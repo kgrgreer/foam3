@@ -6,6 +6,7 @@ p({
     import net.nanopay.bench.*;
     lc = x.get("logLevelFilterLogger");
     lc.setLogInfo(true);
+    savedDebug = lc.getLogDebug();
     lc.setLogDebug(false);
     x = x.put("pmLogger", null);
     b = new TransactionBenchmark();
@@ -21,7 +22,7 @@ p({
     print(runner.getResult());
     l = x.get("logger");
     lc.setLogInfo(true);
-    lc.setLogDebug(true);
+    lc.setLogDebug(savedDebug);
     l.info(new Object[] {runner.getResult()});
   `,
   "output":""

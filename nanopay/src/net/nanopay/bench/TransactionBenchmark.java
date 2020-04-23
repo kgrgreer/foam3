@@ -176,10 +176,6 @@ public class TransactionBenchmark
       bank.setAccountNumber(RESERVE_ACCOUNT_NUMBER);
       bank.setOwner(admin.getId());
       bank.setStatus(BankAccountStatus.VERIFIED);
-      bank = (BankAccount) accountDAO_.put_(x, bank);
-    }
-    if ( bank.getLifecycleState() != LifecycleState.ACTIVE ) {
-      bank = (BankAccount) bank.fclone();
       bank.setLifecycleState(LifecycleState.ACTIVE);
       bank = (BankAccount) accountDAO_.put_(x, bank);
     }
@@ -195,12 +191,8 @@ public class TransactionBenchmark
       trust = new TrustAccount();
       trust.setId(TRUST_ID);
       trust.setReserveAccount(bank.getId());
-      trust = (TrustAccount) accountDAO_.put(trust);
-    }
-    if ( trust.getLifecycleState() != LifecycleState.ACTIVE ) {
-      trust = (TrustAccount) trust.fclone();
       trust.setLifecycleState(LifecycleState.ACTIVE);
-      trust = (TrustAccount) accountDAO_.put_(x, bank);
+      trust = (TrustAccount) accountDAO_.put(trust);
     }
 
     for ( long i = 1; i <= MAX_USERS; i++ ) {
@@ -217,13 +209,8 @@ public class TransactionBenchmark
         user.setEmailVerified(true);
         // NOTE: use 'business' group so default digital account is created below.
         user.setGroup("business");
-        user = (User) userDAO_.put(user);
-
-      }
-      if ( user.getLifecycleState() != LifecycleState.ACTIVE ) {
-        user = (User) user.fclone();
         user.setLifecycleState(LifecycleState.ACTIVE);
-        user = (User) userDAO_.put_(x, bank);
+        user = (User) userDAO_.put(user);
       }
     }
 
@@ -295,6 +282,7 @@ public class TransactionBenchmark
       transaction.setPayeeId(payeeId);
       transaction.setPayerId(payerId);
       transaction.setAmount(amount);
+      transaction.setLifecycleState(LifecycleState.ACTIVE);
 
       if ( quote_ ) {
         TransactionQuote quote = (TransactionQuote) transactionPlannerDAO.put(new TransactionQuote.Builder(x).setRequestTransaction(transaction).build());
