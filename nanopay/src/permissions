@@ -287,7 +287,7 @@ p({"class":"foam.nanos.auth.Permission","id":"service.run.httpBlobService","desc
 p({"class":"foam.nanos.auth.Permission","id":"service.run.httpFileService","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.run.pacsMsg","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.run.quickbooksWebAgent","description":""})
-p({"class":"foam.nanos.auth.Permission","id":"service.run.sugar","description":"Permission to access sugar"})
+p({"class":"foam.nanos.auth.Permission","id":"service.run.sugar","description":"Permission to use sugar."})
 p({"class":"foam.nanos.auth.Permission","id":"service.run.xeroWebAgent","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.scriptDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.securefactLEVDAO","description":""})
