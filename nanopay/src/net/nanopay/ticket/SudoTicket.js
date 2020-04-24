@@ -31,7 +31,23 @@ foam.CLASS({
           },
           errorString: 'Please select a user.'
         }
-      ]
+      ],
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          search: true,
+          selectionView: {
+            class: 'net.nanopay.auth.ui.UserSelectionView',
+            emptySelectionLabel: '--'
+          },
+          rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
+          sections: [
+            {
+              dao: X.data.__context__.userDAO.limit(20).orderBy(foam.nanos.auth.User.BUSINESS_NAME)
+            }
+          ]
+        };
+      }
     },
     {
       name: 'expiry',
