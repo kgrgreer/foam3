@@ -58,6 +58,23 @@ p({
 })
 p({
   "class":"foam.nanos.ruler.Rule",
+  "id":"08bbad15-4c87-4ded-b5b0-429271bd4cee","name":"prevent updated liquidity settings from creating loops in associated accounts",
+  "priority":100,
+  "ruleGroup":"Liquidity",
+  "documentation":"if the user updates a liquidity setting where associated accounts would create a liquidity settings loop, throw an error.",
+  "daoKey":"localLiquiditySettingsDAO",
+  "operation":1,
+  "action":{
+    "class":"net.nanopay.liquidity.PreventLiquiditySettingsLoopRule",
+    "message":"Infinite loop detected in Liquidity Settings, please update settings."
+  },
+  "after":false,
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
   "id":"99c4f61a-d96c-414e-bc45-ff6be05e96ce",
   "name":"create a verification transaction when a new bank is added",
   "priority":100,
