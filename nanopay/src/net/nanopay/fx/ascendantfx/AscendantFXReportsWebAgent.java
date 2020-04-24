@@ -25,6 +25,7 @@ import java.util.zip.ZipOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.nanopay.flinks.model.AccountWithDetailModel;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 
@@ -741,18 +742,40 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       // It is unnecessary to show institution number for US bank accounts
 
       // Get bankaccount branch and institution
-        Branch branch = (Branch) bankAccount.findBranch(x);
-        Institution institution = null;
-        String branchNum;
-        String institutionNum;
-        if ( branch != null ) {
-          branchNum = branch.getBranchId();
-          institution = branch.findInstitution(x);
-          institutionNum = institution == null ? "N/A" : institution.getInstitutionNumber();
-        } else {
-          branchNum = "N/A";
-          institutionNum = "N/A";
+      Branch branch = (Branch) bankAccount.findBranch(x);
+      Institution institution = null;
+      String branchNum;
+      String institutionNum;
+      if ( branch != null ) {
+        branchNum = branch.getBranchId();
+        institution = branch.findInstitution(x);
+        institutionNum = institution == null ? "N/A" : institution.getInstitutionNumber();
+      } else {
+        branchNum = "N/A";
+        institutionNum = "N/A";
+      }
+
+      // Get flinks account holder
+      FlinksAccountsDetailResponse flinksAccountInformation = null;
+      if ( bankAccount instanceof CABankAccount && microVerificationTimestamp == null) {
+        java.util.List flinksAcc = ((ArraySink) flinksResponseDAO.where(
+          EQ(FlinksAccountsDetailResponse.USER_ID, business.getId())).select(new ArraySink())).getArray();
+        String accountHolder = "";
+        for ( Object flinksAccountObj : flinksAcc ) {
+          FlinksAccountsDetailResponse flinksAccountsDetailResponse = (FlinksAccountsDetailResponse) flinksAccountObj;
+          for ( Object obj : flinksAccountsDetailResponse.getAccounts() ) {
+            AccountWithDetailModel accountDetail = (AccountWithDetailModel) obj;
+            if ( accountDetail.getTransitNumber().equals(branchNum) &&
+              accountDetail.getInstitutionNumber().equals(institutionNum) &&
+              accountDetail.getAccountNumber().equals(accountNum) ) {
+              flinksAccountInformation = flinksAccountsDetailResponse;
+              accountHolder = accountDetail.getHolder().getName();
+              break;
+            }
+          }
         }
+        list.add(new ListItem("Account holder: " + accountHolder));
+      }
 
       if ( accountCurrency.equals("USD") ) {
         list.add(new ListItem("Routing number: " + branchNum));
@@ -780,9 +803,6 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
           list.add(new ListItem("Micro transaction verification date: " + verification));
           list.add(new ListItem("PAD agreement date: " + bankAddedDate));
         } else { // flinks
-          FlinksAccountsDetailResponse flinksAccountInformation = (FlinksAccountsDetailResponse) flinksResponseDAO.find(
-            EQ(FlinksAccountsDetailResponse.USER_ID, business.getId())
-          );
           Date createDate = caBankAccount.getCreated();
           String dateOfValidation = sdf.format(createDate);
           String flinksRequestId = flinksAccountInformation !=  null ? flinksAccountInformation.getRequestId() : "N/A";
