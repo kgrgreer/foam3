@@ -55,6 +55,7 @@ foam.CLASS({
             if ( request.getStatus() == ApprovalStatus.REJECTED ) {
               kotakFxTransaction.setStatus(TransactionStatus.DECLINED);
               transactionDAO.put_(x, kotakFxTransaction);
+              return;
             }
 
             if ( rate <= 0 ) {
