@@ -2,7 +2,8 @@ foam.CLASS({
   package: 'net.nanopay.liquidity',
   name: 'PreventAccountLiquidityLoopRule',
 
-  documentation: 'This rule prevents money from infinitely looping through multiple accounts via Liquidity Settings.',
+  documentation: `When an account is created or updated this rule prevents money 
+    from infinitely looping through multiple accounts via Liquidity Settings.`,
 
   implements: ['foam.nanos.ruler.RuleAction'],
 
@@ -27,14 +28,23 @@ foam.CLASS({
         DigitalAccount account = (DigitalAccount) obj;
         DAO accountDAO = (DAO) x.get("localAccountDAO");
         DAO liquiditySettingsDAO = (DAO) x.get("localLiquiditySettingsDAO");
-        HashSet<DigitalAccount> seenAccounts = new HashSet<>();
+        HashSet<DigitalAccount> highSeenAccounts = new HashSet<>();
+        HashSet<DigitalAccount> lowSeenAccounts = new HashSet<>();
         while ( account != null ) {
-          if ( seenAccounts.contains(account) ) {
+          if ( highSeenAccounts.contains(account) ) {
             throw new RuntimeException(this.getMessage());
           }
-          seenAccounts.add(account);
+          highSeenAccounts.add(account);
           LiquiditySettings liquiditySettings = (LiquiditySettings) liquiditySettingsDAO.find(account.getLiquiditySetting());
           account = (DigitalAccount) accountDAO.find(liquiditySettings.getHighLiquidity().getPushPullAccount());
+        }
+        while ( account != null ) {
+          if ( lowSeenAccounts.contains(account) ) {
+            throw new RuntimeException(this.getMessage());
+          }
+          lowSeenAccounts.add(account);
+          LiquiditySettings liquiditySettings = (LiquiditySettings) liquiditySettingsDAO.find(account.getLiquiditySetting());
+          account = (DigitalAccount) accountDAO.find(liquiditySettings.getLowLiquidity().getPushPullAccount());
         }
       `
     }
