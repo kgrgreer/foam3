@@ -43,7 +43,7 @@ foam.CLASS({
           rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
           sections: [
             {
-              dao: X.data.__context__.userDAO.limit(20).orderBy(foam.nanos.auth.User.BUSINESS_NAME)
+              dao: X.data.__context__.userDAO.limit(50).orderBy(foam.nanos.auth.User.BUSINESS_NAME)
             }
           ]
         };
