@@ -593,7 +593,10 @@ foam.CLASS({
         });
 
         if ( locHash === '#reset' ) {
-          view = { class: 'foam.nanos.auth.ChangePasswordView' };
+          view = {
+            class: 'foam.nanos.auth.ChangePasswordView',
+            modelOf: 'foam.nanos.auth.ResetPassword'
+          };
         }
 
         if ( locHash === '#sign-up' && ! self.loginSuccess ) {
