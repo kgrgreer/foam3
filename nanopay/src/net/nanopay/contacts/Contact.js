@@ -272,7 +272,7 @@ foam.CLASS({
       view: function(_, X) {
         return foam.u2.view.FObjectView.create({
           of: net.nanopay.bank.BankAccount,
-          strategizerDisabled: X.data.bankAccount > 0
+          enableStrategizer: X.data.bankAccount === 0
         }, X);
       }
     },
