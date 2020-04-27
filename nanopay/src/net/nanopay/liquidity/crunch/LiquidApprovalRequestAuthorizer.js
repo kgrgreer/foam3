@@ -54,14 +54,16 @@ foam.CLASS({
       name: 'authorizeOnUpdate',
       javaCode:  `
         foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("user");
+        Boolean isAdmin = user.getId() == foam.nanos.auth.User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system");
+
         if ( user != null && 
-             ( user.getId() == foam.nanos.auth.User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system") ) && 
+             isAdmin && 
              ((ApprovalRequest) newObj).getIsFulfilled() ) 
           return;
 
         ApprovalRequest request = (ApprovalRequest) oldObj;
 
-        if ( ! (user.getId() == request.getApprover()) ) {
+        if ( user.getId() != request.getApprover() && ! isAdmin ) {
           throw new AuthorizationException("You are not the approver of this request");
         }
 

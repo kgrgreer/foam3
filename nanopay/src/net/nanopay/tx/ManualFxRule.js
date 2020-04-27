@@ -30,6 +30,9 @@ foam.CLASS({
         @Override
         public void execute(X x) {
           ManualFxApprovalRequest request = (ManualFxApprovalRequest) obj;
+          if ( request.getStatus() == ApprovalStatus.REQUESTED ) {
+            return;
+          }
           DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
           DAO transactionDAO = ((DAO) x.get("transactionDAO"));
           DAO fxQuoteDAO = (DAO) x.get("fxQuoteDAO");
@@ -48,6 +51,13 @@ foam.CLASS({
           if ( list != null && list.size() > 0 ) {
             KotakFxTransaction kotakFxTransaction = (KotakFxTransaction) list.get(0);
             double rate = request.getFxRate();
+
+            if ( request.getStatus() == ApprovalStatus.REJECTED ) {
+              kotakFxTransaction.setStatus(TransactionStatus.DECLINED);
+              transactionDAO.put_(x, kotakFxTransaction);
+              return;
+            }
+
             if ( rate <= 0 ) {
               request.setStatus(ApprovalStatus.REQUESTED);
               request = (ManualFxApprovalRequest) approvalRequestDAO.put_(x, request);
