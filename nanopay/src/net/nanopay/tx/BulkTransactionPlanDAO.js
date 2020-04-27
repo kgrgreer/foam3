@@ -59,7 +59,8 @@ foam.CLASS({
               bulkTxn.setSourceAccount(sourceAccount.getId());
               bulkTxn.setDestinationAccount(getAccount(x, payee, bulkTxn.getDestinationCurrency(), bulkTxn.getExplicitCO()).getId());
 
-              parentQuote.setRequestTransaction(bulkTxn);
+              // Need to fclone the bulkTxn when reusing it as the request transaction in a quote since bulkTxn is frozen.
+              parentQuote.setRequestTransaction((Transaction) bulkTxn.fclone());
               parentQuote = (TransactionQuote) getDelegate().put_(x, parentQuote);
               
               // Update the child of the bulk transaction
