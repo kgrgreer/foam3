@@ -79,6 +79,10 @@ foam.CLASS({
           throw new AuthorizationException("You cannot cancel a request that you did not initiate.");
         }
 
+        if ( user.getId() != newRequest.getCreatedBy() && newRequest.getStatus() == foam.nanos.approval.ApprovalStatus.REQUESTED ){
+          throw new AuthorizationException("You cannot reset an already Approved, Rejected or Cancelled request back to Requested");
+        }
+
         Long accountId = oldObj instanceof AccountRoleApprovalRequest ? ((AccountRoleApprovalRequest) oldObj).getOutgoingAccount() : 0;
 
         String className;
