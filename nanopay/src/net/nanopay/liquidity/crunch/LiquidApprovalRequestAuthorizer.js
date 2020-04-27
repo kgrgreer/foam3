@@ -66,7 +66,12 @@ foam.CLASS({
           throw new AuthorizationException("You are not the approver of this request");
         }
 
-        if ( user.getId() == newRequest.getCreatedBy() && newRequest.getStatus() != foam.nanos.approval.ApprovalStatus.CANCELLED ){
+        if ( user.getId() == newRequest.getCreatedBy() && 
+          (
+            newRequest.getStatus() == foam.nanos.approval.ApprovalStatus.APPROVED ||
+            newRequest.getStatus() == foam.nanos.approval.ApprovalStatus.REJECTED
+          )
+        ){
           throw new AuthorizationException("You cannot approve or reject a request that you have initiated.");
         }
 
