@@ -6,12 +6,13 @@ foam.CLASS({
     from infinitely looping through multiple accounts via Liquidity Settings.`,
 
   implements: [
-    'foam.nanos.ruler.RuleAction',
-    'foam.mlang.Expressions'
+    'foam.nanos.ruler.RuleAction'
   ],
 
   javaImports: [
     'foam.dao.DAO',
+    'foam.dao.ArraySink',
+    'java.util.HashSet',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.liquidity.LiquiditySettings'
   ],
@@ -33,7 +34,7 @@ foam.CLASS({
         HashSet<DigitalAccount> highSeenAccounts = new HashSet<>();
         HashSet<DigitalAccount> lowSeenAccounts = new HashSet<>();
         ArraySink sink = (ArraySink) accountDAO.where(
-          EQ(DigitalAccount.LIQUIDITY_SETTING, liquiditySettings.getId())
+          foam.mlang.MLang.EQ(DigitalAccount.LIQUIDITY_SETTING, liquiditySettings.getId())
         ).select(new ArraySink());
 
         for ( int i = 0; i < sink.getArray().size(); i++ ) {
@@ -43,16 +44,16 @@ foam.CLASS({
               throw new RuntimeException(this.getMessage());
             }
             highSeenAccounts.add(account);
-            LiquiditySettings liquiditySettings = (LiquiditySettings) liquiditySettingsDAO.find(account.getLiquiditySetting());
-            account = (DigitalAccount) accountDAO.find(liquiditySettings.getHighLiquidity().getPushPullAccount());
+            LiquiditySettings highLiquiditySettings = (LiquiditySettings) liquiditySettingsDAO.find(account.getLiquiditySetting());
+            account = (DigitalAccount) accountDAO.find(highLiquiditySettings.getHighLiquidity().getPushPullAccount());
           }
           while ( account != null ) {
             if ( lowSeenAccounts.contains(account) ) {
               throw new RuntimeException(this.getMessage());
             }
             lowSeenAccounts.add(account);
-            LiquiditySettings liquiditySettings = (LiquiditySettings) liquiditySettingsDAO.find(account.getLiquiditySetting());
-            account = (DigitalAccount) accountDAO.find(liquiditySettings.getLowLiquidity().getPushPullAccount());
+            LiquiditySettings lowLiquiditySettings = (LiquiditySettings) liquiditySettingsDAO.find(account.getLiquiditySetting());
+            account = (DigitalAccount) accountDAO.find(lowLiquiditySettings.getLowLiquidity().getPushPullAccount());
           }
         }
 

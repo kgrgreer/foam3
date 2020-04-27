@@ -35,16 +35,16 @@ foam.CLASS({
             throw new RuntimeException(this.getMessage());
           }
           highSeenAccounts.add(account);
-          LiquiditySettings liquiditySettings = (LiquiditySettings) liquiditySettingsDAO.find(account.getLiquiditySetting());
-          account = (DigitalAccount) accountDAO.find(liquiditySettings.getHighLiquidity().getPushPullAccount());
+          LiquiditySettings highLiquiditySettings = (LiquiditySettings) liquiditySettingsDAO.find(account.getLiquiditySetting());
+          account = (DigitalAccount) accountDAO.find(highLiquiditySettings.getHighLiquidity().getPushPullAccount());
         }
         while ( account != null ) {
           if ( lowSeenAccounts.contains(account) ) {
             throw new RuntimeException(this.getMessage());
           }
           lowSeenAccounts.add(account);
-          LiquiditySettings liquiditySettings = (LiquiditySettings) liquiditySettingsDAO.find(account.getLiquiditySetting());
-          account = (DigitalAccount) accountDAO.find(liquiditySettings.getLowLiquidity().getPushPullAccount());
+          LiquiditySettings lowLiquiditySettings = (LiquiditySettings) liquiditySettingsDAO.find(account.getLiquiditySetting());
+          account = (DigitalAccount) accountDAO.find(lowLiquiditySettings.getLowLiquidity().getPushPullAccount());
         }
       `
     }
