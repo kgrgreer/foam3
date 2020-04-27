@@ -269,9 +269,11 @@ foam.CLASS({
       factory: function() {
         return net.nanopay.bank.BankAccount.create({ isDefault: true });
       },
-      view: {
-        class: 'foam.u2.view.FObjectView',
-        of: 'net.nanopay.bank.BankAccount'
+      view: function(_, X) {
+        return foam.u2.view.FObjectView.create({
+          of: net.nanopay.bank.BankAccount,
+          strategizerDisabled: X.data.bankAccount > 0
+        }, X);
       }
     },
     {
