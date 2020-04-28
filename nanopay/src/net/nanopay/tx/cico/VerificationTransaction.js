@@ -97,24 +97,6 @@ foam.CLASS({
       javaCode: `
         return false;
       `
-    },
-    {
-      documentation: `verification transaction doesn't create any transfers`,
-      name: 'canReverseTransfer',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'oldTxn',
-          type: 'net.nanopay.tx.model.Transaction'
-        }
-      ],
-      type: 'Boolean',
-      javaCode: `
-        return false;
-      `
     }
   ]
 });

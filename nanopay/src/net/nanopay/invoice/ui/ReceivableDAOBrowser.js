@@ -165,7 +165,7 @@ foam.CLASS({
               name: 'reconcile',
               label: 'Reconcile',
               isAvailable: function() {
-                return ! this.payeeReconciled && this.status != this.InvoiceStatus.DRAFT;
+                return ! this.payeeReconciled && this.status === this.InvoiceStatus.PAID;
               },
               code: async function(X) {
                 this.payeeReconciled = true;
