@@ -37,8 +37,8 @@ foam.CLASS({
 
         for ( int i = 0; i < sink.getArray().size(); i++ ) {
           DigitalAccount account = (DigitalAccount) sink.getArray().get(i);
-          checkHighLiquidityLoop(x, account, this.getMessage());
-          checkLowLiquidityLoop(x, account, this.getMessage());
+          checkLiquidityLoop(x, account, true, this.getMessage());
+          checkLiquidityLoop(x, account, false, this.getMessage());
         }
       `
     }

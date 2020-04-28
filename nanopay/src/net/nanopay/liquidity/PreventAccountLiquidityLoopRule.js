@@ -27,12 +27,12 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
         DigitalAccount account = (DigitalAccount) obj;
-        checkHighLiquidityLoop(x, account, this.getMessage());
-        checkLowLiquidityLoop(x, account, this.getMessage());
+        checkLiquidityLoop(x, account, true, this.getMessage());
+        checkLiquidityLoop(x, account, false, this.getMessage());
       `
     },
     {
-      name: 'checkHighLiquidityLoop',
+      name: 'checkLiquidityLoop',
       args: [
         {
           name: 'x',
@@ -43,41 +43,8 @@ foam.CLASS({
           type: 'net.nanopay.account.DigitalAccount'
         },
         {
-          name: 'message',
-          type: 'String'
-        }
-      ],
-      javaCode: `
-        DAO accountDAO = (DAO) x.get("localAccountDAO");
-        HashSet<DigitalAccount> seenAccounts = new HashSet<>();
-
-        LiquiditySettings liquiditySetting = account.findLiquiditySetting(x);
-        if ( liquiditySetting == null ) return;
-
-        seenAccounts.add(account);
-        account = (DigitalAccount) accountDAO.find(liquiditySetting.getHighLiquidity().getPushPullAccount());
-        while ( account != null ) {
-          if ( seenAccounts.contains(account) ) {
-            throw new RuntimeException(message);
-          }
-          seenAccounts.add(account);
-          LiquiditySettings nextLiquiditySetting = account.findLiquiditySetting(x);
-          Liquidity highLiquidity = nextLiquiditySetting.getHighLiquidity();
-          if ( ! highLiquidity.getRebalancingEnabled() ) return;
-          account = (DigitalAccount) accountDAO.find(highLiquidity.getPushPullAccount());
-        }
-      `
-    },
-    {
-      name: 'checkLowLiquidityLoop',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'account',
-          type: 'net.nanopay.account.DigitalAccount'
+          name: 'checkHighLiquidity',
+          type: 'Boolean'
         },
         {
           name: 'message',
@@ -92,16 +59,17 @@ foam.CLASS({
       if ( liquiditySetting == null ) return;
     
       seenAccounts.add(account);
-      account = (DigitalAccount) accountDAO.find(liquiditySetting.getLowLiquidity().getPushPullAccount());
+      Liquidity liquidity = checkHighLiquidity ? liquiditySetting.getHighLiquidity() : liquiditySetting.getLowLiquidity();
+      account = (DigitalAccount) accountDAO.find(liquidity.getPushPullAccount());
       while ( account != null ) {
         if ( seenAccounts.contains(account) ) {
           throw new RuntimeException(message);
         }
         seenAccounts.add(account);
         LiquiditySettings nextLiquiditySetting = account.findLiquiditySetting(x);
-        Liquidity lowLiquidity = nextLiquiditySetting.getLowLiquidity();
-        if ( ! lowLiquidity.getRebalancingEnabled() ) return;
-        account = (DigitalAccount) accountDAO.find(lowLiquidity.getPushPullAccount());
+        Liquidity nextLiquidity = checkHighLiquidity ? nextLiquiditySetting.getHighLiquidity() : nextLiquiditySetting.getLowLiquidity();
+        if ( ! nextLiquidity.getRebalancingEnabled() ) return;
+        account = (DigitalAccount) accountDAO.find(nextLiquidity.getPushPullAccount());
       }
       `
     }
