@@ -94,7 +94,11 @@ foam.CLASS({
                 return this.signUpStatus !== self.ContactStatus.ACTIVE;
               },
               code: function(X) {
-                // disabled until new edit contact flow is implemented
+                X.controllerView.add(self.WizardController.create({
+                  model: 'net.nanopay.contacts.Contact',
+                  data: this,
+                  controllerMode: this.bankAccount > 0 ? foam.u2.ControllerMode.EDIT : foam.u2.ControllerMode.CREATE
+                }, X));
               }
             }),
             this.Action.create({
