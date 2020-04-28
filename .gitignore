@@ -91,17 +91,9 @@ nanopay/src/net/nanopay/iso20022/*
 !nanopay/src/net/nanopay/iso20022/README.md
 
 # editor dump files
-Snap.20200427.123314.14238.0004.trc
-Snap.20200427.124807.14238.0011.trc
-Snap.20200427.124807.14238.0013.trc
-heapdump.20200427.123314.14238.0002.phd
-heapdump.20200427.124807.14238.0005.phd
-heapdump.20200427.124807.14238.0006.phd
-heapdump.20200427.124807.14238.0007.phd
-javacore.20200427.123314.14238.0003.txt
-javacore.20200427.124807.14238.0008.txt
-javacore.20200427.124807.14238.0009.txt
-javacore.20200427.124807.14238.0010.txt
+Snap.*
+heapdump.*
+javacore.*
 
 # sha256 folder
 sha256/
