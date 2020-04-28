@@ -54,15 +54,7 @@ foam.CLASS({
       javaCode: `
       DAO accountDAO = (DAO) x.get("localAccountDAO");
       HashSet<DigitalAccount> seenAccounts = new HashSet<>();
-
-      LiquiditySettings liquiditySetting = account.findLiquiditySetting(x);
-      if ( liquiditySetting == null ) return;
-    
-      seenAccounts.add(account);
-      Liquidity liquidity = checkHighLiquidity ? liquiditySetting.getHighLiquidity() : liquiditySetting.getLowLiquidity();
-      if ( ! liquidity.getRebalancingEnabled() ) return;
       
-      account = (DigitalAccount) accountDAO.find(liquidity.getPushPullAccount());
       while ( account != null ) {
         if ( seenAccounts.contains(account) ) {
           throw new RuntimeException(message);
