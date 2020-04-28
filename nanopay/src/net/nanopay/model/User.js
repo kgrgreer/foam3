@@ -30,8 +30,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.onboarding.model.Questionnaire',
-    'net.nanopay.model.PersonalIdentification'
+    'net.nanopay.model.PersonalIdentification',
+    'net.nanopay.onboarding.model.Questionnaire'
   ],
 
   constants: [

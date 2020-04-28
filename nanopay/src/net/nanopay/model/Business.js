@@ -14,7 +14,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.admin.model.ComplianceStatus'
+    'net.nanopay.admin.model.ComplianceStatus',
   ],
 
   documentation: `Business is an object that extends the user class. A business is an

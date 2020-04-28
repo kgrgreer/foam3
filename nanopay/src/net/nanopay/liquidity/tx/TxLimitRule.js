@@ -25,6 +25,16 @@ foam.CLASS({
     'period'
   ],
 
+  tableColumns: [
+    'id',
+    'name',
+    'enabled',
+    'applyLimitTo',
+    'send',
+    'limit',
+    'period'
+  ],
+
   properties: [
     { name: 'name' },
     { name: 'description' },
@@ -76,13 +86,13 @@ foam.CLASS({
           });
       }
     },
-    {	
-      class: 'Reference',	
-      of: 'net.nanopay.model.Business',	
-      targetDAOKey: 'businessDAO',		
-      documentation: 'The business to limit.',	
-      name: 'businessToLimit',	
-      section: 'basicInfo',	
+    {
+      class: 'Reference',
+      of: 'net.nanopay.model.Business',
+      targetDAOKey: 'businessDAO',
+      documentation: 'The business to limit.',
+      name: 'businessToLimit',
+      section: 'basicInfo',
       view: (_, X) => {
         return {
           class: 'foam.u2.view.RichChoiceView',
@@ -107,7 +117,7 @@ foam.CLASS({
           .catch((error) => {
             this.add(value);
           });
-      }  
+      }
     },
     {
       class: 'Reference',
