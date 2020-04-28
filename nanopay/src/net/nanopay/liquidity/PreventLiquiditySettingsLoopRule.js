@@ -33,30 +33,48 @@ foam.CLASS({
         DAO liquiditySettingsDAO = (DAO) x.get("liquiditySettingsDAO");
         HashSet<DigitalAccount> highSeenAccounts = new HashSet<>();
         HashSet<DigitalAccount> lowSeenAccounts = new HashSet<>();
+
         ArraySink sink = (ArraySink) accountDAO.where(
           foam.mlang.MLang.EQ(DigitalAccount.LIQUIDITY_SETTING, liquiditySettings.getId())
         ).select(new ArraySink());
 
         for ( int i = 0; i < sink.getArray().size(); i++ ) {
           DigitalAccount account = (DigitalAccount) sink.getArray().get(i);
-          while ( account != null ) {
-            if( highSeenAccounts.contains(account) ) {
-              throw new RuntimeException(this.getMessage());
-            }
-            highSeenAccounts.add(account);
-            LiquiditySettings highLiquiditySettings = (LiquiditySettings) liquiditySettingsDAO.find(account.getLiquiditySetting());
-            account = (DigitalAccount) accountDAO.find(highLiquiditySettings.getHighLiquidity().getPushPullAccount());
-          }
-          while ( account != null ) {
-            if ( lowSeenAccounts.contains(account) ) {
-              throw new RuntimeException(this.getMessage());
-            }
-            lowSeenAccounts.add(account);
-            LiquiditySettings lowLiquiditySettings = (LiquiditySettings) liquiditySettingsDAO.find(account.getLiquiditySetting());
-            account = (DigitalAccount) accountDAO.find(lowLiquiditySettings.getLowLiquidity().getPushPullAccount());
-          }
+          LiquiditySettings liquiditySettingsToCheck = (LiquiditySettings) liquiditySettingsDAO.find(account.getLiquiditySetting());
+          checkForLoop(x, account, highSeenAccounts, liquiditySettingsToCheck.getHighLiquidity().getPushPullAccount());
+          checkForLoop(x, account, lowSeenAccounts, liquiditySettingsToCheck.getLowLiquidity().getPushPullAccount());
         }
-
+      `
+    },
+    {
+      name: 'checkForLoop',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'account',
+          type: 'net.nanopay.account.DigitalAccount'
+        },
+        {
+          name: 'seenAccounts',
+          type: 'java.util.HashSet'
+        },
+        {
+          name: 'pushPullId',
+          type: 'Long'
+        }
+      ],
+      javaCode: `
+        DAO accountDAO = (DAO) x.get("localAccountDAO");
+        while ( account != null ) {
+          if ( seenAccounts.contains(account) ) {
+            throw new RuntimeException(this.getMessage());
+          }
+          seenAccounts.add(account);
+          account = (DigitalAccount) accountDAO.find(pushPullId);
+        }
       `
     }
   ]
