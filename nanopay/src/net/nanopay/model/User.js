@@ -357,14 +357,6 @@ foam.CLASS({
       `
     },
     {
-      name: 'getStringId',
-      type: 'String',
-      javaCode: `
-        String id = ((Long) getId()).toString();
-        return id;
-      `
-    },
-    {
       name: `validate`,
       args: [
         { name: 'x', type: 'Context' }
