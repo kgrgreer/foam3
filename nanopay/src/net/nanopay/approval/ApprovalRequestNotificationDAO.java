@@ -32,7 +32,8 @@ extends ProxyDAO {
       notificationType = "approval request for reference id: " + ret.getRefObj() + " cause: " + causeDAO;
       notificationBody = "New approval was requested for reference id: " + ret.getRefObj() + " cause: " + causeDAO;
     } else if ( old != null 
-      && ret.getIsFulfilled()
+      && ret.getStatus() != old.getStatus()
+      && ( ret.getStatus() == ApprovalStatus.APPROVED || ret.getStatus() == ApprovalStatus.REJECTED )
       && ret.getLastModifiedBy() != ret.getApprover()
     ) {
       notificationType = "approval request updated for reference id: " + ret.getRefObj();
@@ -67,6 +68,7 @@ extends ProxyDAO {
           EQ(ApprovalRequest.STATUS, ApprovalStatus.REJECTED),
           EQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED)
         ),
+        EQ(ApprovalRequest.CREATED_BY, ret.getCreatedBy()),
         EQ(ApprovalRequest.OBJ_ID, ret.getObjId()),
         EQ(ApprovalRequest.APPROVABLE_HASH_KEY, ret.getApprovableHashKey())
       ));

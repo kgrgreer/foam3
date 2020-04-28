@@ -1346,6 +1346,7 @@ p({
     import foam.nanos.menu.DAOMenu2;
     import foam.nanos.menu.Menu;
     import foam.nanos.menu.SubMenu;
+    import foam.mlang.MLang;
 
     DRY_RUN = true;
     // For fix me, Set to true to undo the permission and ui changes made to the "SME" group using this script
@@ -1539,9 +1540,9 @@ p({
     // create Account submenu
     accountMenuConfig = new DAOControllerConfig();
     accountMenuConfig.setDaoKey("accountDAO");
-    accountMenuConfig.setCreateEnabled(false);
-    accountMenuConfig.setEditEnabled(false);
-    accountMenuConfig.setDeleteEnabled(false);
+    accountMenuConfig.setCreatePredicate(MLang.FALSE);
+    accountMenuConfig.setEditPredicate(MLang.FALSE);
+    accountMenuConfig.setDeletePredicate(MLang.FALSE);
 
     accountDaoMenu = new DAOMenu2.Builder(x)
       .setConfig(accountMenuConfig)
@@ -1557,9 +1558,9 @@ p({
     // create Businesses submenu
     businessMenuConfig = new DAOControllerConfig();
     businessMenuConfig.setDaoKey("businessDAO");
-    businessMenuConfig.setCreateEnabled(false);
-    businessMenuConfig.setEditEnabled(false);
-    businessMenuConfig.setDeleteEnabled(false);
+    businessMenuConfig.setCreatePredicate(MLang.FALSE);
+    businessMenuConfig.setEditPredicate(MLang.FALSE);
+    businessMenuConfig.setDeletePredicate(MLang.FALSE);
 
     businessDaoMenu = new DAOMenu2.Builder(x)
       .setConfig(businessMenuConfig)
@@ -1575,9 +1576,9 @@ p({
     // create Transactions submenu
     txnMenuConfig = new DAOControllerConfig();
     txnMenuConfig.setDaoKey("transactionDAO");
-    txnMenuConfig.setCreateEnabled(false);
-    txnMenuConfig.setEditEnabled(false);
-    txnMenuConfig.setDeleteEnabled(false);
+    txnMenuConfig.setCreatePredicate(MLang.FALSE);
+    txnMenuConfig.setEditPredicate(MLang.FALSE);
+    txnMenuConfig.setDeletePredicate(MLang.FALSE);
 
     txnDaoMenu = new DAOMenu2.Builder(x)
       .setConfig(txnMenuConfig)
@@ -1593,9 +1594,9 @@ p({
     // create user submenu
     userMenuConfig = new DAOControllerConfig();
     userMenuConfig.setDaoKey("userDAO");
-    userMenuConfig.setCreateEnabled(false);
-    userMenuConfig.setEditEnabled(false);
-    userMenuConfig.setDeleteEnabled(false);
+    userMenuConfig.setCreatePredicate(MLang.FALSE);
+    userMenuConfig.setEditPredicate(MLang.FALSE);
+    userMenuConfig.setDeletePredicate(MLang.FALSE);
 
     userDaoMenu = new DAOMenu2.Builder(x)
       .setConfig(userMenuConfig)
