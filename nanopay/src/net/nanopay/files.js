@@ -915,6 +915,7 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/tx/TxLimitRule' },
    { name: 'net/nanopay/liquidity/tx/RestrictAccountsRule' },
    { name: 'net/nanopay/liquidity/tx/RestrictUsersRule' },
+   { name: 'net/nanopay/liquidity/tx/refinements' },
    { name: 'net/nanopay/liquidity/ruler/AccountLSValidationPredicate' },
 
 
