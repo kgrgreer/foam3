@@ -62,13 +62,27 @@ foam.CLASS({
           return;
 
         ApprovalRequest request = (ApprovalRequest) oldObj;
+        ApprovalRequest newRequest = (ApprovalRequest) newObj;
 
         if ( user.getId() != request.getApprover() && ! isAdmin ) {
           throw new AuthorizationException("You are not the approver of this request");
         }
 
-        if ( user.getId() == request.getCreatedBy() ){
-          throw new AuthorizationException("You cannot approve your own request");
+        if ( user.getId() == newRequest.getCreatedBy() && 
+          (
+            newRequest.getStatus() == foam.nanos.approval.ApprovalStatus.APPROVED ||
+            newRequest.getStatus() == foam.nanos.approval.ApprovalStatus.REJECTED
+          )
+        ){
+          throw new AuthorizationException("You cannot approve or reject a request that you have initiated.");
+        }
+
+        if ( user.getId() != newRequest.getCreatedBy() && newRequest.getStatus() == foam.nanos.approval.ApprovalStatus.CANCELLED ){
+          throw new AuthorizationException("You cannot cancel a request that you did not initiate.");
+        }
+
+        if ( user.getId() != newRequest.getCreatedBy() && newRequest.getStatus() == foam.nanos.approval.ApprovalStatus.REQUESTED ){
+          throw new AuthorizationException("You cannot reset an already Approved, Rejected or Cancelled request back to Requested");
         }
 
         Long accountId = oldObj instanceof AccountRoleApprovalRequest ? ((AccountRoleApprovalRequest) oldObj).getOutgoingAccount() : 0;
