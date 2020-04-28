@@ -60,6 +60,8 @@ foam.CLASS({
     
       seenAccounts.add(account);
       Liquidity liquidity = checkHighLiquidity ? liquiditySetting.getHighLiquidity() : liquiditySetting.getLowLiquidity();
+      if ( ! liquidity.getRebalancingEnabled() ) return;
+      
       account = (DigitalAccount) accountDAO.find(liquidity.getPushPullAccount());
       while ( account != null ) {
         if ( seenAccounts.contains(account) ) {
@@ -67,8 +69,11 @@ foam.CLASS({
         }
         seenAccounts.add(account);
         LiquiditySettings nextLiquiditySetting = account.findLiquiditySetting(x);
+        if ( nextLiquiditySetting == null ) return;
+
         Liquidity nextLiquidity = checkHighLiquidity ? nextLiquiditySetting.getHighLiquidity() : nextLiquiditySetting.getLowLiquidity();
-        if ( ! nextLiquidity.getRebalancingEnabled() ) return;
+        if ( nextLiquidity == null || ! nextLiquidity.getRebalancingEnabled() ) return;
+
         account = (DigitalAccount) accountDAO.find(nextLiquidity.getPushPullAccount());
       }
       `
