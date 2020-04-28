@@ -470,3 +470,26 @@ p({
   """,
   "client": "{\"of\":\"net.nanopay.tx.cico.EFTFile\"}"
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "transactionLimitService",
+  "serve": true,
+  "authenticate": true, 
+  "boxClass":"net.nanopay.tx.TransactionLimitServiceInterfaceSkeleton",
+  "serviceClass": "net.nanopay.tx.TransactionLimitService",
+  "client":
+    """
+      {
+        "class":"net.nanopay.tx.client.ClientTransactionLimitService",
+        "delegate": {
+          "class":"foam.box.SessionClientBox",
+          "delegate": {
+            "class":"foam.box.HTTPBox",
+            "url":
+            "service/transactionLimitService"
+          }
+        }
+      }
+    """
+})

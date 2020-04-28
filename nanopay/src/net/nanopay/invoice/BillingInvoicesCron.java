@@ -146,16 +146,12 @@ public class BillingInvoicesCron implements ContextAgent {
         // Only want to charge fees on completed or declined Transaction chains
         TransactionStatus state = transaction.getState(x);
 
-        if ( state == TransactionStatus.DECLINED ) {
-          Transaction ct = (Transaction) transactionDAO.find(AND(
-            EQ(Transaction.PARENT, transaction.getId()),
-            INSTANCE_OF(ComplianceTransaction.class)
-          ));
-          if ( ct != null && ct.getStatus() == TransactionStatus.DECLINED ) {
-            return;
-          }
-        } else if ( ! (state == TransactionStatus.COMPLETED || state == TransactionStatus.SENT) ) {
-          return;
+        Transaction ct = (Transaction) transactionDAO.find(AND(
+          EQ(Transaction.PARENT, transaction.getId()),
+          INSTANCE_OF(ComplianceTransaction.class)
+        ));
+        if ( ct != null && ct.getStatus() != TransactionStatus.COMPLETED ) {
+          return; 
         }
 
         Account sourceAccount = transaction.findSourceAccount(x);
