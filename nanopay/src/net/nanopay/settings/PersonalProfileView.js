@@ -1,4 +1,4 @@
- foam.CLASS({
+foam.CLASS({
   package: 'net.nanopay.settings',
   name: 'PersonalProfileView',
   extends: 'foam.u2.View',
@@ -415,7 +415,12 @@
       this
       .addClass(this.myClass())
       .start(changePasswordProfile)
-        .start().tag( { class: foam.nanos.auth.ChangePasswordView, horizontal: true, topBarShow: false } ).end()
+        .start().tag({
+          class: foam.nanos.auth.ChangePasswordView,
+          modelOf: 'foam.nanos.auth.UpdatePassword',
+          showHeader: false,
+          isHorizontal: true
+        }).end()
       .end();
 
       this
@@ -561,7 +566,7 @@
     {
       name: 'disableTwoFactor',
       label: 'Disable',
-      code: function (X) {
+      code: function() {
         var self = this;
 
         if ( ! this.twoFactorToken ) {
@@ -570,7 +575,7 @@
         }
 
         this.twofactor.disable(null, this.twoFactorToken)
-        .then(function (result) {
+        .then(function(result) {
           if ( ! result ) {
             self.add(self.NotificationMessage.create({ message: self.TwoFactorDisableError, type: 'error' }));
             return;

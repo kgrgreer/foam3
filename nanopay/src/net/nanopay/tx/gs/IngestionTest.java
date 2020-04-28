@@ -16,7 +16,7 @@ public class IngestionTest
   public void runTest(X x){
     String name = "9differentTxnTypes.csv";
     int timeOut = 15;
-    int expectedTxns = 30;
+    int expectedTxns = 26;
 
     GsRowToTx ingestionScript = new GsRowToTx();
     java.io.File file = new java.io.File("deployment/liquid/"+name);

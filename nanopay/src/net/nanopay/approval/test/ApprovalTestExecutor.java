@@ -118,7 +118,7 @@ public class ApprovalTestExecutor extends LiquidTestExecutor {
       .setEmail(email)
       .setGroup("liquidBasic")
       .setJobTitle("Tester")
-      .setOrganization("Goldman Sachs")
+      .setOrganization("Acme")
       .setEnabled(true)
       .build();
 

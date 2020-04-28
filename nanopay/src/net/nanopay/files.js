@@ -366,6 +366,8 @@ FOAM_FILES([
 
   // tx
   { name: 'net/nanopay/tx/TransactionValidator' },
+  { name: 'net/nanopay/tx/TransactionLimitServiceInterface' },
+  { name: 'net/nanopay/tx/client/ClientTransactionLimitService' },
   { name: 'net/nanopay/tx/client/ClientUserTransactionLimitService' },
   { name: 'net/nanopay/util/Frequency' },
   { name: 'net/nanopay/tx/model/Fee' },
@@ -400,6 +402,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ruler/MicroDepositFailed' },
   { name: 'net/nanopay/tx/ruler/MicroDepositSent' },
   { name: 'net/nanopay/tx/model/TransactionLimitType' },
+  { name: 'net/nanopay/tx/model/TransactionLimitDetail' },
   { name: 'net/nanopay/tx/TransactionPurpose' },
   { name: 'net/nanopay/tx/UserTransactionLimit' },
   { name: 'net/nanopay/tx/AbliiTransaction' },
@@ -912,6 +915,7 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/tx/TxLimitRule' },
    { name: 'net/nanopay/liquidity/tx/RestrictAccountsRule' },
    { name: 'net/nanopay/liquidity/tx/RestrictUsersRule' },
+   { name: 'net/nanopay/liquidity/tx/refinements' },
    { name: 'net/nanopay/liquidity/ruler/AccountLSValidationPredicate' },
 
 
@@ -1036,6 +1040,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/PrivacyView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/PaymentCodeView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/TransactionLimitView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/TransactionLimitSearchView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/BeneficialOwnerView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SMEWizardOverview', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/InfoMessageContainer', flags: ['web'] },
@@ -1393,7 +1398,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/rbc/iso20022file/RbcTransmissionHeader' },
   { name: 'net/nanopay/tx/rbc/ftps/RbcFTPSCredential' },
 
-  // goldman ingestion
+  // file ingestion
   { name: 'net/nanopay/tx/gs/GsTxCsvRow' },
   { name: 'net/nanopay/tx/gs/GsRowToTx' },
   { name: 'net/nanopay/tx/gs/GsTxAssembly' },

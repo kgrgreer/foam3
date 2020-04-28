@@ -1559,6 +1559,8 @@ foam.CLASS({
             self.beneficialOwnersTable.put(self['owner'+(i+1)].clone());
           }
         });
+
+        this.certifyAllInfoIsAccurate = false;
       }
     },
   ],

@@ -41,7 +41,8 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.Country',
-    'foam.dao.PromisedDAO'
+    'foam.dao.PromisedDAO',
+    'foam.u2.DisplayMode'
   ],
 
   constants: [
@@ -181,7 +182,9 @@ foam.CLASS({
       documentation: `True if the user confirms their relationship with the contact.`,
       section: 'stepOne',
       label: '',
-      updateVisibility: foam.u2.DisplayMode.HIDDEN,
+      updateVisibility: function() {
+        return foam.u2.DisplayMode.HIDDEN;
+      },
       createVisibility: function(isEdit) {
         return isEdit ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
@@ -282,7 +285,9 @@ foam.CLASS({
           foam.u2.DisplayMode.RW :
           foam.u2.DisplayMode.HIDDEN;
       },
-      updateVisibility: foam.u2.DisplayMode.HIDDEN,
+      updateVisibility: function() {
+        return foam.u2.DisplayMode.HIDDEN;
+      },
       view: function(_, X) {
         return foam.u2.CheckBox.create({ label: X.data.INVITE_LABEL });
       }

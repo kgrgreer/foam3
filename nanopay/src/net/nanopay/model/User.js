@@ -30,8 +30,8 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.onboarding.model.Questionnaire',
-    'net.nanopay.model.PersonalIdentification'
+    'net.nanopay.model.PersonalIdentification',
+    'net.nanopay.onboarding.model.Questionnaire'
   ],
 
   constants: [
@@ -349,7 +349,7 @@ foam.CLASS({
       `
     },
     {
-      name: 'getApprovableKey',
+      name: 'getStringId',
       type: 'String',
       javaCode: `
         String id = ((Long) getId()).toString();
