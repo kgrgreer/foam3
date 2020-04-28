@@ -47,6 +47,10 @@ p({
   "documentation":"if the user creates or updates an account with a liquidity settings loop, throw an error.",
   "daoKey":"localAccountDAO",
   "operation":3,
+  "predicate":{
+    "class":"foam.mlang.predicate.IsInstanceOf",
+    "targetClass":"net.nanopay.account.DigitalAccount"
+  },
   "action":{
     "class":"net.nanopay.liquidity.PreventAccountLiquidityLoopRule",
     "message":"Infinite loop detected in Liquidity Settings of account, please update settings."
@@ -58,7 +62,7 @@ p({
 })
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"08bbad15-4c87-4ded-b5b0-429271bd4cee","name":"prevent updated liquidity settings from creating loops in associated accounts",
+  "id":"a2931561-c643-4917-a491-386d4f9cf592","name":"prevent updated liquidity settings from creating loops in associated accounts",
   "priority":100,
   "ruleGroup":"Liquidity",
   "documentation":"if the user updates a liquidity setting where associated accounts would create a liquidity settings loop, throw an error.",
