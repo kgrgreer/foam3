@@ -11,6 +11,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'java.util.HashSet',
     'net.nanopay.account.DigitalAccount',
+    'net.nanopay.liquidity.Liquidity',
     'net.nanopay.liquidity.LiquiditySettings'
   ],
 
@@ -48,19 +49,22 @@ foam.CLASS({
       ],
       javaCode: `
         DAO accountDAO = (DAO) x.get("localAccountDAO");
-        DAO liquiditySettingsDAO = (DAO) x.get("localLiquiditySettingsDAO");
         HashSet<DigitalAccount> seenAccounts = new HashSet<>();
-        seenAccounts.add(account);
 
-        LiquiditySettings liquiditySettings = (LiquiditySettings) liquiditySettingsDAO.find(account.getLiquiditySetting());
-        account = (DigitalAccount) accountDAO.find(liquiditySettings.getHighLiquidity().getPushPullAccount());
+        LiquiditySettings liquiditySetting = account.findLiquiditySetting(x);
+        if ( liquiditySetting == null ) return;
+
+        seenAccounts.add(account);
+        account = (DigitalAccount) accountDAO.find(liquiditySetting.getHighLiquidity().getPushPullAccount());
         while ( account != null ) {
           if ( seenAccounts.contains(account) ) {
             throw new RuntimeException(message);
           }
           seenAccounts.add(account);
-          LiquiditySettings nextLiquiditySettings = (LiquiditySettings) liquiditySettingsDAO.find(account.getLiquiditySetting());
-          account = (DigitalAccount) accountDAO.find(nextLiquiditySettings.getHighLiquidity().getPushPullAccount());
+          LiquiditySettings nextLiquiditySetting = account.findLiquiditySetting(x);
+          Liquidity highLiquidity = nextLiquiditySetting.getHighLiquidity();
+          if ( ! highLiquidity.getRebalancingEnabled() ) return;
+          account = (DigitalAccount) accountDAO.find(highLiquidity.getPushPullAccount());
         }
       `
     },
@@ -82,18 +86,22 @@ foam.CLASS({
       ],
       javaCode: `
       DAO accountDAO = (DAO) x.get("localAccountDAO");
-      DAO liquiditySettingsDAO = (DAO) x.get("localLiquiditySettingsDAO");
       HashSet<DigitalAccount> seenAccounts = new HashSet<>();
+
+      LiquiditySettings liquiditySetting = account.findLiquiditySetting(x);
+      if ( liquiditySetting == null ) return;
+    
       seenAccounts.add(account);
-      LiquiditySettings liquiditySettings = (LiquiditySettings) liquiditySettingsDAO.find(account.getLiquiditySetting());
-      account = (DigitalAccount) accountDAO.find(liquiditySettings.getLowLiquidity().getPushPullAccount());
+      account = (DigitalAccount) accountDAO.find(liquiditySetting.getLowLiquidity().getPushPullAccount());
       while ( account != null ) {
         if ( seenAccounts.contains(account) ) {
           throw new RuntimeException(message);
         }
         seenAccounts.add(account);
-        LiquiditySettings nextLiquiditySettings = (LiquiditySettings) liquiditySettingsDAO.find(account.getLiquiditySetting());
-        account = (DigitalAccount) accountDAO.find(nextLiquiditySettings.getLowLiquidity().getPushPullAccount());
+        LiquiditySettings nextLiquiditySetting = account.findLiquiditySetting(x);
+        Liquidity lowLiquidity = nextLiquiditySetting.getLowLiquidity();
+        if ( ! lowLiquidity.getRebalancingEnabled() ) return;
+        account = (DigitalAccount) accountDAO.find(lowLiquidity.getPushPullAccount());
       }
       `
     }
