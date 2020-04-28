@@ -26,8 +26,8 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
         DigitalAccount account = (DigitalAccount) obj;
-        checkHighLiquidityLoop(x, account);
-        checkLowLiquidityLoop(x, account);
+        checkHighLiquidityLoop(x, account, this.getMessage());
+        checkLowLiquidityLoop(x, account, this.getMessage());
       `
     },
     {
@@ -40,6 +40,10 @@ foam.CLASS({
         {
           name: 'account',
           type: 'net.nanopay.account.DigitalAccount'
+        },
+        {
+          name: 'message',
+          type: 'String'
         }
       ],
       javaCode: `
@@ -47,11 +51,12 @@ foam.CLASS({
         DAO liquiditySettingsDAO = (DAO) x.get("localLiquiditySettingsDAO");
         HashSet<DigitalAccount> seenAccounts = new HashSet<>();
         seenAccounts.add(account);
+
         LiquiditySettings liquiditySettings = (LiquiditySettings) liquiditySettingsDAO.find(account.getLiquiditySetting());
         account = (DigitalAccount) accountDAO.find(liquiditySettings.getHighLiquidity().getPushPullAccount());
         while ( account != null ) {
           if ( seenAccounts.contains(account) ) {
-            throw new RuntimeException(this.getMessage());
+            throw new RuntimeException(message);
           }
           seenAccounts.add(account);
           LiquiditySettings nextLiquiditySettings = (LiquiditySettings) liquiditySettingsDAO.find(account.getLiquiditySetting());
@@ -69,6 +74,10 @@ foam.CLASS({
         {
           name: 'account',
           type: 'net.nanopay.account.DigitalAccount'
+        },
+        {
+          name: 'message',
+          type: 'String'
         }
       ],
       javaCode: `
@@ -80,7 +89,7 @@ foam.CLASS({
       account = (DigitalAccount) accountDAO.find(liquiditySettings.getLowLiquidity().getPushPullAccount());
       while ( account != null ) {
         if ( seenAccounts.contains(account) ) {
-          throw new RuntimeException(this.getMessage());
+          throw new RuntimeException(message);
         }
         seenAccounts.add(account);
         LiquiditySettings nextLiquiditySettings = (LiquiditySettings) liquiditySettingsDAO.find(account.getLiquiditySetting());
