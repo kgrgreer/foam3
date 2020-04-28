@@ -41,10 +41,6 @@ foam.CLASS({
       `
     },
     {
-      name: 'daoKey',
-      value: 'transactionDAO'
-    },
-    {
       class: 'Enum',
       of: 'foam.nanos.ruler.Operations',
       name: 'operation',
