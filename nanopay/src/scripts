@@ -1426,10 +1426,12 @@ p({
     permissionArray.add("service.notificationDAO");
     permissionArray.add("service.run.dig");
     permissionArray.add("service.run.sugar");
+    permissionArray.add("service.run.genTxnReport");
     permissionArray.add("service.sessionService");
     permissionArray.add("service.transactionDAO");
     permissionArray.add("service.transactionHierarchyDAO");
     permissionArray.add("service.twofactor");
+    permissionArray.add("session.create."+NAME);
     permissionArray.add("session.read.*");
     permissionArray.add("transaction.create");
     permissionArray.add("transaction.read.*");
