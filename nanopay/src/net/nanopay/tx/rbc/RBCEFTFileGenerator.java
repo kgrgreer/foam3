@@ -72,7 +72,7 @@ public class RBCEFTFileGenerator implements EFTFileGenerator {
       EFTFile eftFile = createEFTFile(transactions);
       if ( eftFile != null ) {
         eftFile.setFile(createFile(eftFile).getId());
-        eftFile.setProvider(5); // TODO set provider appropriately
+        eftFile.setProvider("RBC"); // TODO set provider appropriately
         return (EFTFile) ((DAO) this.x.get("eftFileDAO")).put(eftFile);
       }
     } catch (Throwable t) {

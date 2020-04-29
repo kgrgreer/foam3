@@ -76,7 +76,7 @@ public class BmoEftFileGenerator implements EFTFileGenerator {
     try {
       BmoEftFile bmoFile = initFile(transactions);
       bmoFile.setFile(createEftFile(bmoFile).getId());
-      bmoFile.setProvider(2); // TODO set provider appropriately
+      bmoFile.setProvider("BMO"); // TODO set provider appropriately
       return (BmoEftFile) ((DAO) this.x.get("bmoEftFileDAO")).put(bmoFile);
     } catch (Throwable t) {
       this.logger.error("BMO Error generating EFT File. " + t.getMessage(), t);
