@@ -453,14 +453,6 @@ foam.CLASS({
       `
     },
     {
-      name: 'getStringId',
-      type: 'String',
-      javaCode: `
-        Long key = getId();
-        return (String) key.toString();
-      `
-    },
-    {
       name: 'getOutgoingAccountCreate',
       type: 'Long',
       args: [

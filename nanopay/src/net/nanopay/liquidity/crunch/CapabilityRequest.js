@@ -351,14 +351,6 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'getStringId',
-      type: 'String',
-      javaCode: `
-        String id = String.valueOf(getId());
-        return id;
-      `
-    },
-    {
       name: 'toSummary',
       type: 'String',
       code: function(){
@@ -375,7 +367,7 @@ foam.CLASS({
           .where(
             AND(
               EQ(ApprovalRequest.DAO_KEY, "capabilityRequestDAO"),
-              EQ(ApprovalRequest.OBJ_ID, getStringId()),
+              EQ(ApprovalRequest.OBJ_ID, String.valueOf(getProperty("id"))),
               EQ(ApprovalRequest.OPERATION, foam.nanos.ruler.Operations.CREATE),
               EQ(ApprovalRequest.IS_FULFILLED, false),
               EQ(ApprovalRequest.STATUS, ApprovalStatus.REJECTED)

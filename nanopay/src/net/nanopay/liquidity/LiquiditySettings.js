@@ -383,13 +383,5 @@ fm.foldForState(getId()+":high", getLastModified(), getHighLiquidity().getThresh
 fm.foldForState(getId()+":low", getLastModified(), getLowLiquidity().getThreshold());
       `
     },
-    {
-      name: 'getStringId',
-      type: 'String',
-      javaCode: `
-        String id = ((Long) getId()).toString();
-        return id;
-      `
-    }
   ]
 });
