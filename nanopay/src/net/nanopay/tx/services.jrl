@@ -314,7 +314,6 @@ p({
   """
     return new foam.dao.EasyDAO.Builder(x)
       .setAuthorize(true)
-      .setSeqNo(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("paymentProviders")
       .setOf(net.nanopay.payment.PaymentProvider.getOwnClassInfo())

@@ -541,7 +541,8 @@ foam.CLASS({
                 data: this.stack,
                 showActions: false
               })
-            .end();
+            .end()
+            .tag(this.footerView_);
           } else {
           this.addClass(this.myClass())
           .start()

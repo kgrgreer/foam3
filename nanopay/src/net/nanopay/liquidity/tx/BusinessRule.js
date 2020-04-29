@@ -167,14 +167,6 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'getStringId',
-      type: 'String',
-      javaCode: `
-        String id = (String) getId();
-        return id;
-      `
-    },
-    {
       name: 'toSummary',
       documentation: `When using a reference to the roleDAO, the labels associated
         to it will show a chosen property rather than the first alphabetical string

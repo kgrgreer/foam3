@@ -1336,13 +1336,6 @@ foam.CLASS({
     `
   },
   {
-    name: 'getStringId',
-    type: 'String',
-    javaCode: `
-      return getId();
-    `
-  },
-  {
     name: 'getOutgoingAccount',
     type: 'Long',
     javaCode: `
