@@ -48,8 +48,8 @@ p({
   "daoKey":"localAccountDAO",
   "operation":3,
   "predicate":{
-    "class":"foam.mlang.predicate.IsInstanceOf",
-    "targetClass":"net.nanopay.account.DigitalAccount"
+    "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+    "of":"net.nanopay.account.DigitalAccount"
   },
   "action":{
     "class":"net.nanopay.liquidity.PreventAccountLiquidityLoopRule",
