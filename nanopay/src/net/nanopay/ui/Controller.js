@@ -122,7 +122,7 @@ foam.CLASS({
 
     .foam-u2-stack-StackView {
       overflow: scroll;
-      height: calc(100vh - 80px);
+      height: calc(100vh - 65px);
     }
   `,
 
