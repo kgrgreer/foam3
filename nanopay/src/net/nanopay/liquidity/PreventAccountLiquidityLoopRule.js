@@ -65,7 +65,11 @@ foam.CLASS({
           
           Liquidity nextLiquidity = checkHighLiquidity ? nextLiquiditySetting.getHighLiquidity() : nextLiquiditySetting.getLowLiquidity();
           if ( nextLiquidity == null || ! nextLiquidity.getRebalancingEnabled() ) return;
-          account = (DigitalAccount) accountDAO.find(nextLiquidity.getPushPullAccount());
+          try {
+            account = (DigitalAccount) accountDAO.find(nextLiquidity.getPushPullAccount());
+          } catch (ClassCastException e) {
+            return;
+          }
         }
       `
     }
