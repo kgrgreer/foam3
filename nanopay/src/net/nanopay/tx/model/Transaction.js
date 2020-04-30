@@ -77,7 +77,6 @@ foam.CLASS({
   searchColumns: [
     'type',
     'status',
-    'total',
     'created',
     'completionDate',
     'referenceNumber'
@@ -89,7 +88,6 @@ foam.CLASS({
     'sourceAccount',
     'summary',
     'destinationAccount',
-    'total',
     'created',
     'completionDate',
     'referenceNumber'
@@ -368,18 +366,6 @@ foam.CLASS({
       javaToCSVLabel: 'outputter.outputValue("Payment Id/Invoice Id");',
     },
     {
-      name: 'invoiceNumber',
-      hidden: true,
-      factory: function() {
-        return this.invoiceId;
-      },
-      tableCellFormatter: function(value, obj) {
-        this.__subSubContext__.invoiceDAO.find(value).then((invoice) => {
-          if ( invoice ) this.start().add(invoice.invoiceNumber).end();
-        });
-      }
-    },
-    {
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'status',
@@ -638,29 +624,6 @@ foam.CLASS({
       tableWidth: 400,
     },
     {
-      // REVIEW: why do we have total and amount?
-      class: 'UnitValue',
-      name: 'total',
-      label: 'Total Amount',
-      transient: true,
-      visibility: 'HIDDEN',
-      expression: function(amount) {
-        return amount;
-      },
-      javaGetter: `
-        return this.getAmount();
-      `,
-      tableCellFormatter: function(total, X) {
-        var formattedAmount = total / 100;
-        this
-          .start()
-          .addClass('amount-Color-Green')
-            .add('$', X.addCommas(formattedAmount.toFixed(2)))
-          .end();
-      },
-      tableWidth: 160
-    },
-    {
       class: 'UnitValue',
       name: 'destinationAmount',
       label: 'Destination Amount',
@@ -831,24 +794,6 @@ foam.CLASS({
         h[0].setTimeStamp(new Date());
         return h;`
     },
-    // schedule TODO: future
-    {
-      // TODO: Why do we have this and scheduledTime?
-      name: 'scheduled',
-      class: 'DateTime',
-      section: 'basicInfo',
-      createVisibility: 'HIDDEN',
-      readVisibility: function(scheduled) {
-        return scheduled ?
-          foam.u2.DisplayMode.RO :
-          foam.u2.DisplayMode.HIDDEN;
-      },
-      updateVisibility: function(scheduled) {
-        return scheduled ?
-          foam.u2.DisplayMode.RO :
-          foam.u2.DisplayMode.HIDDEN;
-      }
-    },
     {
       name: 'lastStatusChange',
       class: 'DateTime',
@@ -907,13 +852,6 @@ foam.CLASS({
           foam.u2.DisplayMode.HIDDEN;
       },
       documentation: `The scheduled date when transaction should be processed.`
-    },
-    {
-      class: 'Boolean',
-      name: 'deleted',
-      value: false,
-      writePermissionRequired: true,
-      visibility: 'HIDDEN'
     },
     {
       class: 'String',
@@ -982,13 +920,6 @@ foam.CLASS({
       setReferenceNumber(other.getReferenceNumber());
       setLifecycleState(other.getLifecycleState());
       setStatusHistory(other.getStatusHistory());
-      `
-    },
-    {
-      name: 'isActive',
-      type: 'Boolean',
-      javaCode: `
-         return false;
       `
     },
     {

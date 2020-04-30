@@ -13,11 +13,6 @@ foam.CLASS({
 
   constants: [
     {
-      name: 'PROVIDER_ID',
-      type: 'String',
-      value: 'Alterna'
-    },
-    {
       name: 'INSTITUTION_NUMBER',
       type: 'String',
       value: '842'

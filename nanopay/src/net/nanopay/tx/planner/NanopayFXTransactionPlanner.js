@@ -84,8 +84,8 @@ foam.CLASS({
           fxTransaction.setAccepted(true);
         }
 
-        quote.addTransfer(sourceAccount.getId(), -requestTxn.getTotal());
-        quote.addTransfer(brokerSourceAccount.getId(), requestTxn.getTotal());
+        quote.addTransfer(sourceAccount.getId(), -requestTxn.getAmount());
+        quote.addTransfer(brokerSourceAccount.getId(), requestTxn.getAmount());
         quote.addTransfer(brokerDestinationAccount.getId(), -fxTransaction.getDestinationAmount());
         quote.addTransfer(destinationAccount.getId(), fxTransaction.getDestinationAmount());
 
