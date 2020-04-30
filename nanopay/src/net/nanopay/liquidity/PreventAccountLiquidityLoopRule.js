@@ -27,8 +27,8 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
         DigitalAccount account = (DigitalAccount) obj;
-        checkLiquidityLoop(x, account, true, this.getMessage());
-        checkLiquidityLoop(x, account, false, this.getMessage());
+        checkLiquidityLoop(x, account, true, null, this.getMessage());
+        checkLiquidityLoop(x, account, false, null, this.getMessage());
       `
     },
     {
@@ -47,6 +47,10 @@ foam.CLASS({
           type: 'Boolean'
         },
         {
+          name: 'updatedSetting',
+          type: 'net.nanopay.liquidity.LiquiditySettings'
+        },
+        {
           name: 'message',
           type: 'String'
         }
@@ -60,13 +64,14 @@ foam.CLASS({
             throw new RuntimeException(message);
           }
           seenAccountIds.add(account.getId());
-          LiquiditySettings nextLiquiditySetting = account.findLiquiditySetting(x);
+          LiquiditySettings nextLiquiditySetting = updatedSetting != null ? updatedSetting : account.findLiquiditySetting(x);
           if ( nextLiquiditySetting == null ) return;
           
           Liquidity nextLiquidity = checkHighLiquidity ? nextLiquiditySetting.getHighLiquidity() : nextLiquiditySetting.getLowLiquidity();
           if ( nextLiquidity == null || ! nextLiquidity.getRebalancingEnabled() ) return;
           try {
             account = (DigitalAccount) accountDAO.find(nextLiquidity.getPushPullAccount());
+            if ( updatedSetting != null ) updatedSetting = null;
           } catch (ClassCastException e) {
             return;
           }

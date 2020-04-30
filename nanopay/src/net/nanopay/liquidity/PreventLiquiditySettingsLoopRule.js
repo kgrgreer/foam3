@@ -29,7 +29,7 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
         LiquiditySettings liquiditySetting = (LiquiditySettings) obj;
-        DAO accountDAO = (DAO) x.get("accountDAO");
+        DAO accountDAO = (DAO) x.get("localAccountDAO");
 
         ArraySink sink = (ArraySink) accountDAO.where(
           foam.mlang.MLang.EQ(DigitalAccount.LIQUIDITY_SETTING, liquiditySetting.getId())
@@ -37,8 +37,8 @@ foam.CLASS({
 
         for ( int i = 0; i < sink.getArray().size(); i++ ) {
           DigitalAccount account = (DigitalAccount) sink.getArray().get(i);
-          checkLiquidityLoop(x, account, true, this.getMessage());
-          checkLiquidityLoop(x, account, false, this.getMessage());
+          checkLiquidityLoop(x, account, true, liquiditySetting, this.getMessage());
+          checkLiquidityLoop(x, account, false, liquiditySetting, this.getMessage());
         }
       `
     }
