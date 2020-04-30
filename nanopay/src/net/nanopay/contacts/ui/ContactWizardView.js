@@ -234,6 +234,7 @@ foam.CLASS({
         return currentIndex === 1;
       },
       code: async function(X) {
+        this.data.createBankAccount = net.nanopay.bank.BankAccount.create({ isDefault: true });
         if ( ! await this.addContact() ) return;
         X.closeDialog();
       }
