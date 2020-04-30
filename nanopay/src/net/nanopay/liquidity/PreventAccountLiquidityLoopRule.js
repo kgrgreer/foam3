@@ -8,6 +8,7 @@ foam.CLASS({
   implements: ['foam.nanos.ruler.RuleAction'],
 
   javaImports: [
+    'foam.core.FObject',
     'foam.dao.DAO',
     'java.util.HashSet',
     'net.nanopay.account.DigitalAccount',
@@ -69,12 +70,12 @@ foam.CLASS({
           
           Liquidity nextLiquidity = checkHighLiquidity ? nextLiquiditySetting.getHighLiquidity() : nextLiquiditySetting.getLowLiquidity();
           if ( nextLiquidity == null || ! nextLiquidity.getRebalancingEnabled() ) return;
-          try {
-            account = (DigitalAccount) accountDAO.find(nextLiquidity.getPushPullAccount());
-            if ( updatedSetting != null ) updatedSetting = null;
-          } catch (ClassCastException e) {
-            return;
-          }
+
+          FObject obj = accountDAO.find(nextLiquidity.getPushPullAccount());
+          if ( !(obj instanceof DigitalAccount) ) return;
+          account = (DigitalAccount) obj;
+
+          if ( updatedSetting != null ) updatedSetting = null;
         }
       `
     }
