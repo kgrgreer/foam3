@@ -328,6 +328,8 @@ var classes = [
    'net.nanopay.liquidity.Liquidity',
    'net.nanopay.liquidity.LiquidityAuth',
    'net.nanopay.liquidity.LiquidityRule',
+   'net.nanopay.liquidity.PreventAccountLiquidityLoopRule',
+   'net.nanopay.liquidity.PreventLiquiditySettingsLoopRule',
    'net.nanopay.liquidity.ui.dashboard.cicoShadow.TransactionCICOType',
    'net.nanopay.liquidity.approvalRequest.OutstandingRequestsPreventDeletionPredicate',
    'net.nanopay.liquidity.approvalRequest.OutstandingRequestsPreventDeletionRule',
