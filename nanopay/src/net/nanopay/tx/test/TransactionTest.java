@@ -337,7 +337,6 @@ public class TransactionTest
     test(txnNew.getReferenceData() == txn.getReferenceData(),"Reference Data copied in LimitedClone");
     test(txnNew.getReferenceNumber().equals(txn.getReferenceNumber()),"Reference Number copied in LimitedClone");
     test(txnNew.getStatus() == txn.getStatus(),"Status copied in LimitedClone from "+txn.getStatus().getName() +" and "+ txnNew.getStatus().getName());
-    test(! txn.isActive(), "isActive returns false");
 
     int amount = txn.getTransfers().length;
     Transfer transfer = new Transfer();

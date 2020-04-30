@@ -162,7 +162,6 @@ public class ReportTransaction {
             .append(receiver != null ? receiver.label() : "").append(COMMA_SEPARATOR)
             .append(receiver != null ? receiver.getEmail() : "").append(COMMA_SEPARATOR)
             .append(transaction.getAmount()).append(COMMA_SEPARATOR)
-            .append(transaction.getTotal())
             .append(System.getProperty("line.separator"));
 
           // Update aggregates
