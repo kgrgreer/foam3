@@ -441,6 +441,11 @@ foam.CLASS({
             }
 
             Address businessAddress = this.getBusinessAddress();
+
+            if ( businessAddress == null ) {
+              throw new IllegalStateException("Business Address is required.");
+            }
+
             DAO countryDAO = (DAO) x.get("countryDAO");
             DAO regionDAO = (DAO) x.get("regionDAO");
 

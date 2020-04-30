@@ -103,7 +103,6 @@ foam.CLASS({
     { name: 'TITLE', message: 'Settlement CSV File Upload' },
     { name: 'OLD_HEADING', message: 'Review Previously Ingested Files' },
     { name: 'IN_PROGRESS_HEADING', message: 'Ingestion In Progress' },
-    { name: 'FINISHED_MSG', message: 'Ingestion Finished' },
     { name: 'LOADING_MSG', message: 'Loading...' }
   ],
 
@@ -263,7 +262,7 @@ foam.CLASS({
             // it includes the one that just finished.
             this.ProgressBarDAO.cmd(this.AbstractDAO.RESET_CMD);
 
-            this.add(this.NotificationMessage.create({ message: this.FINISHED_MSG }));
+            this.add(this.NotificationMessage.create({ message: pbd.status }));
             this.ingestionInProgress_ = false;
             this.pbdBeingReviewedId_ = this.pbdInProgressId_;
             this.pbdInProgress_ = null;
