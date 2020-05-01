@@ -68,6 +68,10 @@ foam.CLASS({
     ^ h3 {
       font-weight: 200;
     }
+    ^ .DAOBrowser .foam-u2-filter-BooleanFilterView-container .foam-u2-md-CheckBox:checked {
+      background-color: #ffff;
+      border-color: #ffff;
+    }
   `,
 
   messages: [
