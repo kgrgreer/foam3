@@ -35,7 +35,6 @@ foam.CLASS({
   imports: [
     'auth',
     'countryDAO',
-    'publicBusinessDAO',
     'user'
   ],
 
@@ -121,6 +120,13 @@ foam.CLASS({
       postSet: function(_,n) {
         this.businessName = n;
       }
+    },
+    {
+      class: 'String',
+      name: 'operatingBusinessName',
+      documentation: `The operating business name of the business the contact is
+        associated to.`,
+      visibility: 'HIDDEN',
     },
     {
       name: 'legalName',
@@ -579,13 +585,10 @@ foam.CLASS({
       `
     },
     {
-      name: 'label',
+      name: 'toSummary',
       type: 'String',
-      code: async function label() {
-        if ( this.businessId ) {
-          let business = await this.publicBusinessDAO.find(this.businessId);
-          return business.label();
-        }
+      code: function toSummary() {
+        if ( this.operatingBusinessName ) return this.operatingBusinessName;
         if ( this.organization ) return this.organization;
         if ( this.businessName ) return this.businessName;
         if ( this.legalName ) return this.legalName;
@@ -595,11 +598,7 @@ foam.CLASS({
         return '';
       },
       javaCode: `
-        DAO publicBusinessDAO = (DAO) getX().get("publicBusinessDAO");
-        if ( this.getBusinessId() != 0 ) {
-          Business business = (Business) publicBusinessDAO.find(this.getBusinessId());
-          return business.label();
-        }
+        if ( ! SafetyUtil.isEmpty(this.getOperatingBusinessName()) ) return this.getOperatingBusinessName();
         if ( ! SafetyUtil.isEmpty(this.getOrganization()) ) return this.getOrganization();
         if ( ! SafetyUtil.isEmpty(this.getBusinessName()) ) return this.getBusinessName();
         if ( ! SafetyUtil.isEmpty(this.getLegalName()) ) return this.getLegalName();

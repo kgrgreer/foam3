@@ -332,7 +332,7 @@ foam.CLASS({
         this.__subContext__.userDAO
           .find(value)
           .then((user) => {
-            this.add(user.label());
+            this.add(user.toSummary());
           })
           .catch((error) => {
             console.log('user: ' + value +' error last mod capR: ' + error);

@@ -80,7 +80,7 @@ foam.CLASS({
                   DAO entityDAO = (DAO) x.get(response.getDaoKey());
                   FObject entity = (FObject) entityDAO.find(response.getUserId());
                   String label = "";
-                  if ( entity instanceof User ) { label = ((User) entity).label(); }
+                  if ( entity instanceof User ) { label = ((User) entity).toSummary(); }
                   if ( entity instanceof BeneficialOwner ) { label = ((BeneficialOwner) entity).toSummary(); }
                   ComplianceItem complianceItem = new ComplianceItem.Builder(x)
                     .setDowJones(response.getId())
@@ -97,7 +97,7 @@ foam.CLASS({
                   DAO entityDAO = (DAO) x.get(response.getDaoKey());
                   FObject entity = (FObject) entityDAO.find(response.getEntityId().toString());
                   String label = "";
-                  if ( entity instanceof User ) { label = ((User) entity).label(); }
+                  if ( entity instanceof User ) { label = ((User) entity).toSummary(); }
                   if ( entity instanceof BeneficialOwner ) { label = ((BeneficialOwner) entity).toSummary(); }
                   ComplianceItem complianceItem;
                   if ( entity instanceof Transaction ) {
@@ -128,7 +128,7 @@ foam.CLASS({
                     .setType("Secure Fact (LEV)")
                     .setUser(response.getEntityId())
                     .setEntityId(response.getEntityId())
-                    .setEntityLabel(business.label())
+                    .setEntityLabel(business.toSummary())
                     .build();
                   DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
                   complianceItemDAO.inX(x).put(complianceItem);
@@ -141,7 +141,7 @@ foam.CLASS({
                     .setType("Secure Fact (SIDni)")
                     .setUser(response.getEntityId())
                     .setEntityId(response.getEntityId())
-                    .setEntityLabel(user.label())
+                    .setEntityLabel(user.toSummary())
                     .build();
                   DAO complianceItemDAO = (DAO) x.get("complianceItemDAO");
                   complianceItemDAO.inX(x).put(complianceItem);

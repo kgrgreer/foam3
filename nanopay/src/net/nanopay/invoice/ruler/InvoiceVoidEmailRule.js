@@ -47,7 +47,7 @@ foam.CLASS({
             args.put("account",  accountVar);
             args.put("amount",   formatter.format(invoice.getAmount()/100.00));
             args.put("link",     config.getUrl());
-            args.put("fromName", payee.label());
+            args.put("fromName", payee.toSummary());
             args.put("toName", User.FIRST_NAME);
             args.put("sendTo",   User.EMAIL);
             args.put("supportEmail", SafetyUtil.isEmpty(config.getSupportEmail()) ? payerGroup.getSupportEmail() : config.getSupportEmail());

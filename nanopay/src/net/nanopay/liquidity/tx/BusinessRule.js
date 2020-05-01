@@ -120,8 +120,8 @@ foam.CLASS({
       tableCellFormatter: function(value, obj) {
         obj.__subContext__.userDAO.find(value).then(function(user) {
           if ( user ) {
-            if ( user.label() ) {
-              this.add(user.label());
+            if ( user.toSummary() ) {
+              this.add(user.toSummary());
             }
           }
         }.bind(this));

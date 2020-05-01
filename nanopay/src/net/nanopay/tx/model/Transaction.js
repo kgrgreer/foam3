@@ -525,7 +525,7 @@ foam.CLASS({
           class: 'foam.u2.view.ChoiceView',
           dao: X.userDAO,
           objToChoice: function(user) {
-            return [user.id, user.label()];
+            return [user.id, user.toSummary()];
           }
         };
       }

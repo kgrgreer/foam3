@@ -80,7 +80,7 @@ foam.CLASS({
       tableCellFormatter: function(value, obj, axiom) {
         this.__subSubContext__.liquiditySettingsUserDAO
           .find(value)
-          .then((user) => this.add(user.label()))
+          .then((user) => this.add(user.toSummary()))
           .catch((error) => {
             this.add(value);
           });
@@ -338,7 +338,7 @@ foam.CLASS({
       tableCellFormatter: function(value, obj, axiom) {
         this.__subSubContext__.userDAO
           .find(value)
-          .then((user) => this.add(user.label()))
+          .then((user) => this.add(user.toSummary()))
           .catch((error) => {
             this.add(value);
           });

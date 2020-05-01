@@ -117,8 +117,8 @@ foam.CLASS({
           defaultColumns: [
             this.Invoice.PAYER_ID.clone().copyFrom({
               label: 'Company',
-              tableCellFormatter: async function(_, invoice) {
-                var additiveSubField = await invoice.payer.label();
+              tableCellFormatter: function(_, invoice) {
+                var additiveSubField = invoice.payer.toSummary();
                 this.add(additiveSubField);
                 this.tooltip = additiveSubField;
               }
@@ -146,8 +146,8 @@ foam.CLASS({
           columns: [
             this.Invoice.PAYER_ID.clone().copyFrom({
               label: 'Company',
-              tableCellFormatter: async function(_, invoice) {
-                var additiveSubField = await invoice.payer.label();
+              tableCellFormatter: function(_, invoice) {
+                var additiveSubField = invoice.payer.toSummary();
                 this.add(additiveSubField);
               }
             }),

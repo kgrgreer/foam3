@@ -31,7 +31,7 @@ foam.CLASS({
             DAO businessSectorDAO = (DAO) x.get("businessSectorDAO");
             BusinessSector businessSector = (BusinessSector) businessSectorDAO.find(business.getBusinessSectorId());
             setId(business.getId());
-            setOperatingBusinessName(business.label());
+            setOperatingBusinessName(business.toSummary());
             setOrganization(business.getOrganization());
             setBusinessName(business.getBusinessName());
             setAddress(business.getAddress());
@@ -45,12 +45,6 @@ foam.CLASS({
     {
       name: 'toSummary',
       type: 'String',
-      code: function() {
-        return this.label();
-      }
-    },
-    {
-      name: 'label',
       code: function() {
         return this.operatingBusinessName
           ? this.operatingBusinessName

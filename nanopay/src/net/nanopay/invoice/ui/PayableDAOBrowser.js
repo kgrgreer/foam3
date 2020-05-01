@@ -117,8 +117,8 @@ foam.CLASS({
           defaultColumns: [
             this.Invoice.PAYEE_ID.clone().copyFrom({
               label: 'Company',
-              tableCellFormatter: async function(_, invoice) {
-                var additiveSubField = await invoice.payee.label();
+              tableCellFormatter: function(_, invoice) {
+                var additiveSubField = invoice.payee.toSummary();
                 this.add(additiveSubField);
                 this.tooltip = additiveSubField;
               }

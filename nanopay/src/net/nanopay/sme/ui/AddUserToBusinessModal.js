@@ -101,7 +101,7 @@ foam.CLASS({
     function initE() {
       this.addClass(this.myClass())
         .start().addClass('input-container')
-          .start('h2').add(this.TITLE, this.user.label()).addClass('medium-header').end()
+          .start('h2').add(this.TITLE, this.user.toSummary()).addClass('medium-header').end()
           .start().addClass('input-wrapper')
             .hide(this.noChoice$)
             .start().addClass('input-label').add(this.ROLE_LABEL).end()
