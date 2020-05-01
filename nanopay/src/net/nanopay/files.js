@@ -877,6 +877,8 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/LiquidityRule' },
    { name: 'net/nanopay/liquidity/LiquiditySettingsRowView', flags: ['web'] },
    { name: 'net/nanopay/liquidity/LiquiditySettingsSelectionView', flags: ['web'] },
+   { name: 'net/nanopay/liquidity/PreventAccountLiquidityLoopRule' },
+   { name: 'net/nanopay/liquidity/PreventLiquiditySettingsLoopRule' },
    { name: 'net/nanopay/liquidity/ucjQuery/AccountUCJQueryService' },
    { name: 'net/nanopay/liquidity/ucjQuery/CachedAccountUCJQueryService' },
    { name: 'net/nanopay/liquidity/ucjQuery/ClientAccountUCJQueryService' },

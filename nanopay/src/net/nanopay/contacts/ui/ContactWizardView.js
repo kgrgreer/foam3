@@ -230,8 +230,8 @@ foam.CLASS({
     {
       name: 'option',
       label: 'Save without banking',
-      isAvailable: function(currentIndex) {
-        return currentIndex === 1;
+      isAvailable: function(currentIndex, data$bankAccount) {
+        return currentIndex === 1 && data$bankAccount === 0;
       },
       code: async function(X) {
         this.data.createBankAccount = net.nanopay.bank.BankAccount.create({ isDefault: true });

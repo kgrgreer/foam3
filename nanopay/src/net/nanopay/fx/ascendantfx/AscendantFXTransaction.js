@@ -194,7 +194,7 @@ foam.CLASS({
       String fee = srcCurrency.format(getCost());
 
       // Get and format the total settlement.
-      String totalSettlement = srcCurrency.format(getTotal());
+      String totalSettlement = srcCurrency.format(getAmount());
 
       // Get the client ID.
       DAO ascendantFXUserDAO = ((DAO) x.get("ascendantFXUserDAO")).inX(x);
