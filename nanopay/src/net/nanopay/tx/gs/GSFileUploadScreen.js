@@ -261,8 +261,8 @@ foam.CLASS({
             // Force the dropdown of previously ingested files to update so that
             // it includes the one that just finished.
             this.ProgressBarDAO.cmd(this.AbstractDAO.RESET_CMD);
-
-            this.add(this.NotificationMessage.create({ message: pbd.status }));
+            if ( pbd.statusPass === true ) this.add(this.NotificationMessage.create({ message: pbd.status }));
+            else this.add(this.NotificationMessage.create({ message: pbd.status, type:'error' }));
             this.ingestionInProgress_ = false;
             this.pbdBeingReviewedId_ = this.pbdInProgressId_;
             this.pbdInProgress_ = null;
