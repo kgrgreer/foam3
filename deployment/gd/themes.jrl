@@ -3,7 +3,6 @@ p({
   "id":"BE1FD088-5618-4508-BCDF-178719D863B3",
   "name":"gd",
   "description":"Grain Discovery",
-  "priority":1,
   "defaultMenu":"sme.accountProfile.switch-business",
   "logo":"images/gd/gd-logo-72x72.png",
   "largeLogo":"images/gd/gd-logo-72x72.png",
