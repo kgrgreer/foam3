@@ -71,6 +71,8 @@ foam.CLASS({
 
         if ( getFailed() ){
           getProgressBarData().setReport(getFailText());
+          getProgressBarData().setStatus("File upload has failed");
+          getProgressBarData().setStatusPass(false);
         } else {
           getProgressBarData().setReport(
             "Ingestion took: " +
@@ -84,8 +86,10 @@ foam.CLASS({
             "\\nFailed rows: " +
             getFailedRows()
           );
+          getProgressBarData().setStatusPass(true);
+          getProgressBarData().setStatus("File upload complete");
         }
-
+        getProgressBarData().setValue(getProgressBarData().getMaxValue());
         foam.dao.DAO dao = (foam.dao.DAO) getX().get("ProgressBarDAO");
         dao.put(getProgressBarData());
       `

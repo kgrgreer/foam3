@@ -170,15 +170,6 @@ foam.CLASS({
               transactionProcessor.enqueue(job);
             }
           }
-
-          ProgressBarData finalPBD = (ProgressBarData) pbd.fclone();
-          finalPBD.setValue(am);
-          finalPBD.setStatus("File Has Been Ingested");
-          finalJob.setProgressBarData(finalPBD);
-        }
-
-        if ( finalJob.getFailed() ) {
-          finalJob.getProgressBarData().setStatus("File Upload Failed");
         }
         transactionProcessor.enqueue(finalJob);
       `
