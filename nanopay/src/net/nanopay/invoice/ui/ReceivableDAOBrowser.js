@@ -69,8 +69,8 @@ foam.CLASS({
       font-weight: 200;
     }
     ^ .DAOBrowser .foam-u2-filter-BooleanFilterView-container .foam-u2-md-CheckBox:checked {
-      background-color: #ffff;
-      border-color: #ffff;
+      background-color: /*%WHITE%*/ #ffffff;
+      border-color: /*%WHITE%*/ #ffffff;
     }
   `,
 
