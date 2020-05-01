@@ -53,7 +53,7 @@ p({
   },
   "action":{
     "class":"net.nanopay.liquidity.PreventAccountLiquidityLoopRule",
-    "message":"Infinite loop detected in Liquidity Settings of account, please update settings."
+    "message":"Liquidity threshold settings inputted will create a looping error. Please review and update accounts or thresholds."
   },
   "after":false,
   "enabled":true,
@@ -70,7 +70,7 @@ p({
   "operation":1,
   "action":{
     "class":"net.nanopay.liquidity.PreventLiquiditySettingsLoopRule",
-    "message":"Infinite loop detected in Liquidity Settings, please update settings."
+    "message":"Liquidity threshold settings inputted will create a looping error. Please review and update accounts or thresholds."
   },
   "after":false,
   "enabled":true,
