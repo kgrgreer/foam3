@@ -361,7 +361,8 @@ foam.CLASS({
       name: 'userFeedback',
       storageTransient: true,
       visibility: 'HIDDEN'
-    }
+    },
+    'checkerPredicate'
   ],
   methods: [
     {

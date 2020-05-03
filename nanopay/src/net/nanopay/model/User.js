@@ -342,7 +342,8 @@ foam.CLASS({
       tableWidth: 160,
       section: 'business',
       label: 'Company Name'
-    }
+    },
+    'checkerPredicate'
   ],
 
   methods: [
