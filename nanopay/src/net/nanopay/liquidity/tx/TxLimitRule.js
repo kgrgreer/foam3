@@ -79,7 +79,7 @@ foam.CLASS({
         this.__subContext__.liquiditySettingsUserDAO
           .find(value)
           .then((user) => {
-            this.add(user.label());
+            this.add(user.toSummary());
           })
           .catch((error) => {
             this.add(value);
@@ -112,7 +112,7 @@ foam.CLASS({
         this.__subContext__.businessDAO
           .find(value)
           .then((business) => {
-            this.add(business.label());
+            this.add(business.toSummary());
           })
           .catch((error) => {
             this.add(value);

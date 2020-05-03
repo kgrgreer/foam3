@@ -7,12 +7,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'net.nanopay.model.Business',
-    'net.nanopay.contacts.Contact',
-    'foam.util.SafetyUtil',
-  ],
-
-  imports: [
-    'contactDAO'
+    'foam.util.SafetyUtil'
   ],
 
   tableColumns: [
@@ -108,21 +103,7 @@ foam.CLASS({
   methods: [
     {
       name: 'toSummary',
-      type: 'String',
-      code: async function() {
-        return await this.label();
-      },
-      javaCode: `
-        return this.label();
-      `
-    },
-    {
-      name: 'label',
-      code: async function() {
-        if ( this.type === 'Contact' ) {
-          let contact = await this.contactDAO.find(this.id);
-          return await contact.label();
-        }
+      code: function() {
         return this.operatingBusinessName
           ? this.operatingBusinessName
           : this.organization

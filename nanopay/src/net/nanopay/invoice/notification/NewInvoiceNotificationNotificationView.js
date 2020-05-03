@@ -33,8 +33,8 @@ foam.CLASS({
           self.message = 'The invoice for this notification can no longer be found.';
         } else {
           var senderName = self.invoice.payeeId !== self.invoice.createdBy
-              ? self.invoice.payer.label()
-              : self.invoice.payee.label();
+              ? self.invoice.payer.toSummary()
+              : self.invoice.payee.toSummary();
           var invoiceType = self.getInvoiceNotificationType(self.invoice);
           var amount = self.addCommas((self.invoice.amount / 100).toFixed(2));
           self.message = `${senderName} just sent you a ${invoiceType.label} invoice

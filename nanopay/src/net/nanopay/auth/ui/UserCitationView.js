@@ -37,13 +37,13 @@ foam.CLASS({
   ],
 
   methods: [
-    async function initE() {
+    function initE() {
       this
         .addClass(this.myClass())
         .start()
           .start()
             .addClass(this.myClass('company'))
-            .add(await this.data.label())
+            .add(this.data.toSummary())
           .end()
           .start()
             .addClass(this.myClass('name'))

@@ -9,7 +9,6 @@ p({
     "dayOfWeek": -1,
     "second": 0
   },
-  "scheduledTime": "2019-09-10T05:00:00.000Z",
   "id": "ClosedExpiredSudoTickets",
   "description": "Closed expired Sudo tickets to revert priviledges.",
   "code":

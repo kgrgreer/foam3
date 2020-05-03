@@ -149,8 +149,8 @@ foam.CLASS({
   methods: [
     function initE() {
       var label = this.data.payeeId === this.user.id ?
-        this.data.payer.label() :
-        this.data.payee.label();
+        this.data.payer.toSummary() :
+        this.data.payee.toSummary();
       var dueDateFormatted = this.data.dueDate ?
         'Due ' + this.data.dueDate.toISOString().slice(0, 10) :
         '';
@@ -222,10 +222,10 @@ foam.CLASS({
 
       try {
         await this.notificationDAO.put(notification);
-        var successMessage = this.REMINDER_SENT_SUCCESSFULLY.replace('${0}', this.data.payer.businessName || this.data.payer.label());
+        var successMessage = this.REMINDER_SENT_SUCCESSFULLY.replace('${0}', this.data.payer.businessName || this.data.payer.toSummary());
         this.add(this.NotificationMessage.create({ message: successMessage }));
       } catch (exception) {
-        var errorMessage = this.REMINDER_ERROR_MESSAGE.replace('${0}', this.data.payer.businessName || this.data.payer.label());
+        var errorMessage = this.REMINDER_ERROR_MESSAGE.replace('${0}', this.data.payer.businessName || this.data.payer.toSummary());
         this.add(this.NotificationMessage.create({ message: errorMessage, type: 'error' }));
         console.error(exception);
       }

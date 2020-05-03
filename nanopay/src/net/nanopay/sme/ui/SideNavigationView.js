@@ -198,7 +198,7 @@ foam.CLASS({
               .start()
                 .addClass('account-button-info-detail')
                 .add(this.slot(function(user) {
-                  return this.E().add(user.label());
+                  return this.E().add(user.toSummary());
                 }))
               .end()
               .start()

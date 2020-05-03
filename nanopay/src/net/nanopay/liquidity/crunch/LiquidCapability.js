@@ -105,7 +105,7 @@ foam.CLASS({
         this.__subContext__.userDAO
           .find(value)
           .then((user) => {
-            this.add(user.label());
+            this.add(user.toSummary());
           })
           .catch((error) => {
             this.add(value);
@@ -115,13 +115,6 @@ foam.CLASS({
   ],
 
   methods: [
-    {
-      name: 'getStringId',
-      type: 'String',
-      javaCode: `
-        return getId();
-      `
-    },
     {
       name: 'toSummary',
       type: 'String',

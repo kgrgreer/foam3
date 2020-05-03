@@ -92,7 +92,7 @@ foam.CLASS({
           message.setTo(new String[]{ invitation.getEmail() });
           args.put("link", url);
           args.put("sendTo", invitation.getEmail());
-          args.put("companyname", business.label());  
+          args.put("companyname", business.toSummary());  
           try {
             EmailsUtility.sendEmailFromTemplate(x, business, message, "signingOfficerReminder", args);
           } catch (Throwable t) {

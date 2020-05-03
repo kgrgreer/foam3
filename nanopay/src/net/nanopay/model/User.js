@@ -339,24 +339,6 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'toSummary',
-      type: 'String',
-      code: function() {
-        return this.label();
-      },
-      javaCode: `
-        return label();
-      `
-    },
-    {
-      name: 'getStringId',
-      type: 'String',
-      javaCode: `
-        String id = ((Long) getId()).toString();
-        return id;
-      `
-    },
-    {
       name: `validate`,
       args: [
         { name: 'x', type: 'Context' }
@@ -449,7 +431,7 @@ foam.CLASS({
           createEnabled: false,
           editEnabled: true,
           exportEnabled: true,
-          title: `${this.label()}'s Transactions`,
+          title: `${this.toSummary()}'s Transactions`,
           data: X.transactionDAO.where(
             m.OR(
               m.IN(net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT, ids),
@@ -469,7 +451,7 @@ foam.CLASS({
           createEnabled: false,
           editEnabled: true,
           exportEnabled: true,
-          title: `${this.label()}'s Payables`,
+          title: `${this.toSummary()}'s Payables`,
           data: this.expenses
         });
       }
@@ -484,7 +466,7 @@ foam.CLASS({
           createEnabled: false,
           editEnabled: true,
           exportEnabled: true,
-          title: `${this.label()}'s Receivables`,
+          title: `${this.toSummary()}'s Receivables`,
           data: this.sales
         });
       }

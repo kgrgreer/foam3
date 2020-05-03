@@ -23,7 +23,7 @@ foam.CLASS({
     'agent',
     'agentJunctionDAO',
     'businessInvitationDAO',
-    'user',
+    'user'
   ],
 
   exports: [
@@ -66,7 +66,8 @@ foam.CLASS({
     { name: 'DISABLED_FAILURE', message: 'Failed to disable ' },
     { name: 'ACTIVE_SUCCESS', message: ' successfully enabled' },
     { name: 'ACTIVE_FAILURE', message: 'Failed to enable ' },
-    { name: 'DELETE_FAILURE', message: 'Failed to delete ' }
+    { name: 'DELETE_FAILURE', message: 'Failed to delete ' },
+    { name: 'INVITE', message: 'invite' }
   ],
 
   methods: [
@@ -131,25 +132,24 @@ foam.CLASS({
                 var junction = this;
                 var email = this.email;
 
-                self.clientJunctionDAO.remove(junction).then(function() {
-                  self.businessInvitationDAO
-                    .where(
-                      self.AND(
-                        self.EQ(self.Invitation.EMAIL, email),
-                        self.EQ(self.Invitation.STATUS, self.InvitationStatus.SENT),
-                        self.EQ(self.Invitation.CREATED_BY, self.user.id)
-                      )
-                    ).select().then(function(invite) {
-                      ctrl.add(self.Popup.create().tag({
-                        class: 'foam.u2.DeleteModal',
-                        dao: self.businessInvitationDAO,
-                        data: invite.array[0]
-                      }))
-                    });
-                }).catch(function(err) {
-                  var message = err ? err.message : self.DELETE_FAILURE;
-                  ctrl.add(self.NotificationMessage.create({ message: email + " " + message, type: 'error' }));
-                });
+                self.businessInvitationDAO
+                  .where(
+                    self.AND(
+                      self.EQ(self.Invitation.EMAIL, email),
+                      self.EQ(self.Invitation.STATUS, self.InvitationStatus.SENT),
+                      self.EQ(self.Invitation.CREATED_BY, self.user.id)
+                    )
+                  ).select().then(function(invite) {
+                    ctrl.add(self.Popup.create().tag({
+                      class: 'net.nanopay.settings.business.DeleteInvitedUserView',
+                      dao: self.businessInvitationDAO,
+                      data: invite.array[0],
+                      email: email,
+                      junction: junction,
+                      clientJunctionDAO: self.clientJunctionDAO,
+                      label: self.INVITE
+                    }))
+                  });
               }
             })
           ]

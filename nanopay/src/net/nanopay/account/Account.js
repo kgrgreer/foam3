@@ -334,7 +334,7 @@ foam.CLASS({
       tableCellFormatter: function(value, obj, axiom) {
         this.__subSubContext__.userDAO
           .find(value)
-          .then((user) => this.add(user.label()))
+          .then((user) => this.add(user.toSummary()))
           .catch((error) => {
             this.add(value);
           });
@@ -466,14 +466,6 @@ foam.CLASS({
           logger.debug(this, "amount", amount, "balance", bal);
           throw new RuntimeException("Insufficient balance in account " + this.getId());
         }
-      `
-    },
-    {
-      name: 'getStringId',
-      type: 'String',
-      javaCode: `
-        Long key = getId();
-        return (String) key.toString();
       `
     },
     {

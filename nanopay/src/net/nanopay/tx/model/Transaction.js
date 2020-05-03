@@ -77,7 +77,6 @@ foam.CLASS({
   searchColumns: [
     'type',
     'status',
-    'total',
     'created',
     'completionDate',
     'referenceNumber'
@@ -89,7 +88,6 @@ foam.CLASS({
     'sourceAccount',
     'summary',
     'destinationAccount',
-    'total',
     'created',
     'completionDate',
     'referenceNumber'
@@ -542,7 +540,7 @@ foam.CLASS({
           class: 'foam.u2.view.ChoiceView',
           dao: X.userDAO,
           objToChoice: function(user) {
-            return [user.id, user.label()];
+            return [user.id, user.toSummary()];
           }
         };
       }
@@ -639,29 +637,6 @@ foam.CLASS({
         }));
       },
       tableWidth: 400,
-    },
-    {
-      // REVIEW: why do we have total and amount?
-      class: 'UnitValue',
-      name: 'total',
-      label: 'Total Amount',
-      transient: true,
-      visibility: 'HIDDEN',
-      expression: function(amount) {
-        return amount;
-      },
-      javaGetter: `
-        return this.getAmount();
-      `,
-      tableCellFormatter: function(total, X) {
-        var formattedAmount = total / 100;
-        this
-          .start()
-          .addClass('amount-Color-Green')
-            .add('$', X.addCommas(formattedAmount.toFixed(2)))
-          .end();
-      },
-      tableWidth: 160
     },
     {
       class: 'UnitValue',
@@ -842,25 +817,6 @@ foam.CLASS({
         h[0].setTimeStamp(new Date());
         return h;`
     },
-    // schedule TODO: future
-    {
-      // TODO: Why do we have this and scheduledTime?
-      name: 'scheduled',
-      class: 'DateTime',
-      includeInDigest: false,
-      section: 'basicInfo',
-      createVisibility: 'HIDDEN',
-      readVisibility: function(scheduled) {
-        return scheduled ?
-          foam.u2.DisplayMode.RO :
-          foam.u2.DisplayMode.HIDDEN;
-      },
-      updateVisibility: function(scheduled) {
-        return scheduled ?
-          foam.u2.DisplayMode.RO :
-          foam.u2.DisplayMode.HIDDEN;
-      }
-    },
     {
       name: 'lastStatusChange',
       class: 'DateTime',
@@ -923,14 +879,6 @@ foam.CLASS({
           foam.u2.DisplayMode.HIDDEN;
       },
       documentation: `The scheduled date when transaction should be processed.`
-    },
-    {
-      class: 'Boolean',
-      name: 'deleted',
-      value: false,
-      includeInDigest: true,
-      writePermissionRequired: true,
-      visibility: 'HIDDEN'
     },
     {
       // REVIEW - Remove - Why is this on the base Transaction? This should be on a view model.
@@ -1006,13 +954,6 @@ foam.CLASS({
       `
     },
     {
-      name: 'isActive',
-      type: 'Boolean',
-      javaCode: `
-         return false;
-      `
-    },
-    {
       name: 'add',
       code: function add(transferArr) {
         this.transfers = this.transfers.concat(transferArr);
@@ -1058,24 +999,6 @@ foam.CLASS({
         ) {
           return true;
         }
-        return false;
-      `
-    },
-    {
-      documentation: `return true when status change is such that reveral Transfers should be executed (applied)`,
-      name: 'canReverseTransfer',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'oldTxn',
-          type: 'net.nanopay.tx.model.Transaction'
-        }
-      ],
-      type: 'Boolean',
-      javaCode: `
         return false;
       `
     },
@@ -1355,18 +1278,11 @@ foam.CLASS({
       javaCode: `
       // TODO: Move logic in AuthenticatedTransactionDAO here.
     `
-    },
-    {
-      name: 'getStringId',
-      type: 'String',
-      javaCode: `
-      return getId();
-    `
-    },
-    {
-      name: 'getOutgoingAccount',
-      type: 'Long',
-      javaCode: `
+  },
+  {
+    name: 'getOutgoingAccount',
+    type: 'Long',
+    javaCode: `
       return getSourceAccount();
     `
     }
