@@ -664,7 +664,13 @@ while getopts "bcdD:eghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz" opt ; do
         U) RUN_USER=${OPTARG};;
         v) COMPILE_ONLY=1 ;;
         V) VERSION=$OPTARG
-           echo "VERSION=${VERSION}";;
+           echo "VERSION=${VERSION}"
+           if [ -z "${GRADLE_FLAGS}" ]; then
+               GRADLE_FLAGS="-Pversion=${VERSION}"
+           else
+               GRADLE_FLAGS="${GRADLE_FLAGS} -Pversion=${VERSION}"
+           fi
+           ;;
         w) DISABLE_LIVESCRIPTBUNDLER=1 ;;
         W) WEB_PORT=$OPTARG
            echo "WEB_PORT=${WEB_PORT}";;
