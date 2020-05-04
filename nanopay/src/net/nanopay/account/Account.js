@@ -372,7 +372,10 @@ foam.CLASS({
       storageTransient: true,
       visibility: 'HIDDEN'
     },
-    'checkerPredicate'
+    {
+      name: 'checkerPredicate',
+      javaFactory: 'return foam.mlang.MLang.FALSE;'
+    }
   ],
 
   methods: [
