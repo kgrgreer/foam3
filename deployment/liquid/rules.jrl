@@ -584,7 +584,7 @@ p({
 // Enable checker approval phase (in ApprovableAwareDAO)
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d183","name":"Enable checker on CapabilityRequest",
+  "id":"3a9788fc-78b5-481e-9682-effa98489c331","name":"Enable checker on CapabilityRequest",
   "priority":100,
   "enabled":true,
   "ruleGroup":"liquid",
@@ -597,7 +597,7 @@ p({
   },
   "action":{
     "class":"foam.nanos.ruler.action.ChangePropertyAction",
-    "propName":"lifecycleState",
+    "propName":"checkerPredicate",
     "valueExpr":{
       "class":"foam.mlang.Constant",
       "value":{
@@ -610,7 +610,7 @@ p({
 })
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d184","name":"Enable checker on LiquiditySettings",
+  "id":"3a9788fc-78b5-481e-9682-effa98489c332","name":"Enable checker on LiquiditySettings",
   "priority":100,
   "enabled":true,
   "ruleGroup":"liquid",
@@ -623,7 +623,7 @@ p({
   },
   "action":{
     "class":"foam.nanos.ruler.action.ChangePropertyAction",
-    "propName":"lifecycleState",
+    "propName":"checkerPredicate",
     "valueExpr":{
       "class":"foam.mlang.Constant",
       "value":{
@@ -636,7 +636,7 @@ p({
 })
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d184","name":"Enable checker on User",
+  "id":"3a9788fc-78b5-481e-9682-effa98489c333","name":"Enable checker on User",
   "priority":100,
   "enabled":true,
   "ruleGroup":"liquid",
@@ -649,7 +649,7 @@ p({
   },
   "action":{
     "class":"foam.nanos.ruler.action.ChangePropertyAction",
-    "propName":"lifecycleState",
+    "propName":"checkerPredicate",
     "valueExpr":{
       "class":"foam.mlang.Constant",
       "value":{
@@ -662,7 +662,7 @@ p({
 })
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d184","name":"Enable checker on Account",
+  "id":"3a9788fc-78b5-481e-9682-effa98489c334","name":"Enable checker on Account",
   "priority":100,
   "enabled":true,
   "ruleGroup":"liquid",
@@ -675,7 +675,7 @@ p({
   },
   "action":{
     "class":"foam.nanos.ruler.action.ChangePropertyAction",
-    "propName":"lifecycleState",
+    "propName":"checkerPredicate",
     "valueExpr":{
       "class":"foam.mlang.Constant",
       "value":{
