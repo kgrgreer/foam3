@@ -30,10 +30,10 @@ p({
     inner = new net.nanopay.tx.TransactionDAO(x, inner);
 
     if ( "true".equals(System.getProperty("CLUSTER")) ) {
-      inner = new foam.nanos.medusa.MedusaAdapterDAO.Builder(x)
-          .setNSpec(new foam.nanos.boot.NSpec.Builder(x).setName("localTransactionDAO").build())
-          .setDelegate(inner)
-          .build();
+      inner = new foam.nanos.medusa.ClusterClientDAO.Builder(x)
+        .setNSpec(new foam.nanos.boot.NSpec.Builder(x).setName("localTransactionDAO").build())
+        .setDelegate(inner)
+        .build();
     } else {
       inner = new net.nanopay.security.HashingJDAO(x, "SHA-256", true, inner, "transactions");
     }
