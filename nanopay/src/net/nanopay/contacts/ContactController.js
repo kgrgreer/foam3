@@ -12,7 +12,8 @@ foam.CLASS({
     'net.nanopay.bank.INBankAccount',
     'net.nanopay.contacts.Contact',
     'net.nanopay.contacts.ContactStatus',
-    'net.nanopay.invoice.model.Invoice'
+    'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.ui.wizard.WizardController'
   ],
 
   implements: [
@@ -94,7 +95,11 @@ foam.CLASS({
                 return this.signUpStatus !== self.ContactStatus.ACTIVE;
               },
               code: function(X) {
-                // disabled until new edit contact flow is implemented
+                X.controllerView.add(self.WizardController.create({
+                  model: 'net.nanopay.contacts.Contact',
+                  data: this,
+                  controllerMode: this.bankAccount > 0 ? foam.u2.ControllerMode.EDIT : foam.u2.ControllerMode.CREATE
+                }, X));
               }
             }),
             this.Action.create({
@@ -113,11 +118,10 @@ foam.CLASS({
                   createdBy: this.user.id,
                   isContact: true
                 });
-                X.controllerView.add(self.Popup.create(null, X).tag({
-                  class: net.nanopay.contacts.ui.InvitationWizardView,
-                  data: invite,
-                  disableMenuMode: true
-                }));
+                X.controllerView.add(self.WizardController.create({
+                  model: 'net.nanopay.model.Invitation',
+                  data: invite
+                }, X));
               }
             }),
             this.Action.create({

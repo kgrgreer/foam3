@@ -420,7 +420,10 @@ foam.CLASS({
       }
 
       // Confirm Invoice information:
-      this.invoice.draft = false;
+      if ( this.invoice.draft ) {
+        this.invoice.draft = false;
+        this.invoice = await this.invoiceDAO.put(this.invoice);
+      }
 
       // invoice payer/payee should be populated from InvoiceSetDestDAO
       try {
