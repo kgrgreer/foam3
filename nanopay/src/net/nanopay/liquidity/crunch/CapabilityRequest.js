@@ -350,6 +350,7 @@ foam.CLASS({
     {
       name: 'checkerPredicate',
       javaFactory: 'return foam.mlang.MLang.FALSE;'
+    }
   ],
 
   methods: [
