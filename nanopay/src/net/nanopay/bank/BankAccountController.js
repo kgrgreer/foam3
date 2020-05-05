@@ -99,6 +99,8 @@ foam.CLASS({
                   self.notify(self.DELETE_DEFAULT, 'error');
                   return;
                 }
+                
+                this.deleted = true;
                 self.ctrl.add(self.Popup.create().tag({
                   class: 'foam.u2.DeleteModal',
                   dao: self.user.accounts,

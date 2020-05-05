@@ -40,7 +40,7 @@ foam.INTERFACE({
           name: 'x'
         },
         {
-          type: 'Long',
+          type: 'String',
           name: 'providerId',
           documentation: 'Payment Provider ID'
         },
@@ -97,9 +97,55 @@ foam.INTERFACE({
           name: 'x'
         },
         {
-          type: 'Long',
+          type: 'String',
           name: 'providerId',
           documentation: 'Payment Provider ID'
+        },
+        {
+          type: 'String',
+          name: 'sourceCountry',
+          documentation: 'Source Country'
+        },
+        {
+          type: 'String',
+          name: 'targetCountry',
+          documentation: 'Target Country'
+        },
+        {
+          type: 'String',
+          name: 'sourceCurrency',
+          documentation: 'Source Currency'
+        },
+        {
+          type: 'String',
+          name: 'targetCurrency',
+          documentation: 'Target Currency'
+        }
+      ]
+    },
+    {
+      name: 'getQuoteCorridorPaymentProviders',
+      javaType: 'java.util.List',
+      documentation: 'Returns List of Corridor Payment Provider Junctions that can handle the corridor and currency pairs.',
+      args: [
+        {
+          type: 'Context',
+          name: 'x'
+        },
+        {
+          type: 'net.nanopay.tx.TransactionQuote',
+          name: 'transactionQuote',
+        }
+      ]
+    },
+    {
+      name: 'getCorridorPaymentProviders',
+      javaType: 'java.util.List',
+      documentation: 'Returns List of Corridor Payment Provider Junctions that can handle the corridor and currency pairs.',
+      args: [
+        {
+          type: 'Context',
+          name: 'x'
         },
         {
           type: 'String',

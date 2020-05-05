@@ -63,7 +63,7 @@ foam.CLASS({
       var user = invoice.createdBy === invoice.payer.id ?
         invoice.payer :
         invoice.payee;
-      this.name = await user.label();
+      this.name = user.toSummary();
 
       return parentView
         .addClass(this.myClass())

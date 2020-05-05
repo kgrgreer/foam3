@@ -51,7 +51,7 @@ public class DigitalAccountInfoPopulateDAO
       //Create the object and load the data into it
       DigitalAccountInfo digitalInfo = new DigitalAccountInfo();
       digitalInfo.setAccountId(account.getId());
-      digitalInfo.setOwner(user.label());
+      digitalInfo.setOwner(user.toSummary());
 
       try{
         digitalInfo.setTransactionsRecieved(((Count)recievedCount.getGroups().get(account.getId())).getValue());

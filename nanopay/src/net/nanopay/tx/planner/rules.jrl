@@ -276,7 +276,7 @@ p({
       },
       {
         "class":"net.nanopay.tx.planner.predicate.TransactionQuoteCorridorPredicate",
-        "providerId":4,
+        "providerId":"AFEX",
       },
       {
         "class":"net.nanopay.tx.planner.predicate.IsAFEXUserPredicate",
@@ -310,7 +310,7 @@ p({
       },
       {
         "class":"net.nanopay.tx.planner.predicate.TransactionQuoteCorridorPredicate",
-        "providerId":1,
+        "providerId":"AscendantFX",
       },
       {
         "class":"net.nanopay.tx.planner.predicate.IsAscendantFXUserPredicate",

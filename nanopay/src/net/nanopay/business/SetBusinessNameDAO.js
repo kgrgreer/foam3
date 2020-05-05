@@ -64,7 +64,7 @@ foam.CLASS({
         }
 
         FObject clone = (FObject) obj.fclone();
-        getNameProperty().set(clone, business.label());
+        getNameProperty().set(clone, business.toSummary());
         return super.put_(x, clone);
       `
     }

@@ -166,7 +166,7 @@ foam.CLASS({
       .endContext()
       .tag(this.EXPORT_BUTTON)
       .start('h5')
-        .add('Invoice from ', this.data.payee.label())
+        .add('Invoice from ', this.data.payee.toSummary())
         .callIf(this.foreignExchange, function() {
           this.start({
             class: 'foam.u2.tag.Image',

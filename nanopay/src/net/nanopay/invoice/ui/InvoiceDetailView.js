@@ -89,7 +89,7 @@ foam.CLASS({
           placeholder: `Please Select a ${X.data.otherPartyName}`,
           objToChoice: function(user) {
             var username = user.businessName || user.organization ||
-                user.label();
+                user.toSummary();
             return [user.id, username + ' - (' + user.email + ')'];
           }
         });

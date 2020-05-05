@@ -154,7 +154,7 @@ foam.CLASS({
 
       const invoice = await this.invoiceDAO.find(record.objectId);
       // name of the payee
-      const payee = await invoice.payee.label();
+      const payee = invoice.payee.toSummary();
       // a flag for checking if the invoice was completed by the payee
       const completedByPayee = invoice.paymentMethod === this.PaymentStatus.CHEQUE;
 

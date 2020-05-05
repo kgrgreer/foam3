@@ -75,7 +75,8 @@ foam.CLASS({
     { name: 'SUB_TITLE', message: `Here's a list of payments that people have requested from you` },
     { name: 'DELETE_DRAFT', message: 'Draft has been deleted.' },
     { name: 'RECONCILED_SUCCESS', message: 'Invoice has been reconciled by payer.' },
-    { name: 'RECONCILED_ERROR', message: `There was an error reconciling the invoice.` }
+    { name: 'RECONCILED_ERROR', message: `There was an error reconciling the invoice.` },
+    { name: 'INVOICE', message: 'invoice' }
   ],
 
   classes: [
@@ -116,8 +117,8 @@ foam.CLASS({
           defaultColumns: [
             this.Invoice.PAYEE_ID.clone().copyFrom({
               label: 'Company',
-              tableCellFormatter: async function(_, invoice) {
-                var additiveSubField = await invoice.payee.label();
+              tableCellFormatter: function(_, invoice) {
+                var additiveSubField = invoice.payee.toSummary();
                 this.add(additiveSubField);
                 this.tooltip = additiveSubField;
               }
@@ -273,9 +274,12 @@ foam.CLASS({
                 return this.status === self.InvoiceStatus.DRAFT;
               },
               code: function() {
-                self.user.expenses.remove(this).then(() => {
-                  self.notify(self.DELETE_DRAFT, 'success');
-                });
+                ctrl.add(self.Popup.create().tag({
+                  class: 'foam.u2.DeleteModal',
+                  dao: self.user.expenses,
+                  data: this,
+                  label: self.INVOICE
+                }));
               }
             })
           ]
