@@ -1434,6 +1434,7 @@ FOAM_FILES([
 
   // planners
   { name: 'net/nanopay/tx/planner/SummaryPopulatorDAO' },
+  { name: 'net/nanopay/tx/planner/CorridorQuoteDAO' },
   { name: 'net/nanopay/tx/planner/TransactionQuotingDAO' },
   { name: 'net/nanopay/tx/planner/AbstractTransactionPlanner' },
   { name: 'net/nanopay/tx/planner/ExamplePlanner' },
@@ -1443,9 +1444,9 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/GenericFXPlanner' },
   { name: 'net/nanopay/tx/planner/AFEXTransactionPlanner' },
   { name: 'net/nanopay/tx/planner/predicate/FXPlannerPredicate' },
+  { name: 'net/nanopay/tx/planner/predicate/ProviderPredicate' },
   { name: 'net/nanopay/tx/planner/predicate/IsAFEXUserPredicate' },
   { name: 'net/nanopay/tx/planner/predicate/IsAscendantFXUserPredicate' },
-  { name: 'net/nanopay/tx/planner/predicate/TransactionQuoteCorridorPredicate' },
   { name: 'net/nanopay/tx/planner/predicate/SameUserTxnPredicate' },
   { name: 'net/nanopay/tx/planner/AscendantFXTransactionPlanner' },
   { name: 'net/nanopay/tx/planner/KotakFxTransactionPlanner' },

@@ -487,6 +487,7 @@ foam.CLASS({
             .setDenomination(txn.getSourceCurrency())
             .setName(txn.getSourceCurrency() + " Bank Account")
             .setAccountNumber("000000")
+            .setCountry("US")
             .build();
           X systemX = x.put("user", new User.Builder(x).setId(1).build());
           b = (BankAccount) accountDAO.put_(systemX,b).fclone();
@@ -660,6 +661,7 @@ foam.CLASS({
             .setDenomination(txn.getSourceCurrency())
             .setName(txn.getSourceCurrency() +" Bank Account")
             .setAccountNumber("000000")
+            .setCountry("US")
             .build();
           X systemX = x.put("user", new User.Builder(x).setId(1).build());
           accountDAO.inX(systemX).put(sourceTrust);
@@ -687,6 +689,7 @@ foam.CLASS({
             .setLifecycleState(LifecycleState.ACTIVE)
             .setDenomination(txn.getDestinationCurrency())
             .setName(txn.getDestinationCurrency() +" Bank Account")
+            .setCountry("US")
             .build();
           accountDAO.put(destinationTrust);
           accountDAO.put(destBank);
