@@ -114,10 +114,10 @@ foam.CLASS({
         Transaction plan = (Transaction) quoteTxn(x, txn).fclone();
 
         if ( withdrawLineItem != null ) {
-          plan.addLineItems( new TransactionLineItem[] {withdrawLineItem},null );
+          plan.addLineItems( new TransactionLineItem[] {withdrawLineItem} );
         }
         if ( depositLineItem != null ) {
-          plan.addLineItems( new TransactionLineItem[] {depositLineItem},null );
+          plan.addLineItems( new TransactionLineItem[] {depositLineItem} );
         }
 
         quote.getAlternatePlans_().add(plan);

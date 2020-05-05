@@ -223,7 +223,7 @@ foam.CLASS({
     //     if ( getPADType(transaction) == 0 ) {
     //       PADTypeLineItem lineItem = new PADTypeLineItem();
     //       lineItem.setPadType(padType);
-    //       transaction.addLineItems(new TransactionLineItem[] { lineItem }, null);
+    //       transaction.addLineItems(new TransactionLineItem[] { lineItem } );
     //     }
     //   `
     // },

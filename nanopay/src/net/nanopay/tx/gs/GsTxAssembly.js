@@ -558,7 +558,7 @@ foam.CLASS({
           txn.addLineItems(new InfoLineItem[] {
             createInfoLineItem("Sending Company",row1.getCompany()),
             createInfoLineItem("Receiving Company",row2.getCompany()),
-          }, null);
+          });
         }
 
         txn.addLineItems(new InfoLineItem[] {
@@ -570,7 +570,7 @@ foam.CLASS({
           createInfoLineItem("Liquidity Hierarchy 2",row1.getProto_Liquidity_Hierarchy2()),
           createInfoLineItem("Liquidity Hierarchy 3",row1.getProto_Liquidity_Hierarchy3()),
           createInfoLineItem("Liquidity Hierarchy 4",row1.getProto_Liquidity_Hierarchy4()),
-        }, null);
+        });
         return txn;
       `
     },

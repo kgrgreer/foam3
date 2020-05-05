@@ -130,7 +130,7 @@ foam.CLASS({
         Transaction[] nextPlans = kotakPlan.getNext();
         while( nextPlans != null && nextPlans.length > 0 ) {
           Transaction nextPlan = nextPlans[0];
-          txn.addLineItems(nextPlan.getLineItems(), nextPlan.getReverseLineItems());
+          txn.addLineItems( nextPlan.getLineItems() );
           nextPlans = nextPlan.getNext();
         }
       } else {

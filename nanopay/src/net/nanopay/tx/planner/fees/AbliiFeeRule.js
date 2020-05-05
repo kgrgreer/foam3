@@ -35,7 +35,7 @@ foam.CLASS({
         Transaction tx = (Transaction) obj;
         Boolean sameCurrency = tx.findSourceAccount(x).getDenomination().equals(tx.findDestinationAccount(x).getDenomination());
         Long feeAmount = sameCurrency ? getDomesticFee() : getInternationalFee();
-        tx.addLineItems(new TransactionLineItem[] {new InvoicedFeeLineItem.Builder(getX()).setGroup("InvoiceFee").setAmount(feeAmount).setCurrency(tx.getSourceCurrency()).build()}, null);
+        tx.addLineItems(new TransactionLineItem[] {new InvoicedFeeLineItem.Builder(getX()).setGroup("InvoiceFee").setAmount(feeAmount).setCurrency(tx.getSourceCurrency()).build()});
       `
     }
   ]
