@@ -47,11 +47,7 @@ foam.CLASS({
             args.put("userEmail", User.EMAIL);
             args.put("sendTo", User.EMAIL);
             args.put("link", config.getUrl());
-            if ( ! user.getSpid().equals("nanopay") ) {
-              args.put("spid", user.getSpid());
-            } else {
-              args.put("spid", "ablii");
-            }
+
             Notification notification = new Notification.Builder(x)
             .setBody(acc.toSummary() + " is processing ")
             .setNotificationType("bankNotifications")
