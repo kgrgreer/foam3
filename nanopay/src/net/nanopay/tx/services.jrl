@@ -82,7 +82,7 @@ p({
       new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo())
       .setInnerDAO(x.get("localTransactionDAO"))
-      .setDecorator(new foam.nanos.auth.PermissionedPropertyDAO(x,         new foam.dao.NullDAO(x, net.nanopay.tx.model.Transaction.getOwnClassInfo())))
+      .setDecorator(new foam.nanos.auth.PermissionedPropertyDAO(x, new foam.dao.NullDAO(x, net.nanopay.tx.model.Transaction.getOwnClassInfo())))
       .setAuthorizer(new foam.nanos.auth.AuthorizableAuthorizer("transaction"))
       .setPm(true)
       .setPipelinePm(true)
