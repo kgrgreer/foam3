@@ -97,13 +97,6 @@ public class TransactionDAO
          (txn.canTransfer(y, oldTxn)) ) {
       return true;
     }
-    // legacy support for REVERSE
-    if ( txn instanceof net.nanopay.tx.alterna.AlternaCOTransaction &&
-         txn.getStatus() == TransactionStatus.REVERSE &&
-         oldTxn != null &&
-         oldTxn.getStatus() != TransactionStatus.REVERSE ) {
-      return true;
-    }
     return false;
   }
 
