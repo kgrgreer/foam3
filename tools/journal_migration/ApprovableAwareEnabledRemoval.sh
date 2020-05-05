@@ -15,7 +15,7 @@ then
     echo "Found $JOURNAL_HOME/services"
     echo "Migrating $JOURNAL_HOME/services ..."
 
-    perl -p -i -e 's/\s* \.setApprovableAwareEnabled\((.*)\)//g;' "$JOURNAL_HOME"/services
+    perl -p -i -e 's/\.setApprovableAwareEnabled\([^\)]*\)//g; s/^\s+\n+//g;' "$JOURNAL_HOME"/services
 
     echo "Finished migrating $JOURNAL_HOME/services"
 else
