@@ -38,7 +38,7 @@ p({
         new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.medusa.MedusaEntry.INDEX).build()
       })
       .setDecorator(new foam.nanos.medusa.ReplayDAO.Builder(x)
-      .setDelegate(new foam.dao.BatchServerDAO.Builder(x)
+      .setDelegate(new foam.nanos.medusa.BatchServerDAO.Builder(x)
       .setDelegate(new foam.nanos.medusa.MedusaUniqueDAO.Builder(x)
       .setDelegate(new foam.nanos.medusa.MedusaHashingDAO.Builder(x)
       .setDelegate(new foam.nanos.medusa.MedusaSigningDAO.Builder(x)
