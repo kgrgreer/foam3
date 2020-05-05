@@ -275,11 +275,11 @@ p({
         "of":"net.nanopay.bank.BankAccount"
       },
       {
-        "class":"net.nanopay.tx.planner.predicate.TransactionQuoteCorridorPredicate",
-        "providerId":"AFEX",
+        "class":"net.nanopay.tx.planner.predicate.IsAFEXUserPredicate",
       },
       {
-        "class":"net.nanopay.tx.planner.predicate.IsAFEXUserPredicate",
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"AFEX"
       }
     ]
   },
@@ -309,11 +309,11 @@ p({
         "of":"net.nanopay.bank.BankAccount"
       },
       {
-        "class":"net.nanopay.tx.planner.predicate.TransactionQuoteCorridorPredicate",
-        "providerId":"AscendantFX",
+        "class":"net.nanopay.tx.planner.predicate.IsAscendantFXUserPredicate",
       },
       {
-        "class":"net.nanopay.tx.planner.predicate.IsAscendantFXUserPredicate",
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"AscendantFX"
       }
     ]
   },
@@ -353,6 +353,10 @@ p({
         "propName":"destinationUnit",
         "propValue":"INR"
       },
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"Kotak"
+      }
     ]
   },
   "action":{"class":"net.nanopay.tx.planner.KotakFxTransactionPlanner"},
@@ -380,6 +384,10 @@ p({
         "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"destinationAccount",
         "of":"net.nanopay.bank.INBankAccount"
+      },
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"Kotak"
       }
     ]
   },
@@ -413,6 +421,10 @@ p({
         "class":"foam.nanos.ruler.predicate.PropertyEQProperty",
         "prop1":"sourceUnit",
         "prop2":"destinationUnit"
+      },
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"Kotak"
       }
     ]
   },

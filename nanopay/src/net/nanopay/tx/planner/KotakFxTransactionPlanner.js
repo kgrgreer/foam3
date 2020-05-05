@@ -63,7 +63,7 @@ foam.CLASS({
       txn.setStatus(TransactionStatus.PENDING);
       txn.setInitialStatus(TransactionStatus.PENDING);
       txn.setName("KotakFxTransaction");
-      txn.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
+      txn.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()} );
       txn.setSourceAccount(kotakCAbank.getId());
       txn.setDestinationAccount(kotakINbank.getId());
 
@@ -96,8 +96,8 @@ foam.CLASS({
           new PurposeCodeLineItem.Builder(x).setPurposeCode("P1099").build(),
           new AccountRelationshipLineItem.Builder(x).setAccountRelationship("Employee").build(),
           new ETALineItem.Builder(x).setEta(/* 12 hours */ 43200000L).build()
-        },
-        null);
+        }
+      );
       t3.setIsQuoted(true);
       t3.setSourceAccount(kotakINPartnerBank.getId());
       t3.setSourceCurrency(requestTxn.getDestinationCurrency());

@@ -129,13 +129,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'reverseLineItemsSection',
-      title: 'Reverse Line Items',
-      isAvailable: function(reverseLineItems, mode) {
-        return reverseLineItems.length && mode !== 'create';
-      }
-    },
-    {
       name: '_defaultSection',
       isAvailable: function(mode) {
         return mode !== 'create';
@@ -852,17 +845,6 @@ foam.CLASS({
       includeInDigest: false,
     },
     {
-      name: 'reverseLineItems',
-      label: '',
-      includeInDigest: false,
-      section: 'reverseLineItemsSection',
-      createVisibility: 'HIDDEN',
-      updateVisibility: 'RO',
-      class: 'FObjectArray',
-      of: 'net.nanopay.tx.TransactionLineItem',
-      javaValue: 'new TransactionLineItem[] {}',
-    },
-    {
       class: 'DateTime',
       name: 'scheduledTime',
       includeInDigest: false,
@@ -1120,25 +1102,17 @@ foam.CLASS({
     },
     {
       name: 'addLineItems',
-      code: function addLineItems(forward, reverse) {
+      code: function addLineItems(forward) {
         if ( Array.isArray(forward) && forward.length > 0 ) {
           this.lineItems = this.copyLineItems(forward, this.lineItems);
         }
-
-        if ( Array.isArray(reverse) && reverse.length > 0 ) {
-          this.reverseLineItems = this.copyLineItems(reverse, this.reverseLineItems);
-        }
       },
       args: [
-        { name: 'forward', type: 'net.nanopay.tx.TransactionLineItem[]' },
-        { name: 'reverse', type: 'net.nanopay.tx.TransactionLineItem[]' }
+        { name: 'forward', type: 'net.nanopay.tx.TransactionLineItem[]' }
       ],
       javaCode: `
     if ( forward != null && forward.length > 0 ) {
       setLineItems(copyLineItems(forward, getLineItems()));
-    }
-    if ( reverse != null && reverse.length > 0 ) {
-      setReverseLineItems(copyLineItems(forward, getReverseLineItems()));
     }
 `
     },

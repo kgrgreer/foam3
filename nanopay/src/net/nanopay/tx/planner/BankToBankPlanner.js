@@ -82,9 +82,9 @@ foam.CLASS({
               ComplianceTransaction ct = createCompliance(txn);
               ct.addNext(ci);
               t.addNext(ct);
-              t.addLineItems(CIP.getLineItems(), CIP.getReverseLineItems());
-              t.addLineItems(DP.getLineItems(), DP.getReverseLineItems());
-              t.addLineItems(COP.getLineItems(), COP.getReverseLineItems());
+              t.addLineItems(CIP.getLineItems());
+              t.addLineItems(DP.getLineItems());
+              t.addLineItems(COP.getLineItems());
               t.setStatus(TransactionStatus.COMPLETED);
               quote.getAlternatePlans_().add(t);
             }

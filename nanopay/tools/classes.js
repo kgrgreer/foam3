@@ -963,6 +963,7 @@ var classes = [
 
   // Planners
   'net.nanopay.tx.planner.SummaryPopulatorDAO',
+  'net.nanopay.tx.planner.CorridorQuoteDAO',
   'net.nanopay.tx.planner.TransactionQuotingDAO',
   'net.nanopay.tx.planner.AbstractTransactionPlanner',
   'net.nanopay.tx.planner.ExamplePlanner',
@@ -972,8 +973,8 @@ var classes = [
   'net.nanopay.tx.planner.GenericFXPlanner',
   'net.nanopay.tx.planner.predicate.FXPlannerPredicate',
   'net.nanopay.tx.planner.predicate.IsAFEXUserPredicate',
+  'net.nanopay.tx.planner.predicate.ProviderPredicate',
   'net.nanopay.tx.planner.predicate.IsAscendantFXUserPredicate',
-  'net.nanopay.tx.planner.predicate.TransactionQuoteCorridorPredicate',
   'net.nanopay.tx.planner.predicate.SameUserTxnPredicate',
   'net.nanopay.tx.planner.AscendantFXTransactionPlanner',
   'net.nanopay.tx.planner.KotakSplitTransactionPlanner',

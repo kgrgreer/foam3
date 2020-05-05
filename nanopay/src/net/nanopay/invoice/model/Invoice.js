@@ -573,7 +573,11 @@ foam.CLASS({
           rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
           sections: [
             {
-              dao: X.user.contacts.orderBy(foam.nanos.auth.User.BUSINESS_NAME)
+              dao: X.user.contacts.orderBy(foam.nanos.auth.User.BUSINESS_NAME),
+              searchBy: [
+                net.nanopay.contacts.Contact.BUSINESS_NAME,
+                net.nanopay.contacts.Contact.OPERATING_BUSINESS_NAME
+              ]
             }
           ]
         };
