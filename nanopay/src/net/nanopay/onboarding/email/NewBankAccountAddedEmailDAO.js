@@ -13,12 +13,14 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
+    'foam.nanos.theme.Theme',
     'foam.util.Emails.EmailsUtility',
     'java.util.HashMap',
     'java.util.Map',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.contacts.Contact',
-    'net.nanopay.model.Business'
+    'net.nanopay.model.Business',
+    'static foam.mlang.MLang.*'
   ],
 
   methods: [
@@ -68,6 +70,11 @@ foam.CLASS({
         return account;
       }
 
+      DAO themeDAO = (DAO) x.get("themeDAO");
+      Theme theme = (Theme) themeDAO.find(
+        EQ(Theme.SPID, owner.getSpid())
+      );
+
       // Send email only after passing above checks
       EmailMessage message = new EmailMessage.Builder(x).build();
       Map<String, Object>  args = new HashMap<>();
@@ -79,6 +86,7 @@ foam.CLASS({
       args.put("accDen", account.getDenomination());
       args.put("accName", account.getName());
       args.put("accId", account.getId());
+      args.put("theme", theme);
 
       if ( owner instanceof Business &&  ((Business) owner).getOnboarded() ) {
         args.put("title", "User added a (" + account.getStatus() + ") Account & was previously onboarded");
