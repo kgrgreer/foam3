@@ -48,17 +48,19 @@ foam.CLASS({
           throw new RuntimeException(t);
         }
 
-        // test login attempts reset by email
-        Test_LoginAttemptAuthService_LoginAttemptsReset(x, userDAO, auth, "kirk@nanopay.net", "login in by email");
-        ResetLoginCount(x, userDAO);
+        try {
+          // test login attempts reset by email
+          Test_LoginAttemptAuthService_LoginAttemptsReset(x, userDAO, auth, "kirk@nanopay.net", "login in by email");
+          ResetLoginCount(x, userDAO);
 
-        // test login by email
-        Test_LoginAttemptAuthService_LoginAttemptsExceeded(x, userDAO, auth, "kirk@nanopay.net", "login in by email");
-        ResetLoginCount(x, userDAO);
-        
-        //set back the Context
-        session.setUserId(oldUserId);
-        session.setContext(oldContext);
+          // test login by email
+          Test_LoginAttemptAuthService_LoginAttemptsExceeded(x, userDAO, auth, "kirk@nanopay.net", "login in by email");
+          ResetLoginCount(x, userDAO);
+        } finally {
+          //set back the Context
+          session.setUserId(oldUserId);
+          session.setContext(oldContext);
+        } 
       `
     },
     {
