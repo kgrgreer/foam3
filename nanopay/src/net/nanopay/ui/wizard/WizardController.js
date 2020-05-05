@@ -9,7 +9,6 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.u2.detail.WizardSectionView',
     'foam.u2.dialog.Popup',
     'net.nanopay.sme.ui.MenuRedirectSMEModalView',
   ],
