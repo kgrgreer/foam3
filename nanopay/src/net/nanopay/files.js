@@ -676,6 +676,7 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/service/InvoicePaymentService' },
   { name: 'net/nanopay/invoice/service/ClientInvoicePaymentService' },
   { name: 'net/nanopay/invoice/InvoiceLineItem' },
+  { name: 'net/nanopay/invoice/util/InvoiceHistoryUtility' },
 
   // documents
   { name: 'net/nanopay/documents/AcceptanceDocument' },
