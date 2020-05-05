@@ -40,13 +40,18 @@ foam.CLASS({
 
           Account sourceAccount = bulkTxn.findSourceAccount(x);
           User payer = (User) userDAO.find_(x, bulkTxn.getPayerId());
+          
           if ( payer == null && sourceAccount != null ) {
             payer = sourceAccount.findOwner(x);
           } else if ( payer != null && sourceAccount == null ) {
             sourceAccount = getAccount(x, payer, bulkTxn.getSourceCurrency(), bulkTxn.getExplicitCI());
           }
+
           if ( payer == null || sourceAccount == null ) {
-              throw new RuntimeException("BulkTransaction failed to determine payer or sourceAccount. payerId: "+bulkTxn.getPayerId()+" sourceAccount: "+bulkTxn.getSourceAccount());
+            throw new RuntimeException("BulkTransaction failed to determine payer or sourceAccount. payerId: "
+              + bulkTxn.getPayerId()
+              + " sourceAccount: "
+              + bulkTxn.getSourceAccount());
           }
 
           // If only a single child transaction or no children and a non-null
@@ -54,6 +59,10 @@ foam.CLASS({
           if ( bulkTxn.getNext().length == 0 ) {
             if ( bulkTxn.getPayeeId() != 0 ) {
               User payee = (User) userDAO.find_(x, bulkTxn.getPayeeId());
+
+              if ( payee == null ) {
+                throw new RuntimeException("BulkTransaction failed to determine payeeId: " + bulkTxn.getPayeeId());
+              }
 
               // Set the sourceAccount and destinationAccount of the bulk transaction
               // SourceAccount and DestinationAccount are required
@@ -197,10 +206,10 @@ foam.CLASS({
       javaCode: `
         if ( cico ) {
           Account account = BankAccount.findDefault(x, user, currency);
-          if ( account != null ) {
-            return account;
+          if ( account == null ) {
+            throw new RuntimeException(currency + " BankAccount not found for business: " + user.getId());
           }
-          throw new RuntimeException(currency + " BankAccount not found for " + user.getId());
+          return account;
         } else {
           return DigitalAccount.findDefault(x, user, currency);
         }
