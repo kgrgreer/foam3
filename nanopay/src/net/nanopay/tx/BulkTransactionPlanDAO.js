@@ -55,6 +55,10 @@ foam.CLASS({
             if ( bulkTxn.getPayeeId() != 0 ) {
               User payee = (User) userDAO.find_(x, bulkTxn.getPayeeId());
 
+              if ( payee == null ) {
+                throw new RuntimeException("BulkTransaction failed to determine payeeId: " + bulkTxn.getPayeeId());
+              }
+
               // Set the sourceAccount and destinationAccount of the bulk transaction
               // SourceAccount and DestinationAccount are required
               bulkTxn.setSourceAccount(sourceAccount.getId());
