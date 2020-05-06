@@ -18,8 +18,7 @@ foam.CLASS({
     'java.util.Map',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.contacts.Contact',
-    'net.nanopay.model.Business',
-    'static foam.mlang.MLang.*'
+    'net.nanopay.model.Business'
   ],
 
   methods: [
