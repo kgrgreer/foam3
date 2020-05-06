@@ -544,7 +544,6 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setAuthorize(false)
       .setServiceProviderAware(true)
-      .setApprovableAwareEnabled(false)
       .build();
     dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.User.EMAIL });
     dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.User.GROUP });
@@ -1063,7 +1062,6 @@ p({
     .setJournalName("liquiditySettings")
     .setOf(net.nanopay.liquidity.LiquiditySettings.getOwnClassInfo())
     .setDecorator(dao)
-    .setApprovableAwareEnabled(false)
     .setAuthorize(false)
     .build();
   """,

@@ -4,10 +4,6 @@ foam.CLASS({
   extends: 'foam.nanos.ruler.Rule',
   abstract: true,
 
-  implements: [
-    'foam.nanos.approval.ApprovableAware'
-  ],
-
   documentation: 'Business rule base class.',
 
   javaImports: [

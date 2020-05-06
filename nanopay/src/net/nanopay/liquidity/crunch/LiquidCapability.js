@@ -111,7 +111,8 @@ foam.CLASS({
             this.add(value);
           });
       },
-    }
+    },
+    'checkerPredicate'
   ],
 
   methods: [
