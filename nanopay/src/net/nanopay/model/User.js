@@ -334,6 +334,10 @@ foam.CLASS({
       tableWidth: 160,
       section: 'business',
       label: 'Company Name'
+    },
+    {
+      name: 'checkerPredicate',
+      javaFactory: 'return foam.mlang.MLang.FALSE;'
     }
   ],
 
