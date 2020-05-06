@@ -487,6 +487,7 @@ foam.CLASS({
             .setDenomination(txn.getSourceCurrency())
             .setName(txn.getSourceCurrency() + " Bank Account")
             .setAccountNumber("000000")
+            .setCountry("US")
             .build();
           X systemX = x.put("user", new User.Builder(x).setId(1).build());
           b = (BankAccount) accountDAO.put_(systemX,b).fclone();
@@ -558,7 +559,7 @@ foam.CLASS({
           txn.addLineItems(new InfoLineItem[] {
             createInfoLineItem("Sending Company",row1.getCompany()),
             createInfoLineItem("Receiving Company",row2.getCompany()),
-          }, null);
+          });
         }
 
         txn.addLineItems(new InfoLineItem[] {
@@ -570,7 +571,7 @@ foam.CLASS({
           createInfoLineItem("Liquidity Hierarchy 2",row1.getProto_Liquidity_Hierarchy2()),
           createInfoLineItem("Liquidity Hierarchy 3",row1.getProto_Liquidity_Hierarchy3()),
           createInfoLineItem("Liquidity Hierarchy 4",row1.getProto_Liquidity_Hierarchy4()),
-        }, null);
+        });
         return txn;
       `
     },
@@ -660,6 +661,7 @@ foam.CLASS({
             .setDenomination(txn.getSourceCurrency())
             .setName(txn.getSourceCurrency() +" Bank Account")
             .setAccountNumber("000000")
+            .setCountry("US")
             .build();
           X systemX = x.put("user", new User.Builder(x).setId(1).build());
           accountDAO.inX(systemX).put(sourceTrust);
@@ -687,6 +689,7 @@ foam.CLASS({
             .setLifecycleState(LifecycleState.ACTIVE)
             .setDenomination(txn.getDestinationCurrency())
             .setName(txn.getDestinationCurrency() +" Bank Account")
+            .setCountry("US")
             .build();
           accountDAO.put(destinationTrust);
           accountDAO.put(destBank);

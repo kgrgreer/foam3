@@ -33,7 +33,7 @@ foam.CLASS({
         quote.addTransfer(trustAccount.getId(), t.getAmount());
         quote.addTransfer(quote.getSourceAccount().getId(), -t.getAmount());
 
-        t.addLineItems(new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 1 days */ 864800000L).build()}, null);
+        t.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 1 days */ 864800000L).build()} );
         if ( PADTypeLineItem.getPADTypeFrom(x, t) == null ) {
           PADTypeLineItem.addEmptyLineTo(t);
         }

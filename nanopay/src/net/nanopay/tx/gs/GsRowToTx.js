@@ -218,6 +218,7 @@ foam.CLASS({
             .setDenomination(denomination)
             .setName(denomination +" Bank Account")
             .setAccountNumber("000000")
+            .setCountry("US")
             .build();
           accountDAO.put(sourceTrust);
           accountDAO.put(sourceBank);

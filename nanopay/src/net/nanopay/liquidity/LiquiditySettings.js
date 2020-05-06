@@ -351,6 +351,7 @@ foam.CLASS({
       section: 'basicInfo',
       value: foam.nanos.auth.LifecycleState.PENDING,
       writePermissionRequired: true,
+      readPermissionRequired: true,
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       readVisibility: 'RO'
@@ -361,6 +362,10 @@ foam.CLASS({
       name: 'userFeedback',
       storageTransient: true,
       visibility: 'HIDDEN'
+    },
+    {
+      name: 'checkerPredicate',
+      javaFactory: 'return foam.mlang.MLang.FALSE;'
     }
   ],
   methods: [

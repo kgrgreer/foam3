@@ -69,7 +69,7 @@ foam.CLASS({
                     .setFilename("TransactionConfirmation_" + transaction.getId() + ".pdf").setMimeType("application/pdf").build();
     
                   File pdf = (File) fileDAO.inX(x).put(thePDF);
-                  transaction.addLineItems(new TransactionLineItem[]{new ConfirmationFileLineItem.Builder(x).setGroup("fx").setFile(pdf).build()}, null);
+                  transaction.addLineItems( new TransactionLineItem[]{new ConfirmationFileLineItem.Builder(x).setGroup("fx").setFile(pdf).build()} );
                   transactionDAO.put(transaction);
                 
                   // Append file to related invoice.

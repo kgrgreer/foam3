@@ -79,7 +79,7 @@ foam.CLASS({
         fxTransaction.setFxQuoteId(fxQuote.getExternalId());
         fxTransaction.setFxRate(fxQuote.getRate());
         fxTransaction.setDestinationAmount((new Double(fxQuote.getTargetAmount())).longValue());
-        fxTransaction.addLineItems(new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(fxQuote.getExternalId()).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).build()}, null);
+        fxTransaction.addLineItems( new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(fxQuote.getExternalId()).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).build()} );
         if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()) ) {
           fxTransaction.setAccepted(true);
         }
@@ -91,7 +91,7 @@ foam.CLASS({
 
         if ( fxQuote.getFee() > 0 ) {
           Long feeAmount = (new Double(fxQuote.getFee())).longValue();
-          fxTransaction.addLineItems(new TransactionLineItem[] {new FeeLineItem.Builder(x).setGroup("fx").setNote("FX Broker Fee").setAmount(feeAmount).setDestinationAccount(NANOPAY_FEE_ACCOUNT_ID).build()}, null);
+          fxTransaction.addLineItems( new TransactionLineItem[] {new FeeLineItem.Builder(x).setGroup("fx").setNote("FX Broker Fee").setAmount(feeAmount).setDestinationAccount(NANOPAY_FEE_ACCOUNT_ID).build()} );
         }
         fxTransaction.setIsQuoted(true);
         return fxTransaction;

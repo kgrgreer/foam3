@@ -76,7 +76,7 @@ foam.CLASS({
     if ( ! set ) {
       PADTypeLineItem lineItem = new PADTypeLineItem();
       lineItem.setPadType(padType);
-      transaction.addLineItems(new TransactionLineItem[] { lineItem }, null);
+      transaction.addLineItems( new TransactionLineItem[] { lineItem } );
     }
   }
 

@@ -47,7 +47,7 @@ foam.CLASS({
       javaCode: `
       if ( transactions != null ) {
         for ( Transaction transaction : transactions ) {
-          addLineItems(transaction.getLineItems(), transaction.getReverseLineItems());
+          addLineItems(transaction.getLineItems());
           collectLineItemsFromChain(transaction.getNext());
         }
       }
