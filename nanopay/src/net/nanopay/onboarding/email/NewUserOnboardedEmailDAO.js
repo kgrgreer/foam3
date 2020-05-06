@@ -14,7 +14,6 @@ foam.CLASS({
     'foam.mlang.MLang',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
-    'foam.nanos.theme.Theme',
     'foam.nanos.notification.email.EmailMessage',
     'foam.util.Emails.EmailsUtility',
     'net.nanopay.account.Account',
@@ -38,16 +37,10 @@ foam.CLASS({
           EmailMessage message = new EmailMessage();
           Map<String, Object>  args = new HashMap<>();
 
-          DAO themeDAO = (DAO) x.get("themeDAO");
-          Theme theme = (Theme) themeDAO.find(
-            MLang.EQ(Theme.SPID, newUser.getSpid())
-          );
-
           args.put("subTitle1", "User(Account Owner) information: ONBOARDED");
           args.put("userId", newUser.getId());
           args.put("userEmail", newUser.getEmail());
           args.put("userCo", newUser.getOrganization());
-          args.put("theme", theme);
 
           // For the purpose of sending an email once both onboarding and bank account added
           List accountsArray = ((ArraySink) newUser.getAccounts(x).where(
