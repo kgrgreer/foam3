@@ -152,7 +152,7 @@ p({
         "isEnabled": true,
         "enabledActionsAuth": {
           "class": "foam.comics.v2.BasicEnabledActionsAuth",
-          "modelName": "afexbusiness"
+          "modelName": "afexbeneficiary"
         }
       }
     }
