@@ -34,6 +34,11 @@ foam.CLASS({
       name: 'status'
     },
     {
+      class: 'Boolean',
+      name: 'statusPass',
+      value: true
+    },
+    {
       class: 'String',
       name: 'report'
     }

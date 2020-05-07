@@ -122,7 +122,7 @@ foam.CLASS({
 
     .foam-u2-stack-StackView {
       overflow: scroll;
-      height: calc(100vh - 80px);
+      height: calc(100vh - 65px);
     }
   `,
 
@@ -327,14 +327,17 @@ foam.CLASS({
       var searchparam = new URLSearchParams(location.search);
 
       // don't go to log in screen if going to reset password screen
-      if ( location.hash != null && location.hash === '#reset' ) {
+      if ( location.hash && location.hash === '#reset' ) {
         return new Promise(function(resolve, reject) {
-          self.stack.push({ class: 'foam.nanos.auth.ChangePasswordView' }, self);
+          self.stack.push({
+            class: 'foam.nanos.auth.ChangePasswordView',
+            modelOf: 'foam.nanos.auth.ResetPassword'
+          }, self);
           self.loginSuccess$.sub(resolve);
         });
       }
       // don't go to log in screen if going to sign up password screen
-      if ( location.hash != null && location.hash === '#sign-up' ) {
+      if ( location.hash && location.hash === '#sign-up' ) {
         return new Promise(function(resolve, reject) {
           self.stack.push({ class: 'foam.u2.view.LoginView',
           mode_: 'SignUp',

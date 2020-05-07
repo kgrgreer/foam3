@@ -48,13 +48,13 @@ foam.CLASS({
                 Currency currency = (Currency) currencyDAO.find(iv.getDestinationCurrency());
 
                 StringBuilder sb = new StringBuilder("You requested a payment from ")
-                .append(payer.label())
+                .append(payer.toSummary())
                 .append(" for ")
                 .append(currency.format(iv.getAmount()))
                 .append(" ")
                 .append(iv.getSourceCurrency());
 
-                StringBuilder rb = new StringBuilder(user.label())
+                StringBuilder rb = new StringBuilder(user.toSummary())
                 .append(" just requested a payment ")
                 .append(" for ")
                 .append(currency.format(iv.getAmount()))

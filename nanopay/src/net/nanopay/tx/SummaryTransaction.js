@@ -29,24 +29,6 @@ foam.CLASS({
       `
     },
     {
-      documentation: `return true when status change is such that reveral Transfers should be executed (applied)`,
-      name: 'canReverseTransfer',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'oldTxn',
-          type: 'net.nanopay.tx.model.Transaction'
-        }
-      ],
-      type: 'Boolean',
-      javaCode: `
-        return false;
-      `
-    },
-    {
       documentation: `Collect all line items of succeeding transactions of self.`,
       name: 'collectLineItems',
       javaCode: `
@@ -65,7 +47,7 @@ foam.CLASS({
       javaCode: `
       if ( transactions != null ) {
         for ( Transaction transaction : transactions ) {
-          addLineItems(transaction.getLineItems(), transaction.getReverseLineItems());
+          addLineItems(transaction.getLineItems());
           collectLineItemsFromChain(transaction.getNext());
         }
       }

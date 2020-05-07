@@ -282,7 +282,7 @@ foam.CLASS({
         var e = this.start('span').add(id).end();
         o.businessId$find.then((b) => {
           if ( ! b ) return;
-          e.add(' - ', b.label());
+          e.add(' - ', b.toSummary());
         });
       }
     },
@@ -309,7 +309,7 @@ foam.CLASS({
         var e = this.start('span').add(id).end();
         o.userId$find.then((b) => {
           if ( ! b ) return;
-          e.add(' - ', b.label());
+          e.add(' - ', b.toSummary());
         });
       }
     },

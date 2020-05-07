@@ -75,7 +75,8 @@ foam.CLASS({
     { name: 'SUB_TITLE', message: `Here's a list of payments that people have requested from you` },
     { name: 'DELETE_DRAFT', message: 'Draft has been deleted.' },
     { name: 'RECONCILED_SUCCESS', message: 'Invoice has been reconciled by payer.' },
-    { name: 'RECONCILED_ERROR', message: `There was an error reconciling the invoice.` }
+    { name: 'RECONCILED_ERROR', message: `There was an error reconciling the invoice.` },
+    { name: 'INVOICE', message: 'invoice' }
   ],
 
   classes: [
@@ -109,15 +110,15 @@ foam.CLASS({
       factory: function() {
         return this.DAOControllerConfig.create({
           filterExportPredicate: this.NEQ(foam.nanos.export.ExportDriverRegistry.ID, 'CSV'),
-          dao: this.user.expenses.orderBy(this.DESC(this.Invoice.CREATED))
-              .orderBy(this.Invoice.PAYEE_RECONCILED)
-              .orderBy(this.Invoice.PAYER_RECONCILED),
+          dao: this.user.expenses.orderBy(this.Invoice.PAYER_RECONCILED)
+                .orderBy(this.Invoice.PAYEE_RECONCILED)
+                .orderBy(this.DESC(this.Invoice.ISSUE_DATE)),
           createPredicate: foam.mlang.predicate.True,
           defaultColumns: [
             this.Invoice.PAYEE_ID.clone().copyFrom({
               label: 'Company',
-              tableCellFormatter: async function(_, invoice) {
-                var additiveSubField = await invoice.payee.label();
+              tableCellFormatter: function(_, invoice) {
+                var additiveSubField = invoice.payee.toSummary();
                 this.add(additiveSubField);
                 this.tooltip = additiveSubField;
               }
@@ -147,7 +148,7 @@ foam.CLASS({
               name: 'reconcile',
               label: 'Reconcile',
               isAvailable: function() {
-                return ! this.payerReconciled && this.status != this.InvoiceStatus.DRAFT;
+                return ! this.payerReconciled && this.status === this.InvoiceStatus.PAID;
               },
               code: async function(X) {
                 this.payerReconciled = true;
@@ -273,9 +274,12 @@ foam.CLASS({
                 return this.status === self.InvoiceStatus.DRAFT;
               },
               code: function() {
-                self.user.expenses.remove(this).then(() => {
-                  self.notify(self.DELETE_DRAFT, 'success');
-                });
+                ctrl.add(self.Popup.create().tag({
+                  class: 'foam.u2.DeleteModal',
+                  dao: self.user.expenses,
+                  data: this,
+                  label: self.INVOICE
+                }));
               }
             })
           ]

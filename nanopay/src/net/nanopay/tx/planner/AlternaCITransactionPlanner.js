@@ -13,11 +13,6 @@ foam.CLASS({
 
   constants: [
     {
-      name: 'PROVIDER_ID',
-      type: 'String',
-      value: 'Alterna'
-    },
-    {
       name: 'INSTITUTION_NUMBER',
       type: 'String',
       value: '842'
@@ -35,7 +30,7 @@ foam.CLASS({
         t.setInstitutionNumber(INSTITUTION_NUMBER);
         quote.addTransfer(trustAccount.getId(), -t.getAmount());
         quote.addTransfer(quote.getDestinationAccount().getId(), t.getAmount());
-        t.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()}, null);
+        t.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()} );
 
         if ( PADTypeLineItem.getPADTypeFrom(x, t) == null ) {
           PADTypeLineItem.addEmptyLineTo(t);

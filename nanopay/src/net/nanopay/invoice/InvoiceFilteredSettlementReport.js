@@ -351,7 +351,7 @@ foam.CLASS({
           // Format Information variables for each Invoice
           transDate         = df.format(invoice.getPaymentDate());
           tempUser          = invoice.findCreatedBy(x);
-          createdBy_String  = tempUser == null ? "n/a" : tempUser.label();
+          createdBy_String  = tempUser == null ? "n/a" : tempUser.toSummary();
           tempUser          = invoice.findPayerId(x);
           businessNamePayer = tempUser == null ? "n/a" : tempUser.getOrganization();
           tempUser          = invoice.findPayeeId(x);

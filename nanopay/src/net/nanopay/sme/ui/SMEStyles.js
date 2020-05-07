@@ -20,7 +20,7 @@ foam.CLASS({
       font-family: 'Lato', sans-serif;
     }
     .stack-wrapper {
-      height: 100%;
+      height: 100vh;
       padding: 0;
     }
     .full-screen {
@@ -29,7 +29,7 @@ foam.CLASS({
       left: 0;
       height: 100vh !important;
       width: 100vw !important;
-      z-index: 950;
+      z-index: 1005;
       margin: 0 !important;
       padding: 0 !important;
     }
@@ -81,7 +81,6 @@ foam.CLASS({
       padding: 0 21px 0 38px;
     }
     .foam-u2-stack-StackView {
-      height: 100%;
       width: 100%;
     }
 
@@ -1031,6 +1030,7 @@ foam.CLASS({
     }
     .foam-u2-view-LoginView .foam-u2-borders-SplitScreenBorder {
       padding-top: 75px;
+      height: calc(100vh - 75px);
     }
     .foam-u2-filter-FilterSearch-container-search {
       width: 857px;

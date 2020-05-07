@@ -79,19 +79,19 @@ foam.CLASS({
         fxTransaction.setFxQuoteId(fxQuote.getExternalId());
         fxTransaction.setFxRate(fxQuote.getRate());
         fxTransaction.setDestinationAmount((new Double(fxQuote.getTargetAmount())).longValue());
-        fxTransaction.addLineItems(new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(fxQuote.getExternalId()).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).build()}, null);
+        fxTransaction.addLineItems( new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(fxQuote.getExternalId()).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).build()} );
         if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()) ) {
           fxTransaction.setAccepted(true);
         }
 
-        quote.addTransfer(sourceAccount.getId(), -requestTxn.getTotal());
-        quote.addTransfer(brokerSourceAccount.getId(), requestTxn.getTotal());
+        quote.addTransfer(sourceAccount.getId(), -requestTxn.getAmount());
+        quote.addTransfer(brokerSourceAccount.getId(), requestTxn.getAmount());
         quote.addTransfer(brokerDestinationAccount.getId(), -fxTransaction.getDestinationAmount());
         quote.addTransfer(destinationAccount.getId(), fxTransaction.getDestinationAmount());
 
         if ( fxQuote.getFee() > 0 ) {
           Long feeAmount = (new Double(fxQuote.getFee())).longValue();
-          fxTransaction.addLineItems(new TransactionLineItem[] {new FeeLineItem.Builder(x).setGroup("fx").setNote("FX Broker Fee").setAmount(feeAmount).setDestinationAccount(NANOPAY_FEE_ACCOUNT_ID).build()}, null);
+          fxTransaction.addLineItems( new TransactionLineItem[] {new FeeLineItem.Builder(x).setGroup("fx").setNote("FX Broker Fee").setAmount(feeAmount).setDestinationAccount(NANOPAY_FEE_ACCOUNT_ID).build()} );
         }
         fxTransaction.setIsQuoted(true);
         return fxTransaction;

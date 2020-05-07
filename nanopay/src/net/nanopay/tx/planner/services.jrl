@@ -10,6 +10,7 @@ p({
       .build();
     dao = new foam.nanos.ruler.RulerDAO(x, dao, "transactionPlannerDAO");
     dao = new foam.dao.ValidatingDAO(x, dao, new net.nanopay.tx.RequestTransactionValidator());
+    dao = new net.nanopay.tx.planner.CorridorQuoteDAO(x, dao);
     dao = new net.nanopay.tx.QuoteFillerDAO(x, dao);
     dao = new net.nanopay.tx.BulkTransactionPlanDAO.Builder(x)
       .setDelegate(dao)

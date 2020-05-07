@@ -319,7 +319,7 @@ p({
       "args":[
         {"class":"foam.mlang.predicate.Or",
           "args":[
-            {"class":"net.nanopay.tx.ruler.PropertyEQValue","propName":"status","propValue":{"class":"net.nanopay.tx.model.TransactionStatus","ordinal":4}},
+            {"class":"foam.nanos.ruler.predicate.PropertyEQValue","propName":"status","propValue":{"class":"net.nanopay.tx.model.TransactionStatus","ordinal":4}},
             {"class":"foam.nanos.ruler.predicate.PropertyEQValue","propName":"status","propValue":{"class": "net.nanopay.tx.model.TransactionStatus","ordinal":9}
           }]
         },

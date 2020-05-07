@@ -66,7 +66,7 @@ foam.CLASS({
                   self.publicBusinessDAO
                     .find(obj.businessId)
                     .then( (business) =>
-                      this.start().add(business.label()).end()
+                      this.start().add(business.toSummary()).end()
                   );
                 }
               }

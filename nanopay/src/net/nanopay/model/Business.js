@@ -14,7 +14,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.admin.model.ComplianceStatus'
+    'net.nanopay.admin.model.ComplianceStatus',
   ],
 
   documentation: `Business is an object that extends the user class. A business is an
@@ -546,17 +546,7 @@ foam.CLASS({
     {
       name: 'toSummary',
       type: 'String',
-      code: function() {
-        return this.label();
-      },
-      javaCode: `
-        return this.label();
-      `
-    },
-    {
-      name: 'label',
-      type: 'String',
-      code: function label() {
+      code: function toSummary() {
         if ( this.operatingBusinessName ) return this.operatingBusinessName;
         if ( this.organization ) return this.organization;
         if ( this.businessName ) return this.businessName;

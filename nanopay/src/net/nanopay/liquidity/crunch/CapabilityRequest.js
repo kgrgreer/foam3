@@ -332,7 +332,7 @@ foam.CLASS({
         this.__subContext__.userDAO
           .find(value)
           .then((user) => {
-            this.add(user.label());
+            this.add(user.toSummary());
           })
           .catch((error) => {
             console.log('user: ' + value +' error last mod capR: ' + error);
@@ -346,18 +346,14 @@ foam.CLASS({
       name: 'userFeedback',
       storageTransient: true,
       visibility: 'HIDDEN'
+    },
+    {
+      name: 'checkerPredicate',
+      javaFactory: 'return foam.mlang.MLang.FALSE;'
     }
   ],
 
   methods: [
-    {
-      name: 'getStringId',
-      type: 'String',
-      javaCode: `
-        String id = String.valueOf(getId());
-        return id;
-      `
-    },
     {
       name: 'toSummary',
       type: 'String',
@@ -375,7 +371,7 @@ foam.CLASS({
           .where(
             AND(
               EQ(ApprovalRequest.DAO_KEY, "capabilityRequestDAO"),
-              EQ(ApprovalRequest.OBJ_ID, getStringId()),
+              EQ(ApprovalRequest.OBJ_ID, String.valueOf(getProperty("id"))),
               EQ(ApprovalRequest.OPERATION, foam.nanos.ruler.Operations.CREATE),
               EQ(ApprovalRequest.IS_FULFILLED, false),
               EQ(ApprovalRequest.STATUS, ApprovalStatus.REJECTED)

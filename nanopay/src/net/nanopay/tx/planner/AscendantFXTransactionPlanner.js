@@ -84,7 +84,7 @@ foam.CLASS({
                   if ( null != fxQuote && fxQuote.getId() > 0 ) {
                     AscendantFXTransaction ascendantFXTransaction = createAscendantFXTransaction(x, requestTxn, fxQuote);
                     if ( null != disclosure ) {
-                      ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new DisclosureLineItem.Builder(x).setGroup("fx").setText(disclosure.getBody()).build()}, null);
+                      ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new DisclosureLineItem.Builder(x).setGroup("fx").setText(disclosure.getBody()).build()} );
                     }
                     FXSummaryTransaction summaryTransaction = getSummaryTx(ascendantFXTransaction, quote.getSourceAccount(), quote.getDestinationAccount(), fxQuote);
                     return summaryTransaction;
@@ -97,7 +97,7 @@ foam.CLASS({
             //     if ( null != fxQuote && fxQuote.getId() > 0 ) {
             //       AscendantFXTransaction ascendantFXTransaction = createAscendantFXTransaction(x, requestTxn, fxQuote);
             //       if ( null != disclosure ) {
-            //         ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new DisclosureLineItem.Builder(x).setGroup("fx").setText(disclosure.getBody()).build()}, null);
+            //         ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new DisclosureLineItem.Builder(x).setGroup("fx").setText(disclosure.getBody()).build()} );
             //       }
             //       quote.addPlan(ascendantFXTransaction);
             //     }
@@ -114,7 +114,7 @@ foam.CLASS({
         } else  {
           AscendantFXTransaction ascendantFXTransaction = createAscendantFXTransaction(x, requestTxn, fxQuote);
           if ( null != disclosure ) {
-            ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new DisclosureLineItem.Builder(x).setGroup("fx").setText(disclosure.getBody()).build()}, null);
+            ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new DisclosureLineItem.Builder(x).setGroup("fx").setText(disclosure.getBody()).build()} );
           }
           FXSummaryTransaction summaryTransaction = getSummaryTx(ascendantFXTransaction, quote.getSourceAccount(), quote.getDestinationAccount(), fxQuote);
           return summaryTransaction;
@@ -194,12 +194,12 @@ foam.CLASS({
       ascendantFXTransaction.setFxExpiry(fxQuote.getExpiryTime());
       ascendantFXTransaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
       ascendantFXTransaction.setFxRate(fxQuote.getRate());
-      ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(String.valueOf(fxQuote.getId())).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).build()}, null);
+      ascendantFXTransaction.addLineItems( new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(String.valueOf(fxQuote.getId())).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).build()} );
       ascendantFXTransaction.setDestinationAmount((new Double(fxQuote.getTargetAmount())).longValue());
       FeesFields fees = new FeesFields.Builder(x).build();
       fees.setTotalFees(fxQuote.getFee());
       fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
-      ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new AscendantFXFeeLineItem.Builder(x).setGroup("fx").setAmount(fxQuote.getFee()).setCurrency(fxQuote.getFeeCurrency()).build()}, null);
+      ascendantFXTransaction.addLineItems( new TransactionLineItem[] {new AscendantFXFeeLineItem.Builder(x).setGroup("fx").setAmount(fxQuote.getFee()).setCurrency(fxQuote.getFeeCurrency()).build()} );
       ascendantFXTransaction.setFxFees(fees);
       ascendantFXTransaction.setIsQuoted(true);
       ascendantFXTransaction.setPaymentMethod(fxQuote.getPaymentMethod());
@@ -209,7 +209,7 @@ foam.CLASS({
         ascendantFXTransaction.setAccepted(true);
       }
     
-      ascendantFXTransaction.addLineItems(new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(/* 2 days TODO: calculate*/172800000L).build()}, null);
+      ascendantFXTransaction.addLineItems( new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(/* 2 days TODO: calculate*/172800000L).build()} );
       return ascendantFXTransaction;
       `
     },

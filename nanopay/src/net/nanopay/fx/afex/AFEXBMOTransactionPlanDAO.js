@@ -262,12 +262,12 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, FXQuote fxQuote, 
   afexTransaction.setFxExpiry(fxQuote.getExpiryTime());
   afexTransaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
   afexTransaction.setFxRate(fxQuote.getRate());
-  afexTransaction.addLineItems(new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(String.valueOf(fxQuote.getId())).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).build()}, null);
+  afexTransaction.addLineItems( new TransactionLineItem[] { new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(String.valueOf(fxQuote.getId())).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).build()} );
 
   FeesFields fees = new FeesFields.Builder(x).build();
   fees.setTotalFees(fxQuote.getFee());
   fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
-  afexTransaction.addLineItems(new TransactionLineItem[] {new FeeLineItem.Builder(x).setGroup("fx").setAmount(fxQuote.getFee()).setCurrency(fxQuote.getFeeCurrency()).build()}, null);
+  afexTransaction.addLineItems( new TransactionLineItem[] {new FeeLineItem.Builder(x).setGroup("fx").setAmount(fxQuote.getFee()).setCurrency(fxQuote.getFeeCurrency()).build()} );
   afexTransaction.setFxFees(fees);
   
   afexTransaction.setIsQuoted(true);
@@ -284,7 +284,7 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, FXQuote fxQuote, 
   }
 
   // TODO change estimate based on bmo and afex
-  afexTransaction.addLineItems(new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(/* 2 days TODO: calculate*/172800000L).build()}, null);
+  afexTransaction.addLineItems( new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(/* 2 days TODO: calculate*/172800000L).build()} );
   // TODO ADD FEES
   afexTransaction.setIsQuoted(true);
 

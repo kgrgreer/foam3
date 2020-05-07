@@ -1,6 +1,6 @@
 // hidden
 p({"class":"foam.nanos.menu.Menu","id":"intro-to-documentation","label":"Intro","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"intro","daoKey":"nanopayDocumentDAO"},"parent":"hidden"})
 p({"class":"foam.nanos.menu.Menu","id":"sync-bank","label":"Banking","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.accounting.BankSyncView"}},"parent":"hidden"})
-p({"class":"foam.nanos.menu.Menu","id":"reset","label":"Reset Password","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.auth.ChangePasswordView"}},"parent":"hidden"})
+p({"class":"foam.nanos.menu.Menu","id":"reset","label":"Reset Password","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.auth.ChangePasswordView", "modelOf":"foam.nanos.auth.ResetPassword", "showHeader":false}},"parent":"hidden"})
 p({"class":"foam.nanos.menu.Menu","id":"sign-up","label":"Sign Up","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.u2.view.LoginView", "mode_":"SignUp"}},"parent":"hidden"})
 p({"class":"foam.nanos.menu.Menu","id":"set-password","label":"Change Password","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.auth.ChangePasswordView"}},"parent":"hidden"})

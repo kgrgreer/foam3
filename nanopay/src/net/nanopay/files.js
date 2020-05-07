@@ -676,6 +676,7 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/service/InvoicePaymentService' },
   { name: 'net/nanopay/invoice/service/ClientInvoicePaymentService' },
   { name: 'net/nanopay/invoice/InvoiceLineItem' },
+  { name: 'net/nanopay/invoice/util/InvoiceHistoryUtility' },
 
   // documents
   { name: 'net/nanopay/documents/AcceptanceDocument' },
@@ -872,6 +873,8 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/LiquidityRule' },
    { name: 'net/nanopay/liquidity/LiquiditySettingsRowView', flags: ['web'] },
    { name: 'net/nanopay/liquidity/LiquiditySettingsSelectionView', flags: ['web'] },
+   { name: 'net/nanopay/liquidity/PreventAccountLiquidityLoopRule' },
+   { name: 'net/nanopay/liquidity/PreventLiquiditySettingsLoopRule' },
    { name: 'net/nanopay/liquidity/ucjQuery/AccountUCJQueryService' },
    { name: 'net/nanopay/liquidity/ucjQuery/CachedAccountUCJQueryService' },
    { name: 'net/nanopay/liquidity/ucjQuery/ClientAccountUCJQueryService' },
@@ -910,6 +913,7 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/tx/TxLimitRule' },
    { name: 'net/nanopay/liquidity/tx/RestrictAccountsRule' },
    { name: 'net/nanopay/liquidity/tx/RestrictUsersRule' },
+   { name: 'net/nanopay/liquidity/tx/refinements' },
    { name: 'net/nanopay/liquidity/ruler/AccountLSValidationPredicate' },
 
 
@@ -999,6 +1003,7 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/BusinessEmployeeDAO' },
   { name: 'net/nanopay/model/BeneficialOwner' },
   { name: 'net/nanopay/model/BusinessDirector' },
+  { name: 'net/nanopay/sme/ui/FooterView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/AbliiActionView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/MoneyFlowSuccessView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/MoneyFlowRejectView', flags: ['web'] },
@@ -1065,6 +1070,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ruler/BusinessInvitationAndTokenCancelRule' },
   { name: 'net/nanopay/sme/ruler/InvitationAntiSpamCheckRule' },
   { name: 'net/nanopay/sme/ui/ErrorPageView', flags: ['web']  },
+  { name: 'net/nanopay/settings/business/DeleteInvitedUserView', flags: ['web'] },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },
@@ -1424,6 +1430,7 @@ FOAM_FILES([
 
   // planners
   { name: 'net/nanopay/tx/planner/SummaryPopulatorDAO' },
+  { name: 'net/nanopay/tx/planner/CorridorQuoteDAO' },
   { name: 'net/nanopay/tx/planner/TransactionQuotingDAO' },
   { name: 'net/nanopay/tx/planner/AbstractTransactionPlanner' },
   { name: 'net/nanopay/tx/planner/ExamplePlanner' },
@@ -1433,9 +1440,9 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/GenericFXPlanner' },
   { name: 'net/nanopay/tx/planner/AFEXTransactionPlanner' },
   { name: 'net/nanopay/tx/planner/predicate/FXPlannerPredicate' },
+  { name: 'net/nanopay/tx/planner/predicate/ProviderPredicate' },
   { name: 'net/nanopay/tx/planner/predicate/IsAFEXUserPredicate' },
   { name: 'net/nanopay/tx/planner/predicate/IsAscendantFXUserPredicate' },
-  { name: 'net/nanopay/tx/planner/predicate/TransactionQuoteCorridorPredicate' },
   { name: 'net/nanopay/tx/planner/predicate/SameUserTxnPredicate' },
   { name: 'net/nanopay/tx/planner/AscendantFXTransactionPlanner' },
   { name: 'net/nanopay/tx/planner/KotakFxTransactionPlanner' },

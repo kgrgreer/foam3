@@ -123,7 +123,12 @@ foam.CLASS({
       .start('h1').add(this.TITLE).end()
 
       .start().addClass('card')
-        .start().tag( { class: foam.nanos.auth.ChangePasswordView, horizontal: true, topBarShow: false } ).end()
+        .start().tag({
+          class: foam.nanos.auth.ChangePasswordView,
+          modelOf: 'foam.nanos.auth.UpdatePassword',
+          showHeader: false,
+          isHorizontal: true
+        }).end()
       .end()
 
       .br()

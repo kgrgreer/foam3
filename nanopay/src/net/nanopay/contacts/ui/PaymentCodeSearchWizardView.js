@@ -136,12 +136,12 @@ foam.CLASS({
           // copy over contact properties
           contact.copyFrom({
             organization: business.organization,
+            operatingBusinessName: business.operatingBusinessName,
             businessId: business.id,
             address: business.address
           });
           // set confirmation display properties
           contact.businessSectorId = business.businessSectorId;
-          contact.operatingBusinessName = business.operatingBusinessName;
           contact.paymentCodeValue = paymentCodeValue;
           this.currentIndex = this.nextIndex;
         } catch (err) {

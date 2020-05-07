@@ -18,8 +18,8 @@ public class TransactionSetupTest
       print("Testing utilities for currency: " + currency);
 
       User user = TransactionTestUtil.setupTestUser(x, "initial_user" + currency + "@subcubix.com", currency);
-      test(user != null, "User " + user.label() + " returned.");
-      test(user.getId() > 0, "User " + user.label() + " created.");
+      test(user != null, "User " + user.toSummary() + " returned.");
+      test(user.getId() > 0, "User " + user.toSummary() + " created.");
       test(user.getEmailVerified(), "User " + user.getEmail() + " email verified.");
 
       BankAccount bankAccount = TransactionTestUtil.RetrieveBankAccount(x, user, currency);
