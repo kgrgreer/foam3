@@ -43,7 +43,6 @@ p({
       .setOf(Account.getOwnClassInfo())
       .setDaoKey("localAccountDAO")
       .setDelegate(dao)
-      .setIsEnabled(false)
       .build();
     dao = new net.nanopay.bank.AscendantFXBankAccountDAO(x, dao);
     dao = new net.nanopay.bank.RandomDepositBankAccountDAO(x, dao);

@@ -213,7 +213,7 @@ foam.RELATIONSHIP({
       this.__subSubContext__.userDAO
         .find(value)
         .then((user) => {
-          this.add(user.label());
+          this.add(user.toSummary());
         })
         .catch((error) => {
           this.add(value);
@@ -249,7 +249,7 @@ foam.RELATIONSHIP({
       this.__subSubContext__.userDAO
         .find(value)
         .then((user) => {
-          this.add('[', user.cls_.name, '] ', user.label());
+          this.add('[', user.cls_.name, '] ', user.toSummary());
         })
         .catch((error) => {
           this.add(value);
@@ -860,7 +860,7 @@ foam.RELATIONSHIP({
       if ( account != null ) {
         User sender = account.findOwner(x);
         outputter.outputValue(sender.getId());
-        outputter.outputValue(sender.label());
+        outputter.outputValue(sender.toSummary());
       } else {
         ((foam.nanos.logger.Logger) x.get("logger")).error("Transaction.sourceAccount not found (during toCSV).", ((Transaction)obj).getId());
       }
@@ -938,7 +938,7 @@ foam.RELATIONSHIP({
       if ( account != null ) {
         User receiver = account.findOwner(x);
         outputter.outputValue(receiver.getId());
-        outputter.outputValue(receiver.label());
+        outputter.outputValue(receiver.toSummary());
       } else {
         ((foam.nanos.logger.Logger) x.get("logger")).error("Transaction.destinationAccount not found (during toCSV).", ((Transaction)obj).getId());
       }

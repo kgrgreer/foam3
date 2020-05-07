@@ -332,7 +332,7 @@ foam.CLASS({
         this.__subContext__.userDAO
           .find(value)
           .then((user) => {
-            this.add(user.label());
+            this.add(user.toSummary());
           })
           .catch((error) => {
             console.log('user: ' + value +' error last mod capR: ' + error);
@@ -346,6 +346,10 @@ foam.CLASS({
       name: 'userFeedback',
       storageTransient: true,
       visibility: 'HIDDEN'
+    },
+    {
+      name: 'checkerPredicate',
+      javaFactory: 'return foam.mlang.MLang.FALSE;'
     }
   ],
 

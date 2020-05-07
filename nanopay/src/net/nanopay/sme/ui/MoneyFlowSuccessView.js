@@ -126,21 +126,21 @@ foam.CLASS({
         The name to display for the invoice. Either the business name or the
         name of the person at that business, depending on what is available.
       `,
-      expression: async function(invoice, isPayable_) {
-        return isPayable_ ? await invoice.payee.label() : await invoice.payer.label();
+      expression: function(invoice, isPayable_) {
+        return isPayable_ ? invoice.payee.toSummary() : invoice.payer.toSummary();
       }
     },
     {
       class: 'String',
       name: 'title_',
-      expression: async function(isPayable_, isApprover_, formattedAmount_, invoiceName_) {
+      expression: function(isPayable_, isApprover_, formattedAmount_, invoiceName_) {
         if ( isPayable_ ) {
           if ( isApprover_ ) {
-            return `${this.TITLE_SEND1} ${formattedAmount_} ${this.TITLE_SEND2} ${await invoiceName_}`;
+            return `${this.TITLE_SEND1} ${formattedAmount_} ${this.TITLE_SEND2} ${invoiceName_}`;
           }
           return this.TITLE_PENDING;
         }
-        return `${this.TITLE_REC1} ${formattedAmount_} ${this.TITLE_REC2} ${await invoiceName_}`;
+        return `${this.TITLE_REC1} ${formattedAmount_} ${this.TITLE_REC2} ${invoiceName_}`;
       }
     },
     {

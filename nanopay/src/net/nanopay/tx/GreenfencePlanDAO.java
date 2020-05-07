@@ -37,14 +37,14 @@ public class GreenfencePlanDAO extends ProxyDAO {
       .setAmount(txn.getAmount())
       .setPayable(true)
       .build();
-     invoice1.addLineItems(txn.getLineItems(), null);
+     invoice1.addLineItems(txn.getLineItems());
 
      InvoiceTransaction invoice2 = new InvoiceTransaction.Builder(x)
       .setSourceAccount(DigitalAccount.findDefault(x, greenfenceUser, txn.getSourceCurrency()).getId())
       .setDestinationAccount(txn.getDestinationAccount())
       .setAmount(txn.getAmount())
       .build();
-    invoice2.addLineItems(txn.getLineItems(), null);
+    invoice2.addLineItems(txn.getLineItems());
 
     TransactionQuote q1 = new TransactionQuote.Builder(x)
       .setRequestTransaction(invoice1)
@@ -54,7 +54,7 @@ public class GreenfencePlanDAO extends ProxyDAO {
     if ( null != c1.getPlan() ) {
       tx1 = c1.getPlan();
       //txn.addNext(tx1);
-      txn.addLineItems(tx1.getLineItems(), null);
+      txn.addLineItems(tx1.getLineItems());
     } else {
       ((Logger)getX().get("logger")).error("GreenFencePlanDAO: no quote was found for invoice1");
       throw new RuntimeException("GreenFencePlanDAO: no quote was found for invoice1");
@@ -68,7 +68,7 @@ public class GreenfencePlanDAO extends ProxyDAO {
     if ( null != c2.getPlan() ) {
       tx2 = c2.getPlan();
       //txn.addNext(tx2);
-      txn.addLineItems(tx2.getLineItems(), null);
+      txn.addLineItems(tx2.getLineItems());
     } else {
       ((Logger)getX().get("logger")).error("GreenFencePlanDAO: no quote was found for invoice2");
       throw new RuntimeException("GreenFencePlanDAO: no quote was found for invoice2");

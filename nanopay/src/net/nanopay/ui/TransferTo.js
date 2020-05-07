@@ -319,7 +319,7 @@ foam.CLASS({
             return mdao;
           }),
           objToChoice: function(user) {
-            return [user.id, user.label() + ' - (' + user.email + ')'];
+            return [user.id, user.toSummary() + ' - (' + user.email + ')'];
           }
         });
       }
@@ -338,7 +338,7 @@ foam.CLASS({
             return X.user.contacts.limit(50);
           }),
           objToChoice: function(contact) {
-            return [contact.id, contact.label() + ' - (' + contact.email + ')'];
+            return [contact.id, contact.toSummary() + ' - (' + contact.email + ')'];
           }
         });
       }

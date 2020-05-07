@@ -76,7 +76,23 @@ foam.CLASS({
       javaFactory: 'return new ArrayList<Transaction>();',
       networkTransient: true,
       documentation: 'helper property used by planners'
-    }
+    },
+    {
+      name: 'eligibleProviders',
+      class: 'Map',
+      javaFactory: `
+        return new java.util.HashMap<String, Boolean>();
+      `,
+      networkTransient: true,
+      documentation: 'helper property used by planners'
+    },
+    {
+      name: 'corridorsEnabled',
+      class: 'Boolean',
+      value: false,
+      networkTransient: true,
+      documentation: 'helper property used by planners'
+    },
   ],
 
   methods: [

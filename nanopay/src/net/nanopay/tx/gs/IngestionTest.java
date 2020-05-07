@@ -50,7 +50,7 @@ public class IngestionTest
       counter++;
     }
 
-    test( pbd.getStatus().equals("File Has Been Ingested"), "File ingestion status is: "+pbd.getStatus());
+    test( pbd.getStatus().equals("File upload complete"), "File ingestion status is: "+pbd.getStatus());
     test( counter < 30 , "File ingestion took "+ (counter/10)+ " seconds to complete, time out is: "+timeOut+" seconds");
     test( pbd.getReport() != null, "Ingestion Report is available: "+pbd.getReport());
     Count c2 = (Count) txdao.select(new Count());

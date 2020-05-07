@@ -129,13 +129,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'reverseLineItemsSection',
-      title: 'Reverse Line Items',
-      isAvailable: function(reverseLineItems, mode) {
-        return reverseLineItems.length && mode !== 'create';
-      }
-    },
-    {
       name: '_defaultSection',
       isAvailable: function(mode) {
         return mode !== 'create';
@@ -525,7 +518,7 @@ foam.CLASS({
           class: 'foam.u2.view.ChoiceView',
           dao: X.userDAO,
           objToChoice: function(user) {
-            return [user.id, user.label()];
+            return [user.id, user.toSummary()];
           }
         };
       }
@@ -827,16 +820,6 @@ foam.CLASS({
       updateVisibility: 'RO'
     },
     {
-      name: 'reverseLineItems',
-      label: '',
-      section: 'reverseLineItemsSection',
-      createVisibility: 'HIDDEN',
-      updateVisibility: 'RO',
-      class: 'FObjectArray',
-      of: 'net.nanopay.tx.TransactionLineItem',
-      javaValue: 'new TransactionLineItem[] {}'
-    },
-    {
       class: 'DateTime',
       name: 'scheduledTime',
       section: 'basicInfo',
@@ -972,24 +955,6 @@ foam.CLASS({
       `
     },
     {
-      documentation: `return true when status change is such that reveral Transfers should be executed (applied)`,
-      name: 'canReverseTransfer',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'oldTxn',
-          type: 'net.nanopay.tx.model.Transaction'
-        }
-      ],
-      type: 'Boolean',
-      javaCode: `
-        return false;
-      `
-    },
-    {
       name: `validate`,
       args: [
         { name: 'x', type: 'Context' }
@@ -1107,25 +1072,17 @@ foam.CLASS({
     },
     {
       name: 'addLineItems',
-      code: function addLineItems(forward, reverse) {
+      code: function addLineItems(forward) {
         if ( Array.isArray(forward) && forward.length > 0 ) {
           this.lineItems = this.copyLineItems(forward, this.lineItems);
         }
-
-        if ( Array.isArray(reverse) && reverse.length > 0 ) {
-          this.reverseLineItems = this.copyLineItems(reverse, this.reverseLineItems);
-        }
       },
       args: [
-        { name: 'forward', type: 'net.nanopay.tx.TransactionLineItem[]' },
-        { name: 'reverse', type: 'net.nanopay.tx.TransactionLineItem[]' }
+        { name: 'forward', type: 'net.nanopay.tx.TransactionLineItem[]' }
       ],
       javaCode: `
     if ( forward != null && forward.length > 0 ) {
       setLineItems(copyLineItems(forward, getLineItems()));
-    }
-    if ( reverse != null && reverse.length > 0 ) {
-      setReverseLineItems(copyLineItems(forward, getReverseLineItems()));
     }
 `
     },

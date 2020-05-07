@@ -580,3 +580,109 @@ p({
   "action":{"class":"net.nanopay.tx.planner.DigitalTransactionPlanner"},
   "lifecycleState":1
 })
+
+// Enable checker approval phase (in ApprovableAwareDAO)
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"3a9788fc-78b5-481e-9682-effa98489c331","name":"Enable checker on CapabilityRequest",
+  "priority":100,
+  "enabled":true,
+  "ruleGroup":"liquid",
+  "documentation":"Enabled checker on CapabilityRequest put()",
+  "daoKey":"localCapabilityRequestDAO",
+  "operation":3,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.True",
+  },
+  "action":{
+    "class":"foam.nanos.ruler.action.ChangePropertyAction",
+    "propName":"checkerPredicate",
+    "valueExpr":{
+      "class":"foam.mlang.Constant",
+      "value":{
+        "class":"foam.mlang.predicate.True"
+      }
+    }
+  },
+  "saveHistory":true,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"3a9788fc-78b5-481e-9682-effa98489c332","name":"Enable checker on LiquiditySettings",
+  "priority":100,
+  "enabled":true,
+  "ruleGroup":"liquid",
+  "documentation":"Enabled checker on LiquiditySettings put()",
+  "daoKey":"localLiquiditySettingsDAO",
+  "operation":3,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.True",
+  },
+  "action":{
+    "class":"foam.nanos.ruler.action.ChangePropertyAction",
+    "propName":"checkerPredicate",
+    "valueExpr":{
+      "class":"foam.mlang.Constant",
+      "value":{
+        "class":"foam.mlang.predicate.True"
+      }
+    }
+  },
+  "saveHistory":true,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"3a9788fc-78b5-481e-9682-effa98489c333","name":"Enable checker on User",
+  "priority":100,
+  "enabled":true,
+  "ruleGroup":"liquid",
+  "documentation":"Enabled checker on User put()",
+  "daoKey":"localUserDAO",
+  "operation":3,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.True",
+  },
+  "action":{
+    "class":"foam.nanos.ruler.action.ChangePropertyAction",
+    "propName":"checkerPredicate",
+    "valueExpr":{
+      "class":"foam.mlang.Constant",
+      "value":{
+        "class":"foam.mlang.predicate.True"
+      }
+    }
+  },
+  "saveHistory":true,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"3a9788fc-78b5-481e-9682-effa98489c334","name":"Enable checker on Account",
+  "priority":100,
+  "enabled":true,
+  "ruleGroup":"liquid",
+  "documentation":"Enabled checker on Account put()",
+  "daoKey":"localAccountDAO",
+  "operation":3,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.True",
+  },
+  "action":{
+    "class":"foam.nanos.ruler.action.ChangePropertyAction",
+    "propName":"checkerPredicate",
+    "valueExpr":{
+      "class":"foam.mlang.Constant",
+      "value":{
+        "class":"foam.mlang.predicate.True"
+      }
+    }
+  },
+  "saveHistory":true,
+  "lifecycleState":1
+})

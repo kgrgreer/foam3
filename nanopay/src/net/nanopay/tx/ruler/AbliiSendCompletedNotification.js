@@ -39,9 +39,9 @@ foam.CLASS({
               DAO currencyDAO = ((DAO) x.get("currencyDAO")).inX(x);
               Currency currency = (Currency) currencyDAO.find(tx.getSourceCurrency());
 
-              StringBuilder sb = new StringBuilder(sender.label())
+              StringBuilder sb = new StringBuilder(sender.toSummary())
                 .append(" just initiated a payment to ")
-                .append(receiver.label())
+                .append(receiver.toSummary())
                 .append(" for ")
                 .append(currency.format(tx.getAmount()))
                 .append(" ")
@@ -49,7 +49,7 @@ foam.CLASS({
 
                 StringBuilder rb = new StringBuilder()
                 .append(" Payment has been initiated by ")
-                .append(sender.label());
+                .append(sender.toSummary());
               
               if (
                 invoice.getInvoiceNumber() != null &&

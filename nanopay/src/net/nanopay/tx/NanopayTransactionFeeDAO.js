@@ -102,7 +102,7 @@ foam.CLASS({
                 InfoLineItem[] reverse = new InfoLineItem [] {
                   new InfoLineItem.Builder(x).setNote(fee.getName()+" - Non-refundable").setAmount(fee.getFee().getFee(transaction.getAmount())).build()
                 };
-                applyTo.addLineItems(forward, reverse);
+                applyTo.addLineItems(forward);
                 logger.debug(this.getClass().getSimpleName(), "applyFees", "forward", forward[0], "reverse", reverse[0], "transaction", transaction);
               }
             }

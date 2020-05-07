@@ -137,7 +137,7 @@ foam.CLASS({
         }
         TaxLineItem[] forwardLineItems = new TaxLineItem[forward.size()];
         InfoLineItem[] reverseLineItems = new InfoLineItem[reverse.size()];
-        applyTo.addLineItems(forward.toArray(forwardLineItems), reverse.toArray(reverseLineItems));
+        applyTo.addLineItems( forward.toArray(forwardLineItems) );
       }
 
       return applyTo;

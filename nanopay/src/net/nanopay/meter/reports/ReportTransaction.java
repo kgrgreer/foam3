@@ -156,10 +156,10 @@ public class ReportTransaction {
             .append(transaction.getStatus().toString()).append(COMMA_SEPARATOR)
             .append(transaction.getType()).append(COMMA_SEPARATOR)
             .append(sender != null ? sender.getId() : "").append(COMMA_SEPARATOR)
-            .append(sender != null ? sender.label() : "").append(COMMA_SEPARATOR)
+            .append(sender != null ? sender.toSummary() : "").append(COMMA_SEPARATOR)
             .append(sender != null ? sender.getEmail() : "").append(COMMA_SEPARATOR)
             .append(receiver != null ? receiver.getId() : "").append(COMMA_SEPARATOR)
-            .append(receiver != null ? receiver.label() : "").append(COMMA_SEPARATOR)
+            .append(receiver != null ? receiver.toSummary() : "").append(COMMA_SEPARATOR)
             .append(receiver != null ? receiver.getEmail() : "").append(COMMA_SEPARATOR)
             .append(transaction.getAmount()).append(COMMA_SEPARATOR)
             .append(System.getProperty("line.separator"));

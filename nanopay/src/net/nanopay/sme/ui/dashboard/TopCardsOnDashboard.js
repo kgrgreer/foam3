@@ -136,7 +136,7 @@ foam.CLASS({
     },
     function initE() {
       this.addClass(this.myClass())
-        .start().addClass('subTitle').add(this.LOWER_LINE_TXT + this.user.label() + '!').end()
+        .start().addClass('subTitle').add(this.LOWER_LINE_TXT + this.user.toSummary() + '!').end()
             .start().addClass('divider').end()
             .start().addClass('radio-as-arrow-margins').add(this.HIDE_PAYMENT_CARDS).end()
             .start().addClass('radio-as-arrow-margins').addClass(this.hidePaymentCards$.map((hide) => hide ? 'radio-as-arrow' : 'radio-as-arrow-down')).end()

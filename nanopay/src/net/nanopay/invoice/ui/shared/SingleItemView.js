@@ -139,8 +139,8 @@ foam.CLASS({
             .start('h3')
               .add(
                 this.type ?
-                    this.data.payee.label() :
-                    this.data.payer.label()
+                    this.data.payee.toSummary() :
+                    this.data.payer.toSummary()
               )
             .end()
             .start('h3')

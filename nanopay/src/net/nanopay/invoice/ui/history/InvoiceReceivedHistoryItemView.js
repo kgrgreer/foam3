@@ -4,7 +4,8 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   implements: [
-    'foam.u2.history.HistoryItemView'
+    'foam.u2.history.HistoryItemView',
+    'net.nanopay.invoice.util.InvoiceHistoryUtility'
   ],
 
   requires: [
@@ -16,6 +17,7 @@ foam.CLASS({
   imports: [
     'invoiceDAO',
     'userDAO',
+    'user'
   ],
 
   properties: [
@@ -54,10 +56,8 @@ foam.CLASS({
   methods: [
     async function outputRecord(parentView, record) {
       var invoice = await this.invoiceDAO.find(record.objectId);
-      var user = invoice.createdBy === invoice.payer.id ?
-        invoice.payer :
-        invoice.payee;
-      this.name = user.label();
+      // check which name should use agent name or business name
+      this.name = this.getDisplayName(record, this.user, invoice);
 
       return parentView
         .addClass(this.myClass())
@@ -79,14 +79,6 @@ foam.CLASS({
             .end()
           .end()
         .end();
-    },
-
-    function formatDate(timestamp) {
-      var locale = 'en-US';
-      return timestamp.toLocaleTimeString(locale, { hour12: false }) +
-        ' ' + timestamp.toLocaleString(locale, { month: 'short' }) +
-        ' ' + timestamp.getDate() +
-        ' ' + timestamp.getFullYear();
     }
   ]
 });

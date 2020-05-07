@@ -119,11 +119,11 @@ foam.CLASS({
 
           try {
             if ( invoiceIsBeingPaidButNotComplete ) {
-              args = populateArgsForEmail(args, invoice, payerUser.label(), invoice.getCreated(), currencyDAO, agentName, null);
+              args = populateArgsForEmail(args, invoice, payerUser.toSummary(), invoice.getCreated(), currencyDAO, agentName, null);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[0], invoice.getId(), payeeUser, args, externalInvoiceToken );
             }
             if ( invoiceIsARecievable ) {
-              args = populateArgsForEmail(args, invoice, payeeUser.label(), invoice.getDueDate(), currencyDAO, agentName, null);
+              args = populateArgsForEmail(args, invoice, payeeUser.toSummary(), invoice.getDueDate(), currencyDAO, agentName, null);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[1], invoice.getId(), payerUser, args, externalInvoiceToken );
             }
             if ( invoiceNeedsApproval ) {
@@ -136,12 +136,12 @@ foam.CLASS({
                 tempApprover = (User) userDAO.find(approver.getPartnerId());
                 if ( tempApprover == null ) continue;
                 args = populateArgsForEmail(args, invoice, agent.getFirstName(), invoice.getDueDate(), currencyDAO, agentName, null);
-                args.put("paymentTo", payeeUser.label());
+                args.put("paymentTo", payeeUser.toSummary());
                 sendEmailFunction(x, false, emailTemplates[2], invoice.getId(), tempApprover, args, externalInvoiceToken);
               }
             }
             if ( invoiceIsBeingPaidAndCompleted ) {
-              args = populateArgsForEmail(args, invoice, payerUser.label(), invoice.getPaymentDate(), currencyDAO, agentName, null);
+              args = populateArgsForEmail(args, invoice, payerUser.toSummary(), invoice.getPaymentDate(), currencyDAO, agentName, null);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[3], invoice.getId(), payeeUser, args, externalInvoiceToken );
             }
             if ( invoiceHasBeenMarkedComplete ) {
@@ -149,7 +149,7 @@ foam.CLASS({
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[4], invoice.getId(), payerUser, args, externalInvoiceToken );
             }
             if ( invoiceIsPartOfFeesScheduledInvoice ) {
-              args = populateArgsForEmail(args, invoice, payeeUser.label(), invoice.getPaymentDate(), currencyDAO, agentName, null);
+              args = populateArgsForEmail(args, invoice, payeeUser.toSummary(), invoice.getPaymentDate(), currencyDAO, agentName, null);
               sendEmailFunction(x, invoiceIsToAnExternalUser, emailTemplates[5], invoice.getId(), payerUser, args, externalInvoiceToken );
             }
           } catch (Exception e) {}

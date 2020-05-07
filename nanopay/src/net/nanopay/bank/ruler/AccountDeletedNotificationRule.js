@@ -47,7 +47,7 @@ foam.CLASS({
             args.put("account", account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
             args.put("institutionNumber", account.getInstitutionNumber());
             args.put("institutionName", institution == null ? null : institution.toSummary());
-            args.put("business", owner.label());
+            args.put("business", owner.toSummary());
 
             Notification deletedNotification = new Notification.Builder(x)
                     .setBody(account.getName() + " has been deleted.")

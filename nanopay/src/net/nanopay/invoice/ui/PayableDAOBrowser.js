@@ -110,15 +110,15 @@ foam.CLASS({
       factory: function() {
         return this.DAOControllerConfig.create({
           filterExportPredicate: this.NEQ(foam.nanos.export.ExportDriverRegistry.ID, 'CSV'),
-          dao: this.user.expenses.orderBy(this.DESC(this.Invoice.CREATED))
-              .orderBy(this.Invoice.PAYEE_RECONCILED)
-              .orderBy(this.Invoice.PAYER_RECONCILED),
+          dao: this.user.expenses.orderBy(this.Invoice.PAYER_RECONCILED)
+                .orderBy(this.Invoice.PAYEE_RECONCILED)
+                .orderBy(this.DESC(this.Invoice.ISSUE_DATE)),
           createPredicate: foam.mlang.predicate.True,
           defaultColumns: [
             this.Invoice.PAYEE_ID.clone().copyFrom({
               label: 'Company',
-              tableCellFormatter: async function(_, invoice) {
-                var additiveSubField = await invoice.payee.label();
+              tableCellFormatter: function(_, invoice) {
+                var additiveSubField = invoice.payee.toSummary();
                 this.add(additiveSubField);
                 this.tooltip = additiveSubField;
               }
