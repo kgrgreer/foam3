@@ -35,7 +35,7 @@ p({
       .setName("afexBusinessDAO")
       .setJournalName("afexBusinesses")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setAuthorize(false)
+      .setAuthorize(true)
       .build();
   """, 
   "client": "{\"of\":\"net.nanopay.fx.afex.AFEXBusiness\"}"
@@ -53,7 +53,7 @@ p({
       .setSeqNo(true)
       .setJournalName("afexBeneficiaries")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setAuthorize(false)
+      .setAuthorize(true)
       .build();
   """, 
   "client": "{\"of\":\"net.nanopay.fx.afex.AFEXBeneficiary\"}"
