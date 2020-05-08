@@ -2,6 +2,7 @@ p({
   "class":"foam.nanos.theme.Theme",
   "id":"BE1FD088-5618-4508-BCDF-178719D863B3",
   "name":"gd",
+  "appName":"Grain Discovery",
   "description":"Grain Discovery",
   "defaultMenu":"sme.accountProfile.switch-business",
   "logo":"images/gd/gd-logo-72x72.png",

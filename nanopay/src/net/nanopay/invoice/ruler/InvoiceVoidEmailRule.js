@@ -16,6 +16,7 @@ foam.CLASS({
       'foam.nanos.logger.Logger',
       'foam.nanos.notification.email.EmailMessage',
       'foam.nanos.notification.Notification',
+      'foam.nanos.theme.Theme',
       'foam.util.SafetyUtil',
       'net.nanopay.invoice.model.Invoice',
       'net.nanopay.invoice.model.PaymentStatus',
@@ -35,6 +36,7 @@ foam.CLASS({
             User            payee      = (User) invoice.findPayeeId(x);
             Group           payerGroup = (Group) payer.findGroup(x);
             AppConfig       config     = (AppConfig) payerGroup.getAppConfig(x);
+            Theme          theme      = payer.getTheme(x);
             EmailMessage    message    = new EmailMessage();
             NumberFormat    formatter  = NumberFormat.getCurrencyInstance();
 
@@ -50,7 +52,7 @@ foam.CLASS({
             args.put("fromName", payee.toSummary());
             args.put("toName", User.FIRST_NAME);
             args.put("sendTo",   User.EMAIL);
-            args.put("supportEmail", SafetyUtil.isEmpty(config.getSupportEmail()) ? payerGroup.getSupportEmail() : config.getSupportEmail());
+            args.put("supportEmail", theme.getSupportEmail());
 
             try{
 
