@@ -53,6 +53,11 @@ foam.CLASS({
     {
       class: 'String',
       name: "VendorId"
+    },
+    {
+      class: 'String',
+      name: "HighLowValue",
+      value: "0"
     }
   ]
 });
