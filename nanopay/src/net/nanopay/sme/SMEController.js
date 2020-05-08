@@ -60,10 +60,17 @@ foam.CLASS({
   css: `
   ^ {
     height: 100%;
-    display: flex;
   }
   ^ > .stack-wrapper {
     flex-grow: 1;
+  }
+  ^ .login-stack {
+    margin-bottom: -60px;
+    margin-left: 0;
+  }
+  ^ .dashboard-stack {
+    margin-bottom: 0;
+    margin-left: 250px;
   }
   ^ .foam-u2-view-TableView tbody > tr > td {
     white-space: nowrap;
@@ -526,23 +533,48 @@ foam.CLASS({
           if ( ! this.isIframe() ) {
             this.addClass(this.myClass())
             .add(this.loginSuccess$.map((loginSuccess) => {
-              if ( ! loginSuccess ) return null;
-              return this.E().tag(this.topNavigation_);
+              if ( ! loginSuccess ) {
+                return this.E()
+                .start()
+                  .addClass('stack-wrapper')
+                  .addClass('login-stack')
+                  .start({
+                    class: 'net.nanopay.ui.banner.Banner',
+                    data$: this.bannerData$
+                  })
+                  .end()
+                  .tag({
+                    class: 'foam.u2.stack.StackView',
+                    data: this.stack,
+                    showActions: false
+                  })
+                .end();
+              }
+              return this.E()
+                .tag(this.topNavigation_)
+                .start()
+                  .addClass('stack-wrapper')
+                  .addClass('dashboard-stack')
+                  .start({
+                    class: 'net.nanopay.ui.banner.Banner',
+                    data$: this.bannerData$
+                  })
+                  .end()
+                  .tag({
+                    class: 'foam.u2.stack.StackView',
+                    data: this.stack,
+                    showActions: false
+                  })
+                .end();
             }))
+
+
+
+
             .start()
-              .addClass('stack-wrapper')
-              .start({
-                class: 'net.nanopay.ui.banner.Banner',
-                data$: this.bannerData$
-              })
-              .end()
-              .tag({
-                class: 'foam.u2.stack.StackView',
-                data: this.stack,
-                showActions: false
-              })
-            .end()
-            .tag(this.footerView_);
+              .addClass('footer-wrapper')
+              .tag(this.footerView_)
+            .end();
           } else {
           this.addClass(this.myClass())
           .start()

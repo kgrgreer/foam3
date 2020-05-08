@@ -65,7 +65,7 @@ p({
   "logo":"images/ablii-logo.svg",
   "largeLogo":"images/ablii-wordmark.svg",
   "logoBackgroundColour":"transparent",
-  "topNavigation":"net.nanopay.sme.ui.SideNavigationView",
+  "topNavigation":"net.nanopay.ui.TopSideNavigation",
   "footerView":"net.nanopay.sme.ui.FooterView",
   "supportEmail":"support@ablii.com",
   "supportPhone":"+1.647.496.1526",
