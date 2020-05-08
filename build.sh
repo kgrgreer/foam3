@@ -600,7 +600,7 @@ LIQUID_DEMO=0
 RUNTIME_COMPILE=0
 RUN_USER=
 
-while getopts "bcdD:eghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz:fF" opt ; do
+while getopts "bcdD:eghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz:f" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1
