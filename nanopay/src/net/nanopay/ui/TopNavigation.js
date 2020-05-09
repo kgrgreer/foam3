@@ -17,7 +17,7 @@ foam.CLASS({
       display: flex;
       z-index: 10001;
       background-color: /*%PRIMARY1%*/ #202341;
-      height: 60px;
+      height: 56px;
       font-family: Roboto, Helvetica, sans-serif;
     }
     ^ .navigation-components {
@@ -26,7 +26,7 @@ foam.CLASS({
       align-items: center;
     }
     ^ .foam-nanos-u2-navigation-ApplicationLogoView {
-      margin-left: 16px;
+      margin-left: 28px;
       display: flex;
       flex-grow: 1;
     }
@@ -38,9 +38,6 @@ foam.CLASS({
     }
     ^ .foam-nanos-u2-navigation-NotificationMenuItem img {
       margin-top: 10px;
-    }
-    ^ .foam-nanos-u2-navigation-ApplicationLogoView {
-      margin-left: 40px;
     }
     ^ .foam-nanos-menu-SubMenuView-inner div {
       right: 100px;
