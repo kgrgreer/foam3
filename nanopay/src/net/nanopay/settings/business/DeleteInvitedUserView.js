@@ -12,6 +12,7 @@ foam.CLASS({
   imports: [
     'agentJunctionDAO',
     'businessInvitationDAO',
+    'notify',
     'user',
   ],
 
@@ -21,20 +22,23 @@ foam.CLASS({
     'clientJunctionDAO'
   ],
 
+  messages: [
+    { name: 'SUCCESS_MSG', message: 'Successfully deleted.' }
+  ],
+
   methods: [
     async function deleteInvitedUser() {
       var self = this;
 
       this.dao.remove(self.data).then(function() {
         self.clientJunctionDAO.remove(self.junction).then(function() {
-          ctrl.add(self.NotificationMessage.create({ message: self.SUCCESS_MSG, type: 'success' }));
-
+          self.notify(self.SUCCESS_MSG, 'error')
         }).catch(function(err) {
-            ctrl.add(self.NotificationMessage.create({ message: self.email + " " + message, type: 'error' }));
-          })
+          self.notify(self.email + " " + message, 'error');
+         })
       }).catch(function(err) {
         var message = err ? err.message : self.FAIL_MSG;
-        ctrl.add(self.NotificationMessage.create({ message: self.email + " " + message, type: 'error' }));
+        self.notify(self.email + " " + message, 'error');
       });
     }
   ],

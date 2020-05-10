@@ -53,6 +53,12 @@ foam.CLASS({
     {
       class: 'String',
       name: "VendorId"
+    },
+    {
+      class: 'String',
+      name: "HighLowValue",
+      value: "0",
+      documentation: 'Low (local clearing/ ACH) = 0, High (wire) = 1'
     }
   ]
 });
