@@ -1,0 +1,189 @@
+// set mode: 4 - Testing - need not Production to run benchmark test.s
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"appConfig",
+  "lazy":false,
+  "parameters":false,
+  "service": {
+    "class":"foam.nanos.app.AppConfig",
+    "copyright":"Copyright © 2017-@{currentYear} nanopay Corp. All rights reserved.",
+    "mode":0
+  }
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"electoralService",
+  "serve":true,
+  "boxClass":"foam.nanos.medusa.ElectoralServiceSkeleton",
+  "authenticate": true,
+  "serviceClass":"foam.nanos.medusa.ElectoralServiceServer",
+  "client":"{ \"class\":\"foam.nanos.medusa.ClientElectoralService\" }"
+})
+
+// NOTE: see MedusaInternalDAO for access to this DAO.
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "internalMedusaEntryDAO",
+  "serviceScript": `
+    dao = new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.medusa.MedusaEntry.getOwnClassInfo())
+      .setGuid(true)
+      .setAuthorize(false)
+      .setCluster(false)
+      .setRuler(false)
+      .setOrder(new foam.mlang.order.Comparator[] {
+        new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.medusa.MedusaEntry.INDEX).build()
+      })
+      .build();
+    dao.addPropertyIndex(new foam.core.PropertyInfo[] {
+      foam.nanos.medusa.MedusaEntry.INDEX
+    });
+    dao.addPropertyIndex(new foam.core.PropertyInfo[] {
+      foam.nanos.medusa.MedusaEntry.HASH
+    });
+    dao.addPropertyIndex(new foam.core.PropertyInfo[] {
+      foam.nanos.medusa.MedusaEntry.CONSENSUS_COUNT
+    });
+    return dao;
+   `
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "medusaEntryDAO",
+  "serve": true,
+  "serviceScript": `
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.medusa.MedusaEntry.getOwnClassInfo())
+      .setInnerDAO(x.get("internalMedusaEntryDAO"))
+      .setCluster(false)
+      .setRuler(false)
+      .setEnableInterfaceDecorators(false)
+      .build();
+  `,
+  "client": "{\"of\":\"foam.nanos.medusa.MedusaEntry\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "localMedusaEntryDAO",
+  "serviceScript": `
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.medusa.MedusaEntry.getOwnClassInfo())
+      .setAuthorize(false)
+      .setCluster(false)
+      .setRuler(false)
+      .setPm(true)
+      .setNullify(true)
+      .setDecorator(new foam.nanos.medusa.ReplayingDAO.Builder(x)
+      .setDelegate(new foam.nanos.medusa.MedusaBlockingDAO.Builder(x)
+      .setDelegate(new foam.nanos.medusa.MedusaBroadcastDAO.Builder(x)
+        .setType(foam.nanos.medusa.MedusaType.NODE)
+        .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.MedusaEntry.getOwnClassInfo()))
+      .build())
+      .build())
+      .build())
+      .build();
+   `
+})
+//      .setInnerDAO(x.get("internalMedusaEntryDAO"))
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "medusaMediatorDAO",
+  "serve": true,
+  "serviceScript": `
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.medusa.MedusaEntry.getOwnClassInfo())
+      .setCluster(false)
+      .setRuler(false)
+      .setPm(true)
+      .setEnableInterfaceDecorators(false)
+      .setDecorator(new foam.nanos.medusa.BatchServerDAO.Builder(x)
+      .setDelegate(new foam.nanos.medusa.MedusaConsensusDAO.Builder(x)
+      .setDelegate(new foam.nanos.medusa.MedusaInternalDAO.Builder(x)
+        .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.MedusaEntry.getOwnClassInfo()))
+      .build())
+      .build())
+      .build())
+      .build()
+   `,
+  "client": "{\"of\":\"foam.nanos.medusa.MedusaEntry\"}"
+})
+
+// p({
+//   "class": "foam.nanos.boot.NSpec",
+//   "name": "medusaLedgerDAO",
+//   "serviceScript": `
+//     dao = new foam.dao.EasyDAO.Builder(x)
+//       .setOf(foam.nanos.medusa.MedusaEntry.getOwnClassInfo())
+//       .setInnerDAO(new net.nanopay.security.HashingJDAO(x, "SHA-256", true, false,
+//         new foam.dao.MDAO(foam.nanos.medusa.MedusaEntry.getOwnClassInfo()), "ledger"))
+//       .setGuid(true)
+//       .setAuthorize(false)
+//       .setCluster(false)
+//       .setRuler(false)
+//       .setOrder(new foam.mlang.order.Comparator[] {
+//         new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.medusa.MedusaEntry.INDEX).build()
+//       })
+//       .build();
+//     dao.addPropertyIndex(new foam.core.PropertyInfo[] {
+//       foam.nanos.medusa.MedusaEntry.INDEX
+//     });
+//     dao.addPropertyIndex(new foam.core.PropertyInfo[] {
+//       foam.nanos.medusa.MedusaEntry.HASH
+//     });
+//     return dao;
+//    `
+// })
+// //      .setNullify(true)
+// //      .setInnerDAO(new net.nanopay.security.HashingJDAO(x, "SHA-256", true, false,
+//         new foam.dao.MDAO(foam.nanos.medusa.MedusaEntry.getOwnClassInfo()), "ledger"))
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"medusaNodeDAO",
+  "serve":true,
+  "serviceScript":`
+    dao = new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.medusa.MedusaEntry.getOwnClassInfo())
+      .setInnerDAO(new net.nanopay.security.HashingJDAO(x, "SHA-256", true, false,
+        new foam.dao.MDAO(foam.nanos.medusa.MedusaEntry.getOwnClassInfo()), "ledger"))
+      .setRuler(false)
+      .setCluster(false)
+      .setOrder(new foam.mlang.order.Comparator[] {
+        new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.medusa.MedusaEntry.INDEX).build()
+      })
+      .setDecorator(new foam.nanos.medusa.ReplayDAO.Builder(x)
+      .setDelegate(new foam.nanos.medusa.BatchServerDAO.Builder(x)
+      .setDelegate(new foam.nanos.medusa.MedusaUniqueDAO.Builder(x)
+      .setDelegate(new foam.nanos.medusa.MedusaHashingDAO.Builder(x)
+      .setDelegate(new foam.nanos.medusa.MedusaSigningDAO.Builder(x)
+      .setDelegate(new foam.nanos.medusa.MedusaBroadcastDAO.Builder(x)
+        .setType(foam.nanos.medusa.MedusaType.MEDIATOR)
+        .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.MedusaEntry.getOwnClassInfo()))
+        .build())
+      .build())
+      .build())
+      .build())
+      .build())
+      .build())
+      .build();
+    dao.addPropertyIndex(new foam.core.PropertyInfo[] {
+      foam.nanos.medusa.MedusaEntry.INDEX
+    });
+    dao.addPropertyIndex(new foam.core.PropertyInfo[] {
+      foam.nanos.medusa.MedusaEntry.HASH
+    });
+    return dao;
+  `,
+  "client":"{\"of\":\"foam.nanos.medusa.MedusaEntry\", \"remoteListenerSupport\": false}"
+})
+//      .setInnerDAO((foam.dao.DAO) x.get("medusaLedgerDAO"))
+    // dao.addPropertyIndex(new foam.core.PropertyInfo[] {
+    //   foam.nanos.medusa.MedusaEntry.INDEX
+    // });
+    // dao.addPropertyIndex(new foam.core.PropertyInfo[] {
+    //   foam.nanos.medusa.MedusaEntry.HASH
+    // });
