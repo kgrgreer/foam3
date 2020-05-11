@@ -332,8 +332,7 @@ p({
       "class":"foam.nanos.notification.Notification",
       "notificationType":"Verification Transaction declined",
       "body":"Verification Transaction was declined",
-      "groupId":"support",
-      "emailIsEnabled":true
+      "groupId":"support"
     }
   },
   "enabled":true,
@@ -361,8 +360,7 @@ p({
       "class":"foam.nanos.notification.Notification",
       "notificationType":"Compliance Transaction declined",
       "body":"Compliance Transaction was declined",
-      "groupId":"support",
-      "emailIsEnabled":true
+      "groupId":"support"
     }
   },
   "enabled":true,
