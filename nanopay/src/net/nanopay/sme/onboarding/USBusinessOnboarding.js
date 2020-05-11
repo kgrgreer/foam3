@@ -49,6 +49,7 @@ foam.CLASS({
             args: ['amountOfOwners', `owner${i}$errors_`],
             predicateFactory: function(e) {
               return e.OR(
+                e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
                 e.LT(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, i),
                 e.EQ(foam.mlang.IsValid.create({
                   arg1: net.nanopay.sme.onboarding.USBusinessOnboarding['OWNER'+i]
@@ -1270,6 +1271,7 @@ foam.CLASS({
         args: ['amountOfOwners', 'userOwnsPercent', 'owner1$errors_'],
         predicateFactory: function(e) {
           return e.OR(
+            e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
             e.LT(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, 1),
             e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.USER_OWNS_PERCENT, true),
             e.EQ(foam.mlang.IsValid.create({
