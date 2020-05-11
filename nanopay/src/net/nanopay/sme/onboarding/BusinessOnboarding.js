@@ -424,12 +424,6 @@ foam.CLASS({
           this.adminPhone = '';
           this.OWNERSHIP_PERCENT.label = '% of ownership of ' + this.adminFirstName;
         }
-
-        /* Question: why need to clear 'owner1'?
-        if ( ! this.userOwnsPercent ) {
-          this.clearProperty('owner1');
-        }
-        */
       }
     },
     {
@@ -1586,11 +1580,6 @@ foam.CLASS({
               this.owner1.lastName = user.lastName;
               this.owner1.jobTitle = user.jobTitle;
             }
-            /* Question: why need else block?
-            else {
-              this.clearProperty('owner1');
-            }
-            */
           } else {
             this.USER_OWNS_PERCENT.label = this.adminFirstName + ' is one of the owners.';
             this.OWNERSHIP_PERCENT.label = '% of ownership of ' + this.adminFirstName;
@@ -1600,11 +1589,6 @@ foam.CLASS({
               this.owner1.lastName = this.adminLastName;
               this.owner1.jobTitle = this.adminJobTitle;
             }
-            /* Question: why need else?
-            else {
-              this.clearProperty('owner1');
-            }
-            */
           }
         }
 

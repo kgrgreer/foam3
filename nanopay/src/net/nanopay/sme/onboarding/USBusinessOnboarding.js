@@ -361,10 +361,6 @@ foam.CLASS({
         } else {
           this.adminJobTitle = '';
           this.adminPhone = '';
-
-          if ( ! this.userOwnsPercent && this.amountOfOwners > 0 ) {
-            this.clearProperty('owner1');
-          }
         }
       }
     },
@@ -1655,7 +1651,7 @@ foam.CLASS({
               this.owner1.lastName = user.lastName;
               this.owner1.jobTitle = user.jobTitle;
             }
-          } else if ( ! this.signingOfficer ) {
+          } else {
             this.USER_OWNS_PERCENT.label = this.adminFirstName + ' is one of these owners.';
             this.OWNERSHIP_PERCENT.label = '% of ownership of ' + this.adminFirstName;
 
@@ -1664,10 +1660,6 @@ foam.CLASS({
               this.owner1.lastName = this.adminLastName;
               this.owner1.jobTitle = this.adminJobTitle;
             }
-          // Question: the below 'else if' block could never be reached because
-          // the above two conditions are collectively exhaustive?
-          } else if ( ! userOwnsPercent ) {
-            this.clearProperty('owner1');
           }
         });
         this.owner1.showValidation$ = this.signingOfficer$;
