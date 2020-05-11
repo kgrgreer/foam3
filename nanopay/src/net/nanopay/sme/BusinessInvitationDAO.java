@@ -42,7 +42,7 @@ public class BusinessInvitationDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     Business business = null;
 
     // Check is user is a business,

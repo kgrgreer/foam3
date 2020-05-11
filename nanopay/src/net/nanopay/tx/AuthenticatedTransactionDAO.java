@@ -8,10 +8,7 @@ import foam.dao.Sink;
 import foam.dao.ArraySink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
-import foam.nanos.auth.AuthService;
-import foam.nanos.auth.AuthenticationException;
-import foam.nanos.auth.AuthorizationException;
-import foam.nanos.auth.User;
+import foam.nanos.auth.*;
 import foam.nanos.logger.Logger;
 import foam.util.Auth;
 import foam.util.SafetyUtil;
@@ -46,7 +43,7 @@ public class AuthenticatedTransactionDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     AuthService auth = (AuthService) x.get("auth");
     Transaction t = (Transaction) obj;
     Transaction oldTxn = (Transaction) super.find_(x, obj);
@@ -122,7 +119,7 @@ public class AuthenticatedTransactionDAO
 
   @Override
   public FObject find_(X x, Object id) {
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {
@@ -154,7 +151,7 @@ public class AuthenticatedTransactionDAO
   @Override
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
     DAO dao;
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {

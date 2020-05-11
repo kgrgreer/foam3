@@ -9,11 +9,7 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
-import foam.nanos.auth.Group;
-import foam.nanos.auth.GroupPermissionJunction;
-import foam.nanos.auth.Permission;
-import foam.nanos.auth.User;
-import foam.nanos.auth.UserUserJunction;
+import foam.nanos.auth.*;
 import net.nanopay.model.Business;
 
 /**
@@ -38,7 +34,7 @@ public class CreateBusinessDAO extends ProxyDAO {
       return super.put_(x, obj);
     }
 
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     if ( user instanceof Business ) {
       user = (User) x.get("agent");
     }

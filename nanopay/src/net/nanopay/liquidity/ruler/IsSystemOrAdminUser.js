@@ -8,6 +8,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User'
   ],
 
@@ -15,7 +16,7 @@ foam.CLASS({
     {
       name: 'f',
       javaCode: `
-        User user = (User) ((X) obj).get("user");
+        User user = ((Subject) ((X) obj).get("subject")).getUser();
         return user != null
           && ( user.getId() == User.SYSTEM_USER_ID
             || user.getGroup().equals("admin")

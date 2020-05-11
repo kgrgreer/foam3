@@ -8,6 +8,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User'
   ],
 
@@ -24,7 +25,7 @@ foam.CLASS({
       javaCode: `
         return obj instanceof X
           && getUserId() > 0
-          && getUserId() == ((User) ((X) obj).get("user")).getId();
+          && getUserId() == ((User) ((X) obj).get("subject")).getUser().getId();
       `
     }
   ]

@@ -11,6 +11,7 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.Group;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
 import foam.nanos.logger.Logger;
@@ -39,7 +40,7 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
 
   public XeroClient getClient(X x) {
     this.oldToken = false;
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
     XeroToken token = (XeroToken) tokenDAO.find(user.getId()).fclone();
     Group group = user.findGroup(x);
@@ -193,7 +194,7 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
   }
 
   public ContactMismatchPair importContact(X x, com.xero.model.Contact xeroContact) {
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     DAO agentJunctionDAO = ((DAO) x.get("agentJunctionDAO"));
     DAO contactDAO  = ((DAO) x.get("contactDAO")).inX(x);
     DAO businessDAO = ((DAO) x.get("localBusinessDAO")).inX(x);
@@ -206,7 +207,7 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
       EQ(Contact.OWNER, user.getId())
     ));
 
-    if ( existingContact instanceof XeroContact && 
+    if ( existingContact instanceof XeroContact &&
          ((XeroContact) existingContact).getLastUpdated() >= xeroContact.getUpdatedDateUTC().getTime().getTime()) {
         return null;
     }
@@ -274,7 +275,7 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
   @Override
   public ResultResponse contactSync(X x) {
     DAO cacheDAO = (DAO) x.get("AccountingContactEmailCacheDAO");
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     Logger logger = (Logger) x.get("logger");
     XeroClient client = this.getClient(x);
     DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
@@ -342,7 +343,7 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
     DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
     Contact contact;
     XeroInvoice updateInvoice;
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     InvoiceResponseItem errorItem = prepareResponseItemFrom(xeroInvoice);
     XeroInvoice existingInvoice;
 
@@ -437,7 +438,7 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
   }
 
   public XeroInvoice createXeroInvoice(X x, com.xero.model.Invoice xeroInvoice, Contact contact, XeroInvoice newInvoice) {
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
     XeroToken token = (XeroToken) tokenDAO.find(user.getId()).fclone();
     DAO currencyDAO = ((DAO) x.get("currencyDAO")).inX(x);
@@ -535,7 +536,7 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
     Logger logger = (Logger) x.get("logger");
     HashMap<String, List<InvoiceResponseItem>> invoiceErrors = this.initInvoiceErrors();
     List<InvoiceResponseItem> successInvoice = new ArrayList<>();
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
     XeroToken token = (XeroToken) tokenDAO.find(user.getId()).fclone();
 
@@ -583,7 +584,7 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
     List<Payment> paymentList = new ArrayList<>();
     List<XeroInvoice> invoiceList = new ArrayList<>();
     XeroClient client = getClient(x);
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
 
 
     if ( invoice != null ) {
@@ -731,7 +732,7 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
     PaymentResponse response = new PaymentResponse();
     DAO currencyDAO = ((DAO) x.get("currencyDAO")).inX(x);
     Logger logger = (Logger) x.get("logger");
-    User user  = (User) x.get("user");
+    User user  = ((Subject) x.get("subject")).getUser();
     XeroClient client = getClient(x);
 
     ResultResponse validClient = isValidClient(client, x);
@@ -784,7 +785,7 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
 
   @Override
   public ResultResponse removeToken(X x) {
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     DAO userDAO = ((DAO) x.get("localUserUserDAO")).inX(x);
     DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
     DAO accountDAO = (DAO) x.get("accountDAO");
@@ -823,7 +824,7 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
 
   @Override
   public ResultResponse bankAccountSync(X x) {
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
     XeroToken token = (XeroToken) tokenDAO.find(user.getId()).fclone();
     List<AccountingBankAccount> banksList = new ArrayList<>();
@@ -874,7 +875,7 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
 
   @Override
   public ResultResponse singleInvoiceSync(X x, Invoice nanoInvoice) {
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     DAO tokenDAO = ((DAO) x.get("xeroTokenDAO")).inX(x);
     XeroToken token = (XeroToken) tokenDAO.find(user.getId()).fclone();
     XeroClient client = getClient(x);
@@ -917,7 +918,7 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
   }
 
   public ResultResponse saveResult(X x, String method, ResultResponse resultResponse) {
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
 
     ResultResponseWrapper resultWrapper = new ResultResponseWrapper();
     resultWrapper.setMethod(method);

@@ -8,10 +8,13 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.mlang.MLang',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
-    'net.nanopay.tx.model.Transaction',
-    'java.util.List'
+
+    'java.util.List',
+
+    'net.nanopay.tx.model.Transaction'
   ],
 
   properties: [
@@ -27,7 +30,7 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-        User user = (User) x.get("user");
+        User user = ((Subject) x.get("subject")).getUser();
         DAO keyPairDAO = (DAO) x.get("keyPairDAO");
         DAO publicKeyDAO = (DAO) x.get("publicKeyDAO");
         DAO privateKeyDAO = (DAO) x.get("privateKeyDAO");

@@ -35,15 +35,18 @@ foam.CLASS({
     'foam.nanos.auth.Group',
     'foam.nanos.auth.LifecycleAware',
     'foam.nanos.auth.LifecycleState',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.auth.UserUserJunction',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
     'foam.nanos.notification.NotificationSetting',
     'foam.util.SafetyUtil',
+
     'java.util.List',
-    'net.nanopay.model.BusinessUserJunction',
+
     'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.model.BusinessUserJunction',
     'static foam.mlang.MLang.*'
   ],
 
@@ -464,7 +467,7 @@ foam.CLASS({
       name: 'authorizeOnRead',
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
-        User user = (User) x.get("user");
+        User user = ((Subject) x.get("subject")).getUser();
         User agent = (User) x.get("agent");
 
         if ( user == null ) throw new AuthenticationException();
@@ -502,7 +505,7 @@ foam.CLASS({
     {
       name: 'authorizeOnUpdate',
       javaCode: `
-        User user = (User) x.get("user");
+        User user = ((Subject) x.get("subject")).getUser();
         AuthService auth = (AuthService) x.get("auth");
         boolean isUpdatingSelf = SafetyUtil.equals(this.getId(), user.getId());
 
@@ -536,7 +539,7 @@ foam.CLASS({
     {
       name: 'authorizeOnDelete',
       javaCode: `
-        User user = (User) x.get("user");
+        User user = ((Subject) x.get("subject")).getUser();
         Group group = (Group) x.get("group");
         if ( ! SafetyUtil.equals(group.getId(), "admin") ) {
           throw new AuthorizationException("Businesses cannot be deleted.");

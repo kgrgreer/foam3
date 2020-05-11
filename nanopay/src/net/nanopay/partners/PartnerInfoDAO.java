@@ -8,6 +8,7 @@ import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.AuthenticationException;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
 
@@ -27,7 +28,7 @@ public class PartnerInfoDAO
     private User user_;
     public DecoratedSink(X x, Sink delegate) {
       super(x, delegate);
-      user_ = (User) x.get("user");
+      user_ = ((Subject) x.get("subject")).getUser();
       if ( user_ == null ) {
         throw new AuthenticationException();
       }
@@ -49,7 +50,7 @@ public class PartnerInfoDAO
 
   @Override
   public FObject find_(X x, Object id) {
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     UserUserJunction junc = (UserUserJunction) getDelegate().find_(x, id);
     junc = this.setIdProperties(user, junc);
     return junc;

@@ -7,10 +7,7 @@ import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
-import foam.nanos.auth.AuthService;
-import foam.nanos.auth.AuthenticationException;
-import foam.nanos.auth.AuthorizationException;
-import foam.nanos.auth.User;
+import foam.nanos.auth.*;
 import net.nanopay.contacts.Contact;
 
 import static foam.mlang.MLang.EQ;
@@ -31,7 +28,7 @@ public class AuthenticatedAccountDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     Account newAccount = (Account) obj;
     AuthService auth = (AuthService) x.get("auth");
     DAO userDAO_ = (DAO) x.get("bareUserDAO");
@@ -67,7 +64,7 @@ public class AuthenticatedAccountDAO
 
   @Override
   public FObject find_(X x, Object id) {
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {
@@ -91,7 +88,7 @@ public class AuthenticatedAccountDAO
 
   @Override
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {
@@ -110,7 +107,7 @@ public class AuthenticatedAccountDAO
 
   @Override
   public FObject remove_(X x, FObject obj) {
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     Account account = (Account) obj;
     AuthService auth = (AuthService) x.get("auth");
 
@@ -132,7 +129,7 @@ public class AuthenticatedAccountDAO
 
   @Override
   public void removeAll_(X x, long skip, long limit, Comparator order, Predicate predicate) {
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {
@@ -151,7 +148,7 @@ public class AuthenticatedAccountDAO
    * @return true if the given account is owned by a contact that the user owns.
    */
   public boolean ownsContactThatOwnsAccount(X x, Account account) {
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     User owner = account.findOwner(x);
     return owner instanceof Contact && ((Contact) owner).getOwner() == user.getId();
   }

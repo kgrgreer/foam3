@@ -5,6 +5,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.Address;
 import foam.nanos.auth.Phone;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.session.Session;
@@ -274,7 +275,7 @@ public class IdentityMindRequestGenerator {
     if ( agent != null ) {
       return agent;
     }
-    return (User) x.get("user");
+    return ((Subject) x.get("subject")).getUser();
   }
 
   private static String formatDate(Date date) {

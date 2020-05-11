@@ -21,6 +21,7 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import net.nanopay.cico.model.MobileWallet;
@@ -65,7 +66,7 @@ public class RealexTransactionDAO
       else if ( MobileWallet.APPLEPAY == paymentAccountInfo.getMobileWallet() )
         paymentRequest.addMobile("apple-pay");
     } else if ( paymentAccountInfo.getType() == net.nanopay.cico.CICOPaymentType.PAYMENTCARD ) {
-      User user = (User) x.get("user");
+      User user = ((Subject) x.get("subject")).getUser();
       DAO currencyDAO = (DAO) x.get("currencyDAO");
       foam.core.Currency currency = (foam.core.Currency) currencyDAO.find(paymentAccountInfo.getCurrencyId().toString());
       DAO paymentCardDAO = (DAO) x.get("paymentCardDAO");

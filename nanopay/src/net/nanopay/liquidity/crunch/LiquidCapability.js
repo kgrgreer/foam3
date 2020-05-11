@@ -31,7 +31,7 @@ foam.CLASS({
       required: true,
     },
     // BELOW THIS ARE PROPERTIES NOT REALLY NEEDED IN LIQUIDCAPABILITY
-    // WE SHOULD RESTRICT USERS FROM ACCESSING THESE PROPERTIES 
+    // WE SHOULD RESTRICT USERS FROM ACCESSING THESE PROPERTIES
     {
       name: 'permissionsGranted',
       hidden: true,
@@ -135,77 +135,79 @@ foam.CLASS({
   implements: [ 'foam.core.Validatable' ],
 
   javaImports: [
+    'foam.core.X',
+    'foam.dao.DAO',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.crunch.UserCapabilityJunction',
-    'foam.dao.DAO',
-    'foam.core.X',
-    'static foam.mlang.MLang.*',
-    'java.util.List',
+
     'java.util.ArrayList',
-    'java.util.Arrays'
+    'java.util.Arrays',
+    'java.util.List',
+    'static foam.mlang.MLang.*'
   ],
 
   properties: [
-    { 
-      class: 'Boolean', 
-      name: 'canViewAccount', 
+    {
+      class: 'Boolean',
+      name: 'canViewAccount',
       label: 'View Account',
       validateObj: function(canViewAccount, canMakeAccount, canApproveAccount, canViewTransaction, canMakeTransaction, canApproveTransaction, canViewDashboard) {
-        if ( ! this.validate() ) 
+        if ( ! this.validate() )
           return 'At least one permission must be selected.'
       }
     },
-    { 
-      class: 'Boolean', 
-      name: 'canMakeAccount', 
+    {
+      class: 'Boolean',
+      name: 'canMakeAccount',
       label: 'Make Account',
       validateObj: function(canViewAccount, canMakeAccount, canApproveAccount, canViewTransaction, canMakeTransaction, canApproveTransaction, canViewDashboard) {
-        if ( ! this.validate() ) 
+        if ( ! this.validate() )
           return 'At least one permission must be selected.'
       }
     },
-    { 
-      class: 'Boolean', 
-      name: 'canApproveAccount', 
+    {
+      class: 'Boolean',
+      name: 'canApproveAccount',
       label: 'Approve Account',
       validateObj: function(canViewAccount, canMakeAccount, canApproveAccount, canViewTransaction, canMakeTransaction, canApproveTransaction, canViewDashboard) {
-        if ( ! this.validate() ) 
+        if ( ! this.validate() )
           return 'At least one permission must be selected.'
       }
     },
-    { 
-      class: 'Boolean', 
-      name: 'canViewTransaction', 
+    {
+      class: 'Boolean',
+      name: 'canViewTransaction',
       label: 'View Transaction',
       validateObj: function(canViewAccount, canMakeAccount, canApproveAccount, canViewTransaction, canMakeTransaction, canApproveTransaction, canViewDashboard) {
-        if ( ! this.validate() ) 
+        if ( ! this.validate() )
           return 'At least one permission must be selected.'
       }
     },
-    { 
-      class: 'Boolean', 
-      name: 'canMakeTransaction', 
+    {
+      class: 'Boolean',
+      name: 'canMakeTransaction',
       label: 'Make Transaction',
       validateObj: function(canViewAccount, canMakeAccount, canApproveAccount, canViewTransaction, canMakeTransaction, canApproveTransaction, canViewDashboard) {
-        if ( ! this.validate() ) 
+        if ( ! this.validate() )
           return 'At least one permission must be selected.'
       }
     },
-    { 
-      class: 'Boolean', 
-      name: 'canApproveTransaction', 
+    {
+      class: 'Boolean',
+      name: 'canApproveTransaction',
       label: 'Approve Transaction',
       validateObj: function(canViewAccount, canMakeAccount, canApproveAccount, canViewTransaction, canMakeTransaction, canApproveTransaction, canViewDashboard) {
-        if ( ! this.validate() ) 
+        if ( ! this.validate() )
           return 'At least one permission must be selected.'
       }
     },
-    { 
-      class: 'Boolean', 
-      name: 'canViewDashboard', 
+    {
+      class: 'Boolean',
+      name: 'canViewDashboard',
       label: 'View Dashboard',
       validateObj: function(canViewAccount, canMakeAccount, canApproveAccount, canViewTransaction, canMakeTransaction, canApproveTransaction, canViewDashboard) {
-        if ( ! this.validate() ) 
+        if ( ! this.validate() )
           return 'At least one permission must be selected.'
       }
     },
@@ -248,7 +250,7 @@ foam.CLASS({
     {
       name: 'implies',
       documentation: `
-      Takes a permission string in the form of "booleanPropertyName.outgoingAccountId", and 
+      Takes a permission string in the form of "booleanPropertyName.outgoingAccountId", and
       checks if the boolean property is checked.
       If so, find the ucj and check if the outgoingAccountId is in the accountTemplate map or a child of
       an account in the accountTemplate map stored in the ucj.
@@ -270,7 +272,7 @@ foam.CLASS({
 
           if ( (Boolean) getProperty(permToProperty) ) {
             UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) x.get("userCapabilityJunctionDAO")).find(AND(
-              EQ(UserCapabilityJunction.SOURCE_ID, ((User) x.get("user")).getId()),
+              EQ(UserCapabilityJunction.SOURCE_ID, ((Subject) x.get("subject")).getUser().getId()),
               EQ(UserCapabilityJunction.TARGET_ID, getId())
             ));
             if ( ucj == null ) return false;
@@ -318,195 +320,195 @@ foam.CLASS({
   ],
 
   properties: [
-    { 
-      class: 'Boolean', 
-      name: 'canViewRule', 
+    {
+      class: 'Boolean',
+      name: 'canViewRule',
       label: 'View Rule',
-      validateObj: function(canViewRule, canMakeRule, canApproveRule, canViewUser, canMakeUser, canApproveUser, 
-      canViewLiquiditysettings, canMakeLiquiditysettings, canApproveLiquiditysettings, 
-      canViewCapability, canMakeCapability, canApproveCapability, canMakeCapabilityrequest, 
+      validateObj: function(canViewRule, canMakeRule, canApproveRule, canViewUser, canMakeUser, canApproveUser,
+      canViewLiquiditysettings, canMakeLiquiditysettings, canApproveLiquiditysettings,
+      canViewCapability, canMakeCapability, canApproveCapability, canMakeCapabilityrequest,
       canApproveCapabilityrequest, canIngestFile) {
         if ( ! this.validate() ) {
           return 'At least one permission must be selected.'
         }
       }
     },
-    { 
-      class: 'Boolean', 
-      name: 'canMakeRule', 
+    {
+      class: 'Boolean',
+      name: 'canMakeRule',
       label: 'Make Rule',
-      validateObj: function(canViewRule, canMakeRule, canApproveRule, canViewUser, canMakeUser, canApproveUser, 
-      canViewLiquiditysettings, canMakeLiquiditysettings, canApproveLiquiditysettings, 
-      canViewCapability, canMakeCapability, canApproveCapability, canMakeCapabilityrequest, 
+      validateObj: function(canViewRule, canMakeRule, canApproveRule, canViewUser, canMakeUser, canApproveUser,
+      canViewLiquiditysettings, canMakeLiquiditysettings, canApproveLiquiditysettings,
+      canViewCapability, canMakeCapability, canApproveCapability, canMakeCapabilityrequest,
       canApproveCapabilityrequest, canIngestFile) {
         if ( ! this.validate() ) {
           return 'At least one permission must be selected.'
         }
       }
     },
-    { 
-      class: 'Boolean', 
-      name: 'canApproveRule', 
+    {
+      class: 'Boolean',
+      name: 'canApproveRule',
       label: 'Approve Rule',
-      validateObj: function(canViewRule, canMakeRule, canApproveRule, canViewUser, canMakeUser, canApproveUser, 
-      canViewLiquiditysettings, canMakeLiquiditysettings, canApproveLiquiditysettings, 
-      canViewCapability, canMakeCapability, canApproveCapability, canMakeCapabilityrequest, 
+      validateObj: function(canViewRule, canMakeRule, canApproveRule, canViewUser, canMakeUser, canApproveUser,
+      canViewLiquiditysettings, canMakeLiquiditysettings, canApproveLiquiditysettings,
+      canViewCapability, canMakeCapability, canApproveCapability, canMakeCapabilityrequest,
       canApproveCapabilityrequest, canIngestFile) {
         if ( ! this.validate() ) {
           return 'At least one permission must be selected.'
         }
       }
     },
-    { 
-      class: 'Boolean', 
-      name: 'canViewUser', 
+    {
+      class: 'Boolean',
+      name: 'canViewUser',
       label: 'View User',
-      validateObj: function(canViewRule, canMakeRule, canApproveRule, canViewUser, canMakeUser, canApproveUser, 
-      canViewLiquiditysettings, canMakeLiquiditysettings, canApproveLiquiditysettings, 
-      canViewCapability, canMakeCapability, canApproveCapability, canMakeCapabilityrequest, 
+      validateObj: function(canViewRule, canMakeRule, canApproveRule, canViewUser, canMakeUser, canApproveUser,
+      canViewLiquiditysettings, canMakeLiquiditysettings, canApproveLiquiditysettings,
+      canViewCapability, canMakeCapability, canApproveCapability, canMakeCapabilityrequest,
       canApproveCapabilityrequest, canIngestFile) {
         if ( ! this.validate() ) {
           return 'At least one permission must be selected.'
         }
       }
     },
-    { 
-      class: 'Boolean', 
-      name: 'canMakeUser', 
+    {
+      class: 'Boolean',
+      name: 'canMakeUser',
       label: 'Make User',
-      validateObj: function(canViewRule, canMakeRule, canApproveRule, canViewUser, canMakeUser, canApproveUser, 
-      canViewLiquiditysettings, canMakeLiquiditysettings, canApproveLiquiditysettings, 
-      canViewCapability, canMakeCapability, canApproveCapability, canMakeCapabilityrequest, 
+      validateObj: function(canViewRule, canMakeRule, canApproveRule, canViewUser, canMakeUser, canApproveUser,
+      canViewLiquiditysettings, canMakeLiquiditysettings, canApproveLiquiditysettings,
+      canViewCapability, canMakeCapability, canApproveCapability, canMakeCapabilityrequest,
       canApproveCapabilityrequest, canIngestFile) {
         if ( ! this.validate() ) {
           return 'At least one permission must be selected.'
         }
       }
     },
-    { 
-      class: 'Boolean', 
-      name: 'canApproveUser', 
+    {
+      class: 'Boolean',
+      name: 'canApproveUser',
       label: 'Approve User',
-      validateObj: function(canViewRule, canMakeRule, canApproveRule, canViewUser, canMakeUser, canApproveUser, 
-      canViewLiquiditysettings, canMakeLiquiditysettings, canApproveLiquiditysettings, 
-      canViewCapability, canMakeCapability, canApproveCapability, canMakeCapabilityrequest, 
+      validateObj: function(canViewRule, canMakeRule, canApproveRule, canViewUser, canMakeUser, canApproveUser,
+      canViewLiquiditysettings, canMakeLiquiditysettings, canApproveLiquiditysettings,
+      canViewCapability, canMakeCapability, canApproveCapability, canMakeCapabilityrequest,
       canApproveCapabilityrequest, canIngestFile) {
         if ( ! this.validate() ) {
           return 'At least one permission must be selected.'
         }
       }
     },
-    { 
-      class: 'Boolean', 
-      name: 'canViewLiquiditysettings', 
+    {
+      class: 'Boolean',
+      name: 'canViewLiquiditysettings',
       label: 'View Liquidity Settings',
-      validateObj: function(canViewRule, canMakeRule, canApproveRule, canViewUser, canMakeUser, canApproveUser, 
-      canViewLiquiditysettings, canMakeLiquiditysettings, canApproveLiquiditysettings, 
-      canViewCapability, canMakeCapability, canApproveCapability, canMakeCapabilityrequest, 
+      validateObj: function(canViewRule, canMakeRule, canApproveRule, canViewUser, canMakeUser, canApproveUser,
+      canViewLiquiditysettings, canMakeLiquiditysettings, canApproveLiquiditysettings,
+      canViewCapability, canMakeCapability, canApproveCapability, canMakeCapabilityrequest,
       canApproveCapabilityrequest, canIngestFile) {
         if ( ! this.validate() ) {
           return 'At least one permission must be selected.'
         }
       }
     },
-    { 
-      class: 'Boolean', 
-      name: 'canMakeLiquiditysettings', 
+    {
+      class: 'Boolean',
+      name: 'canMakeLiquiditysettings',
       label: 'Make Liquidity Settings',
-      validateObj: function(canViewRule, canMakeRule, canApproveRule, canViewUser, canMakeUser, canApproveUser, 
-      canViewLiquiditysettings, canMakeLiquiditysettings, canApproveLiquiditysettings, 
-      canViewCapability, canMakeCapability, canApproveCapability, canMakeCapabilityrequest, 
+      validateObj: function(canViewRule, canMakeRule, canApproveRule, canViewUser, canMakeUser, canApproveUser,
+      canViewLiquiditysettings, canMakeLiquiditysettings, canApproveLiquiditysettings,
+      canViewCapability, canMakeCapability, canApproveCapability, canMakeCapabilityrequest,
       canApproveCapabilityrequest, canIngestFile) {
         if ( ! this.validate() ) {
           return 'At least one permission must be selected.'
         }
       }
     },
-    { 
-      class: 'Boolean', 
-      name: 'canApproveLiquiditysettings', 
+    {
+      class: 'Boolean',
+      name: 'canApproveLiquiditysettings',
       label: 'Approve Liquidity Settings',
-      validateObj: function(canViewRule, canMakeRule, canApproveRule, canViewUser, canMakeUser, canApproveUser, 
-      canViewLiquiditysettings, canMakeLiquiditysettings, canApproveLiquiditysettings, 
-      canViewCapability, canMakeCapability, canApproveCapability, canMakeCapabilityrequest, 
+      validateObj: function(canViewRule, canMakeRule, canApproveRule, canViewUser, canMakeUser, canApproveUser,
+      canViewLiquiditysettings, canMakeLiquiditysettings, canApproveLiquiditysettings,
+      canViewCapability, canMakeCapability, canApproveCapability, canMakeCapabilityrequest,
       canApproveCapabilityrequest, canIngestFile) {
         if ( ! this.validate() ) {
           return 'At least one permission must be selected.'
         }
       }
     },
-    { 
-      class: 'Boolean', 
-      name: 'canViewCapability', 
+    {
+      class: 'Boolean',
+      name: 'canViewCapability',
       label: 'View Role',
-      validateObj: function(canViewRule, canMakeRule, canApproveRule, canViewUser, canMakeUser, canApproveUser, 
-      canViewLiquiditysettings, canMakeLiquiditysettings, canApproveLiquiditysettings, 
-      canViewCapability, canMakeCapability, canApproveCapability, canMakeCapabilityrequest, 
+      validateObj: function(canViewRule, canMakeRule, canApproveRule, canViewUser, canMakeUser, canApproveUser,
+      canViewLiquiditysettings, canMakeLiquiditysettings, canApproveLiquiditysettings,
+      canViewCapability, canMakeCapability, canApproveCapability, canMakeCapabilityrequest,
       canApproveCapabilityrequest, canIngestFile) {
         if ( ! this.validate() ) {
           return 'At least one permission must be selected.'
         }
       }
     },
-    { 
-      class: 'Boolean', 
-      name: 'canMakeCapability', 
+    {
+      class: 'Boolean',
+      name: 'canMakeCapability',
       label: 'Make Role',
-      validateObj: function(canViewRule, canMakeRule, canApproveRule, canViewUser, canMakeUser, canApproveUser, 
-      canViewLiquiditysettings, canMakeLiquiditysettings, canApproveLiquiditysettings, 
-      canViewCapability, canMakeCapability, canApproveCapability, canMakeCapabilityrequest, 
+      validateObj: function(canViewRule, canMakeRule, canApproveRule, canViewUser, canMakeUser, canApproveUser,
+      canViewLiquiditysettings, canMakeLiquiditysettings, canApproveLiquiditysettings,
+      canViewCapability, canMakeCapability, canApproveCapability, canMakeCapabilityrequest,
       canApproveCapabilityrequest, canIngestFile) {
         if ( ! this.validate() ) {
           return 'At least one permission must be selected.'
         }
       }
     },
-    { 
-      class: 'Boolean', 
-      name: 'canApproveCapability', 
+    {
+      class: 'Boolean',
+      name: 'canApproveCapability',
       label: 'Approve Role',
-      validateObj: function(canViewRule, canMakeRule, canApproveRule, canViewUser, canMakeUser, canApproveUser, 
-      canViewLiquiditysettings, canMakeLiquiditysettings, canApproveLiquiditysettings, 
-      canViewCapability, canMakeCapability, canApproveCapability, canMakeCapabilityrequest, 
+      validateObj: function(canViewRule, canMakeRule, canApproveRule, canViewUser, canMakeUser, canApproveUser,
+      canViewLiquiditysettings, canMakeLiquiditysettings, canApproveLiquiditysettings,
+      canViewCapability, canMakeCapability, canApproveCapability, canMakeCapabilityrequest,
       canApproveCapabilityrequest, canIngestFile) {
         if ( ! this.validate() ) {
           return 'At least one permission must be selected.'
         }
       }
     },
-    { 
-      class: 'Boolean', 
-      name: 'canMakeCapabilityrequest', 
+    {
+      class: 'Boolean',
+      name: 'canMakeCapabilityrequest',
       label: 'Make Role Assignment',
-      validateObj: function(canViewRule, canMakeRule, canApproveRule, canViewUser, canMakeUser, canApproveUser, 
-      canViewLiquiditysettings, canMakeLiquiditysettings, canApproveLiquiditysettings, 
-      canViewCapability, canMakeCapability, canApproveCapability, canMakeCapabilityrequest, 
+      validateObj: function(canViewRule, canMakeRule, canApproveRule, canViewUser, canMakeUser, canApproveUser,
+      canViewLiquiditysettings, canMakeLiquiditysettings, canApproveLiquiditysettings,
+      canViewCapability, canMakeCapability, canApproveCapability, canMakeCapabilityrequest,
       canApproveCapabilityrequest, canIngestFile) {
         if ( ! this.validate() ) {
           return 'At least one permission must be selected.'
         }
       }
     },
-    { 
-      class: 'Boolean', 
-      name: 'canApproveCapabilityrequest', 
+    {
+      class: 'Boolean',
+      name: 'canApproveCapabilityrequest',
       label: 'Approve Role Assignment',
-      validateObj: function(canViewRule, canMakeRule, canApproveRule, canViewUser, canMakeUser, canApproveUser, 
-      canViewLiquiditysettings, canMakeLiquiditysettings, canApproveLiquiditysettings, 
-      canViewCapability, canMakeCapability, canApproveCapability, canMakeCapabilityrequest, 
+      validateObj: function(canViewRule, canMakeRule, canApproveRule, canViewUser, canMakeUser, canApproveUser,
+      canViewLiquiditysettings, canMakeLiquiditysettings, canApproveLiquiditysettings,
+      canViewCapability, canMakeCapability, canApproveCapability, canMakeCapabilityrequest,
       canApproveCapabilityrequest, canIngestFile) {
         if ( ! this.validate() ) {
           return 'At least one permission must be selected.'
         }
       }
     },
-    { 
-      class: 'Boolean', 
-      name: 'canIngestFile', 
+    {
+      class: 'Boolean',
+      name: 'canIngestFile',
       label: 'Ingest File',
-      validateObj: function(canViewRule, canMakeRule, canApproveRule, canViewUser, canMakeUser, canApproveUser, 
-      canViewLiquiditysettings, canMakeLiquiditysettings, canApproveLiquiditysettings, 
-      canViewCapability, canMakeCapability, canApproveCapability, canMakeCapabilityrequest, 
+      validateObj: function(canViewRule, canMakeRule, canApproveRule, canViewUser, canMakeUser, canApproveUser,
+      canViewLiquiditysettings, canMakeLiquiditysettings, canApproveLiquiditysettings,
+      canViewCapability, canMakeCapability, canApproveCapability, canMakeCapabilityrequest,
       canApproveCapabilityrequest, canIngestFile) {
         if ( ! this.validate() ) {
           return 'At least one permission must be selected.'
@@ -519,7 +521,7 @@ foam.CLASS({
       hidden: true,
       documentation: `
       Class of the information stored in data field of UserCapabilityJunctions, if there is any.
-      In this case, it is an Integer representing approver level, or 0 if the capability does not grant 
+      In this case, it is an Integer representing approver level, or 0 if the capability does not grant
       an approver role.
       `
     },
@@ -557,7 +559,7 @@ foam.CLASS({
         if ( getCanViewCapability() && getCanViewUser() ) permissions.add("menu.read.roles.rolequeryview");
 
         // add file upload permission for file ingesters
-        if ( getCanIngestFile() ) { 
+        if ( getCanIngestFile() ) {
           permissions.add("menu.read.fileupload");
           permissions.add("file.create");
         }
@@ -595,7 +597,7 @@ foam.CLASS({
       javaCode: `
         String[] permissionsGranted = this.getPermissionsGranted();
         for ( String permissionName : permissionsGranted ) {
-          if ( this.stringImplies(permissionName, permission) ) return true; 
+          if ( this.stringImplies(permissionName, permission) ) return true;
         }
 
         try {

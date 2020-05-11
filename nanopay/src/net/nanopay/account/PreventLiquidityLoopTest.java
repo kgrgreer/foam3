@@ -3,6 +3,7 @@ package net.nanopay.account;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.test.Test;
 import foam.test.TestUtils;
@@ -14,7 +15,7 @@ import net.nanopay.util.Frequency;
 import static foam.mlang.MLang.*;
 
 /*
-  Test for PreventAccountLiquidityLoopRule and PreventLiquiditySettingsLoopRule creates 3 accounts and 3 liquidity settings. 
+  Test for PreventAccountLiquidityLoopRule and PreventLiquiditySettingsLoopRule creates 3 accounts and 3 liquidity settings.
   Creates a liquidity loop by setting liquidity settings for accounts in a loop throwing a RuntimeException.
 */
 
@@ -30,7 +31,7 @@ public class PreventLiquidityLoopTest extends Test {
     // initialize DAOs, systemUser
     accountDAO_ = (DAO) x.get("localAccountDAO");
     liquiditySettingsDAO_ = (DAO) x.get("localLiquiditySettingsDAO");
-    systemUser_ = (User) x.get("user");
+    systemUser_ = ((Subject) x.get("subject")).getUser();
 
     // setup test accounts, liquiditys, and liquidity settings
     setupAccounts(x);
@@ -115,7 +116,7 @@ public class PreventLiquidityLoopTest extends Test {
       .setResetBalance(150000000)
       .setPushPullAccount(account2_.getId())
       .build();
-      
+
     lowLiquidity1_ = new Liquidity.Builder(x)
       .setEnabled(true)
       .setRebalancingEnabled(true)
@@ -133,7 +134,7 @@ public class PreventLiquidityLoopTest extends Test {
       .setResetBalance(150000000)
       .setPushPullAccount(account3_.getId())
       .build();
-      
+
     lowLiquidity2_ = new Liquidity.Builder(x)
       .setEnabled(true)
       .setRebalancingEnabled(true)
@@ -151,7 +152,7 @@ public class PreventLiquidityLoopTest extends Test {
       .setResetBalance(150000000)
       .setPushPullAccount(account1_.getId())
       .build();
-      
+
     lowLiquidity3_ = new Liquidity.Builder(x)
       .setEnabled(true)
       .setRebalancingEnabled(true)

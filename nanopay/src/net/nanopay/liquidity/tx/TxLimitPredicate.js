@@ -9,13 +9,15 @@ foam.CLASS({
   javaImports: [
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
+
     'net.nanopay.account.Account',
     'net.nanopay.fx.FXTransaction',
+    'net.nanopay.model.Business',
     'net.nanopay.tx.DigitalTransaction',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.model.Business',
-    'static foam.mlang.MLang.*',
+    'static foam.mlang.MLang.*'
   ],
   properties: [
     {
@@ -73,9 +75,9 @@ foam.CLASS({
 
         if (this.getSend()) {
           // When sending, retrieve the user/business from the context
-          User user = (User) ((X) obj).get("user");
+          User user = ((Subject) ((X) obj).get("subject")).getUser();
           if (this.getEntityType() == TxLimitEntityType.BUSINESS) {
-            return 
+            return
               (user instanceof Business) ? user.getId() == this.getId() :
               false;
           }
@@ -83,14 +85,14 @@ foam.CLASS({
           // Retrieve the agent from the context
           User agent = (User) ((X) obj).get("agent");
           if (this.getEntityType() == TxLimitEntityType.USER) {
-            return 
+            return
               (user instanceof Business && agent != null) ? agent.getId() == this.getId() :
               (user != null) ? user.getId() == this.getId() :
               false;
           }
         } else {
           // When receiving, lookup the user or business from the account
-          User user = account.findOwner((X) obj); 
+          User user = account.findOwner((X) obj);
           if (this.getEntityType() == TxLimitEntityType.USER ||
              (this.getEntityType() == TxLimitEntityType.BUSINESS && user instanceof Business)) {
             return user.getId() == this.getId();

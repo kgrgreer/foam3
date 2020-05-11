@@ -7,6 +7,7 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.nanos.auth.AuthenticationException;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
 import net.nanopay.accounting.quickbooks.model.QuickbooksContact;
@@ -31,7 +32,7 @@ public class PreventDuplicateContactEmailDAO extends ProxyDAO {
       return super.put_(x, obj);
     }
 
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
 
     if ( user == null ) {
       throw new AuthenticationException();

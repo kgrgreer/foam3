@@ -5,25 +5,28 @@ foam.CLASS({
   extends: 'foam.dao.ProxyDAO',
 
   javaImports: [
+    'foam.core.Currency',
     'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.Group',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.auth.UserUserJunction',
     'foam.nanos.auth.token.TokenService',
     'foam.nanos.logger.Logger',
-    'foam.nanos.notification.email.EmailMessage',
     'foam.nanos.notification.Notification',
+    'foam.nanos.notification.email.EmailMessage',
+
     'java.text.SimpleDateFormat',
     'java.util.*',
+
     'net.nanopay.invoice.model.BillingInvoice',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.model.Business',
-    'foam.core.Currency',
     'static foam.mlang.MLang.*'
   ],
 
@@ -47,7 +50,7 @@ foam.CLASS({
         Invoice invoice = (Invoice) obj;
         Invoice oldInvoice = (Invoice) super.find(invoice.getId());
         User agent = (User) x.get("agent");
-        User user = (User) x.get("user");
+        User user = ((Subject) x.get("subject")).getUser();
 
         String agentName = agent != null ? agent.getFirstName() + " " + agent.getLastName() : null;
 
@@ -128,7 +131,7 @@ foam.CLASS({
             }
             if ( invoiceNeedsApproval ) {
               User tempApprover = null;
-              User currentUser = (User) x.get("user");
+              User currentUser = ((Subject) x.get("subject")).getUser();
               List<UserUserJunction> approvers = findApproversOftheBusiness(x);
               DAO userDAO = (DAO) x.get("userDAO");
               for ( UserUserJunction approver : approvers ) {
@@ -289,7 +292,7 @@ foam.CLASS({
       javaCode: `
         // Need to find all approvers and admins in a business
         DAO agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
-        User user = (User) x.get("user");
+        User user = ((Subject) x.get("subject")).getUser();
         if ( user == null ) {
           ((Logger) x.get("logger")).error("@InvoiceNotificationDAO and context user is null", new Exception());
           return null;

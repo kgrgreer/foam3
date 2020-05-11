@@ -13,11 +13,13 @@ foam.CLASS({
     'foam.core.Detachable',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.dao.Sink',
     'foam.dao.ProxySink',
+    'foam.dao.Sink',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
-    'net.nanopay.model.Business',
     'foam.nanos.auth.UserUserJunction',
+
+    'net.nanopay.model.Business',
     'static foam.mlang.MLang.*'
   ],
 
@@ -36,7 +38,7 @@ foam.CLASS({
         };
 
         getDelegate().select_(x, proxy, skip, limit, order, predicate);
-        
+
         return proxy.getDelegate();
       `
     },
@@ -48,9 +50,9 @@ foam.CLASS({
         { name: 'user', type: 'foam.nanos.auth.User' }
       ],
       javaCode: `
-        if (user == null) return false; 
+        if (user == null) return false;
 
-        User business = (Business) x.get("user");
+        User business = (Business) ((Subject) x.get("subject")).getUser();
         DAO agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
         UserUserJunction junction = (UserUserJunction) agentJunctionDAO.find(
           AND(

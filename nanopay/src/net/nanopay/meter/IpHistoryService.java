@@ -3,6 +3,7 @@ package net.nanopay.meter;
 import foam.core.ContextAwareSupport;
 import foam.core.X;
 import foam.dao.DAO;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.session.Session;
 import net.nanopay.model.Business;
@@ -14,7 +15,7 @@ public class IpHistoryService extends ContextAwareSupport {
 
   public void record(Object target, String description) {
     X x = getX();
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     Business business = null;
     Object agent = x.get("agent");
 

@@ -8,16 +8,18 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.MDAO',
-    'static foam.mlang.MLang.*',
-    'foam.nanos.auth.User',
+    'foam.dao.SequenceNumberDAO',
     'foam.nanos.auth.AuthorizationException',
-    'foam.nanos.auth.UserAndGroupAuthService',
+    'foam.nanos.auth.CreatedByAwareDAO',
     'foam.nanos.auth.LifecycleState',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
+    'foam.nanos.auth.UserAndGroupAuthService',
     'foam.util.Auth',
+
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.tx.model.Transaction',
-    'foam.nanos.auth.CreatedByAwareDAO',
-    'foam.dao.SequenceNumberDAO'
+    'static foam.mlang.MLang.*'
   ],
 
   methods: [{
@@ -588,7 +590,7 @@ foam.CLASS({
       Invoice adminPermInvoice = (Invoice) invoiceDAO.put_(x, invoice);
 
       // Admin user from runTest context
-      User admin = (User) x.get("user");
+      User admin = ((Subject) x.get("subject")).getUser();
 
       // Payer Business User
       User payerUser = new User();

@@ -26,6 +26,8 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.Subject',
+
     'net.nanopay.sme.onboarding.OnboardingStatus'
   ],
 
@@ -313,7 +315,7 @@ foam.CLASS({
       name: 'authorizeOnCreate',
       javaCode: `
         foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("agent");
-        if ( user == null ) user = (foam.nanos.auth.User) x.get("user");
+        if ( user == null ) user = ((Subject) x.get("subject")).getUser();
 
         if ( user.getId() == getUserId() ) return;
 
@@ -328,7 +330,7 @@ foam.CLASS({
       name: 'authorizeOnRead',
       javaCode: `
         foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("agent");
-        if ( user == null ) user = (foam.nanos.auth.User) x.get("user");
+        if ( user == null ) user = ((Subject) x.get("subject")).getUser();
 
         if ( user.getId() == getUserId() ) return;
 
@@ -343,7 +345,7 @@ foam.CLASS({
       name: 'authorizeOnUpdate',
       javaCode: `
         foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("agent");
-        if ( user == null ) user = (foam.nanos.auth.User) x.get("user");
+        if ( user == null ) user = ((Subject) x.get("subject")).getUser();
 
         if ( user.getId() == getUserId() ) return;
 
@@ -358,7 +360,7 @@ foam.CLASS({
       name: 'authorizeOnDelete',
       javaCode: `
         foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("agent");
-        if ( user == null ) user = (foam.nanos.auth.User) x.get("user");
+        if ( user == null ) user = ((Subject) x.get("subject")).getUser();
 
         if ( user.getId() == getUserId() ) return;
 
@@ -370,5 +372,5 @@ foam.CLASS({
       `
     }
   ]
-  
+
 });
