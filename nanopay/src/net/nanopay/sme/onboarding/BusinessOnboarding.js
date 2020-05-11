@@ -1172,7 +1172,11 @@ foam.CLASS({
           }
 
           this.owner1.birthday = this.birthday;
-          this.owner1.address = this.address;
+          // Need to compare before setting FObject property to prevent
+          // unnecessary propagation of propertyChanged
+          if ( ! foam.util.equals(this.owner1.address, this.address) ) {
+            this.owner1.address = this.address;
+          }
           this.owner1.ownershipPercent = this.ownershipPercent;
         } else {
           if ( this.amountOfOwners > 0 &&
