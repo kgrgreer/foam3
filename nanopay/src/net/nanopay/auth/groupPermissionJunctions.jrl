@@ -677,3 +677,13 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","tar
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","targetId":"service.approvalRequestDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","targetId":"approval.create"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","targetId":"approval.update.*"})
+
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"menu.read.users"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"service.agentJunctionDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"service.balanceService"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"service.service.currencyDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"service.digitalAccount"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"service.menuDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"user.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"user.delete.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"user.update.*"})
