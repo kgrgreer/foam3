@@ -1173,14 +1173,8 @@ foam.CLASS({
             this.owner1.jobTitle = this.adminJobTitle;
           }
 
-          // Need to compare before setting Date and FObject properties to
-          // prevent unnecessary propagation of propertyChanged
-          if ( ! foam.util.equals(this.owner1.birthday, this.birthday) ) {
-            this.owner1.birthday = this.birthday;
-          }
-          if ( ! foam.util.equals(this.owner1.address, this.address) ) {
-            this.owner1.address = this.address;
-          }
+          this.owner1.birthday = this.birthday;
+          this.owner1.address = this.address;
           this.owner1.ownershipPercent = this.ownershipPercent;
         } else {
           if ( this.amountOfOwners > 0 &&
