@@ -46,7 +46,7 @@ foam.CLASS({
         var i = this.index;
         return [
           {
-            args: ['amountOfOwners', `owner${i}$errors_`],
+            args: ['signingOfficer', 'amountOfOwners', `owner${i}$errors_`],
             predicateFactory: function(e) {
               return e.OR(
                 e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
@@ -1268,7 +1268,7 @@ foam.CLASS({
       index: 1,
       validationPredicates: [
       {
-        args: ['amountOfOwners', 'userOwnsPercent', 'owner1$errors_'],
+        args: ['signingOfficer', 'amountOfOwners', 'userOwnsPercent', 'owner1$errors_'],
         predicateFactory: function(e) {
           return e.OR(
             e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
