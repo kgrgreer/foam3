@@ -533,8 +533,9 @@ foam.CLASS({
           return;
         }
 
-        User user = ((Subject) x.get("subject")).getUser();
-        User agent = (User) x.get("agent");
+        Subject subject = (Subject) x.get("subject");
+        User user = subject.getUser();
+        User agent = subject.getEffectiveUser();
         AuthService auth = (AuthService) x.get("auth");
 
         if ( user == null ) {

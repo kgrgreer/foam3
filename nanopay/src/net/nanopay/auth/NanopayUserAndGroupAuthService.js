@@ -15,6 +15,7 @@ foam.CLASS({
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.AuthenticationException',
     'foam.nanos.auth.Group',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.notification.email.EmailMessage',
     'foam.nanos.session.Session',
@@ -53,7 +54,7 @@ foam.CLASS({
 
         // This case is for business user of sme
         if ( user instanceof Business) {
-          user = (User) x.get("agent");
+          user = ((Subject) x.get("subject")).getEffectiveUser();
           user = (User) ((DAO) getLocalUserDAO()).find(user.getId());
         }
 

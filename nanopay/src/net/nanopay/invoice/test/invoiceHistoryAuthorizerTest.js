@@ -17,7 +17,6 @@ foam.CLASS({
     'foam.dao.history.HistoryRecord',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.Subject',
-    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.test.Test',
     'foam.test.TestUtils',

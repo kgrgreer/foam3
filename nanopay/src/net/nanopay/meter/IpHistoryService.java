@@ -15,9 +15,10 @@ public class IpHistoryService extends ContextAwareSupport {
 
   public void record(Object target, String description) {
     X x = getX();
-    User user = ((Subject) x.get("subject")).getUser();
+    Subject subject = (Subject) x.get("subject");
+    User user = subject.getUser();
     Business business = null;
-    Object agent = x.get("agent");
+    Object agent = subject.getEffectiveUser();
 
     if (target instanceof Business) {
       business = (Business) target;

@@ -83,7 +83,7 @@ foam.CLASS({
           }
 
           // Retrieve the agent from the context
-          User agent = (User) ((X) obj).get("agent");
+          User agent = ((Subject) ((X) obj).get("subject")).getEffectiveUser();
           if (this.getEntityType() == TxLimitEntityType.USER) {
             return
               (user instanceof Business && agent != null) ? agent.getId() == this.getId() :

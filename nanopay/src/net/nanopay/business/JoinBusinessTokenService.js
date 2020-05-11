@@ -27,7 +27,7 @@ foam.CLASS({
     'net.nanopay.model.Business',
     'net.nanopay.model.Invitation',
     'net.nanopay.model.InvitationStatus',
-    'static foam.mlang.MLang.*'
+    'static foam.mlang.MLang.*',
   ],
 
   methods: [
@@ -36,7 +36,7 @@ foam.CLASS({
       javaCode: `
         try {
           DAO tokenDAO = (DAO) x.get("localTokenDAO");
-          User agent = (User) x.get("agent");
+          User agent = ((Subject) x.get("subject")).getEffectiveUser();
           String url = agent.findGroup(x).getAppConfig(x).getUrl();
 
           Token token = new Token.Builder(x)

@@ -49,8 +49,9 @@ foam.CLASS({
 
         Invoice invoice = (Invoice) obj;
         Invoice oldInvoice = (Invoice) super.find(invoice.getId());
-        User agent = (User) x.get("agent");
-        User user = ((Subject) x.get("subject")).getUser();
+        Subject subject = ((Subject) x.get("subject"));
+        User agent = subject.getEffectiveUser();
+        User user = subject.getUser();
 
         String agentName = agent != null ? agent.getFirstName() + " " + agent.getLastName() : null;
 

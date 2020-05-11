@@ -164,7 +164,7 @@ public class BusinessInvitationDAO
    * @param invite The invitation object.
    */
   public void sendInvitationEmail(X x, Business business, Invitation invite) {
-    User agent = (User) x.get("agent");
+    User agent = ((Subject) x.get("subject")).getEffectiveUser();
     Logger logger = (Logger) getX().get("logger");
 
     Group group = business.findGroup(x);
