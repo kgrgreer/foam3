@@ -50,7 +50,6 @@ import static foam.mlang.MLang.*;
       notification.setGroupId("admin");
       notification.setNotificationType("no permanent administrators left in the system");
       notification.setBody("There are no permanent administrators in the system that appear to be in the Admin User Id list in appConfig -> Admin Access Config. Please update the list with the set of permanent administrators.");
-      notification.setEmailIsEnabled(true);
       notificationDAO.put(notification);
       logger.error("AdminAccessConfigCron cannot run due to no administrators being left other than the system@nanopay.net user. The Admin User Id list in appConfig -> Admin Access Config needs to be updated with permanent administrators.");
       return;
@@ -64,7 +63,6 @@ import static foam.mlang.MLang.*;
       notification.setUserId(removeAdminUser.getId());
       notification.setNotificationType("nanopay admin access has expired");
       notification.setBody("Your nanopay admin access has been revoked. Please create a ticket to request admin access when required.");
-      notification.setEmailIsEnabled(true);
       notificationDAO.put(notification);
     }
   }

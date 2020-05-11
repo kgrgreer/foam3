@@ -51,7 +51,6 @@ foam.CLASS({
                   .setBody("This business can now make payments")
                   .setNotificationType("Latest_Activity")
                   .setGroupId(group.toString())
-                  .setEmailIsEnabled(true)
                   .setEmailArgs(args)
                   .setEmailName("compliance-notification-to-user")
                   .build();

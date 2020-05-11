@@ -42,7 +42,6 @@ foam.CLASS({
               Notification notification = new Notification();
               notification.setUserId(config.getAlertUser());
               notification.setGroupId(config.getAlertGroup());
-              //notification.setEmailIsEnabled(config.getSendEmail());
               notification.setNotificationType("Alarm");
               notification.setBody("An alarm has been triggered for " + config.getName());
               ((DAO) x.get("localNotificationDAO")).put(notification);

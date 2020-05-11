@@ -33,7 +33,6 @@ foam.CLASS({
           public void execute(X x) {
             IdentityMindResponse response = (IdentityMindResponse) obj;
             Notification notification = new Notification.Builder(x)
-              .setEmailIsEnabled(true)
               .setNotificationType("IdentityMind Errors")
               .setGroupId(getGroupId())
               .setBody(String.format("[%d %s] IdentityMindResponse (id:%d, entityType:%s, entityId:%s).",

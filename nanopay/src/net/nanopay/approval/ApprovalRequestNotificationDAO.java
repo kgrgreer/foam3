@@ -52,7 +52,6 @@ extends ProxyDAO {
     Notification notification = new Notification();
     notification.setUserId(ret.getApprover());
     notification.setNotificationType(notificationType);
-    notification.setEmailIsEnabled(true);
     notification.setBody(notificationBody);
     //notification.setEmailName("future email template name"); !!! PROPER WAY TO SET EMAIL TEMPLATE (when it is done) !!!
     //notification.setEmailArgs(MAP_GOES_HERE); !!! PROPER WAY TO SET EMAIL ARGS FOR TEMPLATE !!!
@@ -88,7 +87,6 @@ extends ProxyDAO {
     Notification notification = new Notification();
     notification.setUserId(ret.getApprover());
     notification.setNotificationType(notificationType);
-    notification.setEmailIsEnabled(true);
     notification.setBody(notificationBody);
     ((DAO) x.get("localNotificationDAO")).put(notification);
     return ret;

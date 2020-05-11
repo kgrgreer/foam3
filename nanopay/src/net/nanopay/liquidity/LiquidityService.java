@@ -218,7 +218,6 @@ public class LiquidityService
     args.put("link",        url);
 
     notification.setEmailArgs(args);
-    notification.setEmailIsEnabled(true);
     notification.setUserId(recipient);
     ((DAO) x_.get("notificationDAO")).put(notification);
   }
@@ -247,7 +246,6 @@ public class LiquidityService
       Notification notification = new Notification();
       notification.setNotificationType("Failure to Rebalance");
       notification.setBody("An error occurred and the rebalancing operation for liquidity setting "+ls.getName()+" has failed.");
-      notification.setEmailIsEnabled(false);
       notification.setUserId(ls.getUserToEmail());
       ((DAO) x_.get("notificationDAO")).put(notification);
     }

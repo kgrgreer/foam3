@@ -9,7 +9,6 @@ foam.CLASS({
       value: 'payment-ops',
       javaValue: '"payment-ops"'
     },
-    ['emailIsEnabled', true],
     ['emailName', 'user-signup'],
     ['notificationType', 'UserSignup'],
     {

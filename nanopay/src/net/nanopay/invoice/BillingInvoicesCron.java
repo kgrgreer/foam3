@@ -239,7 +239,6 @@ public class BillingInvoicesCron implements ContextAgent {
       if ( ! dryRun_ ) {
         ((DAO) x.get("localNotificationDAO")).put(
           new Notification.Builder(x)
-            .setEmailIsEnabled(true)
             .setBody(result_.toString())
             .setNotificationType("BillingInvoicesCron")
             .setGroupId(errorNotificationGroupId_)

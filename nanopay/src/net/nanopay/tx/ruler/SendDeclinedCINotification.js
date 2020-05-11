@@ -39,7 +39,6 @@ foam.CLASS({
               Logger logger  = (Logger) x.get("logger");
 
               Notification notification = new Notification();
-              notification.setEmailIsEnabled(true);
 
               if ( obj == null ) return; 
               Transaction t = (Transaction) obj; // used through loop

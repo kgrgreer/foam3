@@ -96,7 +96,6 @@ public class IdentityMindWebAgent implements WebAgent {
             approvalRequestDAO.put(approvalRequest);
           } else {
             Notification notification = new Notification();
-            notification.setEmailIsEnabled(true);
             notification.setBody("The approval request has already been rejected or approved.");
             notification.setNotificationType("Approval request already updated.");
             notification.setGroupId("fraud-ops");

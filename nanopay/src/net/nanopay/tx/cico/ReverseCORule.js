@@ -52,7 +52,6 @@ foam.CLASS({
               catch (Exception e) {
               //email Support about failure.
                 Notification notification = new Notification();
-                notification.setEmailIsEnabled(true);
                 notification.setBody("Cash Out transaction id: " + txn.getId() + " was declined but the balance was not restored.");
                 notification.setNotificationType("Cashout transaction declined");
                 notification.setGroupId("support");
