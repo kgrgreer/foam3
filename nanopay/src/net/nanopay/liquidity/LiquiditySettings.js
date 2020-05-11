@@ -348,10 +348,8 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
-      section: 'basicInfo',
       value: foam.nanos.auth.LifecycleState.PENDING,
       writePermissionRequired: true,
-      readPermissionRequired: true,
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       readVisibility: 'RO'

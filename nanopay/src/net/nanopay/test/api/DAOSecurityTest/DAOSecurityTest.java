@@ -37,6 +37,7 @@ public abstract class DAOSecurityTest extends ApiTestBase {
     GLOBAL_IGNORES.add("regionDAO");
     GLOBAL_IGNORES.add("smeBusinessRegistrationDAO");
     GLOBAL_IGNORES.add("themeDAO");
+    GLOBAL_IGNORES.add("themeDomainDAO");
     GLOBAL_IGNORES.add("userDAO");
     GLOBAL_IGNORES.add("userUserDAO");
   }
@@ -150,11 +151,11 @@ public abstract class DAOSecurityTest extends ApiTestBase {
       try {
         result = testDAO(x, nspec.getName(), request);
       } catch ( TestDAOFailed e ) {
-        System.out.println(e.getMsgBody());
-        System.out.println(e.getResponse());
+        System.out.println("TestDAOSecurityTest-"+nspec.getName()+" message: "+e.getMsgBody());
+        System.out.println("TestDAOSecurityTest-"+nspec.getName()+" response: "+e.getResponse());
         result = false;
       } catch ( ParseException | IOException e ) {
-        System.out.println(e.getMessage());
+        System.out.println("TestDAOSecurityTest-"+nspec.getName()+" message: "+e.getMessage());
         result = false;
       }
 
