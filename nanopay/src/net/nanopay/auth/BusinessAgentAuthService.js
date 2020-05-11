@@ -21,13 +21,16 @@ foam.CLASS({
     'foam.nanos.auth.AuthenticationException',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.Group',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.auth.UserUserJunction',
     'foam.nanos.logger.Logger',
     'foam.nanos.session.Session',
-    'net.nanopay.contacts.Contact',
-    'net.nanopay.auth.AgentJunctionStatus',
+
     'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.auth.AgentJunctionStatus',
+    'net.nanopay.contacts.Contact',
+
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.INSTANCE_OF',
@@ -55,8 +58,9 @@ foam.CLASS({
           throw new RuntimeException("You cannot act as a contact.");
         }
 
-        User currentAgent = (User) x.get("agent");
-        User currentUser = (User) x.get("user");
+        Subject subject = (Subject) x.get("subject");
+        User currentAgent = subject.getEffectiveUser();
+        User currentUser = subject.getUser();
 
         // The user could already be acting as someone else and want to switch
         // who they're acting as.
@@ -84,12 +88,13 @@ foam.CLASS({
         agent = (User) agent.fclone();
         agent.freeze();
 
+        Subject sessionSubject = new Subject.Builder(x).setUser(entity).setEffectiveUser(agent).build();
+
         // Set user and agent objects into the session context and place into sessionDAO.
         Session session = x.get(Session.class);
         session.setUserId(entity.getId());
         session.setAgentId(agent.getId());
-        session.setContext(session.getContext().put("user", entity));
-        session.setContext(session.getContext().put("agent", agent));
+        session.setContext(session.getContext().put("subject", sessionSubject));
         session.setContext(session.getContext().put("group", actingWithinGroup));
         DAO sessionDAO = (DAO) getX().get("localSessionDAO");
         sessionDAO.put(session);
@@ -120,7 +125,7 @@ foam.CLASS({
           throw new AuthorizationException("Entity is disabled.");
         }
 
-        DAO groupDAO = (DAO) x.get("groupDAO"); 
+        DAO groupDAO = (DAO) x.get("groupDAO");
         Group group = (Group) groupDAO.inX(x).find(entity.getGroup());
         if ( group == null ) {
           throw new AuthorizationException("Entity must exist within a group.");
@@ -137,7 +142,6 @@ foam.CLASS({
         // user doesn't have permission to read the status property, in which
         // case it defaults to Active and passes.
         UserUserJunction permissionJunction = (UserUserJunction) agentJunctionDAO.find(AND(
-          EQ(UserUserJunction.SOURCE_ID, agent.getId()),
           EQ(UserUserJunction.TARGET_ID, entity.getId())
         ));
 

@@ -18,23 +18,26 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.Detachable',
-    'foam.core.X',
     'foam.core.FObject',
     'foam.core.MethodInfo',
-    'foam.dao.DAO',
+    'foam.core.X',
     'foam.dao.AbstractSink',
-    'foam.nanos.auth.CreatedByAware',
-    'foam.nanos.auth.LifecycleAware',
-    'foam.nanos.auth.LifecycleState',
-    'foam.nanos.auth.User',
-    'foam.nanos.logger.Logger',
-    'foam.nanos.ruler.Operations',
-    'java.util.List',
-    'net.nanopay.account.Account',
+    'foam.dao.DAO',
+    'foam.nanos.approval.ApprovableAware',
     'foam.nanos.approval.ApprovalRequest',
     'foam.nanos.approval.ApprovalRequestUtil',
     'foam.nanos.approval.ApprovalStatus',
-    'foam.nanos.approval.ApprovableAware',
+    'foam.nanos.auth.CreatedByAware',
+    'foam.nanos.auth.LifecycleAware',
+    'foam.nanos.auth.LifecycleState',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
+    'foam.nanos.logger.Logger',
+    'foam.nanos.ruler.Operations',
+
+    'java.util.List',
+
+    'net.nanopay.account.Account',
     'net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest',
     'net.nanopay.liquidity.ucjQuery.AccountUCJQueryService',
     'net.nanopay.tx.model.Transaction',
@@ -139,11 +142,12 @@ foam.CLASS({
           // Fallback if initiating user was not found
           if (initiatingUser == null) {
             ((Logger) x.get("logger")).info("Falling back to agent/user for initiating user.");
-            initiatingUser = x.get("agent") != null ? ((User) x.get("agent")) : ((User) x.get("user"));
+            initiatingUser = ((Subject) x.get("subject")).getEffectiveUser();
           }
 
           // Context for putting approval requests as the initiating user
-          X initiatingUserX = x.put("user", initiatingUser);
+          Subject subject = new Subject.Builder(x).setUser(initiatingUser).build();
+          X initiatingUserX = x.put("subject", subject);
 
           ApprovalRequest approvalRequest = new AccountRoleApprovalRequest.Builder(x)
             .setClassification(classification)
@@ -246,7 +250,8 @@ foam.CLASS({
           )
         ).select(new AbstractSink() {
           public void put(Object obj, Detachable sub) {
-            X system = x.put("user", new User.Builder(x).setId(User.SYSTEM_USER_ID).build());
+            Subject subject = new Subject.Builder(x).setUser(new User.Builder(x).setId(User.SYSTEM_USER_ID).build()).build();
+            X system = x.put("subject", subject);
 
             AccountRoleApprovalRequest approvalRequest = (AccountRoleApprovalRequest) obj;
             approvalRequest.setIsFulfilled(true);

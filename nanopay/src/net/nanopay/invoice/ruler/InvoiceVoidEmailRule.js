@@ -12,17 +12,20 @@ foam.CLASS({
       'foam.core.X',
       'foam.nanos.app.AppConfig',
       'foam.nanos.auth.Group',
+      'foam.nanos.auth.Subject',
       'foam.nanos.auth.User',
       'foam.nanos.logger.Logger',
-      'foam.nanos.notification.email.EmailMessage',
       'foam.nanos.notification.Notification',
+      'foam.nanos.notification.email.EmailMessage',
       'foam.nanos.theme.Theme',
       'foam.nanos.theme.Themes',
       'foam.util.SafetyUtil',
-      'net.nanopay.invoice.model.Invoice',
-      'net.nanopay.invoice.model.PaymentStatus',
+
       'java.text.NumberFormat',
-      'java.util.HashMap'
+      'java.util.HashMap',
+
+      'net.nanopay.invoice.model.Invoice',
+      'net.nanopay.invoice.model.PaymentStatus'
     ],
 
     methods: [
@@ -37,7 +40,8 @@ foam.CLASS({
             User            payee      = (User) invoice.findPayeeId(x);
             Group           payerGroup = (Group) payer.findGroup(x);
             AppConfig       config     = (AppConfig) payerGroup.getAppConfig(x);
-            Theme          theme      = ((Themes) x.get("themes")).findTheme(x.put("user", payer));
+            Subject subject = new Subject.Builder(x).setUser(payer).build();
+            Theme          theme      = ((Themes) x.get("themes")).findTheme(x.put("subject", subject));
             EmailMessage    message    = new EmailMessage();
             NumberFormat    formatter  = NumberFormat.getCurrencyInstance();
 

@@ -2,6 +2,7 @@ package net.nanopay.liquidity.tx;
 
 import foam.core.X;
 import foam.dao.DAO;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.auth.LifecycleState;
 import foam.nanos.test.Test;
@@ -38,7 +39,6 @@ public class TxLimitRuleTest
   }
 
   public void testTransactionLimit(X x, TxLimitEntityType entityType, boolean send, Frequency period, long limit, long[] txAmounts, String message) {
-    User testUser = (User) x.get("user");
     DAO ruleDAO = (DAO) x.get("localRuleDAO");
     DAO transactionDAO = (DAO) x.get("localTransactionDAO");
 
@@ -47,7 +47,8 @@ public class TxLimitRuleTest
     User destinationUser = TransactionTestUtil.setupTestUser(x, "destination_user_limit@nanopay.net");
 
     // Create context with the source user for the transaction put
-    X sourceX = x.put("user", sourceUser);
+    Subject subject = new Subject.Builder(x).setUser(sourceUser).build();
+    X sourceX = x.put("subject", subject);
 
     // fetch source account
     Account sourceAccount = TransactionTestUtil.RetrieveDigitalAccount(x, sourceUser);
@@ -70,7 +71,7 @@ public class TxLimitRuleTest
     txLimitRule.setPeriod(period);
     txLimitRule.setLifecycleState(LifecycleState.ACTIVE);
     txLimitRule = (TxLimitRule) ruleDAO.put(txLimitRule);
-    test( txLimitRule.getEnabled() && txLimitRule.getLifecycleState() == LifecycleState.ACTIVE, 
+    test( txLimitRule.getEnabled() && txLimitRule.getLifecycleState() == LifecycleState.ACTIVE,
           "Checking if rule is enabled: " + txLimitRule.getEnabled() + ", and active: " + txLimitRule.getLifecycleState());
 
     // create test transactions
