@@ -1018,7 +1018,11 @@ var classes = [
   'net.nanopay.tx.planner.DebtablePlanner',
 
   // Fees
-  'net.nanopay.tx.planner.fees.AbliiFeeRule'
+  'net.nanopay.tx.planner.fees.AbliiFeeRule',
+
+  // msp
+  'net.nanopay.msp.MspInfo',
+  'net.nanopay.msp.MspSetupDAO'
 ];
 
 var abstractClasses = [

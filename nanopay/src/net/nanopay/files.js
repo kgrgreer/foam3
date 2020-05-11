@@ -1478,4 +1478,6 @@ FOAM_FILES([
   // Fees
   { name: 'net/nanopay/tx/planner/fees/AbliiFeeRule' },
 
+  // msp
+  { name: 'net/nanopay/msp/MspInfo' }
 ]);
