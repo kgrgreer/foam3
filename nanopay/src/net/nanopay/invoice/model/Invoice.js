@@ -573,7 +573,11 @@ foam.CLASS({
           rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
           sections: [
             {
-              dao: X.user.contacts.orderBy(foam.nanos.auth.User.BUSINESS_NAME)
+              dao: X.user.contacts.orderBy(foam.nanos.auth.User.BUSINESS_NAME),
+              searchBy: [
+                net.nanopay.contacts.Contact.BUSINESS_NAME,
+                net.nanopay.contacts.Contact.OPERATING_BUSINESS_NAME
+              ]
             }
           ]
         };
@@ -740,18 +744,18 @@ foam.RELATIONSHIP({
         var dao = this.__context__.userDAO;
         return new Promise(function(resolve, reject) {
           dao.find(key).then(function(user) {
-            resolve(user ? user.label() : 'Unknown User: ' + key);
+            resolve(user ? user.toSummary() : 'Unknown User: ' + key);
           });
         });
       },
       viewSpec: { class: 'foam.u2.view.ChoiceView', size: 14 }
     },
     tableCellFormatter: function(value, obj, rel) {
-      this.add(obj.payee ? obj.payee.label() : 'N/A');
+      this.add(obj.payee ? obj.payee.toSummary() : 'N/A');
     },
     javaToCSV: `
       User payee = ((Invoice)obj).findPayeeId(x);
-      outputter.outputValue(payee.label());
+      outputter.outputValue(payee.toSummary());
     `,
     javaToCSVLabel: `
       outputter.outputValue("Payee");
@@ -794,18 +798,18 @@ foam.RELATIONSHIP({
         var dao = this.__context__.userDAO;
         return new Promise( function(resolve, reject) {
           dao.find(key).then( function(user) {
-            resolve(user ? user.label() : 'Unknown User: ' + key);
+            resolve(user ? user.toSummary() : 'Unknown User: ' + key);
           });
         });
       },
       viewSpec: { class: 'foam.u2.view.ChoiceView', size: 14 }
     },
     tableCellFormatter: function(value, obj, rel) {
-      this.add(obj.payer ? obj.payer.label() : 'N/A');
+      this.add(obj.payer ? obj.payer.toSummary() : 'N/A');
     },
     javaToCSV: `
     User payer = ((Invoice)obj).findPayerId(x);
-    outputter.outputValue(payer.label());
+    outputter.outputValue(payer.toSummary());
     `,
     javaToCSVLabel: `
     outputter.outputValue("Payer");

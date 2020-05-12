@@ -34,11 +34,11 @@ foam.CLASS({
                     type: 'Contact',
                     group: 'sme',
                     organization: business.businessName,
+                    operatingBusinessName: business.operatingBusinessName,
                     businessId: business.id,
                     address: business.address
                   });
                   contact.businessSectorId = business.businessSectorId;
-                  contact.operatingBusinessName = business.operatingBusinessName;
                   data.contact = contact;
                 })
               .end();

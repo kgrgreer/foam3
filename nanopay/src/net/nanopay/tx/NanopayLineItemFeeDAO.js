@@ -110,7 +110,7 @@ foam.CLASS({
                   new InfoLineItem.Builder(x).setType(fee.getFeeType()).setNote(lineItemType.getName()+ " Non-refundable").setAmount(amount).build()
                 };
               }
-              applyTo.addLineItems(forward, reverse);
+              applyTo.addLineItems(forward);
             }
           }
         }

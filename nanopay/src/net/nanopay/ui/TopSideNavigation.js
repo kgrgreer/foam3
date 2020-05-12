@@ -23,6 +23,18 @@ foam.CLASS({
     'loginSuccess',
   ],
 
+  css: `
+    ^ .foam-u2-view-TreeViewRow-label {
+      display: inline-flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    ^ .foam-u2-view-TreeViewRow {
+      white-space: normal !important;
+    }
+  `,
+
   methods: [
       function initE() {
         var self = this;

@@ -56,7 +56,15 @@ foam.CLASS({
       name: 'useAccountTemplate',
       label: 'Use Account Group',
       documentation: 'Use account group instead of source account if set to true.',
-      section: 'basicInfo'
+      section: 'basicInfo',
+      postSet: function(o, n) {
+        if ( o ) {
+          this.clearProperty('accountTemplate');
+          this.clearProperty('denomination');
+        } else if ( n ) {
+          this.clearProperty('sourceAccount');
+        }
+      }
     },
     {
       class: 'Reference',

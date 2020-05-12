@@ -60,7 +60,7 @@ foam.CLASS({
           args.put("name", user.getFirstName());
           args.put("sendTo", user.getEmail());
           args.put("inviterName", agent.getFirstName());
-          args.put("business", business.label());
+          args.put("business", business.toSummary());
           args.put("link", url + "/service/joinBusiness?token=" + token.getData() + "&redirect=/" );
           EmailsUtility.sendEmailFromTemplate(x, user, message, "join-business-internal", args);
           return true;

@@ -88,9 +88,9 @@ foam.CLASS({
                 args.put("amount", currency.format(t.getAmount()));
                 args.put("toName", (signingOfficer != null) ?
                   signingOfficer.getFirstName() :
-                  sender.label()
+                  sender.toSummary()
                 );
-                args.put("name", receiver.label());
+                args.put("name", receiver.toSummary());
                 args.put("reference", invoice.getReferenceId());
                 args.put("sendTo", sender.getEmail());
                 args.put("account", ((BankAccount) t.findSourceAccount(x)).getAccountNumber());

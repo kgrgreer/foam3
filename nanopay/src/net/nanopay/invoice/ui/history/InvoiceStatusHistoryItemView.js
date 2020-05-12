@@ -4,7 +4,8 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   implements: [
-    'foam.u2.history.HistoryItemView'
+    'foam.u2.history.HistoryItemView',
+    'net.nanopay.invoice.util.InvoiceHistoryUtility'
   ],
 
   requires: [
@@ -14,13 +15,16 @@ foam.CLASS({
   ],
 
   imports: [
-    'invoiceDAO'
+    'invoiceDAO',
+    'user',
+    'agent'
   ],
 
   documentation: 'View for displaying history for invoice status',
 
   properties: [
-    'paymentDate'
+    'paymentDate',
+    'name'
   ],
 
   css: `
@@ -58,78 +62,6 @@ foam.CLASS({
   `,
 
   methods: [
-    function getAttributes(record) {
-      var status = record.updates.find((u) => u.name === 'status');
-
-      if ( status === undefined ) return null;
-
-      switch ( status.newValue ) {
-        case this.InvoiceStatus.VOID:
-          return {
-            labelText: this.InvoiceStatus.VOID.label,
-            labelDecoration: 'Invoice-Status-Void',
-            icon: 'images/ic-void.svg'
-          };
-        case this.InvoiceStatus.FAILED:
-          return {
-            labelText: this.InvoiceStatus.FAILED.label,
-            labelDecoration: 'Invoice-Status-Void',
-            icon: 'images/ic-void.svg'
-          };
-        case this.InvoiceStatus.PROCESSING:
-          return {
-            labelText: this.InvoiceStatus.PROCESSING.label,
-            labelDecoration: 'Invoice-Status-Processing',
-            icon: 'images/ic-pending.svg',
-          };
-        case this.InvoiceStatus.PAID:
-          return {
-            labelText: this.InvoiceStatus.PAID.label,
-            labelDecoration: 'Invoice-Status-Paid',
-            icon: 'images/ic-approve.svg'
-          };
-        case this.InvoiceStatus.SCHEDULED:
-          return {
-            labelText: this.InvoiceStatus.SCHEDULED.label,
-            labelDecoration: 'Invoice-Status-Scheduled',
-            icon: 'images/ic-scheduled.svg'
-          };
-        case this.InvoiceStatus.OVERDUE:
-          return {
-            labelText: this.InvoiceStatus.OVERDUE.label,
-            labelDecoration: 'Invoice-Status-Overdue',
-            icon: 'images/ic-overdue.svg'
-          };
-        case this.InvoiceStatus.UNPAID:
-          return {
-            labelText: this.InvoiceStatus.UNPAID.label,
-            labelDecoration: 'Invoice-Status-Unpaid',
-            icon: 'images/ic-scheduled.svg'
-          };
-        case this.InvoiceStatus.PENDING_APPROVAL:
-          var user = ctrl.user;
-          var currentUser = `${user.lastName}, ${user.firstName}(${user.id})`;
-          if ( record.user === currentUser ) {
-            return {
-              labelText: this.InvoiceStatus.PENDING_APPROVAL.label,
-              labelDecoration: 'Invoice-Status-Pending-approval',
-              icon: 'images/ic-scheduled.svg'
-            };
-          } else return null;
-        case this.InvoiceStatus.PENDING_ACCEPTANCE:
-          return {
-            labelText: this.InvoiceStatus.PENDING_ACCEPTANCE.label,
-            labelDecoration: 'Invoice-Status-Pending-approval',
-            icon: 'images/ic-scheduled.svg'
-          };
-        case this.InvoiceStatus.DEPOSITING_MONEY:
-          return {
-            labelText: this.InvoiceStatus.DEPOSITING_MONEY.label,
-            labelDecoration: 'Invoice-Status-Pending-approval',
-            icon: 'images/ic-scheduled.svg'
-          };
-      }
-    },
 
     function formatDate(timestamp, displayTime=true) {
       var locale = 'en-US';
@@ -153,10 +85,16 @@ foam.CLASS({
       const displayDate = hasDisplayDate ? new Date(paymentDateUpdate.newValue) : null;
 
       const invoice = await this.invoiceDAO.find(record.objectId);
-      // name of the payee
-      const payee = await invoice.payee.label();
+
+      this.name = this.getDisplayName(record, this.user, invoice);
+
+      const payee = invoice.payee.id === this.user.id ? this.name : invoice.payee.toSummary();
       // a flag for checking if the invoice was completed by the payee
       const completedByPayee = invoice.paymentMethod === this.PaymentStatus.CHEQUE;
+      // a flag for checking if the invoice was edited by employee
+      const emplyeeChanges = attributes.labelText === this.InvoiceStatus.PENDING_APPROVAL.label;
+      // a flag for checking if the invoice was marked as void
+      const markAsVoid = attributes.labelText === this.InvoiceStatus.VOID.label;
 
       return parentView
         .addClass(this.myClass())
@@ -167,15 +105,24 @@ foam.CLASS({
           .start('div')
             .style({ 'padding-left': '30px' })
             .start('span').addClass('statusTitle')
-              .callIfElse(completedByPayee, function() {
+              .callIf(completedByPayee, function() {
                 this.add(`${payee} marked invoice as `);
-              }, function() {
+              })
+              .callIf(emplyeeChanges, function() {
+                this.add(` ${self.name} send invoice for approval `);
+              })
+              .callIf( markAsVoid, function() {
+                this.add(`${self.name} marks invoice as `);
+              })
+              .callIf( ! completedByPayee && ! emplyeeChanges && ! markAsVoid, function() {
                 this.add('Invoice status changed to ');
               })
             .end()
-            .start('span')
-              .add(attributes.labelText)
-            .end()
+            .callIf( ! emplyeeChanges, function() {
+              this.start('span')
+                .add(attributes.labelText)
+              .end()
+            })
             .callIf(hasDisplayDate &&
               (attributes.labelText === 'Scheduled' || completedByPayee),
               function() {

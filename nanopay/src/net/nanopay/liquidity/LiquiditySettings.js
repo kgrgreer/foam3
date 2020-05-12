@@ -80,7 +80,7 @@ foam.CLASS({
       tableCellFormatter: function(value, obj, axiom) {
         this.__subSubContext__.liquiditySettingsUserDAO
           .find(value)
-          .then((user) => this.add(user.label()))
+          .then((user) => this.add(user.toSummary()))
           .catch((error) => {
             this.add(value);
           });
@@ -338,7 +338,7 @@ foam.CLASS({
       tableCellFormatter: function(value, obj, axiom) {
         this.__subSubContext__.userDAO
           .find(value)
-          .then((user) => this.add(user.label()))
+          .then((user) => this.add(user.toSummary()))
           .catch((error) => {
             this.add(value);
           });
@@ -348,7 +348,6 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
-      section: 'basicInfo',
       value: foam.nanos.auth.LifecycleState.PENDING,
       writePermissionRequired: true,
       createVisibility: 'HIDDEN',
@@ -361,6 +360,10 @@ foam.CLASS({
       name: 'userFeedback',
       storageTransient: true,
       visibility: 'HIDDEN'
+    },
+    {
+      name: 'checkerPredicate',
+      javaFactory: 'return foam.mlang.MLang.FALSE;'
     }
   ],
   methods: [
@@ -383,13 +386,5 @@ fm.foldForState(getId()+":high", getLastModified(), getHighLiquidity().getThresh
 fm.foldForState(getId()+":low", getLastModified(), getLowLiquidity().getThreshold());
       `
     },
-    {
-      name: 'getStringId',
-      type: 'String',
-      javaCode: `
-        String id = ((Long) getId()).toString();
-        return id;
-      `
-    }
   ]
 });

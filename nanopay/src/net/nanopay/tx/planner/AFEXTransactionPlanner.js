@@ -128,7 +128,7 @@ foam.CLASS({
         afexTransaction.setFxExpiry(fxQuote.getExpiryTime());
         afexTransaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
         afexTransaction.setFxRate(fxQuote.getRate());
-        afexTransaction.addLineItems(new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(String.valueOf(fxQuote.getId())).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).build()}, null);
+        afexTransaction.addLineItems( new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(String.valueOf(fxQuote.getId())).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).build()} );
       
         afexTransaction.setFxExpiry(fxQuote.getExpiryTime());
       
@@ -152,7 +152,7 @@ foam.CLASS({
       
         }
         if ( date != null )
-          afexTransaction.addLineItems(new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(date.getTime() - new  Date().getTime()).build()}, null);
+          afexTransaction.addLineItems( new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(date.getTime() - new  Date().getTime()).build()} );
         
         // TODO move to fee engine
         // add invoice fee

@@ -308,16 +308,14 @@ p({
       .setEnableInterfaceDecorators(true)
       .setServiceProviderAware(true)
       .setServiceProviderAwarePropertyInfos(
-        new java.util.HashMap() {{
-          put(
-            net.nanopay.invoice.model.Invoice.class.getName(),
-            new foam.core.PropertyInfo[] {
-              net.nanopay.invoice.model.Invoice.PAYER_ID,
-              net.nanopay.invoice.model.Invoice.PAYEE_ID,
-            }
-          );
-        }}
-      )
+        foam.util.Arrays.asMap(new Object[]
+        {
+          net.nanopay.invoice.model.Invoice.class.getName(),
+          new foam.core.PropertyInfo[] {
+            net.nanopay.invoice.model.Invoice.PAYER_ID,
+            net.nanopay.invoice.model.Invoice.PAYEE_ID,
+          }
+        }))
       .build()
       .orderBy(foam.mlang.MLang.DESC(net.nanopay.invoice.model.Invoice.CREATED));
   """,
@@ -544,7 +542,6 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setAuthorize(false)
       .setServiceProviderAware(true)
-      .setApprovableAwareEnabled(false)
       .build();
     dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.User.EMAIL });
     dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.User.GROUP });
@@ -1008,7 +1005,7 @@ p({
 })
 
 p({"class":"foam.nanos.boot.NSpec", "name":"EFTReturnFileCredentials",         "lazy":false, "service":{"class":"net.nanopay.cico.model.EFTReturnFileCredentials"}})
-p({"class":"foam.nanos.boot.NSpec", "name":"blobService",                      "serve":true,  "client": "{ \"class\":\"foam.blob.RestBlobService\", \"serviceName\":\"service/httpFileService\" }"})
+p({"class":"foam.nanos.boot.NSpec", "name":"blobService",                      "serve":true,  "client": "{ \"class\":\"foam.blob.RestBlobService\", \"serviceName\":\"service/httpBlobService\" }"})
 
 p({
   "class": "foam.nanos.boot.NSpec",
@@ -1063,7 +1060,6 @@ p({
     .setJournalName("liquiditySettings")
     .setOf(net.nanopay.liquidity.LiquiditySettings.getOwnClassInfo())
     .setDecorator(dao)
-    .setApprovableAwareEnabled(false)
     .setAuthorize(false)
     .build();
   """,

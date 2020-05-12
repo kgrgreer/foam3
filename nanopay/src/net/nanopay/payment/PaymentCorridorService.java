@@ -34,7 +34,7 @@ public class PaymentCorridorService implements CorridorService {
     );
   }
 
-  public PaymentProviderCorridorJunction getProviderCorridor(X x, long providerId, String sourceCountry, String targetCountry) {
+  public PaymentProviderCorridorJunction getProviderCorridor(X x, String providerId, String sourceCountry, String targetCountry) {
     DAO dao = (DAO) x.get("paymentProviderCorridorJunctionDAO");
     Corridor corridor = getCorridor(x, sourceCountry, targetCountry);
     if ( corridor == null ) return null;
@@ -66,7 +66,7 @@ public class PaymentCorridorService implements CorridorService {
     return count.getValue() > 0;
   }
 
-  public boolean canProcessCurrencyPair(X x, long providerId, String sourceCountry, String targetCountry, String sourceCurrency, String targetCurrency) {
+  public boolean canProcessCurrencyPair(X x, String providerId, String sourceCountry, String targetCountry, String sourceCurrency, String targetCurrency) {
     Corridor corridor = getCorridor(x, sourceCountry, targetCountry);
     if ( corridor == null ) return false;
 
@@ -98,15 +98,19 @@ public class PaymentCorridorService implements CorridorService {
     if ( from instanceof BankAccount ) {
       sourceCountry = ((BankAccount) from).getCountry();
     } else {
-      sourceCountry = ((BankAccount) TrustAccount.find(x,from)
-        .findReserveAccount(x)).getCountry();
+      BankAccount r = ((BankAccount) TrustAccount.find(x,from)
+        .findReserveAccount(x));
+      if (r != null)
+        sourceCountry = r.getCountry();
     }
 
     if ( to instanceof BankAccount ) {
       targetCountry = ((BankAccount) to).getCountry();
     } else {
-      targetCountry = ((BankAccount) TrustAccount.find(x,to)
-          .findReserveAccount(x)).getCountry();
+      BankAccount r = ((BankAccount) TrustAccount.find(x,to)
+          .findReserveAccount(x));
+      if (r != null)
+        targetCountry = r.getCountry();
     }
 
     if ( SafetyUtil.isEmpty(sourceCountry) || SafetyUtil.isEmpty(targetCountry) ) Collections.emptyList();

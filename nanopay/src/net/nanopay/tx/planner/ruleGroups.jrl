@@ -45,17 +45,32 @@ p({
   "class":"foam.nanos.ruler.RuleGroup",
   "id":"AlternaPlanner",
   "documentation":"Alterna CICO operations",
-  "enabled":true
+  "enabled":true,
+  "predicate":
+  {
+    "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+    "provider":"Alterna"
+  }
 })
 p({
   "class":"foam.nanos.ruler.RuleGroup",
   "id":"BMOPlanner",
   "documentation":"BMO CICO operations",
-  "enabled":true
+  "enabled":true,
+  "predicate":
+  {
+    "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+    "provider":"BMO"
+  }
 })
 p({
   "class":"foam.nanos.ruler.RuleGroup",
   "id":"RBCPlanner",
   "documentation":"RBC CICO operations",
-  "enabled":true
+  "enabled":true,
+  "predicate":
+  {
+    "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+    "provider":"RBC"
+  }
 })

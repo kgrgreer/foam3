@@ -40,7 +40,7 @@ foam.INTERFACE({
           name: 'x'
         },
         {
-          type: 'Long',
+          type: 'String',
           name: 'providerId',
           documentation: 'Payment Provider ID'
         },
@@ -97,7 +97,7 @@ foam.INTERFACE({
           name: 'x'
         },
         {
-          type: 'Long',
+          type: 'String',
           name: 'providerId',
           documentation: 'Payment Provider ID'
         },

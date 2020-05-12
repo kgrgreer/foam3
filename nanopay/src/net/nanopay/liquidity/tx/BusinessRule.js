@@ -4,10 +4,6 @@ foam.CLASS({
   extends: 'foam.nanos.ruler.Rule',
   abstract: true,
 
-  implements: [
-    'foam.nanos.approval.ApprovableAware'
-  ],
-
   documentation: 'Business rule base class.',
 
   javaImports: [
@@ -120,8 +116,8 @@ foam.CLASS({
       tableCellFormatter: function(value, obj) {
         obj.__subContext__.userDAO.find(value).then(function(user) {
           if ( user ) {
-            if ( user.label() ) {
-              this.add(user.label());
+            if ( user.toSummary() ) {
+              this.add(user.toSummary());
             }
           }
         }.bind(this));
@@ -166,14 +162,6 @@ foam.CLASS({
   ],
 
   methods: [
-    {
-      name: 'getStringId',
-      type: 'String',
-      javaCode: `
-        String id = (String) getId();
-        return id;
-      `
-    },
     {
       name: 'toSummary',
       documentation: `When using a reference to the roleDAO, the labels associated

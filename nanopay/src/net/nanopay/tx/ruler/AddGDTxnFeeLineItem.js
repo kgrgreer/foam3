@@ -63,7 +63,7 @@ foam.CLASS({
                     .setName("Transaction Fee")
                     .setAmount(getFee())
                     .build()
-                }, null);
+                });
               }
             }
           }

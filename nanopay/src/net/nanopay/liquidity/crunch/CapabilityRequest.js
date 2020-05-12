@@ -55,6 +55,18 @@ foam.CLASS({
       tableHeaderFormatter: function(axiom) {
         this.add('Request Type');
       },
+      postSet: function(o, n) {
+        if ( o.name === 'ASSIGN_ACCOUNT_BASED' ) {
+          this.clearProperty('accountBasedCapability');
+          this.clearProperty('isUsingTemplate');
+          this.clearProperty('capabilityAccountTemplateChoice');
+          this.clearProperty('capabilityAccountTemplateMap');
+          this.clearProperty('accountToAssignTo');
+          this.clearProperty('approverLevel');
+        } else if ( o.name === 'ASSIGN_GLOBAL' ) {
+          this.clearProperty('globalCapability');
+        }
+      }
     },
     {
       class: 'Reference',
@@ -162,6 +174,14 @@ foam.CLASS({
         // }
 
         return foam.u2.DisplayMode.HIDDEN;
+      },
+      postSet: function(o, n) {
+        if ( o ) {
+          this.clearProperty('capabilityAccountTemplateChoice');
+          this.clearProperty('capabilityAccountTemplateMap');
+        } else if ( n ) {
+          this.clearProperty('accountToAssignTo');
+        }
       }
     },
     {
@@ -332,7 +352,7 @@ foam.CLASS({
         this.__subContext__.userDAO
           .find(value)
           .then((user) => {
-            this.add(user.label());
+            this.add(user.toSummary());
           })
           .catch((error) => {
             console.log('user: ' + value +' error last mod capR: ' + error);
@@ -346,18 +366,14 @@ foam.CLASS({
       name: 'userFeedback',
       storageTransient: true,
       visibility: 'HIDDEN'
+    },
+    {
+      name: 'checkerPredicate',
+      javaFactory: 'return foam.mlang.MLang.FALSE;'
     }
   ],
 
   methods: [
-    {
-      name: 'getStringId',
-      type: 'String',
-      javaCode: `
-        String id = String.valueOf(getId());
-        return id;
-      `
-    },
     {
       name: 'toSummary',
       type: 'String',
@@ -375,7 +391,7 @@ foam.CLASS({
           .where(
             AND(
               EQ(ApprovalRequest.DAO_KEY, "capabilityRequestDAO"),
-              EQ(ApprovalRequest.OBJ_ID, getStringId()),
+              EQ(ApprovalRequest.OBJ_ID, String.valueOf(getProperty("id"))),
               EQ(ApprovalRequest.OPERATION, foam.nanos.ruler.Operations.CREATE),
               EQ(ApprovalRequest.IS_FULFILLED, false),
               EQ(ApprovalRequest.STATUS, ApprovalStatus.REJECTED)

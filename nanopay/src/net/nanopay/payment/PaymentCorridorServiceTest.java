@@ -15,7 +15,7 @@ public class PaymentCorridorServiceTest extends foam.nanos.test.Test {
   DAO corridorDAO, paymentProviderCorridorJunctionDAO;
   Corridor c;
   PaymentProviderCorridorJunction j;
-  long p = 4L;
+  String p = "AFEX";
 
   public void runTest(X x) {
     corridorDAO = (DAO) x.get("corridorDAO");

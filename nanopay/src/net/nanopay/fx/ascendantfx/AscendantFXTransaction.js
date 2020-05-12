@@ -194,7 +194,7 @@ foam.CLASS({
       String fee = srcCurrency.format(getCost());
 
       // Get and format the total settlement.
-      String totalSettlement = srcCurrency.format(getTotal());
+      String totalSettlement = srcCurrency.format(getAmount());
 
       // Get the client ID.
       DAO ascendantFXUserDAO = ((DAO) x.get("ascendantFXUserDAO")).inX(x);
@@ -277,7 +277,7 @@ foam.CLASS({
       doc.append(\"  </tr>\");
       doc.append(\"  <tr>\");
       doc.append(\"    <td><b>Client Name:</b></td>\");
-      doc.append(\"    <td>\").append(payer.label()).append(\"</td>\");
+      doc.append(\"    <td>\").append(payer.toSummary()).append(\"</td>\");
       doc.append(\"    <td><b>Transaction Date:</b></td>\");
       doc.append(\"    <td>\").append(transactionCreated).append(\"</td>\");
       doc.append(\"  </tr>\");
@@ -313,19 +313,19 @@ foam.CLASS({
       doc.append(\"  </tr>\");
       doc.append(\"  <tr>\");
       doc.append(\"    <td><b>Initiated By:</b></td>\");
-      doc.append(\"    <td>\").append(initiator.label()).append(\" [\").append(invoiceCreated).append(\"]\").append(\"</td>\");
+      doc.append(\"    <td>\").append(initiator.toSummary()).append(\" [\").append(invoiceCreated).append(\"]\").append(\"</td>\");
       doc.append(\"    <td></td>\");
       doc.append(\"    <td></td>\");
       doc.append(\"  </tr>\");
       doc.append(\"  <tr>\");
       doc.append(\"    <td><b>Approved By:</b></td>\");
-      doc.append(\"    <td>\").append(approver.label()).append(\" [\").append(transactionCreated).append(\"]\").append(\"</td>\");
+      doc.append(\"    <td>\").append(approver.toSummary()).append(\" [\").append(transactionCreated).append(\"]\").append(\"</td>\");
       doc.append(\"    <td></td>\");
       doc.append(\"    <td></td>\");
       doc.append(\"  </tr>\");
       doc.append(\"  <tr>\");
       doc.append(\"    <td><b>Released By:</b></td>\");
-      doc.append(\"    <td>\").append(approver.label()).append(\" [\").append(transactionCreated).append(\"]\").append(\"</td>\");
+      doc.append(\"    <td>\").append(approver.toSummary()).append(\" [\").append(transactionCreated).append(\"]\").append(\"</td>\");
       doc.append(\"    <td></td>\");
       doc.append(\"    <td></td>\");
       doc.append(\"  </tr>\");
@@ -345,7 +345,7 @@ foam.CLASS({
       doc.append(\"  </tr>\");
       doc.append(\"  <tr>\");
       doc.append(\"    <td>1</td>\");
-      doc.append(\"    <td>\").append(payee.label()).append(\"</td>\");
+      doc.append(\"    <td>\").append(payee.toSummary()).append(\"</td>\");
       doc.append(\"    <td>EFT/ACH</td>\");
       doc.append(\"    <td>\").append(getDestinationCurrency()).append(\"</td>\");
       doc.append(\"    <td class=\\\"r-align\\\">\").append(destAmountFormatted).append(\"</td>\");

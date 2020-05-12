@@ -68,6 +68,10 @@ foam.CLASS({
     ^ h3 {
       font-weight: 200;
     }
+    ^ .DAOBrowser .foam-u2-filter-BooleanFilterView-container .foam-u2-md-CheckBox:checked {
+      background-color: /*%WHITE%*/ #ffffff;
+      border-color: /*%WHITE%*/ #ffffff;
+    }
   `,
 
   messages: [
@@ -75,7 +79,8 @@ foam.CLASS({
     { name: 'SUB_TITLE', message: `Here's a list of the funds you've requested from other people` },
     { name: 'DELETE_DRAFT', message: 'Draft has been deleted.' },
     { name: 'RECONCILED_SUCCESS', message: 'Invoice has been reconciled by payer.' },
-    { name: 'RECONCILED_ERROR', message: `There was an error reconciling the invoice.` }
+    { name: 'RECONCILED_ERROR', message: `There was an error reconciling the invoice.` },
+    { name: 'INVOICE', message: 'invoice' }
   ],
 
   classes: [
@@ -109,15 +114,15 @@ foam.CLASS({
       factory: function() {
         return this.DAOControllerConfig.create({
           filterExportPredicate: this.NEQ(foam.nanos.export.ExportDriverRegistry.ID, 'CSV'),
-          dao: this.user.sales.orderBy(this.DESC(this.Invoice.CREATED))
+          dao: this.user.sales.orderBy(this.Invoice.PAYEE_RECONCILED)
                 .orderBy(this.Invoice.PAYER_RECONCILED)
-                .orderBy(this.Invoice.PAYEE_RECONCILED),
+                .orderBy(this.DESC(this.Invoice.ISSUE_DATE)),
           createPredicate: foam.mlang.predicate.True,
           defaultColumns: [
             this.Invoice.PAYER_ID.clone().copyFrom({
               label: 'Company',
-              tableCellFormatter: async function(_, invoice) {
-                var additiveSubField = await invoice.payer.label();
+              tableCellFormatter: function(_, invoice) {
+                var additiveSubField = invoice.payer.toSummary();
                 this.add(additiveSubField);
                 this.tooltip = additiveSubField;
               }
@@ -145,8 +150,8 @@ foam.CLASS({
           columns: [
             this.Invoice.PAYER_ID.clone().copyFrom({
               label: 'Company',
-              tableCellFormatter: async function(_, invoice) {
-                var additiveSubField = await invoice.payer.label();
+              tableCellFormatter: function(_, invoice) {
+                var additiveSubField = invoice.payer.toSummary();
                 this.add(additiveSubField);
               }
             }),
@@ -239,9 +244,12 @@ foam.CLASS({
                 return this.status === self.InvoiceStatus.DRAFT;
               },
               code: function(X) {
-                self.user.sales.remove(this).then(() => {
-                  self.notify(self.DELETE_DRAFT, 'success')
-                });
+                ctrl.add(self.Popup.create().tag({
+                  class: 'foam.u2.DeleteModal',
+                  dao: self.user.sales,
+                  data: this,
+                  label: self.INVOICE
+                }));
               }
             })
           ]

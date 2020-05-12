@@ -2,7 +2,7 @@
 p({
   "class":"foam.nanos.cron.Cron",
   "second":30,
-  "enabled":true,
+  "enabled":false,
   "id":"SMTP Email Service",
   "description":"Re-send UNSENT emails in emailMessageDAO",
   "code":"""
@@ -11,7 +11,7 @@ p({
     import foam.nanos.notification.email.EmailMessage;
     import foam.nanos.notification.email.SMTPEmailService;
     import foam.nanos.notification.email.Status;
-    import static foam.mlang.MLang.*;
+    import static foam.mlang.MLang.EQ;
     
     DAO emailMessageDAO = (DAO) x.get("emailMessageDAO");
     emailMessages = ((ArraySink)
@@ -31,7 +31,7 @@ p({
       emailMessageDAO.put(emailService.sendEmail(x, emailMessage));
       count++;
       if ( count > tps ) {
-        remaining = endTime - System.currentTimeMillis;
+        remaining = endTime - System.currentTimeMillis();
         if ( remaining > 0 ) {
           Thread.sleep(remaining);
         }

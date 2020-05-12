@@ -63,7 +63,7 @@ public class JoinBusinessWebAgent implements WebAgent {
       long businessId = (long) parameters.get("businessId");
       DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
       Business business = (Business) localBusinessDAO.inX(x).find(businessId);
-      message = "You've been successfully added to " + business.label();
+      message = "You've been successfully added to " + business.toSummary();
       // Look up the user.
       if ( token.getUserId() == 0 ) throw new Exception("User not found.");
       DAO localUserDAO = (DAO) x.get("localUserDAO");

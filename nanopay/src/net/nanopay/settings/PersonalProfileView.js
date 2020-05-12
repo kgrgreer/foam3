@@ -37,19 +37,15 @@ foam.CLASS({
       width: 1000px;
       margin-top: 30px;
     }
-    ^ .firstName-Text {
-      width: 150px;
-      margin-right: 88px;
-      margin-bottom: 8px;
-      display: inline-block;
+    ^ .flex-rsb {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
     }
-    ^ .lastName-Text {
-      width: 150px;
-      margin-right: 82px;
-      margin-bottom: 8px;
-    }
-    ^ .jobTitle-Text{
-      margin-bottom: 8px;
+    ^ .flex-csb {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
     }
     ^ h1{
       opacity: 0.6;
@@ -82,26 +78,6 @@ foam.CLASS({
       text-align: left;
       color: /*%BLACK%*/ #1e1f21;
     }
-    ^ .firstName-Input{
-      width: 215px;
-      height: 40px;
-      margin-right: 20px;
-      margin-bottom: 20px;
-    }
-    ^ .lastName-Input{
-      width: 215px;
-      height: 40px;
-      margin-right: 20px;
-    }
-    ^ .jobTitle-Input{
-      width: 470px;
-      height: 40px;
-    }
-    ^ .emailAddress-Text {
-      width: 150px;
-      margin-bottom: 8px;
-      margin-right: 322px;
-    }
     ^ .phoneNumber-Dropdown{
       width: 80px;
       height: 40px;
@@ -115,18 +91,14 @@ foam.CLASS({
       color: /*%BLACK%*/ #1e1f21;
       margin-right: 10px;
     }
-    ^ .emailAddress-Input{
-      width: 450px;
-      height: 40px;
-      margin-right: 20px;
-      margin-bottom: 19px;
-      border: solid 1px rgba(164, 179, 184, 0.5) !important;
-      padding: 10px ;
-      color: #a4b3b8 !important;
+    ^ .gTextField {
+      width: auto;
+      display: inline-block;
     }
-    ^ .phoneNumber-Input{
-      width: 380px;
+    ^ .gInputField{
+      width: auto;
       height: 40px;
+      display: inline-block;
     }
     ^ .update-BTN{
       width: 135px;
@@ -134,7 +106,7 @@ foam.CLASS({
       border-radius: 2px;
       font-family: Roboto;
       font-size: 14px;
-      line-height: 2.86;
+      line-height: normal;
       letter-spacing: 0.2px;
       text-align: center;
       color: #ffffff;
@@ -380,29 +352,29 @@ foam.CLASS({
       this
       .addClass(this.myClass())
       .start(personalProfile)
-        .start().style({ display: 'flex'})
-          .start().style({ display:'inline-block'})
-            .start('h2').add("First name").addClass('firstName-Text').end()
-            .start(this.FIRST_NAME).addClass('firstName-Input').end()
+        .start().addClass('flex-rsb')
+          .start().addClass('flex-csb')
+            .start('h2').add("First name").addClass('gTextField').end()
+            .start(this.FIRST_NAME).addClass('gInputField').end()
           .end()
-          .start().style({ display:'inline-block', 'margin-left': '50px'})
-            .start('h2').add("Last name").addClass('lastName-Text').end()
-            .start(this.LAST_NAME).addClass('lastName-Input').end()
+          .start().addClass('flex-csb')
+            .start('h2').add("Last name").addClass('gTextField').end()
+            .start(this.LAST_NAME).addClass('gInputField').end()
           .end()
-          .start().style({ display:'inline-block', 'margin-left': '50px'})
-            .start('h2').add("Job Title").addClass('jobTitle-Text').end()
-            .start(this.JOB_TITLE).addClass('jobTitle-Input').end()
+          .start().addClass('flex-csb')
+            .start('h2').add("Job Title").addClass('gTextField').end()
+            .start(this.JOB_TITLE).addClass('gInputField').end()
           .end()       
         .end()
 
-        .start('div')
-          .start('h2').add("Email Address").addClass('emailAddress-Text').end()
-          .start(this.EMAIL ,{ mode:  this.email ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.RW}).addClass('emailAddress-Input').end()
+        .start().addClass('flex-csb')
+          .start('h2').add("Email Address").addClass('gTextField').end()
+          .start(this.EMAIL).addClass('gInputField').end()
         .end()
-
-        .start()
-          .start('h2').add("Phone Number").end()
-          .start(this.PHONE).addClass('phoneNumber-Input').end()
+        
+        .start().addClass('flex-csb')
+          .start('h2').add("Phone Number").addClass('gTextField').end()
+          .start(this.PHONE).addClass('gInputField').end()
         .end()
 
         .start('div')

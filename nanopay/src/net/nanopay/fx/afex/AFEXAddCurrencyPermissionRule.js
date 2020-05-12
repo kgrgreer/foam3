@@ -113,7 +113,7 @@ foam.CLASS({
 
         String toCountry = business.getAddress().getCountryId().equals("CA") ? "USA" : "Canada";
         String toCurrency = business.getAddress().getCountryId().equals("CA") ? "USD" : "CAD";
-        args.put("business", business.label());
+        args.put("business", business.toSummary());
         args.put("toCurrency", toCurrency);
         args.put("toCountry", toCountry);
         args.put("link",   config.getUrl() + "#sme.main.dashboard");

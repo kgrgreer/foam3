@@ -337,7 +337,6 @@ public class TransactionTest
     test(txnNew.getReferenceData() == txn.getReferenceData(),"Reference Data copied in LimitedClone");
     test(txnNew.getReferenceNumber().equals(txn.getReferenceNumber()),"Reference Number copied in LimitedClone");
     test(txnNew.getStatus() == txn.getStatus(),"Status copied in LimitedClone from "+txn.getStatus().getName() +" and "+ txnNew.getStatus().getName());
-    test(! txn.isActive(), "isActive returns false");
 
     int amount = txn.getTransfers().length;
     Transfer transfer = new Transfer();
@@ -357,8 +356,6 @@ public class TransactionTest
     test(! txn.canTransfer(x_, null), "Cannot transfer transaction if status is PENDING");
     txnNew.setStatus(TransactionStatus.PENDING);
     test( ! txn.canTransfer(x_,txnNew),"Cannot transfer transaction in same status as old transaction");
-    test( ! txn.canReverseTransfer(x_,txn), "canReverseTransfer returns false");
-
   }
 
   public void testPADType() {

@@ -181,7 +181,7 @@ public class NanopayLineItemFeeDAOTest
       .setType(expense.getId())
       .setAmount(2000)
       .build();
-    transaction.addLineItems(new TransactionLineItem[] {lineItem1, lineItem2}, new TransactionLineItem[] {});
+    transaction.addLineItems(new TransactionLineItem[] {lineItem1, lineItem2});
 
     quote.setRequestTransaction(transaction);
     TransactionQuote resultQoute = (TransactionQuote) ((DAO) x_.get("localTransactionPlannerDAO")).put_(x_, quote);

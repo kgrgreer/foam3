@@ -30,8 +30,8 @@ foam.CLASS({
       documentation: `The name of the other party involved with the invoice.`,
       expression: function(invoice, user) {
         return user.id !== invoice.payeeId ?
-            this.invoice.payee.label() :
-            this.invoice.payer.label();
+            this.invoice.payee.toSummary() :
+            this.invoice.payer.toSummary();
       }
     },
     {

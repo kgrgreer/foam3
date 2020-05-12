@@ -384,7 +384,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
               list.add(new ListItem(String.format("acceptance document: %s user: %s business: %s country: %s date: %s",
                 accDoc.getTitle(),
-                user.label(),
+                user.toSummary(),
                 businessId,
                 business.getAddress().getCountryId(),
                 doc.getLastModified())));

@@ -118,6 +118,14 @@ public class BmoReportProcessor {
       return;
     }
 
+    try {
+      // Save File
+      EFTFileUtil.storeEFTFile(this.x, file, "text/csv"); 
+      FileUtils.deleteQuietly(file);
+    } catch ( Exception e ) {
+      this.logger.error("Error while saving file: . " + file.getName(), e.getMessage(), e);
+    }
+
   }
 
   /**
