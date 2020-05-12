@@ -333,16 +333,14 @@ p({
       .setEnableInterfaceDecorators(true)
       .setServiceProviderAware(true)
       .setServiceProviderAwarePropertyInfos(
-        new java.util.HashMap() {{
-          put(
-            net.nanopay.invoice.model.Invoice.class.getName(),
-            new foam.core.PropertyInfo[] {
-              net.nanopay.invoice.model.Invoice.PAYER_ID,
-              net.nanopay.invoice.model.Invoice.PAYEE_ID,
-            }
-          );
-        }}
-      )
+        foam.util.Arrays.asMap(new Object[]
+        {
+          net.nanopay.invoice.model.Invoice.class.getName(),
+          new foam.core.PropertyInfo[] {
+            net.nanopay.invoice.model.Invoice.PAYER_ID,
+            net.nanopay.invoice.model.Invoice.PAYEE_ID,
+          }
+        }))
       .build()
       .orderBy(foam.mlang.MLang.DESC(net.nanopay.invoice.model.Invoice.CREATED));
   """,

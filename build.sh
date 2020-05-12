@@ -317,6 +317,13 @@ function start_nanos {
             JAVA_OPTS="${JAVA_OPTS} -Dresource.journals.dir=journals"
             JAR=$(ls ${NANOPAY_HOME}/lib/nanopay-*.jar | awk '{print $1}')
             exec java -jar "${JAR}"
+        elif [ "$RUNTIME_COMPILE" -eq 1 ]; then
+          gradle --daemon genJava
+          gradle --daemon copyLib
+          CLASSPATH="$CLASSPATH":foam2/src:build/src/java:nanopay/src
+          JAVA_SOURCES="{sources:[\"nanopay/src\",\"foam2/src\",\"build/src/java\"],\"output\":\"build/classes/java/main\"}"
+          javac -cp "$CLASSPATH" -d build/classes/java/main foam2/src/foam/nanos/ccl/CCLoader.java
+          exec java -cp "$CLASSPATH" -DJAVA_SOURCES=$JAVA_SOURCES -Djava.system.class.loader=foam.nanos.ccl.CCLoader foam.nanos.boot.Boot
         elif [ "$DAEMONIZE" -eq 0 ]; then
             exec java -cp "$CLASSPATH" foam.nanos.boot.Boot
         else
@@ -599,9 +606,10 @@ WEB_PORT=8080
 VULNERABILITY_CHECK=0
 GRADLE_FLAGS=
 LIQUID_DEMO=0
+RUNTIME_COMPILE=0
 RUN_USER=
 
-while getopts "bcC:dD:E:eghijJ:klmM:N:opP:QrsStT:uU:vV:wW:xz" opt ; do
+while getopts "bcC:dD:E:efghijJ:klmM:N:opP:QrsStT:uU:vV:wW:xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;
@@ -619,6 +627,7 @@ while getopts "bcC:dD:E:eghijJ:klmM:N:opP:QrsStT:uU:vV:wW:xz" opt ; do
                 GRADLE_FLAGS="$GRADLE_FLAGS $skipGenFlag"
            fi
            ;;
+        f) RUNTIME_COMPILE=1;;
         g) STATUS=1 ;;
         h) usage ; quit 0 ;;
         i) INSTALL=1 ;;
@@ -732,7 +741,7 @@ fi
 
 deploy_journals
 
-if [ "${RESTART_ONLY}" -eq 0 ]; then
+if [ "${RESTART_ONLY}" -eq 0 ] && [ "${RUNTIME_COMPILE}" -eq 0 ]; then
     build_jar
 fi
 

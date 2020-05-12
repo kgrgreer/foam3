@@ -20,7 +20,14 @@ foam.CLASS({
       class: 'Boolean',
       name: 'enabled',
       documentation: 'Determines whether Liquidity is active, and notifications and/or re-balancing is to occur',
-      value: true
+      value: true,
+      postSet: function(o, n) {
+        if ( o ) {
+          this.clearProperty('rebalancingEnabled');
+          this.clearProperty('denomination');
+          this.clearProperty('threshold');
+        }
+      }
     },
     {
       class: 'Boolean',
@@ -29,7 +36,13 @@ foam.CLASS({
       visibility: function(enabled) {
         return enabled ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
-      documentation: 'Triggeres automatic transaction on accounts.'
+      documentation: 'Triggers automatic transaction on accounts.',
+      postSet: function(o, n) {
+        if ( o ) {
+          this.clearProperty('resetBalance');
+          this.clearProperty('pushPullAccount');
+        }
+      }
     },
     {
       visibility: 'hidden',
