@@ -51,6 +51,18 @@ foam.CLASS({
           class: 'foam.u2.EnumView',
           permissioned: true
         };
+      },
+      postSet: function(o, n) {
+        if ( o.name === 'ACCOUNT' ) {
+          this.clearProperty('accountToLimit');
+          this.clearProperty('includeChildAccounts');
+        } else if ( o.name === 'USER' ) {
+          this.clearProperty('userToLimit');
+          this.clearProperty('denomination');
+        } else if (o.name === 'BUSINESS' ) {
+          this.clearProperty('businessToLimit');
+          this.clearProperty('denomination');
+        }
       }
     },
     {
