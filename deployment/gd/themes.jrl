@@ -1,9 +1,9 @@
 p({
   "class":"foam.nanos.theme.Theme",
-  "id":4,
-  "description":"Ablii Grain Discovery",
-  "appName":"Ablii-GD",
-  "priority":2,
+  "id":"BE1FD088-5618-4508-BCDF-178719D863B3",
+  "name":"gd",
+  "appName":"Grain Discovery",
+  "description":"Grain Discovery",
   "defaultMenu":"sme.accountProfile.switch-business",
   "logo":"images/gd/gd-logo-72x72.png",
   "largeLogo":"images/gd/gd-logo-72x72.png",
@@ -49,5 +49,8 @@ p({
     .latest-ablii-items {
       display: none;
     }
-  """
+  """,
+  "createdBy":1,
+  "createdByAgent":1,
+  "created":"2020-04-29T22:32:52.685Z"
 })
