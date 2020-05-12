@@ -638,3 +638,37 @@ p({
   "enabled":true,
   "lifecycleState":1
 })
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"fd13a701-ed05-438b-a686-8191b9957c42",
+  "name":"Transaction Cascading Cancellation",
+  "documentation":"Sets all child transactions to cancelled status on status change to cancelled",
+  "ruleGroup":"ReverseTransactions",
+  "daoKey":"localTransactionDAO",
+  "priority":1000,
+  "after":true,
+  "operation":1,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyChangePredicate",
+        "propName":"status",
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue": {
+          "class": "net.nanopay.tx.model.TransactionStatus",
+          "ordinal": 11
+        }
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.tx.ruler.CascadingCancelAction",
+  },
+  "enabled":true,
+  "lifecycleState":1
+})

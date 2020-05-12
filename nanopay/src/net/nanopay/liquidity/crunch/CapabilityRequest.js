@@ -55,6 +55,18 @@ foam.CLASS({
       tableHeaderFormatter: function(axiom) {
         this.add('Request Type');
       },
+      postSet: function(o, n) {
+        if ( o.name === 'ASSIGN_ACCOUNT_BASED' ) {
+          this.clearProperty('accountBasedCapability');
+          this.clearProperty('isUsingTemplate');
+          this.clearProperty('capabilityAccountTemplateChoice');
+          this.clearProperty('capabilityAccountTemplateMap');
+          this.clearProperty('accountToAssignTo');
+          this.clearProperty('approverLevel');
+        } else if ( o.name === 'ASSIGN_GLOBAL' ) {
+          this.clearProperty('globalCapability');
+        }
+      }
     },
     {
       class: 'Reference',
@@ -162,6 +174,14 @@ foam.CLASS({
         // }
 
         return foam.u2.DisplayMode.HIDDEN;
+      },
+      postSet: function(o, n) {
+        if ( o ) {
+          this.clearProperty('capabilityAccountTemplateChoice');
+          this.clearProperty('capabilityAccountTemplateMap');
+        } else if ( n ) {
+          this.clearProperty('accountToAssignTo');
+        }
       }
     },
     {

@@ -396,6 +396,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ruler/AbliiSendCompletedNotification' },
   { name: 'net/nanopay/tx/ruler/SendDeclinedCINotification' },
   { name: 'net/nanopay/tx/ruler/AddStatusHistoryAction' },
+  { name: 'net/nanopay/tx/ruler/CascadingCancelAction' },
   { name: 'net/nanopay/tx/ruler/IsSecurityQuote' },
   { name: 'net/nanopay/tx/model/TransactionLimitTimeFrame' },
   { name: 'net/nanopay/tx/ruler/MicroDepositSuccessed' },
