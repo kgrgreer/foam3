@@ -5,7 +5,7 @@ p({
   "serviceScript":
   """
     dao = new net.nanopay.msp.MspSetupDAO.Builder(x)
-      .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.msp.MspInfo.getOwnClassInfo()).build())
+      .setDelegate(new foam.dao.NullDAO(x, net.nanopay.msp.MspInfo.getOwnClassInfo()))
       .build();
     
     return new foam.dao.EasyDAO.Builder(x)
