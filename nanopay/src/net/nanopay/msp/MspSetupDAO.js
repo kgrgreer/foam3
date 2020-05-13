@@ -10,7 +10,10 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.ServiceProvider',
-    'foam.nanos.auth.User'
+    'foam.nanos.auth.User',
+    'foam.nanos.auth.GroupPermissionJunction',
+    'java.util.ArrayList',
+    'java.util.List'
   ],
 
   methods: [
@@ -30,6 +33,7 @@ foam.CLASS({
 
         DAO groupDAO = (DAO) x.get("localGroupDAO");
         DAO userDAO = (DAO) x.get("localUserDAO");
+        DAO groupPermissionJunctionDAO = (DAO) x.get("groupPermissionJunctionDAO");
 
         // Create spid-admin group
         Group adminGroup = new Group();
@@ -49,6 +53,30 @@ foam.CLASS({
         adminUser.setSpid(mspInfo.getSpid());
         adminUser.setEmailVerified(true);
         userDAO.put(adminUser);
+
+        List<String> permissionArray = new ArrayList<>();
+        permissionArray.add("group.update." + mspInfo.getSpid() + "-admin");
+        permissionArray.add("group.update." + mspInfo.getSpid() + "-fraud-ops");
+        permissionArray.add("group.update." + mspInfo.getSpid() + "-payment-ops");
+        permissionArray.add("group.update." + mspInfo.getSpid() + "-support");
+        permissionArray.add("group.read." + mspInfo.getSpid() + "-admin");
+        permissionArray.add("group.read." + mspInfo.getSpid() + "-fraud-ops");
+        permissionArray.add("group.read." + mspInfo.getSpid() + "-payment-ops");
+        permissionArray.add("group.read." + mspInfo.getSpid() + "-support");
+
+        for ( int i = 0; i < permissionArray.size(); i++ ) {
+          // Add the permissions of spid's groups to the spid-admin group
+          GroupPermissionJunction junction = new GroupPermissionJunction();
+          junction.setSourceId(mspInfo.getSpid() + "-admin");
+          junction.setTargetId(permissionArray.get(i));
+          groupPermissionJunctionDAO.put(junction);
+
+          // Add the permissions of spid's groups to the msp-admin group
+          GroupPermissionJunction mspAdminJunction = new GroupPermissionJunction();
+          junction.setSourceId("msp-admin");
+          junction.setTargetId(permissionArray.get(i));
+          groupPermissionJunctionDAO.put(junction);
+        }
 
         // Create spid-fraud-ops group
         Group fraudOpsGroup = new Group();
