@@ -282,7 +282,7 @@ p({
       "config":
         {
           "class": "foam.comics.v2.DAOControllerConfig",
-          "daoKey": "invoiceDAO"
+          "daoKey": "detailedInvoiceDAO"
         }
     }
 })

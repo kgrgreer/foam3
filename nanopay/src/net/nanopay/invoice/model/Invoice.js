@@ -615,6 +615,13 @@ foam.CLASS({
       name: 'payerReconciled',
       documentation: `Determines whether invoice has been reconciled by payer.
           Verifies that the sent amount is correct.`
+    },
+    {
+      class: 'FObjectArray',
+      name: 'transactionHistory',
+      of: 'net.nanopay.tx.model.Transaction',
+      view: { class: 'foam.u2.view.DAOtoFObjectArrayView' },
+      visibility: 'RO'
     }
   ],
 
