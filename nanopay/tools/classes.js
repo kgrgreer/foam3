@@ -502,6 +502,7 @@ var classes = [
   'net.nanopay.tx.ruler.AbliiSendCompletedNotification',
   'net.nanopay.tx.ruler.SendDeclinedCINotification',
   'net.nanopay.tx.ruler.AddStatusHistoryAction',
+  'net.nanopay.tx.ruler.CascadingCancelAction',
   'net.nanopay.tx.RepayDebtOnCIRule',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',
@@ -1023,7 +1024,11 @@ var classes = [
 
   // Notification
   'net.nanopay.notification.TriggerNotificationTestAction',
-  'net.nanopay.notification.TriggerDoNotifyTestAction'
+  'net.nanopay.notification.TriggerDoNotifyTestAction',
+  
+  // msp
+  'net.nanopay.msp.MspInfo',
+  'net.nanopay.msp.MspSetupDAO'
 ];
 
 var abstractClasses = [

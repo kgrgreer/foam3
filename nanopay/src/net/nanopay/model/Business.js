@@ -51,7 +51,6 @@ foam.CLASS({
   tableColumns: [
     'id',
     'businessName',
-    'email',
     'address',
     'compliance',
     'viewAccounts'
