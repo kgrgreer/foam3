@@ -54,7 +54,6 @@ foam.CLASS({
 
               // notification
               Notification notification = new Notification();
-              notification.setEmailIsEnabled(true);
               notification.setGroupId(getGroupId());
               notification.setBody(notificationMsg);
               notification.setNotificationType("Business Rule Transaction Alert");

@@ -73,7 +73,6 @@ foam.CLASS({
             Notification helpSignUpNotification = new Notification.Builder(x)
               .setBody("Send Welcome Email After 30 Minutes.")
               .setNotificationType("WelcomeEmail")
-              .setEmailIsEnabled(true)
               .setEmailArgs(args)
               .setEmailName("helpsignup")
               .build();

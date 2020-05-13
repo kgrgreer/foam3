@@ -205,7 +205,6 @@ foam.CLASS({
           Notification notification = new Notification.Builder(x)
             .setBody("Invoice Notification.")
             .setNotificationType(emailTemplateName + " email.")
-            .setEmailIsEnabled(true)
             .setEmailArgs(args)
             .setEmailName(emailTemplateName)
             .build();

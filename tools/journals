@@ -47,6 +47,8 @@ menus
 mspSetup
 notifications
 notificationTemplates
+notificationSettings
+notificationSettingDefaults
 payoutOptions
 paymentCodes
 paymentProviderCorridorJunctions
