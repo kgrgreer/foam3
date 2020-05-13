@@ -564,9 +564,9 @@ foam.CLASS({
     {
       name: 'doNotify',
       javaCode: `
-        DAO agentJunctionDAO       = (DAO) x.get("agentJunctionDAO");
+        DAO       agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
         DAO notificationSettingDAO = (DAO) x.get("notificationSettingDAO");
-        DAO               userDAO  = (DAO) x.get("localUserDAO");
+        DAO                userDAO = (DAO) x.get("localUserDAO");
         Logger              logger = (Logger) x.get("logger");
 
         // Send business notifications

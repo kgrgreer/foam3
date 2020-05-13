@@ -63,7 +63,7 @@ import static foam.mlang.MLang.*;
       notification.setUserId(removeAdminUser.getId());
       notification.setNotificationType("nanopay admin access has expired");
       notification.setBody("Your nanopay admin access has been revoked. Please create a ticket to request admin access when required.");
-      notificationDAO.put(notification);
+      removeAdminUser.doNotify(x, notification);
     }
   }
  }

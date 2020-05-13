@@ -36,6 +36,7 @@ public class LiquidityService
   extends    ContextAwareSupport
   implements LiquidityAuth
 {
+  protected DAO    userDAO_;
   protected DAO    accountDAO_;
   protected DAO    liquiditySettingsDAO_;
   protected DAO    transactionDAO_;
@@ -49,6 +50,11 @@ public class LiquidityService
     return logger_;
   }
 
+  protected DAO getUserDAO() {
+    if ( userDAO_ == null ) userDAO_ = (DAO) getX().get("localUserDAO");
+
+    return userDAO_;
+  }
   protected DAO getAccountDAO() {
     if ( accountDAO_ == null ) accountDAO_ = (DAO) getX().get("localAccountDAO");
 
@@ -147,8 +153,10 @@ public class LiquidityService
         Notification notification = new Notification();
         notification.setNotificationType("No verified bank account for liquidity settings");
         notification.setBody("You need to add and verify bank account for liquidity settings");
-        notification.setUserId(account.getOwner());
-        ((DAO) x_.get("notificationDAO")).put(notification);
+        User user = (User) getUserDAO().find(account.getOwner());
+        if ( user != null ) {
+          user.doNotify(x_, notification);
+        }
         return;
       }
 
@@ -178,8 +186,10 @@ public class LiquidityService
         Notification notification = new Notification();
         notification.setNotificationType("No verified bank account for liquidity settings");
         notification.setBody("You need to add and verify bank account for liquidity settings");
-        notification.setUserId(account.getOwner());
-        ((DAO) x_.get("notificationDAO")).put(notification);
+        User user = (User) getUserDAO().find(account.getOwner());
+        if ( user != null ) {
+          user.doNotify(x_, notification);
+        }
         return;
       }
       if ( txnAmount <= 0 && currentBalance - txnAmount >= liquidity.getThreshold() ) {
@@ -218,8 +228,10 @@ public class LiquidityService
     args.put("link",        url);
 
     notification.setEmailArgs(args);
-    notification.setUserId(recipient);
-    ((DAO) x_.get("notificationDAO")).put(notification);
+    User recipientUser = (User) getUserDAO().find(recipient);
+    if ( recipientUser != null ) {
+      recipientUser.doNotify(x_, notification);
+    }
   }
 
   //Add cash in and cash out transaction, set transaction type to separate if it is an cash in or cash out transaction
@@ -246,8 +258,10 @@ public class LiquidityService
       Notification notification = new Notification();
       notification.setNotificationType("Failure to Rebalance");
       notification.setBody("An error occurred and the rebalancing operation for liquidity setting "+ls.getName()+" has failed.");
-      notification.setUserId(ls.getUserToEmail());
-      ((DAO) x_.get("notificationDAO")).put(notification);
+      User user = (User) getUserDAO().find(ls.getUserToEmail());
+      if ( user != null ) {
+        user.doNotify(x_, notification);
+      }
     }
   }
 
