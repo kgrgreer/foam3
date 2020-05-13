@@ -75,7 +75,7 @@ foam.CLASS({
           GroupPermissionJunction mspAdminJunction = new GroupPermissionJunction();
           junction.setSourceId("msp-admin");
           junction.setTargetId(permissionArray.get(i));
-          groupPermissionJunctionDAO.put(junction);
+          groupPermissionJunctionDAO.put(mspAdminJunction);
         }
 
         // Create spid-fraud-ops group
