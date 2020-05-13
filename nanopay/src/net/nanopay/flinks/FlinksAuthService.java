@@ -2,17 +2,18 @@ package net.nanopay.flinks;
 
 import foam.core.*;
 import foam.dao.*;
-import java.util.*;
-
 import foam.nanos.auth.AuthenticationException;
 import foam.nanos.auth.User;
-import net.nanopay.flinks.model.*;
-import foam.nanos.NanoService;
-import org.apache.commons.io.IOUtils;
-import java.util.Base64;
-import java.util.Date;
-import java.io.*;
 import foam.nanos.logger.Logger;
+import foam.nanos.NanoService;
+import foam.util.SafetyUtil;
+import net.nanopay.flinks.model.*;
+
+import java.io.*;
+import java.util.*;
+
+import org.apache.commons.io.IOUtils;
+
 
 /**
  * The FlinksAuthService is used as service that will be delegated into the Skeleton Box.
@@ -204,7 +205,7 @@ public class FlinksAuthService
     AccountWithDetailModel[] filteredAccounts = accounts;
     return Arrays.stream(filteredAccounts).filter(
       account ->
-        ! account.getTransitNumber().isEmpty() &&
+        ! SafetyUtil.isEmpty(account.getTransitNumber()) &&
         account.getCategory().equals("Operations") &&
         account.getCurrency().equals("CAD")
     ).toArray(AccountWithDetailModel[]::new);
