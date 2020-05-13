@@ -57,7 +57,7 @@ foam.CLASS({
       Long transactionVal = 0L;
       RbcAssignedClientValue rbcValues = (RbcAssignedClientValue) x.get("rbcAssignedClientValue");
       BankAccount fundingAccount = (BankAccount) ((DAO) x.get("accountDAO")).find(rbcValues.getAccountId());
-      if ( fundingAccount == null ) throw new RuntimeException("Nanopay bank account cannot be null");
+      if ( fundingAccount == null ) throw new RuntimeException("nanopay bank account cannot be null");
 
       net.nanopay.iso20022.Pain00100103 pain00100103Msg = new net.nanopay.iso20022.Pain00100103();
       CustomerCreditTransferInitiationV03 cstmrCdtTrfInitn = new CustomerCreditTransferInitiationV03();
