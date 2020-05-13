@@ -20,7 +20,7 @@ foam.CLASS({
     {
       name: 'accountId',
       class: 'Long',
-      documentation: 'Nanopay RBC account ID'
+      documentation: 'nanopay RBC account ID'
     }
   ]
 
