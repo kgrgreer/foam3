@@ -12,6 +12,7 @@ foam.CLASS({
     'foam.nanos.auth.ServiceProvider',
     'foam.nanos.auth.User',
     'foam.nanos.auth.GroupPermissionJunction',
+    'net.nanopay.admin.model.AccountStatus',
     'java.util.ArrayList',
     'java.util.List'
   ],
@@ -52,6 +53,7 @@ foam.CLASS({
         adminUser.setGroup(mspInfo.getSpid() + "-admin");
         adminUser.setSpid(mspInfo.getSpid());
         adminUser.setEmailVerified(true);
+        adminUser.setStatus(AccountStatus.ACTIVE);
         userDAO.put(adminUser);
 
         List<String> permissionArray = new ArrayList<>();
