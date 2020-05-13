@@ -12,3 +12,4 @@ p({"class":"foam.nanos.auth.Group","id":"payment-ops","enabled":true,"descriptio
 p({"class":"foam.nanos.auth.Group","id":"fraud-ops","enabled":true,"description":"Fraud Operations","parent":"basicUser","defaultMenu":"accounts"})
 p({"class":"foam.nanos.auth.Group","id":"operations-support","enabled":true,"description":"Operations Support","parent":"basicUser","defaultMenu":"accounts"})
 p({"class":"foam.nanos.auth.Group","id":"identityMind","enabled":true,"description":"IdentityMind group for webhook user.","parent":"basicUser"})
+p({"class":"foam.nanos.auth.Group","id":"msp-admin","enabled":true,"description":"Multi Service Provider admin group.","parent":"basicUser", "defaultMenu":"users"})
