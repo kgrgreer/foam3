@@ -112,7 +112,10 @@ foam.CLASS({
           });
       },
     },
-    'checkerPredicate'
+    {
+      name: 'checkerPredicate',
+      javaFactory: 'return foam.mlang.MLang.FALSE;'
+    }
   ],
 
   methods: [
