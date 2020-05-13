@@ -46,6 +46,8 @@ liquidUserCapabilityJunctions
 menus
 notifications
 notificationTemplates
+notificationSettings
+notificationSettingDefaults
 payoutOptions
 paymentCodes
 paymentProviderCorridorJunctions
