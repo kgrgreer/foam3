@@ -327,6 +327,7 @@ var classes = [
    'net.nanopay.liquidity.LiquiditySettings',
    'net.nanopay.liquidity.Liquidity',
    'net.nanopay.liquidity.LiquidityAuth',
+   'net.nanopay.liquidity.LiquidNotification',
    'net.nanopay.liquidity.LiquidityRule',
    'net.nanopay.liquidity.PreventAccountLiquidityLoopRule',
    'net.nanopay.liquidity.PreventLiquiditySettingsLoopRule',
@@ -1018,7 +1019,11 @@ var classes = [
   'net.nanopay.tx.planner.DebtablePlanner',
 
   // Fees
-  'net.nanopay.tx.planner.fees.AbliiFeeRule'
+  'net.nanopay.tx.planner.fees.AbliiFeeRule',
+
+  // Notification
+  'net.nanopay.notification.TriggerNotificationTestAction',
+  'net.nanopay.notification.TriggerDoNotifyTestAction'
 ];
 
 var abstractClasses = [

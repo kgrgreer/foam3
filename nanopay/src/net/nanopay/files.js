@@ -699,7 +699,6 @@ FOAM_FILES([
   { name: 'net/nanopay/settings/business/EditBusinessProfileView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/UserManagementView', flags: ['web'] },
   { name: 'net/nanopay/settings/PersonalProfileView', flags: ['web'] },
-  { name: 'net/nanopay/settings/MultiUserManagementView', flags: ['web'] },
   { name: 'net/nanopay/settings/IntegrationView', flags: ['web'] },
 
   // auth
@@ -875,6 +874,7 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/LiquiditySettings' },
    { name: 'net/nanopay/liquidity/Liquidity' },
    { name: 'net/nanopay/liquidity/LiquidityAuth' },
+   { name: 'net/nanopay/liquidity/LiquidNotification' },
    { name: 'net/nanopay/liquidity/LiquidityRule' },
    { name: 'net/nanopay/liquidity/LiquiditySettingsRowView', flags: ['web'] },
    { name: 'net/nanopay/liquidity/LiquiditySettingsSelectionView', flags: ['web'] },
@@ -1086,7 +1086,6 @@ FOAM_FILES([
   { name: 'net/nanopay/test/BranchDAOTest' },
   { name: 'net/nanopay/test/BranchDAOAuthorizationTest' },
   { name: 'net/nanopay/test/BusinessSectorDAOTest' },
-
   { name: 'net/nanopay/test/ModelledTest' },
   { name: 'net/nanopay/auth/PublicUserInfoDAOTest' },
   { name: 'net/nanopay/auth/ExternalInvoiceTokenTest' },
@@ -1096,6 +1095,8 @@ FOAM_FILES([
   { name: 'net/nanopay/test/TestsReporter' },
   { name: 'net/nanopay/test/TestReport' },
   { name: 'net/nanopay/tx/alterna/test/EFTTest' },
+  { name: 'net/nanopay/notification/TriggerNotificationTestAction' },
+  { name: 'net/nanopay/notification/TriggerDoNotifyTestAction' },
 
   // iso20022
   { name: 'net/nanopay/iso20022/ISODateTest' },
