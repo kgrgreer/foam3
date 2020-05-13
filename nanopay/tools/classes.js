@@ -294,6 +294,7 @@ var classes = [
   'net.nanopay.invoice.service.ClientInvoicePaymentService',
   'net.nanopay.invoice.InvoiceNotificationDAO',
   'net.nanopay.invoice.InvoiceLineItem',
+  'net.nanopay.invoice.DetailedInvoiceDAO',
   'net.nanopay.invoice.ruler.CompleteInvoiceNotification',
   'net.nanopay.invoice.ruler.IsCompletePayment',
   'net.nanopay.invoice.ruler.InvoiceVoidEmailRule',
