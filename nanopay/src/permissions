@@ -555,4 +555,4 @@ p({"class":"foam.nanos.auth.Permission","id":"file.create", "description":"Permi
 p({"class":"foam.nanos.auth.Permission","id":"transactionreport.read.*", "description":"Permission to read TransactionReport."})
 p({"class":"foam.nanos.auth.Permission","id":"strategyreference.read.283b51ca-6505-74c6-93c4-a8f474e06efa","description":"Permission to see sudo ticket type in strategizer view."})
 p({"class":"foam.nanos.auth.Permission","id":"service.run.httpBlobService","description":"Permission to run httpBlobService"})
-p({"class":"foam.nanos.auth.Permission","id":"service.run.mspSetupDAO","description":"Permission to run mspSetup"})
+p({"class":"foam.nanos.auth.Permission","id":"service.mspSetupDAO","description":"Permission to run mspSetupDAO"})

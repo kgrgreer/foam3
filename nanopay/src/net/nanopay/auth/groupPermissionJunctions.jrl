@@ -686,7 +686,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","tar
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"service.digitalAccount"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"service.groupDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"service.menuDAO"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"service.run.mspSetupDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"service.mspSetupDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"user.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"user.delete.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"user.update.*"})
