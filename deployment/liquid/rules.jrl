@@ -641,7 +641,7 @@ p({
   "enabled":true,
   "ruleGroup":"liquid",
   "documentation":"Enabled checker on User put()",
-  "daoKey":"localUserDAO",
+  "daoKey":"bareUserDAO",
   "operation":3,
   "after":false,
   "predicate":{
