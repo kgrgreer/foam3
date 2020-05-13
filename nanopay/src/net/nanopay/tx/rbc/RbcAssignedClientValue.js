@@ -10,10 +10,6 @@ foam.CLASS({
       class: 'String'
     },
     {
-      name: 'gradServiceAccountNUmber',
-      class: 'String'
-    },
-    {
       name: 'PDSAccountNumber',
       class: 'String'
     },
@@ -22,15 +18,10 @@ foam.CLASS({
       class: 'String'
     },
     {
-      name: 'bankIdentification',
-      class: 'String',
-      documentation: 'Nanopay originating bank institution number'
-    },
-    {
-      name: 'bankName',
-      class: 'String',
-      documentation: 'Nanopay originating bank name'
-    },
+      name: 'accountId',
+      class: 'Long',
+      documentation: 'Nanopay RBC account ID'
+    }
   ]
 
 });
