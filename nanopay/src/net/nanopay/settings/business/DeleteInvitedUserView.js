@@ -32,7 +32,7 @@ foam.CLASS({
 
       this.dao.remove(self.data).then(function() {
         self.clientJunctionDAO.remove(self.junction).then(function() {
-          self.notify(self.SUCCESS_MSG, 'error')
+          self.notify(self.SUCCESS_MSG, 'success')
         }).catch(function(err) {
           self.notify(self.email + " " + message, 'error');
          })
