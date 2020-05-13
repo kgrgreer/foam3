@@ -96,6 +96,17 @@ foam.CLASS({
         paymentOpsGroup.setDescription(mspInfo.getSpid() + " payment-ops group");
         groupDAO.put(paymentOpsGroup);
 
+        List<String> fraudPermissionArray = new ArrayList<>();
+        fraudPermissionArray.add("group.update." + mspInfo.getSpid() + "-fraud-ops");
+        fraudPermissionArray.add("group.update." + mspInfo.getSpid() + "-payment-ops");
+
+        for ( int i = 0; i < fraudPermissionArray.size(); i++ ) {
+          GroupPermissionJunction junction = new GroupPermissionJunction();
+          junction.setSourceId(mspInfo.getSpid() + "-fraud-ops");
+          junction.setTargetId(permissionArray.get(i));
+          groupPermissionJunctionDAO.put(junction);
+        }
+
         // Create spid-support group
         Group supportGroup = new Group();
         supportGroup.setId(mspInfo.getSpid() + "-support");
