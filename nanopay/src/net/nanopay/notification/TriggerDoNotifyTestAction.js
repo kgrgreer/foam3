@@ -36,7 +36,6 @@ foam.CLASS({
               notification.setUserId(user.getId());
               notification.setBody(notificationMsg);
               notification.setNotificationType("Test_Notification");
-              notification.setEmailIsEnabled(true);
               try {
                 user.doNotify(x, notification);
               }
