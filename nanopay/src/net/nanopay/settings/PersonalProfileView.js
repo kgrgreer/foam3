@@ -2,6 +2,8 @@ foam.CLASS({
   package: 'net.nanopay.settings',
   name: 'PersonalProfileView',
   extends: 'foam.u2.View',
+  
+  implements: [ 'foam.mlang.Expressions' ],
 
   documentation: 'Settings / Personal View',
 
@@ -10,7 +12,8 @@ foam.CLASS({
     'user',
     'stack',
     'userDAO',
-    'twofactor'
+    'twofactor',
+    'notificationSettingDAO'
   ],
 
   exports: [ 'as data' ],
@@ -95,6 +98,11 @@ foam.CLASS({
       width: auto;
       display: inline-block;
     }
+    ^ .gSubTextField {
+      width: auto;
+      display: inline-block;
+      font-size: 11px;
+    }
     ^ .gInputField{
       width: auto;
       height: 40px;
@@ -118,29 +126,6 @@ foam.CLASS({
     ^ .update-BTN:hover {
       opacity: 0.9;
       border: 1px solid /*%PRIMARY3%*/ #406dea;
-    }
-    ^ .check-Box{
-      border: solid 1px rgba(164, 179, 184, 0.5);
-      width: 14px;
-      height: 14px;
-      border-radius: 2px;
-      margin-right: 20px;
-      position: relative;
-    }
-    ^ .foam-u2-CheckBox{
-      padding-bottom: 11px;
-      display: inline-block;
-    }
-    ^ .checkBox-Text{
-      height: 16px;
-      font-family: Roboto;
-      font-size: 12px;
-      line-height: 1.33;
-      letter-spacing: 0.2px;
-      text-align: left;
-      color: /*%BLACK%*/ #1e1f21;
-      display: block;
-      margin-bottom: 11px;
     }
     ^ .personalProfile-Text{
       width: 141px;
@@ -312,7 +297,17 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'twoFactorToken',
+      name: 'twoFactorToken'
+    },
+    {
+      class: 'Boolean',
+      name: 'inAppNotificationsEnabled',
+      label: 'Enabled'
+    },
+    {
+      class: 'Boolean',
+      name: 'emailNotificationsEnabled',
+      label: 'Enabled'
     }
   ],
 
@@ -338,6 +333,7 @@ foam.CLASS({
       var personalProfile = this.ExpandContainer.create({ title: 'Personal profile', link: '', linkView: '' });
       var changePasswordProfile = this.ExpandContainer.create({ title: 'Change Password', link: '', linkView: '' });
       var twoFactorProfile = this.ExpandContainer.create({ title: 'Two-Factor Authentication', link: '', linkView: '' });
+      var notificationProfile = this.ExpandContainer.create({ title: 'Notifications', link: '', linkView: '' });
 
       if ( this.user.firstName != "" ) {
         this.firstName = this.user.firstName;
@@ -347,6 +343,19 @@ foam.CLASS({
         // split the country code and phone number
         this.phone = this.user.phone.number.replace(this.phoneCode, "");
         this.phone = this.phone.replace(/\s/g, "");
+      }
+
+      if ( this.user )
+      {
+        this.user.notificationSettings.where(this.CLASS_OF('foam.nanos.notification.NotificationSetting')).select().then(function (notificationSettingDAO) {
+          var notificationSetting = notificationSettingDAO.array[0];
+          self.inAppNotificationsEnabled = ( notificationSetting ) ? notificationSetting.enabled : true;
+        });
+          
+        this.user.notificationSettings.where(this.CLASS_OF('foam.nanos.notification.EmailSetting')).select().then(function (notificationSettingDAO) {
+          var emailSettings = notificationSettingDAO.array[0];
+          self.emailNotificationsEnabled = ( emailSettings ) ? emailSettings.enabled : true;
+        });
       }
 
       this
@@ -381,6 +390,38 @@ foam.CLASS({
           .start({class: 'foam.u2.CheckBox'}, {mode: foam.u2.DisplayMode.DISABLED}).end()
           .add("Make my profile visible to public").addClass('checkBox-Text').addClass('disabled').end()
           .start(this.UPDATE_PROFILE).addClass('update-BTN').end()
+        .end()
+      .end();
+
+      this
+      .addClass(this.myClass())
+      .start(notificationProfile)
+        .start()
+        .add(this.slot(function(inAppNotificationsEnabled) {
+          return this.E()
+            .start().addClass('flex-csb')
+              .start('h2').add("In-App Notifications").addClass('gTextField').end()
+              .start('div')
+                .start(this.IN_APP_NOTIFICATIONS_ENABLED).end()
+              .end()
+              .start().add('Disabling will mark notifications read automatically').addClass('gSubTextField').end()
+            .end();
+        }, this.inAppNotificationsEnabled$))
+        .end()
+
+        .start()
+        .add(this.slot(function(emailNotificationsEnabled) {
+          return this.E()
+          .start().addClass('flex-csb')
+            .start('h2').add("Email Notifications").addClass('gTextField').end()
+            .start('div')
+              .start(this.EMAIL_NOTIFICATIONS_ENABLED).end()
+            .end()
+          .end();
+        }, this.emailNotificationsEnabled$))
+
+        .start('div')
+          .start(this.UPDATE_NOTIFICATIONS).addClass('update-BTN').end()
         .end()
       .end();
 
@@ -477,6 +518,31 @@ foam.CLASS({
   ],
 
   actions: [
+    {
+      name: 'updateNotifications',
+      label: 'Update',
+      code: function(X) {
+        var self = this;
+
+        this.user.notificationSettings
+          .where(this.CLASS_OF('foam.nanos.notification.NotificationSetting')).select()
+          .then(function (notificationSettingDAO) {
+            var notificationSetting = notificationSettingDAO.array[0] ? notificationSettingDAO.array[0] : foam.nanos.notification.NotificationSetting.create({ owner: self.user.id });
+            notificationSetting.enabled = self.inAppNotificationsEnabled;
+            self.notificationSettingDAO.put(notificationSetting);
+          });
+          
+        this.user.notificationSettings
+          .where(this.CLASS_OF('foam.nanos.notification.EmailSetting')).select()
+          .then(function (notificationSettingDAO) {
+            var emailSetting = notificationSettingDAO.array[0] ? notificationSettingDAO.array[0] : foam.nanos.notification.EmailSetting.create({ owner: self.user.id });
+            emailSetting.enabled = self.emailNotificationsEnabled;
+            self.notificationSettingDAO.put(emailSetting);
+          });
+
+        this.add(self.NotificationMessage.create({ message: 'Notification settings updated.' }));
+      }
+    },
     {
       name: 'updateProfile',
       label: 'Update',

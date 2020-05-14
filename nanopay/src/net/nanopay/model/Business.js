@@ -42,7 +42,7 @@ foam.CLASS({
     'foam.nanos.notification.Notification',
     'foam.nanos.notification.NotificationSetting',
     'foam.util.SafetyUtil',
-
+    'java.util.HashMap',
     'java.util.List',
 
     'net.nanopay.admin.model.AccountStatus',
@@ -53,7 +53,6 @@ foam.CLASS({
   tableColumns: [
     'id',
     'businessName',
-    'email',
     'address',
     'compliance',
     'viewAccounts'
@@ -568,9 +567,9 @@ foam.CLASS({
     {
       name: 'doNotify',
       javaCode: `
-        DAO agentJunctionDAO       = (DAO) x.get("agentJunctionDAO");
+        DAO       agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
         DAO notificationSettingDAO = (DAO) x.get("notificationSettingDAO");
-        DAO               userDAO  = (DAO) x.get("localUserDAO");
+        DAO                userDAO = (DAO) x.get("localUserDAO");
         Logger              logger = (Logger) x.get("logger");
 
         // Send business notifications
@@ -590,10 +589,21 @@ foam.CLASS({
             continue;
           }
 
+          // Get the default settings for the user if none are already defined
+          List<NotificationSetting> settingDefaults = ((ArraySink) ((DAO) x.get("notificationSettingDefaultsDAO")).select(new ArraySink())).getArray();
+          HashMap<String, NotificationSetting> settingsMap = new HashMap<String, NotificationSetting>();
+          for ( NotificationSetting setting : settingDefaults ) {
+            settingsMap.put(setting.getClassInfo().getId(), setting);
+          }
+
           // Gets the notification settings for this business-user pair
           List<NotificationSetting> userSettings = ((ArraySink) businessUserJunction.getNotificationSettingsForUserUsers(x).select(new ArraySink())).getArray();
-          for( NotificationSetting setting : userSettings ) {
-            setting.sendNotification(x, businessUser, notification);
+          for ( NotificationSetting setting : userSettings ) {
+            settingsMap.put(setting.getClassInfo().getId(), setting);
+          }
+
+          for ( NotificationSetting setting : settingsMap.values() ) {
+            setting.doNotify(x, businessUser, notification);
           }
         }
       `

@@ -39,13 +39,10 @@ public class MakeConnectionDAO
 
     // Send notification if accepted
     if ( accepted ) {
-      DAO notificationDAO = (DAO) x.get("localNotificationDAO");
       Notification notification = new Notification();
-      notification.setUserId(sender.getId());
-      notification.setBody(user.getLegalName() +
-          " accepted your request to connect.");
+      notification.setBody(user.getLegalName() + " accepted your request to connect.");
       notification.setNotificationType("Partner invitation result");
-      notificationDAO.put_(x, notification);
+      sender.doNotify(x, notification);
     }
 
     return super.put_(x, invite);

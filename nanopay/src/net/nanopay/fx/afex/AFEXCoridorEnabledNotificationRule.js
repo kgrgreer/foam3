@@ -86,7 +86,6 @@ foam.CLASS({
         Notification internationalPaymentsEnabledNotification = new Notification.Builder(x)
           .setBody("AFEX Business has been created and corridor has been enabled.")
           .setNotificationType("AFEXBusinessCreatedCorridorEnabled")
-          .setEmailIsEnabled(true)
           .setEmailArgs(args)
           .setEmailName("international-payments-enabled-notification")
           .build();

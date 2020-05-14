@@ -6,6 +6,7 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.approval.ApprovalRequest;
 import foam.nanos.approval.ApprovalStatus;
+import foam.nanos.auth.User;
 import foam.nanos.notification.Notification;
 import net.nanopay.meter.compliance.ComplianceApprovalRequest;
 import static foam.mlang.MLang.*;
@@ -49,14 +50,15 @@ extends ProxyDAO {
       return ret;
     }
 
-    Notification notification = new Notification();
-    notification.setUserId(ret.getApprover());
-    notification.setNotificationType(notificationType);
-    notification.setEmailIsEnabled(true);
-    notification.setBody(notificationBody);
-    //notification.setEmailName("future email template name"); !!! PROPER WAY TO SET EMAIL TEMPLATE (when it is done) !!!
-    //notification.setEmailArgs(MAP_GOES_HERE); !!! PROPER WAY TO SET EMAIL ARGS FOR TEMPLATE !!!
-    ((DAO) x.get("localNotificationDAO")).put(notification);
+    DAO userDAO = (DAO) x.get("localUserDAO");
+    User user = (User) userDAO.find(ret.getApprover());
+    if ( user != null ) {
+      Notification notification = new Notification();
+      notification.setNotificationType(notificationType);
+      notification.setBody(notificationBody);
+      user.doNotify(x, notification);
+    }
+
     return ret;
   }
 
@@ -85,12 +87,15 @@ extends ProxyDAO {
       .append(fulfilled.getLastModifiedBy())
       .toString();
 
-    Notification notification = new Notification();
-    notification.setUserId(ret.getApprover());
-    notification.setNotificationType(notificationType);
-    notification.setEmailIsEnabled(true);
-    notification.setBody(notificationBody);
-    ((DAO) x.get("localNotificationDAO")).put(notification);
+    DAO userDAO = (DAO) x.get("localUserDAO");
+    User user = (User) userDAO.find(ret.getApprover());
+    if ( user != null ) {
+      Notification notification = new Notification();
+      notification.setNotificationType(notificationType);
+      notification.setBody(notificationBody);
+      user.doNotify(x, notification);
+    }
+    
     return ret;
     
   }

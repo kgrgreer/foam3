@@ -39,6 +39,27 @@ foam.CLASS({
         sectionName: 'requiredSection',
         showTitle: false
       },
+    },
+    {
+      name: 'validationPredicates',
+      factory: function() {
+        var i = this.index;
+        return [
+          {
+            args: ['signingOfficer', 'amountOfOwners', `owner${i}$errors_`],
+            predicateFactory: function(e) {
+              return e.OR(
+                e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
+                e.LT(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, i),
+                e.EQ(foam.mlang.IsValid.create({
+                  arg1: net.nanopay.sme.onboarding.USBusinessOnboarding['OWNER'+i]
+                }), true)
+              );
+            },
+            errorString: `Owner #${i} is invalid.`
+          }
+        ];
+      }
     }
   ]
 });
@@ -333,7 +354,7 @@ foam.CLASS({
           this.adminPhone = this.phone.number;
           this.signingOfficerEmail = '';
 
-          if ( this.userOwnsPercent ) {
+          if ( this.userOwnsPercent && this.amountOfOwners > 0 ) {
             this.userId$find.then((user) => {
               this.owner1.firstName = user.firstName;
               this.owner1.lastName = user.lastName;
@@ -343,10 +364,6 @@ foam.CLASS({
         } else {
           this.adminJobTitle = '';
           this.adminPhone = '';
-
-          if ( ! this.userOwnsPercent ) {
-            this.clearProperty('owner1');
-          }
         }
       }
     },
@@ -1187,8 +1204,10 @@ foam.CLASS({
           return;
         }
 
-        if ( this.owner1.firstName === this.firstName || this.owner1.firstName === this.adminFirstName
-          && this.owner1.lastName === this.lastName || this.owner1.lastName === this.adminLastName ) {
+        if ( this.amountOfOwners > 0
+          && (this.owner1.firstName === this.firstName || this.owner1.firstName === this.adminFirstName)
+          && (this.owner1.lastName === this.lastName || this.owner1.lastName === this.adminLastName)
+        ) {
           this.clearProperty('owner1');
         }
 
@@ -1242,6 +1261,7 @@ foam.CLASS({
         }
       ]
     }),
+    // owner1..4
     {
       class: 'net.nanopay.sme.onboarding.USOwnerProperty',
       index: 1,
@@ -1251,14 +1271,11 @@ foam.CLASS({
         predicateFactory: function(e) {
           return e.OR(
             e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
-            e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, 0),
+            e.LT(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, 1),
             e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.USER_OWNS_PERCENT, true),
-            e.AND(
-              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.USER_OWNS_PERCENT, false),
-              e.EQ(foam.mlang.IsValid.create({
-                arg1: net.nanopay.sme.onboarding.USBusinessOnboarding['OWNER1']
-              }), true)
-            )
+            e.EQ(foam.mlang.IsValid.create({
+              arg1: net.nanopay.sme.onboarding.USBusinessOnboarding['OWNER1']
+            }), true)
           );
         },
         errorString: 'Owner1 is invalid.'
@@ -1267,72 +1284,15 @@ foam.CLASS({
     },
     {
       class: 'net.nanopay.sme.onboarding.USOwnerProperty',
-      index: 2,
-      validationPredicates: [
-      {
-        args: ['signingOfficer', 'amountOfOwners', 'userOwnsPercent', 'owner2$errors_'],
-        predicateFactory: function(e) {
-          return e.OR(
-            e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
-            e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, 0),
-            e.LT(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, 2),
-            e.AND(
-              e.GTE(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, 2),
-              e.EQ(foam.mlang.IsValid.create({
-                arg1: net.nanopay.sme.onboarding.USBusinessOnboarding['OWNER2']
-              }), true)
-            )
-          );
-        },
-        errorString: 'Owner2 is invalid.'
-      }
-     ]
+      index: 2
     },
     {
       class: 'net.nanopay.sme.onboarding.USOwnerProperty',
-      index: 3,
-      validationPredicates: [
-      {
-        args: ['signingOfficer', 'amountOfOwners', 'userOwnsPercent', 'owner3$errors_'],
-        predicateFactory: function(e) {
-          return e.OR(
-            e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
-            e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, 0),
-            e.LT(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, 3),
-            e.AND(
-              e.GTE(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, 3),
-              e.EQ(foam.mlang.IsValid.create({
-                arg1: net.nanopay.sme.onboarding.USBusinessOnboarding['OWNER3']
-              }), true)
-            )
-          );
-        },
-        errorString: 'Owner3 is invalid.'
-      }
-     ]
+      index: 3
     },
     {
       class: 'net.nanopay.sme.onboarding.USOwnerProperty',
-      index: 4,
-      validationPredicates: [
-      {
-        args: ['signingOfficer', 'amountOfOwners', 'userOwnsPercent', 'owner4$errors_'],
-        predicateFactory: function(e) {
-          return e.OR(
-            e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false),
-            e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, 0),
-            e.LT(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, 4),
-            e.AND(
-              e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.AMOUNT_OF_OWNERS, 4),
-              e.EQ(foam.mlang.IsValid.create({
-                arg1: net.nanopay.sme.onboarding.USBusinessOnboarding['OWNER4']
-              }), true)
-            )
-          );
-        },
-        errorString: 'Owner4 is invalid.'
-      }
-     ]
+      index: 4
     },
     {
       class: 'FObjectArray',
@@ -1545,10 +1505,13 @@ foam.CLASS({
   ].map((a) => net.nanopay.sme.onboarding.SpecialOutputter.objectify(a)),
 
   reactions: [
-    ['', 'propertyChange.amountOfOwners', 'updateTable']
+    ['', 'propertyChange.amountOfOwners', 'updateTable'],
+    ['', 'propertyChange.amountOfOwners', 'resetCertify']
   ].concat([1, 2, 3, 4].map((i) => [
     [`owner${i}`, 'propertyChange', 'updateTable'],
-    ['', `propertyChange.owner${i}`, 'updateTable']
+    [`owner${i}`, 'propertyChange', 'resetCertify'],
+    ['', `propertyChange.owner${i}`, 'updateTable'],
+    ['', `propertyChange.owner${i}`, 'resetCertify']
   ]).flat()),
 
   listeners: [
@@ -1562,10 +1525,15 @@ foam.CLASS({
             self.beneficialOwnersTable.put(self['owner'+(i+1)].clone());
           }
         });
-
-        this.certifyAllInfoIsAccurate = false;
       }
     },
+    {
+      name: 'resetCertify',
+      isFramed: true,
+      code: function() {
+        this.certifyAllInfoIsAccurate = false;
+      }
+    }
   ],
 
   messages: [
@@ -1686,7 +1654,7 @@ foam.CLASS({
               this.owner1.lastName = user.lastName;
               this.owner1.jobTitle = user.jobTitle;
             }
-          } else if ( ! this.signingOfficer ) {
+          } else {
             this.USER_OWNS_PERCENT.label = this.adminFirstName + ' is one of these owners.';
             this.OWNERSHIP_PERCENT.label = '% of ownership of ' + this.adminFirstName;
 
@@ -1695,8 +1663,6 @@ foam.CLASS({
               this.owner1.lastName = this.adminLastName;
               this.owner1.jobTitle = this.adminJobTitle;
             }
-          } else if ( ! userOwnsPercent ) {
-            this.clearProperty('owner1');
           }
         });
         this.owner1.showValidation$ = this.signingOfficer$;

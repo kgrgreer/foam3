@@ -94,7 +94,6 @@ foam.CLASS({
             Notification onboardingReminderNotification = new Notification.Builder(x)
               .setBody("Here's a reminder to complete your business registration on Ablii.")
               .setNotificationType("OnboardingReminder")
-              .setEmailIsEnabled(true)
               .setEmailArgs(args)
               .setEmailName("onboarding-reminder")
               .build();

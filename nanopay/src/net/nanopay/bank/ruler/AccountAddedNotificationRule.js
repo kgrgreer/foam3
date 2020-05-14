@@ -48,7 +48,6 @@ foam.CLASS({
             Notification addedNotification = new Notification.Builder(x)
                     .setBody(accountNumber + " has been added!")
                     .setNotificationType("Latest_Activity")
-                    .setEmailIsEnabled(true)
                     .setEmailArgs(args)
                     .setEmailName("addBank")
                     .build();

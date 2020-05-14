@@ -32,7 +32,6 @@ foam.CLASS({
               public void execute(X x) {
                 Invoice iv = (Invoice) obj;
                 DAO localUserDAO = (DAO) x.get("localUserDAO");
-                DAO notificationDAO = (DAO) x.get("localNotificationDAO");
                 Logger logger = (Logger) x.get("logger");
 
                 PublicUserInfo payer = (PublicUserInfo) iv.getPayer();
@@ -50,21 +49,21 @@ foam.CLASS({
                 Currency currency = (Currency) currencyDAO.find(iv.getDestinationCurrency());
 
                 StringBuilder sb = new StringBuilder("You requested a payment from ")
-                .append(payer.toSummary())
-                .append(" for ")
-                .append(currency.format(iv.getAmount()))
-                .append(" ")
-                .append(iv.getSourceCurrency());
+                  .append(payer.toSummary())
+                  .append(" for ")
+                  .append(currency.format(iv.getAmount()))
+                  .append(" ")
+                  .append(iv.getSourceCurrency())
+                  .append(".");
 
                 StringBuilder rb = new StringBuilder(user.toSummary())
                 .append(" just requested a payment ")
-                .append(" for ")
-                .append(currency.format(iv.getAmount()))
-                .append(" ")
-                .append(iv.getSourceCurrency());
+                  .append(" for ")
+                  .append(currency.format(iv.getAmount()))
+                  .append(" ")
+                  .append(iv.getSourceCurrency())
+                  .append(".");
 
-                sb.append(".");
-                rb.append(".");
                 String notificationMsg = sb.toString();
                 String payer_notificationMsg = rb.toString();
 
@@ -74,21 +73,27 @@ foam.CLASS({
                 userNotification.setBody(notificationMsg);
                 userNotification.setNotificationType("Latest_Activity");
                 try {
-                  notificationDAO.put_(x, userNotification);
+                  user.doNotify(x, userNotification);
                 }
                 catch (Exception E) { logger.error("Failed to put notification. "+E); };
 
                 // notification to payer
                 if ( payer.getId() != user.getId() ) {
-                Notification payerNotification = new Notification();
-                payerNotification.setUserId(payer.getId());
-                payerNotification.setBody(payer_notificationMsg);
-                payerNotification.setNotificationType("Latest_Activity");
-                try {
-                  notificationDAO.put_(x, payerNotification);
+                  Notification payerNotification = new Notification();
+                  payerNotification.setBody(payer_notificationMsg);
+                  payerNotification.setNotificationType("Latest_Activity");
+                  try {
+                    User sysUser = new User.Builder(x).setId(1).build();
+                    X systemX = x.put("subject", new Subject.Builder(x).setUser(sysUser).build());
+                    User payerUser = (User) localUserDAO.inX(systemX).find(payer.getId());
+                    if ( payerUser != null ) {
+                      payerUser.doNotify(x, payerNotification);
+                    } else {
+                      logger.warning("Cannot find payer " + payer.getId() + " for request payment notification");
+                    }
+                  }
+                  catch (Exception E) { logger.error("Failed to put notification. "+E); };
                 }
-                catch (Exception E) { logger.error("Failed to put notification. "+E); };
-              }
 
               }
            },"send a Ablii Completed notification");

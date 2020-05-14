@@ -74,10 +74,9 @@ public class SendInvitationDAO
 
       if ( invite.getInternal() ) {
         // Send the internal user a notification.
-        DAO notificationDAO = (DAO) x.get("localNotificationDAO");
         DAO userDAO = (DAO) x.get("localUserDAO");
         User recipient = (User) userDAO.inX(x).find(invite.getInviteeId());
-        sendInvitationNotification(notificationDAO.inX(x), user, recipient, invite);
+        sendInvitationNotification(x, user, recipient, invite);
       }
 
       invite.setTimestamp(new Date());
@@ -167,18 +166,17 @@ public class SendInvitationDAO
    * @param {User} recipient The user being invited
    */
   private void sendInvitationNotification(
-      DAO notificationDAO,
+      X x,
       User currentUser,
       User recipient,
       Invitation invitation
   ) {
-    PartnerInvitationNotification notification =
-        new PartnerInvitationNotification();
+    PartnerInvitationNotification notification = new PartnerInvitationNotification();
     notification.setUserId(recipient.getId());
     notification.setCreatedBy(currentUser.getId());
     notification.setInviterName(currentUser.getLegalName());
     notification.setNotificationType("Partner invitation");
     notification.setInvitationId(invitation.getId());
-    notificationDAO.put(notification);
+    recipient.doNotify(getX(), notification);
   }
 }

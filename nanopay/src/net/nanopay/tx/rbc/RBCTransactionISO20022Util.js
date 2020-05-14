@@ -56,6 +56,8 @@ foam.CLASS({
       int transactionCount = 0;
       Long transactionVal = 0L;
       RbcAssignedClientValue rbcValues = (RbcAssignedClientValue) x.get("rbcAssignedClientValue");
+      BankAccount fundingAccount = (BankAccount) ((DAO) x.get("accountDAO")).find(rbcValues.getAccountId());
+      if ( fundingAccount == null ) throw new RuntimeException("nanopay bank account cannot be null");
 
       net.nanopay.iso20022.Pain00100103 pain00100103Msg = new net.nanopay.iso20022.Pain00100103();
       CustomerCreditTransferInitiationV03 cstmrCdtTrfInitn = new CustomerCreditTransferInitiationV03();
@@ -120,7 +122,7 @@ foam.CLASS({
       net.nanopay.iso20022.CashAccount16 dbtrAcct = new net.nanopay.iso20022.CashAccount16();
       net.nanopay.iso20022.AccountIdentification4Choice acctId = new net.nanopay.iso20022.AccountIdentification4Choice();
       net.nanopay.iso20022.GenericAccountIdentification1 acctOthr = new net.nanopay.iso20022.GenericAccountIdentification1();
-      acctOthr.setIdentification(rbcValues.getPDSAccountNumber()); // Debiting RBC DDA AccountNumber associated to the ACH product/service.
+      acctOthr.setIdentification(fundingAccount.getAccountNumber()); // Debiting RBC DDA AccountNumber associated to the ACH product/service.
       acctId.setOthr(acctOthr);
       dbtrAcct.setIdentification(acctId);
       pmtInf.setDebtorAccount(dbtrAcct);
@@ -132,9 +134,28 @@ foam.CLASS({
       net.nanopay.iso20022.ClearingSystemIdentification2Choice clrSysId = new net.nanopay.iso20022.ClearingSystemIdentification2Choice();
       clrSysId.setCd("CACPA");  
       clrSysMmbId.setClearingSystemIdentification(clrSysId);
-      clrSysMmbId.setMemberIdentification(rbcValues.getBankIdentification()); // TODO Should this be configured in rbcValues?
+
+      String insNumber = "";
+      String branchNum = "";
+      String insName = "";
+      Branch b = fundingAccount.findBranch(x);
+      if ( b != null ) {
+        branchNum = padLeftWithZeros(b.getBranchId(), 5);
+        Institution inst = (Institution) b.findInstitution(x);
+        if ( inst != null ) {
+          insName = inst.getName();
+          insNumber = padLeftWithZeros(inst.getInstitutionNumber(), 4);
+        }
+      }
+
+      StringBuilder memId = new StringBuilder();
+      memId.append(insNumber);
+      memId.append(branchNum);
+      memId.append(fundingAccount.getAccountNumber());
+
+      clrSysMmbId.setMemberIdentification(memId.toString());
       finInstnId.setClearingSystemMemberIdentification(clrSysMmbId);
-      finInstnId.setName(rbcValues.getBankName());  // TODO Should this be configured in rbcValues?
+      finInstnId.setName(insName);
       dbtrAgt.setFinancialInstitutionIdentification(finInstnId);
       pmtInf.setDebtorAgent(dbtrAgt);
 
@@ -189,18 +210,20 @@ foam.CLASS({
           clrSysMmbId2.setClearingSystemIdentification(clrSysId2);
           String institutionNumber = "";
           String branchNumber = "";
+          String institutionName = "";
           Branch branch = destAccount.findBranch(x);
           if ( branch != null ) {
             branchNumber = padLeftWithZeros(String.valueOf(( branch.getBranchId() )), 5);
             Institution institution = (Institution) branch.findInstitution(x);
             if ( institution != null ) {
-              institutionNumber = padLeftWithZeros(String.valueOf((    institution.getInstitutionNumber() )), 4);
+              institutionName = institution.getName();
+              institutionNumber = padLeftWithZeros(String.valueOf((institution.getInstitutionNumber() )), 4);
             }
           }
           clrSysMmbId2.setMemberIdentification(institutionNumber + branchNumber);
           finInstnId2.setClearingSystemMemberIdentification(clrSysMmbId2);
           if ( "US".equals(destAccount.getCountry()) ) {
-            finInstnId2.setName(destAccount.getName()); // TODO use afex to get bank details?
+            finInstnId2.setName(institutionName);
           }
           cdtrAgt.setFinancialInstitutionIdentification(finInstnId2);
           cdtTrfTxInf.setCreditorAgent(cdtrAgt);
@@ -279,6 +302,8 @@ foam.CLASS({
       int transactionCount = 0;
       Long transactionVal = 0L;
       RbcAssignedClientValue rbcValues = (RbcAssignedClientValue) x.get("rbcAssignedClientValue");
+      BankAccount fundingAccount = (BankAccount) ((DAO) x.get("accountDAO")).find(rbcValues.getAccountId());
+      if ( fundingAccount == null ) throw new RuntimeException("Nanopay bank account cannot be null");
 
       net.nanopay.iso20022.Pain00800102 msg = new net.nanopay.iso20022.Pain00800102();
       net.nanopay.iso20022.CustomerDirectDebitInitiationV02 directDbtMsg = new net.nanopay.iso20022.CustomerDirectDebitInitiationV02();
@@ -340,7 +365,7 @@ foam.CLASS({
       net.nanopay.iso20022.CashAccount16 cdtrAcct = new net.nanopay.iso20022.CashAccount16();
       net.nanopay.iso20022.AccountIdentification4Choice acctId2 = new net.nanopay.iso20022.AccountIdentification4Choice();
       net.nanopay.iso20022.GenericAccountIdentification1 acctOthr2 = new net.nanopay.iso20022.GenericAccountIdentification1();
-      acctOthr2.setIdentification(rbcValues.getPAPAccountNumber()); // Debiting RBC DDA AccountNumber associated to the ACH product/service.
+      acctOthr2.setIdentification(fundingAccount.getAccountNumber()); // Debiting RBC DDA AccountNumber associated to the ACH product/service.
       acctId2.setOthr(acctOthr2);
       cdtrAcct.setIdentification(acctId2);
       cdtrAcct.setCurrency("CAD");
@@ -353,9 +378,28 @@ foam.CLASS({
       net.nanopay.iso20022.ClearingSystemIdentification2Choice clrSysId2 = new net.nanopay.iso20022.ClearingSystemIdentification2Choice();
       clrSysId2.setCd("CACPA");
       clrSysMmbId2.setClearingSystemIdentification(clrSysId2);
-      clrSysMmbId2.setMemberIdentification(rbcValues.getBankIdentification()); // TODO Should this be configured in rbcValues?
+
+      String insNumber = "";
+      String branchNum = "";
+      String insName = "";
+      Branch b = fundingAccount.findBranch(x);
+      if ( b != null ) {
+        branchNum = padLeftWithZeros(b.getBranchId(), 5);
+        Institution inst = (Institution) b.findInstitution(x);
+        if ( inst != null ) {
+          insName = inst.getName();
+          insNumber = padLeftWithZeros(inst.getInstitutionNumber(), 4);
+        }
+      }
+
+      StringBuilder memId = new StringBuilder();
+      memId.append(insNumber);
+      memId.append(branchNum);
+      memId.append(fundingAccount.getAccountNumber());
+
+      clrSysMmbId2.setMemberIdentification(memId.toString()); 
       finInstnId2.setClearingSystemMemberIdentification(clrSysMmbId2);
-      finInstnId2.setName(rbcValues.getBankName());  // TODO Should this be configured in rbcValues?
+      finInstnId2.setName(insName);
       cdtrAgt.setFinancialInstitutionIdentification(finInstnId2);
       pmtInf.setCreditorAgent(cdtrAgt);
 
@@ -407,17 +451,19 @@ foam.CLASS({
           clrSysMmbId.setClearingSystemIdentification(clrSysId);
           String institutionNumber = "";
           String branchNumber = "";
+          String institutionName = "";
           Branch branch = sourceAccount.findBranch(x);
           if ( branch != null ) {
             branchNumber = padLeftWithZeros(branch.getBranchId(), 5);
             Institution institution = (Institution) branch.findInstitution(x);
             if ( institution != null ) {
+              institutionName = institution.getName();
               institutionNumber = padLeftWithZeros(institution.getInstitutionNumber(), 4);
             }
           }
           clrSysMmbId.setMemberIdentification(institutionNumber + branchNumber);
           finInstnId.setClearingSystemMemberIdentification(clrSysMmbId);
-          finInstnId.setName(sourceAccount.getName()); // TODO use afex to get bank details?
+          finInstnId.setName(institutionName); 
           if ( "US".equals(sourceAccount.getCountry()) && payerBankAddress != null ) { // Bank address only mandatory for US
             net.nanopay.iso20022.PostalAddress6 pstlAdr2 = new net.nanopay.iso20022.PostalAddress6();
             String streetName = payerBankAddress.getStreetName() == null ? "" : payerBankAddress.getStreetName();

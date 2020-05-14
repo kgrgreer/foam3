@@ -216,7 +216,6 @@ foam.CLASS({
       event.stopPropagation();
 
       var notification = this.Notification.create();
-      notification.emailIsEnabled = true;
       // TODO: set email template when ready using 'emailName'
       notification.userId = this.data.payerId;
 
