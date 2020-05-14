@@ -188,9 +188,7 @@ foam.CLASS({
       label: 'Add',
       code: function() {
         this.stack.push({
-          class: 'net.nanopay.bank.ui.BankPickCurrencyView',
-          cadAvailable: true,
-          usdAvailable: true
+          class: 'net.nanopay.bank.ui.BankPickCurrencyView'
         });
       }
     },
