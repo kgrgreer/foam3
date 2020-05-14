@@ -5,8 +5,7 @@ foam.CLASS({
 
   css: `
     ^ {
-      width: 456px;
-      height: 56px;
+      display: flex;
       border: 1px solid /*%GREY5%*/ #f5f7fa;
       border-radius: 3px;
       background-color: white;
@@ -44,7 +43,7 @@ foam.CLASS({
 
   messages: [
     { name: 'Title', message: 'Your safety is our top priority' },
-    { name: 'Subtitle', message: 'Ablii uses state-of-the-art security and encryption measures when handling your data' }
+    { name: 'Subtitle', message: 'Our platform uses state-of-the-art security and encryption measures when handling your data' }
   ],
 
   methods: [
@@ -55,7 +54,7 @@ foam.CLASS({
         .start('div').addClass(this.myClass('text-container'))
           .start('p').add(this.Title).addClass(this.myClass('title')).end()
           .start('p').add(this.Subtitle).addClass(this.myClass('subtitle')).end()
-        .end()
+        .end();
     }
   ]
 });

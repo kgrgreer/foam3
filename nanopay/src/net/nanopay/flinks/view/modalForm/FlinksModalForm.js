@@ -97,6 +97,7 @@ foam.CLASS({
         'accountSelection'        : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalAccountSelect' } },
         'pad'                     : { view: { class: 'net.nanopay.flinks.view.modalForm.FlinksModalPAD' } },
       };
+
       this.viewData.redoOnFail = true;
       this.onDetach(function() {
         if ( self.viewData.pollTimer ) clearTimeout(self.viewData.pollTimer);

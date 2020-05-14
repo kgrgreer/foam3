@@ -37,6 +37,14 @@ foam.CLASS({
   ]
 });
 
+foam.RELATIONSHIP({
+  sourceModel: 'foam.nanos.auth.User',
+  targetModel: 'net.nanopay.fx.Corridor',
+  forwardName: 'corridors',
+  inverseName: 'user',
+  cardinality: '1:*'
+});
+
 // NOTE: Commented out until relationships are supported on DIG
 // foam.RELATIONSHIP({
 //   sourceModel: 'net.nanopay.fx.interac.model.Corridor',

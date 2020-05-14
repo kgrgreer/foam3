@@ -117,6 +117,8 @@ var classes = [
   'net.nanopay.model.BusinessType',
   'net.nanopay.model.PadAccount',
   'net.nanopay.model.PadCapture',
+  'net.nanopay.model.CAPadCapture',
+  'net.nanopay.model.USPadCapture',
   'net.nanopay.model.Identification',
   'net.nanopay.model.DateAndPlaceOfBirth',
   'net.nanopay.model.Invitation',

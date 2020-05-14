@@ -231,7 +231,7 @@ foam.CLASS({
         responseItem.account = response.account;
         responseItem.plaidItem = response.plaidItem;
         responseItem.plaidError = response.plaidError;
-
+        responseItem.account.plaidResponseItem = responseItem;
         // No errors, success
         if ( responseItem.plaidError === undefined ) {
           if ( this.isUpdateMode ) {
@@ -240,9 +240,10 @@ foam.CLASS({
           } else {
             this.hint = 'You can add another bank account by clicking the Connect button again';
 
-            this.ctrl.add(this.Popup.create().tag({
-              class: 'net.nanopay.bank.ui.addUSBankModal.AddUSBankModalWizard',
-              plaidResponseItem: responseItem
+            this.add(this.Popup.create().tag({
+              class: 'net.nanopay.account.ui.BankAccountWizard',
+              data: responseItem.account,
+              useSections: ['pad']
             }));
           }
         }
