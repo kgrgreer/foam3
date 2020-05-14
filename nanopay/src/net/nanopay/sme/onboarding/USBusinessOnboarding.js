@@ -1580,7 +1580,7 @@ foam.CLASS({
       name: 'authorizeOnCreate',
       javaCode: `
         Subject subject = (Subject) x.get("subject");
-        User user = subject.getEffectiveUser() != null ? subject.getEffectiveUser() : subject.getUser();
+        User user = subject.getRealUser();
 
         if ( user.getId() == getUserId() ) return;
 
@@ -1595,7 +1595,7 @@ foam.CLASS({
       name: 'authorizeOnRead',
       javaCode: `
         Subject subject = (Subject) x.get("subject");
-        User user = subject.getEffectiveUser() != null ? subject.getEffectiveUser() : subject.getUser();
+        User user = subject.getRealUser();
 
         if ( user.getId() == getUserId() ) return;
 
@@ -1610,7 +1610,7 @@ foam.CLASS({
       name: 'authorizeOnUpdate',
       javaCode: `
         Subject subject = (Subject) x.get("subject");
-        User user = subject.getEffectiveUser() != null ? subject.getEffectiveUser() : subject.getUser();
+        User user = subject.getRealUser();
 
         if ( user.getId() == getUserId() ) return;
 
@@ -1625,7 +1625,7 @@ foam.CLASS({
       name: 'authorizeOnDelete',
       javaCode: `
         Subject subject = (Subject) x.get("subject");
-        User user = subject.getEffectiveUser() != null ? subject.getEffectiveUser() : subject.getUser();
+        User user = subject.getRealUser();
 
         if ( user.getId() == getUserId() ) return;
 

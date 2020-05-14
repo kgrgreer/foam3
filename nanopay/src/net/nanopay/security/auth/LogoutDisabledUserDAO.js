@@ -69,7 +69,7 @@ foam.CLASS({
           @Override
           public void put(Object obj, Detachable sub) {
             Session session = (Session) obj;
-            User agent = ((Subject) session.getContext().get("subject")).getEffectiveUser();
+            User agent = ((Subject) session.getContext().get("subject")).getRealUser();
             if ( session.getUserId() == userId
               || (agent != null && agent.getId() == userId)
             ) {

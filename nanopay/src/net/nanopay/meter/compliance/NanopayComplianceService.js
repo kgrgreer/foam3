@@ -54,7 +54,7 @@ foam.CLASS({
         // QUESTION: Why do we cache compliance user and agent? Shouldn't it be
         // always checking the latest user/agent when checking for compliance?
         User cachedAgent = (User) x.get("cachedComplianceAgent");
-        User agent = (cachedAgent != null) ? cachedAgent : ((Subject) x.get("subject")).getEffectiveUser();
+        User agent = (cachedAgent != null) ? cachedAgent : ((Subject) x.get("subject")).getRealUser();
         if ( agent != null ) {
           // Set the cached agent if it hasn't been set already
           if ( cachedAgent == null ) {

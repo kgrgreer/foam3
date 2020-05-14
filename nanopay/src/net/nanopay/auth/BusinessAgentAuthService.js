@@ -60,20 +60,20 @@ foam.CLASS({
         }
 
         Subject subject = (Subject) x.get("subject");
-        User effectiveUser = subject.getEffectiveUser();
+        User realUser = subject.getRealUser();
 
         // Make sure you're logged in as yourself before trying to act as
         // someone else.
-        if ( effectiveUser == null ) {
+        if ( realUser == null ) {
           throw new AuthenticationException();
         }
 
-        if ( ! canActAs(x, effectiveUser, entity) ) {
+        if ( ! canActAs(x, realUser, entity) ) {
           return null;
         }
 
         UserUserJunction permissionJunction = (UserUserJunction) ((DAO) getAgentJunctionDAO()).find(AND(
-          EQ(UserUserJunction.SOURCE_ID, effectiveUser.getId()),
+          EQ(UserUserJunction.SOURCE_ID, realUser.getId()),
           EQ(UserUserJunction.TARGET_ID, entity.getId())
         ));
         Group actingWithinGroup = (Group) ((DAO) getGroupDAO()).find(permissionJunction.getGroup());
@@ -81,20 +81,20 @@ foam.CLASS({
         // Clone and freeze both user and agent.
         entity = (User) entity.fclone();
         entity.freeze();
-        effectiveUser = (User) effectiveUser.fclone();
-        effectiveUser.freeze();
+        realUser = (User) realUser.fclone();
+        realUser.freeze();
 
-        Subject sessionSubject = new Subject.Builder(x).setUser(entity).setEffectiveUser(effectiveUser).build();
+        Subject sessionSubject = new Subject.Builder(x).setUser(realUser).setUser(entity).build();
 
         // Set user and agent objects into the session context and place into sessionDAO.
         Session session = x.get(Session.class);
         session.setUserId(entity.getId());
-        session.setAgentId(effectiveUser.getId());
+        session.setAgentId(realUser.getId());
         session.setContext(session.getContext().put("subject", sessionSubject));
         session.setContext(session.getContext().put("group", actingWithinGroup));
         DAO sessionDAO = (DAO) getX().get("localSessionDAO");
         sessionDAO.put(session);
-        return effectiveUser;
+        return realUser;
       `
     },
     {

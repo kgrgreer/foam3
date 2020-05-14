@@ -50,10 +50,10 @@ foam.CLASS({
         Invoice invoice = (Invoice) obj;
         Invoice oldInvoice = (Invoice) super.find(invoice.getId());
         Subject subject = ((Subject) x.get("subject"));
-        User agent = subject.getEffectiveUser();
+        User agent = subject.getRealUser();
         User user = subject.getUser();
 
-        String agentName = agent != null ? agent.getFirstName() + " " + agent.getLastName() : null;
+        String agentName = agent != user ? agent.getFirstName() + " " + agent.getLastName() : null;
 
         // CPF-1322 showed an issue with an invoice not being saved in dao due to error down chain
         // thus confirm invoice put first.

@@ -142,7 +142,7 @@ foam.CLASS({
           // Fallback if initiating user was not found
           if (initiatingUser == null) {
             ((Logger) x.get("logger")).info("Falling back to agent/user for initiating user.");
-            initiatingUser = ((Subject) x.get("subject")).getEffectiveUser();
+            initiatingUser = ((Subject) x.get("subject")).getRealUser();
           }
 
           // Context for putting approval requests as the initiating user
