@@ -21,7 +21,6 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.test.Test',
     'foam.test.TestUtils',
-    'foam.test.TestUtils',
     'foam.util.Auth',
 
     'java.util.Date',
