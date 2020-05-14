@@ -47,9 +47,10 @@ public abstract class LiquidTestExecutor extends Test {
 
   protected void setupContexts(X x) {
     Subject systemSubject = new Subject.Builder(x).setUser(new User.Builder(x).setId(1).build()).build();
+    this.systemX = x.put("subject", systemSubject);
+
     Subject firstSubject = new Subject.Builder(x).setUser(this.getFirstSystemUser(x)).build();
     Subject secondSubject = new Subject.Builder(x).setUser(this.getSecondSystemUser(x)).build();
-    this.systemX = x.put("subject", systemSubject);
     this.firstX = x.put("subject", firstSubject);
     this.secondX = x.put("subject", secondSubject);
     this.logger = (Logger) x.get("logger");
