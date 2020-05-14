@@ -73,7 +73,7 @@ foam.CLASS({
         }
 
         User cachedUser = (User) x.get("cachedComplianceUser");
-        User user = (cachedUser != null) ? cachedUser : ((Subject) x.get("subject")).getUser();;
+        User user = (cachedUser != null) ? cachedUser : ((Subject) x.get("subject")).getUser();
         if ( user != null ) {
           // Set the cached User if it hasn't been set already
           if ( cachedUser == null ) {

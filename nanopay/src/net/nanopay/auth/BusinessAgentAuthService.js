@@ -138,6 +138,7 @@ foam.CLASS({
         // user doesn't have permission to read the status property, in which
         // case it defaults to Active and passes.
         UserUserJunction permissionJunction = (UserUserJunction) agentJunctionDAO.find(AND(
+          EQ(UserUserJunction.SOURCE_ID, agent.getId()),
           EQ(UserUserJunction.TARGET_ID, entity.getId())
         ));
 
