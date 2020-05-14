@@ -16,6 +16,7 @@ foam.CLASS({
     ],
 
   javaImports: [
+    'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.NanoService',
     'foam.nanos.auth.AuthenticationException',
@@ -59,25 +60,20 @@ foam.CLASS({
         }
 
         Subject subject = (Subject) x.get("subject");
-        User currentAgent = subject.getEffectiveUser();
-        User currentUser = subject.getUser();
-
-        // The user could already be acting as someone else and want to switch
-        // who they're acting as.
-        User agent = currentAgent != null ? currentAgent : currentUser;
+        User effectiveUser = subject.getEffectiveUser();
 
         // Make sure you're logged in as yourself before trying to act as
         // someone else.
-        if ( agent == null ) {
+        if ( effectiveUser == null ) {
           throw new AuthenticationException();
         }
 
-        if ( ! canActAs(x, agent, entity) ) {
+        if ( ! canActAs(x, effectiveUser, entity) ) {
           return null;
         }
 
         UserUserJunction permissionJunction = (UserUserJunction) ((DAO) getAgentJunctionDAO()).find(AND(
-          EQ(UserUserJunction.SOURCE_ID, agent.getId()),
+          EQ(UserUserJunction.SOURCE_ID, effectiveUser.getId()),
           EQ(UserUserJunction.TARGET_ID, entity.getId())
         ));
         Group actingWithinGroup = (Group) ((DAO) getGroupDAO()).find(permissionJunction.getGroup());
@@ -85,20 +81,20 @@ foam.CLASS({
         // Clone and freeze both user and agent.
         entity = (User) entity.fclone();
         entity.freeze();
-        agent = (User) agent.fclone();
-        agent.freeze();
+        effectiveUser = (User) effectiveUser.fclone();
+        effectiveUser.freeze();
 
-        Subject sessionSubject = new Subject.Builder(x).setUser(entity).setEffectiveUser(agent).build();
+        Subject sessionSubject = new Subject.Builder(x).setUser(entity).setEffectiveUser(effectiveUser).build();
 
         // Set user and agent objects into the session context and place into sessionDAO.
         Session session = x.get(Session.class);
         session.setUserId(entity.getId());
-        session.setAgentId(agent.getId());
+        session.setAgentId(effectiveUser.getId());
         session.setContext(session.getContext().put("subject", sessionSubject));
         session.setContext(session.getContext().put("group", actingWithinGroup));
         DAO sessionDAO = (DAO) getX().get("localSessionDAO");
         sessionDAO.put(session);
-        return agent;
+        return effectiveUser;
       `
     },
     {
@@ -171,3 +167,4 @@ foam.CLASS({
     }
   ]
 });
+
