@@ -5,14 +5,24 @@ foam.CLASS({
 
   documentation: 'The base model for creating and managing all bank accounts.',
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   requires: [
-    'foam.nanos.auth.Address'
+    'foam.core.Currency',
+    'foam.dao.PromisedDAO',
+    'foam.nanos.auth.Address',
+    'net.nanopay.fx.Corridor'
   ],
 
   imports: [
+    'agent',
+    'branchDAO',
     'countryDAO',
+    'currencyDAO',
     'institutionDAO',
-    'branchDAO'
+    'user'
   ],
 
   javaImports: [
@@ -20,14 +30,14 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'static foam.mlang.MLang.*',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Country',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'java.util.List',
-    'net.nanopay.account.Account'
+    'net.nanopay.account.Account',
+    'static foam.mlang.MLang.*'
   ],
 
   tableColumns: [
@@ -50,24 +60,21 @@ foam.CLASS({
   sections: [
     {
       name: 'pad',
-      permissionRequired: true
+      permissionRequired: true,
+      isAvailable: function(forContact) {
+        return ! forContact;
+      }
     }
   ],
 
   messages: [
-    { name: 'BANK_ACCOUNT_LABEL', message: 'Bank Account' }
+    { name: 'BANK_ACCOUNT_LABEL', message: 'Bank Account' },
+    { name: 'ACCOUNT_NUMBER_REQUIRED', message: 'Account number required.' },
+    { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number invalid.' },
+    { name: 'NICKNAME_REQUIRED', message: 'Nickname required.' }
   ],
 
   properties: [
-    {
-      name: 'name',
-      label: 'Bank account name',
-      validateObj: function(name) {
-        if ( name == '' ) {
-          return 'Please enter a Bank account name.';
-        }
-      },
-    },
     {
       class: 'String',
       name: 'accountNumber',
@@ -94,9 +101,9 @@ foam.CLASS({
         var accNumberRegex = /^[0-9]{1,30}$/;
 
         if ( accountNumber === '' ) {
-          return 'Account number required.';
+          return this.ACCOUNT_NUMBER_REQUIRED;
         } else if ( ! accNumberRegex.test(accountNumber) ) {
-          return 'Invalid account number.';
+          return this.ACCOUNT_NUMBER_INVALID;
         }
       }
     },
@@ -245,7 +252,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.Address',
       name: 'address',
       documentation: `User pad authorization address.`,
-      section: 'pad',
+      // section: 'pad',
       // Note: To be removed
       factory: function() {
         return this.Address.create();
@@ -256,14 +263,73 @@ foam.CLASS({
       of: 'foam.nanos.auth.Address',
       name: 'bankAddress',
       documentation: `Returns the bank account address from the Address model.`,
-      section: 'pad',
+      // section: 'pad',
       factory: function() {
         return this.Address.create();
       },
     },
     {
+      class: 'foam.dao.DAOProperty',
+      name: 'availableCurrencies',
+      documentation: `Contains list of available currencies to receive or send.
+          System expects corridors to be aware of domicilied and permitted corridors.`,
+      visibility: 'HIDDEN',
+      section: 'accountDetails',
+      expression: function(user, currencyDAO, forContact) {
+        let propInfo = forContact ? this.Corridor.TARGET_COUNTRY : this.Corridor.SOURCE_COUNTRY;
+        return this.PromisedDAO.create({
+          of: 'foam.core.Currency',
+          promise: user.corridors
+            .where(this.EQ(propInfo, this.country))
+            .select(this.MAP(this.Corridor.CURRENCIES))
+            .then((sink) => {
+              return currencyDAO.where(
+                this.IN(this.Currency.ID, sink.delegate.array.flat())
+              );
+            })
+        });
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'forContact',
+      documentation: `Flag for whether bank account is owned by a contact.
+          Required for visibility property expressions.`
+    },
+    {
       name: 'denomination',
-      visibility: 'HIDDEN'
+      updateVisibility: 'RO',
+      writePermissionRequired: false,
+      gridColumns: 12,
+      section: 'accountDetails',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          data$: X.data.denomination$,
+          sections: [
+            {
+              heading: 'Available Currencies',
+              dao$: X.data.availableCurrencies$
+            }
+          ]
+        };
+      }
+    },
+    {
+      name: 'name',
+      label: 'Nickname',
+      order: 4,
+      validateObj: function(name) {
+        if ( name === '' || ! name ) {
+          return this.NICKNAME_REQUIRED;
+        }
+      }
+    },
+    {
+      name: 'securityPromoteInfo',
+      label: '',
+      section: 'accountDetails',
+      view: { class: 'net.nanopay.ui.DataSecurityBanner' }
     }
   ],
   methods: [

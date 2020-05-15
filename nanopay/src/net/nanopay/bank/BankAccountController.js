@@ -79,7 +79,7 @@ foam.CLASS({
             foam.core.Action.create({
               name: 'verifyAccount',
               isAvailable: function() {
-                return this.type != self.USBankAccount.name;
+                return this.cls_.name == self.CABankAccount.name;
               },
               isEnabled: function() {
                 return this.status === self.BankAccountStatus.UNVERIFIED;
@@ -136,11 +136,8 @@ foam.CLASS({
           name: 'addBank',
           label: 'Add bank account',
           code: async function(X) {
-            var USEnabled = self.user.address.countryId != 'CA';
             X.controllerView.stack.push({
-              class: 'net.nanopay.bank.ui.BankPickCurrencyView',
-              usdAvailable: USEnabled,
-              cadAvailable: ! USEnabled
+              class: 'net.nanopay.bank.ui.BankPickCurrencyView'
             }, self);
           }
         });
@@ -173,7 +170,7 @@ foam.CLASS({
     {
       name: 'dblclick',
       code: function onEdit(account) {
-        if ( account.status === this.BankAccountStatus.UNVERIFIED && account.denomination == 'CAD' ) {
+        if ( account.status === this.BankAccountStatus.UNVERIFIED && this.CABankAccount.isInstance(account) ) {
           this.ctrl.add(this.Popup.create().tag({
             class: 'net.nanopay.cico.ui.bankAccount.modalForm.CABankMicroForm',
             bank: account

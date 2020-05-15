@@ -2132,7 +2132,6 @@ p({
     dao = new foam.dao.EasyDAO.Builder(x)
       .setEnableInterfaceDecorators(false)
       .setOf(foam.nanos.ruler.Rule.getOwnClassInfo())
-      .setRuler(false)
       .setCluster(false)
       .setInnerDAO(x.get("localRuleDAO"))
       .build();
@@ -2431,4 +2430,38 @@ p({
     return dao;
   """,
   "client":"{\"of\":\"foam.nanos.crunch.Capability\"}"
+})
+
+// transaction history of invoiceDAO
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "detailedInvoiceDAO",
+  "documentation": "Wrapper on invoiceDAO to populate invoice transactionHistory on DAO.find()",
+  "authNotes": "No need for authorize and permissioned because invoiceDAO already has them",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    dao = new net.nanopay.invoice.DetailedInvoiceDAO.Builder(x)
+      .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.invoice.model.Invoice.getOwnClassInfo()).build())
+      .build();
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.invoice.model.Invoice.getOwnClassInfo())
+      .setInnerDAO(x.get("invoiceDAO"))
+      .setDecorator(dao)
+      .setAuthorize(false)
+      .setPm(true)
+      .setPermissioned(false)
+      .setEnableInterfaceDecorators(false)
+      .setRuler(false)
+      .build();
+  """,
+  "client":
+  """
+    {
+      "of": "net.nanopay.invoice.model.Invoice", 
+      "remoteListenerSupport": false, 
+      "cache": false
+    }
+  """
 })

@@ -71,7 +71,6 @@ foam.CLASS({
         // Generate the notification sent to Fraud-ops & Payment-ops group only
         DAO localNotificationDAO = (DAO) x.get("localNotificationDAO");
         Notification notification = new Notification();
-        notification.setEmailIsEnabled(true);
         notification.setBody("A Canadian business with name: " + business.getOrganization() + " and id: "
           + business.getId() + " has completed the cross-border onboarding.");
         notification.setNotificationType("A cross-border business has been onboarded");

@@ -2,6 +2,9 @@ FOAM_FILES([
   // DAO
   { name: 'net/nanopay/dao/EasyDAO'},
 
+  { name: 'net/nanopay/security/HexString', flags: ['web']},
+  { name: 'net/nanopay/security/HexStringArray', flags: ['web']},
+
   // Approvable
   { name: 'net/nanopay/liquidity/approvalRequest/AccountApprovableAware'},
   { name: 'net/nanopay/liquidity/approvalRequest/AccountApprovableAwareDAO' },
@@ -41,8 +44,9 @@ FOAM_FILES([
   { name: 'net/nanopay/account/AccountBalanceView' },
   { name: 'net/nanopay/account/Debtable' },
   { name: 'net/nanopay/account/Accountable' },
-  { name: 'net/nanopay/account/DuplicateAccountRule'},
-  { name: 'net/nanopay/account/PreventDuplicateBankAccountRule'},
+  { name: 'net/nanopay/account/DuplicateAccountRule' },
+  { name: 'net/nanopay/account/PreventDuplicateBankAccountRule' },
+  { name: 'net/nanopay/account/ui/BankAccountWizard' },
   { name: 'net/nanopay/account/ui/AccountSummaryView' },
   { name: 'net/nanopay/account/ui/AccountTreeGraph' },
   { name: 'net/nanopay/account/ui/AccountTreeView' },
@@ -102,9 +106,6 @@ FOAM_FILES([
   { name: 'net/nanopay/model/ClientUserJunction' },
   { name: 'net/nanopay/tx/Transfer' },
   { name: 'net/nanopay/tx/AcceptAware' },
-  { name: 'net/nanopay/bank/ui/addUSBankModal/AddUSBankModalWizard', flags: ['web'] },
-  { name: 'net/nanopay/bank/ui/addUSBankModal/USBankVoidForm', flags: ['web'] },
-  { name: 'net/nanopay/bank/ui/addUSBankModal/USBankPADForm', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/BankPADForm', flags: ['web'] },
   { name: 'net/nanopay/bank/BankAccount' },
   { name: 'net/nanopay/bank/CABankAccount' },
@@ -126,6 +127,8 @@ FOAM_FILES([
   { name: 'net/nanopay/model/BusinessType' },
   { name: 'net/nanopay/model/PadAccount' },
   { name: 'net/nanopay/model/PadCapture' },
+  { name: 'net/nanopay/model/CAPadCapture' },
+  { name: 'net/nanopay/model/USPadCapture' },
   { name: 'net/nanopay/model/DateAndPlaceOfBirth' },
   { name: 'net/nanopay/model/Identification' },
   { name: 'net/nanopay/model/Invitation' },
@@ -190,9 +193,6 @@ FOAM_FILES([
   { name: 'net/nanopay/exchangeable/AssetClass' },
 
   // AddCABankModal
-  { name: 'net/nanopay/cico/ui/bankAccount/modalForm/AddCABankModal', flags: ['web'] },
-  { name: 'net/nanopay/cico/ui/bankAccount/modalForm/CABankVoidForm', flags: ['web'] },
-  { name: 'net/nanopay/cico/ui/bankAccount/modalForm/CABankPADForm', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/bankAccount/modalForm/CABankMicroForm', flags: ['web'] },
 
   // onboarding
@@ -396,6 +396,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ruler/AbliiSendCompletedNotification' },
   { name: 'net/nanopay/tx/ruler/SendDeclinedCINotification' },
   { name: 'net/nanopay/tx/ruler/AddStatusHistoryAction' },
+  { name: 'net/nanopay/tx/ruler/CascadingCancelAction' },
   { name: 'net/nanopay/tx/ruler/IsSecurityQuote' },
   { name: 'net/nanopay/tx/model/TransactionLimitTimeFrame' },
   { name: 'net/nanopay/tx/ruler/MicroDepositSuccessed' },
@@ -676,6 +677,7 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/service/InvoicePaymentService' },
   { name: 'net/nanopay/invoice/service/ClientInvoicePaymentService' },
   { name: 'net/nanopay/invoice/InvoiceLineItem' },
+  { name: 'net/nanopay/invoice/DetailedInvoiceDAO' },
   { name: 'net/nanopay/invoice/util/InvoiceHistoryUtility' },
 
   // documents
@@ -699,7 +701,6 @@ FOAM_FILES([
   { name: 'net/nanopay/settings/business/EditBusinessProfileView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/UserManagementView', flags: ['web'] },
   { name: 'net/nanopay/settings/PersonalProfileView', flags: ['web'] },
-  { name: 'net/nanopay/settings/MultiUserManagementView', flags: ['web'] },
   { name: 'net/nanopay/settings/IntegrationView', flags: ['web'] },
 
   // auth
@@ -719,8 +720,6 @@ FOAM_FILES([
   { name: 'net/nanopay/security/pii/FreezeApprovedPIIRequestsDAO' },
 
   // security
-  { name: 'net/nanopay/security/HexString' },
-  { name: 'net/nanopay/security/HexStringArray' },
   { name: 'net/nanopay/security/EncryptedObject' },
   { name: 'net/nanopay/security/EncryptingDAO' },
   { name: 'net/nanopay/security/KeyStoreManager' },
@@ -875,6 +874,7 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/LiquiditySettings' },
    { name: 'net/nanopay/liquidity/Liquidity' },
    { name: 'net/nanopay/liquidity/LiquidityAuth' },
+   { name: 'net/nanopay/liquidity/LiquidNotification' },
    { name: 'net/nanopay/liquidity/LiquidityRule' },
    { name: 'net/nanopay/liquidity/LiquiditySettingsRowView', flags: ['web'] },
    { name: 'net/nanopay/liquidity/LiquiditySettingsSelectionView', flags: ['web'] },
@@ -1086,7 +1086,6 @@ FOAM_FILES([
   { name: 'net/nanopay/test/BranchDAOTest' },
   { name: 'net/nanopay/test/BranchDAOAuthorizationTest' },
   { name: 'net/nanopay/test/BusinessSectorDAOTest' },
-
   { name: 'net/nanopay/test/ModelledTest' },
   { name: 'net/nanopay/auth/PublicUserInfoDAOTest' },
   { name: 'net/nanopay/auth/ExternalInvoiceTokenTest' },
@@ -1096,6 +1095,8 @@ FOAM_FILES([
   { name: 'net/nanopay/test/TestsReporter' },
   { name: 'net/nanopay/test/TestReport' },
   { name: 'net/nanopay/tx/alterna/test/EFTTest' },
+  { name: 'net/nanopay/notification/TriggerNotificationTestAction' },
+  { name: 'net/nanopay/notification/TriggerDoNotifyTestAction' },
 
   // iso20022
   { name: 'net/nanopay/iso20022/ISODateTest' },
@@ -1466,4 +1467,6 @@ FOAM_FILES([
   // Fees
   { name: 'net/nanopay/tx/planner/fees/AbliiFeeRule' },
 
+  // msp
+  { name: 'net/nanopay/msp/MspInfo' }
 ]);

@@ -103,7 +103,6 @@ public class BmoFormatUtil {
     notification.setNotificationType("BMO EFT");
     notification.setIssuedDate(new Date());
     notification.setBody(subject + "\n" + body);
-    notification.setEmailIsEnabled(true);
     notificationDAO.put(notification);
   }
 }

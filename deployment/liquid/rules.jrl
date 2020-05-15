@@ -584,7 +584,7 @@ p({
 // Enable checker approval phase (in ApprovableAwareDAO)
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"3a9788fc-78b5-481e-9682-effa98489c331","name":"Enable checker on CapabilityRequest",
+  "id":"3a9788fc-78b5-481e-9682-effa98489c331","name":"Enable checker on CapabilityRequest put()",
   "priority":100,
   "enabled":true,
   "ruleGroup":"liquid",
@@ -610,7 +610,33 @@ p({
 })
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"3a9788fc-78b5-481e-9682-effa98489c332","name":"Enable checker on LiquiditySettings",
+  "id":"3a9788fc-78b5-481e-9682-effa98489c332","name":"Enable checker on CapabilityRequest remove()",
+  "priority":100,
+  "enabled":true,
+  "ruleGroup":"liquid",
+  "documentation":"Enabled checker on CapabilityRequest remove()",
+  "daoKey":"localCapabilityRequestDAO",
+  "operation":2,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.True",
+  },
+  "action":{
+    "class":"foam.nanos.ruler.action.ChangePropertyAction",
+    "propName":"checkerPredicate",
+    "valueExpr":{
+      "class":"foam.mlang.Constant",
+      "value":{
+        "class":"foam.mlang.predicate.True"
+      }
+    }
+  },
+  "saveHistory":true,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"3a9788fc-78b5-481e-9682-effa98489c333","name":"Enable checker on LiquiditySettings put()",
   "priority":100,
   "enabled":true,
   "ruleGroup":"liquid",
@@ -636,12 +662,38 @@ p({
 })
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"3a9788fc-78b5-481e-9682-effa98489c333","name":"Enable checker on User",
+  "id":"3a9788fc-78b5-481e-9682-effa98489c334","name":"Enable checker on LiquiditySettings remove()",
+  "priority":100,
+  "enabled":true,
+  "ruleGroup":"liquid",
+  "documentation":"Enabled checker on LiquiditySettings remove()",
+  "daoKey":"localLiquiditySettingsDAO",
+  "operation":2,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.True",
+  },
+  "action":{
+    "class":"foam.nanos.ruler.action.ChangePropertyAction",
+    "propName":"checkerPredicate",
+    "valueExpr":{
+      "class":"foam.mlang.Constant",
+      "value":{
+        "class":"foam.mlang.predicate.True"
+      }
+    }
+  },
+  "saveHistory":true,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"3a9788fc-78b5-481e-9682-effa98489c335","name":"Enable checker on User put()",
   "priority":100,
   "enabled":true,
   "ruleGroup":"liquid",
   "documentation":"Enabled checker on User put()",
-  "daoKey":"localUserDAO",
+  "daoKey":"bareUserDAO",
   "operation":3,
   "after":false,
   "predicate":{
@@ -662,13 +714,169 @@ p({
 })
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"3a9788fc-78b5-481e-9682-effa98489c334","name":"Enable checker on Account",
+  "id":"3a9788fc-78b5-481e-9682-effa98489c336","name":"Enable checker on User remove()",
+  "priority":100,
+  "enabled":true,
+  "ruleGroup":"liquid",
+  "documentation":"Enabled checker on User remove()",
+  "daoKey":"localUserDAO",
+  "operation":2,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.True",
+  },
+  "action":{
+    "class":"foam.nanos.ruler.action.ChangePropertyAction",
+    "propName":"checkerPredicate",
+    "valueExpr":{
+      "class":"foam.mlang.Constant",
+      "value":{
+        "class":"foam.mlang.predicate.True"
+      }
+    }
+  },
+  "saveHistory":true,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"3a9788fc-78b5-481e-9682-effa98489c337","name":"Enable checker on Account put()",
   "priority":100,
   "enabled":true,
   "ruleGroup":"liquid",
   "documentation":"Enabled checker on Account put()",
   "daoKey":"localAccountDAO",
   "operation":3,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.True",
+  },
+  "action":{
+    "class":"foam.nanos.ruler.action.ChangePropertyAction",
+    "propName":"checkerPredicate",
+    "valueExpr":{
+      "class":"foam.mlang.Constant",
+      "value":{
+        "class":"foam.mlang.predicate.True"
+      }
+    }
+  },
+  "saveHistory":true,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"3a9788fc-78b5-481e-9682-effa98489c338","name":"Enable checker on Account remove()",
+  "priority":100,
+  "enabled":true,
+  "ruleGroup":"liquid",
+  "documentation":"Enabled checker on Account remove()",
+  "daoKey":"localAccountDAO",
+  "operation":2,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.True",
+  },
+  "action":{
+    "class":"foam.nanos.ruler.action.ChangePropertyAction",
+    "propName":"checkerPredicate",
+    "valueExpr":{
+      "class":"foam.mlang.Constant",
+      "value":{
+        "class":"foam.mlang.predicate.True"
+      }
+    }
+  },
+  "saveHistory":true,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"3a9788fc-78b5-481e-9682-effa98489c339","name":"Enable checker on Rule put()",
+  "priority":100,
+  "enabled":true,
+  "ruleGroup":"liquid",
+  "documentation":"Enabled checker on Rule put()",
+  "daoKey":"ruleDAO",
+  "operation":3,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.True",
+  },
+  "action":{
+    "class":"foam.nanos.ruler.action.ChangePropertyAction",
+    "propName":"checkerPredicate",
+    "valueExpr":{
+      "class":"foam.mlang.Constant",
+      "value":{
+        "class":"foam.mlang.predicate.True"
+      }
+    }
+  },
+  "saveHistory":true,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"3a9788fc-78b5-481e-9682-effa98489c340","name":"Enable checker on Rule remove()",
+  "priority":100,
+  "enabled":true,
+  "ruleGroup":"liquid",
+  "documentation":"Enabled checker on Rule remove()",
+  "daoKey":"ruleDAO",
+  "operation":2,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.True",
+  },
+  "action":{
+    "class":"foam.nanos.ruler.action.ChangePropertyAction",
+    "propName":"checkerPredicate",
+    "valueExpr":{
+      "class":"foam.mlang.Constant",
+      "value":{
+        "class":"foam.mlang.predicate.True"
+      }
+    }
+  },
+  "saveHistory":true,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"3a9788fc-78b5-481e-9682-effa98489c341","name":"Enable checker on Capability put()",
+  "priority":100,
+  "enabled":true,
+  "ruleGroup":"liquid",
+  "documentation":"Enabled checker on Capability put()",
+  "daoKey":"localCapabilityDAO",
+  "operation":3,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.True",
+  },
+  "action":{
+    "class":"foam.nanos.ruler.action.ChangePropertyAction",
+    "propName":"checkerPredicate",
+    "valueExpr":{
+      "class":"foam.mlang.Constant",
+      "value":{
+        "class":"foam.mlang.predicate.True"
+      }
+    }
+  },
+  "saveHistory":true,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"3a9788fc-78b5-481e-9682-effa98489c342","name":"Enable checker on Capability remove()",
+  "priority":100,
+  "enabled":true,
+  "ruleGroup":"liquid",
+  "documentation":"Enabled checker on Capability remove()",
+  "daoKey":"localCapabilityDAO",
+  "operation":2,
   "after":false,
   "predicate":{
     "class":"foam.mlang.predicate.True",

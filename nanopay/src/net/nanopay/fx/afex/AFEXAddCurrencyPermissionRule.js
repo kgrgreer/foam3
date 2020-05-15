@@ -129,7 +129,6 @@ foam.CLASS({
               .setBody("AFEX Business can make international payments.")
               .setNotificationType("AFEXBusinessInternationalPaymentsEnabled")
               .setGroupId(group.toString())
-              .setEmailIsEnabled(true)
               .setEmailArgs(args)
               .setEmailName("international-payments-enabled-notification")
               .build() :
@@ -137,7 +136,6 @@ foam.CLASS({
               .setBody("This business can now make international payments")
               .setNotificationType("Latest_Activity")
               .setGroupId(group.toString())
-              .setEmailIsEnabled(true)
               .setEmailArgs(args)
               .setEmailName("compliance-notification-to-user")
               .build();

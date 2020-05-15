@@ -35,11 +35,9 @@ foam.CLASS({
             public void execute(X x) {
               // SETUP
               DAO currencyDAO = (DAO) x.get("currencyDAO");
-              DAO notificationDAO = ((DAO) x.get("localNotificationDAO"));
               Logger logger  = (Logger) x.get("logger");
 
               Notification notification = new Notification();
-              notification.setEmailIsEnabled(true);
 
               if ( obj == null ) return; 
               Transaction t = (Transaction) obj; // used through loop
@@ -99,7 +97,7 @@ foam.CLASS({
                 args.put("link", config.getUrl());
 
                 notification.setEmailArgs(args);
-                notificationDAO.put(notification);
+                sender.doNotify(x, notification);
               } else {
                 notification.setBody("Your Cash In transaction was rejected.");
                 notification.setUserId(receiver.getId());
@@ -122,7 +120,7 @@ foam.CLASS({
 
                 notification.setEmailArgs(args);
                 try {
-                  notificationDAO.put(notification);
+                  receiver.doNotify(x, notification);
                 }
                 catch (Exception E) { logger.error("Failed to put notification. "+E); };
               }

@@ -4,6 +4,14 @@ foam.CLASS({
   label: 'US Bank Account',
   extends: 'net.nanopay.bank.BankAccount',
 
+  imports: [
+    'notify',
+    'padCaptureDAO',
+    'plaidService',
+    'stack',
+    'user'
+  ],
+
   javaImports: [
     'foam.util.SafetyUtil',
     'net.nanopay.model.Branch',
@@ -11,6 +19,26 @@ foam.CLASS({
   ],
 
   documentation: 'US Bank account information.',
+
+  sections: [
+    {
+      name: 'accountDetails',
+      title: function(forContact) {
+        return forContact ? this.SECTION_DETAILS_TITLE_CONTACT : this.SECTION_DETAILS_TITLE_VOID;
+      },
+      subTitle: `Connect to the account without signing in to online banking.
+          Please ensure the details are entered properly.`
+    },
+    {
+      name: 'pad',
+      title: `Connect using a void check`,
+      subTitle: `Connect to your account without signing in to online banking. 
+          Please ensure your details are entered properly.`,
+      isAvailable: function(forContact) {
+        return ! forContact;
+      }
+    }
+  ],
 
   constants: [
     {
@@ -23,6 +51,18 @@ foam.CLASS({
       type: 'Regex',
       javaValue: 'Pattern.compile("^[0-9]{6,17}$")'
     }
+  ],
+
+  messages: [
+    { name: 'DROP_ZONE_TITLE', message: 'DRAG & DROP YOUR VOID CHECK OR STATEMENT HERE' },
+    { name: 'ROUTING_NUMBER_REQUIRED', message: 'Routing number required.' },
+    { name: 'ROUTING_NUMBER_INVALID', message: 'Routing number must be 9 digits long.' },
+    { name: 'ACCOUNT_NUMBER_REQUIRED', message: 'Account number required.' },
+    { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number must be between 6 and 17 digits long.' },
+    { name: 'IMAGE_REQUIRED', message: 'Please attach a void check or a 3 month bank statement.' },
+    { name: 'ADD_SUCCESSFUL', message: 'Bank Account added successfully!' },
+    { name: 'SECTION_DETAILS_TITLE_CONTACT', message: 'Add contact bank account' },
+    { name: 'SECTION_DETAILS_TITLE_VOID', message: 'Connect using a void check' }
   ],
 
   properties: [
@@ -43,6 +83,7 @@ foam.CLASS({
     },
     {
       name: 'desc',
+      visibility: 'HIDDEN'
     },
     { // REVIEW: remove
       class: 'String',
@@ -69,12 +110,6 @@ foam.CLASS({
       documentation: 'void check image for this bank account',
     },
     {
-      class: 'foam.nanos.fs.FileArray',
-      name: 'supportingDocuments',
-      documentation: 'Supporting documents to verify bank account',
-      view: { class: 'net.nanopay.invoice.ui.InvoiceFileUploadView' }
-    },
-    {
       name: 'branchId',
       label: 'ACH Routing Number',
       section: 'accountDetails',
@@ -91,13 +126,16 @@ foam.CLASS({
         var reg = /^\d+$/;
         return reg.test(n) ? n : o;
       },
+      postSet: function(o, n) {
+        this.padCapture.branchId = n;
+      },
       validateObj: function(branchId) {
         var accNumberRegex = /^[0-9]{9}$/;
 
         if ( branchId === '' ) {
-          return 'Routing number required.';
+          return this.ROUTING_NUMBER_REQUIRED;
         } else if ( ! accNumberRegex.test(branchId) ) {
-          return 'Invalid routing number.';
+          return this.ROUTING_NUMBER_INVALID;
         }
       }
     },
@@ -105,13 +143,16 @@ foam.CLASS({
       name: 'accountNumber',
       label: 'ACH Account Number',
       updateVisibility: 'RO',
+      postSet: function(o, n) {
+        this.padCapture.accountNumber = n;
+      },
       validateObj: function(accountNumber) {
         var accNumberRegex = /^[0-9]{6,17}$/;
 
         if ( accountNumber === '' ) {
-          return 'Please enter an account number.';
+          return this.ACCOUNT_NUMBER_REQUIRED;
         } else if ( ! accNumberRegex.test(accountNumber) ) {
-          return 'Account number must be between 6 and 17 digits long.';
+          return this.ACCOUNT_NUMBER_INVALID;
         }
       },
       gridColumns: 6
@@ -131,6 +172,13 @@ foam.CLASS({
     //   visibility: 'HIDDEN',
     //   value: 'US0000000'
     // },
+    {
+      class: 'FObjectProperty',
+      name: 'plaidResponseItem',
+      storageTransient: true,
+      section: 'pad',
+      visibility: 'HIDDEN'
+    },
     {
       //REVIEW: Set by Plaid, not read
       class: 'String',
@@ -170,10 +218,92 @@ foam.CLASS({
           }))
         .end();
       }
+    },
+    {
+      class: 'foam.nanos.fs.FileArray',
+      name: 'supportingDocuments',
+      label: `Please upload either an image of a void check or a bank statement from within
+          the past 3 months to verify ownership of this bank account.`,
+      section: 'accountDetails',
+      documentation: 'Supporting documents to verify bank account',
+      validateObj: function(supportingDocuments, plaidResponseItem) {
+        if ( supportingDocuments.length === 0 && ! plaidResponseItem ) {
+          return this.IMAGE_REQUIRED;
+        }
+      },
+      view: function(_, X) {
+        return {
+          class: 'net.nanopay.sme.ui.fileDropZone.FileDropZone',
+          files$: X.data.supportingDocuments$,
+          title: X.data.DROP_ZONE_TITLE,
+          supportedFormats: {
+            'image/jpg': 'JPG',
+            'image/jpeg': 'JPEG',
+            'image/png': 'PNG',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOCX',
+            'application/msword': 'DOC',
+            'application/pdf': 'PDF'
+          }
+        };
+      }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.model.USPadCapture',
+      name: 'padCapture',
+      section: 'pad',
+      storageTransient: true,
+      label: '',
+      updateVisibility: 'HIDDEN',
+      factory: function() {
+        return net.nanopay.model.USPadCapture.create({
+          country: this.country,
+          firstName: this.agent.firstName,
+          lastName: this.agent.lastName,
+          companyName: this.user.businessName,
+          address: this.user.address
+        }, this);
+      },
+      view: function(_, X) {
+        return foam.u2.view.FObjectView.create({
+          of: net.nanopay.model.USPadCapture
+        }, X);
+      }
     }
   ],
-  
+
   methods: [
+    async function save() {
+      try {
+        await this.padCaptureDAO.put(this.padCapture);
+      } catch (e) {
+        this.notify(e, 'error');
+        return;
+      }
+      if ( this.plaidResponseItem ) {
+        let responseItem = this.plaidResponseItem;
+        this.plaidResponseItem = null; // avoids stack call recursion.
+        try {
+          let response = await this.plaidService.saveAccount(null, responseItem);
+          if ( response.plaidError ) {
+            let message = error.display_message !== '' ? error.display_message : error.error_code;
+            this.notify(message, 'error');
+          }
+          if ( this.stack ) this.stack.back();
+        } catch (e) {
+          this.notify(e.message, 'error');
+        }
+      } else {
+        try {
+          this.address = this.padCapture.address;
+          await this.user.accounts.put(this);
+          if ( this.stack ) this.stack.back();
+          this.notify(this.ADD_SUCCESSFUL);
+        } catch (error) {
+          this.notify(error.message, 'error');
+        }
+      }
+    },
     {
       name: 'validate',
       args: [
@@ -189,17 +319,17 @@ foam.CLASS({
         String accountNumber = this.getAccountNumber();
         
         if ( SafetyUtil.isEmpty(branchId) ) {
-          throw new IllegalStateException("Please enter a routing number.");
+          throw new IllegalStateException(this.ROUTING_NUMBER_REQUIRED);
         }
         if ( ! BRANCH_ID_PATTERN.matcher(branchId).matches() ) {
-          throw new IllegalStateException("Routing number must be 9 digits long.");
+          throw new IllegalStateException(this.ROUTING_NUMBER_INVALID);
         }
 
         if ( SafetyUtil.isEmpty(accountNumber) ) {
-          throw new IllegalStateException("Please enter an account number.");
+          throw new IllegalStateException(this.ACCOUNT_NUMBER_REQUIRED);
         }
         if ( ! ACCOUNT_NUMBER_PATTERN.matcher(accountNumber).matches() ) {
-          throw new IllegalStateException("Account number must be between 6 and 17 digits long.");
+          throw new IllegalStateException(this.ACCOUNT_NUMBER_INVALID);
         }
       `
     },

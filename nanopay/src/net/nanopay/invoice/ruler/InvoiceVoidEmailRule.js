@@ -60,7 +60,6 @@ foam.CLASS({
               Notification invoiceVoidedNotification = new Notification.Builder(x)
                 .setBody(accountVar + " has been void.")
                 .setNotificationType("InvoiceVoid")
-                .setEmailIsEnabled(true)
                 .setEmailArgs(args)
                 .setEmailName("voidInvoice")
                 .build();

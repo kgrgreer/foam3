@@ -357,7 +357,6 @@ XeroTokenStorage tokenStorage = (XeroTokenStorage) store.find(user.getId());
 Group            group        = user.findGroup(x);
 AppConfig        app          = group.getAppConfig(x);
 DAO              configDAO    = ((DAO) x.get("xeroConfigDAO")).inX(x);
-DAO              notification = ((DAO) x.get("localNotificationDAO")).inX(x);
 XeroConfig       config       = (XeroConfig)configDAO.find(app.getUrl());
 XeroClient       client_      = new XeroClient(config);
 Logger           logger       = (Logger) x.get("logger");
@@ -443,11 +442,10 @@ try {
     //TODO: Remove this when we accept other currencies
     if ( ! (xeroInvoice.getCurrencyCode() == CurrencyCode.CAD || xeroInvoice.getCurrencyCode() == CurrencyCode.USD) ) {
       Notification notify = new Notification();
-      notify.setUserId(user.getId());
       notify.setBody("Xero Invoice # " +
         xeroInvoice.getInvoiceNumber()+
         " cannot sync due to portal only accepting CAD and USD");
-      notification.put(notify);
+      user.doNotify(x, notify);
       continue;
     }
 

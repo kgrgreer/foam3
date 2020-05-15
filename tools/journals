@@ -47,8 +47,11 @@ liquidCapabilities
 liquiditySettings
 liquidUserCapabilityJunctions
 menus
+mspSetup
 notifications
 notificationTemplates
+notificationSettings
+notificationSettingDefaults
 payoutOptions
 paymentCodes
 paymentProviderCorridorJunctions
