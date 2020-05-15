@@ -7,16 +7,20 @@ foam.CLASS({
   implements: ['foam.nanos.ruler.RuleAction'],
 
   javaImports: [
-    'java.util.Date',
-    'foam.core.X',
     'foam.core.ContextAgent',
+    'foam.core.Currency',
+    'foam.core.X',
     'foam.dao.DAO',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
+
+    'java.util.Date',
+
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
-    'foam.core.Currency',
+
     'static foam.mlang.MLang.*',
   ],
 
@@ -34,7 +38,8 @@ foam.CLASS({
               PublicUserInfo payer = (PublicUserInfo) iv.getPayer();
               PublicUserInfo payee = (PublicUserInfo) iv.getPayee();
 
-              X systemX = x.put("user", new User.Builder(x).setId(1).build());
+              Subject subject = new Subject.Builder(x).setUser(new User.Builder(x).setId(1).build()).build();
+              X systemX = x.put("subject", subject);
               User payerUser = (User) localUserDAO.inX(systemX).find(payer.getId());
               User payeeUser = (User) localUserDAO.inX(systemX).find(payee.getId());
 
@@ -59,7 +64,7 @@ foam.CLASS({
 
               String notificationMsg = sb.toString();
               String payer_notificationMsg = rb.toString();
-              
+
               // notification to payee
               Notification payeeNotification = new Notification();
               payeeNotification.setUserId(payee.getId());
@@ -74,7 +79,7 @@ foam.CLASS({
                 }
               }
               catch (Exception E) { logger.error("Failed to put notification. "+E); };
-              
+
               // notification to payer
               if ( payer.getId() != payee.getId() ) {
                 Notification payerNotification = new Notification();

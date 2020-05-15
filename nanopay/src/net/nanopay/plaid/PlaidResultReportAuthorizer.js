@@ -7,10 +7,12 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
-    'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
-    'net.nanopay.plaid.PlaidResultReport',
+
+    'net.nanopay.plaid.PlaidResultReport'
   ],
 
   methods: [
@@ -26,7 +28,7 @@ foam.CLASS({
     {
       name: 'authorizeOnRead',
       javaCode: `
-        User user = (User) x.get("user");
+        User user = ((Subject) x.get("subject")).getUser();
         AuthService authService = (AuthService) x.get("auth");
 
         PlaidResultReport plaidResultReport = (PlaidResultReport) obj;
@@ -39,7 +41,7 @@ foam.CLASS({
     {
       name: 'authorizeOnUpdate',
       javaCode: `
-        User user = (User) x.get("user");
+        User user = ((Subject) x.get("subject")).getUser();
         AuthService authService = (AuthService) x.get("auth");
 
         PlaidResultReport plaidResultReport = (PlaidResultReport) oldObj;

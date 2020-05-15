@@ -7,10 +7,7 @@ import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
-import foam.nanos.auth.AuthService;
-import foam.nanos.auth.AuthenticationException;
-import foam.nanos.auth.AuthorizationException;
-import foam.nanos.auth.User;
+import foam.nanos.auth.*;
 import net.nanopay.security.pii.ViewPIIRequest;
 
 import static foam.mlang.MLang.EQ;
@@ -30,7 +27,7 @@ public class AuthenticatedPIIRequestDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
 
     if ( user == null ) {
       throw new AuthenticationException();
@@ -41,9 +38,9 @@ public class AuthenticatedPIIRequestDAO
 
   @Override
   public FObject find_(X x, Object id) {
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     AuthService auth = (AuthService) x.get("auth");
-    
+
     if ( user == null ) {
       throw new AuthenticationException();
     }
@@ -59,7 +56,7 @@ public class AuthenticatedPIIRequestDAO
 
   @Override
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {
@@ -73,7 +70,7 @@ public class AuthenticatedPIIRequestDAO
 
   @Override
   public FObject remove_(X x, FObject obj) {
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     ViewPIIRequest viewPIIRequest = (ViewPIIRequest) obj;
     AuthService auth = (AuthService) x.get("auth");
 
@@ -89,7 +86,7 @@ public class AuthenticatedPIIRequestDAO
 
   @Override
   public void removeAll_(X x, long skip, long limit, Comparator order, Predicate predicate) {
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {

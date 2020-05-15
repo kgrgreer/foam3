@@ -5,13 +5,16 @@ foam.CLASS({
   implements: [ 'foam.nanos.auth.Authorizer' ],
 
   javaImports: [
-    'foam.nanos.auth.AuthorizationException',
-    'foam.nanos.auth.AuthService',
+    'foam.dao.DAO',
     'foam.nanos.approval.Approvable',
     'foam.nanos.approval.ApprovalRequest',
-    'net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest',
     'foam.nanos.approval.ApprovalStatus',
-    'foam.dao.DAO'
+    'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
+
+    'net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest'
   ],
 
   methods: [
@@ -32,7 +35,7 @@ foam.CLASS({
     {
       name: 'authorizeOnRead',
       javaCode:  `
-        foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("user");
+        User user = ((Subject) x.get("subject")).getUser();
         if ( user != null && ( user.getId() == foam.nanos.auth.User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system") ) ) return;
 
         ApprovalRequest request = (ApprovalRequest) obj;
@@ -53,12 +56,12 @@ foam.CLASS({
     {
       name: 'authorizeOnUpdate',
       javaCode:  `
-        foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("user");
+        User user = ((Subject) x.get("subject")).getUser();
         Boolean isAdmin = user.getId() == foam.nanos.auth.User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system");
 
-        if ( user != null && 
-             isAdmin && 
-             ((ApprovalRequest) newObj).getIsFulfilled() ) 
+        if ( user != null &&
+             isAdmin &&
+             ((ApprovalRequest) newObj).getIsFulfilled() )
           return;
 
         ApprovalRequest request = (ApprovalRequest) oldObj;
@@ -68,7 +71,7 @@ foam.CLASS({
           throw new AuthorizationException("You are not the approver of this request");
         }
 
-        if ( user.getId() == newRequest.getCreatedBy() && 
+        if ( user.getId() == newRequest.getCreatedBy() &&
           (
             newRequest.getStatus() == foam.nanos.approval.ApprovalStatus.APPROVED ||
             newRequest.getStatus() == foam.nanos.approval.ApprovalStatus.REJECTED
@@ -90,11 +93,11 @@ foam.CLASS({
         String className;
         if ( request.getOperation() == foam.nanos.ruler.Operations.UPDATE ) {
           String daoKey = ((Approvable) ((DAO) x.get("approvableDAO")).find(request.getObjId())).getDaoKey();
-          className = ((DAO) x.get(daoKey)).getOf().getObjClass().getSimpleName().toLowerCase(); 
+          className = ((DAO) x.get(daoKey)).getOf().getObjClass().getSimpleName().toLowerCase();
         } else {
           className = ((DAO) x.get(request.getDaoKey())).getOf().getObjClass().getSimpleName().toLowerCase();
         }
-        
+
         String permission = createPermission(className, "approve", accountId);
         AuthService authService = (AuthService) x.get("auth");
 
@@ -106,7 +109,7 @@ foam.CLASS({
     {
       name: 'authorizeOnCreate',
       javaCode:  `
-        foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("user");
+        User user = ((Subject) x.get("subject")).getUser();
         if ( user != null && ( user.getId() == foam.nanos.auth.User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system") ) ) return;
 
         ApprovalRequest request = (ApprovalRequest) obj;
@@ -116,11 +119,11 @@ foam.CLASS({
         String className;
         if ( request.getOperation() == foam.nanos.ruler.Operations.UPDATE ) {
           String daoKey = ((Approvable) ((DAO) x.get("approvableDAO")).find(request.getObjId())).getDaoKey();
-          className = ((DAO) x.get(daoKey)).getOf().getObjClass().getSimpleName().toLowerCase(); 
+          className = ((DAO) x.get(daoKey)).getOf().getObjClass().getSimpleName().toLowerCase();
         } else {
           className = ((DAO) x.get(request.getDaoKey())).getOf().getObjClass().getSimpleName().toLowerCase();
         }
-        
+
         String permission = createPermission(className, "make", accountId);
         AuthService authService = (AuthService) x.get("auth");
 
@@ -132,11 +135,11 @@ foam.CLASS({
     {
       name: 'authorizeOnDelete',
       javaCode:  `
-        foam.nanos.auth.User user = (foam.nanos.auth.User) x.get("user");
+        User user = ((Subject) x.get("subject")).getUser();
         if ( user != null && ( user.getId() == foam.nanos.auth.User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system") ) ) return;
         throw new AuthorizationException("Approval requests can only be created by the system");
       `
     }
   ]
 })
-  
+

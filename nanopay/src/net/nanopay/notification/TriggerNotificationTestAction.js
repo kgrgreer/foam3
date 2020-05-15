@@ -9,6 +9,7 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
@@ -23,11 +24,11 @@ foam.CLASS({
          agency.submit(x, new ContextAgent() {
             @Override
             public void execute(X x) {
-              User user = (User) x.get("user");
+              User user = ((Subject) x.get("user")).getUser();
 
               DAO localUserDAO = (DAO) x.get("localUserDAO");
               DAO notificationDAO = (DAO) x.get("localNotificationDAO");
-              
+
               Logger logger = (Logger) x.get("logger");
               logger.info("Sending notification to: " + user);
 
@@ -43,8 +44,8 @@ foam.CLASS({
               try {
                 notificationDAO.put_(x, notification);
               }
-              catch (Exception e) { 
-                logger.error("Failed to put notification. " + e); 
+              catch (Exception e) {
+                logger.error("Failed to put notification. " + e);
               }
             }
          },"Test notification");

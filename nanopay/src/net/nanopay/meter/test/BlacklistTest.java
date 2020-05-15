@@ -20,7 +20,7 @@ import foam.nanos.auth.UserUserJunction;
 public class BlacklistTest extends Test {
 
   @Override
-  public void runTest(X x) {  
+  public void runTest(X x) {
     DAO accountDAO = (DAO) x.get("accountDAO");
     DAO bareUserDAO = (DAO) x.get("bareUserDAO");
     DAO invoiceDAO = (DAO) x.get("invoiceDAO");
@@ -66,7 +66,7 @@ public class BlacklistTest extends Test {
     adminToBusinessJunc.setSourceId(myAdmin.getId());
     adminToBusinessJunc.setTargetId(myBusiness.getId());
     adminToBusinessJunc.setGroup(myBusiness.getBusinessPermissionId() + ".admin");
-    agentJunctionDAO.put(adminToBusinessJunc);
+    agentJunctionDAO.put_(myAdminContext, adminToBusinessJunc);
 
     // Creating respective contexts with user-agent enabled in their sessions
     Session sessionAdmin = myAdminContext.get(Session.class);
@@ -117,7 +117,7 @@ public class BlacklistTest extends Test {
     transaction.setPayeeId(invoice.getPayeeId());
     transaction.setAmount(invoice.getAmount());
     transaction.setInvoiceId(invoice.getId());
-    try { 
+    try {
       Transaction result = (Transaction) transactionDAO.inX(myAdminContext).put(transaction);
       test(result == null, "Transaction not created until business passes compliance passing proper compliance.");
     } catch (Throwable t) {

@@ -5,6 +5,7 @@ import foam.core.FObject;
 import foam.core.Validator;
 import foam.core.X;
 import foam.nanos.auth.LifecycleState;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import net.nanopay.account.Account;
@@ -39,7 +40,7 @@ public class LiquidTransactionValidator implements Validator {
     if (dest.getLifecycleState() == LifecycleState.DELETED )
       throw new RuntimeException("Unable to send to account "+dest.getId());
 
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     if (     tx.getOrigin() == net.nanopay.tx.OriginatingSource.MANUAL && source.getClass() != DigitalAccount.class
       && ! (
       user.getGroup().equals("admin")

@@ -4,6 +4,7 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
 import net.nanopay.bank.BankAccountStatus;
@@ -38,19 +39,19 @@ public class AbliiBankAccountAutoverifyDAO
      * this autoverified bank account WILL NOT CARRY OVER to their ablii account, as they will have to still set up an
      * account and verify it using the micro-deposit even if they are using the same bank information
      * Contact Bank Accounts are exlusively meant to just RECEIVE money from ablii users
-     * 
+     *
      * 3. FOR FLINKS BANK ACCOUNTS
      * NOTE: MIGHT WANT TO INCLUDE THIS IN THE FUTURE FOR INSTITUTIONS IDS BETWEEN 1 to 23 SINCE THESE WILL ALL REQUIRE TO LOGIN VIA THE CLIENT
-     * Since flinks bank accounts are being verified by logging in from the client, 
+     * Since flinks bank accounts are being verified by logging in from the client,
      * we can automatically verify these bank accounts when passing them through this decorator
      */
 
-   User user = (User) x.get("user");
+   User user = ((Subject) x.get("subject")).getUser();
    long userId = user.getId();
-   
+
    // since the bank account details are included in obj, we can grab the ownerId of the bank account
    // in the case of a contact bank account, the contact should be the OWNER of the bank account
-   Account bankAccountObj = (Account) obj; 
+   Account bankAccountObj = (Account) obj;
    long bankAccountOwnerId = bankAccountObj.getOwner();
 
    // 1. CONTACT BANK ACCOUNTS

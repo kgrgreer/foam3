@@ -12,23 +12,24 @@ foam.CLASS({
   javaImports: [
     'foam.core.FObject',
     'foam.core.X',
-    'foam.dao.DAO',
     'foam.dao.ArraySink',
+    'foam.dao.DAO',
     'foam.nanos.approval.ApprovalRequest',
     'foam.nanos.approval.ApprovalRequestUtil',
     'foam.nanos.approval.ApprovalStatus',
     'foam.nanos.auth.Group',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.PrefixLogger',
+    'foam.nanos.session.Session',
     'foam.nanos.ticket.Ticket',
     'foam.nanos.ticket.TicketStatus',
-    'foam.nanos.session.Session',
-    'net.nanopay.ticket.SudoTicket',
-    'net.nanopay.ticket.SudoTicketApprovalResponseRule',
-    'net.nanopay.ticket.SudoTicketApprovalRequestRule',
     'java.util.ArrayList',
     'java.util.Arrays',
+    'net.nanopay.ticket.SudoTicket',
+    'net.nanopay.ticket.SudoTicketApprovalRequestRule',
+    'net.nanopay.ticket.SudoTicketApprovalResponseRule',
     'static foam.mlang.MLang.*'
   ],
 
@@ -76,7 +77,8 @@ foam.CLASS({
 
    DAO ticketDAO = (DAO) x.get("localTicketDAO");
    SudoTicket ticket = new SudoTicket.Builder(x).setOwner(user2.getId()).setSudoAsUser(user3.getId()).setComment("user2 as user3").build();
-   X y = x.put("user", user2);
+   Subject subject = new Subject.Builder(x).setUser(user2).build();
+   X y = x.put("subject", subject);
    ticket = (SudoTicket) ticketDAO.inX(y).put_(y, ticket).fclone();
 
    String classification = SudoTicket.class.getSimpleName();

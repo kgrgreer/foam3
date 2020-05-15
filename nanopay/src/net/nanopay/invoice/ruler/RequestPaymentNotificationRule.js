@@ -7,18 +7,20 @@ foam.CLASS({
     implements: ['foam.nanos.ruler.RuleAction'],
 
     javaImports: [
+      'foam.core.ContextAgent',
+      'foam.core.Currency',
       'foam.core.FObject',
       'foam.core.X',
-      'foam.core.ContextAgent',
       'foam.dao.DAO',
+      'foam.nanos.auth.Subject',
       'foam.nanos.auth.User',
       'foam.nanos.logger.Logger',
       'foam.nanos.notification.Notification',
       'foam.util.SafetyUtil',
+
       'net.nanopay.auth.PublicUserInfo',
       'net.nanopay.invoice.model.Invoice',
-      'foam.core.Currency',
-      'static foam.mlang.MLang.*',
+      'static foam.mlang.MLang.*'
     ],
 
     methods: [
@@ -33,7 +35,7 @@ foam.CLASS({
                 Logger logger = (Logger) x.get("logger");
 
                 PublicUserInfo payer = (PublicUserInfo) iv.getPayer();
-                User user = (User) x.get("user");
+                User user = ((Subject) x.get("subject")).getUser();
 
                 PublicUserInfo payee = (PublicUserInfo) iv.getPayee();
 
@@ -64,7 +66,7 @@ foam.CLASS({
 
                 String notificationMsg = sb.toString();
                 String payer_notificationMsg = rb.toString();
-                
+
                 // notification to user
                 Notification userNotification = new Notification();
                 userNotification.setUserId(user.getId());
@@ -74,18 +76,19 @@ foam.CLASS({
                   user.doNotify(x, userNotification);
                 }
                 catch (Exception E) { logger.error("Failed to put notification. "+E); };
-                
+
                 // notification to payer
                 if ( payer.getId() != user.getId() ) {
                   Notification payerNotification = new Notification();
                   payerNotification.setBody(payer_notificationMsg);
                   payerNotification.setNotificationType("Latest_Activity");
                   try {
-                    X systemX = x.put("user", new User.Builder(x).setId(1).build());
+                    User sysUser = new User.Builder(x).setId(1).build();
+                    X systemX = x.put("subject", new Subject.Builder(x).setUser(sysUser).build());
                     User payerUser = (User) localUserDAO.inX(systemX).find(payer.getId());
                     if ( payerUser != null ) {
                       payerUser.doNotify(x, payerNotification);
-                    } else { 
+                    } else {
                       logger.warning("Cannot find payer " + payer.getId() + " for request payment notification");
                     }
                   }

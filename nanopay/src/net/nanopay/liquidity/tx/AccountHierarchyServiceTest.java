@@ -32,7 +32,8 @@ public class AccountHierarchyServiceTest extends Test {
     accountDAO = (DAO) x.get("accountDAO");
     x = TestUtils.mockDAO(x, "userCapabilityJunctionDAO");
     ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
-    system = x.put("user", new foam.nanos.auth.User.Builder(x).setId(1).build());
+    Subject subject = new Subject.Builder(x).setUser(new foam.nanos.auth.User.Builder(x).setId(1).build()).build();
+    system = x.put("subject", subject);
     al1 = new ApproverLevel.Builder(x).setApproverLevel(1).build();
     al2 = new ApproverLevel.Builder(x).setApproverLevel(2).build();
     al3 = new ApproverLevel.Builder(x).setApproverLevel(3).build();
@@ -63,7 +64,7 @@ public class AccountHierarchyServiceTest extends Test {
     cad1.setApproverLevel(al3);
     map.put("1765", cad1);
     assign(x, ucj, map);
-    
+
     map.clear();
     cad1.setIsCascading(false);
     cad1.setIsIncluded(true);

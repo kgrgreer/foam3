@@ -9,9 +9,11 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.history.HistoryRecord',
-    'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
+
     'net.nanopay.invoice.model.Invoice',
     'static foam.mlang.MLang.*',
   ],
@@ -20,7 +22,7 @@ foam.CLASS({
     {
       name: 'authorizeOnCreate',
       javaCode: `
-        User user = (User) x.get("user");
+        User user = ((Subject) x.get("subject")).getUser();
         if ( user == null ) {
           throw new foam.nanos.auth.AuthenticationException("User not found.");
         } else if ( ! "admin".equalsIgnoreCase(user.getGroup()) && ! "system".equalsIgnoreCase(user.getGroup())) {
@@ -32,7 +34,7 @@ foam.CLASS({
       name: 'authorizeOnRead',
       javaCode: `
         DAO invoiceDAO = (DAO) x.get("invoiceDAO");
-        User user = (User) x.get("user");
+        User user = ((Subject) x.get("subject")).getUser();
 
         Invoice invoice = (Invoice) invoiceDAO.find(((HistoryRecord) obj).getObjectId());
         if ( invoice == null )
@@ -45,7 +47,7 @@ foam.CLASS({
     {
       name: 'authorizeOnUpdate',
       javaCode: `
-        User user = (User) x.get("user");
+        User user = ((Subject) x.get("subject")).getUser();
         if ( user == null ) {
           throw new foam.nanos.auth.AuthenticationException("User not found.");
         } else if ( ! "admin".equalsIgnoreCase(user.getGroup()) && ! "system".equalsIgnoreCase(user.getGroup())) {
@@ -56,7 +58,7 @@ foam.CLASS({
     {
       name: 'authorizeOnDelete',
       javaCode: `
-        User user = (User) x.get("user");
+        User user = ((Subject) x.get("subject")).getUser();
         if ( user == null ) {
           throw new foam.nanos.auth.AuthenticationException("User not found.");
         } else if ( ! "admin".equalsIgnoreCase(user.getGroup()) && ! "system".equalsIgnoreCase(user.getGroup())) {

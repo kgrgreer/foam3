@@ -8,10 +8,12 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
-    'foam.nanos.auth.User',
     'foam.mlang.MLang',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
+
     'java.util.ArrayList',
-    'java.util.Date',
+    'java.util.Date'
   ],
 
   imports: [
@@ -46,7 +48,7 @@ foam.CLASS({
     },
     {
       name: 'addTimeToPIIRequest',
-      documentation: `clones a PIIRequest and adds the current date to the DownloadedAt Array and puts 
+      documentation: `clones a PIIRequest and adds the current date to the DownloadedAt Array and puts
       it back to the dao `,
       type: 'Void',
       args: [
@@ -57,7 +59,7 @@ foam.CLASS({
       ],
       javaCode: `
         DAO vprDAO = (DAO) x.get("viewPIIRequestDAO");
-        User user = (User) x.get("user");
+        User user = ((Subject) x.get("subject")).getUser();
 
         // get valid PII request object for current user
         ViewPIIRequest request = (ViewPIIRequest) vprDAO.inX(x)

@@ -22,6 +22,7 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
 import net.nanopay.cico.paymentCard.model.PaymentCardNetwork;
@@ -43,7 +44,7 @@ public class RealexPaymentCardStoreDAO
       return getDelegate().put_(x, obj);
 
     RealexPaymentCard card = (RealexPaymentCard) obj;
-    User user = (User)x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     DAO txnProcessorUserReferenceDAO = (DAO) x.get("txnProcessorUserReferenceDAO");
     ArraySink sink = (ArraySink) txnProcessorUserReferenceDAO.where(
       AND(

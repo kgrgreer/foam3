@@ -404,7 +404,9 @@ foam.CLASS({
               .start('div')
                 .start(this.IN_APP_NOTIFICATIONS_ENABLED).end()
               .end()
-              .start().add('Disabling will mark notifications read automatically').addClass('gSubTextField').end()
+              .callIf( ! inAppNotificationsEnabled, function() {
+                this.start().add('Notifications will still show in your notification history for your records but will be marked as read automatically.').addClass('gSubTextField').end();
+              })
             .end();
         }, this.inAppNotificationsEnabled$))
         .end()

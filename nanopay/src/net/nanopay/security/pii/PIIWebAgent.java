@@ -1,6 +1,7 @@
 package net.nanopay.security.pii;
 
 import foam.core.X;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.http.WebAgent;
 import javax.servlet.http.HttpServletResponse;
@@ -16,8 +17,8 @@ public class PIIWebAgent
   public synchronized void execute(X x) {
     try {
       HttpServletResponse response = x.get(HttpServletResponse.class);
-      
-      User user = (User) x.get("user");
+
+      User user = ((Subject) x.get("subject")).getUser();
       Long userId = user.getId();
 
       // Generate PII report

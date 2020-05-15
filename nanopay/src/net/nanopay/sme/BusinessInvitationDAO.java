@@ -42,7 +42,7 @@ public class BusinessInvitationDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     Business business = null;
 
     // Check is user is a business,
@@ -164,7 +164,7 @@ public class BusinessInvitationDAO
    * @param invite The invitation object.
    */
   public void sendInvitationEmail(X x, Business business, Invitation invite) {
-    User agent = (User) x.get("agent");
+    User agent = ((Subject) x.get("subject")).getRealUser();
     Logger logger = (Logger) getX().get("logger");
 
     Group group = business.findGroup(x);
