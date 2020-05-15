@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.invoice.notification',
   name: 'InvoicePaymentNotificationNotificationView',
-  extends: 'foam.nanos.notification.NotificationView',
+  extends: 'foam.nanos.notification.NotificationCitationView',
 
   requires: [
     'net.nanopay.invoice.model.PaymentStatus'

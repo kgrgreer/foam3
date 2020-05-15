@@ -1,7 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.partners.ui',
   name: 'PartnerInvitationNotificationNotificationView',
-  extends: 'foam.nanos.notification.NotificationView',
+  extends: 'foam.nanos.notification.NotificationCitationView',
 
   requires: [
     'foam.u2.dialog.NotificationMessage',

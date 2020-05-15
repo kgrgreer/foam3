@@ -7,7 +7,7 @@ import foam.dao.ProxyDAO;
 import foam.nanos.approval.ApprovalRequest;
 import foam.nanos.approval.ApprovalStatus;
 import foam.nanos.auth.User;
-import foam.nanos.notification.Notification;
+import net.nanopay.liquidity.LiquidNotification;
 import net.nanopay.meter.compliance.ComplianceApprovalRequest;
 import static foam.mlang.MLang.*;
 
@@ -53,12 +53,18 @@ extends ProxyDAO {
     DAO userDAO = (DAO) x.get("localUserDAO");
     User user = (User) userDAO.find(ret.getApprover());
     if ( user != null ) {
-      Notification notification = new Notification();
-      notification.setNotificationType(notificationType);
-      notification.setBody(notificationBody);
+      LiquidNotification notification = new LiquidNotification.Builder(x)
+        .setUserId(user.getId())
+        .setNotificationType(notificationType)
+        .setBody(notificationBody)
+        .setAction(ret.getOperation().toString())
+        .setEntity(ret.getClassification())
+        .setDescription(notificationBody)
+        .setApprovalStatus(ret.getStatus())
+        .build();
       user.doNotify(x, notification);
     }
-
+    
     return ret;
   }
 
@@ -90,9 +96,15 @@ extends ProxyDAO {
     DAO userDAO = (DAO) x.get("localUserDAO");
     User user = (User) userDAO.find(ret.getApprover());
     if ( user != null ) {
-      Notification notification = new Notification();
-      notification.setNotificationType(notificationType);
-      notification.setBody(notificationBody);
+      LiquidNotification notification = new LiquidNotification.Builder(x)
+        .setUserId(user.getId())
+        .setNotificationType(notificationType)
+        .setBody(notificationBody)
+        .setAction(fulfilled.getOperation().toString())
+        .setEntity(ret.getClassification())
+        .setDescription(notificationBody)
+        .setApprovalStatus(fulfilled.getStatus())
+        .build();
       user.doNotify(x, notification);
     }
     
