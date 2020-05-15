@@ -1,7 +1,11 @@
 package net.nanopay.approval.test;
 
 import foam.core.X;
+import foam.dao.DAO;
+import java.util.List;
 import foam.dao.ArraySink;
+import foam.nanos.approval.Approvable;
+import foam.nanos.approval.ApprovableAware;
 import foam.nanos.approval.ApprovalRequest;
 import foam.nanos.approval.ApprovalStatus;
 import foam.nanos.auth.Subject;
@@ -105,8 +109,29 @@ public class ApprovalStatusTestExecutor extends LiquidTestExecutor {
 
     User xUser = ((Subject) x.get("subject")).getUser();
 
+    DAO approvableDAO = getApprovableDAO(getFirstX());
+
+    String approvableHashKey = ApprovableAware.getApprovableHashKey(x, userInApproval, Operations.CREATE);
+
+    String hashedId = new StringBuilder("d")
+      .append("bareUserDAO")
+      .append(":o")
+      .append(userInApproval.getId())
+      .append(":h")
+      .append(String.valueOf(approvableHashKey))
+      .toString();
+
+    List approvablesPending = ((ArraySink) approvableDAO
+      .where(
+        foam.mlang.MLang.EQ(Approvable.LOOKUP_ID, hashedId)
+      ).inX(getFirstX()).select(new ArraySink())).getArray();
+
+    if ( approvablesPending.size() != 1 ) throw new RuntimeException("Something went wrong. More than one approvable exists.");
+
+    Approvable approvable = (Approvable) approvablesPending.get(0);
+
     approvalRequests = (ArraySink) getApprovalRequestDAO(getSystemX()).inX(getSystemX()).where(AND(
-      CONTAINS_IC(ApprovalRequest.OBJ_ID, String.valueOf(userInApproval.getId())),
+      EQ(ApprovalRequest.OBJ_ID, approvable.getId()),
       EQ(ApprovalRequest.CLASSIFICATION, "User"),
       EQ(ApprovalRequest.OPERATION, Operations.CREATE),
       EQ(ApprovalRequest.APPROVER, xUser.getId()),
@@ -143,8 +168,14 @@ public class ApprovalStatusTestExecutor extends LiquidTestExecutor {
       .build();
 
     // Add to the context
-    user = (User) getLocalUserDAO(x).inX(x).put(user);
-
+    try {
+      getLocalUserDAO(x).inX(x).put(user);
+    } catch(RuntimeException ex){
+      if ( ! ex.getMessage().equals("An approval request has been sent out.") ){
+        throw new RuntimeException(ex);
+      }
+    }
+    
     usersCounter++;
 
     return user;
@@ -159,7 +190,7 @@ public class ApprovalStatusTestExecutor extends LiquidTestExecutor {
     ArraySink approvalRequestBefore = (ArraySink) this.getApprovalRequestDAO(x).select(new ArraySink());
 
     this.getApprovalRequestDAO(x).where(AND(
-      CONTAINS_IC(ApprovalRequest.OBJ_ID, String.valueOf(userInApproval.getId())),
+      EQ(ApprovalRequest.OBJ_ID, userInApproval.getId()),
       EQ(ApprovalRequest.CLASSIFICATION, "User"),
       EQ(ApprovalRequest.OPERATION, Operations.CREATE)
     )).removeAll();

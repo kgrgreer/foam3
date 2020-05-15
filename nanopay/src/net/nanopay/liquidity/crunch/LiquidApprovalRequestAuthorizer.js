@@ -13,7 +13,8 @@ foam.CLASS({
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
-
+    'foam.nanos.logger.Logger',
+    'foam.util.SafetyUtil',
     'net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest'
   ],
 
@@ -56,14 +57,14 @@ foam.CLASS({
     {
       name: 'authorizeOnUpdate',
       javaCode:  `
+        Logger logger = (Logger) x.get("logger");
+        
         User user = ((Subject) x.get("subject")).getUser();
         Boolean isAdmin = user.getId() == foam.nanos.auth.User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system");
-
         if ( user != null &&
              isAdmin &&
              ((ApprovalRequest) newObj).getIsFulfilled() )
           return;
-
         ApprovalRequest request = (ApprovalRequest) oldObj;
         ApprovalRequest newRequest = (ApprovalRequest) newObj;
 
@@ -90,14 +91,12 @@ foam.CLASS({
 
         Long accountId = oldObj instanceof AccountRoleApprovalRequest ? ((AccountRoleApprovalRequest) oldObj).getOutgoingAccount() : 0;
 
-        String className;
-        if ( request.getOperation() == foam.nanos.ruler.Operations.UPDATE ) {
-          String daoKey = ((Approvable) ((DAO) x.get("approvableDAO")).find(request.getObjId())).getDaoKey();
-          className = ((DAO) x.get(daoKey)).getOf().getObjClass().getSimpleName().toLowerCase();
-        } else {
-          className = ((DAO) x.get(request.getDaoKey())).getOf().getObjClass().getSimpleName().toLowerCase();
+        String daoKey = request.getDaoKey();
+        if ( SafetyUtil.equals(request.getDaoKey(),"approvableDAO") ){
+          daoKey = ((Approvable) ((DAO) x.get("approvableDAO")).find(request.getObjId())).getDaoKey();
         }
 
+        String className = ((DAO) x.get(daoKey)).getOf().getObjClass().getSimpleName().toLowerCase();
         String permission = createPermission(className, "approve", accountId);
         AuthService authService = (AuthService) x.get("auth");
 
@@ -109,6 +108,8 @@ foam.CLASS({
     {
       name: 'authorizeOnCreate',
       javaCode:  `
+        Logger logger = (Logger) x.get("logger");
+
         User user = ((Subject) x.get("subject")).getUser();
         if ( user != null && ( user.getId() == foam.nanos.auth.User.SYSTEM_USER_ID || user.getGroup().equals("admin") || user.getGroup().equals("system") ) ) return;
 
@@ -116,14 +117,12 @@ foam.CLASS({
 
         Long accountId = obj instanceof AccountRoleApprovalRequest ? ((AccountRoleApprovalRequest) obj).getOutgoingAccount() : 0;
 
-        String className;
-        if ( request.getOperation() == foam.nanos.ruler.Operations.UPDATE ) {
-          String daoKey = ((Approvable) ((DAO) x.get("approvableDAO")).find(request.getObjId())).getDaoKey();
-          className = ((DAO) x.get(daoKey)).getOf().getObjClass().getSimpleName().toLowerCase();
-        } else {
-          className = ((DAO) x.get(request.getDaoKey())).getOf().getObjClass().getSimpleName().toLowerCase();
+        String daoKey = request.getDaoKey();
+        if ( SafetyUtil.equals(request.getDaoKey(),"approvableDAO") ){
+          daoKey = ((Approvable) ((DAO) x.get("approvableDAO")).find(request.getObjId())).getDaoKey();
         }
 
+        String className = ((DAO) x.get(daoKey)).getOf().getObjClass().getSimpleName().toLowerCase();
         String permission = createPermission(className, "make", accountId);
         AuthService authService = (AuthService) x.get("auth");
 

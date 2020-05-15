@@ -132,7 +132,7 @@ p({
   "enabled":true,
   "ruleGroup": "liquid",
   "documentation": "set up newly created account in each ucj where the parent account is in the map and is cascading",
-  "daoKey": "accountDAO",
+  "daoKey": "localAccountDAO",
   "operation": 0,
   "after": true,
   "action" : {
@@ -346,7 +346,6 @@ p({
   "documentation":"Handle an approved or rejected update request",
   "daoKey":"approvableDAO",
   "operation":1,
-  "after":true,
   "predicate":{
     "class":"foam.nanos.approval.FulfilledApprovablePredicate",
   },
@@ -502,7 +501,7 @@ p({
   "ruleGroup": "liquid",
   "documentation": "add account to ucj of creater with non-cascading on parent",
   "daoKey": "localAccountDAO",
-  "operation": 1, 
+  "operation": 0, 
   "after": true,
   "action" : { "class": "net.nanopay.liquidity.crunch.AddChildAccountToMakerOnAccountApproval" },
   "saveHistory": true,
