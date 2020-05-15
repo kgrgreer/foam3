@@ -60,10 +60,17 @@ foam.CLASS({
   css: `
   ^ {
     height: 100%;
-    display: flex;
   }
   ^ > .stack-wrapper {
     flex-grow: 1;
+  }
+  ^ .login-stack {
+    margin-bottom: -60px;
+    margin-left: 0;
+  }
+  ^ .dashboard-stack {
+    margin-bottom: 0;
+    margin-left: 250px;
   }
   ^ .foam-u2-view-TableView tbody > tr > td {
     white-space: nowrap;
@@ -465,7 +472,9 @@ foam.CLASS({
           menu.launch(this);
         }
 
-        this.bannerizeCompliance();
+        if ( hash != 'sme.accountProfile.signout' && hash !== '' ) {
+          this.bannerizeCompliance();
+        }
       };
     },
 
@@ -531,6 +540,9 @@ foam.CLASS({
             }))
             .start()
               .addClass('stack-wrapper')
+              .addClass(this.loginSuccess$.map((loginSuccess) => {
+                return ! loginSuccess ? 'login-stack' : 'dashboard-stack';
+              }))
               .start({
                 class: 'net.nanopay.ui.banner.Banner',
                 data$: this.bannerData$
@@ -542,7 +554,10 @@ foam.CLASS({
                 showActions: false
               })
             .end()
-            .tag(this.footerView_);
+            .start()
+              .addClass('footer-wrapper')
+              .tag(this.footerView_)
+            .end();
           } else {
           this.addClass(this.myClass())
           .start()

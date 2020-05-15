@@ -8,17 +8,22 @@ foam.CLASS({
     information along with personal settings menus.`,
 
   imports: [
-    'loginSuccess'
+    'loginSuccess',
+    'theme'
   ],
 
   css: `
     ^ {
       width: 100%;
       display: flex;
+      justify-content: space-between;
       z-index: 10001;
       background-color: /*%PRIMARY1%*/ #202341;
-      height: 60px;
+      height: 56px;
       font-family: Roboto, Helvetica, sans-serif;
+    }
+    ^ .logo-wrapper {
+      cursor: pointer;
     }
     ^ .navigation-components {
       margin-right: 40px;
@@ -26,9 +31,10 @@ foam.CLASS({
       align-items: center;
     }
     ^ .foam-nanos-u2-navigation-ApplicationLogoView {
-      margin-left: 16px;
+      margin-left: 28px;
       display: flex;
       flex-grow: 1;
+      height: 56px;
     }
     ^ .net-nanopay-sme-ui-AbliiActionView-currencyChoice,
     ^ .net-nanopay-sme-ui-AbliiActionView-currencyChoice:hover
@@ -38,9 +44,6 @@ foam.CLASS({
     }
     ^ .foam-nanos-u2-navigation-NotificationMenuItem img {
       margin-top: 10px;
-    }
-    ^ .foam-nanos-u2-navigation-ApplicationLogoView {
-      margin-left: 40px;
     }
     ^ .foam-nanos-menu-SubMenuView-inner div {
       right: 100px;
@@ -111,9 +114,16 @@ foam.CLASS({
           this.start()
             .show(this.loginSuccess$)
             .addClass(this.myClass())
-            .tag({ class: 'foam.nanos.u2.navigation.ApplicationLogoView' })
+            .start().addClass('logo-wrapper')
+              .on('click', () => {
+                window.location.hash = this.theme.logoRedirect;
+              })
+              .tag({ class: 'foam.nanos.u2.navigation.ApplicationLogoView' })
+            .end()
             .start().addClass('navigation-components')
-              .tag({ class: 'net.nanopay.ui.topNavigation.CurrencyChoiceView' })
+              .callIf( ! this.theme.disableCurrencyChoice, function() {
+                this.tag({ class: 'net.nanopay.ui.topNavigation.CurrencyChoiceView' })
+              })
               .tag({ class: 'foam.nanos.u2.navigation.NotificationMenuItem' })
               .tag({ class: 'foam.nanos.u2.navigation.UserInfoNavigationView' })
             .end()
