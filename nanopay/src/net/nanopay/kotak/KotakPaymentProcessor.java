@@ -162,7 +162,6 @@ public class KotakPaymentProcessor implements ContextAgent {
     Notification notification = new Notification.Builder(x)
       .setNotificationType(body)
       .setGroupId("payment-ops")
-      .setEmailIsEnabled(true)
       .build();
 
     ((DAO) x.get("localNotificationDAO")).put(notification);

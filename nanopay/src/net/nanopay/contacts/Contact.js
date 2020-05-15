@@ -39,6 +39,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'net.nanopay.fx.Corridor',
     'foam.nanos.auth.Country',
     'foam.dao.PromisedDAO',
     'foam.u2.DisplayMode'
@@ -198,7 +199,7 @@ foam.CLASS({
         return {
           class: 'foam.u2.CheckBox',
           label: X.data.CONFIRM_RELATIONSHIP
-        }
+        };
       },
       validateObj: function(confirm) {
         if ( ! confirm ) {
@@ -273,14 +274,45 @@ foam.CLASS({
       storageTransient: true,
       label: '',
       factory: function() {
-        return net.nanopay.bank.BankAccount.create({ isDefault: true });
+        return net.nanopay.bank.BankAccount.create({}, this);
       },
       view: function(_, X) {
+        let e = foam.mlang.Expressions.create();
+        var pred = e.AND(
+            e.EQ(foam.strategy.StrategyReference.DESIRED_MODEL_ID, 'net.nanopay.bank.BankAccount'),
+            e.IN(foam.strategy.StrategyReference.STRATEGY, X.data.countries)
+        );
         return foam.u2.view.FObjectView.create({
+          data: X.data.createBankAccount,
           of: net.nanopay.bank.BankAccount,
-          enableStrategizer: X.data.bankAccount === 0
+          persistantData: { isDefault: true, forContact: true },
+          enableStrategizer: X.data.bankAccount === 0,
+          predicate: pred
         }, X);
       }
+    },
+    {
+      name: 'availableCountries',
+      section: 'stepOne',
+      visibility: 'HIDDEN',
+      expression: function(user) {
+        return this.PromisedDAO.create({
+          promise: user.corridors
+            .select(this.MAP(this.Corridor.TARGET_COUNTRY))
+            .then((sink) => {
+              let unique = [...new Set(sink.delegate.array)];
+              for ( i = 0; i < unique.length; i++ ) {
+                unique[i] = foam.lookup(`net.nanopay.bank.${ unique[i] }BankAccount`);
+              }
+              this.countries = unique;
+            })
+        });
+      }
+    },
+    {
+      name: 'countries',
+      visibility: 'HIDDEN',
+      documentation: 'Stores available countries contact can have account domicilied in.'
     },
     {
       class: 'Boolean',

@@ -44,10 +44,14 @@ liquidCapabilities
 liquiditySettings
 liquidUserCapabilityJunctions
 menus
+mspSetup
 notifications
 notificationTemplates
+notificationSettings
+notificationSettingDefaults
 payoutOptions
 paymentCodes
+paymentMethods
 paymentProviderCorridorJunctions
 paymentProviders
 PADTypes

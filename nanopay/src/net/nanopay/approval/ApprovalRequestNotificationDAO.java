@@ -6,7 +6,8 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.approval.ApprovalRequest;
 import foam.nanos.approval.ApprovalStatus;
-import foam.nanos.notification.Notification;
+import foam.nanos.auth.User;
+import net.nanopay.liquidity.LiquidNotification;
 import net.nanopay.meter.compliance.ComplianceApprovalRequest;
 import static foam.mlang.MLang.*;
 
@@ -49,14 +50,21 @@ extends ProxyDAO {
       return ret;
     }
 
-    Notification notification = new Notification();
-    notification.setUserId(ret.getApprover());
-    notification.setNotificationType(notificationType);
-    notification.setEmailIsEnabled(true);
-    notification.setBody(notificationBody);
-    //notification.setEmailName("future email template name"); !!! PROPER WAY TO SET EMAIL TEMPLATE (when it is done) !!!
-    //notification.setEmailArgs(MAP_GOES_HERE); !!! PROPER WAY TO SET EMAIL ARGS FOR TEMPLATE !!!
-    ((DAO) x.get("localNotificationDAO")).put(notification);
+    DAO userDAO = (DAO) x.get("localUserDAO");
+    User user = (User) userDAO.find(ret.getApprover());
+    if ( user != null ) {
+      LiquidNotification notification = new LiquidNotification.Builder(x)
+        .setUserId(user.getId())
+        .setNotificationType(notificationType)
+        .setBody(notificationBody)
+        .setAction(ret.getOperation().toString())
+        .setEntity(ret.getClassification())
+        .setDescription(notificationBody)
+        .setApprovalStatus(ret.getStatus())
+        .build();
+      user.doNotify(x, notification);
+    }
+    
     return ret;
   }
 
@@ -85,12 +93,21 @@ extends ProxyDAO {
       .append(fulfilled.getLastModifiedBy())
       .toString();
 
-    Notification notification = new Notification();
-    notification.setUserId(ret.getApprover());
-    notification.setNotificationType(notificationType);
-    notification.setEmailIsEnabled(true);
-    notification.setBody(notificationBody);
-    ((DAO) x.get("localNotificationDAO")).put(notification);
+    DAO userDAO = (DAO) x.get("localUserDAO");
+    User user = (User) userDAO.find(ret.getApprover());
+    if ( user != null ) {
+      LiquidNotification notification = new LiquidNotification.Builder(x)
+        .setUserId(user.getId())
+        .setNotificationType(notificationType)
+        .setBody(notificationBody)
+        .setAction(fulfilled.getOperation().toString())
+        .setEntity(ret.getClassification())
+        .setDescription(notificationBody)
+        .setApprovalStatus(fulfilled.getStatus())
+        .build();
+      user.doNotify(x, notification);
+    }
+    
     return ret;
     
   }

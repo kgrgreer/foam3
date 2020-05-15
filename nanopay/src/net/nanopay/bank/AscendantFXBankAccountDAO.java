@@ -61,10 +61,7 @@ public class AscendantFXBankAccountDAO
           .build();
       ((DAO) x.get("localNotificationDAO")).put(notification);
       ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), message);
-
       }
-
-
     }
 
     return super.put_(x, obj);

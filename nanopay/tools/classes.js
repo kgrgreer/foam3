@@ -60,6 +60,7 @@ var classes = [
   'net.nanopay.payment.PayrollEntry',
   'net.nanopay.payment.client.ClientPaymentService',
   'net.nanopay.payment.PaymentProvider',
+  'net.nanopay.payment.PaymentMethod',
   'net.nanopay.payment.PaymentProviderCorridorJunction',
   'net.nanopay.payment.CorridorService',
   'net.nanopay.payment.InstitutionPaymentProvider',
@@ -117,6 +118,8 @@ var classes = [
   'net.nanopay.model.BusinessType',
   'net.nanopay.model.PadAccount',
   'net.nanopay.model.PadCapture',
+  'net.nanopay.model.CAPadCapture',
+  'net.nanopay.model.USPadCapture',
   'net.nanopay.model.Identification',
   'net.nanopay.model.DateAndPlaceOfBirth',
   'net.nanopay.model.Invitation',
@@ -294,6 +297,7 @@ var classes = [
   'net.nanopay.invoice.service.ClientInvoicePaymentService',
   'net.nanopay.invoice.InvoiceNotificationDAO',
   'net.nanopay.invoice.InvoiceLineItem',
+  'net.nanopay.invoice.DetailedInvoiceDAO',
   'net.nanopay.invoice.ruler.CompleteInvoiceNotification',
   'net.nanopay.invoice.ruler.IsCompletePayment',
   'net.nanopay.invoice.ruler.InvoiceVoidEmailRule',
@@ -327,6 +331,7 @@ var classes = [
    'net.nanopay.liquidity.LiquiditySettings',
    'net.nanopay.liquidity.Liquidity',
    'net.nanopay.liquidity.LiquidityAuth',
+   'net.nanopay.liquidity.LiquidNotification',
    'net.nanopay.liquidity.LiquidityRule',
    'net.nanopay.liquidity.PreventAccountLiquidityLoopRule',
    'net.nanopay.liquidity.PreventLiquiditySettingsLoopRule',
@@ -501,6 +506,7 @@ var classes = [
   'net.nanopay.tx.ruler.AbliiSendCompletedNotification',
   'net.nanopay.tx.ruler.SendDeclinedCINotification',
   'net.nanopay.tx.ruler.AddStatusHistoryAction',
+  'net.nanopay.tx.ruler.CascadingCancelAction',
   'net.nanopay.tx.RepayDebtOnCIRule',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',
@@ -1013,7 +1019,15 @@ var classes = [
   'net.nanopay.tx.planner.DebtablePlanner',
 
   // Fees
-  'net.nanopay.tx.planner.fees.AbliiFeeRule'
+  'net.nanopay.tx.planner.fees.AbliiFeeRule',
+
+  // Notification
+  'net.nanopay.notification.TriggerNotificationTestAction',
+  'net.nanopay.notification.TriggerDoNotifyTestAction',
+  
+  // msp
+  'net.nanopay.msp.MspInfo',
+  'net.nanopay.msp.MspSetupDAO'
 ];
 
 var abstractClasses = [

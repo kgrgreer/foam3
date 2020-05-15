@@ -51,7 +51,6 @@ foam.CLASS({
               catch (Exception e) {
                 //email Support about failure.
                 Notification notification = new Notification();
-                notification.setEmailIsEnabled(true);
                 notification.setBody("Cash in transaction id: " + txn.getId() + " was declined but failed to revert the balance.");
                 notification.setNotificationType("Cashin transaction declined");
                 notification.setGroupId("support");
