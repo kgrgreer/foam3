@@ -4,6 +4,7 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.util.Email;
 import foam.util.SafetyUtil;
@@ -49,7 +50,7 @@ public class NewP2PTxnRequestDAO
 
   private void validateRequest(X x,P2PTxnRequest request)
   throws RuntimeException {
-    User currentUser = (User) x.get("user");
+    User currentUser = ((Subject) x.get("subject")).getUser();
 
     // check if the requestor's email is current user's email
     if ( ! request.getRequestorEmail().equals(currentUser.getEmail()) ) {

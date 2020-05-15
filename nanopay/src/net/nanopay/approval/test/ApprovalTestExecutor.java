@@ -266,6 +266,6 @@ public class ApprovalTestExecutor extends LiquidTestExecutor {
 
     // Check the lifecycle state
     test(foundUser.getLifecycleState() == lifecycleState, "Checking if found user lifecycle state is correct. Expected: " + lifecycleState + ". Actual: " + foundUser.getLifecycleState());
-    return foundUser;
+    return (User) foundUser.fclone();
   }  
 }

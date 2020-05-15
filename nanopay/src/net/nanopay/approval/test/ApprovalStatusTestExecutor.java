@@ -4,6 +4,7 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.nanos.approval.ApprovalRequest;
 import foam.nanos.approval.ApprovalStatus;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.ruler.Operations;
 import net.nanopay.test.liquid.LiquidTestExecutor;
@@ -102,7 +103,7 @@ public class ApprovalStatusTestExecutor extends LiquidTestExecutor {
     ApprovalRequest approvalRequest;
     ArraySink approvalRequests;
 
-    User xUser = (User) x.get("user");
+    User xUser = ((Subject) x.get("subject")).getUser();
 
     approvalRequests = (ArraySink) getApprovalRequestDAO(getSystemX()).inX(getSystemX()).where(AND(
       CONTAINS_IC(ApprovalRequest.OBJ_ID, String.valueOf(userInApproval.getId())),

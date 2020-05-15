@@ -1,0 +1,4 @@
+p({"class":"net.nanopay.payment.PaymentMethod", "id":"ACH","name":"ACH"})
+p({"class":"net.nanopay.payment.PaymentMethod", "id":"WIRE","name":"WIRE"})
+p({"class":"net.nanopay.payment.PaymentMethod", "id":"IMPS","name":"IMPS"})
+p({"class":"net.nanopay.payment.PaymentMethod", "id":"RTGS","name":"RTGS"})

@@ -4,13 +4,14 @@ foam.CLASS({
   implements: [ 'foam.nanos.auth.Authorizer' ],
 
   javaImports: [
-    'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'net.nanopay.account.Account',
     'net.nanopay.account.ShadowAccount',
-    'net.nanopay.tx.model.Transaction',
     'net.nanopay.liquidity.approvalRequest.AccountApprovableAware',
+    'net.nanopay.tx.model.Transaction'
   ],
 
   properties: [
@@ -72,7 +73,7 @@ foam.CLASS({
         if ( obj instanceof User ) {
           User userToRead = (User) obj;
 
-          User currentUser = (User) x.get("user");
+          User currentUser = ((Subject) x.get("subject")).getUser();
 
           if ( userToRead.getId() == currentUser.getId() ) return;
         }
@@ -97,7 +98,7 @@ foam.CLASS({
         if ( oldObj instanceof User ) {
           User userToRead = (User) oldObj;
 
-          User currentUser = (User) x.get("user");
+          User currentUser = ((Subject) x.get("subject")).getUser();
 
           if ( userToRead.getId() == currentUser.getId() ) return;
         }

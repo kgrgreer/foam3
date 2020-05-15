@@ -8,10 +8,7 @@ import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
-import foam.nanos.auth.AuthService;
-import foam.nanos.auth.AuthenticationException;
-import foam.nanos.auth.AuthorizationException;
-import foam.nanos.auth.User;
+import foam.nanos.auth.*;
 import foam.util.SafetyUtil;
 import net.nanopay.contacts.Contact;
 import net.nanopay.invoice.model.Invoice;
@@ -100,7 +97,7 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
 
     public AuthenticatedInvoiceSink(X x, Sink delegate) {
       super(x, delegate);
-      user_ = (User) x.get("user");
+      user_ = ((Subject) x.get("subject")).getUser();
       if ( user_ == null ) throw new AuthenticationException();
     }
 
@@ -163,7 +160,7 @@ public class AuthenticatedInvoiceDAO extends ProxyDAO {
   public void removeAll_(X x, long skip, long limit, Comparator order, Predicate predicate) {}
 
   protected User getUser(X x) {
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     if ( user == null ) {
       throw new AuthenticationException();
     }

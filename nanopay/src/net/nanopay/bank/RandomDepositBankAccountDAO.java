@@ -4,6 +4,7 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import net.nanopay.tx.alterna.AlternaVerificationTransaction;
 import net.nanopay.tx.bmo.cico.BmoVerificationTransaction;
@@ -56,7 +57,7 @@ public class RandomDepositBankAccountDAO
       long randomDepositAmount = (long) (1 + Math.floor(Math.random() * 99));
       account.setRandomDepositAmount(randomDepositAmount);
       super.put_(x, account);
-      User user = (User) x.get("user");
+      User user = ((Subject) x.get("subject")).getUser();
 
       // create new transaction and store
       VerificationTransaction transaction = null;

@@ -1,12 +1,12 @@
 p({
   "class":"foam.nanos.theme.Theme",
-  "id":2,
-  "description":"nanopay",
+  "id":"06B35BA7-C672-4DBC-8788-14922B704DBF",
+  "name":"nanopay",
   "appName":"nanopay",
-  "priority":2,
   "navigationRootMenu":"",
   "settingsRootMenu":"settings",
   "logoRedirect":"admin.data",
+  "description":"nanopay",
   "defaultMenu":"admin.data",
   "largeLogoEnabled": true,
   "largeLogo": "images/nanopay_blue_white_206x42.png",
@@ -38,6 +38,7 @@ p({
   "grey4":"#e7eaec",
   "grey5":"#f5f7fa",
   "black":"#1e1f21",
+  "white":"#ffffff",
   "inputHeight":"32px",
   "inputVerticalPadding":"6px",
   "inputHorizontalPadding":"8px",
@@ -55,19 +56,22 @@ p({
       font-family: Roboto, 'Helvetica Neue', helvetica, sans-serif;
       letter-spacing: 0.2px;
     }
-  """
+  """,
+  "createdBy":1,
+  "createdByAgent":1,
+  "created":"2020-04-29T22:32:52.685Z"
 })
 
 p({
   "class":"foam.nanos.theme.Theme",
-  "id":3,
-  "description":"Ablii",
+  "id":"A7FBB672-D395-4C30-B5EE-F737B8079BCD",
+  "name":"ablii",
   "appName":"Ablii",
-  "priority":2,
   "navigationRootMenu":"smeNavigation",
   "settingsRootMenu":"smeSettings",
   "disableCurrencyChoice": true,
   "logoRedirect":"sme.main.dashboard",
+  "description":"Ablii",
   "defaultMenu":"sme.accountProfile.switch-business",
   "logo":"images/ablii-logo.svg",
   "largeLogo":"images/ablii-wordmark.svg",
@@ -102,7 +106,11 @@ p({
   "grey4":"#e7eaec",
   "grey5":"#f5f7fa",
   "black":"#1e1f21",
+  "white":"#ffffff",
   "inputHeight":"40px",
   "inputVerticalPadding":"10px",
-  "inputHorizontalPadding":"8px"
+  "inputHorizontalPadding":"8px",
+  "createdBy":1,
+  "createdByAgent":1,
+  "created":"2020-04-29T22:32:52.685Z"
 })

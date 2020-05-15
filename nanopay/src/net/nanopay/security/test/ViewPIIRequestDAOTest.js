@@ -10,17 +10,19 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.MDAO',
     'foam.mlang.sink.Count',
-    'foam.nanos.auth.User',
     'foam.nanos.auth.LifecycleState',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
     'foam.nanos.auth.UserAndGroupAuthService',
     'foam.util.Auth',
+
+    'java.util.ArrayList',
+    'java.util.Date',
+
     'net.nanopay.security.pii.AuthenticatedPIIRequestDAO',
     'net.nanopay.security.pii.PIIReportGenerator',
     'net.nanopay.security.pii.PIIRequestStatus',
-    'net.nanopay.security.pii.ViewPIIRequest',
-
-    'java.util.ArrayList',
-    'java.util.Date'
+    'net.nanopay.security.pii.ViewPIIRequest'
   ],
 
   constants: [
@@ -181,7 +183,7 @@ foam.CLASS({
         // Create new request, set it to approved and put to DAO
         ViewPIIRequest piiRequest = new ViewPIIRequest();
         piiRequest.setId(100);
-        piiRequest.setCreatedBy(((User) x.get("user")).getId());
+        piiRequest.setCreatedBy((((Subject) x.get("subject")).getUser()).getId());
         piiRequest.setViewRequestStatus(PIIRequestStatus.APPROVED);
         vprDAO.inX(x).put(piiRequest);
         // Find object from DAO

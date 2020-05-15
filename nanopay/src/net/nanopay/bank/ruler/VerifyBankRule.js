@@ -8,12 +8,14 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.ContextAgent',
-    'net.nanopay.tx.cico.VerificationTransaction',
-    'net.nanopay.bank.BankAccount',
-    'net.nanopay.account.DigitalAccount',
-    'foam.nanos.auth.User',
     'foam.core.X',
-    'foam.dao.DAO'
+    'foam.dao.DAO',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
+
+    'net.nanopay.account.DigitalAccount',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.tx.cico.VerificationTransaction'
   ],
 
   methods: [
@@ -29,7 +31,7 @@ foam.CLASS({
           long randomDepositAmount = (long) (1 + Math.floor(Math.random() * 99));
           account.setRandomDepositAmount(randomDepositAmount);
 
-          User user = (User) x.get("user");
+          User user = ((Subject) x.get("subject")).getUser();
 
           VerificationTransaction transaction = new VerificationTransaction();
 

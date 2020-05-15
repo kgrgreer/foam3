@@ -4,6 +4,7 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.notification.Notification;
 import net.nanopay.model.Invitation;
@@ -31,20 +32,17 @@ public class MakeConnectionDAO
     invite.setStatus(InvitationStatus.COMPLETED);
 
     // Add as partners
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     DAO userDAO = (DAO) x.get("localUserDAO");
     User sender = (User) userDAO.find_(x, invite.getCreatedBy());
     user.getPartners(x).add(sender);
 
     // Send notification if accepted
     if ( accepted ) {
-      DAO notificationDAO = (DAO) x.get("localNotificationDAO");
       Notification notification = new Notification();
-      notification.setUserId(sender.getId());
-      notification.setBody(user.getLegalName() +
-          " accepted your request to connect.");
+      notification.setBody(user.getLegalName() + " accepted your request to connect.");
       notification.setNotificationType("Partner invitation result");
-      notificationDAO.put_(x, notification);
+      sender.doNotify(x, notification);
     }
 
     return super.put_(x, invite);

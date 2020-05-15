@@ -3,6 +3,7 @@ package net.nanopay.test.api;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.LifecycleState;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
@@ -23,7 +24,8 @@ public class AuthenticationApiTest extends ApiTestBase {
     try
     {
       // Enable the test user.
-      X systemX = x.put("user", new User.Builder(x).setId(1).build());
+      Subject subject = new Subject.Builder(x).setUser(new User.Builder(x).setId(1).build()).build();
+      X systemX = x.put("subject", subject);
       DAO localUserDAO = ((DAO) systemX.get("localUserDAO")).inX(systemX);
       User user = (User) (localUserDAO.find(EQ(User.EMAIL, TEST_USER_EMAIL_ADDRESS))).fclone();
       user.setLoginEnabled(true);

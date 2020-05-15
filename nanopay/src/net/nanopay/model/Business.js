@@ -35,22 +35,24 @@ foam.CLASS({
     'foam.nanos.auth.Group',
     'foam.nanos.auth.LifecycleAware',
     'foam.nanos.auth.LifecycleState',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.auth.UserUserJunction',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
     'foam.nanos.notification.NotificationSetting',
     'foam.util.SafetyUtil',
+    'java.util.HashMap',
     'java.util.List',
-    'net.nanopay.model.BusinessUserJunction',
+
     'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.model.BusinessUserJunction',
     'static foam.mlang.MLang.*'
   ],
 
   tableColumns: [
     'id',
     'businessName',
-    'email',
     'address',
     'compliance',
     'viewAccounts'
@@ -464,8 +466,9 @@ foam.CLASS({
       name: 'authorizeOnRead',
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
-        User user = (User) x.get("user");
-        User agent = (User) x.get("agent");
+        Subject subject = (Subject) x.get("subject");
+        User user = subject.getUser();
+        User agent = subject.getRealUser();
 
         if ( user == null ) throw new AuthenticationException();
 
@@ -502,7 +505,7 @@ foam.CLASS({
     {
       name: 'authorizeOnUpdate',
       javaCode: `
-        User user = (User) x.get("user");
+        User user = ((Subject) x.get("subject")).getUser();
         AuthService auth = (AuthService) x.get("auth");
         boolean isUpdatingSelf = SafetyUtil.equals(this.getId(), user.getId());
 
@@ -536,7 +539,7 @@ foam.CLASS({
     {
       name: 'authorizeOnDelete',
       javaCode: `
-        User user = (User) x.get("user");
+        User user = ((Subject) x.get("subject")).getUser();
         Group group = (Group) x.get("group");
         if ( ! SafetyUtil.equals(group.getId(), "admin") ) {
           throw new AuthorizationException("Businesses cannot be deleted.");
@@ -564,9 +567,9 @@ foam.CLASS({
     {
       name: 'doNotify',
       javaCode: `
-        DAO agentJunctionDAO       = (DAO) x.get("agentJunctionDAO");
+        DAO       agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
         DAO notificationSettingDAO = (DAO) x.get("notificationSettingDAO");
-        DAO               userDAO  = (DAO) x.get("localUserDAO");
+        DAO                userDAO = (DAO) x.get("localUserDAO");
         Logger              logger = (Logger) x.get("logger");
 
         // Send business notifications
@@ -586,10 +589,21 @@ foam.CLASS({
             continue;
           }
 
+          // Get the default settings for the user if none are already defined
+          List<NotificationSetting> settingDefaults = ((ArraySink) ((DAO) x.get("notificationSettingDefaultsDAO")).select(new ArraySink())).getArray();
+          HashMap<String, NotificationSetting> settingsMap = new HashMap<String, NotificationSetting>();
+          for ( NotificationSetting setting : settingDefaults ) {
+            settingsMap.put(setting.getClassInfo().getId(), setting);
+          }
+
           // Gets the notification settings for this business-user pair
           List<NotificationSetting> userSettings = ((ArraySink) businessUserJunction.getNotificationSettingsForUserUsers(x).select(new ArraySink())).getArray();
-          for( NotificationSetting setting : userSettings ) {
-            setting.sendNotification(x, businessUser, notification);
+          for ( NotificationSetting setting : userSettings ) {
+            settingsMap.put(setting.getClassInfo().getId(), setting);
+          }
+
+          for ( NotificationSetting setting : settingsMap.values() ) {
+            setting.doNotify(x, businessUser, notification);
           }
         }
       `

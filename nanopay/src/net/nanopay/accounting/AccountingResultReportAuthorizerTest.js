@@ -7,6 +7,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.session.Session',
     'net.nanopay.accounting.AccountingResultReport'
@@ -29,7 +30,8 @@ foam.CLASS({
           .build();
 
         X nonAdminContext = nonAdminUserSession.applyTo(x);
-        x = x.put("user", nonAdminUser);
+        Subject subject = new Subject.Builder(x).setUser(nonAdminUser).build();
+        x = x.put("subject", subject);
 
         AccountingResultReport testResultReport = new AccountingResultReport();
 

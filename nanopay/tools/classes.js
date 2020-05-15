@@ -60,6 +60,7 @@ var classes = [
   'net.nanopay.payment.PayrollEntry',
   'net.nanopay.payment.client.ClientPaymentService',
   'net.nanopay.payment.PaymentProvider',
+  'net.nanopay.payment.PaymentMethod',
   'net.nanopay.payment.PaymentProviderCorridorJunction',
   'net.nanopay.payment.CorridorService',
   'net.nanopay.payment.InstitutionPaymentProvider',
@@ -117,6 +118,8 @@ var classes = [
   'net.nanopay.model.BusinessType',
   'net.nanopay.model.PadAccount',
   'net.nanopay.model.PadCapture',
+  'net.nanopay.model.CAPadCapture',
+  'net.nanopay.model.USPadCapture',
   'net.nanopay.model.Identification',
   'net.nanopay.model.DateAndPlaceOfBirth',
   'net.nanopay.model.Invitation',
@@ -294,6 +297,7 @@ var classes = [
   'net.nanopay.invoice.service.ClientInvoicePaymentService',
   'net.nanopay.invoice.InvoiceNotificationDAO',
   'net.nanopay.invoice.InvoiceLineItem',
+  'net.nanopay.invoice.DetailedInvoiceDAO',
   'net.nanopay.invoice.ruler.CompleteInvoiceNotification',
   'net.nanopay.invoice.ruler.IsCompletePayment',
   'net.nanopay.invoice.ruler.InvoiceVoidEmailRule',
@@ -327,6 +331,7 @@ var classes = [
    'net.nanopay.liquidity.LiquiditySettings',
    'net.nanopay.liquidity.Liquidity',
    'net.nanopay.liquidity.LiquidityAuth',
+   'net.nanopay.liquidity.LiquidNotification',
    'net.nanopay.liquidity.LiquidityRule',
    'net.nanopay.liquidity.PreventAccountLiquidityLoopRule',
    'net.nanopay.liquidity.PreventLiquiditySettingsLoopRule',
@@ -501,6 +506,7 @@ var classes = [
   'net.nanopay.tx.ruler.AbliiSendCompletedNotification',
   'net.nanopay.tx.ruler.SendDeclinedCINotification',
   'net.nanopay.tx.ruler.AddStatusHistoryAction',
+  'net.nanopay.tx.ruler.CascadingCancelAction',
   'net.nanopay.tx.RepayDebtOnCIRule',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',
@@ -663,13 +669,9 @@ var classes = [
   'net.nanopay.security.test.HashingOutputterTest',
   'net.nanopay.security.test.HashingWriterTest',
   'net.nanopay.security.test.LoginAttemptAuthServiceTest',
-  'net.nanopay.security.test.MerkleTreeHelperTest',
-  'net.nanopay.security.test.MerkleTreeTest',
   'net.nanopay.security.test.PayerAssentTransactionDAOTest',
   'net.nanopay.security.test.PKCS11KeyStoreManagerTest',
   'net.nanopay.security.test.PKCS12KeyStoreManagerTest',
-  'net.nanopay.security.test.ReceiptGeneratingDAOTest',
-  'net.nanopay.security.test.ReceiptSerializationTest',
   'net.nanopay.security.test.UserKeyPairGenerationDAOTest',
   'net.nanopay.security.test.ViewPIIRequestDAOTest',
   'net.nanopay.security.test.RollingJournalTest',
@@ -677,7 +679,6 @@ var classes = [
   // receipt
   'net.nanopay.security.receipt.Receipt',
   'net.nanopay.security.receipt.ReceiptGenerator',
-  'net.nanopay.security.receipt.TimedBasedReceiptGenerator',
   'net.nanopay.security.receipt.ReceiptGeneratingDAO',
 
   // password entropy
@@ -1018,7 +1019,15 @@ var classes = [
   'net.nanopay.tx.planner.DebtablePlanner',
 
   // Fees
-  'net.nanopay.tx.planner.fees.AbliiFeeRule'
+  'net.nanopay.tx.planner.fees.AbliiFeeRule',
+
+  // Notification
+  'net.nanopay.notification.TriggerNotificationTestAction',
+  'net.nanopay.notification.TriggerDoNotifyTestAction',
+  
+  // msp
+  'net.nanopay.msp.MspInfo',
+  'net.nanopay.msp.MspSetupDAO'
 ];
 
 var abstractClasses = [

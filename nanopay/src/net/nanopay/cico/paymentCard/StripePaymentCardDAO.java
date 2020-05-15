@@ -16,6 +16,7 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import net.nanopay.cico.paymentCard.model.StripePaymentCard;
 
@@ -39,9 +40,9 @@ public class StripePaymentCardDAO
 
     if ( ! (obj instanceof StripePaymentCard) )
       return getDelegate().put_(x, obj);
-    
+
     StripePaymentCard paymentCard = (StripePaymentCard) obj;
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
 
     try {
       Map<String, Object> params = new HashMap<String, Object>();

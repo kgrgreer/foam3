@@ -124,8 +124,7 @@ foam.CLASS({
               .callIf( ! this.theme.disableCurrencyChoice, function() {
                 this.tag({ class: 'net.nanopay.ui.topNavigation.CurrencyChoiceView' })
               })
-              // Hide notification icon from Top Nav for Liquid Demo
-              // .tag({ class: 'foam.nanos.u2.navigation.NotificationMenuItem' })
+              .tag({ class: 'foam.nanos.u2.navigation.NotificationMenuItem' })
               .tag({ class: 'foam.nanos.u2.navigation.UserInfoNavigationView' })
             .end()
           .end()

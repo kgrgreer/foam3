@@ -153,7 +153,6 @@ foam.CLASS({
 
             if ( businessOnboarding.getPEPHIORelated() ) {
               Notification notification = new Notification();
-              notification.setEmailIsEnabled(true);
               notification.setBody("A PEP/HIO related user with Id: " + user.getId() + ", Business Name: " +
                                     business.getOrganization() + " and Business Id: " + business.getId() + " has been Onboarded.");
               notification.setNotificationType("A PEP/HIO related user has been Onboarded");
