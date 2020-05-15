@@ -15,7 +15,6 @@ foam.CLASS({
       height: 65px;
       margin: auto;
       color: white;
-      position: absolute;
       display: flex;
       align-items: center;
       z-index: 949;
