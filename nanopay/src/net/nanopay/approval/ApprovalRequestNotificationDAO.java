@@ -77,8 +77,7 @@ extends ProxyDAO {
           EQ(ApprovalRequest.STATUS, ApprovalStatus.APPROVED)
         ),
         EQ(ApprovalRequest.CREATED_BY, ret.getCreatedBy()),
-        EQ(ApprovalRequest.OBJ_ID, ret.getObjId()),
-        EQ(ApprovalRequest.APPROVABLE_HASH_KEY, ret.getApprovableHashKey())
+        EQ(ApprovalRequest.OBJ_ID, ret.getObjId())
       ));
     if ( fulfilled == null ) return ret;
 
