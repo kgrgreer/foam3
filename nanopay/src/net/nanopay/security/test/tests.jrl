@@ -4,8 +4,6 @@ p({"class":"net.nanopay.security.test.HashingJournalTest","id":"HashingJournalTe
 p({"class":"net.nanopay.security.test.HashingOutputterTest","id":"HashingOutputterTest"})
 p({"class":"net.nanopay.security.test.HashingWriterTest","id":"HashingWriterTest"})
 p({"class":"net.nanopay.security.test.LoginAttemptAuthServiceTest","id":"LoginAttemptAuthServiceTest","description":"Tests the LoginAttemptAuthService class"})
-p({"class":"net.nanopay.security.test.MerkleTreeHelperTest","id":"MerkleTreeOpTest"})
-p({"class":"net.nanopay.security.test.MerkleTreeTest","id":"MerkleTreeTest","name":"Testing the generation of Merkle trees"})
 // Test was disabled because the functionality is not integrated from "minchip" yet
 //p({"class":"net.nanopay.security.test.PayerAssentTransactionDAOTest","id":"PayerAssentTransactionDAO test"})
 p({"class":"net.nanopay.security.test.PKCS11KeyStoreManagerTest","id":"pkcs11KeystoreManagerTest"})

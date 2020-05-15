@@ -2,26 +2,10 @@ foam.CLASS({
   package: 'net.nanopay.liquidity',
   name: 'LiquidNotification',
   extends: 'foam.nanos.notification.Notification',
-  implements: [
-    'foam.nanos.auth.CreatedByAware'
-  ],
 
   documentation: 'Liquid specific notification model.',
 
   properties: [
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.User',
-      name: 'createdBy',
-      documentation: 'User that initiated the notification.'
-    },
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.User',
-      name: 'createdByAgent',
-      readPermissionRequired: true,
-      writePermissionRequired: true
-    },
     {
       class: 'String',
       name: 'action',
@@ -39,7 +23,7 @@ foam.CLASS({
       expression: (createdBy, action, entity) => {
         this.__subContext__.userDAO.find(createdBy)
           .then((user) => {
-            return user.getFirstName() + ' ' + user.getLastName() + action + ' a ' + entity.toLowerCase();
+            return user.getFirstName() + ' ' + user.getLastName() + action + 'd a ' + entity.toLowerCase();
           });
       },
       transient: true
