@@ -534,44 +534,25 @@ foam.CLASS({
           if ( ! this.isIframe() ) {
             this.addClass(this.myClass())
             .add(this.loginSuccess$.map((loginSuccess) => {
-              if ( ! loginSuccess ) {
-                return this.E()
-                .start()
-                  .addClass('stack-wrapper')
-                  .addClass('login-stack')
-                  .start({
-                    class: 'net.nanopay.ui.banner.Banner',
-                    data$: this.bannerData$
-                  })
-                  .end()
-                  .tag({
-                    class: 'foam.u2.stack.StackView',
-                    data: this.stack,
-                    showActions: false
-                  })
-                .end();
-              }
-              return this.E()
-                .tag(this.topNavigation_)
-                .start()
-                  .addClass('stack-wrapper')
-                  .addClass('dashboard-stack')
-                  .start({
-                    class: 'net.nanopay.ui.banner.Banner',
-                    data$: this.bannerData$
-                  })
-                  .end()
-                  .tag({
-                    class: 'foam.u2.stack.StackView',
-                    data: this.stack,
-                    showActions: false
-                  })
-                .end();
+              if ( ! loginSuccess ) return null;
+              return this.E().tag(this.topNavigation_); 
             }))
-
-
-
-
+            .start()
+              .addClass('stack-wrapper')
+              .addClass(this.loginSuccess$.map((loginSuccess) => {
+                return ! loginSuccess ? 'login-stack' : 'dashboard-stack';
+              }))
+                .start({
+                  class: 'net.nanopay.ui.banner.Banner',
+                  data$: this.bannerData$
+                })
+                .end()
+                .tag({
+                  class: 'foam.u2.stack.StackView',
+                  data: this.stack,
+                  showActions: false
+                })
+            .end()
             .start()
               .addClass('footer-wrapper')
               .tag(this.footerView_)
