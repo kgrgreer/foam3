@@ -471,8 +471,9 @@ foam.CLASS({
         if ( menu ) {
           menu.launch(this);
         }
-
-        this.bannerizeCompliance();
+        if ( hash != 'sme.accountProfile.signout' && hash !== '' ) {
+          this.bannerizeCompliance();
+        }
       };
     },
 
