@@ -51,6 +51,7 @@ notificationSettings
 notificationSettingDefaults
 payoutOptions
 paymentCodes
+paymentMethods
 paymentProviderCorridorJunctions
 paymentProviders
 PADTypes
