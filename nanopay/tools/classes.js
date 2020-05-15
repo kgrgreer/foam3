@@ -669,13 +669,9 @@ var classes = [
   'net.nanopay.security.test.HashingOutputterTest',
   'net.nanopay.security.test.HashingWriterTest',
   'net.nanopay.security.test.LoginAttemptAuthServiceTest',
-  'net.nanopay.security.test.MerkleTreeHelperTest',
-  'net.nanopay.security.test.MerkleTreeTest',
   'net.nanopay.security.test.PayerAssentTransactionDAOTest',
   'net.nanopay.security.test.PKCS11KeyStoreManagerTest',
   'net.nanopay.security.test.PKCS12KeyStoreManagerTest',
-  'net.nanopay.security.test.ReceiptGeneratingDAOTest',
-  'net.nanopay.security.test.ReceiptSerializationTest',
   'net.nanopay.security.test.UserKeyPairGenerationDAOTest',
   'net.nanopay.security.test.ViewPIIRequestDAOTest',
   'net.nanopay.security.test.RollingJournalTest',
@@ -683,7 +679,6 @@ var classes = [
   // receipt
   'net.nanopay.security.receipt.Receipt',
   'net.nanopay.security.receipt.ReceiptGenerator',
-  'net.nanopay.security.receipt.TimedBasedReceiptGenerator',
   'net.nanopay.security.receipt.ReceiptGeneratingDAO',
 
   // password entropy

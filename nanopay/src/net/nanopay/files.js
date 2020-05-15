@@ -749,7 +749,6 @@ FOAM_FILES([
   // receipt
   { name: 'net/nanopay/security/receipt/Receipt' },
   { name: 'net/nanopay/security/receipt/ReceiptGenerator' },
-  { name: 'net/nanopay/security/receipt/TimedBasedReceiptGenerator' },
   { name: 'net/nanopay/security/receipt/ReceiptGeneratingDAO' },
 
   // security tests
@@ -759,13 +758,9 @@ FOAM_FILES([
   { name: 'net/nanopay/security/test/HashingOutputterTest' },
   { name: 'net/nanopay/security/test/HashingWriterTest' },
   { name: 'net/nanopay/security/test/LoginAttemptAuthServiceTest' },
-  { name: 'net/nanopay/security/test/MerkleTreeHelperTest' },
-  { name: 'net/nanopay/security/test/MerkleTreeTest' },
   { name: 'net/nanopay/security/test/PayerAssentTransactionDAOTest' },
   { name: 'net/nanopay/security/test/PKCS11KeyStoreManagerTest' },
   { name: 'net/nanopay/security/test/PKCS12KeyStoreManagerTest' },
-  { name: 'net/nanopay/security/test/ReceiptGeneratingDAOTest' },
-  { name: 'net/nanopay/security/test/ReceiptSerializationTest' },
   { name: 'net/nanopay/security/test/UserKeyPairGenerationDAOTest' },
   { name: 'net/nanopay/security/test/ViewPIIRequestDAOTest' },
   { name: 'net/nanopay/security/test/RollingJournalTest' },
