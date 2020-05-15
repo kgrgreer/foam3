@@ -34,6 +34,7 @@ foam.CLASS({
 
           ComplianceTransaction ct = new ComplianceTransaction.Builder(x).build();
           ct.copyFrom(plan);
+          ct.clearId();
           ct.clearLineItems();
           ct.clearNext();
           ct.addNext(plan);
