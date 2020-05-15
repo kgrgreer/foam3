@@ -5,12 +5,8 @@ import foam.core.FObject;
 import foam.dao.*;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
-import foam.nanos.auth.AuthService;
-import foam.nanos.auth.AuthenticationException;
-import foam.nanos.auth.AuthorizationException;
-import foam.nanos.auth.User;
+import foam.nanos.auth.*;
 import foam.util.SafetyUtil;
-import foam.nanos.approval.ApprovalStatus;
 import foam.nanos.approval.ApprovalRequest;
 
 import static foam.mlang.MLang.EQ;
@@ -29,7 +25,7 @@ public class AuthenticatedApprovalDAO
   @Override
   public FObject put_(X x, FObject obj) {
     ApprovalRequest approvalRequest = (ApprovalRequest) obj;
-    Long userId = ((User) x.get("user")).getId();
+    Long userId = ((Subject) x.get("subject")).getUser().getId();
     AuthService authService = (AuthService) x.get("auth");
 
     if ( ! authService.check(x, GLOBAL_APPROVAL_UPDATE) && ! SafetyUtil.equals(approvalRequest.getApprover(), userId) ) {
@@ -43,7 +39,7 @@ public class AuthenticatedApprovalDAO
   public FObject find_(X x, Object id) {
     ApprovalRequest ret = (ApprovalRequest) super.find_(x, id);
     if ( ret != null ) {
-      long currentUserId = ((User) x.get("user")).getId();
+      long currentUserId = ((Subject) x.get("subject")).getUser().getId();
       AuthService authService = (AuthService) x.get("auth");
 
       if ( ! authService.check(x, GLOBAL_APPROVAL_READ) && ! SafetyUtil.equals(currentUserId, ret.getApprover()) ) {
@@ -56,7 +52,7 @@ public class AuthenticatedApprovalDAO
 
   @Override
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     AuthService auth = (AuthService) x.get("auth");
 
     if ( user == null ) {

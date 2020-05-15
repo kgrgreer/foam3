@@ -67,7 +67,7 @@ public class AuthenticatedUserUserJunctionDAO
   }
 
   private User getUser(X x) {
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     if ( user == null ) {
       throw new AuthenticationException();
     }

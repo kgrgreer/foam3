@@ -9,6 +9,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.notification.Notification',
     'java.util.Calendar',
@@ -22,7 +23,7 @@ foam.CLASS({
         if ( obj.getProperty("viewRequestStatus").equals(net.nanopay.security.pii.PIIRequestStatus.APPROVED)){
           if ( obj.getProperty("reportIssued").equals(false) ) {
             // set approvedBy and ApprovedAt
-            obj.setProperty("approvedBy", ((User) x.get("user")).getId() );
+            obj.setProperty("approvedBy", ((Subject) x.get("subject")).getUser().getId() );
             obj.setProperty("approvedAt", new Date());
             
             Calendar cal = Calendar.getInstance();

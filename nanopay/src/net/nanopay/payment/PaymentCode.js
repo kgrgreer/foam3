@@ -7,10 +7,12 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
+
     'java.util.*'
   ],
 
@@ -65,7 +67,7 @@ foam.CLASS({
       javaThrows: ['AuthorizationException'],
       javaCode: `
       AuthService auth = (AuthService) x.get("auth");
-      User user = (User) x.get("user");
+      User user = ((Subject) x.get("subject")).getUser();
       if (  user == null || ( ! auth.check(x, "paymentcode.read." + getId()) && ! SafetyUtil.equals(user.getId(), getOwner())) ) {
         throw new AuthorizationException(LACKS_READ_PERMISSION);
       }
@@ -80,7 +82,7 @@ foam.CLASS({
       javaThrows: ['AuthorizationException'],
       javaCode: `
       AuthService auth = (AuthService) x.get("auth");
-      User user = (User) x.get("user");
+      User user = ((Subject) x.get("subject")).getUser();
       if (  user == null || ( ! auth.check(x, "paymentcode.update." + getId()) && ! SafetyUtil.equals(user.getId(), getOwner()) ) ) {
         throw new AuthorizationException(LACKS_UPDATE_PERMISSION);
       }

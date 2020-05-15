@@ -4,6 +4,7 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import net.nanopay.invoice.model.Invoice;
 
@@ -34,7 +35,7 @@ public class InvoiceToContactDAO extends ProxyDAO {
       return super.put_(x, obj);
     }
 
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
 
     boolean isPayable = invoice.getPayerId() == user.getId();
 

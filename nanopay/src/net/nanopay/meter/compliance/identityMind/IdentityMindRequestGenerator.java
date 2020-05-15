@@ -5,6 +5,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.Address;
 import foam.nanos.auth.Phone;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.session.Session;
@@ -115,15 +116,15 @@ public class IdentityMindRequestGenerator {
     Account destinationAccount = transaction.findDestinationAccount(x);
     // The owner of destination account is a business but we need to know
     // the person who actually sends the payment therefore uses agent as sender.
-    User sender = (User) x.get("agent");
-    if ( sender == null ) {
-      // REVIEW: it is not always the case that a user is logged in when
-      // Transactions are created. Also, this logic fails the transaction
-      // pipeline during non-ablii tests as they have no knowledge of
-      // user/agent setup.
-      ((Logger) x.get("logger")).warning("IdentityMindRequestGenerator.getTransferRequest agent not found in context, using sourceAccount owner.");
-      sender = (User) localUserDAO.inX(x).find(sourceAccount.getOwner());
-    }
+    User sender = ((Subject) x.get("subject")).getRealUser();
+//    if ( sender == null ) {
+//      // REVIEW: it is not always the case that a user is logged in when
+//      // Transactions are created. Also, this logic fails the transaction
+//      // pipeline during non-ablii tests as they have no knowledge of
+//      // user/agent setup.
+//      ((Logger) x.get("logger")).warning("IdentityMindRequestGenerator.getTransferRequest agent not found in context, using sourceAccount owner.");
+//      sender = (User) localUserDAO.inX(x).find(sourceAccount.getOwner());
+//    }
     User receiver = (User) localUserDAO.inX(x).find(destinationAccount.getOwner());
 
     IdentityMindRequest request = new IdentityMindRequest.Builder(x)
@@ -270,11 +271,11 @@ public class IdentityMindRequestGenerator {
   }
 
   private static User getRealUser(X x) {
-    User agent = (User) x.get("agent");
+    User agent = ((Subject) x.get("subject")).getRealUser();
     if ( agent != null ) {
       return agent;
     }
-    return (User) x.get("user");
+    return ((Subject) x.get("subject")).getUser();
   }
 
   private static String formatDate(Date date) {

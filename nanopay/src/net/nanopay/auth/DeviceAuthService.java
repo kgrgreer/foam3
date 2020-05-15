@@ -6,10 +6,7 @@ import foam.dao.DAO;
 import foam.dao.Sink;
 import foam.mlang.MLang;
 import foam.nanos.NanoService;
-import foam.nanos.auth.AuthService;
-import foam.nanos.auth.AuthenticationException;
-import foam.nanos.auth.ProxyAuthService;
-import foam.nanos.auth.User;
+import foam.nanos.auth.*;
 import foam.nanos.session.Session;
 import foam.util.SafetyUtil;
 import net.nanopay.retail.model.Device;
@@ -73,9 +70,10 @@ public class DeviceAuthService
     device.setStatus(DeviceStatus.ACTIVE);
     deviceDAO_.put(device);
 
+    Subject subject = new Subject.Builder(x).setUser(user).build();
     Session session = x.get(Session.class);
     session.setUserId(user.getId());
-    session.setContext(session.getContext().put("user", user));
+    session.setContext(session.getContext().put("subject", subject));
     sessionDAO_.put(session);
     return user;
   }

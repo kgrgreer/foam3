@@ -24,14 +24,14 @@ foam.CLASS({
         try {
           String filterRegion = "";
           Date filterLRDFrom = fetchLastExecutionDate(x, user.getId(), "Dow Jones User");
-          if ( user.getAddress().getCountryId() != null ) {
+          if ( user.getAddress() != null && user.getAddress().getCountryId() != null ) {
             if ( user.getAddress().getCountryId().equals("CA") ) {
               filterRegion = "Canada,CANA,CA,CAN";
             } else if ( user.getAddress().getCountryId().equals("US") ) {
               filterRegion = "United States,USA,US";
             }
           }
-          
+
           PersonNameSearchData searchData = new PersonNameSearchData.Builder(x)
             .setSearchId(user.getId())
             .setFirstName(user.getFirstName())
@@ -50,7 +50,7 @@ foam.CLASS({
             agency.submit(x, new ContextAgent() {
               @Override
               public void execute(X x) {
-                requestApproval(x, 
+                requestApproval(x,
                   new DowJonesApprovalRequest.Builder(x)
                     .setObjId(user.getId())
                     .setDaoKey("localUserDAO")

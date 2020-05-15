@@ -5,9 +5,11 @@ foam.CLASS({
   documentation: 'Captures acceptance documents accepted by user and date accepted.',
 
   javaImports: [
-    'foam.nanos.auth.AuthorizationException',
-    'foam.nanos.auth.User',
     'foam.dao.DAO',
+    'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
+
     'net.nanopay.model.Business'
   ],
 
@@ -134,7 +136,7 @@ foam.CLASS({
       DAO acceptanceDocumentDAO = (DAO) x.get("acceptanceDocumentDAO");
       AcceptanceDocument acceptanceDocument = (AcceptanceDocument) acceptanceDocumentDAO.find(getAcceptedDocument());
       if ( acceptanceDocument != null && acceptanceDocument.getAuthenticated()) {
-        User user = (User) x.get("user");
+        User user = ((Subject) x.get("subject")).getUser();
         if ( user == null ) throw new AuthorizationException("You need to be logged in to access document.");
       }
       `

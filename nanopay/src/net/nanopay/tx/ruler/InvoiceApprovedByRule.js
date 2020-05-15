@@ -11,10 +11,13 @@ foam.CLASS({
     javaImports: [
       'foam.core.ContextAgent',
       'foam.core.X',
+      'foam.nanos.auth.Subject',
       'foam.nanos.auth.User',
+
+      'java.util.Date',
+
       'net.nanopay.invoice.model.Invoice',
-      'net.nanopay.invoice.model.PaymentStatus',
-      'java.util.Date'
+      'net.nanopay.invoice.model.PaymentStatus'
     ],
 
     methods: [
@@ -22,7 +25,7 @@ foam.CLASS({
         name: 'applyAction',
         javaCode: `
             ((Invoice) obj).setApprovalDate(new Date());
-            ((Invoice) obj).setApprovedBy(((User) x.get("agent")).getId());
+            ((Invoice) obj).setApprovedBy(((Subject) x.get("subject")).getUser().getId());
         `
       }
     ]

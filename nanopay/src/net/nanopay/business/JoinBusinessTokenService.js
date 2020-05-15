@@ -11,19 +11,22 @@ foam.CLASS({
     'foam.mlang.MLang',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.AuthenticationException',
-    'foam.nanos.auth.token.Token',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.auth.UserUserJunction',
+    'foam.nanos.auth.token.Token',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
     'foam.util.Emails.EmailsUtility',
-    'net.nanopay.model.Business',
-    'net.nanopay.model.Invitation',
-    'net.nanopay.model.InvitationStatus',
+
     'java.util.Calendar',
     'java.util.HashMap',
     'java.util.Map',
     'java.util.UUID',
+
+    'net.nanopay.model.Business',
+    'net.nanopay.model.Invitation',
+    'net.nanopay.model.InvitationStatus',
     'static foam.mlang.MLang.*',
   ],
 
@@ -33,7 +36,7 @@ foam.CLASS({
       javaCode: `
         try {
           DAO tokenDAO = (DAO) x.get("localTokenDAO");
-          User agent = (User) x.get("agent");
+          User agent = ((Subject) x.get("subject")).getRealUser();
           String url = agent.findGroup(x).getAppConfig(x).getUrl();
 
           Token token = new Token.Builder(x)
@@ -48,7 +51,7 @@ foam.CLASS({
           EmailMessage message = new EmailMessage();
           message.setTo(new String[]{user.getEmail()});
 
-          User business = (User) x.get("user");
+          User business = ((Subject) x.get("subject")).getUser();
 
           if ( business == null ) throw new AuthenticationException();
 
@@ -130,7 +133,7 @@ foam.CLASS({
       name: 'generateExpiryDate',
       type: 'Date',
       javaCode: `
-      Calendar cal = Calendar.getInstance(); 
+      Calendar cal = Calendar.getInstance();
       cal.add(Calendar.MONTH, 1);
       return cal.getTime();
       `

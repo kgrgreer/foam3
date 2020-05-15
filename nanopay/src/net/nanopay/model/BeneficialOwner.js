@@ -16,8 +16,9 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil'
   ],
@@ -216,7 +217,7 @@ foam.CLASS({
       javaThrows: ['AuthorizationException'],
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
-        User user = (User) x.get("user");
+        User user = ((Subject) x.get("subject")).getUser();
 
         if ( auth.check(x, String.format("beneficialowner.create.%d", this.getId())) ) return;
 
@@ -238,7 +239,7 @@ foam.CLASS({
       javaThrows: ['AuthorizationException'],
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
-        User user = (User) x.get("user");
+        User user = ((Subject) x.get("subject")).getUser();
 
         if ( auth.check(x, String.format("beneficialowner.read.%d", this.getId())) ) return;
 
@@ -256,7 +257,7 @@ foam.CLASS({
       type: 'Void',
       javaThrows: ['AuthorizationException'],
       javaCode: `
-        User user = (User) x.get("user");
+        User user = ((Subject) x.get("subject")).getUser();
         AuthService auth = (AuthService) x.get("auth");
 
         if ( auth.check(x, String.format("beneficialowner.update.%d", this.getId())) ) return;
@@ -275,7 +276,7 @@ foam.CLASS({
       javaThrows: ['AuthorizationException'],
       javaCode: `
         AuthService auth = (AuthService) x.get("auth");
-        User user = (User) x.get("user");
+        User user = ((Subject) x.get("subject")).getUser();
 
         if ( auth.check(x, String.format("beneficialowner.delete.%d", this.getId())) ) return;
 

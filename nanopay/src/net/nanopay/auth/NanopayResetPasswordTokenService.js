@@ -16,12 +16,14 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.Sink',
     'foam.mlang.MLang',
-    'foam.nanos.auth.token.Token',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
+    'foam.nanos.auth.token.Token',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
-    'foam.util.Emails.EmailsUtility',
     'foam.util.Email',
+    'foam.util.Emails.EmailsUtility',
+
     'java.util.Calendar',
     'java.util.HashMap',
     'java.util.List',
@@ -41,8 +43,9 @@ Logger logger = (Logger) x.get("logger");
 // context. Therefore we put the system user in the context here so that
 // decorators down the line won't throw NPEs when trying to access the user in
 // the context.
-User systemUser = (User) getX().get("user");
-x = x.put("user", systemUser);
+User systemUser = ((Subject) getX().get("subject")).getUser();
+Subject subject = new Subject.Builder(x).setUser(systemUser).build();
+x = x.put("subject", subject);
 
 DAO userDAO = (DAO) getX().get("localUserUserDAO");
 DAO tokenDAO = (DAO) getTokenDAO();
@@ -78,7 +81,7 @@ if ( user == null ) {
   throw new RuntimeException("User not found");
 }
 
-String url = ((User)x.get("user")).findGroup(x).getAppConfig(x).getUrl();
+String url = (((Subject)x.get("subject")).getUser()).findGroup(x).getAppConfig(x).getUrl();
 
 Token token = new Token();
 token.setUserId(user.getId());

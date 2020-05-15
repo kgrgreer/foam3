@@ -6,6 +6,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.Group;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.http.WebAgent;
 import foam.nanos.logger.Logger;
@@ -41,7 +42,7 @@ public class QuickbooksWebAgent implements WebAgent {
       HttpServletRequest  req          = x.get(HttpServletRequest.class);
       HttpServletResponse resp         = x.get(HttpServletResponse.class);
       DAO                 store        = ((DAO) x.get("quickbooksTokenDAO")).inX(x);
-      User                user         = (User) x.get("user");
+      User                user         = ((Subject) x.get("subject")).getUser();
       DAO                 userDAO      = ((DAO) x.get("localUserDAO")).inX(x);
       QuickbooksOauth          auth         = (QuickbooksOauth) x.get("quickbooksAuth");
       Group               group        = user.findGroup(x);

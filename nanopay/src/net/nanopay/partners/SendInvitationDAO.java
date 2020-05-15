@@ -5,6 +5,7 @@ import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.app.AppConfig;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.token.Token;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
@@ -35,7 +36,7 @@ public class SendInvitationDAO
 
   @Override
   public FObject put_(X x, FObject obj) {
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     Invitation invite = (Invitation) obj.fclone();
 
     long hoursSinceLastSend = getHoursSinceLastSend(invite);

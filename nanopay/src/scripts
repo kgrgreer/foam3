@@ -606,7 +606,7 @@ PASSED_COMPLIANCE = true;
 
 // Set this if you want a specific existing user to be in the context when
 // running the script.
-USER_ID = x.get("user").getId();
+USER_ID = x.get("subject")).getUser().getId();
 
 // Set this if you want the user identified by USER_ID to act as another user.
 BUSINESS_TO_ACT_AS = 0;
@@ -622,6 +622,7 @@ import foam.nanos.auth.Permission;
 import foam.nanos.auth.User;
 import foam.nanos.session.Session;
 import java.util.Arrays;
+import foam.nanos.auth.Subject;
 
 AuthService authService = (AuthService) x.get("auth");
 DAO localGroupDAO = (DAO) x.get("localGroupDAO");
@@ -630,7 +631,7 @@ DAO localUserDAO = (DAO) x.get("localUserDAO");
 void printContextInfo(X context) {
   Group g = context.get("group");
   print(String.format("Group:\t%s", new Object[] { g.getId() }));
-  User u = context.get("user");
+  User u = ((Subject) context.get("subject")).getUser();
   print(String.format("Label:\t%s", new Object[] { u.toSummary() }));
   print(String.format("Uid:\t%s", new Object[] { u.getId() }));
 }
@@ -684,7 +685,7 @@ void executeCalls(X context) {
 
 context = null;
 
-if ( USER_ID == x.get("user").getId() ) {
+if ( USER_ID == x.get("subject")).getUser().getId() ) {
   context = x;
 } else {
   userContext = foam.util.Auth.sudo(x, USER_ID);
@@ -1754,8 +1755,9 @@ p({
     import static foam.mlang.MLang.*;
     import foam.mlang.predicate.Predicate;
     import foam.mlang.sink.Count;
+    import foam.nanos.auth.Subject;
 
-    user = (User) x.get("user");
+    user = ((Subject) x.get("subject")).getUser();
     userDAO = (DAO) x.get("bareUserDAO");
     agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
     notificationSettingDAO = (DAO) x.get("notificationSettingDAO");
@@ -2103,7 +2105,7 @@ p({
     if ( pointer.getClass().getName().equals("foam.dao.NullDAO") ) {
       break;
     }
-    
+
     pointer = pointer.getDelegate();
   }
 
@@ -2129,14 +2131,14 @@ p({
   import foam.nanos.auth.LifecycleState;
   print(\"Initializing Migrate Deleted: true to LifecycleAware: ACTIVE for Users script\");
   print(\"...\");
-  
+
   DAO bareUserDAO = (DAO) x.get(\"bareUserDAO\");
   users = ((ArraySink) bareUserDAO.select(new ArraySink())).getArray();
-  
+
   for ( User user : users ) {
     if ( user.getDeleted() ) {
       print(\"Migrating user: \" + user.getEmail());
-      
+
       User clonedUser = user.fclone();
       clonedUser.setLifecycleState(LifecycleState.DELETED);
       bareUserDAO.put(clonedUser);
@@ -2155,17 +2157,17 @@ p({
   import foam.dao.DAO;
   import net.nanopay.account.Account;
   import foam.nanos.auth.LifecycleState;
-  
+
   print(\"Initializing Migrate Deleted: true to LifecycleAware: ACTIVE for Accounts script\");
   print(\"...\");
   DAO localAccountDAO = (DAO) x.get(\"localAccountDAO\");
   localAccountDAO = localAccountDAO.delegate.delegate.delegate.delegate.delegate.delegate.delegate;
   accounts = ((ArraySink) localAccountDAO.select(new ArraySink())).getArray();
-  
+
   for ( Account account : accounts ) {
     if ( account.getDeleted() ) {
       print(\"Migrating account: \" + account.getName());
-      
+
       Account clonedAccount = account.fclone();
       clonedAccount.setLifecycleState(LifecycleState.DELETED);
       localAccountDAO.put(clonedAccount);
@@ -2184,22 +2186,22 @@ p({
   import foam.dao.DAO;
   import foam.nanos.ruler.Rule;
   import foam.nanos.auth.LifecycleState;
-  
+
   print(\"Initializing Migrating LifecycleState on Rule script\");
   print(\"...\");
   DAO localRuleDAO = (DAO) x.get(\"localRuleDAO\");
   rules = ((ArraySink) localRuleDAO.select(new ArraySink())).getArray();
-  
+
   for ( Rule rule : rules ) {
     if ( rule.getLifecycleState() == LifecycleState.PENDING ) {
       print(\"Migrating rule: \" + rule.getName() + \" to ACTIVE state\");
-      
+
       Rule clonedRule = rule.fclone();
       clonedRule.setLifecycleState(LifecycleState.ACTIVE);
       localRuleDAO.put(clonedRule);
     }
   }
-  
+
   print(\"Finished Migrating LifecycleState on Rule script\");
   """
 })

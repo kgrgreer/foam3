@@ -8,15 +8,18 @@ foam.CLASS({
     'user'
   ],
 
-  documentation: `Prevents a new request being put to the dao if 
+  documentation: `Prevents a new request being put to the dao if
   there is already an active request assosciated with the user`,
 
   javaImports: [
     'foam.dao.DAO',
-    'foam.nanos.auth.User',
     'foam.mlang.MLang',
     'foam.mlang.sink.Count',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
+
     'java.util.Date',
+
     'net.nanopay.security.pii.ViewPIIRequest'
   ],
 
@@ -25,10 +28,10 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
   DAO vprDAO = (DAO) x.get("viewPIIRequestDAO");
-  User user = (User) x.get("user");
-  
+  User user = ((Subject) x.get("subject")).getUser();
+
   if ( obj.getProperty("viewRequestStatus").equals(net.nanopay.security.pii.PIIRequestStatus.PENDING)){
-    // get pending or valid and approved PII requests for current user 
+    // get pending or valid and approved PII requests for current user
     Count count = (Count) vprDAO.where(
       MLang.OR(
         (MLang.AND(

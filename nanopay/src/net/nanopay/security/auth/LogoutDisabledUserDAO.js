@@ -11,8 +11,10 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.mlang.MLang',
     'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.session.Session',
+
     'net.nanopay.admin.model.AccountStatus'
   ],
 
@@ -67,7 +69,7 @@ foam.CLASS({
           @Override
           public void put(Object obj, Detachable sub) {
             Session session = (Session) obj;
-            User agent = (User) session.getContext().get("agent");
+            User agent = ((Subject) session.getContext().get("subject")).getRealUser();
             if ( session.getUserId() == userId
               || (agent != null && agent.getId() == userId)
             ) {

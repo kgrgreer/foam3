@@ -74,7 +74,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
   @Override
   public ResultResponse isSignedIn(X x) {
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
 
     if ( token == null  || ! (user.getIntegrationCode() == IntegrationCode.QUICKBOOKS)) {
@@ -140,7 +140,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
   @Override
   public ResultResponse invoiceSync(X x) {
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
     if ( token != null ) {
       token = (QuickbooksToken) token.fclone();
@@ -186,7 +186,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
   @Override
   public ResultResponse singleInvoiceSync(X x, net.nanopay.invoice.model.Invoice nanoInvoice){
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
     HashMap<String, List<InvoiceResponseItem>> invoiceErrors = this.initInvoiceErrors();
     List<InvoiceResponseItem> successResult = new ArrayList<>();
@@ -233,7 +233,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
   @Override
   public ResultResponse removeToken(X x) {
-    User              user         = (User) x.get("user");
+    User              user         = ((Subject) x.get("subject")).getUser();
     QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
     DAO accountDAO = (DAO) x.get("accountDAO");
     ArraySink sink = new ArraySink();
@@ -265,7 +265,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   @Override
   public ResultResponse bankAccountSync(X x) {
     List<AccountingBankAccount> results = new ArrayList<>();
-    User            user           = (User) x.get("user");
+    User            user           = ((Subject) x.get("subject")).getUser();
     QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
     DAO accountingBankDAO = (DAO) x.get("accountingBankAccountCacheDAO");
 
@@ -309,7 +309,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   @Override
   public ResultResponse invoiceResync(X x, net.nanopay.invoice.model.Invoice invoice) {
     QuickbooksInvoice quickInvoice = (QuickbooksInvoice) invoice.fclone();
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
 
     ResultResponse resultResponse = null;
 
@@ -344,7 +344,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   }
 
   public void reSyncInvoices(X x) {
-    User            user           = (User) x.get("user");
+    User            user           = ((Subject) x.get("subject")).getUser();
     QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
     Logger logger = (Logger) x.get("logger");
     // 1. find all the deSync invoices
@@ -446,7 +446,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   }
 
   public ContactMismatchPair importContact(foam.core.X x, NameBase importContact, HashMap<String, List<ContactResponseItem>> contactErrors) {
-    User              user         = (User) x.get("user");
+    User              user         = ((Subject) x.get("subject")).getUser();
     DAO            userDAO        = ((DAO) x.get("localUserUserDAO")).inX(x);
     DAO            businessDAO    = ((DAO) x.get("localBusinessDAO")).inX(x);
     DAO            agentJunctionDAO = ((DAO) x.get("agentJunctionDAO"));
@@ -459,7 +459,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       EQ(Contact.OWNER, user.getId())
     ));
 
-    if ( existContact instanceof QuickbooksContact && 
+    if ( existContact instanceof QuickbooksContact &&
        ((QuickbooksContact) existContact).getLastUpdated() >= importContact.getMetaData().getLastUpdatedTime().getTime() ) {
         throw new RuntimeException("skip");
     }
@@ -561,7 +561,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   }
 
   public QuickbooksContact updateQuickbooksContact(X x, NameBase importContact, QuickbooksContact existContact, boolean existUser,  HashMap<String, List<ContactResponseItem>> contactErrors) {
-    User            user           = (User) x.get("user");
+    User            user           = ((Subject) x.get("subject")).getUser();
     CountryService  countryService = (CountryService) x.get("countryService");
     RegionService   regionService  = (RegionService) x.get("regionService");
     QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
@@ -691,7 +691,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     // prepare error item
     InvoiceResponseItem errorItem = prepareErrorItemFrom(qInvoice);
 
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     QuickbooksToken token = (QuickbooksToken) tokenDAO.inX(x).find(user.getId());
 
     // check currency support
@@ -837,7 +837,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   }
 
   public File[] getAttachments(X x, String type, String id) {
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     BlobService blobStore    = (BlobService) x.get("blobStore");
     DAO               fileDAO      = ((DAO) x.get("fileDAO")).inX(x);
 
@@ -871,7 +871,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   }
 
   public Transaction createPaymentFor(X x, QuickbooksInvoice quickInvoice) {
-    User user        = (User) x.get("user");
+    User user        = ((Subject) x.get("subject")).getUser();
 
     String type = "";
     Currency currency = null;
@@ -997,7 +997,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
 
   public List sendRequest(foam.core.X x, String query, String table) {
-    User user       = (User) x.get("user");
+    User user       = ((Subject) x.get("subject")).getUser();
     DAO store       = ((DAO) x.get("quickbooksTokenDAO")).inX(x);
     Logger logger = (Logger) x.get("logger");
     Group group     = user.findGroup(x);
@@ -1041,7 +1041,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   }
 
   public IEntity create(foam.core.X x, IEntity object) {
-    User user       = (User) x.get("user");
+    User user       = ((Subject) x.get("subject")).getUser();
     DAO store       = ((DAO) x.get("quickbooksTokenDAO")).inX(x);
     Group group     = user.findGroup(x);
     AppConfig app   = group.getAppConfig(x);
@@ -1071,7 +1071,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   }
 
   public void batchOperation(X x, BatchOperation operation, CallbackHandler callbackHandler) {
-    User user       = (User) x.get("user");
+    User user       = ((Subject) x.get("subject")).getUser();
     DAO store       = ((DAO) x.get("quickbooksTokenDAO")).inX(x);
     Group group     = user.findGroup(x);
     AppConfig app   = group.getAppConfig(x);
@@ -1121,7 +1121,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
   }
 
   public ResultResponse saveResult(X x, String method, ResultResponse resultResponse) {
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
 
     ResultResponseWrapper resultWrapper = new ResultResponseWrapper();
     resultWrapper.setMethod(method);

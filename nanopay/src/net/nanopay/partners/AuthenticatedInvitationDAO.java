@@ -12,10 +12,7 @@ import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
-import foam.nanos.auth.AuthService;
-import foam.nanos.auth.AuthenticationException;
-import foam.nanos.auth.AuthorizationException;
-import foam.nanos.auth.User;
+import foam.nanos.auth.*;
 import net.nanopay.model.Invitation;
 import net.nanopay.model.InvitationStatus;
 
@@ -138,7 +135,7 @@ public class AuthenticatedInvitationDAO
   }
 
   public User getUser(X x) {
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
     if ( user == null ) {
       throw new AuthenticationException();
     }

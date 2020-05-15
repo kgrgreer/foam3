@@ -12,7 +12,9 @@ foam.CLASS({
     'foam.nanos.auth.*',
     'foam.nanos.auth.LifecycleState',
     'foam.util.Auth',
+
     'java.util.List',
+
     'static foam.mlang.MLang.*'
   ],
 
@@ -69,7 +71,8 @@ foam.CLASS({
       ],
       javaCode: `
       try {
-        X nullUserContext = x.put("user", null);
+        Subject subject = new Subject.Builder(x).setUser(null).build();
+        X nullUserContext = x.put("subject", subject);
         DigitalAccount account = new DigitalAccount();
         try {
           accountDAO.put_(nullUserContext, account);
@@ -214,7 +217,7 @@ foam.CLASS({
       ],
       javaCode: `
       // create an accounts for different users, verify that a select returns only owned accounts
-    
+
       // create accounts
       DigitalAccount account1 = null;
       DigitalAccount account2 = null;

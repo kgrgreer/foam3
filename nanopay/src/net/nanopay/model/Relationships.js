@@ -407,8 +407,10 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
+    'foam.nanos.auth.Subject',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
+
     'net.nanopay.model.Business'
   ],
 
@@ -531,8 +533,9 @@ foam.CLASS({
           return;
         }
 
-        User user = (User) x.get("user");
-        User agent = (User) x.get("agent");
+        Subject subject = (Subject) x.get("subject");
+        User user = subject.getUser();
+        User agent = subject.getRealUser();
         AuthService auth = (AuthService) x.get("auth");
 
         if ( user == null ) {
@@ -1127,7 +1130,7 @@ foam.CLASS({
   refines: 'net.nanopay.payment.PaymentProviderCorridorJunction',
 
   documentation: `
-    Model for PaymentProviderCorridorJunction, also contains accepted 
+    Model for PaymentProviderCorridorJunction, also contains accepted
     currency string for each junction.
   `,
 
