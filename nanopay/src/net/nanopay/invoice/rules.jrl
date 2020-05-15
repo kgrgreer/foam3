@@ -25,8 +25,16 @@ p({
     "ruleGroup":"InvoiceNotification",
     "documentation":"Sends notification when request payment is made.",
     "daoKey":"invoiceDAO",
-        "operation":0,
+    "operation":3,
     "after":true,
+    "predicate":{
+      "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+      "propName":"status",
+      "propValue":{
+        "class":"net.nanopay.invoice.model.InvoiceStatus",
+        "ordinal":9
+      }
+    },
     "action":{
         "class":"net.nanopay.invoice.ruler.RequestPaymentNotificationRule"
     },
