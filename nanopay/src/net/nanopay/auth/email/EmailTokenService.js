@@ -4,7 +4,7 @@ foam.CLASS({
   refines: 'foam.nanos.auth.email.EmailTokenService',
 
   imports: [
-    'logger'
+    'Logger logger'
   ],
 
   javaImports: [

@@ -22,7 +22,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'identityMindResponseDAO'
+    'DAO identityMindResponseDAO'
   ],
 
   properties: [

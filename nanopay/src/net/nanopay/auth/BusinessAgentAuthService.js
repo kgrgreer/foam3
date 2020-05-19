@@ -10,9 +10,9 @@ foam.CLASS({
   ],
 
   imports: [
-    'agentJunctionDAO',
+    'DAO agentJunctionDAO',
     'bareUserDAO',
-    'groupDAO'
+    'DAO groupDAO'
     ],
 
   javaImports: [

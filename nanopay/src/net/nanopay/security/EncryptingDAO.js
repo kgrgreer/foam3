@@ -4,11 +4,12 @@ foam.CLASS({
   extends: 'foam.dao.ProxyDAO',
 
   javaImports: [
-  'foam.lib.json.Outputter'
+    'foam.lib.json.Outputter',
+    'foam.nanos.logger.Logger'
   ],
 
   imports: [
-    'logger'
+    'Logger logger'
   ],
 
   constants: [

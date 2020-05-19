@@ -10,7 +10,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'loginAttemptDAO'
+    'DAO loginAttemptDAO'
   ],
 
   javaImports: [

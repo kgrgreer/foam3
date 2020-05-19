@@ -12,12 +12,12 @@ foam.CLASS({
   `,
 
    imports: [
-    'bareUserDAO',
+    'DAO bareUserDAO',
     'currencyDAO',
     'invoiceDAO',
-    'userUserDAO',
-    'logger',
-    'tokenDAO'
+    'DAO userUserDAO',
+    'Logger logger',
+    'DAO tokenDAO'
   ],
 
    javaImports: [

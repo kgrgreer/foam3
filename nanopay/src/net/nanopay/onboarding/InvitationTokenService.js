@@ -4,8 +4,8 @@ foam.CLASS({
   extends: 'foam.nanos.auth.email.EmailTokenService',
 
   imports: [
-    'localUserDAO',
-    'tokenDAO'
+    'DAO localUserDAO',
+    'DAO tokenDAO'
   ],
 
   javaImports: [
