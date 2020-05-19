@@ -10,7 +10,6 @@ foam.CLASS({
     'foam.dao.MDAO',
     'foam.dao.Sink',
     'foam.nanos.auth.Address',
-    'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
     'net.nanopay.model.Business',
     'static foam.mlang.MLang.*',
@@ -89,9 +88,7 @@ foam.CLASS({
 
         onboarding.setSigningOfficer(true);
         onboarding.setJobTitle("CEO");
-        Phone signingOfficerPhone = new Phone();
-        signingOfficerPhone.setNumber("123-456-7890");
-        onboarding.setPhone(signingOfficerPhone);
+        onboarding.setPhoneNumber("123-456-7890");
         Date birthday = new Date(1992, 11, 21); 
         onboarding.setBirthday(birthday);
         onboarding.setPEPHIORelated(true);

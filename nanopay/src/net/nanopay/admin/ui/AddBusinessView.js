@@ -528,9 +528,7 @@ foam.CLASS({
         return;
       }
 
-      var businessPhone = this.Phone.create({
-        number: this.countryCode + ' ' + this.phoneNumber
-      });
+      var businessPhone = this.countryCode + ' ' + this.phoneNumber;
 
       var newBusiness = this.User.create({
         firstName: this.firstNameField,
@@ -543,7 +541,7 @@ foam.CLASS({
         group: 'business',
         status: this.AccountStatus.PENDING,
         compliance: this.ComplianceStatus.REQUESTED,
-        phone: businessPhone,
+        phoneNumber: businessPhone,
         invited: true,
         invitedBy: this.user.id
       });

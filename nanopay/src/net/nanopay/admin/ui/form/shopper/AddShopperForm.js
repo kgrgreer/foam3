@@ -7,7 +7,6 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.Address',
-    'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
     'foam.nanos.notification.email.EmailMessage',
     'foam.u2.dialog.NotificationMessage',
@@ -173,9 +172,7 @@ foam.CLASS({
         if ( this.position == 2 ) {
           // Review
 
-          var shopperPhone = this.Phone.create({
-            number: shopperInfo.phoneNumber
-          });
+          var shopperPhone = shopperInfo.phoneNumber;
 
           var shopperAddress = this.Address.create({
             address1: shopperInfo.streetNumber + ' ' + shopperInfo.streetName,
@@ -206,10 +203,6 @@ foam.CLASS({
 
           if ( newShopper.errors_ ) {
             this.add(this.NotificationMessage.create({ message: newShopper.errors_[0][1], type: 'error' }));
-            return;
-          }
-          if ( shopperPhone.errors_ ) {
-            this.add(this.NotificationMessage.create({ message: shopperPhone.errors_[0][1], type: 'error' }));
             return;
           }
           if ( shopperAddress.errors_ ) {

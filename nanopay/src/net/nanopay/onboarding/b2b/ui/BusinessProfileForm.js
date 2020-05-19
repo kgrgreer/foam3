@@ -18,7 +18,6 @@ foam.CLASS({
     'foam.nanos.auth.Region',
     'foam.u2.dialog.NotificationMessage',
     'foam.nanos.auth.User',
-    'foam.nanos.auth.Phone',
     'foam.nanos.auth.Address'
   ],
 
@@ -368,13 +367,11 @@ foam.CLASS({
       class: 'String',
       name: 'phoneNumberField',
       factory: function() {
-        return this.viewData.user.phone ? this.viewData.user.phone.number.substring(2) : '';
+        return this.viewData.user.phoneNumber ? this.viewData.user.phoneNumber.substring(2) : '';
       },
       postSet: function(oldValue, newValue) {
         this.isEditingPhone = false;
-        this.viewData.user.phone = this.Phone.create({
-          number: '+1 ' + newValue
-        });
+        this.viewData.user.phoneNumber = '+1 ' + newValue;
       }
     },
     {

@@ -670,7 +670,7 @@ foam.CLASS({
           this.user.group = X.data.group;
 
           if ( X.data.phoneNumber ) {
-            this.user.phone.number = X.data.phoneNumber;
+            this.user.phoneNumber = X.data.phoneNumber;
           }
           if ( X.data.birthday ) {
             this.user.birthday = X.data.birthday;

@@ -115,7 +115,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             onboardingRequest.setBusinessName(business.getBusinessName());
             onboardingRequest.setBusinessZip(business.getAddress().getPostalCode());
             onboardingRequest.setCompanyType(getAFEXCompanyType(business.getBusinessTypeId()));
-            onboardingRequest.setContactBusinessPhone(business.getPhone().getNumber());
+            onboardingRequest.setContactBusinessPhone(business.getPhoneNumber());
             String businessRegDate = null;
             try {
               SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");

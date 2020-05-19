@@ -289,7 +289,7 @@ foam.CLASS({
       doc.append(\"  </tr>\");
       doc.append(\"  <tr>\");
       doc.append(\"    <td><b>Tel:</b></td>\");
-      doc.append(\"    <td>\").append(payer.getPhone().getNumber()).append(\"</td>\");
+      doc.append(\"    <td>\").append(payer.getPhoneNumber()).append(\"</td>\");
       doc.append(\"    <td><b>Deal Type:</b></td>\");
       doc.append(\"    <td>Spot</td>\");
       doc.append(\"  </tr>\");

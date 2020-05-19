@@ -15,7 +15,6 @@ foam.CLASS({
     'com.twilio.type.PhoneNumber',
     'foam.dao.DAO',
     'foam.mlang.MLang',
-    'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
     'foam.nanos.auth.token.Token',
     'foam.util.SecurityUtil',
@@ -53,8 +52,8 @@ foam.CLASS({
         DAO tokenDAO = (DAO) x.get("localTokenDAO");
 
         // don't send token if already verified
-        Phone phone = user.getPhone();
-        if (phone.getVerified()) {
+        String phoneNumber = user.getPhoneNumber();
+        if (user.getPhoneNumberVerified()) {
           throw new RuntimeException("Phone already verified");
         }
 
@@ -66,7 +65,7 @@ foam.CLASS({
           .setData(data)
           .build());
 
-        return Message.creator(new PhoneNumber(phone.getNumber()), new PhoneNumber(getPhoneNumber()),
+        return Message.creator(new PhoneNumber(phoneNumber), new PhoneNumber(getPhoneNumber()),
           "Your MintChip phone verification pin is: " + data).create() != null;
       `
     },
@@ -93,15 +92,14 @@ foam.CLASS({
           throw new RuntimeException("User not found");
         }
 
-        Phone phone = newUser.getPhone();
-        if ( phone.getVerified() ) {
+        if ( newUser.getPhoneNumberVerified() ) {
           throw new RuntimeException("Phone already verified");
         }
 
         // update phone to verified
         newUser = (User) newUser.fclone();
-        phone.setVerified(true);
-        newUser.setPhone(phone);
+        newUser.setPhoneNumber(user.getPhoneNumber());
+        newUser.setPhoneNumberVerified(true);
         userDAO.put_(x, newUser);
 
         // update token

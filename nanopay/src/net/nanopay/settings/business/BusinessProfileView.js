@@ -195,7 +195,7 @@ foam.CLASS({
             .start().addClass('inlineDiv')
               .start().addClass('labelDiv')
                 .start().add('Business Phone').addClass('labelTitle').end()
-                .start().add(this.user.phone.number).addClass('labelContent').end()
+                .start().add(this.user.phoneNumber).addClass('labelContent').end()
               .end()
               .start().addClass('labelDiv')
                 .start().add('Business Registration Number').addClass('labelTitle').end()

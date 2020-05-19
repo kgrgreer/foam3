@@ -31,7 +31,6 @@ foam.CLASS({
     'foam.nanos.auth.Region',
     'foam.u2.dialog.NotificationMessage',
     'foam.nanos.auth.User',
-    'foam.nanos.auth.Phone',
     'foam.nanos.auth.Address',
     'foam.dao.ArrayDAO'
   ],
@@ -971,7 +970,7 @@ foam.CLASS({
       this.isEditingName = false; // This will change displayedLegalName as well
       this.jobTitleField = user.jobTitle;
       this.emailAddressField = user.email;
-      this.phoneNumberField = this.extractPhoneNumber(user.phone);
+      this.phoneNumberField = this.extractPhoneNumber(user.phoneNumber);
       this.isEditingPhone = false;
       this.birthdayField = user.birthday;
 
@@ -988,8 +987,8 @@ foam.CLASS({
       this.isDisplayMode = !editable;
     },
 
-    function extractPhoneNumber(phone) {
-      return phone.number.substring(2);
+    function extractPhoneNumber(phoneNumber) {
+      return phoneNumber.substring(2);
     },
 
     function sameAsAdmin(flag) {
@@ -1002,7 +1001,7 @@ foam.CLASS({
 
         this.jobTitleField = this.user.jobTitle;
         this.emailAddressField = this.user.email;
-        this.phoneNumberField = this.extractPhoneNumber(this.user.phone);
+        this.phoneNumberField = this.extractPhoneNumber(this.user.phoneNumber);
         this.isEditingPhone = false;
       }
     },
@@ -1098,9 +1097,7 @@ foam.CLASS({
       principleOwner.middleName = this.middleNameField;
       principleOwner.lastName = this.lastNameField;
       principleOwner.email = this.emailAddressField;
-      principleOwner.phone = this.Phone.create({
-        number: this.phoneCountryCodeField + this.phoneNumberField
-      });
+      principleOwner.phoneNumber = this.phoneCountryCodeField + this.phoneNumberField;
       principleOwner.birthday = this.birthdayField;
       principleOwner.address = this.Address.create({
         streetNumber: this.streetNumberField,

@@ -426,7 +426,7 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'businessPhoneVerified',
+      name: 'businessPhoneNumberVerified',
       writePermissionRequired: true,
       visibility: 'HIDDEN'
     }

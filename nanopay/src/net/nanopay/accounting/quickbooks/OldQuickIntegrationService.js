@@ -31,7 +31,6 @@ foam.CLASS({
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.*',
     'foam.nanos.auth.Address',
-    'foam.nanos.auth.Phone',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.fs.File',
@@ -825,31 +824,26 @@ try {
     /*
      * Phone integration
      */
-    String busPhoneNumber =
+    String businessPhone =
       customer.getPrimaryPhone() != null ?
       customer.getPrimaryPhone().getFreeFormNumber() : "";
 
-    String mobilePhoneNumber =
+    Boolean businessPhoneNumberVerified = ! SafetyUtil.isEmpty(businessPhone);
+    String mobilePhone = 
       customer.getMobile() != null ?
       customer.getMobile().getFreeFormNumber() : "";
-
-    Phone businessPhone = new Phone.Builder(x)
-      .setNumber( busPhoneNumber )
-      .setVerified( ! busPhoneNumber.equals("") )
-      .build();
-
-    Phone mobilePhone = new Phone.Builder(x)
-      .setNumber( mobilePhoneNumber )
-      .setVerified( ! mobilePhoneNumber.equals("") )
-      .build();
+    Boolean mobilePhoneVerified = ! SafetyUtil.isEmpty(mobilePhone);
 
     newContact.setEmail(email.getAddress());
     newContact.setOrganization(customer.getCompanyName());
     newContact.setFirstName(customer.getGivenName());
     newContact.setLastName(customer.getFamilyName());
     newContact.setOwner(user.getId());
+    newContact.setBusinessPhoneNumber(businessPhone);
+    newContact.setBusinessPhoneNumberVerified(businessPhoneNumberVerified);
     newContact.setBusinessPhone(businessPhone);
-    newContact.setMobile(mobilePhone);
+    newContact.setMobileNumber(mobilePhone);
+    newContact.setMobileNumberVerified(mobilePhoneVerified);
     newContact.setGroup("sme");
     newContact.setQuickId(customer.getId());
     newContact.setRealmId(tokenStorage.getRealmId());
@@ -1332,31 +1326,25 @@ if ( customerAddress != null ) {
 /*
  * Phone integration
  */
-String busPhoneNumber =
+String businessPhone =
   importContact.getPrimaryPhone() != null ?
-    importContact.getPrimaryPhone().getFreeFormNumber() : "";
+  importContact.getPrimaryPhone().getFreeFormNumber() : "";
+Boolean businessPhoneNumberVerified = ! SafetyUtil.isEmpty(businessPhone);
 
-String mobilePhoneNumber =
+String mobilePhone = 
   importContact.getMobile() != null ?
-    importContact.getMobile().getFreeFormNumber() : "";
-
-Phone businessPhone = new Phone.Builder(x)
-  .setNumber( busPhoneNumber )
-  .setVerified( ! busPhoneNumber.equals("") )
-  .build();
-
-Phone mobilePhone = new Phone.Builder(x)
-  .setNumber( mobilePhoneNumber )
-  .setVerified( ! mobilePhoneNumber.equals("") )
-  .build();
+  importContact.getMobile().getFreeFormNumber() : "";
+Boolean mobilePhoneVerified = ! SafetyUtil.isEmpty(mobilePhone);
 
 newContact.setEmail(email.getAddress());
 newContact.setOrganization(importContact.getCompanyName());
 newContact.setFirstName(importContact.getGivenName());
 newContact.setLastName(importContact.getFamilyName());
 newContact.setOwner(user.getId());
-newContact.setBusinessPhone(businessPhone);
-newContact.setMobile(mobilePhone);
+newContact.setBusinessPhoneNumber(businessPhone);
+newContact.setBusinessPhoneNumberVerified(businessPhoneNumberVerified);
+newContact.setMobileNumber(mobilePhone);
+newContact.setMobileNumberVerified(mobilePhoneVerified);
 newContact.setGroup("sme");
 newContact.setQuickId(importContact.getId());
 newContact.setRealmId(tokenStorage.getRealmId());

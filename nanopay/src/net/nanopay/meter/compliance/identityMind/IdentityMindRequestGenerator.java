@@ -4,7 +4,6 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.Address;
-import foam.nanos.auth.Phone;
 import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
@@ -102,9 +101,9 @@ public class IdentityMindRequestGenerator {
       request.setAs(prepareString(address.getRegionId()));
       request.setAz(prepareString(address.getPostalCode()));
     }
-    Phone phone = business.getPhone();
-    if ( phone != null ) {
-      request.setPhn(prepareString(phone.getNumber()));
+    String phoneNumber = business.getPhoneNumber();
+    if ( phoneNumber != null ) {
+      request.setPhn(prepareString(phoneNumber));
     }
     request.setWebsite(prepareString(business.getWebsite()));
     return request;
@@ -164,9 +163,9 @@ public class IdentityMindRequestGenerator {
       request.setBs(prepareString(senderAddress.getRegionId()));
       request.setBz(prepareString(senderAddress.getPostalCode()));
     }
-    Phone senderPhone = sender.getPhone();
-    if (senderPhone != null) {
-      request.setPhn(prepareString(senderPhone.getNumber()));
+    String senderPhoneNumber = sender.getPhoneNumber();
+    if (senderPhoneNumber != null) {
+      request.setPhn(prepareString(senderPhoneNumber));
     }
 
     // Receiver information
@@ -191,9 +190,9 @@ public class IdentityMindRequestGenerator {
         request.setSs(prepareString(receiverAddress.getRegionId()));
         request.setSz(prepareString(receiverAddress.getPostalCode()));
       }
-      Phone receiverPhone = receiver.getPhone();
-      if (receiverPhone != null) {
-        request.setDph(prepareString(receiverPhone.getNumber()));
+      String receiverPhoneNumber = receiver.getPhoneNumber();
+      if (receiverPhoneNumber != null) {
+        request.setDph(prepareString(receiverPhoneNumber));
       }
     }
     return request;
@@ -232,9 +231,9 @@ public class IdentityMindRequestGenerator {
       request.setBs(prepareString(address.getRegionId()));
       request.setBz(prepareString(address.getPostalCode()));
     }
-    Phone phone = user.getPhone();
-    if (phone != null) {
-      request.setPhn(prepareString(phone.getNumber()));
+    String phoneNumber = user.getPhoneNumber();
+    if (phoneNumber != null) {
+      request.setPhn(prepareString(phoneNumber));
     }
     request.setTitle(prepareString(user.getJobTitle()));
     Date birthDay = user.getBirthday();

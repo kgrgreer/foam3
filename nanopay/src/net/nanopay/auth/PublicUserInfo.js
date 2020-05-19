@@ -86,6 +86,10 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
+      class: 'PhoneNumber',
+      name: 'phoneNumber'
+    },
+    {
       class: 'foam.nanos.fs.FileProperty',
       name: 'businessProfilePicture',
       documentation: `The profile picture of the business, initially defaulting
@@ -151,7 +155,7 @@ foam.CLASS({
             setEmail(user.getEmail());
             setProfilePicture(user.getProfilePicture());
             setAddress(user.getAddress());
-            setPhone(user.getPhone());
+            setPhoneNumber(user.getPhoneNumber());
             setType(user.getType());
           }
         `);

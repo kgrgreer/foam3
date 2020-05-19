@@ -270,10 +270,10 @@ foam.CLASS({
       name: 'phoneNumberField',
       documentation: 'Phone number field.',
       postSet: function(o, n) {
-        this.viewData.agent.phone.number = n;
+        this.viewData.agent.phoneNumber = n;
       },
       factory: function() {
-        return this.viewData.agent.phone.number;
+        return this.viewData.agent.phoneNumber;
       },
     },
     {

@@ -11,7 +11,6 @@ foam.CLASS({
   requires: [
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Country',
-    'foam.nanos.auth.Phone',
     'foam.nanos.auth.Region',
     'foam.nanos.auth.User',
     'foam.u2.dialog.NotificationMessage',
@@ -364,10 +363,10 @@ foam.CLASS({
       name: 'phoneNumberField',
       documentation: 'Business phone number field.',
       factory: function() {
-        if ( this.viewData.user.phone ) return this.viewData.user.phone.number;
+        if ( this.viewData.user.phoneNumber ) return this.viewData.user.phoneNumber;
       },
       postSet: function(o, n) {
-        this.viewData.user.phone.number = n;
+        this.viewData.user.phoneNumber = n;
       }
     },
     {

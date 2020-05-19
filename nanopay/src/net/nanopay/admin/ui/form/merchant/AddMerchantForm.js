@@ -8,7 +8,6 @@ foam.CLASS({
   requires: [
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Country',
-    'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
     'foam.nanos.notification.email.EmailMessage',
     'foam.u2.dialog.NotificationMessage',
@@ -200,9 +199,7 @@ foam.CLASS({
         if ( this.position == 3 ) {
           // Review
 
-          var merchantPhone = this.Phone.create({
-            number: merchantInfo.phoneNumber
-          });
+          var merchantPhone = merchantInfo.phoneNumber;
 
           var merchantAddress = this.Address.create({
             address1: merchantInfo.streetNumber + ' ' + merchantInfo.streetName,
@@ -235,10 +232,6 @@ foam.CLASS({
           });
 
           if ( newMerchant.errors_ ) {
-            this.add(this.NotificationMessage.create({ message: newMerchant.errors_[0][1], type: 'error' }));
-            return;
-          }
-          if ( merchantPhone.errors_ ) {
             this.add(this.NotificationMessage.create({ message: newMerchant.errors_[0][1], type: 'error' }));
             return;
           }

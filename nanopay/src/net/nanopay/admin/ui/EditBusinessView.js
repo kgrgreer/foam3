@@ -210,7 +210,7 @@ foam.CLASS({
       postSet: function (oldValue, newValue) {
         this.displayedPhoneNumber = '';
         if ( this.countryCode ) this.displayedPhoneNumber += this.countryCode;
-        if ( this.data.phone.number ) this.displayedPhoneNumber += ' ' + this.data.phone.number;
+        if ( this.data.phoneNumber ) this.displayedPhoneNumber += ' ' + this.data.phoneNumber;
       }
     },
     {
@@ -326,7 +326,7 @@ foam.CLASS({
             .addClass('nameDisplayContainer')
             .enableClass('hidden', this.isEditingPhone$)
             .start('p').add(this.PhoneNumberLabel).addClass('label').end()
-            .start(this.DISPLAYED_PHONE_NUMBER, { data$: this.data.phone.number$})
+            .start(this.DISPLAYED_PHONE_NUMBER, { data$: this.data.phoneNumber$})
               .addClass('legalNameDisplayField')
               .on('focus', function() {
                 this.blur();
@@ -354,7 +354,7 @@ foam.CLASS({
               .enableClass('middleName', this.isEditingPhone$, true)
               .start('p').add(this.PhoneNumberLabel).addClass('label').end()
               .start(this.User.PHONE_NUMBER, {
-                data$: this.data.phone.number$.map( function(a) {
+                data$: this.data.phoneNumber$.map( function(a) {
                   return a.replace( self.countryCode, '' );
                 })
               })
@@ -373,7 +373,7 @@ foam.CLASS({
     },
 
     function validations() {
-      if ( ! this.data.firstName || ! this.data.lastName || ! this.data.jobTitle || ! this.data.phone || ! this.data.phone.number ) {
+      if ( ! this.data.firstName || ! this.data.lastName || ! this.data.jobTitle || ! this.data.phoneNumber ) {
         this.add(this.NotificationMessage.create({ message: 'Please fill out all necessary fields before proceeding.', type: 'error' }));
         return false;
       }
@@ -407,7 +407,7 @@ foam.CLASS({
         this.add(this.NotificationMessage.create({ message: 'Invalid job title.', type: 'error' }));
         return false;
       }
-      if ( ! this.validatePhone(this.countryCode + ' ' + this.data.phone.number) ) {
+      if ( ! this.validatePhone(this.countryCode + ' ' + this.data.phoneNumber) ) {
         this.add(this.NotificationMessage.create({ message: 'Invalid phone number.', type: 'error' }));
         return false;
       }

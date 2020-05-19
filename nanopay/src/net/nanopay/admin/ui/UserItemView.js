@@ -5,7 +5,6 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.User',
-    'foam.nanos.auth.Phone',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.admin.model.AccountStatus'
@@ -105,7 +104,7 @@ foam.CLASS({
             .start('td').add(this.data.id$).end()
             .start('td').add(this.data.legalName$).end()
             .start('td').add(this.data.email$).end()
-            .start('td').add(this.data.phone.number$).end()
+            .start('td').add(this.data.phoneNumber$).end()
             .start('td').add(this.data.jobTitle$).end()
             .start('td').add(this.data.businessName$).end()
             .start('td')

@@ -274,7 +274,6 @@ foam.CLASS({
 
     'foam.dao.DAO',
     'foam.nanos.auth.Address',
-    'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
     'foam.core.FObject',
     'foam.nanos.logger.Logger',
@@ -349,96 +348,93 @@ foam.CLASS({
                 INBankAccount receiverBankAcct = null;
                 Transaction transaction = null;
 
-                 try {
-                   if ( (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor() != null ) {
-                     sender = (User) userDAO.find(EQ(User.EMAIL, (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getContactDetails().getEmailAddress()));
+                try {
+                  if ( (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor() != null ) {
+                    sender = (User) userDAO.find(EQ(User.EMAIL, (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getContactDetails().getEmailAddress()));
 
-                     // Create a Sender
-                     if ( sender == null ) {
-                       sender = new User();
+                    // Create a Sender
+                    if ( sender == null ) {
+                      sender = new User();
 
-                       sender.setEmail((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getContactDetails().getEmailAddress());
+                      sender.setEmail((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getContactDetails().getEmailAddress());
 
-                       Phone senderPhone = new Phone();
-                       senderPhone.setVerified(true);
-                       senderPhone.setNumber(((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getContactDetails().getPhoneNumber()).replace(String.valueOf('-'), ""));
+                      sender.setPhoneNumber(((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getContactDetails().getPhoneNumber()).replace(String.valueOf('-'), ""));
+                      sender.setPhoneNumberVerified(true);
 
-                       sender.setPhone(senderPhone);
-
-                       sender.setEmailVerified(true);
-                       sender.setFirstName((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getName());
-                       sender.setLastName((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getName());
-                       sender.setBirthday((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getIdentification().getPrvtId().getDateAndPlaceOfBirth().getBirthDate());
-                       sender.setGroup("system");
-                       sender.setSpid(spId);
-                       // REVIEW: removed with User/Business split
-                       // sender.setBusinessTypeId(0);
-                       // sender.setBusinessSectorId(1);
-                       //sender.setStatus("Active");
+                      sender.setEmailVerified(true);
+                      sender.setFirstName((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getName());
+                      sender.setLastName((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getName());
+                      sender.setBirthday((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getIdentification().getPrvtId().getDateAndPlaceOfBirth().getBirthDate());
+                      sender.setGroup("system");
+                      sender.setSpid(spId);
+                      // REVIEW: removed with User/Business split
+                      // sender.setBusinessTypeId(0);
+                      // sender.setBusinessSectorId(1);
+                      // sender.setStatus("Active");
                       // sender.setOnboarded(true);
 
-                       Address senderAddress = new Address();
-                       addrLine = "";
+                      Address senderAddress = new Address();
+                      addrLine = "";
 
-                       if ( (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getPostalAddress().getStreetName() != null ||
-                              ((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getPostalAddress().getStreetName()).equals("") ) {  //structured
-                                senderAddress.setStructured(true);
-                                senderAddress.setStreetName((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getPostalAddress().getStreetName());
-                                senderAddress.setSuite((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getPostalAddress().getBuildingNumber());
-                       } else {
-                         for ( int j = 0; j < (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getPostalAddress().getAddressLine().length; j++ ) {
-                           addrLine += (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getPostalAddress().getAddressLine()[j] + " ";
-                         }
+                      if ( (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getPostalAddress().getStreetName() != null ||
+                            ((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getPostalAddress().getStreetName()).equals("") ) {  //structured
+                        senderAddress.setStructured(true);
+                        senderAddress.setStreetName((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getPostalAddress().getStreetName());
+                        senderAddress.setSuite((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getPostalAddress().getBuildingNumber());
+                      } else {
+                        for ( int j = 0; j < (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getPostalAddress().getAddressLine().length; j++ ) {
+                          addrLine += (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getPostalAddress().getAddressLine()[j] + " ";
+                        }
 
-                         senderAddress.setAddress1(addrLine);
-                       }
-                       senderAddress.setCity((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getPostalAddress().getTownName());
-                       senderAddress.setCountryId((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getPostalAddress().getCountry());
-                       senderAddress.setRegionId((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getPostalAddress().getCountrySubDivision());
-                       senderAddress.setPostalCode((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getPostalAddress().getPostCode());
+                        senderAddress.setAddress1(addrLine);
+                      }
+                      senderAddress.setCity((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getPostalAddress().getTownName());
+                      senderAddress.setCountryId((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getPostalAddress().getCountry());
+                      senderAddress.setRegionId((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getPostalAddress().getCountrySubDivision());
+                      senderAddress.setPostalCode((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getPostalAddress().getPostCode());
 
-                       sender.setAddress(senderAddress);
+                      sender.setAddress(senderAddress);
 
-                       fObjSender = userDAO.put(sender);
+                      fObjSender = userDAO.put(sender);
 
-                       if ( fObjSender instanceof FObject )
-                        senderId = ((User)fObjSender).getId();
+                      if ( fObjSender instanceof FObject )
+                      senderId = ((User)fObjSender).getId();
 
                       // Create a Sender's BankAccount
-                       if ( (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtorAccount() != null ) {
-                          senderBankAcct = new CABankAccount();
+                      if ( (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtorAccount() != null ) {
+                        senderBankAcct = new CABankAccount();
 
-                          senderBankAcct.setId(senderId);
-                          senderBankAcct.setName(senderId + "Account");
-                          senderBankAcct.setX(getX());
-                          senderBankAcct.setOwner(senderId);
-                          senderBankAcct.setAccountNumber((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtorAccount().getIdentification().getOthr().getIdentification());
-                          senderBankAcct.setDenomination((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getInstructedAmount().getCcy());
+                        senderBankAcct.setId(senderId);
+                        senderBankAcct.setName(senderId + "Account");
+                        senderBankAcct.setX(getX());
+                        senderBankAcct.setOwner(senderId);
+                        senderBankAcct.setAccountNumber((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtorAccount().getIdentification().getOthr().getIdentification());
+                        senderBankAcct.setDenomination((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getInstructedAmount().getCcy());
 
-                          Institution institution = (Institution) institutionDAO.find(EQ(Institution.INSTITUTION_NUMBER, (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtorAgent().getFinancialInstitutionIdentification().getClearingSystemMemberIdentification().getMemberIdentification()));
-                          if ( institution != null ) {
-                            senderBankAcct.setInstitutionNumber(String.valueOf(institution.getInstitutionNumber()));
-                          } else {
-                            logger.warning("generatePacs002Msgby008Msg", "Unknown Institution", (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtorAgent().getFinancialInstitutionIdentification().getClearingSystemMemberIdentification().getMemberIdentification(), "sender", String.valueOf(senderId), "accountNumber", (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtorAccount().getIdentification().getOthr().getIdentification());
-                          }
+                        Institution institution = (Institution) institutionDAO.find(EQ(Institution.INSTITUTION_NUMBER, (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtorAgent().getFinancialInstitutionIdentification().getClearingSystemMemberIdentification().getMemberIdentification()));
+                        if ( institution != null ) {
+                          senderBankAcct.setInstitutionNumber(String.valueOf(institution.getInstitutionNumber()));
+                        } else {
+                          logger.warning("generatePacs002Msgby008Msg", "Unknown Institution", (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtorAgent().getFinancialInstitutionIdentification().getClearingSystemMemberIdentification().getMemberIdentification(), "sender", String.valueOf(senderId), "accountNumber", (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtorAccount().getIdentification().getOthr().getIdentification());
+                        }
 
-                          Branch branch = (Branch) branchDAO.find(EQ(Branch.BRANCH_ID, (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtorAgent().getBranchIdentification().getIdentification()));
-                          if ( branch != null ) {
-                            senderBankAcct.setBranchId(String.valueOf(branch.getBranchId()));
-                          } else {
-                            logger.warning("generatePacs002Msgby008Msg", "Unknown Branch", (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtorAgent().getBranchIdentification().getIdentification(), "sender", String.valueOf(senderId), "accountNumber", (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtorAccount().getIdentification().getOthr().getIdentification());
-                          }
-                          senderBankAcct.setStatus(BankAccountStatus.VERIFIED);
-                          senderBankAcct.setVerificationAttempts(1);
-                          senderBankAcct.setIsDefault(true);
+                        Branch branch = (Branch) branchDAO.find(EQ(Branch.BRANCH_ID, (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtorAgent().getBranchIdentification().getIdentification()));
+                        if ( branch != null ) {
+                          senderBankAcct.setBranchId(String.valueOf(branch.getBranchId()));
+                        } else {
+                          logger.warning("generatePacs002Msgby008Msg", "Unknown Branch", (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtorAgent().getBranchIdentification().getIdentification(), "sender", String.valueOf(senderId), "accountNumber", (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtorAccount().getIdentification().getOthr().getIdentification());
+                        }
+                        senderBankAcct.setStatus(BankAccountStatus.VERIFIED);
+                        senderBankAcct.setVerificationAttempts(1);
+                        senderBankAcct.setIsDefault(true);
 
-                          fObjSenderBk = accountDAO.put(senderBankAcct);
+                        fObjSenderBk = accountDAO.put(senderBankAcct);
 
-                          if ( fObjSenderBk instanceof FObject )
-                            senderBkId = ((BankAccount)fObjSenderBk).getId();
+                        if ( fObjSenderBk instanceof FObject )
+                          senderBkId = ((BankAccount)fObjSenderBk).getId();
 
                       } else {
-                          throw new RuntimeException("Missing field : DbtrAcct");
+                        throw new RuntimeException("Missing field : DbtrAcct");
                       }
                     } else {
                        sender = (User)userDAO.find(EQ(User.EMAIL, (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtor().getContactDetails().getEmailAddress()));
@@ -458,11 +454,8 @@ foam.CLASS({
 
                       receiver.setEmail((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getContactDetails().getEmailAddress());
 
-                      Phone receiverPhone = new Phone();
-                      receiverPhone.setVerified(true);
-                      receiverPhone.setNumber(((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getContactDetails().getPhoneNumber()).replace(String.valueOf('-'), ""));
-
-                      receiver.setPhone(receiverPhone);
+                      receiver.setPhoneNumber(((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getContactDetails().getPhoneNumber()).replace(String.valueOf('-'), ""));
+                      receiver.setPhoneNumberVerified(true);
 
                       receiver.setEmailVerified(true);
                       receiver.setFirstName((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getName());
@@ -481,9 +474,9 @@ foam.CLASS({
 
                       if ( (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getPostalAddress().getStreetName() != null ||
                              ((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getPostalAddress().getStreetName()).equals("") ) {  //structured
-                               receiverAddress.setStructured(true);
-                               receiverAddress.setStreetName((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getPostalAddress().getStreetName());
-                               receiverAddress.setSuite((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getPostalAddress().getBuildingNumber());
+                        receiverAddress.setStructured(true);
+                        receiverAddress.setStreetName((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getPostalAddress().getStreetName());
+                        receiverAddress.setSuite((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getPostalAddress().getBuildingNumber());
                       } else {
                         for ( int j = 0; j < (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getPostalAddress().getAddressLine().length; j++ ) {
                           addrLine += (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditor().getPostalAddress().getAddressLine()[j] + " ";
@@ -512,8 +505,8 @@ foam.CLASS({
                         receiverBankAcct.setOwner(receiverId);
                         receiverBankAcct.setAccountNumber((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditorAccount().getIdentification().getOthr().getIdentification());
                         receiverBankAcct.setDenomination((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getInterbankSettlementAmount().getCcy());
-//                        receiverBankAcct.setInstitution((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditorAgent().getFinancialInstitutionIdentification().getClearingSystemMemberIdentification().getMemberIdentification());
-//                        receiverBankAcct.setBranch((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditorAgent().getBranchIdentification().getIdentification());
+                        // receiverBankAcct.setInstitution((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditorAgent().getFinancialInstitutionIdentification().getClearingSystemMemberIdentification().getMemberIdentification());
+                        // receiverBankAcct.setBranch((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditorAgent().getBranchIdentification().getIdentification());
 
                           Institution institution = (Institution) institutionDAO.find(EQ(Institution.INSTITUTION_NUMBER, (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditorAgent().getFinancialInstitutionIdentification().getClearingSystemMemberIdentification().getMemberIdentification()));
                           if ( institution != null ) {

@@ -605,23 +605,15 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       /*
        * Phone accounting
        */
-      String busPhoneNumber =
+      String businessPhone =
         importContact.getPrimaryPhone() != null ?
-          importContact.getPrimaryPhone().getFreeFormNumber() : "";
+        importContact.getPrimaryPhone().getFreeFormNumber() : "";
+      Boolean businessPhoneNumberVerified = ! SafetyUtil.isEmpty(businessPhone);
 
-      String mobilePhoneNumber =
+      String mobilePhone =
         importContact.getMobile() != null ?
-          importContact.getMobile().getFreeFormNumber() : "";
-
-      Phone businessPhone = new Phone.Builder(x)
-        .setNumber( busPhoneNumber )
-        .setVerified( ! busPhoneNumber.equals("") )
-        .build();
-
-      Phone mobilePhone = new Phone.Builder(x)
-        .setNumber( mobilePhoneNumber )
-        .setVerified( ! mobilePhoneNumber.equals("") )
-        .build();
+        importContact.getMobile().getFreeFormNumber() : "";
+      Boolean mobilePhoneVerified = ! SafetyUtil.isEmpty(mobilePhone);
 
       newContact.setOrganization(importContact.getCompanyName());
       if ( importContact.getGivenName() != null ) {
@@ -630,8 +622,10 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       if ( importContact.getFamilyName() != null ) {
         newContact.setLastName(importContact.getFamilyName());
       }
-      newContact.setBusinessPhone(businessPhone);
-      newContact.setMobile(mobilePhone);
+      newContact.setBusinessPhoneNumber(businessPhone);
+      newContact.setBusinessPhoneNumberVerified(businessPhoneNumberVerified);
+      newContact.setMobileNumber(mobilePhone);
+      newContact.setMobileNumberVerified(mobilePhoneVerified);
     }
 
 
