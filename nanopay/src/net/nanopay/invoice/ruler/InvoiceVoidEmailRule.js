@@ -40,23 +40,36 @@ foam.CLASS({
             User            payee      = (User) invoice.findPayeeId(x);
             Group           payerGroup = (Group) payer.findGroup(x);
             AppConfig       config     = (AppConfig) payerGroup.getAppConfig(x);
-            Subject subject = new Subject.Builder(x).setUser(payer).build();
-            Theme          theme      = ((Themes) x.get("themes")).findTheme(x.put("subject", subject));
+            Subject         subject    = new Subject.Builder(x).setUser(payer).build();
+            Theme           theme      = ((Themes) x.get("themes")).findTheme(x.put("subject", subject));
             EmailMessage    message    = new EmailMessage();
             NumberFormat    formatter  = NumberFormat.getCurrencyInstance();
 
             String accountVar = SafetyUtil.isEmpty(invoice.getInvoiceNumber()) ?
               (SafetyUtil.isEmpty(invoice.getPurchaseOrder()) ? "N/A" : invoice.getPurchaseOrder()) :
               invoice.getInvoiceNumber();
+            
+            // Extract void note from invoice note
+            // Note that currently void note is appended to invoice note and void note contains
+            // a string that indicates the beginning of the void note. If the note that user writes
+            // includes this string, it is not possible to locate where void note starts in some
+            // of these cases. We may want to reconsider how we are storing void note for invoice.
+            String note = invoice.getNote();
+            String voidNote = "";
+            if ( note.contains(Invoice.ON_VOID_NOTE) ) {
+              int start = note.lastIndexOf(Invoice.ON_VOID_NOTE) + Invoice.ON_VOID_NOTE.length();
+              voidNote = note.substring(start);
+            }
 
             message.setTo(new String[]{payer.getEmail()});
             HashMap<String, Object> args = new HashMap<>();
-            args.put("account",  accountVar);
-            args.put("amount",   formatter.format(invoice.getAmount()/100.00));
-            args.put("link",     config.getUrl());
-            args.put("fromName", payee.toSummary());
-            args.put("toName", User.FIRST_NAME);
-            args.put("sendTo",   User.EMAIL);
+            args.put("account",      accountVar);
+            args.put("amount",       formatter.format(invoice.getAmount()/100.00));
+            args.put("link",         config.getUrl());
+            args.put("fromName",     payee.toSummary());
+            args.put("note",         voidNote);
+            args.put("toName",       User.FIRST_NAME);
+            args.put("sendTo",       User.EMAIL);
             args.put("supportEmail", theme.getSupportEmail());
 
             try{

@@ -625,6 +625,11 @@ foam.CLASS({
     }
   ],
 
+  messages: [
+    // used in MarkAsVoidModal and InvoiceVoidEmailRule
+    { name: 'ON_VOID_NOTE', message: 'On Void Note: ' }
+  ],
+
   methods: [
     {
       name: `validate`,
