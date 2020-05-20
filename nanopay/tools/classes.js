@@ -932,20 +932,6 @@ var classes = [
   'net.nanopay.tx.bmo.BmoReferenceNumber',
   'net.nanopay.tx.bmo.BmoTransactionHistory',
 
-  // alarming & monitoring
-  'net.nanopay.alarming.Alarm',
-  'net.nanopay.alarming.AlarmConfig',
-  'net.nanopay.alarming.AlarmConfigOMNameDAO',
-  'net.nanopay.alarming.AlarmConfigOMNameSink',
-  'net.nanopay.alarming.AlarmHostnameRuleAction',
-  'net.nanopay.alarming.AlarmReason',
-  'net.nanopay.alarming.AlarmAndMonitoring',
-  'net.nanopay.alarming.Alarming',
-  'net.nanopay.alarming.AlarmingUniqueNameDAO',
-  'net.nanopay.alarming.MonitoringReport',
-  'net.nanopay.alarming.MonitorType',
-  'net.nanopay.alarming.OMName',
-
   // file ingestion
   'net.nanopay.tx.gs.GsTxCsvRow',
   'net.nanopay.tx.gs.GsRowToTx',
