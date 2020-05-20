@@ -11,8 +11,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'blacklistDAO',
-    'complianceService'
+    'DAO blacklistDAO',
+    'ComplianceService complianceService'
   ],
 
   javaImports: [

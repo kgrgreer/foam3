@@ -80,7 +80,6 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.Address',
-    'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
     'net.nanopay.model.BeneficialOwner',
     'net.nanopay.model.Business',
@@ -262,7 +261,7 @@ foam.CLASS({
             this.firstName = user.firstName;
             this.lastName = user.lastName;
             this.jobTitle = user.jobTitle;
-            this.phone = user.phone;
+            this.phoneNumber = user.phoneNumber;
           });
         } catch (_) {
             // ignore error, this is here to catch the fact that userId/businessId is a copied property to a
@@ -403,7 +402,7 @@ foam.CLASS({
         }
       },
     },
-    foam.nanos.auth.User.PHONE.clone().copyFrom({
+    foam.nanos.auth.User.PHONE_NUMBER.clone().copyFrom({
       section: 'personalInformationSection',
       label: '',
       createVisibility: 'RW',
@@ -1639,8 +1638,8 @@ foam.CLASS({
     {
       name: 'init',
       code: function() {
-        this.phone.VERIFIED.writePermissionRequired = false;
-        this.PHONE.label = '';
+        // this.phone.VERIFIED.writePermissionRequired = false;
+        // this.PHONE.label = '';
         this.ADDRESS.label = '';
         this.BUSINESS_ADDRESS.label = '';
 

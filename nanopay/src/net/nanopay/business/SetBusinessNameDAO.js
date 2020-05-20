@@ -6,8 +6,8 @@ foam.CLASS({
   documentation: 'A decorator to look up a business and set its name on another property.',
 
   imports: [
-    'localBusinessDAO',
-    'logger',
+    'DAO localBusinessDAO',
+    'Logger logger',
   ],
 
   javaImports: [

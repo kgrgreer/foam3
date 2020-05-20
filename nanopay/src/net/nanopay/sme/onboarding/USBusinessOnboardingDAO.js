@@ -11,7 +11,6 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.auth.User',
-    'foam.nanos.auth.Phone',
     'foam.nanos.session.Session',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.documents.AcceptanceDocumentService',
@@ -148,7 +147,7 @@ foam.CLASS({
 
         // * Signing officer
         user.setJobTitle(businessOnboarding.getJobTitle());
-        user.setPhone(businessOnboarding.getPhone());
+        user.setPhoneNumber(businessOnboarding.getPhoneNumber());
         user.setIdentification(businessOnboarding.getSigningOfficerIdentification());
         user.setAddress(businessOnboarding.getAddress());
 
@@ -172,7 +171,7 @@ foam.CLASS({
             // * Step 6: Business info
             // Business info: business address
             business.setAddress(businessOnboarding.getBusinessAddress());
-            business.setPhone(businessOnboarding.getPhone());
+            business.setPhoneNumber(businessOnboarding.getPhoneNumber());
             business.setBusinessRegistrationDate(businessOnboarding.getBusinessFormationDate());
             business.setTaxIdentificationNumber(businessOnboarding.getTaxIdentificationNumber());
             business.setCountryOfBusinessRegistration(businessOnboarding.getCountryOfBusinessFormation());

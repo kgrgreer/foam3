@@ -341,7 +341,7 @@ foam.CLASS({
         this.jobTitle = this.user.jobTitle;
         this.email = this.user.email;
         // split the country code and phone number
-        this.phone = this.user.phone.number.replace(this.phoneCode, "");
+        this.phone = this.user.phoneNumber.replace(this.phoneCode, "");
         this.phone = this.phone.replace(/\s/g, "");
       }
 
@@ -565,7 +565,7 @@ foam.CLASS({
         this.user.lastName = this.lastName;
         this.user.jobTitle = this.jobTitle;
         this.user.email = this.email;
-        this.user.phone.number = this.phoneCode + " " + this.phone;
+        this.user.phoneNumber = this.phoneCode + " " + this.phoneNumber;
         this.userDAO.put(this.user).then(function (result) {
           // copy new user, show success
           self.user.copyFrom(result);

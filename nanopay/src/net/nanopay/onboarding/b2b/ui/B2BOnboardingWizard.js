@@ -10,7 +10,6 @@ foam.CLASS({
     'foam.u2.dialog.Popup',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.User',
-    'foam.nanos.auth.Phone',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus'
   ],
@@ -205,7 +204,7 @@ foam.CLASS({
         return false;
       }
 
-      if ( ! this.validatePhone(editedUser.phone.number) ) {
+      if ( ! this.validatePhone(editedUser.phoneNumber) ) {
         this.add(this.NotificationMessage.create({ message: this.ErrorAdminNumberMessage, type: 'error' }));
         return false;
       }
@@ -219,7 +218,7 @@ foam.CLASS({
         return false;
       }
 
-      if ( ! this.validatePhone(businessProfile.phone.number) ) {
+      if ( ! this.validatePhone(businessProfile.phoneNumber) ) {
         this.add(this.NotificationMessage.create({ message: this.ErrorBusinessProfilePhoneMessage, type: 'error' }));
         return false;
       }

@@ -10,9 +10,9 @@ foam.CLASS({
   ],
 
   imports: [
-    'agentJunctionDAO',
+    'DAO agentJunctionDAO',
     'bareUserDAO',
-    'groupDAO'
+    'DAO groupDAO'
     ],
 
   javaImports: [
@@ -84,7 +84,8 @@ foam.CLASS({
         realUser = (User) realUser.fclone();
         realUser.freeze();
 
-        Subject sessionSubject = new Subject.Builder(x).setUser(realUser).setUser(entity).build();
+        Subject sessionSubject = new Subject.Builder(x).setUser(realUser).build();
+        sessionSubject.setUser(entity);
 
         // Set user and agent objects into the session context and place into sessionDAO.
         Session session = x.get(Session.class);

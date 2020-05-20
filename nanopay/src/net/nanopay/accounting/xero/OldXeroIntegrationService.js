@@ -315,19 +315,13 @@ try {
           (xeroMobilePhone.getPhoneAreaCode() != null ? xeroMobilePhone.getPhoneAreaCode() : "") +
           (xeroMobilePhone.getPhoneNumber() != null ? xeroMobilePhone.getPhoneNumber() : "");
 
-      foam.nanos.auth.Phone nanoPhone = new foam.nanos.auth.Phone.Builder(getX())
-        .setNumber(phoneNumber)
-        .setVerified(!phoneNumber.equals(""))
-        .build();
+      Boolean nanoPhoneVerified = ! SafetyUtil.isEmpty(phoneNumber);
+      Boolean nanoMobileVerified = ! SafetyUtil.isEmpty(mobileNumber);
 
-      foam.nanos.auth.Phone nanoMobilePhone = new foam.nanos.auth.Phone.Builder(getX())
-        .setNumber(mobileNumber)
-        .setVerified(!mobileNumber.equals(""))
-        .build();
-
-      newContact.setBusinessPhone(nanoPhone);
-      newContact.setMobile(nanoMobilePhone);
-      newContact.setPhoneNumber(phoneNumber);
+      newContact.setBusinessPhoneNumber(phoneNumber);
+      newContact.setBusinessPhoneNumberVerified(nanoPhoneVerified);
+      newContact.setMobileNumber(nanoMobilePhone);
+      newContact.setMobileNumberVerified(nanoMobileVerified);
     }
 
     newContact.setXeroId(xeroContact.getContactID());

@@ -159,19 +159,10 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
       (xeroMobilePhone.getPhoneAreaCode() != null ? xeroMobilePhone.getPhoneAreaCode() : "") +
       (xeroMobilePhone.getPhoneNumber() != null ? xeroMobilePhone.getPhoneNumber() : "");
 
-      foam.nanos.auth.Phone nanoPhone = new foam.nanos.auth.Phone.Builder(x)
-      .setNumber(phoneNumber)
-      .setVerified(!phoneNumber.equals(""))
-      .build();
-
-      foam.nanos.auth.Phone nanoMobilePhone = new foam.nanos.auth.Phone.Builder(x)
-      .setNumber(mobileNumber)
-      .setVerified(!mobileNumber.equals(""))
-      .build();
-
-      newContact.setBusinessPhone(nanoPhone);
-      newContact.setMobile(nanoMobilePhone);
-      newContact.setPhoneNumber(phoneNumber);
+      newContact.setBusinessPhoneNumber(phoneNumber);
+      newContact.setBusinessPhoneNumberVerified(! SafetyUtil.isEmpty(phoneNumber));
+      newContact.setMobileNumber(mobileNumber);
+      newContact.setMobileNumberVerified(! SafetyUtil.isEmpty(mobileNumber));
     }
 
     newContact.setXeroId(xeroContact.getContactID());

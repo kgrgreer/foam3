@@ -45,7 +45,7 @@ foam.CLASS({
         .end()
         .start().addClass('info-container')
           .start().addClass('table-content').add(this.PHONE_LABEL).end()
-          .start().addClass('table-content').addClass('subdued-text').add(this.user.phone.number).end()
+          .start().addClass('table-content').addClass('subdued-text').add(this.user.phoneNumber).end()
         .end()
         .start().addClass('info-container')
           .start().addClass('table-content').add(this.ADDRESS_LABEL).end()

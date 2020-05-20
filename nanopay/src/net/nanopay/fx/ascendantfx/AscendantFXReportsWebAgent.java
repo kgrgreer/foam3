@@ -199,9 +199,9 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     String businessReg = business.getBusinessRegistrationDate() != null ? new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss Z").format(business.getBusinessRegistrationDate()) : "-";
 
     String businessPhoneNumber;
-    if ( isBusinessSet && business.getPhone() != null ) {
-      if ( ! SafetyUtil.isEmpty(business.getPhone().getNumber()) ) {
-        businessPhoneNumber = business.getPhone().getNumber();
+    if ( isBusinessSet && business.getPhoneNumber() != null ) {
+      if ( ! SafetyUtil.isEmpty(business.getPhoneNumber()) ) {
+        businessPhoneNumber = business.getPhoneNumber();
       } else {
         businessPhoneNumber = "N/A";
       }
@@ -495,8 +495,8 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       birthday = sdf.format(signingOfficer.getBirthday());
     }
     String phoneNumber = null;
-    if ( signingOfficer.getPhone() != null ) {
-      phoneNumber = signingOfficer.getPhone().getNumber();
+    if ( signingOfficer.getPhoneNumber() != null ) {
+      phoneNumber = signingOfficer.getPhoneNumber();
     }
     String email = signingOfficer.getEmail();
     String suiteNumber = signingOfficer.getAddress().getSuite();

@@ -45,8 +45,9 @@ FOAM_FILES([
   { name: 'net/nanopay/account/AccountBalanceView' },
   { name: 'net/nanopay/account/Debtable' },
   { name: 'net/nanopay/account/Accountable' },
-  { name: 'net/nanopay/account/DuplicateAccountRule' },
-  { name: 'net/nanopay/account/PreventDuplicateBankAccountRule' },
+  { name: 'net/nanopay/account/DuplicateEntryRule' },
+  { name: 'net/nanopay/account/DuplicateCABankAccountRule' },
+  { name: 'net/nanopay/account/DuplicateUSBankAccountRule' },
   { name: 'net/nanopay/account/ui/BankAccountWizard' },
   { name: 'net/nanopay/account/ui/AccountSummaryView' },
   { name: 'net/nanopay/account/ui/AccountTreeGraph' },
@@ -328,6 +329,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEXSubmitPaymentPredicate' },
   { name: 'net/nanopay/fx/afex/AFEXSubmitPaymentRule' },
   { name: 'net/nanopay/fx/afex/AFEXBeneficialOwnerRule' },
+  { name: 'net/nanopay/fx/afex/AFEXBusinessDirectorRule' },
   { name: 'net/nanopay/fx/afex/AFEXSigningOfficerRule' },
 
   // kotak

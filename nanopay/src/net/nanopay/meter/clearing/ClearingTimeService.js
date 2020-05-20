@@ -6,7 +6,7 @@ foam.CLASS({
     transaction based on transaction clearing time and process date.`,
 
   imports: [
-    'bankHolidayService'
+    'BankHolidayService bankHolidayService'
   ],
 
   javaImports: [

@@ -1030,7 +1030,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       credentials = getCredentials();
       HttpPost httpPost = new HttpPost(credentials.getPartnerApi() + "api/v2/AddCompanyOfficer");
 
-      httpPost.addHeader("API-Key", addCompanyOfficerRequest.getApiKey());
+      httpPost.addHeader("API-Key", credentials.getApiKey());
       httpPost.addHeader("Content-Type", "application/json");
       httpPost.addHeader("Authorization", "bearer " + getToken().getAccess_token());
 
@@ -1045,7 +1045,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       httpPost.setEntity(params);
 
-      logMessage(addCompanyOfficerRequest.getApiKey(), "AddCompanyOfficer", parseHttpPost(httpPost), false);
+      logMessage(credentials.getApiKey(), "AddCompanyOfficer", parseHttpPost(httpPost), false);
 
       omLogger.log("AFEX AddCompanyOfficer starting");
 

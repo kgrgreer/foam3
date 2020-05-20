@@ -6,8 +6,8 @@ foam.CLASS({
     for individual identity verification and business entity search.`,
 
   imports: [
-    'securefactLEVDAO',
-    'securefactSIDniDAO'
+    'DAO securefactLEVDAO',
+    'DAO securefactSIDniDAO'
   ],
 
   javaImports: [

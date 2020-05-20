@@ -13,7 +13,6 @@ import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.Address;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.Permission;
-import foam.nanos.auth.Phone;
 import foam.nanos.auth.Region;
 import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
@@ -110,9 +109,7 @@ public class AFEXServiceProviderTest
       PersonalIdentification identification = new PersonalIdentification();
       identification.setExpirationDate(new Date());
       user1.setIdentification(identification);
-      Phone phone = new Phone();
-      phone.setNumber("123-456-7890");
-      user1.setPhone(phone);
+      user1.setPhoneNumber("123-456-7890");
       user1 = (User) smeBusinessRegistrationDAO.put(user1).fclone();
 
       // Set properties that can't be set during registration.
@@ -148,9 +145,7 @@ public class AFEXServiceProviderTest
       business.setAddress(address);
       business.setOnboarded(true);
       business.setCompliance(ComplianceStatus.PASSED);
-      Phone phone = new Phone();
-      phone.setNumber("123-456-7890");
-      business.setPhone(phone);
+      business.setPhoneNumber("123-456-7890");
       business.setBusinessRegistrationDate(new Date());
       business.setBusinessTypeId(1);
       SuggestedUserTransactionInfo suggestedUserTransactionInfo = new SuggestedUserTransactionInfo();

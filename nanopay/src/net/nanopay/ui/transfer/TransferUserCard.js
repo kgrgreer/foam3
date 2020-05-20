@@ -90,7 +90,7 @@ foam.CLASS({
     'idLabel_',
     'name_',
     'email_',
-    'phone_',
+    'phoneNumber_',
     'flagURL_',
     {
       name: 'suite_',
@@ -147,7 +147,7 @@ foam.CLASS({
             .end()
           .end()
           .start('p').addClass('pDetails').add(this.email_$).end()
-          .start('p').addClass('pDetails').add(this.phone_$).end()
+          .start('p').addClass('pDetails').add(this.phoneNumber_$).end()
           .start('p').addClass('pDetails').add(this.suite_$).end()
           .start('p').addClass('pDetails').add(this.address1_$).end()
           .start('p').addClass('pDetails').add(this.address2_$).end()
@@ -240,14 +240,14 @@ foam.CLASS({
         this.email_ = this.user.email;
 
         var phonePropertyName = this.invoiceMode ?
-          'businessPhone' :
-          'phone';
+          'businessPhoneNumber' :
+          'phoneNumber';
         var addressPropertyName = this.invoiceMode ?
           'businessAddress' :
           'address';
 
         if ( this.user[phonePropertyName] ) {
-          this.phone_ = this.user[phonePropertyName].number;
+          this.phoneNumber_ = this.user[phonePropertyName];
         }
 
         if ( this.user[addressPropertyName] ) {

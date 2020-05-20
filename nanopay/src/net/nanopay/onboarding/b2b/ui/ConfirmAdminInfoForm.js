@@ -5,10 +5,6 @@ foam.CLASS({
 
   documentation: 'Form to input and confirm admin information',
 
-  requires: [
-    'foam.nanos.auth.Phone'
-  ],
-
   css: `
   ^ .container {
     width: 540px;
@@ -298,13 +294,11 @@ foam.CLASS({
       name: 'phoneNumber',
       class: 'String',
       factory: function() {
-        return this.viewData.user.phone ? this.viewData.user.phone.number.substring(2) : '';
+        return this.viewData.user.phoneNumber ? this.viewData.user.phoneNumber.substring(2) : '';
       },
       postSet: function(oldValue, newValue) {
         this.isEditingPhone = false;
-        this.viewData.user.phone = this.Phone.create({
-          number: '+1 ' + newValue
-        });
+        this.viewData.user.phoneNumber = '+1 ' + newValue;
       }
     },
     'phoneNumberElement'

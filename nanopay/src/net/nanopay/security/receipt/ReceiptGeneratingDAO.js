@@ -8,7 +8,11 @@ foam.CLASS({
   `,
 
   imports: [
-    'receiptDAO'
+    'DAO receiptDAO'
+  ],
+
+  javaImports: [
+    'foam.dao.DAO'
   ],
 
   properties: [

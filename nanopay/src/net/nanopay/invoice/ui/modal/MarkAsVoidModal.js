@@ -16,13 +16,13 @@ foam.CLASS({
 
   messages: [
     { name: 'TITLE', message: 'Mark as void?' },
-    { name: 'MSG1', message: 'Are you sure you want to void this invoice?'},
+    { name: 'MSG1', message: 'Are you sure you want to void this invoice?' },
     { name: 'MSG2', message: 'Once this invoice is voided, it cannot be edited.' },
-    { name: 'SUCCESS_MESSAGE', message: 'Invoice has been marked as voided.'},
+    { name: 'SUCCESS_MESSAGE', message: 'Invoice has been marked as voided.' },
     { name: 'NOTE_LABEL', message: 'Notes' },
     { name: 'NOTE_HINT', message: 'i.e. Why is it voided?' },
-    { name: 'VOID_SUCCESS', message: 'Invoice successfully voided.'},
-    { name: 'VOID_ERROR', message: 'Invoice could not be voided.'}
+    { name: 'VOID_SUCCESS', message: 'Invoice successfully voided.' },
+    { name: 'VOID_ERROR', message: 'Invoice could not be voided.' }
   ],
 
   css: `
@@ -46,11 +46,11 @@ foam.CLASS({
       opacity: 0.8;
     }
     ^ .margin-bottom-8 {
-     margin: 0px;
-     margin-bottom: 8px;
+      margin: 0px;
+      margin-bottom: 8px;
     }
     ^ .input-note {
-     width: 100%;
+      width: 100%;
     }
   `,
   properties: [
@@ -119,7 +119,10 @@ foam.CLASS({
       label: 'Void',
       code: function(X) {
         this.invoice.paymentMethod = this.PaymentStatus.VOID;
-        this.invoice.note = this.note ? this.invoice.note + ' On Void Note: ' + this.note : this.invoice.note;
+        // if void note is provided, append it to the end of the existing invoice note
+        if ( this.note ) {
+          this.invoice.note = `${this.invoice.note} ${this.invoice.ON_VOID_NOTE}${this.note}`;
+        }
         this.invoiceDAO.put(this.invoice).then((invoice) => {
          if ( invoice.paymentMethod == this.PaymentStatus.VOID ) {
           X.closeDialog();

@@ -18,10 +18,10 @@ foam.CLASS({
   `,
 
   imports: [
-    'agentJunctionDAO',
-    'localBusinessDAO',
-    'groupDAO',
-    'localSessionDAO'
+    'DAO agentJunctionDAO',
+    'DAO localBusinessDAO',
+    'DAO groupDAO',
+    'DAO localSessionDAO'
   ],
 
   javaImports: [

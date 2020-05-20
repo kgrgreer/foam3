@@ -31,7 +31,6 @@ foam.CLASS({
     'foam.nanos.auth.Region',
     'foam.u2.dialog.NotificationMessage',
     'foam.nanos.auth.User',
-    'foam.nanos.auth.Phone',
     'foam.nanos.auth.Address'
   ],
 
@@ -389,7 +388,7 @@ foam.CLASS({
       name: 'displayedPhoneNumber',
       value: '+1',
       factory: function() {
-        return this.user.phone ? '+1 ' + this.user.phone.number : '';
+        return this.user.phoneNumber ? '+1 ' + this.user.phoneNumber : '';
       }
     },
     {
@@ -402,7 +401,7 @@ foam.CLASS({
       class: 'String',
       name: 'phoneNumberField',
       factory: function() {
-        return this.user.phone ? this.user.phone.number : '';
+        return this.user.phoneNumber ? this.user.phoneNumber : '';
       },
       postSet: function(oldValue, newValue){
         this.displayPhoneNumber = newValue;
@@ -736,7 +735,7 @@ foam.CLASS({
           return;
         }
         this.user.businessName = this.businessNameField;
-        this.user.phone.number = this.phoneNumberField;
+        this.user.phoneNumber = this.phoneNumberField;
         this.user.website = this.websiteField;
         this.user.businessTypeId = this.businessTypeField;
         this.user.businessRegistrationNumber = this.businessRegistrationNumberField;

@@ -68,8 +68,9 @@ var classes = [
   'net.nanopay.payment.PADTypeLineItem',
   'net.nanopay.payment.PADTypeCheckDAO',
   'net.nanopay.account.Balance',
-  'net.nanopay.account.DuplicateAccountRule',
-  'net.nanopay.account.PreventDuplicateBankAccountRule',
+  'net.nanopay.account.DuplicateEntryRule',
+  'net.nanopay.account.DuplicateCABankAccountRule',
+  'net.nanopay.account.DuplicateUSBankAccountRule',
   'net.nanopay.account.EnforceOneDefaultDigitalAccountPerCurrencyDAO',
   'net.nanopay.model.Branch',
   'net.nanopay.model.BusinessUserJunction',
@@ -227,6 +228,7 @@ var classes = [
   'net.nanopay.fx.afex.AFEXSubmitPaymentPredicate',
   'net.nanopay.fx.afex.AFEXSubmitPaymentRule',
   'net.nanopay.fx.afex.AFEXBeneficialOwnerRule',
+  'net.nanopay.fx.afex.AFEXBusinessDirectorRule',
   'net.nanopay.fx.afex.AFEXSigningOfficerRule',
 
   // Partners

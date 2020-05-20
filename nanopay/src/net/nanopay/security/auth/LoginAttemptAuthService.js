@@ -10,8 +10,9 @@ foam.CLASS({
   ],
 
   imports: [
-    'localUserDAO',
-    'groupDAO'
+    'DAO localUserDAO',
+    'Logger logger',
+    'DAO groupDAO'
   ],
 
   javaImports: [

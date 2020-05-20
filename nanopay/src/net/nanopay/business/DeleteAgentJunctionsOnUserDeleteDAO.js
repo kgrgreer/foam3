@@ -13,7 +13,7 @@ foam.CLASS({
   `,
 
   imports: [
-    'agentJunctionDAO'
+    'DAO agentJunctionDAO'
   ],
 
   javaImports: [

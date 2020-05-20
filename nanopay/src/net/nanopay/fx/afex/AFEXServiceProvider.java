@@ -35,6 +35,7 @@ import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
 import net.nanopay.model.BeneficialOwner;
 import net.nanopay.model.Business;
+import net.nanopay.model.BusinessDirector;
 import net.nanopay.model.BusinessSector;
 import net.nanopay.model.BusinessType;
 import net.nanopay.model.JobTitle;
@@ -115,7 +116,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             onboardingRequest.setBusinessName(business.getBusinessName());
             onboardingRequest.setBusinessZip(business.getAddress().getPostalCode());
             onboardingRequest.setCompanyType(getAFEXCompanyType(business.getBusinessTypeId()));
-            onboardingRequest.setContactBusinessPhone(business.getPhone().getNumber());
+            onboardingRequest.setContactBusinessPhone(business.getPhoneNumber());
             String businessRegDate = null;
             try {
               SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -196,13 +197,10 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
   }
 
   public void pushSigningOfficer(Business business, User officer, String clientKey) {
-    StringBuilder name = new StringBuilder();
-    name.append(officer.getFirstName());
-    name.append(" ");
-    name.append(officer.getLastName());
     AddCompanyOfficerRequest request = new AddCompanyOfficerRequest();
     request.setApiKey(clientKey);
-    request.setName(name.toString());
+    request.setFirstName(officer.getFirstName());
+    request.setLastName(officer.getLastName());
     int ownership = getSigningOfficerOwnershipPercentage(business, officer);
     request.setPercentOwnership(String.valueOf(ownership));
     request.setDirector("true");
@@ -249,7 +247,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             && beneficialOwner.getLastName().equals(officer.getLastName()) )
           return beneficialOwner.getOwnershipPercent();
       }
-      return 0;
+      return 1; // AFEX work arround to return 1 where there is no ownership percentage
   }
 
   public void pushBeneficialOwners(Business business, String clientKey) {
@@ -265,13 +263,10 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
   }
 
   public void pushBeneficialOwner(BeneficialOwner beneficialOwner, String clientKey) {
-    StringBuilder beneficialOwnerName = new StringBuilder();
-    beneficialOwnerName.append(beneficialOwner.getFirstName());
-    beneficialOwnerName.append(" ");
-    beneficialOwnerName.append(beneficialOwner.getLastName());
     AddCompanyOfficerRequest request = new AddCompanyOfficerRequest();
     request.setApiKey(clientKey);
-    request.setName(beneficialOwnerName.toString());
+    request.setFirstName(beneficialOwner.getFirstName());
+    request.setLastName(beneficialOwner.getLastName());
     request.setPercentOwnership(String.valueOf(beneficialOwner.getOwnershipPercent()));
     request.setDirector("false");
     try {
@@ -293,11 +288,44 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     addCompanyOfficer(request);
   }
 
+  public void pushBusinessDirectors(Business business, String clientKey) {
+    if ( business == null ) return;
+    for ( BusinessDirector director : business.getBusinessDirectors() ) {
+      pushBusinessDirector(business, director, clientKey);
+    }
+  }
+
+  public void pushBusinessDirector(Business business, BusinessDirector director, String clientKey) {
+    if ( business == null || director == null ) return;
+
+    if ( directorIsBeneficialOwner(business, director) ) return; // We already pushed beneficial owners
+
+    AddCompanyOfficerRequest request = new AddCompanyOfficerRequest();
+    request.setApiKey(clientKey);
+    request.setFirstName(director.getFirstName());
+    request.setLastName(director.getLastName());
+    request.setPercentOwnership("1"); // AFEX work arround to return 1 where there is no ownership percentage
+    request.setDirector("true");
+    addCompanyOfficer(request);
+  }
+
+  private boolean directorIsBeneficialOwner(Business business, BusinessDirector director) {
+    boolean isBeneficialOwner = false;
+    List<BeneficialOwner> beneficialOwners = ((ArraySink) business.getBeneficialOwners(x)
+    .select(new ArraySink())).getArray();
+    for ( BeneficialOwner beneficialOwner : beneficialOwners ) {
+      if ( beneficialOwner.getFirstName().equals(director.getFirstName()) 
+          && beneficialOwner.getLastName().equals(director.getLastName()) )
+        isBeneficialOwner = true;
+    }
+    return isBeneficialOwner;
+  }
+
   public void addCompanyOfficer(AddCompanyOfficerRequest request) {
     try {
       afexClient.addCompanyOfficer(request);
     } catch(Exception e) {
-      logger_.error("Failed to push beneficial owner: " + request.getName(), e);
+      logger_.error("Failed to push beneficial owner: " + request.getFirstName(), e);
     }
   }
 

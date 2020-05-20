@@ -150,7 +150,7 @@ foam.CLASS({
               .end()
               .start().addClass('labelDiv')
                 .start().add('Phone Number').addClass('labelTitle').end()
-                .start().add(user.phone.number).addClass('labelContent').end()
+                .start().add(user.phoneNumber).addClass('labelContent').end()
               .end()
             .end()
             .start().addClass('inlineDiv')

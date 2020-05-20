@@ -7,7 +7,6 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.Address',
-    'foam.nanos.auth.Phone',
     'foam.nanos.auth.Country',
     'foam.nanos.auth.User',
     'foam.u2.dialog.NotificationMessage',
@@ -187,9 +186,7 @@ foam.CLASS({
         if ( this.position == 2 ) {
           // Review
 
-          var businessPhone = this.Phone.create({
-            number: companyInfo.phoneNumber
-          });
+          var businessPhone = companyInfo.phoneNumber;
 
           var businessAddress = this.Address.create({
             address1: companyInfo.streetNumber + ' ' + companyInfo.streetName,
@@ -227,10 +224,7 @@ foam.CLASS({
             this.add(this.NotificationMessage.create({ message: newBusiness.errors_[0][1], type: 'error' }));
             return;
           }
-          if ( businessPhone.errors_ ) {
-            this.add(this.NotificationMessage.create({ message: businessPhone.errors_[0[1]], type: 'error' }));
-            return;
-          }
+          
           if ( businessAddress.errors_ ) {
             this.add(this.NotificationMessage.create({ message: businessAddress.errors_[0][1], type: 'error' }));
             return;

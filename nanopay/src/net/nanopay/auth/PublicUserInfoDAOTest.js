@@ -40,7 +40,6 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.MDAO',
     'foam.nanos.auth.Address',
-    'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
     'foam.nanos.fs.File'
   ],
@@ -70,9 +69,8 @@ foam.CLASS({
         Address businessAddress = new Address();
         businessAddress.setCity("Toronto");
         testUser.setAddress(businessAddress);
-        Phone phone = new Phone();
-        phone.setNumber("123-456-7890");
-        testUser.setPhone(phone);
+        String phoneNumber = "123-456-7890";
+        testUser.setPhoneNumber(phoneNumber);
         File businessProfilePicFile = new File();
         businessProfilePicFile.setFilename("Business profile picture");
         User john = (User) userDAO.put(testUser);
@@ -108,9 +106,8 @@ foam.CLASS({
         test(owner.getAddress().equals(john.getAddress()), "'owner.getAddress()' should match the user's business address.");
         test(owner.getAddress().getCity().equals(john.getAddress().getCity()), "'owner.getAddress().getCity()' should match the user's business address city (Toronto).");
 
-        test(owner.getPhone() instanceof Phone, "'owner.getPhone()' should be of type 'Phone'.");
-        test(owner.getPhone().equals(john.getPhone()), "'owner.getPhone()' should match the user's business phone.");
-        test(owner.getPhone().getNumber().equals(john.getPhone().getNumber()), "'owner.getPhone().getNumber()' should match the user's business phone number (123-456-7890).");
+        test(owner.getPhoneNumber().equals(john.getPhoneNumber()), "'owner.getPhoneNumber()' should match the user's business phone.");
+        test(owner.getPhoneNumber().equals(john.getPhoneNumber()), "'owner.getPhoneNumber()' should match the user's business phone number (123-456-7890).");
 
         // Null values
         TestWidget badWidget = new TestWidget();
