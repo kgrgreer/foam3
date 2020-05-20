@@ -11,7 +11,6 @@ foam.CLASS({
 
   imports: [
     'DAO localUserDAO',
-    'Logger logger',
     'DAO groupDAO'
   ],
 
@@ -26,7 +25,6 @@ foam.CLASS({
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.OR',
     'static foam.mlang.MLang.CLASS_OF',
-
     'java.util.Date',
     'java.util.Calendar',
     'java.text.SimpleDateFormat'
