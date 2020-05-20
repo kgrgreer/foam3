@@ -1344,8 +1344,7 @@ p({
     opsGroup = new Group();
     opsGroup.setId(NAME+"-ops");
     opsGroup.setParent("basicUser");
-    opsGroup.setDefaultMenu(NAME+"-operation");
-    opsGroup.setRootMenu(NAME+"-operation");
+    opsGroup.setDefaultMenu(NAME+"-operation.users");
     opsGroup.setDescription(NAME_LONG+" Operations");
 
     if ( DRY_RUN ) {
