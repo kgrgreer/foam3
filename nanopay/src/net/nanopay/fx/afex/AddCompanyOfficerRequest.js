@@ -8,8 +8,12 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: "Name"
+      name: "FirstName"
     },
+    {
+      class: 'String',
+      name: "LastName"
+    },    
     {
       class: 'String',
       name: "PercentOwnership"
