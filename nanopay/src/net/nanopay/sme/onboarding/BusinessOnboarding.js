@@ -468,7 +468,8 @@ foam.CLASS({
       section: 'personalInformationSection',
       label: '',
       createVisibility: 'RW',
-      autoValidate: true
+      autoValidate: true,
+      required: true
       // verified.writePermissionRequired value is set as false in the init()
     }),
     foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
