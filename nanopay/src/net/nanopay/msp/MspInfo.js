@@ -23,6 +23,18 @@ foam.CLASS({
     {
         class: 'String',
         name: 'adminUserLastname'
+    },
+    {
+        class: 'List',
+        name: 'domain'
+    },
+    {
+        class: 'String',
+        name: 'appName'
+    },
+    {
+        class: 'String',
+        name: 'description'
     }
   ]
 });
