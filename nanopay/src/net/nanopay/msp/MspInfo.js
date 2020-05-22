@@ -21,7 +21,16 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'adminUserEmail'
+      name: 'adminUserEmail',
+      validationPredicates: [
+        {
+          args: ['spid'],
+          predicateFactory: function(e) {
+            return e.REG_EXP(net.nanopay.msp.MspInfo.ADMIN_USER_EMAIL, /^[A-Za-z0-9._%+-]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,6}$/);
+          },
+          errorString: 'Invalid email address.'
+        }
+      ]
     },
     {
       class: 'Password',
@@ -30,10 +39,28 @@ foam.CLASS({
     {
       class: 'String',
       name: 'adminUserFirstname',
+      validationPredicates: [
+        {
+          args: ['adminUserFirstname'],
+          predicateFactory: function(e) {
+            return e.NEQ(net.nanopay.msp.MspInfo.ADMIN_USER_FIRSTNAME, '');
+          },
+          errorString: 'First name required.'
+        }
+      ]
     },
     {
       class: 'String',
-      name: 'adminUserLastname'
+      name: 'adminUserLastname',
+      validationPredicates: [
+        {
+          args: ['adminUserLastname'],
+          predicateFactory: function(e) {
+            return e.NEQ(net.nanopay.msp.MspInfo.ADMIN_USER_LASTNAME, '');
+          },
+          errorString: 'Last name required.'
+        }
+      ]
     },
     {
       class: 'List',
