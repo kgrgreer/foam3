@@ -27,7 +27,7 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-        MspInfo mspInfo = (MspInfo) obj;
+        MspInfo mspInfo = (MspInfo) getDelegate().put_(x, obj);
 
         ServiceProvider spid = new ServiceProvider.Builder(x)
           .setEnabled(true)
@@ -158,7 +158,7 @@ foam.CLASS({
         supportGroup.setDescription(mspInfo.getSpid() + " support group");
         groupDAO.put(supportGroup);
 
-        return super.put_(x, obj);
+        return mspInfo;
       `
     }
   ]

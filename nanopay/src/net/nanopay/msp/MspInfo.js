@@ -5,8 +5,17 @@ foam.CLASS({
 
   properties: [
     {
-        class: 'String',
-        name: 'spid',
+      class: 'String',
+      name: 'spid',
+      validationPredicates: [
+        {
+          args: ['spid'],
+          predicateFactory: function(e) {
+            return e.REG_EXP(net.nanopay.msp.MspInfo.SPID, /^[a-z0-9]+$/);
+          },
+          errorString: 'Invalid character(s) in spid.'
+        }
+      ]
     },
     {
         class: 'String',
@@ -18,7 +27,7 @@ foam.CLASS({
     },
     {
         class: 'String',
-        name: 'adminUserFirstname'
+        name: 'adminUserFirstname',
     },
     {
         class: 'String',
