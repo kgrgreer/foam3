@@ -3,6 +3,8 @@ foam.CLASS({
   name: 'MspInfo',
   ids: ['spid'],
 
+  documentation: 'The base model for the Multi Service Provider Setup.',
+
   properties: [
     {
       class: 'String',
@@ -18,32 +20,32 @@ foam.CLASS({
       ]
     },
     {
-        class: 'String',
-        name: 'adminUserEmail'
+      class: 'String',
+      name: 'adminUserEmail'
     },
     {
-        class: 'Password',
-        name: 'adminUserPassword'
+      class: 'Password',
+      name: 'adminUserPassword'
     },
     {
-        class: 'String',
-        name: 'adminUserFirstname',
+      class: 'String',
+      name: 'adminUserFirstname',
     },
     {
-        class: 'String',
-        name: 'adminUserLastname'
+      class: 'String',
+      name: 'adminUserLastname'
     },
     {
-        class: 'List',
-        name: 'domain'
+      class: 'List',
+      name: 'domain'
     },
     {
-        class: 'String',
-        name: 'appName'
+      class: 'String',
+      name: 'appName'
     },
     {
-        class: 'String',
-        name: 'description'
+      class: 'String',
+      name: 'description'
     }
   ]
 });
