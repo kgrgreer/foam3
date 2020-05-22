@@ -572,9 +572,6 @@ foam.CLASS({
         DAO                userDAO = (DAO) x.get("localUserDAO");
         Logger              logger = (Logger) x.get("logger");
 
-        // Send business notifications
-        super.doNotify(x, notification);
-
         // Gets all the business-user pairs
         List<UserUserJunction> businessUserJunctions = ((ArraySink) agentJunctionDAO
           .where(AND(

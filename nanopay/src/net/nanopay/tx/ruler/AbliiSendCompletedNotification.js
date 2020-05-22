@@ -29,6 +29,7 @@ foam.CLASS({
             public void execute(X x) {
               Transaction tx = (Transaction) obj;
               DAO localUserDAO = (DAO) x.get("localUserDAO");
+              DAO notificationDAO = (DAO) x.get("localNotificationDAO");
               Invoice invoice = tx.findInvoiceId(x);
               Logger logger = (Logger) x.get("logger");
 
@@ -73,7 +74,7 @@ foam.CLASS({
               senderNotification.setBody(notificationMsg);
               senderNotification.setNotificationType("Latest_Activity");
               try {
-                sender.doNotify(x, senderNotification);
+                notificationDAO.put_(x, senderNotification);
               }
               catch (Exception E) { logger.error("Failed to put notification. "+E); };
 
@@ -84,7 +85,7 @@ foam.CLASS({
                 receiverNotification.setBody(receiver_notificationMsg);
                 receiverNotification.setNotificationType("Latest_Activity");
                 try {
-                  receiver.doNotify(x, receiverNotification);
+                  notificationDAO.put_(x, receiverNotification);
                 }
                 catch (Exception E) { logger.error("Failed to put notification. "+E); };
               }
