@@ -1177,62 +1177,6 @@ p({
 
 p({
   "class": "foam.nanos.script.Script",
-  "id": "migratePhoneNumbers",
-  "description": "Migrate phone numbers to new phone properties for all users (users, businesses, contacts).",
-  "server": true,
-  "scheduled": false,
-  "code":
-  """
-    import foam.core.X;
-    import foam.dao.ArraySink;
-    import foam.dao.DAO;
-    import foam.nanos.auth.User;
-    import net.nanopay.contacts.Contact;
-
-    DAO userDAO = (DAO) x.get("userDAO");
-
-    users = userDAO.select().getArray();
-
-    print( "Phone Number Migration Started!" );
-
-    for( User user : users) {
-      try{
-
-        user = user.fclone();
-        print(" --- Migrating user with id " + user.getId());
-
-        if( user.getPhone() != null ) {
-          user.setPhoneNumber( user.getPhone().getNumber() );
-          user.setPhoneNumberVerified( user.getPhone().getVerified() );
-        }
-
-        if( user.getMobile() != null ) {
-          user.setMobileNumber( user.getMobile().getNumber() );
-          user.setMobileNumberVerified( user.getMobile().getVerified() );
-        }
-
-        if ( user instanceof Contact ) {
-          contact = (Contact) user;
-          if( contact.getBusinessPhone() != null ) {
-            print(contact.getId() + " : Contact");
-            contact.setBusinessPhoneNumber( contact.getBusinessPhone().getNumber() );
-            contact.setBusinessPhoneNumberVerified( contact.getBusinessPhone().getVerified() );
-          }
-        }
-
-        userDAO.put(user);
-      } catch ( Exception e ) {
-        print(" - Migration failed for class : " + user + " having id: " + user.getId() + " Error was : " + e.getMessage());
-      }
-    }
-
-    print("Migration complete.");
-  """
-
-})
-
-p({
-  "class": "foam.nanos.script.Script",
   "id": "Set up Transaction WebHook for Grain Discover",
   "code": """
     import foam.core.X;

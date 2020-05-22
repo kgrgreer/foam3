@@ -54,7 +54,7 @@ foam.CLASS({
               .setCountry(address != null ? address.getCountryId() : "")
               .setAddressLine(address != null ? address.getSuite() : "")
               .setAddressUrl(address != null ? address.getStreetNumber() + " " + address.getStreetName() : "")
-              .setPhoneNumber(user.getPhone() != null ? user.getPhone().getNumber() : "")
+              .setPhoneNumber(user.getPhoneNumber())
               .setCity(address != null ? address.getCity() : "")
               .setState(address != null ? address.getRegionId() : "")
               .setPostalCode(address != null ? address.getPostalCode() : "")

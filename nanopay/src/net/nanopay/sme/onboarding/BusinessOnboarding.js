@@ -321,7 +321,7 @@ foam.CLASS({
             this.firstName = user.firstName;
             this.lastName = user.lastName;
             this.jobTitle = user.jobTitle;
-            this.phoneNumber = user.PHONE_NUMBER;
+            this.phoneNumber = user.phoneNumber;
           }
         } catch (e) {
           // ignore error, this is here to catch the fact that userId/businessId is a copied property to a
@@ -464,6 +464,8 @@ foam.CLASS({
         }
       ]
     },
+    // TODO: remove phone property after phone number migration
+    foam.nanos.auth.User.PHONE.clone(),
     foam.nanos.auth.User.PHONE_NUMBER.clone().copyFrom({
       section: 'personalInformationSection',
       label: '',

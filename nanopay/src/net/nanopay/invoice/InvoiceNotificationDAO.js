@@ -195,17 +195,17 @@ foam.CLASS({
         }
       ],
       javaCode: `
+        Group group = (Group) userBeingSentEmail.findGroup(x);
+        AppConfig appConfig = group.getAppConfig(x);
+        args.put("link", appConfig.getUrl().replaceAll("/$", ""));
+        args.put("name", User.FIRST_NAME);
+        args.put("sendTo", User.EMAIL);
+        args.put("invoiceId", invoiceId);
+
         if ( isContact ) {
           args.put("template", emailTemplateName);
-          args.put("invoiceId", invoiceId);
           externalInvoiceToken.generateTokenWithParameters(x, userBeingSentEmail, args);
         } else {
-          Group group = (Group) userBeingSentEmail.findGroup(x);
-          AppConfig appConfig = group.getAppConfig(x);
-          args.put("link", appConfig.getUrl().replaceAll("/$", ""));
-          args.put("name", User.FIRST_NAME);
-          args.put("sendTo", User.EMAIL);
-
           Notification notification = new Notification.Builder(x)
             .setBody("Invoice Notification.")
             .setNotificationType(emailTemplateName + " email.")
