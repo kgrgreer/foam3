@@ -3,6 +3,7 @@ package net.nanopay.meter.test;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
+import foam.nanos.auth.Address;
 import foam.nanos.test.Test;
 import foam.util.Auth;
 import net.nanopay.account.Account;
@@ -35,10 +36,12 @@ public class BlacklistTest extends Test {
 
     // Setup the business
     localBusinessDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "business@example.com")).removeAll();
+    Address myAddress = new Address.Builder(x).setCountryId("CA").build();
     Business myBusiness = new Business();
     myBusiness.setBusinessName("MyBusiness");
     myBusiness.setEmail("busadmin@example.com");
     myBusiness.setEmailVerified(true); // Required to send or receive money.
+    myBusiness.setAddress(myAddress);
     myBusiness = (Business) localBusinessDAO.put(myBusiness);
 
     // Setup the business admin
