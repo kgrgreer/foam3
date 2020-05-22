@@ -592,7 +592,7 @@ p({
       .setRulerDaoKey("approvalRequestDAO")
       .setDecorator(
         new foam.nanos.approval.SendGroupRequestApprovalDAO(x,
-          new net.nanopay.approval.ApprovalRequestNotificationDAO(x,
+          new net.nanopay.liquidity.approvalRequest.LiquidityApprovalRequestNotificationDAO(x,
             new foam.nanos.approval.ApprovalDAO(x, null)
           )
         )

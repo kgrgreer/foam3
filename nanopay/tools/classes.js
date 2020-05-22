@@ -343,6 +343,8 @@ var classes = [
    'net.nanopay.liquidity.approvalRequest.AccountApprovableAwareDAO',
    'net.nanopay.liquidity.approvalRequest.AccountApprovableAware',
    'net.nanopay.liquidity.approvalRequest.AccountRoleApprovalRequest',
+   'net.nanopay.liquidity.approvalRequest.LiquidityApprovalRequestNotification',
+   'net.nanopay.liquidity.approvalRequest.LiquidityApprovalStatus',
    'net.nanopay.liquidity.crunch.ApproverLevel',
    'net.nanopay.liquidity.crunch.LiquidCapability',
    'net.nanopay.liquidity.crunch.LiquidCapabilityAuthService',
