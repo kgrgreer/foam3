@@ -24,8 +24,8 @@ foam.CLASS({
       name: 'urls',
       class: 'StringArray',
       documentation: 'Array of urls to enforce this spid on',
-      factory: function(){
-        return  [];
+      factory: function() {
+        return [];
       },
       javaFactory: 'return new String[0];',
       required: true
