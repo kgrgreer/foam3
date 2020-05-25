@@ -108,7 +108,7 @@ foam.CLASS({
         } catch ( RuntimeException e ) {
           Throwable t = e.getCause();
           test(t instanceof CompoundException
-            && t.toString().contains("Payer user is disabled."), message);
+            && t.getMessage().contains("Payer user is disabled."), message);
         }
       `
     },
@@ -126,7 +126,7 @@ foam.CLASS({
         } catch ( RuntimeException e ) {
           Throwable t = e.getCause();
           test(t instanceof CompoundException
-            && t.toString().contains("Payee user is disabled."), message);
+            && t.getMessage().contains("Payee user is disabled."), message);
         }
       `
     }
