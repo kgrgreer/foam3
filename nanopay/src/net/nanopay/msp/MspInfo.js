@@ -7,7 +7,8 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'String',
+      class: 'Reference',
+      of: 'foam.nanos.auth.ServiceProvider',
       name: 'spid',
       validationPredicates: [
         {
