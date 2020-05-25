@@ -41,8 +41,8 @@ foam.CLASS({
         try {
           validateTransactionChain(x, quote.getPlan());
         } catch (Exception e ) {
-          logger.warning("Transaction plan failed to validate",e,quote.getPlan());
-          throw new UnsupportedTransactionException("Unable to find a plan for requested transaction.");
+          logger.warning("Transaction plan failed to validate", e, quote.getPlan());
+          throw new UnsupportedTransactionException("Unable to find a plan for requested transaction.", e);
         }
         return quote;
       }
@@ -54,8 +54,8 @@ foam.CLASS({
         try {
           validateTransactionChain(x, quote.getPlan());
         } catch (Exception e ) {
-          logger.warning("Transaction plan failed to validate",e,quote.getPlan());
-          throw new UnsupportedTransactionException("Unable to find a plan for requested transaction.");
+          logger.warning("Transaction plan failed to validate", e, quote.getPlan());
+          throw new UnsupportedTransactionException("Unable to find a plan for requested transaction.", e);
         }
         return quote;
       }
@@ -75,8 +75,8 @@ foam.CLASS({
         try {
           validateTransactionChain(x, quote.getPlans()[0]);
         } catch (Exception e ) {
-          logger.warning("Transaction plan failed to validate",e,quote.getPlans()[0]);
-          throw new UnsupportedTransactionException("Unable to find a plan for requested transaction.");
+          logger.warning("Transaction plan failed to validate", e, quote.getPlans()[0]);
+          throw new UnsupportedTransactionException("Unable to find a plan for requested transaction.", e);
         }
         quote.setPlan(quote.getPlans()[0]);
         return quote;
@@ -87,18 +87,20 @@ foam.CLASS({
       PlanTransactionComparator planComparators = new PlanTransactionComparator.Builder(x).build();
       planComparators.add(costComparator); // Compare Cost first
       planComparators.add(etaComparator);
-      List<Transaction> transactionPlans = new ArrayList<Transaction>();
+      List<Transaction> transactionPlans = new ArrayList<>();
+      Exception cause = null;
 
-      for ( Object aTransaction : quote.getPlans() ) {
+      for ( Transaction aTransaction : quote.getPlans() ) {
         try {
-          validateTransactionChain(x, (Transaction) aTransaction);          
-          transactionPlans.add((Transaction) aTransaction);
+          validateTransactionChain(x, aTransaction);
+          transactionPlans.add(aTransaction);
         } catch (Exception e) {
-          logger.warning("Transaction plan failed to validate",e,aTransaction);
+          logger.warning("Transaction plan failed to validate", e, aTransaction);
+          cause = e;
         }
       }
-      if ( transactionPlans.size() == 0 ) { 
-        throw new UnsupportedTransactionException("Unable to find a plan for requested transaction.");
+      if ( transactionPlans.size() == 0 ) {
+        throw new UnsupportedTransactionException("Unable to find a plan for requested transaction.", cause);
       }
       Collections.sort(transactionPlans, planComparators);
       quote.setPlan(transactionPlans.get(0));

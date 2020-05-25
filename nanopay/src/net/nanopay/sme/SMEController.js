@@ -534,7 +534,7 @@ foam.CLASS({
           }
           if ( ! this.isIframe() ) {
             this.addClass(this.myClass())
-            .add(this.loginSuccess$.map((loginSuccess) => {
+            .add(this.slot(function (loginSuccess, topNavigation_) {
               if ( ! loginSuccess ) return null;
               return this.E().tag(this.topNavigation_);
             }))
@@ -556,7 +556,9 @@ foam.CLASS({
             .end()
             .start()
               .addClass('footer-wrapper')
-              .tag(this.footerView_)
+              .add(this.slot(function (footerView_) {
+                return this.E().tag(footerView_);
+              }))
             .end();
           } else {
           this.addClass(this.myClass())

@@ -220,7 +220,7 @@ foam.CLASS({
         this.fetchTheme().then(() => {
           this.client.nSpecDAO.find('appConfig').then((config) => {
             this.appConfig.copyFrom(config.service);
-            
+
             // Replace the detail view in non-liquid deployments to give more control over the users
             if (this.appConfig.name != 'liquid') {
               this.__subContext__.register(net.nanopay.meter.UserDetailView, 'net.nanopay.liquidity.ui.user.LiquidUserDetailView');
@@ -240,7 +240,9 @@ foam.CLASS({
             this
               .addClass(this.myClass())
               .start()
-                .tag(this.topNavigation_)
+                .add(this.slot(function(topNavigation_) {
+                  return this.E().tag(topNavigation_);
+                }))
               .end()
               .start()
                 .addClass('stack-wrapper')
@@ -256,7 +258,9 @@ foam.CLASS({
               .end()
               .start()
                 .enableClass('footer-wrapper', this.loginSuccess$)
-                .tag(this.footerView_)
+                .add(this.slot(function(footerView_) {
+                  return this.E().tag(footerView_);
+                }))
               .end();
           } else {
             this

@@ -4,10 +4,10 @@ foam.CLASS({
   extends: 'foam.nanos.test.Test',
 
   javaImports: [
+    'foam.core.CompoundException',
     'foam.dao.DAO',
     'foam.mlang.MLang',
     'foam.nanos.auth.User',
-    'foam.test.TestUtils',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
@@ -101,14 +101,15 @@ foam.CLASS({
         User receiver = setUserStatus("test_user@nanopay.net", AccountStatus.ACTIVE);
         Transaction txn = buildTransaction(disabledUser, receiver);
 
-        test(
-          TestUtils.testThrows(
-            () -> transactionDAO_.put(txn),
-            "Unable to find a plan for requested transaction.",
-            RuntimeException.class
-          ),
-          "Create transaction with disabled sender throws RuntimeException"
-        );
+        String message = "Create transaction with disabled sender throws RuntimeException";
+        try {
+          transactionDAO_.put(txn);
+          test(false, message);
+        } catch ( RuntimeException e ) {
+          Throwable t = e.getCause();
+          test(t instanceof CompoundException
+            && t.getMessage().contains("Payer user is disabled."), message);
+        }
       `
     },
     {
@@ -118,14 +119,15 @@ foam.CLASS({
         User sender = setUserStatus("test_user@nanopay.net", AccountStatus.ACTIVE);
         Transaction txn = buildTransaction(sender, disabledUser);
 
-        test(
-          TestUtils.testThrows(
-            () -> transactionDAO_.put(txn),
-            "Unable to find a plan for requested transaction.",
-            RuntimeException.class
-          ),
-          "Create transaction with disabled receiver throws RuntimeException"
-        );
+        String message = "Create transaction with disabled receiver throws RuntimeException";
+        try {
+          transactionDAO_.put(txn);
+          test(false, message);
+        } catch ( RuntimeException e ) {
+          Throwable t = e.getCause();
+          test(t instanceof CompoundException
+            && t.getMessage().contains("Payee user is disabled."), message);
+        }
       `
     }
   ],

@@ -6,6 +6,7 @@ import static foam.mlang.MLang.INSTANCE_OF;
 import static foam.mlang.MLang.NOT;
 import static net.nanopay.tx.model.TransactionStatus.COMPLETED;
 
+import foam.core.CompoundException;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
@@ -165,10 +166,14 @@ public class TransactionTest
       .setDestinationAccount(loaneeTester_Dig.getId())
       .setAmount(100001)
       .build();
-    test(TestUtils.testThrows(
-      () -> txnDAO.put(finalTxn),
-      "Unable to find a plan for requested transaction.",
-      RuntimeException.class), "Exception: try to exceed principal");
+
+    try {
+      txnDAO.put(finalTxn);
+      test(false,"Exception: try to exceed principal");
+    } catch (RuntimeException e) {
+      Throwable t = e.getCause();
+      test(t instanceof CompoundException && t.toString().contains("Transaction Exceeds Loan Account Principal Limit"), "try to exceed principal");
+    }
 
     // test trying to repay more then borrowed
     Transaction payment = new Transaction.Builder(x_)
@@ -182,10 +187,14 @@ public class TransactionTest
       .setDestinationAccount(loanAccount.getId())
       .setAmount(300001)
       .build();
-    test(TestUtils.testThrows(
-      () -> txnDAO.put(finalTxn2),
-      "Invalid transfer, LoanedTotalAccount account balance must remain >= 0. nanopay Loan Account CAD",
-      RuntimeException.class), "Exception: try to overpay loan");
+
+    try {
+      txnDAO.put(finalTxn2);
+      test(false,"Try to overpay loan");
+    } catch (RuntimeException e) {
+      test(e.toString().contains("Invalid transfer, LoanedTotalAccount account balance must remain >= 0"), "Try to overpay loan");
+    }
+
   }
 
   public void testFXTransaction(){
