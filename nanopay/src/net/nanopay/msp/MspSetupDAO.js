@@ -17,6 +17,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'net.nanopay.auth.ServiceProviderURL',
     'net.nanopay.auth.UserCreateServiceProviderURLRule',
+    'net.nanopay.auth.UserCreateServiceProviderURLRuleAction',
     'net.nanopay.admin.model.AccountStatus',
     'java.util.Arrays',
     'java.util.ArrayList',
@@ -43,6 +44,7 @@ foam.CLASS({
         DAO groupPermissionJunctionDAO = (DAO) x.get("groupPermissionJunctionDAO");
         DAO themeDAO = (DAO) x.get("themeDAO");
         DAO themeDomainDAO = (DAO) x.get("themeDomainDAO");
+        DAO ruleDAO = (DAO) x.get("localRuleDAO");
 
         // Create spid-admin group
         Group adminGroup = new Group();
@@ -106,7 +108,7 @@ foam.CLASS({
             themeDomainDAO.put(themeDomain);
         }
 
-        // Add new serviceProviderURL in the config list of the existing UserCreateServiceProviderURLRule
+        // Create new serviceProviderURL
         ServiceProviderURL serviceProviderURL = new ServiceProviderURL();
         serviceProviderURL.setSpid(mspInfo.getSpid());
         domainList.add(mspInfo.getSpid());
@@ -114,13 +116,24 @@ foam.CLASS({
         newDomainArray = domainList.toArray(domainArray);
         serviceProviderURL.setUrls(newDomainArray);
 
-        DAO ruleDAO = (DAO) x.get("ruleDAO");
-        String ruleId = "68afcf0c-c718-98f8-0841-75e97a3ad16d4";
-        UserCreateServiceProviderURLRule rule = (UserCreateServiceProviderURLRule) ruleDAO.find(ruleId);
-        ServiceProviderURL[] configList = rule.getConfig();
-        List<ServiceProviderURL> arrayConfigList = new ArrayList<>(Arrays.asList(configList));
-        arrayConfigList.add(serviceProviderURL);
+        ServiceProviderURL[] configList = new ServiceProviderURL[1];
+        configList[0] = serviceProviderURL;
+
+        // Create new UserCreateServiceProviderURLRule
+        UserCreateServiceProviderURLRule rule = new UserCreateServiceProviderURLRule();
         rule.setConfig(configList);
+        rule.setName(mspInfo.getSpid() + "UserCreateServiceProviderURLRule");
+        rule.setPriority(100);
+        rule.setRuleGroup("UserCreate");
+        rule.setDocumentation("Set ServiceProvider on User Create based on AppConfig URL for " + mspInfo.getSpid());
+        rule.setDaoKey("localUserDAO");
+        rule.setOperation(foam.nanos.ruler.Operations.CREATE);
+        rule.setAfter(false);
+        rule.setEnabled(true);
+        rule.setSaveHistory(false);
+        rule.setLifecycleState(foam.nanos.auth.LifecycleState.ACTIVE);
+        UserCreateServiceProviderURLRuleAction ruleAction = new UserCreateServiceProviderURLRuleAction();
+        rule.setAction(ruleAction);
         ruleDAO.put(rule);
 
         // Create spid-fraud-ops group
