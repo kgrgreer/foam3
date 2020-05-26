@@ -10,28 +10,12 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.ServiceProvider',
       name: 'spid',
-      validationPredicates: [
-        {
-          args: ['spid'],
-          predicateFactory: function(e) {
-            return e.REG_EXP(net.nanopay.msp.MspInfo.SPID, /^[a-z0-9]+$/);
-          },
-          errorString: 'Invalid character(s) in spid.'
-        }
-      ]
+      required: true
     },
     {
       class: 'String',
       name: 'adminUserEmail',
-      validationPredicates: [
-        {
-          args: ['spid'],
-          predicateFactory: function(e) {
-            return e.REG_EXP(net.nanopay.msp.MspInfo.ADMIN_USER_EMAIL, /^[A-Za-z0-9._%+-]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,6}$/);
-          },
-          errorString: 'Invalid email address.'
-        }
-      ]
+      required: true
     },
     {
       class: 'Password',
