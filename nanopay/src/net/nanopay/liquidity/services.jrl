@@ -32,6 +32,7 @@ p({
       .setGuid(true)
       .setOf(net.nanopay.liquidity.crunch.LiquidCapability.getOwnClassInfo())
       .setAuthorize(false)
+      .setApprovableAwareServiceName("capabilityDAO")
       .build();
     dao.addPropertyIndex(new foam.core.PropertyInfo[] { net.nanopay.liquidity.crunch.LiquidCapability.NAME });
 
