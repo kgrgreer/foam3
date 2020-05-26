@@ -8,12 +8,11 @@ foam.CLASS({
     implements: ['foam.nanos.ruler.RuleAction'],
 
     javaImports: [
-      'foam.core.ContextAgent',
+      'foam.core.ContextAwareAgent',
       'foam.core.X',
       'foam.dao.DAO',
       'foam.nanos.auth.User',
       'foam.nanos.auth.UserUserJunction',
-      'foam.nanos.notification.Notification',
       'foam.nanos.notification.email.EmailMessage',
       'java.util.HashMap',
       'java.util.Map',
@@ -26,14 +25,14 @@ foam.CLASS({
       {
         name: 'applyAction',
         javaCode: `
-           agency.submit(x, new ContextAgent() {
+           agency.submit(x, new ContextAwareAgent() {
             @Override
              public void execute(X x) {
-              User user = (User) obj; 
+              User user = (User) obj;
 
               if (user == null || user.getId() <= 0) return;
-              DAO businessDAO = (DAO) x.get("businessDAO");
-              DAO agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
+              DAO businessDAO = (DAO) getX().get("businessDAO");
+              DAO agentJunctionDAO = (DAO) getX().get("agentJunctionDAO");
               UserUserJunction junction = (UserUserJunction) agentJunctionDAO.find(EQ(UserUserJunction.SOURCE_ID, user.getId()));
               Business business = (Business) businessDAO.find(junction.getTargetId());
               EmailMessage message = new EmailMessage();
@@ -47,8 +46,8 @@ foam.CLASS({
               .setEmailArgs(args)
               .build();
 
-              DAO notificationDAO = ((DAO) x.get("localNotificationDAO")).inX(x);
-              notificationDAO.put(notification);            
+              DAO notificationDAO = (DAO) getX().get("localNotificationDAO");
+              notificationDAO.put(notification);
           }
         }, "send notification");
         `
