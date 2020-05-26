@@ -490,7 +490,8 @@ foam.CLASS({
     {
       class: 'foam.nanos.fs.FileArray',
       name: 'invoiceFile',
-      tableWidth: 70,
+      label: 'Attachment',
+      tableWidth: 100,
       documentation: 'A stored copy of the original invoice document.',
       view: { class: 'net.nanopay.invoice.ui.InvoiceFileUploadView' },
       tableCellFormatter: function(files) {
