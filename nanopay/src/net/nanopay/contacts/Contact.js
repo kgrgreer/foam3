@@ -288,7 +288,7 @@ foam.CLASS({
         return foam.u2.view.FObjectView.create({
           data: X.data.createBankAccount,
           of: net.nanopay.bank.BankAccount,
-          persistantData: { isDefault: true, forContact: true },
+          persistentData: { isDefault: true, forContact: true },
           enableStrategizer: X.data.bankAccount === 0,
           predicate: pred
         }, X);
