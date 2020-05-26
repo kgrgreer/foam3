@@ -28,7 +28,7 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-        String spid = (MspInfo) obj).getSpid();
+        String spid = ((MspInfo) obj).getSpid();
         DAO spidDAO = (DAO) x.get("serviceProviderDAO");
         spidDAO.put(
           new ServiceProvider.Builder(x)
