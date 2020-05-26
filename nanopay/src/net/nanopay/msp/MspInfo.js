@@ -13,7 +13,7 @@ foam.CLASS({
       required: true
     },
     {
-      class: 'String',
+      class: 'EMail',
       name: 'adminUserEmail',
       required: true
     },
