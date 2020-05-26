@@ -40,8 +40,9 @@ foam.CLASS({
         Transaction[] COs = multiQuoteTxn(x, co);
         for ( Transaction tx1 : digitals ) {
           for ( Transaction tx2 : COs ) {
-            tx1.addNext(tx2);
-            quote.getAlternatePlans_().add(tx1);
+            Transaction Digital = (Transaction) tx1.fclone();
+            Digital.addNext((Transaction) tx2.fclone());
+            quote.getAlternatePlans_().add(Digital);
           }
         }
         return null;

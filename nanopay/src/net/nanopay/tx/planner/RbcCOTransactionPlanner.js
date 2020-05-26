@@ -6,6 +6,7 @@ foam.CLASS({
   documentation: 'Plans CO Transaction for RBC',
 
   javaImports: [
+    'java.time.Duration',
     'net.nanopay.account.TrustAccount',
     'net.nanopay.payment.PADTypeLineItem',
     'net.nanopay.tx.ETALineItem',
@@ -33,7 +34,9 @@ foam.CLASS({
         quote.addTransfer(trustAccount.getId(), t.getAmount());
         quote.addTransfer(quote.getSourceAccount().getId(), -t.getAmount());
 
-        t.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 1 days */ 864800000L).build()} );
+        t.addLineItems(new TransactionLineItem[] {
+          new ETALineItem.Builder(x).setEta(Duration.ofDays(1).toMillis()).build()
+        });
         if ( PADTypeLineItem.getPADTypeFrom(x, t) == null ) {
           PADTypeLineItem.addEmptyLineTo(t);
         }

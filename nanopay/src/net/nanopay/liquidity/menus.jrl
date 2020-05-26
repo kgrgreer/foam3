@@ -48,7 +48,24 @@ p({
             }
           },
         }
+    },
+  "registrations":[
+    {
+      "class":"foam.nanos.menu.XRegistration",
+      "targetName":"net.nanopay.liquidity.ui.account.AccountDetailView",
+      "className":"foam.u2.detail.SectionedDetailView"
+    },
+    {
+      "class":"foam.nanos.menu.XRegistration",
+      "targetName":"net.nanopay.account.AccountDAOSummaryViewView",
+      "className":"foam.u2.detail.SectionedDetailView"
+    },
+    {
+      "class":"foam.nanos.menu.XRegistration",
+      "targetName":"net.nanopay.account.AccountDAOSummaryView",
+      "className":"foam.comics.v2.DAOSummaryView"
     }
+  ]
 })
 
 p({
@@ -116,7 +133,12 @@ p({
       "browseTitle": "Users",
       "defaultColumns": ["id", "firstName", "lastName", "jobTitle", "organization", "email"]
     }
-  }
+  },
+  "registrations":[{
+    "class":"foam.nanos.menu.XRegistration",
+    "targetName":"net.nanopay.liquidity.ui.user.LiquidUserDetailView",
+    "className":"net.nanopay.meter.UserDetailView"
+  }]
 })
 
 p({

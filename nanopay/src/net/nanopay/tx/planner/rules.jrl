@@ -765,7 +765,7 @@ p({
     "propName":"requestTransaction",
     "of":"net.nanopay.tx.BulkTransaction"
   },
-  "action":{"class":"net.nanopay.tx.planner.BulkTransaction"},
+  "action":{"class":"net.nanopay.tx.planner.BulkTransactionPlanner"},
   "lifecycleState":1
 })
 p({

@@ -151,8 +151,6 @@ foam.CLASS({
       StringBuilder memId = new StringBuilder();
       memId.append(insNumber);
       memId.append(branchNum);
-      memId.append(fundingAccount.getAccountNumber());
-
       clrSysMmbId.setMemberIdentification(memId.toString());
       finInstnId.setClearingSystemMemberIdentification(clrSysMmbId);
       finInstnId.setName(insName);
@@ -395,8 +393,6 @@ foam.CLASS({
       StringBuilder memId = new StringBuilder();
       memId.append(insNumber);
       memId.append(branchNum);
-      memId.append(fundingAccount.getAccountNumber());
-
       clrSysMmbId2.setMemberIdentification(memId.toString()); 
       finInstnId2.setClearingSystemMemberIdentification(clrSysMmbId2);
       finInstnId2.setName(insName);
