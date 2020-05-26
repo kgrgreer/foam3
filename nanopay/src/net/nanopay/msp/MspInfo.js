@@ -35,33 +35,18 @@ foam.CLASS({
     },
     {
       class: 'Password',
-      name: 'adminUserPassword'
+      name: 'adminUserPassword',
+      required: true
     },
     {
       class: 'String',
       name: 'adminUserFirstname',
-      validationPredicates: [
-        {
-          args: ['adminUserFirstname'],
-          predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.msp.MspInfo.ADMIN_USER_FIRSTNAME, '');
-          },
-          errorString: 'First name required.'
-        }
-      ]
+      required: true
     },
     {
       class: 'String',
       name: 'adminUserLastname',
-      validationPredicates: [
-        {
-          args: ['adminUserLastname'],
-          predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.msp.MspInfo.ADMIN_USER_LASTNAME, '');
-          },
-          errorString: 'Last name required.'
-        }
-      ]
+      required: true
     },
     {
       class: 'List',
@@ -69,7 +54,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'appName'
+      name: 'appName',
+      required: true
     },
     {
       class: 'String',
