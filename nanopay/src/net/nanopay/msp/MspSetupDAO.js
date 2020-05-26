@@ -28,16 +28,16 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-        MspInfo mspInfo = (MspInfo) getDelegate().put_(x, obj);
-
         ServiceProvider spid = new ServiceProvider.Builder(x)
           .setEnabled(true)
-          .setId(mspInfo.getSpid())
-          .setDescription(mspInfo.getSpid() + " spid")
+          .setId(((MspInfo) obj).getSpid())
+          .setDescription(((MspInfo) obj).getSpid() + " spid")
           .build();
 
         DAO spidDAO = (DAO) x.get("serviceProviderDAO");
         spidDAO.put(spid);
+
+        MspInfo mspInfo = (MspInfo) getDelegate().put_(x, obj);
 
         DAO groupDAO = (DAO) x.get("localGroupDAO");
         DAO userDAO = (DAO) x.get("localUserDAO");
