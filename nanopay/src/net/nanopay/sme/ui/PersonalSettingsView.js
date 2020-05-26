@@ -6,7 +6,7 @@ foam.CLASS({
   documentation: 'Personal settings page for Ablii',
 
   imports: [
-    'agent',
+    'subject',
     'twofactor'
   ],
 
@@ -177,7 +177,7 @@ foam.CLASS({
               })
               .end();
           }
-        }, this.agent.twoFactorEnabled$))
+        }, this.subject.realUser.twoFactorEnabled$))
       .end();
     }
   ]

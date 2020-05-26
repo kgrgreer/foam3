@@ -218,8 +218,8 @@ foam.CLASS({
               x.user.address = o.address
             });
 
-            await x.userDAO.find(x.agent.id).then((agent) => {
-              x.agent = agent;
+            await x.userDAO.find(x.subject.realUser.id).then((agent) => {
+              x.subject.realUser = agent;
             });
 
             this.auth.cache = {};

@@ -565,7 +565,7 @@ foam.CLASS({
         this.user.lastName = this.lastName;
         this.user.jobTitle = this.jobTitle;
         this.user.email = this.email;
-        this.user.phoneNumber = this.phoneCode + " " + this.phoneNumber;
+        this.user.phoneNumber = this.phoneCode + this.phone;
         this.userDAO.put(this.user).then(function (result) {
           // copy new user, show success
           self.user.copyFrom(result);

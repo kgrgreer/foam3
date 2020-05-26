@@ -23,8 +23,7 @@ foam.CLASS({
     'institution',
     'isConnecting',
     'notify',
-    'user',
-    'agent'
+    'subject'
   ],
 
   css: `
@@ -111,7 +110,7 @@ foam.CLASS({
       postSet: function(oldValue, newValue) {
         if ( this.termsAgreementDocument ) {
           this.acceptanceDocumentService.
-            updateUserAcceptanceDocument(this.__context__, this.agent.id, this.user.id, this.termsAgreementDocument.id, newValue);
+            updateUserAcceptanceDocument(this.__context__, this.subject.realUser.id, this.subject.user.id, this.termsAgreementDocument.id, newValue);
         }
       }
     },
@@ -182,7 +181,7 @@ foam.CLASS({
           null,
           this.institution.name,
           this.username, this.password,
-          this.user
+          this.subject.user
         );
       } catch (error) {
         this.notify(`${error.message}. Please try again.`, 'error');

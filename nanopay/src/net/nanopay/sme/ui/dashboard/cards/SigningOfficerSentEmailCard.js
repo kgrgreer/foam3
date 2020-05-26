@@ -12,7 +12,6 @@ foam.CLASS({
   ],
 
   imports: [
-    'agent',
     'stack',
     'menuDAO',
     'user'

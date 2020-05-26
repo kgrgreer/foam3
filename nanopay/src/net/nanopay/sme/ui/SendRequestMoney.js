@@ -12,7 +12,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'agent',
+    'subject',
     'appConfig',
     'auth',
     'checkAndNotifyAbilityToPay',
@@ -576,7 +576,7 @@ foam.CLASS({
         switch ( currentViewId ) {
           case this.DETAILS_VIEW_ID:
             if ( ! this.invoiceDetailsValidation(this.invoice) ) return;
-            if ( ! this.agent.twoFactorEnabled && this.isPayable && this.permitToPay ) {
+            if ( ! this.subject.realUser.twoFactorEnabled && this.isPayable && this.permitToPay ) {
               if ( this.appConfig.mode === this.Mode.PRODUCTION ||
                    this.appConfig.mode === this.Mode.DEMO ) {
                 this.notify(this.TWO_FACTOR_REQUIRED, 'error');

@@ -10,7 +10,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'agent',
+    'subject',
     'currentMenu',
     'menuDAO',
     'pushMenu',
@@ -203,7 +203,7 @@ foam.CLASS({
               .end()
               .start()
                 .addClass('account-button-info-detail-small')
-                .add(this.agent$.dot('firstName'))
+                .add(this.subject.realUser$.dot('firstName'))
               .end()
             .end()
             .start({

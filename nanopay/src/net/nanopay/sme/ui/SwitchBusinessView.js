@@ -18,7 +18,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'agent',
+    'subject',
     'agentAuth',
     'auth',
     'businessDAO',
@@ -207,7 +207,7 @@ foam.CLASS({
         if ( result ) {
           await this.ctrl.fetchGroup();
           this.user = business;
-          this.agent = result;
+          this.subject.realUser = result;
           // Add the condition check for Grain Discovery.
           // This should be removed once we use Crunch for onboarding.
           if ( this.ctrl.webApp !== 'Ablii-GD' ) {
@@ -246,7 +246,7 @@ foam.CLASS({
       var self = this;
 
       this.start().addClass(this.myClass())
-        .start().show(this.agent$.map(function(agent) {
+        .start().show(this.subject.realUser$.map(function(agent) {
           return agent;
         }))
           .addClass(this.myClass('sme-side-block'))
@@ -265,7 +265,7 @@ foam.CLASS({
         .end()
 
         .start().addClass(this.myClass('sme-middle-block'))
-          .enableClass('comp-back', this.agent$.map(function(agent) {
+          .enableClass('comp-back', this.subject.realUser$.map(function(agent) {
             return ! agent;
           }))
           .start('h2').addClass(this.myClass('header'))

@@ -36,5 +36,14 @@ foam.CLASS({
       .Invoice-Status-Completed {
         background: #2cab70;
       }
+
+      .net-nanopay-ui-wizard-WizardController input {
+        border: solid 1px #8e9090;
+        border-radius: 3px;
+        padding: 12px;
+        font-size: 14px;
+        font-family: 'Lato', sans-serif;
+      }
+
     `
   });

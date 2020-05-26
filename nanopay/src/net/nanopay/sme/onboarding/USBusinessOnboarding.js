@@ -80,6 +80,7 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.Address',
+    'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
     'net.nanopay.model.BeneficialOwner',
     'net.nanopay.model.Business',
@@ -350,7 +351,7 @@ foam.CLASS({
       postSet: function() {
         if ( this.signingOfficer ) {
           this.adminJobTitle = this.jobTitle;
-          this.adminPhone = this.phone.number;
+          this.adminPhone = this.phoneNumber;
           this.signingOfficerEmail = '';
 
           if ( this.userOwnsPercent && this.amountOfOwners > 0 ) {
@@ -408,7 +409,8 @@ foam.CLASS({
       section: 'personalInformationSection',
       label: '',
       createVisibility: 'RW',
-      autoValidate: true
+      autoValidate: true,
+      required: true
       // verified.writePermissionRequired value is set as false in the init()
     }),
     foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
@@ -564,7 +566,10 @@ foam.CLASS({
           },
           errorString: 'Invalid phone number.'
         },
-      ]
+      ],
+      expression: function (signingOfficer, phoneNumber) {
+        return signingOfficer ? phoneNumber : '';
+      }
     },
     foam.nanos.auth.User.ADDRESS.clone().copyFrom({
       label: '',

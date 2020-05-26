@@ -29,7 +29,6 @@ foam.CLASS({
 
   imports: [
     'accountingIntegrationUtil',
-    'agent',
     'businessDAO',
     'businessOnboardingDAO',
     'businessInvitationDAO',

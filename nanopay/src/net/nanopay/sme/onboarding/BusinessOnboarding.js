@@ -141,6 +141,7 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.auth.Address',
+    'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
     'net.nanopay.model.BeneficialOwner',
     'net.nanopay.model.Business',
@@ -618,7 +619,10 @@ foam.CLASS({
           },
           errorString: 'Invalid phone number.'
         },
-      ]
+      ],
+      expression: function (signingOfficer, phoneNumber) {
+        return signingOfficer ? phoneNumber : '';
+      }
     },
     foam.nanos.auth.User.ADDRESS.clone().copyFrom({
       label: '',
