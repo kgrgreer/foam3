@@ -20,7 +20,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'agent',
+    'subject',
     'businessOnboardingDAO',
     'canadaUsBusinessOnboardingDAO',
     'uSBusinessOnboardingDAO',
@@ -297,7 +297,7 @@ foam.CLASS({
       name: 'getStarted',
       label: 'Get started',
       code: function(x) {
-          var userId = this.agent.id;
+          var userId = this.subject.realUser.id;
           var businessId = this.user.id;
           if ( ! this.user.onboarded ) {
             var isDomesticOnboarding = this.type === this.UnlockPaymentsCardType.DOMESTIC;

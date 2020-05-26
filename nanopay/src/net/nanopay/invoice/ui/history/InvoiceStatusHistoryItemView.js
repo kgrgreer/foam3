@@ -16,8 +16,7 @@ foam.CLASS({
 
   imports: [
     'invoiceDAO',
-    'user',
-    'agent'
+    'subject'
   ],
 
   documentation: 'View for displaying history for invoice status',
@@ -86,9 +85,9 @@ foam.CLASS({
 
       const invoice = await this.invoiceDAO.find(record.objectId);
 
-      this.name = this.getDisplayName(record, this.user, invoice);
+      this.name = this.getDisplayName(record, this.subject.user, invoice);
 
-      const payee = invoice.payee.id === this.user.id ? this.name : invoice.payee.toSummary();
+      const payee = invoice.payee.id === this.subject.user.id ? this.name : invoice.payee.toSummary();
       // a flag for checking if the invoice was completed by the payee
       const completedByPayee = invoice.paymentMethod === this.PaymentStatus.CHEQUE;
       // a flag for checking if the invoice was edited by employee

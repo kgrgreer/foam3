@@ -35,7 +35,6 @@ foam.CLASS({
 
   exports: [
     'accountingIntegrationUtil',
-    'agent',
     'appConfig',
     'as ctrl',
     'bannerData',
@@ -448,7 +447,7 @@ foam.CLASS({
         var menu;
 
         // Redirect user to switch business if agent doesn't exist.
-        if ( ! this.agent ) {
+        if ( ! this.subject.realUser ) {
           menu = await this.client.menuDAO.find('sme.accountProfile.switch-business');
           menu.launch(this);
           return;
@@ -480,7 +479,7 @@ foam.CLASS({
 
     function onSessionTimeout() {
       if ( (this.user && this.user.emailVerified) ||
-           (this.agent && this.agent.emailVerified) ) {
+           (this.subject.realUser && this.subject.realUser.emailVerified) ) {
         this.add(this.SMEModal.create({ closeable: false }).tag({
           class: 'net.nanopay.ui.modal.SessionTimeoutModal',
         }));
@@ -509,7 +508,7 @@ foam.CLASS({
           this.client.nSpecDAO.find('appConfig').then((config) => {
             this.appConfig.copyFrom(config.service);
           });
-          this.fetchAgent();
+          // this.fetchAgent();
 
           this.AppStyles.create();
           this.SMEStyles.create();
@@ -667,7 +666,7 @@ foam.CLASS({
           }
         }
       }
-      await this.getCAUSPaymentEnabled(user, this.agent);
+      await this.getCAUSPaymentEnabled(user, this.subject.realUser);
 
       if ( user.compliance == this.ComplianceStatus.PASSED ) {
         var signingOfficers = await this.getSigningOfficersArray(user);
@@ -733,7 +732,7 @@ foam.CLASS({
     async function check2FAEnalbed() {
       var canPayInvoice = await this.client.auth.check(null, 'invoice.pay');
 
-      if ( canPayInvoice && ! this.agent.twoFactorEnabled ) {
+      if ( canPayInvoice && ! this.subject.realUser.twoFactorEnabled ) {
         var TwoFactorNotificationDOM = this.Element.create()
           .start().style({ 'display': 'inline-block' })
             .add(this.TWO_FACTOR_REQUIRED_ONE)

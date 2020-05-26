@@ -11,7 +11,6 @@ foam.CLASS({
   ],
   imports: [
     'acceptanceDocumentService',
-    'agent',
     'bankInstitutions',
     'fail',
     'flinksAuth',
@@ -22,7 +21,7 @@ foam.CLASS({
     'pushViews',
     'rollBackView',
     'success',
-    'user',
+    'subject',
     'window'
   ],
 
@@ -162,7 +161,7 @@ foam.CLASS({
         this.viewData.check = newValue;
         if ( this.termsAgreementDocument ) {
           this.acceptanceDocumentService.
-            updateUserAcceptanceDocument(this.__context__, this.agent.id, this.user.id, this.termsAgreementDocument.id, newValue); 
+            updateUserAcceptanceDocument(this.__context__, this.subject.realUser.id, this.subject.user.id, this.termsAgreementDocument.id, newValue); 
         }
       },
     },
@@ -243,7 +242,7 @@ foam.CLASS({
           null,
           this.viewData.selectedInstitution.name,
           this.username, this.password,
-          this.user
+          this.subject.user
         );
       } catch (error) {
         this.notify(`${error.message}. Please try again.`, 'error');

@@ -33,7 +33,7 @@ foam.CLASS({
   imports: [
     'auth',
     'accountingIntegrationUtil',
-    'agent',
+    'subject',
     'businessDAO',
     'businessOnboardingDAO',
     'businessInvitationDAO',
@@ -264,12 +264,12 @@ foam.CLASS({
       // including the businessId in our search criteria we avoid this problem.
       this.businessOnboarding = await this.businessOnboardingDAO.find(
         this.AND(
-          this.EQ(this.BusinessOnboarding.USER_ID, this.agent.id),
+          this.EQ(this.BusinessOnboarding.USER_ID, this.subject.realUser.id),
           this.EQ(this.BusinessOnboarding.BUSINESS_ID, this.user.id)
         )
       ) || await this.uSBusinessOnboardingDAO.find(
         this.AND(
-          this.EQ(this.USBusinessOnboarding.USER_ID, this.agent.id),
+          this.EQ(this.USBusinessOnboarding.USER_ID, this.subject.realUser.id),
           this.EQ(this.USBusinessOnboarding.BUSINESS_ID, this.user.id)
         )
       );

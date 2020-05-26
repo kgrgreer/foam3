@@ -6,7 +6,7 @@ foam.CLASS({
   documentation: 'A Popup modal to confirm user disabling 2FA',
 
   imports: [
-    'agent',
+    'subject',
     'closeDialog',
     'ctrl',
     'notify',
@@ -134,7 +134,7 @@ foam.CLASS({
             }
 
             self.validationCode = '';
-            self.agent.twoFactorEnabled = false;
+            self.subject.realUser.twoFactorEnabled = false;
             self.ctrl.notify(self.SUCCESS);
             self.closeDialog();
           })

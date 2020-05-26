@@ -18,7 +18,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'agent',
+    'subject',
     'bannerizeCompliance',
     'businessDAO',
     'ctrl',
@@ -230,11 +230,11 @@ foam.CLASS({
   methods: [
     function init() {
       this.viewData.user = this.user;
-      this.viewData.agent = this.agent;
+      this.viewData.agent = this.subject.realUser;
       this.title = 'Your business profile';
 
       this.user.signingOfficers.dao
-        .find(this.agent.id)
+        .find(this.subject.realUser.id)
         .then((result) => {
           this.isSigningOfficer = result != null;
         });
@@ -570,11 +570,11 @@ foam.CLASS({
     },
 
     async function saveAgent() {
-      this.agent = this.viewData.agent;
+      this.subject.realUser = this.viewData.agent;
       try {
-        var result = await this.userDAO.put(this.agent);
-        this.agent.copyFrom(result);
-        this.viewData.agent = this.agent;
+        var result = await this.userDAO.put(this.subject.realUser);
+        this.subject.realUser.copyFrom(result);
+        this.viewData.agent = this.subject.realUser;
       } catch (exp) {
         this.notify(this.SAVE_FAILURE_MESSAGE, 'error');
         return false;

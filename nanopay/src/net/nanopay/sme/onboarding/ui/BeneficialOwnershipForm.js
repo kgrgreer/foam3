@@ -8,7 +8,6 @@ foam.CLASS({
 `,
 
 imports: [
-  'agent',
   'beneficialOwnersDAO',
   'countryDAO',
   'notify',

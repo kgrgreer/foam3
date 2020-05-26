@@ -20,10 +20,9 @@ foam.CLASS({
   ],
 
   imports: [
-    'agent',
+    'subject',
     'agentJunctionDAO',
-    'businessInvitationDAO',
-    'user'
+    'businessInvitationDAO'
   ],
 
   exports: [
@@ -92,7 +91,7 @@ foam.CLASS({
             foam.core.Action.create({
               name: 'disableUser',
               isEnabled: function() {
-                return this.status === self.AgentJunctionStatus.ACTIVE && self.agent.id != this.sourceId;
+                return this.status === self.AgentJunctionStatus.ACTIVE && self.subject.realUser.id != this.sourceId;
               },
               code: function(X) {
                 // Disable user junction.
@@ -109,7 +108,7 @@ foam.CLASS({
             foam.core.Action.create({
               name: 'enableUser',
               isEnabled: function() {
-                return this.status === self.AgentJunctionStatus.DISABLED && self.agent.id != this.sourceId;
+                return this.status === self.AgentJunctionStatus.DISABLED && self.subject.realUser.id != this.sourceId;
               },
               code: function(X) {
                 // Enable user junction.
@@ -126,7 +125,7 @@ foam.CLASS({
             foam.core.Action.create({
               name: 'Delete',
               isEnabled: function() {
-                return this.status === self.AgentJunctionStatus.INVITED && self.agent.id != this.sourceId;
+                return this.status === self.AgentJunctionStatus.INVITED && self.subject.realUser.id != this.sourceId;
               },
               code: function(X) {
                 var junction = this;
@@ -137,7 +136,7 @@ foam.CLASS({
                     self.AND(
                       self.EQ(self.Invitation.EMAIL, email),
                       self.EQ(self.Invitation.STATUS, self.InvitationStatus.SENT),
-                      self.EQ(self.Invitation.CREATED_BY, self.user.id)
+                      self.EQ(self.Invitation.CREATED_BY, self.subject.user.id)
                     )
                   ).select().then(function(invite) {
                     ctrl.add(self.Popup.create().tag({
@@ -167,8 +166,8 @@ foam.CLASS({
     function updateDAO() {
       var self = this;
 
-      // Populate the clientJunctionDAO with all the agents this.user is related to.
-      var agentJunctionDAO = this.agentJunctionDAO.where(this.EQ(this.UserUserJunction.TARGET_ID, this.user.id));
+      // Populate the clientJunctionDAO with all the agents this.subject.user is related to.
+      var agentJunctionDAO = this.agentJunctionDAO.where(this.EQ(this.UserUserJunction.TARGET_ID, this.subject.user.id));
       this.clientJunctionDAO.removeAll();
 
       agentJunctionDAO.select({
@@ -189,7 +188,7 @@ foam.CLASS({
       this.businessInvitationDAO
         .where(
           this.AND(
-            this.EQ(this.Invitation.CREATED_BY, this.user.id),
+            this.EQ(this.Invitation.CREATED_BY, this.subject.user.id),
             this.EQ(this.Invitation.STATUS, this.InvitationStatus.SENT)
           )
         )

@@ -23,7 +23,7 @@ foam.CLASS({
 
   imports: [
     'acceptanceDocumentService',
-    'agent',
+    'subject',
     'ctrl',
     'isSigningOfficer',
     'menuDAO',
@@ -205,10 +205,10 @@ foam.CLASS({
       postSet: function(o, n) {
         this.nextLabel = n === 'Yes' ? 'Next' : 'Complete';
         if ( n === 'Yes' ) {
-          this.user.signingOfficers.add(this.agent);
+          this.user.signingOfficers.add(this.subject.realUser);
           this.isSigningOfficer = true;
         } else {
-          this.user.signingOfficers.remove(this.agent);
+          this.user.signingOfficers.remove(this.subject.realUser);
           this.isSigningOfficer = false;
         }
         this.hasSaveOption = n === 'Yes';
@@ -605,7 +605,7 @@ foam.CLASS({
     async function updateUserAcceptance(id, val) {
       try {
         this.acceptanceDocumentService
-          .updateUserAcceptanceDocument(this.__context__, this.agent.id, this.user.id, id, val);
+          .updateUserAcceptanceDocument(this.__context__, this.subject.realUser.id, this.user.id, id, val);
       } catch (error) {
         console.warn('Error updating user accepted document: ', error);
       }

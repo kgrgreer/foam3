@@ -17,7 +17,6 @@ foam.CLASS({
   ],
 
   imports: [
-    'agent',
     'branchDAO',
     'countryDAO',
     'currencyDAO',

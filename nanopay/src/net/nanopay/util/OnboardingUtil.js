@@ -19,7 +19,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'agent',
+    'subject',
     'auth',
     'businessOnboardingDAO',
     'canadaUsBusinessOnboardingDAO',
@@ -37,13 +37,13 @@ foam.CLASS({
       return this.ctrl.user.address.countryId === 'CA' ?
         await this.businessOnboardingDAO.find(
           this.AND(
-            this.EQ(this.BusinessOnboarding.USER_ID, this.agent.id),
+            this.EQ(this.BusinessOnboarding.USER_ID, this.subject.realUser.id),
             this.EQ(this.BusinessOnboarding.BUSINESS_ID, this.user.id)
           )
         ) :
         await this.uSBusinessOnboardingDAO.find(
           this.AND(
-            this.EQ(this.USBusinessOnboarding.USER_ID, this.agent.id),
+            this.EQ(this.USBusinessOnboarding.USER_ID, this.subject.realUser.id),
             this.EQ(this.USBusinessOnboarding.BUSINESS_ID, this.user.id)
           )
         );
@@ -57,7 +57,7 @@ foam.CLASS({
     async function createOnboarding() {
       var address = this.user.address.clone();
       var data = {
-        userId: this.agent.id,
+        userId: this.subject.realUser.id,
         businessId: this.user.id,
         businessAddress: address
       };
@@ -87,7 +87,7 @@ foam.CLASS({
     async function initInternationalOnboardingView() {
       await this.canadaUsBusinessOnboardingDAO.find(
         this.AND(
-            this.EQ(this.CanadaUsBusinessOnboarding.USER_ID, this.agent.id),
+            this.EQ(this.CanadaUsBusinessOnboarding.USER_ID, this.subject.realUser.id),
             this.EQ(this.CanadaUsBusinessOnboarding.BUSINESS_ID, this.user.id)
           )
         ).then((businessOnboarding) => {
