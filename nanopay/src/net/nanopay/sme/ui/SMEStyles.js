@@ -170,18 +170,18 @@ foam.CLASS({
     }
 
     /* Styles related to rich choice view */
-    .net-nanopay-sme-SMEController .foam-u2-view-RichChoiceView {
+    .net-nanopay-ui-Controller .foam-u2-view-RichChoiceView {
       display: block;
     }
 
-    .net-nanopay-sme-SMEController .foam-u2-view-RichChoiceView-container {
+    .net-nanopay-ui-Controller .foam-u2-view-RichChoiceView-container {
       border-radius: 4px;
       width: 100%;
       z-index: 1;
       -webkit-appearance: none;
     }
 
-    .net-nanopay-sme-SMEController .foam-u2-view-RichChoiceView-heading {
+    .net-nanopay-ui-Controller .foam-u2-view-RichChoiceView-heading {
       font-weight: bold;
       border-bottom: 1px solid #f4f4f9;
       line-height: 24px;
@@ -203,7 +203,7 @@ foam.CLASS({
       left: 5;
     }
 
-    .net-nanopay-sme-SMEController .foam-u2-view-RichChoiceView-selection-view {
+    .net-nanopay-ui-Controller .foam-u2-view-RichChoiceView-selection-view {
       min-height: 40px;
       width: 100%;
       border-radius: 4px;
@@ -219,7 +219,7 @@ foam.CLASS({
       cursor: pointer;
     }
 
-    .net-nanopay-sme-SMEController .foam-u2-view-RichChoiceView-chevron::before {
+    .net-nanopay-ui-Controller .foam-u2-view-RichChoiceView-chevron::before {
       color: #bdbdbd;
       font-size: 17px;
       padding-left: 8px;
@@ -640,7 +640,7 @@ foam.CLASS({
       filter: hue-rotate(67deg) saturate(100000000) opacity(65%);
     }
 
-    .net-nanopay-sme-SMEController .foam-comics-DAOControllerView-top-row {
+    .net-nanopay-ui-Controller .foam-comics-DAOControllerView-top-row {
       margin-bottom: 36px;
     }
 
@@ -665,8 +665,70 @@ foam.CLASS({
       width: 330px;
     }
 
-    .net-nanopay-sme-SMEController .foam-u2-view-TableView-selected {
+    .net-nanopay-ui-Controller .foam-u2-view-TableView-selected {
       background: initial;
+    }
+
+    .login-stack {
+      margin-bottom: -60px;
+      margin-left: 0;
+    }
+    
+    .dashboard-stack {
+      margin-bottom: 0;
+      margin-left: 250px;
+    }
+
+    .net-nanopay-auth-ui-UserSelectionView .styleHolder_NameField {
+      overflow: hidden;
+      white-space: nowrap;
+      max-width: 200px;
+      text-overflow: ellipsis;
+    }
+
+    .net-nanopay-auth-ui-UserSelectionView .styleHolder_EmailField {
+      overflow: hidden;
+      white-space: nowrap;
+      max-width: 200px;
+      text-overflow: ellipsis;
+    }
+
+    .net-nanopay-sme-ui-InvoiceDetails .medium-header {
+      overflow: hidden;
+      white-space: nowrap;
+      max-width: 300px;
+      text-overflow: ellipsis;
+    }
+
+    .net-nanopay-sme-ui-CompanyInformationView .table-content {
+      overflow: hidden;
+      white-space: nowrap;
+      max-width: 240px;
+      text-overflow: ellipsis;
+    }
+
+    .net-nanopay-sme-ui-AddUserToBusinessModal .medium-header {
+      overflow: hidden;
+      white-space: nowrap;
+      max-width: 450px;
+      text-overflow: ellipsis;
+    }
+
+    .toast-link {
+      color: #604aff;
+      cursor: pointer;
+      margin-left: 5px;
+      text-decoration: underline;
+    }
+
+    .net-nanopay-sme-ui-AbliiActionView-large {
+      width: 160px;
+    }
+
+    .foam-u2-view-TableView tbody > tr > td {
+      white-space: nowrap;
+      max-width: 280px;
+      text-overflow: ellipsis;
     }
 
     .foam-u2-md-overlaydropdown {
@@ -1014,7 +1076,7 @@ foam.CLASS({
       height: calc(100% - 36px);
     }
 
-    .net-nanopay-sme-SMEController .foam-u2-md-OverlayDropdown {
+    .net-nanopay-ui-Controller .foam-u2-md-OverlayDropdown {
       transform: translate(-100%, 16px);
     }
 
