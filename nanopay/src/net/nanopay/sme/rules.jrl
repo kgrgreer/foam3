@@ -27,6 +27,10 @@ p({
     "class":"foam.mlang.predicate.And",
     "args":[
       {
+        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of":"net.nanopay.model.Business"
+      },
+      {
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
         "propName":"compliance",
         "propValue":{"class": "net.nanopay.admin.model.ComplianceStatus", "ordinal":2}
