@@ -12,6 +12,7 @@ p({
       .setOf(net.nanopay.msp.MspInfo.getOwnClassInfo())
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("mspSetup")
+      .setValidated(true)
       .setDecorator(dao)
       .build();
   """,

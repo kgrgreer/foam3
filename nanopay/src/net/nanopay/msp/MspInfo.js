@@ -3,26 +3,47 @@ foam.CLASS({
   name: 'MspInfo',
   ids: ['spid'],
 
+  documentation: 'The base model for the Multi Service Provider Setup.',
+
   properties: [
     {
-        class: 'String',
-        name: 'spid',
+      class: 'Reference',
+      of: 'foam.nanos.auth.ServiceProvider',
+      name: 'spid',
+      required: true
     },
     {
-        class: 'String',
-        name: 'adminUserEmail'
+      class: 'EMail',
+      name: 'adminUserEmail',
+      required: true
     },
     {
-        class: 'Password',
-        name: 'adminUserPassword'
+      class: 'Password',
+      name: 'adminUserPassword',
+      required: true
     },
     {
-        class: 'String',
-        name: 'adminUserFirstname'
+      class: 'String',
+      name: 'adminUserFirstname',
+      required: true
     },
     {
-        class: 'String',
-        name: 'adminUserLastname'
+      class: 'String',
+      name: 'adminUserLastname',
+      required: true
+    },
+    {
+      class: 'List',
+      name: 'domain'
+    },
+    {
+      class: 'String',
+      name: 'appName',
+      required: true
+    },
+    {
+      class: 'String',
+      name: 'description'
     }
   ]
 });
