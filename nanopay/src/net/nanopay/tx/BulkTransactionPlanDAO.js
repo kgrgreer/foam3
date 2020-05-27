@@ -76,6 +76,8 @@ foam.CLASS({
               // Update the child of the bulk transaction
               bulkTxn.addNext(parentQuote.getPlan());
               bulkTxn.setIsQuoted(true);
+              //place holder until we move to proper planner
+              bulkTxn.setPlanner("68afcf0c-c718-98f8-0841-75e97a3ad16d182");
 
               parentQuote.setPlan(bulkTxn);
               return parentQuote;
@@ -99,7 +101,8 @@ foam.CLASS({
           ct.setSourceAccount(payerDigitalAccount.getId());
           ct.setDestinationAccount(payerDigitalAccount.getId());
           ct.setIsQuoted(true);
-
+          //place holder until we move to proper planner
+          ct.setPlanner("68afcf0c-c718-98f8-0841-75e97a3ad16d182");
           for (Transaction childTransaction : childTransactions) {
             // Sum amount of child transactions
             sum += childTransaction.getAmount();

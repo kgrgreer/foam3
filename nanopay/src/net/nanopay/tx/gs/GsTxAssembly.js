@@ -37,6 +37,8 @@ foam.CLASS({
     'net.nanopay.tx.OriginatingSource',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.Transfer',
+    'net.nanopay.tx.SummaryTransaction',
+    'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.tx.gs.GsTxCsvRow',
     'net.nanopay.tx.gs.ProgressBarData',
     'net.nanopay.tx.model.Transaction',
@@ -173,10 +175,12 @@ foam.CLASS({
       args: [{ name: 'transaction', type: 'net.nanopay.tx.model.Transaction' }],
       javaCode: `
       HashMap hm = (HashMap<Long,Long>) getMyBalances();
-      for ( Transfer tr : transaction.getTransfers() ) {
-        long add4 = 0;
-        if (hm.get(tr.getAccount()) != null ) add4 = (Long) hm.get(tr.getAccount());
-        hm.put(tr.getAccount(),add4+tr.getAmount());
+      if( ! (transaction instanceof SummaryTransaction || transaction instanceof FXSummaryTransaction ) ) {
+        for ( Transfer tr : transaction.getTransfers() ) {
+          long add4 = 0;
+          if (hm.get(tr.getAccount()) != null ) add4 = (Long) hm.get(tr.getAccount());
+          hm.put(tr.getAccount(),add4+tr.getAmount());
+        }
       }
       if ( transaction.getNext() != null )
         for ( Transaction tx : transaction.getNext() )

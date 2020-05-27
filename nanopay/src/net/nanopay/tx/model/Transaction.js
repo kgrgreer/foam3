@@ -50,7 +50,8 @@ foam.CLASS({
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.OriginatingSource',
     'net.nanopay.account.Balance',
-    'static foam.mlang.MLang.EQ'
+    'static foam.mlang.MLang.EQ',
+    'net.nanopay.tx.planner.AbstractTransactionPlanner'
   ],
 
   requires: [
@@ -758,6 +759,13 @@ foam.CLASS({
       value: 'CAD'
     },
     {
+      class: 'String',
+      name: 'planner',
+      documentation: 'A reference to the planner that created this transaction.',
+      visibility: 'HIDDEN',
+      storageTransient: true,
+    },
+    {
       name: 'next',
       class: 'FObjectArray',
       of: 'net.nanopay.tx.model.Transaction',
@@ -1235,6 +1243,19 @@ foam.CLASS({
     javaCode: `
       return getSourceAccount();
     `
+  },
+  {
+    name: 'findPlanner',
+    documentation: 'Find the planner that created this transaction',
+    args: [
+      { name: 'x', type: 'Context' },
+    ],
+    type: 'FObject',
+    javaCode: `
+      //TODO: once plannerDAO is a thing this method can go away as itll be auto generated.
+      DAO rulerDAO = (DAO) x.get("ruleDAO");
+      return (AbstractTransactionPlanner) rulerDAO.find(getPlanner());
+    `,
   }
 ],
   actions: [

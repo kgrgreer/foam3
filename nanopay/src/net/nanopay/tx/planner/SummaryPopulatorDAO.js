@@ -36,6 +36,18 @@ foam.CLASS({
             t.setLineItems((TransactionLineItem[]) items.toArray(new TransactionLineItem[0]));
           }
         }
+         if ( quote.getPlan() != null ) {
+          Transaction tx = quote.getPlan();
+            if ( tx instanceof SummaryTransaction || tx instanceof FXSummaryTransaction ) {
+              List trans = new ArrayList<Transfer>();
+              List items = new ArrayList<TransactionLineItem>();
+
+              walk(tx, trans, items);
+
+              tx.setTransfers((Transfer[]) trans.toArray(new Transfer[0]));
+              tx.setLineItems((TransactionLineItem[]) items.toArray(new TransactionLineItem[0]));
+            }
+          }
         return getDelegate().put_(x, quote);
       `
     },
@@ -46,13 +58,14 @@ foam.CLASS({
         { name: 'transfers', type: 'List' },
         { name: 'lineItems', type: 'List' },
       ],
-      documentation: 'Recursivly walk the tree of transactions and add up transfers and lineitems',
+      documentation: 'Recursively walk the tree of transactions and add up transfers and lineitems',
       javaCode: `
       for (Transfer a : txn.getTransfers())
         transfers.add(a);
-      for (TransactionLineItem a : txn.getLineItems())
+      for (TransactionLineItem a : txn.getLineItems()) {
+        a.setTransaction(txn.getId());
         lineItems.add(a);
-
+      }
       if ( txn.getNext() != null && txn.getNext().length > 0)
         for ( Transaction t2 : txn.getNext() )
           walk(t2, transfers, lineItems);

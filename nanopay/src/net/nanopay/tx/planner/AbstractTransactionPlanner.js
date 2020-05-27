@@ -1,6 +1,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx.planner',
   name: 'AbstractTransactionPlanner',
+  extends: 'foam.nanos.ruler.Rule',
   abstract: true,
 
   documentation: 'Abstract rule action for transaction planning.',
@@ -30,7 +31,30 @@ foam.CLASS({
       documentation: 'true for planners which produce more then one plan',
       class: 'Boolean',
       value: false
-    }
+    },
+    {
+      name: 'action',
+      transient: true,
+      visibility: 'HIDDEN',
+      javaGetter: 'return this;',
+    },
+    {
+      name: 'after',
+      visibility: 'HIDDEN',
+      value: false
+    },
+    {
+      name: 'daoKey',
+      value: 'transactionPlannerDAO',
+      visibility: 'HIDDEN',
+    },
+    {
+      class: 'Enum',
+      of: 'foam.nanos.ruler.Operations',
+      name: 'operation',
+      value: 'CREATE',
+      visibility: 'HIDDEN',
+    },
   ],
 
   methods: [
@@ -77,6 +101,8 @@ foam.CLASS({
             Transaction altPlan = (Transaction) altPlanO;
             altPlan.setIsQuoted(true);
             altPlan.setTransfers((Transfer[]) ArrayUtils.addAll(altPlan.getTransfers(),quote.getMyTransfers_().toArray(new Transfer[0])));
+            // add the planner id for validation
+            altPlan.setPlanner(this.getId());
             altPlan.setId(UUID.randomUUID().toString());
             altPlan = (Transaction) ((DAO) x.get("localFeeEngineDAO")).put(altPlan);
             quote.addPlan(altPlan);
@@ -91,6 +117,8 @@ foam.CLASS({
           txn = (Transaction) ((DAO) x.get("localFeeEngineDAO")).put(txn);
           //TODO: hit tax engine
           //TODO: signing
+          // add the planner id for validation
+          txn.setPlanner(this.getId());
           quote.addPlan(txn);
           if (forceBestPlan()) {
             quote.setPlan(txn);
@@ -146,6 +174,7 @@ foam.CLASS({
         ct.setName("Compliance Transaction");
         ct.clearTransfers();
         ct.clearLineItems();
+        ct.setPlanner(getId());
         ct.clearNext();
         ct.setIsQuoted(true);
         return ct;
@@ -159,6 +188,19 @@ foam.CLASS({
         return false;
       `
     },
+    {
+      name: 'validatePlan',
+      documentation: 'final step validation to see if there are any line items etc to be filled out',
+      type: 'boolean',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
+      ],
+      javaCode: `
+        return true;
+        // To be filled out in extending class.
+      `
+    }
   ]
 });
 

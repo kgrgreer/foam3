@@ -10,10 +10,6 @@ foam.CLASS({
     'net.nanopay.account.TrustAccount',
   ],
 
-  //TODO: Predicate:
-  /*if ( destAccount instanceof BankAccount &&
-                           sourceAccount instanceof DigitalAccount ) */
-
   methods: [
     {
       name: 'plan',

@@ -14,7 +14,10 @@ foam.CLASS({
     'net.nanopay.account.ZeroAccount',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.TransactionQuote',
-    'net.nanopay.tx.Transfer'
+    'net.nanopay.tx.Transfer',
+    'net.nanopay.tx.TransactionLineItem',
+    'net.nanopay.tx.SummaryTransaction',
+    'net.nanopay.fx.FXSummaryTransaction'
   ],
 
   properties: [
@@ -54,14 +57,47 @@ foam.CLASS({
       type: 'foam.core.FObject',
       javaCode: `
         Transaction txn = (Transaction) obj;
+        // Transaction Quoting
         if ( ! txn.getIsQuoted() ) {
           TransactionQuote quote = new TransactionQuote();
           quote.setRequestTransaction((Transaction) txn.fclone());
           quote = (TransactionQuote) ((DAO) x.get("localTransactionPlannerDAO")).inX(x).put(quote);
           validateQuoteTransfers(x, quote);
-          return getDelegate().put_(x, quote.getPlan());
+          txn = quote.getPlan();
         }
-        return getDelegate().put_(x, obj);
+        // Transaction Plan Validation
+        AbstractTransactionPlanner atp = (AbstractTransactionPlanner) txn.findPlanner(x);
+        if (atp != null) atp.validatePlan(x, txn);
+        else {
+          Logger logger = (Logger) x.get("logger");
+          logger.warning(txn.getId() + " failed planner validation");
+          return txn;
+        }
+        // Transaction Line Item Validation and Copying
+        for ( TransactionLineItem li : txn.getLineItems() )
+          li.validate();
+        if ( txn instanceof SummaryTransaction || txn instanceof FXSummaryTransaction) {
+          for ( TransactionLineItem li : txn.getLineItems() )
+            replaceLineItem( li, li.findFromChain(txn) );
+        }
+        return getDelegate().put_(x, txn);
+      `
+    },
+    {
+      name: 'replaceLineItem',
+      args: [
+        { name: 'line', type: 'net.nanopay.tx.TransactionLineItem'},
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction'}
+      ],
+      documentation: 'replace a lineItem on the transaction with an updated line item.',
+      javaCode: `
+        TransactionLineItem[] tlis = txn.getLineItems();
+        for (TransactionLineItem tli : tlis) {
+          if (line.getId().equals(tli.getId())) {
+            tli = line;
+            break;
+          }
+        }
       `
     },
     {
