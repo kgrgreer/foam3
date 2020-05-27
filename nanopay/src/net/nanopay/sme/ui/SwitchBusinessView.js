@@ -27,7 +27,6 @@ foam.CLASS({
     'onboardingUtil',
     'pushMenu',
     'stack',
-    'subject',
     'window'
   ],
 
