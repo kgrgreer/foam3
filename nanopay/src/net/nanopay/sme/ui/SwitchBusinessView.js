@@ -27,6 +27,7 @@ foam.CLASS({
     'onboardingUtil',
     'pushMenu',
     'stack',
+    'user',
     'window'
   ],
 
@@ -209,7 +210,7 @@ foam.CLASS({
         var result = await this.agentAuth.actAs(this, business);
         if ( result ) {
           await this.ctrl.fetchGroup();
-          this.user = business;
+          this.subject.user = business;
           this.subject.realUser = result;
           // Add the condition check for Grain Discovery.
           // This should be removed once we use Crunch for onboarding.

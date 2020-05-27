@@ -516,7 +516,7 @@ foam.CLASS({
       this.sessionTimer.enable = true;
       this.sessionTimer.onSessionTimeout = this.onSessionTimeout.bind(this);
 
-      await this.themeInstalled;      
+      await this.themeInstalled;
 
       if ( this.theme.name === 'ablii' ) {
         window.onpopstate = async (event) => {
@@ -981,8 +981,9 @@ foam.CLASS({
 
   listeners: [
     function onUserAgentAndGroupLoaded() {
+
       if ( this.theme.name === 'ablii' ) {
-        if ( ! this.user.emailVerified ) {
+        if ( ! this.subject.user.emailVerified ) {
           this.loginSuccess = false;
           this.stack.push({ class: 'foam.nanos.auth.ResendVerificationEmail' });
           return;
