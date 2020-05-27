@@ -27,7 +27,7 @@ foam.CLASS({
     'onboardingUtil',
     'pushMenu',
     'stack',
-    'user',
+    'subject',
     'window'
   ],
 
@@ -151,7 +151,9 @@ foam.CLASS({
       documentation: `
         The DAO used to populate the enabled businesses in the list.
       `,
-      expression: function(user, agent, updated) {
+      expression: function(subject, updated) {
+        var agent = subject.realUser;
+        var user = subject.user;
         var party = agent.created ? agent : user;
         return this.PromisedDAO.create({
           promise: party.entities.dao
@@ -174,7 +176,9 @@ foam.CLASS({
       documentation: `
         The DAO used to populate the disabled businesses in the list.
       `,
-      expression: function(user, agent, updated) {
+      expression: function(subject, updated) {
+        var agent = subject.realUser;
+        var user = subject.user;
         var party = agent.created ? agent : user;
         return this.PromisedDAO.create({
           promise: party.entities.dao
