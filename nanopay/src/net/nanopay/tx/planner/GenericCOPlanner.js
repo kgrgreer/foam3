@@ -10,6 +10,13 @@ foam.CLASS({
     'net.nanopay.account.TrustAccount',
   ],
 
+  properties: [
+    {
+      name: 'bestPlan',
+      value: true
+    }
+  ],
+
   methods: [
     {
       name: 'plan',
@@ -28,12 +35,6 @@ foam.CLASS({
 
       return cashOut;
 
-      `
-    },
-    {
-      name: 'forceBestPlan',
-      javaCode: `
-        return true;
       `
     }
   ]

@@ -10,6 +10,10 @@ foam.CLASS({
     'foam.nanos.ruler.RuleAction'
   ],
 
+  imports: [
+    'ruleGroupDAO',
+  ],
+
   javaImports: [
     'foam.dao.DAO',
     'java.util.UUID',
@@ -25,11 +29,39 @@ foam.CLASS({
     'org.apache.commons.lang.ArrayUtils'
   ],
 
+  tableColumns: [
+    'willPlan',
+    'name',
+    'id',
+    'enabled',
+    'bestPlan',
+    'multiPlan_',
+    'ruleGroup'
+  ],
+
   properties: [
     {
       name: 'multiPlan_',
+      label: 'Multi Planner',
       documentation: 'true for planners which produce more then one plan',
       class: 'Boolean',
+      value: false
+    },
+    {
+      name: 'willPlan',
+      label: 'Planner will Plan',
+      documentation: 'For front end, tells whether this planner will plan or not',
+      class: 'Boolean',
+      expression: async function() {
+        return ( ( await this.ruleGroupDAO.find(this.ruleGroup) ).enabled && this.enabled );
+      },
+      storageTransient: true
+    },
+    {
+      name: 'bestPlan',
+      label: 'Force Best Plan',
+      class: 'Boolean',
+      documentation: 'determines whether to save as best plan',
       value: false
     },
     {
@@ -120,7 +152,7 @@ foam.CLASS({
           // add the planner id for validation
           txn.setPlanner(this.getId());
           quote.addPlan(txn);
-          if (forceBestPlan()) {
+          if (getBestPlan()) {
             quote.setPlan(txn);
           }
         }
@@ -178,14 +210,6 @@ foam.CLASS({
         ct.clearNext();
         ct.setIsQuoted(true);
         return ct;
-      `
-    },
-    {
-      name: 'forceBestPlan',
-      documentation: 'determines whether to save as best plan',
-      type: 'boolean',
-      javaCode: `
-        return false;
       `
     },
     {

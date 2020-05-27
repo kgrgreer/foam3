@@ -91,6 +91,9 @@ foam.CLASS({
       ],
       documentation: 'replace a lineItem on the transaction with an updated line item.',
       javaCode: `
+        if ( txn == null ) {
+          return;
+        }
         TransactionLineItem[] tlis = txn.getLineItems();
         for (TransactionLineItem tli : tlis) {
           if (line.getId().equals(tli.getId())) {

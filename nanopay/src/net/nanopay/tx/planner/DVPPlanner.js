@@ -12,6 +12,13 @@ foam.CLASS({
     'net.nanopay.tx.SecurityTransaction'
   ],
 
+  properties: [
+    {
+      name: 'bestPlan',
+      value: true
+    }
+  ],
+
   methods: [
     {
       name: 'plan',
@@ -42,12 +49,6 @@ foam.CLASS({
         tx.addNext(quoteTxn(x, dt));
 
         return tx;
-      `
-    },
-    {
-      name: 'forceBestPlan',
-      javaCode: `
-        return true;
       `
     }
   ]
