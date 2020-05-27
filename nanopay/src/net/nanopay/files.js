@@ -670,9 +670,9 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ui/history/InvoiceCreatedHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/history/InvoiceApprovedHistoryItemView', flags: ['web'] },
   { name: 'net/nanopay/invoice/notification/NewInvoiceNotification' },
-  { name: 'net/nanopay/invoice/notification/NewInvoiceNotificationNotificationView', flags: ['web'] },
+  { name: 'net/nanopay/invoice/notification/NewInvoiceNotificationNotificationCitationView', flags: ['web'] },
   { name: 'net/nanopay/invoice/notification/InvoicePaymentNotification' },
-  { name: 'net/nanopay/invoice/notification/InvoicePaymentNotificationNotificationView', flags: ['web'] },
+  { name: 'net/nanopay/invoice/notification/InvoicePaymentNotificationNotificationCitationView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ruler/CompleteInvoiceNotification' },
   { name: 'net/nanopay/invoice/ruler/InvoiceVoidEmailRule' },
   { name: 'net/nanopay/invoice/ruler/IsCompletePayment' },
@@ -981,7 +981,7 @@ FOAM_FILES([
   { name: 'net/nanopay/partners/ui/ContactCard', flags: ['web'] },
   { name: 'net/nanopay/partners/ui/ContactCardView', flags: ['web'] },
   { name: 'net/nanopay/partners/ui/PartnerInvitationNotification', flags: ['web'] },
-  { name: 'net/nanopay/partners/ui/PartnerInvitationNotificationNotificationView', flags: ['web'] },
+  { name: 'net/nanopay/partners/ui/PartnerInvitationNotificationNotificationCitationView', flags: ['web'] },
   { name: 'net/nanopay/auth/PublicUserInfo' },
 
   // contacts
