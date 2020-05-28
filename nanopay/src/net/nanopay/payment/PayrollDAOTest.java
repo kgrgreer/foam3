@@ -34,6 +34,7 @@ public class PayrollDAOTest extends foam.nanos.test.Test {
     addPayeesIfNotFound(x);
     addPayrollEntries(x);
     payroll = new Payroll();
+    payroll.setSpid("payroll");
     payroll.setSourceAccount(PAYER_ACCOUNT);
     payroll.setPayrollEntries(entries);
 
