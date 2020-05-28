@@ -6,7 +6,7 @@ foam.CLASS({
   documentation: 'View to display footer view.',
 
   imports: [
-    'appConfig'
+    'theme'
   ],
 
   css: `
@@ -44,13 +44,13 @@ foam.CLASS({
       this
         .addClass(this.myClass())
           .start().add(this.CONTACT_SUPPORT).end()
-          .add(this.slot((appConfig) => {
+          .add(this.slot((theme) => {
             return this.E().addClass('appConfig-info')
               .start('a')
-                .attrs({ href: 'mailto:' + appConfig.supportEmail })
-                .add(appConfig.supportEmail)
+                .attrs({ href: 'mailto:' + theme.supportEmail })
+                .add(theme.supportEmail)
               .end()
-              .start().add(appConfig.supportPhone).end();
+              .start().add(theme.supportPhone).end();
           }))
         .end();
     },
