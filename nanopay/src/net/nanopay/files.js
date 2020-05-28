@@ -150,7 +150,6 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/model/ComplianceStatus' },
   { name: 'net/nanopay/admin/model/AccountStatus' },
   { name: 'net/nanopay/model/User' },
-  { name: 'net/nanopay/model/AppConfig' },
   { name: 'net/nanopay/ui/wizard/WizardCssAxiom', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
   { name: 'net/nanopay/ui/wizardModal/WizardModal', flags: ['web'] },
