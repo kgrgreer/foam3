@@ -101,7 +101,6 @@ public class BmoFormatUtil {
     Notification notification = new Notification();
     notification.setGroupId("payment-ops");
     notification.setNotificationType("BMO EFT");
-    notification.setIssuedDate(new Date());
     notification.setBody(subject + "\n" + body);
     notificationDAO.put(notification);
   }
