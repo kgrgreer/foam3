@@ -7,7 +7,7 @@ foam.CLASS({
 
   tableColumns: [
     'spid',
-    'adminUserPassword',
+    'adminUserEmail',
     'adminUserFirstname',
     'adminUserLastname',
     'appName',
