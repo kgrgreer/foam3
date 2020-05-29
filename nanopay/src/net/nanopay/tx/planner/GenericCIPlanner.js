@@ -10,9 +10,12 @@ foam.CLASS({
     'net.nanopay.account.TrustAccount',
   ],
 
-  //TODO: Predicate:
-  /*if ( sourceAccount instanceof BankAccount &&
-                           destinationAccount instanceof DigitalAccount ) */
+  properties: [
+    {
+      name: 'bestPlan',
+      value: true
+    }
+  ],
 
   methods: [
     {
@@ -32,12 +35,6 @@ foam.CLASS({
 
       return cashIn;
 
-      `
-    },
-    {
-      name: 'forceBestPlan',
-      javaCode: `
-        return true;
       `
     }
   ]

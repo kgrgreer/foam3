@@ -81,6 +81,7 @@ foam.CLASS({
       kotakCO.setSourceAccount(requestTxn.getSourceAccount());
       kotakCO.setDestinationAccount(this.KOTAK_CO_DESTINATION_ACCOUNT_ID);
       kotakCO.setIsQuoted(true);
+      kotakCO.setPlanner(this.getId());
       kotakCO.add(transfers);
       txn.addNext(kotakCO);
 
@@ -99,6 +100,7 @@ foam.CLASS({
         }
       );
       t3.setIsQuoted(true);
+      t3.setPlanner(this.getId());
       t3.setSourceAccount(kotakINPartnerBank.getId());
       t3.setSourceCurrency(requestTxn.getDestinationCurrency());
       txn.addNext(t3);

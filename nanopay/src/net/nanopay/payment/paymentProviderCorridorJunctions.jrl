@@ -49,7 +49,7 @@ p({
 })
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridorJunction",
-  "sourceId": "Alterna",
+  "sourceId": "BMO",
   "targetId": 5,
   "currencies":["CAD"],
   "description": "CA to CA corridor via BMO"

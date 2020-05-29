@@ -8,6 +8,7 @@ foam.CLASS({
     'notify',
     'padCaptureDAO',
     'stack',
+    'subject',
     'user'
   ],
 
@@ -263,8 +264,8 @@ foam.CLASS({
       factory: function() {
         return net.nanopay.model.CAPadCapture.create({
           country: this.country,
-          firstName: this.agent.firstName,
-          lastName: this.agent.lastName,
+          firstName: this.subject.realUser.firstName,
+          lastName: this.subject.realUser.lastName,
           companyName: this.user.businessName,
           address: this.user.address
         }, this);

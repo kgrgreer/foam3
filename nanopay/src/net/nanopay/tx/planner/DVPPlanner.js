@@ -12,6 +12,13 @@ foam.CLASS({
     'net.nanopay.tx.SecurityTransaction'
   ],
 
+  properties: [
+    {
+      name: 'bestPlan',
+      value: true
+    }
+  ],
+
   methods: [
     {
       name: 'plan',
@@ -34,7 +41,7 @@ foam.CLASS({
         dt.setDestinationAccount(tx.getDestinationPaymentAccount());
         dt.setSourceCurrency(dt.findSourceAccount(x).getDenomination());
         // may not be able to find destination account with user context so use getX();
-        dt.setDestinationCurrency(dt.findDestinationAccount(x).getDenomination());
+        dt.setDestinationCurrency(dt.findDestinationAccount(getX()).getDenomination());
 
         dt.setAmount(tx.getPaymentAmount());
         dt.setDestinationAmount(tx.getDestinationPaymentAmount());
@@ -42,12 +49,6 @@ foam.CLASS({
         tx.addNext(quoteTxn(x, dt));
 
         return tx;
-      `
-    },
-    {
-      name: 'forceBestPlan',
-      javaCode: `
-        return true;
       `
     }
   ]

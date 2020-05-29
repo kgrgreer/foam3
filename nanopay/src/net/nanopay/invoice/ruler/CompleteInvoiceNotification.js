@@ -70,7 +70,6 @@ foam.CLASS({
               payeeNotification.setUserId(payee.getId());
               payeeNotification.setBody(notificationMsg);
               payeeNotification.setNotificationType("Latest_Activity");
-              payeeNotification.setIssuedDate(new Date());
               try {
                 if ( payeeUser != null ) {
                   payeeUser.doNotify(x, payeeNotification);
@@ -86,7 +85,6 @@ foam.CLASS({
                 payerNotification.setUserId(payer.getId());
                 payerNotification.setBody(payer_notificationMsg);
                 payerNotification.setNotificationType("Latest_Activity");
-                payerNotification.setIssuedDate(new Date());
                 try {
                   if ( payerUser != null ) {
                     payerUser.doNotify(x, payerNotification);

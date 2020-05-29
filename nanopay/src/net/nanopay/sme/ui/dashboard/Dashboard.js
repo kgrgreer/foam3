@@ -194,7 +194,7 @@ foam.CLASS({
                 this.Notification.NOTIFICATION_TYPE,
                 this.user.disabledTopics))
           )
-        ).orderBy(this.DESC(this.Notification.ISSUED_DATE));
+        ).orderBy(this.DESC(this.Notification.CREATED));
       }
     },
     {

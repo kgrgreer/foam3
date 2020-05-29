@@ -83,12 +83,38 @@ foam.CLASS({
       class: 'Boolean',
       visibility: 'RO',
       value: true
+    },
+    {
+      name: 'transaction',
+      label: 'From Transaction',
+      class: 'Reference',
+      of: 'net.nanopay.tx.model.Transaction',
+      visibility: 'HIDDEN',
+      storageTransient: true,
     }
   ],
 
   methods: [
     function toSummary() {
       return this.name;
+    },
+    {
+      name: 'findFromChain',
+      type: 'net.nanopay.tx.model.Transaction',
+      args: [
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction'}
+      ],
+      type: 'net.nanopay.tx.model.Transaction',
+      javaCode: `
+        if (txn.getId().equals(getTransaction()))
+          return txn;
+        Transaction [] txs = txn.getNext();
+        for ( Transaction t : txs ) {
+          Transaction tx = findFromChain(t);
+          if ( tx != null ) return tx;
+        }
+        return null;
+      `,
     },
     {
       name: 'validate',

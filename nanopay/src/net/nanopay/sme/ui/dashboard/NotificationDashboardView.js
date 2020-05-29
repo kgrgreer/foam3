@@ -55,8 +55,8 @@ foam.CLASS({
   methods: [
     function initE() {
       this.bodyMsg = this.data.body;
-      this.date = this.data.issuedDate ?
-          this.spliceDateFormatter(this.data.issuedDate.toISOString().slice(0, 10)) : '';
+      this.date = this.data.created ?
+          this.spliceDateFormatter(this.data.created.toISOString().slice(0, 10)) : '';
 
       this.SUPER();
       this

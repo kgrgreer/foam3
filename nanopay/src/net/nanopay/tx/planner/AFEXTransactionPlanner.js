@@ -42,6 +42,13 @@ foam.CLASS({
     }
   ],
 
+  properties: [
+    {
+      name: 'bestPlan',
+      value: true
+    }
+  ],
+
   methods: [
     {
       name: 'plan',
@@ -215,12 +222,6 @@ foam.CLASS({
         summary.addNext(afexCT);
       
         return summary;
-      `
-    },
-    {
-      name: 'forceBestPlan',
-      javaCode: `
-        return true;
       `
     }
   ]

@@ -160,6 +160,23 @@ p({"class":"foam.nanos.script.Script","id":"LiquidLiquiditySettingsTest","descri
 p({"class":"foam.nanos.script.Script","id":"Network Transport for EmailMessages", "code":"\nimport foam.nanos.notification.email.EmailService;\nimport foam.nanos.notification.email.SMTPEmailService;\nimport foam.nanos.notification.email.ProxyEmailService;\n\n\nProxyEmailService pes = x.get(\"email\"); \nEmailService es = new SMTPEmailService.Builder(x)\n.setHost(\"smtp.gmail.com\")\n.setPort(\"587\")\n.setStarttls(true)\n.setUsername(\"nanopay.email@gmail.com\")\n.setPassword(\"Em@1l53nd3r\")\n.build(); \n\npes.setDelegate(es);\nprint(\"done\");","output":""})
 p({
   "class":"foam.nanos.script.Script",
+  "id":"Twilio Network Transport for SMSMessages",
+  "code":"""
+import foam.nanos.notification.sms.SMSService;
+import foam.nanos.notification.sms.TwilioSMSService;
+import foam.nanos.notification.sms.ProxySMSService;
+
+ProxySMSService pss = x.get("smsService");
+SMSService ss = new TwilioSMSService.Builder(x)
+  .build();
+  
+pss.setDelegate(ss);
+print("done");
+  """,
+  "output":""
+})
+p({
+  "class":"foam.nanos.script.Script",
   "id":"setupAbliiUsers",
   "status":2,
   "code":"""

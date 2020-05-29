@@ -230,18 +230,18 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'IntegrationsTitle', message: 'Integrations' },
-    { name: 'BankMatchingTitle', message: 'Bank account matching' },
-    { name: 'Connect', message: 'Connect' },
-    { name: 'Disconnect', message: 'Disconnect' },
-    { name: 'Connected', message: 'Connected' },
-    { name: 'NotConnected', message: 'Not connected' },
-    { name: 'YourBanksLabel', message: 'Your Ablii bank accounts' },
-    { name: 'AccountingBanksLabel', message: 'Bank accounts in your accounting software' },
-    { name: 'BankMatchingDesc1', message: 'Please select which accounts you would like to match between Ablii and ' },
-    { name: 'BankMatchingDesc2', message: ' from the drop downs.' },
-    { name: 'BankMatchingDesc3', message: 'This will ensure that all transactions completed on Ablii are mapped and reconciled to the correct account in ' },
-    { name: 'TokenExpired', message: 'Please sync again to your accounting software to fetch the latest information.' }
+    { name: 'INTEGRATIONS_TITLE', message: 'Integrations' },
+    { name: 'BANK_MATCHING_TITLE', message: 'Bank account matching' },
+    { name: 'CONNECT_LABEL', message: 'Connect' },
+    { name: 'DISCONNECT_LABEL', message: 'Disconnect' },
+    { name: 'CONNECTED_LABEL', message: 'Connected' },
+    { name: 'NOT_CONNECTED_LABEL', message: 'Not connected' },
+    { name: 'YOUR_BANKS_LABEL', message: 'Your Ablii bank accounts' },
+    { name: 'ACCOUNTING_BANKS_LABEL', message: 'Bank accounts in your accounting software' },
+    { name: 'BANK_MATCHING_DESC_1', message: 'Please select which accounts you would like to match between Ablii and ' },
+    { name: 'BANK_MATCHING_DESC_2', message: ' from the drop downs.' },
+    { name: 'BANK_MATCHING_DESC_3', message: 'This will ensure that all transactions completed on Ablii are mapped and reconciled to the correct account in ' },
+    { name: 'TOKEN_EXPIRED', message: 'Please sync again to your accounting software to fetch the latest information.' }
   ],
 
   properties: [
@@ -377,7 +377,7 @@ foam.CLASS({
       this.accountingList = bankAccountList;
       this
         .addClass(this.myClass()).show(showIntegrationButtons[0])
-        .start().add(this.IntegrationsTitle).addClass('title').end()
+        .start().add(this.INTEGRATIONS_TITLE).addClass('title').end()
         .start().addClass('integration-box').show(showIntegrationButtons[1])
           .start()
             .start({ class: 'foam.u2.tag.Image', data: '/images/xero.png' }).addClass('accounting-logo').end()
@@ -405,22 +405,22 @@ foam.CLASS({
           }).enableClass('disconnect', this.showQuickBooksDisconected$).end()
         .end()
         .start().show(this.connected$)
-          .start().add(this.BankMatchingTitle).addClass('title').end()
+          .start().add(this.BANK_MATCHING_TITLE).addClass('title').end()
           .start().addClass('bank-matching-box')
             .start().addClass('inline-left-div')
               .start({ class: 'foam.u2.tag.Image', data: '/images/ablii-wordmark.svg' }).addClass('ablii-logo').end()
               .start().add('+').addClass('plus-sign').end()
               .start({ class: 'foam.u2.tag.Image', data: this.bankMatchingLogo$ }).addClass('qb-bank-matching').end()
-              .start().add(this.BankMatchingDesc1 + this.user.integrationCode.label + this.BankMatchingDesc2).addClass('bank-matching-desc').end()
-              .start().add(this.BankMatchingDesc3 + this.user.integrationCode.label ).addClass('bank-matching-desc').addClass('marginTop').end()
+              .start().add(this.BANK_MATCHING_DESC_1 + this.user.integrationCode.label + this.BANK_MATCHING_DESC_2).addClass('bank-matching-desc').end()
+              .start().add(this.BANK_MATCHING_DESC_3 + this.user.integrationCode.label ).addClass('bank-matching-desc').addClass('marginTop').end()
               .start()
                 .show(this.displayExpiredTokenMessage)
-                .add(this.TokenExpired)
+                .add(this.TOKEN_EXPIRED)
                 .addClass('token-expired-desc')
               .end()
             .end()
             .start().addClass('inline-right-div')
-              .start().add(this.YourBanksLabel).addClass('drop-down-label').end()
+              .start().add(this.YOUR_BANKS_LABEL).addClass('drop-down-label').end()
               .start()
                 .add(this.ABLII_BANK_LIST).addClass('dropdown').enableClass('error-box', this.showPickBankAblii$)
               .end()
@@ -434,7 +434,7 @@ foam.CLASS({
                   .add('Please select a bank account in Ablii before matching.').addClass('failure-text')
                 .end()
               .end()
-              .start().add(this.AccountingBanksLabel).addClass('drop-down-label').end()
+              .start().add(this.ACCOUNTING_BANKS_LABEL).addClass('drop-down-label').end()
               .start()
                 .add(this.ACCOUNTING_BANK_LIST).addClass('dropdown').enableClass('error-box', this.showPickBank$)
               .end()
@@ -463,26 +463,26 @@ foam.CLASS({
     },
     function isXeroConnected() {
       if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
-        this.xeroBtnLabel = this.Disconnect;
-        this.xeroConnected = this.Connected;
+        this.xeroBtnLabel = this.DISCONNECT_LABEL;
+        this.xeroConnected = this.CONNECTED_LABEL;
         this.bankMatchingLogo = '/images/xero.png';
         this.showXeroDisconected = true;
       } else {
-        this.xeroBtnLabel = this.Connect;
-        this.xeroConnected = this.NotConnected;
+        this.xeroBtnLabel = this.CONNECT_LABEL;
+        this.xeroConnected = this.NOT_CONNECTED_LABEL;
         this.showXeroDisconected = false;
       }
       this.checkForConnections();
     },
     function isQuickbooksConnected() {
       if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS  ) {
-        this.qbBtnLabel = this.Disconnect;
-        this.qbConnected = this.Connected;
+        this.qbBtnLabel = this.DISCONNECT_LABEL;
+        this.qbConnected = this.CONNECTED_LABEL;
         this.bankMatchingLogo = '/images/quickbooks.png';
         this.showQuickBooksDisconected = true;
       } else {
-        this.qbBtnLabel = this.Connect;
-        this.qbConnected = this.NotConnected;
+        this.qbBtnLabel = this.CONNECT_LABEL;
+        this.qbConnected = this.NOT_CONNECTED_LABEL;
         this.showQuickBooksDisconected = false;
       }
       this.checkForConnections();
@@ -509,10 +509,10 @@ foam.CLASS({
       name: 'xeroConnect',
       code: function() {
         var self = this;
-        if ( this.xeroBtnLabel == this.Disconnect ) {
+        if ( this.xeroBtnLabel == this.DISCONNECT_LABEL ) {
           this.xeroService.removeToken(null, this.user).then(function(result) {
-            self.xeroBtnLabel = this.Connect;
-            self.xeroConnected = this.NotConnected;
+            self.xeroBtnLabel = this.CONNECT_LABEL;
+            self.xeroConnected = this.NOT_CONNECTED_LABEL;
             self.add(self.NotificationMessage.create({ message: 'Xero integration has been disconnected' }));
             self.connected = false;
             self.showXeroDisconected = false;
@@ -533,10 +533,10 @@ foam.CLASS({
       name: 'quickbooksConnect',
       code: function() {
         var self = this;
-        if ( this.qbBtnLabel == this.Disconnect ) {
+        if ( this.qbBtnLabel == this.DISCONNECT_LABEL ) {
           this.quickbooksService.removeToken(null, this.user).then(function(result) {
-            self.qbBtnLabel = this.Connect;
-            self.qbConnected = this.NotConnected;
+            self.qbBtnLabel = this.CONNECT_LABEL;
+            self.qbConnected = this.NOT_CONNECTED_LABEL;
             self.add(self.NotificationMessage.create({ message: 'Intuit quickbooks integration has been disconnected' }));
             self.connected = false;
             self.showQuickBooksDisconected = false;
