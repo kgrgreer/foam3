@@ -25,29 +25,30 @@ foam.CLASS({
           return getDelegate().put_(x, obj);
         }
         TransactionQuote quote = (TransactionQuote) obj;
-        for ( Transaction t : quote.getPlans() ) {
-          if ( t instanceof SummaryTransaction || t instanceof FXSummaryTransaction ) {
+        if ( quote.getPlan() != null ) {
+          Transaction tx = quote.getPlan();
+          if ( tx instanceof SummaryTransaction || tx instanceof FXSummaryTransaction ) {
             List trans = new ArrayList<Transfer>();
             List items = new ArrayList<TransactionLineItem>();
 
-            walk(t, trans, items);
+            walk(tx, trans, items);
 
-            t.setTransfers((Transfer[]) trans.toArray(new Transfer[0]));
-            t.setLineItems((TransactionLineItem[]) items.toArray(new TransactionLineItem[0]));
+            tx.setTransfers((Transfer[]) trans.toArray(new Transfer[0]));
+            tx.setLineItems((TransactionLineItem[]) items.toArray(new TransactionLineItem[0]));
           }
-        }
-         if ( quote.getPlan() != null ) {
-          Transaction tx = quote.getPlan();
-            if ( tx instanceof SummaryTransaction || tx instanceof FXSummaryTransaction ) {
+        } else {
+          for ( Transaction t : quote.getPlans() ) {
+            if ( t instanceof SummaryTransaction || t instanceof FXSummaryTransaction ) {
               List trans = new ArrayList<Transfer>();
               List items = new ArrayList<TransactionLineItem>();
 
-              walk(tx, trans, items);
+              walk(t, trans, items);
 
-              tx.setTransfers((Transfer[]) trans.toArray(new Transfer[0]));
-              tx.setLineItems((TransactionLineItem[]) items.toArray(new TransactionLineItem[0]));
+              t.setTransfers((Transfer[]) trans.toArray(new Transfer[0]));
+              t.setLineItems((TransactionLineItem[]) items.toArray(new TransactionLineItem[0]));
             }
           }
+        } 
         return getDelegate().put_(x, quote);
       `
     },

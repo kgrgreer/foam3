@@ -9,7 +9,7 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.account.TrustAccount',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus',
+    'net.nanopay.tx.model.TransactionStatus'
   ],
 
   properties: [
@@ -157,11 +157,11 @@ foam.CLASS({
       type: 'String',
       javaCode: `
       for ( TransactionLineItem item : getLineItems() ) {
-        if ( item instanceof PurposeCodeLineItem ) {
-          return ((PurposeCodeLineItem) item).getPurposeCode();
+        if ( item instanceof KotakPaymentPurposeLineItem ) {
+          return ((KotakPaymentPurposeLineItem) item).getPurposeCode();
         }
       }
-      return "P1099";
+      return"";
       `
     },
     {
@@ -169,11 +169,11 @@ foam.CLASS({
       type: 'String',
       javaCode: `
       for ( TransactionLineItem item : getLineItems() ) {
-        if ( item instanceof AccountRelationshipLineItem ) {
-          return ((AccountRelationshipLineItem) item).getAccountRelationship();
+        if ( item instanceof KotakAccountRelationshipLineItem ) {
+          return ((KotakAccountRelationshipLineItem) item).getAccountRelationship();
         }
       }
-      return "Employee";
+      return"";
       `
     }
   ]

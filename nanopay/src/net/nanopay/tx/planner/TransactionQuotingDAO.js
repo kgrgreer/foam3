@@ -95,12 +95,13 @@ foam.CLASS({
           return;
         }
         TransactionLineItem[] tlis = txn.getLineItems();
-        for (TransactionLineItem tli : tlis) {
-          if (line.getId().equals(tli.getId())) {
-            tli = line;
+        for ( int i =0; i < tlis.length; i++ ) {
+          if (line.getId().equals(tlis[i].getId())) {
+            tlis[i] = line;
             break;
           }
         }
+        txn.setLineItems(tlis);
       `
     },
     {

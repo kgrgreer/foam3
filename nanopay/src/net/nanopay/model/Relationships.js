@@ -835,6 +835,8 @@ foam.RELATIONSHIP({
         sections: sec
       };
     },
+    createVisibility: 'RO',
+    readVisibility: 'RO',
     updateVisibility: 'RO',
     section: 'paymentInfoSource',
     tableWidth: 180,
@@ -882,11 +884,17 @@ foam.RELATIONSHIP({
   unauthorizedSourceDAOKey: 'localAccountDAO',
   targetDAOKey: 'transactionDAO',
   unauthorizedTargetDAOKey: 'localTransactionDAO',
-  sourceProperty: { visibility: 'RO' },
+  sourceProperty: {
+  createVisibility: 'RO',
+  readVisibility: 'RO',
+  updateVisibility: 'RO'
+  },
   targetProperty: {
     help: `Please input your payee's account id. Confirm account id with contact externally.`,
     gridColumns: 7,
     required: true,
+    createVisibility: 'RO',
+    readVisibility: 'RO',
     updateVisibility: 'RO',
     view: { class: 'foam.u2.view.IntView' },
     section: 'paymentInfoDestination',

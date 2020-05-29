@@ -44,6 +44,7 @@ foam.CLASS({
     'loadingSpin',
     'newButton',
     'predicate',
+    'requestTxn',
     'updateInvoiceDetails',
     'forceUpdate'
   ],
@@ -242,7 +243,14 @@ foam.CLASS({
       name: 'forceUpdate',
       value: false
     },
-    'updateInvoiceDetails'
+    'updateInvoiceDetails',
+    {
+      class: 'FObjectProperty',
+      name: 'requestTxn',
+      factory: function() {
+        return this.AbliiTransaction.create();
+      }
+    }
   ],
 
   messages: [
@@ -268,7 +276,8 @@ foam.CLASS({
       name: 'TWO_FACTOR_REQUIRED',
       message: `You require two-factor authentication to continue this payment.
           Please go to the Personal Settings page to set up two-factor authentication.`
-    }
+    },
+    { name: 'INR_RATE_LIMIT', message: 'This transaction exceeds your total daily limit for payments to India. For help, contact support at support@ablii.com' }
   ],
 
   methods: [
@@ -378,6 +387,19 @@ foam.CLASS({
         this.notify(this.QUOTE_ERROR, 'error');
         return false;
       }
+
+      // Validate transaction line items
+      try {
+        for ( i =0; i < this.viewData.quote.lineItems.length; i++ ) {
+          if ( this.viewData.quote.lineItems[i].requiresUserInput ) {
+            this.viewData.quote.lineItems[i].validate();
+          }
+        }
+      } catch (e) {
+        this.notify(e, 'error');
+        return false;
+      }
+
       return true;
     },
   
@@ -388,19 +410,9 @@ foam.CLASS({
     },
   
     async function getFXQuote() {
-      var transaction = this.AbliiTransaction.create({
-        sourceAccount: this.invoice.account,
-        destinationAccount: this.invoice.destinationAccount,
-        sourceCurrency: this.invoice.sourceCurrency,
-        destinationCurrency: this.invoice.destinationCurrency,
-        payerId: this.invoice.payerId,
-        payeeId: this.invoice.payeeId,
-        destinationAmount: this.invoice.amount
-      });
-
       var quote = await this.transactionPlannerDAO.put(
         this.TransactionQuote.create({
-          requestTransaction: transaction
+          requestTransaction: this.requestTxn
         })
       );
       return quote.plan;
@@ -477,7 +489,14 @@ foam.CLASS({
             let tem = await this.transactionDAO.put(transaction);
           } catch ( error ) {
             console.error('@SendRequestMoney (Accept and put transaction quote): ' + error.message);
-            this.notify(this.TRANSACTION_ERROR + this.type, 'error');
+            if ( error.message && error.message.includes('[Transaction Validation error] ') ) {
+              let temp = error.message.split('[Transaction Validation error] ');
+              this.notify(temp[1], 'error');
+            } else if ( error.message && error.message == 'Exceed INR Transaction limit' ) {
+              this.notify(this.INR_RATE_LIMIT, 'error');
+            } else {
+              this.notify(this.TRANSACTION_ERROR + this.type, 'error');
+            }
             this.isLoading = false;
             return;
           }
@@ -585,7 +604,7 @@ foam.CLASS({
                 // report but don't fail/error - facilitates automated testing
                 this.notify(this.TWO_FACTOR_REQUIRED, 'warning');
               }
-           }
+            }
             this.populatePayerIdOrPayeeId().then(() => {
               this.subStack.push(this.views[this.subStack.pos + 1].view);
             });

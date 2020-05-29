@@ -93,9 +93,17 @@ public class KotakPaymentProcessor implements ContextAgent {
           requestInstrument.setTelephoneNo(payee.getPhoneNumber());
           requestInstrument.setChgBorneBy(kotakTransaction.getChargeBorneBy());
 
-          String remitPurpose = getPurposeText(destinationBankAccount.getPurposeCode());
           String beneACType   = destinationBankAccount.getBeneAccountType();
-          String relationShip = destinationBankAccount.getAccountRelationship().replace("/", " ");
+
+          String remitPurpose = kotakTransaction.getPurposeCode();
+          String relationShip = kotakTransaction.getAccountRelationship().replaceAll("[^A-Za-z0-9]"," ");
+          // Todo remove after all kotakpaymentTransactions have line items
+          if ( SafetyUtil.isEmpty(remitPurpose) ) {
+            remitPurpose = getPurposeText(destinationBankAccount.getPurposeCode());
+          }
+          if ( SafetyUtil.isEmpty(relationShip) ) {
+            relationShip = destinationBankAccount.getAccountRelationship().replaceAll("[^A-Za-z0-9]"," ");
+          }
 
           EnrichmentSetType type = new EnrichmentSetType();
           type.setEnrichment(new String[]{

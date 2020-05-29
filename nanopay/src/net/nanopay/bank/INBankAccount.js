@@ -134,58 +134,14 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.tx.AccountRelationship',
       label: 'Relationship with the contact',
-      view: {
-        class: 'foam.u2.view.ChoiceWithOtherView',
-        choiceView: {
-          class: 'foam.u2.view.ChoiceView',
-          placeholder: 'Please Select',
-          choices: [
-            'Employer/Employee',
-            'Contractor',
-            'Vendor/Client',
-            'Other'
-          ]
-        },
-        otherKey: 'Other'
-      },
-      validationPredicates: [
-        {
-          args: ['accountRelationship'],
-          predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.bank.INBankAccount.ACCOUNT_RELATIONSHIP, '');
-          },
-          errorString: 'Please specify your Relationship with the contact.'
-        }
-      ],
-      section: 'accountDetails'
+      visibility: 'HIDDEN'
     },
     {
       name: 'purposeCode',
       class: 'Reference',
       of: 'net.nanopay.tx.PurposeCode',
       label: 'Purpose of Transfer',
-      section: 'accountDetails',
-      validationPredicates: [
-        {
-          args: ['purposeCode'],
-          predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.bank.INBankAccount.PURPOSE_CODE, '');
-          },
-          errorString: 'Please enter a Purpose of Transfer.'
-        }
-      ],
-      view: function(_, x) {
-        return foam.u2.view.ChoiceWithOtherView.create({
-          choiceView: foam.u2.view.ChoiceView.create({
-            dao: x.purposeCodeDAO,
-            placeholder: 'Please select',
-            objToChoice: function(purposeCode) {
-              return [purposeCode.code, purposeCode.description];
-            }
-          }),
-          otherKey: 'Other'
-        });
-      }
+      visibility: 'HIDDEN'
     }
   ],
 

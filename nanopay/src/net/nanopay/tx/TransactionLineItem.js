@@ -44,7 +44,9 @@ foam.CLASS({
       documentation: 'By default, show Transaction Line Item class name - to distinguish sub-classes.',
       name: 'name',
       class: 'String',
-      visibility: 'RO',
+      createVisibility: 'RO',
+      readVisibility: 'RO',
+      updateVisibility: 'RO',
       factory: function() {
         return this.cls_.name;
       },
@@ -81,8 +83,16 @@ foam.CLASS({
       name: 'reversable',
       label: 'Refundable',
       class: 'Boolean',
-      visibility: 'RO',
+      createVisibility: 'RO',
+      readVisibility: 'RO',
+      updateVisibility: 'RO',
       value: true
+    },
+    {
+      name: 'requiresUserInput',
+      class: 'Boolean',
+      value: false,
+      hidden: true
     },
     {
       name: 'transaction',

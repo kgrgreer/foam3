@@ -341,6 +341,9 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/KotakCOTransaction' },
   { name: 'net/nanopay/tx/KotakPaymentTransaction' },
   { name: 'net/nanopay/tx/ManualFxRule' },
+  { name: 'net/nanopay/tx/KotakPaymentPurposeLineItem' },
+  { name: 'net/nanopay/tx/KotakAccountRelationshipLineItem' },
+
   // interac
   { name: 'net/nanopay/fx/interac/model/RequiredAccountFields' },
   { name: 'net/nanopay/fx/interac/model/RequiredAddressFields' },

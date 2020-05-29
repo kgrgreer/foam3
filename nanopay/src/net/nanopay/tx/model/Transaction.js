@@ -537,7 +537,9 @@ foam.CLASS({
       section: 'amountSelection',
       required: true,
       gridColumns: 5,
-      visibility: 'RO',
+      createVisibility: 'RO',
+      readVisibility: 'RO',
+      updateVisibility: 'RO',
       help: `This is the amount withdrawn from the payer's chosen account (Source Account).`,
       view: function(_, X) {
         return {
@@ -708,7 +710,9 @@ foam.CLASS({
       aliases: ['sourceDenomination'],
       section: 'paymentInfoSource',
       gridColumns: 5,
-      visibility: 'RO',
+      createVisibility: 'RO',
+      readVisibility: 'RO',
+      updateVisibility: 'RO',
       factory: function() {
         return this.ctrl.homeDenomination ? this.ctrl.homeDenomination : 'CAD';
       },
@@ -753,7 +757,9 @@ foam.CLASS({
       class: 'String',
       name: 'destinationCurrency',
       aliases: ['destinationDenomination'],
-      visibility: 'RO',
+      createVisibility: 'RO',
+      readVisibility: 'RO',
+      updateVisibility: 'RO',
       section: 'paymentInfoDestination',
       gridColumns: 5,
       value: 'CAD'

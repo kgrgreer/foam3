@@ -166,6 +166,8 @@ var classes = [
   // kotak
   'net.nanopay.kotak.Kotak',
   'net.nanopay.kotak.KotakCredentials',
+  'net.nanopay.tx.KotakPaymentPurposeLineItem',
+  'net.nanopay.tx.KotakAccountRelationshipLineItem',
 
   // AFEX
   'net.nanopay.fx.FXSummaryTransaction',
