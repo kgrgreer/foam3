@@ -686,7 +686,6 @@ p({
       }
     ]
   },
-  "action":{"class":"net.nanopay.tx.planner.BmoCOTransactionPlanner"},
   "lifecycleState":1
 })
 p({
