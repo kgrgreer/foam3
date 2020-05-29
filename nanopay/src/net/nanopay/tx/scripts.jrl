@@ -27,3 +27,49 @@ p({
   `,
   "output":""
 })
+
+p({
+  "class":"foam.nanos.script.Script",
+  "id":"benchmarkTransactionCreationClient",
+  "server":false,
+  "clusterable":false,
+  "code":"""
+var domain = 'localhost';
+var port = 8080;
+var sessionId = 'e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef73';
+//var of = net.nanopay.tx.model.Transaction;
+//var serviceName = 'transactionDAO';
+var of = foam.nanos.auth.Country;
+var serviceName = 'countryDAO';
+var box = foam.box.HTTPBox.create({ url: 'http://'+domain+':'+port+'/service/'+serviceName }, x);
+box = foam.box.TimeoutBox.create({ delegate: box }, x);
+box = foam.box.SessionClientBox.create({ sessionID: sessionId, delegate: box }, x);
+var dao = foam.dao.EasyDAO.create({
+    daoType: 'CLIENT',
+    of: of,
+    serverBox: box
+}, x);
+// var delegate = dao;
+// while ( delegate ) {
+//     console.log("delegate: "+delegate.cls_.id);
+//     delegate = delegate.delegate;
+// }
+dao.select(foam.mlang.sink.Count.create()).then(function(c) {
+    console.log("count: "+c.value);
+}).catch(function(e) {
+    console.error(e.message);
+});
+
+//dao.select(foam.dao.ArraySink.create()).then(function(s) {
+//    var a = s.array;
+//    for ( var i = 0 ; i < a.length; i++ ) {
+//        console.log('t['+i+']: '+a[i]);
+//    }
+//}).catch(function(e) {
+//    console.error(e.message);
+//});
+//dao.find("a").then(function(result) {
+//    print("t: "+result);
+//});
+  """
+});
