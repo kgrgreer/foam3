@@ -83,7 +83,7 @@ public class BmoReportProcessor {
         logger.info("finishing process report " + file.getName());
 
 
-        
+
       } catch ( Exception e ) {
 
         try {
@@ -106,26 +106,23 @@ public class BmoReportProcessor {
 
     String firstLine = strings.get(0);
 
-    // process rejected file
     if ( firstLine.contains("DEFR210") || firstLine.contains("DEFR211") ) {
-      this.processRejectReport(strings);
-      return;
+      this.processRejectReport(strings); // process rejected file
+    } else if ( firstLine.contains("DEFR220") ) {
+      processSettlementReport(strings); // process settled file
     }
 
-    // process settled file
-    if ( firstLine.contains("DEFR220") ) {
-      processSettlementReport(strings);
-      return;
-    }
+    storeFile(file);
+  }
 
+  protected void storeFile(File file) {
     try {
       // Save File
-      EFTFileUtil.storeEFTFile(this.x, file, "text/csv"); 
+      EFTFileUtil.storeEFTFile(this.x, file, "text/csv");
       FileUtils.deleteQuietly(file);
     } catch ( Exception e ) {
       this.logger.error("Error while saving file: . " + file.getName(), e.getMessage(), e);
     }
-
   }
 
   /**
@@ -251,7 +248,7 @@ public class BmoReportProcessor {
     String fileNumber = null;
     try {
       // Save Report File
-      foam.nanos.fs.File f = EFTFileUtil.storeEFTFile(this.x, file, "text/csv"); 
+      foam.nanos.fs.File f = EFTFileUtil.storeEFTFile(this.x, file, "text/csv");
       fileNumber = getFileCreationNumber(file);
       DAO eftFileDAO = ((DAO) x.get("bmoEftFileDAO")).inX(x);
       BmoEftFile eftFile = (BmoEftFile) eftFileDAO.find(fileNumber);
