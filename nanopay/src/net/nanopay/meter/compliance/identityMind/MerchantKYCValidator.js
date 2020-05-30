@@ -35,7 +35,7 @@ foam.CLASS({
                 .setCauseDaoKey("identityMindResponseDAO")
                 .setStatus(getApprovalStatus(status))
                 .setApprover(getApprover(status))
-                .setClassification("Validate Business Using IdentityMind")
+                .setClassification("Validate Business Using IdentityMind, Response ID: " + response.getId())
                 .build()
             );
             ruler.putResult(status);
