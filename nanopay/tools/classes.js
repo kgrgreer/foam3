@@ -166,6 +166,8 @@ var classes = [
   // kotak
   'net.nanopay.kotak.Kotak',
   'net.nanopay.kotak.KotakCredentials',
+  'net.nanopay.tx.KotakPaymentPurposeLineItem',
+  'net.nanopay.tx.KotakAccountRelationshipLineItem',
 
   // AFEX
   'net.nanopay.fx.FXSummaryTransaction',
@@ -359,8 +361,9 @@ var classes = [
    'net.nanopay.liquidity.crunch.LiquidAuthorizer',
    'net.nanopay.liquidity.crunch.LiquidTransactionAuthorizer',
    'net.nanopay.liquidity.crunch.LiquidApprovalRequestAuthorizer',
-   'net.nanopay.liquidity.crunch.CapabilityRequestOperations',
    'net.nanopay.liquidity.crunch.CapabilityRequest',
+   'net.nanopay.liquidity.crunch.CapabilityRequestOperations',
+   'net.nanopay.liquidity.crunch.CheckSelfRefCapabilityRequestAction',
    'net.nanopay.liquidity.crunch.CreateUserCapabilityJunctionOnRequestApproval',
    'net.nanopay.liquidity.crunch.AddAccountToUserCapabilityJunctionOnCreate',
    'net.nanopay.liquidity.crunch.RemoveAccountBasedUCJIfAccountsEmpty',
@@ -375,6 +378,8 @@ var classes = [
    'net.nanopay.util.Frequency',
    'net.nanopay.liquidity.ruler.AccountTemplateContains',
    'net.nanopay.liquidity.ruler.ApprovalRuleActionOnCreate',
+   'net.nanopay.liquidity.ruler.CheckSelfRefAction',
+   'net.nanopay.liquidity.ruler.CheckSelfRefPredicate',
    'net.nanopay.liquidity.ruler.IsSystemOrAdminUser',
    'net.nanopay.liquidity.ruler.LogoutUserOnAssignmentAction',
    'net.nanopay.liquidity.ruler.LogoutUserOnCapabilityUpdateAction',
@@ -391,6 +396,7 @@ var classes = [
    'net.nanopay.liquidity.tx.TxLimitEntityType',
    'net.nanopay.liquidity.tx.TxLimitPredicate',
    'net.nanopay.liquidity.tx.TxLimitRule',
+   'net.nanopay.liquidity.tx.CheckSelfRefTxLimitRuleAction',
    'net.nanopay.liquidity.tx.RestrictAccountsRule',
    'net.nanopay.liquidity.tx.RestrictUsersRule',
    'net.nanopay.liquidity.tx.AccountHierarchy',

@@ -196,7 +196,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
     String province = isBusinessAddressSet ? business.getAddress().getRegionId() : "-";
     String country = isBusinessAddressSet ? business.getAddress().getCountryId() : "-";
     String postalCode = isBusinessAddressSet ? business.getAddress().getPostalCode() : "-";
-    String businessReg = business.getBusinessRegistrationDate() != null ? new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss Z").format(business.getBusinessRegistrationDate()) : "-";
+    String businessReg = business.getBusinessRegistrationDate() != null ? sdf.format(business.getBusinessRegistrationDate()) : "-";
 
     String businessPhoneNumber;
     if ( isBusinessSet && business.getPhoneNumber() != null ) {
@@ -312,7 +312,7 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
 
       List list = new List(List.UNORDERED);
       list.add(new ListItem("Currency choices for this business will be USD and CAD")); // TODO this is hardcoded for Currency choice AFEX wants confirmation of. Future this should be dynamically set.
-      if ( !country.equals("US") ) list.add(new ListItem("Business Registration Time: " + businessReg));
+      if ( !country.equals("US") ) list.add(new ListItem("Business Registration Date: " + businessReg));
       list.add(new ListItem("Type of Business: " + businessType));
       list.add(new ListItem("Legal Name of Business: " + businessName));
       if ( operatingName.length() != 0 ) {

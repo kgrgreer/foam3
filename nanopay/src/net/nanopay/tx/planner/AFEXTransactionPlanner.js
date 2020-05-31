@@ -204,6 +204,9 @@ foam.CLASS({
         summary.setInvoiceId(tx.getInvoiceId());
         summary.setIsQuoted(true);
         summary.addNext(createCompliance(tx));
+        FXLineItem fxLineItem = new FXLineItem();
+        fxLineItem.setRate(fxQuote.getRate());
+        summary.addLineItems( new TransactionLineItem[] { fxLineItem } );
 
         // create AFEXBeneficiaryComplianceTransaction
         AFEXBeneficiaryComplianceTransaction afexCT = new AFEXBeneficiaryComplianceTransaction();

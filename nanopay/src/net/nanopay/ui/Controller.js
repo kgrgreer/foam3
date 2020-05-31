@@ -518,7 +518,7 @@ foam.CLASS({
 
       await this.themeInstalled;
 
-      if ( this.theme.name === 'ablii' ) {
+      if ( this.theme.name !== 'nanopay' ) {
         window.onpopstate = async (event) => {
           var menu;
   
@@ -584,7 +584,7 @@ foam.CLASS({
             this.__subContext__.register(foam.comics.v2.DAOSummaryView, "net.nanopay.account.AccountDAOSummaryView");
           }
         }
-        if ( this.theme.name === 'ablii' ) {
+        else {
           // Prevent action within platform if user is not a business. Redirect regular users to
           // switch business menu screen to select a business.
           this.stack$.dot('pos').sub(function() {
@@ -628,13 +628,13 @@ foam.CLASS({
         this
           .addClass(this.myClass())
           .add(this.slot(function (loginSuccess, topNavigation_) {
-            if ( ! loginSuccess && this.theme.name === 'ablii' ) return null;
+            if ( ! loginSuccess && this.theme.name !== 'nanopay' ) return null;
             return this.E().tag(topNavigation_);
           }))
           .start()
             .addClass('stack-wrapper')
             .addClass(this.slot(function (loginSuccess) {
-              if ( this.theme.name != 'ablii' ) return;
+              if ( this.theme.name === 'nanopay' ) return;
               return ! loginSuccess ? 'login-stack' : 'dashboard-stack';
             }))
             .enableClass('login-wrapper', this.loginSuccess$)
@@ -726,7 +726,7 @@ foam.CLASS({
       if ( locHash ) {
         var searchParams = new URLSearchParams(location.search);
         var tokenParam = searchParams.get('token');
-        if ( this.theme.name === 'ablii' ) {
+        if ( this.theme.name !== 'nanopay' ) {
 
           // direct to error page if an invalid token hits (token not found)
           self.client.authenticationTokenService.processToken(null, null, tokenParam).then(() => {
@@ -769,7 +769,7 @@ foam.CLASS({
               disableCompanyName_: searchParams.has('companyName')
             }
           };
-          if ( this.theme.name === 'ablii' ) {
+          if ( this.theme.name !== 'nanopay' ) {
             view.organization = searchParams.has('companyName')
                 ? searchParams.get('companyName')
                 : '';
@@ -982,7 +982,7 @@ foam.CLASS({
   listeners: [
     function onUserAgentAndGroupLoaded() {
 
-      if ( this.theme.name === 'ablii' ) {
+      if ( this.theme.name !== 'nanopay' ) {
         if ( ! this.subject.user.emailVerified ) {
           this.loginSuccess = false;
           this.stack.push({ class: 'foam.nanos.auth.ResendVerificationEmail' });

@@ -209,6 +209,7 @@ foam.CLASS({
         ct.setPlanner(getId());
         ct.clearNext();
         ct.setIsQuoted(true);
+        ct.setId(UUID.randomUUID().toString());
         return ct;
       `
     },

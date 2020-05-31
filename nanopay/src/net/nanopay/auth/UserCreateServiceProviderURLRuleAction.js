@@ -20,6 +20,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'static foam.mlang.MLang.*',
     'foam.nanos.app.AppConfig',
+    'foam.nanos.auth.AuthService',
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
     'java.net.URL',
@@ -30,6 +31,15 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
+        User user = (User) obj;
+        AuthService auth = (AuthService) x.get("auth");
+
+        if ( ! SafetyUtil.isEmpty(user.getSpid())
+          && auth.check(x, "spid.create." + user.getSpid())
+        ) {
+          return;
+        }
+
         final ServiceProviderURL spu_ = new ServiceProviderURL();
 
         UserCreateServiceProviderURLRule myRule = (UserCreateServiceProviderURLRule) rule;
@@ -60,7 +70,6 @@ foam.CLASS({
           return;
         }
 
-        User user = (User) obj;
         user.setSpid(spu_.getSpid());
       `
     }

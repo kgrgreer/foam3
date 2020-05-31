@@ -119,7 +119,7 @@ p({"class":"net.nanopay.tx.PurposeCode","group":1,"code":"P0011","description":"
 //p({"class":"net.nanopay.tx.PurposeCode","group":1,"code":"P0018","description":"Other capital receipts not included elsewhere","send":false})
 //p({"class":"net.nanopay.tx.PurposeCode","group":2,"code":"P0101","description":"Value of export bills negotiated / purchased / discounted etc (covered under GR/PP/SOFTEX/EC copy of shipping bills etc)","send":false})
 //p({"class":"net.nanopay.tx.PurposeCode","group":2,"code":"P0102","description":"Realisation of export bills (in respect of goods) sent on collection (full invoice value)","send":false})
-p({"class":"net.nanopay.tx.PurposeCode","group":2,"code":"P0103","description":"Advance against export ","send":false})
+p({"class":"net.nanopay.tx.PurposeCode","group":2,"code":"P0103","description":"Advance against export","send":false})
 //p({"class":"net.nanopay.tx.PurposeCode","group":2,"code":"P0104","description":"Receipts against export of goods not covered by the GR/PP/SOFTEX/EC copy of shipping bill etc","send":false})
 //p({"class":"net.nanopay.tx.PurposeCode","group":2,"code":"P0105","description":"Export bills (in respect of goods) sent on collection","send":false})
 //p({"class":"net.nanopay.tx.PurposeCode","group":2,"code":"P0106","description":"Conversion of overdue export bills from NPD to collection mode","send":false})
