@@ -42,7 +42,7 @@ foam.CLASS({
         if ( account == null ) {
           User user = (User) ((DAO) x.get("bareUserDAO")).find_(x, txn.getPayerId());
           if ( user == null ) {
-            ((Logger) x.get("logger")).error("Payer not found for " + txn.getId());
+            ((Logger) x.get("logger")).error("Payer not found", txn.getId(), "source", txn.getSourceAccount(), "payer", txn.getPayerId());
             throw new RuntimeException("Payer not found");
           }
           account = DigitalAccount.findDefault(getX(), user, txn.getSourceCurrency());
@@ -57,7 +57,7 @@ foam.CLASS({
         if ( destAccount == null ) {
           User user = (User) ((DAO) x.get("bareUserDAO")).find_(x, txn.getPayeeId());
           if ( user == null ) {
-            ((Logger) x.get("logger")).error("Payee not found for " + txn.getId());
+            ((Logger) x.get("logger")).error("Paye not found", txn.getId(), "source", txn.getDestinationAccount(), "payer", txn.getPayeeId());
             throw new RuntimeException("Payee not found");
           }
           DigitalAccount accountDigital = DigitalAccount.findDefault(getX(), user, txn.getDestinationCurrency());

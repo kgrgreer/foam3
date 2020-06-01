@@ -5,7 +5,7 @@ p({
   "predicate":{
     "class":"net.nanopay.tx.ruler.IsSecurityQuote"
   },
-  "enabled":true
+  "enabled":false
 })
 p({
   "class":"foam.nanos.ruler.RuleGroup",
@@ -45,7 +45,7 @@ p({
   "class":"foam.nanos.ruler.RuleGroup",
   "id":"AlternaPlanner",
   "documentation":"Alterna CICO operations",
-  "enabled":true,
+  "enabled":false,
   "predicate":
   {
     "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
@@ -56,7 +56,7 @@ p({
   "class":"foam.nanos.ruler.RuleGroup",
   "id":"BMOPlanner",
   "documentation":"BMO CICO operations",
-  "enabled":true,
+  "enabled":false,
   "predicate":
   {
     "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
@@ -67,7 +67,7 @@ p({
   "class":"foam.nanos.ruler.RuleGroup",
   "id":"RBCPlanner",
   "documentation":"RBC CICO operations",
-  "enabled":true,
+  "enabled":false,
   "predicate":
   {
     "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",

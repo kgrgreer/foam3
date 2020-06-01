@@ -10,8 +10,9 @@ p({
     lc.setLogDebug(false);
     x = x.put("pmLogger", null);
     b = new TransactionBenchmark();
-    b.setQuoteTransactions(false);
-    b.setDisableRules(true);
+    b.setQuoteTransactions(true);
+    b.setDisableRules(false);
+    b.setPurgePerRun(false);
     builder = new BenchmarkRunner.Builder(x)
       .setInvocationCount(10000)
       .setRunPerThread(true)
