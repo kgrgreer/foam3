@@ -130,7 +130,7 @@ foam.CLASS({
           cashInTransaction.setDestinationAccount(payerDigitalAccount.getId());
           cashInTransaction.setAmount(bulkTxn.getAmount());
           if ( bulkTxnPADType != null ) { PADTypeLineItem.addTo(cashInTransaction, bulkTxnPADType.getId()); }
-          cashInTransaction = quoteTxn(x,cashInTransaction);
+          cashInTransaction = quoteTxn(x, cashInTransaction);
 
           // Add the compositeTransaction as the next of the cash-in transaction.
           cashInTransaction.addNext(ct);

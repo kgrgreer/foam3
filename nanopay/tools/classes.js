@@ -494,6 +494,7 @@ var classes = [
   'net.nanopay.tx.ruler.IsSecurityQuote',
   'net.nanopay.tx.SaveChainedTransactionDAO',
   'net.nanopay.tx.SummaryTransaction',
+  'net.nanopay.tx.LiquidSummaryTransaction',
   'net.nanopay.tx.BulkTransaction',
   'net.nanopay.tx.BulkTransactionPlanDAO',
   'net.nanopay.tx.TransactionLineItem',

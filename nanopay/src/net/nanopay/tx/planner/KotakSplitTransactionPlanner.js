@@ -113,7 +113,7 @@ foam.CLASS({
       // split 2: CA digital -> IN bank
       Transaction t2 = (Transaction) requestTxn.fclone();
       t2.setSourceAccount(destinationDigitalaccount.getId());
-      Transaction kotakPlan = quoteTxn(x,t2);
+      Transaction kotakPlan = quoteTxn(x, t2);
       if ( kotakPlan != null ) {
 
         // add transfer to update CI trust account

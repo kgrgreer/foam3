@@ -17,6 +17,7 @@ foam.CLASS({
 
         SecurityTransaction secTx = new SecurityTransaction.Builder(x).build();
         secTx.copyFrom(requestTxn);
+        secTx.setLineItems(requestTxn.getLineItems());
         secTx.setName("Digital Security Transaction");
         secTx.setDestinationAmount(secTx.getAmount());
         quote.addTransfer(((SecuritiesAccount) quote.getSourceAccount()).getSecurityAccount(x, quote.getSourceUnit()).getId(), -secTx.getAmount());
