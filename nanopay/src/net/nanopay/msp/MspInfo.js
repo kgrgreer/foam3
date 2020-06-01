@@ -48,10 +48,9 @@ foam.CLASS({
       name: 'adminUserLastname',
       required: true
     },
-    {
-      class: 'List',
+    net.nanopay.auth.ServiceProviderURL.URLS.clone().copyFrom({
       name: 'domain'
-    },
+    }),
     {
       class: 'String',
       name: 'appName',
