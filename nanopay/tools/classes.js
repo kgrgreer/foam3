@@ -1039,6 +1039,8 @@ var classes = [
   'net.nanopay.crunch.compliance.IsPendingCapabilityOfCertainCategory',
   'net.nanopay.crunch.compliance.PersonSanctionValidator',
   'net.nanopay.crunch.compliance.EntitySanctionValidator',
+  'net.nanopay.crunch.compliance.BeneficialOwnerSanctionValidator',
+  'net.nanopay.crunch.compliance.ReputOnboardingCapabilityOnBeneficialOwnerCompliancePassed',
   'net.nanopay.crunch.compliance.SecurefactSIDniValidator',
   'net.nanopay.crunch.compliance.SecurefactLEVValidator',
   'net.nanopay.crunch.compliance.UserComplianceApproval',

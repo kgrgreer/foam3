@@ -1492,6 +1492,8 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/compliance/IsPendingCapabilityOfCertainCategory' },
   { name: 'net/nanopay/crunch/compliance/PersonSanctionValidator' },
   { name: 'net/nanopay/crunch/compliance/EntitySanctionValidator' },
+  { name: 'net/nanopay/crunch/compliance/BeneficialOwnerSanctionValidator' },
+  { name: 'net/nanopay/crunch/compliance/ReputOnboardingCapabilityOnBeneficialOwnerCompliancePassed' },
   { name: 'net/nanopay/crunch/compliance/SecurefactSIDniValidator' },
   { name: 'net/nanopay/crunch/compliance/SecurefactLEVValidator' },
   { name: 'net/nanopay/crunch/compliance/UserComplianceApproval' },

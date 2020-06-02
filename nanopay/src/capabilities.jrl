@@ -144,6 +144,7 @@ p({
   "enabled":true,
   "visible":false,
   "daoKey":"convertOwnerObjectDAO",
+  "reviewRequired":true
 })
 
 p({

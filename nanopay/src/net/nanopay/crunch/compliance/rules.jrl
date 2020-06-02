@@ -98,6 +98,78 @@ p({
 
 p({
   "class":"foam.nanos.ruler.Rule",
+  "id":"crunch-onboard-compliance-beneficialowner-0",
+  "name":"Crunch Onboarding - Dow Jones Beneficial Owner KYC - Business onboarding",
+  "priority":100,
+  "ruleGroup":"crunchOnboarding",
+  "documentation":"Check beneficial owners via Dow Jones API",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {"class":"foam.mlang.predicate.Not","arg1":{"class":"foam.nanos.ruler.predicate.NewEqOld"}},
+      {"class":"net.nanopay.crunch.compliance.IsPendingCapabilityOfCertainCategory","category":"beneficialOwnerOnboarding"}
+    ]
+  },
+  "action":{
+    "class": "net.nanopay.crunch.compliance.BeneficialOwnerSanctionValidator"
+  },
+  "enabled":true,
+  "saveHistory":true,
+  "validity":1,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"crunch-onboard-compliance-beneficialowner-1",
+  "name":"Reput Onboarding Capability On BeneficialOwner Compliance Passed",
+  "priority":1,
+  "ruleGroup":"crunchOnboarding",
+  "documentation":"reput onboarding capability when businessHasOwners is granted",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+        "propName":"status",
+        "propValue":{
+          "class":"foam.nanos.crunch.CapabilityJunctionStatus",
+          "ordinal":2
+        },
+        "isNew":false
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue":{
+          "class":"foam.nanos.crunch.CapabilityJunctionStatus",
+          "ordinal":2
+        }
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsClass",
+        "propName":"data",
+        "of":"net.nanopay.crunch.onboardingModels.BusinessOwnershipData"
+      }
+    ]
+  },
+  "action":{
+    "class": "net.nanopay.crunch.compliance.ReputOnboardingCapabilityOnBeneficialOwnerCompliancePassed"
+  },
+  "enabled":true,
+  "saveHistory":true,
+  "validity":1,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
   "id":"crunch-onboard-compliance-0",
   "name":"Crunch Onboarding - User Final Compliance Rule",
   "documentation":"Final rule for User compliance.",
@@ -118,6 +190,12 @@ p({
       {
         "class":"net.nanopay.crunch.compliance.IsPendingCapabilityOfCertainCategory",
         "category":"onboarding",
+        "isRecurring":false,
+        "statusChanged":false
+      },
+      {
+        "class":"net.nanopay.crunch.compliance.IsPendingCapabilityOfCertainCategory",
+        "category":"beneficialOwnerOnboarding",
         "isRecurring":false,
         "statusChanged":false
       }
