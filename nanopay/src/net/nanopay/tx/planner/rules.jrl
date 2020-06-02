@@ -818,13 +818,9 @@ p({
   "ruleGroup":"transactionPlanner",
   "enabled":false,
   "predicate":{
-    "args":[
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
-        "propName":"sourceAccount",
-        "of":"net.nanopay.account.Debtable"
-      }
-    ]
+    "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+    "propName":"sourceAccount",
+    "of":"net.nanopay.account.Debtable"
   },
   "lifecycleState":1
 })
@@ -837,13 +833,9 @@ p({
   "ruleGroup":"transactionPlanner",
   "enabled":false,
   "predicate":{
-    "args":[
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
-        "propName":"destinationAccount",
-        "of":"net.nanopay.account.DebtAccount"
-      }
-    ]
+    "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+    "propName":"destinationAccount",
+    "of":"net.nanopay.account.DebtAccount"
   },
   "lifecycleState":1
 })
