@@ -41,7 +41,7 @@ foam.CLASS({
         CorridorService cs = (CorridorService) x.get("corridorService");
 
         // get list of payment providers
-        List junctions = cs.getQuoteCorridorPaymentProviders(x, quote);
+        List junctions = cs.getQuoteCorridorPaymentProviders(getX(), quote);
 
         for ( Object j : junctions )
           quote.getEligibleProviders().put(((PaymentProviderCorridorJunction) j).getSourceId(), true);
