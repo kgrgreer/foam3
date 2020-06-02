@@ -494,6 +494,7 @@ var classes = [
   'net.nanopay.tx.ruler.IsSecurityQuote',
   'net.nanopay.tx.SaveChainedTransactionDAO',
   'net.nanopay.tx.SummaryTransaction',
+  'net.nanopay.tx.LiquidSummaryTransaction',
   'net.nanopay.tx.BulkTransaction',
   'net.nanopay.tx.BulkTransactionPlanDAO',
   'net.nanopay.tx.TransactionLineItem',
@@ -1016,6 +1017,52 @@ var classes = [
 
   // Fees
   'net.nanopay.tx.planner.fees.AbliiFeeRule',
+
+  // crunch onboarding
+  'net.nanopay.crunch.onboardingModels.SigningOfficerInformationData',
+  'net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData',
+  'net.nanopay.crunch.onboardingModels.AddSigningOfficerCapabilityOnPut',
+  'net.nanopay.crunch.onboardingModels.SigningOfficerQuestion',
+  'net.nanopay.crunch.onboardingModels.BusinessHasNoSigningOfficers',
+  'net.nanopay.crunch.onboardingModels.SigningOfficerQuestionOnPut',
+  'net.nanopay.crunch.onboardingModels.BusinessInformationData',
+  'net.nanopay.crunch.onboardingModels.BusinessAddressData',
+  'net.nanopay.crunch.onboardingModels.BusinessOwnershipData',
+  'net.nanopay.crunch.onboardingModels.TransactionDetailsData',
+  'net.nanopay.crunch.onboardingModels.InternationalBusinessInformationData',
+  'net.nanopay.crunch.BusinessOwnershipToBeneficialOwnerDAO',
+  'net.nanopay.crunch.onboardingModels.SigningOfficerCapabilityInterceptPredicate',
+  'net.nanopay.crunch.onboardingModels.SetBusinessOnboardedOnUCJPut',
+  'net.nanopay.crunch.onboardingModels.OnboardingCapabilityUCJSubmitted',
+
+  // crunch compliance
+  'net.nanopay.crunch.compliance.IsPendingCapabilityOfCertainCategory',
+  'net.nanopay.crunch.compliance.PersonSanctionValidator',
+  'net.nanopay.crunch.compliance.EntitySanctionValidator',
+  'net.nanopay.crunch.compliance.BeneficialOwnerSanctionValidator',
+  'net.nanopay.crunch.compliance.ReputOnboardingCapabilityOnBeneficialOwnerCompliancePassed',
+  'net.nanopay.crunch.compliance.SecurefactSIDniValidator',
+  'net.nanopay.crunch.compliance.SecurefactLEVValidator',
+  'net.nanopay.crunch.compliance.UserComplianceApproval',
+
+  // crunch acceptance
+  'net.nanopay.crunch.acceptanceDocuments.capabilities.TriPartyAgreementCAD',
+  'net.nanopay.crunch.acceptanceDocuments.capabilities.TriPartyAgreementUSD',
+  'net.nanopay.crunch.acceptanceDocuments.capabilities.DualPartyAgreementCAD',
+  'net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiTermsAndConditions',
+  'net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy',
+  'net.nanopay.crunch.acceptanceDocuments.capabilities.CADAFEXTerms',
+  'net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms',
+  'net.nanopay.crunch.acceptanceDocuments.capabilities.NanopayInternationalPaymentsCustomerAgreement',
+  'net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyOwnersPercent',
+  'net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyBankAccountOwnership',
+  'net.nanopay.crunch.acceptanceDocuments.capabilities.AFXMassachusettsDisclosure',
+  'net.nanopay.crunch.acceptanceDocuments.capabilities.AFXNewYorkDisclosure',
+  'net.nanopay.crunch.acceptanceDocuments.capabilities.AFXWashingtonDisclosure',
+  'net.nanopay.crunch.acceptanceDocuments.capabilities.AFXArizonaDisclosure',
+  'net.nanopay.crunch.acceptanceDocuments.capabilities.AFXCaliforniaDisclosure',
+  'net.nanopay.crunch.acceptanceDocuments.capabilities.AFXColoradoDisclosure',
+  'net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability',
 
   // Notification
   'net.nanopay.notification.TriggerNotificationTestAction',

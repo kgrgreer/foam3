@@ -37,7 +37,7 @@ foam.CLASS({
         co.setSourceAccount(digital.getId());
 
         Transaction[] digitals = multiQuoteTxn(x, digitalTxn);
-        Transaction[] COs = multiQuoteTxn(x, co);
+        Transaction[] COs = multiQuoteTxn(x, co, false);
         for ( Transaction tx1 : digitals ) {
           for ( Transaction tx2 : COs ) {
             Transaction Digital = (Transaction) tx1.fclone();

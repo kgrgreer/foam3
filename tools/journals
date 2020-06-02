@@ -13,6 +13,8 @@ businessSectors
 businessTypes
 complianceItems
 capabilities
+capabilityCategoryCapabilityJunction
+capabilityCategories
 capabilityRequests
 clearingTimes
 clusterConfig

@@ -4,6 +4,9 @@ foam.CLASS({
 
   documentation: `
     A beneficial owner is a person who owns part of a business.
+    has 2 modes:
+    1) 'percent' which assumes everything is pre-populated with user(signingOfficer) data
+    2) ...anything else, which assumes nothing and entire object is visible.
   `,
 
   implements: [
@@ -45,6 +48,13 @@ foam.CLASS({
       name: 'id'
     },
     {
+      class: 'String',
+      name: 'mode',
+      documentation: 'Used to change visibility. ex) "percent" suggests all hidden but this.ownershipPercent.',
+      hidden: true,
+      flags: ['js']
+    },
+    {
       class: 'Boolean',
       name: 'showValidation',
       value: true
@@ -53,6 +63,9 @@ foam.CLASS({
       class: 'String',
       name: 'jobTitle',
       section: 'requiredSection',
+      visibility: function(mode) {
+        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      },
       view: function(_, X) {
         return {
           class: 'foam.u2.view.ChoiceWithOtherView',
@@ -112,6 +125,9 @@ foam.CLASS({
       class: 'String',
       name: 'firstName',
       section: 'requiredSection',
+      visibility: function(mode) {
+        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      },
       validationPredicates: [
         {
           args: ['firstName', 'showValidation'],
@@ -132,6 +148,9 @@ foam.CLASS({
       class: 'String',
       name: 'lastName',
       section: 'requiredSection',
+      visibility: function(mode) {
+        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      },
       validationPredicates: [
         {
           args: ['lastName', 'showValidation'],
@@ -155,6 +174,9 @@ foam.CLASS({
       name: 'birthday',
       label: 'Date of birth',
       section: 'requiredSection',
+      visibility: function(mode) {
+        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      },
       validationPredicates: [
         {
           args: ['birthday', 'showValidation'],
@@ -191,6 +213,9 @@ foam.CLASS({
       of: 'foam.nanos.auth.Address',
       name: 'address',
       section: 'requiredSection',
+      visibility: function(mode) {
+        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      },
       factory: function() {
         return this.Address.create();
       },

@@ -1,0 +1,119 @@
+foam.CLASS({
+  package: 'net.nanopay.crunch.onboardingModels',
+  name: 'TransactionDetailsData',
+
+  documentation: `
+    This model represents the transactionDetailsSection of the onboarding model.
+  `,
+
+  implements: [
+    'foam.core.Validatable'
+  ],
+
+  imports: [
+    'user'
+  ],
+
+  sections: [
+    {
+      name: 'transactionSection',
+      title: 'Enter the transaction details',
+      help: `Thanks! Now let’s get some details on the company's transactions.`,
+      order: 1
+    },
+    {
+      name: 'purposeSection',
+      title: ' ',
+      order: 2
+    },
+    {
+      name: 'reviewSection',
+      title: ' ',
+      order: 3
+    }
+  ],
+
+  messages: [
+    { name: 'NO_TARGET_CUSTOMERS_ERROR', message: 'Please enter target customers.' },
+    { name: 'NO_SUGGESTED_USER_TXN_INFO_ERROR', message: 'Please enter suggested user transaction info.' }
+  ],
+
+  properties: [
+    {
+      name: 'reviewed',
+      class: 'Boolean',
+      section: 'reviewSection',
+      readPermissionRequired: true,
+      writePermissionRequired: true
+    },
+    net.nanopay.model.Business.TARGET_CUSTOMERS.clone().copyFrom({
+      section: 'purposeSection',
+      view: {
+        class: 'foam.u2.tag.TextArea',
+        onKey: true,
+        placeholder: 'Example: Small manufacturing businesses in North America'
+      },
+      validationPredicates: [
+        {
+          args: ['targetCustomers', 'reviewed'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.GT(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.crunch.onboardingModels.TransactionDetailsData.TARGET_CUSTOMERS
+                }), 0),
+              e.EQ(net.nanopay.crunch.onboardingModels.TransactionDetailsData.REVIEWED, false)
+            );
+          },
+          errorMessage: 'NO_TARGET_CUSTOMERS_ERROR'
+        }
+      ]
+    }),
+    net.nanopay.model.Business.SUGGESTED_USER_TRANSACTION_INFO.clone().copyFrom({
+      label: '',
+      section: 'transactionSection',
+      factory: function() {
+        let baseCurrency = 'USD';
+        if ( this.user.address && this.user.address.countryId && this.user.address.countryId === 'CA' ) {
+          // TODO need connection between address.country and currency : use domestic corridor ****
+          baseCurrency = 'CAD';
+        }
+        return net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.create({ baseCurrency: baseCurrency });
+      },
+      validationPredicates: [
+        {
+          args: ['suggestedUserTransactionInfo', 'reviewed'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(foam.mlang.IsValid.create({
+                arg1: net.nanopay.crunch.onboardingModels.TransactionDetailsData.SUGGESTED_USER_TRANSACTION_INFO
+              }), true),
+              e.EQ(net.nanopay.crunch.onboardingModels.TransactionDetailsData.REVIEWED, false)
+            );
+          },
+          errorMessage: 'NO_SUGGESTED_USER_TXN_INFO_ERROR'
+        }
+      ]
+    })
+  ],
+
+  methods: [
+    {
+      name: 'validate',
+      javaCode: `
+        java.util.List<foam.core.PropertyInfo> props = getClassInfo().getAxiomsByClass(foam.core.PropertyInfo.class);
+        for ( foam.core.PropertyInfo prop : props ) {
+          try {
+            prop.validateObj(x, this);
+          } catch ( IllegalStateException e ) {
+            throw e;
+          }
+        }
+
+        if ( ! this.getReviewed() ) {
+          throw new IllegalStateException("Must confirm all data entered has been reviewed and is correct.");
+        }
+      `
+    }
+  ]
+});

@@ -172,6 +172,12 @@ foam.CLASS({
       documentation: 'The token associated to the sent invitation',
       visibility: 'HIDDEN'
     },
+    {
+      class: 'Boolean',
+      name: 'isSigningOfficer',
+      documentation: 'Then invited user is a signing officer',
+      visibility: 'HIDDEN'
+    }
   ],
 
   methods: [

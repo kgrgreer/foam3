@@ -30,8 +30,8 @@ foam.CLASS({
 
       quote.addTransfer(id of account (Long), amount of transfer (Long) : adds a transfer to the transaction plan
 
-      quoteTxn(x, Transaction to sub plan) : makes it easy to build split planners. can call transactionPlannerDAO
-      and receive the best transaction in one line.
+      quoteTxn(x, Transaction to sub plan, whether or not to clear line items) : makes it easy to build split planners. can call transactionPlannerDAO
+      and receive the best transaction in one line, with or without also submitting lineitems.
 
 */
   methods: [

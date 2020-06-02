@@ -165,13 +165,17 @@ foam.CLASS({
       documentation: 'Takes care of recursive transactionPlannerDAO calls returns best txn',
       args: [
         { name: 'x', type: 'Context' },
-        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' },
+        { name: 'clearTLIs', type: 'Boolean' }
       ],
       type: 'net.nanopay.tx.model.Transaction',
       javaCode: `
         DAO d = (DAO) x.get("localTransactionPlannerDAO");
         TransactionQuote quote = new TransactionQuote();
         quote.setRequestTransaction((Transaction) txn.fclone());
+        if (clearTLIs) {
+          quote.getRequestTransaction().clearLineItems();
+        }
         quote = (TransactionQuote) d.put(quote);
         return quote.getPlan();
       `
@@ -181,13 +185,17 @@ foam.CLASS({
       documentation: 'Takes care of recursive transactionPlannerDAO calls returns ',
       args: [
         { name: 'x', type: 'Context' },
-        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' },
+        { name: 'clearTLIs', type: 'Boolean' }
       ],
       type: 'net.nanopay.tx.model.Transaction[]',
       javaCode: `
         DAO d = (DAO) x.get("localTransactionPlannerDAO");
         TransactionQuote quote = new TransactionQuote();
         quote.setRequestTransaction((Transaction) txn.fclone());
+        if (clearTLIs) {
+          quote.getRequestTransaction().clearLineItems();
+        }
         quote = (TransactionQuote) d.put(quote);
         return quote.getPlans();
       `
@@ -226,6 +234,23 @@ foam.CLASS({
         // To be filled out in extending class.
       `
     }
-  ]
+  ],
+  axioms: [
+      {
+        buildJavaClass: function(cls) {
+          cls.extras.push( `
+
+            public Transaction quoteTxn(X x, Transaction txn) {
+              return quoteTxn(x, txn, true);
+            }
+
+            public Transaction[]  multiQuoteTxn(X x, Transaction txn) {
+              return multiQuoteTxn(x, txn, true);
+            }
+
+        `);
+        }
+      }
+    ]
 });
 

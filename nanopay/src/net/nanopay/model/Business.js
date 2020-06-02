@@ -274,7 +274,28 @@ foam.CLASS({
       section: 'business',
       factory: function() {
         return this.Address.create();
-      }
+      },
+      validationPredicates: [
+        {
+          args: ['address', 'address$countryId', 'address$errors_',],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(e.DOT(net.nanopay.model.Business.ADDRESS, foam.nanos.auth.Address.COUNTRY_ID), 'CA'),
+              e.EQ(e.DOT(net.nanopay.model.Business.ADDRESS, foam.nanos.auth.Address.COUNTRY_ID), 'US')
+            );
+          },
+          errorString: 'This application does not currently support businesses outside of Canada and the USA. We are working hard to change this! If you are based outside of Canada and the USA, check back for updates.'
+        },
+        {
+          args: ['address', 'address$errors_'],
+          predicateFactory: function(e) {
+            return e.EQ(foam.mlang.IsValid.create({
+                arg1: net.nanopay.model.Business.ADDRESS
+              }), true);
+          },
+          errorString: 'Invalid address.'
+        }
+      ]
     },
     {
       class: 'Boolean',
@@ -477,7 +498,6 @@ foam.CLASS({
 
         // Allow businesses to read themselves.
         if ( user instanceof Business && SafetyUtil.equals(this.getId(), user.getId())) return;
-
         DAO junctionDAO = user.getEntities(x).getJunctionDAO();
 
         // There are decorators on agentJunctionDAO that need to access

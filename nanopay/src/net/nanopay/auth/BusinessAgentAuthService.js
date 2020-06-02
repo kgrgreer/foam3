@@ -84,7 +84,7 @@ foam.CLASS({
         realUser = (User) realUser.fclone();
         realUser.freeze();
 
-        Subject sessionSubject = new Subject.Builder(x).setUser(realUser).build();
+        Subject sessionSubject = new Subject.Builder(x).build();
         sessionSubject.setUser(entity);
 
         // Set user and agent objects into the session context and place into sessionDAO.

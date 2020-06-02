@@ -13,6 +13,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.EmailSetting',
     'foam.nanos.notification.NotificationSetting',
+    'foam.nanos.notification.sms.SMSSetting',
     'java.util.ArrayList'
   ],
 
@@ -26,9 +27,11 @@ foam.CLASS({
             UserUserJunction userUserJunction = (UserUserJunction) obj;
             NotificationSetting notificationSetting = new NotificationSetting();
             EmailSetting emailSetting = new EmailSetting();
+            SMSSetting smsSetting = new SMSSetting();
             try {
               userUserJunction.getNotificationSettingsForUserUsers(x).put(notificationSetting);
               userUserJunction.getNotificationSettingsForUserUsers(x).put(emailSetting);
+              userUserJunction.getNotificationSettingsForUserUsers(x).put(smsSetting);
             } catch ( Exception e ) {
               Logger logger = (Logger) x.get("logger");
               logger.error("Failed to create notification settings for " + "src:" + userUserJunction.getSourceId() + " target:" + userUserJunction.getTargetId() + ":" + e);

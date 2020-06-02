@@ -1,0 +1,13 @@
+p({
+  "class":"foam.nanos.theme.Theme",
+  "id":"D306F95E-4C4F-4C2B-BC5F-F67CFFE3EC98",
+  "name":"ablii",
+  "navigationRootMenu":"smeNavigation",
+  "settingsRootMenu":"smeSettings",
+  "logoRedirect":"sme.main.dashboard",
+  "defaultMenu":"sme.accountProfile.switch-business",
+  "disableCurrencyChoice": true,
+  "createdBy":1,
+  "createdByAgent":1,
+  "created":"2020-04-29T22:32:52.685Z"
+})

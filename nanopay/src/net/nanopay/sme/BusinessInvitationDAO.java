@@ -115,6 +115,7 @@ public class BusinessInvitationDAO
     tokenParams.put("businessId", business.getId());
     tokenParams.put("group", invite.getGroup());
     tokenParams.put("inviteeEmail", invite.getEmail());
+    tokenParams.put("isSigningOfficer", invite.getIsSigningOfficer());
 
     // Create token for user registration
     DAO tokenDAO = ((DAO) x.get("localTokenDAO")).inX(x);
@@ -138,6 +139,7 @@ public class BusinessInvitationDAO
       parameters.put("businessId", business.getId());
       parameters.put("group", invite.getGroup());
       parameters.put("inviteeEmail", invite.getEmail());
+      parameters.put("isSigningOfficer", invite.getIsSigningOfficer());
       DAO localUserDAO = ((DAO) x.get("localUserDAO")).inX(x);
       User invitee = (User) localUserDAO.find(invite.getInviteeId());
       joinBusiness.generateTokenWithParameters(x, invitee, parameters);

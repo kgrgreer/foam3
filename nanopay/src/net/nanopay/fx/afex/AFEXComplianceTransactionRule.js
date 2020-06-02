@@ -27,15 +27,7 @@ foam.CLASS({
         @Override
         public void execute(X x) {
           
-          if ( ! (obj instanceof AFEXBeneficiaryComplianceTransaction) ) {
-            return;
-          }
           AFEXBeneficiaryComplianceTransaction txn = (AFEXBeneficiaryComplianceTransaction) obj;
-
-          if ( txn.getStatus() != TransactionStatus.PENDING ) {
-            return;
-          }
-          
           AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
 
           Account sourceAccount = txn.findSourceAccount(x);

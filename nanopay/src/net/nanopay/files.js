@@ -22,6 +22,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/DigitalTransaction' },
   { name: 'net/nanopay/tx/SecurityTransaction' },
   { name: 'net/nanopay/tx/SummaryTransaction' },
+  { name: 'net/nanopay/tx/LiquidSummaryTransaction' },
   { name: 'net/nanopay/tx/CompositeTransaction' },
   { name: 'net/nanopay/tx/BulkTransaction' },
   { name: 'net/nanopay/tx/CreateExpediteApprovalRequest' },
@@ -190,7 +191,6 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/BalanceView', flags: ['web'] },
   { name: 'net/nanopay/ui/ExpandContainer', flags: ['web'] },
   { name: 'net/nanopay/ui/DataSecurityBanner', flags: ['web'] },
-  { name: 'net/nanopay/ui/ConnectSubMenu', flags: ['web'] },
 
   // Exchangeable
   { name: 'net/nanopay/exchangeable/Security' },
@@ -862,7 +862,6 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/Controller', flags: ['web'] },
   { name: 'net/nanopay/ui/CountdownView', flags: ['web'] },
   { name: 'net/nanopay/ui/NewPasswordView', flags: ['web'] },
-  { name: 'net/nanopay/ui/NanoConnectStyles', flags: ['web'] },
   { name: 'net/nanopay/ui/AccountRowView', flags: ['web'] },
   { name: 'net/nanopay/ui/AccountSelectionView', flags: ['web'] },
   { name: 'net/nanopay/ui/UserRowView', flags: ['web'] },
@@ -1472,6 +1471,51 @@ FOAM_FILES([
 
   // Fees
   { name: 'net/nanopay/tx/planner/fees/AbliiFeeRule' },
+
+  // crunch onboarding
+  { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerInformationData' },
+  { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerPersonalData' },
+  { name: 'net/nanopay/crunch/onboardingModels/AddSigningOfficerCapabilityOnPut' },
+  { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerQuestion' },
+  { name: 'net/nanopay/crunch/onboardingModels/BusinessHasNoSigningOfficers' },
+  { name: 'net/nanopay/crunch/onboardingModels/BusinessInformationData' },
+  { name: 'net/nanopay/crunch/onboardingModels/BusinessAddressData' },
+  { name: 'net/nanopay/crunch/onboardingModels/BusinessOwnershipData' },
+  { name: 'net/nanopay/crunch/onboardingModels/TransactionDetailsData' },
+  { name: 'net/nanopay/crunch/onboardingModels/InternationalBusinessInformationData' },
+  { name: 'net/nanopay/crunch/PrerequisiteCapabilityJunctionRefine' },
+  { name: 'net/nanopay/crunch/BusinessOwnershipToBeneficialOwnerDAO' },
+  { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerCapabilityInterceptPredicate' },
+  { name: 'net/nanopay/crunch/onboardingModels/SetBusinessOnboardedOnUCJPut' },
+
+  // crunch compliance
+  { name: 'net/nanopay/crunch/compliance/IsPendingCapabilityOfCertainCategory' },
+  { name: 'net/nanopay/crunch/compliance/PersonSanctionValidator' },
+  { name: 'net/nanopay/crunch/compliance/EntitySanctionValidator' },
+  { name: 'net/nanopay/crunch/compliance/BeneficialOwnerSanctionValidator' },
+  { name: 'net/nanopay/crunch/compliance/ReputOnboardingCapabilityOnBeneficialOwnerCompliancePassed' },
+  { name: 'net/nanopay/crunch/compliance/SecurefactSIDniValidator' },
+  { name: 'net/nanopay/crunch/compliance/SecurefactLEVValidator' },
+  { name: 'net/nanopay/crunch/compliance/UserComplianceApproval' },
+
+  // crunch acceptance
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/AbliiTermsAndConditions' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/AbliiPrivacyPolicy' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/CADAFEXTerms' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/USDAFEXTerms' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/NanopayInternationalPaymentsCustomerAgreement' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/CertifyOwnersPercent' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/CertifyBankAccountOwnership' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/TriPartyAgreementCAD' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/TriPartyAgreementUSD' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/DualPartyAgreementCAD' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/AFXArizonaDisclosure' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/AFXCaliforniaDisclosure' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/AFXColoradoDisclosure' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/AFXMassachusettsDisclosure' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/AFXNewYorkDisclosure' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/AFXWashingtonDisclosure' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/BaseAcceptanceDocumentCapability' },
 
   // msp
   { name: 'net/nanopay/msp/MspInfo' }

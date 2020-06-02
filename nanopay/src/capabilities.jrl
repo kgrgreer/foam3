@@ -1,11 +1,187 @@
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f",
-  "name":"viewCrunchAppStore",
-  "description":"Ability to view the CRUNCH App Store",
-  "notes":"When users sign up for an account, they are granted the capability to view the crunch app store and select the capabilities they want.",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-0",
+  "name":"Signing Officer?",
+  "of":"net.nanopay.crunch.onboardingModels.SigningOfficerQuestion",
+  "description":"Are you a Signing Officer?",
+  "notes":"this capability will intercept its permissions when there are no signingofficerjunctions belonging to the current business",
+  "version":"0",
+  "enabled":true,
+  "visible":true,
+  "permissionsIntercepted":[
+    "businessHasSigningOfficer"
+  ],
+  "interceptIf":{"class":"net.nanopay.crunch.onboardingModels.BusinessHasNoSigningOfficers"}
+})
+
+// note: capability.id = 554af38a-8225-87c8-dfdf-eeb15f71215f-1a5 is used specifically by AddSigningOfficerCapabilityOnPut.js
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5",
+  "name":"Personal Info for Signing Officer",
+  "of":"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData",
+  "description":"Unlock Signing Officer privileges",
   "version":"0",
   "enabled":true,
   "visible":false,
-  "permissionsGranted":["menu.read.appStore"]
+  "daoKey":"userDAO",
+  "contextDAOFindKey":"subject.realuser",
+  "reviewRequired":true,
+  "permissionsGranted":[
+    "businessinformationdata.rw.reviewed",
+    "businessaddressdata.rw.reviewed",
+    "businessownershipdata.rw.reviewed",
+    "transactiondetailsdata.rw.reviewed",
+    "internationalbusinessinformationdata.rw.reviewed",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.certifyownerspercent.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.dualpartyagreementcad.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.tripartyagreementcad.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.usdafexterms.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.nanopayinternationalpaymentscustomeragreement.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.certifybankaccountownership.section.reviewAgreementDocumentsSection","description",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxmassachusettsdisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxnewyorkdisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxwashingtondisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxcaliforniadisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxarizonadisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.tripartyagreementusd.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxcoloradodisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.abliitermsandconditions.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.abliiprivacypolicy.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.cadafexterms.section.reviewAgreementDocumentsSection"
+  ]
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-1",
+  "name":"Personal Info for Signing Officer",
+  "of":"net.nanopay.crunch.onboardingModels.SigningOfficerInformationData",
+  "description":"Unlock Signing Officer privileges",
+  "version":"0",
+  "enabled":true,
+  "visible":false,
+  "permissionsIntercepted": [
+    "businessinformationdata.rw.reviewed",
+    "businessaddressdata.rw.reviewed",
+    "businessownershipdata.rw.reviewed",
+    "transactiondetailsdata.rw.reviewed",
+    "internationalbusinessinformationdata.rw.reviewed",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.certifyownerspercent.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.dualpartyagreementcad.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.tripartyagreementcad.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.usdafexterms.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.nanopayinternationalpaymentscustomeragreement.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.certifybankaccountownership.section.reviewAgreementDocumentsSection","description",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxmassachusettsdisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxnewyorkdisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxwashingtondisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxcaliforniadisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxarizonadisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.tripartyagreementusd.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxcoloradodisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.abliitermsandconditions.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.abliiprivacypolicy.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.cadafexterms.section.reviewAgreementDocumentsSection"
+  ],
+  "interceptIf":{"class":"net.nanopay.crunch.onboardingModels.SigningOfficerCapabilityInterceptPredicate"}
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-4",
+  "name":"Business Details",
+  "of":"net.nanopay.crunch.onboardingModels.BusinessInformationData",
+  "version":"0",
+  "enabled":true,
+  "visible":false,
+  "daoKey":"businessDAO",
+  "contextDAOFindKey":"subject.user"
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-4-a",
+  "name":"Business Address",
+  "of":"net.nanopay.crunch.onboardingModels.BusinessAddressData",
+  "version":"0",
+  "enabled":true,
+  "visible":false,
+  "daoKey":"businessDAO",
+  "contextDAOFindKey":"subject.user"
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-5",
+  "name":"Extended Business Details",
+  "of":"net.nanopay.crunch.onboardingModels.InternationalBusinessInformationData",
+  "version":"0",
+  "enabled":true,
+  "visible":false,
+  "daoKey":"businessDAO",
+  "contextDAOFindKey":"subject.user"
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-6",
+  "name":"Transaction Details",
+  "of":"net.nanopay.crunch.onboardingModels.TransactionDetailsData",
+  "version":"0",
+  "enabled":true,
+  "visible":false,
+  "daoKey":"businessDAO",
+  "contextDAOFindKey":"subject.user"
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-7",
+  "name":"Business Owner Information",
+  "of":"net.nanopay.crunch.onboardingModels.BusinessOwnershipData",
+  "version":"0",
+  "enabled":true,
+  "visible":false,
+  "daoKey":"convertOwnerObjectDAO",
+  "reviewRequired":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-11",
+  "name":"Canadian Domestic Onboarding",
+  "description":"Unlock payments to Canada (CAD to CAD)",
+  "icon":"/images/ablii/CanadaCard.png",
+  "version":"0",
+  "enabled":true,
+  "visible":true,
+  "reviewRequired":true,
+  "keywords":["featured"]
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-12",
+  "name":"Canadian International Onboarding",
+  "description":"Unlock payments to USA and India",
+  "icon":"/images/ablii/InternationalCard.png",
+  "version":"0",
+  "enabled":true,
+  "visible":true,
+  "reviewRequired":true,
+  "keywords":["featured"]
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-13",
+  "name":"USA International & Domestic Onboarding",
+  "description":"Unlock payments",
+  "icon":"/images/ablii/AmericaCard.png",
+  "version":"0",
+  "enabled":true,
+  "visible":true,
+  "reviewRequired":true,
+  "keywords":["featured"]
 })

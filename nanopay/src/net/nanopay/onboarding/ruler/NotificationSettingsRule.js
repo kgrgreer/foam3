@@ -13,6 +13,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.EmailSetting',
     'foam.nanos.notification.NotificationSetting',
+    'foam.nanos.notification.sms.SMSSetting',
     'net.nanopay.model.Business'
   ],
 
@@ -26,10 +27,12 @@ foam.CLASS({
             User user = (User) obj;
             NotificationSetting notificationSetting = new NotificationSetting();
             EmailSetting emailSetting = new EmailSetting();
+            SMSSetting smsSetting = new SMSSetting();
             try {
               user.getNotificationSettings(x).put(notificationSetting);
               if ( ! ( user instanceof Business ) ) {
                 user.getNotificationSettings(x).put(emailSetting);
+                user.getNotificationSettings(x).put(smsSetting);
               }
             } catch ( Exception e ) {
               Logger logger = (Logger) x.get("logger");

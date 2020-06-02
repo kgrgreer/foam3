@@ -646,6 +646,29 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
+  "name":"localCapabilityDAO",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    import foam.dao.DAO;
+  
+    dao = new foam.dao.EasyDAO.Builder(x)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("liquidCapabilities")
+      .setGuid(true)
+      .setApprovableAwareEnabled(false)
+      .setOf(net.nanopay.liquidity.crunch.LiquidCapability.getOwnClassInfo())
+      .setAuthorize(false)
+      .build();
+    dao.addPropertyIndex(new foam.core.PropertyInfo[] { net.nanopay.liquidity.crunch.LiquidCapability.NAME });
+
+    return dao;
+  """,
+  "client":"{\"of\":\"net.nanopay.liquidity.crunch.LiquidCapability\"}"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
   "name":"capabilityDAO",
   "lazy":false,
   "serve":true,

@@ -24,6 +24,7 @@ foam.CLASS({
 
       COTransaction cashOut = new COTransaction();
       cashOut.copyFrom(requestTxn);
+      cashOut.setLineItems(requestTxn.getLineItems());
       cashOut.setName("Cash Out of "+cashOut.getSourceCurrency());
       // use destinations trust, need system context.
       TrustAccount trustAccount = TrustAccount.find(getX(), quote.getDestinationAccount());
