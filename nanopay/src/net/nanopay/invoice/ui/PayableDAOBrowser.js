@@ -45,7 +45,6 @@ foam.CLASS({
     }
     ^ .DAOBrowser {
       position: relative;
-      top: -40px;
     }
     ^ .net-nanopay-sme-ui-AbliiActionView-sync, ^ .net-nanopay-sme-ui-AbliiActionView-sync:hover:not(:disabled) {
       position: relative;

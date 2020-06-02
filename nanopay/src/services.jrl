@@ -109,19 +109,19 @@ p({
       "initParameters": {
         "CONTENT_SECURITY_POLICY": """
           default-src 'none';
-          child-src 'self';
-          worker-src 'self';
-          manifest-src 'self' /favicon/manifest.json;
-          connect-src 'self' data: blob: filesystem: ws:;
-          script-src 'self' https://cdn.plaid.com/link/v2/stable/link-initialize.js 'unsafe-eval' 'sha256-HY1JzEwuxkis4xx0ggY23gbYY/MCEAE1T6+OQnWS2vA=' 'sha256-NiNrLgJ8wbIXIi5saiR3XTd1Mxm4k0nju66GJsw4b9U=' 'sha256-FLYDXBkz4oo/H5jEfYXqAGYUwERY44OO1yznaMCdMiU=' 'sha256-G3UfiJBy6rwOk3glkBQuQDFA7IoCtiOT56gTh+IfNF0=';
-          style-src 'self' https://fonts.googleapis.com/css https://fonts.googleapis.com/icon data: chrome-extension-resource: 'unsafe-inline';
+          child-src 'self' https://cdn.plaid.com/link/ nanopay.net nanopay.net data: chrome-extension-resource:;
+          connect-src 'self' http://localhost:*/service/;
           font-src 'self' https://fonts.gstatic.com data: chrome-extension-resource:;
           img-src 'self' data: blob: filesystem:;
+          manifest-src 'self';
           media-src * data: blob: filesystem:;
           object-src 'self' data: blob: filesystem:;
-          frame-src 'self' https://cdn.plaid.com/link/ nanopay.net nanopay.net data: chrome-extension-resource:;
+          prefetch-src 'self' https://cdn.plaid.com/link/;
           report-uri /service/CSPReportWebAgent;
-        """
+          script-src 'self' https://cdn.plaid.com/link/v2/stable/link-initialize.js 'unsafe-eval' 'sha256-HY1JzEwuxkis4xx0ggY23gbYY/MCEAE1T6+OQnWS2vA=' 'sha256-NiNrLgJ8wbIXIi5saiR3XTd1Mxm4k0nju66GJsw4b9U=' 'sha256-FLYDXBkz4oo/H5jEfYXqAGYUwERY44OO1yznaMCdMiU=' 'sha256-G3UfiJBy6rwOk3glkBQuQDFA7IoCtiOT56gTh+IfNF0=';
+          style-src 'self' https://fonts.googleapis.com/css https://fonts.googleapis.com/icon data: chrome-extension-resource: 'unsafe-inline';
+          worker-src 'self';
+          """
       }
     }]
   }

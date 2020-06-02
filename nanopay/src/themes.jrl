@@ -3,12 +3,6 @@ p({
   "id":"06B35BA7-C672-4DBC-8788-14922B704DBF",
   "name":"nanopay",
   "appName":"nanopay",
-  "loginImage": "",
-  "navigationRootMenu":"",
-  "settingsRootMenu":"settings",
-  "logoRedirect":"admin.data",
-  "description":"nanopay",
-  "defaultMenu":"admin.data",
   "largeLogoEnabled": true,
   "largeLogo": "images/nanopay_blue_white_206x42.png",
   "logoBackgroundColour":"#202341",
@@ -18,46 +12,6 @@ p({
   "primary3":"#406dea",
   "primary4":"#a7beff",
   "primary5":"#e5f1fc",
-  "approval1":"#19402e",
-  "approval2":"#117a41",
-  "approval3":"#32bf5e",
-  "approval4":"#b8e5b3",
-  "approval5":"#e2f2dd",
-  "warning1":"#816819",
-  "warning2":"#c1ae12",
-  "warning3":"#eedc00",
-  "warning4":"#fbe88f",
-  "warning5":"#fdf8de",
-  "destructive1":"#631414",
-  "destructive2":"#a61414",
-  "destructive3":"#d9170e",
-  "destructive4":"#f79393",
-  "destructive5":"#fbedec",
-  "grey1":"#5e6061",
-  "grey2":"#9ba1a6",
-  "grey3":"#cbcfd4",
-  "grey4":"#e7eaec",
-  "grey5":"#f5f7fa",
-  "black":"#1e1f21",
-  "white":"#ffffff",
-  "inputHeight":"32px",
-  "inputVerticalPadding":"6px",
-  "inputHorizontalPadding":"8px",
-  "topNavigation":"net.nanopay.ui.TopSideNavigation",
-  "customCSS":
-  """
-    .login-wrapper {
-      padding-top: 60px;
-      margin-left: 250px;
-    }
-    .footer-wrapper {
-      margin-left: 250px;
-    }
-    .foam-u2-DateView {
-      font-family: Roboto, 'Helvetica Neue', helvetica, sans-serif;
-      letter-spacing: 0.2px;
-    }
-  """,
   "createdBy":1,
   "createdByAgent":1,
   "created":"2020-04-29T22:32:52.685Z"
@@ -68,13 +22,13 @@ p({
   "id":"A7FBB672-D395-4C30-B5EE-F737B8079BCD",
   "name":"ablii",
   "appName":"Ablii",
-  "loginImage": "images/sign_in_illustration.png",
-  "navigationRootMenu":"smeNavigation",
-  "settingsRootMenu":"smeSettings",
-  "disableCurrencyChoice": true,
-  "logoRedirect":"sme.main.dashboard",
   "description":"Ablii",
-  "defaultMenu":"sme.accountProfile.switch-business",
+  "navigationRootMenu":"",
+  "settingsRootMenu":"settings",
+  "logoRedirect":"admin.data",
+  "description":"nanopay",
+  "defaultMenu":"admin.data",
+  "loginImage": "images/sign_in_illustration.png",
   "logo":"images/ablii-logo.svg",
   "largeLogo":"images/ablii-wordmark.svg",
   "logoBackgroundColour":"transparent",
@@ -112,6 +66,11 @@ p({
   "inputHeight":"40px",
   "inputVerticalPadding":"10px",
   "inputHorizontalPadding":"8px",
+  "customCSS":"""
+    .login-wrapper {
+      margin-left: 250px;
+    }
+  """,
   "createdBy":1,
   "createdByAgent":1,
   "created":"2020-04-29T22:32:52.685Z"

@@ -191,7 +191,6 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/BalanceView', flags: ['web'] },
   { name: 'net/nanopay/ui/ExpandContainer', flags: ['web'] },
   { name: 'net/nanopay/ui/DataSecurityBanner', flags: ['web'] },
-  { name: 'net/nanopay/ui/ConnectSubMenu', flags: ['web'] },
 
   // Exchangeable
   { name: 'net/nanopay/exchangeable/Security' },
@@ -863,7 +862,6 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/Controller', flags: ['web'] },
   { name: 'net/nanopay/ui/CountdownView', flags: ['web'] },
   { name: 'net/nanopay/ui/NewPasswordView', flags: ['web'] },
-  { name: 'net/nanopay/ui/NanoConnectStyles', flags: ['web'] },
   { name: 'net/nanopay/ui/AccountRowView', flags: ['web'] },
   { name: 'net/nanopay/ui/AccountSelectionView', flags: ['web'] },
   { name: 'net/nanopay/ui/UserRowView', flags: ['web'] },
