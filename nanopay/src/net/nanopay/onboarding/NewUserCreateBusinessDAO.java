@@ -20,6 +20,7 @@ import foam.util.Auth;
 import foam.util.SafetyUtil;
 import net.nanopay.admin.model.AccountStatus;
 import net.nanopay.model.Business;
+import net.nanopay.model.BusinessUserJunction;
 import net.nanopay.model.Invitation;
 import net.nanopay.model.InvitationStatus;
 
@@ -33,6 +34,7 @@ import net.nanopay.model.InvitationStatus;
 public class NewUserCreateBusinessDAO extends ProxyDAO {
   private DAO localBusinessDAO_;
   private DAO agentJunctionDAO_;
+  private DAO signingOfficerJunctionDAO_;
   private DAO tokenDAO_;
   private DAO invitationDAO_;
 
@@ -40,6 +42,7 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
     super(x, delegate);
     localBusinessDAO_ = (DAO) x.get("localBusinessDAO");
     agentJunctionDAO_ = (DAO) x.get("agentJunctionDAO");
+    signingOfficerJunctionDAO_ = (DAO) x.get("signingOfficerJunctionDAO");
     tokenDAO_ = (DAO) x.get("localTokenDAO");
     invitationDAO_ = (DAO) x.get("businessInvitationDAO");
   }
@@ -92,6 +95,7 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
       if ( params.containsKey("group") && params.containsKey("businessId") ) {
         String group = (String) params.get("group");
         long businessId = (long) params.get("businessId");
+        boolean isSigningOfficer = params.containsKey("isSigningOfficer") ? (boolean) params.get("isSigningOfficer") : false;
         UserUserJunction junction;
 
         if ( businessId != 0 ) {
@@ -110,6 +114,14 @@ public class NewUserCreateBusinessDAO extends ProxyDAO {
             .build();
 
           agentJunctionDAO_.inX(sysContext).put(junction);
+
+          if ( isSigningOfficer ) {
+            signingOfficerJunctionDAO_.inX(sysContext).put(
+              new BusinessUserJunction.Builder(x)
+                .setSourceId(business.getId())
+                .setTargetId(user.getId())
+                .build());
+          }
 
           // Get a context with the Business in it so we can update the invitation.
           X businessContext = Auth.sudo(sysContext, business);

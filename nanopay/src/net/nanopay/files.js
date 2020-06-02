@@ -1474,6 +1474,49 @@ FOAM_FILES([
   // Fees
   { name: 'net/nanopay/tx/planner/fees/AbliiFeeRule' },
 
+  // crunch onboarding
+  { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerInformationData' },
+  { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerPersonalData' },
+  { name: 'net/nanopay/crunch/onboardingModels/AddSigningOfficerCapabilityOnPut' },
+  { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerQuestion' },
+  { name: 'net/nanopay/crunch/onboardingModels/BusinessHasNoSigningOfficers' },
+  { name: 'net/nanopay/crunch/onboardingModels/BusinessInformationData' },
+  { name: 'net/nanopay/crunch/onboardingModels/BusinessAddressData' },
+  { name: 'net/nanopay/crunch/onboardingModels/BusinessOwnershipData' },
+  { name: 'net/nanopay/crunch/onboardingModels/TransactionDetailsData' },
+  { name: 'net/nanopay/crunch/onboardingModels/InternationalBusinessInformationData' },
+  { name: 'net/nanopay/crunch/PrerequisiteCapabilityJunctionRefine' },
+  { name: 'net/nanopay/crunch/BusinessOwnershipToBeneficialOwnerDAO' },
+  { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerCapabilityInterceptPredicate' },
+  { name: 'net/nanopay/crunch/onboardingModels/SetBusinessOnboardedOnUCJPut' },
+
+  // crunch compliance
+  { name: 'net/nanopay/crunch/compliance/IsPendingCapabilityOfCertainCategory' },
+  { name: 'net/nanopay/crunch/compliance/PersonSanctionValidator' },
+  { name: 'net/nanopay/crunch/compliance/EntitySanctionValidator' },
+  { name: 'net/nanopay/crunch/compliance/SecurefactSIDniValidator' },
+  { name: 'net/nanopay/crunch/compliance/SecurefactLEVValidator' },
+  { name: 'net/nanopay/crunch/compliance/UserComplianceApproval' },
+
+  // crunch acceptance
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/AbliiTermsAndConditions' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/AbliiPrivacyPolicy' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/CADAFEXTerms' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/USDAFEXTerms' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/NanopayInternationalPaymentsCustomerAgreement' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/CertifyOwnersPercent' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/CertifyBankAccountOwnership' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/TriPartyAgreementCAD' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/TriPartyAgreementUSD' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/DualPartyAgreementCAD' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/AFXArizonaDisclosure' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/AFXCaliforniaDisclosure' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/AFXColoradoDisclosure' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/AFXMassachusettsDisclosure' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/AFXNewYorkDisclosure' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/AFXWashingtonDisclosure' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/BaseAcceptanceDocumentCapability' },
+
   // msp
   { name: 'net/nanopay/msp/MspInfo' }
 ]);

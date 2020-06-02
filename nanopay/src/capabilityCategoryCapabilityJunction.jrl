@@ -1,0 +1,37 @@
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "app",
+"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-11"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "onboarding",
+"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-11"
+})
+
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "app",
+"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-12"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "onboarding",
+"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-12"
+})
+
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "app",
+"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-13"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "onboarding",
+"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-13"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "signingOfficerOnboarding",
+"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-1a5"
+})

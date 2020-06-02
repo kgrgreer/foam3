@@ -8,7 +8,6 @@ foam.CLASS({
   javaImports: [
     'foam.core.FObject',
     'foam.dao.DAO',
-    'foam.mlang.MLang',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.AuthenticationException',
     'foam.nanos.auth.Subject',
@@ -18,16 +17,15 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
     'foam.util.Emails.EmailsUtility',
-
+    'net.nanopay.model.Business',
+    'net.nanopay.model.BusinessUserJunction',
+    'net.nanopay.model.Invitation',
+    'net.nanopay.model.InvitationStatus',
     'java.util.Calendar',
     'java.util.HashMap',
     'java.util.Map',
     'java.util.UUID',
-
-    'net.nanopay.model.Business',
-    'net.nanopay.model.Invitation',
-    'net.nanopay.model.InvitationStatus',
-    'static foam.mlang.MLang.*',
+    'static foam.mlang.MLang.*'
   ],
 
   methods: [
@@ -80,11 +78,11 @@ foam.CLASS({
         DAO tokenDAO = (DAO) x.get("localTokenDAO");
         Calendar calendar = Calendar.getInstance();
 
-        FObject result = tokenDAO.find(MLang.AND(
-          MLang.EQ(Token.USER_ID, user.getId()),
-          MLang.EQ(Token.PROCESSED, false),
-          MLang.GT(Token.EXPIRY, calendar.getTime()),
-          MLang.EQ(Token.DATA, token)
+        FObject result = tokenDAO.find(AND(
+          EQ(Token.USER_ID, user.getId()),
+          EQ(Token.PROCESSED, false),
+          GT(Token.EXPIRY, calendar.getTime()),
+          EQ(Token.DATA, token)
         ));
 
         if ( result == null ) throw new RuntimeException("Token not found.");
@@ -99,6 +97,7 @@ foam.CLASS({
         long businessId = (long) parameters.get("businessId");
         DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
         Business business = (Business) localBusinessDAO.inX(x).find(businessId);
+        boolean isSigningOfficer = parameters.containsKey("isSigningOfficer") ? (boolean) parameters.get("isSigningOfficer") : false;
 
         try {
           DAO agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
@@ -108,6 +107,13 @@ foam.CLASS({
             .setGroup(business.getBusinessPermissionId() + "." + (String) parameters.get("group"))
             .build();
           agentJunctionDAO.put(junction);
+
+          DAO signingOfficerJunctionDAO = (DAO) x.get("signingOfficerJunctionDAO");
+          BusinessUserJunction soJunction = new BusinessUserJunction.Builder(x)
+            .setSourceId(business.getId())
+            .setTargetId(user.getId())
+            .build();
+          signingOfficerJunctionDAO.put(soJunction);
         } catch (Throwable err) {
           Logger logger = (Logger) x.get("logger");
           logger.debug(String.format("An error occurred while trying to add user %d to business %d.", user.getId(), businessId), err);

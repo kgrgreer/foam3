@@ -6,7 +6,8 @@ foam.CLASS({
   documentation: `Model used for registering/creating an ABLII user.`,
 
   imports: [
-    'acceptanceDocumentService'
+    'acceptanceDocumentService',
+    'userCapabilityJunctionDAO'
   ],
 
   messages: [

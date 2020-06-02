@@ -320,6 +320,41 @@ for(int j = 0; j < emails.length; j+=2) {
 }
   """
 })
+p({
+  "class":"foam.nanos.script.Script",
+  "id":"setupAbliiTestUCJ",
+  "status":2,
+  "code":"""
+// Parameters
+userId = 8007;
+onboardingGUID = "554af38a-8225-87c8-dfdf-eeb15f71215f";
+
+import foam.nanos.auth.Address;
+import foam.nanos.crunch.UserCapabilityJunction;
+import net.nanopay.crunch.onboardingModels.BusinessInformationData;
+import net.nanopay.crunch.onboardingModels.InternationalBusinessInformationData;
+
+ucj = x.get("userCapabilityJunctionDAO");
+
+entryBuilder = new UserCapabilityJunction.Builder(x)
+  .setSourceId(userId);
+data1 = new BusinessInformationData.Builder(x)
+  // Test String
+  .setOperatingBusinessName("Business McBusinessFace")
+  // Test FObjectProperty
+  .setAddress(new Address.Builder(x)
+    .setStreetName("Street McStreetFace")
+    .build())
+  .build();
+ucj.put(entryBuilder.setTargetId(onboardingGUID+"-4")
+  .setData(data1).build());
+data2 = new InternationalBusinessInformationData.Builder(x)
+  .setCountryOfBusinessRegistration("US")
+  .build();
+ucj.put(entryBuilder.setTargetId(onboardingGUID+"-5")
+  .setData(data2).build());
+  """
+})
 p({"class":"foam.nanos.script.Script","id":"testKotakPayment","description":"submit a kotak payment","code":"import net.nanopay.kotak.Test;\nimport net.nanopay.kotak.KotakService;\nimport net.nanopay.kotak.KotakPaymentProcessor;\n\nKotakService kotakService = new KotakService(x);\n\nTest test = new Test();\n\n// kotakService, msgSource, clientCode, myProdCode, payMode, senderAccountNo, txnAmnt, beneAcctNo, beneName,\n// IFSCCode, remitterName, beneACType, remitterAddress, remitterAcNo, remitPurpose\n\n// testing\ntest.paymentTest(kotakService, \"NANOPAY\", \"TESTAPI\", \"NETPAY\", \"IMPS\", \"9411128990\", 500, \"9111175690\", \"HELLO API\", \n                 \"ICIC0000361\", \"NANOPAY\", \"SAVING\", \"905 King St W Suite 300\", \"9411128990\", \"TRANSFER_FROM_SELF\");\n\nprint(\"paymentMessageId: \" + test.paymentMessageId);\nprint(\"paymentResponseStatusCode: \" + test.paymentResponseStatusCode);\nprint(\"paymentResponseStatusRem: \" + test.paymentResponseStatusRem);\nprint(\"done\");"})
 p({"class":"foam.nanos.script.Script","id":"testKotakStatusChecking","description":"check the status of a kotak payment","code":"import net.nanopay.kotak.Test;\nimport net.nanopay.kotak.KotakService;\nimport net.nanopay.kotak.KotakPaymentProcessor;\n\nKotakService kotakService = new KotakService(x);\nTest test = new Test();\n\n// kotakService, paymentMessageId, msgSrc, clientCode\n// testing\ntest.reversalTest(kotakService, \"7ea9bfd303e04312\", \"NANOPAY\", \"TESTAPI\");\n\nprint(\"transactionStatusCode: \" + test.transactionStatusCode);\nprint(\"transactionStatusDesc: \" + test.transactionStatusDesc);\nprint(\"done\");"})
 p({"class":"foam.nanos.script.Script","id":"Enable Rules for Compliance","status":2,"code":"import foam.dao.DAO;\nimport foam.dao.ArraySink;\nimport foam.nanos.ruler.Rule;\n\nDAO ruleDAO = x.get(\"ruleDAO\");\n\nrules = (ruleDAO.select(new ArraySink())).getArray();\n\nfor (Rule rule : rules) {\n\n  print(\"Checking: \" + rule.id + \" - \" + rule.name + \": \" + rule.enabled);\n  if (rule.enabled)\n    continue;\n\n  // Enable Compliance Rules for Onboarding (TX Rule is not enabled!)\n  if (rule.id == 1100 || // SIDni\n      rule.id == 1101 || // LEV\n      rule.id == 1200 || // DJ KYC User\n      rule.id == 1201 || // DJ KYC Business\n      rule.id == 1202 || // DJ Beneficial Owner\n      rule.id == 1203 || // DJ Approval Request\n      rule.id == 1300 || // User Final Rule\n      rule.id == 1301 || // Business Final Fule\n      rule.id == 1400 || // IDM Consumer Signup\n      rule.id == 1410 || // IDM Login\n      rule.id == 1420 || // IDM Merchant\n      rule.id == 1430    // IDM Consumer\n     ) {\n\n    // clone the rule to unfreeze it and resubmit the updated rule\n    rule = rule.fclone();\n    rule.enabled = true;\n    rule = ruleDAO.put(rule);\n    print(\"Updated: \" + rule);\n  }\n}","output":""})

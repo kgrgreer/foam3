@@ -8,6 +8,7 @@ import foam.nanos.approval.ApprovalRequest;
 import foam.nanos.approval.ApprovableAware;
 import foam.nanos.approval.ApprovalStatus;
 import foam.nanos.auth.LifecycleState;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.auth.UserQueryService;
 import foam.nanos.logger.Logger;
@@ -109,7 +110,7 @@ public class ApprovalTestExecutor extends LiquidTestExecutor {
   }
 
   private ApprovalRequest getRequest(X x, Approvable approvable) {
-    User xUser = (User) x.get("user");
+    User xUser = ((Subject) x.get("subject")).getUser();
 
     List approvalRequests = ((ArraySink) getApprovalRequestDAO(x).inX(x).where(AND(
       EQ(ApprovalRequest.OBJ_ID, approvable.getId()),

@@ -333,19 +333,6 @@ public class AscendantFXReportsWebAgent extends ProxyBlobService implements WebA
       list.add(new ListItem("Who do you market your products and services to? " + targetCustomers));
       list.add(new ListItem("Source of Funds (Where did you acquire the funds used to pay us?): " + sourceOfFunds));
       list.add(new ListItem("Transaction purpose: " + purposeOfTransactions));
-      if ( purposeOfTransactions.equals("Other") ) {
-        String otherPurposeOfTransactions;
-        if ( business.getSuggestedUserTransactionInfo() != null ) {
-          if ( ! SafetyUtil.isEmpty(business.getSuggestedUserTransactionInfo().getOtherTransactionPurpose()) ) {
-            otherPurposeOfTransactions = business.getSuggestedUserTransactionInfo().getOtherTransactionPurpose();
-          } else {
-            otherPurposeOfTransactions = "N/A";
-          }
-        } else {
-          otherPurposeOfTransactions = "N/A";
-        }
-        list.add(new ListItem("Other transaction purpose: " + otherPurposeOfTransactions));
-      }
       list.add(new ListItem("Annual gross sales: " + baseCurrency + " " + annualRevenue));
       list.add(new ListItem("Transfers: "));
       List domesticSubList = new List(true, false, 20);

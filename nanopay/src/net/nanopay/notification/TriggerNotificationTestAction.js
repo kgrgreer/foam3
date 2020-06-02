@@ -24,7 +24,7 @@ foam.CLASS({
          agency.submit(x, new ContextAgent() {
             @Override
             public void execute(X x) {
-              User user = ((Subject) x.get("user")).getUser();
+              User user = ((Subject) x.get("subject")).getUser();
 
               DAO localUserDAO = (DAO) x.get("localUserDAO");
               DAO notificationDAO = (DAO) x.get("localNotificationDAO");

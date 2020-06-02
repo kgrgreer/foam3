@@ -1,0 +1,23 @@
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "app",
+  "name": "Premium Feature"
+})
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "currency",
+  "name": "Payment Corridor",
+  "visible": false
+})
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "onboarding",
+  "name": "Onboarding Your Business",
+  "visible": false
+})
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "signingOfficerOnboarding",
+  "name": "Onboarding A Signing Officer",
+  "visible": false
+})
