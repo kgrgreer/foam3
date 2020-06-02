@@ -180,23 +180,24 @@ public class TransactionBenchmark
       bank.setOwner(admin.getId());
       bank.setStatus(BankAccountStatus.VERIFIED);
       bank.setLifecycleState(LifecycleState.ACTIVE);
+      bank.setStatus(BankAccountStatus.VERIFIED);
       bank = (BankAccount) accountDAO_.put_(x, bank);
     }
 
-    // if ( bank.getStatus() != BankAccountStatus.VERIFIED ) {
-    //   bank = (BankAccount) bank.fclone();
-    //   bank.setStatus(BankAccountStatus.VERIFIED);
-    //   bank = (BankAccount) accountDAO_.put_(x, bank);
-    // }
+    if ( bank.getStatus() != BankAccountStatus.VERIFIED ) {
+      bank = (BankAccount) bank.fclone();
+      bank.setStatus(BankAccountStatus.VERIFIED);
+      bank = (BankAccount) accountDAO_.put_(x, bank);
+    }
 
-    // TrustAccount trust = (TrustAccount) accountDAO_.find(TRUST_ID);
-    // if ( trust == null ) {
-    //   trust = new TrustAccount();
-    //   trust.setId(TRUST_ID);
-    //   trust.setReserveAccount(bank.getId());
-    //   trust.setLifecycleState(LifecycleState.ACTIVE);
-    //   trust = (TrustAccount) accountDAO_.put(trust);
-    // }
+    TrustAccount trust = (TrustAccount) accountDAO_.find(TRUST_ID);
+    if ( trust == null ) {
+      trust = new TrustAccount();
+      trust.setId(TRUST_ID);
+      trust.setReserveAccount(bank.getId());
+      trust.setLifecycleState(LifecycleState.ACTIVE);
+      trust = (TrustAccount) accountDAO_.put(trust);
+    }
 
     for ( long i = 1; i <= MAX_USERS; i++ ) {
       User user = null;

@@ -59,7 +59,7 @@ p({
         "CONTENT_SECURITY_POLICY": """
           default-src 'none';
           child-src 'self' https://cdn.plaid.com/link/ nanopay.net nanopay.net data: chrome-extension-resource:;
-          connect-src 'self' http://localhost:*/service/ http://mm1:*/service/ http://mm2:*/service/ http://mm3:*/service/ http://mm4:*/service/;
+          connect-src 'self' http://localhost:*/service/ http://mm1:*/service/ http://mm2:*/service/ http://mm3:*/service/ http://mm4:*/service/ http://aws-mm1:*/service/ http://aws-mm2:*/service/ http://aws-mm3:*/service/ http://aws-mm4:*/service/;
           font-src 'self' https://fonts.gstatic.com data: chrome-extension-resource:;
           img-src 'self' data: blob: filesystem:;
           manifest-src 'self';
