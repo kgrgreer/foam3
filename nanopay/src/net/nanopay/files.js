@@ -511,6 +511,7 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/ui/RevokeInviteModal', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/SendMoneyView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/SubMenu', flags: ['web'] },
+  { name: 'net/nanopay/ui/ConnectSubMenu', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/TransactionView', flags: ['web'] },
   { name: 'net/nanopay/tx/ui/TransactionsAccountsView', flags: ['web'] },
   { name: 'net/nanopay/admin/ui/TransactionDetailView', flags: ['web'] },

@@ -14,7 +14,24 @@ p({
   "primary5":"#e5f1fc",
   "createdBy":1,
   "createdByAgent":1,
-  "created":"2020-04-29T22:32:52.685Z"
+  "created":"2020-04-29T22:32:52.685Z",
+  "customCSS":"""
+    .login-wrapper {
+      margin-left: 250px;
+    }
+    .foam-u2-stack-StackView {
+      margin: auto;
+      overflow: scroll;
+      height: calc(100vh - 150px);
+    }
+    .net-nanopay-ui-Controller {
+      overflow: hidden;
+    }
+    .foam-comics-BrowserView {
+      width: 95%;
+      margin: auto;
+    }
+  """,
 })
 
 p({
@@ -69,6 +86,19 @@ p({
   "customCSS":"""
     .login-wrapper {
       margin-left: 250px;
+    }
+    .foam-u2-stack-StackView {
+      margin: auto;
+      padding-bottom: 65px;
+      overflow: scroll;
+      height: calc(100vh - 100px);
+    }
+    .net-nanopay-ui-Controller {
+      overflow: hidden;
+    }
+    .foam-comics-BrowserView {
+      width: 72%;
+      margin: auto;
     }
   """,
   "createdBy":1,

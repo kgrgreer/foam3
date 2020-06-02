@@ -18,6 +18,7 @@ foam.CLASS({
       display: flex;
       align-items: center;
       z-index: 949;
+      position: fixed;
       bottom: 0;
       justify-content: flex-end;
       background-color: /*%PRIMARY1%*/ #2e2379;

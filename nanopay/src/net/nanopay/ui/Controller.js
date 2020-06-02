@@ -49,6 +49,7 @@ foam.CLASS({
     'net.nanopay.sme.ui.VerifyEmailView',
     'net.nanopay.ui.banner.BannerData',
     'net.nanopay.ui.banner.BannerMode',
+    'net.nanopay.ui.ConnectSubMenu',
     'net.nanopay.ui.modal.ModalStyling',
     'net.nanopay.ui.modal.SessionTimeoutModal',
     'net.nanopay.ui.style.AppStyles',
@@ -154,11 +155,6 @@ foam.CLASS({
     .foam-flow-Document a {
       color: rgb(0, 153, 229);
       text-decoration-line: none;
-    }
-
-    .foam-u2-stack-StackView {
-      overflow: scroll;
-      height: calc(100vh - 65px);
     }
   `,
 
@@ -559,6 +555,7 @@ foam.CLASS({
         this.BankPadAuthorization.create();
 
         this.__subContext__.register(this.AbliiActionView, 'foam.u2.ActionView');
+        this.__subContext__.register(this.ConnectSubMenu, 'foam.nanos.menu.SubMenu');
         this.__subContext__.register(this.SMEWizardOverview, 'net.nanopay.ui.wizard.WizardOverview');
         this.__subContext__.register(this.SMEModal, 'foam.u2.dialog.Popup');
         this.__subContext__.register(this.SuccessPasswordView, 'foam.nanos.auth.resetPassword.SuccessView');
