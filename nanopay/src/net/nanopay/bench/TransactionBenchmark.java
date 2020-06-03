@@ -17,6 +17,7 @@ import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
 import foam.nanos.bench.Benchmark;
 import foam.nanos.auth.LifecycleState;
+import foam.nanos.logger.PrefixLogger;
 import foam.nanos.logger.Logger;
 import foam.nanos.ruler.RuleGroup;
 import net.nanopay.account.Account;
@@ -53,10 +54,10 @@ public class TransactionBenchmark
   protected Boolean disableRules_ = false;
 
   // Alterna
-  //  protected Long INSTITUTION_ID = 24L;
+  protected Long INSTITUTION_ID = 35L;
   protected String INSTITUTION_NUMBER = "123";
-  //  protected Long BRANCH_ID = 1L;
-  protected String BRANCH_NUMBER = "12345";
+  protected Long BRANCH_ID = 130L;
+  protected String BRANCH_NUMBER = "00646";
   protected Long RESERVE_ACCOUNT_ID = 7L;
   protected String RESERVE_ACCOUNT_NUMBER = "2131412443534534";
   protected Long TRUST_ID = 1L;
@@ -75,7 +76,7 @@ public class TransactionBenchmark
 
   @Override
   public void teardown(X x, java.util.Map stats) {
-    Logger logger = (Logger) x.get("logger");
+    logger_.info("teardown");
     DAO dao = (DAO) x.get("localTransactionDAO");
     Count txns = (Count) dao.select(new Count());
     stats.put("Transactions (M)", (txns.getValue() / 1000.0));
@@ -107,7 +108,7 @@ public class TransactionBenchmark
         // nop
       }
     }
-    logger.info(this.getClass().getSimpleName(), "teardown", "counts", sb.toString());
+    logger_.info("teardown", "counts", sb.toString());
 
     if ( purge_ ) {
       while ( dao != null &&
@@ -117,12 +118,12 @@ public class TransactionBenchmark
           Count before = (Count) mdao.select(new Count());
           mdao.removeAll();
           Count after = (Count) mdao.select(new Count());
-          logger.info(this.getClass().getSimpleName(), "teardown", "purge", (before.getValue() - after.getValue()));
+          logger_.info("teardown", "purge", (before.getValue() - after.getValue()));
           break;
         } else if ( dao instanceof foam.dao.ProxyDAO ) {
           dao = ((foam.dao.ProxyDAO) dao).getDelegate();
         } else {
-          logger.info(this.getClass().getSimpleName(), "teardown", "purge", "FAILED");
+          logger_.info("teardown", "purge", "FAILED");
           break;
         }
       }
@@ -134,8 +135,11 @@ public class TransactionBenchmark
     AppConfig config = (AppConfig) x.get("appConfig");
     if ( config.getMode() == foam.nanos.app.Mode.PRODUCTION ) return;
 
-    logger_ = (Logger) x.get("logger");
-    logger_.info(this.getClass().getSimpleName(), "setup");
+    logger_ = new PrefixLogger(new Object[] {
+        this.getClass().getSimpleName()
+      }, (Logger) x.get("logger"));
+
+    logger_.info("setup");
     System.gc();
 
     accountDAO_ = (DAO) x.get("localAccountDAO");
@@ -150,32 +154,32 @@ public class TransactionBenchmark
 
     BankAccount bank = (BankAccount) accountDAO_.find(RESERVE_ACCOUNT_ID);
     if ( bank == null ) {
-    //   Institution institution = (Institution) institutionDAO_.find(INSTITUTION_ID);
-    //   if ( institution == null ) {
-    //     institution = new Institution.Builder(x)
-    //       .setId(INSTITUTION_ID)
-    //       .setCountryId("CA")
-    //       .setInstitutionNumber(INSTITUTION_NUMBER)
-    //       .build();
-    //     institution = (Institution) institutionDAO_.put_(x, institution);
-    //   }
+      Institution institution = (Institution) institutionDAO_.find(INSTITUTION_ID);
+      if ( institution == null ) {
+        institution = new Institution.Builder(x)
+          .setId(INSTITUTION_ID)
+          .setCountryId("CA")
+          .setInstitutionNumber(INSTITUTION_NUMBER)
+          .build();
+        institution = (Institution) institutionDAO_.put_(x, institution);
+      }
 
-    //   Branch branch = (Branch) branchDAO_.find(BRANCH_ID);
-    //   if ( branch == null ) {
-    //     branch = new Branch.Builder(x)
-    //       .setId(BRANCH_ID)
-    //       .setInstitution(institution.getId())
-    //       .setBranchId(BRANCH_NUMBER)
-    //       .build();
-    //     branch = (Branch) branchDAO_.put_(x, branch);
-    //   }
+      Branch branch = (Branch) branchDAO_.find(BRANCH_ID);
+      if ( branch == null ) {
+        branch = new Branch.Builder(x)
+          .setId(BRANCH_ID)
+          .setInstitution(institution.getId())
+          .setBranchId(BRANCH_NUMBER)
+          .build();
+        branch = (Branch) branchDAO_.put_(x, branch);
+      }
 
       bank = new CABankAccount();
       bank.setId(RESERVE_ACCOUNT_ID);
       bank.setName("Reserve");
-      //      bank.setBranch(branch.getId());
-      bank.setInstitutionNumber(INSTITUTION_NUMBER);
-      bank.setBranchId(BRANCH_NUMBER);
+      bank.setBranch(branch.getId());
+      //bank.setInstitutionNumber(INSTITUTION_NUMBER);
+      //bank.setBranchId(BRANCH_NUMBER);
       bank.setAccountNumber(RESERVE_ACCOUNT_NUMBER);
       bank.setOwner(admin.getId());
       bank.setStatus(BankAccountStatus.VERIFIED);
@@ -207,9 +211,9 @@ public class TransactionBenchmark
         user = new User();
         user.setId(id);
         String s = String.valueOf(id);
-        user.setFirstName("k");
-        user.setLastName("s");
-        user.setEmail(s+"@nanopay.net");
+        user.setFirstName("k_"+id);
+        user.setLastName("s_"+id);
+        user.setEmail(user.getFirstName()+"_"+user.getLastName()+"@acme.lan");
         user.setEmailVerified(true);
         // NOTE: use 'sme' group so default digital account is created below.
         user.setGroup("sme");
@@ -229,33 +233,27 @@ public class TransactionBenchmark
 
     // initial funding of system.
     DigitalAccount adminDCA = DigitalAccount.findDefault(x, admin, "CAD");
-    //    Transaction ci = (Transaction) new AlternaCITransaction();
     Transaction ci = (Transaction) new Transaction();
     ci.setSourceAccount(bank.getId());
     ci.setDestinationAccount(adminDCA.getId());
     ci.setAmount(Long.valueOf(users_.size()) * STARTING_BALANCE);
-    //    ci.setStatus(TransactionStatus.COMPLETED);
-    //    ci.setIsQuoted(true);
-    //    ci.setPlanner("68afcf0c-c718-98f8-0841-75e97a3ad16d182");
     ci = (Transaction) transactionDAO_.put_(x, ci).fclone();
-    //    ci.setStatus(TransactionStatus.COMPLETED);
-    //    ci = (Transaction) transactionDAO_.put_(x, ci).fclone();
+    if ( ci.getStatus() != TransactionStatus.COMPLETED ) {
+      ci.setStatus(TransactionStatus.COMPLETED);
+      ci = (Transaction) transactionDAO_.put_(x, ci).fclone();
+    }
     Long bal = (Long) adminDCA.findBalance(x);
     assert bal >= Long.valueOf(users_.size()) * STARTING_BALANCE;
 
     // distribute the funds to all user digital accounts
     for ( int i = 0 ; i < users_.size() ; i++ ) {
       User user = (User) users_.get(i);
-      //user = (User) user.fclone();
       DigitalAccount account = DigitalAccount.findDefault(x, user, "CAD");
-      accounts_.put(i, account);
-      //      Transaction txn = (Transaction) new DigitalTransaction();
+      accounts_.put(user.getId(), account);
       Transaction txn = (Transaction) new Transaction();
       txn.setSourceAccount(adminDCA.getId());
       txn.setDestinationAccount(account.getId());
       txn.setAmount(STARTING_BALANCE);
-      //      txn.setIsQuoted(true);
-      //      txn.setPlanner("68afcf0c-c718-98f8-0841-75e97a3ad16d182");
       transactionDAO_.put(txn);
       Long balance = (Long) account.findBalance(x);
       assert balance >= STARTING_BALANCE;
@@ -280,7 +278,7 @@ public class TransactionBenchmark
   public void execute(X x) {
     AppConfig config = (AppConfig) x.get("appConfig");
     if ( config.getMode() == foam.nanos.app.Mode.PRODUCTION ) return;
-
+    logger_.info("execute");
     int fi = (int) (Math.random() * users_.size());
     int ti = (int) (Math.random() * users_.size());
     long amount = (long) ((Math.random() + 0.1) * 100);
@@ -295,6 +293,8 @@ public class TransactionBenchmark
       Transaction transaction = new Transaction();
       transaction.setPayeeId(payeeId);
       transaction.setPayerId(payerId);
+      transaction.setSourceAccount(((Account) accounts_.get(payerId)).getId());
+      transaction.setDestinationAccount(((Account) accounts_.get(payeeId)).getId());
       transaction.setAmount(amount);
       transaction.setLifecycleState(LifecycleState.ACTIVE);
 
@@ -302,10 +302,6 @@ public class TransactionBenchmark
         TransactionQuote quote = (TransactionQuote) transactionPlannerDAO.put(new TransactionQuote.Builder(x).setRequestTransaction(transaction).build());
         transaction = quote.getPlan();
       } else {
-        Account payerAccount = (DigitalAccount) accounts_.get(fi);
-        Account payeeAccount = (DigitalAccount) accounts_.get(ti);
-        transaction.setSourceAccount(payerAccount.getId());
-        transaction.setDestinationAccount(payeeAccount.getId());
         transaction.setIsQuoted(true);
         transaction.setPlanner("68afcf0c-c718-98f8-0841-75e97a3ad16d182");
       }
