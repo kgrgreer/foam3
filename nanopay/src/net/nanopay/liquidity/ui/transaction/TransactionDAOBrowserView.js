@@ -100,6 +100,13 @@ foam.CLASS({
       }
     },
     {
+      class: 'foam.dao.DAOProperty',
+      name: 'searchFilterDAO',
+      expression: function(config, accountSelectionPredicate, cannedPredicate) {
+        return config.dao$proxy.where(this.AND(accountSelectionPredicate, cannedPredicate));
+      }
+    },
+    {
       class: 'foam.mlang.predicate.PredicateProperty',
       name: 'accountSelectionPredicate',
       expression: function(accountSelection) {
