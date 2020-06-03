@@ -27,7 +27,7 @@ foam.CLASS({
       cashIn.setName("Cash In of "+cashIn.getSourceCurrency());
       // i think these are backwards.. should use the trust of the dest accnt here.
       cashIn.setLineItems(requestTxn.getLineItems());
-      TrustAccount trustAccount = TrustAccount.find(x, quote.getSourceAccount());
+      TrustAccount trustAccount = TrustAccount.find(getX(), quote.getSourceAccount());
 
       quote.addTransfer(trustAccount.getId(), - cashIn.getAmount());
       quote.addTransfer(quote.getDestinationAccount().getId(), cashIn.getAmount());
