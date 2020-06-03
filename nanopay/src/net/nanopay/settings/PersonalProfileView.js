@@ -356,7 +356,7 @@ foam.CLASS({
         this.jobTitle = this.user.jobTitle;
         this.email = this.user.email;
         // split the country code and phone number
-        this.mobile = this.user.mobile.number.replace(this.phoneCode, "");
+        this.mobile = this.user.mobileNumber.replace(this.phoneCode, "");
         this.mobile = this.mobile.replace(/\s/g, "");
         this.phone = this.user.phoneNumber.replace(this.phoneCode, "");
         this.phone = this.phone.replace(/\s/g, "");
@@ -584,22 +584,20 @@ foam.CLASS({
           .then(function(notificationSettingDAO) {
             var smsSetting = notificationSettingDAO.array[0] ? notificationSettingDAO.array[0] : foam.nanos.notification.sms.SMSSetting.create({ owner: self.user.id });
             smsSetting.enabled = self.smsNotificationsEnabled;
+            if ( self.smsNotificationsEnabled ) {
+              if ( ! /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(self.mobile) ) {
+                self.add(self.NotificationMessage.create({ message: self.INVALID_MOBILE, type: 'error' }));
+                return;
+              }
+            }
+            self.user.mobileNumber = self.phoneCode + self.mobile;
+            self.userDAO.put(self.user).then((result) => {
+              self.user.copyFrom(result);
+            });
             self.notificationSettingDAO.put(smsSetting);
           });
 
-        if ( this.smsNotificationsEnabled ) {
-          this.user.mobile.number = this.phoneCode + this.mobile;
-          if ( ! /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(this.mobile) ) {
-            this.add(self.NotificationMessage.create({ message: this.INVALID_MOBILE, type: 'error' }));
-            return;
-          }
-          this.userDAO.put(this.user).then((result) => {
-            this.user.copyFrom(result);
-            this.add(self.NotificationMessage.create({ message: 'Notification settings updated.' }));
-          });
-        } else {
-          this.add(self.NotificationMessage.create({ message: 'Notification settings updated.' }));
-        }
+        this.add(self.NotificationMessage.create({ message: 'Notification settings updated.' }));
       }
     },
     {
