@@ -54,6 +54,7 @@ public class TransactionBenchmark
   protected Boolean disableRules_ = false;
 
   // Alterna
+  protected Long TRUST_USER_ID = 101L;
   protected Long INSTITUTION_ID = 35L;
   protected String INSTITUTION_NUMBER = "123";
   protected Long BRANCH_ID = 130L;
@@ -178,8 +179,6 @@ public class TransactionBenchmark
       bank.setId(RESERVE_ACCOUNT_ID);
       bank.setName("Reserve");
       bank.setBranch(branch.getId());
-      //bank.setInstitutionNumber(INSTITUTION_NUMBER);
-      //bank.setBranchId(BRANCH_NUMBER);
       bank.setAccountNumber(RESERVE_ACCOUNT_NUMBER);
       bank.setOwner(admin.getId());
       bank.setStatus(BankAccountStatus.VERIFIED);
@@ -198,6 +197,7 @@ public class TransactionBenchmark
     if ( trust == null ) {
       trust = new TrustAccount();
       trust.setId(TRUST_ID);
+      trust.setOwner(TRUST_USER_ID);
       trust.setReserveAccount(bank.getId());
       trust.setLifecycleState(LifecycleState.ACTIVE);
       trust = (TrustAccount) accountDAO_.put(trust);
