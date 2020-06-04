@@ -14,7 +14,7 @@ foam.CLASS({
     'businessEmployeeDAO',
     'ctrl',
     'signingOfficerJunctionDAO',
-    'user'
+    'subject'
   ],
 
   requires: [
@@ -93,7 +93,7 @@ foam.CLASS({
       of: 'net.nanopay.model.Business',
       name: 'businessId',
       factory: function() {
-        return this.user.id;
+        return this.subject.user.id;
       },
       hidden: true
     },
@@ -111,7 +111,10 @@ foam.CLASS({
       factory: function() {
         var self = this;
         var x = this.ctrl.__subContext__;
-        var dao = foam.dao.MDAO.create({
+        var adao = foam.dao.ArrayDAO.create({
+          of: net.nanopay.model.BeneficialOwner
+        });
+        var pdao = foam.dao.PromisedDAO.create({
           of: net.nanopay.model.BeneficialOwner
         });
         var sinkFn = (so) => {
@@ -121,33 +124,26 @@ foam.CLASS({
               firstName: so.firstName,
               lastName: so.lastName,
               jobTitle: so.jobTitle,
-              business: this.user.id,
+              business: this.subject.user.id,
+              address: so.address,
+              birthday: so.birthday,
               mode: 'percent'
             }, x);
-            obj.address = so.address;
-            obj.birthday = so.birthday;
-            dao.put(obj);
-        };
-        var eof = () => {
-          this.soUsersDAO = dao;
-          this.isLoading = false;
+            adao.put(obj);
         };
 
         this.signingOfficerJunctionDAO
-          .where(this.EQ(
-            net.nanopay.model.BusinessUserJunction.SOURCE_ID, this.user.id)
-          )
-          .select()
-            .then((sos) => {
-              var sOIds = sos.array.filter((so) =>
-                so && so.targetId).map((so)=> so.targetId);
-
-              this.businessEmployeeDAO
-                .where(this.IN(foam.nanos.auth.User.ID, sOIds))
-                .select({ put: sinkFn, eof: eof });
-            });
-
-        return dao;
+          .where(this.EQ(net.nanopay.model.BusinessUserJunction
+            .SOURCE_ID, this.subject.user.id))
+          .select(this.PROJECTION(net.nanopay.model.BusinessUserJunction
+            .TARGET_ID))
+          .then((sos) => {
+            this.businessEmployeeDAO
+              .where(this.IN(foam.nanos.auth.User.ID, sos.array))
+              .select({ put: sinkFn })
+              .then(() => pdao.promise.resolve(adao));
+          });
+        return pdao;
       },
       hidden: true
     },
@@ -158,7 +154,7 @@ foam.CLASS({
       storageTransient: true,
       factory: function() {
         return [];
-      }, 
+      }
     },
     {
       name: 'ownerSelectionsValidated',
@@ -166,7 +162,8 @@ foam.CLASS({
       hidden: true,
       storageTransient: true,
       getter: function() {
-        return this.amountOfOwners <= 0 || new Set(this.chosenOwners).size === this.amountOfOwners;
+        return this.amountOfOwners <= 0 ||
+          new Set(this.chosenOwners).size === this.amountOfOwners;
       }
     },
 
@@ -204,7 +201,8 @@ foam.CLASS({
         {
           args: ['ownerSelectionsValidated', 'owner1', 'owner2', 'owner3', 'owner4', 'chosenOwners'],
           predicateFactory: function(e) {
-            return e.EQ(net.nanopay.crunch.onboardingModels.BusinessOwnershipData.OWNER_SELECTIONS_VALIDATED, true);
+            return e.EQ(net.nanopay.crunch.onboardingModels
+              .BusinessOwnershipData.OWNER_SELECTIONS_VALIDATED, true);
           },
           errorMessage: 'INVALID_OWNER_SELECTION_ERROR'
         }
@@ -231,10 +229,13 @@ foam.CLASS({
         args: ['amountOfOwners', 'owner1$errors_', 'reviewed'],
         predicateFactory: function(e) {
           return e.OR(
-            e.EQ(net.nanopay.crunch.onboardingModels.BusinessOwnershipData.REVIEWED, false),
-            e.LT(net.nanopay.crunch.onboardingModels.BusinessOwnershipData.AMOUNT_OF_OWNERS, 1),
+            e.EQ(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
+              .REVIEWED, false),
+            e.LT(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
+              .AMOUNT_OF_OWNERS, 1),
             e.AND(
-              e.GTE(net.nanopay.crunch.onboardingModels.BusinessOwnershipData.AMOUNT_OF_OWNERS, 1),
+              e.GTE(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
+                .AMOUNT_OF_OWNERS, 1),
               e.EQ(foam.mlang.IsValid.create({
                 arg1: net.nanopay.crunch.onboardingModels.BusinessOwnershipData['OWNER1']
               }), true)
@@ -253,10 +254,13 @@ foam.CLASS({
         args: ['amountOfOwners', 'owner2$errors_', 'reviewed'],
         predicateFactory: function(e) {
           return e.OR(
-            e.EQ(net.nanopay.crunch.onboardingModels.BusinessOwnershipData.REVIEWED, false),
-            e.LT(net.nanopay.crunch.onboardingModels.BusinessOwnershipData.AMOUNT_OF_OWNERS, 2),
+            e.EQ(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
+              .REVIEWED, false),
+            e.LT(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
+              .AMOUNT_OF_OWNERS, 2),
             e.AND(
-              e.GTE(net.nanopay.crunch.onboardingModels.BusinessOwnershipData.AMOUNT_OF_OWNERS, 2),
+              e.GTE(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
+                .AMOUNT_OF_OWNERS, 2),
               e.EQ(foam.mlang.IsValid.create({
                 arg1: net.nanopay.crunch.onboardingModels.BusinessOwnershipData['OWNER2']
               }), true)
@@ -275,10 +279,13 @@ foam.CLASS({
         args: ['amountOfOwners', 'owner3$errors_', 'reviewed'],
         predicateFactory: function(e) {
           return e.OR(
-            e.EQ(net.nanopay.crunch.onboardingModels.BusinessOwnershipData.REVIEWED, false),
-            e.LT(net.nanopay.crunch.onboardingModels.BusinessOwnershipData.AMOUNT_OF_OWNERS, 3),
+            e.EQ(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
+              .REVIEWED, false),
+            e.LT(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
+              .AMOUNT_OF_OWNERS, 3),
             e.AND(
-              e.GTE(net.nanopay.crunch.onboardingModels.BusinessOwnershipData.AMOUNT_OF_OWNERS, 3),
+              e.GTE(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
+                .AMOUNT_OF_OWNERS, 3),
               e.EQ(foam.mlang.IsValid.create({
                 arg1: net.nanopay.crunch.onboardingModels.BusinessOwnershipData['OWNER3']
               }), true)
@@ -297,10 +304,13 @@ foam.CLASS({
         args: ['amountOfOwners', 'owner4$errors_', 'reviewed'],
         predicateFactory: function(e) {
           return e.OR(
-            e.EQ(net.nanopay.crunch.onboardingModels.BusinessOwnershipData.REVIEWED, false),
-            e.LT(net.nanopay.crunch.onboardingModels.BusinessOwnershipData.AMOUNT_OF_OWNERS, 4),
+            e.EQ(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
+              .REVIEWED, false),
+            e.LT(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
+              .AMOUNT_OF_OWNERS, 4),
             e.AND(
-              e.GTE(net.nanopay.crunch.onboardingModels.BusinessOwnershipData.AMOUNT_OF_OWNERS, 4),
+              e.GTE(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
+                .AMOUNT_OF_OWNERS, 4),
               e.EQ(foam.mlang.IsValid.create({
                 arg1: net.nanopay.crunch.onboardingModels.BusinessOwnershipData['OWNER4']
               }), true)
@@ -565,6 +575,7 @@ foam.CLASS({
     {
       name: 'preSet',
       value: function(o, n) {
+        if ( ! n ) return n;
         if ( ! n.id || n.id === 1 ) {
           n.id = ++this.index;
         }
@@ -609,13 +620,14 @@ foam.CLASS({
       name: 'choiceData_',
       documentation: 'Data that is set by choiceView(reference object)',
       postSet: function(_, n) {
+          if ( this.data && n == this.data.id ) return n;
           if ( n > 1 ) {
-            this.dao2.find(this.choiceData_).then(
+            this.dao2.find(n).then(
               (obj) =>
                 this.data = obj ? obj.clone() : obj
             );
           } else {
-            this.dao.find(this.choiceData_).then(
+            this.dao.find(n).then(
               (obj) =>
                 this.data = obj ? obj.clone() : obj
             );
