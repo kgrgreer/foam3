@@ -20,6 +20,7 @@ import foam.nanos.app.Mode;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
+import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.account.BalanceService;
 import net.nanopay.account.DigitalAccount;
@@ -203,12 +204,13 @@ public class LiquidityService
   }
 
   public void notifyUser( Account account, LiquiditySettings ls, Liquidity liquidity, long recipient ) {
-    var notification = new Notification();
+    var notification = new LiquidNotification();
     var args = new HashMap<String, Object>();
     var user = account.findOwner(x_);
     var url = user.findGroup(getX()).getAppConfig(getX()).getUrl();
     var notificationBody = "";
     var threshold = "";
+    var emailName = "";
 
     var currency = (Currency) ((DAO) x_.get("currencyDAO")).find(ls.findDenomination(x_));
     if ( currency != null) {
@@ -223,7 +225,7 @@ public class LiquidityService
     args.put("link",            url);
 
     if ( liquidity.getRebalancingEnabled() ) {
-      notification.setEmailName("liquidityNotificationSweep");
+      emailName = "liquidityNotificationSweep";
 
       args.put("src_account_name",    account.getName());
       args.put("src_account_id",      account.getId());
@@ -244,7 +246,7 @@ public class LiquidityService
         threshold, ls.getName(), account.getName(), account.getId(), dstAccountName, dstAccountId
       );
     } else {
-      notification.setEmailName("liquidityNotification");
+      emailName = "liquidityNotification";
 
       args.put("account_name",    account.getName());
       args.put("account_id",      account.getId());
@@ -255,10 +257,18 @@ public class LiquidityService
       );
     }
 
-    notification.setEmailArgs(args);
+    if ( ! SafetyUtil.isEmpty(emailName) ) {
+      notification.setEmailName(emailName);
+      notification.setEmailArgs(args);
+    }
+
+    notification.setNotificationType("Liquidity Setting");
     notification.setBody(notificationBody);
+
     var recipientUser = (User) getUserDAO().find(recipient);
     if ( recipientUser != null ) {
+      notification.setCreatedBy(recipientUser.getId());
+      notification.setUserId(recipientUser.getId());
       recipientUser.doNotify(x_, notification);
     }
   }

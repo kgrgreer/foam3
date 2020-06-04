@@ -4,11 +4,16 @@ foam.CLASS({
   extends: 'foam.u2.view.OverlayActionListView',
 
   css: `
+    ^ { 
+      padding: 13px 0px
+    }
+    
     ^action {
       border-radius: 0px;
       padding: 8px 24px;
       font-size: 16px;
       color: /*%BLACK%*/ #1e1f21;
+      float: right;
     }
 
     ^action[disabled] {
