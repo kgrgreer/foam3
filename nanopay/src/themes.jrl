@@ -53,6 +53,7 @@ p({
   "footerView":"net.nanopay.sme.ui.FooterView",
   "supportEmail":"support@ablii.com",
   "supportPhone":"+1.647.496.1526",
+  "personalSupportUser":1030,
   "primary1":"#2e2379",
   "primary2":"#4434b4",
   "primary3":"#604aff",
