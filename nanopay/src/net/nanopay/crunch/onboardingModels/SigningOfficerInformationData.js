@@ -20,6 +20,7 @@ foam.CLASS({
       label: 'Signing Officer Personal Information',
       class: 'FObjectProperty',
       of: 'net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData',
+      view: { class: 'foam.u2.detail.VerticalDetailView' },
       storageTransient: true,
       factory: function() {
         return net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.create({ countryId: this.countryId }, this);
@@ -52,7 +53,7 @@ foam.CLASS({
     }
   ],
 
-  methods: [ 
+  methods: [
     {
       name: 'validate',
       javaCode: `
