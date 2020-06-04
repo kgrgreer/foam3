@@ -17,7 +17,6 @@ p({
     mdao.addIndex(new foam.core.PropertyInfo[] {Transaction.DESTINATION_ACCOUNT});
     mdao.addIndex(new foam.core.PropertyInfo[] {Transaction.SOURCE_ACCOUNT});
     mdao.addIndex(new foam.core.PropertyInfo[] {Transaction.LAST_STATUS_CHANGE});
-    mdao.addIndex(new foam.core.PropertyInfo[] {Transaction.CREATED});
 
     inner = new DAOFoldManager.Builder(x)
       .setDao((DAO)x.get("accountBalanceHourlyCandlestickDAO"))
@@ -29,15 +28,6 @@ p({
       .build();
     inner = new net.nanopay.tx.TransactionDAO(x, inner);
 
-    if ( "true".equals(System.getProperty("CLUSTER")) ) {
-      inner = new foam.nanos.medusa.MedusaAdapterDAO.Builder(x)
-        .setNSpec(new foam.nanos.boot.NSpec.Builder(x).setName("localTransactionDAO").build())
-        .setDelegate(inner)
-        .build();
-    } else {
-      inner = new net.nanopay.security.HashingJDAO(x, "SHA-256", true, inner, "transactions");
-    }
-    
     dao = new net.nanopay.tx.SaveChainedTransactionDAO.Builder(x)
       .setDelegate(new foam.dao.NullDAO(x, net.nanopay.tx.model.Transaction.getOwnClassInfo()))
       .build();
@@ -59,14 +49,14 @@ p({
 
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo())
-      .setInnerDAO(inner)
+      .setMdao(inner)
+      .setInnerDAO(new net.nanopay.security.HashingJDAO(x, "SHA-256", true, false, inner, "transactions"))
       .setDecorator(dao)
       .setPm(true)
       .setPipelinePm(true)
       .setGuid(false)
       .setContextualize(true)
       .setRuler(false)
-      .setCluster(false)
       .build();
     """
 })
