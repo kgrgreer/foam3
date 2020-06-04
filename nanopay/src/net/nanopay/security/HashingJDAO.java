@@ -69,7 +69,7 @@ public class HashingJDAO
       .setFilename(filename + ".0")
       .setCreateFile(false)
       .setAlgorithm(algorithm)
-      .setDigestRequired(digestRequired)
+      .setDigestRequired(false)
       .setRollDigests(rollDigests)
       .build();
     repo.replay(x, delegate);
