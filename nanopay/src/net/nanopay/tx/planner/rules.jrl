@@ -291,7 +291,7 @@ p({
   "name":"KotakFxTransactionPlanner",
   "documentation":"Planner for transaction from CA Digital Account (CAD) to IN Bank Account (INR)",
   "priority":90,
-  "ruleGroup":"transactionPlanner",
+  "ruleGroup":"KotakPlanner",
   "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
@@ -330,7 +330,7 @@ p({
   "name":"KotakSplitTransactionPlanner",
   "documentation":"Split CA bank to IN bank transactions",
   "priority":85,
-  "ruleGroup":"transactionPlanner",
+  "ruleGroup":"KotakPlanner",
   "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
@@ -359,7 +359,7 @@ p({
   "name":"KotakTransactionPlanner",
   "documentation":"Planner for INR Digital to INR bank account",
   "priority":70,
-  "ruleGroup":"transactionPlanner",
+  "ruleGroup":"KotakPlanner",
   "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
