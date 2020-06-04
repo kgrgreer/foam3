@@ -98,7 +98,7 @@ public class PaymentCorridorService implements CorridorService {
     if ( from instanceof BankAccount ) {
       sourceCountry = ((BankAccount) from).getCountry();
     } else {
-      BankAccount r = ((BankAccount) TrustAccount.find(getX(),from)
+      BankAccount r = ((BankAccount) TrustAccount.find(x,from)
         .findReserveAccount(x));
       if (r != null)
         sourceCountry = r.getCountry();
@@ -107,7 +107,7 @@ public class PaymentCorridorService implements CorridorService {
     if ( to instanceof BankAccount ) {
       targetCountry = ((BankAccount) to).getCountry();
     } else {
-      BankAccount r = ((BankAccount) TrustAccount.find(getX(),to)
+      BankAccount r = ((BankAccount) TrustAccount.find(x,to)
           .findReserveAccount(x));
       if (r != null)
         targetCountry = r.getCountry();
