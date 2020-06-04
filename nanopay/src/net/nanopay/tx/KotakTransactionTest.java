@@ -11,6 +11,7 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
+import foam.nanos.ruler.RuleGroup;
 import foam.util.SafetyUtil;
 import foam.nanos.approval.ApprovalRequest;
 import foam.nanos.approval.ApprovalStatus;
@@ -32,7 +33,7 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
   CABankAccount sourceAccount;
   INBankAccount destinationAccount;
   User sender, receiver;
-  DAO userDAO, accountDAO, txnDAO, approvalDAO, fxQuoteDAO, planDAO, quoteDAO;
+  DAO userDAO, accountDAO, txnDAO, approvalDAO, fxQuoteDAO, planDAO, quoteDAO, ruleGroupDAO;
   Transaction txn, txn2, txn3, txn4, txn5, txn6, txn7;
   KotakFxTransaction kotakTxn;
   ManualFxApprovalRequest approval;
@@ -41,6 +42,7 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
   ArraySink sink;
 
   public void runTest(X x) {
+    ruleGroupDAO = ((DAO) x.get("ruleGroupDAO"));
     userDAO = ((DAO) x.get("localUserDAO"));
     accountDAO = (DAO) x.get("localAccountDAO");
     txnDAO = ((DAO) x.get("localTransactionDAO"));
@@ -48,6 +50,9 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
     approvalDAO = (DAO) x.get("approvalRequestDAO");
     fxQuoteDAO = (DAO) x.get("fxQuoteDAO");
     quoteDAO = (DAO) x.get("localTransactionPlannerDAO");
+    RuleGroup kotak = (RuleGroup) ruleGroupDAO.find("KotakPlanner");
+    kotak.setEnabled(true);
+    ruleGroupDAO.put(kotak);
     sender = addUserIfNotFound(x, senderEmail);
     receiver = addUserIfNotFound(x, receiverEmail);
     addCAAccountIfNotFound(x);
@@ -62,6 +67,8 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
 
     // test fx quote
     testFXQuote(x);
+    kotak.setEnabled(false);
+    ruleGroupDAO.put(kotak);
   }
 
   public void testTxnChain(X x) {

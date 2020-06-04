@@ -74,3 +74,16 @@ p({
     "provider":"RBC"
   }
 })
+p({
+  "class":"foam.nanos.ruler.RuleGroup",
+  "id":"KotakPlanner",
+  "documentation":"Kotak Transaction planning",
+  "enabled":false,
+  "predicate":
+  {
+    "class": "foam.mlang.predicate.Not",
+    "arg1":{
+      "class":"net.nanopay.tx.ruler.IsSecurityQuote",
+    }
+  },
+})

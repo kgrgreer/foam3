@@ -37,7 +37,9 @@ foam.CLASS({
     gridColumns: 3,
     label: '',
     class: 'String',
-    visibility: 'RO',
+    updateVisibility: 'RO',
+    createVisibility: 'RO',
+    readVisibility: 'RO'
   },
   {
     name: 'note',
