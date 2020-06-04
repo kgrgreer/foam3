@@ -292,7 +292,7 @@ p({
   "documentation":"Planner for transaction from CA Digital Account (CAD) to IN Bank Account (INR)",
   "priority":90,
   "ruleGroup":"transactionPlanner",
-  "enabled":true,
+  "enabled":false,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -331,7 +331,7 @@ p({
   "documentation":"Split CA bank to IN bank transactions",
   "priority":85,
   "ruleGroup":"transactionPlanner",
-  "enabled":true,
+  "enabled":false,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -360,7 +360,7 @@ p({
   "documentation":"Planner for INR Digital to INR bank account",
   "priority":70,
   "ruleGroup":"transactionPlanner",
-  "enabled":true,
+  "enabled":false,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -463,7 +463,7 @@ p({
   "documentation":"Planner for Bank -> bank transactions",
   "priority":95,
   "ruleGroup":"transactionPlanner",
-  
+
   "enabled":true,
 
   "predicate":{
@@ -559,7 +559,7 @@ p({
   "documentation":"Alterna CO Transaction Planner",
   "priority":100,
   "ruleGroup":"AlternaPlanner",
-  
+
   "enabled":true,
 
   "predicate":{
@@ -607,7 +607,7 @@ p({
   "documentation":"BMO CI Transaction Planner",
   "priority":100,
   "ruleGroup":"BMOPlanner",
-  
+
   "enabled":true,
 
   "predicate":{
@@ -647,7 +647,7 @@ p({
   "documentation":"BMO CO Transaction Planner",
   "priority":100,
   "ruleGroup":"BMOPlanner",
-  
+
   "enabled":true,
 
   "predicate":{
