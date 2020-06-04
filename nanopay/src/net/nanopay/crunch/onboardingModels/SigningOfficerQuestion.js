@@ -78,7 +78,7 @@ foam.CLASS({
         {
           args: [ 'adminFirstName' ],
           predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.sme.onboarding.BusinessOnboarding.ADMIN_FIRST_NAME, '');
+            return e.NEQ(net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.ADMIN_FIRST_NAME, '');
           },
           errorMessage: 'ADMIN_FIRST_NAME_ERROR'
         }
@@ -96,7 +96,7 @@ foam.CLASS({
         {
           args: [ 'adminLastName' ],
           predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.sme.onboarding.BusinessOnboarding.ADMIN_LAST_NAME, '');
+            return e.NEQ(net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.ADMIN_LAST_NAME, '');
           },
           errorMessage: 'ADMIN_LAST_NAME_ERROR'
         }
@@ -126,7 +126,7 @@ foam.CLASS({
         {
           args: [ 'adminJobTitle' ],
           predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.sme.onboarding.BusinessOnboarding.ADMIN_JOB_TITLE, '');
+            return e.NEQ(net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.ADMIN_JOB_TITLE, '');
           },
           errorMessage: 'NO_JOB_TITLE_ERROR'
         }
@@ -143,7 +143,7 @@ foam.CLASS({
           args: [ 'adminPhone' ],
           predicateFactory: function(e) {
             return e.REG_EXP(
-              net.nanopay.sme.onboarding.BusinessOnboarding.ADMIN_PHONE,
+              net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.ADMIN_PHONE,
               /^(?:\+?1[-.●]?)?\(?([0-9]{3})\)?[-.●]?([0-9]{3})[-.●]?([0-9]{4})$/);
           },
           errorMessage: 'INVALID_PHONE_NUMBER_ERROR'
