@@ -299,6 +299,7 @@ p({"class":"foam.nanos.auth.Permission","id":"service.sessionService","descripti
 p({"class":"foam.nanos.auth.Permission","id":"service.sessionDAO","description":"Permission to access SessionDAO."})
 p({"class":"foam.nanos.auth.Permission","id":"service.signingOfficerJunctionDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.smeBusinessRegistrationDAO","description":""})
+p({"class":"foam.nanos.auth.Permission","id":"service.smsMessageDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.supportEmailDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.ticketDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.ticketMessageDAO","description":""})
