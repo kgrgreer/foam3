@@ -107,7 +107,6 @@ public class CanReceiveCurrencyDAO extends ProxyDAO {
     ArraySink accountSink = (ArraySink) accountDAO.where(AND(
       EQ(net.nanopay.account.Account.DELETED, false),
       EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
-      EQ(net.nanopay.account.Account.ENABLED, true),
       EQ(net.nanopay.account.Account.ID, query.getAccountChoice()),
       OR(
         CLASS_OF(net.nanopay.account.DigitalAccount.class),

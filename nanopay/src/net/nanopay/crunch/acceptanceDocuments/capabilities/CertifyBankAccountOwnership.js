@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'CertifyBankAccountOwnership',
   extends: 'net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability',
 
+  messages: [
+    { name: 'ACKNOWLEDGE_STATEMENT', message: 'Must acknowledge the statement above.' }
+  ],
+
   properties: [
     {
       name: 'checkboxText',
@@ -17,7 +21,7 @@ foam.CLASS({
             return e.EQ(net.nanopay.crunch.acceptanceDocuments.capabilities
               .CertifyBankAccountOwnership.AGREEMENT, true);
           },
-          errorString: 'Must acknowledge the statement above.'
+          errorMessage: 'ACKNOWLEDGE_STATEMENT'
         }
       ]
     }

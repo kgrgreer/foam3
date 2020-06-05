@@ -14,6 +14,9 @@ foam.CLASS({
     'foam.nanos.approval.ApprovalRequest',
     'foam.nanos.approval.ApprovalRequestUtil',
     'foam.nanos.approval.ApprovalStatus',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
+    'foam.nanos.crunch.AgentCapabilityJunction',
     'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.nanos.crunch.UserCapabilityJunction',
     'static foam.mlang.MLang.*'
@@ -38,7 +41,17 @@ foam.CLASS({
             if ( approval == null || approval != ApprovalStatus.REQUESTED ) {
               ucj.setStatus(ApprovalStatus.REJECTED == approval ? CapabilityJunctionStatus.ACTION_REQUIRED : CapabilityJunctionStatus.GRANTED);
 
-              ((DAO) x.get("userCapabilityJunctionDAO")).put(ucj);
+              DAO userDAO = (DAO) x.get("localUserDAO");
+              User user = (User) userDAO.find(ucj.getSourceId());
+              Subject subject = new Subject.Builder(x).build();
+              subject.setUser(user);
+              if ( ucj instanceof AgentCapabilityJunction ) {
+                User effectiveUser = (User) userDAO.find(((AgentCapabilityJunction) ucj).getEffectiveUser());
+                subject.setUser(effectiveUser);
+              }
+              X ownerContext = x.put("subject", subject);
+
+              ((DAO) x.get("userCapabilityJunctionDAO")).inX(ownerContext).put(ucj);
             }
           }
         }, "User Compliance Approval");

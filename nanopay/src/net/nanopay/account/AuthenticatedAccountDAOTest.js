@@ -147,7 +147,7 @@ foam.CLASS({
       } catch (Throwable t) {
         test(false, "Tests for 'find' failed due to an unexpected exception.");
       } finally {
-        accountDAO.where(INSTANCE_OF(DigitalAccount.class)).removeAll();
+        accountDAO.where(CLASS_OF(DigitalAccount.class)).removeAll();
       }
       `
     },

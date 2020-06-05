@@ -179,6 +179,8 @@ foam.CLASS({
 
           // Set bulk transaction to the parent quote
           parentQuote.setPlan(bulkTxn);
+          //place holder until we move to proper planner
+          bulkTxn.setPlanner("68afcf0c-c718-98f8-0841-75e97a3ad16d182");
 
           return parentQuote;
         }

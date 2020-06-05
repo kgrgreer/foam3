@@ -820,7 +820,6 @@ foam.RELATIONSHIP({
         {
           dao: X.accountDAO.where(X.data.AND(
             X.data.EQ(net.nanopay.account.Account.DELETED, false),
-            X.data.EQ(net.nanopay.account.Account.ENABLED, true),
             X.data.EQ(net.nanopay.account.Account.LIFECYCLE_STATE,
               foam.nanos.auth.LifecycleState.ACTIVE)
           )).orderBy(net.nanopay.account.Account.NAME),

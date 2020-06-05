@@ -9,7 +9,8 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'static foam.mlang.MLang.*',
     'java.util.List',
-    'java.util.Iterator'
+    'java.util.Iterator',
+    'foam.nanos.auth.LifecycleState'
   ],
 
   methods: [
@@ -29,7 +30,7 @@ foam.CLASS({
                      EQ(DigitalAccount.OWNER, account.getOwner()),
                      EQ(DigitalAccount.DENOMINATION, account.getDenomination()),
                      EQ(DigitalAccount.IS_DEFAULT, true),
-                     EQ(DigitalAccount.ENABLED, true)
+                     EQ(DigitalAccount.LIFECYCLE_STATE, LifecycleState.ACTIVE)
                      )
                  )
           .select(new ArraySink())).getArray();

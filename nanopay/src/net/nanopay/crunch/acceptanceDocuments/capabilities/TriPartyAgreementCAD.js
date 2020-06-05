@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'TriPartyAgreementCAD',
   extends: 'net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability',
 
+  messages: [
+    { name: 'ACKNOWLEDGE_AGREEMENT', message: 'Must acknowledge the agreement above.' }
+  ],
+
   properties: [
     {
       name: 'title',
@@ -39,7 +43,7 @@ foam.CLASS({
             return e.EQ(net.nanopay.crunch.acceptanceDocuments.capabilities
               .TriPartyAgreementCAD.AGREEMENT, true);
           },
-          errorString: 'Must acknowledge the agreement above.'
+          errorMessage: 'ACKNOWLEDGE_AGREEMENT'
         }
       ]
     }

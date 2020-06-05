@@ -98,7 +98,7 @@ foam.CLASS({
             account = (DigitalAccount) accountDAO
               .find(
                 AND(
-                  EQ(Account.ENABLED, true),
+                  EQ(Account.LIFECYCLE_STATE, LifecycleState.ACTIVE),
                   INSTANCE_OF(instance == null ? DigitalAccount.class : instance.getClass()),
                   EQ(Account.DENOMINATION, denomination),
                   EQ(Account.IS_DEFAULT, true)

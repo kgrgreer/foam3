@@ -13,6 +13,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
+    'foam.nanos.auth.LifecycleState',
     'foam.util.Emails.EmailsUtility',
     'java.util.HashMap',
     'java.util.Map',
@@ -33,7 +34,7 @@ foam.CLASS({
       BankAccount account    = (BankAccount) obj;
   
       // Check 1: Don't send email if account is not enabled
-      if ( ! account.getEnabled() ) {
+      if ( account.getLifecycleState() != LifecycleState.ACTIVE ) {
         return getDelegate().put_(x, obj);
       }
   
