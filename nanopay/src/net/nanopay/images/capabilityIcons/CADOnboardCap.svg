@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="274px" height="155px" viewBox="0 0 274 155" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Canada 2</title>
+    <defs>
+        <path d="M3,0 L269,0 C270.656854,0 272,1.34314575 272,3 L272,150 C272,151.656854 270.656854,153 269,153 L142.26762,153 L142.26762,153 L137.846188,153 L3,153 C1.34314575,153 0,151.656854 0,150 L0,3 C0,1.34314575 1.34314575,0 3,0 Z" id="path-1"></path>
+        <path d="M3,0 L269,0 C270.656854,0 272,1.34314575 272,3 L272,150 C272,151.656854 270.656854,153 269,153 L142.26762,153 L142.26762,153 L137.846188,153 L3,153 C1.34314575,153 0,151.656854 0,150 L0,3 C0,1.34314575 1.34314575,0 3,0 Z" id="path-3"></path>
+    </defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Canada">
+            <g id="Mask">
+                <g id="path-1-link" transform="translate(1.000000, 1.000000)" fill="#000000" fill-rule="nonzero">
+                    <path d="M3,0 L269,0 C270.656854,0 272,1.34314575 272,3 L272,150 C272,151.656854 270.656854,153 269,153 L142.26762,153 L142.26762,153 L137.846188,153 L3,153 C1.34314575,153 0,151.656854 0,150 L0,3 C0,1.34314575 1.34314575,0 3,0 Z" id="path-1"></path>
+                </g>
+                <path d="M270,0.5 L4,0.5 C3.03350169,0.5 2.15850169,0.891750844 1.52512627,1.52512627 C0.891750844,2.15850169 0.5,3.03350169 0.5,4 L0.5,151 C0.5,151.966498 0.891750844,152.841498 1.52512627,153.474874 C2.15850169,154.108249 3.03350169,154.5 4,154.5 L270,154.5 C270.966498,154.5 271.841498,154.108249 272.474874,153.474874 C273.108249,152.841498 273.5,151.966498 273.5,151 L273.5,4 C273.5,3.03350169 273.108249,2.15850169 272.474874,1.52512627 C271.841498,0.891750844 270.966498,0.5 270,0.5 Z" id="Path" stroke="#E7EAEC" fill="#FFFFFF"></path>
+            </g>
+            <g id="Oval-Clipped" transform="translate(1.000000, 1.000000)">
+                <mask id="mask-2" fill="white">
+                    <use xlink:href="#path-1"></use>
+                </mask>
+                <g id="path-1"></g>
+                <g id="Oval" mask="url(#mask-2)">
+                    <g transform="translate(7.000000, -49.000000)" id="Group">
+                        <g>
+                            <circle id="Oval" fill="#F32323" fill-rule="nonzero" opacity="0.0816127232" cx="129" cy="129" r="129"></circle>
+                            <circle id="Oval" fill="#F32323" fill-rule="nonzero" opacity="0.1585984" cx="129.5" cy="129.5" r="104.5"></circle>
+                            <circle id="Oval" fill="#F32323" fill-rule="nonzero" opacity="0.239465" cx="129" cy="129" r="75"></circle>
+                            <circle id="Oval" fill="#F32323" fill-rule="nonzero" cx="129.5" cy="129.5" r="49.5"></circle>
+                        </g>
+                    </g>
+                </g>
+            </g>
+            <g id="🇨🇦-Clipped" transform="translate(1.000000, 1.000000)">
+                <mask id="mask-4" fill="white">
+                    <use xlink:href="#path-3"></use>
+                </mask>
+                <g id="path-1"></g>
+                <text id="🇨🇦" fill="#1E1F21" fill-rule="nonzero" mask="url(#mask-4)" font-family="AppleColorEmoji, Apple Color Emoji" font-size="56" font-weight="normal">
+                    <tspan x="108" y="102">🇨🇦</tspan>
+                </text>
+            </g>
+        </g>
+    </g>
+</svg>
