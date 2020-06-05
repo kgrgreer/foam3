@@ -2,6 +2,7 @@ package net.nanopay.account;
 
 import foam.core.X;
 import foam.dao.DAO;
+import foam.nanos.auth.LifecycleState;
 import foam.nanos.auth.User;
 import foam.test.TestUtils;
 
@@ -41,7 +42,7 @@ public class DuplicateDigitalAccountRuleTest
     DigitalAccount dA = new DigitalAccount.Builder(x_)
       .setName("duplicateAccountChild")
       .setDenomination("test")
-      .setEnabled(true)
+      .setLifecycleState(LifecycleState.ACTIVE)
       .setDesc("alsoTest")
       .setOwner(user.getId())
       .build();
@@ -52,7 +53,7 @@ public class DuplicateDigitalAccountRuleTest
     DigitalAccount dB = new DigitalAccount.Builder(x_)
       .setName("duplicateAccountChild")
       .setDenomination("test")
-      .setEnabled(true)
+      .setLifecycleState(LifecycleState.ACTIVE)
       .setDesc("alsoTest")
       .setOwner(user.getId())
       .build();

@@ -12,6 +12,7 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.mlang.MLang',
+    'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
@@ -47,7 +48,7 @@ foam.CLASS({
             MLang.AND(
               MLang.INSTANCE_OF(BankAccount.class),
               MLang.EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
-              MLang.EQ(BankAccount.ENABLED, true)
+              MLang.EQ(BankAccount.LIFECYCLE_STATE, LifecycleState.ACTIVE)
             ))
             .limit(1).select(new ArraySink())).getArray();
 

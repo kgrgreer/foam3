@@ -26,7 +26,6 @@ foam.CLASS({
             .where(
               AND(
                 EQ(Account.PARENT, account.getId()),
-                EQ(Account.ENABLED, true),
                 EQ(Account.DELETED, false),
                 OR(
                   // we don't want to included REJECTED or DELETED accounts

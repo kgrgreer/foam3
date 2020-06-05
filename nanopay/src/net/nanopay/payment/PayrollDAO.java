@@ -7,6 +7,7 @@ import foam.dao.ProxyDAO;
 import foam.nanos.auth.ServiceProvider;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
+import foam.nanos.auth.LifecycleState;
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
 import static foam.mlang.MLang.INSTANCE_OF;
@@ -126,7 +127,7 @@ public class PayrollDAO extends ProxyDAO {
           INSTANCE_OF(CABankAccount.class),
           EQ(BankAccount.OWNER, id),
           EQ(BankAccount.ACCOUNT_NUMBER, bankAccountNo),
-          EQ(BankAccount.ENABLED, true)
+          EQ(BankAccount.LIFECYCLE_STATE, LifecycleState.ACTIVE)
         )
       );
     if ( account == null ) {

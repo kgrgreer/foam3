@@ -124,7 +124,6 @@ foam.CLASS({
           {
             dao: X.accountDAO.where(X.data.AND( // TODO confirm these filters.***
               X.data.EQ(net.nanopay.account.Account.DELETED, false),
-              X.data.EQ(net.nanopay.account.Account.ENABLED, true),
               X.data.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
               X.data.OR(
                 foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' }),

@@ -893,6 +893,7 @@ p({
     import foam.dao.DAO;
     import foam.mlang.predicate.Predicate;
     import foam.nanos.auth.Address;
+    import foam.nanos.auth.LifecycleState;
     import net.nanopay.bank.BankAccount;
     import net.nanopay.contacts.Contact;
     import net.nanopay.fx.afex.AFEXBeneficiary;
@@ -938,7 +939,7 @@ p({
           : ((BankAccount) localAccountDAO.find(contact.getBankAccount()));
 
         BankAccount contactBusinessBankAccount = contactBusiness == null ? null :
-         ((BankAccount) localAccountDAO.find(foam.mlang.MLang.AND( new Predicate[] { foam.mlang.MLang.EQ(BankAccount.OWNER, contactBusiness.getId()), foam.mlang.MLang.INSTANCE_OF(BankAccount.class), foam.mlang.MLang.EQ(BankAccount.ENABLED, true) } )));
+         ((BankAccount) localAccountDAO.find(foam.mlang.MLang.AND( new Predicate[] { foam.mlang.MLang.EQ(BankAccount.OWNER, contactBusiness.getId()), foam.mlang.MLang.INSTANCE_OF(BankAccount.class), foam.mlang.MLang.EQ(BankAccount.LIFECYCLE_STATE, LifecycleState.ACTIVE) } )));
 
         if ( contactBankAccount == null &&  contactBusinessBankAccount == null ) {
           print("Unable to migrate " + contact.getOrganization() + " because contact has no bank account." );

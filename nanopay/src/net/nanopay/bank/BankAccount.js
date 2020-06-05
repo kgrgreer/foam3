@@ -31,6 +31,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Country',
+    'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
@@ -427,7 +428,7 @@ foam.CLASS({
               bankAccount = (BankAccount) ((DAO) x.get("localAccountDAO"))
                 .find(
                   AND(
-                    EQ(Account.ENABLED, true),
+                    EQ(Account.LIFECYCLE_STATE, LifecycleState.ACTIVE),
                     EQ(Account.DELETED, false),
                     EQ(BankAccount.OWNER, user.getId()),
                     INSTANCE_OF(BankAccount.class),

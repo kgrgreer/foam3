@@ -121,15 +121,6 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'enabled',
-      documentation: `Determines whether an account is disabled. Accounts
-        on this platform are disabled rather than deleted.
-      `,
-      value: true,
-      section: 'administration',
-    },
-    {
-      class: 'Boolean',
       name: 'deleted',
       documentation: 'Determines whether the account is deleted.',
       value: false,
