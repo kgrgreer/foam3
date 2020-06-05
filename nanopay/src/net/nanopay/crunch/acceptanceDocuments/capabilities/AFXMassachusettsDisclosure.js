@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'AFXMassachusettsDisclosure',
   extends: 'net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability',
 
+  messages: [
+    { name: 'ACKNOWLEDGE_DISCLOSURE', message: 'Must acknowledge the Disclosure.' }
+  ],
+
   properties: [
     {
       name: 'title',
@@ -33,7 +37,7 @@ foam.CLASS({
             return e.EQ(net.nanopay.crunch.acceptanceDocuments.capabilities
               .AFXMassachusettsDisclosure.AGREEMENT, true);
           },
-          errorString: 'Must acknowledge the Disclosure.'
+          errorMessage: 'ACKNOWLEDGE_DISCLOSURE'
         }
       ]
     }

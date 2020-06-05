@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'TriPartyAgreementUSD',
   extends: 'net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability',
 
+  messages: [
+    { name: 'ACKNOWLEDGE_AFEX_AGREEMENT', message: 'Must acknowledge the AFEX agreement.' }
+  ],
+
   properties: [
     {
       name: 'title',
@@ -39,7 +43,7 @@ foam.CLASS({
             return e.EQ(net.nanopay.crunch.acceptanceDocuments.capabilities
               .TriPartyAgreementUSD.AGREEMENT, true);
           },
-          errorString: 'Must acknowledge the AFEX agreement.'
+          errorMessage: 'ACKNOWLEDGE_AFEX_AGREEMENT'
         }
       ]
     }

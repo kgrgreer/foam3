@@ -2,6 +2,10 @@ foam.CLASS({
   package: 'net.nanopay.crunch.acceptanceDocuments.capabilities',
   name: 'CADAFEXTerms',
   extends: 'net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability',
+  
+  messages: [
+    { name: 'ACKNOWLEDGE_AGREEMENT', message: 'Must acknowledge the agreement.' }
+  ],
 
   properties: [
     {
@@ -43,7 +47,7 @@ foam.CLASS({
             return e.EQ(net.nanopay.crunch.acceptanceDocuments.capabilities
               .CADAFEXTerms.AGREEMENT, true);
           },
-          errorString: 'Must acknowledge the agreement.'
+          errorMessage: 'ACKNOWLEDGE_AGREEMENT'
         }
       ]
     }

@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'AbliiPrivacyPolicy',
   extends: 'net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability',
 
+  messages: [
+    { name: 'ACKNOWLEDGE_PRIVACY_POLICY', message: 'Must acknowledge the Privacy Policy.' }
+  ],
+
   properties: [
     {
       name: 'title',
@@ -25,7 +29,7 @@ foam.CLASS({
             return e.EQ(net.nanopay.crunch.acceptanceDocuments.capabilities
               .AbliiPrivacyPolicy.AGREEMENT, true);
           },
-          errorString: 'Must acknowledge the Privacy Policy.'
+          errorMessage: 'ACKNOWLEDGE_PRIVACY_POLICY'
         }
       ]
     }

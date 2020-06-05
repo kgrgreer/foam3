@@ -3,6 +3,10 @@ foam.CLASS({
   name: 'AbliiTermsAndConditions',
   extends: 'net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability',
 
+  messages: [
+    { name: 'ACKNOWLEDGE_ABLII_TC', message: 'Must acknowledge the Terms and Conditions.' }
+  ],
+
   properties: [
     {
       name: 'title',
@@ -25,7 +29,7 @@ foam.CLASS({
             return e.EQ(net.nanopay.crunch.acceptanceDocuments.capabilities
               .AbliiTermsAndConditions.AGREEMENT, true);
           },
-          errorString: 'Must acknowledge the Terms and Conditions.'
+          errorMessage: 'ACKNOWLEDGE_ABLII_TC'
         }
       ]
     }
