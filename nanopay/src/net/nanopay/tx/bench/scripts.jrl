@@ -1,0 +1,182 @@
+p({
+  "class":"foam.nanos.script.Script",
+  "id":"TrustAccountFind",
+  "server":true,
+  "clusterable":false,
+  "code":"""
+
+import net.nanopay.account.Account;
+import net.nanopay.account.TrustAccount;
+import foam.nanos.auth.User;
+import foam.nanos.auth.LifecycleState;
+import foam.mlang.MLang;
+import foam.mlang.predicate.Predicate;
+import foam.dao.ArraySink;
+import foam.dao.DAO;
+import foam.mlang.sink.Count;
+
+
+User user = ((DAO) x.get("localUserDAO")).find(101L);
+print("user: "+user);
+            DAO accounts = ((DAO)x.get("localAccountDAO"))
+                            .where(
+                              MLang.AND(new Predicate[] {
+                                MLang.INSTANCE_OF(TrustAccount.class),
+                                MLang.EQ(Account.LIFECYCLE_STATE, LifecycleState.ACTIVE),
+                                MLang.EQ(Account.OWNER, user.getId()),
+                                MLang.EQ(Account.DENOMINATION, "CAD")
+                              })
+                            );
+Count count = accounts.select(new Count());
+print("count: "+count);
+
+accounts = user.getAccounts(x);
+a = accounts.select(new ArraySink()).getArray();
+for ( account : a ) {
+    print(account.id+", "+account.owner);
+}
+
+"""
+});
+
+p({
+  "class":"foam.nanos.script.Script",
+  "id":"benchmarkTransactionCreation",
+  "code":`
+    import foam.nanos.bench.*;
+    import net.nanopay.tx.bench.*;
+    lc = x.get("logLevelFilterLogger");
+    lc.setLogInfo(true);
+    savedDebug = lc.getLogDebug();
+    lc.setLogDebug(false);
+    x = x.put("pmLogger", null);
+    b = new TransactionBenchmark();
+    b.setQuoteTransactions(true);
+    b.setDisableRules(false);
+    b.setPurgePerRun(false);
+    builder = new BenchmarkRunner.Builder(x)
+      .setInvocationCount(10000)
+      .setRunPerThread(true)
+      .setBenchmark(b);
+    runner = builder.build();
+    runner.execute(x);
+    print("done");
+    print(runner.getResult());
+    l = x.get("logger");
+    lc.setLogInfo(true);
+    lc.setLogDebug(savedDebug);
+    l.info(new Object[] {runner.getResult()});
+  `,
+  "output":""
+})
+
+p({
+  "class":"foam.nanos.script.Script",
+  "id":"benchmarkTransactionCreationClient",
+  "code":`
+    import foam.nanos.bench.*;
+    import net.nanopay.tx.bench.*;
+    lc = x.get("logLevelFilterLogger");
+    lc.setLogInfo(true);
+    savedDebug = lc.getLogDebug();
+    lc.setLogDebug(false);
+    x = x.put("pmLogger", null);
+    b = new TransactionBenchmarkClient();
+    b.setX(x);
+    b.setUrl("http://aws-mm4:8080/service/transactionDAO");
+    b.setSessionId("e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738");
+    b.setMinAccountId(182);
+    b.setMaxAccountId(282);
+    builder = new BenchmarkRunner.Builder(x)
+      .setInvocationCount(1000)
+      .setRunPerThread(true)
+      .setBenchmark(b);
+    runner = builder.build();
+    runner.execute(x);
+    print("done");
+    print(runner.getResult());
+    l = x.get("logger");
+    lc.setLogInfo(true);
+    lc.setLogDebug(savedDebug);
+    l.info(new Object[] {runner.getResult()});
+  `,
+  "output":""
+})
+p({
+  "class":"foam.nanos.script.Script",
+  "id":"benchmarkTransactionCreateClient-Javascript",
+  "server":false,
+  "code":"""
+
+print('start');
+
+var domain = 'aws-mm1';
+// var domain = 'aws-mm2';
+// var domain = 'aws-mm3';
+// var domain = 'aws-mm4';
+var port = 8080;
+var sessionId = 'e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738';
+var of = net.nanopay.tx.model.Transaction;
+var serviceName = 'transactionDAO';
+
+var box = foam.box.HTTPBox.create({
+    url: 'http://'+domain+':'+port+'/service/'+serviceName,
+    authorizationType: foam.box.HTTPAuthorizationType.BEARER,
+    sessionID: sessionId
+}, x);
+box = foam.box.TimeoutBox.create({ delegate: box }, x);
+box = foam.box.SessionClientBox.create({ sessionID: sessionId, delegate: box }, x);
+var dao = foam.dao.EasyDAO.create({
+    daoType: 'CLIENT',
+    of: of,
+    serverBox: box
+}, x);
+
+dao.select(foam.mlang.sink.Count.create()).then(function(c) {
+    console.log("count: "+c.value);
+}).catch(function(e) {
+    console.error(e.message);
+});
+
+
+// account range
+var min = 182;
+var max = 282;
+var limit = 10000;
+var processed = 0;
+var startTime = new Date();
+print('startTime: '+startTime);
+for ( var i = 0; i < limit; i++ ) {
+    var source = Math.floor(Math.random() * (max - min + 1)) + min;
+    var dest = Math.floor(Math.random() * (max - min + 1)) + min;
+    var amount = Math.random() * 100;
+    var txn = net.nanopay.tx.model.Transaction.create({
+        sourceAccount: source,
+        destinationAccount: dest,
+        amount: amount
+    }, x);
+    dao.put(txn).then(function(t) {
+        console.log("txn: "+t.id);
+        processed++;
+        if ( processed >= limit ) {
+            var endTime = new Date();
+            var delta = endTime.getTime() - startTime.getTime()
+            console.log(processed+' / '+ delta + 'ms');
+            print(processed + '/' + delta + 'ms');
+            print('endTime: '+endTime);
+        }
+    }).catch(function(e) {
+        console.error(e.message);
+        processed++;
+        if ( processed >= limit ) {
+            var endTime = new Date();
+            var delta = endTime.getTime() - startTime.getTime()
+            console.log(processed+' / '+ delta + 'ms');
+            print(processed + '/' + delta + 'ms');
+            print('endTime: '+endTime);
+       }
+    });
+}
+
+"""
+});

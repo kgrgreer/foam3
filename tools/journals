@@ -72,6 +72,7 @@ rootAccounts
 ruleGroups
 rules
 scripts
+scriptEvents
 securities
 services
 sessions

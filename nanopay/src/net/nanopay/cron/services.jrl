@@ -1,0 +1,20 @@
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"cronDAO",
+  "serve":true,
+  "serviceScript":"""
+    mdao = new foam.dao.MDAO(foam.nanos.cron.Cron.getOwnClassInfo());
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.cron.Cron.getOwnClassInfo())
+      .setMdao(mdao)
+      .setInnerDAO(new net.nanopay.security.HashingJDAO(x, "SHA-256", true, false, mdao, "cronjobs"))
+      .setGuid(true)
+      .setCluster(false)
+      .setDecorator(new foam.nanos.cron.CronScheduleDAO.Builder(x)
+        .setDelegate(new foam.nanos.script.ScriptRunnerDAO(null))
+        .build())
+      .setPm(true)
+      .build();
+  """,
+  "client":"{\"of\":\"foam.nanos.cron.Cron\"}"
+})
