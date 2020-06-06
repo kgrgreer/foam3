@@ -1,50 +1,20 @@
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"scriptDAO",
+  "description":"duplicated in nanopay to add HashingJDAO",
   "serve":true,
   "serviceScript":"""
     mdao = new foam.dao.MDAO(foam.nanos.script.Script.getOwnClassInfo());
+    mdao.addIndex(new foam.core.PropertyInfo[] {foam.nanos.script.Script.LAST_RUN});
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.script.Script.getOwnClassInfo())
       .setMdao(mdao)
       .setInnerDAO(new net.nanopay.security.HashingJDAO(x, "SHA-256", true, false, mdao, "scripts"))
       .setGuid(true)
       .setPm(true)
-      .setDecorator(new foam.nanos.script.ScriptRunnerDAO.Builder(x)
-        .setDelegate(new foam.dao.NullDAO(x, foam.nanos.script.Script.getOwnClassInfo()))
-        .build())
-      .setOrder(new foam.core.PropertyInfo[] {foam.nanos.script.Script.ID})
-      .setIndex(new foam.core.PropertyInfo[] {foam.nanos.script.Script.ID})
+      .setDecorator(new foam.nanos.script.ScriptRunnerDAO(new foam.dao.NullDAO(x, foam.nanos.script.Script.getOwnClassInfo())))
+      .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.script.Script.LAST_RUN).build() })
       .build();
   """,
   "client":"{\"of\":\"foam.nanos.script.Script\"}"
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"scriptEventDAO",
-  "serve":true,
-  "serviceScript":"""
-    mdao = new foam.dao.MDAO(foam.nanos.script.ScriptEvent.getOwnClassInfo());
-    return new foam.dao.EasyDAO.Builder(x)
-      .setOf(foam.nanos.script.ScriptEvent.getOwnClassInfo())
-      .setMdao(mdao)
-      .setInnerDAO(new net.nanopay.security.HashingJDAO(x, "SHA-256", true, false, mdao, "scriptEvents"))
-      .setGuid(true)
-      .setFixedSize(new foam.dao.FixedSizeDAO.Builder(x)
-        .setComparator(foam.mlang.MLang.DESC(foam.nanos.script.ScriptEvent.LAST_RUN))
-        .setSize(100)
-        .build())
-      .setDecorator(new foam.nanos.script.ScriptEventDAO.Builder(x)
-        .setDelegate(new foam.dao.GUIDDAO.Builder(x)
-        .setDelegate(new foam.dao.NullDAO(x, foam.nanos.script.ScriptEvent.getOwnClassInfo()))
-        .build())
-        .build())
-      .setOrder(new foam.core.PropertyInfo[] {foam.nanos.script.ScriptEvent.LAST_RUN})
-      .setIndex(new foam.core.PropertyInfo[] {foam.nanos.script.ScriptEvent.OWNER})
-      .setCluster(false)
-      .setRuler(false)
-      .build();
-  """,
-  "client":"{\"of\":\"foam.nanos.script.ScriptEvent\"}"
 })
