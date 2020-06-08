@@ -140,7 +140,7 @@ p({
         "propName":"status",
         "propValue":{
           "class":"foam.nanos.crunch.CapabilityJunctionStatus",
-          "ordinal":2
+          "ordinal":1
         },
         "isNew":false
       },
@@ -149,7 +149,7 @@ p({
         "propName":"status",
         "propValue":{
           "class":"foam.nanos.crunch.CapabilityJunctionStatus",
-          "ordinal":2
+          "ordinal":1
         }
       },
       {
