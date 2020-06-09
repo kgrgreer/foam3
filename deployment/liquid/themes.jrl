@@ -1,10 +1,11 @@
 p({
   "class":"foam.nanos.theme.Theme",
-  "id":4,
+  "id":"D306F95E-4C4F-4C2B-BC5F-F67CFFE3ED00",
   "description":"Liquid",
   "appName":"Liquid",
   "priority":2,
-  "defaultMenu":"admin.data",
+  "defaultMenu":"accounts",
+  "logoRedirect":"accounts",
   "largeLogoEnabled": false,
   "largeLogo": "images/nanopay_blue_white_206x42.png",
   "logoBackgroundColour":"#202341",
