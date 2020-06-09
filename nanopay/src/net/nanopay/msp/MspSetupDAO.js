@@ -116,10 +116,7 @@ foam.CLASS({
         themeDAO.put(theme);
 
         // Add themeDomain
-        List<String> domainList = mspInfo.getDomain();
-        String[] domainArray = new String[domainList.size()];
-        domainArray = domainList.toArray(domainArray);
-        for (String domain : domainArray) {
+        for (String domain : mspInfo.getDomain()) {
             ThemeDomain themeDomain = new ThemeDomain();
             themeDomain.setId(domain);
             themeDomain.setTheme(theme.getId());
@@ -129,10 +126,7 @@ foam.CLASS({
         // Create new serviceProviderURL
         ServiceProviderURL serviceProviderURL = new ServiceProviderURL();
         serviceProviderURL.setSpid(mspInfo.getSpid());
-        domainList.add(mspInfo.getSpid());
-        String[] newDomainArray = new String[domainList.size()];
-        newDomainArray = domainList.toArray(domainArray);
-        serviceProviderURL.setUrls(newDomainArray);
+        serviceProviderURL.setUrls(mspInfo.getDomain());
 
         ServiceProviderURL[] configList = new ServiceProviderURL[1];
         configList[0] = serviceProviderURL;

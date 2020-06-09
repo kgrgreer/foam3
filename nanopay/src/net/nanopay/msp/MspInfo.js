@@ -74,8 +74,13 @@ foam.CLASS({
       required: true
     },
     {
-      class: 'List',
-      name: 'domain'
+      class: 'StringArray',
+      name: 'domain',
+      factory: function() {
+        return [];
+      },
+      javaFactory: 'return new String[0];',
+      required: true
     },
     {
       class: 'String',
