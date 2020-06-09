@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.tx.bench',
   name: 'TransactionBenchmarkClient',
@@ -8,6 +25,7 @@ foam.CLASS({
     'foam.box.Box',
     'foam.box.HTTPBox',
     'foam.box.SessionClientBox',
+    'foam.core.FObject',
     'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.ClientDAO',
@@ -20,12 +38,18 @@ foam.CLASS({
     'foam.nanos.auth.LifecycleState',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.logger.Logger',
-    'foam.nanos.pm.PMBox',
+    'foam.nanos.pm.PM',
     'foam.util.SafetyUtil',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.TransactionQuote',
   ],
 
   properties: [
+    {
+      name: 'name',
+      class: 'String',
+      javaFactory: 'return this.getClass().getSimpleName();'
+    },
     {
       name: 'minAccountId',
       class: 'Long',
@@ -85,14 +109,10 @@ foam.CLASS({
       new ClientDAO.Builder(x)
         .setDelegate(new SessionClientBox.Builder(x)
           .setSessionID(getSessionId())
-          .setDelegate(new PMBox.Builder(x)
-            .setClassType(ClientDAO.getOwnClassInfo())
-            .setName(id)
-            .setDelegate(new HTTPBox.Builder(x)
-              .setAuthorizationType(foam.box.HTTPAuthorizationType.BEARER)
-              .setSessionID(getSessionId())
-              .setUrl(getUrl())
-              .build())
+          .setDelegate(new HTTPBox.Builder(x)
+            .setAuthorizationType(foam.box.HTTPAuthorizationType.BEARER)
+            .setSessionID(getSessionId())
+            .setUrl(getUrl())
             .build())
           .build())
         .build()
@@ -113,7 +133,8 @@ foam.CLASS({
       javaCode: `
     AppConfig config = (AppConfig) x.get("appConfig");
     if ( config.getMode() == foam.nanos.app.Mode.PRODUCTION ) return;
-    getLogger().info("execute");
+//    getLogger().info("execute");
+    PM pm = PM.create(x, this.getOwnClassInfo(), getName());
 
     long range = getMaxAccountId() - getMinAccountId() + 1;
     long sourceId = (long) (Math.floor(Math.random() * range) + getMinAccountId());
@@ -129,10 +150,13 @@ foam.CLASS({
       synchronized (this) {
         setTransactions(getTransactions() +1);
       }
+//      getLogger().info("execute", "put", "request", "transaction");
       txn = (Transaction) getClient().put(txn);
-      getLogger().info(txn.getId(), txn.getStatus().getLabel());
+//      getLogger().info("execute", "put", "response", "transaction", txn.getId(), txn.getStatus().getLabel());
     } catch ( Throwable t ) {
-      getLogger().error(t);
+      getLogger().error(t.getMessage(), t);
+    } finally {
+      pm.log(x);
     }
       `
     },

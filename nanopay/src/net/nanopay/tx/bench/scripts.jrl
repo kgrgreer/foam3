@@ -1,8 +1,8 @@
 p({
   "class":"foam.nanos.script.Script",
   "id":"TrustAccountFind",
+  "descripton":"Test for TrustAccounts associated with a particular User.",
   "server":true,
-  "clusterable":false,
   "code":"""
 
 import net.nanopay.account.Account;
@@ -41,7 +41,8 @@ for ( account : a ) {
 
 p({
   "class":"foam.nanos.script.Script",
-  "id":"benchmarkTransactionCreation",
+  "id":"TransactionBenchmark",
+  "description":"Transaction Creation Benchmark - runs against local DAO.",
   "code":`
     import foam.nanos.bench.*;
     import net.nanopay.tx.bench.*;
@@ -72,10 +73,17 @@ p({
 
 p({
   "class":"foam.nanos.script.Script",
-  "id":"benchmarkTransactionCreationClient",
+  "id":"TransactionBenchmarkClient",
+  "description":"Transaction Creation Benchmark - Client - runs against remote DAO",
   "code":`
     import foam.nanos.bench.*;
     import net.nanopay.tx.bench.*;
+
+    // domain = "172.19.241.156"; //aws-mm1
+    // domain = "172.19.240.89"; //aws-mm2
+    // domain = "172.19.241.252"; //aws-mm3
+    domain = "172.19.5.38"; //aws-mm4
+
     lc = x.get("logLevelFilterLogger");
     lc.setLogInfo(true);
     savedDebug = lc.getLogDebug();
@@ -83,7 +91,7 @@ p({
     x = x.put("pmLogger", null);
     b = new TransactionBenchmarkClient();
     b.setX(x);
-    b.setUrl("http://aws-mm4:8080/service/transactionDAO");
+    b.setUrl("http://"+domain+":8080/service/transactionDAO");
     b.setSessionId("e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738");
     b.setMinAccountId(182);
     b.setMaxAccountId(282);
@@ -104,18 +112,59 @@ p({
 })
 p({
   "class":"foam.nanos.script.Script",
-  "id":"benchmarkTransactionCreateClient-Javascript",
+  "id":"TransactionPlannerBenchmarkClient",
+  "description":"Transaction Quote Creation Benchmark - Client - runs against remote DAO",
+  "code":`
+    import foam.nanos.bench.*;
+    import net.nanopay.tx.bench.*;
+
+    // domain = "172.19.241.156"; //aws-mm1
+    // domain = "172.19.240.89"; //aws-mm2
+    // domain = "172.19.241.252"; //aws-mm3
+    domain = "172.19.5.38"; //aws-mm4
+
+    lc = x.get("logLevelFilterLogger");
+    lc.setLogInfo(true);
+    savedDebug = lc.getLogDebug();
+    lc.setLogDebug(false);
+    x = x.put("pmLogger", null);
+    b = new TransactionPlannerBenchmarkClient();
+    b.setX(x);
+    b.setUrl("http://"+domain+":8080/service/transactionPlannerDAO");
+    b.setSessionId("e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738");
+    b.setMinAccountId(182);
+    b.setMaxAccountId(282);
+    builder = new BenchmarkRunner.Builder(x)
+      .setInvocationCount(10)
+      .setRunPerThread(true)
+      .setBenchmark(b);
+    runner = builder.build();
+    runner.execute(x);
+    print("done");
+    print(runner.getResult());
+    l = x.get("logger");
+    lc.setLogInfo(true);
+    lc.setLogDebug(savedDebug);
+    l.info(new Object[] {runner.getResult()});
+  `,
+  "output":""
+})
+p({
+  "class":"foam.nanos.script.Script",
+  "id":"TransactionBenchmarkClient-Javascript",
+  "description":"Transaction Creation Benchmark - (Javascript) Client - runs against remote DAO",
   "server":false,
   "code":"""
 
 print('start');
 
-var domain = 'aws-mm1';
-// var domain = 'aws-mm2';
-// var domain = 'aws-mm3';
-// var domain = 'aws-mm4';
+// var domain = '172.19.241.156'; //'aws-mm1';
+// var domain = '172.19.240.89'; //'aws-mm2';
+// var domain = '172.19.241.252'; //'aws-mm3';
+var domain = '172.19.5.38'; //'aws-mm4';
 var port = 8080;
 var sessionId = 'e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738';
+
 var of = net.nanopay.tx.model.Transaction;
 var serviceName = 'transactionDAO';
 
