@@ -1435,6 +1435,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ticket/test/SudoTicketTest' },
 
   // planners
+  { name: 'net/nanopay/tx/planner/PlannerGroup' },
   { name: 'net/nanopay/tx/planner/SummaryPopulatorDAO' },
   { name: 'net/nanopay/tx/planner/CorridorQuoteDAO' },
   { name: 'net/nanopay/tx/planner/TransactionQuotingDAO' },

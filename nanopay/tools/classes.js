@@ -979,6 +979,7 @@ var classes = [
   'net.nanopay.ticket.test.SudoTicketTest',
 
   // Planners
+  'net.nanopay.tx.planner.PlannerGroup',
   'net.nanopay.tx.planner.SummaryPopulatorDAO',
   'net.nanopay.tx.planner.CorridorQuoteDAO',
   'net.nanopay.tx.planner.TransactionQuotingDAO',
