@@ -48,9 +48,15 @@ foam.CLASS({
       name: 'adminUserLastname',
       required: true
     },
-    net.nanopay.auth.ServiceProviderURL.URLS.clone().copyFrom({
-      name: 'domain'
-    }),
+    {
+      class: 'StringArray',
+      name: 'domain',
+      factory: function() {
+        return [];
+      },
+      javaFactory: 'return new String[0];',
+      required: true
+    },
     {
       class: 'String',
       name: 'appName',
