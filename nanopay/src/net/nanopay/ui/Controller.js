@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.ui',
   name: 'Controller',
@@ -53,7 +70,6 @@ foam.CLASS({
     'net.nanopay.ui.modal.ModalStyling',
     'net.nanopay.ui.modal.SessionTimeoutModal',
     'net.nanopay.ui.style.AppStyles',
-    'net.nanopay.ui.NanoConnectStyles',
     'net.nanopay.util.OnboardingUtil'
   ],
 
@@ -76,11 +92,13 @@ foam.CLASS({
     'currentAccount',
     'findAccount',
     'findBalance',
+    'homeDenomination',
     'isIframe',
     'onboardingUtil',
     'privacyUrl',
+    'sme',
     'termsUrl',
-    'homeDenomination'
+    'userLoggedIn'
   ],
 
   css: `
@@ -154,11 +172,6 @@ foam.CLASS({
     .foam-flow-Document a {
       color: rgb(0, 153, 229);
       text-decoration-line: none;
-    }
-
-    .foam-u2-stack-StackView {
-      overflow: scroll;
-      height: calc(100vh - 65px);
     }
   `,
 
@@ -240,6 +253,10 @@ foam.CLASS({
       message: 'Error occurred when checking the ability to receive payment'
     },
     {
+      name: 'FETCH_MENU_ERROR',
+      message: 'Error occurred when fetching menu'
+    },
+    {
       name: 'QUERY_SIGNING_OFFICERS_ERROR',
       message: 'An unexpected error occurred while querying signing officers: '
     },
@@ -280,6 +297,15 @@ foam.CLASS({
       }
     },
     {
+      class: 'foam.core.FObjectProperty',
+      of: 'foam.core.Latch',
+      name: 'userLoggedIn',
+      documentation: 'A latch used to wait on user login.',
+      factory: function() {
+        return this.Latch.create();
+      }
+    },
+    {
       name: 'loginVariables',
       expression: function( client$smeBusinessRegistrationDAO ) {
         return {
@@ -306,7 +332,7 @@ foam.CLASS({
       name: 'currentAccount',
       factory: function() {
         return this.DigitalAccount.create({
-          owner: this.user,
+          owner: this.subject.user,
           denomination: 'CAD'
         });
       }
@@ -368,6 +394,12 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'verifiedAccount'
+    },
+    {
+      documentation: 'true when User Group is part of SME',
+      class: 'Boolean',
+      name: 'sme',
+      value: false
     },
     {
       class: 'Array',
@@ -509,53 +541,15 @@ foam.CLASS({
   ],
 
   methods: [
-    async function init() {
+    function init() {
       this.SUPER();
 
       // Enable session timer.
       this.sessionTimer.enable = true;
       this.sessionTimer.onSessionTimeout = this.onSessionTimeout.bind(this);
-
-      await this.themeInstalled;
-
-      if ( this.theme.name === 'ablii' ) {
-        window.onpopstate = async (event) => {
-          var menu;
-  
-          // Redirect user to switch business if agent doesn't exist.
-          if ( ! this.agent ) {
-            menu = await this.client.menuDAO.find('sme.accountProfile.switch-business');
-            menu.launch(this);
-            return;
-          }
-  
-          var hash = location.hash.substr(1);
-  
-          if ( hash == 'sme.main.onboarding' ) {
-            this.onboardingUtil.initOnboardingView();
-          }
-  
-          if ( hash == 'sme.main.onboarding.international' ) {
-            this.onboardingUtil.initInternationalOnboardingView();
-          }
-  
-          menu = await this.client.menuDAO.find(hash);
-  
-          // Any errors in finding the menu location to redirect
-          // will result in a redirect to dashboard.
-          if ( menu ) {
-            menu.launch(this);
-          }
-  
-          if ( hash != 'sme.accountProfile.signout' && hash !== '' ) {
-            this.bannerizeCompliance();
-          }
-        };
-      }
     },
 
     async function initE() {
-      var self = this;
       // adding a listener to track the display width here as well since we don't call super
       window.addEventListener('resize', this.updateDisplayWidth);
       this.updateDisplayWidth();
@@ -572,69 +566,37 @@ foam.CLASS({
         this.InvoiceStyles.create();
         this.ModalStyling.create();
 
-        if ( this.theme.name === 'nanopay' ) {
-          this.NanoConnectStyles.create();
-          this.__subContext__.register(this.ConnectSubMenu, 'foam.nanos.menu.SubMenu');
-          // Replace the detail view in non-liquid deployments to give more control over the users
-          if ( this.appConfig.name != 'liquid' ) {
-            this.__subContext__.register(net.nanopay.meter.UserDetailView, 'net.nanopay.liquidity.ui.user.LiquidUserDetailView');
-            //this.__subContext__.register(foam.u2.detail.SectionedDetailView, 'net.nanopay.liquidity.ui.user.LiquidUserDetailView');
-            this.__subContext__.register(foam.u2.detail.SectionedDetailView, "net.nanopay.liquidity.ui.account.AccountDetailView");
-            this.__subContext__.register(foam.u2.detail.SectionedDetailView, "net.nanopay.account.AccountDAOSummaryViewView");
-            this.__subContext__.register(foam.comics.v2.DAOSummaryView, "net.nanopay.account.AccountDAOSummaryView");
-          }
-        }
-        if ( this.theme.name === 'ablii' ) {
-          // Prevent action within platform if user is not a business. Redirect regular users to
-          // switch business menu screen to select a business.
-          this.stack$.dot('pos').sub(function() {
-            if ( self.user.cls_ == net.nanopay.model.Business && self.loginSuccess ) {
-              return;
-            } else if (
-              self.user.cls_ != self.Business &&
-              self.loginSuccess &&
-              location.hash != '#sme.accountProfile.switch-business'
-            ) {
-              self.pushMenu('sme.accountProfile.switch-business');
-              self.notify(self.SELECT_BUSINESS_WARNING, 'warning');
-            }
-          });
+        this.SMEStyles.create();
 
-          this.SMEStyles.create();
+        // TODO & NOTE: This is a workaround. This prevents the CSS from breaking when viewing it in a subclass first before the parent class.
+        this.BankPadAuthorization.create();
 
-          // TODO & NOTE: This is a workaround. This prevents the CSS from breaking when viewing it in a subclass first before the parent class.
-          this.BankPadAuthorization.create();
+        this.__subContext__.register(this.AbliiActionView, 'foam.u2.ActionView');
+        this.__subContext__.register(this.ConnectSubMenu, 'foam.nanos.menu.SubMenu');
+        this.__subContext__.register(this.SMEWizardOverview, 'net.nanopay.ui.wizard.WizardOverview');
+        this.__subContext__.register(this.SMEModal, 'foam.u2.dialog.Popup');
+        this.__subContext__.register(this.SuccessPasswordView, 'foam.nanos.auth.resetPassword.SuccessView');
+        this.__subContext__.register(this.VerifyEmailView, 'foam.nanos.auth.ResendVerificationEmail');
+        this.__subContext__.register(this.NotificationMessage, 'foam.u2.dialog.NotificationMessage');
+        this.__subContext__.register(this.TwoFactorSignInView, 'foam.nanos.auth.twofactor.TwoFactorSignInView');
+        this.__subContext__.register(this.AbliiOverlayActionListView, 'foam.u2.view.OverlayActionListView');
+        this.__subContext__.register(this.SignUp, 'foam.nanos.u2.navigation.SignUp');
 
-          this.__subContext__.register(this.AbliiActionView, 'foam.u2.ActionView');
-          this.__subContext__.register(this.SMEWizardOverview, 'net.nanopay.ui.wizard.WizardOverview');
-          this.__subContext__.register(this.SMEModal, 'foam.u2.dialog.Popup');
-          this.__subContext__.register(this.SuccessPasswordView, 'foam.nanos.auth.resetPassword.SuccessView');
-          this.__subContext__.register(this.VerifyEmailView, 'foam.nanos.auth.ResendVerificationEmail');
-          this.__subContext__.register(this.NotificationMessage, 'foam.u2.dialog.NotificationMessage');
-          this.__subContext__.register(this.TwoFactorSignInView, 'foam.nanos.auth.twofactor.TwoFactorSignInView');
-          this.__subContext__.register(this.AbliiOverlayActionListView, 'foam.u2.view.OverlayActionListView');
-          this.__subContext__.register(this.SignUp, 'foam.nanos.u2.navigation.SignUp');
-        }
         this.themeInstalled.resolve();
       });
 
       await this.themeInstalled;
 
-      if ( this.loginSuccess ) {
-        this.findBalance();
-      }
-
       if ( ! this.isIframe() ){
         this
           .addClass(this.myClass())
           .add(this.slot(function (loginSuccess, topNavigation_) {
-            if ( ! loginSuccess && this.theme.name === 'ablii' ) return null;
+            if ( ! loginSuccess ) return null;
             return this.E().tag(topNavigation_);
           }))
           .start()
             .addClass('stack-wrapper')
             .addClass(this.slot(function (loginSuccess) {
-              if ( this.theme.name != 'ablii' ) return;
               return ! loginSuccess ? 'login-stack' : 'dashboard-stack';
             }))
             .enableClass('login-wrapper', this.loginSuccess$)
@@ -671,8 +633,17 @@ foam.CLASS({
       }
     },
 
+    async function fetchGroup() {
+      await this.SUPER();
+      if ( this.group ) {
+        if ( await this.group.isDescendantOf('sme', this.client.groupDAO) ) {
+          this.sme = true;
+        }
+      }
+    },
+
     function bannerizeTwoFactorAuth() {
-      if ( ! this.user.twoFactorEnabled ) {
+      if ( ! this.subject.user.twoFactorEnabled ) {
         this.setBanner(this.BannerMode.NOTICE, 'Please enable Two-Factor Authentication in Personal Settings.');
       }
     },
@@ -684,15 +655,15 @@ foam.CLASS({
     },
 
     function onSessionTimeout() {
-      if ( (this.user && this.user.emailVerified) ||
-           (this.agent && this.agent.emailVerified) ) {
+      if ( (this.subject && this.subject.user && this.subject.user.emailVerified) ||
+           (this.subject && this.subject.realUser && this.subject.realUser.emailVerified) ) {
         this.add(this.Popup.create({ closeable: false }).tag(this.SessionTimeoutModal));
       }
     },
 
     function findAccount() {
       if ( this.currentAccount == null || this.currentAccount.id == 0 ||
-           this.currentAccount.owner != null && this.currentAccount.owner.id != this.user.id ) {
+           this.currentAccount.owner != null && this.currentAccount.owner.id != this.subject.user.id ) {
         return this.client.digitalAccount.findDefault(this.client, null).then(function(account) {
           this.currentAccount.copyFrom(account);
           return this.currentAccount;
@@ -726,19 +697,19 @@ foam.CLASS({
       if ( locHash ) {
         var searchParams = new URLSearchParams(location.search);
         var tokenParam = searchParams.get('token');
-        if ( this.theme.name === 'ablii' ) {
 
-          // direct to error page if an invalid token hits (token not found)
+        // direct to error page if an invalid token hits (token not found)
+        if ( tokenParam ) {
           self.client.authenticationTokenService.processToken(null, null, tokenParam).then(() => {
           }).catch(e => {
-              if ( tokenParam != null && e.message === 'Token not found' ) {
-                view = net.nanopay.sme.ui.ErrorPageView.create({
-                  title: this.INVALID_TOKEN_ERROR_TITLE,
-                  info_1: this.INVALID_TOKEN_ERROR_1,
-                  info_2: this.INVALID_TOKEN_ERROR_2
-                });
-                self.stack.push(view, self);
-              }
+            if ( tokenParam != null && e.message === 'Token not found' ) {
+              view = net.nanopay.sme.ui.ErrorPageView.create({
+                title: this.INVALID_TOKEN_ERROR_TITLE,
+                info_1: this.INVALID_TOKEN_ERROR_1,
+                info_2: this.INVALID_TOKEN_ERROR_2
+              });
+              self.stack.push(view, self);
+            }
           });
 
           // Process auth token
@@ -749,42 +720,33 @@ foam.CLASS({
               });
           }
         }
+      }
 
-        // don't go to log in screen if going to reset password screen
-        if ( location.hash && location.hash === '#reset' ) {
-          view = {
-            class: 'foam.nanos.auth.ChangePasswordView',
-            modelOf: 'foam.nanos.auth.ResetPassword'
-          };
-        }
-        // don't go to log in screen if going to sign up password screen
-        if ( location.hash && location.hash === '#sign-up' && ! self.loginSuccess ) {
-          view = {
-            class: 'foam.u2.view.LoginView',
-            mode_: 'SignUp',
-            param: {
-              token_: tokenParam,
-              email: searchParams.get('email'),
-              disableEmail_: searchParams.has('email'),
-              disableCompanyName_: searchParams.has('companyName')
-            }
-          };
-          if ( this.theme.name === 'ablii' ) {
-            view.organization = searchParams.has('companyName')
-                ? searchParams.get('companyName')
-                : '';
-            view.countryChoices_ = searchParams.has('country') ? [searchParams.get('country')] : ['CA', 'US'];
-            view.firstName = searchParams.has('firstName') ? searchParams.get('firstName') : '';
-            view.lastName = searchParams.has('lastName') ? searchParams.get('lastName') : '';
-            view.jobTitle = searchParams.has('jobTitle') ? searchParams.get('jobTitle') : '';
-            view.phone = searchParams.has('phone') ? searchParams.get('phone') : '';
+      // don't go to log in screen if going to reset password screen
+      if ( location.hash && location.hash === '#reset' ) {
+        view = {
+          class: 'foam.nanos.auth.ChangePasswordView',
+          modelOf: 'foam.nanos.auth.ResetPassword'
+        };
+      }
+      // don't go to log in screen if going to sign up password screen
+      if ( location.hash && location.hash === '#sign-up' && ! self.loginSuccess ) {
+        view = {
+          class: 'foam.u2.view.LoginView',
+          mode_: 'SignUp',
+          param: {
+            token_: tokenParam,
+            email: searchParams.get('email'),
+            disableEmail_: searchParams.has('email'),
+            disableCompanyName_: searchParams.has('companyName'),
+            organization: searchParams.has('companyName') ? searchParams.get('companyName') : '',
+            countryChoices_: searchParams.has('country') ? [searchParams.get('country')] : ['CA', 'US'],
+            firstName: searchParams.has('firstName') ? searchParams.get('firstName') : '',
+            lastName: searchParams.has('lastName') ? searchParams.get('lastName') : '',
+            jobTitle: searchParams.has('jobTitle') ? searchParams.get('jobTitle') : '',
+            phone: searchParams.has('phone') ? searchParams.get('phone') : ''
           }
-          else {
-            view.organization = searchParams.get('companyName');
-            view.countryChoices_ = searchParams.get('countryChoice');
-            view.group_ = 'basicUser';
-          }
-        }
+        };
       }
       return new Promise(function(resolve, reject) {
         self.stack.push(view, self);
@@ -797,7 +759,7 @@ foam.CLASS({
      * business onboarding status and bank account status.
      */
     async function bannerizeCompliance() {
-      var user = await this.client.userDAO.find(this.user.id);
+      var user = await this.client.userDAO.find(this.subject.user.id);
       var accountArray = await this.getBankAccountArray();
       if ( accountArray ) {
         for ( i =0; i < accountArray.length; i++ ) {
@@ -806,7 +768,7 @@ foam.CLASS({
           }
         }
       }
-      await this.getCAUSPaymentEnabled(user, this.agent);
+      await this.getCAUSPaymentEnabled(user, this.subject.realUser);
 
       if ( user.compliance == this.ComplianceStatus.PASSED ) {
         var signingOfficers = await this.getSigningOfficersArray(user);
@@ -828,7 +790,7 @@ foam.CLASS({
     },
 
     async function checkComplianceAndBanking() {
-      var user = await this.client.userDAO.find(this.user.id);
+      var user = await this.client.userDAO.find(this.subject.user.id);
       var accountArray = await this.getBankAccountArray();
 
       if ( user.compliance == this.ComplianceStatus.PASSED ) {
@@ -866,7 +828,7 @@ foam.CLASS({
     async function check2FAEnalbed() {
       var canPayInvoice = await this.client.auth.check(null, 'invoice.pay');
 
-      if ( canPayInvoice && ! this.agent.twoFactorEnabled ) {
+      if ( canPayInvoice && ! this.subject.realUser.twoFactorEnabled ) {
         var TwoFactorNotificationDOM = this.Element.create()
           .start().style({ 'display': 'inline-block' })
             .add(this.TWO_FACTOR_REQUIRED_ONE)
@@ -914,7 +876,7 @@ foam.CLASS({
      */
     async function getBankAccountArray() {
       try {
-        return (await this.user.accounts
+        return (await this.subject.user.accounts
           .where(this.OR(
             this.EQ(this.Account.TYPE, this.CABankAccount.name),
             this.EQ(this.Account.TYPE, this.USBankAccount.name)
@@ -943,11 +905,11 @@ foam.CLASS({
     /**
      * Set caUsOnboardingComplete based on CA/US oboarding status.
      */
-    async function getCAUSPaymentEnabled(user, agent) {
+    async function getCAUSPaymentEnabled(user, realUser) {
       if ( this.Business.isInstance(user) ) {
         this.__subSubContext__.canadaUsBusinessOnboardingDAO.find(
           this.AND(
-            this.EQ(this.CanadaUsBusinessOnboarding.USER_ID, agent.id),
+            this.EQ(this.CanadaUsBusinessOnboarding.USER_ID, realUser.id),
             this.EQ(this.CanadaUsBusinessOnboarding.BUSINESS_ID, user.id)
           )
         ).then((o) => {
@@ -980,35 +942,87 @@ foam.CLASS({
   ],
 
   listeners: [
-    function onUserAgentAndGroupLoaded() {
+    function onUserAgentAndGroupLoaded() { 
+      var self = this;
+      this.userLoggedIn.resolve();
+      if ( this.sme ) {
+        window.onpopstate = async (event) => {
+          var menu;
+  
+          // Redirect user to switch business if agent doesn't exist.
+          if ( ! this.subject.realUser ) {
+            menu = await this.client.menuDAO.find('sme.accountProfile.switch-business');
+            menu.launch(this);
+            return;
+          }
+  
+          var hash = location.hash.substr(1);
+  
+          if ( hash == 'sme.main.onboarding' ) {
+            this.onboardingUtil.initOnboardingView();
+          }
+  
+          if ( hash == 'sme.main.onboarding.international' ) {
+            this.onboardingUtil.initInternationalOnboardingView();
+          }
+          try {
+            menu = await this.client.menuDAO.find(hash);
+          }
+          catch (err) {
+            console.warn(`${this.FETCH_MENU_ERROR}: `, err);
+          }
+  
+          // Any errors in finding the menu location to redirect
+          // will result in a redirect to dashboard.
+          if ( menu ) {
+            menu.launch(this);
+          }
+  
+          if ( hash != 'sme.accountProfile.signout' && hash !== '' ) {
+            this.bannerizeCompliance();
+          }
+        };
 
-      if ( this.theme.name === 'ablii' ) {
+        // Prevent action within platform if user is not a business. Redirect regular users to
+        // switch business menu screen to select a business.
+        this.stack$.dot('pos').sub(function() {
+          if ( self.user.cls_ == net.nanopay.model.Business && self.loginSuccess ) {
+            return;
+          } else if (
+            self.user.cls_ != self.Business &&
+            self.loginSuccess &&
+            location.hash != '#sme.accountProfile.switch-business'
+          ) {
+            self.pushMenu('sme.accountProfile.switch-business');
+            self.notify(self.SELECT_BUSINESS_WARNING, 'warning');
+          }
+        });
+
         if ( ! this.subject.user.emailVerified ) {
           this.loginSuccess = false;
           this.stack.push({ class: 'foam.nanos.auth.ResendVerificationEmail' });
           return;
         }
 
-        this.bannerizeCompliance();
+        // Update the look and feel now that the user is logged in since there
+        // might be a more specific one to use now.
+        this.fetchTheme();
 
         var hash = this.window.location.hash;
         if ( hash ) hash = hash.substring(1);
 
         if ( hash ) {
           window.onpopstate();
-        } else if ( this.group ) {
-          this.window.location.hash = this.group.defaultMenu;
+        } else if ( this.theme ) {
+          this.window.location.hash = this.theme.defaultMenu;
         }
+      }  
 
-        // Update the look and feel now that the user is logged in since there
-        // might be a more specific one to use now.
-        this.fetchTheme();
-      }
       else {
         // only show B2B onboarding if user is a Business
-        if ( this.user.type === 'Business' ) {
+        if ( this.subject.user.type === 'Business' ) {
           // check account status and show UI accordingly
-          switch ( this.user.status ) {
+          switch ( this.subject.user.status ) {
             case this.AccountStatus.PENDING:
               this.loginSuccess = false;
               this.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard' });
@@ -1025,7 +1039,7 @@ foam.CLASS({
               // disabled but before it was activated, they should see page
               // 5 of the onboarding wizard to be able to review what they
               // submitted.
-              if ( this.user.previousStatus === this.AccountStatus.SUBMITTED ) {
+              if ( this.subject.user.previousStatus === this.AccountStatus.SUBMITTED ) {
                 this.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 });
 
               // Otherwise, if they haven't submitted yet, or were already
@@ -1040,12 +1054,12 @@ foam.CLASS({
 
             // show onboarding screen if user hasn't clicked "Go To Portal" button
             case this.AccountStatus.ACTIVE:
-              if ( ! this.user.createdPwd ) {
+              if ( ! this.subject.user.createdPwd ) {
                 this.loginSuccess = false;
                 this.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 6 });
                 return;
               }
-              if ( this.user.onboarded ) break;
+              if ( this.subject.user.onboarded ) break;
               this.loginSuccess = false;
               this.stack.push({ class: 'net.nanopay.onboarding.b2b.ui.B2BOnboardingWizard', startAt: 5 });
               return;
@@ -1058,7 +1072,6 @@ foam.CLASS({
         }
 
         this.SUPER();
-        this.findBalance();
 
         if ( this.appConfig.mode == foam.nanos.app.Mode.PRODUCTION ) {
           this.bannerizeTwoFactorAuth();

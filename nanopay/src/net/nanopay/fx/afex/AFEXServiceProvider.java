@@ -22,6 +22,7 @@ import foam.nanos.auth.AuthService;
 import foam.nanos.auth.Country;
 import foam.nanos.auth.Region;
 import foam.nanos.auth.User;
+import foam.nanos.auth.LifecycleState;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
@@ -922,7 +923,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     AFEXBeneficiary afexBeneficiary = getAFEXBeneficiary(x, beneficiaryId, ownerId);
     if ( afexBeneficiary == null ) {
       DAO localAccountDAO = (DAO) x.get("localAccountDAO");
-      BankAccount bankAccount = ((BankAccount) localAccountDAO.find(AND(EQ(BankAccount.OWNER, beneficiaryId), INSTANCE_OF(BankAccount.class), EQ(BankAccount.ENABLED, true))));
+      BankAccount bankAccount = ((BankAccount) localAccountDAO.find(AND(EQ(BankAccount.OWNER, beneficiaryId), INSTANCE_OF(BankAccount.class), EQ(BankAccount.LIFECYCLE_STATE, LifecycleState.ACTIVE))));
       if ( null != bankAccount ) {
         try {
           addPayee(beneficiaryId, bankAccount.getId(), ownerId);

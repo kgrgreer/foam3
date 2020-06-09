@@ -2,6 +2,7 @@ package net.nanopay.payment;
 
 import foam.core.X;
 import foam.dao.DAO;
+import foam.nanos.auth.LifecycleState;
 import foam.nanos.auth.User;
 import net.nanopay.account.DigitalAccount;
 import net.nanopay.bank.BankAccount;
@@ -78,7 +79,7 @@ public class PayrollDAOTest extends foam.nanos.test.Test {
       account.setStatus(BankAccountStatus.VERIFIED);
       account.setOwner(PAYER_ID);
       account.setDenomination("CAD");
-      account.setEnabled(true);
+      account.setLifecycleState(LifecycleState.ACTIVE);
       account.setIsDefault(true);
       account = (CABankAccount) accountDAO.put_(x, account);
     }

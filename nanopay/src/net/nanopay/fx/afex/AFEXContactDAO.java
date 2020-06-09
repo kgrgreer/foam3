@@ -8,6 +8,7 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.nanos.auth.LifecycleState;
 import foam.nanos.auth.AuthService;
 import foam.nanos.logger.Logger;
 import net.nanopay.bank.BankAccount;
@@ -62,7 +63,7 @@ public class AFEXContactDAO
     // Check If Contact has business and create AFEX beneficiary for business also
     Business business = (Business) localBusinessDAO.find(contact.getBusinessId());
     if ( business != null ) {
-      BankAccount businessBankAccount = ((BankAccount) localAccountDAO.find(AND(EQ(BankAccount.OWNER, business.getId()), INSTANCE_OF(BankAccount.class), EQ(BankAccount.ENABLED, true))));
+      BankAccount businessBankAccount = ((BankAccount) localAccountDAO.find(AND(EQ(BankAccount.OWNER, business.getId()), INSTANCE_OF(BankAccount.class), EQ(BankAccount.LIFECYCLE_STATE, LifecycleState.ACTIVE))));
       if ( null != businessBankAccount ) {
         String currencyPermission = "currency.read." + businessBankAccount.getDenomination();
         boolean hasCurrencyPermission = auth.checkUser(getX(), contactOwner, currencyPermission);

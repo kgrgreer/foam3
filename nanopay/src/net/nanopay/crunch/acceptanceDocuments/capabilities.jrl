@@ -1,0 +1,152 @@
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-1",
+  "name":"TriPartyAgreementCAD",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.TriPartyAgreementCAD",
+  "version":"0",
+  "enabled":true,
+  "visible":false
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-2",
+  "name":"AFXCaliforniaDisclosure",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.AFXCaliforniaDisclosure",
+  "version":"0",
+  "enabled":true,
+  "visible":false
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-3",
+  "name":"DualPartyAgreementCAD",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.DualPartyAgreementCAD",
+  "version":"0",
+  "enabled":true,
+  "visible":false
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-4",
+  "name":"AFXArizonaDisclosure",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.AFXArizonaDisclosure",
+  "version":"0",
+  "enabled":true,
+  "visible":false
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-5",
+  "name":"TriPartyAgreementUSD",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.TriPartyAgreementUSD",
+  "version":"0",
+  "enabled":true,
+  "visible":false
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-6",
+  "name":"AFXColoradoDisclosure",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.AFXColoradoDisclosure",
+  "version":"0",
+  "enabled":true,
+  "visible":false
+})
+
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-7",
+  "name":"AbliiTermsAndConditions",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiTermsAndConditions",
+  "version":"0",
+  "enabled":true,
+  "visible":false
+})
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-8",
+  "name":"AbliiPrivacyPolicy",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy",
+  "version":"0",
+  "enabled":true,
+  "visible":false
+})
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-9",
+  "name":"CADAFEXTerms",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.CADAFEXTerms",
+  "version":"0",
+  "enabled":true,
+  "visible":false
+})
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-10",
+  "name":"USDAFEXTerms",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms",
+  "version":"0",
+  "enabled":true,
+  "visible":false
+})
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-11",
+  "name":"NanopayInternationalPaymentsCustomerAgreement",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.NanopayInternationalPaymentsCustomerAgreement",
+  "version":"0",
+  "enabled":true,
+  "visible":false
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-12",
+  "name":"CertifyOwnersPercent",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyOwnersPercent",
+  "version":"0",
+  "enabled":true,
+  "visible":false
+})
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-13",
+  "name":"CertifyBankAccountOwnership",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyBankAccountOwnership",
+  "version":"0",
+  "enabled":true,
+  "visible":false
+})
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-14",
+  "name":"AFXMassachusettsDisclosure",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.AFXMassachusettsDisclosure",
+  "version":"0",
+  "enabled":true,
+  "visible":false
+})
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-15",
+  "name":"AFXNewYorkDisclosure",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.AFXNewYorkDisclosure",
+  "version":"0",
+  "enabled":true,
+  "visible":false
+})
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-16",
+  "name":"AFXWashingtonDisclosure",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.AFXWashingtonDisclosure",
+  "version":"0",
+  "enabled":true,
+  "visible":false
+})

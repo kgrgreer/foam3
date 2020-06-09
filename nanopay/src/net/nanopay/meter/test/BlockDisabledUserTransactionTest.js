@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.meter.test',
   name: 'BlockDisabledUserTransactionTest',
@@ -106,9 +123,9 @@ foam.CLASS({
           transactionDAO_.put(txn);
           test(false, message);
         } catch ( RuntimeException e ) {
-          Throwable t = e.getCause();
-          test(t instanceof CompoundException
-            && t.getMessage().contains("Payer user is disabled."), message);
+          test(e.getMessage().contains("Payer user is disabled.") ||
+               e.getMessage().contains("Unable to find a plan for requested transaction"),
+               message);
         }
       `
     },
@@ -124,9 +141,9 @@ foam.CLASS({
           transactionDAO_.put(txn);
           test(false, message);
         } catch ( RuntimeException e ) {
-          Throwable t = e.getCause();
-          test(t instanceof CompoundException
-            && t.getMessage().contains("Payee user is disabled."), message);
+          test(e.getMessage().contains("Payee user is disabled.") ||
+               e.getMessage().contains("Unable to find a plan for requested transaction"),
+               message);
         }
       `
     }

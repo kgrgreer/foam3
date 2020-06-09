@@ -12,8 +12,10 @@ import foam.dao.ProxyDAO;
 import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
+import foam.nanos.auth.LifecycleState;
 import net.nanopay.account.Account;
 import net.nanopay.contacts.Contact;
+
 
 /**
  * A standalone DAO that acts like a service. Put an object to it with a contact
@@ -42,7 +44,7 @@ public class GetDefaultCurrencyDAO extends ProxyDAO {
     BankAccount bankAccount = (BankAccount) accountDAO
       .find(
         AND(
-          EQ(Account.ENABLED, true),
+          EQ(Account.LIFECYCLE_STATE, LifecycleState.ACTIVE),
           EQ(Account.DELETED, false),
           EQ(BankAccount.OWNER, id),
           INSTANCE_OF(BankAccount.class),

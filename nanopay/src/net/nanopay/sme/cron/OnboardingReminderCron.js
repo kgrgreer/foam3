@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.cron',
   name: 'OnboardingReminderCron',
@@ -35,6 +52,10 @@ foam.CLASS({
     }
   ],
 
+  messages: [
+    { name: 'BODY_TEXT', message: 'Here\'s a reminder to complete your business registration.' },
+    { name: 'ERROR_MSG', message: 'NOT SENT ERROR: Email(onboarding-reminder) meant for business: ' }
+  ],
   methods: [
     {
       name: 'execute',
@@ -53,7 +74,8 @@ foam.CLASS({
       Date                 startInterval  = new Date(new Date().getTime() - (1000 * 60 * this.getThreshold()));
       Date                 endInterval    = null;
       Long                 disruptionDiff = 0L;
-      Date                 disruption     = ((Cron)((DAO)x.get("cronDAO")).find("Send Onboarding Reminder Email To Businesses Created Over 24 Hours Ago")).getLastRun();
+      String               cronNameId     = "Send Onboarding Reminder Email To Businesses Created Over 24 Hours Ago";
+      Date                 disruption     = ((Cron)((DAO)x.get("cronDAO")).find(cronNameId)).getLastRun();
 
       // Check if there was no service disruption - if so, add/sub diff from endInterval
       disruptionDiff = disruption == null ? 0 : disruption.getTime() - startInterval.getTime();
@@ -92,7 +114,7 @@ foam.CLASS({
             );
 
             Notification onboardingReminderNotification = new Notification.Builder(x)
-              .setBody("Here's a reminder to complete your business registration on Ablii.")
+              .setBody(BODY_TEXT)
               .setNotificationType("OnboardingReminder")
               .setEmailArgs(args)
               .setEmailName("onboarding-reminder")
@@ -102,7 +124,7 @@ foam.CLASS({
 
           } catch (Throwable t) {
             StringBuilder sb = new StringBuilder();
-            sb.append("Email meant for business onboarding-reminder Error: Business ");
+            sb.append(ERROR_MSG);
             sb.append(business.getId());
             ((Logger) x.get("logger")).error(sb.toString(), t);
           }

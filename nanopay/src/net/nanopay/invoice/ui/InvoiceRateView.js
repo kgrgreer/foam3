@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.invoice.ui',
   name: 'InvoiceRateView',
@@ -13,6 +30,7 @@ foam.CLASS({
   `,
 
   requires: [
+    'foam.u2.ControllerMode',
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.dialog.Popup',
     'net.nanopay.bank.BankAccount',
@@ -44,6 +62,7 @@ foam.CLASS({
     'invoice',
     'invoiceDAO',
     'notify',
+    'requestTxn',
     'transactionPlannerDAO',
     'user',
     'viewData',
@@ -227,7 +246,7 @@ foam.CLASS({
     { name: 'AFEX_RATE_NOTICE', message: 'Rates provided are indicative until the payment is submitted. The rate displayed is held for 30 seconds at a time.' },
     { name: 'UNABLE_TO_PAY_TITLE', message: '*NOTICE: CANNOT PAY TO THIS CURRENCY.' },
     { name: 'CANNOT_PAY_TO_CURRENCY', message: 'Sorry, you cannot pay to this currency. You require enabling FX on our platform to complete the payment.' },
-    { name: 'INR_RATE_LIMIT', message: 'This transaction exceeds your total daily limit for payments to India. For help, contact support at support@ablii.com' }
+    { name: 'ADDITIONAL_INFORMATION', message: 'Additional information' }
 
   ],
 
@@ -462,6 +481,37 @@ foam.CLASS({
             .end()
           .end()
         .end()
+        .startContext({ controllerMode: this.isReadOnly ? this.ControllerMode.VIEW : this.ControllerMode.CREATE })
+          .start()
+            .show(this.slot(function(quote) {
+              if ( ! quote ) return;
+              for ( i=0; i < quote.lineItems.length; i++ ) {
+                if ( quote.lineItems[i].requiresUserInput ) {
+                  return true;
+                }
+              }
+              return false;
+            }))
+            .start('h2')
+              .addClass('large-margin-row')
+              .add(this.ADDITIONAL_INFORMATION)
+            .end()
+            .start()
+              .add(
+                this.slot( function(quote) {
+                  if ( ! quote ) return;
+                  let e = this.E();
+                  for ( i=0; i < quote.lineItems.length; i++ ) {
+                    if ( quote.lineItems[i].requiresUserInput ) {
+                      e.add(quote.lineItems[i]);
+                    }
+                  }
+                  return e;
+                })
+              )
+            .end()
+          .end()
+        .endContext()
         .start().show(this.slot(function(isFx, sourceCurrency, invoice$destinationCurrency) {
           if ( sourceCurrency == null ) {
             return false;
@@ -472,40 +522,21 @@ foam.CLASS({
         .end();
     },
 
-    async function getDomesticQuote() {
-      this.viewData.isDomestic = true;
-
-      var transaction = this.AbliiTransaction.create({
-        sourceAccount: this.invoice.account,
-        destinationAccount: this.invoice.destinationAccount,
-        sourceCurrency: this.invoice.sourceCurrency,
-        destinationCurrency: this.invoice.destinationCurrency,
-        payerId: this.invoice.payerId,
-        payeeId: this.invoice.payeeId,
-        amount: this.invoice.amount,
-        destinationAmount: this.invoice.targetAmount,
-      });
-      var quote = await this.transactionPlannerDAO.put(
-        this.TransactionQuote.create({
-          requestTransaction: transaction
-        })
-      );
-      return quote.plan;
-    },
-    async function getFXQuote() {
-      var transaction = this.AbliiTransaction.create({
-        sourceAccount: this.invoice.account,
-        destinationAccount: this.invoice.destinationAccount,
-        sourceCurrency: this.invoice.sourceCurrency,
-        destinationCurrency: this.invoice.destinationCurrency,
-        payerId: this.invoice.payerId,
-        payeeId: this.invoice.payeeId,
-        destinationAmount: this.invoice.amount
-      });
+    async function getQuote() {
+        this.requestTxn.sourceAccount = this.invoice.account;
+        this.requestTxn.destinationAccount = this.invoice.destinationAccount;
+        this.requestTxn.sourceCurrency = this.invoice.sourceCurrency;
+        this.requestTxn.destinationCurrency = this.invoice.destinationCurrency;
+        this.requestTxn.payerId = this.invoice.payerId;
+        this.requestTxn.payeeId = this.invoice.payeeId;
+        this.requestTxn.destinationAmount = this.invoice.amount;
+        if ( ! this.isFx ) {
+          this.requestTxn.amount = this.invoice.amount;
+        }
 
       var quote = await this.transactionPlannerDAO.put(
         this.TransactionQuote.create({
-          requestTransaction: transaction
+          requestTransaction: this.requestTxn
         })
       );
       return quote.plan;
@@ -561,14 +592,9 @@ foam.CLASS({
           this.loadingSpinner.hide();
           return;
         }
-        this.quote = this.isFx ? await this.getFXQuote() : await this.getDomesticQuote();
+        this.quote = await this.getQuote();
         this.viewData.quote = this.quote;
       } catch (error) {
-        if ( error && error.message === 'Exceed INR Transaction limit' ) {
-          this.notify(this.INR_RATE_LIMIT, 'error');
-          this.loadingSpinner.hide();
-          return;
-        }
         this.notify(this.RATE_FETCH_FAILURE, 'error');
         console.error('@InvoiceRateView.js (Fetch Quote)' + (error ? error.message : ''));
       }

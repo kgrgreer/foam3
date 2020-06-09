@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'KotakPaymentTransaction',
@@ -9,7 +26,7 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.account.TrustAccount',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus',
+    'net.nanopay.tx.model.TransactionStatus'
   ],
 
   properties: [
@@ -157,11 +174,11 @@ foam.CLASS({
       type: 'String',
       javaCode: `
       for ( TransactionLineItem item : getLineItems() ) {
-        if ( item instanceof PurposeCodeLineItem ) {
-          return ((PurposeCodeLineItem) item).getPurposeCode();
+        if ( item instanceof KotakPaymentPurposeLineItem ) {
+          return ((KotakPaymentPurposeLineItem) item).getPurposeCode();
         }
       }
-      return "P1099";
+      return"";
       `
     },
     {
@@ -169,11 +186,11 @@ foam.CLASS({
       type: 'String',
       javaCode: `
       for ( TransactionLineItem item : getLineItems() ) {
-        if ( item instanceof AccountRelationshipLineItem ) {
-          return ((AccountRelationshipLineItem) item).getAccountRelationship();
+        if ( item instanceof KotakAccountRelationshipLineItem ) {
+          return ((KotakAccountRelationshipLineItem) item).getAccountRelationship();
         }
       }
-      return "Employee";
+      return"";
       `
     }
   ]

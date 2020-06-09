@@ -171,8 +171,10 @@ public class TransactionTest
       txnDAO.put(finalTxn);
       test(false,"Exception: try to exceed principal");
     } catch (RuntimeException e) {
-      Throwable t = e.getCause();
-      test(t instanceof CompoundException && t.toString().contains("Transaction Exceeds Loan Account Principal Limit"), "try to exceed principal");
+      // test(e.getMessage().contains("Transaction Exceeds Loan Account Principal Limit"), "try to exceed principal");
+      test(e.getMessage().contains("Unable to find a plan for requested transaction") ||
+           e.getMessage().contains("Transaction Exceeds Loan Account Principal Limit"),
+           "try to exceed principal");
     }
 
     // test trying to repay more then borrowed

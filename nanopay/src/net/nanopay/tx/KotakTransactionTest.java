@@ -11,6 +11,7 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
+import foam.nanos.ruler.RuleGroup;
 import foam.util.SafetyUtil;
 import foam.nanos.approval.ApprovalRequest;
 import foam.nanos.approval.ApprovalStatus;
@@ -22,6 +23,7 @@ import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXSummaryTransaction;
 import net.nanopay.fx.KotakFxTransaction;
 import net.nanopay.fx.ManualFxApprovalRequest;
+import net.nanopay.fx.afex.Quote;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.model.Transaction;
@@ -31,7 +33,7 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
   CABankAccount sourceAccount;
   INBankAccount destinationAccount;
   User sender, receiver;
-  DAO userDAO, accountDAO, txnDAO, approvalDAO, fxQuoteDAO, planDAO;
+  DAO userDAO, accountDAO, txnDAO, approvalDAO, fxQuoteDAO, planDAO, quoteDAO, ruleGroupDAO;
   Transaction txn, txn2, txn3, txn4, txn5, txn6, txn7;
   KotakFxTransaction kotakTxn;
   ManualFxApprovalRequest approval;
@@ -40,12 +42,17 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
   ArraySink sink;
 
   public void runTest(X x) {
+    ruleGroupDAO = ((DAO) x.get("ruleGroupDAO"));
     userDAO = ((DAO) x.get("localUserDAO"));
     accountDAO = (DAO) x.get("localAccountDAO");
     txnDAO = ((DAO) x.get("localTransactionDAO"));
     planDAO = ((DAO) x.get("localTransactionQuotePlanDAO"));
     approvalDAO = (DAO) x.get("approvalRequestDAO");
     fxQuoteDAO = (DAO) x.get("fxQuoteDAO");
+    quoteDAO = (DAO) x.get("localTransactionPlannerDAO");
+    RuleGroup kotak = (RuleGroup) ruleGroupDAO.find("KotakPlanner");
+    kotak.setEnabled(true);
+    ruleGroupDAO.put(kotak);
     sender = addUserIfNotFound(x, senderEmail);
     receiver = addUserIfNotFound(x, receiverEmail);
     addCAAccountIfNotFound(x);
@@ -60,6 +67,8 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
 
     // test fx quote
     testFXQuote(x);
+    kotak.setEnabled(false);
+    ruleGroupDAO.put(kotak);
   }
 
   public void testTxnChain(X x) {
@@ -231,6 +240,23 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
     txn.setDestinationAccount(destinationAccount.getId());
     txn.setDestinationCurrency("INR");
     txn.setAmount(200);
+    TransactionQuote quote = new TransactionQuote();
+    quote.setRequestTransaction(txn);
+    quote = (TransactionQuote) quoteDAO.put(quote);
+    txn = quote.getPlan();
+    TransactionLineItem[] lineItems = txn.getLineItems();
+    for (int i = 0; i < lineItems.length; i++) {
+      if (lineItems[i] instanceof KotakPaymentPurposeLineItem) {
+        KotakPaymentPurposeLineItem purposeLineItem = (KotakPaymentPurposeLineItem) lineItems[i];
+        purposeLineItem.setPurposeCode("Trade Transaction");
+        lineItems[i] = purposeLineItem;
+      } else if (lineItems[i] instanceof KotakAccountRelationshipLineItem) {
+        KotakAccountRelationshipLineItem accountRelationshipLineItem = (KotakAccountRelationshipLineItem) lineItems[i];
+        accountRelationshipLineItem.setAccountRelationship("Client/Vendor");
+        lineItems[i] = accountRelationshipLineItem;
+      }
+    }
+    txn.addLineItems(lineItems);
     txn = (Transaction) txnDAO.put_(x, txn);
   }
 }

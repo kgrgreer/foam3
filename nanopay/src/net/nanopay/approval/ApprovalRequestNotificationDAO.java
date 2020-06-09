@@ -9,12 +9,16 @@ import foam.nanos.approval.ApprovalRequestNotification;
 import foam.nanos.approval.ApprovalStatus;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
+import foam.util.StringUtil;
 import net.nanopay.meter.compliance.ComplianceApprovalRequest;
+
+import java.util.HashMap;
+
 import static foam.mlang.MLang.*;
 
 public class ApprovalRequestNotificationDAO
   extends ProxyDAO {
-  
+
   public ApprovalRequestNotificationDAO(X x,DAO delegate) {
     setX(x);
     setDelegate(delegate);
@@ -35,7 +39,10 @@ public class ApprovalRequestNotificationDAO
     if ( SafetyUtil.isEmpty(classification) ) {
       classification = "reference";
     }
-    
+
+    var emailArgs = new HashMap<String, Object>();
+    var notificationEmail = "";
+
     if ( ret instanceof ComplianceApprovalRequest ) {
       ComplianceApprovalRequest complianceApprovalRequest = (ComplianceApprovalRequest) ret;
       notificationBody = new StringBuilder()
@@ -55,14 +62,26 @@ public class ApprovalRequestNotificationDAO
       notifyUser = (User) userDAO.find(ret.getCreatedBy());
       User approvedBy = (User) userDAO.find(ret.getLastModifiedBy());
 
-      notificationBody = new StringBuilder()
-        .append(approvedBy != null ? approvedBy.toSummary() : ret.getLastModifiedBy())
-        .append(" has approved")
-        .append(" request for ")
-        .append(classification)
-        .append(" with id:")
-        .append(ret.getObjId())
-        .toString();
+      if ( ret.getStatus() == ApprovalStatus.REJECTED) {
+        notificationBody = String.format("Your %s approval request has been rejected by %s.", classification, approvedBy.getLegalName());
+        notificationEmail = "rejectApprovalRequestNotification";
+
+        emailArgs.put("classification", classification);
+        emailArgs.put("rejectedBy", approvedBy.toSummary());
+        if ( ! SafetyUtil.isEmpty(ret.getMemo()) ) {
+          emailArgs.put("memo", String.format("They have provided the following memo along with their rejection: %s.", ret.getMemo()));
+        }
+
+      } else {
+        notificationBody = new StringBuilder()
+          .append(approvedBy != null ? approvedBy.toSummary() : ret.getLastModifiedBy())
+          .append(" has approved")
+          .append(" request for ")
+          .append(classification)
+          .append(" with id:")
+          .append(ret.getObjId())
+          .toString();
+      }
     } else if ( old == null ) {
       notificationBody = new StringBuilder()
         .append("Approval request for new ")
@@ -78,14 +97,19 @@ public class ApprovalRequestNotificationDAO
     if ( notifyUser != null ) {
       ApprovalRequestNotification notification = (ApprovalRequestNotification) x.get(ApprovalRequestNotification.class.getSimpleName());
 
+      if ( ! SafetyUtil.isEmpty(notificationEmail) ) {
+        notification.setEmailName(notificationEmail);
+        notification.setEmailArgs(emailArgs);
+      }
+
       notification.setUserId(notifyUser.getId());
       notification.setApprovalRequest(ret.getId());
       notification.setNotificationType(notificationType);
       notification.setBody(notificationBody);
-      
+
       notifyUser.doNotify(x, notification);
     }
-    
+
     return ret;
   }
 

@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.tx.planner',
   name: 'ExamplePlanner',
@@ -30,8 +47,8 @@ foam.CLASS({
 
       quote.addTransfer(id of account (Long), amount of transfer (Long) : adds a transfer to the transaction plan
 
-      quoteTxn(x, Transaction to sub plan) : makes it easy to build split planners. can call transactionPlannerDAO
-      and receive the best transaction in one line.
+      quoteTxn(x, Transaction to sub plan, whether or not to clear line items) : makes it easy to build split planners. can call transactionPlannerDAO
+      and receive the best transaction in one line, with or without also submitting lineitems.
 
 */
   methods: [

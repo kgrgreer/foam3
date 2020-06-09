@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.onboarding',
   name: 'USOwnerProperty',
@@ -1433,10 +1450,11 @@ foam.CLASS({
       },
     },
     {
-      class: 'Boolean',
+      class: 'net.nanopay.documents.AcceptanceDocumentProperty',
       name: 'certifyAllInfoIsAccurate',
       section: 'reviewOwnersSection',
-      label: 'I certify that any beneficial owners with 25% or more ownership have been listed and the information included about them is accurate.',
+      docName: 'certifyOwnersOwnMoreThen25Percent',
+      label: '',
       visibility: function(signingOfficer, amountOfOwners) {
         return signingOfficer ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
@@ -1447,7 +1465,7 @@ foam.CLASS({
             return e.OR(
               e.AND(
                 e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, true),
-                e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.CERTIFY_ALL_INFO_IS_ACCURATE, true)
+                e.NEQ(net.nanopay.sme.onboarding.USBusinessOnboarding.CERTIFY_ALL_INFO_IS_ACCURATE, 0)
               ),
               e.EQ(net.nanopay.sme.onboarding.USBusinessOnboarding.SIGNING_OFFICER, false)
             );

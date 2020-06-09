@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.settings',
   name: 'PersonalProfileView',
@@ -107,6 +124,11 @@ foam.CLASS({
       width: auto;
       height: 40px;
       display: inline-block;
+    }
+    ^ .blockInputField {
+      width: auto;
+      height: 40px;
+      display: block;
     }
     ^ .update-BTN{
       width: 135px;
@@ -242,7 +264,7 @@ foam.CLASS({
         var hasOkLength = firstName.length >= 1 && firstName.length <= 70;
 
         if ( ! firstName || ! hasOkLength ) {
-          return this.FormError;
+          return this.FORM_ERROR;
         }
       }
     },
@@ -253,7 +275,7 @@ foam.CLASS({
         var hasOkLength = lastName.length >= 1 && lastName.length <= 70;
 
         if ( ! lastName || ! hasOkLength ) {
-          return this.FormError;
+          return this.FORM_ERROR;
         }
       }
     },
@@ -262,11 +284,11 @@ foam.CLASS({
       name: 'jobTitle',
       validateObj: function(jobTitle) {
         if ( ! jobTitle ) {
-          return this.JobTitleEmptyError;
+          return this.JOB_TITLE_EMPTY_ERROR;
         }
 
         if ( jobTitle.length > 35 ) {
-          return this.JobTitleLengthError;
+          return this.JOB_TITLE_LENGTH_ERROR;
         }
       }
     },
@@ -277,13 +299,17 @@ foam.CLASS({
         var emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
 
         if ( ! emailRegex.test(email) ) {
-          return this.EmailError;
+          return this.EMAIL_ERROR;
         }
       }
     },
     {
       class: 'String',
       name: 'phone'
+    },
+    {
+      class: 'String',
+      name: 'mobile'
     },
     {
       //We'll have to account for user country code when internationalize.
@@ -308,22 +334,28 @@ foam.CLASS({
       class: 'Boolean',
       name: 'emailNotificationsEnabled',
       label: 'Enabled'
+    },
+    {
+      class: 'Boolean',
+      name: 'smsNotificationsEnabled',
+      label: 'Enabled'
     }
   ],
 
   messages: [
-    { name: 'noInformation', message: 'Please fill out all necessary fields before proceeding.' },
-    { name: 'invalidPhone', message: 'Phone number is invalid.' },
-    { name: 'informationUpdated', message: 'Information has been successfully changed.' },
-    { name: 'FormError', message: 'Error while saving your changes. Please review your input and try again.' },
-    { name: 'JobTitleEmptyError', message: 'Job title can\'t be empty' },
-    { name: 'JobTitleLengthError', message: 'Job title is too long' },
-    { name: 'EmailError', message: 'Invalid email address' },
-    { name: 'TwoFactorNoTokenError', message: 'Please enter a verification token.' },
-    { name: 'TwoFactorEnableSuccess', message: 'Two-factor authentication enabled.' },
-    { name: 'TwoFactorEnableError', message: 'Could not enable two-factor authentication. Please try again.' },
-    { name: 'TwoFactorDisableSuccess', message: 'Two-factor authentication disabled.' },
-    { name: 'TwoFactorDisableError', message: 'Could not disable two-factor authentication. Please try again.' }
+    { name: 'NO_INFORMATION', message: 'Please fill out all necessary fields before proceeding.' },
+    { name: 'INVALID_PHONE', message: 'Phone Number is invalid.' },
+    { name: 'INVALID_MOBILE', message: 'Mobile Phone Number is invalid.' },
+    { name: 'INFORMATION_UPDATED', message: 'Information has been successfully changed.' },
+    { name: 'FORM_ERROR', message: 'Error while saving your changes. Please review your input and try again.' },
+    { name: 'JOB_TITLE_EMPTY_ERROR', message: 'Job title can\'t be empty' },
+    { name: 'JOB_TITLE_LENGTH_ERROR', message: 'Job title is too long' },
+    { name: 'EMAIL_ERROR', message: 'Invalid email address' },
+    { name: 'TWO_FACTOR_NO_TOKEN_ERROR', message: 'Please enter a verification token.' },
+    { name: 'TWO_FACTOR_ENABLE_SUCCESS', message: 'Two-factor authentication enabled.' },
+    { name: 'TWO_FACTOR_ENABLE_ERROR', message: 'Could not enable two-factor authentication. Please try again.' },
+    { name: 'TWO_FACTOR_DISABLE_SUCCESS', message: 'Two-factor authentication disabled.' },
+    { name: 'TWO_FACTOR_DISABLE_ERROR', message: 'Could not disable two-factor authentication. Please try again.' }
   ],
 
   methods: [
@@ -341,6 +373,8 @@ foam.CLASS({
         this.jobTitle = this.user.jobTitle;
         this.email = this.user.email;
         // split the country code and phone number
+        this.mobile = this.user.mobileNumber.replace(this.phoneCode, "");
+        this.mobile = this.mobile.replace(/\s/g, "");
         this.phone = this.user.phoneNumber.replace(this.phoneCode, "");
         this.phone = this.phone.replace(/\s/g, "");
       }
@@ -355,6 +389,11 @@ foam.CLASS({
         this.user.notificationSettings.where(this.CLASS_OF('foam.nanos.notification.EmailSetting')).select().then(function (notificationSettingDAO) {
           var emailSettings = notificationSettingDAO.array[0];
           self.emailNotificationsEnabled = ( emailSettings ) ? emailSettings.enabled : true;
+        });
+
+        this.user.notificationSettings.where(this.CLASS_OF('foam.nanos.notification.sms.SMSSetting')).select().then(function(notificationSettingDAO) {
+          var smsSettings = notificationSettingDAO.array[0];
+          self.smsNotificationsEnabled = ( smsSettings ) ? smsSettings.enabled: false;
         });
       }
 
@@ -421,6 +460,21 @@ foam.CLASS({
             .end()
           .end();
         }, this.emailNotificationsEnabled$))
+
+        .start()
+        .add(this.slot(function(smsNotificationsEnabled) {
+          return this.E()
+          .start().addClass('flex-csb')
+            .start('h2').add("SMS Notifications").addClass('gTextField').end()
+            .start('div')
+              .start(this.SMS_NOTIFICATIONS_ENABLED).end()
+              .start('div').show(this.smsNotificationsEnabled$)
+                  .start('h2').add("Mobile Phone Number").addClass('gTextField').end()
+                  .start(this.MOBILE).addClass('blockInputField').end()
+              .end()
+            .end()
+          .end();
+        }, this.smsNotificationsEnabled$))
 
         .start('div')
           .start(this.UPDATE_NOTIFICATIONS).addClass('update-BTN').end()
@@ -542,6 +596,24 @@ foam.CLASS({
             self.notificationSettingDAO.put(emailSetting);
           });
 
+        this.user.notificationSettings
+          .where(this.CLASS_OF('foam.nanos.notification.sms.SMSSetting')).select()
+          .then(function(notificationSettingDAO) {
+            var smsSetting = notificationSettingDAO.array[0] ? notificationSettingDAO.array[0] : foam.nanos.notification.sms.SMSSetting.create({ owner: self.user.id });
+            smsSetting.enabled = self.smsNotificationsEnabled;
+            if ( self.smsNotificationsEnabled ) {
+              if ( ! /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(self.mobile) ) {
+                self.add(self.NotificationMessage.create({ message: self.INVALID_MOBILE, type: 'error' }));
+                return;
+              }
+            }
+            self.user.mobileNumber = self.phoneCode + self.mobile;
+            self.userDAO.put(self.user).then((result) => {
+              self.user.copyFrom(result);
+            });
+            self.notificationSettingDAO.put(smsSetting);
+          });
+
         this.add(self.NotificationMessage.create({ message: 'Notification settings updated.' }));
       }
     },
@@ -552,12 +624,12 @@ foam.CLASS({
         var self = this;
 
         if ( ! this.firstName || ! this.lastName || ! this.jobTitle || ! this.email || ! this.phone ) {
-          this.add(this.NotificationMessage.create({ message: this.noInformation, type: 'error' }));
+          this.add(this.NotificationMessage.create({ message: this.NO_INFORMATION, type: 'error' }));
           return;
         }
 
         if ( ! /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(this.phone) ) {
-          this.add(self.NotificationMessage.create({ message: this.invalidPhone, type: 'error' }));
+          this.add(self.NotificationMessage.create({ message: this.INVALID_PHONE, type: 'error' }));
           return;
         }
 
@@ -569,10 +641,10 @@ foam.CLASS({
         this.userDAO.put(this.user).then(function (result) {
           // copy new user, show success
           self.user.copyFrom(result);
-          self.add(self.NotificationMessage.create({ message: self.informationUpdated }));
+          self.add(self.NotificationMessage.create({ message: self.INFORMATION_UPDATED }));
         })
         .catch(function (err) {
-          self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+          self.add(self.NotificationMessage.create({ message: err, type: 'error' }));
         });
       }
     },
@@ -583,23 +655,23 @@ foam.CLASS({
         var self = this;
 
         if ( ! this.twoFactorToken ) {
-          this.add(this.NotificationMessage.create({ message: this.TwoFactorNoTokenError, type: 'error' }));
+          this.add(this.NotificationMessage.create({ message: this.TWO_FACTOR_NO_TOKEN_ERROR, type: 'error' }));
           return;
         }
 
         this.twofactor.verifyToken(null, this.twoFactorToken)
         .then(function (result) {
           if ( ! result ) {
-            self.add(self.NotificationMessage.create({ message: self.TwoFactorEnableError, type: 'error' }));
+            self.add(self.NotificationMessage.create({ message: self.TWO_FACTOR_ENABLE_ERROR, type: 'error' }));
             return;
           }
 
           self.twoFactorToken = null;
           self.user.twoFactorEnabled = true;
-          self.add(self.NotificationMessage.create({ message: self.TwoFactorEnableSuccess }));
+          self.add(self.NotificationMessage.create({ message: self.TWO_FACTOR_ENABLE_SUCCESS }));
         })
         .catch(function (err) {
-          self.add(self.NotificationMessage.create({ message: self.TwoFactorEnableError, type: 'error' }));
+          self.add(self.NotificationMessage.create({ message: self.TWO_FACTOR_ENABLE_ERROR, type: 'error' }));
         });
       }
     },
@@ -610,23 +682,23 @@ foam.CLASS({
         var self = this;
 
         if ( ! this.twoFactorToken ) {
-          this.add(this.NotificationMessage.create({ message: this.TwoFactorNoTokenError, type: 'error' }));
+          this.add(this.NotificationMessage.create({ message: this.TWO_FACTOR_NO_TOKEN_ERROR, type: 'error' }));
           return;
         }
 
         this.twofactor.disable(null, this.twoFactorToken)
         .then(function(result) {
           if ( ! result ) {
-            self.add(self.NotificationMessage.create({ message: self.TwoFactorDisableError, type: 'error' }));
+            self.add(self.NotificationMessage.create({ message: self.TWO_FACTOR_DISABLE_ERROR, type: 'error' }));
             return;
           }
 
           self.twoFactorToken = null;
           self.user.twoFactorEnabled = false;
-          self.add(self.NotificationMessage.create({ message: self.TwoFactorDisableSuccess }));
+          self.add(self.NotificationMessage.create({ message: self.TWO_FACTOR_DISABLE_SUCCESS }));
         })
         .catch(function (err) {
-          self.add(self.NotificationMessage.create({ message: self.TwoFactorDisableError, type: 'error' }));
+          self.add(self.NotificationMessage.create({ message: self.TWO_FACTOR_DISABLE_ERROR, type: 'error' }));
         });
       }
     }

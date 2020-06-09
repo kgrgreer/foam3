@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'BankAccount',
@@ -31,6 +48,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Country',
+    'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
@@ -427,7 +445,7 @@ foam.CLASS({
               bankAccount = (BankAccount) ((DAO) x.get("localAccountDAO"))
                 .find(
                   AND(
-                    EQ(Account.ENABLED, true),
+                    EQ(Account.LIFECYCLE_STATE, LifecycleState.ACTIVE),
                     EQ(Account.DELETED, false),
                     EQ(BankAccount.OWNER, user.getId()),
                     INSTANCE_OF(BankAccount.class),

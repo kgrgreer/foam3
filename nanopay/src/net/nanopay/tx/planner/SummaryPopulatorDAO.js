@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.tx.planner',
   name: 'SummaryPopulatorDAO',
@@ -25,29 +42,30 @@ foam.CLASS({
           return getDelegate().put_(x, obj);
         }
         TransactionQuote quote = (TransactionQuote) obj;
-        for ( Transaction t : quote.getPlans() ) {
-          if ( t instanceof SummaryTransaction || t instanceof FXSummaryTransaction ) {
+        if ( quote.getPlan() != null ) {
+          Transaction tx = quote.getPlan();
+          if ( tx instanceof SummaryTransaction || tx instanceof FXSummaryTransaction ) {
             List trans = new ArrayList<Transfer>();
             List items = new ArrayList<TransactionLineItem>();
 
-            walk(t, trans, items);
+            walk(tx, trans, items);
 
-            t.setTransfers((Transfer[]) trans.toArray(new Transfer[0]));
-            t.setLineItems((TransactionLineItem[]) items.toArray(new TransactionLineItem[0]));
+            tx.setTransfers((Transfer[]) trans.toArray(new Transfer[0]));
+            tx.setLineItems((TransactionLineItem[]) items.toArray(new TransactionLineItem[0]));
           }
-        }
-         if ( quote.getPlan() != null ) {
-          Transaction tx = quote.getPlan();
-            if ( tx instanceof SummaryTransaction || tx instanceof FXSummaryTransaction ) {
+        } else {
+          for ( Transaction t : quote.getPlans() ) {
+            if ( t instanceof SummaryTransaction || t instanceof FXSummaryTransaction ) {
               List trans = new ArrayList<Transfer>();
               List items = new ArrayList<TransactionLineItem>();
 
-              walk(tx, trans, items);
+              walk(t, trans, items);
 
-              tx.setTransfers((Transfer[]) trans.toArray(new Transfer[0]));
-              tx.setLineItems((TransactionLineItem[]) items.toArray(new TransactionLineItem[0]));
+              t.setTransfers((Transfer[]) trans.toArray(new Transfer[0]));
+              t.setLineItems((TransactionLineItem[]) items.toArray(new TransactionLineItem[0]));
             }
           }
+        } 
         return getDelegate().put_(x, quote);
       `
     },
