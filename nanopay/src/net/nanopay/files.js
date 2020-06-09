@@ -1411,6 +1411,11 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/rbc/iso20022file/RbcTransmissionHeader' },
   { name: 'net/nanopay/tx/rbc/ftps/RbcFTPSCredential' },
 
+  //RequestToPay
+  { name: 'net/nanopay/tx/MoneyRequest' },
+  { name: 'net/nanopay/tx/MoneyRequestResponse' },
+  { name: 'net/nanopay/tx/MoneyRequestDAO' },
+
   // file ingestion
   { name: 'net/nanopay/tx/gs/GsTxCsvRow' },
   { name: 'net/nanopay/tx/gs/GsRowToTx' },
