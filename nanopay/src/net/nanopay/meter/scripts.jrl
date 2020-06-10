@@ -59,3 +59,40 @@ for ( ComplianceItem complianceItem : complianceItems ) {
 print(String.format("Updated %d compliance items and skipped %d.", new Object[] { updated, skipped }));
 """
 })
+
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "Set entityId on existing ApprovalRequests",
+  "description": "A migration script to fix entityId of the existing approval requests so that approval requests for user show up properly.",
+  "code": """
+    import foam.dao.ArraySink;
+    import foam.mlang.MLang;
+    import foam.mlang.predicate.Predicate;
+    import foam.nanos.approval.ApprovalRequest;
+
+    approvalRequestDAO = x.get("approvalRequestDAO");
+    approvalRequests = approvalRequestDAO.where(
+      MLang.AND(new Predicate[] {
+        MLang.EQ(ApprovalRequest.ENTITY_ID, 0),
+        MLang.OR(new Predicate[] {
+          MLang.EQ(ApprovalRequest.DAO_KEY, "localUserDAO"),
+          MLang.EQ(ApprovalRequest.SERVER_DAO_KEY, "localUserDAO")
+        })
+      })
+    ).select().array;
+
+    updated = 0;
+    for ( approvalRequest : approvalRequests) {
+      entityId = ((Long) approvalRequest.objId).longValue();
+
+      approvalRequest = approvalRequest.fclone();
+      approvalRequest.entityId = entityId;
+      approvalRequestDAO.put(approvalRequest);
+      updated++;
+
+      print("✔ Updated entityId: " + entityId + ", approvalRequest id: " + approvalRequest.id);
+    }
+
+    print(updated + " approval request(s) has been updated.");
+  """
+ })

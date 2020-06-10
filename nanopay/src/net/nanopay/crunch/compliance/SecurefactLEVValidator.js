@@ -61,6 +61,7 @@ foam.CLASS({
               public void execute(X x) {
                 requestApproval(x,
                   new ComplianceApprovalRequest.Builder(x)
+                    .setEntityId(business.getId())
                     .setObjId(ucj.getId())
                     .setDaoKey("userCapabilityJunctionDAO")
                     .setCauseId(response.getId())
@@ -77,6 +78,7 @@ foam.CLASS({
           LEVResponse response = getResponse();
           requestApproval(x,
             new ComplianceApprovalRequest.Builder(x)
+              .setEntityId(business.getId())
               .setObjId(ucj.getId())
               .setDaoKey("userCapabilityJunctionDAO")
               .setCauseId(response != null ? response.getId() : 0L)

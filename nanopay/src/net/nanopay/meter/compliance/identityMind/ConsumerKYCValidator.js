@@ -57,6 +57,7 @@ foam.CLASS({
             if ( obj instanceof User ) {
               requestApproval(x,
                 new ComplianceApprovalRequest.Builder(x)
+                  .setEntityId(user.getId())
                   .setObjId(obj.getProperty("id"))
                   .setDaoKey("localUserDAO")
                   .setCauseId(response.getId())

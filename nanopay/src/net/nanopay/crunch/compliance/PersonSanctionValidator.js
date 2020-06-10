@@ -90,6 +90,7 @@ foam.CLASS({
               public void execute(X x) {
                 requestApproval(x, 
                   new DowJonesApprovalRequest.Builder(x)
+                    .setEntityId(user.getId())
                     .setObjId(ucj.getId())
                     .setDaoKey("userCapabilityJunctionDAO")
                     .setCauseId(response.getId())
@@ -106,6 +107,7 @@ foam.CLASS({
           DowJonesResponse response = getResponse();
           requestApproval(x, 
             new DowJonesApprovalRequest.Builder(x)
+              .setEntityId(user.getId())
               .setObjId(ucj.getId())
               .setDaoKey("userCapabilityJunctionDAO")
               .setCauseId(response != null ? response.getId() : 0L)
