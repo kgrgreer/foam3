@@ -1019,6 +1019,8 @@ foam.CLASS({
 
     .net-nanopay-ui-Controller .foam-u2-md-OverlayDropdown {
       transform: translate(-100%, 16px);
+      display: flex;
+      flex-direction: column;
     }
 
     /* signIn & signUp */
