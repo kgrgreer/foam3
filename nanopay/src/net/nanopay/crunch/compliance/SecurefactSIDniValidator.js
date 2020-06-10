@@ -66,6 +66,7 @@ foam.CLASS({
               public void execute(X x) {
                 requestApproval(x,
                   new ComplianceApprovalRequest.Builder(x)
+                    .setEntityId(user.getId())
                     .setObjId(ucj.getId())
                     .setDaoKey("userCapabilityJunctionDAO")
                     .setCauseId(getResponse().getId())
@@ -80,6 +81,7 @@ foam.CLASS({
         } catch (Exception e) {
           SIDniResponse response = getResponse();
           requestApproval(x, new ComplianceApprovalRequest.Builder(x)
+            .setEntityId(user.getId())
             .setObjId(ucj.getId())
             .setDaoKey("userCapabilityJunctionDAO")
             .setCauseId(response == null ? 0L : getResponse().getId())

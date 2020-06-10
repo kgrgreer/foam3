@@ -35,6 +35,7 @@ foam.CLASS({
     'foam.nanos.u2.navigation.FooterView',
     'foam.nanos.u2.navigation.TopNavigation',
     'foam.core.Currency',
+
     'foam.core.Latch',
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.Element',
@@ -942,7 +943,7 @@ foam.CLASS({
   ],
 
   listeners: [
-    function onUserAgentAndGroupLoaded() { 
+    function onUserAgentAndGroupLoaded() {
       var self = this;
       this.userLoggedIn.resolve();
       if ( this.sme ) {
@@ -1007,7 +1008,6 @@ foam.CLASS({
         // Update the look and feel now that the user is logged in since there
         // might be a more specific one to use now.
         this.fetchTheme();
-
         var hash = this.window.location.hash;
         if ( hash ) hash = hash.substring(1);
 

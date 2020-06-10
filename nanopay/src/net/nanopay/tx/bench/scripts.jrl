@@ -1,46 +1,5 @@
 p({
   "class":"foam.nanos.script.Script",
-  "id":"TrustAccountFind",
-  "descripton":"Test for TrustAccounts associated with a particular User.",
-  "server":true,
-  "code":"""
-
-import net.nanopay.account.Account;
-import net.nanopay.account.TrustAccount;
-import foam.nanos.auth.User;
-import foam.nanos.auth.LifecycleState;
-import foam.mlang.MLang;
-import foam.mlang.predicate.Predicate;
-import foam.dao.ArraySink;
-import foam.dao.DAO;
-import foam.mlang.sink.Count;
-
-
-User user = ((DAO) x.get("localUserDAO")).find(101L);
-print("user: "+user);
-            DAO accounts = ((DAO)x.get("localAccountDAO"))
-                            .where(
-                              MLang.AND(new Predicate[] {
-                                MLang.INSTANCE_OF(TrustAccount.class),
-                                MLang.EQ(Account.LIFECYCLE_STATE, LifecycleState.ACTIVE),
-                                MLang.EQ(Account.OWNER, user.getId()),
-                                MLang.EQ(Account.DENOMINATION, "CAD")
-                              })
-                            );
-Count count = accounts.select(new Count());
-print("count: "+count);
-
-accounts = user.getAccounts(x);
-a = accounts.select(new ArraySink()).getArray();
-for ( account : a ) {
-    print(account.id+", "+account.owner);
-}
-
-"""
-});
-
-p({
-  "class":"foam.nanos.script.Script",
   "id":"TransactionBenchmark",
   "description":"Transaction Creation Benchmark - runs against local DAO.",
   "code":`
@@ -110,6 +69,7 @@ p({
   `,
   "output":""
 })
+
 p({
   "class":"foam.nanos.script.Script",
   "id":"TransactionPlannerBenchmarkClient",
@@ -149,6 +109,7 @@ p({
   `,
   "output":""
 })
+
 p({
   "class":"foam.nanos.script.Script",
   "id":"TransactionBenchmarkClient-Javascript",

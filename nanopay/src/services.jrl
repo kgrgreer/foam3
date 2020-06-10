@@ -406,8 +406,12 @@ p({
   """
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.fx.Corridor.getOwnClassInfo())
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName("corridors")
+      .setInnerDAO(x.get("localCapabilityDAO"))
+      .setDecorator(
+        new foam.dao.FilteredDAO.Builder(x)
+          .setPredicate(foam.mlang.MLang.INSTANCE_OF(net.nanopay.fx.Corridor.class))
+          .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.fx.Corridor.getOwnClassInfo()).build())
+        .build())
       .setPm(true)
       .setPipelinePm(true)
       .setAuthorize(false)

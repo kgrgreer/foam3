@@ -296,8 +296,10 @@ foam.CLASS({
         let propInfo = forContact ? this.Corridor.TARGET_COUNTRY : this.Corridor.SOURCE_COUNTRY;
         return this.PromisedDAO.create({
           of: 'foam.core.Currency',
-          promise: user.corridors
-            .where(this.EQ(propInfo, this.country))
+          promise: user.capabilities.dao.where(this.AND(
+              this.EQ(propInfo, this.country),
+              this.INSTANCE_OF(this.Corridor)
+            ))
             .select(this.MAP(this.Corridor.CURRENCIES))
             .then((sink) => {
               return currencyDAO.where(

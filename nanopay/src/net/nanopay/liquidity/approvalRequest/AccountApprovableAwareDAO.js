@@ -47,7 +47,7 @@ foam.CLASS({
         AccountRoleApprovalRequest request = (AccountRoleApprovalRequest) req.fclone();
         request.clearId();
         request.setApprover(userId);
-        ((DAO) x.get("approvalRequestDAO")).put_(x, request);
+        getApprovalRequestDAO().inX(x).put(request);
       `
     },
     {

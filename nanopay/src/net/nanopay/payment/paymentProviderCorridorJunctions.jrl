@@ -1,70 +1,70 @@
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridorJunction",
   "sourceId": "AFEX",
-  "targetId": 2,
+  "targetId": "554af38a-8125-87c8-dfdf-eeb15f7121ca-us",
   "currencies":["CAD","USD"],
   "description": "CA to US corridor via AFEX"
 })
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridorJunction",
   "sourceId": "AFEX",
-  "targetId": 3,
+  "targetId": "554af38a-8125-87c8-dfdf-eeb15f7121us-ca",
   "currencies":["CAD","USD"],
   "description": "US to CA corridor via AFEX"
 })
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridorJunction",
   "sourceId": "AFEX",
-  "targetId": 4,
+  "targetId": "554af38a-8125-87c8-dfdf-eeb15f7121us-us",
   "currencies":["USD"],
   "description": "US to US corridor via AFEX"
 })
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridorJunction",
   "sourceId": "AscendantFX",
-  "targetId": 2,
+  "targetId": "554af38a-8125-87c8-dfdf-eeb15f7121ca-us",
   "currencies":["CAD","USD"],
   "description": "CA to US corridor via AscendantFX"
 })
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridorJunction",
   "sourceId": "AscendantFX",
-  "targetId": 3,
+  "targetId": "554af38a-8125-87c8-dfdf-eeb15f7121us-ca",
   "currencies":["CAD","USD"],
   "description": "US to CA corridor via AscendantFX"
 })
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridorJunction",
   "sourceId": "AscendantFX",
-  "targetId": 4,
+  "targetId": "554af38a-8125-87c8-dfdf-eeb15f7121us-us",
   "currencies":["USD"],
   "description": "US to US corridor via AscendantFX"
 })
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridorJunction",
   "sourceId": "Alterna",
-  "targetId": 5,
+  "targetId": "554af38a-8125-87c8-dfdf-eeb15f7121ca-ca",
   "currencies":["CAD"],
   "description": "CA to CA corridor via Alterna"
 })
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridorJunction",
   "sourceId": "BMO",
-  "targetId": 5,
+  "targetId": "554af38a-8125-87c8-dfdf-eeb15f7121ca-ca",
   "currencies":["CAD"],
   "description": "CA to CA corridor via BMO"
 })
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridorJunction",
   "sourceId": "RBC",
-  "targetId": 5,
+  "targetId": "554af38a-8125-87c8-dfdf-eeb15f7121ca-ca",
   "currencies":["CAD"],
   "description": "CA to CA corridor via RBC"
 })
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridorJunction",
   "sourceId": "Kotak",
-  "targetId": 1,
+  "targetId": "554af38a-8125-87c8-dfdf-eeb15f7121ca-in",
   "currencies":["CAD","INR"],
   "description": "CA to IN corridor via Kotak"
 })

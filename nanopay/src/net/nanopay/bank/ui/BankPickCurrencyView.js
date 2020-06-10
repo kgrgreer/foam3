@@ -30,7 +30,7 @@ foam.CLASS({
     'notify',
     'pushMenu',
     'stack',
-    'user',
+    'subject',
     'userDAO'
   ],
 
@@ -228,7 +228,7 @@ foam.CLASS({
       factory: function() {
         return this.PromisedDAO.create({
           of: 'foam.nanos.auth.Country',
-          promise: this.user.corridors
+          promise: this.subject.user.capabilities.dao.where(this.INSTANCE_OF(this.Corridor))
             .select(this.MAP(this.Corridor.SOURCE_COUNTRY))
             .then((sink) => {
               return this.countryDAO.where(this.IN(this.Country.CODE, sink.delegate.array));
@@ -243,7 +243,6 @@ foam.CLASS({
       label: 'Country of bank account',
       documentation: 'Determines what bank view will be displayed pertaining to country.',
       // TODO: Select first country after promise resolve on permitted countries.
-      value: 'CA',
       view: function(_, x) {
         return {
           class: 'foam.u2.view.RichChoiceView',
@@ -362,7 +361,7 @@ foam.CLASS({
     },
 
     async function checkIntegration() {
-      var nUser = await this.userDAO.find(this.user.id);
+      var nUser = await this.userDAO.find(this.subject.user.id);
       this.hasCompletedIntegration = nUser.hasIntegrated;
     }
   ]
