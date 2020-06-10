@@ -95,6 +95,9 @@ fi
 #JAVA_OPTS="${JAVA_OPTS} -XX:+UseG1GC"
 #JAVA_OPTS="${JAVA_OPTS} -Xgcpolicy.gencon"
 
+# G1GC options - default in Java 11
+JAVA_OPTS="${JAVA_OPTS} -XX:+G1EnableStringDeduplication"
+
 # Garbage Collection logging
 # NOTE: disabled - we are experiencing lockup on GC for 4-5 seconds
 # see https://nanopay.atlassian.net/browse/CPF-2417

@@ -1,5 +1,9 @@
 p({
-  "class":"foam.nanos.ruler.RuleGroup",
+  "class":"net.nanopay.tx.planner.PlannerGroup",
+  "id":"Planner"
+})
+p({
+  "class":"net.nanopay.tx.planner.PlannerGroup",
   "id":"SecurityPlanner",
   "documentation":"Transaction Planning Engine (TPE) which deals with securities transactions",
   "predicate":{
@@ -8,7 +12,7 @@ p({
   "enabled":false
 })
 p({
-  "class":"foam.nanos.ruler.RuleGroup",
+  "class":"net.nanopay.tx.planner.PlannerGroup",
   "id":"transactionPlanner",
   "documentation":"Transaction Planning Engine (TPE) which deals with cash transactions",
   "predicate":
@@ -21,7 +25,7 @@ p({
   "enabled":true
 })
 p({
-  "class":"foam.nanos.ruler.RuleGroup",
+  "class":"net.nanopay.tx.planner.PlannerGroup",
   "id":"genericPlanner",
   "documentation":"TPE that makes plans for instant txns that can potentially print money such as in liquid",
   "predicate":
@@ -35,14 +39,14 @@ p({
 })
 
 p({
-  "class":"foam.nanos.ruler.RuleGroup",
+  "class":"net.nanopay.tx.planner.PlannerGroup",
   "id":"FeeEngine",
   "documentation":"Fee Engine which deals with adding fees to transactions",
   "enabled":true
 })
 
 p({
-  "class":"foam.nanos.ruler.RuleGroup",
+  "class":"net.nanopay.tx.planner.PlannerGroup",
   "id":"AlternaPlanner",
   "documentation":"Alterna CICO operations",
   "enabled":false,
@@ -53,7 +57,7 @@ p({
   }
 })
 p({
-  "class":"foam.nanos.ruler.RuleGroup",
+  "class":"net.nanopay.tx.planner.PlannerGroup",
   "id":"BMOPlanner",
   "documentation":"BMO CICO operations",
   "enabled":false,
@@ -64,7 +68,7 @@ p({
   }
 })
 p({
-  "class":"foam.nanos.ruler.RuleGroup",
+  "class":"net.nanopay.tx.planner.PlannerGroup",
   "id":"RBCPlanner",
   "documentation":"RBC CICO operations",
   "enabled":false,
@@ -75,7 +79,7 @@ p({
   }
 })
 p({
-  "class":"foam.nanos.ruler.RuleGroup",
+  "class":"net.nanopay.tx.planner.PlannerGroup",
   "id":"KotakPlanner",
   "documentation":"Kotak Transaction planning",
   "enabled":false,

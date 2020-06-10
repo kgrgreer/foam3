@@ -1065,7 +1065,6 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/VerifyEmail', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/VerifyEmailView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/TopBarBackToAblii', flags: ['web'] },
-  { name: 'net/nanopay/sme/ui/ToastNotification', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/PersonalSettingsView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/AddUserToBusinessModal', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/CreateBusinessModal', flags: ['web'] },
@@ -1413,6 +1412,11 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/rbc/iso20022file/RbcTransmissionHeader' },
   { name: 'net/nanopay/tx/rbc/ftps/RbcFTPSCredential' },
 
+  //RequestToPay
+  { name: 'net/nanopay/tx/MoneyRequest' },
+  { name: 'net/nanopay/tx/MoneyRequestResponse' },
+  { name: 'net/nanopay/tx/MoneyRequestDAO' },
+
   // file ingestion
   { name: 'net/nanopay/tx/gs/GsTxCsvRow' },
   { name: 'net/nanopay/tx/gs/GsRowToTx' },
@@ -1432,6 +1436,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ticket/test/SudoTicketTest' },
 
   // planners
+  { name: 'net/nanopay/tx/planner/PlannerGroup' },
   { name: 'net/nanopay/tx/planner/SummaryPopulatorDAO' },
   { name: 'net/nanopay/tx/planner/CorridorQuoteDAO' },
   { name: 'net/nanopay/tx/planner/TransactionQuotingDAO' },

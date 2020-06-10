@@ -41,7 +41,6 @@ p({"class":"foam.nanos.ruler.RuleGroup","id":"restrictAccountsRules"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"restrictUsersRules"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"txapprovals"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"Payment"})
-p({"class":"foam.nanos.ruler.RuleGroup","id":"Planner"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"smeBusinessCompliance"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"GD"})
 p({
