@@ -53,8 +53,8 @@ foam.CLASS({
       flex-grow: 1;
       height: 56px;
     }
-    ^ .net-nanopay-sme-ui-AbliiActionView-currencyChoice,
-    ^ .net-nanopay-sme-ui-AbliiActionView-currencyChoice:hover
+    ^ .foam-u2-ActionView-currencyChoice,
+    ^ .foam-u2-ActionView-currencyChoice:hover
     {
       background: none !important;
       border: none !important;

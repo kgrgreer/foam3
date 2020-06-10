@@ -78,7 +78,7 @@ foam.CLASS({
       color: #604AFF;
     }
 
-    ^ .net-nanopay-sme-ui-AbliiActionView {
+    ^ .foam-u2-ActionView {
       border: none !important;
       background: none !important;
       box-shadow: none !important;

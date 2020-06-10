@@ -62,7 +62,7 @@ foam.CLASS({
   css:`
     ^ .foam-u2-ActionView-back {
       display: flex;
-      align-items: center;
+      align-self: flex-start;
     }
 
     ^actions-header .foam-u2-ActionView {

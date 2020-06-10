@@ -40,7 +40,7 @@ foam.CLASS({
       background: white;
       padding: 20px;
     }
-    .net-nanopay-sme-ui-AbliiActionView-closeModal {
+    .foam-u2-ActionView-closeModal {
       width: 60px;
       background: none !important;
       border: none !important;
@@ -55,7 +55,7 @@ foam.CLASS({
       text-align: center;
       margin-bottom: 20px;
     }
-    ^ .net-nanopay-sme-ui-AbliiActionView-create {
+    ^ .foam-u2-ActionView-create {
       float: right;
     }
     ^ .foam-u2-TextField, ^ .foam-u2-tag-Select {

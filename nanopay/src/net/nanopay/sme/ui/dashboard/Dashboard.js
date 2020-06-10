@@ -112,10 +112,10 @@ foam.CLASS({
       height: 60px;
       padding:14px 0;
     }
-    ^ .net-nanopay-sme-ui-AbliiActionView-requestPayment {
+    ^ .foam-u2-ActionView-requestPayment {
       width: 200px;
     }
-    ^ .net-nanopay-sme-ui-AbliiActionView-sendPayment {
+    ^ .foam-u2-ActionView-sendPayment {
       width: 200px;
     }
     ^ .divider-half {

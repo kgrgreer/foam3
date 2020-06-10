@@ -65,7 +65,7 @@ foam.CLASS({
       margin-top: 8px;
       margin-left: 5px;
     }
-    ^ .net-nanopay-sme-ui-AbliiActionView-currencyChoice {
+    ^ .foam-u2-ActionView-currencyChoice {
       background: none !important;
       border: none !important;
       box-shadow: none !important;
@@ -73,7 +73,7 @@ foam.CLASS({
       cursor: pointer;
       margin-left: 5px;
     }
-    ^ .net-nanopay-sme-ui-AbliiActionView-currencyChoice > span {
+    ^ .foam-u2-ActionView-currencyChoice > span {
       color: /*%BLACK%*/ #1e1f21 !important;
       font-family: lato !important;
       font-size: 12px;
@@ -156,10 +156,10 @@ foam.CLASS({
       position: fixed;
       z-index: 850;
     }
-    ^ .net-nanopay-sme-ui-AbliiActionView.net-nanopay-sme-ui-AbliiActionView-currencyChoice img {
+    ^ .foam-u2-ActionView.foam-u2-ActionView-currencyChoice img {
       border-radius: 2px !important;
     }
-    ^ .net-nanopay-sme-ui-AbliiActionView.net-nanopay-sme-ui-ActionView-currencyChoice:hover {
+    ^ .foam-u2-ActionView.net-nanopay-sme-ui-ActionView-currencyChoice:hover {
       background: transparent !important;
     }
     ^ .disabled {

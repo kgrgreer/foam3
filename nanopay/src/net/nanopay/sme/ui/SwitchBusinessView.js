@@ -137,14 +137,14 @@ foam.CLASS({
     ^ .disabled .net-nanopay-sme-ui-BusinessJunctionRowView-oval {
       background-color: #e2e2e3 !important;
     }
-    ^ .net-nanopay-sme-ui-AbliiActionView-createBusiness {
+    ^ .foam-u2-ActionView-createBusiness {
       background: none;
       border: none;
       color: cornflowerblue;
       font-style: italic;
       margin-top: 10px;
     }
-    ^ .net-nanopay-sme-ui-AbliiActionView-createBusiness:hover:not(:disabled) {
+    ^ .foam-u2-ActionView-createBusiness:hover:not(:disabled) {
       background: none;
       border: none;
       color: grey;

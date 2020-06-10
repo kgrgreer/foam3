@@ -317,8 +317,8 @@ foam.CLASS({
     .login {
       margin-top: 24px !important;
     }
-    /* specifically overriding the action but intenet is only for SignIn/Up: TODO remove AbliiActionView*/
-    .net-nanopay-sme-ui-AbliiActionView-login {
+    /* specifically overriding the action but intenet is only for SignIn/Up*/
+    .foam-u2-ActionView-login {
       width: 100%;
     }
     .sme-title {
@@ -617,36 +617,6 @@ foam.CLASS({
       line-height: 15px !important;
     }
 
-    /* DAO controller */
-
-    .foam-comics-DAOControllerView-top-row .foam-u2-ActionView {
-      width: 158px !important;
-      height: 48px !important;
-      box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05);
-      border: solid 1px #4a33f4 !important;
-      font-family: lato;
-      font-size: 16px;
-      background: #604aff !important;
-    }
-
-    .foam-comics-DAOControllerView .actions .foam-u2-ActionView {
-      display: flex;
-      align-items: center;
-      background: none !important;
-      border: none !important;
-      box-shadow: none;
-      font-size: 16px;
-      font-weight: 500;
-      font-family: lato;
-      color: #8e9090;
-      cursor: pointer;
-      line-height: 24px;
-      width: auto !important;
-      height: 40px;
-      margin-left: 28px;
-      display: inline-block;
-    }
-
     .foam-comics-DAOControllerView .actions .foam-u2-ActionView img + span {
       margin-left: 12px;
     }
@@ -737,7 +707,7 @@ foam.CLASS({
       text-decoration: underline;
     }
 
-    .net-nanopay-sme-ui-AbliiActionView-large {
+    .foam-u2-ActionView-large {
       width: 160px;
     }
 
@@ -1029,51 +999,6 @@ foam.CLASS({
       margin-top: 16px !important;
     }
 
-    /* Wizards */
-    .foam-u2-ActionView-save {
-      color: #525455 !important;
-      background: none !important;
-      font-size: 16px !important;
-      font-family: lato !important;
-      height: 48px !important;
-    }
-
-    .foam-u2-ActionView-exit {
-      color: #525455 !important;
-      background: none !important;
-      font-size: 16px !important;
-      font-family: lato !important;
-      height: 48px !important;
-      border: none !important;
-      box-shadow: none !important;
-    }
-
-    .foam-u2-ActionView-goNext {
-      width: 158px !important;
-      height: 48px !important;
-      border-radius: 4px !important;
-      box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05) !important;
-      background-color: #604aff !important;
-      border: 1px solid #4a33f4 !important;
-      font-size: 16px !important;
-      font-weight: 400 !important;
-      font-family: lato !important;
-    }
-
-    .foam-u2-ActionView-goBack,
-    .net-nanopay-sme-ui-SendRequestMoney .foam-u2-ActionView-save {
-      width: 158px !important;
-      height: 48px !important;
-      border-radius: 4px !important;
-      box-shadow: 0 1px 0 0 rgba(22, 29, 37, 0.05) !important;
-      background-color: #fff !important;
-      border: 1px solid #604aff !important;
-      font-size: 16px !important;
-      font-weight: 400 !important;
-      font-family: lato !important;
-      color: #604aff !important;
-    }
-
     .navigationContainer {
       padding: 12px 0 !important;
     }
@@ -1115,7 +1040,7 @@ foam.CLASS({
       margin-left: 7px;
     }
     .DAOBrowser-query-bar {
-      align-items: center !important;
+      align-items: flex-start !important;
     }
     .foam-u2-filter-BooleanFilterView-container > input[type='checkbox']:checked:after {
       width: 16px;
@@ -1139,7 +1064,7 @@ foam.CLASS({
       border: solid 0 #ffffff;
       background-color: #ffffff;
     }
-    .foam-u2-detail-SectionedDetailPropertyView div .net-nanopay-sme-onboarding-BusinessDirectorArrayView .net-nanopay-sme-ui-AbliiActionView-secondary {
+    .foam-u2-detail-SectionedDetailPropertyView div .net-nanopay-sme-onboarding-BusinessDirectorArrayView .foam-u2-ActionView-secondary {
       // onboarding Business Directors Info Add Director button
       border: 0px;
       border-style: none;

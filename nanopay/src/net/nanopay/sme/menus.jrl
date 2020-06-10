@@ -19,6 +19,8 @@ p({
   "class": "foam.nanos.menu.Menu",
   "id": "sme.main.invoices.payables",
   "label": "Payables",
+  "activeIcon":"images/ablii/payables-icon-active.svg",
+  "icon":"images/ablii/payables-icon-resting.svg",
   "handler": {
     "class": "foam.nanos.menu.ViewMenu",
     "view": {
@@ -32,6 +34,8 @@ p({
   "class": "foam.nanos.menu.Menu",
   "id": "sme.main.invoices.receivables",
   "label": "Receivables",
+  "activeIcon":"images/ablii/receivables-icon-active.svg",
+  "icon":"images/ablii/receivables-icon-resting.svg",
   "handler": {
     "class": "foam.nanos.menu.ViewMenu",
     "view": {
@@ -46,7 +50,7 @@ p({
   "class":"foam.nanos.menu.Menu",
   "id": "sme.main.appStore",
   "label": "Capabilities",
-  "activeIcon":"images/ablii/dashboard-icon-resting.svg",
+  "activeIcon":"images/ablii/dashboard-icon-active.svg",
   "icon":"images/ablii/dashboard-icon-resting.svg",
   "handler":{
     "class":"foam.nanos.menu.ViewMenu",
