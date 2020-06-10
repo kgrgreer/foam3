@@ -150,3 +150,13 @@ p({
   "enabled":true,
   "visible":false
 })
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-17",
+  "name":"CertifyDirectorsListed",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyDirectorsListed",
+  "version":"0",
+  "enabled":true,
+  "visible":false
+})

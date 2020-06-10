@@ -68,12 +68,21 @@ foam.CLASS({
           ).select(txnSink);
 
           List<Transaction> txnList = txnSink.getArray();
-          ArraySink arraySink_txnList = new ArraySink();
-          List<Transaction> childTxnList = new ArrayList<>();
 
           // If the trasaction id is not valid format or it cannot find transaction
           if (txnList.isEmpty() || txnList.get(0) == null) {
             throw new RuntimeException("Error when trying to find the child transaction of " + id);
+          }
+
+          ArraySink arraySink_txnList = new ArraySink();
+          List<Transaction> childTxnList = new ArrayList<>();
+
+          if (txnList.get(0) instanceof CITransaction) {
+            txnList.get(0).getChildren(x).select(arraySink_txnList);
+            childTxnList.add(txnList.get(0));
+
+            Transaction nextTxn = (Transaction) arraySink_txnList.getArray().get(0);
+            txnList.set(0, nextTxn);
           }
 
           // If it is a one-to-many transactions
@@ -110,13 +119,21 @@ foam.CLASS({
               }
             }
           } else {
-            // If it is a one-to-one transaction
-            childTxnList.add(txnList.get(0));
-            txnList.get(0).getChildren(x).select(arraySink_txnList);
+            // If it is a one-to-one transaction,
+            // iterate throw the transaction chain to find digital and CICO transaction
+            while (txnList.get(0) != null) {
+              ArraySink oneToOneSink = new ArraySink();
+              txnList.get(0).getChildren(x).select(oneToOneSink);
+              if ( oneToOneSink.getArray().size() > 0 ) {
+                Transaction txn = (Transaction) oneToOneSink.getArray().get(0);
+                txnList.set(0, txn);
 
-            if (! arraySink_txnList.getArray().isEmpty() && arraySink_txnList.getArray().get(0) != null) {
-              List<Transaction> txnList2 = arraySink_txnList.getArray();
-              childTxnList.add(txnList2.get(0));
+                if (txn instanceof CITransaction || txn instanceof COTransaction || txn instanceof DigitalTransaction ) {
+                  childTxnList.add(txn);
+                }
+              } else {
+                txnList.set(0, null);
+              }
             }
           }
 
