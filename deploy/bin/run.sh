@@ -13,7 +13,7 @@ NANOS_PIDFILE=/tmp/nanos.pid
 DAEMONIZE=1
 VERSION=
 RUN_USER=
-CLUSTER=true
+CLUSTER=false
 
 export DEBUG=0
 

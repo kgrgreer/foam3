@@ -79,14 +79,6 @@ p({
 r({"class":"foam.nanos.boot.NSpec", "name":"liveScriptBundler"})
 
 p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "ping",
-  "lazy": false,
-  "authenticate": false,
-  "serviceClass": "foam.nanos.medusa.ClusterPingService"
-})
-
-p({
   "class":"foam.nanos.boot.NSpec",
   "name":"clusterConfigMonitor",
   "lazy": false,
