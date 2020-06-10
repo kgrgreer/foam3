@@ -60,7 +60,7 @@ foam.CLASS({
       }
     }
 
-    .account-sync-loading-animation .net-nanopay-sme-ui-AbliiActionView-syncBtn > img {
+    .account-sync-loading-animation .foam-u2-ActionView-syncBtn > img {
       animation-name: spin;
       animation-duration: 1.5s;
       animation-iteration-count: infinite;

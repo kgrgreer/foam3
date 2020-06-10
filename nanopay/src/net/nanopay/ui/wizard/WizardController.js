@@ -59,8 +59,8 @@ foam.CLASS({
       background-color: #fafafa;
       padding: 0 24px 0;
     }
-    .net-nanopay-sme-ui-AbliiActionView-tertiary:focus:not(:hover),
-    .net-nanopay-sme-ui-AbliiActionView-primary:focus:not(:hover) {
+    .foam-u2-ActionView-tertiary:focus:not(:hover),
+    .foam-u2-ActionView-primary:focus:not(:hover) {
       border-color: transparent !important;
     }
   `,

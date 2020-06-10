@@ -55,31 +55,26 @@ foam.CLASS({
       margin: auto;
       margin-top: 30px;
     }
-    ^ .net-nanopay-sme-ui-AbliiActionView-reqMoney {
-      position: relative;
-      left: 850px;
-      top: -75px;
+    ^row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 16px;
     }
     ^ .DAOBrowser {
       position: relative;
     }
-    ^ .net-nanopay-sme-ui-AbliiActionView-sync, ^ .net-nanopay-sme-ui-AbliiActionView-sync:hover:not(:disabled) {
-      position: relative;
-      left: 680px;
-      top: -25px;
+    ^ .foam-u2-ActionView-sync, ^ .foam-u2-ActionView-sync:hover:not(:disabled) {
       background: none !important;
       border: none !important;
       color: grey;
     }
-    ^ .net-nanopay-sme-ui-AbliiActionView-sync {
+    ^ .foam-u2-ActionView-sync {
       background: none;
       border: none;
     }
-    ^ .net-nanopay-sme-ui-AbliiActionView-secondary {
+    ^ .foam-u2-ActionView-secondary {
       border: 1px solid lightgrey;
-    }
-    ^ h1, h3 {
-      margin: 15px;
     }
     ^ h3 {
       font-weight: 200;
@@ -302,16 +297,20 @@ foam.CLASS({
   methods: [
     function initE() {
       this.start().addClass(this.myClass())
-      .start('h1').add(this.TITLE).end()
-      .start('h3').addClass('subdued-text').add(this.SUB_TITLE).end()
-      .tag(this.primaryAction, {
-        size: 'LARGE'
-      })
-      .startContext({ data: this })
-        .tag(this.SYNC, {
-          size: 'MEDIUM'
+      .start('div').addClass(this.myClass('row'))
+        .start('h1').add(this.TITLE).end()
+        .tag(this.primaryAction, {
+          size: 'LARGE'
         })
-      .endContext()
+      .end()
+      .start('div').addClass(this.myClass('row'))
+        .start('h3').addClass('subdued-text').add(this.SUB_TITLE).end()
+        .startContext({ data: this })
+          .tag(this.SYNC, {
+            size: 'MEDIUM'
+          })
+        .endContext()
+      .end() 
       .tag(this.DAOBrowser.create({
         config: this.config,
         summaryView: this.summaryView

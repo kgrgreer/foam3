@@ -56,7 +56,8 @@ foam.CLASS({
     margin-top: 7px;
     margin-left: 7px;
   }
-  ^ .foam-u2-ActionView-currencyChoice{
+  ^ .foam-u2-ActionView-currencyChoice {
+    display: inline-block;
     background: none !important;
     border: 0 !important;
     box-shadow: none !important;
@@ -67,7 +68,7 @@ foam.CLASS({
   ^ .foam-nanos-u2-navigation-TopNavigation-CurrencyChoiceView {
     align-items: center;
   }
-  ^ .foam-u2-ActionView-currencyChoice > span{
+  ^ .foam-u2-ActionView-currencyChoice > span {
     font-family: Roboto;
     font-size: 16px;
     font-weight: 300;
@@ -86,7 +87,7 @@ foam.CLASS({
     line-height: 30px;
   }
   ^ .foam-u2-PopupView {
-    left: -40 !important;
+    left: -30 !important;
     top: 51px !important;
     padding: 0 !important;
     z-index: 1000;

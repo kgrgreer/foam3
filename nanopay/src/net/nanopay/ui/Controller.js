@@ -55,7 +55,6 @@ foam.CLASS({
     'net.nanopay.model.Business',
     'net.nanopay.model.BusinessUserJunction',
     'net.nanopay.model.SignUp',
-    'net.nanopay.sme.ui.AbliiActionView',
     'net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding',
     'net.nanopay.sme.onboarding.OnboardingStatus',
     'net.nanopay.sme.ui.AbliiOverlayActionListView',
@@ -572,7 +571,6 @@ foam.CLASS({
         // TODO & NOTE: This is a workaround. This prevents the CSS from breaking when viewing it in a subclass first before the parent class.
         this.BankPadAuthorization.create();
 
-        this.__subContext__.register(this.AbliiActionView, 'foam.u2.ActionView');
         this.__subContext__.register(this.ConnectSubMenu, 'foam.nanos.menu.SubMenu');
         this.__subContext__.register(this.SMEWizardOverview, 'net.nanopay.ui.wizard.WizardOverview');
         this.__subContext__.register(this.SMEModal, 'foam.u2.dialog.Popup');

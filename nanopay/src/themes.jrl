@@ -136,8 +136,9 @@ p({
       overflow: hidden;
     }
     .foam-comics-BrowserView {
-      width: 72%;
+      width: 1024px;
       margin: auto;
+      margin-top: 30px;
     }
   """,
   "createdBy":1,

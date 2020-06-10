@@ -82,7 +82,7 @@ foam.CLASS({
       line-height: 1.5;
       color: #525455;
     }
-    ^ .net-nanopay-sme-ui-AbliiActionView-getStarted {
+    ^ .foam-u2-ActionView-getStarted {
       margin-top: 10px;
     }
     ^complete-container {
