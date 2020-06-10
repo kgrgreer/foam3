@@ -26,6 +26,12 @@ p({
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-11",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-6-5",
+  "priority":6
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-11",
   "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-3",
   "priority":7
 })
@@ -34,6 +40,11 @@ p({
   "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-7",
   "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-12",
   "priority":7
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-6-5",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-17"
 })
 
 // prerequisites for usBusinessOnboardedWithDomesticPayments
@@ -60,6 +71,11 @@ p({
   "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-13",
   "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-6",
   "priority":9
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-13",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-6-5"
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
