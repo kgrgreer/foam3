@@ -185,3 +185,64 @@ p({
   "reviewRequired":true,
   "keywords":["featured"]
 })
+
+p({
+  "class":"net.nanopay.fx.Corridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15f7121ca-in",
+  "name":"CA-IN Corridor",
+  "version":"0",
+  "sourceCountry":"CA",
+  "targetCountry":"IN",
+  "currencies":["INR"],
+  "enabled":true,
+  "visible":true
+})
+
+p({
+  "class":"net.nanopay.fx.Corridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15f7121ca-us",
+  "name":"CA-US Corridor",
+  "version":"0",
+  "sourceCountry":"CA",
+  "targetCountry":"US",
+  "currencies":["CAD", "USD"],
+  "enabled":true,
+  "visible":true
+})
+
+p({
+  "class":"net.nanopay.fx.Corridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15f7121us-ca",
+  "name":"US-CA Corridor",
+  "version":"0",
+  "sourceCountry":"US",
+  "targetCountry":"CA",
+  "currencies":["CAD", "USD"],
+  "enabled":true,
+  "visible":true
+})
+
+p({
+  "class":"net.nanopay.fx.Corridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15f7121us-us",
+  "name":"US-US Corridor",
+  "version":"0",
+  "sourceCountry":"US",
+  "targetCountry":"US",
+  "currencies":["CAD", "USD"],
+  "enabled":true,
+  "visible":true
+})
+
+p({
+  "class":"net.nanopay.fx.Corridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15f7121ca-ca",
+  "name":"CA-CA Corridor",
+  "version":"0",
+  "sourceCountry":"CA",
+  "targetCountry":"CA",
+  "currencies":["CAD"],
+  "enabled":true,
+  "visible":true
+})
+

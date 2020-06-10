@@ -55,6 +55,7 @@ foam.CLASS({
   imports: [
     'auth',
     'countryDAO',
+    'subject',
     'user'
   ],
 
@@ -120,6 +121,11 @@ foam.CLASS({
     {
       name: 'RESTRICT_INVITE_LABEL',
       message: 'This contact cannot be invited to join Ablii'
+    },
+    {
+      name: 'UNABLE_TO_ADD_BANK_ACCOUNT',
+      message: `You currently have not completed the necessary requirements
+          to add an account to your contact. Please visit the capability store to enable payments.`
     }
   ],
 
@@ -293,6 +299,9 @@ foam.CLASS({
       section: 'stepTwo',
       storageTransient: true,
       label: '',
+      visibility: function() {
+        return this.countries <= 0 ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      },
       factory: function() {
         return net.nanopay.bank.BankAccount.create({}, this);
       },
@@ -305,7 +314,7 @@ foam.CLASS({
         return foam.u2.view.FObjectView.create({
           data: X.data.createBankAccount,
           of: net.nanopay.bank.BankAccount,
-          persistentData: { isDefault: true, forContact: true },
+          persistantData: { isDefault: true, forContact: true },
           enableStrategizer: X.data.bankAccount === 0,
           predicate: pred
         }, X);
@@ -315,9 +324,9 @@ foam.CLASS({
       name: 'availableCountries',
       section: 'stepOne',
       visibility: 'HIDDEN',
-      expression: function(user) {
+      expression: function(subject) {
         return this.PromisedDAO.create({
-          promise: user.corridors
+          promise: subject.user.capabilities.dao.where(this.INSTANCE_OF(this.Corridor))
             .select(this.MAP(this.Corridor.TARGET_COUNTRY))
             .then((sink) => {
               let unique = [...new Set(sink.delegate.array)];
@@ -333,6 +342,17 @@ foam.CLASS({
       name: 'countries',
       visibility: 'HIDDEN',
       documentation: 'Stores available countries contact can have account domicilied in.'
+    },
+    {
+      name: 'noCorridorsAvailable',
+      documentation: 'GUI when no corridor capabilities have been added to user.',
+      section: 'stepTwo',
+      visibility: function() {
+        return this.countries <= 0 ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
+      },
+      view: function(_, X) {
+        return X.E().start().add(X.data.UNABLE_TO_ADD_BANK_ACCOUNT).end();
+      }
     },
     {
       class: 'Boolean',
@@ -360,39 +380,10 @@ foam.CLASS({
       section: 'stepThree',
       label: '',
       view: function(_, X) {
+        // Removing auth checks. TODO: solution on what to show based on what.
         return {
           class: 'net.nanopay.sme.ui.AddressView',
-          showDisclaimer: true,
-          customCountryDAO: X.data.PromisedDAO.create({
-            promise: X.data.auth.check(null, 'currency.read.USD').then((hasPermission) => {
-              var q;
-              if ( hasPermission && X.data.user.countryOfBusinessRegistration == 'CA' ) {
-                q = X.data.OR(
-                  X.data.EQ(X.data.Country.ID, 'CA'),
-                  X.data.EQ(X.data.Country.ID, 'US'),
-                  X.data.EQ(X.data.Country.ID, 'IN')
-                );
-              } else if ( hasPermission ) {
-                q = X.data.OR(
-                  X.data.EQ(X.data.Country.ID, 'CA'),
-                  X.data.EQ(X.data.Country.ID, 'US')
-                );
-              } else {
-                return X.data.auth.check(null, 'currency.read.INR').then((inrPermission) => {
-                  if ( inrPermission ) {
-                    q = X.data.OR(
-                      X.data.EQ(X.data.Country.ID, 'CA'),
-                      X.data.EQ(X.data.Country.ID, 'IN')
-                    );
-                  } else {
-                    q = X.data.EQ(X.data.Country.ID, 'CA');
-                  }
-                  return X.data.countryDAO.where(q);
-                });
-              }
-              return X.data.countryDAO.where(q);
-            })
-          })
+          showDisclaimer: true
         };
       },
       factory: function() {

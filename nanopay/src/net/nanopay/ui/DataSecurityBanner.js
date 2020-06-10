@@ -59,8 +59,8 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'Title', message: 'Your safety is our top priority' },
-    { name: 'Subtitle', message: 'Our platform uses state-of-the-art security and encryption measures when handling your data' }
+    { name: 'DATA_TITLE', message: 'Your safety is our top priority' },
+    { name: 'DATA_SUBTITLE', message: 'Our platform uses state-of-the-art security and encryption measures when handling your data' }
   ],
 
   methods: [
@@ -69,8 +69,8 @@ foam.CLASS({
       this.addClass(this.myClass())
         .start({ class: 'foam.u2.tag.Image', data: 'images/security-icon.svg' }).addClass(this.myClass('image')).end()
         .start('div').addClass(this.myClass('text-container'))
-          .start('p').add(this.Title).addClass(this.myClass('title')).end()
-          .start('p').add(this.Subtitle).addClass(this.myClass('subtitle')).end()
+          .start('p').add(this.DATA_TITLE).addClass(this.myClass('title')).end()
+          .start('p').add(this.DATA_SUBTITLE).addClass(this.myClass('subtitle')).end()
         .end();
     }
   ]

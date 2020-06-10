@@ -18,15 +18,12 @@
 foam.CLASS({
   package: 'net.nanopay.fx',
   name: 'Corridor',
+  extends: 'foam.nanos.crunch.Capability',
 
   documentation: 'Agreement between two countries' +
       ' permitting specified currencies & payout options.',
 
   properties: [
-    {
-      class: 'Long',
-      name: 'id'
-    },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.Country',
@@ -45,21 +42,13 @@ foam.CLASS({
       class: 'StringArray',
       name: 'currencies',
       documentation: 'Agreed upon currencies.'
-    },
+    }
     // {
     //   class: 'StringArray',
     //   name: 'payoutOptions',
     //   documentation: 'Agreed upon payout options.'
     // }
   ]
-});
-
-foam.RELATIONSHIP({
-  sourceModel: 'foam.nanos.auth.User',
-  targetModel: 'net.nanopay.fx.Corridor',
-  forwardName: 'corridors',
-  inverseName: 'user',
-  cardinality: '1:*'
 });
 
 // NOTE: Commented out until relationships are supported on DIG

@@ -33,6 +33,8 @@ public class PaymentCorridorServiceTest extends foam.nanos.test.Test {
     c = (Corridor) corridorDAO.put(
       new Corridor.Builder(x).setSourceCountry("CA")
       .setTargetCountry("US")
+      .setEnabled(true)
+      .setVisible(true)
       .build());
 
     j = (PaymentProviderCorridorJunction) paymentProviderCorridorJunctionDAO.put(
@@ -57,14 +59,14 @@ public class PaymentCorridorServiceTest extends foam.nanos.test.Test {
 
   public void testIsSupportedCurrencyPair(X x) {
     PaymentCorridorService s = new PaymentCorridorService();
-    test(s.isSupportedCurrencyPair(x, "CA", "US", "CAD", "USD"), "Currency pair is supported on the platform.");
+    test(s.isSupportedCurrencyPair(x, "CA", "US", "CAD", "USD"), "Supported Currency pair is supported on the platform.");
     test(! s.isSupportedCurrencyPair(x, "CA", "US", "CAD", "UDX"), "Corridor not supported");
     test(! s.isSupportedCurrencyPair(x, "CA", "US", "CAD", null), "null currency handled");
   }
 
   public void testGetCorridorPaymentProviders(X x) {
     PaymentCorridorService s = new PaymentCorridorService();
-    test(s.getCorridorPaymentProviders(x, "CA", "US", "CAD", "USD").size() == 1, "Currency pair is supported on the platform.");
+    test(s.getCorridorPaymentProviders(x, "CA", "US", "CAD", "USD").size() >= 1, "Corridor Currency pair is supported on the platform.");
     test(s.getCorridorPaymentProviders(x, "CA", "US", "CAD", "UDX").size() == 0, "Corridor not supported");
     test(s.getCorridorPaymentProviders(x, "CA", "US", "CAD", null).size() == 0, "null currency handled");
   }
@@ -75,7 +77,7 @@ public class PaymentCorridorServiceTest extends foam.nanos.test.Test {
       .setSourceAccount(createTestBankAccount(x, "CAD"))
       .setDestinationAccount(createTestBankAccount(x, "USD"))
       .build();
-    test(s.getQuoteCorridorPaymentProviders(x, quote).size() == 1, "Currency pair in quote is supported on the platform.");
+    test(s.getQuoteCorridorPaymentProviders(x, quote).size() >= 1, "Currency pair in quote is supported on the platform.");
 
     TransactionQuote quote2 = new TransactionQuote.Builder(x)
       .setSourceAccount(createTestBankAccount(x, "CAD"))
@@ -88,7 +90,7 @@ public class PaymentCorridorServiceTest extends foam.nanos.test.Test {
       .setSourceAccount(createTestDigitalAccount(x, "CAD"))
       .setDestinationAccount(createTestDigitalAccount(x, "USD"))
       .build();
-    test(s.getQuoteCorridorPaymentProviders(x, quote3).size() == 1, "Currency pair in quote3 is supported on the platform.");
+    test(s.getQuoteCorridorPaymentProviders(x, quote3).size() >= 1, "Currency pair in quote3 is supported on the platform.");
   }
 
   private BankAccount createTestBankAccount(X x, String denomination) {
