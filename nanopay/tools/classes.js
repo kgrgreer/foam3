@@ -32,6 +32,7 @@ var classes = [
   'net.nanopay.tx.alterna.AlternaCOTransaction',
   'net.nanopay.tx.alterna.AlternaCITransaction',
   'net.nanopay.tx.alterna.AlternaVerificationTransaction',
+  'net.nanopay.tx.bench.TransactionBenchmarkClient',
   'net.nanopay.tx.stripe.StripeTransaction',
   'net.nanopay.tx.stripe.StripeCustomer',
   'net.nanopay.tx.realex.RealexTransaction',
