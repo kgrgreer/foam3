@@ -30,7 +30,7 @@ foam.CLASS({
     'foam.nanos.export.JSONDriver',
     'foam.nanos.export.JSONJDriver',
     'foam.nanos.export.XMLDriver',
-    'foam.nanos.export.CSVDriver'
+    'foam.nanos.export.CSVTableExportDriver'
   ],
 
   properties: [
@@ -67,7 +67,7 @@ foam.CLASS({
     {
       name: 'csvDriver',
       factory: function() {
-        return this.CSVDriver.create();
+        return this.CSVTableExportDriver.create();
       }
     },
     {
