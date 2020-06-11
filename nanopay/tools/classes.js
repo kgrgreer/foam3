@@ -1021,6 +1021,8 @@ var classes = [
   'net.nanopay.tx.planner.AFEXTransactionPlanner',
   'net.nanopay.tx.planner.DebtRepaymentPlanner',
   'net.nanopay.tx.planner.DebtablePlanner',
+  'net.nanopay.tx.planner.TrevisoSplitTransactionPlanner',
+  'net.nanopay.tx.planner.TrevisoTransactionPlanner',
 
   // Fees
   'net.nanopay.tx.planner.fees.AbliiFeeRule',
@@ -1079,7 +1081,11 @@ var classes = [
   
   // msp
   'net.nanopay.msp.MspInfo',
-  'net.nanopay.msp.MspSetupDAO'
+  'net.nanopay.msp.MspSetupDAO',
+
+  // Treviso
+ 'net.nanopay.fx.treviso.TrevisoTransaction',
+ 'net.nanopay.fx.treviso.NatureCode',
 ];
 
 var abstractClasses = [

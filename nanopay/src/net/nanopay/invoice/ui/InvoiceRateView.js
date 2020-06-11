@@ -533,6 +533,7 @@ foam.CLASS({
         if ( ! this.isFx ) {
           this.requestTxn.amount = this.invoice.amount;
         }
+        this.requestTxn.lineItems = [];
 
       var quote = await this.transactionPlannerDAO.put(
         this.TransactionQuote.create({
@@ -542,6 +543,10 @@ foam.CLASS({
       return quote.plan;
     },
     async function setChosenBankAccount() {
+      if ( this.viewData.bankAccount ) {
+        this.chosenBankAccount = this.viewData.bankAccount;
+        return;
+      }
       this.chosenBankAccount = this.viewData.bankAccount = await this.user.accounts.find(
         this.AND(
           this.INSTANCE_OF(this.BankAccount),

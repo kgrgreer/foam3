@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 //Transaction Planners only beyond this point.
 p({
   "class":"net.nanopay.tx.planner.DigitalTransactionPlanner",
@@ -919,6 +936,89 @@ p({
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
         "propName":"destinationUnit",
         "propValue":"CAD"
+      }
+    ]
+  },
+  "lifecycleState":1
+})
+
+// TODO change sourceAccount predicate to check for brazil bank account
+p({
+  "class":"net.nanopay.tx.planner.TrevisoSplitTransactionPlanner",
+  "id":"2775abef-05d4-4460-bea8-7a70e9d544af",
+  "name":"TrevisoSplitTransactionPlanner",
+  "documentation":"Planner for transaction from BRL to destination currency",
+  "priority":90,
+  "ruleGroup":"TrevisoPlanner",
+  "enabled":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.bank.BankAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.bank.BankAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"sourceUnit",
+        "propValue":"BRL"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+        "propName":"destinationUnit",
+        "propValue":"USD"
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.IsAFEXUserPredicate",
+      },
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"Treviso"
+      }
+    ]
+  },
+  "lifecycleState":1
+})
+p({
+  "class":"net.nanopay.tx.planner.TrevisoTransactionPlanner",
+  "id":"519e2a68-a914-444f-b050-2ce01f29fe24",
+  "name":"TrevisoTransactionPlanner",
+  "documentation":"Planner for transaction from BRL to USD",
+  "priority":80,
+  "ruleGroup":"TrevisoPlanner",
+  "enabled":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.bank.BankAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.bank.USBankAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"sourceUnit",
+        "propValue":"BRL"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"destinationUnit",
+        "propValue":"USD"
+      },
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"Treviso"
       }
     ]
   },
