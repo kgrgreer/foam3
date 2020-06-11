@@ -16,9 +16,9 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.tx',
-  name: 'KotakPaymentPurposeLineItem',
-  extends: 'net.nanopay.tx.InfoLineItem',
+  package: 'net.nanopay.fx.treviso',
+  name: 'NatureCode',
+  extends: 'net.nanopay.tx.TransactionLineItem',
 
   implements: [
     'foam.mlang.Expressions',
@@ -28,37 +28,35 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction'
   ],
 
+  messages: [
+    {
+      name: 'INVALID_NATURE_CODE',
+      message: 'Please select a nature code.',
+    }
+  ],
+
   properties: [
     {
       name: 'purposeCode',
       class: 'Reference',
       of: 'net.nanopay.tx.PurposeCode',
-      label: 'Purpose of Transfer',
+      label: 'Nature Code',
       validationPredicates: [
         {
           args: ['purposeCode'],
           predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.tx.KotakPaymentPurposeLineItem.PURPOSE_CODE, '');
+            return e.NEQ(net.nanopay.fx.treviso.NatureCode.PURPOSE_CODE, '');
           },
-          errorString: 'Please enter a Purpose of Transfer.'
+          errorString: 'Please select a nature code.'
         }
       ],
       view: function(args, x) {
-        if ( args.mode$.value.name === 'RO' ) {
-          return foam.u2.Element.create()
-            .start()
-              .add(x.data.getPurposeName())
-            .end();
-        }
-        return foam.u2.view.ChoiceWithOtherView.create({
-          choiceView: foam.u2.view.ChoiceView.create({
-            dao: x.purposeCodeDAO.where(x.data.EQ(net.nanopay.tx.PurposeCode.COUNTRY, 'IN')),
-            placeholder: 'Please select',
-            objToChoice: function(purposeCode) {
-              return [purposeCode.code, purposeCode.description];
-            }
-          }),
-          otherKey: 'Other'
+        return foam.u2.view.ChoiceView.create({
+          dao: x.purposeCodeDAO.where(x.data.EQ(net.nanopay.tx.PurposeCode.COUNTRY, 'BR')),
+          placeholder: 'Please select',
+          objToChoice: function(purposeCode) {
+            return [purposeCode.code, purposeCode.description];
+          }
         });
       }
     },
@@ -102,24 +100,11 @@ foam.CLASS({
       value: true
     }
   ],
+
   methods: [
     function validate() {
       if ( this.purposeCode === '' ) {
-        throw 'Purpose of Transfer cannot be empty';
-      }
-    },
-    function getPurposeName() {
-      switch ( this.purposeCode ) {
-        case 'P0306':
-          return 'Payment For Travel';
-        case 'P1306':
-          return 'Tax Payments In India';
-        case 'P0011':
-          return 'Repayment of loans';
-        case 'P0103':
-          return 'Advance payment against imports';
-        default:
-          return 'Trade transaction';
+        throw this.INVALID_NATURE_CODE;
       }
     }
   ]

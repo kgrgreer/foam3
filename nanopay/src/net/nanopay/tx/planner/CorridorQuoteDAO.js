@@ -54,7 +54,11 @@ foam.CLASS({
         if ( ! getEnabled() ) {
           return getDelegate().put_(x, obj);
         }
-        quote.setCorridorsEnabled(true);
+        
+        if ( ! quote.isPropertySet("corridorsEnabled") ) {
+          quote.setCorridorsEnabled(true);
+        }
+
         CorridorService cs = (CorridorService) x.get("corridorService");
 
         // get list of payment providers

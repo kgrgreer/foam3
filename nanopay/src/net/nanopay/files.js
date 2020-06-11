@@ -1476,6 +1476,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/LoanTransactionPlanner' },
   { name: 'net/nanopay/tx/planner/DebtRepaymentPlanner' },
   { name: 'net/nanopay/tx/planner/DebtablePlanner' },
+  { name: 'net/nanopay/tx/planner/TrevisoTransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/TrevisoSplitTransactionPlanner' },
 
   // Fees
   { name: 'net/nanopay/tx/planner/fees/AbliiFeeRule' },
@@ -1528,5 +1530,9 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/acceptanceDocuments/BaseAcceptanceDocumentCapability' },
 
   // msp
-  { name: 'net/nanopay/msp/MspInfo' }
+  { name: 'net/nanopay/msp/MspInfo' },
+
+  // Treviso
+  { name: 'net/nanopay/fx/treviso/TrevisoTransaction' },
+  { name: 'net/nanopay/fx/treviso/NatureCode' },
 ]);

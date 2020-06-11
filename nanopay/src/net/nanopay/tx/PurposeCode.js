@@ -47,5 +47,10 @@ foam.CLASS({
       name: 'send',
       documentation: 'Whether purpose code is used in sending / receiving payment'
     },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.Country',
+      name: 'country'
+    },
   ]
 });

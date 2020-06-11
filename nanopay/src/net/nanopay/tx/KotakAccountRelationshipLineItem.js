@@ -48,7 +48,7 @@ foam.CLASS({
         {
           args: ['accountRelationship'],
           predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.bank.INBankAccount.ACCOUNT_RELATIONSHIP, '');
+            return e.NEQ(net.nanopay.tx.KotakAccountRelationshipLineItem.ACCOUNT_RELATIONSHIP, '');
           },
           errorString: 'Please specify your Relationship with the contact.'
         }

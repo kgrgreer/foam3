@@ -162,6 +162,7 @@ foam.CLASS({
         afexTransaction.setSourceCurrency(fxQuote.getSourceCurrency());
         afexTransaction.setDestinationAmount(fxQuote.getTargetAmount());
         afexTransaction.setDestinationCurrency(fxQuote.getTargetCurrency());
+        afexTransaction.setPlanner(this.getId());
         
         if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()))
         {
@@ -221,9 +222,6 @@ foam.CLASS({
         summary.setInvoiceId(tx.getInvoiceId());
         summary.setIsQuoted(true);
         summary.addNext(createCompliance(tx));
-        FXLineItem fxLineItem = new FXLineItem();
-        fxLineItem.setRate(fxQuote.getRate());
-        summary.addLineItems( new TransactionLineItem[] { fxLineItem } );
 
         // create AFEXBeneficiaryComplianceTransaction
         AFEXBeneficiaryComplianceTransaction afexCT = new AFEXBeneficiaryComplianceTransaction();
@@ -238,6 +236,7 @@ foam.CLASS({
         afexCT.setPayeeId(tx.getPayeeId());
         afexCT.setPayerId(tx.getPayerId());
         afexCT.addNext(tx);
+        afexCT.setPlanner(this.getId());
         
         summary.addNext(afexCT);
       

@@ -74,6 +74,7 @@ foam.CLASS({
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.bank.CanReceiveCurrency',
     'net.nanopay.contacts.ContactStatus',
+    'net.nanopay.fx.FXLineItem',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.tx.AbliiTransaction',
@@ -417,13 +418,35 @@ foam.CLASS({
         return false;
       }
 
+      for ( i=0; i < this.viewData.quote.lineItems.length; i++ ) {
+        if ( this.viewData.quote.lineItems[i].requiresUserInput ) {
+          this.requestTxn.lineItems.push(this.viewData.quote.lineItems[i]);
+        }
+      }
+
       return true;
     },
   
-    function getExpiryTime( time, expiryTime) {
+    function getExpired( time, transaction) {
+
+      let quoteExpiry = null;
+      for ( i=0; i < this.viewData.quote.lineItems.length; i++ ) {
+        if ( this.FXLineItem.isInstance(this.viewData.quote.lineItems[i]) && this.viewData.quote.lineItems[i].expiry ) {
+          if ( quoteExpiry == null ) {
+            quoteExpiry = this.viewData.quote.lineItems[i].expiry;
+            quoteExpiry = Date.UTC(quoteExpiry.getFullYear(), quoteExpiry.getMonth(), quoteExpiry.getDate(), quoteExpiry.getHours(), quoteExpiry.getMinutes(), quoteExpiry.getSeconds());
+          } else {
+            let temp = this.viewData.quote.lineItems[i].expiry;
+            temp = Date.UTC(temp.getFullYear(), temp.getMonth(), temp.getDate(), temp.getHours(), temp.getMinutes(), temp.getSeconds());
+            quoteExpiry = quoteExpiry < temp ? quoteExpiry : temp;
+          }
+        }
+      }
+
+      if ( quoteExpiry == null ) return false;
+
       let utc1 =  Date.UTC(time.getFullYear(), time.getMonth(), time.getDate(), time.getHours(), time.getMinutes(), time.getSeconds());
-      let utc2 = Date.UTC(expiryTime.getFullYear(), expiryTime.getMonth(), expiryTime.getDate(), expiryTime.getHours(), expiryTime.getMinutes(), expiryTime.getSeconds());
-      return Math.floor(( utc2-utc1 ));
+      return Math.floor(( quoteExpiry-utc1 )) <= 0;
     },
   
     async function getFXQuote() {
@@ -476,7 +499,7 @@ foam.CLASS({
         var transaction = this.viewData.quote ? this.viewData.quote : null;
         transaction.invoiceId = this.invoice.id;
         // confirm fxquote is still valid
-        if ( transaction != null && transaction.fxExpiry && this.getExpiryTime(new Date(), transaction.fxExpiry) <= 0 ) {
+        if ( transaction != null && this.getExpired(new Date(), transaction) ) {
           transaction = await this.getFXQuote();
           transaction.invoiceId = this.invoice.id;
           this.notify(this.RATE_REFRESH + ( this.isApproving ? this.RATE_REFRESH_APPROVE : this.RATE_REFRESH_SUBMIT), 'warning');

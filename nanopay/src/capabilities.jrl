@@ -262,3 +262,26 @@ p({
   "visible":true
 })
 
+p({
+  "class":"net.nanopay.fx.Corridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15f7121br-ca",
+  "name":"BR-CA Corridor",
+  "version":"0",
+  "sourceCountry":"BR",
+  "targetCountry":"CA",
+  "currencies":["BRL", "CAD"],
+  "enabled":true,
+  "visible":true
+})
+
+p({
+  "class":"net.nanopay.fx.Corridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15f7121br-us",
+  "name":"BR-US Corridor",
+  "version":"0",
+  "sourceCountry":"BR",
+  "targetCountry":"US",
+  "currencies":["BRL", "USD"],
+  "enabled":true,
+  "visible":true
+})
