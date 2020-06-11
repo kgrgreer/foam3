@@ -38,7 +38,7 @@ foam.CLASS({
       position: fixed;
       bottom: 0;
       justify-content: flex-end;
-      background-color: /*%PRIMARY1%*/ #2e2379;
+      background-color: /*%PRIMARY1%*/ #202341;
     }
     ^ .appConfig-info {
       display: flex;
