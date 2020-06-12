@@ -97,8 +97,7 @@ foam.CLASS({
     'onboardingUtil',
     'privacyUrl',
     'sme',
-    'termsUrl',
-    'userLoggedIn'
+    'termsUrl'
   ],
 
   css: `
@@ -299,8 +298,8 @@ foam.CLASS({
     {
       class: 'foam.core.FObjectProperty',
       of: 'foam.core.Latch',
-      name: 'userLoggedIn',
-      documentation: 'A latch used to wait on user login.',
+      name: 'themeUpdated',
+      documentation: 'A latch used to wait on theme update after login.',
       factory: function() {
         return this.Latch.create();
       }
@@ -589,8 +588,9 @@ foam.CLASS({
       if ( ! this.isIframe() ){
         this
           .addClass(this.myClass())
-          .add(this.slot(function (loginSuccess, topNavigation_) {
+          .add(this.slot( async function (loginSuccess, topNavigation_) {
             if ( ! loginSuccess ) return null;
+            await this.themeUpdated;
             return this.E().tag(topNavigation_);
           }))
           .start()
@@ -610,7 +610,8 @@ foam.CLASS({
           .end()
           .start()
             .enableClass('footer-wrapper', this.loginSuccess$)
-            .add(this.slot(function (footerView_) {
+            .add(this.slot( async function (loginSuccess, footerView_) {
+              if ( loginSuccess ) await this.themeUpdated;
               return this.E().tag(footerView_);
             }))
           .end();
@@ -943,7 +944,8 @@ foam.CLASS({
   listeners: [
     function onUserAgentAndGroupLoaded() {
       var self = this;
-      this.userLoggedIn.resolve();
+      this.loginSuccess = true;
+      this.themeUpdated.resolve();
       if ( this.sme ) {
         window.onpopstate = async (event) => {
           var menu;
