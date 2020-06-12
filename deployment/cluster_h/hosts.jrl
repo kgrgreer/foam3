@@ -21,3 +21,9 @@ p({
   "id":"mn2",
   "address":"moosehead",
 })
+
+p({
+  "class":"foam.net.Host",
+  "id":"mn3",
+  "address":"stella"
+})
