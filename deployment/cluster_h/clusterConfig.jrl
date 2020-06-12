@@ -1,6 +1,6 @@
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
-  "id":"mm1",
+  "id":"jhughes",
   "name":"mm1",
   "enabled":true,
   "realm":"nanopay",
@@ -16,7 +16,7 @@ p({
 
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
-  "id":"mm2",
+  "id":"woodchuck",
   "name":"mm2",
   "enabled":true,
   "realm":"nanopay",
@@ -48,7 +48,7 @@ p({
 
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
-  "id":"mn1",
+  "id":"schooner",
   "name":"mn1",
   "enabled":true,
   "realm":"nanopay",
@@ -64,7 +64,7 @@ p({
 
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
-  "id":"mn2",
+  "id":"moosehead",
   "name":"mn2",
   "enabled":true,
   "realm":"nanopay",
@@ -80,7 +80,7 @@ p({
 
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
-  "id":"mn3",
+  "id":"stella",
   "name":"mn3",
   "enabled":true,
   "realm":"nanopay",
