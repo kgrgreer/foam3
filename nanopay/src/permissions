@@ -304,6 +304,7 @@ p({"class":"foam.nanos.auth.Permission","id":"service.smsMessageDAO","descriptio
 p({"class":"foam.nanos.auth.Permission","id":"service.supportEmailDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.ticketDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.ticketMessageDAO","description":""})
+p({"class":"foam.nanos.auth.Permission","id":"service.ticketStatusDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.transactionDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.tableViewTransactionDAO","description":"Permission to access the service named 'tableViewTransactionDAO'."})
 p({"class":"foam.nanos.auth.Permission","id":"service.transactionFeeDAO","description":""})

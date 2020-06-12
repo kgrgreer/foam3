@@ -690,6 +690,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support","targe
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support","targetId":"service.smsMessageDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support","targetId":"service.tableViewAccountDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support","targetId":"service.ticketDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support","targetId":"service.ticketStatusDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support","targetId":"service.transactionDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support","targetId":"smsmessage.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support","targetId":"transaction.read.*"})
