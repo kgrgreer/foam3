@@ -145,6 +145,7 @@ p({"class":"foam.nanos.auth.Permission","id":"service.paymentCodeService","descr
 p({"class":"foam.nanos.auth.Permission","id":"service.complianceItemDAO"})
 p({"class":"foam.nanos.auth.Permission","id":"service.contactDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.currencyDAO","description":""})
+p({"class":"foam.nanos.auth.Permission","id":"service.detailedInvoiceDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.digitalAccount","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.doNotSolicitDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.emailMessageDAO","description":""})
