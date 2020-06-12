@@ -43,7 +43,7 @@ foam.CLASS({
     'isPayable',
     'loadingSpin',
     'notify',
-    'user',
+    'subject',
     'viewData'
   ],
 
@@ -125,7 +125,7 @@ foam.CLASS({
       if ( ! this.isPayable ) return;
       var type = this.viewData.quote ? this.viewData.quote.type : null;
       try {
-        var disclosure = await this.acceptanceDocumentService.getTransactionRegionDocuments(this.__context__, type, this.AcceptanceDocumentType.DISCLOSURE, this.user.address.countryId, this.user.address.regionId);
+        var disclosure = await this.acceptanceDocumentService.getTransactionRegionDocuments(this.__context__, type, this.AcceptanceDocumentType.DISCLOSURE, this.subject.user.address.countryId, this.subject.user.address.regionId);
         if ( disclosure ) {
           this.disclosureView = this.Document.create({ markup: disclosure.body });
         }

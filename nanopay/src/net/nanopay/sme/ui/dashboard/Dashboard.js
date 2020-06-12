@@ -64,7 +64,6 @@ foam.CLASS({
     'stack',
     'quickbooksService',
     'uSBusinessOnboardingDAO',
-    'user',
     'userDAO',
     'xeroService',
     'checkAndNotifyAbilityToPay',
@@ -139,7 +138,7 @@ foam.CLASS({
       class: 'Int',
       name: 'countRequiresApproval',
       factory: function() {
-        this.user.expenses
+        this.subject.user.expenses
           .where(
             this.EQ(this.Invoice.STATUS, this.InvoiceStatus.PENDING_APPROVAL))
           .select(this.COUNT()).then((c) => {
@@ -152,7 +151,7 @@ foam.CLASS({
       class: 'Int',
       name: 'countOverdueAndUpcoming',
       factory: function() {
-        this.user.expenses
+        this.subject.user.expenses
           .where(this.OR(
             this.EQ(this.Invoice.STATUS, this.InvoiceStatus.UNPAID),
             this.EQ(this.Invoice.STATUS, this.InvoiceStatus.OVERDUE)
@@ -167,7 +166,7 @@ foam.CLASS({
       class: 'Int',
       name: 'countDepositPayment',
       factory: function() {
-        this.user.sales
+        this.subject.user.sales
           .where(this.OR(
             this.EQ(this.Invoice.STATUS, this.InvoiceStatus.PENDING_ACCEPTANCE),
           ))
@@ -181,7 +180,7 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'myDAOReceivables',
       factory: function() {
-        return this.user.sales
+        return this.subject.user.sales
           .orderBy(this.DESC(this.Invoice.LAST_MODIFIED))
           .limit(5);
       }
@@ -190,7 +189,7 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'myDAOPayables',
       factory: function() {
-        return this.user.expenses
+        return this.subject.user.expenses
           .orderBy(this.DESC(this.Invoice.LAST_MODIFIED))
           .limit(5);
       }
@@ -202,14 +201,14 @@ foam.CLASS({
         return this.notificationDAO.where(
           this.AND(
              this.OR(
-              this.EQ(this.Notification.USER_ID, this.user.id),
+              this.EQ(this.Notification.USER_ID, this.subject.user.id),
               this.EQ(this.Notification.GROUP_ID, this.group.id),
               this.EQ(this.Notification.BROADCASTED, true)
             ),
             this.EQ( this.Notification.NOTIFICATION_TYPE, 'Latest_Activity'),
             this.NOT(this.IN(
                 this.Notification.NOTIFICATION_TYPE,
-                this.user.disabledTopics))
+                this.subject.user.disabledTopics))
           )
         ).orderBy(this.DESC(this.Notification.CREATED));
       }
@@ -218,7 +217,7 @@ foam.CLASS({
       class: 'Int',
       name: 'payablesCount',
       factory: function() {
-        this.user.expenses
+        this.subject.user.expenses
           .select(this.COUNT()).then((c) => {
             this.payablesCount = c.value;
           });
@@ -229,7 +228,7 @@ foam.CLASS({
       class: 'Int',
       name: 'receivablesCount',
       factory: function() {
-        this.user.sales
+        this.subject.user.sales
           .select(this.COUNT()).then((c) => {
             this.receivablesCount = c.value;
           });
@@ -256,7 +255,7 @@ foam.CLASS({
 
   methods: [
     async function getUserAccounts() {
-      await this.user.accounts
+      await this.subject.user.accounts
         .where(
           this.AND(
             this.OR(
@@ -282,12 +281,12 @@ foam.CLASS({
       this.businessOnboarding = await this.businessOnboardingDAO.find(
         this.AND(
           this.EQ(this.BusinessOnboarding.USER_ID, this.subject.realUser.id),
-          this.EQ(this.BusinessOnboarding.BUSINESS_ID, this.user.id)
+          this.EQ(this.BusinessOnboarding.BUSINESS_ID, this.subject.user.id)
         )
       ) || await this.uSBusinessOnboardingDAO.find(
         this.AND(
           this.EQ(this.USBusinessOnboarding.USER_ID, this.subject.realUser.id),
-          this.EQ(this.USBusinessOnboarding.BUSINESS_ID, this.user.id)
+          this.EQ(this.USBusinessOnboarding.BUSINESS_ID, this.subject.user.id)
         )
       );
     },

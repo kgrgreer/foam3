@@ -79,7 +79,7 @@ foam.CLASS({
       */
 
       let service = null;
-      let newUser = await this.userDAO.find(this.user.id);
+      let newUser = await this.userDAO.find(this.subject.user.id);
 
       if ( newUser.integrationCode == this.IntegrationCode.XERO ) {
         service = this.xeroService;

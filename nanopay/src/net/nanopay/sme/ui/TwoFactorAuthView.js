@@ -129,9 +129,9 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'TwoFactorNoTokenError', message: 'Please enter a verification token.' },
-    { name: 'TwoFactorEnableSuccess', message: 'Two-factor authentication enabled.' },
-    { name: 'TwoFactorEnableError', message: 'Could not enable two-factor authentication. Please try again.' },
+    { name: 'TWO_FACTOR_NO_TOKEN_ERROR', message: 'Please enter a verification token.' },
+    { name: 'TWO_FACTOR_ENABLE_SUCCESS', message: 'Two-factor authentication enabled.' },
+    { name: 'TWO_FACTOR_ENABLE_ERROR', message: 'Could not enable two-factor authentication. Please try again.' },
     { name: 'TWO_FACTOR_BENEFIT', message: 'Two-factor authentication provides an extra layer of security to your account. Two-factor authentication is enabled at all time to prevent potential unauthorized access to your business and financial information.' },
     { name: 'TWO_FACTOR_LABEL', message: 'Enter verification code' },
     { name: 'EnterCode', message: 'Enter code' },
@@ -250,24 +250,24 @@ foam.CLASS({
         var self = this;
 
         if ( ! this.twoFactorToken ) {
-          this.ctrl.notify(this.TwoFactorNoTokenError, 'error' );
+          this.ctrl.notify(self.TWO_FACTOR_NO_TOKEN_ERROR, 'error' );
           return;
         }
 
         this.twofactor.verifyToken(null, this.twoFactorToken)
         .then(function(result) {
           if ( ! result ) {
-            self.ctrl.notify(self.TwoFactorEnableError, 'error');
+            self.ctrl.notify(self.TWO_FACTOR_ENABLE_ERROR, 'error');
             return;
           }
 
           self.twoFactorToken = null;
           self.subject.realUser.twoFactorEnabled = true;
-          self.ctrl.notify(self.TwoFactorEnableSuccess);
+          self.ctrl.notify(self.TWO_FACTOR_ENABLE_SUCCESS);
         })
         .catch(function(err) {
           console.warn(err);
-          self.ctrl.notify(self.TwoFactorEnableError, 'error');
+          self.ctrl.notify(self.TWO_FACTOR_ENABLE_ERROR, 'error');
         });
       }
     },

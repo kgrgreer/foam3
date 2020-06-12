@@ -43,7 +43,6 @@ foam.CLASS({
     'pushMenu',
     'stack',
     'transactionDAO',
-    'user',
     'userDAO',
     'transactionPlannerDAO',
     'quickbooksService',
@@ -186,9 +185,9 @@ foam.CLASS({
       name: 'invoiceDAO',
       expression: function(isPayable) {
         if ( isPayable ) {
-          return this.user.expenses;
+          return this.subject.user.expenses;
         }
-        return this.user.sales;
+        return this.subject.user.sales;
       }
     },
     {
@@ -586,7 +585,7 @@ foam.CLASS({
     async function populatePayerIdOrPayeeId() {
       try {
         if ( ! this.invoice.payee || ! this.invoice.payer ) {
-          var contact = await this.user.contacts.find(this.invoice.contactId);
+          var contact = await this.subject.user.contacts.find(this.invoice.contactId);
           if ( this.isPayable ) {
             this.invoice.payeeId = contact.businessId || contact.id;
           } else {
@@ -622,7 +621,7 @@ foam.CLASS({
         return hasNextOption;
       },
       isEnabled: function(errors, isLoading) {
-        if ( this.user.address.countryId === 'CA' ) {
+        if ( this.subject.user.address.countryId === 'CA' ) {
           return ! errors && ! isLoading;
         } else {
           return this.auth.check(null, 'strategyreference.read.9319664b-aa92-5aac-ae77-98daca6d754d').then(function(cadPerm) {

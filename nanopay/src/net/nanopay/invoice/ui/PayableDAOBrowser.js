@@ -45,7 +45,7 @@ foam.CLASS({
     'currencyDAO',
     'notify',
     'stack',
-    'user',
+    'subject',
     'accountingIntegrationUtil',
   ],
 
@@ -121,7 +121,7 @@ foam.CLASS({
       factory: function() {
         return this.DAOControllerConfig.create({
           filterExportPredicate: this.NEQ(foam.nanos.export.ExportDriverRegistry.ID, 'CSV'),
-          dao: this.user.expenses.orderBy(this.Invoice.PAYER_RECONCILED, this.Invoice.PAYEE_RECONCILED, this.DESC(this.Invoice.ISSUE_DATE)),
+          dao: this.subject.user.expenses.orderBy(this.Invoice.PAYER_RECONCILED, this.Invoice.PAYEE_RECONCILED, this.DESC(this.Invoice.ISSUE_DATE)),
           createPredicate: foam.mlang.predicate.True,
           defaultColumns: [
             this.Invoice.PAYEE_ID.clone().copyFrom({
@@ -161,7 +161,7 @@ foam.CLASS({
               },
               code: async function(X) {
                 this.payerReconciled = true;
-                self.user.expenses.put(this).then(() => {
+                self.subject.user.expenses.put(this).then(() => {
                   self.notify(self.RECONCILED_SUCCESS, 'success');
                 }).catch((err) => {
                   self.notify(self.RECONCILED_ERROR, 'error');
@@ -255,7 +255,7 @@ foam.CLASS({
               name: 'markVoid',
               label: 'Mark as Void',
               isEnabled: function() {
-                return self.user.id === this.createdBy &&
+                return self.subject.user.id === this.createdBy &&
                   ( this.status === self.InvoiceStatus.UNPAID ||
                   this.status === self.InvoiceStatus.OVERDUE ||
                   this.status === self.InvoiceStatus.PENDING_APPROVAL ) && !
@@ -285,7 +285,7 @@ foam.CLASS({
               code: function() {
                 ctrl.add(self.Popup.create().tag({
                   class: 'foam.u2.DeleteModal',
-                  dao: self.user.expenses,
+                  dao: self.subject.user.expenses,
                   data: this,
                   label: self.INVOICE
                 }));

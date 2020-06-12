@@ -64,7 +64,7 @@ foam.CLASS({
     'notify',
     'requestTxn',
     'transactionPlannerDAO',
-    'user',
+    'subject',
     'viewData',
     'wizard',
     'updateInvoiceDetails',
@@ -136,7 +136,7 @@ foam.CLASS({
       name: 'isPayable',
       documentation: 'Determines if invoice is a payable.',
       factory: function() {
-        return this.invoice.payerId === this.user.id;
+        return this.invoice.payerId === this.subject.user.id;
       }
     },
     {
@@ -295,7 +295,7 @@ foam.CLASS({
         sections: [
           {
             heading: 'Your bank accounts',
-            dao: this.user.accounts.where(
+            dao: this.subject.user.accounts.where(
               this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED)
             )
           }
@@ -547,7 +547,7 @@ foam.CLASS({
         this.chosenBankAccount = this.viewData.bankAccount;
         return;
       }
-      this.chosenBankAccount = this.viewData.bankAccount = await this.user.accounts.find(
+      this.chosenBankAccount = this.viewData.bankAccount = await this.subject.user.accounts.find(
         this.AND(
           this.INSTANCE_OF(this.BankAccount),
           this.EQ(this.BankAccount.IS_DEFAULT, true),
@@ -556,8 +556,8 @@ foam.CLASS({
       );
 
       if ( ! this.chosenBankAccount ) {
-        let srcCurrency = this.user.countryOfBusinessRegistration === 'CA' ? 'CAD' : 'USD';
-        this.chosenBankAccount = this.viewData.bankAccount = await this.user.accounts.find(
+        let srcCurrency = this.subject.user.countryOfBusinessRegistration === 'CA' ? 'CAD' : 'USD';
+        this.chosenBankAccount = this.viewData.bankAccount = await this.subject.user.accounts.find(
           this.AND(
             this.INSTANCE_OF(this.BankAccount),
             this.EQ(this.BankAccount.IS_DEFAULT, true),
@@ -629,7 +629,7 @@ foam.CLASS({
         var accountId = this.isPayable
           ? this.invoice.account
           : this.invoice.destinationAccount;
-        this.chosenBankAccount = await this.user.accounts.find(accountId);
+        this.chosenBankAccount = await this.subject.user.accounts.find(accountId);
         this.viewData.bankAccount = this.chosenBankAccount;
       } catch (error) {
         this.notify(this.ACCOUNT_FIND_ERROR, 'error');

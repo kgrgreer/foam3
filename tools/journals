@@ -27,6 +27,8 @@ currencyfxServices
 deprecatedCapabilityJunctions
 exchangeRates
 emailTemplates
+extraConfigAddOns
+extraConfigDataTypeViewConfigs
 exportDriverRegistrys
 fundTransferSystems
 fxProviders

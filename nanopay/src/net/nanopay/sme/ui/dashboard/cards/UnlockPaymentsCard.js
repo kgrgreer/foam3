@@ -43,7 +43,6 @@ foam.CLASS({
     'uSBusinessOnboardingDAO',
     'menuDAO',
     'stack',
-    'user',
     'auth',
     'appConfigService'
   ],
@@ -176,8 +175,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'flagImgPath',
-      expression: function(user, type) {
-        const country = user.address.countryId;
+      expression: function(subject, type) {
+        const country = subject.user.address.countryId;
         if ( type === this.UnlockPaymentsCardType.INTERNATIONAL ) {
           return 'url(\'images/ablii/InternationalCard.png\')'
         }
@@ -247,8 +246,8 @@ foam.CLASS({
     },
     {
       name: 'isCanadianBusiness',
-      expression: function(user) {
-        return user.address.countryId === 'CA';
+      expression: function(subject) {
+        return subject.user.address.countryId === 'CA';
       }
     },
     {
@@ -280,7 +279,7 @@ foam.CLASS({
               .end();
             }
             if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && this.isCanadianBusiness
-                && this.hasFXProvisionPermission && ! this.user.onboarded && ! this.isEmployee ) {
+                && this.hasFXProvisionPermission && ! this.subject.user.onboarded && ! this.isEmployee ) {
               return this.E().start().addClass(self.myClass('complete-container'))
                 .start('p').addClass(self.myClass('complete')).add(self.PENDING).end()
               .end();
@@ -315,8 +314,8 @@ foam.CLASS({
       label: 'Get started',
       code: function(x) {
           var userId = this.subject.realUser.id;
-          var businessId = this.user.id;
-          if ( ! this.user.onboarded ) {
+          var businessId = this.subject.user.id;
+          if ( ! this.subject.user.onboarded ) {
             var isDomesticOnboarding = this.type === this.UnlockPaymentsCardType.DOMESTIC;
 
             // We need to find the BusinessOnboarding by checking both the

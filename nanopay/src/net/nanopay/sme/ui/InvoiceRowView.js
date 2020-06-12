@@ -56,7 +56,7 @@ foam.CLASS({
     'currencyDAO',
     'notificationDAO',
     'stack',
-    'user',
+    'subject',
     'xeroService',
     'quickbooksService',
     'accountingIntegrationUtil',
@@ -142,8 +142,8 @@ foam.CLASS({
     },
     {
       name: 'isPayable',
-      expression: function(data, user) {
-        return data.payerId === user.id;
+      expression: function(data, subject) {
+        return data.payerId === subject.user.id;
       }
     },
     {
@@ -165,7 +165,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      var label = this.data.payeeId === this.user.id ?
+      var label = this.data.payeeId === this.subject.user.id ?
         this.data.payer.toSummary() :
         this.data.payee.toSummary();
       var dueDateFormatted = this.data.dueDate ?

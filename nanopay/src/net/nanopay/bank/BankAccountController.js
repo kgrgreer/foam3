@@ -41,7 +41,7 @@ foam.CLASS({
     'ctrl',
     'notify',
     'stack',
-    'user'
+    'subject'
   ],
 
   exports: [
@@ -63,7 +63,7 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'data',
       factory: function() {
-        var dao = this.user.accounts.where(
+        var dao = this.subject.user.accounts.where(
           this.OR(
             this.EQ(this.Account.TYPE, this.BankAccount.name),
             this.EQ(this.Account.TYPE, this.CABankAccount.name),
@@ -120,7 +120,7 @@ foam.CLASS({
                 this.deleted = true;
                 self.ctrl.add(self.Popup.create().tag({
                   class: 'foam.u2.DeleteModal',
-                  dao: self.user.accounts,
+                  dao: self.subject.user.accounts,
                   data: this
                 }));
               }
@@ -133,7 +133,7 @@ foam.CLASS({
                   return;
                 }
                 this.isDefault = true;
-                self.user.accounts.put(this).then(() =>{
+                self.subject.user.accounts.put(this).then(() =>{
                   self.notify(`${ this.name } ${ self.IS_DEFAULT }`);
                 }).catch((err) => {
                   this.isDefault = false;
