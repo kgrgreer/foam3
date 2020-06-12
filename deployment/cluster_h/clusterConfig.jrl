@@ -16,7 +16,7 @@ p({
 
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
-  "id":"woodchuck",
+  "id":"moosehead",
   "name":"mm2",
   "enabled":true,
   "realm":"nanopay",
@@ -32,9 +32,9 @@ p({
 
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
-  "id":"mm3",
+  "id":"schooner",
   "name":"mm3",
-  "enabled":false,
+  "enabled":true,
   "realm":"nanopay",
   "region":"Toronto",
   "regionStatus":1,
@@ -48,7 +48,7 @@ p({
 
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
-  "id":"schooner",
+  "id":"artemis",
   "name":"mn1",
   "enabled":true,
   "realm":"nanopay",
@@ -64,7 +64,7 @@ p({
 
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
-  "id":"moosehead",
+  "id":"grolsch",
   "name":"mn2",
   "enabled":true,
   "realm":"nanopay",
@@ -82,6 +82,54 @@ p({
   "class":"foam.nanos.medusa.ClusterConfig",
   "id":"stella",
   "name":"mn3",
+  "enabled":true,
+  "realm":"nanopay",
+  "region":"Toronto",
+  "regionStatus":1,
+  "zone":0,
+  "port":8080,
+  "sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738",
+  "type":1,
+  "created":"2020-03-28T14:57:12.959Z",
+  "createdBy":2
+})
+
+p({
+  "class":"foam.nanos.medusa.ClusterConfig",
+  "id":"apollo",
+  "name":"mn4",
+  "enabled":true,
+  "realm":"nanopay",
+  "region":"Toronto",
+  "regionStatus":1,
+  "zone":0,
+  "port":8080,
+  "sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738",
+  "type":1,
+  "created":"2020-03-28T14:57:12.959Z",
+  "createdBy":2
+})
+
+p({
+  "class":"foam.nanos.medusa.ClusterConfig",
+  "id":"athena",
+  "name":"mn5",
+  "enabled":true,
+  "realm":"nanopay",
+  "region":"Toronto",
+  "regionStatus":1,
+  "zone":0,
+  "port":8080,
+  "sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738",
+  "type":1,
+  "created":"2020-03-28T14:57:12.959Z",
+  "createdBy":2
+})
+
+p({
+  "class":"foam.nanos.medusa.ClusterConfig",
+  "id":"woodchuck",
+  "name":"mn6",
   "enabled":true,
   "realm":"nanopay",
   "region":"Toronto",
