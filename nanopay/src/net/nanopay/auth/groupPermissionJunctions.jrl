@@ -666,7 +666,6 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support","targe
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support","targetId":"menu.read.integration"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support","targetId":"menu.read.integration.afexBeneficiaries"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support","targetId":"menu.read.integration.afexBusiness"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support","targetId":"menu.read.integration.ascendantFXUsers"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support","targetId":"menu.read.invoices"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support","targetId":"menu.read.operation"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support","targetId":"menu.read.operation.ipHistories"})
