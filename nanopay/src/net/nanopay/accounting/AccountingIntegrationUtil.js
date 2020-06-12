@@ -43,7 +43,7 @@ foam.CLASS({
     'quickbooksService',
     'userDAO',
     'xeroService',
-    'user'
+    'subject'
   ],
 
   exports: [
@@ -81,10 +81,10 @@ foam.CLASS({
       // find the service
       let service = null;
 
-      if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
+      if ( this.subject.user.integrationCode == this.IntegrationCode.XERO ) {
         service = this.xeroService;
       }
-      if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
+      if ( this.subject.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
         service = this.quickbooksService;
       }
 
@@ -116,13 +116,13 @@ foam.CLASS({
       this.ctrl.notify('All information has been synchronized', 'success');
       
       let report = this.AccountingResultReport.create();
-      report.userId = this.user.id;
+      report.userId = this.subject.user.id;
       report.time = new Date();
       report.resultResponse = finalResult;
-      report.integrationCode = this.user.integrationCode;
+      report.integrationCode = this.subject.user.integrationCode;
       this.accountingReportDAO.put(report);
 
-      this.userDAO.put(this.user);
+      this.userDAO.put(this.subject.user);
 
       return finalResult;
     },
@@ -132,11 +132,11 @@ foam.CLASS({
       this.showIntegrationModal = false;
       let service = null;
       let accountingSoftwareName = null;
-      if ( this.XeroInvoice.isInstance(invoice) && this.user.id == invoice.createdBy &&(invoice.status == this.InvoiceStatus.UNPAID || invoice.status == this.InvoiceStatus.OVERDUE) ) {
+      if ( this.XeroInvoice.isInstance(invoice) && this.subject.user.id == invoice.createdBy &&(invoice.status == this.InvoiceStatus.UNPAID || invoice.status == this.InvoiceStatus.OVERDUE) ) {
         service = this.xeroService;
         accountingSoftwareName = 'Xero';
         this.redirectUrl = '/service/xeroWebAgent?portRedirect=';
-      } else if ( this.QuickbooksInvoice.isInstance(invoice) && this.user.id == invoice.createdBy &&(invoice.status == this.InvoiceStatus.UNPAID || invoice.status == this.InvoiceStatus.OVERDUE) ) {
+      } else if ( this.QuickbooksInvoice.isInstance(invoice) && this.subject.user.id == invoice.createdBy &&(invoice.status == this.InvoiceStatus.UNPAID || invoice.status == this.InvoiceStatus.OVERDUE) ) {
         service = this.quickbooksService;
         accountingSoftwareName = 'Quickbooks';
         this.redirectUrl = '/service/quickbooksWebAgent?portRedirect=';
@@ -163,9 +163,9 @@ foam.CLASS({
     function callback() {
       if ( this.showIntegrationModal ) {
         let service = null;
-        if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
+        if ( this.subject.user.integrationCode == this.IntegrationCode.XERO ) {
           service = this.xeroService;
-        } else if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
+        } else if ( this.subject.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
           service = this.quickbooksService;
         }
         if ( service != null ) {
@@ -191,7 +191,7 @@ foam.CLASS({
       this.createInvoiceErrorsTables(reportResult.invoiceErrors, doc);
       this.createContactMismatchTable(reportResult.contactSyncMismatches, doc);
 
-      doc.save(this.user.integrationCode.label + ' sync report.pdf');
+      doc.save(this.subject.user.integrationCode.label + ' sync report.pdf');
     },
 
     function createContactMismatchTable(mismatch, doc) {

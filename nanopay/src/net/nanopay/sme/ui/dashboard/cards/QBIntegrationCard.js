@@ -36,7 +36,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'user',
+    'subject',
     'userDAO',
     'pushMenu'
   ],
@@ -79,7 +79,7 @@ foam.CLASS({
 
   methods: [
     async function init() {
-      this.updatedUser = await this.userDAO.find(this.user.id);
+      this.updatedUser = await this.userDAO.find(this.subject.user.id);
       var self = this;
       this.add(this.slot(function(updatedUser) {
         return this.E()

@@ -51,7 +51,7 @@ foam.CLASS({
     'businessInvitationDAO',
     'canadaUsBusinessOnboardingDAO',
     'isIframe',
-    'user',
+    'subject',
     'userDAO'
   ],
 
@@ -145,28 +145,28 @@ foam.CLASS({
 
   methods: [
     async function init() {
-      let business = await this.businessDAO.find(this.user.id);
+      let business = await this.businessDAO.find(this.subject.user.id);
       this.onboardingStatus = business.onboarded;
       this.countryOfBusinessRegistration = business.countryOfBusinessRegistration;
       this.businessRegistrationDate = business.businessRegistrationDate;
     },
     function initE() {
       this.addClass(this.myClass())
-        .start().addClass('subTitle').add(this.LOWER_LINE_TXT + this.user.toSummary() + '!').end()
+        .start().addClass('subTitle').add(this.LOWER_LINE_TXT + this.subject.user.toSummary() + '!').end()
             .start().addClass('divider').end()
             .start().addClass('radio-as-arrow-margins').add(this.HIDE_PAYMENT_CARDS).end()
             .start().addClass('radio-as-arrow-margins').addClass(this.hidePaymentCards$.map((hide) => hide ? 'radio-as-arrow' : 'radio-as-arrow-down')).end()
             .start().addClass('cards').hide(this.hidePaymentCards$)
               .start('span')
-                .add(this.slot((user$onboarded, businessOnboarding) => {
-                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.DOMESTIC, isComplete: user$onboarded, businessOnboarding: businessOnboarding }).end();
+                .add(this.slot((subject$user$onboarded, businessOnboarding) => {
+                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.DOMESTIC, isComplete: subject$user$onboarded, businessOnboarding: businessOnboarding }).end();
                 }))
               .end()
               .start('span')
                 .hide(this.isIframe())
                 .addClass('us-business-onboarding')
-                .add(this.slot((user$onboarded, businessOnboarding, complete) => {
-                  let isEmp = user$onboarded && this.businessOnboarding && ! this.businessOnboarding.signingOfficer && this.businessOnboarding.status === this.OnboardingStatus.SUBMITTED;
+                .add(this.slot((subject$user$onboarded, businessOnboarding, complete) => {
+                  let isEmp = subject$user$onboarded && this.businessOnboarding && ! this.businessOnboarding.signingOfficer && this.businessOnboarding.status === this.OnboardingStatus.SUBMITTED;
                   return this.E()
                     .start()
                     .tag({
@@ -189,8 +189,8 @@ foam.CLASS({
           .start('span')
             .hide(this.isIframe())
             .addClass('accounting-software')
-            .add(this.slot((user$hasIntegrated) => {
-              return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.QBIntegrationCard', hasPermission: this.userHasPermissionsForAccounting && this.userHasPermissionsForAccounting[0], hasIntegration: user$hasIntegrated }).end();
+            .add(this.slot((subject$user$hasIntegrated) => {
+              return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.QBIntegrationCard', hasPermission: this.userHasPermissionsForAccounting && this.userHasPermissionsForAccounting[0], hasIntegration: subject$user$hasIntegrated }).end();
             }))
           .end()
         .end();

@@ -46,7 +46,7 @@ foam.CLASS({
     'currencyDAO',
     'notify',
     'stack',
-    'user',
+    'subject',
     'accountingIntegrationUtil'
   ],
 
@@ -61,7 +61,7 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'data',
       factory: function() {
-        return this.user.expenses.orderBy(this.DESC(this.Invoice.CREATED));
+        return this.subject.user.expenses.orderBy(this.DESC(this.Invoice.CREATED));
       }
     },
     {
@@ -184,7 +184,7 @@ foam.CLASS({
               name: 'markVoid',
               label: 'Mark as Void',
               isEnabled: function() {
-                return self.user.id === this.createdBy &&
+                return self.subject.user.id === this.createdBy &&
                   ( this.status === self.InvoiceStatus.UNPAID ||
                   this.status === self.InvoiceStatus.OVERDUE ||
                   this.status === self.InvoiceStatus.PENDING_APPROVAL ) && !
@@ -213,7 +213,7 @@ foam.CLASS({
                 return this.status === self.InvoiceStatus.DRAFT;
               },
               code: function() {
-                self.user.expenses.remove(this).then(() => {
+                self.subject.user.expenses.remove(this).then(() => {
                   self.notify(self.DELETE_DRAFT, 'success')
                 });
               }

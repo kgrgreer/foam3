@@ -40,7 +40,7 @@ foam.CLASS({
     'menuDAO',
     'stack',
     'transactionDAO',
-    'user'
+    'subject'
   ],
 
   css: `
@@ -107,7 +107,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isPayable_',
       expression: function(invoice) {
-        return invoice.payerId === this.user.id;
+        return invoice.payerId === this.subject.user.id;
       }
     },
     {

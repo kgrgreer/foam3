@@ -38,7 +38,7 @@ foam.CLASS({
   imports: [
     'currencyDAO',
     'notify',
-    'user'
+    'subject'
   ],
 
   css: `
@@ -185,12 +185,12 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.auth.PublicUserInfo',
       name: 'payer',
-      expression: function(invoice$payer, invoice$payerId, user$id, user, invoice$contactId) {
+      expression: function(invoice$payer, invoice$payerId, subject$user$id, subject, invoice$contactId) {
         if ( ! invoice$payer && invoice$payerId ) {
-          if ( invoice$payerId === user$id ) {
-            return Promise.resolve(this.PublicUserInfo.create(user));
+          if ( invoice$payerId === subject$user$id ) {
+            return Promise.resolve(this.PublicUserInfo.create(subject.user));
           } else {
-            return Promise.resolve(user.contacts.find(invoice$contactId).then(
+            return Promise.resolve(subject.user.contacts.find(invoice$contactId).then(
               (u) => this.PublicUserInfo.create(u)
             ));
           }
@@ -219,12 +219,12 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.auth.PublicUserInfo',
       name: 'payee',
-      expression: function(invoice$payee, invoice$payeeId, user$id, user, invoice$contactId) {
+      expression: function(invoice$payee, invoice$payeeId, subject$user$id, subject, invoice$contactId) {
         if ( ! invoice$payee && invoice$payeeId ) {
-          if ( invoice$payeeId === user$id ) {
-            return Promise.resolve(this.PublicUserInfo.create(user));
+          if ( invoice$payeeId === subject$user$id ) {
+            return Promise.resolve(this.PublicUserInfo.create(subject.user));
           } else {
-            return Promise.resolve(user.contacts.find(invoice$contactId).then(
+            return Promise.resolve(subject.user.contacts.find(invoice$contactId).then(
               (u) => this.PublicUserInfo.create(u)));
           }
         } else {

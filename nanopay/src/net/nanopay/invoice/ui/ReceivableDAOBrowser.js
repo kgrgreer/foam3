@@ -45,7 +45,7 @@ foam.CLASS({
     'currencyDAO',
     'notify',
     'stack',
-    'user',
+    'subject',
     'accountingIntegrationUtil',
   ],
 
@@ -125,7 +125,7 @@ foam.CLASS({
       factory: function() {
         return this.DAOControllerConfig.create({
           filterExportPredicate: this.NEQ(foam.nanos.export.ExportDriverRegistry.ID, 'CSV'),
-          dao: this.user.sales.orderBy(this.Invoice.PAYEE_RECONCILED, this.Invoice.PAYER_RECONCILED, this.DESC(this.Invoice.ISSUE_DATE)),
+          dao: this.subject.user.sales.orderBy(this.Invoice.PAYEE_RECONCILED, this.Invoice.PAYER_RECONCILED, this.DESC(this.Invoice.ISSUE_DATE)),
           createPredicate: foam.mlang.predicate.True,
           defaultColumns: [
             this.Invoice.PAYER_ID.clone().copyFrom({
@@ -183,7 +183,7 @@ foam.CLASS({
               },
               code: async function(X) {
                 this.payeeReconciled = true;
-                self.user.expenses.put(this).then(() => {
+                self.subject.user.expenses.put(this).then(() => {
                   self.notify(self.RECONCILED_SUCCESS, 'success');
                 }).catch((err) => {
                   self.notify(self.RECONCILED_ERROR, 'error');
@@ -227,12 +227,12 @@ foam.CLASS({
               name: 'markVoid',
               label: 'Mark as Void',
               isEnabled: function() {
-                if ( self.user.id != this.createdBy ) return false;
+                if ( self.subject.user.id != this.createdBy ) return false;
                 return this.status === self.InvoiceStatus.UNPAID ||
                   this.status === self.InvoiceStatus.OVERDUE;
               },
               isAvailable: function() {
-                if ( self.user.id != this.createdBy ) return false;
+                if ( self.subject.user.id != this.createdBy ) return false;
                 return this.status === self.InvoiceStatus.UNPAID ||
                   this.status === self.InvoiceStatus.PAID ||
                   this.status === self.InvoiceStatus.PROCESSING ||
@@ -255,7 +255,7 @@ foam.CLASS({
               code: function(X) {
                 ctrl.add(self.Popup.create().tag({
                   class: 'foam.u2.DeleteModal',
-                  dao: self.user.sales,
+                  dao: self.subject.user.sales,
                   data: this,
                   label: self.INVOICE
                 }));

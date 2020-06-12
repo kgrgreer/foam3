@@ -44,7 +44,7 @@ foam.CLASS({
     'checkAndNotifyAbilityToPay',
     'checkAndNotifyAbilityToReceive',
     'stack',
-    'user',
+    'subject',
     'pushMenu',
     'publicBusinessDAO',
   ],
@@ -62,7 +62,7 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'data',
       factory: function() {
-        return this.user.contacts;
+        return this.subject.user.contacts;
       }
     },
     {
@@ -132,7 +132,7 @@ foam.CLASS({
                 var invite = net.nanopay.model.Invitation.create({
                   email: this.email,
                   businessName: this.organization,
-                  createdBy: this.user.id,
+                  createdBy: this.subject.user.id,
                   isContact: true
                 });
                 X.controllerView.add(self.WizardController.create({

@@ -38,7 +38,7 @@ foam.CLASS({
     'notificationDAO',
     'notify',
     'stack',
-    'user',
+    'subject',
     'userDAO'
   ],
 
@@ -384,7 +384,7 @@ foam.CLASS({
     async function init() {
       this.onContactIdChange();
       if ( this.type != 'payable' ) {
-        await this.user.accounts.where(this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED))
+        await this.subject.user.accounts.where(this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED))
           .select({
             put: (b) => {
               this.currencies.push(b.denomination);
@@ -401,9 +401,9 @@ foam.CLASS({
         = this.currencyType;
       
       if ( this.type === 'payable' ) {
-        this.invoice.payerId = this.user.id;
+        this.invoice.payerId = this.subject.user.id;
       } else {
-        this.invoice.payeeId = this.user.id;
+        this.invoice.payeeId = this.subject.user.id;
       }
       let displayMode = this.disableAccountingInvoiceFields ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
 
@@ -618,8 +618,8 @@ foam.CLASS({
 
   listeners: [
     async function onContactIdChange() {
-      this.contact = await this.user.contacts.find(this.invoice.contactId);
-      if ( this.type == 'payable' && ( this.contact.bankAccount > 0 || this.contact.businessId > 0 ) ) {
+      this.contact = await this.subject.user.contacts.find(this.invoice.contactId);
+      if ( this.type == 'payable' && this.contact && ( this.contact.bankAccount > 0 || this.contact.businessId > 0 ) ) {
         await this.setDefaultCurrency();
       }
       this.checkUser(this.currencyType);
@@ -631,7 +631,7 @@ foam.CLASS({
     function checkUser(currency) {
       var destinationCurrency = currency ? currency : 'CAD';
       var isPayable = this.type === 'payable';
-      var partyId = isPayable ? this.invoice.contactId : this.user.id;
+      var partyId = isPayable ? this.invoice.contactId : this.subject.user.id;
       if ( partyId && destinationCurrency && this.invoice.contactId ) {
         var request = this.CanReceiveCurrency.create({
           userId: partyId,

@@ -26,8 +26,7 @@ foam.CLASS({
     'padCaptureDAO',
     'plaidService',
     'stack',
-    'subject',
-    'user'
+    'subject'
   ],
 
   javaImports: [
@@ -278,8 +277,8 @@ foam.CLASS({
           country: this.country,
           firstName: this.subject.realUser.firstName,
           lastName: this.subject.realUser.lastName,
-          companyName: this.user.businessName,
-          address: this.user.address
+          companyName: this.subject.user.businessName,
+          address: this.subject.user.address
         }, this);
       },
       view: function(_, X) {
@@ -314,7 +313,7 @@ foam.CLASS({
       } else {
         try {
           this.address = this.padCapture.address;
-          await this.user.accounts.put(this);
+          await this.subject.user.accounts.put(this);
           if ( this.stack ) this.stack.back();
           this.notify(this.ADD_SUCCESSFUL);
         } catch (error) {

@@ -45,7 +45,7 @@ foam.CLASS({
     'institutionDAO',
     'pushMenu',
     'stack',
-    'user',
+    'subject',
   ],
 
   messages: [
@@ -103,7 +103,7 @@ foam.CLASS({
           return subtitle;
         }
 
-        return isAccountThere ? (this.user.address.countryId === 'US' ? this.SUBTITLE_VERIFING : this.SUBTITLE_VERIF) : this.SUBTITLE_EMPTY;
+        return isAccountThere ? (this.subject.user.address.countryId === 'US' ? this.SUBTITLE_VERIFING : this.SUBTITLE_VERIF) : this.SUBTITLE_EMPTY;
       }
     },
     {
@@ -143,7 +143,7 @@ foam.CLASS({
     },
 
     async function checkDefaultAccount() {
-      await this.user.accounts
+      await this.subject.user.accounts
         .find(
           this.AND(
             this.OR(
@@ -169,7 +169,7 @@ foam.CLASS({
               iconPath: this.iconPath,
               title: this.TITLE,
               subtitle: subtitleToUse,
-              action: isAccountThere ? (this.user.address.countryId === 'US' ? (this.isVerified ? this.VIEW_ACCOUNT : this.VERIFY_ACCOUNT) : (this.isVerified ? this.VIEW_ACCOUNT : this.VERIFY_BANK)) : this.ADD_BANK
+              action: isAccountThere ? (this.subject.user.address.countryId === 'US' ? (this.isVerified ? this.VIEW_ACCOUNT : this.VERIFY_ACCOUNT) : (this.isVerified ? this.VIEW_ACCOUNT : this.VERIFY_BANK)) : this.ADD_BANK
             }).end();
         }));
       });
