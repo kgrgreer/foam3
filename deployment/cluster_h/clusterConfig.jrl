@@ -1,7 +1,7 @@
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
   "id":"jhughes",
-  "name":"mm1",
+  "name":"mm1-jhughes",
   "enabled":true,
   "realm":"nanopay",
   "region":"Toronto",
@@ -17,7 +17,7 @@ p({
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
   "id":"moosehead",
-  "name":"mm2",
+  "name":"mm2-moosehead",
   "enabled":true,
   "realm":"nanopay",
   "region":"Toronto",
@@ -33,7 +33,7 @@ p({
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
   "id":"schooner",
-  "name":"mm3",
+  "name":"mm3-schooner",
   "enabled":true,
   "realm":"nanopay",
   "region":"Toronto",
@@ -49,7 +49,7 @@ p({
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
   "id":"artemis",
-  "name":"mn1",
+  "name":"mn1-artemis",
   "enabled":true,
   "realm":"nanopay",
   "region":"Toronto",
@@ -65,7 +65,7 @@ p({
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
   "id":"grolsch",
-  "name":"mn2",
+  "name":"mn2-grolsch",
   "enabled":true,
   "realm":"nanopay",
   "region":"Toronto",
@@ -81,7 +81,7 @@ p({
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
   "id":"stella",
-  "name":"mn3",
+  "name":"mn3-stella",
   "enabled":true,
   "realm":"nanopay",
   "region":"Toronto",
@@ -97,7 +97,7 @@ p({
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
   "id":"apollo",
-  "name":"mn4",
+  "name":"mn4-apollo",
   "enabled":true,
   "realm":"nanopay",
   "region":"Toronto",
@@ -113,7 +113,7 @@ p({
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
   "id":"athena",
-  "name":"mn5",
+  "name":"mn5-athena",
   "enabled":true,
   "realm":"nanopay",
   "region":"Toronto",
@@ -129,7 +129,7 @@ p({
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
   "id":"woodchuck",
-  "name":"mn6",
+  "name":"mn6-woodchuck",
   "enabled":true,
   "realm":"nanopay",
   "region":"Toronto",
