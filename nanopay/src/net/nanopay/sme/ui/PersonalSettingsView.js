@@ -125,12 +125,13 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Personal Settings' },
     { name: 'TWO_FACTOR_SUBTITLE', message: 'Two-factor Authentication' },
-    { name: 'TwoFactorInstr1', message: 'Download and use your Google Authenticator ' },
-    { name: 'TwoFactorInstr2', message: ' app on your mobile device to scan the QR code. If you can’t use the QR code, you can enter the provided key into the Google Authenticator app manually.' },
-    { name: 'IOSName', message: 'iOS' },
-    { name: 'AndroidName', message: 'Android' },
-    { name: 'StepOne', message: 'Step 1' },
-    { name: 'StepTwo', message: 'Step 2' }
+    { name: 'TWO_FACTOR_INSTR1', message: 'Download and use your Google Authenticator ' },
+    { name: 'TWO_FACTOR_INSTR2', message: ' app on your mobile device to scan the QR code. If you can’t use the QR code, you can enter the provided key into the Google Authenticator app manually.' },
+    { name: 'IOS_NAME', message: 'iOS' },
+    { name: 'ANDROID_NAME', message: 'Android' },
+    { name: 'OR', message: ' or ' },
+    { name: 'STEP_ONE', message: 'Step 1' },
+    { name: 'STEP_TWO', message: 'Step 2' }
   ],
 
   methods: [
@@ -164,17 +165,17 @@ foam.CLASS({
                   .start().addClass(this.myClass('step-1'))
                     .br()
                     .start('span')
-                      .add(this.TwoFactorInstr1)
+                      .add(this.TWO_FACTOR_INSTR1)
                       .start('a').addClass(this.myClass('two-factor-link'))
-                        .add(this.IOSName)
+                        .add(this.IOS_NAME)
                         .attrs({ href: this.IOS_LINK, target: '_blank' })
                       .end()
-                      .add(' or ')
+                      .add(this.OR)
                       .start('a').addClass(this.myClass('two-factor-link'))
-                        .add(this.AndroidName)
+                        .add(this.ANDROID_NAME)
                         .attrs({ href: this.ANDROID_LINK, target: '_blank' })
                       .end()
-                      .add(this.TwoFactorInstr2)
+                      .add(this.TWO_FACTOR_INSTR2)
                     .end()
                   .end()
                 .end()

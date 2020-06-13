@@ -944,6 +944,7 @@ foam.CLASS({
   listeners: [
     function onUserAgentAndGroupLoaded() {
       var self = this;
+      this.loginSuccess = true;
       this.themeUpdated.resolve();
       if ( this.sme ) {
         window.onpopstate = async (event) => {
