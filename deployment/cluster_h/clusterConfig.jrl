@@ -64,8 +64,8 @@ p({
 
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
-  "id":"grolsch",
-  "name":"mn2-grolsch",
+  "id":"aphrodite",
+  "name":"mn2-aphrodite",
   "enabled":true,
   "realm":"nanopay",
   "region":"Toronto",
@@ -80,8 +80,8 @@ p({
 
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
-  "id":"stella",
-  "name":"mn3-stella",
+  "id":"ares",
+  "name":"mn3-ares",
   "enabled":true,
   "realm":"nanopay",
   "region":"Toronto",
