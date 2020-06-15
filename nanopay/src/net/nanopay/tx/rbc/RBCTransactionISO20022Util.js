@@ -674,7 +674,7 @@ foam.CLASS({
         { name: 'logger', type: 'Logger' },
       ],
       javaCode:`
-        RbcAssignedClientValue rbcValues = (RbcAssignedClientValue) getX().get("RbcAssignedClientValue");
+        RbcAssignedClientValue rbcValues = (RbcAssignedClientValue) getX().get("rbcAssignedClientValue");
         Logger log = (Logger)getX().get("logger");
         int padtype = 0;
         for ( var lItem : transaction.getLineItems() ) {
