@@ -335,6 +335,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'principalOwners',
       documentation: 'Represents the people who own the majority shares in a business.',
+      view: { class: 'foam.u2.view.DAOtoFObjectArrayView' },
       createVisibility: 'HIDDEN',
       section: 'business'
     },

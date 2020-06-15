@@ -363,6 +363,14 @@ foam.CLASS({
     {
       name: 'checkerPredicate',
       javaFactory: 'return foam.mlang.MLang.FALSE;'
+    },
+    {
+      class: 'FObjectArray',
+      name: 'approvalRequests',
+      of: 'foam.nanos.approval.ApprovalRequest',
+      view: { class: 'foam.u2.view.DAOtoFObjectArrayView' },
+      visibility: 'RO',
+      storageTransient: true
     }
   ],
 
