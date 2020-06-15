@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.tx.cico',
   name: 'CITransaction',
-  extends: 'net.nanopay.tx.model.Transaction',
+  extends: 'net.nanopay.tx.ClearingTimeTransaction',
 
   javaImports: [
     'foam.dao.DAO',
@@ -41,20 +41,6 @@ foam.CLASS({
       javaFactory: `
         return "Cash In";
       `
-    },
-    {
-      class: 'foam.core.Enum',
-      of: 'net.nanopay.tx.model.TransactionStatus',
-      name: 'status',
-      value: 'PENDING',
-      javaFactory: 'return TransactionStatus.PENDING;'
-    },
-    {
-      class: 'foam.core.Enum',
-      of: 'net.nanopay.tx.model.TransactionStatus',
-      name: 'initialStatus',
-      value: 'PENDING',
-      javaFactory: 'return TransactionStatus.PENDING;'
     },
     {
       name: 'institutionNumber',
@@ -117,8 +103,6 @@ foam.CLASS({
       ],
       javaCode: `
       super.limitedCopyFrom(other);
-      setCompletionDate(other.getCompletionDate());
-      setProcessDate(other.getProcessDate());
       copyClearingTimesFrom(other);
       `
     },

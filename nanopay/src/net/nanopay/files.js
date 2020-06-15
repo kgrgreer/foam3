@@ -422,6 +422,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/TransactionQuoteDAO' },
   { name: 'net/nanopay/tx/JackieRuleOnCreate' },
   { name: 'net/nanopay/tx/JackieRuleOnPut' },
+  { name: 'net/nanopay/tx/ClearingTimeTransaction' },
   { name: 'net/nanopay/tx/ruler/TransactionLimitState' },
   { name: 'net/nanopay/tx/FailedTransactionNotification' },
   { name: 'net/nanopay/tx/DebtTransaction' },

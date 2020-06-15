@@ -16,19 +16,32 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.tx.cico',
-  name: 'VerificationTransaction',
-  extends: 'net.nanopay.tx.CompositeTransaction',
+  package: 'net.nanopay.tx',
+  name: 'ClearingTimeTransaction',
+  extends: 'net.nanopay.tx.model.Transaction',
 
   javaImports: [
     'foam.dao.DAO',
-    'foam.nanos.notification.Notification',
+    'foam.nanos.logger.Logger',
+    'java.util.ArrayList',
+    'java.util.List',
+    'net.nanopay.account.TrustAccount',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.tx.Transfer'
+    'foam.nanos.auth.LifecycleState'
   ],
-
   properties: [
+    {
+      name: 'name',
+      factory: function() {
+        return 'Clearing Time Transaction';
+      },
+      javaFactory: `
+        return "Clearing Time Transaction";
+      `
+    },
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionStatus',
@@ -42,43 +55,6 @@ foam.CLASS({
       name: 'initialStatus',
       value: 'PENDING',
       javaFactory: 'return TransactionStatus.PENDING;'
-    },
-    {
-      name: 'statusChoices',
-      hidden: true,
-      documentation: 'Returns available statuses for each transaction depending on current status',
-      factory: function() {
-        if ( this.status == this.TransactionStatus.COMPLETED ) {
-          return [
-            'choose status',
-            ['DECLINED', 'DECLINED']
-          ];
-        }
-        if ( this.status == this.TransactionStatus.SENT ) {
-          return [
-            'choose status',
-            ['DECLINED', 'DECLINED'],
-            ['COMPLETED', 'COMPLETED']
-          ];
-        }
-        if ( this.status == this.TransactionStatus.PENDING ) {
-          return [
-            'choose status',
-            ['PAUSED', 'PAUSED'],
-            ['DECLINED', 'DECLINED'],
-            ['COMPLETED', 'COMPLETED'],
-            ['SENT', 'SENT']
-          ];
-        }
-        if ( this.status == this.TransactionStatus.PAUSED ) {
-          return [
-            'choose status',
-            ['PENDING', 'PENDING'],
-            ['CANCELLED', 'CANCELLED']
-          ];
-        }
-        return ['No status to choose'];
-      }
     },
     {
       class: 'DateTime',
@@ -97,7 +73,23 @@ foam.CLASS({
       section: 'basicInfo',
       createVisibility: 'HIDDEN',
       tableWidth: 172
-    }
+    },
+    {
+      class: 'DateTime',
+      name: 'processDate',
+      storageTransient: true,
+      createVisibility: 'HIDDEN',
+      readVisibility: function(processDate) {
+       return processDate ?
+         foam.u2.DisplayMode.RO :
+         foam.u2.DisplayMode.HIDDEN;
+      },
+      updateVisibility: function(processDate) {
+       return processDate ?
+         foam.u2.DisplayMode.RO :
+         foam.u2.DisplayMode.HIDDEN;
+      }
+    },
   ],
 
   methods: [
@@ -111,29 +103,12 @@ foam.CLASS({
       ],
       javaCode: `
       super.limitedCopyFrom(other);
-      if ( other instanceof VerificationTransaction ) {
-        setEstimatedCompletionDate(((VerificationTransaction) other).getEstimatedCompletionDate());
-        setProcessDate(((VerificationTransaction) other).getProcessDate());
+      if ( other instanceof ClearingTimeTransaction ) {
+        setEstimatedCompletionDate(((ClearingTimeTransaction) other).getEstimatedCompletionDate());
+        setProcessDate(((ClearingTimeTransaction) other).getProcessDate());
       }
       `
     },
-    {
-      documentation: `verification transaction doesn't create any transfers`,
-      name: 'canTransfer',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'oldTxn',
-          type: 'net.nanopay.tx.model.Transaction'
-        }
-      ],
-      type: 'Boolean',
-      javaCode: `
-        return false;
-      `
-    }
+
   ]
 });

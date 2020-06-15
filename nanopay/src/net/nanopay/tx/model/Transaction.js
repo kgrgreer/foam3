@@ -683,8 +683,9 @@ foam.CLASS({
     },
     {
       // REVIEW: processDate and completionDate are Alterna specific?
-      class: 'DateTime',
+      class: 'DateTime', //TODO: DELETE... DEPRECATED
       name: 'processDate',
+      storageTransient: true,
       createVisibility: 'HIDDEN',
       readVisibility: function(processDate) {
         return processDate ?
@@ -699,7 +700,8 @@ foam.CLASS({
     },
     {
       class: 'DateTime',
-      name: 'completionDate',
+      name: 'completionDate',//TODO: DELETE... DEPRECATED
+      storageTransient: true,
       readVisibility: function(completionDate) {
         return completionDate ?
           foam.u2.DisplayMode.RO :
