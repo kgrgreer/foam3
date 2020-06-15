@@ -18,7 +18,7 @@ p({
       .setDelegate(new foam.nanos.medusa.MedusaHashingDAO.Builder(x)
       .setDelegate(new foam.nanos.medusa.MedusaSigningDAO.Builder(x)
       .setDelegate(new foam.nanos.medusa.MedusaBroadcastDAO.Builder(x)
-        .setType(foam.nanos.medusa.MedusaType.MEDIATOR)
+        .setBroadcastToType(foam.nanos.medusa.MedusaType.MEDIATOR)
         .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.MedusaEntry.getOwnClassInfo()))
         .build())
       .build())
