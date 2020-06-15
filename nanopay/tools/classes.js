@@ -449,6 +449,7 @@ var classes = [
   'net.nanopay.retail.model.DeviceType',
   'net.nanopay.tx.JackieRuleOnCreate',
   'net.nanopay.tx.JackieRuleOnPut',
+  'net.nanopay.tx.ClearingTimeTransaction',
   'net.nanopay.tx.AcceptAware',
   'net.nanopay.tx.AccountRelationship',
   'net.nanopay.tx.AccountRelationshipLineItem',

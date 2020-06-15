@@ -622,12 +622,15 @@ p({
   "authenticate": false,
   "serviceScript":
   """
+    dao = new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.auth.User.getOwnClassInfo()).build();
+    dao = new foam.nanos.approval.PopulateApprovalRequestsDAO.Builder(x).setDaoKey("localUserDAO").setDelegate(dao).build();
     return new foam.dao.EasyDAO.Builder(x)
         .setPm(true)
         .setPipelinePm(true)
         .setValidated(true)
         .setValidator(new foam.nanos.auth.validators.UserGroupAndSpidValidator())
         .setOf(foam.nanos.auth.User.getOwnClassInfo())
+        .setDecorator(dao)
         .setInnerDAO(x.get("localUserDAO"))
         .setEnableInterfaceDecorators(false)
         .build();
@@ -889,8 +892,11 @@ p({
   "description":"Adds authorization to localBusinessDAO and is served to the client",
   "serviceScript":
   """
+    dao = new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.model.Business.getOwnClassInfo()).build();
+    dao = new foam.nanos.approval.PopulateApprovalRequestsDAO.Builder(x).setDaoKey("localUserDAO").setDelegate(dao).build();
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.model.Business.getOwnClassInfo())
+      .setDecorator(dao)
       .setInnerDAO(x.get("localBusinessDAO"))
       .setEnableInterfaceDecorators(false)
       .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(net.nanopay.model.Business.CREATED).build() })

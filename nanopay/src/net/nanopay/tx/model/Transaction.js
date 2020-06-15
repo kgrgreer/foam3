@@ -698,10 +698,10 @@ foam.CLASS({
       `
     },
     {
-      // REVIEW: processDate and completionDate are PaymentProvider specific?
-      class: 'DateTime',
+      // REVIEW: processDate and completionDate are Alterna specific?
+      class: 'DateTime', //TODO: DELETE... DEPRECATED
       name: 'processDate',
-      includeInDigest: false,
+      storageTransient: true,
       createVisibility: 'HIDDEN',
       readVisibility: function(processDate) {
         return processDate ?
@@ -716,8 +716,8 @@ foam.CLASS({
     },
     {
       class: 'DateTime',
-      name: 'completionDate',
-      includeInDigest: false,
+      name: 'completionDate',//TODO: DELETE... DEPRECATED
+      storageTransient: true,
       readVisibility: function(completionDate) {
         return completionDate ?
           foam.u2.DisplayMode.RO :

@@ -674,6 +674,7 @@ foam.CLASS({
         { name: 'logger', type: 'Logger' },
       ],
       javaCode:`
+        RbcAssignedClientValue rbcValues = (RbcAssignedClientValue) getX().get("rbcAssignedClientValue");
         Logger log = (Logger)getX().get("logger");
         int padtype = 0;
         for ( var lItem : transaction.getLineItems() ) {
@@ -703,7 +704,7 @@ foam.CLASS({
             return "GOVT";
           default:
             logger.warning("Pad Type not found", padtype);
-            return "SUPP";
+            return rbcValues.getDefaultPadType();
         }
       `
     }

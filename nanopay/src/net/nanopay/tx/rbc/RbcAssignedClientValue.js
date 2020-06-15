@@ -38,6 +38,11 @@ foam.CLASS({
       name: 'accountId',
       class: 'Long',
       documentation: 'nanopay RBC account ID'
+    },
+    {
+      class: 'String',
+      name: 'defaultPadType',
+      value: 'SALA'
     }
   ]
 
