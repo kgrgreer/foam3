@@ -94,7 +94,7 @@ foam.CLASS({
         EmailMessage message = new EmailMessage();
         String businessInfo = business == null ? "" : business.getId() + " " + business.getBusinessName();
         String body = "Failed to upload bank account: " + account + ", for AFEX business " + afexBusiness.getId() + ", business: " + businessInfo;
-        message.setTo(new String[]{"paymentops@nanopay.net"});
+        message.setTo(new String[]{"enrollment@ablii.com"});
         message.setSubject("Failed AFEX Bank Account Upload");
         message.setBody(body);
         EmailsUtility.sendEmailFromTemplate(x, null, message, null, null);
