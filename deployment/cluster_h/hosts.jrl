@@ -1,29 +1,5 @@
 p({
   "class":"foam.net.Host",
-  "id":"mm1",
+  "id":"nerf1",
   "address":"jhughes",
-})
-
-p({
-  "class":"foam.net.Host",
-  "id":"mm2",
-  "address":"woodchuck",
-})
-
-p({
-  "class":"foam.net.Host",
-  "id":"mn1",
-  "address":"schooner",
-})
-
-p({
-  "class":"foam.net.Host",
-  "id":"mn2",
-  "address":"moosehead",
-})
-
-p({
-  "class":"foam.net.Host",
-  "id":"mn3",
-  "address":"stella"
 })

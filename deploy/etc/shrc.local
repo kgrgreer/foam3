@@ -29,11 +29,11 @@ fi
 
 # memory - heap
 if [ -z "`echo "${JAVA_OPTS}" | grep "Xms"`" ]; then
-  JAVA_OPTS="${JAVA_OPTS} -Xms512m"
+  JAVA_OPTS="${JAVA_OPTS} -Xms2048m"
 fi
 
 if [ -z "`echo "${JAVA_OPTS}" | grep "Xmx"`" ]; then
-  JAVA_OPTS="${JAVA_OPTS} -Xmx2048m"
+  JAVA_OPTS="${JAVA_OPTS} -Xmx4096m"
 fi
 
 # memory - stack

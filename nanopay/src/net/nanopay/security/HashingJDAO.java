@@ -54,6 +54,10 @@ public class HashingJDAO
   }
 
   public HashingJDAO(X x, String algorithm, boolean digestRequired, boolean rollDigests, DAO delegate, String filename) {
+    this(x, algorithm, digestRequired, rollDigests, delegate, filename, false);
+  }
+
+  public HashingJDAO(X x, String algorithm, boolean digestRequired, boolean rollDigests, DAO delegate, String filename, boolean cluster) {
     setX(x);
     setOf(delegate.getOf());
     setDelegate(delegate);
@@ -74,16 +78,20 @@ public class HashingJDAO
       .build();
     repo.replay(x, delegate);
 
-    // replay runtime journal
-    setJournal(new HashingJournal.Builder(x)
-      .setAlgorithm(algorithm)
-      .setPreviousDigest(repo.getPreviousDigest())
-      .setDigestRequired(digestRequired)
-      .setRollDigests(rollDigests)
-      .setDao(delegate)
-      .setFilename(filename)
-      .setCreateFile(true)
-      .build());
-    getJournal().replay(x, delegate);
+    if ( cluster ) {
+      setJournal(new foam.dao.NullJournal.Builder(x).build());
+    } else {
+      // replay runtime journal
+      setJournal(new HashingJournal.Builder(x)
+                 .setAlgorithm(algorithm)
+                 .setPreviousDigest(repo.getPreviousDigest())
+                 .setDigestRequired(digestRequired)
+                 .setRollDigests(rollDigests)
+                 .setDao(delegate)
+                 .setFilename(filename)
+                 .setCreateFile(true)
+                 .build());
+      getJournal().replay(x, delegate);
+    }
   }
 }

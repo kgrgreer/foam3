@@ -68,7 +68,7 @@ p({
       .setDecorator(new foam.nanos.medusa.ReplayingDAO.Builder(x)
       .setDelegate(new foam.nanos.medusa.MedusaBlockingDAO.Builder(x)
       .setDelegate(new foam.nanos.medusa.MedusaBroadcastDAO.Builder(x)
-        .setType(foam.nanos.medusa.MedusaType.NODE)
+        .setBroadcastToType(foam.nanos.medusa.MedusaType.NODE)
         .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.MedusaEntry.getOwnClassInfo()))
       .build())
       .build())

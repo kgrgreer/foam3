@@ -13,7 +13,7 @@ NANOS_PIDFILE=/tmp/nanos.pid
 DAEMONIZE=1
 VERSION=
 RUN_USER=
-CLUSTER=false
+#CLUSTER=false
 
 export DEBUG=0
 
@@ -75,7 +75,9 @@ JAVA_OPTS="${JAVA_OPTS} -DNANOPAY_HOME=${NANOPAY_HOME}"
 JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=${NANOPAY_HOME}/journals"
 JAVA_OPTS="${JAVA_OPTS} -DDOCUMENT_HOME=${NANOPAY_HOME}/documents"
 JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=${NANOPAY_HOME}/logs"
-JAVA_OPTS="${JAVA_OPTS} -DCLUSTER=${CLUSTER}"
+if [ ! -z ${CLUSTER} ]; then
+    JAVA_OPTS="${JAVA_OPTS} -DCLUSTER=${CLUSTER}"
+fi
 if [ "$PROFILER" -eq 1 ]; then
     JAVA_OPTS="${JAVA_OPTS} -agentpath:=port=$PROFILER_PORT"
 fi
@@ -92,9 +94,9 @@ fi
 export RES_JAR_HOME="${JAR}"
 
 export JAVA_TOOL_OPTIONS="${JAVA_OPTS}"
-
+echo ${JAVA_OPTS} > ${NANOPAY_HOME}/logs/opts.txt
 if [ "$DAEMONIZE" -eq 1 ]; then
-    nohup java -server -jar "${JAR}" > ${NANOPAY_HOME}/logs/out.txt 2>&1 &
+    nohup java -server -jar "${JAR}" > ${NANOPAY_HOME}/logs/out.txt 3>&1 &
     echo $! > "${NANOS_PIDFILE}"
 else
     java -server -jar "${JAR}"
