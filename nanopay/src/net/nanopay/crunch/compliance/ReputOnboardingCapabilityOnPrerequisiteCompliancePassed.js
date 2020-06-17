@@ -17,13 +17,13 @@
 
 foam.CLASS({
   package: 'net.nanopay.crunch.compliance',
-  name: 'ReputOnboardingCapabilityOnBeneficialOwnerCompliancePassed',
+  name: 'ReputOnboardingCapabilityOnPrerequisiteCompliancePassed',
   implements: [
     'foam.nanos.ruler.RuleAction'
   ],
 
   documentation: `Reput the final onboarding capability for compliance checks once the prerequisite
-  capability ( businessHasOwners ) compliance has passed.`,
+  capability compliance has passed.`,
 
   javaImports: [
     'foam.core.ContextAgent',
