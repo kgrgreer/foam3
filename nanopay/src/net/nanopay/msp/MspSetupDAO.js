@@ -64,11 +64,29 @@ foam.CLASS({
         DAO themeDomainDAO = (DAO) x.get("themeDomainDAO");
         DAO ruleDAO = (DAO) x.get("localRuleDAO");
 
+        // Add theme
+        Theme theme = new Theme();
+        theme.setName(mspInfo.getSpid());
+        theme.setAppName(mspInfo.getAppName());
+        theme.setDescription(mspInfo.getDescription());
+        theme.setLogoRedirect("users");
+        theme.setDefaultMenu("users");
+        theme = (Theme) themeDAO.put(theme);
+
+        // Add themeDomain
+        for (String domain : mspInfo.getDomain()) {
+          ThemeDomain themeDomain = new ThemeDomain();
+          themeDomain.setId(domain);
+          themeDomain.setTheme(theme.getId());
+          themeDomainDAO.put(themeDomain);
+        }
+
         // Create spid-admin group
         Group adminGroup = new Group();
         adminGroup.setId(mspInfo.getSpid() + "-admin");
         adminGroup.setParent("msp-admin");
         adminGroup.setDefaultMenu("users");
+        adminGroup.setTheme(theme.getId());
         adminGroup.setDescription(mspInfo.getSpid() +" admin");
         groupDAO.put(adminGroup);
 
@@ -85,6 +103,13 @@ foam.CLASS({
         userDAO.put(adminUser);
 
         List<String> permissionArray = new ArrayList<>();
+        permissionArray.add("ticket.read.*");
+        permissionArray.add("ticket.update.*");
+        permissionArray.add("service.ticketDAO");
+        permissionArray.add("service.ticketCommentDAO");
+        permissionArray.add("service.ticketStatusDAO");
+        permissionArray.add("menu.read.admin");
+        permissionArray.add("menu.read.admin.tickets");
         permissionArray.add("group.update." + mspInfo.getSpid() + "-admin");
         permissionArray.add("group.update." + mspInfo.getSpid() + "-fraud-ops");
         permissionArray.add("group.update." + mspInfo.getSpid() + "-payment-ops");
@@ -95,7 +120,7 @@ foam.CLASS({
         permissionArray.add("group.read." + mspInfo.getSpid() + "-support");
 
         for ( int i = 0; i < permissionArray.size(); i++ ) {
-          // Add the permissions of spid's groups to the spid-admin group
+          // Add the particular permissions to the spid-admin group
           GroupPermissionJunction junction = new GroupPermissionJunction();
           junction.setSourceId(mspInfo.getSpid() + "-admin");
           junction.setTargetId(permissionArray.get(i));
@@ -106,21 +131,6 @@ foam.CLASS({
           junction.setSourceId("msp-admin");
           junction.setTargetId(permissionArray.get(i));
           groupPermissionJunctionDAO.put(mspAdminJunction);
-        }
-
-        // Add theme
-        Theme theme = new Theme();
-        theme.setName(mspInfo.getSpid());
-        theme.setAppName(mspInfo.getAppName());
-        theme.setDescription(mspInfo.getDescription());
-        themeDAO.put(theme);
-
-        // Add themeDomain
-        for (String domain : mspInfo.getDomain()) {
-            ThemeDomain themeDomain = new ThemeDomain();
-            themeDomain.setId(domain);
-            themeDomain.setTheme(theme.getId());
-            themeDomainDAO.put(themeDomain);
         }
 
         // Create new serviceProviderURL
