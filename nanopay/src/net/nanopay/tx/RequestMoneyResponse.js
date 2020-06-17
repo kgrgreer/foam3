@@ -17,13 +17,13 @@
 
  foam.CLASS({
   package: 'net.nanopay.tx',
-  name: 'MoneyRequestResponse',
+  name: 'RequestMoneyResponse',
 
   properties: [
     {
       name: 'id',
       aliases: ['requestId'],
-      documentation: 'Unique ID for each Create Money Request.',
+      documentation: 'Unique ID for each Request Money request.',
       class: 'String',
     },
     {

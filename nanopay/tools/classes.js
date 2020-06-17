@@ -968,9 +968,9 @@ var classes = [
   'net.nanopay.tx.rbc.iso20022file.RbcTransmissionHeader',
 
   //Request to Pay
-  'net.nanopay.tx.MoneyRequest',
-  'net.nanopay.tx.MoneyRequestResponse',
-  'net.nanopay.tx.MoneyRequestDAO',
+  'net.nanopay.tx.RequestMoney',
+  'net.nanopay.tx.RequestMoneyResponse',
+  'net.nanopay.tx.RequestMoneyDAO',
 
   // Ticket
   'net.nanopay.ticket.SudoTicket',

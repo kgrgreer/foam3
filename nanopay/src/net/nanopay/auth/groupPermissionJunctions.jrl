@@ -639,7 +639,6 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"portal-develope
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"portal-developer","targetId":"service.currencyDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"portal-developer","targetId":"service.digDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"portal-developer","targetId":"service.digitalAccount"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"portal-developer","targetId":"service.dugDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"portal-developer","targetId":"service.menuDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"portal-developer","targetId":"service.nanopayDocumentDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"portal-developer","targetId":"service.notificationDAO"})

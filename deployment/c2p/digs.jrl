@@ -1,0 +1,33 @@
+p({
+    class:"foam.nanos.dig.DIG",
+    id:"Send Request Money request",
+    daoKey:"requestMoneyDAO",
+    cmd:1,
+    data:"""
+    {
+        "requestId":"W012356789",
+        "requestAmount": 500,
+        "requestExpiryDate": "2021-01-15T18:00:00.000Z",
+        "senderMemo": "Interact e-transfer",
+        "requesterName": "Sean M",
+        "requesterEmail": "sean@acme.com",
+        "custAccount": "123-44444-55566677788899911122"
+    }
+    """,
+    postURL:"/service/dig?dao=requestMoneyDAO&cmd=put&format=json",
+    result:"""
+    {
+        "class":"net.nanopay.tx.RequestMoneyResponse",
+        "id":"W012356789",
+        "gatewayURL":"https://etransfer.interac.ca/acceptPaymentRequest.do?rID=CA1MREvhpZEx&src"
+    }
+    """
+})
+
+p({
+    class:"foam.nanos.dig.DIG",
+    id:"Retrieve All Request Money requests",
+    daoKey:"requestMoneyDAO",
+    postURL:"/service/dig?dao=requestMoneyDAO&cmd=select&format=json",
+    result:"[]"
+})

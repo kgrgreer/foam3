@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * 2020 nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -17,22 +17,22 @@
 
  foam.CLASS({
   package: 'net.nanopay.tx',
-  name: 'MoneyRequest',
+  name: 'RequestMoney',
   ids: [ 'requestId' ],
 
   properties: [
     {
       name: 'requestId',
-      documentation: 'Unique ID for each Create Money Request.',
+      documentation: 'Unique ID for each Request Money request.',
       class: 'String',
     },
     {
-      name: 'moneyRequestAmount',
+      name: 'requestAmount',
       documentation: 'Request Amount in CAD',
       class: 'Long'
     },
     {
-      name: 'moneyRequestExpiryDate',
+      name: 'requestExpiryDate',
       class: 'DateTime',
       documentation: 'Request Expiry Date in UTC.',
     },
@@ -46,7 +46,7 @@
       class: 'String',
     },
     {
-      name: 'RequesterEmail',
+      name: 'requesterEmail',
       class: 'String',
     },
     {
@@ -55,14 +55,14 @@
      documentation: 'Unique FI Identifier for Requester’s Account.'
     },
     {
-      name: 'CustAccount',
+      name: 'custAccount',
       class: 'String',
       documentation: `Requester account number. Canadian bank account format is aaa-bbbbb-cccccccccccccccccccc ‘aaa’ is the Financial Institution Identifier ‘bbbbb’ is the Transit Number ‘cccccccc...’ is the Account Number. Maximum length = 30.`
     },
     {
       name: 'returnUrl',
       class: 'String',
-      documentation: 'If present the Responder’s browser is redirected to the Return URL after the Responder fulfills the Money Request',
+      documentation: 'If present the Responder’s browser is redirected to the Return URL after the Responder fulfills the Request Money request',
     }
   ]
 });

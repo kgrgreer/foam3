@@ -25,26 +25,26 @@ import foam.nanos.logger.Logger;
 
 import java.util.Date;
 
-public class MoneyRequestValidator implements Validator {
+public class RequestMoneyValidator implements Validator {
 
   @Override
   public void validate(X x, FObject obj) {
 
     Logger logger = new PrefixLogger(new Object[] { this.getClass().getSimpleName() }, (Logger) x.get("logger"));
-    if ( ! (obj instanceof MoneyRequest) ) {
+    if ( ! (obj instanceof RequestMoney) ) {
       logger.error("Malformed Request", obj );
       throw new RuntimeException("Malformed Request");
     }
-    MoneyRequest mr = (MoneyRequest) obj;
+    RequestMoney mr = (RequestMoney) obj;
 
     if( mr.getRequestId().isEmpty())
       throw new RuntimeException("RequestId missing");
-    if( mr.getMoneyRequestAmount() <= 0 )
-      throw new RuntimeException("MoneyRequestAmount must be greater then 0");
-    if( mr.getMoneyRequestExpiryDate() == null )
-      throw new RuntimeException("MoneyRequestExpiryDate missing");
-    if( mr.getMoneyRequestExpiryDate().before(new Date()) )
-      throw new RuntimeException("MoneyRequestExpiryDate is already past");
+    if( mr.getRequestAmount() <= 0 )
+      throw new RuntimeException("RequestAmount must be greater then 0");
+    if( mr.getRequestExpiryDate() == null )
+      throw new RuntimeException("RequestExpiryDate missing");
+    if( mr.getRequestExpiryDate().before(new Date()) )
+      throw new RuntimeException("RequestExpiryDate is already past");
 
     if( mr.getRequesterName().isEmpty())
       throw new RuntimeException("RequesterName missing");

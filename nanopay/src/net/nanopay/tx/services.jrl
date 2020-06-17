@@ -1,22 +1,22 @@
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "MoneyRequestDAO",
+  "name": "requestMoneyDAO",
   "serve": true,
   "serviceScript":
   """
-    dao = new foam.dao.ValidatingDAO(x, null, new net.nanopay.tx.MoneyRequestValidator());
-    dao = new net.nanopay.tx.MoneyRequestDAO(x, dao);
+    dao = new foam.dao.ValidatingDAO(x, null, new net.nanopay.tx.RequestMoneyValidator());
+    dao = new net.nanopay.tx.RequestMoneyDAO(x, dao);
 
     return new foam.dao.EasyDAO.Builder(x)
-      .setOf(net.nanopay.tx.MoneyRequest.getOwnClassInfo())
+      .setOf(net.nanopay.tx.RequestMoney.getOwnClassInfo())
       .setPm(true)
       .setPipelinePm(true)
-      .setJournalName("MoneyRequests")
+      .setJournalName("requestMoney")
       .setDecorator(dao)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .build();
   """,
-  "client": "{\"of\":\"net.nanopay.tx.MoneyRequest\"}"
+  "client": "{\"of\":\"net.nanopay.tx.RequestMoney\"}"
 })
 p({
   "class":"foam.nanos.boot.NSpec",
