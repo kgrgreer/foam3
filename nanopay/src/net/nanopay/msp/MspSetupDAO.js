@@ -64,11 +64,29 @@ foam.CLASS({
         DAO themeDomainDAO = (DAO) x.get("themeDomainDAO");
         DAO ruleDAO = (DAO) x.get("localRuleDAO");
 
+        // Add theme
+        Theme theme = new Theme();
+        theme.setName(mspInfo.getSpid());
+        theme.setAppName(mspInfo.getAppName());
+        theme.setDescription(mspInfo.getDescription());
+        theme.setLogoRedirect("users");
+        theme.setDefaultMenu("users");
+        theme = (Theme) themeDAO.put(theme);
+
+        // Add themeDomain
+        for (String domain : mspInfo.getDomain()) {
+          ThemeDomain themeDomain = new ThemeDomain();
+          themeDomain.setId(domain);
+          themeDomain.setTheme(theme.getId());
+          themeDomainDAO.put(themeDomain);
+        }
+
         // Create spid-admin group
         Group adminGroup = new Group();
         adminGroup.setId(mspInfo.getSpid() + "-admin");
         adminGroup.setParent("msp-admin");
         adminGroup.setDefaultMenu("users");
+        adminGroup.setTheme(theme.getId());
         adminGroup.setDescription(mspInfo.getSpid() +" admin");
         groupDAO.put(adminGroup);
 
@@ -106,21 +124,6 @@ foam.CLASS({
           junction.setSourceId("msp-admin");
           junction.setTargetId(permissionArray.get(i));
           groupPermissionJunctionDAO.put(mspAdminJunction);
-        }
-
-        // Add theme
-        Theme theme = new Theme();
-        theme.setName(mspInfo.getSpid());
-        theme.setAppName(mspInfo.getAppName());
-        theme.setDescription(mspInfo.getDescription());
-        themeDAO.put(theme);
-
-        // Add themeDomain
-        for (String domain : mspInfo.getDomain()) {
-            ThemeDomain themeDomain = new ThemeDomain();
-            themeDomain.setId(domain);
-            themeDomain.setTheme(theme.getId());
-            themeDomainDAO.put(themeDomain);
         }
 
         // Create new serviceProviderURL
