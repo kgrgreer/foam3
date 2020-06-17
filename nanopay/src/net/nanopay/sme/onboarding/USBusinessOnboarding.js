@@ -113,6 +113,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.FObject',
     'foam.dao.DAO',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.AuthorizationException',
@@ -1597,7 +1598,7 @@ foam.CLASS({
           throw new AuthorizationException(PROHIBITED_MESSAGE);
         }
 
-        if ( obj.getStatus() == OnboardingStatus.SUBMITTED ) super.validate(x);
+        if ( obj.getStatus() == OnboardingStatus.SUBMITTED ) FObject.super.validate(x);
       `
     },
     {
