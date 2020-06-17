@@ -135,8 +135,18 @@ p({
 })
 
 // integration
-p({"class":"foam.nanos.menu.Menu","id":"integration.alterna-eft","label":"Alterna-EFT","handler":{"class":"foam.nanos.menu.ViewMenu", "view":{"class":"net.nanopay.cico.ui.AlternaEFTDownload"}},"parent":"integration"})
-
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"integration.alterna-eft",
+  "label":"Alterna-EFT",
+  "handler":{
+    "class":"foam.nanos.menu.ViewMenu",
+    "view":{
+      "class":"net.nanopay.cico.ui.AlternaEFTDownload"
+    }
+  },
+  "parent":"integration"
+})
 p({
   "class":"foam.nanos.menu.Menu",
   "id":"integration.ascendantFXUsers",
@@ -163,7 +173,18 @@ p({
   },
   "parent":"integration"
 })
-p({"class":"foam.nanos.menu.Menu","id":"integration.devices","label":"Devices","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.retail.ui.devices.DevicesView"}},"parent":"integration"})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"integration.devices",
+  "label":"Devices",
+  "handler":{
+    "class":"foam.nanos.menu.ViewMenu",
+    "view":{
+      "class":"net.nanopay.retail.ui.devices.DevicesView"
+    }
+  },
+  "parent":"integration"
+})
 p({
   "class":"foam.nanos.menu.Menu",
   "id":"integration.flinksResponses",
