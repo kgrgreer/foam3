@@ -103,6 +103,13 @@ foam.CLASS({
         userDAO.put(adminUser);
 
         List<String> permissionArray = new ArrayList<>();
+        permissionArray.add("ticket.read.*");
+        permissionArray.add("ticket.update.*");
+        permissionArray.add("service.ticketDAO");
+        permissionArray.add("service.ticketCommentDAO");
+        permissionArray.add("service.ticketStatusDAO");
+        permissionArray.add("menu.read.admin");
+        permissionArray.add("menu.read.admin.tickets");
         permissionArray.add("group.update." + mspInfo.getSpid() + "-admin");
         permissionArray.add("group.update." + mspInfo.getSpid() + "-fraud-ops");
         permissionArray.add("group.update." + mspInfo.getSpid() + "-payment-ops");
@@ -113,7 +120,7 @@ foam.CLASS({
         permissionArray.add("group.read." + mspInfo.getSpid() + "-support");
 
         for ( int i = 0; i < permissionArray.size(); i++ ) {
-          // Add the permissions of spid's groups to the spid-admin group
+          // Add the particular permissions to the spid-admin group
           GroupPermissionJunction junction = new GroupPermissionJunction();
           junction.setSourceId(mspInfo.getSpid() + "-admin");
           junction.setTargetId(permissionArray.get(i));
