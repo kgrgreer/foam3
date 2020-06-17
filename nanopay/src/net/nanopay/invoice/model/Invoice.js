@@ -138,7 +138,7 @@ foam.CLASS({
         return new Date();
       `,
       javaSetter: `
-        if ( this.__frozen__ ) throw new UnsupportedOperationException("Object is frozen.");
+        if ( isFrozen() ) throw new UnsupportedOperationException("Object is frozen.");
         issueDate_ = val;
         if ( issueDate_ != null ) {
           issueDateIsSet_ = true;

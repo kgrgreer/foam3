@@ -148,6 +148,7 @@ p({
   "enabled":true,
   "visible":false,
   "daoKey":"businessDAO",
+  "reviewRequired":true,
   "contextDAOFindKey":"subject.user"
 })
 

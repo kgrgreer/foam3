@@ -1413,9 +1413,9 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/rbc/ftps/RbcFTPSCredential' },
 
   //RequestToPay
-  { name: 'net/nanopay/tx/MoneyRequest' },
-  { name: 'net/nanopay/tx/MoneyRequestResponse' },
-  { name: 'net/nanopay/tx/MoneyRequestDAO' },
+  { name: 'net/nanopay/tx/RequestMoney' },
+  { name: 'net/nanopay/tx/RequestMoneyResponse' },
+  { name: 'net/nanopay/tx/RequestMoneyDAO' },
 
   // file ingestion
   { name: 'net/nanopay/tx/gs/GsTxCsvRow' },
@@ -1505,7 +1505,8 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/compliance/PersonSanctionValidator' },
   { name: 'net/nanopay/crunch/compliance/EntitySanctionValidator' },
   { name: 'net/nanopay/crunch/compliance/BeneficialOwnerSanctionValidator' },
-  { name: 'net/nanopay/crunch/compliance/ReputOnboardingCapabilityOnBeneficialOwnerCompliancePassed' },
+  { name: 'net/nanopay/crunch/compliance/BusinessDirectorSanctionValidator' },
+  { name: 'net/nanopay/crunch/compliance/ReputOnboardingCapabilityOnPrerequisiteCompliancePassed' },
   { name: 'net/nanopay/crunch/compliance/SecurefactSIDniValidator' },
   { name: 'net/nanopay/crunch/compliance/SecurefactLEVValidator' },
   { name: 'net/nanopay/crunch/compliance/UserComplianceApproval' },

@@ -27,3 +27,9 @@ p({
   "name": "Adding beneficial owners",
   "visible": false
 })
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "businessDirectorOnboarding",
+  "name": "Adding business directors",
+  "visible": false
+})

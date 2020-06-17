@@ -449,6 +449,10 @@ foam.CLASS({
         a partner platform to support international payments.`,
       section: 'business'
     },
+    {
+      class: 'Boolean',
+      name: 'publiclyTraded'
+    },
     // Overwrite validateObj on firstName, lastName, and email so we can create
     // businesses through the GUI.
     {

@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * 2020 nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -17,14 +17,14 @@
 
  foam.CLASS({
   package: 'net.nanopay.tx',
-  name: 'MoneyRequestDAO',
+  name: 'RequestMoneyDAO',
   extends: 'foam.dao.ProxyDAO',
 
-  documentation: `Makes transactions out of MoneyRequest objects.`,
+  documentation: `Makes transactions out of RequestMoney objects.`,
 
   javaImports: [
-    'net.nanopay.tx.MoneyRequest',
-    'net.nanopay.tx.MoneyRequestResponse',
+    'net.nanopay.tx.RequestMoney',
+    'net.nanopay.tx.RequestMoneyResponse',
     'foam.dao.DAO',
     'foam.util.SafetyUtil',
     'net.nanopay.tx.model.Transaction',
@@ -36,7 +36,7 @@
     {
       buildJavaClass: function(cls) {
         cls.extras.push(`
-  public MoneyRequestDAO(foam.core.X x, foam.dao.DAO delegate) {
+  public RequestMoneyDAO(foam.core.X x, foam.dao.DAO delegate) {
     setDelegate(delegate);
   }
        `);
@@ -48,11 +48,11 @@
     {
       name: 'put_',
       javaCode: `
-        MoneyRequest request = (MoneyRequest) obj;
+        RequestMoney request = (RequestMoney) obj;
         // validate..
         String response;
         try {
-          request = (MoneyRequest) getDelegate().put_(x, request);
+          request = (RequestMoney) getDelegate().put_(x, request);
           //set interact email link.
           response = "https://etransfer.interac.ca/acceptPaymentRequest.do?rID=CA1MREvhpZEx&src";
         }
@@ -61,7 +61,7 @@
         }
 
         // return the return object
-        MoneyRequestResponse mrr = new MoneyRequestResponse();
+        RequestMoneyResponse mrr = new RequestMoneyResponse();
         mrr.setId(request.getRequestId());
         mrr.setGatewayURL(response);
         return mrr;
