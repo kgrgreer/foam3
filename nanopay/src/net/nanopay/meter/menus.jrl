@@ -18,6 +18,54 @@ p({
 
 p({
   "class":"foam.nanos.menu.Menu",
+  "id":"operation.afexBeneficiaries",
+  "label":"AFEX Beneficiaries",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"afexBeneficiaryDAO",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "afexbeneficiary"
+        }
+      }
+    }
+  },
+  "parent":"operation"
+})
+
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"operation.afexBusiness",
+  "label":"AFEX Businesses",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"afexBusinessDAO",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "afexbusiness"
+        }
+      }
+    }
+  },
+  "parent":"operation"
+})
+
+p({
+  "class":"foam.nanos.menu.Menu",
   "id":"operation.businessOnboarding-cad",
   "label":"Canadian only Business Onboarding",
   "handler": {
