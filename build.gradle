@@ -73,6 +73,7 @@ dependencies {
 	compile "xml-apis:xml-apis:1.4.01"
 	compile "mysql:mysql-connector-java:8.0.16"
 	compile "com.sun.xml.ws:jaxws-ri:2.3.2"
+	compile "io.methvin:directory-watcher:0.9.10"
 }
 
 configurations.all {
