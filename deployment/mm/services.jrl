@@ -67,8 +67,7 @@ p({
       .setPm(true)
       .setDecorator(new foam.nanos.medusa.ReplayingDAO.Builder(x)
       .setDelegate(new foam.nanos.medusa.MedusaBlockingDAO.Builder(x)
-      .setDelegate(new foam.nanos.medusa.MedusaBroadcastDAO.Builder(x)
-        .setBroadcastToType(foam.nanos.medusa.MedusaType.NODE)
+      .setDelegate(new foam.nanos.medusa.MedusaBroadcast2NodesDAO.Builder(x)
         .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.MedusaEntry.getOwnClassInfo()))
       .build())
       .build())
@@ -101,6 +100,3 @@ p({
    `,
   "client": "{\"of\":\"foam.nanos.medusa.MedusaEntry\"}"
 })
-//      .setInnerDAO(x.get("internalMedusaDAO"))
-//      .setDelegate(new foam.nanos.medusa.MedusaInternalDAO.Builder(x)
-//      .build())
