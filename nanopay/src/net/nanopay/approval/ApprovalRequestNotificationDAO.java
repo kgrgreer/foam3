@@ -59,7 +59,7 @@ public class ApprovalRequestNotificationDAO
                 ( ret.getStatus() == ApprovalStatus.APPROVED ||
                   ret.getStatus() == ApprovalStatus.REJECTED ) &&
                 ret.getLastModifiedBy() != ret.getApprover() ) {
-      notifyUser = (User) userDAO.find(ret.getCreatedBy());
+      notifyUser = (User) userDAO.find(ret.getApprover());
       User approvedBy = (User) userDAO.find(ret.getLastModifiedBy());
 
       if ( ret.getStatus() == ApprovalStatus.REJECTED) {
@@ -102,7 +102,6 @@ public class ApprovalRequestNotificationDAO
         notification.setEmailArgs(emailArgs);
       }
 
-      notification.setUserId(notifyUser.getId());
       notification.setApprovalRequest(ret.getId());
       notification.setNotificationType(notificationType);
       notification.setBody(notificationBody);
@@ -135,8 +134,8 @@ public class ApprovalRequestNotificationDAO
 
     DAO userDAO = (DAO) x.get("localUserDAO");
     User requester = (User) userDAO.find(fulfilled.getCreatedBy());
-    User approver = (User) userDAO.find(fulfilled.getApprover());
     User approvedBy = (User) userDAO.find(fulfilled.getLastModifiedBy());
+    User approver = (User) userDAO.find(ret.getApprover());
 
     String notificationBody = new StringBuilder()
       .append(approvedBy != null ? approvedBy.toSummary() : ret.getLastModifiedBy())
@@ -145,17 +144,17 @@ public class ApprovalRequestNotificationDAO
       .append(classification)
       .append(" with id:")
       .append(ret.getObjId())
+      .append(" from ")
+      .append(requester != null ? requester.toSummary() : fulfilled.getCreatedBy())
       .toString();
 
-    if ( requester != null ) {
+    if ( approver != null ) {
       ApprovalRequestNotification notification = (ApprovalRequestNotification) x.get(ApprovalRequestNotification.class.getSimpleName());
-
-      notification.setUserId(requester.getId());
       notification.setApprovalRequest(fulfilled.getId());
       notification.setNotificationType(notificationType);
       notification.setBody(notificationBody);
 
-      requester.doNotify(x, notification);
+      approver.doNotify(x, notification);
     }
 
     return ret;
