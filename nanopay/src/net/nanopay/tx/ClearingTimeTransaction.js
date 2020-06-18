@@ -43,6 +43,40 @@ foam.CLASS({
       `
     },
     {
+      class: 'DateTime',
+      name: 'estimatedCompletionDate',
+      createVisibility: 'HIDDEN',
+      readVisibility: function(processDate) {
+       return processDate ?
+         foam.u2.DisplayMode.RO :
+         foam.u2.DisplayMode.HIDDEN;
+      },
+      updateVisibility: function(processDate) {
+       return processDate ?
+         foam.u2.DisplayMode.RO :
+         foam.u2.DisplayMode.HIDDEN;
+      },
+      section: 'basicInfo',
+      createVisibility: 'HIDDEN',
+      tableWidth: 172
+    },
+    {
+     class: 'DateTime',
+     name: 'processDate',
+     storageTransient: true,
+     createVisibility: 'HIDDEN',
+     readVisibility: function(processDate) {
+      return processDate ?
+        foam.u2.DisplayMode.RO :
+        foam.u2.DisplayMode.HIDDEN;
+     },
+     updateVisibility: function(processDate) {
+      return processDate ?
+        foam.u2.DisplayMode.RO :
+        foam.u2.DisplayMode.HIDDEN;
+     }
+    },
+    {
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'status',
@@ -55,40 +89,6 @@ foam.CLASS({
       name: 'initialStatus',
       value: 'PENDING',
       javaFactory: 'return TransactionStatus.PENDING;'
-    },
-    {
-      class: 'DateTime',
-      name: 'estimatedCompletionDate',
-      createVisibility: 'HIDDEN',
-      readVisibility: function(processDate) {
-        return processDate ?
-          foam.u2.DisplayMode.RO :
-          foam.u2.DisplayMode.HIDDEN;
-      },
-      updateVisibility: function(processDate) {
-        return processDate ?
-          foam.u2.DisplayMode.RO :
-          foam.u2.DisplayMode.HIDDEN;
-      },
-      section: 'basicInfo',
-      createVisibility: 'HIDDEN',
-      tableWidth: 172
-    },
-    {
-      class: 'DateTime',
-      name: 'processDate',
-      storageTransient: true,
-      createVisibility: 'HIDDEN',
-      readVisibility: function(processDate) {
-       return processDate ?
-         foam.u2.DisplayMode.RO :
-         foam.u2.DisplayMode.HIDDEN;
-      },
-      updateVisibility: function(processDate) {
-       return processDate ?
-         foam.u2.DisplayMode.RO :
-         foam.u2.DisplayMode.HIDDEN;
-      }
     },
   ],
 
@@ -106,6 +106,7 @@ foam.CLASS({
       if ( other instanceof ClearingTimeTransaction ) {
         setEstimatedCompletionDate(((ClearingTimeTransaction) other).getEstimatedCompletionDate());
         setProcessDate(((ClearingTimeTransaction) other).getProcessDate());
+        copyClearingTimesFrom(other);
       }
       `
     },

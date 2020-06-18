@@ -4,12 +4,20 @@ p({
   "name":"gd",
   "appName":"Grain Discovery",
   "description":"Grain Discovery",
+  "navigationRootMenu":"smeNavigation",
   "settingsRootMenu":"smeSettings",
+  "logoRedirect":"sme.main.dashboard",
   "defaultMenu":"sme.accountProfile.switch-business",
+  "disableCurrencyChoice": true,
+  "loginImage": "images/sign_in_illustration.png",
   "logo":"images/gd/gd-logo-72x72.png",
   "largeLogo":"images/gd/gd-logo-72x72.png",
   "logoBackgroundColour":"transparent",
   "topNavigation":"net.nanopay.ui.TopSideNavigation",
+  "footerView":"net.nanopay.sme.ui.FooterView",
+  "supportEmail":"support@ablii.com",
+  "supportPhone":"+1.647.496.1526",
+  "personalSupportUser":1030,
   "primary1":"#2e2379",
   "primary2":"#4434b4",
   "primary3":"#604aff",
@@ -41,6 +49,23 @@ p({
   "inputHorizontalPadding":"8px",
   "customCSS":
   """
+    .login-wrapper {
+      margin-left: 250px;
+    }
+    .foam-u2-stack-StackView {
+      margin: auto;
+      padding-bottom: 65px;
+      overflow: scroll;
+      height: calc(100vh - 100px);
+    }
+    .net-nanopay-ui-Controller {
+      overflow: hidden;
+    }
+    .foam-comics-BrowserView {
+      width: 1024px;
+      margin: auto;
+      margin-top: 30px;
+    }
     .us-business-onboarding {
       display: none;
     }
