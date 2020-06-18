@@ -31,6 +31,7 @@ foam.CLASS({
     'java.util.Date',
     'net.nanopay.meter.clearing.ClearingTimeService',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.meter.clearing.ClearingTimesTrait',
     'static foam.mlang.MLang.*'
   ],
 
@@ -42,12 +43,13 @@ foam.CLASS({
           @Override
           public void execute(X x) {
             DAO dao = (DAO) x.get("localTransactionDAO");
-            Transaction transaction = (Transaction) obj.fclone();
             ClearingTimeService clearingTimeService = (ClearingTimeService) x.get("clearingTimeService");
-
-            Date completionDate = clearingTimeService.estimateCompletionDateSimple(x, transaction);
-            transaction.setCompletionDate(completionDate);
-            dao.put(transaction);
+            if ( obj instanceof ClearingTimesTrait) {
+              Transaction t = (Transaction) obj.fclone();
+              Date completionDate = clearingTimeService.estimateCompletionDateSimple(x, t);
+              ((ClearingTimesTrait) t).setEstimatedCompletionDate(completionDate);
+              dao.put(t);
+            }
           }
         }, "Estimate Transaction Completion Date");
       `

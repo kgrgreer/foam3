@@ -31,8 +31,8 @@
 
 foam.CLASS({
   package: 'net.nanopay.meter.clearing',
-  name: 'CITransactionRefinement',
-  refines: 'net.nanopay.tx.cico.CITransaction',
+  name: 'ClearingTimeTransactionRefinement',
+  refines: 'net.nanopay.tx.ClearingTimeTransaction',
 
   implements: [
     'net.nanopay.meter.clearing.ClearingTimesTrait'
@@ -42,23 +42,14 @@ foam.CLASS({
     {
       name: 'clearingTimes',
       javaFactory: 'return new java.util.HashMap<>();'
-    }
-  ]
-});
-
-foam.CLASS({
-  package: 'net.nanopay.meter.clearing',
-  name: 'COTransactionRefinement',
-  refines: 'net.nanopay.tx.cico.COTransaction',
-
-  implements: [
-    'net.nanopay.meter.clearing.ClearingTimesTrait'
-  ],
-
-  properties: [
+    },
     {
-      name: 'clearingTimes',
-      javaFactory: 'return new java.util.HashMap<>();'
+      name: 'estimatedCompletionDate',
+      javaFactory: 'return null;'
+    },
+    {
+      name: 'processDate',
+      javaFactory: 'return null;'
     }
   ]
 });
@@ -76,6 +67,14 @@ foam.CLASS({
     {
       name: 'clearingTimes',
       javaFactory: 'return new java.util.HashMap<>();'
+    },
+    {
+      name: 'estimatedCompletionDate',
+      javaFactory: 'return null;'
+    },
+    {
+      name: 'processDate',
+      javaFactory: 'return null;'
     }
   ]
 });
@@ -93,6 +92,14 @@ foam.CLASS({
     {
       name: 'clearingTimes',
       javaFactory: 'return new java.util.HashMap<>();'
+    },
+    {
+      name: 'estimatedCompletionDate',
+      javaFactory: 'return null;'
+    },
+    {
+      name: 'processDate',
+      javaFactory: 'return null;'
     }
   ]
 });

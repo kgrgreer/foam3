@@ -94,19 +94,6 @@ foam.CLASS({
 
   methods: [
     {
-      name: 'limitedCopyFrom',
-      args: [
-        {
-          name: 'other',
-          javaType: 'net.nanopay.tx.model.Transaction'
-        }
-      ],
-      javaCode: `
-      super.limitedCopyFrom(other);
-      copyClearingTimesFrom(other);
-      `
-    },
-    {
       name: `validate`,
       args: [
         { name: 'x', type: 'Context' }

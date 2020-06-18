@@ -44,6 +44,40 @@ foam.CLASS({
       javaFactory: 'return TransactionStatus.PENDING;'
     },
     {
+      class: 'DateTime',
+      name: 'estimatedCompletionDate',
+      createVisibility: 'HIDDEN',
+      readVisibility: function(processDate) {
+        return processDate ?
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
+      },
+      updateVisibility: function(processDate) {
+        return processDate ?
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
+      },
+      section: 'basicInfo',
+      createVisibility: 'HIDDEN',
+      tableWidth: 172
+    },
+    {
+      class: 'DateTime',
+      name: 'processDate',
+      storageTransient: true,
+      createVisibility: 'HIDDEN',
+      readVisibility: function(processDate) {
+       return processDate ?
+         foam.u2.DisplayMode.RO :
+         foam.u2.DisplayMode.HIDDEN;
+      },
+      updateVisibility: function(processDate) {
+       return processDate ?
+         foam.u2.DisplayMode.RO :
+         foam.u2.DisplayMode.HIDDEN;
+      }
+    },
+    {
       name: 'statusChoices',
       hidden: true,
       documentation: 'Returns available statuses for each transaction depending on current status',
@@ -80,24 +114,6 @@ foam.CLASS({
         return ['No status to choose'];
       }
     },
-    {
-      class: 'DateTime',
-      name: 'estimatedCompletionDate',
-      createVisibility: 'HIDDEN',
-      readVisibility: function(processDate) {
-        return processDate ?
-          foam.u2.DisplayMode.RO :
-          foam.u2.DisplayMode.HIDDEN;
-      },
-      updateVisibility: function(processDate) {
-        return processDate ?
-          foam.u2.DisplayMode.RO :
-          foam.u2.DisplayMode.HIDDEN;
-      },
-      section: 'basicInfo',
-      createVisibility: 'HIDDEN',
-      tableWidth: 172
-    }
   ],
 
   methods: [

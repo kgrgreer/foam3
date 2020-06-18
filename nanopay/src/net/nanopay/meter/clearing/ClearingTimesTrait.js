@@ -31,7 +31,15 @@ foam.INTERFACE({
       writePermissionRequired: true,
       javaType: 'java.util.Map<String, Integer>',
       javaFactory: ''
-    }
+    },
+    {
+      class: 'DateTime',
+      name: 'estimatedCompletionDate',
+    },
+    {
+      class: 'DateTime',
+      name: 'processDate',
+    },
   ],
 
   axioms: [
