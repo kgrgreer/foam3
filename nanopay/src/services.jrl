@@ -2440,41 +2440,6 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"localCapabilityDAO",
-  "lazy":true,
-  "serve":true,
-  "serviceScript":"""
-    dao = new foam.dao.EasyDAO.Builder(x)
-      .setAuthorize(false)
-      .setGuid(true)
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName("capabilities")
-      .setOf(foam.nanos.crunch.Capability.getOwnClassInfo())
-      .build();
-    dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.Capability.NAME });
-
-    return dao;
-  """,
-  "client":"{\"of\":\"foam.nanos.crunch.Capability\"}"
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"capabilityDAO",
-  "lazy":true,
-  "serve":true,
-  "serviceScript":"""
-    return new foam.dao.EasyDAO.Builder(x)
-      .setAuthorize(true)
-      .setInnerDAO(x.get("localCapabilityDAO"))
-      .setOf(foam.nanos.crunch.Capability.getOwnClassInfo())
-      .build();
-  """,
-  "client":"{\"of\":\"foam.nanos.crunch.Capability\"}"
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
   "name":"userCapabilityJunctionDAO",
   "serve":true,
   "serviceScript":"""
