@@ -50,7 +50,7 @@ foam.CLASS({
      value: 120000 // 2minutes
    },
    {
-     class: 'FObjectProperty',
+     class: 'Object',
      javaType: 'java.util.Timer',
      name: 'timer',
      javaFactory: 'return new Timer();',
