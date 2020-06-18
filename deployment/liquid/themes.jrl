@@ -4,8 +4,10 @@ p({
   "description":"Liquid",
   "appName":"Liquid",
   "priority":2,
-  "defaultMenu":"accounts",
+  "navigationRootMenu":"",
+  "settingsRootMenu":"settings",
   "logoRedirect":"accounts",
+  "defaultMenu":"accounts",
   "largeLogoEnabled": false,
   "largeLogo": "images/nanopay_blue_white_206x42.png",
   "logoBackgroundColour":"#202341",
@@ -43,11 +45,19 @@ p({
   "customCSS":
   """
     .login-wrapper {
-      padding-top: 60px;
       margin-left: 250px;
     }
-    .footer-wrapper {
-      margin-left: 250px;
+    .foam-u2-stack-StackView {
+      margin: auto;
+      overflow: scroll;
+      height: calc(100vh - 150px);
+    }
+    .net-nanopay-ui-Controller {
+      overflow: hidden;
+    }
+    .foam-comics-BrowserView {
+      width: 95%;
+      margin: auto;
     }
     .foam-u2-DateView {
       font-family: Roboto, 'Helvetica Neue', helvetica, sans-serif;
