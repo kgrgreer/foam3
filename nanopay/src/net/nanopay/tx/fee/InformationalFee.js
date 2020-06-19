@@ -15,34 +15,39 @@
  * from nanopay Corporation.
  */
 
-foam.INTERFACE({
-  package: 'net.nanopay.tx.model',
-  name: 'FeeInterface',
+foam.CLASS({
+  package: 'net.nanopay.tx.fee',
+  name: 'InformationalFee',
+  extends: 'net.nanopay.tx.fee.Fee',
+
+  properties: [
+    {
+      class: 'Long',
+      name: 'amount'
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.tx.fee.FeeType',
+      name: 'type',
+      value: 'INFORMATIONAL'
+    }
+  ],
 
   methods: [
     {
       name: 'getFee',
-      type: 'Long',
-      async: true,
-      javaThrows: [ 'java.lang.RuntimeException' ],
       args: [
         {
-          name: 'transactionAmount',
-          type: 'Long',
+          name: 'obj',
+          type: 'FObject',
         }
-      ]
-    },
-    {
-      name: 'getTotalAmount',
+      ],
       type: 'Long',
-      async: true,
-      javaThrows: [ 'java.lang.RuntimeException' ],
-      args: [
-        {
-          name: 'transactionAmount',
-          type: 'Long',
-        }
-      ]
+      javaCode: ' return this.getAmount(); ',
+      swiftCode: ' return amount ',
+      code: function() {
+        return this.amount;
+      }
     }
   ]
 });

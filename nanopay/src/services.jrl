@@ -421,15 +421,16 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
       .setPipelinePm(true)
+      .setGuid(true)
       .setJournalName("fees")
-      .setOf(net.nanopay.tx.model.Fee.getOwnClassInfo())
+      .setOf(net.nanopay.tx.fee.Fee.getOwnClassInfo())
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .build();
   """,
   "client":
   """
   {
-    "of":"net.nanopay.tx.model.Fee"
+    "of":"net.nanopay.tx.fee.Fee"
   }
   """
 })

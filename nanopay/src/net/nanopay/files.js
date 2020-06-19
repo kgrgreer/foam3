@@ -378,12 +378,6 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/client/ClientTransactionLimitService' },
   { name: 'net/nanopay/tx/client/ClientUserTransactionLimitService' },
   { name: 'net/nanopay/util/Frequency' },
-  { name: 'net/nanopay/tx/model/Fee' },
-  { name: 'net/nanopay/tx/model/FeeInterface' },
-  { name: 'net/nanopay/tx/model/FeeType' },
-  { name: 'net/nanopay/tx/model/FixedFee' },
-  { name: 'net/nanopay/tx/model/InformationalFee' },
-  { name: 'net/nanopay/tx/model/PercentageFee' },
   { name: 'net/nanopay/tx/model/TransactionFee' },
   { name: 'net/nanopay/tx/model/TransactionStatus' },
   { name: 'net/nanopay/tx/model/TransactionEntity' },
@@ -1483,6 +1477,14 @@ FOAM_FILES([
 
   // Fees
   { name: 'net/nanopay/tx/planner/fees/AbliiFeeRule' },
+  { name: 'net/nanopay/tx/fee/Fee' },
+  { name: 'net/nanopay/tx/fee/FeeExpr' },
+  { name: 'net/nanopay/tx/fee/FeeType' },
+  { name: 'net/nanopay/tx/fee/FixedFee' },
+  { name: 'net/nanopay/tx/fee/InformationalFee' },
+  { name: 'net/nanopay/tx/fee/PercentageFee' },
+  { name: 'net/nanopay/tx/fee/TransactionFeeRule' },
+  { name: 'net/nanopay/tx/fee/test/TransactionFeeRuleTest' },
 
   // crunch onboarding
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerInformationData' },

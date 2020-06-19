@@ -68,7 +68,7 @@ foam.CLASS({
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.tx.model.Fee',
+      of: 'net.nanopay.tx.fee.Fee',
       name: 'fee',
       documentation: 'Fee class that should be applied to transaction.',
     },

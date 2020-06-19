@@ -1,1 +1,1 @@
-p({"class":"net.nanopay.model.Broker","id":1,"name":"nanopay","active":true,"userId":1002,"fee":{"class":"net.nanopay.tx.model.FixedFee","fixedFee":50,"type":1}})
+p({"class":"net.nanopay.model.Broker","id":1,"name":"nanopay","active":true,"userId":1002,"fee":{"class":"net.nanopay.tx.fee.FixedFee","fixedFee":50,"type":1}})
