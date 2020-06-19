@@ -191,7 +191,7 @@ foam.CLASS({
           for ( Transaction txn: txnList ) {
             Account account = txn.findDestinationAccount(x);
             // TODO remove after all kotak transaction use line items
-            if ( account instanceof INBankAccount && getPurposeText(((INBankAccount) account).getPurposeCode()).equals("TRADE_TRANSACTION") ) {
+            if ( account instanceof INBankAccount && ((INBankAccount) account).getPurposeCode().equals("TRADE_TRANSACTION") ) {
               limit += txn.getDestinationAmount();
             } else {
               for (TransactionLineItem lineItem: txn.getLineItems() ) {
@@ -206,34 +206,6 @@ foam.CLASS({
         
         if ( limit + requestTxn.getDestinationAmount() > credentials.getTradePurposeCodeLimit() ) {
           throw new RuntimeException("Exceed INR Transaction limit");
-        }
-      `
-    },
-    {
-      name: 'getPurposeText',
-      javaType: 'String',
-      args: [
-        {
-          name: 'purposeCode',
-          type: 'String',
-        }
-      ],
-      javaCode: `
-        switch (purposeCode) {
-          case "P0306":
-            return "PAYMENTS_FOR_TRAVEL";
-    
-          case "P1306":
-            return "TAX_PAYMENTS_IN_INDIA";
-    
-          case "P0011":
-            return "EMI_PAYMENTS_FOR_REPAYMENT_OF_LOANS";
-    
-          case "P0103":
-            return "ADVANCE_AGAINST_EXPORTS";
-    
-          default:
-            return "TRADE_TRANSACTION";
         }
       `
     },
@@ -263,7 +235,7 @@ foam.CLASS({
           throw new RuntimeException("[Transaction Validation error] Invalid account relationship");
         }
 
-        if ( getPurposeText(paymentPurpose).equals("TRADE_TRANSACTION") ) {
+        if ( paymentPurpose.equals("TRADE_TRANSACTION") ) {
           checkTransactionLimits(x, txn);
         }
 
