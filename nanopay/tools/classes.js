@@ -282,6 +282,9 @@ var classes = [
   'net.nanopay.onboarding.email.NewUserOnboardedEmailDAO',
   'net.nanopay.onboarding.ruler.NotificationSettingsRule',
 
+  // sme business setting
+  'net.nanopay.sme.ruler.AccessControlChangeNotificationRule',
+
   // sign up
   'net.nanopay.sme.ruler.CheckUserNameAvailabilityRule',
 
@@ -1080,7 +1083,7 @@ var classes = [
   // Notification
   'net.nanopay.notification.TriggerNotificationTestAction',
   'net.nanopay.notification.TriggerDoNotifyTestAction',
-  
+
   // msp
   'net.nanopay.msp.MspInfo',
   'net.nanopay.msp.MspSetupDAO',

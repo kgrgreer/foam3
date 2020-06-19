@@ -194,6 +194,12 @@ foam.CLASS({
       name: 'isSigningOfficer',
       documentation: 'Then invited user is a signing officer',
       visibility: 'HIDDEN'
+    },
+    {
+      class: 'Boolean',
+      name: 'isRequiredResend',
+      documentation: 'The flag to resend already sent invitation (but send a new invitation)',
+      visibility: 'HIDDEN'
     }
   ],
 

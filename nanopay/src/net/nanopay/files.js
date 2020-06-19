@@ -1083,6 +1083,8 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ruler/InvitationAntiSpamCheckRule' },
   { name: 'net/nanopay/sme/ui/ErrorPageView', flags: ['web']  },
   { name: 'net/nanopay/settings/business/DeleteInvitedUserView', flags: ['web'] },
+  { name: 'net/nanopay/settings/business/AccessControlModal', flags: ['web'] },
+  { name: 'net/nanopay/sme/ruler/AccessControlChangeNotificationRule' },
 
   // relationships
   { name: 'net/nanopay/model/Relationships' },

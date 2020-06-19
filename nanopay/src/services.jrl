@@ -1640,9 +1640,7 @@ p({
   "description": "DAO responsible for storing agent authentication permission information.",
   "serviceScript":
   """
-    dao = new net.nanopay.business.EnforceOneBusinessAdminDAO.Builder(x)
-      .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.auth.UserUserJunction.getOwnClassInfo()).build())
-      .build();
+    dao = new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.auth.UserUserJunction.getOwnClassInfo()).build();
     dao = new net.nanopay.partners.PartnerInfoDAO(x, dao);
     dao = new net.nanopay.auth.PublicUserInfoDAO(x, false, "partnerId", "partnerInfo", dao);
     dao = new net.nanopay.auth.PublicUserInfoDAO(x, false, "yourId", "yourInfo", dao);
@@ -2490,8 +2488,8 @@ p({
   "client":
   """
     {
-      "of": "net.nanopay.invoice.model.Invoice", 
-      "remoteListenerSupport": false, 
+      "of": "net.nanopay.invoice.model.Invoice",
+      "remoteListenerSupport": false,
       "cache": false
     }
   """

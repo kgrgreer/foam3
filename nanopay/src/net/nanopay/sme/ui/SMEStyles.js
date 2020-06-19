@@ -659,7 +659,7 @@ foam.CLASS({
       margin-bottom: -60px;
       margin-left: 0;
     }
-    
+
     .dashboard-stack {
       margin-bottom: 0;
       margin-left: 250px;

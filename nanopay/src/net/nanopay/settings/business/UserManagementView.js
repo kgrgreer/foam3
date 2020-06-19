@@ -29,7 +29,6 @@ foam.CLASS({
     'foam.dao.EasyDAO',
     'foam.nanos.auth.UserUserJunction',
     'foam.u2.dialog.Popup',
-    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.auth.AgentJunctionStatus',
     'net.nanopay.model.ClientUserJunction',
     'net.nanopay.model.Invitation',
@@ -37,9 +36,10 @@ foam.CLASS({
   ],
 
   imports: [
-    'subject',
     'agentJunctionDAO',
-    'businessInvitationDAO'
+    'businessInvitationDAO',
+    'notify',
+    'subject',
   ],
 
   exports: [
@@ -83,7 +83,9 @@ foam.CLASS({
     { name: 'ACTIVE_SUCCESS', message: ' successfully enabled' },
     { name: 'ACTIVE_FAILURE', message: 'Failed to enable ' },
     { name: 'DELETE_FAILURE', message: 'Failed to delete ' },
-    { name: 'INVITE', message: 'invite' }
+    { name: 'INVITE', message: 'invite' },
+    { name: 'INVITATION_SUCCESS', message: 'Invitation resent' },
+    { name: 'INVITATION_FAILURE', message: 'Failed to resent invitation' }
   ],
 
   methods: [
@@ -106,8 +108,23 @@ foam.CLASS({
           editColumnsEnabled: false,
           contextMenuActions: [
             foam.core.Action.create({
-              name: 'disableUser',
-              isEnabled: function() {
+              name: 'Change access control',
+              isAvailable: function() {
+                return (this.status === self.AgentJunctionStatus.ACTIVE || this.status === self.AgentJunctionStatus.INVITED) && self.subject.realUser.id != this.sourceId;
+              },
+              code: function(X) {
+                var junction = this;
+
+                ctrl.add(self.Popup.create().tag({
+                  class: 'net.nanopay.settings.business.AccessControlModal',
+                  dao: self.clientJunctionDAO,
+                  junction: junction
+                }));
+              }
+            }),
+            foam.core.Action.create({
+              name: 'Deactivate account',
+              isAvailable: function() {
                 return this.status === self.AgentJunctionStatus.ACTIVE && self.subject.realUser.id != this.sourceId;
               },
               code: function(X) {
@@ -115,16 +132,16 @@ foam.CLASS({
                 var junction = this;
                 this.agentJunctionObj.status = self.AgentJunctionStatus.DISABLED;
                 self.agentJunctionDAO.put(this.agentJunctionObj).then(function(resp) {
-                  ctrl.add(self.NotificationMessage.create({ message: junction.name + self.DISABLED_SUCCESS }));
+                  self.notify(`${ junction.name + self.DISABLED_SUCCESS }`, 'success');
                 }).catch(function(err) {
                   var message = err ? err.message : self.DISABLED_FAILURE;
-                  ctrl.add(self.NotificationMessage.create({ message: message + junction.name, type: 'error' }));
+                  self.notify(`${ message + junction.name }`, 'error');
                 });
               }
             }),
             foam.core.Action.create({
-              name: 'enableUser',
-              isEnabled: function() {
+              name: 'Activate account',
+              isAvailable: function() {
                 return this.status === self.AgentJunctionStatus.DISABLED && self.subject.realUser.id != this.sourceId;
               },
               code: function(X) {
@@ -132,16 +149,43 @@ foam.CLASS({
                 var junction = this;
                 this.agentJunctionObj.status = self.AgentJunctionStatus.ACTIVE;
                 self.agentJunctionDAO.put(this.agentJunctionObj).then(function(resp) {
-                  ctrl.add(self.NotificationMessage.create({ message: junction.name + self.ACTIVE_SUCCESS }));
+                  self.notify(`${ junction.name }`, 'success');
                 }).catch(function(err) {
                   var message = err ? err.message : self.ACTIVE_FAILURE;
-                  ctrl.add(self.NotificationMessage.create({ message: message + junction.name, type: 'error' }));
+                  self.notify(`${ message + junction.name }`, 'error');
                 });
               }
             }),
             foam.core.Action.create({
-              name: 'Delete',
-              isEnabled: function() {
+              name: 'Resend invitation',
+              isAvailable: function() {
+                return this.status === self.AgentJunctionStatus.INVITED && self.subject.realUser.id != this.sourceId;
+              },
+              code: function(X) {
+                var junction = this;
+                var email = this.email;
+
+                self.businessInvitationDAO
+                  .where(
+                    self.AND(
+                      self.EQ(self.Invitation.EMAIL, email),
+                      self.EQ(self.Invitation.STATUS, self.InvitationStatus.SENT),
+                      self.EQ(self.Invitation.CREATED_BY, self.subject.user.id)
+                    )
+                  ).select().then(function(invite) {
+                      invite.array[0].isRequiredResend = true;
+                      self.businessInvitationDAO.put(invite.array[0]).then((resp) => {
+                      self.notify(`${ self.INVITATION_SUCCESS }`, 'success');
+                    }).catch((err) => {
+                      var message = err ? err.message : self.INVITATION_FAILURE;
+                      self.notify(`${ message }`, 'error');
+                    })
+                  });
+              }
+            }),
+            foam.core.Action.create({
+              name: 'Revoke invitation',
+              isAvailable: function() {
                 return this.status === self.AgentJunctionStatus.INVITED && self.subject.realUser.id != this.sourceId;
               },
               code: function(X) {
@@ -232,10 +276,9 @@ foam.CLASS({
       code: function() {
         // Add add user flow
         ctrl.add(this.Popup.create().tag({
-          class: 'net.nanopay.sme.ui.AddUserToBusinessModal',
+          class: 'net.nanopay.settings.business.AccessControlModal',
           dao: this.clientJunctionDAO,
-          role: 'employee',
-          noChoice: true
+          isAddUser: true
         }));
       }
     }
