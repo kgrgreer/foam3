@@ -93,20 +93,36 @@ foam.CLASS({
       name: 'country',
       value: 'CA',
       section: 'accountDetails',
-      createVisibility: 'HIDDEN'
+      visibility: 'RO'
     },
     {
       name: 'flagImage',
       section: 'accountDetails',
       label: '',
       value: 'images/flags/cad.png',
-      createVisibility: 'HIDDEN'
+      visibility: 'RO'
     },
     {
       name: 'denomination',
       section: 'accountDetails',
       gridColumns: 12,
       value: 'CAD',
+    },
+    {
+      class: 'String',
+      name: 'iban',
+      visibility: 'HIDDEN',
+      getter: function() {
+        return this.accountNumber;
+      },
+      javaGetter: `
+        return getAccountNumber();
+      `
+    },
+    {
+      class: 'String',
+      name: 'bankCode',
+      visibility: 'HIDDEN'
     },
     {
       name: 'voidChequeImage',

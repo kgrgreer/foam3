@@ -86,13 +86,13 @@ foam.CLASS({
     {
       name: 'country',
       value: 'US',
-      createVisibility: 'HIDDEN'
+      visibility: 'RO'
     },
     {
       name: 'flagImage',
       label: '',
       value: 'images/flags/us.png',
-      createVisibility: 'HIDDEN'
+      visibility: 'RO'
     },
     {
       name: 'denomination',
@@ -100,6 +100,20 @@ foam.CLASS({
     },
     {
       name: 'desc',
+      visibility: 'HIDDEN'
+    },
+    {
+      name: 'iban',
+      visibility: 'HIDDEN',
+      getter: function() {
+        return this.accountNumber;
+      },
+      javaGetter: `
+        return getAccountNumber();
+      `
+    },
+    {
+      name: 'bankCode',
       visibility: 'HIDDEN'
     },
     { // REVIEW: remove
@@ -348,18 +362,6 @@ foam.CLASS({
         if ( ! ACCOUNT_NUMBER_PATTERN.matcher(accountNumber).matches() ) {
           throw new IllegalStateException(this.ACCOUNT_NUMBER_INVALID);
         }
-      `
-    },
-    {
-      name: 'getBankCode',
-      type: 'String',
-      args: [
-        {
-          name: 'x', type: 'Context'
-        }
-      ],
-      javaCode: `
-        return "";
       `
     },
     {
