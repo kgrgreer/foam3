@@ -1,5 +1,6 @@
 package net.nanopay.approval.test;
 
+import foam.comics.v2.userfeedback.UserFeedbackException;
 import foam.core.X;
 import foam.dao.DAO;
 import java.util.List;
@@ -171,11 +172,19 @@ public class ApprovalStatusTestExecutor extends LiquidTestExecutor {
     try {
       getLocalUserDAO(x).inX(x).put(user);
     } catch(RuntimeException ex){
-      if ( ! ex.getMessage().equals("An approval request has been sent out.") ){
+      boolean pass = false;
+
+      if ( ex instanceof UserFeedbackException) {
+        var ufe = (UserFeedbackException) ex;
+        if ( ufe.getUserFeedback().getMessage().equals("An approval request has been sent out."))
+          pass = true;
+      }
+
+      if ( ! pass ){
         throw new RuntimeException(ex);
       }
     }
-    
+
     usersCounter++;
 
     return user;

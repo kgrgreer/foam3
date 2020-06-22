@@ -1,5 +1,6 @@
 package net.nanopay.test.liquid;
 
+import foam.comics.v2.userfeedback.UserFeedbackException;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
@@ -12,7 +13,7 @@ import java.util.List;
 import static foam.mlang.MLang.*;
 
 public class LiquidUserCreateTest extends LiquidTestExecutor {
-  
+
   public LiquidUserCreateTest() {
     super("CreateUserTest");
   }
@@ -42,10 +43,18 @@ public class LiquidUserCreateTest extends LiquidTestExecutor {
     // Add to the context
     try {
       getUserUserDAO(x).inX(getFirstX()).put(user);
-    } 
-    catch (RuntimeException ex) 
-    { 
-      test(ex.getMessage().equals("An approval request has been sent out."), "Expecting approval exception: " + ex.getMessage());
+    }
+    catch (RuntimeException ex)
+    {
+      boolean pass = false;
+
+      if ( ex instanceof UserFeedbackException) {
+        var ufe = (UserFeedbackException) ex;
+        if ( ufe.getUserFeedback().getMessage().equals("An approval request has been sent out."))
+          pass = true;
+      }
+
+      test(pass, "Expecting approval exception: " + ex.getMessage());
     }
 
     DAO approvableDAO = getApprovableDAO(getFirstX());
@@ -75,7 +84,7 @@ public class LiquidUserCreateTest extends LiquidTestExecutor {
     test(group.equals("liquidBasic"), "Checking if group assigned to user is liquidBasic: " + group);
     test(emailVerified, "Checking if user email is automatically verified: " + emailVerified);
 
-    // Attempt retrieving the user 
+    // Attempt retrieving the user
     user = (User) getUserUserDAO(x).inX(getFirstX()).find(user.getId());
     test(user == null, "Checking if user can be retrieved if the create approvable hasn't been approved");
   }
