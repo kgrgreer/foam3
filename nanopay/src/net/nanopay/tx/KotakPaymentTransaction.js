@@ -175,7 +175,7 @@ foam.CLASS({
       javaCode: `
       for ( TransactionLineItem item : getLineItems() ) {
         if ( item instanceof KotakPaymentPurposeLineItem ) {
-          return ((KotakPaymentPurposeLineItem) item).getPurposeCode();
+          return getPurposeText(((KotakPaymentPurposeLineItem) item).getPurposeCode());
         }
       }
       return"";
@@ -192,6 +192,34 @@ foam.CLASS({
       }
       return"";
       `
-    }
+    },
+    {
+      name: 'getPurposeText',
+      javaType: 'String',
+      args: [
+        {
+          name: 'purposeCode',
+          type: 'String',
+        }
+      ],
+      javaCode: `
+        switch (purposeCode) {
+          case "P0306":
+            return "PAYMENTS_FOR_TRAVEL";
+    
+          case "P1306":
+            return "TAX_PAYMENTS_IN_INDIA";
+    
+          case "P0011":
+            return "EMI_PAYMENTS_FOR_REPAYMENT_OF_LOANS";
+    
+          case "P0103":
+            return "ADVANCE_AGAINST_EXPORTS";
+    
+          default:
+            return "TRADE_TRANSACTION";
+        }
+      `
+    },
   ]
 });

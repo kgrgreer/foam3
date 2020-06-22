@@ -16,24 +16,32 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.tx.model',
-  name: 'Fee',
+  package: 'net.nanopay.tx.fee',
+  name: 'FixedFee',
+  extends: 'net.nanopay.tx.fee.Fee',
 
-  documentation: 'Describes the fee type.',
-
-  abstract: true,
-  implements: ['net.nanopay.tx.model.FeeInterface'],
   properties: [
     {
-      class: 'foam.core.Enum',
-      of: 'net.nanopay.tx.model.FeeType',
-      name: 'type',
-      documentation: 'Determines fee type.'
-    },
+      class: 'Long',
+      name: 'fixedFee'
+    }
+  ],
+
+  methods: [
     {
-      name: 'isPassThroughFee',
-      class: 'Boolean',
-      value: false
-    },
+      name: 'getFee',
+      args: [
+        {
+          name: 'obj',
+          type: 'FObject',
+        }
+      ],
+      type: 'Long',
+      javaCode: ' return this.getFixedFee(); ',
+      swiftCode: ' return fixedFee ',
+      code: function() {
+        return this.fixedFee;
+      }
+    }
   ]
- });
+});

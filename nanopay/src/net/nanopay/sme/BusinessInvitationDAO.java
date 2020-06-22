@@ -65,27 +65,6 @@ public class BusinessInvitationDAO
     Invitation invite = (Invitation) obj.fclone();
     invite.setEmail(invite.getEmail().toLowerCase());
 
-    // A legal requirement is that we need to do a compliance check on any
-    // user that can make payments, which includes admins and approvers.
-    // However, we only do compliance checks on the company right now, not
-    // every user that can act as it. Therefore in the short term we'll
-    // only allow users to invite employees, because employees can't pay
-    // invoices, only submit them for approval.
-
-    // However, one of our use cases is when an employee of a company signs up,
-    // partially fills out the business profile and then invites the company
-    // signing officer to sign up and finish the business profile. For that
-    // reason we include the compliance condition below. We need to allow people
-    // to add an admin to their business before finishing the business profile
-    // so that the company signing officer can sign up and finish the business
-    // profile.
-    if (
-      business.getCompliance() != ComplianceStatus.NOTREQUESTED &&
-      ! SafetyUtil.equals(invite.getGroup(), "employee")
-    ) {
-      throw new AuthorizationException("Only employees can be added for the time being."); // TODO: Come up with a better message.
-    }
-
     Invitation existingInvite = (Invitation) getDelegate().inX(getX()).find(
       OR(
         EQ(Invitation.ID, invite.getId()),
@@ -104,10 +83,14 @@ public class BusinessInvitationDAO
         return super.put_(x, invite);
       }
 
-      // Log duplicate invites.
-      Logger logger = (Logger) x.get("logger");
-      logger.warning(String.format("Invitation with id %d already exists.", invite.getId()));
-      throw new RuntimeException("Invitation already exists");
+      if ( ! invite.getIsRequiredResend() ) {
+        // Log duplicate invites.
+        Logger logger = (Logger) x.get("logger");
+        logger.warning(String.format("Invitation with id %d already exists.", invite.getId()));
+        throw new RuntimeException("Invitation already exists");
+      } else { // cancel the existing invite
+        getDelegate().remove(existingInvite);
+      }
     }
 
     // Associated the business into the param. Add group type (admin, approver, employee)
@@ -154,6 +137,7 @@ public class BusinessInvitationDAO
       sendInvitationEmail(x, business, invite);
     }
 
+    invite.setIsRequiredResend(false);
     invite.setTimestamp(new Date());
     return super.put_(x, invite);
   }

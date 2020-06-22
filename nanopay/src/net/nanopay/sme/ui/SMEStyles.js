@@ -620,12 +620,7 @@ foam.CLASS({
     .foam-comics-DAOControllerView .actions .foam-u2-ActionView img + span {
       margin-left: 12px;
     }
-
-    .foam-comics-DAOControllerView .actions .foam-u2-ActionView:hover {
-      /* Change the color of the icon to purple */
-      filter: hue-rotate(67deg) saturate(100000000) opacity(65%);
-    }
-
+    
     .net-nanopay-ui-Controller .foam-comics-DAOControllerView-top-row {
       margin-bottom: 36px;
     }
@@ -659,7 +654,7 @@ foam.CLASS({
       margin-bottom: -60px;
       margin-left: 0;
     }
-    
+
     .dashboard-stack {
       margin-bottom: 0;
       margin-left: 250px;

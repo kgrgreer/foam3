@@ -16,14 +16,19 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.tx.model',
+  package: 'net.nanopay.tx.fee',
   name: 'PercentageFee',
-  extends: 'net.nanopay.tx.model.Fee',
+  extends: 'net.nanopay.tx.fee.Fee',
 
   properties: [
     {
       class: 'Float',
       name: 'percentage'
+    },
+    {
+      class: 'String',
+      name: 'propName',
+      value: 'amount'
     }
   ],
 
@@ -32,31 +37,28 @@ foam.CLASS({
       name: 'getFee',
       args: [
         {
-          name: 'transactionAmount',
-          type: 'Long',
+          name: 'obj',
+          type: 'FObject',
         }
       ],
       type: 'Long',
-      javaCode: ' return ((Double) (this.getPercentage()/100.0 * transactionAmount)).longValue(); ',
-      swiftCode: ' return Int(floorf(percentage / 100.0 * Float(transactionAmount)))',
-      code: function() {
-        return this.percentage/100 * transactionAmount;
+      javaCode: `
+        var prop = obj.getProperty(getPropName());
+        if ( prop instanceof Number ) {
+          return ((Double)
+            (this.getPercentage()/100.0 * ((Number) prop).doubleValue())
+          ).longValue();
+        }
+        return 0;
+      `,
+      // swiftCode: ' return Int(floorf(percentage / 100.0 * Float(transactionAmount)))',
+      code: function(obj) {
+        return this.percentage/100 * obj[this.propName];
       }
     },
     {
-      name: 'getTotalAmount',
-      args: [
-        {
-          name: 'transactionAmount',
-          type: 'Long',
-        }
-      ],
-      type: 'Long',
-      javaCode: ' return getFee(transactionAmount) + transactionAmount; ',
-      swiftCode: ' return getFee(transactionAmount) + transactionAmount ',
-      code: function() {
-        return getFee(transactionAmount) + transactionAmount;
-      }
+      name: 'getRate',
+      javaCode: 'return getPercentage() / 100.0;'
     }
   ]
 });

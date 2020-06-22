@@ -1,5 +1,6 @@
 package net.nanopay.approval.test;
 
+import foam.comics.v2.userfeedback.UserFeedbackException;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
@@ -150,10 +151,18 @@ public class ApprovalTestExecutor extends LiquidTestExecutor {
 
     try {
       getLocalUserDAO(x).inX(x).put(user);
-    } 
-    catch (RuntimeException ex) 
-    { 
-      test(ex.getMessage().equals("An approval request has been sent out."), "Expecting approval exception: " + ex.getMessage());
+    }
+    catch (RuntimeException ex)
+    {
+      boolean pass = false;
+
+      if ( ex instanceof UserFeedbackException ) {
+        var ufe = (UserFeedbackException) ex;
+        if ( ufe.getUserFeedback().getMessage().equals("An approval request has been sent out."))
+          pass = true;
+      }
+
+      test(pass, "Expecting approval exception: " + ex.getMessage());
     }
 
     return user;
@@ -172,10 +181,18 @@ public class ApprovalTestExecutor extends LiquidTestExecutor {
     // Put the user
     try {
       getLocalUserDAO(x).inX(x).put(user);
-    } 
-    catch (RuntimeException ex) 
-    { 
-      test(ex.getMessage().equals("An approval request has been sent out."), "Expecting approval exception: " + ex.getMessage());
+    }
+    catch (RuntimeException ex)
+    {
+      boolean pass = false;
+
+      if ( ex instanceof UserFeedbackException ) {
+        var ufe = (UserFeedbackException) ex;
+        if ( ufe.getUserFeedback().getMessage().equals("An approval request has been sent out."))
+          pass = true;
+      }
+
+      test(pass, "Expecting approval exception: " + ex.getMessage());
     }
 
     // Test that the user has not been updated
@@ -190,10 +207,18 @@ public class ApprovalTestExecutor extends LiquidTestExecutor {
     // call remove on the user
     try {
       getLocalUserDAO(x).inX(x).remove(user);
-    } 
-    catch (RuntimeException ex) 
-    { 
-      test(ex.getMessage().equals("An approval request has been sent out."), "Expecting approval exception: " + ex.getMessage());
+    }
+    catch (RuntimeException ex)
+    {
+      boolean pass = false;
+
+      if ( ex instanceof UserFeedbackException ) {
+        var ufe = (UserFeedbackException) ex;
+        if ( ufe.getUserFeedback().getMessage().equals("An approval request has been sent out."))
+          pass = true;
+      }
+
+      test(pass, "Expecting approval exception: " + ex.getMessage());
     }
 
     // make sure the user still exists
@@ -226,14 +251,14 @@ public class ApprovalTestExecutor extends LiquidTestExecutor {
       // Make sure any other requests are REQUESTED
       test(request.getStatus() == ApprovalStatus.REQUESTED, "ApprovalRequest(" + operation + ") set to " + request.getStatus() + ": " + request.getId() + ", user: " + request.getApprover());
 
-      // Look for the approving user 
+      // Look for the approving user
       if (request.getApprover() == approvingUser.getId())
         approvalRequest = request;
 
       // Keep track off all the approvers
       requestApproverIds.add(request.getApprover());
     }
-    
+
     // Remove the requestor from the set of approvers
     //requestApproverIds.remove(requestingUser.getId());
     Collections.sort(requestApproverIds);
@@ -241,10 +266,10 @@ public class ApprovalTestExecutor extends LiquidTestExecutor {
     // Lookup all of the possible approvers
     List<Long> approverIds = this.getUserQueryService(x).getAllApprovers(x, User.getOwnClassInfo().getObjClass().getSimpleName());
     Collections.sort(approverIds);
-    
+
     // Test to see if they match
     test(approverIds.equals(requestApproverIds), "Checking if UCJ approvers and approval requests approvers match");
-    
+
     // Test that an approval request has been found for the approving user
     test(approvalRequest != null, "Checking if approval request found for approving user: " + approvingUser.getId());
     return approvalRequest;
@@ -269,7 +294,7 @@ public class ApprovalTestExecutor extends LiquidTestExecutor {
 
     test(foundApprovable != null, "Checking if Approvable found after update");
     test(foundApprovable.getStatus() == expectedStatus, "Expected status: " + expectedStatus + ". Actual status: " + foundApprovable.getStatus());
-    
+
     if ( operation == Operations.UPDATE ){
       // Test that the user has not been updated
       User foundUser = (User) getLocalUserDAO(x).inX(x).find(user.getId());
@@ -296,7 +321,7 @@ public class ApprovalTestExecutor extends LiquidTestExecutor {
 
   private void applyApprovalAction(X x, ApprovalStatus status, ApprovalRequest request, Operations operation) {
     test(request != null, "Checking if ApprovalRequest found for approving user: " + this.getTestPrefix());
-    
+
     // Mark the request with the appropriate status
     request = (ApprovalRequest) request.fclone();
     request.setStatus(status);
@@ -326,5 +351,5 @@ public class ApprovalTestExecutor extends LiquidTestExecutor {
     // Check the lifecycle state
     test(foundUser.getLifecycleState() == lifecycleState, "Checking if found user lifecycle state is correct. Expected: " + lifecycleState + ". Actual: " + foundUser.getLifecycleState());
     return (User) foundUser.fclone();
-  }  
+  }
 }

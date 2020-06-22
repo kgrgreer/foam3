@@ -283,6 +283,9 @@ var classes = [
   'net.nanopay.onboarding.email.NewUserOnboardedEmailDAO',
   'net.nanopay.onboarding.ruler.NotificationSettingsRule',
 
+  // sme business setting
+  'net.nanopay.sme.ruler.AccessControlChangeNotificationRule',
+
   // sign up
   'net.nanopay.sme.ruler.CheckUserNameAvailabilityRule',
 
@@ -463,12 +466,6 @@ var classes = [
   'net.nanopay.tx.ModifyCicoStatus',
   'net.nanopay.tx.PurposeGroup',
   'net.nanopay.util.Frequency',
-  'net.nanopay.tx.model.Fee',
-  'net.nanopay.tx.model.FeeInterface',
-  'net.nanopay.tx.model.FeeType',
-  'net.nanopay.tx.model.FixedFee',
-  'net.nanopay.tx.model.InformationalFee',
-  'net.nanopay.tx.model.PercentageFee',
   'net.nanopay.tx.model.TransactionFee',
   'net.nanopay.tx.FeeLineItem',
   'net.nanopay.tx.InvoicedFeeLineItem',
@@ -1028,6 +1025,14 @@ var classes = [
 
   // Fees
   'net.nanopay.tx.planner.fees.AbliiFeeRule',
+  'net.nanopay.tx.fee.Fee',
+  'net.nanopay.tx.fee.FeeExpr',
+  'net.nanopay.tx.fee.FeeType',
+  'net.nanopay.tx.fee.FixedFee',
+  'net.nanopay.tx.fee.InformationalFee',
+  'net.nanopay.tx.fee.PercentageFee',
+  'net.nanopay.tx.fee.TransactionFeeRule',
+  'net.nanopay.tx.fee.test.TransactionFeeRuleTest',
 
   // crunch onboarding
   'net.nanopay.crunch.onboardingModels.SigningOfficerInformationData',
@@ -1081,7 +1086,7 @@ var classes = [
   // Notification
   'net.nanopay.notification.TriggerNotificationTestAction',
   'net.nanopay.notification.TriggerDoNotifyTestAction',
-  
+
   // msp
   'net.nanopay.msp.MspInfo',
   'net.nanopay.msp.MspSetupDAO',

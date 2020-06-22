@@ -482,7 +482,7 @@ function setenv {
       fi
     fi
 
-    if [ -z "$MODE" ] || [ "$MODE" == "DEVELOPMENT" ] || [ "$MODE" == "STAGING" ]; then
+    if [ -z "$MODE" ] || [ "$MODE" == "DEVELOPMENT" ] || [ "$MODE" == "STAGING" ] || [ "$MODE" == "TEST" ]; then
         JAVA_OPTS="-enableassertions ${JAVA_OPTS}"
     fi
 

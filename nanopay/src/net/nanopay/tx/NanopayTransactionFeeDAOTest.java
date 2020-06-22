@@ -17,7 +17,7 @@ import net.nanopay.bank.CABankAccount;
 import net.nanopay.fx.FXService;
 import net.nanopay.payment.Institution;
 import net.nanopay.tx.alterna.AlternaCOTransaction;
-import net.nanopay.tx.model.PercentageFee;
+import net.nanopay.tx.fee.PercentageFee;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionFee;
 

@@ -57,7 +57,7 @@ foam.CLASS({
     {
       class: 'foam.core.FObjectProperty',
       name: 'fee',
-      of: 'net.nanopay.tx.model.Fee',
+      of: 'net.nanopay.tx.fee.Fee',
       documentation: 'Associated fees marked by broker.'
     }
   ]

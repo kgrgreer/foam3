@@ -564,27 +564,23 @@ foam.CLASS({
         obj.toSummary = () => 'Other';
         dao.put(obj);
         return {
-          class: 'foam.u2.view.ModeAltView',
-          readView: { class: 'foam.u2.detail.VerticalDetailView' },
-          writeView: {
-            class: 'net.nanopay.crunch.onboardingModels.SelectionViewOwner',
-            dao2$: dao2,
-            dao: dao,
-            choiceView:
-            {
-              class: 'foam.u2.view.RichChoiceView',
-              choosePlaceholder: 'Please select one of the following...',
-              sections: [
-                {
-                  heading: 'Please select one of the following registered Signing Officers...',
-                  dao$: dao2
-                },
-                {
-                  heading: 'If owner is not a registered Signing Officers, please select the following...',
-                  dao: dao
-                }
-              ]
-            }
+          class: 'net.nanopay.crunch.onboardingModels.SelectionViewOwner',
+          dao2$: dao2,
+          dao: dao,
+          choiceView:
+          {
+            class: 'foam.u2.view.RichChoiceView',
+            choosePlaceholder: 'Please select one of the following...',
+            sections: [
+              {
+                heading: 'Please select one of the following registered Signing Officers...',
+                dao$: dao2
+              },
+              {
+                heading: 'If owner is not a registered Signing Officers, please select the following...',
+                dao: dao
+              }
+            ]
           }
         };
       }
