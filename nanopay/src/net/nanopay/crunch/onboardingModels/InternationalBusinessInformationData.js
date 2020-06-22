@@ -39,7 +39,7 @@ foam.CLASS({
     {
       section: 'businessDetailsSection',
       name: 'businessRegistrationDate',
-      label: 'businessFormationDate',
+      label: 'Business Formation Date',
       class: 'Date',
       documentation: 'Date of Business Formation or Incorporation.',
       validationPredicates: [
@@ -58,7 +58,7 @@ foam.CLASS({
     {
       section: 'businessDetailsSection',
       name: 'countryOfBusinessRegistration',
-      label: 'countryOfBusinessFormation',
+      label: 'Country Of Business Formation',
       class: 'Reference',
       of: 'foam.nanos.auth.Country',
       documentation: 'Country or Jurisdiction of Formation or Incorporation.',
