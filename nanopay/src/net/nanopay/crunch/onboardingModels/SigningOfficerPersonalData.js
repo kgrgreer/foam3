@@ -112,21 +112,23 @@ foam.CLASS({
         {
           args: ['birthday'],
           predicateFactory: function(e) {
-            return foam.mlang.predicate.OlderThan.create({
-              arg1: net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.BIRTHDAY,
-              timeMs: 18 * 365 * 24 * 60 * 60 * 1000
-            });
+            var limit = new Date();
+            limit.setDate(limit.getDate() - ( 18 * 365 ));
+            return e.AND(
+              e.NEQ(net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.BIRTHDAY, null),
+              e.LT(net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.BIRTHDAY, limit)
+            );
           },
           errorMessage: 'UNGER_AGE_LIMIT_ERROR'
         },
         {
           args: ['birthday'],
           predicateFactory: function(e) {
-            return e.NOT(
-              foam.mlang.predicate.OlderThan.create({
-                arg1: net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.BIRTHDAY,
-                timeMs: 125 * 365 * 24 * 60 * 60 * 1000
-              })
+            var limit = new Date();
+            limit.setDate(limit.getDate() - ( 125 * 365 ));
+            return e.AND(
+              e.NEQ(net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.BIRTHDAY, null),
+              e.GT(net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.BIRTHDAY, limit)
             );
           },
           errorMessage: 'OVER_AGE_LIMIT_ERROR'

@@ -524,9 +524,9 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
       }
 
       //payee.setPayeeBankSwiftCode(institution.getSwiftCode());
-      payee.setPayeeAccountIBANNumber(bankAccount.getIBAN(x));
+      payee.setPayeeAccountIBANNumber(bankAccount.getIban());
       payee.setPayeeBankRoutingCode(bankAccount.getRoutingCode(x));
-      payee.setPayeeBankBankCode(bankAccount.getBankCode(x));
+      payee.setPayeeBankBankCode(bankAccount.getBankCode());
       payee.setPayeeBankRoutingType(DEFAULT_AFX_PAYMENT_METHOD); //TODO
       payee.setPayeeInterBankRoutingCodeType(""); // TODO
 

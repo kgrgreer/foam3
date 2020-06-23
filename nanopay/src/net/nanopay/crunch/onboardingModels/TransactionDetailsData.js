@@ -56,13 +56,6 @@ foam.CLASS({
   ],
 
   properties: [
-    {
-      name: 'reviewed',
-      class: 'Boolean',
-      section: 'reviewSection',
-      readPermissionRequired: true,
-      writePermissionRequired: true
-    },
     net.nanopay.model.Business.TARGET_CUSTOMERS.clone().copyFrom({
       section: 'purposeSection',
       view: {
@@ -72,15 +65,12 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['targetCustomers', 'reviewed'],
+          args: ['targetCustomers'],
           predicateFactory: function(e) {
-            return e.OR(
-              e.GT(
-                foam.mlang.StringLength.create({
-                  arg1: net.nanopay.crunch.onboardingModels.TransactionDetailsData.TARGET_CUSTOMERS
-                }), 0),
-              e.EQ(net.nanopay.crunch.onboardingModels.TransactionDetailsData.REVIEWED, false)
-            );
+            return e.GT(
+              foam.mlang.StringLength.create({
+                arg1: net.nanopay.crunch.onboardingModels.TransactionDetailsData.TARGET_CUSTOMERS
+              }), 0);
           },
           errorMessage: 'NO_TARGET_CUSTOMERS_ERROR'
         }
@@ -99,14 +89,11 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['suggestedUserTransactionInfo', 'reviewed'],
+          args: ['suggestedUserTransactionInfo'],
           predicateFactory: function(e) {
-            return e.OR(
-              e.EQ(foam.mlang.IsValid.create({
-                arg1: net.nanopay.crunch.onboardingModels.TransactionDetailsData.SUGGESTED_USER_TRANSACTION_INFO
-              }), true),
-              e.EQ(net.nanopay.crunch.onboardingModels.TransactionDetailsData.REVIEWED, false)
-            );
+            return e.EQ(foam.mlang.IsValid.create({
+              arg1: net.nanopay.crunch.onboardingModels.TransactionDetailsData.SUGGESTED_USER_TRANSACTION_INFO
+            }), true);
           },
           errorMessage: 'NO_SUGGESTED_USER_TXN_INFO_ERROR'
         }
@@ -125,10 +112,6 @@ foam.CLASS({
           } catch ( IllegalStateException e ) {
             throw e;
           }
-        }
-
-        if ( ! this.getReviewed() ) {
-          throw new IllegalStateException("Must confirm all data entered has been reviewed and is correct.");
         }
       `
     }

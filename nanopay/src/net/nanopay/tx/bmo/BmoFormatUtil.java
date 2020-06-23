@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import foam.dao.DAO;
+import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
 import org.apache.commons.lang3.StringUtils;
 
@@ -90,14 +91,14 @@ public class BmoFormatUtil {
 
   public static void sendEmail(X x, String subject, Exception e) {
     DAO notificationDAO = (DAO) x.get("notificationDAO");
+    Logger logger = (Logger) x.get("logger");
     String body = "Exception" + System.lineSeparator();
-    body = body + e.getMessage() + System.lineSeparator();
-    body = body + System.lineSeparator();
-    ByteArrayOutputStream os = new ByteArrayOutputStream();
-    PrintStream ps = new PrintStream(os);
-    e.printStackTrace(ps);
-    body = body + os.toString();
-    
+    if ( e != null ) {
+      body = body + e.getMessage() + System.lineSeparator();
+      body = body + e.getStackTrace();
+      logger.error(body);
+    }
+
     Notification notification = new Notification();
     notification.setGroupId("payment-ops");
     notification.setNotificationType("BMO EFT");

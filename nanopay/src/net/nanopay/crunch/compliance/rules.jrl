@@ -124,89 +124,6 @@ p({
 
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"crunch-onboard-compliance-prerequisite-1",
-  "name":"Reput Onboarding Capability On prerequisite Compliance Passed",
-  "priority":1,
-  "ruleGroup":"crunchOnboarding",
-  "documentation":"reput onboarding capability when prerequisite is granted",
-  "daoKey":"userCapabilityJunctionDAO",
-  "operation":3,
-  "after":true,
-  "predicate":{
-    "class":"foam.mlang.predicate.And",
-    "args":[
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
-        "propName":"status",
-        "propValue":{
-          "class":"foam.nanos.crunch.CapabilityJunctionStatus",
-          "ordinal":1
-        },
-        "isNew":false
-      },
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
-        "propName":"status",
-        "propValue":{
-          "class":"foam.nanos.crunch.CapabilityJunctionStatus",
-          "ordinal":1
-        }
-      },
-      {
-        "class":"foam.mlang.predicate.Or",
-        "args":[
-          {
-            "class":"foam.nanos.ruler.predicate.PropertyIsClass",
-            "propName":"data",
-            "of":"net.nanopay.crunch.onboardingModels.BusinessOwnershipData"
-          },
-          {
-            "class":"foam.nanos.ruler.predicate.PropertyIsClass",
-            "propName":"data",
-            "of":"net.nanopay.crunch.onboardingModels.BusinessDirectorsData"
-          }
-        ]
-      }
-    ]
-  },
-  "action":{
-    "class": "net.nanopay.crunch.compliance.ReputOnboardingCapabilityOnPrerequisiteCompliancePassed"
-  },
-  "enabled":true,
-  "saveHistory":true,
-  "validity":1,
-  "lifecycleState":1
-})
-
-
-p({
-  "class":"foam.nanos.ruler.Rule",
-  "id":"crunch-onboard-compliance-businessdirector-0",
-  "name":"Crunch Onboarding - Dow Jones Business Director KYC - Business onboarding",
-  "priority":100,
-  "ruleGroup":"crunchOnboarding",
-  "documentation":"Check business directors via Dow Jones API",
-  "daoKey":"userCapabilityJunctionDAO",
-  "operation":3,
-  "after":true,
-  "predicate":{
-    "class":"foam.mlang.predicate.And",
-    "args":[
-      {"class":"foam.mlang.predicate.Not","arg1":{"class":"foam.nanos.ruler.predicate.NewEqOld"}},
-      {"class":"net.nanopay.crunch.compliance.IsPendingCapabilityOfCertainCategory","category":"businessDirectorOnboarding"}
-    ]
-  },
-  "action":{
-    "class": "net.nanopay.crunch.compliance.BusinessDirectorSanctionValidator"
-  },
-  "enabled":true,
-  "saveHistory":true,
-  "validity":1,
-  "lifecycleState":1
-})
-
-p({
-  "class":"foam.nanos.ruler.Rule",
   "id":"crunch-onboard-compliance-0",
   "name":"Crunch Onboarding - User Final Compliance Rule",
   "documentation":"Final rule for User compliance.",
@@ -246,6 +163,97 @@ p({
   },
   "asyncAction":{
     "class":"net.nanopay.crunch.compliance.UserComplianceApproval"
+  },
+  "enabled":true,
+  "saveHistory":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"crunch-onboard-compliance-businessdirector-0",
+  "name":"Crunch Onboarding - Dow Jones Business Director KYC - Business onboarding",
+  "priority":100,
+  "ruleGroup":"crunchOnboarding",
+  "documentation":"Check business directors via Dow Jones API",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {"class":"foam.mlang.predicate.Not","arg1":{"class":"foam.nanos.ruler.predicate.NewEqOld"}},
+      {"class":"net.nanopay.crunch.compliance.IsPendingCapabilityOfCertainCategory","category":"businessDirectorOnboarding"}
+    ]
+  },
+  "action":{
+    "class": "net.nanopay.crunch.compliance.BusinessDirectorSanctionValidator"
+  },
+  "enabled":true,
+  "saveHistory":true,
+  "validity":1,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"crunch-onboard-compliance-passed-reput-0",
+  "name":"Reput Dependent Capabilities When Reviewed Capability Granted",
+  "priority":1,
+  "ruleGroup":"crunchOnboarding",
+  "documentation":"reput dependent capabilities when reviewed capability granted",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class": "foam.nanos.ruler.predicate.PropertyNEQValue",
+        "propName": "data",
+        "propValue": null
+      },
+      {
+        "class":"foam.mlang.predicate.Or",
+        "args":[
+          {
+            "class":"foam.nanos.ruler.predicate.PropertyIsClass",
+            "propName":"data",
+            "of":"net.nanopay.crunch.onboardingModels.BusinessOwnershipData"
+          },
+          {
+            "class":"foam.nanos.ruler.predicate.PropertyIsClass",
+            "propName":"data",
+            "of":"net.nanopay.crunch.onboardingModels.BusinessDirectorsData"
+          },
+          {
+            "class":"foam.nanos.ruler.predicate.PropertyIsClass",
+            "propName":"data",
+            "of":"net.nanopay.crunch.onboardingModels.CertifyDataReviewed"
+          }
+        ]
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+        "propName":"status",
+        "propValue":{
+          "class":"foam.nanos.crunch.CapabilityJunctionStatus",
+          "ordinal":1
+        },
+        "isNew":false
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue":{
+          "class":"foam.nanos.crunch.CapabilityJunctionStatus",
+          "ordinal":1
+        }
+      }
+    ]
+  },
+  "action":{
+    "class": "net.nanopay.crunch.compliance.ReputDependenciesOnUCJPut"
   },
   "enabled":true,
   "saveHistory":true,

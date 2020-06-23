@@ -37,6 +37,14 @@ foam.CLASS({
     'businessTypeDAO'
   ],
 
+  javaImports: [
+    'foam.dao.DAO',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
+    'net.nanopay.model.Business',
+    'static foam.mlang.MLang.INSTANCE_OF'
+  ],
+
   sections: [
     {
       name: 'businessDetailsSection',
@@ -69,12 +77,9 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['businessTypeId', 'reviewed'],
+          args: ['businessTypeId'],
           predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(net.nanopay.crunch.onboardingModels.BusinessInformationData.BUSINESS_TYPE_ID, 0),
-              e.EQ(net.nanopay.crunch.onboardingModels.BusinessInformationData.REVIEWED, false)
-            );
+            return e.NEQ(net.nanopay.crunch.onboardingModels.BusinessInformationData.BUSINESS_TYPE_ID, 0);
           },
           errorMessage: 'BUSINESS_TYPE_ERROR'
         }
@@ -90,12 +95,9 @@ foam.CLASS({
       view: { class: 'net.nanopay.business.NatureOfBusiness' },
       validationPredicates: [
         {
-          args: ['businessSectorId', 'reviewed'],
+          args: ['businessSectorId'],
           predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(net.nanopay.crunch.onboardingModels.BusinessInformationData.BUSINESS_SECTOR_ID, 0),
-              e.EQ(net.nanopay.crunch.onboardingModels.BusinessInformationData.REVIEWED, false)
-            );
+            return e.NEQ(net.nanopay.crunch.onboardingModels.BusinessInformationData.BUSINESS_SECTOR_ID, 0);
           },
           errorMessage: 'NATURE_OF_BUSINESS_ERROR'
         }
@@ -127,15 +129,12 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['sourceOfFunds', 'reviewed'],
+          args: ['sourceOfFunds'],
           predicateFactory: function(e) {
-            return e.OR(
-              e.GT(
-                foam.mlang.StringLength.create({
-                  arg1: net.nanopay.crunch.onboardingModels.BusinessInformationData.SOURCE_OF_FUNDS
-                }), 0),
-              e.EQ(net.nanopay.crunch.onboardingModels.BusinessInformationData.REVIEWED, false)
-            );
+            return e.GT(
+              foam.mlang.StringLength.create({
+                arg1: net.nanopay.crunch.onboardingModels.BusinessInformationData.SOURCE_OF_FUNDS
+              }), 0);
           },
           errorMessage: 'SOURCE_OF_FUNDS_ERROR'
         }
@@ -166,25 +165,17 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['operatingUnderDifferentName', 'operatingBusinessName', 'reviewed'],
+          args: ['operatingUnderDifferentName', 'operatingBusinessName'],
           predicateFactory: function(e) {
             return e.OR(
               e.EQ(net.nanopay.crunch.onboardingModels.BusinessInformationData.OPERATING_UNDER_DIFFERENT_NAME, false),
-              e.NEQ(net.nanopay.crunch.onboardingModels.BusinessInformationData.OPERATING_BUSINESS_NAME, ""),
-              e.EQ(net.nanopay.crunch.onboardingModels.BusinessInformationData.REVIEWED, false)
+              e.NEQ(net.nanopay.crunch.onboardingModels.BusinessInformationData.OPERATING_BUSINESS_NAME, "")
             );
           },
           errorMessage: 'OPERATING_NAME_ERROR'
         }
       ]
-    }),
-    {
-      name: 'reviewed',
-      class: 'Boolean',
-      section: 'businessDetailsSection',
-      readPermissionRequired: true,
-      writePermissionRequired: true
-    }
+    })
   ],
 
   methods: [
@@ -200,9 +191,12 @@ foam.CLASS({
           }
         }
 
-        if ( ! this.getReviewed() ) {
-          throw new IllegalStateException("Must confirm all data entered has been reviewed and is correct.");
-        }
+        DAO userDAO = (DAO) x.get("userDAO");
+        Long businessId = ((User) ((Subject) x.get("subject")).getUser()).getId();
+        User businessUser = (User) (userDAO.find(businessId)).fclone();
+        Business business = (Business) businessUser;
+        business.setBusinessTypeId(getBusinessTypeId());
+        userDAO.put(business);
       `,
     }
   ]

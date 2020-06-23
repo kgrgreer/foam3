@@ -53,11 +53,13 @@ foam.CLASS({
     properties: [
       {
         name: 'country',
-        value: 'PK'
+        value: 'PK',
+        visibility: 'RO'
       },
       {
         name: 'flagImage',
-        value: 'images/flags/unknown.png'
+        value: 'images/flags/unknown.png',
+        visibility: 'RO'
       },
       {
         name: 'denomination',

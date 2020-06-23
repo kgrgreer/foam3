@@ -44,13 +44,13 @@ foam.CLASS({
     {
       name: 'country',
       value: 'IN',
-      createVisibility: 'HIDDEN'
+      visibility: 'RO'
     },
     {
       name: 'flagImage',
       label: '',
       value: 'images/flags/india.png',
-      createVisibility: 'HIDDEN'
+      visibility: 'RO'
     },
     {
       name: 'desc',

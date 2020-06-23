@@ -349,11 +349,51 @@ foam.CLASS({
       label: '',
       section: 'accountDetails',
       view: { class: 'net.nanopay.ui.DataSecurityBanner' }
+    },
+    {
+      class: 'String',
+      name: 'iban',
+      label: 'IBAN Number',
+      documentation: `Standard international numbering system developed to 
+          identify an overseas bank account.`,
+      visibility: 'RO',
+      getter: function() {
+        return this.country + this.calcChecksum() + this.bankCode + this.accountNumber;
+      },
+      javaGetter: function() {
+        // create java getter to calculate generic IBAN.
+      }
+    },
+    {
+      class: 'String',
+      name: 'bankCode',
+      documentation: `International bank code that identifies banks worldwide. BIC/SWIFT`,
+      updateVisibility: 'RO'
     }
   ],
   methods: [
     function toSummary() {
       return `${ this.name } ${ this.country } ${ this.BANK_ACCOUNT_LABEL } (${this.denomination})`;
+    },
+    {
+      name: 'calcCheckSum',
+      documentation: `Calculates check digits for IBAN number. Some countries may not share the same calculation.`,
+      code: function() {
+        var replaceChars = function(str) {
+          return str.replace(/./g, function(c) {
+            var a = 'A'.charCodeAt(0);
+            var z = 'Z'.charCodeAt(0);
+            var code = c.charCodeAt(0);
+            return (a <= code && code <= z) ? code - a + 10 : parseInt(c);
+          });
+        };
+        var numericCode = replaceChars(this.bankCode) + this.accountNumber + replaceChars(this.country) + '00';
+        while ( numericCode.length > 10 ) {
+          var part = numericCode.substring(0, 10);
+          numericCode = (part % 97) + numericCode.substring(10);
+        }
+        return 98 - numericCode % 97;
+      }
     },
     {
       name: 'getBankCode',
@@ -364,7 +404,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        return "";
+        return getBankCode();
       `
     },
     {
@@ -377,18 +417,6 @@ foam.CLASS({
       ],
       javaCode: `
         return "";
-      `
-    },
-    {
-      name: 'getIBAN',
-      type: 'String',
-      args: [
-        {
-          name: 'x', type: 'Context'
-        }
-      ],
-      javaCode: `
-        return getAccountNumber();
       `
     },
     {
