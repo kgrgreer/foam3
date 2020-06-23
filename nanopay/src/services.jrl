@@ -425,6 +425,7 @@ p({
       .setJournalName("fees")
       .setOf(net.nanopay.tx.fee.Fee.getOwnClassInfo())
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setIndex(new foam.core.PropertyInfo[] { net.nanopay.tx.fee.Fee.NAME })
       .build();
   """,
   "client":

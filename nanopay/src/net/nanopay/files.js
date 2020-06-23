@@ -1502,6 +1502,7 @@ FOAM_FILES([
   // Fees
   { name: 'net/nanopay/tx/planner/fees/AbliiFeeRule' },
   { name: 'net/nanopay/tx/fee/Fee' },
+  { name: 'net/nanopay/tx/fee/FeeDAOCreateView' },
   { name: 'net/nanopay/tx/fee/FeeExpr' },
   { name: 'net/nanopay/tx/fee/FeeType' },
   { name: 'net/nanopay/tx/fee/FixedFee' },
