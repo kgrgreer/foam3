@@ -57,7 +57,8 @@ foam.CLASS({
       background-color: #fafafa;
       position: fixed;
       bottom: 0;
-      margin-bottom: 140px;
+      position: absolute;
+      margin: 0;
     }
     ^ .button-container > div > button {
       font-size: 18px;
@@ -267,6 +268,13 @@ foam.CLASS({
   actions: [
     {
       name: 'save',
+      isEnabled: function(isAddUser, email) {
+        if ( isAddUser) {
+          return email ? true : false;
+        } else {
+          return true;
+        }
+      },
       code: async function(X) {
         var self = this;
 
