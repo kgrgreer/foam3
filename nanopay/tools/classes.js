@@ -1141,7 +1141,7 @@ var skeletons = [
   'net.nanopay.account.BalanceServiceInterface',
   'net.nanopay.liquidity.tx.AccountHierarchy',
   'net.nanopay.tx.TransactionLimitServiceInterface',
-  'net.nanopay.contacts.PaymentCodeServiceInterface'
+  'net.nanopay.contacts.PaymentCodeServiceInterface',
 ];
 
 var proxies = [
