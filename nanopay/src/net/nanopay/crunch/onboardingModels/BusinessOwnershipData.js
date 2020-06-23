@@ -376,10 +376,10 @@ foam.CLASS({
       javaGetter: `
         int sum = 0;
 
-        if ( getAmountOfOwners() >= 1 ) sum += getOwner1().getOwnershipPercent();
-        if ( getAmountOfOwners() >= 2 ) sum += getOwner2().getOwnershipPercent();
-        if ( getAmountOfOwners() >= 3 ) sum += getOwner3().getOwnershipPercent();
-        if ( getAmountOfOwners() >= 4 ) sum += getOwner4().getOwnershipPercent();
+        if ( getAmountOfOwners() >= 1 && getOwner1() != null ) sum += getOwner1().getOwnershipPercent();
+        if ( getAmountOfOwners() >= 2 && getOwner2() != null ) sum += getOwner2().getOwnershipPercent();
+        if ( getAmountOfOwners() >= 3 && getOwner3() != null ) sum += getOwner3().getOwnershipPercent();
+        if ( getAmountOfOwners() >= 4 && getOwner4() != null ) sum += getOwner4().getOwnershipPercent();
 
         return sum;
       `,
