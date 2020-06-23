@@ -134,10 +134,10 @@ foam.CLASS({
         {
           args: ['issueDate'],
           predicateFactory: function(e) {
-            return foam.mlang.predicate.OlderThan.create({
-                arg1: net.nanopay.model.PersonalIdentification.ISSUE_DATE,
-                timeMs: 0
-              });
+            return e.AND(
+              e.NEQ(net.nanopay.model.PersonalIdentification.ISSUE_DATE, null),
+              e.LT(net.nanopay.model.PersonalIdentification.ISSUE_DATE, new Date())
+            );
           },
           errorString: 'Must be before today.'
         }
@@ -154,16 +154,8 @@ foam.CLASS({
           args: ['expirationDate'],
           predicateFactory: function(e) {
             return e.AND(
-              e.NOT(
-                foam.mlang.predicate.OlderThan.create({
-                  arg1: net.nanopay.model.PersonalIdentification.EXPIRATION_DATE,
-                  timeMs: 0
-                })
-              ),
-              e.NEQ(
-                net.nanopay.model.PersonalIdentification.EXPIRATION_DATE,
-                null
-              )
+              e.NEQ(net.nanopay.model.PersonalIdentification.EXPIRATION_DATE, null),
+              e.GT(net.nanopay.model.PersonalIdentification.EXPIRATION_DATE, new Date())
             );
           },
           errorString: 'Must be after today.'

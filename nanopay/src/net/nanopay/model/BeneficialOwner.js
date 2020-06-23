@@ -198,12 +198,14 @@ foam.CLASS({
         {
           args: ['birthday', 'showValidation'],
           predicateFactory: function(e) {
+            var limit = new Date();
+            limit.setDate(limit.getDate() - ( 18 * 365 ));
             return e.OR(
               e.EQ(net.nanopay.model.BeneficialOwner.SHOW_VALIDATION, false),
-              foam.mlang.predicate.OlderThan.create({
-                arg1: net.nanopay.model.BeneficialOwner.BIRTHDAY,
-                timeMs: 18 * 365 * 24 * 60 * 60 * 1000
-              })
+              e.AND(
+                e.NEQ(net.nanopay.model.BeneficialOwner.BIRTHDAY, null),
+                e.LT(net.nanopay.model.BeneficialOwner.BIRTHDAY, limit)
+              )
             );
           },
           errorString: 'Must be at least 18 years old.'
@@ -211,13 +213,13 @@ foam.CLASS({
         {
           args: ['birthday', 'showValidation'],
           predicateFactory: function(e) {
+            var limit = new Date();
+            limit.setDate(limit.getDate() - ( 125 * 365 ));
             return e.OR(
               e.EQ(net.nanopay.model.BeneficialOwner.SHOW_VALIDATION, false),
-              e.NOT(
-                foam.mlang.predicate.OlderThan.create({
-                  arg1: net.nanopay.model.BeneficialOwner.BIRTHDAY,
-                  timeMs: 125 * 365 * 24 * 60 * 60 * 1000
-                })
+              e.AND(
+                e.NEQ(net.nanopay.model.BeneficialOwner.BIRTHDAY, null),
+                e.GT(net.nanopay.model.BeneficialOwner.BIRTHDAY, limit)
               )
             );
           },
