@@ -644,7 +644,22 @@ foam.CLASS({
           self.add(self.NotificationMessage.create({ message: self.INFORMATION_UPDATED }));
         })
         .catch(function (err) {
-          self.add(self.NotificationMessage.create({ message: err, type: 'error' }));
+          if ( err.exception && err.exception.userFeedback  ) {
+            var currentFeedback = err.exception.userFeedback;
+            while ( currentFeedback ) {
+              self.add(self.NotificationMessage.create({
+                message: currentFeedback.message,
+                type: currentFeedback.status.name.toLowerCase()
+              }));
+
+              currentFeedback = currentFeedback.next;
+            }
+          } else {
+            self.add(self.NotificationMessage.create({
+              message: err.message,
+              type: 'error'
+            }));
+          }
         });
       }
     },
