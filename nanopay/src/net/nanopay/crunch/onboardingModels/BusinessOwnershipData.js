@@ -77,8 +77,8 @@ foam.CLASS({
       name: 'reviewOwnersSection',
       title: 'Review the list of owners',
       help: 'Awesome! Just confirm the details you’ve entered are correct and we can proceed!',
-      isAvailable: function(amountOfOwners, reviewed) {
-        return amountOfOwners > 0 || (amountOfOwners == 0 && reviewed);
+      isAvailable: function(amountOfOwners) {
+        return amountOfOwners > 0;
       }
     },
   ],
@@ -98,12 +98,6 @@ foam.CLASS({
       name: 'id',
       class: 'Long',
       hidden: true
-    },
-    {
-      name: 'reviewed',
-      class: 'Boolean',
-      readPermissionRequired: true,
-      writePermissionRequired: true
     },
     {
       class: 'Reference',
@@ -200,17 +194,13 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['amountOfOwners', 'reviewed'],
+          args: ['amountOfOwners'],
           predicateFactory: function(e) {
-            return e.OR(
-              e.AND(
-                e.GTE(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
-                  .AMOUNT_OF_OWNERS, 0),
-                e.LTE(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
-                  .AMOUNT_OF_OWNERS, 4)
-              ),
-              e.EQ(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
-                .REVIEWED, false)
+            return e.AND(
+              e.GTE(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
+                .AMOUNT_OF_OWNERS, 0),
+              e.LTE(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
+                .AMOUNT_OF_OWNERS, 4)
             );
           },
           errorMessage: 'NO_AMOUNT_OF_OWNERS_SELECTED_ERROR'
@@ -243,11 +233,9 @@ foam.CLASS({
       index: 1,
       validationPredicates: [
       {
-        args: ['amountOfOwners', 'owner1$errors_', 'reviewed'],
+        args: ['amountOfOwners', 'owner1$errors_'],
         predicateFactory: function(e) {
           return e.OR(
-            e.EQ(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
-              .REVIEWED, false),
             e.LT(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
               .AMOUNT_OF_OWNERS, 1),
             e.AND(
@@ -268,11 +256,9 @@ foam.CLASS({
       index: 2,
       validationPredicates: [
       {
-        args: ['amountOfOwners', 'owner2$errors_', 'reviewed'],
+        args: ['amountOfOwners', 'owner2$errors_'],
         predicateFactory: function(e) {
           return e.OR(
-            e.EQ(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
-              .REVIEWED, false),
             e.LT(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
               .AMOUNT_OF_OWNERS, 2),
             e.AND(
@@ -293,11 +279,9 @@ foam.CLASS({
       index: 3,
       validationPredicates: [
       {
-        args: ['amountOfOwners', 'owner3$errors_', 'reviewed'],
+        args: ['amountOfOwners', 'owner3$errors_'],
         predicateFactory: function(e) {
           return e.OR(
-            e.EQ(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
-              .REVIEWED, false),
             e.LT(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
               .AMOUNT_OF_OWNERS, 3),
             e.AND(
@@ -318,11 +302,9 @@ foam.CLASS({
       index: 4,
       validationPredicates: [
       {
-        args: ['amountOfOwners', 'owner4$errors_', 'reviewed'],
+        args: ['amountOfOwners', 'owner4$errors_'],
         predicateFactory: function(e) {
           return e.OR(
-            e.EQ(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
-              .REVIEWED, false),
             e.LT(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
               .AMOUNT_OF_OWNERS, 4),
             e.AND(
@@ -419,16 +401,6 @@ foam.CLASS({
           errorMessage: 'TOTAL_OWNERSHIP_ERROR'
         }
       ]
-    },
-    {
-      section: 'reviewOwnersSection',
-      name: 'noBeneficialOwners',
-      label: 'There are no beneficial owners with 25% or more ownership listed.',
-      documentation: 'If amountOfOwners property is zero, this message will be display',
-      visibility: function(amountOfOwners) {
-        return amountOfOwners === 0 ?
-          foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
-      },
     }
   ],
 
@@ -476,10 +448,6 @@ foam.CLASS({
           } catch ( IllegalStateException e ) {
             throw e;
           }
-        }
-
-        if ( ! this.getReviewed() ) {
-          throw new IllegalStateException("Must confirm all data entered has been reviewed and is correct.");
         }
       `,
     }

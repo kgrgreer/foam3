@@ -1521,6 +1521,7 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/onboardingModels/BusinessOwnershipData' },
   { name: 'net/nanopay/crunch/onboardingModels/TransactionDetailsData' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessDirectorsData' },
+  { name: 'net/nanopay/crunch/onboardingModels/CertifyDataReviewed' },
   { name: 'net/nanopay/crunch/onboardingModels/InternationalBusinessInformationData' },
   { name: 'net/nanopay/crunch/PrerequisiteCapabilityJunctionRefine' },
   { name: 'net/nanopay/crunch/BusinessOwnershipToBeneficialOwnerDAO' },
@@ -1533,10 +1534,10 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/compliance/EntitySanctionValidator' },
   { name: 'net/nanopay/crunch/compliance/BeneficialOwnerSanctionValidator' },
   { name: 'net/nanopay/crunch/compliance/BusinessDirectorSanctionValidator' },
-  { name: 'net/nanopay/crunch/compliance/ReputOnboardingCapabilityOnPrerequisiteCompliancePassed' },
   { name: 'net/nanopay/crunch/compliance/SecurefactSIDniValidator' },
   { name: 'net/nanopay/crunch/compliance/SecurefactLEVValidator' },
   { name: 'net/nanopay/crunch/compliance/UserComplianceApproval' },
+  { name: 'net/nanopay/crunch/compliance/ReputDependenciesOnUCJPut' },
 
   // crunch acceptance
   { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/AbliiTermsAndConditions' },

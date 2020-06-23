@@ -1068,6 +1068,7 @@ var classes = [
   'net.nanopay.crunch.onboardingModels.BusinessOwnershipData',
   'net.nanopay.crunch.onboardingModels.TransactionDetailsData',
   'net.nanopay.crunch.onboardingModels.BusinessDirectorsData',
+  'net.nanopay.crunch.onboardingModels.CertifyDataReviewed',
   'net.nanopay.crunch.onboardingModels.InternationalBusinessInformationData',
   'net.nanopay.crunch.BusinessOwnershipToBeneficialOwnerDAO',
   'net.nanopay.crunch.onboardingModels.SigningOfficerCapabilityInterceptPredicate',
@@ -1080,10 +1081,10 @@ var classes = [
   'net.nanopay.crunch.compliance.EntitySanctionValidator',
   'net.nanopay.crunch.compliance.BusinessDirectorSanctionValidator',
   'net.nanopay.crunch.compliance.BeneficialOwnerSanctionValidator',
-  'net.nanopay.crunch.compliance.ReputOnboardingCapabilityOnPrerequisiteCompliancePassed',
   'net.nanopay.crunch.compliance.SecurefactSIDniValidator',
   'net.nanopay.crunch.compliance.SecurefactLEVValidator',
   'net.nanopay.crunch.compliance.UserComplianceApproval',
+  'net.nanopay.crunch.compliance.ReputDependenciesOnUCJPut',
 
   // crunch acceptance
   'net.nanopay.crunch.acceptanceDocuments.capabilities.TriPartyAgreementCAD',

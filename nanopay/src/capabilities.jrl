@@ -28,12 +28,7 @@ p({
   "contextDAOFindKey":"subject.realuser",
   "reviewRequired":true,
   "permissionsGranted":[
-    "businessinformationdata.rw.reviewed",
-    "businessaddressdata.rw.reviewed",
-    "businessownershipdata.rw.reviewed",
-    "businessdirectorsdata.rw.reviewed",
-    "transactiondetailsdata.rw.reviewed",
-    "internationalbusinessinformationdata.rw.reviewed",
+    "certifydatareviewed.rw.reviewed",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifyownerspercent.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.dualpartyagreementcad.section.reviewAgreementDocumentsSection",
@@ -64,12 +59,7 @@ p({
   "enabled":true,
   "visible":false,
   "permissionsIntercepted": [
-    "businessinformationdata.rw.reviewed",
-    "businessaddressdata.rw.reviewed",
-    "businessownershipdata.rw.reviewed",
-    "businessdirectorsdata.rw.reviewed",
-    "transactiondetailsdata.rw.reviewed",
-    "internationalbusinessinformationdata.rw.reviewed",
+    "certifydatareviewed.rw.reviewed",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifyownerspercent.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.dualpartyagreementcad.section.reviewAgreementDocumentsSection",
@@ -89,6 +79,17 @@ p({
     "net.nanopay.crunch.acceptancedocuments.capabilities.cadafexterms.section.reviewAgreementDocumentsSection"
   ],
   "interceptIf":{"class":"net.nanopay.crunch.onboardingModels.SigningOfficerCapabilityInterceptPredicate"}
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-14",
+  "name":"Certify Data Reviewed",
+  "of":"net.nanopay.crunch.onboardingModels.CertifyDataReviewed",
+  "description":"Certify all data submitted has been reviewed",
+  "version":"0",
+  "enabled":true,
+  "visible":false
 })
 
 p({
