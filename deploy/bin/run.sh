@@ -62,6 +62,9 @@ if [ ! -z ${RUN_USER} ] && [ "$(uname -s)" == "Linux" ] && [ "$(whoami)" != "${R
 fi
 
 JAVA_OPTS=""
+export JOURNAL_HOME="${NANOPAY_HOME}/journals"
+export DOCUMENT_HOME="${NANOPAY_HOME}/documents"
+export LOG_HOME="${NANOPAY_HOME}/logs"
 
 # load instance specific deployment options
 if [ -f "${NANOPAY_HOME}/etc/shrc.local" ]; then
@@ -72,9 +75,9 @@ JAVA_OPTS="${JAVA_OPTS} -Dresource.journals.dir=journals"
 JAVA_OPTS="${JAVA_OPTS} -Dhostname=${HOST_NAME}"
 JAVA_OPTS="${JAVA_OPTS} -Dhttp.port=${WEB_PORT}"
 JAVA_OPTS="${JAVA_OPTS} -DNANOPAY_HOME=${NANOPAY_HOME}"
-JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=${NANOPAY_HOME}/journals"
-JAVA_OPTS="${JAVA_OPTS} -DDOCUMENT_HOME=${NANOPAY_HOME}/documents"
-JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=${NANOPAY_HOME}/logs"
+JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=${JOURNAL_HOME}"
+JAVA_OPTS="${JAVA_OPTS} -DDOCUMENT_HOME=${DOCUMENT_HOME}"
+JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=${LOG_HOME}"
 if [ ! -z ${CLUSTER} ]; then
     JAVA_OPTS="${JAVA_OPTS} -DCLUSTER=${CLUSTER}"
 fi

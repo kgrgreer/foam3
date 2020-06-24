@@ -9,6 +9,6 @@ p({
     "privacyUrl":"https://www.nanopay.net/wp-content/uploads/2019/04/nanopay-Privacy-Policy.pdf",
     "copyright":"Copyright © 2017-@{currentYear} nanopay Corp. All rights reserved.",
     "termsAndCondLink":"https://nanopay.net/wp-content/uploads/2019/04/nanopay-Terms-of-Service.pdf",
-    "mode":0
+    "mode":4
   }
 })

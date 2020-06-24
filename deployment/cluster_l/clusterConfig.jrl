@@ -50,7 +50,7 @@ p({
   "class":"foam.nanos.medusa.ClusterConfig",
   "id":"mm3",
   "name":"mm3",
-  "enabled":true,
+  "enabled":false,
   "realm":"nanopay",
   "region":"Toronto",
   "regionStatus":1,

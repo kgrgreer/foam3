@@ -155,7 +155,7 @@ p({
     return x.get("localBranchDAO")
   """,
   "client": "{\"of\":\"net.nanopay.model.Branch\"}"
-});
+})
 
 p({
   "class": "foam.nanos.boot.NSpec",
@@ -1700,6 +1700,7 @@ p({
       .setPermissionPrefix("loginAttempt")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("loginAttempts")
+      .setCluster(false)
       .build()
       .orderBy(foam.mlang.MLang.DESC(net.nanopay.auth.LoginAttempt.CREATED));
   """,

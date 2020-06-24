@@ -22,7 +22,7 @@ if [ -f "${CUSTOM_CONFIG}" ]; then
 fi
 
 ###### Project parameter File
-PROJECT_CONFIG="$NANOPAY_HOME/etc/shrc.project"
+PROJECT_CONFIG="${NANOPAY_HOME}/etc/shrc.project"
 if [ -f "${PROJECT_CONFIG}" ]; then
   . ${PROJECT_CONFIG} $1
 fi
@@ -99,32 +99,14 @@ fi
 JAVA_OPTS="${JAVA_OPTS} -XX:+UseStringDeduplication"
 
 # Garbage Collection logging
-# NOTE: disabled - we are experiencing lockup on GC for 4-5 seconds
-# see https://nanopay.atlassian.net/browse/CPF-2417
-#JAVA_OPTS=$JAVA_OPTS" -XX:+PrintGCDetails"
-# if [ -z "`echo "${JAVA_OPTS}" | grep "XX:.*PrintGC"`" ]; then
-#   JAVA_OPTS=$JAVA_OPTS" -XX:+PrintGCTimeStamps"
+if [ -z "`echo "${JAVA_OPTS}" | grep ":gc"`" ]; then
 
-#   JAVA_OPTS=$JAVA_OPTS" -XX:+PrintTenuringDistribution"
-
-#   # include class histogram in thread dumps, makes thread
-#   # dumps more costly but can be useful for troubleshooting
-#   # memory leaks. This feature can cause extended pauses while
-#   # gc occurs. Do not enable this feature if you perform
-#   # non troubleshooting 'routine' threaddumps.
-#   #JAVA_OPTS="${JAVA_OPTS} -XX:+PrintClassHistogram"
-
-#   export GC_LOG="${NANOPAY_HOME}/logs/gcstats.log.$$"
-#   JAVA_OPTS=$JAVA_OPTS" -XX:+UseGCLogFileRotation"
-#   JAVA_OPTS=$JAVA_OPTS" -XX:NumberOfGCLogFiles=10"
-#   JAVA_OPTS=$JAVA_OPTS" -XX:GCLogFileSize=100m"
-#   JAVA_OPTS=$JAVA_OPTS" -Xloggc:${GC_LOG}"
-#   JAVA_OPTS=$JAVA_OPTS" -verbose:gc"
-# fi
+    JAVA_OPTS="${JAVA_OPTS} -Xlog:gc*,safepoint:${LOG_HOME}/gc.log:time,uptime:filecount=10,filesize=1024K"
+fi
 
 # OutOfMemory
 JAVA_OPTS=$JAVA_OPTS" -XX:+HeapDumpOnOutOfMemoryError"
-JAVA_OPTS=$JAVA_OPTS" -XX:HeapDumpPath=${PROJECT_HOME}/logs/java_pid<pid>.hprof"
+JAVA_OPTS=$JAVA_OPTS" -XX:HeapDumpPath=${LOG_HOME}/java_pid<pid>.hprof"
 #JAVA_OPTS=$JAVA_OPTS" -XX:OnOutOfMemoryError="< cmd args >;< cmd args >" // shutdown -r for example.
 JAVA_OPTS=$JAVA_OPTS" -XX:+UseGCOverheadLimit"
 
