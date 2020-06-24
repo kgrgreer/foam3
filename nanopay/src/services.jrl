@@ -450,6 +450,7 @@ p({
       .setJournalName("fees")
       .setOf(net.nanopay.tx.fee.Fee.getOwnClassInfo())
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setIndex(new foam.core.PropertyInfo[] { net.nanopay.tx.fee.Fee.NAME })
       .build();
   """,
   "client":
@@ -575,9 +576,6 @@ p({
     dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.User.EMAIL });
     dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.User.GROUP });
     return dao;
-  """,
-  "client": """
-    { "of":"foam.nanos.auth.User" }
   """
 })
 
@@ -708,20 +706,6 @@ p({
       .setEnableInterfaceDecorators(false)
       .setAuthorize(false)
       .build();
-  """,
-  "client":
-  """
-  {
-    "of":"foam.nanos.auth.User",
-    "decorators": [
-      {
-        "class":"foam.nanos.fs.FileDAODecorator"
-      },
-      {
-        "class":"foam.nanos.fs.FileArrayDAODecorator"
-      }
-    ]
-  }
   """
 })
 
@@ -848,6 +832,7 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.auth.User.getOwnClassInfo())
       .setAuthorize(false)
+      .setReadOnly(true)
       .setRuler(false)
       .setDecorator(new net.nanopay.auth.BusinessEmployeeDAO.Builder(x).build())
       .setInnerDAO(x.get("bareUserDAO"))

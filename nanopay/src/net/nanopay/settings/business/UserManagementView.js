@@ -149,7 +149,7 @@ foam.CLASS({
                 var junction = this;
                 this.agentJunctionObj.status = self.AgentJunctionStatus.ACTIVE;
                 self.agentJunctionDAO.put(this.agentJunctionObj).then(function(resp) {
-                  self.notify(`${ junction.name }`, 'success');
+                  self.notify(`${ junction.name + self.ACTIVE_SUCCESS }`, 'success');
                 }).catch(function(err) {
                   var message = err ? err.message : self.ACTIVE_FAILURE;
                   self.notify(`${ message + junction.name }`, 'error');

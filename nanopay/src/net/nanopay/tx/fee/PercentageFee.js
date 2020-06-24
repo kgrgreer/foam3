@@ -20,15 +20,31 @@ foam.CLASS({
   name: 'PercentageFee',
   extends: 'net.nanopay.tx.fee.Fee',
 
+  messages: [
+    { name: 'FORMULA_PREFIX', message: 'Percentage fee' }
+  ],
+
   properties: [
+    'name',
+    'label',
     {
       class: 'Float',
-      name: 'percentage'
+      name: 'percentage',
+      section: 'basicInfo'
     },
     {
       class: 'String',
-      name: 'propName',
-      value: 'amount'
+      name: 'amountPropName',
+      label: 'Applies On',
+      value: 'amount',
+      section: 'basicInfo'
+    },
+    {
+      name: 'formula',
+      visibility: 'HIDDEN',
+      tableCellFormatter: function(_, obj) {
+        this.add(obj.FORMULA_PREFIX, ': ', obj.percentage, '%');
+      }
     }
   ],
 
@@ -43,13 +59,9 @@ foam.CLASS({
       ],
       type: 'Long',
       javaCode: `
-        var prop = obj.getProperty(getPropName());
-        if ( prop instanceof Number ) {
-          return ((Double)
-            (this.getPercentage()/100.0 * ((Number) prop).doubleValue())
-          ).longValue();
-        }
-        return 0;
+        return ((Double)
+          (this.getPercentage()/100.0 * getAmount(obj))
+        ).longValue();
       `,
       // swiftCode: ' return Int(floorf(percentage / 100.0 * Float(transactionAmount)))',
       code: function(obj) {
@@ -59,6 +71,20 @@ foam.CLASS({
     {
       name: 'getRate',
       javaCode: 'return getPercentage() / 100.0;'
+    },
+    {
+      name: 'getAmount',
+      type: 'Long',
+      args: [
+        { name: 'obj', type: 'FObject' }
+      ],
+      javaCode: `
+        var prop = obj.getProperty(getAmountPropName());
+        if ( prop instanceof Number ) {
+          return ((Number) prop).longValue();
+        }
+        return 0l;
+      `
     }
   ]
 });

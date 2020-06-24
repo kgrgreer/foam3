@@ -21,21 +21,30 @@ foam.CLASS({
 
   documentation: 'Describes the fee type.',
 
+  sections: [
+    {
+      name: 'basicInfo',
+      title: 'Basic Info'
+    },
+    {
+      name: '_defaultSection',
+      title: 'Administrative',
+      permissionRequired: true
+    }
+  ],
+
+  tableColumns: [
+    'id',
+    'name',
+    'label',
+    'formula'
+  ],
+
   properties: [
     {
       class: 'String',
-      name: 'id'
-    },
-    {
-      class: 'foam.core.Enum',
-      of: 'net.nanopay.tx.fee.FeeType',
-      name: 'type',
-      documentation: 'Determines fee type.'
-    },
-    {
-      name: 'isPassThroughFee',
-      class: 'Boolean',
-      value: false
+      name: 'id',
+      visibility: 'RO'
     },
     {
       class: 'String',
@@ -49,19 +58,43 @@ foam.CLASS({
           errorString: 'Invalid name.'
         }
       ],
-      required: true
+      required: true,
+      section: 'basicInfo'
     },
     {
       class: 'String',
-      name: 'label'
+      name: 'label',
+      label: 'Display Name',
+      section: 'basicInfo'
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.tx.fee.FeeType',
+      name: 'type',
+      documentation: 'Determines fee type.',
+      value: 'SENDING',
+      section: 'basicInfo',
+      visibility: 'HIDDEN'    // not being used in FeeEngine
+    },
+    {
+      name: 'isPassThroughFee',
+      class: 'Boolean',
+      value: false,
+      section: 'basicInfo',
+      visibility: 'HIDDEN'    // not being used in FeeEngine
     },
     {
       class: 'foam.mlang.ExprProperty',
-      name: 'formula'
+      name: 'formula',
+      view: { class: 'foam.u2.view.JSONTextView' },
+      tableCellFormatter: function(value) {
+        this.add(value.toString());
+      }
     },
     {
       class: 'foam.mlang.predicate.PredicateProperty',
       name: 'predicate',
+      view: { class: 'foam.u2.view.JSONTextView' },
       factory: function () {
         return foam.mlang.predicate.True.create();
       },
