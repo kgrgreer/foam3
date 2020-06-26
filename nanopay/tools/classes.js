@@ -1119,6 +1119,24 @@ var classes = [
   // Treviso
  'net.nanopay.fx.treviso.TrevisoTransaction',
  'net.nanopay.fx.treviso.NatureCode',
+
+ // DAO decorators
+ 'net.nanopay.fx.afex.AFEXContactDAO',
+ 'net.nanopay.account.AbliiBankAccountAutoverifyDAO',
+ 'net.nanopay.admin.AccountStatusUserDAO',
+ 'net.nanopay.contacts.AddExternalContactToken',
+ 'net.nanopay.approval.ApprovalRequestNotificationDAO',
+ 'net.nanopay.bank.AscendantFXBankAccountDAO',
+ 'net.nanopay.fx.ascendantfx.AscendantFXTransactionDAO',
+ 'net.nanopay.account.AuthenticatedAccountDAO',
+ 'net.nanopay.approval.AuthenticatedApprovalDAO',
+ 'net.nanopay.partners.AuthenticatedInvitationDAO',
+ 'net.nanopay.invoice.AuthenticatedInvoiceDAO',
+ 'net.nanopay.retail.AuthenticatedP2PTxnRequestDAO',
+ 'net.nanopay.security.pii.AuthenticatedPIIRequestDAO',
+ 'net.nanopay.tx.AuthenticatedTransactionDAO',
+ 'net.nanopay.partners.AuthenticatedUserUserJunctionDAO',
+ 'net.nanopay.tx.AutoCashOutForInvoiceTransactionDAO'
 ];
 
 var abstractClasses = [
