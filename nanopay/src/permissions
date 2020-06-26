@@ -268,6 +268,7 @@ p({"class":"foam.nanos.auth.Permission","id":"service.lineItemTypeDAO","descript
 p({"class":"foam.nanos.auth.Permission","id":"service.liquiditySettingsDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.loginAttemptDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.menuDAO","description":""})
+p({"class":"foam.nanos.auth.Permission","id":"service.myNotificationDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.nSpecDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.notificationDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.padCaptureDAO","description":""})
