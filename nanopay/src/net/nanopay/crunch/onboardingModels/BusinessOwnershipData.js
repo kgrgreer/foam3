@@ -359,6 +359,10 @@ foam.CLASS({
       section: 'reviewOwnersSection',
       name: 'totalOwnership',
       class: 'Long',
+      view: {
+        class: 'foam.u2.view.ModeAltView',
+        writeView: { class: 'foam.u2.view.ValueView' }
+      },
       expression: function(amountOfOwners,
                            owner1$ownershipPercent,
                            owner2$ownershipPercent,
@@ -385,7 +389,7 @@ foam.CLASS({
       `,
       visibility: function(totalOwnership) {
         return Number(totalOwnership) > 100 ?
-          foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
+          foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       autoValidate: true,
       max: 100,
