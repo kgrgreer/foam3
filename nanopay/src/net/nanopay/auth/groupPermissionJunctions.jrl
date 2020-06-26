@@ -25,6 +25,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","tar
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","targetId":"registration.email.enabled"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","targetId":"service.emailMessageDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","targetId":"service.groupPermissionJunctionDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","targetId":"service.myNotificationDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","targetId":"service.smsMessageDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","targetId":"service.run.httpBlobService"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"basicUser","targetId":"service.run.httpFileService"})
