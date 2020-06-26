@@ -634,8 +634,7 @@ foam.CLASS({
     {
       name: 'choiceSections_',
       documentation: 'Sections displayed in the choice view',
-      class: 'Array',
-      factory: () => []
+      class: 'Array'
     }
   ],
 
