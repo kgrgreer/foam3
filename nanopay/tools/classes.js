@@ -1152,7 +1152,23 @@ var classes = [
  'net.nanopay.tx.GreenfencePlanDAO',
  'net.nanopay.contacts.InvoiceToContactDAO',
  'net.nanopay.partners.MakeConnectionDAO',
- 'net.nanopay.cico.paymentCard.NetworkedPaymentCardDAO'
+ 'net.nanopay.cico.paymentCard.NetworkedPaymentCardDAO',
+ 'net.nanopay.retail.NewP2PTxnRequestDAO',
+ 'net.nanopay.onboarding.NewUserCreateBusinessDAO',
+ 'net.nanopay.retail.P2PTxnRequestNotificationDAO',
+ 'net.nanopay.retail.P2PTxnRequestUserInfoDAO',
+ 'net.nanopay.partners.PartnerInfoDAO',
+ 'net.nanopay.cico.paymentCard.PaymentCardSanitizeDAO',
+ 'net.nanopay.cico.paymentCard.PaymentCardTransientDAO',
+ 'net.nanopay.payment.PayrollDAO',
+ 'net.nanopay.contacts.PreventDuplicateContactEmailDAO',
+ 'net.nanopay.retail.PreventDuplicateDeviceDAO',
+ 'net.nanopay.tx.PreventNotQuotedTransactionDAO',
+ 'net.nanopay.invoice.PreventRemoveInvoiceDAO',
+ 'net.nanopay.auth.PublicUserInfoDAO',
+ 'net.nanopay.bank.RandomDepositBankAccountDAO',
+ 'net.nanopay.cico.paymentCard.RealexPaymentCardStoreDAO',
+ 'net.nanopay.tx.realex.RealexTransactionDAO'
 ];
 
 var abstractClasses = [
