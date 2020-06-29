@@ -189,7 +189,7 @@ foam.CLASS({
           cdtTrfTxInf.setPaymentIdentification(pmtId);
           net.nanopay.iso20022.PaymentTypeInformation19 pmtTpInf2 = new net.nanopay.iso20022.PaymentTypeInformation19();
           net.nanopay.iso20022.CategoryPurpose1Choice ctgyPurp = new net.nanopay.iso20022.CategoryPurpose1Choice();
-          ctgyPurp.setCd(this.getCategoryPurposeCodes(txn, logger));
+          ctgyPurp.setCd(this.getCategoryPurposeCodes(x, txn, logger));
           pmtTpInf2.setCategoryPurpose(ctgyPurp);
           cdtTrfTxInf.setPaymentTypeInformation(pmtTpInf2);
 
@@ -430,7 +430,7 @@ foam.CLASS({
           drctDbtTxInf.setPaymentIdentification(pmtId);
           net.nanopay.iso20022.PaymentTypeInformation20 pmtTpInf2 = new net.nanopay.iso20022.PaymentTypeInformation20();
           net.nanopay.iso20022.CategoryPurpose1Choice ctgyPurp = new net.nanopay.iso20022.CategoryPurpose1Choice();
-          ctgyPurp.setCd(this.getCategoryPurposeCodes(txn, logger));
+          ctgyPurp.setCd(this.getCategoryPurposeCodes(x, txn, logger));
           pmtTpInf2.setCategoryPurpose(ctgyPurp);
           drctDbtTxInf.setPaymentTypeInformation(pmtTpInf2);
 
@@ -653,11 +653,16 @@ foam.CLASS({
       name: 'getCategoryPurposeCodes',
       type: 'String',
       args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
         { name: 'transaction', type: 'net.nanopay.tx.model.Transaction' },
         { name: 'logger', type: 'Logger' },
       ],
       javaCode:`
-        Logger log = (Logger)getX().get("logger");
+        RbcAssignedClientValue rbcValues = (RbcAssignedClientValue) x.get("rbcAssignedClientValue");
+        Logger log = (Logger) x.get("logger");
         int padtype = 0;
         for ( var lItem : transaction.getLineItems() ) {
           if ( lItem instanceof PADTypeLineItem ) {
@@ -686,7 +691,7 @@ foam.CLASS({
             return "GOVT";
           default:
             logger.warning("Pad Type not found", padtype);
-            return "SUPP";
+            return rbcValues.getDefaultPadType();
         }
       `
     }
