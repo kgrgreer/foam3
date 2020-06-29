@@ -1136,7 +1136,23 @@ var classes = [
  'net.nanopay.security.pii.AuthenticatedPIIRequestDAO',
  'net.nanopay.tx.AuthenticatedTransactionDAO',
  'net.nanopay.partners.AuthenticatedUserUserJunctionDAO',
- 'net.nanopay.tx.AutoCashOutForInvoiceTransactionDAO'
+ 'net.nanopay.tx.AutoCashOutForInvoiceTransactionDAO',
+ 'net.nanopay.invoice.AutoDepositPendingAcceptance',
+ 'net.nanopay.bank.BankAccountBranchDAO',
+ 'net.nanopay.bank.BankAccountInstitutionDAO',
+ 'net.nanopay.sme.BusinessInvitationDAO',
+ 'net.nanopay.bank.CanReceiveCurrencyDAO',
+ 'net.nanopay.contacts.CheckContactExistingTransaction',
+ 'net.nanopay.onboarding.CreateBusinessDAO',
+ 'net.nanopay.account.DigitalAccountInfoPopulateDAO',
+ 'net.nanopay.cico.paymentCard.DuplicatePaymentCard',
+ 'net.nanopay.auth.email.EmailVerificationDAO',
+ 'net.nanopay.retail.ExistingP2PTxnRequestDAO',
+ 'net.nanopay.bank.GetDefaultCurrencyDAO',
+ 'net.nanopay.tx.GreenfencePlanDAO',
+ 'net.nanopay.contacts.InvoiceToContactDAO',
+ 'net.nanopay.partners.MakeConnectionDAO',
+ 'net.nanopay.cico.paymentCard.NetworkedPaymentCardDAO'
 ];
 
 var abstractClasses = [
