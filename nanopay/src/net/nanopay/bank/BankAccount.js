@@ -357,12 +357,13 @@ foam.CLASS({
       documentation: `Standard international numbering system developed to 
           identify an overseas bank account.`,
       visibility: 'RO',
-      getter: function() {
+      factory: function() {
         return this.country + this.calcChecksum() + this.bankCode + this.accountNumber;
       },
-      javaGetter: function() {
-        // create java getter to calculate generic IBAN.
-      }
+      javaFactory: `
+        String checkSum = calcCheckSum();
+        return getCountry() + checkSum + getBankCode() + getAccountNumber();
+      `
     },
     {
       class: 'String',
@@ -377,23 +378,61 @@ foam.CLASS({
     },
     {
       name: 'calcCheckSum',
-      documentation: `Calculates check digits for IBAN number. Some countries may not share the same calculation.`,
+      type: 'String',
+      documentation: `
+        Calculates check digits for IBAN number. Some countries may not share the same calculation.
+        Calculation based on following document https://www.bpfi.ie/wp-content/uploads/2014/08/MOD-97-Final-May-2013-4.pdf
+      `,
       code: function() {
-        var replaceChars = function(str) {
-          return str.replace(/./g, function(c) {
-            var a = 'A'.charCodeAt(0);
-            var z = 'Z'.charCodeAt(0);
-            var code = c.charCodeAt(0);
-            return (a <= code && code <= z) ? code - a + 10 : parseInt(c);
-          });
-        };
-        var numericCode = replaceChars(this.bankCode) + this.accountNumber + replaceChars(this.country) + '00';
+        var requiredDigits = 10 - this.accountNumber.length;
+        var numericCode = this.replaceChars(this.bankCode) + "0".repeat(requiredDigits >= 0 ? requiredDigits : 0) + this.accountNumber + this.replaceChars(this.country) + '00';
         while ( numericCode.length > 10 ) {
           var part = numericCode.substring(0, 10);
           numericCode = (part % 97) + numericCode.substring(10);
         }
-        return 98 - numericCode % 97;
-      }
+        var checkSum = (98 - numericCode % 97).toString();
+        return checkSum.length == 1 ? "0" + checkSum : checkSum;
+      },
+      javaCode: `
+        int requiredDigits = 10 - getAccountNumber().length();
+        String numericCode = replaceChars(getBankCode() + "0".repeat(requiredDigits >= 0 ? requiredDigits : 0) + getAccountNumber() + replaceChars(getCountry()) + "00");
+        while ( numericCode.length() > 10 ) {
+          long part = Long.parseLong(numericCode.substring(0, 10));
+          numericCode = Long.toString(part % 97) + numericCode.substring(10);
+        }
+        String checkSum = Long.toString(98 - Long.parseLong(numericCode) % 97);
+        return checkSum.length() == 1 ? "0" + checkSum : checkSum;
+      `
+    },
+    {
+      name: 'replaceChars',
+      documentation: `Replace string with ascii related int.`,
+      code: function(str) {
+        return str.replace(/./g, function(c) {
+          var a = 'A'.charCodeAt(0);
+          var z = 'Z'.charCodeAt(0);
+          var code = c.charCodeAt(0);
+          return (a <= code && code <= z) ? code - a + 10 : parseInt(c);
+        });
+      },
+      type: 'String',
+      args: [
+        { name: 'str', type: 'String'}
+      ],
+      javaCode: `
+        StringBuilder sb = new StringBuilder();
+        for (char c : str.toCharArray()) {
+          int a = 'A';
+          int z = 'Z';
+          int code = c;
+          if ( a <= code && code <= z ) {
+              sb.append((int) code - a  + 10) ;
+          } else {
+            sb.append(c);
+          }
+        }
+        return sb.toString();
+      `
     },
     {
       name: 'getBankCode',
@@ -471,7 +510,6 @@ foam.CLASS({
                   }
                 }
               }
-
               bankAccount = (BankAccount) ((DAO) x.get("localAccountDAO"))
                 .find(
                   AND(
