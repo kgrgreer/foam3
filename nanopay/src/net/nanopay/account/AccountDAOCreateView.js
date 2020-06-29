@@ -109,6 +109,8 @@ foam.CLASS({
 
               currentFeedback = currentFeedback.next;
             }
+
+            this.stack.back();
           } else {
             this.ctrl.add(this.NotificationMessage.create({
               message: e.message,
