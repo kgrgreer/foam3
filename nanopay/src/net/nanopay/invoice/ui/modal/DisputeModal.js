@@ -23,8 +23,8 @@ foam.CLASS({
   documentation: 'Dispute Invoice Modal',
 
   requires: [
+    'foam.log.LogLevel',
     'net.nanopay.ui.modal.ModalHeader',
-    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.invoice.model.PaymentStatus'
   ],
 
@@ -35,6 +35,7 @@ foam.CLASS({
   imports: [
     'user',
     'invoiceDAO',
+    'notify',
     'stack'
   ],
 
@@ -109,10 +110,7 @@ foam.CLASS({
         this.invoice.paymentMethod = this.PaymentStatus.VOID;
         this.invoice.note = X.data.note;
         this.invoiceDAO.put(this.invoice);
-        ctrl.add(this.NotificationMessage.create({
-          message: this.VoidSuccess,
-          type: ''
-        }));
+        this.notify(this.VoidSuccess, '', this.LogLevel.INFO, true);
         this.stack.push({"class":"net.nanopay.invoice.ui.SalesView"});
         X.closeDialog();
       }

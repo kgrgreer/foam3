@@ -23,7 +23,7 @@ foam.CLASS({
   documentation: 'View for deleting an invitation and user on userManagement table',
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel'
   ],
 
   imports: [
@@ -49,13 +49,13 @@ foam.CLASS({
 
       this.dao.remove(self.data).then(function() {
         self.clientJunctionDAO.remove(self.junction).then(function() {
-          self.notify(self.SUCCESS_MSG, 'success')
+          self.notify(self.SUCCESS_MSG, '', self.LogLevel.INFO, true);
         }).catch(function(err) {
-          self.notify(self.email + " " + message, 'error');
+          self.notify(self.email + ' ' + message, '', self.LogLevel.ERROR, true);
          })
       }).catch(function(err) {
         var message = err ? err.message : self.FAIL_MSG;
-        self.notify(self.email + " " + message, 'error');
+        self.notify(self.email + ' ' + message, '', self.LogLevel.ERROR, true);
       });
     }
   ],

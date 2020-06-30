@@ -33,6 +33,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'foam.nanos.auth.User',
     'net.nanopay.bank.BankAccount'
   ],
@@ -145,7 +146,7 @@ foam.CLASS({
           await this.auth.logout();
           window.location.assign(window.location.origin);
         } catch (e) {
-          this.notify(e.toString(), 'error');
+          this.notify(e.toString(), '', this.LogLevel.ERROR, true);
           window.location.assign(window.location.origin);
         }
       }
@@ -163,7 +164,7 @@ foam.CLASS({
             this.EQ(this.BankAccount.OWNER, this.user.id),
           ).select();
         } catch (e) {
-          this.notify(e.toString(), 'error');
+          this.notify(e.toString(), '', this.LogLevel.ERROR, true);
           this.signOut();
         }
       }

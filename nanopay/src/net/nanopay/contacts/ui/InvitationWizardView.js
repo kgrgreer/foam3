@@ -28,11 +28,12 @@ foam.CLASS({
     'pushMenu',
     'ctrl',
     'invitationDAO',
+    'notify',
     'user'
   ],
 
   requires: [
-    'foam.u2.dialog.NotificationMessage'
+    'foam.log.LogLevel'
   ],
 
   messages: [
@@ -102,19 +103,14 @@ foam.CLASS({
         this.invitationDAO
           .put(this.data.clone())
           .then(() => {
-            this.ctrl.add(this.NotificationMessage.create({
-              message: this.INVITE_SUCCESS,
-            }));
+            X.notify(this.INVITE_SUCCESS, '', this.LogLevel.INFO, true);
             // Force the view to update.
             this.user.contacts.cmd(foam.dao.AbstractDAO.RESET_CMD);
             X.closeDialog();
           })
           .catch((e) => {
             let message = e.message || this.INVITE_FAILURE;
-            this.ctrl.add(this.NotificationMessage.create({
-              message: message,
-              type: 'error'
-            }));
+            X.notify(message, '', this.LogLevel.ERROR, true);
           });
       }
     }

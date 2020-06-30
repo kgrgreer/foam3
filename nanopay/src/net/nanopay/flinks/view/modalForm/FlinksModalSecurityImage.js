@@ -23,6 +23,7 @@ foam.CLASS({
   documentation: 'Security authentication for Laurentienne bank. May be used by other banks',
 
   requires: [
+    'foam.log.LogLevel',
     'net.nanopay.ui.LoadingSpinner',
     'foam.u2.tag.Image'
   ],
@@ -206,10 +207,11 @@ foam.CLASS({
       name: 'next',
       label: 'Connect',
       code: function(X) {
+        var self = this;
         var model = X.securityImage;
         if ( model.isConnecting ) return;
         if ( model.selectedIndex < 0 ) {
-          X.notify(model.INVALID_FORM, 'error');
+          X.notify(model.INVALID_FORM, '', self.LogLevel.ERROR, true);
           return;
         }
 

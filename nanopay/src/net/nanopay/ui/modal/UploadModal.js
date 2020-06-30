@@ -25,13 +25,14 @@ foam.CLASS({
   requires: [
     'net.nanopay.ui.modal.ModalHeader',
     'foam.blob.BlobBlob',
+    'foam.log.LogLevel',
     'foam.nanos.fs.File',
-    'foam.u2.dialog.NotificationMessage'
   ],
 
   imports: [
     'user',
-    'blobService'
+    'blobService',
+    'notify'
   ],
 
   exports: [
@@ -279,7 +280,7 @@ foam.CLASS({
               if ( this.isImageType(file) ) {
                 files.push(file);
               } else {
-                this.add(this.NotificationMessage.create({ message: this.FileTypeError, type: 'error' }));
+                this.notify(this.FileTypeError, '', this.LogLevel.ERROR, true);
               }
             }
           }
@@ -290,7 +291,7 @@ foam.CLASS({
           var file = inputFile[i];
           if ( this.isImageType(file) ) files.push(file);
           else {
-            this.add(this.NotificationMessage.create({ message: this.FileTypeError, type: 'error' }));
+            this.notify(this.FileTypeError, '', this.LogLevel.ERROR, true);
           }
         }
       }
@@ -321,7 +322,7 @@ foam.CLASS({
         // skip files that exceed limit
         if ( files[i].size > ( 10 * 1024 * 1024 ) ) {
           if ( ! errors ) errors = true;
-          this.add(this.NotificationMessage.create({ message: this.FileSizeError, type: 'error' }));
+          this.notify(this.FileSizeError, '', this.LogLevel.ERROR, true);
           continue;
         }
         var isIncluded = false;

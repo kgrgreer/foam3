@@ -31,6 +31,7 @@ foam.CLASS({
     'accountDAO',
     'accountingIntegrationUtil',
     'ctrl',
+    'notify',
     'quickbooksService',
     'user',
     'userDAO',
@@ -38,7 +39,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'foam.u2.dialog.Popup',
     'net.nanopay.account.Account',
     'net.nanopay.accounting.AccountingErrorCodes',
@@ -530,12 +531,12 @@ foam.CLASS({
           this.xeroService.removeToken(null, this.user).then(function(result) {
             self.xeroBtnLabel = this.CONNECT_LABEL;
             self.xeroConnected = this.NOT_CONNECTED_LABEL;
-            self.add(self.NotificationMessage.create({ message: 'Xero integration has been disconnected' }));
+            self.notify('Xero integration has been disconnected.', '', self.LogLevel.INFO, true);
             self.connected = false;
             self.showXeroDisconected = false;
           })
           .catch(function(err) {
-            self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+            self.notify(err.message, '', self.LogLevel.ERROR, true);
           });
         } else {
           if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
@@ -554,12 +555,12 @@ foam.CLASS({
           this.quickbooksService.removeToken(null, this.user).then(function(result) {
             self.qbBtnLabel = this.CONNECT_LABEL;
             self.qbConnected = this.NOT_CONNECTED_LABEL;
-            self.add(self.NotificationMessage.create({ message: 'Intuit quickbooks integration has been disconnected' }));
+            self.notify('Intuit quickbooks integration has been disconnected.', '', self.LogLevel.INFO, true);
             self.connected = false;
             self.showQuickBooksDisconected = false;
           })
           .catch(function(err) {
-            self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+            self.notify(err.message, '', self.LogLevel.ERROR, true);
           });
         } else {
           if ( this.user.integrationCode == this.IntegrationCode.XERO ) {
@@ -611,7 +612,7 @@ foam.CLASS({
 
         abliiBank.integrationId = accountingBank.xeroBankAccountId ? accountingBank.xeroBankAccountId: accountingBank.quickBooksBankAccountId;
         this.accountDAO.put(abliiBank).then(function(result) {
-          self.add(self.NotificationMessage.create({ message: 'Accounts have been successfully linked' }));
+          self.notify('Accounts have been successfully linked.', '', self.LogLevel.INFO, true);
           self.accountingBankList = -1;
           self.abliiBankList = -1;
         });

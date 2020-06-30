@@ -27,13 +27,14 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.ui.modal.ModalHeader',
   ],
 
   imports: [
     'userDAO',
+    'notify',
     'closeDialog'
   ],
 
@@ -115,10 +116,10 @@ foam.CLASS({
           if ( ! result ) throw new Error('Unable to activate profile.');
           X.closeDialog();
           self.data.copyFrom(result);
-          self.add(self.NotificationMessage.create({ message: 'Profile successfully activated.' }));
+          self.notify('Profile successfully activated.', '', self.LogLevel.INFO, true);
         })
         .catch(function (err) {
-          self.add(self.NotificationMessage.create({ message: 'Unable to activate profile.', type: 'error' }));
+          self.notify('Unable to activate profile.', '', self.LogLevel.ERROR, true);
         });
       }
     }

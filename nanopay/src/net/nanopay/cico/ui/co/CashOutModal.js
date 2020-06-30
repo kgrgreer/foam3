@@ -22,7 +22,7 @@ foam.CLASS({
 
   requires: [ 
     'net.nanopay.cico.ui.CicoView',
-    'foam.u2.dialog.NotificationMessage'  
+    'foam.log.LogLevel'
   ],
 
   imports: [ 
@@ -30,7 +30,8 @@ foam.CLASS({
     'bankList', 
     'closeDialog', 
     'confirmCashIn', 
-    'goToBankAccounts'
+    'goToBankAccounts',
+    'notify'
   ],
 
   documentation: 'Pop up modal for cashing out.',
@@ -207,12 +208,12 @@ foam.CLASS({
       label: 'Next',
       code: function(X) {
         var self = this;
-        if(self.bankList == null) {
-          self.add(self.NotificationMessage.create({ message: 'Please add and verify a bank account to continue.', type: 'error' }));
+        if ( self.bankList == null ) {
+          X.notify('Please add and verify a bank account to continue.', '', self.LogLevel.ERROR, true);
           return;
         }
-        if(self.amount == 0) {
-          self.add(self.NotificationMessage.create({ message: 'Please enter an amount greater than $0.00.', type: 'error' }));
+        if ( self.amount == 0 ) {
+          X.notify('Please enter an amount greater than $0.00', '', self.LogLevel.ERROR, true);
           return;
         }
         X.closeDialog();

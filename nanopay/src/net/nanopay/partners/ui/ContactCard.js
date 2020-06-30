@@ -26,7 +26,7 @@ foam.CLASS({
 
   requires: [
     'foam.comics.DAOCreateControllerView',
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'foam.u2.PopupView',
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
@@ -38,6 +38,7 @@ foam.CLASS({
   imports: [
     'invitationDAO',
     'invoiceDAO',
+    'notify',
     'stack',
     'user'
   ],
@@ -326,15 +327,10 @@ foam.CLASS({
       });
       try {
         await this.invitationDAO.put(invite);
-        this.add(this.NotificationMessage.create({
-          message: this.InviteSendSuccess,
-        }));
+        this.notify(this.InviteSendSuccess, '', this.LogLevel.INFO, true);
       } catch (err) {
         console.error(err);
-        this.add(this.NotificationMessage.create({
-          message: this.InviteSendError,
-          type: 'error',
-        }));
+        this.notify(this.InviteSendError, '', this.LogLevel.ERROR, true);
       }
     },
 
@@ -349,15 +345,10 @@ foam.CLASS({
 
         if ( result ) {
           this.status = undefined;
-          this.add(this.NotificationMessage.create({
-            message: this.DisconnectSuccess
-          }));
+          this.notify(this.DisconnectSuccess, '', this.LogLevel.INFO, true);
         }
       } catch (e) {
-        this.add(this.NotificationMessage.create({
-          message: this.DisconnectError,
-          type: 'error'
-        }));
+        this.notify(this.DisconnectError, '', this.LogLevel.ERROR, true);
       }
     }
   ],

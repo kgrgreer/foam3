@@ -27,6 +27,10 @@ foam.CLASS({
     'user',
   ],
 
+  requires: [
+    'foam.log.LogLevel'
+  ],
+
   css: `
     ^ {
       width: 504px;
@@ -87,10 +91,10 @@ foam.CLASS({
       try {
         var result = await this.user.contacts.remove(this.data);
         if ( ! result ) throw new Error(this.FAIL_MSG);
-        this.notify(this.SUCCESS_MSG);
+        this.notify(this.SUCCESS_MSG, '', this.LogLevel.INFO, true);
       } catch (err) {
         var msg = err && err.message ? err.message : this.FAIL_MSG;
-        this.notify(msg, 'error');
+        this.notify(msg, '', this.LogLevel.ERROR, true);
       };
     }
   ],

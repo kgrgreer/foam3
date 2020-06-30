@@ -22,6 +22,10 @@ foam.CLASS({
 
   documentation: `Model used for registering/creating an ABLII user.`,
 
+  requires: [
+    'foam.log.LogLevel'
+  ],
+
   imports: [
     'acceptanceDocumentService',
     'userCapabilityJunctionDAO'
@@ -133,7 +137,7 @@ foam.CLASS({
             }
           })
           .catch((err) => {
-            this.notify(err.message || 'There was a problem while signing you in.', 'error');
+            this.notify(err.message || 'There was a problem while signing you in.', '', this.LogLevel.ERROR, true);
           });
       }
     }

@@ -33,6 +33,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'net.nanopay.ui.LoadingSpinner'
   ],
 
@@ -91,7 +92,7 @@ foam.CLASS({
           this.user
         );
       } catch (error) {
-        this.notify(`${error.message} Please try again.`, 'error');
+        this.notify(`${error.message} Please try again.`, '', this.LogLevel.ERROR, true);
         this.fail();
         return;
       } finally {
@@ -109,7 +110,7 @@ foam.CLASS({
           this.redoChallenge(response);
           break;
         case 401:
-          this.notify(response.Message, 'error');
+          this.notify(response.Message, '', this.LogLevel.ERROR, true);
           this.redoChallenge(response);
           break;
         default:

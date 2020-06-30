@@ -27,6 +27,7 @@ foam.CLASS({
   imports: [
     'accountDAO',
     'pushMenu',
+    'notify',
     'quickbooksService',
     'stack',
     'user',
@@ -34,7 +35,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
@@ -280,9 +281,9 @@ foam.CLASS({
         this.accountingBankAccounts = await this.xeroService.bankAccountSync(null);
       }
       if ( ! this.accountingBankAccounts.result && this.accountingBankAccounts.errorCode.name === 'TOKEN_EXPIRED' ) {
-        this.add(this.NotificationMessage.create({ message: this.TokenExpired, type: 'error' }));
+        this.notify(this.TokenExpired, '', this.LogLevel.ERROR, true);
       } else if ( ! this.accountingBankAccounts.result && ! ( this.accountingBankAccounts.errorCode.name === 'NOT_SIGNED_IN' ) ) {
-        this.add(this.NotificationMessage.create({ message: this.accountingBankAccounts.reason, type: 'error' }));
+        this.notify(this.accountingBankAccounts.reason, '', this.LogLevel.ERROR, true);
       }
       if ( this.accountingBankAccounts ) {
         for ( let i = 0; i < this.accountingBankAccounts.bankAccountList.length; i++ ) {
@@ -398,7 +399,7 @@ foam.CLASS({
 
         abliiBank.integrationId = accountingBank.xeroBankAccountId ? accountingBank.xeroBankAccountId: accountingBank.quickBooksBankAccountId;
         await this.accountDAO.put(abliiBank);
-        this.add(this.NotificationMessage.create({ message: 'Accounts have been successfully linked' }));
+        this.notify('Accounts have been successfully linked.', '', this.LogLevel.INFO, true);
         this.accountingBankList = -1;
         // to report sync loading page
         this.stack.push({

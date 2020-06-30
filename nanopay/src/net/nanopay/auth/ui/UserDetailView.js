@@ -21,10 +21,11 @@ foam.CLASS({
   extends: 'foam.u2.Controller',
 
   requires: [
-    'foam.u2.dialog.NotificationMessage'
+    'foam.log.LogLevel'
   ],
 
   imports: [
+    'notify',
     'regionDAO',
     'userDAO',
     'validateAddress',
@@ -668,10 +669,7 @@ foam.CLASS({
     },
 
     function showErrorMessage(msg) {
-      this.add(this.NotificationMessage.create({
-        message: msg,
-        type: 'error'
-      }));
+      this.notify(msg, '', this.LogLevel.ERROR, true);
     }
   ],
 

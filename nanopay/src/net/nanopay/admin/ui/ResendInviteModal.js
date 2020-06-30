@@ -27,14 +27,15 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'net.nanopay.ui.modal.ModalHeader'
   ],
 
   imports: [
     'inviteToken',
     'editProfilePopUp',
-    'closeDialog'
+    'closeDialog',
+    'notify'
   ],
 
   css: `
@@ -113,10 +114,10 @@ foam.CLASS({
         this.inviteToken.generateToken(null, this.data).then(function (result) {
           if ( ! result ) throw new Error('Unable to resend invitation.');
           X.closeDialog();
-          self.add(self.NotificationMessage.create({ message: 'Invitation successfully resent.' }));
+          X.notify('Invitation successfully resent.', '', self.LogLevel.INFO, true);
         })
         .catch(function (err) {
-          self.add(self.NotificationMessage.create({ message: 'Unable to resend invitation.', type: 'error' }));
+          X.notify('Unable to resend invitation.', '', self.LogLevel.ERROR, true);
         });
       }
     }

@@ -30,6 +30,10 @@ foam.CLASS({
     A configurable view to create a Transaction instance
   `,
 
+  requires: [
+    'foam.log.LogLevel'
+  ],
+
   properties: [
     {
       class: 'foam.u2.ViewSpecWithJava',
@@ -56,13 +60,13 @@ foam.CLASS({
         x.transactionDAO.put(this.data)
         .then(
           (_) => {
-            x.notify('An approval request has been created.');
+            x.notify('An approval request has been created.', '', this.LogLevel.INFO, true);
             x.stack.back();
           }
         ).catch(
           (e) => {
             this.data.mode = 'create'; // if fail - want to maintain the create mode - other option is to close on fail - but this gives user option to edit with fail
-            x.notify('Transaction Creation Error: ' + e.message || e, 'error');
+            x.notify('Transaction Creation Error: ' + e.message || e, '', this.LogLevel.ERROR, true);
           }
         );
       }

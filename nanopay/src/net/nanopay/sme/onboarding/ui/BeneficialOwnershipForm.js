@@ -45,6 +45,7 @@ implements: [
 
 requires: [
   'foam.dao.ArrayDAO',
+  'foam.log.LogLevel',
   'foam.nanos.auth.Address',
   'foam.nanos.auth.Region',
   'foam.nanos.auth.User',
@@ -866,10 +867,10 @@ actions: [
 
       try {
         await this.user.beneficialOwners.put(beneficialOwner);
-        this.notify(this.BENEFICIAL_OWNER_SUCCESS);
+        this.notify(this.BENEFICIAL_OWNER_SUCCESS, '', this.LogLevel.INFO, true);
       } catch (err) {
         console.error(err);
-        this.notify(err && err.message ? err.message : this.BENEFICIAL_OWNER_FAILURE, 'error');
+        this.notify(err && err.message ? err.message : this.BENEFICIAL_OWNER_FAILURE, '', this.LogLevel.ERROR, true);
       }
 
       this.editingBeneficialOwner = null;

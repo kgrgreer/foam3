@@ -25,10 +25,10 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'net.nanopay.auth.AgentJunctionStatus',
     'net.nanopay.model.ClientUserJunction',
-    'net.nanopay.model.Invitation',
-    'foam.u2.dialog.NotificationMessage'
+    'net.nanopay.model.Invitation'
   ],
 
   imports: [
@@ -145,7 +145,7 @@ foam.CLASS({
       name: 'addUser',
       code: async function() {
         if ( ! this.validateEmail(this.email) ) {
-          this.notify(this.INVALID_EMAIL, 'error');
+          this.notify(this.INVALID_EMAIL, '', this.LogLevel.ERROR, true);
           return;
         }
 
@@ -156,7 +156,7 @@ foam.CLASS({
           var currentBusUserArray = (await this.dao.where(this.EQ(this.ClientUserJunction.STATUS, this.AgentJunctionStatus.ACTIVE)).select()).array;
           currentBusUserArray.forEach( (busUser) => {
             if ( foam.util.equals(busUser.email, this.email) ) {
-              this.notify(this.INVALID_EMAIL2, 'error');
+              this.notify(this.INVALID_EMAIL2, '', this.LogLevel.ERROR, true);
               disallowUserAdditionReturnFromAddUser = true;
               // only exits loop with return, due to nesting function
               return;
@@ -174,12 +174,12 @@ foam.CLASS({
         this.businessInvitationDAO
           .put(invitation)
           .then((resp) => {
-            this.notify(this.INVITATION_SUCCESS);
+            this.notify(this.INVITATION_SUCCESS, '', this.LogLevel.INFO, true);
             this.agentJunctionDAO.on.reset.pub();
             this.closeDialog();
           })
           .catch((err) => {
-            this.notify(`${ this.INVITATION_ERROR } ${ err.message }`, 'error');
+            this.notify(`${ this.INVITATION_ERROR } ${ err.message }`, '', this.LogLevel.ERROR, true);
           });
       }
     },

@@ -28,6 +28,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'net.nanopay.invoice.model.PaymentStatus'
   ],
 
@@ -149,11 +150,11 @@ foam.CLASS({
               invoice: this.invoice
             });
           } else {
-            this.notify(this.VOID_SUCCESS, 'success');
+            this.notify(this.VOID_SUCCESS, '', this.LogLevel.INFO, true);
           }
          }
         }).catch((err) => {
-         if ( err ) this.notify(this.VOID_ERROR, 'error');
+         if ( err ) this.notify(this.VOID_ERROR, '', this.LogLevel.ERROR, true);
          X.closeDialog();
         });
       }

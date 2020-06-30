@@ -20,6 +20,10 @@ foam.CLASS({
   name: 'TransactionDAOBrowserView',
   extends: 'foam.comics.v2.DAOBrowserView',
 
+  requires: [
+    'foam.log.LogLevel'
+  ],
+
   imports: [
     'notify'
   ],
@@ -182,7 +186,7 @@ foam.CLASS({
     function fetchTransactionCount() {
       this.predicatedDAO.select(this.COUNT()).then((count) => {
         if ( count.value === 0 ) {
-          this.notify(this.NO_TRANSACTIONS);
+          this.notify(this.NO_TRANSACTIONS, '', this.LogLevel.WARN, true);
         }
       });
     }

@@ -36,6 +36,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'net.nanopay.contacts.Contact',
     'foam.mlang.sink.Count'
   ],
@@ -110,10 +111,10 @@ foam.CLASS({
       this.isConnecting = true;
       try {
       contact = await this.user.contacts.put(this.data.contact);
-      this.ctrl.notify(this.CONTACT_ADDED);
+      this.ctrl.notify(this.CONTACT_ADDED, '', this.LogLevel.INFO, true);
       } catch (e) {
         var msg = e.message || this.GENERIC_PUT_FAILED;
-        this.ctrl.notify(msg, 'error');
+        this.ctrl.notify(msg, '', this.LogLevel.ERROR, true);
         this.isConnecting = false;
         return false;
       }
@@ -147,7 +148,7 @@ foam.CLASS({
           // check if contact associated with given payment code already exists
           var sink = await this.user.contacts.where(this.EQ(this.Contact.BUSINESS_ID, business.id)).select(this.Count.create());
           if ( sink.value != 0 ) {
-            this.ctrl.notify(this.CONTACT_EXISTS_ERROR, 'error');
+            this.ctrl.notify(this.CONTACT_EXISTS_ERROR, '', this.LogLevel.ERROR, true);
             return;
           }
           // copy over contact properties
@@ -163,7 +164,7 @@ foam.CLASS({
           this.currentIndex = this.nextIndex;
         } catch (err) {
           var msg = err.message;
-          this.ctrl.notify(msg, 'error');
+          this.ctrl.notify(msg, '', this.LogLevel.ERROR, true);
         }
       }
     },

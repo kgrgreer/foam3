@@ -26,6 +26,7 @@ foam.CLASS({
 
   requires: [
     'foam.flow.Document',
+    'foam.log.LogLevel',
     'net.nanopay.documents.AcceptanceDocumentService',
     'net.nanopay.documents.AcceptanceDocument',
     'net.nanopay.documents.AcceptanceDocumentType'
@@ -131,7 +132,7 @@ foam.CLASS({
         }
       } catch (error) {
         console.error(error.message);
-        this.ctrl.notify(error.message, 'error');
+        this.ctrl.notify(error.message, '', this.LogLevel.ERROR, true);
       }
     }
   ]

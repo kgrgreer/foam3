@@ -30,6 +30,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.log.LogLevel',
     'foam.util.SafetyUtil',
     'net.nanopay.model.Branch',
     'java.util.regex.Pattern'
@@ -308,7 +309,7 @@ foam.CLASS({
       try {
         await this.padCaptureDAO.put(this.padCapture);
       } catch (e) {
-        this.notify(e, 'error');
+        this.notify(e, '', this.LogLevel.ERROR, true);
         return;
       }
       if ( this.plaidResponseItem ) {
@@ -318,20 +319,20 @@ foam.CLASS({
           let response = await this.plaidService.saveAccount(null, responseItem);
           if ( response.plaidError ) {
             let message = error.display_message !== '' ? error.display_message : error.error_code;
-            this.notify(message, 'error');
+            this.notify(message, '', this.LogLevel.ERROR, true);
           }
           if ( this.stack ) this.stack.back();
         } catch (e) {
-          this.notify(e.message, 'error');
+          this.notify(e.message, '', this.LogLevel.ERROR, true);
         }
       } else {
         try {
           this.address = this.padCapture.address;
           await this.subject.user.accounts.put(this);
           if ( this.stack ) this.stack.back();
-          this.notify(this.ADD_SUCCESSFUL);
+          this.notify(this.ADD_SUCCESSFUL, '', this.LogLevel.INFO, true);
         } catch (error) {
-          this.notify(error.message, 'error');
+          this.notify(error.message, '', this.LogLevel.ERROR, true);
         }
       }
     },

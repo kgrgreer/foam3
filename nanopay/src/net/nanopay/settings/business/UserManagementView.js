@@ -27,6 +27,7 @@ foam.CLASS({
 
   requires: [
     'foam.dao.EasyDAO',
+    'foam.log.LogLevel',
     'foam.nanos.auth.UserUserJunction',
     'foam.u2.dialog.Popup',
     'net.nanopay.auth.AgentJunctionStatus',
@@ -36,6 +37,8 @@ foam.CLASS({
   ],
 
   imports: [
+    'notify',
+    'subject',
     'agentJunctionDAO',
     'businessInvitationDAO',
     'notify',
@@ -132,10 +135,10 @@ foam.CLASS({
                 var junction = this;
                 this.agentJunctionObj.status = self.AgentJunctionStatus.DISABLED;
                 self.agentJunctionDAO.put(this.agentJunctionObj).then(function(resp) {
-                  self.notify(`${ junction.name + self.DISABLED_SUCCESS }`, 'success');
+                  self.notify(junction.name + self.DISABLED_SUCCESS, '', self.LogLevel.INFO, true);
                 }).catch(function(err) {
                   var message = err ? err.message : self.DISABLED_FAILURE;
-                  self.notify(`${ message + junction.name }`, 'error');
+                  self.notify(message + junction.name, '', self.LogLevel.ERROR, true);
                 });
               }
             }),
@@ -149,10 +152,10 @@ foam.CLASS({
                 var junction = this;
                 this.agentJunctionObj.status = self.AgentJunctionStatus.ACTIVE;
                 self.agentJunctionDAO.put(this.agentJunctionObj).then(function(resp) {
-                  self.notify(`${ junction.name + self.ACTIVE_SUCCESS }`, 'success');
+                  self.notify(`${ junction.name + self.ACTIVE_SUCCESS }`, '', self.LogLevel.INFO, true);
                 }).catch(function(err) {
                   var message = err ? err.message : self.ACTIVE_FAILURE;
-                  self.notify(`${ message + junction.name }`, 'error');
+                  self.notify(`${ message + junction.name }`, '', self.LogLevel.ERROR, true);
                 });
               }
             }),

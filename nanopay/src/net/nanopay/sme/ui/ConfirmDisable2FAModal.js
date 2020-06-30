@@ -22,6 +22,10 @@ foam.CLASS({
 
   documentation: 'A Popup modal to confirm user disabling 2FA',
 
+  requires: [
+    'foam.log.LogLevel'
+  ],
+
   imports: [
     'subject',
     'closeDialog',
@@ -139,24 +143,24 @@ foam.CLASS({
         var self = this;
 
         if ( ! this.validationCode ) {
-          this.ctrl.notify(this.ERROR_NO_TOKEN, 'error');
+          this.ctrl.notify(this.ERROR_NO_TOKEN, '', this.LogLevel.ERROR, true);
           return;
         }
 
         this.twofactor.disable(null, this.validationCode)
           .then(function(result) {
             if ( ! result ) {
-              self.ctrl.notify(self.ERROR_DISABLE, 'error');
+              self.ctrl.notify(self.ERROR_DISABLE, '', this.LogLevel.ERROR, true);
               return;
             }
 
             self.validationCode = '';
             self.subject.realUser.twoFactorEnabled = false;
-            self.ctrl.notify(self.SUCCESS);
+            self.ctrl.notify(self.SUCCESS, '', this.LogLevel.INFO, true);
             self.closeDialog();
           })
           .catch(function(err) {
-            self.ctrl.notify(self.ERROR_DISABLE, 'error');
+            self.ctrl.notify(self.ERROR_DISABLE, '', this.LogLevel.ERROR, true);
           });
       }
     },

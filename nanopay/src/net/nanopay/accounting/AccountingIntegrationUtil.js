@@ -22,8 +22,8 @@ foam.CLASS({
   documentation: 'Manages the front-end common logic for Accounting Integrations',
 
   requires: [
+    'foam.log.LogLevel',
     'foam.u2.dialog.Popup',
-    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.accounting.IntegrationCode',
     'net.nanopay.accounting.AccountingErrorCodes',
     'net.nanopay.invoice.model.Invoice',
@@ -100,20 +100,20 @@ foam.CLASS({
         return null;
       }
       if ( ! contactResult.result ) {
-        this.ctrl.notify(contactResult.reason, 'error');
+        this.ctrl.notify(contactResult.reason, '', this.LogLevel.ERROR, true);
       }
 
       // invoice sync
       let invoiceResult = await service.invoiceSync(null);
       if ( ! invoiceResult.result ) {
-        this.ctrl.notify(contactResult.reason, 'error');
+        this.ctrl.notify(contactResult.reason, '', this.LogLevel.ERROR, true);
       }
 
       // build final result
       let finalResult = contactResult.clone();
       finalResult.invoiceErrors = invoiceResult.invoiceErrors;
       finalResult.successInvoice = invoiceResult.successInvoice;
-      this.ctrl.notify('All information has been synchronized', 'success');
+      this.ctrl.notify('All information has been synchronized', '', this.LogLevel.INFO, true);
       
       let report = this.AccountingResultReport.create();
       report.userId = this.subject.user.id;
@@ -151,7 +151,7 @@ foam.CLASS({
               accountingSoftwareName: accountingSoftwareName
             }));
           } else {
-            this.ctrl.notify(result.reason, 'error');
+            this.ctrl.notify(result.reason, '', this.LogLevel.ERROR, true);
           }
           return null;
         }

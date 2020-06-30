@@ -23,6 +23,7 @@ foam.CLASS({
   documentation: 'Input micro-deposit amount screen',
 
   requires: [
+    'foam.log.LogLevel',
     'net.nanopay.ui.LoadingSpinner'
   ],
 
@@ -148,7 +149,7 @@ foam.CLASS({
 
     function validateForm() {
       if ( this.amount <= 0 || this.amount >= 1 ) {
-        ctrl.notify(this.INVALID_FORM, 'error');
+        ctrl.notify(this.INVALID_FORM, '', this.LogLevel.ERROR, true);
         return false;
       }
       return true;
@@ -160,7 +161,7 @@ foam.CLASS({
         var isVerified = await this.bankAccountVerification
           .verify(null, this.bank.id, Math.round(this.amount*100));
       } catch (error) {
-        this.ctrl.notify(error.message ? error.message : this.DEFAULT_ERROR, 'error');
+        this.ctrl.notify(error.message ? error.message : this.DEFAULT_ERROR, '', this.LogLevel.ERROR, true);
         return;
       } finally {
         this.isConnecting = false;
@@ -168,13 +169,13 @@ foam.CLASS({
 
       if ( isVerified ) {
         var accountNumber = '***' + this.bank.accountNumber.slice(-4);
-        ctrl.notify(this.SUCCESS_ONE + ` ${accountNumber} ` + this.SUCCESS_TWO);
+        ctrl.notify(this.SUCCESS_ONE + ` ${accountNumber} ` + this.SUCCESS_TWO, '', this.LogLevel.INFO, true);
         if ( this.onComplete ) this.onComplete();
 
         try {
           this.bank = await this.accountDAO.find(this.bank.id);
         } catch (error) {
-          this.ctrl.notify(error.message ? error.message : this.DEFAULT_ERROR, 'error');
+          this.ctrl.notify(error.message ? error.message : this.DEFAULT_ERROR, '', this.LogLevel.ERROR, true);
         }
         // Force the view to update.
         this.user.accounts.cmd(foam.dao.AbstractDAO.RESET_CMD);
