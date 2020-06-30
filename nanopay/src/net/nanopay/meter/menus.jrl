@@ -117,6 +117,7 @@ p({
     "config": {
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey": "ruleDAO",
+      "factory": "net.nanopay.meter.clearing.ruler.BusinessClearingTimeRule",
       "predicate": {
         "class": "foam.mlang.predicate.IsInstanceOf",
         "targetClass": "net.nanopay.meter.clearing.ruler.ClearingTimeRule"

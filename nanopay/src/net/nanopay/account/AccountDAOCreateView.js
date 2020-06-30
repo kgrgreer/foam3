@@ -60,7 +60,7 @@ foam.CLASS({
           dataView: 'net.nanopay.liquidity.ui.account.AccountDetailView'
         };
       }
-    },
+    }
   ],
 
   actions: [
