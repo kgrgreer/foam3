@@ -23,13 +23,14 @@ foam.CLASS({
   documentation: 'Terms and Conditions Modal',
 
   requires: [
+    'foam.log.LogLevel',
     'net.nanopay.ui.modal.ModalHeader',
-    'foam.u2.dialog.NotificationMessage',
   ],
 
   imports: [
     'appConfig',
     'emailDocService',
+    'notify',
     'user'
   ],
 
@@ -129,10 +130,10 @@ foam.CLASS({
           if ( ! result ) {
             throw new Error('Error sending Email');
           }
-          self.add(self.NotificationMessage.create({ message: 'Email sent to ' + self.user.email }));
+          self.notify('Email sent to ' + self.user.email, '', self.LogLevel.INFO, true);
         })
         .catch(function(err) {
-          self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+          self.notify(err.message, '', self.LogLevel.ERROR, true);
         });
       }
     },

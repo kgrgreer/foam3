@@ -55,6 +55,7 @@ foam.CLASS({
     'ctrl',
     'currencyDAO',
     'notificationDAO',
+    'notify',
     'stack',
     'subject',
     'xeroService',
@@ -64,8 +65,8 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'foam.nanos.notification.Notification',
-    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.accounting.AccountingErrorCodes',
     'net.nanopay.bank.CanReceiveCurrency',
     'net.nanopay.accounting.IntegrationCode',
@@ -214,7 +215,7 @@ foam.CLASS({
       });
       let responseObj = await this.canReceiveCurrencyDAO.put(request);
       if ( ! responseObj.response ) {
-        this.ctrl.notify(responseObj.message, 'error');
+        this.ctrl.notify(responseObj.message, '', this.LogLevel.ERROR, true);
         return;
       }
       let updatedInvoice = await this.accountingIntegrationUtil.forceSyncInvoice(this.data);
@@ -239,10 +240,10 @@ foam.CLASS({
       try {
         await this.notificationDAO.put(notification);
         var successMessage = this.REMINDER_SENT_SUCCESSFULLY.replace('${0}', this.data.payer.businessName || this.data.payer.toSummary());
-        this.add(this.NotificationMessage.create({ message: successMessage }));
+        this.notify(successMessage, '', this.LogLevel.INFO, true);
       } catch (exception) {
         var errorMessage = this.REMINDER_ERROR_MESSAGE.replace('${0}', this.data.payer.businessName || this.data.payer.toSummary());
-        this.add(this.NotificationMessage.create({ message: errorMessage, type: 'error' }));
+        this.notify(errorMessage, '', this.LogLevel.ERROR, true);
         console.error(exception);
       }
     }

@@ -23,6 +23,7 @@ foam.CLASS({
   documentation: 'Login screen for Flinks',
 
   requires: [
+    'foam.log.LogLevel',
     'net.nanopay.ui.LoadingSpinner',
     'foam.u2.dialog.Popup',
     'net.nanopay.documents.AcceptanceDocument',
@@ -201,7 +202,7 @@ foam.CLASS({
           this.subject.user
         );
       } catch (error) {
-        this.notify(`${error.message}. Please try again.`, 'error');
+        this.notify(`${error.message}. Please try again.`, '', this.LogLevel.ERROR, true);
         return;
       } finally {
         this.isConnecting = false;
@@ -217,10 +218,10 @@ foam.CLASS({
           this.pushToId('security');
           break;
         case 401:
-          this.notify(response.Message, 'error');
+          this.notify(response.Message, '', this.LogLevel.ERROR, true);
           break;
         default:
-          this.notify(this.ERROR, 'error');
+          this.notify(this.ERROR, '', this.LogLevel.ERROR, true);
           break;
       }
     }
@@ -241,11 +242,11 @@ foam.CLASS({
         var model = X.connect;
         if ( model.isConnecting ) return;
         if ( ! ( model.username.trim().length > 0 && model.password.trim().length > 0 ) ) {
-          X.notify(model.INVALID_FORM, 'error');
+          X.notify(model.INVALID_FORM, '', this.LogLevel.ERROR, true);
           return;
         }
         if ( ! model.isTermsAgreed ) {
-          X.notify(model.ACCEPT_CONDITIONS, 'error');
+          X.notify(model.ACCEPT_CONDITIONS, '', this.LogLevel.ERROR, true);
           return;
         }
         X.connect.connectToBank();

@@ -31,6 +31,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'net.nanopay.admin.model.ComplianceStatus',
   ],
 
@@ -696,7 +697,7 @@ foam.CLASS({
       code: function() {
         if ( this.compliance === this.ComplianceStatus.NOTREQUESTED
           || ! this.onboarded ) {
-          this.ctrl.notify(this.organization + this.COMPLIANCE_REPORT_WARNING);
+          this.ctrl.notify(this.organization + this.COMPLIANCE_REPORT_WARNING, '', this.LogLevel.INFO, true);
           return;
         }
         var url = window.location.origin

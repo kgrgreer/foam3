@@ -23,10 +23,11 @@ foam.CLASS({
   documentation: 'next step view',
 
   requires: [
-    'foam.u2.dialog.NotificationMessage'
+    'foam.log.LogLevel'
   ],
 
   imports: [
+    'notify',
     'user',
     'userDAO',
     'window'
@@ -63,7 +64,7 @@ foam.CLASS({
           X.window.location.reload();
         })
         .catch(function (err) {
-          X.add(X.NotificationMessage.create({ message: 'Sorry something went wrong.', type: 'error' }));
+          X.notify('Sorry something went wrong.', '', X.LogLevel.ERROR, true);
         });
       }
     }

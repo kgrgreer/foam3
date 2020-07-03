@@ -29,6 +29,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'foam.u2.Tab',
     'foam.u2.UnstyledTabs',
     'net.nanopay.settings.business.UserManagementView',
@@ -138,7 +139,7 @@ foam.CLASS({
           .tag(tabs);
       } catch (err) {
         console.error(err);
-        this.notify(err.message || this.GENERIC_ERROR, 'error');
+        this.notify(err.message || this.GENERIC_ERROR, '', this.LogLevel.ERROR, true);
       }
     }
   ]

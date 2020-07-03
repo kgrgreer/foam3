@@ -59,29 +59,25 @@ foam.CLASS({
       agency.submit(x, new ContextAgent() {
         @Override
         public void execute(X x) {
-          TransactionQuote transactionQuote = (TransactionQuote) obj;
+          Transaction transaction= (Transaction) obj;
 
-          // Iterate through the transaction array
-          // (In current situation, the array only has one item)
-          for ( Transaction transaction : transactionQuote.getPlans()) {
-            if (transaction instanceof DigitalTransaction && transaction.getCost() == 0 ) {
+          if (transaction instanceof DigitalTransaction && transaction.getCost() == 0 ) {
 
-              DAO userDAO = (DAO) x.get("localUserDAO");
-              User payee = (User) userDAO.find_(x, transaction.getPayeeId());
+            DAO userDAO = (DAO) x.get("localUserDAO");
+            User payee = (User) userDAO.find_(x, transaction.getPayeeId());
 
-              DigitalAccount defaultDigitalAccount = DigitalAccount.findDefault(x, payee, transaction.getDestinationCurrency());
-              LiquiditySettings digitalAccLiquid = defaultDigitalAccount.findLiquiditySetting(x);
+            DigitalAccount defaultDigitalAccount = DigitalAccount.findDefault(x, payee, transaction.getDestinationCurrency());
+            LiquiditySettings digitalAccLiquid = defaultDigitalAccount.findLiquiditySetting(x);
 
-              // Check if the default digital account of the payee has the liqudity setting or not
-              if ( digitalAccLiquid == null || ! digitalAccLiquid.getHighLiquidity().getEnabled()) {
-                // Set fee lineitem for digital transaction to farmers
-                transaction.addLineItems(new TransactionLineItem[] {
-                  new InvoicedFeeLineItem.Builder(getX())
-                    .setName("Transaction Fee")
-                    .setAmount(getFee())
-                    .build()
-                });
-              }
+            // Check if the default digital account of the payee has the liqudity setting or not
+            if ( digitalAccLiquid == null || ! digitalAccLiquid.getHighLiquidity().getEnabled()) {
+              // Set fee lineitem for digital transaction to farmers
+              transaction.addLineItems(new TransactionLineItem[] {
+                new InvoicedFeeLineItem.Builder(getX())
+                  .setName("Transaction Fee")
+                  .setAmount(getFee())
+                  .build()
+              });
             }
           }
         }

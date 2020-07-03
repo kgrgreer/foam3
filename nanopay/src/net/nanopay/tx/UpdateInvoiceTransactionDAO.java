@@ -10,6 +10,7 @@ import foam.dao.DAO;
 import foam.dao.ProxyDAO;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
+import foam.nanos.notification.Notification;
 import foam.util.SafetyUtil;
 import net.nanopay.fx.FXSummaryTransaction;
 import net.nanopay.fx.FXTransaction;
@@ -93,6 +94,7 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
     }
 
     Invoice invoice = getInvoice(x, transaction);
+    if ( invoice == null ) return getDelegate().put_(x, obj);
     if ( transaction.getStatus() == TransactionStatus.SENT &&
          transaction instanceof COTransaction ) {
         // only update the estimated completion date on the last CO leg.
@@ -151,8 +153,13 @@ public class UpdateInvoiceTransactionDAO extends ProxyDAO {
     Invoice invoice = transaction.findInvoiceId(x);
     if ( invoice == null ) {
       // TODO: create notification
-      logger_.error("Transaction", transaction.getId(), "invoice", transaction.getInvoiceId(), "not found.");
-      throw new RuntimeException("Invoice with id " + transaction.getInvoiceId() + " not found.");
+      String notificationMsg = "Transaction " + transaction.getId() + ", invoice " + transaction.getInvoiceId() + " not found.";
+      logger_.error(notificationMsg);
+      Notification notification = new Notification.Builder(x)
+        .setTemplate("NOC")
+        .setBody(notificationMsg)
+        .build();
+      ((DAO) x.get("localNotificationDAO")).put(notification);
     }
     return invoice;
  }

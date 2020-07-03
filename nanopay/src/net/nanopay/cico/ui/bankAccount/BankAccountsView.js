@@ -286,12 +286,12 @@ foam.CLASS({
       requires: [
         'net.nanopay.bank.BankAccount',
         'net.nanopay.bank.BankAccountStatus',
-        'foam.u2.dialog.Popup',
-        'foam.u2.dialog.NotificationMessage'
+        'foam.u2.dialog.Popup'
       ],
 
       imports: [
         'accountDAO as bankAccountDAO',
+        'notify',
         'verifyAccount',
         'stack',
         'selectedAccount',
@@ -359,10 +359,7 @@ foam.CLASS({
         },
 
         function manageAccountNotification(_message, _type) {
-          this.add(this.NotificationMessage.create({
-            message: _message,
-            type: _type
-          }));
+          this.notify(_message, '', _type, true);
         }
       ]
     }

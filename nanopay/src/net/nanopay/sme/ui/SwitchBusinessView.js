@@ -25,6 +25,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'foam.u2.dialog.Popup',
     'foam.dao.PromisedDAO',
     'foam.nanos.auth.UserUserJunction',
@@ -241,7 +242,7 @@ foam.CLASS({
         var msg = err != null && typeof err.message === 'string'
           ? err.message
           : this.BUSINESS_LOGIN_FAILED;
-        this.notify(msg, 'error');
+        this.notify(msg, '', this.LogLevel.ERROR, true);
       }
     },
 
@@ -310,7 +311,7 @@ foam.CLASS({
                 })
                   .on('click', () => {
                     if ( junction.status === self.AgentJunctionStatus.DISABLED ) {
-                      self.ctrl.notify(self.ERROR_DISABLED, 'error');
+                      self.ctrl.notify(self.ERROR_DISABLED, '', self.LogLevel.ERROR, true);
                     }
                     self.assignBusinessAndLogIn(junction);
                   })
@@ -326,7 +327,7 @@ foam.CLASS({
                 })
                   .addClass('disabled')
                   .on('click', () => {
-                    self.notify(self.DISABLED_BUSINESS_MSG, 'error');
+                    self.notify(self.DISABLED_BUSINESS_MSG, '', self.LogLevel.ERROR, true);
                   })
                 .end();
             })
@@ -355,7 +356,7 @@ foam.CLASS({
   listeners: [
     function goBack() {
       if ( this.user.cls_ != net.nanopay.model.Business ) {
-        this.notify('Please select a business', 'error');
+        this.notify('Please select a business', '', this.LogLevel.ERROR, true);
         return;
       }
       if ( this.stack.pos > 1 ) {

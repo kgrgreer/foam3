@@ -30,12 +30,14 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
+    'foam.nanos.notification.Notification',
+    'foam.nanos.notification.ToastState',
     'foam.nanos.u2.navigation.FooterView',
     'foam.nanos.u2.navigation.TopNavigation',
     'foam.core.Currency',
-
     'foam.core.Latch',
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.Element',
@@ -77,7 +79,8 @@ foam.CLASS({
     'canadaUsBusinessOnboardingDAO',
     'digitalAccount',
     'accountDAO',
-    'balanceDAO'
+    'balanceDAO',
+    'notificationDAO'
   ],
 
   exports: [
@@ -811,7 +814,7 @@ foam.CLASS({
 
       if ( toastElement ) {
         if ( ! toastElement.passed ) {
-          this.notify(toastElement.msg, 'warning');
+          this.notify(toastElement.msg, '', this.LogLevel.WARN, true);
         }
         return toastElement.passed;
       } else {
@@ -840,7 +843,7 @@ foam.CLASS({
           .end();
 
         // Pass the customized DOM element into the toast notification
-        this.notify(TwoFactorNotificationDOM, 'warning');
+        this.notify(TwoFactorNotificationDOM, '', this.LogLevel.WARN, true);
         if ( this.appConfig.mode != foam.nanos.app.Mode.PRODUCTION ) {
           return true;
         } else {
@@ -856,7 +859,7 @@ foam.CLASS({
         return result ? await this.check2FAEnalbed() : result;
       } catch (err) {
         console.warn(`${this.ABILITY_TO_PAY_ERROR}: `, err);
-        this.notify(`${this.ABILITY_TO_PAY_ERROR}.`, 'error');
+        this.notify(`${this.ABILITY_TO_PAY_ERROR}.`, '', this.LogLevel.ERROR, true);
       }
     },
 
@@ -865,7 +868,7 @@ foam.CLASS({
         return await this.checkComplianceAndBanking();
       } catch (err) {
         console.warn(`${this.ABILITY_TO_RECEIVE_ERROR}: `, err);
-        this.notify(`${this.ABILITY_TO_RECEIVE_ERROR}.`, 'error');
+        this.notify(`${this.ABILITY_TO_RECEIVE_ERROR}.`, '', this.LogLevel.ERROR, true);
       }
     },
 
@@ -943,7 +946,28 @@ foam.CLASS({
   listeners: [
     function onUserAgentAndGroupLoaded() {
       var self = this;
-      this.userLoggedIn.resolve();
+      this.loginSuccess = true;
+      this.themeUpdated.resolve();
+
+      // Listener to check for new toast notifications
+      var userNotificationQueryId = this.subject && this.subject.realUser ?
+      this.subject.realUser.id : this.user.id;
+
+      this.__subSubContext__.notificationDAO.where(
+        this.EQ(this.Notification.USER_ID, userNotificationQueryId)
+      ).on.put.sub((sub, on, put, obj) => {
+        if ( obj.toastState == this.ToastState.REQUESTED ) {
+          this.add(this.NotificationMessage.create({
+            message: obj.toastMessage,
+            type: obj.severity,
+            description: obj.toastSubMessage
+          }));
+          var clonedNotification = obj.clone();
+          clonedNotification.toastState = this.ToastState.DISPLAYED;
+          this.__subSubContext__.notificationDAO.put(clonedNotification);
+        }
+      });
+
       if ( this.sme ) {
         window.onpopstate = async (event) => {
           var menu;
@@ -993,7 +1017,7 @@ foam.CLASS({
             location.hash != '#sme.accountProfile.switch-business'
           ) {
             self.pushMenu('sme.accountProfile.switch-business');
-            self.notify(self.SELECT_BUSINESS_WARNING, 'warning');
+            self.notify(self.SELECT_BUSINESS_WARNING, '', this.LogLevel.WARN, true);
           }
         });
 

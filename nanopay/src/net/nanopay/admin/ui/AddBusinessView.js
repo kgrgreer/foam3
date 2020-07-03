@@ -23,15 +23,16 @@ foam.CLASS({
   documentation: 'View for adding a business',
 
   requires: [
+    'foam.log.LogLevel',
     'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
-    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus'
   ],
 
   imports: [
     'inviteToken',
+    'notify',
     'stack',
     'user',
     'userDAO',
@@ -482,45 +483,45 @@ foam.CLASS({
 
     function validations() {
       if ( this.firstNameField.length > 70 ) {
-        this.add(this.NotificationMessage.create({ message: 'First name cannot exceed 70 characters.', type: 'error' }));
+        this.notify('First name cannot exceed 70 characters.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( /\d/.test(this.firstNameField) ) {
-        this.add(this.NotificationMessage.create({ message: 'First name cannot contain numbers', type: 'error' }));
+        this.notify('First name cannot contain numbers.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( this.middleNameField ) {
         if ( this.middleNameField.length > 70 ) {
-          this.add(this.NotificationMessage.create({ message: 'Middle initials cannot exceed 70 characters.', type: 'error' }));
+          this.notify('Middle initials cannot exceed 70 characters.', '', this.LogLevel.ERROR, true);
           return false;
         }
         if ( /\d/.test(this.middleNameField) ) {
-          this.add(this.NotificationMessage.create({ message: 'Middle initials cannot contain numbers', type: 'error' }));
+          this.notify('Middle initials cannot contain numbers', '', this.LogLevel.ERROR, true);
           return false;
         }
       }
       if ( this.lastNameField.length > 70 ) {
-        this.add(this.NotificationMessage.create({ message: 'Last name cannot exceed 70 characters.', type: 'error' }));
+        this.notify('Last name cannot exceed 70 characters.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( /\d/.test(this.lastNameField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Last name cannot contain numbers.', type: 'error' }));
+        this.notify('Last name cannot contain numbers', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validateTitleNumOrAuth(this.jobTitle) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid job title.', type: 'error' }));
+        this.notify('Invalid job title.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validateEmail(this.emailAddress) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid email address.', type: 'error' }));
+        this.notify('Invalid email address.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( this.emailAddress != this.confirmEmailAddress ) {
-        this.add(this.NotificationMessage.create({ message: 'Confirmation email does not match.', type: 'error' }));
+        this.notify('Confirmation email does not match', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validatePhone(this.countryCode + ' ' + this.phoneNumber) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid phone number.', type: 'error' }));
+        this.notify('Invalid phone number.', '', this.LogLevel.ERROR, true);
         return false;
       }
 
@@ -537,7 +538,7 @@ foam.CLASS({
       ( this.confirmEmailAddress == null || this.confirmEmailAddress.trim() == '' ) ||
       ( this.countryCode == null || this.countryCode.trim() == '' ) ||
       ( this.phoneNumber == null || this.phoneNumber.trim() == '' ) ) {
-        this.add(this.NotificationMessage.create({ message: 'Please fill out all fields before proceeding.', type: 'error' }));
+        this.notify('Please fill out all fields before proceeding.', '', this.LogLevel.ERROR, true);
         return;
       }
 
@@ -564,11 +565,11 @@ foam.CLASS({
       });
 
       if ( newBusiness.errors_ ) {
-        this.add(this.NotificationMessage.create({ message: newBusiness.errors_[0][1], type: 'error' }));
+        this.notify(newBusiness.errors_[0][1], '', this.LogLevel.ERROR, true);
         return;
       }
       if ( businessPhone.errors_ ) {
-        this.add(this.NotificationMessage.create({ message: businessPhone.errors_[0][1], type: 'error' }));
+        this.notify(businessPhone.errors_[0][1], '', this.LogLevel.ERROR, true);
         return;
       }
 
@@ -576,11 +577,11 @@ foam.CLASS({
         if ( ! result ) throw new Error();
         self.stack.back();
       }).catch(function (error) {
-        if ( error.message ){
-          self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+        if ( error.message ) {
+          self.notify(error.message, '', self.LogLevel.ERROR, true);
           return;
         }
-        self.add(self.NotificationMessage.create({ message: 'Adding the business failed.', type: 'error' }));
+        self.notify('Adding the business failed.', '', self.LogLevel.ERROR, true);
       });
     },
     function notEditingName() {

@@ -29,7 +29,6 @@ foam.CLASS({
     'fail',
     'isConnecting',
     'loadingSpinner',
-    'notify',
     'pushViews',
     'rollBackView',
     'success'],
@@ -185,13 +184,6 @@ foam.CLASS({
 
       this
         .addClass(this.myClass());
-    },
-
-    function notify(message, type) {
-      this.add(this.NotificationMessage.create({
-        message,
-        type
-      }));
     }
   ]
 });

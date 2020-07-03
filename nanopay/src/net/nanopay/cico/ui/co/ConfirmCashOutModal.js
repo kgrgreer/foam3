@@ -23,7 +23,7 @@ foam.CLASS({
   documentation: 'Pop up modal for confirming cash out.',
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'net.nanopay.tx.model.Transaction'
   ],
 
@@ -36,6 +36,7 @@ foam.CLASS({
     'onCashOutSuccess',
     'cashOut',
     'transactionDAO',
+    'notify',
     'user'
   ],
 
@@ -267,7 +268,7 @@ foam.CLASS({
           X.closeDialog();
           X.onCashOutSuccess();
         }).catch(function(error) {
-          self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+          X.notify(error.message, '', self.LogLevel.ERROR, true);
         });
       }
     }

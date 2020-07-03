@@ -22,6 +22,10 @@ foam.CLASS({
 
   documentation: `View that displays company/business privacy setting`,
 
+  requires: [
+    'foam.log.LogLevel'
+  ],
+
   imports: [
     'user',
     'userDAO',
@@ -119,7 +123,7 @@ foam.CLASS({
         this.userDAO.put(this.user)
         .catch((err) => {
           console.error(err);
-          this.notify(err.message || this.ERROR_MSG, 'error');
+          this.notify(err.message || this.ERROR_MSG, '', this.LogLevel.ERROR, true);
         });
       }
     }

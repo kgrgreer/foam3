@@ -23,12 +23,13 @@ foam.CLASS({
   documentation: 'View for editing a business',
 
   requires: [
-    'foam.nanos.auth.User',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.log.LogLevel',
+    'foam.nanos.auth.User'
   ],
 
   imports: [
     'stack',
+    'notify',
     'userDAO',
     'validatePhone',
     'validateTitleNumOrAuth'
@@ -391,41 +392,41 @@ foam.CLASS({
 
     function validations() {
       if ( ! this.data.firstName || ! this.data.lastName || ! this.data.jobTitle || ! this.data.phoneNumber ) {
-        this.add(this.NotificationMessage.create({ message: 'Please fill out all necessary fields before proceeding.', type: 'error' }));
+        this.notify('Please fill out all necessary fields before proceeding.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( this.data.firstName.length > 70 ) {
-        this.add(this.NotificationMessage.create({ message: 'First name cannot exceed 70 characters.', type: 'error' }));
+        this.notify('First name cannot exceed 70 characters', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( /\d/.test(this.data.firstName) ) {
-        this.add(this.NotificationMessage.create({ message: 'First name cannot contain numbers', type: 'error' }));
+        this.notify('First name cannot contain numbers.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( this.data.middleName ) {
         if ( this.data.middleName.length > 70 ) {
-          this.add(this.NotificationMessage.create({ message: 'Middle initials cannot exceed 70 characters.', type: 'error' }));
+          this.notify('Middle initials cannoot exceed 70 characters', '', this.LogLevel.ERROR, true);
           return false;
         }
         if ( /\d/.test(this.data.middleName) ) {
-          this.add(this.NotificationMessage.create({ message: 'Middle initials cannot contain numbers', type: 'error' }));
+          this.notify('Middle initials cannot contain numbers.', '', this.LogLevel.ERROR, true);
           return false;
         }
       }
       if ( this.data.lastName.length > 70 ) {
-        this.add(this.NotificationMessage.create({ message: 'Last name cannot exceed 70 characters.', type: 'error' }));
+        this.notify('Last name cannot exceed 70 characters.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( /\d/.test(this.data.lastName) ) {
-        this.add(this.NotificationMessage.create({ message: 'Last name cannot contain numbers.', type: 'error' }));
+        this.notify('Last name cannot contain numbers.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validateTitleNumOrAuth(this.data.jobTitle) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid job title.', type: 'error' }));
+        this.notify('Invalid job title.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validatePhone(this.countryCode + ' ' + this.data.phoneNumber) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid phone number.', type: 'error' }));
+        this.notify('Invalid phone number.', '', this.LogLevel.ERROR, true);
         return false;
       }
       return true;
@@ -450,11 +451,11 @@ foam.CLASS({
         }
 
         this.userDAO.put(this.data).then(function (result) {
-          self.add(self.NotificationMessage.create({ message: 'Successfully updated business profile.' }));
+          self.notify('Successfully updated business profile.', '', self.LogLevel.INFO, true);
           self.stack.back();
         })
         .catch(function (err) {
-          self.add(self.NotificationMessage.create({ message: 'Error updating business profile.', type: 'error' }));
+          self.notify('Error updating business profile.', '', self.LogLevel.ERROR, true);
         });
       }
     }

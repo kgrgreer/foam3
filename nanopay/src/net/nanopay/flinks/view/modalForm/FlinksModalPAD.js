@@ -23,7 +23,7 @@ foam.CLASS({
   documentation: 'PAD form for Flinks',
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'foam.u2.dialog.Popup',
     'net.nanopay.model.PadCapture',
     'net.nanopay.ui.LoadingSpinner'
@@ -133,19 +133,19 @@ foam.CLASS({
     function validateInputs() {
       var user = this.viewData.user;
       if ( user.firstName.trim() === '' ) {
-        this.notify(this.ERROR_FIRST, 'error');
+        this.notify(this.ERROR_FIRST, '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( user.lastName.trim() === '' ) {
-        this.notify(this.ERROR_LAST, 'error');
+        this.notify(this.ERROR_LAST, '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( user.firstName.length > 70 ) {
-        this.notify(this.ERROR_FLENGTH, 'error');
+        this.notify(this.ERROR_FLENGTH, '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( user.lastName.length > 70 ) {
-        this.notify(this.ERROR_LLENGTH, 'error');
+        this.notify(this.ERROR_LLENGTH, '', this.LogLevel.ERROR, true);
         return false;
       }
       return true;
@@ -171,12 +171,12 @@ foam.CLASS({
           account.address = user.address;
           await this.bankAccountDAO.put(account);
         } catch (error) {
-          this.notify(error.message, 'error');
+          this.notify(error.message, '', this.LogLevel.ERROR, true);
           return;
         } finally {
           this.isConnecting = false;
         }
-        this.ctrl.notify(this.SUCCESS);
+        this.ctrl.notify(this.SUCCESS, '', this.LogLevel.INFO, true);
         if ( this.onComplete ) this.onComplete();
         this.closeDialog();
         location.hash = 'sme.main.banking';

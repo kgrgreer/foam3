@@ -359,6 +359,10 @@ foam.CLASS({
       section: 'reviewOwnersSection',
       name: 'totalOwnership',
       class: 'Long',
+      view: {
+        class: 'foam.u2.view.ModeAltView',
+        writeView: { class: 'foam.u2.view.ValueView' }
+      },
       expression: function(amountOfOwners,
                            owner1$ownershipPercent,
                            owner2$ownershipPercent,
@@ -385,7 +389,7 @@ foam.CLASS({
       `,
       visibility: function(totalOwnership) {
         return Number(totalOwnership) > 100 ?
-          foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
+          foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       autoValidate: true,
       max: 100,
@@ -538,17 +542,7 @@ foam.CLASS({
           choiceView:
           {
             class: 'foam.u2.view.RichChoiceView',
-            choosePlaceholder: 'Please select one of the following...',
-            sections: [
-              {
-                heading: 'Please select one of the following registered Signing Officers...',
-                dao$: dao2
-              },
-              {
-                heading: 'If owner is not a registered Signing Officers, please select the following...',
-                dao: dao
-              }
-            ]
+            choosePlaceholder: 'Please select one of the following...'
           }
         };
       }
@@ -574,9 +568,30 @@ foam.CLASS({
   package: 'net.nanopay.crunch.onboardingModels',
   name: 'SelectionViewOwner',
   extends: 'foam.u2.View',
+
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   requires: [
     'foam.u2.layout.Rows'
   ],
+
+  messages: [
+    {
+      name: 'OTHER_SELECTION_HAS_SO',
+      message: 'If owner is not a registered Signing Officers, please select the following...'
+    },
+    {
+      name: 'OTHER_SELECTION_NO_SO',
+      message: 'As there are no signing officers, please select this option...'
+    },
+    {
+      name: 'SO_SELECTION',
+      message: 'Please select one of the following registered Signing Officers...'
+    }
+  ],
+
   properties: [
     {
       class: 'foam.u2.ViewSpec',
@@ -586,12 +601,17 @@ foam.CLASS({
     {
       name: 'dao2',
       class: 'foam.dao.DAOProperty',
-      documentation: 'dao that is used in choiceView, should not change.'
+      documentation: 'dao that is used in choiceView, should not change.',
+      postSet: function (_, dao2) {
+        dao2.select(this.COUNT()).then(countSink => {
+          this.updateSections_(countSink.value > 0);
+        })
+      }
     },
     {
       name: 'dao',
       class: 'foam.dao.DAOProperty',
-      documentation: 'dao that is used in choiceView, should not change.'
+      documentation: 'dao that is used in choiceView, should not change.',
     },
     {
       name: 'otherLabel',
@@ -614,6 +634,11 @@ foam.CLASS({
             );
           }
       }
+    },
+    {
+      name: 'choiceSections_',
+      documentation: 'Sections displayed in the choice view',
+      class: 'Array'
     }
   ],
 
@@ -635,10 +660,18 @@ foam.CLASS({
   ],
 
   methods: [
+    function init() {
+      // Pre-initialize with just one section to prevent empty array error
+      // thrown by RichChoiceView
+      this.updateSections_(false);
+    },
     function initE() {
-      this.add(this.slot((choiceData_) => {
+      this.add(this.slot((choiceData_, choiceSections_) => {
         return this.Rows.create()
-          .tag(this.choiceView, { data$: this.choiceData_$ }, this.choiceView_$)
+          .tag(this.choiceView, {
+            data$: this.choiceData_$,
+            sections: this.choiceSections_
+          }, this.choiceView_$)
           .start()
             .tag({
               class: 'foam.u2.detail.SectionView',
@@ -648,6 +681,20 @@ foam.CLASS({
           .end();
         }
       ));
+    },
+    function updateSections_(showDAO2) {
+      var choiceSections = [];
+      if ( showDAO2 ) choiceSections.push({
+        heading: this.SO_SELECTION,
+        dao$: this.dao2$
+      });
+      choiceSections.push({
+        heading: showDAO2
+          ? this.OTHER_SELECTION_HAS_SO
+          : this.OTHER_SELECTION_NO_SO,
+        dao$: this.dao$
+      });
+      this.choiceSections_ = choiceSections;
     }
   ]
 });

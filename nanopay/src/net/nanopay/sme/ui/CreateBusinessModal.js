@@ -23,6 +23,7 @@ foam.CLASS({
   documentation: 'Create new business modal',
 
   requires: [
+    'foam.log.LogLevel',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Country',
     'net.nanopay.model.Business'
@@ -145,9 +146,9 @@ foam.CLASS({
         try {
           await this.businessDAO.put(business);
           this.updated = ! this.updated;
-          this.notify(this.SUCCESS_MESSAGE);
+          this.notify(this.SUCCESS_MESSAGE, '', this.LogLevel.INFO, true);
         } catch (e) {
-          this.notify(`${this.ERROR_MESSAGE} ${e}`, 'error');
+          this.notify(`${this.ERROR_MESSAGE} ${e}`, '', this.LogLevel.ERROR, true);
         }
         X.closeDialog();
       }

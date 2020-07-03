@@ -27,12 +27,13 @@ foam.CLASS({
 
   imports: [
     'invitationDAO',
+    'notify',
     'user',
     'validateEmail'
   ],
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'foam.u2.tag.TextArea',
     'net.nanopay.model.Invitation',
     'net.nanopay.ui.modal.ModalHeader'
@@ -153,7 +154,7 @@ foam.CLASS({
       code: function(X) {
         var self = this;
         if ( ! this.validateEmail(this.emailAddress) ) {
-          this.add(this.NotificationMessage.create({ message: 'Invalid Email Address.', type: 'error' }));
+          this.notify('Invalid email address.', '', this.LogLevel.ERROR, true);
           return;
         }
         var invite = this.Invitation.create({
@@ -164,15 +165,10 @@ foam.CLASS({
 
         // See SendInvitationDAO.java
         this.invitationDAO.put(invite).then(function(a) {
-          X.ctrl.add(self.NotificationMessage.create({
-            message: self.InviteSendSuccess,
-          }));
+          X.notify(self.InviteSendSuccess, '', self.LogLevel.INFO, true);
           X.closeDialog();
         }).catch(function(err) {
-          X.ctrl.add(self.NotificationMessage.create({
-            message: err.message,
-            type: 'error',
-          }));
+          X.notify(err.message, '', self.LogLevel.ERROR, true);
         });
       }
     }

@@ -20,6 +20,10 @@
   name: 'FeeExpr',
   extends: 'foam.mlang.AbstractExpr',
 
+  imports: [
+    'DAO feeDAO'
+  ],
+
   javaImports: [
     'foam.core.X',
     'foam.dao.DAO',
@@ -37,18 +41,22 @@
     {
       name: 'f',
       javaCode: `
-        if ( obj instanceof X ) {
-          var x = (X) obj;
-          var feeDAO = (DAO) x.get("feeDAO");
-          return feeDAO.find(
-            AND(
-              EQ(Fee.NAME, getFeeName()),
-              DOT_F(Fee.PREDICATE, x.get("OBJ"))
-            )
-          );
-        }
-        return null;
-      `
+        return getFeeDAO().find(
+          AND(
+            EQ(Fee.NAME, getFeeName()),
+            DOT_F(Fee.PREDICATE, obj)
+          )
+        );
+      `,
+      code: function(obj) {
+        var E = foam.mlang.Expressions.create();
+        return this.feeDAO.find(
+          E.AND(
+            E.EQ(net.nanopay.tx.fee.Fee.NAME, this.feeName),
+            E.DOT_F(net.nanopay.tx.fee.Fee.PREDICATE, obj)
+          )
+        );
+      }
     },
     {
       name: 'toString',

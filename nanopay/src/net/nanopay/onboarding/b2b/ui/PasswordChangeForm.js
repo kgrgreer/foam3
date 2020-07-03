@@ -23,11 +23,12 @@ foam.CLASS({
   documentation: 'Password change form for onboarding',
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'net.nanopay.admin.model.AccountStatus'
   ],
 
   imports: [
+    'notify',
     'user',
     'userDAO',
     'stack',
@@ -150,30 +151,30 @@ foam.CLASS({
 
         // check if original password entered
         if ( ! this.originalPassword ) {
-          this.add(this.NotificationMessage.create({ message: this.emptyOriginal, type: 'error' }));
+          this.notify(this.emptyOriginal, '', this.LogLevel.ERROR, true);
           return;
         }
 
         // validate new password
         if ( ! this.newPassword ) {
-          this.add(this.NotificationMessage.create({ message: this.emptyPassword, type: 'error' }));
+          this.notify(this.emptyPassword, '', this.LogLevel.ERROR, true);
           return;
         }
 
         if ( ! this.validatePassword(this.newPassword) ) {
-          this.add(self.NotificationMessage.create({ message: this.invalidPassword, type: 'error' }));
+          this.notify(this.invalidPassword, '', this.LogLevel.ERROR, true);
           return;
         }
 
         // check if confirmation entered
         if ( ! this.confirmPassword ) {
-          this.add(self.NotificationMessage.create({ message: this.emptyConfirmation, type: 'error' }));
+          this.notify(this.emptyConfirmation, '', this.LogLevel.ERROR, true);
           return;
         }
 
         // check if passwords match
         if ( ! this.confirmPassword.trim() || this.confirmPassword !== this.newPassword ) {
-          this.add(self.NotificationMessage.create({ message: this.passwordMismatch, type: 'error' }));
+          this.notify(this.passwordMismatch, '', this.LogLevel.ERROR, true);
           return;
         }
 
@@ -181,15 +182,15 @@ foam.CLASS({
         this.user.onboarded = true;
         this.userDAO.put(this.user).then( function(result) {
           self.auth.updatePassword(null, self.originalPassword, self.newPassword).then(function(a) {
-            self.add(self.NotificationMessage.create({ message: self.passwordSuccess }));
+            self.notify(self.passwordSuccess, '', self.LogLevel.INFO, true);
             this.window.location.hash = '';
             this.window.location.reload();
           }).catch(function(err) {
-            self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+            self.notify(err.message, '', self.LogLevel.ERROR, true);
           });
         })
         .catch( function(err) {
-          self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+          self.notify(err.message, '', self.LogLevel.ERROR, true);
         });
       }
     }

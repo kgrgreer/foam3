@@ -30,7 +30,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'foam.u2.Element',
     'foam.u2.ViewSpec'
   ],
@@ -248,7 +248,7 @@ foam.CLASS({
       code: function(X) {
         var self = this;
         if ( ! this.twoFactorToken ) {
-          this.notify(this.TWO_FACTOR_NO_TOKEN, 'error');
+          this.notify(this.TWO_FACTOR_NO_TOKEN, '', this.LogLevel.ERROR, true);
           return;
         }
 

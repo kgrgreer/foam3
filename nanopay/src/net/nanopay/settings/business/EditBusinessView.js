@@ -25,7 +25,6 @@ foam.CLASS({
   requires: [
     'foam.nanos.auth.Address',
     'foam.nanos.auth.User',
-    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.retail.model.Business'
   ],
 
@@ -34,6 +33,7 @@ foam.CLASS({
     'businessSectorDAO',
     'businessTypeDAO',
     'countryDAO',
+    'notify',
     'regionDAO',
     'stack',
     'user',
@@ -313,23 +313,23 @@ foam.CLASS({
         address.postalCode = address.postalCode.toUpperCase().replace(/\s/g, '');
         if ( address.structured ) {
           if ( ! address.streetNumber ) {
-            view.add(foam.u2.dialog.NotificationMessage.create({ message: view.structAddress, type: 'error' }));
+            X.notify(view.structAddress, '', foam.log.LogLevel.ERROR, true);
             return;
           }
         } else {
           if ( ! address.address1 ) {
-            view.add(foam.u2.dialog.NotificationMessage.create({ message: view.nonStructAddress, type: 'error' }));
+            X.notify(view.nonStructAddress, '', foam.log.LogLevel.ERROR, true);
             return;
           }
         }
 
         if ( ! /^(?!.*[DFIOQU])[A-VXY][0-9][A-Z][0-9][A-Z][0-9]$/.test(address.postalCode) ) {
-          view.add(foam.u2.dialog.NotificationMessage.create({ message: view.invalidPostal, type: 'error' }));
+          X.notify(view.invalidPostal, '', foam.log.LogLevel.ERROR, true);
           return;
         }
 
         if ( ! this.businessName || ! this.businessIdentificationNumber || ! this.issuingAuthority || ! address.city ) {
-          view.add(foam.u2.dialog.NotificationMessage.create({ message: view.noInformation, type: 'error' }));
+          X.notify(view.noInformation, '', foam.log.LogLevel.ERROR, true);
           return;
         }
 
