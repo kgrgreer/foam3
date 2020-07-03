@@ -48,6 +48,12 @@ p({
 
 p({
   "class":"foam.net.Host",
+  "id":"noc",
+  "address":"10.22.41.111",
+})
+
+p({
+  "class":"foam.net.Host",
   "id":"moosehead",
   "address":"10.22.41.128",
 })
@@ -62,4 +68,10 @@ p({
   "class":"foam.net.Host",
   "id":"woodchuck",
   "address":"10.22.41.130",
+})
+
+p({
+  "class":"foam.net.Host",
+  "id":"raspberrypi",
+  "address":"10.22.41.187",
 })

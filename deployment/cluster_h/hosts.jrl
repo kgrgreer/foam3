@@ -63,3 +63,9 @@ p({
   "id":"woodchuck",
   "address":"10.22.41.130",
 })
+
+p({
+  "class":"foam.net.Host",
+  "id":"raspberrypi",
+  "address":"10.22.41.187",
+})
