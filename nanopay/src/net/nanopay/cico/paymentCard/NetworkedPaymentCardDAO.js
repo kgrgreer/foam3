@@ -80,6 +80,7 @@ foam.CLASS({
     },
     {
       name: 'isVisa',
+      visibility: 'protected',
       type: 'boolean',
       args: [
         { type: 'String', name: 'number' }
@@ -90,6 +91,7 @@ foam.CLASS({
     },
     {
       name: 'isMasterCard',
+      visibility: 'protected',
       type: 'boolean',
       args: [
         { type: 'String', name: 'number' }
@@ -100,6 +102,7 @@ foam.CLASS({
     },
     {
       name: 'isDiscover',
+      visibility: 'protected',
       type: 'boolean',
       args: [
         { type: 'String', name: 'number' }
@@ -110,6 +113,7 @@ foam.CLASS({
     },
     {
       name: 'isAmex',
+      visibility: 'protected',
       type: 'boolean',
       args: [
         { type: 'String', name: 'number' }
@@ -120,6 +124,7 @@ foam.CLASS({
     },
     {
       name: 'isDinersClub',
+      visibility: 'protected',
       type: 'boolean',
       args: [
         { type: 'String', name: 'number' }
@@ -130,6 +135,7 @@ foam.CLASS({
     },
     {
       name: 'isJCB',
+      visibility: 'protected',
       type: 'boolean',
       args: [
         { type: 'String', name: 'number' }

@@ -85,6 +85,7 @@ foam.CLASS({
     },
     {
       name: 'isNewRequest',
+      visibility: 'protected',
       type: 'boolean',
       args: [
         { type: 'P2PTxnRequest', name: 'request' }
@@ -95,6 +96,7 @@ foam.CLASS({
     },
     {
       name: 'validateRequest',
+      visibility: 'protected',
       type: 'void',
       args: [
         { type: 'Context', name: 'x' },

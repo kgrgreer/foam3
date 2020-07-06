@@ -44,9 +44,8 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'FObjectProperty',
-      of: 'foam.dao.DAO',
-      name: 'localUserDAO_'
+      class: 'foam.dao.DAOProperty',
+      name: 'localUserDAO'
     }
   ],
 
@@ -57,7 +56,7 @@ foam.CLASS({
         cls.extras.push(`
           public InvoiceToContactDAO(X x, DAO delegate) {
             super(x, delegate);
-            setLocalUserDAO_(((DAO) x.get("localUserDAO")).inX(x));
+            setLocalUserDAO(((DAO) x.get("localUserDAO")).inX(x));
           }    
         `
         );
@@ -82,7 +81,7 @@ foam.CLASS({
         boolean isPayable = invoice.getPayerId() == user.getId();
 
         if ( invoice.getContactId() != 0 ) {
-          User contact = (User) getLocalUserDAO_().inX(x).find(invoice.getContactId());
+          User contact = (User) getLocalUserDAO().inX(x).find(invoice.getContactId());
           long idToSet;
           long businessId = ((Contact) contact).getBusinessId();
           if ( businessId != 0 ) {
@@ -104,6 +103,7 @@ foam.CLASS({
     },
     {
       name: 'isNew',
+      visibility: 'protected',
       type: 'boolean',
       args: [
         { type: 'Invoice', name: 'invoice' }

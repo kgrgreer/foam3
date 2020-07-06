@@ -143,6 +143,7 @@ foam.CLASS({
     },
     {
       name: 'addBranch',
+      visibility: 'protected',
       type: 'Void',
       args: [
         { type: 'Context', name: 'x' },
@@ -170,6 +171,7 @@ foam.CLASS({
     },
     {
       name: 'createBranch',
+      visibility: 'protected',
       type: 'Branch',
       args: [
         { type: 'Context', name: 'x' },

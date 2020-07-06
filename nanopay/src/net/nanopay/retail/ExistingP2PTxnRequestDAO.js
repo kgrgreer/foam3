@@ -100,6 +100,7 @@ foam.CLASS({
     },
     {
       name: 'getExistingRequest',
+      visibility: 'protected',
       type: 'P2PTxnRequest',
       args: [
         { type: 'P2PTxnRequest', name: 'request' }
@@ -110,6 +111,7 @@ foam.CLASS({
     },
     {
       name: 'validateOperationOnRequest',
+      visibility: 'protected',
       type: 'void',
       args: [
         { type: 'Context', name: 'x' },
@@ -147,6 +149,7 @@ foam.CLASS({
     },
     {
       name: 'checkReadOnlyFields',
+      visibility: 'protected',
       type: 'boolean',
       args: [
         { type: 'P2PTxnRequest', name: 'request' },
@@ -165,6 +168,7 @@ foam.CLASS({
     },
     {
       name: 'acceptRequest',
+      visibility: 'protected',
       type: 'void',
       args: [
         { type: 'Context', name: 'x' },
@@ -183,6 +187,7 @@ foam.CLASS({
     },
     {
       name: 'processTxn',
+      visibility: 'protected',
       type: 'void',
       args: [
         { type: 'User', name: 'requestee' },

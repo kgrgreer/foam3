@@ -61,29 +61,24 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'FObjectProperty',
-      of: 'foam.dao.DAO',
-      name: 'localBusinessDAO_',
+      class: 'foam.dao.DAOProperty',
+      name: 'localBusinessDAO'
     },
     {
-      class: 'FObjectProperty',
-      of: 'foam.dao.DAO',
-      name: 'agentJunctionDAO_',
+      class: 'foam.dao.DAOProperty',
+      name: 'agentJunctionDAO'
     },
     {
-      class: 'FObjectProperty',
-      of: 'foam.dao.DAO',
-      name: 'signingOfficerJunctionDAO_',
+      class: 'foam.dao.DAOProperty',
+      name: 'signingOfficerJunctionDAO'
     },
     {
-      class: 'FObjectProperty',
-      of: 'foam.dao.DAO',
-      name: 'tokenDAO_',
+      class: 'foam.dao.DAOProperty',
+      name: 'tokenDAO'
     },
     {
-      class: 'FObjectProperty',
-      of: 'foam.dao.DAO',
-      name: 'invitationDAO_',
+      class: 'foam.dao.DAOProperty',
+      name: 'invitationDAO'
     }
   ],
 
@@ -94,11 +89,11 @@ foam.CLASS({
         cls.extras.push(`
           public NewUserCreateBusinessDAO(X x, DAO delegate) {
             super(x, delegate);
-            setLocalBusinessDAO_((DAO) x.get("localBusinessDAO"));
-            setAgentJunctionDAO_((DAO) x.get("agentJunctionDAO"));
-            setSigningOfficerJunctionDAO_((DAO) x.get("signingOfficerJunctionDAO"));
-            setTokenDAO_((DAO) x.get("localTokenDAO"));
-            setInvitationDAO_((DAO) x.get("businessInvitationDAO"));
+            setLocalBusinessDAO((DAO) x.get("localBusinessDAO"));
+            setAgentJunctionDAO((DAO) x.get("agentJunctionDAO"));
+            setSigningOfficerJunctionDAO((DAO) x.get("signingOfficerJunctionDAO"));
+            setTokenDAO((DAO) x.get("localTokenDAO"));
+            setInvitationDAO((DAO) x.get("businessInvitationDAO"));
           }    
         `
         );
@@ -134,7 +129,7 @@ foam.CLASS({
 
         if ( ! SafetyUtil.isEmpty(user.getSignUpToken()) ) {
           // Check if Token exists
-          Token token = (Token) getTokenDAO_().find(EQ(Token.DATA, user.getSignUpToken()));
+          Token token = (Token) getTokenDAO().find(EQ(Token.DATA, user.getSignUpToken()));
           user.setEmailVerified(token != null);
 
           if ( token == null ) {
@@ -147,7 +142,7 @@ foam.CLASS({
             // Process token
             Token clone = (Token) token.fclone();
             clone.setProcessed(true);
-            getTokenDAO_().inX(sysContext).put(clone);
+            getTokenDAO().inX(sysContext).put(clone);
           } catch (Exception ignored) { }
 
           // There can be different tokens with different parameters used.
@@ -160,7 +155,7 @@ foam.CLASS({
             UserUserJunction junction;
 
             if ( businessId != 0 ) {
-              Business business = (Business) getLocalBusinessDAO_().inX(sysContext).find(businessId);
+              Business business = (Business) getLocalBusinessDAO().inX(sysContext).find(businessId);
               if ( business == null ) {
                 throw new RuntimeException(NO_BUSINESS_ERROR_MSG);
               }
@@ -174,10 +169,10 @@ foam.CLASS({
                 .setGroup(business.getBusinessPermissionId() + "." + group)
                 .build();
 
-              getAgentJunctionDAO_().inX(sysContext).put(junction);
+              getAgentJunctionDAO().inX(sysContext).put(junction);
 
               if ( isSigningOfficer ) {
-                getSigningOfficerJunctionDAO_().inX(sysContext).put(
+                getSigningOfficerJunctionDAO().inX(sysContext).put(
                   new BusinessUserJunction.Builder(x)
                     .setSourceId(business.getId())
                     .setTargetId(user.getId())
@@ -188,7 +183,7 @@ foam.CLASS({
               X businessContext = Auth.sudo(sysContext, business);
 
               // Update the invitation to mark that they joined.
-              Invitation invitation = (Invitation) getInvitationDAO_()
+              Invitation invitation = (Invitation) getInvitationDAO()
                 .inX(businessContext)
                 .find(
                   AND(
@@ -197,7 +192,7 @@ foam.CLASS({
                   )
                 ).fclone();
               invitation.setStatus(InvitationStatus.COMPLETED);
-              getInvitationDAO_().inX(businessContext).put(invitation);
+              getInvitationDAO().inX(businessContext).put(invitation);
 
               CreateOnboardingCloneService createOnboardingCloneService = new CreateOnboardingCloneService(sysContext);
               List<Object> onboardings = createOnboardingCloneService.getSourceOnboarding(businessId);
@@ -231,7 +226,7 @@ foam.CLASS({
           .setEmailVerified(true)
           .build();
 
-        getLocalBusinessDAO_().inX(userContext).put(business);
+          getLocalBusinessDAO().inX(userContext).put(business);
 
         return user;
       `
