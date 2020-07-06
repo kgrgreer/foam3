@@ -42,6 +42,16 @@ foam.CLASS({
       visibility: 'HIDDEN'
     },
     {
+      name: 'transactionType',
+      label: 'Transaction Type',
+      class: 'Enum',
+      of: 'net.nanopay.tx.LiquidCashTransactionType',
+      updateVisibility: 'RO',
+      createVisibility: 'RW',
+      readVisibility: 'RO',
+      section: 'paymentInfoSource',
+    },
+    {
       name: 'lineItems',
       label: '',
       section: 'additionalInfo',

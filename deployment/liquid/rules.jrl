@@ -890,3 +890,69 @@ p({
   "saveHistory":true,
   "lifecycleState":1
 })
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"cbb0b212-0bd5-415c-8c51-8121ae6bbdf5",
+  "name":"add liquid summary txn",
+  "priority":100,
+  "enabled":true,
+  "ruleGroup":"liquid",
+  "documentation":"Find transactions without parents, that are not liquid summary txns. add a liquid summary.",
+  "daoKey":"localTransactionDAO",
+  "operation":2,
+  "after":false,
+  "predicate":{
+        "class":"foam.mlang.predicate.AND",
+        "args": [
+          {
+            "class": "foam.mlang.predicate.Not",
+            "arg1":{
+              class:"foam.nanos.ruler.predicate.IsInstancePredicate",
+              "of":"net.nanopay.tx.LiquidSummaryTransaction"
+            }
+          },
+          {
+            "class": "foam.mlang.predicate.Not",
+            "arg1":{
+              "class":"foam.nanos.ruler.predicate.PropertyHasValue",
+              "propName":"parent"
+            }
+          }
+        ]
+  },
+  "action":{
+    "class":"net.nanopay.tx.AddLiquidTransactionAction",
+  },
+  "saveHistory":true,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"cbb0b212-0bd5-415c-8c51-8121ae6bbdf5",
+  "name":"Add liquid transactionType to summary",
+  "priority":100,
+  "enabled":true,
+  "ruleGroup":"liquid",
+  "documentation":"If a liquid summary transaction doesnt have a transactiontype add one",
+  "daoKey":"localTransactionDAO",
+  "operation":2,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.AND",
+    "args": [
+      {
+        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of":"net.nanopay.tx.LiquidSummaryTransaction"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyHasValue",
+        "propName":"transactionType"
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.tx.LabelLiquidSummaryAction",
+  },
+  "saveHistory":true,
+  "lifecycleState":1
+})
