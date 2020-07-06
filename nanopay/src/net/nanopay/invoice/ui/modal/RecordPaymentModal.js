@@ -23,7 +23,7 @@ foam.CLASS({
   documentation: 'Record Payment Modal',
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus'
   ],
@@ -181,7 +181,7 @@ foam.CLASS({
       label: 'Complete',
       code: function(X) {
         if ( ! X.data.paymentDate ) {
-          this.add(this.notify(this.MSG_RECEIVE_DATE, 'error'));
+          this.add(this.notify(this.MSG_RECEIVE_DATE, '', this.LogLevel.ERROR, true));
           return;
         }
 
@@ -194,8 +194,8 @@ foam.CLASS({
 
         let isInvalidPaymentDate = isNaN(paymentDate_) || Number(paymentDate_) > Number(currentDate_) || Number(paymentDate_) < Number(issueDate_);
 
-        if ( isInvalidPaymentDate) {
-          this.notify(this.MSG_INVALID_DATE, 'error');
+        if ( isInvalidPaymentDate ) {
+          this.notify(this.MSG_INVALID_DATE, '', this.LogLevel.ERROR, true);
           return;
         }
 
@@ -210,7 +210,7 @@ foam.CLASS({
         this.invoice.paymentMethod = this.PaymentStatus.CHEQUE;
         this.invoice.note = X.data.note;
         this.invoiceDAO.put(this.invoice);
-        this.notify(this.SUCCESS_MESSAGE);
+        this.notify(this.SUCCESS_MESSAGE, '', this.LogLevel.INFO, true);
         X.closeDialog();
       }
     }

@@ -27,6 +27,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus'
   ],
@@ -200,7 +201,7 @@ foam.CLASS({
       self.selectedAccount.isDefault = true;
       self.selectedAccount.name += ' (Default)';
       self.bankAccountDAO.put(self.selectedAccount).then(function(response) {
-        self.manageAccountNotification('Bank account successfully set as default.', '');
+        self.manageAccountNotification('Bank account successfully set as default.', self.LogLevel.INFO);
         self.closeDialog();
       });
     },
@@ -218,7 +219,7 @@ foam.CLASS({
           self.bankAccountDAO.put(a.array[0]).then( function(a) {
             self.setNewDefaultBank();
           }).catch( function( error ) {
-            self.manageAccountNotification(error.message, 'error');
+            self.manageAccountNotification(error.message, self.LogLevel.ERROR);
           });
         }
       });
@@ -254,7 +255,7 @@ foam.CLASS({
         if ( ! X.selectedAccount.isDefault ) {
           this.switchDefaultBank();
         } else {
-          X.manageAccountNotification('Bank account already set as default.', 'error');
+          X.manageAccountNotification('Bank account already set as default.', this.LogLevel.ERROR);
           X.closeDialog();
         }
       }
@@ -266,10 +267,10 @@ foam.CLASS({
       code: function(X) {
         // bankAccountDAO
         X.accountDAO.remove(X.selectedAccount).then(function(response) {
-          X.manageAccountNotification('Bank account successfully deleted', '');
+          X.manageAccountNotification('Bank account successfully deleted', this.LogLevel.INFO);
           X.closeDialog();
         }).catch(function(error) {
-          X.manageAccountNotification(error.message, 'error');
+          X.manageAccountNotification(error.message, this.LogLevel.ERROR);
         });
       }
     }

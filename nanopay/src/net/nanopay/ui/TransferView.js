@@ -23,11 +23,11 @@ foam.CLASS({
   documentation: "View to Transfer Amounts From Account to Account",
 
   requires: [
+    'foam.log.LogLevel',
     'net.nanopay.ui.CountdownView',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.tx.model.Transaction',
-    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.tx.TransactionQuote'
   ],
 
@@ -37,6 +37,7 @@ foam.CLASS({
 
   imports: [
     'accountDAO',
+    'notify',
     'transactionDAO',
     'transactionPlannerDAO'
   ],
@@ -260,10 +261,7 @@ foam.CLASS({
 
         if ( this.position === 0 ) { // transfer from
           if ( this.viewData.payerPartnerCheck && this.viewData.payerPartner == undefined ) {
-            this.add(this.NotificationMessage.create({
-              message: this.NoPartners,
-              type: 'error'
-            }));
+            this.notify(this.NoPartners, '', this.LogLevel.ERROR, true);
             return;
           }
           var accountType = this.viewData.payerType;
@@ -272,10 +270,7 @@ foam.CLASS({
           var isLoanAccount = accountType == 'LoanAccount';
 
           if ( self.viewData.fromAmount <= 0 ) {
-            this.add(this.NotificationMessage.create({
-              message: this.ZeroAmount,
-              type: 'error'
-            }));
+            this.notify(this.ZeroAmount, '', this.LogLevel.ERROR, true);
             return;
           }
 
@@ -287,18 +282,12 @@ foam.CLASS({
                 self.EQ(self.BankAccount.STATUS, self.BankAccountStatus.VERIFIED)))
             .select().then(function(account) {
               if ( account.array.length === 0 ) {
-                self.add(self.NotificationMessage.create({
-                  message: self.VerifyBank,
-                  type: 'error'
-                }));
+                self.notify(self.VerifyBank, '', self.LogLevel.ERROR, true);
                 return;
               }
               self.subStack.push(self.views[self.subStack.pos + 1].view); // otherwise
             }).catch(function(err) {
-              self.add(self.NotificationMessage.create({
-                message: self.CannotContinue,
-                type: 'error'
-              }));
+              self.notify(self.CannotContinue, '', self.LogLevel.ERROR, true);
             });
           } else {
             // Check if payer has enough digital cash to make the transfer and show
@@ -306,10 +295,7 @@ foam.CLASS({
             var fundsInsufficient =
               this.viewData.balance < this.viewData.fromAmount;
             if ( ! isLoanAccount && ! isBankAccount && ! isTrustAccount && fundsInsufficient ) {
-              this.add(this.NotificationMessage.create({
-                message: this.InsuffientDigitalBalance,
-                type: 'error'
-              }));
+              this.notify(this.InsuffientDigitalBalance, '', this.LogLevel.ERROR, true);
               return;
             }
             self.subStack.push(self.views[self.subStack.pos + 1].view); // otherwise
@@ -325,10 +311,7 @@ foam.CLASS({
             err = this.NoAccount;
           }
           if ( err !== '' ) {
-            this.add(this.NotificationMessage.create({
-              message: err,
-              type: 'error'
-            }));
+            this.notify(err, '', this.LogLevel.ERROR, true);
             return;
           } else {
             this.subStack.push(this.views[this.subStack.pos + 1].view);
@@ -377,10 +360,7 @@ foam.CLASS({
               self.nextLabel = self.invoiceMode ? self.PayInvoice : self.NewTransfer;
             })
             .catch(function(err) {
-              self.add(self.NotificationMessage.create({
-                type: 'error',
-                message: self.CannotProcess + err.message
-              }));
+              self.notify(self.CannotProcess + err.message, '', self.LogLevel.ERROR, true);
             });
         }  else if ( this.position === 4 ) { // Successful
           this.backLabel = this.Back;

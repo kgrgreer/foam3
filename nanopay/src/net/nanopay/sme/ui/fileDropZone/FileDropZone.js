@@ -23,6 +23,7 @@ foam.CLASS({
   documentation: 'A default zone to drag & drop files',
 
   requires: [
+    'foam.log.LogLevel',
     'foam.blob.BlobBlob',
     'foam.nanos.fs.File',
     'foam.nanos.fs.FileArray',
@@ -230,7 +231,7 @@ foam.CLASS({
         // skip files that exceed limit
         if ( files[i].size > ( this.maxSize * 1024 * 1024 ) ) {
           if ( ! errors ) errors = true;
-          ctrl.notify(this.ERROR_FILE_SIZE, 'error');
+          ctrl.notify(this.ERROR_FILE_SIZE, '', this.LogLevel.ERROR, true);
           continue;
         }
         var isIncluded = false;
@@ -306,7 +307,7 @@ foam.CLASS({
               if ( this.isFileType(file) ) {
                 files.push(file);
               } else {
-                ctrl.notify(this.ERROR_FILE_TYPE, 'error');
+                ctrl.notify(this.ERROR_FILE_TYPE, '', this.LogLevel.ERROR, true);
               }
             }
           }
@@ -317,7 +318,7 @@ foam.CLASS({
           var file = inputFile[i];
           if ( this.isFileType(file) ) files.push(file);
           else {
-            ctrl.notify(this.ERROR_FILE_TYPE, 'error');
+            ctrl.notify(this.ERROR_FILE_TYPE, '', this.LogLevel.ERROR, true);
           }
         }
       }

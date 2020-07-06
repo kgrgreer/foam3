@@ -2221,3 +2221,84 @@ p({
   print(\"Finished Migrating LifecycleState on Rule script\");
   """
 })
+
+p({
+  class:"foam.nanos.script.Script",
+  id:"Set up country corridor capabilities",
+  description:"Sets up all possible corridors and country corridor capabilities available on our system - based on countries.",
+  code:"""
+    // Sets up all possible corridors and country corridor capabilities available on our system - based on countries.
+    // Does not create perquisites between corridors and country corridors since they may not be required.
+    
+    import foam.mlang.MLang;
+    import foam.mlang.predicate.Predicate;
+    import net.nanopay.fx.Corridor;
+    import net.nanopay.payment.SourceCountryCorridorCapability;
+    import net.nanopay.payment.TargetCountryCorridorCapability;
+    countryDAO = x.get("countryDAO");
+    corridorDAO = x.get("corridorDAO");
+    capabilityDAO = x.get("capabilityDAO");
+    srcCountryCapabilityDAO = capabilityDAO.where(foam.mlang.MLang.INSTANCE_OF(SourceCountryCorridorCapability.class));
+    trgCountryCapabilityDAO = capabilityDAO.where(foam.mlang.MLang.INSTANCE_OF(TargetCountryCorridorCapability.class));
+    countries = countryDAO.select().getArray();
+    corridors = corridorDAO.select().getArray();
+    
+    for ( country : countries ) {
+      srcCountry = capabilityDAO.find(MLang.AND(new Predicate[] {
+        MLang.INSTANCE_OF(SourceCountryCorridorCapability.class),
+        MLang.EQ(SourceCountryCorridorCapability.COUNTRY, country.getId())
+      }));
+      
+      if ( srcCountry == null ) {
+        srcCountry = new SourceCountryCorridorCapability();
+        srcCountry.setCountry(country.getId());
+        capabilityDAO.put(srcCountry);
+        print(country.getId() + " added as source country corridor capability");
+      }
+      
+      trgCountry = capabilityDAO.find(MLang.AND( new Predicate[] {
+        MLang.INSTANCE_OF(TargetCountryCorridorCapability.class),
+        MLang.EQ(TargetCountryCorridorCapability.COUNTRY, country.getId())
+      }));
+      
+      if ( trgCountry == null ) {
+        trgCountry = new TargetCountryCorridorCapability();
+        trgCountry.setCountry(country.getId());
+        capabilityDAO.put(trgCountry);
+        print(country.getId() + " added as target country corridor capability\");
+      }
+      for ( pairCountry : countries ) {
+        srcCorridor = corridorDAO.find(MLang.AND(new Predicate[] {
+          MLang.EQ(Corridor.SOURCE_COUNTRY, country.getId()),
+          MLang.EQ(Corridor.TARGET_COUNTRY, pairCountry.getId())
+        }));
+        
+        if ( srcCorridor == null ) {
+          corridor = new Corridor();
+          corridor.setSourceCountry(country.getId());
+          corridor.setTargetCountry(pairCountry.getId());
+          corridor.setEnabled(true);
+          corridor.setVisible(true);
+          corridor = corridorDAO.put(corridor);
+          print("New corridor added: source " + corridor.getSourceCountry() + " target " + corridor.getTargetCountry());
+        }
+        
+        trgCorridor = corridorDAO.find(MLang.AND(new Predicate[] {
+          MLang.EQ(Corridor.SOURCE_COUNTRY, pairCountry.getId()),
+          MLang.EQ(Corridor.TARGET_COUNTRY, country.getId())
+        }));
+        
+        if ( trgCorridor == null ) {
+          corridor = new Corridor();
+          corridor.setSourceCountry(pairCountry.getId());
+          corridor.setTargetCountry(country.getId());
+          corridor.setEnabled(true);
+          corridor.setVisible(true);
+          corridor = corridorDAO.put(corridor);
+          print("New corridor added: source " + corridor.getSourceCountry() + " target " + corridor.getTargetCountry());
+        }
+      }
+    }
+  """,
+  lastModifiedBy:1348
+})

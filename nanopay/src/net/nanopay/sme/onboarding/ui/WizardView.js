@@ -20,6 +20,10 @@ foam.CLASS({
   name: 'WizardView',
   extends: 'foam.u2.detail.WizardSectionsView',
 
+  requires: [
+    'foam.log.LogLevel'
+  ],
+
   imports: [
     'auth',
     'userDAO',
@@ -240,13 +244,13 @@ foam.CLASS({
             });
 
             this.auth.cache = {};
-            x.ctrl.notify(this.SUCCESS_SUBMIT_MESSAGE);
+            x.ctrl.notify(this.SUCCESS_SUBMIT_MESSAGE, '', this.LogLevel.INFO, true);
             x.pushMenu('sme.main.dashboard');
           }, function(err) {
             console.log('Error during submitting the onboarding info: ' + err);
             x.ctrl.notify('Business profile submission failed.  ' +
                           ( ( err && err.message ) ? err.message : 'Please try again later.' ),
-                          'error');
+                          '', this.LogLevel.ERROR, true);
           });
       }
     },
@@ -260,10 +264,10 @@ foam.CLASS({
           sendInvitation: true
           })).
           then(function() {
-            x.ctrl.notify('Progress saved.');
+            x.ctrl.notify('Progress saved.', '', this.LogLevel.INFO, true);
             x.pushMenu('sme.main.dashboard');
           }, function() {
-            x.ctrl.notify('Error saving progress, please try again shortly.', 'error');
+            x.ctrl.notify('Error saving progress, please try again shortly.', '', this.LogLevel.ERROR, true);
           });
       }
     }

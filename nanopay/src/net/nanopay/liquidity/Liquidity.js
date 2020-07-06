@@ -37,29 +37,13 @@ foam.CLASS({
       class: 'Boolean',
       name: 'enabled',
       documentation: 'Determines whether Liquidity is active, and notifications and/or re-balancing is to occur',
-      value: true,
-      postSet: function(o, n) {
-        if ( o ) {
-          this.clearProperty('rebalancingEnabled');
-          this.clearProperty('denomination');
-          this.clearProperty('threshold');
-        }
-      }
+      value: true
     },
     {
       class: 'Boolean',
       name: 'rebalancingEnabled',
       label: 'Automate Sweep',
-      visibility: function(enabled) {
-        return enabled ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
-      },
-      documentation: 'Triggers automatic transaction on accounts.',
-      postSet: function(o, n) {
-        if ( o ) {
-          this.clearProperty('resetBalance');
-          this.clearProperty('pushPullAccount');
-        }
-      }
+      documentation: 'Triggers automatic transaction on accounts.'
     },
     {
       visibility: 'hidden',
@@ -74,30 +58,21 @@ foam.CLASS({
       unitPropName: 'denomination',
       name: 'threshold',
       documentation: 'The balance when liquidity should be triggered.',
-      visibility: function(enabled) {
-        return enabled ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
-      },
-      view: { class: 'net.nanopay.liquidity.ui.LiquidCurrencyView' }
+      view: { class: 'foam.u2.view.CurrencyInputView', contingentProperty: 'denomination' }
     },
     {
       class: 'UnitValue',
       unitPropName: 'denomination',
       name: 'resetBalance',
-      visibility: function(rebalancingEnabled) {
-        return rebalancingEnabled ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
-      },
       label: 'Reset balance to',
       documentation: 'Account balance must match reset amount after liquidity transaction was generated.',
-      view: { class: 'net.nanopay.liquidity.ui.LiquidCurrencyView' }
+      view: { class: 'foam.u2.view.CurrencyInputView', contingentProperty: 'denomination' }
     },
     {
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'pushPullAccount',
       label: 'Rebalancing Account',
-      visibility: function(rebalancingEnabled) {
-        return rebalancingEnabled ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
-      },
       documentation: 'Account associated to setting.',
       tableCellFormatter: function(value, obj, axiom) {
         obj.pushPullAccount$find.then((account) => {
@@ -117,7 +92,7 @@ foam.CLASS({
               X.data.AND(
                 X.data.EQ(
                   net.nanopay.account.Account.DENOMINATION,
-                  X.denominationToFilterBySlot.get()
+                  X.denominationToFilterBySlot ? X.denominationToFilterBySlot.get() : X.data.denomination
                 ),
                 X.data.NOT(X.data.INSTANCE_OF(net.nanopay.account.AggregateAccount)),
                 X.data.EQ(Account.LIFECYCLE_STATE, LifecycleState.ACTIVE)

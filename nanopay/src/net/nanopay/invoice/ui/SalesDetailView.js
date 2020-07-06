@@ -21,8 +21,8 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   requires: [
+    'foam.log.LogLevel',
     'foam.u2.PopupView',
-    'foam.u2.dialog.NotificationMessage',
     'foam.u2.dialog.Popup',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.PaymentStatus',
@@ -33,6 +33,7 @@ foam.CLASS({
     'ctrl',
     'hideSummary',
     'invoiceDAO',
+    'notify',
     'stack',
     'user'
   ],
@@ -246,10 +247,7 @@ foam.CLASS({
       code: function(X) {
         var self = this;
         if ( this.data.paymentMethod != this.PaymentStatus.NONE ) {
-          self.add(self.NotificationMessage.create({
-            message: `${this.verbTenseMsg} ${this.data.paymentMethod.label}.`,
-            type: 'error'
-          }));
+          X.notify(`${this.verbTenseMsg} ${this.data.paymentMethod.label}.`, '', self.LogLevel.ERROR, true);
           return;
         }
         X.ctrl.add(foam.u2.dialog.Popup.create(undefined, X).tag({
@@ -285,10 +283,7 @@ foam.CLASS({
       var self = this;
       self.voidPopUp_.remove();
       if ( this.data.paymentMethod != this.PaymentStatus.NONE ) {
-        self.add(self.NotificationMessage.create({
-          message: `${this.verbTenseMsg} ${this.data.paymentMethod.label}.`,
-          type: 'error'
-        }));
+        X.notify(`${this.verbTenseMsg} ${this.data.paymentMethod.label}.`, '', self.LogLevel.ERROR, true);
         return;
       }
       this.ctrl.add(this.Popup.create().tag({

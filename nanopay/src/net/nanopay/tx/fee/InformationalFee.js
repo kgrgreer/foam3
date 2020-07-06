@@ -20,16 +20,31 @@ foam.CLASS({
   name: 'InformationalFee',
   extends: 'net.nanopay.tx.fee.Fee',
 
+  messages: [
+    { name: 'FORMULA_PREFIX', message: 'Informational fee' }
+  ],
+
   properties: [
+    'name',
+    'label',
     {
       class: 'Long',
-      name: 'amount'
+      name: 'amount',
+      section: 'basicInfo'
     },
     {
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.fee.FeeType',
       name: 'type',
       value: 'INFORMATIONAL'
+    },
+    {
+      name: 'formula',
+      visibility: 'HIDDEN',
+      tableCellFormatter: function(_, obj) {
+        var formattedAmount = obj.amount / 100;
+        this.add(obj.FORMULA_PREFIX, ': $', ctrl.addCommas(formattedAmount.toFixed(2)));
+      }
     }
   ],
 

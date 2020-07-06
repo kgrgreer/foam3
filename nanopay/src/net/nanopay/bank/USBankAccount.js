@@ -30,6 +30,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.log.LogLevel',
     'foam.util.SafetyUtil',
     'net.nanopay.model.Branch',
     'java.util.regex.Pattern'
@@ -86,13 +87,13 @@ foam.CLASS({
     {
       name: 'country',
       value: 'US',
-      createVisibility: 'HIDDEN'
+      visibility: 'RO'
     },
     {
       name: 'flagImage',
       label: '',
       value: 'images/flags/us.png',
-      createVisibility: 'HIDDEN'
+      visibility: 'RO'
     },
     {
       name: 'denomination',
@@ -100,6 +101,20 @@ foam.CLASS({
     },
     {
       name: 'desc',
+      visibility: 'HIDDEN'
+    },
+    {
+      name: 'iban',
+      visibility: 'HIDDEN',
+      getter: function() {
+        return this.accountNumber;
+      },
+      javaGetter: `
+        return getAccountNumber();
+      `
+    },
+    {
+      name: 'bankCode',
       visibility: 'HIDDEN'
     },
     { // REVIEW: remove
@@ -294,7 +309,7 @@ foam.CLASS({
       try {
         await this.padCaptureDAO.put(this.padCapture);
       } catch (e) {
-        this.notify(e, 'error');
+        this.notify(e, '', this.LogLevel.ERROR, true);
         return;
       }
       if ( this.plaidResponseItem ) {
@@ -304,20 +319,20 @@ foam.CLASS({
           let response = await this.plaidService.saveAccount(null, responseItem);
           if ( response.plaidError ) {
             let message = error.display_message !== '' ? error.display_message : error.error_code;
-            this.notify(message, 'error');
+            this.notify(message, '', this.LogLevel.ERROR, true);
           }
           if ( this.stack ) this.stack.back();
         } catch (e) {
-          this.notify(e.message, 'error');
+          this.notify(e.message, '', this.LogLevel.ERROR, true);
         }
       } else {
         try {
           this.address = this.padCapture.address;
           await this.subject.user.accounts.put(this);
           if ( this.stack ) this.stack.back();
-          this.notify(this.ADD_SUCCESSFUL);
+          this.notify(this.ADD_SUCCESSFUL, '', this.LogLevel.INFO, true);
         } catch (error) {
-          this.notify(error.message, 'error');
+          this.notify(error.message, '', this.LogLevel.ERROR, true);
         }
       }
     },
@@ -348,18 +363,6 @@ foam.CLASS({
         if ( ! ACCOUNT_NUMBER_PATTERN.matcher(accountNumber).matches() ) {
           throw new IllegalStateException(this.ACCOUNT_NUMBER_INVALID);
         }
-      `
-    },
-    {
-      name: 'getBankCode',
-      type: 'String',
-      args: [
-        {
-          name: 'x', type: 'Context'
-        }
-      ],
-      javaCode: `
-        return "";
       `
     },
     {

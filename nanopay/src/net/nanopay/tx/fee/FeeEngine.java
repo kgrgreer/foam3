@@ -25,8 +25,6 @@ import foam.mlang.Formula;
 import foam.nanos.logger.Logger;
 import net.nanopay.tx.InvoicedFeeLineItem;
 import net.nanopay.tx.TransactionLineItem;
-import net.nanopay.tx.fee.Fee;
-import net.nanopay.tx.fee.FeeExpr;
 import net.nanopay.tx.model.Transaction;
 
 import java.util.*;
@@ -79,11 +77,12 @@ public class FeeEngine {
 
   private Fee loadFee(X x, String feeName, Transaction transaction) {
     var feeExpr = new FeeExpr(feeName);
-    return loadFee(x.put("OBJ", transaction), feeExpr);
+    return loadFee(x, feeExpr, transaction);
   }
 
-  private Fee loadFee(X x, FeeExpr feeExpr) {
-    var fee = (Fee) feeExpr.f(x);
+  private Fee loadFee(X x, FeeExpr feeExpr, FObject obj) {
+    feeExpr.setX(x);
+    var fee = (Fee) feeExpr.f(obj);
 
     if ( fee == null ) {
       if ( currentFeeId_ == null ) return null;
@@ -91,14 +90,14 @@ public class FeeEngine {
     }
 
     fee = (Fee) fee.fclone();
-    resolveFeeFormula(x, fee);
+    resolveFeeFormula(x, fee, obj);
     return fee;
   }
 
-  private void resolveFeeFormula(X x, Fee fee) {
+  private void resolveFeeFormula(X x, Fee fee, FObject obj) {
     if ( fee.getFormula() == null ) return;
     addToFeeGraph(fee.getId());
-    fee.setFormula(resolveFormula(x, fee.getFormula()));
+    fee.setFormula(resolveFormula(x, fee.getFormula(), obj));
   }
 
   private void addToFeeGraph(String feeId) {
@@ -120,19 +119,19 @@ public class FeeEngine {
     currentFeeId_ = feeId;
   }
 
-  private Expr resolveFormula(X x, Expr formula) {
+  private Expr resolveFormula(X x, Expr formula, FObject obj) {
     if ( formula instanceof Formula ) {
       var args = ((Formula) formula).getArgs();
       for ( int i = 0; i < args.length; i++ ) {
-        args[i] = resolveFormula(x, args[i]);
+        args[i] = resolveFormula(x, args[i], obj);
       }
     }
 
     if ( formula instanceof FeeExpr ) {
-      var childFee = loadFee(x, (FeeExpr) formula);
+      var childFee = loadFee(x, (FeeExpr) formula, obj);
       return childFee.getFormula() != null
         ? childFee.getFormula()
-        : new Constant(childFee.getRate((FObject) x.get("OBJ")));
+        : new Constant(childFee.getRate(obj));
     }
 
     return formula;

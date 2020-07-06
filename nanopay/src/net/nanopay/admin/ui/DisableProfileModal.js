@@ -27,7 +27,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.ui.modal.ModalHeader',
   ],
@@ -37,6 +37,7 @@ foam.CLASS({
     'approvePopUp',
     'closeDialog',
     'editProfilePopUp',
+    'notify',
     'userDAO'
   ],
 
@@ -121,10 +122,10 @@ foam.CLASS({
           if ( ! result ) throw new Error('Unable to disable profile');
           X.closeDialog();
           self.data.copyFrom(result);
-          self.add(self.NotificationMessage.create({ message: 'Profile successfully disabled.' }));
+          self.notify('Profile successfully disabled.', '', self.LogLevel.INFO, true);
         })
         .catch(function (err) {
-          self.add(self.NotificationMessage.create({ message: 'Unable to disable profile.', type: 'error' }));
+          self.notify('Unable to disable profile', '', self.LogLevel.ERROR, true);
         });
       }
     }

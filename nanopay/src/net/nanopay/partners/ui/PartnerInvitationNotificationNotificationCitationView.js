@@ -21,7 +21,7 @@ foam.CLASS({
   extends: 'foam.nanos.notification.NotificationCitationView',
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'net.nanopay.model.Invitation',
     'net.nanopay.model.InvitationStatus'
   ],
@@ -31,6 +31,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'notify',
     'user',
     'invitationDAO',
   ],
@@ -59,9 +60,7 @@ foam.CLASS({
     async function respondToInvitation(status) {
       var invite = await this.getInvitation();
       if ( this.hasBeenRespondedTo(invite) ) {
-        this.add(this.NotificationMessage.create({
-          message: this.AlreadyAccepted
-        }));
+        this.notify(this.AlreadyAccepted, '', this.LogLevel.INFO, true);
         return;
       }
       invite.status = status;
@@ -93,10 +92,7 @@ foam.CLASS({
       }
 
       if ( ! this.Invitation.isInstance(result) ) {
-        this.add(this.NotificationMessage.create({
-          message: this.InviteNotFound,
-          type: 'error'
-        }));
+        this.notify(this.InviteNotFound, '', this.LogLevel.ERROR, true);
         throw new Error(`Invitation not found`);
       }
       return result;
@@ -119,10 +115,7 @@ foam.CLASS({
       try {
         await this.invitationDAO.put(invitation);
       } catch (err) {
-        this.add(this.NotificationMessage.create({
-          message: this.ErrorFromBackend,
-          type: 'error'
-        }));
+        this.notify(this.ErrorFromBackend, '', this.LogLevel.ERROR, true);
         throw err;
       }
     },
@@ -140,7 +133,7 @@ foam.CLASS({
         default:
           throw new Error(`Unsupported response type: ${status}`);
       }
-      this.add(this.NotificationMessage.create({ message: message }));
+      this.notify(message, '', this.LogLevel.INFO, true);
     }
   ],
 

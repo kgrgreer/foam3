@@ -30,14 +30,15 @@ foam.CLASS({
     'stack',
     'userDAO',
     'twofactor',
-    'notificationSettingDAO'
+    'notificationSettingDAO',
+    'notify'
   ],
 
   exports: [ 'as data' ],
 
   requires: [
-    'net.nanopay.ui.ExpandContainer',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.log.LogLevel',
+    'net.nanopay.ui.ExpandContainer'
   ],
 
   css:`
@@ -514,7 +515,7 @@ foam.CLASS({
                   self.twoFactorQrCode = otpKey.qrCode;
                 })
                 .catch(function(err) {
-                  self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+                  self.notify(err.message, '', self.LogLevel.ERROR, true);
                 });
 
               return this.E()
@@ -603,7 +604,7 @@ foam.CLASS({
             smsSetting.enabled = self.smsNotificationsEnabled;
             if ( self.smsNotificationsEnabled ) {
               if ( ! /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(self.mobile) ) {
-                self.add(self.NotificationMessage.create({ message: self.INVALID_MOBILE, type: 'error' }));
+                self.notify(self.INVALID_MOBILE, '', self.LogLevel.ERROR, true);
                 return;
               }
             }
@@ -614,7 +615,7 @@ foam.CLASS({
             self.notificationSettingDAO.put(smsSetting);
           });
 
-        this.add(self.NotificationMessage.create({ message: 'Notification settings updated.' }));
+        this.notify('Notification settings updated.', '', this.LogLevel.INFO, true);
       }
     },
     {
@@ -624,12 +625,12 @@ foam.CLASS({
         var self = this;
 
         if ( ! this.firstName || ! this.lastName || ! this.jobTitle || ! this.email || ! this.phone ) {
-          this.add(this.NotificationMessage.create({ message: this.NO_INFORMATION, type: 'error' }));
+          this.notify(this.NO_INFORMATION, '', this.LogLevel.ERROR, true);
           return;
         }
 
         if ( ! /^\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})$/.test(this.phone) ) {
-          this.add(self.NotificationMessage.create({ message: this.INVALID_PHONE, type: 'error' }));
+          this.notify(this.INVALID_PHONE, '', this.LogLevel.ERROR, true);
           return;
         }
 
@@ -641,10 +642,19 @@ foam.CLASS({
         this.userDAO.put(this.user).then(function (result) {
           // copy new user, show success
           self.user.copyFrom(result);
-          self.add(self.NotificationMessage.create({ message: self.INFORMATION_UPDATED }));
+          self.notify(self.INFORMATION_UPDATED, '', self.LogLevel.INFO, true);
         })
         .catch(function (err) {
-          self.add(self.NotificationMessage.create({ message: err, type: 'error' }));
+          if ( err.exception && err.exception.userFeedback  ) {
+            var currentFeedback = err.exception.userFeedback;
+            while ( currentFeedback ) {
+              self.notify(currentFeedback.message, '', self.LogLevel.ERROR, true);
+
+              currentFeedback = currentFeedback.next;
+            }
+          } else {
+            self.notify(err.message, '', self.LogLevel.ERROR, true);
+          }
         });
       }
     },
@@ -655,23 +665,23 @@ foam.CLASS({
         var self = this;
 
         if ( ! this.twoFactorToken ) {
-          this.add(this.NotificationMessage.create({ message: this.TWO_FACTOR_NO_TOKEN_ERROR, type: 'error' }));
+          this.notify(this.TWO_FACTOR_NO_TOKEN_ERROR, '', this.LogLevel.ERROR, true);
           return;
         }
 
         this.twofactor.verifyToken(null, this.twoFactorToken)
         .then(function (result) {
           if ( ! result ) {
-            self.add(self.NotificationMessage.create({ message: self.TWO_FACTOR_ENABLE_ERROR, type: 'error' }));
+            self.notify(self.TWO_FACTOR_ENABLE_ERROR, '', self.LogLevel.ERROR, true);
             return;
           }
 
           self.twoFactorToken = null;
           self.user.twoFactorEnabled = true;
-          self.add(self.NotificationMessage.create({ message: self.TWO_FACTOR_ENABLE_SUCCESS }));
+          self.notify(self.TWO_FACTOR_ENABLE_SUCCESS, '', self.LogLevel.INFO, true);
         })
         .catch(function (err) {
-          self.add(self.NotificationMessage.create({ message: self.TWO_FACTOR_ENABLE_ERROR, type: 'error' }));
+          self.notify(self.TWO_FACTOR_ENABLE_ERROR, '', self.LogLevel.ERROR, true);
         });
       }
     },
@@ -682,23 +692,23 @@ foam.CLASS({
         var self = this;
 
         if ( ! this.twoFactorToken ) {
-          this.add(this.NotificationMessage.create({ message: this.TWO_FACTOR_NO_TOKEN_ERROR, type: 'error' }));
+          this.notify(this.TWO_FACTOR_NO_TOKEN_ERROR, '', this.LogLevel.ERROR, true);
           return;
         }
 
         this.twofactor.disable(null, this.twoFactorToken)
         .then(function(result) {
           if ( ! result ) {
-            self.add(self.NotificationMessage.create({ message: self.TWO_FACTOR_DISABLE_ERROR, type: 'error' }));
+            self.notify(self.TWO_FACTOR_DISABLE_ERROR, '', self.LogLevel.ERROR, true);
             return;
           }
 
           self.twoFactorToken = null;
           self.user.twoFactorEnabled = false;
-          self.add(self.NotificationMessage.create({ message: self.TWO_FACTOR_DISABLE_SUCCESS }));
+          self.notify(self.TWO_FACTOR_DISABLE_SUCCESS, '', self.LogLevel.INFO, true);
         })
         .catch(function (err) {
-          self.add(self.NotificationMessage.create({ message: self.TWO_FACTOR_DISABLE_ERROR, type: 'error' }));
+          self.notify(self.TWO_FACTOR_DISABLE_ERROR, '', self.LogLevel.ERROR, true);
         });
       }
     }

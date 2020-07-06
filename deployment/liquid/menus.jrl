@@ -51,6 +51,7 @@ p({
         {
           "class": "foam.comics.v2.DAOControllerConfig",
           "daoKey": "tableViewAccountDAO",
+          "factory": "net.nanopay.account.AggregateAccount",
           "cannedQueries": [
             {
               "class": "foam.comics.v2.CannedQuery",
@@ -236,6 +237,7 @@ p({
         {
           "class": "foam.comics.v2.DAOControllerConfig",
           "daoKey": "transactionDAO",
+          "factory": "net.nanopay.tx.LiquidSummaryTransaction",
           "editPredicate":{"class":"foam.mlang.predicate.False"},
           "deletePredicate":{"class":"foam.mlang.predicate.False"},
           "defaultColumns": [

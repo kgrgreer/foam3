@@ -29,6 +29,7 @@ foam.CLASS({
 
   requires: [
     'foam.core.PromiseSlot',
+    'foam.log.LogLevel',
     'net.nanopay.auth.PublicUserInfo',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
@@ -558,7 +559,7 @@ foam.CLASS({
         downloadContent.style.backgroundColor = '#f9fbff';
         downloadContent.style.padding = '0px';
       } catch (e) {
-        this.notify(this.SAVE_AS_PDF_FAIL, 'error');
+        this.notify(this.SAVE_AS_PDF_FAIL, '', this.LogLevel.ERROR, true);
         throw e;
       }
     }

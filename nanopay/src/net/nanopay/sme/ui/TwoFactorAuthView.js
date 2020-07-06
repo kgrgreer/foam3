@@ -29,6 +29,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'foam.u2.dialog.Popup'
   ],
 
@@ -176,7 +177,7 @@ foam.CLASS({
                   self.twoFactorKey = otpKey.key;
                   self.twoFactorQrCode = otpKey.qrCode;
                 }).catch(function(err) {
-                  self.ctrl.notify(err.message, 'error');
+                  self.ctrl.notify(err.message, '', self.LogLevel.ERROR, true);
                 });
 
               return this.E().addClass(this.myClass('flex-div'))
@@ -249,24 +250,24 @@ foam.CLASS({
         var self = this;
 
         if ( ! this.twoFactorToken ) {
-          this.ctrl.notify(self.TWO_FACTOR_NO_TOKEN_ERROR, 'error' );
+          this.ctrl.notify(self.TWO_FACTOR_NO_TOKEN_ERROR, '', this.LogLevel.ERROR, true);
           return;
         }
 
         this.twofactor.verifyToken(null, this.twoFactorToken)
         .then(function(result) {
           if ( ! result ) {
-            self.ctrl.notify(self.TWO_FACTOR_ENABLE_ERROR, 'error');
+            self.ctrl.notify(self.TWO_FACTOR_ENABLE_ERROR, '', self.LogLevel.ERROR, true);
             return;
           }
 
           self.twoFactorToken = null;
           self.subject.realUser.twoFactorEnabled = true;
-          self.ctrl.notify(self.TWO_FACTOR_ENABLE_SUCCESS);
+          self.ctrl.notify(self.TWO_FACTOR_ENABLE_SUCCESS, '', self.LogLevel.INFO, true);
         })
         .catch(function(err) {
           console.warn(err);
-          self.ctrl.notify(self.TWO_FACTOR_ENABLE_ERROR, 'error');
+          self.ctrl.notify(self.TWO_FACTOR_ENABLE_ERROR, '', self.LogLevel.ERROR, true);
         });
       }
     },

@@ -20,10 +20,25 @@ foam.CLASS({
   name: 'FixedFee',
   extends: 'net.nanopay.tx.fee.Fee',
 
+  messages: [
+    { name: 'FORMULA_PREFIX', message: 'Fixed fee' }
+  ],
+
   properties: [
+    'name',
+    'label',
     {
       class: 'Long',
-      name: 'fixedFee'
+      name: 'fixedFee',
+      section: 'basicInfo'
+    },
+    {
+      name: 'formula',
+      visibility: 'HIDDEN',
+      tableCellFormatter: function(_, obj) {
+        var formattedFee = obj.fixedFee / 100;
+        this.add(obj.FORMULA_PREFIX, ': $', ctrl.addCommas(formattedFee.toFixed(2)));
+      }
     }
   ],
 

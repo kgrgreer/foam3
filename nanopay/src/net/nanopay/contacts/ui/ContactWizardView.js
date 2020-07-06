@@ -23,6 +23,7 @@ foam.CLASS({
   documentation: 'Lets the user create a contact from scratch.',
 
   requires: [
+    'foam.log.LogLevel',
     'foam.u2.ControllerMode',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.BankAccount',
@@ -144,18 +145,18 @@ foam.CLASS({
         if ( this.data.shouldInvite && canInvite ) {
           try {
             if ( await this.sendInvite(false) ) {
-              this.ctrl.notify(this.CONTACT_ADDED_INVITE_SUCCESS);
+              this.ctrl.notify(this.CONTACT_ADDED_INVITE_SUCCESS, '', this.LogLevel.INFO, true);
             }
           } catch (err) {
             var msg = err.message || this.GENERIC_PUT_FAILED;
-            this.ctrl.notify(msg, 'error');
+            this.ctrl.notify(msg, '', this.LogLevel.ERROR, true);
           }
         } else {
-          this.ctrl.notify(this.isEdit ? this.CONTACT_EDITED : this.CONTACT_ADDED);
+          this.ctrl.notify(this.isEdit ? this.CONTACT_EDITED : this.CONTACT_ADDED, '', this.LogLevel.INFO, true);
       }
       } catch (e) {
         var msg = e.message || this.GENERIC_PUT_FAILED;
-        this.ctrl.notify(msg, 'error');
+        this.ctrl.notify(msg, '', this.LogLevel.ERROR, true);
         this.isConnecting = false;
         return false;
       }
@@ -174,12 +175,12 @@ foam.CLASS({
       try {
         await this.invitationDAO.put(invite);
         if ( showToastMsg ) {
-          this.ctrl.notify(this.INVITE_SUCCESS);
+          this.ctrl.notify(this.INVITE_SUCCESS, '', this.LogLevel.INFO, true);
         }
         // Force the view to update.
         this.user.contacts.cmd(foam.dao.AbstractDAO.RESET_CMD);
       } catch (e) {
-        this.ctrl.notify(this.CONTACT_ADDED_INVITE_FAILURE, 'error');
+        this.ctrl.notify(this.CONTACT_ADDED_INVITE_FAILURE, '', this.LogLevel.ERROR, true);
         return false;
       }
       return true;
@@ -195,7 +196,7 @@ foam.CLASS({
         await this.updateContactBankInfo(contact, result.id);
       } catch (err) {
         var msg = err.message || this.ACCOUNT_CREATION_ERROR;
-        this.ctrl.notify(msg, 'error');
+        this.ctrl.notify(msg, '', this.LogLevel.ERROR, true);
         return false;
       }
       this.isConnecting = false;
@@ -208,7 +209,7 @@ foam.CLASS({
         await this.user.contacts.put(contact);
       } catch (err) {
         var msg = err.message || this.GENERIC_PUT_FAILED;
-        this.ctrl.notify(msg, 'error');
+        this.ctrl.notify(msg, '', this.LogLevel.ERROR, true);
       }
     }
   ],

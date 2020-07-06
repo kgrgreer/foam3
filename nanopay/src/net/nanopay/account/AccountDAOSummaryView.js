@@ -187,11 +187,21 @@ foam.CLASS({
                                   properties: [
                                     ls.lowLiquidity.THRESHOLD.clone().copyFrom({
                                       label: 'Low',
-                                      gridColumns: 4
+                                      gridColumns: 4,
+                                      view: {
+                                        class: 'foam.u2.view.CurrencyInputView',
+                                        contingentProperty: 'denomination',
+                                        shortenToPrecision: 1
+                                      }
                                     }),
                                     ls.lowLiquidity.RESET_BALANCE.clone().copyFrom({
                                       label: 'Reset balance to',
-                                      gridColumns: 4
+                                      gridColumns: 4,
+                                      view: {
+                                        class: 'foam.u2.view.CurrencyInputView',
+                                        contingentProperty: 'denomination',
+                                        shortenToPrecision: 1
+                                      }
                                     }),
                                     ls.lowLiquidity.PUSH_PULL_ACCOUNT.clone().copyFrom({
                                       label: 'With funding from',
@@ -208,11 +218,21 @@ foam.CLASS({
                                   properties: [
                                     ls.highLiquidity.THRESHOLD.clone().copyFrom({
                                       label: 'High',
-                                      gridColumns: 4
+                                      gridColumns: 4,
+                                      view: {
+                                        class: 'foam.u2.view.CurrencyInputView',
+                                        contingentProperty: 'denomination',
+                                        shortenToPrecision: 1
+                                      }
                                     }),
                                     ls.highLiquidity.RESET_BALANCE.clone().copyFrom({
                                       label: 'Reset balance to',
-                                      gridColumns: 4
+                                      gridColumns: 4,
+                                      view: {
+                                        class: 'foam.u2.view.CurrencyInputView',
+                                        contingentProperty: 'denomination',
+                                        shortenToPrecision: 1
+                                      }
                                     }),
                                     ls.highLiquidity.PUSH_PULL_ACCOUNT.clone().copyFrom({
                                       label: 'With excess to',
@@ -233,7 +253,7 @@ foam.CLASS({
                 .start(self.CardBorder).addClass(self.myClass('transactions-table'))
                   .start().add(self.TABLE_HEADER).addClass(self.myClass('table-header')).end()
                   .start(foam.comics.v2.DAOBrowserView, {
-                    config: self.DAOControllerConfig.create({ 
+                    config: self.DAOControllerConfig.create({
                       editEnabled: false,
                       deleteEnabled: false,
                       dao: self.transactionDAO

@@ -28,12 +28,13 @@ foam.CLASS({
   documentation: 'Resend verification email view (Deprecated since release 3.0)',
 
   requires: [
-    'foam.u2.dialog.NotificationMessage'
+    'foam.log.LogLevel'
   ],
 
   imports: [
     'auth',
     'emailToken',
+    'notify',
     'stack',
     'user'
   ],
@@ -233,9 +234,9 @@ foam.CLASS({
           if ( ! result ) {
             throw new Error('Error generating reset token');
           }
-          self.add(self.NotificationMessage.create({ message: 'Verification email sent to ' + self.user.email }));
+          self.notify('Verification email sent to ' + self.user.email, '', self.LogLevel.INFO, true);
         }).catch(function(err) {
-          self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+          self.notify(err.message, '', this.LogLevel.ERROR, true);
         });
       }
     },

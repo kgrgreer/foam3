@@ -51,11 +51,17 @@ foam.CLASS({
           ]
         };
       },
-      tableCellFormatter: function(value, _, _) {
+      tableCellFormatter: function(value, obj, _) {
         this.__subContext__.capabilityDAO
-          .find(value)
+          .where(obj.EQ(foam.nanos.crunch.Capability.ID, value))
+          .limit(1)
+          .select(obj.PROJECTION(foam.nanos.crunch.Capability.NAME))
           .then((result) => {
-            this.add(result.name);
+            if ( ! result || result.array.size < 1 || ! result.array[0]) {
+              this.add(value);
+              return;
+            }
+            this.add(result.array[0]);
           });
       }
     },
@@ -76,11 +82,17 @@ foam.CLASS({
           ]
         };
       },
-      tableCellFormatter: function(value, _, _) {
+      tableCellFormatter: function(value, obj, _) {
         this.__subContext__.capabilityDAO
-          .find(value)
+          .where(obj.EQ(foam.nanos.crunch.Capability.ID, value))
+          .limit(1)
+          .select(obj.PROJECTION(foam.nanos.crunch.Capability.NAME))
           .then((result) => {
-            this.add(result.name);
+            if ( ! result || result.array.size < 1 || ! result.array[0]) {
+              this.add(value);
+              return;
+            }
+            this.add(result.array[0]);
           });
       }
     }

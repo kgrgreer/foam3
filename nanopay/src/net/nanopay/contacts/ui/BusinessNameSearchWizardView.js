@@ -26,6 +26,10 @@ foam.CLASS({
     does not exist, then create a new contact.
   `,
 
+  requires: [
+    'foam.log.LogLevel'
+  ],
+
   imports: [
     'auth',
     'ctrl',
@@ -126,10 +130,10 @@ foam.CLASS({
       this.isConnecting = true;
       try {
       contact = await this.user.contacts.put(this.data.contact);
-      this.ctrl.notify(this.CONTACT_ADDED);
+      this.ctrl.notify(this.CONTACT_ADDED, '', this.LogLevel.INFO, true);
       } catch (e) {
         var msg = e.message || this.GENERIC_PUT_FAILED;
-        this.ctrl.notify(msg, 'error');
+        this.ctrl.notify(msg, '', this.LogLevel.ERROR, true);
         this.isConnecting = false;
         return false;
       }

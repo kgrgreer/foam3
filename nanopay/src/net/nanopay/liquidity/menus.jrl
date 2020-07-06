@@ -26,6 +26,7 @@ p({
             "balance",
             "homeBalance"
           ],
+          "factory": "net.nanopay.account.AggregateAccount",
           "filterExportPredicate":
           {
             "class": "foam.mlang.predicate.Neq",
@@ -79,6 +80,7 @@ p({
         {
           "class": "foam.comics.v2.DAOControllerConfig",
           "daoKey": "transactionDAO",
+          "factory": "net.nanopay.tx.LiquidSummaryTransaction",
           "editPredicate":{"class":"foam.mlang.predicate.False"},
           "deletePredicate":{"class":"foam.mlang.predicate.False"},
           "defaultColumns": [

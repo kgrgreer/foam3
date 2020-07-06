@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import foam.dao.ArraySink;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -18,6 +19,7 @@ import foam.dao.DAO;
 import foam.mlang.MLang;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
+import foam.nanos.notification.Notification;
 import foam.util.SafetyUtil;
 import net.nanopay.tx.TransactionEvent;
 import net.nanopay.tx.bmo.cico.BmoCITransaction;
@@ -110,7 +112,9 @@ public class BmoReportProcessor {
       this.processRejectReport(strings); // process rejected file
     } else if ( firstLine.contains("DEFR220") ) {
       processSettlementReport(strings); // process settled file
-    }
+    } else if ( firstLine.contains("DEFR200" ) ) {
+       processControlFile(strings);
+     }
 
     storeFile(file);
   }
@@ -231,6 +235,16 @@ public class BmoReportProcessor {
       referenceNumber = rejectedItem.get(0).substring(108, 127).trim();
 
       Transaction transaction = getTransactionBy(Integer.valueOf(fileCreationNumber), referenceNumber);
+      if ( TransactionStatus.COMPLETED == transaction.getStatus() ) {
+        String msg = "BMO received DECLINE on COMPLETED transaction: " + transaction.getId();
+        BmoFormatUtil.sendEmail(x, msg, null);
+        Notification notification = new Notification.Builder(x)
+          .setTemplate("NOC")
+          .setBody(msg)
+          .build();
+        ((DAO) x.get("localNotificationDAO")).put(notification);
+        return; // Don't decline already Completed transactions
+      }
 
       transaction.setStatus(TransactionStatus.DECLINED);
       transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Transaction rejected.").build());
@@ -241,6 +255,47 @@ public class BmoReportProcessor {
     } catch ( Exception e ) {
       logger.error("Error when process reference number: " + referenceNumber, e);
       BmoFormatUtil.sendEmail(x, "Error when process reference number: " + referenceNumber, e);
+    }
+  }
+
+  public void processControlFile(List<String> report) {
+
+    String fileCreationNumber = "";
+
+    for ( String line : report ) {
+
+      if ( line.contains("FILE CREATION NO.") ) {
+        fileCreationNumber = line.substring(73, 77);
+      }
+
+      if ( line.contains("THE FILE INPUT IN THIS EDIT RUN HAS BEEN REJECTED FOR THE REASONS LISTED ABOVE")
+           || line.contains("THERE ARE NO VALID RECORDS IN THIS FILE ") ) {
+        processRejectedFile(fileCreationNumber);
+        BmoFormatUtil.sendEmail(x, "EFT file with file creation number " + fileCreationNumber + " has been rejected by BMO", null);
+      }
+    }
+
+  }
+
+  public void processRejectedFile(String fileCreationNumber) {
+
+    try {
+
+      List<Transaction> transactions = getTransactions(Integer.valueOf(fileCreationNumber)).getArray();
+
+      for ( Transaction transaction : transactions ) {
+        transaction = (Transaction) transaction.fclone();
+        transaction.setStatus(TransactionStatus.DECLINED);
+        transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("EFT File Rejected.").build());
+        ((BmoTransaction) transaction).setRejectReason("EFT File Rejected");
+        transaction.setCompletionDate(new Date());
+
+        transactionDAO.inX(this.x).put(transaction);
+      }
+
+    } catch ( Exception e ) {
+      logger.error("Error when processing rejected EFT file no: " + fileCreationNumber, e);
+      BmoFormatUtil.sendEmail(x, "Error when processing rejected EFT file no: " + fileCreationNumber, e);
     }
   }
 
@@ -266,23 +321,20 @@ public class BmoReportProcessor {
 
     Transaction transaction = (Transaction) this.transactionDAO.find(MLang.AND(
       MLang.EQ(BmoCITransaction.BMO_REFERENCE_NUMBER, referenceNumber),
-      MLang.EQ(BmoCITransaction.BMO_FILE_CREATION_NUMBER, Integer.valueOf(fileCreationNumber)),
-      MLang.EQ(Transaction.STATUS, TransactionStatus.SENT)
+      MLang.EQ(BmoCITransaction.BMO_FILE_CREATION_NUMBER, Integer.valueOf(fileCreationNumber))
     ));
 
     if ( transaction == null ) {
       transaction = (Transaction) this.transactionDAO.find(MLang.AND(
         MLang.EQ(BmoCOTransaction.BMO_REFERENCE_NUMBER, referenceNumber),
-        MLang.EQ(BmoCOTransaction.BMO_FILE_CREATION_NUMBER, Integer.valueOf(fileCreationNumber)),
-        MLang.EQ(Transaction.STATUS, TransactionStatus.SENT)
+        MLang.EQ(BmoCOTransaction.BMO_FILE_CREATION_NUMBER, Integer.valueOf(fileCreationNumber))
       ));
     }
 
     if ( transaction == null ) {
       transaction = (Transaction) this.transactionDAO.find(MLang.AND(
         MLang.EQ(BmoVerificationTransaction.BMO_REFERENCE_NUMBER, referenceNumber),
-        MLang.EQ(BmoVerificationTransaction.BMO_FILE_CREATION_NUMBER, Integer.valueOf(fileCreationNumber)),
-        MLang.EQ(Transaction.STATUS, TransactionStatus.SENT)
+        MLang.EQ(BmoVerificationTransaction.BMO_FILE_CREATION_NUMBER, Integer.valueOf(fileCreationNumber))
       ));
     }
 
@@ -291,6 +343,27 @@ public class BmoReportProcessor {
     }
 
     return transaction = (Transaction) transaction.fclone();
+  }
+
+  public ArraySink getTransactions(int fileCreationNumber) {
+
+    ArraySink transactions = new ArraySink();
+    this.transactionDAO.where(MLang.AND(
+      MLang.EQ(BmoVerificationTransaction.BMO_FILE_CREATION_NUMBER, Integer.valueOf(fileCreationNumber)),
+      MLang.EQ(Transaction.STATUS, TransactionStatus.SENT)
+    )).select(transactions);
+
+    this.transactionDAO.where(MLang.AND(
+      MLang.EQ(BmoCITransaction.BMO_FILE_CREATION_NUMBER, Integer.valueOf(fileCreationNumber)),
+      MLang.EQ(Transaction.STATUS, TransactionStatus.SENT)
+    )).select(transactions);
+
+    this.transactionDAO.where(MLang.AND(
+      MLang.EQ(BmoCOTransaction.BMO_FILE_CREATION_NUMBER, Integer.valueOf(fileCreationNumber)),
+      MLang.EQ(Transaction.STATUS, TransactionStatus.SENT)
+    )).select(transactions);
+
+    return transactions;
   }
 
   public String getFileCreationNumber(File file) throws IOException {

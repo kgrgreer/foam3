@@ -21,8 +21,8 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   requires: [
+    'foam.log.LogLevel',
     'foam.u2.PopupView',
-    'foam.u2.dialog.NotificationMessage',
     'foam.u2.dialog.Popup',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
@@ -32,6 +32,7 @@ foam.CLASS({
 
   imports: [
     'window',
+    'notify',
     'userDAO'
   ],
 
@@ -322,10 +323,10 @@ foam.CLASS({
         .then(function (result) {
           if ( ! result ) throw new Error('Unable to set pending profile.');
           self.data.copyFrom(result);
-          self.add(self.NotificationMessage.create({ message: 'Profile successfully set to pending.' }));
+          X.notify('Profile successfully set to pending.', '', self.LogLevel.INFO, true);
         })
         .catch(function (err) {
-          self.add(self.NotificationMessage.create({ message: 'Unable to set profile to pending.', type: 'error' }));
+          X.notify('Unable to set profile to pending.', '', self.LogLevel.ERROR, true);
         });
       }
     },
@@ -341,10 +342,10 @@ foam.CLASS({
         .then(function (result) {
           if ( ! result ) throw new Error('Unable to approve profile.');
           self.data.copyFrom(result);
-          self.add(self.NotificationMessage.create({ message: 'Profile successfully approved.' }));
+          X.notify('Profile successfully approved.', '', self.LogLevel.INFO, true);
         })
         .catch(function (err) {
-          self.add(self.NotificationMessage.create({ message: 'Unable to approve profile.', type: 'error' }));
+          X.notify('Unable to approve profile.', '', self.LogLevel.ERROR, true);
         });
       }
     },

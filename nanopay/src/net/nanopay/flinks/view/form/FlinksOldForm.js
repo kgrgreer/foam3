@@ -35,11 +35,12 @@ foam.CLASS({
   imports: [
     'flinksAuth',
     'institutionDAO',
+    'notify',
     'stack'
   ],
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'foam.nanos.auth.Country',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
@@ -235,7 +236,7 @@ foam.CLASS({
         // sign in
         if ( this.position == 1 ) {
           if ( this.viewData.check != true ) {
-            this.add(this.NotificationMessage.create({ message: 'Please read the condition and check', type: 'error' }));
+            X.notify('Please read the condition and check.', '', this.LogLevel.ERROR, true);
             return;
           }
           // disable button, prevent double click
@@ -270,15 +271,14 @@ foam.CLASS({
               }
               self.subStack.push(self.views[self.subStack.pos + 1].view);
             } else {
-              self.add(self.NotificationMessage.create({ message: 'flinks: ' + msg.Message, type: 'error'}));
+              X.notify('flinks: ' + msg.Message, '', self.LogLevel.ERROR, true);
             }
           }).catch( function(a) {
             // repeated as .finally is not supported in Safari/Edge/IE
             self.isConnecting = false;
             self.loadingSpinner.hide();
             self.isEnabledButtons(true);
-
-            self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }));
+            X.notify(a.message + '. Please try again.', '', self.LogLevel.ERROR, true);
           });
           return;
         }
@@ -310,18 +310,17 @@ foam.CLASS({
 
             } else if ( status == 401 ) {
               // MFA response error and forwar to another security challenge
-              self.add(self.NotificationMessage.create({ message: msg.Message, type: 'error' }));
+              X.notify(msg.Message, '', self.LogLevel.ERROR, true);
               self.viewData.securityChallenges = msg.securityChallenges;
             } else {
-              self.add(self.NotificationMessage.create({ message: 'flinks: ' + msg.Message, type: 'error'}));
+              X.notify('flinks: ' + msg.Message, '', self.LogLevel.ERROR, true);
             }
           }).catch( function(a) {
             // repeated as .finally is not supported in Safari/Edge/IE
             self.loadingSpinner.hide();
             self.isEnabledButtons(true);
             self.isConnecting = false;
-
-            self.add(self.NotificationMessage.create({ message: a.message + '. Please try again.', type: 'error' }));
+            X.notify(a.message + '. Please try again.', '', self.LogLevel.ERROR, true);
           });
           return;
         }
@@ -339,7 +338,7 @@ foam.CLASS({
                   branch: item.TransitNumber,
                   status: self.BankAccountStatus.VERIFIED
                 })).catch(function(a) {
-                  self.add(self.NotificationMessage.create({ message: a.message, type: 'error' }));
+                  X.notify(a.message, '', self.LogLevel.ERROR, true);
                 });
               }
             });

@@ -25,6 +25,7 @@ foam.CLASS({
   imports: [
     'wizard',
     'countryDAO',
+    'notify',
     'regionDAO',
     'validateEmail',
     'validatePostalCode',
@@ -41,8 +42,8 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'foam.nanos.auth.Region',
-    'foam.u2.dialog.NotificationMessage',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Address',
     'foam.dao.ArrayDAO'
@@ -1040,54 +1041,54 @@ foam.CLASS({
 
     function validatePrincipalOwner() {
       if ( ! this.firstNameField || ! this.lastNameField ) {
-        this.add(this.NotificationMessage.create({ message: 'First and last name fields must be populated.', type: 'error' }));
+        this.notify('First and last name fields must be populated.', '', this.LogLevel.ERROR, true);
         return false;
       }
 
       if ( ! this.jobTitleField ) {
-        this.add(this.NotificationMessage.create({ message: 'Job title field must be populated.', type: 'error' }));
+        this.notify('Job title field must be populated.', '', this.LogLevel.ERROR, true);
         return false;
       }
 
       if ( ! this.validateEmail(this.emailAddressField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid email address.', type: 'error' }));
+        this.notify('Invalid email address.', '', this.LogLevel.ERROR, true);
         return false;
       }
 
       if ( ! this.validatePhone(this.phoneCountryCodeField + this.phoneNumberField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid phone number.', type: 'error' }));
+        this.notify('Invalid phone number.', '', this.LogLevel.ERROR, true);
         return false;
       }
 
       // By pass for safari & mozilla type='date' on input support
       // Operator checking if dueDate is a date object if not, makes it so or throws notification.
       if ( isNaN(this.birthdayField) && this.birthdayField != null ) {
-        this.add(foam.u2.dialog.NotificationMessage.create({ message: 'Please Enter Valid Birthday yyyy-mm-dd.', type: 'error' }));
+        this.notify('Please enter valid birthday yyyy-mm-dd.', '', this.LogLevel.ERROR, true);
         return;
       }
       if ( ! this.validateAge(this.birthdayField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Principal owner must be at least 16 years of age.', type: 'error' }));
+        this.notify('Principal owner must be at least 16 years of age.', '', this.LogLevel.ERROR, true);
         return false;
       }
 
       if ( ! this.validateStreetNumber(this.streetNumberField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid street number.', type: 'error' }));
+        this.notify('Invalid street number.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validateAddress(this.streetNameField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid street name.', type: 'error' }));
+        this.notify('Invalid street name.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( this.suiteField.length > 0 && ! this.validateAddress(this.suiteField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid address line.', type: 'error' }));
+        this.notify('Invalid address line.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validateCity(this.cityField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid city name.', type: 'error' }));
+        this.notify('Invalid city name.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validatePostalCode(this.postalCodeField, this.countryField) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
+        this.notify('Invalid postal code.', '', this.LogLevel.ERROR, true);
         return false;
       }
 
@@ -1149,10 +1150,7 @@ foam.CLASS({
             return ownerFirst === formFirst && ownerLast === formLast;
           });
           if ( nameTaken ) {
-            this.add(this.NotificationMessage.create({
-              message: this.PrincipalOwnerError,
-              type: 'error'
-            }));
+            this.notify(this.PrincipalOwnerError, '', this.LogLevel.ERROR, true);
             return;
           }
         }

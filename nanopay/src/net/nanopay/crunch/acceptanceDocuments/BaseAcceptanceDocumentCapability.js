@@ -32,6 +32,7 @@ foam.CLASS({
   javaImports: [
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
+    'foam.nanos.logger.Logger',
     'javax.servlet.http.HttpServletRequest'
   ],
 
@@ -187,15 +188,20 @@ foam.CLASS({
         }
 
         // add user meta data for validity of ucj
-        HttpServletRequest               request          = (HttpServletRequest) x.get(HttpServletRequest.class);
-        String                           ipAddress        = request.getRemoteAddr();
-        User                             user             = ((Subject) x.get("subject")).getUser(); // potentially non-exiting
-        long                             userId           = (((Subject) x.get("subject")).getRealUser()).getId();
-        long                             businessId       = user != null ? user.getId() : 0;
+        Logger logger = (Logger) x.get("logger");
+        try {
+          HttpServletRequest               request          = (HttpServletRequest) x.get(HttpServletRequest.class);
+          String                           ipAddress        = request.getRemoteAddr();
+          User                             user             = ((Subject) x.get("subject")).getUser(); // potentially non-exiting
+          long                             userId           = (((Subject) x.get("subject")).getRealUser()).getId();
+          long                             businessId       = user != null ? user.getId() : 0;
 
-        setUser(userId);
-        setBusiness(businessId);
-        setIpAddress(request.getRemoteAddr());
+          setUser(userId);
+          setBusiness(businessId);
+          setIpAddress(request.getRemoteAddr());
+        } catch (Exception e) {
+          logger.warning("Some thing may have went wrong in saving properties to acceptance document.");
+        }
       `
     }
   ]

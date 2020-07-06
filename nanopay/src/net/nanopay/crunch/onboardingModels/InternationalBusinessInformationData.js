@@ -31,12 +31,6 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'reviewed',
-      class: 'Boolean',
-      readPermissionRequired: true,
-      writePermissionRequired: true
-    },
-    {
       section: 'businessDetailsSection',
       name: 'businessRegistrationDate',
       label: 'Business Formation Date',
@@ -44,12 +38,9 @@ foam.CLASS({
       documentation: 'Date of Business Formation or Incorporation.',
       validationPredicates: [
         {
-          args: ['businessRegistrationDate', 'reviewed'],
+          args: ['businessRegistrationDate'],
           predicateFactory: function(e) {
-            return e.OR(
-              e.LTE(net.nanopay.crunch.onboardingModels.InternationalBusinessInformationData.BUSINESS_REGISTRATION_DATE, new Date()),
-              e.EQ(net.nanopay.crunch.onboardingModels.BusinessInformationData.REVIEWED, false)
-            );
+            return e.LTE(net.nanopay.crunch.onboardingModels.InternationalBusinessInformationData.BUSINESS_REGISTRATION_DATE, new Date());
           },
           errorMessage: 'BUSINESS_REGISTRATION_DATE_ERROR'
         }
@@ -78,12 +69,11 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['countryOfBusinessRegistration', 'reviewed'],
+          args: ['countryOfBusinessRegistration'],
           predicateFactory: function(e) {
             return e.OR(
               e.EQ(net.nanopay.crunch.onboardingModels.InternationalBusinessInformationData.COUNTRY_OF_BUSINESS_REGISTRATION, 'CA'),
-              e.EQ(net.nanopay.crunch.onboardingModels.InternationalBusinessInformationData.COUNTRY_OF_BUSINESS_REGISTRATION, 'US'),
-              e.EQ(net.nanopay.crunch.onboardingModels.BusinessInformationData.REVIEWED, false)
+              e.EQ(net.nanopay.crunch.onboardingModels.InternationalBusinessInformationData.COUNTRY_OF_BUSINESS_REGISTRATION, 'US')
             );
           },
           errorMessage: 'COUNTRY_OF_REGISTRATION_ERROR'
@@ -101,12 +91,11 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['reviewed', 'taxIdentificationNumber', 'countryOfBusinessRegistration'],
+          args: ['taxIdentificationNumber', 'countryOfBusinessRegistration'],
           predicateFactory: function(e) {
             return e.OR(
               e.EQ(net.nanopay.crunch.onboardingModels.InternationalBusinessInformationData.COUNTRY_OF_BUSINESS_REGISTRATION, 'CA'),
-              e.REG_EXP(net.nanopay.crunch.onboardingModels.InternationalBusinessInformationData.TAX_IDENTIFICATION_NUMBER, /^[0-9]{9}$/),
-              e.EQ(net.nanopay.crunch.onboardingModels.BusinessInformationData.REVIEWED, false)
+              e.REG_EXP(net.nanopay.crunch.onboardingModels.InternationalBusinessInformationData.TAX_IDENTIFICATION_NUMBER, /^[0-9]{9}$/)
             );
           },
           errorMessage: 'TAX_ID_NUMBER_ERROR'
@@ -126,10 +115,6 @@ foam.CLASS({
           } catch ( IllegalStateException e ) {
             throw e;
           }
-        }
-
-        if ( ! this.getReviewed() ) {
-          throw new IllegalStateException("Must confirm all data entered has been reviewed and is correct.");
         }
       `
     }

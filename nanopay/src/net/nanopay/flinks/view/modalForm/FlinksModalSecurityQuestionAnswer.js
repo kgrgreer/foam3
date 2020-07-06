@@ -23,6 +23,7 @@ foam.CLASS({
   documentation: 'Screen to answer Multi-Factor authentication',
 
   requires: [
+    'foam.log.LogLevel',
     'foam.u2.tag.Input',
     'foam.u2.view.ChoiceView',
     'foam.u2.view.PasswordView',
@@ -371,11 +372,12 @@ foam.CLASS({
       name: 'next',
       label: 'Continue',
       code: function(X) {
+        var self = this;
         var model = X.model;
         if ( X.isConnecting ) return;
         var isAllAnswered  = model.answerCheck.reduce((allAnswered, val) => allAnswered && val);
         if ( ! isAllAnswered ) {
-          X.notify(model.INVALID_FORM, 'error');
+          X.notify(model.INVALID_FORM, '', self.LogLevel.ERROR, true);
           return;
         }
         X.viewData.submitChallenge();

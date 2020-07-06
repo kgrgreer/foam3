@@ -24,6 +24,7 @@ foam.CLASS({
 
   requires: [
     'foam.core.Action',
+    'foam.log.LogLevel',
     'foam.u2.dialog.Popup',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
@@ -152,7 +153,7 @@ foam.CLASS({
               },
               code: function(X) {
                 self.user.sales.remove(this).then(() => {
-                  self.notify(self.DELETE_DRAFT, 'success')
+                  self.notify(self.DELETE_DRAFT, '', self.LogLevel.INFO, true);
                 });
               }
             })

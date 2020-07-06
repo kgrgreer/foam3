@@ -34,6 +34,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'foam.nanos.notification.email.EmailMessage',
     'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage',
@@ -721,9 +722,9 @@ foam.CLASS({
     function markAsReconciled() {
       this.invoice[this.isPayable ? 'payerReconciled' : 'payeeReconciled'] = true;
       this.invoiceDAO.put(this.invoice).then((r) => {
-        this.notify(this.RECONCILED_SUCCESS);
+        this.notify(this.RECONCILED_SUCCESS, '', this.LogLevel.INFO, true);
       }).catch((err) => {
-        this.notify(this.RECONCILED_ERROR, 'error');
+        this.notify(this.RECONCILED_ERROR, '', this.LogLevel.ERROR, true);
       });
     }
   ],
@@ -782,7 +783,7 @@ foam.CLASS({
             });
             this.canReceiveCurrencyDAO.put(request).then((responseObj) => {
               if ( ! responseObj.response ) {
-                this.notify(responseObj.message, 'error');
+                this.notify(responseObj.message, '', this.LogLevel.ERROR, true);
                 return;
               }
               X.menuDAO.find('sme.quickAction.send').then((menu) => {

@@ -20,6 +20,7 @@ foam.CLASS({
   name: 'FlinksConnectForm',
   extends: 'net.nanopay.ui.wizard.WizardSubView',
   requires: [
+    'foam.log.LogLevel',
     'foam.u2.dialog.Popup',
     'foam.u2.PopupView',
     'net.nanopay.ui.LoadingSpinner',
@@ -262,7 +263,7 @@ foam.CLASS({
           this.subject.user
         );
       } catch (error) {
-        this.notify(`${error.message}. Please try again.`, 'error');
+        this.notify(`${error.message}. Please try again.`, '', this.LogLevel.ERROR, true);
         return;
       } finally {
         this.isConnecting = false;
@@ -279,7 +280,7 @@ foam.CLASS({
           this.pushViews('FlinksSecurityChallenge');
           break;
         case 401:
-          this.notify(response.Message, 'error');
+          this.notify(response.Message, '', this.LogLevel.ERROR, true);
           break;
         default:
           break;

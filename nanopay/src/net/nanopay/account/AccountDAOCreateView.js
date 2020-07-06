@@ -29,13 +29,14 @@ foam.CLASS({
   imports: [
     'ctrl',
     'group',
+    'notify',
     'stack',
     'user'
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'net.nanopay.account.DigitalAccount',
-    'foam.u2.dialog.NotificationMessage'
   ],
 
   documentation: `
@@ -60,7 +61,7 @@ foam.CLASS({
           dataView: 'net.nanopay.liquidity.ui.account.AccountDetailView'
         };
       }
-    },
+    }
   ],
 
   actions: [
@@ -79,20 +80,14 @@ foam.CLASS({
         this.config.dao.put(cData).then((o) => {
           this.data = o;
           this.finished.pub();
-          if ( foam.comics.v2.userfeedback.UserFeedbackAware.isInstance(o) && o.userFeedback ){
+          if ( foam.comics.v2.userfeedback.UserFeedbackAware.isInstance(o) && o.userFeedback ) {
             var currentFeedback = o.userFeedback;
-            while ( currentFeedback ){
-              this.ctrl.add(this.NotificationMessage.create({
-                message: currentFeedback.message,
-                type: currentFeedback.status.name.toLowerCase()
-              }));
-
+            while ( currentFeedback ) {
+              this.notify(currentFeedback.message, '', this.LogLevel.INFO, true);
               currentFeedback = currentFeedback.next;
             }
           } else {
-            this.ctrl.add(this.NotificationMessage.create({
-              message: `${this.data.model_.label} created.`
-            }));
+            this.notify(`${this.data.model_.label} created.`, '', this.LogLevel.INFO, true);
           }
 
           this.stack.back();
@@ -102,18 +97,13 @@ foam.CLASS({
           if ( e.exception && e.exception.userFeedback  ) {
             var currentFeedback = e.exception.userFeedback;
             while ( currentFeedback ) {
-              this.ctrl.add(this.NotificationMessage.create({
-                message: currentFeedback.message,
-                type: currentFeedback.status.name.toLowerCase()
-              }));
-
+              this.ctrl.notify(currentFeedback.message, '', this.LogLevel.INFO, true);
               currentFeedback = currentFeedback.next;
             }
+
+            this.stack.back();
           } else {
-            this.ctrl.add(this.NotificationMessage.create({
-              message: e.message,
-              type: 'error'
-            }));
+            this.notify(e.message, '', this.LogLevel.ERROR, true);
           }
         });
       }

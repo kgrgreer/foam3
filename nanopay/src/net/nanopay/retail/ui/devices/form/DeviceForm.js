@@ -25,12 +25,13 @@ foam.CLASS({
   requires: [
     'net.nanopay.retail.model.Device',
     'net.nanopay.retail.model.DeviceStatus',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.log.LogLevel'
   ],
 
   imports: [
     'user',
-    'deviceDAO'
+    'deviceDAO',
+    'notify'
   ],
 
   axioms: [
@@ -117,7 +118,7 @@ foam.CLASS({
           // Device Name
 
           if ( ( deviceInfo.deviceName == null || deviceInfo.deviceName.trim() == '' ) ) {
-            self.add(self.NotificationMessage.create({ message: 'Please fill out all necessary fields before proceeding.', type: 'error' }));
+            X.notify('Please fill out all necessary fields before proceeding.', '', self.LogLevel.ERROR, true);
             return;
           }
 
@@ -129,7 +130,7 @@ foam.CLASS({
           // Device Serial Number
 
           if ( ! /^[a-zA-Z0-9]{16}$/.exec(deviceInfo.serialNumber) ) {
-            self.add(self.NotificationMessage.create({ message: 'Please enter a valid serial number before proceeding.', type: 'error' }));
+            X.notify('Please enter a valid serial number before proceeding.', '', self.LogLevel.ERROR, true);
             return;
           }
 
@@ -153,7 +154,7 @@ foam.CLASS({
             self.nextLabel = 'Done';
           })
           .catch(function (err) {
-            self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+            X.notify(err.message, '', self.LogLevel.ERROR, true);
           });
           return;
         }

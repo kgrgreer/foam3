@@ -32,6 +32,10 @@ foam.CLASS({
     into the targetDAO provided.
   `,
 
+  requires: [
+    'foam.log.LogLevel'
+  ],
+
   imports: [
     'notify'
   ],
@@ -126,10 +130,10 @@ foam.CLASS({
           dao.put(this.__context__.data);
         } catch (e) {
           console.error(`${ this.BOOLEAN_ERROR } ${ this.property.label } of ${ this.__context__.cls_.name }`);
-          this.notify(`${ this.BOOLEAN_ERROR } ${ this.property.label }`);
+          this.notify(`${ this.BOOLEAN_ERROR } ${ this.property.label }`, '', this.LogLevel.ERROR, true);
           return;
         }
-        this.notify(`${ this.property.label } ${ this.BOOLEAN_SUCCESS }`);
+        this.notify(`${ this.property.label } ${ this.BOOLEAN_SUCCESS }`, '', this.LogLevel.INFO, true);
       }
     }
   ]

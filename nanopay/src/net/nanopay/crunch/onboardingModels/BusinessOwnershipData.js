@@ -77,8 +77,8 @@ foam.CLASS({
       name: 'reviewOwnersSection',
       title: 'Review the list of owners',
       help: 'Awesome! Just confirm the details you’ve entered are correct and we can proceed!',
-      isAvailable: function(amountOfOwners, reviewed) {
-        return amountOfOwners > 0 || (amountOfOwners == 0 && reviewed);
+      isAvailable: function(amountOfOwners) {
+        return amountOfOwners > 0;
       }
     },
   ],
@@ -98,12 +98,6 @@ foam.CLASS({
       name: 'id',
       class: 'Long',
       hidden: true
-    },
-    {
-      name: 'reviewed',
-      class: 'Boolean',
-      readPermissionRequired: true,
-      writePermissionRequired: true
     },
     {
       class: 'Reference',
@@ -200,17 +194,13 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['amountOfOwners', 'reviewed'],
+          args: ['amountOfOwners'],
           predicateFactory: function(e) {
-            return e.OR(
-              e.AND(
-                e.GTE(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
-                  .AMOUNT_OF_OWNERS, 0),
-                e.LTE(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
-                  .AMOUNT_OF_OWNERS, 4)
-              ),
-              e.EQ(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
-                .REVIEWED, false)
+            return e.AND(
+              e.GTE(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
+                .AMOUNT_OF_OWNERS, 0),
+              e.LTE(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
+                .AMOUNT_OF_OWNERS, 4)
             );
           },
           errorMessage: 'NO_AMOUNT_OF_OWNERS_SELECTED_ERROR'
@@ -243,11 +233,9 @@ foam.CLASS({
       index: 1,
       validationPredicates: [
       {
-        args: ['amountOfOwners', 'owner1$errors_', 'reviewed'],
+        args: ['amountOfOwners', 'owner1$errors_'],
         predicateFactory: function(e) {
           return e.OR(
-            e.EQ(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
-              .REVIEWED, false),
             e.LT(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
               .AMOUNT_OF_OWNERS, 1),
             e.AND(
@@ -268,11 +256,9 @@ foam.CLASS({
       index: 2,
       validationPredicates: [
       {
-        args: ['amountOfOwners', 'owner2$errors_', 'reviewed'],
+        args: ['amountOfOwners', 'owner2$errors_'],
         predicateFactory: function(e) {
           return e.OR(
-            e.EQ(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
-              .REVIEWED, false),
             e.LT(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
               .AMOUNT_OF_OWNERS, 2),
             e.AND(
@@ -293,11 +279,9 @@ foam.CLASS({
       index: 3,
       validationPredicates: [
       {
-        args: ['amountOfOwners', 'owner3$errors_', 'reviewed'],
+        args: ['amountOfOwners', 'owner3$errors_'],
         predicateFactory: function(e) {
           return e.OR(
-            e.EQ(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
-              .REVIEWED, false),
             e.LT(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
               .AMOUNT_OF_OWNERS, 3),
             e.AND(
@@ -318,11 +302,9 @@ foam.CLASS({
       index: 4,
       validationPredicates: [
       {
-        args: ['amountOfOwners', 'owner4$errors_', 'reviewed'],
+        args: ['amountOfOwners', 'owner4$errors_'],
         predicateFactory: function(e) {
           return e.OR(
-            e.EQ(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
-              .REVIEWED, false),
             e.LT(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
               .AMOUNT_OF_OWNERS, 4),
             e.AND(
@@ -377,6 +359,10 @@ foam.CLASS({
       section: 'reviewOwnersSection',
       name: 'totalOwnership',
       class: 'Long',
+      view: {
+        class: 'foam.u2.view.ModeAltView',
+        writeView: { class: 'foam.u2.view.ValueView' }
+      },
       expression: function(amountOfOwners,
                            owner1$ownershipPercent,
                            owner2$ownershipPercent,
@@ -394,16 +380,16 @@ foam.CLASS({
       javaGetter: `
         int sum = 0;
 
-        if ( getAmountOfOwners() >= 1 ) sum += getOwner1().getOwnershipPercent();
-        if ( getAmountOfOwners() >= 2 ) sum += getOwner2().getOwnershipPercent();
-        if ( getAmountOfOwners() >= 3 ) sum += getOwner3().getOwnershipPercent();
-        if ( getAmountOfOwners() >= 4 ) sum += getOwner4().getOwnershipPercent();
+        if ( getAmountOfOwners() >= 1 && getOwner1() != null ) sum += getOwner1().getOwnershipPercent();
+        if ( getAmountOfOwners() >= 2 && getOwner2() != null ) sum += getOwner2().getOwnershipPercent();
+        if ( getAmountOfOwners() >= 3 && getOwner3() != null ) sum += getOwner3().getOwnershipPercent();
+        if ( getAmountOfOwners() >= 4 && getOwner4() != null ) sum += getOwner4().getOwnershipPercent();
 
         return sum;
       `,
       visibility: function(totalOwnership) {
         return Number(totalOwnership) > 100 ?
-          foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
+          foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       autoValidate: true,
       max: 100,
@@ -419,16 +405,6 @@ foam.CLASS({
           errorMessage: 'TOTAL_OWNERSHIP_ERROR'
         }
       ]
-    },
-    {
-      section: 'reviewOwnersSection',
-      name: 'noBeneficialOwners',
-      label: 'There are no beneficial owners with 25% or more ownership listed.',
-      documentation: 'If amountOfOwners property is zero, this message will be display',
-      visibility: function(amountOfOwners) {
-        return amountOfOwners === 0 ?
-          foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
-      },
     }
   ],
 
@@ -476,10 +452,6 @@ foam.CLASS({
           } catch ( IllegalStateException e ) {
             throw e;
           }
-        }
-
-        if ( ! this.getReviewed() ) {
-          throw new IllegalStateException("Must confirm all data entered has been reviewed and is correct.");
         }
       `,
     }
@@ -570,17 +542,7 @@ foam.CLASS({
           choiceView:
           {
             class: 'foam.u2.view.RichChoiceView',
-            choosePlaceholder: 'Please select one of the following...',
-            sections: [
-              {
-                heading: 'Please select one of the following registered Signing Officers...',
-                dao$: dao2
-              },
-              {
-                heading: 'If owner is not a registered Signing Officers, please select the following...',
-                dao: dao
-              }
-            ]
+            choosePlaceholder: 'Please select one of the following...'
           }
         };
       }
@@ -606,9 +568,30 @@ foam.CLASS({
   package: 'net.nanopay.crunch.onboardingModels',
   name: 'SelectionViewOwner',
   extends: 'foam.u2.View',
+
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   requires: [
     'foam.u2.layout.Rows'
   ],
+
+  messages: [
+    {
+      name: 'OTHER_SELECTION_HAS_SO',
+      message: 'If owner is not a registered Signing Officers, please select the following...'
+    },
+    {
+      name: 'OTHER_SELECTION_NO_SO',
+      message: 'As there are no signing officers, please select this option...'
+    },
+    {
+      name: 'SO_SELECTION',
+      message: 'Please select one of the following registered Signing Officers...'
+    }
+  ],
+
   properties: [
     {
       class: 'foam.u2.ViewSpec',
@@ -618,12 +601,17 @@ foam.CLASS({
     {
       name: 'dao2',
       class: 'foam.dao.DAOProperty',
-      documentation: 'dao that is used in choiceView, should not change.'
+      documentation: 'dao that is used in choiceView, should not change.',
+      postSet: function (_, dao2) {
+        dao2.select(this.COUNT()).then(countSink => {
+          this.updateSections_(countSink.value > 0);
+        })
+      }
     },
     {
       name: 'dao',
       class: 'foam.dao.DAOProperty',
-      documentation: 'dao that is used in choiceView, should not change.'
+      documentation: 'dao that is used in choiceView, should not change.',
     },
     {
       name: 'otherLabel',
@@ -646,6 +634,11 @@ foam.CLASS({
             );
           }
       }
+    },
+    {
+      name: 'choiceSections_',
+      documentation: 'Sections displayed in the choice view',
+      class: 'Array'
     }
   ],
 
@@ -667,10 +660,18 @@ foam.CLASS({
   ],
 
   methods: [
+    function init() {
+      // Pre-initialize with just one section to prevent empty array error
+      // thrown by RichChoiceView
+      this.updateSections_(false);
+    },
     function initE() {
-      this.add(this.slot((choiceData_) => {
+      this.add(this.slot((choiceData_, choiceSections_) => {
         return this.Rows.create()
-          .tag(this.choiceView, { data$: this.choiceData_$ }, this.choiceView_$)
+          .tag(this.choiceView, {
+            data$: this.choiceData_$,
+            sections: this.choiceSections_
+          }, this.choiceView_$)
           .start()
             .tag({
               class: 'foam.u2.detail.SectionView',
@@ -680,6 +681,20 @@ foam.CLASS({
           .end();
         }
       ));
+    },
+    function updateSections_(showDAO2) {
+      var choiceSections = [];
+      if ( showDAO2 ) choiceSections.push({
+        heading: this.SO_SELECTION,
+        dao$: this.dao2$
+      });
+      choiceSections.push({
+        heading: showDAO2
+          ? this.OTHER_SELECTION_HAS_SO
+          : this.OTHER_SELECTION_NO_SO,
+        dao$: this.dao$
+      });
+      this.choiceSections_ = choiceSections;
     }
   ]
 });

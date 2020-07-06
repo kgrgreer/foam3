@@ -29,6 +29,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.log.LogLevel',
     'foam.util.SafetyUtil',
     'java.util.regex.Pattern',
     'net.nanopay.model.Branch',
@@ -93,20 +94,36 @@ foam.CLASS({
       name: 'country',
       value: 'CA',
       section: 'accountDetails',
-      createVisibility: 'HIDDEN'
+      visibility: 'RO'
     },
     {
       name: 'flagImage',
       section: 'accountDetails',
       label: '',
       value: 'images/flags/cad.png',
-      createVisibility: 'HIDDEN'
+      visibility: 'RO'
     },
     {
       name: 'denomination',
       section: 'accountDetails',
       gridColumns: 12,
       value: 'CAD',
+    },
+    {
+      class: 'String',
+      name: 'iban',
+      visibility: 'HIDDEN',
+      getter: function() {
+        return this.accountNumber;
+      },
+      javaGetter: `
+        return getAccountNumber();
+      `
+    },
+    {
+      class: 'String',
+      name: 'bankCode',
+      visibility: 'HIDDEN'
     },
     {
       name: 'voidChequeImage',
@@ -300,9 +317,9 @@ foam.CLASS({
         this.address = this.padCapture.address;
         await this.subject.user.accounts.put(this);
         if ( this.stack ) this.stack.back();
-        this.notify(this.ADD_SUCCESSFUL);
+        this.notify(this.ADD_SUCCESSFUL, '', this.LogLevel.INFO, true);
       } catch (error) {
-        this.notify(error.message, 'error');
+        this.notify(error.message, '', this.LogLevel.ERROR, true);
       }
     },
     {

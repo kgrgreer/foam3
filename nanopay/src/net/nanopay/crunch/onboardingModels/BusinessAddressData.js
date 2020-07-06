@@ -74,13 +74,13 @@ foam.CLASS({
         return {
           class: 'net.nanopay.sme.ui.AddressView',
           customCountryDAO: dao,
-          showValidation$: X.data.slot((reviewed) => reviewed)
+          showValidation: true
         };
       },
       autoValidate: false,
       validationPredicates: [
         {
-          args: ['address', 'address$countryId', 'address$errors_', 'reviewed', 'countryId'],
+          args: ['address', 'address$countryId', 'address$errors_', 'countryId'],
           predicateFactory: function(e) {
             return e.OR(
               e.AND(
@@ -90,43 +90,29 @@ foam.CLASS({
                   net.nanopay.crunch.onboardingModels.BusinessAddressData.COUNTRY_ID
                 )
               ),
-              e.EQ(net.nanopay.crunch.onboardingModels.BusinessAddressData.COUNTRY_ID, null),
-              e.EQ(net.nanopay.crunch.onboardingModels.BusinessAddressData.REVIEWED, false)
+              e.EQ(net.nanopay.crunch.onboardingModels.BusinessAddressData.COUNTRY_ID, null)
             );
           },
           errorMessage: 'COUNTRY_MISMATCH_ERROR'
         },
         {
-          args: ['address', 'address$regionId', 'address$errors_', 'reviewed'],
+          args: ['address', 'address$regionId', 'address$errors_'],
           predicateFactory: function(e) {
-            return e.OR(
-              e.NEQ(e.DOT(net.nanopay.crunch.onboardingModels.BusinessAddressData.ADDRESS, foam.nanos.auth.Address.REGION_ID), 'QC'),
-              e.EQ(net.nanopay.crunch.onboardingModels.BusinessAddressData.REVIEWED, false)
-            );
+            return e.NEQ(e.DOT(net.nanopay.crunch.onboardingModels.BusinessAddressData.ADDRESS, foam.nanos.auth.Address.REGION_ID), 'QC');
           },
           errorMessage: 'QUEBEC_NOT_SUPPORTED_ERROR'
         },
         {
-          args: ['address', 'address$errors_', 'reviewed'],
+          args: ['address', 'address$errors_'],
           predicateFactory: function(e) {
-            return e.OR(
-              e.EQ(foam.mlang.IsValid.create({
+            return e.EQ(foam.mlang.IsValid.create({
                 arg1: net.nanopay.crunch.onboardingModels.BusinessAddressData.ADDRESS
-              }), true),
-              e.EQ(net.nanopay.crunch.onboardingModels.BusinessAddressData.REVIEWED, false)
-            );
+              }), true);
           },
           errorMessage: 'INVALID_ADDRESS_ERROR'
         }
       ]
-    }),
-    {
-      name: 'reviewed',
-      class: 'Boolean',
-      section: 'businessAddressSection',
-      readPermissionRequired: true,
-      writePermissionRequired: true
-    }
+    })
   ],
 
   methods: [
@@ -140,10 +126,6 @@ foam.CLASS({
           } catch ( IllegalStateException e ) {
             throw e;
           }
-        }
-
-        if ( ! this.getReviewed() ) {
-          throw new IllegalStateException("Must confirm all data entered has been reviewed and is correct.");
         }
       `
     }
