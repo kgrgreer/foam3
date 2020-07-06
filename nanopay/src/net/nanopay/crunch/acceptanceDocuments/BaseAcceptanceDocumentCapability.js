@@ -39,6 +39,7 @@ foam.CLASS({
   sections: [
     {
       name: 'reviewAgreementDocumentsSection',
+      title: 'please review and agree to the following terms and service policy.',
       permissionRequired: true
     },
     {

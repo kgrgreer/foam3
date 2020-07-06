@@ -19,7 +19,7 @@ foam.CLASS({
   package: 'net.nanopay.crunch.onboardingModels',
   name: 'SigningOfficerPersonalData',
 
-  implements: [ 
+  implements: [
     'foam.core.Validatable',
     'foam.mlang.Expressions'
   ],
@@ -69,8 +69,8 @@ foam.CLASS({
       view: function(_, X) {
         var m = foam.mlang.Expressions.create();
         var countryId = X.user && X.user.address ? X.user.address.countryId : null;
-        var dao = countryId ? 
-          X.countryDAO.where(m.EQ(foam.nanos.auth.Country.ID, countryId)) : 
+        var dao = countryId ?
+          X.countryDAO.where(m.EQ(foam.nanos.auth.Country.ID, countryId)) :
           X.countryDAO;
 
         return {
@@ -192,7 +192,7 @@ foam.CLASS({
     }
   ],
 
-  methods: [ 
+  methods: [
     {
       name: 'validate',
       javaCode: `
