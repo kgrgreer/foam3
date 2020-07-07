@@ -29,6 +29,14 @@ foam.CLASS({
     {
       class: 'UnitValue',
       name: 'value',
+      valueToString: async function(x, val, unitPropName) {
+        var formattedAmount = val;
+        if ( this.type == net.nanopay.tx.LineItemAmountType.PERCENT ) {
+          return amount / 100;
+        } else {
+          return x.addCommas(formattedAmount.toFixed(2));
+        }
+      },
       tableCellFormatter: function(amount, X) {
         var formattedAmount = amount;
         if ( this.type == net.nanopay.tx.LineItemAmountType.PERCENT ) {

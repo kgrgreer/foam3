@@ -89,6 +89,12 @@ foam.CLASS({
       },
       documentation: 'Amount in Receiver Currency',
       section: 'amountSelection',
+      valueToString: async function(x, val, unitPropName) {
+        var unitProp = await x.securitiesDAO.find(unitPropName);
+        if ( unitProp )
+          return unitProp.format(val);
+        return val;
+      },
       tableCellFormatter: function(value, obj) {
         obj.securitiesDAO.find(obj.destinationCurrency).then(function(s) {
           if ( s ) {

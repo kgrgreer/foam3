@@ -56,6 +56,10 @@ foam.CLASS({
         {
           name: 'taxable',
           class: 'UnitValue',
+          valueToString: async function(x, val, unitPropName) {
+            var formattedAmount = val / 100;
+            return '$' + x.addCommas(formattedAmount.toFixed(2));
+          },
           tableCellFormatter: function(amount, X) {
             var formattedAmount = amount/100;
             this
@@ -71,6 +75,10 @@ foam.CLASS({
         {
           name: 'tax',
           class: 'UnitValue',
+          valueToString: async function(x, val, unitPropName) {
+            var formattedAmount = val / 100;
+            return '$' + x.addCommas(formattedAmount.toFixed(2));
+          },
           tableCellFormatter: function(amount, X) {
             var formattedAmount = amount/100;
             this
@@ -82,6 +90,10 @@ foam.CLASS({
         {
           name: 'taxCalculated',
           class: 'UnitValue',
+          valueToString: async function(x, val, unitPropName) {
+            var formattedAmount = val / 100;
+            return '$' + x.addCommas(formattedAmount.toFixed(2));
+          },
           tableCellFormatter: function(amount, X) {
             var formattedAmount = amount/100;
             this
@@ -93,6 +105,10 @@ foam.CLASS({
         {
           name: 'nonTaxable',
           class: 'UnitValue',
+          valueToString: async function(x, val, unitPropName) {
+            var formattedAmount = val / 100;
+            return '$' + x.addCommas(formattedAmount.toFixed(2));
+          },
           tableCellFormatter: function(amount, X) {
             var formattedAmount = amount/100;
             this
