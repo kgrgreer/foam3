@@ -373,7 +373,12 @@ foam.CLASS({
           foam.u2.DisplayMode.RO :
           foam.u2.DisplayMode.HIDDEN;
       },
-      view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select invoice' },
+      view: function(_, x) {
+        return foam.u2.Element.create()
+          .start()
+            .add(x.data.invoiceId)
+          .end();
+      },
       javaToCSVLabel: 'outputter.outputValue("Payment Id/Invoice Id");',
     },
     {
