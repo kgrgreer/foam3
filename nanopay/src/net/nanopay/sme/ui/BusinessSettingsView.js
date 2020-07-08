@@ -25,7 +25,7 @@ foam.CLASS({
   imports: [
     'accountingIntegrationUtil',
     'auth',
-    'notify'
+    'ctrl'
   ],
 
   requires: [
@@ -87,6 +87,7 @@ foam.CLASS({
   methods: [
     async function initE() {
       this.SUPER();
+
       try {
         const [hasUMPermission, [hasIntegrationPermission], hasPrivacyPermission] = await Promise.all([
           this.auth.check(null, 'menu.read.sme.userManagement'),
@@ -139,7 +140,7 @@ foam.CLASS({
           .tag(tabs);
       } catch (err) {
         console.error(err);
-        this.notify(err.message || this.GENERIC_ERROR, '', this.LogLevel.ERROR, true);
+        this.ctrl.notify(err.message || this.GENERIC_ERROR, '', this.LogLevel.ERROR, true);
       }
     }
   ]

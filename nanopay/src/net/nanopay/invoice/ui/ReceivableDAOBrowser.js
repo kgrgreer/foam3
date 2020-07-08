@@ -44,7 +44,6 @@ foam.CLASS({
   imports: [
     'checkAndNotifyAbilityToReceive',
     'currencyDAO',
-    'notify',
     'stack',
     'subject',
     'accountingIntegrationUtil',
