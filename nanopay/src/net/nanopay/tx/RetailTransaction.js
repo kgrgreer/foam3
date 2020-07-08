@@ -35,6 +35,10 @@ foam.CLASS({
       name: 'tip',
       label: 'Tip',
       visibility: 'RO',
+      valueToString: async function(x, val, unitPropName) {
+        var formattedAmount = val / 100;
+        return '$' + x.addCommas(formattedAmount.toFixed(2));
+      },
       tableCellFormatter: function(tip, X) {
         var formattedAmount = tip/100;
         this
@@ -53,6 +57,10 @@ foam.CLASS({
         return amount + tip;
       },
       javaGetter: `return getAmount() + getTip();`,
+      valueToString: async function(x, val, unitPropName) {
+        var formattedAmount = val / 100;
+        return '$' + x.addCommas(formattedAmount.toFixed(2));
+      },
       tableCellFormatter: function(total, X) {
         var formattedAmount = total / 100;
         var refund =

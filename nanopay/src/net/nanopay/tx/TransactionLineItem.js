@@ -81,6 +81,10 @@ foam.CLASS({
     {
       name: 'amount',
       class: 'UnitValue',
+      valueToString: async function(x, val, unitPropName) {
+        var formattedAmount = val / 100;
+        return '$' + x.addCommas(formattedAmount.toFixed(2));
+      },
       tableCellFormatter: function(amount, X) {
         var formattedAmount = amount/100;
         this

@@ -59,9 +59,8 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'FObjectProperty',
-      of: 'foam.dao.DAO',
-      name: 'whitelistedEmailDAO_'
+      class: 'foam.dao.DAOProperty',
+      name: 'whitelistedEmailDAO'
     }
   ],
 
@@ -72,7 +71,7 @@ foam.CLASS({
         cls.extras.push(`
           public BusinessInvitationDAO(X x, DAO delegate) {
             super(x, delegate);
-            setWhitelistedEmailDAO_((DAO) x.get("whitelistedEmailDAO"));
+            setWhitelistedEmailDAO((DAO) x.get("whitelistedEmailDAO"));
           }    
         `
         );
@@ -174,7 +173,7 @@ foam.CLASS({
           // Add invited user to the email whitelist.
           EmailWhitelistEntry entry = new EmailWhitelistEntry();
           entry.setId(invite.getEmail());
-          getWhitelistedEmailDAO_().inX(getX()).put(entry);
+          getWhitelistedEmailDAO().inX(getX()).put(entry);
 
           sendInvitationEmail(x, business, invite);
         }

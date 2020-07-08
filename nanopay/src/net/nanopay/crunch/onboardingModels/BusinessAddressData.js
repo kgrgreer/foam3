@@ -41,7 +41,7 @@ foam.CLASS({
     {
       name: 'businessAddressSection',
       title: 'Enter the business address',
-      help: `Thanks! That’s all the personal info I’ll need for now. Now let’s get some more details on the company…`
+      help: `require business address`
     }
   ],
 

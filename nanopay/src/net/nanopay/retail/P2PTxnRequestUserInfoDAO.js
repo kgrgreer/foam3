@@ -46,7 +46,7 @@ foam.CLASS({
             setDelegate(delegate);
           }
         
-          private class DecoratedSink extends foam.dao.ProxySink {
+          protected class DecoratedSink extends foam.dao.ProxySink {
             public DecoratedSink(X x, Sink delegate) {
               super(x, delegate);
             }
@@ -91,6 +91,7 @@ foam.CLASS({
     },
     {
       name: 'setUsersInfo',
+      visibility: 'protected',
       type: 'P2PTxnRequest',
       args: [
         { type: 'Context', name: 'x' },

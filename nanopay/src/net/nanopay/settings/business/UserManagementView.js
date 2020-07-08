@@ -40,9 +40,7 @@ foam.CLASS({
     'notify',
     'subject',
     'agentJunctionDAO',
-    'businessInvitationDAO',
-    'notify',
-    'subject',
+    'businessInvitationDAO'
   ],
 
   exports: [

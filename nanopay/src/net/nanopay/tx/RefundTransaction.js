@@ -37,6 +37,10 @@ foam.CLASS({
         return amount;
       },
       javaGetter: `return getAmount();`,
+      valueToString: async function(x, val, unitPropName) {
+        var formattedAmount = val / 100;
+        return '$' + x.addCommas(formattedAmount.toFixed(2));
+      },
       tableCellFormatter: function(total, X) {
         var formattedAmount = total / 100;
         this

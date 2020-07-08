@@ -28,6 +28,8 @@ import foam.nanos.approval.ApprovalRequest;
 import foam.nanos.approval.ApprovalStatus;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.tx.ComplianceTransaction;
+import net.nanopay.tx.TransactionLineItem;
+import net.nanopay.tx.SourceLineItem;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
 import net.nanopay.tx.model.Transaction;
@@ -284,6 +286,11 @@ public class LiquidityService
         .setDestinationAccount(destination)
         .setSourceAccount(source)
         .build();
+    SourceLineItem sli = new SourceLineItem();
+    TransactionLineItem[] tlis = new TransactionLineItem[1];
+    sli.setNote("LiquidityService");
+    tlis[0] = sli;
+    transaction.addLineItems(tlis);
     try {
       Transaction tx = (Transaction) getLocalTransactionDAO().put_(x_, transaction);
       if ( tx instanceof ComplianceTransaction &&

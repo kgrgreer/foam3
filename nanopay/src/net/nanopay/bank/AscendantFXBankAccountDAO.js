@@ -39,7 +39,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'NOTIFICATION', message: 'Organization setup on AscendantFX system is required for User with id: ' }
+    { name: 'ORGANIZATION_SETUP_REQUIRED_ERROR_MSG', message: 'Organization setup on AscendantFX system is required for User with id: ' }
   ],
 
   axioms: [
@@ -88,7 +88,7 @@ foam.CLASS({
             ascendantFXUserDAO.put_(getX(), ascendantFXUser);
     
             //Create Ascendant Organization notification
-            String message = NOTIFICATION + accountOwner.getId() ;
+            String message = ORGANIZATION_SETUP_REQUIRED_ERROR_MSG + accountOwner.getId() ;
             Notification notification = new Notification.Builder(x)
               .setTemplate("NOC")
               .setBody(message)

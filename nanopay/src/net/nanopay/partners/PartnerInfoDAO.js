@@ -47,7 +47,7 @@ foam.CLASS({
           }  
           
           /** Used to apply the replacement logic to each item returned by a select */
-          private class DecoratedSink extends foam.dao.ProxySink {
+          protected class DecoratedSink extends foam.dao.ProxySink {
             private User user_;
             public DecoratedSink(X x, Sink delegate) {
               super(x, delegate);
@@ -95,6 +95,7 @@ foam.CLASS({
     },
     {
       name: 'setIdProperties',
+      visibility: 'protected',
       type: 'UserUserJunction',
       args: [
         { type: 'User', name: 'user' },

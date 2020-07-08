@@ -20,10 +20,6 @@ foam.CLASS({
   name: 'WizardView',
   extends: 'foam.u2.detail.WizardSectionsView',
 
-  requires: [
-    'foam.log.LogLevel'
-  ],
-
   imports: [
     'auth',
     'userDAO',
@@ -231,26 +227,26 @@ foam.CLASS({
             sendInvitation: true
           })).
           then(async () => {
-            await x.userDAO.find(x.user.id).then((o) => {
+            await x.userDAO.find(x.user.id).then(o => {
               x.user = o;
               x.user.onboarded = o.onboarded;
               x.user.countryOfBusinessRegistration = o.countryOfBusinessRegistration;
               x.user.businessRegistrationDate = o.businessRegistrationDate;
-              x.user.address = o.address
+              x.user.address = o.address;
             });
 
-            await x.userDAO.find(x.subject.realUser.id).then((agent) => {
+            await x.userDAO.find(x.subject.realUser.id).then(agent => {
               x.subject.realUser = agent;
             });
 
             this.auth.cache = {};
-            x.ctrl.notify(this.SUCCESS_SUBMIT_MESSAGE, '', this.LogLevel.INFO, true);
             x.pushMenu('sme.main.dashboard');
+            x.ctrl.notify(this.SUCCESS_SUBMIT_MESSAGE, '', foam.log.LogLevel.INFO, true);
           }, function(err) {
             console.log('Error during submitting the onboarding info: ' + err);
             x.ctrl.notify('Business profile submission failed.  ' +
                           ( ( err && err.message ) ? err.message : 'Please try again later.' ),
-                          '', this.LogLevel.ERROR, true);
+                          '', foam.log.LogLevel.ERROR, true);
           });
       }
     },
@@ -264,10 +260,10 @@ foam.CLASS({
           sendInvitation: true
           })).
           then(function() {
-            x.ctrl.notify('Progress saved.', '', this.LogLevel.INFO, true);
             x.pushMenu('sme.main.dashboard');
+            x.ctrl.notify('Progress saved.', '', foam.log.LogLevel.INFO, true);
           }, function() {
-            x.ctrl.notify('Error saving progress, please try again shortly.', '', this.LogLevel.ERROR, true);
+            x.ctrl.notify('Error saving progress, please try again shortly.', '', foam.log.LogLevel.ERROR, true);
           });
       }
     }

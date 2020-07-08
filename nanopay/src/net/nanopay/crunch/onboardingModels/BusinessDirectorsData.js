@@ -23,7 +23,8 @@ foam.CLASS({
     sections: [
       {
         name: 'directorsInfoSection',
-        title: 'Enter the directors information'
+        title: 'Enter the directors information',
+        help: 'require business director information'
       }
     ],
   

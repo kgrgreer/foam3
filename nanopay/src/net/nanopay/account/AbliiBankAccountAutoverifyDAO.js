@@ -24,7 +24,6 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
-    'foam.dao.ProxyDAO',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
@@ -35,7 +34,7 @@ foam.CLASS({
   constants: [
     {
       name: 'FLINKS_INSTITUTION_ID',
-      type: 'Integer',
+      type: 'int',
       value: 16 // this should change later once we add more bank verification clients to ablii
     }
   ],

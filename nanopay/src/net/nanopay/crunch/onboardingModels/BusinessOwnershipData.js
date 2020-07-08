@@ -42,8 +42,8 @@ foam.CLASS({
     {
       name: 'ownershipAmountSection',
       title: 'How many individuals directly or indirectly own 25% or more of the business?',
-      help: `Great, almost done! In accordance with banking laws, we need to document
-          the percentage of ownership of any individual with a 25% + stake in the company.`,
+      help: `In accordance with banking laws, we need to document the percentage of ownership of any individual with a 25% + stake in the company.
+      Please have owner address and birthday ready.`,
     },
     {
       class: 'net.nanopay.crunch.onboardingModels.OwnerSection',

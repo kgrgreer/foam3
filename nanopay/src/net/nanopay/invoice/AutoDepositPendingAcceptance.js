@@ -73,6 +73,7 @@ foam.CLASS({
     },
     {
       name: 'doTransactionToBankAccount',
+      visibility: 'protected',
       type: 'Void',
       args: [
         { type: 'Context', name: 'x' },
@@ -99,6 +100,7 @@ foam.CLASS({
     },
     {
       name: 'checkIfUserHasVerifiedBankAccount',
+      visibility: 'protected',
       type: 'Boolean',
       args: [
         { type: 'Context', name: 'x' },

@@ -53,28 +53,23 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'FObjectProperty',
-      of: 'foam.dao.DAO',
+      class: 'foam.dao.DAOProperty',
       name: 'localServiceProviderDAO'
     },
     {
-      class: 'FObjectProperty',
-      of: 'foam.dao.DAO',
+      class: 'foam.dao.DAOProperty',
       name: 'userDAO'
     },
     {
-      class: 'FObjectProperty',
-      of: 'foam.dao.DAO',
+      class: 'foam.dao.DAOProperty',
       name: 'transactionDAO'
     },
     {
-      class: 'FObjectProperty',
-      of: 'foam.dao.DAO',
+      class: 'foam.dao.DAOProperty',
       name: 'accountDAO'
     },
     {
-      class: 'FObjectProperty',
-      of: 'foam.dao.DAO',
+      class: 'foam.dao.DAOProperty',
       name: 'liquiditySettingsDAO'
     },
     {

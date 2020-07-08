@@ -74,8 +74,7 @@ foam.CLASS({
       `
     },
     {
-      class: 'FObjectProperty',
-      of: 'foam.dao.DAO',
+      class: 'foam.dao.DAOProperty',
       name: 'userDAO',
       documentation: 'A DAO to store user instances'
     }
@@ -120,7 +119,7 @@ foam.CLASS({
           }
 
           /** Used to apply the replacement logic to each item returned by a select */
-          private class DecoratedSink extends foam.dao.ProxySink {
+          protected class DecoratedSink extends foam.dao.ProxySink {
             public DecoratedSink(X x, Sink delegate) {
               super(x, delegate);
             }
@@ -165,6 +164,7 @@ foam.CLASS({
     },
     {
       name: 'fillPublicInfo',
+      visibility: 'protected',
       type: 'FObject',
       args: [
         { type: 'FObject', name: 'obj' }

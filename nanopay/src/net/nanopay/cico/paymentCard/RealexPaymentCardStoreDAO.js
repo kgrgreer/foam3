@@ -155,6 +155,7 @@ foam.CLASS({
     },
     {
       name: 'call',
+      visibility: 'protected',
       type: 'PaymentResponse',
       args: [
         { type: 'PaymentRequest', name: 'request' }
