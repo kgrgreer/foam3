@@ -146,7 +146,7 @@ foam.CLASS({
     {
       name: 'data',
       factory: function() {
-        return this.groupDAO;
+        return this.groupDAO.where(this.EQ(this.Group.TEMPLATE, true));
       }
     },
     {
@@ -175,7 +175,7 @@ foam.CLASS({
       this.SUPER();
 
       // get filtered groupDAO for sme
-      await this.groupDAO.where(this.EQ(this.Group.FLAG, true)).select().then((ac) => {
+      await this.data.select().then((ac) => {
         for ( var k = 0; k < ac.array.length; k++ ) {
           this.accessControlValue[k] = [ac.array[k].label.toLowerCase(), ac.array[k].label, ac.array[k].description];
         }
