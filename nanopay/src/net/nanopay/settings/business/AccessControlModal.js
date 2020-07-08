@@ -12,6 +12,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.nanos.auth.Group',
     'foam.nanos.auth.UserUserJunction',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.auth.AgentJunctionStatus',
@@ -23,6 +24,7 @@ foam.CLASS({
     'agentJunctionDAO',
     'businessInvitationDAO',
     'closeDialog',
+    'groupDAO',
     'notify',
     'subject',
     'user',
@@ -122,27 +124,6 @@ foam.CLASS({
       name: 'SUB_TITLE_2', message: ' will have in nanopay Corporation.'
     },
     {
-      name: 'ADMIN', message: 'Admin'
-    },
-    {
-      name: 'ADMIN_DESCRIPTION',
-      message: 'Admin is a single user who holds the highest level of permissions. Only this person can manage all users and deactivate company account or transfer Admin access to someone else.'
-    },
-    {
-      name: 'APPROVER', message: 'Approver'
-    },
-    {
-      name: 'APPROVER_DESCRIPTION',
-      message: 'There can be multiple Approvers, Approvers have the same level of permissions as the Admin, except they can\'t manage the Admin access or deactivate company account.'
-    },
-    {
-      name: 'EMPLOYEE', message: 'Employee'
-    },
-    {
-      name: 'EMPLOYEE_DESCRIPTION',
-      message: 'Employees are the people in your company. They can create invoices and initiate payments, but they require the approvals from the Approvers or Admin.'
-    },
-    {
       name: 'ACCESS_CONTROL_CHANGE_SUCCESS', message: 'Access control successfully changed'
     },
     {
@@ -163,13 +144,14 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'data',
+      factory: function() {
+        return this.groupDAO;
+      }
+    },
+    {
       name: 'accessControlValue',
-      factory: function() { return [
-               ['admin', this.ADMIN, this.ADMIN_DESCRIPTION],
-               ['approver', this.APPROVER, this.APPROVER_DESCRIPTION],
-               ['employee', this.EMPLOYEE, this.EMPLOYEE_DESCRIPTION],
-             ];
-       }
+      factory: function() { return []; }
     },
     {
       class: 'EMail',
@@ -188,9 +170,16 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    async function initE() {
       var self = this;
       this.SUPER();
+
+      // get filtered groupDAO for sme
+      await this.groupDAO.where(this.EQ(this.Group.FLAG, true)).select().then((ac) => {
+        for ( var k = 0; k < ac.array.length; k++ ) {
+          this.accessControlValue[k] = [ac.array[k].label.toLowerCase(), ac.array[k].label, ac.array[k].description];
+        }
+      });
 
       // set default accessControl
       if ( self.junction && self.junction.accessControl )
