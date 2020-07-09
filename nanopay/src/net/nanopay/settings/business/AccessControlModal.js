@@ -151,10 +151,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'accessControlValue',
-      factory: function() { return []; }
-    },
-    {
       class: 'EMail',
       name: 'email',
       documentation: `The email address of the person to invite.`
@@ -175,12 +171,7 @@ foam.CLASS({
       var self = this;
       this.SUPER();
 
-      // get filtered groupDAO for sme
-      await this.data.select().then((ac) => {
-        for ( var k = 0; k < ac.array.length; k++ ) {
-          this.accessControlValue[k] = [ac.array[k].label.toLowerCase(), ac.array[k].label, ac.array[k].description];
-        }
-      });
+      var accessControlValue = await this.data.select();
 
       // set default accessControl
       if ( self.junction && self.junction.accessControl )
@@ -198,59 +189,59 @@ foam.CLASS({
              .add(this.SUB_TITLE_1).add(this.isAddUser ? this.THE_USER : this.subject.realUser.toSummary()).add(this.SUB_TITLE_2)
           .end()
           .start('table')
-            .add(this.accessControlValue.map(function(ac) {
-              return self.E('div')
-                .start('tr')
-                  .start('td')
-                    .start('input')
-                      .attrs({
-                         type: 'radio',
-                         name: 'accessControl',
-                         value: ac[0],
-                         checked: self.slot(function (data, accessControl) { return data === ac[0] || accessControl === ac[0]; })
-                       })
-                    .end()
+            .forEach(accessControlValue.array, function(ac) {
+              this.start('tr')
+                .start('td')
+                  .start('input')
+                    .attrs({
+                       type: 'radio',
+                       name: 'accessControl',
+                       value: ac.displayName.toLowerCase(),
+                       checked: self.slot(function (data, accessControl) { return data === ac.displayName.toLowerCase() || accessControl === ac.displayName.toLowerCase(); })
+                     })
                   .end()
-                  .start('td')
-                    .start('div').addClass('labelStyle')
-                      .start('label')
-                        .start('span')
-                          .add(ac[1])
-                        .end()
+                .end()
+                .start('td')
+                  .start('div').addClass('labelStyle')
+                    .start('label')
+                      .start('span')
+                        .add(ac.displayName)
                       .end()
                     .end()
-                   .start('div').addClass('labelDescriptionStyle')
-                     .start('span')
-                       .add(ac[2])
-                     .end()
-                   .end()
                   .end()
-                   .on('click', function(evt) {
-                      self.data = ac[0];
-                      self.accessControl = ac[0];
-                    })
+                 .start('div').addClass('labelDescriptionStyle')
+                   .start('span')
+                     .add(ac.description)
+                   .end()
+                 .end()
                 .end()
-              }))
-          .end()
-          .startContext({ data: this })
-            .start().addClass('emailStyle').show(this.isAddUser$)
-              .start().addClass('input-wrapper').add(this.EMAIL_LABEL).end()
-              .tag(this.EMAIL)
-            .end()
-          .endContext()
-          .startContext({ data: this })
-            .start().addClass('button-container')
-              .start()
-                .tag(this.CANCEL, { size: 'LARGE', buttonStyle: 'TERTIARY' })
+                 .on('click', function(evt) {
+                    self.data = ac.displayName.toLowerCase();
+                    self.accessControl = ac.displayName.toLowerCase();
+                  })
               .end()
-              .start().addClass(this.myClass('button-sub-container'))
-                .tag(this.SAVE, {
-                   size: 'LARGE',
-                   label$: this.isAddUser$.map((flag) => flag ? 'Add User' : 'Save')
-                 })
+
               .end()
-            .end()
-          .endContext()
+            })
+            self.startContext({ data: this })
+              .start().addClass('emailStyle').show(this.isAddUser$)
+                .start().addClass('input-wrapper').add(this.EMAIL_LABEL).end()
+                .tag(this.EMAIL)
+              .end()
+            .endContext()
+            self.startContext({ data: this })
+              .start().addClass('button-container')
+                .start()
+                  .tag(this.CANCEL, { size: 'LARGE', buttonStyle: 'TERTIARY' })
+                .end()
+                .start().addClass(this.myClass('button-sub-container'))
+                  .tag(this.SAVE, {
+                     size: 'LARGE',
+                     label$: this.isAddUser$.map((flag) => flag ? 'Add User' : 'Save')
+                   })
+                .end()
+              .end()
+            .endContext()
         .end();
     }
   ],
