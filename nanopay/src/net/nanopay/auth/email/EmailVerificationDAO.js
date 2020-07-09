@@ -41,12 +41,12 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.email.EmailTokenService',
-      name: 'emailToken_'
+      name: 'emailToken'
     },
     {
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.email.EmailTokenService',
-      name: 'inviteToken_'
+      name: 'inviteToken'
     }
   ],
 
@@ -58,8 +58,8 @@ foam.CLASS({
           public EmailVerificationDAO(X x, DAO delegate) {
             setX(x);
             setDelegate(delegate);
-            setEmailToken_((EmailTokenService) x.get("emailToken"));
-            setInviteToken_((EmailTokenService) x.get("inviteToken"));
+            setEmailToken((EmailTokenService) x.get("emailToken"));
+            setInviteToken((EmailTokenService) x.get("inviteToken"));
           }   
         `
         );
@@ -83,7 +83,7 @@ foam.CLASS({
         // Send email verification if new registered user's email enabled
         if ( result != null && newUser && ! result.getEmailVerified() && registrationEmailEnabled &&
             ! result.getInvited() ) {
-            getEmailToken_().generateToken(x, result);
+            getEmailToken().generateToken(x, result);
         }
     
         return result;

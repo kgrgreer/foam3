@@ -51,23 +51,17 @@ foam.CLASS({
     }
   ],
 
-  properties: [
-    {
-      class: 'FObjectProperty',
-      of: 'foam.nanos.auth.AuthService',
-      name: 'auth_'
-    }
-  ],
-
   axioms: [
     {
       name: 'javaExtras',
       buildJavaClass: function(cls) {
         cls.extras.push(`
+          private AuthService auth_;
+
           public AuthenticatedInvitationDAO(X x, DAO delegate) {
             setX(x);
             setDelegate(delegate);
-            setAuth_((AuthService) x.get("auth"));
+            auth_ = (AuthService) x.get("auth");
           }  
         `
         );
@@ -89,7 +83,7 @@ foam.CLASS({
         Invitation existingInvite = (Invitation) getDelegate().find_(x, invite);
 
         if ( existingInvite != null ) {
-          if ( getAuth_().check(x, "*") ) return super.put_(x, obj);
+          if ( auth_.check(x, "*") ) return super.put_(x, obj);
 
           this.checkPermissions(x, existingInvite);
 
@@ -166,7 +160,7 @@ foam.CLASS({
       ],
       javaCode: `
         User user = this.getUser(x);
-        boolean hasPermission = getAuth_().check(x, "*") || this.isOwner(user, invite);
+        boolean hasPermission = auth_.check(x, "*") || this.isOwner(user, invite);
     
         if ( ! hasPermission ) {
           throw new AuthorizationException();
@@ -180,7 +174,7 @@ foam.CLASS({
         { type: 'Context', name: 'x' }
       ],
       javaCode: `
-        if ( getAuth_().check(x, "*") ) return getDelegate();
+        if ( auth_.check(x, "*") ) return getDelegate();
         User user = this.getUser(x);
         long id = user.getId();
         return getDelegate().where(OR(

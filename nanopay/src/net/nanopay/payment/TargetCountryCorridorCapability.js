@@ -17,7 +17,7 @@
 
 foam.CLASS({
     package: 'net.nanopay.payment',
-    name: 'DestinationCountryCorridorCapability',
+    name: 'TargetCountryCorridorCapability',
     extends: 'foam.nanos.crunch.Capability',
   
     properties: [

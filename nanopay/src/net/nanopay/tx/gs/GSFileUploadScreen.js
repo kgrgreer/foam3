@@ -24,7 +24,7 @@ foam.CLASS({
 
   requires: [
     'foam.dao.AbstractDAO',
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'net.nanopay.script.CsvUploadScript',
     'net.nanopay.sme.ui.fileDropZone.FileDropZone',
     'net.nanopay.tx.gs.ProgressBarData',
@@ -35,6 +35,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'notify',
     'window',
     'csvUploadScriptDAO',
     'ProgressBarDAO'
@@ -278,8 +279,8 @@ foam.CLASS({
             // Force the dropdown of previously ingested files to update so that
             // it includes the one that just finished.
             this.ProgressBarDAO.cmd(this.AbstractDAO.RESET_CMD);
-            if ( pbd.statusPass === true ) this.add(this.NotificationMessage.create({ message: pbd.status }));
-            else this.add(this.NotificationMessage.create({ message: pbd.status, type:'error' }));
+            if ( pbd.statusPass === true ) this.notify(pbd.status, '', this.LogLevel.INFO, true);
+            else this.notify(pbd.status, '', this.LogLevel.ERROR, true);
             this.ingestionInProgress_ = false;
             this.pbdBeingReviewedId_ = this.pbdInProgressId_;
             this.pbdInProgress_ = null;

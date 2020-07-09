@@ -137,7 +137,8 @@ foam.CLASS({
     },
     {
       name: 'afexBeneficiaryExists',
-      type: 'Boolean',
+      visibility: 'protected',
+      type: 'boolean',
       args: [
         { type: 'Context', name: 'x' },
         { type: 'Long', name: 'contactId' },
@@ -157,7 +158,8 @@ foam.CLASS({
     },
     {
       name: 'createAFEXBeneficiary',
-      type: 'Void',
+      visibility: 'protected',
+      type: 'void',
       args: [
         { type: 'Context', name: 'x' },
         { type: 'Long', name: 'beneficiaryId' },

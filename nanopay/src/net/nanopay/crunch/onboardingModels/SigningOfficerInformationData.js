@@ -19,7 +19,7 @@ foam.CLASS({
   package: 'net.nanopay.crunch.onboardingModels',
   name: 'SigningOfficerInformationData',
 
-  implements: [ 
+  implements: [
     'foam.core.Validatable'
   ],
 

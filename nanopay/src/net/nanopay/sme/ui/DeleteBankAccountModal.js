@@ -23,6 +23,7 @@ foam.CLASS({
   documentation: 'Export Modal',
 
   requires: [
+    'foam.log.LogLevel',
     'net.nanopay.ui.modal.ModalHeader'
   ],
 
@@ -175,11 +176,11 @@ foam.CLASS({
         X.accountDAO
           .remove(this.account)
           .then(() => {
-            this.notify(this.SUCCESS_MESSAGE);
+            this.notify(this.SUCCESS_MESSAGE, '', this.LogLevel.INFO, true);
             this.closeDialog();
           })
           .catch((err) => {
-            this.notify(err.message || this.DEFAULT_ERROR_MESSAGE, 'error');
+            this.notify(err.message || this.DEFAULT_ERROR_MESSAGE, '', this.LogLevel.ERROR, true);
           });
       }
     }

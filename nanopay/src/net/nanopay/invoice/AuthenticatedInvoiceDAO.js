@@ -218,6 +218,7 @@ foam.CLASS({
     },
     {
       name: 'getUser',
+      visibility: 'protected',
       type: 'User',
       args: [
         { type: 'Context', name: 'x' }
@@ -232,6 +233,7 @@ foam.CLASS({
     },
     {
       name: 'isRelated',
+      visibility: 'protected',
       type: 'Boolean',
       args: [
         { type: 'Context', name: 'x' },
@@ -257,6 +259,7 @@ foam.CLASS({
     },
     {
       name: 'getContactsWithEmail',
+      visibility: 'protected',
       javaType: 'List<Contact>',
       args: [
         { type: 'Context', name: 'x' },

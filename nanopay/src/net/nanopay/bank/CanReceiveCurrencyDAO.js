@@ -48,13 +48,11 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'FObjectProperty',
-      of: 'foam.dao.DAO',
+      class: 'foam.dao.DAOProperty',
       name: 'bareUserDAO'
     },
     {
-      class: 'FObjectProperty',
-      of: 'foam.dao.DAO',
+      class: 'foam.dao.DAOProperty',
       name: 'accountDAO'
     }
   ],

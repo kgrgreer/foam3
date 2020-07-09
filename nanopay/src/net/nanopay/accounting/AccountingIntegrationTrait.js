@@ -22,7 +22,7 @@ foam.CLASS({
   documentation: 'Manages the buttons for Accounting Integrations',
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'net.nanopay.accounting.IntegrationCode',
     'net.nanopay.accounting.AccountingErrorCodes'
   ],
@@ -31,6 +31,7 @@ foam.CLASS({
     'contactDAO',
     'ctrl',
     'invoiceDAO',
+    'notify',
     'quickbooksService',
     'userDAO',
     'xeroService'
@@ -94,10 +95,7 @@ foam.CLASS({
           let result = await service.isSignedIn(null, newUser);
           this.isSignedIn = result.result;
         } catch (error) {
-          this.ctrl.add(this.NotificationMessage.create({
-            message: err.message,
-            type: 'error'
-          }));
+          this.notify(err.message, '', this.LogLevel.ERROR, true);
         }
       } else {
         this.isSignedIn = false;

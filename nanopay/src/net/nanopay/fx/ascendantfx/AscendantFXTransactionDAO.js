@@ -87,6 +87,7 @@ foam.CLASS({
     },
     {
       name: 'generateCompletionDate',
+      visibility: 'protected',
       type: 'Date',
       javaCode: `
         List<Integer> cadHolidays = CsvUtil.cadHolidays; // REVIEW: When BankHolidays is tested

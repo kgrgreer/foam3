@@ -26,15 +26,12 @@ foam.CLASS({
   sections: [
     {
       name: 'signingOfficerQuestionSection',
-      title: 'Are you considered a signing officer at the company?',
-      help: 'Alright, let’s do this! First off, I’m going to need to know if you are a signing officer at the company…'
+      title: 'Are you considered a signing officer at the company?'
     },
     {
       name: 'signingOfficerEmailSection',
       title: 'Enter the signing officer\'s email',
-      help: `For security, we require the approval of a signing officer before you can continue.
-          I can email the signing officer directly for the approval.`,
-      isAvailable: function ( isSigningOfficer ) { return ! isSigningOfficer }
+      isAvailable: function( isSigningOfficer ) { return ! isSigningOfficer }
     }
   ],
 

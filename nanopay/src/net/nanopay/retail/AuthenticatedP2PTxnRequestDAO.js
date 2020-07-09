@@ -126,7 +126,8 @@ foam.CLASS({
     },
     {
       name: 'isUserAssociatedWithRequest',
-      type: 'Boolean',
+      visibility: 'protected',
+      type: 'boolean',
       args: [
         { type: 'User', name: 'user' },
         { type: 'P2PTxnRequest', name: 'request' }
@@ -145,6 +146,7 @@ foam.CLASS({
     },
     {
       name: 'checkIfUsersExist',
+      visibility: 'protected',
       type: 'Boolean',
       args: [
         { type: 'Context', name: 'x' },

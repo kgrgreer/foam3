@@ -47,7 +47,7 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'foam.nanos.logger.Logger',
-      name: 'logger_'
+      name: 'logger'
     }
   ],
 
@@ -59,7 +59,7 @@ foam.CLASS({
           public P2PTxnRequestNotificationDAO(X x, DAO delegate) {
             setX(x);
             setDelegate(delegate);
-            setLogger_((Logger) x.get("logger"));
+            setLogger((Logger) x.get("logger"));
           }    
         `
         );
@@ -82,7 +82,7 @@ foam.CLASS({
             Map data = createNotificationData(request);
             push.sendPush(user, MONEY_REQUEST_MSG, data);
           } else {
-            getLogger_().error(CAANOT_SEND_PUSH_ERROR_MSG);
+            getLogger().error(CAANOT_SEND_PUSH_ERROR_MSG);
           }
         }
 
@@ -91,6 +91,7 @@ foam.CLASS({
     },
     {
       name: 'createNotificationData',
+      visibility: 'protected',
       type: 'Map',
       args: [
         { type: 'P2PTxnRequest', name: 'request' }
@@ -106,6 +107,7 @@ foam.CLASS({
     },
     {
       name: 'isNewRequest',
+      visibility: 'protected',
       type: 'boolean',
       args: [
         { type: 'P2PTxnRequest', name: 'request' }

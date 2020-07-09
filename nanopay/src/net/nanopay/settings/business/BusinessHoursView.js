@@ -23,6 +23,7 @@ foam.CLASS({
   documentation: 'View displaying business hours',
 
   imports: [
+    'notify',
     'user',
     'userDAO'
   ],
@@ -34,10 +35,10 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.DayOfWeek',
     'foam.nanos.auth.Hours',
-    'foam.u2.dialog.NotificationMessage'
   ],
 
   css: `
@@ -502,7 +503,7 @@ foam.CLASS({
         var businessHoursArray = [];
 
         if( ! X.timeRegex() ) {
-          self.add(self.NotificationMessage.create({ message: 'Please input time in 24 hour format when using safari, eg. 01:00 PM -> 13:00', type: 'error' }));
+          X.notify('Please input time in 24 hour format when using safari, eg. 01:00 PM -> 13:00', '', self.LogLevel.ERROR, true);
           return;
         }
 
@@ -565,9 +566,9 @@ foam.CLASS({
 
         this.userDAO.put(this.user).then(function (response) {
           self.user.copyFrom(response);
-          self.add(self.NotificationMessage.create({ message: 'Business hours sucessfully saved.', type: '' }));
+          X.notify('Business hours successfully saved.', '', self.LogLevel.INFO, true);
         }).catch(function (error) {
-          self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+          X.notify(error.message, '', self.LogLevel.ERROR, true);
         });
       }
 

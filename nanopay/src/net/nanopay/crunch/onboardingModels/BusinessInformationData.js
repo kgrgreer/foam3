@@ -48,8 +48,7 @@ foam.CLASS({
   sections: [
     {
       name: 'businessDetailsSection',
-      title: 'Enter the business details',
-      help: `Thanks! That’s all the personal info I’ll need for now. Now let’s get some more details on the company…`
+      title: 'Enter the business details'
     }
   ],
 
@@ -58,7 +57,22 @@ foam.CLASS({
     { name: 'BUSINESS_TYPE_ERROR', message: 'Please select type of business.' },
     { name: 'NATURE_OF_BUSINESS_ERROR', message: 'Please select nature of business.' },
     { name: 'SOURCE_OF_FUNDS_ERROR', message: 'Please provide primary source of funds.' },
-    { name: 'OPERATING_NAME_ERROR', message: 'Please enter business name.' }
+    { name: 'OPERATING_NAME_ERROR', message: 'Please enter business name.' },
+    { name: 'YES', message: 'Yes' },
+    { name: 'NO', message: 'No' },
+    { name: 'OTHER_LABEL', message: 'Other' },
+    { name: 'BUSINESS_LABEL', message: 'Does your business operate under a different name?' },
+    { name: 'OPERATING_NAME_LABEL', message: 'Enter your operating name' },
+    { name: 'NATURE_LABEL', message: 'Nature of business' },
+    { name: 'PRIMARY_LABEL', message: 'Primary source of funds' },
+    { name: 'OPTION_ONE', message: 'Purchase of goods produced' },
+    { name: 'OPTION_TWO', message: 'Completion of service contracts' },
+    { name: 'OPTION_THREE', message: 'Investment Income' },
+    { name: 'OPTION_FOUR', message: 'Brokerage Fees' },
+    { name: 'OPTION_FIVE', message: 'Consulting Fees' },
+    { name: 'OPTION_SIX', message: 'Sale of investments' },
+    { name: 'OPTION_SEVEN', message: 'Inheritance' },
+    { name: 'OPTION_EIGHT', message: 'Grants, loans, and other sources of financing' }
   ],
 
   properties: [
@@ -68,7 +82,7 @@ foam.CLASS({
       view: function(_, X) {
         return {
             class: 'foam.u2.view.ChoiceView',
-            placeholder: 'Please select...', // this.PLACE_HOLDER, X.data.PLACE_HOLDER,
+            placeholder: X.data.PLACE_HOLDER,
             dao: X.businessTypeDAO,
             objToChoice: function(a) {
               return [a.id, a.name];
@@ -91,7 +105,7 @@ foam.CLASS({
       of: 'net.nanopay.model.BusinessSector',
       name: 'businessSectorId',
       documentation: 'Represents the specific economic grouping for the business.',
-      label: 'Nature of business',
+      label: this.NATURE_LABEL,
       view: { class: 'net.nanopay.business.NatureOfBusiness' },
       validationPredicates: [
         {
@@ -105,24 +119,24 @@ foam.CLASS({
     },
     net.nanopay.model.Business.SOURCE_OF_FUNDS.clone().copyFrom({
       section: 'businessDetailsSection',
-      label: 'Primary source of funds',
+      label: this.PRIMARY_LABEL,
       view: function(_, X) {
         return {
           class: 'foam.u2.view.ChoiceWithOtherView',
-          otherKey: 'Other',
+          otherKey: this.OTHER_LABEL,
           choiceView: {
             class: 'foam.u2.view.ChoiceView',
-            placeholder: 'Please select...', // this.PLACE_HOLDER, X.data.PLACE_HOLDER,
+            placeholder: X.data.PLACE_HOLDER,
             choices: [
-              'Purchase of goods produced',
-              'Completion of service contracts',
-              'Investment Income',
-              'Brokerage Fees',
-              'Consulting Fees',
-              'Sale of investments',
-              'Inheritance',
-              'Grants, loans, and other sources of financing',
-              'Other'
+              X.data.OPTION_ONE,
+              X.data.OPTION_TWO,
+              X.data.OPTION_THREE,
+              X.data.OPTION_FOUR,
+              X.data.OPTION_FIVE,
+              X.data.OPTION_SIX,
+              X.data.OPTION_SEVEN,
+              X.data.OPTION_EIGHT,
+              X.data.OTHER_LABEL
             ]
           }
         };
@@ -144,21 +158,23 @@ foam.CLASS({
       section: 'businessDetailsSection',
       class: 'Boolean',
       name: 'operatingUnderDifferentName',
-      label: 'Does your business operate under a different name?',
-      view: {
-        class: 'foam.u2.view.RadioView',
-        choices: [
-          [true, 'Yes'],
-          [false, 'No']
-        ],
-        isHorizontal: true
+      label: this.BUSINESS_LABEL,
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RadioView',
+          choices: [
+            [true, X.data.YES],
+            [false, X.data.NO]
+          ],
+          isHorizontal: true
+        };
       }
     },
     net.nanopay.model.Business.OPERATING_BUSINESS_NAME.clone().copyFrom({
       section: 'businessDetailsSection',
       view: {
         class: 'foam.u2.TextField',
-        placeholder: 'Enter your operating name'
+        placeholder: this.OPERATING_NAME_LABEL
       },
       visibility: function(operatingUnderDifferentName) {
         return operatingUnderDifferentName ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
@@ -169,7 +185,7 @@ foam.CLASS({
           predicateFactory: function(e) {
             return e.OR(
               e.EQ(net.nanopay.crunch.onboardingModels.BusinessInformationData.OPERATING_UNDER_DIFFERENT_NAME, false),
-              e.NEQ(net.nanopay.crunch.onboardingModels.BusinessInformationData.OPERATING_BUSINESS_NAME, "")
+              e.NEQ(net.nanopay.crunch.onboardingModels.BusinessInformationData.OPERATING_BUSINESS_NAME, '')
             );
           },
           errorMessage: 'OPERATING_NAME_ERROR'

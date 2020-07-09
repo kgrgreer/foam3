@@ -240,6 +240,12 @@ foam.CLASS({
       createVisibility: 'HIDDEN', // No point in showing as read-only during create since it'll always be 0
       updateVisibility: 'RO',
       readVisibility: 'RO',
+      valueToString: async function(x, val) {
+        var unitProp = await x.currencyDAO.find(denomination);
+        if ( unitProp )
+          return unitProp.format(val);
+        return val;
+      },
       javaToCSV: `
         DAO currencyDAO = (DAO) x.get("currencyDAO");
         long balance  = (Long) ((Account)obj).findBalance(x);
@@ -274,6 +280,9 @@ foam.CLASS({
       storageTransient: true,
       visibility: 'RO',
       tableWidth: 175,
+      valueToString: async function(x, val, unitPropName) {
+        return await this.exchangeRateService.exchangeFormat(this.denomination, this.homeDenomination, this.balance);
+      },
       tableCellFormatter: function(value, obj, axiom) {
       var self = this;
         this.add(obj.slot(function(denomination, homeDenomination, balance) {

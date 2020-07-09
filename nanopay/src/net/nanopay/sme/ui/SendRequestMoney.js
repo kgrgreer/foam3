@@ -66,7 +66,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'foam.nanos.app.Mode',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
@@ -377,20 +377,20 @@ foam.CLASS({
 
     function invoiceDetailsValidation(invoice) {
       if ( invoice.amount > this.Invoice.ABLII_MAX_AMOUNT ) {
-        this.notify(this.INVOICE_AMOUNT_ERROR, 'error');
+        this.notify(this.INVOICE_AMOUNT_ERROR, '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! invoice.contactId ) {
-        this.notify(this.CONTACT_ERROR, 'error');
+        this.notify(this.CONTACT_ERROR, '', this.LogLevel.ERROR, true);
         return false;
       } else if ( ! invoice.amount || invoice.amount < 0 ) {
-        this.notify(this.AMOUNT_ERROR, 'error');
+        this.notify(this.AMOUNT_ERROR, '', this.LogLevel.ERROR, true);
         return false;
       } else if ( ! (invoice.dueDate instanceof Date && ! isNaN(invoice.dueDate.getTime())) ) {
-        this.notify(this.DUE_DATE_ERROR, 'error');
+        this.notify(this.DUE_DATE_ERROR, '', this.LogLevel.ERROR, true);
         return false;
       } else if ( ! (invoice.issueDate instanceof Date && ! isNaN(invoice.issueDate.getTime())) ) {
-        this.notify(this.ISSUE_DATE_ERROR, 'error');
+        this.notify(this.ISSUE_DATE_ERROR, '', this.LogLevel.ERROR, true);
         return false;
       }
       return true;
@@ -398,10 +398,10 @@ foam.CLASS({
 
     function paymentValidation() {
       if ( ! this.viewData.bankAccount || ! foam.util.equals(this.viewData.bankAccount.status, net.nanopay.bank.BankAccountStatus.VERIFIED) ) {
-        this.notify(this.BANK_ACCOUNT_REQUIRED, 'error');
+        this.notify(this.BANK_ACCOUNT_REQUIRED, '', this.LogLevel.ERROR, true);
         return false;
       } else if ( ! this.viewData.quote && this.isPayable ) {
-        this.notify(this.QUOTE_ERROR, 'error');
+        this.notify(this.QUOTE_ERROR, '', this.LogLevel.ERROR, true);
         return false;
       }
 
@@ -413,7 +413,7 @@ foam.CLASS({
           }
         }
       } catch (e) {
-        this.notify(e, 'error');
+        this.notify(e, '', this.LogLevel.ERROR, true);
         return false;
       }
 
@@ -488,7 +488,7 @@ foam.CLASS({
         }
       } catch (error) {
         console.error('@SendRequestMoney (Invoice put): ' + error.message);
-        this.notify(this.INVOICE_ERROR + this.type, 'error');
+        this.notify(this.INVOICE_ERROR + this.type, '', this.LogLevel.ERROR, true);
         this.isLoading = false;
         return;
       }
@@ -501,7 +501,7 @@ foam.CLASS({
         if ( transaction != null && this.getExpired(new Date(), transaction) ) {
           transaction = await this.getFXQuote();
           transaction.invoiceId = this.invoice.id;
-          this.notify(this.RATE_REFRESH + ( this.isApproving ? this.RATE_REFRESH_APPROVE : this.RATE_REFRESH_SUBMIT), 'warning');
+          this.notify(this.RATE_REFRESH + ( this.isApproving ? this.RATE_REFRESH_APPROVE : this.RATE_REFRESH_SUBMIT), '', this.LogLevel.WARN, true);
           this.isLoading = false;
           this.updateInvoiceDetails = transaction;
           this.forceUpdate = true;
@@ -509,15 +509,15 @@ foam.CLASS({
         }
 
         if ( this.viewData.isDomestic ) {
-          if ( ! transaction ) this.notify(this.QUOTE_ERROR, 'error');
+          if ( ! transaction ) this.notify(this.QUOTE_ERROR, '', this.LogLevel.ERROR, true);
           try {
             let tem = await this.transactionDAO.put(transaction);
           } catch (error) {
             console.error('@SendRequestMoney (Transaction put): ' + error.message);
             if ( error.message && error.message.includes('exceed') ) {
-              this.notify(error.message, 'error');
+              this.notify(error.message, '', this.LogLevel.ERROR, true);
             } else {
-              this.notify(this.TRANSACTION_ERROR + this.type, 'error');
+              this.notify(this.TRANSACTION_ERROR + this.type, '', this.LogLevel.ERROR, true);
             }
             this.isLoading = false;
             return;
@@ -530,11 +530,11 @@ foam.CLASS({
             console.error('@SendRequestMoney (Accept and put transaction quote): ' + error.message);
             if ( error.message && error.message.includes('[Transaction Validation error] ') ) {
               let temp = error.message.split('[Transaction Validation error] ');
-              this.notify(temp[1], 'error');
+              this.notify(temp[1], '', this.LogLevel.ERROR, true);
             } else if ( error.message && error.message == 'Exceed INR Transaction limit' ) {
-              this.notify(this.INR_RATE_LIMIT, 'error');
+              this.notify(this.INR_RATE_LIMIT, '', this.LogLevel.ERROR, true);
             } else {
-              this.notify(this.TRANSACTION_ERROR + this.type, 'error');
+              this.notify(this.TRANSACTION_ERROR + this.type, '', this.LogLevel.ERROR, true);
             }
             this.isLoading = false;
             return;
@@ -561,7 +561,7 @@ foam.CLASS({
       } catch ( error ) {
         this.isLoading = false;
         console.error('@SendRequestMoney (Invoice/Integration Sync): ' + error.message);
-        this.notify(this.TRANSACTION_ERROR + this.type, 'error');
+        this.notify(this.TRANSACTION_ERROR + this.type, '', this.LogLevel.ERROR, true);
         return;
       }
       this.isLoading = false;
@@ -572,13 +572,13 @@ foam.CLASS({
       if ( ! this.invoiceDetailsValidation(this.invoice) ) return;
       try {
         await this.invoiceDAO.put(invoice);
-        this.notify(this.DRAFT_SUCCESS);
+        this.notify(this.DRAFT_SUCCESS, '', this.LogLevel.INFO, true);
         this.pushMenu(this.isPayable
           ? 'sme.main.invoices.payables'
           : 'sme.main.invoices.receivables');
       } catch (error) {
         console.error('@SendRequestMoney (Invoice put after quote transaction put): ' + error.message);
-        this.notify(this.SAVE_DRAFT_ERROR + this.type, 'error');
+        this.notify(this.SAVE_DRAFT_ERROR + this.type, '', this.LogLevel.ERROR, true);
         return;
       }
     },
@@ -595,7 +595,7 @@ foam.CLASS({
       } catch (err) {
         if ( this.invoice.payerId && this.invoice.payeeId && err.id == 'foam.nanos.auth.AuthorizationException' ) return;
         console.error('@SendRequestMoney (Populate invoice fields): ' + err.message);
-        this.notify(this.CONTACT_NOT_FOUND, 'error');
+        this.notify(this.CONTACT_NOT_FOUND, '', this.LogLevel.ERROR, true);
       }
     }
   ],
@@ -637,11 +637,11 @@ foam.CLASS({
             if ( ! this.subject.realUser.twoFactorEnabled && this.isPayable && this.permitToPay ) {
               if ( this.appConfig.mode === this.Mode.PRODUCTION ||
                    this.appConfig.mode === this.Mode.DEMO ) {
-                this.notify(this.TWO_FACTOR_REQUIRED, 'error');
+                this.notify(this.TWO_FACTOR_REQUIRED, '', this.LogLevel.ERROR, true);
                 return;
               } else {
                 // report but don't fail/error - facilitates automated testing
-                this.notify(this.TWO_FACTOR_REQUIRED, 'warning');
+                this.notify(this.TWO_FACTOR_REQUIRED, '', this.LogLevel.WARN, true);
               }
             }
             this.populatePayerIdOrPayeeId().then(() => {
@@ -656,7 +656,7 @@ foam.CLASS({
             break;
           case this.REVIEW_VIEW_ID:
             if ( ! this.viewData.quote && this.isPayable && ! this.viewData.isDomestic ) {
-              this.notify(this.WAITING_FOR_RATE, 'warning');
+              this.notify(this.WAITING_FOR_RATE, '', this.LogLevel.WARN, true);
               return;
             }
             this.submit();

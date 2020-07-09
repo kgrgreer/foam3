@@ -24,7 +24,7 @@ foam.CLASS({
 
   requires: [
     'foam.core.Action',
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'foam.u2.dialog.Popup',
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
@@ -113,7 +113,7 @@ foam.CLASS({
               name: 'delete',
               code: function(X) {
                 if ( this.isDefault ) {
-                  self.notify(self.DELETE_DEFAULT, 'error');
+                  self.notify(self.DELETE_DEFAULT, '', self.LogLevel.ERROR, true);
                   return;
                 }
                 
@@ -129,15 +129,15 @@ foam.CLASS({
               name: 'Set as Default',
               code: function(X) {
                 if ( this.isDefault ) {
-                  self.notify(`${ this.name } ${ self.ALREADY_DEFAULT }`, 'warning');
+                  self.notify(`${ this.name } ${ self.ALREADY_DEFAULT }`, '', self.LogLevel.WARN, true);
                   return;
                 }
                 this.isDefault = true;
                 self.subject.user.accounts.put(this).then(() =>{
-                  self.notify(`${ this.name } ${ self.IS_DEFAULT }`);
+                  self.notify(`${ this.name } ${ self.IS_DEFAULT }`, '', self.LogLevel.INFO, true);
                 }).catch((err) => {
                   this.isDefault = false;
-                  self.notify(self.UNABLE_TO_DEFAULT, 'error');
+                  self.notify(self.UNABLE_TO_DEFAULT, '', self.LogLevel.ERROR, true);
                 });
               }
             })

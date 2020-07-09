@@ -28,13 +28,14 @@ foam.CLASS({
     'stack',
     'appConfig',
     'plaidCredential',
-    'ctrl'
+    'ctrl',
+    'notify'
   ],
 
   requires: [
     'net.nanopay.plaid.model.PlaidPublicToken',
     'net.nanopay.plaid.PlaidResponseItem',
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'foam.u2.dialog.Popup'
   ],
 
@@ -225,7 +226,7 @@ foam.CLASS({
         );
 
       if ( Object.keys(selectedAccount).length > 1 ) {
-        this.showNotification('Only 1 bank account can be added.', 'warning');
+        this.showNotification('Only 1 bank account can be added.', this.LogLevel.WARN);
         this.isLoading = false;
         return;
       }
@@ -275,7 +276,7 @@ foam.CLASS({
       } catch (e) {
         this.isUpdateMode = false;
         this.hint = 'Oops! Retry?';
-        this.showNotification(e.message, 'error');
+        this.showNotification(e.message, this.LogLevel.ERROR);
       }
 
       this.isLoading = false;
@@ -300,12 +301,12 @@ foam.CLASS({
         default:
           let msg =
             error.display_message !== "" ? error.display_message : error.error_code;
-          this.showNotification(msg, 'error')
+          this.showNotification(msg, this.LogLevel.ERROR)
       }
     },
 
     function showNotification(msg, type) {
-      this.ctrl.add(this.NotificationMessage.create({ message: msg, type: type}));
+      this.notify(msg, '', type, true);
     }
   ],
 

@@ -24,6 +24,7 @@ foam.CLASS({
 
   requires: [
     'foam.core.Action',
+    'foam.log.LogLevel',
     'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.invoice.model.Invoice',
@@ -214,7 +215,7 @@ foam.CLASS({
               },
               code: function() {
                 self.subject.user.expenses.remove(this).then(() => {
-                  self.notify(self.DELETE_DRAFT, 'success')
+                  self.notify(self.DELETE_DRAFT, '', self.LogLevel.INFO, true);
                 });
               }
             })

@@ -27,7 +27,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.ui.modal.ModalHeader'
   ],
@@ -35,6 +35,7 @@ foam.CLASS({
   imports: [
     'closeDialog',
     'editProfilePopUp',
+    'notify',
     'userDAO'
   ],
 
@@ -118,10 +119,10 @@ foam.CLASS({
           if ( ! result ) throw new Error('Unable to revoke profile.');
           X.closeDialog();
           self.data.copyFrom(result);
-          self.add(self.NotificationMessage.create({ message: 'Profile successfully revoked.' }));
+          X.notify('Profile successfully revoked.', '', self.LogLevel.INFO, true);
         })
         .catch(function (err) {
-          self.add(self.NotificationMessage.create({ message: 'Unable to revoke profile.', type: 'error' }));
+          X.notify('Unable to revoke profile.', '', self.LogLevel.ERROR, true);
         });
       }
     }

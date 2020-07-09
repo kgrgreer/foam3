@@ -23,8 +23,8 @@ foam.CLASS({
   documentation: 'Pop up that extends WizardView for adding a single bank account',
 
   requires: [
+    'foam.log.LogLevel',
     'foam.nanos.auth.User',
-    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.model.PadCapture',
@@ -35,6 +35,7 @@ foam.CLASS({
     'accountDAO as bankAccountDAO',
     'padCaptureDAO',
     'bankAccountVerification',
+    'notify',
     'selectedAccount',
     'stack',
     'user',
@@ -141,24 +142,24 @@ foam.CLASS({
         && accountInfo.institutionNumber && accountInfo.institutionNumber.trim() !== '');
 
       if ( ! validateRequiredFields ) {
-        this.notify('Please fill out all necessary fields before proceeding.', 'error');
+        this.notify('Please fill out all necessary fields before proceeding.', '', this.LogLevel.ERROR, true);
         return false;
       }
 
       if ( accountInfo.name.length > 70 ) {
-        this.notify('Account name cannot exceed 70 characters.', 'error');
+        this.notify('Account name cannot exceed 70 characters.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validateTransitNumber(accountInfo.transitNumber) ) {
-        this.notify('Invalid transit number.', 'error');
+        this.notify('Invalid transit number.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validateAccountNumber(accountInfo.accountNumber) ) {
-        this.notify('Invalid account number.', 'error');
+        this.notify('Invalid account number.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validateInstitutionNumber(accountInfo.institutionNumber) ) {
-        this.notify('Invalid institution number.', 'error');
+        this.notify('Invalid institution number.', '', this.LogLevel.ERROR, true);
         return false;
       }
       return true;
@@ -173,42 +174,36 @@ foam.CLASS({
       this.userAddress = user.address;
 
       if ( user.firstName.length > 70 ) {
-        this.notify('First name cannot exceed 70 characters.', 'error');
+        this.notify('First name cannot exceed 70 characters.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( user.lastName.length > 70 ) {
-        this.notify('Last name cannot exceed 70 characters.', 'error');
+        this.notify('Last name cannot exceed 70 characters.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validateStreetNumber(this.userAddress.streetNumber) && ! this.validateStreetNumber(bankAddress.streetNumber) ) {
-        this.notify('Invalid street number.', 'error');
+        this.notify('Invalid street number.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validateAddress(this.userAddress.streetName) && ! this.validateAddress(bankAddress.streetName) ) {
-        this.notify('Invalid street name.', 'error');
+        this.notify('Invalid street name.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validateCity(this.userAddress.city) && ! this.validateCity(bankAddress.city) ) {
-        this.notify('Invalid city name.', 'error');
+        this.notify('Invalid city name.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validatePostalCode(this.userAddress.postalCode, this.userAddress.countryId) ) {
-        this.notify('Invalid user postal code.', 'error');
+        this.notify('Invalid user postal code.', '', this.LogLevel.ERROR, true);
         return false;
       }
 
       if ( ! this.validatePostalCode(bankAddress.postalCode, bankAddress.countryId) ) {
-        this.notify('Invalid bank postal code.', 'error');
+        this.notify('Invalid bank postal code.', '', this.LogLevel.ERROR, true);
         return false;
       }
 
       return true;
-    },
-    function notify(message, type) {
-      this.add(this.NotificationMessage.create({
-        message,
-        type
-      }));
     },
     function goToBankPadAuthorization(accountInfo) {
       // REVIEW: AccountRefactor - what type of bank account to create? - Joel, perhaps need a factory.
@@ -222,7 +217,7 @@ foam.CLASS({
       });
 
       if ( newAccount.errors_ ) {
-        this.notify(newAccount.errors_[0][1], 'error');
+        this.notify(newAccount.errors_[0][1], '', this.LogLevel.ERROR, true);
         return;
       }
       this.viewData.bankAccounts.push(newAccount);
@@ -252,7 +247,7 @@ foam.CLASS({
         account.bankAddress = this.viewData.bankAddress;
         account = await this.bankAccountDAO.put(account);
       } catch (error) {
-        this.notify(error.message, 'error');
+        this.notify(error.message, '', this.LogLevel.ERROR, true);
         return;
       }
       this.viewData.bankAccounts[0] = account; // updated account
@@ -271,11 +266,11 @@ foam.CLASS({
         var isVerified = await this.bankAccountVerification
           .verify(null, account.id, this.viewData.verificationAmount);
       } catch (error) {
-        this.notify(error.message ? error.message : 'An error occurred while processing your request.', 'error');
+        this.notify(error.message ? error.message : 'An error occurred while processing your request.', '', this.LogLevel.ERROR, true);
         return;
       }
       if ( isVerified ) {
-        this.notify('Account successfully verified!', '');
+        this.notify('Account successfully verified!', '', this.LogLevel.INFO, true);
         this.subStack.push(
           this.views.find((t) => t.id === this.DONE_ADDING_BANK_ID).view
         );

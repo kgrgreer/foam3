@@ -29,6 +29,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.log.LogLevel',
     'foam.util.SafetyUtil',
     'java.util.regex.Pattern',
     'net.nanopay.model.Branch',
@@ -316,9 +317,9 @@ foam.CLASS({
         this.address = this.padCapture.address;
         await this.subject.user.accounts.put(this);
         if ( this.stack ) this.stack.back();
-        this.notify(this.ADD_SUCCESSFUL);
+        this.notify(this.ADD_SUCCESSFUL, '', this.LogLevel.INFO, true);
       } catch (error) {
-        this.notify(error.message, 'error');
+        this.notify(error.message, '', this.LogLevel.ERROR, true);
       }
     },
     {

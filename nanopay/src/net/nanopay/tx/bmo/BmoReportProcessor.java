@@ -19,6 +19,7 @@ import foam.dao.DAO;
 import foam.mlang.MLang;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
+import foam.nanos.notification.Notification;
 import foam.util.SafetyUtil;
 import net.nanopay.tx.TransactionEvent;
 import net.nanopay.tx.bmo.cico.BmoCITransaction;
@@ -234,6 +235,16 @@ public class BmoReportProcessor {
       referenceNumber = rejectedItem.get(0).substring(108, 127).trim();
 
       Transaction transaction = getTransactionBy(Integer.valueOf(fileCreationNumber), referenceNumber);
+      if ( TransactionStatus.COMPLETED == transaction.getStatus() ) {
+        String msg = "BMO received DECLINE on COMPLETED transaction: " + transaction.getId();
+        BmoFormatUtil.sendEmail(x, msg, null);
+        Notification notification = new Notification.Builder(x)
+          .setTemplate("NOC")
+          .setBody(msg)
+          .build();
+        ((DAO) x.get("localNotificationDAO")).put(notification);
+        return; // Don't decline already Completed transactions
+      }
 
       transaction.setStatus(TransactionStatus.DECLINED);
       transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Transaction rejected.").build());
@@ -310,23 +321,20 @@ public class BmoReportProcessor {
 
     Transaction transaction = (Transaction) this.transactionDAO.find(MLang.AND(
       MLang.EQ(BmoCITransaction.BMO_REFERENCE_NUMBER, referenceNumber),
-      MLang.EQ(BmoCITransaction.BMO_FILE_CREATION_NUMBER, Integer.valueOf(fileCreationNumber)),
-      MLang.EQ(Transaction.STATUS, TransactionStatus.SENT)
+      MLang.EQ(BmoCITransaction.BMO_FILE_CREATION_NUMBER, Integer.valueOf(fileCreationNumber))
     ));
 
     if ( transaction == null ) {
       transaction = (Transaction) this.transactionDAO.find(MLang.AND(
         MLang.EQ(BmoCOTransaction.BMO_REFERENCE_NUMBER, referenceNumber),
-        MLang.EQ(BmoCOTransaction.BMO_FILE_CREATION_NUMBER, Integer.valueOf(fileCreationNumber)),
-        MLang.EQ(Transaction.STATUS, TransactionStatus.SENT)
+        MLang.EQ(BmoCOTransaction.BMO_FILE_CREATION_NUMBER, Integer.valueOf(fileCreationNumber))
       ));
     }
 
     if ( transaction == null ) {
       transaction = (Transaction) this.transactionDAO.find(MLang.AND(
         MLang.EQ(BmoVerificationTransaction.BMO_REFERENCE_NUMBER, referenceNumber),
-        MLang.EQ(BmoVerificationTransaction.BMO_FILE_CREATION_NUMBER, Integer.valueOf(fileCreationNumber)),
-        MLang.EQ(Transaction.STATUS, TransactionStatus.SENT)
+        MLang.EQ(BmoVerificationTransaction.BMO_FILE_CREATION_NUMBER, Integer.valueOf(fileCreationNumber))
       ));
     }
 
@@ -354,7 +362,7 @@ public class BmoReportProcessor {
       MLang.EQ(BmoCOTransaction.BMO_FILE_CREATION_NUMBER, Integer.valueOf(fileCreationNumber)),
       MLang.EQ(Transaction.STATUS, TransactionStatus.SENT)
     )).select(transactions);
-    
+
     return transactions;
   }
 

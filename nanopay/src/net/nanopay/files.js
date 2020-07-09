@@ -23,6 +23,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/SecurityTransaction' },
   { name: 'net/nanopay/tx/SummaryTransaction' },
   { name: 'net/nanopay/tx/LiquidSummaryTransaction' },
+  { name: 'net/nanopay/tx/LiquidCashTransactionType' },
   { name: 'net/nanopay/tx/CompositeTransaction' },
   { name: 'net/nanopay/tx/BulkTransaction' },
   { name: 'net/nanopay/tx/CreateExpediteApprovalRequest' },
@@ -37,7 +38,7 @@ FOAM_FILES([
   { name: 'net/nanopay/payment/PaymentProviderCapability' },
   { name: 'net/nanopay/payment/PaymentProviderCorridorCapability' },
   { name: 'net/nanopay/payment/SourceCountryCorridorCapability' },
-  { name: 'net/nanopay/payment/DestinationCountryCorridorCapability' },
+  { name: 'net/nanopay/payment/TargetCountryCorridorCapability' },
   { name: 'net/nanopay/payment/InstitutionPaymentProvider' },
   { name: 'net/nanopay/payment/PADType' },
   { name: 'net/nanopay/payment/PADTypeLineItem' },
@@ -460,7 +461,9 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/Amount' },
   { name: 'net/nanopay/tx/ruler/ComplianceTransactionPlanner' },
   { name: 'net/nanopay/tx/ruler/AddGDTxnFeeLineItem' },
-  { name: 'net/nanopay/tx/OriginatingSource' },
+  { name: 'net/nanopay/tx/OriginatingSource' }, //can remove?
+  { name: 'net/nanopay/tx/AddLiquidTransactionAction' },
+  { name: 'net/nanopay/tx/LabelLiquidSummaryAction' },
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },

@@ -23,11 +23,12 @@ foam.CLASS({
   documentation: 'Form to input Questionnaire answers',
 
   imports: [
+    'notify',
     'questionnaireDAO'
   ],
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'net.nanopay.onboarding.model.Question'
   ],
 
@@ -119,7 +120,7 @@ foam.CLASS({
           });
       })
       .catch(function (err) {
-        self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+        self.notify(err.message, '', self.LogLevel.ERROR, true);
       })
     },
 

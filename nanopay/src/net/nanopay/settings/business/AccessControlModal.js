@@ -12,6 +12,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.UserUserJunction',
     'foam.u2.dialog.NotificationMessage',
@@ -71,7 +72,7 @@ foam.CLASS({
     table {
       margin: 24px 32px -10px 32px;
       border-collapse: separate;
-      border-spacing: 5px 18px;
+      border-spacing: 1px 13px;
     }
     tr:hover {
       outline: 2px solid #937dff;
@@ -268,7 +269,7 @@ foam.CLASS({
         var self = this;
 
         if ( ! this.accessControl ) {
-          this.notify(this.INVALID_ACCESS_CONTROL, 'error');
+          this.notify(this.INVALID_ACCESS_CONTROL, '', this.LogLevel.ERROR, true);
           return;
         }
 
@@ -276,7 +277,7 @@ foam.CLASS({
 
         if ( ! self.isAddUser ) {
           if ( newAccessControl === self.junction.accessControl ) {
-            this.notify(`${ this.ACCESS_CONTROL_CHANGE_ERROR }`, 'error');
+            this.notify(`${ this.ACCESS_CONTROL_CHANGE_ERROR }`, '', this.LogLevel.ERROR, true);
             return;
           }
 
@@ -304,10 +305,10 @@ foam.CLASS({
                     self.businessInvitationDAO
                       .put(invitation)
                       .then(function(resp) {
-                        self.notify(self.ACCESS_CONTROL_CHANGE_SUCCESS);
+                        self.notify(self.ACCESS_CONTROL_CHANGE_SUCCESS, '', self.LogLevel.INFO, true);
                         self.agentJunctionDAO.on.reset.pub();
                       }).catch((err) => {
-                        self.notify(`${ self.ACCESS_CONTROL_CHANGE_FAILURE } ${ err.message }`, 'error');
+                        self.notify(`${ self.ACCESS_CONTROL_CHANGE_FAILURE } ${ err.message }`, '', self.LogLevel.ERROR, true);
                       });
                   } else { // AgentJunctionStatus.ACTIVE
                     self.agentJunctionDAO
@@ -319,24 +320,24 @@ foam.CLASS({
                       aj.array[0].group = `${ self.user.businessPermissionId }.${ self.accessControl }`;
 
                       self.agentJunctionDAO.put(aj.array[0]).then(function() {
-                        self.notify(self.ACCESS_CONTROL_CHANGE_SUCCESS);
+                        self.notify(self.ACCESS_CONTROL_CHANGE_SUCCESS, '', self.LogLevel.INFO, true);
                       }).catch((err) => {
-                        self.notify(`${ self.ACCESS_CONTROL_CHANGE_FAILURE } ${ err.message }`, 'error');
+                        self.notify(`${ self.ACCESS_CONTROL_CHANGE_FAILURE } ${ err.message }`, '', self.LogLevel.ERROR, true);
                       })
                      }).catch((err) => {
-                        self.notify(`${ self.ACCESS_CONTROL_CHANGE_FAILURE } ${ err.message }`, 'error');
+                        self.notify(`${ self.ACCESS_CONTROL_CHANGE_FAILURE } ${ err.message }`, '', self.LogLevel.ERROR, true);
                      })
                   }
                  });
                 }).catch((err) => {
-                  self.notify(`${ self.ACCESS_CONTROL_CHANGE_FAILURE } ${ err.message }`, 'error');
+                  self.notify(`${ self.ACCESS_CONTROL_CHANGE_FAILURE } ${ err.message }`, '', self.LogLevel.ERROR, true);
                 });
 
                X.closeDialog();
             }
         } else { // isAddUser
           if ( ! this.validateEmail(self.email) ) {
-            self.notify(self.INVALID_EMAIL, 'error');
+            self.notify(self.INVALID_EMAIL, '', self.LogLevel.ERROR, true);
             return;
           }
 
@@ -347,7 +348,7 @@ foam.CLASS({
             var currentBusUserArray = (await self.dao.where(self.EQ(self.ClientUserJunction.STATUS, self.AgentJunctionStatus.ACTIVE)).select()).array;
             currentBusUserArray.forEach( (busUser) => {
               if ( foam.util.equals(busUser.email, self.email) ) {
-                this.notify(this.INVALID_EMAIL2, 'error');
+                this.notify(this.INVALID_EMAIL2, '', this.LogLevel.ERROR, true);
                 disallowUserAdditionReturnFromAddUser = true;
                 // only exits loop with return, due to nesting function
                 return;
@@ -365,12 +366,12 @@ foam.CLASS({
           this.businessInvitationDAO
             .put(invitation)
             .then((resp) => {
-              this.notify(this.INVITATION_SUCCESS);
+              this.notify(this.INVITATION_SUCCESS, '', this.LogLevel.INFO, true);
               this.agentJunctionDAO.on.reset.pub();
               this.closeDialog();
             })
             .catch((err) => {
-              this.notify(`${ this.INVITATION_ERROR } ${ err.message }`, 'error');
+              this.notify(`${ this.INVITATION_ERROR } ${ err.message }`, '', this.LogLevel.ERROR, true);
             });
         }
       }

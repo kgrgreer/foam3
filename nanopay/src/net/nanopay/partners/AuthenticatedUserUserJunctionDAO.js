@@ -47,23 +47,23 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'createPermission_'
+      name: 'createPermission'
     },
     {
       class: 'String',
-      name: 'updatePermission_'
+      name: 'updatePermission'
     },
     {
       class: 'String',
-      name: 'removePermission_'
+      name: 'removePermission'
     },
     {
       class: 'String',
-      name: 'readPermission_'
+      name: 'readPermission'
     },
     {
       class: 'String',
-      name: 'deletePermission_'
+      name: 'deletePermission'
     }
   ],
 
@@ -71,14 +71,14 @@ foam.CLASS({
     {
       name: 'javaExtras',
       buildJavaClass: function(cls) {
-        cls.extras.push(`
+        cls.extras.push(`        
           public AuthenticatedUserUserJunctionDAO(X x, String name, DAO delegate) {
             super(x, delegate);
-            setCreatePermission_(name + ".create.*");
-            setUpdatePermission_(name + ".update.*");
-            setRemovePermission_(name + ".remove.*");
-            setReadPermission_(name + ".read.*");
-            setDeletePermission_(name + ".delete.*");
+            setCreatePermission(name + ".create.*");
+            setUpdatePermission(name + ".update.*");
+            setRemovePermission(name + ".remove.*");
+            setReadPermission(name + ".read.*");
+            setDeletePermission(name + ".delete.*");
           }    
         `
         );
@@ -89,6 +89,7 @@ foam.CLASS({
   methods: [
     {
       name: 'checkOwnership',
+      visibility: 'protected',
       type: 'Void',
       args: [
         { type: 'Context', name: 'x' },
@@ -117,6 +118,7 @@ foam.CLASS({
     },
     {
       name: 'getFilteredDAO',
+      visibility: 'protected',
       type: 'DAO',
       args: [
         { type: 'Context', name: 'x' },
@@ -133,6 +135,7 @@ foam.CLASS({
     },
     {
       name: 'getUser',
+      visibility: 'protected',
       type: 'User',
       args: [
         { type: 'Context', name: 'x' }
@@ -150,9 +153,9 @@ foam.CLASS({
       javaCode: `
         Object id = obj.getProperty("id");
         if ( id == null || getDelegate().find_(x, id) == null ) {
-          checkOwnership(x, obj, getCreatePermission_());
+          checkOwnership(x, obj, getCreatePermission());
         } else {
-          checkOwnership(x, obj, getUpdatePermission_());
+          checkOwnership(x, obj, getUpdatePermission());
         }
         return super.put_(x, obj);
       `
@@ -162,7 +165,7 @@ foam.CLASS({
       javaCode: `
         FObject result = super.find_(x, id);
         if ( result != null ) {
-          checkOwnership(x, result, getReadPermission_());
+          checkOwnership(x, result, getReadPermission());
         }
         return super.find_(x, id);
       `
@@ -170,21 +173,21 @@ foam.CLASS({
     {
       name: 'select_',
       javaCode: `
-        DAO dao = getFilteredDAO(x, getReadPermission_());
+        DAO dao = getFilteredDAO(x, getReadPermission());
         return dao.select_(x, sink, skip, limit, order, predicate);
       `
     },
     {
       name: 'remove_',
       javaCode: `
-        checkOwnership(x, obj, getRemovePermission_());
+        checkOwnership(x, obj, getRemovePermission());
         return super.remove_(x, obj);
       `
     },
     {
       name: 'removeAll_',
       javaCode: `
-        DAO dao = getFilteredDAO(x, getDeletePermission_());
+        DAO dao = getFilteredDAO(x, getDeletePermission());
         dao.removeAll_(x, skip, limit, order, predicate);
       `
     }

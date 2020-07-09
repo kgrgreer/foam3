@@ -41,14 +41,12 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'FObjectProperty',
-      of: 'foam.dao.DAO',
-      name: 'groupDAO'
+      class: 'foam.dao.DAOProperty',
+      name: 'groupDAO',
     },
     {
-      class: 'FObjectProperty',
-      of: 'foam.dao.DAO',
-      name: 'agentJunctionDAO'
+      class: 'foam.dao.DAOProperty',
+      name: 'agentJunctionDAO',
     }
   ],
 

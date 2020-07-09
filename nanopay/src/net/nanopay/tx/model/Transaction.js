@@ -373,7 +373,12 @@ foam.CLASS({
           foam.u2.DisplayMode.RO :
           foam.u2.DisplayMode.HIDDEN;
       },
-      view: { class: 'foam.u2.view.ReferenceView', placeholder: 'select invoice' },
+      view: function(_, x) {
+        return foam.u2.Element.create()
+          .start()
+            .add(x.data.invoiceId)
+          .end();
+      },
       javaToCSVLabel: 'outputter.outputValue("Payment Id/Invoice Id");',
     },
     {
@@ -566,6 +571,12 @@ foam.CLASS({
           linkAmount$: X.data.destinationAmount$
         };
       },
+      valueToString: async function(x, val, unitPropName) {
+        var unitProp = await x.currencyDAO.find(unitPropName);
+        if ( unitProp )
+          return unitProp.format(val);
+        return val;
+      },
       tableCellFormatter: function(value, obj) {
         obj.currencyDAO.find(obj.sourceCurrency).then(function(c) {
           if ( c ) {
@@ -659,6 +670,10 @@ foam.CLASS({
       },
       documentation: 'Amount in Receiver Currency',
       section: 'amountSelection',
+      valueToString: async function(x, val, unitPropName) {
+        var unitProp = await x.currencyDAO.find(unitPropName);
+        return unitProp.format(val);
+      },
       tableCellFormatter: function(value, obj) {
         obj.currencyDAO.find(obj.destinationCurrency).then(function(c) {
           if ( c ) {

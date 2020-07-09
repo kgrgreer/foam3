@@ -23,8 +23,8 @@ foam.CLASS({
   documentation: 'Pop up that extends WizardView for e-transfer',
 
   requires: [
+    'foam.log.LogLevel',
     'foam.nanos.notification.email.EmailMessage',
-    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.ui.CountdownView',
     'net.nanopay.bank.BankAccount',
@@ -43,6 +43,7 @@ foam.CLASS({
     'email',
     'formatCurrency',
     'invoiceDAO',
+    'notify',
     'transactionDAO',
     'user',
     'accountDAO as bankAccountDAO',
@@ -367,19 +368,12 @@ foam.CLASS({
               )
             ).limit(1).select().then(function(account) {
               if ( account.array.length === 0 ) {
-                self.add(self.NotificationMessage.create({
-                  message: 'Bank Account should be verified for paying this '
-                    + 'invoice.',
-                  type: 'error'
-                }));
+                self.notify('Bank account should be verified for paying this invoice.', '', self.LogLevel.ERROR, true);
                 return;
               }
               self.subStack.push(self.views[self.subStack.pos + 1].view); // otherwise
             }).catch(function(err) {
-              self.add(self.NotificationMessage.create({
-                message: 'Could not continue. Please contact customer support.',
-                type: 'error'
-              }));
+              self.notify('Could not continue. Please contact customer support.', '', self.LogLevel.ERROR, true);
             });
           } else {
             // Check if user has enough digital cash to make the transfer and show
@@ -387,10 +381,7 @@ foam.CLASS({
             var fundsInsufficient =
               this.balance.balance < self.viewData.fromAmount;
             if ( ! self.viewData.accountCheck && fundsInsufficient ) {
-              this.add(this.NotificationMessage.create({
-                message: 'Unable to process payment: insufficient digital cash.',
-                type: 'error'
-              }));
+              this.notify('Unable to process payment: insufficient digital cash.', '', this.LogLevel.ERROR, true);
             }
             self.subStack.push(self.views[self.subStack.pos + 1].view); // otherwise
           }
@@ -439,10 +430,7 @@ foam.CLASS({
               self.nextLabel = 'Make New Transfer';
             })
             .catch(function(err) {
-              self.add(self.NotificationMessage.create({
-                type: 'error',
-                message: 'Unable to process payment: ' + err.message
-              }));
+              self.notify('Unable to process payment: ' + err.message, '', self.LogLevel.ERROR, true);
             });
         } else if ( this.position === 3 ) { // Successful
           // TODO: Reset params and restart flow

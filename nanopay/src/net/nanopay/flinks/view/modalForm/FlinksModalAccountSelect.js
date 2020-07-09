@@ -27,6 +27,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
@@ -255,13 +256,14 @@ foam.CLASS({
       name: 'next',
       label: 'Confirm',
       code: function(X) {
+        var self = this;
         var model = X.accountSelection;
         if ( model.isConnecting ) return;
         if ( model.selectedAccounts.length > 0 ) {
           model.crossCheckInstitutions();
           return;
         }
-        X.notify(model.INVALID_FORM, 'error');
+        X.notify(model.INVALID_FORM, '', self.LogLevel.ERROR, true);
       }
     }
   ]

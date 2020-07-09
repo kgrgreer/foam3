@@ -30,8 +30,8 @@ foam.CLASS({
   `,
 
   requires: [
+    'foam.log.LogLevel',
     'foam.u2.ControllerMode',
-    'foam.u2.dialog.NotificationMessage',
     'foam.u2.dialog.Popup',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
@@ -584,7 +584,7 @@ foam.CLASS({
       try {
         await this.fetchBankAccount();
       } catch (err) {
-        this.notify(this.ACCOUNT_FIND_ERROR, 'error');
+        this.notify(this.ACCOUNT_FIND_ERROR, '', this.LogLevel.ERROR, true);
         console.error('@InvoiceRateView.js (Fetch Bank Account)' + (err ? err.message : ''));
       }
 
@@ -592,7 +592,7 @@ foam.CLASS({
         this.viewData.isDomestic = ! this.isFx;
         var currencyCheck = `currency.read.${this.invoice.destinationCurrency}`;
         if ( ! await this.auth.check(null, currencyCheck) ) {
-          this.notify(this.CANNOT_PAY_TO_CURRENCY, 'error');
+          this.notify(this.CANNOT_PAY_TO_CURRENCY, '', this.LogLevel.ERROR, true);
           this.showExchangeRateSection = false;
           this.loadingSpinner.hide();
           return;
@@ -600,7 +600,7 @@ foam.CLASS({
         this.quote = await this.getQuote();
         this.viewData.quote = this.quote;
       } catch (error) {
-        this.notify(this.RATE_FETCH_FAILURE, 'error');
+        this.notify(this.RATE_FETCH_FAILURE, '', this.LogLevel.ERROR, true);
         console.error('@InvoiceRateView.js (Fetch Quote)' + (error ? error.message : ''));
       }
 
@@ -632,7 +632,7 @@ foam.CLASS({
         this.chosenBankAccount = await this.subject.user.accounts.find(accountId);
         this.viewData.bankAccount = this.chosenBankAccount;
       } catch (error) {
-        this.notify(this.ACCOUNT_FIND_ERROR, 'error');
+        this.notify(this.ACCOUNT_FIND_ERROR, '', this.LogLevel.ERROR, true);
         console.error('@InvoiceRateView.js (Fetch payer accounts)' + (error ? error.message : ''));
       }
 
@@ -656,7 +656,7 @@ foam.CLASS({
             .find(this.chosenBankAccount.denomination);
         }
       } catch (error) {
-        this.notify(this.CURRENCY_FIND_ERROR, 'error');
+        this.notify(this.CURRENCY_FIND_ERROR, '', this.LogLevel.ERROR, true);
         console.error('@InvoiceRateView.js (Set source currency)' + (error ? error.message : ''));
         this.loadingSpinner.hide();
         return;

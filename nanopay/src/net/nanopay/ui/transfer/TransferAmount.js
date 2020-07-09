@@ -25,12 +25,13 @@ foam.CLASS({
   imports: [
     'addCommas',
     'exchangeRate',
+    'notify',
     'type',
     'user'
   ],
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'net.nanopay.ui.LoadingSpinner'
   ],
 
@@ -395,9 +396,9 @@ foam.CLASS({
       this.countdownView.reset();
       this.viewData.rateLocked = false;
 
-      this.exchangeRate.getRate('CAD', 'INR', 100).then(function(response){
-        if(!response){
-          self.tag(self.NotificationMessage.create({ message: 'Unable to retrieve rate, Please try again later.', type: 'error'}));
+      this.exchangeRate.getRate('CAD', 'INR', 100).then(function(response) {
+        if ( ! response ) {
+          self.notify('Unable to retrieve rate, Please try again later.', '', self.LogLevel.WARN, true);
           return;
         }
         self.rate = response.toAmount;
@@ -405,7 +406,6 @@ foam.CLASS({
         self.startTimer();
         self.viewData.rateLocked = true;
       });
-
     },
 
     function startTimer() {

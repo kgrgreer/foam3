@@ -330,6 +330,12 @@ foam.CLASS({
       ],
       required: true,
       tableWidth: 120,
+      valueToString: async function(x, val, unitPropName) {
+        var unitProp = await x.currencyDAO.find(unitPropName);
+        if ( unitProp )
+          return unitProp.format(val);
+        return val;
+      },
       javaToCSV: `
         DAO currencyDAO = (DAO) x.get("currencyDAO");
         String dstCurrency = ((Invoice)obj).getDestinationCurrency();

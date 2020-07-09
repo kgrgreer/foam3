@@ -23,6 +23,7 @@ foam.CLASS({
   requires: [
     'foam.comics.v2.DAOControllerConfig',
     'foam.core.Action',
+    'foam.log.LogLevel',
     'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.invoice.model.Invoice',
@@ -43,7 +44,6 @@ foam.CLASS({
   imports: [
     'checkAndNotifyAbilityToPay',
     'currencyDAO',
-    'notify',
     'stack',
     'subject',
     'accountingIntegrationUtil',
@@ -162,9 +162,9 @@ foam.CLASS({
               code: async function(X) {
                 this.payerReconciled = true;
                 self.subject.user.expenses.put(this).then(() => {
-                  self.notify(self.RECONCILED_SUCCESS, 'success');
+                  self.notify(self.RECONCILED_SUCCESS, '', self.LogLevel.INFO, true);
                 }).catch((err) => {
-                  self.notify(self.RECONCILED_ERROR, 'error');
+                  self.notify(self.RECONCILED_ERROR, '', self.LogLevel.ERROR, true);
                 });
               }
             }),

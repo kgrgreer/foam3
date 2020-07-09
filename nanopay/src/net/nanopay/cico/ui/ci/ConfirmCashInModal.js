@@ -21,7 +21,7 @@ foam.CLASS({
   extends: 'foam.u2.Controller',
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'net.nanopay.tx.model.Transaction'
   ],
 
@@ -32,6 +32,7 @@ foam.CLASS({
     'currentAccount',
     'cashIn',
     'closeDialog',
+    'notify',
     'onCashInSuccess',
     'transactionDAO',
     'user'
@@ -271,7 +272,7 @@ foam.CLASS({
           X.closeDialog();
           X.onCashInSuccess();
         }).catch(function(error) {
-          self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+          X.notify(error.message, '', self.LogLevel.ERROR, true);
         });
       }
     }

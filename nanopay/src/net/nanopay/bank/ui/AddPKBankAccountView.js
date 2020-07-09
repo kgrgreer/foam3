@@ -24,7 +24,7 @@ foam.CLASS({
       'net.nanopay.bank.PKBankAccount',
       'net.nanopay.bank.BankAccountStatus',
       'net.nanopay.payment.Institution',
-      'foam.u2.dialog.NotificationMessage'
+      'foam.log.LogLevel'
     ],
 
     implements: [
@@ -32,6 +32,7 @@ foam.CLASS({
     ],
 
     imports: [
+      'notify',
       'user',
       'accountDAO as bankAccountDAO',
       'stack'
@@ -104,16 +105,10 @@ foam.CLASS({
       },
       function validation() {
         if ( ! this.accountNumber.match('^[0-9]{16}$') ) {
-          this.add(this.NotificationMessage.create({
-            type: 'error',
-            message: 'Invalid Account Number'
-          }));
+          this.notify('Invalid account number.', '', this.LogLevel.ERROR, true);
           return false;
         } else if ( ! this.accountName.match('^[a-zA-Z0-9]+') ) {
-          this.add(this.NotificationMessage.create({
-            type: 'error',
-            message: 'Bank Account Display Name can only contain letters and numbers.'
-          }));
+          this.notify('Bank account display name can only contain letters and numbers.', '', this.LogLevel.ERROR, true);
           return false;
         }
         return true;
@@ -132,16 +127,11 @@ foam.CLASS({
         bankAccount.iban = await bankAccount.calculateIban();
         try {
           await this.bankAccountDAO.put(bankAccount);
-          this.add(this.NotificationMessage.create({
-            message: 'Successfully Added Bank Account'
-          }));
+          this.notify('Successfully added bank account.', '', this.LogLevel.INFO, true);
           this.stack.back();
         } catch (err) {
           console.log(err);
-          this.add(this.NotificationMessage.create({
-            type: 'error',
-            message: err.message
-          }));
+          this.notify(err.message, '', this.LogLevel.ERROR, true);
         }
       }
     ],

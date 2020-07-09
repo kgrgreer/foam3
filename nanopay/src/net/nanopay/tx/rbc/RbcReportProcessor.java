@@ -6,6 +6,7 @@ import foam.mlang.MLang;
 import foam.mlang.predicate.Predicate;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
+import foam.nanos.notification.Notification;
 import foam.util.SafetyUtil;
 
 import java.io.File;
@@ -224,7 +225,17 @@ public class RbcReportProcessor {
     for ( net.nanopay.iso20022.PaymentTransactionInformation25 txnInfoStatus : paymentInfo.getTransactionInformationAndStatus() ) {
       try {
         String rejectReason = getRejectReason(txnInfoStatus.getStatusReasonInformation());
-        Transaction transaction = getTransaction(messageId, txnInfoStatus.getOriginalEndToEndIdentification(), TransactionStatus.SENT);
+        Transaction transaction = getTransaction(messageId, txnInfoStatus.getOriginalEndToEndIdentification());
+        if ( TransactionStatus.COMPLETED == transaction.getStatus() ) {
+          String msg = "RBC received DECLINE on COMPLETED transaction: " + transaction.getId();
+          BmoFormatUtil.sendEmail(x, msg, null);
+          Notification notification = new Notification.Builder(x)
+            .setTemplate("NOC")
+            .setBody(msg)
+            .build();
+          ((DAO) x.get("localNotificationDAO")).put(notification);
+          return; // Don't decline already Completed transactions
+        }
         transaction.setStatus(TransactionStatus.DECLINED);
         transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Transaction rejected. " + rejectReason).build());
         ((RbcTransaction)transaction).setRejectReason(rejectReason);
@@ -263,7 +274,7 @@ public class RbcReportProcessor {
     for ( net.nanopay.iso20022.PaymentTransactionInformation25 txnInfoStatus : paymentInfo.getTransactionInformationAndStatus() ) {
       if ( net.nanopay.iso20022.TransactionIndividualStatus3Code.ACSP != txnInfoStatus.getTransactionStatus() ) continue;
       try {
-        Transaction transaction = getTransaction(messageId, txnInfoStatus.getOriginalEndToEndIdentification(), TransactionStatus.SENT);
+        Transaction transaction = getTransaction(messageId, txnInfoStatus.getOriginalEndToEndIdentification());
         transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Transaction was settled by RBC.").build());
         ((RbcTransaction)transaction).setSettled(true);
 
@@ -276,27 +287,24 @@ public class RbcReportProcessor {
     }
   }
 
-  public Transaction getTransaction(long fileId,  String referenceNumber, TransactionStatus status) throws RuntimeException {
+  public Transaction getTransaction(long fileId,  String referenceNumber) throws RuntimeException {
 
     Transaction transaction = (Transaction) this.transactionDAO.find(MLang.AND(
       MLang.EQ(RbcCITransaction.RBC_REFERENCE_NUMBER, referenceNumber),
-      MLang.EQ(RbcCITransaction.RBC_FILE_CREATION_NUMBER, fileId),
-      MLang.EQ(Transaction.STATUS, status)
+      MLang.EQ(RbcCITransaction.RBC_FILE_CREATION_NUMBER, fileId)
     ));
 
     if ( transaction == null ) {
       transaction = (Transaction) this.transactionDAO.find(MLang.AND(
         MLang.EQ(RbcCOTransaction.RBC_REFERENCE_NUMBER, referenceNumber),
-        MLang.EQ(RbcCOTransaction.RBC_FILE_CREATION_NUMBER, fileId),
-        MLang.EQ(Transaction.STATUS, status)
+        MLang.EQ(RbcCOTransaction.RBC_FILE_CREATION_NUMBER, fileId)
       ));
     }
 
     if ( transaction == null ) {
       transaction = (Transaction) this.transactionDAO.find(MLang.AND(
         MLang.EQ(RbcVerificationTransaction.RBC_REFERENCE_NUMBER, referenceNumber),
-        MLang.EQ(RbcVerificationTransaction.RBC_FILE_CREATION_NUMBER, fileId),
-        MLang.EQ(Transaction.STATUS, status)
+        MLang.EQ(RbcVerificationTransaction.RBC_FILE_CREATION_NUMBER, fileId)
       ));
     }
 

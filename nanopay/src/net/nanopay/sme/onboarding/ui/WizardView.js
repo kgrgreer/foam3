@@ -227,26 +227,26 @@ foam.CLASS({
             sendInvitation: true
           })).
           then(async () => {
-            await x.userDAO.find(x.user.id).then((o) => {
+            await x.userDAO.find(x.user.id).then(o => {
               x.user = o;
               x.user.onboarded = o.onboarded;
               x.user.countryOfBusinessRegistration = o.countryOfBusinessRegistration;
               x.user.businessRegistrationDate = o.businessRegistrationDate;
-              x.user.address = o.address
+              x.user.address = o.address;
             });
 
-            await x.userDAO.find(x.subject.realUser.id).then((agent) => {
+            await x.userDAO.find(x.subject.realUser.id).then(agent => {
               x.subject.realUser = agent;
             });
 
             this.auth.cache = {};
-            x.ctrl.notify(this.SUCCESS_SUBMIT_MESSAGE);
             x.pushMenu('sme.main.dashboard');
+            x.ctrl.notify(this.SUCCESS_SUBMIT_MESSAGE, '', foam.log.LogLevel.INFO, true);
           }, function(err) {
             console.log('Error during submitting the onboarding info: ' + err);
             x.ctrl.notify('Business profile submission failed.  ' +
                           ( ( err && err.message ) ? err.message : 'Please try again later.' ),
-                          'error');
+                          '', foam.log.LogLevel.ERROR, true);
           });
       }
     },
@@ -260,10 +260,10 @@ foam.CLASS({
           sendInvitation: true
           })).
           then(function() {
-            x.ctrl.notify('Progress saved.');
             x.pushMenu('sme.main.dashboard');
+            x.ctrl.notify('Progress saved.', '', foam.log.LogLevel.INFO, true);
           }, function() {
-            x.ctrl.notify('Error saving progress, please try again shortly.', 'error');
+            x.ctrl.notify('Error saving progress, please try again shortly.', '', foam.log.LogLevel.ERROR, true);
           });
       }
     }

@@ -29,6 +29,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Country',
     'foam.nanos.auth.Region',
@@ -653,7 +654,7 @@ foam.CLASS({
     function checkQuebec(detachable, eventName, propName, propSlot) {
       var regionId = propSlot.get();
       if ( regionId === 'QC' ) {
-        this.ctrl.notify(this.QUEBEC_DISCLAIMER, 'error');
+        this.ctrl.notify(this.QUEBEC_DISCLAIMER, '', this.LogLevel.WARN, true);
       }
     }
   ],

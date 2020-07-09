@@ -23,12 +23,13 @@ foam.CLASS({
   documentation: 'Pop up modal for deleting a device',
 
   requires: [
-    'foam.u2.dialog.NotificationMessage'
+    'foam.log.LogLevel'
   ],
 
   imports: [
     'deviceDAO', 
-    'closeDialog', 
+    'closeDialog',
+    'notify', 
     'selectedDevice'
   ],
 
@@ -151,10 +152,10 @@ foam.CLASS({
         var self = this;
 
         X.deviceDAO.remove(X.selectedDevice).then(function(response) {
-          self.add(self.NotificationMessage.create({ message: 'Device successfully deleted.'}));
+          X.notify('Device successfully deleted.', '', self.LogLevel.INFO, true);
           X.closeDialog();
         }).catch(function(error) {
-          self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+          X.notify(error.message, '', self.LogLevel.ERROR, true);
         });
       }
     }
