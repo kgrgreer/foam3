@@ -125,6 +125,12 @@ p({
   "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-11",
   "priority":10
 })
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-13",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-14",
+  "priority":11
+})
 
 
 // prerequisites for internationalBusinessOnboarded
@@ -143,12 +149,20 @@ p({
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-12",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-11"
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-11",
+  "priority":3
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-12",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-9"
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-9",
+  "priority":4
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-12",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-14",
+  "priority":5
 })
 
 
