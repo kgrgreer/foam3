@@ -147,7 +147,7 @@ foam.CLASS({
     {
       name: 'data',
       factory: function() {
-        return this.groupDAO.where(this.EQ(this.Group.TEMPLATE, true));
+        return this.groupDAO.where(this.STARTS_WITH(this.Group.ID, 'smeBusiness'));
       }
     },
     {
