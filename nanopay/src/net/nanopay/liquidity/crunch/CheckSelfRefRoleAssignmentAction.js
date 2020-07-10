@@ -17,10 +17,10 @@
 
 foam.CLASS({
   package: 'net.nanopay.liquidity.crunch',
-  name: 'CheckSelfRefCapabilityRequestAction',
+  name: 'CheckSelfRefRoleAssignmentAction',
   extends: 'net.nanopay.liquidity.ruler.CheckSelfRefAction',
 
-  documentation: `CapabilityRequest self reference check action.`,
+  documentation: `RoleAssignment self reference check action.`,
 
   javaImports: [
     'foam.core.X',
@@ -42,12 +42,12 @@ foam.CLASS({
         List<Long> users = null;
         if ( approvable.getOperation() == Operations.CREATE ){
           Map propsToUpdate = approvable.getPropertiesToUpdate();  
-          if ( ! propsToUpdate.containsKey(CapabilityRequest.USERS.getName()) )
+          if ( ! propsToUpdate.containsKey(RoleAssignment.USERS.getName()) )
             return new HashSet<Long>();
-          users = (List<Long>) propsToUpdate.get(CapabilityRequest.USERS.getName());
+          users = (List<Long>) propsToUpdate.get(RoleAssignment.USERS.getName());
         } else { // UPDATE
           DAO serverDao = (DAO) x.get(approvable.getServerDaoKey());
-          CapabilityRequest request = (CapabilityRequest) serverDao.inX(getX()).find(approvable.getObjId());
+          RoleAssignment request = (RoleAssignment) serverDao.inX(getX()).find(approvable.getObjId());
           if ( request == null )
             return new HashSet<Long>();
           users = request.getUsers();
@@ -62,7 +62,7 @@ foam.CLASS({
         if ( obj == null )
           return referencedUserSet;
 
-        CapabilityRequest request = (CapabilityRequest) obj;
+        RoleAssignment request = (RoleAssignment) obj;
         if ( request == null || request.getUsers() == null )
           return referencedUserSet;
 

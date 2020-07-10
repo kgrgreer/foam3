@@ -86,7 +86,7 @@ foam.CLASS({
           this.accountOrUserRef.of = foam.nanos.auth.User;
           this.accountOrUserRef.clearProperty("dao");
           this.userOrRoleRef.of = foam.nanos.crunch.Capability;
-          this.userOrRoleRef.targetDAOKey = "accountBasedLiquidCapabilityDAO";
+          this.userOrRoleRef.targetDAOKey = "localCapabilityDAO";
         }
         if ( nu === 'accountAndUser' ) {
           this.accountOrUserRef.of = net.nanopay.account.Account;
@@ -102,7 +102,7 @@ foam.CLASS({
             this.EQ(this.Account.LIFECYCLE_STATE, this.LifecycleState.ACTIVE)
           );
           this.userOrRoleRef.of = foam.nanos.crunch.Capability;
-          this.userOrRoleRef.targetDAOKey = "accountBasedLiquidCapabilityDAO";
+          this.userOrRoleRef.targetDAOKey = "localCapabilityDAO";
         }
       },
     },

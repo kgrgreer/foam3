@@ -92,7 +92,7 @@ foam.CLASS({
         if ( nu === 'role' ) {
           this.queryRef.of = foam.nanos.crunch.Capability;
           this.queryRef.clearProperty("dao");
-          this.queryRef.dao = this.__context__['accountBasedLiquidCapabilityDAO'].where(
+          this.queryRef.dao = this.__context__['localCapabilityDAO'].where(
               this.EQ(this.LiquidCapability.LIFECYCLE_STATE, this.LifecycleState.ACTIVE),
           );
         }

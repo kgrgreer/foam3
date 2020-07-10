@@ -24,8 +24,10 @@ foam.CLASS({
   implements: ['foam.nanos.ruler.RuleAction'],
 
   javaImports: [
+    'foam.core.FObject',
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.core.NumberSet',
     'foam.dao.DAO',
     'foam.dao.ArraySink',
     'foam.nanos.auth.User',
@@ -34,9 +36,7 @@ foam.CLASS({
     'foam.nanos.crunch.UserCapabilityJunction',
     'java.util.List',
     'java.util.ArrayList',
-    'java.util.Map',
-    'java.util.Set',
-    'java.util.HashSet'
+    'foam.mlang.MLang'
   ],
 
   methods: [
@@ -50,21 +50,23 @@ foam.CLASS({
 
             Account account = (Account) obj;
             Long accountId = account.getId();
+            Long parentId = account.getParent();
 
             // get all ucjs where it is account-based
             DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
             
-            // todo ruby faster to make a predicate instead?
-            List<UserCapabilityJunction> ucjs = ((ArraySink) ucjDAO.select(new ArraySink())).getArray();
+            // non account-based capabilities do not store anything in data
+            List<UserCapabilityJunction> ucjs = ((ArraySink) ucjDAO
+              .where(MLang.NEQ(UserCapabilityJunction.DATA, null))
+              .select(new ArraySink())).getArray();
 
             for ( UserCapabilityJunction ucj : ucjs ) {
-              if ( ! ( ucj.getData() instanceof AccountApproverMap ) ) continue;
-              AccountApproverMap map = (AccountApproverMap) ucj.getData();
-              Long parent = map.impliesChildAccount(x, accountId);
-              if ( parent > 0 ) {
-                CapabilityAccountData data = map.getAccounts().get(String.valueOf(parent));
-                map.addAccount(accountId, data);
-                ucj.setData(map);
+              if ( ! ( ucj.getData() instanceof NumberSet ) ) continue;              
+              NumberSet numberSet = (NumberSet) ucj.getData();
+                            
+              if ( numberSet.contains(parentId) ) {
+                numberSet.add(accountId);
+                ucj.setData((numberSet));
                 ucjDAO.put(ucj);
               }
             }

@@ -14,7 +14,7 @@ complianceItems
 capabilities
 capabilityCategoryCapabilityJunction
 capabilityCategories
-capabilityRequests
+roleAssignments
 clearingTimes
 corridors
 countries
@@ -43,9 +43,7 @@ lineItemFees
 lineItemTax
 lineItemTypeAccounts
 lineItemTypes
-liquidCapabilities
 liquiditySettings
-liquidUserCapabilityJunctions
 menus
 mspSetup
 notifications
@@ -67,6 +65,7 @@ quickbooksToken
 regions
 reports
 rootAccounts
+roleTemplates
 ruleGroups
 rules
 scripts
