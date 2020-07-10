@@ -189,15 +189,15 @@ foam.CLASS({
              .add(this.SUB_TITLE_1).add(this.isAddUser ? this.THE_USER : this.subject.realUser.toSummary()).add(this.SUB_TITLE_2)
           .end()
           .start('table')
-            .forEach(accessControlValue.array, function(ac) {
+            .forEach(accessControlValue.array, function(group) {
               this.start('tr')
                 .start('td')
                   .start('input')
                     .attrs({
                        type: 'radio',
                        name: 'accessControl',
-                       value: ac.displayName.toLowerCase(),
-                       checked: self.slot(function (data, accessControl) { return data === ac.displayName.toLowerCase() || accessControl === ac.displayName.toLowerCase(); })
+                       value: group.displayName.toLowerCase(),
+                       checked: self.slot(function (data, accessControl) { return data === group.displayName.toLowerCase() || accessControl === group.displayName.toLowerCase(); })
                      })
                   .end()
                 .end()
@@ -205,19 +205,19 @@ foam.CLASS({
                   .start('div').addClass('labelStyle')
                     .start('label')
                       .start('span')
-                        .add(ac.displayName)
+                        .add(group.displayName)
                       .end()
                     .end()
                   .end()
                  .start('div').addClass('labelDescriptionStyle')
                    .start('span')
-                     .add(ac.description)
+                     .add(group.description)
                    .end()
                  .end()
                 .end()
                  .on('click', function(evt) {
-                    self.data = ac.displayName.toLowerCase();
-                    self.accessControl = ac.displayName.toLowerCase();
+                    self.data = group.displayName.toLowerCase();
+                    self.accessControl = group.displayName.toLowerCase();
                   })
               .end()
 
