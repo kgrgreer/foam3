@@ -420,6 +420,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ruler/SendCompleteRetailTransactionNotificationRule' },
   { name: 'net/nanopay/tx/model/TransactionLimit' },
   { name: 'net/nanopay/tx/ruler/TransactionLimitProbeInfo' },
+  { name: 'net/nanopay/tx/ruler/TransactionLimitRule' },
   { name: 'net/nanopay/tx/ruler/InvoiceApprovedByRule' },
   { name: 'net/nanopay/tx/ruler/SlowDownRule' },
   { name: 'net/nanopay/tx/ruler/TransactionQuotedStatusRule' },
@@ -461,7 +462,6 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/Amount' },
   { name: 'net/nanopay/tx/ruler/ComplianceTransactionPlanner' },
   { name: 'net/nanopay/tx/ruler/AddGDTxnFeeLineItem' },
-  { name: 'net/nanopay/tx/OriginatingSource' }, //can remove?
   { name: 'net/nanopay/tx/AddLiquidTransactionAction' },
   { name: 'net/nanopay/tx/LabelLiquidSummaryAction' },
 

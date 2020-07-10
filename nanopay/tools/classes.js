@@ -536,6 +536,7 @@ var classes = [
   'net.nanopay.tx.model.TransactionLimit',
   'net.nanopay.tx.ruler.AddGDTxnFeeLineItem',
   'net.nanopay.tx.ruler.TransactionLimitProbeInfo',
+  'net.nanopay.tx.ruler.TransactionLimitRule',
   'net.nanopay.tx.ruler.TransactionQuotedStatusRule',
   'net.nanopay.tx.ruler.InvoiceApprovedByRule',
   'net.nanopay.tx.ruler.SlowDownRule',
@@ -601,7 +602,6 @@ var classes = [
   'net.nanopay.fx.interac.model.AcceptExchangeRateFields',
   'net.nanopay.fx.AddINCurrencyPermissionRule',
   'net.nanopay.tx.TransactionValidator',
-  'net.nanopay.tx.OriginatingSource', // can remove?
   'net.nanopay.tx.AddLiquidTransactionAction',
   'net.nanopay.tx.LabelLiquidSummaryAction',
 
