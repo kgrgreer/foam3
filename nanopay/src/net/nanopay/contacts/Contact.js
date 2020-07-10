@@ -126,7 +126,12 @@ foam.CLASS({
       name: 'UNABLE_TO_ADD_BANK_ACCOUNT',
       message: `You currently have not completed the necessary requirements
           to add an account to your contact. Please visit the capability store to enable payments.`
-    }
+    },
+    { name: 'ERROR_BUSINESS_PROFILE_NAME_MESSAGE', message: 'Business name required.' },
+    { name: 'INVALID_EMAIL', message: 'Invalid email address.' },
+    { name: 'INVALID_FIRST_NAME', message: 'First name cannot exceed 70 characters.' },
+    { name: 'INVALID_LAST_NAME', message: 'Last name cannot exceed 70 characters.' },
+    { name: 'CONFIRMATION_REQUIRED', message: 'Confirmation required.' },
   ],
 
   properties: [
@@ -141,7 +146,7 @@ foam.CLASS({
           typeof organization !== 'string' ||
           organization.trim().length === 0
         ) {
-          return 'Business name required';
+          return this.ERROR_BUSINESS_PROFILE_NAME_MESSAGE;
         }
       },
       postSet: function(_,n) {
@@ -173,7 +178,7 @@ foam.CLASS({
         if ( ! this.businessId ) {
           var emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
           if ( ! emailRegex.test(email) ) {
-            return 'Invalid email address.';
+            return this.INVALID_EMAIL;
           }
         }
       }
@@ -186,7 +191,7 @@ foam.CLASS({
       validateObj: function(firstName) {
         if ( !! firstName ) {
           if ( firstName.length > this.NAME_MAX_LENGTH ) {
-            return 'First name cannot exceed 70 characters.';
+            return this.INVALID_FIRST_NAME;
           }
         }
       }
@@ -204,7 +209,7 @@ foam.CLASS({
       validateObj: function(lastName) {
         if ( !! lastName ) {
           if ( lastName.length > this.NAME_MAX_LENGTH ) {
-            return 'Last name cannot exceed 70 characters.';
+            return this.INVALID_LAST_NAME;
           }
         }
       }
@@ -229,7 +234,7 @@ foam.CLASS({
       },
       validateObj: function(confirm) {
         if ( ! confirm ) {
-          return 'Confirmation required.';
+          return this.CONFIRMATION_REQUIRED;
         }
       }
     },
