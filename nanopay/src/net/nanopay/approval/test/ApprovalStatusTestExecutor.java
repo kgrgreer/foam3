@@ -11,6 +11,7 @@ import foam.nanos.approval.ApprovalRequest;
 import foam.nanos.approval.ApprovalStatus;
 import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
+import foam.nanos.crunch.UserCapabilityJunction;
 import foam.nanos.ruler.Operations;
 import net.nanopay.test.liquid.LiquidTestExecutor;
 
@@ -131,6 +132,16 @@ public class ApprovalStatusTestExecutor extends LiquidTestExecutor {
 
     Approvable approvable = (Approvable) approvablesPending.get(0);
 
+    List all = ((ArraySink) getApprovalRequestDAO(getSystemX()).inX(getSystemX()).select(new ArraySink())).getArray();
+
+    DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
+
+    List ucj = ((ArraySink) ucjDAO.inX(getSystemX()).where(
+      EQ(UserCapabilityJunction.SOURCE_ID, xUser.getId())
+    ).select(new ArraySink())).getArray();
+
+    List allUcj = ((ArraySink) ucjDAO.inX(getSystemX()).select(new ArraySink())).getArray();
+
     approvalRequests = (ArraySink) getApprovalRequestDAO(getSystemX()).inX(getSystemX()).where(AND(
       EQ(ApprovalRequest.OBJ_ID, approvable.getId()),
       EQ(ApprovalRequest.CLASSIFICATION, "User"),
@@ -175,7 +186,7 @@ public class ApprovalStatusTestExecutor extends LiquidTestExecutor {
       boolean pass = false;
 
       if ( ex instanceof UserFeedbackException) {
-        var ufe = (UserFeedbackException) ex;
+        UserFeedbackException ufe = (UserFeedbackException) ex;
         if ( ufe.getUserFeedback().getMessage().equals("An approval request has been sent out."))
           pass = true;
       }

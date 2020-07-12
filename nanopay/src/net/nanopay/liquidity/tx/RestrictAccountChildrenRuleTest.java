@@ -128,7 +128,6 @@ public class RestrictAccountChildrenRuleTest
     //this test bypasses planners and built in validation
     transaction_.setPlanner("68afcf0c-c718-98f8-0841-75e97a3ad16d182");
     transaction_.setIsQuoted(true);
-    transaction_.setOrigin(net.nanopay.tx.OriginatingSource.MANUAL);
 
     test(
       TestUtils.testThrows(

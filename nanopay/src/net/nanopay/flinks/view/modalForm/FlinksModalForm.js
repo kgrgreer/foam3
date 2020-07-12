@@ -76,6 +76,9 @@ foam.CLASS({
     ^ .full-width-input-password {
       width: 100%;
     }
+    ^ .net-nanopay-sme-ui-wizardModal-WizardModalNavigationBar .net-nanopay-sme-ui-wizardModal-WizardModalNavigationBar-container {
+      position: absolute;
+    }
   `,
 
   properties: [

@@ -83,7 +83,6 @@ public class TxLimitRuleTest
       transaction.setDestinationAccount(destinationAccount.getId());
       transaction.setSourceCurrency("CAD");
       transaction.setAmount(txAmounts[i]);
-      transaction.setOrigin(net.nanopay.tx.OriginatingSource.MANUAL);
       transaction.setStatus(TransactionStatus.COMPLETED);
       transactionDAO.inX(sourceX).put(transaction);
       spent += txAmounts[i];
@@ -92,7 +91,6 @@ public class TxLimitRuleTest
     Transaction transaction = new Transaction();
     transaction.setSourceAccount(sourceAccount.getId());
     transaction.setDestinationAccount(destinationAccount.getId());
-    transaction.setOrigin(net.nanopay.tx.OriginatingSource.MANUAL);
     transaction.setSourceCurrency("CAD");
     transaction.setAmount(txAmounts[txAmounts.length - 1]);
     transaction.setStatus(TransactionStatus.COMPLETED);

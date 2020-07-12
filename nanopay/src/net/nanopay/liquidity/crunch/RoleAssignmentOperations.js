@@ -17,7 +17,7 @@
 
 foam.ENUM({
   package: 'net.nanopay.liquidity.crunch',
-  name: 'CapabilityRequestOperations',
+  name: 'RoleAssignmentOperations',
 
   values: [
     {

@@ -26,7 +26,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.X',
     'java.util.ArrayList',
-    'java.util.HashSet',
+    'java.util.Set',
     'net.nanopay.account.Account',
     'net.nanopay.liquidity.tx.AccountHierarchy',
     'static foam.mlang.MLang.*'
@@ -45,7 +45,7 @@ foam.CLASS({
       javaCode: `
         // Use AccountHierarchyService to fetch child accounts of parentId then pass childIds into MLang.IN predicate
         AccountHierarchy accountHierarchy = (AccountHierarchy) getX().get("accountHierarchyService");
-        HashSet<Long> childIdSet = accountHierarchy.getChildAccountIds(getX(), this.getParentId());
+        Set<Long> childIdSet = accountHierarchy.getChildAccountIds(getX(), this.getParentId());
         ArrayList<Long> childIds = new ArrayList<>(childIdSet);
         return
           IN(Account.ID, childIds)

@@ -28,8 +28,8 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
-    'net.nanopay.liquidity.crunch.AccountMap',
-    'net.nanopay.liquidity.tx.AccountHierarchy',
+    'foam.dao.DAO',
+    'net.nanopay.liquidity.crunch.AccountTemplate',
     'static foam.mlang.MLang.*'
   ],
 
@@ -51,11 +51,12 @@ foam.CLASS({
       name: 'f',
       javaCode: `
         X x = (X) obj;
-        AccountHierarchy accountHierarchy = (AccountHierarchy) x.get("accountHierarchyService");
-        AccountMap accountMap = accountHierarchy.getAccountsFromAccountTemplate(x, findAccountTemplate(x));
+        DAO accountTemplateDAO = (DAO) x.get("accountTemplateDAO");
 
-        return accountMap.getAccounts().containsKey(
-          String.valueOf( DOT(NEW_OBJ, getAccountProperty()).f(obj) )
+        AccountTemplate accountTemplate = (AccountTemplate) accountTemplateDAO.find(getAccountTemplate());
+
+        return accountTemplate.getAccounts().contains(
+          DOT(NEW_OBJ, getAccountProperty()).f(obj)
         );
       `
     }

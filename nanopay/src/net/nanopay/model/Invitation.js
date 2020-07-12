@@ -38,6 +38,12 @@ foam.CLASS({
     }
   ],
 
+  messages: [
+    { name: 'ERROR_BUSINESS_PROFILE_NAME_MESSAGE', message: 'Business name required.' },
+    { name: 'INVALID_EMAIL', message: 'Invalid email address.' },
+    { name: 'PERMISSION_REQUIRED', message: 'Permission required' }
+  ],
+
   properties: [
     {
       class: 'Long',
@@ -79,7 +85,7 @@ foam.CLASS({
           typeof businessName !== 'string' ||
           businessName.trim().length === 0
         ) {
-          return 'Business name required';
+          return this.ERROR_BUSINESS_PROFILE_NAME_MESSAGE;
         }
       },
     },
@@ -95,7 +101,7 @@ foam.CLASS({
       validateObj: function(email) {
         var emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
         if ( ! emailRegex.test(email) ) {
-          return 'Invalid email address.';
+          return this.INVALID_EMAIL;
         }
       }
     },
@@ -114,7 +120,7 @@ foam.CLASS({
       view: { class: 'foam.u2.CheckBox', label: `I have this contact's permission to invite them to Ablii` },
       validateObj: function(invitePermission) {
         if ( ! invitePermission ) {
-          return 'Permission required.';
+          return this.PERMISSION_REQUIRED;
         }
       }
     },

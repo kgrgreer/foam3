@@ -15,8 +15,8 @@ import static foam.mlang.MLang.TRUE;
 public class AccountHierarchyService
   implements AccountHierarchy
 {
-  protected Map<String, HashSet<Long>> map_;
-  public Map<Long, ArrayList<String>> userToViewableRootAccountsMap_;
+  protected Map<String, Set<Long>> map_;
+  public Map<Long, List<Long>> userToViewableRootAccountsMap_;
 
   public AccountHierarchyService() { }
 
@@ -26,30 +26,57 @@ public class AccountHierarchyService
 
     List<Account> ret = new ArrayList<Account>();
 
-    Set<String> roots = new HashSet<String>(getViewableRootAccountIds(x, userId));
+    Set<Long> roots = new HashSet<Long>(getViewableRootAccountIds(x, userId));
 
-    for ( String root : roots ) {
-      ret.add((Account) accountDAO.find(Long.parseLong(root)));
+    for ( Long root : roots ) {
+      ret.add((Account) accountDAO.find(root));
     }
     return ret;
   }
 
-  public List<String> getViewableRootAccountIds(X x, long userId) {
+  public List<Long> getViewableRootAccountIds(X x, long userId) {
     if ( ! getUserToViewableRootAccountsMap().containsKey(userId) ) {
       // if not in map, get from dao and put in map
       DAO dao = (DAO) x.get("rootAccountsDAO");
       RootAccounts userRootAccounts = (RootAccounts) dao.find(userId);
       if ( userRootAccounts == null ) {
-        return new ArrayList<String>();
+        return new ArrayList<Long>();
       }
       
       userRootAccounts = (RootAccounts) userRootAccounts.fclone();
-      userToViewableRootAccountsMap_.put(userId, (ArrayList<String>) userRootAccounts.getRootAccounts());
+      userToViewableRootAccountsMap_.put(userId, (ArrayList<Long>) userRootAccounts.getRootAccounts());
     }
     return getUserToViewableRootAccountsMap().get(userId);
   }
 
-  protected Map<String, HashSet<Long>> getChildMap(X x) {
+  @Override
+  public void addViewableRootAccounts(X x, List<Long> userIds, List<Long> rootAccountIds) {
+    DAO rootAccountsDAO = (DAO) x.get("rootAccountsDAO");
+
+    for (  Long userId : userIds ){
+      RootAccounts userRootAccounts = (RootAccounts) rootAccountsDAO.find(userId);
+
+      List<Long> userRootAccountIds;
+
+      if ( userRootAccounts == null ){
+        userRootAccountIds = new ArrayList<Long>();
+      } else {
+        userRootAccountIds = userRootAccounts.getRootAccounts();
+      }
+
+      // need to ensure each element is unique
+      Set<Long> userRootAccountIdsSet = new HashSet<Long>(userRootAccountIds);
+      userRootAccountIdsSet.addAll(rootAccountIds);
+      userRootAccountIds = new ArrayList<Long>(userRootAccountIdsSet);
+
+      userRootAccounts = new RootAccounts.Builder(x).setUserId(userId).setRootAccounts(userRootAccountIds).build();
+
+      rootAccountsDAO.put(userRootAccounts);
+      getUserToViewableRootAccountsMap().put(userId, userRootAccountIds);
+    }
+  }
+
+  protected Map<String, Set<Long>> getChildMap(X x) {
     DAO accountDAO = (DAO) x.get("localAccountDAO");
 
     if ( map_ != null ) {
@@ -74,20 +101,20 @@ public class AccountHierarchyService
     };
 
     accountDAO.listen(purgeSink, TRUE);
-    map_ = new ConcurrentHashMap<String, HashSet<Long>>();
+    map_ = new ConcurrentHashMap<String, Set<Long>>();
     return map_;
   }
 
-  protected Map<Long, ArrayList<String>> getUserToViewableRootAccountsMap() {
+  protected Map<Long, List<Long>> getUserToViewableRootAccountsMap() {
     if ( userToViewableRootAccountsMap_ == null ) {
-      userToViewableRootAccountsMap_ = new ConcurrentHashMap<Long, ArrayList<String>>();
+      userToViewableRootAccountsMap_ = new ConcurrentHashMap<Long, List<Long>>();
     }
     return userToViewableRootAccountsMap_;
   }
 
   @Override
-  public HashSet<Long> getChildAccountIds(X x, long parentId) {
-    Map <String, HashSet<Long>> map = getChildMap(x);
+  public Set<Long> getChildAccountIds(X x, long parentId) {
+    Map <String, Set<Long>> map = getChildMap(x);
     DAO accountDAO = (DAO) x.get("localAccountDAO");
     String parentIdString = Long.toString(parentId);
 
@@ -106,7 +133,7 @@ public class AccountHierarchyService
         }
       }
 
-      HashSet<Long> childIdSet = new HashSet<>(childIdList);
+      Set<Long> childIdSet = new HashSet<>(childIdList);
       map.put(parentIdString, childIdSet);
     }
 
@@ -133,196 +160,15 @@ public class AccountHierarchyService
   }
 
   @Override
-  public AccountApproverMap getAssignedAccountMap(X x, boolean trackRootAccounts, long user, AccountApproverMap oldTemplate, Map<String, CapabilityAccountData> newMap) {
-    Map<String, CapabilityAccountData> oldMap = oldTemplate == null || oldTemplate.getAccounts() == null ? new HashMap<String, CapabilityAccountData>() : oldTemplate.getAccounts();
-
-    if ( newMap == null || newMap.size() == 0 ) throw new RuntimeException("Invalid accountTemplate");
-    Set<String> accountIds = newMap.keySet();
-
-    ArrayList<String> roots = trackRootAccounts ? (ArrayList<String>) getViewableRootAccountIds(x, user) : null;
-    
-    // pre-populate roots with the account template keys so that unnecessary ones will be removed during child finding process
-    if ( trackRootAccounts ) {
-      for ( String accountId : accountIds ) {
-        if ( ( ! oldMap.containsKey(accountId) || 
-               ( oldMap.containsKey(accountId) && 
-                 roots.contains(accountId) ) ) &&
-             (
-               newMap.get(accountId) != null &&
-               newMap.get(accountId).getIsIncluded()
-             ) ){
-          roots.add(accountId);
-        }
-      }
-    }
-
-    for ( String accountId : accountIds ) {
-      CapabilityAccountData data = (CapabilityAccountData) newMap.get(accountId);
-      if ( data.getIsIncluded() ) {
-        newMap.put(accountId, data);
-        if ( data.getIsCascading() ) {
-          newMap = addChildrenToCapabilityAccountTemplate(x, accountId, newMap.get(accountId), roots, new HashMap<String, CapabilityAccountData>(newMap), new HashMap<String, CapabilityAccountData>(oldMap));
-        } else {
-          // since this account is not going thru addchildren, need to go thru its immediate children to make sure that they are not in the roots set
-          if ( trackRootAccounts ) {
-            List<Account> immediateChildren = ((ArraySink) ((Account) ((DAO) x.get("localAccountDAO")).find(accountId)).getChildren(x).select(new ArraySink())).getArray();
-            for ( Account child : immediateChildren ) {
-              roots.remove(String.valueOf(child.getId()));
-            }
-          }
-        }
-      } 
-    }
-    oldMap.putAll(newMap);
-
-    if ( trackRootAccounts ) {
-      userToViewableRootAccountsMap_.remove(user);
-      DAO dao = (DAO) x.get("rootAccountsDAO");
-      RootAccounts obj = new RootAccounts.Builder(x).setUserId(user).setRootAccounts((ArrayList<String>) roots).build();
-      dao.put(obj);
-    }
-
-    return new AccountApproverMap.Builder(x).setAccounts(oldMap).build();
-  }
-
-  private Map<String, CapabilityAccountData> addChildrenToCapabilityAccountTemplate(X x, String accountId, CapabilityAccountData data, ArrayList<String> roots, Map<String, CapabilityAccountData> accountMap, Map<String, CapabilityAccountData> oldMap){
-    DAO accountDAO = (DAO) x.get("accountDAO");
-    Account tempAccount = (Account) accountDAO.find(Long.parseLong(accountId));
-    List<Account> children = ((ArraySink) ( tempAccount.getChildren(x)).select(new ArraySink())).getArray();
-
-    Set<Account> accountsSet = new HashSet<Account>();
-
-    while ( children.size() > 0 ) {
-      if ( ! accountMap.containsKey(String.valueOf(children.get(0))) ) {
-        tempAccount = children.get(0);
-        accountsSet.add(tempAccount);
-        List<Account> tempChildren = ((ArraySink) (tempAccount.getChildren(x)).select(new ArraySink())).getArray();
-        for ( Account tempChild : tempChildren ) {
-          if ( ! children.contains(tempChild) ) children.add(tempChild);
-          accountsSet.add(tempChild);
-        }
-      }
-      children.remove(0);
-    }
-
-    String aid;
-    for ( Account account : accountsSet ) {
-      aid = String.valueOf(account.getId());
-      if ( ! accountMap.containsKey(aid) ) accountMap.put(aid, data);
-      if ( roots != null && roots.contains(aid) ) roots.remove(aid);
-    }
-    return accountMap;
-  }
-
-  @Override
-  public AccountMap getAccountsFromAccountTemplate(X x, AccountTemplate template){
-    // TODO: Wire up caching
-    Map<String, AccountData> templateMap = template.getAccounts();
-    Set<String> accountIds = templateMap.keySet();
-
-    Map<String, AccountData> finalMap = new ConcurrentHashMap<>();
-
-    for ( String accountId : accountIds ) {
-      finalMap.put(accountId, templateMap.get(accountId));
-      addChildrenToAccountTemplate(x, accountId, templateMap.get(accountId), finalMap);
-    }
-
-    return new AccountMap.Builder(x).setAccounts(finalMap).build();
-
-  }
-
-  private void addChildrenToAccountTemplate(X x, String accountId, AccountData data, Map<String, AccountData> accountMap){
-    DAO accountDAO = (DAO) x.get("accountDAO");
-    Account tempAccount = (Account) accountDAO.find(Long.parseLong(accountId));
-    List<Account> children = ((ArraySink) ( tempAccount.getChildren(x)).select(new ArraySink())).getArray();
-
-    Set<Account> accountsSet = new HashSet<>(children);
-    accountsSet.addAll(children);
-
-    while ( children.size() > 0 ) {
-      tempAccount = children.get(0);
-      List<Account> tempChildren = ((ArraySink) ( tempAccount.getChildren(x)).select(new ArraySink())).getArray();
-      for ( Account tempChild : tempChildren ) {
-        if ( ! children.contains(tempChild) ) children.add(tempChild);
-        accountsSet.add(tempChild);
-      }
-      children.remove(0);
-    }
-
-    for ( Account account : accountsSet ) {
-      if ( ! accountMap.containsKey(String.valueOf(account.getId()))) accountMap.put(String.valueOf(account.getId()), data);
-    }
-  }
-
-
-  @Override
-  public AccountApproverMap getRevokedAccountsMap(X x, boolean trackRootAccounts, long user, AccountApproverMap oldTemplate, Map<String, CapabilityAccountData> newMap) {
-    ArrayList<String> currentRoots = (ArrayList<String>) getViewableRootAccountIds(x, user);
-    if ( currentRoots == null || currentRoots.size() == 0 ) throw new RuntimeException("Revoke cannot be performed since user does not have any accounts authorized for this capability."); 
-    
-    Map<String, CapabilityAccountData> oldMap = oldTemplate == null || oldTemplate.getAccounts() == null ? new HashMap<String, CapabilityAccountData>() : oldTemplate.getAccounts();
-
-    if ( newMap == null || newMap.size() == 0 ) throw new RuntimeException("Invalid accountTemplate");
-    Set<String> accountIds = newMap.keySet();
-
-    ArrayList<String> roots = trackRootAccounts ? new ArrayList<String>() : null;
-    
-    // pre-populate roots with the account template keys so that unnecessary ones will be removed during child finding process
-    if ( trackRootAccounts ) {
-      for ( String accountId : accountIds ) {
-        if ( newMap.get(accountId) != null && newMap.get(accountId).getIsIncluded() ) roots.add(accountId);
-      }
-    }
-
-    for ( String accountId : accountIds ) {
-      CapabilityAccountData data = (CapabilityAccountData) newMap.get(accountId);
-      if ( data.getIsIncluded() ) {
-        newMap.put(accountId, data);
-        if ( data.getIsCascading() ) {
-          newMap = addChildrenToCapabilityAccountTemplate(x, accountId, newMap.get(accountId), roots, new HashMap<String, CapabilityAccountData>(newMap), new HashMap<String, CapabilityAccountData>(oldMap));
-        } else {
-          // since this account is not going thru addchildren, need to go thru its immediate children to make sure that they are not in the roots set
-          if ( trackRootAccounts ) {
-            List<Account> immediateChildren = ((ArraySink) ((Account) ((DAO) x.get("localAccountDAO")).find(accountId)).getChildren(x).select(new ArraySink())).getArray();
-            for ( Account child : immediateChildren ) {
-              roots.remove(String.valueOf(child.getId()));
-            }
-          }
-        }
-      } 
-    }
-
-    if ( trackRootAccounts ) {
-      for ( String root : roots ) {
-        if ( oldMap.containsKey(root) ) {
-          List<Account> immediateChildren = ((ArraySink) ((Account) ((DAO) x.get("localAccountDAO")).find(root)).getChildren(x).select(new ArraySink())).getArray();
-          for ( Account child : immediateChildren ) {
-            if (oldMap.containsKey(String.valueOf(child.getId())) && ! newMap.containsKey(String.valueOf(child.getId())) ) currentRoots.add(String.valueOf(child.getId()));
-          }
-          currentRoots.remove(root);
-        }
-      }
-      userToViewableRootAccountsMap_.remove(user);
-      DAO dao = (DAO) x.get("rootAccountsDAO");
-      RootAccounts obj = new RootAccounts.Builder(x).setUserId(user).setRootAccounts((ArrayList<String>) currentRoots).build();
-      dao.put(obj);
-    }
-
-    oldMap.keySet().removeAll(newMap.keySet());
-
-    return new AccountApproverMap.Builder(x).setAccounts(oldMap).build();
-  }
-
-  @Override
   public void removeRootFromUser(X x, long user, long account) {  
-    List<String> userRoots = getViewableRootAccountIds(x, user);
+    List<Long> userRoots = getViewableRootAccountIds(x, user);
 
-    if ( userRoots.contains(String.valueOf(account)) ) {
+    if ( userRoots.contains(account) ) {
       userToViewableRootAccountsMap_.remove(user);
-      userRoots.removeIf( accountId -> accountId.equals(String.valueOf(account)) );
+      userRoots.removeIf( accountId -> accountId.equals(account) );
 
       DAO dao = (DAO) x.get("rootAccountsDAO");
-      RootAccounts obj = new RootAccounts.Builder(x).setUserId(user).setRootAccounts((ArrayList<String>) userRoots).build();
+      RootAccounts obj = new RootAccounts.Builder(x).setUserId(user).setRootAccounts((ArrayList<Long>) userRoots).build();
       dao.put(obj);
     }
   }

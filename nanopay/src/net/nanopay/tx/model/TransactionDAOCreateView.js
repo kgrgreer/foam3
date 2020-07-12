@@ -54,7 +54,6 @@ foam.CLASS({
         return ! data$errors_;
       },
       code: function(x) {
-        this.data.origin = net.nanopay.tx.OriginatingSource.MANUAL;
         this.data.mode = ''; // TODO - use controllerMode instead of mode, but currently it's lost ??
         this.data.payerId = x.user ? x.user.id : 0; // to show the user who created this transaction
         x.transactionDAO.put(this.data)

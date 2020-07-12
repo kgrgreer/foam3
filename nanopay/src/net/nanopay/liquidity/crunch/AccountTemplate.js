@@ -22,8 +22,8 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
-    'java.util.Map',
-    'java.util.Set'
+    'java.util.ArrayList',
+    'java.util.List'
   ],
 
   tableColumns: [
@@ -37,40 +37,63 @@ foam.CLASS({
   properties: [  
     {
       name: 'id',
-      class: 'Long',
-      hidden: true
+      class: 'String',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
     },
     { 
       name: 'templateName',
       class: 'String',
-      required: true
     },
     {
       name: 'accounts',
-      class: 'Map',
-      view: function() {
-        return {
-          class: 'net.nanopay.liquidity.crunch.CapabilityAccountTemplateMapView',
-          isCapabilityAccountData: false
-        }
+      class: 'List',
+      javaType: 'java.util.List<Long>',
+      javaFactory: `
+        return new ArrayList<Long>();
+      `,
+      factory: function() {
+        return [];
+      }
+    },
+    {
+      name: 'roots',
+      class: 'List',
+      javaType: 'java.util.List<Long>',
+      javaFactory: `
+        return new ArrayList<Long>();
+      `,
+      factory: function() {
+        return [];
       }
     }
   ],
   methods: [
+    {
+      name: 'toSummary',
+      type: 'String',
+      documentation: `
+        When using a reference to the accountDAO, the labels associated with it will show
+        a chosen property rather than the first alphabetical string property. In this
+        case, we are using the account name.
+      `,
+      code: function() {
+        return this.templateName || this.id;
+      }
+    },
     {
       name: 'validate',
       javaCode: `
         if ( getTemplateName() == null ) 
           throw new IllegalStateException("Template name must be provided");
 
-        Map<String, AccountData> map = getAccounts();
-        if ( map == null || map.size() == 0 ) 
+        List<Long> accountsList = (List<Long>) getAccounts();
+        if ( accountsList == null || accountsList.size() == 0 ) 
           throw new IllegalStateException("At least one account must be provided to create this template");
         
         DAO dao = (DAO) x.get("localAccountDAO");
-        Set<String> keySet = map.keySet();
-        for ( String key : keySet ) {
-          if ( dao.find(Long.parseLong(key)) == null ) 
+        for ( Long accountId : accountsList ) {
+          if ( dao.find(accountId) == null ) 
             throw new IllegalStateException("One or more entries of this template contains an invalid value for account");
         }
       `,
