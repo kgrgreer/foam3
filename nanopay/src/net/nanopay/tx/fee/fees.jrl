@@ -1,0 +1,24 @@
+// Ablii Fee
+p({
+  class: "net.nanopay.tx.fee.FixedFee",
+  id:"b3a61c9b-047c-df94-ac0d-8a190099eeb8",
+  name: "Ablii Fee",
+  label: "Domestic Fee",
+  fixedFee: 75,
+  predicate: {
+    class: "net.nanopay.tx.fee.predicate.IsDomesticTransaction"
+  },
+  feeRule: "bb64181c-654e-4bc5-a31e-03642a34df50"
+})
+p({
+  class: "net.nanopay.tx.fee.FixedFee",
+  id:"323bd5c0-7cc3-0390-ef02-26e99696b878",
+  name: "Ablii Fee",
+  label: "International Fee",
+  fixedFee: 500,
+  predicate: {
+    class: "net.nanopay.tx.fee.predicate.IsDomesticTransaction",
+    value: false
+  },
+  feeRule: "bb64181c-654e-4bc5-a31e-03642a34df50"
+})

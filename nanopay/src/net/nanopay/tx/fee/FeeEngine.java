@@ -19,30 +19,32 @@ package net.nanopay.tx.fee;
 
 import foam.core.FObject;
 import foam.core.X;
+import foam.dao.DAO;
 import foam.mlang.Constant;
 import foam.mlang.Expr;
 import foam.mlang.Formula;
 import foam.nanos.logger.Logger;
-import net.nanopay.tx.InvoicedFeeLineItem;
+import net.nanopay.tx.FeeLineItem;
 import net.nanopay.tx.TransactionLineItem;
 import net.nanopay.tx.model.Transaction;
 
 import java.util.*;
 
+import static foam.core.ContextAware.maybeContextualize;
+
 public class FeeEngine {
-  private final String feeGroup_;
-  private final String currency_;
+  private final TransactionFeeRule transactionFeeRule_;
 
   private String currentFeeId_ = null;
   private Map<String, List<String>> feeGraph_ = new HashMap<>();
 
-  public FeeEngine(String feeGroup, String currency) {
-    feeGroup_ = feeGroup;
-    currency_ = currency;
+  public FeeEngine(TransactionFeeRule transactionFeeRule) {
+    transactionFeeRule_ = transactionFeeRule;
   }
 
-  public void execute(X x, String feeName, Transaction transaction) {
+  public void execute(X x, Transaction transaction) {
     var logger = (Logger) x.get("logger");
+    var feeName = transactionFeeRule_.getFeeName();
     Fee fee = null;
     try {
       fee = loadFee(x, feeName, transaction);
@@ -52,13 +54,8 @@ public class FeeEngine {
           logger.debug("Fee amount is (" + feeAmount + ")", fee.toString(), transaction);
         }
 
-        transaction.addLineItems(new TransactionLineItem[]{
-          new InvoicedFeeLineItem.Builder(x)
-            .setGroup(getFeeGroup())
-            .setName(fee.getLabel())
-            .setCurrency(getCurrency())
-            .setAmount(feeAmount)
-            .build()
+        transaction.addLineItems(new TransactionLineItem[] {
+          newFeeLineItem(fee.getLabel(), feeAmount, getCurrency(transaction))
         });
       }
     } catch ( Exception e ) {
@@ -67,21 +64,40 @@ public class FeeEngine {
     }
   }
 
-  public String getFeeGroup() {
-    return feeGroup_;
+  private FeeLineItem newFeeLineItem(String name, long amount, String currency)
+    throws InstantiationException, IllegalAccessException
+  {
+    var result = (FeeLineItem) transactionFeeRule_.getFeeClass().newInstance();
+    result.setGroup(getFeeGroup());
+    result.setName(name);
+    result.setCurrency(currency);
+    result.setAmount(amount);
+    return result;
   }
 
-  public String getCurrency() {
-    return currency_;
+  public String getFeeGroup() {
+    return transactionFeeRule_.getFeeGroup();
+  }
+
+  public String getCurrency(Transaction transaction) {
+    return transactionFeeRule_.getSourceCurrencyAsFeeDenomination()
+      ? transaction.getSourceCurrency()
+      : transactionFeeRule_.getFeeDenomination();
+  }
+
+  public DAO getFeeDAO(X x) {
+    return transactionFeeRule_.getFees(x);
   }
 
   private Fee loadFee(X x, String feeName, Transaction transaction) {
     var feeExpr = new FeeExpr(feeName);
-    return loadFee(x, feeExpr, transaction);
+    return loadFee(x, feeExpr, maybeContextualize(x, transaction));
   }
 
   private Fee loadFee(X x, FeeExpr feeExpr, FObject obj) {
     feeExpr.setX(x);
+    feeExpr.setFeeDAO(getFeeDAO(x));
+
     var fee = (Fee) feeExpr.f(obj);
 
     if ( fee == null ) {

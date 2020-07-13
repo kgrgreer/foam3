@@ -1,6 +1,6 @@
 p({
   "class": "foam.nanos.menu.Menu",
-  "id": "operation.txFees",
+  "id": "rules.txfeerules",
   "label": "Transaction Fees",
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
@@ -14,7 +14,8 @@ p({
       "defaultColumns": [
         "id",
         "name",
-        "enabled"
+        "enabled",
+        "predicate"
       ],
       "of": "net.nanopay.tx.fee.TransactionFeeRule",
       "browseTitle": "Transaction Fees",
@@ -28,5 +29,5 @@ p({
       }
     }
   },
-  "parent": "operation"
+  "parent": "rules"
 })

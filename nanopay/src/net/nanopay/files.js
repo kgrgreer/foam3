@@ -1504,7 +1504,6 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/TrevisoSplitTransactionPlanner' },
 
   // Fees
-  { name: 'net/nanopay/tx/planner/fees/AbliiFeeRule' },
   { name: 'net/nanopay/tx/fee/Fee' },
   { name: 'net/nanopay/tx/fee/FeeDAOCreateView' },
   { name: 'net/nanopay/tx/fee/FeeExpr' },
@@ -1513,6 +1512,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/fee/InformationalFee' },
   { name: 'net/nanopay/tx/fee/PercentageFee' },
   { name: 'net/nanopay/tx/fee/TransactionFeeRule' },
+  { name: 'net/nanopay/tx/fee/Relationships' },
+  { name: 'net/nanopay/tx/fee/predicate/IsDomesticTransaction' },
   { name: 'net/nanopay/tx/fee/test/TransactionFeeRuleTest' },
 
   // crunch onboarding

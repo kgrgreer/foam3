@@ -65,7 +65,7 @@ foam.CLASS({
       ],
       javaCode: `
         var fee75 = new FixedFee.Builder(x).setName("fee75").setFixedFee(75).build();
-        setupTestFeeAndTxFeeRule(x, fee75, "CAD");
+        setupTestTxFeeRuleAndFee(x, fee75, "CAD");
 
         test(true, "TransactionFeeRuleTest_fixed_fee:");
         testTransactionFees(x, new long[] { 75 });
@@ -80,7 +80,7 @@ foam.CLASS({
       ],
       javaCode: `
         var fee2p = new PercentageFee.Builder(x).setName("fee2p").setPercentage(2.0F).build();
-        setupTestFeeAndTxFeeRule(x, fee2p, "CAD");
+        setupTestTxFeeRuleAndFee(x, fee2p, "CAD");
 
         test(true, "TransactionFeeRuleTest_percentage_fee:");
         testTransactionFees(x, new long[] { 20 });
@@ -96,8 +96,8 @@ foam.CLASS({
       javaCode: `
         var fee2p = new PercentageFee.Builder(x).setName("fee2p").setPercentage(2.0F).build();
         var fee75 = new FixedFee.Builder(x).setName("fee75").setFixedFee(75).build();
-        setupTestFeeAndTxFeeRule(x, fee2p, "CAD");
-        setupTestFeeAndTxFeeRule(x, fee75, "CAD");
+        setupTestTxFeeRuleAndFee(x, fee2p, "CAD");
+        setupTestTxFeeRuleAndFee(x, fee75, "CAD");
 
         test(true, "TransactionFeeRuleTest_multiple_fees:");
         testTransactionFees(x, new long[] { 20, 75 });
@@ -117,7 +117,7 @@ foam.CLASS({
             // fee = (10 + 20) * 30 - 100
             SUB(MUL(ADD(10, 20), 30), 100)
           ).build();
-        setupTestFeeAndTxFeeRule(x, fee, "CAD");
+        setupTestTxFeeRuleAndFee(x, fee, "CAD");
 
         test(true, "TransactionFeeRuleTest_fee_with_formula:");
         testTransactionFees(x, new long[] { (10 + 20) * 30 - 100 });
@@ -131,8 +131,6 @@ foam.CLASS({
         { name: 'x', type: 'Context' }
       ],
       javaCode: `
-        setupTestFee(x, new PercentageFee.Builder(x).setName("percentageFeePart").setPercentage(2.9F).build());
-        setupTestFee(x, new FixedFee.Builder(x).setName("fixedFeePart").setFixedFee(30).build());
         var fee = new Fee.Builder(x)
           .setName("fee")
           .setFormula(
@@ -142,7 +140,9 @@ foam.CLASS({
               new FeeExpr("fixedFeePart")
             )
           ).build();
-        setupTestFeeAndTxFeeRule(x, fee, "CAD");
+        var feeRule = setupTestTxFeeRuleAndFee(x, fee, "CAD");
+        setupTestFee(x, new PercentageFee.Builder(x).setName("percentageFeePart").setPercentage(2.9F).build(), feeRule);
+        setupTestFee(x, new FixedFee.Builder(x).setName("fixedFeePart").setFixedFee(30).build(), feeRule);
 
         test(true, "TransactionFeeRuleTest_fee_formula_with_fee_expressions:");
         testTransactionFees(x, new long[] { 29 + 30 });
@@ -161,7 +161,7 @@ foam.CLASS({
           // fee = invalid_fee (nonexistent fee reference)
           .setFormula(new FeeExpr("invalid_fee"))
           .build();
-        setupTestFeeAndTxFeeRule(x, fee, "CAD");
+        setupTestTxFeeRuleAndFee(x, fee, "CAD");
 
         var passed = false;
         try {
@@ -183,7 +183,7 @@ foam.CLASS({
       javaCode: `
         var fee75 = new FixedFee.Builder(x).setName("fee75").setFixedFee(75)
           .setPredicate(FALSE).build();
-        setupTestFeeAndTxFeeRule(x, fee75, "CAD");
+        setupTestTxFeeRuleAndFee(x, fee75, "CAD");
 
         test(true, "TransactionFeeRuleTest_ignore_inapplicable_fee:");
         testTransactionFees(x, new long[0]);
@@ -201,8 +201,8 @@ foam.CLASS({
         var fee75 = new FixedFee.Builder(x).setName("fee75").setFixedFee(75).build();
         fee2p.setPredicate(GTE(Transaction.AMOUNT, 4000));
         fee75.setPredicate(LT(Transaction.AMOUNT, 4000));
-        setupTestFeeAndTxFeeRule(x, fee2p, "CAD");
-        setupTestFeeAndTxFeeRule(x, fee75, "CAD");
+        setupTestTxFeeRuleAndFee(x, fee2p, "CAD");
+        setupTestTxFeeRuleAndFee(x, fee75, "CAD");
 
         test(true, "TransactionFeeRuleTest_select_fee_based_on_predicate:");
         testTransactionFees(x, new long[] { 75 });
@@ -216,19 +216,20 @@ foam.CLASS({
         { name: 'x', type: 'Context' }
       ],
       javaCode: `
+        var aFee = new Fee.Builder(x)
+          .setName("a")
+          // a = b + 1
+          .setFormula( ADD(new FeeExpr("b"), 1) )
+          .build();
+        var feeRule = setupTestTxFeeRuleAndFee(x, aFee, "CAD");
         setupTestFee(x,
           new Fee.Builder(x)
-            .setName("a")
-            // a = b + 1
-            .setFormula( ADD(new FeeExpr("b"), 1) )
-            .build()
+            .setName("b")
+            // b = a + 1
+            .setFormula( ADD(new FeeExpr("a"), 1) )
+            .build(),
+          feeRule
         );
-        var fee = new Fee.Builder(x)
-          .setName("b")
-          // b = a + 1
-          .setFormula( ADD(new FeeExpr("a"), 1) )
-          .build();
-        setupTestFeeAndTxFeeRule(x, fee, "CAD");
 
         var passed = false;
         try {
@@ -248,22 +249,23 @@ foam.CLASS({
         { name: 'x', type: 'Context' }
       ],
       javaCode: `
+        var aFee = new Fee.Builder(x)
+          .setName("a")
+          // a = b + c
+          .setFormula( ADD(new FeeExpr("b"), new FeeExpr("c")) )
+          .build();
+        var feeRule = setupTestTxFeeRuleAndFee(x, aFee, "CAD");
         setupTestFee(x,
           new Fee.Builder(x)
-            .setName("a")
-            // a = b
-            .setFormula( new FeeExpr("b") )
-            .build()
+            .setName("b")
+            // b = c
+            .setFormula( new FeeExpr("c") )
+            .build(),
+          feeRule
         );
         setupTestFee(x,
-          // b = 10
-          new FixedFee.Builder(x).setName("b").setFixedFee(10).build());
-        var fee = new Fee.Builder(x)
-          .setName("c")
-          // c = a + b
-          .setFormula( ADD(new FeeExpr("a"), new FeeExpr("b")) )
-          .build();
-        setupTestFeeAndTxFeeRule(x, fee, "CAD");
+          // c = 10
+          new FixedFee.Builder(x).setName("c").setFixedFee(10).build(), feeRule);
 
         test(true, "TransactionFeeRuleTest_fee_none_self_recursion:");
         testTransactionFees(x, new long[] { 10 + 10 });
@@ -279,8 +281,8 @@ foam.CLASS({
       javaCode: `
         var fee75 = new FixedFee.Builder(x).setName("fee75").setFixedFee(75).build();
         var promo = new FixedFee.Builder(x).setName("promo").setFixedFee(-75).build();
-        setupTestFeeAndTxFeeRule(x, fee75, "CAD");
-        setupTestFeeAndTxFeeRule(x, promo, "CAD");
+        setupTestTxFeeRuleAndFee(x, fee75, "CAD");
+        setupTestTxFeeRuleAndFee(x, promo, "CAD");
 
         test(true, "TransactionFeeRuleTest_allow_negative_fee_aka_promotion:");
         testTransactionFees(x, new long[] { -75, 75 });
@@ -303,7 +305,7 @@ foam.CLASS({
               MAX_FUNC( MUL(Transaction.AMOUNT, 0.02), 75 )
             )
           ).build();
-        setupTestFeeAndTxFeeRule(x, fee, "CAD");
+        setupTestTxFeeRuleAndFee(x, fee, "CAD");
 
         test(true, "TransactionFeeRuleTest_fee_formula_with_min_max_functions:");
         testTransactionFees(x, new long[] { 75 });
@@ -321,7 +323,7 @@ foam.CLASS({
           .setName("divide_by_zero")
           // divide_by_zero = 1 / 0
           .setFormula(DIV(1, 0)).build();
-        setupTestFeeAndTxFeeRule(x, fee, "CAD");
+        setupTestTxFeeRuleAndFee(x, fee, "CAD");
 
         var passed = false;
         try {
@@ -345,7 +347,7 @@ foam.CLASS({
           .setName("zero_divide_by_zero")
           // zero_divide_by_zero = 0 / 0
           .setFormula(DIV(0, 0)).build();
-        setupTestFeeAndTxFeeRule(x, fee, "CAD");
+        setupTestTxFeeRuleAndFee(x, fee, "CAD");
 
         var passed = false;
         try {
@@ -369,7 +371,7 @@ foam.CLASS({
           .setName("zero_divide_by_one")
           // zero_divide_by_one = 0 / 1
           .setFormula(DIV(0, 1)).build();
-        setupTestFeeAndTxFeeRule(x, fee, "CAD");
+        setupTestTxFeeRuleAndFee(x, fee, "CAD");
 
         test(true, "TransactionFeeRuleTest_handle_zero_divide_by_non_zero_in_fee_formula:");
         testTransactionFees(x, new long[] { 0 });
@@ -428,24 +430,23 @@ foam.CLASS({
       name: 'setupTestFee',
       args: [
         { name: 'x', type: 'Context' },
-        { name: 'fee', type: 'Fee' }
+        { name: 'fee', type: 'Fee' },
+        { name: 'feeRule', type: 'net.nanopay.tx.fee.TransactionFeeRule' }
       ],
       javaCode: `
-        var feeDAO = (DAO) x.get("feeDAO");
-        fee = (Fee) feeDAO.put(fee);
+        fee = (Fee) feeRule.getFees(x).put(fee);
         testFeeIds.add(fee.getId());
       `
     },
     {
-      name: 'setupTestFeeAndTxFeeRule',
+      name: 'setupTestTxFeeRuleAndFee',
+      type: 'net.nanopay.tx.fee.TransactionFeeRule',
       args: [
         { name: 'x', type: 'Context' },
         { name: 'fee', type: 'net.nanopay.tx.fee.Fee' },
         { name: 'currency', type: 'String' }
       ],
       javaCode: `
-        setupTestFee(x, fee);
-
         // create transaction fee rule
         var ruleDAO = (DAO) x.get("localRuleDAO");
         var txFeeRule = new TransactionFeeRule();
@@ -462,19 +463,11 @@ foam.CLASS({
         assert txFeeRule.getEnabled() && txFeeRule.getLifecycleState() == LifecycleState.ACTIVE
           : "Tx fee rule is enabled: " + txFeeRule.getEnabled() + ", and active: " + txFeeRule.getLifecycleState();
 
+        // create fee
+        setupTestFee(x, fee, txFeeRule);
+
         testFeeRuleIds.add(txFeeRule.getId());
-      `
-    },
-    {
-      name: 'tearDownTestFees',
-      args: [
-        { name: 'x', type: 'Context' },
-      ],
-      javaCode: `
-        var feeDAO = (DAO) x.get("feeDAO");
-        feeDAO.where(
-          IN(Fee.ID, testFeeIds)
-        ).removeAll();
+        return txFeeRule;
       `
     },
     {

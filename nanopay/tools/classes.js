@@ -1049,7 +1049,6 @@ var classes = [
   'net.nanopay.tx.planner.TrevisoTransactionPlanner',
 
   // Fees
-  'net.nanopay.tx.planner.fees.AbliiFeeRule',
   'net.nanopay.tx.fee.Fee',
   'net.nanopay.tx.fee.FeeExpr',
   'net.nanopay.tx.fee.FeeType',
@@ -1057,6 +1056,7 @@ var classes = [
   'net.nanopay.tx.fee.InformationalFee',
   'net.nanopay.tx.fee.PercentageFee',
   'net.nanopay.tx.fee.TransactionFeeRule',
+  'net.nanopay.tx.fee.predicate.IsDomesticTransaction',
   'net.nanopay.tx.fee.test.TransactionFeeRuleTest',
 
   // crunch onboarding
