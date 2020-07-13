@@ -24,7 +24,7 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'net.nanopay.payment.PaymentProvider',
-      name: 'paymentProviderId',
+      name: 'paymentProvider',
     }
   ]
 });

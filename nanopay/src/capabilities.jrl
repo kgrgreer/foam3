@@ -290,50 +290,50 @@ p({
 
 p({
   class:"net.nanopay.payment.PaymentProviderCapability",
-  paymentProviderId:"AFEX",
-  id:"b2b1f5c1-96f4-4192-917e-1c56937f9c42",
+  paymentProvider:"AFEX",
+  id:"afexf5c1-96f4-4192-917e-1c56937f9c42",
   name:"AFEX",
   enabled:true
 })
 p({
   class:"net.nanopay.payment.PaymentProviderCapability",
-  paymentProviderId:"Alterna",
-  id:"0ba4a00f-44c9-bf3c-3f5d-6b16762e2cdc",
+  paymentProvider:"Alterna",
+  id:"alternaf-44c9-bf3c-3f5d-6b16762e2cdc",
   name:"Alterna",
   enabled:true
 })
 p({
   class:"net.nanopay.payment.PaymentProviderCapability",
-  paymentProviderId:"AscendantFX",
-  id:"da09f9c5-946e-701c-6dfc-4c9158b0ac06",
+  paymentProvider:"AscendantFX",
+  id:"afx9f9c5-946e-701c-6dfc-4c9158b0ac06",
   name:"AscendantFX",
   enabled:true
 })
 p({
   class:"net.nanopay.payment.PaymentProviderCapability",
-  paymentProviderId:"BMO",
-  id:"c499ea03-07c4-0499-8589-80c7691fe724",
+  paymentProvider:"BMO",
+  id:"bmo9ea03-07c4-0499-8589-80c7691fe724",
   name:"BMO",
   enabled:true
 })
 p({
   class:"net.nanopay.payment.PaymentProviderCapability",
-  paymentProviderId:"Kotak",
-  id:"606739c3-4bf3-96d8-1368-b29e7de218ef",
-  name:"BMO",
+  paymentProvider:"Kotak",
+  id:"kotak9c3-4bf3-96d8-1368-b29e7de218ef",
+  name:"Kotak",
   enabled:true
 })
 p({
   class:"net.nanopay.payment.PaymentProviderCapability",
-  paymentProviderId:"RBC",
-  id:"54c0b7e5-b683-03cd-330a-b2f68a3bbb34",
+  paymentProvider:"RBC",
+  id:"rbc0b7e5-b683-03cd-330a-b2f68a3bbb34",
   name:"RBC",
   enabled:true
 })
 p({
   class:"net.nanopay.payment.PaymentProviderCapability",
-  paymentProviderId:"Treviso",
-  id:"c03f7d48-9274-76d3-af1f-e800ea6945f6",
+  paymentProvider:"Treviso",
+  id:"treviso48-9274-76d3-af1f-e800ea6945f6",
   name:"Treviso",
   enabled:true
 })
@@ -469,4 +469,3 @@ p({
   name:"Treviso br-us",
   enabled:true
 })
-

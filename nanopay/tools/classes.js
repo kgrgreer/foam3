@@ -72,6 +72,8 @@ var classes = [
   'net.nanopay.payment.PADType',
   'net.nanopay.payment.PADTypeLineItem',
   'net.nanopay.payment.PADTypeCheckDAO',
+  'net.nanopay.payment.PaymentProviderPrerequisiteRule',
+  'net.nanopay.payment.PaymentProviderCorridorJunctionRule',
   'net.nanopay.account.Balance',
   'net.nanopay.account.DuplicateEntryRule',
   'net.nanopay.account.DuplicateCABankAccountRule',
