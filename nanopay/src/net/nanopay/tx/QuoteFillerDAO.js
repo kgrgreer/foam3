@@ -74,7 +74,7 @@ foam.CLASS({
         if ( destAccount == null ) {
           User user = (User) ((DAO) x.get("bareUserDAO")).find_(x, txn.getPayeeId());
           if ( user == null ) {
-            ((Logger) x.get("logger")).error("Paye not found", txn.getId(), "source", txn.getDestinationAccount(), "payer", txn.getPayeeId());
+            ((Logger) x.get("logger")).error("Payee not found", txn.getId(), "source", txn.getDestinationAccount(), "payee", txn.getPayeeId());
             throw new RuntimeException("Payee not found");
           }
           DigitalAccount accountDigital = DigitalAccount.findDefault(getX(), user, txn.getDestinationCurrency());
