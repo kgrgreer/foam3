@@ -487,15 +487,25 @@ p({
   "parent": "rules"
 })
 
+// Roles and Capabilities
 p({
   "class": "foam.nanos.menu.Menu",
-  "id": "roles.assigncapability",
+  "id": "roles",
+  "label": "Role Management",
+  "handler": {
+    "class": "foam.nanos.menu.SubMenu"
+  }
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "roles.roleassignment",
   "label": "Role Assignment",
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
     "config": {
       "class": "foam.comics.v2.DAOControllerConfig",
-      "daoKey": "capabilityRequestDAO",
+      "daoKey": "roleAssignmentDAO",
       "browseTitle": "Role Assignment",
       "createTitle": "Execute a Role Assignment",
       "CRUDEnabledActionsAuth": {
@@ -503,7 +513,7 @@ p({
         "isEnabled": true,
         "enabledActionsAuth": {
           "class": "net.nanopay.liquidity.crunch.LiquidEnabledActionsAuth",
-          "modelName": "capabilityrequest"
+          "modelName": "roles"
         }
       }
     }
@@ -513,23 +523,15 @@ p({
 
 p({
   "class": "foam.nanos.menu.Menu",
-  "id": "roles.accountbasedliquidcapabilities",
-  "label": "Transactional Roles",
+  "id": "roles.roletemplate",
+  "label": "Role Templates",
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
     "config": {
       "class": "foam.comics.v2.DAOControllerConfig",
-      "daoKey": "accountBasedLiquidCapabilityDAO",
-      "browseTitle": "Transactional Roles",
-      "createTitle": "Create a Transactional Role",
-      "CRUDEnabledActionsAuth": {
-        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
-        "isEnabled": true,
-        "enabledActionsAuth": {
-          "class": "net.nanopay.liquidity.crunch.LiquidEnabledActionsAuth",
-          "modelName": "capability"
-        }
-      }
+      "daoKey": "roleTemplateDAO",
+      "browseTitle": "Role Template",
+      "createTitle": "Create a Role Template"
     }
   },
   "parent": "roles"
@@ -537,23 +539,15 @@ p({
 
 p({
   "class": "foam.nanos.menu.Menu",
-  "id": "roles.globalliquidcapabilities",
-  "label": "Admin Roles",
+  "id": "roles.accounttemplate",
+  "label": "Account Groups for Roles",
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
     "config": {
       "class": "foam.comics.v2.DAOControllerConfig",
-      "daoKey": "globalLiquidCapabilityDAO",
-      "browseTitle": "Admin Roles",
-      "createTitle": "Create a New Admin Role",
-      "CRUDEnabledActionsAuth": {
-        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
-        "isEnabled": true,
-        "enabledActionsAuth": {
-          "class": "net.nanopay.liquidity.crunch.LiquidEnabledActionsAuth",
-          "modelName": "capability"
-        }
-      }
+      "daoKey": "accountTemplateDAO",
+      "browseTitle": "Account Groups for Roles",
+      "createTitle": "Create a New Account Group for Roles",
     }
   },
   "parent": "roles"

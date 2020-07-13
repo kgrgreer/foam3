@@ -107,7 +107,7 @@ foam.CLASS({
       value: 'localTransactionDAO',
       visibility: 'RO',
     },
-    {
+    /*{ //TODO: Rule Action does not exist
       name: 'action',
       transient: true,
       javaFactory: `
@@ -118,7 +118,7 @@ foam.CLASS({
           .setCurrentLimits(this.getCurrentLimits())
           .build();
       `,
-    },
+    },*/
     {
       name: 'predicate',
       transient: true

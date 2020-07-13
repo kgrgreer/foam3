@@ -20,107 +20,15 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"globalLiquidCapabilityDAO",
-  "lazy":false,
-  "serve":true,
-  "serviceScript":"""
-    return new foam.dao.EasyDAO.Builder(x)
-      .setEnableInterfaceDecorators(false)
-      .setInnerDAO(x.get("capabilityDAO"))
-      .setOf(net.nanopay.liquidity.crunch.GlobalLiquidCapability.getOwnClassInfo())
-      .setAuthorize(false)
-      .setValidated(true)
-      .setDecorator(new foam.dao.FilteredDAO(
-        x, 
-        foam.mlang.MLang.INSTANCE_OF(net.nanopay.liquidity.crunch.GlobalLiquidCapability.class), 
-        null, 
-        net.nanopay.liquidity.crunch.GlobalLiquidCapability.getOwnClassInfo(),
-        net.nanopay.liquidity.crunch.GlobalLiquidCapability.ID
-      ))
-      .build();
-  """,
-  "client":"{\"of\":\"net.nanopay.liquidity.crunch.GlobalLiquidCapability\"}"
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"accountBasedLiquidCapabilityDAO",
-  "lazy":false,
-  "serve":true,
-  "serviceScript":"""
-    return new foam.dao.EasyDAO.Builder(x)
-      .setEnableInterfaceDecorators(false)
-      .setInnerDAO(x.get("capabilityDAO"))
-      .setOf(net.nanopay.liquidity.crunch.AccountBasedLiquidCapability.getOwnClassInfo())
-      .setAuthorize(false)
-      .setValidated(true)
-      .setDecorator(new foam.dao.FilteredDAO(
-        x, 
-        foam.mlang.MLang.INSTANCE_OF(net.nanopay.liquidity.crunch.AccountBasedLiquidCapability.class), 
-        null, 
-        net.nanopay.liquidity.crunch.AccountBasedLiquidCapability.getOwnClassInfo(),
-        net.nanopay.liquidity.crunch.AccountBasedLiquidCapability.ID
-      ))
-      .build();
-  """,
-  "client":"{\"of\":\"net.nanopay.liquidity.crunch.AccountBasedLiquidCapability\"}"
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
   "name":"accountTemplateDAO",
   "serve":true,
   "serviceScript":"""
     return new foam.dao.EasyDAO.Builder(x)
-      .setInnerDAO(x.get("accountTemplateAndCapabilityAccountTemplateDAO"))
       .setOf(net.nanopay.liquidity.crunch.AccountTemplate.getOwnClassInfo())
-      .setAuthorize(false)
-      .setValidated(true)
-      .setDecorator(new foam.dao.FilteredDAO(
-        x, 
-        foam.mlang.MLang.NOT(foam.mlang.MLang.INSTANCE_OF(net.nanopay.liquidity.crunch.CapabilityAccountTemplate.class)), 
-        null, 
-        net.nanopay.liquidity.crunch.AccountTemplate.getOwnClassInfo(),
-        net.nanopay.liquidity.crunch.AccountTemplate.ID
-      ))
-      .build();
-  """,
-  "client":"{\"of\":\"net.nanopay.liquidity.crunch.AccountTemplate\"}"
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"capabilityAccountTemplateDAO",
-  "serve":true,
-  "serviceScript":"""
-    return new foam.dao.EasyDAO.Builder(x)
-      .setInnerDAO(x.get("accountTemplateAndCapabilityAccountTemplateDAO"))
-      .setOf(net.nanopay.liquidity.crunch.CapabilityAccountTemplate.getOwnClassInfo())
-      .setAuthorize(false)
-      .setValidated(true)
-      .setDecorator(new foam.dao.FilteredDAO(
-        x, 
-        foam.mlang.MLang.INSTANCE_OF(net.nanopay.liquidity.crunch.CapabilityAccountTemplate.class), 
-        null, 
-        net.nanopay.liquidity.crunch.CapabilityAccountTemplate.getOwnClassInfo(),
-        net.nanopay.liquidity.crunch.CapabilityAccountTemplate.ID
-      ))
-      .build();
-  """,
-  "client":"{\"of\":\"net.nanopay.liquidity.crunch.CapabilityAccountTemplate\"}"
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"accountTemplateAndCapabilityAccountTemplateDAO",
-  "serve":true,
-  "serviceScript":"""
-    return new foam.dao.EasyDAO.Builder(x)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("accountTemplates")
-      .setSeqNo(true)
-      .setOf(net.nanopay.liquidity.crunch.AccountTemplate.getOwnClassInfo())
-      .setAuthorize(false) // authorize this later on
+      .setGuid(true)
+      .setValidated(true)
       .build();
   """,
   "client":"{\"of\":\"net.nanopay.liquidity.crunch.AccountTemplate\"}"
@@ -128,33 +36,33 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"capabilityRequestDAO",
+  "name":"roleAssignmentDAO",
   "serve":true,
   "serviceScript":"""      
     return new foam.dao.EasyDAO.Builder(x)
-      .setInnerDAO(x.get("localCapabilityRequestDAO"))
+      .setInnerDAO(x.get("localRoleAssignmentDAO"))
       .setValidated(true)
-      .setOf(net.nanopay.liquidity.crunch.CapabilityRequest.getOwnClassInfo())
+      .setOf(net.nanopay.liquidity.crunch.RoleAssignment.getOwnClassInfo())
       .setEnableInterfaceDecorators(false)
       .setRuler(false)
       .build();
   """,
-  "client":"{\"of\":\"net.nanopay.liquidity.crunch.CapabilityRequest\", \"remoteListenerSupport\": false}"
+  "client":"{\"of\":\"net.nanopay.liquidity.crunch.RoleAssignment\", \"remoteListenerSupport\": false}"
 })
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"localCapabilityRequestDAO",
+  "name":"localRoleAssignmentDAO",
   "serviceScript":"""
     return new foam.dao.EasyDAO.Builder(x)
-      .setOf(net.nanopay.liquidity.crunch.CapabilityRequest.getOwnClassInfo())
+      .setOf(net.nanopay.liquidity.crunch.RoleAssignment.getOwnClassInfo())
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName("capabilityRequests")
-      .setSeqNo(true)
+      .setJournalName("roleAssignments")
+      .setGuid(true)
       .setAuthorize(false)
       .build();
   """,
-  "client":"{\"of\":\"net.nanopay.liquidity.crunch.CapabilityRequest\", \"remoteListenerSupport\": false}"
+  "client":"{\"of\":\"net.nanopay.liquidity.crunch.RoleAssignment\", \"remoteListenerSupport\": false}"
 })
 
 p({

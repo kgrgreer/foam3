@@ -24,7 +24,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'net.nanopay.account.Account',
-    'java.util.Map'
+    'java.util.ArrayList'
   ],
   
   searchColumns: [

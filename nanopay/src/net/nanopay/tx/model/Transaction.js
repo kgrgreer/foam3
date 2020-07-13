@@ -65,7 +65,6 @@ foam.CLASS({
     'net.nanopay.tx.InterestTransaction',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.Transfer',
-    'net.nanopay.tx.OriginatingSource',
     'net.nanopay.account.Balance',
     'static foam.mlang.MLang.EQ',
     'net.nanopay.tx.planner.AbstractTransactionPlanner'
@@ -78,7 +77,6 @@ foam.CLASS({
    'net.nanopay.tx.TransactionLineItem',
    'net.nanopay.tx.model.TransactionStatus',
    'net.nanopay.tx.HistoricStatus',
-   'net.nanopay.tx.OriginatingSource'
   ],
 
   constants: [
@@ -440,18 +438,6 @@ foam.CLASS({
       includeInDigest: true,
       tableWidth: 50
     },
-    {
-      class: 'foam.core.Enum',
-      of: 'net.nanopay.tx.OriginatingSource',
-      name: 'origin',
-      createVisibility: 'HIDDEN',
-      updateVisibility: 'RO',
-      section: 'basicInfo',
-      label: 'Originating Source',
-      value: 'NONE',
-      javaFactory: 'return OriginatingSource.NONE;',
-      includeInDigest: true,
-    },
      {
       // FIXME: move to a ViewTransaction used on the client
       class: 'FObjectProperty',
@@ -460,13 +446,13 @@ foam.CLASS({
       label: 'Sender',
       section: 'paymentInfoSource',
       createVisibility: 'HIDDEN',
-      readVisibility: function(payer, origin) {
-        if ( origin == this.OriginatingSource.MANUAL && payer )
+      readVisibility: function(payer) {
+        if ( payer )
           return foam.u2.DisplayMode.RO;
         return foam.u2.DisplayMode.HIDDEN;
       },
-      updateVisibility: function(payer, origin) {
-        if ( origin == this.OriginatingSource.MANUAL && payer )
+      updateVisibility: function(payer) {
+        if ( payer )
           return foam.u2.DisplayMode.RO;
         return foam.u2.DisplayMode.HIDDEN;
       },
@@ -494,13 +480,13 @@ foam.CLASS({
       storageTransient: true,
       section: 'paymentInfoDestination',
       createVisibility: 'HIDDEN',
-      readVisibility: function(payee, origin) {
-         if ( origin == this.OriginatingSource.MANUAL && payee )
+      readVisibility: function(payee) {
+         if ( payee )
            return foam.u2.DisplayMode.RO;
          return foam.u2.DisplayMode.HIDDEN;
       },
-      updateVisibility: function(payee, origin) {
-         if ( origin == this.OriginatingSource.MANUAL && payee )
+      updateVisibility: function(payee) {
+         if ( payee )
            return foam.u2.DisplayMode.RO;
          return foam.u2.DisplayMode.HIDDEN;
       },

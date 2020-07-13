@@ -19,8 +19,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.nanopay.liquidity.crunch.CapabilityRequest;
-import net.nanopay.liquidity.crunch.CapabilityRequestOperations;
+import net.nanopay.liquidity.crunch.RoleAssignment;
+import net.nanopay.liquidity.crunch.RoleAssignmentOperations;
 
 import static foam.mlang.MLang.*;
 
@@ -93,8 +93,8 @@ public abstract class LiquidTestExecutor extends Test {
     return (DAO) x.get("userUserDAO");
   }
 
-  protected DAO getLocalCapabilityRequestDAO(X x) {
-    return (DAO) x.get("localCapabilityRequestDAO");
+  protected DAO getLocalRoleAssignmentDAO(X x) {
+    return (DAO) x.get("localRoleAssignmentDAO");
   }
 
   protected UserQueryService getUserQueryService(X x) {
@@ -147,13 +147,14 @@ public abstract class LiquidTestExecutor extends Test {
     userList.add(user.getId());
 
     // Assign role
-    CapabilityRequest capabilityRequest = new CapabilityRequest.Builder(this.getSystemX())
-      .setGlobalCapability("8b36b11a-93c6-b40c-d9c8-f8effefb31cc-8")
-      .setRequestType(CapabilityRequestOperations.ASSIGN_GLOBAL)
+    // TODO: make sure they use admin role template
+    RoleAssignment RoleAssignment = new RoleAssignment.Builder(this.getSystemX())
+      .setRoleTemplate("ddbabe1a-dea2-d4e3-09af-70aac6201ed5")
       .setUsers(userList)
+      .setAccountTemplate("554af38a-8225-87c8-dfdf-eeb15f71215f-0")
       .setLifecycleState(LifecycleState.ACTIVE)
       .build();
-    this.getLocalCapabilityRequestDAO(x).inX(this.getSystemX()).put(capabilityRequest);
+    this.getLocalRoleAssignmentDAO(x).inX(this.getSystemX()).put(RoleAssignment);
 
     return user;
   }

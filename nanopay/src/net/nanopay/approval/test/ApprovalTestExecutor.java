@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import net.nanopay.liquidity.crunch.CapabilityRequest;
-import net.nanopay.liquidity.crunch.CapabilityRequestOperations;
+import net.nanopay.liquidity.crunch.RoleAssignment;
+import net.nanopay.liquidity.crunch.RoleAssignmentOperations;
 import net.nanopay.test.liquid.LiquidTestExecutor;
 
 import static foam.mlang.MLang.*;

@@ -29,7 +29,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.mlang.MLang',
     'foam.nanos.crunch.UserCapabilityJunction',
-    'net.nanopay.liquidity.crunch.CapabilityRequest',
+    'net.nanopay.liquidity.crunch.RoleAssignment',
     'net.nanopay.liquidity.crunch.LiquidCapability',
     'java.util.List'
   ],

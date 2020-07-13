@@ -25,14 +25,14 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
-    'net.nanopay.liquidity.crunch.CapabilityRequest'
+    'net.nanopay.liquidity.crunch.RoleAssignment'
   ],
 
   methods: [
     {
       name: 'applyAction',
       javaCode: `
-      CapabilityRequest request = (CapabilityRequest) obj;
+      RoleAssignment request = (RoleAssignment) obj;
       
       // Check if there are users
       if (request.getUsers().size() <= 0) {

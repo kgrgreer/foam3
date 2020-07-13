@@ -54,25 +54,6 @@ foam.INTERFACE({
       ]
     },
     {
-      name: 'getApproversByLevel',
-      async: true,
-      type: 'List',
-      args: [
-        {
-          name: 'x',
-          type: 'Context'
-        },
-        {
-          name: 'modelToApprove',
-          type: 'String'
-        },
-        {
-          name: 'level',
-          type: 'Integer'
-        }
-      ]
-    },
-    {
       name: 'getAllApprovers',
       async: true,
       type: 'List',

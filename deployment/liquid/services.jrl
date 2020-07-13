@@ -652,7 +652,7 @@ p({
   "serviceScript":"""
     dao = new foam.dao.EasyDAO.Builder(x)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName("liquidCapabilities")
+      .setJournalName("capabilities")
       .setGuid(true)
       .setOf(net.nanopay.liquidity.crunch.LiquidCapability.getOwnClassInfo())
       .setAuthorize(false)
@@ -683,23 +683,6 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"capabilityRequestDAO",
-  "serve":true,
-  "serviceScript":"""      
-    return new foam.dao.EasyDAO.Builder(x)
-      .setAuthorizer(new net.nanopay.liquidity.crunch.LiquidAuthorizer("capabilityrequest"))
-      .setInnerDAO(x.get("localCapabilityRequestDAO"))
-      .setValidated(true)
-      .setOf(net.nanopay.liquidity.crunch.CapabilityRequest.getOwnClassInfo())
-      .setEnableInterfaceDecorators(false)
-      .setRuler(false)
-      .build();
-  """,
-  "client":"{\"of\":\"net.nanopay.liquidity.crunch.CapabilityRequest\", \"remoteListenerSupport\": false}"
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
   "name":"userCapabilityJunctionDAO",
   "lazy":false,
   "serve":true,
@@ -709,15 +692,31 @@ p({
     dao = new foam.dao.MDAO(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo());
     dao.addIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.SOURCE_ID, foam.nanos.crunch.UserCapabilityJunction.TARGET_ID });
     dao.addIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.SOURCE_ID });
-    dao = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, dao, "liquidUserCapabilityJunctions");
+    dao = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, dao, "userCapabilityJunctions");
 
     return new foam.dao.EasyDAO.Builder(x)
       .setAuthorize(false)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName("liquidUserCapabilityJunctions")
+      .setJournalName("userCapabilityJunctions")
       .setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo())
       .setInnerDAO(dao)
       .build();
   """,
   "client":"{\"of\":\"foam.nanos.crunch.UserCapabilityJunction\", \"remoteListenerSupport\": false}"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"roleTemplateDAO",
+  "serve":true,
+  "serviceScript":"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.liquidity.crunch.RoleTemplate.getOwnClassInfo())
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("roleTemplates")
+      .setGuid(true)
+      .setValidated(true)
+      .build();
+  """,
+  "client":"{\"of\":\"net.nanopay.liquidity.crunch.RoleTemplate\", \"remoteListenerSupport\": false}"
 })
