@@ -39,6 +39,13 @@ foam.CLASS({
         rather than leave Cash-Out to be dealt with via Liquidity.
       `,
       value: false
+    },
+    {
+      name: 'children',
+      class: 'FObjectArray',
+      of: 'net.nanopay.tx.model.Transaction',
+      transient: true,
+      visibility: 'HIDDEN'
     }
   ]
 });

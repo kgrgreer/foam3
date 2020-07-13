@@ -520,7 +520,7 @@ var classes = [
   'net.nanopay.tx.LiquidSummaryTransaction',
   'net.nanopay.tx.LiquidCashTransactionType',
   'net.nanopay.tx.BulkTransaction',
-  'net.nanopay.tx.BulkTransactionPlanDAO',
+  'net.nanopay.tx.BulkTransactionDAO',
   'net.nanopay.tx.SourceLineItem',
   'net.nanopay.tx.TransactionLineItem',
   'net.nanopay.tx.DisclosureLineItem',
