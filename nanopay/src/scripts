@@ -2227,6 +2227,7 @@ p({
   id:"Set up country corridor capabilities",
   description:"Sets up all possible corridors and country corridor capabilities available on our system - based on countries.",
   code:"""
+    //// WARNING REQUIRES UPDATES
     // Sets up all possible corridors and country corridor capabilities available on our system - based on countries.
     // Does not create perquisites between corridors and country corridors since they may not be required.
     

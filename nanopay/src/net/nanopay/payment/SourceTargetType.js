@@ -15,22 +15,13 @@
  * from nanopay Corporation.
  */
 
-foam.CLASS({
-    package: 'net.nanopay.payment',
-    name: 'TargetCountryCorridorCapability',
-    extends: 'foam.nanos.crunch.Capability',
-  
-    properties: [
-      {
-        class: 'Reference',
-        name: 'country',
-        of: 'foam.nanos.auth.Country'
-      },
-      {
-        class: 'StringArray',
-        name: 'currencies',
-        documentation: 'Agreed upon currencies in country.'
-      }
-    ]
-  });
-  
+foam.ENUM({
+  package: 'net.nanopay.payment',
+  name: 'SourceTargetType',
+  documentation: `Values represents source or target type on country currency list.`,
+
+  values: [
+    { name: 'SOURCE', value: 'Source' },
+    { name: 'TARGET', value: 'Target' }
+  ]
+});

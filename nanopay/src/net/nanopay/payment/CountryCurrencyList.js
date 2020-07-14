@@ -17,8 +17,17 @@
 
 foam.CLASS({
     package: 'net.nanopay.payment',
-    name: 'SourceCountryCorridorCapability',
+    name: 'CountryCurrencyList',
     extends: 'foam.nanos.crunch.Capability',
+    documentation: `Contains a list of currencies available to the specified country.
+        Used as a capability to determine what currencies are available to the user in various components.
+        
+        On bank account create all country currency list objects are pulled and their currencies are provided as
+        a selection for the denomination of the bank account.
+        
+        When attempting a payment using a payment provider, the country currency lists prerequisites will be required
+        in order to process payment - along with any prerequisites pertaining to the payment provider and the payment provider
+        corridor.`,
   
     properties: [
       {
@@ -30,6 +39,12 @@ foam.CLASS({
         class: 'StringArray',
         name: 'currencies',
         documentation: 'Agreed upon currencies in country.'
+      },
+      {
+        class: 'Enum',
+        of: 'net.nanopay.payment.SourceTargetType',
+        name: 'type',
+        documentation: 'States whether applied to source or target country on corridor.'
       }
     ]
   });
