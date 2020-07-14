@@ -112,7 +112,7 @@ p({
     "roletemplate.rw.approveliquiditysettings"
   ],
   "id":"1b36b11a-93c6-b40c-d9c8-f8effefb31cc-3",
-  "name": "approveLiquiditysettings"
+  "name": "approveLiquiditySettings"
 })
 p({
   "class": "net.nanopay.liquidity.crunch.LiquidCapability",
