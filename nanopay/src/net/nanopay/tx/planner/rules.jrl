@@ -252,7 +252,7 @@ p({
         "of":"net.nanopay.bank.BankAccount"
       },
       {
-        "class":"net.nanopay.tx.planner.predicate.IsAFEXUserPredicate",
+        "class":"net.nanopay.tx.planner.predicate.IsAccountOwnerAFEXUserPredicate",
       },
       {
         "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
@@ -967,7 +967,7 @@ p({
         "propValue":"USD"
       },
       {
-        "class":"net.nanopay.tx.planner.predicate.IsAFEXUserPredicate",
+        "class":"net.nanopay.tx.planner.predicate.IsAccountOwnerAFEXUserPredicate",
       },
       {
         "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",

@@ -17,7 +17,7 @@
 
 foam.CLASS({
   package: 'net.nanopay.tx.planner.predicate',
-  name: 'IsAFEXUserPredicate',
+  name: 'IsAccountOwnerAFEXUserPredicate',
   extends: 'foam.mlang.predicate.AbstractPredicate',
   implements: ['foam.core.Serializable'],
 
@@ -26,6 +26,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.FObject',
     'foam.core.X',
+    'net.nanopay.account.Account',
     'net.nanopay.fx.afex.AFEXServiceProvider',
     'net.nanopay.tx.TransactionQuote',
 
@@ -37,10 +38,16 @@ foam.CLASS({
       name: 'f',
       javaCode: `
       FObject nu  = (FObject) NEW_OBJ.f(obj);
-      if ( ! ( nu instanceof TransactionQuote ) ) return false;
-      TransactionQuote tq = (TransactionQuote) nu;
       AFEXServiceProvider afexService = (AFEXServiceProvider) ((X) obj).get("afexServiceProvider");
-      return null != afexService.getAFEXBusiness(((X) obj), tq.getSourceAccount().getOwner());
+      if ( nu instanceof TransactionQuote ) {
+        TransactionQuote tq = (TransactionQuote) nu;
+        return null != afexService.getAFEXBusiness(((X) obj), tq.getSourceAccount().getOwner());
+      } else if ( nu instanceof Account ) {
+        Account account = (Account) nu;
+        return null != afexService.getAFEXBusiness(((X) obj), account.getOwner());
+      } else {
+        return false;
+      }
       
       `
     }

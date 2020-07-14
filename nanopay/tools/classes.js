@@ -260,6 +260,7 @@ var classes = [
   'net.nanopay.fx.afex.AFEXBeneficialOwnerRule',
   'net.nanopay.fx.afex.AFEXBusinessDirectorRule',
   'net.nanopay.fx.afex.AFEXSigningOfficerRule',
+  'net.nanopay.fx.afex.AFEXBankUpdatingRule',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
@@ -1017,7 +1018,7 @@ var classes = [
   'net.nanopay.tx.planner.GenericCOPlanner',
   'net.nanopay.tx.planner.GenericFXPlanner',
   'net.nanopay.tx.planner.predicate.FXPlannerPredicate',
-  'net.nanopay.tx.planner.predicate.IsAFEXUserPredicate',
+  'net.nanopay.tx.planner.predicate.IsAccountOwnerAFEXUserPredicate',
   'net.nanopay.tx.planner.predicate.ProviderPredicate',
   'net.nanopay.tx.planner.predicate.IsAscendantFXUserPredicate',
   'net.nanopay.tx.planner.predicate.SameUserTxnPredicate',

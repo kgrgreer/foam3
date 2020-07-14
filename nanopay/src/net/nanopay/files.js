@@ -364,6 +364,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEXBeneficialOwnerRule' },
   { name: 'net/nanopay/fx/afex/AFEXBusinessDirectorRule' },
   { name: 'net/nanopay/fx/afex/AFEXSigningOfficerRule' },
+  { name: 'net/nanopay/fx/afex/AFEXBankUpdatingRule' },
 
   // kotak
   { name: 'net/nanopay/kotak/Kotak' },
@@ -1476,7 +1477,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/AFEXTransactionPlanner' },
   { name: 'net/nanopay/tx/planner/predicate/FXPlannerPredicate' },
   { name: 'net/nanopay/tx/planner/predicate/ProviderPredicate' },
-  { name: 'net/nanopay/tx/planner/predicate/IsAFEXUserPredicate' },
+  { name: 'net/nanopay/tx/planner/predicate/IsAccountOwnerAFEXUserPredicate' },
   { name: 'net/nanopay/tx/planner/predicate/IsAscendantFXUserPredicate' },
   { name: 'net/nanopay/tx/planner/predicate/SameUserTxnPredicate' },
   { name: 'net/nanopay/tx/planner/AscendantFXTransactionPlanner' },

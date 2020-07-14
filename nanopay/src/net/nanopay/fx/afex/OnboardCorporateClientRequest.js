@@ -21,6 +21,11 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
+      name: 'accountNumber',
+      documentation: 'AFEX account number'
+    },
+    {
+      class: 'String',
       name: "accountPrimaryIdentificationExpirationDate"
     },
     {

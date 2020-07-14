@@ -17,10 +17,10 @@
 
 foam.CLASS({
   package: 'net.nanopay.fx.afex',
-  name: 'AFEXBankUploadingRule2',
+  name: 'AFEXBankUpdatingRule',
   implements: ['foam.nanos.ruler.RuleAction'],
 
-   documentation: `Uploads bank information to AFEX when a new account is added to a business that is already onboarded on AFEX.`,
+   documentation: `Uploads bank information to AFEX when a bankaccount is updated for a business that is already onboarded on AFEX.`,
 
    javaImports: [
     'foam.core.ContextAgent',
@@ -49,16 +49,20 @@ foam.CLASS({
               AFEXBusiness afexBusiness = afexServiceProvider.getAFEXBusiness(x, account.getOwner());
 
               try {
+                if ( ! afexServiceProvider.directDebitUnenrollment(business, account) ) {
+                  sendFailureEmail(x, String.valueOf(account.getId()), String.valueOf(afexBusiness.getUser()), business, "Failed to upload bank account, unenrollment failed: ");
+                }
+
                 if ( ! afexServiceProvider.directDebitEnrollment(business, account) ) {
-                  sendFailureEmail(x, String.valueOf(account.getId()), String.valueOf(afexBusiness.getUser()), business);
+                  sendFailureEmail(x, String.valueOf(account.getId()), String.valueOf(afexBusiness.getUser()), business, "Failed to upload bank account: ");
                 }
               } catch (Exception e) {
-                ((Logger) x.get("logger")).error("Error uploading bank account on AFEX", account, e);
-                sendFailureEmail(x, String.valueOf(account.getId()), String.valueOf(afexBusiness.getUser()), business);
+                ((Logger) x.get("logger")).error("Error updating bank account on AFEX", account, e);
+                sendFailureEmail(x, String.valueOf(account.getId()), String.valueOf(afexBusiness.getUser()), business, "Failed to upload bank account, : ");
               }
             }
           }
-        }, "Uploads business'a bank accounts to AFEX if the business has passed comliance.");
+        }, "Uploads bank information to AFEX when a bankaccount is updated for a business that is already onboarded on AFEX.");
       `
     },
     {
@@ -79,16 +83,20 @@ foam.CLASS({
         {
           type: 'Business',
           name: 'business'
-        }
+        },
+        {
+          type: 'String',
+          name: 'message'
+        },
       ],
       javaCode: `
-        EmailMessage message = new EmailMessage();
+        EmailMessage emailMessage = new EmailMessage();
         String businessInfo = business == null ? "" : business.getId() + " " + business.getBusinessName();
-        String body = "Failed to upload bank account: " + account + ", for AFEX business " + afexBusiness + ", business: " + businessInfo;
-        message.setTo(new String[]{"enrollment@ablii.com"});
-        message.setSubject("Failed AFEX Bank Account Upload");
-        message.setBody(body);
-        EmailsUtility.sendEmailFromTemplate(x, null, message, null, null);
+        String body = message + account + ", for AFEX business " + afexBusiness + ", business: " + businessInfo;
+        emailMessage.setTo(new String[]{"enrollment@ablii.com"});
+        emailMessage.setSubject("Failed AFEX Bank Account Upload");
+        emailMessage.setBody(body);
+        EmailsUtility.sendEmailFromTemplate(x, null, emailMessage, null, null);
       `
     }
   ]

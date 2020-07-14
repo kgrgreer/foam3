@@ -160,8 +160,11 @@ p({
     "class": "foam.mlang.predicate.And",
     "args": [
       {
-        "class": "net.nanopay.meter.compliance.ruler.predicate.BankAccountVerified"
+        "class":"net.nanopay.tx.planner.predicate.IsAccountOwnerAFEXUserPredicate",
       },
+      {
+        "class": "net.nanopay.meter.compliance.ruler.predicate.BankAccountVerified"
+      }, 
       {
         "class": "net.nanopay.meter.compliance.ruler.predicate.BankAccountOwnerIsBusiness"
       }
@@ -298,6 +301,48 @@ p({
   },
   "asyncAction":{
     "class":"net.nanopay.fx.afex.AFEXBusinessDirectorRule"
+  },
+  "enabled":true,
+  "saveHistory":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"2e5854eb-26ac-4117-97ce-a816abdf2b95","name":"Update bank accounts to AFEX for existing AFEX business",
+  "documentation":"Rule to update bank account for existing AFEX business",
+  "priority":100,
+  "ruleGroup":"AFEXOnboarding",
+  "daoKey":"localAccountDAO",
+  "operation":1,
+  "after":true,
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class":"net.nanopay.tx.planner.predicate.IsAccountOwnerAFEXUserPredicate",
+      },
+      {
+        "class": "foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName": "status",
+        "propValue": {
+          "class": "net.nanopay.bank.BankAccountStatus",
+          "ordinal":1
+        }
+      },
+      {
+        "class": "net.nanopay.meter.compliance.ruler.predicate.BankAccountOwnerIsBusiness"
+      },
+      {
+        "class":"foam.mlang.predicate.Not",
+        "arg1":{
+          "class": "net.nanopay.meter.compliance.ruler.predicate.BankAccountVerified"
+        }
+      }
+    ]
+  },
+  "asyncAction":{
+    "class":"net.nanopay.fx.afex.AFEXBankUpdatingRule"
   },
   "enabled":true,
   "saveHistory":true,
