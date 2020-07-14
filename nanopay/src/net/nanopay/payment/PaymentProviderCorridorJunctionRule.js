@@ -28,11 +28,10 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
-    'foam.dao.DAO',
     'foam.nanos.logger.Logger',
     'net.nanopay.fx.Corridor',
     'net.nanopay.payment.PaymentProvider',
-    'net.nanopay.payment.PaymentProviderCorridorJunction'
+    'net.nanopay.payment.PaymentProviderCorridor'
   ],
 
   messages: [
@@ -50,21 +49,15 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        DAO paymentProviderDAO = (DAO) x.get("paymentProviderDAO");
-        DAO corridorDAO = (DAO) x.get("capabilityDAO");
         Logger logger = (Logger) x.get("logger");
-
-        PaymentProviderCorridorJunction ppcj = (PaymentProviderCorridorJunction) obj;
-        PaymentProvider provider = (PaymentProvider) paymentProviderDAO.find(ppcj.getSourceId());
-        Corridor corridor = (Corridor) corridorDAO.find(ppcj.getTargetId());
-
-        if ( provider == null ) {
-          logger.error(MISSING_PROVIDER, ppcj.getSourceId());
-          throw new RuntimeException(MISSING_PROVIDER + ppcj.getSourceId());
+        PaymentProviderCorridor ppcj = (PaymentProviderCorridor) obj;
+        if ( ((PaymentProvider) ppcj.findProvider(x)) == null ) {
+          logger.error(MISSING_PROVIDER, ppcj.getProvider());
+          throw new RuntimeException(MISSING_PROVIDER + ppcj.getCorridor());
         }
-        if ( corridor == null ) {
-          logger.error(MISSING_CORRIDOR, ppcj.getTargetId());
-          throw new RuntimeException(MISSING_CORRIDOR + ppcj.getTargetId());
+        if ( ((Corridor) ppcj.findCorridor(x)) == null ) {
+          logger.error(MISSING_CORRIDOR, ppcj.getCorridor());
+          throw new RuntimeException(MISSING_CORRIDOR + ppcj.getCorridor());
         }
       `
     }

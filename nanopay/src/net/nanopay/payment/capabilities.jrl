@@ -1,0 +1,200 @@
+p({
+  "class":"net.nanopay.fx.Corridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15f7121ca-in",
+  "name":"CA-IN Corridor",
+  "version":"0",
+  "sourceCountry":"CA",
+  "targetCountry":"IN",
+  "currencies":["INR"],
+  "enabled":true,
+  "visible":true
+})
+
+p({
+  "class":"net.nanopay.fx.Corridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15f7121ca-us",
+  "name":"CA-US Corridor",
+  "version":"0",
+  "sourceCountry":"CA",
+  "targetCountry":"US",
+  "currencies":["CAD", "USD"],
+  "enabled":true,
+  "visible":true
+})
+
+p({
+  "class":"net.nanopay.fx.Corridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15f7121us-ca",
+  "name":"US-CA Corridor",
+  "version":"0",
+  "sourceCountry":"US",
+  "targetCountry":"CA",
+  "currencies":["CAD", "USD"],
+  "enabled":true,
+  "visible":true
+})
+
+p({
+  "class":"net.nanopay.fx.Corridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15f7121us-us",
+  "name":"US-US Corridor",
+  "version":"0",
+  "sourceCountry":"US",
+  "targetCountry":"US",
+  "currencies":["CAD", "USD"],
+  "enabled":true,
+  "visible":true
+})
+
+p({
+  "class":"net.nanopay.fx.Corridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15f7121ca-ca",
+  "name":"CA-CA Corridor",
+  "version":"0",
+  "sourceCountry":"CA",
+  "targetCountry":"CA",
+  "currencies":["CAD"],
+  "enabled":true,
+  "visible":true
+})
+
+p({
+  "class":"net.nanopay.fx.Corridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15f7121br-ca",
+  "name":"BR-CA Corridor",
+  "version":"0",
+  "sourceCountry":"BR",
+  "targetCountry":"CA",
+  "currencies":["BRL", "CAD"],
+  "enabled":true,
+  "visible":true
+})
+
+p({
+  "class":"net.nanopay.fx.Corridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15f7121br-us",
+  "name":"BR-US Corridor",
+  "version":"0",
+  "sourceCountry":"BR",
+  "targetCountry":"US",
+  "currencies":["BRL", "USD"],
+  "enabled":true,
+  "visible":true
+})
+
+p({"class":"net.nanopay.payment.PaymentProvider","id":"AscendantFX","name":"AscendantFX", "enabled":true})
+p({"class":"net.nanopay.payment.PaymentProvider","id":"BMO","name":"Bank of Montreal", "enabled":true})
+p({"class":"net.nanopay.payment.PaymentProvider","id":"Alterna","name":"Alterna Savings and Credit Union", "enabled":true})
+p({"class":"net.nanopay.payment.PaymentProvider","id":"AFEX","name":"AFEX", "enabled":true})
+p({"class":"net.nanopay.payment.PaymentProvider","id":"RBC","name":"Royal Bank of Canada", "enabled":true})
+p({"class":"net.nanopay.payment.PaymentProvider","id":"Kotak","name":"Kotak", "enabled":true})
+p({"class":"net.nanopay.payment.PaymentProvider","id":"Treviso","name":"Treviso", "enabled":true})
+p({
+  "class": "net.nanopay.payment.PaymentProviderCorridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15fafexca-us",
+  "provider": "AFEX",
+  "corridor": "554af38a-8125-87c8-dfdf-eeb15f7121ca-us",
+  "currencies":["CAD","USD"],
+  "description": "CA to US corridor via AFEX",
+  "enabled":true
+})
+p({
+  "class": "net.nanopay.payment.PaymentProviderCorridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
+  "provider": "AFEX",
+  "corridor": "554af38a-8125-87c8-dfdf-eeb15f7121us-ca",
+  "currencies":["CAD","USD"],
+  "description": "US to CA corridor via AFEX",
+  "enabled":true
+})
+p({
+  "class": "net.nanopay.payment.PaymentProviderCorridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15f7afexus-us",
+  "provider": "AFEX",
+  "corridor": "554af38a-8125-87c8-dfdf-eeb15f7121us-us",
+  "currencies":["USD"],
+  "description": "US to US corridor via AFEX",
+  "enabled":true
+})
+p({
+  "class": "net.nanopay.payment.PaymentProviderCorridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15f7afxca-us",
+  "provider": "AscendantFX",
+  "corridor": "554af38a-8125-87c8-dfdf-eeb15f7121ca-us",
+  "currencies":["CAD","USD"],
+  "description": "CA to US corridor via AscendantFX",
+  "enabled":true
+})
+p({
+  "class": "net.nanopay.payment.PaymentProviderCorridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15f7afxus-ca",
+  "provider": "AscendantFX",
+  "corridor": "554af38a-8125-87c8-dfdf-eeb15f7121us-ca",
+  "currencies":["CAD","USD"],
+  "description": "US to CA corridor via AscendantFX",
+  "enabled":true
+})
+p({
+  "class": "net.nanopay.payment.PaymentProviderCorridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15f7afxus-us",
+  "provider": "AscendantFX",
+  "corridor": "554af38a-8125-87c8-dfdf-eeb15f7121us-us",
+  "currencies":["USD"],
+  "description": "US to US corridor via AscendantFX",
+  "enabled":true
+})
+p({
+  "class": "net.nanopay.payment.PaymentProviderCorridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15f7altca-ca",
+  "provider": "Alterna",
+  "corridor": "554af38a-8125-87c8-dfdf-eeb15f7121ca-ca",
+  "currencies":["CAD"],
+  "description": "CA to CA corridor via Alterna",
+  "enabled":true
+})
+p({
+  "class": "net.nanopay.payment.PaymentProviderCorridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15f7bmoca-ca",
+  "provider": "BMO",
+  "corridor": "554af38a-8125-87c8-dfdf-eeb15f7121ca-ca",
+  "currencies":["CAD"],
+  "description": "CA to CA corridor via BMO",
+  "enabled":true
+})
+p({
+  "class": "net.nanopay.payment.PaymentProviderCorridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15f7rbcca-ca",
+  "provider": "RBC",
+  "corridor": "554af38a-8125-87c8-dfdf-eeb15f7121ca-ca",
+  "currencies":["CAD"],
+  "description": "CA to CA corridor via RBC",
+  "enabled":true
+})
+p({
+  "class": "net.nanopay.payment.PaymentProviderCorridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15kotakca-in",
+  "provider": "Kotak",
+  "corridor": "554af38a-8125-87c8-dfdf-eeb15f7121ca-in",
+  "currencies":["CAD","INR"],
+  "description": "CA to IN corridor via Kotak",
+  "enabled":true
+})
+
+p({
+  "class": "net.nanopay.payment.PaymentProviderCorridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15ftrevisobr-ca",
+  "provider": "Treviso",
+  "corridor": "554af38a-8125-87c8-dfdf-eeb15f7121br-ca",
+  "currencies":["CAD","BRL"],
+  "description": "BR to CA corridor via Treviso",
+  "enabled":true
+})
+p({
+  "class": "net.nanopay.payment.PaymentProviderCorridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb1trevisobr-us",
+  "provider": "Treviso",
+  "corridor": "554af38a-8125-87c8-dfdf-eeb15f7121br-us",
+  "currencies":["BRL","USD"],
+  "description": "BR to US corridor via Treviso",
+  "enabled":true
+})

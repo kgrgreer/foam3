@@ -25,6 +25,11 @@ foam.CLASS({
         class: 'Reference',
         name: 'country',
         of: 'foam.nanos.auth.Country'
+      },
+      {
+        class: 'StringArray',
+        name: 'currencies',
+        documentation: 'Agreed upon currencies in country.'
       }
     ]
   });

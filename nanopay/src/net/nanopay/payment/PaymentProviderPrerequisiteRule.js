@@ -31,16 +31,15 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.crunch.CapabilityCapabilityJunction',
     'foam.nanos.logger.Logger',
-    'net.nanopay.payment.PaymentProviderCapability',
-    'net.nanopay.payment.PaymentProviderCorridorCapability',
-    'net.nanopay.payment.PaymentProviderCorridorJunctionId',
+    'net.nanopay.payment.PaymentProvider',
+    'net.nanopay.payment.PaymentProviderCorridor',
     'static foam.mlang.MLang.EQ'
   ],
 
   messages: [
     {
       name: 'MISSING_PROVIDER',
-      message: `WARNING: Missing associated payment provider capability. Verify whether payment provider 
+      message: `WARNING: Missing associated payment provider. Verify whether payment provider 
           capability exists or junction references the correct id `
     },
     {
@@ -55,30 +54,24 @@ foam.CLASS({
       javaCode: `
         DAO capabilityDAO = (DAO) x.get("capabilityDAO");
         Logger logger = (Logger) x.get("logger");
+        PaymentProviderCorridor paymentProviderCorridor = (PaymentProviderCorridor) obj;
+        PaymentProvider paymentProvider = (PaymentProvider) paymentProviderCorridor.findProvider(x);
 
-        PaymentProviderCorridorCapability ppcc = (PaymentProviderCorridorCapability) obj;
-        PaymentProviderCorridorJunctionId ppcjId = (PaymentProviderCorridorJunctionId) ppcc.getPaymentProviderCorridorId();
-
-        PaymentProviderCapability ppc = (PaymentProviderCapability) capabilityDAO.find(
-          EQ(PaymentProviderCapability.PAYMENT_PROVIDER, ppcjId.getSourceId())
-        );
-
-        if ( ppc == null ) {
-          logger.warning(MISSING_PROVIDER + ppcjId.getSourceId());
+        if ( paymentProvider == null ) {
+          logger.warning(MISSING_PROVIDER + paymentProviderCorridor.getProvider());
         } else {
           agency.submit(x, new ContextAgent() {
             @Override
             public void execute(X x) {
               DAO prerequisiteDAO = (DAO) x.get("prerequisiteCapabilityJunctionDAO");
               CapabilityCapabilityJunction ccj = new CapabilityCapabilityJunction();
-              ccj.setSourceId(ppc.getId());
-              ccj.setTargetId(ppcc.getId());
+              ccj.setSourceId(paymentProvider.getId());
+              ccj.setTargetId(paymentProviderCorridor.getId());
               ccj.setPriority(1);
-
               try {
                 prerequisiteDAO.put(ccj);
               } catch (Exception e) {
-                logger.error(UNABLE_TO_CREATE_PREREQUISITE, ppcc.getId());
+                logger.error(UNABLE_TO_CREATE_PREREQUISITE, paymentProviderCorridor.getId());
               }
             }
           }, "Create payment provider prerequisites on payment provider corridor capability create");

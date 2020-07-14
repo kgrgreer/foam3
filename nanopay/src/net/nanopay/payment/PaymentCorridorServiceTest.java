@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 package net.nanopay.payment;
 
 import foam.core.X;
@@ -12,14 +29,14 @@ import net.nanopay.tx.TransactionQuote;
 
 public class PaymentCorridorServiceTest extends foam.nanos.test.Test {
 
-  DAO corridorDAO, paymentProviderCorridorJunctionDAO;
+  DAO corridorDAO, paymentProviderCorridorDAO;
   Corridor c;
-  PaymentProviderCorridorJunction j;
+  PaymentProviderCorridor j;
   String p = "AFEX";
 
   public void runTest(X x) {
     corridorDAO = (DAO) x.get("corridorDAO");
-    paymentProviderCorridorJunctionDAO = (DAO) x.get("paymentProviderCorridorJunctionDAO");
+    paymentProviderCorridorDAO = (DAO) x.get("paymentProviderCorridorDAO");
 
     setUpTest(x);
     testCanHandleCorridor(x);
@@ -37,15 +54,16 @@ public class PaymentCorridorServiceTest extends foam.nanos.test.Test {
       .setVisible(true)
       .build());
 
-    j = (PaymentProviderCorridorJunction) paymentProviderCorridorJunctionDAO.put(
-      new PaymentProviderCorridorJunction.Builder(x).setSourceId(p)
-      .setTargetId(c.getId())
+    j = (PaymentProviderCorridor) paymentProviderCorridorDAO.put(
+      new PaymentProviderCorridor.Builder(x)
+      .setProvider(p)
+      .setCorridor(c.getId())
       .setCurrencies(new String[]{"CAD","USD"})
       .build());
   }
 
   public void tearDownTest() {
-    paymentProviderCorridorJunctionDAO.remove(j);
+    paymentProviderCorridorDAO.remove(j);
     corridorDAO.remove(c);
   }
 
@@ -113,5 +131,4 @@ public class PaymentCorridorServiceTest extends foam.nanos.test.Test {
     User user = (User) userDAO.find_(x, 1348L);
     return DigitalAccount.findDefault(x, user, denomination);
   }
-
- }
+}

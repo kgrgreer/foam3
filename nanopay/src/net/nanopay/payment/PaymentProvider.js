@@ -18,6 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.payment',
   name: 'PaymentProvider',
+  extends: 'foam.nanos.crunch.Capability',
 
   documentation: 'Payment Provider.',
 
@@ -32,10 +33,6 @@ foam.CLASS({
   ],
 
   properties: [
-    {
-      class: 'String',
-      name: 'id',
-    },
     {
       class: 'String',
       name: 'name',

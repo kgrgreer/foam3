@@ -28,7 +28,7 @@ foam.CLASS({
     'net.nanopay.tx.TransactionQuote',
     'foam.dao.DAO',
     'net.nanopay.payment.CorridorService',
-    'net.nanopay.payment.PaymentProviderCorridorJunction',
+    'net.nanopay.payment.PaymentProviderCorridor',
     'java.util.List',
     'java.util.ArrayList',
   ],
@@ -65,7 +65,7 @@ foam.CLASS({
         List junctions = cs.getQuoteCorridorPaymentProviders(getX(), quote);
 
         for ( Object j : junctions )
-          quote.getEligibleProviders().put(((PaymentProviderCorridorJunction) j).getSourceId(), true);
+          quote.getEligibleProviders().put(((PaymentProviderCorridor) j).getProvider(), true);
 
         return getDelegate().put_(x, quote);
 

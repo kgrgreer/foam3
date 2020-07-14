@@ -26,19 +26,17 @@ import net.nanopay.fx.Corridor;
 public class PaymentCapabilitiesTest extends foam.nanos.test.Test {
 
   DAO corridorDAO;
-  DAO paymentProviderCorridorJunctionDAO;
+  DAO paymentProviderCorridorDAO;
   DAO prerequisiteDAO, capabilityDAO, paymentProviderDAO;
 
   Corridor c;
-  PaymentProviderCorridorJunction j;
-  PaymentProviderCorridorCapability ppcc;
+  PaymentProviderCorridor j;
   PaymentProvider paymentProvider;
-  PaymentProviderCapability paymentProviderCapability;
 
   public void runTest(X x) {
     corridorDAO = (DAO) x.get("corridorDAO");
     capabilityDAO = (DAO) x.get("capabilityDAO");
-    paymentProviderCorridorJunctionDAO = (DAO) x.get("paymentProviderCorridorJunctionDAO");
+    paymentProviderCorridorDAO = (DAO) x.get("paymentProviderCorridorDAO");
     paymentProviderDAO = (DAO) x.get("paymentProviderDAO");
     prerequisiteDAO = (DAO) x.get("prerequisiteCapabilityJunctionDAO");
 
@@ -62,51 +60,37 @@ public class PaymentCapabilitiesTest extends foam.nanos.test.Test {
       new PaymentProvider.Builder(x)
         .setId("TEST_PROVIDER")
         .setName("TEST_PROVIDER")
-        .build());
-
-    // NOTE: May make sense to make payment providers into capabilities.
-    paymentProviderCapability = (PaymentProviderCapability) capabilityDAO.put(
-      new PaymentProviderCapability.Builder(x)
-        .setPaymentProvider(paymentProvider.getId())
         .setEnabled(true)
-        .setName("Test_provider")
         .build());
 
-    j = (PaymentProviderCorridorJunction) paymentProviderCorridorJunctionDAO.put(
-      new PaymentProviderCorridorJunction.Builder(x)
-      .setSourceId(paymentProvider.getId())
-      .setTargetId(c.getId())
+    j = (PaymentProviderCorridor) paymentProviderCorridorDAO.put(
+      new PaymentProviderCorridor.Builder(x)
+      .setProvider(paymentProvider.getId())
+      .setCorridor(c.getId())
       .setCurrencies(new String[]{"CAD","USD"})
       .build());
-
-    ppcc = (PaymentProviderCorridorCapability) capabilityDAO.put(
-      new PaymentProviderCorridorCapability.Builder(x)
-        .setPaymentProviderCorridorId(j.getId())
-        .setEnabled(true)
-        .setName("Test provider ca-us")
-        .build());
   }
 
  // Test that payment provider capability is added as prerequisite when adding payment provider corridor capability.
   public void testCreatePrequisitePaymentProvider(X x) {
     CapabilityCapabilityJunction ccj = (CapabilityCapabilityJunction) prerequisiteDAO.find(
       foam.mlang.MLang.AND(
-        foam.mlang.MLang.EQ(CapabilityCapabilityJunction.SOURCE_ID, paymentProviderCapability.getId()),
-        foam.mlang.MLang.EQ(CapabilityCapabilityJunction.TARGET_ID, ppcc.getId())
+        foam.mlang.MLang.EQ(CapabilityCapabilityJunction.SOURCE_ID, paymentProvider.getId()),
+        foam.mlang.MLang.EQ(CapabilityCapabilityJunction.TARGET_ID, j.getId())
       )
     );
 
     test(ccj != null, "Payment Provider Capability added as prerequisite");
   }
 
- // Test that payment provider corridor junction cannot be created since payment provider does not exist.
+ // Test that payment provider corridor cannot be created since payment provider does not exist.
   public void testPreventJunctionPaymentProvider(X x) {
     Exception exception = null;
     try {
-      PaymentProviderCorridorJunction providerCorridorJunction = (PaymentProviderCorridorJunction) paymentProviderCorridorJunctionDAO.put(
-        new PaymentProviderCorridorJunction.Builder(x)
-        .setSourceId("FAULTY_PROVIDER")
-        .setTargetId(c.getId())
+      PaymentProviderCorridor providerCorridor = (PaymentProviderCorridor) paymentProviderCorridorDAO.put(
+        new PaymentProviderCorridor.Builder(x)
+        .setProvider("FAULTY_PROVIDER")
+        .setCorridor(c.getId())
         .setCurrencies(new String[]{"CAD","USD"})
         .build());
     } catch (Exception e) {
@@ -120,16 +104,16 @@ public class PaymentCapabilitiesTest extends foam.nanos.test.Test {
   public void testPreventJunctionCorridor(X x) {
     Exception exception = null;
     try {
-      PaymentProviderCorridorJunction providerCorridorJunction = (PaymentProviderCorridorJunction) paymentProviderCorridorJunctionDAO.put(
-        new PaymentProviderCorridorJunction.Builder(x)
-        .setSourceId(paymentProvider.getId())
-        .setTargetId("a-random-id-string")
+      PaymentProviderCorridor providerCorridor = (PaymentProviderCorridor) paymentProviderCorridorDAO.put(
+        new PaymentProviderCorridor.Builder(x)
+        .setProvider(paymentProvider.getId())
+        .setCorridor("a-random-id-string")
         .setCurrencies(new String[]{"CAD","USD"})
         .build());
     } catch (Exception e) {
       exception = e;
     }
 
-    test(exception != null, "Unable to create payment provider corridor junction - missing valid corridor");
+    test(exception != null, "Unable to create payment provider corridor - missing valid corridor");
   }
 }

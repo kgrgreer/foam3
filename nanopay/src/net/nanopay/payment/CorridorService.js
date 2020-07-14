@@ -49,7 +49,7 @@ foam.INTERFACE({
     },
     {
       name: 'getProviderCorridor',
-      type: 'net.nanopay.payment.PaymentProviderCorridorJunction',
+      type: 'net.nanopay.payment.PaymentProviderCorridor',
       documentation: 'Returns a corridor supported by a Payment Provider',
       args: [
         {

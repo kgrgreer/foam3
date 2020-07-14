@@ -330,11 +330,21 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setAuthorize(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName("paymentProviders")
+      .setInnerDAO(x.get("localCapabilityDAO"))
+      .setDecorator(
+        new foam.dao.FilteredDAO.Builder(x)
+          .setPredicate(foam.mlang.MLang.INSTANCE_OF(net.nanopay.payment.PaymentProvider.class))
+          .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.payment.PaymentProvider.getOwnClassInfo()).build())
+        .build())
       .setOf(net.nanopay.payment.PaymentProvider.getOwnClassInfo())
       .build();
   """,
-  "client":"{\"of\":\"net.nanopay.payment.PaymentProvider\"}"
+  "client":
+    """
+      {
+        "of":"net.nanopay.payment.PaymentProvider"
+      }
+    """
 })
 
 p({
@@ -429,19 +439,30 @@ p({
 })
 
 p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"paymentProviderCorridorJunctionDAO",
-  "serve":true,
-  "serviceScript":"""
+  "class": "foam.nanos.boot.NSpec",
+  "name": "paymentProviderCorridorDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
     return new foam.dao.EasyDAO.Builder(x)
-      .setPipelinePm(true)
-      .setPm(true)
+      .setAuthorize(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName("paymentProviderCorridorJunctions")
-      .setOf(net.nanopay.payment.PaymentProviderCorridorJunction.getOwnClassInfo())
+      .setInnerDAO(x.get("localCapabilityDAO"))
+      .setDecorator(
+        new foam.dao.FilteredDAO.Builder(x)
+          .setPredicate(foam.mlang.MLang.INSTANCE_OF(net.nanopay.payment.PaymentProviderCorridor.class))
+          .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.payment.PaymentProviderCorridor.getOwnClassInfo()).build())
+        .build())
+      .setOf(net.nanopay.payment.PaymentProviderCorridor.getOwnClassInfo())
       .build();
   """,
-  "client": "{\"of\":\"net.nanopay.payment.PaymentProviderCorridorJunction\"}"
+  "client":
+    """
+      {
+        "of":"net.nanopay.payment.PaymentProviderCorridor"
+      }
+    """
 })
 
 p({

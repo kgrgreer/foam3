@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 package net.nanopay.payment;
 
 import foam.core.X;
@@ -34,15 +51,15 @@ public class PaymentCorridorService implements CorridorService {
     );
   }
 
-  public PaymentProviderCorridorJunction getProviderCorridor(X x, String providerId, String sourceCountry, String targetCountry) {
-    DAO dao = (DAO) x.get("paymentProviderCorridorJunctionDAO");
+  public PaymentProviderCorridor getProviderCorridor(X x, String providerId, String sourceCountry, String targetCountry) {
+    DAO dao = (DAO) x.get("paymentProviderCorridorDAO");
     Corridor corridor = getCorridor(x, sourceCountry, targetCountry);
     if ( corridor == null ) return null;
 
-    return (PaymentProviderCorridorJunction) dao.find(
+    return (PaymentProviderCorridor) dao.find(
       AND(
-        EQ(PaymentProviderCorridorJunction.SOURCE_ID, providerId),
-        EQ(PaymentProviderCorridorJunction.TARGET_ID, corridor.getId())
+        EQ(PaymentProviderCorridor.PROVIDER, providerId),
+        EQ(PaymentProviderCorridor.CORRIDOR, corridor.getId())
       )
     );
   }
@@ -53,13 +70,15 @@ public class PaymentCorridorService implements CorridorService {
     Corridor corridor = getCorridor(x, sourceCountry, targetCountry);
     if ( corridor == null ) return false;
 
-    DAO dao = (DAO) x.get("paymentProviderCorridorJunctionDAO");
-
+    DAO dao = (DAO) x.get("paymentProviderCorridorDAO");
+    //TODO: rewrite grabbing currencies associated to corridor.
+    // Look up payment provider corridor using corridor. Look up source and target country currency list
+    // Future PZ: Models have been changed to remove junction reference.
     Count count = (Count) dao.where(
       AND(
-        EQ(PaymentProviderCorridorJunction.TARGET_ID, corridor.getId()),
-        CONTAINS_IC(PaymentProviderCorridorJunction.CURRENCIES, sourceCurrency),
-        CONTAINS_IC(PaymentProviderCorridorJunction.CURRENCIES, targetCurrency)
+        EQ(PaymentProviderCorridor.CORRIDOR, corridor.getId()),
+        CONTAINS_IC(PaymentProviderCorridor.CURRENCIES, sourceCurrency),
+        CONTAINS_IC(PaymentProviderCorridor.CURRENCIES, targetCurrency)
       )
     ).select(new Count());
 
@@ -70,13 +89,13 @@ public class PaymentCorridorService implements CorridorService {
     Corridor corridor = getCorridor(x, sourceCountry, targetCountry);
     if ( corridor == null ) return false;
 
-    DAO dao = (DAO) x.get("paymentProviderCorridorJunctionDAO");
-    PaymentProviderCorridorJunction junction = (PaymentProviderCorridorJunction) dao.find(
+    DAO dao = (DAO) x.get("paymentProviderCorridorDAO");
+    PaymentProviderCorridor junction = (PaymentProviderCorridor) dao.find(
       AND(
-        EQ(PaymentProviderCorridorJunction.SOURCE_ID, providerId),
-        EQ(PaymentProviderCorridorJunction.TARGET_ID, corridor.getId()),
-        CONTAINS_IC(PaymentProviderCorridorJunction.CURRENCIES, sourceCurrency),
-        CONTAINS_IC(PaymentProviderCorridorJunction.CURRENCIES, targetCurrency)
+        EQ(PaymentProviderCorridor.PROVIDER, providerId),
+        EQ(PaymentProviderCorridor.CORRIDOR, corridor.getId()),
+        CONTAINS_IC(PaymentProviderCorridor.CURRENCIES, sourceCurrency),
+        CONTAINS_IC(PaymentProviderCorridor.CURRENCIES, targetCurrency)
       )
     );
 
@@ -126,11 +145,11 @@ public class PaymentCorridorService implements CorridorService {
     Corridor corridor = getCorridor(x, sourceCountry, targetCountry);
     if ( corridor == null ) return junctions;
 
-    junctions =  ((ArraySink) ((DAO) x.get("paymentProviderCorridorJunctionDAO")).where(
+    junctions =  ((ArraySink) ((DAO) x.get("paymentProviderCorridorDAO")).where(
       AND(
-        EQ(PaymentProviderCorridorJunction.TARGET_ID, corridor.getId()),
-        CONTAINS_IC(PaymentProviderCorridorJunction.CURRENCIES, sourceCurrency),
-        CONTAINS_IC(PaymentProviderCorridorJunction.CURRENCIES, targetCurrency)
+        EQ(PaymentProviderCorridor.CORRIDOR, corridor.getId()),
+        CONTAINS_IC(PaymentProviderCorridor.CURRENCIES, sourceCurrency),
+        CONTAINS_IC(PaymentProviderCorridor.CURRENCIES, targetCurrency)
       )
     ).select(new ArraySink())).getArray();
 

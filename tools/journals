@@ -54,8 +54,6 @@ notificationSettingDefaults
 payoutOptions
 paymentCodes
 paymentMethods
-paymentProviderCorridorJunctions
-paymentProviders
 PADTypes
 permissions
 prerequisiteCapabilityJunctions

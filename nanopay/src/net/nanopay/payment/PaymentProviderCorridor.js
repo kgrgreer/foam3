@@ -17,14 +17,32 @@
 
 foam.CLASS({
   package: 'net.nanopay.payment',
-  name: 'PaymentProviderCapability',
+  name: 'PaymentProviderCorridor',
   extends: 'foam.nanos.crunch.Capability',
+
+  documentation: `References payment provider and corridor along with currencies available
+      in the relationship through the source and target country capabilities.
+      Defines what corridors payment provider provide and the currencies available to the 
+      source and target country capabilities. Acts as a junction model with it's own junctionDAO
+      (PaymentProviderCorridorDAO)`,
 
   properties: [
     {
       class: 'Reference',
+      name: 'provider',
       of: 'net.nanopay.payment.PaymentProvider',
-      name: 'paymentProvider',
+      targetDAOKey: 'paymentProviderDAO'
+    },
+    {
+      class: 'Reference',
+      name: 'corridor',
+      of: 'net.nanopay.fx.Corridor',
+      targetDAOKey: 'corridorDAO'
+    },
+    {
+      class: 'StringArray',
+      name: 'currencies',
+      documentation: 'Agreed upon currencies in country.'
     }
   ]
 });

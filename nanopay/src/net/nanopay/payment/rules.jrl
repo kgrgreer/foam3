@@ -23,7 +23,7 @@ p({
   "priority": 100,
   "ruleGroup": "paymentProvidersCapabilities",
   "documentation": "Create payment provider prerequisites on payment provider corridor capability create",
-  "daoKey": "capabilityDAO",
+  "daoKey":"localCapabilityDAO",
   "operation": 0,
   "after": true,
   "action": {
@@ -31,7 +31,7 @@ p({
   },
   "predicate":{
     "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
-    "of":"net.nanopay.payment.PaymentProviderCorridorCapability"
+    "of":"net.nanopay.payment.PaymentProviderCorridor"
   },
   "enabled": true,
   "saveHistory": false,
@@ -45,7 +45,7 @@ p({
   "priority": 200,
   "ruleGroup": "paymentProvidersCapabilities",
   "documentation": "Prevent ppcj put if references are missing",
-  "daoKey": "paymentProviderCorridorJunctionDAO",
+  "daoKey": "paymentProviderCorridorDAO",
   "operation": 0,
   "after": false,
   "action": {
