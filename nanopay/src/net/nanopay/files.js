@@ -157,6 +157,8 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/ui/BankAccountCitationView', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/AddINBankAccountView', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/AddPKBankAccountView', flags: ['web'] },
+  { name: 'net/nanopay/tx/SummaryTransactionCitationView' },
+  { name: 'net/nanopay/tx/LineItemCitationView' },
 
   { name: 'net/nanopay/model/BusinessSector' },
   { name: 'net/nanopay/model/BusinessType' },
@@ -1572,5 +1574,5 @@ FOAM_FILES([
 
   // Treviso
   { name: 'net/nanopay/fx/treviso/TrevisoTransaction' },
-  { name: 'net/nanopay/fx/treviso/NatureCode' },
+  { name: 'net/nanopay/fx/treviso/NatureCodeLineItem' },
 ]);

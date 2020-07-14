@@ -26,6 +26,10 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction'
   ],
 
+  messages: [
+     { name: 'DESCRIPTION', message: 'Summary' },
+ ],
+
   methods: [
     {
      documentation: `return true when status change is such that normal (forward) Transfers should be executed (applied)`,
@@ -69,7 +73,9 @@ foam.CLASS({
       }
     }
     `
+  },
+  function toSummary() {
+    return this.DESCRIPTION;
   }
- ]
-
+ ],
 });

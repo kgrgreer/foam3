@@ -24,11 +24,12 @@ foam.CLASS({
   javaImports: [
     'foam.util.SafetyUtil',
     'net.nanopay.fx.FXLineItem',
+    'net.nanopay.fx.FXQuote',
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.fx.treviso.NatureCode',
+    'net.nanopay.fx.treviso.NatureCodeLineItem',
     'net.nanopay.fx.treviso.TrevisoTransaction',
   ],
 
@@ -66,8 +67,15 @@ foam.CLASS({
       placeHolder.setPlanner(this.getId());
       this.addLineItems(x, placeHolder, requestTxn);
 
+      FXQuote fxQuote = new FXQuote();
+      fxQuote.setSourceCurrency("USD");
+      fxQuote.setTargetCurrency("BRL");
+      fxQuote.setRate(5.0);
+      
       FXLineItem fxLineItem = new FXLineItem();
-      fxLineItem.setRate(5);
+      fxLineItem.setRate(fxQuote.getRate());
+      fxLineItem.setSourceCurrency(fxQuote.findSourceCurrency(x));
+      fxLineItem.setDestinationCurrency(fxQuote.findTargetCurrency(x));
       placeHolder.addLineItems( new TransactionLineItem[] { fxLineItem } );
       txn.setStatus(TransactionStatus.COMPLETED);
       txn.addNext(placeHolder);
@@ -85,17 +93,17 @@ foam.CLASS({
         if ( ! (txn instanceof TrevisoTransaction) ) {
           return true;
         }
-        NatureCode natureCode = null;
+        NatureCodeLineItem natureCode = null;
         TrevisoTransaction transaction = (TrevisoTransaction) txn;;
 
         for (TransactionLineItem lineItem: txn.getLineItems() ) {
-          if ( lineItem instanceof NatureCode ) {
-            natureCode = (NatureCode) lineItem;
+          if ( lineItem instanceof NatureCodeLineItem ) {
+            natureCode = (NatureCodeLineItem) lineItem;
             break;
           }
         }
 
-        if ( natureCode == null || SafetyUtil.isEmpty(natureCode.getPurposeCode()) ) {
+        if ( natureCode == null || SafetyUtil.isEmpty(natureCode.getNatureCode()) ) {
           throw new RuntimeException("[Transaction Validation error]"+ this.INVALID_NATURE_CODE);
         }
 
@@ -120,16 +128,16 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        NatureCode natureCode = null;
+      NatureCodeLineItem natureCode = null;
         for (TransactionLineItem lineItem: requestTxn.getLineItems() ) {
-          if ( lineItem instanceof NatureCode ) {
-            natureCode = (NatureCode) lineItem;
+          if ( lineItem instanceof NatureCodeLineItem ) {
+            natureCode = (NatureCodeLineItem) lineItem;
             break;
           }
         }
 
         if ( natureCode == null ) {
-          natureCode = new NatureCode();
+          natureCode = new NatureCodeLineItem();
         }
         txn.addLineItems( new TransactionLineItem[] { natureCode } );
 

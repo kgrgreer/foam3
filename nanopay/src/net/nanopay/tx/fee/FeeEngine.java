@@ -19,12 +19,14 @@ package net.nanopay.tx.fee;
 
 import foam.core.FObject;
 import foam.core.X;
+import foam.core.Currency;
 import foam.dao.DAO;
 import foam.mlang.Constant;
 import foam.mlang.Expr;
 import foam.mlang.Formula;
 import foam.nanos.logger.Logger;
 import net.nanopay.tx.FeeLineItem;
+import net.nanopay.tx.InvoicedFeeLineItem;
 import net.nanopay.tx.TransactionLineItem;
 import net.nanopay.tx.model.Transaction;
 
@@ -54,8 +56,15 @@ public class FeeEngine {
           logger.debug("Fee amount is (" + feeAmount + ")", fee.toString(), transaction);
         }
 
-        transaction.addLineItems(new TransactionLineItem[] {
-          newFeeLineItem(fee.getLabel(), feeAmount, getCurrency(transaction))
+        Currency currency = (Currency) ((DAO) x.get("currencyDAO")).find(getCurrency(transaction));
+        transaction.addLineItems(new TransactionLineItem[]{
+          new InvoicedFeeLineItem.Builder(x)
+            .setGroup(getFeeGroup())
+            .setName(fee.getLabel())
+            .setCurrency(getCurrency(transaction))
+            .setAmount(feeAmount)
+            .setFeeCurrency(currency)
+            .build()
         });
       }
     } catch ( Exception e ) {

@@ -111,6 +111,8 @@ foam.CLASS({
       txn.addNext(createCompliance(requestTxn));
       FXLineItem fxLineItem = new FXLineItem();      
       fxLineItem.setRate(fxQuote.getRate());
+      fxLineItem.setSourceCurrency(fxQuote.findSourceCurrency(x));
+      fxLineItem.setDestinationCurrency(fxQuote.findTargetCurrency(x));
       txn.addLineItems( new TransactionLineItem[] { fxLineItem } );
 
       DigitalAccount destinationDigitalaccount = DigitalAccount.findDefault(x, destinationAccount.findOwner(x), sourceAccount.getDenomination());

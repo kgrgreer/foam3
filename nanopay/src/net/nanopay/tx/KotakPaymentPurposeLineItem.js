@@ -28,6 +28,10 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction'
   ],
 
+  messages: [
+    { name: 'DESCRIPTION', message: 'Kotak Payment Purpose' }
+  ],
+
   properties: [
     {
       name: 'purposeCode',
@@ -102,12 +106,14 @@ foam.CLASS({
       value: true
     }
   ],
+
   methods: [
     function validate() {
       if ( this.purposeCode === '' ) {
         throw 'Purpose of Transfer cannot be empty';
       }
     },
+
     function getPurposeName() {
       switch ( this.purposeCode ) {
         case 'P0306':
@@ -121,6 +127,10 @@ foam.CLASS({
         default:
           return 'Trade transaction';
       }
+    },
+
+    function toSummary() {
+      return this.DESCRIPTION;
     }
   ]
 });

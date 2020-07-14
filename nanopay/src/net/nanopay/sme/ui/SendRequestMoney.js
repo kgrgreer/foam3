@@ -56,6 +56,7 @@ foam.CLASS({
     'isDetailView',
     'isForm',
     'isList',
+    'isLoading',
     'isPayable',
     'loadingSpin',
     'newButton',
@@ -165,7 +166,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isForm',
       value: true,
-      documentation: `Form stands for the new invoice form 
+      documentation: `Form stands for the new invoice form
       or the draft invoice form.`
     },
     {
@@ -224,7 +225,7 @@ foam.CLASS({
           this.invoice.status !== this.InvoiceStatus.DRAFT &&
           position === 0;
       },
-      documentation: `An expression is required for the 1st step of the 
+      documentation: `An expression is required for the 1st step of the
         send/request payment flow to show the 'Save as draft' button.`
     },
     {
@@ -232,7 +233,7 @@ foam.CLASS({
       expression: function(isList) {
         return ! isList;
       },
-      documentation: `An expression is required for the 1st step of the 
+      documentation: `An expression is required for the 1st step of the
         send/request payment flow to show the 'Save as draft' button.`
     },
     {
@@ -267,7 +268,12 @@ foam.CLASS({
       factory: function() {
         return this.AbliiTransaction.create();
       }
-    }
+    },
+    {
+      class: 'Boolean',
+      name: 'reQuote',
+      value: false
+    },
   ],
 
   messages: [
@@ -396,36 +402,51 @@ foam.CLASS({
       return true;
     },
 
-    function paymentValidation() {
+    async function paymentValidation() {
       if ( ! this.viewData.bankAccount || ! foam.util.equals(this.viewData.bankAccount.status, net.nanopay.bank.BankAccountStatus.VERIFIED) ) {
         this.notify(this.BANK_ACCOUNT_REQUIRED, '', this.LogLevel.ERROR, true);
         return false;
       } else if ( ! this.viewData.quote && this.isPayable ) {
         this.notify(this.QUOTE_ERROR, '', this.LogLevel.ERROR, true);
         return false;
+      } else if ( ! this.isPayable ) {
+        return true;
       }
 
       // Validate transaction line items
-      try {
-        for ( i =0; i < this.viewData.quote.lineItems.length; i++ ) {
+      if ( this.type === 'payable' ) {
+        try {
+          for ( i =0; i < this.viewData.quote.lineItems.length; i++ ) {
+            if ( this.viewData.quote.lineItems[i].requiresUserInput ) {
+              this.viewData.quote.lineItems[i].validate();
+            }
+          }
+        } catch (e) {
+          this.notify(e, '', this.LogLevel.ERROR, true);
+          return false;
+        }
+
+        for ( i=0; i < this.viewData.quote.lineItems.length; i++ ) {
           if ( this.viewData.quote.lineItems[i].requiresUserInput ) {
-            this.viewData.quote.lineItems[i].validate();
+            this.requestTxn.lineItems.push(this.viewData.quote.lineItems[i]);
+            if ( ! this.requote && this.viewData.quote.lineItems[i].quoteOnChange ) {
+              this.reQuote = true;
+            }
           }
         }
-      } catch (e) {
-        this.notify(e, '', this.LogLevel.ERROR, true);
-        return false;
-      }
 
-      for ( i=0; i < this.viewData.quote.lineItems.length; i++ ) {
-        if ( this.viewData.quote.lineItems[i].requiresUserInput ) {
-          this.requestTxn.lineItems.push(this.viewData.quote.lineItems[i]);
+        if ( this.reQuote ) {
+          this.isLoading = true;
+          this.updateInvoiceDetails = await this.getQuote();
+          this.forceUpdate = true;
+          this.isLoading = false;
+          this.reQuote = false;
         }
       }
 
       return true;
     },
-  
+
     function getExpired( time, transaction) {
 
       let quoteExpiry = null;
@@ -447,8 +468,8 @@ foam.CLASS({
       let utc1 =  Date.UTC(time.getFullYear(), time.getMonth(), time.getDate(), time.getHours(), time.getMinutes(), time.getSeconds());
       return Math.floor(( quoteExpiry-utc1 )) <= 0;
     },
-  
-    async function getFXQuote() {
+
+    async function getQuote() {
       var quote = await this.transactionPlannerDAO.put(
         this.TransactionQuote.create({
           requestTransaction: this.requestTxn
@@ -480,7 +501,7 @@ foam.CLASS({
       try {
         // Calling put here makes display 'invoice was created' message in invoice history.
         // We want to show this message only when we are creating a new invoice.
-        
+
         // a flag for determining if we are creating a new invoice
         const isNewInvoice = this.invoice.id === 0;
         if ( isNewInvoice ) {
@@ -499,7 +520,7 @@ foam.CLASS({
         transaction.invoiceId = this.invoice.id;
         // confirm fxquote is still valid
         if ( transaction != null && this.getExpired(new Date(), transaction) ) {
-          transaction = await this.getFXQuote();
+          transaction = await this.getQuote();
           transaction.invoiceId = this.invoice.id;
           this.notify(this.RATE_REFRESH + ( this.isApproving ? this.RATE_REFRESH_APPROVE : this.RATE_REFRESH_SUBMIT), '', this.LogLevel.WARN, true);
           this.isLoading = false;
@@ -629,7 +650,7 @@ foam.CLASS({
           });
         }
       },
-      code: function() {
+      code: async function() {
         var currentViewId = this.views[this.position].id;
         switch ( currentViewId ) {
           case this.DETAILS_VIEW_ID:
@@ -649,7 +670,7 @@ foam.CLASS({
             });
             break;
           case this.PAYMENT_VIEW_ID:
-            if ( ! this.paymentValidation() ) return;
+            if ( ! await this.paymentValidation() ) return;
             this.populatePayerIdOrPayeeId().then(() => {
               this.subStack.push(this.views[this.subStack.pos + 1].view);
             });

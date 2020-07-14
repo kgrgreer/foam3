@@ -17,7 +17,7 @@
 
 foam.CLASS({
   package: 'net.nanopay.fx.treviso',
-  name: 'NatureCode',
+  name: 'NatureCodeLineItem',
   extends: 'net.nanopay.tx.TransactionLineItem',
 
   implements: [
@@ -37,15 +37,16 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'purposeCode',
+      name: 'natureCode',
       class: 'Reference',
       of: 'net.nanopay.tx.PurposeCode',
       label: 'Nature Code',
+      required: true,
       validationPredicates: [
         {
-          args: ['purposeCode'],
+          args: ['natureCode'],
           predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.fx.treviso.NatureCode.PURPOSE_CODE, '');
+            return e.NEQ(net.nanopay.fx.treviso.NatureCodeLineItem.NATURE_CODE, '');
           },
           errorString: 'Please select a nature code.'
         }
@@ -54,8 +55,8 @@ foam.CLASS({
         return foam.u2.view.ChoiceView.create({
           dao: x.purposeCodeDAO.where(x.data.EQ(net.nanopay.tx.PurposeCode.COUNTRY, 'BR')),
           placeholder: 'Please select',
-          objToChoice: function(purposeCode) {
-            return [purposeCode.code, purposeCode.description];
+          objToChoice: function(natureCode) {
+            return [natureCode.code, natureCode.description];
           }
         });
       }
@@ -98,12 +99,16 @@ foam.CLASS({
     {
       name: 'requiresUserInput',
       value: true
+    },
+    {
+      name: 'quoteOnChange',
+      value: true
     }
   ],
 
   methods: [
     function validate() {
-      if ( this.purposeCode === '' ) {
+      if ( this.natureCode === '' ) {
         throw this.INVALID_NATURE_CODE;
       }
     }

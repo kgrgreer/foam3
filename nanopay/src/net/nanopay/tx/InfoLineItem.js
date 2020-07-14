@@ -52,11 +52,15 @@ foam.CLASS({
     documentation: 'By default, show Transaction Line Item class name - to distinguish sub-classes.',
     name: 'name',
     gridColumns: 3,
-    label: '',
+    //label: '',
     class: 'String',
     updateVisibility: 'RO',
     createVisibility: 'RO',
-    readVisibility: 'RO'
+    readVisibility: 'RO',
+    factory: function() {
+      return this.cls_.name;
+    },
+    javaFactory: 'return getClass().getSimpleName();'
   },
   {
     name: 'note',
@@ -91,7 +95,7 @@ foam.CLASS({
   ],
   methods: [
     function toSummary() {
-      return this.name+ " : "+this.note;
+      return this.name+ " : "+ this.note;
     },
   ]
 });

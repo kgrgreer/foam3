@@ -271,7 +271,9 @@ foam.CLASS({
     {
       name: 'EXTERNAL_TITLE',
       message: 'Attention to Payment'
-    }
+    },
+    { name: 'ACCOUNT_WITHDRAW_LABEL', message: 'Withdraw from' },
+    { name: 'ACCOUNT_DEPOSIT_LABEL', message: 'Deposit to' },
   ],
 
   constants: [
@@ -377,7 +379,12 @@ foam.CLASS({
     {
       class: 'Array',
       name: 'currencies'
-    }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.bank.BankAccount',
+      name: 'chosenBankAccount'
+    },
   ],
 
   methods: [
@@ -410,6 +417,20 @@ foam.CLASS({
       // Listeners to check if receiver or payer is valid for transaction.
       this.invoice$.dot('contactId').sub(this.onContactIdChange);
       this.currencyType$.sub(this.onCurrencyTypeChange);
+
+      var accountSelectionView = {
+        class: 'foam.u2.view.RichChoiceView',
+        selectionView: { class: 'net.nanopay.bank.ui.BankAccountSelectionView' },
+        rowView: { class: 'net.nanopay.bank.ui.BankAccountCitationView' },
+        sections: [
+          {
+            heading: 'Your bank accounts',
+            dao: this.subject.user.accounts.where(
+              this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED)
+            )
+          }
+        ]
+      };
 
       this.ctrl
         .start()
@@ -521,7 +542,23 @@ foam.CLASS({
                 .end()
               .end()
             .end()
-
+            
+            .start()
+              .addClass('input-wrapper')
+              .start()
+                .addClass('input-label')
+                .add( this.type === 'payable' ? this.ACCOUNT_WITHDRAW_LABEL : this.ACCOUNT_DEPOSIT_LABEL )
+              .end()
+              .start()
+                  .add(this.slot(function(invoice, type) {
+                     if ( type === 'payable' ) {
+                      return invoice.ACCOUNT.copyFrom({ view: accountSelectionView });
+                     }
+                     return invoice.DESTINATION_ACCOUNT.copyFrom({ view: accountSelectionView });
+                  }))
+              .end()
+            .end()
+            
             .start().addClass('invoice-block')
               .start().addClass('input-wrapper')
                 .start().addClass('input-label').add('Invoice Number').end()
@@ -621,6 +658,7 @@ foam.CLASS({
       this.contact = await this.subject.user.contacts.find(this.invoice.contactId);
       if ( this.type == 'payable' && this.contact && ( this.contact.bankAccount > 0 || this.contact.businessId > 0 ) ) {
         await this.setDefaultCurrency();
+        this.setChosenBankAccount();
       }
       this.checkUser(this.currencyType);
     },
@@ -666,6 +704,24 @@ foam.CLASS({
         }
       } catch (e) {
         console.error('Error fetch default currency: ', e.message);
+      }
+    },
+    async function setChosenBankAccount() {
+      this.chosenBankAccount = await this.subject.user.accounts.find(
+        this.AND(
+          this.INSTANCE_OF(this.BankAccount),
+          this.EQ(this.BankAccount.IS_DEFAULT, true),
+          this.EQ(this.BankAccount.DENOMINATION, this.type === 'payable' ? this.invoice.destinationCurrency : this.invoice.sourceCurrency)
+        )
+      );
+
+      if ( ! this.chosenBankAccount ) {
+        return;
+      }
+      if ( this.type === 'payable' ) {
+        this.invoice.account = this.chosenBankAccount;
+      } else {
+        this.invoice.destinationAccount = this.chosenBankAccount;
       }
     }
   ],

@@ -555,7 +555,7 @@ foam.CLASS({
       // adding a listener to track the display width here as well since we don't call super
       window.addEventListener('resize', this.updateDisplayWidth);
       this.updateDisplayWidth();
-  
+
       // If we don't wait for the Theme object to load then we'll get
       // errors when trying to expand the CSS macros in these models.
       await this.clientPromise;
@@ -972,20 +972,20 @@ foam.CLASS({
       if ( this.sme ) {
         window.onpopstate = async (event) => {
           var menu;
-  
+
           // Redirect user to switch business if agent doesn't exist.
           if ( ! this.subject.realUser ) {
             menu = await this.client.menuDAO.find('sme.accountProfile.switch-business');
             menu.launch(this);
             return;
           }
-  
+
           var hash = location.hash.substr(1);
-  
+
           if ( hash == 'sme.main.onboarding' ) {
             this.onboardingUtil.initOnboardingView();
           }
-  
+
           if ( hash == 'sme.main.onboarding.international' ) {
             this.onboardingUtil.initInternationalOnboardingView();
           }
@@ -995,13 +995,13 @@ foam.CLASS({
           catch (err) {
             console.warn(`${this.FETCH_MENU_ERROR}: `, err);
           }
-  
+
           // Any errors in finding the menu location to redirect
           // will result in a redirect to dashboard.
           if ( menu ) {
             menu.launch(this);
           }
-  
+
           if ( hash != 'sme.accountProfile.signout' && hash !== '' ) {
             this.bannerizeCompliance();
           }
@@ -1039,7 +1039,7 @@ foam.CLASS({
         } else if ( this.theme ) {
           this.window.location.hash = this.theme.defaultMenu;
         }
-      }  
+      }
 
       else {
         // only show B2B onboarding if user is a Business

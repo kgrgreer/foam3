@@ -22,4 +22,56 @@ foam.CLASS({
 
   documentation: 'A Fee LineItem whereby the fee collection occurs after the Transaction during some billing period. ',
 
+  messages: [
+      { name: 'DESCRIPTION', message: 'Invoiced Fee' },
+      { name: 'NOTE_MESSAGE', message: 'will be charged at the end of billing period.' },
+  ],
+
+  properties: [
+    {
+      name: 'group',
+      hidden: true
+    },
+    {
+      name: 'type',
+      hidden: true
+    },
+    {
+      name: 'reversable',
+      hidden: true
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.core.Currency',
+      name: 'feeCurrency',
+      hidden: true
+    },
+    {
+      name: 'amount',
+      view: function(_, x) {
+        let amount = x.data.amount;
+        if ( x.data.feeCurrency ) {
+           amount = x.data.feeCurrency.format(x.data.amount);
+        }
+        return foam.u2.Element.create()
+        .start()
+          .add(amount)
+        .end();
+      }
+    },
+    {
+      name: 'note',
+      value: this.NOTE_MESSAGE,
+      factory: function() {
+        return this.NOTE_MESSAGE;
+      }
+    },
+
+  ],
+
+  methods: [
+    function toSummary() {
+      return this.DESCRIPTION;
+    }
+  ]
 });

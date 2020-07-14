@@ -1121,7 +1121,7 @@ var classes = [
 
   // Treviso
  'net.nanopay.fx.treviso.TrevisoTransaction',
- 'net.nanopay.fx.treviso.NatureCode',
+ 'net.nanopay.fx.treviso.NatureCodeLineItem',
 
  // DAO decorators
  'net.nanopay.account.AbliiBankAccountAutoverifyDAO',
