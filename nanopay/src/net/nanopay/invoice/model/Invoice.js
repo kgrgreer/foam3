@@ -330,7 +330,7 @@ foam.CLASS({
       ],
       required: true,
       tableWidth: 120,
-      valueToString: async function(x, val, unitPropName) {
+      unitPropValueToString: async function(x, val, unitPropName) {
         var unitProp = await x.currencyDAO.find(unitPropName);
         if ( unitProp )
           return unitProp.format(val);

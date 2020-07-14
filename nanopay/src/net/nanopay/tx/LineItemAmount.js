@@ -29,7 +29,7 @@ foam.CLASS({
     {
       class: 'UnitValue',
       name: 'value',
-      valueToString: async function(x, val, unitPropName) {
+      unitPropValueToString: async function(x, val, unitPropName) {
         var formattedAmount = val;
         if ( this.type == net.nanopay.tx.LineItemAmountType.PERCENT ) {
           return amount / 100;

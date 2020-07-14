@@ -240,7 +240,7 @@ foam.CLASS({
       createVisibility: 'HIDDEN', // No point in showing as read-only during create since it'll always be 0
       updateVisibility: 'RO',
       readVisibility: 'RO',
-      valueToString: async function(x, val, unitPropName) {
+      unitPropValueToString: async function(x, val, unitPropName) {
         var unitProp = await x.currencyDAO.find(unitPropName);
         if ( unitProp )
           return unitProp.format(val);
@@ -280,8 +280,8 @@ foam.CLASS({
       storageTransient: true,
       visibility: 'RO',
       tableWidth: 175,
-      valueToString: async function(x, val, unitPropName) {// have no idea how to fix this
-        return await this.exchangeRateService.exchangeFormat(this.denomination, this.homeDenomination, this.balance);
+      unitPropValueToString: async function(x, val, unitPropName) {
+        return await this.exchangeRateService.exchangeFormat(unitPropName, this.homeDenomination, val);
       },
       tableCellFormatter: function(value, obj, axiom) {
       var self = this;

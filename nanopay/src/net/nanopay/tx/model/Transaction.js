@@ -557,7 +557,7 @@ foam.CLASS({
           linkAmount$: X.data.destinationAmount$
         };
       },
-      valueToString: async function(x, val, unitPropName) {
+      unitPropValueToString: async function(x, val, unitPropName) {
         var unitProp = await x.currencyDAO.find(unitPropName);
         if ( unitProp )
           return unitProp.format(val);
@@ -656,7 +656,7 @@ foam.CLASS({
       },
       documentation: 'Amount in Receiver Currency',
       section: 'amountSelection',
-      valueToString: async function(x, val, unitPropName) {
+      unitPropValueToString: async function(x, val, unitPropName) {
         var unitProp = await x.currencyDAO.find(unitPropName);
         return unitProp.format(val);
       },

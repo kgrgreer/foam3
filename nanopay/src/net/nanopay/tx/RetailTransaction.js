@@ -35,7 +35,7 @@ foam.CLASS({
       name: 'tip',
       label: 'Tip',
       visibility: 'RO',
-      valueToString: async function(x, val, unitPropName) {
+      unitPropValueToString: async function(x, val, unitPropName) {
         var formattedAmount = val / 100;
         return '$' + x.addCommas(formattedAmount.toFixed(2));
       },
@@ -57,7 +57,7 @@ foam.CLASS({
         return amount + tip;
       },
       javaGetter: `return getAmount() + getTip();`,
-      valueToString: async function(x, val, unitPropName) {
+      unitPropValueToString: async function(x, val, unitPropName) {
         var formattedAmount = val / 100;
         return '$' + x.addCommas(formattedAmount.toFixed(2));
       },
