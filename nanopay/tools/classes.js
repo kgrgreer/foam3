@@ -404,6 +404,7 @@ var classes = [
    'net.nanopay.liquidity.crunch.RoleTemplate',
    'net.nanopay.liquidity.crunch.RemoveDeletedAccountFromAccountTemplate',
    'net.nanopay.liquidity.crunch.LiquidEnabledActionsAuth',
+   'net.nanopay.liquidity.crunch.RemoveAccountFromRootAccounts',
 
    'net.nanopay.util.Frequency',
    'net.nanopay.liquidity.ruler.AccountTemplateContains',
