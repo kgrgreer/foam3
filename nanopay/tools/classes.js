@@ -540,6 +540,7 @@ var classes = [
   'net.nanopay.tx.ruler.TransactionQuotedStatusRule',
   'net.nanopay.tx.ruler.InvoiceApprovedByRule',
   'net.nanopay.tx.ruler.SlowDownRule',
+  'net.nanopay.tx.ruler.LiquidTransactionalBlocks',
   'net.nanopay.tx.ruler.AbliiSendCompletedNotification',
   'net.nanopay.tx.ruler.SendDeclinedCINotification',
   'net.nanopay.tx.ruler.AddStatusHistoryAction',

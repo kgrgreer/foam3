@@ -437,6 +437,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ruler/MicroDepositSuccessed' },
   { name: 'net/nanopay/tx/ruler/MicroDepositFailed' },
   { name: 'net/nanopay/tx/ruler/MicroDepositSent' },
+  { name: 'net/nanopay/tx/ruler/LiquidTransactionalBlocks' },
   { name: 'net/nanopay/tx/model/TransactionLimitType' },
   { name: 'net/nanopay/tx/model/TransactionLimitDetail' },
   { name: 'net/nanopay/tx/TransactionPurpose' },

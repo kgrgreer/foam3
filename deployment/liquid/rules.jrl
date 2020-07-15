@@ -961,3 +961,26 @@ p({
   "saveHistory":true,
   "lifecycleState":1
 })
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"c8af9202-6890-4bdb-96ba-60082960422f",
+  "name":"block certain liquid transactions",
+  "priority":100,
+  "enabled":true,
+  "ruleGroup":"liquid",
+  "documentation":"blocks certain accounts from transacting",
+  "daoKey":"localTransactionDAO",
+  "operation":3,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.Not",
+    "arg1":{
+      "class":"foam.nanos.ruler.predicate.ContextContainsPredicate",
+      "key":"systemGenerated"
+    }
+  }
+  "action":{
+    "class":"net.nanopay.tx.ruler.LiquidTransactionalBlocks",
+  },
+  "lifecycleState":1
+})
