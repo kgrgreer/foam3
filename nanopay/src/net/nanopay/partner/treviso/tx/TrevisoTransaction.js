@@ -16,7 +16,7 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.fx.treviso',
+  package: 'net.nanopay.partner.treviso.tx',
   name: 'TrevisoTransaction',
   extends: 'net.nanopay.fx.FXTransaction',
 

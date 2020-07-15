@@ -1,0 +1,40 @@
+p({"class":"foam.nanos.boot.NSpec", "name":"TrevisoCredientials", "lazy":false, "service":{"class":"net.nanopay.partner.treviso.TrevisoCredientials"}})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "trevisoClientDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.partner.treviso.TrevisoClient.getOwnClassInfo())
+      .setSeqNo(true)
+      .setName("trevisoClientDAO")
+      .setJournalName("trevisoClients")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setAuthorize(true)
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.partner.treviso.TrevisoClient\"}"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"trevisoAPIService",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.partner.treviso.api.TrevisoAPIService(x));
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"trevisoService",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.partner.treviso.TrevisoService(x, x.get("trevisoAPIService"));
+  """
+})

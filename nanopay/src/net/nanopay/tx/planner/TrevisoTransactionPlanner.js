@@ -29,8 +29,8 @@ foam.CLASS({
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.fx.treviso.NatureCodeLineItem',
-    'net.nanopay.fx.treviso.TrevisoTransaction',
+    'net.nanopay.partner.treviso.tx.NatureCodeLineItem',
+    'net.nanopay.partner.treviso.tx.TrevisoTransaction',
   ],
 
   properties: [
@@ -71,7 +71,7 @@ foam.CLASS({
       fxQuote.setSourceCurrency("USD");
       fxQuote.setTargetCurrency("BRL");
       fxQuote.setRate(5.0);
-      
+
       FXLineItem fxLineItem = new FXLineItem();
       fxLineItem.setRate(fxQuote.getRate());
       fxLineItem.setSourceCurrency(fxQuote.findSourceCurrency(x));
@@ -79,7 +79,7 @@ foam.CLASS({
       placeHolder.addLineItems( new TransactionLineItem[] { fxLineItem } );
       txn.setStatus(TransactionStatus.COMPLETED);
       txn.addNext(placeHolder);
-      return txn;       
+      return txn;
     `
     },
     {

@@ -16,7 +16,7 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.fx.treviso',
+  package: 'net.nanopay.partner.treviso.tx',
   name: 'NatureCodeLineItem',
   extends: 'net.nanopay.tx.TransactionLineItem',
 
@@ -46,7 +46,7 @@ foam.CLASS({
         {
           args: ['natureCode'],
           predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.fx.treviso.NatureCodeLineItem.NATURE_CODE, '');
+            return e.NEQ(net.nanopay.partner.treviso.tx.NatureCodeLineItem.NATURE_CODE, '');
           },
           errorString: 'Please select a nature code.'
         }

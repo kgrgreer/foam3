@@ -1,5 +1,5 @@
 
-package net.nanopay.fx.treviso;
+package net.nanopay.partner.treviso.tx;
 
 import static foam.mlang.MLang.EQ;
 

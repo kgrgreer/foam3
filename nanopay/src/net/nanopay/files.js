@@ -1574,6 +1574,8 @@ FOAM_FILES([
   { name: 'net/nanopay/msp/MspInfo' },
 
   // Treviso
-  { name: 'net/nanopay/fx/treviso/TrevisoTransaction' },
-  { name: 'net/nanopay/fx/treviso/NatureCodeLineItem' },
+  { name: 'net/nanopay/partner/treviso/TrevisoCredientials' },
+  { name: 'net/nanopay/partner/treviso/TrevisoClient' },
+  { name: 'net/nanopay/partner/treviso/tx/NatureCodeLineItem' },
+  { name: 'net/nanopay/partner/treviso/tx/TrevisoTransaction' }
 ]);
