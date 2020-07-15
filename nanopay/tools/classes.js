@@ -1063,9 +1063,7 @@ var classes = [
   'net.nanopay.tx.fee.test.TransactionFeeRuleTest',
 
   // crunch onboarding
-  'net.nanopay.crunch.onboardingModels.SigningOfficerInformationData',
   'net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData',
-  'net.nanopay.crunch.onboardingModels.AddSigningOfficerCapabilityOnPut',
   'net.nanopay.crunch.onboardingModels.SigningOfficerQuestion',
   'net.nanopay.crunch.onboardingModels.BusinessHasNoSigningOfficers',
   'net.nanopay.crunch.onboardingModels.SigningOfficerQuestionOnPut',
@@ -1080,6 +1078,7 @@ var classes = [
   'net.nanopay.crunch.onboardingModels.SigningOfficerCapabilityInterceptPredicate',
   'net.nanopay.crunch.onboardingModels.SetBusinessOnboardedOnUCJPut',
   'net.nanopay.crunch.onboardingModels.OnboardingCapabilityUCJSubmitted',
+  'net.nanopay.crunch.onboardingModels.UserIsSigningOfficerOfBusiness',
 
   // crunch compliance
   'net.nanopay.crunch.compliance.IsPendingCapabilityOfCertainCategory',

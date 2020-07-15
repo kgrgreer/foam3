@@ -1523,9 +1523,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/fee/test/TransactionFeeRuleTest' },
 
   // crunch onboarding
-  { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerInformationData' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerPersonalData' },
-  { name: 'net/nanopay/crunch/onboardingModels/AddSigningOfficerCapabilityOnPut' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerQuestion' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessHasNoSigningOfficers' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessInformationData' },
@@ -1539,6 +1537,7 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/BusinessOwnershipToBeneficialOwnerDAO' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerCapabilityInterceptPredicate' },
   { name: 'net/nanopay/crunch/onboardingModels/SetBusinessOnboardedOnUCJPut' },
+  { name: 'net/nanopay/crunch/onboardingModels/UserIsSigningOfficerOfBusiness' },
 
   // crunch compliance
   { name: 'net/nanopay/crunch/compliance/IsPendingCapabilityOfCertainCategory' },

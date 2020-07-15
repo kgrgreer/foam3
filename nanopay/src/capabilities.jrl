@@ -14,7 +14,6 @@ p({
   "interceptIf":{"class":"net.nanopay.crunch.onboardingModels.BusinessHasNoSigningOfficers"}
 })
 
-// note: capability.id = 554af38a-8225-87c8-dfdf-eeb15f71215f-1a5 is used specifically by AddSigningOfficerCapabilityOnPut.js
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5",
@@ -23,10 +22,11 @@ p({
   "description":"Unlock Signing Officer privileges",
   "version":"0",
   "enabled":true,
-  "visible":false,
+  "visible":true,
   "daoKey":"userDAO",
   "contextDAOFindKey":"subject.realuser",
   "reviewRequired":true,
+  "associatedEntity":2,
   "permissionsGranted":[
     "certifydatareviewed.rw.reviewed",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",
@@ -46,18 +46,7 @@ p({
     "net.nanopay.crunch.acceptancedocuments.capabilities.abliitermsandconditions.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.abliiprivacypolicy.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.cadafexterms.section.reviewAgreementDocumentsSection"
-  ]
-})
-
-p({
-  "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-1",
-  "name":"Personal Info for Signing Officer",
-  "of":"net.nanopay.crunch.onboardingModels.SigningOfficerInformationData",
-  "description":"Unlock Signing Officer privileges",
-  "version":"0",
-  "enabled":true,
-  "visible":false,
+  ],
   "permissionsIntercepted": [
     "certifydatareviewed.rw.reviewed",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",
