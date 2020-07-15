@@ -513,6 +513,22 @@ p({
 
 p({
   "class":"foam.nanos.ruler.Rule",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d281",
+  "name":"Remove Deleted Account From RootAccounts",
+  "priority": 100,
+  "enabled":true,
+  "ruleGroup": "liquid",
+  "documentation": "On account delete, remove the reference of the account from any account templates/ any roleassignment using template",
+  "daoKey": "localAccountDAO",
+  "operation": 2, 
+  "after": true,
+  "action" : { "class": "net.nanopay.liquidity.crunch.RemoveAccountFromRootAccounts" },
+  "saveHistory": true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
   "id":"68afcf0d-c718-98f8-0841-75e97a3ad16d182",
   "name":"Outstanding Requests Prevent Deletion",
   "priority":110,

@@ -983,6 +983,7 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/crunch/RootAccounts' },
    { name: 'net/nanopay/liquidity/crunch/RemoveDeletedAccountFromAccountTemplate' },
    { name: 'net/nanopay/liquidity/crunch/LiquidEnabledActionsAuth' },
+   { name: 'net/nanopay/liquidity/crunch/RemoveAccountFromRootAccounts' },
 
    // liquidity ui
    { name: 'net/nanopay/liquidity/ui/LiquidCurrencyView' },

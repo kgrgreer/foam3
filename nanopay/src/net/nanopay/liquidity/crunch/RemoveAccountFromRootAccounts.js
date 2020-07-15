@@ -17,9 +17,9 @@
 
 foam.CLASS({
     package: 'net.nanopay.liquidity.crunch',
-    name: 'RemoveAccountFromUcjDataOnAccountRemoval',
+    name: 'RemoveAccountFromRootAccounts',
   
-    documentation: 'Rule to remove account from ucj data on account removal',
+    documentation: 'Rule to remove account from root account dao on account removal',
   
     implements: [
       'foam.nanos.ruler.RuleAction'
@@ -27,14 +27,14 @@ foam.CLASS({
   
     javaImports: [
       'foam.core.ContextAgent',
-      'foam.core.NumberSet',
       'foam.core.X',
       'foam.dao.ArraySink',
       'foam.dao.DAO',
       'foam.nanos.auth.LifecycleAware',
       'foam.nanos.crunch.UserCapabilityJunction',
       'java.util.List',
-      'net.nanopay.account.Account'
+      'net.nanopay.account.Account',
+      'net.nanopay.liquidity.crunch.RootAccounts'
     ],
   
     methods: [
@@ -45,28 +45,27 @@ foam.CLASS({
           @Override
           public void execute(X x) {
             if ( ((LifecycleAware) obj).getLifecycleState() == foam.nanos.auth.LifecycleState.DELETED ) {
-              DAO dao = (DAO) x.get("userCapabilityJunctionDAO");
+              DAO rootAccountsDAO = (DAO) x.get("rootAccountsDAO");
 
               Long id = ((Account) obj).getId();
 
-              List<UserCapabilityJunction> list= ((ArraySink) dao
+              List<RootAccounts> rootAccountsList= ((ArraySink) rootAccountsDAO
                 .select(new ArraySink()))
                 .getArray();
 
-              for ( UserCapabilityJunction ucj : list ) {
-                if ( ucj.getData() instanceof NumberSet ) {
-                  NumberSet numberSet = (NumberSet) ucj.getData();
+              for ( RootAccounts ra : rootAccountsList ) {
+                List<Long> accountsList = (List<Long>) ra.getRootAccounts();
+                if ( accountsList.contains(id.toString()) ) {
+                  accountsList.remove(id.toString());
 
-                  if ( numberSet.contains(id) ) {
-                    numberSet.remove(id);
-                    ucj.setData(numberSet);
-                    dao.put(ucj);
-                  }
+                  ra.setRootAccounts(accountsList);
+
+                  rootAccountsDAO.put(ra);
                 }
               }
             }
           }
-        }, "Remove accounts from ucjdata on account removal");
+        }, "Remove account from root account dao on account removal");
         `
       }
     ]
