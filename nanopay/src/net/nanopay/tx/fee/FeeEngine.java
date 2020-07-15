@@ -26,7 +26,6 @@ import foam.mlang.Expr;
 import foam.mlang.Formula;
 import foam.nanos.logger.Logger;
 import net.nanopay.tx.FeeLineItem;
-import net.nanopay.tx.InvoicedFeeLineItem;
 import net.nanopay.tx.TransactionLineItem;
 import net.nanopay.tx.model.Transaction;
 
@@ -56,15 +55,8 @@ public class FeeEngine {
           logger.debug("Fee amount is (" + feeAmount + ")", fee.toString(), transaction);
         }
 
-        Currency currency = (Currency) ((DAO) x.get("currencyDAO")).find(getCurrency(transaction));
         transaction.addLineItems(new TransactionLineItem[]{
-          new InvoicedFeeLineItem.Builder(x)
-            .setGroup(getFeeGroup())
-            .setName(fee.getLabel())
-            .setCurrency(getCurrency(transaction))
-            .setAmount(feeAmount)
-            .setFeeCurrency(currency)
-            .build()
+          newFeeLineItem(fee.getLabel(), feeAmount, getCurrency(x, transaction))
         });
       }
     } catch ( Exception e ) {
@@ -73,14 +65,14 @@ public class FeeEngine {
     }
   }
 
-  private FeeLineItem newFeeLineItem(String name, long amount, String currency)
+  private FeeLineItem newFeeLineItem(String name, long amount, Currency currency)
     throws InstantiationException, IllegalAccessException
   {
     var result = (FeeLineItem) transactionFeeRule_.getFeeClass().newInstance();
     result.setGroup(getFeeGroup());
     result.setName(name);
-    result.setCurrency(currency);
     result.setAmount(amount);
+    result.setFeeCurrency(currency);
     return result;
   }
 
@@ -88,10 +80,11 @@ public class FeeEngine {
     return transactionFeeRule_.getFeeGroup();
   }
 
-  public String getCurrency(Transaction transaction) {
-    return transactionFeeRule_.getSourceCurrencyAsFeeDenomination()
-      ? transaction.getSourceCurrency()
-      : transactionFeeRule_.getFeeDenomination();
+  public Currency getCurrency(X x, Transaction transaction) {
+    String currency = transactionFeeRule_.getSourceCurrencyAsFeeDenomination() ?
+      transaction.getSourceCurrency() :
+      transactionFeeRule_.getFeeDenomination();
+    return (Currency) ((DAO) x.get("currencyDAO")).find(currency);
   }
 
   public DAO getFeeDAO(X x) {
