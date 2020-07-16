@@ -25,272 +25,328 @@ foam.CLASS({
 		},
 		{
 			class: "foam.core.Double",
-			name: "cp_Cide",
+			name: "cpCide",
+			shortName: "cp_Cide",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula1",
+			name: "cpClausula1",
+			shortName: "cp_Clausula1",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula10",
+			name: "cpClausula10",
+			shortName: "cp_Clausula10",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula11",
+			name: "cpClausula11",
+			shortName: "cp_Clausula11",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula12",
+			name: "cpClausula12",
+			shortName: "cp_Clausula12",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula13",
+			name: "cpClausula13",
+			shortName: "cp_Clausula13",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula14",
+			name: "cpClausula14",
+			shortName: "cp_Clausula14",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula15",
+			name: "cpClausula15",
+			shortName: "cp_Clausula15",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula16",
+			name: "cpClausula16",
+			shortName: "cp_Clausula16",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula17",
+			name: "cpClausula17",
+			shortName: "cp_Clausula17",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula18",
+			name: "cpClausula18",
+			shortName: "cp_Clausula18",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula19",
+			name: "cpClausula19",
+			shortName: "cp_Clausula19",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula2",
+			name: "cpClausula2",
+			shortName: "cp_Clausula2",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula20",
+			name: "cpClausula20",
+			shortName: "cp_Clausula20",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula21",
+			name: "cpClausula21",
+			shortName: "cp_Clausula21",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula22",
+			name: "cpClausula22",
+			shortName: "cp_Clausula22",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula23",
+			name: "cpClausula23",
+			shortName: "cp_Clausula23",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula24",
+			name: "cpClausula24",
+			shortName: "cp_Clausula24",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula25",
+			name: "cpClausula25",
+			shortName: "cp_Clausula25",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula26",
+			name: "cpClausula26",
+			shortName: "cp_Clausula26",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula27",
+			name: "cpClausula27",
+			shortName: "cp_Clausula27",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula28",
+			name: "cpClausula28",
+			shortName: "cp_Clausula28",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula29",
+			name: "cpClausula29",
+			shortName: "cp_Clausula29",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula3",
+			name: "cpClausula3",
+			shortName: "cp_Clausula3",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula30",
+			name: "cpClausula30",
+			shortName: "cp_Clausula30",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula31",
+			name: "cpClausula31",
+			shortName: "cp_Clausula31",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula32",
+			name: "cpClausula32",
+			shortName: "cp_Clausula32",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula33",
+			name: "cpClausula33",
+			shortName: "cp_Clausula33",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula34",
+			name: "cpClausula34",
+			shortName: "cp_Clausula34",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula35",
+			name: "cpClausula35",
+			shortName: "cp_Clausula35",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula36",
+			name: "cpClausula36",
+			shortName: "cp_Clausula36",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula37",
+			name: "cpClausula37",
+			shortName: "cp_Clausula37",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula38",
+			name: "cpClausula38",
+			shortName: "cp_Clausula38",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula39",
+			name: "cpClausula39",
+			shortName: "cp_Clausula39",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula4",
+			name: "cpClausula4",
+			shortName: "cp_Clausula4",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula40",
+			name: "cpClausula40",
+			shortName: "cp_Clausula40",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula5",
+			name: "cpClausula5",
+			shortName: "cp_Clausula5",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula6",
+			name: "cpClausula6",
+			shortName: "cp_Clausula6",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula7",
+			name: "cpClausula7",
+			shortName: "cp_Clausula7",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula8",
+			name: "cpClausula8",
+			shortName: "cp_Clausula8",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "cp_Clausula9",
+			name: "cpClausula9",
+			shortName: "cp_Clausula9",
 			required: false
 		},
 		{
 			class: "foam.core.Double",
-			name: "cp_Cofins",
+			name: "cpCofins",
+			shortName: "cp_Cofins",
 			required: false
 		},
 		{
 			class: "foam.core.String",
-			name: "cp_Doc1"
+			name: "cpDoc1",
+			shortName: "cp_Doc1"
 		},
 		{
 			class: "foam.core.String",
-			name: "cp_Doc10"
+			name: "cpDoc10",
+			shortName: "cp_Doc10"
 		},
 		{
 			class: "foam.core.String",
-			name: "cp_Doc2"
+			name: "cpDoc2",
+			shortName: "cp_Doc2"
 		},
 		{
 			class: "foam.core.String",
-			name: "cp_Doc3"
+			name: "cpDoc3",
+			shortName: "cp_Doc3"
 		},
 		{
 			class: "foam.core.String",
-			name: "cp_Doc4"
+			name: "cpDoc4",
+			shortName: "cp_Doc3"
 		},
 		{
 			class: "foam.core.String",
-			name: "cp_Doc5"
+			name: "cpDoc5",
+			shortName: "cp_Doc5"
 		},
 		{
 			class: "foam.core.String",
-			name: "cp_Doc6"
+			name: "cpDoc6",
+			shortName: "cp_Doc6"
 		},
 		{
 			class: "foam.core.String",
-			name: "cp_Doc7"
+			name: "cpDoc7",
+			shortName: "cp_Doc7"
 		},
 		{
 			class: "foam.core.String",
-			name: "cp_Doc8"
+			name: "cpDoc8",
+			shortName: "cp_Doc8"
 		},
 		{
 			class: "foam.core.String",
-			name: "cp_Doc9"
+			name: "cpDoc9",
+			shortName: "cp_Doc9"
 		},
 		{
 			class: "foam.core.Double",
-			name: "cp_Iof",
+			name: "cpIof",
+			shortName: "cp_Iof",
 			required: false
 		},
 		{
 			class: "foam.core.Double",
-			name: "cp_Ir",
+			name: "cpIr",
+			shortName: "cp_Ir",
 			required: false
 		},
 		{
 			class: "foam.core.Double",
-			name: "cp_Iss",
+			name: "cpIss",
+			shortName: "cp_Iss",
 			required: false
 		},
 		{
 			class: "foam.core.Double",
-			name: "cp_Pis",
+			name: "cpPis",
+			shortName: "cp_Pis",
 			required: false
 		},
 		{
@@ -308,272 +364,328 @@ foam.CLASS({
 		},
 		{
 			class: "foam.core.Double",
-			name: "vd_Cide",
+			name: "vdCide",
+			shortName: "vd_Cide",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula1",
+			name: "vdClausula1",
+			shortName: "vd_Clausula1",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula10",
+			name: "vdClausula10",
+			shortName: "vd_Clausula10",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula11",
+			name: "vdClausula11",
+			shortName: "vd_Clausula11",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula12",
+			name: "vdClausula12",
+			shortName: "vd_Clausula12",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula13",
+			name: "vdClausula13",
+			shortName: "vd_Clausula13",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula14",
+			name: "vdClausula14",
+			shortName: "vd_Clausula14",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula15",
+			name: "vdClausula15",
+			shortName: "vd_Clausula15",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula16",
+			name: "vdClausula16",
+			shortName: "vd_Clausula16",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula17",
+			name: "vdClausula17",
+			shortName: "vd_Clausula17",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula18",
+			name: "vdClausula18",
+			shortName: "vd_Clausula18",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula19",
+			name: "vdClausula19",
+			shortName: "vd_Clausula19",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula2",
+			name: "vdClausula2",
+			shortName: "vd_Clausula2",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula20",
+			name: "vdClausula20",
+			shortName: "vd_Clausula20",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula21",
+			name: "vdClausula21",
+			shortName: "vd_Clausula21",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula22",
+			name: "vdClausula22",
+			shortName: "vd_Clausula22",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula23",
+			name: "vdClausula23",
+			shortName: "vd_Clausula23",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula24",
+			name: "vdClausula24",
+			shortName: "vd_Clausula24",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula25",
+			name: "vdClausula25",
+			shortName: "vd_Clausula25",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula26",
+			name: "vdClausula26",
+			shortName: "vd_Clausula26",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula27",
+			name: "vdClausula27",
+			shortName: "vd_Clausula27",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula28",
+			name: "vdClausula28",
+			shortName: "vd_Clausula28",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula29",
+			name: "vdClausula29",
+			shortName: "vd_Clausula29",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula3",
+			name: "vdClausula3",
+			shortName: "vd_Clausula3",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula30",
+			name: "vdClausula30",
+			shortName: "vd_Clausula30",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula31",
+			name: "vdClausula31",
+			shortName: "vd_Clausula31",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula32",
+			name: "vdClausula32",
+			shortName: "vd_Clausula32",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula33",
+			name: "vdClausula33",
+			shortName: "vd_Clausula33",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula34",
+			name: "vdClausula34",
+			shortName: "vd_Clausula34",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula35",
+			name: "vdClausula35",
+			shortName: "vd_Clausula35",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula36",
+			name: "vdClausula36",
+			shortName: "vd_Clausula36",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula37",
+			name: "vdClausula37",
+			shortName: "vd_Clausula37",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula38",
+			name: "vdClausula38",
+			shortName: "vd_Clausula38",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula39",
+			name: "vdClausula39",
+			shortName: "vd_Clausula39",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula4",
+			name: "vdClausula4",
+			shortName: "vd_Clausula4",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula40",
+			name: "vdClausula40",
+			shortName: "vd_Clausula40",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula5",
+			name: "vdClausula5",
+			shortName: "vd_Clausula5",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula6",
+			name: "vdClausula6",
+			shortName: "vd_Clausula6",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula7",
+			name: "vdClausula7",
+			shortName: "vd_Clausula7",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula8",
+			name: "vdClausula8",
+			shortName: "vd_Clausula8",
 			required: false
 		},
 		{
 			class: "foam.core.Int",
-			name: "vd_Clausula9",
+			name: "vdClausula9",
+			shortName: "vd_Clausula9",
 			required: false
 		},
 		{
 			class: "foam.core.Double",
-			name: "vd_Cofins",
+			name: "vdCofins",
+			shortName: "vd_Cofins",
 			required: false
 		},
 		{
 			class: "foam.core.String",
-			name: "vd_Doc1"
+			name: "vdDoc1",
+			shortName: "vd_Doc1"
 		},
 		{
 			class: "foam.core.String",
-			name: "vd_Doc10"
+			name: "vdDoc10",
+			shortName: "vd_Doc10"
 		},
 		{
 			class: "foam.core.String",
-			name: "vd_Doc2"
+			name: "vdDoc2",
+			shortName: "vd_Doc2"
 		},
 		{
 			class: "foam.core.String",
-			name: "vd_Doc3"
+			name: "vdDoc3",
+			shortName: "vd_Doc3"
 		},
 		{
 			class: "foam.core.String",
-			name: "vd_Doc4"
+			name: "vdDoc4",
+			shortName: "vd_Doc4"
 		},
 		{
 			class: "foam.core.String",
-			name: "vd_Doc5"
+			name: "vdDoc5",
+			shortName: "vd_Doc5"
 		},
 		{
 			class: "foam.core.String",
-			name: "vd_Doc6"
+			name: "vdDoc6",
+			shortName: "vd_Doc6"
 		},
 		{
 			class: "foam.core.String",
-			name: "vd_Doc7"
+			name: "vdDoc7",
+			shortName: "vd_Doc7"
 		},
 		{
 			class: "foam.core.String",
-			name: "vd_Doc8"
+			name: "vdDoc8",
+			shortName: "vd_Doc8"
 		},
 		{
 			class: "foam.core.String",
-			name: "vd_Doc9"
+			name: "vdDoc9",
+			shortName: "vd_Doc9"
 		},
 		{
 			class: "foam.core.Double",
-			name: "vd_Iof",
+			name: "vdIof",
+			shortName: "vd_Iof",
 			required: false
 		},
 		{
 			class: "foam.core.Double",
-			name: "vd_Ir",
+			name: "vdIr",
+			shortName: "vd_Ir",
 			required: false
 		},
 		{
 			class: "foam.core.Double",
-			name: "vd_Iss",
+			name: "vdIss",
+			shortName: "vd_Iss",
 			required: false
 		},
 		{
 			class: "foam.core.Double",
-			name: "vd_Pis",
+			name: "vdPis",
+			shortName: "vd_Pis",
 			required: false
 		}
 	]

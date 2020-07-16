@@ -52,6 +52,8 @@ import net.nanopay.partner.treviso.api.Entity;
 import net.nanopay.partner.treviso.api.FepWebResponse;
 import net.nanopay.partner.treviso.api.InsertBoleto;
 import net.nanopay.partner.treviso.api.InsertBoletoResponse;
+import net.nanopay.partner.treviso.api.InsertTitular;
+import net.nanopay.partner.treviso.api.InsertTitularResponse;
 import net.nanopay.partner.treviso.api.Natureza;
 import net.nanopay.partner.treviso.api.PTaxRate;
 import net.nanopay.partner.treviso.api.PTaxDollarRateResponse;
@@ -227,28 +229,25 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
     return new Double(response.getSearchTitularResult().getTitular().getLIMITEOP()).longValue();
   }
 
+  public void insertTransactionLimit(long userId, long amount) throws RuntimeException {
+    InsertTitular request = new InsertTitular();
+    Titular titular = getTitularRequest(userId, amount);
+    try {
+      InsertTitularResponse response = exchangeService.insertTitular(request);
+      if ( response == null || response.getInsertTitularResult() == null )
+        throw new RuntimeException("Unable to get a valid response from Exchange while calling insertTitular");
+
+      if ( response.getInsertTitularResult().getCODRETORNO() != 0 )
+        throw new RuntimeException("Error while calling updateTitular: " + response.getInsertTitularResult().getMENSAGEM());
+    } catch(Throwable t) {
+      logger_.error("Error updating Titular" , t);
+      throw new RuntimeException(t);
+    }
+  }
+
   public void updateTransactionLimit(long userId, long amount) throws RuntimeException {
-    User user = (User) ((DAO) getX().get("bareUserDAO")).find(userId);
-    if ( user == null ) throw new RuntimeException("User not found: " + userId);
-    if ( user.getAddress() == null ) throw new RuntimeException("User address cannot be null: " + userId);
-
     UpdateTitular request = new UpdateTitular();
-    Titular titular = new Titular();
-
-    titular.setDTINICIO(new Date());   // TODO Date customer registered
-    titular.setCODIGO("10786348070"); // TODO CPF/CNPJ saved where?
-    titular.setTIPO(1);
-    titular.setSUBTIPO("J"); // F = Physical, J = Legal, S = Symbolic
-    titular.setNOMEAB(getName(user));
-    titular.setNOME(getName(user));
-    titular.setENDERECO(user.getAddress().getAddress());
-    titular.setCIDADE(user.getAddress().getCity());
-    Region region = user.getAddress().findRegionId(getX());
-    titular.setESTADO(region == null ? "" : region.getName());
-    titular.setCEP(user.getAddress().getPostalCode());
-    titular.setPAIS(user.getAddress().getCountryId());
-    titular.setPAISMT(user.getAddress().getCountryId()); // TODO Pais Matriz do Cliente - Bacen Code
-    titular.setLIMITEOP(new Long(amount).doubleValue());
+    Titular titular = getTitularRequest(userId, amount);
     request.setDadosTitular(titular);
 
     try {
@@ -262,6 +261,30 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
       logger_.error("Error updating Titular" , t);
       throw new RuntimeException(t);
     }
+  }
+
+  protected Titular getTitularRequest(long userId, long amount) {
+    User user = (User) ((DAO) getX().get("bareUserDAO")).find(userId);
+    if ( user == null ) throw new RuntimeException("User not found: " + userId);
+    if ( user.getAddress() == null ) throw new RuntimeException("User address cannot be null: " + userId);
+
+    Titular titular = new Titular();
+    titular.setDTINICIO(user.getCreated());
+    titular.setCODIGO("10786348070"); // TODO CPF/CNPJ saved where?
+    titular.setTIPO(1);
+    titular.setSUBTIPO("J"); // F = Physical, J = Legal, S = Symbolic
+    titular.setNOMEAB(getName(user));
+    titular.setNOME(getName(user));
+    titular.setENDERECO(user.getAddress().getAddress());
+    titular.setCIDADE(user.getAddress().getCity());
+    Region region = user.getAddress().findRegionId(getX());
+    titular.setESTADO(region == null ? "" : region.getName());
+    titular.setCEP(user.getAddress().getPostalCode());
+    titular.setPAIS(user.getAddress().getCountryId());
+    titular.setPAISMT(user.getAddress().getCountryId()); // TODO Pais Matriz do Cliente - Bacen Code
+    titular.setLIMITEOP(new Long(amount).doubleValue());
+
+    return titular;
   }
 
   public Transaction createTransaction(Transaction transaction) throws RuntimeException {
