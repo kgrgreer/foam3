@@ -290,6 +290,8 @@ foam.CLASS({
       if ( this.wizard.isApproving ||
         ( this.invoice.account !== 0 && ! this.isReadOnly) ) {
         this.fetchRates();
+      } else {
+        this.fetchBankAccount();
       }
 
       if ( this.chosenBankAccount && ! this.sourceCurrency ) {
@@ -550,6 +552,7 @@ foam.CLASS({
     async function fetchBankAccount() {
       // If the user selects the placeholder option in the account dropdown,
       // clear the data.
+
       var accountId = this.isPayable
         ? this.invoice.account
         : this.invoice.destinationAccount;

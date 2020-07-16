@@ -409,8 +409,6 @@ foam.CLASS({
       } else if ( ! this.viewData.quote && this.isPayable ) {
         this.notify(this.QUOTE_ERROR, '', this.LogLevel.ERROR, true);
         return false;
-      } else if ( ! this.isPayable ) {
-        return true;
       }
 
       // Validate transaction line items
