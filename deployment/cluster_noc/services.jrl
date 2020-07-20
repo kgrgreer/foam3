@@ -11,3 +11,10 @@ p({
     "mode":4
   }
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"clusterTopologyMonitor",
+  "lazy": false,
+  "serviceClass":"foam.nanos.medusa.ClusterTopologyMonitor"
+})

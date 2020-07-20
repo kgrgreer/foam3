@@ -100,3 +100,10 @@ p({
    `,
   "client": "{\"of\":\"foam.nanos.medusa.MedusaEntry\"}"
 })
+
+// p({
+//   "class":"foam.nanos.boot.NSpec",
+//   "name":"clusterTopologyMonitor",
+//   "lazy": false,
+//   "serviceClass":"foam.nanos.medusa.ClusterTopologyMonitor"
+// })
