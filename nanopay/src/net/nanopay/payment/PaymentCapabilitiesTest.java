@@ -43,7 +43,6 @@ public class PaymentCapabilitiesTest extends foam.nanos.test.Test {
     setUpTest(x);
     testCreatePrequisitePaymentProvider(x);
     testPreventJunctionPaymentProvider(x);
-    testPreventJunctionCorridor(x);
   }
 
   // Sets up payment providers, corridors and associated capabilities.
@@ -98,22 +97,5 @@ public class PaymentCapabilitiesTest extends foam.nanos.test.Test {
     }
 
     test(exception != null, "Unable to create payment provider corridor junction - missing valid payment provider");
-  }
-
-  // Test that payment provider corridor junction cannot be created since corridor does not exist.
-  public void testPreventJunctionCorridor(X x) {
-    Exception exception = null;
-    try {
-      PaymentProviderCorridor providerCorridor = (PaymentProviderCorridor) paymentProviderCorridorDAO.put(
-        new PaymentProviderCorridor.Builder(x)
-        .setProvider(paymentProvider.getId())
-        .setCorridor("a-random-id-string")
-        .setCurrencies(new String[]{"CAD","USD"})
-        .build());
-    } catch (Exception e) {
-      exception = e;
-    }
-
-    test(exception != null, "Unable to create payment provider corridor - missing valid corridor");
   }
 }

@@ -38,10 +38,6 @@ foam.CLASS({
     {
       name: 'MISSING_PROVIDER',
       message: 'ERROR: Unable to find payment provider '
-    },
-    {
-      name: 'MISSING_CORRIDOR',
-      message: 'ERROR: Unable to find corridor '
     }
   ],
 
@@ -54,10 +50,6 @@ foam.CLASS({
         if ( ((PaymentProvider) ppcj.findProvider(x)) == null ) {
           logger.error(MISSING_PROVIDER, ppcj.getProvider());
           throw new RuntimeException(MISSING_PROVIDER + ppcj.getCorridor());
-        }
-        if ( ((Corridor) ppcj.findCorridor(x)) == null ) {
-          logger.error(MISSING_CORRIDOR, ppcj.getCorridor());
-          throw new RuntimeException(MISSING_CORRIDOR + ppcj.getCorridor());
         }
       `
     }

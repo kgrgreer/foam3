@@ -37,12 +37,27 @@ foam.CLASS({
       class: 'Reference',
       name: 'corridor',
       of: 'net.nanopay.fx.Corridor',
-      targetDAOKey: 'corridorDAO'
+      targetDAOKey: 'corridorDAO',
+      documentation: 'Looking to deprecate - not required.'
     },
     {
       class: 'StringArray',
       name: 'currencies',
       documentation: 'Agreed upon currencies in country.'
-    }
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.Country',
+      name: 'sourceCountry',
+      documentation: '1st party involved in agreement.',
+      required: true
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.Country',
+      name: 'targetCountry',
+      documentation: '2nd party involved in agreement.',
+      required: true
+    },
   ]
 });

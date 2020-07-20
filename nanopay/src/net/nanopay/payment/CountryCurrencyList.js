@@ -45,6 +45,12 @@ foam.CLASS({
         of: 'net.nanopay.payment.SourceTargetType',
         name: 'type',
         documentation: 'States whether applied to source or target country on corridor.'
+      },
+      {
+        class: 'Reference',
+        name: 'provider',
+        of: 'net.nanopay.payment.PaymentProvider',
+        targetDAOKey: 'paymentProviderDAO'
       }
     ]
   });

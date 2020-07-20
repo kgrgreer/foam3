@@ -1,0 +1,249 @@
+p({
+  class:"foam.nanos.script.Script",
+  id:"Payment provider corridor setup - (AFEX)",
+  description:"Sets up payment provider corridor and it's prerequisites",
+  code: """
+    // Sets up all payment provider corridors for AFEX
+    import foam.mlang.MLang;
+    import foam.mlang.predicate.Predicate;
+    import net.nanopay.fx.Corridor;
+    import net.nanopay.payment.*;
+    import foam.core.Currency;
+    import foam.nanos.crunch.CapabilityCapabilityJunction;
+    
+    // Supported currencies by AFEX
+    String[] supportedCurrencies = {"AED","AFN","ALL","AMD","ARS","AUD","AWG","AZN","BBD","BDT","BGN","BHD","BIF","BMD","BOB","BRL",
+    "BSD","BTN","BWP","BZD","CAD","CDF","CHF","CLP","CNH","CNY","COP","CRC","CZK","DJF","DKK","DOP","DZD","EGP","EUR","FJD","GBP","GEL",
+    "GHS","GNF","GTQ","HKD","HNL","HRK","HTG","HUF","IDR","ILS","INR","ISK","JMD","JOD","JPY","KES","KHR","KRW","KWD","KZT","LBP",
+    "LKR","LSL","MAD","MDL","MGA","MKD","MMK","MUR","MWK","MXN","MYR","MZN","NAD","NGN","NIO","NOK","NPR","NZD","OMR","PEN","PGK",
+    "PHP","PKR","PLN","PYG","QAR","RON","RSD","RUB","RWF","SAR","SEK","SGD","SLL","THB","TND","TOP","TRY","TTD","TWD","TZS","UAH","UGX",
+    "USD","UYU","UZS","VND","VUV","WST","XAF","XCD","XOF","XPF","ZAR","ZMW"};
+    
+    // Filter currencies based on currency in journals and AFEX support currencies.
+    currs = (x.get("currencyDAO")).where(foam.mlang.MLang.IN(Currency.ID, supportedCurrencies)).select().getArray();
+    availableCurrencies = new String[currs.size()];
+    int ind = 0;
+    for ( currency : currs) {
+      id = currency.getId();
+      availableCurrencies[ind++] = id;
+    }
+    countryDAO = x.get("countryDAO");
+    capabilityDAO = x.get("capabilityDAO");
+    currencyListDAO = x.get("countryCurrencyListDAO");
+    ppcDAO = x.get("paymentProviderCorridorDAO");
+    providerDAO = x.get("paymentProviderDAO");
+    prereqDAO = x.get("prerequisiteCapabilityJunctionDAO");
+    afex = providerDAO.find("AFEX");
+    countries = countryDAO.select().getArray();
+    for ( country : countries ) {
+      for ( pairCountry : countries ) {
+        // Create Currency List Caps for countries missing currency list provided by afex
+        // Create country currency list for var `county` (Target and Source)
+        srcCountry = currencyListDAO.find(MLang.AND( new Predicate[] {
+          MLang.INSTANCE_OF(CountryCurrencyList.class),
+          MLang.EQ(CountryCurrencyList.COUNTRY, country.getId()),
+          MLang.EQ(CountryCurrencyList.TYPE, SourceTargetType.SOURCE),
+          MLang.EQ(CountryCurrencyList.PROVIDER, afex.getId())
+        }));
+
+      if ( srcCountry == null ) {
+        srcCountry = new CountryCurrencyList();
+        srcCountry.setCountry(country.getId());
+        srcCountry.setName(country.getId() + "AFEX Source Country Currency Capability");
+        srcCountry.setCurrencies(availableCurrencies);
+        srcCountry.setProvider(afex.getId());
+        srcCountry.setType(SourceTargetType.SOURCE);
+        srcCountry = currencyListDAO.put(srcCountry);
+        print(country.getId() + " added as source country currency list capability");
+      }
+      
+      trgCountry = currencyListDAO.find(MLang.AND( new Predicate[] {
+        MLang.INSTANCE_OF(CountryCurrencyList.class),
+        MLang.EQ(CountryCurrencyList.COUNTRY, country.getId()),
+        MLang.EQ(CountryCurrencyList.TYPE, SourceTargetType.TARGET),
+        MLang.EQ(CountryCurrencyList.PROVIDER, afex.getId())
+      }));
+      
+      if ( trgCountry == null ) {
+        trgCountry = new CountryCurrencyList();
+        trgCountry.setCountry(country.getId());
+        trgCountry.setName(country.getId() + "AFEX Target Country Currency Capability");
+        trgCountry.setCurrencies(availableCurrencies);
+        trgCountry.setProvider(afex.getId());
+        trgCountry.setType(SourceTargetType.TARGET);
+        trgCountry = currencyListDAO.put(trgCountry);
+        print(country.getId() + " added as target country currency list capability");
+      }
+      // Create country currency list for var `pairCountry` (Target and Source)
+      srcPairCountry = currencyListDAO.find(MLang.AND( new Predicate[] {
+        MLang.INSTANCE_OF(CountryCurrencyList.class),
+        MLang.EQ(CountryCurrencyList.COUNTRY, pairCountry.getId()),
+        MLang.EQ(CountryCurrencyList.TYPE, SourceTargetType.SOURCE),
+        MLang.EQ(CountryCurrencyList.PROVIDER, afex.getId())
+      }));
+      if ( srcPairCountry == null ) {
+        srcPairCountry = new CountryCurrencyList();
+        srcPairCountry.setCountry(pairCountry.getId());
+        srcPairCountry.setName(pairCountry.getId() + "AFEX Source Country Currency Capability");
+        srcPairCountry.setCurrencies(availableCurrencies);
+        srcPairCountry.setProvider(afex.getId());
+        srcPairCountry.setType(SourceTargetType.SOURCE);
+        srcPairCountry = currencyListDAO.put(srcPairCountry);
+        print(pairCountry.getId() + " added as source country currency list capability");
+      }
+      trgPairCountry = currencyListDAO.find(MLang.AND( new Predicate[] {
+        MLang.INSTANCE_OF(CountryCurrencyList.class),
+        MLang.EQ(CountryCurrencyList.COUNTRY, pairCountry.getId()),
+        MLang.EQ(CountryCurrencyList.TYPE, SourceTargetType.TARGET),
+        MLang.EQ(CountryCurrencyList.PROVIDER, afex.getId())
+      }));
+      
+      if ( trgPairCountry == null ) {
+        trgPairCountry = new CountryCurrencyList();
+        trgPairCountry.setCountry(pairCountry.getId());
+        trgPairCountry.setName(pairCountry.getId() + "AFEX Target Country Currency Capability");
+        trgPairCountry.setCurrencies(availableCurrencies);
+        trgPairCountry.setProvider(afex.getId());
+        trgPairCountry.setType(SourceTargetType.TARGET);
+        trgPairCountry = currencyListDAO.put(trgPairCountry);
+        print(pairCountry.getId() + " added as target country currency list capability");
+      }
+      // Create afex payment provider corridors if missing
+      corridor = ppcDAO.find(MLang.AND(new Predicate[] {
+        MLang.EQ(PaymentProviderCorridor.SOURCE_COUNTRY, country.getId()),
+        MLang.EQ(PaymentProviderCorridor.TARGET_COUNTRY, pairCountry.getId()),
+        MLang.EQ(PaymentProviderCorridor.PROVIDER, afex.getId())
+      }));
+      if ( corridor == null ) {
+        corridor = new PaymentProviderCorridor();
+        corridor.setSourceCountry(country.getId());
+        corridor.setTargetCountry(pairCountry.getId());
+        corridor.setEnabled(true);
+        corridor.setVisible(true);
+        corridor.setProvider(afex.getId());
+        corridor.setName(country.getId() + "-" + pairCountry.getId() + " Corridor AFEX");
+        corridor = ppcDAO.put(corridor);
+        print("New AFEX corridor added: source " + corridor.getSourceCountry() + " target " + corridor.getTargetCountry());
+      }
+      // Find currency list capability
+      srcCurr = currencyListDAO.find(MLang.AND( new Predicate[] {
+        MLang.INSTANCE_OF(CountryCurrencyList.class),
+        MLang.EQ(CountryCurrencyList.COUNTRY, country.getId()),
+        MLang.EQ(CountryCurrencyList.TYPE, SourceTargetType.SOURCE),
+        MLang.EQ(CountryCurrencyList.PROVIDER, afex.getId())
+      }));
+      trgCurr = currencyListDAO.find(MLang.AND( new Predicate[] {
+        MLang.INSTANCE_OF(CountryCurrencyList.class),
+        MLang.EQ(CountryCurrencyList.COUNTRY, pairCountry.getId()),
+        MLang.EQ(CountryCurrencyList.TYPE, SourceTargetType.TARGET),
+        MLang.EQ(CountryCurrencyList.PROVIDER, afex.getId())
+      }));
+      // check if pre requisite exists.
+      prereqTrg = prereqDAO.find(MLang.AND( new Predicate[] {
+        MLang.EQ(CapabilityCapabilityJunction.SOURCE_ID, corridor.getId()),
+        MLang.EQ(CapabilityCapabilityJunction.TARGET_ID, trgCurr.getId())
+      }));
+      // create country currency list prerequisite for target country provider corridor capability
+      if ( prereqTrg == null ) {
+        prereqTrg = new CapabilityCapabilityJunction();
+        prereqTrg.setSourceId(corridor.getId());
+        prereqTrg.setTargetId(trgCurr.getId());
+        prereqTrg.setPriority(2);
+        prereqDAO.put(prereqTrg);
+        print("target currency prerequisite created for " + corridor.getSourceCountry() + corridor.getTargetCountry());
+      }
+      prereqSrc = prereqDAO.find(MLang.AND( new Predicate[] {
+        MLang.EQ(CapabilityCapabilityJunction.SOURCE_ID, corridor.getId()),
+        MLang.EQ(CapabilityCapabilityJunction.TARGET_ID, srcCurr.getId())
+      }));
+      // create country currency list prerequisite for source country provider corridor capability
+      if ( prereqSrc == null ) {
+        prereqSrc = new CapabilityCapabilityJunction();
+        prereqSrc.setSourceId(corridor.getId());
+        prereqSrc.setTargetId(srcCurr.getId());
+        prereqSrc.setPriority(2);
+        prereqDAO.put(prereqSrc);
+        print("Source currency prerequisite created for " + corridor.getSourceCountry() + corridor.getTargetCountry());
+      }
+      prereqAfex = prereqDAO.find(MLang.AND( new Predicate[] {
+        MLang.EQ(CapabilityCapabilityJunction.SOURCE_ID, corridor.getId()),
+        MLang.EQ(CapabilityCapabilityJunction.TARGET_ID, afex.getId())
+      }));
+      if ( prereqAfex == null ) {
+        prereqAfex = new CapabilityCapabilityJunction();
+        prereqAfex.setSourceId(corridor.getId());
+        prereqAfex.setTargetId(afex.getId());
+        prereqAfex.setPriority(1);
+        prereqDAO.put(prereqAfex);
+        print(afex.getId() + " Payment provider prerequisite created for " + corridor.getSourceCountry() + corridor.getTargetCountry());
+      }
+      // inverse of above logic
+      trgCorridor = ppcDAO.find(MLang.AND(new Predicate[] {
+        MLang.EQ(PaymentProviderCorridor.SOURCE_COUNTRY, pairCountry.getId()),
+        MLang.EQ(PaymentProviderCorridor.TARGET_COUNTRY, country.getId()),
+        MLang.EQ(PaymentProviderCorridor.PROVIDER, afex.getId())
+      }));
+      if ( trgCorridor == null ) {
+        trgCorridor = new PaymentProviderCorridor();
+        trgCorridor.setSourceCountry(pairCountry.getId());
+        trgCorridor.setTargetCountry(country.getId());
+        trgCorridor.setEnabled(true);
+        trgCorridor.setVisible(true);
+        trgCorridor.setProvider(afex.getId());
+        trgCorridor.setName(pairCountry.getId() + "-" + country.getId() + " Corridor AFEX");
+        trgCorridor = ppcDAO.put(trgCorridor);
+        print("New AFEX corridor added: source " + trgCorridor.getSourceCountry() + " target " + trgCorridor.getTargetCountry());
+      }
+      prereqAfex = prereqDAO.find(MLang.AND( new Predicate[] {
+        MLang.EQ(CapabilityCapabilityJunction.SOURCE_ID, trgCorridor.getId()),
+        MLang.EQ(CapabilityCapabilityJunction.TARGET_ID, afex.getId())
+      }));
+      if ( prereqAfex == null ) {
+        prereqAfex = new CapabilityCapabilityJunction();
+        prereqAfex.setSourceId(trgCorridor.getId());
+        prereqAfex.setTargetId(afex.getId());
+        prereqAfex.setPriority(1);
+        prereqDAO.put(prereqAfex);
+        print(afex.getId() + " Payment provider prerequisite created for " + trgCorridor.getSourceCountry() + trgCorridor.getTargetCountry());
+      }
+      srcCurr1 = currencyListDAO.find(MLang.AND( new Predicate[] {
+        MLang.INSTANCE_OF(CountryCurrencyList.class),
+        MLang.EQ(CountryCurrencyList.COUNTRY, pairCountry.getId()),
+        MLang.EQ(CountryCurrencyList.TYPE, SourceTargetType.SOURCE),
+        MLang.EQ(CountryCurrencyList.PROVIDER, afex.getId())
+      }));
+      trgCurr1 = currencyListDAO.find(MLang.AND( new Predicate[] {
+        MLang.INSTANCE_OF(CountryCurrencyList.class),
+        MLang.EQ(CountryCurrencyList.COUNTRY, country.getId()),
+        MLang.EQ(CountryCurrencyList.TYPE, SourceTargetType.TARGET),
+        MLang.EQ(CountryCurrencyList.PROVIDER, afex.getId())
+      }));
+      prereqTrg1 = prereqDAO.find(MLang.AND( new Predicate[] {
+        MLang.EQ(CapabilityCapabilityJunction.SOURCE_ID, trgCorridor.getId()),
+        MLang.EQ(CapabilityCapabilityJunction.TARGET_ID, trgCurr1.getId())
+      }));
+      if ( prereqTrg1 == null ) {
+        prereqTrg1 = new CapabilityCapabilityJunction();
+        prereqTrg1.setSourceId(corridor.getId());
+        prereqTrg1.setTargetId(trgCurr1.getId());
+        prereqTrg1.setPriority(2);
+        prereqDAO.put(prereqTrg1);
+        print("Target currency prerequisite created for " + corridor.getSourceCountry() + corridor.getTargetCountry());
+      }
+      prereqSrc1 = prereqDAO.find(MLang.AND( new Predicate[] {
+        MLang.EQ(CapabilityCapabilityJunction.SOURCE_ID, trgCorridor.getId()),
+        MLang.EQ(CapabilityCapabilityJunction.TARGET_ID, srcCurr1.getId())
+      }));
+      if ( prereqSrc1 == null ) {
+        prereqSrc1 = new CapabilityCapabilityJunction();
+        prereqSrc1.setSourceId(trgCorridor.getId());
+        prereqSrc1.setTargetId(srcCurr1.getId());
+        prereqSrc1.setPriority(2);
+        prereqDAO.put(prereqSrc1);
+        print("Source currency prerequisite created for " + trgCorridor.getSourceCountry() + trgCorridor.getTargetCountry());
+      }
+    }
+  }
+  print("Script Finished.");
+  """
+})
