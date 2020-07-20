@@ -164,7 +164,7 @@ foam.CLASS({
     },
     {
       name: 'removeAll_',
-      javacode: `
+      javaCode: `
         throw new UnsupportedOperationException(UNSUPPORTED_OPERATION_ERROR_MSG + "removeAll_");
       `
     }

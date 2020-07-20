@@ -25,7 +25,7 @@ p({
   "lazy":false,
   "serve":true,
   "serviceScript":"""
-    return new net.nanopay.partner.treviso.api.TrevisoAPIService(x));
+    return new net.nanopay.partner.treviso.api.TrevisoAPIService(x);
   """
 })
 

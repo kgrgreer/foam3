@@ -978,7 +978,7 @@ p({
       "class":"foam.nanos.ruler.predicate.ContextContainsPredicate",
       "key":"systemGenerated"
     }
-  }
+  },
   "action":{
     "class":"net.nanopay.tx.ruler.LiquidTransactionalBlocks",
   },
