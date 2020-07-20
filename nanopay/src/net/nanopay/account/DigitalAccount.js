@@ -58,7 +58,13 @@ foam.CLASS({
       name: 'denomination',
       value: 'CAD',
       updateVisibility: 'RO'
-    }
+    },
+    {
+      name: 'IBAN',
+      class: 'Reference',
+      of: 'net.nanopay.tx.IBAN',
+      targetDAOKey: 'ibanDAO',
+    },
   ],
 
   actions: [

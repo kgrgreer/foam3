@@ -1573,6 +1573,9 @@ FOAM_FILES([
   // msp
   { name: 'net/nanopay/msp/MspInfo' },
 
+  // IBAN
+  { name: 'net/nanopay/tx/IBAN' },
+
   // Treviso
   { name: 'net/nanopay/partner/treviso/TrevisoCredientials' },
   { name: 'net/nanopay/partner/treviso/TrevisoClient' },
