@@ -290,6 +290,8 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
   public Transaction createTransaction(Transaction transaction) throws RuntimeException {
     BankAccount bankAccount = (BankAccount)transaction.findSourceAccount(getX());
     if ( null == bankAccount ) throw new RuntimeException("Invalid source bank account " + transaction.getId());
+    User user = (User) ((DAO) getX().get("bareUserDAO")).find(bankAccount.getOwner());
+    if ( user == null ) throw new RuntimeException("User not found: " + bankAccount.getOwner());
 
     InsertBoleto request = new InsertBoleto();
     Boleto dadosBoleto = new Boleto();
@@ -310,17 +312,25 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
     dadosBoleto.setCLAUSULAXX(false);
     dadosBoleto.setCNPJPCPFCLIENTE("10786348070"); // TODO CPF/CNPJ
 
+    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
     try {
-      SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-      sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
       String today = sdf.format(new Date());
       dadosBoleto.setDATALQ(today); // TODO Settlement date ( DD / MM / YYYY)
       dadosBoleto.setDATAME(today); // TODO Foreign currency delivery date ( DD / MM / YYYY)
       dadosBoleto.setDATAMN(today); // TODO National currency delivery date ( DD / MM / YYYY)
-      dadosBoleto.setDATAOP(today); // TODO Date of operation ( DD / MM / YYYY)
     } catch(Throwable t) {
       logger_.error("Unable to parse settlement date", t);
       throw new RuntimeException("Error inserting boleto. Cound not parse date.");
+    }
+
+    if ( user instanceof Business ) {
+      try {
+        dadosBoleto.setDATAOP(sdf.format(((Business) user).getBusinessRegistrationDate()));
+      } catch(Throwable t) {
+        logger_.error("Unable to parse business registration date", t);
+        throw new RuntimeException("Error inserting boleto. Cound not parse business registration date.");
+      }
     }
 
     // TODO consider fixing problem with parsing default values because we are checking PropertyInfo isSet.
