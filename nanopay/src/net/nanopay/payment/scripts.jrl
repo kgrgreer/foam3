@@ -247,3 +247,257 @@ p({
   print("Script Finished.");
   """
 })
+
+p({
+  class:"foam.nanos.script.Script",
+  id:"Payment Provider Corridor Setup - (BMO)",
+  description:"Sets up payment provider corridor and it's prerequisites for BMO",
+  code:"""
+  //Sets up all payment provider corridors for BMO
+  // SCRIPT PROCESS
+  // Find Country Currency List Source and Target of BMO payment provider (create if missing)
+  // Find BMO payment provider corridor (create if missing)
+  // Add BMO payment provider and country currency list as prerequisites to payment provider corridor
+  import foam.mlang.MLang;
+  import foam.mlang.predicate.Predicate;
+  import net.nanopay.fx.Corridor;
+  import net.nanopay.payment.*;
+  import foam.core.Currency;
+  import foam.nanos.crunch.CapabilityCapabilityJunction;
+
+  String[] availableCurrency = {"CAD"};
+  countryDAO = x.get("countryDAO");
+  capabilityDAO = x.get("capabilityDAO");
+  currencyListDAO = x.get("countryCurrencyListDAO");
+  ppcDAO = x.get("paymentProviderCorridorDAO");
+  providerDAO = x.get("paymentProviderDAO");
+  prereqDAO = x.get("prerequisiteCapabilityJunctionDAO");
+  bmo = providerDAO.find("BMO");
+
+  srcCountry = currencyListDAO.find(MLang.AND( new Predicate[] {
+    MLang.INSTANCE_OF(CountryCurrencyList.class),
+    MLang.EQ(CountryCurrencyList.COUNTRY, "CA"),
+    MLang.EQ(CountryCurrencyList.TYPE, SourceTargetType.SOURCE),
+    MLang.EQ(CountryCurrencyList.PROVIDER, bmo.getId())
+  }));
+
+  if ( srcCountry == null ) {
+    srcCountry = new CountryCurrencyList();
+    srcCountry.setCountry("CA");
+    srcCountry.setName("BMO CA Source Country Currency Capability");
+    srcCountry.setCurrencies(availableCurrency);
+    srcCountry.setProvider(bmo.getId());
+    srcCountry.setType(SourceTargetType.SOURCE);
+    srcCountry = currencyListDAO.put(srcCountry);
+    print("CA created as source country currency list capability ... finding target country currency list capability CA");
+  }
+
+  trgCountry = currencyListDAO.find(MLang.AND( new Predicate[] {
+    MLang.INSTANCE_OF(CountryCurrencyList.class),
+    MLang.EQ(CountryCurrencyList.COUNTRY, "CA"),
+    MLang.EQ(CountryCurrencyList.TYPE, SourceTargetType.TARGET),
+    MLang.EQ(CountryCurrencyList.PROVIDER, bmo.getId())
+  }));
+
+  if ( trgCountry == null ) {
+    trgCountry = new CountryCurrencyList();
+    trgCountry.setCountry("CA");
+    trgCountry.setName("CA BMO Target Country Currency Capability");
+    trgCountry.setCurrencies(availableCurrency);
+    trgCountry.setProvider(bmo.getId());
+    trgCountry.setType(SourceTargetType.TARGET);
+    trgCountry = currencyListDAO.put(trgCountry);
+    print("BMO created as target country currency list capability ... finding corridor");
+  }
+
+  // Create bmo payment provider corridors if missing
+  corridor = ppcDAO.find(MLang.AND(new Predicate[] {
+    MLang.EQ(PaymentProviderCorridor.SOURCE_COUNTRY, "CA"),
+    MLang.EQ(PaymentProviderCorridor.TARGET_COUNTRY, "CA"),
+    MLang.EQ(PaymentProviderCorridor.PROVIDER, bmo.getId())
+  }));
+
+  if ( corridor == null ) {
+    corridor = new PaymentProviderCorridor();
+    corridor.setSourceCountry("CA");
+    corridor.setTargetCountry("CA");
+    corridor.setEnabled(true);
+    corridor.setVisible(true);
+    corridor.setProvider(bmo.getId());
+    corridor.setName("CA-CA Corridor BMO");
+    corridor = ppcDAO.put(corridor);
+    print("BMO corridor added: source CA target CA");
+  }
+
+  // Check if country currency prerequisites exists for BMO Corridor
+  prereqTrg = prereqDAO.find(MLang.AND( new Predicate[] {
+    MLang.EQ(CapabilityCapabilityJunction.SOURCE_ID, corridor.getId()),
+    MLang.EQ(CapabilityCapabilityJunction.TARGET_ID, trgCountry.getId())
+  }));
+
+  // Create country currency list prerequisite for target country provider corridor capability
+  if ( prereqTrg == null ) {
+    prereqTrg = new CapabilityCapabilityJunction();
+    prereqTrg.setSourceId(corridor.getId());
+    prereqTrg.setTargetId(trgCountry.getId());
+    prereqTrg.setPriority(2);
+    prereqDAO.put(prereqTrg);
+    print("Target currency prerequisite created for CA-CA BMO corridor");
+  }
+  prereqSrc = prereqDAO.find(MLang.AND( new Predicate[] {
+    MLang.EQ(CapabilityCapabilityJunction.SOURCE_ID, corridor.getId()),
+    MLang.EQ(CapabilityCapabilityJunction.TARGET_ID, srcCountry.getId())
+  }));
+
+  // Create country currency list prerequisite for source country provider corridor capability
+  if ( prereqSrc == null ) {
+    prereqSrc = new CapabilityCapabilityJunction();
+    prereqSrc.setSourceId(corridor.getId());
+    prereqSrc.setTargetId(srcCountry.getId());
+    prereqSrc.setPriority(2);
+    prereqDAO.put(prereqSrc);
+    print("Source currency prerequisite created for CA-CA BMO corridor");
+  }
+  prereqBmo = prereqDAO.find(MLang.AND( new Predicate[] {
+    MLang.EQ(CapabilityCapabilityJunction.SOURCE_ID, corridor.getId()),
+    MLang.EQ(CapabilityCapabilityJunction.TARGET_ID, bmo.getId())
+  }));
+
+  if ( prereqBmo == null ) {
+    prereqBmo = new CapabilityCapabilityJunction();
+    prereqBmo.setSourceId(corridor.getId());
+    prereqBmo.setTargetId(bmo.getId());
+    prereqBmo.setPriority(1);
+    prereqDAO.put(prereqBmo);
+    print("BMO Payment provider prerequisite created for CA-CA");
+  }
+  print("Script Finished.")
+  """
+})
+
+p({
+  class:"foam.nanos.script.Script",
+  id:"Payment Provider Corridor Setup - (RBC)",
+  description:"Sets up payment provider corridor and it's prerequisites for RBC",
+  code:"""
+  // Sets up all payment provider corridors for RBC
+  // SCRIPT PROCESS
+  // Find Country Currency List Source and Target of RBC payment provider (create if missing)
+  // Find RBC payment provider corridor (create if missing)
+  // Add RBC payment provider and country currency list as prerequisites to payment provider corridor
+  import foam.mlang.MLang;
+  import foam.mlang.predicate.Predicate;
+  import net.nanopay.fx.Corridor;
+  import net.nanopay.payment.*;
+  import foam.core.Currency;
+  import foam.nanos.crunch.CapabilityCapabilityJunction;
+
+  String[] availableCurrency = {"CAD"};
+  countryDAO = x.get("countryDAO");
+  capabilityDAO = x.get("capabilityDAO");
+  currencyListDAO = x.get("countryCurrencyListDAO");
+  ppcDAO = x.get("paymentProviderCorridorDAO");
+  providerDAO = x.get("paymentProviderDAO");
+  prereqDAO = x.get("prerequisiteCapabilityJunctionDAO");
+  rbc = providerDAO.find("RBC");
+
+  srcCountry = currencyListDAO.find(MLang.AND( new Predicate[] {
+    MLang.INSTANCE_OF(CountryCurrencyList.class),
+    MLang.EQ(CountryCurrencyList.COUNTRY, "CA"),
+    MLang.EQ(CountryCurrencyList.TYPE, SourceTargetType.SOURCE),
+    MLang.EQ(CountryCurrencyList.PROVIDER, rbc.getId())
+  }));
+
+  if ( srcCountry == null ) {
+    srcCountry = new CountryCurrencyList();
+    srcCountry.setCountry("CA");
+    srcCountry.setName("RBC CA Source Country Currency Capability");
+    srcCountry.setCurrencies(availableCurrency);
+    srcCountry.setProvider(rbc.getId());
+    srcCountry.setType(SourceTargetType.SOURCE);
+    srcCountry = currencyListDAO.put(srcCountry);
+    print("CA created as source country currency list capability ... finding target country currency list capability CA");
+  }
+
+  trgCountry = currencyListDAO.find(MLang.AND( new Predicate[] {
+    MLang.INSTANCE_OF(CountryCurrencyList.class),
+    MLang.EQ(CountryCurrencyList.COUNTRY, "CA"),
+    MLang.EQ(CountryCurrencyList.TYPE, SourceTargetType.TARGET),
+    MLang.EQ(CountryCurrencyList.PROVIDER, rbc.getId())
+  }));
+
+  if ( trgCountry == null ) {
+    trgCountry = new CountryCurrencyList();
+    trgCountry.setCountry("CA");
+    trgCountry.setName("CA RBC Target Country Currency Capability");
+    trgCountry.setCurrencies(availableCurrency);
+    trgCountry.setProvider(rbc.getId());
+    trgCountry.setType(SourceTargetType.TARGET);
+    trgCountry = currencyListDAO.put(trgCountry);
+    print("RBC created as target country currency list capability ... finding corridor");
+  }
+
+  // Create RBC payment provider corridors if missing
+  corridor = ppcDAO.find(MLang.AND(new Predicate[] {
+    MLang.EQ(PaymentProviderCorridor.SOURCE_COUNTRY, "CA"),
+    MLang.EQ(PaymentProviderCorridor.TARGET_COUNTRY, "CA"),
+    MLang.EQ(PaymentProviderCorridor.PROVIDER, rbc.getId())
+  }));
+
+  if ( corridor == null ) {
+    corridor = new PaymentProviderCorridor();
+    corridor.setSourceCountry("CA");
+    corridor.setTargetCountry("CA");
+    corridor.setEnabled(true);
+    corridor.setVisible(true);
+    corridor.setProvider(rbc.getId());
+    corridor.setName("CA-CA Corridor RBC");
+    corridor = ppcDAO.put(corridor);
+    print("RBC corridor added: source CA target CA");
+  }
+
+  // Check if country currency prerequisites exists for RBC Corridor
+  prereqTrg = prereqDAO.find(MLang.AND( new Predicate[] {
+    MLang.EQ(CapabilityCapabilityJunction.SOURCE_ID, corridor.getId()),
+    MLang.EQ(CapabilityCapabilityJunction.TARGET_ID, trgCountry.getId())
+  }));
+
+  // Create country currency list prerequisite for target country provider corridor capability
+  if ( prereqTrg == null ) {
+    prereqTrg = new CapabilityCapabilityJunction();
+    prereqTrg.setSourceId(corridor.getId());
+    prereqTrg.setTargetId(trgCountry.getId());
+    prereqTrg.setPriority(2);
+    prereqDAO.put(prereqTrg);
+    print("Target currency prerequisite created for CA-CA RBC corridor");
+  }
+  prereqSrc = prereqDAO.find(MLang.AND( new Predicate[] {
+    MLang.EQ(CapabilityCapabilityJunction.SOURCE_ID, corridor.getId()),
+    MLang.EQ(CapabilityCapabilityJunction.TARGET_ID, srcCountry.getId())
+  }));
+
+  // Create country currency list prerequisite for source country provider corridor capability
+  if ( prereqSrc == null ) {
+    prereqSrc = new CapabilityCapabilityJunction();
+    prereqSrc.setSourceId(corridor.getId());
+    prereqSrc.setTargetId(srcCountry.getId());
+    prereqSrc.setPriority(2);
+    prereqDAO.put(prereqSrc);
+    print("Source currency prerequisite created for CA-CA RBC corridor");
+  }
+  prereqRbc = prereqDAO.find(MLang.AND( new Predicate[] {
+    MLang.EQ(CapabilityCapabilityJunction.SOURCE_ID, corridor.getId()),
+    MLang.EQ(CapabilityCapabilityJunction.TARGET_ID, rbc.getId())
+  }));
+
+  if ( prereqRbc == null ) {
+    prereqRbc = new CapabilityCapabilityJunction();
+    prereqRbc.setSourceId(corridor.getId());
+    prereqRbc.setTargetId(rbc.getId());
+    prereqRbc.setPriority(1);
+    prereqDAO.put(prereqRbc);
+    print("RBC Payment provider prerequisite created for CA-CA");
+  }
+  print("Script Finished.")
+  """
+})
