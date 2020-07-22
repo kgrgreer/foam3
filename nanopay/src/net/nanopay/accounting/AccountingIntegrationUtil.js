@@ -43,7 +43,8 @@ foam.CLASS({
     'quickbooksService',
     'userDAO',
     'xeroService',
-    'subject'
+    'subject',
+    'theme'
   ],
 
   exports: [
@@ -62,7 +63,10 @@ foam.CLASS({
     { name: 'EXISTING_USER_CONTACT', message: 'There is a contact who is also a user with that email.' },
     { name: 'EXISTING_CONTACT', message: 'There is an existing contact with that email.' },
     { name: 'EXISTING_USER', message: 'There is already a user with that email.' },
-    { name: 'EXISTING_USER_MULTI', message: 'The user belongs to multiple businesses.' }
+    { name: 'EXISTING_USER_MULTI', message: 'The user belongs to multiple businesses.' },
+    { name: 'REQUIRE_BUSINESS_1', message: 'These contacts have been added to ' },
+    { name: 'REQUIRE_BUSINESS_2', message: ' but require a business address' }
+
   ],
 
   properties: [
@@ -237,7 +241,7 @@ foam.CLASS({
           if ( contactErrors[key].length !== 0 ) {
               doc.text('Contact Sync Action Required', 14, doc.myY);
               doc.myY = doc.myY + 10;
-              doc.text('These contacts have been added to Ablii, but require a business address', 14, doc.myY);
+              doc.text(this.REQUIRE_BUSINESS_1 + this.theme.appName + this.REQUIRE_BUSINESS_2, 14, doc.myY);
               doc.myY = doc.myY + 7;
               doc.text('before you can pay them.', 14, doc.myY);
             doc.text('', 14, doc.myY);

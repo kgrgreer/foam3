@@ -169,7 +169,8 @@ foam.CLASS({
     'ctrl',
     'pushMenu',
     'appConfig',
-    'identificationTypeDAO'
+    'identificationTypeDAO',
+    'theme'
   ],
 
   javaImports: [
@@ -697,10 +698,10 @@ foam.CLASS({
       documentation: 'More info on signing officer',
       label: '',
       section: 'signingOfficerEmailSection',
-      view: function() {
+      view: function(_,X) {
         return foam.u2.Element.create()
           .start('p')
-            .add('Invite a signing officer to complete the onboarding for your business.  Once the signing officer completes their onboarding, your business can start using Ablii.')
+            .add(X.data.INVITE_SIGNING_OFFICER + X.theme.appName )
           .end();
       }
     },
@@ -1510,6 +1511,10 @@ foam.CLASS({
     {
       name: 'PLACE_HOLDER',
       message: 'Please select...'
+    },
+    {
+      name: 'INVITE_SIGNING_OFFICER',
+      message: 'Invite a signing officer to complete the onboarding for your business.  Once the signing officer completes their onboarding, your business can start using '
     }
   ],
 

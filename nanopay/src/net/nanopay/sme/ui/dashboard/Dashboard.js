@@ -68,6 +68,7 @@ foam.CLASS({
     'xeroService',
     'checkAndNotifyAbilityToPay',
     'checkAndNotifyAbilityToReceive',
+    'theme'
   ],
 
   exports: [
@@ -84,7 +85,8 @@ foam.CLASS({
     { name: 'SUBTITLE3', message: 'Latest Activity' },
     { name: 'SUBTITLE4', message: 'Recent Receivables' },
     { name: 'VIEW_ALL', message: 'View all' },
-    { name: 'UPPER_TXT', message: 'Your latest Ablii items' }
+    { name: 'YOUR_LATEST', message: 'Your latest ' },
+    { name: 'ITEMS', message: ' items' }
   ],
 
   css: `
@@ -245,6 +247,13 @@ foam.CLASS({
         return 0;
       }
     },
+    {
+      class: 'String',
+      name: 'appName',
+      factory: function() {
+        return this.theme.appName;
+      }
+    },
     'bankAccount',
     'userHasPermissionsForAccounting',
     'businessOnboarding',
@@ -314,7 +323,7 @@ foam.CLASS({
         var line = this.Element.create()
           .start().addClass('line')
             .start('span')
-              .addClass('divider-half').add(this.UPPER_TXT)
+              .addClass('divider-half').add(this.YOUR_LATEST + this.appName + this.ITEMS)
             .end()
           .end();
 

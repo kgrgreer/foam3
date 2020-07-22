@@ -116,7 +116,7 @@ foam.CLASS({
     },
     {
       name: 'INVITE_LABEL',
-      message: 'Invite this contact to join Ablii'
+      message: 'Invite this contact to join '
     },
     {
       name: 'RESTRICT_INVITE_LABEL',
@@ -374,7 +374,7 @@ foam.CLASS({
         return foam.u2.DisplayMode.HIDDEN;
       },
       view: function(_, X) {
-        return foam.u2.CheckBox.create({ label: X.data.INVITE_LABEL });
+        return foam.u2.CheckBox.create({ label: X.data.INVITE_LABEL + X.theme.appName });
       }
     },
     {

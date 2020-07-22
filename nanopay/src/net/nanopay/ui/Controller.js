@@ -243,10 +243,6 @@ foam.CLASS({
       message: `You've been successfully added to `
     },
     {
-      name: 'ADDED_TO_BUSINESS_2',
-      message: '. Welcome to Ablii!'
-    },
-    {
       name: 'ABILITY_TO_PAY_ERROR',
       message: 'Error occurred when checking the ability to send payment'
     },

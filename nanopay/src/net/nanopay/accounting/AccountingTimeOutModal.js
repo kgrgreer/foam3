@@ -118,7 +118,23 @@ foam.CLASS({
       class: 'Boolean',
       name: 'goDashboard',
       value: false
+    },
+    {
+      class: 'String',
+      name: 'appName',
+      factory: function() {
+        return this.theme.appName;
+      }
     }
+  ],
+
+  messages: [
+    { name:'REMAIN_SYNC_1', message:' so your data in '},
+    { name:'REMAIN_SYNC_2', message:' remains synced.'},
+    { name:'TOKEN_EXIPRE', message:' token is about to expire.'},
+    { name:'TOKEN_EXIPRE', message:' token is about to expire.'},
+    { name:'SYNC_AGAIN_WITH', message:'Sync again with '},
+    { name:'YOUR', message:'Your '},
   ],
 
   methods: [
@@ -129,8 +145,8 @@ foam.CLASS({
         .start().addClass('Container')
           .start().addClass('headerTitle').add('Accounting Timeout').end()
           .start().addClass('content')
-            .start().add('Your ' + this.user.integrationCode.label  + ' token is about to expire.').end()
-            .add(' Sync again with ' + this.user.integrationCode.label  + ' so your data in Ablii remains synced.')
+            .start().add(this.YOUR + this.user.integrationCode.label  + this.TOKEN_EXIPRE).end()
+            .add(this.SYNC_AGAIN_WITH + this.user.integrationCode.label  + this.REMAIN_SYNC_1 + this.appName + this.REMAIN_SYNC_2)
           .end()
           .start().addClass('actions')
             .start(this.CANCEL_TIME_OUT_MODAL).addClass('cancel-button').addClass('ignoreFloat').end()
