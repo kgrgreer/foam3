@@ -17,40 +17,54 @@
 
 foam.CLASS({
     package: 'net.nanopay.payment',
-    name: 'CountryCurrencyList',
+    name: 'CountryCapability',
     extends: 'foam.nanos.crunch.Capability',
-    documentation: `Contains a list of currencies available to the specified country.
-        Used as a capability to determine what currencies are available to the user in various components.
+    documentation: `Used as a capability to determine requirements to transact in a payment provider corridor.
         
-        On bank account create all country currency list objects are pulled and their currencies are provided as
-        a selection for the denomination of the bank account.
-        
-        When attempting a payment using a payment provider, the country currency lists prerequisites will be required
+        When attempting a payment using a payment provider, both source and target country capabilities will be required
         in order to process payment - along with any prerequisites pertaining to the payment provider and the payment provider
         corridor.`,
-  
+
+    implements: [
+      'foam.core.Validatable'
+    ],
+
+    javaImports: [
+      'foam.nanos.auth.Country'
+    ],
+
+    messages: [
+      { name: 'UNSUPPORTED_COUNTRY', message: 'Error: Country provided is not supported.' }
+    ],
+
     properties: [
       {
         class: 'Reference',
         name: 'country',
-        of: 'foam.nanos.auth.Country'
-      },
-      {
-        class: 'StringArray',
-        name: 'currencies',
-        documentation: 'Agreed upon currencies in country.'
+        of: 'foam.nanos.auth.Country',
+        targetDAOKey: 'countryDAO'
       },
       {
         class: 'Enum',
         of: 'net.nanopay.payment.SourceTargetType',
         name: 'type',
         documentation: 'States whether applied to source or target country on corridor.'
-      },
+      }
+    ],
+
+    methods: [
       {
-        class: 'Reference',
-        name: 'provider',
-        of: 'net.nanopay.payment.PaymentProvider',
-        targetDAOKey: 'paymentProviderDAO'
+        name: 'validate',
+        args: [
+          { name: 'x', type: 'Context' }
+        ],
+        type: 'Void',
+        javaThrows: ['IllegalStateException'],
+        javaCode: `
+          if ( ((Country) findCountry(x)) == null ) {
+            throw new IllegalStateException(UNSUPPORTED_COUNTRY + getCountry());
+          }
+         `
       }
     ]
   });

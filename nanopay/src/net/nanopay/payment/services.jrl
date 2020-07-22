@@ -1,6 +1,6 @@
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "countryCurrencyListDAO",
+  "name": "countryCapabilityDAO",
   "lazy": false,
   "serve": true,
   "serviceScript":
@@ -9,18 +9,19 @@ p({
       .setAuthorize(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setInnerDAO(x.get("localCapabilityDAO"))
+      .setValidated(true)
       .setDecorator(
         new foam.dao.FilteredDAO.Builder(x)
-          .setPredicate(foam.mlang.MLang.INSTANCE_OF(net.nanopay.payment.CountryCurrencyList.class))
-          .setDelegate(new foam.dao.NullDAO(x, net.nanopay.payment.CountryCurrencyList.getOwnClassInfo()))
+          .setPredicate(foam.mlang.MLang.INSTANCE_OF(net.nanopay.payment.CountryCapability.class))
+          .setDelegate(new foam.dao.NullDAO(x, net.nanopay.payment.CountryCapability.getOwnClassInfo()))
         .build())
-      .setOf(net.nanopay.payment.CountryCurrencyList.getOwnClassInfo())
+      .setOf(net.nanopay.payment.CountryCapability.getOwnClassInfo())
       .build();
   """,
   "client":
     """
       {
-        "of":"net.nanopay.payment.CountryCurrencyList"
+        "of":"net.nanopay.payment.CountryCapability"
       }
     """
 })
@@ -81,6 +82,7 @@ p({
       .setAuthorize(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setInnerDAO(x.get("localCapabilityDAO"))
+      .setValidated(true)
       .setDecorator(
         new foam.dao.FilteredDAO.Builder(x)
           .setPredicate(foam.mlang.MLang.INSTANCE_OF(net.nanopay.payment.PaymentProviderCorridor.class))

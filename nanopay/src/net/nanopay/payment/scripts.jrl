@@ -3,21 +3,20 @@ p({
   id:"Payment provider corridor setup - (AFEX)",
   description:"Sets up payment provider corridor and it's prerequisites",
   code: """
-    // Sets up all payment provider corridors for AFEX
+    // Sets up all payment provider corridors for AFEX\
     import foam.mlang.MLang;
     import foam.mlang.predicate.Predicate;
     import net.nanopay.fx.Corridor;
     import net.nanopay.payment.*;
     import foam.core.Currency;
-    import foam.nanos.crunch.CapabilityCapabilityJunction;
     
     // Supported currencies by AFEX
     String[] supportedCurrencies = {"AED","AFN","ALL","AMD","ARS","AUD","AWG","AZN","BBD","BDT","BGN","BHD","BIF","BMD","BOB","BRL",
-    "BSD","BTN","BWP","BZD","CAD","CDF","CHF","CLP","CNH","CNY","COP","CRC","CZK","DJF","DKK","DOP","DZD","EGP","EUR","FJD","GBP","GEL",
-    "GHS","GNF","GTQ","HKD","HNL","HRK","HTG","HUF","IDR","ILS","INR","ISK","JMD","JOD","JPY","KES","KHR","KRW","KWD","KZT","LBP",
-    "LKR","LSL","MAD","MDL","MGA","MKD","MMK","MUR","MWK","MXN","MYR","MZN","NAD","NGN","NIO","NOK","NPR","NZD","OMR","PEN","PGK",
-    "PHP","PKR","PLN","PYG","QAR","RON","RSD","RUB","RWF","SAR","SEK","SGD","SLL","THB","TND","TOP","TRY","TTD","TWD","TZS","UAH","UGX",
-    "USD","UYU","UZS","VND","VUV","WST","XAF","XCD","XOF","XPF","ZAR","ZMW"};
+      "BSD","BTN","BWP","BZD","CAD","CDF","CHF","CLP","CNH","CNY","COP","CRC","CZK","DJF","DKK","DOP","DZD","EGP","EUR","FJD","GBP","GEL",
+      "GHS","GNF","GTQ","HKD","HNL","HRK","HTG","HUF","IDR","ILS","INR","ISK","JMD","JOD","JPY","KES","KHR","KRW","KWD","KZT","LBP",
+      "LKR","LSL","MAD","MDL","MGA","MKD","MMK","MUR","MWK","MXN","MYR","MZN","NAD","NGN","NIO","NOK","NPR","NZD","OMR","PEN","PGK",
+      "PHP","PKR","PLN","PYG","QAR","RON","RSD","RUB","RWF","SAR","SEK","SGD","SLL","THB","TND","TOP","TRY","TTD","TWD","TZS","UAH","UGX",
+      "USD","UYU","UZS","VND","VUV","WST","XAF","XCD","XOF","XPF","ZAR","ZMW"};
     
     // Filter currencies based on currency in journals and AFEX support currencies.
     currs = (x.get("currencyDAO")).where(foam.mlang.MLang.IN(Currency.ID, supportedCurrencies)).select().getArray();
@@ -28,223 +27,56 @@ p({
       availableCurrencies[ind++] = id;
     }
     countryDAO = x.get("countryDAO");
-    capabilityDAO = x.get("capabilityDAO");
-    currencyListDAO = x.get("countryCurrencyListDAO");
+    countryCapabilityDAO = x.get("countryCapabilityDAO");
     ppcDAO = x.get("paymentProviderCorridorDAO");
-    providerDAO = x.get("paymentProviderDAO");
-    prereqDAO = x.get("prerequisiteCapabilityJunctionDAO");
-    afex = providerDAO.find("AFEX");
+    afex = (x.get("paymentProviderDAO")).find("AFEX");
     countries = countryDAO.select().getArray();
+
     for ( country : countries ) {
       for ( pairCountry : countries ) {
-        // Create Currency List Caps for countries missing currency list provided by afex
-        // Create country currency list for var `county` (Target and Source)
-        srcCountry = currencyListDAO.find(MLang.AND( new Predicate[] {
-          MLang.INSTANCE_OF(CountryCurrencyList.class),
-          MLang.EQ(CountryCurrencyList.COUNTRY, country.getId()),
-          MLang.EQ(CountryCurrencyList.TYPE, SourceTargetType.SOURCE),
-          MLang.EQ(CountryCurrencyList.PROVIDER, afex.getId())
+        // Create afex payment provider corridors if missing
+        corridor = ppcDAO.find(MLang.AND(new Predicate[] {
+          MLang.EQ(PaymentProviderCorridor.SOURCE_COUNTRY, country.getId()),
+          MLang.EQ(PaymentProviderCorridor.TARGET_COUNTRY, pairCountry.getId()),
+          MLang.EQ(PaymentProviderCorridor.PROVIDER, afex.getId())
         }));
-
-      if ( srcCountry == null ) {
-        srcCountry = new CountryCurrencyList();
-        srcCountry.setCountry(country.getId());
-        srcCountry.setName(country.getId() + "AFEX Source Country Currency Capability");
-        srcCountry.setCurrencies(availableCurrencies);
-        srcCountry.setProvider(afex.getId());
-        srcCountry.setType(SourceTargetType.SOURCE);
-        srcCountry = currencyListDAO.put(srcCountry);
-        print(country.getId() + " added as source country currency list capability");
-      }
-      
-      trgCountry = currencyListDAO.find(MLang.AND( new Predicate[] {
-        MLang.INSTANCE_OF(CountryCurrencyList.class),
-        MLang.EQ(CountryCurrencyList.COUNTRY, country.getId()),
-        MLang.EQ(CountryCurrencyList.TYPE, SourceTargetType.TARGET),
-        MLang.EQ(CountryCurrencyList.PROVIDER, afex.getId())
-      }));
-      
-      if ( trgCountry == null ) {
-        trgCountry = new CountryCurrencyList();
-        trgCountry.setCountry(country.getId());
-        trgCountry.setName(country.getId() + "AFEX Target Country Currency Capability");
-        trgCountry.setCurrencies(availableCurrencies);
-        trgCountry.setProvider(afex.getId());
-        trgCountry.setType(SourceTargetType.TARGET);
-        trgCountry = currencyListDAO.put(trgCountry);
-        print(country.getId() + " added as target country currency list capability");
-      }
-      // Create country currency list for var `pairCountry` (Target and Source)
-      srcPairCountry = currencyListDAO.find(MLang.AND( new Predicate[] {
-        MLang.INSTANCE_OF(CountryCurrencyList.class),
-        MLang.EQ(CountryCurrencyList.COUNTRY, pairCountry.getId()),
-        MLang.EQ(CountryCurrencyList.TYPE, SourceTargetType.SOURCE),
-        MLang.EQ(CountryCurrencyList.PROVIDER, afex.getId())
-      }));
-      if ( srcPairCountry == null ) {
-        srcPairCountry = new CountryCurrencyList();
-        srcPairCountry.setCountry(pairCountry.getId());
-        srcPairCountry.setName(pairCountry.getId() + "AFEX Source Country Currency Capability");
-        srcPairCountry.setCurrencies(availableCurrencies);
-        srcPairCountry.setProvider(afex.getId());
-        srcPairCountry.setType(SourceTargetType.SOURCE);
-        srcPairCountry = currencyListDAO.put(srcPairCountry);
-        print(pairCountry.getId() + " added as source country currency list capability");
-      }
-      trgPairCountry = currencyListDAO.find(MLang.AND( new Predicate[] {
-        MLang.INSTANCE_OF(CountryCurrencyList.class),
-        MLang.EQ(CountryCurrencyList.COUNTRY, pairCountry.getId()),
-        MLang.EQ(CountryCurrencyList.TYPE, SourceTargetType.TARGET),
-        MLang.EQ(CountryCurrencyList.PROVIDER, afex.getId())
-      }));
-      
-      if ( trgPairCountry == null ) {
-        trgPairCountry = new CountryCurrencyList();
-        trgPairCountry.setCountry(pairCountry.getId());
-        trgPairCountry.setName(pairCountry.getId() + "AFEX Target Country Currency Capability");
-        trgPairCountry.setCurrencies(availableCurrencies);
-        trgPairCountry.setProvider(afex.getId());
-        trgPairCountry.setType(SourceTargetType.TARGET);
-        trgPairCountry = currencyListDAO.put(trgPairCountry);
-        print(pairCountry.getId() + " added as target country currency list capability");
-      }
-      // Create afex payment provider corridors if missing
-      corridor = ppcDAO.find(MLang.AND(new Predicate[] {
-        MLang.EQ(PaymentProviderCorridor.SOURCE_COUNTRY, country.getId()),
-        MLang.EQ(PaymentProviderCorridor.TARGET_COUNTRY, pairCountry.getId()),
-        MLang.EQ(PaymentProviderCorridor.PROVIDER, afex.getId())
-      }));
-      if ( corridor == null ) {
-        corridor = new PaymentProviderCorridor();
-        corridor.setSourceCountry(country.getId());
-        corridor.setTargetCountry(pairCountry.getId());
-        corridor.setEnabled(true);
-        corridor.setVisible(true);
-        corridor.setProvider(afex.getId());
-        corridor.setName(country.getId() + "-" + pairCountry.getId() + " Corridor AFEX");
-        corridor = ppcDAO.put(corridor);
-        print("New AFEX corridor added: source " + corridor.getSourceCountry() + " target " + corridor.getTargetCountry());
-      }
-      // Find currency list capability
-      srcCurr = currencyListDAO.find(MLang.AND( new Predicate[] {
-        MLang.INSTANCE_OF(CountryCurrencyList.class),
-        MLang.EQ(CountryCurrencyList.COUNTRY, country.getId()),
-        MLang.EQ(CountryCurrencyList.TYPE, SourceTargetType.SOURCE),
-        MLang.EQ(CountryCurrencyList.PROVIDER, afex.getId())
-      }));
-      trgCurr = currencyListDAO.find(MLang.AND( new Predicate[] {
-        MLang.INSTANCE_OF(CountryCurrencyList.class),
-        MLang.EQ(CountryCurrencyList.COUNTRY, pairCountry.getId()),
-        MLang.EQ(CountryCurrencyList.TYPE, SourceTargetType.TARGET),
-        MLang.EQ(CountryCurrencyList.PROVIDER, afex.getId())
-      }));
-      // check if pre requisite exists.
-      prereqTrg = prereqDAO.find(MLang.AND( new Predicate[] {
-        MLang.EQ(CapabilityCapabilityJunction.SOURCE_ID, corridor.getId()),
-        MLang.EQ(CapabilityCapabilityJunction.TARGET_ID, trgCurr.getId())
-      }));
-      // create country currency list prerequisite for target country provider corridor capability
-      if ( prereqTrg == null ) {
-        prereqTrg = new CapabilityCapabilityJunction();
-        prereqTrg.setSourceId(corridor.getId());
-        prereqTrg.setTargetId(trgCurr.getId());
-        prereqTrg.setPriority(2);
-        prereqDAO.put(prereqTrg);
-        print("target currency prerequisite created for " + corridor.getSourceCountry() + corridor.getTargetCountry());
-      }
-      prereqSrc = prereqDAO.find(MLang.AND( new Predicate[] {
-        MLang.EQ(CapabilityCapabilityJunction.SOURCE_ID, corridor.getId()),
-        MLang.EQ(CapabilityCapabilityJunction.TARGET_ID, srcCurr.getId())
-      }));
-      // create country currency list prerequisite for source country provider corridor capability
-      if ( prereqSrc == null ) {
-        prereqSrc = new CapabilityCapabilityJunction();
-        prereqSrc.setSourceId(corridor.getId());
-        prereqSrc.setTargetId(srcCurr.getId());
-        prereqSrc.setPriority(2);
-        prereqDAO.put(prereqSrc);
-        print("Source currency prerequisite created for " + corridor.getSourceCountry() + corridor.getTargetCountry());
-      }
-      prereqAfex = prereqDAO.find(MLang.AND( new Predicate[] {
-        MLang.EQ(CapabilityCapabilityJunction.SOURCE_ID, corridor.getId()),
-        MLang.EQ(CapabilityCapabilityJunction.TARGET_ID, afex.getId())
-      }));
-      if ( prereqAfex == null ) {
-        prereqAfex = new CapabilityCapabilityJunction();
-        prereqAfex.setSourceId(corridor.getId());
-        prereqAfex.setTargetId(afex.getId());
-        prereqAfex.setPriority(1);
-        prereqDAO.put(prereqAfex);
-        print(afex.getId() + " Payment provider prerequisite created for " + corridor.getSourceCountry() + corridor.getTargetCountry());
-      }
-      // inverse of above logic
-      trgCorridor = ppcDAO.find(MLang.AND(new Predicate[] {
-        MLang.EQ(PaymentProviderCorridor.SOURCE_COUNTRY, pairCountry.getId()),
-        MLang.EQ(PaymentProviderCorridor.TARGET_COUNTRY, country.getId()),
-        MLang.EQ(PaymentProviderCorridor.PROVIDER, afex.getId())
-      }));
-      if ( trgCorridor == null ) {
-        trgCorridor = new PaymentProviderCorridor();
-        trgCorridor.setSourceCountry(pairCountry.getId());
-        trgCorridor.setTargetCountry(country.getId());
-        trgCorridor.setEnabled(true);
-        trgCorridor.setVisible(true);
-        trgCorridor.setProvider(afex.getId());
-        trgCorridor.setName(pairCountry.getId() + "-" + country.getId() + " Corridor AFEX");
-        trgCorridor = ppcDAO.put(trgCorridor);
-        print("New AFEX corridor added: source " + trgCorridor.getSourceCountry() + " target " + trgCorridor.getTargetCountry());
-      }
-      prereqAfex = prereqDAO.find(MLang.AND( new Predicate[] {
-        MLang.EQ(CapabilityCapabilityJunction.SOURCE_ID, trgCorridor.getId()),
-        MLang.EQ(CapabilityCapabilityJunction.TARGET_ID, afex.getId())
-      }));
-      if ( prereqAfex == null ) {
-        prereqAfex = new CapabilityCapabilityJunction();
-        prereqAfex.setSourceId(trgCorridor.getId());
-        prereqAfex.setTargetId(afex.getId());
-        prereqAfex.setPriority(1);
-        prereqDAO.put(prereqAfex);
-        print(afex.getId() + " Payment provider prerequisite created for " + trgCorridor.getSourceCountry() + trgCorridor.getTargetCountry());
-      }
-      srcCurr1 = currencyListDAO.find(MLang.AND( new Predicate[] {
-        MLang.INSTANCE_OF(CountryCurrencyList.class),
-        MLang.EQ(CountryCurrencyList.COUNTRY, pairCountry.getId()),
-        MLang.EQ(CountryCurrencyList.TYPE, SourceTargetType.SOURCE),
-        MLang.EQ(CountryCurrencyList.PROVIDER, afex.getId())
-      }));
-      trgCurr1 = currencyListDAO.find(MLang.AND( new Predicate[] {
-        MLang.INSTANCE_OF(CountryCurrencyList.class),
-        MLang.EQ(CountryCurrencyList.COUNTRY, country.getId()),
-        MLang.EQ(CountryCurrencyList.TYPE, SourceTargetType.TARGET),
-        MLang.EQ(CountryCurrencyList.PROVIDER, afex.getId())
-      }));
-      prereqTrg1 = prereqDAO.find(MLang.AND( new Predicate[] {
-        MLang.EQ(CapabilityCapabilityJunction.SOURCE_ID, trgCorridor.getId()),
-        MLang.EQ(CapabilityCapabilityJunction.TARGET_ID, trgCurr1.getId())
-      }));
-      if ( prereqTrg1 == null ) {
-        prereqTrg1 = new CapabilityCapabilityJunction();
-        prereqTrg1.setSourceId(corridor.getId());
-        prereqTrg1.setTargetId(trgCurr1.getId());
-        prereqTrg1.setPriority(2);
-        prereqDAO.put(prereqTrg1);
-        print("Target currency prerequisite created for " + corridor.getSourceCountry() + corridor.getTargetCountry());
-      }
-      prereqSrc1 = prereqDAO.find(MLang.AND( new Predicate[] {
-        MLang.EQ(CapabilityCapabilityJunction.SOURCE_ID, trgCorridor.getId()),
-        MLang.EQ(CapabilityCapabilityJunction.TARGET_ID, srcCurr1.getId())
-      }));
-      if ( prereqSrc1 == null ) {
-        prereqSrc1 = new CapabilityCapabilityJunction();
-        prereqSrc1.setSourceId(trgCorridor.getId());
-        prereqSrc1.setTargetId(srcCurr1.getId());
-        prereqSrc1.setPriority(2);
-        prereqDAO.put(prereqSrc1);
-        print("Source currency prerequisite created for " + trgCorridor.getSourceCountry() + trgCorridor.getTargetCountry());
+        
+        if ( corridor == null ) {
+          corridor = new PaymentProviderCorridor();
+          corridor.setSourceCountry(country.getId());
+          corridor.setTargetCountry(pairCountry.getId());
+          corridor.setEnabled(true);
+          corridor.setVisible(true);
+          corridor.setProvider(afex.getId());
+          corridor.setSourceCurrencies(availableCurrencies);
+          corridor.setTargetCurrencies(availableCurrencies);
+          corridor.setName(country.getId() + "-" + pairCountry.getId() + " Corridor - AFEX");
+          corridor = ppcDAO.put(corridor);
+          print("New AFEX corridor added: source " + corridor.getSourceCountry() + " target " + corridor.getTargetCountry());
+        }
+        // inverse of above logic
+        trgCorridor = ppcDAO.find(MLang.AND(new Predicate[] {
+          MLang.EQ(PaymentProviderCorridor.SOURCE_COUNTRY, pairCountry.getId()),
+          MLang.EQ(PaymentProviderCorridor.TARGET_COUNTRY, country.getId()),
+          MLang.EQ(PaymentProviderCorridor.PROVIDER, afex.getId())
+        }));
+        
+        if ( trgCorridor == null ) {
+          trgCorridor = new PaymentProviderCorridor();
+          trgCorridor.setSourceCountry(pairCountry.getId());
+          trgCorridor.setTargetCountry(country.getId());
+          trgCorridor.setEnabled(true);
+          trgCorridor.setVisible(true);
+          trgCorridor.setSourceCurrencies(availableCurrencies);
+          trgCorridor.setTargetCurrencies(availableCurrencies);
+          trgCorridor.setProvider(afex.getId());
+          trgCorridor.setName(pairCountry.getId() + "-" + country.getId() + " Corridor AFEX\");
+          trgCorridor = ppcDAO.put(trgCorridor);
+          print("New AFEX corridor added: source " + trgCorridor.getSourceCountry() + " target " + trgCorridor.getTargetCountry());
+        }
       }
     }
-  }
-  print("Script Finished.");
+    print("Script finished.");
   """
 })
 
@@ -253,125 +85,47 @@ p({
   id:"Payment Provider Corridor Setup - (BMO)",
   description:"Sets up payment provider corridor and it's prerequisites for BMO",
   code:"""
-  //Sets up all payment provider corridors for BMO
-  // SCRIPT PROCESS
-  // Find Country Currency List Source and Target of BMO payment provider (create if missing)
-  // Find BMO payment provider corridor (create if missing)
-  // Add BMO payment provider and country currency list as prerequisites to payment provider corridor
-  import foam.mlang.MLang;
-  import foam.mlang.predicate.Predicate;
-  import net.nanopay.fx.Corridor;
-  import net.nanopay.payment.*;
-  import foam.core.Currency;
-  import foam.nanos.crunch.CapabilityCapabilityJunction;
+    // Sets up all payment provider corridors for BMO
+    // Prior to running - verify no BMO related corridors exist.
+    // Script ensures all prerequisites for payment provider corridor are associated with the newly created corridor.
+    // Prerequisite associations are handled by rules on the paymentProviderCorridorDAO
+    import foam.mlang.MLang;
+    import foam.mlang.predicate.Predicate;
+    import net.nanopay.payment.*;
 
-  String[] availableCurrency = {"CAD"};
-  countryDAO = x.get("countryDAO");
-  capabilityDAO = x.get("capabilityDAO");
-  currencyListDAO = x.get("countryCurrencyListDAO");
-  ppcDAO = x.get("paymentProviderCorridorDAO");
-  providerDAO = x.get("paymentProviderDAO");
-  prereqDAO = x.get("prerequisiteCapabilityJunctionDAO");
-  bmo = providerDAO.find("BMO");
+    String[] availableCurrency = {"CAD"};
 
-  srcCountry = currencyListDAO.find(MLang.AND( new Predicate[] {
-    MLang.INSTANCE_OF(CountryCurrencyList.class),
-    MLang.EQ(CountryCurrencyList.COUNTRY, "CA"),
-    MLang.EQ(CountryCurrencyList.TYPE, SourceTargetType.SOURCE),
-    MLang.EQ(CountryCurrencyList.PROVIDER, bmo.getId())
-  }));
+    ppcDAO = x.get("paymentProviderCorridorDAO");
 
-  if ( srcCountry == null ) {
-    srcCountry = new CountryCurrencyList();
-    srcCountry.setCountry("CA");
-    srcCountry.setName("BMO CA Source Country Currency Capability");
-    srcCountry.setCurrencies(availableCurrency);
-    srcCountry.setProvider(bmo.getId());
-    srcCountry.setType(SourceTargetType.SOURCE);
-    srcCountry = currencyListDAO.put(srcCountry);
-    print("CA created as source country currency list capability ... finding target country currency list capability CA");
-  }
+    bmo = x.get("paymentProviderDAO").find("BMO");
 
-  trgCountry = currencyListDAO.find(MLang.AND( new Predicate[] {
-    MLang.INSTANCE_OF(CountryCurrencyList.class),
-    MLang.EQ(CountryCurrencyList.COUNTRY, "CA"),
-    MLang.EQ(CountryCurrencyList.TYPE, SourceTargetType.TARGET),
-    MLang.EQ(CountryCurrencyList.PROVIDER, bmo.getId())
-  }));
-
-  if ( trgCountry == null ) {
-    trgCountry = new CountryCurrencyList();
-    trgCountry.setCountry("CA");
-    trgCountry.setName("CA BMO Target Country Currency Capability");
-    trgCountry.setCurrencies(availableCurrency);
-    trgCountry.setProvider(bmo.getId());
-    trgCountry.setType(SourceTargetType.TARGET);
-    trgCountry = currencyListDAO.put(trgCountry);
-    print("BMO created as target country currency list capability ... finding corridor");
-  }
-
-  // Create bmo payment provider corridors if missing
-  corridor = ppcDAO.find(MLang.AND(new Predicate[] {
+    // Create bmo payment provider corridors if missing
+    corridor = ppcDAO.find(MLang.AND(new Predicate[] {
     MLang.EQ(PaymentProviderCorridor.SOURCE_COUNTRY, "CA"),
     MLang.EQ(PaymentProviderCorridor.TARGET_COUNTRY, "CA"),
     MLang.EQ(PaymentProviderCorridor.PROVIDER, bmo.getId())
-  }));
+    }));
 
-  if ( corridor == null ) {
+    // Remove deprecated corridor
+    if ( corridor != null && corridor.getSourceCountry() == null ) {
+      ppcDAO.remove(corridor);
+    }
+
+    if ( corridor == null ) {
     corridor = new PaymentProviderCorridor();
     corridor.setSourceCountry("CA");
     corridor.setTargetCountry("CA");
+    corridor.setSourceCurrencies(availableCurrency);
+    corridor.setTargetCurrencies(availableCurrency);
     corridor.setEnabled(true);
     corridor.setVisible(true);
     corridor.setProvider(bmo.getId());
     corridor.setName("CA-CA Corridor BMO");
     corridor = ppcDAO.put(corridor);
     print("BMO corridor added: source CA target CA");
-  }
+    }
 
-  // Check if country currency prerequisites exists for BMO Corridor
-  prereqTrg = prereqDAO.find(MLang.AND( new Predicate[] {
-    MLang.EQ(CapabilityCapabilityJunction.SOURCE_ID, corridor.getId()),
-    MLang.EQ(CapabilityCapabilityJunction.TARGET_ID, trgCountry.getId())
-  }));
-
-  // Create country currency list prerequisite for target country provider corridor capability
-  if ( prereqTrg == null ) {
-    prereqTrg = new CapabilityCapabilityJunction();
-    prereqTrg.setSourceId(corridor.getId());
-    prereqTrg.setTargetId(trgCountry.getId());
-    prereqTrg.setPriority(2);
-    prereqDAO.put(prereqTrg);
-    print("Target currency prerequisite created for CA-CA BMO corridor");
-  }
-  prereqSrc = prereqDAO.find(MLang.AND( new Predicate[] {
-    MLang.EQ(CapabilityCapabilityJunction.SOURCE_ID, corridor.getId()),
-    MLang.EQ(CapabilityCapabilityJunction.TARGET_ID, srcCountry.getId())
-  }));
-
-  // Create country currency list prerequisite for source country provider corridor capability
-  if ( prereqSrc == null ) {
-    prereqSrc = new CapabilityCapabilityJunction();
-    prereqSrc.setSourceId(corridor.getId());
-    prereqSrc.setTargetId(srcCountry.getId());
-    prereqSrc.setPriority(2);
-    prereqDAO.put(prereqSrc);
-    print("Source currency prerequisite created for CA-CA BMO corridor");
-  }
-  prereqBmo = prereqDAO.find(MLang.AND( new Predicate[] {
-    MLang.EQ(CapabilityCapabilityJunction.SOURCE_ID, corridor.getId()),
-    MLang.EQ(CapabilityCapabilityJunction.TARGET_ID, bmo.getId())
-  }));
-
-  if ( prereqBmo == null ) {
-    prereqBmo = new CapabilityCapabilityJunction();
-    prereqBmo.setSourceId(corridor.getId());
-    prereqBmo.setTargetId(bmo.getId());
-    prereqBmo.setPriority(1);
-    prereqDAO.put(prereqBmo);
-    print("BMO Payment provider prerequisite created for CA-CA");
-  }
-  print("Script Finished.")
+    print("Script Finished.");
   """
 })
 
@@ -380,124 +134,326 @@ p({
   id:"Payment Provider Corridor Setup - (RBC)",
   description:"Sets up payment provider corridor and it's prerequisites for RBC",
   code:"""
-  // Sets up all payment provider corridors for RBC
-  // SCRIPT PROCESS
-  // Find Country Currency List Source and Target of RBC payment provider (create if missing)
-  // Find RBC payment provider corridor (create if missing)
-  // Add RBC payment provider and country currency list as prerequisites to payment provider corridor
-  import foam.mlang.MLang;
-  import foam.mlang.predicate.Predicate;
-  import net.nanopay.fx.Corridor;
-  import net.nanopay.payment.*;
-  import foam.core.Currency;
-  import foam.nanos.crunch.CapabilityCapabilityJunction;
+    // Sets up all payment provider corridors for RBC
+    // Prior to running - verify no RBC related corridors exist.
+    // Script ensures all prerequisites for payment provider corridor are associated with the newly created corridor.
+    // Prerequisite associations are handled by rules on the paymentProviderCorridorDAO
+    import foam.mlang.MLang;
+    import foam.mlang.predicate.Predicate;
+    import net.nanopay.payment.*;
 
-  String[] availableCurrency = {"CAD"};
-  countryDAO = x.get("countryDAO");
-  capabilityDAO = x.get("capabilityDAO");
-  currencyListDAO = x.get("countryCurrencyListDAO");
-  ppcDAO = x.get("paymentProviderCorridorDAO");
-  providerDAO = x.get("paymentProviderDAO");
-  prereqDAO = x.get("prerequisiteCapabilityJunctionDAO");
-  rbc = providerDAO.find("RBC");
+    String[] availableCurrency = {"CAD"};
 
-  srcCountry = currencyListDAO.find(MLang.AND( new Predicate[] {
-    MLang.INSTANCE_OF(CountryCurrencyList.class),
-    MLang.EQ(CountryCurrencyList.COUNTRY, "CA"),
-    MLang.EQ(CountryCurrencyList.TYPE, SourceTargetType.SOURCE),
-    MLang.EQ(CountryCurrencyList.PROVIDER, rbc.getId())
-  }));
+    ppcDAO = x.get("paymentProviderCorridorDAO");
 
-  if ( srcCountry == null ) {
-    srcCountry = new CountryCurrencyList();
-    srcCountry.setCountry("CA");
-    srcCountry.setName("RBC CA Source Country Currency Capability");
-    srcCountry.setCurrencies(availableCurrency);
-    srcCountry.setProvider(rbc.getId());
-    srcCountry.setType(SourceTargetType.SOURCE);
-    srcCountry = currencyListDAO.put(srcCountry);
-    print("CA created as source country currency list capability ... finding target country currency list capability CA");
-  }
+    rbc = x.get("paymentProviderDAO").find("RBC");
 
-  trgCountry = currencyListDAO.find(MLang.AND( new Predicate[] {
-    MLang.INSTANCE_OF(CountryCurrencyList.class),
-    MLang.EQ(CountryCurrencyList.COUNTRY, "CA"),
-    MLang.EQ(CountryCurrencyList.TYPE, SourceTargetType.TARGET),
-    MLang.EQ(CountryCurrencyList.PROVIDER, rbc.getId())
-  }));
-
-  if ( trgCountry == null ) {
-    trgCountry = new CountryCurrencyList();
-    trgCountry.setCountry("CA");
-    trgCountry.setName("CA RBC Target Country Currency Capability");
-    trgCountry.setCurrencies(availableCurrency);
-    trgCountry.setProvider(rbc.getId());
-    trgCountry.setType(SourceTargetType.TARGET);
-    trgCountry = currencyListDAO.put(trgCountry);
-    print("RBC created as target country currency list capability ... finding corridor");
-  }
-
-  // Create RBC payment provider corridors if missing
-  corridor = ppcDAO.find(MLang.AND(new Predicate[] {
+    // Create RBC payment provider corridors if missing
+    corridor = ppcDAO.find(MLang.AND(new Predicate[] {
     MLang.EQ(PaymentProviderCorridor.SOURCE_COUNTRY, "CA"),
     MLang.EQ(PaymentProviderCorridor.TARGET_COUNTRY, "CA"),
     MLang.EQ(PaymentProviderCorridor.PROVIDER, rbc.getId())
-  }));
+    }));
 
-  if ( corridor == null ) {
+    // Remove deprecated corridor
+    if ( corridor != null && corridor.getSourceCountry() == null ) {
+      ppcDAO.remove(corridor);
+    }
+
+    if ( corridor == null ) {
     corridor = new PaymentProviderCorridor();
     corridor.setSourceCountry("CA");
     corridor.setTargetCountry("CA");
+    corridor.setSourceCurrencies(availableCurrency);
+    corridor.setTargetCurrencies(availableCurrency);
     corridor.setEnabled(true);
     corridor.setVisible(true);
     corridor.setProvider(rbc.getId());
     corridor.setName("CA-CA Corridor RBC");
     corridor = ppcDAO.put(corridor);
     print("RBC corridor added: source CA target CA");
-  }
+    }
 
-  // Check if country currency prerequisites exists for RBC Corridor
-  prereqTrg = prereqDAO.find(MLang.AND( new Predicate[] {
-    MLang.EQ(CapabilityCapabilityJunction.SOURCE_ID, corridor.getId()),
-    MLang.EQ(CapabilityCapabilityJunction.TARGET_ID, trgCountry.getId())
-  }));
+    print("Script Finished.");
+  """
+})
 
-  // Create country currency list prerequisite for target country provider corridor capability
-  if ( prereqTrg == null ) {
-    prereqTrg = new CapabilityCapabilityJunction();
-    prereqTrg.setSourceId(corridor.getId());
-    prereqTrg.setTargetId(trgCountry.getId());
-    prereqTrg.setPriority(2);
-    prereqDAO.put(prereqTrg);
-    print("Target currency prerequisite created for CA-CA RBC corridor");
-  }
-  prereqSrc = prereqDAO.find(MLang.AND( new Predicate[] {
-    MLang.EQ(CapabilityCapabilityJunction.SOURCE_ID, corridor.getId()),
-    MLang.EQ(CapabilityCapabilityJunction.TARGET_ID, srcCountry.getId())
-  }));
+p({
+  class:"foam.nanos.script.Script",
+  id:"Payment Provider Corridor Setup - (Alterna)",
+  description:"Sets up payment provider corridor and it's prerequisites for Alterna",
+  code:"""
+    // Sets up all payment provider corridors for Alterna
+    // Script ensures all prerequisites for payment provider corridor are associated with the newly created corridor.
+    // Prerequisite associations are handled by rules on the paymentProviderCorridorDAO
 
-  // Create country currency list prerequisite for source country provider corridor capability
-  if ( prereqSrc == null ) {
-    prereqSrc = new CapabilityCapabilityJunction();
-    prereqSrc.setSourceId(corridor.getId());
-    prereqSrc.setTargetId(srcCountry.getId());
-    prereqSrc.setPriority(2);
-    prereqDAO.put(prereqSrc);
-    print("Source currency prerequisite created for CA-CA RBC corridor");
-  }
-  prereqRbc = prereqDAO.find(MLang.AND( new Predicate[] {
-    MLang.EQ(CapabilityCapabilityJunction.SOURCE_ID, corridor.getId()),
-    MLang.EQ(CapabilityCapabilityJunction.TARGET_ID, rbc.getId())
-  }));
+    import foam.mlang.MLang;
+    import foam.mlang.predicate.Predicate;
+    import net.nanopay.payment.*;
 
-  if ( prereqRbc == null ) {
-    prereqRbc = new CapabilityCapabilityJunction();
-    prereqRbc.setSourceId(corridor.getId());
-    prereqRbc.setTargetId(rbc.getId());
-    prereqRbc.setPriority(1);
-    prereqDAO.put(prereqRbc);
-    print("RBC Payment provider prerequisite created for CA-CA");
-  }
-  print("Script Finished.")
+    String[] availableCurrency = {"CAD"};
+
+    ppcDAO = x.get("paymentProviderCorridorDAO");
+
+    alterna = x.get("paymentProviderDAO").find("Alterna");
+
+    // Create Alterna payment provider corridors if missing
+    corridor = ppcDAO.find(MLang.AND(new Predicate[] {
+    MLang.EQ(PaymentProviderCorridor.SOURCE_COUNTRY, "CA"),
+    MLang.EQ(PaymentProviderCorridor.TARGET_COUNTRY, "CA"),
+    MLang.EQ(PaymentProviderCorridor.PROVIDER, alterna.getId())
+    }));
+
+    // Remove deprecated corridor
+    if ( corridor != null && corridor.getSourceCountry() == null ) {
+      ppcDAO.remove(corridor);
+    }
+
+    if ( corridor == null ) {
+    corridor = new PaymentProviderCorridor();
+    corridor.setSourceCountry("CA");
+    corridor.setTargetCountry("CA");
+    corridor.setSourceCurrencies(availableCurrency);
+    corridor.setTargetCurrencies(availableCurrency);
+    corridor.setEnabled(true);
+    corridor.setVisible(true);
+    corridor.setProvider(alterna.getId());
+    corridor.setName("CA-CA Corridor Alterna");
+    corridor = ppcDAO.put(corridor);
+    print("Alterna corridor added: source CA target CA");
+    }
+
+    print("Script Finished.");
+  """
+})
+
+p({
+  class:"foam.nanos.script.Script",
+  id:"Payment Provider Corridor Setup - (Kotak)",
+  description:"Sets up payment provider corridor and it's prerequisites for Kotak",
+  code:"""
+    // Sets up all payment provider corridors for Kotak
+    // Script ensures all prerequisites for payment provider corridor are associated with the newly created corridor.
+    // Prerequisite associations are handled by rules on the paymentProviderCorridorDAO
+
+    import foam.mlang.MLang;
+    import foam.mlang.predicate.Predicate;
+    import net.nanopay.payment.*;
+
+    String[] sourceCurrency = {"CAD"};
+    String[] targetCurrency = {"INR"};
+
+    ppcDAO = x.get("paymentProviderCorridorDAO");
+
+    kotak = x.get("paymentProviderDAO").find("Kotak");
+
+    // Create Kotak payment provider corridors if missing
+    corridor = ppcDAO.find(MLang.AND(new Predicate[] {
+    MLang.EQ(PaymentProviderCorridor.SOURCE_COUNTRY, "CA"),
+    MLang.EQ(PaymentProviderCorridor.TARGET_COUNTRY, "IN"),
+    MLang.EQ(PaymentProviderCorridor.PROVIDER, kotak.getId())
+    }));
+
+    // Remove deprecated corridor
+    if ( corridor != null && corridor.getSourceCountry() == null ) {
+      ppcDAO.remove(corridor);
+    }
+
+    if ( corridor == null ) {
+    corridor = new PaymentProviderCorridor();
+    corridor.setSourceCountry("CA");
+    corridor.setTargetCountry("IN");
+    corridor.setSourceCurrencies(sourceCurrency);
+    corridor.setTargetCurrencies(targetCurrency);
+    corridor.setEnabled(true);
+    corridor.setVisible(true);
+    corridor.setProvider(kotak.getId());
+    corridor.setName("CA-IN Corridor Kotak");
+    corridor = ppcDAO.put(corridor);
+    print("Kotak corridor added: source CA target IN");
+    }
+
+    print("Script Finished.");
+  """
+})
+
+p({
+  class:"foam.nanos.script.Script",
+  id:"Payment Provider Corridor Setup - (Treviso)",
+  description:"Sets up payment provider corridor and it's prerequisites for Treviso",
+  code:"""
+    // Sets up all payment provider corridors for Treviso
+    // Script ensures all prerequisites for payment provider corridor are associated with the newly created corridor.
+    // Prerequisite associations are handled by rules on the paymentProviderCorridorDAO
+
+    import foam.mlang.MLang;
+    import foam.mlang.predicate.Predicate;
+    import net.nanopay.payment.*;
+
+    String[] caCurrency = {"CAD"};
+    String[] brCurrency = {"INR"};
+    String[] usCurrency = {"USD"};
+
+    ppcDAO = x.get("paymentProviderCorridorDAO");
+
+    treviso = x.get("paymentProviderDAO").find("Treviso");
+
+    // Create Treviso payment provider corridors if missing
+    // Treviso Corridor BR-CA creation
+    corridor = ppcDAO.find(MLang.AND(new Predicate[] {
+    MLang.EQ(PaymentProviderCorridor.SOURCE_COUNTRY, "BR"),
+    MLang.EQ(PaymentProviderCorridor.TARGET_COUNTRY, "CA"),
+    MLang.EQ(PaymentProviderCorridor.PROVIDER, treviso.getId())
+    }));
+
+    // Remove deprecated corridor
+    if ( corridor != null && corridor.getSourceCountry() == null ) {
+      ppcDAO.remove(corridor);
+    }
+
+    if ( corridor == null ) {
+    corridor = new PaymentProviderCorridor();
+    corridor.setSourceCountry("BR");
+    corridor.setTargetCountry("CA");
+    corridor.setSourceCurrencies(caCurrency);
+    corridor.setTargetCurrencies(brCurrency);
+    corridor.setEnabled(true);
+    corridor.setVisible(true);
+    corridor.setProvider(treviso.getId());
+    corridor.setName("BR-CA Corridor Treviso");
+    corridor = ppcDAO.put(corridor);
+    print("Treviso corridor added: source BR target CA");
+    }
+
+    // Treviso Corridor BR-US creation
+    usCorridor = ppcDAO.find(MLang.AND(new Predicate[] {
+    MLang.EQ(PaymentProviderCorridor.SOURCE_COUNTRY, "BR"),
+    MLang.EQ(PaymentProviderCorridor.TARGET_COUNTRY, "US"),
+    MLang.EQ(PaymentProviderCorridor.PROVIDER, treviso.getId())
+    }));
+
+    // Remove deprecated corridor
+    if ( usCorridor != null && usCorridor.getSourceCountry() == null ) {
+      ppcDAO.remove(usCorridor);
+    }
+
+    if ( usCorridor == null ) {
+    usCorridor = new PaymentProviderCorridor();
+    usCorridor.setSourceCountry("BR");
+    usCorridor.setTargetCountry("US");
+    usCorridor.setSourceCurrencies(caCurrency);
+    usCorridor.setTargetCurrencies(usCurrency);
+    usCorridor.setEnabled(true);
+    usCorridor.setVisible(true);
+    usCorridor.setProvider(treviso.getId());
+    usCorridor.setName("BR-US Corridor Treviso");
+    usCorridor = ppcDAO.put(usCorridor);
+    print("Treviso corridor added: source BR target US");
+    }
+
+    print("Script Finished.");
+  """
+})
+
+p({
+  class:"foam.nanos.script.Script",
+  id:"Payment Provider Corridor Setup - (AscendantFX)",
+  description:"Sets up payment provider corridor and it's prerequisites for AscendantFX",
+  code:"""
+    // Sets up all payment provider corridors for AscendantFX
+    // Script ensures all prerequisites for payment provider corridor are associated with the newly created corridor.
+    // Prerequisite associations are handled by rules on the paymentProviderCorridorDAO
+
+    import foam.mlang.MLang;
+    import foam.mlang.predicate.Predicate;
+    import net.nanopay.payment.*;
+
+    String[] caCurrency = {"CAD"};
+    String[] usCurrency = {"USD"};
+
+    ppcDAO = x.get("paymentProviderCorridorDAO");
+
+    afx = x.get("paymentProviderDAO").find("AscendantFX");
+
+    // Create AscendantFX payment provider corridors if missing
+    // AscendantFX Corridor CA-US creation
+    corridor = ppcDAO.find(MLang.AND(new Predicate[] {
+    MLang.EQ(PaymentProviderCorridor.SOURCE_COUNTRY, "CA"),
+    MLang.EQ(PaymentProviderCorridor.TARGET_COUNTRY, "US"),
+    MLang.EQ(PaymentProviderCorridor.PROVIDER, afx.getId())
+    }));
+
+    // Remove deprecated corridor
+    if ( corridor != null && corridor.getSourceCountry() == null ) {
+      ppcDAO.remove(corridor);
+    }
+
+    if ( corridor == null ) {
+    corridor = new PaymentProviderCorridor();
+    corridor.setSourceCountry("CA");
+    corridor.setTargetCountry("US");
+    corridor.setSourceCurrencies(caCurrency);
+    corridor.setTargetCurrencies(usCurrency);
+    corridor.setEnabled(true);
+    corridor.setVisible(true);
+    corridor.setProvider(afx.getId());
+    corridor.setName("CA-US Corridor AscendantFX");
+    corridor = ppcDAO.put(corridor);
+    print("AscendantFX corridor added: source CA target US");
+    }
+
+    // AscendantFX Corridor US-CA creation
+    usCorridor = ppcDAO.find(MLang.AND(new Predicate[] {
+    MLang.EQ(PaymentProviderCorridor.SOURCE_COUNTRY, "US"),
+    MLang.EQ(PaymentProviderCorridor.TARGET_COUNTRY, "CA"),
+    MLang.EQ(PaymentProviderCorridor.PROVIDER, afx.getId())
+    }));
+
+    // Remove deprecated corridor
+    if ( usCorridor != null && usCorridor.getSourceCountry() == null ) {
+      ppcDAO.remove(usCorridor);
+    }
+
+    if ( usCorridor == null ) {
+    usCorridor = new PaymentProviderCorridor();
+    usCorridor.setSourceCountry("US");
+    usCorridor.setTargetCountry("CA");
+    usCorridor.setSourceCurrencies(usCurrency);
+    usCorridor.setTargetCurrencies(caCurrency);
+    usCorridor.setEnabled(true);
+    usCorridor.setVisible(true);
+    usCorridor.setProvider(afx.getId());
+    usCorridor.setName("US-CA Corridor AscendantFX");
+    usCorridor = ppcDAO.put(usCorridor);
+    print("AscendantFX corridor added: source US target CA");
+    }
+
+    // AscendantFX Corridor US-US creation
+    uCorridor = ppcDAO.find(MLang.AND(new Predicate[] {
+    MLang.EQ(PaymentProviderCorridor.SOURCE_COUNTRY, "US"),
+    MLang.EQ(PaymentProviderCorridor.TARGET_COUNTRY, "US"),
+    MLang.EQ(PaymentProviderCorridor.PROVIDER, afx.getId())
+    }));
+
+    // Remove deprecated corridor
+    if ( uCorridor != null && uCorridor.getSourceCountry() == null ) {
+      ppcDAO.remove(uCorridor);
+    }
+
+    if ( uCorridor == null ) {
+    uCorridor = new PaymentProviderCorridor();
+    uCorridor.setSourceCountry("US");
+    uCorridor.setTargetCountry("US");
+    uCorridor.setSourceCurrencies(usCurrency);
+    uCorridor.setTargetCurrencies(usCurrency);
+    uCorridor.setEnabled(true);
+    uCorridor.setVisible(true);
+    uCorridor.setProvider(afx.getId());
+    uCorridor.setName("US-US Corridor AscendantFX");
+    uCorridor = ppcDAO.put(uCorridor);
+    print("AscendantFX corridor added: source US target US");
+    }
+
+    print("Script Finished.");
   """
 })

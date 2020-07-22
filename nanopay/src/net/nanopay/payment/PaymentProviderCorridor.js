@@ -21,10 +21,36 @@ foam.CLASS({
   extends: 'foam.nanos.crunch.Capability',
 
   documentation: `References payment provider and corridor along with currencies available
-      in the relationship through the source and target country capabilities.
-      Defines what corridors payment provider provide and the currencies available to the 
-      source and target country capabilities. Acts as a junction model with it's own junctionDAO
-      (PaymentProviderCorridorDAO)`,
+      in source and target currencies.
+      Defines a corridor a payment provider provides and the currencies available through
+      the source and target currencies. Acts as a junction model with it's own junctionDAO
+      (PaymentProviderCorridorDAO)
+
+      Refrain from creating paymentProviderCorridors directly into journals.
+      Rules on the paymentProviderCorridorDAO are responsible for associating the appropriate
+      prerequisites.
+  `,
+
+  implements: [
+    'foam.core.Validatable',
+  ],
+
+  javaImports: [
+    'foam.core.Currency',
+    'foam.dao.DAO',
+    'foam.nanos.auth.Country',
+    'net.nanopay.payment.PaymentProvider',
+
+    'static foam.mlang.MLang.EQ',
+    'foam.util.Arrays'
+  ],
+
+  messages: [
+    { name: 'MISSING_SOURCE_COUNTRY', message: 'Error: Cannot find or missing associated source country in DB: ' },
+    { name: 'MISSING_TARGET_COUNTRY', message: 'Error: Cannot find or missing associated target country in DB: ' },
+    { name: 'MISSING_PROVIDER', message: 'Error: Cannot find payment provider in DB: ' },
+    { name: 'CURRENCY_NOT_SUPPORTED', message: 'Error: Currency not supported: '}
+  ],
 
   properties: [
     {
@@ -43,12 +69,13 @@ foam.CLASS({
     {
       class: 'StringArray',
       name: 'currencies',
-      documentation: 'Agreed upon currencies in country.'
+      documentation: 'Looking to deprecate - not required.'
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.Country',
       name: 'sourceCountry',
+      targetDAOKey: 'countryDAO',
       documentation: '1st party involved in agreement.',
       required: true
     },
@@ -56,8 +83,49 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.Country',
       name: 'targetCountry',
+      targetDAOKey: 'countryDAO',
       documentation: '2nd party involved in agreement.',
       required: true
     },
+    {
+      class: 'StringArray',
+      name: 'sourceCurrencies',
+      documentation: `Currencies user can transact from the account's source country.`
+    },
+    {
+      class: 'StringArray',
+      name: 'targetCurrencies',
+      documentation: `Currencies user can transact from the account's target country.`
+    }
+  ],
+
+  methods: [
+    {
+      name: 'validate',
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      type: 'Void',
+      javaThrows: ['IllegalStateException'],
+      javaCode: `
+        if ( ((Country) findSourceCountry(x)) == null ) {
+          throw new IllegalStateException(MISSING_SOURCE_COUNTRY + getSourceCountry());
+        }
+        if ( ((Country) findTargetCountry(x)) == null ) {
+          throw new IllegalStateException(MISSING_TARGET_COUNTRY + getTargetCountry());
+        }
+        if ( ((PaymentProvider) findProvider(x)) == null ) {
+          throw new IllegalStateException(MISSING_PROVIDER + getProvider());
+        }
+
+        DAO currencyDAO = (DAO) x.get("currencyDAO");
+        String[] currencies = Arrays.append(getSourceCurrencies(), getTargetCurrencies());
+        for ( String currency : currencies ) {
+          if ( ((Currency)currencyDAO.find(currency)) == null ) {
+            throw new IllegalStateException(CURRENCY_NOT_SUPPORTED + currency);
+          }
+        }
+       `
+    }
   ]
 });

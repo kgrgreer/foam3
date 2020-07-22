@@ -56,6 +56,8 @@ public class PaymentCorridorServiceTest extends foam.nanos.test.Test {
 
     j = (PaymentProviderCorridor) paymentProviderCorridorDAO.put(
       new PaymentProviderCorridor.Builder(x)
+      .setSourceCountry("CA")
+      .setTargetCountry("US")
       .setProvider(p)
       .setCorridor(c.getId())
       .setCurrencies(new String[]{"CAD","USD"})
