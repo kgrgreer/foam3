@@ -71,7 +71,8 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.IconTextFieldView',
         icon: 'images/ablii/search.png',
-        onKey: true
+        onKey: true,
+        focused: true
       }
     },
     {
