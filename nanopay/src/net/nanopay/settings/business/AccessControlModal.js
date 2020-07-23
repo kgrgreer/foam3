@@ -226,7 +226,7 @@ foam.CLASS({
             self.startContext({ data: this })
               .start().addClass('emailStyle').show(this.isAddUser$)
                 .start().addClass('input-wrapper').add(this.EMAIL_LABEL).end()
-                .tag(this.EMAIL)
+                .tag(this.EMAIL, { focused: true })
               .end()
             .endContext()
             self.startContext({ data: this })

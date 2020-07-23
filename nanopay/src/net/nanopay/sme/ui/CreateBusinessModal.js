@@ -112,7 +112,7 @@ foam.CLASS({
         .start().addClass('content')
           .start('p').addClass('description').add(this.DESCRIPTION).end()
           .start().addClass('input-label').add(this.COMPANY_NAME.label).end()
-          .start(this.COMPANY_NAME).end()
+          .start(this.COMPANY_NAME).focus().end()
           .start().addClass('input-label').add(this.COUNTRY_ID.label).end()
           .start(this.COUNTRY_ID).end()
           .startContext({ data: this })
