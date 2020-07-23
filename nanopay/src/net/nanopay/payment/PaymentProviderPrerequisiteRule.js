@@ -31,8 +31,6 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.crunch.CapabilityCapabilityJunction',
     'foam.nanos.logger.Logger',
-    'net.nanopay.payment.PaymentProvider',
-    'net.nanopay.payment.PaymentProviderCorridor',
     'static foam.mlang.MLang.EQ'
   ],
 
@@ -65,8 +63,8 @@ foam.CLASS({
             public void execute(X x) {
               DAO prerequisiteDAO = (DAO) x.get("prerequisiteCapabilityJunctionDAO");
               CapabilityCapabilityJunction ccj = new CapabilityCapabilityJunction();
-              ccj.setSourceId(paymentProvider.getId());
-              ccj.setTargetId(paymentProviderCorridor.getId());
+              ccj.setSourceId(paymentProviderCorridor.getId());
+              ccj.setTargetId(paymentProvider.getId());
               ccj.setPriority(1);
               try {
                 prerequisiteDAO.put(ccj);

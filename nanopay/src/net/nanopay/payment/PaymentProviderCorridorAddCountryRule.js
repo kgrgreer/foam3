@@ -31,10 +31,6 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.crunch.CapabilityCapabilityJunction',
     'foam.nanos.logger.Logger',
-    'net.nanopay.payment.CountryCapability',
-    'net.nanopay.payment.SourceTargetType',
-    'net.nanopay.payment.PaymentProvider',
-    'net.nanopay.payment.PaymentProviderCorridor',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ'
   ],
@@ -55,31 +51,30 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
         // Assumes payment provider corridor has been validated through it's validate method.
-        DAO countryCapabilityDAO = (DAO) x.get("countryCapabilityDAO");
         Logger logger = (Logger) x.get("logger");
         PaymentProviderCorridor paymentProviderCorridor = (PaymentProviderCorridor) obj;
 
         String sourceCountry = (String) paymentProviderCorridor.getSourceCountry();
         String targetCountry = (String) paymentProviderCorridor.getTargetCountry();
 
-        CountryCapability sourceCountryCapability = (CountryCapability) countryCapabilityDAO.find(
-          AND(
-            EQ(CountryCapability.COUNTRY, sourceCountry),
-            EQ(CountryCapability.TYPE, SourceTargetType.SOURCE)
-          ));
-
-        CountryCapability targetCountryCapability = (CountryCapability) countryCapabilityDAO.find(
-          AND(
-            EQ(CountryCapability.COUNTRY, targetCountry),
-            EQ(CountryCapability.TYPE, SourceTargetType.TARGET)
-          ));
-
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
             DAO countryCapabilityDAO = (DAO) x.get("countryCapabilityDAO");
+            CountryCapability sourceCountryCapability = (CountryCapability) countryCapabilityDAO.find(
+              AND(
+                EQ(CountryCapability.COUNTRY, sourceCountry),
+                EQ(CountryCapability.TYPE, SourceTargetType.SOURCE)
+              ));
+
+            CountryCapability targetCountryCapability = (CountryCapability) countryCapabilityDAO.find(
+              AND(
+                EQ(CountryCapability.COUNTRY, targetCountry),
+                EQ(CountryCapability.TYPE, SourceTargetType.TARGET)
+              ));
+
             if ( sourceCountryCapability == null ) {
-              CountryCapability sourceCountryCapability = new CountryCapability();
+              sourceCountryCapability = new CountryCapability();
               sourceCountryCapability.setCountry(sourceCountry);
               sourceCountryCapability.setType(SourceTargetType.SOURCE);
               sourceCountryCapability.setName("Source Country Capability " + sourceCountry);
@@ -94,7 +89,7 @@ foam.CLASS({
             }
 
             if ( targetCountryCapability == null ) {
-              CountryCapability targetCountryCapability = new CountryCapability();
+              targetCountryCapability = new CountryCapability();
               targetCountryCapability.setCountry(targetCountry);
               targetCountryCapability.setType(SourceTargetType.TARGET);
               targetCountryCapability.setName("Target Country Capability " + targetCountry);
@@ -111,11 +106,11 @@ foam.CLASS({
             DAO prerequisiteDAO = (DAO) x.get("prerequisiteCapabilityJunctionDAO");
             if ( sourceCountryCapability != null ) {
               CapabilityCapabilityJunction sourceCCJ = new CapabilityCapabilityJunction();
-              sourceCCJ.setSourceId(sourceCountryCapability.getId());
-              sourceCCJ.setTargetId(paymentProviderCorridor.getId());
+              sourceCCJ.setSourceId(paymentProviderCorridor.getId());
+              sourceCCJ.setTargetId(sourceCountryCapability.getId());
               sourceCCJ.setPriority(1);
               try {
-                prerequisiteDAO.put(sourceCCJ);
+                sourceCCJ = (CapabilityCapabilityJunction) prerequisiteDAO.put(sourceCCJ);
               } catch (Exception e) {
                 logger.error(UNABLE_TO_CREATE_PREREQUISITE + paymentProviderCorridor.getId() + " " + sourceCountry);
               }
@@ -123,11 +118,11 @@ foam.CLASS({
 
             if ( targetCountryCapability != null ) {
               CapabilityCapabilityJunction targetCCJ = new CapabilityCapabilityJunction();
-              targetCCJ.setSourceId(targetCountryCapability.getId());
-              targetCCJ.setTargetId(paymentProviderCorridor.getId());
+              targetCCJ.setSourceId(paymentProviderCorridor.getId());
+              targetCCJ.setTargetId(targetCountryCapability.getId());
               targetCCJ.setPriority(1);
               try {
-                prerequisiteDAO.put(targetCCJ);
+                targetCCJ = (CapabilityCapabilityJunction) prerequisiteDAO.put(targetCCJ);
               } catch (Exception e) {
                 logger.error(UNABLE_TO_CREATE_PREREQUISITE + paymentProviderCorridor.getId() + " " + targetCountry);
               }

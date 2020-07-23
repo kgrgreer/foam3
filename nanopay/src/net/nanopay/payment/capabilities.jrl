@@ -1,87 +1,3 @@
-p({
-  "class":"net.nanopay.fx.Corridor",
-  "id":"554af38a-8125-87c8-dfdf-eeb15f7121ca-in",
-  "name":"CA-IN Corridor",
-  "version":"0",
-  "sourceCountry":"CA",
-  "targetCountry":"IN",
-  "currencies":["INR"],
-  "enabled":true,
-  "visible":true
-})
-
-p({
-  "class":"net.nanopay.fx.Corridor",
-  "id":"554af38a-8125-87c8-dfdf-eeb15f7121ca-us",
-  "name":"CA-US Corridor",
-  "version":"0",
-  "sourceCountry":"CA",
-  "targetCountry":"US",
-  "currencies":["CAD", "USD"],
-  "enabled":true,
-  "visible":true
-})
-
-p({
-  "class":"net.nanopay.fx.Corridor",
-  "id":"554af38a-8125-87c8-dfdf-eeb15f7121us-ca",
-  "name":"US-CA Corridor",
-  "version":"0",
-  "sourceCountry":"US",
-  "targetCountry":"CA",
-  "currencies":["CAD", "USD"],
-  "enabled":true,
-  "visible":true
-})
-
-p({
-  "class":"net.nanopay.fx.Corridor",
-  "id":"554af38a-8125-87c8-dfdf-eeb15f7121us-us",
-  "name":"US-US Corridor",
-  "version":"0",
-  "sourceCountry":"US",
-  "targetCountry":"US",
-  "currencies":["CAD", "USD"],
-  "enabled":true,
-  "visible":true
-})
-
-p({
-  "class":"net.nanopay.fx.Corridor",
-  "id":"554af38a-8125-87c8-dfdf-eeb15f7121ca-ca",
-  "name":"CA-CA Corridor",
-  "version":"0",
-  "sourceCountry":"CA",
-  "targetCountry":"CA",
-  "currencies":["CAD"],
-  "enabled":true,
-  "visible":true
-})
-
-p({
-  "class":"net.nanopay.fx.Corridor",
-  "id":"554af38a-8125-87c8-dfdf-eeb15f7121br-ca",
-  "name":"BR-CA Corridor",
-  "version":"0",
-  "sourceCountry":"BR",
-  "targetCountry":"CA",
-  "currencies":["BRL", "CAD"],
-  "enabled":true,
-  "visible":true
-})
-
-p({
-  "class":"net.nanopay.fx.Corridor",
-  "id":"554af38a-8125-87c8-dfdf-eeb15f7121br-us",
-  "name":"BR-US Corridor",
-  "version":"0",
-  "sourceCountry":"BR",
-  "targetCountry":"US",
-  "currencies":["BRL", "USD"],
-  "enabled":true,
-  "visible":true
-})
-
 p({"class":"net.nanopay.payment.PaymentProvider","id":"AscendantFX","name":"AscendantFX", "enabled":true})
 p({"class":"net.nanopay.payment.PaymentProvider","id":"BMO","name":"Bank of Montreal", "enabled":true})
 p({"class":"net.nanopay.payment.PaymentProvider","id":"Alterna","name":"Alterna Savings and Credit Union", "enabled":true})
@@ -92,90 +8,120 @@ p({"class":"net.nanopay.payment.PaymentProvider","id":"Treviso","name":"Treviso"
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridor",
   "id":"554af38a-8125-87c8-dfdf-eeb15fafexca-us",
+  "name":"CA-US (AFEX Corridor)",
   "provider": "AFEX",
-  "corridor": "554af38a-8125-87c8-dfdf-eeb15f7121ca-us",
-  "currencies":["CAD","USD"],
+  "sourceCountry":"CA",
+  "targetCountry":"US",
+  "sourceCurrencies":["CAD"],
+  "targetCurrencies":["USD"],
   "description": "CA to US corridor via AFEX",
   "enabled":true
 })
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridor",
   "id":"554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
+  "name":"US-CA (AFEX Corridor)",
   "provider": "AFEX",
-  "corridor": "554af38a-8125-87c8-dfdf-eeb15f7121us-ca",
-  "currencies":["CAD","USD"],
+  "sourceCountry":"US",
+  "targetCountry":"CA",
+  "sourceCurrencies":["USD"],
+  "targetCurrencies":["CAD"],
   "description": "US to CA corridor via AFEX",
   "enabled":true
 })
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridor",
   "id":"554af38a-8125-87c8-dfdf-eeb15f7afexus-us",
+  "name":"US-US (AFEX Corridor)",
   "provider": "AFEX",
-  "corridor": "554af38a-8125-87c8-dfdf-eeb15f7121us-us",
-  "currencies":["USD"],
+  "sourceCountry":"US",
+  "targetCountry":"US",
+  "sourceCurrencies":["USD"],
+  "targetCurrencies":["USD"],
   "description": "US to US corridor via AFEX",
   "enabled":true
 })
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridor",
   "id":"554af38a-8125-87c8-dfdf-eeb15f7afxca-us",
+  "name":"CA-US (AscendantFX Corridor)",
   "provider": "AscendantFX",
-  "corridor": "554af38a-8125-87c8-dfdf-eeb15f7121ca-us",
-  "currencies":["CAD","USD"],
+  "sourceCountry":"CA",
+  "targetCountry":"US",
+  "sourceCurrencies":["CAD"],
+  "targetCurrencies":["USD"],
   "description": "CA to US corridor via AscendantFX",
   "enabled":true
 })
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridor",
   "id":"554af38a-8125-87c8-dfdf-eeb15f7afxus-ca",
+  "name":"US-CA (AscendantFX Corridor)",
   "provider": "AscendantFX",
-  "corridor": "554af38a-8125-87c8-dfdf-eeb15f7121us-ca",
-  "currencies":["CAD","USD"],
+  "sourceCountry":"US",
+  "targetCountry":"CA",
+  "sourceCurrencies":["USD"],
+  "targetCurrencies":["CAD"],
   "description": "US to CA corridor via AscendantFX",
   "enabled":true
 })
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridor",
   "id":"554af38a-8125-87c8-dfdf-eeb15f7afxus-us",
+  "name":"US-US (AscendantFX Corridor)",
   "provider": "AscendantFX",
-  "corridor": "554af38a-8125-87c8-dfdf-eeb15f7121us-us",
-  "currencies":["USD"],
+  "sourceCountry":"US",
+  "targetCountry":"US",
+  "sourceCurrencies":["USD"],
+  "targetCurrencies":["USD"],
   "description": "US to US corridor via AscendantFX",
   "enabled":true
 })
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridor",
   "id":"554af38a-8125-87c8-dfdf-eeb15f7altca-ca",
+  "name":"CA-CA (Alterna Corridor)",
   "provider": "Alterna",
-  "corridor": "554af38a-8125-87c8-dfdf-eeb15f7121ca-ca",
-  "currencies":["CAD"],
+  "sourceCountry":"CA",
+  "targetCountry":"CA",
+  "sourceCurrencies":["CAD"],
+  "targetCurrencies":["CAD"],
   "description": "CA to CA corridor via Alterna",
   "enabled":true
 })
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridor",
   "id":"554af38a-8125-87c8-dfdf-eeb15f7bmoca-ca",
+  "name":"CA-CA (BMO Corridor)",
   "provider": "BMO",
-  "corridor": "554af38a-8125-87c8-dfdf-eeb15f7121ca-ca",
-  "currencies":["CAD"],
+  "sourceCountry":"CA",
+  "targetCountry":"CA",
+  "sourceCurrencies":["CAD"],
+  "targetCurrencies":["CAD"],
   "description": "CA to CA corridor via BMO",
   "enabled":true
 })
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridor",
   "id":"554af38a-8125-87c8-dfdf-eeb15f7rbcca-ca",
+  "name":"CA-CA (RBC Corridor)",
   "provider": "RBC",
-  "corridor": "554af38a-8125-87c8-dfdf-eeb15f7121ca-ca",
-  "currencies":["CAD"],
+  "sourceCountry":"CA",
+  "targetCountry":"CA",
+  "sourceCurrencies":["CAD"],
+  "targetCurrencies":["CAD"],
   "description": "CA to CA corridor via RBC",
   "enabled":true
 })
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridor",
   "id":"554af38a-8125-87c8-dfdf-eeb15kotakca-in",
+  "name":"CA-IN (Kotak Corridor)",
   "provider": "Kotak",
-  "corridor": "554af38a-8125-87c8-dfdf-eeb15f7121ca-in",
-  "currencies":["CAD","INR"],
+  "sourceCountry":"CA",
+  "targetCountry":"IN",
+  "sourceCurrencies":["CAD"],
+  "targetCurrencies":["INR"],
   "description": "CA to IN corridor via Kotak",
   "enabled":true
 })
@@ -183,18 +129,24 @@ p({
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridor",
   "id":"554af38a-8125-87c8-dfdf-eeb15ftrevisobr-ca",
+  "name":"BR-CA (Treviso Corridor)",
   "provider": "Treviso",
-  "corridor": "554af38a-8125-87c8-dfdf-eeb15f7121br-ca",
-  "currencies":["CAD","BRL"],
+  "sourceCountry":"BR",
+  "targetCountry":"CA",
+  "sourceCurrencies":["BRL"],
+  "targetCurrencies":["CAD"],
   "description": "BR to CA corridor via Treviso",
   "enabled":true
 })
 p({
   "class": "net.nanopay.payment.PaymentProviderCorridor",
   "id":"554af38a-8125-87c8-dfdf-eeb1trevisobr-us",
+  "name":"BR-US (Treviso Corridor)",
   "provider": "Treviso",
-  "corridor": "554af38a-8125-87c8-dfdf-eeb15f7121br-us",
-  "currencies":["BRL","USD"],
+  "sourceCountry":"BR",
+  "targetCountry":"US",
+  "sourceCurrencies":["BRL"],
+  "targetCurrencies":["USD"],
   "description": "BR to US corridor via Treviso",
   "enabled":true
 })

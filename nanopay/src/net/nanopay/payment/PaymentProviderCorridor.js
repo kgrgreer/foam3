@@ -49,7 +49,8 @@ foam.CLASS({
     { name: 'MISSING_SOURCE_COUNTRY', message: 'Error: Cannot find or missing associated source country in DB: ' },
     { name: 'MISSING_TARGET_COUNTRY', message: 'Error: Cannot find or missing associated target country in DB: ' },
     { name: 'MISSING_PROVIDER', message: 'Error: Cannot find payment provider in DB: ' },
-    { name: 'CURRENCY_NOT_SUPPORTED', message: 'Error: Currency not supported: '}
+    { name: 'CURRENCY_NOT_SUPPORTED', message: 'Error: Currency not supported: ' },
+    { name: 'PAYMENT_CORRIDOR_EXISTS', message: 'Error: Payment Provider Corridor already exists.' },
   ],
 
   properties: [
@@ -124,6 +125,17 @@ foam.CLASS({
           if ( ((Currency)currencyDAO.find(currency)) == null ) {
             throw new IllegalStateException(CURRENCY_NOT_SUPPORTED + currency);
           }
+        }
+
+        DAO paymentProviderCorridorDAO = (DAO) x.get("paymentProviderDAO");
+        PaymentProviderCorridor ppc = (PaymentProviderCorridor) paymentProviderCorridorDAO.find(
+          foam.mlang.MLang.AND(
+            foam.mlang.MLang.EQ(PaymentProviderCorridor.SOURCE_COUNTRY, getSourceCountry()),
+            foam.mlang.MLang.EQ(PaymentProviderCorridor.TARGET_COUNTRY, getTargetCountry())
+          ));
+
+        if ( ppc != null && ppc.getId() != getId() ) {
+          throw new IllegalStateException(PAYMENT_CORRIDOR_EXISTS);
         }
        `
     }

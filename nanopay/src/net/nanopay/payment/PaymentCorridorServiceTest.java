@@ -24,18 +24,15 @@ import net.nanopay.account.DigitalAccount;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.bank.USBankAccount;
-import net.nanopay.fx.Corridor;
 import net.nanopay.tx.TransactionQuote;
 
 public class PaymentCorridorServiceTest extends foam.nanos.test.Test {
 
   DAO corridorDAO, paymentProviderCorridorDAO;
-  Corridor c;
   PaymentProviderCorridor j;
   String p = "AFEX";
 
   public void runTest(X x) {
-    corridorDAO = (DAO) x.get("corridorDAO");
     paymentProviderCorridorDAO = (DAO) x.get("paymentProviderCorridorDAO");
 
     setUpTest(x);
@@ -43,30 +40,17 @@ public class PaymentCorridorServiceTest extends foam.nanos.test.Test {
     testIsSupportedCurrencyPair(x);
     testGetCorridorPaymentProviders(x);
     testTransactionQuotePaymentProviders(x);
-    tearDownTest();
   }
 
   public void setUpTest(X x) {
-    c = (Corridor) corridorDAO.put(
-      new Corridor.Builder(x).setSourceCountry("CA")
-      .setTargetCountry("US")
-      .setEnabled(true)
-      .setVisible(true)
-      .build());
-
     j = (PaymentProviderCorridor) paymentProviderCorridorDAO.put(
       new PaymentProviderCorridor.Builder(x)
       .setSourceCountry("CA")
       .setTargetCountry("US")
+      .setSourceCurrencies(new String[] {"CAD"})
+      .setTargetCurrencies(new String[] {"USD"})
       .setProvider(p)
-      .setCorridor(c.getId())
-      .setCurrencies(new String[]{"CAD","USD"})
       .build());
-  }
-
-  public void tearDownTest() {
-    paymentProviderCorridorDAO.remove(j);
-    corridorDAO.remove(c);
   }
 
   public void testCanHandleCorridor(X x) {

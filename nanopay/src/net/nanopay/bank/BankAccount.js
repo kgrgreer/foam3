@@ -30,7 +30,6 @@ foam.CLASS({
     'foam.core.Currency',
     'foam.dao.PromisedDAO',
     'foam.nanos.auth.Address',
-    'net.nanopay.fx.Corridor'
   ],
 
   imports: [
