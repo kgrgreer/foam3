@@ -311,17 +311,9 @@ foam.CLASS({
         return net.nanopay.bank.BankAccount.create({}, this);
       },
       view: function(_, X) {
-        let e = foam.mlang.Expressions.create();
-        var pred = e.AND(
-            e.EQ(foam.strategy.StrategyReference.DESIRED_MODEL_ID, 'net.nanopay.bank.BankAccount'),
-            e.IN(foam.strategy.StrategyReference.STRATEGY, X.data.countries)
-        );
         return foam.u2.view.FObjectView.create({
-          data: X.data.createBankAccount,
           of: net.nanopay.bank.BankAccount,
-          persistantData: { isDefault: true, forContact: true },
-          enableStrategizer: X.data.bankAccount === 0,
-          predicate: pred
+          persistantData: { isDefault: true, forContact: true }
         }, X);
       }
     },
