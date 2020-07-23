@@ -140,7 +140,7 @@ foam.CLASS({
       documentation: 'The organization/business associated with the Contact.',
       section: 'stepOne',
       label: 'Business',
-      view: { class: 'foam.u2.tag.Input', placeholder: 'ex. Vandelay Industries' },
+      view: { class: 'foam.u2.tag.Input', placeholder: 'ex. Vandelay Industries', focused: true },
       validateObj: function(organization) {
         if (
           typeof organization !== 'string' ||

@@ -61,7 +61,8 @@ foam.CLASS({
       type: 'search',
       view: {
         class: 'foam.u2.view.IconTextFieldView',
-        icon: 'images/ablii/payment-code.png'
+        icon: 'images/ablii/payment-code.png',
+        focused: true
       }
     },
     {
