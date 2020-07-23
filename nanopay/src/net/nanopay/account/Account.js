@@ -32,7 +32,6 @@ foam.CLASS({
   ],
 
   imports: [
-    'homeDenomination',
     'exchangeRateService',
     'user',
     'balanceService',
@@ -41,7 +40,11 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
-    'foam.core.Currency'
+    'foam.core.Currency',
+    'foam.nanos.session.LocalSetting',
+    'foam.nanos.session.Session',
+    'net.nanopay.fx.ExchangeRateService',
+    'static foam.mlang.MLang.EQ'
   ],
 
   searchColumns: [
@@ -268,8 +271,7 @@ foam.CLASS({
 
   },
     {
-      class: 'UnitValue',
-      unitPropName: 'homeDenomination',
+      class: 'String',
       name: 'homeBalance',
       label: 'Balance (home)',
       documentation: `
@@ -279,19 +281,25 @@ foam.CLASS({
       section: 'balanceDetails',
       storageTransient: true,
       visibility: 'RO',
+      javaGetter: `
+        Session session = foam.core.XLocator.get().get(Session.class);
+        foam.dao.DAO localLocalSettingDAO = (foam.dao.DAO)session.getContext().get("localLocalSettingDAO");
+
+        String homeDenomination = "USD";
+
+        if (localLocalSettingDAO != null) {
+          LocalSetting ls = (LocalSetting)localLocalSettingDAO.find(EQ(LocalSetting.ID, "homeDenomination"));
+          if ( ls != null && ! ls.getValue().isEmpty() )
+            homeDenomination = ls.getValue();
+        }
+
+        String denomination = getDenomination();
+        ExchangeRateService ert = (ExchangeRateService)getX().get("exchangeRateService");
+        return ert.exchangeFormat(denomination, homeDenomination, getBalance()) + " " + homeDenomination;
+      `,
       tableWidth: 175,
-      unitPropValueToString: async function(x, val, unitPropName) {
-        return await this.exchangeRateService.exchangeFormat(unitPropName, this.homeDenomination, val);
-      },
       tableCellFormatter: function(value, obj, axiom) {
-      var self = this;
-        this.add(obj.slot(function(denomination, homeDenomination, balance) {
-          return self.E().add(foam.core.PromiseSlot.create({
-            promise: this.exchangeRateService.exchangeFormat(denomination, homeDenomination, balance).then((result) => {
-              return self.E().add(result);
-            })
-          }));
-        }))
+        this.add(value);
       }
     },
     {

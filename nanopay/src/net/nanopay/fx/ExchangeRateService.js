@@ -75,7 +75,11 @@ foam.CLASS({
       code: async function exchangeFormat(u1, u2, amount) {
         var unit = await this.findUnit_(u2);
         return unit.format((await this.exchange(u1, u2, amount)));
-      }
+      },
+      javaCode: `
+        Unit unit = findUnit_(u2);
+        return unit.format(exchange(u1, u2, amount));
+      `,
     },
     {
       name: 'getRate',
