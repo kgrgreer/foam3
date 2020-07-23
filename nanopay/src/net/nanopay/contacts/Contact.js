@@ -60,7 +60,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.fx.Corridor',
+    'net.nanopay.payment.PaymentProviderCorridor',
     'foam.nanos.auth.Country',
     'foam.dao.PromisedDAO',
     'foam.u2.DisplayMode'
@@ -323,8 +323,8 @@ foam.CLASS({
       visibility: 'HIDDEN',
       expression: function(subject) {
         return this.PromisedDAO.create({
-          promise: subject.user.capabilities.dao.where(this.INSTANCE_OF(this.Corridor))
-            .select(this.MAP(this.Corridor.TARGET_COUNTRY))
+          promise: subject.user.capabilities.dao.where(this.INSTANCE_OF(this.PaymentProviderCorridor))
+            .select(this.MAP(this.PaymentProviderCorridor.TARGET_COUNTRY))
             .then((sink) => {
               let unique = [...new Set(sink.delegate.array)];
               for ( i = 0; i < unique.length; i++ ) {

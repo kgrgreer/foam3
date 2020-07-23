@@ -46,7 +46,7 @@ foam.CLASS({
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
-    'net.nanopay.fx.Corridor',
+    'net.nanopay.payment.PaymentProviderCorridor',
     'net.nanopay.sme.ui.SMEModal'
   ],
 
@@ -228,8 +228,8 @@ foam.CLASS({
       factory: function() {
         return this.PromisedDAO.create({
           of: 'foam.nanos.auth.Country',
-          promise: this.subject.user.capabilities.dao.where(this.INSTANCE_OF(this.Corridor))
-            .select(this.MAP(this.Corridor.SOURCE_COUNTRY))
+          promise: this.subject.user.capabilities.dao.where(this.INSTANCE_OF(this.PaymentProviderCorridor))
+            .select(this.MAP(this.PaymentProviderCorridor.SOURCE_COUNTRY))
             .then((sink) => {
               return this.countryDAO.where(this.IN(this.Country.CODE, sink.delegate.array));
             })

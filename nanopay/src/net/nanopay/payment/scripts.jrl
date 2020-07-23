@@ -6,7 +6,6 @@ p({
     // Sets up all payment provider corridors for AFEX\
     import foam.mlang.MLang;
     import foam.mlang.predicate.Predicate;
-    import net.nanopay.fx.Corridor;
     import net.nanopay.payment.*;
     import foam.core.Currency;
     

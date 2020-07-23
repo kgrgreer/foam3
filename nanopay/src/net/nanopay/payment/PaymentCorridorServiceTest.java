@@ -28,7 +28,7 @@ import net.nanopay.tx.TransactionQuote;
 
 public class PaymentCorridorServiceTest extends foam.nanos.test.Test {
 
-  DAO corridorDAO, paymentProviderCorridorDAO;
+  DAO paymentProviderCorridorDAO;
   PaymentProviderCorridor j;
   String p = "AFEX";
 

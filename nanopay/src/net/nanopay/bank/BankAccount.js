@@ -30,6 +30,7 @@ foam.CLASS({
     'foam.core.Currency',
     'foam.dao.PromisedDAO',
     'foam.nanos.auth.Address',
+    'net.nanopay.payment.PaymentProviderCorridor'
   ],
 
   imports: [
@@ -287,19 +288,19 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'availableCurrencies',
-      documentation: `Contains list of available currencies to receive or send.
-          System expects corridors to be aware of domicilied and permitted corridors.`,
+      documentation: `Contains list of available currencies to receive or send in selected account country`,
       visibility: 'HIDDEN',
       section: 'accountDetails',
       expression: function(user, currencyDAO, forContact) {
-        let propInfo = forContact ? this.Corridor.TARGET_COUNTRY : this.Corridor.SOURCE_COUNTRY;
+        let propInfo = forContact ? this.PaymentProviderCorridor.TARGET_COUNTRY : this.PaymentProviderCorridor.SOURCE_COUNTRY;
+        let propInfoCurrency = forContact ? this.PaymentProviderCorridor.TARGET_CURRENCIES : this.PaymentProviderCorridor.SOURCE_CURRENCIES;
         return this.PromisedDAO.create({
           of: 'foam.core.Currency',
           promise: user.capabilities.dao.where(this.AND(
               this.EQ(propInfo, this.country),
-              this.INSTANCE_OF(this.Corridor)
+              this.INSTANCE_OF(this.PaymentProviderCorridor)
             ))
-            .select(this.MAP(this.Corridor.CURRENCIES))
+            .select(this.MAP(propInfoCurrency))
             .then((sink) => {
               return currencyDAO.where(
                 this.IN(this.Currency.ID, sink.delegate.array.flat())

@@ -449,7 +449,6 @@ var classes = [
   // fx
   'net.nanopay.tx.CreateManualFxRule',
   'net.nanopay.fx.ExchangeRateInterface',
-  'net.nanopay.fx.Corridor',
   'net.nanopay.fx.interac.model.RequiredUserFields',
   'net.nanopay.fx.interac.model.RequiredAddressFields',
   'net.nanopay.fx.interac.model.RequiredIdentificationFields',

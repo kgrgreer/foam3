@@ -44,8 +44,6 @@ p({"class":"foam.nanos.auth.Permission","id":"cc.*","description":"All Connected
 p({"class":"foam.nanos.auth.Permission","id":"cico.ci","description":"Permission to cash-in through the GUI"})
 p({"class":"foam.nanos.auth.Permission","id":"complianceitem.read.*","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"contact.read.*","description":"Ability to see all Contact objects in the system."})
-p({"class":"foam.nanos.auth.Permission","id":"corridor.read.*"})
-p({"class":"foam.nanos.auth.Permission","id":"corridor.write.*"})
 p({"class":"foam.nanos.auth.Permission","id":"currency.read.*","description":"Ability to see all Currency objects in the system. Also determines whether you can create transactions and invoices with this currency as the destination currency, as well as whether or not you can own bank accounts in this currency."})
 p({"class":"foam.nanos.auth.Permission","id":"flinksaccountsdetailresponse.read.*"})
 p({"class":"foam.nanos.auth.Permission","id":"foam.nanos.auth.User.permission.viewAccounts","description":"Controls visibility of View Accounts action on User models. Does not actually enforce any access control."})
