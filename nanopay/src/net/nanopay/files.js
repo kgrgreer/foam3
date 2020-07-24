@@ -1576,6 +1576,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/IBAN' },
 
   // Treviso
+  { name: 'net/nanopay/country/br/CPF' },
+  { name: 'net/nanopay/country/br/CNPJ' },
   { name: 'net/nanopay/partner/treviso/TrevisoCredientials' },
   { name: 'net/nanopay/partner/treviso/TrevisoClient' },
   { name: 'net/nanopay/partner/treviso/tx/NatureCodeLineItem' },
