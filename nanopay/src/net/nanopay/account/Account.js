@@ -222,6 +222,9 @@ foam.CLASS({
       tableHeaderFormatter: function(axiom) {
         this.add('Default');
       },
+      tableHeader: function(axiom) {
+        return 'Default';
+      },
       tableCellFormatter: function(value, obj, property) {
         this
           .start()

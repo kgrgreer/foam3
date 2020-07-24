@@ -57,6 +57,9 @@ foam.CLASS({
       tableHeaderFormatter: function(axiom) {
         this.add('Status');
       },
+      tableHeader: function(axiom) {
+        return 'Status';
+      },
       tableCellFormatter: function(value, obj) {
         this.add( value ? "Enabled" : "Disabled" );
       }
