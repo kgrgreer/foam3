@@ -434,6 +434,24 @@ foam.CLASS({
       name: 'businessPhoneNumberVerified',
       writePermissionRequired: true,
       visibility: 'HIDDEN'
+    },
+    {
+      class: 'String',
+      name: 'warning',
+      label: '',
+      tableWidth: 55,
+      javaGetter: `
+        return getBankAccount() == 0 && getBusinessId() == 0 ? "Missing bank information" : null;
+      `,
+      tableHeaderFormatter: function() { },
+      tableCellFormatter: function(value, obj, axiom) {
+        if ( value ) {
+          this.start()
+            .attrs({ title: value } )
+            .start({ class: 'foam.u2.tag.Image', data: 'images/warning.svg' }).end()
+          .end();
+        }
+      }
     }
   ],
 

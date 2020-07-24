@@ -557,3 +557,4 @@ p({"class":"foam.nanos.auth.Permission","id":"service.mspSetupDAO","description"
 p({"class":"foam.nanos.auth.Permission","id":"service.googleSheetsDataExport","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"notification.notify","description":"Permission allows ops team to use resend notification action"})
 p({"class":"foam.nanos.auth.Permission","id":"service.resendNotificationService","description":"Allows user to use resend notification service"})
+p({"class":"foam.nanos.auth.Permission","id":"service.localSettingDAO","description":""})
