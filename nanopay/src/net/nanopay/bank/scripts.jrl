@@ -1,0 +1,62 @@
+p({
+  "class": "foam.nanos.script.Script",
+  "id": "Set VerfiedBy to existing bank account",
+  "code": """
+    import foam.dao.ArraySink;
+    import foam.dao.DAO;
+    import foam.nanos.auth.User;
+    import foam.util.SafetyUtil;
+    import net.nanopay.bank.BankAccount;
+    import net.nanopay.bank.BankAccountStatus;
+    import net.nanopay.payment.Institution;
+    import net.nanopay.tx.cico.COTransaction;
+    import net.nanopay.tx.cico.CITransaction;
+    import net.nanopay.tx.cico.VerificationTransaction;
+    import net.nanopay.fx.afex.AFEXTransaction;
+    import net.nanopay.tx.model.Transaction;
+    import net.nanopay.tx.model.TransactionStatus;
+    import java.util.List;
+    import foam.mlang.MLang;
+    import foam.mlang.predicate.Predicate;
+
+
+    DAO accountDAO = (DAO) x.get("accountDAO");
+    ArraySink bankSink = new ArraySink();
+    accountDAO.where(
+      MLang.INSTANCE_OF(BankAccount.class)
+    ).select(bankSink);
+    List bankAccounts = bankSink.getArray();
+    for ( BankAccount acc : bankAccounts) {
+      ArraySink txnSink = new ArraySink();
+      DAO transactionDAO = (DAO) x.get("localTransactionDAO");
+      transactionDAO.where(
+        MLang.AND(
+          new Predicate[]{
+            MLang.OR(
+              new Predicate[]{
+              MLang.EQ(Transaction.DESTINATION_ACCOUNT, acc.getId()),
+              MLang.EQ(Transaction.SOURCE_ACCOUNT, acc.getId())
+              }
+            ),
+            MLang.OR(
+              new Predicate[]{
+              MLang.INSTANCE_OF(COTransaction.class),
+              MLang.INSTANCE_OF(CITransaction.class),
+              MLang.INSTANCE_OF(AFEXTransaction.class),
+              MLang.INSTANCE_OF(VerificationTransaction.class)
+              }
+            ),
+            MLang.EQ(Transaction.STATUS, TransactionStatus.COMPLETED)
+          }
+        )
+      ).select(txnSink);
+      List txns = txnSink.getArray();
+      if ( txns.size() != 0 || SafetyUtil.equals(acc.getProperty("institution"), 16) ) {
+        acc = (BankAccount) acc.fclone();
+        acc.setVerifiedBy("TRANSACTION");
+        accountDAO.put(acc);
+      }
+    }
+    print("done");
+  """
+})
