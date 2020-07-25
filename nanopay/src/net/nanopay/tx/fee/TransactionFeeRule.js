@@ -26,18 +26,83 @@ foam.CLASS({
   ],
 
   properties: [
+    'id',
+    'name',
+    'documentation',
+    'enabled',
+    {
+      name: 'predicate',
+      view: { class: 'foam.u2.view.JSONTextView' },
+      tableCellFormatter: function(value) {
+        this.add(value.toString());
+      }
+    },
     {
       class: 'String',
-      name: 'feeName'
+      name: 'feeName',
+      section: 'basicInfo'
+    },
+    {
+      class: 'Boolean',
+      name: 'sourceCurrencyAsFeeDenomination',
+      label: 'Use Transaction Source Currency As Fee Denomination',
+      value: false,
+      section: 'basicInfo',
+      postSet: function(_, n) {
+        this.feeDenomination = '';
+      }
     },
     {
       class: 'Reference',
       of: 'foam.core.Currency',
-      name: 'feeDenomination'
+      name: 'feeDenomination',
+      section: 'basicInfo',
+      validationPredicates: [
+        {
+          args: ['sourceCurrencyAsFeeDenomination', 'feeDenomination'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.tx.fee.TransactionFeeRule.SOURCE_CURRENCY_AS_FEE_DENOMINATION, true),
+              e.NEQ(net.nanopay.tx.fee.TransactionFeeRule.FEE_DENOMINATION, '')
+            );
+          },
+          errorString: 'Please select fee denomination.'
+        }
+      ],
+      visibility: function(sourceCurrencyAsFeeDenomination) {
+        return sourceCurrencyAsFeeDenomination ?
+          foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      }
     },
     {
       class: 'String',
-      name: 'feeGroup'
+      name: 'feeGroup',
+      section: 'basicInfo'
+    },
+    {
+      class: 'Class',
+      name: 'feeClass',
+      value: 'net.nanopay.tx.FeeLineItem',
+      javaValue: 'net.nanopay.tx.FeeLineItem.getOwnClassInfo()',
+      view: {
+        class: 'foam.u2.view.StrategizerChoiceView',
+        desiredModelId: 'net.nanopay.tx.FeeLineItem'
+      },
+      validationPredicates: [
+        {
+          args: ['feeClass'],
+          predicateFactory: function(e) {
+            return e.NEQ(net.nanopay.tx.fee.TransactionFeeRule.FEE_CLASS, null);
+          },
+          errorString: 'Please select fee class.'
+        }
+      ],
+      section: 'basicInfo'
+    },
+    {
+      name: 'priority',
+      value: 100,
+      visibility: 'HIDDEN'
     },
     {
       name: 'operation',
@@ -57,11 +122,6 @@ foam.CLASS({
     {
       name: 'after',
       value: false,
-      visibility: 'HIDDEN'
-    },
-    {
-      name: 'predicate',
-      transient: true,
       visibility: 'HIDDEN'
     },
     {
@@ -100,10 +160,7 @@ foam.CLASS({
               return;
             }
 
-            new FeeEngine(
-              txFeeRule.getFeeGroup(),
-              txFeeRule.getFeeDenomination()
-            ).execute(x, txFeeRule.getFeeName(), (Transaction) obj);
+            new FeeEngine(txFeeRule).execute(x, (Transaction) obj);
           `
         }
       ]

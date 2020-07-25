@@ -31,7 +31,8 @@ foam.CLASS({
   imports: [
     'stack',
     'menuDAO',
-    'user'
+    'user',
+    'theme'
   ],
 
   css: `
@@ -98,11 +99,13 @@ foam.CLASS({
       name: 'TITLE',
       message: 'We’ve sent an email to a signing officer at your company!'
     },
+    { 
+      name: 'DESCRIPTION_1',
+      message: 'For security reasons, we required that a signing officer complete your businesses verification.\nOnce the signing officer completes it, your business can start using '
+    },
     {
-      name: 'DESCRIPTION',
-      message: `For security reasons, we required that a signing officer complete your businesses verification.\n
-      Once the signing officer completes it, your business can start using Ablii. \n
-      In the meantime, you’re more than welcome to have a look around the app!`
+      name: 'DESCRIPTION_2',
+      message: '.\nIn the meantime, you’re more than welcome to have a look around the app!'
     }
   ],
 
@@ -111,7 +114,7 @@ foam.CLASS({
       this.addClass(this.myClass())
         .start().addClass('info-box')
           .start('p').addClass('title').add(this.TITLE).end()
-          .start('p').addClass('description').add(this.DESCRIPTION).end()
+          .start('p').addClass('description').add(this.DESCRIPTION_1 + this.theme.appName + this.DESCRIPTION_2).end()
         .end()
         .start('img').addClass('img-right-corner') 
           .attrs({ src: '/images/ablii/dashboard/contacts-4.png' })

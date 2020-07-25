@@ -26,7 +26,8 @@ foam.CLASS({
     'loginSuccess',
     'notify',
     'twofactor',
-    'menuDAO'
+    'menuDAO',
+    'theme'
   ],
 
   requires: [
@@ -149,6 +150,13 @@ foam.CLASS({
           incorrectCode$: X.data.incorrectCode$
         };
       }
+    },
+    {
+      class: 'String',
+      name: 'appName',
+      factory: function() {
+        return this.theme.appName;
+      }
     }
   ],
 
@@ -160,7 +168,7 @@ foam.CLASS({
     { name: 'TWO_FACTOR_EXPLANATION', message: `Open your Google Authenticator app on your mobile device to view the 6-digit code and verify your identity` },
     { name: 'TWO_FACTOR_NOTES_1', message: `Need another way to authenticate?` },
     { name: 'TWO_FACTOR_NOTES_2', message: `Contact us` },
-    { name: 'GO_BACK', message: 'Go to ablii.com' }
+    { name: 'GO_BACK', message: 'Go to ' }
   ],
 
   methods: [
@@ -231,7 +239,7 @@ foam.CLASS({
                 .addClass('inline-block')
                 .add('➔')
               .end()
-              .add(this.GO_BACK)
+              .add(this.GO_BACK + this.appName)
               .on('click', () => {
                 window.location = this.ABLII_ADDRESS;
               })

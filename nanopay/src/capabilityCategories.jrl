@@ -19,7 +19,8 @@ p({
   "class": "foam.nanos.crunch.CapabilityCategory",
   "id": "signingOfficerOnboarding",
   "name": "Onboarding A Signing Officer",
-  "visible": false
+  "visible": true,
+  "visibilityCondition": {"class":"net.nanopay.crunch.onboardingModels.UserIsSigningOfficerOfBusiness"}
 })
 p({
   "class": "foam.nanos.crunch.CapabilityCategory",

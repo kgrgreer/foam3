@@ -83,7 +83,6 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       if  ( business.getOnboarded() ) {
         DAO afexBusinessDAO = (DAO) this.x.get("afexBusinessDAO");
         AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, business.getId()));
-        if ( afexBusiness != null ) return true;
 
         User signingOfficer = getSigningOfficer(this.x, business);
         AuthService auth = (AuthService) this.x.get("auth");
@@ -92,6 +91,9 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
           OnboardCorporateClientRequest onboardingRequest = new OnboardCorporateClientRequest();
           Region businessRegion = business.getAddress().findRegionId(this.x);
           Country businessCountry = business.getAddress().findCountryId(this.x);
+          if ( afexBusiness != null ) {
+            onboardingRequest.setAccountNumber(afexBusiness.getAccountNumber());
+          }
 
           if ( signingOfficer != null ) {
             Boolean useHardCoded = business.getAddress().getCountryId().equals("CA");
@@ -168,7 +170,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             }
             onboardingRequest.setTermsAndConditions("true");
             OnboardCorporateClientResponse newClient = afexClient.onboardCorporateClient(onboardingRequest);
-            if ( newClient != null ) {
+            if ( newClient != null && afexBusiness == null ) {
               afexBusiness  = new AFEXBusiness();
               afexBusiness.setUser(business.getId());
               afexBusiness.setApiKey(newClient.getAPIKey());

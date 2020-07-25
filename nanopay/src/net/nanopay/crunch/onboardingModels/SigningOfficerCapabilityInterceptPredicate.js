@@ -29,6 +29,8 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
+    'foam.nanos.crunch.AgentCapabilityJunction',
+    'foam.nanos.crunch.UserCapabilityJunction',
     'net.nanopay.model.Business',
     'net.nanopay.model.BusinessUserJunction',
     'static foam.mlang.MLang.*'
@@ -41,6 +43,7 @@ foam.CLASS({
         if ( ! ( obj instanceof X ) ) return false;
         X x = (X) obj;
         DAO signingOfficerJunctionDAO = (DAO) x.get("signingOfficerJunctionDAO");
+        DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
         User agent = ((Subject) x.get("subject")).getRealUser();
         User user = ((Subject) x.get("subject")).getUser();
 
@@ -52,7 +55,22 @@ foam.CLASS({
             EQ(BusinessUserJunction.TARGET_ID, agent.getId())
           )
         );
-        return soJunction != null ;
+
+        // do not intercept if the ucj is pending review
+        AgentCapabilityJunction acj = (AgentCapabilityJunction) userCapabilityJunctionDAO.find(
+          AND(
+            INSTANCE_OF(AgentCapabilityJunction.class),
+            EQ(UserCapabilityJunction.SOURCE_ID, agent.getId()),
+            EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-1a5"),
+            EQ(AgentCapabilityJunction.EFFECTIVE_USER, user.getId()),
+            OR(
+              EQ(UserCapabilityJunction.STATUS, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED),
+              EQ(UserCapabilityJunction.STATUS, foam.nanos.crunch.CapabilityJunctionStatus.PENDING)
+            )
+          )
+        );
+    
+        return soJunction != null && acj == null;
       `
     }
   ]

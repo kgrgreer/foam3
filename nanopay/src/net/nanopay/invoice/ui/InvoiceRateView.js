@@ -61,6 +61,7 @@ foam.CLASS({
     'group',
     'invoice',
     'invoiceDAO',
+    'isLoading',
     'notify',
     'requestTxn',
     'transactionPlannerDAO',
@@ -126,7 +127,26 @@ foam.CLASS({
       color: #8e9090
     }
     ^ .fees {
-      margin-top: 50px;
+      margin-top: 30px;
+    }
+    .requote-Spinner {
+      text-align: center;
+    }
+    .requote-Spinner .net-nanopay-ui-LoadingSpinner img {
+      width: 100px;
+    }
+    .foam-u2-detail-SectionedDetailView-card-container .foam-u2-borders-CardBorder {
+      border-radius: 0px;
+      box-shadow: 0 0px 0px 0 rgba(0, 0, 0, 0);
+      border: solid 0px;
+      background-color: #F4F7FA;
+    }
+    .foam-u2-detail-SectionedDetailView .inner-card {
+      margin-left: -15px;
+    }
+    .additional-info-title {
+      margin-top: 30px;
+      margin-bottom: -10px;
     }
   `,
 
@@ -218,6 +238,12 @@ foam.CLASS({
       expression: function(invoice$destinationCurrency, chosenBankAccount) {
         return chosenBankAccount && invoice$destinationCurrency == chosenBankAccount.denomination;
       }
+    },
+    {
+      name: 'reQuoteSpinner',
+      factory: function() {
+        return this.LoadingSpinner.create();
+      }
     }
   ],
 
@@ -260,11 +286,12 @@ foam.CLASS({
        * And fetch the rate when we go back from 3rd to 2nd step
        * for send payment flow.
        */
-      await this.setChosenBankAccount();
 
       if ( this.wizard.isApproving ||
         ( this.invoice.account !== 0 && ! this.isReadOnly) ) {
         this.fetchRates();
+      } else {
+        this.fetchBankAccount();
       }
 
       if ( this.chosenBankAccount && ! this.sourceCurrency ) {
@@ -288,28 +315,11 @@ foam.CLASS({
         });
       }
 
-      var accountSelectionView = {
-        class: 'foam.u2.view.RichChoiceView',
-        selectionView: { class: 'net.nanopay.bank.ui.BankAccountSelectionView' },
-        rowView: { class: 'net.nanopay.bank.ui.BankAccountCitationView' },
-        sections: [
-          {
-            heading: 'Your bank accounts',
-            dao: this.subject.user.accounts.where(
-              this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED)
-            )
-          }
-        ]
-      };
-
-      var bankAccountSelection = this.isPayable
-        ? this.Invoice.ACCOUNT
-          .copyFrom({ view: accountSelectionView })
-        : this.Invoice.DESTINATION_ACCOUNT
-          .copyFrom({ view: accountSelectionView });
-
       this
         .start()
+          .show( this.slot(function(isLoading) {
+            return ! isLoading;
+          }))
           .addClass(this.myClass())
           .start('h2')
             .add(! this.isReadOnly ? this.TITLE :
@@ -346,24 +356,6 @@ foam.CLASS({
             .end()
           .end()
 
-          /** Account choice view with label, choice and advisory note. **/
-          .start()
-            .addClass('input-wrapper')
-            .hide(this.isReadOnly)
-            .start()
-            .addClass('form-label')
-              .add( this.isPayable ?
-                this.ACCOUNT_WITHDRAW_LABEL :
-                this.ACCOUNT_DEPOSIT_LABEL )
-            .end()
-            .startContext({ data: this })
-              .start()
-                .startContext({ data: this.invoice })
-                  .add(bankAccountSelection)
-                .endContext()
-              .end()
-            .endContext()
-          .end()
           /** Loading spinner. **/
           .start().addClass('loading-spinner-container').hide(this.isReadOnly)
             .start().add(this.loadingSpinner).end()
@@ -393,28 +385,6 @@ foam.CLASS({
                 .start().addClass('exchange-amount-container')
                   .start()
                     .addClass(this.myClass('label-value-row'))
-                    .addClass(this.myClass('exchange-rate-text'))
-                    .start()
-                      .addClass('inline')
-                      .add(this.EXCHANGE_RATE_LABEL)
-                    .end()
-                    .start()
-                      .addClass('float-right')
-                      .add(
-                        this.quote$.dot('fxRate').map((rate) => {
-                          if ( rate ) return 1;
-                        }), ' ',
-                        this.quote$.dot('destinationCurrency'),
-                        this.quote$.dot('fxRate').map((rate) => {
-                          if ( rate ) return this.TO + (1 / rate).toFixed(4);
-                        }), ' ',
-                        this.quote$.dot('sourceCurrency'),
-                        this.exchangeRateNotice$.map((value) => value ? '*' : '')
-                      )
-                    .end()
-                  .end()
-                  .start()
-                    .addClass(this.myClass('label-value-row'))
                     .start()
                       .addClass('inline')
                       .add(this.CONVERTED_AMOUNT_LABEL)
@@ -433,32 +403,6 @@ foam.CLASS({
                   .end()
                 .end()
               .end();
-          }))
-
-          /** Amount to be paid. **/
-          .add(this.slot(function(quote, loadingSpinner$isHidden, sourceCurrency) {
-            return ! quote || ! loadingSpinner$isHidden ? null :
-              this.E()
-                .start()
-                  .addClass('label-value-row')
-                  .addClass('amount-container')
-                  .show(this.loadingSpinner.isHidden$)
-                  .start().addClass('inline')
-                    .add(this.isPayable ? this.AMOUNT_PAID_LABEL : this.isReadOnly ? this.AMOUNT_PAID_TO_LABEL : '')
-                    .addClass('bold-label')
-                  .end()
-                  .start().addClass('float-right').addClass('bold-label')
-                    .add(
-                      this.quote$.dot('amount').map((amount) => {
-                        if ( Number.isSafeInteger(amount) ) {
-                          if ( ! sourceCurrency ) return;
-                          return this.sourceCurrency.format(amount);
-                        }
-                      }),
-                      this.isFx$.map((value) => value ? '*' : '')
-                    )
-                  .end()
-                .end();
           }))
           .start().show(this.slot(function(quote) {
             if ( quote == null ) {
@@ -481,9 +425,15 @@ foam.CLASS({
             .end()
           .end()
         .end()
+        .start()
+          .show(this.isLoading$)
+          .addClass('requote-Spinner')
+          .add(this.reQuoteSpinner)
+        .end()
         .startContext({ controllerMode: this.isReadOnly ? this.ControllerMode.VIEW : this.ControllerMode.CREATE })
           .start()
-            .show(this.slot(function(quote) {
+            .show(this.slot(function(quote, isLoading) {
+              if ( isLoading ) return false;
               if ( ! quote ) return;
               for ( i=0; i < quote.lineItems.length; i++ ) {
                 if ( quote.lineItems[i].requiresUserInput ) {
@@ -492,8 +442,7 @@ foam.CLASS({
               }
               return false;
             }))
-            .start('h2')
-              .addClass('large-margin-row')
+            .start('h2').addClass('additional-info-title')
               .add(this.ADDITIONAL_INFORMATION)
             .end()
             .start()
@@ -501,17 +450,43 @@ foam.CLASS({
                 this.slot( function(quote) {
                   if ( ! quote ) return;
                   let e = this.E();
+
+                  // display requiresUserInput lineItems first
                   for ( i=0; i < quote.lineItems.length; i++ ) {
                     if ( quote.lineItems[i].requiresUserInput ) {
                       e.add(quote.lineItems[i]);
                     }
                   }
+
+                  for ( i=0; i < quote.lineItems.length; i++ ) {
+                    if ( ! quote.lineItems[i].requiresUserInput ) {
+                      e.start({
+                        class: 'net.nanopay.tx.LineItemCitationView',
+                        data: quote.lineItems[i]
+                      })
+                    }
+                  }
+
                   return e;
                 })
               )
             .end()
           .end()
         .endContext()
+
+        /** summaryTransaction area **/
+        .start()
+          .add(
+            this.slot( function(quote) {
+              if ( ! quote ) return;
+                return this.E().start({
+                  class: 'net.nanopay.tx.SummaryTransactionCitationView',
+                  data: quote
+                })
+            })
+          )
+        .end()
+
         .start().show(this.slot(function(isFx, sourceCurrency, invoice$destinationCurrency) {
           if ( sourceCurrency == null ) {
             return false;
@@ -541,39 +516,6 @@ foam.CLASS({
         })
       );
       return quote.plan;
-    },
-    async function setChosenBankAccount() {
-      if ( this.viewData.bankAccount ) {
-        this.chosenBankAccount = this.viewData.bankAccount;
-        return;
-      }
-      this.chosenBankAccount = this.viewData.bankAccount = await this.subject.user.accounts.find(
-        this.AND(
-          this.INSTANCE_OF(this.BankAccount),
-          this.EQ(this.BankAccount.IS_DEFAULT, true),
-          this.EQ(this.BankAccount.DENOMINATION, this.isPayable ? this.invoice.destinationCurrency : this.invoice.sourceCurrency)
-        )
-      );
-
-      if ( ! this.chosenBankAccount ) {
-        let srcCurrency = this.subject.user.countryOfBusinessRegistration === 'CA' ? 'CAD' : 'USD';
-        this.chosenBankAccount = this.viewData.bankAccount = await this.subject.user.accounts.find(
-          this.AND(
-            this.INSTANCE_OF(this.BankAccount),
-            this.EQ(this.BankAccount.IS_DEFAULT, true),
-            this.EQ(this.BankAccount.DENOMINATION, srcCurrency)
-          )
-        );
-      }
-
-      if ( ! this.chosenBankAccount ) {
-        return;
-      }
-      if ( this.isPayable ) {
-        this.invoice.account = this.chosenBankAccount;
-      } else {
-        this.invoice.destinationAccount = this.chosenBankAccount;
-      }
     }
   ],
 
@@ -610,6 +552,7 @@ foam.CLASS({
     async function fetchBankAccount() {
       // If the user selects the placeholder option in the account dropdown,
       // clear the data.
+
       var accountId = this.isPayable
         ? this.invoice.account
         : this.invoice.destinationAccount;

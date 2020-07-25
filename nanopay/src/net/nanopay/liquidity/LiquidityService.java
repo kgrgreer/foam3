@@ -105,6 +105,9 @@ public class LiquidityService
   }
 
   public void executeLiquidity(LiquiditySettings ls, DigitalAccount account, long txnAmount) {
+    // set context tag
+    x_ = x_.put("systemGenerated","liquidityService");
+
     long pendingBalance =  getBalanceService().findBalance_(getX(),account);
     pendingBalance += ((Double) ((Sum) getLocalTransactionDAO().where(
       AND(

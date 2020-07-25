@@ -400,44 +400,6 @@ p({
 })
 
 p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "localCorridorDAO",
-  "serviceScript":
-  """
-    return new foam.dao.EasyDAO.Builder(x)
-      .setOf(net.nanopay.fx.Corridor.getOwnClassInfo())
-      .setInnerDAO(x.get("localCapabilityDAO"))
-      .setDecorator(
-        new foam.dao.FilteredDAO.Builder(x)
-          .setPredicate(foam.mlang.MLang.INSTANCE_OF(net.nanopay.fx.Corridor.class))
-          .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.fx.Corridor.getOwnClassInfo()).build())
-        .build())
-      .setPm(true)
-      .setPipelinePm(true)
-      .setAuthorize(false)
-      .build();
-  """
-})
-
-p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "corridorDAO",
-  "serve": true,
-  "serviceScript":
-  """
-    return new foam.dao.EasyDAO.Builder(x)
-      .setOf(net.nanopay.fx.Corridor.getOwnClassInfo())
-      .setPm(true)
-      .setEnableInterfaceDecorators(false)
-      .setPipelinePm(true)
-      .setInnerDAO(x.get("localCorridorDAO"))
-      .setAuthorize(true)
-      .build();
-  """,
-  "client": "{\"of\":\"net.nanopay.fx.Corridor\"}"
-})
-
-p({
   "class":"foam.nanos.boot.NSpec",
   "name":"feeDAO",
   "serve":true,
@@ -1843,7 +1805,25 @@ p({
     "client": "{\"of\": \"net.nanopay.model.BusinessUserJunction\"}"
 })
 
-p({"class":"foam.nanos.boot.NSpec", "name":"canadianSanctionDAO",              "lazy":false, "serve":true, "description":"In-memeory datastore for Canadian sanction records.", "authenticate": false, "serviceScript":"new foam.dao.EasyDAO.Builder(x).setPm(true).setPipelinePm(true).setSeqNo(true).setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer(\"canadianSanctionDAO\")).setName(\"canadianSanction\").setOf(net.nanopay.meter.compliance.canadianSanction.Record.getOwnClassInfo()).build();","client":"{\"of\":\"net.nanopay.meter.compliance.canadianSanction.Record\"}"})
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "canadianSanctionDAO",
+  "lazy": false,
+  "serve": true,
+  "description": "In-memeory datastore for Canadian sanction records.",
+  "authenticate": false,
+  "serviceScript": """
+    new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setSeqNo(true)
+      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("canadianSanctionDAO"))
+      .setName("canadianSanction")
+      .setOf(net.nanopay.meter.compliance.canadianSanction.Record.getOwnClassInfo())
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.meter.compliance.canadianSanction.Record\"}"
+})
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"acceptanceDocumentDAO",

@@ -25,39 +25,37 @@ foam.CLASS({
    javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
-    'foam.dao.DAO',
+    'foam.nanos.auth.User',
     'foam.nanos.notification.email.EmailMessage',
+    'foam.nanos.logger.Logger',
     'foam.util.Emails.EmailsUtility',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.bank.BankAccountStatus',
-    'net.nanopay.model.Business',
-    'static foam.mlang.MLang.EQ',
-    'static foam.mlang.MLang.AND',
-    'static foam.mlang.MLang.INSTANCE_OF'
+    'net.nanopay.model.Business'
   ],
 
    methods: [
     {
       name: 'applyAction',
-      javaCode: ` 
+      javaCode: `
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-            if ( ! (obj instanceof BankAccount && (oldObj == null || ((BankAccount)oldObj).getStatus() == BankAccountStatus.UNVERIFIED)) ) {
-              return;
-            }
             BankAccount account = (BankAccount) obj;
-            AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
-            AFEXBusiness afexBusiness = afexServiceProvider.getAFEXBusiness(x, account.getOwner());
+            User user = (User) account.findOwner(x);
 
-            if ( afexBusiness == null ) {
-              return;
-            }
-            DAO businessDAO = (DAO) x.get("businessDAO");
-            Business business = (Business) businessDAO.find(account.getOwner());
+            if ( user instanceof Business ) {
+              Business business = (Business) user;
+              AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
+              AFEXBusiness afexBusiness = afexServiceProvider.getAFEXBusiness(x, account.getOwner());
 
-            if ( ! afexServiceProvider.directDebitEnrollment(business, account) ) {
-              sendFailureEmail(x, String.valueOf(account.getId()), String.valueOf(afexBusiness.getUser()), business);
+              try {
+                if ( ! afexServiceProvider.directDebitEnrollment(business, account) ) {
+                  sendFailureEmail(x, String.valueOf(account.getId()), String.valueOf(afexBusiness.getUser()), business);
+                }
+              } catch (Exception e) {
+                ((Logger) x.get("logger")).error("Error uploading bank account on AFEX", account, e);
+                sendFailureEmail(x, String.valueOf(account.getId()), String.valueOf(afexBusiness.getUser()), business);
+              }
             }
           }
         }, "Uploads business'a bank accounts to AFEX if the business has passed comliance.");

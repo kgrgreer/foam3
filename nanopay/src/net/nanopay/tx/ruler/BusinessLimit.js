@@ -78,6 +78,9 @@ foam.CLASS({
       tableHeaderFormatter: function() {
         this.add('Business ID');
       },
+      tableHeader: function(axiom) {
+        return 'Business ID';
+      },
       tableWidth: 120,
       readVisibility: 'HIDDEN' // Show business name instead in read mode.
     },

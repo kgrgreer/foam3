@@ -152,7 +152,7 @@ foam.CLASS({
         afexTransaction.setFxExpiry(fxQuote.getExpiryTime());
         afexTransaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
         afexTransaction.setFxRate(fxQuote.getRate());
-        afexTransaction.addLineItems( new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(String.valueOf(fxQuote.getId())).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).build()} );
+        afexTransaction.addLineItems( new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(String.valueOf(fxQuote.getId())).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).setSourceCurrency(fxQuote.findSourceCurrency(x)).setDestinationCurrency(fxQuote.findTargetCurrency(x)).build()} );
       
         afexTransaction.setFxExpiry(fxQuote.getExpiryTime());
       

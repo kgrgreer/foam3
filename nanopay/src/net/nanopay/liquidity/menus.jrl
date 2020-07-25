@@ -328,7 +328,7 @@ p({
 
 p({
   "class":"foam.nanos.menu.Menu",
-  "id":"rules.txapprovaltrules",
+  "id":"rules.txapprovalrules",
   "label":"High Value L2 Rules",
   "handler":{
     "class":"foam.nanos.menu.DAOMenu2",

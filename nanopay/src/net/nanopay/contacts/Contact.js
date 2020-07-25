@@ -60,7 +60,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.fx.Corridor',
+    'net.nanopay.payment.PaymentProviderCorridor',
     'foam.nanos.auth.Country',
     'foam.dao.PromisedDAO',
     'foam.u2.DisplayMode'
@@ -116,7 +116,7 @@ foam.CLASS({
     },
     {
       name: 'INVITE_LABEL',
-      message: 'Invite this contact to join Ablii'
+      message: 'Invite this contact to join '
     },
     {
       name: 'RESTRICT_INVITE_LABEL',
@@ -140,7 +140,7 @@ foam.CLASS({
       documentation: 'The organization/business associated with the Contact.',
       section: 'stepOne',
       label: 'Business',
-      view: { class: 'foam.u2.tag.Input', placeholder: 'ex. Vandelay Industries' },
+      view: { class: 'foam.u2.tag.Input', placeholder: 'ex. Vandelay Industries', focused: true },
       validateObj: function(organization) {
         if (
           typeof organization !== 'string' ||
@@ -311,17 +311,9 @@ foam.CLASS({
         return net.nanopay.bank.BankAccount.create({}, this);
       },
       view: function(_, X) {
-        let e = foam.mlang.Expressions.create();
-        var pred = e.AND(
-            e.EQ(foam.strategy.StrategyReference.DESIRED_MODEL_ID, 'net.nanopay.bank.BankAccount'),
-            e.IN(foam.strategy.StrategyReference.STRATEGY, X.data.countries)
-        );
         return foam.u2.view.FObjectView.create({
-          data: X.data.createBankAccount,
           of: net.nanopay.bank.BankAccount,
-          persistantData: { isDefault: true, forContact: true },
-          enableStrategizer: X.data.bankAccount === 0,
-          predicate: pred
+          persistantData: { isDefault: true, forContact: true }
         }, X);
       }
     },
@@ -331,8 +323,8 @@ foam.CLASS({
       visibility: 'HIDDEN',
       expression: function(subject) {
         return this.PromisedDAO.create({
-          promise: subject.user.capabilities.dao.where(this.INSTANCE_OF(this.Corridor))
-            .select(this.MAP(this.Corridor.TARGET_COUNTRY))
+          promise: subject.user.capabilities.dao.where(this.INSTANCE_OF(this.PaymentProviderCorridor))
+            .select(this.MAP(this.PaymentProviderCorridor.TARGET_COUNTRY))
             .then((sink) => {
               let unique = [...new Set(sink.delegate.array)];
               for ( i = 0; i < unique.length; i++ ) {
@@ -374,7 +366,7 @@ foam.CLASS({
         return foam.u2.DisplayMode.HIDDEN;
       },
       view: function(_, X) {
-        return foam.u2.CheckBox.create({ label: X.data.INVITE_LABEL });
+        return foam.u2.CheckBox.create({ label: X.data.INVITE_LABEL + X.theme.appName });
       }
     },
     {
@@ -442,6 +434,24 @@ foam.CLASS({
       name: 'businessPhoneNumberVerified',
       writePermissionRequired: true,
       visibility: 'HIDDEN'
+    },
+    {
+      class: 'String',
+      name: 'warning',
+      label: '',
+      tableWidth: 55,
+      javaGetter: `
+        return getBankAccount() == 0 && getBusinessId() == 0 ? "Missing bank information" : null;
+      `,
+      tableHeaderFormatter: function() { },
+      tableCellFormatter: function(value, obj, axiom) {
+        if ( value ) {
+          this.start()
+            .attrs({ title: value } )
+            .start({ class: 'foam.u2.tag.Image', data: 'images/warning.svg' }).end()
+          .end();
+        }
+      }
     }
   ],
 

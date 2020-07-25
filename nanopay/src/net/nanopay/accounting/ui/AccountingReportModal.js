@@ -22,7 +22,8 @@ foam.CLASS({
 
   imports: [
     'user',
-    'pushMenu'
+    'pushMenu',
+    'theme'
   ],
 
   implements: [
@@ -101,7 +102,26 @@ foam.CLASS({
       name: 'redirect',
       type: 'Boolean',
       value: 'true'
+    },
+    {
+      name: 'appName',
+      type: 'String',
+      factory: function() {
+        return this.theme.appName
+      }
     }
+  ],
+
+  messages: [
+    {name: 'CONTACT_EXIST', message: 'A contact with that email address already exists'},
+    {name: 'USER_EMAIL_EXIST', message: 'A contact with that email address already exists'},
+    {name: 'WITH_EMAIL', message: ' with the email address : '},
+    {name: 'USER_EXIST_1', message: 'A contact who is also an user already exists on '},
+    {name: 'USER_EXIST_2', message: ' with the email : '},
+    {name: 'USER_EXIST_3', message: ' belongs to multiple businessness on '},
+    {name: 'CONTACT', message: ' contact : '},
+    {name: 'ACC_SOFTWARE_CONTACT', message: 'Accounting software contact: '},
+    {name: 'USER_ON', message: 'A user on '}
   ],
 
   methods: [
@@ -141,19 +161,19 @@ foam.CLASS({
                   if ( self.contactResult.contactSyncMismatches[i].resultCode.name === 'EXISTING_CONTACT' ) {
                     this
                       .start().addClass('result-item').addClass('warning')
-                        .add('A contact with that email address already exists')
-                        .add('Ablii contact : ' + self.contactResult.contactSyncMismatches[i].existContact.email)
-                        .add('Accounting software contact: ' + self.contactResult.contactSyncMismatches[i].newContact.email)
+                        .add(self.CONTACT_EXIST)
+                        .add(self.appName + self.CONTACT + self.contactResult.contactSyncMismatches[i].existContact.email)
+                        .add(self.ACC_SOFTWARE_CONTACT + self.contactResult.contactSyncMismatches[i].newContact.email)
                       .end();
                   } else if ( self.contactResult.contactSyncMismatches[i].resultCode.name === 'EXISTING_USER' ) {
                     this
-                      .start().add('A user already exists on Ablii with the email : ' + self.contactResult.contactSyncMismatches[i].existContact.email).addClass('result-item').addClass('warning').end();
+                      .start().add(self.USER_EMAIL_EXIST + self.appName + self.USER_EXIST_2 + self.contactResult.contactSyncMismatches[i].existContact.email).addClass('result-item').addClass('warning').end();
                   } else if ( self.contactResult.contactSyncMismatches[i].resultCode.name === 'EXISTING_USER_MULTI' ) {
                     this
-                      .start().add('A user on Ablii with the email address : ' + self.contactResult.contactSyncMismatches[i].existContact.email + ' belongs to multiple businessness on Ablii').addClass('result-item').addClass('warning').end();
+                      .start().add(self.USER_ON + self.appName + self.WITH_EMAIL + self.contactResult.contactSyncMismatches[i].existContact.email + self.USER_EXIST_3 + self.appName).addClass('result-item').addClass('warning').end();
                   } else if ( self.contactResult.contactSyncMismatches[i].resultCode.name === 'EXISTING_USER_CONTACT' ) {
                     this
-                    .start().add('A contact who is also an user already exists on Ablii with the email : ' + self.contactResult.contactSyncMismatches[i].existContact.email).addClass('result-item').addClass('warning').end();
+                    .start().add(self.USER_EXIST_1 + self.appName + self.USER_EXIST_2  + self.contactResult.contactSyncMismatches[i].existContact.email).addClass('result-item').addClass('warning').end();
                   }
                 }
               }

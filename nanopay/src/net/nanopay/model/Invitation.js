@@ -79,7 +79,7 @@ foam.CLASS({
       visibility: function(isContact) {
         return isContact ? foam.u2.DisplayMode.DISABLED : foam.u2.DisplayMode.RW;
       },
-      view: { class: 'foam.u2.tag.Input', placeholder: 'ex. Vandelay Industries' },
+      view: { class: 'foam.u2.tag.Input', placeholder: 'ex. Vandelay Industries', focused: true },
       validateObj: function(businessName) {
         if (
           typeof businessName !== 'string' ||

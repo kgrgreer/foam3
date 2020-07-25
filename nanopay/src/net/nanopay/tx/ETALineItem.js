@@ -37,7 +37,24 @@ foam.CLASS({
           .start()
           .add('$', self.formatTime(eta))
           .end();
+      },
+      view: function(_, x) {
+        let formatted = foam.core.Duration.duration(x.data.eta);
+        return foam.u2.Element.create()
+        .start()
+          .add(formatted)
+        .end();
       }
+    }
+  ],
+
+  messages: [
+      { name: 'DESCRIPTION', message: 'Estimated time of Arrival' }
+  ],
+
+  methods: [
+    function toSummary() {
+      return this.DESCRIPTION;
     }
   ]
 });

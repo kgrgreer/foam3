@@ -32,7 +32,13 @@ foam.CLASS({
   properties: [
     {
       name: 'rate',
-      class: 'Double'
+      class: 'Double',
+      view: function(_, x) {
+        return foam.u2.Element.create()
+          .start()
+            .add( x.data.sourceCurrency.format(1 * Math.pow(10, x.data.sourceCurrency.precision)) + ' : ' + x.data.destinationCurrency.format(x.data.rate * Math.pow(10, x.data.sourceCurrency.precision)))
+          .end();
+      }
     },
     {
       name: 'accepted',
@@ -46,6 +52,28 @@ foam.CLASS({
       class: 'String',
       hidden: true
     },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.core.Currency',
+      name: 'sourceCurrency',
+      hidden: true
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.core.Currency',
+      name: 'destinationCurrency',
+      hidden: true
+    },
     // destinationAmount ?
+  ],
+
+  messages: [
+      { name: 'DESCRIPTION', message: 'Foreign Exchange Information' },
+  ],
+
+  methods: [
+    function toSummary() {
+      return this.DESCRIPTION;
+    }
   ]
 });

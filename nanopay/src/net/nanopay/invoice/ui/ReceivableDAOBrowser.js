@@ -159,6 +159,7 @@ foam.CLASS({
           columns: [
             this.Invoice.PAYER_ID.clone().copyFrom({
               label: 'Company',
+              name: 'organization',
               tableCellFormatter: function(_, invoice) {
                 var additiveSubField = invoice.payer.toSummary();
                 this.add(additiveSubField);
@@ -166,6 +167,7 @@ foam.CLASS({
             }),
             this.Invoice.INVOICE_NUMBER.clone().copyFrom({
               label: 'Invoice No.',
+              name: 'invoiceNumber',
               tableWidth: 115
             }),
             this.Invoice.AMOUNT.clone().copyFrom({ tableWidth: 115 }),

@@ -25,6 +25,8 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Group',
+    'java.util.ArrayList',
+    'java.util.List',
     'net.nanopay.account.Account',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
@@ -125,7 +127,7 @@ foam.CLASS({
         }
       }
     }
-    
+
     testPADTypeBeforeQuote(x, sender, receiver);
       `
     },
@@ -155,13 +157,13 @@ foam.CLASS({
     TransactionQuote quote = new TransactionQuote.Builder(x).setRequestTransaction(bulk).build();
     quote = (TransactionQuote) transactionQuoteDAO.inX(x).put(quote);
     Transaction next = quote.getPlan(); // BulkTransaction
-    CITransaction ciTransaction = (CITransaction) next.getNext()[0];  
+    CITransaction ciTransaction = (CITransaction) next.getNext()[0];
     next = ciTransaction;
     next = next.getNext()[0]; // Composite
     next = next.getNext()[0]; // Compliance
     next = next.getNext()[0]; // Digital
     COTransaction coTransaction = (COTransaction) next.getNext()[0];
-    
+
     test(PADTypeLineItem.getPADTypeFrom(x, ciTransaction).getId() == 700, "CI Transaction PAD type set to 700.");
     test(PADTypeLineItem.getPADTypeFrom(x, coTransaction).getId() == 700, "CO Transaction PAD type set to 700.");
       `
@@ -260,13 +262,16 @@ foam.CLASS({
       javaCode: `
     BulkTransaction bulk = new BulkTransaction();
     bulk.setPayerId(sender.getId());
+
+    List<Transaction> children = new ArrayList<>();
     for ( int i = 0; i < receivers.length; i++) {
       User u = receivers[i];
       Transaction dest = new Transaction();
       dest.setPayeeId(u.getId());
       dest.setAmount(100);
-      bulk.addNext(dest);
+      children.add(dest);
     }
+    bulk.setChildren(children.toArray(new Transaction[children.size()]));
     return bulk;
     `
     }

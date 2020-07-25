@@ -219,6 +219,9 @@ foam.CLASS({
       tableHeaderFormatter: function(axiom) {
         this.add('Direction');
       },
+      tableHeader: function(axiom) {
+        return 'Direction';
+      },
       tableCellFormatter: function(value, obj) {
         this.add( value ? "Sending" : "Receiving" );
       }
@@ -228,6 +231,9 @@ foam.CLASS({
       name: 'limit',
       label: 'With Transaction Value More Than',
       section: 'basicInfo',
+      tableHeader: function(axiom) {
+        return 'Value';
+      },
       tableHeaderFormatter: function(axiom) {
         this.add('Value');
       },

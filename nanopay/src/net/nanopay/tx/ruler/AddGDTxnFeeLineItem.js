@@ -32,6 +32,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.ContextAgent',
+    'foam.core.Currency',
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
@@ -72,10 +73,12 @@ foam.CLASS({
             // Check if the default digital account of the payee has the liqudity setting or not
             if ( digitalAccLiquid == null || ! digitalAccLiquid.getHighLiquidity().getEnabled()) {
               // Set fee lineitem for digital transaction to farmers
+              Currency currency = (Currency) ((DAO) x.get("currencyDAO")).find(transaction.getSourceCurrency());
               transaction.addLineItems(new TransactionLineItem[] {
                 new InvoicedFeeLineItem.Builder(getX())
                   .setName("Transaction Fee")
                   .setAmount(getFee())
+                  .setFeeCurrency(currency)
                   .build()
               });
             }

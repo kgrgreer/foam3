@@ -1,3 +1,4 @@
 p({"class":"net.nanopay.payment.PayrollDAOTest","id":"payrollDAOTest","description":"Test PayrollDAO"})
 p({"class":"net.nanopay.payment.InstitutionAuthorizerTest","id":"institutionAuthorizerTest"})
 p({"class":"net.nanopay.payment.PaymentCorridorServiceTest","id":"PaymentCorridorServiceTest"})
+p({"class":"net.nanopay.payment.PaymentCapabilitiesTest","id":"PaymentCapabilitiesTest"})

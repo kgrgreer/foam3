@@ -55,6 +55,10 @@ foam.CLASS({
         Logger logger = (Logger) x.get("logger");
         logger.info(" ** Reading file ... " + blob.getSize());
 
+        // ---- set up x ----
+
+        x = x.put("systemGenerated","fileUpload");
+
         // ---- parse file into GsTxCsvRow Objects ...
         GSReportAssembly finalJob = new GSReportAssembly(x);
         finalJob.setFilename(filename);

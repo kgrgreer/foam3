@@ -13,6 +13,7 @@ foam.CLASS({
 
   requires: [
     'foam.log.LogLevel',
+    'foam.nanos.auth.Group',
     'foam.nanos.auth.UserUserJunction',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.auth.AgentJunctionStatus',
@@ -24,6 +25,7 @@ foam.CLASS({
     'agentJunctionDAO',
     'businessInvitationDAO',
     'closeDialog',
+    'groupDAO',
     'notify',
     'subject',
     'user',
@@ -70,7 +72,7 @@ foam.CLASS({
     table {
       margin: 24px 32px -10px 32px;
       border-collapse: separate;
-      border-spacing: 5px 18px;
+      border-spacing: 1px 13px;
     }
     tr:hover {
       outline: 2px solid #937dff;
@@ -123,27 +125,6 @@ foam.CLASS({
       name: 'SUB_TITLE_2', message: ' will have in nanopay Corporation.'
     },
     {
-      name: 'ADMIN', message: 'Admin'
-    },
-    {
-      name: 'ADMIN_DESCRIPTION',
-      message: 'Admin is a single user who holds the highest level of permissions. Only this person can manage all users and deactivate company account or transfer Admin access to someone else.'
-    },
-    {
-      name: 'APPROVER', message: 'Approver'
-    },
-    {
-      name: 'APPROVER_DESCRIPTION',
-      message: 'There can be multiple Approvers, Approvers have the same level of permissions as the Admin, except they can\'t manage the Admin access or deactivate company account.'
-    },
-    {
-      name: 'EMPLOYEE', message: 'Employee'
-    },
-    {
-      name: 'EMPLOYEE_DESCRIPTION',
-      message: 'Employees are the people in your company. They can create invoices and initiate payments, but they require the approvals from the Approvers or Admin.'
-    },
-    {
       name: 'ACCESS_CONTROL_CHANGE_SUCCESS', message: 'Access control successfully changed'
     },
     {
@@ -164,13 +145,10 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'accessControlValue',
-      factory: function() { return [
-               ['admin', this.ADMIN, this.ADMIN_DESCRIPTION],
-               ['approver', this.APPROVER, this.APPROVER_DESCRIPTION],
-               ['employee', this.EMPLOYEE, this.EMPLOYEE_DESCRIPTION],
-             ];
-       }
+      name: 'data',
+      factory: function() {
+        return this.groupDAO.where(this.STARTS_WITH(this.Group.ID, 'smeBusiness'));
+      }
     },
     {
       class: 'EMail',
@@ -189,9 +167,11 @@ foam.CLASS({
   ],
 
   methods: [
-    function initE() {
+    async function initE() {
       var self = this;
       this.SUPER();
+
+      var accessControlValue = await this.data.select();
 
       // set default accessControl
       if ( self.junction && self.junction.accessControl )
@@ -209,59 +189,59 @@ foam.CLASS({
              .add(this.SUB_TITLE_1).add(this.isAddUser ? this.THE_USER : this.subject.realUser.toSummary()).add(this.SUB_TITLE_2)
           .end()
           .start('table')
-            .add(this.accessControlValue.map(function(ac) {
-              return self.E('div')
-                .start('tr')
-                  .start('td')
-                    .start('input')
-                      .attrs({
-                         type: 'radio',
-                         name: 'accessControl',
-                         value: ac[0],
-                         checked: self.slot(function (data, accessControl) { return data === ac[0] || accessControl === ac[0]; })
-                       })
-                    .end()
+            .forEach(accessControlValue.array, function(group) {
+              this.start('tr')
+                .start('td')
+                  .start('input')
+                    .attrs({
+                       type: 'radio',
+                       name: 'accessControl',
+                       value: group.displayName.toLowerCase(),
+                       checked: self.slot(function (data, accessControl) { return data === group.displayName.toLowerCase() || accessControl === group.displayName.toLowerCase(); })
+                     })
                   .end()
-                  .start('td')
-                    .start('div').addClass('labelStyle')
-                      .start('label')
-                        .start('span')
-                          .add(ac[1])
-                        .end()
+                .end()
+                .start('td')
+                  .start('div').addClass('labelStyle')
+                    .start('label')
+                      .start('span')
+                        .add(group.displayName)
                       .end()
                     .end()
-                   .start('div').addClass('labelDescriptionStyle')
-                     .start('span')
-                       .add(ac[2])
-                     .end()
-                   .end()
                   .end()
-                   .on('click', function(evt) {
-                      self.data = ac[0];
-                      self.accessControl = ac[0];
-                    })
+                 .start('div').addClass('labelDescriptionStyle')
+                   .start('span')
+                     .add(group.description)
+                   .end()
+                 .end()
                 .end()
-              }))
-          .end()
-          .startContext({ data: this })
-            .start().addClass('emailStyle').show(this.isAddUser$)
-              .start().addClass('input-wrapper').add(this.EMAIL_LABEL).end()
-              .tag(this.EMAIL)
-            .end()
-          .endContext()
-          .startContext({ data: this })
-            .start().addClass('button-container')
-              .start()
-                .tag(this.CANCEL, { size: 'LARGE', buttonStyle: 'TERTIARY' })
+                 .on('click', function(evt) {
+                    self.data = group.displayName.toLowerCase();
+                    self.accessControl = group.displayName.toLowerCase();
+                  })
               .end()
-              .start().addClass(this.myClass('button-sub-container'))
-                .tag(this.SAVE, {
-                   size: 'LARGE',
-                   label$: this.isAddUser$.map((flag) => flag ? 'Add User' : 'Save')
-                 })
+
               .end()
-            .end()
-          .endContext()
+            })
+            self.startContext({ data: this })
+              .start().addClass('emailStyle').show(this.isAddUser$)
+                .start().addClass('input-wrapper').add(this.EMAIL_LABEL).end()
+                .tag(this.EMAIL, { focused: true })
+              .end()
+            .endContext()
+            self.startContext({ data: this })
+              .start().addClass('button-container')
+                .start()
+                  .tag(this.CANCEL, { size: 'LARGE', buttonStyle: 'TERTIARY' })
+                .end()
+                .start().addClass(this.myClass('button-sub-container'))
+                  .tag(this.SAVE, {
+                     size: 'LARGE',
+                     label$: this.isAddUser$.map((flag) => flag ? 'Add User' : 'Save')
+                   })
+                .end()
+              .end()
+            .endContext()
         .end();
     }
   ],

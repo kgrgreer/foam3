@@ -24,6 +24,9 @@ foam.CLASS({
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
   ],
+  imports: [
+    'theme'
+  ],
   css: `
     ^ {
       height: 92%;
@@ -89,6 +92,7 @@ foam.CLASS({
   ],
   methods: [
     function initE() {
+      var help = this.section.help.replace('Ablii', this.theme.appName)
       this.SUPER();
       this.addClass(this.myClass())
         .start(this.Cols)
@@ -99,7 +103,7 @@ foam.CLASS({
               .addClass(this.myClass('joanne'))
             .end()
             .start('h1').addClass(this.myClass('help'))
-              .add(this.section$.dot('help'))
+              .add(help)
             .end()
           .end()
 

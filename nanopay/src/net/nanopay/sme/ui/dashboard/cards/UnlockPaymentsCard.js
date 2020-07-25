@@ -132,7 +132,7 @@ foam.CLASS({
     },
     {
       name: 'DESCRIPTION_INTERNATIONAL',
-      message: 'We are adding the ability to make FX payments around the world using Ablii. '
+      message: 'We are adding the ability to make FX payments around the world using '
     },
     {
       name: 'DESCRIPTION_CAD_INTERNATIONAL',
@@ -219,7 +219,7 @@ foam.CLASS({
         }
 
         if ( type === this.UnlockPaymentsCardType.INTERNATIONAL ) {
-          return this.DESCRIPTION_INTERNATIONAL;
+          return this.DESCRIPTION_INTERNATIONAL + this.theme.appName;
         }
 
         if ( businessOnboarding.signingOfficer || businessOnboarding.status !== this.OnboardingStatus.SAVED ) {

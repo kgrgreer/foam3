@@ -35,7 +35,8 @@ foam.CLASS({
     'quickbooksService',
     'user',
     'userDAO',
-    'xeroService'
+    'xeroService',
+    'theme'
   ],
 
   requires: [
@@ -254,12 +255,16 @@ foam.CLASS({
     { name: 'DISCONNECT_LABEL', message: 'Disconnect' },
     { name: 'CONNECTED_LABEL', message: 'Connected' },
     { name: 'NOT_CONNECTED_LABEL', message: 'Not connected' },
-    { name: 'YOUR_BANKS_LABEL', message: 'Your Ablii bank accounts' },
     { name: 'ACCOUNTING_BANKS_LABEL', message: 'Bank accounts in your accounting software' },
-    { name: 'BANK_MATCHING_DESC_1', message: 'Please select which accounts you would like to match between Ablii and ' },
+    { name: 'BANK_MATCHING_DESC_1', message: 'Please select which accounts you would like to match between ' },
     { name: 'BANK_MATCHING_DESC_2', message: ' from the drop downs.' },
-    { name: 'BANK_MATCHING_DESC_3', message: 'This will ensure that all transactions completed on Ablii are mapped and reconciled to the correct account in ' },
-    { name: 'TOKEN_EXPIRED', message: 'Please sync again to your accounting software to fetch the latest information.' }
+    { name: 'BANK_MATCHING_DESC_3', message: 'This will ensure that all transactions completed on ' },
+    { name: 'BANK_MATCHING_DESC_4', message: ' are mapped and reconciled to the correct account in ' },
+    { name: 'TOKEN_EXPIRED', message: 'Please sync again to your accounting software to fetch the latest information.' },
+    { name: 'YOUR', message: 'Your ' },
+    { name: 'BANK_ACCOUNT', message: ' bank accounts' },
+    { name: 'PLEASE_SELECT_BANK', message: 'Please select a bank account in ' },
+    { name: 'BEFORE_MATCH', message: ' before mathching.' }
   ],
 
   properties: [
@@ -429,8 +434,8 @@ foam.CLASS({
               .start({ class: 'foam.u2.tag.Image', data: '/images/ablii-wordmark.svg' }).addClass('ablii-logo').end()
               .start().add('+').addClass('plus-sign').end()
               .start({ class: 'foam.u2.tag.Image', data: this.bankMatchingLogo$ }).addClass('qb-bank-matching').end()
-              .start().add(this.BANK_MATCHING_DESC_1 + this.user.integrationCode.label + this.BANK_MATCHING_DESC_2).addClass('bank-matching-desc').end()
-              .start().add(this.BANK_MATCHING_DESC_3 + this.user.integrationCode.label ).addClass('bank-matching-desc').addClass('marginTop').end()
+              .start().add(this.BANK_MATCHING_DESC_1 + `${this.theme.appName} and ` + this.user.integrationCode.label + this.BANK_MATCHING_DESC_2).addClass('bank-matching-desc').end()
+              .start().add(this.BANK_MATCHING_DESC_3 + this.theme.appName + this.BANK_MATCHING_DESC_4 + this.user.integrationCode.label ).addClass('bank-matching-desc').addClass('marginTop').end()
               .start()
                 .show(this.displayExpiredTokenMessage)
                 .add(this.TOKEN_EXPIRED)
@@ -438,7 +443,7 @@ foam.CLASS({
               .end()
             .end()
             .start().addClass('inline-right-div')
-              .start().add(this.YOUR_BANKS_LABEL).addClass('drop-down-label').end()
+              .start().add(this.YOUR + this.theme.appName + this.BANK_ACCOUNT).addClass('drop-down-label').end()
               .start()
                 .add(this.ABLII_BANK_LIST).addClass('dropdown').enableClass('error-box', this.showPickBankAblii$)
               .end()
@@ -449,7 +454,7 @@ foam.CLASS({
                   .attrs({ src: 'images/inline-error-icon.svg' })
                 .end()
                 .start()
-                  .add('Please select a bank account in Ablii before matching.').addClass('failure-text')
+                  .add(this.PLEASE_SELECT_BANK + this.theme.appName + this.BEFORE_MATCH).addClass('failure-text')
                 .end()
               .end()
               .start().add(this.ACCOUNTING_BANKS_LABEL).addClass('drop-down-label').end()

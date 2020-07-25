@@ -26,17 +26,17 @@ foam.CLASS({
   ],
 
   imports: [
-    'user'
+    'user',
+    'theme'
   ],
 
   sections: [
     {
       name: 'search',
       title: 'Search by Payment Code',
-      subTitle: `
-      Search a business on Ablii to add them to your contacts. You can ask your
-      contact for their Payment Code.
-      `
+      subTitle: function() {
+        return this.SEARCH_BUSINESS_1 + this.theme.appName + this.SEARCH_BUSINESS_2
+      }
     },
     {
       name: 'confirmation',
@@ -45,7 +45,9 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'USER_PAYMENT_CODE_LABEL', message: 'My Payment Code' }
+    { name: 'USER_PAYMENT_CODE_LABEL', message: 'My Payment Code' },
+    { name:'SEARCH_BUSINESS_1', message:'Search a business on '},
+    { name:'SEARCH_BUSINESS_2', message:' to add them to your contacts. You can ask your contact for their Payment Code.'}
   ],
 
   properties: [
@@ -59,7 +61,8 @@ foam.CLASS({
       type: 'search',
       view: {
         class: 'foam.u2.view.IconTextFieldView',
-        icon: 'images/ablii/payment-code.png'
+        icon: 'images/ablii/payment-code.png',
+        focused: true
       }
     },
     {

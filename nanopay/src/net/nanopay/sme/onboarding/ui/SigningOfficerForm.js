@@ -45,7 +45,8 @@ foam.CLASS({
     'ctrl',
     'isSigningOfficer',
     'menuDAO',
-    'user'
+    'user',
+    'theme'
   ],
 
   css: `
@@ -432,6 +433,13 @@ foam.CLASS({
       },
       displayWidth: 60,
     },
+    {
+      class: 'String',
+      name: 'appName',
+      factory: function() {
+        return this.theme.appName;
+      }
+    }
   ],
 
   messages: [
@@ -470,7 +478,7 @@ foam.CLASS({
     {
       name: 'INVITE_USERS_EXP',
       message: `Invite a signing officer to your business.
-          Recipients will receive a link to join your business on Ablii`
+          Recipients will receive a link to join your business on `
     },
     {
       name: 'SIGNING_OFFICER_UPLOAD_DESC',
@@ -614,7 +622,7 @@ foam.CLASS({
         .start().addClass('borderless-container')
           .start().addClass('medium-header').add(this.INVITE_USERS_HEADING).end()
           .start().addClass('body-paragraph').addClass('subdued-text')
-            .add(this.INVITE_USERS_EXP)
+            .add(this.INVITE_USERS_EXP + this.appName )
           .end()
         .end()
           .tag(this.ADD_USERS, { label: this.ADD_USERS_LABEL })

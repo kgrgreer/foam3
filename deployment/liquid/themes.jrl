@@ -1,9 +1,22 @@
 p({
   "class":"foam.nanos.theme.Theme",
+  "id":"A7FBB672-D395-4C30-B5EE-F737B8079BCD",
+  "disableCurrencyChoice": false
+})
+
+p({
+  "class":"foam.nanos.theme.Theme",
+  "id":"06B35BA7-C672-4DBC-8788-14922B704DBF",
+  "disableCurrencyChoice": false
+})
+
+p({
+  "class":"foam.nanos.theme.Theme",
   "id":"D306F95E-4C4F-4C2B-BC5F-F67CFFE3ED00",
   "description":"Liquid",
   "appName":"Liquid",
   "priority":2,
+  "disableCurrencyChoice": false,
   "navigationRootMenu":"",
   "settingsRootMenu":"settings",
   "logoRedirect":"accounts",
@@ -11,7 +24,7 @@ p({
   "largeLogoEnabled": false,
   "largeLogo": "images/nanopay_blue_white_206x42.png",
   "logoBackgroundColour":"#202341",
-  "logo":"images/nanopay_logo_blue.svg",
+  "logo":"images/nanopay_logo_blue.png",
   "primary1":"#202341",
   "primary2":"#144794",
   "primary3":"#406dea",

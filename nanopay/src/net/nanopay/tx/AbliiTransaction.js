@@ -37,7 +37,11 @@ foam.CLASS({
     {
       name: 'PROHIBITED_MESSAGE',
       message: 'You do not have permission to pay invoices.'
-    }
+    },
+    {
+      name: 'DESCRIPTION',
+      message: 'Summary'
+    },
   ],
 
   methods: [
@@ -110,5 +114,11 @@ foam.CLASS({
         super.authorizeOnRead(x);
       `
     },
+    {
+      name: 'toSummary',
+      code: function(x) {
+        return this.DESCRIPTION;
+      }
+    }
   ]
 });

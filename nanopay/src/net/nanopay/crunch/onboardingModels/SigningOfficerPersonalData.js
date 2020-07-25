@@ -24,6 +24,10 @@ foam.CLASS({
     'foam.mlang.Expressions'
   ],
 
+  imports: [
+    'subject'
+  ],
+
   requires: [
     'foam.nanos.auth.Phone',
     'foam.nanos.auth.Address',
@@ -58,10 +62,15 @@ foam.CLASS({
   properties: [
     {
       name: 'countryId',
-      class: 'String',
+      class: 'Reference',
+      of: 'foam.nanos.auth.Country',
       hidden: true,
       storageTransient: true,
-      writePermissionRequired: true
+      writePermissionRequired: true,
+      factory: function() {
+        var userCountry = this.subject.user && this.subject.user.address ? this.subject.user.address.countryId : null;
+        return userCountry;
+      }
     },
     foam.nanos.auth.User.ADDRESS.clone().copyFrom({
       section: 'signingOfficerAddressSection',

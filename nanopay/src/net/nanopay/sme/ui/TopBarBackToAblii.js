@@ -24,7 +24,8 @@ foam.CLASS({
 
   imports: [
     'auth',
-    'stack'
+    'stack',
+    'theme'
   ],
 
   css: `
@@ -46,7 +47,7 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'GO_BACK', message: 'Back to ablii.com' },
+    { name: 'GO_BACK', message: 'Back to ' },
   ],
 
   methods: [
@@ -61,7 +62,7 @@ foam.CLASS({
               .addClass('inline-block')
               .add('➔')
             .end()
-            .add(this.GO_BACK)
+            .add(self.GO_BACK + self.theme.appName)
             .on('click', () => {
               self.auth.logout();
               self.stack.push({ class: 'foam.u2.view.LoginView', mode_: 'SignIn' }, self);

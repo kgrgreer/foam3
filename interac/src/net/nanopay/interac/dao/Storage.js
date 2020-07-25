@@ -22,7 +22,7 @@ foam.CLASS({
   documentation: 'Creates all Interac DAO\'s.',
 
   requires: [
-    'foam.dao.DecoratedDAO',
+    'foam.dao.InterceptedDAO',
     'foam.dao.EasyDAO',
     'foam.nanos.auth.User',
     'net.nanopay.interac.model.Identification',

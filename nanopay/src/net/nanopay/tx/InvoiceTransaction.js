@@ -108,7 +108,7 @@ foam.CLASS({
         value = value * percent.longValue();
         return value;
       `,
-      valueToString: async function(x, val, unitPropName) {
+      unitPropValueToString: async function(x, val, unitPropName) {
         var formattedAmount = val / 100;
         return '$' + x.addCommas(formattedAmount.toFixed(2));
       },

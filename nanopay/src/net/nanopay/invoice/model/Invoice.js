@@ -51,8 +51,8 @@ foam.CLASS({
   tableColumns: [
     'id',
     'invoiceNumber',
-    'payerId',
-    'payeeId',
+    'payerId.businessName',
+    'payeeId.businessName',
     'issueDate',
     'amount',
     'status'
@@ -144,8 +144,8 @@ foam.CLASS({
           issueDateIsSet_ = true;
         }
       `,
-      tableCellFormatter: function(_, invoice) {
-        this.add(invoice.issueDate.toISOString().substring(0, 10));
+      tableCellFormatter: function(val) {
+        this.add(val.toISOString().substring(0, 10));
       },
       aliases: [
         'issueDate',
@@ -158,8 +158,8 @@ foam.CLASS({
       name: 'dueDate',
       documentation: `The date by which the invoice must be paid.`,
       label: 'Date Due',
-      tableCellFormatter: function(_, invoice) {
-        this.add(invoice.dueDate.toISOString().substring(0, 10));
+      tableCellFormatter: function(val) {
+        this.add(val.toISOString().substring(0, 10));
       },
       aliases: ['dueDate', 'due', 'd', 'issued'],
       tableWidth: 95
@@ -175,32 +175,32 @@ foam.CLASS({
       class: 'Date',
       name: 'processingDate',
       documentation: `The date by which the invoice payment begun.`,
-      tableCellFormatter: function(_, invoice) {
-        this.add(invoice.processingDate ? invoice.processingDate.toISOString().substring(0, 10) : null);
+      tableCellFormatter: function(val) {
+        this.add(val ? val.toISOString().substring(0, 10) : null);
       }
     },
     {
       class: 'Date',
       name: 'approvalDate',
       documentation: `The date by which the invoice approval occured.`,
-      tableCellFormatter: function(_, invoice) {
-        this.add(invoice.approvalDate ? invoice.approvalDate.toISOString().substring(0, 10) : null);
+      tableCellFormatter: function(val) {
+        this.add(val ? val.toISOString().substring(0, 10) : null);
       }
     },
     {
       class: 'Date',
       name: 'paymentSentDate',
       documentation: `The date by which the invoice payment was sent.`,
-      tableCellFormatter: function(_, invoice) {
-        this.add(invoice.paymentSentDate ? invoice.paymentSentDate.toISOString().substring(0, 10) : null);
+      tableCellFormatter: function(val) {
+        this.add(vale ? val.toISOString().substring(0, 10) : null);
       }
     },
     {
       class: 'Date',
       name: 'paymentReceivedDate',
       documentation: `The date by which the invoice payment was received.`,
-      tableCellFormatter: function(_, invoice) {
-        this.add(invoice.paymentReceivedDate ? invoice.paymentReceivedDate.toISOString().substring(0, 10) : null);
+      tableCellFormatter: function(val) {
+        this.add(val ? val.toISOString().substring(0, 10) : null);
       }
     },
     {
@@ -330,7 +330,7 @@ foam.CLASS({
       ],
       required: true,
       tableWidth: 120,
-      valueToString: async function(x, val, unitPropName) {
+      unitPropValueToString: async function(x, val, unitPropName) {
         var unitProp = await x.currencyDAO.find(unitPropName);
         if ( unitProp )
           return unitProp.format(val);
@@ -785,7 +785,7 @@ foam.RELATIONSHIP({
       viewSpec: { class: 'foam.u2.view.ChoiceView', size: 14 }
     },
     tableCellFormatter: function(value, obj, rel) {
-      this.add(obj.payee ? obj.payee.toSummary() : 'N/A');
+      this.add(value ? value.toSummary() : 'N/A');
     },
     javaToCSV: `
       User payee = ((Invoice)obj).findPayeeId(x);
@@ -839,7 +839,7 @@ foam.RELATIONSHIP({
       viewSpec: { class: 'foam.u2.view.ChoiceView', size: 14 }
     },
     tableCellFormatter: function(value, obj, rel) {
-      this.add(obj.payer ? obj.payer.toSummary() : 'N/A');
+      this.add(value ? value.toSummary() : 'N/A');
     },
     javaToCSV: `
     User payer = ((Invoice)obj).findPayerId(x);

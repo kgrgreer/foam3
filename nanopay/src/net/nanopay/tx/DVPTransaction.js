@@ -89,7 +89,7 @@ foam.CLASS({
       },
       documentation: 'Amount in Receiver Currency',
       section: 'amountSelection',
-      valueToString: async function(x, val, unitPropName) {
+      unitPropValueToString: async function(x, val, unitPropName) {
         var unitProp = await x.securitiesDAO.find(unitPropName);
         if ( unitProp )
           return unitProp.format(val);

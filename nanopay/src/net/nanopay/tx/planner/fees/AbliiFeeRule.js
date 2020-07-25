@@ -26,6 +26,8 @@ foam.CLASS({
   implements: ['foam.nanos.ruler.RuleAction'],
 
   javaImports: [
+    'foam.core.Currency',
+    'foam.dao.DAO',
     'net.nanopay.tx.InvoicedFeeLineItem',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.TransactionLineItem'
@@ -52,7 +54,8 @@ foam.CLASS({
         Transaction tx = (Transaction) obj;
         Boolean sameCurrency = tx.findSourceAccount(x).getDenomination().equals(tx.findDestinationAccount(x).getDenomination());
         Long feeAmount = sameCurrency ? getDomesticFee() : getInternationalFee();
-        tx.addLineItems(new TransactionLineItem[] {new InvoicedFeeLineItem.Builder(getX()).setGroup("InvoiceFee").setAmount(feeAmount).setCurrency(tx.getSourceCurrency()).build()});
+        Currency currency = (Currency) ((DAO) x.get("currencyDAO")).find(tx.getSourceCurrency());
+        tx.addLineItems(new TransactionLineItem[] {new InvoicedFeeLineItem.Builder(getX()).setGroup("InvoiceFee").setAmount(feeAmount).setCurrency(tx.getSourceCurrency()).setFeeCurrency(currency).build()});
       `
     }
   ]

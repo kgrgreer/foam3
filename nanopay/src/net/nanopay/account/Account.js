@@ -32,7 +32,6 @@ foam.CLASS({
   ],
 
   imports: [
-    'homeDenomination',
     'exchangeRateService',
     'user',
     'balanceService',
@@ -41,7 +40,11 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
-    'foam.core.Currency'
+    'foam.core.Currency',
+    'foam.nanos.session.LocalSetting',
+    'foam.nanos.session.Session',
+    'net.nanopay.fx.ExchangeRateService',
+    'static foam.mlang.MLang.EQ'
   ],
 
   searchColumns: [
@@ -228,6 +231,9 @@ foam.CLASS({
       tableHeaderFormatter: function(axiom) {
         this.add('Default');
       },
+      tableHeader: function(axiom) {
+        return 'Default';
+      },
       tableCellFormatter: function(value, obj, property) {
         this
           .start()
@@ -249,8 +255,8 @@ foam.CLASS({
       createVisibility: 'HIDDEN', // No point in showing as read-only during create since it'll always be 0
       updateVisibility: 'RO',
       readVisibility: 'RO',
-      valueToString: async function(x, val) {
-        var unitProp = await x.currencyDAO.find(denomination);
+      unitPropValueToString: async function(x, val, unitPropName) {
+        var unitProp = await x.currencyDAO.find(unitPropName);
         if ( unitProp )
           return unitProp.format(val);
         return val;
@@ -277,8 +283,7 @@ foam.CLASS({
 
   },
     {
-      class: 'UnitValue',
-      unitPropName: 'homeDenomination',
+      class: 'String',
       name: 'homeBalance',
       label: 'Balance (home)',
       documentation: `
@@ -288,19 +293,25 @@ foam.CLASS({
       section: 'balanceDetails',
       storageTransient: true,
       visibility: 'RO',
+      javaGetter: `
+        Session session = foam.core.XLocator.get().get(Session.class);
+        foam.dao.DAO localLocalSettingDAO = (foam.dao.DAO)session.getContext().get("localLocalSettingDAO");
+
+        String homeDenomination = "USD";
+
+        if (localLocalSettingDAO != null) {
+          LocalSetting ls = (LocalSetting)localLocalSettingDAO.find(EQ(LocalSetting.ID, "homeDenomination"));
+          if ( ls != null && ! ls.getValue().isEmpty() )
+            homeDenomination = ls.getValue();
+        }
+
+        String denomination = getDenomination();
+        ExchangeRateService ert = (ExchangeRateService)getX().get("exchangeRateService");
+        return ert.exchangeFormat(denomination, homeDenomination, getBalance()) + " " + homeDenomination;
+      `,
       tableWidth: 175,
-      valueToString: async function(x, val, unitPropName) {
-        return await this.exchangeRateService.exchangeFormat(this.denomination, this.homeDenomination, this.balance);
-      },
       tableCellFormatter: function(value, obj, axiom) {
-      var self = this;
-        this.add(obj.slot(function(denomination, homeDenomination, balance) {
-          return self.E().add(foam.core.PromiseSlot.create({
-            promise: this.exchangeRateService.exchangeFormat(denomination, homeDenomination, balance).then((result) => {
-              return self.E().add(result);
-            })
-          }));
-        }))
+        this.add(value);
       }
     },
     {

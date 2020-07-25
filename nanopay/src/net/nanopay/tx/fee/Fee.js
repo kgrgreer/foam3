@@ -49,15 +49,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'name',
-      validationPredicates: [
-        {
-          args: ['name'],
-          predicateFactory: function(e) {
-            return e.REG_EXP(net.nanopay.tx.fee.Fee.NAME, /^[a-zA-Z]+[\_a-zA-Z0-9]*$/);
-          },
-          errorString: 'Invalid name.'
-        }
-      ],
       required: true,
       section: 'basicInfo'
     },

@@ -48,15 +48,6 @@ foam.CLASS({
     'pushMenu',
     'publicBusinessDAO',
   ],
-
-  constants: [
-    {
-      type: 'String',
-      name: 'WARNING_ICON',
-      value: 'images/warning.svg'
-    }
-  ],
-
   properties: [
     {
       class: 'foam.dao.DAOProperty',
@@ -74,7 +65,7 @@ foam.CLASS({
           editColumnsEnabled: false,
           columns: [
             foam.core.Property.create({
-              name: 'company',
+              name: 'organization',
               label: 'Business',
               tableCellFormatter: function(X, obj) {
                 if ( ! obj.businessId ) {
@@ -89,20 +80,7 @@ foam.CLASS({
               }
             }),
             'signUpStatus',
-            foam.core.Property.create({
-              name: 'warning',
-              label: '',
-              tableWidth: 55,
-              tableHeaderFormatter: function() { },
-              tableCellFormatter: function(value, obj, axiom) {
-                if ( obj.bankAccount === 0 && obj.businessId === 0 ) {
-                  this.start()
-                    .attrs({ title: 'Missing bank information' } )
-                    .start({ class: 'foam.u2.tag.Image', data: self.WARNING_ICON }).end()
-                    .end();
-                }
-              }
-            })
+            'warning'
           ],
           contextMenuActions: [
             this.Action.create({

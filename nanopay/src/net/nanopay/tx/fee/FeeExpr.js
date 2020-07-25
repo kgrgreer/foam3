@@ -20,13 +20,11 @@
   name: 'FeeExpr',
   extends: 'foam.mlang.AbstractExpr',
 
-  imports: [
-    'DAO feeDAO'
-  ],
+  implements: [ 'foam.core.Serializable' ],
 
   javaImports: [
-    'foam.core.X',
     'foam.dao.DAO',
+    'static foam.core.ContextAware.maybeContextualize',
     'static foam.mlang.MLang.*'
   ],
 
@@ -34,6 +32,14 @@
     {
       class: 'String',
       name: 'feeName'
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'feeDAO',
+      documentation: 'The feeDAO for fee lookup in f(). If going through FeeEngine, it will be set the relationship DAO from a TransactionFeeRule.',
+      javaFactory: 'return (DAO) getX().get("feeDAO");',
+      transient: true,
+      visibility: 'HIDDEN'
     }
   ],
 
@@ -44,24 +50,37 @@
         return getFeeDAO().find(
           AND(
             EQ(Fee.NAME, getFeeName()),
-            DOT_F(Fee.PREDICATE, obj)
+            maybeContextualize(getX(), DOT_F(Fee.PREDICATE, obj))
           )
         );
       `,
-      code: function(obj) {
-        var E = foam.mlang.Expressions.create();
-        return this.feeDAO.find(
-          E.AND(
-            E.EQ(net.nanopay.tx.fee.Fee.NAME, this.feeName),
-            E.DOT_F(net.nanopay.tx.fee.Fee.PREDICATE, obj)
-          )
-        );
+      code: function() {
+        // Fee predicate might require context therefore it must be originated
+        // on the server. Client side FeeExpr is not supported.
       }
+    },
+    {
+      name: 'deepClone',
+      type: 'FObject',
+      javaCode: 'return this;'
     },
     {
       name: 'toString',
       type: 'String',
       javaCode: ' return "FeeExpr(\'" + getFeeName() + "\')"; '
+    }
+  ],
+
+  axioms: [
+    {
+      name: 'javaExtras',
+      buildJavaClass: function(cls) {
+        cls.extras.push(`
+          public FeeExpr(String feeName) {
+            setFeeName(feeName);
+          }
+        `);
+      }
     }
   ]
 })

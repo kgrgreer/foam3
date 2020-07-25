@@ -15,18 +15,23 @@
  * from nanopay Corporation.
  */
 
-/**
- * @license
- * Copyright 2018 The FOAM Authors. All Rights Reserved.
- * http://www.apache.org/licenses/LICENSE-2.0
- */
-
 foam.CLASS({
   package: 'net.nanopay.tx.planner',
   name: 'BulkTransactionPlanner',
   extends: 'net.nanopay.tx.planner.AbstractTransactionPlanner',
 
-  documentation: `Planner that supports one to many transactions and one to one transactions.`,
+  documentation: `
+    Planner that supports one to many transactions and one to one transactions.
+
+    The final transaction chain is:
+
+        Bulk -> (CI) -> Composite -> [ Compliance1 -> Digital1 -> (CO1), ..., Compliance_N -> Digital_N -> (CO_N) ]
+
+    Where (CI) is optional cash-in transaction, Compliance1, Digital1 and (CO1)
+    are the first child compliance, digital and optional cash-out transactions,
+    and Compliance_N, Digital_N and (CO_N) are the N-th child transactions of
+    respective types.
+  `,
 
   javaImports: [
     'foam.core.X',
@@ -48,55 +53,21 @@ foam.CLASS({
     {
       name: 'plan',
       javaCode: `
-        BulkTransaction bulkTxn = (BulkTransaction) requestTxn.fclone();   
+        BulkTransaction bulkTxn = (BulkTransaction) requestTxn.fclone();
         PADType bulkTxnPADType = PADTypeLineItem.getPADTypeFrom(x, bulkTxn);
 
         DAO userDAO = (DAO) x.get("localUserDAO");
 
-        Account sourceAccount = quote.getSourceAccount();
-        User payer = (User) userDAO.find_(x, bulkTxn.getPayerId());
-
-        if ( payer == null && sourceAccount != null ) {
-          payer = sourceAccount.findOwner(x);
-        } else if ( payer != null && sourceAccount == null ) {
-          sourceAccount = getAccount(x, payer, bulkTxn.getSourceCurrency(), bulkTxn.getExplicitCI());
-        }
-        if ( payer == null || sourceAccount == null ) {
-            throw new RuntimeException("BulkTransaction failed to determine payer or sourceAccount. payerId: "+bulkTxn.getPayerId()+" sourceAccount: "+bulkTxn.getSourceAccount());
-        }
-
-        // If only a single child transaction or no children and a non-null
-        // payee then quote a single transaction, which is a one to one transaction.
-        if ( bulkTxn.getNext().length == 0 ) {
-          if ( bulkTxn.getPayeeId() != 0 ) {
-            User payee = (User) userDAO.find_(x, bulkTxn.getPayeeId());
-
-            // Set the sourceAccount and destinationAccount of the bulk transaction
-            // SourceAccount and DestinationAccount are required
-            bulkTxn.setSourceAccount(sourceAccount.getId());
-            bulkTxn.setDestinationAccount(getAccount(x, payee, bulkTxn.getDestinationCurrency(), bulkTxn.getExplicitCO()).getId());
-
-            bulkTxn.addNext(quoteTxn(x,bulkTxn));
-            return bulkTxn;
-          } else {
-            throw new RuntimeException("BulkTransaction missing child transactions or a payee.");
-          }
-        }
-
-        // Set the destination of bulk transaction to payer's default digital account
-        DigitalAccount payerDigitalAccount = DigitalAccount.findDefault(x, payer, bulkTxn.getSourceCurrency());
-        bulkTxn.setSourceAccount(payerDigitalAccount.getId());
-        bulkTxn.setDestinationAccount(payerDigitalAccount.getId());
-
         long sum = 0;
-        Transaction[] childTransactions = bulkTxn.getNext();
+        Transaction[] childTransactions = bulkTxn.getChildren();
         CompositeTransaction ct = new CompositeTransaction();
         // Set the composite transaction as a quoted transaction so that
         // it won't be quoted in the DigitalTransactionPlanDAO decorator.
         // In order to set the composite transaction as a quoted one, it requires
         // to have both source account and destination account setup.
-        ct.setSourceAccount(payerDigitalAccount.getId());
-        ct.setDestinationAccount(payerDigitalAccount.getId());
+        ct.setSourceAccount(bulkTxn.getSourceAccount());
+        ct.setDestinationAccount(bulkTxn.getDestinationAccount());
+        ct.setPlanner(getId());
         ct.setIsQuoted(true);
 
         for (Transaction childTransaction : childTransactions) {
@@ -125,16 +96,21 @@ foam.CLASS({
           // set the pad type for each child transaction
           if ( bulkTxnPADType != null ) { PADTypeLineItem.addTo(childTransaction, bulkTxnPADType.getId()); }
 
-          // Put all the child transaction quotes to TransactionQuotePlanDAO
-          // Add the child transaction plans as the next of the compositeTransaction
-          ct.addNext(quoteTxn(x, childTransaction));
+          // Inject compliance transaction before each child transaction and
+          // add it as the next of the composite transaction
+          var quotedChild = quoteTxn(x, childTransaction, false);
+          var compliance = createCompliance(quotedChild);
+          compliance.addNext(quotedChild);
+          ct.addNext(compliance);
         }
 
         // TODO: consider FX.
         // Set the total amount on parent
         bulkTxn.setAmount(sum);
 
-        Long payerDigitalBalance = (Long) payerDigitalAccount.findBalance(x);
+        var payer               = (User) userDAO.find_(x, bulkTxn.getPayerId());
+        var payerDigitalAccount = DigitalAccount.findDefault(x, payer, bulkTxn.getSourceCurrency());
+        var payerDigitalBalance = payerDigitalAccount.findBalance(x);
 
         if ( sum > payerDigitalBalance ||
             bulkTxn.getExplicitCI() ) {
@@ -147,7 +123,7 @@ foam.CLASS({
           cashInTransaction.setDestinationAccount(payerDigitalAccount.getId());
           cashInTransaction.setAmount(bulkTxn.getAmount());
           if ( bulkTxnPADType != null ) { PADTypeLineItem.addTo(cashInTransaction, bulkTxnPADType.getId()); }
-          cashInTransaction = quoteTxn(x, cashInTransaction);
+          cashInTransaction = quoteTxn(x, cashInTransaction, false);
 
           // Add the compositeTransaction as the next of the cash-in transaction.
           cashInTransaction.addNext(ct);

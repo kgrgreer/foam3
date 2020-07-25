@@ -1,0 +1,152 @@
+p({"class":"net.nanopay.payment.PaymentProvider","id":"AscendantFX","name":"AscendantFX", "enabled":true})
+p({"class":"net.nanopay.payment.PaymentProvider","id":"BMO","name":"Bank of Montreal", "enabled":true})
+p({"class":"net.nanopay.payment.PaymentProvider","id":"Alterna","name":"Alterna Savings and Credit Union", "enabled":true})
+p({"class":"net.nanopay.payment.PaymentProvider","id":"AFEX","name":"AFEX", "enabled":true})
+p({"class":"net.nanopay.payment.PaymentProvider","id":"RBC","name":"Royal Bank of Canada", "enabled":true})
+p({"class":"net.nanopay.payment.PaymentProvider","id":"Kotak","name":"Kotak", "enabled":true})
+p({"class":"net.nanopay.payment.PaymentProvider","id":"Treviso","name":"Treviso", "enabled":true})
+p({
+  "class": "net.nanopay.payment.PaymentProviderCorridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15fafexca-us",
+  "name":"CA-US (AFEX Corridor)",
+  "provider": "AFEX",
+  "sourceCountry":"CA",
+  "targetCountry":"US",
+  "sourceCurrencies":["CAD"],
+  "targetCurrencies":["USD"],
+  "description": "CA to US corridor via AFEX",
+  "enabled":true
+})
+p({
+  "class": "net.nanopay.payment.PaymentProviderCorridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
+  "name":"US-CA (AFEX Corridor)",
+  "provider": "AFEX",
+  "sourceCountry":"US",
+  "targetCountry":"CA",
+  "sourceCurrencies":["USD"],
+  "targetCurrencies":["CAD"],
+  "description": "US to CA corridor via AFEX",
+  "enabled":true
+})
+p({
+  "class": "net.nanopay.payment.PaymentProviderCorridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15f7afexus-us",
+  "name":"US-US (AFEX Corridor)",
+  "provider": "AFEX",
+  "sourceCountry":"US",
+  "targetCountry":"US",
+  "sourceCurrencies":["USD"],
+  "targetCurrencies":["USD"],
+  "description": "US to US corridor via AFEX",
+  "enabled":true
+})
+p({
+  "class": "net.nanopay.payment.PaymentProviderCorridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15f7afxca-us",
+  "name":"CA-US (AscendantFX Corridor)",
+  "provider": "AscendantFX",
+  "sourceCountry":"CA",
+  "targetCountry":"US",
+  "sourceCurrencies":["CAD"],
+  "targetCurrencies":["USD"],
+  "description": "CA to US corridor via AscendantFX",
+  "enabled":true
+})
+p({
+  "class": "net.nanopay.payment.PaymentProviderCorridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15f7afxus-ca",
+  "name":"US-CA (AscendantFX Corridor)",
+  "provider": "AscendantFX",
+  "sourceCountry":"US",
+  "targetCountry":"CA",
+  "sourceCurrencies":["USD"],
+  "targetCurrencies":["CAD"],
+  "description": "US to CA corridor via AscendantFX",
+  "enabled":true
+})
+p({
+  "class": "net.nanopay.payment.PaymentProviderCorridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15f7afxus-us",
+  "name":"US-US (AscendantFX Corridor)",
+  "provider": "AscendantFX",
+  "sourceCountry":"US",
+  "targetCountry":"US",
+  "sourceCurrencies":["USD"],
+  "targetCurrencies":["USD"],
+  "description": "US to US corridor via AscendantFX",
+  "enabled":true
+})
+p({
+  "class": "net.nanopay.payment.PaymentProviderCorridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15f7altca-ca",
+  "name":"CA-CA (Alterna Corridor)",
+  "provider": "Alterna",
+  "sourceCountry":"CA",
+  "targetCountry":"CA",
+  "sourceCurrencies":["CAD"],
+  "targetCurrencies":["CAD"],
+  "description": "CA to CA corridor via Alterna",
+  "enabled":true
+})
+p({
+  "class": "net.nanopay.payment.PaymentProviderCorridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15f7bmoca-ca",
+  "name":"CA-CA (BMO Corridor)",
+  "provider": "BMO",
+  "sourceCountry":"CA",
+  "targetCountry":"CA",
+  "sourceCurrencies":["CAD"],
+  "targetCurrencies":["CAD"],
+  "description": "CA to CA corridor via BMO",
+  "enabled":true
+})
+p({
+  "class": "net.nanopay.payment.PaymentProviderCorridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15f7rbcca-ca",
+  "name":"CA-CA (RBC Corridor)",
+  "provider": "RBC",
+  "sourceCountry":"CA",
+  "targetCountry":"CA",
+  "sourceCurrencies":["CAD"],
+  "targetCurrencies":["CAD"],
+  "description": "CA to CA corridor via RBC",
+  "enabled":true
+})
+p({
+  "class": "net.nanopay.payment.PaymentProviderCorridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15kotakca-in",
+  "name":"CA-IN (Kotak Corridor)",
+  "provider": "Kotak",
+  "sourceCountry":"CA",
+  "targetCountry":"IN",
+  "sourceCurrencies":["CAD"],
+  "targetCurrencies":["INR"],
+  "description": "CA to IN corridor via Kotak",
+  "enabled":true
+})
+
+p({
+  "class": "net.nanopay.payment.PaymentProviderCorridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb15ftrevisobr-ca",
+  "name":"BR-CA (Treviso Corridor)",
+  "provider": "Treviso",
+  "sourceCountry":"BR",
+  "targetCountry":"CA",
+  "sourceCurrencies":["BRL"],
+  "targetCurrencies":["CAD"],
+  "description": "BR to CA corridor via Treviso",
+  "enabled":true
+})
+p({
+  "class": "net.nanopay.payment.PaymentProviderCorridor",
+  "id":"554af38a-8125-87c8-dfdf-eeb1trevisobr-us",
+  "name":"BR-US (Treviso Corridor)",
+  "provider": "Treviso",
+  "sourceCountry":"BR",
+  "targetCountry":"US",
+  "sourceCurrencies":["BRL"],
+  "targetCurrencies":["USD"],
+  "description": "BR to US corridor via Treviso",
+  "enabled":true
+})

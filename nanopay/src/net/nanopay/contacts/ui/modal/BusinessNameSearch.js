@@ -36,21 +36,27 @@ foam.CLASS({
 
   imports: [
     'publicBusinessDAO',
-    'user'
+    'user',
+    'theme'
   ],
 
   sections: [
     {
       name: 'search',
       title: 'Search by Business Name',
-      subTitle: `Search a business on Ablii to add them to your
-      contacts.  For better results, search using their registered
-      business name and location.`
+      subTitle: function() {
+        return this.SEARCH_BUSINESS_1 + this.theme.appName + this.SEARCH_BUSINESS_2
+      }
     },
     {
       name: 'confirmation',
       title: ''
     }
+  ],
+
+  messages: [
+    { name:'SEARCH_BUSINESS_1', message:'Search a business on '},
+    { name:'SEARCH_BUSINESS_2', message:' to add them to your contacts. For better results, search using their registered business name and location.'}
   ],
 
   properties: [
@@ -65,7 +71,8 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.IconTextFieldView',
         icon: 'images/ablii/search.png',
-        onKey: true
+        onKey: true,
+        focused: true
       }
     },
     {

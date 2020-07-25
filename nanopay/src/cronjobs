@@ -7,7 +7,28 @@ p({"class":"foam.nanos.cron.Cron","enabled":false,"schedule":{"class":"foam.nano
 p({"class":"foam.nanos.cron.Cron","enabled":false,"schedule":{"class":"foam.nanos.cron.CronSchedule","minute":0,"hour":0,"dayOfMonth":-1,"month":-1,"dayOfWeek":-1,"second":0},"scheduledTime":"2019-09-10T04:00:00.000Z","id":"Eft Return File Remove Cron","description":"Move old Alterna EFT Return Files to archive folder","code":"import net.nanopay.tx.cron.EftReturnFileRemoveCron;\ncron = new EftReturnFileRemoveCron();\ncron.execute(x);\nprint(\"done\");"})
 p({"class":"foam.nanos.cron.Cron","enabled":false,"schedule":{"class":"foam.nanos.cron.CronSchedule","minute":0,"hour":23,"dayOfMonth":-1,"month":-1,"dayOfWeek":-1,"second":0},"scheduledTime":"2019-09-10T03:00:00.000Z","id":"testReporterCron","description":"Run test reporter.","code":"runScript(\"TestReporter\");"})
 p({"class":"foam.nanos.cron.Cron","enabled":false,"schedule":{"class":"foam.nanos.cron.CronSchedule","minute":0,"hour":0,"dayOfMonth":-1,"month":-1,"dayOfWeek":-1,"second":0},"scheduledTime":"2019-09-10T04:00:00.000Z","id":"Update Exchange Rates With CAD as Base Currency","description":"Fetch Exchange rates daily using CAD as base currency","code":"import net.nanopay.fx.ExchangeRatesCron; \ncron = new ExchangeRatesCron();\ncron.execute(x);\nprint(\"done\");"})
-p({"class":"foam.nanos.cron.Cron","enabled":false,"schedule":{"class":"foam.nanos.cron.CronSchedule","minute":0,"hour":-1,"dayOfMonth":-1,"month":-1,"dayOfWeek":-1,"second":0},"scheduledTime":"2019-09-09T17:00:00.000Z","id":"Reload Canadian Sanctions List","description":"Reload Canadian sanctions list every hour.","code":"import net.nanopay.meter.compliance.cron.ReloadCanadianSanctionsListCron; \ncron = new ReloadCanadianSanctionsListCron();\ncron.execute(x);\nprint(\"done\");"})
+p({
+  "class":"foam.nanos.cron.Cron",
+  "id": "Reload Canadian Sanctions List",
+  "description": "Reload Canadian sanctions list every hour.",
+  "enabled": false,
+  "schedule": {
+    "class": "foam.nanos.cron.CronSchedule",
+    "minute": 0,
+    "hour": -1,
+    "dayOfMonth": -1,
+    "month": -1,
+    "dayOfWeek": -1,
+    "second": 0
+  },
+  "scheduledTime": "2019-09-09T17:00:00.000Z",
+  "code": """
+    import net.nanopay.meter.compliance.cron.ReloadCanadianSanctionsListCron;
+    cron = new ReloadCanadianSanctionsListCron();
+    cron.execute(x);
+    print("done");
+  """
+})
 p({"class":"foam.nanos.cron.Cron","enabled":false,"schedule":{"class":"foam.nanos.cron.CronSchedule","minute":0,"hour":0,"dayOfMonth":-1,"month":-1,"dayOfWeek":-1,"second":0},"scheduledTime":"2019-09-10T04:00:00.000Z","id":"Calculate daily Interest","description":"calculates daily interest based on EOD balance","code":"import net.nanopay.tx.cron.InterestAccrual; ICcron = new InterestAccrual();ICcron.execute(x);\nprint(\"done\");"})
 p({"class":"foam.nanos.cron.Cron","enabled":false,"schedule":{"class":"foam.nanos.cron.CronSchedule","minute":0,"hour":0,"dayOfMonth":-1,"month":-1,"dayOfWeek":-1,"second":0},"scheduledTime":"2019-09-10T04:00:00.000Z","id":"Compound Interest Rate","description":"adds interest to account via tx","code":"import net.nanopay.tx.cron.CompoundInterest; CIcron = new CompoundInterest();CIcron.execute(x);\nprint(\"done\");"})
 p({"class":"foam.nanos.cron.Cron","enabled":false,"schedule":{"class":"foam.nanos.cron.CronSchedule","minute":-1,"hour":-1,"dayOfMonth":-1,"month":-1,"dayOfWeek":-1,"second":1},"scheduledTime":"2019-09-09T16:56:01.000Z","id":"Scheduled Transactions","description":"executes scheduled transactions","code":"import net.nanopay.tx.cron.ScheduledTransactionCron;\ncron = new ScheduledTransactionCron();\ncron.execute(x);\nprint(\"done\");"})

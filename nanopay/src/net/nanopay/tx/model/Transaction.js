@@ -413,7 +413,7 @@ foam.CLASS({
       `,
       tableWidth: 190,
       view: function(o, x) {
-        if ( o.mode$.value.name === 'RO' ) {
+        if ( ! o && o.mode$.value.name === 'RO' ) {
           return foam.u2.Element.create()
             .start()
               .add(x.data.status.label)
@@ -573,7 +573,7 @@ foam.CLASS({
           linkAmount$: X.data.destinationAmount$
         };
       },
-      valueToString: async function(x, val, unitPropName) {
+      unitPropValueToString: async function(x, val, unitPropName) {
         var unitProp = await x.currencyDAO.find(unitPropName);
         if ( unitProp )
           return unitProp.format(val);
@@ -672,7 +672,7 @@ foam.CLASS({
       },
       documentation: 'Amount in Receiver Currency',
       section: 'amountSelection',
-      valueToString: async function(x, val, unitPropName) {
+      unitPropValueToString: async function(x, val, unitPropName) {
         var unitProp = await x.currencyDAO.find(unitPropName);
         return unitProp.format(val);
       },

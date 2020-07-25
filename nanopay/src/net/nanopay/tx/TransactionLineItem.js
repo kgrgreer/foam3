@@ -81,7 +81,7 @@ foam.CLASS({
     {
       name: 'amount',
       class: 'UnitValue',
-      valueToString: async function(x, val, unitPropName) {
+      unitPropValueToString: async function(x, val, unitPropName) {
         var formattedAmount = val / 100;
         return '$' + x.addCommas(formattedAmount.toFixed(2));
       },
@@ -107,7 +107,8 @@ foam.CLASS({
       createVisibility: 'RO',
       readVisibility: 'RO',
       updateVisibility: 'RO',
-      value: true
+      value: true,
+      view: { class: 'foam.u2.CheckBox', showLabel: false }
     },
     {
       name: 'requiresUserInput',
@@ -122,6 +123,13 @@ foam.CLASS({
       of: 'net.nanopay.tx.model.Transaction',
       visibility: 'HIDDEN',
       storageTransient: true,
+    },
+    {
+      name: 'quoteOnChange',
+      class: 'Boolean',
+      value: false,
+      hidden: true,
+      storageTransient: true
     }
   ],
 

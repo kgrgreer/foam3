@@ -24,6 +24,10 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction'
   ],
 
+  messages: [
+      { name: 'DESCRIPTION', message: 'Kotak Payment Purpose' }
+  ],
+
   properties: [
     {
       name: 'accountRelationship',
@@ -101,6 +105,10 @@ foam.CLASS({
       if ( this.accountRelationship === '' ) {
         throw 'Relationship with the contact cannot be empty';
       }
+    },
+
+    function toSummary() {
+      return this.DESCRIPTION;
     }
   ]
 });

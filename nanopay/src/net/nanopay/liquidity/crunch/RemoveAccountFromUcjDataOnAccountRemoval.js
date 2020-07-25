@@ -34,8 +34,7 @@ foam.CLASS({
       'foam.nanos.auth.LifecycleAware',
       'foam.nanos.crunch.UserCapabilityJunction',
       'java.util.List',
-      'net.nanopay.account.Account',
-      'net.nanopay.liquidity.tx.AccountHierarchy'
+      'net.nanopay.account.Account'
     ],
   
     methods: [
@@ -47,7 +46,6 @@ foam.CLASS({
           public void execute(X x) {
             if ( ((LifecycleAware) obj).getLifecycleState() == foam.nanos.auth.LifecycleState.DELETED ) {
               DAO dao = (DAO) x.get("userCapabilityJunctionDAO");
-              AccountHierarchy service = (AccountHierarchy) x.get("accountHierarchyService");
 
               Long id = ((Account) obj).getId();
 
@@ -63,8 +61,6 @@ foam.CLASS({
                     numberSet.remove(id);
                     ucj.setData(numberSet);
                     dao.put(ucj);
-
-                    service.removeRootFromUser(x, ucj.getSourceId(), ((Account) obj).getId());
                   }
                 }
               }

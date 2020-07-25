@@ -27,29 +27,8 @@ foam.INTERFACE({
 
   methods: [
     {
-      name: 'getCorridor',
-      type: 'net.nanopay.fx.Corridor',
-      documentation: 'Returns a corridor',
-      args: [
-        {
-          type: 'Context',
-          name: 'x'
-        },
-        {
-          type: 'String',
-          name: 'sourceCountry',
-          documentation: 'Source Country'
-        },
-        {
-          type: 'String',
-          name: 'targetCountry',
-          documentation: 'Target Country'
-        }
-      ]
-    },
-    {
       name: 'getProviderCorridor',
-      type: 'net.nanopay.payment.PaymentProviderCorridorJunction',
+      type: 'net.nanopay.payment.PaymentProviderCorridor',
       documentation: 'Returns a corridor supported by a Payment Provider',
       args: [
         {
@@ -143,7 +122,7 @@ foam.INTERFACE({
     {
       name: 'getQuoteCorridorPaymentProviders',
       javaType: 'java.util.List',
-      documentation: 'Returns List of Corridor Payment Provider Junctions that can handle the corridor and currency pairs.',
+      documentation: 'Returns List of Corridor Payment Provider Corridors that can handle the corridor and currency pairs.',
       args: [
         {
           type: 'Context',

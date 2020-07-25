@@ -513,6 +513,22 @@ p({
 
 p({
   "class":"foam.nanos.ruler.Rule",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d281",
+  "name":"Remove Deleted Account From RootAccounts",
+  "priority": 100,
+  "enabled":true,
+  "ruleGroup": "liquid",
+  "documentation": "On account delete, remove the reference of the account from any account templates/ any roleassignment using template",
+  "daoKey": "localAccountDAO",
+  "operation": 2, 
+  "after": true,
+  "action" : { "class": "net.nanopay.liquidity.crunch.RemoveAccountFromRootAccounts" },
+  "saveHistory": true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
   "id":"68afcf0d-c718-98f8-0841-75e97a3ad16d182",
   "name":"Outstanding Requests Prevent Deletion",
   "priority":110,
@@ -943,5 +959,28 @@ p({
     "class":"net.nanopay.tx.LabelLiquidSummaryAction",
   },
   "saveHistory":true,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"c8af9202-6890-4bdb-96ba-60082960422f",
+  "name":"block certain liquid transactions",
+  "priority":100,
+  "enabled":true,
+  "ruleGroup":"liquid",
+  "documentation":"blocks certain accounts from transacting",
+  "daoKey":"localTransactionDAO",
+  "operation":3,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.Not",
+    "arg1":{
+      "class":"foam.nanos.ruler.predicate.ContextContainsPredicate",
+      "key":"systemGenerated"
+    }
+  },
+  "action":{
+    "class":"net.nanopay.tx.ruler.LiquidTransactionalBlocks",
+  },
   "lifecycleState":1
 })
