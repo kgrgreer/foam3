@@ -80,8 +80,8 @@ p({
 
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
-  "id":"ares",
-  "name":"ares",
+  "id":"alectrona",
+  "name":"alectrona",
   "enabled":true,
   "realm":"nanopay",
   "region":"Toronto",
@@ -112,8 +112,8 @@ p({
 
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
-  "id":"athena",
-  "name":"athena",
+  "id":"ares",
+  "name":"ares",
   "enabled":true,
   "realm":"nanopay",
   "region":"Toronto",
@@ -144,8 +144,24 @@ p({
 
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
-  "id":"alectrona",
-  "name":"alectrona",
+  "id":"athena",
+  "name":"athena",
+  "enabled":true,
+  "realm":"nanopay",
+  "region":"Toronto",
+  "regionStatus":1,
+  "zone":0,
+  "port":8080,
+  "sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738",
+  "type":1,
+  "created":"2020-03-28T14:57:12.959Z",
+  "createdBy":2
+})
+
+p({
+  "class":"foam.nanos.medusa.ClusterConfig",
+  "id":"atlas",
+  "name":"atlas",
   "enabled":true,
   "realm":"nanopay",
   "region":"Toronto",

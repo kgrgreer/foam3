@@ -12,6 +12,12 @@ p({
 
 p({
   "class":"foam.net.Host",
+  "id":"antheia",
+  "address":"10.22.41.206",
+})
+
+p({
+  "class":"foam.net.Host",
   "id":"aphrodite",
   "address":"10.22.41.197",
 })
@@ -38,6 +44,12 @@ p({
   "class":"foam.net.Host",
   "id":"athena",
   "address":"10.22.41.192",
+})
+
+p({
+  "class":"foam.net.Host",
+  "id":"atlas",
+  "address":"10.22.41.214",
 })
 
 p({
