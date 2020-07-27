@@ -58,6 +58,11 @@ foam.CLASS({
       type: 'String',
       name: 'ASCENDANTFX_SERVICE_NSPEC_ID',
       value: 'ascendantFXService'
+    },
+    {
+      name: 'PAYMENT_PROVIDER',
+      type: 'String',
+      value: 'AscendantFX'
     }
   ],
 
@@ -218,6 +223,7 @@ foam.CLASS({
       fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
       ascendantFXTransaction.addLineItems( new TransactionLineItem[] {new AscendantFXFeeLineItem.Builder(x).setGroup("fx").setAmount(fxQuote.getFee()).setCurrency(fxQuote.getFeeCurrency()).build()} );
       ascendantFXTransaction.setFxFees(fees);
+      ascendantFXTransaction.setPaymentProvider(PAYMENT_PROVIDER);
       ascendantFXTransaction.setIsQuoted(true);
       ascendantFXTransaction.setPaymentMethod(fxQuote.getPaymentMethod());
       if ( ascendantFXTransaction.getAmount() < 1 ) ascendantFXTransaction.setAmount(fxQuote.getSourceAmount());

@@ -56,6 +56,11 @@ foam.CLASS({
       type: 'String',
       name: 'AFEX_SERVICE_NSPEC_ID',
       value: 'afexServiceProvider'
+    },
+    {
+      name: 'PAYMENT_PROVIDER',
+      type: 'String',
+      value: 'AFEX'
     }
   ],
 
@@ -155,7 +160,8 @@ foam.CLASS({
         afexTransaction.addLineItems( new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(String.valueOf(fxQuote.getId())).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).setSourceCurrency(fxQuote.findSourceCurrency(x)).setDestinationCurrency(fxQuote.findTargetCurrency(x)).build()} );
       
         afexTransaction.setFxExpiry(fxQuote.getExpiryTime());
-      
+
+        afexTransaction.setPaymentProvider(PAYMENT_PROVIDER);
         afexTransaction.setIsQuoted(true);
       
         afexTransaction.setAmount(fxQuote.getSourceAmount());

@@ -47,6 +47,14 @@ foam.CLASS({
     }
   ],
 
+  constants: [
+    {
+      name: 'PAYMENT_PROVIDER',
+      type: 'String',
+      value: 'Treviso'
+    }
+  ],
+
   methods: [
     {
       name: 'plan',
@@ -63,6 +71,7 @@ foam.CLASS({
       placeHolder.copyFrom(requestTxn);
       placeHolder.setAmount(requestTxn.getDestinationAmount()*5);
       placeHolder.setName("Treviso transaction");
+      placeHolder.setPaymentProvider(PAYMENT_PROVIDER);
       placeHolder.setIsQuoted(true);
       placeHolder.setPlanner(this.getId());
       this.addLineItems(x, placeHolder, requestTxn);

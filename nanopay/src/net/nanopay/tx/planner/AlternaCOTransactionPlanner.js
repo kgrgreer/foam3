@@ -33,6 +33,11 @@ foam.CLASS({
       name: 'INSTITUTION_NUMBER',
       type: 'String',
       value: '842'
+    },
+    {
+      name: 'PAYMENT_PROVIDER',
+      type: 'String',
+      value: 'Alterna'
     }
   ],
 
@@ -45,6 +50,7 @@ foam.CLASS({
         t.copyFrom(requestTxn);
         t.setStatus(net.nanopay.tx.model.TransactionStatus.PENDING);
         t.setInstitutionNumber(INSTITUTION_NUMBER);
+        t.setPaymentProvider(PAYMENT_PROVIDER);
         quote.addTransfer(trustAccount.getId(), t.getAmount());
         quote.addTransfer(quote.getSourceAccount().getId(), -t.getAmount());
         t.addLineItems( new TransactionLineItem[] { new ETALineItem.Builder(x).setEta(/* 2 days */ 172800000L).build()} );
