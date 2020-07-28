@@ -104,3 +104,9 @@ p({
     }
   },
 })
+p({
+  "class":"net.nanopay.tx.planner.PlannerGroup",
+  "id":"SandBoxPlanner",
+  "documentation":"planning for instant bank to bank ",
+  "enabled":false,
+})

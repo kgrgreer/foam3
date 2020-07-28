@@ -107,6 +107,15 @@ foam.CLASS({
   ],
 
   methods: [
+    //planners set themselves as rule actions, which would lead to stack overflow on cloning
+    {
+      name: 'fclone',
+      type: 'foam.core.FObject',
+      javaCode: `
+        this.__frozen__ = false;
+        return this;
+      `
+    },
     {
       name: 'applyAction',
       documentation: 'applyAction of the rule is called by rule engine',
