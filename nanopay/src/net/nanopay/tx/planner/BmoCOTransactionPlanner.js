@@ -35,6 +35,11 @@ foam.CLASS({
       type: 'String',
       value: '001'
     },
+    {
+      name: 'PAYMENT_PROVIDER',
+      type: 'String',
+      value: 'BMO'
+    }
   ],
 
   methods: [
@@ -46,6 +51,7 @@ foam.CLASS({
         t.copyFrom(requestTxn);
         t.setStatus(net.nanopay.tx.model.TransactionStatus.PENDING);
         t.setInstitutionNumber(INSTITUTION_NUMBER);
+        t.setPaymentProvider(PAYMENT_PROVIDER);
         quote.addTransfer(trustAccount.getId(), t.getAmount());
         quote.addTransfer(quote.getSourceAccount().getId(), -t.getAmount());
 

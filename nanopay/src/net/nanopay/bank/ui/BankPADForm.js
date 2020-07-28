@@ -208,11 +208,11 @@ foam.CLASS({
 
         .start().addClass('inline')
           .start().add(this.LABEL_FIRST_NAME).addClass(this.myClass('field-label')).end()
-          .start(this.FIRST_NAME).addClass(this.myClass('input-size-half')).end()
+          .start().add(this.FIRST_NAME).addClass(this.myClass('input-size-half')).end()
         .end()
         .start().addClass('inline').addClass('float-right')
           .start().add(this.LABEL_LAST_NAME).addClass(this.myClass('field-label')).end()
-          .start(this.LAST_NAME).addClass(this.myClass('input-size-half')).end()
+          .start().add(this.LAST_NAME).addClass(this.myClass('input-size-half')).end()
         .end()
 
         .start().addClass(this.myClass('divider')).end()

@@ -63,6 +63,11 @@ foam.CLASS({
       type: 'Long',
       name: 'KOTAK_CO_DESTINATION_ACCOUNT_ID',
       value: 9
+    },
+    {
+      name: 'PAYMENT_PROVIDER',
+      type: 'String',
+      value: 'Kotak'
     }
   ],
 
@@ -110,6 +115,7 @@ foam.CLASS({
       kotakCO.setAmount(requestTxn.getAmount());
       kotakCO.setSourceAccount(requestTxn.getSourceAccount());
       kotakCO.setDestinationAccount(this.KOTAK_CO_DESTINATION_ACCOUNT_ID);
+      kotakCO.setPaymentProvider(PAYMENT_PROVIDER);
       kotakCO.setIsQuoted(true);
       kotakCO.setPlanner(this.getId());
       kotakCO.add(transfers);

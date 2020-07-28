@@ -34,6 +34,8 @@ FOAM_FILES([
   { name: 'net/nanopay/payment/PaymentCode' },
   { name: 'net/nanopay/payment/PaymentService' },
   { name: 'net/nanopay/payment/PaymentProvider' },
+  { name: 'net/nanopay/payment/PaymentProviderAware' },
+  { name: 'net/nanopay/payment/TransactionRefinement' },
   { name: 'net/nanopay/payment/PaymentMethod' },
   { name: 'net/nanopay/payment/PaymentProviderCorridor' },
   { name: 'net/nanopay/payment/CountryCapability' },
