@@ -25,8 +25,11 @@ foam.CLASS({
   package: 'net.nanopay.fx.afex',
   name: 'AFEXTransaction',
   extends: 'net.nanopay.fx.FXTransaction',
-
   documentation: `Hold AFEX specific properties`,
+
+  implements: [
+    'net.nanopay.tx.PartnerTransaction'
+  ],
 
   javaImports: [
     'foam.core.X',
