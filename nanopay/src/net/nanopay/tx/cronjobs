@@ -71,3 +71,64 @@ p({
     print("Liquidity Monthly Run");
   """
 })
+
+p({
+  "class": "foam.nanos.cron.Cron",
+  "enabled": false,
+  "schedule": {
+    "class": "foam.nanos.cron.CronSchedule",
+    "minute": -1,
+    "hour": -1,
+    "dayOfMonth": -1,
+    "month": -1,
+    "dayOfWeek": -1,
+    "second": 0
+  },
+  "id": "generic transaction completion cron",
+  "description": "This cron job sets CICO transaction to complete if they are in sent status and have passed the completion date.",
+  "code": 
+  """
+  import foam.mlang.predicate.Predicate;
+  import foam.core.ContextAgent;
+  import foam.core.Detachable;
+  import foam.core.X;
+  import foam.dao.AbstractSink;
+  import foam.dao.DAO;
+  import net.nanopay.tx.cico.CITransaction;
+  import net.nanopay.tx.cico.COTransaction;
+  import net.nanopay.tx.cico.VerificationTransaction;
+  import net.nanopay.tx.model.Transaction;
+  import net.nanopay.tx.model.TransactionStatus;
+  import java.time.LocalDateTime;
+  import static foam.mlang.MLang.*;
+  import java.time.ZoneId;
+
+  DAO transactionDAO = (DAO) x.get("localTransactionDAO");
+  transactionDAO
+    .where(
+          AND(new Predicate[] {
+              EQ(Transaction.STATUS, TransactionStatus.SENT),
+              OR(new Predicate[] {
+                INSTANCE_OF(CITransaction.class),
+                INSTANCE_OF(COTransaction.class),
+                INSTANCE_OF(VerificationTransaction.class)
+              })
+            })
+          )
+    .select( new AbstractSink() {
+
+    public void put(Object o, Detachable d) {
+      Transaction txn = (Transaction) o.fclone();
+      LocalDateTime now = LocalDateTime.now();
+      if ( txn.getEstimatedCompletionDate() != null ) {
+        LocalDateTime completion = LocalDateTime.ofInstant(txn.getEstimatedCompletionDate().toInstant(),ZoneId.systemDefault());
+        if ( now.isAfter(completion) ) {
+          txn.setStatus(TransactionStatus.COMPLETED);
+          txn2 = transactionDAO.put(txn);
+        }
+      }
+    }
+  });
+  print("done");
+  """
+})

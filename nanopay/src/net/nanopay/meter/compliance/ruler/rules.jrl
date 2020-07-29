@@ -452,6 +452,26 @@ p({
   "lifecycleState":1
 })
 
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id":"348d6c1a-1e3c-4da6-a1e7-f42892aed3cb",
+  "name": "Estimate Transaction completionDate sandbox version",
+  "documentation": "Simulates a shorter clearing time.",
+  "ruleGroup": "ClearingTime",
+  "daoKey": "localTransactionDAO",
+  "operation": 1,
+  "after": true,
+  "action": {
+    "class": "net.nanopay.meter.clearing.ruler.SimulateTransactionCompletionDate"
+  },
+  "enabled": false,
+  "saveHistory": false,
+  "predicate": {
+    "class": "net.nanopay.meter.clearing.ruler.predicate.DefaultClearingTimeRulePredicate"
+  },
+  "lifecycleState":1
+})
+
 // Notifications
 p({
   "class":"foam.nanos.ruler.Rule",

@@ -31,6 +31,11 @@ foam.CLASS({
     {
       name: 'bestPlan',
       value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'instantComplete',
+      value: true
     }
   ],
 
@@ -49,7 +54,11 @@ foam.CLASS({
       quote.addTransfer(trustAccount.getId(), - cashIn.getAmount());
       quote.addTransfer(quote.getDestinationAccount().getId(), cashIn.getAmount());
 
-      cashIn.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);
+      if ( getInstantComplete() ) {
+        cashIn.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);
+      } else {
+        cashIn.setStatus(net.nanopay.tx.model.TransactionStatus.SENT);
+      }
 
       return cashIn;
 
