@@ -1,13 +1,13 @@
 p({
   "class":"foam.net.Host",
-  "id":"nerf1",
-  "address":"10.22.41.111",
+  "id":"alectrona",
+  "address":"10.22.41.202",
 })
 
 p({
   "class":"foam.net.Host",
-  "id":"alectrona",
-  "address":"10.22.41.202",
+  "id":"antheia",
+  "address":"10.22.41.206",
 })
 
 p({
@@ -30,6 +30,12 @@ p({
 
 p({
   "class":"foam.net.Host",
+  "id":"argus",
+  "address":"10.22.41.174",
+})
+
+p({
+  "class":"foam.net.Host",
   "id":"artemis",
   "address":"10.22.41.200",
 })
@@ -42,14 +48,38 @@ p({
 
 p({
   "class":"foam.net.Host",
+  "id":"atlas",
+  "address":"10.22.41.214",
+})
+
+p({
+  "class":"foam.net.Host",
+  "id":"chimera",
+  "address":"10.22.41.227",
+})
+
+p({
+  "class":"foam.net.Host",
+  "id":"cerberus",
+  "address":"10.22.41.226",
+})
+
+p({
+  "class":"foam.net.Host",
+  "id":"chaos",
+  "address":"10.22.41.221",
+})
+
+p({
+  "class":"foam.net.Host",
   "id":"jhughes",
   "address":"10.22.41.111",
 })
 
 p({
   "class":"foam.net.Host",
-  "id":"noc",
-  "address":"10.22.41.111",
+  "id":"kraken",
+  "address":"10.22.41.223",
 })
 
 p({
@@ -74,4 +104,10 @@ p({
   "class":"foam.net.Host",
   "id":"raspberrypi",
   "address":"10.22.41.187",
+})
+
+p({
+  "class":"foam.net.Host",
+  "id":"nerf1",
+  "address":"10.22.41.111",
 })
