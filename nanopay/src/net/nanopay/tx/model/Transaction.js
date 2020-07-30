@@ -1066,21 +1066,30 @@ foam.CLASS({
       ],
       type: 'net.nanopay.tx.model.TransactionStatus',
       javaCode: `
+        return getStateTxn(x).getStatus();
+      `
+    },
+    {
+      documentation: 'Returns 1st child with non complete status',
+      name: 'getStateTxn',
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      type: 'net.nanopay.tx.model.Transaction',
+      javaCode: `
       if ( getStatus() != TransactionStatus.COMPLETED ) {
-        return getStatus();
+        return this;
       }
       DAO dao = (DAO) x.get("localTransactionDAO");
       List children = ((ArraySink) dao.where(EQ(Transaction.PARENT, getId())).select(new ArraySink())).getArray();
-// REVIEW: the following is very slow going through authenticated transactionDAO rather than unauthenticated localTransactionDAO
-//      List children = ((ArraySink) getChildren(x).select(new ArraySink())).getArray();
       for ( Object obj : children ) {
         Transaction child = (Transaction) obj;
-        TransactionStatus status = child.getState(x);
-        if ( status != TransactionStatus.COMPLETED ) {
-          return status;
+        Transaction current = child.getStateTxn(x);
+        if ( current.getStatus() != TransactionStatus.COMPLETED ) {
+          return current;
         }
       }
-      return getStatus();
+      return this;
       `
     },
     {

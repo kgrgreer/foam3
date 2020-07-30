@@ -1252,7 +1252,8 @@ var classes = [
  'net.nanopay.tx.realex.RealexTransactionDAO',
  'net.nanopay.tx.realex.RealexTransactionPlanDAO',
  'net.nanopay.tx.stripe.StripeTransactionDAO',
- 'net.nanopay.tx.IBAN'
+ 'net.nanopay.tx.IBAN',
+ 'net.nanopay.tx.ChainSummary',
 ];
 
 var abstractClasses = [
