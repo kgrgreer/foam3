@@ -840,7 +840,12 @@ foam.CLASS({
           .end();
 
         // Pass the customized DOM element into the toast notification
-        this.notify(TwoFactorNotificationDOM, '', this.LogLevel.WARN, true);
+        this.add(this.NotificationMessage.create({
+           message: TwoFactorNotificationDOM,
+           type: this.LogLevel.WARN,
+           description: ''
+         }));
+
         if ( this.appConfig.mode != foam.nanos.app.Mode.PRODUCTION ) {
           return true;
         } else {
