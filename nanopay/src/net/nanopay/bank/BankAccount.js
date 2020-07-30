@@ -126,6 +126,7 @@ foam.CLASS({
     },
     {
       name: 'summary',
+      networkTransient: false,
       tableCellFormatter: function(_, obj) {
         this.start()
         .start()
@@ -137,7 +138,10 @@ foam.CLASS({
               }
           }))
         .end();
-      }
+      },
+      javaFactory: `
+        return "***" + getAccountNumber().substring(getAccountNumber().length() - 4);
+      `
     },
     {
       class: 'foam.core.Enum',
@@ -216,7 +220,7 @@ foam.CLASS({
     {
       class: 'Int',
       name: 'verificationAttempts',
-      documentation: `Defines the number of times it is attempted to verify 
+      documentation: `Defines the number of times it is attempted to verify
         ownership of the bank account.`,
       value: 0,
       section: 'administration',
@@ -232,7 +236,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.Country',
       name: 'country',
-      documentation: `The name of the country associated with the bank account. 
+      documentation: `The name of the country associated with the bank account.
         This should be set by the child class.
       `,
       section: 'accountDetails',
@@ -242,7 +246,7 @@ foam.CLASS({
       class: 'URL',
       name: 'flagImage',
       label: 'Country', // To set table column heading
-      documentation: `A URL link to an image of the country's flag. Used for 
+      documentation: `A URL link to an image of the country's flag. Used for
         display purposes. This should be set by the child class.
       `,
       tableWidth: 91,
@@ -260,7 +264,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'integrationId',
-      documentation:`A unique identifier for a bank account within the 
+      documentation:`A unique identifier for a bank account within the
         client's accounting software.`,
       section: 'administration'
     },
@@ -354,7 +358,7 @@ foam.CLASS({
       class: 'String',
       name: 'iban',
       label: 'IBAN Number',
-      documentation: `Standard international numbering system developed to 
+      documentation: `Standard international numbering system developed to
           identify an overseas bank account.`,
       visibility: 'RO',
       factory: function() {
