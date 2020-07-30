@@ -29,6 +29,8 @@ foam.CLASS({
     'foam.u2.dialog.Popup',
     'foam.dao.PromisedDAO',
     'foam.nanos.auth.UserUserJunction',
+    'foam.nanos.crunch.UserCapabilityJunction',
+    'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.auth.AgentJunctionStatus',
@@ -40,11 +42,14 @@ foam.CLASS({
     'agentAuth',
     'auth',
     'businessDAO',
+    'crunchController',
     'ctrl',
     'notify',
     'onboardingUtil',
     'pushMenu',
     'stack',
+    'theme',
+    'userCapabilityJunctionDAO',
     'user',
     'window'
   ],
@@ -230,12 +235,7 @@ foam.CLASS({
           await this.ctrl.fetchGroup();
           this.subject.user = business;
           this.subject.realUser = result;
-          // Add the condition check for Grain Discovery.
-          // This should be removed once we use Crunch for onboarding.
-          if ( this.ctrl.webApp !== 'gd' ) {
-            this.onboardingUtil.initOnboardingView();
-          }
-          this.pushMenu('sme.main.dashboard');
+          this.pushMenu('sme.main.appStore');
           return;
         }
       } catch (err) {
@@ -250,8 +250,29 @@ foam.CLASS({
       if ( this.user.cls_ != net.nanopay.model.Business ) {
         this.enabledBusinesses_
           .select()
-          .then((sink) => {
-            if ( sink.array.length === 1 ) {
+          .then(async (sink) => {
+            // no registered business
+            if ( sink.array.length === 0 ) {
+              var ac = this.theme.admissionCapability;
+              
+              // check if user registration capability is granted
+              var ucj = await this.userCapabilityJunctionDAO.find(
+                this.AND(
+                  this.EQ(this.UserCapabilityJunction.SOURCE_ID, this.subject.user.id),
+                  this.EQ(this.UserCapabilityJunction.TARGET_ID, ac),
+                  this.EQ(this.UserCapabilityJunction.STATUS, this.CapabilityJunctionStatus.GRANTED)
+                )
+              );
+              // if yes, redirect to appStore
+              if ( ucj ) {
+                this.pushMenu('sme.main.appStore');
+                return;
+              }
+
+              // if no, pass to user reg
+              this.onboardingUtil.initUserRegistration(ac);
+            }
+            else if ( sink.array.length === 1 ) {
               var junction = sink.array[0];
 
               // If the user is only in one business but that business has
@@ -363,7 +384,7 @@ foam.CLASS({
         this.stack.back();
         return;
       }
-      this.pushMenu('sme.main.dashboard');
+      this.pushMenu('sme.main.appStore');
     }
   ],
   actions: [

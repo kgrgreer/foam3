@@ -1177,6 +1177,9 @@ var classes = [
   'net.nanopay.crunch.acceptanceDocuments.capabilities.AFXColoradoDisclosure',
   'net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability',
 
+  // crunch registration
+  'net.nanopay.crunch.registration.UserRegistrationData',
+
   // Notification
   'net.nanopay.notification.TriggerNotificationTestAction',
   'net.nanopay.notification.TriggerDoNotifyTestAction',

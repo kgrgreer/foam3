@@ -60,7 +60,7 @@ p({
     .login-wrapper {
       margin-left: 250px;
     }
-    .foam-u2-stack-StackView {
+    .net-nanopay-ui-Controller-stack-view {
       margin: auto;
       overflow: scroll;
       height: calc(100vh - 150px);

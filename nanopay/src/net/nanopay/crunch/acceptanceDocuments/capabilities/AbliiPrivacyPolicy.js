@@ -20,6 +20,10 @@ foam.CLASS({
   name: 'AbliiPrivacyPolicy',
   extends: 'net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability',
 
+  imports: [
+    'appConfig'
+  ],
+
   messages: [
     { name: 'ACKNOWLEDGE_PRIVACY_POLICY', message: 'Must acknowledge the Privacy Policy.' }
   ],
@@ -35,7 +39,9 @@ foam.CLASS({
     },
     {
       name: 'link',
-      value: 'https://nanopay.net/wp-content/uploads/2019/05/Ablii-by-nanopay-Privacy-Policy.pdf'
+      expression: function(appConfig$privacyUrl) {
+        return appConfig$privacyUrl;
+      }
     },
     {
       name: 'agreement',

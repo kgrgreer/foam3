@@ -26,6 +26,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.nanos.crunch.UserCapabilityJunction',
     'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.sme.onboarding.BusinessOnboarding',
@@ -40,13 +41,16 @@ foam.CLASS({
     'auth',
     'businessOnboardingDAO',
     'canadaUsBusinessOnboardingDAO',
+    'crunchController',
     'ctrl',
     'quickbooksService',
+    'pushMenu',
     'stack',
     'userDAO',
     'xeroService',
     'uSBusinessOnboardingDAO',
     'user',
+    'userCapabilityJunctionDAO'
   ],
 
   methods: [
@@ -118,6 +122,43 @@ foam.CLASS({
             }
           }
         });
+    },
+    
+    async function initUserRegistration(cap) {
+      var capsAndWizlets = await this.crunchController.getCapsAndWizardlets(cap);
+
+      capsAndWizlets.wizCaps = capsAndWizlets.wizCaps.map((wizCap) => {
+        wizCap.mustBeValid = true;
+        return wizCap;
+      });
+
+      var config = foam.u2.wizard.StepWizardConfig.create({ 
+        allowBacktracking: false,
+        allowSkipping: false
+      });
+
+      this.stack.push({
+        class: 'foam.u2.wizard.StepWizardletView',
+        data: foam.u2.wizard.StepWizardletController.create({
+          wizardlets: capsAndWizlets.wizCaps,
+          config: config
+        }),
+        onClose: async () => {
+          let updatedUser = await this.userDAO.find(this.user.id);
+          this.subject.user = updatedUser;
+          this.subject.realUser = updatedUser;
+          // put top-level cap to ucj
+          await this.userCapabilityJunctionDAO.put(this.UserCapabilityJunction.create({
+            sourceId: updatedUser,
+            targetId: cap
+          }));
+          this.pushMenu('sme.main.appStore');
+        },
+        fullScreen: true,
+        hideX: true,
+        backDisabled: true
+      });
+      location.hash = 'sme.main.registration';
     }
   ]
 

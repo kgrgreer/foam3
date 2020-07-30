@@ -206,13 +206,6 @@ foam.CLASS({
         // TODO: Why are we doing this here instead of letting PreventDuplicateEmailDAO catch this down the line?
         if ( ! isInternal ) checkUserDuplication(x, user);
 
-        Address businessAddress = user.getAddress();
-
-        // Prevent non cad accounts
-        if ( ! businessAddress.getCountryId().equals("CA") && ! businessAddress.getCountryId().equals("US") ) {
-          throw new IllegalStateException(CAD_US_SUPPORTED_ONLY_ERROR_MSG);
-        }
-
         return super.put_(sysContext, user);
       `
     },

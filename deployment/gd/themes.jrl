@@ -6,7 +6,7 @@ p({
   "description":"Grain Discovery",
   "navigationRootMenu":"smeNavigation",
   "settingsRootMenu":"smeSettings",
-  "logoRedirect":"sme.main.dashboard",
+  "logoRedirect":"sme.main.appStore",
   "defaultMenu":"sme.accountProfile.switch-business",
   "disableCurrencyChoice": true,
   "loginImage": "images/sign_in_illustration.png",
@@ -52,7 +52,7 @@ p({
     .login-wrapper {
       margin-left: 250px;
     }
-    .foam-u2-stack-StackView {
+    .net-nanopay-ui-Controller-stack-view {
       margin: auto;
       padding-bottom: 65px;
       overflow: scroll;
