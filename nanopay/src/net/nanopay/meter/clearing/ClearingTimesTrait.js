@@ -35,6 +35,12 @@ foam.INTERFACE({
     {
       class: 'DateTime',
       name: 'estimatedCompletionDate',
+      view: function(_, x) {
+        return foam.u2.Element.create()
+          .start()
+            .add(x.data.estimatedCompletionDate)
+          .end();
+      },
     },
     {
       class: 'DateTime',

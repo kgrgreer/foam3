@@ -192,3 +192,26 @@ p({
   "reviewRequired":true,
   "keywords":["featured"]
 })
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-18",
+  "name":"Nanopay Admission",
+  "version":"0",
+  "enabled":true,
+  "visible":true,
+  "associatedEntity": 1
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-19",
+  "name":"User Registration",
+  "of":"net.nanopay.crunch.registration.UserRegistrationData",
+  "version":"0",
+  "enabled":true,
+  "visible":true,
+  "daoKey":"userDAO",
+  "contextDAOFindKey": "subject.realUser",
+  "associatedEntity": 1
+})

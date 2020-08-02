@@ -56,7 +56,6 @@ foam.CLASS({
     'net.nanopay.invoice.ui.style.InvoiceStyles',
     'net.nanopay.model.Business',
     'net.nanopay.model.BusinessUserJunction',
-    'net.nanopay.model.SignUp',
     'net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding',
     'net.nanopay.sme.onboarding.OnboardingStatus',
     'net.nanopay.sme.ui.AbliiOverlayActionListView',
@@ -111,6 +110,7 @@ foam.CLASS({
       flex-grow: 1;
       /* 70px for topNav || 20px for padding || 40px for footer */
       min-height: calc(100% - 70px - 20px - 40px) !important;
+      background-color: white;
     }
     .stack-wrapper:after {
       content: "";
@@ -305,9 +305,9 @@ foam.CLASS({
     },
     {
       name: 'loginVariables',
-      expression: function( client$smeBusinessRegistrationDAO ) {
+      expression: function( client$smeUserRegistrationDAO ) {
         return {
-          dao_: client$smeBusinessRegistrationDAO || null,
+          dao_: client$smeUserRegistrationDAO || null,
           imgPath: this.theme.loginImage,
           group_: 'sme',
           countryChoices_: ['CA', 'US']
@@ -577,7 +577,6 @@ foam.CLASS({
         this.__subContext__.register(this.NotificationMessage, 'foam.u2.dialog.NotificationMessage');
         this.__subContext__.register(this.TwoFactorSignInView, 'foam.nanos.auth.twofactor.TwoFactorSignInView');
         this.__subContext__.register(this.AbliiOverlayActionListView, 'foam.u2.view.OverlayActionListView');
-        this.__subContext__.register(this.SignUp, 'foam.nanos.u2.navigation.SignUp');
 
         this.themeInstalled.resolve();
       });
@@ -602,10 +601,13 @@ foam.CLASS({
               class: 'net.nanopay.ui.banner.Banner',
               data$: this.bannerData$
             })
-            .tag(this.StackView, {
-              data: this.stack,
-              showActions: false
-            })
+            .start()
+              .addClass(this.myClass('stack-view'))
+              .add(this.StackView.create({
+                data: this.stack,
+                showActions: false
+              }))
+            .end()
           .end()
           .start()
             .enableClass('footer-wrapper', this.loginSuccess$)
@@ -624,10 +626,13 @@ foam.CLASS({
               class: 'net.nanopay.ui.banner.Banner',
               data$: this.bannerData$
             })
-            .tag(this.StackView, {
-              data: this.stack,
-              showActions: false
-            })
+            .start()
+              .addClass(this.myClass('stack-view'))
+              .add(this.StackView.create({
+                data: this.stack,
+                showActions: false
+              }))
+            .end()
           .end();
       }
     },
@@ -840,7 +845,12 @@ foam.CLASS({
           .end();
 
         // Pass the customized DOM element into the toast notification
-        this.notify(TwoFactorNotificationDOM, '', this.LogLevel.WARN, true);
+        this.add(this.NotificationMessage.create({
+           message: TwoFactorNotificationDOM,
+           type: this.LogLevel.WARN,
+           description: ''
+         }));
+
         if ( this.appConfig.mode != foam.nanos.app.Mode.PRODUCTION ) {
           return true;
         } else {
@@ -977,14 +987,12 @@ foam.CLASS({
           }
 
           var hash = location.hash.substr(1);
-
-          if ( hash == 'sme.main.onboarding' ) {
-            this.onboardingUtil.initOnboardingView();
+  
+          if ( hash == 'sme.main.registration' ) {
+            var ac = this.theme.admissionCapability;
+            this.onboardingUtil.initUserRegistration(ac);
           }
-
-          if ( hash == 'sme.main.onboarding.international' ) {
-            this.onboardingUtil.initInternationalOnboardingView();
-          }
+  
           try {
             menu = await this.client.menuDAO.find(hash);
           }
@@ -1002,21 +1010,6 @@ foam.CLASS({
             this.bannerizeCompliance();
           }
         };
-
-        // Prevent action within platform if user is not a business. Redirect regular users to
-        // switch business menu screen to select a business.
-        this.stack$.dot('pos').sub(function() {
-          if ( self.user.cls_ == net.nanopay.model.Business && self.loginSuccess ) {
-            return;
-          } else if (
-            self.user.cls_ != self.Business &&
-            self.loginSuccess &&
-            location.hash != '#sme.accountProfile.switch-business'
-          ) {
-            self.pushMenu('sme.accountProfile.switch-business');
-            self.notify(self.SELECT_BUSINESS_WARNING, '', this.LogLevel.WARN, true);
-          }
-        });
 
         if ( ! this.subject.user.emailVerified ) {
           this.loginSuccess = false;

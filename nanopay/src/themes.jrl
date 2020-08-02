@@ -24,7 +24,7 @@ p({
     .login-wrapper {
       margin-left: 250px;
     }
-    .foam-u2-stack-StackView {
+    .net-nanopay-ui-Controller-stack-view {
       margin: auto;
       overflow: scroll;
       height: calc(100vh - 150px);
@@ -65,7 +65,7 @@ p({
     .login-wrapper {
       margin-left: 250px;
     }
-    .foam-u2-stack-StackView {
+    .net-nanopay-ui-Controller-stack-view {
       margin: auto;
       overflow: scroll;
       height: calc(100vh - 150px);
@@ -88,7 +88,8 @@ p({
   "description":"Ablii",
   "navigationRootMenu":"smeNavigation",
   "settingsRootMenu":"smeSettings",
-  "logoRedirect":"sme.main.dashboard",
+  "logoRedirect":"sme.main.appStore",
+  "admissionCapability": "554af38a-8225-87c8-dfdf-eeb15f71215e-18",
   "defaultMenu":"sme.accountProfile.switch-business",
   "disableCurrencyChoice": true,
   "loginImage": "images/sign_in_illustration.png",
@@ -134,7 +135,7 @@ p({
     .login-wrapper {
       margin-left: 250px;
     }
-    .foam-u2-stack-StackView {
+    .net-nanopay-ui-Controller-stack-view {
       margin: auto;
       padding-bottom: 65px;
       overflow: scroll;

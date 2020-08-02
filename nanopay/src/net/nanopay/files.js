@@ -471,6 +471,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ruler/AddGDTxnFeeLineItem' },
   { name: 'net/nanopay/tx/AddLiquidTransactionAction' },
   { name: 'net/nanopay/tx/LabelLiquidSummaryAction' },
+  { name: 'net/nanopay/tx/ChainSummary' },
+  { name: 'net/nanopay/tx/PartnerTransaction' },
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },
@@ -732,7 +734,6 @@ FOAM_FILES([
   { name: 'net/nanopay/documents/ui/AcceptanceDocumentView' },
 
   // settings
-  { name: 'net/nanopay/model/SignUp' },
   { name: 'net/nanopay/settings/autoCashout/AutoCashoutSettingsView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/BusinessHoursView', flags: ['web'] },
   { name: 'net/nanopay/settings/business/EditPrincipalOwnersView', flags: ['web'] },
@@ -1249,6 +1250,7 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/clearing/ruler/ClearingTimeRule' },
   { name: 'net/nanopay/meter/clearing/ruler/ClearingTimeRuleDAOCreateView' },
   { name: 'net/nanopay/meter/clearing/ruler/EstimateTransactionCompletionDate' },
+  { name: 'net/nanopay/meter/clearing/ruler/SimulateTransactionCompletionDate' },
   { name: 'net/nanopay/meter/clearing/ruler/InstitutionClearingTimeRule' },
   { name: 'net/nanopay/meter/clearing/ruler/TransactionTypeClearingTimeRule' },
   { name: 'net/nanopay/meter/clearing/ruler/predicate/DefaultClearingTimeRulePredicate' },
@@ -1523,6 +1525,10 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/fee/Relationships' },
   { name: 'net/nanopay/tx/fee/predicate/IsDomesticTransaction' },
   { name: 'net/nanopay/tx/fee/test/TransactionFeeRuleTest' },
+
+  // crunch registration
+  { name: 'net/nanopay/crunch/registration/UserRegistrationData' },
+
 
   // crunch onboarding
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerPersonalData' },

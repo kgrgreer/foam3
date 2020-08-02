@@ -23,6 +23,7 @@ foam.CLASS({
   documentation: 'View to display footer view.',
 
   imports: [
+    'appConfig',
     'theme'
   ],
 
@@ -37,8 +38,16 @@ foam.CLASS({
       z-index: 949;
       position: fixed;
       bottom: 0;
-      justify-content: flex-end;
-      background-color: /*%PRIMARY1%*/ #2e2379;
+      justify-content: space-between;
+      background-color: /*%PRIMARY1%*/ #202341;
+    }
+    .acd-container, .support-container {
+      display: flex;
+      align-items: center;
+    }
+    ^ button {
+      background-color: transparent;
+      color: white;
     }
     ^ .appConfig-info {
       display: flex;
@@ -52,7 +61,9 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'CONTACT_SUPPORT', message: 'Contact Support' },
+    { name: 'TERMS_AND_CONDITIONS_TITLE', message: 'Terms and Conditions' },
+    { name: 'PRIVACY_TITLE', message: 'Privacy Policy' },
+    { name: 'CONTACT_SUPPORT', message: 'Contact Support' }
   ],
 
   methods: [
@@ -61,16 +72,47 @@ foam.CLASS({
 
       this
         .addClass(this.myClass())
-          .start().add(this.CONTACT_SUPPORT).end()
-          .add(this.slot((theme) => {
-            return this.E().addClass('appConfig-info')
-              .start('a')
-                .attrs({ href: 'mailto:' + theme.supportEmail })
-                .add(theme.supportEmail)
-              .end()
-              .start().add(theme.supportPhone).end();
-          }))
+          .start().addClass('acd-container')
+            .start().addClass(this.myClass('button'))
+              .add(this.slot((appConfig$termsAndCondLink) => {
+                return this.E().addClass('appConfig-info')
+                  .start('a')
+                    .add(this.TERMS_AND_CONDITIONS_TITLE)
+                    .attrs({
+                      href: appConfig$termsAndCondLink,
+                      target: '_blank'
+                    })
+                    .style({'text-decoration':'none'})
+                  .end()
+              }))
+            .end()
+            .add('|')
+            .start().addClass(this.myClass('button'))
+              .add(this.slot((appConfig$privacyUrl) => {
+                return this.E().addClass('appConfig-info')
+                  .start('a')
+                    .add(this.PRIVACY_TITLE)
+                    .attrs({
+                      href: appConfig$privacyUrl,
+                      target: '_blank'
+                    })
+                    .style({'text-decoration':'none'})
+                  .end()
+              }))
+            .end()
+          .end()
+          .start().addClass('support-container')
+            .start().add(this.CONTACT_SUPPORT).end()
+            .add(this.slot((theme) => {
+              return this.E().addClass('appConfig-info')
+                .start('a')
+                  .attrs({ href: 'mailto:' + theme.supportEmail })
+                  .add(theme.supportEmail)
+                .end()
+                .start().add(theme.supportPhone).end();
+            }))
+          .end()
         .end();
-    },
+    }
   ]
 });

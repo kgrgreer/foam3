@@ -62,17 +62,13 @@ foam.CLASS({
     ^ .foam-nanos-u2-navigation-NotificationMenuItem img {
       margin-top: 10px;
     }
-    ^ .foam-nanos-menu-SubMenuView-inner div {
-      right: 100px;
-      position: relative;
-    }
     ^ .foam-nanos-menu-SubMenuView-inner {
       z-index: 10001;
       box-shadow: none;
       position: absolute;
       top: 60px;
       font-weight: 300;
-      right: -100px;
+      right: 0;
     }
     ^ .foam-nanos-menu-SubMenuView-inner > div {
       height: 40px;

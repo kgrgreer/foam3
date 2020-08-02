@@ -21,10 +21,25 @@ foam.CLASS({
   extends: 'net.nanopay.tx.model.Transaction',
 
   javaImports: [
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.cico.CITransaction',
+    'net.nanopay.tx.cico.COTransaction',
+    'net.nanopay.tx.PartnerTransaction',
+    'net.nanopay.tx.DigitalTransaction',
+    'net.nanopay.tx.ChainSummary'
   ],
 
   documentation: 'Used solely to present a summary of LineItems for chained Transactions',
+
+  properties: [
+    {
+      name: 'chainSummary',
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.ChainSummary',
+      storageTransient: true,
+      visibility: 'HIDDEN'
+    }
+  ],
 
   methods: [
      {
@@ -69,6 +84,43 @@ foam.CLASS({
         }
       }
       `
-    }
+    },
+    {
+      documentation: 'Returns childrens status.',
+      name: 'getState',
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      type: 'net.nanopay.tx.model.TransactionStatus',
+      javaCode: `
+
+        Transaction t = getStateTxn(x);
+        ChainSummary cs = new ChainSummary();
+        cs.setStatus(t.getStatus());
+        cs.setCategory(categorize_(t));
+        this.setChainSummary(cs);
+        return t.getStatus();
+      `
+    },
+    {
+      documentation: 'sorts transaction into category, for display to user.',
+      name: 'categorize_',
+      args: [
+        { name: 't', type: 'net.nanopay.tx.model.Transaction' }
+      ],
+      type: 'String',
+      javaCode: `
+        if (t instanceof CITransaction)
+          return "Cash In";
+        if (t instanceof COTransaction)
+          return "Cash Out";
+        if (t instanceof PartnerTransaction)
+          return "Partner";
+        if (t instanceof DigitalTransaction)
+          return "Digital";
+        else
+          return "Approval";
+      `
+    },
   ]
 });

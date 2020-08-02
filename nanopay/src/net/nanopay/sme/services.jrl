@@ -36,6 +36,43 @@ p({
 })
 
 p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "smeUserRegistrationDAO",
+  "lazy": false,
+  "serve": true,
+  "authenticate": false,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(foam.nanos.auth.User.getOwnClassInfo())
+      .setInnerDAO(x.get("localUserDAO"))
+      .setDecorator(
+        new net.nanopay.security.UserRegistrationSanitationDAO.Builder(x).setDelegate(
+        new foam.nanos.auth.UserPasswordHashingDAO(x,
+        new net.nanopay.onboarding.UserRegistrationDAO(x, "sme", 
+        new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.auth.User.getOwnClassInfo()).build()))).build())
+      .setAuthorize(false)
+      .setRuler(true)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setValidated(true)
+      .setEnableInterfaceDecorators(false)
+      .setValidator(new net.nanopay.onboarding.UserRegistrationValidator())
+      .build();
+  """,
+  "client": """
+    {
+      "of": "foam.nanos.auth.User",
+      "cache": true,
+      "decorators": [
+        { "class": "foam.nanos.fs.FileDAODecorator" },
+        { "class": "foam.nanos.fs.FileArrayDAODecorator"}
+      ]
+    }
+  """
+})
+
+p({
   "class":"foam.nanos.boot.NSpec",
   "name":"businessInvitationDAO",
   "serve":true,

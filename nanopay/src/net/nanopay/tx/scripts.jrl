@@ -53,6 +53,16 @@ p({
     ruleDAO_.put(r2);
     ruleDAO_.put(r3);
     ruleDAO_.put(r4);
+
+    // enable clearing time cron and rule
+    r5 = ruleDAO_.find("348d6c1a-1e3c-4da6-a1e7-f42892aed3cb").fclone();
+    r5.setEnabled(true);
+    ruleDAO_.put(r5);
+    
+    cronDAO_ = x.get("cronDAO");
+    cron = cronDAO.find("generic transaction completion cron");
+    cron.setEnabled(true);
+    cronDAO.put(cron);
     print("done");
   `
 })

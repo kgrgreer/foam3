@@ -406,7 +406,6 @@ foam.CLASS({
       // Setup the default destination currency
       this.invoice.destinationCurrency
         = this.currencyType;
-      
       if ( this.type === 'payable' ) {
         this.invoice.payerId = this.subject.user.id;
       } else {
@@ -542,7 +541,6 @@ foam.CLASS({
                 .end()
               .end()
             .end()
-            
             .start()
               .addClass('input-wrapper')
               .start()
@@ -558,7 +556,6 @@ foam.CLASS({
                   }))
               .end()
             .end()
-            
             .start().addClass('invoice-block')
               .start().addClass('input-wrapper')
                 .start().addClass('input-label').add('Invoice Number').end()
@@ -656,14 +653,17 @@ foam.CLASS({
   listeners: [
     async function onContactIdChange() {
       this.contact = await this.subject.user.contacts.find(this.invoice.contactId);
-      if ( this.type == 'payable' && this.contact && ( this.contact.bankAccount > 0 || this.contact.businessId > 0 ) ) {
-        await this.setDefaultCurrency();
+      if ( this.contact && ( this.contact.bankAccount > 0 || this.contact.businessId > 0 ) ) {
+        if ( this.type == 'payable' )
+          await this.setDefaultCurrency();
+
         this.setChosenBankAccount();
       }
       this.checkUser(this.currencyType);
     },
     function onCurrencyTypeChange() {
       this.selectedCurrency = this.currencyType;
+      this.setChosenBankAccount();
       this.checkUser(this.currencyType);
     },
     function checkUser(currency) {
@@ -707,13 +707,24 @@ foam.CLASS({
       }
     },
     async function setChosenBankAccount() {
-      this.chosenBankAccount = await this.subject.user.accounts.find(
-        this.AND(
-          this.INSTANCE_OF(this.BankAccount),
-          this.EQ(this.BankAccount.IS_DEFAULT, true),
-          this.EQ(this.BankAccount.DENOMINATION, this.type === 'payable' ? this.invoice.destinationCurrency : this.invoice.sourceCurrency)
-        )
-      );
+      var isPayable = this.type === 'payable' ? true : false ;
+
+      if ( isPayable ) {
+        this.chosenBankAccount = await this.subject.user.accounts.find(
+          this.AND(
+            this.INSTANCE_OF(this.BankAccount),
+            this.EQ(this.BankAccount.IS_DEFAULT, true),
+          )
+        );
+      } else {
+        this.chosenBankAccount = await this.subject.user.accounts.find(
+          this.AND(
+            this.INSTANCE_OF(this.BankAccount),
+            this.EQ(this.BankAccount.IS_DEFAULT, true),
+            this.EQ(this.BankAccount.DENOMINATION, this.currencyType)
+          )
+        );
+      }
 
       if ( ! this.chosenBankAccount ) {
         return;

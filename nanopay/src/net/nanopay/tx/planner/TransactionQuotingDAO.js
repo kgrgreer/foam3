@@ -82,20 +82,23 @@ foam.CLASS({
           validateQuoteTransfers(x, quote);
           txn = quote.getPlan();
         }
-        // Transaction Plan Validation
-        AbstractTransactionPlanner atp = (AbstractTransactionPlanner) txn.findPlanner(x);
-        if (atp != null) atp.validatePlan(x, txn);
-        else {
-          Logger logger = (Logger) x.get("logger");
-          logger.warning(txn.getId() + " failed planner validation");
-          return txn;
-        }
-        // Transaction Line Item Validation and Copying
-        for ( TransactionLineItem li : txn.getLineItems() )
-          li.validate();
-        if ( txn instanceof SummaryTransaction || txn instanceof FXSummaryTransaction) {
+        Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(((Transaction) obj).getId());
+        if ( oldTxn == null ) {
+          // Transaction Plan Validation
+          AbstractTransactionPlanner atp = (AbstractTransactionPlanner) txn.findPlanner(x);
+          if (atp != null) atp.validatePlan(x, txn);
+          else {
+            Logger logger = (Logger) x.get("logger");
+            logger.warning(txn.getId() + " failed planner validation");
+            return txn;
+          }
+          // Transaction Line Item Validation and Copying
           for ( TransactionLineItem li : txn.getLineItems() )
-            replaceLineItem( li, li.findFromChain(txn) );
+            li.validate();
+          if ( txn instanceof SummaryTransaction || txn instanceof FXSummaryTransaction) {
+            for ( TransactionLineItem li : txn.getLineItems() )
+              replaceLineItem( li, li.findFromChain(txn) );
+          }
         }
         return getDelegate().put_(x, txn);
       `

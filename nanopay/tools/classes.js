@@ -569,6 +569,7 @@ var classes = [
   'net.nanopay.tx.ParentCompleteToPendingRule',
   'net.nanopay.tx.BucketTransaction',
   'net.nanopay.tx.Amount',
+  'net.nanopay.tx.PartnerTransaction',
   'net.nanopay.tx.ruler.ComplianceTransactionPlanner',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
@@ -789,6 +790,7 @@ var classes = [
   'net.nanopay.meter.clearing.ruler.BusinessClearingTimeRule',
   'net.nanopay.meter.clearing.ruler.ClearingTimeRule',
   'net.nanopay.meter.clearing.ruler.EstimateTransactionCompletionDate',
+  'net.nanopay.meter.clearing.ruler.SimulateTransactionCompletionDate',
   'net.nanopay.meter.clearing.ruler.InstitutionClearingTimeRule',
   'net.nanopay.meter.clearing.ruler.TransactionTypeClearingTimeRule',
   'net.nanopay.meter.clearing.ruler.predicate.DefaultClearingTimeRulePredicate',
@@ -1176,6 +1178,9 @@ var classes = [
   'net.nanopay.crunch.acceptanceDocuments.capabilities.AFXColoradoDisclosure',
   'net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability',
 
+  // crunch registration
+  'net.nanopay.crunch.registration.UserRegistrationData',
+
   // Notification
   'net.nanopay.notification.TriggerNotificationTestAction',
   'net.nanopay.notification.TriggerDoNotifyTestAction',
@@ -1248,7 +1253,8 @@ var classes = [
  'net.nanopay.tx.realex.RealexTransactionDAO',
  'net.nanopay.tx.realex.RealexTransactionPlanDAO',
  'net.nanopay.tx.stripe.StripeTransactionDAO',
- 'net.nanopay.tx.IBAN'
+ 'net.nanopay.tx.IBAN',
+ 'net.nanopay.tx.ChainSummary',
 ];
 
 var abstractClasses = [

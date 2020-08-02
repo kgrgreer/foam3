@@ -20,6 +20,10 @@ foam.CLASS({
   name: 'AbliiTermsAndConditions',
   extends: 'net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability',
 
+  imports: [
+    'appConfig'
+  ],
+
   messages: [
     { name: 'ACKNOWLEDGE_ABLII_TC', message: 'Must acknowledge the Terms and Conditions.' }
   ],
@@ -35,7 +39,9 @@ foam.CLASS({
     },
     {
       name: 'link',
-      value: 'https://nanopay.net/wp-content/uploads/2019/05/Ablii-by-nanopay-Terms-of-Service-Agreement.pdf'
+      expression: function(appConfig$termsAndCondLink) {
+        return appConfig$termsAndCondLink;
+      }
     },
     {
       name: 'agreement',
