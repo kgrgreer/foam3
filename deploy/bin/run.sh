@@ -15,6 +15,17 @@ VERSION=
 RUN_USER=
 #CLUSTER=false
 
+MACOS='darwin*'
+LINUXOS='linux-gnu'
+
+PROFILER_AGENT_PATH=""
+if [[ $OSTYPE =~ $MACOS ]]; then
+    PROFILER_AGENT_PATH="/Applications/JProfiler.app/Contents/Resources/app/bin/macos/libjprofilerti.jnilib"
+#elif [[ $OSTYPE =~ $LINUXOS ]]; then
+    echo "MACOS";
+fi
+
+
 export DEBUG=0
 
 function usage {
@@ -78,11 +89,14 @@ JAVA_OPTS="${JAVA_OPTS} -DNANOPAY_HOME=${NANOPAY_HOME}"
 JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=${JOURNAL_HOME}"
 JAVA_OPTS="${JAVA_OPTS} -DDOCUMENT_HOME=${DOCUMENT_HOME}"
 JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=${LOG_HOME}"
-if [ ! -z ${CLUSTER} ]; then
+echo CLUSTER=$CLUSTER
+if [[ ${JAVA_OPTS} != *"CLUSTER"* ]]; then
+  if [[ ${CLUSTER} = "true" ]]; then
     JAVA_OPTS="${JAVA_OPTS} -DCLUSTER=${CLUSTER}"
+  fi
 fi
 if [ "$PROFILER" -eq 1 ]; then
-    JAVA_OPTS="${JAVA_OPTS} -agentpath:=port=$PROFILER_PORT"
+    JAVA_OPTS="${JAVA_OPTS} -agentpath:${PROFILER_AGENT_PATH}=port=$PROFILER_PORT"
 fi
 if [ "$DEBUG" -eq 1 ]; then
     JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=${DEBUG_SUSPEND=},address=${DEBUG_PORT} ${JAVA_OPTS}"
@@ -98,6 +112,7 @@ export RES_JAR_HOME="${JAR}"
 
 export JAVA_TOOL_OPTIONS="${JAVA_OPTS}"
 echo ${JAVA_OPTS} > ${NANOPAY_HOME}/logs/opts.txt
+echo JAVA_OPTS=${JAVA_OPTS}
 if [ "$DAEMONIZE" -eq 1 ]; then
     nohup java -server -jar "${JAR}" > ${NANOPAY_HOME}/logs/out.txt 3>&1 &
     echo $! > "${NANOS_PIDFILE}"
