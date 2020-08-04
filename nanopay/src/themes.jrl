@@ -106,6 +106,8 @@ p({
   "primary3":"#604aff",
   "primary4":"#937dff",
   "primary5":"#e4e4f7",
+  "secondary1":"#4a33f4",
+  "secondary2":"#432de7",
   "approval1":"#19402e",
   "approval2":"#117a41",
   "approval3":"#32bf5e",
