@@ -215,3 +215,25 @@ p({
   "contextDAOFindKey": "subject.realUser",
   "associatedEntity": 1
 })
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"688cb7c6-7316-4bbf-8483-fb79f8fdeaaf",
+  "name":"CNPJ",
+  "of":"net.nanopay.country.br.CNPJ",
+  "version":"0",
+  "enabled":true,
+  "visible":true,
+  "associatedEntity": 0
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"fb7d3ca2-62f2-4caf-a84c-860392e4676b",
+  "name":"CPF",
+  "of":"net.nanopay.country.br.CPF",
+  "version":"0",
+  "enabled":true,
+  "visible":true,
+  "associatedEntity": 1
+})

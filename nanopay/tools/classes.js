@@ -1065,6 +1065,8 @@ var classes = [
   'net.nanopay.tx.fee.test.TransactionFeeRuleTest',
 
   // Treviso
+  'net.nanopay.country.br.CNPJ',
+  'net.nanopay.country.br.CPF',
   'net.nanopay.country.br.FederalRevenueService',
   'net.nanopay.partner.sintegra.CPFResponseData',
   'net.nanopay.partner.sintegra.CNPJResponseData',
@@ -1131,7 +1133,7 @@ var classes = [
   'net.nanopay.partner.treviso.TrevisoServiceInterface',
   'net.nanopay.partner.treviso.tx.NatureCodeLineItem',
   'net.nanopay.partner.treviso.tx.TrevisoTransaction',
-  'net.nanopay.partner.treviso.tx.planner.TrevisoTransactionPlanner',	
+  'net.nanopay.partner.treviso.tx.planner.TrevisoTransactionPlanner',
 
   // crunch onboarding
   'net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData',
@@ -1193,8 +1195,8 @@ var classes = [
   'net.nanopay.msp.MspInfo',
   'net.nanopay.msp.MspSetupDAO',
 
-  // exchange limit	
-  'net.nanopay.country.br.tx.ruler.ExchangeLimitTransactionRule',	
+  // exchange limit
+  'net.nanopay.country.br.tx.ruler.ExchangeLimitTransactionRule',
   'net.nanopay.country.br.tx.ExchangeLimitTransaction',
 
   // DAO decorators

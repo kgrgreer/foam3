@@ -1,0 +1,9 @@
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"federalRevenueService",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return x.get("trevisoService");
+  """
+})

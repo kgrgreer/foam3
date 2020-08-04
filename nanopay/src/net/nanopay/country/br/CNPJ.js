@@ -26,6 +26,14 @@ foam.CLASS({
     The first eight digits identify the company, the four digits after the slash identify the branch or subsidiary ("0001" defaults to the headquarters), and the last two are check digits
   `,
 
+  implements: [
+    'foam.core.Validatable'
+  ],
+
+  javaImports: [
+    'foam.nanos.logger.Logger',
+  ],
+
   properties: [
     {
       name: 'data',
@@ -35,7 +43,7 @@ foam.CLASS({
           args: ['data'],
           predicateFactory: function(e) {
             return e.AND(
-              e.EQ(foam.mlang.StringLength.create({ arg1: net.nanopay.crunch.identificationNumbers.BrazilCPF }), 14)
+              e.EQ(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.CNPJ.DATA }), 14)
             );
           }
         }
@@ -74,4 +82,18 @@ foam.CLASS({
       }
     }
   ],
+
+  methods: [
+    {
+      name: 'validate',
+      javaCode: `
+        try {
+          if ( ! ((FederalRevenueService) x.get("federalRevenueService")).validateCnpj(getData()) )
+            throw new RuntimeException("Invalid CNPJ");
+        } catch(Throwable t) {
+          throw t;
+        }
+      `
+    }
+  ]
 });
