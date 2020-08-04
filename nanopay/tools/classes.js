@@ -67,6 +67,7 @@ var classes = [
   'net.nanopay.payment.CountryCapability',
   'net.nanopay.payment.SourceTargetType',
   'net.nanopay.payment.CorridorService',
+  'net.nanopay.payment.ClientCorridorService',
   'net.nanopay.payment.InstitutionPaymentProvider',
   'net.nanopay.payment.PADType',
   'net.nanopay.payment.PADTypeLineItem',
