@@ -39,16 +39,20 @@ import java.util.List;
 import java.util.TimeZone;
 
 import net.nanopay.bank.BankAccount;
+import net.nanopay.country.br.FederalRevenueService;
 import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
 import net.nanopay.fx.FXTransaction;
 import net.nanopay.model.Business;
+import net.nanopay.partner.sintegra.SintegraService;
+import net.nanopay.partner.sintegra.CPFResponseData;
+import net.nanopay.partner.sintegra.CNPJResponseData;
 import net.nanopay.partner.treviso.api.Boleto;
-import net.nanopay.partner.treviso.api.ExchangeServiceInterface;
 import net.nanopay.partner.treviso.api.ClientStatus;
 import net.nanopay.partner.treviso.api.CurrentPlatform;
 import net.nanopay.partner.treviso.api.Document;
 import net.nanopay.partner.treviso.api.Entity;
+import net.nanopay.partner.treviso.api.ExchangeServiceInterface;
 import net.nanopay.partner.treviso.api.FepWebResponse;
 import net.nanopay.partner.treviso.api.InsertBoleto;
 import net.nanopay.partner.treviso.api.InsertBoletoResponse;
@@ -73,7 +77,7 @@ import net.nanopay.partner.treviso.api.UpdateTitularResponse;
 import net.nanopay.payment.Institution;
 import net.nanopay.tx.model.Transaction;
 
-public class TrevisoService extends ContextAwareSupport implements TrevisoServiceInterface, FXService {
+public class TrevisoService extends ContextAwareSupport implements TrevisoServiceInterface, FXService, FederalRevenueService {
 
   private TrevisoAPIServiceInterface trevisoAPIService;
   private ExchangeServiceInterface exchangeService;
@@ -413,6 +417,53 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
       return null;
     } catch(Throwable t) {
       logger_.error("Error getting PTax" , t);
+      throw new RuntimeException(t);
+    }
+  }
+
+  public boolean validateCnpj(String cnpj) throws RuntimeException {
+    try {
+      String formattedCnpj = cnpj.replaceAll("[^0-9]", "");
+      TrevisoCredientials credentials = (TrevisoCredientials) getX().get("TrevisoCredientials");
+      if ( null == credentials ) throw new RuntimeException("Invalid credientials. Treviso token required to validate CNPJ");
+      CNPJResponseData data = new SintegraService(getX()).getCNPJData(formattedCnpj, credentials.getSintegraToken());
+      if ( data == null ) throw new RuntimeException("Unable to get a valid response from CNPJ validation.");
+
+      if ( ! "0".equals(data.getCode()) ) throw new RuntimeException(data.getMessage());
+
+      return "ATIVA".equals(data.getSituacao());
+    } catch(Throwable t) {
+      logger_.error("Error validating CNPJ" , t);
+      throw new RuntimeException(t);
+    }
+  }
+
+  public boolean validateCpf(String cpf, long userId) throws RuntimeException {
+    User user = (User) ((DAO) getX().get("bareUserDAO")).find(userId);
+    if ( user == null ) throw new RuntimeException("User not found: " + userId);
+
+    String birthDate = "";
+    try {
+      SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+      sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+      birthDate = sdf.format(user.getBirthday());
+    } catch(Throwable t) {
+      logger_.error("Unable to parse user birth date: " + userId , t);
+      throw new RuntimeException("Unable to parse user birth date.");
+    }
+
+    try {
+      String formattedCpf = cpf.replaceAll("[^0-9]", "");
+      TrevisoCredientials credentials = (TrevisoCredientials) getX().get("TrevisoCredientials");
+      if ( null == credentials ) throw new RuntimeException("Invalid credientials. Treviso token required to validate CPF");
+      CPFResponseData data = new SintegraService(getX()).getCPFData(formattedCpf, birthDate, credentials.getSintegraToken());
+      if ( data == null ) throw new RuntimeException("Unable to get a valid response from CPF validation.");
+
+      if ( ! "0".equals(data.getCode()) ) throw new RuntimeException(data.getMessage());
+
+      return "Regular".equals(data.getSituacaoCadastral());
+    } catch(Throwable t) {
+      logger_.error("Error validating CPF" , t);
       throw new RuntimeException(t);
     }
   }

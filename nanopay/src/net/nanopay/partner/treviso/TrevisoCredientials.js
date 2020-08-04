@@ -42,22 +42,26 @@ foam.CLASS({
     {
       class: 'String',
        name: 'exchangeUrl'
-     },
+    },
     {
       class: 'Int',
        name: 'exchangeAgencia'
-     },
+    },
     {
       class: 'String',
        name: 'exchangeUsername'
-     },
+    },
     {
       class: 'String',
        name: 'exchangePassword'
-     },
+    },
     {
       class: 'String',
        name: 'brPtaxBaseUrl'
-     }
+    },
+    {
+      class: 'String',
+       name: 'sintegraToken'
+    }
   ]
 });

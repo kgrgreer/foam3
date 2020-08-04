@@ -1065,6 +1065,10 @@ var classes = [
   'net.nanopay.tx.fee.test.TransactionFeeRuleTest',
 
   // Treviso
+  'net.nanopay.country.br.FederalRevenueService',
+  'net.nanopay.partner.sintegra.CPFResponseData',
+  'net.nanopay.partner.sintegra.CNPJResponseData',
+  'net.nanopay.partner.sintegra.SintegraServiceInterface',
   'net.nanopay.partner.treviso.api.Address',
   'net.nanopay.partner.treviso.api.ArrayOfBoleto',
   'net.nanopay.partner.treviso.api.ArrayOfNatureza',
