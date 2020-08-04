@@ -15,7 +15,7 @@
  * from nanopay Corporation.
  */
 foam.CLASS({
-  package: 'net.nanopay.tx.planner',
+  package: 'net.nanopay.partner.treviso.tx.planner',
   name: 'TrevisoTransactionPlanner',
   extends: 'net.nanopay.tx.planner.AbstractTransactionPlanner',
 
@@ -23,12 +23,14 @@ foam.CLASS({
 
   javaImports: [
     'foam.util.SafetyUtil',
+    'java.util.UUID',
     'net.nanopay.fx.FXLineItem',
     'net.nanopay.fx.FXQuote',
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
+    'net.nanopay.country.br.tx.ExchangeLimitTransaction',
     'net.nanopay.partner.treviso.tx.NatureCodeLineItem',
     'net.nanopay.partner.treviso.tx.TrevisoTransaction',
   ],
@@ -57,6 +59,27 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'createLimit',
+      documentation: 'Creates a limit check transaction and returns it',
+      args: [
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
+      ],
+      type: 'ExchangeLimitTransaction',
+      javaCode: `
+        ExchangeLimitTransaction elt = new ExchangeLimitTransaction();
+        elt.copyFrom(txn);
+        elt.setStatus(net.nanopay.tx.model.TransactionStatus.PENDING);
+        elt.setName("Exchange TxLimit Transaction");
+        elt.clearTransfers();
+        elt.clearLineItems();
+        elt.setPlanner(getId());
+        elt.clearNext();
+        elt.setIsQuoted(true);
+        elt.setId(UUID.randomUUID().toString());
+        return elt;
+      `
+    },
+    {
       name: 'plan',
       javaCode: `
 
@@ -67,6 +90,10 @@ foam.CLASS({
       // TODO replace with real logic once api is completed
       txn.setAmount(requestTxn.getDestinationAmount()*5);
       txn.setDestinationCurrency("USD");
+
+      txn.addNext(createCompliance(requestTxn));
+      txn.addNext(createLimit(requestTxn));
+
       TrevisoTransaction placeHolder = new TrevisoTransaction();
       placeHolder.copyFrom(requestTxn);
       placeHolder.setAmount(requestTxn.getDestinationAmount()*5);

@@ -4,7 +4,7 @@ p({
   "name":"AFEX Beneficiary Compliance Transaction",
   "priority":80,
   "ruleGroup":"AFEX",
-  "documentation":"Check if AFEX Beneficiary is apporved before preceeding with payment",
+  "documentation":"Check if AFEX Beneficiary is approved before proceeding with payment",
   "daoKey":"localTransactionDAO",
   "operation":3,
   "after":false,
