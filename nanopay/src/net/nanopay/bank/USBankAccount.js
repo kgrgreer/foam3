@@ -287,13 +287,13 @@ foam.CLASS({
       storageTransient: true,
       label: '',
       updateVisibility: 'HIDDEN',
-      factory: function() {
+      expression: function(subject, country) {
         return net.nanopay.model.USPadCapture.create({
-          country: this.country,
-          firstName: this.subject.realUser.firstName,
-          lastName: this.subject.realUser.lastName,
-          companyName: this.subject.user.businessName,
-          address: this.subject.user.address
+          country: country,
+          firstName: ! subject ? null : subject.realUser.firstName,
+          lastName: ! subject ? null : subject.realUser.lastName,
+          companyName: ! subject ? null : subject.user.businessName,
+          address: ! subject ? null : subject.user.address
         }, this);
       },
       view: function(_, X) {
