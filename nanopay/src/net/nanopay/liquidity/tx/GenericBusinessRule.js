@@ -46,7 +46,7 @@ foam.CLASS({
     'name',
     'enabled',
     'businessRuleAction',
-    'createdBy.legalName,
+    'createdBy.legalName',
     'description'
   ],
 
