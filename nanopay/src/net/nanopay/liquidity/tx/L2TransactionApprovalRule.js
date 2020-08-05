@@ -173,7 +173,7 @@ foam.CLASS({
           errorString: 'Amount must be greater than 0.'
         }
       ],
-      view: { class: 'net.nanopay.liquidity.ui.LiquidCurrencyView' }
+      view: { class: 'foam.u2.view.CurrencyInputView', contingentProperty: 'denomination' }
     },
     {
       name: 'predicate',
