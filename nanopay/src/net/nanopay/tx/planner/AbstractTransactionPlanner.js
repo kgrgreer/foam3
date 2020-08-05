@@ -53,7 +53,7 @@ foam.CLASS({
     'enabled',
     'bestPlan',
     'multiPlan_',
-    'ruleGroup'
+    'ruleGroup.id'
   ],
 
   properties: [

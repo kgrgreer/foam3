@@ -33,8 +33,8 @@ foam.CLASS({
   ],
 
   tableColumns: [
-    'fromCurrency',
-    'toCurrency',
+    'fromCurrency.name',
+    'toCurrency.name',
     'rate',
     'expirationDate'
   ],

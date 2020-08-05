@@ -25,7 +25,11 @@ foam.CLASS({
   ],
 
   tableColumns: [
-    'id', 'entityName', 'entityId', 'closeMatches', 'searchId'
+    'id',
+    'entityName',
+    'entityId.id',
+    'closeMatches',
+    'searchId'
   ],
 
   properties: [

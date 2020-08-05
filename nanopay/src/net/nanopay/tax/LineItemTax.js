@@ -30,7 +30,11 @@ foam.CLASS({
   ],
 
   tableColumns: [
-    'id', 'taxType', 'rate', 'countryId', 'regionId'
+    'id',
+    'taxType',
+    'rate',
+    'countryId.code',
+    'regionId.code'
   ],
 
   properties: [

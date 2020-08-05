@@ -44,7 +44,7 @@ foam.CLASS({
     'id',
     'name',
     'enabled',
-    'createdBy'
+    'createdBy.id'
   ],
 
   properties: [
