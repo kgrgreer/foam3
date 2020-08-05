@@ -162,7 +162,7 @@ p({
   "action": {
     "class": "net.nanopay.bank.ruler.CorridorAuthorizationRule"
   },
-  "enabled":true,
+  "enabled":false,
   "saveHistory":true,
   "lifecycleState":1
 })
