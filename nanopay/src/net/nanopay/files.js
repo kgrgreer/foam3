@@ -1517,7 +1517,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/LoanTransactionPlanner' },
   { name: 'net/nanopay/tx/planner/DebtRepaymentPlanner' },
   { name: 'net/nanopay/tx/planner/DebtablePlanner' },
-  { name: 'net/nanopay/tx/planner/IntermediaryAccountSplitPlanner' },
+  { name: 'net/nanopay/tx/planner/IntermediaryDestinationAccountSplitPlanner' },
 
   // Fees
   { name: 'net/nanopay/tx/fee/Fee' },
@@ -1530,6 +1530,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/fee/TransactionFeeRule' },
   { name: 'net/nanopay/tx/fee/Relationships' },
   { name: 'net/nanopay/tx/fee/predicate/IsDomesticTransaction' },
+  { name: 'net/nanopay/tx/fee/predicate/PaymentCorridorPredicate' },
   { name: 'net/nanopay/tx/fee/test/TransactionFeeRuleTest' },
 
   // crunch registration

@@ -70,7 +70,7 @@ foam.CLASS({
           quote.addTransfer(txn.getDestinationAccount(), txn.getAmount());
           return txn;
         }
-    
+
         TransactionLineItem withdrawLineItem = null;
         TransactionLineItem depositLineItem = null;
         DAO accountDAO = (DAO) x.get("localAccountDAO");
@@ -86,7 +86,7 @@ foam.CLASS({
               MLang.EQ( LoanedTotalAccount.DENOMINATION,theLoanAccount.getDenomination())
             )
           ));
-    
+
           if ( globalLoanAccount == null ) {
             ((Logger) x.get("logger")).error("Total Loan Account not found");
             throw new RuntimeException("Total Loan Account not found");
@@ -102,7 +102,7 @@ foam.CLASS({
           txn.setSourceAccount( theLoanAccount.getLenderAccount() );
           quote.setSourceAccount(theLoanAccount.findLenderAccount(x));
         }
-    
+
         if ( destinationAccount instanceof LoanAccount ) {
           LoanAccount theLoanAccount = (LoanAccount) destinationAccount;
           LoanedTotalAccount globalLoanAccount = ( (LoanedTotalAccount) accountDAO.find(
@@ -111,7 +111,7 @@ foam.CLASS({
               MLang.EQ( LoanedTotalAccount.DENOMINATION,theLoanAccount.getDenomination())
             )
           ));
-    
+
           if ( globalLoanAccount == null ) {
             ((Logger) x.get("logger")).error("Total Loan Account not found");
             throw new RuntimeException("Total Loan Account not found");
@@ -128,7 +128,7 @@ foam.CLASS({
           quote.setDestinationAccount(theLoanAccount.findLenderAccount(x));
         }
 
-        Transaction plan = (Transaction) quoteTxn(x, txn).fclone();
+        Transaction plan = (Transaction) quoteTxn(x, txn, quote).fclone();
 
         if ( withdrawLineItem != null ) {
           plan.addLineItems( new TransactionLineItem[] {withdrawLineItem} );

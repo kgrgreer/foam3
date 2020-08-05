@@ -17,19 +17,31 @@
 
 foam.CLASS({
   package: 'net.nanopay.tx.fee.predicate',
-  name: 'IsDomesticTransaction',
+  name: 'PaymentCorridorPredicate',
   extends: 'foam.mlang.predicate.AbstractPredicate',
   implements: ['foam.core.Serializable'],
 
-  documentation: `Test if the transaction is domestic i.e. sourceAccount
-    country same as destinationAccount country.
-
-    It throws when the sourceAccount or destinationAccount of the transaction is
-    not a bank account and the caller eg. FeeEngine.execute() should catch it.`,
+  documentation: 'Tests transaction payment provider, source and target countries.',
 
   javaImports: [
+    'net.nanopay.bank.BankAccount',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.bank.BankAccount'
+    'net.nanopay.payment.PaymentProviderAware'
+  ],
+
+  properties: [
+    {
+      class: 'String',
+      name: 'paymentProvider'
+    },
+    {
+      class: 'String',
+      name: 'sourceCountry'
+    },
+    {
+      class: 'String',
+      name: 'targetCountry'
+    }
   ],
 
   methods: [
@@ -40,15 +52,19 @@ foam.CLASS({
         var sourceAccount = (BankAccount) transaction.findSourceAccount(getX());
         var destinationAccount = (BankAccount) transaction.findDestinationAccount(getX());
 
-        return sourceAccount.getCountry().equals(destinationAccount.getCountry());
+        return transaction instanceof PaymentProviderAware
+          && getPaymentProvider().equals(((PaymentProviderAware) transaction).getPaymentProvider())
+          && getSourceCountry().equals(sourceAccount.getCountry())
+          && getTargetCountry().equals(destinationAccount.getCountry());
       `,
       code: function(obj) {
-        throw new Error('IsDomesticTransaction is not supported.');
+        throw new Error('PaymentCorridorPredicate is not supported.');
       }
     },
     {
       name: 'deepClone',
       type: 'FObject',
+      documentation: 'Disable deepClone to preserve the given context.',
       javaCode: 'return this;'
     }
   ]

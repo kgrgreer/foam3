@@ -114,7 +114,7 @@ foam.CLASS({
       fxLineItem.setDestinationCurrency(fxQuote.findTargetCurrency(x));
       placeHolder.addLineItems( new TransactionLineItem[] { fxLineItem } );
       txn.setStatus(TransactionStatus.COMPLETED);
-      txn.addNext(placeHolder);
+      txn.addNext(applyFee(x, quote, placeHolder));
       return txn;
     `
     },

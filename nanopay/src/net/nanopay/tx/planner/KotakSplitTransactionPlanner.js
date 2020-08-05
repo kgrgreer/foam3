@@ -99,8 +99,8 @@ foam.CLASS({
       FXService fxService = CurrencyFXService.getFXServiceByNSpecId(x, requestTxn.getSourceCurrency(), requestTxn.getDestinationCurrency(), LOCAL_FX_SERVICE_NSPEC_ID);
       FXQuote fxQuote = fxService.getFXRate(sourceAccount.getDenomination(), destinationAccount.getDenomination(), quote.getRequestTransaction().getAmount(), quote.getRequestTransaction().getDestinationAmount(),"","",sourceAccount.getOwner(),"nanopay");
       requestTxn = (Transaction) requestTxn.fclone();
-  
-      // calculate source amount 
+
+      // calculate source amount
       Unit denomination = sourceAccount.findDenomination(x);
       Double currencyPrecision = Math.pow(10, denomination.getPrecision());
       Double amount =  Math.ceil(requestTxn.getDestinationAmount()/currencyPrecision/fxQuote.getRate()*currencyPrecision);
@@ -109,7 +109,7 @@ foam.CLASS({
       FXSummaryTransaction txn = new FXSummaryTransaction.Builder(x).build();
       txn.copyFrom(requestTxn);
       txn.addNext(createCompliance(requestTxn));
-      FXLineItem fxLineItem = new FXLineItem();      
+      FXLineItem fxLineItem = new FXLineItem();
       fxLineItem.setRate(fxQuote.getRate());
       fxLineItem.setSourceCurrency(fxQuote.findSourceCurrency(x));
       fxLineItem.setDestinationCurrency(fxQuote.findTargetCurrency(x));
@@ -122,17 +122,17 @@ foam.CLASS({
       t1.setDestinationAccount(destinationDigitalaccount.getId());
       t1.setDestinationCurrency(t1.getSourceCurrency());
       t1.setDestinationAmount(t1.getAmount());
-      Transaction cashinPlan = quoteTxn(x, t1);
+      Transaction cashinPlan = quoteTxn(x, t1, quote);
       if ( cashinPlan != null ) {
         txn.addNext(cashinPlan);
       } else {
         return null;
       }
-      
+
       // split 2: CA digital -> IN bank
       Transaction t2 = (Transaction) requestTxn.fclone();
       t2.setSourceAccount(destinationDigitalaccount.getId());
-      Transaction kotakPlan = quoteTxn(x, t2);
+      Transaction kotakPlan = quoteTxn(x, t2, quote);
       if ( kotakPlan != null ) {
 
         // add transfer to update CI trust account

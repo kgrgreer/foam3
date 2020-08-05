@@ -1,10 +1,10 @@
 // TODO change sourceAccount predicate to check for brazil bank account
 p({
-  "class":"net.nanopay.tx.planner.IntermediaryAccountSplitPlanner",
-  "intermediaryAccountId":24,
+  "class":"net.nanopay.tx.planner.IntermediaryDestinationAccountSplitPlanner",
   "id":"2775abef-05d4-4460-bea8-7a70e9d544af",
   "name":"TrevisoSplitTransactionPlanner",
   "documentation":"Planner for transaction from BRL to destination currency",
+  "intermediaryAccountId":24,
   "priority":90,
   "ruleGroup":"TrevisoPlanner",
   "enabled":true,
@@ -40,9 +40,9 @@ p({
       }
     ]
   },
+  "spid": "treviso",
   "lifecycleState":1
 })
-
 p({
   "class":"net.nanopay.partner.treviso.tx.planner.TrevisoTransactionPlanner",
   "id":"519e2a68-a914-444f-b050-2ce01f29fe24",
@@ -80,5 +80,7 @@ p({
       }
     ]
   },
+  "isFeeOnRootCorridors": true,
+  "spid": "treviso",
   "lifecycleState":1
 })

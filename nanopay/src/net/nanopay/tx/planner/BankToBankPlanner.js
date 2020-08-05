@@ -66,7 +66,7 @@ foam.CLASS({
         Account destinationAccount = quote.getDestinationAccount();
         DigitalAccount sourceDigitalAccount = DigitalAccount.findDefault(x, sourceAccount.findOwner(x), sourceAccount.getDenomination());
         DigitalAccount destinationDigitalAccount = DigitalAccount.findDefault(x, destinationAccount.findOwner(x), destinationAccount.getDenomination());
-       
+
         // Split 1: ABank -> ADigital
         Transaction t1 = new Transaction(x);
         t1.copyFrom(txn);
@@ -86,9 +86,9 @@ foam.CLASS({
         t3.setDestinationAccount(destinationAccount.getId());
 
         // Put chain transaction together
-        Transaction[] cashInPlans = multiQuoteTxn(x, t1);
-        Transaction[] digitalPlans = multiQuoteTxn(x, t2);
-        Transaction[] cashOutPlans = multiQuoteTxn(x, t3);
+        Transaction[] cashInPlans = multiQuoteTxn(x, t1, quote);
+        Transaction[] digitalPlans = multiQuoteTxn(x, t2, quote);
+        Transaction[] cashOutPlans = multiQuoteTxn(x, t3, quote);
 
         for ( Transaction CIP : cashInPlans ) {
           for ( Transaction DP : digitalPlans ) {

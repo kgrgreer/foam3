@@ -1056,7 +1056,7 @@ var classes = [
   'net.nanopay.tx.planner.AFEXTransactionPlanner',
   'net.nanopay.tx.planner.DebtRepaymentPlanner',
   'net.nanopay.tx.planner.DebtablePlanner',
-  'net.nanopay.tx.planner.IntermediaryAccountSplitPlanner',
+  'net.nanopay.tx.planner.IntermediaryDestinationAccountSplitPlanner',
 
   // Fees
   'net.nanopay.tx.fee.Fee',
@@ -1067,6 +1067,7 @@ var classes = [
   'net.nanopay.tx.fee.PercentageFee',
   'net.nanopay.tx.fee.TransactionFeeRule',
   'net.nanopay.tx.fee.predicate.IsDomesticTransaction',
+  'net.nanopay.tx.fee.predicate.PaymentCorridorPredicate',
   'net.nanopay.tx.fee.test.TransactionFeeRuleTest',
 
   // Treviso
