@@ -165,6 +165,7 @@ var classes = [
   'net.nanopay.bank.ruler.AccountVerifiedNotificationRule',
   'net.nanopay.bank.ruler.AccountDeletedNotificationRule',
   'net.nanopay.bank.ruler.AccountAddedNotificationRule',
+  'net.nanopay.bank.ruler.CorridorAuthorizationRule',
   'net.nanopay.plaid.PlaidAccountDetailTest',
   'net.nanopay.plaid.PlaidResultReportAuthorizer',
   'net.nanopay.plaid.PlaidResultReportAuthorizerTest',

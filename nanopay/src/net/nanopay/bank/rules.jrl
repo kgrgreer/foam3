@@ -149,3 +149,20 @@ p({
   "saveHistory":true,
   "lifecycleState":1
 })
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"9c65ddf4-d1b3-11ea-87d0-0242ac130003",
+  "name": "corridor Authorization rule",
+  "priority": 100,
+  "ruleGroup": "bankOperations",
+  "documentation": "throw AuthorizationException if user missing correct PaymentProviderCorridor",
+  "daoKey": "localAccountDAO",
+  "operation": 3,
+  "action": {
+    "class": "net.nanopay.bank.ruler.CorridorAuthorizationRule"
+  },
+  "enabled":true,
+  "saveHistory":true,
+  "lifecycleState":1
+})
