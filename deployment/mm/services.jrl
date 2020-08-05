@@ -8,6 +8,13 @@ p({
   "client":"{ \"class\":\"foam.nanos.medusa.ClientElectoralService\" }"
 })
 
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "medusaRegistry",
+  "serve": false,
+  "service": {"class":"foam.nanos.medusa.MedusaRegistryService"}
+})
+
 // NOTE: see MedusaInternalDAO for access to this DAO.
 p({
   "class": "foam.nanos.boot.NSpec",
@@ -66,10 +73,8 @@ p({
       .setRuler(false)
       .setPm(true)
       .setDecorator(new foam.nanos.medusa.ReplayingDAO.Builder(x)
-      .setDelegate(new foam.nanos.medusa.MedusaBlockingDAO.Builder(x)
       .setDelegate(new foam.nanos.medusa.MedusaBroadcast2NodesDAO.Builder(x)
         .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.MedusaEntry.getOwnClassInfo()))
-      .build())
       .build())
       .build())
       .build();
@@ -87,12 +92,10 @@ p({
       .setRuler(false)
       .setPm(true)
       .setEnableInterfaceDecorators(false)
-      .setDecorator(new foam.nanos.medusa.BatchServerDAO.Builder(x)
-      .setDelegate(new foam.nanos.medusa.MedusaConsensusDAO.Builder(x)
+      .setDecorator(new foam.nanos.medusa.MedusaConsensusDAO.Builder(x)
       .setDelegate(new foam.nanos.medusa.MedusaBroadcastDAO.Builder(x)
       .setDelegate(new foam.nanos.medusa.MedusaInternalDAO.Builder(x)
       .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.MedusaEntry.getOwnClassInfo()))
-      .build())
       .build())
       .build())
       .build())
