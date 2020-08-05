@@ -21,6 +21,7 @@ import foam.dao.DAO;
 import foam.test.TestUtils;
 import foam.nanos.auth.Address;
 import foam.nanos.auth.User;
+import java.util.Date;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.CABankAccount;
@@ -62,6 +63,8 @@ public class TrevisoServiceTest
   private void setUpTest() {
     createUsers(x);
     testBankAccount = createTestBankAccount();
+    ((TrevisoService) trevisoService)
+      .saveTrevisoClient(testBankAccount.getOwner(), "Active");
   }
 
   public void createUsers(X x) {
@@ -81,7 +84,7 @@ public class TrevisoServiceTest
   }
 
   private void testSaveEntity() {
-    TrevisoClient client = trevisoService.createEntity(x, user.getId(), "71.288.828/0001-35");
+    TrevisoClient client = trevisoService.createEntity(x, user.getId());
     test( client != null , "Entity Saved" );
   }
 
@@ -92,7 +95,7 @@ public class TrevisoServiceTest
 
   private void testCreateTrevisoTransaction() {
     Transaction transaction = trevisoService.createTransaction(
-      new Transaction.Builder(x).setSourceAccount(testBankAccount.getId()).build());
+      new Transaction.Builder(x).setSourceAccount(testBankAccount.getId()).setCompletionDate(new Date()).build());
     test( transaction != null , "treviso transaction created" );
   }
 

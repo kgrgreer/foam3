@@ -1385,44 +1385,44 @@ foam.CLASS({
 			required: false
 		},
 		{
-			class: "foam.core.Double",
+			class: "foam.core.Long",
 			name: "VALORME",
 			documentation: 'TODO Foreign Currency Value',
 			required: false
 		},
 		{
-			class: "foam.core.Double",
+			class: "foam.core.Long",
 			name: "VALORMN",
 			documentation: 'TODO National Currency Value',
 			required: false
 		},
 		{
-			class: "foam.core.Double",
+			class: "foam.core.Long",
 			name: "VALORR",
 			required: false
 		},
 		{
-			class: "foam.core.Double",
+			class: "foam.core.Long",
 			name: "VALORR2",
 			required: false
 		},
 		{
-			class: "foam.core.Double",
+			class: "foam.core.Long",
 			name: "VALORR3",
 			required: false
 		},
 		{
-			class: "foam.core.Double",
+			class: "foam.core.Long",
 			name: "VALORR4",
 			required: false
 		},
 		{
-			class: "foam.core.Double",
+			class: "foam.core.Long",
 			name: "VALORR5",
 			required: false
 		},
 		{
-			class: "foam.core.Double",
+			class: "foam.core.Long",
 			name: "VALORROF",
 			required: false
 		},
