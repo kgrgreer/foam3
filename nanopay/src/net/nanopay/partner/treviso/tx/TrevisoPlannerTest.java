@@ -17,7 +17,9 @@ import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.USBankAccount;
 import net.nanopay.fx.FXSummaryTransaction;
+import net.nanopay.country.br.tx.ExchangeLimitTransaction;
 import net.nanopay.payment.Institution;
+import net.nanopay.tx.ComplianceTransaction;
 import net.nanopay.tx.TransactionQuote;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
@@ -156,21 +158,33 @@ public class TrevisoPlannerTest
     quote.setRequestTransaction(transaction);
     quote.setDestinationAccount(user2USBankAccount);
     quote.setSourceAccount(user1BankAccount);
-    Transaction result = (Transaction) ((TransactionQuote) planDAO.put(quote)).getPlan();
-    test( null != result, "BRL USD quote was processed" );
+    Transaction txn = (Transaction) ((TransactionQuote) planDAO.put(quote)).getPlan();
+    test( null != txn, "BRL USD quote was processed" );
+    test( txn instanceof FXSummaryTransaction && txn.getStatus() == TransactionStatus.COMPLETED,
+      "FXSummary Transaction is the first transaction for BRL to USD");
+    
+    txn = txn.getNext()[0];
+    test( txn instanceof ComplianceTransaction && txn.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED,
+      "BRL-USD root.next[0] instanceof ComplianceTransaction, found: "+txn.getClass().getSimpleName());
+    test( txn.getNext().length > 0, "BRL-USD root.next[0] has next, found: "+txn.getNext().length);
 
-    test( result instanceof FXSummaryTransaction && result.getStatus() == TransactionStatus.COMPLETED, "FXSummary Transaction is first transaction for BRL to USD");
+    txn = txn.getNext()[0];
+    test( txn instanceof ExchangeLimitTransaction && txn.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED,
+      "BRL-USD root.next[0].next[0] instanceof ExchangeLimitTransaction, found: "+txn.getClass().getSimpleName());
+    test( txn.getNext().length > 0, "BRL-USD root.next[0].next[0] has next");
+    txn = txn.getNext()[0];
 
-    Transaction tx2 = result.getNext()[0];
-    test( tx2 instanceof TrevisoTransaction && tx2.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED, "Treviso Transaction is 2nd transaction");
+    test( txn instanceof TrevisoTransaction && txn.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED,
+      "BRL-USD root.next[0].next[0].next[0] instanceof TrevisoTransaction, found: "+txn.getClass().getSimpleName());
+    test( txn.getNext().length == 0, "BRL-USD root.next[0].next[0].next[0] does not have next, found: "+txn.getNext().length);
 
     user2USBankAccount = (USBankAccount) localAccountDAO.find(user2USBankAccount);
-    test(tx2.getSourceCurrency().equals("BRL"), "BRL USD Source Currency is BRL");
-    test(tx2.getDestinationCurrency().equals("USD"), "BRL USD Destination Currency is USD");
-    test(tx2.getAmount() == 500l, "BRl USD Source amount is correct");
-    test(tx2.getDestinationAmount() == 100l, "BRL USD Destination amount is correct");
-    test( tx2.getSourceAccount() == user1BankAccount.getId(), "Corrent source bank account");
-    test( tx2.getDestinationAccount() == user2USBankAccount.getId(), "Correct destination bank account");
+    test(txn.getSourceCurrency().equals("BRL"), "BRL USD Source Currency is BRL");
+    test(txn.getDestinationCurrency().equals("USD"), "BRL USD Destination Currency is USD");
+    test(txn.getAmount() == 500l, "BRL USD Source amount is correct");
+    test(txn.getDestinationAmount() == 100l, "BRL USD Destination amount is correct");
+    test( txn.getSourceAccount() == user1BankAccount.getId(), "Corrent source bank account");
+    test( txn.getDestinationAccount() == user2USBankAccount.getId(), "Correct destination bank account");
 
   }
 

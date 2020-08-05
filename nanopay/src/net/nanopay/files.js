@@ -1510,8 +1510,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/LoanTransactionPlanner' },
   { name: 'net/nanopay/tx/planner/DebtRepaymentPlanner' },
   { name: 'net/nanopay/tx/planner/DebtablePlanner' },
-  { name: 'net/nanopay/tx/planner/TrevisoTransactionPlanner' },
-  { name: 'net/nanopay/tx/planner/TrevisoSplitTransactionPlanner' },
+  { name: 'net/nanopay/tx/planner/IntermediaryAccountSplitPlanner' },
 
   // Fees
   { name: 'net/nanopay/tx/fee/Fee' },
@@ -1584,11 +1583,17 @@ FOAM_FILES([
   // IBAN
   { name: 'net/nanopay/tx/IBAN' },
 
-  // Treviso
+  // exchange limit
+  { name: 'net/nanopay/country/br/tx/ruler/ExchangeLimitTransactionRule'},
+  { name: 'net/nanopay/country/br/tx/ExchangeLimitTransaction'},
+
   { name: 'net/nanopay/country/br/CPF' },
   { name: 'net/nanopay/country/br/CNPJ' },
+
+  // Treviso
   { name: 'net/nanopay/partner/treviso/TrevisoCredientials' },
   { name: 'net/nanopay/partner/treviso/TrevisoClient' },
   { name: 'net/nanopay/partner/treviso/tx/NatureCodeLineItem' },
-  { name: 'net/nanopay/partner/treviso/tx/TrevisoTransaction' }
+  { name: 'net/nanopay/partner/treviso/tx/TrevisoTransaction' },
+  { name: 'net/nanopay/partner/treviso/tx/planner/TrevisoTransactionPlanner' }
 ]);

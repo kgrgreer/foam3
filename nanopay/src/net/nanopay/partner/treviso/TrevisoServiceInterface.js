@@ -123,6 +123,6 @@ foam.INTERFACE({
       documentation: 'Get latest PTax rate',
       async: true,
       javaThrows: ['java.lang.RuntimeException']
-    },
+    }
   ]
 });

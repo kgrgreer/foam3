@@ -34,6 +34,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'capabilityDAO',
     'branchDAO',
     'countryDAO',
     'currencyDAO',
@@ -300,7 +301,7 @@ foam.CLASS({
         let propInfoCurrency = forContact ? this.PaymentProviderCorridor.TARGET_CURRENCIES : this.PaymentProviderCorridor.SOURCE_CURRENCIES;
         return this.PromisedDAO.create({
           of: 'foam.core.Currency',
-          promise: user.capabilities.dao.where(this.AND(
+          promise: this.capabilityDAO.where(this.AND(
               this.EQ(propInfo, this.country),
               this.INSTANCE_OF(this.PaymentProviderCorridor)
             ))
@@ -362,7 +363,7 @@ foam.CLASS({
           identify an overseas bank account.`,
       visibility: 'RO',
       factory: function() {
-        return this.country + this.calcChecksum() + this.bankCode + this.accountNumber;
+        return this.country + this.calcCheckSum() + this.bankCode + this.accountNumber;
       },
       javaFactory: `
         String checkSum = calcCheckSum();
