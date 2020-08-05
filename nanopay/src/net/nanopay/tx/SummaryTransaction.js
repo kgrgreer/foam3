@@ -22,6 +22,7 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.cico.CITransaction',
     'net.nanopay.tx.cico.COTransaction',
     'net.nanopay.tx.PartnerTransaction',
@@ -37,7 +38,8 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.ChainSummary',
       storageTransient: true,
-      visibility: 'HIDDEN'
+      visibility: 'RO',
+      section: 'basicInfo'
     }
   ],
 
@@ -98,6 +100,7 @@ foam.CLASS({
         ChainSummary cs = new ChainSummary();
         cs.setStatus(t.getStatus());
         cs.setCategory(categorize_(t));
+        cs.setSummary(cs.toSummary());
         this.setChainSummary(cs);
         return t.getStatus();
       `
@@ -110,10 +113,12 @@ foam.CLASS({
       ],
       type: 'String',
       javaCode: `
+        if (t.getStatus().equals(TransactionStatus.COMPLETED))
+          return "";
         if (t instanceof CITransaction)
-          return "Cash In";
+          return "CashIn";
         if (t instanceof COTransaction)
-          return "Cash Out";
+          return "CashOut";
         if (t instanceof PartnerTransaction)
           return "Partner";
         if (t instanceof DigitalTransaction)

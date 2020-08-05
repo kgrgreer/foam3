@@ -1,0 +1,1179 @@
+<title>API Data</title>
+
+<h1>Data Objects</h1>
+
+<h2>Transaction</h2>
+<p> A "Transaction" on the platform is an transfer of value from a source account with a source currency to a destination account in the destination currency. </p>
+
+<table border="1px" width="100%">
+  <thead>
+    <tr>
+      <th>Field</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>name</td>
+      <td>String </td>
+      <td>Type of the transaction.</td>
+    </tr>
+    <tr>
+      <td>id</td>
+      <td>String </td>
+      <td>ID of the transaction.</td>
+    </tr>
+    <tr>
+      <td>created</td>
+      <td>DateTime </td>
+      <td>The date the transaction was created.</td>
+    </tr>
+    <tr>
+      <td>createdBy</td>
+      <td>Reference </td>
+      <td>The id of the user who created the transaction.</td>
+    </tr>
+    <tr>
+      <td>createdByAgent</td>
+      <td>Reference </td>
+      <td>The id of the agent who created the transaction.</td>
+    </tr>
+    <tr>
+      <td>lastModified</td>
+      <td>DateTime </td>
+      <td>The date the transaction was last modified.</td>
+    </tr>
+    <tr>
+      <td>lastModifiedBy</td>
+      <td>Reference </td>
+      <td>The id of the user who last modified the transaction.</td>
+    </tr>
+    <tr>
+      <td>status</td>
+      <td>Enum (TransactionStatus)</td>
+      <td>Transaction status. <pre><p>{PENDING = 0, REVERSE = 1, REVERSE_FAIL = 2, SENT = 3, DECLINE = 4, 
+COMPLETED = 5, REFUNDED = 6, FAILED = 9, PAUSED = 10, CANCELLED = 11, 
+PENDING_PARENT_COMPLETED = 12, SCHEDULED = 13}</p></pre></td>
+    </tr>
+    <tr>
+      <td>referenceNumber</td>
+      <td>String </td>
+      <td>Reference number for the transaction.</td>
+    </tr>
+    <tr>
+      <td>payeeId</td>
+      <td>Long </td>
+      <td>ID of the payee.</td>
+    </tr>
+    <tr>
+      <td>payerId</td>
+      <td>Long </td>
+      <td>ID of the payer.</td>
+    </tr>
+    <tr>
+      <td>amount</td>
+      <td>UnitValue </td>
+      <td>Amount withdrawn from the payer's account (source account) in the source currency.</td>
+    </tr>
+    <tr>
+      <td>summary</td>
+      <td>String </td>
+      <td>
+        Used to display a lot of information in a visually compact way in table
+        views of Transactions.
+      </td>
+    </tr>
+    <tr>
+      <td>destinationAmount</td>
+      <td>UnitValue </td>
+      <td>Amount received in the payee's account (desintation account) in the destination currency.</td>
+    </tr>
+    <tr>
+      <td>completionDate</td>
+      <td>DateTime </td>
+      <td>Date of completion.</td>
+    </tr>
+    <tr>
+      <td>messageId</td>
+      <td>String </td>
+      <td>Defined by ISO 20220 (Pacs008)</td>
+    </tr>
+    <tr>
+      <td>sourceCurrency</td>
+      <td>String </td>
+      <td>Source currency.</td>
+    </tr>
+    <tr>
+      <td>referenceData</td>
+      <td>FObjectArray </td>
+      <td>referenceData holds entities such as the pacs008 message.</td>
+    </tr>
+    <tr>
+      <td>dstAccountError</td>
+      <td>String </td>
+      <td>This is used strictly for the synchronizing of dstAccount errors on create.</td>
+    </tr>
+    <tr>
+      <td>destinationCurrency</td>
+      <td>String </td>
+      <td>Destination currency.</td>
+    </tr>
+    <tr>
+      <td>statusHistory</td>
+      <td>FObjectArray </td>
+      <td>Status history of the transaction.</td>
+    </tr>
+    <tr>
+      <td>lastStatusChange</td>
+      <td>DateTime </td>
+      <td>The date that a transaction changed to its current status</td>
+    </tr>
+    <tr>
+      <td>lineItems</td>
+      <td>FObjectArray </td>
+      <td>Line items of the transaction.</td>
+    </tr>
+    <tr>
+      <td>scheduledTime</td>
+      <td>DateTime </td>
+      <td>The scheduled date when transaction should be processed.</td>
+    </tr>
+    <tr>
+      <td>searchName</td>
+      <td>String </td>
+      <td>This property exists only as a means to let users filter transactions by payer or payee name.</td>
+    </tr>
+    <tr>
+      <td>lifecycleState</td>
+      <td>Enum </td>
+      <td>Lifecycle state of the entity. <pre><p>{PENDING = 0, ACTIVE = 1, REJECTED = 2, DELETED = 3}</p></pre></td>
+    </tr>
+    <tr>
+      <td>chainSummary</td>
+      <td>net.nanopay.tx.ChainSummary </td>
+      <td>Chain summary of the transaction.</td>
+    </tr>
+    <tr>
+      <td><i>status</i></td>
+      <td>Enum (net.nanopay.tx.ChainSummary) </td>
+      <td>Status of the transaction chain. <pre><p>{PENDING = 0, REVERSE = 1, REVERSE_FAIL = 2, SENT = 3, DECLINE = 4,
+COMPLETED = 5, REFUNDED = 6, FAILED = 9, PAUSED = 10, CANCELLED = 11, 
+PENDING_PARENT_COMPLETED = 12, SCHEDULED = 13}</p></pre></td>
+    </tr>
+    <tr>
+      <td><i>category</i></td>
+      <td>String (net.nanopay.tx.ChainSummary) </td>
+      <td>Category of the transaction chain.</td>
+    </tr>
+    <tr>
+      <td><i>summary</i></td>
+      <td>String (net.nanopay.tx.ChainSummary) </td>
+      <td>Summary of the transaction chain.</td>
+    </tr>
+    <tr>
+      <td>destinationAccount</td>
+      <td>Long (Reference)</td>
+      <td>ID of the destination account.</td>
+    </tr>
+    <tr>
+      <td>sourceAccount</td>
+      <td>Long (Reference)</td>
+      <td>ID of the source account.</td>
+    </tr>
+    <tr>
+      <td>associateTransaction</td>
+      <td>String (Reference)</td>
+      <td>Associated transaction ID.</td>
+    </tr>
+    <tr>
+      <td>parent</td>
+      <td>String (Reference) </td>
+      <td>Parent transaction ID.</td>
+    </tr>
+    <tr>
+      <td>signatures</td>
+      <td>List </td>
+      <td>List of signatures for a given transaction</td>
+    </tr>
+  </tbody>
+</table>
+
+<p> </p>
+
+<h2>User</h2>
+<p>A “User” on the platform is an individual that is added to a business with a specific set of permissions. Each user will be assigned a set of defined permissions based on the role that they are given.</p>
+
+<table border="1px" width="100%">
+  <thead>
+    <tr>
+      <th>Field</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>id</td>
+      <td>Long </td>
+      <td>The ID for the User.</td>
+    </tr>
+    <tr>
+      <td>spid</td>
+      <td>Reference </td>
+      <td>The ID of the Service Provider.</td>
+    </tr>
+    <tr>
+      <td>enabled</td>
+      <td>Boolean </td>
+      <td>Determines whether the User is permitted certain actions.</td>
+    </tr>
+    <tr>
+      <td>loginEnabled</td>
+      <td>Boolean </td>
+      <td>Determines whether the User can login to the platform.</td>
+    </tr>
+    <tr>
+      <td>lastLogin</td>
+      <td>DateTime </td>
+      <td>The date and time of last login by User.</td>
+    </tr>
+    <tr>
+      <td>firstName</td>
+      <td>String </td>
+      <td>First name of user.</td>
+    </tr>
+    <tr>
+      <td>middleName</td>
+      <td>String </td>
+      <td>The middle name of the User.</td>
+    </tr>
+    <tr>
+      <td>lastName</td>
+      <td>String </td>
+      <td>Last name of user.</td>
+    </tr>
+    <tr>
+      <td>legalName</td>
+      <td>String </td>
+      <td>Full legal name of user. Appends first, middle & last name.</td>
+    </tr>
+    <tr>
+      <td>jobTitle</td>
+      <td>String </td>
+      <td>The job title of the individual person, or real user.</td>
+    </tr>
+    <tr>
+      <td>organization</td>
+      <td>String </td>
+      <td>The organization/business associated with the User.</td>
+    </tr>
+    <tr>
+      <td>department</td>
+      <td>String </td>
+      <td>The department associated with the organization/business
+        of the User.</td>
+    </tr>
+    <tr>
+      <td>userName</td>
+      <td>String </td>
+      <td>The username of the User.</td>
+    </tr>
+    <tr>
+      <td>email</td>
+      <td>EMail</td>
+      <td>Email address of the user.</td>
+    </tr>
+    <tr>
+      <td>emailVerified</td>
+      <td>Boolean </td>
+      <td>Determines whether the email address of the User is valid.</td>
+    </tr>
+    <tr>
+      <td>phoneNumber</td>
+      <td>PhoneNumber </td>
+      <td>Personal phone number.</td>
+    </tr>
+    <tr>
+      <td>phoneNumberVerified</td>
+      <td>Boolean </td>
+      <td>Whether the phone number was verified.</td>
+    </tr>
+    <tr>
+      <td>mobileNumber</td>
+      <td>PhoneNumber </td>
+      <td>Returns the mobile phone number of the User from the Phone model.</td>
+    </tr>
+    <tr>
+      <td>mobileNumberVerified</td>
+      <td>Boolean </td>
+      <td>Whether the phone number was verified.</td>
+    </tr>
+    <tr>
+      <td>type</td>
+      <td>String </td>
+      <td>The type of the User.</td>
+    </tr>
+    <tr>
+      <td>birthday</td>
+      <td>Date </td>
+      <td>The date of birth of the individual person, or real user.</td>
+    </tr>
+    <tr>
+      <td>profilePicture</td>
+      <td>FileProperty </td>
+      <td>The profile picture of the individual user, initially
+        defaulting to a placeholder picture.</td>
+    </tr>
+    <tr>
+      <td>address</td>
+      <td>foam.nanos.auth.Address </td>
+      <td>Returns the postal address from the Address model.</td>
+    </tr>
+    <tr>
+      <td><i>structured</i></td>
+      <td>Boolean (foam.nanos.auth.Address)</td>
+      <td>Determines whether the address is shown in the following structure: 
+        Street Number, Street Name, Suite Number. For an unstructured address field, 
+        use address1 and/or address2.
+      </td>
+    </tr>
+    <tr>
+      <td><i>address1</i></td>
+      <td>String (foam.nanos.auth.Address)</td>
+      <td>An unstructured field for the main postal address.</td>
+    </tr>
+    <tr>
+      <td><i>address2</i></td>
+      <td>String (foam.nanos.auth.Address)</td>
+      <td>An unstructured field for the sub postal address.</td>
+    </tr>
+    <tr>
+      <td><i>countryId</i></td>
+      <td>Reference (foam.nanos.auth.Address)</td>
+      <td>A foreign key into the CountryDAO which represents the country.</td>
+    </tr>
+    <tr>
+      <td><i>regionId</i></td>
+      <td>Reference (foam.nanos.auth.Address)</td>
+      <td>A foreign key into the RegionDAO which represents
+        the region of the country.</td>
+    </tr>
+    <tr>
+      <td><i>suite</i></td>
+      <td>String (foam.nanos.auth.Address)</td>
+      <td>The structured field for the suite number of the postal address.</td>
+    </tr>
+    <tr>
+      <td><i>streetNumber</i></td>
+      <td>String (foam.nanos.auth.Address)</td>
+      <td>The structured field for the street number of the postal address.</td>
+    </tr>
+    <tr>
+      <td><i>streetName</i></td>
+      <td>String (foam.nanos.auth.Address)</td>
+      <td>The structured field for the street name of the postal address.</td>
+    </tr>
+    <tr>
+      <td><i>city</i></td>
+      <td>String (foam.nanos.auth.Address)</td>
+      <td>The city of the postal address.</td>
+    </tr>
+    <tr>
+      <td><i>postalCode</i></td>
+      <td>String (foam.nanos.auth.Address)</td>
+      <td>The postal code of the postal address.</td>
+    </tr>
+    <tr>
+      <td><i>latitude</i></td>
+      <td>Double (foam.nanos.auth.Address)</td>
+      <td>The latitude of the postal address location.</td>
+    </tr>
+    <tr>
+      <td><i>longitude</i></td>
+      <td>Double (foam.nanos.auth.Address)</td>
+      <td>The longitude of the postal address location.</td>
+    </tr>
+    <tr>
+      <td>language</td>
+      <td>String (Reference)</td>
+      <td>The default language preferred by the User.</td>
+    </tr>
+    <tr>
+      <td>timeZone</td>
+      <td>String </td>
+      <td>The preferred time zone of the User.</td>
+    </tr>
+    <tr>
+      <td>desiredPassword</td>
+      <td>Password </td>
+      <td>The password that the individual person, or real user,
+        chooses to be used as a password but may or may not pass as valid.</td>
+    </tr>
+    <tr>
+      <td>passwordLastModified</td>
+      <td>DateTime </td>
+      <td>The date and time that the password was last modified.</td>
+    </tr>
+    <tr>
+      <td>note</td>
+      <td>String </td>
+      <td>A field for a note that can be added and appended to the User.</td>
+    </tr>
+    <tr>
+      <td>businessName</td>
+      <td>String </td>
+      <td>The name of the business associated with the User.</td>
+    </tr>
+    <tr>
+      <td>website</td>
+      <td>URL </td>
+      <td>A URL link to the website of the User.</td>
+    </tr>
+    <tr>
+      <td>created</td>
+      <td>DateTime </td>
+      <td>The date and time of when the User was created in the system.</td>
+    </tr>
+    <tr>
+      <td>lastModified</td>
+      <td>DateTime </td>
+      <td>The date and time the User was last modified.</td>
+    </tr>
+    <tr>
+      <td>lifecycleState</td>
+      <td>Enum </td>
+      <td>Lifecycle state of the entity. <pre><p>{PENDING = 0, ACTIVE = 1, REJECTED = 2, DELETED = 3}</p></pre></td>
+    </tr>
+    <tr>
+      <td>compliance</td>
+      <td>Enum </td>
+      <td>Admin user account approval status. <pre><p>{NOTREQUESTED = 0, REQUESTED = 1, PASSED = 2, FAILED = 3}</p></pre></td>
+    </tr>
+    <tr>
+      <td>integrationCode</td>
+      <td>Enum </td>
+      <td>The code that determines which Accounting system is currently active with the user. <pre><p>{NONE = 0, XERO = 1, QUICKBOOKS = 2}</p></pre></td>
+    </tr>
+    <tr>
+      <td>hasIntegrated</td>
+      <td>Boolean </td>
+      <td>Whether the user has integrated with an accounting system.</td>
+    </tr>
+    <tr>
+      <td>loginAttempts</td>
+      <td>Short </td>
+      <td>Count of failed login attempts.</td>
+    </tr>
+    <tr>
+      <td>nextLoginAttemptAllowedAt</td>
+      <td>DateTime </td>
+      <td>When the next login attempt is allowed.</td>
+    </tr>
+    <tr>
+      <td>isPublic</td>
+      <td>Boolean </td>
+      <td>Visibility in Global Directory / Parners lookup</td>
+    </tr>
+    <tr>
+      <td>invited</td>
+      <td>Boolean </td>
+      <td>Determines whether the User was invited to the platform by
+        an invitation email.</td>
+    </tr>
+    <tr>
+      <td>invitedBy</td>
+      <td>Long (Reference)</td>
+      <td>The ID of the person who invited the User to the platform.</td>
+    </tr>
+    <tr>
+      <td>previousStatus</td>
+      <td>Enum </td>
+      <td>Tracks the previous status of the User.</td>
+    </tr>
+    <tr>
+      <td>status</td>
+      <td>Enum </td>
+      <td>
+        Tracks the type of status of the User. <pre><p>{PENDING = 0, SUBMITTED = 1, ACTIVE = 2, DISABLED = 3, REVOKED = 4}</p></pre>
+      </td>
+    </tr>
+    <tr>
+      <td>welcomeEmailSent</td>
+      <td>Boolean </td>
+      <td>Determines whether a welcome email has been sent to the User.</td>
+    </tr>
+    <tr>
+      <td>portalAdminCreated</td>
+      <td>Boolean </td>
+      <td>Determines whether a User was created by an admin user.</td>
+    </tr>
+    <tr>
+      <td>createdPwd</td>
+      <td>Boolean </td>
+      <td>Determines whether the User is using its own unique password or one
+        that was system-generated.</td>
+    </tr>
+    <tr>
+      <td>inviteAttempts</td>
+      <td>Int </td>
+      <td>Defines the number of attempts to invite the user.</td>
+    </tr>
+    <tr>
+      <td>thirdParty</td>
+      <td>Boolean </td>
+      <td>Determines whether the User is taking instructions from and/or acting
+        on behalf of a 3rd party.
+      </td>
+    </tr>
+    <tr>
+      <td>PEPHIORelated</td>
+      <td>Boolean </td>
+      <td>Determines whether the user is a domestic or foreign _Politically
+        Exposed Person (PEP), Head of an International Organization (HIO)_, or
+        related to any such person.
+      </td>
+    </tr>
+    <tr>
+      <td>deviceToken</td>
+      <td>String </td>
+      <td>Identifying token of device.</td>
+    </tr>
+    <tr>
+      <td>twoFactorEnabled</td>
+      <td>Boolean </td>
+      <td>Whether two factor authentication is enabled.</td>
+    </tr>
+    <tr>
+      <td>lastModifiedBy</td>
+      <td>Long (Reference)</td>
+      <td>User who last modified entry</td>
+    </tr>
+    <tr>
+      <td>theme</td>
+      <td>String (Reference)</td>
+      <td>UI theme.</td>
+    </tr>
+    <tr>
+      <td>group</td>
+      <td>String (Reference)</td>
+      <td>The group of the user.</td>
+    </tr>
+    <tr>
+      <td>createdBy</td>
+      <td>Long (Reference)</td>
+      <td>User who created the entry</td>
+    </tr>
+    <tr>
+      <td>createdByAgent</td>
+      <td>Long (Reference)</td>
+      <td>Agent acting as User who created the entry</td>
+    </tr>
+  </tbody>
+</table>
+
+<p> </p>
+
+<h2>Business</h2>
+<p>A business is an entity on behalf of which multiple users can act. A business is associated with the company name provided by the user who first creates it.</p>
+
+<table border="1px" width="100%">
+  <thead>
+    <tr>
+      <th>Field</th>
+      <th>Type</th>
+      <th>Description</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><i>id</i></td>
+      <td>Long </td>
+      <td>The ID for the Business.</td>
+    </tr>
+    <tr>
+      <td>businessName</td>
+      <td>String </td>
+      <td>Legal name of business.</td>
+    </tr>
+    <tr>
+      <td>operatingBusinessName</td>
+      <td>String </td>
+      <td>The business name displayed to the public. This may differ
+        from the organization name.</td>
+    </tr>
+    <tr>
+      <td>businessTypeId</td>
+      <td>Reference </td>
+      <td>The ID of the proprietary details of the business.</td>
+    </tr>
+    <tr>
+      <td>created</td>
+      <td>DateTime </td>
+      <td>This refines the "created" property in
+        foam.nanos.auth.user and changes the section from administrative to
+        business, so that paymentops and other groups can see this property.
+      </td>
+    </tr>
+    <tr>
+      <td>businessSectorId</td>
+      <td>Reference </td>
+      <td>The ID of the general economic grouping for the business.</td>
+    </tr>
+    <tr>
+      <td>businessPermissionId</td>
+      <td>String </td>
+      <td>A generated name used in permission strings related to the business.
+        The name does not contain any special characters.
+      </td>
+    </tr>
+    <tr>
+      <td>loginEnabled</td>
+      <td>Boolean </td>
+      <td>Determines whether the User can login to the platform.</td>
+    </tr>
+    <tr>
+      <td>emailVerified</td>
+      <td>Boolean </td>
+      <td>Determines whether the email address of the User is valid.</td>
+    </tr>
+    <tr>
+      <td>desiredPassword</td>
+      <td>Password </td>
+      <td>The password that the individual person, or real user,
+        chooses to be used as a password but may or may not pass as valid.</td>
+    </tr>
+    <tr>
+      <td>passwordLastModified</td>
+      <td>DateTime </td>
+      <td>The date and time that the password was last modified.</td>
+    </tr>
+    <tr>
+      <td>passwordExpiry</td>
+      <td>DateTime </td>
+      <td>The date and time that the current password of the User
+        will expire.</td>
+    </tr>
+    <tr>
+      <td>residenceOperated</td>
+      <td>Boolean </td>
+      <td>Determines whether a business is operated at the residence of the owner.</td>
+    </tr>
+    <tr>
+      <td>beneficialOwnerDocuments</td>
+      <td>FileArray </td>
+      <td>A stored copy of the documents that verify a person as a
+        beneficial owner.</td>
+    </tr>
+    <tr>
+      <td>businessRegistrationAuthority</td>
+      <td>String </td>
+      <td>An organization that has the power to issue and process a
+        business registration.</td>
+    </tr>
+    <tr>
+      <td>issuingAuthority</td>
+      <td>String </td>
+      <td>An organization that has the power to issue an official document.</td>
+    </tr>
+    <tr>
+      <td>countryOfBusinessRegistration</td>
+      <td>Reference </td>
+      <td>Country where business was registered.</td>
+    </tr>
+    <tr>
+      <td>businessRegistrationDate</td>
+      <td>Date </td>
+      <td>The date that the business was registered by their issuing authority.</td>
+    </tr>
+    <tr>
+      <td>phoneNumber</td>
+      <td>PhoneNumber </td>
+      <td>The phone number of the business.</td>
+    </tr>
+    <tr>
+      <td>phoneNumberVerified</td>
+      <td>Boolean </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>address</td>
+      <td>foam.nanos.auth.Address </td>
+      <td>Returns the postal address of the business associated with the
+        User from the Address model.</td>
+    </tr>
+    <tr>
+      <td><i>structured</i></td>
+      <td>Boolean (foam.nanos.auth.Address)</td>
+      <td>Determines whether the address is shown in the following structure: 
+        Street Number, Street Name, Suite Number. For an unstructured address field, 
+        use address1 and/or address2.
+      </td>
+    </tr>
+    <tr>
+      <td><i>address1</i></td>
+      <td>String (foam.nanos.auth.Address)</td>
+      <td>An unstructured field for the main postal address.</td>
+    </tr>
+    <tr>
+      <td><i>address2</i></td>
+      <td>String (foam.nanos.auth.Address)</td>
+      <td>An unstructured field for the sub postal address.</td>
+    </tr>
+    <tr>
+      <td><i>countryId</i></td>
+      <td>Reference (foam.nanos.auth.Address)</td>
+      <td>A foreign key into the CountryDAO which represents the country.</td>
+    </tr>
+    <tr>
+      <td><i>regionId</i></td>
+      <td>Reference (foam.nanos.auth.Address)</td>
+      <td>A foreign key into the RegionDAO which represents
+        the region of the country.</td>
+    </tr>
+    <tr>
+      <td><i>suite</i></td>
+      <td>String (foam.nanos.auth.Address)</td>
+      <td>The structured field for the suite number of the postal address.</td>
+    </tr>
+    <tr>
+      <td><i>streetNumber</i></td>
+      <td>String (foam.nanos.auth.Address)</td>
+      <td>The structured field for the street number of the postal address.</td>
+    </tr>
+    <tr>
+      <td><i>streetName</i></td>
+      <td>String (foam.nanos.auth.Address)</td>
+      <td>The structured field for the street name of the postal address.</td>
+    </tr>
+    <tr>
+      <td><i>city</i></td>
+      <td>String (foam.nanos.auth.Address)</td>
+      <td>The city of the postal address.</td>
+    </tr>
+    <tr>
+      <td><i>postalCode</i></td>
+      <td>String (foam.nanos.auth.Address)</td>
+      <td>The postal code of the postal address.</td>
+    </tr>
+    <tr>
+      <td><i>latitude</i></td>
+      <td>Double (foam.nanos.auth.Address)</td>
+      <td>The latitude of the postal address location.</td>
+    </tr>
+    <tr>
+      <td><i>longitude</i></td>
+      <td>Double (foam.nanos.auth.Address)</td>
+      <td>The longitude of the postal address location.</td>
+    </tr>
+    <tr>
+      <td>businessHoursEnabled</td>
+      <td>Boolean </td>
+      <td>Determines whether business hours are enabled for the User to set.</td>
+    </tr>
+    <tr>
+      <td>onboarded</td>
+      <td>Boolean </td>
+      <td>Determines whether completed business registration. This property
+        dictates portal views after compliance and account approval.</td>
+    </tr>
+    <tr>
+      <td>principalOwners</td>
+      <td>FObjectArray </td>
+      <td>Represents the people who own the majority shares in a business.</td>
+    </tr>
+    <tr>
+      <td>holdingCompany</td>
+      <td>Boolean </td>
+      <td>Determines whether a Business is a holding company.  A holding company
+        represent a corporate group which owns shares of multiple companies.</td>
+    </tr>
+    <tr>
+      <td>sourceOfFunds</td>
+      <td>String </td>
+      <td>The entities that provide funding to the business.</td>
+    </tr>
+    <tr>
+      <td>targetCustomers</td>
+      <td>String </td>
+      <td>The type of clients that the business markets its products and
+        services.</td>
+    </tr>
+    <tr>
+      <td>suggestedUserTransactionInfo</td>
+      <td>SuggestedUserTransactionInfo </td>
+      <td>Returns the expected transaction types, frequency, amount and
+        currencies that the User anticipates making with the platform. This
+        information is required for KYC purposes.  It is drawn from the
+        suggestedUserTransactionInfo object.
+        </td>
+    </tr>
+    <tr>
+      <td><i>baseCurrency</i></td>
+      <td>String (SuggestedUserTransactionInfo)</td>
+      <td>Currency based on business address.</td>
+    </tr>
+    <tr>
+      <td><i>annualRevenue</i></td>
+      <td>String (SuggestedUserTransactionInfo)</td>
+      <td>Estimated annual revenue for user or business.</td>
+    </tr>
+    <tr>
+      <td><i>transactionPurpose</i></td>
+      <td>String (SuggestedUserTransactionInfo)</td>
+      <td>General transaction purposes.</td>
+    </tr>
+    <tr>
+      <td><i>annualTransactionAmount</i></td>
+      <td>String (SuggestedUserTransactionInfo)</td>
+      <td>Estimated annual number of transactions user or business conducts.
+      BaseCurrency of this field which is set when user confirms that they do international transfers,
+      is opposite (CAD - USD) of set base currency of this model.
+      Legacy Property-as of April 2020</td>
+    </tr>
+    <tr>
+      <td><i>annualTransactionFrequency</i></td>
+      <td>String (SuggestedUserTransactionInfo)</td>
+      <td>Estimated annual frequency of transactions the user or business conducts.</td>
+    </tr>
+    <tr>
+      <td><i>annualVolume</i></td>
+      <td>String (SuggestedUserTransactionInfo)</td>
+      <td>Estimated annual volume in USD of user or business.
+      BaseCurrency of this field which is set when user confirms that they do international transfers,
+      is opposite (CAD - USD) of set base currency of this model.
+      Legacy Property-as of April 2020</td>
+    </tr>
+    <tr>
+      <td><i>firstTradeDate</i></td>
+      <td>Date (SuggestedUserTransactionInfo)</td>
+      <td>Anticipated first payment date.
+      Legacy Property-as of April 2020</td>
+    </tr>
+    <tr>
+      <td><i>annualDomesticTransactionAmount</i></td>
+      <td>String (SuggestedUserTransactionInfo)</td>
+      <td>Estimated annual number of transactions user or business conducts. baseCurrency of this model.
+      US-based company (the information pertains to their domestic transactions, as they will be processed through AFX)
+      Legacy Property-as of April 2020</td>
+    </tr>
+    <tr>
+      <td><i>annualDomesticVolume</i></td>
+      <td>String (SuggestedUserTransactionInfo)</td>
+      <td>Estimated annual volume in USD of user or business. baseCurrency of this model.
+      US-based company (the information pertains to their domestic transactions, as they will be processed through AFX)</td>
+    </tr>
+    <tr>
+      <td><i>firstTradeDateDomestic</i></td>
+      <td>Date (SuggestedUserTransactionInfo)</td>
+      <td>Anticipated first payment date.
+      US-based company (the information pertains to their domestic transactions, as they will be processed through AFX)
+      Legacy Property-as of April 2020</td>
+    </tr>
+    <tr>
+      <td>taxIdentificationNumber</td>
+      <td>String </td>
+      <td>The tax identification number associated with the business of
+      the User.</td>
+    </tr>
+    <tr>
+      <td>businessIdentificationCode</td>
+      <td>String </td>
+      <td>ISO 9362 Business Identification Code (BIC) (regulated by SWIFT). see https://en.wikipedia.org/wiki/ISO_9362.</td>
+    </tr>
+    <tr>
+      <td>businessRegistrationNumber</td>
+      <td>String </td>
+      <td>The Business Registration Number (BRN) that identifies your business
+        to federal, provincial or municipal governments and is used by the business
+        for tax purposes. This number is typically issued by an Issuing Authority such as
+        the CRA.</td>
+    </tr>
+    <tr>
+      <td>businessIdentificationNumber</td>
+      <td>String </td>
+      <td>The Business Identification Number (BIN) that identifies your business
+        to federal, provincial or municipal governments and is used by the business
+        for tax purposes. This number is typically issued by an Issuing Authority such as
+        the CRA.</td>
+    </tr>
+    <tr>
+      <td>businessDirectors</td>
+      <td>FObjectArray </td>
+      <td>List of business directors.</td>
+    </tr>
+    <tr>
+      <td>businessProfilePicture</td>
+      <td>FileProperty </td>
+      <td>The profile picture of the business, such as a logo, initially
+        defaulting to a placeholder picture.</td>
+    </tr>
+    <tr>
+      <td>internationalPaymentEnabled</td>
+      <td>Boolean </td>
+      <td>Determines whether a user has been onboarded to
+        a partner platform to support international payments.</td>
+    </tr>
+    <tr>
+      <td>publiclyTraded</td>
+      <td>Boolean </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>firstName</td>
+      <td>String </td>
+      <td>(not used) First name of user.</td>
+    </tr>
+    <tr>
+      <td>lastName</td>
+      <td>String </td>
+      <td>(not used) Last name of user.</td>
+    </tr>
+    <tr>
+      <td>email</td>
+      <td>EMail </td>
+      <td>(not used) Email of the user.</td>
+    </tr>
+    <tr>
+      <td><i>spid</i></td>
+      <td>Reference (String)</td>
+      <td>The service provider of the business.</td>
+    </tr>
+    <tr>
+      <td><i>enabled</i></td>
+      <td>Boolean </td>
+      <td>Determines whether the User is permitted certain actions.</td>
+    </tr>
+    <tr>
+      <td><i>lastLogin</i></td>
+      <td>DateTime </td>
+      <td>The date and time of last login by User.</td>
+    </tr>
+    <tr>
+      <td><i>middleName</i></td>
+      <td>String </td>
+      <td>(not used) The middle name of the User.</td>
+    </tr>
+    <tr>
+      <td><i>legalName</i></td>
+      <td>String </td>
+      <td>(not used) Full legal name of user. Appends first, middle & last name.</td>
+    </tr>
+    <tr>
+      <td><i>jobTitle</i></td>
+      <td>String </td>
+      <td>(not used) The job title of the individual person, or real user.</td>
+    </tr>
+    <tr>
+      <td><i>organization</i></td>
+      <td>String </td>
+      <td>The organization/business associated with the User.</td>
+    </tr>
+    <tr>
+      <td><i>department</i></td>
+      <td>String </td>
+      <td>The department associated with the organization/business
+        of the User.</td>
+    </tr>
+    <tr>
+      <td><i>userName</i></td>
+      <td>String </td>
+      <td>(not used) The username of the User.</td>
+    </tr>
+    <tr>
+      <td><i>mobileNumber</i></td>
+      <td>PhoneNumber </td>
+      <td>Returns the mobile phone number of the User from the Phone model.</td>
+    </tr>
+    <tr>
+      <td><i>mobileNumberVerified</i></td>
+      <td>Boolean </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><i>type</i></td>
+      <td>String </td>
+      <td>The type of the User.</td>
+    </tr>
+    <tr>
+      <td><i>birthday</i></td>
+      <td>Date </td>
+      <td>The date of birth of the individual person, or real user.</td>
+    </tr>
+    <tr>
+      <td><i>profilePicture</i></td>
+      <td>FileProperty </td>
+      <td>The profile picture of the individual user, initially
+        defaulting to a placeholder picture.</td>
+    </tr>
+    <tr>
+      <td><i>language</i></td>
+      <td>Reference (String)</td>
+      <td>The default language preferred by the User.</td>
+    </tr>
+    <tr>
+      <td><i>timeZone</i></td>
+      <td>String </td>
+      <td>The preferred time zone of the User.</td>
+    </tr>
+    <tr>
+      <td><i>note</i></td>
+      <td>String </td>
+      <td>A field for a note that can be added and appended to the User.</td>
+    </tr>
+    <tr>
+      <td><i>website</i></td>
+      <td>URL </td>
+      <td>A URL link to the website of the User.</td>
+    </tr>
+    <tr>
+      <td><i>lastModified</i></td>
+      <td>DateTime </td>
+      <td>The date and time the User was last modified.</td>
+    </tr>
+    <tr>
+      <td>lifecycleState</td>
+      <td>Enum </td>
+      <td>Lifecycle state of the entity. <pre><p>{PENDING = 0, ACTIVE = 1, REJECTED = 2, DELETED = 3}</p></pre></td>
+    </tr>
+    <tr>
+      <td>compliance</td>
+      <td>Enum </td>
+      <td>Admin user account approval status. <pre><p>{NOTREQUESTED = 0, REQUESTED = 1, PASSED = 2, FAILED = 3}</p></pre></td>
+    </tr>
+    <tr>
+      <td>integrationCode</td>
+      <td>Enum </td>
+      <td>The code that determines which Accounting system is currently active with the user. <pre><p>{NONE = 0, XERO = 1, QUICKBOOKS = 2}</p></pre></td>
+    </tr>
+    <tr>
+      <td><i>hasIntegrated</i></td>
+      <td>Boolean </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><i>loginAttempts</i></td>
+      <td>Short </td>
+      <td>Failed login attempts.</td>
+    </tr>
+    <tr>
+      <td><i>nextLoginAttemptAllowedAt</i></td>
+      <td>DateTime </td>
+      <td>When the user is next allowed to login.</td>
+    </tr>
+     <tr>
+      <td><i>isPublic</i></td>
+      <td>Boolean </td>
+      <td>Visibility in Global Directory / Parners lookup</td>
+    </tr>
+    <tr>
+      <td><i>invited</i></td>
+      <td>Boolean </td>
+      <td>Determines whether the User was invited to the platform by
+        an invitation email.</td>
+    </tr>
+    <tr>
+      <td><i>invitedBy</i></td>
+      <td>Reference </td>
+      <td>The ID of the person who invited the User to the platform.</td>
+    </tr>
+    <tr>
+      <td><i>previousStatus</i></td>
+      <td>Enum </td>
+      <td>Tracks the previous status of the User.</td>
+    </tr>
+    <tr>
+      <td>status</td>
+      <td>Enum </td>
+      <td>
+        Tracks the type of status of the User. <pre><p>{PENDING = 0, SUBMITTED = 1, ACTIVE = 2, DISABLED = 3, REVOKED = 4}</p></pre>
+      </td>
+    </tr>
+    <tr>
+      <td><i>additionalDocuments</i></td>
+      <td>FileArray </td>
+      <td>A stored copy of additional documents for compliance verification.</td>
+    </tr>
+    <tr>
+      <td><i>welcomeEmailSent</i></td>
+      <td>Boolean </td>
+      <td>Determines whether a welcome email has been sent to the User.</td>
+    </tr>
+    <tr>
+      <td><i>portalAdminCreated</i></td>
+      <td>Boolean </td>
+      <td>Determines whether a User was created by an admin user.</td>
+    </tr>
+    <tr>
+      <td><i>createdPwd</i></td>
+      <td>Boolean </td>
+      <td>Determines whether the User is using its own unique password or one
+        that was system-generated.</td>
+    </tr>
+    <tr>
+      <td><i>inviteAttempts</i></td>
+      <td>Int </td>
+      <td>Defines the number of attempts to invite the user.</td>
+    </tr>
+    <tr>
+      <td><i>thirdParty</i></td>
+      <td>Boolean </td>
+      <td>Determines whether the User is taking instructions from and/or acting
+        on behalf of a 3rd party.
+      </td>
+    </tr>
+    <tr>
+      <td><i>PEPHIORelated</i></td>
+      <td>Boolean </td>
+      <td>Determines whether the user is a domestic or foreign _Politically
+        Exposed Person (PEP), Head of an International Organization (HIO)_, or
+        related to any such person.
+      </td>
+    </tr>
+    <tr>
+      <td><i>signUpToken</i></td>
+      <td>String </td>
+      <td>This is set to a random Universal Unique Identifier (UUID) that
+        lets the User register with the platform from an email link. A sign up token
+        is embedded in the email link.  This token includes a property that allows the
+        backend to verify the email of the User and associate the User with the Contact
+        that was created when inviting the User.
+      </td>
+    </tr>
+    <tr>
+      <td><i>deviceToken</i></td>
+      <td>String </td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td><i>twoFactorEnabled</i></td>
+      <td>Boolean </td>
+      <td>Whether two factor authentication is enabled.</td>
+    </tr>
+    <tr>
+      <td><i>lastModifiedBy</i></td>
+      <td>Reference </td>
+      <td>User who last modified entry</td>
+    </tr>
+    <tr>
+      <td><i>theme</i></td>
+      <td>Reference (String)</td>
+      <td>UI theme.</td>
+    </tr>
+    <tr>
+      <td><i>group</i></td>
+      <td>Reference (String)</td>
+      <td>Group.</td>
+    </tr>
+    <tr>
+      <td><i>createdBy</i></td>
+      <td>Reference </td>
+      <td>User who created the entry</td>
+    </tr>
+    <tr>
+      <td><i>createdByAgent</i></td>
+      <td>Reference </td>
+      <td>Agent acting as User who created the entry</td>
+    </tr>
+  </tbody>
+</table>

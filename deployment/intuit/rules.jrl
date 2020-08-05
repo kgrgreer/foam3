@@ -1,0 +1,41 @@
+p({
+    class:"net.nanopay.auth.UserCreateServiceProviderURLRule",
+    id:"fda30583-9ecb-0bf2-38c2-df0c44f3e69a",
+    name:"intuitUserCreateServiceProviderURLRule",
+    priority:100,
+    documentation:"Set ServiceProvider on User Create based on AppConfig URL for intuit",
+    daoKey:"localUserDAO",
+    operation:0,
+    after:false,
+    action:{class:"net.nanopay.auth.UserCreateServiceProviderURLRuleAction"},
+    config:[{
+        class:"net.nanopay.auth.ServiceProviderURL",
+        spid:"intuit"
+    }],
+    enabled:true,
+    saveHistory:false,
+    created:1594218436764,
+    createdBy:1,
+    createdByAgent:1,
+    lastModified:1594218436764,
+    lastModifiedBy:1,
+    lifecycleState:1,
+    ruleGroup:"UserCreate"
+})
+
+p({
+    class:"foam.nanos.dig.DUGRule",
+    id:"a6a0300a-0530-5ee6-c970-1c2f418edc64",
+    name:"User Update Notifications",
+    daoKey:"userDAO",
+    url:"https://my-waiting-listener.com",
+    bearerToken:"custom-bearer-token",
+    format:2,
+    lifecycleState:1,
+    createdByAgent:8023,
+    created:1594658156756,
+    createdBy:8023,
+    astModified:1594658156755,
+    lastModifiedBy:8023,
+    spid:"intuit"
+})

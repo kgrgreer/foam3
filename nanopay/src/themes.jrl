@@ -21,10 +21,7 @@ p({
   "createdByAgent":1,
   "created":"2020-04-29T22:32:52.685Z",
   "customCSS":"""
-    .login-wrapper {
-      margin-left: 250px;
-    }
-    .net-nanopay-ui-Controller-stack-view {
+    .foam-u2-stack-StackView {
       margin: auto;
       overflow: scroll;
       height: calc(100vh - 150px);
@@ -34,7 +31,6 @@ p({
     }
     .foam-comics-BrowserView {
       width: 95%;
-      margin: auto;
     }
   """,
 })
@@ -62,10 +58,7 @@ p({
   "createdByAgent":1,
   "created":"2020-04-29T22:32:52.685Z",
   "customCSS":"""
-    .login-wrapper {
-      margin-left: 250px;
-    }
-    .net-nanopay-ui-Controller-stack-view {
+    .foam-u2-stack-StackView {
       margin: auto;
       overflow: scroll;
       height: calc(100vh - 150px);
@@ -75,7 +68,6 @@ p({
     }
     .foam-comics-BrowserView {
       width: 95%;
-      margin: auto;
     }
   """,
 })
@@ -134,10 +126,7 @@ p({
   "inputVerticalPadding":"10px",
   "inputHorizontalPadding":"8px",
   "customCSS":"""
-    .login-wrapper {
-      margin-left: 250px;
-    }
-    .net-nanopay-ui-Controller-stack-view {
+    .foam-u2-stack-StackView {
       margin: auto;
       padding-bottom: 65px;
       overflow: scroll;
@@ -147,8 +136,6 @@ p({
       overflow: hidden;
     }
     .foam-comics-BrowserView {
-      width: 1024px;
-      margin: auto;
       margin-top: 30px;
     }
   """,

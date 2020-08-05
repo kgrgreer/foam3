@@ -46,6 +46,8 @@ FOAM_FILES([
   { name: 'net/nanopay/payment/Payroll' },
   { name: 'net/nanopay/payment/PayrollEntry' },
   { name: 'net/nanopay/payment/client/ClientPaymentService' },
+  { name: 'net/nanopay/payment/CorridorService' },
+  { name: 'net/nanopay/payment/ClientCorridorService' },
   { name: 'net/nanopay/payment/InstitutionPurposeCode' },
   { name: 'net/nanopay/payment/InstitutionAuthorizerTest' },
   { name: 'net/nanopay/payment/PaymentProviderPrerequisiteRule' },
@@ -256,6 +258,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/ruler/AccountAddedNotificationRule' },
   { name: 'net/nanopay/bank/ruler/AccountVerifiedNotificationRule' },
   { name: 'net/nanopay/bank/ruler/AccountDeletedNotificationRule' },
+  { name: 'net/nanopay/bank/ruler/CorridorAuthorizationRule' },
   { name: 'net/nanopay/bank/ruler/VerifyBankRule' },
 
   // fx
@@ -365,6 +368,8 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEXBusinessDirectorRule' },
   { name: 'net/nanopay/fx/afex/AFEXSigningOfficerRule' },
   { name: 'net/nanopay/fx/afex/AFEXBankUpdatingRule' },
+  { name: 'net/nanopay/fx/afex/TransactionInvalidBankAccountRule' },
+  { name: 'net/nanopay/fx/afex/TransactionVerifyBankAccountRule' },
 
   // kotak
   { name: 'net/nanopay/kotak/Kotak' },
@@ -431,6 +436,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ruler/SlowDownRule' },
   { name: 'net/nanopay/tx/ruler/TransactionQuotedStatusRule' },
   { name: 'net/nanopay/tx/ruler/AbliiSendCompletedNotification' },
+  { name: 'net/nanopay/tx/ruler/CICOTransactionInvalidBankAccountRule' },
   { name: 'net/nanopay/tx/ruler/SendDeclinedCINotification' },
   { name: 'net/nanopay/tx/ruler/AddStatusHistoryAction' },
   { name: 'net/nanopay/tx/ruler/CascadingCancelAction' },
@@ -473,6 +479,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/LabelLiquidSummaryAction' },
   { name: 'net/nanopay/tx/ChainSummary' },
   { name: 'net/nanopay/tx/PartnerTransaction' },
+  { name: 'net/nanopay/tx/SummaryTransactionDAO' },
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },

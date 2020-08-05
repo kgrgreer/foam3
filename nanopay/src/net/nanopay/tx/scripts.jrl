@@ -9,7 +9,7 @@ p({
     import static foam.mlang.MLang.*;
     import foam.nanos.ruler.Rule;
     // optionally allow for custom clearing time
-    instantComplete = true;
+    instantComplete = false;
     // turn off all planners
     ruleGroupDAO_ = x.get("ruleGroupDAO");
     ruleDAO_ = x.get("ruleDAO");
@@ -49,6 +49,7 @@ p({
        r2.setInstantComplete(true);
        r4.setInstantComplete(true);
     }
+    r3.setCreateCompliance(false);
     ruleDAO_.put(r1);
     ruleDAO_.put(r2);
     ruleDAO_.put(r3);
@@ -57,12 +58,15 @@ p({
     // enable clearing time cron and rule
     r5 = ruleDAO_.find("348d6c1a-1e3c-4da6-a1e7-f42892aed3cb").fclone();
     r5.setEnabled(true);
+    r6 = ruleDAO_.find("68afcf0c-c718-98f8-0841-75e97a3ad16d113").fclone();
+    r6.setEnabled(false);
     ruleDAO_.put(r5);
+    ruleDAO_.put(r6);
     
     cronDAO_ = x.get("cronDAO");
-    cron = cronDAO.find("generic transaction completion cron");
+    cron = cronDAO_.find("generic transaction completion cron");
     cron.setEnabled(true);
-    cronDAO.put(cron);
+    cronDAO_.put(cron);
     print("done");
   `
 })

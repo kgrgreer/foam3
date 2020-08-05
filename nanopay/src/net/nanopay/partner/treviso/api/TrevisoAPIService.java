@@ -180,11 +180,8 @@ public class TrevisoAPIService extends ContextAwareSupport implements TrevisoAPI
   protected String parseHttpResponse(CloseableHttpResponse httpResponse, String endpoint) {
     if ( httpResponse == null ) throw new RuntimeException("No response got from Treviso endpoint: " + endpoint);
     try {
-      if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-        String errorMsg = parseHttpResponseError(endpoint, httpResponse);
-        logger.error(errorMsg);
-        throw new RuntimeException(errorMsg);
-      }
+      if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 )
+        return parseHttpResponseError(endpoint, httpResponse);
 
       String response = new BasicResponseHandler().handleResponse(httpResponse);
       logResponseMessage(endpoint, response);
@@ -202,7 +199,8 @@ public class TrevisoAPIService extends ContextAwareSupport implements TrevisoAPI
   }
 
   protected String parseHttpResponseError(String endpoint, CloseableHttpResponse httpResponse) {
-    if ( httpResponse == null  ) return "";
+    String responseString = "";
+    if ( httpResponse == null  ) return responseString;
     StringBuilder sb = new StringBuilder();
     sb.append("Treviso ");
     sb.append(endpoint);
@@ -211,12 +209,14 @@ public class TrevisoAPIService extends ContextAwareSupport implements TrevisoAPI
     sb.append(" - ");
     sb.append(httpResponse.getStatusLine().getReasonPhrase());
     try {
-      sb.append(EntityUtils.toString(httpResponse.getEntity(), "UTF-8"));
+      responseString = EntityUtils.toString(httpResponse.getEntity(), "UTF-8");
+      sb.append(responseString);
     } catch (Exception e) {
-
+      logger.error(sb.toString());
     }
     EntityUtils.consumeQuietly(httpResponse.getEntity());
-    return sb.toString();
+    logger.error(sb.toString());
+    return responseString;
   }
 
   protected String getJsonMessage(FObject obj) {

@@ -1,10 +1,12 @@
 acceptanceDocuments
 accounts
 accountTemplates
+agentJunctions
 alarmConfig
 ascendantfxusers
 ascendantUserPayeeJunctions
 assetClasses
+beneficialOwners
 blacklists
 bootscripts
 branches
@@ -76,8 +78,10 @@ securities
 services
 sessions
 sessionsinternal
+signingOfficerJunctions
 spids
 strategyReferences
+sugars
 tests
 themes
 themeDomains

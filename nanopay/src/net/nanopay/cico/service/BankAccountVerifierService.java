@@ -33,6 +33,7 @@ public class BankAccountVerifierService
     if ( randomDepositAmount == -1000000 ) {
       BankAccount bankAccount = (BankAccount) bankAccountDAO.inX(x).find(bankAccountId);
       bankAccount.setStatus(BankAccountStatus.VERIFIED);
+      bankAccount.setVerifiedBy("MICRO_DEPOSIT");
       bankAccount = (BankAccount) bankAccountDAO.inX(x).put(bankAccount);
       if ( bankAccount != null) checkPendingAcceptanceInvoices(x, bankAccount);
       return true;

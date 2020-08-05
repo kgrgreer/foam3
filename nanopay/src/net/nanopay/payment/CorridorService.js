@@ -28,6 +28,7 @@ foam.INTERFACE({
   methods: [
     {
       name: 'getProviderCorridor',
+      async: true,
       type: 'net.nanopay.payment.PaymentProviderCorridor',
       documentation: 'Returns a corridor supported by a Payment Provider',
       args: [
@@ -55,6 +56,7 @@ foam.INTERFACE({
     {
       name: 'isSupportedCurrencyPair',
       type: 'Boolean',
+      async: true,
       documentation: 'Returns true if there is any Provider that can handle the currency pair.',
       args: [
         {
@@ -86,6 +88,7 @@ foam.INTERFACE({
     {
       name: 'canProcessCurrencyPair',
       type: 'Boolean',
+      async: true,
       documentation: 'Returns true if a provider can process corridor and currrency pair',
       args: [
         {

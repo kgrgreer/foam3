@@ -31,12 +31,9 @@ foam.CLASS({
 
   css: `
     ^ {
-      width: 100%;
       display: flex;
       justify-content: space-between;
-      z-index: 10001;
       background-color: /*%PRIMARY1%*/ #202341;
-      height: 56px;
       font-family: Roboto, Helvetica, sans-serif;
     }
     ^ .logo-wrapper {
@@ -135,7 +132,7 @@ foam.CLASS({
             .end()
             .start().addClass('navigation-components')
               .callIf( ! this.theme.disableCurrencyChoice, function() {
-                this.tag({ class: 'net.nanopay.ui.topNavigation.CurrencyChoiceView' })
+                this.tag({ class: 'net.nanopay.ui.topNavigation.CurrencyChoiceView' });
               })
               .tag({ class: 'foam.nanos.u2.navigation.NotificationMenuItem' })
               .tag({ class: 'foam.nanos.u2.navigation.UserInfoNavigationView' })

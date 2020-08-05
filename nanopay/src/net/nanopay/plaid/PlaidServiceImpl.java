@@ -286,7 +286,9 @@ public class PlaidServiceImpl implements PlaidService {
     Logger logger          = (Logger) x.get("logger");
 
     try {
-      USBankAccount account = (USBankAccount) accountDAO.put(plaidResponseItem.getAccount());
+      USBankAccount account = (USBankAccount) plaidResponseItem.getAccount();
+      account.setVerifiedBy("PLAID");
+      account = (USBankAccount) accountDAO.put(plaidResponseItem.getAccount());
       createReport(x, plaidResponseItem.getAccountDetail(),account.getId(), plaidResponseItem.getPlaidItem());
       return responseItem;
     } catch ( PlaidException e ) {

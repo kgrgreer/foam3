@@ -169,6 +169,7 @@ foam.CLASS({
             accountNumber: account.accountNumber
           }));
           account.address = user.address;
+          account.verifiedBy = "FLINKS";
           await this.bankAccountDAO.put(account);
         } catch (error) {
           this.notify(error.message, '', this.LogLevel.ERROR, true);

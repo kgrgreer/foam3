@@ -32,10 +32,21 @@ foam.INTERFACE({
           type: 'Long',
           name: 'user'
         },
+      ]
+    },
+    {
+      name: 'updateEntity',
+      async: true,
+      javaThrows: ['java.lang.RuntimeException'],
+      args: [
         {
-          type: 'String',
-          name: 'cnpj'
+          type: 'Context',
+          name: 'x'
         },
+        {
+          type: 'Long',
+          name: 'user'
+        }
       ]
     },
     {
@@ -76,6 +87,42 @@ foam.INTERFACE({
           type: 'net.nanopay.tx.model.Transaction',
           name: 'transaction'
         },
+      ]
+    },
+    {
+      name: 'createExchangeCustomerDefault',
+      async: true,
+      type: 'net.nanopay.partner.treviso.TrevisoClient',
+      javaThrows: ['java.lang.RuntimeException'],
+      args: [
+        {
+          type: 'Long',
+          name: 'userId'
+        },
+        {
+          type: 'String',
+          name: 'cnpj'
+        }
+      ]
+    },
+    {
+      name: 'createExchangeCustomer',
+      async: true,
+      type: 'net.nanopay.partner.treviso.TrevisoClient',
+      javaThrows: ['java.lang.RuntimeException'],
+      args: [
+        {
+          type: 'Long',
+          name: 'userId'
+        },
+        {
+          type: 'Long',
+          name: 'amount'
+        },
+        {
+          type: 'String',
+          name: 'cnpj'
+        }
       ]
     },
     {

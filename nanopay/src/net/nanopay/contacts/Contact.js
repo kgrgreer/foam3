@@ -446,7 +446,7 @@ foam.CLASS({
       class: 'String',
       name: 'warning',
       label: '',
-      tableWidth: 55,
+      tableWidth: 80,
       javaGetter: `
         return getBankAccount() == 0 && getBusinessId() == 0 ? "Missing bank information" : null;
       `,

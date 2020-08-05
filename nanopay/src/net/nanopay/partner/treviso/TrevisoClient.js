@@ -55,11 +55,6 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'cnpj',
-      documentation: 'Customer CNPJ.'
-    },
-    {
-      class: 'String',
       name: 'status',
       value: 'Pending',
       documentation: 'Status on Treviso system.'

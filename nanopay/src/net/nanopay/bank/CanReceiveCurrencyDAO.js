@@ -34,6 +34,7 @@ foam.CLASS({
     'foam.mlang.order.Comparator',
     'foam.mlang.predicate.Predicate',
     'foam.mlang.sink.Count',
+    'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'net.nanopay.account.Account',
@@ -100,6 +101,7 @@ foam.CLASS({
             INSTANCE_OF(BankAccount.getOwnClassInfo()),
             EQ(BankAccount.DELETED, false),
             EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
+            EQ(Account.LIFECYCLE_STATE, LifecycleState.ACTIVE),
             EQ(Account.OWNER, user.getId())))
           .select(new Count());
 

@@ -51,9 +51,8 @@ foam.CLASS({
 
   css: `
     ^ {
-      width: 1024px;
       margin: auto;
-      margin-top: 30px;
+      padding: 32px;
     }
     ^row {
       display: flex;

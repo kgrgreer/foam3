@@ -32,16 +32,13 @@ foam.CLASS({
     'foam.core.X',
     'foam.core.FObject',
     'foam.dao.*',
- 
     'static foam.mlang.MLang.EQ',
-    
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
-    
+    'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.model.Branch',
     'net.nanopay.payment.Institution',
     'net.nanopay.tx.Transfer',
-    
     'java.util.List'
   ],
 
@@ -75,11 +72,14 @@ foam.CLASS({
 
         BankAccount bankAccount = (BankAccount) obj;
         Institution institution = null;
-        Branch branch = bankAccount.findBranch(x);
-        if (branch != null) {
-          institution = branch.findInstitution(x);
-        } else {
-          institution = bankAccount.findInstitution(x);
+        Branch branch = null;
+        if ( bankAccount.getStatus() !=  BankAccountStatus.UNVERIFIED ) {
+          branch = bankAccount.findBranch(x);
+          if (branch != null) {
+            institution = branch.findInstitution(x);
+          } else {
+            institution = bankAccount.findInstitution(x);
+          }
         }
         if (institution == null && !foam.util.SafetyUtil.isEmpty(bankAccount.getInstitutionNumber())) {
           DAO institutionDAO = (DAO) x.get("institutionDAO");

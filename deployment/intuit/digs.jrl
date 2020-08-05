@@ -1,0 +1,47 @@
+p({
+    class:"foam.nanos.dig.DIG",
+    id:"Retrieve All Businesses",
+    daoKey:"businessDAO",
+    postURL:"/service/dig?dao=businessDAO&cmd=select&format=json",
+    result:"[]",
+    createdBy:8023,
+    lastUpdatedBy:8023
+})
+
+p({
+    class:"foam.nanos.dig.DIG",
+    id:"Retrieve All Users",
+    daoKey:"userDAO",
+    q:"type=User",
+    postURL:"/service/dig?dao=userDAO&cmd=select&format=json&q=type%3DUser",
+    result:"[]",
+    createdBy:8023,
+    lastUpdatedBy:8023
+})
+
+p({
+    class:"foam.nanos.dig.DIG",
+    id:"Retrieve All Accounts",
+    createdBy:8023,
+    createdByAgent:8023,
+    created:1595435232977,
+    lastModified:1595435232977,
+    lastModifiedBy:8023,
+    daoKey:"accountDAO",
+    postURL:"/service/dig?dao=accountDAO&cmd=select&format=json"
+})
+
+p({
+    class:"foam.nanos.dig.DIG",
+    id:"Create Transaction",
+    createdBy:8023,
+    createdByAgent:8023,
+    created:1595435232977,
+    lastModified:1595435232977,
+    lastModifiedBy:8023,
+    daoKey:"summaryTransactionDAO",
+    cmd:1,
+    data:"{\n\"class\":\"net.nanopay.tx.model.Transaction\",\n\"destinationAmount\":800,\n\"sourceCurrency\":\"CAD\",\n\"destinationCurrency\":\"CAD\",\n\"destinationAccount\":186,\n\"sourceAccount\":189\n}",
+    postURL:"/service/dig?dao=summaryTransactionDAO&cmd=put&format=json",
+    Description:"Creating a Bank to Bank transaction.\nA sample body is included below.\nThe JSON object represents a Transaction Model in our system that will be put into the Transaction DAO.\nDestination amount is the amount that will be sent from sourceAccount to destinationAccount.\ndestinationAccount and sourceAccount are the ID's of the accounts in the transfer.\nAccount ID's can be found under Data -> Accounts.\nValid accounts for transfers have already been setup, their ID's are 186, 189, 191.\nsource and destination Currency is the currency the transaction will use, in this environment only CAD is supported."
+})
