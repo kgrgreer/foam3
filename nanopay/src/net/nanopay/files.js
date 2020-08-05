@@ -1554,7 +1554,7 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/onboardingModels/UserIsSigningOfficerOfBusiness' },
 
   // crunch compliance
-  { name: 'net/nanopay/crunch/compliance/IsPendingCapabilityOfCertainCategory' },
+  { name: 'net/nanopay/crunch/compliance/IsCapabilityOfCertainCategoryAndStatus' },
   { name: 'net/nanopay/crunch/compliance/PersonSanctionValidator' },
   { name: 'net/nanopay/crunch/compliance/EntitySanctionValidator' },
   { name: 'net/nanopay/crunch/compliance/BeneficialOwnerSanctionValidator' },
@@ -1563,6 +1563,11 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/compliance/SecurefactLEVValidator' },
   { name: 'net/nanopay/crunch/compliance/UserComplianceApproval' },
   { name: 'net/nanopay/crunch/compliance/ReputDependenciesOnUCJPut' },
+
+  // crunch afex
+  { name: 'net/nanopay/partner/afex/crunch/BusinessHasVerifiedBankAccount' },
+  { name: 'net/nanopay/partner/afex/crunch/AFEXBusinessOnboardingRule' },
+  { name: 'net/nanopay/partner/afex/crunch/BankAccountOwnerIsBusiness' },
 
   // crunch acceptance
   { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/AbliiTermsAndConditions' },
