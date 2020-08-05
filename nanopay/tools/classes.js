@@ -261,6 +261,8 @@ var classes = [
   'net.nanopay.fx.afex.AFEXBusinessDirectorRule',
   'net.nanopay.fx.afex.AFEXSigningOfficerRule',
   'net.nanopay.fx.afex.AFEXBankUpdatingRule',
+  'net.nanopay.fx.afex.TransactionInvalidBankAccountRule',
+  'net.nanopay.fx.afex.TransactionVerifyBankAccountRule',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
@@ -546,6 +548,7 @@ var classes = [
   'net.nanopay.tx.ruler.SendDeclinedCINotification',
   'net.nanopay.tx.ruler.AddStatusHistoryAction',
   'net.nanopay.tx.ruler.CascadingCancelAction',
+  'net.nanopay.tx.ruler.CICOTransactionInvalidBankAccountRule',
   'net.nanopay.tx.RepayDebtOnCIRule',
   'net.nanopay.tx.model.TransactionLimitTimeFrame',
   'net.nanopay.tx.model.TransactionLimitType',

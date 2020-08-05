@@ -29,7 +29,8 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
-    'foam.dao.DAO'
+    'foam.dao.DAO',
+    'foam.util.SafetyUtil'
   ],
 
   methods: [
@@ -37,7 +38,7 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
         BankAccount bankAccount = (BankAccount) obj;
-        if ( ! bankAccount.getStatus().equals(BankAccountStatus.VERIFIED) ) {
+        if ( ! bankAccount.getStatus().equals(BankAccountStatus.VERIFIED) && ! SafetyUtil.isEmpty(bankAccount.getVerifiedBy()) ) {
           throw new RuntimeException("Unable to set unverified bank accounts as default");
         }
 

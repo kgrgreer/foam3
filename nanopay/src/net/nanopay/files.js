@@ -367,6 +367,8 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEXBusinessDirectorRule' },
   { name: 'net/nanopay/fx/afex/AFEXSigningOfficerRule' },
   { name: 'net/nanopay/fx/afex/AFEXBankUpdatingRule' },
+  { name: 'net/nanopay/fx/afex/TransactionInvalidBankAccountRule' },
+  { name: 'net/nanopay/fx/afex/TransactionVerifyBankAccountRule' },
 
   // kotak
   { name: 'net/nanopay/kotak/Kotak' },
@@ -432,6 +434,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ruler/SlowDownRule' },
   { name: 'net/nanopay/tx/ruler/TransactionQuotedStatusRule' },
   { name: 'net/nanopay/tx/ruler/AbliiSendCompletedNotification' },
+  { name: 'net/nanopay/tx/ruler/CICOTransactionInvalidBankAccountRule' },
   { name: 'net/nanopay/tx/ruler/SendDeclinedCINotification' },
   { name: 'net/nanopay/tx/ruler/AddStatusHistoryAction' },
   { name: 'net/nanopay/tx/ruler/CascadingCancelAction' },
