@@ -827,6 +827,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/dashboard/cards/IntegrationCard', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/dashboard/cards/BankIntegrationCard', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/dashboard/cards/QBIntegrationCard', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/dashboard/LowerCardsView', flags: ['web'] },
 
   // sme WizardModal NavigationBar
   { name: 'net/nanopay/sme/ui/wizardModal/WizardModalNavigationBar', flags: ['web'] },

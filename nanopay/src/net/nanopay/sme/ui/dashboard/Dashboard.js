@@ -26,6 +26,7 @@ foam.CLASS({
 
   requires: [
     'foam.nanos.notification.Notification',
+    'foam.u2.crunch.CapabilityStore',
     'foam.u2.dialog.NotificationMessage',
     'foam.u2.Element',
     'net.nanopay.account.Account',
@@ -143,7 +144,7 @@ foam.CLASS({
         this.subject.user.expenses
           .where(
             this.EQ(this.Invoice.STATUS, this.InvoiceStatus.PENDING_APPROVAL))
-          .select(this.COUNT()).then((c) => {
+          .select(this.COUNT()).then(c => {
             this.countRequiresApproval = c.value;
           });
         return 0;
@@ -158,7 +159,7 @@ foam.CLASS({
             this.EQ(this.Invoice.STATUS, this.InvoiceStatus.UNPAID),
             this.EQ(this.Invoice.STATUS, this.InvoiceStatus.OVERDUE)
           ))
-          .select(this.COUNT()).then((c) => {
+          .select(this.COUNT()).then(c => {
             this.countOverdueAndUpcoming = c.value;
           });
         return 0;
@@ -172,7 +173,7 @@ foam.CLASS({
           .where(this.OR(
             this.EQ(this.Invoice.STATUS, this.InvoiceStatus.PENDING_ACCEPTANCE),
           ))
-          .select(this.COUNT()).then((c) => {
+          .select(this.COUNT()).then(c => {
             this.countDepositPayment = c.value;
           });
         return 0;
@@ -220,7 +221,7 @@ foam.CLASS({
       name: 'payablesCount',
       factory: function() {
         this.subject.user.expenses
-          .select(this.COUNT()).then((c) => {
+          .select(this.COUNT()).then(c => {
             this.payablesCount = c.value;
           });
         return 0;
@@ -231,7 +232,7 @@ foam.CLASS({
       name: 'receivablesCount',
       factory: function() {
         this.subject.user.sales
-          .select(this.COUNT()).then((c) => {
+          .select(this.COUNT()).then(c => {
             this.receivablesCount = c.value;
           });
         return 0;
@@ -241,9 +242,9 @@ foam.CLASS({
       class: 'Int',
       name: 'notificationsCount',
       factory: function() {
-        this.myDaoNotification$proxy.select(this.COUNT()).then((c) => {
+        this.myDaoNotification$proxy.select(this.COUNT()).then(c => {
           this.notificationsCount = c.value;
-        })
+        });
         return 0;
       }
     },
@@ -275,7 +276,7 @@ foam.CLASS({
             this.NEQ(this.BankAccount.STATUS, this.BankAccountStatus.DISABLED)
           )
         ).select()
-        .then((sink) => {
+        .then(sink => {
           this.bankAccount = sink.array[0];
         });
      this.userHasPermissionsForAccounting = await this.accountingIntegrationUtil.getPermission();
@@ -302,23 +303,24 @@ foam.CLASS({
     function initE() {
       this.ctrl.bannerizeCompliance();
       this.SUPER();
+
+      var split = this.DashboardBorder.create();
+      var capStore = this.CapabilityStore.create(this.ctrl.__subContext__);
+
       this.getUserAccounts().then(() => {
         var self = this;
-        var split = this.DashboardBorder.create();
-
         var top = this.Element.create()
           .start('h1')
             .add(this.TITLE)
           .end()
-          .tag({
-            class: 'net.nanopay.sme.ui.dashboard.TopCardsOnDashboard',
-            bankAccount: this.bankAccount,
-            userHasPermissionsForAccounting: this.userHasPermissionsForAccounting,
-            businessOnboarding: this.businessOnboarding,
-            onboardingStatus$: this.onboardingStatus$,
-            businessRegistrationDate$: this.businessRegistrationDate$,
-            countryOfBusinessRegistration$: this.countryOfBusinessRegistration$
-          }); // DynamixSixButtons' }); // paths for both dashboards the same, just switch calss name to toggle to old dashboard
+          .add(capStore.renderFeatured())
+          .start()
+            .tag({
+              class: 'net.nanopay.sme.ui.dashboard.LowerCardsView',
+              bankAccount: this.bankAccount,
+              userHasPermissionsForAccounting: this.userHasPermissionsForAccounting
+            })
+          .end();
 
         var line = this.Element.create()
           .start().addClass('line')
@@ -348,16 +350,16 @@ foam.CLASS({
             .start('span')
               .addClass(this.myClass('clickable'))
               .add(this.VIEW_ALL)
-              .hide(this.payablesCount$.map((value) => value == 0))
+              .hide(this.payablesCount$.map(value => value == 0))
               .on('click', function() {
                 self.pushMenu('sme.main.invoices.payables');
               })
             .end()
           .end()
           .start()
-            .show(this.payablesCount$.map((value) => value > 0))
+            .show(this.payablesCount$.map(value => value > 0))
             .addClass('invoice-list-wrapper')
-            .select(this.myDAOPayables$proxy, (invoice) => {
+            .select(this.myDAOPayables$proxy, invoice => {
               return this.E().start({
                 class: 'net.nanopay.sme.ui.InvoiceRowView',
                 data: invoice,
@@ -377,7 +379,7 @@ foam.CLASS({
             })
           .end()
           .start()
-            .hide(this.payablesCount$.map((value) => value > 0))
+            .hide(this.payablesCount$.map(value => value > 0))
             .addClass('empty-state')
             .start().add(this.SEND_PAYMENT).end()
             .start('p').add(this.NO_RECENT_PAYABLES).end()
@@ -388,7 +390,7 @@ foam.CLASS({
             .add(this.SUBTITLE3)
           .end()
           .start()
-          .show(this.notificationsCount$.map((value) => value > 0))
+          .show(this.notificationsCount$.map(value => value > 0))
             .select(this.myDaoNotification$proxy, function(notif) {
               return this.E().start({
                 class: 'net.nanopay.sme.ui.dashboard.NotificationDashboardView',
@@ -401,7 +403,7 @@ foam.CLASS({
             })
             .end()
             .start()
-              .hide(this.notificationsCount$.map((value) => value > 0))
+              .hide(this.notificationsCount$.map(value => value > 0))
               .addClass('empty-state')
               .start().addClass('empty-box')
                 .start('p').add(this.NO_LATEST_ACTIVITY).end()
@@ -417,16 +419,16 @@ foam.CLASS({
             .start('span')
               .addClass(this.myClass('clickable'))
               .add(this.VIEW_ALL)
-              .hide(this.receivablesCount$.map((value) => value == 0))
+              .hide(this.receivablesCount$.map(value => value == 0))
               .on('click', function() {
                 self.pushMenu('sme.main.invoices.receivables');
               })
             .end()
           .end()
           .start()
-            .show(this.receivablesCount$.map((value) => value > 0))
+            .show(this.receivablesCount$.map(value => value > 0))
             .addClass('invoice-list-wrapper')
-            .select(this.myDAOReceivables$proxy, (invoice) => {
+            .select(this.myDAOReceivables$proxy, invoice => {
               return this.E().start({
                 class: 'net.nanopay.sme.ui.InvoiceRowView',
                 data: invoice
@@ -441,7 +443,7 @@ foam.CLASS({
             })
           .end()
           .start()
-            .hide(this.receivablesCount$.map((value) => value > 0))
+            .hide(this.receivablesCount$.map(value => value > 0))
             .addClass('empty-state')
             .start().add(this.REQUEST_PAYMENT).end()
             .start('p').add(this.NO_RECENT_RECEIVABLES).end()
@@ -478,7 +480,7 @@ foam.CLASS({
       name: 'sendPayment',
       label: 'Send payment',
       code: function() {
-        this.checkAndNotifyAbilityToPay().then((result) => {
+        this.checkAndNotifyAbilityToPay().then(result => {
           if ( result ) {
             this.pushMenu('sme.quickAction.send');
           }
@@ -489,7 +491,7 @@ foam.CLASS({
       name: 'requestPayment',
       label: 'Request payment',
       code: function() {
-        this.checkAndNotifyAbilityToReceive().then((result) => {
+        this.checkAndNotifyAbilityToReceive().then(result => {
           if ( result ) {
             this.pushMenu('sme.quickAction.request');
           }

@@ -22,9 +22,7 @@ foam.CLASS({
 
   css: `
     ^ {
-      max-width: 1024px;
-      margin: auto;
-      padding: 12px 24px 24px 24px;
+      padding: 0 2vw 15vh 2vw;
     }
     ^ .two-column-grid {
       margin-top: 32px;
@@ -59,8 +57,8 @@ foam.CLASS({
     function init() {
       this
         .addClass(this.myClass())
-        .tag('div', null, this.topButtons$)
-        .tag('div', null, this.line$)
+        .start().tag('div', null, this.topButtons$).end()
+        .start().tag('div', null, this.line$).end()
         .start()
           .addClass('two-column-grid')
           .start()
