@@ -37,6 +37,11 @@ foam.CLASS({
     {
       name: 'multiPlan_',
       value: true
+    },
+    {
+      name: 'createCompliance',
+      class: 'Boolean',
+      value: true
     }
   ],
 
@@ -50,7 +55,6 @@ foam.CLASS({
         if ( requestTxn.getType().equals("Transaction") ) {
           txn = new SummaryTransaction(x);
           txn.copyFrom(requestTxn);
-          txn.addNext(createCompliance(requestTxn));
         } else {
           txn = (Transaction) requestTxn.fclone();
         }
@@ -96,9 +100,14 @@ foam.CLASS({
               dp.addNext(co);
               ci.addNext(dp);
               dp.setInitialStatus(TransactionStatus.COMPLETED);
-              ComplianceTransaction ct = createCompliance(txn);
-              ct.addNext(ci);
-              t.addNext(ct);
+              if (getCreateCompliance()) {
+                ComplianceTransaction ct = createCompliance(txn);
+                ct.addNext(ci);
+                t.addNext(ct);
+              }
+              else{
+                t.addNext(ci);
+              }
               t.addLineItems(CIP.getLineItems());
               t.addLineItems(DP.getLineItems());
               t.addLineItems(COP.getLineItems());

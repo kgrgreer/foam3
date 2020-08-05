@@ -139,6 +139,46 @@ p({
   "client": "{\"of\":\"net.nanopay.tx.model.Transaction\", \"remoteListenerSupport\": false, \"serverBox\":{ \"class\":\"foam.box.SessionClientBox\", \"url\":\"service/tableViewTransactionDAO\", \"delegate\":{ \"class\":\"foam.box.TimeoutBox\", \"timeout\":25000,\"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/tableViewTransactionDAO\"}}}}"
 })
 
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "summaryTransactionDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo())
+      .setInnerDAO(x.get("transactionDAO"))
+      .setDecorator(new net.nanopay.tx.SummaryTransactionDAO(x, new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo()).build()))
+      .setAuthorize(false)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setEnableInterfaceDecorators(false)
+      .setRuler(false)
+      .build();
+  """,
+  "client":
+    """
+      {
+        "of":"net.nanopay.tx.model.Transaction",
+        "remoteListenerSupport": false,
+        "serverBox":{
+          "class":"foam.box.SessionClientBox",
+          "url":"service/summaryTransactionDAO",
+          "delegate":{
+            "class":"foam.box.TimeoutBox",
+            "timeout":25000,
+            "delegate":{
+              "class":"foam.box.HTTPBox",
+              "url":"service/summaryTransactionDAO"
+            }
+          }
+        }
+      }
+    """
+})
+
+
 p({"class":"foam.nanos.boot.NSpec", "name":"liquidityService",                   "serviceScript":"return new net.nanopay.liquidity.LiquidityService();"})
 
 p({

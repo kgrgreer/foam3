@@ -477,6 +477,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/LabelLiquidSummaryAction' },
   { name: 'net/nanopay/tx/ChainSummary' },
   { name: 'net/nanopay/tx/PartnerTransaction' },
+  { name: 'net/nanopay/tx/SummaryTransactionDAO' },
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },

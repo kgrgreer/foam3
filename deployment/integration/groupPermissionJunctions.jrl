@@ -1,0 +1,13 @@
+// Northcard
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"group.read.api-northcard"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"group.update.api-northcard"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"menu.read.api-doc-northcard"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"menu.read.view-contacts"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"menu.read.view-requestmoney"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"menu.read.view-transactions"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"requestmoney.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"requestmoney.update.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"requestmoney.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"requestmoney.remove.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"service.read.requestMoneyDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"service.requestMoneyDAO"})

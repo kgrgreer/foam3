@@ -33,14 +33,22 @@ foam.CLASS({
       class: 'String',
       name: 'category',
     },
+    {
+      class: 'String',
+      name: 'summary',
+    },
   ],
 
   methods: [
     {
       name: 'toSummary',
+      type: 'String',
       code: function() {
-        return this.category + ' ' + this.status;
-      }
+        return this.category + ' ' + this.status.getName();
+      },
+      javaCode: `
+        return getCategory() + ' ' + getStatus().getName();
+      `
     }
   ]
 });

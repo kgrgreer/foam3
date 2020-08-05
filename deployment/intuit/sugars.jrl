@@ -1,0 +1,68 @@
+p({
+    class:"foam.nanos.dig.SUGAR",
+    id:"Create Session Token for Initech",
+    createdBy:8023,
+    lastUpdatedBy:8023,
+    data:"""
+    {
+        "service":"sessionService",
+        "method":"createSessionWithTTL",
+        "interfaceName":"foam.nanos.session.SessionService",
+        "userId":8029,
+        "agentId":8028,
+        "ttl": 28800000
+    }
+    """,
+    description:"""'userId':  the ID of the business to act on behalf of
+'agentId': the ID of the user to act on behalf of
+'ttl': time in milliseconds
+========================================================
+Result:   use the sessionId returned in the bearer token for authentication
+    """
+})
+
+p({
+    class:"foam.nanos.dig.SUGAR",
+    id:"Create Session Token for Small Business",
+    createdBy:8023,
+    lastUpdatedBy:8023,
+    data:"""
+    {
+        "service":"sessionService",
+        "method":"createSessionWithTTL",
+        "interfaceName":"foam.nanos.session.SessionService",
+        "userId":8027,
+        "agentId":8026,
+        "ttl": 28800000
+    }
+    """,
+    description:"""'userId':  the ID of the business to act on behalf of
+'agentId': the ID of the user to act on behalf of
+'ttl': time in milliseconds
+========================================================
+Result:   use the sessionId returned in the bearer token for authentication
+    """
+})
+
+p({
+    class:"foam.nanos.dig.SUGAR",
+    id:"Create Session Token for Tiny Business",
+    createdBy:8023,
+    lastUpdatedBy:8023,
+    data:"""
+    {
+        "service":"sessionService",
+        "method":"createSessionWithTTL",
+        "interfaceName":"foam.nanos.session.SessionService",
+        "userId":8033,
+        "agentId":8032,
+        "ttl": 28800000
+    }
+    """,
+    description:"""'userId':  the ID of the business to act on behalf of
+'agentId': the ID of the user to act on behalf of
+'ttl': time in milliseconds
+========================================================
+Result:   use the sessionId returned in the bearer token for authentication
+    """
+})

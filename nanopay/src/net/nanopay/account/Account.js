@@ -59,8 +59,7 @@ foam.CLASS({
     'id',
     'type',
     'summary',
-    'balance',
-    'homeBalance'
+    'balance'
   ],
 
   axioms: [
@@ -126,7 +125,7 @@ foam.CLASS({
       javaGetter: `
         return getClass().getSimpleName();
       `,
-      tableWidth: 135,
+      tableWidth: 150,
       section: 'accountType',
       visibility: 'RO'
     },
@@ -137,7 +136,7 @@ foam.CLASS({
       documentation: 'The ID for the account.',
       section: 'administration',
       visibility: 'RO',
-      tableWidth: 50
+      tableWidth: 150
     },
     {
       class: 'Boolean',
@@ -161,7 +160,8 @@ foam.CLASS({
         }
       },
       section: 'accountDetails',
-      order: 1
+      order: 1,
+      tableWidth: 200
     },
     {
       class: 'String',
@@ -285,7 +285,14 @@ foam.CLASS({
       storageTransient: true,
       visibility: 'RO',
       javaGetter: `
+      try {
+        if ( foam.core.XLocator.get() == null ) {
+          return "";
+        }
         Session session = foam.core.XLocator.get().get(Session.class);
+        if ( session == null ) {
+          return "";
+        }
         foam.dao.DAO localLocalSettingDAO = (foam.dao.DAO)session.getContext().get("localLocalSettingDAO");
 
         String homeDenomination = "USD";
@@ -299,6 +306,9 @@ foam.CLASS({
         String denomination = getDenomination();
         ExchangeRateService ert = (ExchangeRateService)getX().get("exchangeRateService");
         return ert.exchangeFormat(denomination, homeDenomination, getBalance()) + " " + homeDenomination;
+      } catch (NullPointerException e) {
+        return "";
+      }
       `,
       tableWidth: 175,
       tableCellFormatter: function(value, obj, axiom) {
