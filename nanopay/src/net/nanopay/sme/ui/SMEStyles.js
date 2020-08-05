@@ -620,10 +620,6 @@ foam.CLASS({
     .foam-comics-DAOControllerView .actions .foam-u2-ActionView img + span {
       margin-left: 12px;
     }
-    
-    .net-nanopay-ui-Controller .foam-comics-DAOControllerView-top-row {
-      margin-bottom: 36px;
-    }
 
     .foam-comics-DAOControllerView-title-container span {
       color: #8e9090;
@@ -653,11 +649,6 @@ foam.CLASS({
     .login-stack {
       margin-bottom: -60px;
       margin-left: 0;
-    }
-
-    .dashboard-stack {
-      margin-bottom: 0;
-      margin-left: 250px;
     }
 
     .net-nanopay-auth-ui-UserSelectionView .styleHolder_NameField {
@@ -816,7 +807,6 @@ foam.CLASS({
       background: #fff;
     }
     .top-bar-inner {
-      max-width: 1024px;
       margin: auto;
       height: 64px;
     }

@@ -52,10 +52,7 @@ p({
   "inputHorizontalPadding":"8px",
   "customCSS":
   """
-    .login-wrapper {
-      margin-left: 250px;
-    }
-    .net-nanopay-ui-Controller-stack-view {
+    .foam-u2-stack-StackView {
       margin: auto;
       padding-bottom: 65px;
       overflow: scroll;
@@ -65,8 +62,6 @@ p({
       overflow: hidden;
     }
     .foam-comics-BrowserView {
-      width: 1024px;
-      margin: auto;
       margin-top: 30px;
     }
     .us-business-onboarding {

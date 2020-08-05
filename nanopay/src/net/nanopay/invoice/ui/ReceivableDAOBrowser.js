@@ -51,9 +51,8 @@ foam.CLASS({
 
   css: `
     ^ {
-      width: 1024px;
       margin: auto;
-      margin-top: 30px;
+      padding: 32px;
     }
     ^row {
       display: flex;
@@ -312,7 +311,7 @@ foam.CLASS({
             size: 'MEDIUM'
           })
         .endContext()
-      .end() 
+      .end()
       .tag(this.DAOBrowser.create({
         config: this.config,
         summaryView: this.summaryView

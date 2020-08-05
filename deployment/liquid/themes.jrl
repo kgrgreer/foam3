@@ -57,10 +57,7 @@ p({
   "topNavigation":"net.nanopay.ui.TopSideNavigation",
   "customCSS":
   """
-    .login-wrapper {
-      margin-left: 250px;
-    }
-    .net-nanopay-ui-Controller-stack-view {
+    .foam-u2-stack-StackView {
       margin: auto;
       overflow: scroll;
       height: calc(100vh - 150px);
@@ -70,7 +67,6 @@ p({
     }
     .foam-comics-BrowserView {
       width: 95%;
-      margin: auto;
     }
     .foam-u2-DateView {
       font-family: Roboto, 'Helvetica Neue', helvetica, sans-serif;
