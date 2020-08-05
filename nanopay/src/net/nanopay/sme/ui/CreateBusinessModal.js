@@ -84,7 +84,7 @@ foam.CLASS({
           objToChoice: function(a) {
             return [a.id, a.name];
           },
-          dao: X.data.countryDAO.where(E.IN(X.data.Country.ID, ['CA', 'US']))
+          dao: X.data.countryDAO
         }, X);
       },
       required: true,
