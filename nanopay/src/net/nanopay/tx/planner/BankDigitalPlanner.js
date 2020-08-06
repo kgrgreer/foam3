@@ -41,7 +41,7 @@ foam.CLASS({
       javaCode: `
         Account sourceAccount = quote.getSourceAccount();
         DigitalAccount sourceDigitalAccount = DigitalAccount.findDefault(x, sourceAccount.findOwner(x), sourceAccount.getDenomination());
-        
+
         // Split 1: ABank -> ADigital
         Transaction t1 = new Transaction(x);
         t1.copyFrom(requestTxn);
@@ -52,8 +52,8 @@ foam.CLASS({
         t2.copyFrom(requestTxn);
         t2.setSourceAccount(sourceDigitalAccount.getId());
 
-        Transaction[] digitals = multiQuoteTxn(x, t2);
-        Transaction[] CIs = multiQuoteTxn(x, t1);
+        Transaction[] digitals = multiQuoteTxn(x, t2, quote);
+        Transaction[] CIs = multiQuoteTxn(x, t1, quote);
         for ( Transaction tx1 : digitals ) {
           for ( Transaction tx2 : CIs ) {
             Transaction CI = (Transaction) tx2.fclone();

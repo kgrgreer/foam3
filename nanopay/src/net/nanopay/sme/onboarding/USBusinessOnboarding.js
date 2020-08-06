@@ -125,8 +125,8 @@ foam.CLASS({
   ],
 
   tableColumns: [
-    'userId',
-    'businessId',
+    'userId.id',
+    'businessId.id',
     'status',
     'created',
     'lastModified'

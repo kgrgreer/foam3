@@ -222,3 +222,25 @@ p({
   "saveHistory":true,
   "lifecycleState":1
 })
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"039555c4-16d0-462b-8a6c-c0edbc9c2c47",
+  "name":"Transaction Creation from invoice",
+  "documentation":"Quotes and creates transactions ",
+  "ruleGroup":"InvoicePayment",
+  "daoKey":"invoiceDAO",
+  "priority":1000,
+  "operation":0,
+  "after": false,
+  "predicate":{
+      "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+      "propName":"processPaymentOnCreate",
+      "propValue":true
+  },
+  "action":{
+    "class":"net.nanopay.tx.TransactionCreateOnInvoiceSubmission",
+  },
+  "enabled":true,
+  "lifecycleState":1
+})

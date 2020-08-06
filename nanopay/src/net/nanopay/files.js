@@ -478,6 +478,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/AddLiquidTransactionAction' },
   { name: 'net/nanopay/tx/LabelLiquidSummaryAction' },
   { name: 'net/nanopay/tx/ChainSummary' },
+  { name: 'net/nanopay/tx/PaymentError' },
   { name: 'net/nanopay/tx/PartnerTransaction' },
   { name: 'net/nanopay/tx/SummaryTransactionDAO' },
 
@@ -665,6 +666,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/realex/RealexTransaction' },
   { name: 'net/nanopay/tx/stripe/StripeTransaction' },
   { name: 'net/nanopay/tx/stripe/StripeCustomer' },
+  { name: 'net/nanopay/tx/TransactionCreateOnInvoiceSubmission' },
 
   { name: 'net/nanopay/cico/paymentCard/model/PaymentCardNetwork' },
   { name: 'net/nanopay/cico/paymentCard/model/PaymentCardType' },
@@ -828,6 +830,7 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/dashboard/cards/IntegrationCard', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/dashboard/cards/BankIntegrationCard', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/dashboard/cards/QBIntegrationCard', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/dashboard/LowerCardsView', flags: ['web'] },
 
   // sme WizardModal NavigationBar
   { name: 'net/nanopay/sme/ui/wizardModal/WizardModalNavigationBar', flags: ['web'] },
@@ -1517,7 +1520,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/LoanTransactionPlanner' },
   { name: 'net/nanopay/tx/planner/DebtRepaymentPlanner' },
   { name: 'net/nanopay/tx/planner/DebtablePlanner' },
-  { name: 'net/nanopay/tx/planner/IntermediaryAccountSplitPlanner' },
+  { name: 'net/nanopay/tx/planner/IntermediaryDestinationAccountSplitPlanner' },
 
   // Fees
   { name: 'net/nanopay/tx/fee/Fee' },
@@ -1530,6 +1533,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/fee/TransactionFeeRule' },
   { name: 'net/nanopay/tx/fee/Relationships' },
   { name: 'net/nanopay/tx/fee/predicate/IsDomesticTransaction' },
+  { name: 'net/nanopay/tx/fee/predicate/PaymentCorridorPredicate' },
   { name: 'net/nanopay/tx/fee/test/TransactionFeeRuleTest' },
 
   // crunch registration
@@ -1554,7 +1558,7 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/onboardingModels/UserIsSigningOfficerOfBusiness' },
 
   // crunch compliance
-  { name: 'net/nanopay/crunch/compliance/IsPendingCapabilityOfCertainCategory' },
+  { name: 'net/nanopay/crunch/compliance/IsCapabilityOfCertainCategoryAndStatus' },
   { name: 'net/nanopay/crunch/compliance/PersonSanctionValidator' },
   { name: 'net/nanopay/crunch/compliance/EntitySanctionValidator' },
   { name: 'net/nanopay/crunch/compliance/BeneficialOwnerSanctionValidator' },
@@ -1563,6 +1567,11 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/compliance/SecurefactLEVValidator' },
   { name: 'net/nanopay/crunch/compliance/UserComplianceApproval' },
   { name: 'net/nanopay/crunch/compliance/ReputDependenciesOnUCJPut' },
+
+  // crunch afex
+  { name: 'net/nanopay/partner/afex/crunch/BusinessHasVerifiedBankAccount' },
+  { name: 'net/nanopay/partner/afex/crunch/AFEXBusinessOnboardingRule' },
+  { name: 'net/nanopay/partner/afex/crunch/BankAccountOwnerIsBusiness' },
 
   // crunch acceptance
   { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/AbliiTermsAndConditions' },

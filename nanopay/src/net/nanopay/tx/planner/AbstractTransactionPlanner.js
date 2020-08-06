@@ -53,7 +53,7 @@ foam.CLASS({
     'enabled',
     'bestPlan',
     'multiPlan_',
-    'ruleGroup'
+    'ruleGroup.id'
   ],
 
   properties: [
@@ -79,6 +79,15 @@ foam.CLASS({
       label: 'Force Best Plan',
       class: 'Boolean',
       documentation: 'determines whether to save as best plan',
+      value: false
+    },
+    {
+      name: 'isFeeOnRootCorridors',
+      class: 'Boolean',
+      documentation: `Determines whether fee is applied on the planned
+        transaction with the country and currency corridors from the root quote.
+
+        If set to false (default), fee is applied directly on the transaction.`,
       value: false
     },
     {
@@ -162,7 +171,7 @@ foam.CLASS({
             // add the planner id for validation
             altPlan.setPlanner(this.getId());
             altPlan.setId(UUID.randomUUID().toString());
-            altPlan = (Transaction) ((DAO) x.get("localFeeEngineDAO")).put(altPlan);
+            altPlan = applyFee(x, quote, altPlan);
             quote.addPlan(altPlan);
           }
         }
@@ -172,7 +181,7 @@ foam.CLASS({
           txn.setIsQuoted(true);
           //likely can add logic for setting clearing/completion time based on planners here.
           //auto add fx rate
-          txn = (Transaction) ((DAO) x.get("localFeeEngineDAO")).put(txn);
+          txn = applyFee(x, quote, txn);
           //TODO: hit tax engine
           //TODO: signing
           // add the planner id for validation
@@ -192,17 +201,12 @@ foam.CLASS({
       args: [
         { name: 'x', type: 'Context' },
         { name: 'txn', type: 'net.nanopay.tx.model.Transaction' },
+        { name: 'parent', type: 'net.nanopay.tx.TransactionQuote' },
         { name: 'clearTLIs', type: 'Boolean' }
       ],
       type: 'net.nanopay.tx.model.Transaction',
       javaCode: `
-        DAO d = (DAO) x.get("localTransactionPlannerDAO");
-        TransactionQuote quote = new TransactionQuote();
-        quote.setRequestTransaction((Transaction) txn.fclone());
-        if (clearTLIs) {
-          quote.getRequestTransaction().clearLineItems();
-        }
-        quote = (TransactionQuote) d.put(quote);
+        var quote = _quoteTxn(x, txn, parent, clearTLIs);
         return quote.getPlan();
       `
     },
@@ -212,18 +216,34 @@ foam.CLASS({
       args: [
         { name: 'x', type: 'Context' },
         { name: 'txn', type: 'net.nanopay.tx.model.Transaction' },
+        { name: 'parent', type: 'net.nanopay.tx.TransactionQuote' },
         { name: 'clearTLIs', type: 'Boolean' }
       ],
       type: 'net.nanopay.tx.model.Transaction[]',
       javaCode: `
-        DAO d = (DAO) x.get("localTransactionPlannerDAO");
+        var quote = _quoteTxn(x, txn, parent, clearTLIs);
+        return quote.getPlans();
+      `
+    },
+    {
+      name: '_quoteTxn',
+      documentation: 'Helper method to quote a transaction. Internal use only.',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' },
+        { name: 'parent', type: 'net.nanopay.tx.TransactionQuote' },
+        { name: 'clearTLIs', type: 'Boolean' }
+      ],
+      type: 'net.nanopay.tx.TransactionQuote',
+      javaCode: `
+        DAO dao = (DAO) x.get("localTransactionPlannerDAO");
         TransactionQuote quote = new TransactionQuote();
         quote.setRequestTransaction((Transaction) txn.fclone());
+        quote.setParent(parent);
         if (clearTLIs) {
           quote.getRequestTransaction().clearLineItems();
         }
-        quote = (TransactionQuote) d.put(quote);
-        return quote.getPlans();
+        return (TransactionQuote) dao.put(quote);
       `
     },
     {
@@ -259,6 +279,45 @@ foam.CLASS({
         return true;
         // To be filled out in extending class.
       `
+    },
+    {
+      name: 'applyFee',
+      type: 'Transaction',
+      documentation: `
+        In the normal flow, fee is applied on the planned transaction that is
+        returned by the planner, which is the head transaction in the chain.
+        However, applyFee() can also be used by and inside the planner logic to
+        send a specific transaction in the chain for fee evaluation.
+
+        The specific transaction might not have the same country and currency
+        corridors as that of the root quote.
+
+        If the 'isFeeOnRootCorridors' flag is set to false (default), fee will
+        be directly applied on the transaction.
+
+        If the 'isFeeOnRootCorridors' flag is set to true, the transaction will
+        use the country and currency corridors from the root quote instead of
+        its own. Therefore, fees targeting those corridors will be applied on
+        the transaction.`,
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'quote', type: 'net.nanopay.tx.TransactionQuote' },
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
+      ],
+      javaCode: `
+        if ( getIsFeeOnRootCorridors() ) {
+          while ( quote.getParent() != null ){
+            quote = quote.getParent();
+          }
+
+          txn = (Transaction) txn.fclone();
+          txn.setSourceAccount(quote.getSourceAccount().getId());
+          txn.setDestinationAccount(quote.getDestinationAccount().getId());
+          txn.setSourceCurrency(quote.getSourceUnit());
+          txn.setDestinationCurrency(quote.getDestinationUnit());
+        }
+        return (Transaction) ((DAO) x.get("localFeeEngineDAO")).put(txn);
+      `
     }
   ],
   axioms: [
@@ -266,12 +325,12 @@ foam.CLASS({
         buildJavaClass: function(cls) {
           cls.extras.push( `
 
-            public Transaction quoteTxn(X x, Transaction txn) {
-              return quoteTxn(x, txn, true);
+            public Transaction quoteTxn(X x, Transaction txn, TransactionQuote parent) {
+              return quoteTxn(x, txn, parent, true);
             }
 
-            public Transaction[]  multiQuoteTxn(X x, Transaction txn) {
-              return multiQuoteTxn(x, txn, true);
+            public Transaction[]  multiQuoteTxn(X x, Transaction txn, TransactionQuote parent) {
+              return multiQuoteTxn(x, txn, parent, true);
             }
 
         `);

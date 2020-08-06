@@ -1057,7 +1057,7 @@ var classes = [
   'net.nanopay.tx.planner.AFEXTransactionPlanner',
   'net.nanopay.tx.planner.DebtRepaymentPlanner',
   'net.nanopay.tx.planner.DebtablePlanner',
-  'net.nanopay.tx.planner.IntermediaryAccountSplitPlanner',
+  'net.nanopay.tx.planner.IntermediaryDestinationAccountSplitPlanner',
 
   // Fees
   'net.nanopay.tx.fee.Fee',
@@ -1068,11 +1068,13 @@ var classes = [
   'net.nanopay.tx.fee.PercentageFee',
   'net.nanopay.tx.fee.TransactionFeeRule',
   'net.nanopay.tx.fee.predicate.IsDomesticTransaction',
+  'net.nanopay.tx.fee.predicate.PaymentCorridorPredicate',
   'net.nanopay.tx.fee.test.TransactionFeeRuleTest',
 
   // Treviso
   'net.nanopay.country.br.CNPJ',
   'net.nanopay.country.br.CPF',
+  'net.nanopay.country.br.ExchangeServiceInterface',
   'net.nanopay.country.br.FederalRevenueService',
   'net.nanopay.partner.sintegra.CPFResponseData',
   'net.nanopay.partner.sintegra.CNPJResponseData',
@@ -1092,7 +1094,6 @@ var classes = [
   'net.nanopay.partner.treviso.api.DocumentType',
   'net.nanopay.partner.treviso.api.EconomicGroup',
   'net.nanopay.partner.treviso.api.Entity',
-  'net.nanopay.partner.treviso.api.ExchangeServiceInterface',
   'net.nanopay.partner.treviso.api.FormOperationType',
   'net.nanopay.partner.treviso.api.FormParameter',
   'net.nanopay.partner.treviso.api.FepWebResponse',
@@ -1160,7 +1161,7 @@ var classes = [
   'net.nanopay.crunch.onboardingModels.UserIsSigningOfficerOfBusiness',
 
   // crunch compliance
-  'net.nanopay.crunch.compliance.IsPendingCapabilityOfCertainCategory',
+  'net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus',
   'net.nanopay.crunch.compliance.PersonSanctionValidator',
   'net.nanopay.crunch.compliance.EntitySanctionValidator',
   'net.nanopay.crunch.compliance.BusinessDirectorSanctionValidator',
@@ -1169,6 +1170,11 @@ var classes = [
   'net.nanopay.crunch.compliance.SecurefactLEVValidator',
   'net.nanopay.crunch.compliance.UserComplianceApproval',
   'net.nanopay.crunch.compliance.ReputDependenciesOnUCJPut',
+
+  // crunch afex
+  'net.nanopay.partner.afex.crunch.AFEXBusinessOnboardingRule',
+  'net.nanopay.partner.afex.crunch.BusinessHasVerifiedBankAccount',
+  'net.nanopay.partner.afex.crunch.BankAccountOwnerIsBusiness',
 
   // crunch acceptance
   'net.nanopay.crunch.acceptanceDocuments.capabilities.TriPartyAgreementCAD',
@@ -1271,6 +1277,7 @@ var classes = [
   'net.nanopay.tx.stripe.StripeTransactionDAO',
   'net.nanopay.tx.IBAN',
   'net.nanopay.tx.ChainSummary',
+  'net.nanopay.tx.PaymentError',
 ];
 
 var abstractClasses = [

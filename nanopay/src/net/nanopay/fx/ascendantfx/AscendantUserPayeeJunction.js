@@ -30,7 +30,7 @@ foam.CLASS({
 
   tableColumns: [
     'id',
-    'user',
+    'user.id',
     'created',
     'createdBy',
     'createdByAgent',

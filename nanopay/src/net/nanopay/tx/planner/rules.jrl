@@ -933,6 +933,7 @@ p({
   },
   "lifecycleState":1
 })
+
 p({
   class: "net.nanopay.tx.planner.BulkTransactionPlanner",
   id: "2585bc32-02f1-4a66-bebe-39e61740abf7",

@@ -20,6 +20,7 @@ import foam.core.ContextAwareSupport;
 import foam.core.X;
 import foam.nanos.logger.Logger;
 
+import net.nanopay.country.br.ExchangeServiceInterface;
 import net.nanopay.partner.treviso.api.Entity;
 import net.nanopay.partner.treviso.api.FepWebResponse;
 import net.nanopay.partner.treviso.api.LoginResponse;

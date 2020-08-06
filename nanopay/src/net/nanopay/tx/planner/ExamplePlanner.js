@@ -47,7 +47,7 @@ foam.CLASS({
 
       quote.addTransfer(id of account (Long), amount of transfer (Long) : adds a transfer to the transaction plan
 
-      quoteTxn(x, Transaction to sub plan, whether or not to clear line items) : makes it easy to build split planners. can call transactionPlannerDAO
+      quoteTxn(x, Transaction to sub plan, current quote, whether or not to clear line items) : makes it easy to build split planners. can call transactionPlannerDAO
       and receive the best transaction in one line, with or without also submitting lineitems.
 
 */
@@ -74,7 +74,7 @@ foam.CLASS({
         Account myAccount = (Account) ((DAO) x.get("accountDAO")).find(EQ(Account.NAME,"Michal's Account"));
 
         //If this planner is a split planner, it can also recursively plan its sub parts with the subPlan function.
-        Transaction dt2 = quoteTxn(x, dt);
+        Transaction dt2 = quoteTxn(x, dt, quote);
         dt.addNext(dt2);
 
         // order of transfer creation does not matter. It will always be added to the returned transaction.

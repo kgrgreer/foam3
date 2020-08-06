@@ -2448,3 +2448,86 @@ p({
   """,
   "lastModifiedBy":1348
 })
+p({
+  "class":"foam.nanos.script.Script",
+  "id":"Prefill All Digital Accounts Through One Shadow",
+  "code":"""
+    import net.nanopay.tx.model.Transaction;
+    import foam.dao.DAO;
+    import java.util.ArrayList; 
+    import net.nanopay.account.DigitalAccount;
+    import net.nanopay.account.TrustAccount;
+    import net.nanopay.account.ShadowAccount;
+    import net.nanopay.bank.BankAccount;
+    import net.nanopay.bank.BankAccountStatus;
+    import foam.mlang.predicate.Predicate;
+    
+    accountDAO = (DAO) x.get("localAccountDAO");
+    txnDAO = (DAO) x.get("localTransactionDAO");
+    
+    // get all accounts
+    accounts = accountDAO.select().getArray();
+
+    // grabbing a US bank account
+    bankAccount = (BankAccount) accountDAO.find(
+      foam.mlang.MLang.AND( new Predicate[] { 
+        foam.mlang.MLang.EQ(BankAccount.DENOMINATION, "USD"),
+        foam.mlang.MLang.INSTANCE_OF(BankAccount.class),
+        foam.mlang.MLang.EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED)
+      })
+    );
+
+    shadowAccount = (ShadowAccount) accountDAO.find(
+      foam.mlang.MLang.AND( new Predicate[] { 
+        foam.mlang.MLang.EQ(ShadowAccount.DENOMINATION, "USD"),
+        foam.mlang.MLang.INSTANCE_OF(ShadowAccount.class)
+      })
+    );
+
+    print("Bank Account");
+    print(bankAccount.getName());
+
+    print("Shadow Account");
+    print(shadowAccount.getName());
+
+    
+    for ( int i = 0 ; i < accounts.size() ; i++ ) {
+      account = accounts.get(i);
+    
+      if ( account instanceof DigitalAccount && ! ( account instanceof TrustAccount) ) {
+    
+        print("Virtual Account");
+        print(account.getName());
+
+        amount = (Long) ((Math.random()*100000000)+(100000000));
+
+        tx = new Transaction();
+        tx.setSourceAccount(bankAccount.getId());
+        tx.setDestinationAccount(shadowAccount.getId());
+        tx.setAmount(amount);
+        tx.setDestinationAmount(amount);
+        tx.setSourceCurrency(bankAccount.getDenomination());
+        tx.setDestinationCurrency(shadowAccount.getDenomination());
+        tx = txnDAO.put(tx);
+
+        print("Bank account to shadow txn #" + i);
+        print(tx.getId());
+    
+        for ( int j = 0 ; j < 6; j++ ){          
+          tx = new Transaction();
+          tx.setSourceAccount(shadowAccount.getId());
+          tx.setDestinationAccount(account.getId());
+          tx.setAmount(amount/6);
+          tx.setDestinationAmount(amount/6);
+          tx.setSourceCurrency(shadowAccount.getDenomination());
+          tx.setDestinationCurrency(account.getDenomination());
+          tx = txnDAO.put(tx);
+
+          print("shadow account to account txn  #" + j);
+          print(tx.getId());
+        }
+      }
+    }
+  """,
+  "lastModifiedBy":1348
+})

@@ -12,7 +12,7 @@ p({
     "class":"foam.mlang.predicate.And",
     "args":[
       {"class":"foam.mlang.predicate.Not","arg1":{"class":"foam.nanos.ruler.predicate.NewEqOld"}},
-      {"class":"net.nanopay.crunch.compliance.IsPendingCapabilityOfCertainCategory","category":"signingOfficerOnboarding","isRecurring":false}
+      {"class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus","category":"signingOfficerOnboarding","isRecurring":false}
     ]
   },
   "asyncAction":{"class":"net.nanopay.crunch.compliance.SecurefactSIDniValidator"},
@@ -35,7 +35,7 @@ p({
     "class":"foam.mlang.predicate.And",
     "args":[
       {"class":"foam.mlang.predicate.Not","arg1":{"class":"foam.nanos.ruler.predicate.NewEqOld"}},
-      {"class":"net.nanopay.crunch.compliance.IsPendingCapabilityOfCertainCategory","category":"signingOfficerOnboarding"}
+      {"class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus","category":"signingOfficerOnboarding"}
     ]
   },
   "asyncAction":{
@@ -61,7 +61,7 @@ p({
     "class":"foam.mlang.predicate.And",
     "args":[
       {"class":"foam.mlang.predicate.Not","arg1":{"class":"foam.nanos.ruler.predicate.NewEqOld"}},
-      {"class":"net.nanopay.crunch.compliance.IsPendingCapabilityOfCertainCategory","category":"onboarding","isRecurring":false}
+      {"class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus","category":"onboarding","isRecurring":false}
     ]
   },
   "asyncAction":{"class":"net.nanopay.crunch.compliance.SecurefactLEVValidator"},
@@ -84,7 +84,7 @@ p({
     "class":"foam.mlang.predicate.And",
     "args":[
       {"class":"foam.mlang.predicate.Not","arg1":{"class":"foam.nanos.ruler.predicate.NewEqOld"}},
-      {"class":"net.nanopay.crunch.compliance.IsPendingCapabilityOfCertainCategory","category":"onboarding"}
+      {"class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus","category":"onboarding"}
     ]
   },
   "asyncAction":{
@@ -110,7 +110,7 @@ p({
     "class":"foam.mlang.predicate.And",
     "args":[
       {"class":"foam.mlang.predicate.Not","arg1":{"class":"foam.nanos.ruler.predicate.NewEqOld"}},
-      {"class":"net.nanopay.crunch.compliance.IsPendingCapabilityOfCertainCategory","category":"beneficialOwnerOnboarding"}
+      {"class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus","category":"beneficialOwnerOnboarding"}
     ]
   },
   "action":{
@@ -136,25 +136,25 @@ p({
     "class":"foam.mlang.predicate.Or",
     "args":[
       {
-        "class":"net.nanopay.crunch.compliance.IsPendingCapabilityOfCertainCategory",
+        "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
         "category":"signingOfficerOnboarding",
         "isRecurring":false,
         "statusChanged":false
       },
       {
-        "class":"net.nanopay.crunch.compliance.IsPendingCapabilityOfCertainCategory",
+        "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
         "category":"onboarding",
         "isRecurring":false,
         "statusChanged":false
       },
       {
-        "class":"net.nanopay.crunch.compliance.IsPendingCapabilityOfCertainCategory",
+        "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
         "category":"beneficialOwnerOnboarding",
         "isRecurring":false,
         "statusChanged":false
       },
       {
-        "class":"net.nanopay.crunch.compliance.IsPendingCapabilityOfCertainCategory",
+        "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
         "category":"businessDirectorOnboarding",
         "isRecurring":false,
         "statusChanged":false
@@ -183,7 +183,7 @@ p({
     "class":"foam.mlang.predicate.And",
     "args":[
       {"class":"foam.mlang.predicate.Not","arg1":{"class":"foam.nanos.ruler.predicate.NewEqOld"}},
-      {"class":"net.nanopay.crunch.compliance.IsPendingCapabilityOfCertainCategory","category":"businessDirectorOnboarding"}
+      {"class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus","category":"businessDirectorOnboarding"}
     ]
   },
   "action":{

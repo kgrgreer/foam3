@@ -45,7 +45,7 @@ foam.CLASS({
     'id',
     'name',
     'userStatus',
-    'user',
+    'user.businessName',
     'orgId',
   ],
 

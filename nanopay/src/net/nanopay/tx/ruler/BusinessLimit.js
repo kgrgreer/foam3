@@ -37,7 +37,7 @@ foam.CLASS({
   tableColumns: [
     'businessName',
     'description',
-    'business',
+    'business.businessName',
     'enabled'
   ],
 

@@ -65,8 +65,7 @@ foam.CLASS({
   tableColumns: [
     'id',
     'type',
-    'group',
-    'legalName',
+    'group.id',
     'organization',
     'email',
   ],

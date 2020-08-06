@@ -31,7 +31,11 @@ foam.CLASS({
    ],
 
   tableColumns: [
-    'id', 'createdBy', 'approvedBy'
+    'id',
+    'createdBy.firstName',
+    'createdBy.lastName',
+    'approvedBy.firstName',
+    'approvedBy.lastName'
   ],
 
   properties: [

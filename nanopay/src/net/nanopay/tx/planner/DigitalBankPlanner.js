@@ -42,19 +42,19 @@ foam.CLASS({
         Account destinationAccount = quote.getDestinationAccount();
         foam.nanos.auth.User bankOwner = destinationAccount.findOwner(x);
         Account digital = DigitalAccount.findDefault(x, bankOwner, requestTxn.getDestinationCurrency());
-        
+
         // digital -> digital
         Transaction digitalTxn = new Transaction();
         digitalTxn.copyFrom(requestTxn);
         digitalTxn.setDestinationAccount(digital.getId());
 
-        // cash out 
+        // cash out
         Transaction co = new Transaction();
         co.copyFrom(requestTxn);
         co.setSourceAccount(digital.getId());
 
-        Transaction[] digitals = multiQuoteTxn(x, digitalTxn);
-        Transaction[] COs = multiQuoteTxn(x, co, false);
+        Transaction[] digitals = multiQuoteTxn(x, digitalTxn, quote);
+        Transaction[] COs = multiQuoteTxn(x, co, quote, false);
         for ( Transaction tx1 : digitals ) {
           for ( Transaction tx2 : COs ) {
             Transaction Digital = (Transaction) tx1.fclone();

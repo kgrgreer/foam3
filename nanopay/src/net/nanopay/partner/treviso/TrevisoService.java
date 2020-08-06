@@ -42,6 +42,7 @@ import net.nanopay.bank.BankAccount;
 import foam.nanos.crunch.Capability;
 import foam.nanos.crunch.UserCapabilityJunction;
 import net.nanopay.country.br.CNPJ;
+import net.nanopay.country.br.ExchangeServiceInterface;
 import net.nanopay.country.br.FederalRevenueService;
 import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
@@ -56,7 +57,6 @@ import net.nanopay.partner.treviso.api.ClientStatus;
 import net.nanopay.partner.treviso.api.CurrentPlatform;
 import net.nanopay.partner.treviso.api.Document;
 import net.nanopay.partner.treviso.api.Entity;
-import net.nanopay.partner.treviso.api.ExchangeServiceInterface;
 import net.nanopay.partner.treviso.api.FepWebResponse;
 import net.nanopay.partner.treviso.api.InsertBoleto;
 import net.nanopay.partner.treviso.api.InsertBoletoResponse;
@@ -336,8 +336,7 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
     titular.setNOME(getName(user));
     titular.setENDERECO(user.getAddress().getAddress());
     titular.setCIDADE(user.getAddress().getCity());
-    Region region = user.getAddress().findRegionId(getX());
-    titular.setESTADO(region == null ? "" : region.getName());
+    titular.setESTADO(user.getAddress().getRegionId());
     titular.setCEP(user.getAddress().getPostalCode());
     titular.setPAIS("1058"); // TODO Pais do Cliente – Código Bacen - Brazil
     titular.setPAISMT("1058"); // TODO Pais Matriz do Cliente - Bacen Code - Brazil

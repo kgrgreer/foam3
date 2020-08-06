@@ -294,10 +294,6 @@ foam.CLASS({
       storageTransient: true,
       visibility: 'RO',
       javaGetter: `
-      try {
-        if ( foam.core.XLocator.get() == null ) {
-          return "";
-        }
         Session session = foam.core.XLocator.get().get(Session.class);
         if ( session == null ) {
           return "";
@@ -314,10 +310,10 @@ foam.CLASS({
 
         String denomination = getDenomination();
         ExchangeRateService ert = (ExchangeRateService)getX().get("exchangeRateService");
-        return ert.exchangeFormat(denomination, homeDenomination, getBalance()) + " " + homeDenomination;
-      } catch (NullPointerException e) {
+        if ( ert != null ) {
+          return ert.exchangeFormat(denomination, homeDenomination, getBalance()) + " " + homeDenomination;
+        }
         return "";
-      }
       `,
       tableWidth: 175,
       tableCellFormatter: function(value, obj, axiom) {

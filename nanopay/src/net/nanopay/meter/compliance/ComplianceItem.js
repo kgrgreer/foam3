@@ -33,7 +33,8 @@ foam.CLASS({
   tableColumns: [
     'responseId',
     'type',
-    'user',
+    'user.firstName',
+    'user.lastName',
     'entityLabel',
     'summary',
     'created'

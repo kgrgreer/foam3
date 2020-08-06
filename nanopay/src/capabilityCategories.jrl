@@ -34,3 +34,9 @@ p({
   "name": "Adding business directors",
   "visible": false
 })
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "AFEXOnboarding",
+  "name": "Onboarding Your AFEX Business",
+  "visible": false
+})

@@ -101,9 +101,9 @@ foam.CLASS({
   tableColumns: [
     'type',
     'status',
-    'sourceAccount',
+    'sourceAccount.name',
     'summary',
-    'destinationAccount',
+    'destinationAccount.name',
     'created',
     'completionDate',
     'referenceNumber'

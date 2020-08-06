@@ -98,7 +98,7 @@ foam.CLASS({
 
           // Inject compliance transaction before each child transaction and
           // add it as the next of the composite transaction
-          var quotedChild = quoteTxn(x, childTransaction, false);
+          var quotedChild = quoteTxn(x, childTransaction, quote, false);
           var compliance = createCompliance(quotedChild);
           compliance.addNext(quotedChild);
           ct.addNext(compliance);
@@ -123,7 +123,7 @@ foam.CLASS({
           cashInTransaction.setDestinationAccount(payerDigitalAccount.getId());
           cashInTransaction.setAmount(bulkTxn.getAmount());
           if ( bulkTxnPADType != null ) { PADTypeLineItem.addTo(cashInTransaction, bulkTxnPADType.getId()); }
-          cashInTransaction = quoteTxn(x, cashInTransaction, false);
+          cashInTransaction = quoteTxn(x, cashInTransaction, quote, false);
 
           // Add the compositeTransaction as the next of the cash-in transaction.
           cashInTransaction.addNext(ct);

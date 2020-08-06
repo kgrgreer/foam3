@@ -21,7 +21,10 @@ foam.CLASS({
   documentation: 'Purpose of the transaction',
 
   tableColumns: [
-    'id', 'purposeCode', 'country', 'description'
+    'id',
+    'purposeCode',
+    'country.code',
+    'description'
   ],
 
   // relationships: Processor

@@ -17,7 +17,7 @@
 
 foam.CLASS({
   package: 'net.nanopay.crunch.compliance',
-  name: 'IsPendingCapabilityOfCertainCategory',
+  name: 'IsCapabilityOfCertainCategoryAndStatus',
   
   extends: 'foam.mlang.predicate.AbstractPredicate',
   implements: ['foam.core.Serializable'],
@@ -36,6 +36,14 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'status',
+      class: 'Enum',
+      of: 'foam.nanos.crunch.CapabilityJunctionStatus',
+      javaFactory: `
+        return foam.nanos.crunch.CapabilityJunctionStatus.PENDING;
+      `
+    },
+    {
       name: 'category',
       class: 'String'
     },
@@ -50,7 +58,7 @@ foam.CLASS({
       value: true,
       documentation: `
         Denote if a status change is required.
-        If this is true, the old ucj must not be in status PENDING
+        If this is true, the old ucj must not be in status this.status
       `
     }
   ],
@@ -63,9 +71,9 @@ foam.CLASS({
         UserCapabilityJunction old = (UserCapabilityJunction) x.get("OLD");
         UserCapabilityJunction ucj = (UserCapabilityJunction) x.get("NEW");
 
-        if ( ( getStatusChanged() && old != null && old.getStatus() == CapabilityJunctionStatus.PENDING ) || 
+        if ( ( getStatusChanged() && old != null && old.getStatus() == getStatus() ) || 
              ( old != null && old.getStatus() == CapabilityJunctionStatus.EXPIRED && ! getIsRecurring() ) || 
-              ucj.getStatus() != CapabilityJunctionStatus.PENDING ) 
+              ucj.getStatus() != getStatus() ) 
           return false;
 
         DAO categoryJunctionDAO = (DAO) x.get("capabilityCategoryCapabilityJunctionDAO");
