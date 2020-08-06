@@ -538,7 +538,6 @@ var classes = [
   'net.nanopay.tx.RefundTransaction',
   'net.nanopay.tx.RetailTransaction',
   'net.nanopay.tx.model.TransactionLimit',
-  'net.nanopay.tx.ruler.AddGDTxnFeeLineItem',
   'net.nanopay.tx.ruler.TransactionLimitProbeInfo',
   'net.nanopay.tx.ruler.TransactionLimitRule',
   'net.nanopay.tx.ruler.TransactionQuotedStatusRule',
