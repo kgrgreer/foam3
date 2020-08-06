@@ -1276,6 +1276,7 @@ var classes = [
   'net.nanopay.tx.IBAN',
   'net.nanopay.tx.ChainSummary',
   'net.nanopay.tx.PaymentError',
+  'net.nanopay.tx.TransactionCreateOnInvoiceSubmission',
 ];
 
 var abstractClasses = [
