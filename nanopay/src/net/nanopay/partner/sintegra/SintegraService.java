@@ -176,7 +176,7 @@ public class SintegraService extends ContextAwareSupport implements SintegraServ
       Map<String, String> params = Map.of(
         "token", token,
         "cpf", cpf,
-        "date-birth", dateOfBirth,
+        "data-nascimento", dateOfBirth,
         "plugin", "CPF"
       );
       CloseableHttpResponse httpResponse = sendGet(VALIDATION_URL, params);
