@@ -276,12 +276,22 @@ public class TransactionBenchmark
   @Override
   public void execute(X x) {
     AppConfig config = (AppConfig) x.get("appConfig");
-    if ( config.getMode() == foam.nanos.app.Mode.PRODUCTION ) return;
-    logger_.info("execute");
-    int fi = (int) (Math.random() * users_.size());
-    int ti = (int) (Math.random() * users_.size());
 
-    while(fi == ti){
+    if ( config.getMode() == foam.nanos.app.Mode.PRODUCTION ) {
+      return;
+    }
+    logger_.info("execute");
+
+    if ( users_.size() == 0 ) {
+      logger_.warning("execute", "no users");
+      return;
+    }
+
+    int fi = 0;
+    int ti = 0;
+
+    while ( fi == ti ) {
+      fi = (int) (Math.random() * users_.size());
       ti = (int) (Math.random() * users_.size());
     }
 
