@@ -258,7 +258,7 @@ foam.CLASS({
     {
       name: 'isQuoted',
       class: 'Boolean',
-      includeInDigest: false
+      includeInDigest: false,
       documentation: 'Whether the transaction has been quoted.',
       hidden: true
     },
