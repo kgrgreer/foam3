@@ -665,6 +665,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/realex/RealexTransaction' },
   { name: 'net/nanopay/tx/stripe/StripeTransaction' },
   { name: 'net/nanopay/tx/stripe/StripeCustomer' },
+  { name: 'net/nanopay/tx/TransactionCreateOnInvoiceSubmission' },
 
   { name: 'net/nanopay/cico/paymentCard/model/PaymentCardNetwork' },
   { name: 'net/nanopay/cico/paymentCard/model/PaymentCardType' },

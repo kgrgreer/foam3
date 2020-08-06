@@ -489,6 +489,8 @@ foam.CLASS({
         return;
       }
 
+      invoice.processPaymentOnCreate = false;
+
       // Confirm Invoice information:
       if ( this.invoice.draft ) {
         this.invoice.draft = false;
