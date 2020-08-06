@@ -16,7 +16,7 @@
  */
 
 foam.INTERFACE({
-  package: 'net.nanopay.partner.treviso.api',
+  package: 'net.nanopay.country.br',
   name: 'ExchangeServiceInterface',
 
   documentation: 'Interface to the Brazil Exchange',

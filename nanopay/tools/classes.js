@@ -1073,6 +1073,7 @@ var classes = [
   // Treviso
   'net.nanopay.country.br.CNPJ',
   'net.nanopay.country.br.CPF',
+  'net.nanopay.country.br.ExchangeServiceInterface',
   'net.nanopay.country.br.FederalRevenueService',
   'net.nanopay.partner.sintegra.CPFResponseData',
   'net.nanopay.partner.sintegra.CNPJResponseData',
@@ -1092,7 +1093,6 @@ var classes = [
   'net.nanopay.partner.treviso.api.DocumentType',
   'net.nanopay.partner.treviso.api.EconomicGroup',
   'net.nanopay.partner.treviso.api.Entity',
-  'net.nanopay.partner.treviso.api.ExchangeServiceInterface',
   'net.nanopay.partner.treviso.api.FormOperationType',
   'net.nanopay.partner.treviso.api.FormParameter',
   'net.nanopay.partner.treviso.api.FepWebResponse',
@@ -1169,7 +1169,7 @@ var classes = [
   'net.nanopay.crunch.compliance.SecurefactLEVValidator',
   'net.nanopay.crunch.compliance.UserComplianceApproval',
   'net.nanopay.crunch.compliance.ReputDependenciesOnUCJPut',
-  
+
   // crunch afex
   'net.nanopay.partner.afex.crunch.AFEXBusinessOnboardingRule',
   'net.nanopay.partner.afex.crunch.BusinessHasVerifiedBankAccount',

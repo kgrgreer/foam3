@@ -26,6 +26,7 @@ import java.util.*;
 import java.io.*;
 import foam.nanos.logger.Logger;
 
+import net.nanopay.country.br.ExchangeServiceInterface;
 import net.nanopay.partner.treviso.api.InsertBoleto;
 import net.nanopay.partner.treviso.api.InsertBoletoResponse;
 import net.nanopay.partner.treviso.TrevisoCredientials;
