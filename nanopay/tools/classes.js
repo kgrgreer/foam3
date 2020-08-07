@@ -1072,6 +1072,7 @@ var classes = [
   // Treviso
   'net.nanopay.country.br.CNPJ',
   'net.nanopay.country.br.CPF',
+  'net.nanopay.country.PermittedCountryFilterDAO',
   'net.nanopay.country.br.ExchangeServiceInterface',
   'net.nanopay.country.br.FederalRevenueService',
   'net.nanopay.partner.sintegra.CPFResponseData',

@@ -1603,6 +1603,7 @@ FOAM_FILES([
 
   { name: 'net/nanopay/country/br/CPF' },
   { name: 'net/nanopay/country/br/CNPJ' },
+  { name: 'net/nanopay/country/PermittedCountryFilterDAO' },
 
   // Treviso
   { name: 'net/nanopay/partner/treviso/TrevisoCredientials' },

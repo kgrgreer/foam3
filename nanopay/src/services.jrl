@@ -2460,3 +2460,23 @@ p({
     }
   """
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "permittedCountryDAO",
+  "serve": true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setInnerDAO(x.get("countryDAO"))
+      .setDecorator(new net.nanopay.country.PermittedCountryFilterDAO(new String[] { "CA", "US", "BR" }, x, new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.auth.Country.getOwnClassInfo()).build()))
+      .setOf(foam.nanos.auth.Country.getOwnClassInfo())
+      .build();
+  """,
+  "client":
+  """
+  {
+    "of":"foam.nanos.auth.Country",
+    "cache": false
+  }
+  """
+})
