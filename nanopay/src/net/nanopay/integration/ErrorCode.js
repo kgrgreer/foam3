@@ -16,13 +16,9 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.tx',
-  name: 'PaymentError',
-  documentation: 'Error codes used for transactions',
-
-  javaImports: [
-    'net.nanopay.tx.model.TransactionStatus',
-  ],
+  package: 'net.nanopay.integration',
+  name: 'ErrorCode',
+  documentation: 'Error codes used for returning error cause information',
 
   properties: [
     {

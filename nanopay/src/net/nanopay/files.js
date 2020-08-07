@@ -476,9 +476,11 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/AddLiquidTransactionAction' },
   { name: 'net/nanopay/tx/LabelLiquidSummaryAction' },
   { name: 'net/nanopay/tx/ChainSummary' },
-  { name: 'net/nanopay/tx/PaymentError' },
   { name: 'net/nanopay/tx/PartnerTransaction' },
   { name: 'net/nanopay/tx/SummaryTransactionDAO' },
+
+  //integration
+  { name: 'net/nanopay/integration/ErrorCode' },
 
   // tx tests
   { name: 'net/nanopay/tx/model/TransactionParseTest' },

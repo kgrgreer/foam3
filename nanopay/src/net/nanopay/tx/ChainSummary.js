@@ -21,6 +21,8 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.tx.model.TransactionStatus',
+    'net.nanopay.integration.ErrorCode',
+    'foam.dao.DAO',
   ],
 
   properties: [
@@ -37,6 +39,22 @@ foam.CLASS({
       class: 'String',
       name: 'summary',
     },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.integration.ErrorCode',
+      targetDAOKey: 'errorCodeDAO',
+      name: 'errorCode'
+    },
+    {
+      class: 'String',
+      name: 'errorInfo',
+      transient: true,
+      javaValue:`
+        ( getErrorCode() == 0 ) ? "No Error" :
+        ( findErrorCode(foam.core.XLocator.get()) == null ) ? "Unknown Error: " + getErrorCode() :
+          findErrorCode(foam.core.XLocator.get()).getSummary()
+      `
+    }
   ],
 
   methods: [
