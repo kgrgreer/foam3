@@ -393,7 +393,6 @@ foam.CLASS({
       value: 'COMPLETED',
       includeInDigest: true,
       writePermissionRequired: true,
-      javaFactory: 'return TransactionStatus.COMPLETED;',
       javaToCSVLabel: `
         // Outputting two columns: "this transaction status" and "Returns childrens status"
         outputter.outputValue("Transaction Status");
@@ -433,7 +432,6 @@ foam.CLASS({
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'initialStatus',
       value: 'COMPLETED',
-      javaFactory: 'return TransactionStatus.COMPLETED;',
       networkTransient: true,
       hidden: true,
     },
@@ -802,8 +800,7 @@ foam.CLASS({
       name: 'planner',
       documentation: 'A reference to the planner that created this transaction.',
       visibility: 'HIDDEN',
-      storageTransient: true,
-      networkTransient: true
+      storageTransient: true
     },
     {
       name: 'next',

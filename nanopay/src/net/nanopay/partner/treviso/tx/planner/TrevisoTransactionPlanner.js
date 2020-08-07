@@ -91,8 +91,8 @@ foam.CLASS({
       txn.setAmount(requestTxn.getDestinationAmount()*5);
       txn.setDestinationCurrency("USD");
 
-      txn.addNext(createCompliance(requestTxn));
-      txn.addNext(createLimit(requestTxn));
+      txn.addNext(createCompliance(txn));
+      txn.addNext(createLimit(txn));
 
       TrevisoTransaction placeHolder = new TrevisoTransaction();
       placeHolder.copyFrom(requestTxn);
