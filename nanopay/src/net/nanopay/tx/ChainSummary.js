@@ -30,25 +30,29 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.tx.model.TransactionStatus',
       name: 'status',
+      documentation: 'Status of the transaction chain.'
     },
     {
       class: 'String',
       name: 'category',
+      documentation: 'Category of the transaction status.'
     },
     {
       class: 'String',
       name: 'summary',
+      documentation: 'Summary of the transaction status.'
     },
     {
       class: 'Reference',
       of: 'net.nanopay.integration.ErrorCode',
       targetDAOKey: 'errorCodeDAO',
-      name: 'errorCode'
+      name: 'errorCode',
+      documentation: 'Error code for transaction chain.'
     },
     {
       class: 'String',
       name: 'errorInfo',
-      transient: true,
+      documentation: 'Error information for transaction chain.',
       javaValue:`
         ( getErrorCode() == 0 ) ? "No Error" :
         ( findErrorCode(foam.core.XLocator.get()) == null ) ? "Unknown Error: " + getErrorCode() :

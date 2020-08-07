@@ -1,0 +1,20 @@
+p({
+    class:"foam.nanos.dig.DUGRule",
+    id:"A7CA51BA-0573-4AB9-8ECE-C4FB858CE2D6",
+    name:"Summary Transaction Notifications",
+    daoKey:"summaryTransactionDAO",
+    url:"https://webhook.site/e43580fe-8c10-403b-8d39-e6f035198f4c",
+    bearerToken:"custom-bearer-token",
+    predicate: {
+        class: "foam.nanos.ruler.predicate.IsInstancePredicate",
+        of: "net.nanopay.tx.SummaryTransaction"
+    },
+    format:2,
+    lifecycleState:1,
+    createdByAgent:8023,
+    created:1594658156756,
+    createdBy:8023,
+    lastModified:1594658156755,
+    lastModifiedBy:8023,
+    spid:"intuit"
+})

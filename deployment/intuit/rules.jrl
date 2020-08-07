@@ -39,3 +39,15 @@ p({
     lastModifiedBy:8023,
     spid:"intuit"
 })
+
+p({
+    "class":"foam.nanos.ruler.Rule",
+    "id":"B11C328F-9572-426D-8373-09BA2DF73114",
+    "enabled":true,
+})
+
+p({
+    "class":"foam.nanos.ruler.Rule",
+    "id":"B11C328E-9572-426D-8373-09BA2DF73114",
+    "enabled":true,
+})

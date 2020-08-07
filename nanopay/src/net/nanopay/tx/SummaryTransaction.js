@@ -32,6 +32,14 @@ foam.CLASS({
 
   documentation: 'Used solely to present a summary of LineItems for chained Transactions',
 
+  sections: [
+    {
+      name: 'transactionChainSummary',
+      help: 'Transaction chain information can be added here',
+      order: 4
+    }
+  ],
+
   properties: [
     {
       name: 'chainSummary',
@@ -39,8 +47,12 @@ foam.CLASS({
       of: 'net.nanopay.tx.ChainSummary',
       storageTransient: true,
       visibility: 'RO',
-      section: 'basicInfo'
-    }
+      section: 'transactionChainSummary'
+    },
+    {
+      name: 'status',
+      value: 'COMPLETED',
+    },
   ],
 
   methods: [

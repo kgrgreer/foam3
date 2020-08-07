@@ -19,6 +19,7 @@
     <a href="#transaction">Transaction</a>
     <ul>
       <li><a href="#chain-summary">ChainSummary</a></li>
+      <li><a href="#error-codes">Error Codes</a></li>
       <li><a href="#historic-status">HistoricStatus</a></li>
       <li><a href="#signature">Signature</a></li>
       <li><a href="#transaction-line-item">TransactionLineItem</a></li>
@@ -927,21 +928,173 @@ PAUSED = 10, CANCELLED = 11, PENDING_PARENT_COMPLETED = 12, SCHEDULED = 13}</p><
     <tr>
       <td>status</td>
       <td>Enum </td>
-      <td>Status of the transaction. 
+      <td>Status of the transaction chain. 
         <pre><p>{PENDING = 0, SENT = 3, DECLINE = 4, COMPLETED = 5, FAILED = 9, 
 PAUSED = 10, CANCELLED = 11, PENDING_PARENT_COMPLETED = 12, SCHEDULED = 13}</p></pre></td>
     </tr>
     <tr>
       <td>category</td>
       <td>String </td>
-      <td>Category of the transaction status.</td>
+      <td>Category of the transaction chain status.</td>
     </tr>
     <tr>
       <td>summary</td>
       <td>String </td>
-      <td>Summary of the transaction status.</td>
+      <td>Summary of the transaction chain status.</td>
+    </tr>
+    <tr>
+      <td>errorCode</td>
+      <td>Long (Reference) </td>
+      <td>Error code for transaction chain.</td>
+    </tr>
+    <tr>
+      <td>errorInfo</td>
+      <td>String </td>
+      <td>Error information for transaction chain.</td>
     </tr>
   </tbody>
+</table>
+
+<h4><a name="error-codes">Error Codes in ChainSummary</a></h4>
+<table border="1px" width="100%">
+<thead>
+  <tr>
+    <th>Code</th>
+    <th>Category</th>
+    <th>Description</th>
+    <th>Abbreviation</th>
+  </tr>
+</thead>
+<tbody>
+
+    <tr>
+        <td>900</td>
+        <td>Returned/Dishonoured Items</td>
+        <td>Edit Reject</td>
+        <td>REJ/REV</td>
+    </tr>
+    <tr>
+        <td>901</td>
+        <td>Returned/Dishonoured Items</td>
+        <td>NSF (Debit Only)</td>
+        <td>NSF/DSP</td>
+    </tr>
+    <tr>
+        <td>902</td>
+        <td>Returned/Dishonoured Items</td>
+        <td>Account not found</td>
+        <td>CNT/ITV</td>
+    </tr>
+    <tr>
+        <td>903</td>
+        <td>Returned/Dishonoured Items</td>
+        <td>Payment Stopped/Recalled</td>
+        <td>STP/ARR</td>
+    </tr>
+    <tr>
+        <td>905</td>
+        <td>Returned/Dishonoured Items</td>
+        <td>Account Closed</td>
+        <td>CLS/FER</td>
+    </tr>
+    <tr>
+        <td>907</td>
+        <td>Returned/Dishonoured Items</td>
+        <td>No Debit Allowed</td>
+        <td>NCP/PPC</td>
+    </tr>
+    <tr>
+        <td>908</td>
+        <td>Returned/Dishonoured Items</td>
+        <td>Funds not Cleared (Debit Only)</td>
+        <td>FNC/FNL</td>
+    </tr>
+    <tr>
+        <td>909</td>
+        <td>Returned/Dishonoured Items</td>
+        <td>Currency/Account Mismatch</td>
+        <td>WCU/MDC</td>
+    </tr>
+    <tr>
+        <td>910</td>
+        <td>Returned/Dishonoured Items</td>
+        <td>Payor/Payee Deceased</td>
+        <td>DEC/DEC</td>
+    </tr>
+    <tr>
+        <td>911</td>
+        <td>Returned/Dishonoured Items</td>
+        <td>Account Frozen</td>
+        <td>FZN/BLQ</td>
+    </tr>
+    <tr>
+        <td>912</td>
+        <td>Returned/Dishonoured Items</td>
+        <td>Invalid/Incorrect Account No.</td>
+        <td>INA/INV</td>
+    </tr>
+    <tr>
+        <td>914</td>
+        <td>Returned/Dishonoured Items</td>
+        <td>Incorrect Payor/Payee Name</td>
+        <td>INP/NOM</td>
+    </tr>
+    <tr>
+        <td>915</td>
+        <td>Customer Initiated Returns, Debits Only</td>
+        <td>No Agreement Existed</td>
+        <td>ANP/NOG</td>
+    </tr>
+    <tr>
+        <td>916</td>
+        <td>Customer Initiated Returns, Debits Only</td>
+        <td>Not According to Agreement - Personal</td>
+        <td>NCA/ACP</td>
+    </tr>
+    <tr>
+        <td>917</td>
+        <td>Customer Initiated Returns, Debits Only</td>
+        <td>Agreement Revoked - Personal</td>
+        <td>ARP/AGP</td>
+    </tr>
+    <tr>
+        <td>918</td>
+        <td>Customer Initiated Returns, Debits Only</td>
+        <td>No Confirmation/Pre-Notification - Personal</td>
+        <td>PNP/PRP</td>
+    </tr>
+    <tr>
+        <td>919</td>
+        <td>Customer Initiated Returns, Debits Only</td>
+        <td>Not According to Agreement - Business</td>
+        <td>NCE/ACB</td>
+    </tr>
+    <tr>
+        <td>920</td>
+        <td>Customer Initiated Returns, Debits Only</td>
+        <td>Agreement Revoked - Business</td>
+        <td>ARE/AGB</td>
+    </tr>
+    <tr>
+        <td>921</td>
+        <td>Customer Initiated Returns, Debits Only</td>
+        <td>No Confirmation/Pre-Notification - Business</td>
+        <td>PNE/PRB</td>
+    </tr>
+    <tr>
+        <td>922</td>
+        <td>Customer Initiated Returns, Credits Only</td>
+        <td>Customer Intiated Return</td>
+        <td>REC/CIR</td>
+    </tr>
+    <tr>
+        <td>990</td>
+        <td>Default</td>
+        <td>Institution in Default</td>
+        <td>DEF/DEF</td>
+    </tr>
+    
+</tbody>
 </table>
 
 <h4><a name="historic-status">HistoricStatus</a></h4>

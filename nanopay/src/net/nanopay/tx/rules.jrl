@@ -783,3 +783,54 @@ p({
   "saveHistory":true,
   "lifecycleState":1
 })
+
+p({
+    "class":"foam.nanos.ruler.Rule",
+    "id":"B11C328F-9572-426D-8373-09BA2DF73114",
+    "name":"SummaryTransaction Update Rule",
+    "priority":100,
+    "ruleGroup":"summaryTransactions",
+    "documentation":"Update a summary transaction after transaction put.",
+    "daoKey":"localTransactionDAO",
+    "operation":3,
+    "after":true,
+    "action":{
+      "class":"net.nanopay.tx.ruler.SummaryTransactionAfterPutRule"
+    },
+    "enabled":false,
+    "saveHistory":false,
+    "lifecycleState":1
+})
+
+p({
+    "class":"foam.nanos.ruler.Rule",
+    "id":"B11C328E-9572-426D-8373-09BA2DF73114",
+    "name":"Update SummaryTransaction DUGRule",
+    "priority":100,
+    "ruleGroup":"summaryTransactions",
+    "documentation":"Update a DUGRule on summaryTransactionDAO.",
+    "daoKey":"ruleDAO",
+    "operation":0,
+    "after":false,
+    "predicate": {
+      "class":"foam.mlang.predicate.And",
+      "args":[
+        {
+          "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+          "of":"foam.nanos.dig.DUGRule"
+        },
+        {
+          "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+          "propName":"daoKey",
+          "propValue": "summaryTransactionDAO",
+          "isNew":true
+        }
+      ]
+    },
+    "action":{
+      "class":"net.nanopay.tx.ruler.SummaryTransactionUpdateDUGRule"
+    },
+    "enabled":false,
+    "saveHistory":false,
+    "lifecycleState":1
+})

@@ -1,0 +1,66 @@
+<title>API Webhooks</title>
+
+<h1>Webhooks</h1>
+<p>
+    The Data Update Gateway (DUG) is used to configure webhooks. DUG enables users to configure webhooks to listen for operations on a given DAO, such as the userDAO or the transactionDAO.
+</p>
+
+<h4>Webhook Retry Behaviour</h4>
+<p>
+    Webhooks are sent after an operation has completed on a DAO for a given entity, so that 
+    the result of the webhook does not affect the operation itself. If the 
+    webhook call fails, it will be retried 5 times, with a 10 second interval between each 
+    retry attempt. After the 5th retry attempt, the webhook call will fail and will not be 
+    retried again.
+</p>
+
+<h2>Transaction Webhook</h2>
+<p>
+    DUG can be configured to send transaction operations through a webhook. In order to 
+    subscribe to transaction operations, create a new DUG entry and configure the DAO as
+    the summaryTransactionDAO, set the URL and the bearer token and the format, then
+    save the DUG rule. It will be active immediately and start sending transaction operations
+    to the configured URL.
+</p>
+<h3>Message Payload</h3>
+<p>
+    The payload of the transaction webhook is a serialization of the transaction entry. See the 
+    API data decription of the Transaction for field level descriptions.
+</p>
+<p>
+<code>
+{
+  "class": "net.nanopay.tx.SummaryTransaction",
+  "chainSummary": {
+    "class": "net.nanopay.tx.ChainSummary",
+    "status": 3,
+    "category": "CashIn",
+    "summary": "CashIn SENT",
+    "errorCode": 0,
+    "errorInfo: ""
+  },
+  "name": "Transaction",
+  "isQuoted": true,
+  "id": "02adf86d-b215-4568-9036-98d141732e6e",
+  "created": "2020-08-06T20:07:46.552Z",
+  "createdBy": 1,
+  "createdByAgent": 1,
+  "lastModified": "2020-08-06T20:07:46.830Z",
+  "lastModifiedBy": 1,
+  "status": 5,
+  "destinationAmount": 800,
+  "sourceCurrency": "CAD",
+  "destinationCurrency": "CAD",
+  "statusHistory": [
+    {
+      "class": "net.nanopay.tx.HistoricStatus",
+      "timeStamp": "2020-08-06T20:07:46.552Z",
+      "status": 5
+    }
+  ],
+  "destinationAccount": 186,
+  "sourceAccount": 189,
+  "signatures": []
+}
+</code>
+</p>

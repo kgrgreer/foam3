@@ -425,6 +425,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/GreenfenceTransaction' },
   { name: 'net/nanopay/tx/InvoiceTransaction' },
   { name: 'net/nanopay/tx/ruler/InvoiceTransactionAfterPutRule' },
+  { name: 'net/nanopay/tx/ruler/SummaryTransactionAfterPutRule' },
+  { name: 'net/nanopay/tx/ruler/SummaryTransactionUpdateDUGRule' },
   { name: 'net/nanopay/tx/RefundTransaction' },
   { name: 'net/nanopay/tx/RetailTransaction' },
   { name: 'net/nanopay/tx/ruler/SendCompleteRetailTransactionNotificationRule' },
@@ -478,6 +480,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ChainSummary' },
   { name: 'net/nanopay/tx/PartnerTransaction' },
   { name: 'net/nanopay/tx/SummaryTransactionDAO' },
+  { name: 'net/nanopay/tx/SummaryTransactionInnerDAO' },
 
   //integration
   { name: 'net/nanopay/integration/ErrorCode' },
