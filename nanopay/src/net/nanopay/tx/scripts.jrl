@@ -92,8 +92,11 @@ p({
     
     cronDAO_ = x.get("cronDAO");
     cron = cronDAO_.find("generic transaction completion cron");
+    cron2 = cronDAO_.find("generic transaction sending cron");
     cron.setEnabled(true);
+    cron2.setEnabled(true);
     cronDAO_.put(cron);
+    cronDAO_.put(cron2);
     print("done");
   `
 })

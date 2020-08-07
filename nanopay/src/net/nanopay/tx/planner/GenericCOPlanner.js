@@ -57,7 +57,7 @@ foam.CLASS({
       if ( getInstantComplete() ) {
         cashOut.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);
       } else {
-        cashOut.setStatus(net.nanopay.tx.model.TransactionStatus.SENT);
+        cashOut.setStatus(net.nanopay.tx.model.TransactionStatus.PENDING);
       }
 
       return cashOut;

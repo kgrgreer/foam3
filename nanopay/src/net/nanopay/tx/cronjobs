@@ -132,3 +132,55 @@ p({
   print("done");
   """
 })
+p({
+  "class": "foam.nanos.cron.Cron",
+  "enabled": false,
+  "schedule": {
+    "class": "foam.nanos.cron.CronSchedule",
+    "minute": -1,
+    "hour": -1,
+    "dayOfMonth": -1,
+    "month": -1,
+    "dayOfWeek": -1,
+    "second": 0
+  },
+  "id": "generic transaction sending cron",
+  "description": "This cron job sets CICO transaction to sent if they are in pending status",
+  "code":
+  """
+  import foam.mlang.predicate.Predicate;
+  import foam.core.ContextAgent;
+  import foam.core.Detachable;
+  import foam.core.X;
+  import foam.dao.AbstractSink;
+  import foam.dao.DAO;
+  import net.nanopay.tx.cico.CITransaction;
+  import net.nanopay.tx.cico.COTransaction;
+  import net.nanopay.tx.cico.VerificationTransaction;
+  import net.nanopay.tx.model.Transaction;
+  import net.nanopay.tx.model.TransactionStatus;
+  import static foam.mlang.MLang.*;
+
+  DAO transactionDAO = (DAO) x.get("localTransactionDAO");
+  transactionDAO
+    .where(
+          AND(new Predicate[] {
+              EQ(Transaction.STATUS, TransactionStatus.PENDING),
+              OR(new Predicate[] {
+                INSTANCE_OF(CITransaction.class),
+                INSTANCE_OF(COTransaction.class),
+                INSTANCE_OF(VerificationTransaction.class)
+              })
+            })
+          )
+    .select( new AbstractSink() {
+
+    public void put(Object o, Detachable d) {
+      Transaction txn = (Transaction) o.fclone();
+      txn.setStatus(TransactionStatus.SENT);
+      txn2 = transactionDAO.put(txn);
+    }
+  });
+  print("done");
+  """
+})
