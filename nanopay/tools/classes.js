@@ -1070,6 +1070,7 @@ var classes = [
   'net.nanopay.tx.fee.test.TransactionFeeRuleTest',
 
   // Treviso
+  'net.nanopay.country.br.NatureCode',
   'net.nanopay.country.br.CNPJ',
   'net.nanopay.country.br.CPF',
   'net.nanopay.country.PermittedCountryFilterDAO',

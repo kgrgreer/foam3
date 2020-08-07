@@ -509,3 +509,31 @@ p({
   """,
   "client": "{\"of\":\"net.nanopay.tx.PaymentError\"}"
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "natureCodeDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setInnerDAO(x.get("localCapabilityDAO"))
+      .setValidated(true)
+      .setDecorator(
+        new foam.dao.FilteredDAO.Builder(x)
+          .setPredicate(foam.mlang.MLang.INSTANCE_OF(net.nanopay.country.br.NatureCode.class))
+          .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.country.br.NatureCode.getOwnClassInfo()).build())
+        .build())
+      .setOf(net.nanopay.country.br.NatureCode.getOwnClassInfo())
+      .build();
+  """,
+  "client":
+    """
+      {
+        "of":"net.nanopay.country.br.NatureCode"
+      }
+    """
+})
