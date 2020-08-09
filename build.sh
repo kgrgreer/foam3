@@ -279,7 +279,7 @@ function start_nanos {
             OPT_ARGS="${OPT_ARGS} -U${RUN_USER}"
         fi
 
-        ${NANOPAY_HOME}/bin/run.sh -Z${DAEMONIZE} -D${DEBUG} -S${DEBUG_SUSPEND} -P${DEBUG_PORT} -N${NANOPAY_HOME} -W${WEB_PORT} -C${CLUSTER} -H${HOST_NAME} -j${PROFILER} -J${PROFILER_PORT} ${OPT_ARGS}
+        ${NANOPAY_HOME}/bin/run.sh -Z${DAEMONIZE} -D${DEBUG} -S${DEBUG_SUSPEND} -P${DEBUG_PORT} -N${NANOPAY_HOME} -W${WEB_PORT} -C${CLUSTER} -H${HOST_NAME} -j${PROFILER} -J${PROFILER_PORT} -F${FS} ${OPT_ARGS}
     else
         cd "$PROJECT_HOME"
 
@@ -501,6 +501,7 @@ function usage {
     echo "  -D PORT : JDPA debugging enabled on port PORT."
     echo "  -e : Skipping genJava task."
     echo "  -E EXPLICIT_JOURNALS : "
+    echo "  -F <rw | ro> : File System Read-Write (default) or Read-Only"
     echo "  -f : Build foam."
     echo "  -g : Output running/notrunning status of daemonized nanos."
     echo "  -h : Print usage information."
@@ -570,6 +571,7 @@ fi
 
 ############################
 
+FS=rw
 JOURNAL_CONFIG=default
 JOURNAL_SPECIFIED=0
 INSTANCE=
@@ -609,7 +611,7 @@ LIQUID_DEMO=0
 RUNTIME_COMPILE=0
 RUN_USER=
 
-while getopts "bcC:dD:E:efghijJ:klmM:N:opP:QrsStT:uU:vV:wW:xz" opt ; do
+while getopts "bcC:dD:E:efF:ghijJ:klmM:N:opP:QrsStT:uU:vV:wW:xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;
@@ -627,6 +629,7 @@ while getopts "bcC:dD:E:efghijJ:klmM:N:opP:QrsStT:uU:vV:wW:xz" opt ; do
                 GRADLE_FLAGS="$GRADLE_FLAGS $skipGenFlag"
            fi
            ;;
+        F) FS=$OPTARG;;
         f) RUNTIME_COMPILE=1;;
         g) STATUS=1 ;;
         h) usage ; quit 0 ;;

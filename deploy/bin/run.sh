@@ -13,6 +13,7 @@ NANOS_PIDFILE=/tmp/nanos.pid
 DAEMONIZE=1
 VERSION=
 RUN_USER=
+FS=rw
 #CLUSTER=false
 
 MACOS='darwin*'
@@ -34,6 +35,7 @@ function usage {
     echo "Options are:"
     echo "  -C <true>           : enable cluster"
     echo "  -D 0 or 1           : Debug mode."
+    echo "  -F <rw | ro>       : File System mode"
     echo "  -H <hostname>       : hostname "
     echo "  -h                  : Display help."
     echo "  -j 0 or 1           : JProfiler enabled"
@@ -47,10 +49,11 @@ function usage {
     echo "  -Z <0/1>            : Daemonize."
 }
 
-while getopts "C:D:H:hj:J:N:P:S:U:V:W:Z:" opt ; do
+while getopts "C:D:F:H:hj:J:N:P:S:U:V:W:Z:" opt ; do
     case $opt in
         C) CLUSTER=$OPTARG;;
         D) DEBUG_DEV=$OPTARG;;
+        F) FS=$OPTARG;;
         H) HOST_NAME=$OPTARG;;
         h) usage; exit 0;;
         j) PROFILER=$OPTARG;;
@@ -89,6 +92,11 @@ JAVA_OPTS="${JAVA_OPTS} -DNANOPAY_HOME=${NANOPAY_HOME}"
 JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=${JOURNAL_HOME}"
 JAVA_OPTS="${JAVA_OPTS} -DDOCUMENT_HOME=${DOCUMENT_HOME}"
 JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=${LOG_HOME}"
+
+if [[ ${FS} = "ro" ]]; then
+    JAVA_OPTS="${JAVA_OPTS} -DFS=ro"
+fi
+
 echo CLUSTER=$CLUSTER
 if [[ ${JAVA_OPTS} != *"CLUSTER"* ]]; then
   if [[ ${CLUSTER} = "true" ]]; then
