@@ -134,7 +134,7 @@ p({
   "realm":"nanopay",
   "region":"Toronto",
   "regionStatus":1,
-  "zone":1,
+  "zone":0,
   "port":8080,
   "sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738",
   "type":1,
