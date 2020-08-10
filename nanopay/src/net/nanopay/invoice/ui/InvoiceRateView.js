@@ -45,7 +45,8 @@ foam.CLASS({
     'net.nanopay.ui.LoadingSpinner',
     'net.nanopay.ui.modal.TandCModal',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus'
+    'net.nanopay.tx.model.TransactionStatus',
+    'net.nanopay.tx.SummaryTransactionLineItem'
   ],
 
   implements: [
@@ -459,7 +460,7 @@ foam.CLASS({
                   }
 
                   for ( i=0; i < quote.lineItems.length; i++ ) {
-                    if ( ! quote.lineItems[i].requiresUserInput ) {
+                    if ( ! quote.lineItems[i].requiresUserInput && this.SummaryTransactionLineItem.isInstance(quote.lineItems[i]) ) {
                       e.start({
                         class: 'net.nanopay.tx.LineItemCitationView',
                         data: quote.lineItems[i]

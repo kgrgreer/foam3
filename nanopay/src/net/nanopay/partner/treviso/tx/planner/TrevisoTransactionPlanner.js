@@ -109,9 +109,9 @@ foam.CLASS({
       fxQuote.setRate(5.0);
 
       FXLineItem fxLineItem = new FXLineItem();
-      fxLineItem.setRate(fxQuote.getRate());
-      fxLineItem.setSourceCurrency(fxQuote.findSourceCurrency(x));
-      fxLineItem.setDestinationCurrency(fxQuote.findTargetCurrency(x));
+      fxLineItem.setRate(1/fxQuote.getRate());
+      fxLineItem.setSourceCurrency(fxQuote.findTargetCurrency(x));
+      fxLineItem.setDestinationCurrency(fxQuote.findSourceCurrency(x));
       placeHolder.addLineItems( new TransactionLineItem[] { fxLineItem } );
       txn.setStatus(TransactionStatus.COMPLETED);
       txn.addNext(applyFee(x, quote, placeHolder));
