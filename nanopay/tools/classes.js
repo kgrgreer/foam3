@@ -958,6 +958,7 @@ var classes = [
   'net.nanopay.business.SetBusinessNameDAO',
   'net.nanopay.business.ruler.JunctionNotificationSettingsRule',
   'net.nanopay.business.ruler.RegistrationLoginDisabledRule',
+  'net.nanopay.business.ruler.InitialBusinessRegistrationRule',
 
   // settlment Report service
   'net.nanopay.invoice.InvoiceFilteredSettlementReport',
@@ -1146,6 +1147,9 @@ var classes = [
   'net.nanopay.partner.treviso.tx.planner.TrevisoTransactionPlanner',
 
   // crunch onboarding
+  'net.nanopay.crunch.onboardingModels.CheckUserCountry',
+  'net.nanopay.crunch.onboardingModels.IsBusiness',
+  'net.nanopay.crunch.onboardingModels.InitialBusinessData',
   'net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData',
   'net.nanopay.crunch.onboardingModels.SigningOfficerQuestion',
   'net.nanopay.crunch.onboardingModels.BusinessHasNoSigningOfficers',

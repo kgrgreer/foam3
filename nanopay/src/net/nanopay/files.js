@@ -1422,6 +1422,7 @@ FOAM_FILES([
   { name: 'net/nanopay/business/DeleteAgentJunctionsOnUserDeleteDAO' },
   { name: 'net/nanopay/business/ruler/JunctionNotificationSettingsRule' },
   { name: 'net/nanopay/business/ruler/RegistrationLoginDisabledRule' },
+  { name: 'net/nanopay/business/ruler/InitialBusinessRegistrationRule' },
 
   // approval
   { name: 'net/nanopay/approval/UserRefines' },
@@ -1544,6 +1545,8 @@ FOAM_FILES([
 
 
   // crunch onboarding
+  { name: 'net/nanopay/crunch/onboardingModels/CheckUserCountry' },
+  { name: 'net/nanopay/crunch/onboardingModels/InitialBusinessData' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerPersonalData' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerQuestion' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessHasNoSigningOfficers' },
