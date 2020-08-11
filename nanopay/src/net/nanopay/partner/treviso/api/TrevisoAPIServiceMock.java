@@ -64,10 +64,4 @@ public class TrevisoAPIServiceMock extends ContextAwareSupport implements Trevis
     response.setDcmntTypNm("CONFIDENTIALITY AGREEMENT");
     return response;
   }
-
-  @Override
-  public PTaxDollarRateResponse getLatestPTaxRates() {
-    PTaxDollarRateResponse response = new PTaxDollarRateResponse();
-    return response;
-  }
 }

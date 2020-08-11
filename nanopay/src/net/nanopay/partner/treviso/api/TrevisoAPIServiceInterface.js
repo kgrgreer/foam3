@@ -69,11 +69,5 @@ foam.INTERFACE({
         }
       ]
     },
-    {
-      name: 'getLatestPTaxRates',
-      type: 'net.nanopay.partner.treviso.api.PTaxDollarRateResponse',
-      documentation: 'Get latest PTax rates from Brazil central bank open api: https://olinda.bcb.gov.br/olinda/service/PTAX/version/v1/odata',
-      async: true
-    },
   ]
 });

@@ -163,13 +163,6 @@ foam.INTERFACE({
           name: 'natureCode'
         },
       ]
-    },
-    {
-      name: 'getLatestPTaxRates',
-      type: 'net.nanopay.partner.treviso.api.PTaxRate',
-      documentation: 'Get latest PTax rate',
-      async: true,
-      javaThrows: ['java.lang.RuntimeException']
     }
   ]
 });
