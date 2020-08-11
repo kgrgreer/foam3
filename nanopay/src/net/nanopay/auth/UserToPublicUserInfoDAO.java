@@ -54,7 +54,6 @@ public class UserToPublicUserInfoDAO
    */
   public boolean isPublic(User user) {
     return user != null &&
-      ! SafetyUtil.equals(user.getGroup(), "system") &&
       user.getLoginEnabled() &&
       user.getStatus() == AccountStatus.ACTIVE &&
       user.getIsPublic();
