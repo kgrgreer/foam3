@@ -1566,6 +1566,10 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/onboardingModels/SetBusinessOnboardedOnUCJPut' },
   { name: 'net/nanopay/crunch/onboardingModels/UserIsSigningOfficerOfBusiness' },
 
+  // crunch notification
+  { name: 'net/nanopay/crunch/UCJExpiryReminderCron' },
+  { name: 'net/nanopay/crunch/compliance/SendExpiryNotification' },
+
   // crunch compliance
   { name: 'net/nanopay/crunch/compliance/IsCapabilityOfCertainCategoryAndStatus' },
   { name: 'net/nanopay/crunch/compliance/PersonSanctionValidator' },

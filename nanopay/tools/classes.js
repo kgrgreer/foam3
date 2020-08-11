@@ -1172,6 +1172,10 @@ var classes = [
   'net.nanopay.crunch.onboardingModels.OnboardingCapabilityUCJSubmitted',
   'net.nanopay.crunch.onboardingModels.UserIsSigningOfficerOfBusiness',
 
+  // crunch notification 
+  'net.nanopay.crunch.UCJExpiryReminderCron',
+  'net.nanopay.crunch.compliance.SendExpiryNotification',
+
   // crunch compliance
   'net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus',
   'net.nanopay.crunch.compliance.PersonSanctionValidator',

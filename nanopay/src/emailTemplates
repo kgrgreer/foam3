@@ -1112,7 +1112,6 @@ p({
   "subject": "Your access control changed",
   "body": "{% extends 'ablii-email-base_2'%}{% block content %} <br> \n <h2>Access control changed</h2>\n <br>\n <p>\n Hello {{userName}}, <br><br>\n Your access control has been changed to {{groupName}} on {{business}} in {{appName}}.</p> <br><br>\n\n <a href=\"{{link}}\"><button  style=\"width: 100%;margin: auto;height: 40px; font-size: 12px; cursor:pointer; border-radius: 2px; border: none; background: #604aff; color: #ffffff; text-align:center;\">Sign in</button></a>\n {% endblock content %}"
 })
-
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
   "id": 146,
@@ -1123,7 +1122,6 @@ p({
   "subject": "The transaction between you and {{contactBusiness}} has failed",
   "body": "{% extends 'ablii-email-base_2'%}\n \n {% block content %}\n <p style=\"font-size: 24px; font-family: 'Lato', sans-serif; margin-top: 50px;margin-bottom: 40px;\"><b>Transaction Failed</b></p>\n <p style = \"font-size: 16px;\"> Hi {{name}},</p><br>\n <p style = \"font-family: 'Lato', sans-serif; font-size: 16px; margin-top: -5px; margin-bottom: 30px;\">The transaction to contact <b>{{contactBusiness}}</b> failed</p>\n <br>\n <div style= \"border-radius: 4px; font-size: 14px;\">\n <div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;\">\n <div class= \"left  \" style= \"float:left  \">\n <span style = \"width: 68px; height: 21px; font-family: 'Lato', sans-serif; font-size: 14px;font-weight: 900; font-stretch: normal; font-style: normal; line-height: 1.5; letter-spacing: normal; color: #2b2b2b;\">Institution Number</span>\n </div>\n <div class= \"right  \" style= \"float:right; color: #8e9090;\">\n {{institutionNumber}}\n </div>\n </div>\n <div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top: 8px;\"> \n <div class= \"left  \" style= \"float:left  \">\n <span style = \"width: 68px; height: 21px; font-family: 'Lato', sans-serif; font-size: 14px; font-weight: 900; font-stretch: normal; font-style: normal; line-height: 1.5; letter-spacing: normal; color: #2b2b2b;\">Institution</span>\n </div> \n <div class= \"right  \" style= \"float:right; color: #8e9090;\">\n {{institutionName}}\n </div>\n </div>\n <div style= \"overflow: hidden; padding-bottom: 8px; padding-top:8px  \"> \n <div class= \"left  \" style= \"float:left  \">\n <span style = \"width: 68px; height: 21px; font-family: 'Lato', sans-serif; font-size: 14px;font-weight: 900;font-stretch: normal;font-style: normal;line-height: 1.5;letter-spacing: normal;color: #2b2b2b;\">Account Number</span>\n </div>\n <div class= \"right  \" style= \"float:right; color: #8e9090;\">\n ***{{accountNumber}}\n </div>\n </div>\n <p style = \"margin-top: 40px;margin-bottom: 20px; line-height: 24px; font-size: 16px; font-family: 'Lato', sans-serif;\">The transaction between you and <b>{{contactBusiness}}</b> failed due to an invalid bank account. Please confirm that you have the correct information for <b>{{contactBusiness}}</b>'s account, and re-add the bank account. Thank you.</p>\n <p style = \"margin-top: 20px;margin-bottom: 30px; line-height: 24px; font-size: 16px; font-family: 'Lato', sans-serif;\">If you have any questions, contact us at <a style = \" color: #604aff; font-weight: 900;\">{{supportEmail}}<a> </p>\n </div>\n <a href=\"{{appLink}}\" style=\" text-decoration: none;\">\n <div style=\"margin-top: 30px; padding: 14px 0; text-align: center; width: 504px; border-radius: 4px; font-weight: 600; background: #604aff; border-color: #4a33f4; color: #fff; cursor: pointer;\">Go to {{appName}}\n </div>\n </a>\n {% endblock content %}"
 })
-
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
   "id": 147,
@@ -1133,4 +1131,34 @@ p({
   "displayName": "{{appName}}",
   "subject": "Your transaction has failed, please confirm that the bank information you provided is correct",
   "body": "{% extends 'ablii-email-base_2'%}\n \n {% block content %}\n <p style=\"font-size: 24px; font-family: 'Lato', sans-serif; margin-top: 50px;margin-bottom: 40px;\"><b>Transaction Failed</b></p>\n <p style = \"font-size: 16px;\"> Hi {{name}},</p><br>\n <p style = \"font-family: 'Lato', sans-serif; font-size: 16px; margin-top: -5px; margin-bottom: 30px;\">The account ending in ***{{accountNumber}} was involved in a failed transaction.</p>\n <br>\n <div style= \"border-radius: 4px; font-size: 14px;\">\n <div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;\">\n <div class= \"left  \" style= \"float:left  \">\n <span style = \"width: 68px; height: 21px; font-family: 'Lato', sans-serif; font-size: 14px;font-weight: 900; font-stretch: normal; font-style: normal; line-height: 1.5; letter-spacing: normal; color: #2b2b2b;\">Institution Number</span>\n </div>\n <div class= \"right  \" style= \"float:right; color: #8e9090;\">\n {{institutionNumber}}\n </div>\n </div>\n <div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top: 8px;\"> \n <div class= \"left  \" style= \"float:left  \">\n <span style = \"width: 68px; height: 21px; font-family: 'Lato', sans-serif; font-size: 14px; font-weight: 900; font-stretch: normal; font-style: normal; line-height: 1.5; letter-spacing: normal; color: #2b2b2b;\">Institution</span>\n </div> \n <div class= \"right  \" style= \"float:right; color: #8e9090;\">\n {{institutionName}}\n </div>\n </div>\n <div style= \"overflow: hidden; padding-bottom: 8px; padding-top:8px  \"> \n <div class= \"left  \" style= \"float:left  \">\n <span style = \"width: 68px; height: 21px; font-family: 'Lato', sans-serif; font-size: 14px;font-weight: 900;font-stretch: normal;font-style: normal;line-height: 1.5;letter-spacing: normal;color: #2b2b2b;\">Account Number</span>\n </div>\n <div class= \"right  \" style= \"float:right; color: #8e9090;\">\n ***{{accountNumber}}\n </div>\n </div>\n <p style = \"margin-top: 40px;margin-bottom: 20px; line-height: 24px; font-size: 16px; font-family: 'Lato', sans-serif;\">The transaction between you and <b>{{contactBusiness}}</b> failed due to an invalid bank account. Please confirm that your account information is correct. Thank you.</p>\n <p style = \"margin-top: 20px;margin-bottom: 30px; line-height: 24px; font-size: 16px; font-family: 'Lato', sans-serif;\">If you have any questions, contact us at <a style = \" color: #604aff; font-weight: 900;\">{{supportEmail}}<a> </p>\n </div>\n <a href=\"{{appLink}}\" style=\" text-decoration: none;\">\n <div style=\"margin-top: 30px; padding: 14px 0; text-align: center; width: 504px; border-radius: 4px; font-weight: 600; background: #604aff; border-color: #4a33f4; color: #fff; cursor: pointer;\">Go to {{appName}}\n </div>\n </a>\n {% endblock content %}"
+})
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": 148,
+  "name": "ucjExpiredNotification",
+  "sendTo": "{{userEmail}}",
+  "group": "sme",
+  "displayName": "{{appName}}",
+  "subject": "Your capability has expired",
+  "body": "{% extends 'ablii-email-base_2'%}{% block content %} <br> \n <h2>Capability Expired</h2>\n <br>\n <p>\n Hello {{userName}}, <br><br>\n {{body}}</p> <br><br>\n\n <a href=\"{{link}}\"><button  style=\"width: 100%;margin: auto;height: 40px; font-size: 12px; cursor:pointer; border-radius: 2px; border: none; background: #604aff; color: #ffffff; text-align:center;\">Sign in</button></a>\n {% endblock content %}"
+})
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": 149,
+  "name": "ucjGracePeriodNotification",
+  "sendTo": "{{userEmail}}",
+  "group": "sme",
+  "displayName": "{{appName}}",
+  "subject": "Your capability has transitioned to grace period",
+  "body": "{% extends 'ablii-email-base_2'%}{% block content %} <br> \n <h2>Capability In Grace Period</h2>\n <br>\n <p>\n Hello {{userName}}, <br><br>\n {{body}}</p> <br><br>\n\n <a href=\"{{link}}\"><button  style=\"width: 100%;margin: auto;height: 40px; font-size: 12px; cursor:pointer; border-radius: 2px; border: none; background: #604aff; color: #ffffff; text-align:center;\">Sign in</button></a>\n {% endblock content %}"
+})
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": 150,
+  "name": "ucjExpiryReminder",
+  "sendTo": "{{userEmail}}",
+  "group": "sme",
+  "displayName": "{{appName}}",
+  "subject": "Your capability will expire soon",
+  "body": "{% extends 'ablii-email-base_2'%}{% block content %} <br> \n <h2>Capability Expired</h2>\n <br>\n <p>\n Hello {{userName}}, <br><br>\n {{body}}</p> <br><br>\n\n <a href=\"{{link}}\"><button  style=\"width: 100%;margin: auto;height: 40px; font-size: 12px; cursor:pointer; border-radius: 2px; border: none; background: #604aff; color: #ffffff; text-align:center;\">Sign in</button></a>\n {% endblock content %}"
 })
