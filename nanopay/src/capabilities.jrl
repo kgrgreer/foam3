@@ -338,3 +338,57 @@ p({
   "visible":true,
   "associatedEntity": 1
 })
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"b5f2b020-db0f-11ea-87d0-0242ac130003",
+  "name":"Office Consumption",
+  "of":"net.nanopay.crunch.document.Documents",
+  "version":"0",
+  "enabled":true,
+  "visible":true,
+  "associatedEntity": 0
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"26d32e86-db11-11ea-87d0-0242ac130003",
+  "name":"Articles Of Incorporation",
+  "of":"net.nanopay.crunch.document.Documents",
+  "version":"0",
+  "enabled":true,
+  "visible":true,
+  "associatedEntity": 0
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"7e2739cc-db32-11ea-87d0-0242ac130003",
+  "name":"business latest annual report",
+  "of":"net.nanopay.crunch.document.Documents",
+  "version":"0",
+  "enabled":true,
+  "visible":true,
+  "associatedEntity": 0
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"85cee1de-db32-11ea-87d0-0242ac130003",
+  "name":"Residence Consumption Bill",
+  "of":"net.nanopay.crunch.document.Documents",
+  "version":"0",
+  "enabled":true,
+  "visible":true,
+  "associatedEntity": 1
+})
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"8ad3c898-db32-11ea-87d0-0242ac130003",
+  "name":"user identity",
+  "of":"net.nanopay.crunch.document.Document",
+  "version":"0",
+  "enabled":true,
+  "visible":true,
+  "associatedEntity": 1
+})
