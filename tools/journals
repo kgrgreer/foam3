@@ -87,6 +87,7 @@ transactionLimits
 transactionPurposes
 transactions
 txnProcessors
+userCapabilityJunctionHistory
 userCapabilityJunctions
 users
 xeroConfig

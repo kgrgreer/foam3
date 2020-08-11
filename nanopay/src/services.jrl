@@ -2415,6 +2415,8 @@ p({
     dao.addIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.SOURCE_ID });
     dao = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, dao, "userCapabilityJunctions");
 
+    decorator = new foam.dao.history.HistoryDAO(x, "userCapabilityJunctionHistoryDAO", new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo()).build());
+
     dao = new foam.dao.EasyDAO.Builder(x)
       .setAuthorize(false)
       .setGuid(true)
@@ -2422,6 +2424,7 @@ p({
       .setJournalName("userCapabilityJunctions")
       .setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo())
       .setInnerDAO(dao)
+      .setDecorator(decorator)
       .build();
     dao = new foam.nanos.crunch.UserCapabilityJunctionDAO.Builder(x).setDelegate(dao).build();
     return dao;
