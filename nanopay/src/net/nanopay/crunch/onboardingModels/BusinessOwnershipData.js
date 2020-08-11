@@ -683,14 +683,15 @@ foam.CLASS({
           heading: this.SO_SELECTION,
           dao$: this.dao2$
         });
-        choiceSections.push({
-          heading: showDAO2
-            ? this.OTHER_SELECTION_HAS_SO
-            : this.OTHER_SELECTION_NO_SO,
-          dao$: this.dao$
-        });
-        this.choiceSections_ = choiceSections;
       }
+      choiceSections.push({
+        heading: showDAO2
+          ? this.OTHER_SELECTION_HAS_SO
+          : this.OTHER_SELECTION_NO_SO,
+        dao$: this.dao$
+      });
+      this.choiceSections_ = choiceSections;
+      
     }
   ]
 });
