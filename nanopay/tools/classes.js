@@ -1148,6 +1148,7 @@ var classes = [
   'net.nanopay.partner.treviso.tx.NatureCodeLineItem',
   'net.nanopay.partner.treviso.tx.TrevisoTransaction',
   'net.nanopay.partner.treviso.tx.planner.TrevisoTransactionPlanner',
+  'net.nanopay.partner.treviso.tx.TrevisoCreateExchange',
   'net.nanopay.partner.treviso.tx.TrevisoSummaryLineItemRule',
 
   // crunch onboarding

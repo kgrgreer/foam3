@@ -1623,5 +1623,6 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/tx/NatureCodeLineItem' },
   { name: 'net/nanopay/partner/treviso/tx/TrevisoTransaction' },
   { name: 'net/nanopay/partner/treviso/tx/planner/TrevisoTransactionPlanner' },
+  { name: 'net/nanopay/partner/treviso/tx/TrevisoCreateExchange' },
   { name: 'net/nanopay/partner/treviso/tx/TrevisoSummaryLineItemRule' },
 ]);
