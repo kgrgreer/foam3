@@ -1168,8 +1168,6 @@ var classes = [
   'net.nanopay.crunch.onboardingModels.InternationalBusinessInformationData',
   'net.nanopay.crunch.BusinessOwnershipToBeneficialOwnerDAO',
   'net.nanopay.crunch.onboardingModels.SigningOfficerCapabilityInterceptPredicate',
-  'net.nanopay.crunch.onboardingModels.SetBusinessOnboardedOnUCJPut',
-  'net.nanopay.crunch.onboardingModels.OnboardingCapabilityUCJSubmitted',
   'net.nanopay.crunch.onboardingModels.UserIsSigningOfficerOfBusiness',
 
   // crunch notification 
@@ -1185,8 +1183,8 @@ var classes = [
   'net.nanopay.crunch.compliance.SecurefactSIDniValidator',
   'net.nanopay.crunch.compliance.SecurefactLEVValidator',
   'net.nanopay.crunch.compliance.UserComplianceApproval',
-  'net.nanopay.crunch.compliance.ReputDependenciesOnUCJPut',
-
+  'net.nanopay.crunch.compliance.SetFulfilledComplianceApprovalRequest',
+  
   // crunch afex
   'net.nanopay.partner.afex.crunch.AFEXBusinessOnboardingRule',
   'net.nanopay.partner.afex.crunch.BusinessHasVerifiedBankAccount',

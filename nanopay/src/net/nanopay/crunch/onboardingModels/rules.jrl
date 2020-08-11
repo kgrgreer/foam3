@@ -3,7 +3,7 @@ p({
   "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d0-crunch0",
   "name":"addOrInviteSigningOfficerRule",
   "priority":100,
-  "ruleGroup":"crunch",
+  "ruleGroup":"crunchOnboarding",
   "daoKey":"userCapabilityJunctionDAO",
   "enabled":true,
   "after":true,
@@ -14,20 +14,5 @@ p({
     "of":"net.nanopay.crunch.onboardingModels.SigningOfficerQuestion"
   },
   "action":{"class":"net.nanopay.crunch.onboardingModels.SigningOfficerQuestionOnPut"},
-  "lifecycleState":1
-})
-
-p({
-  "class":"foam.nanos.ruler.Rule",
-  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d0-crunch2",
-  "name":"setBusinessStatusOnOnboardingComplete",
-  "priority":100,
-  "ruleGroup":"crunch",
-  "daoKey":"userCapabilityJunctionDAO",
-  "enabled":true,
-  "after":true,
-  "operation":3,
-  "predicate":{"class":"net.nanopay.crunch.onboardingModels.OnboardingCapabilityUCJSubmitted"},
-  "action":{"class":"net.nanopay.crunch.onboardingModels.SetBusinessOnboardedOnUCJPut"},
   "lifecycleState":1
 })

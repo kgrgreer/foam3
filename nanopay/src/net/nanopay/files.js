@@ -1563,7 +1563,6 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/PrerequisiteCapabilityJunctionRefine' },
   { name: 'net/nanopay/crunch/BusinessOwnershipToBeneficialOwnerDAO' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerCapabilityInterceptPredicate' },
-  { name: 'net/nanopay/crunch/onboardingModels/SetBusinessOnboardedOnUCJPut' },
   { name: 'net/nanopay/crunch/onboardingModels/UserIsSigningOfficerOfBusiness' },
 
   // crunch notification
@@ -1579,7 +1578,7 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/compliance/SecurefactSIDniValidator' },
   { name: 'net/nanopay/crunch/compliance/SecurefactLEVValidator' },
   { name: 'net/nanopay/crunch/compliance/UserComplianceApproval' },
-  { name: 'net/nanopay/crunch/compliance/ReputDependenciesOnUCJPut' },
+  { name: 'net/nanopay/crunch/compliance/SetFulfilledComplianceApprovalRequest' },
 
   // crunch afex
   { name: 'net/nanopay/partner/afex/crunch/BusinessHasVerifiedBankAccount' },
