@@ -61,6 +61,27 @@ foam.CLASS({
           setSettled( ((BmoCOTransaction) other).getSettled() );
         }
       `
+    },
+    {
+      name: 'calculateErrorCode',
+      javaCode: `
+        String reason = getRejectReason();
+        if ( reason.contains("EFT File Rejected") ) {
+          return 991;
+        } else if ( reason.contains("INST. ID INVALID") ) {
+          return 923l;
+        } else if ( reason.contains("ACCOUNT NO. INVALID") ) {
+          return 912l;
+        } else if ( reason.contains("PAYEE PAYOR NAME INVALID") ) {
+          return 914l;
+        } else if ( reason.contains("DEST. INST. NOT DEFINED ON FIF") ) {
+          return 923l;
+        } else if ( reason.contains("DEST. ACCT. NO. INVALID") ) {
+          return 912l;
+        } else {
+          return 991l;
+        }
+      `
     }
   ]
 });

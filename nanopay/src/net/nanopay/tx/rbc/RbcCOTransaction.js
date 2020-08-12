@@ -66,6 +66,13 @@ foam.CLASS({
           setSettled( ((RbcCOTransaction) other).getSettled() );
         }
       `
+    },
+    {
+      name: 'calculateErrorCode',
+      javaCode: `
+       return 0;
+       //TODO: Mayowa will fill this out later.
+      `
     }
   ]
 });
