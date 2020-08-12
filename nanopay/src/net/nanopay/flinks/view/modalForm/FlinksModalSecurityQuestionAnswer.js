@@ -45,7 +45,7 @@ foam.CLASS({
 
   css: `
     ^ {
-      width: 504px;
+      width: auto;
       max-height: 80vh;
       overflow-y: scroll;
     }

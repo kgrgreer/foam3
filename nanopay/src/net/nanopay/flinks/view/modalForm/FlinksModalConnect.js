@@ -46,7 +46,7 @@ foam.CLASS({
 
   css: `
     ^ {
-      width: 504px;
+      width: auto;
     }
     ^content {
       position: relative;

@@ -79,7 +79,8 @@ foam.CLASS({
     ^ .net-nanopay-sme-ui-wizardModal-WizardModalNavigationBar .net-nanopay-sme-ui-wizardModal-WizardModalNavigationBar-container {
       position: absolute;
       bottom: 0;
-      width: 100%;
+      width: 90%;
+      background-color: #0000;
     }
   `,
 
