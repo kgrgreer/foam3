@@ -344,6 +344,7 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"b5f2b020-db0f-11ea-87d0-0242ac130003",
   "name":"Office Consumption",
+  "description":"Office consumption bill includes Energy, Telephone, Water, Cable TV, IPTU or Bank Statement. 3 months of billing documents required.",
   "of":"net.nanopay.crunch.document.Documents",
   "version":"0",
   "enabled":true,
@@ -355,6 +356,7 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"26d32e86-db11-11ea-87d0-0242ac130003",
   "name":"Articles Of Incorporation",
+  "description":"Document that establishes the existence of a corporation.",
   "of":"net.nanopay.crunch.document.Documents",
   "version":"0",
   "enabled":true,
@@ -365,7 +367,8 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"7e2739cc-db32-11ea-87d0-0242ac130003",
-  "name":"business latest annual report",
+  "name":"Business Latest Annual Report",
+  "description":"Formal financial statements that are published yearly and sent to company stockholders and various other interested parties.",
   "of":"net.nanopay.crunch.document.Documents",
   "version":"0",
   "enabled":true,
@@ -377,17 +380,20 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"85cee1de-db32-11ea-87d0-0242ac130003",
   "name":"Residence Consumption Bill",
+  "description":"Residence consumption bill includes Energy, Telephone, Water, Cable TV, IPTU or Bank Statement. 3 months of billing documents required.",
   "of":"net.nanopay.crunch.document.Documents",
   "version":"0",
   "enabled":true,
   "visible":true,
   "associatedEntity": 1
 })
+
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"8ad3c898-db32-11ea-87d0-0242ac130003",
-  "name":"user identity",
-  "of":"net.nanopay.crunch.document.Document",
+  "name":"User Identity",
+  "description":"Identity Document that contains full name, CPF number and photo. Valid until expire date or no longer than 10 years.",
+  "of":"net.nanopay.crunch.document.Documents",
   "version":"0",
   "enabled":true,
   "visible":true,

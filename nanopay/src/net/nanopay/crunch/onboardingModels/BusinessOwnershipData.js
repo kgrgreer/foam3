@@ -536,7 +536,8 @@ foam.CLASS({
           choiceView:
           {
             class: 'foam.u2.view.RichChoiceView',
-            choosePlaceholder: 'Please select one of the following...'
+            choosePlaceholder: 'Please select one of the following...',
+            sections: ['Owner type']
           }
         };
       }
