@@ -32,7 +32,7 @@ foam.CLASS({
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.country.br.tx.ExchangeLimitTransaction',
     'net.nanopay.partner.treviso.TrevisoService',
-    'net.nanopay.partner.treviso.tx.NatureCodeLineItem',
+    'net.nanopay.country.br.tx.NatureCodeLineItem',
     'net.nanopay.partner.treviso.tx.TrevisoTransaction',
   ],
 

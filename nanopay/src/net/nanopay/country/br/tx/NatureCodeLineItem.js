@@ -16,7 +16,7 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.partner.treviso.tx',
+  package: 'net.nanopay.country.br.tx',
   name: 'NatureCodeLineItem',
   extends: 'net.nanopay.tx.TransactionLineItem',
 
@@ -39,24 +39,27 @@ foam.CLASS({
     {
       name: 'natureCode',
       class: 'Reference',
-      of: 'net.nanopay.tx.PurposeCode',
+      of: 'net.nanopay.country.br.NatureCode',
       label: 'Nature Code',
       required: true,
       validationPredicates: [
         {
           args: ['natureCode'],
           predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.partner.treviso.tx.NatureCodeLineItem.NATURE_CODE, '');
+            return e.NEQ(net.nanopay.country.br.tx.NatureCodeLineItem.NATURE_CODE, '');
           },
           errorString: 'Please select a nature code.'
         }
       ],
       view: function(args, x) {
         return foam.u2.view.ChoiceView.create({
-          dao: x.purposeCodeDAO.where(x.data.EQ(net.nanopay.tx.PurposeCode.COUNTRY, 'BR')),
+          dao: x.natureCodeDAO.where(x.data.AND(
+            x.data.NEQ(net.nanopay.country.br.NatureCode.CODE, ''),
+            x.data.EQ(net.nanopay.country.br.NatureCode.COUNTRY, 'BR')
+          )),
           placeholder: 'Please select',
           objToChoice: function(natureCode) {
-            return [natureCode.code, natureCode.description];
+            return [natureCode.code, natureCode.name];
           }
         });
       }

@@ -1539,6 +1539,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/fee/PercentageFee' },
   { name: 'net/nanopay/tx/fee/TransactionFeeRule' },
   { name: 'net/nanopay/tx/fee/Relationships' },
+  { name: 'net/nanopay/tx/fee/predicate/HasLineItemPredicate' },
   { name: 'net/nanopay/tx/fee/predicate/IsDomesticTransaction' },
   { name: 'net/nanopay/tx/fee/predicate/PaymentCorridorPredicate' },
   { name: 'net/nanopay/tx/fee/test/TransactionFeeRuleTest' },
@@ -1623,7 +1624,7 @@ FOAM_FILES([
   // Treviso
   { name: 'net/nanopay/partner/treviso/TrevisoCredientials' },
   { name: 'net/nanopay/partner/treviso/TrevisoClient' },
-  { name: 'net/nanopay/partner/treviso/tx/NatureCodeLineItem' },
+  { name: 'net/nanopay/country/br/tx/NatureCodeLineItem' },
   { name: 'net/nanopay/partner/treviso/tx/TrevisoTransaction' },
   { name: 'net/nanopay/partner/treviso/tx/planner/TrevisoTransactionPlanner' },
   { name: 'net/nanopay/partner/treviso/tx/TrevisoCreateExchange' },
