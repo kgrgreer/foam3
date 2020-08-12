@@ -57,7 +57,7 @@ notificationTemplates
 notificationSettings
 notificationSettingDefaults
 payoutOptions
-paymentErrors
+errorCodes
 paymentCodes
 paymentMethods
 PADTypes
@@ -92,6 +92,7 @@ transactionLimits
 transactionPurposes
 transactions
 txnProcessors
+userCapabilityJunctionHistory
 userCapabilityJunctions
 users
 xeroConfig

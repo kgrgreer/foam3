@@ -47,16 +47,20 @@ foam.CLASS({
           @Override
           public void execute(X x) {
             UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
+            CapabilityJunctionStatus status = ucj.getStatus();
 
             DAO dao = ((DAO) x.get("approvalRequestDAO"))
               .where(AND(
                 EQ(ApprovalRequest.DAO_KEY, "userCapabilityJunctionDAO"),
-                EQ(ApprovalRequest.OBJ_ID, ucj.getId())
+                EQ(ApprovalRequest.OBJ_ID, ucj.getId()),
+                EQ(ApprovalRequest.IS_FULFILLED, false)
               ));
-
             ApprovalStatus approval = ApprovalRequestUtil.getState(dao);
             if ( approval == null || approval != ApprovalStatus.REQUESTED ) {
-              ucj.setStatus(ApprovalStatus.REJECTED == approval ? CapabilityJunctionStatus.ACTION_REQUIRED : CapabilityJunctionStatus.GRANTED);
+              status = ApprovalStatus.REJECTED == approval ? CapabilityJunctionStatus.ACTION_REQUIRED : CapabilityJunctionStatus.APPROVED;
+              ucj.setStatus(status);
+
+              if ( approval == ApprovalStatus.REJECTED ) ucj.clearData();
 
               DAO userDAO = (DAO) x.get("localUserDAO");
               User user = (User) userDAO.find(ucj.getSourceId());
@@ -70,6 +74,7 @@ foam.CLASS({
 
               ((DAO) x.get("userCapabilityJunctionDAO")).inX(ownerContext).put(ucj);
             }
+            ruler.putResult(status);
           }
         }, "User Compliance Approval");
       `

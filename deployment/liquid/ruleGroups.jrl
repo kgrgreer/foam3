@@ -62,3 +62,8 @@ p({
   "id":"FeeEngine",
   "enabled":false
 })
+
+// disable crunch rules
+p({"class":"foam.nanos.ruler.RuleGroup","id":"crunch","enabled":false})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"ucjDAO","enabled":false})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"crunchOnboarding","enabled":false})

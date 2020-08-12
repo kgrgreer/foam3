@@ -1,0 +1,20 @@
+p({
+  "class":"foam.nanos.cron.Cron",
+  "id":"UCJ Expiry Reminder Cron",
+  "description":"Daily check to send notification on ucjs about to expire",
+  "schedule":{
+    "class":"foam.nanos.cron.CronSchedule",
+    "minute":0,
+    "hour":0,
+    "dayOfMonth":-1,
+    "month":-1,
+    "dayOfWeek":-1,
+    "second":0
+  },
+  "code": """
+    cron = new net.nanopay.crunch.UCJExpiryReminderCron();
+    cron.execute(x);
+    print("done");
+  """,
+  "enabled":true
+})

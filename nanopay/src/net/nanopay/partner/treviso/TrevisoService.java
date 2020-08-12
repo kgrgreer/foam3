@@ -44,6 +44,9 @@ import foam.nanos.crunch.UserCapabilityJunction;
 import net.nanopay.country.br.CNPJ;
 import net.nanopay.country.br.ExchangeServiceInterface;
 import net.nanopay.country.br.FederalRevenueService;
+import net.nanopay.country.br.OpenDataService;
+import net.nanopay.country.br.PTaxRate;
+import net.nanopay.country.br.PTaxDollarRateResponse;
 import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
 import net.nanopay.fx.FXTransaction;
@@ -63,8 +66,6 @@ import net.nanopay.partner.treviso.api.InsertBoletoResponse;
 import net.nanopay.partner.treviso.api.InsertTitular;
 import net.nanopay.partner.treviso.api.InsertTitularResponse;
 import net.nanopay.partner.treviso.api.Natureza;
-import net.nanopay.partner.treviso.api.PTaxRate;
-import net.nanopay.partner.treviso.api.PTaxDollarRateResponse;
 import net.nanopay.partner.treviso.api.ResponsibleArea;
 import net.nanopay.partner.treviso.api.SaveEntityRequest;
 import net.nanopay.partner.treviso.api.SearchCustomerRequest;
@@ -460,21 +461,6 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
 
     } catch(Throwable t) {
       logger_.error("Error searching nature code" , t);
-      throw new RuntimeException(t);
-    }
-  }
-
-  public PTaxRate getLatestPTaxRates() throws RuntimeException {
-    try {
-      PTaxDollarRateResponse response = trevisoAPIService.getLatestPTaxRates();
-      if ( response == null )
-        throw new RuntimeException("Unable to get a valid response from PTax open API");
-
-      if ( response.getValue() != null && response.getValue().length > 0 ) return response.getValue()[0];
-
-      return null;
-    } catch(Throwable t) {
-      logger_.error("Error getting PTax" , t);
       throw new RuntimeException(t);
     }
   }

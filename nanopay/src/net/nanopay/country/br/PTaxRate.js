@@ -15,14 +15,19 @@
  * from nanopay Corporation.
  */
 foam.CLASS({
-  package: 'net.nanopay.partner.treviso.api',
-  name: 'PTaxDollarRateResponse',
+  package: 'net.nanopay.country.br',
+  name: 'PTaxRate',
 
-	properties: [
-		{
-			class: "FObjectArray",
-			name: "value",
-			of: "net.nanopay.partner.treviso.api.PTaxRate"
-		}
-	]
+  properties: [
+    {
+      class: 'foam.core.Double',
+      name: 'cotacaoCompra',
+      documentation: 'Buy rate'
+    },
+    {
+      class: 'foam.core.Double',
+      name: 'cotacaoVenda',
+      documentation: 'Sell rate'
+    }
+  ]
 });

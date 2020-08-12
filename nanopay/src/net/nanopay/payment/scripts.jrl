@@ -456,3 +456,62 @@ p({
     print("Script Finished.");
   """
 })
+
+p({
+  class:"foam.nanos.script.Script",
+  id:"Set CountryCapabilityDAO",
+  description:"set CountryCapabilityDAO by using existing PaymentProviderCorridors",
+  code:"""
+    import foam.core.X;
+    import foam.dao.ArraySink;
+    import foam.dao.DAO;
+    import foam.mlang.MLang;
+    import foam.mlang.predicate.Predicate;
+    import foam.nanos.crunch.CapabilityCapabilityJunction;
+    import net.nanopay.payment.*;
+    import net.nanopay.payment.CountryCapability;
+    import net.nanopay.payment.PaymentProviderCorridor;
+    import java.util.List;
+
+    ppcDAO = x.get("paymentProviderCorridorDAO");
+    countryCapabilityDAO = (DAO) x.get("countryCapabilityDAO");
+    List corridors = ppcDAO.select(new ArraySink()).getArray();
+    for(  corridor : corridors ) {
+      sourceCountryCapability = (CountryCapability) countryCapabilityDAO.find(
+        MLang.AND(
+          new Predicate[]{
+          MLang.EQ(CountryCapability.COUNTRY, corridor.getSourceCountry()),
+          MLang.EQ(CountryCapability.TYPE, SourceTargetType.SOURCE)
+          }
+        ));
+
+      targetCountryCapability = (CountryCapability) countryCapabilityDAO.find(
+        MLang.AND(
+          new Predicate[]{
+          MLang.EQ(CountryCapability.COUNTRY, corridor.getTargetCountry()),
+          MLang.EQ(CountryCapability.TYPE, SourceTargetType.TARGET)
+          }
+        ));
+      if ( sourceCountryCapability == null ) {
+        sourceCountryCapability = new CountryCapability();
+        sourceCountryCapability.setCountry(corridor.getSourceCountry());
+        sourceCountryCapability.setType(SourceTargetType.SOURCE);
+        sourceCountryCapability.setName("Source Country Capability " + corridor.getSourceCountry());
+        sourceCountryCapability.setVisible(true);
+        sourceCountryCapability.setEnabled(true);
+        sourceCountryCapability = (CountryCapability) countryCapabilityDAO.put(sourceCountryCapability);
+      }
+
+      if ( targetCountryCapability == null ) {
+        targetCountryCapability = new CountryCapability();
+        targetCountryCapability.setCountry(corridor.getTargetCountry());
+        targetCountryCapability.setType(SourceTargetType.TARGET);
+        targetCountryCapability.setName("Target Country Capability " + corridor.getTargetCountry());
+        targetCountryCapability.setVisible(true);
+        targetCountryCapability.setEnabled(true);
+        targetCountryCapability = (CountryCapability) countryCapabilityDAO.put(targetCountryCapability);
+      }
+    }
+    print("done");
+  """
+})

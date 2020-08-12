@@ -34,3 +34,37 @@ p({
   "enabled": false,
   "lifecycleState":1
 })
+
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"crunch-business-registration",
+  "name":"Create business on initial business data submit.",
+  "priority":1,
+  "ruleGroup":"crunchOnboarding",
+  "documentation":"Create business on initial business data submit",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":0,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class": "foam.nanos.ruler.predicate.PropertyNEQValue",
+        "propName": "data",
+        "propValue": null
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsClass",
+        "propName":"data",
+        "of":"net.nanopay.crunch.onboardingModels.InitialBusinessData"
+      }
+    ]
+  },
+  "action":{
+    "class": "net.nanopay.business.ruler.InitialBusinessRegistrationRule"
+  },
+  "enabled":true,
+  "saveHistory":true,
+  "lifecycleState":1
+}) 

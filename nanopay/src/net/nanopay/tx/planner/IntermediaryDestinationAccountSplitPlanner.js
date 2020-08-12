@@ -82,7 +82,7 @@ foam.CLASS({
           fxSummary.copyFrom(requestTxn);
           fxSummary.setAmount(leg1.getAmount());
           fxSummary.clearLineItems();
-          fxSummary.addNext(createCompliance(requestTxn));
+          fxSummary.addNext(createCompliance(fxSummary));
 
           fxSummary.setStatus(TransactionStatus.COMPLETED);
           fxSummary.addNext(leg1.getNext()[0].getNext()[0]);

@@ -162,15 +162,20 @@ p({
   "serve": true,
   "serviceScript":
   """
+    foam.dao.DAO innerDAO = new net.nanopay.tx.SummaryTransactionInnerDAO.Builder(x)
+      .setDelegate(x.get("transactionDAO"))
+      .setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo())
+      .build();
+
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo())
-      .setInnerDAO(x.get("transactionDAO"))
+      .setInnerDAO(innerDAO)
       .setDecorator(new net.nanopay.tx.SummaryTransactionDAO(x, new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo()).build()))
       .setAuthorize(false)
       .setPm(true)
       .setPipelinePm(true)
       .setEnableInterfaceDecorators(false)
-      .setRuler(false)
+      .setRuler(true)
       .build();
   """,
   "client":
@@ -511,18 +516,46 @@ p({
 })
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "paymentErrorDAO",
+  "name": "errorCodeDAO",
   "serve": true,
   "serviceScript":
   """
 
     return new foam.dao.EasyDAO.Builder(x)
-      .setOf(net.nanopay.tx.PaymentError.getOwnClassInfo())
+      .setOf(net.nanopay.integration.ErrorCode.getOwnClassInfo())
       .setPm(true)
       .setPipelinePm(true)
-      .setJournalName("paymentErrors")
+      .setJournalName("errorCodes")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .build();
   """,
-  "client": "{\"of\":\"net.nanopay.tx.PaymentError\"}"
+  "client": "{\"of\":\"net.nanopay.integration.ErrorCode\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "natureCodeDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setInnerDAO(x.get("localCapabilityDAO"))
+      .setValidated(true)
+      .setDecorator(
+        new foam.dao.FilteredDAO.Builder(x)
+          .setPredicate(foam.mlang.MLang.INSTANCE_OF(net.nanopay.country.br.NatureCode.class))
+          .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.country.br.NatureCode.getOwnClassInfo()).build())
+        .build())
+      .setOf(net.nanopay.country.br.NatureCode.getOwnClassInfo())
+      .build();
+  """,
+  "client":
+    """
+      {
+        "of":"net.nanopay.country.br.NatureCode"
+      }
+    """
 })

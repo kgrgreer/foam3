@@ -157,40 +157,103 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-11",
-  "name":"Canadian Domestic Onboarding",
-  "description":"Unlock payments to Canada (CAD to CAD)",
+  "name":"Unlock Domestic Payments and Invoicing",
+  "description":"Unlock payments and invoicing to Canada (CAD to CAD)",
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
   "version":"0",
   "enabled":true,
   "visible":true,
   "reviewRequired":true,
-  "keywords":["featured"]
+  "keywords":["featured"],
+  "availabilityPredicate": {
+    "class":"foam.mlang.predicate.And",
+    "args": [
+      { "class":"net.nanopay.crunch.onboardingModels.IsBusiness" },
+      {
+        "class":"net.nanopay.crunch.onboardingModels.CheckUserCountry",
+        "country":"CA"
+      }
+    ]
+  }
 })
 
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-12",
-  "name":"Canadian International Onboarding",
-  "description":"Unlock payments to USA and India",
+  "name":"Unlock International Payments",
+  "description":"Unlock International payments",
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
   "version":"0",
   "enabled":true,
   "visible":true,
   "reviewRequired":true,
-  "keywords":["featured"]
+  "keywords":["featured"],
+  "availabilityPredicate": {
+    "class":"foam.mlang.predicate.And",
+    "args": [
+      { "class":"net.nanopay.crunch.onboardingModels.IsBusiness" },
+      {
+        "class":"net.nanopay.crunch.onboardingModels.CheckUserCountry",
+        "country":"CA"
+      }
+    ]
+  }
 })
 
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-13",
-  "name":"USA International & Domestic Onboarding",
+  "name":"Unlock International & Domestic Payments and Invoicing",
   "description":"Unlock payments",
   "icon":"/images/capabilityIcons/USDOnboardCap.svg",
   "version":"0",
   "enabled":true,
   "visible":true,
   "reviewRequired":true,
-  "keywords":["featured"]
+  "keywords":["featured"],
+  "availabilityPredicate": {
+    "class":"foam.mlang.predicate.And",
+    "args": [
+      { "class":"net.nanopay.crunch.onboardingModels.IsBusiness" },
+      {
+        "class": "foam.mlang.predicate.Not",
+        "arg1": {
+          "class":"net.nanopay.crunch.onboardingModels.CheckUserCountry",
+          "country":"CA"
+        }
+      },
+      {
+        "class": "foam.mlang.predicate.Not",
+        "arg1": {
+          "class":"net.nanopay.crunch.onboardingModels.CheckUserCountry",
+          "country":"BR"
+        }
+      }
+    ]
+  }
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
+  "name":"Unlock International & Domestic Payments and Invoicing",
+  "description":"Unlock payments in brazil",
+  "icon":"/images/capabilityIcons/BrazilCap.svg",
+  "version":"0",
+  "enabled":true,
+  "visible":true,
+  "reviewRequired":true,
+  "keywords":["featured"],
+  "availabilityPredicate": {
+    "class":"foam.mlang.predicate.And",
+    "args": [
+      { "class":"net.nanopay.crunch.onboardingModels.IsBusiness" },
+      {
+        "class":"net.nanopay.crunch.onboardingModels.CheckUserCountry",
+        "country":"BR"
+      }
+    ]
+  }
 })
 
 p({
@@ -217,6 +280,44 @@ p({
 })
 
 p({
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-76",
+  "name":"Business Registration",
+  "description":"Create a business to access payments and invoice on the platform.",
+  "icon":"/images/capabilityIcons/CADOnboardCap.svg",
+  "of":"net.nanopay.crunch.onboardingModels.InitialBusinessData",
+  "version":"0",
+  "enabled":true,
+  "visible":true,
+  "keywords":["featured"],
+  "availabilityPredicate": {
+    "class": "foam.mlang.predicate.Not",
+    "arg1": {
+      "class":"net.nanopay.crunch.onboardingModels.IsBusiness" 
+    }
+  }
+})
+
+p({
+  class:"net.nanopay.payment.CountryCapability",
+  country:"BR",
+  type:0,
+  id:"520a4120-3bc6-cef9-6635-c32af8219a6a",
+  name:"Source Country Capability BR",
+  enabled:true,
+  visible:false
+})
+
+p({
+  class:"net.nanopay.payment.CountryCapability",
+  country:"BR",
+  type:1,
+  id:"63049307-8db4-2437-5c02-b71d6878263c",
+  name:"Target Country Capability BR",
+  enabled:true,
+  visible:false
+})
+
+p({
   "class":"foam.nanos.crunch.Capability",
   "id":"688cb7c6-7316-4bbf-8483-fb79f8fdeaaf",
   "name":"CNPJ",
@@ -232,6 +333,60 @@ p({
   "id":"fb7d3ca2-62f2-4caf-a84c-860392e4676b",
   "name":"CPF",
   "of":"net.nanopay.country.br.CPF",
+  "version":"0",
+  "enabled":true,
+  "visible":true,
+  "associatedEntity": 1
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"b5f2b020-db0f-11ea-87d0-0242ac130003",
+  "name":"Office Consumption",
+  "of":"net.nanopay.crunch.document.Documents",
+  "version":"0",
+  "enabled":true,
+  "visible":true,
+  "associatedEntity": 0
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"26d32e86-db11-11ea-87d0-0242ac130003",
+  "name":"Articles Of Incorporation",
+  "of":"net.nanopay.crunch.document.Documents",
+  "version":"0",
+  "enabled":true,
+  "visible":true,
+  "associatedEntity": 0
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"7e2739cc-db32-11ea-87d0-0242ac130003",
+  "name":"business latest annual report",
+  "of":"net.nanopay.crunch.document.Documents",
+  "version":"0",
+  "enabled":true,
+  "visible":true,
+  "associatedEntity": 0
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"85cee1de-db32-11ea-87d0-0242ac130003",
+  "name":"Residence Consumption Bill",
+  "of":"net.nanopay.crunch.document.Documents",
+  "version":"0",
+  "enabled":true,
+  "visible":true,
+  "associatedEntity": 1
+})
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"8ad3c898-db32-11ea-87d0-0242ac130003",
+  "name":"user identity",
+  "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "enabled":true,
   "visible":true,

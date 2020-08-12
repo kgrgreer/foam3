@@ -140,7 +140,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'LOWER_LINE_TXT', message: 'Welcome back ' }
+    { name: 'LOWER_LINE_TXT', message: 'Welcome back' }
   ],
 
   methods: [
@@ -152,7 +152,7 @@ foam.CLASS({
     },
     function initE() {
       this.addClass(this.myClass())
-        .start().addClass('subTitle').add(this.LOWER_LINE_TXT + this.subject.user.toSummary() + '!').end()
+        .start().addClass('subTitle').add(this.LOWER_LINE_TXT +' '+ this.subject.user.toSummary() + '!').end()
             .start().addClass('divider').end()
             .start().addClass('radio-as-arrow-margins').add(this.HIDE_PAYMENT_CARDS).end()
             .start().addClass('radio-as-arrow-margins').addClass(this.hidePaymentCards$.map((hide) => hide ? 'radio-as-arrow' : 'radio-as-arrow-down')).end()

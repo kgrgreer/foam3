@@ -25,14 +25,16 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.ContextAgent',
+    'foam.core.Detachable',
+    'foam.core.FObject',
     'foam.core.X',
+    'foam.dao.AbstractSink',
     'foam.dao.DAO',
     'foam.nanos.approval.ApprovalRequest',
     'foam.nanos.approval.ApprovalRequestUtil',
     'foam.nanos.approval.ApprovalStatus',
     'foam.nanos.auth.User',
     'foam.nanos.notification.Notification',
-    'net.nanopay.account.Account',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.partner.treviso.TrevisoService',
     'net.nanopay.country.br.tx.ExchangeLimitTransaction',
@@ -100,6 +102,18 @@ foam.CLASS({
                   notifyAgent(x, agentGroup, txn.getId(), notificationBody, "Limit exceeded and transaction failed");
 
                 } else if ( approval == ApprovalStatus.APPROVED ) {
+                  // Mark the approved approval requests as fulfilled so that
+                  // it will not be reconsidered on re-entrance.
+                  filteredApprovalRequestDAO.select(new AbstractSink() {
+                    @Override
+                    public void put(Object o, Detachable d) {
+                      var approvalRequest = (ApprovalRequest) ((FObject) o).fclone();
+                      approvalRequest.setIsFulfilled(true);
+                      approvalRequestDAO.put(approvalRequest);
+                    }
+                  });
+
+                  // Resent approval request as the limit check remains fail
                   approvalRequestDAO.put(
                     new ApprovalRequest.Builder(x)
                       .setClassification("Exchange Limit Exceeded")

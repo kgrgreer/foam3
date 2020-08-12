@@ -31,7 +31,7 @@ foam.CLASS({
 
   imports: [
     'businessDAO',
-    'countryDAO',
+    'permittedCountryDAO',
     'notify'
   ],
 
@@ -84,7 +84,7 @@ foam.CLASS({
           objToChoice: function(a) {
             return [a.id, a.name];
           },
-          dao: X.data.countryDAO
+          dao: X.data.permittedCountryDAO
         }, X);
       },
       required: true,
