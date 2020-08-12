@@ -50,7 +50,7 @@ foam.CLASS({
     {
       name: 'pad',
       title: `Connect using a void check`,
-      subTitle: `Connect to your account without signing in to online banking. 
+      subTitle: `Connect to your account without signing in to online banking.
           Please ensure your details are entered properly.`,
       isAvailable: function(forContact) {
         return ! forContact;
@@ -301,6 +301,14 @@ foam.CLASS({
           of: net.nanopay.model.USPadCapture
         }, X);
       }
+    },
+    {
+      name: 'bankCode',
+      visibility: 'HIDDEN'
+    },
+    {
+      name: 'iban',
+      visibility: 'HIDDEN'
     }
   ],
 
@@ -349,7 +357,7 @@ foam.CLASS({
         super.validate(x);
         String branchId = this.getBranchId();
         String accountNumber = this.getAccountNumber();
-        
+
         if ( SafetyUtil.isEmpty(branchId) ) {
           throw new IllegalStateException(this.ROUTING_NUMBER_REQUIRED);
         }

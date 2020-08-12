@@ -89,7 +89,15 @@ foam.CLASS({
     { name: 'BANK_ACCOUNT_LABEL', message: 'Bank Account' },
     { name: 'ACCOUNT_NUMBER_REQUIRED', message: 'Account number required.' },
     { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number invalid.' },
-    { name: 'NICKNAME_REQUIRED', message: 'Nickname required.' }
+    { name: 'NICKNAME_REQUIRED', message: 'Nickname required.' },
+    { name: 'BANK_CODE_REQUIRED', message: 'Bank code required.' },
+    { name: 'BANK_CODE_INVALID', message: 'Bank code invalid.' },
+    { name: 'SORT_CODE_REQUIRED', message: 'Sort code required.' },
+    { name: 'SORT_CODE_INVALID', message: 'Sort code invalid.' },
+    { name: 'CHECK_DIGIT_REQUIRED', message: 'Check digit required.' },
+    { name: 'CHECK_DIGIT_INVALID', message: 'Check digit invalid.' },
+    { name: 'BRANCH_CODE_REQUIRED', message: 'Branch code required.' },
+    { name: 'BRANCH_CODE_INVALID', message: 'Branch code invalid.' },
   ],
 
   properties: [
@@ -255,7 +263,9 @@ foam.CLASS({
       visibility: 'RO',
       view: function(_, X) {
         return {
-          class: 'foam.u2.tag.Image'
+          class: 'foam.u2.tag.Image',
+          displayWidth: '44px',
+          displayHeight: '30px'
         };
       },
       tableCellFormatter: function(value, obj, axiom) {
@@ -350,31 +360,27 @@ foam.CLASS({
       }
     },
     {
-      name: 'securityPromoteInfo',
-      label: '',
-      section: 'accountDetails',
-      view: { class: 'net.nanopay.ui.DataSecurityBanner' }
-    },
-    {
       class: 'String',
       name: 'iban',
       label: 'IBAN Number',
+      section: 'accountDetails',
       documentation: `Standard international numbering system developed to
           identify an overseas bank account.`,
-      visibility: 'RO',
-      factory: function() {
-        return this.country + this.calcCheckSum() + this.bankCode + this.accountNumber;
-      },
-      javaFactory: `
-        String checkSum = calcCheckSum();
-        return getCountry() + checkSum + getBankCode() + getAccountNumber();
-      `
+      visibility: 'RW',
     },
     {
       class: 'String',
       name: 'bankCode',
+      label: 'Bank Code',
       documentation: `International bank code that identifies banks worldwide. BIC/SWIFT`,
-      updateVisibility: 'RO'
+      updateVisibility: 'RO',
+      section: 'accountDetails'
+    },
+    {
+      name: 'securityPromoteInfo',
+      label: '',
+      section: 'accountDetails',
+      view: { class: 'net.nanopay.ui.DataSecurityBanner' }
     }
   ],
   methods: [
