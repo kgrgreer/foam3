@@ -280,6 +280,7 @@ p({
 })
 
 p({
+  "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-76",
   "name":"Business Registration",
   "description":"Create a business to access payments and invoice on the platform.",
@@ -289,7 +290,7 @@ p({
   "enabled":true,
   "visible":true,
   "keywords":["featured"],
-  "availabilityPredicate": {
+  "availabilityPredicate":{
     "class": "foam.mlang.predicate.Not",
     "arg1": {
       "class":"net.nanopay.crunch.onboardingModels.IsBusiness" 
