@@ -618,6 +618,7 @@ var classes = [
   'net.nanopay.tx.SummaryTransactionLineItem',
   'net.nanopay.tx.FeeSummaryTransactionLineItem',
   'net.nanopay.tx.FxSummaryTransactionLineItem',
+  'net.nanopay.tx.EtaSummaryTransactionLineItem',
 
   'net.nanopay.fx.FXService',
   'net.nanopay.fx.client.ClientFXService',
@@ -1154,6 +1155,8 @@ var classes = [
   'net.nanopay.partner.treviso.tx.planner.TrevisoTransactionPlanner',
   'net.nanopay.partner.treviso.tx.TrevisoCreateExchange',
   'net.nanopay.partner.treviso.tx.TrevisoSummaryLineItemRule',
+  'net.nanopay.tx.EtaSummaryTransactionLineItem',
+  'net.nanopay.tx.planner.SummaryLineItemRule',
 
   // crunch onboarding
   'net.nanopay.crunch.onboardingModels.CheckUserCountry',

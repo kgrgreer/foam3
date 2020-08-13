@@ -166,6 +166,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/SummaryTransactionLineItem' },
   { name: 'net/nanopay/tx/FeeSummaryTransactionLineItem' },
   { name: 'net/nanopay/tx/FxSummaryTransactionLineItem' },
+  { name: 'net/nanopay/tx/EtaSummaryTransactionLineItem' },
+  { name: 'net/nanopay/tx/planner/SummaryLineItemRule' },
 
   { name: 'net/nanopay/model/BusinessSector' },
   { name: 'net/nanopay/model/BusinessType' },

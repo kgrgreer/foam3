@@ -67,7 +67,6 @@ foam.CLASS({
   
         if ( fx.size() > 0 ) {
           FXLineItem[] fxArray = fx.toArray((new FXLineItem[fx.size()]));
-          fxSummary.setSummaryType("fx");
           fxSummary.setLineItems(fxArray);
           Currency source = null;
           Currency destination = null;
@@ -94,18 +93,19 @@ foam.CLASS({
   
         if ( fee.size() > 0 ) {
           FeeLineItem[] feeArray = fee.toArray((new FeeLineItem[fee.size()]));
+          fxSummary.setLineItems(feeArray);
           Long totalFee = 0l;
           Currency currency = feeArray[0].getFeeCurrency();
           for ( FeeLineItem feeLine: feeArray ) {
             totalFee += feeLine.getAmount();
           }
-          feeSummary.setSummaryType("fee");
           feeSummary.setTotalFee(currency.format(totalFee) + currency.getId());
         }
     
         txn.setLineItems(summarizedLineItems.toArray(new TransactionLineItem[summarizedLineItems.size()]));
         txn.addLineItems(new TransactionLineItem[]{feeSummary,fxSummary});
         quote.setPlan(txn);
+        quote.setShowAllLineItems(false);
         return;
       `
     }

@@ -110,6 +110,12 @@ foam.CLASS({
       networkTransient: true,
       documentation: 'helper property used by planners'
     },
+    {
+      class: 'Boolean',
+      name: 'showAllLineItems',
+      value: true,
+      documentation: 'Set to false to only show SummaryLineItems and lineItems that require user input'
+    }
   ],
 
   methods: [

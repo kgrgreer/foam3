@@ -23,8 +23,8 @@
 
 foam.CLASS({
   package: 'net.nanopay.tx',
-  name: 'SummaryTransactionLineItem',
-  extends: 'net.nanopay.tx.TransactionLineItem',
+  name: 'EtaSummaryTransactionLineItem',
+  extends: 'net.nanopay.tx.SummaryTransactionLineItem',
 
   javaImports: [
     'net.nanopay.tx.Transfer',
@@ -34,35 +34,26 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'FObjectArray',
-      of: 'net.nanopay.tx.TransactionLineItem',
-      name: 'lineItems',
-      hidden: true
-    },
-    {
-      name: 'id',
-      visibility: 'HIDDEN'
-    },
-    {
-      name: 'type',
-      visibility: 'HIDDEN'
-    },
-    {
-      name: 'group',
-      visibility: 'HIDDEN'
-    },
-    {
-      name: 'amount',
-      visibility: 'HIDDEN'
-    },
-    {
-      name: 'note',
-      visibility: 'HIDDEN'
-    },
-    {
-      name: 'reversable',
-      hidden: true
+      class: 'Long',
+      name: 'eta',
+      view: function(_, x) {
+        let formatted = foam.core.Duration.duration(x.data.eta);
+        return foam.u2.Element.create()
+        .start()
+          .add(formatted)
+        .end();
+      }
     }
   ],
+
+  messages: [
+    { name: 'ETA_MESSAGE', message: 'Eta' }
+  ],
+
+  methods: [
+    function toSummary() {
+      return this.ETA_MESSAGE;
+    }
+  ]
 
 });
