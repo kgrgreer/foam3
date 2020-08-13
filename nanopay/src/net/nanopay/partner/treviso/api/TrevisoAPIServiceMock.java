@@ -30,6 +30,7 @@ import net.nanopay.partner.treviso.api.TrevisoAPIServiceInterface;
 public class TrevisoAPIServiceMock extends ContextAwareSupport implements TrevisoAPIServiceInterface {
 
   private Logger logger;
+  private SaveEntityRequest saveEntityRequest;
 
   public TrevisoAPIServiceMock(X x) {
     setX(x);
@@ -45,6 +46,7 @@ public class TrevisoAPIServiceMock extends ContextAwareSupport implements Trevis
 
   @Override
   public FepWebResponse saveEntity(SaveEntityRequest request) {
+    saveEntityRequest = request;
     FepWebResponse response = new FepWebResponse();
     return response;
   }
@@ -63,5 +65,13 @@ public class TrevisoAPIServiceMock extends ContextAwareSupport implements Trevis
     GetDocumentTypeResponse response = new GetDocumentTypeResponse();
     response.setDcmntTypNm("CONFIDENTIALITY AGREEMENT");
     return response;
+  }
+
+  public SaveEntityRequest getSaveEntityRequest() {
+    return saveEntityRequest;
+  }
+
+  public void clearSaveEntityRequest() {
+    saveEntityRequest = null;
   }
 }

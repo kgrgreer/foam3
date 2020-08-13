@@ -1145,6 +1145,7 @@ var classes = [
   'net.nanopay.partner.treviso.api.UpdateTitularResponse',
   'net.nanopay.partner.treviso.api.UserFillerDTO',
   'net.nanopay.partner.treviso.api.Workflow',
+  'net.nanopay.partner.treviso.FepWebUserUpdatingRule',
   'net.nanopay.partner.treviso.TrevisoClient',
   'net.nanopay.partner.treviso.TrevisoCredientials',
   'net.nanopay.partner.treviso.TrevisoServiceInterface',
