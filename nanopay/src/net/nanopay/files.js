@@ -922,6 +922,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/MenuChoiceSelection', flags: ['web'] },
   { name: 'net/nanopay/ui/MenuRowView', flags: ['web'] },
   { name: 'net/nanopay/ui/DetailedActionBooleanView', flags: ['web'] },
+  { name: 'net/nanopay/ui/topNavigation/LanguageChoiceView', flags: ['web'] },
 
   // liquidity
    { name: 'net/nanopay/liquidity/LiquiditySettings' },
