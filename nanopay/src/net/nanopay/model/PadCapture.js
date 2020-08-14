@@ -99,13 +99,6 @@ foam.CLASS({
       }
     },
     {
-      class: 'net.nanopay.documents.AcceptanceDocumentProperty',
-      name: 'verifyOwnership',
-      documentation: 'Verifies user understanding of cancellation under pad agreement terms and AFEX (US).',
-      docName: 'verify_ownership_account',
-      label: ''
-    },
-    {
       name: 'agree1',
       visibility: 'HIDDEN'
     },

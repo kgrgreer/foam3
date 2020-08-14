@@ -1215,6 +1215,9 @@ var classes = [
   'net.nanopay.crunch.acceptanceDocuments.capabilities.AFXArizonaDisclosure',
   'net.nanopay.crunch.acceptanceDocuments.capabilities.AFXCaliforniaDisclosure',
   'net.nanopay.crunch.acceptanceDocuments.capabilities.AFXColoradoDisclosure',
+  'net.nanopay.crunch.acceptanceDocuments.capabilities.CABankAccountAuthAgreement',
+  'net.nanopay.crunch.acceptanceDocuments.capabilities.RecourseAgreement',
+  'net.nanopay.crunch.acceptanceDocuments.capabilities.CancellationAgreement',
   'net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability',
 
   // crunch registration
