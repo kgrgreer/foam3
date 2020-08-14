@@ -36,6 +36,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'eta',
+      label: 'ETA',
       view: function(_, x) {
         let formatted = foam.core.Duration.duration(x.data.eta);
         return foam.u2.Element.create()
@@ -47,7 +48,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'ETA_MESSAGE', message: 'Eta' }
+    { name: 'ETA_MESSAGE', message: 'Estimated time of Arrival' }
   ],
 
   methods: [
