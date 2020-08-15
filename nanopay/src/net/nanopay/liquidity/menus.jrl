@@ -86,9 +86,9 @@ p({
           "defaultColumns": [
             "summary",
             "lastModified",
-            "sourceAccount",
-            "destinationAccount",
-            "destinationCurrency",
+            "sourceAccount.name",
+            "destinationAccount.name",
+            "destinationCurrency.name",
             "destinationAmount"
           ],
           "CRUDEnabledActionsAuth": {
@@ -176,8 +176,8 @@ p({
       "defaultColumns": [
         "classification",
         "operation",
-        "createdBy",
-        "approver",
+        "createdBy.legalName",
+        "approver.legalName",
         "status",
         "lastModified"
       ],
@@ -236,7 +236,7 @@ p({
         "name",
         "enabled",
         "businessRuleAction",
-        "createdBy"
+        "createdBy.legalName"
       ],
       "of": "net.nanopay.liquidity.tx.GenericBusinessRule",
       "CRUDEnabledActionsAuth": {
@@ -269,9 +269,9 @@ p({
         "id",
         "name",
         "enabled",
-        "createdBy",
-        "sourceAccount",
-        "destinationAccount"
+        "createdBy.legalName",
+        "sourceAccount.name",
+        "destinationAccount.name"
       ],
       "of": "net.nanopay.liquidity.tx.RestrictAccountsRule",
       "browseTitle": "Restrict Accounts",
@@ -306,9 +306,9 @@ p({
         "id",
         "name",
         "enabled",
-        "createdBy",
-        "sourceUser",
-        "destinationUser"
+        "createdBy.legalName",
+        "sourceUser.legalName",
+        "destinationUser.legalName"
       ],
       "of": "net.nanopay.liquidity.tx.RestrictUsersRule",
       "browseTitle": "Restrict Users",

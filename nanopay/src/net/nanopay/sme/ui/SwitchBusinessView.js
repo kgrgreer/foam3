@@ -42,8 +42,10 @@ foam.CLASS({
     'agentAuth',
     'auth',
     'businessDAO',
+    'capabilityDAO',
     'crunchController',
     'ctrl',
+    'menuDAO',
     'notify',
     'onboardingUtil',
     'pushMenu',
@@ -235,6 +237,7 @@ foam.CLASS({
           await this.ctrl.fetchGroup();
           this.subject.user = business;
           this.subject.realUser = result;
+          this.clearCachedDAOs();
           this.pushMenu('sme.main.appStore');
           return;
         }
@@ -264,22 +267,10 @@ foam.CLASS({
                 )
               );
               // if yes, redirect to appStore
-              if ( ucj ) {
-                this.pushMenu('sme.main.appStore');
+              if ( ! ucj ) {
+                this.onboardingUtil.initUserRegistration(ac);
                 return;
               }
-
-              // if no, pass to user reg
-              this.onboardingUtil.initUserRegistration(ac);
-            }
-            else if ( sink.array.length === 1 ) {
-              var junction = sink.array[0];
-
-              // If the user is only in one business but that business has
-              // disabled them, then don't immediately switch to that business.
-              if ( junction.status === this.AgentJunctionStatus.DISABLED ) return;
-              this.assignBusinessAndLogIn(junction);
-              this.removeAllChildren();
             }
           });
       }
@@ -371,15 +362,17 @@ foam.CLASS({
           .end()
         .end()
       .end();
+    },
+    function clearCachedDAOs() {
+      this.menuDAO.cmd_(this, foam.dao.CachingDAO.PURGE);
+      this.menuDAO.cmd_(this, foam.dao.AbstractDAO.RESET_CMD);
+      this.capabilityDAO.cmd_(this, foam.dao.CachingDAO.PURGE);
+      this.capabilityDAO.cmd_(this, foam.dao.AbstractDAO.RESET_CMD);
     }
   ],
 
   listeners: [
     function goBack() {
-      if ( this.user.cls_ != net.nanopay.model.Business ) {
-        this.notify('Please select a business', '', this.LogLevel.ERROR, true);
-        return;
-      }
       if ( this.stack.pos > 1 ) {
         this.stack.back();
         return;

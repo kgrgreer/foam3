@@ -37,6 +37,11 @@ foam.CLASS({
     {
       name: 'multiPlan_',
       value: true
+    },
+    {
+      name: 'createCompliance',
+      class: 'Boolean',
+      value: true
     }
   ],
 
@@ -50,7 +55,6 @@ foam.CLASS({
         if ( requestTxn.getType().equals("Transaction") ) {
           txn = new SummaryTransaction(x);
           txn.copyFrom(requestTxn);
-          txn.addNext(createCompliance(requestTxn));
         } else {
           txn = (Transaction) requestTxn.fclone();
         }
@@ -62,7 +66,7 @@ foam.CLASS({
         Account destinationAccount = quote.getDestinationAccount();
         DigitalAccount sourceDigitalAccount = DigitalAccount.findDefault(x, sourceAccount.findOwner(x), sourceAccount.getDenomination());
         DigitalAccount destinationDigitalAccount = DigitalAccount.findDefault(x, destinationAccount.findOwner(x), destinationAccount.getDenomination());
-       
+
         // Split 1: ABank -> ADigital
         Transaction t1 = new Transaction(x);
         t1.copyFrom(txn);
@@ -82,9 +86,9 @@ foam.CLASS({
         t3.setDestinationAccount(destinationAccount.getId());
 
         // Put chain transaction together
-        Transaction[] cashInPlans = multiQuoteTxn(x, t1);
-        Transaction[] digitalPlans = multiQuoteTxn(x, t2);
-        Transaction[] cashOutPlans = multiQuoteTxn(x, t3);
+        Transaction[] cashInPlans = multiQuoteTxn(x, t1, quote);
+        Transaction[] digitalPlans = multiQuoteTxn(x, t2, quote);
+        Transaction[] cashOutPlans = multiQuoteTxn(x, t3, quote);
 
         for ( Transaction CIP : cashInPlans ) {
           for ( Transaction DP : digitalPlans ) {
@@ -96,9 +100,14 @@ foam.CLASS({
               dp.addNext(co);
               ci.addNext(dp);
               dp.setInitialStatus(TransactionStatus.COMPLETED);
-              ComplianceTransaction ct = createCompliance(txn);
-              ct.addNext(ci);
-              t.addNext(ct);
+              if (getCreateCompliance()) {
+                ComplianceTransaction ct = createCompliance(txn);
+                ct.addNext(ci);
+                t.addNext(ct);
+              }
+              else{
+                t.addNext(ci);
+              }
               t.addLineItems(CIP.getLineItems());
               t.addLineItems(DP.getLineItems());
               t.addLineItems(COP.getLineItems());

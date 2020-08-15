@@ -51,7 +51,7 @@ foam.CLASS({
         fop.setSourceCurrency(tx.getSourceCurrency());
         fop.setDestinationCurrency(tx.getDestinationCurrency());
         fop.setAmount(tx.getAmount());
-        tx.addNext(quoteTxn(x, fop));
+        tx.addNext(quoteTxn(x, fop, quote));
 
         //create the Payment digital transaction
         dt.setSourceAccount(tx.getSourcePaymentAccount());
@@ -63,7 +63,7 @@ foam.CLASS({
         dt.setAmount(tx.getPaymentAmount());
         dt.setDestinationAmount(tx.getDestinationPaymentAmount());
 
-        tx.addNext(quoteTxn(x, dt));
+        tx.addNext(quoteTxn(x, dt, quote));
 
         return tx;
       `

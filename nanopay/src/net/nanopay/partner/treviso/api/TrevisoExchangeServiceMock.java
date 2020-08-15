@@ -19,20 +19,15 @@ package net.nanopay.partner.treviso.api;
 import foam.core.ContextAwareSupport;
 import foam.core.X;
 import foam.nanos.logger.Logger;
-
-import net.nanopay.partner.treviso.api.Entity;
-import net.nanopay.partner.treviso.api.FepWebResponse;
-import net.nanopay.partner.treviso.api.LoginResponse;
-import net.nanopay.partner.treviso.api.LoginRequest;
-import net.nanopay.partner.treviso.api.SaveEntityRequest;
-import net.nanopay.partner.treviso.api.SearchTitular;
-import net.nanopay.partner.treviso.api.SearchTitularResponse;
-import net.nanopay.partner.treviso.api.ServiceStatus;
-import net.nanopay.partner.treviso.api.TrevisoAPIServiceInterface;
+import net.nanopay.country.br.ExchangeServiceInterface;
 
 public class TrevisoExchangeServiceMock extends ContextAwareSupport implements ExchangeServiceInterface {
 
   private Logger logger;
+
+  // Stub searchTitular which contains exchange limit in
+  // searchTitularResult.titular.LIMITEOP
+  private SearchTitularResponse stubSearchTitular = new SearchTitularResponse();
 
   public TrevisoExchangeServiceMock(X x) {
     setX(x);
@@ -61,8 +56,7 @@ public class TrevisoExchangeServiceMock extends ContextAwareSupport implements E
 
   @Override
   public SearchTitularResponse searchTitular(SearchTitular request) {
-    SearchTitularResponse response = new SearchTitularResponse();
-    return response;
+    return getStubSearchTitular();
   }
 
   @Override
@@ -83,4 +77,7 @@ public class TrevisoExchangeServiceMock extends ContextAwareSupport implements E
     return response;
   }
 
+  public SearchTitularResponse getStubSearchTitular() {
+    return this.stubSearchTitular;
+  }
 }

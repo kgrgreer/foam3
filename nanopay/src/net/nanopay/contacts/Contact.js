@@ -54,6 +54,7 @@ foam.CLASS({
 
   imports: [
     'auth',
+    'capabilityDAO',
     'countryDAO',
     'subject',
     'user'
@@ -311,8 +312,14 @@ foam.CLASS({
         return net.nanopay.bank.BankAccount.create({}, this);
       },
       view: function(_, X) {
+        let e = foam.mlang.Expressions.create();
+        var pred = e.AND(
+            e.EQ(foam.strategy.StrategyReference.DESIRED_MODEL_ID, 'net.nanopay.bank.BankAccount'),
+            e.IN(foam.strategy.StrategyReference.STRATEGY, X.data.countries)
+        );
         return foam.u2.view.FObjectView.create({
           of: net.nanopay.bank.BankAccount,
+          predicate: pred,
           persistantData: { isDefault: true, forContact: true }
         }, X);
       }
@@ -321,9 +328,9 @@ foam.CLASS({
       name: 'availableCountries',
       section: 'stepOne',
       visibility: 'HIDDEN',
-      expression: function(subject) {
+      expression: function(capabilityDAO) {
         return this.PromisedDAO.create({
-          promise: subject.user.capabilities.dao.where(this.INSTANCE_OF(this.PaymentProviderCorridor))
+          promise: capabilityDAO.where(this.INSTANCE_OF(this.PaymentProviderCorridor))
             .select(this.MAP(this.PaymentProviderCorridor.TARGET_COUNTRY))
             .then((sink) => {
               let unique = [...new Set(sink.delegate.array)];
@@ -439,7 +446,7 @@ foam.CLASS({
       class: 'String',
       name: 'warning',
       label: '',
-      tableWidth: 55,
+      tableWidth: 80,
       javaGetter: `
         return getBankAccount() == 0 && getBusinessId() == 0 ? "Missing bank information" : null;
       `,

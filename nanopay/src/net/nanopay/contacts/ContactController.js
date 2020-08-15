@@ -84,16 +84,31 @@ foam.CLASS({
           ],
           contextMenuActions: [
             this.Action.create({
+              name: 'addBankAccount',
+              label: 'Add Bank',
+              isEnabled: async function() {
+                var bank = await this.accounts.find(this.EQ(net.nanopay.bank.BankAccount.OWNER, this.id))
+                return this.signUpStatus !== self.ContactStatus.ACTIVE && ! bank;
+              },
+              code: function(X) {
+                X.controllerView.add(self.WizardController.create({
+                  model: 'net.nanopay.contacts.Contact',
+                  data: this,
+                  controllerMode: foam.u2.ControllerMode.CREATE
+                }, X));
+              }
+            }),
+            this.Action.create({
               name: 'edit',
               label: 'View details',
-              isEnabled: function() {
+              isEnabled: async function() {
                 return this.signUpStatus !== self.ContactStatus.ACTIVE;
               },
               code: function(X) {
                 X.controllerView.add(self.WizardController.create({
                   model: 'net.nanopay.contacts.Contact',
                   data: this,
-                  controllerMode: this.bankAccount > 0 ? foam.u2.ControllerMode.EDIT : foam.u2.ControllerMode.CREATE
+                  controllerMode: foam.u2.ControllerMode.EDIT
                 }, X));
               }
             }),

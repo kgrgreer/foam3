@@ -411,7 +411,7 @@ function setenv {
     fi
     if [ ! -d "${DOCUMENT_HOME}" ]; then
         ln -s "$(pwd)/documents" $DOCUMENT_HOME
-    elif [ ! -L "${DOCUMENT_HOME}" ]; then
+    elif [ -d "${DOCUMENT_HOME}" ]; then
         rm -rf "${DOCUMENT_HOME}"
         ln -s "$(pwd)/documents" $DOCUMENT_HOME
     fi

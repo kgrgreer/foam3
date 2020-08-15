@@ -17,8 +17,10 @@ p({
   label: "International Fee",
   fixedFee: 500,
   predicate: {
-    class: "net.nanopay.tx.fee.predicate.IsDomesticTransaction",
-    value: false
+    class: "foam.mlang.predicate.Not",
+    arg1: {
+      class: "net.nanopay.tx.fee.predicate.IsDomesticTransaction"
+    }
   },
   feeRule: "bb64181c-654e-4bc5-a31e-03642a34df50"
 })

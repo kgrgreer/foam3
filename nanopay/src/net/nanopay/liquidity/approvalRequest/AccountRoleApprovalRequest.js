@@ -23,8 +23,8 @@ foam.CLASS({
   tableColumns: [
     'classification',
     'operation',
-    'outgoingAccount',
-    'approver',
+    'outgoingAccount.name',
+    'approver',//change to approver.id
     'status'
   ],
 

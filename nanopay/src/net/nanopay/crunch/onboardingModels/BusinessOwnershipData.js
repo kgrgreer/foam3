@@ -76,7 +76,6 @@ foam.CLASS({
     {
       name: 'reviewOwnersSection',
       title: 'Review the list of owners',
-      help: 'Awesome! Just confirm the details you’ve entered are correct and we can proceed!',
       isAvailable: function(amountOfOwners) {
         return amountOfOwners > 0;
       }
@@ -128,7 +127,7 @@ foam.CLASS({
         var pdao = foam.dao.PromisedDAO.create({
           of: net.nanopay.model.BeneficialOwner
         });
-        var sinkFn = (so) => {
+        var sinkFn = so => {
           var obj = net.nanopay.model.BeneficialOwner.create(
             {
               id: ++self.index,
@@ -148,7 +147,7 @@ foam.CLASS({
             .SOURCE_ID, this.subject.user.id))
           .select(this.PROJECTION(net.nanopay.model.BusinessUserJunction
             .TARGET_ID))
-          .then((sos) => {
+          .then(sos => {
             this.businessEmployeeDAO
               .where(this.IN(foam.nanos.auth.User.ID, sos.array))
               .select({ put: sinkFn })
@@ -210,8 +209,7 @@ foam.CLASS({
           predicateFactory: function(e) {
             return e.EQ(net.nanopay.crunch.onboardingModels
               .BusinessOwnershipData.OWNER_SELECTIONS_VALIDATED, true);
-          },
-          errorMessage: 'INVALID_OWNER_SELECTION_ERROR'
+          }
         }
       ]
     },
@@ -474,10 +472,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'help',
-      value: 'Next, I’ll need you to tell me some more details about the remaining owners who hold 25% + of the company…'
-    },
-    {
       name: 'title',
       expression: function(index) {
         return `Add for owner #${index}`;
@@ -684,17 +678,19 @@ foam.CLASS({
     },
     function updateSections_(showDAO2) {
       var choiceSections = [];
-      if ( showDAO2 ) choiceSections.push({
-        heading: this.SO_SELECTION,
-        dao$: this.dao2$
-      });
-      choiceSections.push({
-        heading: showDAO2
-          ? this.OTHER_SELECTION_HAS_SO
-          : this.OTHER_SELECTION_NO_SO,
-        dao$: this.dao$
-      });
-      this.choiceSections_ = choiceSections;
+      if ( showDAO2 ) {
+        choiceSections.push({
+          heading: this.SO_SELECTION,
+          dao$: this.dao2$
+        });
+        choiceSections.push({
+          heading: showDAO2
+            ? this.OTHER_SELECTION_HAS_SO
+            : this.OTHER_SELECTION_NO_SO,
+          dao$: this.dao$
+        });
+        this.choiceSections_ = choiceSections;
+      }
     }
   ]
 });

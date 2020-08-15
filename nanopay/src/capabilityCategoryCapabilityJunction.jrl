@@ -50,4 +50,13 @@ p({
 "sourceId": "app",
 "targetId": "554af38a-8225-87c8-dfdf-eeb15f71215e-18"
 })
-
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "AFEXOnboarding",
+"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-12"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "AFEXOnboarding",
+"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-13"
+})

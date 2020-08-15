@@ -1,0 +1,212 @@
+p({
+  class: "net.nanopay.tx.fee.FixedFee",
+  id: "26464c66-3b64-4587-96da-5c56e300598f-001",
+  name: "Treviso Fee",
+  fixedFee: 2500,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "net.nanopay.tx.fee.predicate.PaymentCorridorPredicate",
+        paymentProvider: "Treviso",
+        sourceCountry: "BR",
+        targetCountry: "US"
+      },
+      {
+        class: "foam.mlang.predicate.Lte",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationAmount"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: 300000
+        }
+      }
+    ]
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.FixedFee",
+  id: "26464c66-3b64-4587-96da-5c56e300598f-002",
+  name: "Treviso Fee",
+  fixedFee: 2000,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "net.nanopay.tx.fee.predicate.PaymentCorridorPredicate",
+        paymentProvider: "Treviso",
+        sourceCountry: "BR",
+        targetCountry: "US"
+      },
+      {
+        class: "foam.mlang.predicate.Gt",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationAmount"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: 300000
+        }
+      },
+      {
+        class: "foam.mlang.predicate.Lte",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationAmount"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: 1000000
+        }
+      }
+    ]
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.FixedFee",
+  id: "26464c66-3b64-4587-96da-5c56e300598f-003",
+  name: "Treviso Fee",
+  fixedFee: 1500,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "net.nanopay.tx.fee.predicate.PaymentCorridorPredicate",
+        paymentProvider: "Treviso",
+        sourceCountry: "BR",
+        targetCountry: "US"
+      },
+      {
+        class: "foam.mlang.predicate.Gt",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationAmount"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: 1000000
+        }
+      }
+    ]
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+
+// p({
+//   class: "net.nanopay.tx.fee.FixedFee",
+//   id: "1545bad0-b88e-40df-886d-98f22532b535",
+//   name: "Treviso Fee",
+//   fixedFee: 4000,
+//   predicate: {
+//     class: "net.nanopay.tx.fee.predicate.PaymentCorridorPredicate",
+//     paymentProvider: "Treviso",
+//     sourceCountry: "BR",
+//     targetCountry: "CA"
+//   },
+//   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+// })
+
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "4d88a81a-2fdf-4f1b-b649-20265603ebed-001",
+  name: "Bank Fee",
+  percentage: 0.08,
+  predicate: {
+    class: "foam.mlang.predicate.Eq",
+    arg1: {
+      class: "__Property__",
+      forClass_: "net.nanopay.tx.model.Transaction",
+      name: "destinationCurrency"
+    },
+    arg2: {
+      class: "foam.mlang.Constant",
+      value: "USD"
+    }
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "4d88a81a-2fdf-4f1b-b649-20265603ebed-002",
+  name: "Bank Fee",
+  percentage: 0.11,
+  predicate: {
+    class: "foam.mlang.predicate.Eq",
+    arg1: {
+      class: "__Property__",
+      forClass_: "net.nanopay.tx.model.Transaction",
+      name: "destinationCurrency"
+    },
+    arg2: {
+      class: "foam.mlang.Constant",
+      value: "EUR"
+    }
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "4d88a81a-2fdf-4f1b-b649-20265603ebed-003",
+  name: "Bank Fee",
+  percentage: 0.7,
+  predicate: {
+    class: "foam.mlang.predicate.Eq",
+    arg1: {
+      class: "__Property__",
+      forClass_: "net.nanopay.tx.model.Transaction",
+      name: "destinationCurrency"
+    },
+    arg2: {
+      class: "foam.mlang.Constant",
+      value: "GBP"
+    }
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "4d88a81a-2fdf-4f1b-b649-20265603ebed-004",
+  name: "Bank Fee",
+  percentage: 0.4,
+  predicate: {
+    class: "foam.mlang.predicate.Eq",
+    arg1: {
+      class: "__Property__",
+      forClass_: "net.nanopay.tx.model.Transaction",
+      name: "destinationCurrency"
+    },
+    arg2: {
+      class: "foam.mlang.Constant",
+      value: "CAD"
+    }
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "4d88a81a-2fdf-4f1b-b649-20265603ebed-005",
+  name: "Bank Fee",
+  percentage: 0.7,
+  predicate: {
+    class: "foam.mlang.predicate.Eq",
+    arg1: {
+      class: "__Property__",
+      forClass_: "net.nanopay.tx.model.Transaction",
+      name: "destinationCurrency"
+    },
+    arg2: {
+      class: "foam.mlang.Constant",
+      value: "AUD"
+    }
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})

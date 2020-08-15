@@ -46,7 +46,7 @@ foam.CLASS({
           tSub.setSourceCurrency(amnt.getUnit());
           tSub.setDestinationCurrency(amnt.getUnit());
           tSub.setAmount(amnt.getQuantity());
-          comp.addNext(quoteTxn(x, tSub));
+          comp.addNext(quoteTxn(x, tSub, quote));
         }
 
         tx.addNext(comp);

@@ -39,12 +39,20 @@ import java.util.List;
 import java.util.TimeZone;
 
 import net.nanopay.bank.BankAccount;
+import foam.nanos.crunch.Capability;
+import foam.nanos.crunch.UserCapabilityJunction;
+import net.nanopay.country.br.CNPJ;
+import net.nanopay.country.br.ExchangeServiceInterface;
+import net.nanopay.country.br.FederalRevenueService;
 import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
 import net.nanopay.fx.FXTransaction;
+import net.nanopay.meter.clearing.ClearingTimeService;
 import net.nanopay.model.Business;
+import net.nanopay.partner.sintegra.SintegraService;
+import net.nanopay.partner.sintegra.CPFResponseData;
+import net.nanopay.partner.sintegra.CNPJResponseData;
 import net.nanopay.partner.treviso.api.Boleto;
-import net.nanopay.partner.treviso.api.ExchangeServiceInterface;
 import net.nanopay.partner.treviso.api.ClientStatus;
 import net.nanopay.partner.treviso.api.CurrentPlatform;
 import net.nanopay.partner.treviso.api.Document;
@@ -73,7 +81,7 @@ import net.nanopay.partner.treviso.api.UpdateTitularResponse;
 import net.nanopay.payment.Institution;
 import net.nanopay.tx.model.Transaction;
 
-public class TrevisoService extends ContextAwareSupport implements TrevisoServiceInterface, FXService {
+public class TrevisoService extends ContextAwareSupport implements TrevisoServiceInterface, FXService, FederalRevenueService {
 
   private TrevisoAPIServiceInterface trevisoAPIService;
   private ExchangeServiceInterface exchangeService;
@@ -86,8 +94,8 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
     this.logger_ = (Logger) x.get("logger");
   }
 
-  public TrevisoClient createEntity(X x, long userId, String cnpj) {
-    TrevisoClient client = findEntity(x, userId);
+  public TrevisoClient createEntity(X x, long userId) {
+    TrevisoClient client = findClient(userId);
     if ( client != null ) return client;
 
     User user = (User) ((DAO) x.get("bareUserDAO")).find(userId);
@@ -95,17 +103,33 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
     if ( user.getAddress() == null ) throw new RuntimeException("User address cannot be null: " + userId);
 
     try {
-      SaveEntityRequest request = buildSaveEntityRequest(x, user, cnpj);
+      SaveEntityRequest request = buildSaveEntityRequest(x, user, findCpfCnpj(userId));
       FepWebResponse res = trevisoAPIService.saveEntity(request);
-      if ( res != null ) {
-        return saveTrevisoClient(x, user, request.getStatus(), request.getCnpjCpf());
-      }
-    } catch(Throwable t) {
-      logger_.error("Error onboarding Treviso client.", t);
-      throw new RuntimeException("Error onboarding Treviso client.");
-    }
+      if ( res != null && res.getCode() != 0 )
+        throw new RuntimeException("Error onboarding Treviso client to FepWeb. " + res.getMessage());
 
-    return null;
+      return saveTrevisoClient(user.getId(), "Active");
+    } catch(Throwable t) {
+      throw new RuntimeException(t);
+    }
+  }
+
+  public void updateEntity(X x, long userId) {
+    User user = (User) ((DAO) x.get("bareUserDAO")).find(userId);
+    if ( user == null ) throw new RuntimeException("User not found: " + userId);
+    if ( user.getAddress() == null ) throw new RuntimeException("User address cannot be null: " + userId);
+
+    try {
+      SaveEntityRequest request = buildSaveEntityRequest(x, user, findCpfCnpj(userId));
+      FepWebResponse res = trevisoAPIService.saveEntity(request);
+      if ( res == null )
+        throw new RuntimeException("Update failed. No response from FepWeb.");
+      if ( res != null && res.getCode() != 0 )
+        throw new RuntimeException("Error updating Treviso client on FepWeb. " + res.getMessage());
+
+    } catch(Throwable t) {
+      throw t;
+    }
   }
 
   public TrevisoClient searchCustomer(X x, long userId) {
@@ -119,13 +143,12 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
       SearchCustomerResponse res = trevisoAPIService.searchCustomer(request);
       if ( res != null && res.getEntityDTOList() != null && res.getEntityDTOList().length > 0  ) {
         Entity entity = (Entity) res.getEntityDTOList()[0];
-        return saveTrevisoClient(x, user, entity.getStatus(), entity.getCnpjCpf());
+        return saveTrevisoClient(user.getId(), entity.getStatus());
       }
     } catch(Throwable t) {
       logger_.error("Error searching Treviso client.", t);
       throw new RuntimeException("Error searching Treviso client. " + t.getMessage());
     }
-
     return null;
   }
 
@@ -133,7 +156,7 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
     Region region = user.getAddress().findRegionId(x);
     SaveEntityRequest request = new SaveEntityRequest();
     request.setExtCode(user.getId());
-    request.setPersonType("J");
+    request.setPersonType((user instanceof Business) ? "J" : "P");
     request.setSocialName(getName(user));
     request.setCnpjCpf(cnpj);
     request.setIe(region.getName());
@@ -160,24 +183,40 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
     return null;
   }
 
-  public TrevisoClient findEntity(X x, long user) {
+  public TrevisoClient findClient(long user) {
     return (TrevisoClient) ((DAO)
-      x.get("trevisoClientDAO")).find(EQ(TrevisoClient.USER, user)); // TODO: Call Find Client API
+      getX().get("trevisoClientDAO")).find(EQ(TrevisoClient.USER, user));
   }
 
-  protected TrevisoClient saveTrevisoClient(X x, User user, String status, String cnpj) {
-    TrevisoClient client = new TrevisoClient.Builder(x)
-      .setUser(user.getId())
-      .setStatus(status)
-      .setCnpj(cnpj)
-      .build();
-    return (TrevisoClient) ((DAO)
-      x.get("trevisoClientDAO")).put(client);
+  protected TrevisoClient saveTrevisoClient(long userId, String status) {
+    DAO trevisoClientDAO = (DAO) getX().get("trevisoClientDAO");
+    TrevisoClient client  = findClient(userId);
+    if ( client == null ) {
+      client = (TrevisoClient) trevisoClientDAO.put(new TrevisoClient.Builder(getX())
+        .setUser(userId)
+        .setStatus(status)
+        .build());
+    }
+    return client;
   }
 
   protected String getName(User user) {
     if ( user instanceof Business ) return ((Business) user).getBusinessName();
     return user.getLegalName();
+  }
+
+  protected String findCpfCnpj(long userId) {
+    Capability cnpjCapability = (Capability) ((DAO) getX().get("capabilityDAO")).find(EQ(Capability.NAME, "CNPJ"));
+    if ( cnpjCapability != null ) {
+      UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) getX().get("userCapabilityJunctionDAO")).find(AND(
+        EQ(UserCapabilityJunction.TARGET_ID, cnpjCapability.getId()),
+        EQ(UserCapabilityJunction.SOURCE_ID, userId)
+      ));
+
+      if ( ucj != null ) return ucj.getData() != null ? ((CNPJ)ucj.getData()).getData() : "";
+    }
+
+    return ""; // TODO Pending CNPJ Capability
   }
 
   public FXQuote getFXRate(String sourceCurrency, String targetCurrency, long sourceAmount,  long destinationAmount,
@@ -212,9 +251,38 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
     return true;
   }
 
-  public long getTransactionLimit(long userId) throws RuntimeException {
+  public TrevisoClient createExchangeCustomerDefault(long userId, String cnpj) throws RuntimeException {
+    return createExchangeCustomer(userId, 1000000L, cnpj); // Default limit
+  }
+
+  public TrevisoClient createExchangeCustomer(long userId, long amount, String cnpj) throws RuntimeException {
+    try {
+      if ( getExchangeCustomer(userId, cnpj) != null ) return findClient(userId); // User already pushed to Exchange
+    } catch(Throwable t) {
+      logger_.error("Error fetching exchange user" , t);
+    }
+
+    InsertTitular request = new InsertTitular();
+    request.setDadosTitular(getTitularRequest(userId, amount, cnpj));
+    try {
+      InsertTitularResponse response = exchangeService.insertTitular(request);
+      if ( response == null || response.getInsertTitularResult() == null )
+        throw new RuntimeException("Unable to get a valid response from Exchange while calling insertTitular");
+
+      if ( response.getInsertTitularResult().getCODRETORNO() != 0 )
+        throw new RuntimeException("Error while calling insertTitular: " + response.getInsertTitularResult().getMENSAGEM());
+
+      return saveTrevisoClient(userId, "Active");
+    } catch(Throwable t) {
+      logger_.error("Error updating Titular" , t);
+      throw new RuntimeException(t);
+    }
+  }
+
+  public Titular getExchangeCustomer(long userId, String cpfCnpj) throws RuntimeException {
     SearchTitular request = new SearchTitular();
-    request.setCODIGO("10786348070"); // TODO CPF/CNPJ saved where?
+    String formattedcpfCnpj = cpfCnpj.replaceAll("[^0-9]", "");
+    request.setCODIGO(formattedcpfCnpj); // 10786348070
     SearchTitularResponse response = exchangeService.searchTitular(request);
     if ( response == null || response.getSearchTitularResult() == null )
       throw new RuntimeException("Unable to get a valid response from Exchange while calling SearchTitular");
@@ -226,28 +294,16 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
     if ( status.getCODRETORNO() != 0 || response.getSearchTitularResult().getTitular() == null )
       throw new RuntimeException("Error while calling SearchTitular: " + status.getMENSAGEM());
 
-    return new Double(response.getSearchTitularResult().getTitular().getLIMITEOP()).longValue();
+    return response.getSearchTitularResult().getTitular();
   }
 
-  public void insertTransactionLimit(long userId, long amount) throws RuntimeException {
-    InsertTitular request = new InsertTitular();
-    Titular titular = getTitularRequest(userId, amount);
-    try {
-      InsertTitularResponse response = exchangeService.insertTitular(request);
-      if ( response == null || response.getInsertTitularResult() == null )
-        throw new RuntimeException("Unable to get a valid response from Exchange while calling insertTitular");
-
-      if ( response.getInsertTitularResult().getCODRETORNO() != 0 )
-        throw new RuntimeException("Error while calling updateTitular: " + response.getInsertTitularResult().getMENSAGEM());
-    } catch(Throwable t) {
-      logger_.error("Error updating Titular" , t);
-      throw new RuntimeException(t);
-    }
+  public long getTransactionLimit(long userId) throws RuntimeException {
+    return new Double(getExchangeCustomer(userId, findCpfCnpj(userId)).getLIMITEOP()).longValue();
   }
 
   public void updateTransactionLimit(long userId, long amount) throws RuntimeException {
     UpdateTitular request = new UpdateTitular();
-    Titular titular = getTitularRequest(userId, amount);
+    Titular titular = getTitularRequest(userId, amount, findCpfCnpj(userId));
     request.setDadosTitular(titular);
 
     try {
@@ -263,25 +319,27 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
     }
   }
 
-  protected Titular getTitularRequest(long userId, long amount) {
+  protected Titular getTitularRequest(long userId, long amount, String cpfCnpj) {
     User user = (User) ((DAO) getX().get("bareUserDAO")).find(userId);
     if ( user == null ) throw new RuntimeException("User not found: " + userId);
     if ( user.getAddress() == null ) throw new RuntimeException("User address cannot be null: " + userId);
 
     Titular titular = new Titular();
+    TrevisoCredientials credentials = (TrevisoCredientials) getX().get("TrevisoCredientials");
+    titular.setAGENCIA(credentials.getExchangeAgencia());
     titular.setDTINICIO(user.getCreated());
-    titular.setCODIGO("10786348070"); // TODO CPF/CNPJ saved where?
+    String formattedCpfCnpj = cpfCnpj.replaceAll("[^0-9]", "");
+    titular.setCODIGO(formattedCpfCnpj); // e.g 10786348070
     titular.setTIPO(1);
     titular.setSUBTIPO("J"); // F = Physical, J = Legal, S = Symbolic
     titular.setNOMEAB(getName(user));
     titular.setNOME(getName(user));
     titular.setENDERECO(user.getAddress().getAddress());
     titular.setCIDADE(user.getAddress().getCity());
-    Region region = user.getAddress().findRegionId(getX());
-    titular.setESTADO(region == null ? "" : region.getName());
+    titular.setESTADO(user.getAddress().getRegionId());
     titular.setCEP(user.getAddress().getPostalCode());
-    titular.setPAIS(user.getAddress().getCountryId());
-    titular.setPAISMT(user.getAddress().getCountryId()); // TODO Pais Matriz do Cliente - Bacen Code
+    titular.setPAIS("1058"); // TODO Pais do Cliente – Código Bacen - Brazil
+    titular.setPAISMT("1058"); // TODO Pais Matriz do Cliente - Bacen Code - Brazil
     titular.setLIMITEOP(new Long(amount).doubleValue());
 
     return titular;
@@ -303,25 +361,29 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
     if ( institution != null ) {
       dadosBoleto.setBANCOBEN1(institution.getSwiftCode());
     }
-
     Address bankAddress = bankAccount.getAddress() == null ? bankAccount.getBankAddress() : bankAccount.getAddress();
     if ( bankAddress != null ) {
       dadosBoleto.setBANCOBEN3(bankAddress.getCity());
     }
 
     dadosBoleto.setCLAUSULAXX(false);
-    dadosBoleto.setCNPJPCPFCLIENTE("10786348070"); // TODO CPF/CNPJ
+    String formattedCpfCnpj = findCpfCnpj(user.getId()).replaceAll("[^0-9]", "");
+    dadosBoleto.setCNPJPCPFCLIENTE(formattedCpfCnpj); // eg 10786348070
 
     SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
     sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+    Date completionDate = transaction.getCompletionDate();
+    if ( completionDate == null )
+      completionDate = ((ClearingTimeService) getX().get("clearingTimeService")).estimateCompletionDateSimple(getX(), transaction);
+
     try {
-      String today = sdf.format(new Date());
-      dadosBoleto.setDATALQ(today); // TODO Settlement date ( DD / MM / YYYY)
-      dadosBoleto.setDATAME(today); // TODO Foreign currency delivery date ( DD / MM / YYYY)
-      dadosBoleto.setDATAMN(today); // TODO National currency delivery date ( DD / MM / YYYY)
+      String completionDateString = sdf.format(completionDate);
+      dadosBoleto.setDATALQ(completionDateString);
+      dadosBoleto.setDATAME(completionDateString); // TODO Foreign currency delivery date ( DD / MM / YYYY)
+      dadosBoleto.setDATAMN(completionDateString); // TODO National currency delivery date ( DD / MM / YYYY)
     } catch(Throwable t) {
-      logger_.error("Unable to parse settlement date", t);
-      throw new RuntimeException("Error inserting boleto. Cound not parse date.");
+      logger_.error("Unable to parse completion date", t);
+      throw new RuntimeException("Error inserting boleto. Cound not parse completion date.");
     }
 
     if ( user instanceof Business ) {
@@ -413,6 +475,53 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
       return null;
     } catch(Throwable t) {
       logger_.error("Error getting PTax" , t);
+      throw new RuntimeException(t);
+    }
+  }
+
+  public boolean validateCnpj(String cnpj) throws RuntimeException {
+    try {
+      String formattedCnpj = cnpj.replaceAll("[^0-9]", "");
+      TrevisoCredientials credentials = (TrevisoCredientials) getX().get("TrevisoCredientials");
+      if ( null == credentials ) throw new RuntimeException("Invalid credientials. Treviso token required to validate CNPJ");
+      CNPJResponseData data = new SintegraService(getX()).getCNPJData(formattedCnpj, credentials.getSintegraToken());
+      if ( data == null ) throw new RuntimeException("Unable to get a valid response from CNPJ validation.");
+
+      if ( ! "0".equals(data.getCode()) ) throw new RuntimeException(data.getMessage());
+
+      return "ATIVA".equals(data.getSituacao());
+    } catch(Throwable t) {
+      logger_.error("Error validating CNPJ" , t);
+      throw new RuntimeException(t);
+    }
+  }
+
+  public boolean validateCpf(String cpf, long userId) throws RuntimeException {
+    User user = (User) ((DAO) getX().get("bareUserDAO")).find(userId);
+    if ( user == null ) throw new RuntimeException("User not found: " + userId);
+
+    String birthDate = "";
+    try {
+      SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+      sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+      birthDate = sdf.format(user.getBirthday());
+    } catch(Throwable t) {
+      logger_.error("Unable to parse user birth date: " + userId , t);
+      throw new RuntimeException("Unable to parse user birth date.");
+    }
+
+    try {
+      String formattedCpf = cpf.replaceAll("[^0-9]", "");
+      TrevisoCredientials credentials = (TrevisoCredientials) getX().get("TrevisoCredientials");
+      if ( null == credentials ) throw new RuntimeException("Invalid credientials. Treviso token required to validate CPF");
+      CPFResponseData data = new SintegraService(getX()).getCPFData(formattedCpf, birthDate, credentials.getSintegraToken());
+      if ( data == null ) throw new RuntimeException("Unable to get a valid response from CPF validation.");
+
+      if ( ! "0".equals(data.getCode()) ) throw new RuntimeException(data.getMessage());
+
+      return "Regular".equals(data.getSituacaoCadastral());
+    } catch(Throwable t) {
+      logger_.error("Error validating CPF" , t);
       throw new RuntimeException(t);
     }
   }

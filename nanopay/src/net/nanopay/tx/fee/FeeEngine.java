@@ -31,8 +31,6 @@ import net.nanopay.tx.model.Transaction;
 
 import java.util.*;
 
-import static foam.core.ContextAware.maybeContextualize;
-
 public class FeeEngine {
   private final TransactionFeeRule transactionFeeRule_;
 
@@ -60,7 +58,7 @@ public class FeeEngine {
         });
       }
     } catch ( Exception e ) {
-      var feeInfo = fee != null ? fee.toString() : "name:" + feeName;
+      var feeInfo = fee != null ? fee.toString() : "fee name:" + feeName;
       throw new RuntimeException("Could not apply " + feeInfo + " to transaction id:" + transaction.getId(), e);
     }
   }
@@ -93,7 +91,7 @@ public class FeeEngine {
 
   private Fee loadFee(X x, String feeName, Transaction transaction) {
     var feeExpr = new FeeExpr(feeName);
-    return loadFee(x, feeExpr, maybeContextualize(x, transaction));
+    return loadFee(x, feeExpr, transaction);
   }
 
   private Fee loadFee(X x, FeeExpr feeExpr, FObject obj) {

@@ -785,13 +785,13 @@ foam.CLASS({
 			class: "foam.core.String",
 			name: "FORMAME",
 			value: "TX",
-			description: "Form of delivery of foreign currency: “CC” - Current account “ESPECIE” - Type “TX” - Tele transmission “ORDER” - Payment Order"
+			documentation: "Form of delivery of foreign currency: “CC” - Current account “ESPECIE” - Type “TX” - Tele transmission “ORDER” - Payment Order"
 		},
 		{
 			class: "foam.core.String",
 			name: "FORMAMN",
 			value: "TED",
-			description: "Delivery method of the national currency: “CAIXA” - Caixa “CC” - Current account “TED” - Electronic Transfer"
+			documentation: "Delivery method of the national currency: “CAIXA” - Caixa “CC” - Current account “TED” - Electronic Transfer"
 		},
 		{
 			class: "foam.core.String",
@@ -840,13 +840,13 @@ foam.CLASS({
 			class: "foam.core.String",
 			name: "GIRO",
 			value: "",
-			description: "Turn: “Y” - Yes “N” - No"
+			documentation: "Turn: “Y” - Yes “N” - No"
 		},
 		{
 			class: "foam.core.String",
 			name: "IMPRESSO",
 			value: "C",
-			description: "E-mail indicator: “T” - Client / Broker “C” - Client “R” - Broker “N” - No"
+			documentation: "E-mail indicator: “T” - Client / Broker “C” - Client “R” - Broker “N” - No"
 		},
 		{
 			class: "foam.core.String",
@@ -937,7 +937,7 @@ foam.CLASS({
 		{
 			class: "foam.core.String",
 			name: "LEILAO",
-			description: "Auction: “S” - Yes “N” - No"
+			documentation: "Auction: “S” - Yes “N” - No"
 		},
 		{
 			class: "foam.core.String",
@@ -1021,7 +1021,7 @@ foam.CLASS({
 			class: "foam.core.String",
 			name: "OPLINHA",
 			value: "",
-			description: "Line: “Y” - Yes “N” - No"
+			documentation: "Line: “Y” - Yes “N” - No"
 		},
 		{
 			class: "foam.core.String",
@@ -1076,14 +1076,14 @@ foam.CLASS({
 			class: "foam.core.Long",
 			name: "PAIS",
 			value: 1058,
-			description: "Paying / Receiving Abroad - Pais Bacen",
+			documentation: "Paying / Receiving Abroad - Pais Bacen",
 			required: false
 		},
 		{
 			class: "foam.core.Double",
 			name: "PARIDADE",
 			value: 1,
-			description: "Foreign currency parity",
+			documentation: "Foreign currency parity",
 			required: false
 		},
 		{
@@ -1113,7 +1113,7 @@ foam.CLASS({
 			class: "foam.core.String",
 			name: "PLATBMF",
 			value: "",
-			description: 'BMF Platform: “Y” - Yes “N” - No'
+			documentation: 'BMF Platform: “Y” - Yes “N” - No'
 		},
 		{
 			class: "foam.core.String",
@@ -1174,7 +1174,7 @@ foam.CLASS({
 			class: "foam.core.String",
 			name: "RSISB",
 			value: 'P',
-			description: 'Transmission to Sisbacen: “P” - CAM0021 (Individualized Primary Market) "A" - Bacen File (Foreign Exchange Correspondent) Interbank Operations: "R" - CAM0009 - STR (Purchase) "B" - CAM0006 - BMF (Purchase) "C" - CAM0009 - STR (Sale) "B" - CAM0006 - BMF (Sale)'
+			documentation: 'Transmission to Sisbacen: “P” - CAM0021 (Individualized Primary Market) "A" - Bacen File (Foreign Exchange Correspondent) Interbank Operations: "R" - CAM0009 - STR (Purchase) "B" - CAM0006 - BMF (Purchase) "C" - CAM0009 - STR (Sale) "B" - CAM0006 - BMF (Sale)'
 		},
 		{
 			class: "foam.core.String",
@@ -1184,7 +1184,7 @@ foam.CLASS({
 			class: "foam.core.String",
 			name: "SEGMENTO",
 			value: 'L',
-			description: 'Operation Segment: "F" - For Tourism operations "L" - For Remittance operations'
+			documentation: 'Operation Segment: "F" - For Tourism operations "L" - For Remittance operations'
 		},
 		{
 			class: "foam.core.String",
@@ -1234,7 +1234,7 @@ foam.CLASS({
 		{
 			class: "foam.core.String",
 			name: "STATUS",
-			description: 'Boleto Status: "R" - Pre-Boleto "F" - Closed "M" - Pending Payment "E" - Completed'
+			documentation: 'Boleto Status: "R" - Pre-Boleto "F" - Closed "M" - Pending Payment "E" - Completed'
 		},
 		{
 			class: "foam.core.String",
@@ -1273,7 +1273,7 @@ foam.CLASS({
 		{
 			class: "foam.core.Double",
 			name: "TAXAOP",
-			description: 'Exchange rate',
+			documentation: 'Exchange rate',
 			required: false
 		},
 		{
@@ -1285,7 +1285,7 @@ foam.CLASS({
 			class: "foam.core.Int",
 			name: "TIPO",
 			value: 3,
-			description: 'Operation type code: 01 - Export 02 - Import 03 - Financial Transfer Abroad 04 - Financial Transfer Abroad 05 - Banking Purchase 06 - Banking Sale',
+			documentation: 'Operation type code: 01 - Export 02 - Import 03 - Financial Transfer Abroad 04 - Financial Transfer Abroad 05 - Banking Purchase 06 - Banking Sale',
 			required: false
 		},
 		{
@@ -1385,44 +1385,44 @@ foam.CLASS({
 			required: false
 		},
 		{
-			class: "foam.core.Double",
+			class: "foam.core.Long",
 			name: "VALORME",
-			description: 'TODO Foreign Currency Value',
+			documentation: 'TODO Foreign Currency Value',
 			required: false
 		},
 		{
-			class: "foam.core.Double",
+			class: "foam.core.Long",
 			name: "VALORMN",
-			description: 'TODO National Currency Value',
+			documentation: 'TODO National Currency Value',
 			required: false
 		},
 		{
-			class: "foam.core.Double",
+			class: "foam.core.Long",
 			name: "VALORR",
 			required: false
 		},
 		{
-			class: "foam.core.Double",
+			class: "foam.core.Long",
 			name: "VALORR2",
 			required: false
 		},
 		{
-			class: "foam.core.Double",
+			class: "foam.core.Long",
 			name: "VALORR3",
 			required: false
 		},
 		{
-			class: "foam.core.Double",
+			class: "foam.core.Long",
 			name: "VALORR4",
 			required: false
 		},
 		{
-			class: "foam.core.Double",
+			class: "foam.core.Long",
 			name: "VALORR5",
 			required: false
 		},
 		{
-			class: "foam.core.Double",
+			class: "foam.core.Long",
 			name: "VALORROF",
 			required: false
 		},

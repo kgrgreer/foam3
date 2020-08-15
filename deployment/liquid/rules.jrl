@@ -961,12 +961,15 @@ p({
   "saveHistory":true,
   "lifecycleState":1
 })
+
+// TODO: Enable when ingestion gets fixed
+// Need to be disabled for the "Prefill All Digital Accounts Through One Shadow" script to run
 p({
   "class":"foam.nanos.ruler.Rule",
   "id":"c8af9202-6890-4bdb-96ba-60082960422f",
   "name":"block certain liquid transactions",
   "priority":100,
-  "enabled":true,
+  "enabled":false,
   "ruleGroup":"liquid",
   "documentation":"blocks certain accounts from transacting",
   "daoKey":"localTransactionDAO",

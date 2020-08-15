@@ -31,10 +31,20 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
+  "name":"trevisoExchangeService",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.partner.treviso.api.TrevisoExchangeService(x);
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
   "name":"trevisoService",
   "lazy":false,
   "serve":true,
   "serviceScript":"""
-    return new net.nanopay.partner.treviso.TrevisoService(x, x.get("trevisoAPIService"));
+    return new net.nanopay.partner.treviso.TrevisoService(x, x.get("trevisoAPIService"), x.get("trevisoExchangeService"));
   """
 })

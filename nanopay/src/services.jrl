@@ -2128,6 +2128,7 @@ p({
   """
     dao = new foam.dao.EasyDAO.Builder(x)
       .setEnableInterfaceDecorators(false)
+      .setServiceProviderAware(true)
       .setOf(foam.nanos.ruler.Rule.getOwnClassInfo())
       .setInnerDAO(x.get("localRuleDAO"))
       .build();
@@ -2416,6 +2417,7 @@ p({
 
     dao = new foam.dao.EasyDAO.Builder(x)
       .setAuthorize(false)
+      .setGuid(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("userCapabilityJunctions")
       .setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo())
@@ -2458,5 +2460,25 @@ p({
       "remoteListenerSupport": false,
       "cache": false
     }
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "permittedCountryDAO",
+  "serve": true,
+  "serviceScript": """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setInnerDAO(x.get("countryDAO"))
+      .setDecorator(new net.nanopay.country.PermittedCountryFilterDAO(new String[] { "CA", "US", "BR" }, x, new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.auth.Country.getOwnClassInfo()).build()))
+      .setOf(foam.nanos.auth.Country.getOwnClassInfo())
+      .build();
+  """,
+  "client":
+  """
+  {
+    "of":"foam.nanos.auth.Country",
+    "cache": false
+  }
   """
 })

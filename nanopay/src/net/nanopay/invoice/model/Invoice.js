@@ -644,6 +644,23 @@ foam.CLASS({
       of: 'net.nanopay.tx.model.Transaction',
       view: { class: 'foam.u2.view.DAOtoFObjectArrayView' },
       visibility: 'RO'
+    },
+    {
+      class: 'Boolean',
+      name: 'processPaymentOnCreate',
+      documentation: `When set to true, on invoice submit a transaction will be planned and submitted.
+          If the transaction require fx, current rates will be used and there will NOT be a chance to review these rates.
+          Send required lineitems using the 'transactionLineItems' property if required.
+        `,
+      storageTransient: true,
+      value: false
+    },
+    {
+      class: 'FObjectArray',
+      name: 'transactionLineItems',
+      of: 'net.nanopay.tx.TransactionLineItem',
+      hidden: 'true',
+      storageTransient: true
     }
   ],
 

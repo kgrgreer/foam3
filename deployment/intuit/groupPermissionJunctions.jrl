@@ -1,0 +1,132 @@
+// Intuit
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"spid.read.intuit"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"group.read.intuit-api"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"group.update.intuit-api"})
+
+// Documentation
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"menu.read.documentation"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"menu.read.api-doc-10-introduction"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"menu.read.api-doc-20-authentication"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"menu.read.api-doc-30-data"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"menu.read.api-doc-35-webhooks"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"menu.read.api-doc-40-reference"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"menu.read.integration.api-sugar"})
+
+// Intuit Service API Group Setup
+
+// Acceptance Documents
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"service.read.userAcceptanceDocumentDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"service.userAcceptanceDocumentDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"useracceptancedocument.read.*"})
+
+// Agent Junction (User - Business Junction)
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"service.read.agentJunctionDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"service.agentJunctionDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"useruserjunction.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"useruserjunction.rw.status"})
+
+// Business
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"menu.read.view-businesses"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"service.read.businessDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"business.rw.ispublic"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"business.rw.compliance"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"business.read.*"})
+
+// User
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"menu.read.view-users"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"user.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"user.rw.compliance"})
+
+// ******** SESSION *********
+
+// Intuit session creation
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"group.read.intuit-api-session"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"group.update.intuit-api-session"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"session.create.intuit"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"user.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"user.update.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"user.remove.*"})
+
+// ******* DEV *************
+
+// Intuit developer
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"group.read.intuit-dev"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"group.update.intuit-dev"})
+
+// Accounts
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"menu.read.view-accounts"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"service.read.accountDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"account.read.*"})
+
+// Beneficial Owners
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"service.read.beneficialOwnerDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"service.beneficialOwnerDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"beneficialowner.read.*"})
+
+// Exchange Rates
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"service.read.exchangeRateDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"service.exchangeRateDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"exchangerate.read.*"})
+
+// Payment Codes
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"service.read.paymentCodeDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"service.paymentCodeDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"paymentcode.read.*"})
+
+// Signing Officers
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"service.read.signingOfficerJunctionDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"service.signingOfficerJunctionDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"businessuserjunction.read.*"})
+
+// Transactions
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"menu.read.view-summarytransactions"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"service.read.summaryTransactionDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"service.summaryTransactionDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"transaction.rw.*"})
+
+// ********** ADMIN ***************
+
+// Intuit SPID Extras
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"intuit-admin",t:"group.update.intuit-admin"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"intuit-admin",t:"group.read.intuit-admin"})
+
+// QBO Business group permissions
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"smallbusiness8025.employee",t:"invoice.holdingAccount"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"smallbusiness8025.approver",t:"invoice.pay"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"smallbusiness8025.admin",t:"business.add.smallbusiness8025.*"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"smallbusiness8025.admin",t:"business.read.smallbusiness8025.*"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"smallbusiness8025.admin",t:"business.remove.smallbusiness8025.*"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"smallbusiness8025.admin",t:"business.rw.ispublic"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"smallbusiness8025.admin",t:"business.update.smallbusiness8025.*"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"smallbusiness8025.admin",t:"group.update.smallbusiness8025.*"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"smallbusiness8025.admin",t:"menu.read.sme.*"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"smallbusiness8025.admin",t:"useruserjunction.rw.status"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"smallbusiness8025.employee",t:"currency.read.CAD"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"smallbusiness8025.admin",t:"fx.provision.payer"})
+
+// Tiny Business
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"tinybusiness8033.employee",targetId:"invoice.holdingAccount"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"tinybusiness8033.approver",targetId:"invoice.pay"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"tinybusiness8033.admin",targetId:"business.add.tinybusiness8033.*"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"tinybusiness8033.admin",targetId:"business.read.tinybusiness8033.*"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"tinybusiness8033.admin",targetId:"business.remove.tinybusiness8033.*"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"tinybusiness8033.admin",targetId:"business.rw.ispublic"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"tinybusiness8033.admin",targetId:"business.update.tinybusiness8033.*"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"tinybusiness8033.admin",targetId:"group.update.tinybusiness8033.*"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"tinybusiness8033.admin",targetId:"menu.read.sme.*"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"tinybusiness8033.admin",targetId:"useruserjunction.rw.status"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"tinybusiness8033.employee",targetId:"currency.read.CAD"})
+
+// Initech
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"initech8029.employee",t:"invoice.holdingAccount"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"initech8029.approver",t:"invoice.pay"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"initech8029.admin",t:"business.add.initech8029.*"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"initech8029.admin",t:"business.read.initech8029.*"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"initech8029.admin",t:"business.remove.initech8029.*"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"initech8029.admin",t:"business.rw.ispublic"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"initech8029.admin",t:"business.update.initech8029.*"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"initech8029.admin",t:"group.update.initech8029.*"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"initech8029.admin",t:"menu.read.sme.*"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"initech8029.admin",t:"useruserjunction.rw.status"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"initech8029.employee",t:"currency.read.CAD"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"initech8029.admin",t:"fx.provision.payer"})

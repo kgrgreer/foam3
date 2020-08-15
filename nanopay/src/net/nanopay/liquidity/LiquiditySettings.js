@@ -58,8 +58,8 @@ foam.CLASS({
   tableColumns: [
     'name',
     'cashOutFrequency',
-    'denomination',
-    'createdBy',
+    'denomination.name',
+    'createdBy.legalName',
     'lowLiquidity',
     'highLiquidity'
   ],

@@ -70,5 +70,4 @@ public class TrevisoAPIServiceMock extends ContextAwareSupport implements Trevis
     PTaxDollarRateResponse response = new PTaxDollarRateResponse();
     return response;
   }
-
 }

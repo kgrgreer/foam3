@@ -4,7 +4,7 @@ p({
   "name":"AFEX Beneficiary Compliance Transaction",
   "priority":80,
   "ruleGroup":"AFEX",
-  "documentation":"Check if AFEX Beneficiary is apporved before preceeding with payment",
+  "documentation":"Check if AFEX Beneficiary is approved before proceeding with payment",
   "daoKey":"localTransactionDAO",
   "operation":3,
   "after":false,
@@ -343,6 +343,50 @@ p({
   },
   "asyncAction":{
     "class":"net.nanopay.fx.afex.AFEXBankUpdatingRule"
+  },
+  "enabled":true,
+  "saveHistory":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"3dbf3174-ca06-11ea-87d0-0242ac130003","name":"afex invalid bank account rule",
+  "documentation":"Rule to set Bank account to unverified if afex transaction failed",
+  "priority":100,
+  "ruleGroup":"AFEX",
+  "daoKey":"localTransactionDAO",
+  "operation":1,
+  "after":true,
+  "predicate": {
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of":"net.nanopay.fx.afex.AFEXTransaction"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+        "propName":"status",
+        "propValue": {
+          "class": "net.nanopay.tx.model.TransactionStatus",
+          "ordinal":9
+        },
+        "isNew":false
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue": {
+          "class": "net.nanopay.tx.model.TransactionStatus",
+          "ordinal":9
+        },
+        "isNew":true
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.fx.afex.TransactionInvalidBankAccountRule"
   },
   "enabled":true,
   "saveHistory":true,

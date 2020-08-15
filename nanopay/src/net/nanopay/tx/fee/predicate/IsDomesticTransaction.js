@@ -24,21 +24,12 @@ foam.CLASS({
   documentation: `Test if the transaction is domestic i.e. sourceAccount
     country same as destinationAccount country.
 
-    If the 'value' property is set to false to it will test for international
-    transaction instead.`,
+    It throws when the sourceAccount or destinationAccount of the transaction is
+    not a bank account and the caller eg. FeeEngine.execute() should catch it.`,
 
   javaImports: [
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.bank.BankAccount'
-  ],
-
-  properties: [
-    {
-      class: 'Boolean',
-      name: 'value',
-      value: true,
-      documentation: 'Please see model documentation above.'
-    }
   ],
 
   methods: [
@@ -46,21 +37,13 @@ foam.CLASS({
       name: 'f',
       javaCode: `
         var transaction = (Transaction) obj;
-        var sourceAccount = transaction.findSourceAccount(getX());
-        var destinationAccount = transaction.findDestinationAccount(getX());
+        var sourceAccount = (BankAccount) transaction.findSourceAccount(getX());
+        var destinationAccount = (BankAccount) transaction.findDestinationAccount(getX());
 
-        return sourceAccount instanceof BankAccount
-          && destinationAccount instanceof BankAccount
-          && getValue() == ((BankAccount) sourceAccount).getCountry().equals(
-            ((BankAccount) destinationAccount).getCountry());
+        return sourceAccount.getCountry().equals(destinationAccount.getCountry());
       `,
-      code: async function(obj) {
-        var sourceAccount = await obj.sourceAccount$find;
-        var destinationAccount = await obj.destinationAccount$find;
-
-        return net.nanopay.bank.BankAccount.isInstance(sourceAccount)
-          && net.nanopay.bank.BankAccount.isInstance(destinationAccount)
-          && this.value === (sourceAccount.country === destinationAccount.country);
+      code: function(obj) {
+        throw new Error('IsDomesticTransaction is not supported.');
       }
     },
     {

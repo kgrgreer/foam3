@@ -26,8 +26,8 @@ foam.CLASS({
 
   tableColumns: [
     'id',
-    'invitee',
-    'inviter',
+    'invitee.id',
+    'inviter.id',
     'timestamp',
   ],
 

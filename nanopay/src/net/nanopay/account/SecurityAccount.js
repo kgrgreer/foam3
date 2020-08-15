@@ -42,7 +42,7 @@ foam.CLASS({
     'id',
     'name',
     'type',
-    'denomination',
+    'denomination.name',
     'balance'
   ],
 

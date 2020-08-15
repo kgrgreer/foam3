@@ -49,8 +49,9 @@ foam.CLASS({
 
   tableColumns: [
     'id',
-    'business',
-    'legalName'
+    'business.id',
+    'firstName',
+    'lastName'
   ],
 
   sections: [

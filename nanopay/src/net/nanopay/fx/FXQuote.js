@@ -30,8 +30,8 @@ foam.CLASS({
     tableColumns: [
       'id',
       'user',
-      'sourceCurrency',
-      'targetCurrency',
+      'sourceCurrency.name',
+      'targetCurrency.name',
       'rate',
       'fee'
     ],

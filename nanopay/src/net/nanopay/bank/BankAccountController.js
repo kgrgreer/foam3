@@ -31,6 +31,7 @@ foam.CLASS({
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
+    'net.nanopay.sme.ui.SMEModal'
   ],
 
   implements: [
@@ -57,6 +58,17 @@ foam.CLASS({
     { name: 'ALREADY_DEFAULT', message: 'is already a default bank account.' },
     { name: 'BANK_ACCOUNT_LABEL', message: 'Bank Account' }
   ],
+
+  css:`
+  .net-nanopay-sme-ui-SMEModal-inner {
+    width: 515px;
+    height: 500px;
+  }
+  .net-nanopay-sme-ui-SMEModal-content {
+    overflow: scroll !important;
+    padding: 30px;
+  }
+  `,
 
   properties: [
     {
@@ -139,6 +151,21 @@ foam.CLASS({
                   this.isDefault = false;
                   self.notify(self.UNABLE_TO_DEFAULT, '', self.LogLevel.ERROR, true);
                 });
+              }
+            }),
+            foam.core.Action.create({
+              name: 'Edit',
+              isAvailable: function() {
+                return ! this.verifiedBy
+              },
+              code: function(X) {
+                self.ctrl.add(self.SMEModal.create().tag(
+                  {
+                    class: 'net.nanopay.account.ui.BankAccountWizard',
+                    data: this,
+                    useSections: ['accountDetails', 'pad']
+                  }
+                ));
               }
             })
           ]

@@ -110,7 +110,6 @@ foam.CLASS({
       flex-grow: 1;
       /* 70px for topNav || 20px for padding || 40px for footer */
       min-height: calc(100% - 70px - 20px - 40px) !important;
-      background-color: white;
     }
     .stack-wrapper:after {
       content: "";
@@ -557,7 +556,7 @@ foam.CLASS({
       await this.clientPromise;
       await this.fetchTheme();
 
-      this.client.nSpecDAO.find('appConfig').then((config) => {
+      this.client.nSpecDAO.find('appConfig').then(config => {
         this.appConfig.copyFrom(config.service);
 
         this.AppStyles.create();
@@ -583,35 +582,29 @@ foam.CLASS({
 
       await this.themeInstalled;
 
-      if ( ! this.isIframe() ){
+      if ( ! this.isIframe() ) {
         this
           .addClass(this.myClass())
-          .add(this.slot( async function (loginSuccess, topNavigation_) {
+          .add(this.slot( async function(loginSuccess, topNavigation_) {
             if ( ! loginSuccess ) return null;
             await this.themeUpdated;
             return this.E().tag(topNavigation_);
           }))
           .start()
             .addClass('stack-wrapper')
-            .addClass(this.slot(function (loginSuccess) {
-              return ! loginSuccess ? 'login-stack' : 'dashboard-stack';
-            }))
-            .enableClass('login-wrapper', this.loginSuccess$)
+            .enableClass('login-stack', this.loginSuccess$.map( ls => ! ls ))
             .tag({
               class: 'net.nanopay.ui.banner.Banner',
               data$: this.bannerData$
             })
-            .start()
-              .addClass(this.myClass('stack-view'))
-              .add(this.StackView.create({
+            .tag(this.StackView.create({
                 data: this.stack,
                 showActions: false
               }))
-            .end()
           .end()
           .start()
             .enableClass('footer-wrapper', this.loginSuccess$)
-            .add(this.slot( async function (loginSuccess, footerView_) {
+            .add(this.slot( async function(loginSuccess, footerView_) {
               if ( loginSuccess ) await this.themeUpdated;
               return this.E().tag(footerView_);
             }))
@@ -621,18 +614,14 @@ foam.CLASS({
           .addClass(this.myClass())
           .start()
             .addClass('stack-wrapper')
-            .enableClass('login-wrapper', this.loginSuccess$)
             .tag({
               class: 'net.nanopay.ui.banner.Banner',
               data$: this.bannerData$
             })
-            .start()
-              .addClass(this.myClass('stack-view'))
-              .add(this.StackView.create({
-                data: this.stack,
-                showActions: false
-              }))
-            .end()
+            .tag(this.StackView, {
+              data: this.stack,
+              showActions: false
+            })
           .end();
       }
     },
@@ -976,7 +965,7 @@ foam.CLASS({
       });
 
       if ( this.sme ) {
-        window.onpopstate = async (event) => {
+        window.onpopstate = async event => {
           var menu;
 
           // Redirect user to switch business if agent doesn't exist.

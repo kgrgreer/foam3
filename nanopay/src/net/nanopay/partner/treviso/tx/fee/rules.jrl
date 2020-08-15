@@ -1,0 +1,17 @@
+// TODO: consider requiring nature code in predicate
+p({
+  class: "net.nanopay.tx.fee.TransactionFeeRule",
+  id: "91194da9-8391-436a-8468-fa2c706126b8",
+  name: "Treviso Fee",
+  documentation: "Add fee line item for Treviso transactions.",
+  feeName: "Treviso Fee",
+  feeDenomination: "USD",
+  feeClass: "net.nanopay.tx.FeeLineItem",
+  enabled: true,
+  predicate: {
+    class: "foam.nanos.ruler.predicate.IsInstancePredicate",
+    of: "net.nanopay.partner.treviso.tx.TrevisoTransaction"
+  },
+  spid: "treviso",
+  lifecycleState:1
+})

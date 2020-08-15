@@ -25,6 +25,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'capabilityDAO',
     'countryDAO',
     'ctrl',
     'notify',
@@ -226,9 +227,16 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'permittedCountries',
       factory: function() {
+        let predicate = this.subject.user.cls_ != net.nanopay.model.Business ?
+            this.INSTANCE_OF(this.PaymentProviderCorridor) :
+            this.AND(
+              this.INSTANCE_OF(this.PaymentProviderCorridor),
+              this.EQ(this.PaymentProviderCorridor.SOURCE_COUNTRY, this.subject.user.address.countryId)
+            );
+
         return this.PromisedDAO.create({
           of: 'foam.nanos.auth.Country',
-          promise: this.subject.user.capabilities.dao.where(this.INSTANCE_OF(this.PaymentProviderCorridor))
+          promise: this.capabilityDAO.where(predicate)
             .select(this.MAP(this.PaymentProviderCorridor.SOURCE_COUNTRY))
             .then((sink) => {
               return this.countryDAO.where(this.IN(this.Country.CODE, sink.delegate.array));

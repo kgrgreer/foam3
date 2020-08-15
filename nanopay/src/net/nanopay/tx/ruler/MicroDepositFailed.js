@@ -74,9 +74,6 @@ foam.CLASS({
             .setEmailArgs(args)
             .build();
             user.doNotify(x, notification);
-            try {
-              accountDAO.remove(acc);
-            } catch (Exception E) { logger.error("Failed to remove bankaccount. "+E); };
           }
       }, "send notification");
       `

@@ -62,10 +62,6 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'spid'
-    },
-    {
-      class: 'String',
       name: 'group'
     },
     {
@@ -88,13 +84,8 @@ foam.CLASS({
       buildJavaClass: function(cls) {
         cls.extras.push(`
           public UserRegistrationDAO(X x, String group, DAO delegate) {
-            this(x, ((AppConfig) x.get("appConfig")).getDefaultSpid(), group, delegate);
-          }
-        
-          public UserRegistrationDAO(X x, String spid, String group, DAO delegate) {
             setX(x);
             setDelegate(delegate);
-            setSpid(spid);
             setGroup(group);
             setTokenDAO((DAO) x.get("localTokenDAO"));
             setLocalBusinessDAO((DAO) x.get("localBusinessDAO"));
@@ -117,7 +108,6 @@ foam.CLASS({
           throw new RuntimeException(EMAIL_REQUIRED_ERROR_MSG);
         }
 
-        user.setSpid(getSpid());
         user.setGroup(getGroup());
 
         // We want the system user to be putting the User we're trying to create. If

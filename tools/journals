@@ -1,10 +1,12 @@
 acceptanceDocuments
 accounts
 accountTemplates
+agentJunctions
 alarmConfig
 ascendantfxusers
 ascendantUserPayeeJunctions
 assetClasses
+beneficialOwners
 blacklists
 branches
 brokers
@@ -52,6 +54,7 @@ notificationTemplates
 notificationSettings
 notificationSettingDefaults
 payoutOptions
+errorCodes
 paymentCodes
 paymentMethods
 PADTypes
@@ -71,8 +74,10 @@ scripts
 securities
 services
 sessions
+signingOfficerJunctions
 spids
 strategyReferences
+sugars
 tests
 themes
 themeDomains
