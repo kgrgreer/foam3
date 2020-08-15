@@ -91,25 +91,19 @@ foam.CLASS({
       }
     },
     {
-      class: 'net.nanopay.documents.AcceptanceDocumentProperty',
-      name: 'authAgreement',
-      documentation: 'Verifies if the user has authorized nanopay or afex to debit and credit accounts (CA).',
-      docName: 'pad_auth_cad',
-      label: ''
-    },
-    {
-      class: 'net.nanopay.documents.AcceptanceDocumentProperty',
-      name: 'recourseAgreement',
-      documentation: 'Verifies user understanding of recourse and reimbursement of pad agreement.',
-      docName: 'recourse_agreement',
-      label: ''
-    },
-    {
-      class: 'net.nanopay.documents.AcceptanceDocumentProperty',
-      name: 'cancellationAgreement',
-      documentation: 'Verifies user understanding of cancellation under pad agreement terms.',
-      docName: 'cancellation_agreement',
-      label: ''
+      class: 'StringArray',
+      name: 'acceptancedocs',
+      label: '',
+      documentation: 'a list of acceptance documents',
+      view: {
+        class: 'foam.nanos.crunch.ui.CapabilityView',
+        capabilityIDs: [
+          '554af38a-8225-87c8-dfdf-eeb15f71215e-13', // Certify Bank Account Ownership Agreement
+          '554af38a-8225-87c8-dfdf-eeb15f71215e-20', // CA Bank Account Auth Agreement
+          '554af38a-8225-87c8-dfdf-eeb15f71215e-21', // Recourse/Reimbursement Agreement
+          '554af38a-8225-87c8-dfdf-eeb15f71215e-22' // Cancellation Agreement
+        ]
+      }
     }
   ]
 });

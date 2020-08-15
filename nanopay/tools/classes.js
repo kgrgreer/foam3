@@ -136,6 +136,7 @@ var classes = [
   'net.nanopay.bank.SKBankAccount',
   'net.nanopay.bank.SIBankAccount',
   'net.nanopay.bank.ESBankAccount',
+  'net.nanopay.bank.CNBankAccount',
   'net.nanopay.bank.BankAccountStatus',
   'net.nanopay.bank.CanReceiveCurrency',
   'net.nanopay.bank.GetDefaultCurrency',
@@ -614,6 +615,10 @@ var classes = [
   'net.nanopay.tx.TransactionValidator',
   'net.nanopay.tx.AddLiquidTransactionAction',
   'net.nanopay.tx.LabelLiquidSummaryAction',
+  'net.nanopay.tx.SummaryTransactionLineItem',
+  'net.nanopay.tx.FeeSummaryTransactionLineItem',
+  'net.nanopay.tx.FxSummaryTransactionLineItem',
+  'net.nanopay.tx.EtaSummaryTransactionLineItem',
 
   'net.nanopay.fx.FXService',
   'net.nanopay.fx.client.ClientFXService',
@@ -958,6 +963,7 @@ var classes = [
   'net.nanopay.business.SetBusinessNameDAO',
   'net.nanopay.business.ruler.JunctionNotificationSettingsRule',
   'net.nanopay.business.ruler.RegistrationLoginDisabledRule',
+  'net.nanopay.business.ruler.InitialBusinessRegistrationRule',
 
   // settlment Report service
   'net.nanopay.invoice.InvoiceFilteredSettlementReport',
@@ -1068,6 +1074,7 @@ var classes = [
   'net.nanopay.tx.fee.InformationalFee',
   'net.nanopay.tx.fee.PercentageFee',
   'net.nanopay.tx.fee.TransactionFeeRule',
+  'net.nanopay.tx.fee.predicate.HasLineItemPredicate',
   'net.nanopay.tx.fee.predicate.IsDomesticTransaction',
   'net.nanopay.tx.fee.predicate.PaymentCorridorPredicate',
   'net.nanopay.tx.fee.test.TransactionFeeRuleTest',
@@ -1079,6 +1086,9 @@ var classes = [
   'net.nanopay.country.PermittedCountryFilterDAO',
   'net.nanopay.country.br.ExchangeServiceInterface',
   'net.nanopay.country.br.FederalRevenueService',
+  'net.nanopay.country.br.OpenData',
+  'net.nanopay.country.br.PTaxRate',
+  'net.nanopay.country.br.PTaxDollarRateResponse',
   'net.nanopay.partner.sintegra.CPFResponseData',
   'net.nanopay.partner.sintegra.CNPJResponseData',
   'net.nanopay.partner.sintegra.SintegraServiceInterface',
@@ -1111,8 +1121,6 @@ var classes = [
   'net.nanopay.partner.treviso.api.Natureza',
   'net.nanopay.partner.treviso.api.Parcelas',
   'net.nanopay.partner.treviso.api.Product',
-  'net.nanopay.partner.treviso.api.PTaxRate',
-  'net.nanopay.partner.treviso.api.PTaxDollarRateResponse',
   'net.nanopay.partner.treviso.api.ResponseBoleto',
   'net.nanopay.partner.treviso.api.ResponseTitular',
   'net.nanopay.partner.treviso.api.ResponsibleArea',
@@ -1138,14 +1146,22 @@ var classes = [
   'net.nanopay.partner.treviso.api.UpdateTitularResponse',
   'net.nanopay.partner.treviso.api.UserFillerDTO',
   'net.nanopay.partner.treviso.api.Workflow',
+  'net.nanopay.partner.treviso.FepWebUserUpdatingRule',
   'net.nanopay.partner.treviso.TrevisoClient',
   'net.nanopay.partner.treviso.TrevisoCredientials',
   'net.nanopay.partner.treviso.TrevisoServiceInterface',
-  'net.nanopay.partner.treviso.tx.NatureCodeLineItem',
+  'net.nanopay.country.br.tx.NatureCodeLineItem',
   'net.nanopay.partner.treviso.tx.TrevisoTransaction',
   'net.nanopay.partner.treviso.tx.planner.TrevisoTransactionPlanner',
+  'net.nanopay.partner.treviso.tx.TrevisoCreateExchange',
+  'net.nanopay.partner.treviso.tx.TrevisoSummaryLineItemRule',
+  'net.nanopay.tx.EtaSummaryTransactionLineItem',
+  'net.nanopay.tx.planner.SummaryLineItemRule',
 
   // crunch onboarding
+  'net.nanopay.crunch.onboardingModels.CheckUserCountry',
+  'net.nanopay.crunch.onboardingModels.IsBusiness',
+  'net.nanopay.crunch.onboardingModels.InitialBusinessData',
   'net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData',
   'net.nanopay.crunch.onboardingModels.SigningOfficerQuestion',
   'net.nanopay.crunch.onboardingModels.BusinessHasNoSigningOfficers',
@@ -1159,9 +1175,11 @@ var classes = [
   'net.nanopay.crunch.onboardingModels.InternationalBusinessInformationData',
   'net.nanopay.crunch.BusinessOwnershipToBeneficialOwnerDAO',
   'net.nanopay.crunch.onboardingModels.SigningOfficerCapabilityInterceptPredicate',
-  'net.nanopay.crunch.onboardingModels.SetBusinessOnboardedOnUCJPut',
-  'net.nanopay.crunch.onboardingModels.OnboardingCapabilityUCJSubmitted',
   'net.nanopay.crunch.onboardingModels.UserIsSigningOfficerOfBusiness',
+
+  // crunch notification 
+  'net.nanopay.crunch.UCJExpiryReminderCron',
+  'net.nanopay.crunch.compliance.SendExpiryNotification',
 
   // crunch compliance
   'net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus',
@@ -1172,8 +1190,8 @@ var classes = [
   'net.nanopay.crunch.compliance.SecurefactSIDniValidator',
   'net.nanopay.crunch.compliance.SecurefactLEVValidator',
   'net.nanopay.crunch.compliance.UserComplianceApproval',
-  'net.nanopay.crunch.compliance.ReputDependenciesOnUCJPut',
-
+  'net.nanopay.crunch.compliance.SetFulfilledComplianceApprovalRequest',
+  
   // crunch afex
   'net.nanopay.partner.afex.crunch.AFEXBusinessOnboardingRule',
   'net.nanopay.partner.afex.crunch.BusinessHasVerifiedBankAccount',
@@ -1197,10 +1215,17 @@ var classes = [
   'net.nanopay.crunch.acceptanceDocuments.capabilities.AFXArizonaDisclosure',
   'net.nanopay.crunch.acceptanceDocuments.capabilities.AFXCaliforniaDisclosure',
   'net.nanopay.crunch.acceptanceDocuments.capabilities.AFXColoradoDisclosure',
+  'net.nanopay.crunch.acceptanceDocuments.capabilities.CABankAccountAuthAgreement',
+  'net.nanopay.crunch.acceptanceDocuments.capabilities.RecourseAgreement',
+  'net.nanopay.crunch.acceptanceDocuments.capabilities.CancellationAgreement',
   'net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability',
 
   // crunch registration
   'net.nanopay.crunch.registration.UserRegistrationData',
+
+  //curunch documents
+  'net.nanopay.crunch.document.Documents',
+  'net.nanopay.crunch.document.Document',
 
   // Notification
   'net.nanopay.notification.TriggerNotificationTestAction',

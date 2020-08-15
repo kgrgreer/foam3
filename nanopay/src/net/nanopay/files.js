@@ -150,6 +150,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/SKBankAccount' },
   { name: 'net/nanopay/bank/SIBankAccount' },
   { name: 'net/nanopay/bank/ESBankAccount' },
+  { name: 'net/nanopay/bank/CNBankAccount' },
   { name: 'net/nanopay/bank/BankAccountStatus' },
   { name: 'net/nanopay/bank/BankAccountController', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/BankPickCurrencyView', flags: ['web'] },
@@ -162,6 +163,11 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/ui/AddPKBankAccountView', flags: ['web'] },
   { name: 'net/nanopay/tx/SummaryTransactionCitationView' },
   { name: 'net/nanopay/tx/LineItemCitationView' },
+  { name: 'net/nanopay/tx/SummaryTransactionLineItem' },
+  { name: 'net/nanopay/tx/FeeSummaryTransactionLineItem' },
+  { name: 'net/nanopay/tx/FxSummaryTransactionLineItem' },
+  { name: 'net/nanopay/tx/EtaSummaryTransactionLineItem' },
+  { name: 'net/nanopay/tx/planner/SummaryLineItemRule' },
 
   { name: 'net/nanopay/model/BusinessSector' },
   { name: 'net/nanopay/model/BusinessType' },
@@ -918,6 +924,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/MenuChoiceSelection', flags: ['web'] },
   { name: 'net/nanopay/ui/MenuRowView', flags: ['web'] },
   { name: 'net/nanopay/ui/DetailedActionBooleanView', flags: ['web'] },
+  { name: 'net/nanopay/ui/topNavigation/LanguageChoiceView', flags: ['web'] },
 
   // liquidity
    { name: 'net/nanopay/liquidity/LiquiditySettings' },
@@ -1422,6 +1429,7 @@ FOAM_FILES([
   { name: 'net/nanopay/business/DeleteAgentJunctionsOnUserDeleteDAO' },
   { name: 'net/nanopay/business/ruler/JunctionNotificationSettingsRule' },
   { name: 'net/nanopay/business/ruler/RegistrationLoginDisabledRule' },
+  { name: 'net/nanopay/business/ruler/InitialBusinessRegistrationRule' },
 
   // approval
   { name: 'net/nanopay/approval/UserRefines' },
@@ -1535,6 +1543,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/fee/PercentageFee' },
   { name: 'net/nanopay/tx/fee/TransactionFeeRule' },
   { name: 'net/nanopay/tx/fee/Relationships' },
+  { name: 'net/nanopay/tx/fee/predicate/HasLineItemPredicate' },
   { name: 'net/nanopay/tx/fee/predicate/IsDomesticTransaction' },
   { name: 'net/nanopay/tx/fee/predicate/PaymentCorridorPredicate' },
   { name: 'net/nanopay/tx/fee/test/TransactionFeeRuleTest' },
@@ -1544,6 +1553,8 @@ FOAM_FILES([
 
 
   // crunch onboarding
+  { name: 'net/nanopay/crunch/onboardingModels/CheckUserCountry' },
+  { name: 'net/nanopay/crunch/onboardingModels/InitialBusinessData' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerPersonalData' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerQuestion' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessHasNoSigningOfficers' },
@@ -1557,8 +1568,11 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/PrerequisiteCapabilityJunctionRefine' },
   { name: 'net/nanopay/crunch/BusinessOwnershipToBeneficialOwnerDAO' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerCapabilityInterceptPredicate' },
-  { name: 'net/nanopay/crunch/onboardingModels/SetBusinessOnboardedOnUCJPut' },
   { name: 'net/nanopay/crunch/onboardingModels/UserIsSigningOfficerOfBusiness' },
+
+  // crunch notification
+  { name: 'net/nanopay/crunch/UCJExpiryReminderCron' },
+  { name: 'net/nanopay/crunch/compliance/SendExpiryNotification' },
 
   // crunch compliance
   { name: 'net/nanopay/crunch/compliance/IsCapabilityOfCertainCategoryAndStatus' },
@@ -1569,7 +1583,7 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/compliance/SecurefactSIDniValidator' },
   { name: 'net/nanopay/crunch/compliance/SecurefactLEVValidator' },
   { name: 'net/nanopay/crunch/compliance/UserComplianceApproval' },
-  { name: 'net/nanopay/crunch/compliance/ReputDependenciesOnUCJPut' },
+  { name: 'net/nanopay/crunch/compliance/SetFulfilledComplianceApprovalRequest' },
 
   // crunch afex
   { name: 'net/nanopay/partner/afex/crunch/BusinessHasVerifiedBankAccount' },
@@ -1594,6 +1608,9 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/AFXMassachusettsDisclosure' },
   { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/AFXNewYorkDisclosure' },
   { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/AFXWashingtonDisclosure' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/CABankAccountAuthAgreement' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/RecourseAgreement' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/CancellationAgreement' },
   { name: 'net/nanopay/crunch/acceptanceDocuments/BaseAcceptanceDocumentCapability' },
 
   // msp
@@ -1612,9 +1629,12 @@ FOAM_FILES([
   { name: 'net/nanopay/country/PermittedCountryFilterDAO' },
 
   // Treviso
+  { name: 'net/nanopay/partner/treviso/FepWebUserUpdatingRule'},
   { name: 'net/nanopay/partner/treviso/TrevisoCredientials' },
   { name: 'net/nanopay/partner/treviso/TrevisoClient' },
-  { name: 'net/nanopay/partner/treviso/tx/NatureCodeLineItem' },
+  { name: 'net/nanopay/country/br/tx/NatureCodeLineItem' },
   { name: 'net/nanopay/partner/treviso/tx/TrevisoTransaction' },
-  { name: 'net/nanopay/partner/treviso/tx/planner/TrevisoTransactionPlanner' }
+  { name: 'net/nanopay/partner/treviso/tx/planner/TrevisoTransactionPlanner' },
+  { name: 'net/nanopay/partner/treviso/tx/TrevisoCreateExchange' },
+  { name: 'net/nanopay/partner/treviso/tx/TrevisoSummaryLineItemRule' },
 ]);

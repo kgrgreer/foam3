@@ -76,15 +76,9 @@ foam.CLASS({
       section: 'signingOfficerAddressSection',
       label: '',
       view: function(_, X) {
-        var m = foam.mlang.Expressions.create();
-        var countryId = X.user && X.user.address ? X.user.address.countryId : null;
-        var dao = countryId ?
-          X.countryDAO.where(m.EQ(foam.nanos.auth.Country.ID, countryId)) :
-          X.countryDAO;
-
         return {
           class: 'net.nanopay.sme.ui.AddressView',
-          customCountryDAO: dao,
+          customCountryDAO: X.countryDAO,
           showValidation: true
         };
       },
@@ -162,6 +156,23 @@ foam.CLASS({
         isHorizontal: true
       },
       visibility: 'RW',
+    }),
+    foam.nanos.auth.User.THIRD_PARTY.clone().copyFrom({
+      section: 'signingOfficerPersonalInformationSection',
+      label: 'I am taking instructions from and/or conducting transactions on behalf of a 3rd party',
+      help: `
+        A third party is a person or entity who instructs another person or entity
+        to conduct an activity or financial transaction on their behalf
+      `,
+      value: false,
+      view: {
+        class: 'foam.u2.view.RadioView',
+        choices: [
+          [true, 'Yes'],
+          [false, 'No']
+        ],
+        isHorizontal: true
+      }
     }),
     {
       name: 'businessId',

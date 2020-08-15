@@ -23,8 +23,8 @@ foam.CLASS({
   documentation: 'A Fee LineItem whereby the fee collection occurs after the Transaction during some billing period. ',
 
   messages: [
-      { name: 'DESCRIPTION', message: 'Invoiced Fee' },
-      { name: 'NOTE_MESSAGE', message: 'will be charged at the end of billing period.' },
+      { name: 'DESCRIPTION', message: 'Invoice Fee' },
+      { name: 'NOTE_MESSAGE', message: 'Fee will be charged at the end of billing period.' },
   ],
 
   properties: [

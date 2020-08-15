@@ -7,3 +7,13 @@ p({
     return x.get("trevisoService");
   """
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"openDataService",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.country.br.OpenDataService(x);
+  """
+})

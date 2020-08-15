@@ -9,11 +9,9 @@ p({
   "operation":3,
   "after":true,
   "predicate":{
-    "class":"foam.mlang.predicate.And",
-    "args":[
-      {"class":"foam.mlang.predicate.Not","arg1":{"class":"foam.nanos.ruler.predicate.NewEqOld"}},
-      {"class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus","category":"signingOfficerOnboarding","isRecurring":false}
-    ]
+    "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+    "category":"signingOfficerOnboarding",
+    "isRecurring":false
   },
   "asyncAction":{"class":"net.nanopay.crunch.compliance.SecurefactSIDniValidator"},
   "enabled":true,
@@ -32,11 +30,8 @@ p({
   "operation":3,
   "after":true,
   "predicate":{
-    "class":"foam.mlang.predicate.And",
-    "args":[
-      {"class":"foam.mlang.predicate.Not","arg1":{"class":"foam.nanos.ruler.predicate.NewEqOld"}},
-      {"class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus","category":"signingOfficerOnboarding"}
-    ]
+    "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+    "category":"signingOfficerOnboarding"
   },
   "asyncAction":{
     "class": "net.nanopay.crunch.compliance.PersonSanctionValidator"
@@ -58,11 +53,9 @@ p({
   "operation":3,
   "after":true,
   "predicate":{
-    "class":"foam.mlang.predicate.And",
-    "args":[
-      {"class":"foam.mlang.predicate.Not","arg1":{"class":"foam.nanos.ruler.predicate.NewEqOld"}},
-      {"class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus","category":"onboarding","isRecurring":false}
-    ]
+    "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+    "category":"onboarding",
+    "isRecurring":false
   },
   "asyncAction":{"class":"net.nanopay.crunch.compliance.SecurefactLEVValidator"},
   "enabled":true,
@@ -81,11 +74,8 @@ p({
   "operation":3,
   "after":true,
   "predicate":{
-    "class":"foam.mlang.predicate.And",
-    "args":[
-      {"class":"foam.mlang.predicate.Not","arg1":{"class":"foam.nanos.ruler.predicate.NewEqOld"}},
-      {"class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus","category":"onboarding"}
-    ]
+    "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+    "category":"onboarding"
   },
   "asyncAction":{
     "class": "net.nanopay.crunch.compliance.EntitySanctionValidator"
@@ -107,11 +97,8 @@ p({
   "operation":3,
   "after":true,
   "predicate":{
-    "class":"foam.mlang.predicate.And",
-    "args":[
-      {"class":"foam.mlang.predicate.Not","arg1":{"class":"foam.nanos.ruler.predicate.NewEqOld"}},
-      {"class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus","category":"beneficialOwnerOnboarding"}
-    ]
+    "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+    "category":"beneficialOwnerOnboarding"
   },
   "action":{
     "class": "net.nanopay.crunch.compliance.BeneficialOwnerSanctionValidator"
@@ -127,7 +114,7 @@ p({
   "id":"crunch-onboard-compliance-0",
   "name":"Crunch Onboarding - User Final Compliance Rule",
   "documentation":"Final rule for User compliance.",
-  "priority":10,
+  "priority":50,
   "ruleGroup":"crunchOnboarding",
   "daoKey":"userCapabilityJunctionDAO",
   "operation":3,
@@ -180,11 +167,8 @@ p({
   "operation":3,
   "after":true,
   "predicate":{
-    "class":"foam.mlang.predicate.And",
-    "args":[
-      {"class":"foam.mlang.predicate.Not","arg1":{"class":"foam.nanos.ruler.predicate.NewEqOld"}},
-      {"class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus","category":"businessDirectorOnboarding"}
-    ]
+    "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+    "category":"businessDirectorOnboarding"
   },
   "action":{
     "class": "net.nanopay.crunch.compliance.BusinessDirectorSanctionValidator"
@@ -198,12 +182,12 @@ p({
 p({
   "class":"foam.nanos.ruler.Rule",
   "id":"crunch-onboard-compliance-passed-reput-0",
-  "name":"Reput Dependent Capabilities When Reviewed Capability Granted",
+  "name":"Reput Dependents when Onboarding Capability Granted on Update",
   "priority":1,
   "ruleGroup":"crunchOnboarding",
-  "documentation":"reput dependent capabilities when reviewed capability granted",
+  "documentation":"reput dependent capabilities when certain onboarding capabilities are granted on update",
   "daoKey":"userCapabilityJunctionDAO",
-  "operation":3,
+  "operation":1,
   "after":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
@@ -253,8 +237,159 @@ p({
     ]
   },
   "action":{
-    "class": "net.nanopay.crunch.compliance.ReputDependenciesOnUCJPut"
+    "class": "foam.nanos.crunch.ReputDependentUCJs"
   },
+  "enabled":true,
+  "saveHistory":true,
+  "lifecycleState":1
+})
+
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"crunch-onboard-compliance-passed-reput-1",
+  "name":"Reput Dependent Capabilities When Onboarding Capability Granted on Create",
+  "priority":1,
+  "ruleGroup":"crunchOnboarding",
+  "documentation":"reput dependent capabilities when certain onboarding capabilities are granted on create",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":0,
+  "after":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class": "foam.nanos.ruler.predicate.PropertyNEQValue",
+        "propName": "data",
+        "propValue": null
+      },
+      {
+        "class":"foam.mlang.predicate.Or",
+        "args":[
+          {
+            "class":"foam.nanos.ruler.predicate.PropertyIsClass",
+            "propName":"data",
+            "of":"net.nanopay.crunch.onboardingModels.BusinessOwnershipData"
+          },
+          {
+            "class":"foam.nanos.ruler.predicate.PropertyIsClass",
+            "propName":"data",
+            "of":"net.nanopay.crunch.onboardingModels.BusinessDirectorsData"
+          },
+          {
+            "class":"foam.nanos.ruler.predicate.PropertyIsClass",
+            "propName":"data",
+            "of":"net.nanopay.crunch.onboardingModels.CertifyDataReviewed"
+          }
+        ]
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue":{
+          "class":"foam.nanos.crunch.CapabilityJunctionStatus",
+          "ordinal":1
+        }
+      }
+    ]
+  },
+  "action":{
+    "class": "foam.nanos.crunch.ReputDependentUCJs"
+  },
+  "enabled":true,
+  "saveHistory":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"crunch-onboard-compliance-approvalrequest-0",
+  "name":"Set Fulfilled ComplianceApprovalRequest",
+  "priority":1,
+  "ruleGroup":"crunchOnboarding",
+  "documentation":"on ucj update, Set approved/rejected ComplianceApprovalRequest to isFulfilled",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":1,
+  "after":true,
+  "asyncAction":{"class":"net.nanopay.crunch.compliance.SetFulfilledComplianceApprovalRequest"},
+  "enabled":true,
+  "saveHistory":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"crunch-onboard-compliance-notification",
+  "name":"Send UCJ Expiry Notification",
+  "priority":1,
+  "ruleGroup":"crunchOnboarding",
+  "documentation":"When a UCJ goes into GRACE PERIOD or EXPIRED status, notify the user",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":1,
+  "after":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.Or",
+    "args":[
+      {
+        "class":"foam.mlang.predicate.And",
+        "args":[
+          {
+            "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+            "propName":"status",
+            "propValue":{
+              "class":"foam.nanos.crunch.CapabilityJunctionStatus",
+              "ordinal":1
+            },
+            "isNew":false
+          },
+          {
+            "class":"foam.mlang.predicate.Or",
+            "args":[
+              {
+                "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+                "propName":"status",
+                "propValue":{
+                  "class":"foam.nanos.crunch.CapabilityJunctionStatus",
+                  "ordinal":2
+                }
+              },
+              {
+                "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+                "propName":"status",
+                "propValue":{
+                  "class":"foam.nanos.crunch.CapabilityJunctionStatus",
+                  "ordinal":5
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "class":"foam.mlang.predicate.And",
+        "args":[
+          {
+            "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+            "propName":"status",
+            "propValue":{
+              "class":"foam.nanos.crunch.CapabilityJunctionStatus",
+              "ordinal":5
+            },
+            "isNew":false
+          },
+          {
+            "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+            "propName":"status",
+            "propValue":{
+              "class":"foam.nanos.crunch.CapabilityJunctionStatus",
+              "ordinal":2
+            }
+          }
+        ]
+      },
+    ]
+  },
+  "action":{"class":"net.nanopay.crunch.compliance.SendExpiryNotification"},
   "enabled":true,
   "saveHistory":true,
   "lifecycleState":1

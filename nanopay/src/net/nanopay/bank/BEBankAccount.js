@@ -34,6 +34,45 @@ foam.CLASS({
       label: '',
       value: 'images/flags/belgium.svg',
       visibility: 'RO'
+    },
+    {
+      name: 'bankCode',
+      label: 'Bank Code',
+      updateVisibility: 'RO',
+      validateObj: function(bankCode) {
+        var bankCodeRegex = /^[A-z0-9a-z]{3}$/;
+
+        if ( bankCode === '' ) {
+          return this.BANK_CODE_REQUIRED;
+        } else if ( ! bankCodeRegex.test(bankCode) ) {
+          return this.BANK_CODE_INVALID;
+        }
+      }
+    },
+    {
+      name: 'accountNumber',
+      label: 'Account No.',
+      updateVisibility: 'RO',
+      validateObj: function(accountNumber) {
+        var accNumberRegex = /^[0-9]{7}$/;
+
+        if ( accountNumber === '' ) {
+          return this.ACCOUNT_NUMBER_REQUIRED;
+        } else if ( ! accNumberRegex.test(accountNumber) ) {
+          return this.ACCOUNT_NUMBER_INVALID;
+        }
+      }
+    },
+    {
+      class: 'String',
+      name: 'checkDigit',
+      section: 'accountDetails',
+      label: 'Check Digit',
+      updateVisibility: 'RO'
+    },
+    {
+      name: 'desc',
+      visibility: 'HIDDEN'
     }
   ]
 });

@@ -43,6 +43,7 @@ p({"class":"foam.nanos.ruler.RuleGroup","id":"txapprovals"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"Payment"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"smeBusinessCompliance"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"GD"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"FEPWebOnboarding"})
 p({
   "class":"foam.nanos.ruler.RuleGroup",
   "id":"bankOperations",
@@ -76,6 +77,7 @@ p({"class":"foam.nanos.ruler.RuleGroup","id":"UpdateInvoiceByTransaction"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"businessInvitations"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"invitationAntiSpamCheck"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"crunchOnboarding"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"AFEXCrunchOnboarding"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"selfApprovalPrevention"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"accessControlChange"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"paymentProvidersCapabilities"})

@@ -47,6 +47,8 @@ lineItemTax
 lineItemTypeAccounts
 lineItemTypes
 liquiditySettings
+liquidUserCapabilityJunctions
+locales
 menus
 mspSetup
 notifications
@@ -87,6 +89,7 @@ transactionLimits
 transactionPurposes
 transactions
 txnProcessors
+userCapabilityJunctionHistory
 userCapabilityJunctions
 users
 xeroConfig

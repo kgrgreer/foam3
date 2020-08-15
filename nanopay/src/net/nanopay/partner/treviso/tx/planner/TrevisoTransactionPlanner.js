@@ -31,7 +31,8 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.country.br.tx.ExchangeLimitTransaction',
-    'net.nanopay.partner.treviso.tx.NatureCodeLineItem',
+    'net.nanopay.partner.treviso.TrevisoService',
+    'net.nanopay.country.br.tx.NatureCodeLineItem',
     'net.nanopay.partner.treviso.tx.TrevisoTransaction',
   ],
 
@@ -87,34 +88,30 @@ foam.CLASS({
       txn.copyFrom(requestTxn);
       txn.clearLineItems();
 
-      // TODO replace with real logic once api is completed
-      txn.setAmount(requestTxn.getDestinationAmount()*5);
-      txn.setDestinationCurrency("USD");
+      TrevisoService service = (TrevisoService) x.get("trevisoService");
+      FXQuote fxQuote = service.getFXRate(requestTxn.getSourceCurrency(), requestTxn.getDestinationCurrency(), 0, requestTxn.getDestinationAmount(),
+      null, null, requestTxn.findSourceAccount(x).getOwner(), null);
+      txn.setAmount(fxQuote.getSourceAmount());
 
       txn.addNext(createCompliance(txn));
       txn.addNext(createLimit(txn));
 
-      TrevisoTransaction placeHolder = new TrevisoTransaction();
-      placeHolder.copyFrom(requestTxn);
-      placeHolder.setAmount(requestTxn.getDestinationAmount()*5);
-      placeHolder.setName("Treviso transaction");
-      placeHolder.setPaymentProvider(PAYMENT_PROVIDER);
-      placeHolder.setIsQuoted(true);
-      placeHolder.setPlanner(this.getId());
-      this.addLineItems(x, placeHolder, requestTxn);
-
-      FXQuote fxQuote = new FXQuote();
-      fxQuote.setSourceCurrency("USD");
-      fxQuote.setTargetCurrency("BRL");
-      fxQuote.setRate(5.0);
+      TrevisoTransaction trevisoTxn = new TrevisoTransaction();
+      trevisoTxn.copyFrom(requestTxn);
+      trevisoTxn.setAmount(fxQuote.getSourceAmount());
+      trevisoTxn.setName("Treviso transaction");
+      trevisoTxn.setPaymentProvider(PAYMENT_PROVIDER);
+      trevisoTxn.setIsQuoted(true);
+      trevisoTxn.setPlanner(this.getId());
+      this.addLineItems(x, trevisoTxn, requestTxn); 
 
       FXLineItem fxLineItem = new FXLineItem();
-      fxLineItem.setRate(fxQuote.getRate());
+      fxLineItem.setRate(1/fxQuote.getRate());
       fxLineItem.setSourceCurrency(fxQuote.findSourceCurrency(x));
       fxLineItem.setDestinationCurrency(fxQuote.findTargetCurrency(x));
-      placeHolder.addLineItems( new TransactionLineItem[] { fxLineItem } );
+      trevisoTxn.addLineItems( new TransactionLineItem[] { fxLineItem } );
       txn.setStatus(TransactionStatus.COMPLETED);
-      txn.addNext(applyFee(x, quote, placeHolder));
+      txn.addNext(applyFee(x, quote, trevisoTxn));
       return txn;
     `
     },

@@ -18,4 +18,6 @@ p({"class":"net.nanopay.integration.ErrorCode","id":919,"category":"Customer Ini
 p({"class":"net.nanopay.integration.ErrorCode","id":920,"category":"Customer Initiated Returns, Debits Only","fullText":"Agreement Revoked - Business","abbreviation":"ARE/AGB"})
 p({"class":"net.nanopay.integration.ErrorCode","id":921,"category":"Customer Initiated Returns, Debits Only","fullText":"No Confirmation/Pre-Notification - Business","abbreviation":"PNE/PRB"})
 p({"class":"net.nanopay.integration.ErrorCode","id":922,"category":"Customer Initiated Returns, Credits Only","fullText":"Customer Intiated Return","abbreviation":"REC/CIR"})
+p({"class":"net.nanopay.integration.ErrorCode","id":923,"category":"Returned/Dishonoured Items","fullText":"Invalid/Incorrect Institution No.","abbreviation":"INV/INS"})
 p({"class":"net.nanopay.integration.ErrorCode","id":990,"category":"Default","fullText":"Institution in Default","abbreviation":"DEF/DEF"})
+p({"class":"net.nanopay.integration.ErrorCode","id":991,"category":"Default","fullText":"Investigation","abbreviation":"DEF/INV"})

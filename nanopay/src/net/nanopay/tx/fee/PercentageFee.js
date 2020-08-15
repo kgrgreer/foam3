@@ -28,7 +28,7 @@ foam.CLASS({
     'name',
     'label',
     {
-      class: 'Float',
+      class: 'Double',
       name: 'percentage',
       section: 'basicInfo'
     },

@@ -180,6 +180,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'emailVerified',
+      value: true,
       hidden: true
     },
     {

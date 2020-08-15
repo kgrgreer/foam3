@@ -29,9 +29,6 @@ foam.CLASS({
       box-shadow: none;
       border: none;
     }
-    ^ .link {
-      display: none;
-    }
     ^ .checkBoxText {
       font-size: 10px;
       color: /*%GREY1%*/ #8e9090;
@@ -39,7 +36,7 @@ foam.CLASS({
     ^ .net-nanopay-documents-AcceptanceDocumentUserInputView .checkBox {
       display: none;
     }
-    ^ input {
+    ^ input:not([type="checkbox"]) {
       width: 100%;
     }
     ^ .foam-u2-layout-Cols {

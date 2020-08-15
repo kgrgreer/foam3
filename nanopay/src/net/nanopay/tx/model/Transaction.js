@@ -1294,6 +1294,13 @@ foam.CLASS({
     `
   },
   {
+    name: 'calculateErrorCode',
+    type: 'Long',
+    javaCode: `
+      return 0l;
+    `
+  },
+  {
     name: 'findPlanner',
     documentation: 'Find the planner that created this transaction',
     args: [

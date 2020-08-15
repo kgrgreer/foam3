@@ -53,7 +53,7 @@ foam.CLASS({
         UserCapabilityJunctionDAO ucjDAO = new UserCapabilityJunctionDAO.Builder(x).build();
 
         Capability capability = (Capability) ucj.findTargetId(x);
-        User user = (User) ucjDAO.saveDataToDAO(x, capability, ucj, false);
+        User user = (User) ucj.saveDataToDAO(x, capability, false);
 
         DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
         try {

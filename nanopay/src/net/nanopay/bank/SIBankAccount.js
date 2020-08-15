@@ -32,8 +32,78 @@ foam.CLASS({
     {
       name: 'flagImage',
       label: '',
-      value: 'images/flags/india.png',
+      value: 'images/flags/slovenia.svg',
       visibility: 'RO'
+    },
+    {
+      name: 'bankCode',
+      label: 'Bank Code',
+      updateVisibility: 'RO',
+      validateObj: function(bankCode) {
+        var regex = /^[A-z0-9a-z]{2}$/;
+
+        if ( bankCode === '' ) {
+          return this.BANK_CODE_REQUIRED;
+        } else if ( ! regex.test(bankCode) ) {
+          return this.BANK_CODE_INVALID;
+        }
+      }
+    },
+    {
+      name: 'accountNumber',
+      label: 'Account No.',
+      updateVisibility: 'RO',
+      view: {
+        class: 'foam.u2.tag.Input',
+        placeholder: '12345678',
+        onKey: true
+      },
+      preSet: function(o, n) {
+        return /^\d*$/.test(n) ? n : o;
+      },
+      tableCellFormatter: function(str) {
+        if ( ! str ) return;
+        var displayAccountNumber = '***' + str.substring(str.length - 4, str.length)
+        this.start()
+          .add(displayAccountNumber);
+        this.tooltip = displayAccountNumber;
+      },
+      validateObj: function(accountNumber) {
+        var accNumberRegex = /^[0-9]{8}$/;
+
+        if ( accountNumber === '' ) {
+          return this.ACCOUNT_NUMBER_REQUIRED;
+        } else if ( ! accNumberRegex.test(accountNumber) ) {
+          return this.ACCOUNT_NUMBER_INVALID;
+        }
+      }
+    },
+    {
+      class: 'String',
+      name: 'branchCode',
+      label: 'Branch Code',
+      section: 'accountDetails',
+      updateVisibility: 'RO',
+      validateObj: function(branchCode) {
+        var regex = /^[0-9]{3}$/;
+
+        if ( branchCode === '' ) {
+          return this.BRANCH_CODE_REQUIRED;
+        } else if ( ! regex.test(branchCode) ) {
+          return this.BRANCH_CODE_INVALID;
+        }
+      }
+    },
+    {
+      class: 'String',
+      name: 'checkDigit',
+      label: 'Check/Control Digits',
+      section: 'accountDetails',
+      updateVisibility: 'RO'
+    },
+    {
+      name: 'desc',
+      visibility: 'HIDDEN'
     }
   ]
 });

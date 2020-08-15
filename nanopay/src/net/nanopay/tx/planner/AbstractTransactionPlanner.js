@@ -186,6 +186,7 @@ foam.CLASS({
           //TODO: signing
           // add the planner id for validation
           txn.setPlanner(this.getId());
+          txn = createSummaryLineItems(x, txn);
           quote.addPlan(txn);
           if (getBestPlan()) {
             quote.setPlan(txn);
@@ -279,6 +280,18 @@ foam.CLASS({
         return true;
         // To be filled out in extending class.
       `
+    },
+    {
+      name: 'createSummaryLineItems',
+      documentation: 'group up similar line items',
+      type: 'net.nanopay.tx.model.Transaction',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
+      ],
+      javaCode: `
+        return txn;
+        `
     },
     {
       name: 'applyFee',

@@ -29,11 +29,6 @@ import foam.util.SafetyUtil;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
-import java.time.DayOfWeek;
-import java.time.format.DateTimeFormatter;
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.Map;
 import net.nanopay.partner.treviso.api.FepWebResponse;
 import net.nanopay.partner.treviso.api.LoginRequest;
@@ -300,33 +295,4 @@ public class TrevisoAPIService extends ContextAwareSupport implements TrevisoAPI
       throw e;
     }
   }
-
-  public PTaxDollarRateResponse getLatestPTaxRates() {
-    try {
-      String endpoint = getCredentials().getBrPtaxBaseUrl() + "DollarRateDate(dataCotacao=@dataCotacao)";
-      String latestDate = latestDateSkippingWeekends().format(DateTimeFormatter.ofPattern("MM-dd-yyyy"));
-      Map<String, String> params = Map.of(
-        "@dataCotacao", "'" + latestDate + "'",
-        "$format", "json"
-      );
-      CloseableHttpResponse httpResponse = sendGet(endpoint, params);
-      return (PTaxDollarRateResponse) jsonParser.parseString(parseHttpResponse(httpResponse, endpoint), PTaxDollarRateResponse.class);
-    } catch (Exception e) {
-      logger.error(e);
-      throw e;
-    }
-  }
-
-  public static LocalDate latestDateSkippingWeekends() {
-    LocalDate result = Instant.now().atZone(ZoneId.systemDefault()).toLocalDate();
-    int subtractedDays = 0;
-    while ( subtractedDays < 1 ) {
-      result = result.minusDays(1);
-      if ( ! (result.getDayOfWeek() == DayOfWeek.SATURDAY || result.getDayOfWeek() == DayOfWeek.SUNDAY) ) {
-        ++subtractedDays;
-      }
-    }
-    return result;
-  }
-
 }

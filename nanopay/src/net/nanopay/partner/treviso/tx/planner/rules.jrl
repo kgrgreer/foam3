@@ -12,6 +12,11 @@ p({
     "class":"foam.mlang.predicate.And",
     "args":[
       {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"parent",
+        "propValue":null
+      },
+      {
         "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"sourceAccount",
         "of":"net.nanopay.bank.BankAccount"
@@ -26,11 +31,7 @@ p({
         "propName":"sourceUnit",
         "propValue":"BRL"
       },
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
-        "propName":"destinationUnit",
-        "propValue":"USD"
-      },
+
       {
         "class":"net.nanopay.tx.planner.predicate.IsAccountOwnerAFEXUserPredicate",
       },
@@ -54,6 +55,11 @@ p({
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+        "propName":"parent",
+        "propValue": null
+      },
       {
         "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"sourceAccount",
@@ -84,3 +90,65 @@ p({
   "spid": "treviso",
   "lifecycleState":1
 })
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"ca9af304-7545-47f0-8863-c61a3d654148","name":"Treviso create exchange rule",
+  "documentation":"Rule to create exchange when transaction is PENDING.",
+  "priority":100,
+  "ruleGroup":"TrevisoPlanner",
+  "daoKey":"localTransactionDAO",
+  "operation":1,
+  "after":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of":"net.nanopay.partner.treviso.tx.TrevisoTransaction"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue":{"class":"net.nanopay.tx.model.TransactionStatus","ordinal":0}
+      }
+    ]
+  },
+  "asyncAction":{
+    "class":"net.nanopay.partner.treviso.tx.TrevisoCreateExchange"
+  },
+  "enabled":true,
+  "saveHistory":true,
+  "lifecycleState":1
+})
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id":"89fb9b97-7e28-4112-8213-3c3323ab0c1b",
+  "name": "Summary line item planner",
+  "ruleGroup": "TrevisoPlanner",
+  "documentation": "Summary Transaction line creator",
+  "daoKey": "transactionPlannerDAO",
+  "operation": 0,
+  "after": true,
+  "priority": 100,
+  "predicate": {
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"sourceUnit",
+        "propValue":"BRL"
+      },
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"Treviso"
+      }
+    ]
+  },
+  "action": {
+    "class": "net.nanopay.partner.treviso.tx.TrevisoSummaryLineItemRule"
+  },
+  "enabled": true,
+  "lifecycleState":1
+})
+
