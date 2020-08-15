@@ -32,20 +32,30 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
   ],
 
+  messages: [
+    { name: 'INVALID_CPF', messages: 'Invalid CPF.' }
+  ],
+
   properties: [
     {
       name: 'data',
+      label: 'CPF',
       class: 'String',
+      view: {
+        class: 'foam.u2.TextField',
+        placeholder: '12345678910',
+        minLength: 11,
+        maxLength: 11
+      },
       validationPredicates: [
         {
           args: ['data'],
           predicateFactory: function(e) {
-            return e.AND(
-              e.EQ(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.CPF.DATA }), 11)
-            );
+            return e.EQ(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.CPF.DATA }), 11);
           }
         }
       ],
+      errorMessage: 'INVALID_CPF'
     }
   ],
 
@@ -56,7 +66,7 @@ foam.CLASS({
         try {
           User agent = ((Subject) x.get("subject")).getRealUser();
           if ( ! ((FederalRevenueService) x.get("federalRevenueService")).validateCpf(getData(), agent.getId()) )
-            throw new RuntimeException("Invalid CPF");
+            throw new RuntimeException(INVALID_CPF);
         } catch(Throwable t) {
           throw t;
         }
