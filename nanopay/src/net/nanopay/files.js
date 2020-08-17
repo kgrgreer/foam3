@@ -1628,6 +1628,7 @@ FOAM_FILES([
   { name: 'net/nanopay/country/br/NatureCode' },
   { name: 'net/nanopay/country/br/NatureCodeRate' },
   { name: 'net/nanopay/country/PermittedCountryFilterDAO' },
+  { name: 'net/nanopay/country/br/NatureCodePaymentProviderJunction' },
 
   // Treviso
   { name: 'net/nanopay/partner/treviso/FepWebUserUpdatingRule'},

@@ -30,7 +30,7 @@ foam.CLASS({
       name: 'operationType',
       validateObj: function(code) {
         var regex = /^[0-9]{5}$/;
-        if ( ! regex.test(code) && group != null) {
+        if ( ! regex.test(code) && group != null ) {
           return this.ENTER_NATURE_CODE;
         }
       }
