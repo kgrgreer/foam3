@@ -84,6 +84,7 @@ tests
 themes
 themeDomains
 ticketStatuses
+timezones
 transactionfees
 transactionLimits
 transactionPurposes

@@ -1,4 +1,3 @@
-// TODO: consider requiring nature code in predicate
 p({
   class: "net.nanopay.tx.fee.TransactionFeeRule",
   id: "91194da9-8391-436a-8468-fa2c706126b8",
@@ -9,8 +8,35 @@ p({
   feeClass: "net.nanopay.tx.FeeLineItem",
   enabled: true,
   predicate: {
-    class: "foam.nanos.ruler.predicate.IsInstancePredicate",
-    of: "net.nanopay.partner.treviso.tx.TrevisoTransaction"
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.nanos.ruler.predicate.IsInstancePredicate",
+        of: "net.nanopay.partner.treviso.tx.TrevisoTransaction"
+      },
+      {
+        class: "foam.mlang.predicate.Eq",
+        arg1: {
+          class: "foam.mlang.expr.Dot",
+          arg1: {
+            class: "foam.mlang.ContextObject",
+            key: "NEW"
+          },
+          arg2: {
+            class: "foam.mlang.PredicatedExpr",
+            arg1: {
+              class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+              of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+              propName: "natureCode"
+            }
+          }
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: true
+        }
+      }
+    ]
   },
   spid: "treviso",
   lifecycleState:1

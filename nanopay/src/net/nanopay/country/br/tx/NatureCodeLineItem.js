@@ -38,8 +38,7 @@ foam.CLASS({
   properties: [
     {
       name: 'natureCode',
-      class: 'Reference',
-      of: 'net.nanopay.country.br.NatureCode',
+      class: 'String',
       label: 'Nature Code',
       required: true,
       validationPredicates: [
