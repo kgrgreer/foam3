@@ -1080,12 +1080,13 @@ var classes = [
   'net.nanopay.tx.fee.test.TransactionFeeRuleTest',
 
   // Treviso
-  'net.nanopay.country.br.NatureCode',
   'net.nanopay.country.br.CNPJ',
   'net.nanopay.country.br.CPF',
   'net.nanopay.country.PermittedCountryFilterDAO',
   'net.nanopay.country.br.ExchangeServiceInterface',
   'net.nanopay.country.br.FederalRevenueService',
+  'net.nanopay.country.br.NatureCode',
+  'net.nanopay.country.br.NatureCodeRate',
   'net.nanopay.country.br.OpenData',
   'net.nanopay.country.br.PTaxRate',
   'net.nanopay.country.br.PTaxDollarRateResponse',
@@ -1177,7 +1178,7 @@ var classes = [
   'net.nanopay.crunch.onboardingModels.SigningOfficerCapabilityInterceptPredicate',
   'net.nanopay.crunch.onboardingModels.UserIsSigningOfficerOfBusiness',
 
-  // crunch notification 
+  // crunch notification
   'net.nanopay.crunch.UCJExpiryReminderCron',
   'net.nanopay.crunch.compliance.SendExpiryNotification',
 
@@ -1191,7 +1192,7 @@ var classes = [
   'net.nanopay.crunch.compliance.SecurefactLEVValidator',
   'net.nanopay.crunch.compliance.UserComplianceApproval',
   'net.nanopay.crunch.compliance.SetFulfilledComplianceApprovalRequest',
-  
+
   // crunch afex
   'net.nanopay.partner.afex.crunch.AFEXBusinessOnboardingRule',
   'net.nanopay.partner.afex.crunch.BusinessHasVerifiedBankAccount',

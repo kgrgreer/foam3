@@ -358,7 +358,7 @@ foam.CLASS({
 			name: "descricao2"
 		},
 		{
-			class: "foam.core.Double",
+			class: "foam.core.String",
 			name: "natureza",
 			required: false
 		},

@@ -16,18 +16,34 @@
  */
 
 foam.CLASS({
-	package: "net.nanopay.partner.treviso.api",
-	name: "ResponseNatureza",
-	properties: [
-		{
-			class: "FObjectArray",
-			name: "natureza",
-			of: "net.nanopay.partner.treviso.api.Natureza"
-		},
-		{
-			class: "FObjectProperty",
-			name: "serviceStatus",
-			of: "net.nanopay.partner.treviso.api.ServiceStatus"
-		}
-	]
+  package: 'net.nanopay.country.br',
+  name: 'NatureCodeRate',
+
+  properties: [
+    {
+      class: 'String',
+      name: 'id'
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.country.br.NatureCode',
+      name: 'natureCode'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.Country',
+      name: 'country',
+      documentation: 'NatureCode specific country.',
+    },
+    {
+      class: 'Double',
+      name: 'iof',
+      value: 0
+    },
+    {
+      class: 'Double',
+      name: 'irs',
+      value: 0
+    }
+  ]
 });

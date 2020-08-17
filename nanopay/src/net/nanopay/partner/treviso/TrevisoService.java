@@ -454,7 +454,7 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
         throw new RuntimeException("Error while calling searchNatureza: " + status.getMENSAGEM());
 
       if ( response.getSearchNaturezaResult().getNatureza() != null ) {
-        for ( Natureza nCode : response.getSearchNaturezaResult().getNatureza().getNatureza() ) {
+        for ( Natureza nCode : response.getSearchNaturezaResult().getNatureza() ) {
           natureCodes.add(nCode);
         }
       }

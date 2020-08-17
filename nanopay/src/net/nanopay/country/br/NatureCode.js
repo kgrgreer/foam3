@@ -21,29 +21,58 @@ foam.CLASS({
   extends: 'foam.nanos.crunch.Capability',
 
   messages: [
-    { name: 'ENTER_NATURE_CODE', message: 'Please enter a Nature Code.' } 
+    { name: 'ENTER_NATURE_CODE', message: 'Please enter a Nature Code.' }
   ],
 
   properties: [
     {
-      class: 'Reference',
-      of: 'net.nanopay.country.br.NatureCode',
-      name: 'group'
+      class: 'String',
+      name: 'operationType',
+      validateObj: function(code) {
+        var regex = /^[0-9]{5}$/;
+        if ( ! regex.test(code) && group != null) {
+          return this.ENTER_NATURE_CODE;
+        }
+      }
     },
     {
-      class: 'Reference',
-      of: 'foam.nanos.auth.Country',
-      name: 'country'
+      class: 'String',
+      name: 'payerType',
+      documentation: '00 - Physical person domiciled in the country, 09 - Non-financial company - private'
     },
-    { 
-      class: 'String', 
-      name: 'code', 
-      validateObj: function(code) { 
-        var regex = /^[0-9]{5}$/;
-        if ( ! regex.test(code) && group != null) { 
-          return this.ENTER_NATURE_CODE; 
-        } 
-      } 
+    {
+      class: 'String',
+      name: 'approvalType'
+    },
+    {
+      class: 'String',
+      name: 'payeeType',
+      documentation: '02 - Physical person domiciled abroad, 05 - Non-financial company - private, 90 - No payer/recipient'
+    },
+    {
+      class: 'String',
+      name: 'groupCode',
+      value: '90',
+      documentation: '90 - others'
+    }
+  ],
+
+  methods: [
+    {
+      name: 'getCode',
+      type: 'String',
+      code: function() {
+        return operationType.concat(payerType, approvalType, payeeType, groupCode);
+      },
+      javaCode: `
+        StringBuilder str = new StringBuilder();
+        str.append(getOperationType());
+        str.append(getPayerType());
+        str.append(getApprovalType());
+        str.append(getPayeeType());
+        str.append(getGroupCode());
+        return str.toString();
+      `
     }
   ]
 });
