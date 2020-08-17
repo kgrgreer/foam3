@@ -32,7 +32,7 @@ foam.CLASS({
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.country.br.tx.ExchangeLimitTransaction',
     'net.nanopay.partner.treviso.TrevisoService',
-    'net.nanopay.partner.treviso.tx.NatureCodeLineItem',
+    'net.nanopay.country.br.tx.NatureCodeLineItem',
     'net.nanopay.partner.treviso.tx.TrevisoTransaction',
   ],
 
@@ -89,7 +89,7 @@ foam.CLASS({
       txn.clearLineItems();
 
       TrevisoService service = (TrevisoService) x.get("trevisoService");
-      FXQuote fxQuote = service.getFXRate(requestTxn.getSourceCurrency(), requestTxn.getDestinationCurrency(), requestTxn.getAmount(), requestTxn.getDestinationAmount(),
+      FXQuote fxQuote = service.getFXRate(requestTxn.getSourceCurrency(), requestTxn.getDestinationCurrency(), 0, requestTxn.getDestinationAmount(),
       null, null, requestTxn.findSourceAccount(x).getOwner(), null);
       txn.setAmount(fxQuote.getSourceAmount());
 
@@ -107,8 +107,8 @@ foam.CLASS({
 
       FXLineItem fxLineItem = new FXLineItem();
       fxLineItem.setRate(1/fxQuote.getRate());
-      fxLineItem.setSourceCurrency(fxQuote.findTargetCurrency(x));
-      fxLineItem.setDestinationCurrency(fxQuote.findSourceCurrency(x));
+      fxLineItem.setSourceCurrency(fxQuote.findSourceCurrency(x));
+      fxLineItem.setDestinationCurrency(fxQuote.findTargetCurrency(x));
       trevisoTxn.addLineItems( new TransactionLineItem[] { fxLineItem } );
       txn.setStatus(TransactionStatus.COMPLETED);
       txn.addNext(applyFee(x, quote, trevisoTxn));

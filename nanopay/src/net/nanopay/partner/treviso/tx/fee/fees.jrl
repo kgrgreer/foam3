@@ -210,3 +210,135 @@ p({
   },
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
+
+// FTT Rates
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "6498491c-3237-4f82-b46a-2d2d5f3f3046-001",
+  name: "FTT Rate",
+  percentage: 0.38,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+        of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+        propName: "natureCode",
+        propValue: "10001"
+      }
+    ]
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "6498491c-3237-4f82-b46a-2d2d5f3f3046-002",
+  name: "FTT Rate",
+  percentage: 1.1,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+        of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+        propName: "natureCode",
+        propValue: "10002"
+      }
+    ]
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "6498491c-3237-4f82-b46a-2d2d5f3f3046-003",
+  name: "FTT Rate",
+  percentage: 0.38,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+        of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+        propName: "natureCode",
+        propValue: "10003"
+      }
+    ]
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "6498491c-3237-4f82-b46a-2d2d5f3f3046-004",
+  name: "FTT Rate",
+  percentage: 0.38,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+        of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+        propName: "natureCode",
+        propValue: "20001"
+      }
+    ]
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "6498491c-3237-4f82-b46a-2d2d5f3f3046-005",
+  name: "FTT Rate",
+  percentage: 0.38,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+        of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+        propName: "natureCode",
+        propValue: "20002"
+      }
+    ]
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+
+// IRS Rates
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "83a864bc-f34c-4b1f-86de-18097383a19a-001",
+  name: "IRS Rate",
+  percentage: 10.0,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "net.nanopay.tx.fee.predicate.PaymentCorridorPredicate",
+        paymentProvider: "Treviso",
+        sourceCountry: "BR",
+        targetCountry: "US"
+      },
+      {
+        class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+        of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+        propName: "natureCode",
+        propValue: "10002"
+      }
+    ]
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "83a864bc-f34c-4b1f-86de-18097383a19a-002",
+  name: "IRS Rate",
+  percentage: 15.0,
+  predicate: {
+    class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+    of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+    propName: "natureCode",
+    propValue: "10002"
+  },
+  order: 10,
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})

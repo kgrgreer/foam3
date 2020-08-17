@@ -150,6 +150,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/SKBankAccount' },
   { name: 'net/nanopay/bank/SIBankAccount' },
   { name: 'net/nanopay/bank/ESBankAccount' },
+  { name: 'net/nanopay/bank/CNBankAccount' },
   { name: 'net/nanopay/bank/BankAccountStatus' },
   { name: 'net/nanopay/bank/BankAccountController', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/BankPickCurrencyView', flags: ['web'] },
@@ -165,6 +166,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/SummaryTransactionLineItem' },
   { name: 'net/nanopay/tx/FeeSummaryTransactionLineItem' },
   { name: 'net/nanopay/tx/FxSummaryTransactionLineItem' },
+  { name: 'net/nanopay/tx/EtaSummaryTransactionLineItem' },
+  { name: 'net/nanopay/tx/planner/SummaryLineItemRule' },
 
   { name: 'net/nanopay/model/BusinessSector' },
   { name: 'net/nanopay/model/BusinessType' },
@@ -924,6 +927,7 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/MenuChoiceSelection', flags: ['web'] },
   { name: 'net/nanopay/ui/MenuRowView', flags: ['web'] },
   { name: 'net/nanopay/ui/DetailedActionBooleanView', flags: ['web'] },
+  { name: 'net/nanopay/ui/topNavigation/LanguageChoiceView', flags: ['web'] },
 
   // liquidity
    { name: 'net/nanopay/liquidity/LiquiditySettings' },
@@ -1542,6 +1546,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/fee/PercentageFee' },
   { name: 'net/nanopay/tx/fee/TransactionFeeRule' },
   { name: 'net/nanopay/tx/fee/Relationships' },
+  { name: 'net/nanopay/tx/fee/predicate/HasLineItemPredicate' },
   { name: 'net/nanopay/tx/fee/predicate/IsDomesticTransaction' },
   { name: 'net/nanopay/tx/fee/predicate/PaymentCorridorPredicate' },
   { name: 'net/nanopay/tx/fee/test/TransactionFeeRuleTest' },
@@ -1606,6 +1611,9 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/AFXMassachusettsDisclosure' },
   { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/AFXNewYorkDisclosure' },
   { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/AFXWashingtonDisclosure' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/CABankAccountAuthAgreement' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/RecourseAgreement' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/CancellationAgreement' },
   { name: 'net/nanopay/crunch/acceptanceDocuments/BaseAcceptanceDocumentCapability' },
 
   // msp
@@ -1624,9 +1632,10 @@ FOAM_FILES([
   { name: 'net/nanopay/country/PermittedCountryFilterDAO' },
 
   // Treviso
+  { name: 'net/nanopay/partner/treviso/FepWebUserUpdatingRule'},
   { name: 'net/nanopay/partner/treviso/TrevisoCredientials' },
   { name: 'net/nanopay/partner/treviso/TrevisoClient' },
-  { name: 'net/nanopay/partner/treviso/tx/NatureCodeLineItem' },
+  { name: 'net/nanopay/country/br/tx/NatureCodeLineItem' },
   { name: 'net/nanopay/partner/treviso/tx/TrevisoTransaction' },
   { name: 'net/nanopay/partner/treviso/tx/planner/TrevisoTransactionPlanner' },
   { name: 'net/nanopay/partner/treviso/tx/TrevisoCreateExchange' },

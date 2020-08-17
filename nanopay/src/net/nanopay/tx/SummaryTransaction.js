@@ -110,6 +110,9 @@ foam.CLASS({
 
         Transaction t = getStateTxn(x);
         ChainSummary cs = new ChainSummary();
+        if (t.getStatus() == TransactionStatus.DECLINED) {
+          cs.setErrorCode(t.calculateErrorCode());
+        }
         cs.setStatus(t.getStatus());
         cs.setCategory(categorize_(t));
         cs.setSummary(cs.toSummary());

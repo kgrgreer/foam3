@@ -40,11 +40,6 @@ foam.CLASS({
       hidden: true
     },
     {
-      class: 'String',
-      name: 'summaryType',
-      hidden: true
-    },
-    {
       name: 'id',
       visibility: 'HIDDEN'
     },

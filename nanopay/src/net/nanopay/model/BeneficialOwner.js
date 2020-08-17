@@ -240,11 +240,9 @@ foam.CLASS({
         return this.Address.create();
       },
       view: function(_, X) {
-        var m = foam.mlang.Expressions.create();
-        var dao = X.countryDAO.where(m.OR(m.EQ(foam.nanos.auth.Country.ID, 'CA'),m.EQ(foam.nanos.auth.Country.ID, 'US')))
         return {
           class: 'net.nanopay.sme.ui.AddressView',
-          customCountryDAO: dao,
+          customCountryDAO: X.countryDAO,
           showValidation: X.data.showValidation
         };
       },

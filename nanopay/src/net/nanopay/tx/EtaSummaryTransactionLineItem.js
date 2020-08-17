@@ -15,32 +15,46 @@
  * from nanopay Corporation.
  */
 
+/**
+ * @license
+ * Copyright 2018 The FOAM Authors. All Rights Reserved.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 foam.CLASS({
   package: 'net.nanopay.tx',
-  name: 'InvoicedFeeLineItem',
-  extends: 'net.nanopay.tx.FeeLineItem',
+  name: 'EtaSummaryTransactionLineItem',
+  extends: 'net.nanopay.tx.SummaryTransactionLineItem',
 
-  documentation: 'A Fee LineItem whereby the fee collection occurs after the Transaction during some billing period. ',
-
-  messages: [
-      { name: 'DESCRIPTION', message: 'Invoice Fee' },
-      { name: 'NOTE_MESSAGE', message: 'Fee will be charged at the end of billing period.' },
+  javaImports: [
+    'net.nanopay.tx.Transfer',
+    'net.nanopay.tx.model.Transaction',
+    'foam.dao.DAO'
   ],
 
   properties: [
     {
-      name: 'note',
-      value: this.NOTE_MESSAGE,
-      factory: function() {
-        return this.NOTE_MESSAGE;
+      class: 'Long',
+      name: 'eta',
+      label: 'ETA',
+      view: function(_, x) {
+        let formatted = foam.core.Duration.duration(x.data.eta);
+        return foam.u2.Element.create()
+        .start()
+          .add(formatted)
+        .end();
       }
-    },
+    }
+  ],
 
+  messages: [
+    { name: 'ETA_MESSAGE', message: 'Estimated time of Arrival' }
   ],
 
   methods: [
     function toSummary() {
-      return this.DESCRIPTION;
+      return this.ETA_MESSAGE;
     }
   ]
+
 });

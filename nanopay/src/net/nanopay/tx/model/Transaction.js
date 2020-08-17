@@ -1319,15 +1319,22 @@ foam.CLASS({
       javaCode: `
       return getSourceAccount();
     `
-    },
-    {
-      name: 'findPlanner',
-      documentation: 'Find the planner that created this transaction',
-      args: [
-        { name: 'x', type: 'Context' },
-      ],
-      type: 'FObject',
-      javaCode: `
+  },
+  {
+    name: 'calculateErrorCode',
+    type: 'Long',
+    javaCode: `
+      return 0l;
+    `
+  },
+  {
+    name: 'findPlanner',
+    documentation: 'Find the planner that created this transaction',
+    args: [
+      { name: 'x', type: 'Context' },
+    ],
+    type: 'FObject',
+    javaCode: `
       //TODO: once plannerDAO is a thing this method can go away as itll be auto generated.
       DAO rulerDAO = (DAO) x.get("ruleDAO");
       return (AbstractTransactionPlanner) rulerDAO.find(getPlanner());

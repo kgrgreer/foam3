@@ -90,6 +90,18 @@ foam.CLASS({
         return foam.mlang.predicate.True.create();
       },
       javaFactory: 'return foam.mlang.MLang.TRUE;'
+    },
+    {
+      class: 'Int',
+      name: 'order',
+      documentation: `Order of the fee to be evaluated. Default to 0.
+
+        Fee Engine (FeeExpr) will evaluate fees' predicate according to the
+        "order" from the smallest to the largest.
+
+        It can be also used for setting up a default fee (without a predicate)
+        that is evaluated last by setting the "order" to a number greater than
+        other existing fees.`
     }
   ],
 

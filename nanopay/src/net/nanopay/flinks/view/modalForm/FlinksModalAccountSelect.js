@@ -51,7 +51,7 @@ foam.CLASS({
 
   css: `
     ^ {
-      width: 504px;
+      width: auto;
       max-height: 80vh;
       overflow-y: scroll;
     }
@@ -66,7 +66,7 @@ foam.CLASS({
       overflow: hidden;
     }
     ^account-card {
-      width: 456px;
+      width: auto;
       height: 83px;
       box-sizing: border-box;
       border-radius: 3px;

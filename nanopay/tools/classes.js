@@ -137,6 +137,7 @@ var classes = [
   'net.nanopay.bank.SKBankAccount',
   'net.nanopay.bank.SIBankAccount',
   'net.nanopay.bank.ESBankAccount',
+  'net.nanopay.bank.CNBankAccount',
   'net.nanopay.bank.BankAccountStatus',
   'net.nanopay.bank.CanReceiveCurrency',
   'net.nanopay.bank.GetDefaultCurrency',
@@ -618,6 +619,7 @@ var classes = [
   'net.nanopay.tx.SummaryTransactionLineItem',
   'net.nanopay.tx.FeeSummaryTransactionLineItem',
   'net.nanopay.tx.FxSummaryTransactionLineItem',
+  'net.nanopay.tx.EtaSummaryTransactionLineItem',
 
   'net.nanopay.fx.FXService',
   'net.nanopay.fx.client.ClientFXService',
@@ -1073,6 +1075,7 @@ var classes = [
   'net.nanopay.tx.fee.InformationalFee',
   'net.nanopay.tx.fee.PercentageFee',
   'net.nanopay.tx.fee.TransactionFeeRule',
+  'net.nanopay.tx.fee.predicate.HasLineItemPredicate',
   'net.nanopay.tx.fee.predicate.IsDomesticTransaction',
   'net.nanopay.tx.fee.predicate.PaymentCorridorPredicate',
   'net.nanopay.tx.fee.test.TransactionFeeRuleTest',
@@ -1144,14 +1147,17 @@ var classes = [
   'net.nanopay.partner.treviso.api.UpdateTitularResponse',
   'net.nanopay.partner.treviso.api.UserFillerDTO',
   'net.nanopay.partner.treviso.api.Workflow',
+  'net.nanopay.partner.treviso.FepWebUserUpdatingRule',
   'net.nanopay.partner.treviso.TrevisoClient',
   'net.nanopay.partner.treviso.TrevisoCredientials',
   'net.nanopay.partner.treviso.TrevisoServiceInterface',
-  'net.nanopay.partner.treviso.tx.NatureCodeLineItem',
+  'net.nanopay.country.br.tx.NatureCodeLineItem',
   'net.nanopay.partner.treviso.tx.TrevisoTransaction',
   'net.nanopay.partner.treviso.tx.planner.TrevisoTransactionPlanner',
   'net.nanopay.partner.treviso.tx.TrevisoCreateExchange',
   'net.nanopay.partner.treviso.tx.TrevisoSummaryLineItemRule',
+  'net.nanopay.tx.EtaSummaryTransactionLineItem',
+  'net.nanopay.tx.planner.SummaryLineItemRule',
 
   // crunch onboarding
   'net.nanopay.crunch.onboardingModels.CheckUserCountry',
@@ -1210,6 +1216,9 @@ var classes = [
   'net.nanopay.crunch.acceptanceDocuments.capabilities.AFXArizonaDisclosure',
   'net.nanopay.crunch.acceptanceDocuments.capabilities.AFXCaliforniaDisclosure',
   'net.nanopay.crunch.acceptanceDocuments.capabilities.AFXColoradoDisclosure',
+  'net.nanopay.crunch.acceptanceDocuments.capabilities.CABankAccountAuthAgreement',
+  'net.nanopay.crunch.acceptanceDocuments.capabilities.RecourseAgreement',
+  'net.nanopay.crunch.acceptanceDocuments.capabilities.CancellationAgreement',
   'net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability',
 
   // crunch registration

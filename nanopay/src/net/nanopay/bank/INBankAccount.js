@@ -159,6 +159,14 @@ foam.CLASS({
       of: 'net.nanopay.tx.PurposeCode',
       label: 'Purpose of Transfer',
       visibility: 'HIDDEN'
+    },
+    {
+      name: 'bankCode',
+      visibility: 'HIDDEN'
+    },
+    {
+      name: 'iban',
+      visibility: 'HIDDEN'
     }
   ],
 

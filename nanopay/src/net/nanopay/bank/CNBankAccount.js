@@ -17,44 +17,27 @@
 
 foam.CLASS({
   package: 'net.nanopay.bank',
-  name: 'SKBankAccount',
-  label: 'Slovakia Bank Account',
+  name: 'CNBankAccount',
+  label: 'China Bank Account',
   extends: 'net.nanopay.bank.BankAccount',
 
-  documentation: 'Slovakian bank account information.',
+  documentation: 'China bank account information.',
 
   properties: [
     {
       name: 'country',
-      value: 'SK',
+      value: 'CN',
       visibility: 'RO'
     },
     {
       name: 'flagImage',
       label: '',
-      value: 'images/flags/slovakia.svg',
+      value: 'images/flags/china.svg',
       visibility: 'RO'
     },
     {
-      class: 'String',
-      name: 'accountPrefix',
-      label: 'AccountPrefix',
-      section: 'accountDetails',
-      updateVisibility: 'RO'
-    },
-    {
       name: 'bankCode',
-      label: 'Bank Code',
-      updateVisibility: 'RO',
-      validateObj: function(bankCode) {
-        var regex = /^[A-z0-9a-z]{4}$/;
-
-        if ( bankCode === '' ) {
-          return this.BANK_CODE_REQUIRED;
-        } else if ( ! regex.test(bankCode) ) {
-          return this.BANK_CODE_INVALID;
-        }
-      }
+      visibility: 'HIDDEN'
     },
     {
       name: 'accountNumber',
@@ -62,7 +45,7 @@ foam.CLASS({
       updateVisibility: 'RO',
       view: {
         class: 'foam.u2.tag.Input',
-        placeholder: '1234567890123456',
+        placeholder: '123456789012',
         onKey: true
       },
       preSet: function(o, n) {
@@ -76,7 +59,7 @@ foam.CLASS({
         this.tooltip = displayAccountNumber;
       },
       validateObj: function(accountNumber) {
-        var accNumberRegex = /^[0-9]{16}$/;
+        var accNumberRegex = /^[0-9]{12}$/;
 
         if ( accountNumber === '' ) {
           return this.ACCOUNT_NUMBER_REQUIRED;
@@ -86,7 +69,7 @@ foam.CLASS({
       }
     },
     {
-      name: 'desc',
+      name: 'iban',
       visibility: 'HIDDEN'
     }
   ]

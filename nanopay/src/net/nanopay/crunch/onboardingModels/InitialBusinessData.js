@@ -29,7 +29,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'countryDAO',
+    'permittedCountryDAO',
     'user'
   ],
 
@@ -69,8 +69,8 @@ foam.CLASS({
         var m = foam.mlang.Expressions.create();
         var countryId = X.data ? X.data.countryId : null;
         var dao = countryId ? 
-          X.countryDAO.where(m.EQ(foam.nanos.auth.Country.ID, countryId)) : 
-          X.countryDAO;
+          X.permittedCountryDAO.where(m.EQ(foam.nanos.auth.Country.ID, countryId)) :
+          X.permittedCountryDAO;
 
         return {
           class: 'net.nanopay.sme.ui.AddressView',

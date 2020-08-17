@@ -40,6 +40,7 @@ foam.CLASS({
     'net.nanopay.fx.FeesFields',
     'net.nanopay.fx.FXService',
     'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.payment.PADTypeLineItem',
     'net.nanopay.tx.AbliiTransaction',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.ui.LoadingSpinner',
@@ -70,7 +71,8 @@ foam.CLASS({
     'viewData',
     'wizard',
     'updateInvoiceDetails',
-    'forceUpdate'
+    'forceUpdate',
+    'txnQuote'
   ],
 
   exports: [
@@ -301,13 +303,6 @@ foam.CLASS({
     },
     function initE() {
       let self = this;
-      // Update the rates every time the selected account changes.
-      if ( this.isPayable ) {
-        this.invoice.account$.sub(this.fetchRates);
-      } else {
-        this.invoice.destinationAccount$.sub(this.fetchBankAccount);
-      }
-
       // Format the amount & add the currency symbol
       if ( this.invoice.destinationCurrency !== undefined ) {
         this.currencyDAO.find(this.invoice.destinationCurrency)
@@ -433,9 +428,10 @@ foam.CLASS({
         .end()
         .startContext({ controllerMode: this.isReadOnly ? this.ControllerMode.VIEW : this.ControllerMode.CREATE })
           .start()
-            .show(this.slot(function(quote, isLoading) {
+            .show(this.slot(function(quote, isLoading, txnQuote) {
               if ( isLoading ) return false;
               if ( ! quote ) return;
+              if ( txnQuote.showAllLineItems ) return true;
               for ( i=0; i < quote.lineItems.length; i++ ) {
                 if ( quote.lineItems[i].requiresUserInput ) {
                   return true;
@@ -448,7 +444,7 @@ foam.CLASS({
             .end()
             .start()
               .add(
-                this.slot( function(quote) {
+                this.slot( function(quote, txnQuote) {
                   if ( ! quote ) return;
                   let e = this.E();
 
@@ -460,11 +456,13 @@ foam.CLASS({
                   }
 
                   for ( i=0; i < quote.lineItems.length; i++ ) {
-                    if ( ! quote.lineItems[i].requiresUserInput && this.SummaryTransactionLineItem.isInstance(quote.lineItems[i]) ) {
+                    if ( ! quote.lineItems[i].requiresUserInput
+                      && (txnQuote.showAllLineItems || this.SummaryTransactionLineItem.isInstance(quote.lineItems[i])) 
+                      && ! this.PADTypeLineItem.isInstance(quote.lineItems[i]) ) {
                       e.start({
                         class: 'net.nanopay.tx.LineItemCitationView',
                         data: quote.lineItems[i]
-                      })
+                      });
                     }
                   }
 
@@ -516,6 +514,7 @@ foam.CLASS({
           requestTransaction: this.requestTxn
         })
       );
+      this.txnQuote = quote;
       return quote.plan;
     }
   ],

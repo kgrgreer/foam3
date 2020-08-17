@@ -68,7 +68,7 @@ foam.CLASS({
     {
       name: 'pad',
       title: `Connect using a void check`,
-      subTitle: `Connect to your account without signing in to online banking. 
+      subTitle: `Connect to your account without signing in to online banking.
           Please ensure your details are entered properly.`,
       isAvailable: function(forContact) {
         return ! forContact;
@@ -309,6 +309,14 @@ foam.CLASS({
         }, X);
       }
     },
+    {
+      name: 'bankCode',
+      visibility: 'HIDDEN'
+    },
+    {
+      name: 'iban',
+      visibility: 'HIDDEN'
+    }
   ],
   methods: [
     async function save() {

@@ -41,6 +41,7 @@ import java.util.TimeZone;
 import net.nanopay.bank.BankAccount;
 import foam.nanos.crunch.Capability;
 import foam.nanos.crunch.UserCapabilityJunction;
+import net.nanopay.contacts.Contact;
 import net.nanopay.country.br.CNPJ;
 import net.nanopay.country.br.ExchangeServiceInterface;
 import net.nanopay.country.br.FederalRevenueService;
@@ -117,6 +118,7 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
 
   public void updateEntity(X x, long userId) {
     User user = (User) ((DAO) x.get("bareUserDAO")).find(userId);
+    if ( user instanceof Contact ) return;
     if ( user == null ) throw new RuntimeException("User not found: " + userId);
     if ( user.getAddress() == null ) throw new RuntimeException("User address cannot be null: " + userId);
 

@@ -58,7 +58,6 @@ p({
   "visible":false
 })
 
-
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-7",
@@ -69,6 +68,7 @@ p({
   "visible":false,
   "associatedEntity": 1
 })
+
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-8",
@@ -79,6 +79,7 @@ p({
   "visible":false,
   "associatedEntity": 1
 })
+
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-9",
@@ -88,6 +89,7 @@ p({
   "enabled":true,
   "visible":false
 })
+
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-10",
@@ -97,6 +99,7 @@ p({
   "enabled":true,
   "visible":false
 })
+
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-11",
@@ -116,6 +119,7 @@ p({
   "enabled":true,
   "visible":false
 })
+
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-13",
@@ -125,6 +129,7 @@ p({
   "enabled":true,
   "visible":false
 })
+
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-14",
@@ -134,6 +139,7 @@ p({
   "enabled":true,
   "visible":false
 })
+
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-15",
@@ -143,6 +149,7 @@ p({
   "enabled":true,
   "visible":false
 })
+
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-16",
@@ -162,3 +169,34 @@ p({
   "enabled":true,
   "visible":false
 })
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-20",
+  "name":"CABankAccountAuthAgreement",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.CABankAccountAuthAgreement",
+  "version":"0",
+  "enabled":true,
+  "visible":false
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-21",
+  "name":"RecourseAgreement",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.RecourseAgreement",
+  "version":"0",
+  "enabled":true,
+  "visible":false
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-22",
+  "name":"CancellationAgreement",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.CancellationAgreement",
+  "version":"0",
+  "enabled":true,
+  "visible":false
+})
+

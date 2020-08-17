@@ -62,6 +62,7 @@ foam.CLASS({
     'newButton',
     'predicate',
     'requestTxn',
+    'txnQuote',
     'updateInvoiceDetails',
     'forceUpdate'
   ],
@@ -274,6 +275,10 @@ foam.CLASS({
       name: 'reQuote',
       value: false
     },
+    {
+      class: 'FObjectProperty',
+      name: 'txnQuote',
+    }
   ],
 
   messages: [
@@ -473,6 +478,7 @@ foam.CLASS({
           requestTransaction: this.requestTxn
         })
       );
+      this.txnQuote = quote;
       return quote.plan;
     },
 

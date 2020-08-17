@@ -1,0 +1,44 @@
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"18332cc8-cd05-41d8-9892-e05cf9959c0c",
+  "name":"FepWeb Update User",
+  "priority":100,
+  "ruleGroup":"FEPWebOnboarding",
+  "documentation":"Rule to update the user information to FepWeb when it is changed by Treviso agents",
+  "daoKey":"localUserDAO",
+  "operation":1,
+  "after":true,
+  "predicate":{
+    "class": "foam.mlang.predicate.Or",
+    "args": [
+      {
+        "class": "foam.nanos.ruler.predicate.PropertyChangePredicate",
+        "propName": "address"
+      },
+      {
+        "class": "foam.mlang.predicate.And",
+        "args": [
+          {
+            "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+            "of": "net.nanopay.model.Business"
+          },
+          {
+            "class": "foam.nanos.ruler.predicate.PropertyChangePredicate",
+            "propName": "businessName"
+          }
+        ]
+      },
+      {
+        "class": "foam.nanos.ruler.predicate.PropertyChangePredicate",
+        "propName": "legalName"
+      }
+    ]
+  },
+  "asyncAction":{
+    "class": "net.nanopay.partner.treviso.FepWebUserUpdatingRule"
+  },
+  "enabled":false,
+  "saveHistory":true,
+  "spid": "treviso",
+  "lifecycleState":1
+})

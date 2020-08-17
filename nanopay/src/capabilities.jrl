@@ -4,7 +4,7 @@ p({
   "name":"Signing Officer?",
   "of":"net.nanopay.crunch.onboardingModels.SigningOfficerQuestion",
   "description":"Are you a Signing Officer?",
-  "notes":"this capability will intercept its permissions when there are no signingofficerjunctions belonging to the current business",
+  "notes":"This capability will intercept its permissions when there are no signingofficerjunctions belonging to the current business",
   "version":"0",
   "enabled":true,
   "visible":true,
@@ -17,6 +17,75 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5",
+  "name":"Personal Info for Signing Officer",
+  "of":"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData",
+  "description":"Unlock Signing Officer privileges",
+  "version":"0",
+  "enabled":true,
+  "visible":true,
+  "daoKey":"userDAO",
+  "contextDAOFindKey":"subject.realuser",
+  "reviewRequired":true,
+  "associatedEntity":2,
+  "permissionsGranted":[
+    "certifydatareviewed.rw.reviewed",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.certifyownerspercent.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.dualpartyagreementcad.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.tripartyagreementcad.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.usdafexterms.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.nanopayinternationalpaymentscustomeragreement.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.certifybankaccountownership.section.reviewAgreementDocumentsSection","description",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.cabankaccountauthagreement.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.recourseagreement.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.cancellationagreement.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxmassachusettsdisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxnewyorkdisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxwashingtondisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxcaliforniadisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxarizonadisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.tripartyagreementusd.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxcoloradodisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.abliitermsandconditions.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.abliiprivacypolicy.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.cadafexterms.section.reviewAgreementDocumentsSection"
+  ],
+  "permissionsIntercepted": [
+    "certifydatareviewed.rw.reviewed",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.certifyownerspercent.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.dualpartyagreementcad.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.tripartyagreementcad.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.usdafexterms.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.nanopayinternationalpaymentscustomeragreement.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.certifybankaccountownership.section.reviewAgreementDocumentsSection","description",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.cabankaccountauthagreement.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.recourseagreement.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.cancellationagreement.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxmassachusettsdisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxnewyorkdisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxwashingtondisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxcaliforniadisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxarizonadisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.tripartyagreementusd.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxcoloradodisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.abliitermsandconditions.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.abliiprivacypolicy.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.cadafexterms.section.reviewAgreementDocumentsSection"
+  ],
+  "interceptIf": { "class":"net.nanopay.crunch.onboardingModels.SigningOfficerCapabilityInterceptPredicate" },
+  "availabilityPredicate": {
+    "class": "foam.mlang.predicate.Not",
+    "arg1": {
+      "class":"net.nanopay.crunch.onboardingModels.CheckUserCountry",
+      "country":"BR"
+    }
+  }
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"777af38a-8225-87c8-dfdf-eeb15f71215f-123",
   "name":"Personal Info for Signing Officer",
   "of":"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData",
   "description":"Unlock Signing Officer privileges",
@@ -67,7 +136,11 @@ p({
     "net.nanopay.crunch.acceptancedocuments.capabilities.abliiprivacypolicy.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.cadafexterms.section.reviewAgreementDocumentsSection"
   ],
-  "interceptIf":{"class":"net.nanopay.crunch.onboardingModels.SigningOfficerCapabilityInterceptPredicate"}
+  "interceptIf":{ "class":"net.nanopay.crunch.onboardingModels.SigningOfficerCapabilityInterceptPredicate" }, 
+  "availabilityPredicate": {
+    "class":"net.nanopay.crunch.onboardingModels.CheckUserCountry",
+    "country":"BR"
+  }
 })
 
 p({
@@ -280,6 +353,7 @@ p({
 })
 
 p({
+  "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-76",
   "name":"Business Registration",
   "description":"Create a business to access payments and invoice on the platform.",
@@ -289,7 +363,7 @@ p({
   "enabled":true,
   "visible":true,
   "keywords":["featured"],
-  "availabilityPredicate": {
+  "availabilityPredicate":{
     "class": "foam.mlang.predicate.Not",
     "arg1": {
       "class":"net.nanopay.crunch.onboardingModels.IsBusiness" 
@@ -343,6 +417,7 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"b5f2b020-db0f-11ea-87d0-0242ac130003",
   "name":"Office Consumption",
+  "description":"Office consumption bill includes Energy, Telephone, Water, Cable TV, IPTU or Bank Statement. 3 months of billing documents required.",
   "of":"net.nanopay.crunch.document.Documents",
   "version":"0",
   "enabled":true,
@@ -354,6 +429,7 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"26d32e86-db11-11ea-87d0-0242ac130003",
   "name":"Articles Of Incorporation",
+  "description":"Document that establishes the existence of a corporation.",
   "of":"net.nanopay.crunch.document.Documents",
   "version":"0",
   "enabled":true,
@@ -364,7 +440,8 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"7e2739cc-db32-11ea-87d0-0242ac130003",
-  "name":"business latest annual report",
+  "name":"Business Latest Annual Report",
+  "description":"Formal financial statements that are published yearly and sent to company stockholders and various other interested parties.",
   "of":"net.nanopay.crunch.document.Documents",
   "version":"0",
   "enabled":true,
@@ -376,17 +453,20 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"85cee1de-db32-11ea-87d0-0242ac130003",
   "name":"Residence Consumption Bill",
+  "description":"Residence consumption bill includes Energy, Telephone, Water, Cable TV, IPTU or Bank Statement. 3 months of billing documents required.",
   "of":"net.nanopay.crunch.document.Documents",
   "version":"0",
   "enabled":true,
   "visible":true,
   "associatedEntity": 1
 })
+
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"8ad3c898-db32-11ea-87d0-0242ac130003",
-  "name":"user identity",
-  "of":"net.nanopay.crunch.document.Document",
+  "name":"User Identity",
+  "description":"Identity Document that contains full name, CPF number and photo. Valid until expire date or no longer than 10 years.",
+  "of":"net.nanopay.crunch.document.Documents",
   "version":"0",
   "enabled":true,
   "visible":true,

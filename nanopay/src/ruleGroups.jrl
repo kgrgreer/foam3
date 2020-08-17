@@ -43,6 +43,7 @@ p({"class":"foam.nanos.ruler.RuleGroup","id":"txapprovals"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"Payment"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"smeBusinessCompliance"})
 p({"class":"foam.nanos.ruler.RuleGroup","id":"GD"})
+p({"class":"foam.nanos.ruler.RuleGroup","id":"FEPWebOnboarding"})
 p({
   "class":"foam.nanos.ruler.RuleGroup",
   "id":"bankOperations",
