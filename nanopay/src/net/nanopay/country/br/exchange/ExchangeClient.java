@@ -310,7 +310,7 @@ public class ExchangeClient
         while ( children.hasNext() ) {
           SOAPElement child = (SOAPElement) children.next();
           // check that local name equals the property name
-          if ( child.getLocalName().equalsIgnoreCase(prop.getName()) ) {
+          if ( child.getLocalName().equalsIgnoreCase(prop.getName()) || child.getLocalName().equalsIgnoreCase(prop.getShortName()) ) {
             if ( prop instanceof AbstractFObjectPropertyInfo ) {
               // parse FObjectProperty
               FObject value = (FObject) getX().create(prop.getValueClass());
@@ -320,7 +320,7 @@ public class ExchangeClient
               // parse FObjectArrayProperty
               List list = new ArrayList();
               Class of = Class.forName(((AbstractFObjectArrayPropertyInfo) prop).of());
-              Iterator array = child.getChildElements(new QName("http://tempuri.org/", of.getSimpleName()));
+              Iterator array = child.getChildElements();
               while ( array.hasNext() ) {
                 SOAPElement arrayChild = (SOAPElement) array.next();
                 FObject value = (FObject) getX().create(of);
