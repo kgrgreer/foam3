@@ -442,7 +442,7 @@ foam.CLASS({
         is a calculated property used to determine whether an invoice is unpaid,
         void, pending, paid, scheduled, or overdue.
       `,
-      transient: true,
+      storageTransient: true,
       aliases: [
         's'
       ],
