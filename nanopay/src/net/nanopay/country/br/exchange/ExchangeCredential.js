@@ -15,37 +15,25 @@
   * from nanopay Corporation.
   */
 foam.CLASS({
-  package: 'net.nanopay.partner.treviso',
-  name: 'TrevisoCredientials',
+  package: 'net.nanopay.country.br.exchange',
+  name: 'ExchangeCredential',
 
   properties: [
     {
       class: 'String',
-      name: 'fepWebUsername'
+       name: 'exchangeUrl'
+    },
+    {
+      class: 'Int',
+       name: 'exchangeAgencia'
     },
     {
       class: 'String',
-      name: 'fepWebPassword'
+       name: 'exchangeUsername'
     },
     {
       class: 'String',
-      name: 'fepWebApi'
+       name: 'exchangePassword'
     },
-    {
-      class: 'String',
-      name: 'fepWebCode'
-    },
-    {
-      class: 'String',
-      name: 'fepWebCodeName'
-    },
-    {
-      class: 'String',
-       name: 'brPtaxBaseUrl'
-    },
-    {
-      class: 'String',
-       name: 'sintegraToken'
-    }
   ]
 });

@@ -1629,13 +1629,16 @@ FOAM_FILES([
   { name: 'net/nanopay/country/br/CPF' },
   { name: 'net/nanopay/country/br/CNPJ' },
   { name: 'net/nanopay/country/br/NatureCode' },
+  { name: 'net/nanopay/country/br/NatureCodeRate' },
   { name: 'net/nanopay/country/PermittedCountryFilterDAO' },
+  { name: 'net/nanopay/country/br/NatureCodePaymentProviderJunction' },
 
   // Treviso
   { name: 'net/nanopay/partner/treviso/FepWebUserUpdatingRule'},
   { name: 'net/nanopay/partner/treviso/TrevisoCredientials' },
-  { name: 'net/nanopay/partner/treviso/TrevisoClient' },
   { name: 'net/nanopay/country/br/tx/NatureCodeLineItem' },
+  { name: 'net/nanopay/partner/treviso/TrevisoCredientials' },
+  { name: 'net/nanopay/partner/treviso/FepWebClient' },
   { name: 'net/nanopay/partner/treviso/tx/TrevisoTransaction' },
   { name: 'net/nanopay/partner/treviso/tx/planner/TrevisoTransactionPlanner' },
   { name: 'net/nanopay/partner/treviso/tx/TrevisoCreateExchange' },

@@ -68,6 +68,11 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","ta
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"service.exchangeRateDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"exchangerate.read.*"})
 
+// SME Business Registration
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"service.read.smeUserRegistrationDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"service.smeUserRegistrationDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"user.rw.*"})
+
 // Payment Codes
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"service.read.paymentCodeDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"service.paymentCodeDAO"})

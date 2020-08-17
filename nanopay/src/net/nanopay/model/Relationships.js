@@ -1107,3 +1107,12 @@ foam.RELATIONSHIP({
   inverseName: 'paymentMethods',
   cardinality: '1:*'
 });
+
+foam.RELATIONSHIP({
+  cardinality: '*:*',
+  sourceModel: 'net.nanopay.country.br.NatureCode',
+  targetModel: 'net.nanopay.payment.PaymentProvider',
+  forwardName: 'paymentProviders',
+  inverseName: 'natureCodes',
+  junctionDAOKey: 'NatureCodePaymentProviderJunctionDAO'
+});

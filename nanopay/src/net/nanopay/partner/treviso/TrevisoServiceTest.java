@@ -21,39 +21,37 @@ import foam.dao.DAO;
 import foam.test.TestUtils;
 import foam.nanos.auth.Address;
 import foam.nanos.auth.User;
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.INSTANCE_OF;
 import java.util.Date;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.CABankAccount;
-import net.nanopay.country.br.ExchangeServiceInterface;
+import net.nanopay.country.br.exchange.Exchange;
+import net.nanopay.country.br.exchange.ExchangeClientMock;
+import net.nanopay.country.br.exchange.ExchangeService;
 import net.nanopay.model.Branch;
-import net.nanopay.partner.treviso.TrevisoClient;
-import net.nanopay.partner.treviso.api.TrevisoAPIServiceInterface;
-import net.nanopay.partner.treviso.api.TrevisoAPIServiceMock;
-import net.nanopay.partner.treviso.api.TrevisoAPIService;
-import net.nanopay.partner.treviso.api.TrevisoExchangeServiceMock;
+import net.nanopay.partner.treviso.FepWebClient;
+import net.nanopay.partner.treviso.api.FepWeb;
+import net.nanopay.partner.treviso.api.FepWebServiceMock;
+import net.nanopay.partner.treviso.api.FepWebService;
 import net.nanopay.payment.Institution;
 import net.nanopay.tx.model.Transaction;
-
-
-
-import static foam.mlang.MLang.AND;
-import static foam.mlang.MLang.EQ;
-import static foam.mlang.MLang.INSTANCE_OF;
 
 public class TrevisoServiceTest
   extends foam.nanos.test.Test {
 
   X x;
   protected TrevisoServiceInterface trevisoService;
-  protected ExchangeServiceInterface exchangeService;
+  protected Exchange exchangeService;
   User user;
   BankAccount testBankAccount;
 
   @Override
   public void runTest(X x) {
     this.x = x;
-    trevisoService = new TrevisoService(x, new TrevisoAPIServiceMock(x), new TrevisoExchangeServiceMock(x));
+    trevisoService = new TrevisoService(x, new FepWebServiceMock(x), new ExchangeClientMock(x));
     setUpTest();
     testSaveEntity();
     testSearchCustomer();
@@ -64,7 +62,7 @@ public class TrevisoServiceTest
     createUsers(x);
     testBankAccount = createTestBankAccount();
     ((TrevisoService) trevisoService)
-      .saveTrevisoClient(testBankAccount.getOwner(), "Active");
+      .saveFepWebClient(testBankAccount.getOwner(), "Active");
   }
 
   public void createUsers(X x) {
@@ -84,17 +82,17 @@ public class TrevisoServiceTest
   }
 
   private void testSaveEntity() {
-    TrevisoClient client = trevisoService.createEntity(x, user.getId());
+    FepWebClient client = trevisoService.createEntity(x, user.getId());
     test( client != null , "Entity Saved" );
   }
 
   private void testSearchCustomer() {
-    TrevisoClient client = trevisoService.searchCustomer(x, user.getId());
+    FepWebClient client = trevisoService.searchCustomer(x, user.getId());
     test( client != null , "Customer found" );
   }
 
   private void testCreateTrevisoTransaction() {
-    Transaction transaction = trevisoService.createTransaction(
+    Transaction transaction = ((ExchangeService) trevisoService).createTransaction(
       new Transaction.Builder(x).setSourceAccount(testBankAccount.getId()).setCompletionDate(new Date()).build());
     test( transaction != null , "treviso transaction created" );
   }

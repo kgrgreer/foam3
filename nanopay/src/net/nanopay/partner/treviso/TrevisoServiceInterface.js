@@ -20,7 +20,7 @@ foam.INTERFACE({
   methods: [
     {
       name: 'createEntity',
-      type: 'net.nanopay.partner.treviso.TrevisoClient',
+      type: 'net.nanopay.partner.treviso.FepWebClient',
       async: true,
       javaThrows: ['java.lang.RuntimeException'],
       args: [
@@ -51,7 +51,7 @@ foam.INTERFACE({
     },
     {
       name: 'searchCustomer',
-      type: 'net.nanopay.partner.treviso.TrevisoClient',
+      type: 'net.nanopay.partner.treviso.FepWebClient',
       async: true,
       javaThrows: ['java.lang.RuntimeException'],
       args: [
@@ -65,104 +65,5 @@ foam.INTERFACE({
         },
       ]
     },
-    {
-      name: 'validateCnpjCpf',
-      type: 'Boolean',
-      async: true,
-      javaThrows: ['java.lang.RuntimeException'],
-      args: [
-        {
-          type: 'String',
-          name: 'cnpjCpf'
-        },
-      ]
-    },
-    {
-      name: 'createTransaction',
-      type: 'net.nanopay.tx.model.Transaction',
-      async: true,
-      javaThrows: ['java.lang.RuntimeException'],
-      args: [
-        {
-          type: 'net.nanopay.tx.model.Transaction',
-          name: 'transaction'
-        },
-      ]
-    },
-    {
-      name: 'createExchangeCustomerDefault',
-      async: true,
-      type: 'net.nanopay.partner.treviso.TrevisoClient',
-      javaThrows: ['java.lang.RuntimeException'],
-      args: [
-        {
-          type: 'Long',
-          name: 'userId'
-        },
-        {
-          type: 'String',
-          name: 'cnpj'
-        }
-      ]
-    },
-    {
-      name: 'createExchangeCustomer',
-      async: true,
-      type: 'net.nanopay.partner.treviso.TrevisoClient',
-      javaThrows: ['java.lang.RuntimeException'],
-      args: [
-        {
-          type: 'Long',
-          name: 'userId'
-        },
-        {
-          type: 'Long',
-          name: 'amount'
-        },
-        {
-          type: 'String',
-          name: 'cnpj'
-        }
-      ]
-    },
-    {
-      name: 'getTransactionLimit',
-      type: 'Long',
-      async: true,
-      javaThrows: ['java.lang.RuntimeException'],
-      args: [
-        {
-          type: 'Long',
-          name: 'userId'
-        },
-      ]
-    },
-    {
-      name: 'updateTransactionLimit',
-      async: true,
-      javaThrows: ['java.lang.RuntimeException'],
-      args: [
-        {
-          type: 'Long',
-          name: 'userId'
-        },
-        {
-          type: 'Long',
-          name: 'amount'
-        },
-      ]
-    },
-    {
-      name: 'searchNatureCode',
-      type: 'List',
-      async: true,
-      javaThrows: ['java.lang.RuntimeException'],
-      args: [
-        {
-          type: 'String',
-          name: 'natureCode'
-        },
-      ]
-    }
   ]
 });

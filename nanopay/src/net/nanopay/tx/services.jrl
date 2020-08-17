@@ -559,3 +559,25 @@ p({
       }
     """
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "NatureCodePaymentProviderJunctionDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("natureCodePaymentProviderJunctionDAO")
+      .setOf(net.nanopay.country.br.NatureCodePaymentProviderJunction.getOwnClassInfo())
+      .build();
+  """,
+  "client":
+    """
+      {
+        "of":"net.nanopay.country.br.NatureCodePaymentProviderJunction"
+      }
+    """
+})
+

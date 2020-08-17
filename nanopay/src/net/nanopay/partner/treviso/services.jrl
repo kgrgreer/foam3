@@ -2,13 +2,13 @@ p({"class":"foam.nanos.boot.NSpec", "name":"TrevisoCredientials", "lazy":false, 
 
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "trevisoClientDAO",
+  "name": "fepWebClientDAO",
   "lazy": false,
   "serve": true,
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
-      .setOf(net.nanopay.partner.treviso.TrevisoClient.getOwnClassInfo())
+      .setOf(net.nanopay.partner.treviso.FepWebClient.getOwnClassInfo())
       .setSeqNo(true)
       .setName("trevisoClientDAO")
       .setJournalName("trevisoClients")
@@ -16,26 +16,16 @@ p({
       .setAuthorize(true)
       .build();
   """,
-  "client": "{\"of\":\"net.nanopay.partner.treviso.TrevisoClient\"}"
+  "client": "{\"of\":\"net.nanopay.partner.treviso.FepWebClient\"}"
 })
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"trevisoAPIService",
+  "name":"fepWebService",
   "lazy":false,
   "serve":true,
   "serviceScript":"""
-    return new net.nanopay.partner.treviso.api.TrevisoAPIService(x);
-  """
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"trevisoExchangeService",
-  "lazy":false,
-  "serve":true,
-  "serviceScript":"""
-    return new net.nanopay.partner.treviso.api.TrevisoExchangeService(x);
+    return new net.nanopay.partner.treviso.api.FepWebService(x);
   """
 })
 
@@ -45,6 +35,6 @@ p({
   "lazy":false,
   "serve":true,
   "serviceScript":"""
-    return new net.nanopay.partner.treviso.TrevisoService(x, x.get("trevisoAPIService"), x.get("trevisoExchangeService"));
+    return new net.nanopay.partner.treviso.TrevisoService(x, x.get("fepWebService"), x.get("exchange"));
   """
 })

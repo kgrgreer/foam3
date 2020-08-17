@@ -1,44 +1,55 @@
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"18332cc8-cd05-41d8-9892-e05cf9959c0c",
-  "name":"FepWeb Update User",
-  "priority":100,
-  "ruleGroup":"FEPWebOnboarding",
-  "documentation":"Rule to update the user information to FepWeb when it is changed by Treviso agents",
-  "daoKey":"localUserDAO",
-  "operation":1,
+  "id":"treviso-exchange-crunch-onboarding-rule",
+  "name":"Onboard Business to Brazil Exchange",
+  "documentation":"Rule to onboard business to Brazil Exchange if it has passed comliance.",
+  "priority":1,
+  "ruleGroup":"TrevisoCrunchOnboarding",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
   "after":true,
-  "predicate":{
-    "class": "foam.mlang.predicate.Or",
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
     "args": [
       {
-        "class": "foam.nanos.ruler.predicate.PropertyChangePredicate",
-        "propName": "address"
-      },
-      {
-        "class": "foam.mlang.predicate.And",
-        "args": [
-          {
-            "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
-            "of": "net.nanopay.model.Business"
-          },
-          {
-            "class": "foam.nanos.ruler.predicate.PropertyChangePredicate",
-            "propName": "businessName"
-          }
-        ]
-      },
-      {
-        "class": "foam.nanos.ruler.predicate.PropertyChangePredicate",
-        "propName": "legalName"
+        "class": "net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+        "status": 1,
+        "statusChanged": false,
+        "category": "onboarding"
       }
     ]
   },
-  "asyncAction":{
-    "class": "net.nanopay.partner.treviso.FepWebUserUpdatingRule"
-  },
+  spid: "treviso",
+  "asyncAction":{ "class":"net.nanopay.country.br.exchange.ExchangeServiceOnboardingRule" },
   "enabled":false,
   "saveHistory":true,
-  "spid": "treviso",
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"fepweb-crunch-onboarding-rule",
+  "name":"Onboard Business to FepWeb",
+  "documentation":"Rule to onboard business to FepWeb if it has passed comliance.",
+  "priority":1,
+  "ruleGroup":"TrevisoCrunchOnboarding",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class": "net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+        "status": 1,
+        "statusChanged": false,
+        "category": "onboarding"
+      }
+    ]
+  },
+  spid: "treviso",
+  "asyncAction":{ "class":"net.nanopay.partner.treviso.FepWebOnboardingRule" },
+  "enabled":false,
+  "saveHistory":true,
   "lifecycleState":1
 })
