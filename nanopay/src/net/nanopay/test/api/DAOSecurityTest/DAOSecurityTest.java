@@ -18,13 +18,14 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public abstract class DAOSecurityTest extends ApiTestBase {
 
   private static final String USER_AGENT = "Mozilla/5.0";
-  protected static final List<String> GLOBAL_IGNORES = new ArrayList<>();
+  protected static final Set<String> GLOBAL_IGNORES = new HashSet<>();
 
   public DAOSecurityTest() {
     // TODO: Review this list.
@@ -41,6 +42,7 @@ public abstract class DAOSecurityTest extends ApiTestBase {
     GLOBAL_IGNORES.add("themeDomainDAO");
     GLOBAL_IGNORES.add("userDAO");
     GLOBAL_IGNORES.add("userUserDAO");
+    GLOBAL_IGNORES.add("localeDAO");
   }
 
   // Helper class for holding results
