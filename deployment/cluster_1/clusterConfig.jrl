@@ -1,7 +1,7 @@
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
-  "id":"jhughes",
-  "name":"jhughes",
+  "id":"mediator",
+  "name":"mediator",
   "enabled":true,
   "realm":"nanopay",
   "region":"Toronto",
