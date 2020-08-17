@@ -43,7 +43,10 @@ import foam.nanos.crunch.Capability;
 import foam.nanos.crunch.UserCapabilityJunction;
 import net.nanopay.contacts.Contact;
 import net.nanopay.country.br.CNPJ;
-import net.nanopay.country.br.ExchangeServiceInterface;
+import net.nanopay.country.br.exchange.Exchange;
+import net.nanopay.country.br.exchange.ExchangeCredential;
+import net.nanopay.country.br.exchange.ExchangeCustomer;
+import net.nanopay.country.br.exchange.ExchangeService;
 import net.nanopay.country.br.FederalRevenueService;
 import net.nanopay.country.br.OpenDataService;
 import net.nanopay.country.br.PTaxRate;
@@ -56,48 +59,48 @@ import net.nanopay.model.Business;
 import net.nanopay.partner.sintegra.SintegraService;
 import net.nanopay.partner.sintegra.CPFResponseData;
 import net.nanopay.partner.sintegra.CNPJResponseData;
-import net.nanopay.partner.treviso.api.Boleto;
+import net.nanopay.country.br.exchange.Boleto;
 import net.nanopay.partner.treviso.api.ClientStatus;
 import net.nanopay.partner.treviso.api.CurrentPlatform;
 import net.nanopay.partner.treviso.api.Document;
 import net.nanopay.partner.treviso.api.Entity;
+import net.nanopay.partner.treviso.api.FepWeb;
 import net.nanopay.partner.treviso.api.FepWebResponse;
-import net.nanopay.partner.treviso.api.InsertBoleto;
-import net.nanopay.partner.treviso.api.InsertBoletoResponse;
-import net.nanopay.partner.treviso.api.InsertTitular;
-import net.nanopay.partner.treviso.api.InsertTitularResponse;
-import net.nanopay.partner.treviso.api.Natureza;
+import net.nanopay.country.br.exchange.InsertBoleto;
+import net.nanopay.country.br.exchange.InsertBoletoResponse;
+import net.nanopay.country.br.exchange.InsertTitular;
+import net.nanopay.country.br.exchange.InsertTitularResponse;
+import net.nanopay.country.br.exchange.Natureza;
 import net.nanopay.partner.treviso.api.ResponsibleArea;
 import net.nanopay.partner.treviso.api.SaveEntityRequest;
 import net.nanopay.partner.treviso.api.SearchCustomerRequest;
 import net.nanopay.partner.treviso.api.SearchCustomerResponse;
-import net.nanopay.partner.treviso.api.SearchNatureza;
-import net.nanopay.partner.treviso.api.SearchNaturezaResponse;
-import net.nanopay.partner.treviso.api.SearchTitular;
-import net.nanopay.partner.treviso.api.SearchTitularResponse;
-import net.nanopay.partner.treviso.api.ServiceStatus;
-import net.nanopay.partner.treviso.api.Titular;
-import net.nanopay.partner.treviso.api.TrevisoAPIServiceInterface;
-import net.nanopay.partner.treviso.api.UpdateTitular;
-import net.nanopay.partner.treviso.api.UpdateTitularResponse;
+import net.nanopay.country.br.exchange.SearchNatureza;
+import net.nanopay.country.br.exchange.SearchNaturezaResponse;
+import net.nanopay.country.br.exchange.SearchTitular;
+import net.nanopay.country.br.exchange.SearchTitularResponse;
+import net.nanopay.country.br.exchange.ServiceStatus;
+import net.nanopay.country.br.exchange.Titular;
+import net.nanopay.country.br.exchange.UpdateTitular;
+import net.nanopay.country.br.exchange.UpdateTitularResponse;
 import net.nanopay.payment.Institution;
 import net.nanopay.tx.model.Transaction;
 
-public class TrevisoService extends ContextAwareSupport implements TrevisoServiceInterface, FXService, FederalRevenueService {
+public class TrevisoService extends ContextAwareSupport implements TrevisoServiceInterface, FXService, ExchangeService, FederalRevenueService {
 
-  private TrevisoAPIServiceInterface trevisoAPIService;
-  private ExchangeServiceInterface exchangeService;
+  private FepWeb fepWebService;
+  private Exchange exchangeService;
   private final Logger logger_;
 
-  public TrevisoService(X x, final TrevisoAPIServiceInterface trevisoAPIService, final ExchangeServiceInterface exchangeService) {
-    this.trevisoAPIService = trevisoAPIService;
+  public TrevisoService(X x, final FepWeb fepWebService, final Exchange exchangeService) {
+    this.fepWebService = fepWebService;
     this.exchangeService = exchangeService;
     setX(x);
     this.logger_ = (Logger) x.get("logger");
   }
 
-  public TrevisoClient createEntity(X x, long userId) {
-    TrevisoClient client = findClient(userId);
+  public FepWebClient createEntity(X x, long userId) {
+    FepWebClient client = findClient(userId);
     if ( client != null ) return client;
 
     User user = (User) ((DAO) x.get("bareUserDAO")).find(userId);
@@ -106,11 +109,11 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
 
     try {
       SaveEntityRequest request = buildSaveEntityRequest(x, user, findCpfCnpj(userId));
-      FepWebResponse res = trevisoAPIService.saveEntity(request);
+      FepWebResponse res = fepWebService.saveEntity(request);
       if ( res != null && res.getCode() != 0 )
         throw new RuntimeException("Error onboarding Treviso client to FepWeb. " + res.getMessage());
 
-      return saveTrevisoClient(user.getId(), "Active");
+      return saveFepWebClient(user.getId(), "Active");
     } catch(Throwable t) {
       throw new RuntimeException(t);
     }
@@ -124,7 +127,7 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
 
     try {
       SaveEntityRequest request = buildSaveEntityRequest(x, user, findCpfCnpj(userId));
-      FepWebResponse res = trevisoAPIService.saveEntity(request);
+      FepWebResponse res = fepWebService.saveEntity(request);
       if ( res == null )
         throw new RuntimeException("Update failed. No response from FepWeb.");
       if ( res != null && res.getCode() != 0 )
@@ -135,7 +138,7 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
     }
   }
 
-  public TrevisoClient searchCustomer(X x, long userId) {
+  public FepWebClient searchCustomer(X x, long userId) {
     User user = (User) ((DAO) x.get("bareUserDAO")).find(userId);
     if ( user == null ) throw new RuntimeException("User not found: " + userId);
     if ( user.getAddress() == null ) throw new RuntimeException("User address cannot be null: " + userId);
@@ -143,10 +146,10 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
     try {
       SearchCustomerRequest request = new SearchCustomerRequest();
       request.setExtCode(user.getId());
-      SearchCustomerResponse res = trevisoAPIService.searchCustomer(request);
+      SearchCustomerResponse res = fepWebService.searchCustomer(request);
       if ( res != null && res.getEntityDTOList() != null && res.getEntityDTOList().length > 0  ) {
         Entity entity = (Entity) res.getEntityDTOList()[0];
-        return saveTrevisoClient(user.getId(), entity.getStatus());
+        return saveFepWebClient(user.getId(), entity.getStatus());
       }
     } catch(Throwable t) {
       logger_.error("Error searching Treviso client.", t);
@@ -186,16 +189,16 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
     return null;
   }
 
-  public TrevisoClient findClient(long user) {
-    return (TrevisoClient) ((DAO)
-      getX().get("trevisoClientDAO")).find(EQ(TrevisoClient.USER, user));
+  public FepWebClient findClient(long user) {
+    return (FepWebClient) ((DAO)
+      getX().get("fepWebClientDAO")).find(EQ(FepWebClient.USER, user));
   }
 
-  protected TrevisoClient saveTrevisoClient(long userId, String status) {
-    DAO trevisoClientDAO = (DAO) getX().get("trevisoClientDAO");
-    TrevisoClient client  = findClient(userId);
+  protected FepWebClient saveFepWebClient(long userId, String status) {
+    DAO fepWebClientDAO = (DAO) getX().get("fepWebClientDAO");
+    FepWebClient client  = findClient(userId);
     if ( client == null ) {
-      client = (TrevisoClient) trevisoClientDAO.put(new TrevisoClient.Builder(getX())
+      client = (FepWebClient) fepWebClientDAO.put(new FepWebClient.Builder(getX())
         .setUser(userId)
         .setStatus(status)
         .build());
@@ -254,19 +257,19 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
     return true;
   }
 
-  public TrevisoClient createExchangeCustomerDefault(long userId, String cnpj) throws RuntimeException {
-    return createExchangeCustomer(userId, 1000000L, cnpj); // Default limit
+  public ExchangeCustomer createExchangeCustomerDefault(long userId) throws RuntimeException {
+    return createExchangeCustomer(userId, 1000000L); // Default limit
   }
 
-  public TrevisoClient createExchangeCustomer(long userId, long amount, String cnpj) throws RuntimeException {
+  public ExchangeCustomer createExchangeCustomer(long userId, long amount) throws RuntimeException {
     try {
-      if ( getExchangeCustomer(userId, cnpj) != null ) return findClient(userId); // User already pushed to Exchange
+      if ( getExchangeCustomer(userId) != null ) return findExchangeCustomer(userId); // User already pushed to Exchange
     } catch(Throwable t) {
       logger_.error("Error fetching exchange user" , t);
     }
 
     InsertTitular request = new InsertTitular();
-    request.setDadosTitular(getTitularRequest(userId, amount, cnpj));
+    request.setDadosTitular(getTitularRequest(userId, amount));
     try {
       InsertTitularResponse response = exchangeService.insertTitular(request);
       if ( response == null || response.getInsertTitularResult() == null )
@@ -275,16 +278,33 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
       if ( response.getInsertTitularResult().getCODRETORNO() != 0 )
         throw new RuntimeException("Error while calling insertTitular: " + response.getInsertTitularResult().getMENSAGEM());
 
-      return saveTrevisoClient(userId, "Active");
+      return saveExchangeCustomer(userId, "Active");
     } catch(Throwable t) {
       logger_.error("Error updating Titular" , t);
       throw new RuntimeException(t);
     }
   }
 
-  public Titular getExchangeCustomer(long userId, String cpfCnpj) throws RuntimeException {
+  public ExchangeCustomer findExchangeCustomer(long user) {
+    return (ExchangeCustomer) ((DAO)
+      getX().get("brazilExchangeCustomerDAO")).find(EQ(ExchangeCustomer.USER, user));
+  }
+
+  protected ExchangeCustomer saveExchangeCustomer(long userId, String status) {
+    DAO exchangeCustomerDAO = (DAO) getX().get("brazilExchangeCustomerDAO");
+    ExchangeCustomer client  = findExchangeCustomer(userId);
+    if ( client == null ) {
+      client = (ExchangeCustomer) exchangeCustomerDAO.put(new ExchangeCustomer.Builder(getX())
+        .setUser(userId)
+        .setStatus(status)
+        .build());
+    }
+    return client;
+  }
+
+  public Titular getExchangeCustomer(long userId) throws RuntimeException {
     SearchTitular request = new SearchTitular();
-    String formattedcpfCnpj = cpfCnpj.replaceAll("[^0-9]", "");
+    String formattedcpfCnpj = findCpfCnpj(userId).replaceAll("[^0-9]", "");
     request.setCODIGO(formattedcpfCnpj); // 10786348070
     SearchTitularResponse response = exchangeService.searchTitular(request);
     if ( response == null || response.getSearchTitularResult() == null )
@@ -301,12 +321,12 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
   }
 
   public long getTransactionLimit(long userId) throws RuntimeException {
-    return new Double(getExchangeCustomer(userId, findCpfCnpj(userId)).getLIMITEOP()).longValue();
+    return new Double(getExchangeCustomer(userId).getLIMITEOP()).longValue();
   }
 
   public void updateTransactionLimit(long userId, long amount) throws RuntimeException {
     UpdateTitular request = new UpdateTitular();
-    Titular titular = getTitularRequest(userId, amount, findCpfCnpj(userId));
+    Titular titular = getTitularRequest(userId, amount);
     request.setDadosTitular(titular);
 
     try {
@@ -322,16 +342,17 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
     }
   }
 
-  protected Titular getTitularRequest(long userId, long amount, String cpfCnpj) {
+  protected Titular getTitularRequest(long userId, long amount) {
     User user = (User) ((DAO) getX().get("bareUserDAO")).find(userId);
     if ( user == null ) throw new RuntimeException("User not found: " + userId);
     if ( user.getAddress() == null ) throw new RuntimeException("User address cannot be null: " + userId);
 
     Titular titular = new Titular();
-    TrevisoCredientials credentials = (TrevisoCredientials) getX().get("TrevisoCredientials");
+    ExchangeCredential credentials = (ExchangeCredential) getX().get("exchangeCredential");
     titular.setAGENCIA(credentials.getExchangeAgencia());
     titular.setDTINICIO(user.getCreated());
-    String formattedCpfCnpj = cpfCnpj.replaceAll("[^0-9]", "");
+    String formattedCpfCnpj = findCpfCnpj(userId).replaceAll("[^0-9]", "");
+    if ( SafetyUtil.isEmpty(formattedCpfCnpj) ) throw new RuntimeException("Invalid CNPJ");
     titular.setCODIGO(formattedCpfCnpj); // e.g 10786348070
     titular.setTIPO(1);
     titular.setSUBTIPO("J"); // F = Physical, J = Legal, S = Symbolic
@@ -356,7 +377,7 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
 
     InsertBoleto request = new InsertBoleto();
     Boleto dadosBoleto = new Boleto();
-    TrevisoCredientials credentials = (TrevisoCredientials) getX().get("TrevisoCredientials");
+    ExchangeCredential credentials = (ExchangeCredential) getX().get("exchangeCredential");
     dadosBoleto.setAGENCIA(credentials.getExchangeAgencia());
     dadosBoleto.setBANCO(bankAccount.getBankCode());
 
@@ -430,11 +451,6 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
 
     transaction.setReferenceNumber(response.getInsertBoletoResult().getNRREFERENCE());
     return transaction;
-  }
-
-  public boolean validateCnpjCpf(String cnpjCpf) throws RuntimeException {
-    // TODO: Implement appropriate treviso API
-    return true;
   }
 
   public List searchNatureCode(String natureCode) throws RuntimeException {

@@ -1,3 +1,5 @@
+p({"class":"foam.nanos.boot.NSpec", "name":"exchangeCredential", "lazy":false, "service":{"class":"net.nanopay.country.br.exchange.ExchangeCredential"}})
+
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"federalRevenueService",
@@ -6,6 +8,45 @@ p({
   "serviceScript":"""
     return x.get("trevisoService");
   """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"exchange",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.country.br.exchange.ExchangeClient(x);
+  """
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"exchangeService",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return x.get("trevisoService");
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "brazilExchangeCustomerDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.country.br.exchange.ExchangeCustomer.getOwnClassInfo())
+      .setSeqNo(true)
+      .setName("exchangeCustomerDAO")
+      .setJournalName("brazilExchangeCustomers")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setAuthorize(true)
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.country.br.exchange.ExchangeCustomer\"}"
 })
 
 p({
