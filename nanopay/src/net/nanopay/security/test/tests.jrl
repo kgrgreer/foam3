@@ -2,7 +2,6 @@ p({"class":"net.nanopay.security.test.EncryptingDAOTest","id":"EncryptingDAOTest
 p({"class":"net.nanopay.security.test.HashedJSONParserTest","id":"HashedJSONParserTest"})
 p({"class":"net.nanopay.security.test.HashingJournalTest","id":"HashingJournalTest"})
 p({"class":"net.nanopay.security.test.HashingOutputterTest","id":"HashingOutputterTest"})
-p({"class":"net.nanopay.security.test.HashingWriterTest","id":"HashingWriterTest"})
 p({"class":"net.nanopay.security.test.LoginAttemptAuthServiceTest","id":"LoginAttemptAuthServiceTest","description":"Tests the LoginAttemptAuthService class"})
 // Test was disabled because the functionality is not integrated from "minchip" yet
 //p({"class":"net.nanopay.security.test.PayerAssentTransactionDAOTest","id":"PayerAssentTransactionDAO test"})

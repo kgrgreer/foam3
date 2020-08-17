@@ -5,8 +5,7 @@ p({
   "serviceScript":`
     dao = new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.medusa.MedusaEntry.getOwnClassInfo())
-      .setInnerDAO(new net.nanopay.security.HashingJDAO(x, "SHA-256", true, false,
-        new foam.dao.MDAO(foam.nanos.medusa.MedusaEntry.getOwnClassInfo()), "ledger"))
+      .setInnerDAO(new net.nanopay.security.HashingJDAO(x, new foam.dao.MDAO(foam.nanos.medusa.MedusaEntry.getOwnClassInfo()), "ledger"))
       .setRuler(false)
       .setCluster(false)
       .setOrder(new foam.mlang.order.Comparator[] {
@@ -67,9 +66,9 @@ p({
       .build();
    """
 })
-// p({
-//   "class":"foam.nanos.boot.NSpec",
-//   "name":"clusterConfigMonitor",
-//   "lazy": false,
-//   "serviceClass":"foam.nanos.medusa.ClusterConfigMonitor"
-// })
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"clusterConfigMonitor",
+  "lazy": false,
+  "serviceClass":"foam.nanos.medusa.ClusterConfigMonitor"
+})

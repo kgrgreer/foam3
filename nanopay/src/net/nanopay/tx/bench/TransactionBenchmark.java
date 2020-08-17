@@ -32,6 +32,7 @@ import foam.nanos.auth.LifecycleState;
 import foam.nanos.logger.PrefixLogger;
 import foam.nanos.logger.Logger;
 import foam.nanos.ruler.Rule;
+import foam.nanos.pm.PM;
 import net.nanopay.account.Account;
 import net.nanopay.account.DigitalAccount;
 import net.nanopay.account.TrustAccount;
@@ -280,12 +281,11 @@ public class TransactionBenchmark
     if ( config.getMode() == foam.nanos.app.Mode.PRODUCTION ) {
       return;
     }
-    logger_.info("execute");
-
     if ( users_.size() == 0 ) {
       logger_.warning("execute", "no users");
       return;
     }
+    logger_.info("execute");
 
     int fi = 0;
     int ti = 0;
@@ -311,11 +311,16 @@ public class TransactionBenchmark
       Account payeeAccount = (DigitalAccount) accounts_.get(ti);
       transaction.setSourceAccount(payerAccount.getId());
       transaction.setDestinationAccount(payeeAccount.getId());
+      PM pm = new PM(this.getClass().getSimpleName(), "execute");
       try {
         transactionDAO_.put(transaction);
       } catch (RuntimeException e) {
         System.out.println(e.getMessage());
-        logger_.warning(e.getMessage());
+        e.printStackTrace();
+        logger_.warning(e.getMessage(), e);
+        pm.error(x, e);
+      } finally {
+        pm.log(x);
       }
     }
   }
