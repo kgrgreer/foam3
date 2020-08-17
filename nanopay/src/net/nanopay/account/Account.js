@@ -120,7 +120,7 @@ foam.CLASS({
       documentation: 'The type of the account.',
       transient: true,
       getter: function() {
-        return this.model_.label === 'Digital Account' ? 'Virtual Account' : this.model_.label;
+        return this.model_.label === 'Digital Account' ? 'Virtual Account' : this.model_.name;
       },
       javaGetter: `
         return getClass().getSimpleName();
