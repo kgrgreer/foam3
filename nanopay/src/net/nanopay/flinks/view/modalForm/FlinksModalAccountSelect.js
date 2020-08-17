@@ -57,8 +57,7 @@ foam.CLASS({
     }
     ^content {
       position: relative;
-      padding: 24px;
-      padding-top: 0;
+      padding: 0px 50px 24px 0px;
     }
     ^shrink {
       /*max height - titlebar - navigationbar - content padding*/
@@ -130,6 +129,9 @@ foam.CLASS({
 
       margin: 0;
       margin-bottom: 24px;
+    }
+    ^ .net-nanopay-sme-ui-wizardModal-WizardModalNavigationBar-container {
+      padding: 0 60px 0 0;
     }
   `,
 
