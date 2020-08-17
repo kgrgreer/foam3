@@ -1,5 +1,11 @@
 p({
   "class":"foam.net.Host",
+  "id":"mediator",
+  "address":"localhost",
+})
+
+p({
+  "class":"foam.net.Host",
   "id":"node",
   "address":"localhost",
 })
