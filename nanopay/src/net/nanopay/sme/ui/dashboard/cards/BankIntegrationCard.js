@@ -147,9 +147,9 @@ foam.CLASS({
         .find(
           this.AND(
             this.OR(
-              this.EQ(this.Account.TYPE, this.BankAccount.name),
-              this.EQ(this.Account.TYPE, this.CABankAccount.name),
-              this.EQ(this.Account.TYPE, this.USBankAccount.name)
+              this.EQ(this.Account.TYPE, this.BankAccount.id),
+              this.EQ(this.Account.TYPE, this.CABankAccount.id),
+              this.EQ(this.Account.TYPE, this.USBankAccount.id)
             ),
             this.NEQ(this.BankAccount.STATUS, this.BankAccountStatus.DISABLED),
             this.EQ(this.Account.IS_DEFAULT, true)
