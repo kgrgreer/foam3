@@ -4,7 +4,7 @@ node:
 ./build.sh -uJcluster,cluster_1,mn -Nnode -W8090 -c
 
 mediator
-./build.sh -uJcluster,cluster_1,mm -Nmediator -W8080 -Ctrue -c
+./build.sh -uJcluster,cluster_1,mm -Nmediator -W8070 -Ctrue -c
 
 client
 ./build.sh -uJcluster,cluster_1 -Nclient -W8100 -Ctrue -c

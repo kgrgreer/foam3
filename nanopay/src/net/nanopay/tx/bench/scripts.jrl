@@ -9,7 +9,6 @@ p({
     lc.setLogInfo(true);
     savedDebug = lc.getLogDebug();
     lc.setLogDebug(false);
-    //x = x.put("pmLogger", null);
     b = new TransactionBenchmark();
     b.setDisableRules(false);
     b.setPurgePerRun(false);

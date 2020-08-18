@@ -3,9 +3,11 @@ p({
   "name":"medusaNodeDAO",
   "serve":true,
   "serviceScript":`
+    mdao = new foam.dao.MDAO(foam.nanos.medusa.MedusaEntry.getOwnClassInfo());
     dao = new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.medusa.MedusaEntry.getOwnClassInfo())
-      .setInnerDAO(new net.nanopay.security.HashingJDAO(x, new foam.dao.MDAO(foam.nanos.medusa.MedusaEntry.getOwnClassInfo()), "ledger"))
+      .setMdao(mdao)
+      .setInnerDAO(new net.nanopay.security.HashingJDAO(x, mdao, "ledger"))
       .setRuler(false)
       .setCluster(false)
       .setOrder(new foam.mlang.order.Comparator[] {
