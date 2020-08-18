@@ -125,12 +125,6 @@ foam.CLASS({
           junction.setSourceId(mspInfo.getSpid() + "-admin");
           junction.setTargetId(permissionArray.get(i));
           groupPermissionJunctionDAO.put(junction);
-
-          // Add the permissions of spid's groups to the msp-admin group
-          GroupPermissionJunction mspAdminJunction = new GroupPermissionJunction();
-          junction.setSourceId("msp-admin");
-          junction.setTargetId(permissionArray.get(i));
-          groupPermissionJunctionDAO.put(mspAdminJunction);
         }
 
         // Create new serviceProviderURL
