@@ -119,12 +119,12 @@ foam.CLASS({
       name: 'type',
       documentation: 'The type of the account.',
       transient: true,
-      javaFactory: `
-        return getClass().getName();
-      `,
-      factory: function() {
-        return this.cls_.id;
+      getter: function() {
+        return this.model_.label === 'Digital Account' ? 'Virtual Account' : this.model_.label;
       },
+      javaGetter: `
+        return getClass().getSimpleName();
+      `,
       tableWidth: 150,
       section: 'accountType',
       visibility: 'RO'

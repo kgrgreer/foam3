@@ -196,9 +196,9 @@ foam.CLASS({
       return await this.user.accounts.where(
         this.AND(
           this.OR(
-            this.EQ(this.Account.TYPE, this.BankAccount.id),
-            this.EQ(this.Account.TYPE, this.CABankAccount.id),
-            this.EQ(this.Account.TYPE, this.USBankAccount.id)
+            this.INSTANCE_OF(this.BankAccount),
+            this.INSTANCE_OF(this.CABankAccount),
+            this.INSTANCE_OF(this.USBankAccount)
           ),
           this.NEQ(this.BankAccount.INTEGRATION_ID, '')
         )
