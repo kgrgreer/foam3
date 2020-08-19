@@ -147,7 +147,6 @@ foam.CLASS({
         .find(
           this.AND(
             this.OR(
-              this.INSTANCE_OF(this.BankAccount),
               this.INSTANCE_OF(this.CABankAccount),
               this.INSTANCE_OF(this.USBankAccount)
             ),

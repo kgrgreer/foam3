@@ -104,7 +104,6 @@ foam.CLASS({
       factory: function() {
         var dao = this.user.accounts.where(
           this.OR(
-            this.INSTANCE_OF(this.BankAccount),
             this.INSTANCE_OF(this.CABankAccount),
             this.INSTANCE_OF(this.USBankAccount)
           )
@@ -196,7 +195,6 @@ foam.CLASS({
       return await this.user.accounts.where(
         this.AND(
           this.OR(
-            this.INSTANCE_OF(this.BankAccount),
             this.INSTANCE_OF(this.CABankAccount),
             this.INSTANCE_OF(this.USBankAccount)
           ),
