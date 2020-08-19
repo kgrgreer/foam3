@@ -20,8 +20,10 @@ p({
   "class": "foam.nanos.boot.NSpec",
   "name": "internalMedusaDAO",
   "serviceScript": `
+    mdao = new foam.dao.MDAO(foam.nanos.medusa.MedusaEntry.getOwnClassInfo());
     dao = new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.medusa.MedusaEntry.getOwnClassInfo())
+      .setMdao(mdao)
       .setGuid(true)
       .setAuthorize(false)
       .setCluster(false)
@@ -37,6 +39,14 @@ p({
       foam.nanos.medusa.MedusaEntry.CONSENSUS_COUNT
     });
     dao.addPropertyIndex(new foam.core.PropertyInfo[] {
+      foam.nanos.medusa.MedusaEntry.PROMOTED
+    });
+    dao.addPropertyIndex(new foam.core.PropertyInfo[] {
+      foam.nanos.medusa.MedusaEntry.INDEX,
+      foam.nanos.medusa.MedusaEntry.CONSENSUS_COUNT
+    });
+    dao.addPropertyIndex(new foam.core.PropertyInfo[] {
+      foam.nanos.medusa.MedusaEntry.INDEX,
       foam.nanos.medusa.MedusaEntry.PROMOTED
     });
     return dao;

@@ -13,8 +13,9 @@ p({
     b.setDisableRules(false);
     b.setPurgePerRun(false);
     builder = new BenchmarkRunner.Builder(x)
-      .setInvocationCount(10000)
-      .setRunPerThread(true)
+      .setInvocationCount(1000)
+      .setThreadCount(2)
+      .setRunPerThread(false)
       .setBenchmark(b);
     runner = builder.build();
     runner.execute(x);
