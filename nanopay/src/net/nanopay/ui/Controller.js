@@ -876,8 +876,8 @@ foam.CLASS({
       try {
         return (await this.subject.user.accounts
           .where(this.OR(
-            this.EQ(this.Account.TYPE, this.CABankAccount.name),
-            this.EQ(this.Account.TYPE, this.USBankAccount.name)
+            this.INSTANCE_OF(this.CABankAccount),
+            this.INSTANCE_OF(this.USBankAccount)
           ))
           .select()).array;
       } catch (err) {

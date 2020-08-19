@@ -422,28 +422,28 @@ p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"63049307-8db4-2437-5c02-b71d6878263c",
   "targetId":"688cb7c6-7316-4bbf-8483-fb79f8fdeaaf",
-  "priority":1
-})
-
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"63049307-8db4-2437-5c02-b71d6878263c",
-  "targetId":"fb7d3ca2-62f2-4caf-a84c-860392e4676b",
-  "priority":2
+  "priority":12
 })
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"63049307-8db4-2437-5c02-b71d6878263c",
   "targetId":"7e2739cc-db32-11ea-87d0-0242ac130003",
-  "priority":3
+  "priority":13
 })
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"63049307-8db4-2437-5c02-b71d6878263c",
   "targetId":"26d32e86-db11-11ea-87d0-0242ac130003",
-  "priority":4
+  "priority":14
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"63049307-8db4-2437-5c02-b71d6878263c",
+  "targetId":"b5f2b020-db0f-11ea-87d0-0242ac130003",
+  "priority":15
 })
 
 p({

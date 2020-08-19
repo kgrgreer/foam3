@@ -45,10 +45,10 @@ foam.CLASS({
     }
 
     ^content {
+      background-color: white;
       box-shadow: 0 24px 24px 0 rgba(0, 0, 0, 0.12), 0 0 24px 0 rgba(0, 0, 0, 0.15);
       border-radius: 3px;
       overflow: hidden;
-      background-color: white;
     }
     .net-nanopay-sme-ui-SMEModal .net-nanopay-sme-ui-SMEModal-content .foam-u2-ModalHeader button {
       display: none;

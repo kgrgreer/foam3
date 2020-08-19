@@ -36,11 +36,20 @@ foam.CLASS({
     { name: 'INVALID_CPF', messages: 'Invalid CPF.' }
   ],
 
+  sections: [
+    {
+      name: 'collectCpf',
+      title: 'Enter your CPF'
+    }
+  ],
+
   properties: [
     {
+      class: 'String',
       name: 'data',
       label: 'CPF',
-      class: 'String',
+      section: 'collectCpf',
+      help: `The CPF (Cadastro de Pessoas Físicas or Natural Persons Register) is a number assigned by the Brazilian revenue agency to both Brazilians and resident aliens who are subject to taxes in Brazil.`,
       view: {
         class: 'foam.u2.TextField',
         placeholder: '12345678910',
@@ -52,10 +61,10 @@ foam.CLASS({
           args: ['data'],
           predicateFactory: function(e) {
             return e.EQ(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.CPF.DATA }), 11);
-          }
+          },
+          errorMessage: 'INVALID_CPF'
         }
-      ],
-      errorMessage: 'INVALID_CPF'
+      ]
     }
   ],
 

@@ -288,7 +288,7 @@ public class AFEXServiceProviderTest
   public void testFindBeneficiary() {
     AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, business.getId()));
     test( afexBusiness != null, "AFEXBusiness is found" );
-    FindBeneficiaryResponse beneficiaryResponse = afexServiceProvider.findBeneficiary(user2.getId(), afexBusiness.getApiKey());
+    FindBeneficiaryResponse beneficiaryResponse = afexServiceProvider.findBeneficiary(user2.getId(), afexBusiness.getApiKey(), user2.getSpid());
     test( beneficiaryResponse != null, "beneficiary is found" );
   }
 

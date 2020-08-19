@@ -18,13 +18,20 @@
 foam.CLASS({
   package: 'net.nanopay.model',
   name: 'BusinessDirector',
-
   documentation: `
     A business director is a person from a group of managers who leads or
     supervises a particular area of a company.
   `,
 
+  imports: [
+    'countryDAO'
+  ],
+
   properties: [
+    {
+      name: 'type',
+      hidden: true
+    },
     {
       class: 'String',
       name: 'firstName',
@@ -36,6 +43,52 @@ foam.CLASS({
       name: 'lastName',
       gridColumns: 6,
       minLength: 1
+    },
+    {
+      class: 'String',
+      name: 'foreignId',
+      label: 'RG/RNE:(National/Passport/Foreign ID)',
+      required: true,
+      visibility: function (type) {
+        return type == 'BR' ?
+        foam.u2.DisplayMode.RW :
+        foam.u2.DisplayMode.HIDDEN;
+      }
+    },
+    {
+      class: 'String',
+      name: 'cpf',
+      required: true,
+      visibility: function (type) {
+        return type == 'BR' ?
+        foam.u2.DisplayMode.RW :
+        foam.u2.DisplayMode.HIDDEN;
+      }
+    },
+    {
+      class: 'Reference',
+      targetDAOKey: 'countryDAO',
+      name: 'nationality',
+      of: 'foam.nanos.auth.Country',
+      documentation: `Defined nationality of business director.`,
+      required: true,
+      visibility: function (type) {
+        return type == 'BR' ?
+        foam.u2.DisplayMode.RW :
+        foam.u2.DisplayMode.HIDDEN;
+      },
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          search: true,
+          sections: [
+            {
+              heading: 'Countries',
+              dao: X.countryDAO
+            }
+          ]
+        };
+      }
     }
   ]
 });

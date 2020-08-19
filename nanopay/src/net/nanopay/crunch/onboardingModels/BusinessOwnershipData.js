@@ -43,7 +43,7 @@ foam.CLASS({
       name: 'ownershipAmountSection',
       title: 'How many individuals directly or indirectly own 25% or more of the business?',
       help: `In accordance with banking laws, we need to document the percentage of ownership of any individual with a 25% + stake in the company.
-      Please have owner address and birthday ready.`,
+      Please have owner address and date of birth ready.`,
     },
     {
       class: 'net.nanopay.crunch.onboardingModels.OwnerSection',
@@ -522,9 +522,12 @@ foam.CLASS({
         var dao = foam.dao.MDAO.create({
             of: net.nanopay.model.BeneficialOwner
           });
+
+        var user = X.data.subject.user;
           // note: the one access to businessId(below) ensures the prop is set on obj as it travels through network
         var obj = net.nanopay.model.BeneficialOwner.create({
             business: X.data.businessId,
+            type: user.address.countryId,
             id: 1
           }, X);
         obj.toSummary = () => 'Other';

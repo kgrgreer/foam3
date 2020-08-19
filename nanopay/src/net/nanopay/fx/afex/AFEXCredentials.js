@@ -23,6 +23,10 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'Long',
+      name: 'id'
+    },
+    {
       class: 'String',
       name: 'apiKey'
     },
@@ -57,6 +61,11 @@ foam.CLASS({
       name: 'clientApprovalDelay',
       value: 5,
       documentation: 'Wait time in minutes before AFEX business is approved.'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.ServiceProvider',
+      name: 'spid'
     },
   ]
 });

@@ -273,6 +273,12 @@ foam.CLASS({
     },
     {
       class: 'PhoneNumber',
+      name: 'fax',
+      documentation: 'The fax number of the business.',
+      section: 'business'
+    },
+    {
+      class: 'PhoneNumber',
       name: 'phoneNumber',
       documentation: 'The phone number of the business.',
       section: 'business'
@@ -287,6 +293,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Address',
       name: 'address',
+      label: 'Commercial Address',
       documentation: `Returns the postal address of the business associated with the
         User from the Address model.`,
       section: 'business',
@@ -295,15 +302,26 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['address', 'address$countryId', 'address$errors_',],
+          args: ['address', 'address$errors_'],
           predicateFactory: function(e) {
-            return e.OR(
-              e.EQ(e.DOT(net.nanopay.model.Business.ADDRESS, foam.nanos.auth.Address.COUNTRY_ID), 'CA'),
-              e.EQ(e.DOT(net.nanopay.model.Business.ADDRESS, foam.nanos.auth.Address.COUNTRY_ID), 'US')
-            );
+            return e.EQ(foam.mlang.IsValid.create({
+                arg1: net.nanopay.model.Business.ADDRESS
+              }), true);
           },
-          errorString: 'This application does not currently support businesses outside of Canada and the USA. We are working hard to change this! If you are based outside of Canada and the USA, check back for updates.'
-        },
+          errorString: 'Invalid address.'
+        }
+      ]
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Address',
+      name: 'mailingAddress',
+      documentation: `Mailing address of business`,
+      section: 'business',
+      factory: function() {
+        return this.Address.create();
+      },
+      validationPredicates: [
         {
           args: ['address', 'address$errors_'],
           predicateFactory: function(e) {

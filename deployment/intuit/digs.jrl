@@ -60,3 +60,22 @@ p({
     data:"{\n\"email\":\"test@1.com\",\n\"userName\":\"username321\",\n\"desiredPassword\":\"password123\"\n}\n",
     description:"Creating a User\nSimply change email/username/desiredPassword fields to their apporpriate values"
 })
+
+p({
+    class:"foam.nanos.dig.DIG",
+    id:"Send Flinks Login ID",
+    lastModified:1597333620473,
+    createdBy:8023,
+    createdByAgent:8023,
+    created:1595435232977,
+    lastModified:1595435232977,
+    lastModifiedBy:8023,
+    daoKey:"flinksLoginIdDAO",
+    cmd:1,
+    data:"""
+    {
+        "loginId":"123456"
+    }
+    """,
+    description:"Send a loginId from Flinks to create an account"
+})

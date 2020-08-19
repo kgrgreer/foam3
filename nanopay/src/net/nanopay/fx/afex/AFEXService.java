@@ -6,6 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import foam.dao.ArraySink;
+import foam.dao.DAO;
+import foam.mlang.MLang;
+import foam.mlang.predicate.Eq;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -53,13 +57,14 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
     jsonParser.setX(x);
   }
 
-  protected AFEXCredentials getCredentials() {
-    if ( credentials == null ) {
-      credentials = (AFEXCredentials) getX().get("AFEXCredentials");
-      if ( ! isCredientialsValid() ) { 
-        credentials = null;
-        logger.error(this.getClass().getSimpleName(), "invalid credentials");
-      }
+  protected AFEXCredentials getCredentials(String spid) {
+    DAO credentialDAO = (DAO) getX().get("afexCredentialDAO");
+    ArraySink arraySink = new ArraySink();
+    credentialDAO.where(MLang.EQ(AFEXCredentials.SPID, spid)).select(arraySink);
+    credentials = (AFEXCredentials) (arraySink.getArray()).get(0);
+    if ( ! isCredientialsValid() ) {
+      credentials = null;
+      logger.error(this.getClass().getSimpleName(), "invalid credentials");
     }
     return credentials;
   }
@@ -82,10 +87,10 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public Token getToken() {
+  public Token getToken(String spid) {
     try {
 
-      credentials = getCredentials();
+      credentials = getCredentials(spid);
       HttpPost httpPost = new HttpPost(credentials.getPartnerApi() + "token");
 
       httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -127,14 +132,14 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public OnboardCorporateClientResponse onboardCorporateClient(OnboardCorporateClientRequest request) {
+  public OnboardCorporateClientResponse onboardCorporateClient(OnboardCorporateClientRequest request, String spid) {
     try {
-      credentials = getCredentials();
+      credentials = getCredentials(spid);
       HttpPost httpPost = new HttpPost(credentials.getPartnerApi() + "api/v1/corporateClient");
 
       httpPost.addHeader("API-Key", credentials.getApiKey());
       httpPost.addHeader("Content-Type", "application/json");
-      httpPost.addHeader("Authorization", "bearer " + getToken().getAccess_token());
+      httpPost.addHeader("Authorization", "bearer " + getToken(spid).getAccess_token());
       
       StringEntity params = null;
 
@@ -180,9 +185,9 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public GetClientAccountStatusResponse getClientAccountStatus(String clientAPIKey) {
+  public GetClientAccountStatusResponse getClientAccountStatus(String clientAPIKey, String spid) {
     try {
-      credentials = getCredentials();
+      credentials = getCredentials(spid);
       URIBuilder uriBuilder = new URIBuilder(credentials.getPartnerApi() + "api/v1/clientstatus");
       uriBuilder.setParameter("ApiKey", clientAPIKey);
 
@@ -190,7 +195,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       httpGet.addHeader("API-Key", credentials.getApiKey());
       httpGet.addHeader("Content-Type", "application/x-www-form-urlencoded");
-      httpGet.addHeader("Authorization", "bearer " + getToken().getAccess_token());
+      httpGet.addHeader("Authorization", "bearer " + getToken(spid).getAccess_token());
 
       logMessage(credentials.getApiKey(), "getClientAccountStatus", httpGet.toString(), false);
 
@@ -226,10 +231,10 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public RetrieveClientAccountDetailsResponse retrieveClientAccountDetails(String clientAPIKey) {
+  public RetrieveClientAccountDetailsResponse retrieveClientAccountDetails(String clientAPIKey, String spid) {
 
     try {
-      credentials = getCredentials();
+      credentials = getCredentials(spid);
       URIBuilder uriBuilder = new URIBuilder(credentials.getPartnerApi() + "api/v1/privateclient");
       uriBuilder.setParameter("ApiKey", clientAPIKey);
 
@@ -237,7 +242,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       httpGet.addHeader("API-Key", credentials.getApiKey());
       httpGet.addHeader("Content-Type", "application/x-www-form-urlencoded");
-      httpGet.addHeader("Authorization", "bearer " + getToken().getAccess_token());
+      httpGet.addHeader("Authorization", "bearer " + getToken(spid).getAccess_token());
 
       logMessage(credentials.getApiKey(), "retrieveClientAccountDetails", httpGet.toString(), false);
 
@@ -272,9 +277,9 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public CreateBeneficiaryResponse createBeneficiary(CreateBeneficiaryRequest request) {
+  public CreateBeneficiaryResponse createBeneficiary(CreateBeneficiaryRequest request, String spid) {
     try {
-      credentials = getCredentials();
+      credentials = getCredentials(spid);
       HttpPost httpPost = new HttpPost(credentials.getAFEXApi() + "api/beneficiaryCreate");
 
       httpPost.addHeader("API-Key", request.getClientAPIKey());
@@ -332,10 +337,10 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public UpdateBeneficiaryResponse updateBeneficiary(UpdateBeneficiaryRequest request) {
+  public UpdateBeneficiaryResponse updateBeneficiary(UpdateBeneficiaryRequest request, String spid) {
 
     try {
-      credentials = getCredentials();
+      credentials = getCredentials(spid);
       HttpPost httpPost = new HttpPost(credentials.getAFEXApi()  + "api/beneficiaryUpdate");
 
       httpPost.addHeader("API-Key", request.getClientAPIKey());
@@ -396,9 +401,9 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public String disableBeneficiary(DisableBeneficiaryRequest request) {
+  public String disableBeneficiary(DisableBeneficiaryRequest request, String spid) {
     try {
-      credentials = getCredentials();
+      credentials = getCredentials(spid);
       URIBuilder uriBuilder = new URIBuilder(credentials.getAFEXApi()  + "api/beneficiaryDisable");
       uriBuilder.setParameter("VendorId", request.getVendorId());
 
@@ -440,9 +445,9 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public FindBeneficiaryResponse findBeneficiary(FindBeneficiaryRequest request) {
+  public FindBeneficiaryResponse findBeneficiary(FindBeneficiaryRequest request, String spid) {
     try {
-      credentials = getCredentials();
+      credentials = getCredentials(spid);
       URIBuilder uriBuilder = new URIBuilder(credentials.getAFEXApi()  + "api/beneficiary/find");
       uriBuilder.setParameter("VendorId", request.getVendorId());
 
@@ -481,9 +486,9 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public FindBankByNationalIDResponse findBankByNationalID(FindBankByNationalIDRequest request) {
+  public FindBankByNationalIDResponse findBankByNationalID(FindBankByNationalIDRequest request, String spid) {
     try {
-      credentials = getCredentials();
+      credentials = getCredentials(spid);
       HttpPost httpPost = new HttpPost(credentials.getAFEXApi()  + "api/nationalid/find");
 
       httpPost.addHeader("API-Key", request.getClientAPIKey());
@@ -530,9 +535,9 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public String getValueDate(String currencyPair, String valueType,  String businessApiKey) {
+  public String getValueDate(String currencyPair, String valueType,  String businessApiKey, String spid) {
     try {
-      credentials = getCredentials();
+      credentials = getCredentials(spid);
       URIBuilder uriBuilder = new URIBuilder(credentials.getAFEXApi()  + "api/valuedates");
       uriBuilder.setParameter("CurrencyPair", currencyPair)
                 .setParameter("ValueType", valueType);
@@ -576,9 +581,9 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public GetRateResponse getRate(GetRateRequest request) {
+  public GetRateResponse getRate(GetRateRequest request, String spid) {
     try {
-      credentials = getCredentials();
+      credentials = getCredentials(spid);
       URIBuilder uriBuilder = new URIBuilder(credentials.getAFEXApi()  + "api/rates");
       uriBuilder.setParameter("CurrencyPair", request.getCurrencyPair());
       if ( !request.getValueType().equals("") ) uriBuilder.setParameter("ValueType", request.getValueType());
@@ -621,10 +626,10 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public Quote getQuote(GetQuoteRequest request) {
+  public Quote getQuote(GetQuoteRequest request, String spid) {
     logger.debug("Entered getquote", request);
     try {
-      credentials = getCredentials();
+      credentials = getCredentials(spid);
       URIBuilder uriBuilder = new URIBuilder(credentials.getAFEXApi()  + "api/quote");
       uriBuilder.setParameter("CurrencyPair", request.getCurrencyPair())
         .setParameter("ValueDate", request.getValueDate())
@@ -668,9 +673,9 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public CreateTradeResponse createTrade(CreateTradeRequest request) {
+  public CreateTradeResponse createTrade(CreateTradeRequest request, String spid) {
     try {
-      HttpPost httpPost = new HttpPost(getCredentials().getAFEXApi()  + "api/trades/create");
+      HttpPost httpPost = new HttpPost(getCredentials(spid).getAFEXApi()  + "api/trades/create");
 
       httpPost.addHeader("API-Key", request.getClientAPIKey());
       httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -744,9 +749,9 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public CheckTradeStatusResponse checkTradeStatus(CheckTradeStatusRequest request) {
+  public CheckTradeStatusResponse checkTradeStatus(CheckTradeStatusRequest request, String spid) {
     try {
-      URIBuilder uriBuilder = new URIBuilder(getCredentials().getAFEXApi()  + "api/trades");
+      URIBuilder uriBuilder = new URIBuilder(getCredentials(spid).getAFEXApi()  + "api/trades");
       uriBuilder.setParameter("Id", request.getId());
 
       HttpGet httpGet = new HttpGet(uriBuilder.build());
@@ -787,9 +792,9 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public CreatePaymentResponse createPayment(CreatePaymentRequest request) {
+  public CreatePaymentResponse createPayment(CreatePaymentRequest request, String spid) {
     try {
-      HttpPost httpPost = new HttpPost(getCredentials().getAFEXApi()  + "api/payments/create");
+      HttpPost httpPost = new HttpPost(getCredentials(spid).getAFEXApi()  + "api/payments/create");
 
       httpPost.addHeader("API-Key", request.getClientAPIKey());
       httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -834,9 +839,9 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public CheckPaymentStatusResponse checkPaymentStatus(CheckPaymentStatusRequest request) {
+  public CheckPaymentStatusResponse checkPaymentStatus(CheckPaymentStatusRequest request, String spid) {
     try {
-      URIBuilder uriBuilder = new URIBuilder(getCredentials().getAFEXApi()  + "api/payments");
+      URIBuilder uriBuilder = new URIBuilder(getCredentials(spid).getAFEXApi()  + "api/payments");
       uriBuilder.setParameter("Id", request.getId());
 
       HttpGet httpGet = new HttpGet(uriBuilder.build());
@@ -877,7 +882,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public byte[] getTradeConfirmation(GetConfirmationPDFRequest confirmationPDFRequest) {
+  public byte[] getTradeConfirmation(GetConfirmationPDFRequest confirmationPDFRequest, String spid) {
 
     OkHttpClient client = new OkHttpClient.Builder()
       .connectTimeout(15, TimeUnit.SECONDS)
@@ -889,7 +894,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
     Request request = new Request.Builder()
       .header("Content-Type", "application/json")
       .header("API-Key", confirmationPDFRequest.getClientAPIKey())
-      .url(getCredentials().getAFEXApi()  + "api/confirmations?TradeNumber=" + confirmationPDFRequest.getTradeNumber())
+      .url(getCredentials(spid).getAFEXApi()  + "api/confirmations?TradeNumber=" + confirmationPDFRequest.getTradeNumber())
       .build();
 
     logMessage(confirmationPDFRequest.getClientAPIKey(), "getTradeConfirmation", request.toString(), false);
@@ -918,14 +923,14 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public String directDebitEnrollment(DirectDebitEnrollmentRequest directDebitRequest) {
+  public String directDebitEnrollment(DirectDebitEnrollmentRequest directDebitRequest, String spid) {
     try {
-      credentials = getCredentials();
+      credentials = getCredentials(spid);
       HttpPost httpPost = new HttpPost(credentials.getPartnerApi() + "api/v1/DirectDebitEnroll");
 
       httpPost.addHeader("API-Key", credentials.getApiKey());
       httpPost.addHeader("Content-Type", "application/json");
-      httpPost.addHeader("Authorization", "bearer " + getToken().getAccess_token());
+      httpPost.addHeader("Authorization", "bearer " + getToken(spid).getAccess_token());
 
       StringEntity params = null;
 
@@ -971,14 +976,14 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public String directDebitUnenrollment(DirectDebitUnenrollmentRequest directDebitUnenrollmentRequest) {
+  public String directDebitUnenrollment(DirectDebitUnenrollmentRequest directDebitUnenrollmentRequest, String spid) {
     try {
-      credentials = getCredentials();
+      credentials = getCredentials(spid);
       HttpPost httpPost = new HttpPost(credentials.getPartnerApi() + "api/v1/DirectDebitUnenroll");
 
       httpPost.addHeader("API-Key", credentials.getApiKey());
       httpPost.addHeader("Content-Type", "application/json");
-      httpPost.addHeader("Authorization", "bearer " + getToken().getAccess_token());
+      httpPost.addHeader("Authorization", "bearer " + getToken(spid).getAccess_token());
 
       StringEntity params = null;
       
@@ -1025,14 +1030,14 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public String addCompanyOfficer(AddCompanyOfficerRequest addCompanyOfficerRequest) {
+  public String addCompanyOfficer(AddCompanyOfficerRequest addCompanyOfficerRequest, String spid) {
     try {
-      credentials = getCredentials();
+      credentials = getCredentials(spid);
       HttpPost httpPost = new HttpPost(credentials.getPartnerApi() + "api/v2/AddCompanyOfficer");
 
       httpPost.addHeader("API-Key", credentials.getApiKey());
       httpPost.addHeader("Content-Type", "application/json");
-      httpPost.addHeader("Authorization", "bearer " + getToken().getAccess_token());
+      httpPost.addHeader("Authorization", "bearer " + getToken(spid).getAccess_token());
 
       StringEntity params = null;
 

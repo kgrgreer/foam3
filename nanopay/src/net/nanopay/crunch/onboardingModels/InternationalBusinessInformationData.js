@@ -23,6 +23,17 @@ foam.CLASS({
     'foam.core.Validatable'
   ],
 
+  imports: [
+    'subject'
+  ],
+
+  sections: [
+    {
+      name: 'businessDetailsSection',
+      title: 'Extended business details'
+    },
+  ],
+
   messages: [
     { name: 'BUSINESS_REGISTRATION_DATE_ERROR', message: 'Cannot be future dated.' },
     { name: 'COUNTRY_OF_REGISTRATION_ERROR', message: 'This application does not currently support businesses outside of Canada and the USA. We are working hard to change this! If you are based outside of Canada and the USA, check back for updates.' },
@@ -32,10 +43,28 @@ foam.CLASS({
   properties: [
     {
       section: 'businessDetailsSection',
+      name: 'countryOfBusinessRegistration',
+      label: 'Country Of Business Formation',
+      class: 'Reference',
+      of: 'foam.nanos.auth.Country',
+      documentation: 'Country or Jurisdiction of Formation or Incorporation.',
+      view: function(args, X) {
+        return {
+          class: 'foam.u2.view.ChoiceView',
+          placeholder: '- Please select -',
+          dao: X.permittedCountryDAO,
+          objToChoice: function(a) {
+            return [a.id, a.name];
+          }
+        };
+      }
+    },
+    {
+      section: 'businessDetailsSection',
       name: 'businessRegistrationDate',
-      label: 'Business Formation Date',
+      label: 'Business Registration Date',
       class: 'Date',
-      documentation: 'Date of Business Formation or Incorporation.',
+      documentation: 'Date of Business Registration.',
       validationPredicates: [
         {
           args: ['businessRegistrationDate'],
@@ -48,32 +77,20 @@ foam.CLASS({
     },
     {
       section: 'businessDetailsSection',
-      name: 'countryOfBusinessRegistration',
-      label: 'Country Of Business Formation',
-      class: 'Reference',
-      of: 'foam.nanos.auth.Country',
-      documentation: 'Country or Jurisdiction of Formation or Incorporation.',
-      view: function(args, X) {
-        var m = foam.mlang.Expressions.create();
-        return {
-          class: 'foam.u2.view.ChoiceView',
-          placeholder: '- Please select -',
-          dao: X.permittedCountryDAO,
-          objToChoice: function(a) {
-            return [a.id, a.name];
-          }
-        };
+      name: 'businessIncorporatedDate',
+      label: 'Date of Incorporation',
+      class: 'Date',
+      documentation: 'Date of Business Incorporation.',
+      visibility: function(countryOfBusinessRegistration) {
+        return countryOfBusinessRegistration === 'BR' ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       validationPredicates: [
         {
-          args: ['countryOfBusinessRegistration'],
+          args: ['businessRegistrationDate'],
           predicateFactory: function(e) {
-            return e.OR(
-              e.EQ(net.nanopay.crunch.onboardingModels.InternationalBusinessInformationData.COUNTRY_OF_BUSINESS_REGISTRATION, 'CA'),
-              e.EQ(net.nanopay.crunch.onboardingModels.InternationalBusinessInformationData.COUNTRY_OF_BUSINESS_REGISTRATION, 'US')
-            );
+            return e.LTE(net.nanopay.crunch.onboardingModels.InternationalBusinessInformationData.BUSINESS_REGISTRATION_DATE, new Date());
           },
-          errorMessage: 'COUNTRY_OF_REGISTRATION_ERROR'
+          errorMessage: 'BUSINESS_REGISTRATION_DATE_ERROR'
         }
       ]
     },

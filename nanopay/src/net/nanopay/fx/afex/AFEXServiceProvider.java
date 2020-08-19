@@ -169,7 +169,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
               onboardingRequest.setTradeName(business.getOrganization());
             }
             onboardingRequest.setTermsAndConditions("true");
-            OnboardCorporateClientResponse newClient = afexClient.onboardCorporateClient(onboardingRequest);
+            OnboardCorporateClientResponse newClient = afexClient.onboardCorporateClient(onboardingRequest, business.getSpid());
             if ( newClient != null && afexBusiness == null ) {
               afexBusiness  = new AFEXBusiness();
               afexBusiness.setUser(business.getId());
@@ -238,7 +238,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       }
     }
 
-    addCompanyOfficer(request);
+    addCompanyOfficer(request, business.getSpid());
   }
 
   private int getSigningOfficerOwnershipPercentage(Business business, User officer) {
@@ -260,12 +260,12 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
     for ( BeneficialOwner beneficialOwner : beneficialOwners ) {
       if ( beneficialOwner.getOwnershipPercent() >= 25 ) { // Only push when ownership percentage is greater than 25
-        pushBeneficialOwner(beneficialOwner, clientKey);
+        pushBeneficialOwner(beneficialOwner, clientKey, business.getSpid());
       }
     } 
   }
 
-  public void pushBeneficialOwner(BeneficialOwner beneficialOwner, String clientKey) {
+  public void pushBeneficialOwner(BeneficialOwner beneficialOwner, String clientKey, String spid) {
     AddCompanyOfficerRequest request = new AddCompanyOfficerRequest();
     request.setApiKey(clientKey);
     request.setFirstName(beneficialOwner.getFirstName());
@@ -288,17 +288,17 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       request.setZip(address.getPostalCode());
     }
 
-    addCompanyOfficer(request);
+    addCompanyOfficer(request, spid);
   }
 
   public void pushBusinessDirectors(Business business, String clientKey) {
     if ( business == null ) return;
     for ( BusinessDirector director : business.getBusinessDirectors() ) {
-      pushBusinessDirector(business, director, clientKey);
+      pushBusinessDirector(business, director, clientKey, business.getSpid());
     }
   }
 
-  public void pushBusinessDirector(Business business, BusinessDirector director, String clientKey) {
+  public void pushBusinessDirector(Business business, BusinessDirector director, String clientKey, String spid) {
     if ( business == null || director == null ) return;
 
     if ( directorIsBeneficialOwner(business, director) ) return; // We already pushed beneficial owners
@@ -309,7 +309,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     request.setLastName(director.getLastName());
     request.setPercentOwnership("1"); // AFEX work arround to return 1 where there is no ownership percentage
     request.setDirector("true");
-    addCompanyOfficer(request);
+    addCompanyOfficer(request, spid);
   }
 
   private boolean directorIsBeneficialOwner(Business business, BusinessDirector director) {
@@ -324,9 +324,9 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     return isBeneficialOwner;
   }
 
-  public void addCompanyOfficer(AddCompanyOfficerRequest request) {
+  public void addCompanyOfficer(AddCompanyOfficerRequest request, String spid) {
     try {
-      afexClient.addCompanyOfficer(request);
+      afexClient.addCompanyOfficer(request, spid);
     } catch(Exception e) {
       logger_.error("Failed to push beneficial owner: " + request.getFirstName(), e);
     }
@@ -363,7 +363,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     } else {
       return false;
     }
-    FindBankByNationalIDResponse bankResponse = getBankInformation(x, afexBusiness.getApiKey(), bankAccount);
+    FindBankByNationalIDResponse bankResponse = getBankInformation(x, afexBusiness.getApiKey(), bankAccount, business.getSpid());
     DirectDebitEnrollmentRequest directDebitEnrollmentRequest = new DirectDebitEnrollmentRequest.Builder(x)
       .setAccountNumber(bankAccount.getAccountNumber())
       .setAccountOwnerFirstName(pad.getFirstName())
@@ -379,7 +379,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       directDebitEnrollmentRequest.setBankRoutingCode(bankAccount.getBranchId());
     }
 
-    String directDebitEnrollmentResponse = afexClient.directDebitEnrollment(directDebitEnrollmentRequest);
+    String directDebitEnrollmentResponse = afexClient.directDebitEnrollment(directDebitEnrollmentRequest, business.getSpid());
 
     if ( ! directDebitEnrollmentResponse.equals("\"This account is submitted to enroll in Direct Debit.\"") ) {
       logger_.error("Error creating direct debit account for business " + business.getId(), directDebitEnrollmentRequest, directDebitEnrollmentResponse);
@@ -391,8 +391,9 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
   public String getClientAccountStatus(AFEXBusiness afexBusiness) throws RuntimeException {
     String status = null;
     if ( afexBusiness == null ) return null;
+    User user = User.findUser(x, afexBusiness.getUser());
     try {
-      GetClientAccountStatusResponse response = this.afexClient.getClientAccountStatus(afexBusiness.getApiKey());
+      GetClientAccountStatusResponse response = this.afexClient.getClientAccountStatus(afexBusiness.getApiKey(), user.getSpid());
       if ( response != null ) {
         status = response.getAccountStatus();
       }
@@ -405,6 +406,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
   public FXQuote getFXRate(String sourceCurrency, String targetCurrency, long sourceAmount,  long destinationAmount,
     String fxDirection, String valueDate, long user, String fxProvider) throws RuntimeException {
     FXQuote fxQuote = new FXQuote();
+    User userObj = User.findUser(x, user);
     GetQuoteRequest quoteRequest = new GetQuoteRequest();
     boolean isAmountSettlement = sourceAmount > 0 ? true : false;
     Long amount = isAmountSettlement ? sourceAmount : destinationAmount;
@@ -415,14 +417,14 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     if ( business == null ) {
       throw new RuntimeException("No afexBusiness found for user " + user);
     }
-    quoteRequest.setValueDate(getValueDate(targetCurrency, sourceCurrency, business.getApiKey()));
+    quoteRequest.setValueDate(getValueDate(targetCurrency, sourceCurrency, business.getApiKey(), userObj.getSpid()));
     quoteRequest.setClientAPIKey(business.getApiKey());
 
     if ( SafetyUtil.isEmpty(quoteRequest.getClientAPIKey()) ) {
       throw new RuntimeException("No ClientAPIKey set");
     }
     try {
-      Quote quote = this.afexClient.getQuote(quoteRequest);
+      Quote quote = this.afexClient.getQuote(quoteRequest, userObj.getSpid());
       if ( null != quote ) {
         Double fxAmount = isAmountSettlement ? getConvertedAmount(quote,sourceAmount, true):  getConvertedAmount(quote,destinationAmount, false);
         fxQuote.setRate(quote.getTerms().equals("A") ? quote.getInvertedRate(): quote.getRate());
@@ -468,10 +470,10 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     }
   }
 
-  private String getValueDate(String targetCurrency, String sourceCurrency, String apiKey ) {
+  private String getValueDate(String targetCurrency, String sourceCurrency, String apiKey, String spid) {
     String valueDate = null;
     try {
-      valueDate = this.afexClient.getValueDate(targetCurrency + sourceCurrency, "SPOT", apiKey);
+      valueDate = this.afexClient.getValueDate(targetCurrency + sourceCurrency, "SPOT", apiKey, spid);
     } catch(Exception e) {
       // Log here
     }
@@ -506,7 +508,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     if ( null == afexBusiness ) throw new RuntimeException("Business as not been completely onboarded on partner system. " + sourceUser);
 
     Address bankAddress = bankAccount.getAddress() == null ? bankAccount.getBankAddress() : bankAccount.getAddress();
-    FindBankByNationalIDResponse bankInformation = getBankInformation(x,afexBusiness.getApiKey(),bankAccount);
+    FindBankByNationalIDResponse bankInformation = getBankInformation(x,afexBusiness.getApiKey(),bankAccount, user.getSpid());
     if ( null == bankAddress ) {
       bankAddress = new Address.Builder(x)
         .setCountryId(bankAccount.getCountry())
@@ -514,7 +516,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     }
 
     // Check payee does not already exists on AFEX
-    FindBeneficiaryResponse beneficiaryResponse = findBeneficiary(userId,afexBusiness.getApiKey());
+    FindBeneficiaryResponse beneficiaryResponse = findBeneficiary(userId,afexBusiness.getApiKey(), user.getSpid());
     if ( null == beneficiaryResponse ) {
       String allowedChars = "[^a-zA-Z0-9,.+()?/:‘\\s-]";
       String beneficiaryName = user.getBusinessName().replaceAll(allowedChars,"");;
@@ -539,7 +541,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       createBeneficiaryRequest.setClientAPIKey(afexBusiness.getApiKey());
 
       try {
-        CreateBeneficiaryResponse createBeneficiaryResponse = this.afexClient.createBeneficiary(createBeneficiaryRequest);
+        CreateBeneficiaryResponse createBeneficiaryResponse = this.afexClient.createBeneficiary(createBeneficiaryRequest, user.getSpid());
         if ( null == createBeneficiaryResponse ) throw new RuntimeException("Null response got for remote system." );
         if ( createBeneficiaryResponse.getCode() != 0 ) throw new RuntimeException("Unable to create Beneficiary at this time. " +  createBeneficiaryResponse.getInformationMessage());
         addBeneficiary(x, userId, sourceUser, createBeneficiaryResponse.getStatus());
@@ -551,13 +553,13 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     }
   }
 
-  public FindBeneficiaryResponse findBeneficiary(long beneficiaryId, String clientApiKey) {
+  public FindBeneficiaryResponse findBeneficiary(long beneficiaryId, String clientApiKey, String spid) {
     FindBeneficiaryRequest findBeneficiaryRequest = new FindBeneficiaryRequest();
     findBeneficiaryRequest.setVendorId(String.valueOf(beneficiaryId));
     findBeneficiaryRequest.setClientAPIKey(clientApiKey);
     FindBeneficiaryResponse beneficiaryResponse = null;
     try {
-      beneficiaryResponse = this.afexClient.findBeneficiary(findBeneficiaryRequest);
+      beneficiaryResponse = this.afexClient.findBeneficiary(findBeneficiaryRequest, spid);
     } catch(Throwable t) {
       logger_.debug("A beneficiary does not exist for: " + beneficiaryId);
     }
@@ -600,7 +602,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     AFEXBusiness afexBusiness = getAFEXBusiness(x, sourceUser);
     if ( null == afexBusiness ) throw new RuntimeException("Business as not been completely onboarded on partner system. " + sourceUser);
 
-    FindBankByNationalIDResponse bankInformation = getBankInformation(x,afexBusiness.getApiKey(),bankAccount);
+    FindBankByNationalIDResponse bankInformation = getBankInformation(x,afexBusiness.getApiKey(),bankAccount, user.getSpid());
     String bankName = bankInformation != null ? bankInformation.getInstitutionName() : bankAccount.getName();
 
     String allowedChars = "[^a-zA-Z0-9,.+()?/:‘\\s-]";
@@ -625,7 +627,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     updateBeneficiaryRequest.setClientAPIKey(afexBusiness.getApiKey());
 
     try {
-      UpdateBeneficiaryResponse updateBeneficiaryResponse = this.afexClient.updateBeneficiary(updateBeneficiaryRequest);
+      UpdateBeneficiaryResponse updateBeneficiaryResponse = this.afexClient.updateBeneficiary(updateBeneficiaryRequest, user.getSpid());
       if ( null == updateBeneficiaryResponse ) throw new RuntimeException("Null response got for remote system." );
       if ( updateBeneficiaryResponse.getCode() != 0 ) throw new RuntimeException("Unable to update Beneficiary at this time. " +  updateBeneficiaryResponse.getInformationMessage());
       addBeneficiary(x, userId, sourceUser, updateBeneficiaryResponse.getStatus());
@@ -654,7 +656,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       .setCurrency(bankAccount.getDenomination())
       .build();
 
-    String response = afexClient.directDebitUnenrollment(unenrollmentRequest);
+    String response = afexClient.directDebitUnenrollment(unenrollmentRequest, business.getSpid());
 
     return false;
   }
@@ -662,12 +664,12 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
   public void deletePayee(long payeeUserId, long payerUserId) throws RuntimeException {
     AFEXBusiness afexBusiness = getAFEXBusiness(x, payerUserId);
     if ( null == afexBusiness ) throw new RuntimeException("Business as not been completely onboarded on partner system. " + payerUserId);
-
+    User user = User.findUser(x, payerUserId);
     try{
       DisableBeneficiaryRequest request = new DisableBeneficiaryRequest();
       request.setClientAPIKey(afexBusiness.getApiKey());
       request.setVendorId(String.valueOf(payeeUserId));
-      this.afexClient.disableBeneficiary(request);
+      this.afexClient.disableBeneficiary(request, user.getSpid());
       DAO afexBeneficiaryDAO = ((DAO) x.get("afexBeneficiaryDAO")).inX(x);
       AFEXBeneficiary afexBeneficiary = (AFEXBeneficiary) afexBeneficiaryDAO.find(AND(
         EQ(AFEXBeneficiary.CONTACT, payeeUserId),
@@ -707,6 +709,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       throw new RuntimeException("FXQuote not found with Quote ID:  " + afexTransaction.getFxQuoteId());
     }
 
+    User user = User.findUser(x, transaction.getPayerId());
     long tradeAmount = 0;
     tradeAmount =  afexTransaction.getDestinationAmount();
     CreateTradeRequest createTradeRequest = new CreateTradeRequest();
@@ -722,7 +725,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     createTradeRequest.setValueDate(quote.getValueDate().toString());
 
     try {
-      CreateTradeResponse tradeResponse = this.afexClient.createTrade(createTradeRequest);
+      CreateTradeResponse tradeResponse = this.afexClient.createTrade(createTradeRequest, user.getSpid());
       if ( null != tradeResponse && tradeResponse.getTradeNumber() > 0 ) {
         DAO traderesponseDAO = (DAO) x.get("afexTradeResponseDAO");
         traderesponseDAO.put(tradeResponse);
@@ -780,6 +783,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     CreateTradeResponse tradeResponse = (CreateTradeResponse) traderesponseDAO.find(EQ(CreateTradeResponse.TRADE_NUMBER, afexTransaction.getAfexTradeResponseNumber()));
 
     if ( null != tradeResponse && tradeResponse.getTradeNumber() > 0 ) {
+      User user = User.findUser(x, transaction.getPayerId());
       CreatePaymentRequest createPaymentRequest = new CreatePaymentRequest();
       createPaymentRequest.setClientAPIKey(afexBusiness.getApiKey());
       createPaymentRequest.setPaymentDate(tradeResponse.getValueDate());
@@ -787,7 +791,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       createPaymentRequest.setCurrency(tradeResponse.getTradeCcy());
       createPaymentRequest.setVendorId(String.valueOf(afexBeneficiary.getContact()));
       try {
-        CreatePaymentResponse paymentResponse = this.afexClient.createPayment(createPaymentRequest);
+        CreatePaymentResponse paymentResponse = this.afexClient.createPayment(createPaymentRequest, user.getSpid());
         if ( paymentResponse != null && paymentResponse.getReferenceNumber() > 0 ) {
           AFEXTransaction txn = (AFEXTransaction) afexTransaction.fclone();
           txn.setReferenceNumber(String.valueOf(paymentResponse.getReferenceNumber()));
@@ -823,7 +827,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     request.setId(txn.getReferenceNumber());
 
     try {
-      CheckPaymentStatusResponse paymentStatusResponse = this.afexClient.checkPaymentStatus(request);
+      User user = User.findUser(x, transaction.getPayerId());
+      CheckPaymentStatusResponse paymentStatusResponse = this.afexClient.checkPaymentStatus(request, user.getSpid());
       if ( null == paymentStatusResponse ) throw new RuntimeException("Null response got for remote system." );
       
       txn.setStatus(mapAFEXPaymentStatus(paymentStatusResponse.getPaymentStatus()));
@@ -863,7 +868,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
   }
 
-  public FindBankByNationalIDResponse getBankInformation(X x, String clientAPIKey, BankAccount bankAccount) {
+  public FindBankByNationalIDResponse getBankInformation(X x, String clientAPIKey, BankAccount bankAccount, String spid) {
     FindBankByNationalIDResponse bankInformation = null;
     FindBankByNationalIDRequest findBankByNationalIDRequest = new FindBankByNationalIDRequest();
     findBankByNationalIDRequest.setClientAPIKey(clientAPIKey);
@@ -885,7 +890,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       return null;
     }
     try {
-      bankInformation = this.afexClient.findBankByNationalID(findBankByNationalIDRequest);
+      bankInformation = this.afexClient.findBankByNationalID(findBankByNationalIDRequest, spid);
     } catch(Throwable t) {
       logger_.error("Error finding bank information from AFEX.", t);
     }
@@ -904,7 +909,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       .setTradeNumber(afexTransaction.getAfexTradeResponseNumber()+"")
       .build();
     try {
-      return afexClient.getTradeConfirmation(pdfRequest);
+      User user = User.findUser(x, txn.getPayerId());
+      return afexClient.getTradeConfirmation(pdfRequest, user.getSpid());
     } catch (Throwable t) {
       logger_.error("Error getting trade confirmation PDF from AFEX.", t);
     }

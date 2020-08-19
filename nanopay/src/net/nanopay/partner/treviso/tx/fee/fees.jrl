@@ -342,3 +342,692 @@ p({
   order: 10,
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
+
+// Spread Rates
+p({
+  class: "net.nanopay.tx.fee.Fee",
+  id: "38eb7bbb-2966-4b1c-89d6-f0e9a554eb31",
+  name: "Spread Rate",
+  formula: {
+    class: "foam.mlang.expr.Add",
+    args: [
+      {
+        class: "net.nanopay.tx.fee.FeeExpr",
+        feeName: "Spread Rate Base"
+      },
+      {
+        class: "net.nanopay.tx.fee.FeeExpr",
+        feeName: "Spread Rate 430"
+      }
+    ]
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+
+// Spread Rate Base: USD and <= 3000 USD => 2.5%
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "38eb7bbb-2966-4b1c-89d6-f0e9a554eb31-001",
+  name: "Spread Rate Base",
+  percentage: 2.5,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.mlang.predicate.Eq",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationCurrency"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: "USD"
+        }
+      },
+      {
+        class: "foam.mlang.predicate.Lte",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationAmount"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: 300000
+        }
+      }
+    ]
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+
+// Spread Rate Base: USD and < 3000 USD and <= 10000 USD  => 2.2%
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "38eb7bbb-2966-4b1c-89d6-f0e9a554eb31-002",
+  name: "Spread Rate Base",
+  percentage: 2.2,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.mlang.predicate.Eq",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationCurrency"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: "USD"
+        }
+      },
+      {
+        class: "foam.mlang.predicate.Gt",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationAmount"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: 300000
+        }
+      },
+      {
+        class: "foam.mlang.predicate.Lte",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationAmount"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: 1000000
+        }
+      }
+    ]
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+
+// Spread Rate Base: USD and > 10000 USD => 2.0%
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "38eb7bbb-2966-4b1c-89d6-f0e9a554eb31-003",
+  name: "Spread Rate Base",
+  percentage: 2.0,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.mlang.predicate.Eq",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationCurrency"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: "USD"
+        }
+      },
+      {
+        class: "foam.mlang.predicate.Gt",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationAmount"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: 1000000
+        }
+      }
+    ]
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+
+// Spread Rate Base: EUR and <= 3000 USD => 2.5%
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "38eb7bbb-2966-4b1c-89d6-f0e9a554eb31-004",
+  name: "Spread Rate Base",
+  percentage: 2.5,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.mlang.predicate.Eq",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationCurrency"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: "EUR"
+        }
+      },
+      {
+        class: "foam.mlang.predicate.Lte",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationAmount"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: 300000
+        }
+      }
+    ]
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+
+// Spread Rate Base: EUR and < 3000 USD and <= 10000 USD  => 2.2%
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "38eb7bbb-2966-4b1c-89d6-f0e9a554eb31-005",
+  name: "Spread Rate Base",
+  percentage: 2.2,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.mlang.predicate.Eq",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationCurrency"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: "EUR"
+        }
+      },
+      {
+        class: "foam.mlang.predicate.Gt",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationAmount"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: 300000
+        }
+      },
+      {
+        class: "foam.mlang.predicate.Lte",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationAmount"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: 1000000
+        }
+      }
+    ]
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+
+// Spread Rate Base: EUR and > 10000 USD => 2.0%
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "38eb7bbb-2966-4b1c-89d6-f0e9a554eb31-006",
+  name: "Spread Rate Base",
+  percentage: 2.0,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.mlang.predicate.Eq",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationCurrency"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: "EUR"
+        }
+      },
+      {
+        class: "foam.mlang.predicate.Gt",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationAmount"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: 1000000
+        }
+      }
+    ]
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+
+// Spread Rate Base: GBP and <= 3000 USD => 3.5%
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "38eb7bbb-2966-4b1c-89d6-f0e9a554eb31-007",
+  name: "Spread Rate Base",
+  percentage: 3.5,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.mlang.predicate.Eq",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationCurrency"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: "GBP"
+        }
+      },
+      {
+        class: "foam.mlang.predicate.Lte",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationAmount"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: 300000
+        }
+      }
+    ]
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+
+// Spread Rate Base: GBP and < 3000 USD and <= 10000 USD  => 3.2%
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "38eb7bbb-2966-4b1c-89d6-f0e9a554eb31-008",
+  name: "Spread Rate Base",
+  percentage: 3.2,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.mlang.predicate.Eq",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationCurrency"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: "GBP"
+        }
+      },
+      {
+        class: "foam.mlang.predicate.Gt",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationAmount"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: 300000
+        }
+      },
+      {
+        class: "foam.mlang.predicate.Lte",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationAmount"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: 1000000
+        }
+      }
+    ]
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+
+// Spread Rate Base: GBP and > 10000 USD => 3.0%
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "38eb7bbb-2966-4b1c-89d6-f0e9a554eb31-009",
+  name: "Spread Rate Base",
+  percentage: 3.0,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.mlang.predicate.Eq",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationCurrency"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: "GBP"
+        }
+      },
+      {
+        class: "foam.mlang.predicate.Gt",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationAmount"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: 1000000
+        }
+      }
+    ]
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+
+// Spread Rate Base: CAD and <= 3000 USD => 3.5%
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "38eb7bbb-2966-4b1c-89d6-f0e9a554eb31-010",
+  name: "Spread Rate Base",
+  percentage: 3.5,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.mlang.predicate.Eq",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationCurrency"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: "CAD"
+        }
+      },
+      {
+        class: "foam.mlang.predicate.Lte",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationAmount"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: 300000
+        }
+      }
+    ]
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+
+// Spread Rate Base: CAD and < 3000 USD and <= 10000 USD  => 3.2%
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "38eb7bbb-2966-4b1c-89d6-f0e9a554eb31-011",
+  name: "Spread Rate Base",
+  percentage: 3.2,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.mlang.predicate.Eq",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationCurrency"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: "CAD"
+        }
+      },
+      {
+        class: "foam.mlang.predicate.Gt",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationAmount"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: 300000
+        }
+      },
+      {
+        class: "foam.mlang.predicate.Lte",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationAmount"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: 1000000
+        }
+      }
+    ]
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+
+// Spread Rate Base: CAD and > 10000 USD => 3.0%
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "38eb7bbb-2966-4b1c-89d6-f0e9a554eb31-012",
+  name: "Spread Rate Base",
+  percentage: 3.0,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.mlang.predicate.Eq",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationCurrency"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: "CAD"
+        }
+      },
+      {
+        class: "foam.mlang.predicate.Gt",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationAmount"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: 1000000
+        }
+      }
+    ]
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+
+// Spread Rate Base: AUD and <= 3000 USD => 5.0%
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "38eb7bbb-2966-4b1c-89d6-f0e9a554eb31-013",
+  name: "Spread Rate Base",
+  percentage: 5.0,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.mlang.predicate.Eq",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationCurrency"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: "AUD"
+        }
+      },
+      {
+        class: "foam.mlang.predicate.Lte",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationAmount"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: 300000
+        }
+      }
+    ]
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+
+// Spread Rate Base: AUD and < 3000 USD and <= 10000 USD  => 4.4%
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "38eb7bbb-2966-4b1c-89d6-f0e9a554eb31-014",
+  name: "Spread Rate Base",
+  percentage: 4.4,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.mlang.predicate.Eq",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationCurrency"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: "AUD"
+        }
+      },
+      {
+        class: "foam.mlang.predicate.Gt",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationAmount"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: 300000
+        }
+      },
+      {
+        class: "foam.mlang.predicate.Lte",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationAmount"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: 1000000
+        }
+      }
+    ]
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+
+// Spread Rate Base: AUD and > 10000 USD => 4.0%
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "38eb7bbb-2966-4b1c-89d6-f0e9a554eb31-015",
+  name: "Spread Rate Base",
+  percentage: 4.0,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.mlang.predicate.Eq",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationCurrency"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: "AUD"
+        }
+      },
+      {
+        class: "foam.mlang.predicate.Gt",
+        arg1: {
+          class: "__Property__",
+          forClass_: "net.nanopay.tx.model.Transaction",
+          name: "destinationAmount"
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: 1000000
+        }
+      }
+    ]
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+
+// Spread Rate 430
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "38eb7bbb-2966-4b1c-89d6-f0e9a554eb31-101",
+  name: "Spread Rate 430",
+  percentage: 2.0,
+  predicate: {
+    class: "foam.mlang.predicate.Gte",
+    arg1: {
+      class: "foam.mlang.CurrentTime"
+    },
+    arg2: {
+      class: "foam.mlang.expr.TimeOfDay",
+      hour: 16,
+      minute: 30,
+      country: "BR",
+      timezone: "America/Sao_Paulo"
+    }
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "38eb7bbb-2966-4b1c-89d6-f0e9a554eb31-102",
+  name: "Spread Rate 430",
+  percentage: 0.0,
+  order: 10,
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+
+// PTax Rate
+p({
+  class: "net.nanopay.country.br.tx.fee.PTaxRateFee",
+  id: "948034e0-7b82-4b54-9fde-0905c09558d3",
+  name: "PTax Rate",
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})

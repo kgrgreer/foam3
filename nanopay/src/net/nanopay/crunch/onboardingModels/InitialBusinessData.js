@@ -29,6 +29,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'countryDAO',
     'permittedCountryDAO',
     'user'
   ],
@@ -40,13 +41,13 @@ foam.CLASS({
   sections: [
     {
       name: 'businessRegistration',
-      title: 'Business Registration',
-      help: `Business Name.`
+      title: 'Business Details',
+      help: `Please enter business details.`
     },
     {
       name: 'businessAddress',
       title: 'Business Address',
-      help: 'Business Address.'
+      help: `Please enter your business' address.`
     }
   ],
 
@@ -57,9 +58,35 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'Reference',
+      of: 'net.nanopay.model.Business',
+      name: 'businessId',
+      visibility: 'HIDDEN'
+    },
+    {
       class: 'String',
       name: 'businessName',
       documentation: 'Legal name of business.',
+      section: 'businessRegistration',
+      required: true
+    },
+    {
+      class: 'PhoneNumber',
+      name: 'companyPhone',
+      label: 'Company Phone #',
+      section: 'businessRegistration',
+      required: true
+    },
+    {
+      class: 'PhoneNumber',
+      name: 'fax',
+      label: 'Fax #',
+      section: 'businessRegistration'
+    },
+    {
+      class: 'EMail',
+      name: 'email',
+      label: 'Email Address',
       section: 'businessRegistration'
     },
     net.nanopay.model.Business.ADDRESS.clone().copyFrom({
@@ -92,6 +119,28 @@ foam.CLASS({
           predicateFactory: function(e) {
             return e.EQ(foam.mlang.IsValid.create({
                 arg1: net.nanopay.crunch.onboardingModels.InitialBusinessData.ADDRESS
+              }), true);
+          },
+          errorMessage: 'INVALID_ADDRESS_ERROR'
+        }
+      ]
+    }),
+    net.nanopay.model.Business.MAILING_ADDRESS.clone().copyFrom({
+      section: 'businessAddress',
+      view: function(_, X) {
+        return {
+          class: 'net.nanopay.sme.ui.AddressView',
+          customCountryDAO: X.data.countryDAO,
+          showValidation: true
+        };
+      },
+      autoValidate: false,
+      validationPredicates: [
+        {
+          args: ['address', 'address$errors_'],
+          predicateFactory: function(e) {
+            return e.EQ(foam.mlang.IsValid.create({
+                arg1: net.nanopay.crunch.onboardingModels.BusinessAddressData.MAILING_ADDRESS
               }), true);
           },
           errorMessage: 'INVALID_ADDRESS_ERROR'

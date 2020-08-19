@@ -42,7 +42,7 @@ import net.nanopay.bank.BankAccount;
 import foam.nanos.crunch.Capability;
 import foam.nanos.crunch.UserCapabilityJunction;
 import net.nanopay.contacts.Contact;
-import net.nanopay.country.br.CNPJ;
+import net.nanopay.country.br.BrazilBusinessInfoData;
 import net.nanopay.country.br.exchange.Exchange;
 import net.nanopay.country.br.exchange.ExchangeCredential;
 import net.nanopay.country.br.exchange.ExchangeCustomer;
@@ -212,14 +212,14 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
   }
 
   protected String findCpfCnpj(long userId) {
-    Capability cnpjCapability = (Capability) ((DAO) getX().get("capabilityDAO")).find(EQ(Capability.NAME, "CNPJ"));
+    Capability cnpjCapability = (Capability) ((DAO) getX().get("capabilityDAO")).find(EQ(Capability.NAME, "Additional Business Identification Numbers"));
     if ( cnpjCapability != null ) {
       UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) getX().get("userCapabilityJunctionDAO")).find(AND(
         EQ(UserCapabilityJunction.TARGET_ID, cnpjCapability.getId()),
         EQ(UserCapabilityJunction.SOURCE_ID, userId)
       ));
 
-      if ( ucj != null ) return ucj.getData() != null ? ((CNPJ)ucj.getData()).getData() : "";
+      if ( ucj != null ) return ucj.getData() != null ? ((BrazilBusinessInfoData)ucj.getData()).getCnpj() : "";
     }
 
     return ""; // TODO Pending CNPJ Capability

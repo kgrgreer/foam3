@@ -32,7 +32,6 @@ foam.CLASS({
     'foam.nanos.auth.AgentAuthService',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
-    'foam.nanos.auth.UserUserJunction',
     'foam.nanos.crunch.UserCapabilityJunction',
     'net.nanopay.crunch.onboardingModels.InitialBusinessData',
     'net.nanopay.model.Business'
@@ -40,7 +39,7 @@ foam.CLASS({
 
   messages: [
     { name: 'BUSINESS_CREATE_ERROR',  message: 'There was an issue with creating the business.' },
-    { name: 'ASSOCIATION_ERROR', messsage: 'There was an issue associating the business to the user.'},
+    { name: 'ASSOCIATION_ERROR', messsage: 'There was an issue associating the business to the user.' },
     {
       name: 'UNABLE_SIGN_IN',
       message: `
@@ -58,7 +57,7 @@ foam.CLASS({
         @Override
         public void execute(X x) {
           DAO localUserDAO = (DAO) x.get("localUserDAO");
-          DAO agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
+          DAO capabilityDAO = (DAO) x.get("capabilityDAO");
           User user = ((Subject) x.get("subject")).getUser();
           AgentAuthService agentAuth = (AgentAuthService) x.get("agentAuth");
           // Create user business and associate it to the user.
@@ -67,6 +66,9 @@ foam.CLASS({
             .setBusinessName(businessCapabilityData.getBusinessName())
             .setOrganization(businessCapabilityData.getBusinessName())
             .setAddress(businessCapabilityData.getAddress())
+            .setPhoneNumber(businessCapabilityData.getCompanyPhone())
+            .setFax(businessCapabilityData.getFax())
+            .setEmail(businessCapabilityData.getEmail())
             .setSpid(user.getSpid())
             .build();
           try {
@@ -74,24 +76,12 @@ foam.CLASS({
           } catch (Exception e) {
             throw new Error(BUSINESS_CREATE_ERROR);
           }
-          UserUserJunction junction = new UserUserJunction.Builder(x)
-            .setSourceId(user.getId())
-            .setTargetId(business.getId())
-            .setGroup(business.getBusinessPermissionId() + "." + "admin")
-            .build();
+
           try {
-            agentJunctionDAO.inX(getX()).put(junction);
+            agentAuth.actAs(x, business);
           } catch (Exception e) {
-            throw new Error(ASSOCIATION_ERROR);
+            throw new Error(UNABLE_SIGN_IN);
           }
-          // Uncomment after wizardletconfig on close function is built for the client
-          // Currently after the capability has been granted, this will leave the
-          // context between the server and client mismatched.
-          // try {
-          //   agentAuth.actAs(x, business);
-          // } catch (Exception e) {
-          //   throw new Error(UNABLE_SIGN_IN);
-          // }
         }
       }, "Creates business on initial business data submit.");
       `

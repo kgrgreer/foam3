@@ -26,7 +26,13 @@ foam.INTERFACE({
       name: 'getToken',
       documentation: 'Get token',
       async: true,
-      type: 'net.nanopay.fx.afex.Token'
+      type: 'net.nanopay.fx.afex.Token',
+      args: [
+        {
+          name: 'spid',
+          type: 'String'
+        }
+      ]
     },
     {
       name: 'onboardCorporateClient',
@@ -37,6 +43,10 @@ foam.INTERFACE({
         {
           name: 'request',
           type: 'net.nanopay.fx.afex.OnboardCorporateClientRequest'
+        },
+        {
+          name: 'spid',
+          type: 'String'
         }
       ]
     },
@@ -48,6 +58,10 @@ foam.INTERFACE({
       args: [
         {
           name: 'clientAPIKey',
+          type: 'String'
+        },
+        {
+          name: 'spid',
           type: 'String'
         }
       ]
@@ -61,6 +75,10 @@ foam.INTERFACE({
         {
           name: 'clientAPIKey',
           type: 'String'
+        },
+        {
+          name: 'spid',
+          type: 'String'
         }
       ]
     },
@@ -73,6 +91,10 @@ foam.INTERFACE({
         {
           name: 'request',
           type: 'net.nanopay.fx.afex.CreateBeneficiaryRequest'
+        },
+        {
+          name: 'spid',
+          type: 'String'
         }
       ]
     },
@@ -85,6 +107,10 @@ foam.INTERFACE({
         {
           name: 'request',
           type: 'net.nanopay.fx.afex.UpdateBeneficiaryRequest'
+        },
+        {
+          name: 'spid',
+          type: 'String'
         }
       ]
     },
@@ -97,6 +123,10 @@ foam.INTERFACE({
         {
           name: 'request',
           type: 'net.nanopay.fx.afex.DisableBeneficiaryRequest'
+        },
+        {
+          name: 'spid',
+          type: 'String'
         }
       ]
     },
@@ -109,6 +139,10 @@ foam.INTERFACE({
         {
           name: 'request',
           type: 'net.nanopay.fx.afex.FindBeneficiaryRequest'
+        },
+        {
+          name: 'spid',
+          type: 'String'
         }
       ]
     },
@@ -121,6 +155,10 @@ foam.INTERFACE({
         {
           name: 'request',
           type: 'net.nanopay.fx.afex.FindBankByNationalIDRequest'
+        },
+        {
+          name: 'spid',
+          type: 'String'
         }
       ]
     },
@@ -140,6 +178,10 @@ foam.INTERFACE({
         {
           type: 'String',
           name: 'businessApiKey'
+        },
+        {
+          name: 'spid',
+          type: 'String'
         }
       ]
     },
@@ -152,6 +194,10 @@ foam.INTERFACE({
         {
           type: 'net.nanopay.fx.afex.GetRateRequest',
           name: 'request'
+        },
+        {
+          name: 'spid',
+          type: 'String'
         }
       ]
     },
@@ -164,6 +210,10 @@ foam.INTERFACE({
         {
           type: 'net.nanopay.fx.afex.GetQuoteRequest',
           name: 'request'
+        },
+        {
+          name: 'spid',
+          type: 'String'
         }
       ]
     },
@@ -176,6 +226,10 @@ foam.INTERFACE({
         {
           type: 'net.nanopay.fx.afex.CreateTradeRequest',
           name: 'request'
+        },
+        {
+          name: 'spid',
+          type: 'String'
         }
       ]
     },
@@ -188,6 +242,10 @@ foam.INTERFACE({
         {
           type: 'net.nanopay.fx.afex.CheckTradeStatusRequest',
           name: 'request'
+        },
+        {
+          name: 'spid',
+          type: 'String'
         }
       ]
     },
@@ -200,6 +258,10 @@ foam.INTERFACE({
         {
           type: 'net.nanopay.fx.afex.CreatePaymentRequest',
           name: 'request'
+        },
+        {
+          name: 'spid',
+          type: 'String'
         }
       ]
     },
@@ -212,6 +274,10 @@ foam.INTERFACE({
         {
           type: 'net.nanopay.fx.afex.CheckPaymentStatusRequest',
           name: 'request'
+        },
+        {
+          name: 'spid',
+          type: 'String'
         }
       ]
     },
@@ -224,6 +290,10 @@ foam.INTERFACE({
         {
           type: 'net.nanopay.fx.afex.GetConfirmationPDFRequest',
           name: 'confirmationPDFRequest'
+        },
+        {
+          name: 'spid',
+          type: 'String'
         }
       ]
     },
@@ -236,6 +306,10 @@ foam.INTERFACE({
         {
           type: 'net.nanopay.fx.afex.DirectDebitEnrollmentRequest',
           name: 'directDebitRequest'
+        },
+        {
+          name: 'spid',
+          type: 'String'
         }
       ]
     },
@@ -248,6 +322,10 @@ foam.INTERFACE({
         {
           type: 'net.nanopay.fx.afex.DirectDebitUnenrollmentRequest',
           name: 'directDebitUnenrollmentRequest'
+        },
+        {
+          name: 'spid',
+          type: 'String'
         }
       ]
     },
@@ -260,6 +338,10 @@ foam.INTERFACE({
         {
           type: 'net.nanopay.fx.afex.AddCompanyOfficerRequest',
           name: 'addCompanyOfficerRequest'
+        },
+        {
+          name: 'spid',
+          type: 'String'
         }
       ]
     }

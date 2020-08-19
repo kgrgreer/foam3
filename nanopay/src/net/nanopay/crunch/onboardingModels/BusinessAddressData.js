@@ -29,6 +29,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'permittedCountryDAO',
     'countryDAO',
     'user'
   ],
@@ -63,17 +64,11 @@ foam.CLASS({
     },
     net.nanopay.model.Business.ADDRESS.clone().copyFrom({
       section: 'businessAddressSection',
-      label: '',
+      label: 'Commercial Address',
       view: function(_, X) {
-        var m = foam.mlang.Expressions.create();
-        var countryId = X.data ? X.data.countryId : null;
-        var dao = countryId ? 
-          X.countryDAO.where(m.EQ(foam.nanos.auth.Country.ID, countryId)) : 
-          X.countryDAO;
-
         return {
           class: 'net.nanopay.sme.ui.AddressView',
-          customCountryDAO: dao,
+          customCountryDAO: X.data.permittedCountryDAO,
           showValidation: true
         };
       },
@@ -107,6 +102,28 @@ foam.CLASS({
           predicateFactory: function(e) {
             return e.EQ(foam.mlang.IsValid.create({
                 arg1: net.nanopay.crunch.onboardingModels.BusinessAddressData.ADDRESS
+              }), true);
+          },
+          errorMessage: 'INVALID_ADDRESS_ERROR'
+        }
+      ]
+    }),
+    net.nanopay.model.Business.MAILING_ADDRESS.clone().copyFrom({
+      section: 'businessAddressSection',
+      view: function(_, X) {
+        return {
+          class: 'net.nanopay.sme.ui.AddressView',
+          customCountryDAO: X.data.countryDAO,
+          showValidation: true
+        };
+      },
+      autoValidate: false,
+      validationPredicates: [
+        {
+          args: ['address', 'address$errors_'],
+          predicateFactory: function(e) {
+            return e.EQ(foam.mlang.IsValid.create({
+                arg1: net.nanopay.crunch.onboardingModels.BusinessAddressData.MAILING_ADDRESS
               }), true);
           },
           errorMessage: 'INVALID_ADDRESS_ERROR'

@@ -21,7 +21,14 @@ foam.CLASS({
   extends: 'foam.mlang.predicate.AbstractPredicate',
   implements: ['foam.core.Serializable'],
 
-  documentation: 'Tests transaction for a certain line item.',
+  documentation: `Tests transaction for a certain line item.
+
+    If propName is blank, only checks whether the line item of the "of" type
+    exists, otherwise also checks the "propName" property of the line item
+    against the "propValue".
+
+    If propValue is not given, it would check whether the "propName" of the line
+    item has been set.`,
 
   javaImports: [
     'net.nanopay.tx.model.Transaction'
@@ -35,11 +42,13 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'propName'
+      name: 'propName',
+      documentation: "Property on the line item to check against."
     },
     {
       class: 'Object',
-      name: 'propValue'
+      name: 'propValue',
+      documentation: `Value of the line item's "propName" property.`
     },
   ],
 
@@ -49,10 +58,12 @@ foam.CLASS({
       javaCode: `
         var transaction = (Transaction) obj;
         for ( var lineItem : transaction.getLineItems() ) {
-          if ( getOf().isInstance(lineItem)
-            && lineItem.getProperty(getPropName()).equals(getPropValue())
-          ) {
-            return true;
+          if ( getOf().isInstance(lineItem) ) {
+            if ( getPropName().isBlank() ) return true;
+
+            return isPropertySet("propValue")
+              ? lineItem.getProperty(getPropName()).equals(getPropValue())
+              : lineItem.isPropertySet(getPropName());
           }
         }
         return false;

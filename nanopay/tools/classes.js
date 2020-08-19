@@ -1079,9 +1079,11 @@ var classes = [
   'net.nanopay.tx.fee.predicate.IsDomesticTransaction',
   'net.nanopay.tx.fee.predicate.PaymentCorridorPredicate',
   'net.nanopay.tx.fee.test.TransactionFeeRuleTest',
+  'net.nanopay.country.br.tx.fee.PTaxRateFee',
 
   // Treviso
-  'net.nanopay.country.br.CNPJ',
+  'net.nanopay.country.br.NatureCode',
+  'net.nanopay.country.br.BrazilBusinessInfoData',
   'net.nanopay.country.br.CPF',
   'net.nanopay.country.br.exchange.ArrayOfBoleto',
   'net.nanopay.country.br.exchange.ArrayOfNatureza',
