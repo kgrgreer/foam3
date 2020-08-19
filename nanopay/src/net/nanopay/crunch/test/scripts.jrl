@@ -29,17 +29,18 @@ p({
         "visible": true
       },
       {
+        // TODO: remove of just keeping it here for test
         "class": "foam.nanos.crunch.MinMaxCapability",
         "id": guid + "-120",
         "name": "MinMax Prerequisite",
+        "of": "foam.nanos.cron.TimeHMS",
+        "min": 2,
+        "max": 4,
         "version": "0",
         "enabled": true,
         "visible": true
       },
       ...(['A','B','C','D','E','F'].map(letter => ({
-        "class": "foam.nanos.crunch.MinMaxCapability",
-        "min": 2,
-        "max": 4,
         "id": guid + "-120-" + letter,
         "name": "MinMax Prerequisite " + letter,
         "of": "foam.nanos.cron.TimeHMS",
