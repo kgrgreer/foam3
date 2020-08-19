@@ -295,6 +295,9 @@ foam.CLASS({
       label: '',
       updateVisibility: 'HIDDEN',
       factory: function() {
+        this.subject$.sub(function() {
+          console.log('subject changed');
+        });
         return net.nanopay.model.CAPadCapture.create({
           country: this.country,
           firstName: this.subject.realUser.firstName,
