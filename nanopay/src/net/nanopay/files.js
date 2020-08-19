@@ -1547,6 +1547,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/fee/predicate/IsDomesticTransaction' },
   { name: 'net/nanopay/tx/fee/predicate/PaymentCorridorPredicate' },
   { name: 'net/nanopay/tx/fee/test/TransactionFeeRuleTest' },
+  { name: 'net/nanopay/country/br/tx/fee/PTaxRateFee' },
 
   // crunch registration
   { name: 'net/nanopay/crunch/registration/UserRegistrationData' },

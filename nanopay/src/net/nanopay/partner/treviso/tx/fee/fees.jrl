@@ -1023,3 +1023,11 @@ p({
   order: 10,
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
+
+// PTax Rate
+p({
+  class: "net.nanopay.country.br.tx.fee.PTaxRateFee",
+  id: "948034e0-7b82-4b54-9fde-0905c09558d3",
+  name: "PTax Rate",
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})

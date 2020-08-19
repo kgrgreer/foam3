@@ -106,6 +106,8 @@ public class FeeEngine {
     }
 
     fee = (Fee) fee.fclone();
+    fee.setX(x);
+
     resolveFeeFormula(x, fee, obj);
     return fee;
   }
