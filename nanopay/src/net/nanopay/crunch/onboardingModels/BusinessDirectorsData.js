@@ -64,12 +64,16 @@ foam.CLASS({
         label: '',
         of: 'net.nanopay.model.BusinessDirector',
         section: 'directorsInfoSection',
-        view: {
-          class: 'net.nanopay.sme.onboarding.BusinessDirectorArrayView',
-          mode: 'RW',
-          enableAdding: true,
-          enableRemoving: true,
-          defaultNewItem: ''
+        view: function(_, x) {
+          return {
+            class: 'net.nanopay.sme.onboarding.BusinessDirectorArrayView',
+            mode: 'RW',
+            enableAdding: true,
+            enableRemoving: true,
+            defaultNewItem: net.nanopay.model.BusinessDirector.create({
+              type: x.data.subject.user.address.countryId
+            }, this)
+          }
         },
         visibility: function(businessTypeId, needDirector) {
           return businessTypeId === 3 || businessTypeId === 5 || businessTypeId === 6 ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;

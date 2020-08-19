@@ -1570,6 +1570,8 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/BusinessOwnershipToBeneficialOwnerDAO' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerCapabilityInterceptPredicate' },
   { name: 'net/nanopay/crunch/onboardingModels/UserIsSigningOfficerOfBusiness' },
+  { name: 'net/nanopay/crunch/document/Documents' },
+  { name: 'net/nanopay/crunch/document/Document' },
 
   // crunch notification
   { name: 'net/nanopay/crunch/UCJExpiryReminderCron' },
@@ -1614,6 +1616,10 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/CancellationAgreement' },
   { name: 'net/nanopay/crunch/acceptanceDocuments/BaseAcceptanceDocumentCapability' },
 
+  //wizardlets
+
+  { name: 'net/nanopay/crunch/wizardlet/RefreshWizardlet' },
+
   // msp
   { name: 'net/nanopay/msp/MspInfo' },
 
@@ -1625,7 +1631,7 @@ FOAM_FILES([
   { name: 'net/nanopay/country/br/tx/ExchangeLimitTransaction'},
 
   { name: 'net/nanopay/country/br/CPF' },
-  { name: 'net/nanopay/country/br/CNPJ' },
+  { name: 'net/nanopay/country/br/BrazilBusinessInfoData' },
   { name: 'net/nanopay/country/br/NatureCode' },
   { name: 'net/nanopay/country/br/NatureCodeRate' },
   { name: 'net/nanopay/country/PermittedCountryFilterDAO' },

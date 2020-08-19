@@ -35,12 +35,12 @@ foam.CLASS({
     {
       name: 'transactionSection',
       title: 'Enter the transaction details',
-      help: `require some details on the company's transactions.`,
+      help: `Require details on the company's transactions.`,
       order: 1
     },
     {
       name: 'purposeSection',
-      title: ' ',
+      title: 'Enter target customers',
       order: 2
     }
   ],

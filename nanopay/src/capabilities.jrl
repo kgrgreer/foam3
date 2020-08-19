@@ -80,6 +80,15 @@ p({
       "class":"net.nanopay.crunch.onboardingModels.CheckUserCountry",
       "country":"BR"
     }
+  },
+  "wizardlet": {
+    "class": "foam.nanos.crunch.ui.CapabilityWizardlet",
+    "mustBeValid": true
+  },
+  "wizardletConfig": {
+    "class": "foam.u2.wizard.StepWizardConfig",
+    "allowSkipping": false,
+    "allowBacktracking": true
   }
 })
 
@@ -140,6 +149,15 @@ p({
   "availabilityPredicate": {
     "class":"net.nanopay.crunch.onboardingModels.CheckUserCountry",
     "country":"BR"
+  },
+  "wizardlet": {
+    "class": "foam.nanos.crunch.ui.CapabilityWizardlet",
+    "mustBeValid": true
+  },
+  "wizardletConfig": {
+    "class": "foam.u2.wizard.StepWizardConfig",
+    "allowSkipping": false,
+    "allowBacktracking": true
   }
 })
 
@@ -368,7 +386,10 @@ p({
     "arg1": {
       "class":"net.nanopay.crunch.onboardingModels.IsBusiness" 
     }
-  }
+  },
+  "wizardlet": {
+    "class": "net.nanopay.crunch.wizardlet.RefreshWizardlet"
+  },
 })
 
 p({
@@ -394,8 +415,8 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"688cb7c6-7316-4bbf-8483-fb79f8fdeaaf",
-  "name":"CNPJ",
-  "of":"net.nanopay.country.br.CNPJ",
+  "name":"Business Identification Numbers",
+  "of":"net.nanopay.country.br.BrazilBusinessInfoData",
   "version":"0",
   "enabled":true,
   "visible":true,

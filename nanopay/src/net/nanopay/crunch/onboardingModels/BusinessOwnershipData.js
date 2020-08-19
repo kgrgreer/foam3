@@ -522,9 +522,12 @@ foam.CLASS({
         var dao = foam.dao.MDAO.create({
             of: net.nanopay.model.BeneficialOwner
           });
+
+        var user = X.data.subject.user;
           // note: the one access to businessId(below) ensures the prop is set on obj as it travels through network
         var obj = net.nanopay.model.BeneficialOwner.create({
             business: X.data.businessId,
+            type: user.address.countryId,
             id: 1
           }, X);
         obj.toSummary = () => 'Other';
