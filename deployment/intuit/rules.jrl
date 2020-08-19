@@ -8,10 +8,15 @@ p({
     operation:0,
     after:false,
     action:{class:"net.nanopay.auth.UserCreateServiceProviderURLRuleAction"},
-    config:[{
-        class:"net.nanopay.auth.ServiceProviderURL",
-        spid:"intuit"
-    }],
+    config:[
+        {
+            class:"net.nanopay.auth.ServiceProviderURL",
+            spid:"intuit",
+            urls:[
+                "intuit"
+            ]
+        }
+    ],
     enabled:true,
     saveHistory:false,
     created:1594218436764,
