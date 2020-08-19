@@ -28,6 +28,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.dao.ArraySink',
+    'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'java.util.List',
     'net.nanopay.account.Account',
@@ -66,8 +67,8 @@ foam.CLASS({
               ((Logger) x.get("logger")).error("AFEX Business not found for transaction " + txn.getId() + " with owner id " + beneficiary.getOwner() );
               return;
             }
-
-            FindBeneficiaryResponse beneficiaryResponse = afexServiceProvider.findBeneficiary(beneficiary.getContact(),afexBusiness.getApiKey());
+            User user = User.findUser(x, afexBusiness.getUser());
+            FindBeneficiaryResponse beneficiaryResponse = afexServiceProvider.findBeneficiary(beneficiary.getContact(),afexBusiness.getApiKey(), user.getSpid());
             if ( beneficiaryResponse.getStatus().equals("Approved") ) {
               beneficiary = (AFEXBeneficiary) beneficiary.fclone();
               beneficiary.setStatus("Active");
