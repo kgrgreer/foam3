@@ -215,9 +215,8 @@ foam.CLASS({
       factory: function() {
         var dao = this.user.accounts.where(
           this.OR(
-            this.EQ(this.Account.TYPE, this.BankAccount.name),
-            this.EQ(this.Account.TYPE, this.CABankAccount.name),
-            this.EQ(this.Account.TYPE, this.USBankAccount.name)
+            this.INSTANCE_OF(this.CABankAccount),
+            this.INSTANCE_OF(this.USBankAccount)
           )
         );
         dao.of = this.BankAccount;

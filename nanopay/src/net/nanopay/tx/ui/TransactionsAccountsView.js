@@ -190,7 +190,7 @@ foam.CLASS({
           .start().addClass('flexBox')
             .tag({
               class: 'foam.u2.view.TreeView',
-              data: this.accountDAO.where(this.NEQ(this.Account.TYPE, 'CABankAccount')),
+              data: this.accountDAO.where(this.NOT(this.INSTANCE_OF(this.CABankAccount))),
               selection$: this.selectedAccount$,
               relationship: net.nanopay.account.AccountAccountChildrenRelationship,
               formatter: function(data) {

@@ -170,13 +170,11 @@ foam.CLASS({
             .where(
               this.AND(
                 this.EQ(this.BankAccount.OWNER, this.user.id),
-                // TODO: Use this.INSTANCE_OF(this.BankAccount) instead.
                 this.OR(
-                  this.EQ(this.Account.TYPE, this.BankAccount.name),
-                  this.EQ(this.Account.TYPE, this.USBankAccount.name),
-                  this.EQ(this.Account.TYPE, this.CABankAccount.name),
-                  this.EQ(this.Account.TYPE, this.INBankAccount.name),
-                  this.EQ(this.Account.TYPE, this.PKBankAccount.name))));
+                  this.INSTANCE_OF(this.CABankAccount),
+                  this.INSTANCE_OF(this.USBankAccount),
+                  this.INSTANCE_OF(this.INBankAccount),
+                  this.INSTANCE_OF(this.PKBankAccount))));
         dao.of = this.BankAccount;
         return dao;
       }
@@ -323,10 +321,7 @@ foam.CLASS({
                 .where(
                   this.AND(
                     this.EQ(this.BankAccount.OWNER, this.user.id),
-                    // TODO: Use this.INSTANCE_OF(this.BankAccount) instead.
-                    this.OR(
-                      this.EQ(this.Account.TYPE, this.BankAccount.name),
-                      this.EQ(this.Account.TYPE, this.CABankAccount.name))));
+                    this.INSTANCE_OF(this.CABankAccount)));
             dao.of = this.BankAccount;
             return dao;
           }
