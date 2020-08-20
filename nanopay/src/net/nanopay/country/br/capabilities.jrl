@@ -1,70 +1,8 @@
-// Services
-p({
-  class: "net.nanopay.country.br.NatureCode",
-  id: "cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-1",
-  name: "Services",
-  country: "BR",
-  enabled: true
-})
-p({
-  class: "net.nanopay.country.br.NatureCode",
-  id: "cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-101",
-  name: "Supply and Technology Services",
-  country: "BR",
-  group: "cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-1",
-  code: "10001",
-  enabled: true
-})
-p({
-  class: "net.nanopay.country.br.NatureCode",
-  id: "cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-102",
-  name: "Telecommunication services",
-  country: "BR",
-  group: "cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-1",
-  code: "10002",
-  enabled: true
-})
-p({
-  class: "net.nanopay.country.br.NatureCode",
-  id: "cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-103",
-  name: "Computing services",
-  country: "BR",
-  group: "cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-1",
-  code: "10003",
-  enabled: true
-})
-
-// EXPORTS
-p({
-  class: "net.nanopay.country.br.NatureCode",
-  id: "cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-2",
-  name: "EXPORTS",
-  country: "BR",
-  enabled: true
-})
-p({
-  class: "net.nanopay.country.br.NatureCode",
-  id: "cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-201",
-  name: "Export with advance receipt:",
-  country: "BR",
-  group: "cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-2",
-  enabled: true
-})
-p({
-  class: "net.nanopay.country.br.NatureCode",
-  id: "cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-202",
-  name: "Embedded Goods",
-  country: "BR",
-  group: "cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-2",
-  code: "20001",
-  enabled: true
-})
-p({
-  class: "net.nanopay.country.br.NatureCode",
-  id: "cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-203",
-  name: "Export without RE or DU-E / DSE registration - International Orders",
-  country: "BR",
-  group: "cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-2",
-  code: "20002",
-  enabled: true
-})
+// Temporary nature codes for nature code selection in payment flow.
+// TODO: To be replaced by Eric's work on capable transaction
+p({class: "net.nanopay.country.br.NatureCode", operationType: "10001", payerType: "xx", id: "cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-1", name:"Supply and Technology Services"})
+p({class: "net.nanopay.country.br.NatureCode", operationType: "10002", payerType: "xx", id: "cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-2", name:"Telecommunication services"})
+p({class: "net.nanopay.country.br.NatureCode", operationType: "10003", payerType: "xx", id: "cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-3", name:"Computing services"})
+p({class: "net.nanopay.country.br.NatureCode", operationType: "20001", payerType: "xx", id: "cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-4", name:"Export with advance receipt"})
+p({class: "net.nanopay.country.br.NatureCode", operationType: "20002", payerType: "xx", id: "cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-5", name:"Embedded Goods"})
+p({class: "net.nanopay.country.br.NatureCode", operationType: "20003", payerType: "xx", id: "cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-6", name:"Export without RE or DU-E / DSE registration - International Orders"})

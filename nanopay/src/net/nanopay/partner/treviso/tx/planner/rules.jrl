@@ -31,7 +31,6 @@ p({
         "propName":"sourceUnit",
         "propValue":"BRL"
       },
-
       {
         "class":"net.nanopay.tx.planner.predicate.IsAccountOwnerAFEXUserPredicate",
       },
