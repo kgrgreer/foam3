@@ -202,6 +202,22 @@ foam.INTERFACE({
       ]
     },
     {
+      name: 'getSpotRate',
+      documentation: 'Request a SPOT rate for a specified currency pair',
+      async: true,
+      type: 'net.nanopay.fx.afex.GetRateResponse',
+      args: [
+        {
+          type: 'net.nanopay.fx.afex.GetRateRequest',
+          name: 'request'
+        },
+        {
+          name: 'spid',
+          type: 'String'
+        }
+      ]
+    },
+    {
       name: 'getQuote',
       documentation: 'Get quote',
       async: true,

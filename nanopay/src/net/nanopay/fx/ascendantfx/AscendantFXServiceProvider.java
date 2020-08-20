@@ -147,6 +147,10 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
 
   }
 
+  public double getFXSpotRate(String sourceCurrency, String targetCurrency, long userId) throws RuntimeException {
+    throw new RuntimeException("Missing implementation");
+  }
+
   public boolean acceptFXRate(String quoteId, long user) throws RuntimeException {
     boolean result = false;
     FXQuote quote = (FXQuote) fxQuoteDAO_.find(Long.parseLong(quoteId));
@@ -366,14 +370,14 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
         }
 
         if ( submittedDealResult.getErrorCode() != 0 ) {
-          if ( null != submittedDealResult.getErrorMessage() && 
+          if ( null != submittedDealResult.getErrorMessage() &&
               submittedDealResult.getErrorMessage().contains("Deal already submitted")) {
                 logger.info(submittedDealResult.getErrorMessage());
           } else {
             throw new RuntimeException(submittedDealResult.getErrorMessage());
-          }     
+          }
         }
-          
+
         AscendantFXTransaction txn = (AscendantFXTransaction) ascendantTransaction.fclone();
         txn.setReferenceNumber(submittedDealResult.getDealID());
         txn.setStatus(TransactionStatus.SENT);

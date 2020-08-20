@@ -196,7 +196,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
     for ( User officer : signingOfficers ) {
       pushSigningOfficer(business, officer, clientKey);
-    } 
+    }
   }
 
   public void pushSigningOfficer(Business business, User officer, String clientKey) {
@@ -246,7 +246,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     List<BeneficialOwner> beneficialOwners = ((ArraySink) business.getBeneficialOwners(x)
       .select(new ArraySink())).getArray();
       for ( BeneficialOwner beneficialOwner : beneficialOwners ) {
-        if ( beneficialOwner.getFirstName().equals(officer.getFirstName()) 
+        if ( beneficialOwner.getFirstName().equals(officer.getFirstName())
             && beneficialOwner.getLastName().equals(officer.getLastName()) )
           return beneficialOwner.getOwnershipPercent();
       }
@@ -262,7 +262,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       if ( beneficialOwner.getOwnershipPercent() >= 25 ) { // Only push when ownership percentage is greater than 25
         pushBeneficialOwner(beneficialOwner, clientKey, business.getSpid());
       }
-    } 
+    }
   }
 
   public void pushBeneficialOwner(BeneficialOwner beneficialOwner, String clientKey, String spid) {
@@ -317,7 +317,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     List<BeneficialOwner> beneficialOwners = ((ArraySink) business.getBeneficialOwners(x)
     .select(new ArraySink())).getArray();
     for ( BeneficialOwner beneficialOwner : beneficialOwners ) {
-      if ( beneficialOwner.getFirstName().equals(director.getFirstName()) 
+      if ( beneficialOwner.getFirstName().equals(director.getFirstName())
           && beneficialOwner.getLastName().equals(director.getLastName()) )
         isBeneficialOwner = true;
     }
@@ -452,6 +452,22 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     }
 
     return fxQuote;
+  }
+
+  public double getFXSpotRate(String sourceCurrency, String targetCurrency, long userId) throws RuntimeException {
+    User user = User.findUser(x, userId);
+    if ( null == user ) throw new RuntimeException("Unable to find User " + userId);
+
+    GetRateRequest rateRequest = new GetRateRequest();
+    rateRequest.setCurrencyPair(targetCurrency + sourceCurrency);
+    try {
+      GetRateResponse rateResponse = this.afexClient.getSpotRate(rateRequest, user.getSpid());
+      if ( null == rateResponse ) throw new RuntimeException("Unable to get spot rates from AFEX");
+      return "A".equals(rateResponse.getTerms()) ? rateResponse.getInvertedRate() : rateResponse.getRate();
+    } catch(Exception e) {
+      logger_.error("Error to get FX Rate from AFEX.", e);
+      throw(e);
+    }
   }
 
   private Double getConvertedAmount(Quote quote, long amount, Boolean isSettlementAmount ) {
@@ -830,7 +846,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       User user = User.findUser(x, transaction.getPayerId());
       CheckPaymentStatusResponse paymentStatusResponse = this.afexClient.checkPaymentStatus(request, user.getSpid());
       if ( null == paymentStatusResponse ) throw new RuntimeException("Null response got for remote system." );
-      
+
       txn.setStatus(mapAFEXPaymentStatus(paymentStatusResponse.getPaymentStatus()));
       txn.setAfexPaymentStatus(Enum.valueOf(AFEXPaymentStatus.class, paymentStatusResponse.getPaymentStatus().toUpperCase()));
 
@@ -850,10 +866,10 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       return TransactionStatus.COMPLETED;
 
     if ( AFEXPaymentStatus.PROCESSED.getLabel().equals(paymentStatus) )
-      return TransactionStatus.COMPLETED;     
-      
+      return TransactionStatus.COMPLETED;
+
     if ( AFEXPaymentStatus.PREPARED.getLabel().equals(paymentStatus) )
-      return TransactionStatus.COMPLETED;       
+      return TransactionStatus.COMPLETED;
 
     if ( AFEXPaymentStatus.FAILED.getLabel().equals(paymentStatus) )
       return TransactionStatus.DECLINED;
@@ -862,7 +878,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       return TransactionStatus.DECLINED;
 
       if ( AFEXPaymentStatus.PREPARED_CANCELLED.getLabel().equals(paymentStatus) )
-        return TransactionStatus.DECLINED;      
+        return TransactionStatus.DECLINED;
 
       return TransactionStatus.SENT;
 
