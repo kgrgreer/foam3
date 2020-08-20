@@ -308,14 +308,6 @@ foam.CLASS({
           of: net.nanopay.model.CAPadCapture
         }, X);
       }
-    },
-    {
-      name: 'bankCode',
-      visibility: 'HIDDEN'
-    },
-    {
-      name: 'iban',
-      visibility: 'HIDDEN'
     }
   ],
   methods: [
