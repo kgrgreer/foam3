@@ -30,6 +30,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'accountingIntegrationUtil',
     'existingButton',
     'invoice',
     'isApproving',
@@ -39,16 +40,19 @@ foam.CLASS({
     'newButton',
     'notificationDAO',
     'predicate',
-    'stack',
     'user',
-    'xeroService',
     'quickbooksService',
-    'accountingIntegrationUtil'
+    'stack',
+    'subject',
+    'xeroService'
   ],
 
   requires: [
     'foam.u2.Element',
     'foam.u2.dialog.NotificationMessage',
+    'net.nanopay.account.Account',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.accounting.AccountingErrorCodes',
     'net.nanopay.accounting.IntegrationCode',
     'net.nanopay.auth.PublicUserInfo',
@@ -124,6 +128,11 @@ foam.CLASS({
     ^back-tab {
       margin-left: 6px;
     }
+    ^ .error-slot {
+      display: flex;
+      flex-direction: row;
+      color: #f55a5a;
+    }
   `,
 
   properties: [
@@ -179,14 +188,55 @@ foam.CLASS({
       expression: function(invoice$status) {
         return invoice$status === this.InvoiceStatus.DRAFT;
       }
-    }
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.account.Account',
+      name: 'sourceAccount',
+      view: function(_,X) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          selectionView: { class: 'net.nanopay.bank.ui.BankAccountSelectionView' },
+          rowView: { class: 'net.nanopay.bank.ui.BankAccountCitationView' },
+          sections: [
+            {
+              heading: 'Your bank accounts',
+              dao: X.subject.user.accounts.where(
+                X.data.EQ(X.data.BankAccount.STATUS, X.data.BankAccountStatus.VERIFIED)
+              )
+            }
+          ]
+        }
+      },
+      postSet: function(){
+        this.invoice.account = this.sourceAccount
+      },
+      factory: function() {
+       this.subject.user.accounts.find(
+         this.AND(
+           this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED),
+           this.EQ(this.Account.IS_DEFAULT, true)
+         )
+        ).then(s => {
+          this.sourceAccount = s.id
+        })
+      }
+    },
+    {
+      name: 'missingSourceAccount',
+      expression: function(sourceAccount) {
+        return sourceAccount == 0;
+      }
+    },
   ],
 
   messages: [
     { name: 'DETAILS_SUBTITLE', message: 'Create new or choose from existing' },
     { name: 'EXISTING_HEADER', message: 'Choose an existing ' },
     { name: 'DETAILS_HEADER', message: 'Details' },
-    { name: 'BACK', message: 'Back to selection' }
+    { name: 'BACK', message: 'Back to selection' },
+    { name: 'ACCOUNT_WITHDRAW_LABEL', message: 'Withdraw from' },
+    { name: 'SELECT_BANK_ACCOUNT', message: 'Please select a bank account' }
   ],
 
   methods: [
@@ -304,7 +354,31 @@ foam.CLASS({
                       })
                       .end();
                     } else {
-                      detailView = detailView.start({
+                      detailView = detailView
+                      .start()
+                        .addClass('input-label')
+                        .add( this.ACCOUNT_WITHDRAW_LABEL )
+                      .end()
+                      .start(this.SOURCE_ACCOUNT)
+                      .end()
+                      .start().addClass('error-slot').show(this.missingSourceAccount$)
+                        .start({
+                          class: 'foam.u2.tag.Image',
+                          data: 'images/inline-error-icon.svg',
+                          displayHeight: '16px',
+                          displayWidth: '16px'
+                        })
+                          .style({
+                            'justify-content': 'flex-start',
+                            'margin': '0 8px 0 0'
+                          })
+                        .end()
+                        .start()
+                          .style({ 'flex-grow': 1 })
+                          .add(this.SELECT_BANK_ACCOUNT)
+                        .end()
+                      .end()
+                      .start({
                         class: 'net.nanopay.sme.ui.InvoiceDetails',
                         invoice: this.invoice,
                         showActions: false
