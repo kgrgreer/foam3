@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="86px" height="86px" viewBox="0 0 86 86" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Group 24</title>
+    <defs>
+        <rect id="path-1" x="0" y="0" width="80" height="80" rx="40"></rect>
+        <filter x="-6.2%" y="-5.0%" width="112.5%" height="112.5%" filterUnits="objectBoundingBox" id="filter-2">
+            <feOffset dx="0" dy="1" in="SourceAlpha" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="1.5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.08 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Ablii" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Crunch---1.-Home" transform="translate(-269.000000, -1170.000000)">
+            <g id="Group-28" transform="translate(272.000000, 1171.000000)">
+                <g id="Group-24" transform="translate(0.000000, 1.000000)">
+                    <g id="Rectangle">
+                        <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                        <use fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-1"></use>
+                    </g>
+                    <text id="✍️" font-family="AppleColorEmoji, Apple Color Emoji" font-size="40" font-weight="normal" line-spacing="40" fill="#1E1F21">
+                        <tspan x="21" y="60">✍️</tspan>
+                    </text>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

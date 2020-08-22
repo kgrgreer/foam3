@@ -7,6 +7,7 @@ p({
   "notes":"This capability will intercept its permissions when there are no signingofficerjunctions belonging to the current business",
   "version":"0",
   "enabled":true,
+  "icon":"/images/capabilityIcons/SigningOfficerIcon.svg",
   "visible":true,
   "permissionsIntercepted":[
     "businessHasSigningOfficer"
@@ -17,11 +18,12 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5",
-  "name":"Personal Info for Signing Officer",
+  "name":"Signing Officer Privileges",
   "of":"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData",
-  "description":"Unlock Signing Officer privileges",
+  "description":"Unlock signing officer privileges",
   "version":"0",
   "enabled":true,
+  "icon":"/images/capabilityIcons/SigningOfficerIcon.svg",
   "visible":true,
   "daoKey":"userDAO",
   "contextDAOFindKey":"subject.realuser",
@@ -95,11 +97,12 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"777af38a-8225-87c8-dfdf-eeb15f71215f-123",
-  "name":"Personal Info for Signing Officer",
+  "name":"Signing Officer Privileges",
   "of":"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData",
-  "description":"Unlock Signing Officer privileges",
+  "description":"Unlock signing officer privileges",
   "version":"0",
   "enabled":true,
+  "icon":"/images/capabilityIcons/SigningOfficerIcon.svg",
   "visible":true,
   "daoKey":"userDAO",
   "contextDAOFindKey":"subject.realuser",
@@ -352,6 +355,7 @@ p({
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-18",
   "name":"Nanopay Admission",
   "version":"0",
+  "icon":"images/nanopay_logo_blue.png",
   "enabled":true,
   "visible":true,
   "associatedEntity": 1
