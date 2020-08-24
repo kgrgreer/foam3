@@ -25,7 +25,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'foam.nanos.fs.File',
+      class: 'foam.nanos.fs.FileProperty',
       name: 'document'
     }
   ]

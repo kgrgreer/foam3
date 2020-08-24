@@ -844,10 +844,6 @@ FOAM_FILES([
   // sme WizardModal NavigationBar
   { name: 'net/nanopay/sme/ui/wizardModal/WizardModalNavigationBar', flags: ['web'] },
 
-  // sme FileDropZone
-  { name: 'net/nanopay/sme/ui/fileDropZone/FileDropZone', flags: ['web'] },
-  { name: 'net/nanopay/sme/ui/fileDropZone/FileCard', flags: ['web'] },
-
   //onboarding
   { name: 'net/nanopay/sme/onboarding/BusinessDirectorArrayView', flags: ['web'] },
 
@@ -1649,4 +1645,8 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/tx/planner/TrevisoTransactionPlanner' },
   { name: 'net/nanopay/partner/treviso/tx/TrevisoCreateExchange' },
   { name: 'net/nanopay/partner/treviso/tx/TrevisoSummaryLineItemRule' },
+
+  // crunch document
+  { name: 'net/nanopay/crunch/document/Documents' },
+  { name: 'net/nanopay/crunch/document/Document' },
 ]);

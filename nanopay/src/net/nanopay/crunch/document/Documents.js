@@ -26,7 +26,13 @@ foam.CLASS({
   properties: [
     {
       class: 'foam.nanos.fs.FileArray',
-      name: 'documents'
+      name: 'documents',
+      view: function(_,X) {
+        return {
+          class: 'foam.nanos.fs.fileDropZone.FileDropZone',
+          files$: X.data.documents$
+        }
+      }
     }
   ]
 });
