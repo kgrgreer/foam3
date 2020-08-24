@@ -32,6 +32,7 @@ import foam.nanos.auth.LifecycleState;
 import foam.nanos.logger.PrefixLogger;
 import foam.nanos.logger.Logger;
 import foam.nanos.ruler.Rule;
+import foam.nanos.ruler.RuleGroup;
 import foam.nanos.pm.PM;
 import net.nanopay.account.Account;
 import net.nanopay.account.DigitalAccount;
@@ -39,6 +40,7 @@ import net.nanopay.account.TrustAccount;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.tx.planner.AbstractTransactionPlanner;
+import net.nanopay.tx.planner.DigitalTransactionPlanner;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.planner.PlannerGroup;
 
@@ -91,7 +93,7 @@ public class TransactionBenchmark
     logger_.info("teardown");
     DAO dao = (DAO) x.get("localTransactionDAO");
     Count txns = (Count) dao.select(new Count());
-    stats.put("Transactions (M)", (txns.getValue() / 1000.0));
+    stats.put("Transactions (M)", (txns.getValue() / 1000000.0));
 
     // dump all dao sizes - looking for memory leak
     StringBuilder sb = new StringBuilder();
@@ -259,18 +261,44 @@ public class TransactionBenchmark
       assert balance >= STARTING_BALANCE;
     }
 
-    // optionally disable all rules except for planners.
+    // optionally disable all rules except for Digital Transaction Planner.
     if ( disableRules_ ) {
-      List rules = ((ArraySink) ruleDAO_.where(EQ(INSTANCE_OF(AbstractTransactionPlanner.class),false)).select(new ArraySink())).getArray();
-      for ( Object r : rules ) {
-        foam.nanos.ruler.Rule rule = (foam.nanos.ruler.Rule) ((foam.core.FObject)r).fclone();
-        rule.setEnabled(false);
+      int groupsDisabled = 0;
+      List<RuleGroup> groups = ((ArraySink) ruleGroupDAO_.select(new ArraySink())).getArray();
+      for ( RuleGroup group : groups ) {
+        if ( "benchmark".equals(group.getId()) ||
+             ! group.getEnabled() ) {
+          continue;
+        }
+        group = (RuleGroup) group.fclone();
+        group.setEnabled(false);
         try {
-          ruleDAO_.put(rule);
-        } catch ( Exception e ) {
-          logger_.error("failed to disable rule:", rule);
+          ruleGroupDAO_.put(group);
+          groupsDisabled++;
+        } catch (Exception e) {
+          logger_.error("failed to disable rule group:", group.getId());
         }
       }
+      logger_.info("disabled rule groups:", groupsDisabled);
+
+      int disabled = 0;
+      List<Rule> rules = ((ArraySink) ruleDAO_.select(new ArraySink())).getArray();
+      for ( Rule rule : rules ) {
+        if ( "benchmark".equals(rule.getRuleGroup()) ||
+             ! rule.getEnabled() ) {
+          continue;
+        }
+        rule = (Rule) rule.fclone();
+        rule.setEnabled(false);
+
+        try {
+          ruleDAO_.put(rule);
+          disabled++;
+        } catch ( Exception e ) {
+          logger_.error("failed to disable rule:", rule.getName());
+        }
+      }
+      logger_.info("disabled rules:", disabled);
     }
   }
 

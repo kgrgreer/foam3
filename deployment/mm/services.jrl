@@ -4,7 +4,10 @@ p({
   "serve":true,
   "boxClass":"foam.nanos.medusa.ElectoralServiceSkeleton",
   "authenticate": true,
-  "serviceClass":"foam.nanos.medusa.ElectoralServiceServer",
+  "serviceScript":"""
+    return new foam.nanos.medusa.ElectoralServiceServer.Builder(x)
+      .build();
+  """,
   "client":"{ \"class\":\"foam.nanos.medusa.ClientElectoralService\" }"
 })
 

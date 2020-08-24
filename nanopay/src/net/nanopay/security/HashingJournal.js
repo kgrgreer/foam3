@@ -186,6 +186,7 @@ foam.CLASS({
           }
         } catch ( Throwable t) {
           getLogger().error("Failed to read from journal", t);
+          throw new RuntimeException(t);
         } finally {
           pm.log(x);
           getLogger().log("Successfully read " + successReading.get() + " entries from file: " + getFilename() + " in: " + pm.getTime() + "(ms)");
