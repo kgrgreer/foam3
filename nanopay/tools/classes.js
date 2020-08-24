@@ -1074,12 +1074,13 @@ var classes = [
   'net.nanopay.tx.fee.FixedFee',
   'net.nanopay.tx.fee.InformationalFee',
   'net.nanopay.tx.fee.PercentageFee',
+  'net.nanopay.tx.fee.SpotRate',
   'net.nanopay.tx.fee.TransactionFeeRule',
   'net.nanopay.tx.fee.predicate.HasLineItemPredicate',
   'net.nanopay.tx.fee.predicate.IsDomesticTransaction',
   'net.nanopay.tx.fee.predicate.PaymentCorridorPredicate',
   'net.nanopay.tx.fee.test.TransactionFeeRuleTest',
-  'net.nanopay.country.br.tx.fee.PTaxRateFee',
+  'net.nanopay.country.br.tx.fee.PTaxRate',
 
   // Treviso
   'net.nanopay.country.br.NatureCode',

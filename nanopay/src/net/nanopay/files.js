@@ -1539,13 +1539,14 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/fee/FixedFee' },
   { name: 'net/nanopay/tx/fee/InformationalFee' },
   { name: 'net/nanopay/tx/fee/PercentageFee' },
+  { name: 'net/nanopay/tx/fee/SpotRate' },
   { name: 'net/nanopay/tx/fee/TransactionFeeRule' },
   { name: 'net/nanopay/tx/fee/Relationships' },
   { name: 'net/nanopay/tx/fee/predicate/HasLineItemPredicate' },
   { name: 'net/nanopay/tx/fee/predicate/IsDomesticTransaction' },
   { name: 'net/nanopay/tx/fee/predicate/PaymentCorridorPredicate' },
   { name: 'net/nanopay/tx/fee/test/TransactionFeeRuleTest' },
-  { name: 'net/nanopay/country/br/tx/fee/PTaxRateFee' },
+  { name: 'net/nanopay/country/br/tx/fee/PTaxRate' },
 
   // crunch registration
   { name: 'net/nanopay/crunch/registration/UserRegistrationData' },

@@ -1,3 +1,4 @@
+// Treviso Fees
 p({
   class: "net.nanopay.tx.fee.FixedFee",
   id: "26464c66-3b64-4587-96da-5c56e300598f-001",
@@ -343,7 +344,7 @@ p({
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
 
-// Spread Rates
+// Spread Rate = Spread Rate Base + Spread Rate 430
 p({
   class: "net.nanopay.tx.fee.Fee",
   id: "38eb7bbb-2966-4b1c-89d6-f0e9a554eb31",
@@ -1026,8 +1027,16 @@ p({
 
 // PTax Rate
 p({
-  class: "net.nanopay.country.br.tx.fee.PTaxRateFee",
+  class: "net.nanopay.country.br.tx.fee.PTaxRate",
   id: "948034e0-7b82-4b54-9fde-0905c09558d3",
   name: "PTax Rate",
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+
+// Spot Rate
+p({
+  class: "net.nanopay.tx.fee.SpotRateFee",
+  id: "89c62555-f2df-4be5-91b6-c7651e13894b",
+  name: "Spot Rate",
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
