@@ -110,6 +110,7 @@ foam.CLASS({
         permissionArray.add("service.ticketStatusDAO");
         permissionArray.add("menu.read.admin");
         permissionArray.add("menu.read.admin.tickets");
+        permissionArray.add("menu.read.sme.accountProfile.signout");
         permissionArray.add("group.update." + mspInfo.getSpid() + "-admin");
         permissionArray.add("group.update." + mspInfo.getSpid() + "-fraud-ops");
         permissionArray.add("group.update." + mspInfo.getSpid() + "-payment-ops");
