@@ -101,7 +101,7 @@ JAVA_OPTS="${JAVA_OPTS} -XX:+UseStringDeduplication"
 # Garbage Collection logging
 if [ -z "`echo "${JAVA_OPTS}" | grep ":gc"`" ]; then
 #    JAVA_OPTS="${JAVA_OPTS} -Xlog:gc*,safepoint:${LOG_HOME}/gc.log:time,uptime:filecount=10,filesize=1024K"
-    JAVA_OPTS="${JAVA_OPTS} -Xloggc:$LOG_HOME/gc.log -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCDateStamps -XX:+PrintGCTimeStamps -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=100M"
+    JAVA_OPTS="${JAVA_OPTS} -Xloggc:$LOG_HOME/gc.log -verbose:gc -XX:+PrintGCDetails -XX:+PrintGCTimeStamps -XX:+UseGCLogFileRotation -XX:NumberOfGCLogFiles=10 -XX:GCLogFileSize=100M"
 fi
 
 # OutOfMemory
