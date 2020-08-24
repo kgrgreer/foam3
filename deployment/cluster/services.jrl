@@ -98,6 +98,7 @@ p({
   "name":"benchmarkLanguageDAO",
   "lazy":false,
   "serve":true,
+  "authenticate":false,
   "serviceScript":`
     mdao = new foam.dao.MDAO(foam.nanos.auth.Language.getOwnClassInfo());
     dao = new net.nanopay.security.HashingJDAO(x, mdao, "benchmarkLanguages");
