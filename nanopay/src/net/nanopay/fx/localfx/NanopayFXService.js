@@ -99,6 +99,12 @@ foam.CLASS({
       `
     },
     {
+      name: 'getFXSpotRate',
+      javaCode: `
+        throw new RuntimeException("Missing implementation");
+      `
+    },
+    {
       name: 'acceptFXRate',
       javaCode: `
         X x = getX();

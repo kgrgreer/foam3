@@ -51,6 +51,7 @@ import net.nanopay.country.br.FederalRevenueService;
 import net.nanopay.country.br.OpenDataService;
 import net.nanopay.country.br.PTaxRate;
 import net.nanopay.country.br.PTaxDollarRateResponse;
+import net.nanopay.fx.afex.AFEXServiceProvider;
 import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
 import net.nanopay.fx.FXTransaction;
@@ -227,29 +228,14 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
 
   public FXQuote getFXRate(String sourceCurrency, String targetCurrency, long sourceAmount,  long destinationAmount,
                            String fxDirection, String valueDate, long user, String fxProvider) throws RuntimeException {
-    // Logic Pending when Treviso API is ready
-    FXQuote fxQuote = new FXQuote();
-    fxQuote.setSourceCurrency(sourceCurrency);
-    fxQuote.setTargetCurrency(targetCurrency);
-    fxQuote.setExternalId("");
-    fxQuote.setRate(5.0);
+    // Get FX from AFEX
+    return ((AFEXServiceProvider) getX().get("afexServiceProvider"))
+      .getFXRate(sourceCurrency, targetCurrency, sourceAmount, destinationAmount, fxDirection, valueDate, user, fxProvider);
+  }
 
-    Double amount = 0.0;
-
-    if ( sourceAmount < 1 ) {
-      amount = destinationAmount * fxQuote.getRate();
-      sourceAmount = Math.round(amount);
-    }
-
-    if ( destinationAmount < 1 ) {
-      amount = sourceAmount * fxQuote.getRate();
-      destinationAmount = Math.round(amount);
-    }
-
-    fxQuote.setTargetAmount(destinationAmount);
-    fxQuote.setSourceAmount(sourceAmount);
-
-    return fxQuote;
+  public double getFXSpotRate(String sourceCurrency, String targetCurrency, long userId) throws RuntimeException {
+    // Get FX SPOT rate from AFEX
+    return ((AFEXServiceProvider) getX().get("afexServiceProvider")).getFXSpotRate(sourceCurrency, targetCurrency, userId);
   }
 
   public boolean acceptFXRate(String quoteId, long user) throws RuntimeException {

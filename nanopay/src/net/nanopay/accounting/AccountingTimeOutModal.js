@@ -40,7 +40,7 @@ foam.CLASS({
       width: 330px !important;
       height: 180px !important
     }
-    
+
     ^ .headerTitle {
       width: 214px;
       height: 36px;
@@ -55,7 +55,7 @@ foam.CLASS({
       letter-spacing: normal;
       line-height: 36px;
     }
-    
+
     ^ .content {
       margin-left:24px;
       margin-top: 8px;
@@ -70,7 +70,7 @@ foam.CLASS({
       letter-spacing: normal;
       color: #525455;
     }
-    
+
     ^ .cancel-button {
       width: 96px !important;
       height: 36px !important;
@@ -78,7 +78,7 @@ foam.CLASS({
       box-shadow: none;
       background: rgba(0, 0, 0, 0);
       margin-top: 16px;
-      margin-left: 120px;  
+      margin-left: 120px;
       border: none;
     }
 
@@ -87,7 +87,7 @@ foam.CLASS({
       border: none;
       color: #525455;
     }
-    
+
     ^ .sync-button {
       width: 96px !important;
       height: 36px !important;
@@ -103,7 +103,7 @@ foam.CLASS({
       background-color: #4D38E1 !important;
       color: white;
     }
-    
+
     ^ .actions {
       height: 68px;
       width: 328px;
@@ -131,7 +131,6 @@ foam.CLASS({
   messages: [
     { name:'REMAIN_SYNC_1', message:' so your data in '},
     { name:'REMAIN_SYNC_2', message:' remains synced.'},
-    { name:'TOKEN_EXIPRE', message:' token is about to expire.'},
     { name:'TOKEN_EXIPRE', message:' token is about to expire.'},
     { name:'SYNC_AGAIN_WITH', message:'Sync again with '},
     { name:'YOUR', message:'Your '},

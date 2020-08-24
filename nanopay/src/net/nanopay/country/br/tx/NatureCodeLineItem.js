@@ -51,14 +51,13 @@ foam.CLASS({
         }
       ],
       view: function(args, x) {
+        // TODO: To be replaced by Eric's work on capable transaction
         return foam.u2.view.ChoiceView.create({
-          dao: x.natureCodeDAO.where(x.data.AND(
-            x.data.NEQ(net.nanopay.country.br.NatureCode.CODE, ''),
-            x.data.EQ(net.nanopay.country.br.NatureCode.COUNTRY, 'BR')
-          )),
+          dao: x.natureCodeDAO.where(
+            x.data.EQ(net.nanopay.country.br.NatureCode.PAYER_TYPE, 'xx')),
           placeholder: 'Please select',
           objToChoice: function(natureCode) {
-            return [natureCode.code, natureCode.name];
+            return [natureCode.operationType, natureCode.name];
           }
         });
       }

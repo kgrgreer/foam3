@@ -1064,6 +1064,8 @@ FOAM_FILES([
   { name: 'net/nanopay/contacts/ui/modal/BusinessListView', flags: ['web'] },
   { name: 'net/nanopay/contacts/PaymentCodeServiceInterface' },
   { name: 'net/nanopay/contacts/ClientPaymentCodeService' },
+  { name: 'net/nanopay/contacts/ContactServiceInterface' },
+  { name: 'net/nanopay/contacts/ClientContactService' },
 
   // sme
   { name: 'net/nanopay/model/Business' },

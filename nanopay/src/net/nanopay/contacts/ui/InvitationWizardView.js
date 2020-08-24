@@ -24,16 +24,23 @@ foam.CLASS({
     Lets the user invite an external user to the platform. Doesn't add a contact.
   `,
 
+  implements: [
+    'foam.mlang.Expressions'
+  ],
+
   imports: [
     'pushMenu',
     'ctrl',
+    'contactService',
     'invitationDAO',
     'notify',
-    'user'
+    'user',
+    'userDAO'
   ],
 
   requires: [
-    'foam.log.LogLevel'
+    'foam.log.LogLevel',
+    'foam.nanos.auth.User'
   ],
 
   messages: [
@@ -44,6 +51,13 @@ foam.CLASS({
     {
       name: 'INVITE_FAILURE',
       message: 'There was a problem sending the invitation.'
+    },
+    {
+      name: 'EXISTING_BUSINESS',
+      message: `This email has already been registered on Ablii.
+                You can set up a connection with this user and their business by using their payment code or
+                finding them in the search business menu when adding a contact.
+               `
     }
   ],
 
@@ -56,7 +70,7 @@ foam.CLASS({
       value: false
     }
   ],
-  
+
   methods: [
     function initE() {
       var self = this;
@@ -100,18 +114,24 @@ foam.CLASS({
       },
       code: async function(X) {
         this.data.createdBy = this.user.id;
-        this.invitationDAO
-          .put(this.data.clone())
-          .then(() => {
-            X.notify(this.INVITE_SUCCESS, '', this.LogLevel.INFO, true);
-            // Force the view to update.
-            this.user.contacts.cmd(foam.dao.AbstractDAO.RESET_CMD);
-            X.closeDialog();
-          })
-          .catch((e) => {
-            let message = e.message || this.INVITE_FAILURE;
-            X.notify(message, '', this.LogLevel.ERROR, true);
-          });
+        var isExisting = await this.contactService.checkExistingUser(this, this.data.email);
+
+        if ( ! isExisting ) {
+          this.invitationDAO
+            .put(this.data)
+            .then(() => {
+              X.notify(this.INVITE_SUCCESS, '', this.LogLevel.INFO, true);
+              // Force the view to update.
+              this.user.contacts.cmd(foam.dao.AbstractDAO.RESET_CMD);
+              X.closeDialog();
+            })
+            .catch((e) => {
+              let message = e.message || this.INVITE_FAILURE;
+              X.notify(message, '', this.LogLevel.ERROR, true);
+            });
+        } else {
+          X.notify(this.EXISTING_BUSINESS, '', this.LogLevel.WARN, true);
+        }
       }
     }
   ]

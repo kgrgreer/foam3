@@ -36,6 +36,14 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'spotRateApiKey'
+    },
+    {
+      class: 'String',
+      name: 'spotRateApiPassword'
+    },
+    {
+      class: 'String',
       name: 'partnerApi'
     },
     {

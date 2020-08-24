@@ -140,14 +140,14 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpPost.addHeader("API-Key", credentials.getApiKey());
       httpPost.addHeader("Content-Type", "application/json");
       httpPost.addHeader("Authorization", "bearer " + getToken(spid).getAccess_token());
-      
+
       StringEntity params = null;
 
       try(Outputter jsonOutputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false)) {
     	  String requestJson = jsonOutputter.stringify(request);
-          params = new StringEntity(requestJson); 
+          params = new StringEntity(requestJson);
       }
-      
+
 
       httpPost.setEntity(params);
 
@@ -626,6 +626,45 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
+  public GetRateResponse getSpotRate(GetRateRequest request, String spid) {
+    try {
+      credentials = getCredentials(spid);
+      URIBuilder uriBuilder = new URIBuilder(credentials.getAFEXApi()  + "api/rates");
+      uriBuilder.setParameter("CurrencyPair", request.getCurrencyPair());
+      uriBuilder.setParameter("ValueType", "SPOT");
+      if ( !request.getValueType().equals("") ) uriBuilder.setParameter("ValueType", request.getValueType());
+
+      HttpGet httpGet = new HttpGet(uriBuilder.build());
+      httpGet.addHeader("API-Key", credentials.getSpotRateApiKey());
+      httpGet.addHeader("Content-Type", "application/json");
+
+      logMessage(credentials.getSpotRateApiKey(), "getSpotRate", httpGet.toString(), false);
+      omLogger.log("AFEX getSpotRate starting");
+      CloseableHttpResponse httpResponse = getHttpClient().execute(httpGet);
+      omLogger.log("AFEX getSpotRate completed");
+
+      try {
+        if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
+          String errorMsg = parseHttpResponse("getSpotRate", httpResponse);
+          logger.error(errorMsg);
+          throw new RuntimeException(errorMsg);
+        }
+        String response = new BasicResponseHandler().handleResponse(httpResponse);
+        logMessage(credentials.getSpotRateApiKey(), "getSpotRate", response, true);
+        return (GetRateResponse) jsonParser.parseString(response, GetRateResponse.class);
+      } finally {
+        httpResponse.close();
+      }
+    } catch (IOException e) {
+      omLogger.log("AFEX getSpotRate timeout");
+      logger.error(e);
+    } catch (URISyntaxException e) {
+      logger.error(e);
+    }
+    return null;
+  }
+
+  @Override
   public Quote getQuote(GetQuoteRequest request, String spid) {
     logger.debug("Entered getquote", request);
     try {
@@ -909,7 +948,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
     } catch (IOException e) {
       omLogger.log("AFEX checkPaymentStatus timeout");
       logger.error(e);
-    } 
+    }
     catch ( Throwable t ) {
       logger.error(t);
 
@@ -986,7 +1025,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       httpPost.addHeader("Authorization", "bearer " + getToken(spid).getAccess_token());
 
       StringEntity params = null;
-      
+
       try(Outputter jsonOutputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false)) {
         String requestJson = jsonOutputter.stringify(directDebitUnenrollmentRequest);
         params = new StringEntity(requestJson);
@@ -1093,7 +1132,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
     sb.append(msg);
     logger.debug(sb.toString());
   }
-  
+
   protected String parseHttpPost(HttpPost httpPost) {
     try {
       return EntityUtils.toString(httpPost.getEntity());

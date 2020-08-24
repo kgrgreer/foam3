@@ -3,14 +3,14 @@ p({
   "name": "localContactDAO",
   "serve": false,
   "lazy":false,
-  "serviceScript": 
+  "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.contacts.Contact.getOwnClassInfo())
       .setValidated(true)
       .setDecorator(
         new net.nanopay.contacts.CheckContactExistingTransaction(x,
-        new net.nanopay.fx.afex.AFEXContactDAO(x, 
+        new net.nanopay.fx.afex.AFEXContactDAO(x,
         new foam.dao.FilteredDAO(x, foam.mlang.MLang.INSTANCE_OF(net.nanopay.contacts.Contact.class), new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.contacts.Contact.getOwnClassInfo()).build(), net.nanopay.contacts.Contact.getOwnClassInfo(), net.nanopay.contacts.Contact.ID))))
       .setAuthorize(false)
       .setEnableInterfaceDecorators(false)
@@ -25,7 +25,7 @@ p({
   "name": "contactDAO",
   "serve": true,
   "lazy":false,
-  "serviceScript": 
+  "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.contacts.Contact.getOwnClassInfo())
@@ -61,6 +61,29 @@ p({
             "class":"foam.box.HTTPBox",
             "url":
             "service/paymentCodeService"
+          }
+        }
+      }
+    """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "contactService",
+  "serve": true,
+  "authenticate": true,
+  "boxClass":"net.nanopay.contacts.ContactServiceInterfaceSkeleton",
+  "serviceClass": "net.nanopay.contacts.ContactService",
+  "client":
+    """
+      {
+        "class":"net.nanopay.contacts.ClientContactService",
+        "delegate": {
+          "class":"foam.box.SessionClientBox",
+          "delegate": {
+            "class":"foam.box.HTTPBox",
+            "url":
+            "service/contactService"
           }
         }
       }
