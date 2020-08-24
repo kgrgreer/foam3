@@ -37,10 +37,6 @@ p({
     "net.nanopay.crunch.acceptancedocuments.capabilities.tripartyagreementcad.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.usdafexterms.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.nanopayinternationalpaymentscustomeragreement.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.certifybankaccountownership.section.reviewAgreementDocumentsSection","description",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.cabankaccountauthagreement.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.recourseagreement.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.cancellationagreement.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.afxmassachusettsdisclosure.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.afxnewyorkdisclosure.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.afxwashingtondisclosure.section.reviewAgreementDocumentsSection",
@@ -60,10 +56,6 @@ p({
     "net.nanopay.crunch.acceptancedocuments.capabilities.tripartyagreementcad.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.usdafexterms.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.nanopayinternationalpaymentscustomeragreement.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.certifybankaccountownership.section.reviewAgreementDocumentsSection","description",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.cabankaccountauthagreement.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.recourseagreement.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.cancellationagreement.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.afxmassachusettsdisclosure.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.afxnewyorkdisclosure.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.afxwashingtondisclosure.section.reviewAgreementDocumentsSection",
@@ -116,7 +108,6 @@ p({
     "net.nanopay.crunch.acceptancedocuments.capabilities.tripartyagreementcad.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.usdafexterms.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.nanopayinternationalpaymentscustomeragreement.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.certifybankaccountownership.section.reviewAgreementDocumentsSection","description",
     "net.nanopay.crunch.acceptancedocuments.capabilities.afxmassachusettsdisclosure.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.afxnewyorkdisclosure.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.afxwashingtondisclosure.section.reviewAgreementDocumentsSection",
@@ -136,7 +127,6 @@ p({
     "net.nanopay.crunch.acceptancedocuments.capabilities.tripartyagreementcad.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.usdafexterms.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.nanopayinternationalpaymentscustomeragreement.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.certifybankaccountownership.section.reviewAgreementDocumentsSection","description",
     "net.nanopay.crunch.acceptancedocuments.capabilities.afxmassachusettsdisclosure.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.afxnewyorkdisclosure.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.afxwashingtondisclosure.section.reviewAgreementDocumentsSection",
@@ -393,7 +383,7 @@ p({
   },
   "wizardlet": {
     "class": "net.nanopay.crunch.wizardlet.RefreshWizardlet"
-  },
+  }
 })
 
 p({
