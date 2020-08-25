@@ -63,7 +63,8 @@ foam.CLASS({
   properties: [
     {
       class: 'Long',
-      name: 'id'
+      name: 'id',
+      documentation: 'The ID of the beneficial owner'
     },
     {
       class: 'String',
@@ -137,6 +138,7 @@ foam.CLASS({
       name: 'birthday',
       label: 'Date of birth',
       section: 'requiredSection',
+      documentation: 'The birthday of the beneficial owner',
       visibility: function(mode) {
         return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
@@ -177,6 +179,7 @@ foam.CLASS({
       class: 'String',
       name: 'jobTitle',
       section: 'requiredSection',
+      documentation: 'The job title of the beneficial owner',
       visibility: function(mode) {
         return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
@@ -240,6 +243,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.Address',
       name: 'address',
       section: 'requiredSection',
+      documentation: 'The address of the beneficial owner',
       visibility: function(mode) {
         return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },

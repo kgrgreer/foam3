@@ -55,6 +55,7 @@ foam.CLASS({
   properties: [
     {
       name: 'countryId',
+      documentation: 'ID of the country.',
       class: 'String',
       hidden: true,
       storageTransient: true,

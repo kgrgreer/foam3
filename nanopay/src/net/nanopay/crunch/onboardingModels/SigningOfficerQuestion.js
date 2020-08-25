@@ -50,6 +50,7 @@ foam.CLASS({
       name: 'isSigningOfficer',
       class: 'Boolean',
       help: `A signing officer is a person legally authorized to act on behalf of the business (e.g CEO, COO, board director)`,
+      documentation: `A signing officer is a person legally authorized to act on behalf of the business (e.g CEO, COO, board director)`,
       label: '',
       view: {
         class: 'foam.u2.view.RadioView',
@@ -66,7 +67,7 @@ foam.CLASS({
       name: 'signingOfficerEmail',
       class: 'String',
       label: 'Enter your signing officer\'s email',
-      documentation: 'Business signing officer emails. To be sent invitations to join platform',
+      documentation: 'Business signing officer emails. To be sent invitations to join platform.',
       placeholder: 'example@email.com',
       validationPredicates: [
         {
@@ -84,7 +85,7 @@ foam.CLASS({
       class: 'String',
       name: 'adminFirstName',
       section: 'signingOfficerEmailSection',
-      documentation: 'Signing officer \' first name',
+      documentation: 'Signing officer\'s first name',
       label: 'First Name',
       width: 100,
       gridColumns: 6,
@@ -103,7 +104,7 @@ foam.CLASS({
       name: 'adminLastName',
       label: 'Last Name',
       section: 'signingOfficerEmailSection',
-      documentation: 'Signing officer \' last name',
+      documentation: 'Signing officer\'s last name',
       width: 100,
       gridColumns: 6,
       validationPredicates: [
@@ -121,6 +122,7 @@ foam.CLASS({
       name: 'adminJobTitle',
       label: 'Job Title',
       section: 'signingOfficerEmailSection',
+      documentation: 'Signing officer\'s job title',
       width: 100,
       view: function(args, X) {
         return {
@@ -151,6 +153,7 @@ foam.CLASS({
       class: 'PhoneNumber',
       name: 'adminPhone',
       section: 'signingOfficerEmailSection',
+      documentation: 'Signing officer\'s phone number',
       label: 'Phone Number',
       validationPredicates: [
         {

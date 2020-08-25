@@ -1,0 +1,171 @@
+<title>API Onboarding</title>
+
+<h1>Onboarding</h1>
+<p>
+    Onboarding is a key part of the nanopay experience. Users, business and account all have to be setup 
+    and the process of creating these entities within the system is called onboarding. Once a user has been
+    setup within the system, they can then participate in a transaction. The level of detail in their onboarding
+    determines whether they can participate in transactions as a payee or as a payer.
+</p>
+
+<h2>Onboarding Process</h2>
+<p>
+    There are several steps to completing onboarding.
+    <ol>
+        <li><a href="#create-user">Create User</a></li>
+        <li><a href="#user-onboarding">Onboard User</a></li>
+        <li><a href="#business-onboarding">Onboard Business</a></li>
+    </ol>
+</p>
+
+<h3><a name="create-user">Create User</a></h3>
+<p>
+    Creating a user is necessary in order to start the onboarding process. The user is required to create a session
+    in which all other API calls are authenticated with, this will associate all the objects created with that user.
+</p>
+<p>
+    The user creation API call is a DIG API call to the smeUserRegistrationDAO with the following payload.
+    <code>{
+    "email":"test@domain.com",
+    "emailVerified": true,
+    "userName":"username321",
+    "desiredPassword":"p@sSword123"
+}   </code>
+</p>
+
+<p>
+<i><b>Session Authentication:</b> Authentication for user creation should be done with the administrative session.</i>
+</p>
+
+<h3><a name="user-onboarding">User Onboarding</a></h3>
+<p>
+    Once the user has been created, they can be onboarded by providing user data to enable all the capabilities associated with that user.
+    Capabilities are enabled for a user by making a DIG API call to the capabilityPayloadDAO with the ID of the capability to enable 
+    and all of the payloads for the supporting data. To onboard users specifically, the following payloads have to be provided:
+    <ul>
+        <li><a href="#ablii-terms-and-conditions">AbliiTermsAndConditions</a></li>
+        <li><a href="#ablii-privacy-policy">AbliiPrivacyPolicy</a></li>
+        <li><a href="#user-registration-data">UserRegistrationData</a></li>
+        <li><a href="#initial-business-data">InitialBusinessData</a></li>
+    </ul>
+    Providing all of this data will setup the user. The definition of these objects can be found in the <a href="#user-onboarding-objects">user onboarding objects</a> section.
+</p>
+<p>
+    Along with setting up the user, data is also provided here which will setup the business that the user belongs to for business to business transactions.
+</p>
+
+<p>
+<i><b>Session Authentication:</b> Authentication for user onboarding should be done with a payment session that was created with the userId and agentId set to the ID of the user created in step 1.</i>
+</p>
+
+<h3><a name="business-onboarding">Business Onboarding</a></h3>
+<p>
+    Once the business has been created for the user, the business can be onboarded by providing business details, owner details, 
+    signing officer details, and director details to enable all capabilities associated with a business. Capabilities are enabled 
+    for a user by making a DIG API call to the capabilityPayloadDAO with the ID of the capability to enable and all of the payloads 
+    for the supporting data. To onboard the business specifically, the following payloads have to be provided:
+    <ul>
+        <li><a href="#business-information-data">BusinessInformationData</a></li>
+        <li><a href="#business-address-data">BusinessAddressData</a></li>
+        <li><a href="#transaction-details-data">TransactionDetailsData</a></li>
+        <li><a href="#business-ownership-data">BusinessOwnershipData</a></li>
+        <li><a href="#certify-owners-percent">CertifyOwnersPercent</a></li>
+        <li><a href="#business-directors-data">BusinessDirectorsData</a></li>
+        <li><a href="#certify-directors-listed">CertifyDirectorsListed</a></li>
+        <li><a href="#dual-party-agreement-cad">DualPartyAgreementCAD</a></li>
+        <li><a href="#certify-data-reviewed">CertifyDataReviewed</a></li>
+        <li><a href="#signing-officer-question">SigningOfficerQuestion</a></li>
+        <li><a href="#signing-officer-personal-data">SigningOfficerPersonalData</a></li>
+    </ul>
+    Providing all of this information will setup the business. The definition of these objects can be found in the <a href="#business-onboarding-objects">business onboarding objects</a> section.
+</p>
+
+<p>
+<i><b>Session Authentication:</b> Authentication for business onboarding should be done with a payment session that was created with the userId set the businessId of the business created in steps 2 and agentId set to the ID of the user created in step 1.</i>
+</p>
+
+<h2>Sending Capabilities to CapabilityPayloadDAO</h2>
+<p>
+    All functionality is enabled by setting up capabilities. The mechanism that we are providing to create capabilities 
+    through the API is exposing the capabilityPayloadDAO in DIG. The idea behind this DAO is that all of the payloads, or
+    data, necessary to enable a given set of capabilities is provided in a single call, even though the data may be very 
+    different in nature. In order to determine which payloads are necessary to be provided for a given capability, simply
+    query the capabilityPayloadDAO and provide the ID of the capability in the SELECT method. Performing this select call
+    will return an object which contains the necessary structure for saving to the capabilityPayloadDAO. Simply fill in 
+    the data for the given objects and PUT the CapabilityPayload object back to the capabilityPayloadDAO in DIG. The following table
+    describes the structure of the objects inside the capabilityPayloadDAO.
+</p>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="foam.nanos.crunch.connection.CapabilityPayload" />
+<p>
+    Depending on your use case, the following capabilities will be the top level capabilities for the given use case:
+    <ol>
+        <li>User Onboarding with Initial Business Creation - Capability ID: <pre>B98D97EE-4A43-4B03-84C1-9DE2C0109E87</pre></li>
+        <li>Complete Business Onboarding - Capability ID: <pre>CD499238-7854-4125-A04D-7CE7EE15BC74</pre></li>
+    </ol>
+    As stated above in the <a href="#user-onboarding">user onboarding</a> section and the <a href="#business-onboarding">business onboarding</a>
+    sections, the payloads necessary are all of the different objects listed. These objects will be mapped by easily understandable keys in the
+    capabilityDataObjects map.
+</p>
+
+<h2>Onboarding Data Objects</h2>
+
+<h3><a name="user-onboarding-objects">User Onboarding Objects</a></h3>
+
+<h4><a name="ablii-terms-and-conditions">AbliiTermsAndConditions</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiTermsAndConditions" whitelist="['title', 'agreement']" />
+
+<h4><a name="ablii-privacy-policy">AbliiPrivacyPolicy</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy" whitelist="['title', 'agreement']" />
+
+<h4><a name="user-registration-data">UserRegistrationData</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.registration.UserRegistrationData" />
+
+<h4><a name="initial-business-data">InitialBusinessData</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.onboardingModels.InitialBusinessData" whitelist="['businessName', 'companyPhone', 'fax', 'email', 'address', 'mailingAddress']" />
+
+<h3><a name="business-onboarding-objects">Business Onboarding</a></h3>
+
+<h4><a name="business-information-data">BusinessInformationData</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.onboardingModels.BusinessInformationData" />
+
+<h4><a name="business-address-data">BusinessAddressData</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.onboardingModels.BusinessAddressData" whitelist="['address', 'mailingAddress']" />
+
+<h4><a name="transaction-details-data">TransactionDetailsData</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.onboardingModels.TransactionDetailsData" />
+
+<h4><a name="suggested-user-transaction-info">SuggestedUserTransactionInfo</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo" whitelist="['annualRevenue', 'transactionPurpose', 'annualTransactionAmount', 'annualTransactionFrequency']" />
+
+<h4><a name="business-ownership-data">BusinessOwnershipData</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.onboardingModels.BusinessOwnershipData" whitelist="['amountOfOwners', 'publiclyTraded', 'owner1', 'owner2', 'owner3', 'owner4']" />
+
+<h4><a name="beneficial-owner">BeneficialOwner</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.model.BeneficialOwner" whitelist="['firstName', 'middleName', 'lastName', 'birthday', 'jobTitle', 'ownershipPercentage', 'address', 'PEPHIORelated']" />
+
+<h4><a name="certify-owners-percent">CertifyOwnersPercent</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyOwnersPercent" whitelist="['title', 'agreement']" />
+
+<h4><a name="business-directors-data">BusinessDirectorsData</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.onboardingModels.BusinessDirectorsData" whitelist="['businessDirectors']" />
+
+<h4><a name="certify-directors-listed">CertifyDirectorsListed</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyDirectorsListed" whitelist="['title', 'agreement']" />
+
+<h4><a name="dual-party-agreement-cad">DualPartyAgreementCAD</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.acceptanceDocuments.capabilities.DualPartyAgreementCAD" whitelist="['title', 'agreement']" />
+
+<h4><a name="certify-data-reviewed">CertifyDataReviewed</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.onboardingModels.CertifyDataReviewed" whitelist="['reviewed']" />
+
+<h4><a name="signing-officer-question">SigningOfficerQuestion</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.onboardingModels.SigningOfficerQuestion" />
+
+<h4><a name="signing-officer-personal-data">SigningOfficerPersonalData</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData" whitelist="['address', 'phone', 'birthday', 'PEPHIORelated', 'thirdParty', 'signingOfficerIdentification']" />
+
+<h4><a name="phone">Phone</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="foam.nanos.auth.Phone" />
+
+<h4><a name="personal-identification">PersonalIdentification</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.model.PersonalIdentification" />

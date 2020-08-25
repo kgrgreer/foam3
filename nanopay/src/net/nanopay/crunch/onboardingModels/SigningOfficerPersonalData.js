@@ -46,6 +46,7 @@ foam.CLASS({
     {
       name: 'signingOfficerIdentificationSection',
       title: 'Enter the signing officer\'s personal identification',
+      documentation: 'Documentation of the signing officer',
       isAvailable: function(countryId) {
         return countryId !== 'CA';
       }
