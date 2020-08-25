@@ -61,8 +61,7 @@ foam.CLASS({
     },
 
     function validateStreetNumber(streetNumber) {
-      var re = /^[0-9 ]{1,16}$/;
-      return re.test(String(streetNumber));
+      return streetNumber.length > 0 ? true : false;
     },
 
     function validateAddress(address) {

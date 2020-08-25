@@ -530,8 +530,7 @@ foam.CLASS({
               throw new RuntimeException("Invalid region id.");
             }
 
-            Pattern streetNumber = Pattern.compile("^[0-9]{1,16}$");
-            if ( ! streetNumber.matcher(businessAddress.getStreetNumber()).matches() ) {
+            if ( businessAddress.getStreetNumber().length() <= 0 ) {
               throw new RuntimeException("Invalid street number.");
             }
 
