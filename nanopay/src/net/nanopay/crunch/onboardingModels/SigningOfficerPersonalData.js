@@ -109,36 +109,6 @@ foam.CLASS({
       visibility: 'RW',
       autoValidate: true
     }),
-    foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
-      section: 'signingOfficerPersonalInformationSection',
-      label: 'Date of birth',
-      validationPredicates: [
-        {
-          args: ['birthday'],
-          predicateFactory: function(e) {
-            var limit = new Date();
-            limit.setDate(limit.getDate() - ( 18 * 365 ));
-            return e.AND(
-              e.NEQ(net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.BIRTHDAY, null),
-              e.LT(net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.BIRTHDAY, limit)
-            );
-          },
-          errorMessage: 'UNGER_AGE_LIMIT_ERROR'
-        },
-        {
-          args: ['birthday'],
-          predicateFactory: function(e) {
-            var limit = new Date();
-            limit.setDate(limit.getDate() - ( 125 * 365 ));
-            return e.AND(
-              e.NEQ(net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.BIRTHDAY, null),
-              e.GT(net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.BIRTHDAY, limit)
-            );
-          },
-          errorMessage: 'OVER_AGE_LIMIT_ERROR'
-        }
-      ]
-    }),
     foam.nanos.auth.User.PEPHIORELATED.clone().copyFrom({
       section: 'signingOfficerPersonalInformationSection',
       label: 'I am a politically exposed person or head of an international organization (PEP/HIO)',

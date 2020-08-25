@@ -485,13 +485,13 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
 
   public boolean validateCpf(String cpf, long userId) throws RuntimeException {
     User user = (User) ((DAO) getX().get("bareUserDAO")).find(userId);
-    if ( user == null ) throw new RuntimeException("User not found: " + userId);
+    if ( user == null ) throw new RuntimeException("User cannot be null");
 
     String birthDate = "";
     try {
       SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
       sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-      birthDate = sdf.format(user.getBirthday());
+      birthDate = sdf.format(findUserBirthDate(userId));
     } catch(Throwable t) {
       logger_.error("Unable to parse user birth date: " + userId , t);
       throw new RuntimeException("Unable to parse user birth date.");
@@ -511,6 +511,14 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
       logger_.error("Error validating CPF" , t);
       throw new RuntimeException(t);
     }
+  }
+
+  protected Date findUserBirthDate(long userId) {
+    UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) getX().get("userCapabilityJunctionDAO")).find(AND(
+        EQ(UserCapabilityJunction.TARGET_ID, "8bffdedc-5176-4843-97df-1b75ff6054fb"),
+        EQ(UserCapabilityJunction.SOURCE_ID, userId)
+    ));
+    return (ucj != null && ucj.getData() != null) ? ((net.nanopay.crunch.onboardingModels.UserBirthDateData)ucj.getData()).getBirthday() : null;
   }
 
 }

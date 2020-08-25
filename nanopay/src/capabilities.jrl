@@ -132,7 +132,7 @@ p({
     "net.nanopay.crunch.acceptancedocuments.capabilities.abliiprivacypolicy.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.cadafexterms.section.reviewAgreementDocumentsSection"
   ],
-  "interceptIf":{ "class":"net.nanopay.crunch.onboardingModels.SigningOfficerCapabilityInterceptPredicate" }, 
+  "interceptIf":{ "class":"net.nanopay.crunch.onboardingModels.SigningOfficerCapabilityInterceptPredicate" },
   "availabilityPredicate": {
     "class":"net.nanopay.crunch.onboardingModels.CheckUserCountry",
     "country":"BR"
@@ -366,7 +366,7 @@ p({
   "availabilityPredicate":{
     "class": "foam.mlang.predicate.Not",
     "arg1": {
-      "class":"net.nanopay.crunch.onboardingModels.IsBusiness" 
+      "class":"net.nanopay.crunch.onboardingModels.IsBusiness"
     }
   },
   "wizardlet": {
@@ -470,6 +470,19 @@ p({
   "name":"User Identity",
   "description":"Identity Document that contains full name, CPF number and photo. Valid until expire date or no longer than 10 years.",
   "of":"net.nanopay.crunch.document.Documents",
+  "version":"0",
+  "enabled":true,
+  "visible":true,
+  "associatedEntity": 1
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"8bffdedc-5176-4843-97df-1b75ff6054fb",
+  "name":"Signing Officer Date of Birth",
+  "of":"net.nanopay.crunch.onboardingModels.UserBirthDateData",
+  "daoKey":"userDAO",
+  "contextDAOFindKey":"subject.realuser",
   "version":"0",
   "enabled":true,
   "visible":true,
