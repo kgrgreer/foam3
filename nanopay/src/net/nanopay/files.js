@@ -1616,8 +1616,11 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/CancellationAgreement' },
   { name: 'net/nanopay/crunch/acceptanceDocuments/BaseAcceptanceDocumentCapability' },
 
-  //wizardlets
+  // crunch document
+  { name: 'net/nanopay/crunch/document/Document' },
+  { name: 'net/nanopay/crunch/document/Documents' },
 
+  // wizardlets
   { name: 'net/nanopay/crunch/wizardlet/RefreshWizardlet' },
 
   // msp
