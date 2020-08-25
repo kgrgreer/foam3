@@ -323,11 +323,15 @@ foam.CLASS({
             quote = quote.getParent();
           }
 
-          txn = (Transaction) txn.fclone();
-          txn.setSourceAccount(quote.getSourceAccount().getId());
-          txn.setDestinationAccount(quote.getDestinationAccount().getId());
-          txn.setSourceCurrency(quote.getSourceUnit());
-          txn.setDestinationCurrency(quote.getDestinationUnit());
+          Transaction txnclone = (Transaction) txn.fclone();
+          txnclone.setSourceAccount(quote.getSourceAccount().getId());
+          txnclone.setDestinationAccount(quote.getDestinationAccount().getId());
+          txnclone.setSourceCurrency(quote.getSourceUnit());
+          txnclone.setDestinationCurrency(quote.getDestinationUnit());
+          txnclone = (Transaction) ((DAO) x.get("localFeeEngineDAO")).put(txnclone);
+
+          txn.setLineItems(txnclone.getLineItems());
+          return txn;
         }
         return (Transaction) ((DAO) x.get("localFeeEngineDAO")).put(txn);
       `

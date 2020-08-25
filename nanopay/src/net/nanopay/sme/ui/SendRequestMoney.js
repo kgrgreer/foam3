@@ -80,6 +80,7 @@ foam.CLASS({
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.tx.AbliiTransaction',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.FxSummaryTransactionLineItem',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.ui.LoadingSpinner',
     'foam.u2.dialog.Popup',
@@ -457,7 +458,7 @@ foam.CLASS({
 
       let quoteExpiry = null;
       for ( i=0; i < this.viewData.quote.lineItems.length; i++ ) {
-        if ( this.FXLineItem.isInstance(this.viewData.quote.lineItems[i]) && this.viewData.quote.lineItems[i].expiry ) {
+        if ( ( this.FXLineItem.isInstance(this.viewData.quote.lineItems[i]) || this.FxSummaryTransactionLineItem.isInstance(this.viewData.quote.lineItems[i]) ) && this.viewData.quote.lineItems[i].expiry ) {
           if ( quoteExpiry == null ) {
             quoteExpiry = this.viewData.quote.lineItems[i].expiry;
             quoteExpiry = Date.UTC(quoteExpiry.getFullYear(), quoteExpiry.getMonth(), quoteExpiry.getDate(), quoteExpiry.getHours(), quoteExpiry.getMinutes(), quoteExpiry.getSeconds());

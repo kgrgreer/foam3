@@ -75,6 +75,7 @@ foam.CLASS({
             fxRate = fxArray[0].getRate();
             source = fxArray[0].getSourceCurrency();
             destination = fxArray[0].getSourceCurrency();
+            fxSummary.setExpiry(fxArray[0].getExpiry());
           } else {
             if ( fxArray[0].getSourceCurrency().getId().equals("BRL") ) {
               source = fxArray[0].getSourceCurrency();
@@ -84,6 +85,11 @@ foam.CLASS({
               destination = fxArray[0].getDestinationCurrency();
             }
             fxRate = fxArray[0].getRate() * fxArray[1].getRate();
+            if ( fxArray[0].getExpiry().before(fxArray[1].getExpiry()) ) {
+              fxSummary.setExpiry(fxArray[0].getExpiry());
+            } else {
+              fxSummary.setExpiry(fxArray[1].getExpiry()) ;
+            }
           }
           Double srcPrecision = Math.pow(10, source.getPrecision());
           Double destPrecision = Math.pow(10, destination.getPrecision()) * fxRate;
