@@ -16,7 +16,7 @@
  */
 foam.INTERFACE({
   package: 'net.nanopay.partner.sintegra',
-  name: 'SintegraServiceInterface',
+  name: 'Sintegra',
 
   documentation: 'Interface to the Sintegra API service',
 

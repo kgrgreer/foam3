@@ -1123,7 +1123,7 @@ var classes = [
   'net.nanopay.country.br.tx.NatureCodeLineItem',
   'net.nanopay.partner.sintegra.CPFResponseData',
   'net.nanopay.partner.sintegra.CNPJResponseData',
-  'net.nanopay.partner.sintegra.SintegraServiceInterface',
+  'net.nanopay.partner.sintegra.Sintegra',
   'net.nanopay.partner.treviso.api.Address',
   'net.nanopay.partner.treviso.api.BusinessUnit',
   'net.nanopay.partner.treviso.api.ClientStatus',

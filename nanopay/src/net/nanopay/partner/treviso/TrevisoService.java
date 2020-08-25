@@ -54,7 +54,7 @@ import net.nanopay.fx.FXService;
 import net.nanopay.fx.FXTransaction;
 import net.nanopay.meter.clearing.ClearingTimeService;
 import net.nanopay.model.Business;
-import net.nanopay.partner.sintegra.SintegraService;
+import net.nanopay.partner.sintegra.Sintegra;
 import net.nanopay.partner.sintegra.CPFResponseData;
 import net.nanopay.partner.sintegra.CNPJResponseData;
 import net.nanopay.country.br.exchange.Boleto;
@@ -471,7 +471,7 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
       String formattedCnpj = cnpj.replaceAll("[^0-9]", "");
       TrevisoCredientials credentials = (TrevisoCredientials) getX().get("TrevisoCredientials");
       if ( null == credentials ) throw new RuntimeException("Invalid credientials. Treviso token required to validate CNPJ");
-      CNPJResponseData data = new SintegraService(getX()).getCNPJData(formattedCnpj, credentials.getSintegraToken());
+      CNPJResponseData data = ((Sintegra) getX().get("sintegraService")).getCNPJData(formattedCnpj, credentials.getSintegraToken());
       if ( data == null ) throw new RuntimeException("Unable to get a valid response from CNPJ validation.");
 
       if ( ! "0".equals(data.getCode()) ) throw new RuntimeException(data.getMessage());
@@ -489,7 +489,7 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
 
     String birthDate = "";
     try {
-      SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+      SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
       sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
       birthDate = sdf.format(findUserBirthDate(userId));
     } catch(Throwable t) {
@@ -501,12 +501,12 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
       String formattedCpf = cpf.replaceAll("[^0-9]", "");
       TrevisoCredientials credentials = (TrevisoCredientials) getX().get("TrevisoCredientials");
       if ( null == credentials ) throw new RuntimeException("Invalid credientials. Treviso token required to validate CPF");
-      CPFResponseData data = new SintegraService(getX()).getCPFData(formattedCpf, birthDate, credentials.getSintegraToken());
+      CPFResponseData data = ((Sintegra) getX().get("sintegraService")).getCPFData(formattedCpf, birthDate, credentials.getSintegraToken());
       if ( data == null ) throw new RuntimeException("Unable to get a valid response from CPF validation.");
 
       if ( ! "0".equals(data.getCode()) ) throw new RuntimeException(data.getMessage());
 
-      return "Regular".equals(data.getSituacaoCadastral());
+      return "REGULAR".equalsIgnoreCase(data.getSituacaoCadastral());
     } catch(Throwable t) {
       logger_.error("Error validating CPF" , t);
       throw new RuntimeException(t);

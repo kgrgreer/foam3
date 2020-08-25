@@ -50,7 +50,7 @@ import org.apache.http.message.BasicHeader;
 import org.apache.http.util.EntityUtils;
 
 
-public class SintegraService extends ContextAwareSupport implements SintegraServiceInterface {
+public class SintegraService extends ContextAwareSupport implements Sintegra {
 
   private CloseableHttpClient httpClient;
   private JSONParser jsonParser;
