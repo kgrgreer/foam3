@@ -1,7 +1,7 @@
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-0",
-  "name":"Signing Officer?",
+  "name":"Signing Officer",
   "of":"net.nanopay.crunch.onboardingModels.SigningOfficerQuestion",
   "description":"Are you a Signing Officer?",
   "notes":"This capability will intercept its permissions when there are no signingofficerjunctions belonging to the current business",
@@ -478,6 +478,29 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
+  "id":"B98D97EE-4A43-4B03-84C1-9DE2C0109E87",
+  "name":"API Onboarding User and Business",
+  "description":"Unlock onboarding for a given user by provisioning a business",
+  "icon":"/images/capabilityIcons/CADOnboardCap.svg",
+  "version":"0",
+  "enabled":true,
+  "visible":false,
+  "keywords":["intuit"]
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"CD499238-7854-4125-A04D-7CE7EE15BC74",
+  "name":"API Onboarding Domestic Business Payments (CAD to CAD)",
+  "description":"Unlock domestic payments through the API for a business.",
+  "icon":"/images/capabilityIcons/CADOnboardCap.svg",
+  "version":"0",
+  "enabled":true,
+  "visible":false,
+  "keywords":["intuit"]
+})
+
+p({
   "id":"8bffdedc-5176-4843-97df-1b75ff6054fb",
   "name":"Signing Officer Date of Birth",
   "of":"net.nanopay.crunch.onboardingModels.UserBirthDateData",

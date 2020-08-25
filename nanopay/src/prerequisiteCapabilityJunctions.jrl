@@ -474,6 +474,40 @@ p({
   "priority":4
 })
 
+// Prerequisites for apiUserOnboarding
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"B98D97EE-4A43-4B03-84C1-9DE2C0109E87",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-18",
+  "priority":1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"B98D97EE-4A43-4B03-84C1-9DE2C0109E87",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-76",
+  "priority":2
+})
+
+// Prerequisites for apiDomesticPayments
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"CD499238-7854-4125-A04D-7CE7EE15BC74",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-0",
+  "priority":1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"CD499238-7854-4125-A04D-7CE7EE15BC74",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5",
+  "priority":2
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"CD499238-7854-4125-A04D-7CE7EE15BC74",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-11",
+  "priority":3
+})
+
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"777af38a-8225-87c8-dfdf-eeb15f71215f-123",

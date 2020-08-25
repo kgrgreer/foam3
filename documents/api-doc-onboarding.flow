@@ -107,6 +107,113 @@
     capabilityDataObjects map.
 </p>
 
+<table border="1px" width="100%">
+  <thead>
+    <tr>
+      <th>Use Case</th>
+      <th>Map Key</th>
+      <th>Payload Class</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>User Onboarding</td>
+      <td>AbliiPrivacyPolicy</td>
+      <td>AbliiPrivacyPolicy</td>
+    </tr>
+    <tr>
+      <td>User Onboarding</td>
+      <td>AbliiTermsAndConditions</td>
+      <td>AbliiTermsAndConditions</td>
+    </tr>
+    <tr>
+      <td>User Onboarding</td>
+      <td>User Registration</td>
+      <td>UserRegistrationData</td>
+    </tr>
+    <tr>
+      <td>User Onboarding</td>
+      <td>Nanopay Admission</td>
+      <td>n/a</td>
+    </tr>
+    <tr>
+      <td>User Onboarding</td>
+      <td>Business Registration</td>
+      <td>InitialBusinessData</td>
+    </tr>
+    <tr>
+      <td>User Onboarding</td>
+      <td>API Onboarding User and Business</td>
+      <td>n/a</td>
+    </tr>
+    <tr>
+      <td>Business Onboarding</td>
+      <td>Business Owner Information</td>
+      <td>BusinessOwnershipData</td>
+    </tr>
+    <tr>
+      <td>Business Onboarding</td>
+      <td>CertifyDirectorsListed</td>
+      <td>CertifyDirectorsListed</td>
+    </tr>
+    <tr>
+      <td>Business Onboarding</td>
+      <td>Business Details</td>
+      <td>BusinessInformationData</td>
+    </tr>
+    <tr>
+      <td>Business Onboarding</td>
+      <td>Signing Officer Privileges</td>
+      <td>SigningOfficerPersonalData</td>
+    </tr>
+    <tr>
+      <td>Business Onboarding</td>
+      <td>Unlock Domestic Payments and Invoicing</td>
+      <td>n/a</td>
+    </tr>
+    <tr>
+      <td>Business Onboarding</td>
+      <td>Signing Officer</td>
+      <td>SigningOfficerQuestion</td>
+    </tr>
+    <tr>
+      <td>Business Onboarding</td>
+      <td>Transaction Details</td>
+      <td>TransactionDetailsData</td>
+    </tr>
+    <tr>
+      <td>Business Onboarding</td>
+      <td>Business Directors Data</td>
+      <td>BusinessDirectorsData</td>
+    </tr>
+    <tr>
+      <td>Business Onboarding</td>
+      <td>Business Address</td>
+      <td>BusinessAddressData</td>
+    </tr>
+    <tr>
+      <td>Business Onboarding</td>
+      <td>CertifyOwnersPercent</td>
+      <td>CertifyOwnersPercent</td>
+    </tr>
+    <tr>
+      <td>Business Onboarding</td>
+      <td>DualPartyAgreementCAD</td>
+      <td>DualPartyAgreementCAD</td>
+    </tr>
+    <tr>
+      <td>Business Onboarding</td>
+      <td>Certify Data Reviewed</td>
+      <td>CertifyDataReviewed</td>
+    </tr>
+    <tr>
+      <td>Business Onboarding</td>
+      <td>API Onboarding Domestic Business Payments (CAD to CAD)</td>
+      <td>n/a</td>
+    </tr>
+  </tbody>
+</table>
+
 <h2>Onboarding Data Objects</h2>
 
 <h3><a name="user-onboarding-objects">User Onboarding Objects</a></h3>
