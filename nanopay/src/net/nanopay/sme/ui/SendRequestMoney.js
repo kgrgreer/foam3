@@ -404,7 +404,7 @@ foam.CLASS({
       } else if ( ! (invoice.issueDate instanceof Date && ! isNaN(invoice.issueDate.getTime())) ) {
         this.notify(this.ISSUE_DATE_ERROR, '', this.LogLevel.ERROR, true);
         return false;
-      } else if ( invoice.account == 0 ) {
+      } else if ( invoice.account == 0 && invoice.destinationAccount == 0  ) {
         this.notify(this.BANK_ACCOUNT_REQUIRED, '', this.LogLevel.ERROR, true);
         return false;
       }
