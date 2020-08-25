@@ -76,13 +76,7 @@ p({
     }
   },
   "wizardlet": {
-    "class": "foam.nanos.crunch.ui.CapabilityWizardlet",
-    "mustBeValid": true
-  },
-  "wizardletConfig": {
-    "class": "foam.u2.wizard.StepWizardConfig",
-    "allowSkipping": false,
-    "allowBacktracking": true
+    "class": "foam.nanos.crunch.ui.CapabilityWizardlet"
   }
 })
 
@@ -144,13 +138,7 @@ p({
     "country":"BR"
   },
   "wizardlet": {
-    "class": "foam.nanos.crunch.ui.CapabilityWizardlet",
-    "mustBeValid": true
-  },
-  "wizardletConfig": {
-    "class": "foam.u2.wizard.StepWizardConfig",
-    "allowSkipping": false,
-    "allowBacktracking": true
+    "class": "foam.nanos.crunch.ui.CapabilityWizardlet"
   }
 })
 
