@@ -642,7 +642,7 @@ foam.CLASS({
 
         if (
           user.getId() != this.getOwner() &&
-          ! auth.check(x, "contact.delete." + this.getId())
+          ! auth.check(x, "contact.remove." + this.getId())
         ) {
           throw new AuthorizationException();
         }

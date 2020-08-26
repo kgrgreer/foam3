@@ -426,7 +426,7 @@ foam.CLASS({
         AuthService auth = (AuthService) x.get("auth");
         User user = ((Subject) x.get("subject")).getUser();
 
-        if ( auth.check(x, String.format("beneficialowner.delete.%d", this.getId())) ) return;
+        if ( auth.check(x, String.format("beneficialowner.remove.%d", this.getId())) ) return;
 
         if ( this.getBusiness() != user.getId() ) {
           throw new AuthorizationException("Permission denied: Cannot remove beneficial owners owned by other businesses.");
