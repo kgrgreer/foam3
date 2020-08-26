@@ -77,8 +77,7 @@ foam.CLASS({
       class: 'String',
       name: 'type',
       documentation: 'Used to change visibility of various country specific properties.',
-      hidden: true,
-      flags: ['js']
+      hidden: true
     },
     {
       class: 'Boolean',
@@ -180,38 +179,40 @@ foam.CLASS({
       name: 'jobTitle',
       section: 'requiredSection',
       documentation: 'The job title of the beneficial owner',
-      visibility: function(mode) {
-        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
-      },
-      view: function(_, X) {
-        return {
-          class: 'foam.u2.view.ChoiceWithOtherView',
-          otherKey: 'Other',
-          choiceView: {
-            class: 'foam.u2.view.ChoiceView',
-            placeholder: 'Please select...',
-            dao: X.jobTitleDAO,
-            objToChoice: function(a) {
-              return [a.name, a.label];
-            }
-          }
-        };
-      },
-      validationPredicates: [
-        {
-          args: ['jobTitle', 'showValidation'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.EQ(net.nanopay.model.BeneficialOwner.SHOW_VALIDATION, false),
-              e.GT(
-                foam.mlang.StringLength.create({
-                  arg1: net.nanopay.model.BeneficialOwner.JOB_TITLE
-                }), 0)
-            );
-          },
-          errorString: 'Please select a Job Title.'
-        }
-      ]
+      hidden: true
+      // TODO: added hidden true and commented out below because JobTitle not apart of current flow
+      // visibility: function(mode) {
+      //   return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      // },
+      // view: function(_, X) {
+      //   return {
+      //     class: 'foam.u2.view.ChoiceWithOtherView',
+      //     otherKey: 'Other',
+      //     choiceView: {
+      //       class: 'foam.u2.view.ChoiceView',
+      //       placeholder: 'Please select...',
+      //       dao: X.jobTitleDAO,
+      //       objToChoice: function(a) {
+      //         return [a.name, a.label];
+      //       }
+      //     }
+      //   };
+      // },
+      // validationPredicates: [
+      //   {
+      //     args: ['jobTitle', 'showValidation'],
+      //     predicateFactory: function(e) {
+      //       return e.OR(
+      //         e.EQ(net.nanopay.model.BeneficialOwner.SHOW_VALIDATION, false),
+      //         e.GT(
+      //           foam.mlang.StringLength.create({
+      //             arg1: net.nanopay.model.BeneficialOwner.JOB_TITLE
+      //           }), 0)
+      //       );
+      //     },
+      //     errorString: 'Please select a Job Title.'
+      //   }
+      // ]
     },
     {
       class: 'Int',
@@ -289,13 +290,27 @@ foam.CLASS({
       name: 'cpf',
       label: 'CPF',
       section: 'requiredSection',
-      required: true,
       documentation: `CPF number of beneficial owner.`,
-      visibility: function (type) {
+      visibility: function(type) {
         return type == 'BR' ?
         foam.u2.DisplayMode.RW :
         foam.u2.DisplayMode.HIDDEN;
-      }
+      },
+      validationPredicates: [
+        {
+          args: ['type', 'cpf'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.NEQ(net.nanopay.model.BeneficialOwner.TYPE, 'BR'),
+              e.AND(
+                e.EQ(net.nanopay.model.BeneficialOwner.TYPE, 'BR'),
+                e.NEQ(net.nanopay.model.BeneficialOwner.cpf, '')
+              )
+            );
+          },
+          errorString: 'Please provide a valid CPF number'
+        }
+      ]
     },
     {
       class: 'String',

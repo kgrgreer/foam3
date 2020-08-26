@@ -453,6 +453,7 @@ p({
   "priority":5
 })
 
+// BR Signing Officer to Residence Consumption Bill
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"777af38a-8225-87c8-dfdf-eeb15f71215f-123",
@@ -460,6 +461,7 @@ p({
   "priority":2
 })
 
+// BR Signing Officer to User Identity
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"777af38a-8225-87c8-dfdf-eeb15f71215f-123",
@@ -467,11 +469,28 @@ p({
   "priority":3
 })
 
+// BR Signing Officer to Birth date
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"777af38a-8225-87c8-dfdf-eeb15f71215f-123",
   "targetId":"8bffdedc-5176-4843-97df-1b75ff6054fb",
   "priority":4
+})
+
+// BR Signing Officer to CPF
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"777af38a-8225-87c8-dfdf-eeb15f71215f-123",
+  "targetId":"fb7d3ca2-62f2-4caf-a84c-860392e4676b",
+  "priority":5
+})
+
+// Not BR Signing Officer to Birth date
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5",
+  "targetId":"8bffdedc-5176-4843-97df-1b75ff6054fb",
+  "priority":5
 })
 
 // Prerequisites for apiUserOnboarding
@@ -506,11 +525,4 @@ p({
   "sourceId":"CD499238-7854-4125-A04D-7CE7EE15BC74",
   "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-11",
   "priority":3
-})
-
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"777af38a-8225-87c8-dfdf-eeb15f71215f-123",
-  "targetId":"fb7d3ca2-62f2-4caf-a84c-860392e4676b",
-  "priority":5
 })

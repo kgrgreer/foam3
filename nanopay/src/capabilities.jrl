@@ -83,7 +83,7 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"777af38a-8225-87c8-dfdf-eeb15f71215f-123",
-  "name":"Signing Officer Privileges",
+  "name":"Brazil Signing Officer Privileges",
   "of":"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData",
   "description":"Unlock signing officer privileges",
   "version":"0",
