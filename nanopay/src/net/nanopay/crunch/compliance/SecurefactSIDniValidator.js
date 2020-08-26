@@ -50,7 +50,6 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
         UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
-        UserCapabilityJunctionDAO ucjDAO = new UserCapabilityJunctionDAO.Builder(x).build();
 
         Capability capability = (Capability) ucj.findTargetId(x);
         User user = (User) ucj.saveDataToDAO(x, capability, false);
