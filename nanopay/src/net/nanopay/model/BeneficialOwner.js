@@ -179,40 +179,38 @@ foam.CLASS({
       name: 'jobTitle',
       section: 'requiredSection',
       documentation: 'The job title of the beneficial owner',
-      hidden: true
-      // TODO: added hidden true and commented out below because JobTitle not apart of current flow
-      // visibility: function(mode) {
-      //   return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
-      // },
-      // view: function(_, X) {
-      //   return {
-      //     class: 'foam.u2.view.ChoiceWithOtherView',
-      //     otherKey: 'Other',
-      //     choiceView: {
-      //       class: 'foam.u2.view.ChoiceView',
-      //       placeholder: 'Please select...',
-      //       dao: X.jobTitleDAO,
-      //       objToChoice: function(a) {
-      //         return [a.name, a.label];
-      //       }
-      //     }
-      //   };
-      // },
-      // validationPredicates: [
-      //   {
-      //     args: ['jobTitle', 'showValidation'],
-      //     predicateFactory: function(e) {
-      //       return e.OR(
-      //         e.EQ(net.nanopay.model.BeneficialOwner.SHOW_VALIDATION, false),
-      //         e.GT(
-      //           foam.mlang.StringLength.create({
-      //             arg1: net.nanopay.model.BeneficialOwner.JOB_TITLE
-      //           }), 0)
-      //       );
-      //     },
-      //     errorString: 'Please select a Job Title.'
-      //   }
-      // ]
+      visibility: function(mode) {
+        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      },
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.ChoiceWithOtherView',
+          otherKey: 'Other',
+          choiceView: {
+            class: 'foam.u2.view.ChoiceView',
+            placeholder: 'Please select...',
+            dao: X.jobTitleDAO,
+            objToChoice: function(a) {
+              return [a.name, a.label];
+            }
+          }
+        };
+      },
+      validationPredicates: [
+        {
+          args: ['jobTitle', 'showValidation'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.model.BeneficialOwner.SHOW_VALIDATION, false),
+              e.GT(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.model.BeneficialOwner.JOB_TITLE
+                }), 0)
+            );
+          },
+          errorString: 'Please select a Job Title.'
+        }
+      ]
     },
     {
       class: 'Int',

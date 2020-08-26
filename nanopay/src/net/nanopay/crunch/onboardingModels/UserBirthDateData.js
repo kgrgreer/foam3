@@ -24,6 +24,14 @@ foam.CLASS({
     'foam.mlang.Expressions'
   ],
 
+  sections: [
+    {
+      name: 'signingOfficerPersonalInformationSection',
+      title: 'Please enter the signing officer\'s date of birth',
+      help: 'will require your date of birth.'
+    },
+  ],
+
   messages: [
     { name: 'UNGER_AGE_LIMIT_ERROR', message: 'Must be at least 18 years old.' },
     { name: 'OVER_AGE_LIMIT_ERROR', message: 'Must be under the age of 125 years old.' }

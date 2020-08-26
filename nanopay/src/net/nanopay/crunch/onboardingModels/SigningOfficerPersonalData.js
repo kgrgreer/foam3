@@ -37,15 +37,18 @@ foam.CLASS({
   sections: [
     {
       name: 'signingOfficerPersonalInformationSection',
-      title: 'Enter the signing officer\'s personal information'
+      title: 'Enter the signing officer\'s personal information',
+      help: 'will require your most convenient phone number.'
     },
     {
       name: 'signingOfficerAddressSection',
-      title: 'Enter the signing officer\'s address'
+      title: 'Enter the signing officer\'s address',
+      help: 'will require your personal address. Used only to confirm your identity.'
     },
     {
       name: 'signingOfficerIdentificationSection',
       title: 'Enter the signing officer\'s personal identification',
+      help: 'will require some piece of personal identifiaction.',
       documentation: 'Documentation of the signing officer',
       isAvailable: function(countryId) {
         return countryId !== 'CA';
@@ -103,6 +106,38 @@ foam.CLASS({
         }
       ]
     }),
+    {
+      class: 'String',
+      name: 'jobTitle',
+      section: 'signingOfficerPersonalInformationSection',
+      documentation: 'The job title of signing officer',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.ChoiceWithOtherView',
+          otherKey: 'Other',
+          choiceView: {
+            class: 'foam.u2.view.ChoiceView',
+            placeholder: 'Please select...',
+            dao: X.jobTitleDAO,
+            objToChoice: function(a) {
+              return [a.name, a.label];
+            }
+          }
+        };
+      },
+      validationPredicates: [
+        {
+          args: ['jobTitle'],
+          predicateFactory: function(e) {
+            return e.GT(
+              foam.mlang.StringLength.create({
+                arg1: net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.JOB_TITLE
+              }), 0);
+          },
+          errorString: 'Please select a Job Title.'
+        }
+      ]
+    },
     foam.nanos.auth.User.PHONE.clone().copyFrom({
       section: 'signingOfficerPersonalInformationSection',
       label: '',
