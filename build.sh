@@ -101,6 +101,55 @@ function setup_jce {
   fi
 }
 
+function deploy_documents {
+    echo "INFO :: Deploying Documents"
+
+    # prepare documents
+    cd "$PROJECT_HOME"
+
+    declare -a sources=(
+        "foam2/src"
+        "nanopay/src"
+        "documents"
+    )
+
+    declare -a exclude=(
+        "foam2/src/com/google/flow"
+    )
+
+    for dir in "${sources[@]}"; do
+        find ${dir} -type f \( -name "*.flow" \) | while read path; do
+            # skip excluded directories
+            skip="no"
+            for ex in "${excludes[@]}"; do
+                if [ "${path:0:${#ex}}" = "$ex" ]; then
+                    skip="yes"
+                    break
+                fi
+            done
+            if [ "$skip" = "yes" ]; then
+                continue
+            fi
+
+            # determine document name
+            name=$(basename $path)
+            name=${name%.flow}
+            # documents named "doc" should be renamed
+            if [ "$name" = "doc" ]; then
+                simplePath=${path:(1 + ${#dir})}
+                simplePath=${simplePath%.flow}
+                name=${simplePath//\//-}
+            fi
+            # copy this document to target
+            cp -f "$path" "$DOCUMENT_OUT/$name.flow"
+            # if not jar build, copy to runtime directory
+            if [ "$RUN_JAR" -eq 0 ]; then
+                cp -f "$path" "$DOCUMENT_HOME/$name.flow"
+            fi
+        done
+    done
+}
+
 function deploy_journals {
     echo "INFO :: Deploying Journals"
 
@@ -376,6 +425,8 @@ function setenv {
 
     export JOURNAL_HOME="$NANOPAY_HOME/journals"
 
+    export DOCUMENT_OUT="$PROJECT_HOME"/target/documents
+
     export DOCUMENT_HOME="$NANOPAY_HOME/documents"
 
     export FOAMLINK_DATA="$PROJECT_HOME/.foam/foamlinkoutput.json"
@@ -409,11 +460,15 @@ function setenv {
     if [ ! -d "${JOURNAL_HOME}" ]; then
         mkdir -p "${JOURNAL_HOME}"
     fi
+    # Remove old symlink to prevent copying into the same folder
+    if [ -L "${DOCUMENT_HOME}" ]; then
+        rm "$DOCUMENT_HOME"
+    fi
     if [ ! -d "${DOCUMENT_HOME}" ]; then
-        ln -s "$(pwd)/documents" $DOCUMENT_HOME
-    elif [ -d "${DOCUMENT_HOME}" ]; then
-        rm -rf "${DOCUMENT_HOME}"
-        ln -s "$(pwd)/documents" $DOCUMENT_HOME
+        mkdir -p "${DOCUMENT_HOME}"
+    fi
+    if [ ! -d "${DOCUMENT_OUT}" ]; then
+        mkdir -p "${DOCUMENT_OUT}"
     fi
 
     if [[ ! -w $NANOPAY_HOME && $TEST -ne 1 ]]; then
@@ -736,6 +791,7 @@ if [ "$STOP_ONLY" -eq 1 ]; then
     quit 0
 fi
 
+deploy_documents
 deploy_journals
 
 if [ "${RESTART_ONLY}" -eq 0 ] && [ "${RUNTIME_COMPILE}" -eq 0 ]; then
