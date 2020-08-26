@@ -36,6 +36,10 @@ foam.CLASS({
 
   sections: [
     {
+      name: 'introduction',
+      title: 'Signing Officer Process.'
+    },
+    {
       name: 'signingOfficerPersonalInformationSection',
       title: 'Enter the signing officer\'s personal information',
       help: 'will require your most convenient phone number.'
@@ -64,6 +68,18 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      class: 'String',
+      name: 'pleaseReadImportantInformation',
+      value: `Thank you for letting us know that you are the signing officer of this company. We must collect
+          your information before processing any payments or onboarding requirements for you.
+          This is to ensure the protection of all members operating on the platform.
+          Your business will not be able to fully unlock invoicing and payment capabilities until at least one signing officer
+          completes this form and their identity is fully reviewed and passed.
+      `,
+      section: 'introduction',
+      visibility: 'RO'
+    },
     {
       name: 'countryId',
       class: 'Reference',

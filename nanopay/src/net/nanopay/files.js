@@ -1619,6 +1619,7 @@ FOAM_FILES([
 
   // wizardlets
   { name: 'net/nanopay/crunch/wizardlet/RefreshWizardlet' },
+  { name: 'net/nanopay/crunch/wizardlet/SigningOfficerQuestionWizardlet' },
 
   // msp
   { name: 'net/nanopay/msp/MspInfo' },

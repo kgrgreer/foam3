@@ -12,7 +12,10 @@ p({
   "permissionsIntercepted":[
     "businessHasSigningOfficer"
   ],
-  "interceptIf":{"class":"net.nanopay.crunch.onboardingModels.BusinessHasNoSigningOfficers"}
+  "interceptIf":{"class":"net.nanopay.crunch.onboardingModels.BusinessHasNoSigningOfficers"},
+  "wizardlet": {
+    "class": "net.nanopay.crunch.wizardlet.SigningOfficerQuestionWizardlet"
+  }
 })
 
 p({
@@ -68,12 +71,19 @@ p({
     "net.nanopay.crunch.acceptancedocuments.capabilities.cadafexterms.section.reviewAgreementDocumentsSection"
   ],
   "interceptIf": { "class":"net.nanopay.crunch.onboardingModels.SigningOfficerCapabilityInterceptPredicate" },
-  "availabilityPredicate": {
-    "class": "foam.mlang.predicate.Not",
-    "arg1": {
-      "class":"net.nanopay.crunch.onboardingModels.CheckUserCountry",
-      "country":"BR"
-    }
+  "availabilityPredicate":
+  {
+    "class":"foam.mlang.predicate.And",
+    "args": [
+      { "class":"net.nanopay.crunch.onboardingModels.UserIsSigningOfficerOfBusiness" },
+      {
+        "class": "foam.mlang.predicate.Not",
+        "arg1": {
+          "class":"net.nanopay.crunch.onboardingModels.CheckUserCountry",
+          "country":"BR"
+        }
+      }
+    ]
   },
   "wizardlet": {
     "class": "foam.nanos.crunch.ui.CapabilityWizardlet"
@@ -133,9 +143,16 @@ p({
     "net.nanopay.crunch.acceptancedocuments.capabilities.cadafexterms.section.reviewAgreementDocumentsSection"
   ],
   "interceptIf":{ "class":"net.nanopay.crunch.onboardingModels.SigningOfficerCapabilityInterceptPredicate" },
-  "availabilityPredicate": {
-    "class":"net.nanopay.crunch.onboardingModels.CheckUserCountry",
-    "country":"BR"
+  "availabilityPredicate":
+    {
+    "class":"foam.mlang.predicate.And",
+    "args": [
+      { "class":"net.nanopay.crunch.onboardingModels.UserIsSigningOfficerOfBusiness" },
+      {
+        "class":"net.nanopay.crunch.onboardingModels.CheckUserCountry",
+        "country":"BR"
+      }
+    ]
   },
   "wizardlet": {
     "class": "foam.nanos.crunch.ui.CapabilityWizardlet"
