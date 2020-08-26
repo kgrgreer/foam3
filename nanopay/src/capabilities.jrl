@@ -167,18 +167,6 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-4-a",
-  "name":"Business Address",
-  "of":"net.nanopay.crunch.onboardingModels.BusinessAddressData",
-  "version":"0",
-  "enabled":true,
-  "visible":false,
-  "daoKey":"businessDAO",
-  "contextDAOFindKey":"subject.user"
-})
-
-p({
-  "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-5",
   "name":"Extended Business Details",
   "of":"net.nanopay.crunch.onboardingModels.InternationalBusinessInformationData",

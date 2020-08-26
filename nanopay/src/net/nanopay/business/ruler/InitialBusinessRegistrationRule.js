@@ -66,6 +66,7 @@ foam.CLASS({
             .setBusinessName(businessCapabilityData.getBusinessName())
             .setOrganization(businessCapabilityData.getBusinessName())
             .setAddress(businessCapabilityData.getAddress())
+            .setMailingAddress(businessCapabilityData.getMailingAddress())
             .setPhoneNumber(businessCapabilityData.getCompanyPhone())
             .setFax(businessCapabilityData.getFax())
             .setEmail(businessCapabilityData.getEmail())

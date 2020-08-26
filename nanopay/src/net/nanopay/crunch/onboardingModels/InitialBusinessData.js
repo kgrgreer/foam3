@@ -145,7 +145,7 @@ foam.CLASS({
           args: ['address', 'address$errors_'],
           predicateFactory: function(e) {
             return e.EQ(foam.mlang.IsValid.create({
-                arg1: net.nanopay.crunch.onboardingModels.BusinessAddressData.MAILING_ADDRESS
+                arg1: net.nanopay.crunch.onboardingModels.InitialBusinessData.MAILING_ADDRESS
               }), true);
           },
           errorMessage: 'INVALID_ADDRESS_ERROR'
