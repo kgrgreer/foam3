@@ -80,6 +80,7 @@ foam.CLASS({
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.tx.AbliiTransaction',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.FxSummaryTransactionLineItem',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.ui.LoadingSpinner',
     'foam.u2.dialog.Popup',
@@ -403,7 +404,7 @@ foam.CLASS({
       } else if ( ! (invoice.issueDate instanceof Date && ! isNaN(invoice.issueDate.getTime())) ) {
         this.notify(this.ISSUE_DATE_ERROR, '', this.LogLevel.ERROR, true);
         return false;
-      } else if ( invoice.account == 0 ) {
+      } else if ( invoice.account == 0 && invoice.destinationAccount == 0  ) {
         this.notify(this.BANK_ACCOUNT_REQUIRED, '', this.LogLevel.ERROR, true);
         return false;
       }
@@ -457,7 +458,7 @@ foam.CLASS({
 
       let quoteExpiry = null;
       for ( i=0; i < this.viewData.quote.lineItems.length; i++ ) {
-        if ( this.FXLineItem.isInstance(this.viewData.quote.lineItems[i]) && this.viewData.quote.lineItems[i].expiry ) {
+        if ( ( this.FXLineItem.isInstance(this.viewData.quote.lineItems[i]) || this.FxSummaryTransactionLineItem.isInstance(this.viewData.quote.lineItems[i]) ) && this.viewData.quote.lineItems[i].expiry ) {
           if ( quoteExpiry == null ) {
             quoteExpiry = this.viewData.quote.lineItems[i].expiry;
             quoteExpiry = Date.UTC(quoteExpiry.getFullYear(), quoteExpiry.getMonth(), quoteExpiry.getDate(), quoteExpiry.getHours(), quoteExpiry.getMinutes(), quoteExpiry.getSeconds());

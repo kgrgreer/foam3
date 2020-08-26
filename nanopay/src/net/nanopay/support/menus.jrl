@@ -61,6 +61,17 @@ p({
 })
 p({
     "class":"foam.nanos.menu.Menu",
+    "id":"api-doc-32-onboarding",
+    "label":"API Onboarding",
+    "handler": {
+        "class":"foam.nanos.menu.DocumentFileMenu",
+        "docKey":"api-doc-onboarding",
+        "daoKey":"nanopayDocumentDAO"
+    },
+    "parent":"documentation"
+})
+p({
+    "class":"foam.nanos.menu.Menu",
     "id":"api-doc-35-webhooks",
     "label":"API Webhooks",
     "handler": {

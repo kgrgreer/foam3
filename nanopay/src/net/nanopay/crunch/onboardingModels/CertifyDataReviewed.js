@@ -61,6 +61,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'reviewed',
       section: 'reviewDataSection',
+      documentation: 'Whether the data was reviewed',
       label: 'I certify all data has been reviewed.',
       visibility: function(canReview) {
         return canReview ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;

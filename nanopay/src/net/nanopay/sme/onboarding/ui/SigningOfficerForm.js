@@ -133,7 +133,7 @@ foam.CLASS({
       top: 15px;
     }
 
-    ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
+    ^ .foam-nanos-fs-fileDropZone-FileDropZone {
       background-color: white;
       margin-top: 16px;
       min-height: 264px;

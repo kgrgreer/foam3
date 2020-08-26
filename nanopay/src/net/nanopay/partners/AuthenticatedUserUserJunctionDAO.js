@@ -24,7 +24,7 @@ foam.CLASS({
 
     Features:
       only allow access to records where the user id matches the source or
-      target id of the record    
+      target id of the record
   `,
 
   javaImports: [
@@ -35,7 +35,7 @@ foam.CLASS({
     'foam.mlang.order.Comparator',
     'foam.mlang.predicate.Predicate',
     'foam.nanos.auth.*',
-   
+
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.OR'
   ],
@@ -60,10 +60,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'readPermission'
-    },
-    {
-      class: 'String',
-      name: 'deletePermission'
     }
   ],
 
@@ -71,15 +67,15 @@ foam.CLASS({
     {
       name: 'javaExtras',
       buildJavaClass: function(cls) {
-        cls.extras.push(`        
+        cls.extras.push(`
           public AuthenticatedUserUserJunctionDAO(X x, String name, DAO delegate) {
             super(x, delegate);
-            setCreatePermission(name + ".create.*");
+            name = name.toLowerCase();
+            setCreatePermission(name + ".create");
             setUpdatePermission(name + ".update.*");
             setRemovePermission(name + ".remove.*");
             setReadPermission(name + ".read.*");
-            setDeletePermission(name + ".delete.*");
-          }    
+          }
         `
         );
       }
@@ -187,7 +183,7 @@ foam.CLASS({
     {
       name: 'removeAll_',
       javaCode: `
-        DAO dao = getFilteredDAO(x, getDeletePermission());
+        DAO dao = getFilteredDAO(x, getRemovePermission());
         dao.removeAll_(x, skip, limit, order, predicate);
       `
     }

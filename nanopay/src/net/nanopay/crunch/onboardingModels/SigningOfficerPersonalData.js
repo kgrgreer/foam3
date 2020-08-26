@@ -36,16 +36,24 @@ foam.CLASS({
 
   sections: [
     {
+      name: 'introduction',
+      title: 'Signing Officer Process.'
+    },
+    {
       name: 'signingOfficerPersonalInformationSection',
-      title: 'Enter the signing officer\'s personal information'
+      title: 'Enter the signing officer\'s personal information',
+      help: 'will require your most convenient phone number.'
     },
     {
       name: 'signingOfficerAddressSection',
-      title: 'Enter the signing officer\'s address'
+      title: 'Enter the signing officer\'s address',
+      help: 'will require your personal address. Used only to confirm your identity.'
     },
     {
       name: 'signingOfficerIdentificationSection',
       title: 'Enter the signing officer\'s personal identification',
+      help: 'will require some piece of personal identifiaction.',
+      documentation: 'Documentation of the signing officer',
       isAvailable: function(countryId) {
         return countryId !== 'CA';
       }
@@ -60,6 +68,18 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      class: 'String',
+      name: 'pleaseReadImportantInformation',
+      value: `Thank you for letting us know that you are the signing officer of this company. We must collect
+          your information before processing any payments or onboarding requirements for you.
+          This is to ensure the protection of all members operating on the platform.
+          Your business will not be able to fully unlock invoicing and payment capabilities until at least one signing officer
+          completes this form and their identity is fully reviewed and passed.
+      `,
+      section: 'introduction',
+      visibility: 'RO'
+    },
     {
       name: 'countryId',
       class: 'Reference',
@@ -102,41 +122,43 @@ foam.CLASS({
         }
       ]
     }),
+    {
+      class: 'String',
+      name: 'jobTitle',
+      section: 'signingOfficerPersonalInformationSection',
+      documentation: 'The job title of signing officer',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.ChoiceWithOtherView',
+          otherKey: 'Other',
+          choiceView: {
+            class: 'foam.u2.view.ChoiceView',
+            placeholder: 'Please select...',
+            dao: X.jobTitleDAO,
+            objToChoice: function(a) {
+              return [a.name, a.label];
+            }
+          }
+        };
+      },
+      validationPredicates: [
+        {
+          args: ['jobTitle'],
+          predicateFactory: function(e) {
+            return e.GT(
+              foam.mlang.StringLength.create({
+                arg1: net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.JOB_TITLE
+              }), 0);
+          },
+          errorString: 'Please select a Job Title.'
+        }
+      ]
+    },
     foam.nanos.auth.User.PHONE.clone().copyFrom({
       section: 'signingOfficerPersonalInformationSection',
       label: '',
       visibility: 'RW',
       autoValidate: true
-    }),
-    foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
-      section: 'signingOfficerPersonalInformationSection',
-      label: 'Date of birth',
-      validationPredicates: [
-        {
-          args: ['birthday'],
-          predicateFactory: function(e) {
-            var limit = new Date();
-            limit.setDate(limit.getDate() - ( 18 * 365 ));
-            return e.AND(
-              e.NEQ(net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.BIRTHDAY, null),
-              e.LT(net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.BIRTHDAY, limit)
-            );
-          },
-          errorMessage: 'UNGER_AGE_LIMIT_ERROR'
-        },
-        {
-          args: ['birthday'],
-          predicateFactory: function(e) {
-            var limit = new Date();
-            limit.setDate(limit.getDate() - ( 125 * 365 ));
-            return e.AND(
-              e.NEQ(net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.BIRTHDAY, null),
-              e.GT(net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.BIRTHDAY, limit)
-            );
-          },
-          errorMessage: 'OVER_AGE_LIMIT_ERROR'
-        }
-      ]
     }),
     foam.nanos.auth.User.PEPHIORELATED.clone().copyFrom({
       section: 'signingOfficerPersonalInformationSection',

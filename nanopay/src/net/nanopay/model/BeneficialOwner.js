@@ -63,7 +63,8 @@ foam.CLASS({
   properties: [
     {
       class: 'Long',
-      name: 'id'
+      name: 'id',
+      documentation: 'The ID of the beneficial owner'
     },
     {
       class: 'String',
@@ -76,8 +77,7 @@ foam.CLASS({
       class: 'String',
       name: 'type',
       documentation: 'Used to change visibility of various country specific properties.',
-      hidden: true,
-      flags: ['js']
+      hidden: true
     },
     {
       class: 'Boolean',
@@ -137,6 +137,7 @@ foam.CLASS({
       name: 'birthday',
       label: 'Date of birth',
       section: 'requiredSection',
+      documentation: 'The birthday of the beneficial owner',
       visibility: function(mode) {
         return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
@@ -177,6 +178,7 @@ foam.CLASS({
       class: 'String',
       name: 'jobTitle',
       section: 'requiredSection',
+      documentation: 'The job title of the beneficial owner',
       visibility: function(mode) {
         return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
@@ -240,6 +242,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.Address',
       name: 'address',
       section: 'requiredSection',
+      documentation: 'The address of the beneficial owner',
       visibility: function(mode) {
         return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
@@ -285,13 +288,27 @@ foam.CLASS({
       name: 'cpf',
       label: 'CPF',
       section: 'requiredSection',
-      required: true,
       documentation: `CPF number of beneficial owner.`,
-      visibility: function (type) {
+      visibility: function(type) {
         return type == 'BR' ?
         foam.u2.DisplayMode.RW :
         foam.u2.DisplayMode.HIDDEN;
-      }
+      },
+      validationPredicates: [
+        {
+          args: ['type', 'cpf'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.NEQ(net.nanopay.model.BeneficialOwner.TYPE, 'BR'),
+              e.AND(
+                e.EQ(net.nanopay.model.BeneficialOwner.TYPE, 'BR'),
+                e.NEQ(net.nanopay.model.BeneficialOwner.cpf, '')
+              )
+            );
+          },
+          errorString: 'Please provide a valid CPF number'
+        }
+      ]
     },
     {
       class: 'String',
@@ -407,7 +424,7 @@ foam.CLASS({
         AuthService auth = (AuthService) x.get("auth");
         User user = ((Subject) x.get("subject")).getUser();
 
-        if ( auth.check(x, String.format("beneficialowner.delete.%d", this.getId())) ) return;
+        if ( auth.check(x, String.format("beneficialowner.remove.%d", this.getId())) ) return;
 
         if ( this.getBusiness() != user.getId() ) {
           throw new AuthorizationException("Permission denied: Cannot remove beneficial owners owned by other businesses.");

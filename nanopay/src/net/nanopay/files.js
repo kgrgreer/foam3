@@ -715,8 +715,6 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ui/SubscriptionInvoiceView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/InvoiceFileView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/InvoiceFileUploadView', flags: ['web'] },
-  { name: 'net/nanopay/invoice/ui/PayableController', flags: ['web'] },
-  { name: 'net/nanopay/invoice/ui/ReceivableController', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/PayableDAOBrowser', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/ReceivableDAOBrowser', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/history/InvoiceHistoryView', flags: ['web'] },
@@ -846,10 +844,6 @@ FOAM_FILES([
 
   // sme WizardModal NavigationBar
   { name: 'net/nanopay/sme/ui/wizardModal/WizardModalNavigationBar', flags: ['web'] },
-
-  // sme FileDropZone
-  { name: 'net/nanopay/sme/ui/fileDropZone/FileDropZone', flags: ['web'] },
-  { name: 'net/nanopay/sme/ui/fileDropZone/FileCard', flags: ['web'] },
 
   //onboarding
   { name: 'net/nanopay/sme/onboarding/BusinessDirectorArrayView', flags: ['web'] },
@@ -1546,13 +1540,14 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/fee/FixedFee' },
   { name: 'net/nanopay/tx/fee/InformationalFee' },
   { name: 'net/nanopay/tx/fee/PercentageFee' },
+  { name: 'net/nanopay/tx/fee/SpotRate' },
   { name: 'net/nanopay/tx/fee/TransactionFeeRule' },
   { name: 'net/nanopay/tx/fee/Relationships' },
   { name: 'net/nanopay/tx/fee/predicate/HasLineItemPredicate' },
   { name: 'net/nanopay/tx/fee/predicate/IsDomesticTransaction' },
   { name: 'net/nanopay/tx/fee/predicate/PaymentCorridorPredicate' },
   { name: 'net/nanopay/tx/fee/test/TransactionFeeRuleTest' },
-  { name: 'net/nanopay/country/br/tx/fee/PTaxRateFee' },
+  { name: 'net/nanopay/country/br/tx/fee/PTaxRate' },
 
   // crunch registration
   { name: 'net/nanopay/crunch/registration/UserRegistrationData' },
@@ -1565,7 +1560,6 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerQuestion' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessHasNoSigningOfficers' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessInformationData' },
-  { name: 'net/nanopay/crunch/onboardingModels/BusinessAddressData' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessOwnershipData' },
   { name: 'net/nanopay/crunch/onboardingModels/TransactionDetailsData' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessDirectorsData' },
@@ -1575,6 +1569,7 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/BusinessOwnershipToBeneficialOwnerDAO' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerCapabilityInterceptPredicate' },
   { name: 'net/nanopay/crunch/onboardingModels/UserIsSigningOfficerOfBusiness' },
+  { name: 'net/nanopay/crunch/onboardingModels/UserBirthDateData' },
   { name: 'net/nanopay/crunch/document/Documents' },
   { name: 'net/nanopay/crunch/document/Document' },
 
@@ -1621,9 +1616,13 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/CancellationAgreement' },
   { name: 'net/nanopay/crunch/acceptanceDocuments/BaseAcceptanceDocumentCapability' },
 
-  //wizardlets
+  // crunch document
+  { name: 'net/nanopay/crunch/document/Document' },
+  { name: 'net/nanopay/crunch/document/Documents' },
 
+  // wizardlets
   { name: 'net/nanopay/crunch/wizardlet/RefreshWizardlet' },
+  { name: 'net/nanopay/crunch/wizardlet/SigningOfficerQuestionWizardlet' },
 
   // msp
   { name: 'net/nanopay/msp/MspInfo' },
@@ -1637,6 +1636,8 @@ FOAM_FILES([
 
   { name: 'net/nanopay/country/br/CPF' },
   { name: 'net/nanopay/country/br/BrazilBusinessInfoData' },
+  { name: 'net/nanopay/country/br/exchange/ExchangeCredential' },
+  { name: 'net/nanopay/country/br/exchange/ExchangeCustomer' },
   { name: 'net/nanopay/country/br/NatureCode' },
   { name: 'net/nanopay/country/br/NatureCodeRate' },
   { name: 'net/nanopay/country/PermittedCountryFilterDAO' },
@@ -1652,4 +1653,8 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/tx/planner/TrevisoTransactionPlanner' },
   { name: 'net/nanopay/partner/treviso/tx/TrevisoCreateExchange' },
   { name: 'net/nanopay/partner/treviso/tx/TrevisoSummaryLineItemRule' },
+
+  // crunch document
+  { name: 'net/nanopay/crunch/document/Documents' },
+  { name: 'net/nanopay/crunch/document/Document' },
 ]);

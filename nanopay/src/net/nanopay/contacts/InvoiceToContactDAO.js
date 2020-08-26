@@ -79,6 +79,7 @@ foam.CLASS({
         User user = ((Subject) x.get("subject")).getUser();
 
         boolean isPayable = invoice.getPayerId() == user.getId();
+        boolean isReceivable = invoice.getPayeeId() == user.getId();
 
         if ( invoice.getContactId() != 0 ) {
           User contact = (User) getLocalUserDAO().inX(x).find(invoice.getContactId());
@@ -93,7 +94,7 @@ foam.CLASS({
 
           if ( isPayable ) {
             invoice.setPayeeId(idToSet);
-          } else {
+          }  else if ( isReceivable ) {
             invoice.setPayerId(idToSet);
           }
         }

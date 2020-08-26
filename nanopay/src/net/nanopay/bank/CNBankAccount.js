@@ -36,8 +36,19 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
-      name: 'bankCode',
-      visibility: 'HIDDEN'
+      name: 'swiftCode',
+      label: 'SWIFT/BIC',
+      updateVisibility: 'RO',
+      section: 'accountDetails',
+      validateObj: function(swiftCode) {
+        var regex = /^[A-z0-9a-z]{8,11}$/;
+
+        if ( swiftCode === '' ) {
+          return this.SWIFT_CODE_REQUIRED;
+        } else if ( ! regex.test(swiftCode) ) {
+          return this.SWIFT_CODE_INVALID;
+        }
+      }
     },
     {
       name: 'accountNumber',
@@ -69,7 +80,15 @@ foam.CLASS({
       }
     },
     {
+      name: 'bankCode',
+      visibility: 'HIDDEN'
+    },
+    {
       name: 'iban',
+      visibility: 'HIDDEN'
+    },
+    {
+      name: 'desc',
       visibility: 'HIDDEN'
     }
   ]

@@ -265,7 +265,7 @@ foam.CLASS({
       },
       view: function(_, X) {
         return {
-          class: 'net.nanopay.sme.ui.fileDropZone.FileDropZone',
+          class: 'foam.nanos.fs.fileDropZone.FileDropZone',
           files$: X.data.supportingDocuments$,
           title: X.data.DROP_ZONE_TITLE,
           supportedFormats: {

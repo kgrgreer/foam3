@@ -61,6 +61,7 @@ foam.CLASS({
       {
         class: 'FObjectArray',
         name: 'businessDirectors',
+        documentation: 'Array of business directors.',
         label: '',
         of: 'net.nanopay.model.BusinessDirector',
         section: 'directorsInfoSection',

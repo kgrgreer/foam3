@@ -51,7 +51,7 @@ foam.CLASS({
     {
       name: 'GLOBAL_PAYMENT_CARD_DELETE',
       type: 'String',
-      value: 'paymentCard.delete.*'
+      value: 'paymentCard.remove.*'
     }
   ],
 
@@ -68,7 +68,7 @@ foam.CLASS({
           public ValidatedPaymentCardDAO(X x, DAO delegate) {
             setX(x);
             setDelegate(delegate);
-          }    
+          }
         `
         );
       }

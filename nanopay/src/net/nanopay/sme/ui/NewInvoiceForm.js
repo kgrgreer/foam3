@@ -147,7 +147,7 @@ foam.CLASS({
       padding: 8px 13px;
       background-color: #ffffff;
     }
-    ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
+    ^ .foam-nano-fs-fileDropZone-FileDropZone {
       background-color: #ffffff;
       margin-top: 16px;
       min-height: 264px;
@@ -606,19 +606,8 @@ foam.CLASS({
               .end()
             .end()
             .start({
-              class: 'net.nanopay.sme.ui.fileDropZone.FileDropZone',
-              files$: this.uploadFileData$,
-              supportedFormats: {
-                'image/jpg': 'JPG',
-                'image/jpeg': 'JPEG',
-                'image/png': 'PNG',
-                'application/vnd.openxmlformats-officedocument.wordprocessingml.document': 'DOCX',
-                'application/msword': 'DOC',
-                'application/pdf': 'PDF',
-                'application/csv': 'CSV',
-                'application/vnd.ms-excel': 'XLS',
-                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': 'XLSX'
-              }
+              class: 'foam.nanos.fs.fileDropZone.FileDropZone',
+              files$: this.uploadFileData$
             }).end()
             .start().addClass('input-wrapper')
               .start().addClass('input-label').add(this.ADD_NOTE).end()

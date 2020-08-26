@@ -61,6 +61,7 @@ foam.CLASS({
       updateVisibility: 'RO',
       createVisibility: 'RW',
       section: 'reviewAgreementDocumentsSection',
+      documentation: 'Whether the user agrees to the document.',
       view: function(_, X) {
         var self = X.data$;
         return foam.u2.CheckBox.create({

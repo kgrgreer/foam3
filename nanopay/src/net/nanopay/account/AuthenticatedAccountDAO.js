@@ -48,7 +48,7 @@ foam.CLASS({
     {
       name: 'GLOBAL_ACCOUNT_DELETE',
       type: 'String',
-      value: 'account.delete.*'
+      value: 'account.remove.*'
     },
     {
       name: 'GLOBAL_ACCOUNT_CREATE',
@@ -71,7 +71,7 @@ foam.CLASS({
           public AuthenticatedAccountDAO(X x, DAO delegate) {
             setX(x);
             setDelegate(delegate);
-          }   
+          }
         `
         );
       }

@@ -182,6 +182,7 @@ foam.CLASS({
       section: 'ownershipAmountSection',
       name: 'amountOfOwners',
       class: 'Int',
+      documentation: 'Number of owners',
       label: '',
       value: -1,
       view: {
@@ -217,6 +218,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'publiclyTraded',
       section: 'ownershipAmountSection',
+      documentation: 'Whether this is a publicly traded company.',
       label: 'This is a publicly traded company',
       postSet: function(_, n) {
         if ( n ) this.clearAllOwnerAndPercentData();
@@ -229,6 +231,7 @@ foam.CLASS({
     {
       class: 'net.nanopay.crunch.onboardingModels.OwnerProperty',
       index: 1,
+      documentation: 'First owner',
       validationPredicates: [
       {
         args: ['amountOfOwners', 'owner1$errors_'],
@@ -252,6 +255,7 @@ foam.CLASS({
     {
       class: 'net.nanopay.crunch.onboardingModels.OwnerProperty',
       index: 2,
+      documentation: 'Second owner',
       validationPredicates: [
       {
         args: ['amountOfOwners', 'owner2$errors_'],
@@ -275,6 +279,7 @@ foam.CLASS({
     {
       class: 'net.nanopay.crunch.onboardingModels.OwnerProperty',
       index: 3,
+      documentation: 'Third owner',
       validationPredicates: [
       {
         args: ['amountOfOwners', 'owner3$errors_'],
@@ -298,6 +303,7 @@ foam.CLASS({
     {
       class: 'net.nanopay.crunch.onboardingModels.OwnerProperty',
       index: 4,
+      documentation: 'Forth owner',
       validationPredicates: [
       {
         args: ['amountOfOwners', 'owner4$errors_'],

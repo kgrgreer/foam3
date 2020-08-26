@@ -33,10 +33,7 @@ import static foam.mlang.MLang.INSTANCE_OF;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.TimeZone;
+import java.util.*;
 
 import net.nanopay.bank.BankAccount;
 import foam.nanos.crunch.Capability;
@@ -57,7 +54,7 @@ import net.nanopay.fx.FXService;
 import net.nanopay.fx.FXTransaction;
 import net.nanopay.meter.clearing.ClearingTimeService;
 import net.nanopay.model.Business;
-import net.nanopay.partner.sintegra.SintegraService;
+import net.nanopay.partner.sintegra.Sintegra;
 import net.nanopay.partner.sintegra.CPFResponseData;
 import net.nanopay.partner.sintegra.CNPJResponseData;
 import net.nanopay.country.br.exchange.Boleto;
@@ -213,17 +210,14 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
   }
 
   protected String findCpfCnpj(long userId) {
-    Capability cnpjCapability = (Capability) ((DAO) getX().get("capabilityDAO")).find(EQ(Capability.NAME, "Additional Business Identification Numbers"));
-    if ( cnpjCapability != null ) {
-      UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) getX().get("userCapabilityJunctionDAO")).find(AND(
-        EQ(UserCapabilityJunction.TARGET_ID, cnpjCapability.getId()),
-        EQ(UserCapabilityJunction.SOURCE_ID, userId)
-      ));
+    UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) getX().get("userCapabilityJunctionDAO")).find(AND(
+      EQ(UserCapabilityJunction.TARGET_ID, "fb7d3ca2-62f2-4caf-a84c-860392e4676b"),
+      EQ(UserCapabilityJunction.SOURCE_ID, userId)
+    ));
 
-      if ( ucj != null ) return ucj.getData() != null ? ((BrazilBusinessInfoData)ucj.getData()).getCnpj() : "";
-    }
+    if ( ucj != null ) return ucj.getData() != null ? ((BrazilBusinessInfoData)ucj.getData()).getCnpj() : "";
 
-    return ""; // TODO Pending CNPJ Capability
+    return "";
   }
 
   public FXQuote getFXRate(String sourceCurrency, String targetCurrency, long sourceAmount,  long destinationAmount,
@@ -474,7 +468,7 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
       String formattedCnpj = cnpj.replaceAll("[^0-9]", "");
       TrevisoCredientials credentials = (TrevisoCredientials) getX().get("TrevisoCredientials");
       if ( null == credentials ) throw new RuntimeException("Invalid credientials. Treviso token required to validate CNPJ");
-      CNPJResponseData data = new SintegraService(getX()).getCNPJData(formattedCnpj, credentials.getSintegraToken());
+      CNPJResponseData data = ((Sintegra) getX().get("sintegraService")).getCNPJData(formattedCnpj, credentials.getSintegraToken());
       if ( data == null ) throw new RuntimeException("Unable to get a valid response from CNPJ validation.");
 
       if ( ! "0".equals(data.getCode()) ) throw new RuntimeException(data.getMessage());
@@ -488,13 +482,13 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
 
   public boolean validateCpf(String cpf, long userId) throws RuntimeException {
     User user = (User) ((DAO) getX().get("bareUserDAO")).find(userId);
-    if ( user == null ) throw new RuntimeException("User not found: " + userId);
+    if ( user == null ) throw new RuntimeException("User cannot be null");
 
     String birthDate = "";
     try {
-      SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+      SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
       sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-      birthDate = sdf.format(user.getBirthday());
+      birthDate = sdf.format(findUserBirthDate(userId));
     } catch(Throwable t) {
       logger_.error("Unable to parse user birth date: " + userId , t);
       throw new RuntimeException("Unable to parse user birth date.");
@@ -504,16 +498,24 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
       String formattedCpf = cpf.replaceAll("[^0-9]", "");
       TrevisoCredientials credentials = (TrevisoCredientials) getX().get("TrevisoCredientials");
       if ( null == credentials ) throw new RuntimeException("Invalid credientials. Treviso token required to validate CPF");
-      CPFResponseData data = new SintegraService(getX()).getCPFData(formattedCpf, birthDate, credentials.getSintegraToken());
+      CPFResponseData data = ((Sintegra) getX().get("sintegraService")).getCPFData(formattedCpf, birthDate, credentials.getSintegraToken());
       if ( data == null ) throw new RuntimeException("Unable to get a valid response from CPF validation.");
 
       if ( ! "0".equals(data.getCode()) ) throw new RuntimeException(data.getMessage());
 
-      return "Regular".equals(data.getSituacaoCadastral());
+      return "REGULAR".equalsIgnoreCase(data.getSituacaoCadastral());
     } catch(Throwable t) {
       logger_.error("Error validating CPF" , t);
       throw new RuntimeException(t);
     }
+  }
+
+  protected Date findUserBirthDate(long userId) {
+    UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) getX().get("userCapabilityJunctionDAO")).find(AND(
+        EQ(UserCapabilityJunction.TARGET_ID, "8bffdedc-5176-4843-97df-1b75ff6054fb"),
+        EQ(UserCapabilityJunction.SOURCE_ID, userId)
+    ));
+    return (ucj != null && ucj.getData() != null) ? ((net.nanopay.crunch.onboardingModels.UserBirthDateData)ucj.getData()).getBirthday() : null;
   }
 
 }

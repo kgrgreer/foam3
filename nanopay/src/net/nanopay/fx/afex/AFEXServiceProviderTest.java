@@ -153,7 +153,7 @@ public class AFEXServiceProviderTest
       suggestedUserTransactionInfo.setAnnualDomesticVolume("$2000");
       suggestedUserTransactionInfo.setAnnualDomesticTransactionAmount("N/A");
       business.setSuggestedUserTransactionInfo(suggestedUserTransactionInfo);
-    
+
       try {
         business = (Business) businessDAO.put(business);
       } catch (Exception e) {
@@ -209,7 +209,7 @@ public class AFEXServiceProviderTest
     address.setStreetNumber("123");
     address.setPostalCode("M1M1M1");
     address.setCity("Toronto");
-    address.setRegionId(((Region)regionDAO.find("ON")).getCode());
+    address.setRegionId(((Region)regionDAO.find("US-DE")).getCode());
     return address;
   }
 
@@ -254,7 +254,7 @@ public class AFEXServiceProviderTest
       afexBusiness.setStatus("Active");
       afexBusinessDAO.put(afexBusiness);
     }
-    
+
   }
 
   public void testGetFXRate() {

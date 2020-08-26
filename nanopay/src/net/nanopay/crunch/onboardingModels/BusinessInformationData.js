@@ -79,6 +79,7 @@ foam.CLASS({
     net.nanopay.model.Business.BUSINESS_TYPE_ID.clone().copyFrom({
       section: 'businessDetailsSection',
       label: 'Type of business',
+      documentation: 'The ID of the proprietary details of the business. This ID is found by querying the businessTypeDAO.',
       view: function(_, X) {
         return {
             class: 'foam.u2.view.ChoiceView',
@@ -104,7 +105,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.model.BusinessSector',
       name: 'businessSectorId',
-      documentation: 'Represents the specific economic grouping for the business.',
+      documentation: 'The ID of the general economic grouping for the business. This ID is found by querying the businessSectorDAO.',
       label: this.NATURE_LABEL,
       view: { class: 'net.nanopay.business.NatureOfBusiness' },
       validationPredicates: [
@@ -158,6 +159,7 @@ foam.CLASS({
       section: 'businessDetailsSection',
       class: 'Boolean',
       name: 'operatingUnderDifferentName',
+      documentation: 'Whether the business operates under a different name.',
       label: this.BUSINESS_LABEL,
       view: function(_, X) {
         return {

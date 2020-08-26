@@ -106,9 +106,10 @@ foam.CLASS({
       this.addLineItems(x, trevisoTxn, requestTxn); 
 
       FXLineItem fxLineItem = new FXLineItem();
-      fxLineItem.setRate(1/fxQuote.getRate());
+      fxLineItem.setRate(fxQuote.getRate());
       fxLineItem.setSourceCurrency(fxQuote.findSourceCurrency(x));
       fxLineItem.setDestinationCurrency(fxQuote.findTargetCurrency(x));
+      fxLineItem.setExpiry(fxQuote.getExpiryTime());
       trevisoTxn.addLineItems( new TransactionLineItem[] { fxLineItem } );
       txn.setStatus(TransactionStatus.COMPLETED);
       txn.addNext(applyFee(x, quote, trevisoTxn));

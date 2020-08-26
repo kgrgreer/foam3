@@ -36,6 +36,12 @@ foam.CLASS({
     {
       class: 'String',
       name: 'rate'
+    },
+    {
+      class: 'DateTime',
+      name: 'expiry',
+      label: 'Expires',
+      hidden: true
     }
   ],
 

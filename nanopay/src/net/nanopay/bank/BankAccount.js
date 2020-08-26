@@ -98,6 +98,8 @@ foam.CLASS({
     { name: 'CHECK_DIGIT_INVALID', message: 'Check digit invalid.' },
     { name: 'BRANCH_CODE_REQUIRED', message: 'Branch code required.' },
     { name: 'BRANCH_CODE_INVALID', message: 'Branch code invalid.' },
+    { name: 'SWIFT_CODE_REQUIRED', message: 'SWIFT/BIC code required.' },
+    { name: 'SWIFT_CODE_INVALID', message: 'SWIFT/BIC code invalid.' },
   ],
 
   properties: [

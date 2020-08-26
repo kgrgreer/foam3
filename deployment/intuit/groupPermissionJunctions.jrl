@@ -8,6 +8,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","ta
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"menu.read.api-doc-10-introduction"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"menu.read.api-doc-20-authentication"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"menu.read.api-doc-30-data"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"menu.read.api-doc-32-onboarding"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"menu.read.api-doc-35-webhooks"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"menu.read.api-doc-40-reference"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"menu.read.integration.api-sugar"})
@@ -46,6 +47,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-sess
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"user.create"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"user.update.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","targetId":"user.remove.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"user.rw.emailVerified"})
 
 // ******* DEV *************
 

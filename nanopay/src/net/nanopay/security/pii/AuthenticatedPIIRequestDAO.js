@@ -52,7 +52,7 @@ foam.CLASS({
     {
       name: 'GLOBAL_PII_REQUEST_DELETE',
       type: 'String',
-      value: 'pii_request.delete.*'
+      value: 'pii_request.remove.*'
     }
   ],
 
@@ -68,7 +68,7 @@ foam.CLASS({
           public AuthenticatedPIIRequestDAO(X x, DAO delegate) {
             setX(x);
             setDelegate(delegate);
-          }  
+          }
         `
         );
       }

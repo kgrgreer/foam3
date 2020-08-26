@@ -36,16 +36,17 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
-      name: 'bankCode',
-      label: 'Bank Code',
+      name: 'swiftCode',
+      label: 'SWIFT/BIC',
       updateVisibility: 'RO',
-      validateObj: function(bankCode) {
-        var regex = /^[A-z0-9a-z]{3}$/;
+      section: 'accountDetails',
+      validateObj: function(swiftCode) {
+        var regex = /^[A-z0-9a-z]{8,11}$/;
 
-        if ( bankCode === '' ) {
-          return this.BANK_CODE_REQUIRED;
-        } else if ( ! regex.test(bankCode) ) {
-          return this.BANK_CODE_INVALID;
+        if ( swiftCode === '' ) {
+          return this.SWIFT_CODE_REQUIRED;
+        } else if ( ! regex.test(swiftCode) ) {
+          return this.SWIFT_CODE_INVALID;
         }
       }
     },
@@ -53,6 +54,7 @@ foam.CLASS({
       name: 'accountNumber',
       label: 'Account No.',
       updateVisibility: 'RO',
+      section: 'accountDetails',
       view: {
         class: 'foam.u2.tag.Input',
         placeholder: '1234567890',
@@ -79,7 +81,15 @@ foam.CLASS({
       }
     },
     {
+      name: 'bankCode',
+      visibility: 'HIDDEN'
+    },
+    {
       name: 'iban',
+      visibility: 'HIDDEN'
+    },
+    {
+      name: 'desc',
       visibility: 'HIDDEN'
     }
   ]

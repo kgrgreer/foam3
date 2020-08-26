@@ -1075,12 +1075,13 @@ var classes = [
   'net.nanopay.tx.fee.FixedFee',
   'net.nanopay.tx.fee.InformationalFee',
   'net.nanopay.tx.fee.PercentageFee',
+  'net.nanopay.tx.fee.SpotRate',
   'net.nanopay.tx.fee.TransactionFeeRule',
   'net.nanopay.tx.fee.predicate.HasLineItemPredicate',
   'net.nanopay.tx.fee.predicate.IsDomesticTransaction',
   'net.nanopay.tx.fee.predicate.PaymentCorridorPredicate',
   'net.nanopay.tx.fee.test.TransactionFeeRuleTest',
-  'net.nanopay.country.br.tx.fee.PTaxRateFee',
+  'net.nanopay.country.br.tx.fee.PTaxRate',
 
   // Treviso
   'net.nanopay.country.br.NatureCode',
@@ -1123,7 +1124,7 @@ var classes = [
   'net.nanopay.country.br.tx.NatureCodeLineItem',
   'net.nanopay.partner.sintegra.CPFResponseData',
   'net.nanopay.partner.sintegra.CNPJResponseData',
-  'net.nanopay.partner.sintegra.SintegraServiceInterface',
+  'net.nanopay.partner.sintegra.Sintegra',
   'net.nanopay.partner.treviso.api.Address',
   'net.nanopay.partner.treviso.api.BusinessUnit',
   'net.nanopay.partner.treviso.api.ClientStatus',
@@ -1177,7 +1178,6 @@ var classes = [
   'net.nanopay.crunch.onboardingModels.BusinessHasNoSigningOfficers',
   'net.nanopay.crunch.onboardingModels.SigningOfficerQuestionOnPut',
   'net.nanopay.crunch.onboardingModels.BusinessInformationData',
-  'net.nanopay.crunch.onboardingModels.BusinessAddressData',
   'net.nanopay.crunch.onboardingModels.BusinessOwnershipData',
   'net.nanopay.crunch.onboardingModels.TransactionDetailsData',
   'net.nanopay.crunch.onboardingModels.BusinessDirectorsData',
@@ -1186,6 +1186,7 @@ var classes = [
   'net.nanopay.crunch.BusinessOwnershipToBeneficialOwnerDAO',
   'net.nanopay.crunch.onboardingModels.SigningOfficerCapabilityInterceptPredicate',
   'net.nanopay.crunch.onboardingModels.UserIsSigningOfficerOfBusiness',
+  'net.nanopay.crunch.onboardingModels.UserBirthDateData',
 
   // crunch notification
   'net.nanopay.crunch.UCJExpiryReminderCron',
@@ -1233,7 +1234,7 @@ var classes = [
   // crunch registration
   'net.nanopay.crunch.registration.UserRegistrationData',
 
-  //curunch documents
+  // crunch documents
   'net.nanopay.crunch.document.Documents',
   'net.nanopay.crunch.document.Document',
 

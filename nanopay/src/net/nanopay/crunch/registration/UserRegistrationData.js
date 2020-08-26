@@ -41,7 +41,8 @@ foam.CLASS({
         class: 'foam.u2.TextField',
         placeholder: 'Jane'
       },
-      required: true
+      required: true,
+      documentation: 'First name of the user.'
     },
     {
       class: 'String',
@@ -51,13 +52,15 @@ foam.CLASS({
         class: 'foam.u2.TextField',
         placeholder: 'Doe'
       },
-      required: true
+      required: true,
+      documentation: 'Last name of the user.'
     },
     {
       class: 'PhoneNumber',
       name: 'phone',
       section: 'userRegistrationSection',
-      required: true
+      required: true,
+      documentation: 'Phone number of the user.'
     }
   ],
   

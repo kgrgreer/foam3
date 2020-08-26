@@ -13,7 +13,8 @@ p({
             class:"net.nanopay.auth.ServiceProviderURL",
             spid:"intuit",
             urls:[
-                "intuit"
+                "intuit",
+                "integration.nanopay.net"
             ]
         }
     ],

@@ -40,8 +40,6 @@ function install {
 
     npm install
 
-    setenv
-
     setup_jce
 
     if [[ $IS_MAC -eq 1 ]]; then
@@ -99,6 +97,55 @@ function setup_jce {
       echo "ERROR :: Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy files failed to setup successfully."
     fi
   fi
+}
+
+function deploy_documents {
+    echo "INFO :: Deploying Documents"
+
+    # prepare documents
+    cd "$PROJECT_HOME"
+
+    declare -a sources=(
+        "foam2/src"
+        "nanopay/src"
+        "documents"
+    )
+
+    declare -a exclude=(
+        "foam2/src/com/google/flow"
+    )
+
+    for dir in "${sources[@]}"; do
+        find ${dir} -type f \( -name "*.flow" \) | while read path; do
+            # skip excluded directories
+            skip="no"
+            for ex in "${excludes[@]}"; do
+                if [ "${path:0:${#ex}}" = "$ex" ]; then
+                    skip="yes"
+                    break
+                fi
+            done
+            if [ "$skip" = "yes" ]; then
+                continue
+            fi
+
+            # determine document name
+            name=$(basename $path)
+            name=${name%.flow}
+            # documents named "doc" should be renamed
+            if [ "$name" = "doc" ]; then
+                simplePath=${path:(1 + ${#dir})}
+                simplePath=${simplePath%.flow}
+                name=${simplePath//\//-}
+            fi
+            # copy this document to target
+            cp -f "$path" "$DOCUMENT_OUT/$name.flow"
+            # if not jar build, copy to runtime directory
+            if [ "$RUN_JAR" -eq 0 ]; then
+                cp -f "$path" "$DOCUMENT_HOME/$name.flow"
+            fi
+        done
+    done
 }
 
 function deploy_journals {
@@ -345,6 +392,44 @@ function beginswith {
     esac
 }
 
+function setup_dirs {
+    if [ ! -d "${PROJECT_HOME}/.foam" ]; then
+        mkdir -p "${PROJECT_HOME}/.foam"
+    fi
+
+    if [ ! -d "$NANOPAY_HOME" ]; then
+        mkdir -p "$NANOPAY_HOME"
+    fi
+    if [ ! -d "${NANOPAY_HOME}/lib" ]; then
+        mkdir -p "${NANOPAY_HOME}/lib"
+    fi
+    if [ ! -d "${NANOPAY_HOME}/bin" ]; then
+        mkdir -p "${NANOPAY_HOME}/bin"
+    fi
+    if [ ! -d "${NANOPAY_HOME}/etc" ]; then
+        mkdir -p "${NANOPAY_HOME}/etc"
+    fi
+    if [ ! -d "${NANOPAY_HOME}/keys" ]; then
+        mkdir -p "${NANOPAY_HOME}/keys"
+    fi
+    if [ ! -d "${LOG_HOME}" ]; then
+        mkdir -p "${LOG_HOME}"
+    fi
+    if [ ! -d "${JOURNAL_HOME}" ]; then
+        mkdir -p "${JOURNAL_HOME}"
+    fi
+    # Remove old symlink to prevent copying into the same folder
+    if [ -L "${DOCUMENT_HOME}" ]; then
+        rm "$DOCUMENT_HOME"
+    fi
+    if [ ! -d "${DOCUMENT_HOME}" ]; then
+        mkdir -p "${DOCUMENT_HOME}"
+    fi
+    if [ ! -d "${DOCUMENT_OUT}" ]; then
+        mkdir -p "${DOCUMENT_OUT}"
+    fi
+}
+
 function setenv {
     if [ -z "$NANOPAY_HOME" ]; then
         NANOPAY_ROOT="/opt"
@@ -379,45 +464,19 @@ function setenv {
 
     export JOURNAL_HOME="$NANOPAY_HOME/journals"
 
+    export DOCUMENT_OUT="$PROJECT_HOME"/target/documents
+
     export DOCUMENT_HOME="$NANOPAY_HOME/documents"
 
     export FOAMLINK_DATA="$PROJECT_HOME/.foam/foamlinkoutput.json"
 
+    # Remove $NANOPAY_HOME here and not in setup_dirs step because setup_dirs
+    # will be called again right after clean step; however, we need to keep the
+    # keystore files generated to $NANOPAY_HOME/var/keys/ directory.
     if [ "$TEST" -eq 1 ]; then
         rm -rf "$NANOPAY_HOME"
     fi
-
-    if [ ! -d "${PROJECT_HOME}/.foam" ]; then
-        mkdir -p "${PROJECT_HOME}/.foam"
-    fi
-
-    if [ ! -d "$NANOPAY_HOME" ]; then
-        mkdir -p "$NANOPAY_HOME"
-    fi
-    if [ ! -d "${NANOPAY_HOME}/lib" ]; then
-        mkdir -p "${NANOPAY_HOME}/lib"
-    fi
-    if [ ! -d "${NANOPAY_HOME}/bin" ]; then
-        mkdir -p "${NANOPAY_HOME}/bin"
-    fi
-    if [ ! -d "${NANOPAY_HOME}/etc" ]; then
-        mkdir -p "${NANOPAY_HOME}/etc"
-    fi
-    if [ ! -d "${NANOPAY_HOME}/keys" ]; then
-        mkdir -p "${NANOPAY_HOME}/keys"
-    fi
-    if [ ! -d "${LOG_HOME}" ]; then
-        mkdir -p "${LOG_HOME}"
-    fi
-    if [ ! -d "${JOURNAL_HOME}" ]; then
-        mkdir -p "${JOURNAL_HOME}"
-    fi
-    if [ ! -d "${DOCUMENT_HOME}" ]; then
-        ln -s "$(pwd)/documents" $DOCUMENT_HOME
-    elif [ -d "${DOCUMENT_HOME}" ]; then
-        rm -rf "${DOCUMENT_HOME}"
-        ln -s "$(pwd)/documents" $DOCUMENT_HOME
-    fi
+    setup_dirs
 
     if [[ ! -w $NANOPAY_HOME && $TEST -ne 1 ]]; then
         echo "ERROR :: $NANOPAY_HOME is not writable! Please run 'sudo chown -R $USER /opt' first."
@@ -713,6 +772,9 @@ if [ ${CLEAN_BUILD} -eq 1 ]; then
     GRADLE_FLAGS="${GRADLE_FLAGS} --rerun-tasks"
 fi
 
+############################
+# Build steps
+############################
 setenv
 
 if [[ $INSTALL -eq 1 ]]; then
@@ -726,7 +788,6 @@ if [[ $VULNERABILITY_CHECK -eq 1 ]]; then
     quit 0
 fi
 
-clean
 if [ "$STATUS" -eq 1 ]; then
     status_nanos
     quit 0
@@ -742,6 +803,9 @@ if [ "$STOP_ONLY" -eq 1 ]; then
     quit 0
 fi
 
+clean
+setup_dirs
+deploy_documents
 deploy_journals
 
 if [ "${RESTART_ONLY}" -eq 0 ] && [ "${RUNTIME_COMPILE}" -eq 0 ]; then

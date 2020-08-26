@@ -38,3 +38,13 @@ p({
     return new net.nanopay.partner.treviso.TrevisoService(x, x.get("fepWebService"), x.get("exchange"));
   """
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"sintegraService",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.partner.sintegra.SintegraServiceMock(x);
+  """
+})

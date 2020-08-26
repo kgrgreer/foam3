@@ -327,7 +327,7 @@ css: `
       padding: 24px;
     }
 
-    ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
+    ^ .foam-nanos-fs-fileDropZone-FileDropZone {
       background-color: white;
       margin-right: 25px;
       min-height: 264px;

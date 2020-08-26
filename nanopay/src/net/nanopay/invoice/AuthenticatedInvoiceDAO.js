@@ -33,9 +33,9 @@ foam.CLASS({
     'net.nanopay.contacts.Contact',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
-    
+
     'java.util.List',
-    
+
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.AND'
   ],
@@ -49,7 +49,7 @@ foam.CLASS({
     {
       name: 'GLOBAL_INVOICE_DELETE',
       type: 'String',
-      value: 'invoice.delete.*'
+      value: 'invoice.remove.*'
     }
   ],
 
@@ -82,13 +82,13 @@ foam.CLASS({
 
           private class AuthenticatedInvoiceSink extends foam.dao.ProxySink {
             private User user_;
-        
+
             public AuthenticatedInvoiceSink(X x, Sink delegate) {
               super(x, delegate);
               user_ = ((Subject) x.get("subject")).getUser();
               if ( user_ == null ) throw new AuthenticationException();
             }
-        
+
             @Override
             public void put(Object obj, foam.core.Detachable sub) {
               Invoice invoice = (Invoice) obj;
@@ -98,7 +98,7 @@ foam.CLASS({
                 getDelegate().put(obj, sub);
               }
             }
-          } 
+          }
         `
         );
       }
@@ -176,7 +176,7 @@ foam.CLASS({
         if ( getAuth().check(x, GLOBAL_INVOICE_READ) ) {
           return super.select_(x, sink, skip, limit, order, predicate);
         }
-    
+
         Sink authenticatedInvoiceSink = new AuthenticatedInvoiceSink(x, sink);
         getDelegate().select_(x, authenticatedInvoiceSink, skip, limit, order, predicate);
         return sink;

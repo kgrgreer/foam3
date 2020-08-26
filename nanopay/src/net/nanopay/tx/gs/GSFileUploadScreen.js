@@ -25,8 +25,8 @@ foam.CLASS({
   requires: [
     'foam.dao.AbstractDAO',
     'foam.log.LogLevel',
+    'foam.nanos.fs.fileDropZone.FileDropZone',
     'net.nanopay.script.CsvUploadScript',
-    'net.nanopay.sme.ui.fileDropZone.FileDropZone',
     'net.nanopay.tx.gs.ProgressBarData',
   ],
 
@@ -70,7 +70,7 @@ foam.CLASS({
     margin-bottom: 24px;
   }
 
-  ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
+  ^ .foam-nanos-fs-fileDropZone-FileDropZone {
     margin-bottom: 24px;
   }
 

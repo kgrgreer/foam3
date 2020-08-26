@@ -17,17 +17,17 @@
 
 foam.CLASS({
   package: 'net.nanopay.country.br.tx.fee',
-  name: 'PTaxRateFee',
+  name: 'PTaxRate',
   extends: 'net.nanopay.tx.fee.PercentageFee',
 
-  documentation: 'PTaxRate fee from the Central Bank of Brazil.',
+  documentation: 'PTaxRate from the Central Bank of Brazil for use as fee.',
 
   javaImports: [
     'net.nanopay.country.br.OpenDataService'
   ],
 
   messages: [
-    { name: 'FORMULA_PREFIX', message: 'PTaxRate fee' }
+    { name: 'FORMULA_PREFIX', message: 'PTaxRate' }
   ],
 
   properties: [
@@ -43,6 +43,7 @@ foam.CLASS({
     },
     {
       name: 'formula',
+      transient: true,
       visibility: 'HIDDEN',
       tableCellFormatter: function(_, obj) {
         this.add(obj.FORMULA_PREFIX);

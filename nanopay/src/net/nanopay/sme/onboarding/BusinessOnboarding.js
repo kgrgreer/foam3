@@ -1586,7 +1586,7 @@ foam.CLASS({
         Subject subject = (Subject) x.get("subject");
         User user = subject.getRealUser();
         if ( user.getId() == getUserId() ) return;
-        String permission = "businessOnboarding.delete." + getId();
+        String permission = "businessOnboarding.remove." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
         throw new foam.nanos.auth.AuthorizationException();
