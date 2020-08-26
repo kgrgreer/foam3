@@ -64,20 +64,18 @@ foam.CLASS({
         DAO themeDomainDAO = (DAO) x.get("themeDomainDAO");
         DAO ruleDAO = (DAO) x.get("localRuleDAO");
 
-        // Add theme
-        Theme theme = new Theme();
-        theme.setName(mspInfo.getSpid());
-        theme.setAppName(mspInfo.getAppName());
-        theme.setDescription(mspInfo.getDescription());
-        theme.setLogoRedirect("users");
-        theme.setDefaultMenu("users");
-        theme = (Theme) themeDAO.put(theme);
+        // Add theme for the client side - not for back-office
+        Theme clientTheme = new Theme();
+        clientTheme.setName(mspInfo.getSpid());
+        clientTheme.setAppName(mspInfo.getAppName());
+        clientTheme.setDescription(mspInfo.getDescription());
+        clientTheme = (Theme) themeDAO.put(clientTheme);
 
         // Add themeDomain
         for (String domain : mspInfo.getDomain()) {
           ThemeDomain themeDomain = new ThemeDomain();
           themeDomain.setId(domain);
-          themeDomain.setTheme(theme.getId());
+          themeDomain.setTheme(clientTheme.getId());
           themeDomainDAO.put(themeDomain);
         }
 
@@ -86,7 +84,6 @@ foam.CLASS({
         adminGroup.setId(mspInfo.getSpid() + "-admin");
         adminGroup.setParent("msp-admin");
         adminGroup.setDefaultMenu("users");
-        adminGroup.setTheme(theme.getId());
         adminGroup.setDescription(mspInfo.getSpid() +" admin");
         groupDAO.put(adminGroup);
 
