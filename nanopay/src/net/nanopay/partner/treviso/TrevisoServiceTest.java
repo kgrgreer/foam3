@@ -72,7 +72,7 @@ public class TrevisoServiceTest
       user.setFirstName("Treviso");
       user.setLastName("Treviso");
       Address address = new Address.Builder(x).setCountryId("CA")
-        .setRegionId("ON").setCity("Toronto").build();
+        .setRegionId("CA-ON").setCity("Toronto").build();
       user.setAddress(address);
       user.setEmail("trevisouser@nanopay.net");
     }

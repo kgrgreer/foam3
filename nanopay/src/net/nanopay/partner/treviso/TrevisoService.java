@@ -210,17 +210,14 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
   }
 
   protected String findCpfCnpj(long userId) {
-    Capability cnpjCapability = (Capability) ((DAO) getX().get("capabilityDAO")).find(EQ(Capability.NAME, "Additional Business Identification Numbers"));
-    if ( cnpjCapability != null ) {
-      UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) getX().get("userCapabilityJunctionDAO")).find(AND(
-        EQ(UserCapabilityJunction.TARGET_ID, cnpjCapability.getId()),
-        EQ(UserCapabilityJunction.SOURCE_ID, userId)
-      ));
+    UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) getX().get("userCapabilityJunctionDAO")).find(AND(
+      EQ(UserCapabilityJunction.TARGET_ID, "fb7d3ca2-62f2-4caf-a84c-860392e4676b"),
+      EQ(UserCapabilityJunction.SOURCE_ID, userId)
+    ));
 
-      if ( ucj != null ) return ucj.getData() != null ? ((BrazilBusinessInfoData)ucj.getData()).getCnpj() : "";
-    }
+    if ( ucj != null ) return ucj.getData() != null ? ((BrazilBusinessInfoData)ucj.getData()).getCnpj() : "";
 
-    return ""; // TODO Pending CNPJ Capability
+    return "";
   }
 
   public FXQuote getFXRate(String sourceCurrency, String targetCurrency, long sourceAmount,  long destinationAmount,
