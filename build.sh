@@ -762,6 +762,7 @@ if [[ $RUN_JAR == 1 && $JOURNAL_CONFIG != development && $JOURNAL_CONFIG != stag
     warning "${JOURNAL_CONFIG} journal config unsupported for jar deployment";
 fi
 
+clean
 setenv
 
 if [[ $INSTALL -eq 1 ]]; then
@@ -775,7 +776,6 @@ if [[ $VULNERABILITY_CHECK -eq 1 ]]; then
     quit 0
 fi
 
-clean
 if [ "$STATUS" -eq 1 ]; then
     status_nanos
     quit 0
