@@ -40,8 +40,6 @@ function install {
 
     npm install
 
-    setenv
-
     setup_jce
 
     if [[ $IS_MAC -eq 1 ]]; then
@@ -391,6 +389,44 @@ function beginswith {
     esac
 }
 
+function setup_dirs {
+    if [ ! -d "${PROJECT_HOME}/.foam" ]; then
+        mkdir -p "${PROJECT_HOME}/.foam"
+    fi
+
+    if [ ! -d "$NANOPAY_HOME" ]; then
+        mkdir -p "$NANOPAY_HOME"
+    fi
+    if [ ! -d "${NANOPAY_HOME}/lib" ]; then
+        mkdir -p "${NANOPAY_HOME}/lib"
+    fi
+    if [ ! -d "${NANOPAY_HOME}/bin" ]; then
+        mkdir -p "${NANOPAY_HOME}/bin"
+    fi
+    if [ ! -d "${NANOPAY_HOME}/etc" ]; then
+        mkdir -p "${NANOPAY_HOME}/etc"
+    fi
+    if [ ! -d "${NANOPAY_HOME}/keys" ]; then
+        mkdir -p "${NANOPAY_HOME}/keys"
+    fi
+    if [ ! -d "${LOG_HOME}" ]; then
+        mkdir -p "${LOG_HOME}"
+    fi
+    if [ ! -d "${JOURNAL_HOME}" ]; then
+        mkdir -p "${JOURNAL_HOME}"
+    fi
+    # Remove old symlink to prevent copying into the same folder
+    if [ -L "${DOCUMENT_HOME}" ]; then
+        rm "$DOCUMENT_HOME"
+    fi
+    if [ ! -d "${DOCUMENT_HOME}" ]; then
+        mkdir -p "${DOCUMENT_HOME}"
+    fi
+    if [ ! -d "${DOCUMENT_OUT}" ]; then
+        mkdir -p "${DOCUMENT_OUT}"
+    fi
+}
+
 function setenv {
     if [ -z "$NANOPAY_HOME" ]; then
         NANOPAY_ROOT="/opt"
@@ -431,45 +467,13 @@ function setenv {
 
     export FOAMLINK_DATA="$PROJECT_HOME/.foam/foamlinkoutput.json"
 
+    # Remove $NANOPAY_HOME here and not in setup_dirs step because setup_dirs
+    # will be called again right after clean step; however, we need to keep the
+    # keystore files generated to $NANOPAY_HOME/var/keys/ directory.
     if [ "$TEST" -eq 1 ]; then
         rm -rf "$NANOPAY_HOME"
     fi
-
-    if [ ! -d "${PROJECT_HOME}/.foam" ]; then
-        mkdir -p "${PROJECT_HOME}/.foam"
-    fi
-
-    if [ ! -d "$NANOPAY_HOME" ]; then
-        mkdir -p "$NANOPAY_HOME"
-    fi
-    if [ ! -d "${NANOPAY_HOME}/lib" ]; then
-        mkdir -p "${NANOPAY_HOME}/lib"
-    fi
-    if [ ! -d "${NANOPAY_HOME}/bin" ]; then
-        mkdir -p "${NANOPAY_HOME}/bin"
-    fi
-    if [ ! -d "${NANOPAY_HOME}/etc" ]; then
-        mkdir -p "${NANOPAY_HOME}/etc"
-    fi
-    if [ ! -d "${NANOPAY_HOME}/keys" ]; then
-        mkdir -p "${NANOPAY_HOME}/keys"
-    fi
-    if [ ! -d "${LOG_HOME}" ]; then
-        mkdir -p "${LOG_HOME}"
-    fi
-    if [ ! -d "${JOURNAL_HOME}" ]; then
-        mkdir -p "${JOURNAL_HOME}"
-    fi
-    # Remove old symlink to prevent copying into the same folder
-    if [ -L "${DOCUMENT_HOME}" ]; then
-        rm "$DOCUMENT_HOME"
-    fi
-    if [ ! -d "${DOCUMENT_HOME}" ]; then
-        mkdir -p "${DOCUMENT_HOME}"
-    fi
-    if [ ! -d "${DOCUMENT_OUT}" ]; then
-        mkdir -p "${DOCUMENT_OUT}"
-    fi
+    setup_dirs
 
     if [[ ! -w $NANOPAY_HOME && $TEST -ne 1 ]]; then
         echo "ERROR :: $NANOPAY_HOME is not writable! Please run 'sudo chown -R $USER /opt' first."
@@ -758,11 +762,10 @@ if [ ${CLEAN_BUILD} -eq 1 ]; then
     GRADLE_FLAGS="${GRADLE_FLAGS} --rerun-tasks"
 fi
 
-if [[ $RUN_JAR == 1 && $JOURNAL_CONFIG != development && $JOURNAL_CONFIG != staging && $JOURNAL_CONFIG != production ]]; then
-    warning "${JOURNAL_CONFIG} journal config unsupported for jar deployment";
-fi
 
-clean
+############################
+# Build steps
+############################
 setenv
 
 if [[ $INSTALL -eq 1 ]]; then
@@ -791,6 +794,8 @@ if [ "$STOP_ONLY" -eq 1 ]; then
     quit 0
 fi
 
+clean
+setup_dirs
 deploy_documents
 deploy_journals
 
