@@ -308,9 +308,6 @@ foam.CLASS({
       visibility: function() {
         return this.countries <= 0 ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
-      factory: function() {
-        return net.nanopay.bank.BankAccount.create({}, this);
-      },
       view: function(_, X) {
         let e = foam.mlang.Expressions.create();
         var pred = e.AND(
@@ -320,7 +317,7 @@ foam.CLASS({
         return foam.u2.view.FObjectView.create({
           of: net.nanopay.bank.BankAccount,
           predicate: pred,
-          persistantData: { isDefault: true, forContact: true }
+          copyOldData: function(o) { return { isDefault: o.isDefault, forContact: o.forContact }; }
         }, X);
       }
     },
