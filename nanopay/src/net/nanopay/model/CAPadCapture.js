@@ -77,13 +77,12 @@ foam.CLASS({
       documentation: 'Account associated with PAD capture.',
       visibility: 'DISABLED',
       gridColumns: 6,
-      maxLength: 12,
       tableCellFormatter: function(str) {
         this.start()
           .add('***' + str.substring(str.length - 4, str.length));
       },
       validateObj: function(accountNumber) {
-        var accNumberRegex = /^[0-9]{1,30}$/;
+        var accNumberRegex = /^[0-9]{5,12}$/;
 
         if ( ! accNumberRegex.test(accountNumber) ) {
           return this.INVALID_ACCOUNT_NUMBER;
@@ -101,7 +100,7 @@ foam.CLASS({
           '554af38a-8225-87c8-dfdf-eeb15f71215e-13', // Certify Bank Account Ownership Agreement
           '554af38a-8225-87c8-dfdf-eeb15f71215e-20', // CA Bank Account Auth Agreement
           '554af38a-8225-87c8-dfdf-eeb15f71215e-21', // Recourse/Reimbursement Agreement
-          '554af38a-8225-87c8-dfdf-eeb15f71215e-22' // Cancellation Agreement
+          '554af38a-8225-87c8-dfdf-eeb15f71215e-22'  // CA Cancellation Agreement
         ]
       }
     }

@@ -17,7 +17,7 @@
 
 foam.CLASS({
   package: 'net.nanopay.crunch.acceptanceDocuments.capabilities',
-  name: 'CancellationAgreement',
+  name: 'USCancellationAgreement',
   extends: 'net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability',
   documentation: 'Verifies user understanding of cancellation under pad agreement terms',
 
@@ -25,11 +25,11 @@ foam.CLASS({
     { name: 'ACKNOWLEDGE_STATEMENT', message: 'Must acknowledge the statement above.' },
     {
       name: 'CHECKBOX_MSG',
-      message: 'This Authorization may be cancelled at any time upon notice being provided by me, ' +
-        'either in writing or orally, with proper authorization to verify my identity. I acknowledge ' +
-        'that I can obtain a sample cancellation form or further information on my right to cancel ' +
-        'this Agreement from nanopay Corporation (for Canadian domestic transactions) or AFEX ' +
-        '(for international transactions) or by visiting '
+      message: 'This authority is to remain in effect until AFEX has received written ' +
+        'notification from me/us of its change or termination. The notification must be ' +
+        'received at least 10 business days before the next debit Is scheduled at the ' +
+        'address provided below. AFEX shall advise me/us of any dishonored fees, and ' +
+        'I/we agree to pay them.'
     }
   ],
 
@@ -41,21 +41,13 @@ foam.CLASS({
       }
     },
     {
-      name: 'title',
-      value: 'www.payments.ca',
-    },
-    {
-      name: 'link',
-      value: 'https://www.payments.ca'
-    },
-    {
       name: 'agreement',
       validationPredicates: [
         {
           args: ['agreement'],
           predicateFactory: function(e) {
             return e.EQ(net.nanopay.crunch.acceptanceDocuments.capabilities
-              .CancellationAgreement.AGREEMENT, true);
+              .USCancellationAgreement.AGREEMENT, true);
           },
           errorMessage: 'ACKNOWLEDGE_STATEMENT'
         }

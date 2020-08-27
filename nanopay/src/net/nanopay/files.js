@@ -1610,7 +1610,9 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/AFXWashingtonDisclosure' },
   { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/CABankAccountAuthAgreement' },
   { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/RecourseAgreement' },
-  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/CancellationAgreement' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/CACancellationAgreement' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/USBankAccountAuthAgreement' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/USCancellationAgreement' },
   { name: 'net/nanopay/crunch/acceptanceDocuments/BaseAcceptanceDocumentCapability' },
 
   // crunch document

@@ -153,7 +153,6 @@ foam.CLASS({
       view: {
         class: 'foam.u2.tag.Input',
         placeholder: '12345',
-        maxLength: 5,
         onKey: true
       },
       preSet: function(o, n) {
@@ -219,7 +218,6 @@ foam.CLASS({
       view: {
         class: 'foam.u2.tag.Input',
         placeholder: '1234567',
-        maxLength: 12,
         onKey: true
       },
       postSet: function(o, n) {

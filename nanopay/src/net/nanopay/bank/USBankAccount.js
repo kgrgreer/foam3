@@ -29,8 +29,11 @@ foam.CLASS({
     'subject'
   ],
 
+  requires: [
+    'foam.log.LogLevel'
+  ],
+
   javaImports: [
-    'foam.log.LogLevel',
     'foam.util.SafetyUtil',
     'net.nanopay.model.Branch',
     'java.util.regex.Pattern'
@@ -149,7 +152,6 @@ foam.CLASS({
       view: {
         class: 'foam.u2.tag.Input',
         placeholder: '123456789',
-        maxLength: 9,
         onKey: true
       },
       gridColumns: 6,
@@ -162,11 +164,10 @@ foam.CLASS({
         this.padCapture.branchId = n;
       },
       validateObj: function(branchId) {
-        var accNumberRegex = /^[0-9]{9}$/;
+        if ( branchId === '' ) return this.ROUTING_NUMBER_REQUIRED;
 
-        if ( branchId === '' ) {
-          return this.ROUTING_NUMBER_REQUIRED;
-        } else if ( ! accNumberRegex.test(branchId) ) {
+        var accNumberRegex = /^[0-9]{9}$/;
+        if ( ! accNumberRegex.test(branchId) ) {
           return this.ROUTING_NUMBER_INVALID;
         }
       }
@@ -179,11 +180,10 @@ foam.CLASS({
         this.padCapture.accountNumber = n;
       },
       validateObj: function(accountNumber) {
-        var accNumberRegex = /^[0-9]{6,17}$/;
+        if ( accountNumber === '' ) return this.ACCOUNT_NUMBER_REQUIRED;
 
-        if ( accountNumber === '' ) {
-          return this.ACCOUNT_NUMBER_REQUIRED;
-        } else if ( ! accNumberRegex.test(accountNumber) ) {
+        var accNumberRegex = /^[0-9]{6,17}$/;
+        if ( ! accNumberRegex.test(accountNumber) ) {
           return this.ACCOUNT_NUMBER_INVALID;
         }
       },

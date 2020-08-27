@@ -193,10 +193,29 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-22",
-  "name":"CancellationAgreement",
-  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.CancellationAgreement",
+  "name":"CACancellationAgreement",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.CACancellationAgreement",
   "version":"0",
   "enabled":true,
   "visible":false
 })
 
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-23",
+  "name":"USBankAccountAuthAgreement",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.USBankAccountAuthAgreement",
+  "version":"0",
+  "enabled":true,
+  "visible":false
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-24",
+  "name":"USCancellationAgreement",
+  "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.USCancellationAgreement",
+  "version":"0",
+  "enabled":true,
+  "visible":false
+})

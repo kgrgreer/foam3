@@ -120,7 +120,7 @@ foam.CLASS({
       },
       tableCellFormatter: function(str) {
         if ( ! str ) return;
-        var displayAccountNumber = '***' + str.substring(str.length - 4, str.length)
+        var displayAccountNumber = '***' + str.substring(str.length - 4, str.length);
         this.start()
           .add(displayAccountNumber);
         this.tooltip = displayAccountNumber;

@@ -85,7 +85,6 @@ foam.CLASS({
       documentation: 'Account associated with PAD capture.',
       visibility: 'DISABLED',
       gridColumns: 6,
-      maxLength: 12,
       tableCellFormatter: function(str) {
         this.start()
           .add('***' + str.substring(str.length - 4, str.length));
