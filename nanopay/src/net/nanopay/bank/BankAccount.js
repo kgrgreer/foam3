@@ -383,6 +383,10 @@ foam.CLASS({
       label: '',
       section: 'accountDetails',
       view: { class: 'net.nanopay.ui.DataSecurityBanner' }
+    },
+    {
+      class: 'String',
+      name: 'verifiedBy'
     }
   ],
   methods: [
@@ -493,11 +497,6 @@ foam.CLASS({
           throw new IllegalStateException("Account name must be less than or equal to 70 characters.");
         }
       `
-    },
-    {
-      class: 'String',
-      name: 'verifiedBy',
-      final: true
     }
   ],
 
