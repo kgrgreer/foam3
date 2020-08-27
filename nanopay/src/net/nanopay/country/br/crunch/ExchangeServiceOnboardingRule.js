@@ -16,7 +16,7 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.partner.treviso.crunch',
+  package: 'net.nanopay.country.br.crunch',
   name: 'ExchangeServiceOnboardingRule',
   implements: ['foam.nanos.ruler.RuleAction'],
 
@@ -27,7 +27,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.nanos.auth.User',
     'foam.nanos.crunch.UserCapabilityJunction',
-    'net.nanopay.country.br.ExchangeService',
+    'net.nanopay.country.br.exchange.ExchangeService',
     'net.nanopay.model.Business'
   ],
 

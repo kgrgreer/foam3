@@ -17,7 +17,8 @@
 
 foam.CLASS({
   package: 'net.nanopay.country.br',
-  name: 'NatureCodePaymentProviderJunction',
+  name: 'NatureCodePaymentProviderJunctionRefinement',
+  refines: 'net.nanopay.country.br.NatureCodePaymentProviderJunction',
 
   properties: [
     {

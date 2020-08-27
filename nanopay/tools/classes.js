@@ -1086,6 +1086,7 @@ var classes = [
   'net.nanopay.country.br.NatureCode',
   'net.nanopay.country.br.BrazilBusinessInfoData',
   'net.nanopay.country.br.CPF',
+  'net.nanopay.country.br.crunch.ExchangeServiceOnboardingRule',
   'net.nanopay.country.br.exchange.ArrayOfBoleto',
   'net.nanopay.country.br.exchange.ArrayOfNatureza',
   'net.nanopay.country.br.exchange.ArrayOfParcelas',
