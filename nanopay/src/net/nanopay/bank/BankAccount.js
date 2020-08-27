@@ -151,7 +151,7 @@ foam.CLASS({
         .end();
       },
       javaFactory: `
-        return "***" + getAccountNumber().substring(getAccountNumber().length() - 4);
+        return "***" + getAccountNumber().substring(Math.max(getAccountNumber().length() - 4, 0));
       `
     },
     {
