@@ -13,6 +13,18 @@ p({
   "loginImage": "images/sign_in_illustration.png",
   "logo":"images/gd/gd-logo-72x72.png",
   "largeLogo":"images/gd/gd-logo-72x72.png",
+  "headConfig": {
+    "customFavIcon" : [
+      "<link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/favicon/apple-touch-icon.png\">",
+      "<link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/favicon/ablii.png\">",
+      "<link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"/favicon/ablii.png\">",
+      "<link rel=\"manifest\" href=\"/favicon/manifest.json\">",
+      "<link rel=\"mask-icon\" href=\"/favicon/safari-pinned-tab.svg\" color=\"#5bbad5\">",
+      "<link rel=\"shortcut icon\" href=\"/favicon/ablii.png\">",
+      "<meta name=\"msapplication-config\" content=\"/favicon/browserconfig.xml\">",
+      "<meta name=\"theme-color\" content=\"#ffffff\">"
+    ]
+  },
   "logoBackgroundColour":"transparent",
   "topNavigation":"net.nanopay.ui.TopSideNavigation",
   "footerView":"net.nanopay.sme.ui.FooterView",

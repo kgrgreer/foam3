@@ -56,13 +56,12 @@ p({
     "port": 8080,
     "forwardedForProxyWhitelist": [],
     "welcomeFiles": ["welcome"],
+    "hostDomains": ["ablii", "localhost", "merchantpos"],
     "servletMappings": [{
       "class": "foam.nanos.servlet.ServletMapping",
       "servletObject": {
         "class": "foam.nanos.servlet.VirtualHostRoutingServlet",
-        "hostMapping": {
-          "ablii": "/nanopay/src/net/nanopay/sme/index.html",
-          "localhost": "/nanopay/src/net/nanopay/index.html",
+        "customHostMapping": {
           "merchantpos": "/nanopay/src/net/nanopay/merchant/index.html"
         },
         "defaultHost": "localhost"
