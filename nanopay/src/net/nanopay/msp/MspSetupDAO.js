@@ -65,7 +65,8 @@ foam.CLASS({
         DAO ruleDAO = (DAO) x.get("localRuleDAO");
 
         // Add theme for the client side - not for back-office
-        Theme clientTheme = new Theme();
+        Theme clientTheme = (Theme) themeDAO.find(mspInfo.getTheme());
+        clientTheme = clientTheme == null ? new Theme() : (Theme) clientTheme.fclone();
         clientTheme.setName(mspInfo.getSpid());
         clientTheme.setAppName(mspInfo.getAppName());
         clientTheme.setDescription(mspInfo.getDescription());
