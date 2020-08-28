@@ -91,6 +91,7 @@ properties: [
             predicateFactory: function(e) {
               return e.OR(
                 e.HAS(net.nanopay.crunch.onboardingModels.BusinessDirectorsData.BUSINESS_DIRECTORS),
+                e.EQ(net.nanopay.crunch.onboardingModels.BusinessDirectorsData.BUSINESS_TYPE_ID, 0),
                 e.EQ(net.nanopay.crunch.onboardingModels.BusinessDirectorsData.BUSINESS_TYPE_ID, 1),
                 e.EQ(net.nanopay.crunch.onboardingModels.BusinessDirectorsData.BUSINESS_TYPE_ID, 2),
                 e.EQ(net.nanopay.crunch.onboardingModels.BusinessDirectorsData.BUSINESS_TYPE_ID, 4),
