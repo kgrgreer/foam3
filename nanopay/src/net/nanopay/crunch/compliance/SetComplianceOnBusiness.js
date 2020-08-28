@@ -31,7 +31,8 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.crunch.UserCapabilityJunction',
     'java.lang.UnsupportedOperationException',
-    'net.nanopay.admin.model.ComplianceStatus'
+    'net.nanopay.admin.model.ComplianceStatus',
+    'net.nanopay.model.Business'
   ],
 
   methods: [
@@ -45,9 +46,10 @@ foam.CLASS({
 
             User user = (User) userDAO.find(((UserCapabilityJunction) obj).getSourceId());
             try {
-              user = (User) user.fclone();
-              user.setCompliance(ComplianceStatus.PASSED);
-              userDAO.put(user);
+              Business business = (Business) user.fclone();
+              business.setCompliance(ComplianceStatus.PASSED);
+              business.setOnboarded(true);
+              userDAO.put(business);
             } catch(Exception e) {
               throw new UnsupportedOperationException("Business : " + user.getId() + " compliance not set - but UCJ granted" + "Error: " + e);
             }
