@@ -302,6 +302,12 @@ foam.CLASS({
         String denomination = getDenomination();
         ExchangeRateService ert = (ExchangeRateService)session.getContext().get("exchangeRateService");
         if ( ert != null ) {
+          String exchangeFormat = null;
+          try {
+            exchangeFormat = ert.exchangeFormat(denomination, homeDenomination, getBalance());
+          } catch(Throwable t) {}
+          if ( exchangeFormat == null )
+            return "";
           return ert.exchangeFormat(denomination, homeDenomination, getBalance()) + " " + homeDenomination;
         }
         return "";
