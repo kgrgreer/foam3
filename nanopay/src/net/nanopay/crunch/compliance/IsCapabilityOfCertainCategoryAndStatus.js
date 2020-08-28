@@ -47,14 +47,14 @@ foam.CLASS({
       name: 'category',
       class: 'String'
     },
-    { 
+    {
       name: 'isRecurring',
       class: 'Boolean',
       value: true
     },
     {
       name: 'statusChanged',
-      class: 'Boolean', 
+      class: 'Boolean',
       value: true,
       documentation: `
         Denote if a status change is required.

@@ -1584,6 +1584,8 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/compliance/SecurefactLEVValidator' },
   { name: 'net/nanopay/crunch/compliance/UserComplianceApproval' },
   { name: 'net/nanopay/crunch/compliance/SetFulfilledComplianceApprovalRequest' },
+  { name: 'net/nanopay/crunch/compliance/SetComplianceOnUser' },
+  { name: 'net/nanopay/crunch/compliance/SetComplianceOnBusiness' },
 
   // crunch afex
   { name: 'net/nanopay/partner/afex/crunch/BusinessHasVerifiedBankAccount' },
