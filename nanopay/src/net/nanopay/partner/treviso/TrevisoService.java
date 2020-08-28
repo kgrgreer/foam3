@@ -480,17 +480,21 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
     }
   }
 
-  public boolean validateCpf(String cpf, long userId) throws RuntimeException {
+  public boolean validateUserCpf(String cpf, long userId) throws RuntimeException {
     User user = (User) ((DAO) getX().get("bareUserDAO")).find(userId);
     if ( user == null ) throw new RuntimeException("User cannot be null");
 
+    return validateCpf(cpf, findUserBirthDate(userId));
+  }
+
+  public boolean validateCpf(String cpf, Date dateOfBirth) throws RuntimeException {
     String birthDate = "";
     try {
       SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
       sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-      birthDate = sdf.format(findUserBirthDate(userId));
+      birthDate = sdf.format(dateOfBirth);
     } catch(Throwable t) {
-      logger_.error("Unable to parse user birth date: " + userId , t);
+      logger_.error("Unable to parse user birth date: " , t);
       throw new RuntimeException("Unable to parse user birth date.");
     }
 

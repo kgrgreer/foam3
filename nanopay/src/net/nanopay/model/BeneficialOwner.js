@@ -28,7 +28,9 @@ foam.CLASS({
 
   implements: [
     'foam.nanos.auth.Authorizable',
-    'foam.nanos.auth.HumanNameTrait'
+    'foam.nanos.auth.HumanNameTrait',
+    'foam.mlang.Expressions',
+    'foam.core.Validatable'
   ],
 
   requires: [
@@ -40,7 +42,8 @@ foam.CLASS({
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
-    'foam.util.SafetyUtil'
+    'foam.util.SafetyUtil',
+    'net.nanopay.country.br.FederalRevenueService',
   ],
 
   imports: [
@@ -58,6 +61,10 @@ foam.CLASS({
     {
       name: 'requiredSection'
     }
+  ],
+
+  messages: [
+    { name: 'INVALID_CPF', messages: 'Invalid CPF.' }
   ],
 
   properties: [
@@ -311,18 +318,6 @@ foam.CLASS({
       ]
     },
     {
-      class: 'String',
-      name: 'cpnj',
-      label: 'CPNJ',
-      section: 'requiredSection',
-      documentation: `CPNJ number of beneficial owner business if part of another business.`,
-      visibility: function (type) {
-        return type == 'BR' ?
-        foam.u2.DisplayMode.RW :
-        foam.u2.DisplayMode.HIDDEN;
-      }
-    },
-    {
       class: 'Boolean',
       name: 'PEPHIORelated',
       documentation: `Determines whether the user is a domestic or foreign _Politically
@@ -440,6 +435,19 @@ foam.CLASS({
       javaCode: `
         if ( SafetyUtil.isEmpty(getLastName()) ) return getFirstName();
         return getFirstName() + " " + getLastName();
+      `
+    },
+    {
+      name: 'validate',
+      javaCode: `
+        if ( "BR".equals(getType()) ) {
+          try {
+            if ( ! ((FederalRevenueService) x.get("federalRevenueService")).validateCpf(getCpf(), getBirthday()) )
+              throw new RuntimeException(INVALID_CPF);
+          } catch(Throwable t) {
+            throw t;
+          }
+        }
       `
     }
   ],

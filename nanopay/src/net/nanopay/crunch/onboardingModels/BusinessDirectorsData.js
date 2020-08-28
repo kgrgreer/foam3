@@ -1,7 +1,7 @@
 foam.CLASS({
     package: 'net.nanopay.crunch.onboardingModels',
     name: 'BusinessDirectorsData',
-  
+
     implements: [
       'foam.core.Validatable',
       'foam.mlang.Expressions'
@@ -15,7 +15,11 @@ foam.CLASS({
     requires: [
       'net.nanopay.model.BusinessUserJunction'
     ],
-  
+
+    javaImports: [
+      'net.nanopay.model.BusinessDirector',
+    ],
+
     messages: [
       { name: 'NO_DIRECTOR_INFO', message: 'Please enter director\'s information.' }
     ],
@@ -27,8 +31,8 @@ foam.CLASS({
         help: 'require business director information'
       }
     ],
-  
-    properties: [
+
+properties: [
       {
         name: 'needDirector',
         class: 'Boolean',
@@ -98,7 +102,7 @@ foam.CLASS({
         ]
       }
     ],
-  
+
     methods: [
       {
         name: 'validate',
@@ -111,8 +115,9 @@ foam.CLASS({
               throw e;
             }
           }
+
+          for ( BusinessDirector director : getBusinessDirectors()  ) director.validate(x);
         `
       }
     ]
   });
-  

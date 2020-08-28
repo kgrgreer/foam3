@@ -74,7 +74,7 @@ foam.CLASS({
       javaCode: `
         try {
           User agent = ((Subject) x.get("subject")).getRealUser();
-          if ( ! ((FederalRevenueService) x.get("federalRevenueService")).validateCpf(getData(), agent.getId()) )
+          if ( ! ((FederalRevenueService) x.get("federalRevenueService")).validateUserCpf(getData(), agent.getId()) )
             throw new RuntimeException(INVALID_CPF);
         } catch(Throwable t) {
           throw t;
