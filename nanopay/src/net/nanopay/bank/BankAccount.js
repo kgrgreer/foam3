@@ -120,7 +120,7 @@ foam.CLASS({
       },
       tableCellFormatter: function(str) {
         if ( ! str ) return;
-        var displayAccountNumber = '***' + str.substring(str.length - 4, str.length)
+        var displayAccountNumber = '***' + str.substring(str.length - 4, str.length);
         this.start()
           .add(displayAccountNumber);
         this.tooltip = displayAccountNumber;
@@ -151,7 +151,7 @@ foam.CLASS({
         .end();
       },
       javaFactory: `
-        return "***" + getAccountNumber().substring(getAccountNumber().length() - 4);
+        return "***" + getAccountNumber().substring(Math.max(getAccountNumber().length() - 4, 0));
       `
     },
     {
@@ -383,6 +383,10 @@ foam.CLASS({
       label: '',
       section: 'accountDetails',
       view: { class: 'net.nanopay.ui.DataSecurityBanner' }
+    },
+    {
+      class: 'String',
+      name: 'verifiedBy'
     }
   ],
   methods: [
@@ -493,11 +497,6 @@ foam.CLASS({
           throw new IllegalStateException("Account name must be less than or equal to 70 characters.");
         }
       `
-    },
-    {
-      class: 'String',
-      name: 'verifiedBy',
-      final: true
     }
   ],
 

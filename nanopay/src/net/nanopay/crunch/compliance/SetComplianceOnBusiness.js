@@ -16,19 +16,22 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.country.br.crunch',
-  name: 'ExchangeServiceOnboardingRule',
-  implements: ['foam.nanos.ruler.RuleAction'],
+  package: 'net.nanopay.crunch.compliance',
+  name: 'SetComplianceOnBusiness',
+  implements: [
+    'foam.nanos.ruler.RuleAction'
+  ],
 
-  documentation: `Onboards business to Brazil Exchange Service if onboarding ucj is passed.`,
+  documentation: `For legacy system integration we need to set some properties to User objects.`,
 
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.crunch.UserCapabilityJunction',
-    'net.nanopay.country.br.exchange.ExchangeService',
-    'net.nanopay.model.Business'
+    'java.lang.UnsupportedOperationException',
+    'net.nanopay.admin.model.ComplianceStatus'
   ],
 
   methods: [
@@ -38,19 +41,18 @@ foam.CLASS({
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-            UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
-            User user = (User) ucj.findSourceId(x);
-            Business business;
+            DAO userDAO = ((DAO) x.get("localUserDAO"));
 
+            User user = (User) userDAO.find(((UserCapabilityJunction) obj).getSourceId());
             try {
-              business = (Business) user;
-            } catch (Exception e) {
-              return;
+              user = (User) user.fclone();
+              user.setCompliance(ComplianceStatus.PASSED);
+              userDAO.put(user);
+            } catch(Exception e) {
+              throw new UnsupportedOperationException("Business : " + user.getId() + " compliance not set - but UCJ granted" + "Error: " + e);
             }
-
-            ((ExchangeService) x.get("exchangeService")).createExchangeCustomerDefault(business.getId());
           }
-        }, "Onboards business to Brazil Exchange Service if onboarding ucj is passed.");
+        }, "Business Compliance Set");
       `
     }
   ]

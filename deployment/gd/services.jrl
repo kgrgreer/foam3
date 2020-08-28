@@ -7,16 +7,12 @@ p({
     "port": 8080,
     "forwardedForProxyWhitelist": [],
     "welcomeFiles": ["welcome"],
+    "hostDomains": ["gd", "gd.ablii.com", "gd.sandbox.ablii.com", "localhost"],
     "servletMappings": [{
       "class": "foam.nanos.servlet.ServletMapping",
       "servletObject": {
         "class": "foam.nanos.servlet.VirtualHostRoutingServlet",
-        "hostMapping": {
-          "gd": "/gd.html",
-          "gd.ablii.com":"/gd.html",
-          "gd.sandbox.ablii.com":"/gd.html",
-          "localhost": "/index.html"
-        },
+        "isResourceStorage": true,
         "defaultHost": "localhost"
       },
       "pathSpec": "/welcome"

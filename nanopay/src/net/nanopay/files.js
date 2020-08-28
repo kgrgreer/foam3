@@ -1587,6 +1587,8 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/compliance/SecurefactLEVValidator' },
   { name: 'net/nanopay/crunch/compliance/UserComplianceApproval' },
   { name: 'net/nanopay/crunch/compliance/SetFulfilledComplianceApprovalRequest' },
+  { name: 'net/nanopay/crunch/compliance/SetComplianceOnUser' },
+  { name: 'net/nanopay/crunch/compliance/SetComplianceOnBusiness' },
 
   // crunch afex
   { name: 'net/nanopay/partner/afex/crunch/BusinessHasVerifiedBankAccount' },
@@ -1613,7 +1615,9 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/AFXWashingtonDisclosure' },
   { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/CABankAccountAuthAgreement' },
   { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/RecourseAgreement' },
-  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/CancellationAgreement' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/CACancellationAgreement' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/USBankAccountAuthAgreement' },
+  { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/USCancellationAgreement' },
   { name: 'net/nanopay/crunch/acceptanceDocuments/BaseAcceptanceDocumentCapability' },
 
   // crunch document
@@ -1636,12 +1640,14 @@ FOAM_FILES([
 
   { name: 'net/nanopay/country/br/CPF' },
   { name: 'net/nanopay/country/br/BrazilBusinessInfoData' },
+  { name: 'net/nanopay/country/br/crunch/ExchangeServiceOnboardingRule' },
   { name: 'net/nanopay/country/br/exchange/ExchangeCredential' },
   { name: 'net/nanopay/country/br/exchange/ExchangeCustomer' },
   { name: 'net/nanopay/country/br/NatureCode' },
   { name: 'net/nanopay/country/br/NatureCodeRate' },
   { name: 'net/nanopay/country/PermittedCountryFilterDAO' },
-  { name: 'net/nanopay/country/br/NatureCodePaymentProviderJunction' },
+  { name: 'net/nanopay/country/br/NatureCodePaymentProviderJunctionRefinement' },
+
 
   // Treviso
   { name: 'net/nanopay/partner/treviso/FepWebUserUpdatingRule'},

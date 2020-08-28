@@ -1087,6 +1087,7 @@ var classes = [
   'net.nanopay.country.br.NatureCode',
   'net.nanopay.country.br.BrazilBusinessInfoData',
   'net.nanopay.country.br.CPF',
+  'net.nanopay.country.br.crunch.ExchangeServiceOnboardingRule',
   'net.nanopay.country.br.exchange.ArrayOfBoleto',
   'net.nanopay.country.br.exchange.ArrayOfNatureza',
   'net.nanopay.country.br.exchange.ArrayOfParcelas',
@@ -1193,6 +1194,8 @@ var classes = [
   'net.nanopay.crunch.compliance.SendExpiryNotification',
 
   // crunch compliance
+  'net.nanopay.crunch.compliance.SetComplianceOnUser',
+  'net.nanopay.crunch.compliance.SetComplianceOnBusiness',
   'net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus',
   'net.nanopay.crunch.compliance.PersonSanctionValidator',
   'net.nanopay.crunch.compliance.EntitySanctionValidator',
@@ -1228,7 +1231,9 @@ var classes = [
   'net.nanopay.crunch.acceptanceDocuments.capabilities.AFXColoradoDisclosure',
   'net.nanopay.crunch.acceptanceDocuments.capabilities.CABankAccountAuthAgreement',
   'net.nanopay.crunch.acceptanceDocuments.capabilities.RecourseAgreement',
-  'net.nanopay.crunch.acceptanceDocuments.capabilities.CancellationAgreement',
+  'net.nanopay.crunch.acceptanceDocuments.capabilities.CACancellationAgreement',
+  'net.nanopay.crunch.acceptanceDocuments.capabilities.USBankAccountAuthAgreement',
+  'net.nanopay.crunch.acceptanceDocuments.capabilities.USCancellationAgreement',
   'net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability',
 
   // crunch registration

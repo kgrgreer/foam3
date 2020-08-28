@@ -54,6 +54,30 @@ foam.CLASS({
       required: true
     },
     {
+      class: 'Reference',
+      of: 'foam.nanos.theme.Theme',
+      name: 'theme',
+      tableCellFormatter: function(value, obj, axiom) {
+        this.__subSubContext__.themeDAO
+          .find(value)
+          .then(theme => this.add(theme.getName()))
+          .catch(_ => {
+            this.add(value);
+          });
+      },
+      view: (_, X) => {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          search: true,
+          sections: [
+            {
+              dao: X.themeDAO
+            }
+          ]
+        };
+      }
+    },
+    {
       class: 'EMail',
       name: 'adminUserEmail',
       required: true

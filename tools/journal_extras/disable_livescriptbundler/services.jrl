@@ -7,13 +7,13 @@ p({
     "port": 8080,
     "forwardedForProxyWhitelist": [],
     "welcomeFiles": ["welcome"],
+    "hostDomains": ["ablii", "localhost"],
     "servletMappings": [{
       "class": "foam.nanos.servlet.ServletMapping",
       "servletObject": {
         "class": "foam.nanos.servlet.VirtualHostRoutingServlet",
-        "hostMapping": {
-          "ablii": "/nanopay/src/net/nanopay/sme/index_nolsb.html",
-          "localhost": "/nanopay/src/net/nanopay/index_nolsb.html",
+        "liveScriptBundlerDisabled": true,
+        "customHostMapping": {
           "liquid": "/nanopay/src/net/nanopay/liquid_nolsb.html",
           "merchantpos": "/nanopay/src/net/nanopay/merchant/index.html"
         },

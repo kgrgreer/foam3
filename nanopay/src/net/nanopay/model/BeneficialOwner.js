@@ -302,7 +302,7 @@ foam.CLASS({
               e.NEQ(net.nanopay.model.BeneficialOwner.TYPE, 'BR'),
               e.AND(
                 e.EQ(net.nanopay.model.BeneficialOwner.TYPE, 'BR'),
-                e.NEQ(net.nanopay.model.BeneficialOwner.cpf, '')
+                e.NEQ(net.nanopay.model.BeneficialOwner.CPF, '')
               )
             );
           },

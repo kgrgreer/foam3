@@ -59,8 +59,8 @@ foam.CLASS({
     { name: 'BANK_ACCOUNT_LABEL', message: 'Bank Account' }
   ],
 
-  css:`
-  .net-nanopay-sme-ui-SMEModal-inner {
+  css: `
+  ^ .net-nanopay-sme-ui-SMEModal-inner {
     width: 515px;
     height: 500px;
   }

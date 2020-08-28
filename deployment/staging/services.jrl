@@ -7,14 +7,12 @@ p({
     "port": 8080,
     "forwardedForProxyWhitelist": [],
     "welcomeFiles": ["welcome"],
+    "hostDomains": ["staging.ablii.com", "retail.staging.nanopay.net"],
     "servletMappings": [{
       "class": "foam.nanos.servlet.ServletMapping",
       "servletObject": {
         "class": "foam.nanos.servlet.VirtualHostRoutingServlet",
-        "hostMapping": {
-          "staging.ablii.com": "/ablii.html",
-          "retail.staging.nanopay.net": "/index.html"
-        },
+        "isResourceStorage": true,
         "defaultHost": "retail.staging.nanopay.net"
       },
       "pathSpec": "/welcome"
