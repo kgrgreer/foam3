@@ -308,7 +308,7 @@ foam.CLASS({
           } catch(Throwable t) {}
           if ( exchangeFormat == null )
             return "";
-          return ert.exchangeFormat(denomination, homeDenomination, getBalance()) + " " + homeDenomination;
+          return exchangeFormat + " " + homeDenomination;
         }
         return "";
       `,
