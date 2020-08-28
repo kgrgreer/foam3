@@ -28,6 +28,10 @@ foam.CLASS({
       name: 'WithAccountIdentity'
     },
     {
+      class: 'Boolean',
+      name: 'WithKYC'
+    },
+    {
       class: 'String',
       name: 'DateFrom'
     },

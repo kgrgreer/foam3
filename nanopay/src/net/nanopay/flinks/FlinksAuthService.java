@@ -148,10 +148,9 @@ public class FlinksAuthService
 
         resp.setAccounts(filterAccounts(resp.getAccounts()));
 
-        feedback = resp;
         // save flinks response
         resp.setUserId(currentUser.getId());
-        flinksAccountsDetailResponseDAO_.put(resp);
+        feedback = (FlinksAccountsDetailResponse) flinksAccountsDetailResponseDAO_.put(resp);
       } else {
         feedback = (FlinksInvalidResponse) respMsg.getModel();
         Logger logger = (Logger) x.get("logger");
@@ -184,10 +183,9 @@ public class FlinksAuthService
 
         resp.setAccounts(filterAccounts(resp.getAccounts()));
 
-        feedback = resp;
         // save flinks response
         resp.setUserId(currentUser.getId());
-        flinksAccountsDetailResponseDAO_.put(resp);
+        feedback = (FlinksAccountsDetailResponse) flinksAccountsDetailResponseDAO_.put(resp);
       } else {
         feedback = (FlinksInvalidResponse) respMsg.getModel();
         Logger logger = (Logger) x.get("logger");
