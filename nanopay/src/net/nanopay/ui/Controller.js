@@ -52,6 +52,7 @@ foam.CLASS({
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
+    'net.nanopay.bank.BRBankAccount',
     'net.nanopay.cico.ui.bankAccount.form.BankPadAuthorization',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
     'net.nanopay.model.Business',
@@ -531,6 +532,18 @@ foam.CLASS({
             },
             passed: true,
             showBanner: true
+          },
+          {
+            msg: this.PASSED_BANNER_DOMESTIC_US,
+            bannerMode: this.BannerMode.ACCOMPLISHED,
+            condition: function(user, accountArray, verifiedAccount) {
+              return accountArray.length > 0
+                && user.compliance === self.ComplianceStatus.PASSED
+                && verifiedAccount
+                && user.address.countryId === 'BR';
+            },
+            passed: true,
+            showBanner: true
           }
         ];
       }
@@ -877,7 +890,8 @@ foam.CLASS({
         return (await this.subject.user.accounts
           .where(this.OR(
             this.INSTANCE_OF(this.CABankAccount),
-            this.INSTANCE_OF(this.USBankAccount)
+            this.INSTANCE_OF(this.USBankAccount),
+            this.INSTANCE_OF(this.BRBankAccount)
           ))
           .select()).array;
       } catch (err) {

@@ -86,8 +86,6 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
         User signingOfficer = getSigningOfficer(this.x, business);
         AuthService auth = (AuthService) this.x.get("auth");
-        boolean hasFXProvisionPayerPermission = auth.checkUser(this.x, business, "fx.provision.payer");
-        if ( hasFXProvisionPayerPermission && isFXEnrolled(business, signingOfficer) ) {
           OnboardCorporateClientRequest onboardingRequest = new OnboardCorporateClientRequest();
           Region businessRegion = business.getAddress().findRegionId(this.x);
           Country businessCountry = business.getAddress().findCountryId(this.x);
@@ -101,13 +99,13 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
               : "EmployerIdentificationNumber_EIN"; // Madlen asked it is hardcoded
             String identificationNumber = SafetyUtil.isEmpty(business.getBusinessRegistrationNumber()) ? "N/A"
               : business.getBusinessRegistrationNumber(); // Madlen asked it is hardcoded
-            if ( businessRegion != null ) onboardingRequest.setBusinessStateRegion(businessRegion.getCode());
+            if ( businessRegion != null ) onboardingRequest.setBusinessStateRegion(businessRegion.getName());
             onboardingRequest.setAccountPrimaryIdentificationExpirationDate("01/01/2099"); // Asked to hardcode this by Madlen(AFEX)
             onboardingRequest.setAccountPrimaryIdentificationNumber( useHardCoded ? "000000000" : identificationNumber);
             onboardingRequest.setAccountPrimaryIdentificationType(useHardCoded ? "BusinessRegistrationNumber" : identificationType);
             if ( businessCountry.getId().equals("US") ) onboardingRequest.setTaxIdentificationNumber(business.getTaxIdentificationNumber());
             if ( businessCountry != null ) onboardingRequest.setBusinessCountryCode(businessCountry.getCode());
-            if ( businessRegion != null ) onboardingRequest.setBusinessStateRegion(businessRegion.getCode());
+            if ( businessRegion != null ) onboardingRequest.setBusinessStateRegion(businessRegion.getName());
             onboardingRequest.setBusinessAddress1(business.getAddress().getAddress());
             onboardingRequest.setBusinessCity(business.getAddress().getCity());
 
@@ -139,9 +137,9 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
               onboardingRequest.setContactAddress1(contactAddress.getAddress());
               onboardingRequest.setContactCity(contactAddress.getCity());
               Region region = contactAddress.findRegionId(this.x);
-              if ( region != null ) onboardingRequest.setContactStateRegion(region.getCode());
+              if ( region != null ) onboardingRequest.setContactStateRegion(region.getName());
               Country country = contactAddress.findCountryId(this.x);
-              if ( country != null ) onboardingRequest.setContactCountryCode(country.getCode());
+              if ( country != null ) onboardingRequest.setContactCountryCode(country.getName());
               onboardingRequest.setContactZip(contactAddress.getPostalCode());
             }
 
@@ -179,7 +177,6 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             }
             return true;
           }
-        }
       }
 
     } catch(Exception e) {

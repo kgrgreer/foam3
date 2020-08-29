@@ -35,6 +35,7 @@ var classes = [
   'net.nanopay.flinks.model.FlinksAccount',
   //flinks service
   'net.nanopay.flinks.FlinksAuth',
+  'net.nanopay.flinks.FlinksResponseService',
   'net.nanopay.flinks.ClientFlinksAuthService',
   'net.nanopay.flinks.MaskedFlinksAccountDAO',
   'net.nanopay.flinks.RefinedFlinksAccountDAO',

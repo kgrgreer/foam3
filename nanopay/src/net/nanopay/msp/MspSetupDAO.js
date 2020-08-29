@@ -70,6 +70,7 @@ foam.CLASS({
         clientTheme.setName(mspInfo.getSpid());
         clientTheme.setAppName(mspInfo.getAppName());
         clientTheme.setDescription(mspInfo.getDescription());
+        clientTheme.setDomains(mspInfo.getDomain());
         clientTheme = (Theme) themeDAO.put(clientTheme);
 
         // Add themeDomain
@@ -101,14 +102,6 @@ foam.CLASS({
         userDAO.put(adminUser);
 
         List<String> permissionArray = new ArrayList<>();
-        permissionArray.add("ticket.read.*");
-        permissionArray.add("ticket.update.*");
-        permissionArray.add("service.ticketDAO");
-        permissionArray.add("service.ticketCommentDAO");
-        permissionArray.add("service.ticketStatusDAO");
-        permissionArray.add("menu.read.admin");
-        permissionArray.add("menu.read.admin.tickets");
-        permissionArray.add("menu.read.sme.accountProfile.signout");
         permissionArray.add("group.update." + mspInfo.getSpid() + "-admin");
         permissionArray.add("group.update." + mspInfo.getSpid() + "-fraud-ops");
         permissionArray.add("group.update." + mspInfo.getSpid() + "-payment-ops");
@@ -174,7 +167,7 @@ foam.CLASS({
         for ( int i = 0; i < fraudPermissionArray.size(); i++ ) {
           GroupPermissionJunction junction = new GroupPermissionJunction();
           junction.setSourceId(mspInfo.getSpid() + "-fraud-ops");
-          junction.setTargetId(permissionArray.get(i));
+          junction.setTargetId(fraudPermissionArray.get(i));
           groupPermissionJunctionDAO.put(junction);
         }
 

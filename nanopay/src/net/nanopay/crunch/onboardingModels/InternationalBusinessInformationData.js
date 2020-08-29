@@ -108,8 +108,11 @@ foam.CLASS({
           args: ['taxIdentificationNumber', 'countryOfBusinessRegistration'],
           predicateFactory: function(e) {
             return e.OR(
-              e.EQ(net.nanopay.crunch.onboardingModels.InternationalBusinessInformationData.COUNTRY_OF_BUSINESS_REGISTRATION, 'CA'),
-              e.REG_EXP(net.nanopay.crunch.onboardingModels.InternationalBusinessInformationData.TAX_IDENTIFICATION_NUMBER, /^[0-9]{9}$/)
+              e.NEQ(net.nanopay.crunch.onboardingModels.InternationalBusinessInformationData.COUNTRY_OF_BUSINESS_REGISTRATION, 'US'),
+              e.AND(
+                e.EQ(net.nanopay.crunch.onboardingModels.InternationalBusinessInformationData.COUNTRY_OF_BUSINESS_REGISTRATION, 'US'),
+                e.REG_EXP(net.nanopay.crunch.onboardingModels.InternationalBusinessInformationData.TAX_IDENTIFICATION_NUMBER, /^[0-9]{9}$/)
+              )
             );
           },
           errorMessage: 'TAX_ID_NUMBER_ERROR'

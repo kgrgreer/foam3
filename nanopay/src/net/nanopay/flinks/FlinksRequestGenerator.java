@@ -46,6 +46,7 @@ public class FlinksRequestGenerator {
     request.setRequestId(requestId);
     request.setWithTransactions(false);
     request.setWithAccountIdentity(true);
+    request.setWithKYC(true);
     RequestMsg msg = new RequestMsg(x, request);
     msg.setHttpMethod("POST");
     msg.setRequestInfo("GetAccountsDetail");

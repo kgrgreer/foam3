@@ -38,6 +38,10 @@ foam.CLASS({
     'net.nanopay.model.BeneficialOwner'
   ],
 
+  javaImports: [
+    'net.nanopay.model.BeneficialOwner',
+  ],
+
   sections: [
     {
       name: 'ownershipAmountSection',
@@ -457,6 +461,10 @@ foam.CLASS({
             throw e;
           }
         }
+
+        // validate BeneficialOwner objects
+        BeneficialOwner[] owners = new BeneficialOwner[]{ getOwner1(), getOwner2(), getOwner3(), getOwner4() };
+        for ( int i = 0 ; i < getChosenOwners().size(); i++ ) owners[i].validate(x);
       `,
     }
   ]
@@ -701,7 +709,7 @@ foam.CLASS({
         dao$: this.dao$
       });
       this.choiceSections_ = choiceSections;
-      
+
     }
   ]
 });

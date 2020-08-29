@@ -83,6 +83,7 @@ public class SintegraService extends ContextAwareSupport implements Sintegra {
         uriBuilder.setParameter(entry.getKey(), entry.getValue());
       }
       HttpGet httpGet = new HttpGet(uriBuilder.build());
+      logRequestMessage(endpoint, httpGet.getURI().toString());
       omLogger.log("Sintegra Request to " + endpoint + " Starting");
       CloseableHttpResponse httpResponse = getHttpClient().execute(httpGet);
       omLogger.log("Sintegra Request to " + endpoint + " Completed");

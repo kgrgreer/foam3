@@ -31,7 +31,7 @@ foam.INTERFACE({
       ]
     },
     {
-      name: 'validateCpf',
+      name: 'validateUserCpf',
       type: 'Boolean',
       async: true,
       javaThrows: ['java.lang.RuntimeException'],
@@ -43,6 +43,22 @@ foam.INTERFACE({
         {
           type: 'Long',
           name: 'userId'
+        },
+      ]
+    },
+    {
+      name: 'validateCpf',
+      type: 'Boolean',
+      async: true,
+      javaThrows: ['java.lang.RuntimeException'],
+      args: [
+        {
+          type: 'String',
+          name: 'cpf'
+        },
+        {
+          type: 'Date',
+          name: 'dateOfBirth'
         },
       ]
     },
