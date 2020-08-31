@@ -23,18 +23,22 @@ foam.CLASS({
   documentation: `Decorating DAO for processing FlinksLoginId requests.`,
 
   javaImports: [
-    'foam.core.FObject',
+    'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'foam.dao.ProxySink',
-    'foam.nanos.auth.AuthService',
+    'foam.nanos.auth.Address',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Subject',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.flinks.FlinksAuth',
     'net.nanopay.flinks.FlinksResponseService',
     'net.nanopay.flinks.model.AccountWithDetailModel',
+    'net.nanopay.flinks.model.AddressModel',
     'net.nanopay.flinks.model.FlinksAccountsDetailResponse',
-    'net.nanopay.flinks.model.FlinksResponse'
+    'net.nanopay.flinks.model.FlinksResponse',
+    'net.nanopay.flinks.model.LoginModel',
+    'net.nanopay.flinks.model.HolderModel',
+    'net.nanopay.model.Business',
+    'static foam.mlang.MLang.*'
   ],
 
   methods: [
@@ -42,6 +46,8 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
         DAO accountDAO = (DAO) x.get("localAccountDAO");
+        DAO userDAO = (DAO) x.get("localUserDAO");
+        DAO businessDAO = (DAO) x.get("localBusinessDAO");
         FlinksAuth flinksAuth = (FlinksAuth) x.get("flinksAuth");
         FlinksResponseService flinksResponseService = (FlinksResponseService) x.get("flinksResponseService");
         User user = ((Subject) x.get("subject")).getUser();
@@ -50,6 +56,9 @@ foam.CLASS({
         FlinksResponse flinksResponse = (FlinksResponse) flinksResponseService.getFlinksResponse(x, flinksLoginId);
         if ( flinksResponse == null ) throw new RuntimeException("Flinks failed to provide a valid response when provided with login ID: " + flinksLoginId.getLoginId());
 
+        LoginModel loginModel = flinksResponse.getLogin();
+        String type = loginModel.getType();
+        
         FlinksAccountsDetailResponse flinksDetailResponse = (FlinksAccountsDetailResponse) flinksAuth.getAccountSummary(x, flinksResponse.getRequestId(), user);
         flinksLoginId.setFlinksAccountsDetails(flinksDetailResponse.getId());
 
@@ -57,17 +66,44 @@ foam.CLASS({
         for ( int i = 0; i < accounts.length; i++ ) {
           AccountWithDetailModel accountDetail = accounts[i];
           if ( accountDetail.getCurrency().equals("CAD") ) {
-            CABankAccount bankAccount = new CABankAccount.Builder(x)
-              .setOwner(user.getId())
-              .setAccountNumber(accountDetail.getAccountNumber())
-              .setBranchId(accountDetail.getTransitNumber())
-              .setDenomination(accountDetail.getCurrency())
-              .setInstitutionNumber(accountDetail.getInstitutionNumber())
-              .setName(accountDetail.getTitle())
-              .setType(accountDetail.getType())
-              .setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED)
-              .setVerifiedBy("FLINKS")
+            HolderModel holder = accountDetail.getHolder();
+            AddressModel holderAddress = holder.getAddress();
+
+            Address address = new Address.Builder(x)
+              .setAddress1(holderAddress.getCivicAddress())
+              .setRegionId(holderAddress.getProvince())
+              .setCountryId(holderAddress.getCountry())
+              .setCity(holderAddress.getCity())
+              .setPostalCode(holderAddress.getPostalCode())
               .build();
+
+            CABankAccount bankAccount = new CABankAccount();
+
+            if ( type.equals("Personal") ) {
+              User newUser = new User.Builder(x)
+                .setFirstName(holder.getName())
+                .setEmail(holder.getEmail())
+                .setAddress(address)
+                .build();
+              newUser = (User) userDAO.put(newUser);
+              bankAccount.setOwner(newUser.getId());
+            } else if ( type.equals("Business") ) {
+              Business newBusiness = new Business.Builder(x)
+                .setEmail(holder.getEmail())
+                .setAddress(address)
+                .build();
+              newBusiness = (Business) businessDAO.put(newBusiness);
+              bankAccount.setOwner(newBusiness.getId());
+            }
+
+            bankAccount.setAccountNumber(accountDetail.getAccountNumber());
+            bankAccount.setBranchId(accountDetail.getTransitNumber());
+            bankAccount.setDenomination(accountDetail.getCurrency());
+            bankAccount.setInstitutionNumber(accountDetail.getInstitutionNumber());
+            bankAccount.setName(accountDetail.getTitle());
+            bankAccount.setType(accountDetail.getType());
+            bankAccount.setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED);
+            bankAccount.setVerifiedBy("FLINKS");
 
             bankAccount = (CABankAccount) accountDAO.put(bankAccount);
             flinksLoginId.setAccount(bankAccount.getId());
