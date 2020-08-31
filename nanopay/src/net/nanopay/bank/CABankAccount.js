@@ -28,8 +28,11 @@ foam.CLASS({
     'subject'
   ],
 
-  javaImports: [
+  requires: [
     'foam.log.LogLevel',
+  ],
+
+  javaImports: [
     'foam.util.SafetyUtil',
     'java.util.regex.Pattern',
     'net.nanopay.model.Branch',
@@ -443,6 +446,6 @@ foam.CLASS({
         }
         return code.toString();
       `
-    },
+    }
   ]
 });

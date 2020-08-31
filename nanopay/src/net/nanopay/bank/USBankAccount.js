@@ -376,6 +376,6 @@ foam.CLASS({
       javaCode: `
         return getBranchId();
       `
-    },
+    }
  ]
 });

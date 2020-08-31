@@ -28,6 +28,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
     'net.nanopay.bank.BankAccountStatus',
+    'net.nanopay.bank.BRBankAccount',
     'net.nanopay.contacts.Contact'
   ],
 
@@ -76,7 +77,7 @@ foam.CLASS({
        * account and verify it using the micro-deposit even if they are using the same bank information
        * Contact Bank Accounts are exlusively meant to just RECEIVE money from ablii users
        *
-       * 3. FOR FLINKS BANK ACCOUNTS
+       * 2. FOR FLINKS BANK ACCOUNTS AND BRAZIL BANK ACCOUNTS
        * NOTE: MIGHT WANT TO INCLUDE THIS IN THE FUTURE FOR INSTITUTIONS IDS BETWEEN 1 to 23 SINCE THESE WILL ALL REQUIRE TO LOGIN VIA THE CLIENT
        * Since flinks bank accounts are being verified by logging in from the client,
        * we can automatically verify these bank accounts when passing them through this decorator
@@ -103,15 +104,16 @@ foam.CLASS({
         }
       }
 
-      // 3. FLINKS ACCOUNTS
+      // 2. FLINKS ACCOUNTS & BRAZIL ACCOUNTS
       // ! IMPORTANT: Need to update this as needed once more bank account verification via bank clients are added
       // As recommended above, should later change this to check if the institution id is between 1 and 23 (these are the current institutions on the system)
       // remember this is INSTITUTION ID and NOT INSTITUTION NUMBER
       // institution id entails our identifiers of institutions on our system
       // institution number is the actual legal bank information
       boolean isFlinksAccount = SafetyUtil.equals(obj.getProperty("institution"), FLINKS_INSTITUTION_ID);
+      boolean isBrazilAccount = obj instanceof BRBankAccount;
 
-      if ( isFlinksAccount ) {
+      if ( isFlinksAccount || isBrazilAccount ) {
         obj.setProperty("status", BankAccountStatus.VERIFIED);
       }
 
