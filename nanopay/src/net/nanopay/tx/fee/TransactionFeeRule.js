@@ -20,6 +20,8 @@ foam.CLASS({
   name: 'TransactionFeeRule',
   extends: 'foam.nanos.ruler.Rule',
 
+  documentation: 'Rule for sending a transaction to FeeEngine when the transaction is put (CREATE) into feeEngineDAO.',
+
   javaImports: [
     'net.nanopay.tx.model.Transaction',
     'static foam.mlang.MLang.*'
