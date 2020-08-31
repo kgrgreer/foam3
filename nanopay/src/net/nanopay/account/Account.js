@@ -303,6 +303,7 @@ foam.CLASS({
         ExchangeRateService ert = (ExchangeRateService)session.getContext().get("exchangeRateService");
         if ( ert != null ) {
           String exchangeFormat = null;
+          //catching "Rate Not Found" RuntimeException
           try {
             exchangeFormat = ert.exchangeFormat(denomination, homeDenomination, getBalance());
           } catch(Throwable t) {}
