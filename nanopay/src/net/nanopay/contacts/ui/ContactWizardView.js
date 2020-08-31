@@ -35,6 +35,7 @@ foam.CLASS({
   imports: [
     'accountDAO as bankAccountDAO',
     'ctrl',
+    'contactService',
     'invitationDAO',
     'user'
   ],
@@ -60,7 +61,15 @@ foam.CLASS({
     { name: 'CONTACT_EDITED', message: 'Personal contact edited.' },
     { name: 'INVITE_SUCCESS', message: 'Sent a request to connect.' },
     { name: 'CONTACT_ADDED_INVITE_SUCCESS', message: 'Personal contact added. An email invitation was sent.' },
-    { name: 'CONTACT_ADDED_INVITE_FAILURE', message: 'Personal contact added. An email invitation could not be sent.' }
+    { name: 'CONTACT_ADDED_INVITE_FAILURE', message: 'Personal contact added. An email invitation could not be sent.' },
+    { name: 'ACCOUNT_CREATION_ERROR', message: 'Failed to add an account.' },
+    {
+      name: 'EXISTING_BUSINESS',
+      message: `This email has already been registered on Ablii.
+                You can set up a connection with this user and their business by using their payment code or
+                finding them in the search business menu when adding a contact.
+               `
+    }
   ],
 
   properties: [
@@ -84,7 +93,7 @@ foam.CLASS({
       value: false
     }
   ],
-  
+
   methods: [
     async function init() {
       // filter out inherited sections
@@ -140,20 +149,30 @@ foam.CLASS({
     async function addContact() {
       this.isConnecting = true;
       try {
-        this.contact = await this.user.contacts.put(this.data);
         let canInvite = this.data.createBankAccount.country != 'IN';
         if ( this.data.shouldInvite && canInvite ) {
-          try {
-            if ( await this.sendInvite(false) ) {
-              this.ctrl.notify(this.CONTACT_ADDED_INVITE_SUCCESS, '', this.LogLevel.INFO, true);
+          // check if it is already joined
+          var isExisting = await this.contactService.checkExistingContact(this.__subContext__, this.data.email, false);
+
+          if ( ! isExisting ) {
+            try {
+              this.contact = await this.user.contacts.put(this.data);
+
+              if ( await this.sendInvite(false) ) {
+                this.ctrl.notify(this.CONTACT_ADDED_INVITE_SUCCESS, '', this.LogLevel.INFO, true);
+              }
+            } catch (err) {
+              var msg = err.message || this.GENERIC_PUT_FAILED;
+              this.ctrl.notify(msg, '', this.LogLevel.ERROR, true);
             }
-          } catch (err) {
-            var msg = err.message || this.GENERIC_PUT_FAILED;
-            this.ctrl.notify(msg, '', this.LogLevel.ERROR, true);
+          } else {
+            this.ctrl.notify(this.EXISTING_BUSINESS, '', this.LogLevel.WARN, true);
+            return false;
           }
         } else {
+          this.contact = await this.user.contacts.put(this.data);
           this.ctrl.notify(this.isEdit ? this.CONTACT_EDITED : this.CONTACT_ADDED, '', this.LogLevel.INFO, true);
-      }
+        }
       } catch (e) {
         var msg = e.message || this.GENERIC_PUT_FAILED;
         this.ctrl.notify(msg, '', this.LogLevel.ERROR, true);
@@ -252,7 +271,7 @@ foam.CLASS({
         return currentIndex === 1 && data$bankAccount === 0;
       },
       code: async function(X) {
-        this.data.createBankAccount = net.nanopay.bank.BankAccount.create({ isDefault: true });
+        this.data.createBankAccount = net.nanopay.bank.BankAccount.create({ isDefault: true }, X);
         if ( ! await this.addContact() ) return;
         X.closeDialog();
       }
@@ -266,9 +285,9 @@ foam.CLASS({
       isAvailable: function(nextIndex) {
         return nextIndex === -1;
       },
-      code: async function(X) { 
+      code: async function(X) {
         if ( ! await this.addContact() ) return;
-        if ( this.data.bankAccount === 0 && ! await this.addBankAccount() ) return;
+        if ( ! await this.addBankAccount() ) return;
         X.closeDialog();
       }
     }

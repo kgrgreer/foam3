@@ -105,10 +105,15 @@ foam.CLASS({
                 return this.signUpStatus !== self.ContactStatus.ACTIVE;
               },
               code: function(X) {
+              // case of save without banking
+              if ( this.createBankAccount === 'net.nanopay.bank.BankAccount' ) {
+                this.createBankAccount = net.nanopay.bank.CABankAccount.create({ isDefault: true }, X);
+              }
+
                 X.controllerView.add(self.WizardController.create({
                   model: 'net.nanopay.contacts.Contact',
                   data: this,
-                  controllerMode: foam.u2.ControllerMode.EDIT
+                  controllerMode: foam.u2.ControllerMode.CREATE
                 }, X));
               }
             }),
@@ -127,11 +132,12 @@ foam.CLASS({
                   businessName: this.organization,
                   createdBy: this.subject.user.id,
                   isContact: true
-                });
+                }, X);
                 X.controllerView.add(self.WizardController.create({
                   model: 'net.nanopay.model.Invitation',
-                  data: invite
-                }, X));
+                  data: invite,
+                  controllerMode: foam.u2.ControllerMode.EDIT
+                }, X))
               }
             }),
             this.Action.create({
