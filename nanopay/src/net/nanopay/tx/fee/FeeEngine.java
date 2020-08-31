@@ -35,7 +35,9 @@ public class FeeEngine {
   private final TransactionFeeRule transactionFeeRule_;
 
   private String currentFeeId_ = null;
-  private Map<String, List<String>> feeGraph_ = new HashMap<>();
+  private final Map<String, List<String>> feeGraph_ = new HashMap<>();
+  private final Map<String, Expr> resolvedFormulas_ = new HashMap<>();
+  private final Map<String, String>     loadedFees_ = new HashMap<>();
 
   public FeeEngine(TransactionFeeRule transactionFeeRule) {
     transactionFeeRule_ = transactionFeeRule;
@@ -58,7 +60,7 @@ public class FeeEngine {
         });
       }
     } catch ( Exception e ) {
-      var feeInfo = fee != null ? fee.toString() : "fee name:" + feeName;
+      var feeInfo = fee != null ? fee.toString() : "Fee name:" + feeName;
       throw new RuntimeException("Could not apply " + feeInfo + " to transaction id:" + transaction.getId(), e);
     }
   }
@@ -71,6 +73,14 @@ public class FeeEngine {
     result.setName(name);
     result.setAmount(amount);
     result.setFeeCurrency(currency);
+    StringBuilder sb = new StringBuilder();
+    for ( var entry : loadedFees_.entrySet() ) {
+      sb.append(entry.getKey())
+        .append(" = ")
+        .append(entry.getValue())
+        .append("\n");
+    }
+    result.setNote(sb.toString());
     return result;
   }
 
@@ -114,11 +124,16 @@ public class FeeEngine {
 
   private void resolveFeeFormula(X x, Fee fee, FObject obj) {
     if ( fee.getFormula() == null ) return;
-    addToFeeGraph(fee.getId());
+
+    var oldCurrentFeeId = currentFeeId_;
+    currentFeeId_ = addToFeeGraph(fee.getId());
+
     fee.setFormula(resolveFormula(x, fee.getFormula(), obj));
+
+    currentFeeId_ = oldCurrentFeeId;
   }
 
-  private void addToFeeGraph(String feeId) {
+  private String addToFeeGraph(String feeId) {
     if ( ! feeGraph_.containsKey(feeId) ) {
       feeGraph_.put(feeId, new LinkedList<>());
     }
@@ -134,7 +149,7 @@ public class FeeEngine {
         );
       }
     }
-    currentFeeId_ = feeId;
+    return feeId;
   }
 
   private Expr resolveFormula(X x, Expr formula, FObject obj) {
@@ -147,12 +162,20 @@ public class FeeEngine {
 
     if ( formula instanceof FeeExpr ) {
       var childFee = loadFee(x, (FeeExpr) formula, obj);
-      return childFee.getFormula() != null
-        ? childFee.getFormula()
-        : new Constant(childFee.getRate(obj));
+      if ( childFee.getFormula() == null ) {
+        childFee.setFormula(new Constant(childFee.getRate(obj)));
+      }
+      loadedFees_.put(childFee.getName(), childFee.getFormula().toString());
+      return childFee.getFormula();
     }
 
-    return formula;
+    var key = formula.toString();
+    var resolved = resolvedFormulas_.get(key);
+    if ( resolved == null ) {
+      resolved = formula.partialEval();
+      resolvedFormulas_.put(key, resolved);
+    }
+    return resolved;
   }
 
   private boolean isCyclic(String current) {

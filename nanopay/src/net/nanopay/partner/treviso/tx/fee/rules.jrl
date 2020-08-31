@@ -3,7 +3,7 @@ p({
   id: "91194da9-8391-436a-8468-fa2c706126b8",
   name: "Treviso Fee",
   documentation: "Add fee line item for Treviso transactions.",
-  feeName: "Treviso Fee",
+  feeName: "Total Fee Due",
   feeDenomination: "USD",
   feeClass: "net.nanopay.tx.FeeLineItem",
   enabled: true,
