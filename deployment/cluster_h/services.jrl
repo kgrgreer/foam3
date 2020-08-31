@@ -25,9 +25,7 @@ p({
       "class": "foam.nanos.servlet.ServletMapping",
       "servletObject": {
         "class": "foam.nanos.servlet.VirtualHostRoutingServlet",
-        "hostMapping": {
-          "localhost": "/index.html"
-        },
+        "isResourceStorage": true,
         "defaultHost": "localhost"
       },
       "pathSpec": "/welcome"
