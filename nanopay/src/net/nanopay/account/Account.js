@@ -464,7 +464,12 @@ foam.CLASS({
         return x.balanceService.findBalance(x, this.id);
       },
       javaCode: `
-        return ((BalanceService) x.get("balanceService")).findBalance_(x, this);
+        long balance = 0;
+        //catching "Rate Not Found" RuntimeException
+        try {
+          balance = ((BalanceService) x.get("balanceService")).findBalance_(x, this);
+        } catch(Throwable t) {}
+        return balance;
       `
     },
     {
