@@ -27,9 +27,12 @@ import org.apache.http.util.EntityUtils;
 
 import foam.core.ContextAwareSupport;
 import foam.core.X;
+import foam.dao.DAO;
 import foam.lib.NetworkPropertyPredicate;
 import foam.lib.json.JSONParser;
 import foam.lib.json.Outputter;
+import foam.nanos.alarming.Alarm;
+import foam.nanos.alarming.AlarmReason;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
 import foam.nanos.om.OMLogger;
@@ -65,6 +68,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
     if ( ! isCredientialsValid() ) {
       credentials = null;
       logger.error(this.getClass().getSimpleName(), "invalid credentials");
+      ((DAO) getX().get("alarmDAO")).put(new Alarm.Builder(getX()).setName("AFEX getCredentials").setReason(AlarmReason.CREDENTIALS).build());
     }
     return credentials;
   }
@@ -125,6 +129,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
     } catch (IOException e) {
       omLogger.log("AFEX getToken timeout");
+      ((DAO) getX().get("alarmDAO")).put(new Alarm.Builder(getX()).setName("AFEX getToken").setReason(AlarmReason.TIMEOUT).build());
       logger.error(e);
     }
 
