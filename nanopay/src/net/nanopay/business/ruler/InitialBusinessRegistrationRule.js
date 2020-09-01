@@ -33,6 +33,7 @@ foam.CLASS({
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.crunch.UserCapabilityJunction',
+    'foam.nanos.logger.Logger',
     'net.nanopay.crunch.onboardingModels.InitialBusinessData',
     'net.nanopay.model.Business'
   ],
@@ -94,12 +95,15 @@ foam.CLASS({
             business = (Business) localUserDAO.inX(x).put(business);
             ucj.setSourceId(business.getId());
           } catch (Exception e) {
+            ((Logger) x.get("logger")).warning(e);
             throw new Error(BUSINESS_CREATE_ERROR);
           }
 
           try {
-            agentAuth.actAs(x, business);
+            if (businessCapabilityData.getSignInAsBusiness())
+              agentAuth.actAs(x, business);
           } catch (Exception e) {
+            ((Logger) x.get("logger")).warning(e);
             throw new Error(UNABLE_SIGN_IN);
           }
         }

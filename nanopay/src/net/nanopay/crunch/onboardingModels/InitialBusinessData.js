@@ -103,6 +103,12 @@ foam.CLASS({
       label: 'Email Address',
       section: 'businessRegistration'
     },
+    {
+      class: 'Boolean',
+      name: 'signInAsBusiness',
+      value: true,
+      hidden: true
+    },
     net.nanopay.model.Business.ADDRESS.clone().copyFrom({
       section: 'businessAddress',
       documentation: 'Business address.',
