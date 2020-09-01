@@ -31,7 +31,8 @@ foam.CLASS({
   imports: [
     'countryDAO',
     'permittedCountryDAO',
-    'user'
+    'user',
+    'subject'
   ],
 
   javaImports: [
@@ -68,7 +69,17 @@ foam.CLASS({
       name: 'businessName',
       documentation: 'Legal name of business.',
       section: 'businessRegistration',
-      required: true
+      required: true,
+      visibility: function() {
+        if ( this.subject.user.businessName ) {
+          return foam.u2.DisplayMode.RO;
+        } else {
+          return foam.u2.DisplayMode.RW;
+        }
+      },
+      factory: function() {
+        return this.subject.user.businessName
+      }
     },
     {
       class: 'PhoneNumber',

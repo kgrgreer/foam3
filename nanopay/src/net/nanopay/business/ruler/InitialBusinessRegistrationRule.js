@@ -56,12 +56,30 @@ foam.CLASS({
       agency.submit(x, new ContextAgent() {
         @Override
         public void execute(X x) {
+          UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
           DAO localUserDAO = (DAO) x.get("localUserDAO");
-          DAO capabilityDAO = (DAO) x.get("capabilityDAO");
+          DAO businessDAO = (DAO) x.get("businessDAO");
+          DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
           User user = ((Subject) x.get("subject")).getUser();
+
+          InitialBusinessData businessCapabilityData = (InitialBusinessData) ((UserCapabilityJunction) obj).getData();
+
+          //check if business already exist, if it is, update it
+          Business updatedBusiness = (Business) businessDAO.find(user.getId());
+
+          if ( updatedBusiness != null ) {
+            updatedBusiness.setAddress(businessCapabilityData.getAddress());
+            updatedBusiness.setMailingAddress(businessCapabilityData.getMailingAddress());
+            updatedBusiness.setPhoneNumber(businessCapabilityData.getCompanyPhone());
+            updatedBusiness.setFax(businessCapabilityData.getFax());
+            updatedBusiness.setEmail(businessCapabilityData.getEmail());
+            updatedBusiness.setSpid(user.getSpid());
+            localUserDAO.inX(x).put(updatedBusiness);
+            return;
+          }
+
           AgentAuthService agentAuth = (AgentAuthService) x.get("agentAuth");
           // Create user business and associate it to the user.
-          InitialBusinessData businessCapabilityData = (InitialBusinessData) ((UserCapabilityJunction) obj).getData();
           Business business = new Business.Builder(x)
             .setBusinessName(businessCapabilityData.getBusinessName())
             .setOrganization(businessCapabilityData.getBusinessName())
@@ -74,6 +92,7 @@ foam.CLASS({
             .build();
           try {
             business = (Business) localUserDAO.inX(x).put(business);
+            ucj.setSourceId(business.getId());
           } catch (Exception e) {
             throw new Error(BUSINESS_CREATE_ERROR);
           }
