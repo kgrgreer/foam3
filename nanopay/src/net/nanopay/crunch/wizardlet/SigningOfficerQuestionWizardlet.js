@@ -25,13 +25,6 @@ foam.CLASS({
     }
   ],
 
-  properties: [
-    {
-      name: 'mustBeValid',
-      value: false
-    }
-  ],
-
   methods: [
     {
       name: 'save',

@@ -159,7 +159,7 @@ foam.CLASS({
       autoValidate: false,
       validationPredicates: [
         {
-          args: ['address', 'address$errors_'],
+          args: ['mailingAddress', 'mailingAddress$errors_'],
           predicateFactory: function(e) {
             return e.EQ(foam.mlang.IsValid.create({
                 arg1: net.nanopay.crunch.onboardingModels.InitialBusinessData.MAILING_ADDRESS
