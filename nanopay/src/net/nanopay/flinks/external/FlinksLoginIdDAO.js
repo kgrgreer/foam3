@@ -23,12 +23,20 @@ foam.CLASS({
   documentation: `Decorating DAO for processing FlinksLoginId requests.`,
 
   javaImports: [
+    'foam.core.FObject',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.auth.Address',
+    'foam.nanos.auth.AgentAuthService',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Subject',
+    'foam.nanos.crunch.connection.CapabilityPayload',
+    'java.util.HashMap',
+    'java.util.Map',
     'net.nanopay.bank.CABankAccount',
+    'net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy',
+    'net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiTermsAndConditions',
+    'net.nanopay.crunch.registration.UserRegistrationData',
     'net.nanopay.flinks.FlinksAuth',
     'net.nanopay.flinks.FlinksResponseService',
     'net.nanopay.flinks.model.AccountWithDetailModel',
@@ -45,9 +53,10 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
+        AgentAuthService agentAuth = (AgentAuthService) x.get("agentAuth");
         DAO accountDAO = (DAO) x.get("localAccountDAO");
-        DAO userDAO = (DAO) x.get("localUserDAO");
-        DAO businessDAO = (DAO) x.get("localBusinessDAO");
+        DAO capabilityPayloadDAO = (DAO) x.get("capabilityPayloadDAO");
+        DAO smeUserRegistrationDAO = (DAO) x.get("smeUserRegistrationDAO");
         FlinksAuth flinksAuth = (FlinksAuth) x.get("flinksAuth");
         FlinksResponseService flinksResponseService = (FlinksResponseService) x.get("flinksResponseService");
         User user = ((Subject) x.get("subject")).getUser();
@@ -74,14 +83,51 @@ foam.CLASS({
               .setPostalCode(holderAddress.getPostalCode())
               .build();
 
+            String fullName = holder.getName();
+            String nameSplit[] = fullName.split(" ", 2);
+            String firstName = nameSplit[0];
+            String lastName = nameSplit[1];
+
             User newUser = new User.Builder(x)
-              .setLegalName(holder.getName())
+              .setFirstName(firstName)
+              .setLastName(lastName)
+              .setLegalName(fullName)
               .setEmail(holder.getEmail())
+              .setUserName(holder.getEmail())
               .setAddress(address)
               .setPhoneNumber(holder.getPhoneNumber())
+              .setDesiredPassword("password")
+              .setEmailVerified(true)
               .build();
-            newUser = (User) userDAO.put(newUser);
-            
+            newUser = (User) smeUserRegistrationDAO.put(newUser);
+            agentAuth.actAs(x, newUser);
+
+            Map<String,FObject> capabilityDataObjects = new HashMap<>();
+            AbliiPrivacyPolicy privacyPolicy = new AbliiPrivacyPolicy.Builder(x)
+              .setTitle("Ablii's Privacy Policy")
+              .setAgreement(true)
+              .build();
+            AbliiTermsAndConditions termsAndConditions = new AbliiTermsAndConditions.Builder(x)
+              .setTitle("Ablii's Terms and Conditions")
+              .setAgreement(true)
+              .build();
+            UserRegistrationData registrationData = new UserRegistrationData.Builder(x)
+              .setFirstName(newUser.getFirstName())
+              .setLastName(newUser.getLastName())
+              .setPhone(newUser.getPhoneNumber())
+              .build();
+
+            capabilityDataObjects.put("AbliiPrivacyPolicy", privacyPolicy);
+            capabilityDataObjects.put("AbliiTermsAndConditions", termsAndConditions);
+            capabilityDataObjects.put("UserRegistration", registrationData);
+            capabilityDataObjects.put("Nanopay Admission", null);
+            capabilityDataObjects.put("API Onboarding User and Business", null);
+
+            CapabilityPayload payload = new CapabilityPayload.Builder(x)
+              .setCapabilityDataObjects(new HashMap<String,FObject>(capabilityDataObjects))
+              .build();
+            capabilityPayloadDAO.put(payload);
+
             CABankAccount bankAccount = new CABankAccount();
             bankAccount.setOwner(newUser.getId());
             bankAccount.setAccountNumber(accountDetail.getAccountNumber());
