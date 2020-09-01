@@ -55,9 +55,6 @@ foam.CLASS({
         FlinksLoginId flinksLoginId = (FlinksLoginId) obj;
         FlinksResponse flinksResponse = (FlinksResponse) flinksResponseService.getFlinksResponse(x, flinksLoginId);
         if ( flinksResponse == null ) throw new RuntimeException("Flinks failed to provide a valid response when provided with login ID: " + flinksLoginId.getLoginId());
-
-        LoginModel loginModel = flinksResponse.getLogin();
-        String type = loginModel.getType();
         
         FlinksAccountsDetailResponse flinksDetailResponse = (FlinksAccountsDetailResponse) flinksAuth.getAccountSummary(x, flinksResponse.getRequestId(), user);
         flinksLoginId.setFlinksAccountsDetails(flinksDetailResponse.getId());
@@ -77,25 +74,16 @@ foam.CLASS({
               .setPostalCode(holderAddress.getPostalCode())
               .build();
 
+            User newUser = new User.Builder(x)
+              .setLegalName(holder.getName())
+              .setEmail(holder.getEmail())
+              .setAddress(address)
+              .setPhoneNumber(holder.getPhoneNumber())
+              .build();
+            newUser = (User) userDAO.put(newUser);
+            
             CABankAccount bankAccount = new CABankAccount();
-
-            if ( type.equals("Personal") ) {
-              User newUser = new User.Builder(x)
-                .setFirstName(holder.getName())
-                .setEmail(holder.getEmail())
-                .setAddress(address)
-                .build();
-              newUser = (User) userDAO.put(newUser);
-              bankAccount.setOwner(newUser.getId());
-            } else if ( type.equals("Business") ) {
-              Business newBusiness = new Business.Builder(x)
-                .setEmail(holder.getEmail())
-                .setAddress(address)
-                .build();
-              newBusiness = (Business) businessDAO.put(newBusiness);
-              bankAccount.setOwner(newBusiness.getId());
-            }
-
+            bankAccount.setOwner(newUser.getId());
             bankAccount.setAccountNumber(accountDetail.getAccountNumber());
             bankAccount.setBranchId(accountDetail.getTransitNumber());
             bankAccount.setDenomination(accountDetail.getCurrency());

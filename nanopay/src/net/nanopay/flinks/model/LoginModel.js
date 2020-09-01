@@ -40,7 +40,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'type',
+      name: 'Type',
       visibility: 'RO'
     },
     {
