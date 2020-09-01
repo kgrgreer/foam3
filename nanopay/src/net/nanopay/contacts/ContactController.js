@@ -86,7 +86,7 @@ foam.CLASS({
             this.Action.create({
               name: 'addBankAccount',
               label: 'Add Bank',
-              isEnabled: async function() {
+              isAvailable: async function() {
                 var bank = await this.accounts.find(this.EQ(net.nanopay.bank.BankAccount.OWNER, this.id))
                 return this.signUpStatus !== self.ContactStatus.ACTIVE && ! bank;
               },
@@ -101,7 +101,7 @@ foam.CLASS({
             this.Action.create({
               name: 'edit',
               label: 'View details',
-              isEnabled: async function() {
+              isAvailable: async function() {
                 return this.signUpStatus !== self.ContactStatus.ACTIVE;
               },
               code: function(X) {
