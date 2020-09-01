@@ -201,38 +201,24 @@ p({
         "class":"foam.mlang.predicate.Or",
         "args":[
           {
-            "class":"foam.nanos.ruler.predicate.PropertyIsClass",
-            "propName":"data",
-            "of":"net.nanopay.crunch.onboardingModels.BusinessOwnershipData"
+            "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+            "propName":"status",
+            "propValue":{"class":"foam.nanos.crunch.CapabilityJunctionStatus","ordinal":1},
+            "isNew":false
           },
-          {
-            "class":"foam.nanos.ruler.predicate.PropertyIsClass",
-            "propName":"data",
-            "of":"net.nanopay.crunch.onboardingModels.BusinessDirectorsData"
-          },
-          {
-            "class":"foam.nanos.ruler.predicate.PropertyIsClass",
-            "propName":"data",
-            "of":"net.nanopay.crunch.onboardingModels.CertifyDataReviewed"
-          }
+          { "class":"foam.nanos.ruler.predicate.PropertyEQValue","propName":"isRenewable","propValue":true,"isNew":false }
         ]
       },
       {
-        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
-        "propName":"status",
-        "propValue":{
-          "class":"foam.nanos.crunch.CapabilityJunctionStatus",
-          "ordinal":1
-        },
-        "isNew":false
-      },
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
-        "propName":"status",
-        "propValue":{
-          "class":"foam.nanos.crunch.CapabilityJunctionStatus",
-          "ordinal":1
-        }
+        "class":"foam.mlang.predicate.And",
+        "args":[
+          {
+            "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+            "propName":"status",
+            "propValue":{"class":"foam.nanos.crunch.CapabilityJunctionStatus","ordinal":1}
+          },
+          { "class":"foam.nanos.ruler.predicate.PropertyNEQValue","propName":"isRenewable","propValue":true }
+        ]
       }
     ]
   },
@@ -244,7 +230,7 @@ p({
   "lifecycleState":1
 })
 
-
+// todo remove arg in and? i dont see how its useful
 p({
   "class":"foam.nanos.ruler.Rule",
   "id":"crunch-onboard-compliance-passed-reput-1",
@@ -264,33 +250,11 @@ p({
         "propValue": null
       },
       {
-        "class":"foam.mlang.predicate.Or",
-        "args":[
-          {
-            "class":"foam.nanos.ruler.predicate.PropertyIsClass",
-            "propName":"data",
-            "of":"net.nanopay.crunch.onboardingModels.BusinessOwnershipData"
-          },
-          {
-            "class":"foam.nanos.ruler.predicate.PropertyIsClass",
-            "propName":"data",
-            "of":"net.nanopay.crunch.onboardingModels.BusinessDirectorsData"
-          },
-          {
-            "class":"foam.nanos.ruler.predicate.PropertyIsClass",
-            "propName":"data",
-            "of":"net.nanopay.crunch.onboardingModels.CertifyDataReviewed"
-          }
-        ]
-      },
-      {
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
         "propName":"status",
-        "propValue":{
-          "class":"foam.nanos.crunch.CapabilityJunctionStatus",
-          "ordinal":1
-        }
-      }
+        "propValue":{"class":"foam.nanos.crunch.CapabilityJunctionStatus","ordinal":1}
+      },
+      { "class":"foam.nanos.ruler.predicate.PropertyNEQValue","propName":"isRenewable","propValue":true }
     ]
   },
   "action":{
@@ -334,13 +298,16 @@ p({
         "class":"foam.mlang.predicate.And",
         "args":[
           {
-            "class":"foam.nanos.ruler.predicate.PropertyEQValue",
-            "propName":"status",
-            "propValue":{
-              "class":"foam.nanos.crunch.CapabilityJunctionStatus",
-              "ordinal":1
-            },
-            "isNew":false
+            "class":"foam.mlang.predicate.Or",
+            "args":[
+              {
+                "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+                "propName":"status",
+                "propValue":{"class":"foam.nanos.crunch.CapabilityJunctionStatus","ordinal":1},
+                "isNew":false
+              },
+              { "class":"foam.nanos.ruler.predicate.PropertyNEQValue","propName":"isRenewable","propValue":true,"isNew":false }
+            ]
           },
           {
             "class":"foam.mlang.predicate.Or",
@@ -354,12 +321,9 @@ p({
                 }
               },
               {
-                "class":"foam.nanos.ruler.predicate.PropertyEQValue",
-                "propName":"status",
-                "propValue":{
-                  "class":"foam.nanos.crunch.CapabilityJunctionStatus",
-                  "ordinal":5
-                }
+                "class":"foam.nanos.ruler.predicate.PropertyChangePredicate",
+                "propName":"isInGracePeriod",
+                "propValue":true
               }
             ]
           }
@@ -370,11 +334,8 @@ p({
         "args":[
           {
             "class":"foam.nanos.ruler.predicate.PropertyEQValue",
-            "propName":"status",
-            "propValue":{
-              "class":"foam.nanos.crunch.CapabilityJunctionStatus",
-              "ordinal":5
-            },
+            "propName":"isInGracePeriod",
+            "propValue":true,
             "isNew":false
           },
           {
