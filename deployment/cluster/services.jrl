@@ -11,8 +11,7 @@ p({
       "class": "foam.nanos.servlet.ServletMapping",
       "servletObject": {
         "class": "foam.nanos.servlet.VirtualHostRoutingServlet",
-        "isResourceStorage": true,
-        "defaultHost": "localhost"
+        "isResourceStorage": true
       },
       "pathSpec": "/welcome"
     }, {
@@ -74,21 +73,6 @@ p({
   }
 })
 r({"class":"foam.nanos.boot.NSpec", "name":"liveScriptBundler"})
-
-// p({
-//   "class":"foam.nanos.boot.NSpec",
-//   "name":"clusterConfigMonitor",
-//   "lazy": false,
-//   "serviceClass":"foam.nanos.medusa.ClusterConfigMonitor"
-// })
-
-p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "mping",
-  "lazy": false,
-  "authenticate": false,
-  "serviceClass": "foam.nanos.medusa.ClusterPingService"
-})
 
 p({
   "class":"foam.nanos.boot.NSpec",
