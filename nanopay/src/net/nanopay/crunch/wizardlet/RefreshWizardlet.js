@@ -12,13 +12,6 @@ foam.CLASS({
     'window'
   ],
 
-  properties: [
-    {
-      name: 'mustBeValid',
-      value: false
-    }
-  ],
-
   methods: [
     {
       name: 'save',

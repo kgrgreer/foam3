@@ -70,6 +70,10 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'denomination',
+      value: 'BRL'
+    },
+    {
       name: 'country',
       value: 'BR',
       visibility: 'RO'

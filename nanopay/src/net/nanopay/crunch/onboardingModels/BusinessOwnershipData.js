@@ -40,6 +40,9 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.model.BeneficialOwner',
+    'java.util.stream.Collectors',
+    'java.util.Set',
+    'java.util.List'
   ],
 
   sections: [
@@ -153,7 +156,7 @@ foam.CLASS({
             .TARGET_ID))
           .then(sos => {
             this.businessEmployeeDAO
-              .where(this.IN(foam.nanos.auth.User.ID, sos.array))
+              .where(this.IN(foam.nanos.auth.User.ID, sos.projection))
               .select({ put: sinkFn })
               .then(() => pdao.promise.resolve(adao));
           });
@@ -178,7 +181,11 @@ foam.CLASS({
       getter: function() {
         return this.amountOfOwners <= 0 ||
           new Set(this.chosenOwners).size === this.amountOfOwners;
-      }
+      },
+      javaGetter: `
+      Set<String> ownerSet = (Set<String>) ((List)getChosenOwners()).stream().collect(Collectors.toSet());
+      return getAmountOfOwners() <= 0 || ownerSet.size() == getAmountOfOwners();
+      `
     },
 
     // Ownership Amount Section
@@ -464,7 +471,7 @@ foam.CLASS({
 
         // validate BeneficialOwner objects
         BeneficialOwner[] owners = new BeneficialOwner[]{ getOwner1(), getOwner2(), getOwner3(), getOwner4() };
-        for ( int i = 0 ; i < getChosenOwners().size(); i++ ) owners[i].validate(x);
+        for ( int i = 0 ; i < getAmountOfOwners(); i++ ) owners[i].validate(x);
       `,
     }
   ]

@@ -42,6 +42,7 @@ foam.CLASS({
       class: 'String',
       name: 'nire',
       label: 'NIRE/State Commercial Identification Number',
+      required: true,
       documentation: `NIRE is the State Commercial Identification Number used by the State Commercial Board.`,
       section: 'businessInformation'
     },
@@ -65,6 +66,7 @@ foam.CLASS({
       class: 'String',
       name: 'cnpj',
       label: 'CNPJ',
+      required: true,
       documentation: `
           CNPJ (short for Cadastro Nacional da Pessoa Jurídica in Portuguese, or National Registry of Legal Entities) is an identification number issued to Brazilian companies by the Department of Federal Revenue of Brazil.
           Format of CNPJ - 14-digit number formatted as 00.000.000/0001-00
@@ -77,7 +79,8 @@ foam.CLASS({
             return e.AND(
               e.EQ(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.BrazilBusinessInfoData.CNPJ }), 14)
             );
-          }
+          },
+          errorString: 'Please enter 14-digit National Registry of Legal Entities Number'
         }
       ],
       tableCellFormatter: function(val) {

@@ -84,7 +84,7 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['suggestedUserTransactionInfo'],
+          args: ['suggestedUserTransactionInfo', 'suggestedUserTransactionInfo$errors_'],
           predicateFactory: function(e) {
             return e.EQ(foam.mlang.IsValid.create({
               arg1: net.nanopay.crunch.onboardingModels.TransactionDetailsData.SUGGESTED_USER_TRANSACTION_INFO

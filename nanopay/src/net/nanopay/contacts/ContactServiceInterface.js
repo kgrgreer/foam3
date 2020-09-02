@@ -25,7 +25,7 @@ foam.INTERFACE({
 
     methods: [
       {
-        name: 'checkExistingUser',
+        name: 'checkExistingContact',
         async: true,
         type: 'Boolean',
         args: [
@@ -36,6 +36,10 @@ foam.INTERFACE({
           {
             name: 'email',
             type: 'String'
+          },
+          {
+            name: 'isContact',
+            type: 'boolean'
           }
         ]
       }

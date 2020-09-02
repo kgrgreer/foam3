@@ -79,11 +79,11 @@ foam.CLASS({
             notification.setNotificationType("Capability Expiry Reminder");
             notification.setCreated(new Date());
 
-            if ( junction.getStatus() == CapabilityJunctionStatus.GRACE_PERIOD ) {
+            if ( junction.getIsInGracePeriod() ) {
               String body = new StringBuilder(NOTIF_PRE)
                 .append(cap.getName())
                 .append(GRACE_PERIOD_NOTIF_SUF_1)
-                .append(junction.getGraceDaysLeft())
+                .append(junction.getGracePeriod())
                 .append(GRACE_PERIOD_NOTIF_SUF_2)
                 .toString();
               args.put("body", body);

@@ -15,6 +15,7 @@
         <li><a href="#create-user">Create User</a></li>
         <li><a href="#user-onboarding">Onboard User</a></li>
         <li><a href="#business-onboarding">Onboard Business</a></li>
+        <li><a href="#account-creation">Bank Account Creation</a></li>
     </ol>
 </p>
 
@@ -78,6 +79,28 @@
         <li><a href="#signing-officer-personal-data">SigningOfficerPersonalData</a></li>
     </ul>
     Providing all of this information will setup the business. The definition of these objects can be found in the <a href="#business-onboarding-objects">business onboarding objects</a> section.
+</p>
+
+<p>
+<i><b>Session Authentication:</b> Authentication for business onboarding should be done with a payment session that was created with the userId set the businessId of the business created in steps 2 and agentId set to the ID of the user created in step 1.</i>
+</p>
+
+<h3><a name="account-creation">Bank Account Creation</a></h3>
+<p>
+  After setting up a user and a business, the last step necessary to perform is creating a bank account for the Sending
+  or receiving of funds in a transaction. Bank account information is provided through a connection with Flinks, which 
+  provides all necessary account information to complete a transaction. The steps to create an account are as follows:
+  <ol>
+    <li>Allow user to login to bank account through Flinks</li>
+    <li>Capture the LoginId from the Flinks response</li>
+    <li>Send the Flinks LoginId to DIG</li>
+  </ol>
+</p>
+<p>
+    The Flinks LoginId API call is a DIG API call to the flinksLoginIdDAO with the following payload.
+    <code>{
+    "loginId": "89e91db9-c45b-4771-5a1a-08d53675899d"
+}   </code>
 </p>
 
 <p>

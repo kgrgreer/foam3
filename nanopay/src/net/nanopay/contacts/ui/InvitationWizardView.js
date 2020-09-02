@@ -114,7 +114,7 @@ foam.CLASS({
       },
       code: async function(X) {
         this.data.createdBy = this.user.id;
-        var isExisting = await this.contactService.checkExistingUser(this, this.data.email);
+        var isExisting = await this.contactService.checkExistingContact(this, this.data.email, this.data.isContact);
 
         if ( ! isExisting ) {
           this.invitationDAO

@@ -86,6 +86,7 @@ foam.CLASS({
     },
     {
       name: 'iban',
+      required: false,
       visibility: 'HIDDEN'
     },
     {

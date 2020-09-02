@@ -8,6 +8,9 @@ import foam.nanos.NanoService;
 import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import net.nanopay.admin.model.ComplianceStatus;
+import net.nanopay.contacts.Contact;
+import net.nanopay.contacts.ContactStatus;
+import java.util.List;
 import static foam.mlang.MLang.*;
 
 public class ContactService
@@ -16,12 +19,24 @@ public class ContactService
   protected DAO userDAO;
 
   @Override
-  public boolean checkExistingUser(X x, String email) throws RuntimeException {
+  public boolean checkExistingContact(X x, String email, boolean isContact) throws RuntimeException {
     ArraySink select = (ArraySink) userDAO.where(EQ(User.EMAIL, email)).select(new ArraySink());
 
-    if ( select.getArray().size() > 0 ) {
-      return true;
+    if ( ! isContact ) {
+      if ( select.getArray().size() > 0 ) {
+        return true;
+      }
+    } else {
+      DAO contactDAO = (DAO) x.get("localContactDAO");
+      List<Contact> contactList = ((ArraySink) contactDAO.where(EQ(User.EMAIL, email)).select(new ArraySink())).getArray();
+
+      for (Contact contact : contactList) {
+        if (ContactStatus.ACTIVE.equals(contact.getSignUpStatus())) {
+          return true;
+        }
+      }
     }
+
     return false;
   }
 

@@ -113,9 +113,9 @@ foam.CLASS({
       value: 'CAD',
     },
     {
-      class: 'String',
       name: 'iban',
       visibility: 'HIDDEN',
+      required: false,
       getter: function() {
         return this.accountNumber;
       },
@@ -124,7 +124,6 @@ foam.CLASS({
       `
     },
     {
-      class: 'String',
       name: 'bankCode',
       visibility: 'HIDDEN'
     },

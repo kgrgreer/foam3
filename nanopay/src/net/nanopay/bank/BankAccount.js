@@ -364,7 +364,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'iban',
-      label: 'IBAN Number',
+      label: 'IBAN',
+      required: true,
       section: 'accountDetails',
       documentation: `Standard international numbering system developed to
           identify an overseas bank account.`,
