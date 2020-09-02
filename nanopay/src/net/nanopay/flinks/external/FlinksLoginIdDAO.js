@@ -36,11 +36,13 @@ foam.CLASS({
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy',
     'net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiTermsAndConditions',
+    'net.nanopay.crunch.onboardingModels.InitialBusinessData',
     'net.nanopay.crunch.registration.UserRegistrationData',
     'net.nanopay.flinks.FlinksAuth',
     'net.nanopay.flinks.FlinksResponseService',
-    'net.nanopay.flinks.model.AccountWithDetailModel',
+    'net.nanopay.flinks.model.AccountType',
     'net.nanopay.flinks.model.AddressModel',
+    'net.nanopay.flinks.model.AccountWithDetailModel',
     'net.nanopay.flinks.model.FlinksAccountsDetailResponse',
     'net.nanopay.flinks.model.FlinksResponse',
     'net.nanopay.flinks.model.LoginModel',
@@ -54,7 +56,8 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
         AgentAuthService agentAuth = (AgentAuthService) x.get("agentAuth");
-        DAO accountDAO = (DAO) x.get("localAccountDAO");
+        DAO accountDAO = (DAO) x.get("accountDAO");
+        DAO businessDAO = (DAO) x.get("businessDAO");
         DAO capabilityPayloadDAO = (DAO) x.get("capabilityPayloadDAO");
         DAO smeUserRegistrationDAO = (DAO) x.get("smeUserRegistrationDAO");
         FlinksAuth flinksAuth = (FlinksAuth) x.get("flinksAuth");
@@ -120,23 +123,40 @@ foam.CLASS({
 
             capabilityDataObjects.put("AbliiPrivacyPolicy", privacyPolicy);
             capabilityDataObjects.put("AbliiTermsAndConditions", termsAndConditions);
-            capabilityDataObjects.put("UserRegistration", registrationData);
+            capabilityDataObjects.put("User Registration", registrationData);
             capabilityDataObjects.put("Nanopay Admission", null);
             capabilityDataObjects.put("API Onboarding User and Business", null);
+
+            if ( flinksLoginId.getType().equals(AccountType.BUSINESS) ) {
+              InitialBusinessData businessData = new InitialBusinessData.Builder(x)
+                .setBusinessName("Business")
+                .setCompanyPhone(phoneNumber)
+                .setEmail(holder.getEmail())
+                .setSignInAsBusiness(false)
+                .setAddress(address)
+                .setMailingAddress(address)
+                .build();
+
+              capabilityDataObjects.put("Business Registration", businessData);
+            }
 
             CapabilityPayload payload = new CapabilityPayload.Builder(x)
               .setCapabilityDataObjects(new HashMap<String,FObject>(capabilityDataObjects))
               .build();
             capabilityPayloadDAO.put(payload);
 
+            Business business = (Business) businessDAO.find(newUser.getId());
+            if ( business != null ) {
+              agentAuth.actAs(x, business);
+            }
+
             CABankAccount bankAccount = new CABankAccount();
-            bankAccount.setOwner(newUser.getId());
+            bankAccount.setOwner(business != null ? business.getId() : newUser.getId());
             bankAccount.setAccountNumber(accountDetail.getAccountNumber());
             bankAccount.setBranchId(accountDetail.getTransitNumber());
             bankAccount.setDenomination(accountDetail.getCurrency());
             bankAccount.setInstitutionNumber(accountDetail.getInstitutionNumber());
             bankAccount.setName(accountDetail.getTitle());
-            bankAccount.setType(accountDetail.getType());
             bankAccount.setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED);
             bankAccount.setVerifiedBy("FLINKS");
 

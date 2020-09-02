@@ -74,4 +74,4 @@ foam.CLASS({
       name: 'createdByAgent'
     }
   ]
-})
+});
