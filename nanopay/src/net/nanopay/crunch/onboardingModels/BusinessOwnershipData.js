@@ -156,7 +156,7 @@ foam.CLASS({
             .TARGET_ID))
           .then(sos => {
             this.businessEmployeeDAO
-              .where(this.IN(foam.nanos.auth.User.ID, sos.array))
+              .where(this.IN(foam.nanos.auth.User.ID, sos.projection))
               .select({ put: sinkFn })
               .then(() => pdao.promise.resolve(adao));
           });
