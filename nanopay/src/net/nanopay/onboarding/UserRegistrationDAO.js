@@ -31,12 +31,14 @@ foam.CLASS({
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.User',
+    'foam.nanos.auth.UserUserJunction',
     'foam.nanos.auth.token.Token',
     'foam.nanos.logger.Logger',
     'foam.util.Auth',
     'foam.util.SafetyUtil',
     'net.nanopay.contacts.Contact',
     'net.nanopay.model.Business',
+    'net.nanopay.model.BusinessUserJunction',
     'net.nanopay.model.Invitation',
     'net.nanopay.model.InvitationStatus',
     
@@ -66,6 +68,10 @@ foam.CLASS({
     },
     {
       class: 'foam.dao.DAOProperty',
+      name: 'agentJunctionDAO'
+    },
+    {
+      class: 'foam.dao.DAOProperty',
       name: 'invitationDAO'
     },
     {
@@ -90,6 +96,7 @@ foam.CLASS({
             setTokenDAO((DAO) x.get("localTokenDAO"));
             setLocalBusinessDAO((DAO) x.get("localBusinessDAO"));
             setInvitationDAO((DAO) x.get("businessInvitationDAO"));
+            setAgentJunctionDAO((DAO) x.get("agentJunctionDAO"));
           }    
         `
         );
@@ -162,14 +169,28 @@ foam.CLASS({
             throw new RuntimeException(CANNOT_PROCESS_WO_INVITED_EMAIL_ERROR_MSG);
           }
 
-          if ( params.containsKey("businessId") ) {
+          if ( params.containsKey("group") && params.containsKey("businessId") ) {
+            String group = (String) params.get("group");
             long businessId = (long) params.get("businessId");
+            UserUserJunction junction;
 
             if ( businessId != 0 ) {
               Business business = (Business) getLocalBusinessDAO().inX(sysContext).find(businessId);
               if ( business == null ) {
                 throw new RuntimeException(BUSINESS_NOT_EXIST_ERROR_MSG);
               }
+
+              // Add AgentJunction
+              user = (User) super.put_(sysContext, user);
+
+              // Set up new connection between user and business
+              junction = new UserUserJunction.Builder(x)
+                .setSourceId(user.getId())
+                .setTargetId(business.getId())
+                .setGroup(business.getBusinessPermissionId() + "." + group)
+                .build();
+
+              getAgentJunctionDAO().inX(sysContext).put(junction);
 
               // Get a context with the Business in it
               X businessContext = Auth.sudo(sysContext, business);
@@ -187,14 +208,19 @@ foam.CLASS({
                 logger.warning(BUSINESS_INVITATION_PROCESSED_WHEN_NOT_IN_SENT_STATUS_ERROR_MSG);
               }
               invitation = (Invitation) invitation.fclone();
-              invitation.setStatus(InvitationStatus.ACCEPTED);
+              invitation.setStatus(InvitationStatus.COMPLETED);
               getInvitationDAO().put(invitation);
             }
+            
+            // Invalidate Token
+            try {
+              // Process token
+              Token clone = (Token) token.fclone();
+              clone.setProcessed(true);
+              getTokenDAO().inX(sysContext).put(clone);
+            } catch (Exception ignored) { }
           }
         }
-
-        // TODO: Why are we doing this here instead of letting PreventDuplicateEmailDAO catch this down the line?
-        if ( ! isInternal ) checkUserDuplication(x, user);
 
         return super.put_(sysContext, user);
       `

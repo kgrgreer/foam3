@@ -254,23 +254,34 @@ foam.CLASS({
         this.enabledBusinesses_
           .select()
           .then(async (sink) => {
-            // no registered business
-            if ( sink.array.length === 0 ) {
-              var ac = this.theme.admissionCapability;
+            var ac = this.theme.admissionCapability;
               
-              // check if user registration capability is granted
-              var ucj = await this.userCapabilityJunctionDAO.find(
-                this.AND(
-                  this.EQ(this.UserCapabilityJunction.SOURCE_ID, this.subject.user.id),
-                  this.EQ(this.UserCapabilityJunction.TARGET_ID, ac),
-                  this.EQ(this.UserCapabilityJunction.STATUS, this.CapabilityJunctionStatus.GRANTED)
-                )
-              );
-              // if yes, redirect to appStore
-              if ( ! ucj ) {
-                this.onboardingUtil.initUserRegistration(ac);
-                return;
-              }
+            // check if user registration capability is granted
+            var ucj = await this.userCapabilityJunctionDAO.find(
+              this.AND(
+                this.EQ(this.UserCapabilityJunction.SOURCE_ID, this.subject.user.id),
+                this.EQ(this.UserCapabilityJunction.TARGET_ID, ac),
+                this.EQ(this.UserCapabilityJunction.STATUS, this.CapabilityJunctionStatus.GRANTED)
+              )
+            );
+            if ( ! ucj ) {
+              this.onboardingUtil.initUserRegistration(ac);
+              return;
+            }
+            
+            if ( sink.array.length === 0 ) {
+              this.pushMenu('sme.main.appStore');
+              return;
+            }
+
+            if ( sink.array.length === 1 ) {
+              var junction = sink.array[0];
+
+              // If the user is only in one business but that business has
+              // disabled them, then don't immediately switch to that business.
+              if ( junction.status === this.AgentJunctionStatus.DISABLED ) return;
+              this.assignBusinessAndLogIn(junction);
+              this.removeAllChildren();
             }
           });
       }

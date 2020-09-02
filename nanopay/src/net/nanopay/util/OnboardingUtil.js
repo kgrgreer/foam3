@@ -160,7 +160,7 @@ foam.CLASS({
         })
         .add(this.PutFinalJunctionsAgent)
         .execute().then(() => {
-          this.pushMenu('sme.main.appStore');
+          this.pushMenu('sme.accountProfile.switch-business');
         });
     }
   ]
