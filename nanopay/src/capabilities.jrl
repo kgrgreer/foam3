@@ -526,6 +526,18 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
+  "id":"B98D97EF-4A43-4B03-84C1-9DE2C0109E87",
+  "name":"API Onboarding User",
+  "description":"Unlock onboarding for a given user",
+  "icon":"/images/capabilityIcons/CADOnboardCap.svg",
+  "version":"0",
+  "enabled":true,
+  "visible":false,
+  "keywords":["intuit"]
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
   "id":"CD499238-7854-4125-A04D-7CE7EE15BC74",
   "name":"API Onboarding Domestic Business Payments (CAD to CAD)",
   "description":"Unlock domestic payments through the API for a business.",

@@ -472,6 +472,14 @@ p({
 // Prerequisites for apiUserOnboarding
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"B98D97EF-4A43-4B03-84C1-9DE2C0109E87",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-18",
+  "priority":1
+})
+
+// Prerequisites for apiUserBusinessOnboarding
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"B98D97EE-4A43-4B03-84C1-9DE2C0109E87",
   "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-18",
   "priority":1
