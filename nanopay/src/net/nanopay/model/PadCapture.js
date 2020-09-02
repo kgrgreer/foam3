@@ -20,6 +20,10 @@ foam.CLASS({
   name: 'PadCapture',
   documentation: 'Captures the event when a bank has been PAD authorizated.',
 
+  implements: [
+    'foam.nanos.crunch.lite.Capable'
+  ],
+
   javaImports: ['java.util.Date'],
 
   requires: [
@@ -31,6 +35,10 @@ foam.CLASS({
   ],
 
   properties: [
+    // IDEA: model axiom inheritance
+    ...(foam.nanos.crunch.lite.CapableObjectData
+      .getOwnAxiomsByClass(foam.core.Property)
+      .map(p => p.clone())),
     {
       class: 'Long',
       name: 'id',
@@ -110,5 +118,20 @@ foam.CLASS({
       visibility: 'HIDDEN'
     },
     // TODO: Migration script for terms and agreements, REMOVE agree(1,2..) after script
+    {
+      class: 'StringArray',
+      name: 'capableRequirements',
+      storageTransient: true,
+      networkTransient: true,
+      documentation: `
+        Capable object requirements, defined by a subclass of PadCapture.
+      `
+    }
+  ],
+
+  methods: [
+    ...(foam.nanos.crunch.lite.CapableObjectData
+      .getOwnAxiomsByClass(foam.core.Method)
+      .map(m => m.clone()))
   ]
 });
