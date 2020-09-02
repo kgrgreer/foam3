@@ -87,6 +87,7 @@ foam.CLASS({
             String nameSplit[] = fullName.split(" ", 2);
             String firstName = nameSplit[0];
             String lastName = nameSplit[1];
+            String phoneNumber = holder.getPhoneNumber().replaceAll("[^0-9]", "");
 
             User newUser = new User.Builder(x)
               .setFirstName(firstName)
@@ -95,7 +96,7 @@ foam.CLASS({
               .setEmail(holder.getEmail())
               .setUserName(holder.getEmail())
               .setAddress(address)
-              .setPhoneNumber(holder.getPhoneNumber())
+              .setPhoneNumber(phoneNumber)
               .setDesiredPassword("password")
               .setEmailVerified(true)
               .build();
