@@ -39,6 +39,11 @@ foam.CLASS({
       name: 'loginId'
     },
     {
+      class: 'Enum',
+      of: 'net.nanopay.flinks.model.AccountType',
+      name: 'type'
+    },
+    {
       class: 'Reference',
       name: 'flinksAccountsDetails',
       of: 'net.nanopay.flinks.model.FlinksAccountsDetailResponse',
