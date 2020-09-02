@@ -368,7 +368,11 @@ p({
   "icon":"images/nanopay_logo_blue.png",
   "enabled":true,
   "visible":true,
-  "associatedEntity": 1
+  "associatedEntity": 1,
+  "wizardletConfig": {
+    "class": "foam.u2.wizard.StepWizardConfig",
+    "allowSkipping": false
+  }
 })
 
 p({
