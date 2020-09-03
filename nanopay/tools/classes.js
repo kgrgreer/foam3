@@ -130,6 +130,7 @@ var classes = [
   'net.nanopay.bank.ITBankAccount',
   'net.nanopay.bank.LVBankAccount',
   'net.nanopay.bank.LTBankAccount',
+  'net.nanopay.bank.LUBankAccount',
   'net.nanopay.bank.MTBankAccount',
   'net.nanopay.bank.NLBankAccount',
   'net.nanopay.bank.PTBankAccount',
