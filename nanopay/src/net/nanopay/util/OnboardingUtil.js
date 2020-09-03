@@ -41,6 +41,8 @@ foam.CLASS({
     'foam.u2.crunch.wizardflow.CreateWizardletsAgent',
     'foam.u2.crunch.wizardflow.StepWizardAgent',
     'foam.u2.crunch.wizardflow.PutFinalJunctionsAgent',
+    'foam.u2.crunch.wizardflow.FilterWizardletsAgent',
+    'foam.u2.crunch.wizardflow.LoadTopConfig'
   ],
 
   imports: [
@@ -142,6 +144,8 @@ foam.CLASS({
         .add(this.CapabilityAdaptAgent)
         .add(this.LoadCapabilitiesAgent)
         .add(this.CreateWizardletsAgent)
+        .add(this.FilterWizardletsAgent)
+        .add(this.LoadTopConfig)
         .add(this.StepWizardAgent, {
           config: foam.u2.wizard.StepWizardConfig.create({ 
             allowBacktracking: false,
@@ -156,7 +160,7 @@ foam.CLASS({
         })
         .add(this.PutFinalJunctionsAgent)
         .execute().then(() => {
-          this.pushMenu('sme.main.appStore');
+          this.pushMenu('sme.accountProfile.switch-business');
         });
     }
   ]

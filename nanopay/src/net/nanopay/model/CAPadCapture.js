@@ -103,6 +103,15 @@ foam.CLASS({
           '554af38a-8225-87c8-dfdf-eeb15f71215e-22'  // CA Cancellation Agreement
         ]
       }
+    },
+    {
+      name: 'capableRequirements',
+      value: [
+        '554af38a-8225-87c8-dfdf-eeb15f71215e-13',
+        '554af38a-8225-87c8-dfdf-eeb15f71215e-20',
+        '554af38a-8225-87c8-dfdf-eeb15f71215e-21',
+        '554af38a-8225-87c8-dfdf-eeb15f71215e-22'
+      ],
     }
   ]
 });
