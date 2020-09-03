@@ -15,6 +15,10 @@ p({
   "interceptIf":{"class":"net.nanopay.crunch.onboardingModels.BusinessHasNoSigningOfficers"},
   "wizardlet": {
     "class": "net.nanopay.crunch.wizardlet.SigningOfficerQuestionWizardlet"
+  },
+  "wizardletConfig": {
+    "class": "foam.u2.wizard.StepWizardConfig",
+    "allowSkipping": false
   }
 })
 
@@ -87,6 +91,10 @@ p({
   },
   "wizardlet": {
     "class": "foam.nanos.crunch.ui.CapabilityWizardlet"
+  },
+  "wizardletConfig": {
+    "class": "foam.u2.wizard.StepWizardConfig",
+    "allowSkipping": false
   }
 })
 
@@ -155,7 +163,11 @@ p({
     ]
   },
   "wizardlet": {
-    "class": "foam.nanos.crunch.ui.CapabilityWizardlet"
+    "class": "foam.nanos.crunch.ui.CapabilityWizardlet",
+  },
+  "wizardletConfig": {
+    "class": "foam.u2.wizard.StepWizardConfig",
+    "allowSkipping": false
   }
 })
 
@@ -251,6 +263,13 @@ p({
         "country":"CA"
       }
     ]
+  },
+  "wizardlet": {
+    "class": "foam.nanos.crunch.ui.CapabilityWizardlet"
+  },
+  "wizardletConfig": {
+    "class": "net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig",
+    "allowSkipping": false
   }
 })
 
@@ -274,6 +293,10 @@ p({
         "country":"CA"
       }
     ]
+  },
+  "wizardletConfig": {
+    "class": "net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig",
+    "allowSkipping": false
   }
 })
 
@@ -307,6 +330,10 @@ p({
         }
       }
     ]
+  },
+  "wizardletConfig": {
+    "class": "net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig",
+    "allowSkipping": false
   }
 })
 
@@ -330,6 +357,10 @@ p({
         "country":"BR"
       }
     ]
+  },
+  "wizardletConfig": {
+    "class": "net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig",
+    "allowSkipping": false
   }
 })
 
@@ -341,7 +372,11 @@ p({
   "icon":"images/nanopay_logo_blue.png",
   "enabled":true,
   "visible":true,
-  "associatedEntity": 1
+  "associatedEntity": 1,
+  "wizardletConfig": {
+    "class": "foam.u2.wizard.StepWizardConfig",
+    "allowSkipping": false
+  }
 })
 
 p({
@@ -376,6 +411,10 @@ p({
   },
   "wizardlet": {
     "class": "net.nanopay.crunch.wizardlet.RefreshWizardlet"
+  },
+  "wizardletConfig": {
+    "class": "foam.u2.wizard.StepWizardConfig",
+    "allowSkipping": false
   }
 })
 
@@ -514,5 +553,8 @@ p({
   "version":"0",
   "enabled":true,
   "visible":true,
-  "associatedEntity": 1
+  "associatedEntity": 1,
+  "wizardlet": {
+    "class": "foam.nanos.crunch.ui.CapabilityWizardlet"
+  },
 })

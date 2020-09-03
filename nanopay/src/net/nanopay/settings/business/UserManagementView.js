@@ -235,8 +235,8 @@ foam.CLASS({
       agentJunctionDAO.select({
         put: function(junction) {
           junction = self.ClientUserJunction.create({
-            name: junction.partnerInfo.firstName + ' ' + junction.partnerInfo.lastName,
-            email: junction.partnerInfo.email,
+            name: junction.partnerInfo ? junction.partnerInfo.firstName + ' ' + junction.partnerInfo.lastName : '',
+            email: junction.partnerInfo ? junction.partnerInfo.email : '',
             sourceId: junction.sourceId,
             targetId: junction.targetId,
             group: junction.group,

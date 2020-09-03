@@ -502,3 +502,32 @@ p({
   "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-11",
   "priority":3
 })
+
+//Unlock Domestic Payments and Invoicing
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-11",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-76",
+  "priority": 16
+})
+//Unlock International & Domestic Payments and Invoicing
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-13",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-76",
+  "priority": 16
+})
+//Unlock International & Domestic Payments and Invoicing for brazil
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-76",
+  "priority": 16
+})
+//API Onboarding Domestic Business Payments (CAD to CAD)
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"CD499238-7854-4125-A04D-7CE7EE15BC74",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-76",
+  "priority": 16
+})

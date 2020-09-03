@@ -31,7 +31,7 @@ foam.CLASS({
     { name: 'INVALID_ACCOUNT_NUMBER', message: 'Account number must be between 6 and 17 digits long.' },
     { name: 'ACCOUNT_NUMBER_REQUIRED', message: 'Account number required.' },
     { name: 'INVALID_BRANCH', message: 'Transit number must be 9 digits long.' },
-    { name: 'BRANCH_REQUIRED', message: 'Invalid transit required.' }
+    { name: 'BRANCH_REQUIRED', message: 'Transit number required.' }
   ],
 
   properties: [
@@ -84,6 +84,13 @@ foam.CLASS({
           '554af38a-8225-87c8-dfdf-eeb15f71215e-24'  // US Cancellation Agreement
         ]
       }
+    },
+    {
+      name: 'capableRequirements',
+      value: [
+        '554af38a-8225-87c8-dfdf-eeb15f71215e-23',
+        '554af38a-8225-87c8-dfdf-eeb15f71215e-24'
+      ],
     }
   ]
 });

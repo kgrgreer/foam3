@@ -31,7 +31,8 @@ foam.CLASS({
   imports: [
     'countryDAO',
     'permittedCountryDAO',
-    'user'
+    'user',
+    'subject'
   ],
 
   javaImports: [
@@ -68,7 +69,17 @@ foam.CLASS({
       name: 'businessName',
       documentation: 'Legal name of business.',
       section: 'businessRegistration',
-      required: true
+      required: true,
+      visibility: function() {
+        if ( this.subject.user.businessName ) {
+          return foam.u2.DisplayMode.RO;
+        } else {
+          return foam.u2.DisplayMode.RW;
+        }
+      },
+      factory: function() {
+        return this.subject.user.businessName
+      }
     },
     {
       class: 'PhoneNumber',
@@ -91,6 +102,12 @@ foam.CLASS({
       documentation: 'Company email.',
       label: 'Email Address',
       section: 'businessRegistration'
+    },
+    {
+      class: 'Boolean',
+      name: 'signInAsBusiness',
+      value: true,
+      hidden: true
     },
     net.nanopay.model.Business.ADDRESS.clone().copyFrom({
       section: 'businessAddress',
@@ -142,7 +159,7 @@ foam.CLASS({
       autoValidate: false,
       validationPredicates: [
         {
-          args: ['address', 'address$errors_'],
+          args: ['mailingAddress', 'mailingAddress$errors_'],
           predicateFactory: function(e) {
             return e.EQ(foam.mlang.IsValid.create({
                 arg1: net.nanopay.crunch.onboardingModels.InitialBusinessData.MAILING_ADDRESS

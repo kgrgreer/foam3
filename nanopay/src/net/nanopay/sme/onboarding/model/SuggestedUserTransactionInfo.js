@@ -62,7 +62,7 @@ foam.CLASS({
         {
           args: ['annualRevenue'],
           predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_REVENUE, '');
+            return e.NEQ(net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_REVENUE, null);
           },
           errorString: 'Please make a selection.'
         }
@@ -95,7 +95,7 @@ foam.CLASS({
         {
           args: ['transactionPurpose'],
           predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.TRANSACTION_PURPOSE, '');
+            return e.NEQ(net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.TRANSACTION_PURPOSE, null);
           },
           errorString: 'Please provide transaction purpose.'
         }
@@ -187,7 +187,7 @@ foam.CLASS({
         {
           args: ['annualDomesticVolume'],
           predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_DOMESTIC_VOLUME, '');
+            return e.NEQ(net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_DOMESTIC_VOLUME, null);
           },
           errorString: 'Please make a selection.'
         }

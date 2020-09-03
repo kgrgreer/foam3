@@ -17,9 +17,9 @@
 
 package net.nanopay.tx.fee;
 
+import foam.core.Currency;
 import foam.core.FObject;
 import foam.core.X;
-import foam.core.Currency;
 import foam.dao.DAO;
 import foam.mlang.Constant;
 import foam.mlang.Expr;
@@ -32,15 +32,41 @@ import net.nanopay.tx.model.Transaction;
 import java.util.*;
 
 public class FeeEngine {
+  /**
+   * Transaction fee rule that sets off the fee engine.
+   */
   private final TransactionFeeRule transactionFeeRule_;
 
+  /**
+   * Fee graph data structure to enable self recursion check in fee formula.
+   */
+  private final Map<String, List<String>> feeGraph_ = new HashMap<>();
+
+  /**
+   * Cached formula components for improving fee formula resolution.
+   */
+  private final Map<String, Expr> resolvedFormulas_ = new HashMap<>();
+
+  /**
+   * Saved loaded (child) fees to assist verification on fee calculation.
+   */
+  private final Map<String, String>     loadedFees_ = new HashMap<>();
+
+  /**
+   * Saved current fee id to support fee formula resolution.
+   */
   private String currentFeeId_ = null;
-  private Map<String, List<String>> feeGraph_ = new HashMap<>();
 
   public FeeEngine(TransactionFeeRule transactionFeeRule) {
     transactionFeeRule_ = transactionFeeRule;
   }
 
+  /**
+   * Execute the fee engine to apply fee on the transaction as a fee line item.
+   *
+   * @param x the context
+   * @param transaction transaction to apply fee on
+   */
   public void execute(X x, Transaction transaction) {
     var logger = (Logger) x.get("logger");
     var feeName = transactionFeeRule_.getFeeName();
@@ -58,9 +84,46 @@ public class FeeEngine {
         });
       }
     } catch ( Exception e ) {
-      var feeInfo = fee != null ? fee.toString() : "fee name:" + feeName;
+      var feeInfo = fee != null ? fee.toString() : "Fee name:" + feeName;
       throw new RuntimeException("Could not apply " + feeInfo + " to transaction id:" + transaction.getId(), e);
     }
+  }
+
+  /**
+   * Returns the fee group of the {@link #transactionFeeRule_} for use as the
+   * grouping of the fee line item to be added.
+   *
+   * @return fee group for the fee line item
+   */
+  protected String getFeeGroup() {
+    return transactionFeeRule_.getFeeGroup();
+  }
+
+  /**
+   * Returns Currency of the fee line item.
+   *
+   * @param x the context for currencyDAO lookup
+   * @param transaction contains source currency for use as fee currency when
+   *                    the transactionFeeRule_ is configured to use source
+   *                    currency as fee denomination
+   * @return currency for the fee line item
+   */
+  protected Currency getCurrency(X x, Transaction transaction) {
+    String currency = transactionFeeRule_.getSourceCurrencyAsFeeDenomination() ?
+      transaction.getSourceCurrency() :
+      transactionFeeRule_.getFeeDenomination();
+    return (Currency) ((DAO) x.get("currencyDAO")).find(currency);
+  }
+
+  /**
+   * Returns feeDAO from {@link #transactionFeeRule_} relationship for FeeExpr
+   * lookup.
+   *
+   * @param x the context
+   * @return feeDAO for FeeExpr lookup
+   */
+  protected DAO getFeeDAO(X x) {
+    return transactionFeeRule_.getFees(x);
   }
 
   private FeeLineItem newFeeLineItem(String name, long amount, Currency currency)
@@ -71,29 +134,38 @@ public class FeeEngine {
     result.setName(name);
     result.setAmount(amount);
     result.setFeeCurrency(currency);
+    StringBuilder sb = new StringBuilder();
+    for ( var entry : loadedFees_.entrySet() ) {
+      sb.append(entry.getKey())
+        .append(" = ")
+        .append(entry.getValue())
+        .append("\n");
+    }
+    result.setNote(sb.toString());
     return result;
   }
 
-  public String getFeeGroup() {
-    return transactionFeeRule_.getFeeGroup();
-  }
-
-  public Currency getCurrency(X x, Transaction transaction) {
-    String currency = transactionFeeRule_.getSourceCurrencyAsFeeDenomination() ?
-      transaction.getSourceCurrency() :
-      transactionFeeRule_.getFeeDenomination();
-    return (Currency) ((DAO) x.get("currencyDAO")).find(currency);
-  }
-
-  public DAO getFeeDAO(X x) {
-    return transactionFeeRule_.getFees(x);
-  }
-
+  /**
+   * Load fee by fee name. Delegated to {@link #loadFee(X, FeeExpr, FObject)}.
+   *
+   * @param x the context
+   * @param feeName name of fee to be loaded
+   * @param transaction transaction to be checked against fee predicate
+   * @return fee applicable for the transaction
+   */
   private Fee loadFee(X x, String feeName, Transaction transaction) {
     var feeExpr = new FeeExpr(feeName);
     return loadFee(x, feeExpr, transaction);
   }
 
+  /**
+   * Load fee by fee expr.
+   *
+   * @param x the context
+   * @param feeExpr fee expr for fee lookup
+   * @param obj (F)object to be checked against fee predicate
+   * @return fee applicable for the {@code obj} param
+   */
   private Fee loadFee(X x, FeeExpr feeExpr, FObject obj) {
     feeExpr.setX(x);
     feeExpr.setFeeDAO(getFeeDAO(x));
@@ -112,13 +184,32 @@ public class FeeEngine {
     return fee;
   }
 
+  /**
+   * Resolve fee formula. Used by {@link #loadFee(X, FeeExpr, FObject)}.
+   *
+   * @param x the context
+   * @param fee fee containing the formula to be resolved
+   * @param obj object to evaluate against the {@code formula}
+   */
   private void resolveFeeFormula(X x, Fee fee, FObject obj) {
     if ( fee.getFormula() == null ) return;
-    addToFeeGraph(fee.getId());
+
+    var oldCurrentFeeId = currentFeeId_;
+    currentFeeId_ = addToFeeGraph(fee.getId());
+
     fee.setFormula(resolveFormula(x, fee.getFormula(), obj));
+
+    currentFeeId_ = oldCurrentFeeId;
   }
 
-  private void addToFeeGraph(String feeId) {
+  /**
+   * Add fee dependency to {@link #feeGraph_} and check for self recursion in
+   * the fee formulas.
+   *
+   * @param feeId fee id to be added to {@link #feeGraph_}
+   * @return {@code feeId} if no self recursion found
+   */
+  private String addToFeeGraph(String feeId) {
     if ( ! feeGraph_.containsKey(feeId) ) {
       feeGraph_.put(feeId, new LinkedList<>());
     }
@@ -134,9 +225,18 @@ public class FeeEngine {
         );
       }
     }
-    currentFeeId_ = feeId;
+    return feeId;
   }
 
+  /**
+   * Resolve formula components recursively then simplify and cache the resolved
+   * formula to improve the execution and resolution performances.
+   *
+   * @param x the context
+   * @param formula formula to be resolved
+   * @param obj object to evaluate against the {@code formula}
+   * @return resolved formula
+   */
   private Expr resolveFormula(X x, Expr formula, FObject obj) {
     if ( formula instanceof Formula ) {
       var args = ((Formula) formula).getArgs();
@@ -147,14 +247,33 @@ public class FeeEngine {
 
     if ( formula instanceof FeeExpr ) {
       var childFee = loadFee(x, (FeeExpr) formula, obj);
-      return childFee.getFormula() != null
-        ? childFee.getFormula()
-        : new Constant(childFee.getRate(obj));
+      if ( childFee.getFormula() == null ) {
+        childFee.setFormula(new Constant(childFee.getRate(obj)));
+      }
+      loadedFees_.put(childFee.getName(), childFee.getFormula().toString());
+      return childFee.getFormula();
     }
 
-    return formula;
+    if ( formula instanceof Constant ) {
+      return formula;
+    }
+
+    // Simplify and cache the resolved formula
+    var key = formula.toString();
+    var resolved = resolvedFormulas_.get(key);
+    if ( resolved == null ) {
+      resolved = formula.partialEval();
+      resolvedFormulas_.put(key, resolved);
+    }
+    return resolved;
   }
 
+  /**
+   * Check for circle on {@link #feeGraph_}.
+   *
+   * @param current current node to start the check
+   * @return true if the branch under the {@code current} node contains circle
+   */
   private boolean isCyclic(String current) {
     Set<String> visited = new HashSet<>();
     Set<String> stack = new HashSet<>();
@@ -162,6 +281,14 @@ public class FeeEngine {
     return walkFeeGraph(current, visited, stack);
   }
 
+  /**
+   * Recursive Depth-First search on {@link #feeGraph_} to check for circle.
+   *
+   * @param current current node to start the search
+   * @param visited visited node tracking
+   * @param stack circular node tracking
+   * @return true if the branch under the {@code current} node contains circle
+   */
   private boolean walkFeeGraph(String current, Set<String> visited, Set<String> stack) {
     if ( stack.contains(current) ) return true;
     if ( visited.contains(current) ) return false;

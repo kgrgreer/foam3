@@ -50,9 +50,9 @@ foam.CLASS({
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.bank.BankAccountStatus',
+    'net.nanopay.bank.BRBankAccount',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
-    'net.nanopay.bank.BRBankAccount',
     'net.nanopay.cico.ui.bankAccount.form.BankPadAuthorization',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
     'net.nanopay.model.Business',
@@ -960,9 +960,7 @@ foam.CLASS({
       this.themeUpdated.resolve();
 
       // Listener to check for new toast notifications
-      var userNotificationQueryId = this.subject && this.subject.realUser ?
-      this.subject.realUser.id : this.user.id;
-
+      var userNotificationQueryId = this.subject.realUser.id;
       this.__subSubContext__.notificationDAO.where(
         this.EQ(this.Notification.USER_ID, userNotificationQueryId)
       ).on.put.sub((sub, on, put, obj) => {

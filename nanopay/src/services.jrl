@@ -2434,25 +2434,37 @@ p({
   "name":"userCapabilityJunctionDAO",
   "serve":true,
   "serviceScript":"""
-    import foam.dao.DAO;
-
-    dao = new foam.dao.MDAO(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo());
-    dao.addIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.SOURCE_ID, foam.nanos.crunch.UserCapabilityJunction.TARGET_ID });
-    dao.addIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.SOURCE_ID });
-    dao = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, dao, "userCapabilityJunctions");
-
-    decorator = new foam.dao.history.HistoryDAO(x, "userCapabilityJunctionHistoryDAO", new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo()).build());
-
     dao = new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(false)
+      .setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo())
+      .setInnerDAO(x.get("bareUserCapabilityJunctionDAO"))
+      .build();
+    dao = new foam.nanos.crunch.UserCapabilityJunctionDAO.Builder(x).setDelegate(dao).build();
+    return dao;
+  """,
+  "client":"{\"of\":\"foam.nanos.crunch.UserCapabilityJunction\", \"remoteListenerSupport\": false}"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"bareUserCapabilityJunctionDAO",
+  "serve":true,
+  "serviceScript":"""
+    inner = new foam.dao.MDAO(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo());
+    inner.addIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.SOURCE_ID, foam.nanos.crunch.UserCapabilityJunction.TARGET_ID });
+    inner.addIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.SOURCE_ID });
+    hashingjdao = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, inner, "userCapabilityJunctions");
+    decorator = new foam.dao.history.HistoryDAO(x, "userCapabilityJunctionHistoryDAO", new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo()).build());
+    dao = new foam.dao.EasyDAO.Builder(x)
+      .setMdao(inner)
       .setAuthorize(false)
       .setGuid(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("userCapabilityJunctions")
+      .setInnerDAO(hashingjdao)
       .setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo())
-      .setInnerDAO(dao)
       .setDecorator(decorator)
       .build();
-    dao = new foam.nanos.crunch.UserCapabilityJunctionDAO.Builder(x).setDelegate(dao).build();
     return dao;
   """,
   "client":"{\"of\":\"foam.nanos.crunch.UserCapabilityJunction\", \"remoteListenerSupport\": false}"

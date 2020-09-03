@@ -3,8 +3,8 @@ p({
     id:"A7CA51BA-0573-4AB9-8ECE-C4FB858CE2D6",
     name:"Summary Transaction Notifications",
     daoKey:"summaryTransactionDAO",
-    url:"https://webhook.site/e43580fe-8c10-403b-8d39-e6f035198f4c",
-    bearerToken:"custom-bearer-token",
+    url:"https://webhook.site/91c51ee9-038d-4e45-845d-fcc1f28c4943",
+    bearerToken:"123-custom-bearer-token-789",
     predicate: {
         class: "foam.nanos.ruler.predicate.IsInstancePredicate",
         of: "net.nanopay.tx.SummaryTransaction"

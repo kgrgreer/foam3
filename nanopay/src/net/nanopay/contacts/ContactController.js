@@ -86,7 +86,7 @@ foam.CLASS({
             this.Action.create({
               name: 'addBankAccount',
               label: 'Add Bank',
-              isEnabled: async function() {
+              isAvailable: async function() {
                 var bank = await this.accounts.find(this.EQ(net.nanopay.bank.BankAccount.OWNER, this.id))
                 return this.signUpStatus !== self.ContactStatus.ACTIVE && ! bank;
               },
@@ -101,14 +101,19 @@ foam.CLASS({
             this.Action.create({
               name: 'edit',
               label: 'View details',
-              isEnabled: async function() {
+              isAvailable: async function() {
                 return this.signUpStatus !== self.ContactStatus.ACTIVE;
               },
               code: function(X) {
+              // case of save without banking
+              if ( this.createBankAccount === 'net.nanopay.bank.BankAccount' ) {
+                this.createBankAccount = net.nanopay.bank.CABankAccount.create({ isDefault: true }, X);
+              }
+
                 X.controllerView.add(self.WizardController.create({
                   model: 'net.nanopay.contacts.Contact',
                   data: this,
-                  controllerMode: foam.u2.ControllerMode.EDIT
+                  controllerMode: foam.u2.ControllerMode.CREATE
                 }, X));
               }
             }),
@@ -127,11 +132,12 @@ foam.CLASS({
                   businessName: this.organization,
                   createdBy: this.subject.user.id,
                   isContact: true
-                });
+                }, X);
                 X.controllerView.add(self.WizardController.create({
                   model: 'net.nanopay.model.Invitation',
-                  data: invite
-                }, X));
+                  data: invite,
+                  controllerMode: foam.u2.ControllerMode.EDIT
+                }, X))
               }
             }),
             this.Action.create({

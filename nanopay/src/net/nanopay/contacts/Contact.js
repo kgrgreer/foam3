@@ -314,9 +314,11 @@ foam.CLASS({
             e.EQ(foam.strategy.StrategyReference.DESIRED_MODEL_ID, 'net.nanopay.bank.BankAccount'),
             e.IN(foam.strategy.StrategyReference.STRATEGY, X.data.countries)
         );
+        let bankAccount = net.nanopay.bank.BankAccount.create({ forContact: true }, X);
         return foam.u2.view.FObjectView.create({
           of: net.nanopay.bank.BankAccount,
           predicate: pred,
+          data: bankAccount,
           copyOldData: function(o) { return { isDefault: o.isDefault, forContact: o.forContact }; }
         }, X);
       }

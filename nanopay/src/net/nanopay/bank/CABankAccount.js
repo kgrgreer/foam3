@@ -28,8 +28,11 @@ foam.CLASS({
     'subject'
   ],
 
-  javaImports: [
+  requires: [
     'foam.log.LogLevel',
+  ],
+
+  javaImports: [
     'foam.util.SafetyUtil',
     'java.util.regex.Pattern',
     'net.nanopay.model.Branch',
@@ -81,7 +84,7 @@ foam.CLASS({
     { name: 'TRANSIT_NUMBER_FORMAT', message: 'Transit number must contain numbers.' },
     { name: 'TRANSIT_NUMBER_FIVE', message: 'Transit number must be 5 digits long.' },
     { name: 'ACCOUNT_NUMBER_REQUIRED', message: 'Account number required.' },
-    { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number must be between 6 and 17 digits long.' },
+    { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number must be between 5 and 12 digits long.' },
     { name: 'INSTITUTION_NUMBER_REQUIRED', message: 'Institution number required.' },
     { name: 'INSTITUTION_NUMBER_THREE', message: 'Institution number must be 3 digits long.' },
     { name: 'ADD_SUCCESSFUL', message: 'Bank Account added successfully!' },
@@ -110,9 +113,9 @@ foam.CLASS({
       value: 'CAD',
     },
     {
-      class: 'String',
       name: 'iban',
       visibility: 'HIDDEN',
+      required: false,
       getter: function() {
         return this.accountNumber;
       },
@@ -121,7 +124,6 @@ foam.CLASS({
       `
     },
     {
-      class: 'String',
       name: 'bankCode',
       visibility: 'HIDDEN'
     },
@@ -443,6 +445,6 @@ foam.CLASS({
         }
         return code.toString();
       `
-    },
+    }
   ]
 });

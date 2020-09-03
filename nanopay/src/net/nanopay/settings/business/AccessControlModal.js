@@ -37,12 +37,12 @@ foam.CLASS({
       width: 650px;
       height: 745px;
     }
-    ^ .title {
+    ^title {
       margin: 24px;
       font-size: 30px;
       font-weight: 900;
     }
-    ^ .subTitle {
+    ^subTitle {
       margin: 24px;
       font-size: 18px;
       color: #8e9090;
@@ -51,7 +51,7 @@ foam.CLASS({
     ^ .main {
       margin: 24px;
     }
-    ^ .button-container {
+    ^button-container {
       width: 650px;
       justify-content: flex-end;
       align-items: center;
@@ -63,7 +63,7 @@ foam.CLASS({
       position: absolute;
       margin: 0;
     }
-    ^ .button-container > div > button {
+    ^button-container > div > button {
       font-size: 18px;
       margin: 0px 20px 0px 15px;
       height: 45;
@@ -88,25 +88,25 @@ foam.CLASS({
       padding-left: 8px;
       padding-right: 8px;
     }
-    ^ .labelStyle {
+    ^labelStyle {
       font-weight: 900;
       font-size: 20px;
       margin-top: 10px;
     }
-    ^ .labelDescriptionStyle {
+    ^labelDescriptionStyle {
       font-size: 17px;
       color: #9ba1a6;
       margin-top: 10px;
     }
-    ^ .emailStyle {
+    ^emailStyle {
        margin-left: 32px;
        width: 92%;
     }
-    ^ .emailStyle .foam-u2-TextField {
+    ^emailStyle .foam-u2-TextField {
       width: 98%;
       margin-top: 10px;
     }
-    ^ .input-wrapper {
+    ^input-wrapper {
       font-size: 18;
     }
   `,
@@ -182,10 +182,10 @@ foam.CLASS({
 
       this.addClass(this.myClass())
         .start()
-          .start('h2').addClass('title')
+          .start('h2').addClass(this.myClass('title'))
             .add(this.isAddUser ? this.INVITE_TITLE : this.TITLE_1).add(this.isAddUser ? this.subject.user.toSummary(): this.subject.realUser.toSummary()).add(this.isAddUser ? '' : this.TITLE_2)
           .end()
-          .start('p').addClass('subTitle')
+          .start('p').addClass(this.myClass('subTitle'))
              .add(this.SUB_TITLE_1).add(this.isAddUser ? this.THE_USER : this.subject.realUser.toSummary()).add(this.SUB_TITLE_2)
           .end()
           .start('table')
@@ -202,14 +202,14 @@ foam.CLASS({
                   .end()
                 .end()
                 .start('td')
-                  .start('div').addClass('labelStyle')
+                  .start('div').addClass(self.myClass('labelStyle'))
                     .start('label')
                       .start('span')
                         .add(group.displayName)
                       .end()
                     .end()
                   .end()
-                 .start('div').addClass('labelDescriptionStyle')
+                 .start('div').addClass(self.myClass('labelDescriptionStyle'))
                    .start('span')
                      .add(group.description)
                    .end()
@@ -224,13 +224,13 @@ foam.CLASS({
               .end()
             })
             self.startContext({ data: this })
-              .start().addClass('emailStyle').show(this.isAddUser$)
-                .start().addClass('input-wrapper').add(this.EMAIL_LABEL).end()
+              .start().addClass(this.myClass('emailStyle')).show(this.isAddUser$)
+                .start().addClass(this.myClass('input-wrapper')).add(this.EMAIL_LABEL).end()
                 .tag(this.EMAIL, { focused: true })
               .end()
             .endContext()
             self.startContext({ data: this })
-              .start().addClass('button-container')
+              .start().addClass(this.myClass('button-container'))
                 .start()
                   .tag(this.CANCEL, { size: 'LARGE', buttonStyle: 'TERTIARY' })
                 .end()

@@ -109,6 +109,7 @@ foam.CLASS({
     {
       name: 'iban',
       visibility: 'HIDDEN',
+      required: false,
       getter: function() {
         return this.accountNumber;
       },
@@ -376,6 +377,6 @@ foam.CLASS({
       javaCode: `
         return getBranchId();
       `
-    },
+    }
  ]
 });

@@ -13,6 +13,7 @@ p({
             class:"net.nanopay.auth.ServiceProviderURL",
             spid:"intuit",
             urls:[
+                "api",
                 "intuit",
                 "integration.nanopay.net"
             ]
@@ -27,23 +28,6 @@ p({
     lastModifiedBy:1,
     lifecycleState:1,
     ruleGroup:"UserCreate"
-})
-
-p({
-    class:"foam.nanos.dig.DUGRule",
-    id:"a6a0300a-0530-5ee6-c970-1c2f418edc64",
-    name:"User Update Notifications",
-    daoKey:"userDAO",
-    url:"https://my-waiting-listener.com",
-    bearerToken:"custom-bearer-token",
-    format:2,
-    lifecycleState:1,
-    createdByAgent:8023,
-    created:1594658156756,
-    createdBy:8023,
-    astModified:1594658156755,
-    lastModifiedBy:8023,
-    spid:"intuit"
 })
 
 p({

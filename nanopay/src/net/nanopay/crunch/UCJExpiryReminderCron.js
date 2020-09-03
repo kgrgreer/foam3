@@ -24,11 +24,13 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.FObject',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.crunch.Capability',
     'foam.nanos.crunch.CapabilityJunctionStatus',
+    'foam.nanos.crunch.RenewableData',
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.nanos.notification.Notification',
     'java.util.Calendar',
@@ -123,7 +125,30 @@ foam.CLASS({
           notification.clearUserId();
           notification.clearGroupId();
           notification.clearBody();
+
+          configureRenewableData(x, ucj);
         }
+      `
+    },
+    {
+      name: 'configureRenewableData',
+      args: [
+        { name: 'x', javaType: 'foam.core.X' },
+        { name: 'ucj', javaType: 'foam.nanos.crunch.UserCapabilityJunction' }
+      ],
+      javaCode: `
+        FObject data = (FObject) ucj.getData();
+        if ( data == null || ! ( data instanceof RenewableData ) ) return;
+
+        DAO userCapabilityJunctionDAO = (DAO) x.get("bareUserCapabilityJunctionDAO");
+
+        RenewableData renewable = (RenewableData) data;
+        renewable.setRenewable(true);
+        ucj.setData(renewable);
+        ucj.setIsInRenewablePeriod(true);
+
+        userCapabilityJunctionDAO.put(ucj);
+        
       `
     }
   ]

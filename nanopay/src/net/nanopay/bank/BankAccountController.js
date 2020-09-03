@@ -29,6 +29,7 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
+    'net.nanopay.bank.BRBankAccount',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
     'net.nanopay.sme.ui.SMEModal'
@@ -78,7 +79,8 @@ foam.CLASS({
         var dao = this.subject.user.accounts.where(
           this.OR(
             this.INSTANCE_OF(this.CABankAccount),
-            this.INSTANCE_OF(this.USBankAccount)
+            this.INSTANCE_OF(this.USBankAccount),
+            this.INSTANCE_OF(this.BRBankAccount)
           )
         );
         dao.of = this.BankAccount;
@@ -129,6 +131,8 @@ foam.CLASS({
                 }
                 
                 this.deleted = true;
+                this.status = self.BankAccountStatus.DISABLED;
+
                 self.ctrl.add(self.Popup.create().tag({
                   class: 'foam.u2.DeleteModal',
                   dao: self.subject.user.accounts,
