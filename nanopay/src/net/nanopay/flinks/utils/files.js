@@ -23,6 +23,7 @@ FOAM_FILES([
   { name: 'net/nanopay/flinks/model/AddressModel' },
   { name: 'net/nanopay/flinks/model/HolderModel' },
   { name: 'net/nanopay/flinks/model/AccountTransactionModel' },
+  { name: 'net/nanopay/flinks/model/AccountType' },
   { name: 'net/nanopay/flinks/model/AccountWithDetailModel' },
   { name: 'net/nanopay/flinks/model/AccountStatementModel' },
   { name: 'net/nanopay/flinks/model/AccountStatementContainerModel' },

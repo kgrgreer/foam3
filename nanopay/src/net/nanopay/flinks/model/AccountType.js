@@ -15,38 +15,20 @@
  * from nanopay Corporation.
  */
 
-//instance when Http status code is 200
-foam.CLASS({
+foam.ENUM({
   package: 'net.nanopay.flinks.model',
-  name: 'LoginModel',
+  name: 'AccountType',
 
-  documentation: 'model for Flinks Login',
+  documentation: 'Identifies if flinks account of type personal or business',
 
-  properties: [
+  values: [
     {
-      class: 'String',
-      name: 'Username',
-      hidden: true
+      name: 'PERSONAL',
+      label: 'Personal'
     },
     {
-      class: 'Boolean',
-      name: 'IsScheduledRefresh',
-      visibility: 'RO'
-    },
-    {
-      class: 'String',
-      name: 'LastRefresh',
-      visibility: 'RO'
-    },
-    {
-      class: 'String',
-      name: 'Type',
-      visibility: 'RO'
-    },
-    {
-      class: 'String',
-      name: 'Id',
-      visibility: 'RO'
+      name: 'BUSINESS',
+      label: 'Business'
     }
   ]
 });

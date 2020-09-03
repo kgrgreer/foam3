@@ -24,6 +24,7 @@ var classes = [
   'net.nanopay.flinks.model.AddressModel',
   'net.nanopay.flinks.model.HolderModel',
   'net.nanopay.flinks.model.AccountTransactionModel',
+  'net.nanopay.flinks.model.AccountType',
   'net.nanopay.flinks.model.AccountWithDetailModel',
   'net.nanopay.flinks.model.AccountStatementModel',
   'net.nanopay.flinks.model.AccountStatementContainerModel',
