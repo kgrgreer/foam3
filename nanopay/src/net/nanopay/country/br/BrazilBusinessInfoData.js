@@ -86,34 +86,40 @@ foam.CLASS({
       tableCellFormatter: function(val) {
         return foam.String.applyFormat(val, 'xx.xxx.xxx/xxxx-xx');
       },
-      view: {
-        class: 'foam.u2.FragmentedTextField',
-        delegates: [
-          {
-            class: 'foam.u2.TextField',
-            attributes: [ { name: 'maxlength', value: 2 } ]
-          },
-          '.',
-          {
-            class: 'foam.u2.TextField',
-            attributes: [ { name: 'maxlength', value: 3 } ]
-          },
-          '.',
-          {
-            class: 'foam.u2.TextField',
-            attributes: [ { name: 'maxlength', value: 3 } ]
-          },
-          '/',
-          {
-            class: 'foam.u2.TextField',
-            attributes: [ { name: 'maxlength', value: 4 } ]
-          },
-          '-',
-          {
-            class: 'foam.u2.TextField',
-            attributes: [ { name: 'maxlength', value: 2 } ]
-          },
-        ]
+      view: function(_, X) {
+        return foam.u2.FragmentedTextField.create({
+          delegates: [
+            {
+              class: 'foam.u2.TextField',
+              attributes: [ { name: 'maxlength', value: 2 } ],
+              data: X.data.cnpj.slice(0,2)
+            },
+            '.',
+            {
+              class: 'foam.u2.TextField',
+              attributes: [ { name: 'maxlength', value: 3 } ],
+              data: X.data.cnpj.slice(2,5)
+            },
+            '.',
+            {
+              class: 'foam.u2.TextField',
+              attributes: [ { name: 'maxlength', value: 3 } ],
+              data: X.data.cnpj.slice(5,8)
+            },
+            '/',
+            {
+              class: 'foam.u2.TextField',
+              attributes: [ { name: 'maxlength', value: 4 } ],
+              data: X.data.cnpj.slice(8,12)
+            },
+            '-',
+            {
+              class: 'foam.u2.TextField',
+              attributes: [ { name: 'maxlength', value: 2 } ],
+              data: X.data.cnpj.slice(12,14)
+            },
+          ]
+        })
       }
     }
   ],
