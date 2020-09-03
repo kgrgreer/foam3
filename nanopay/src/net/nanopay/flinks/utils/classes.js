@@ -24,7 +24,6 @@ var classes = [
   'net.nanopay.flinks.model.AddressModel',
   'net.nanopay.flinks.model.HolderModel',
   'net.nanopay.flinks.model.AccountTransactionModel',
-  'net.nanopay.flinks.model.AccountType',
   'net.nanopay.flinks.model.AccountWithDetailModel',
   'net.nanopay.flinks.model.AccountStatementModel',
   'net.nanopay.flinks.model.AccountStatementContainerModel',
@@ -42,6 +41,8 @@ var classes = [
   'net.nanopay.flinks.RefinedFlinksAccountDAO',
   'net.nanopay.flinks.external.FlinksLoginId',
   'net.nanopay.flinks.external.FlinksLoginIdDAO',
+  'net.nanopay.flinks.external.FlinksLoginIdOnboarding',
+  'net.nanopay.flinks.external.OnboardingType',
 ];
 var abstractClasses = [];
 var skeletons = [

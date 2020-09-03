@@ -32,16 +32,23 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'id'
+      name: 'id',
+      hidden: true
     },
     {
       class: 'String',
-      name: 'loginId'
+      name: 'loginId',
+      documentation: 'Flinks LoginId'
     },
     {
-      class: 'Enum',
-      of: 'net.nanopay.flinks.model.AccountType',
-      name: 'type'
+      class: 'String',
+      name: 'accountId',
+      documentation: 'Flinks AccountId'
+    },
+    {
+      class: 'String',
+      name: 'institution',
+      documentation: 'Flinks Institution'
     },
     {
       class: 'Reference',
@@ -55,9 +62,7 @@ foam.CLASS({
       class: 'Reference',
       name: 'account',
       of: 'net.nanopay.account.Account',
-      targetDAOKey: 'accountDAO',
-      readPermissionRequired: true,
-      writePermissionRequired: true
+      targetDAOKey: 'accountDAO'
     },
     {
       class: 'DateTime',

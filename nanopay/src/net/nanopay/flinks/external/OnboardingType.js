@@ -16,10 +16,10 @@
  */
 
 foam.ENUM({
-  package: 'net.nanopay.flinks.model',
-  name: 'AccountType',
+  package: 'net.nanopay.flinks.external',
+  name: 'OnboardingType',
 
-  documentation: 'Identifies if flinks account of type personal or business',
+  documentation: 'Identifies if onboarding type is personal or business',
 
   values: [
     {
