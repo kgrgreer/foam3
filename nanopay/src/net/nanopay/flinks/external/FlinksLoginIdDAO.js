@@ -28,6 +28,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.AgentAuthService',
+    'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Subject',
     'foam.nanos.crunch.connection.CapabilityPayload',
@@ -36,7 +37,17 @@ foam.CLASS({
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy',
     'net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiTermsAndConditions',
+    'net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyOwnersPercent',
+    'net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyDirectorsListed',
+    'net.nanopay.crunch.acceptanceDocuments.capabilities.DualPartyAgreementCAD',
+    'net.nanopay.crunch.onboardingModels.BusinessDirectorsData',
+    'net.nanopay.crunch.onboardingModels.BusinessInformationData',
+    'net.nanopay.crunch.onboardingModels.BusinessOwnershipData',
+    'net.nanopay.crunch.onboardingModels.CertifyDataReviewed',
     'net.nanopay.crunch.onboardingModels.InitialBusinessData',
+    'net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData',
+    'net.nanopay.crunch.onboardingModels.SigningOfficerQuestion',
+    'net.nanopay.crunch.onboardingModels.TransactionDetailsData',
     'net.nanopay.crunch.registration.UserRegistrationData',
     'net.nanopay.flinks.FlinksAuth',
     'net.nanopay.flinks.FlinksResponseService',
@@ -48,6 +59,7 @@ foam.CLASS({
     'net.nanopay.flinks.model.LoginModel',
     'net.nanopay.flinks.model.HolderModel',
     'net.nanopay.model.Business',
+    'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
     'static foam.mlang.MLang.*'
   ],
 
@@ -106,13 +118,11 @@ foam.CLASS({
             newUser = (User) smeUserRegistrationDAO.put(newUser);
             agentAuth.actAs(x, newUser);
 
-            Map<String,FObject> capabilityDataObjects = new HashMap<>();
+            Map<String,FObject> userCapabilityDataObjects = new HashMap<>();
             AbliiPrivacyPolicy privacyPolicy = new AbliiPrivacyPolicy.Builder(x)
-              .setTitle("Ablii's Privacy Policy")
               .setAgreement(true)
               .build();
             AbliiTermsAndConditions termsAndConditions = new AbliiTermsAndConditions.Builder(x)
-              .setTitle("Ablii's Terms and Conditions")
               .setAgreement(true)
               .build();
             UserRegistrationData registrationData = new UserRegistrationData.Builder(x)
@@ -121,44 +131,116 @@ foam.CLASS({
               .setPhone(newUser.getPhoneNumber())
               .build();
 
-            capabilityDataObjects.put("AbliiPrivacyPolicy", privacyPolicy);
-            capabilityDataObjects.put("AbliiTermsAndConditions", termsAndConditions);
-            capabilityDataObjects.put("User Registration", registrationData);
-            capabilityDataObjects.put("Nanopay Admission", null);
-            capabilityDataObjects.put("API Onboarding User and Business", null);
+            userCapabilityDataObjects.put("AbliiPrivacyPolicy", privacyPolicy);
+            userCapabilityDataObjects.put("AbliiTermsAndConditions", termsAndConditions);
+            userCapabilityDataObjects.put("User Registration", registrationData);
+            userCapabilityDataObjects.put("Nanopay Admission", null);
+            userCapabilityDataObjects.put("API Onboarding User and Business", null);
+
+            CapabilityPayload userCapPayload = new CapabilityPayload.Builder(x)
+              .setId("B98D97EE-4A43-4B03-84C1-9DE2C0109E87")
+              .setCapabilityDataObjects(new HashMap<String,FObject>(userCapabilityDataObjects))
+              .build();
+            capabilityPayloadDAO.put(userCapPayload);
+
 
             if ( flinksLoginId.getType().equals(AccountType.BUSINESS) ) {
-              InitialBusinessData businessData = new InitialBusinessData.Builder(x)
-                .setBusinessName("Business")
+              Map<String,FObject> businessCapabilityDataObjects = new HashMap<>();
+
+              InitialBusinessData initialBusinessData = new InitialBusinessData.Builder(x)
                 .setCompanyPhone(phoneNumber)
                 .setEmail(holder.getEmail())
                 .setSignInAsBusiness(false)
                 .setAddress(address)
                 .setMailingAddress(address)
                 .build();
+              SigningOfficerQuestion officerQuestion = new SigningOfficerQuestion.Builder(x)
+                .setIsSigningOfficer(true)
+                .setSigningOfficerEmail(holder.getEmail())
+                .setAdminFirstName(firstName)
+                .setAdminLastName(lastName)
+                .setAdminPhone(phoneNumber)
+                .build();
+              BusinessOwnershipData businessOwnershipData = new BusinessOwnershipData.Builder(x)
+                .setAmountOfOwners(1)
+                .setPubliclyTraded(false)
+                .setOwnerSelectionsValidated(true)
+                .build();
+              CertifyDirectorsListed certifyDirectorsListed = new CertifyDirectorsListed.Builder(x)
+                .setAgreement(true)
+                .build();
+              BusinessInformationData businessInfoData = new BusinessInformationData.Builder(x)
+                .setBusinessTypeId(1)
+                .setBusinessSectorId(1)
+                .setOperatingUnderDifferentName(true)
+                .build();
+              Phone phone = new Phone.Builder(x)
+                .setNumber(phoneNumber)
+                .setVerified(true)
+                .build();
+              SigningOfficerPersonalData soPersonalData = new SigningOfficerPersonalData.Builder(x)
+                .setCountryId(holderAddress.getCountry())
+                .setAddress(address)
+                .setPhone(phone)
+                .setPEPHIORelated(false)
+                .setThirdParty(false)
+                .build();
+              SuggestedUserTransactionInfo txnInfo = new SuggestedUserTransactionInfo.Builder(x)
+                .setBaseCurrency(accountDetail.getCurrency())
+                .build();
+              TransactionDetailsData txnDetailsData = new TransactionDetailsData.Builder(x)
+                .setSuggestedUserTransactionInfo(txnInfo)
+                .build();
+              BusinessDirectorsData businessDirectorsData = new BusinessDirectorsData.Builder(x)
+                .setBusinessTypeId(1)
+                .build();
+              CertifyOwnersPercent certifyPercent = new CertifyOwnersPercent.Builder(x)
+                .setAgreement(true)
+                .build();
+              DualPartyAgreementCAD dualPartyAgreement = new DualPartyAgreementCAD.Builder(x)
+                .setAgreement(true)
+                .build();
+              CertifyDataReviewed certifyData = new CertifyDataReviewed.Builder(x)
+                .setReviewed(true)
+                .build();
+  
+              businessCapabilityDataObjects.put("Business Registration", initialBusinessData);
+              businessCapabilityDataObjects.put("Signing Officer", officerQuestion);
+              businessCapabilityDataObjects.put("Business Owner Information", businessOwnershipData);
+              businessCapabilityDataObjects.put("CertifyDirectorsListed", certifyDirectorsListed);
+              businessCapabilityDataObjects.put("Business Details", businessInfoData);
+              businessCapabilityDataObjects.put("Signing Officer Privileges", soPersonalData);
+              businessCapabilityDataObjects.put("Signing Officer Date of Birth", null);
+              businessCapabilityDataObjects.put("Unlock Domestic Payments and Invoicing", null);
+              businessCapabilityDataObjects.put("Transaction Details", txnInfo);
+              businessCapabilityDataObjects.put("Business Directors Data", businessDirectorsData);
+              businessCapabilityDataObjects.put("CertifyOwnersPercent", certifyPercent);
+              businessCapabilityDataObjects.put("DualPartyAgreementCAD", dualPartyAgreement);
+              businessCapabilityDataObjects.put("Certify Data Reviewed", certifyData);
+              businessCapabilityDataObjects.put("API Onboarding Business Payments (CAD to CAD)", null);
 
-              capabilityDataObjects.put("Business Registration", businessData);
+              CapabilityPayload businessCapPayload = new CapabilityPayload.Builder(x)
+                .setId("CD499238-7854-4125-A04D-7CE7EE15BC74")
+                .setCapabilityDataObjects(new HashMap<String,FObject>(businessCapabilityDataObjects))
+                .build();
+              capabilityPayloadDAO.put(businessCapPayload);
             }
-
-            CapabilityPayload payload = new CapabilityPayload.Builder(x)
-              .setCapabilityDataObjects(new HashMap<String,FObject>(capabilityDataObjects))
-              .build();
-            capabilityPayloadDAO.put(payload);
 
             Business business = (Business) businessDAO.find(newUser.getId());
             if ( business != null ) {
               agentAuth.actAs(x, business);
             }
 
-            CABankAccount bankAccount = new CABankAccount();
-            bankAccount.setOwner(business != null ? business.getId() : newUser.getId());
-            bankAccount.setAccountNumber(accountDetail.getAccountNumber());
-            bankAccount.setBranchId(accountDetail.getTransitNumber());
-            bankAccount.setDenomination(accountDetail.getCurrency());
-            bankAccount.setInstitutionNumber(accountDetail.getInstitutionNumber());
-            bankAccount.setName(accountDetail.getTitle());
-            bankAccount.setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED);
-            bankAccount.setVerifiedBy("FLINKS");
+            CABankAccount bankAccount = new CABankAccount.Builder(x)
+              .setOwner(business != null ? business.getId() : newUser.getId())
+              .setAccountNumber(accountDetail.getAccountNumber())
+              .setBranchId(accountDetail.getTransitNumber())
+              .setDenomination(accountDetail.getCurrency())
+              .setInstitutionNumber(accountDetail.getInstitutionNumber())
+              .setName(accountDetail.getTitle())
+              .setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED)
+              .setVerifiedBy("FLINKS")
+              .build();
 
             bankAccount = (CABankAccount) accountDAO.put(bankAccount);
             flinksLoginId.setAccount(bankAccount.getId());
