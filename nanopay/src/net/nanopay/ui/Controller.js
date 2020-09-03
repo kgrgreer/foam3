@@ -53,7 +53,6 @@ foam.CLASS({
     'net.nanopay.bank.BRBankAccount',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
-    'net.nanopay.bank.BRBankAccount',
     'net.nanopay.cico.ui.bankAccount.form.BankPadAuthorization',
     'net.nanopay.invoice.ui.style.InvoiceStyles',
     'net.nanopay.model.Business',
