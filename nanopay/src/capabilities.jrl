@@ -268,7 +268,8 @@ p({
     "class": "foam.nanos.crunch.ui.CapabilityWizardlet"
   },
   "wizardletConfig": {
-    "class": "net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig"
+    "class": "net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig",
+    "allowSkipping": false
   }
 })
 
@@ -294,7 +295,8 @@ p({
     ]
   },
   "wizardletConfig": {
-    "class": "net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig"
+    "class": "net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig",
+    "allowSkipping": false
   }
 })
 
@@ -330,7 +332,8 @@ p({
     ]
   },
   "wizardletConfig": {
-    "class": "net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig"
+    "class": "net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig",
+    "allowSkipping": false
   }
 })
 
@@ -356,7 +359,8 @@ p({
     ]
   },
   "wizardletConfig": {
-    "class": "net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig"
+    "class": "net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig",
+    "allowSkipping": false
   }
 })
 
