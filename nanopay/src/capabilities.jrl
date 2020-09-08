@@ -584,10 +584,10 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"FB1C8CF2-34B9-40FE-A4AA-58CFA2FDBA15",
-  "name":"Full User Details",
-  "description":"Advanced information for user onboarding",
+  "name":"Expanded User Details",
+  "description":"Advanced information for expanded user onboarding",
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
-  "of":"net.nanopay.crunch.registration.FullUserDetailData",
+  "of":"net.nanopay.crunch.registration.UserDetailExpandedData",
   "version":"0",
   "enabled":true,
   "visible":false,

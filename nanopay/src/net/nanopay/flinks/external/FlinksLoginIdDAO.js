@@ -29,6 +29,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.AgentAuthService',
+    'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Subject',
@@ -37,6 +38,7 @@ foam.CLASS({
     'java.util.HashMap',
     'java.util.Map',
     'java.util.List',
+    'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy',
@@ -124,8 +126,12 @@ foam.CLASS({
           }
         }
 
-        // Create the bank account owned by the business if it exists, otherwise by the user
-        BankAccount bankAccount = createBankAccount(x, (business != null) ? business : user, flinksLoginId, accountDetail);
+        User owner = (business != null) ? business : user;
+        BankAccount bankAccount = findBankAccount(x, owner, flinksLoginId, accountDetail);
+        if ( bankAccount == null ) {
+          // Create the bank account owned by the business if it exists, otherwise by the user
+          bankAccount = createBankAccount(x, owner, flinksLoginId, accountDetail);
+        }
         flinksLoginId.setAccount(bankAccount.getId());
 
         return super.put_(x, flinksLoginId);
@@ -202,6 +208,28 @@ foam.CLASS({
       `
     },
     {
+      name: 'findBankAccount',
+      type: 'BankAccount',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'owner', type: 'User' },
+        { name: 'request', type: 'FlinksLoginId' },
+        { name: 'accountDetail', type: 'AccountWithDetailModel' }
+      ],
+      javaCode: `
+      DAO accountDAO = (DAO) x.get("accountDAO");
+      
+      return (BankAccount) accountDAO.find(AND(
+        INSTANCE_OF(CABankAccount.class),
+        EQ(BankAccount.ACCOUNT_NUMBER, accountDetail.getAccountNumber()),
+        EQ(BankAccount.BRANCH_ID, accountDetail.getTransitNumber()),
+        EQ(BankAccount.INSTITUTION_NUMBER, accountDetail.getInstitutionNumber()),
+        EQ(BankAccount.OWNER, owner.getId()),
+        EQ(Account.LIFECYCLE_STATE, LifecycleState.ACTIVE)
+      ));
+    `
+  },
+  {
       name: 'onboarding',
       args: [
         { name: 'x', type: 'Context' },
