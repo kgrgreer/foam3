@@ -1549,6 +1549,8 @@ FOAM_FILES([
 
   // crunch registration
   { name: 'net/nanopay/crunch/registration/UserRegistrationData' },
+  { name: 'net/nanopay/crunch/registration/UserDetailData' },
+  { name: 'net/nanopay/crunch/registration/UserDetailExpandedData' },
 
 
   // crunch onboarding

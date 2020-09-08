@@ -534,14 +534,66 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"B98D97EF-4A43-4B03-84C1-9DE2C0109E87",
-  "name":"API Onboarding User",
-  "description":"Unlock onboarding for a given user",
+  "id":"1F0B39AD-934E-462E-A608-D590D1081298",
+  "name":"API CAD User Payments",
+  "description":"Unlock onboarding for a Canadian user payments",
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
   "version":"0",
   "enabled":true,
   "visible":false,
   "keywords":["intuit"]
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD",
+  "name":"API CAD User Payments Under 1000CAD",
+  "description":"Unlock onboarding for a Canadian user payments under $1000",
+  "icon":"/images/capabilityIcons/CADOnboardCap.svg",
+  "version":"0",
+  "enabled":true,
+  "visible":false,
+  "keywords":["intuit"]
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"A62AC209-CD55-4755-9B93-2B9BAE885B85",
+  "name":"Simple User Onboarding",
+  "description":"Basic information for user onboarding",
+  "icon":"/images/capabilityIcons/CADOnboardCap.svg",
+  "version":"0",
+  "enabled":true,
+  "visible":false,
+  "keywords":["intuit"]
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"0ED5DD86-AA1A-452B-BA7D-E7A2D0542135",
+  "name":"User Details",
+  "of":"net.nanopay.crunch.registration.UserDetailData",
+  "version":"0",
+  "enabled":true,
+  "visible":false,
+  "daoKey":"userDAO",
+  "contextDAOFindKey": "subject.realUser",
+  "associatedEntity": 1
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"FB1C8CF2-34B9-40FE-A4AA-58CFA2FDBA15",
+  "name":"Full User Details",
+  "description":"Advanced information for user onboarding",
+  "icon":"/images/capabilityIcons/CADOnboardCap.svg",
+  "of":"net.nanopay.crunch.registration.FullUserDetailData",
+  "version":"0",
+  "enabled":true,
+  "visible":false,
+  "daoKey":"userDAO",
+  "contextDAOFindKey": "subject.realUser",
+  "associatedEntity": 1
 })
 
 p({

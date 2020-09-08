@@ -60,6 +60,18 @@ foam.CLASS({
     },
     {
       class: 'Reference',
+      name: 'user',
+      of: 'foam.nanos.auth.User',
+      targetDAOKey: 'userDAO'
+    },
+    {
+      class: 'Reference',
+      name: 'business',
+      of: 'net.nanopay.model.Business',
+      targetDAOKey: 'businessDAO'
+    },
+    {
+      class: 'Reference',
       name: 'account',
       of: 'net.nanopay.account.Account',
       targetDAOKey: 'accountDAO'

@@ -35,6 +35,7 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'java.util.HashMap',
     'java.util.Map',
+    'java.util.List',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy',
@@ -51,6 +52,7 @@ foam.CLASS({
     'net.nanopay.crunch.onboardingModels.SigningOfficerQuestion',
     'net.nanopay.crunch.onboardingModels.TransactionDetailsData',
     'net.nanopay.crunch.registration.UserRegistrationData',
+    'net.nanopay.crunch.registration.UserDetailData',
     'net.nanopay.flinks.FlinksAuth',
     'net.nanopay.flinks.FlinksResponseService',
     'net.nanopay.flinks.model.AddressModel',
@@ -75,9 +77,18 @@ foam.CLASS({
 
         FlinksLoginId flinksLoginId = (FlinksLoginId) obj;
 
-        // TODO: lookup the LoginId on previously seen FlinksLoginId objects to see if we've seen this LoginId before
-        // Add the account to that user and business if the LoginId has already been seen
-
+        List oldRecords = ((ArraySink) getDelegate().where(AND(
+            EQ(FlinksLoginId.LOGIN_ID, flinksLoginId.getLoginId()),
+            NEQ(FlinksLoginId.USER, 0)
+          ))
+          .limit(1)
+          .select(new foam.dao.ArraySink())).getArray();
+        if ( oldRecords.size() == 1 ) {
+          FlinksLoginId previousFlinksLoginId = (FlinksLoginId) oldRecords.get(0);
+          flinksLoginId.setUser(previousFlinksLoginId.getUser());
+          flinksLoginId.setBusiness(previousFlinksLoginId.getBusiness());
+        }
+        
         FlinksResponse flinksResponse = (FlinksResponse) flinksResponseService.getFlinksResponse(x, flinksLoginId);
         if ( flinksResponse == null ) {
           throw new RuntimeException("Flinks failed to provide a valid response when provided with login ID: " + flinksLoginId.getLoginId());
@@ -92,15 +103,22 @@ foam.CLASS({
           throw new RuntimeException("Bank account not found.");
         }
 
-        Business business = null;
-        User user = subject.getRealUser();
-        if ( flinksLoginId instanceof FlinksLoginIdOnboarding ) {
-          FlinksLoginIdOnboarding flinksLoginIdOnboarding = (FlinksLoginIdOnboarding)flinksLoginId;
-          onboarding(x, flinksLoginIdOnboarding, accountDetail);
-          user = flinksLoginIdOnboarding.findUser(x);
-          business = flinksLoginIdOnboarding.findBusiness(x);
-        } else if ( subject.getUser() instanceof Business ) {
-          business = (Business) subject.getUser();
+        // Find the user and business if they already exist
+        User user = flinksLoginId.findUser(x);
+        Business business = flinksLoginId.findBusiness(x);
+
+        // Create the user if this is an onboarding request
+        if ( user == null )
+        {
+          if ( flinksLoginId instanceof FlinksLoginIdOnboarding ) {
+            FlinksLoginIdOnboarding flinksLoginIdOnboarding = (FlinksLoginIdOnboarding)flinksLoginId;
+            onboarding(x, flinksLoginIdOnboarding, accountDetail);
+            user = flinksLoginIdOnboarding.findUser(x);
+            business = flinksLoginIdOnboarding.findBusiness(x);
+          } else if ( subject.getUser() instanceof Business ) {
+            user = subject.getRealUser();
+            business = (Business) subject.getUser();
+          }
         }
 
         // Create the bank account owned by the business if it exists, otherwise by the user
@@ -189,22 +207,107 @@ foam.CLASS({
       ],
       javaCode: `
         // Check if the user already exists by cross referencing the loginId
-        User user = null;
-        Business business = null;
+        User user = request.findUser(x);
+        Business business = request.findBusiness(x);
 
-        // Create the user
-        if ( user == null ) {
-          onboardUser(x, request, accountDetail);
+        if ( request.getType() == OnboardingType.PERSONAL ) {
+
         }
+        else if ( request.getType() == OnboardingType.BUSINESS ) {
+          // Create the user
+          if ( user == null ) {
+            onboardUserForBusiness(x, request, accountDetail);
+          }
 
-        // Create the business
-        if ( request.getType() == OnboardingType.BUSINESS && business == null ) {
-          onboardBusiness(x, request, accountDetail);
+          // Create the business
+          if ( business == null ) {
+            onboardBusiness(x, request, accountDetail);
+          }
+        }
+        else {
+          throw new RuntimeException("Expected onboarding type: " + request.getType());
         }
       `
     },
     {
       name: 'onboardUser',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'request', type: 'FlinksLoginIdOnboarding' },
+        { name: 'accountDetail', type: 'AccountWithDetailModel' }
+      ],
+      javaCode: `
+        DAO userDAO = (DAO) x.get("localUserDAO");
+        HolderModel holder = accountDetail.getHolder();
+        User newUser = new User.Builder(x)
+          .setEmail(holder.getEmail())
+          .setUserName(holder.getEmail())
+          .setDesiredPassword(java.util.UUID.randomUUID().toString())
+          .setEmailVerified(true)
+          .build();
+        newUser = (User) userDAO.put(newUser);
+        
+        // Save the UserId on the request
+        request.setUser(newUser.getId());
+
+        // Switch contexts to the newly created user
+        AgentAuthService agentAuth = (AgentAuthService) x.get("agentAuth");
+        agentAuth.actAs(x, newUser);
+
+        AddressModel holderAddress = holder.getAddress();        
+        Address address = new Address.Builder(x)
+          .setAddress1(holderAddress.getCivicAddress())
+          .setRegionId(holderAddress.getProvince())
+          .setCountryId(holderAddress.getCountry())
+          .setCity(holderAddress.getCity())
+          .setPostalCode(holderAddress.getPostalCode())
+          .build();
+
+        String fullName = holder.getName();
+        String nameSplit[] = fullName.split(" ", 2);
+        String firstName = nameSplit[0];
+        String lastName = nameSplit[1];
+        String phoneNumber = holder.getPhoneNumber().replaceAll("[^0-9]", "");
+
+        // Add capabilities for the new user
+        DAO capabilityPayloadDAO = (DAO) x.get("capabilityPayloadDAO");
+        Map<String,FObject> userCapabilityDataObjects = new HashMap<>();
+        AbliiPrivacyPolicy privacyPolicy = new AbliiPrivacyPolicy.Builder(x)
+          .setAgreement(false)
+          .build();
+        AbliiTermsAndConditions termsAndConditions = new AbliiTermsAndConditions.Builder(x)
+          .setAgreement(false)
+          .build();
+        UserDetailData userData = new UserDetailData.Builder(x)
+          .setFirstName(firstName)
+          .setLastName(lastName)
+          .setPhoneNumber(phoneNumber)
+          .setAddress(address)
+          .build();
+
+        userCapabilityDataObjects.put("AbliiPrivacyPolicy", privacyPolicy);
+        userCapabilityDataObjects.put("AbliiTermsAndConditions", termsAndConditions);
+        userCapabilityDataObjects.put("User Details", userData);
+        userCapabilityDataObjects.put("Simple User Onboarding", null);
+        userCapabilityDataObjects.put("API CAD User Payments Under 1000CAD", null);
+
+        // API CAD User Payments Under 1000CAD Capability ID
+        String capabilityId = "F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD";
+        CapabilityPayload userCapPayload = new CapabilityPayload.Builder(x)
+          .setId(capabilityId)
+          .setCapabilityDataObjects(userCapabilityDataObjects)
+          .build();
+        userCapPayload = (CapabilityPayload) capabilityPayloadDAO.put(userCapPayload);
+
+        // Query the capabilityPayloadDAO to see what capabilities are still required
+        CapabilityPayload missingPayloads = (CapabilityPayload) capabilityPayloadDAO.find(capabilityId);
+
+        // set the remain capabilities to be satisfied
+        request.setMissingUserCapabilityDataObjects(missingPayloads.getCapabilityDataObjects());
+      `
+    },
+    {
+      name: 'onboardUserForBusiness',
       args: [
         { name: 'x', type: 'Context' },
         { name: 'request', type: 'FlinksLoginIdOnboarding' },
@@ -240,7 +343,7 @@ foam.CLASS({
           .setUserName(holder.getEmail())
           .setAddress(address)
           .setPhoneNumber(phoneNumber)
-          .setDesiredPassword("password")
+          .setDesiredPassword(java.util.UUID.randomUUID().toString())
           .setEmailVerified(true)
           .build();
         newUser = (User) smeUserRegistrationDAO.put(newUser);

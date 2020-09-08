@@ -20,11 +20,6 @@ foam.CLASS({
   name: 'FlinksLoginIdOnboarding',
   extends: 'net.nanopay.flinks.external.FlinksLoginId',
 
-  implements: [
-    'foam.nanos.auth.CreatedAware',
-    'foam.nanos.auth.CreatedByAware'
-  ],
-
   javaImports: [
     'foam.core.FObject',
     'java.util.HashMap'
@@ -36,18 +31,6 @@ foam.CLASS({
       of: 'net.nanopay.flinks.external.OnboardingType',
       name: 'type',
       documentation: 'Personal or business onboarding. Defaults to personal.'
-    },
-    {
-      class: 'Reference',
-      name: 'user',
-      of: 'foam.nanos.auth.User',
-      targetDAOKey: 'userDAO'
-    },
-    {
-      class: 'Reference',
-      name: 'business',
-      of: 'net.nanopay.model.Business',
-      targetDAOKey: 'businessDAO'
     },
     {
       class: 'Map',
