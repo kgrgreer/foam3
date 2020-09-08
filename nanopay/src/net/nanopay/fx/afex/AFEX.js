@@ -360,6 +360,74 @@ foam.INTERFACE({
           type: 'String'
         }
       ]
-    }
+    },
+    {
+      name: 'createFundingBalance',
+      documentation: 'This method is used to create a funding balance so AFEX client can receive instant payment',
+      async: true,
+      type: 'net.nanopay.fx.afex.CreateFundingBalanceResponse',
+      args: [
+        {
+          type: 'net.nanopay.fx.afex.CreateFundingBalanceRequest',
+          name: 'request'
+        },
+        {
+          name: 'spid',
+          type: 'String'
+        }
+      ]
+    },
+    {
+      name: 'getFundingBalance',
+      documentation: 'Get funding balance',
+      async: true,
+      type: 'net.nanopay.fx.afex.GetFundingBalanceResponse',
+      args: [
+        {
+          class: 'String',
+          name: "clientAPIKey"
+        },
+        {
+          type: 'String',
+          name: 'currency'
+        },
+        {
+          name: 'spid',
+          type: 'String'
+        }
+      ]
+    },
+    {
+      name: 'createInstantBenefiary',
+      documentation: 'This method is used to create an Instant Beneficiary',
+      async: true,
+      type: 'net.nanopay.fx.afex.CreateInstantBenefiaryResponse',
+      args: [
+        {
+          type: 'net.nanopay.fx.afex.CreateInstantBenefiaryRequest',
+          name: 'request'
+        },
+        {
+          name: 'spid',
+          type: 'String'
+        }
+      ]
+    },
+    {
+      name: 'validateInstantBenefiaryRequest',
+      documentation: 'This method is used to validate an Instant Beneficiary request to see its details are valid',
+      async: true,
+      type: 'net.nanopay.fx.afex.ValidateInstantBenefiaryResponse',
+      args: [
+        {
+          type: 'net.nanopay.fx.afex.ValidateInstantBenefiaryRequest',
+          name: 'request'
+        },
+        {
+          name: 'spid',
+          type: 'String'
+        }
+      ]
+    },
   ]
 });

@@ -35,7 +35,9 @@ foam.CLASS({
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.crunch.AgentCapabilityJunction',
+    'foam.nanos.crunch.Capability',
     'foam.nanos.crunch.CapabilityJunctionStatus',
+    'foam.nanos.crunch.CrunchService',
     'foam.nanos.crunch.UserCapabilityJunction',
     'java.util.List',
     'static foam.mlang.MLang.*'
@@ -57,7 +59,7 @@ foam.CLASS({
               status = ApprovalStatus.REJECTED == approval ? CapabilityJunctionStatus.ACTION_REQUIRED : CapabilityJunctionStatus.APPROVED;
               ucj.setStatus(status);
 
-              if ( approval == ApprovalStatus.REJECTED ) ucj.clearData();
+              if ( approval == ApprovalStatus.REJECTED ) clearData(x, ucj);
 
               DAO userDAO = (DAO) x.get("localUserDAO");
               User user = (User) userDAO.find(ucj.getSourceId());
@@ -98,6 +100,50 @@ foam.CLASS({
         approval = approval == null || approval == ApprovalStatus.APPROVED ? ApprovalStatus.REQUESTED : approval;
 
         return approval;
+      `
+    },
+    {
+      name: 'clearData',
+      args: [
+        { name: 'x', javaType: 'foam.core.X' },
+        { name: 'ucj', javaType: 'foam.nanos.crunch.UserCapabilityJunction' }
+      ],
+      javaCode: `
+        Capability capability = (Capability) ucj.findTargetId(x);
+        if ( capability.getOf() != null ) {
+          ucj.clearData();
+          return;
+        }
+
+        CrunchService crunchService = (CrunchService) x.get("crunchService");
+        DAO userCapabilityJunctionDAO = (DAO) x.get("bareUserCapabilityJunctionDAO");
+
+        List<Capability> prereqs = (List<Capability>) crunchService.getCapabilityPath(x, ucj.getTargetId(), false);
+
+        User user = (User) ucj.findSourceId(x);
+        Subject subject = new Subject.Builder(x).build();
+        subject.setUser(user);
+        if ( ucj instanceof AgentCapabilityJunction ) {
+          User effectiveUser = (User) ((AgentCapabilityJunction) ucj).findEffectiveUser(x);
+          subject.setUser(effectiveUser);
+        }
+
+        for ( Capability prereq : prereqs ) {
+          // this is the business registration capability, onboarding seems to be dependent on this, 
+          // but if this is cleared and the user is prompted to reapply - it will create new business,
+          // and also this is not part of the "onboarding" data, so skip over 
+          if ( prereq.getId().equals("554af38a-8225-87c8-dfdf-eeb15f71215f-76")) continue;
+
+          UserCapabilityJunction prereqUcj = crunchService.getJunctionForSubject(x, prereq.getId(), subject);
+          if ( prereqUcj == null ) continue;
+          prereqUcj.setStatus(CapabilityJunctionStatus.ACTION_REQUIRED);
+          prereqUcj.clearData();
+          prereqUcj.clearGracePeriod();
+          prereqUcj.clearExpiry();
+          prereqUcj.resetRenewalStatus();
+
+          userCapabilityJunctionDAO.put(prereqUcj);
+        }
       `
     }
   ]
