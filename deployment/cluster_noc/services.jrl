@@ -18,9 +18,3 @@ p({
   "lazy": false,
   "serviceClass":"foam.nanos.medusa.ClusterConfigMonitor"
 })
-// p({
-//   "class":"foam.nanos.boot.NSpec",
-//   "name":"clusterTopologyMonitor",
-//   "lazy": false,
-//   "serviceClass":"foam.nanos.medusa.ClusterTopologyMonitor"
-// })

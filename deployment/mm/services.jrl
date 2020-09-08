@@ -31,6 +31,8 @@ p({
       .setAuthorize(false)
       .setCluster(false)
       .setRuler(false)
+      .setPm(true)
+      .setStorageOptionalEnabled(false)
       .build();
     dao.addPropertyIndex(new foam.core.PropertyInfo[] {
       foam.nanos.medusa.MedusaEntry.INDEX
@@ -66,6 +68,7 @@ p({
       .setInnerDAO(x.get("internalMedusaDAO"))
       .setCluster(false)
       .setRuler(false)
+      .setPm(true)
       .setEnableInterfaceDecorators(false)
       .setDecorator(new foam.nanos.medusa.ReplayDAO.Builder(x)
         .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.MedusaEntry.getOwnClassInfo()))
@@ -88,6 +91,7 @@ p({
       .setCluster(false)
       .setRuler(false)
       .setPm(true)
+      .setPipelinePm(true)
       .setDecorator(new foam.nanos.medusa.ReplayingDAO.Builder(x)
       .setDelegate(new foam.nanos.medusa.MedusaBroadcast2NodesDAO.Builder(x)
         .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.MedusaEntry.getOwnClassInfo()))
@@ -107,6 +111,7 @@ p({
       .setCluster(false)
       .setRuler(false)
       .setPm(true)
+      .setPipelinePm(true)
       .setEnableInterfaceDecorators(false)
       .setDecorator(new foam.nanos.medusa.MedusaConsensusDAO.Builder(x)
       .setDelegate(new foam.nanos.medusa.MedusaBroadcastDAO.Builder(x)
@@ -118,17 +123,4 @@ p({
       .build()
    `,
   "client": "{\"of\":\"foam.nanos.medusa.MedusaEntry\"}"
-})
-
-// p({
-//   "class":"foam.nanos.boot.NSpec",
-//   "name":"clusterTopologyMonitor",
-//   "lazy": false,
-//   "serviceClass":"foam.nanos.medusa.ClusterTopologyMonitor"
-// })
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"clusterConfigMonitor",
-  "lazy": false,
-  "serviceClass":"foam.nanos.medusa.ClusterConfigMonitor"
 })

@@ -10,6 +10,8 @@ p({
       .setInnerDAO(new net.nanopay.security.HashingJDAO(x, mdao, "ledger"))
       .setRuler(false)
       .setCluster(false)
+      .setPm(true)
+      .setPipelinePm(true)
       .setDecorator(new foam.nanos.medusa.ReplayDAO.Builder(x)
       .setDelegate(new foam.nanos.medusa.MedusaUniqueDAO.Builder(x)
       .setDelegate(new foam.nanos.medusa.MedusaHashingDAO.Builder(x)
@@ -48,26 +50,4 @@ p({
       .build();
   `,
   "client": "{\"of\":\"foam.nanos.medusa.MedusaEntry\"}"
-})
-
-p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "localClusterConfigDAO",
-  "serviceScript": """
-    return new foam.dao.EasyDAO.Builder(x)
-      .setOf(foam.nanos.medusa.ClusterConfig.getOwnClassInfo())
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName("clusterConfig")
-      .setCluster(false)
-      .setRuler(false)
-      .setAuthorize(false)
-      .setPm(true)
-      .build();
-   """
-})
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"clusterConfigMonitor",
-  "lazy": false,
-  "serviceClass":"foam.nanos.medusa.ClusterConfigMonitor"
 })

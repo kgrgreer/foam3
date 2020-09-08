@@ -147,10 +147,11 @@ foam.CLASS({
 
         // count number of entries successfully read
         AtomicInteger successReading = new AtomicInteger();
+        AtomicInteger failedReading = new AtomicInteger();
 
         // NOTE: explicitly calling PM constructor as create only creates
         // a percentage of PMs, but we want all replay statistics
-        PM pm = new PM(((foam.dao.AbstractDAO)dao).getOf(), "replay."+getFilename());
+        PM pm = new PM(this.getClass().getSimpleName(), ((foam.dao.AbstractDAO)dao).getOf(), "replay", getFilename());
 
         try ( BufferedReader reader = getReader() ) {
           if ( reader == null ) {
@@ -182,14 +183,22 @@ foam.CLASS({
               successReading.incrementAndGet();
             } catch ( Throwable t ) {
               getLogger().error("Error replaying journal entry:", entry, t);
+              failedReading.incrementAndGet();
             }
           }
         } catch ( Throwable t) {
+          pm.error(x, t);
           getLogger().error("Failed to read from journal", t);
           throw new RuntimeException(t);
         } finally {
-          pm.log(x);
-          getLogger().log("Successfully read " + successReading.get() + " entries from file: " + getFilename() + " in: " + pm.getTime() + "(ms)");
+          if ( failedReading.get() > 0 ) {
+            getLogger().warning("Failed to read " + failedReading.get() + " entries from file: " + getFilename());
+            pm.error(x, "Failed to read " + failedReading.get() + " entries");
+            // TODO/REVIEW: - Throw, halt - indicates MessageDigest failure.
+          } else {
+            pm.log(x);
+          }
+          getLogger().info("Successfully read " + successReading.get() + " entries from file: " + getFilename() + " in: " + pm.getTime() + "(ms)");
         }
       `
     }

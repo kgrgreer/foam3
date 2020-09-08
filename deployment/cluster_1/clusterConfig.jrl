@@ -32,6 +32,22 @@ p({
 
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
+  "id":"node2",
+  "name":"node2",
+  "enabled":true,
+  "realm":"nanopay",
+  "region":"Toronto",
+  "regionStatus":1,
+  "zone":0,
+  "port":8095,
+  "sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738",
+  "type":1,
+  "created":"2020-03-28T14:57:12.959Z",
+  "createdBy":2
+})
+
+p({
+  "class":"foam.nanos.medusa.ClusterConfig",
   "id":"client",
   "name":"client",
   "enabled":true,
@@ -40,6 +56,22 @@ p({
   "regionStatus":1,
   "zone":1,
   "port":8100,
+  "sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738",
+  "type":4,
+  "created":"2020-03-28T14:57:12.959Z",
+  "createdBy":2
+})
+
+p({
+  "class":"foam.nanos.medusa.ClusterConfig",
+  "id":"client2",
+  "name":"client2",
+  "enabled":true,
+  "realm":"nanopay",
+  "region":"Toronto",
+  "regionStatus":1,
+  "zone":1,
+  "port":8110,
   "sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738",
   "type":4,
   "created":"2020-03-28T14:57:12.959Z",
