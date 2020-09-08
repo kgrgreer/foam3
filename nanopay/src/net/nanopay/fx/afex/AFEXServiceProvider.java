@@ -579,12 +579,17 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     return beneficiaryResponse;
   }
 
-  private void addBeneficiary(X x, long beneficiaryId, long ownerId, String status) {
+  private AFEXBeneficiary addBeneficiary(X x, long beneficiaryId, long ownerId, String status) {
+    return addBeneficiary(x, beneficiaryId, ownerId, status, false);
+  }
+
+  private AFEXBeneficiary addBeneficiary(X x, long beneficiaryId, long ownerId, String status, boolean isInstantBeneficiary) {
     DAO afexBeneficiaryDAO = ((DAO) x.get("afexBeneficiaryDAO")).inX(x);
     AFEXBeneficiary afexBeneficiary = (AFEXBeneficiary) afexBeneficiaryDAO.find(
       AND(
         EQ(AFEXBeneficiary.CONTACT, beneficiaryId),
-        EQ(AFEXBeneficiary.OWNER, ownerId)
+        EQ(AFEXBeneficiary.OWNER, ownerId),
+        EQ(AFEXBeneficiary.IS_INSTANT_BENEFICIARY, isInstantBeneficiary)
       )
     );
 
@@ -596,7 +601,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     afexBeneficiary.setContact(beneficiaryId);
     afexBeneficiary.setOwner(ownerId);
     afexBeneficiary.setStatus(status);
-    afexBeneficiaryDAO.put(afexBeneficiary);
+    afexBeneficiary.setIsInstantBeneficiary(isInstantBeneficiary);
+    return (AFEXBeneficiary) afexBeneficiaryDAO.put(afexBeneficiary);
   }
 
   public void updatePayee(long userId, long bankAccountId, long sourceUser) throws RuntimeException {
@@ -936,8 +942,16 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
   }
 
   protected AFEXBeneficiary getAFEXBeneficiary(X x, Long beneficiaryId, Long ownerId) {
+    return getAFEXBeneficiary(x, beneficiaryId, ownerId, false);
+  }
+
+  protected AFEXBeneficiary getAFEXBeneficiary(X x, Long beneficiaryId, Long ownerId, boolean isInstantBeneficiary) {
     DAO dao = (DAO) x.get("afexBeneficiaryDAO");
-    return (AFEXBeneficiary) dao.find(AND(EQ(AFEXBeneficiary.CONTACT, beneficiaryId), EQ(AFEXBeneficiary.OWNER, ownerId)));
+    return (AFEXBeneficiary) dao.find(AND(
+      EQ(AFEXBeneficiary.CONTACT, beneficiaryId),
+      EQ(AFEXBeneficiary.OWNER, ownerId),
+      EQ(AFEXBeneficiary.IS_INSTANT_BENEFICIARY, isInstantBeneficiary)
+    ));
   }
 
   protected AFEXBeneficiary getOrCreateAFEXBeneficiary(X x, Long beneficiaryId, Long ownerId) {
@@ -955,6 +969,111 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       }
     }
     return afexBeneficiary;
+  }
+
+  protected AFEXFundingBalance getOrCreateFundingBalance(X x, Long userId, String currency) {
+    AFEXFundingBalance fundingBalance = getUserFundingBalance(x, userId, currency);
+    if ( fundingBalance != null ) return fundingBalance;
+
+    return createFundingBalance(x, userId, currency);
+  }
+
+  public AFEXFundingBalance createFundingBalance(X x, Long userId, String currency) throws RuntimeException {
+    User user = User.findUser(x, userId);
+    if ( null == user ) throw new RuntimeException("Unable to find User " + userId);
+
+    AFEXBusiness afexBusiness = getAFEXBusiness(x, user.getId());
+    if ( null == afexBusiness ) throw new RuntimeException("User not yet onboarded to payment partner " + userId);
+
+    CreateFundingBalanceRequest request = new CreateFundingBalanceRequest();
+    request.setAccountNumber(afexBusiness.getAccountNumber());
+    request.setCurrency(currency);
+    request.setClientAPIKey(afexBusiness.getApiKey());
+    try {
+      CreateFundingBalanceResponse response = afexClient.createFundingBalance(request, user.getSpid());
+      if ( response == null ) throw new RuntimeException("Unable to get a valid response from  CreateFundingBalance API" );
+
+      if ( ! response.getIsSuccessful() ) throw new RuntimeException("Unable to create funding balance. " + response.getMessage());
+
+      return saveFundingBalance(x, userId, response.getFundingBalanceId(), response.getAccountId(), currency);
+    } catch(Throwable t) {
+      logger_.error("Error creating funding balance for user.", t);
+      throw new RuntimeException("Error creating funding balance for user. " + t.getMessage());
+    }
+  }
+
+  protected AFEXFundingBalance saveFundingBalance(X x, long userId, String fundingBalanceId, String accountId, String currency) {
+    AFEXFundingBalance fundingBalance = getUserFundingBalance(x, userId, currency);
+    if ( null == fundingBalance ) {
+      fundingBalance = new AFEXFundingBalance();
+    }
+    fundingBalance = (AFEXFundingBalance) fundingBalance.fclone();
+    fundingBalance.setUser(userId);
+    fundingBalance.setAccountId(accountId);
+    fundingBalance.setFundingBalanceId(fundingBalanceId);
+    fundingBalance.setCurrency(currency);
+    return (AFEXFundingBalance) ((DAO) x.get("afexFundingBalanceDAO")).inX(x).put(fundingBalance);
+  }
+
+  public AFEXFundingBalance getUserFundingBalance(X x, long userId, String currency) {
+    DAO afexFundingBalanceDAO = ((DAO) x.get("afexFundingBalanceDAO")).inX(x);
+    return (AFEXFundingBalance) afexFundingBalanceDAO.find(
+      AND(
+        EQ(AFEXFundingBalance.USER, userId),
+        EQ(AFEXFundingBalance.CURRENCY, currency)
+      )
+    );
+  }
+
+  public AFEXFundingBalance getFundingBalance(X x, Long userId, String currency) throws RuntimeException {
+    AFEXFundingBalance fundingBalance = getUserFundingBalance(x, userId, currency);
+    if ( fundingBalance != null ) return fundingBalance;
+
+    User user = User.findUser(x, userId);
+    if ( null == user ) throw new RuntimeException("Unable to find User " + userId);
+
+    AFEXBusiness afexBusiness = getAFEXBusiness(x, user.getId());
+    if ( null == afexBusiness ) throw new RuntimeException("User not yet onboarded to payment partner " + userId);
+
+    try {
+      GetFundingBalanceResponse response = afexClient.getFundingBalance(afexBusiness.getApiKey(), currency, user.getSpid());
+      if ( response == null ) throw new RuntimeException("Unable to get a valid response from  GetFundingBalance API" );
+      if ( response.getFundingBalances().length < 1 ) return null;
+
+      FundingBalance f = response.getFundingBalances()[0];
+      return saveFundingBalance(x, userId, f.getFundingBalanceId(), f.getAccountId(), currency);
+    } catch(Throwable t) {
+      logger_.error("Error creating funding balance for user.", t);
+      throw new RuntimeException("Error creating funding balance for user. " + t.getMessage());
+    }
+  }
+
+  public AFEXBeneficiary createInstantBeneficiary(X x, Long userId, Long payeeId, String currency) throws RuntimeException {
+    User user = User.findUser(x, userId);
+    if ( null == user ) throw new RuntimeException("Unable to find User " + userId);
+
+    AFEXBusiness afexBusiness = getAFEXBusiness(x, user.getId());
+    if ( null == afexBusiness ) throw new RuntimeException("User not yet onboarded to payment partner " + userId);
+
+    AFEXFundingBalance fundingBalance = getOrCreateFundingBalance(x, payeeId, currency);
+    if ( fundingBalance == null ) throw new RuntimeException("Unable to create funding balance for user " + payeeId);
+
+    CreateInstantBenefiaryRequest request = new CreateInstantBenefiaryRequest();
+    request.setAccountId(fundingBalance.getAccountId());
+    request.setFundingBalanceId(fundingBalance.getFundingBalanceId());
+    request.setVendorId(String.valueOf(payeeId));
+    request.setClientAPIKey(afexBusiness.getApiKey());
+    try {
+      CreateInstantBenefiaryResponse response = afexClient.createInstantBenefiary(request, user.getSpid());
+      if ( response == null ) throw new RuntimeException("Unable to get a valid response from  CreateInstantBeneficiary API" );
+
+      if ( response.getCode() != 0 ) throw new RuntimeException("Unable to create instant beneficiary. " + response.getInformationMessage());
+
+      return addBeneficiary(x, payeeId, userId, "Active", true);
+    } catch(Throwable t) {
+      logger_.error("Error creating funding balance for user.", t);
+      throw new RuntimeException("Error creating funding balance for user. " + t.getMessage());
+    }
   }
 
   protected User getSigningOfficer(X x, Business business) {

@@ -318,22 +318,21 @@ foam.CLASS({
         { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
       ],
       javaCode: `
+        var txnclone = (Transaction) txn.fclone();
         if ( getIsFeeOnRootCorridors() ) {
           while ( quote.getParent() != null ){
             quote = quote.getParent();
           }
 
-          Transaction txnclone = (Transaction) txn.fclone();
           txnclone.setSourceAccount(quote.getSourceAccount().getId());
           txnclone.setDestinationAccount(quote.getDestinationAccount().getId());
           txnclone.setSourceCurrency(quote.getSourceUnit());
           txnclone.setDestinationCurrency(quote.getDestinationUnit());
-          txnclone = (Transaction) ((DAO) x.get("localFeeEngineDAO")).put(txnclone);
-
-          txn.setLineItems(txnclone.getLineItems());
-          return txn;
         }
-        return (Transaction) ((DAO) x.get("localFeeEngineDAO")).put(txn);
+
+        txnclone = (Transaction) ((DAO) x.get("localFeeEngineDAO")).put(txnclone);
+        txn.setLineItems(txnclone.getLineItems());
+        return txn;
       `
     }
   ],

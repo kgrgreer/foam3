@@ -4,7 +4,7 @@ p({
   name: "Treviso Fee",
   documentation: "Add fee line item for Treviso transactions.",
   feeName: "Total Fee Due",
-  feeDenomination: "USD",
+  feeDenomination: "BRL",
   feeClass: "net.nanopay.tx.FeeLineItem",
   enabled: true,
   predicate: {
@@ -12,7 +12,7 @@ p({
     args: [
       {
         class: "foam.nanos.ruler.predicate.IsInstancePredicate",
-        of: "net.nanopay.partner.treviso.tx.TrevisoTransaction"
+        of: "net.nanopay.fx.FXSummaryTransaction"
       },
       {
         class: "foam.mlang.predicate.Eq",

@@ -349,6 +349,18 @@ p({
   "visible":false
 })
 
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode",
+  "name":"Nature Code Requirement",
+  "class": "foam.nanos.crunch.MinMaxCapability",
+  "min": 1,
+  "max": 1,
+  "version":"0",
+  "enabled":true,
+  "visible":false
+})
+
 // Temporary nature codes for nature code selection in payment flow.
 // TODO: To be replaced by Eric's work on capable transaction
 p({class: "net.nanopay.country.br.NatureCode", operationType: "10001", payerType: "xx", id: "cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-1", name:"Supply and Technology Services"})

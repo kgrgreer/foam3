@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.country.br.tx.fee',
   name: 'PTaxRate',
-  extends: 'net.nanopay.tx.fee.PercentageFee',
+  extends: 'net.nanopay.tx.fee.Fee',
 
   documentation: 'PTaxRate from the Central Bank of Brazil for use as fee.',
 
@@ -32,22 +32,23 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'percentage',
-      transient: true,
-      visibility: 'HIDDEN',
-      javaGetter: `
-        var openDataService = (OpenDataService) getX().get("openDataService");
-        var pTaxRate = openDataService.getPTaxRate();
-        return pTaxRate.getCotacaoVenda();
-      `
-    },
-    {
       name: 'formula',
       transient: true,
       visibility: 'HIDDEN',
       tableCellFormatter: function(_, obj) {
         this.add(obj.FORMULA_PREFIX);
       }
+    }
+  ],
+
+  methods: [
+    {
+      name: 'getRate',
+      javaCode: `
+        var openDataService = (OpenDataService) getX().get("openDataService");
+        var pTaxRate = openDataService.getPTaxRate();
+        return pTaxRate.getCotacaoVenda();
+      `
     }
   ]
 });
