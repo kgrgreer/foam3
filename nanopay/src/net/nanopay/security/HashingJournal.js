@@ -151,7 +151,7 @@ foam.CLASS({
 
         // NOTE: explicitly calling PM constructor as create only creates
         // a percentage of PMs, but we want all replay statistics
-        PM pm = new PM(this.getClass().getSimpleName(), ((foam.dao.AbstractDAO)dao).getOf(), "replay", getFilename());
+        PM pm = new PM(this.getClass().getSimpleName(), ((foam.dao.AbstractDAO)dao).getOf().getId(), "replay", getFilename());
 
         try ( BufferedReader reader = getReader() ) {
           if ( reader == null ) {
