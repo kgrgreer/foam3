@@ -147,4 +147,24 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
   public String addCompanyOfficer(AddCompanyOfficerRequest addCompanyOfficerRequest, String spid) {
     return null;
   }
+
+  @Override
+  public CreateFundingBalanceResponse createFundingBalance(CreateFundingBalanceRequest createFundingBalanceRequest, String spid) {
+    return null;
+  }
+
+  @Override
+  public GetFundingBalanceResponse getFundingBalance(String clientAPIKey, String currency, String spid) {
+    return null;
+  }
+
+  @Override
+  public CreateInstantBenefiaryResponse createInstantBenefiary(CreateInstantBenefiaryRequest createInstantBenefiaryRequest, String spid) {
+    return null;
+  }
+
+  @Override
+  public ValidateInstantBenefiaryResponse validateInstantBenefiaryRequest(ValidateInstantBenefiaryRequest validateInstantBenefiary, String spid)  {
+    return null;
+  }
 }

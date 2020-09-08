@@ -1126,6 +1126,183 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
     return null;
   }
 
+  @Override
+  public CreateFundingBalanceResponse createFundingBalance(CreateFundingBalanceRequest createFundingBalanceRequest, String spid) {
+    try {
+      credentials = getCredentials(spid);
+      HttpPost httpPost = new HttpPost(credentials.getPartnerApi() + "api/fundingbalance/create");
+      httpPost.addHeader("API-Key", createFundingBalanceRequest.getClientAPIKey());
+      httpPost.addHeader("Content-Type", "application/json");
+
+      StringEntity params = null;
+      try(Outputter jsonOutputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false)) {
+        String requestJson = jsonOutputter.stringify(createFundingBalanceRequest);
+        params =new StringEntity(requestJson);
+      } catch(Exception e) {
+        logger.error(e);
+      }
+
+      httpPost.setEntity(params);
+      logMessage(createFundingBalanceRequest.getClientAPIKey(), "CreateFundingBalance", parseHttpPost(httpPost), false);
+      omLogger.log("AFEX CreateFundingBalance starting");
+      logger.debug(params);
+
+      CloseableHttpResponse httpResponse = getHttpClient().execute(httpPost);
+
+      omLogger.log("AFEX CreateFundingBalance complete");
+
+      try {
+        if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
+          String errorMsg = parseHttpResponse("CreateFundingBalance", httpResponse);
+          logger.error(errorMsg);
+          throw new RuntimeException(errorMsg);
+        }
+
+        String response = new BasicResponseHandler().handleResponse(httpResponse);
+        logMessage(createFundingBalanceRequest.getClientAPIKey(), "CreateFundingBalance", response, true);
+        return (CreateFundingBalanceResponse) jsonParser.parseString(response, CreateFundingBalanceResponse.class);
+      } finally {
+        httpResponse.close();
+      }
+    } catch (IOException e) {
+      omLogger.log("AFEX CreateFundingBalance timeout");
+      logger.error(e);
+    }
+
+    return null;
+  }
+
+  @Override
+  public GetFundingBalanceResponse getFundingBalance(String clientAPIKey, String currency, String spid) {
+    try {
+      URIBuilder uriBuilder = new URIBuilder(getCredentials(spid).getAFEXApi()  + "api/fundingbalance?Currency");
+      uriBuilder.setParameter("Currency", currency);
+
+      HttpGet httpGet = new HttpGet(uriBuilder.build());
+      httpGet.addHeader("API-Key", clientAPIKey);
+      httpGet.addHeader("Content-Type", "application/json");
+
+      logMessage(clientAPIKey, "GetFundingBalance", httpGet.toString(), false);
+      omLogger.log("AFEX GetFundingBalance starting");
+      CloseableHttpResponse httpResponse = getHttpClient().execute(httpGet);
+      omLogger.log("AFEX GetFundingBalance completed");
+
+      try {
+        if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
+          String errorMsg = parseHttpResponse("GetFundingBalance", httpResponse);
+          logger.error(errorMsg);
+          throw new RuntimeException(errorMsg);
+        }
+
+        String response = new BasicResponseHandler().handleResponse(httpResponse);
+        logMessage(clientAPIKey, "GetFundingBalance", response, true);
+        return (GetFundingBalanceResponse) jsonParser.parseString(response, GetFundingBalanceResponse.class);
+      } finally {
+        httpResponse.close();
+      }
+
+    } catch (IOException e ) {
+      omLogger.log("AFEX GetFundingBalance timeout");
+      logger.error(e);
+    } catch (URISyntaxException e) {
+      logger.error(e);
+    }
+
+    return null;
+  }
+
+  @Override
+  public CreateInstantBenefiaryResponse createInstantBenefiary(CreateInstantBenefiaryRequest createInstantBenefiaryRequest, String spid) {
+    try {
+      credentials = getCredentials(spid);
+      HttpPost httpPost = new HttpPost(credentials.getPartnerApi() + "api/instantbeneficiarycreate");
+      httpPost.addHeader("API-Key", createInstantBenefiaryRequest.getClientAPIKey());
+      httpPost.addHeader("Content-Type", "application/json");
+
+      StringEntity params = null;
+      try(Outputter jsonOutputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false)) {
+        String requestJson = jsonOutputter.stringify(createInstantBenefiaryRequest);
+        params =new StringEntity(requestJson);
+      } catch(Exception e) {
+        logger.error(e);
+      }
+
+      httpPost.setEntity(params);
+      logMessage(createInstantBenefiaryRequest.getClientAPIKey(), "CreateInstantBenefiary", parseHttpPost(httpPost), false);
+      omLogger.log("AFEX CreateInstantBenefiary starting");
+      logger.debug(params);
+
+      CloseableHttpResponse httpResponse = getHttpClient().execute(httpPost);
+
+      omLogger.log("AFEX CreateInstantBenefiary complete");
+
+      try {
+        if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
+          String errorMsg = parseHttpResponse("CreateInstantBenefiary", httpResponse);
+          logger.error(errorMsg);
+          throw new RuntimeException(errorMsg);
+        }
+
+        String response = new BasicResponseHandler().handleResponse(httpResponse);
+        logMessage(createInstantBenefiaryRequest.getClientAPIKey(), "CreateInstantBenefiary", response, true);
+        return (CreateInstantBenefiaryResponse) jsonParser.parseString(response, CreateInstantBenefiaryResponse.class);
+      } finally {
+        httpResponse.close();
+      }
+    } catch (IOException e) {
+      omLogger.log("AFEX CreateInstantBenefiary timeout");
+      logger.error(e);
+    }
+
+    return null;
+  }
+
+  @Override
+  public ValidateInstantBenefiaryResponse validateInstantBenefiaryRequest(ValidateInstantBenefiaryRequest validateInstantBenefiary, String spid) {
+    try {
+      credentials = getCredentials(spid);
+      HttpPost httpPost = new HttpPost(credentials.getPartnerApi() + "api/instantbeneficiaryvalidate");
+      httpPost.addHeader("API-Key", validateInstantBenefiary.getClientAPIKey());
+      httpPost.addHeader("Content-Type", "application/json");
+
+      StringEntity params = null;
+      try(Outputter jsonOutputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false)) {
+        String requestJson = jsonOutputter.stringify(validateInstantBenefiary);
+        params =new StringEntity(requestJson);
+      } catch(Exception e) {
+        logger.error(e);
+      }
+
+      httpPost.setEntity(params);
+      logMessage(validateInstantBenefiary.getClientAPIKey(), "ValidateInstantBenefiaryRequest", parseHttpPost(httpPost), false);
+      omLogger.log("AFEX ValidateInstantBenefiaryRequest starting");
+      logger.debug(params);
+
+      CloseableHttpResponse httpResponse = getHttpClient().execute(httpPost);
+
+      omLogger.log("AFEX ValidateInstantBenefiaryRequest complete");
+
+      try {
+        if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
+          String errorMsg = parseHttpResponse("ValidateInstantBenefiaryRequest", httpResponse);
+          logger.error(errorMsg);
+          throw new RuntimeException(errorMsg);
+        }
+
+        String response = new BasicResponseHandler().handleResponse(httpResponse);
+        logMessage(validateInstantBenefiary.getClientAPIKey(), "ValidateInstantBenefiaryRequest", response, true);
+        return (ValidateInstantBenefiaryResponse) jsonParser.parseString(response, ValidateInstantBenefiaryResponse.class);
+      } finally {
+        httpResponse.close();
+      }
+    } catch (IOException e) {
+      omLogger.log("AFEX ValidateInstantBenefiaryRequest timeout");
+      logger.error(e);
+    }
+
+    return null;
+  }
+
   protected void logMessage(String apiKey, String methodName, String msg, boolean isResponse) {
     String msgType = isResponse ? "Response" : "Request";
     StringBuilder sb = new StringBuilder();

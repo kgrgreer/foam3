@@ -17,16 +17,26 @@
 
 foam.CLASS({
   package: 'net.nanopay.fx.afex',
-  name: 'AFEXBeneficiary',
+  name: 'AFEXFundingBalance',
 
   implements: [
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
+    'foam.nanos.auth.EnabledAware',
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.LastModifiedByAware'
   ],
 
+  imports: [
+    'publicBusinessDAO'
+  ],
+
   properties: [
+    {
+      class: 'Boolean',
+      name: 'enabled',
+      value: true
+    },
     {
       class: 'Long',
       name: 'id',
@@ -35,35 +45,27 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
-      name: 'contact',
-      documentation: `The ID for the contact or underlying business`,
+      name: 'user',
+      documentation: `The ID for the user`,
       tableCellFormatter: function(value, obj, axiom) {
         var self = this;
         this.__subSubContext__.publicBusinessDAO.find(value).then( function( user ) {
           if ( user ) self.add(user.businessName);
         });
       }
-    },
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.User',
-      name: 'owner',
-      documentation: `The owner of the contact`,
-      tableCellFormatter: function(value, obj, axiom) {
-        var self = this;
-        this.__subSubContext__.publicBusinessDAO.find(value).then( function( user ) {
-          if ( user ) self.add(user.businessName);
-        });
-      }
-    },
-    {
-      class: 'Boolean',
-      name: 'isInstantBeneficiary'
     },
     {
       class: 'String',
-      name: 'status',
-      documentation: 'Beneficiary status on AFEX system.'
+      name: 'accountId',
+      documentation: 'AFEX account number'
+    },
+    {
+      class: 'String',
+      name: 'fundingBalanceId'
+    },
+    {
+      class: 'String',
+      name: 'currency'
     },
     {
       class: 'DateTime',
