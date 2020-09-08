@@ -24,6 +24,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.FObject',
+    'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.auth.Address',
@@ -118,6 +119,8 @@ foam.CLASS({
           } else if ( subject.getUser() instanceof Business ) {
             user = subject.getRealUser();
             business = (Business) subject.getUser();
+          } else {
+            user = subject.getUser();
           }
         }
 
@@ -211,7 +214,7 @@ foam.CLASS({
         Business business = request.findBusiness(x);
 
         if ( request.getType() == OnboardingType.PERSONAL ) {
-
+          onboardUser(x, request, accountDetail);
         }
         else if ( request.getType() == OnboardingType.BUSINESS ) {
           // Create the user
@@ -237,6 +240,7 @@ foam.CLASS({
         { name: 'accountDetail', type: 'AccountWithDetailModel' }
       ],
       javaCode: `
+        Subject subject = (Subject) x.get("subject");
         DAO userDAO = (DAO) x.get("localUserDAO");
         HolderModel holder = accountDetail.getHolder();
         User newUser = new User.Builder(x)
@@ -244,6 +248,8 @@ foam.CLASS({
           .setUserName(holder.getEmail())
           .setDesiredPassword(java.util.UUID.randomUUID().toString())
           .setEmailVerified(true)
+          .setGroup("personal")
+          .setSpid(subject.getRealUser().getSpid())
           .build();
         newUser = (User) userDAO.put(newUser);
         
@@ -251,11 +257,11 @@ foam.CLASS({
         request.setUser(newUser.getId());
 
         // Switch contexts to the newly created user
-        AgentAuthService agentAuth = (AgentAuthService) x.get("agentAuth");
-        agentAuth.actAs(x, newUser);
+        Subject newSubject = new Subject.Builder(x).setUser(newUser).build();
+        X subjectX = getX().put("subject", newSubject);
 
         AddressModel holderAddress = holder.getAddress();        
-        Address address = new Address.Builder(x)
+        Address address = new Address.Builder(subjectX)
           .setAddress1(holderAddress.getCivicAddress())
           .setRegionId(holderAddress.getProvince())
           .setCountryId(holderAddress.getCountry())
@@ -270,15 +276,15 @@ foam.CLASS({
         String phoneNumber = holder.getPhoneNumber().replaceAll("[^0-9]", "");
 
         // Add capabilities for the new user
-        DAO capabilityPayloadDAO = (DAO) x.get("capabilityPayloadDAO");
+        DAO capabilityPayloadDAO = (DAO) subjectX.get("capabilityPayloadDAO");
         Map<String,FObject> userCapabilityDataObjects = new HashMap<>();
-        AbliiPrivacyPolicy privacyPolicy = new AbliiPrivacyPolicy.Builder(x)
+        AbliiPrivacyPolicy privacyPolicy = new AbliiPrivacyPolicy.Builder(subjectX)
           .setAgreement(false)
           .build();
-        AbliiTermsAndConditions termsAndConditions = new AbliiTermsAndConditions.Builder(x)
+        AbliiTermsAndConditions termsAndConditions = new AbliiTermsAndConditions.Builder(subjectX)
           .setAgreement(false)
           .build();
-        UserDetailData userData = new UserDetailData.Builder(x)
+        UserDetailData userData = new UserDetailData.Builder(subjectX)
           .setFirstName(firstName)
           .setLastName(lastName)
           .setPhoneNumber(phoneNumber)
@@ -293,14 +299,14 @@ foam.CLASS({
 
         // API CAD User Payments Under 1000CAD Capability ID
         String capabilityId = "F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD";
-        CapabilityPayload userCapPayload = new CapabilityPayload.Builder(x)
+        CapabilityPayload userCapPayload = new CapabilityPayload.Builder(subjectX)
           .setId(capabilityId)
           .setCapabilityDataObjects(userCapabilityDataObjects)
           .build();
-        userCapPayload = (CapabilityPayload) capabilityPayloadDAO.put(userCapPayload);
+        userCapPayload = (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).put(userCapPayload);
 
         // Query the capabilityPayloadDAO to see what capabilities are still required
-        CapabilityPayload missingPayloads = (CapabilityPayload) capabilityPayloadDAO.find(capabilityId);
+        CapabilityPayload missingPayloads = (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).find(capabilityId);
 
         // set the remain capabilities to be satisfied
         request.setMissingUserCapabilityDataObjects(missingPayloads.getCapabilityDataObjects());
