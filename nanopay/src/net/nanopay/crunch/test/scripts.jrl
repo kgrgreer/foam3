@@ -106,3 +106,38 @@ p({
   `,
 	"lastModifiedBy": 1348
 })
+p({
+  "class":"foam.nanos.script.Script",
+  "id": "createNatureCodeAssociations",
+  "description": "Create prerequisite junctions for nature codes",
+  "server": true,
+  "scheduled": false,
+  "code": `
+    import foam.nanos.crunch.Capability;
+    import foam.nanos.crunch.CapabilityCapabilityJunction;
+    import foam.dao.ArraySink;
+    import foam.dao.DAO;
+    import foam.mlang.predicate.Predicate;
+    import java.util.List;
+    import static foam.mlang.MLang.*;
+
+    DAO capabilityDAO = (DAO) x.get("capabilityDAO");
+    Predicate predicate = INSTANCE_OF(net.nanopay.country.br.NatureCode.class);
+
+    List natureCodes = (
+      (ArraySink)
+      capabilityDAO.where(predicate).select(new ArraySink())
+    ).getArray();
+
+    DAO prerequisiteDAO = (DAO) x.get("prerequisiteCapabilityJunctionDAO");
+    for ( Capability natureCode : natureCodes ) {
+      CapabilityCapabilityJunction prerequisiteJunction =
+        new CapabilityCapabilityJunction.Builder(x)
+          .setSourceId("cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode")
+          .setTargetId(natureCode.getId())
+          .build();
+      prerequisiteDAO.put(prerequisiteJunction);
+    }
+  `,
+	"lastModifiedBy": 1348
+})
