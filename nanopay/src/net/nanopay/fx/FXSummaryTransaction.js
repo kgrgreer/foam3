@@ -27,8 +27,20 @@ foam.CLASS({
   ],
 
   messages: [
-     { name: 'DESCRIPTION', message: 'Summary' },
- ],
+    { name: 'DESCRIPTION', message: 'Summary' },
+  ],
+
+  properties: [
+    {
+      class: 'UnitValue',
+      name: 'intermediateAmount',
+      unitPropName: 'intermediateCurrency'
+    },
+    {
+      class: 'String',
+      name: 'intermediateCurrency'
+    }
+  ],
 
   methods: [
     {

@@ -148,6 +148,7 @@ p({
     "class": "net.nanopay.partner.treviso.tx.TrevisoSummaryLineItemRule"
   },
   "enabled": true,
+  "spid": "treviso",
   "lifecycleState":1
 })
 

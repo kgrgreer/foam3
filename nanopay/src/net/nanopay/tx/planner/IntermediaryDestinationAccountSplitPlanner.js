@@ -31,6 +31,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'net.nanopay.account.Account',
     'net.nanopay.fx.FXSummaryTransaction',
+    'net.nanopay.payment.PaymentProviderAware',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus'
@@ -80,11 +81,16 @@ foam.CLASS({
 
           var fxSummary = new FXSummaryTransaction();
           fxSummary.copyFrom(requestTxn);
-          fxSummary.setAmount(leg1.getAmount());
-          fxSummary.clearLineItems();
-          fxSummary.addNext(createCompliance(fxSummary));
-
           fxSummary.setStatus(TransactionStatus.COMPLETED);
+          fxSummary.setAmount(leg1.getAmount());
+          fxSummary.setIntermediateAmount(leg2.getAmount());
+          fxSummary.setIntermediateCurrency(intermediaryAccount.getDenomination());
+          if ( leg1 instanceof PaymentProviderAware ) {
+            var paymentProvider = ((PaymentProviderAware) leg1).getPaymentProvider();
+            fxSummary.setPaymentProvider(paymentProvider);
+          }
+
+          fxSummary.addNext(createCompliance(fxSummary));
           fxSummary.addNext(leg1.getNext()[0].getNext()[0]);
           fxSummary.addNext(leg2.getNext()[0].getNext()[0]);
           return fxSummary;
