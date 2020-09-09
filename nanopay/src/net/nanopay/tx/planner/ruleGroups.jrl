@@ -9,7 +9,7 @@ p({
   "predicate":{
     "class":"net.nanopay.tx.ruler.IsSecurityQuote"
   },
-  "enabled":false
+  "enabled":true
 })
 p({
   "class":"net.nanopay.tx.planner.PlannerGroup",
@@ -22,7 +22,7 @@ p({
       "class":"net.nanopay.tx.ruler.IsSecurityQuote",
     }
   },
-  "enabled":false
+  "enabled":true
 })
 p({
   "class":"net.nanopay.tx.planner.PlannerGroup",
@@ -42,14 +42,14 @@ p({
   "class":"net.nanopay.tx.planner.PlannerGroup",
   "id":"FeeEngine",
   "documentation":"Fee Engine which deals with adding fees to transactions",
-  "enabled":false
+  "enabled":true
 })
 
 p({
   "class":"net.nanopay.tx.planner.PlannerGroup",
   "id":"AlternaPlanner",
   "documentation":"Alterna CICO operations",
-  "enabled":false,
+  "enabled":true,
   "predicate":
   {
     "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
@@ -60,7 +60,7 @@ p({
   "class":"net.nanopay.tx.planner.PlannerGroup",
   "id":"BMOPlanner",
   "documentation":"BMO CICO operations",
-  "enabled":false,
+  "enabled":true,
   "predicate":
   {
     "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
@@ -71,7 +71,7 @@ p({
   "class":"net.nanopay.tx.planner.PlannerGroup",
   "id":"RBCPlanner",
   "documentation":"RBC CICO operations",
-  "enabled":false,
+  "enabled":true,
   "predicate":
   {
     "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
@@ -89,7 +89,7 @@ p({
     "arg1":{
       "class":"net.nanopay.tx.ruler.IsSecurityQuote",
     }
-  },
+  }
 })
 p({
   "class":"net.nanopay.tx.planner.PlannerGroup",
@@ -102,11 +102,11 @@ p({
     "arg1":{
       "class":"net.nanopay.tx.ruler.IsSecurityQuote",
     }
-  },
+  }
 })
 p({
   "class":"net.nanopay.tx.planner.PlannerGroup",
   "id":"SandBoxPlanner",
   "documentation":"planning for instant bank to bank ",
-  "enabled":true,
+  "enabled":false
 })
