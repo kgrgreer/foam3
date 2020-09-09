@@ -74,7 +74,7 @@ p({
 
 p({
   "class": "foam.nanos.cron.Cron",
-  "enabled": false,
+  "enabled": true,
   "schedule": {
     "class": "foam.nanos.cron.CronSchedule",
     "minute": -1,
@@ -134,7 +134,7 @@ p({
 })
 p({
   "class": "foam.nanos.cron.Cron",
-  "enabled": false,
+  "enabled": true,
   "schedule": {
     "class": "foam.nanos.cron.CronSchedule",
     "minute": -1,

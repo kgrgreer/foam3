@@ -444,7 +444,7 @@ p({
   "action": {
     "class": "net.nanopay.meter.clearing.ruler.EstimateTransactionCompletionDate"
   },
-  "enabled": true,
+  "enabled": false,
   "saveHistory": false,
   "predicate": {
     "class": "net.nanopay.meter.clearing.ruler.predicate.DefaultClearingTimeRulePredicate"
@@ -464,7 +464,7 @@ p({
   "action": {
     "class": "net.nanopay.meter.clearing.ruler.SimulateTransactionCompletionDate"
   },
-  "enabled": false,
+  "enabled": true,
   "saveHistory": false,
   "predicate": {
     "class": "net.nanopay.meter.clearing.ruler.predicate.DefaultClearingTimeRulePredicate"
