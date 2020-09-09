@@ -38,6 +38,8 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'java.util.Arrays',
     'java.util.Base64',
+    'net.nanopay.meter.compliance.secureFact.lev.LEVDocumentOrderRequest',
+    'net.nanopay.meter.compliance.secureFact.lev.LEVDocumentOrderResponse',
     'net.nanopay.meter.compliance.secureFact.lev.LEVResponse',
     'net.nanopay.meter.compliance.secureFact.lev.LEVResult',
     'net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse',
@@ -138,6 +140,27 @@ foam.CLASS({
         response.setCloseMatches(closeMatchCounter + "/" + results.length);
         return (LEVResponse)
           ((DAO) getSecurefactLEVDAO()).put(response);
+      `
+    },
+    {
+      name: 'levDocumentOrder',
+      type: 'net.nanopay.meter.compliance.secureFact.lev.LEVDocumentOrderResponse',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'resultId',
+          type: 'int'
+        }
+      ],
+      javaCode: `
+        SecurefactRequest request = SecurefactRequestGenerator.getLEVDocumentOrderRequest(resultId);
+        request.setUrl(getLevDocumentOrderUrl());
+        request.setAuthKey(getLevApiKey());
+        LEVDocumentOrderResponse response = (LEVDocumentOrderResponse) sendRequest(x, request, LEVDocumentOrderResponse.class);
+        return response;
       `
     },
     {

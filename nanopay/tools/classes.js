@@ -899,6 +899,8 @@ var classes = [
   'net.nanopay.meter.compliance.secureFact.sidni.SIDniDataSources',
   'net.nanopay.meter.compliance.secureFact.lev.LEVApplicant',
   'net.nanopay.meter.compliance.secureFact.lev.LEVChange',
+  'net.nanopay.meter.compliance.secureFact.lev.LEVDocumentOrderRequest',
+  'net.nanopay.meter.compliance.secureFact.lev.LEVDocumentOrderResponse',
   'net.nanopay.meter.compliance.secureFact.lev.LEVError',
   'net.nanopay.meter.compliance.secureFact.lev.LEVIndividualScores',
   'net.nanopay.meter.compliance.secureFact.lev.LEVRequest',
