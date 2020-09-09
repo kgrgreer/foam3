@@ -171,6 +171,7 @@ foam.CLASS({
 
           if ( params.containsKey("group") && params.containsKey("businessId") ) {
             String group = (String) params.get("group");
+            boolean isSigningOfficer = params.containsKey("isSigningOfficer") ? (boolean) params.get("isSigningOfficer") : false;
             long businessId = (long) params.get("businessId");
             UserUserJunction junction;
 
@@ -194,6 +195,14 @@ foam.CLASS({
 
               // Get a context with the Business in it
               X businessContext = Auth.sudo(sysContext, business);
+
+              if ( isSigningOfficer ) {
+                DAO signingOfficerJunctionDAO = (DAO) businessContext.get("signingOfficerJunctionDAO");
+                signingOfficerJunctionDAO.put_(businessContext, new BusinessUserJunction.Builder(businessContext)
+                  .setSourceId(business.getId())
+                  .setTargetId(user.getId())
+                  .build());
+              }
 
               Invitation invitation = (Invitation) getInvitationDAO()
                 .inX(businessContext)

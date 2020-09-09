@@ -38,6 +38,7 @@ p({
   "associatedEntity":2,
   "permissionsGranted":[
     "certifydatareviewed.rw.reviewed",
+    "invoice.pay",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifyownerspercent.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.dualpartyagreementcad.section.reviewAgreementDocumentsSection",
@@ -57,6 +58,7 @@ p({
   ],
   "permissionsIntercepted": [
     "certifydatareviewed.rw.reviewed",
+    "invoice.pay",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifyownerspercent.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.dualpartyagreementcad.section.reviewAgreementDocumentsSection",
@@ -114,6 +116,7 @@ p({
   "associatedEntity":2,
   "permissionsGranted":[
     "certifydatareviewed.rw.reviewed",
+    "invoice.pay",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifyownerspercent.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.dualpartyagreementcad.section.reviewAgreementDocumentsSection",
@@ -133,6 +136,7 @@ p({
   ],
   "permissionsIntercepted": [
     "certifydatareviewed.rw.reviewed",
+    "invoice.pay",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifyownerspercent.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.dualpartyagreementcad.section.reviewAgreementDocumentsSection",

@@ -98,9 +98,13 @@ foam.CLASS({
       color: #9ba1a6;
       margin-top: 10px;
     }
+    ^isSigningOfficer {
+      margin: 24px 32px 0 32px;
+    }
     ^emailStyle {
-       margin-left: 32px;
-       width: 92%;
+      margin-top: 24px;
+      margin-left: 32px;
+      width: 92%;
     }
     ^emailStyle .foam-u2-TextField {
       width: 98%;
@@ -157,6 +161,18 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
+      name: 'isSigningOfficer',
+      documentation: `Sets up invited user to go through signing officer capability flow.`,
+      value: false,
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.CheckBox',
+          label: 'Is this person a signing officer?'
+        };
+      },
+    },
+    {
+      class: 'Boolean',
       name: 'isAddUser',
       value: false,
       documentation: `flag to distinguish if the addUser is called (Invite user to business)`
@@ -179,6 +195,7 @@ foam.CLASS({
       else
         self.accessControl = 'employee';
 
+      self.accessControl$.sub(this.updateSigningOfficerCheckBox);
 
       this.addClass(this.myClass())
         .start()
@@ -223,6 +240,14 @@ foam.CLASS({
 
               .end()
             })
+            self.startContext({ data: this })
+              .start().addClass(this.myClass('isSigningOfficer'))
+                .show(this.slot(function(accessControl, isAddUser) {
+                  return accessControl === 'employee' && isAddUser;
+                }))
+                .add(self.IS_SIGNING_OFFICER).end()
+              .end()
+            .endContext()
             self.startContext({ data: this })
               .start().addClass(this.myClass('emailStyle')).show(this.isAddUser$)
                 .start().addClass(this.myClass('input-wrapper')).add(this.EMAIL_LABEL).end()
@@ -350,6 +375,7 @@ foam.CLASS({
 
           var invitation = this.Invitation.create({
             group: self.accessControl,
+            isSigningOfficer: this.isSigningOfficer,
             createdBy: this.subject.user.id,
             email: self.email
           });
@@ -372,6 +398,15 @@ foam.CLASS({
       label: 'Cancel',
       code: function(X) {
         X.closeDialog();
+      }
+    }
+  ],
+
+  listeners: [
+    {
+      name: 'updateSigningOfficerCheckBox',
+      code: function() {
+        this.isSigningOfficer = this.accessControl != 'employee' && this.isAddUser;
       }
     }
   ]
