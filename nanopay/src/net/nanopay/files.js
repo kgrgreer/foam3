@@ -1649,6 +1649,7 @@ FOAM_FILES([
 
 
   // Treviso
+  { name: 'net/nanopay/partner/treviso/FepWebOnboardingRule'},
   { name: 'net/nanopay/partner/treviso/FepWebUserUpdatingRule'},
   { name: 'net/nanopay/partner/treviso/TrevisoCredientials' },
   { name: 'net/nanopay/country/br/tx/NatureCodeLineItem' },
