@@ -29,6 +29,7 @@ import foam.core.X;
 import foam.lib.StoragePropertyPredicate;
 import foam.lib.json.JSONParser;
 import foam.lib.json.Outputter;
+import foam.nanos.auth.Subject;
 import foam.nanos.logger.Logger;
 import net.nanopay.flinks.external.FlinksLoginId;
 import net.nanopay.flinks.model.FlinksAuthRequest;
@@ -58,13 +59,14 @@ public class FlinksResponseServer implements FlinksResponseService {
     HttpURLConnection conn = null;
     FlinksResponse response = null;
     Logger logger = (Logger) x.get("logger");
+    Subject subject = (Subject) x.get("subject");
 
     try {
       FlinksAuthRequest authRequest = new FlinksAuthRequest.Builder(x)
           .setLoginId(flinksLoginId.getLoginId())
           .setLanguage("en")
-          .setWithTransactions(false)
-          .setWithBalance(false)
+          .setMostRecentCached(true)
+          .setTag(subject.getUser().getSpid())
           .build();
 
       URL url = new URL(FLINKS_HOST);
