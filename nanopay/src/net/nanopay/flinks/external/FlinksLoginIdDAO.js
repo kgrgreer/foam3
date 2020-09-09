@@ -97,8 +97,15 @@ foam.CLASS({
           throw new RuntimeException("Flinks failed to provide a valid response when provided with login ID: " + flinksLoginId.getLoginId());
         }
         
-        FlinksAccountsDetailResponse flinksDetailResponse = (FlinksAccountsDetailResponse) 
-          flinksAuth.getAccountSummary(x, flinksResponse.getRequestId(), subject.getUser());
+        
+        FlinksResponse flinksAuthResponse = flinksAuth.getAccountSummary(x, flinksResponse.getRequestId(), subject.getUser());
+        while ( flinksAuthResponse.getHttpStatusCode() == 202 ) {
+          flinksAuthResponse = flinksAuth.pollAsync(x, flinksAuthResponse.getRequestId(), subject.getUser());
+        }
+        if ( flinksAuthResponse.getHttpStatusCode() != 200 ) {
+          throw new RuntimeException("Flinks failed to provide valid account detials " + flinksAuthResponse);
+        }
+        FlinksAccountsDetailResponse flinksDetailResponse = (FlinksAccountsDetailResponse) flinksAuthResponse;
         flinksLoginId.setFlinksAccountsDetails(flinksDetailResponse.getId());
 
         AccountWithDetailModel accountDetail = selectBankAccount(x, flinksLoginId, flinksDetailResponse);

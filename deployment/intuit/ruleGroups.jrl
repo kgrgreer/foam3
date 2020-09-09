@@ -1,5 +1,10 @@
 p({
   "class":"net.nanopay.tx.planner.PlannerGroup",
+  "id":"Planner",
+  "enabled":false
+})
+p({
+  "class":"net.nanopay.tx.planner.PlannerGroup",
   "id":"SecurityPlanner",
   "enabled":false
 })

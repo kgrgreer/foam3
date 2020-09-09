@@ -78,3 +78,14 @@ p({
     }]
   }
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"flinksCredentials",
+  "lazy":false,
+  "service":{
+    "class":"net.nanopay.flinks.model.FlinksCredentials",
+    "url": "https://nanopay-api.private.fin.ag/v3",
+    "customerId": "efee890f-e706-4d1e-b18e-a24e89aafb08"
+  }
+})
