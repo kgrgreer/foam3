@@ -4,12 +4,19 @@ p({
   "id":"ApprovalTests",
   "code":"""
 import foam.dao.*;
+import foam.nanos.auth.Address;
+import foam.nanos.auth.Phone;
 import foam.nanos.auth.User;
+import foam.nanos.crunch.AgentCapabilityJunction;
+import foam.nanos.crunch.CapabilityJunctionStatus;
 import foam.util.Auth;
 
 import net.nanopay.account.Account;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
+import net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData;
+import net.nanopay.crunch.onboardingModels.SigningOfficerQuestion;
+import net.nanopay.crunch.onboardingModels.UserBirthDateData;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.invoice.model.PaymentStatus;
@@ -25,6 +32,7 @@ localBusinessDAO = (DAO) x.get("localBusinessDAO");
 invoiceDAO = (DAO) x.get("invoiceDAO");
 transactionDAO = (DAO) x.get("transactionDAO");
 agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
+userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
 
 ////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// SETUP ////////////////////////////////////////////
@@ -52,7 +60,7 @@ bareUserDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "approver@example.com")).remov
 myApprover = new User();
 myApprover.setFirstName("MyEmployee");
 myApprover.setEmail("approver@example.com");
-myApprover.setGroup(myBusiness.getBusinessPermissionId() + ".approver");
+myApprover.setGroup(myBusiness.getBusinessPermissionId() + ".employee");
 myApprover.setEmailVerified(true); // Required to send or receive money.
 myApprover.setCompliance(ComplianceStatus.PASSED);
 myApprover = bareUserDAO.put(myApprover);
@@ -76,8 +84,50 @@ agentJunctionDAO.put(employeeToBusinessJunc);
 approverToBusinessJunc = new UserUserJunction();
 approverToBusinessJunc.setSourceId(myApprover.getId());
 approverToBusinessJunc.setTargetId(myBusiness.getId());
-approverToBusinessJunc.setGroup(myBusiness.getBusinessPermissionId() + ".approver");
+approverToBusinessJunc.setGroup(myBusiness.getBusinessPermissionId() + ".employee");
 agentJunctionDAO.put(approverToBusinessJunc);
+
+// Grant approver Signing Officer Privileges Capability
+phoneO = new Phone();
+phoneO.setNumber("2899998989");
+address = new Address();
+address.setCountryId("CA");
+address.setStreetName("Avenue Rd");
+address.setStreetNumber("123");
+address.setPostalCode("M1M1M1");
+address.setCity("Toronto");
+address.setRegionId("CA-MA");
+birthday = new GregorianCalendar(2000, 1, 1).getTime();
+
+// Signing Officer Question : 554af38a-8225-87c8-dfdf-eeb15f71215f-0
+soq = new SigningOfficerQuestion();
+soq.setIsSigningOfficer(true);
+ucj = new AgentCapabilityJunction();
+ucj.setSourceId(myApprover.getId());
+ucj.setEffectiveUser(myBusiness.getId());
+ucj.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-0");
+ucj.setData(soq);
+userCapabilityJunctionDAO.put(ucj);
+// Signing Officer P : 554af38a-8225-87c8-dfdf-eeb15f71215f-1a5
+so1 = new UserBirthDateData();
+so1.setBirthday(birthday);
+ucj1 = new AgentCapabilityJunction();
+ucj1.setSourceId(myApprover.getId());
+ucj1.setEffectiveUser(myBusiness.getId());
+ucj1.setTargetId("8bffdedc-5176-4843-97df-1b75ff6054fb");
+ucj1.setData(so1);
+so = new SigningOfficerPersonalData();
+so.setAddress(address);
+so.setJobTitle("Accountant");
+so.setCountryId("CA");
+so.setPhone(phoneO);
+ucj = new AgentCapabilityJunction();
+ucj.setSourceId(myApprover.getId());
+ucj.setEffectiveUser(myBusiness.getId());
+ucj.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-1a5");
+ucj.setData(so);
+userCapabilityJunctionDAO.put(ucj1);
+userCapabilityJunctionDAO.put(ucj);
 
 // Creating respective contexts with user-agent enabled in their sessions
 sessionApprover = myApproverContext.get(Session.class);

@@ -38,16 +38,7 @@ foam.CLASS({
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-            UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
-            User user = (User) ucj.findSourceId(x);
-            Business business;
-
-            try {
-              business = (Business) user;
-            } catch (Exception e) {
-              return;
-            }
-
+            Business business = (Business) obj;
             ((TrevisoService) x.get("trevisoService")).createEntity(x, business.getId());
           }
         }, "Onboards business to FepWeb if onboarding ucj is passed.");

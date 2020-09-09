@@ -2531,3 +2531,44 @@ p({
   """,
   "lastModifiedBy":1348
 })
+p({
+  class:"foam.nanos.script.Script",
+  id:"Remove Approver Groups",
+  description:"Removes approver groups and sets approvers of the business to employees",
+  code:"""
+    import foam.dao.DAO;
+    import foam.nanos.auth.Group;
+    import foam.nanos.auth.UserUserJunction;
+    import foam.dao.ArraySink;
+    
+    agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
+    groupDAO = (DAO) x.get("groupDAO");
+    groups = groupDAO.select(new ArraySink()).getArray();
+    agentJunctions = agentJunctionDAO.select(new ArraySink()).getArray();
+    
+    //REMOVE ALL APPROVER GROUPS AND SET ADMIN GROUP'S PARENT TO EMPLOYEE GROUP
+    for ( Group group : groups ) {
+      if ( group.getId().contains(".admin") && ! group.getParent().contains(".employee") ) {
+        String groupRoot = group.getId().split(".")[0];
+        group.setParent(groupRoot + ".employee");
+        groupDAO.put(group);
+        print("updated " + groupRoot + ".admin group's parent to " + groupRoot + ".employee");
+      }
+      if ( group.getId().contains(".approver") ) {
+        groupDAO.remove(group);
+        print("removed group: " + group.getId());
+      }
+    }
+    //MOVE ALL USERS FROM APPROVER GROUP TO EMPLOYEE GROUP IN AGENTJUNCTION
+    for ( UserUserJunction junction : agentJunctions ) {
+      String group = junction.getGroup();
+      if ( group.contains(".approver") ) {
+        String groupRoot = group.split(".")[0];
+        junction.setGroup(groupRoot + ".employee");
+        agentJunctionDAO.put(junction);
+        print("updated " + junction.getSourceId() + "'s group from " + groupRoot + ".approver to " + groupRoot + ".employee");
+      }
+    }
+    print("done");
+  """
+})

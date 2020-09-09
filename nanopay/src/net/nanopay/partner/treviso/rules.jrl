@@ -28,26 +28,18 @@ p({
 
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"fepweb-crunch-onboarding-rule",
+  "id":"fepweb-onboarding-rule",
   "name":"Onboard Business to FepWeb",
-  "documentation":"Rule to onboard business to FepWeb if it has passed comliance.",
-  "priority":1,
-  "ruleGroup":"TrevisoCrunchOnboarding",
-  "daoKey":"userCapabilityJunctionDAO",
+  "documentation":"Rule to onboard business to FepWeb if it has passed compliance.",
+  "priority":100,
+  "ruleGroup":"FEPWebOnboarding",
+  "daoKey":"localUserDAO",
   "operation":3,
   "after":true,
   "predicate": {
-    "class": "foam.mlang.predicate.And",
-    "args": [
-      {
-        "class": "net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
-        "status": 1,
-        "statusChanged": false,
-        "category": "onboarding"
-      }
-    ]
+    "class": "net.nanopay.meter.compliance.ruler.predicate.BusinessCompliancePassed"
   },
-  spid: "treviso",
+  "spid": "treviso",
   "asyncAction":{ "class":"net.nanopay.partner.treviso.FepWebOnboardingRule" },
   "enabled":false,
   "saveHistory":true,

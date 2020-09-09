@@ -6,6 +6,8 @@ p({
   feeName: "Total Fee Due",
   feeDenomination: "BRL",
   feeClass: "net.nanopay.tx.FeeLineItem",
+  rateName: "Total Rate",
+  isInvertedRate: true,
   enabled: true,
   predicate: {
     class: "foam.mlang.predicate.And",

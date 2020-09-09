@@ -90,7 +90,6 @@ foam.CLASS({
         class: 'foam.u2.view.ChoiceView',
         choices: [
           ['admin', 'Admin'],
-          ['approver', 'Approver'],
           ['employee', 'Employee']
         ]
       }

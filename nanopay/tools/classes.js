@@ -596,6 +596,7 @@ var classes = [
   'net.nanopay.retail.model.P2PTxnRequestStatus',
   'net.nanopay.retail.model.P2PTxnRequest',
   'net.nanopay.fx.FXLineItem',
+  'net.nanopay.fx.TotalRateLineItem',
   'net.nanopay.fx.ascendantfx.AscendantFX',
   'net.nanopay.fx.ascendantfx.AscendantFXTransaction',
   'net.nanopay.fx.ascendantfx.AscendantFXUser',
@@ -1085,6 +1086,7 @@ var classes = [
   'net.nanopay.tx.fee.FixedFee',
   'net.nanopay.tx.fee.InformationalFee',
   'net.nanopay.tx.fee.PercentageFee',
+  'net.nanopay.tx.fee.Rate',
   'net.nanopay.tx.fee.SpotRate',
   'net.nanopay.tx.fee.TransactionFeeRule',
   'net.nanopay.tx.fee.predicate.HasLineItemPredicate',
@@ -1168,6 +1170,7 @@ var classes = [
   'net.nanopay.partner.treviso.api.UserFillerDTO',
   'net.nanopay.partner.treviso.api.Workflow',
   'net.nanopay.partner.treviso.FepWebClient',
+  'net.nanopay.partner.treviso.FepWebOnboardingRule',
   'net.nanopay.partner.treviso.FepWebUserUpdatingRule',
   'net.nanopay.partner.treviso.TrevisoCredientials',
   'net.nanopay.partner.treviso.TrevisoServiceInterface',
@@ -1178,6 +1181,7 @@ var classes = [
   'net.nanopay.partner.treviso.tx.TrevisoSummaryLineItemRule',
   'net.nanopay.tx.EtaSummaryTransactionLineItem',
   'net.nanopay.tx.planner.SummaryLineItemRule',
+  'net.nanopay.tx.planner.SummaryTotalRateLineItemRule',
   'net.nanopay.country.br.NatureCodePaymentProviderJunction',
 
   // crunch onboarding

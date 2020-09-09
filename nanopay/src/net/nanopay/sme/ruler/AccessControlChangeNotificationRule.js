@@ -36,8 +36,6 @@ foam.CLASS({
               groupName = "employee";
             else if ( junction.getGroup().contains(".admin") )
               groupName = "admin";
-            else
-              groupName = "approver";
 
             HashMap<String, Object> args = new HashMap<>();
             args.put("userName",    user.getLegalName());
