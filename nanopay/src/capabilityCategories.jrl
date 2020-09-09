@@ -40,3 +40,9 @@ p({
   "name": "Onboarding Your AFEX Business",
   "visible": false
 })
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "complianceSetting",
+  "name": "Change compliance of entity",
+  "visible": false
+})

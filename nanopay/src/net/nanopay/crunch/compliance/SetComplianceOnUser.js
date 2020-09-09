@@ -42,9 +42,6 @@ foam.CLASS({
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-            if ( ((UserCapabilityJunction) obj).getTargetId() == "554af38a-8225-87c8-dfdf-eeb15f71215f-0" ) return;
-            // TODO - make more dynamic - above is signing officer question cap id which we want to ignore
-
             DAO userDAO = (DAO) x.get("localUserDAO");
 
             User user = (User) userDAO.find(((UserCapabilityJunction) obj).getSourceId());
