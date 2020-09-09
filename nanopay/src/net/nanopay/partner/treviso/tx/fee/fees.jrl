@@ -18,7 +18,7 @@ p({
         arg1: {
           class: "__Property__",
           forClass_: "net.nanopay.tx.model.Transaction",
-          name: "destinationAmount"
+          name: "intermediateAmount"
         },
         arg2: {
           class: "foam.mlang.Constant",
@@ -48,7 +48,7 @@ p({
         arg1: {
           class: "__Property__",
           forClass_: "net.nanopay.tx.model.Transaction",
-          name: "destinationAmount"
+          name: "intermediateAmount"
         },
         arg2: {
           class: "foam.mlang.Constant",
@@ -60,7 +60,7 @@ p({
         arg1: {
           class: "__Property__",
           forClass_: "net.nanopay.tx.model.Transaction",
-          name: "destinationAmount"
+          name: "intermediateAmount"
         },
         arg2: {
           class: "foam.mlang.Constant",
@@ -90,7 +90,7 @@ p({
         arg1: {
           class: "__Property__",
           forClass_: "net.nanopay.tx.model.Transaction",
-          name: "destinationAmount"
+          name: "intermediateAmount"
         },
         arg2: {
           class: "foam.mlang.Constant",
@@ -976,6 +976,16 @@ p({
   class: "net.nanopay.tx.fee.SpotRate",
   id: "89c62555-f2df-4be5-91b6-c7651e13894b",
   name: "Spot Rate",
+  useInvertedRate: true,
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+
+// Intermediary Spot Rate from USD to Destination Currency
+p({
+  class: "net.nanopay.tx.fee.SpotRate",
+  id: "f78b6032-eb27-4c4d-a021-9d235b6e97ff",
+  name: "Intermediary Spot Rate",
+  sourceCurrency: "USD",
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
 
@@ -1073,7 +1083,7 @@ p({
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
 
-// Fee Due = Treviso Fee * Total Rate
+// Fee Due = Treviso Fee * Intermediary Spot Rate * Total Rate
 p({
   class: "net.nanopay.tx.fee.Fee",
   id: "ff1122ca-e32a-4c8c-8a7e-c367b6066077",
@@ -1084,6 +1094,10 @@ p({
       {
         class: "net.nanopay.tx.fee.FeeExpr",
         feeName: "Treviso Fee"
+      },
+      {
+        class: "net.nanopay.tx.fee.FeeExpr",
+        feeName: "Intermediary Spot Rate"
       },
       {
         class: "net.nanopay.tx.fee.FeeExpr",
@@ -1105,8 +1119,7 @@ p({
 
 // Total Fee Due = (amount * Effective IRS Rate)
 //                 + (amount * Effective FTT Rate)
-//                 + (amount * Payment Processor Rate)
-//                 + (amount * Total Rate)
+//                 + (IntermediateAmount * Payment Processor Rate * Intermediary Spot Rate * Total Rate)
 //                 + Fee Due
 p({
   class: "net.nanopay.tx.fee.Fee",
@@ -1148,22 +1161,16 @@ p({
         args: [
           {
             class: "__Property__",
-            forClass_: "net.nanopay.tx.model.Transaction",
-            name: "destinationAmount"
+            forClass_: "net.nanopay.fx.FXSummaryTransaction",
+            name: "intermediateAmount"
           },
           {
             class: "net.nanopay.tx.fee.FeeExpr",
             feeName: "Payment Processor Rate"
-          }
-        ]
-      },
-      {
-        class: "foam.mlang.expr.Multiply",
-        args: [
+          },
           {
-            class: "__Property__",
-            forClass_: "net.nanopay.tx.model.Transaction",
-            name: "destinationAmount"
+            class: "net.nanopay.tx.fee.FeeExpr",
+            feeName: "Intermediary Spot Rate"
           },
           {
             class: "net.nanopay.tx.fee.FeeExpr",

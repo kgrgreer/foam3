@@ -86,11 +86,16 @@ foam.CLASS({
 
       FXSummaryTransaction txn = new FXSummaryTransaction();
       txn.copyFrom(requestTxn);
+      txn.setPaymentProvider(PAYMENT_PROVIDER);
+      txn.setStatus(TransactionStatus.COMPLETED);
       txn.clearLineItems();
 
       TrevisoService service = (TrevisoService) x.get("trevisoService");
-      FXQuote fxQuote = service.getFXRate(requestTxn.getSourceCurrency(), requestTxn.getDestinationCurrency(), 0, requestTxn.getDestinationAmount(),
-      null, null, requestTxn.findSourceAccount(x).getOwner(), null);
+      FXQuote fxQuote = service.getFXRate(
+        requestTxn.getSourceCurrency(), requestTxn.getDestinationCurrency(),
+        0, requestTxn.getDestinationAmount(),
+        null, null, requestTxn.findSourceAccount(x).getOwner(), null
+      );
       txn.setAmount(fxQuote.getSourceAmount());
 
       txn.addNext(createCompliance(txn));
@@ -98,12 +103,13 @@ foam.CLASS({
 
       TrevisoTransaction trevisoTxn = new TrevisoTransaction();
       trevisoTxn.copyFrom(requestTxn);
+      trevisoTxn.setId(UUID.randomUUID().toString());
       trevisoTxn.setAmount(fxQuote.getSourceAmount());
       trevisoTxn.setName("Treviso transaction");
       trevisoTxn.setPaymentProvider(PAYMENT_PROVIDER);
       trevisoTxn.setIsQuoted(true);
       trevisoTxn.setPlanner(this.getId());
-      this.addLineItems(x, trevisoTxn, requestTxn); 
+      this.addLineItems(x, trevisoTxn, requestTxn);
 
       FXLineItem fxLineItem = new FXLineItem();
       fxLineItem.setRate(fxQuote.getRate());
@@ -111,8 +117,7 @@ foam.CLASS({
       fxLineItem.setDestinationCurrency(fxQuote.findTargetCurrency(x));
       fxLineItem.setExpiry(fxQuote.getExpiryTime());
       trevisoTxn.addLineItems( new TransactionLineItem[] { fxLineItem } );
-      txn.setStatus(TransactionStatus.COMPLETED);
-      txn.addNext(applyFee(x, quote, trevisoTxn));
+      txn.addNext(trevisoTxn);
       return txn;
     `
     },

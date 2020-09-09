@@ -43,8 +43,8 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        TransactionQuote quote = (TransactionQuote) obj; 
-        Transaction txn = (Transaction) quote.getPlan(); 
+        TransactionQuote quote = (TransactionQuote) obj;
+        Transaction txn = (Transaction) quote.getPlan();
         ArrayList<TransactionLineItem> fx = new ArrayList<>();
         ArrayList<TransactionLineItem> fee = new ArrayList<>();
         TransactionLineItem[] lineItem = txn.getLineItems();
@@ -74,7 +74,7 @@ foam.CLASS({
           if ( fx.size() == 1 ) {
             fxRate = fxArray[0].getRate();
             source = fxArray[0].getSourceCurrency();
-            destination = fxArray[0].getSourceCurrency();
+            destination = fxArray[0].getDestinationCurrency();
             fxSummary.setExpiry(fxArray[0].getExpiry());
           } else {
             if ( fxArray[0].getSourceCurrency().getId().equals("BRL") ) {
@@ -99,7 +99,7 @@ foam.CLASS({
   
         if ( fee.size() > 0 ) {
           FeeLineItem[] feeArray = fee.toArray((new FeeLineItem[fee.size()]));
-          fxSummary.setLineItems(feeArray);
+          feeSummary.setLineItems(feeArray);
           Long totalFee = 0l;
           Currency currency = feeArray[0].getFeeCurrency();
           for ( FeeLineItem feeLine: feeArray ) {

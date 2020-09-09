@@ -31,6 +31,7 @@ foam.CLASS({
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.Transfer',
     'java.util.ArrayList',
+    'java.util.HashMap',
     'java.util.List',
   ],
 
@@ -46,26 +47,26 @@ foam.CLASS({
           Transaction tx = quote.getPlan();
           if ( tx instanceof SummaryTransaction || tx instanceof FXSummaryTransaction ) {
             List trans = new ArrayList<Transfer>();
-            List items = new ArrayList<TransactionLineItem>();
+            var  items = new HashMap<String, TransactionLineItem>();
 
             walk(tx, trans, items);
 
             tx.setTransfers((Transfer[]) trans.toArray(new Transfer[0]));
-            tx.setLineItems((TransactionLineItem[]) items.toArray(new TransactionLineItem[0]));
+            tx.setLineItems((TransactionLineItem[]) items.values().toArray(new TransactionLineItem[0]));
           }
         } else {
           for ( Transaction t : quote.getPlans() ) {
             if ( t instanceof SummaryTransaction || t instanceof FXSummaryTransaction ) {
               List trans = new ArrayList<Transfer>();
-              List items = new ArrayList<TransactionLineItem>();
+              var  items = new HashMap<String, TransactionLineItem>();
 
               walk(t, trans, items);
 
               t.setTransfers((Transfer[]) trans.toArray(new Transfer[0]));
-              t.setLineItems((TransactionLineItem[]) items.toArray(new TransactionLineItem[0]));
+              t.setLineItems((TransactionLineItem[]) items.values().toArray(new TransactionLineItem[0]));
             }
           }
-        } 
+        }
         return getDelegate().put_(x, quote);
       `
     },
@@ -74,7 +75,7 @@ foam.CLASS({
       args: [
         { name: 'txn', type: 'net.nanopay.tx.model.Transaction' },
         { name: 'transfers', type: 'List' },
-        { name: 'lineItems', type: 'List' },
+        { name: 'lineItems', type: 'java.util.Map' },
       ],
       documentation: 'Recursively walk the tree of transactions and add up transfers and lineitems',
       javaCode: `
@@ -82,7 +83,7 @@ foam.CLASS({
         transfers.add(a);
       for (TransactionLineItem a : txn.getLineItems()) {
         a.setTransaction(txn.getId());
-        lineItems.add(a);
+        lineItems.put(a.getId(), a);
       }
       if ( txn.getNext() != null && txn.getNext().length > 0)
         for ( Transaction t2 : txn.getNext() )

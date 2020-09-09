@@ -23,6 +23,7 @@ foam.CLASS({
   documentation: 'The current spot rate from the Forex for use as fee.',
 
   javaImports: [
+    'foam.util.SafetyUtil',
     'net.nanopay.fx.CurrencyFXService',
     'net.nanopay.tx.model.Transaction'
   ],
@@ -39,6 +40,18 @@ foam.CLASS({
       tableCellFormatter: function(_, obj) {
         this.add(obj.FORMULA_PREFIX);
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'useInvertedRate'
+    },
+    {
+      class: 'String',
+      name: 'sourceCurrency'
+    },
+    {
+      class: 'String',
+      name: 'destinationCurrency'
     }
   ],
 
@@ -46,14 +59,27 @@ foam.CLASS({
     {
       name: 'getRate',
       javaCode: `
+        var sourceCurrency = getSourceCurrency();
+        var destinationCurrency = getDestinationCurrency();
+
         var transaction = (Transaction) obj;
-        var sourceCurrency = transaction.getSourceCurrency();
-        var destinationCurrency = transaction.getDestinationCurrency();
+        if ( SafetyUtil.isEmpty(sourceCurrency) ) {
+          sourceCurrency = transaction.getSourceCurrency();
+        }
+        if ( SafetyUtil.isEmpty(destinationCurrency) ) {
+          destinationCurrency = transaction.getDestinationCurrency();
+        }
         var sender = transaction.findSourceAccount(getX()).findOwner(getX());
         var fxService = CurrencyFXService.getFXService(getX(),
           sourceCurrency, destinationCurrency, sender.getSpid());
 
-        return fxService.getFXSpotRate(sourceCurrency, destinationCurrency, sender.getId());
+        // The FX spot rate is the conversion rate from 1 unit in the source
+        // currency to the destination currency.
+        //
+        // Eg., the conversion rate of 0.18 for sourceCurrency=BRL and
+        // destinationCurrency=USD means 1 BRL = 0.18 USD.
+        var spotRate = fxService.getFXSpotRate(sourceCurrency, destinationCurrency, sender.getId());
+        return getUseInvertedRate() ? ( 1.0 / spotRate ) : spotRate;
       `
     }
   ]
