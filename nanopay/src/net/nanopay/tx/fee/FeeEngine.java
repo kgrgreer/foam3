@@ -25,6 +25,7 @@ import foam.mlang.Constant;
 import foam.mlang.Expr;
 import foam.mlang.Formula;
 import foam.nanos.logger.Logger;
+import net.nanopay.fx.TotalRateLineItem;
 import net.nanopay.tx.FeeLineItem;
 import net.nanopay.tx.TransactionLineItem;
 import net.nanopay.tx.model.Transaction;
@@ -48,9 +49,9 @@ public class FeeEngine {
   private final Map<String, Expr> resolvedFormulas_ = new HashMap<>();
 
   /**
-   * Saved loaded (child) fees to assist verification on fee calculation.
+   * Cached loaded child fees for fee lookup and rates generation.
    */
-  private final Map<String, String>     loadedFees_ = new HashMap<>();
+  private final Map<String, Fee>        loadedFees_ = new HashMap<>();
 
   /**
    * Saved current fee id to support fee formula resolution.
@@ -62,20 +63,30 @@ public class FeeEngine {
   }
 
   /**
-   * Execute the fee engine to apply fee on the transaction as a fee line item.
+   * Execute the fee engine to apply fee and rate on the transaction as line
+   * items.
    *
    * @param x the context
    * @param transaction transaction to apply fee on
    */
   public void execute(X x, Transaction transaction) {
-    var logger = (Logger) x.get("logger");
+    applyFee(x, transaction);
+    applyRate(x, transaction);
+  }
+
+  private void applyFee(X x, Transaction transaction) {
     var feeName = transactionFeeRule_.getFeeName();
+    if ( feeName.isBlank() ) {
+      return;
+    }
+
     Fee fee = null;
     try {
       fee = loadFee(x, feeName, transaction);
       if ( fee != null ) {
         var feeAmount = fee.getFee(transaction);
         if ( feeAmount <= 0 ) {
+          var logger = (Logger) x.get("logger");
           logger.debug("Fee amount is (" + feeAmount + ")", fee.toString(), transaction);
         }
 
@@ -86,6 +97,36 @@ public class FeeEngine {
     } catch ( Exception e ) {
       var feeInfo = fee != null ? fee.toString() : "Fee name:" + feeName;
       throw new RuntimeException("Could not apply " + feeInfo + " to transaction id:" + transaction.getId(), e);
+    }
+  }
+
+  private void applyRate(X x, Transaction transaction) {
+    var rateName = transactionFeeRule_.getRateName();
+    if ( rateName.isBlank() ) {
+      return;
+    }
+
+    Fee fee = null;
+    try {
+      fee = loadFee(x, rateName, transaction);
+      if ( fee != null ) {
+        var rate = new Rate(fee).getValue(transaction);
+        var currencyDAO = (DAO) x.get("currencyDAO");
+        var sourceCurrency = (Currency) currencyDAO.find(transaction.getSourceCurrency());
+        var destinationCurrency = (Currency) currencyDAO.find(transaction.getDestinationCurrency());
+
+        transaction.addLineItems(new TransactionLineItem[] {
+          new TotalRateLineItem.Builder(x)
+            .setRate(transactionFeeRule_.getIsInvertedRate() ? 1.0 / rate : rate)
+            .setSourceCurrency(sourceCurrency)
+            .setDestinationCurrency(destinationCurrency)
+            .setExpiry(new Date())
+            .build()
+        });
+      }
+    } catch ( Exception e ) {
+      var rateInfo = fee != null ? fee.toString() : "Rate name:" + rateName;
+      throw new RuntimeException("Could not get rate " + rateInfo + " for transaction id:" + transaction.getId(), e);
     }
   }
 
@@ -134,14 +175,13 @@ public class FeeEngine {
     result.setName(name);
     result.setAmount(amount);
     result.setFeeCurrency(currency);
-    StringBuilder sb = new StringBuilder();
-    for ( var entry : loadedFees_.entrySet() ) {
-      sb.append(entry.getKey())
-        .append(" = ")
-        .append(entry.getValue())
-        .append("\n");
+    if ( ! loadedFees_.isEmpty() ) {
+      result.setRates(
+        loadedFees_.values().stream()
+          .map(Rate::new)
+          .toArray(Rate[]::new)
+      );
     }
-    result.setNote(sb.toString());
     return result;
   }
 
@@ -167,10 +207,14 @@ public class FeeEngine {
    * @return fee applicable for the {@code obj} param
    */
   private Fee loadFee(X x, FeeExpr feeExpr, FObject obj) {
+    var fee = loadedFees_.get(feeExpr.getFeeName());
+    if ( fee != null ) {
+      return fee;
+    }
+
     feeExpr.setX(x);
     feeExpr.setFeeDAO(getFeeDAO(x));
-
-    var fee = (Fee) feeExpr.f(obj);
+    fee = (Fee) feeExpr.f(obj);
 
     if ( fee == null ) {
       if ( currentFeeId_ == null ) return null;
@@ -250,7 +294,7 @@ public class FeeEngine {
       if ( childFee.getFormula() == null ) {
         childFee.setFormula(new Constant(childFee.getRate(obj)));
       }
-      loadedFees_.put(childFee.getName(), childFee.getFormula().toString());
+      loadedFees_.put(childFee.getName(), childFee);
       return childFee.getFormula();
     }
 

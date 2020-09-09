@@ -42,7 +42,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'feeName',
-      section: 'basicInfo'
+      section: 'basicInfo',
+      documentation: 'Name of a fee entry used by FeeEngine to generate a FeeLineItem'
     },
     {
       class: 'Boolean',
@@ -102,6 +103,18 @@ foam.CLASS({
       section: 'basicInfo'
     },
     {
+      class: 'String',
+      name: 'rateName',
+      section: 'basicInfo',
+      documentation: 'Name of a fee entry used by FeeEngine to generate a TotalRateLineItem'
+    },
+    {
+      class: 'Boolean',
+      name: 'isInvertedRate',
+      section: 'basicInfo',
+      documentation: 'Set to true if the "rateName" is the inverted rate (converting from destination currency to source currency).'
+    },
+    {
       name: 'priority',
       value: 100,
       visibility: 'HIDDEN'
@@ -158,10 +171,6 @@ foam.CLASS({
           name: 'applyAction',
           javaCode: `
             var txFeeRule = (TransactionFeeRule) rule;
-            if ( txFeeRule.getFeeName().isBlank() ) {
-              return;
-            }
-
             new FeeEngine(txFeeRule).execute(x, (Transaction) obj);
           `
         }
