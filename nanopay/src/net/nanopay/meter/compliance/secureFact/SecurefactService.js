@@ -67,6 +67,16 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'levDocumentOrderUrl',
+      label: 'LEV DOCUMENT ORDER URL'
+    },
+    {
+      class: 'String',
+      name: 'levDocumentDataUrl',
+      label: 'LEV DOCUMENT DATA URL'
+    },
+    {
+      class: 'String',
       name: 'levApiKey',
       label: 'LEV API Key'
     }

@@ -1336,6 +1336,7 @@ FOAM_FILES([
 
   // securefact
   { name: 'net/nanopay/meter/compliance/secureFact/ResponseError' },
+  { name: 'net/nanopay/meter/compliance/secureFact/SecurefactOnboardingDAO' },
   { name: 'net/nanopay/meter/compliance/secureFact/SecurefactRequest' },
   { name: 'net/nanopay/meter/compliance/secureFact/SecurefactResponse' },
   { name: 'net/nanopay/meter/compliance/secureFact/SecurefactService' },
