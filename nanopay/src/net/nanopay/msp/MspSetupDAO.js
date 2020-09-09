@@ -67,6 +67,9 @@ foam.CLASS({
         // Add theme for the client side - not for back-office
         Theme clientTheme = (Theme) themeDAO.find(mspInfo.getTheme());
         clientTheme = clientTheme == null ? new Theme() : (Theme) clientTheme.fclone();
+        clientTheme.clearId();
+        clientTheme.clearAdmissionCapability();
+        clientTheme.clearPersonalSupportUser();
         clientTheme.setName(mspInfo.getSpid());
         clientTheme.setAppName(mspInfo.getAppName());
         clientTheme.setDescription(mspInfo.getDescription());
