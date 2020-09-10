@@ -9,9 +9,19 @@ p({
   "operation":3,
   "after":true,
   "predicate":{
-    "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
-    "category":"signingOfficerOnboarding",
-    "isRecurring":false
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+        "category":"complianceSetting",
+        "isRecurring":false
+      },
+      {
+        "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+        "category":"signingOfficerOnboarding",
+        "isRecurring":false
+      }
+    ]
   },
   "asyncAction":{"class":"net.nanopay.crunch.compliance.SecurefactSIDniValidator"},
   "enabled":true,
@@ -30,8 +40,17 @@ p({
   "operation":3,
   "after":true,
   "predicate":{
-    "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
-    "category":"signingOfficerOnboarding"
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+        "category":"complianceSetting"
+      },
+      {
+        "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+        "category":"signingOfficerOnboarding"
+      }
+    ]
   },
   "asyncAction":{
     "class": "net.nanopay.crunch.compliance.PersonSanctionValidator"
@@ -123,10 +142,21 @@ p({
     "class":"foam.mlang.predicate.Or",
     "args":[
       {
-        "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
-        "category":"signingOfficerOnboarding",
-        "isRecurring":false,
-        "statusChanged":false
+        "class":"foam.mlang.predicate.And",
+        "args":[
+          {
+            "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+            "category":"complianceSetting",
+            "isRecurring":false,
+            "statusChanged":false
+          },
+          {
+            "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+            "category":"signingOfficerOnboarding",
+            "isRecurring":false,
+            "statusChanged":false
+          }
+        ]
       },
       {
         "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",

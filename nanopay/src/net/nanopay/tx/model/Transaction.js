@@ -1321,6 +1321,22 @@ foam.CLASS({
     `
   },
   {
+    name: 'getTotal',
+    type: 'Long',
+    description: 'Sum of transfers on this transaction for a given account',
+    args: [
+      { name: 'x', type: 'Context' },
+      { name: 'accountNumber', type: 'Long' }
+    ],
+    javaCode: `
+      Long sum = 0l;
+      for ( Transfer t : getTransfers() )
+        if ( t.getAccount() == accountNumber )
+          sum += t.getAmount();
+      return sum;
+    `
+  },
+  {
     name: 'calculateErrorCode',
     type: 'Long',
     javaCode: `

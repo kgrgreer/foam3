@@ -363,11 +363,16 @@ p({
 
   void printRuleGroup(key, group) {
       if ( ! group.isEmpty() ) {
-          print("    - " + key + ":");
+          print("    - " + key + ":" + groupEnabled(key));
           for( rule : group ) {
               print("      " + formatRule(rule));
           }
       }
+  }
+
+  String groupEnabled(groupName) {
+      rulegroupDAO = x.get("ruleGroupDAO");
+      return " - enabled: "+ rulegroupDAO.find(groupName).getEnabled();
   }
 
   String formatRule(rule) {

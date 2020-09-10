@@ -5,6 +5,8 @@ import foam.core.ContextAgent;
 import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
+import foam.nanos.alarming.Alarm;
+import foam.nanos.alarming.AlarmReason;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.email.EmailMessage;
 import foam.util.Emails.EmailsUtility;
@@ -78,6 +80,11 @@ public class EFTReturnFileProcessor implements ContextAgent
 
     } catch ( JSchException | SftpException e ) {
       logger.error(e);
+      ((DAO) x.get("alarmDAO")).put(new Alarm.Builder(x)
+        .setName("EFF Return File processing")
+        .setReason(AlarmReason.CREDENTIALS)
+        .setNote(e.getMessage())
+        .build());
     } finally {
       if ( channel != null ) channel.disconnect();
       if ( session != null ) session.disconnect();
