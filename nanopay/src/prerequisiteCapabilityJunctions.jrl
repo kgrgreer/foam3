@@ -517,6 +517,12 @@ p({
   "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-76",
   "priority": 16
 })
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-13",
+  "targetId":"8ad3c898-db32-11ea-87d0-0242ac130003",
+  "priority":3
+})
 //Unlock International & Domestic Payments and Invoicing for brazil
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
