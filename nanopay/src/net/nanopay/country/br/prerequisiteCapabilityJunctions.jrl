@@ -1,0 +1,7 @@
+//Unlock International & Domestic Payments and Invoicing for Brazil
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-25",
+  "priority": 17
+})

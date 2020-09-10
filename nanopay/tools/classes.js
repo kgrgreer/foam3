@@ -1182,6 +1182,7 @@ var classes = [
   'net.nanopay.tx.planner.SummaryLineItemRule',
   'net.nanopay.tx.planner.SummaryTotalRateLineItemRule',
   'net.nanopay.country.br.NatureCodePaymentProviderJunction',
+  'net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions',
 
   // crunch onboarding
   'net.nanopay.crunch.onboardingModels.CheckUserCountry',
