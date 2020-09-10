@@ -99,13 +99,13 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
               : "EmployerIdentificationNumber_EIN"; // Madlen asked it is hardcoded
             String identificationNumber = SafetyUtil.isEmpty(business.getBusinessRegistrationNumber()) ? "N/A"
               : business.getBusinessRegistrationNumber(); // Madlen asked it is hardcoded
-            if ( businessRegion != null ) onboardingRequest.setBusinessStateRegion(businessRegion.getName());
+            if ( businessRegion != null ) onboardingRequest.setBusinessStateRegion(businessRegion.getCode().substring(3,5));
             onboardingRequest.setAccountPrimaryIdentificationExpirationDate("01/01/2099"); // Asked to hardcode this by Madlen(AFEX)
             onboardingRequest.setAccountPrimaryIdentificationNumber( useHardCoded ? "000000000" : identificationNumber);
             onboardingRequest.setAccountPrimaryIdentificationType(useHardCoded ? "BusinessRegistrationNumber" : identificationType);
             if ( businessCountry.getId().equals("US") ) onboardingRequest.setTaxIdentificationNumber(business.getTaxIdentificationNumber());
             if ( businessCountry != null ) onboardingRequest.setBusinessCountryCode(businessCountry.getCode());
-            if ( businessRegion != null ) onboardingRequest.setBusinessStateRegion(businessRegion.getName());
+            if ( businessRegion != null ) onboardingRequest.setBusinessStateRegion(businessRegion.getCode().substring(3,5));
             onboardingRequest.setBusinessAddress1(business.getAddress().getAddress());
             onboardingRequest.setBusinessCity(business.getAddress().getCity());
 
@@ -137,9 +137,9 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
               onboardingRequest.setContactAddress1(contactAddress.getAddress());
               onboardingRequest.setContactCity(contactAddress.getCity());
               Region region = contactAddress.findRegionId(this.x);
-              if ( region != null ) onboardingRequest.setContactStateRegion(region.getName());
+              if ( region != null ) onboardingRequest.setContactStateRegion(region.getCode().substring(3,5));
               Country country = contactAddress.findCountryId(this.x);
-              if ( country != null ) onboardingRequest.setContactCountryCode(country.getName());
+              if ( country != null ) onboardingRequest.setContactCountryCode(country.getCode());
               onboardingRequest.setContactZip(contactAddress.getPostalCode());
             }
 
@@ -216,7 +216,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       request.setAddress1(address.getAddress());
       request.setCity(address.getCity());
       request.setCountryCode(address.getCountryId());
-      request.setStateRegion(address.getRegionId());
+      request.setStateRegion(address.getRegionId().substring(3,5));
       request.setZip(address.getPostalCode());
     }
 
@@ -225,7 +225,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       request.setCompanyOfficerIdentificationIssuingType(getAFEXIdentificationType(identification.getIdentificationTypeId()));
       request.setCompanyOfficerIdentificationNumber(identification.getIdentificationNumber());
       request.setCompanyOfficerIdentificationIssuingCountry(identification.getCountryId());
-      request.setCompanyOfficerIdentificationIssuingRegion(identification.getRegionId());
+      request.setCompanyOfficerIdentificationIssuingRegion(identification.getRegionId().substring(3,5));
       try {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -281,7 +281,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       request.setAddress1(address.getAddress());
       request.setCity(address.getCity());
       request.setCountryCode(address.getCountryId());
-      request.setStateRegion(address.getRegionId());
+      request.setStateRegion(address.getRegionId().substring(3,5));
       request.setZip(address.getPostalCode());
     }
 
@@ -548,7 +548,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       createBeneficiaryRequest.setBeneficiaryCountryCode(userAddress.getCountryId());
       createBeneficiaryRequest.setBeneficiaryName(beneficiaryName);
       createBeneficiaryRequest.setBeneficiaryPostalCode(userAddress.getPostalCode());
-      createBeneficiaryRequest.setBeneficiaryRegion(userAddress.getRegionId());
+      createBeneficiaryRequest.setBeneficiaryRegion(userAddress.getRegionId().substring(3,5));
       createBeneficiaryRequest.setCurrency(bankAccount.getDenomination());
       createBeneficiaryRequest.setVendorId(String.valueOf(userId));
       createBeneficiaryRequest.setClientAPIKey(afexBusiness.getApiKey());
@@ -640,7 +640,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     updateBeneficiaryRequest.setBeneficiaryCountryCode(userAddress.getCountryId());
     updateBeneficiaryRequest.setBeneficiaryName(beneficiaryName);
     updateBeneficiaryRequest.setBeneficiaryPostalCode(userAddress.getPostalCode());
-    updateBeneficiaryRequest.setBeneficiaryRegion(userAddress.getRegionId());
+    updateBeneficiaryRequest.setBeneficiaryRegion(userAddress.getRegionId().substring(3,5));
     updateBeneficiaryRequest.setCurrency(bankAccount.getDenomination());
     updateBeneficiaryRequest.setVendorId(String.valueOf(userId));
     updateBeneficiaryRequest.setClientAPIKey(afexBusiness.getApiKey());
