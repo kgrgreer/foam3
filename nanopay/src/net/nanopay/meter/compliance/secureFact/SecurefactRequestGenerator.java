@@ -62,6 +62,13 @@ public class SecurefactRequestGenerator {
     return request;
   }
 
+  public static LEVDocumentDataRequest getLEVDocumentDataRequest(int orderId) {
+    LEVDocumentDataRequest request = new LEVDocumentDataRequest();
+    request.setOrderId(orderId);
+
+    return request;
+  }
+
   
 
   private static SIDniCustomer buildCustomer(X x, User user) {
