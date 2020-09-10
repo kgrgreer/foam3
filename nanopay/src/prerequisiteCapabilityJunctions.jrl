@@ -540,7 +540,7 @@ p({
   "priority": 16
 })
 
-//API CAD User Payments
+//API CAD Personal Payments
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"1F0B39AD-934E-462E-A608-D590D1081298",
@@ -554,7 +554,7 @@ p({
   "priority": 2
 })
 
-//API CAD User Payments Under 1000CAD
+//API CAD Personal Payments Under 1000CAD
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD",

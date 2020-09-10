@@ -33,7 +33,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'id',
-      hidden: true
+      hidden: true,
+      documentation: 'Unique ID'
     },
     {
       class: 'String',
@@ -56,39 +57,46 @@ foam.CLASS({
       of: 'net.nanopay.flinks.model.FlinksAccountsDetailResponse',
       targetDAOKey: 'flinksAccountsDetailResponseDAO',
       readPermissionRequired: true,
-      writePermissionRequired: true
+      writePermissionRequired: true,
+      documentation: 'Response to Flinks account details call'
     },
     {
       class: 'Reference',
       name: 'user',
       of: 'foam.nanos.auth.User',
-      targetDAOKey: 'userDAO'
+      targetDAOKey: 'userDAO',
+      documentation: 'User associated to this Flinks LoginId'
     },
     {
       class: 'Reference',
       name: 'business',
       of: 'net.nanopay.model.Business',
-      targetDAOKey: 'businessDAO'
+      targetDAOKey: 'businessDAO',
+      documentation: 'Business associated to this Flinks LoginId'
     },
     {
       class: 'Reference',
       name: 'account',
       of: 'net.nanopay.account.Account',
-      targetDAOKey: 'accountDAO'
+      targetDAOKey: 'accountDAO',
+      documentation: 'Account associated to this Flinks AccountId'
     },
     {
       class: 'DateTime',
       name: 'created',
+      documentation: 'Date created'
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
+      documentation: 'Creating user'
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
-      name: 'createdByAgent'
+      name: 'createdByAgent',
+      documentation: 'Creating agent'
     }
   ]
 });

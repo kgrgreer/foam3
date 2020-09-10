@@ -330,9 +330,9 @@ foam.CLASS({
         userCapabilityDataObjects.put("AbliiTermsAndConditions", termsAndConditions);
         userCapabilityDataObjects.put("User Details", userData);
         userCapabilityDataObjects.put("Simple User Onboarding", null);
-        userCapabilityDataObjects.put("API CAD User Payments Under 1000CAD", null);
+        userCapabilityDataObjects.put("API CAD Personal Payments Under 1000CAD", null);
 
-        // API CAD User Payments Under 1000CAD Capability ID
+        // API CAD Personal Payments Under 1000CAD Capability ID
         String capabilityId = "F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD";
         CapabilityPayload userCapPayload = new CapabilityPayload.Builder(subjectX)
           .setId(capabilityId)
