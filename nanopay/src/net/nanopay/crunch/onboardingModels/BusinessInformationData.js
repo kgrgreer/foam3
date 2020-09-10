@@ -124,7 +124,7 @@ foam.CLASS({
       view: function(_, X) {
         return {
           class: 'foam.u2.view.ChoiceWithOtherView',
-          otherKey: this.OTHER_LABEL,
+          otherKey: X.data.OTHER_LABEL,
           choiceView: {
             class: 'foam.u2.view.ChoiceView',
             placeholder: X.data.PLACE_HOLDER,

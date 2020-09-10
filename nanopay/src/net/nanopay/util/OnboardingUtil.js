@@ -138,8 +138,7 @@ foam.CLASS({
         rootCapability: cap
       }))
         .add(this.ConfigureFlowAgent, {
-          popupMode: false,
-          ensureHash: 'sme.main.registration'
+          popupMode: false
         })
         .add(this.CapabilityAdaptAgent)
         .add(this.LoadCapabilitiesAgent)
