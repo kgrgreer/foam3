@@ -401,7 +401,7 @@ p({
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-76",
   "name":"Business Registration",
   "description":"Create a business to access payments and invoice on the platform.",
-  "icon":"/images/capabilityIcons/CADOnboardCap.svg",
+  "icon":"/images/capabilityIcons/BusinessRegistrationCap.svg",
   "of":"net.nanopay.crunch.onboardingModels.InitialBusinessData",
   "version":"0",
   "enabled":true,
