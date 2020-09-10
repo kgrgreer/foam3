@@ -1351,13 +1351,24 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/secureFact/sidni/SIDniAdditionalMatchInfo' },
   { name: 'net/nanopay/meter/compliance/secureFact/lev/LEVApplicant' },
   { name: 'net/nanopay/meter/compliance/secureFact/lev/LEVChange' },
-  { name: 'net/nanopay/meter/compliance/secureFact/lev/LEVDocumentOrderRequest' },
-  { name: 'net/nanopay/meter/compliance/secureFact/lev/LEVDocumentOrderResponse' },
   { name: 'net/nanopay/meter/compliance/secureFact/lev/LEVError' },
   { name: 'net/nanopay/meter/compliance/secureFact/lev/LEVIndividualScores' },
   { name: 'net/nanopay/meter/compliance/secureFact/lev/LEVRequest' },
   { name: 'net/nanopay/meter/compliance/secureFact/lev/LEVResponse' },
   { name: 'net/nanopay/meter/compliance/secureFact/lev/LEVResult' },
+
+  // securefact lev document
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/document/LEVDocumentDataEntity' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/document/LEVDocumentDataRequest' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/document/LEVDocumentDataResponse' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/document/LEVDocumentOrderRequest' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/document/LEVDocumentOrderRequest' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/document/LEVDocumentOrderResponse' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/document/LEVDocumentParty' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/document/LEVDocumentPartyShareClass' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/document/LEVEntityAddress' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/document/LEVLastDocumentFiled' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/document/LEVNatureOfBusiness' },
 
   // dow jones
   { name: 'net/nanopay/meter/compliance/dowJones/enums/ContentSet' },

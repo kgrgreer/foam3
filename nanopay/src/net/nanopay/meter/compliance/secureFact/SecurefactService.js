@@ -38,8 +38,8 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'java.util.Arrays',
     'java.util.Base64',
-    'net.nanopay.meter.compliance.secureFact.lev.LEVDocumentOrderRequest',
-    'net.nanopay.meter.compliance.secureFact.lev.LEVDocumentOrderResponse',
+    'net.nanopay.meter.compliance.secureFact.lev.document.LEVDocumentOrderRequest',
+    'net.nanopay.meter.compliance.secureFact.lev.document.LEVDocumentOrderResponse',
     'net.nanopay.meter.compliance.secureFact.lev.LEVResponse',
     'net.nanopay.meter.compliance.secureFact.lev.LEVResult',
     'net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse',
@@ -144,7 +144,7 @@ foam.CLASS({
     },
     {
       name: 'levDocumentOrder',
-      type: 'net.nanopay.meter.compliance.secureFact.lev.LEVDocumentOrderResponse',
+      type: 'net.nanopay.meter.compliance.secureFact.lev.document.LEVDocumentOrderResponse',
       args: [
         {
           name: 'x',

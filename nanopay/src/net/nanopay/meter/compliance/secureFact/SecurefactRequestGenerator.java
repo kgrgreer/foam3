@@ -5,6 +5,7 @@ import foam.nanos.auth.Address;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
 import net.nanopay.meter.compliance.secureFact.lev.*;
+import net.nanopay.meter.compliance.secureFact.lev.document.*;
 import net.nanopay.meter.compliance.secureFact.sidni.*;
 import net.nanopay.model.Business;
 import net.nanopay.model.BusinessType;

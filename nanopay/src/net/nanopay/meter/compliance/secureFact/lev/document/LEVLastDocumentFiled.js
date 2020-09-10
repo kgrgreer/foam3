@@ -16,15 +16,25 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.meter.compliance.secureFact.lev',
-  name: 'LEVDocumentOrderRequest',
-  extends: 'net.nanopay.meter.compliance.secureFact.SecurefactRequest',
+  package: 'net.nanopay.meter.compliance.secureFact.lev.document',
+  name: 'LEVLastDocumentFiled',
+  documentation: 'The details of the last document filed in an LEV document entity report.',
 
   properties: [
     {
-      class: 'Int',
-      name: 'resultId',
-      documentation: 'The resultId provided in the LEV search response for the specific entity.'
+      class: 'String',
+      name: 'documentType',
+      documentation: 'The document type of the last document filed.'
+    },
+    {
+      class: 'String',
+      name: 'documentDate',
+      documentation: 'The date that the last document was filed.'
+    },
+    {
+      class: 'Boolean',
+      name: 'annualReturn',
+      documentation: 'If the last document filed was determined to be an annual return.'
     }
   ]
 });

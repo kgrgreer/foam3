@@ -16,15 +16,30 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.meter.compliance.secureFact.lev',
-  name: 'LEVDocumentOrderResponse',
-  extends: 'net.nanopay.meter.compliance.secureFact.SecurefactResponse',
+  package: 'net.nanopay.meter.compliance.secureFact.lev.document',
+  name: 'LEVDocumentPartyShareClass',
+  documentation: 'Describes the shares held by the party.',
 
   properties: [
     {
-      class: 'Int',
-      name: 'orderId',
-      documentation: 'A unique number provided to the customer once the profile order request is submitted.'
+      class: 'String',
+      name: 'type',
+      documentation: 'The type or class of shares held by the party.'
+    },
+    {
+      class: 'String',
+      name: 'numberOfShares',
+      documentation: 'The number of shares held.'
+    },
+    {
+      class: 'String',
+      name: 'percentageOfShares',
+      documentation: 'The percentage of shares held.'
+    },
+    {
+      class: 'String',
+      name: 'rank',
+      documentation: 'The rank of the shareholder.'
     }
   ]
 });
