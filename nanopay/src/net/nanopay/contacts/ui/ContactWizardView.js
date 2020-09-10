@@ -69,7 +69,8 @@ foam.CLASS({
                 You can set up a connection with this user and their business by using their payment code or
                 finding them in the search business menu when adding a contact.
                `
-    }
+    },
+    { name: 'GENERIC_PUT_FAILED', message: 'Failed to add an account.' },
   ],
 
   properties: [
