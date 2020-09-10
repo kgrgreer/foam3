@@ -194,7 +194,8 @@ foam.CLASS({
           [false, 'No']
         ],
         isHorizontal: true
-      }
+      },
+      visibility: 'RW'
     }),
     {
       name: 'businessId',
