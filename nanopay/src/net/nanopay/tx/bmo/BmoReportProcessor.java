@@ -17,6 +17,8 @@ import org.apache.commons.lang3.StringUtils;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.mlang.MLang;
+import foam.nanos.alarming.Alarm;
+import foam.nanos.alarming.AlarmReason;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
 import foam.nanos.notification.Notification;
@@ -112,9 +114,15 @@ public class BmoReportProcessor {
       this.processRejectReport(strings); // process rejected file
     } else if ( firstLine.contains("DEFR220") ) {
       processSettlementReport(strings); // process settled file
-    } else if ( firstLine.contains("DEFR200" ) ) {
+    } else if ( firstLine.contains("DEFR200") ) {
        processControlFile(strings);
-     }
+    } else if ( firstLine.contains("DEFR260") ) {
+      ((DAO) x.get("alarmDAO")).put(new Alarm.Builder(x)
+        .setName(getFileCreationNumber(file))
+        .setReason(AlarmReason.NSF)
+        .setNote("BMO report" + firstLine)
+        .build());
+    }
 
     storeFile(file);
   }
