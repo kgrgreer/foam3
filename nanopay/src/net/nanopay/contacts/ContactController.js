@@ -105,10 +105,12 @@ foam.CLASS({
                 return this.signUpStatus !== self.ContactStatus.ACTIVE;
               },
               code: function(X) {
-              // case of save without banking
-              if ( this.createBankAccount === 'net.nanopay.bank.BankAccount' ) {
-                this.createBankAccount = net.nanopay.bank.CABankAccount.create({ isDefault: true }, X);
-              }
+                // case of save without banking
+                controllerMode_ = foam.u2.ControllerMode.EDIT;
+                if ((net.nanopay.bank.BankAccount).isInstance(this.createBankAccount) || this.createBankAccount === undefined) {
+                  this.createBankAccount = net.nanopay.bank.CABankAccount.create({ isDefault: true }, X);
+                  controllerMode_ = foam.u2.ControllerMode.CREATE;
+                }
 
                 X.controllerView.add(self.WizardController.create({
                   model: 'net.nanopay.contacts.Contact',
