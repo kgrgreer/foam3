@@ -56,6 +56,11 @@ foam.CLASS({
           .add(amount)
         .end();
       }
+    },
+    {
+      class: 'FObjectArray',
+      of: 'net.nanopay.tx.fee.Rate',
+      name: 'rates'
     }
   ]
 });

@@ -26,6 +26,9 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.nanos.crunch.UserCapabilityJunction',
+    'foam.dao.DAO',
+    'foam.nanos.alarming.Alarm',
+    'foam.nanos.alarming.AlarmReason',
     'foam.nanos.logger.Logger',
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
@@ -40,7 +43,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.meter.compliance.secureFact.lev.LEVResponse'
     }
-  ],  
+  ],
 
   methods: [
     {
@@ -48,7 +51,7 @@ foam.CLASS({
       javaCode: `
         UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
         Business business = (Business) ucj.findSourceId(x);
-      
+
         SecurefactService securefactService = (SecurefactService) x.get("securefactService");
         try {
           setResponse(securefactService.levSearch(x, business));
@@ -85,6 +88,11 @@ foam.CLASS({
               .build()
           );
           ruler.putResult(ComplianceValidationStatus.PENDING);
+          ((DAO) x.get("alarmDAO")).put(new Alarm.Builder(x)
+            .setName("LEVValidator failed")
+            .setReason(AlarmReason.CREDENTIALS)
+            .setNote(e.getMessage())
+            .build());
         }
       `
     }

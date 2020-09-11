@@ -138,8 +138,7 @@ foam.CLASS({
         rootCapability: cap
       }))
         .add(this.ConfigureFlowAgent, {
-          popupMode: false,
-          ensureHash: 'sme.main.registration'
+          popupMode: false
         })
         .add(this.CapabilityAdaptAgent)
         .add(this.LoadCapabilitiesAgent)
@@ -160,7 +159,7 @@ foam.CLASS({
         })
         .add(this.PutFinalJunctionsAgent)
         .execute().then(() => {
-          this.pushMenu('sme.accountProfile.switch-business');
+          this.pushMenu('sme.accountProfile.switch-business', true);
         });
     }
   ]

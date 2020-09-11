@@ -4,6 +4,9 @@ import foam.core.ClassInfo;
 import foam.core.FObject;
 import foam.core.PropertyInfo;
 import foam.core.X;
+import foam.dao.DAO;
+import foam.nanos.alarming.Alarm;
+import foam.nanos.alarming.AlarmReason;
 import foam.nanos.logger.Logger;
 import foam.lib.csv.CSVStringParser;
 import foam.lib.parse.*;
@@ -45,6 +48,11 @@ public class EFTUploadCSVFileParser extends EFTFileParser
       parseFile(ret, reader, classInfo, propertyInfos);
     } catch ( IllegalAccessException | IOException | InstantiationException e ) {
       logger.error(e);
+      ((DAO) x.get("alarmDAO")).put(new Alarm.Builder(x)
+        .setName("EFF Upload CSV Parser")
+        .setReason(AlarmReason.CREDENTIALS)
+        .setNote(e.getMessage())
+        .build());
     }
 
     return ret;

@@ -7,6 +7,8 @@ import foam.blob.IdentifiedBlob;
 import foam.blob.InputStreamBlob;
 import foam.core.X;
 import foam.dao.DAO;
+import foam.nanos.alarming.Alarm;
+import foam.nanos.alarming.AlarmReason;
 import foam.nanos.fs.File;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
@@ -70,6 +72,11 @@ public class EFTFileUtil {
         } catch(IOException t) {
           Logger logger = (Logger) x.get("logger");
           logger.warning(t);
+          ((DAO) x.get("alarmDAO")).put(new Alarm.Builder(x)
+            .setName("EFF Save File")
+            .setReason(AlarmReason.CREDENTIALS)
+            .setNote(t.getMessage())
+            .build());
         }
       }
       return (File) fileDAO.inX(x).put(file);
@@ -99,6 +106,11 @@ public class EFTFileUtil {
         } catch(IOException t) {
           Logger logger = (Logger) x.get("logger");
           logger.warning(t);
+          ((DAO) x.get("alarmDAO")).put(new Alarm.Builder(x)
+            .setName("EFF Get File")
+            .setReason(AlarmReason.CREDENTIALS)
+            .setNote(t.getMessage())
+            .build());
         }
       }
     } catch(Throwable t) {

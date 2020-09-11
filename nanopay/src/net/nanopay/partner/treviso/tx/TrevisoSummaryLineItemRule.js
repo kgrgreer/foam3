@@ -64,7 +64,8 @@ foam.CLASS({
             summarizedLineItems.add(item);
           }
         }
-  
+        txn.setLineItems(summarizedLineItems.toArray(new TransactionLineItem[summarizedLineItems.size()]));
+
         if ( fx.size() > 0 ) {
           FXLineItem[] fxArray = fx.toArray((new FXLineItem[fx.size()]));
           fxSummary.setLineItems(fxArray);
@@ -95,6 +96,7 @@ foam.CLASS({
           Double destPrecision = Math.pow(10, destination.getPrecision()) * fxRate;
           String rate = source.format(srcPrecision.longValue()) + source.getId() + " : " + destination.format(destPrecision.longValue()) + destination.getId();
           fxSummary.setRate(rate);
+          txn.addLineItems(new TransactionLineItem[] { fxSummary });
         }
   
         if ( fee.size() > 0 ) {
@@ -106,10 +108,9 @@ foam.CLASS({
             totalFee += feeLine.getAmount();
           }
           feeSummary.setTotalFee(currency.format(totalFee) + currency.getId());
+          txn.addLineItems(new TransactionLineItem[] { feeSummary });
         }
-    
-        txn.setLineItems(summarizedLineItems.toArray(new TransactionLineItem[summarizedLineItems.size()]));
-        txn.addLineItems(new TransactionLineItem[]{feeSummary,fxSummary});
+
         quote.setPlan(txn);
         quote.setShowAllLineItems(false);
         return;

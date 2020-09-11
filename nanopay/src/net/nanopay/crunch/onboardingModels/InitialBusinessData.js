@@ -54,7 +54,8 @@ foam.CLASS({
 
   messages: [
     { name: 'QUEBEC_NOT_SUPPORTED_ERROR', message: 'This application does not currently support businesses in Quebec. We are working hard to change this! If you are based in Quebec, check back for updates.' },
-    { name: 'INVALID_ADDRESS_ERROR', message: 'Invalid address.' }
+    { name: 'INVALID_ADDRESS_ERROR', message: 'Invalid address.' },
+    { name: 'SAME_AS_BUSINESS_ADDRESS_LABEL', message: 'Mailing address is same as business address.' }
   ],
 
   properties: [
@@ -146,9 +147,28 @@ foam.CLASS({
         }
       ]
     }),
+    {
+      class: 'Boolean',
+      name: 'sameAsBusinessAddress',
+      section: 'businessAddress',
+      documentation: `
+        Determines whether the business address and its mailing address are the same.
+      `,
+      label: '',
+      view: function(_, X) {
+        return foam.u2.CheckBox.create({ label: X.data.SAME_AS_BUSINESS_ADDRESS_LABEL });
+      }
+    },
     net.nanopay.model.Business.MAILING_ADDRESS.clone().copyFrom({
       documentation: 'Business mailing address.',
       section: 'businessAddress',
+      // TODO: Add a JS getter.
+      javaGetter: `
+        return getSameAsBusinessAddress() ? getAddress() : mailingAddress_;
+      `,
+      visibility: function(sameAsBusinessAddress) {
+        return sameAsBusinessAddress ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      },  
       view: function(_, X) {
         return {
           class: 'net.nanopay.sme.ui.AddressView',

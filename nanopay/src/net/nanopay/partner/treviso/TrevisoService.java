@@ -40,6 +40,7 @@ import foam.nanos.crunch.Capability;
 import foam.nanos.crunch.UserCapabilityJunction;
 import net.nanopay.contacts.Contact;
 import net.nanopay.country.br.BrazilBusinessInfoData;
+import net.nanopay.country.br.CPF;
 import net.nanopay.country.br.exchange.Exchange;
 import net.nanopay.country.br.exchange.ExchangeCredential;
 import net.nanopay.country.br.exchange.ExchangeCustomer;
@@ -210,12 +211,30 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
   }
 
   protected String findCpfCnpj(long userId) {
+    User user = (User) ((DAO) getX().get("bareUserDAO")).find(userId);
+    if ( user instanceof Business ) return findCNPJ(userId);
+
+    return findCPF(userId);
+  }
+
+  protected String findCNPJ(long userId) {
+    UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) getX().get("userCapabilityJunctionDAO")).find(AND(
+      EQ(UserCapabilityJunction.TARGET_ID, "688cb7c6-7316-4bbf-8483-fb79f8fdeaaf"),
+      EQ(UserCapabilityJunction.SOURCE_ID, userId)
+    ));
+
+    if ( ucj != null ) return ucj.getData() != null ? ((BrazilBusinessInfoData)ucj.getData()).getCnpj() : "";
+
+    return "";
+  }
+
+  protected String findCPF(long userId) {
     UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) getX().get("userCapabilityJunctionDAO")).find(AND(
       EQ(UserCapabilityJunction.TARGET_ID, "fb7d3ca2-62f2-4caf-a84c-860392e4676b"),
       EQ(UserCapabilityJunction.SOURCE_ID, userId)
     ));
 
-    if ( ucj != null ) return ucj.getData() != null ? ((BrazilBusinessInfoData)ucj.getData()).getCnpj() : "";
+    if ( ucj != null && ucj.getData() != null ) return ((CPF) ucj.getData()).getData();
 
     return "";
   }

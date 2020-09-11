@@ -17,7 +17,7 @@ p({
         class: "foam.mlang.predicate.Lte",
         arg1: {
           class: "__Property__",
-          forClass_: "net.nanopay.tx.model.Transaction",
+          forClass_: "net.nanopay.fx.FXSummaryTransaction",
           name: "intermediateAmount"
         },
         arg2: {
@@ -47,7 +47,7 @@ p({
         class: "foam.mlang.predicate.Gt",
         arg1: {
           class: "__Property__",
-          forClass_: "net.nanopay.tx.model.Transaction",
+          forClass_: "net.nanopay.fx.FXSummaryTransaction",
           name: "intermediateAmount"
         },
         arg2: {
@@ -59,7 +59,7 @@ p({
         class: "foam.mlang.predicate.Lte",
         arg1: {
           class: "__Property__",
-          forClass_: "net.nanopay.tx.model.Transaction",
+          forClass_: "net.nanopay.fx.FXSummaryTransaction",
           name: "intermediateAmount"
         },
         arg2: {
@@ -89,7 +89,7 @@ p({
         class: "foam.mlang.predicate.Gt",
         arg1: {
           class: "__Property__",
-          forClass_: "net.nanopay.tx.model.Transaction",
+          forClass_: "net.nanopay.fx.FXSummaryTransaction",
           name: "intermediateAmount"
         },
         arg2: {
