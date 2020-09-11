@@ -28,20 +28,20 @@ foam.CLASS({
 
   axioms: [
     foam.u2.CSS.create({
-      code: function CSS() {/*
+      code: `
         ^ {
           height: 355px;
         }
         ^ p{
           width: 464px;
-          font-family: Roboto;
+          font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
           font-size: 12px;
           line-height: 1.45;
           letter-spacing: 0.3px;
           color: #093649;
         }
         ^ h3{
-          font-family: Roboto;
+          font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
           font-size: 12px;
           letter-spacing: 0.2px;
           color: #093649;
@@ -90,7 +90,7 @@ foam.CLASS({
         ^ .show-yes{
           display: inline-block;
         }
-      */}
+      `
     })
   ],
 

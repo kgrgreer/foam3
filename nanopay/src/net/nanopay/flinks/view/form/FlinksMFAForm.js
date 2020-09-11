@@ -33,7 +33,7 @@ foam.CLASS({
       height: 240px;
     }
     ^ .header1 {
-      font-family: Roboto;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: 300;
       font-style: normal;
@@ -56,7 +56,7 @@ foam.CLASS({
     }
     ^ .question {
       height: 14px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       font-weight: normal;
       font-style: normal;
@@ -68,7 +68,7 @@ foam.CLASS({
     }
     ^ .forgetAnswer {
       width: 450px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       font-weight: normal;
       font-style: normal;

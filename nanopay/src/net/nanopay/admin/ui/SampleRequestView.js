@@ -56,7 +56,7 @@ foam.CLASS({
     ^ .small-roboto{
       color: white;
       font-size: 14px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       line-height: 1.5;
       font-weight: 300;
     }

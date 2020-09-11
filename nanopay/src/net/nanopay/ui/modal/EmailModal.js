@@ -32,13 +32,13 @@ foam.CLASS({
 
   axioms: [
     foam.u2.CSS.create({
-      code: function CSS() {/*
+      code: `
       ^ {
         width: 448px;
         margin: auto;
-        font-family: Roboto;
+        font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       }
-    */}
+    `
     })
   ],
   

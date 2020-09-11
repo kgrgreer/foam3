@@ -52,7 +52,7 @@ foam.CLASS({
     }
     ^ .header{
       width: 330px;
-      font-family: lato;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 30px;
       font-weight: bold;
       line-height: 48px;
@@ -74,7 +74,7 @@ foam.CLASS({
       background: none;
       color: #604aff;
       font-size: 16px;
-      font-family: lato;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
     ^ .link:hover {
       background: none !important;
