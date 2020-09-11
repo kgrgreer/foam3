@@ -30,7 +30,6 @@ foam.CLASS({
     'foam.nanos.auth.Address',
     'foam.nanos.auth.AgentAuthService',
     'foam.nanos.auth.LifecycleState',
-    'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Subject',
     'foam.nanos.crunch.connection.CapabilityPayload',
@@ -441,7 +440,7 @@ foam.CLASS({
         UserRegistrationData registrationData = new UserRegistrationData.Builder(x)
           .setFirstName(newUser.getFirstName())
           .setLastName(newUser.getLastName())
-          .setPhone(newUser.getPhoneNumber())
+          .setPhoneNumber(newUser.getPhoneNumber())
           .build();
 
         // userCapabilityDataObjects.put("AbliiPrivacyPolicy", privacyPolicy);
@@ -510,14 +509,10 @@ foam.CLASS({
           .setAdminLastName(user.getLastName())
           .setAdminPhone(user.getPhoneNumber())
           .build();
-        Phone phone = new Phone.Builder(x)
-          .setNumber(user.getPhoneNumber())
-          .setVerified(true)
-          .build();
         SigningOfficerPersonalData soPersonalData = new SigningOfficerPersonalData.Builder(x)
           .setCountryId(holderAddress.getCountry())
           .setAddress(user.getAddress())
-          .setPhone(phone)
+          .setPhoneNumber(user.getPhoneNumber())
           .build();
 
         // TODO: set this with SecureFact LEV API call
