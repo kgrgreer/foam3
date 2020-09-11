@@ -22,13 +22,20 @@ foam.ENUM({
   documentation: 'Identifies if onboarding type is personal or business',
 
   values: [
+    { 
+      name: 'DEFAULT',
+      label: 'Default',
+      documentation: 'Use Flinks Login Type to determine onboarding type'
+    },
     {
       name: 'PERSONAL',
-      label: 'Personal'
+      label: 'Personal',
+      documentation: 'Personal onboarding'
     },
     {
       name: 'BUSINESS',
-      label: 'Business'
+      label: 'Business',
+      documentation: 'Business onboarding'
     }
   ]
 });

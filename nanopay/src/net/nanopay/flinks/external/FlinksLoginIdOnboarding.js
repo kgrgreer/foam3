@@ -30,7 +30,10 @@ foam.CLASS({
       class: 'Enum',
       of: 'net.nanopay.flinks.external.OnboardingType',
       name: 'type',
-      documentation: 'Personal or business onboarding. Defaults to personal.'
+      value: 'DEFAULT',
+      documentation: `Personal or business onboarding. 
+        If type is provided, it forces that type of onboarding. 
+        If not provided, the login type from Flinks is used to determine the type of onboarding.`
     },
     {
       class: 'Map',

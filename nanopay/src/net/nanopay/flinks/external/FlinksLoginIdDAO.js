@@ -34,6 +34,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.auth.Subject',
     'foam.nanos.crunch.connection.CapabilityPayload',
+    'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'java.util.HashMap',
     'java.util.Map',
@@ -73,6 +74,7 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
+        Logger logger = (Logger) x.get("logger");
         Subject subject = (Subject) x.get("subject");
 
         FlinksAuth flinksAuth = (FlinksAuth) x.get("flinksAuth");
@@ -80,23 +82,27 @@ foam.CLASS({
 
         FlinksLoginId flinksLoginId = (FlinksLoginId) obj;
 
-        List oldRecords = ((ArraySink) getDelegate().where(AND(
-            EQ(FlinksLoginId.LOGIN_ID, flinksLoginId.getLoginId()),
-            NEQ(FlinksLoginId.USER, 0)
-          ))
-          .limit(1)
-          .select(new foam.dao.ArraySink())).getArray();
-        if ( oldRecords.size() == 1 ) {
-          FlinksLoginId previousFlinksLoginId = (FlinksLoginId) oldRecords.get(0);
-          flinksLoginId.setUser(previousFlinksLoginId.getUser());
-          flinksLoginId.setBusiness(previousFlinksLoginId.getBusiness());
+        // When a user has not been explicitly set
+        if ( flinksLoginId.getUser() == 0 ) {
+
+          // Check if we have seen the Flinks LoginId before, using the user and business previously provisioned
+          List oldRecords = ((ArraySink) getDelegate().where(AND(
+              EQ(FlinksLoginId.LOGIN_ID, flinksLoginId.getLoginId()),
+              NEQ(FlinksLoginId.USER, 0)
+            ))
+            .limit(1)
+            .select(new foam.dao.ArraySink())).getArray();
+          if ( oldRecords.size() == 1 ) {
+            FlinksLoginId previousFlinksLoginId = (FlinksLoginId) oldRecords.get(0);
+            flinksLoginId.setUser(previousFlinksLoginId.getUser());
+            flinksLoginId.setBusiness(previousFlinksLoginId.getBusiness());
+          }
         }
         
         FlinksResponse flinksResponse = (FlinksResponse) flinksResponseService.getFlinksResponse(x, flinksLoginId);
         if ( flinksResponse == null ) {
           throw new RuntimeException("Flinks failed to provide a valid response when provided with login ID: " + flinksLoginId.getLoginId());
         }
-        
         
         FlinksResponse flinksAuthResponse = flinksAuth.getAccountSummary(x, flinksResponse.getRequestId(), subject.getUser());
         while ( flinksAuthResponse.getHttpStatusCode() == 202 ) {
@@ -110,29 +116,39 @@ foam.CLASS({
 
         AccountWithDetailModel accountDetail = selectBankAccount(x, flinksLoginId, flinksDetailResponse);
         if ( accountDetail == null ) {
-          throw new RuntimeException("Bank account not found.");
+          throw new RuntimeException("Flinks bank account not found.");
+        }
+        LoginModel loginDetail = flinksDetailResponse.getLogin();
+        if ( loginDetail == null ) {
+          logger.warning("Unexpected behaviour - No login section found in FlinksResponse for loginId: " + flinksLoginId.getLoginId());
         }
 
         // Find the user and business if they already exist
         User user = flinksLoginId.findUser(x);
+        if ( user == null && flinksLoginId.getUser() != 0 ) {
+          throw new RuntimeException("User not found: " + flinksLoginId.getUser());
+        }
         Business business = flinksLoginId.findBusiness(x);
-
-        // Create the user if this is an onboarding request
-        if ( user == null )
-        {
-          if ( flinksLoginId instanceof FlinksLoginIdOnboarding ) {
-            FlinksLoginIdOnboarding flinksLoginIdOnboarding = (FlinksLoginIdOnboarding)flinksLoginId;
-            onboarding(x, flinksLoginIdOnboarding, accountDetail);
-            user = flinksLoginIdOnboarding.findUser(x);
-            business = flinksLoginIdOnboarding.findBusiness(x);
-          } else if ( subject.getUser() instanceof Business ) {
-            user = subject.getRealUser();
-            business = (Business) subject.getUser();
-          } else {
-            user = subject.getUser();
-          }
+        if ( business == null && flinksLoginId.getBusiness() != 0 ) {
+          throw new RuntimeException("Business not found: " + flinksLoginId.getBusiness());
         }
 
+        // Create the user if this is an onboarding request
+        if ( user == null && flinksLoginId instanceof FlinksLoginIdOnboarding )
+        {
+          onboarding(x, (FlinksLoginIdOnboarding) flinksLoginId, accountDetail, loginDetail);
+          
+          // Retrieve the user
+          user = flinksLoginId.findUser(x);
+          if ( user == null ) {
+            throw new RuntimeException("User not provisioned: " + flinksLoginId.getUser());
+          }
+          business = flinksLoginId.findBusiness(x);
+        } else if ( user == null ) {
+          throw new RuntimeException("User is required to add a bank account");
+        }
+
+        // Set bank account owner to business, if it exists
         User owner = (business != null) ? business : user;
         BankAccount bankAccount = findBankAccount(x, owner, flinksLoginId, accountDetail);
         if ( bankAccount == null ) {
@@ -241,29 +257,48 @@ foam.CLASS({
       args: [
         { name: 'x', type: 'Context' },
         { name: 'request', type: 'FlinksLoginIdOnboarding' },
-        { name: 'accountDetail', type: 'AccountWithDetailModel' }
+        { name: 'accountDetail', type: 'AccountWithDetailModel' },
+        { name: 'loginDetail', type: 'LoginModel' }
       ],
       javaCode: `
-        // Check if the user already exists by cross referencing the loginId
-        User user = request.findUser(x);
-        Business business = request.findBusiness(x);
+        // Determine onboarding type
+        OnboardingType onboardingType = request.getType();
+        if ( onboardingType == OnboardingType.DEFAULT ) {
+          if ( loginDetail == null ) {
+            throw new RuntimeException("Flinks login information not found. Cannot determine onboarding type automatically.");
+          }
 
-        if ( request.getType() == OnboardingType.PERSONAL ) {
+          // Determine onboarding type
+          if ( SafetyUtil.equals(loginDetail.getType(), "Personal") ) {
+            onboardingType = OnboardingType.PERSONAL;
+          }
+          else if ( SafetyUtil.equals(loginDetail.getType(), "Business") ) {
+            onboardingType = OnboardingType.BUSINESS;
+          }
+
+          if ( onboardingType == OnboardingType.DEFAULT ) {
+            throw new RuntimeException("Cannot determine onboarding type with login type: " + loginDetail.getType());
+          }
+        }
+
+        if ( onboardingType == OnboardingType.PERSONAL ) {
           onboardUser(x, request, accountDetail);
         }
-        else if ( request.getType() == OnboardingType.BUSINESS ) {
+        else if ( onboardingType == OnboardingType.BUSINESS ) {
           // Create the user
+          User user = request.findUser(x);
           if ( user == null ) {
             onboardUserForBusiness(x, request, accountDetail);
           }
 
           // Create the business
+          Business business = request.findBusiness(x);
           if ( business == null ) {
             onboardBusiness(x, request, accountDetail);
           }
         }
         else {
-          throw new RuntimeException("Expected onboarding type: " + request.getType());
+          throw new RuntimeException("Unexpected onboarding type: " + request.getType());
         }
       `
     },

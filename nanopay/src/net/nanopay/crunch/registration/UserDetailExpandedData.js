@@ -29,7 +29,8 @@ foam.CLASS({
     foam.nanos.auth.User.BIRTHDAY.clone().copyFrom(),
     foam.nanos.auth.User.JOB_TITLE.clone().copyFrom(),
     foam.nanos.auth.User.PEPHIORELATED.clone().copyFrom(),
-    foam.nanos.auth.User.THIRD_PARTY.clone().copyFrom()
+    foam.nanos.auth.User.THIRD_PARTY.clone().copyFrom(),
+    foam.nanos.auth.User.COMPLIANCE.clone().copyFrom()
   ],
   
   methods: [
