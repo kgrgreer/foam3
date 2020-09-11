@@ -472,6 +472,14 @@ p({
 // Prerequisites for apiUserOnboarding
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"B98D97EF-4A43-4B03-84C1-9DE2C0109E87",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-18",
+  "priority":1
+})
+
+// Prerequisites for apiUserBusinessOnboarding
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"B98D97EE-4A43-4B03-84C1-9DE2C0109E87",
   "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-18",
   "priority":1
@@ -536,4 +544,46 @@ p({
   "sourceId":"CD499238-7854-4125-A04D-7CE7EE15BC74",
   "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-76",
   "priority": 16
+})
+
+//API CAD Personal Payments
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"1F0B39AD-934E-462E-A608-D590D1081298",
+  "targetId":"F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"1F0B39AD-934E-462E-A608-D590D1081298",
+  "targetId":"FB1C8CF2-34B9-40FE-A4AA-58CFA2FDBA15",
+  "priority": 2
+})
+
+//API CAD Personal Payments Under 1000CAD
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD",
+  "targetId":"A62AC209-CD55-4755-9B93-2B9BAE885B85",
+  "priority": 1
+})
+
+//Simple User Onboarding
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"A62AC209-CD55-4755-9B93-2B9BAE885B85",
+  "targetId":"0ED5DD86-AA1A-452B-BA7D-E7A2D0542135",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"A62AC209-CD55-4755-9B93-2B9BAE885B85",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-8",
+  "priority": 2
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"A62AC209-CD55-4755-9B93-2B9BAE885B85",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-7",
+  "priority": 2
 })

@@ -37,6 +37,8 @@ FOAM_FILES([
   { name: 'net/nanopay/flinks/RefinedFlinksAccountDAO' },
   { name: 'net/nanopay/flinks/external/FlinksLoginId' },
   { name: 'net/nanopay/flinks/external/FlinksLoginIdDAO' },
+  { name: 'net/nanopay/flinks/external/FlinksLoginIdOnboarding' },
+  { name: 'net/nanopay/flinks/external/OnboardingType' },
   // flinks views
   { name: 'net/nanopay/flinks/view/FlinksView' },
   { name: 'net/nanopay/flinks/view/form/FlinksForm', flags: ['web'] },

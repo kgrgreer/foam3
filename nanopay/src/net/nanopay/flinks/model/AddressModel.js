@@ -63,6 +63,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'POBox'
+    },
+    {
+      class: 'String',
+      name: 'Country'
     }
   ],
 
