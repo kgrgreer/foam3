@@ -21,7 +21,7 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-3",
-  "name":"DualPartyAgreementCAD",
+  "name":"Dual Party Agreement CAD",
   "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.DualPartyAgreementCAD",
   "version":"0",
   "enabled":true,
@@ -113,7 +113,7 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-12",
-  "name":"CertifyOwnersPercent",
+  "name":"Certify Owners Percent",
   "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyOwnersPercent",
   "version":"0",
   "enabled":true,
@@ -163,7 +163,7 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-17",
-  "name":"CertifyDirectorsListed",
+  "name":"Certify Directors Listed",
   "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyDirectorsListed",
   "version":"0",
   "enabled":true,

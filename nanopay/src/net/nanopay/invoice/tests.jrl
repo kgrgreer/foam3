@@ -5,7 +5,6 @@ p({
   "code":"""
 import foam.dao.*;
 import foam.nanos.auth.Address;
-import foam.nanos.auth.Phone;
 import foam.nanos.auth.User;
 import foam.nanos.crunch.AgentCapabilityJunction;
 import foam.nanos.crunch.CapabilityJunctionStatus;
@@ -88,8 +87,6 @@ approverToBusinessJunc.setGroup(myBusiness.getBusinessPermissionId() + ".employe
 agentJunctionDAO.put(approverToBusinessJunc);
 
 // Grant approver Signing Officer Privileges Capability
-phoneO = new Phone();
-phoneO.setNumber("2899998989");
 address = new Address();
 address.setCountryId("CA");
 address.setStreetName("Avenue Rd");
@@ -120,7 +117,7 @@ so = new SigningOfficerPersonalData();
 so.setAddress(address);
 so.setJobTitle("Accountant");
 so.setCountryId("CA");
-so.setPhone(phoneO);
+so.setPhoneNumber("2899998989");
 ucj = new AgentCapabilityJunction();
 ucj.setSourceId(myApprover.getId());
 ucj.setEffectiveUser(myBusiness.getId());

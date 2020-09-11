@@ -41,6 +41,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.core.Currency',
+    'foam.nanos.logger.Logger',
     'foam.nanos.session.LocalSetting',
     'foam.nanos.session.Session',
     'net.nanopay.fx.ExchangeRateService',
@@ -311,7 +312,17 @@ foam.CLASS({
         String denomination = getDenomination();
         ExchangeRateService ert = (ExchangeRateService)session.getContext().get("exchangeRateService");
         if ( ert != null ) {
-          return ert.exchangeFormat(denomination, homeDenomination, getBalance()) + " " + homeDenomination;
+          String exchangeFormat = null;
+          //catching "Rate Not Found" RuntimeException
+          try {
+            exchangeFormat = ert.exchangeFormat(denomination, homeDenomination, getBalance());
+          } catch(Throwable t) {
+            Logger logger = (Logger) getX().get("logger");
+            logger.error(t);
+          }
+          if ( exchangeFormat == null )
+            return "";
+          return exchangeFormat + " " + homeDenomination;
         }
         return "";
       `,
@@ -472,7 +483,15 @@ foam.CLASS({
         return x.balanceService.findBalance(x, this.id);
       },
       javaCode: `
-        return ((BalanceService) x.get("balanceService")).findBalance_(x, this);
+        long balance = 0;
+        //catching "Rate Not Found" RuntimeException
+        try {
+          balance = ((BalanceService) x.get("balanceService")).findBalance_(x, this);
+        } catch(Throwable t) {
+          Logger logger = (Logger) getX().get("logger");
+          logger.error(t);
+        }
+        return balance;
       `
     },
     {

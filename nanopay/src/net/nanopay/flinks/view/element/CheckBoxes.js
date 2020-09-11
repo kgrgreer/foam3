@@ -25,7 +25,7 @@ foam.CLASS({
   css: `
     ^ .label {
       height: 13px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 13px;
       font-weight: normal;
       font-style: normal;

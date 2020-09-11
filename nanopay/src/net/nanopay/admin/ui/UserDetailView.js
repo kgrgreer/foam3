@@ -82,7 +82,7 @@ foam.CLASS({
     ^ .foam-u2-ActionView-print span {
       width: 31px;
       height: 20px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 10px;
       font-weight: 300;
       font-style: normal;

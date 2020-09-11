@@ -49,7 +49,7 @@ foam.CLASS({
       margin-bottom: 15px;
     }
     ^step-1 span {
-      font-family: Lato;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: normal;
       font-style: normal;
@@ -68,7 +68,7 @@ foam.CLASS({
       margin-top: 32px;
     }
     ^step-2 span {
-      font-family: Lato;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: normal;
       font-style: normal;

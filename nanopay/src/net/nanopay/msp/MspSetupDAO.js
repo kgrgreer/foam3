@@ -38,7 +38,16 @@ foam.CLASS({
     'net.nanopay.admin.model.AccountStatus',
     'java.util.Arrays',
     'java.util.ArrayList',
-    'java.util.List'
+    'java.util.List',
+    'org.apache.commons.lang.ArrayUtils'
+  ],
+
+  properties: [
+    {
+      class: 'String',
+      name: 'spidUrlRule',
+      value: '68afcf0c-c718-98f8-0841-75e97a3ad16d4',
+    }
   ],
 
   methods: [
@@ -47,6 +56,10 @@ foam.CLASS({
       javaCode: `
         String spid = ((MspInfo) obj).getSpid();
         DAO spidDAO = (DAO) x.get("localServiceProviderDAO");
+
+        // if the spid already exists, just simply return
+        ServiceProvider sp = (ServiceProvider) spidDAO.find(spid);
+        if ( sp != null ) throw new RuntimeException("Spid already exists");
         spidDAO.put(
           new ServiceProvider.Builder(x)
             .setEnabled(true)
@@ -130,21 +143,10 @@ foam.CLASS({
         ServiceProviderURL[] configList = new ServiceProviderURL[1];
         configList[0] = serviceProviderURL;
 
-        // Create new UserCreateServiceProviderURLRule
-        UserCreateServiceProviderURLRule rule = new UserCreateServiceProviderURLRule();
-        rule.setConfig(configList);
-        rule.setName(mspInfo.getSpid() + "UserCreateServiceProviderURLRule");
-        rule.setPriority(100);
-        rule.setRuleGroup("UserCreate");
-        rule.setDocumentation("Set ServiceProvider on User Create based on AppConfig URL for " + mspInfo.getSpid());
-        rule.setDaoKey("localUserDAO");
-        rule.setOperation(foam.nanos.ruler.Operations.CREATE);
-        rule.setAfter(false);
-        rule.setEnabled(true);
-        rule.setSaveHistory(false);
-        rule.setLifecycleState(foam.nanos.auth.LifecycleState.ACTIVE);
-        UserCreateServiceProviderURLRuleAction ruleAction = new UserCreateServiceProviderURLRuleAction();
-        rule.setAction(ruleAction);
+        // find the UserCreateServiceProviderURLRule and update the configList
+        UserCreateServiceProviderURLRule rule = 
+          (UserCreateServiceProviderURLRule) ruleDAO.find(this.getSpidUrlRule());
+        rule.setConfig((ServiceProviderURL[]) ArrayUtils.addAll(configList, rule.getConfig()));
         ruleDAO.put(rule);
 
         // Create spid-fraud-ops group

@@ -44,7 +44,7 @@ foam.CLASS({
     ^ .headerTitle {
       margin-left: 24px;
       margin-top: 24px;
-      font-family: Lato;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 24px;
       font-weight: 900;
       font-style: normal;
@@ -57,7 +57,7 @@ foam.CLASS({
     ^ .content {
       width: 456px;
       height: 51px;
-      font-family: Lato;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 15px;
       font-weight: normal;
       font-style: normal;

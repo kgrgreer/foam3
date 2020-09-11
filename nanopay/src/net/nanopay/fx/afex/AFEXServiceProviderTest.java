@@ -109,7 +109,7 @@ public class AFEXServiceProviderTest
       PersonalIdentification identification = new PersonalIdentification();
       identification.setExpirationDate(new Date());
       user1.setIdentification(identification);
-      user1.setPhoneNumber("123-456-7890");
+      user1.setPhoneNumber("1234567890");
       user1 = (User) smeBusinessRegistrationDAO.put(user1).fclone();
 
       // Set properties that can't be set during registration.
@@ -145,7 +145,7 @@ public class AFEXServiceProviderTest
       business.setAddress(address);
       business.setOnboarded(true);
       business.setCompliance(ComplianceStatus.PASSED);
-      business.setPhoneNumber("123-456-7890");
+      business.setPhoneNumber("1234567890");
       business.setBusinessRegistrationDate(new Date());
       business.setBusinessTypeId(1);
       SuggestedUserTransactionInfo suggestedUserTransactionInfo = new SuggestedUserTransactionInfo();
