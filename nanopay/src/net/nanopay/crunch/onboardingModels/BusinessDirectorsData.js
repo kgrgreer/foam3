@@ -57,7 +57,7 @@ properties: [
         class: 'String',
         name: 'noDirectorsNeeded',
         section: 'directorsInfoSection',
-        value: 'No Business Directors required for business type. Please proceed to next step.',
+        value: 'No Business Directors required for this business type. Please proceed to next step.',
         visibility: function(businessTypeId, needDirector) {
           return businessTypeId === 3 || businessTypeId === 5 || businessTypeId === 6 ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RO;
         }
