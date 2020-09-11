@@ -105,7 +105,7 @@ foam.CLASS({
 
         onboarding.setSigningOfficer(true);
         onboarding.setJobTitle("CEO");
-        onboarding.setPhoneNumber("123-456-7890");
+        onboarding.setPhoneNumber("1234567890");
         Date birthday = new Date(1992, 11, 21); 
         onboarding.setBirthday(birthday);
         onboarding.setPEPHIORelated(true);
