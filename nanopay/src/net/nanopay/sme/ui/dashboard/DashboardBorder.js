@@ -25,12 +25,14 @@ foam.CLASS({
       padding: 0 2vw 15vh 2vw;
     }
     ^ .two-column-grid {
+      margin: auto;
       margin-top: 32px;
       display: flex;
       flex-direction: row;
       flex-wrap: wrap;
       flex-basis: 100%;
       justify-content: space-between;
+      width: 94%;
     }
     ^ .left-column {
       width: 500px;
