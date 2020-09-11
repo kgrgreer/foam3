@@ -17,16 +17,21 @@
 
  foam.CLASS({
    package: 'net.nanopay.meter.compliance.secureFact',
-   name: 'SecurefactOnboardingDAO',
-   extends: 'foam.dao.ProxyDAO',
+   name: 'SecurefactOnboardingService',
 
-   documentation: `Decorating DAO for Securefact business onboarding through FlinksLoginId requests.`,
+   documentation: `Securefact service for business onboarding via FlinksLoginId object.`,
 
    javaImports: [
+     'foam.core.FObject',
      'foam.dao.DAO',
      'foam.nanos.auth.Subject',
      'foam.nanos.auth.User',
      'foam.nanos.logger.Logger',
+     'java.util.ArrayList',
+     'java.util.HashMap',
+     'java.util.List',
+     'java.util.Map',
+     'net.nanopay.crunch.onboardingModels.BusinessDirectorsData',
      'net.nanopay.flinks.external.FlinksLoginId',
      'net.nanopay.meter.compliance.secureFact.SecurefactService',
      'net.nanopay.meter.compliance.secureFact.lev.LEVResponse',
@@ -34,24 +39,32 @@
      'net.nanopay.meter.compliance.secureFact.lev.document.LEVDocumentDataResponse',
      'net.nanopay.meter.compliance.secureFact.lev.document.LEVDocumentOrderResponse',
      'net.nanopay.meter.compliance.secureFact.lev.document.LEVDocumentParty',
-     'net.nanopay.model.Business'
+     'net.nanopay.model.Business',
+     'net.nanopay.model.BusinessDirector'
    ],
 
    methods: [
      {
-       name: 'put_',
+       name: 'onboardLEVParties',
+       type: 'java.util.Map',
+       args: [
+         {
+           name: 'x',
+           type: 'Context'
+         },
+         {
+           name: 'flinksLoginId',
+           type: 'net.nanopay.flinks.external.FlinksLoginId'
+         }
+       ],
        javaCode: `
-        FlinksLoginId flinksLoginId = (FlinksLoginId) obj;
-        DAO businessDAO = (DAO) x.get("localBusinessDAO");
+        DAO capabilityPayloadDAO = (DAO) x.get("capabilityPayloadDAO");
         SecurefactService securefactService = (SecurefactService) x.get("securefactService");
         Business business = flinksLoginId.findBusiness(x);
+        Map<String,FObject> partiesCapabilityDataObjects = new HashMap<>();
 
         if ( business == null ) {
-          User user = flinksLoginId.findUser(x);
-          if (user == null) {
-            user = ((Subject) x.get("subject")).getUser();
-          }
-          business = (Business) businessDAO.find(user.getId());
+          throw new RuntimeException("SecurefactOnboardingService: Business is null from flinksLoginId object.");
         }
 
         try {
@@ -70,12 +83,33 @@
             LEVDocumentOrderResponse orderResponse = securefactService.levDocumentOrder(x, chosenResult.getResultId());
             LEVDocumentDataResponse dataResponse = securefactService.levDocumentData(x, orderResponse.getOrderId());
             LEVDocumentParty[] parties = dataResponse.getParties();
+
+            for ( int i = 0; i < parties.length; i++ ) {
+              LEVDocumentParty party = parties[i];
+              List<BusinessDirector> businessDirectorList = new ArrayList<>();
+              if ( party.getDesignation().equals("Director") ) {
+                BusinessDirector businessDirector = new BusinessDirector.Builder(x)
+                  .setType(party.getType())
+                  .setFirstName(party.getFirstName())
+                  .setLastName(party.getLastName())
+                  .build();
+                businessDirectorList.add(businessDirector);
+              }
+              BusinessDirector[] businessDirectorsArray = new BusinessDirector[businessDirectorList.size()];
+              businessDirectorsArray = businessDirectorList.toArray(businessDirectorsArray);
+              BusinessDirectorsData businessDirectorsData = new BusinessDirectorsData.Builder(x)
+                .setBusinessDirectors(businessDirectorsArray)
+                .build();
+              partiesCapabilityDataObjects.put("Business Directors Data", businessDirectorsData);
+              
+            }
+            // create capabilities, sort parties based on type, (directors/owners)
           }
         } catch (Exception e) {
-          ((Logger) x.get("logger")).warning("SecurefactOnboardingDAO failed.", e);
+          ((Logger) x.get("logger")).warning("SecurefactOnboardingService failed.", e);
         }
         
-        return super.put_(x, flinksLoginId);
+        return partiesCapabilityDataObjects;
        `
      }
    ]
