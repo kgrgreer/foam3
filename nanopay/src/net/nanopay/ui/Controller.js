@@ -758,11 +758,6 @@ foam.CLASS({
 
           var hash = location.hash.substr(1);
   
-          if ( hash == 'sme.main.registration' ) {
-            var ac = this.theme.admissionCapability;
-            this.onboardingUtil.initUserRegistration(ac);
-          }
-  
           try {
             menu = await this.client.menuDAO.find(hash);
           }
