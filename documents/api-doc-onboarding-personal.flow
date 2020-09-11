@@ -15,7 +15,7 @@
     retrieve a large part of the customer data which is available through the customer's bank.
 </p>
 
-<h2>Onboarding Process for User using Flinks</h2>
+<h2>Onboarding Process for Personal Payments using Flinks</h2>
 <p>
     There are several steps to completing onboarding for a user when using the Flinks widget.
     <ol>
@@ -60,6 +60,13 @@ https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31
     However, full user onboarding cannot be completed with the Flinks data alone. Several capabilities will still need to
     be completed in order for onboarding to complete successfully. The missing capabilities are returned in the response
     to the DIG call.
+</p>
+<p>
+    One thing to note here is that if the LoginId has been previously seen by the nanopay system, a new user will not be 
+    created. Instead, the previous user will be found and will be returned in the 'user' property. Users that are found 
+    that have already completed onboarding will be easily identifiable by checking the 'missingUserCapabilityDataObjects' 
+    property, which should return an empty map. Similarly, if the CAD bank account already exists for that user, the it 
+    will be found and the ID will be returned in the 'account' field.
 </p>
 <p>
     In order to start the provisioning process, the loginId has to be passed in to the flinksLoginIdDAO through DIG.
