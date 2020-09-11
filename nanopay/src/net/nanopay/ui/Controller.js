@@ -107,6 +107,7 @@ foam.CLASS({
       height: 100%;
     }
     .stack-wrapper {
+      margin-top: 64px;
       flex-grow: 1;
       /* 70px for topNav || 20px for padding || 40px for footer */
       min-height: calc(100% - 70px - 20px - 40px) !important;

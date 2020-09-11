@@ -41,6 +41,12 @@ foam.CLASS({
   ],
 
   css: `
+    ^ {
+      position: absolute;
+      top: 0;
+      width: 100%;
+    }
+    
     ^ .foam-u2-view-TreeViewRow-label {
       display: inline-flex;
       justify-content: space-between;
