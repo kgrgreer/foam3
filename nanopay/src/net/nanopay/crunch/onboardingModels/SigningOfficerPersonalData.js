@@ -48,15 +48,6 @@ foam.CLASS({
       name: 'signingOfficerAddressSection',
       title: 'Enter the signing officer\'s address',
       help: 'will require your personal address. Used only to confirm your identity.'
-    },
-    {
-      name: 'signingOfficerIdentificationSection',
-      title: 'Enter the signing officer\'s personal identification',
-      help: 'will require some piece of personal identifiaction.',
-      documentation: 'Documentation of the signing officer',
-      isAvailable: function(countryId) {
-        return countryId !== 'CA';
-      }
     }
   ],
 
@@ -154,10 +145,11 @@ foam.CLASS({
         }
       ]
     },
-    foam.nanos.auth.User.PHONE.clone().copyFrom({
+    foam.nanos.auth.User.PHONE_NUMBER.clone().copyFrom({
       section: 'signingOfficerPersonalInformationSection',
-      label: '',
+      label: 'Phone',
       visibility: 'RW',
+      required: true,
       autoValidate: true
     }),
     foam.nanos.auth.User.PEPHIORELATED.clone().copyFrom({
@@ -194,43 +186,14 @@ foam.CLASS({
           [false, 'No']
         ],
         isHorizontal: true
-      }
+      },
+      visibility: 'RW'
     }),
     {
       name: 'businessId',
       class: 'Reference',
       of: 'net.nanopay.model.Business',
       hidden: true
-    },
-    {
-      section: 'signingOfficerIdentificationSection',
-      name: 'signingOfficerIdentification',
-      class: 'FObjectProperty',
-      of: 'net.nanopay.model.PersonalIdentification',
-      factory: function() {
-        return this.PersonalIdentification.create({}, this);
-      },
-      view: {
-        class: 'foam.u2.detail.SectionedDetailView',
-        border: 'foam.u2.borders.NullBorder'
-      },
-      validationPredicates: [
-        {
-          args: ['signingOfficerIdentification', 'signingOfficerIdentification$errors_'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.AND(
-                e.EQ(foam.mlang.IsValid.create({
-                  arg1: net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.SIGNING_OFFICER_IDENTIFICATION
-                }), true),
-                e.NEQ(net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.SIGNING_OFFICER_IDENTIFICATION, null)
-              ),
-              e.EQ(net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.COUNTRY_ID, 'CA')
-            );
-          },
-          errorMessage: 'INVALID_ID_ERROR'
-        }
-      ]
     }
   ],
 

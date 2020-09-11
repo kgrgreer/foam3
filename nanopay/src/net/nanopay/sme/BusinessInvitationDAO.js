@@ -134,7 +134,7 @@ foam.CLASS({
           }
         }
 
-        // Associated the business into the param. Add group type (admin, approver, employee)
+        // Associated the business into the param. Add group type (admin, employee)
         Map tokenParams = new HashMap();
         tokenParams.put("businessId", business.getId());
         tokenParams.put("group", invite.getGroup());

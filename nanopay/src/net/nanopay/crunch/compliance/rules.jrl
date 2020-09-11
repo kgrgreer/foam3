@@ -9,9 +9,19 @@ p({
   "operation":3,
   "after":true,
   "predicate":{
-    "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
-    "category":"signingOfficerOnboarding",
-    "isRecurring":false
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+        "category":"complianceSetting",
+        "isRecurring":false
+      },
+      {
+        "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+        "category":"signingOfficerOnboarding",
+        "isRecurring":false
+      }
+    ]
   },
   "asyncAction":{"class":"net.nanopay.crunch.compliance.SecurefactSIDniValidator"},
   "enabled":true,
@@ -30,8 +40,17 @@ p({
   "operation":3,
   "after":true,
   "predicate":{
-    "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
-    "category":"signingOfficerOnboarding"
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+        "category":"complianceSetting"
+      },
+      {
+        "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+        "category":"signingOfficerOnboarding"
+      }
+    ]
   },
   "asyncAction":{
     "class": "net.nanopay.crunch.compliance.PersonSanctionValidator"
@@ -123,10 +142,21 @@ p({
     "class":"foam.mlang.predicate.Or",
     "args":[
       {
-        "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
-        "category":"signingOfficerOnboarding",
-        "isRecurring":false,
-        "statusChanged":false
+        "class":"foam.mlang.predicate.And",
+        "args":[
+          {
+            "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+            "category":"complianceSetting",
+            "isRecurring":false,
+            "statusChanged":false
+          },
+          {
+            "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+            "category":"signingOfficerOnboarding",
+            "isRecurring":false,
+            "statusChanged":false
+          }
+        ]
       },
       {
         "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
@@ -358,7 +388,7 @@ p({
 
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"crunch-onboard-compliance-4",
+  "id":"7bedc2da-d27f-4f17-a452-50038993898e",
   "name":"Signing Officer user compliance value update",
   "documentation":"For legacy system integration we need to set some properties to User objects.",
   "priority":80,
@@ -367,11 +397,17 @@ p({
   "operation":3,
   "after":true,
   "predicate":{
-    "class":"foam.mlang.predicate.Or",
+    "class":"foam.mlang.predicate.And",
     "args":[
       {
         "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
         "category":"signingOfficerOnboarding",
+        "isRecurring":false,
+        "status": 1
+      },
+      {
+        "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+        "category":"complianceSetting",
         "isRecurring":false,
         "status": 1
       }
@@ -387,7 +423,7 @@ p({
 
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"crunch-onboard-compliance-5",
+  "id":"12b0c9d0-eeb9-4b26-9d8d-95ddd19dfb1e",
   "name":"Onboarded user compliance value update",
   "documentation":"For legacy system integration we need to set some properties to User objects.",
   "priority":80,
@@ -396,15 +432,10 @@ p({
   "operation":3,
   "after":true,
   "predicate":{
-    "class":"foam.mlang.predicate.Or",
-    "args":[
-      {
-        "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
-        "category":"onboarding",
-        "isRecurring":false,
-        "status": 1
-      }
-    ]
+    "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+    "category":"onboarding",
+    "isRecurring":false,
+    "status": 1
   },
   "asyncAction":{
     "class":"net.nanopay.crunch.compliance.SetComplianceOnBusiness"

@@ -83,11 +83,11 @@ foam.CLASS({
       Logger logger = (Logger) x.get("logger");
       Transaction request = quote.getRequestTransaction();
       logger.debug(this.getClass().getSimpleName(), "put", quote);
-  
+
       Account sourceAccount = request.findSourceAccount(x);
       Account destinationAccount = request.findDestinationAccount(x);
       Boolean isUSDCAD = null;
-  
+
       // Check if AFEX can handle this transaction
 
       if ( sourceAccount instanceof USBankAccount && destinationAccount instanceof CABankAccount ) {
@@ -121,7 +121,7 @@ foam.CLASS({
             return getDelegate().put_(x, quote);
           }
         // }
-  
+
         if ( isUSDCAD ) {
           return createUSDCAD(x, quote, sourceAccount, destinationAccount);
         } else {
@@ -243,7 +243,7 @@ foam.CLASS({
       FXService fxService = CurrencyFXService.getFXServiceByNSpecId(x, sourceCurrency, destinationCurrency, AFEX_SERVICE_NSPEC_ID);
       AFEXServiceProvider afexService = (AFEXServiceProvider) fxService;
       FXQuote fxQuote = new FXQuote.Builder(x).build();
-      
+
       fxQuote = afexService.getFXRate(sourceCurrency, destinationCurrency, amount , destinationAmount,
         null, null, sourceAccount.getOwner(), null);
       if ( fxQuote != null && fxQuote.getId() > 0 ) {
@@ -262,6 +262,11 @@ foam.CLASS({
         .build();
         ((DAO) x.get("localNotificationDAO")).put(notification);
         ((Logger) x.get("logger")).error("Error sending GetQuote to AFEX.", t);
+        ((DAO) x.get("alarmDAO")).put(new Alarm.Builder(x)
+          .setName("Unable to get FX quotes")
+          .setReason(AlarmReason.CREDENTIALS)
+          .setNote(message)
+          .build());
     }
     return null;
     `
@@ -275,7 +280,7 @@ foam.CLASS({
 protected AFEXTransaction createAFEXTransaction(foam.core.X x, FXQuote fxQuote, long invoiceAmount, long destinationAmount ) {
 
   AFEXTransaction afexTransaction = new AFEXTransaction.Builder(x).build();
- 
+
   afexTransaction.setFxExpiry(fxQuote.getExpiryTime());
   afexTransaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
   afexTransaction.setFxRate(fxQuote.getRate());
@@ -286,7 +291,7 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, FXQuote fxQuote, 
   fees.setTotalFeesCurrency(fxQuote.getFeeCurrency());
   afexTransaction.addLineItems( new TransactionLineItem[] {new FeeLineItem.Builder(x).setGroup("fx").setAmount(fxQuote.getFee()).setCurrency(fxQuote.getFeeCurrency()).build()} );
   afexTransaction.setFxFees(fees);
-  
+
   afexTransaction.setIsQuoted(true);
  // afexTransaction.setPaymentMethod(fxQuote.getPaymentMethod());
 
@@ -294,7 +299,7 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, FXQuote fxQuote, 
   afexTransaction.setSourceCurrency(fxQuote.getSourceCurrency());
   afexTransaction.setDestinationAmount(fxQuote.getTargetAmount());
   afexTransaction.setDestinationCurrency(fxQuote.getTargetCurrency());
-  
+
   if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()))
   {
     afexTransaction.setAccepted(true);

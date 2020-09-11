@@ -29,7 +29,7 @@ p({
         "visible": true
       },
       {
-        // TODO: remove of just keeping it here for test
+        // TODO: Leave of until we allow having off'less wizardlets where createView !== null
         "class": "foam.nanos.crunch.MinMaxCapability",
         "id": guid + "-120",
         "name": "MinMax Prerequisite",
@@ -40,14 +40,50 @@ p({
         "enabled": true,
         "visible": true
       },
-      ...(['A','B','C','D','E','F'].map(letter => ({
+      ...(['A','B','C','D','E'].map(letter => ({
         "id": guid + "-120-" + letter,
         "name": "MinMax Prerequisite " + letter,
         "of": "foam.nanos.cron.TimeHMS",
         "version": "0",
         "enabled": true,
         "visible": true
-      })))
+      }))),
+      ...(['A','B'].map(letter => ({
+        "id": guid + "-120-A" + letter,
+        "name": "MinMax Prerequisite A" + letter,
+        "of": "foam.nanos.cron.TimeHMS",
+        "version": "0",
+        "enabled": true,
+        "visible": true
+      }))),
+      ...(['A','B'].map(letter => ({
+        "id": guid + "-120-AA" + letter,
+        "name": "MinMax Prerequisite AA" + letter,
+        "of": "foam.nanos.cron.TimeHMS",
+        "version": "0",
+        "enabled": true,
+        "visible": true
+      }))),
+      {
+        // TODO: Leave of until we allow having off'less wizardlets where createView !== null
+        "class": "foam.nanos.crunch.MinMaxCapability",
+        "id": guid + "-120-F",
+        "name": "MinMax Prerequisite F",
+        "of": "foam.nanos.cron.TimeHMS",
+        "min": 1,
+        "max": 2,
+        "version": "0",
+        "enabled": true,
+        "visible": true
+      },
+      ...(['A','B','C','D'].map(letter => ({
+        "id": guid + "-120-F" + letter,
+        "name": "MinMax Prerequisite F" + letter,
+        "of": "foam.nanos.cron.TimeHMS",
+        "version": "0",
+        "enabled": true,
+        "visible": true
+      }))),
     ];
     
     var prereqs = [
@@ -62,6 +98,18 @@ p({
       ...(['A','B','C','D','E','F'].map(letter => ({
         "sourceId": guid + "-120",
         "targetId": guid + "-120-" + letter
+      }))),
+      ...(['A','B'].map(letter => ({
+        "sourceId": guid + "-120-A",
+        "targetId": guid + "-120-A" + letter
+      }))),
+      ...(['A','B'].map(letter => ({
+        "sourceId": guid + "-120-AA",
+        "targetId": guid + "-120-AA" + letter
+      }))),
+      ...(['A','B','C','D'].map(letter => ({
+        "sourceId": guid + "-120-F",
+        "targetId": guid + "-120-F" + letter
       })))
     ];
 

@@ -168,6 +168,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/FxSummaryTransactionLineItem' },
   { name: 'net/nanopay/tx/EtaSummaryTransactionLineItem' },
   { name: 'net/nanopay/tx/planner/SummaryLineItemRule' },
+  { name: 'net/nanopay/tx/planner/SummaryTotalRateLineItemRule' },
 
   { name: 'net/nanopay/model/BusinessSector' },
   { name: 'net/nanopay/model/BusinessType' },
@@ -662,6 +663,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ReferenceLineItem' },
   { name: 'net/nanopay/tx/ReferenceLineItemCitationView' },
   { name: 'net/nanopay/fx/FXLineItem' },
+  { name: 'net/nanopay/fx/TotalRateLineItem' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantFXFeeLineItem' },
   { name: 'net/nanopay/fx/ascendantfx/AscendantUserPayeeJunction' },
   { name: 'net/nanopay/tx/cico/VerificationTransaction' },
@@ -1538,6 +1540,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/fee/FixedFee' },
   { name: 'net/nanopay/tx/fee/InformationalFee' },
   { name: 'net/nanopay/tx/fee/PercentageFee' },
+  { name: 'net/nanopay/tx/fee/Rate' },
   { name: 'net/nanopay/tx/fee/SpotRate' },
   { name: 'net/nanopay/tx/fee/TransactionFeeRule' },
   { name: 'net/nanopay/tx/fee/Relationships' },
@@ -1661,6 +1664,7 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/tx/planner/TrevisoTransactionPlanner' },
   { name: 'net/nanopay/partner/treviso/tx/TrevisoCreateExchange' },
   { name: 'net/nanopay/partner/treviso/tx/TrevisoSummaryLineItemRule' },
+  { name: 'net/nanopay/partner/treviso/TrevisoUnlockPaymentTermsAndConditions' },
 
   // crunch document
   { name: 'net/nanopay/crunch/document/Documents' },

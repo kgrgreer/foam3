@@ -158,7 +158,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targ
 
 // QBO Business group permissions
 p({class:"foam.nanos.auth.GroupPermissionJunction",s:"smallbusiness8025.employee",t:"invoice.holdingAccount"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",s:"smallbusiness8025.approver",t:"invoice.pay"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"smallbusiness8025.admin",t:"invoice.pay"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",s:"smallbusiness8025.admin",t:"business.add.smallbusiness8025.*"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",s:"smallbusiness8025.admin",t:"business.read.smallbusiness8025.*"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",s:"smallbusiness8025.admin",t:"business.remove.smallbusiness8025.*"})
@@ -172,7 +172,7 @@ p({class:"foam.nanos.auth.GroupPermissionJunction",s:"smallbusiness8025.admin",t
 
 // Tiny Business
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"tinybusiness8033.employee",targetId:"invoice.holdingAccount"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"tinybusiness8033.approver",targetId:"invoice.pay"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"tinybusiness8033.admin",targetId:"invoice.pay"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"tinybusiness8033.admin",targetId:"business.add.tinybusiness8033.*"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"tinybusiness8033.admin",targetId:"business.read.tinybusiness8033.*"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"tinybusiness8033.admin",targetId:"business.remove.tinybusiness8033.*"})
@@ -185,7 +185,7 @@ p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"tinybusiness8033.em
 
 // Initech
 p({class:"foam.nanos.auth.GroupPermissionJunction",s:"initech8029.employee",t:"invoice.holdingAccount"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",s:"initech8029.approver",t:"invoice.pay"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"initech8029.admin",t:"invoice.pay"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",s:"initech8029.admin",t:"business.add.initech8029.*"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",s:"initech8029.admin",t:"business.read.initech8029.*"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",s:"initech8029.admin",t:"business.remove.initech8029.*"})

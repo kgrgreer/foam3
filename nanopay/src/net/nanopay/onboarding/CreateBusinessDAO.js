@@ -81,7 +81,6 @@ foam.CLASS({
         String safeBusinessName = business.getBusinessPermissionId();
     
         Group adminTemplateGroup = (Group) getGroupDAO().find("smeBusinessAdmin");
-        Group approverTemplateGroup = (Group) getGroupDAO().find("smeBusinessApprover");
         Group employeeTemplateGroup = (Group) getGroupDAO().find("smeBusinessEmployee");
     
         Group employeeGroup = new Group();
@@ -91,17 +90,10 @@ foam.CLASS({
         employeeGroup = (Group) getGroupDAO().put(employeeGroup);
         generatePermissions(x, employeeTemplateGroup, employeeGroup, safeBusinessName);
     
-        Group approverGroup = new Group();
-        approverGroup.copyFrom(approverTemplateGroup);
-        approverGroup.setId(safeBusinessName + ".approver");
-        approverGroup.setParent(safeBusinessName + ".employee");
-        approverGroup = (Group) getGroupDAO().put(approverGroup);
-        generatePermissions(x, approverTemplateGroup, approverGroup, safeBusinessName);
-    
         Group adminGroup = new Group();
         adminGroup.copyFrom(adminTemplateGroup);
         adminGroup.setId(safeBusinessName + ".admin");
-        adminGroup.setParent(safeBusinessName + ".approver");
+        adminGroup.setParent(safeBusinessName + ".employee");
         adminGroup = (Group) getGroupDAO().put(adminGroup);
         generatePermissions(x, adminTemplateGroup, adminGroup, safeBusinessName);
     

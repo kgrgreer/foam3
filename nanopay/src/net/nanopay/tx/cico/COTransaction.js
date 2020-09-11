@@ -25,6 +25,7 @@ foam.CLASS({
     'foam.nanos.auth.LifecycleState',
     'foam.nanos.logger.Logger',
     'net.nanopay.account.Account',
+    'net.nanopay.account.TrustAccount',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.tx.model.Transaction',
@@ -120,6 +121,16 @@ foam.CLASS({
           logger.error("Unable to update COTransaction, if transaction status is accepted or declined. Transaction id: " + getId());
           throw new RuntimeException("Unable to update COTransaction, if transaction status is accepted or declined. Transaction id: " + getId());
         }
+      `
+    },
+    {
+      name: 'getTotal',
+      javaCode: `
+        DAO accountDAO = (DAO) x.get("localAccountDAO");
+        Account a = (Account) accountDAO.find(accountNumber);
+        if (a != null && a instanceof BankAccount)
+          return super.getTotal(x, TrustAccount.find(x, a).getId() );
+        return super.getTotal(x, accountNumber);
       `
     },
     {

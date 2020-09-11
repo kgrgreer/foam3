@@ -25,6 +25,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'java.util.ArrayList',
     'java.util.List',
+    'net.nanopay.account.Account',
     'net.nanopay.account.TrustAccount',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
@@ -121,6 +122,16 @@ foam.CLASS({
           throw new RuntimeException("Unable to update CITransaction, if transaction status is accepted or declined. Transaction id: " + getId());
         }
       `
-    }
+    },
+    {
+      name: 'getTotal',
+      javaCode: `
+        DAO accountDAO = (DAO) x.get("localAccountDAO");
+        Account a = (Account) accountDAO.find(accountNumber);
+        if (a != null && a instanceof BankAccount)
+          return - super.getTotal(x, TrustAccount.find(x, a).getId() );
+        return super.getTotal(x, accountNumber);
+      `
+    },
   ]
 });

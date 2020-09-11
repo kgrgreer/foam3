@@ -129,7 +129,7 @@ p({
   "daoKey": "transactionPlannerDAO",
   "operation": 0,
   "after": true,
-  "priority": 100,
+  "priority": 90,
   "predicate": {
     "class":"foam.mlang.predicate.And",
     "args":[

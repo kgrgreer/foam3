@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="280px" height="161px" viewBox="0 0 280 161" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>Group</title>
+    <defs>
+        <path d="M3,0 L269,0 C270.656854,-3.04359188e-16 272,1.34314575 272,3 L272,150 C272,151.656854 270.656854,153 269,153 L142.26762,153 L142.26762,153 L137.846188,153 L3,153 C1.34314575,153 6.46995335e-16,151.656854 0,150 L0,3 C-2.02906125e-16,1.34314575 1.34314575,3.04359188e-16 3,0 Z" id="path-1"></path>
+        <filter x="-2.2%" y="-3.3%" width="104.4%" height="107.8%" filterUnits="objectBoundingBox" id="filter-3">
+            <feMorphology radius="1" operator="dilate" in="SourceAlpha" result="shadowSpreadOuter1"></feMorphology>
+            <feOffset dx="0" dy="1" in="shadowSpreadOuter1" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="1.5" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.08 0" type="matrix" in="shadowBlurOuter1"></feColorMatrix>
+        </filter>
+    </defs>
+    <g id="Ablii" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Group" transform="translate(4.000000, 3.000000)">
+            <mask id="mask-2" fill="white">
+                <use xlink:href="#path-1"></use>
+            </mask>
+            <g id="Mask">
+                <use fill="black" fill-opacity="1" filter="url(#filter-3)" xlink:href="#path-1"></use>
+                <path stroke="#E7EAEC" stroke-width="1" d="M269,-0.5 C269.966498,-0.5 270.841498,-0.108249156 271.474874,0.525126266 C272.108249,1.15850169 272.5,2.03350169 272.5,3 L272.5,3 L272.5,150 C272.5,150.966498 272.108249,151.841498 271.474874,152.474874 C270.841498,153.108249 269.966498,153.5 269,153.5 L269,153.5 L3,153.5 C2.03350169,153.5 1.15850169,153.108249 0.525126266,152.474874 C-0.108249156,151.841498 -0.5,150.966498 -0.5,150 L-0.5,150 L-0.5,3 C-0.5,2.03350169 -0.108249156,1.15850169 0.525126266,0.525126266 C1.15850169,-0.108249156 2.03350169,-0.5 3,-0.5 L3,-0.5 Z" fill="#FFFFFF" fill-rule="evenodd"></path>
+            </g>
+            <g mask="url(#mask-2)" fill="#CBCFD4" id="Oval">
+                <g transform="translate(7.000000, -49.000000)">
+                    <circle opacity="0.0816127232" cx="129" cy="129" r="129"></circle>
+                    <circle opacity="0.1585984" cx="129.5" cy="129.5" r="104.5"></circle>
+                    <circle opacity="0.239465" cx="129" cy="129" r="75"></circle>
+                    <circle cx="129.5" cy="129.5" r="49.5"></circle>
+                </g>
+            </g>
+            <text id="🏢" mask="url(#mask-2)" font-family="AppleColorEmoji, Apple Color Emoji" font-size="56" font-weight="normal" line-spacing="45" fill="#1E1F21">
+                <tspan x="109" y="100">🏢</tspan>
+            </text>
+        </g>
+    </g>
+</svg>

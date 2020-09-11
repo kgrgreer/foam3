@@ -67,7 +67,6 @@ foam.CLASS({
     'net.nanopay.sme.ui.TwoFactorSignInView',
     'net.nanopay.sme.ui.VerifyEmailView',
     'net.nanopay.ui.banner.BannerData',
-    'net.nanopay.ui.banner.BannerMode',
     'net.nanopay.ui.ConnectSubMenu',
     'net.nanopay.ui.modal.ModalStyling',
     'net.nanopay.ui.modal.SessionTimeoutModal',
@@ -179,50 +178,6 @@ foam.CLASS({
 
   messages: [
     {
-      name: 'COMPLIANCE_NOT_REQUESTED_NO_BANK',
-      message: 'Please complete your business profile and add a bank account.'
-    },
-    {
-      name: 'COMPLIANCE_NOT_REQUESTED_BANK_NEED_VERIFY',
-      message: 'Please verify your bank account and complete your business profile to submit your account for review.'
-    },
-    {
-      name: 'COMPLIANCE_NOT_REQUESTED_BANK_VERIFIED',
-      message: 'Please complete your business profile to submit your account for review.'
-    },
-    {
-      name: 'COMPLIANCE_REQUESTED_NO_BANK',
-      message: 'Please add a bank account to submit your account for review.'
-    },
-    {
-      name: 'COMPLIANCE_REQUESTED_BANK_NEED_VERIFY',
-      message: 'Please verify your bank account to submit your account for review.'
-    },
-    {
-      name: 'COMPLIANCE_PASSED_NO_BANK',
-      message: 'Please add a bank account.'
-    },
-    {
-      name: 'COMPLIANCE_PASSED_BANK_NEED_VERIFY',
-      message: 'Please verify your bank account.'
-    },
-    {
-      name: 'BUSINESS_INFO_UNDER_REVIEW',
-      message: 'Our compliance team is reviewing the information you have submitted. Your account will be updated in 1-3 business days.'
-    },
-    {
-      name: 'PASSED_BANNER',
-      message: 'Congratulations, your business is now fully verified! You\'re now ready to make domestic payments!'
-    },
-    {
-      name: 'PASSED_BANNER_DOMESTIC_US',
-      message: 'Congratulations, your business is now fully verified! You\'re now ready to send and receive payments between Canada and the US!'
-    },
-    {
-      name: 'PASSED_BANNER_INTERNATIONAL',
-      message: 'Congratulations, your business is now fully verified! You\'re now ready to make domestic and international payments to USA!'
-    },
-    {
       name: 'TWO_FACTOR_REQUIRED_ONE',
       message: 'For your security, two factor authentication is required to send payment.'
     },
@@ -231,16 +186,8 @@ foam.CLASS({
       message: 'Click here to set up.'
     },
     {
-      name: 'HAS_NOT_PASSED_COMPLIANCE',
-      message: `Our team is reviewing your account. Once it is approved, you can complete this action.`
-    },
-    {
       name: 'QUERY_BANK_AMOUNT_ERROR',
       message: 'An unexpected error occurred while counting the number of bank accounts the user has: '
-    },
-    {
-      name: 'ADDED_TO_BUSINESS_1',
-      message: `You've been successfully added to `
     },
     {
       name: 'ABILITY_TO_PAY_ERROR',
@@ -257,10 +204,6 @@ foam.CLASS({
     {
       name: 'QUERY_SIGNING_OFFICERS_ERROR',
       message: 'An unexpected error occurred while querying signing officers: '
-    },
-    {
-      name: 'SELECT_BUSINESS_WARNING',
-      message: 'Please select a business before proceeding'
     },
     {
       name: 'INVALID_TOKEN_ERROR_TITLE',
@@ -398,155 +341,6 @@ foam.CLASS({
       class: 'Boolean',
       name: 'sme',
       value: false
-    },
-    {
-      class: 'Array',
-      name: 'complianceStatusArray',
-      documentation: `
-        A customized array contains objects for the toast notification
-        and banner to handle different cases of the business onboarding status
-        and the bank account status.
-      `,
-      factory: function() {
-        var self = this;
-        return [
-          {
-            msg: this.COMPLIANCE_NOT_REQUESTED_NO_BANK,
-            bannerMode: this.BannerMode.NOTICE,
-            condition: function(user, accountArray) {
-              return user.compliance === self.ComplianceStatus.NOTREQUESTED
-                && accountArray.length === 0;
-            },
-            passed: false,
-            showBanner: true
-          },
-          {
-            msg: this.COMPLIANCE_NOT_REQUESTED_BANK_NEED_VERIFY,
-            bannerMode: this.BannerMode.NOTICE,
-            condition: function(user, accountArray, verifiedAccount) {
-              return accountArray.length > 0
-                && user.compliance === self.ComplianceStatus.NOTREQUESTED
-                && ! verifiedAccount;
-            },
-            passed: false,
-            showBanner: true
-          },
-          {
-            msg: this.COMPLIANCE_NOT_REQUESTED_BANK_VERIFIED,
-            bannerMode: this.BannerMode.NOTICE,
-            condition: function(user, accountArray, verifiedAccount) {
-              return accountArray.length > 0
-                && user.compliance === self.ComplianceStatus.NOTREQUESTED
-                && verifiedAccount;
-            },
-            passed: false,
-            showBanner: true
-          },
-          {
-            msg: this.COMPLIANCE_REQUESTED_NO_BANK,
-            bannerMode: this.BannerMode.NOTICE,
-            condition: function(user, accountArray) {
-              return user.compliance === self.ComplianceStatus.REQUESTED
-                && accountArray.length === 0;
-            },
-            passed: false,
-            showBanner: true
-          },
-          {
-            msg: this.COMPLIANCE_REQUESTED_BANK_NEED_VERIFY,
-            bannerMode: this.BannerMode.NOTICE,
-            condition: function(user, accountArray, verifiedAccount) {
-              return accountArray.length > 0
-                && user.compliance === self.ComplianceStatus.REQUESTED
-                && ! verifiedAccount;
-            },
-            passed: false,
-            showBanner: true
-          },
-          {
-            msg: this.COMPLIANCE_PASSED_NO_BANK,
-            bannerMode: this.BannerMode.NOTICE,
-            condition: function(user, accountArray) {
-              return accountArray.length === 0
-                && user.compliance === self.ComplianceStatus.PASSED;
-            },
-            passed: false,
-            showBanner: true
-          },
-          {
-            msg: this.COMPLIANCE_PASSED_BANK_NEED_VERIFY,
-            bannerMode: this.BannerMode.NOTICE,
-            condition: function(user, accountArray, verifiedAccount) {
-              return accountArray.length > 0
-                && user.compliance === self.ComplianceStatus.PASSED
-                && ! verifiedAccount;
-            },
-            passed: false,
-            showBanner: true
-          },
-          {
-            msg: this.BUSINESS_INFO_UNDER_REVIEW,
-            bannerMode: this.BannerMode.NOTICE,
-            condition: function(user, accountArray, verifiedAccount) {
-              return accountArray.length > 0
-                && user.compliance === self.ComplianceStatus.REQUESTED
-                && verifiedAccount;
-            },
-            passed: false,
-            showBanner: true
-          },
-          {
-            msg: this.PASSED_BANNER,
-            bannerMode: this.BannerMode.ACCOMPLISHED,
-            condition: function(user, accountArray, verifiedAccount) {
-              return accountArray.length > 0
-              && user.compliance === self.ComplianceStatus.PASSED
-              && verifiedAccount
-              && user.address.countryId === 'CA'
-              && ! self.caUsOnboardingComplete;
-            },
-            passed: true,
-            showBanner: true
-          },
-          {
-            msg: this.PASSED_BANNER_INTERNATIONAL,
-            bannerMode: this.BannerMode.ACCOMPLISHED,
-            condition: function(user, accountArray, verifiedAccount) {
-              return accountArray.length > 0
-              && user.compliance === self.ComplianceStatus.PASSED
-              && verifiedAccount
-              && user.address.countryId === 'CA'
-              && self.caUsOnboardingComplete;
-            },
-            passed: true,
-            showBanner: true
-          },
-          {
-            msg: this.PASSED_BANNER_DOMESTIC_US,
-            bannerMode: this.BannerMode.ACCOMPLISHED,
-            condition: function(user, accountArray, verifiedAccount) {
-              return accountArray.length > 0
-                && user.compliance === self.ComplianceStatus.PASSED
-                && verifiedAccount
-                && user.address.countryId === 'US';
-            },
-            passed: true,
-            showBanner: true
-          },
-          {
-            msg: this.PASSED_BANNER_DOMESTIC_US,
-            bannerMode: this.BannerMode.ACCOMPLISHED,
-            condition: function(user, accountArray, verifiedAccount) {
-              return accountArray.length > 0
-                && user.compliance === self.ComplianceStatus.PASSED
-                && verifiedAccount
-                && user.address.countryId === 'BR';
-            },
-            passed: true,
-            showBanner: true
-          }
-        ];
-      }
     }
   ],
 
@@ -780,19 +574,6 @@ foam.CLASS({
         var signingOfficers = await this.getSigningOfficersArray(user);
         this.coalesceUserAndSigningOfficersCompliance(user, signingOfficers);
       }
-
-      /*
-       * Get the complianceStatus object from the complianceStatusArray
-       * when it matches the condition of business onboarding status
-       * and bank account status, also when showBanner is true.
-       */
-      var bannerElement = this.complianceStatusArray.find((complianceStatus) => {
-        return complianceStatus.condition(user, accountArray, this.verifiedAccount) && complianceStatus.showBanner;
-      });
-
-      if ( bannerElement ) {
-        this.setBanner(bannerElement.bannerMode, bannerElement.msg);
-      }
     },
 
     async function checkComplianceAndBanking() {
@@ -811,19 +592,7 @@ foam.CLASS({
           }
         }
       }
-
-      var toastElement = this.complianceStatusArray.find((complianceStatus) => {
-        return complianceStatus.condition(user, accountArray, this.verifiedAccount);
-      });
-
-      if ( toastElement ) {
-        if ( ! toastElement.passed ) {
-          this.notify(toastElement.msg, '', this.LogLevel.WARN, true);
-        }
-        return toastElement.passed;
-      } else {
-        return false;
-      }
+      return true;
     },
 
     /**
@@ -988,11 +757,6 @@ foam.CLASS({
           }
 
           var hash = location.hash.substr(1);
-  
-          if ( hash == 'sme.main.registration' ) {
-            var ac = this.theme.admissionCapability;
-            this.onboardingUtil.initUserRegistration(ac);
-          }
   
           try {
             menu = await this.client.menuDAO.find(hash);

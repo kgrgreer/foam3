@@ -38,6 +38,7 @@ p({
   "associatedEntity":2,
   "permissionsGranted":[
     "certifydatareviewed.rw.reviewed",
+    "invoice.pay",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifyownerspercent.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.dualpartyagreementcad.section.reviewAgreementDocumentsSection",
@@ -57,6 +58,7 @@ p({
   ],
   "permissionsIntercepted": [
     "certifydatareviewed.rw.reviewed",
+    "invoice.pay",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifyownerspercent.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.dualpartyagreementcad.section.reviewAgreementDocumentsSection",
@@ -114,6 +116,7 @@ p({
   "associatedEntity":2,
   "permissionsGranted":[
     "certifydatareviewed.rw.reviewed",
+    "invoice.pay",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifyownerspercent.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.dualpartyagreementcad.section.reviewAgreementDocumentsSection",
@@ -133,6 +136,7 @@ p({
   ],
   "permissionsIntercepted": [
     "certifydatareviewed.rw.reviewed",
+    "invoice.pay",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifyownerspercent.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.dualpartyagreementcad.section.reviewAgreementDocumentsSection",
@@ -339,35 +343,9 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
-  "name":"Unlock International & Domestic Payments and Invoicing",
-  "description":"Unlock payments in brazil",
-  "icon":"/images/capabilityIcons/BrazilCap.svg",
-  "version":"0",
-  "enabled":true,
-  "visible":true,
-  "reviewRequired":true,
-  "keywords":["featured"],
-  "availabilityPredicate": {
-    "class":"foam.mlang.predicate.And",
-    "args": [
-      { "class":"net.nanopay.crunch.onboardingModels.IsBusiness" },
-      {
-        "class":"net.nanopay.crunch.onboardingModels.CheckUserCountry",
-        "country":"BR"
-      }
-    ]
-  },
-  "wizardletConfig": {
-    "class": "net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig",
-    "allowSkipping": false
-  }
-})
-
-p({
-  "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-18",
   "name":"Nanopay Admission",
+  "description": "User registration",
   "version":"0",
   "icon":"images/nanopay_logo_blue.png",
   "enabled":true,
@@ -397,7 +375,7 @@ p({
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-76",
   "name":"Business Registration",
   "description":"Create a business to access payments and invoice on the platform.",
-  "icon":"/images/capabilityIcons/CADOnboardCap.svg",
+  "icon":"/images/capabilityIcons/BusinessRegistrationCap.svg",
   "of":"net.nanopay.crunch.onboardingModels.InitialBusinessData",
   "version":"0",
   "enabled":true,

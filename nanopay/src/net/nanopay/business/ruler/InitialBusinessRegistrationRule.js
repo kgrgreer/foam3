@@ -63,6 +63,8 @@ foam.CLASS({
           DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
           User user = ((Subject) x.get("subject")).getUser();
 
+          if ( ucj.getStatus() != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) return;
+
           InitialBusinessData businessCapabilityData = (InitialBusinessData) ((UserCapabilityJunction) obj).getData();
 
           //check if business already exist, if it is, update it
