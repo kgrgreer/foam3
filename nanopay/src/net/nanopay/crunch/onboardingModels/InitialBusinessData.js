@@ -192,11 +192,14 @@ foam.CLASS({
       autoValidate: false,
       validationPredicates: [
         {
-          args: ['mailingAddress', 'mailingAddress$errors_'],
+          args: ['mailingAddress', 'mailingAddress$errors_', 'sameAsBusinessAddress'],
           predicateFactory: function(e) {
-            return e.EQ(foam.mlang.IsValid.create({
-                arg1: net.nanopay.crunch.onboardingModels.InitialBusinessData.MAILING_ADDRESS
-              }), true);
+            return e.OR(
+              e.EQ(net.nanopay.crunch.onboardingModels.InitialBusinessData.SAME_AS_BUSINESS_ADDRESS, true),
+              e.EQ(foam.mlang.IsValid.create({
+                  arg1: net.nanopay.crunch.onboardingModels.InitialBusinessData.MAILING_ADDRESS
+                }), true)
+            );
           },
           errorMessage: 'INVALID_ADDRESS_ERROR'
         }
