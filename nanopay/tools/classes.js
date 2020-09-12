@@ -1257,6 +1257,11 @@ var classes = [
   'net.nanopay.crunch.document.Documents',
   'net.nanopay.crunch.document.Document',
 
+  // crunch wizardlet
+  'net.nanopay.crunch.wizardlet.SigningOfficerQuestionWizardlet',
+  'net.nanopay.crunch.wizardlet.RefreshWizardlet',
+  'net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig',
+
   // Notification
   'net.nanopay.notification.TriggerNotificationTestAction',
   'net.nanopay.notification.TriggerDoNotifyTestAction',
