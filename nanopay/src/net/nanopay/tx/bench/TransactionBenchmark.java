@@ -42,6 +42,7 @@ import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.tx.planner.AbstractTransactionPlanner;
 import net.nanopay.tx.planner.DigitalTransactionPlanner;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.TransactionQuote;
 import net.nanopay.tx.planner.PlannerGroup;
 
 import static foam.mlang.MLang.*;
@@ -72,6 +73,7 @@ public class TransactionBenchmark
   protected DAO ruleDAO_;
   protected DAO ruleGroupDAO_;
   protected DAO transactionDAO_;
+  protected DAO plannerDAO_;
   protected DAO userDAO_;
   protected Long MAX_USERS = 100L;
   protected Long STARTING_BALANCE = 100000L;
@@ -168,6 +170,7 @@ public class TransactionBenchmark
     ruleGroupDAO_ = (DAO) x.get("ruleGroupDAO");
     accountDAO_ = (DAO)x.get("localAccountDAO");
     transactionDAO_ = (DAO) x.get("localTransactionDAO");
+    plannerDAO_ = (DAO) x.get("localTransactionPlannerDAO");
     userDAO_ = (DAO) x.get("localUserDAO");
 
     User admin = (User) userDAO_.find(1L);
@@ -341,7 +344,15 @@ public class TransactionBenchmark
       transaction.setDestinationAccount(payeeAccount.getId());
       PM pm = new PM(this.getClass().getSimpleName(), "execute");
       try {
+        TransactionQuote quote = new TransactionQuote();
+        quote.setRequestTransaction(transaction);
+        PM quotePm = new PM(this.getClass().getSimpleName(), "quote");
+        quote = (TransactionQuote) plannerDAO_.put(quote);
+        transaction = quote.getPlan();
+        quotePm.log(x);
+        PM txnPm = new PM(this.getClass().getSimpleName(), "transaction");
         transactionDAO_.put(transaction);
+        txnPm.log(x);
       } catch (RuntimeException e) {
         System.out.println(e.getMessage());
         e.printStackTrace();
