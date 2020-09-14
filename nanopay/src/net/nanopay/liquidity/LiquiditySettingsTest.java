@@ -45,7 +45,7 @@ public class LiquiditySettingsTest
     // Cash-Out to self will not trigger Liquidity
     Transaction co = createPendingCashOut(x, (Account) senderDigitalDefault, (Account) senderBankAccount_, CASH_OUT_AMOUNT);
     //DAO approvalDAO = (DAO) x_.get("approvalRequestDAO");
-    //ApprovalRequest request = (ApprovalRequest) approvalDAO.find(AND(EQ(ApprovalRequest.OBJ_ID, co.getId()), EQ(ApprovalRequest.DAO_KEY, "localTransactionDAO"))).fclone();
+    //ApprovalRequest request = (ApprovalRequest) approvalDAO.find(AND(EQ(ApprovalRequest.OBJ_ID, co.getId()), EQ(ApprovalRequest.SERVER_DAO_KEY, "localTransactionDAO"))).fclone();
     //request.setStatus(ApprovalStatus.APPROVED);
     //approvalDAO.put_(x_, request);
     balance = (Long)senderDigitalDefault.findBalance(x);
@@ -163,7 +163,7 @@ public class LiquiditySettingsTest
     test(SafetyUtil.equals(balance, CASH_IN_AMOUNT+high.getResetBalance()), "testAffectOfCICO: Cash-In, expecting: "+CASH_IN_AMOUNT+high.getResetBalance()+", found: "+balance);
     Transaction co = createPendingCashOut(x, (Account) senderDigitalDefault, (Account) senderBankAccount_, CASH_OUT_AMOUNT);
     //DAO approvalDAO = (DAO) x_.get("approvalRequestDAO");
-    //ApprovalRequest request = (ApprovalRequest) approvalDAO.find(AND(EQ(ApprovalRequest.OBJ_ID, co.getId()), EQ(ApprovalRequest.DAO_KEY, "localTransactionDAO"))).fclone();
+    //ApprovalRequest request = (ApprovalRequest) approvalDAO.find(AND(EQ(ApprovalRequest.OBJ_ID, co.getId()), EQ(ApprovalRequest.SERVER_DAO_KEY, "localTransactionDAO"))).fclone();
     //request.setStatus(ApprovalStatus.APPROVED);
     //approvalDAO.put_(x_, request);
 

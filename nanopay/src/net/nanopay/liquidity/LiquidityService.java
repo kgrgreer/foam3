@@ -298,7 +298,7 @@ public class LiquidityService
       if ( tx instanceof ComplianceTransaction &&
         ( ( (AppConfig) x_.get("appConfig") ).getMode() == Mode.TEST || ( (AppConfig) x_.get("appConfig") ).getMode() == Mode.DEVELOPMENT ) ) {
         DAO approvalDAO = (DAO) x_.get("approvalRequestDAO");
-        ApprovalRequest request = (ApprovalRequest) approvalDAO.find(AND(EQ(ApprovalRequest.OBJ_ID, tx.getId()), EQ(ApprovalRequest.DAO_KEY, "localTransactionDAO"))).fclone();
+        ApprovalRequest request = (ApprovalRequest) approvalDAO.find(AND(EQ(ApprovalRequest.OBJ_ID, tx.getId()), EQ(ApprovalRequest.SERVER_DAO_KEY, "localTransactionDAO"))).fclone();
         request.setStatus(ApprovalStatus.APPROVED);
         approvalDAO.put_(x_, request);
       }

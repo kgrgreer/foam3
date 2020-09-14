@@ -154,7 +154,8 @@ p({
     dao = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, false, dao, "accounts");
     dao = new AccountApprovableAwareDAO.Builder(x)
       .setOf(Account.getOwnClassInfo())
-      .setDaoKey("localAccountDAO")
+      .setServerDaoKey("localAccountDAO")
+      .setDaoKey("accountDAO")
       .setDelegate(dao)
       .build();
 

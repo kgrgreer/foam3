@@ -70,7 +70,8 @@ foam.CLASS({
                 requestApproval(x,
                   new DowJonesApprovalRequest.Builder(x)
                     .setObjId(user.getId())
-                    .setDaoKey("localUserDAO")
+                    .setServerDaoKey("localUserDAO")
+                    .setDaoKey("userDAO")
                     .setCauseId(response.getId())
                     .setCauseDaoKey("dowJonesResponseDAO")
                     .setClassification("Validate User Using Dow Jones")

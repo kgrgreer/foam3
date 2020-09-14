@@ -69,7 +69,7 @@ foam.CLASS({
                 DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
                 DAO filteredApprovalRequestDAO = approvalRequestDAO.where(
                   AND(
-                    EQ(ApprovalRequest.DAO_KEY, "localTransactionDAO"),
+                    EQ(ApprovalRequest.SERVER_DAO_KEY, "localTransactionDAO"),
                     EQ(ApprovalRequest.OBJ_ID, txn.getId()),
                     EQ(ApprovalRequest.IS_FULFILLED, false)
                   )
@@ -86,7 +86,8 @@ foam.CLASS({
                       .setClassification("Exchange Limit Exceeded")
                       .setDescription(senderSummary + " has initiated a transaction that exceeds the allowed limit. " +
                         "Please review the transaction. ")
-                      .setDaoKey("localTransactionDAO")
+                      .setDaoKey("transactionDAO")
+                      .setServerDaoKey("localTransactionDAO")
                       .setObjId(txn.getId())
                       .setGroup(agentGroup)
                       .setStatus(ApprovalStatus.REQUESTED).build());
@@ -119,7 +120,8 @@ foam.CLASS({
                       .setClassification("Exchange Limit Exceeded")
                       .setDescription("A transaction for " + senderSummary
                         + " was approved but the amount exceeded the allowed limit again. Please review the transaction. ")
-                      .setDaoKey("localTransactionDAO")
+                      .setDaoKey("transactionDAO")
+                      .setServerDaoKey("localTransactionDAO")
                       .setObjId(txn.getId())
                       .setGroup(agentGroup)
                       .setStatus(ApprovalStatus.REQUESTED).build());

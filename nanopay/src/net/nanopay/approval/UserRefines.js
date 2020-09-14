@@ -37,7 +37,7 @@ foam.CLASS({
             title: `${this.organization}'s Approval Requests`,
             data: X.approvalRequestDAO.where(m.AND(
               m.EQ(foam.nanos.approval.ApprovalRequest.OBJ_ID, this.id),
-              m.EQ(foam.nanos.approval.ApprovalRequest.DAO_KEY, 'localUserDAO')
+              m.EQ(foam.nanos.approval.ApprovalRequest.SERVER_DAO_KEY, 'localUserDAO')
             ))
           });
         }

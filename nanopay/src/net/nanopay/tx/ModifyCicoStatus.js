@@ -41,7 +41,7 @@ foam.CLASS({
         ExpediteCICOApprovalRequest approvalRequest = (ExpediteCICOApprovalRequest) approvalRequestDAO.find(
           AND(
             EQ(ExpediteCICOApprovalRequest.OBJ_ID, ci.getId()),
-            EQ(ExpediteCICOApprovalRequest.DAO_KEY, "localTransactionDAO")
+            EQ(ExpediteCICOApprovalRequest.SERVER_DAO_KEY, "localTransactionDAO")
           )
         );
         if ( approvalRequest != null

@@ -50,7 +50,8 @@ foam.CLASS({
                 requestApproval(x,
                   new ComplianceApprovalRequest.Builder(x)
                     .setObjId(business.getId())
-                    .setDaoKey("localUserDAO")
+                    .setDaoKey("userDAO")
+                    .setServerDaoKey("localUserDAO")
                     .setCauseId(response.getId())
                     .setClassification("Validate Business Using SecureFact, Response ID: " + response.getId())
                     .setCauseDaoKey("securefactLEVDAO")

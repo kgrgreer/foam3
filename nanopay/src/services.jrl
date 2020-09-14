@@ -567,7 +567,7 @@ p({
   "serviceScript":
   """
     dao = new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.auth.User.getOwnClassInfo()).build();
-    dao = new foam.nanos.approval.PopulateApprovalRequestsDAO.Builder(x).setDaoKey("localUserDAO").setDelegate(dao).build();
+    dao = new foam.nanos.approval.PopulateApprovalRequestsDAO.Builder(x).setDaoKey("userDAO").setDelegate(dao).build();
     return new foam.dao.EasyDAO.Builder(x)
         .setPm(true)
         .setPipelinePm(true)
@@ -824,7 +824,7 @@ p({
   "serviceScript":
   """
     dao = new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.model.Business.getOwnClassInfo()).build();
-    dao = new foam.nanos.approval.PopulateApprovalRequestsDAO.Builder(x).setDaoKey("localUserDAO").setDelegate(dao).build();
+    dao = new foam.nanos.approval.PopulateApprovalRequestsDAO.Builder(x).setDaoKey("userDAO").setDelegate(dao).build();
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.model.Business.getOwnClassInfo())
       .setDecorator(dao)

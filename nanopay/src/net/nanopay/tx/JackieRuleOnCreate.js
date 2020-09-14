@@ -43,7 +43,8 @@ foam.CLASS({
           headTx = headTx.findParent(x);
         }
         ComplianceApprovalRequest req = new ComplianceApprovalRequest.Builder(x)
-          .setDaoKey("localTransactionDAO")
+          .setDaoKey("transactionDAO")
+          .setServerDaoKey("localTransactionDAO")
           .setObjId(ct.getId())
           .setGroup("fraud-ops")
           .setDescription("Main Summary txn: "+headTx.getSummary()+" The Id of Summary txn: "+headTx.getId() )
