@@ -54,6 +54,7 @@ foam.CLASS({
     'net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData',
     'net.nanopay.crunch.onboardingModels.SigningOfficerQuestion',
     'net.nanopay.crunch.onboardingModels.TransactionDetailsData',
+    'net.nanopay.crunch.registration.PersonalOnboardingTypeData',
     'net.nanopay.crunch.registration.UserRegistrationData',
     'net.nanopay.crunch.registration.UserDetailData',
     'net.nanopay.flinks.FlinksAuth',
@@ -281,7 +282,7 @@ foam.CLASS({
         }
 
         if ( onboardingType == OnboardingType.PERSONAL ) {
-          onboardUser(x, request, accountDetail);
+          onboardUser(x, request, accountDetail, loginDetail);
         }
         else if ( onboardingType == OnboardingType.BUSINESS ) {
           // Create the user
@@ -306,7 +307,8 @@ foam.CLASS({
       args: [
         { name: 'x', type: 'Context' },
         { name: 'request', type: 'FlinksLoginIdOnboarding' },
-        { name: 'accountDetail', type: 'AccountWithDetailModel' }
+        { name: 'accountDetail', type: 'AccountWithDetailModel' },
+        { name: 'loginDetail', type: 'LoginModel' }
       ],
       javaCode: `
         Subject subject = (Subject) x.get("subject");
@@ -359,11 +361,16 @@ foam.CLASS({
           .setPhoneNumber(phoneNumber)
           .setAddress(address)
           .build();
+        PersonalOnboardingTypeData onboardingTypeData = new PersonalOnboardingTypeData.Builder(subjectX)
+          .setUser(newUser.getId())
+          .setFlinksLoginType(loginDetail.getType())
+          .build();
 
         userCapabilityDataObjects.put("AbliiPrivacyPolicy", privacyPolicy);
         userCapabilityDataObjects.put("AbliiTermsAndConditions", termsAndConditions);
         userCapabilityDataObjects.put("User Details", userData);
         userCapabilityDataObjects.put("Simple User Onboarding", null);
+        userCapabilityDataObjects.put("Personal Onboarding Type", onboardingTypeData);
         userCapabilityDataObjects.put("API CAD Personal Payments Under 1000CAD", null);
 
         // API CAD Personal Payments Under 1000CAD Capability ID
