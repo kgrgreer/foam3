@@ -22,6 +22,7 @@ import foam.core.X;
 import foam.lib.NetworkPropertyPredicate;
 import foam.lib.json.JSONParser;
 import foam.lib.json.Outputter;
+import foam.nanos.auth.Address;
 import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
 import foam.nanos.om.OMLogger;
@@ -31,10 +32,13 @@ import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
 import java.time.DayOfWeek;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Date;
 import java.util.Map;
+import net.nanopay.bank.BankHolidayService;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -83,6 +87,7 @@ public class OpenDataService extends ContextAwareSupport implements OpenData {
         uriBuilder.setParameter(entry.getKey(), entry.getValue());
       }
       HttpGet httpGet = new HttpGet(uriBuilder.build());
+      logRequestMessage(endpoint, httpGet.getURI().toString());
       omLogger.log("bcb.opendata.gov Request to " + endpoint + " Starting");
       CloseableHttpResponse httpResponse = getHttpClient().execute(httpGet);
       omLogger.log("bcb.opendata.gov Request to " + endpoint + " Completed");
@@ -159,7 +164,7 @@ public class OpenDataService extends ContextAwareSupport implements OpenData {
   public PTaxDollarRateResponse getLatestPTaxRates() {
     try {
       String endpoint = OPEN_DATA_URL + "DollarRateDate(dataCotacao=@dataCotacao)";
-      String latestDate = latestDateSkippingWeekends().format(DateTimeFormatter.ofPattern("MM-dd-yyyy"));
+      String latestDate = previousDaySkipHolidayAndWeekends().format(DateTimeFormatter.ofPattern("MM-dd-yyyy"));
       Map<String, String> params = Map.of(
         "@dataCotacao", "'" + latestDate + "'",
         "$format", "json"
@@ -172,16 +177,12 @@ public class OpenDataService extends ContextAwareSupport implements OpenData {
     }
   }
 
-  public static LocalDate latestDateSkippingWeekends() {
-    LocalDate result = Instant.now().atZone(ZoneId.systemDefault()).toLocalDate();
-    int subtractedDays = 0;
-    while ( subtractedDays < 1 ) {
-      result = result.minusDays(1);
-      if ( ! (result.getDayOfWeek() == DayOfWeek.SATURDAY || result.getDayOfWeek() == DayOfWeek.SUNDAY) ) {
-        ++subtractedDays;
-      }
-    }
-    return result;
+  public LocalDate previousDaySkipHolidayAndWeekends() {
+    BankHolidayService bankHolidayService = (BankHolidayService) getX().get("bankHolidayService");
+    Address address = new Address.Builder(getX()).setCountryId("BR").setRegionId("").build();
+    Instant yesterday = Instant.now().minus(1, ChronoUnit.DAYS);
+    Date result = bankHolidayService.skipBankHolidaysBackwards(getX(), Date.from(yesterday), address, 0);
+    return result.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
   }
 
   public PTaxRate getPTaxRate() throws RuntimeException {

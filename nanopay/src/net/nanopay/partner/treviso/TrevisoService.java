@@ -46,7 +46,6 @@ import net.nanopay.country.br.exchange.ExchangeCredential;
 import net.nanopay.country.br.exchange.ExchangeCustomer;
 import net.nanopay.country.br.exchange.ExchangeService;
 import net.nanopay.country.br.FederalRevenueService;
-import net.nanopay.country.br.OpenDataService;
 import net.nanopay.country.br.PTaxRate;
 import net.nanopay.country.br.PTaxDollarRateResponse;
 import net.nanopay.fx.afex.AFEXServiceProvider;
