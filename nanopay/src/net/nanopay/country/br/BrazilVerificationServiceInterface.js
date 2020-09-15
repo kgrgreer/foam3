@@ -16,7 +16,8 @@
   */
 foam.INTERFACE({
   package: 'net.nanopay.country.br',
-  name: 'FederalRevenueService',
+  name: 'BrazilVerificationServiceInterface',
+
   methods: [
     {
       name: 'validateCnpj',
@@ -24,6 +25,10 @@ foam.INTERFACE({
       async: true,
       javaThrows: ['java.lang.RuntimeException'],
       args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
         {
           type: 'String',
           name: 'cnpj'
@@ -37,13 +42,13 @@ foam.INTERFACE({
       javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
-          type: 'String',
-          name: 'cpf'
+          name: 'x',
+          type: 'Context'
         },
         {
-          type: 'Long',
-          name: 'userId'
-        },
+          type: 'String',
+          name: 'cpf'
+        }
       ]
     },
     {
@@ -53,14 +58,50 @@ foam.INTERFACE({
       javaThrows: ['java.lang.RuntimeException'],
       args: [
         {
+          name: 'x',
+          type: 'Context'
+        },
+        {
           type: 'String',
           name: 'cpf'
         },
         {
           type: 'Date',
-          name: 'dateOfBirth'
-        },
+          name: 'birthDate'
+        }
       ]
     },
+    {
+      name: 'getCPFName',
+      type: 'String',
+      async: true,
+      javaThrows: ['java.lang.RuntimeException'],
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          type: 'String',
+          name: 'cpf'
+        }
+      ]
+    },
+    {
+      name: 'getCNPJName',
+      type: 'String',
+      async: true,
+      javaThrows: ['java.lang.RuntimeException'],
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          type: 'String',
+          name: 'cnpj'
+        }
+      ]
+    }
   ]
 });

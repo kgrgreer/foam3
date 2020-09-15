@@ -1097,6 +1097,8 @@ var classes = [
   // Treviso
   'net.nanopay.country.br.NatureCode',
   'net.nanopay.country.br.BrazilBusinessInfoData',
+  'net.nanopay.country.br.BrazilVerificationServiceInterface',
+  'net.nanopay.country.br.ClientBrazilVerificationService',
   'net.nanopay.country.br.CPF',
   'net.nanopay.country.br.crunch.ExchangeServiceOnboardingRule',
   'net.nanopay.country.br.exchange.ArrayOfBoleto',
@@ -1126,7 +1128,6 @@ var classes = [
   'net.nanopay.country.br.exchange.Titular',
   'net.nanopay.country.br.exchange.UpdateTitular',
   'net.nanopay.country.br.exchange.UpdateTitularResponse',
-  'net.nanopay.country.br.FederalRevenueService',
   'net.nanopay.country.br.NatureCode',
   'net.nanopay.country.br.NatureCodeRate',
   'net.nanopay.country.PermittedCountryFilterDAO',
@@ -1372,13 +1373,15 @@ var skeletons = [
   'net.nanopay.contacts.PaymentCodeServiceInterface',
   'net.nanopay.interac.service.InteracTransactionDAO',
   'net.nanopay.contacts.ContactServiceInterface',
+  'net.nanopay.country.br.BrazilVerificationServiceInterface'
 ];
 
 var proxies = [
   'net.nanopay.cico.service.BankAccountVerifier',
   'net.nanopay.tx.TransactionLimitServiceInterface',
   'net.nanopay.contacts.PaymentCodeServiceInterface',
-  'net.nanopay.contacts.ContactServiceInterface'
+  'net.nanopay.contacts.ContactServiceInterface',
+  'net.nanopay.country.br.BrazilVerificationServiceInterface'
 ];
 
 module.exports = {
