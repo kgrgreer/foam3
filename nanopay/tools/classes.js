@@ -976,6 +976,7 @@ var classes = [
   'net.nanopay.business.ruler.JunctionNotificationSettingsRule',
   'net.nanopay.business.ruler.RegistrationLoginDisabledRule',
   'net.nanopay.business.ruler.InitialBusinessRegistrationRule',
+  'net.nanopay.business.ruler.CreateNamedBusinessRuleAction',
 
   // settlment Report service
   'net.nanopay.invoice.InvoiceFilteredSettlementReport',
@@ -1253,6 +1254,7 @@ var classes = [
   // crunch registration
   'net.nanopay.crunch.registration.BusinessDetailData',
   'net.nanopay.crunch.registration.BusinessDirectorList',
+  'net.nanopay.crunch.registration.BusinessNameAware',
   'net.nanopay.crunch.registration.BusinessOwnerList',
   'net.nanopay.crunch.registration.BusinessTypeData',
   'net.nanopay.crunch.registration.PersonalOnboardingTypeData',

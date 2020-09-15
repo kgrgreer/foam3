@@ -18,6 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.crunch.registration',
   name: 'BusinessDetailData',
+  extends: 'net.nanopay.crunch.registration.BusinessNameAware',
 
   documentation: `This model represents the basic info of a Business that must be collect for onboarding.`,
   
@@ -28,8 +29,34 @@ foam.CLASS({
   properties: [
     net.nanopay.model.Business.BUSINESS_NAME.clone().copyFrom(),
     net.nanopay.model.Business.PHONE_NUMBER.clone().copyFrom(),
-    net.nanopay.model.Business.ADDRESS.clone().copyFrom(),
-    net.nanopay.model.Business.MAILING_ADDRESS.clone().copyFrom(),
+    net.nanopay.model.Business.ADDRESS.clone().copyFrom({
+      autoValidate: false,
+      validationPredicates: [
+        {
+          args: ['address', 'address$errors_'],
+          predicateFactory: function(e) {
+            return e.EQ(foam.mlang.IsValid.create({
+                arg1: net.nanopay.crunch.registration.BusinessDetailData.ADDRESS
+              }), true);
+          },
+          errorMessage: 'INVALID_ADDRESS_ERROR'
+        }
+      ]
+    }),
+    net.nanopay.model.Business.MAILING_ADDRESS.clone().copyFrom({
+      autoValidate: false,
+      validationPredicates: [
+        {
+          args: ['address', 'address$errors_'],
+          predicateFactory: function(e) {
+            return e.EQ(foam.mlang.IsValid.create({
+                arg1: net.nanopay.crunch.registration.BusinessDetailData.MAILING_ADDRESS
+              }), true);
+          },
+          errorMessage: 'INVALID_ADDRESS_ERROR'
+        }
+      ]
+    }),
     net.nanopay.model.Business.EMAIL.clone().copyFrom()
   ],
   
