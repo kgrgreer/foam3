@@ -1897,6 +1897,15 @@ p({"class":"foam.nanos.boot.NSpec","name":"securefactLEVDAO",                  "
 p({"class":"foam.nanos.boot.NSpec", "name":"securefactService",                "lazy":false, "service":{"class":"net.nanopay.meter.compliance.secureFact.SecurefactService"}})
 
 p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"securefactOnboardingService",
+  "lazy":false,
+  "service":{
+    "class":"net.nanopay.meter.compliance.secureFact.SecurefactOnboardingService"
+  }
+})
+
+p({
   "class": "foam.nanos.boot.NSpec",
   "name": "identityMindResponseDAO",
   "serve": true,
