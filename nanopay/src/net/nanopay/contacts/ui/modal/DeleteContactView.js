@@ -39,7 +39,7 @@ foam.CLASS({
       margin-top: 0;
     }
     ^ p {
-      font-family: Lato;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
     }
     ^main {

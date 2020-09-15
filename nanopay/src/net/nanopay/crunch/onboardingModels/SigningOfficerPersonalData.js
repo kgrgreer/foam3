@@ -145,10 +145,11 @@ foam.CLASS({
         }
       ]
     },
-    foam.nanos.auth.User.PHONE.clone().copyFrom({
+    foam.nanos.auth.User.PHONE_NUMBER.clone().copyFrom({
       section: 'signingOfficerPersonalInformationSection',
-      label: '',
+      label: 'Phone',
       visibility: 'RW',
+      required: true,
       autoValidate: true
     }),
     foam.nanos.auth.User.PEPHIORELATED.clone().copyFrom({

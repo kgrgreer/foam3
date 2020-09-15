@@ -26,12 +26,13 @@ foam.CLASS({
   css: `
   ^ {
     margin: auto;
+    width: 94%;
   }
   ^ .lower-cards {
     width: 100%;
     padding-top: 3vh;
     padding-bottom: 1vh;
-    justify-content: space-around;
+    justify-content: space-between;
     align-items: stretch;
     display: flex;
   }

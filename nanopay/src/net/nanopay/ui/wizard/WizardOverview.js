@@ -168,7 +168,7 @@ foam.CLASS({
 
       font-size: 12px;
       letter-spacing: 0.3px;
-      font-family: Roboto, 'Helvetica Neue', helvetica, sans-serif;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       color: /*%BLACK%*/ #1e1f21;
 
       -webkit-transition: all .15s ease-in-out;

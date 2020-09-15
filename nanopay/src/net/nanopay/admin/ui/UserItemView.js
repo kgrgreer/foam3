@@ -40,7 +40,7 @@ foam.CLASS({
 
     ^ th {
       height: 14px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: 500;
       font-style: normal;
@@ -60,7 +60,7 @@ foam.CLASS({
 
     ^ td {
       height: 20px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       font-weight: normal;
       font-style: normal;

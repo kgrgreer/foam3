@@ -290,6 +290,7 @@ foam.CLASS({
         if ( ! await this.addContact() ) return;
         if ( ! await this.addBankAccount() ) return;
         X.closeDialog();
+        location.reload();
       }
     }
   ]

@@ -75,7 +75,7 @@ foam.CLASS({
     }
     ^ .foam-u2-ActionView-currencyChoice > span {
       color: /*%BLACK%*/ #1e1f21 !important;
-      font-family: lato !important;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
       font-size: 12px;
       font-weight: 300;
       margin-left: 5px;

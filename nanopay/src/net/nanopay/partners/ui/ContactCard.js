@@ -57,7 +57,7 @@ foam.CLASS({
       vertical-align: top;
       }
     ^ h5 {
-      font-family: 'Roboto';
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-weight: normal;
       letter-spacing: 0.2px;
       padding-bottom: 4px;

@@ -30,7 +30,6 @@ foam.CLASS({
   sections: [
     {
       name: 'businessDetailsSection',
-      title: 'Extended business details'
     },
   ],
 

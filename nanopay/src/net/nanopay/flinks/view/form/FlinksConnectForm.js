@@ -49,7 +49,7 @@ foam.CLASS({
     }
     ^ .text {
       height: 16px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: 300;
       letter-spacing: 0.2px;
@@ -73,7 +73,7 @@ foam.CLASS({
     }
     ^ .conditionText {
       height: 16px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 11px;
       line-height: 0.1;
       letter-spacing: 0.1px;
@@ -134,7 +134,7 @@ foam.CLASS({
     ^ .pStyle {
       width: 428px;
       height: 32px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       font-weight: normal;
       font-style: normal;

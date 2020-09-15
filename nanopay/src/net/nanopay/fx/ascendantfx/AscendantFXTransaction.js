@@ -249,7 +249,7 @@ foam.CLASS({
       doc.append("body {");
       doc.append("  width: 8.5in;");
       doc.append("  min-height: 11in;");
-      doc.append("  font-family: sans-serif;");
+      doc.append("  font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;");
       doc.append("  font-size: 12px;");
       doc.append("}");
       doc.append("img {");

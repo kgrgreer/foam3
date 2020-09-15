@@ -345,6 +345,7 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-18",
   "name":"Nanopay Admission",
+  "description": "User registration",
   "version":"0",
   "icon":"images/nanopay_logo_blue.png",
   "enabled":true,

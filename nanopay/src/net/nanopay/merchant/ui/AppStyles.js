@@ -27,7 +27,7 @@ foam.CLASS({
       height: 100%;
     }
     body {
-      font-family: 'Roboto';
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       color: #FFFFFF;
       background-color: /*%BLACK%*/ #1e1f21;
       margin: 0;
@@ -45,7 +45,7 @@ foam.CLASS({
       padding: 0;
       border: none;
       background: none;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 16px;
       line-height: 1.88;
       text-align: center;

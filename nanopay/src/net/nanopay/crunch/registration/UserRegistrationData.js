@@ -57,7 +57,7 @@ foam.CLASS({
     },
     {
       class: 'PhoneNumber',
-      name: 'phone',
+      name: 'phoneNumber',
       section: 'userRegistrationSection',
       required: true,
       documentation: 'Phone number of the user.'

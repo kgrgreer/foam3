@@ -128,10 +128,11 @@ foam.CLASS({
       color: #8e9090;
     }
     ^ .line {
-      width: 100%;
+      width: 94%;
       height: 10px;
       border-bottom: 2px solid #e2e2e3;
       text-align: center;
+      margin: auto;
       margin-top: 15px;
     }
   `,
