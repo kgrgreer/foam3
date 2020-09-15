@@ -195,7 +195,6 @@ foam.CLASS({
       class: 'Int',
       documentation: 'Number of owners',
       label: '',
-      value: -1,
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
