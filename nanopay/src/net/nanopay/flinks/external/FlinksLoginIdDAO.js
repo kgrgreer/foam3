@@ -512,9 +512,6 @@ foam.CLASS({
         SigningOfficerQuestion officerQuestion = new SigningOfficerQuestion.Builder(x)
           .setIsSigningOfficer(true)
           .setSigningOfficerEmail(holder.getEmail())
-          .setAdminFirstName(user.getFirstName())
-          .setAdminLastName(user.getLastName())
-          .setAdminPhone(user.getPhoneNumber())
           .build();
         SigningOfficerPersonalData soPersonalData = new SigningOfficerPersonalData.Builder(x)
           .setCountryId(holderAddress.getCountry())
