@@ -1565,10 +1565,15 @@ FOAM_FILES([
   { name: 'net/nanopay/country/br/tx/fee/PTaxRate' },
 
   // crunch registration
+  { name: 'net/nanopay/crunch/registration/BusinessDetailData' },
+  { name: 'net/nanopay/crunch/registration/BusinessDirectorList' },
+  { name: 'net/nanopay/crunch/registration/BusinessOwnerList' },
+  { name: 'net/nanopay/crunch/registration/BusinessTypeData' },
+  { name: 'net/nanopay/crunch/registration/PersonalOnboardingTypeData' },
+  { name: 'net/nanopay/crunch/registration/SigningOfficerList' },
   { name: 'net/nanopay/crunch/registration/UserRegistrationData' },
   { name: 'net/nanopay/crunch/registration/UserDetailData' },
   { name: 'net/nanopay/crunch/registration/UserDetailExpandedData' },
-
 
   // crunch onboarding
   { name: 'net/nanopay/crunch/onboardingModels/CheckUserCountry' },

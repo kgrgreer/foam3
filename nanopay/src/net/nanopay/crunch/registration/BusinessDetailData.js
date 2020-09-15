@@ -17,20 +17,20 @@
 
 foam.CLASS({
   package: 'net.nanopay.crunch.registration',
-  name: 'UserDetailExpandedData',
+  name: 'BusinessDetailData',
 
-  documentation: `This model represents the expanded info of a User that must be collect for onboarding.`,
+  documentation: `This model represents the basic info of a Business that must be collect for onboarding.`,
   
   implements: [
     'foam.core.Validatable'
   ],
   
   properties: [
-    foam.nanos.auth.User.BIRTHDAY.clone().copyFrom(),
-    foam.nanos.auth.User.JOB_TITLE.clone().copyFrom(),
-    foam.nanos.auth.User.PEPHIORELATED.clone().copyFrom(),
-    foam.nanos.auth.User.THIRD_PARTY.clone().copyFrom(),
-    foam.nanos.auth.User.COMPLIANCE.clone().copyFrom()
+    net.nanopay.model.Business.BUSINESS_NAME.clone().copyFrom(),
+    net.nanopay.model.Business.PHONE_NUMBER.clone().copyFrom(),
+    net.nanopay.model.Business.ADDRESS.clone().copyFrom(),
+    net.nanopay.model.Business.MAILING_ADDRESS.clone().copyFrom(),
+    net.nanopay.model.Business.EMAIL.clone().copyFrom()
   ],
   
   methods: [

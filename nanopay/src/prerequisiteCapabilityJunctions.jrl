@@ -546,6 +546,76 @@ p({
   "priority": 16
 })
 
+//API CAD Business Payments Receiving
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"18DD6F03-998F-4A21-8938-358183151F96",
+  "targetId":"EC535109-E9C0-4B5D-8D24-31282EF72F8F",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"18DD6F03-998F-4A21-8938-358183151F96",
+  "targetId":"A679CA67-93C2-4597-B92E-4BBA00797E96",
+  "priority": 2
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"18DD6F03-998F-4A21-8938-358183151F96",
+  "targetId":"A285FDFA-3C6B-4150-A0F4-B72E664A3A9E",
+  "priority": 3
+})
+
+//Business Type
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"A679CA67-93C2-4597-B92E-4BBA00797E96",
+  "targetId":"ED16359E-628E-4104-83B0-C77BB8544B78",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"A679CA67-93C2-4597-B92E-4BBA00797E96",
+  "targetId":"840FC3EB-F826-4AB3-AD92-131CD1C7C8D1",
+  "priority": 1
+})
+
+//Extra Business Type Data Required
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"840FC3EB-F826-4AB3-AD92-131CD1C7C8D1",
+  "targetId":"F1359801-7D71-4F30-8D36-531B4A674981",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"840FC3EB-F826-4AB3-AD92-131CD1C7C8D1",
+  "targetId":"6DD8D005-7514-432D-BC32-9C5D569A0462",
+  "priority": 2
+})
+
+//Signing Officers
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"A285FDFA-3C6B-4150-A0F4-B72E664A3A9E",
+  "targetId":"25D9499A-36D3-436A-9C87-3CA41B5FC08F",
+  "priority": 1
+})
+
+//User Signing Officer Capability
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"25D9499A-36D3-436A-9C87-3CA41B5FC08F",
+  "targetId":"FB1C8CF2-34B9-40FE-A4AA-58CFA2FDBA15",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"25D9499A-36D3-436A-9C87-3CA41B5FC08F",
+  "targetId":"A62AC209-CD55-4755-9B93-2B9BAE885B85",
+  "priority": 2
+})
+
 //API CAD Personal Payments
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
@@ -566,6 +636,13 @@ p({
   "sourceId":"F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD",
   "targetId":"A62AC209-CD55-4755-9B93-2B9BAE885B85",
   "priority": 1
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD",
+  "targetId":"7B440CC7-C64D-4FDC-B394-052846CB7049",
+  "priority": 2
 })
 
 //Simple User Onboarding

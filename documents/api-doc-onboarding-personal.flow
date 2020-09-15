@@ -15,7 +15,7 @@
     retrieve a large part of the customer data which is available through the customer's bank.
 </p>
 
-<h2>Onboarding Process for User using Flinks</h2>
+<h2>Onboarding Process for Personal Payments using Flinks</h2>
 <p>
     There are several steps to completing onboarding for a user when using the Flinks widget.
     <ol>
@@ -49,8 +49,8 @@ https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31
 
 <h3><a name="login-id">Provisioning a User with Flinks LoginId</a></h3>
 <p>
-    Once the user has completed the Flinks widget flow, they can be provisioned using the data retrieved from Flinks by using 
-    the loginId passed back as a parameter in the redirectUrl from the previous step. With the loginId, nanopay can retrieved 
+    Once the user has completed the Flinks widget flow, nanopay can provision them by retrieving data from Flinks using 
+    the loginId from the redirectUrl in the previous step. By sending nanopay the loginId, the system can retrieve 
     information from Flinks and perform the following steps:
     <ol>
       <li>Create the User</li>
@@ -62,6 +62,13 @@ https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31
     to the DIG call.
 </p>
 <p>
+    One thing to note here is that if the LoginId has been previously seen by the nanopay system, a new user will not be 
+    created. Instead, the previous user will be found and will be returned in the 'user' property. Users that are found 
+    that have already completed onboarding will be easily identifiable by checking the 'missingUserCapabilityDataObjects' 
+    property, which should return an empty map. Similarly, if the CAD bank account already exists for that user, the it 
+    will be found and the ID will be returned in the 'account' field.
+</p>
+<p>
     In order to start the provisioning process, the loginId has to be passed in to the flinksLoginIdDAO through DIG.
     The FlinksLoginIdOnboarding API call is a DIG API call to the flinksLoginIdDAO with the following payload:
     <code>{
@@ -69,7 +76,7 @@ https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31
     "loginId": "2ff467b7-bcde-4346-8996-08d69b30c4d8",
     "accountId": "8cd3e122-4826-4e24-48c4-08d69b30caf5",
     "institution": "FlinksCapital",
-    "type": "PERSONAL"
+    "type": "DEFAULT"
 }   </code>
     Note that the class is required to be 'net.nanopay.flinks.external.FlinksLoginIdOnboarding' in order for the onboarding process to be triggered.
 </p>
@@ -101,7 +108,7 @@ https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31
 <h4><a name="flinks-login-id-onboarding">FlinksLoginIdOnboarding</a></h4>
 <p>
   Here is the full structure of the FlinksLoginIdOnboarding object:
-  <foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.flinks.external.FlinksLoginIdOnboarding" />
+  <foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.flinks.external.FlinksLoginIdOnboarding"  whitelist="['type', 'missingUserCapabilityDataObjects', 'missingBusinessCapabilityDataObjects', 'loginId', 'loginId', 'institution', 'user', 'business', 'account', 'created', 'createdBy']" />
 </p>
 
 <p>

@@ -1264,6 +1264,12 @@ var classes = [
   'net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability',
 
   // crunch registration
+  'net.nanopay.crunch.registration.BusinessDetailData',
+  'net.nanopay.crunch.registration.BusinessDirectorList',
+  'net.nanopay.crunch.registration.BusinessOwnerList',
+  'net.nanopay.crunch.registration.BusinessTypeData',
+  'net.nanopay.crunch.registration.PersonalOnboardingTypeData',
+  'net.nanopay.crunch.registration.SigningOfficerList',
   'net.nanopay.crunch.registration.UserRegistrationData',
   'net.nanopay.crunch.registration.UserDetailData',
   'net.nanopay.crunch.registration.UserDetailExpandedData',
