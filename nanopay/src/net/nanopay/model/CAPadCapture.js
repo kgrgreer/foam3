@@ -90,28 +90,23 @@ foam.CLASS({
       }
     },
     {
-      class: 'StringArray',
-      name: 'acceptancedocs',
-      label: '',
-      documentation: 'a list of acceptance documents',
-      view: {
-        class: 'foam.nanos.crunch.ui.CapabilityView',
-        capabilityIDs: [
+      name: 'capableRequirements',
+      factory: () => {
+        return [
           '554af38a-8225-87c8-dfdf-eeb15f71215e-13', // Certify Bank Account Ownership Agreement
           '554af38a-8225-87c8-dfdf-eeb15f71215e-20', // CA Bank Account Auth Agreement
           '554af38a-8225-87c8-dfdf-eeb15f71215e-21', // Recourse/Reimbursement Agreement
           '554af38a-8225-87c8-dfdf-eeb15f71215e-22'  // CA Cancellation Agreement
-        ]
+        ];
       }
     },
     {
-      name: 'capableRequirements',
-      value: [
-        '554af38a-8225-87c8-dfdf-eeb15f71215e-13',
-        '554af38a-8225-87c8-dfdf-eeb15f71215e-20',
-        '554af38a-8225-87c8-dfdf-eeb15f71215e-21',
-        '554af38a-8225-87c8-dfdf-eeb15f71215e-22'
-      ],
+      name: 'capablePayloads',
+      visibility: 'HIDDEN',
+    },
+    {
+      name: 'userCapabilityRequirements',
+      visibility: 'HIDDEN'
     }
   ]
 });

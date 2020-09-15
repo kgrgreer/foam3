@@ -29,7 +29,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.log.LogLevel',
+    'foam.log.LogLevel'
   ],
 
   javaImports: [
@@ -304,8 +304,18 @@ foam.CLASS({
         }, this);
       },
       view: function(_, X) {
-        return foam.u2.view.FObjectView.create({
-          of: net.nanopay.model.CAPadCapture
+        return foam.u2.MultiView.create({
+          views: [
+            {
+              class: 'foam.u2.view.FObjectView',
+              of: 'net.nanopay.model.CAPadCapture'
+            },
+            {
+              // displays ca bank account capabilities
+              class: 'foam.nanos.crunch.ui.CapableView',
+              capableObj: X.data.padCapture
+            }
+          ]
         }, X);
       }
     }
