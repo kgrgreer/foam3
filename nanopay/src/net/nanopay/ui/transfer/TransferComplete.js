@@ -36,14 +36,14 @@ foam.CLASS({
     }
     ^ p{
       width: 464px;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       line-height: 1.45;
       letter-spacing: 0.3px;
       color: /*%BLACK%*/ #1e1f21;
     }
     ^ h3{
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       letter-spacing: 0.2px;
       color: /*%BLACK%*/ #1e1f21;

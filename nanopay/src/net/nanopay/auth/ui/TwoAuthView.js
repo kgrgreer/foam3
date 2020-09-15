@@ -21,7 +21,7 @@ foam.CLASS({
           line-height: 1;
           letter-spacing: 0.4px;
           color: /*%BLACK%*/ #1e1f21;
-          font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+          font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
           margin: 50px 0;
         }
         ^2-auth-container{

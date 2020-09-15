@@ -40,7 +40,7 @@ foam.CLASS({
       height: 285px;
     }
     ^ .sub-header {
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: 300;
       font-style: normal;
@@ -51,7 +51,7 @@ foam.CLASS({
       color: /*%BLACK%*/ #1e1f21;
     }
     ^ .header1 {
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: 300;
       font-style: normal;
@@ -115,7 +115,7 @@ foam.CLASS({
     }
     ^ .question {
       height: 15px;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: normal;
       font-style: normal;

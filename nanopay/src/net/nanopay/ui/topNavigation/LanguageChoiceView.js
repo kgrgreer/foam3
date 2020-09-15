@@ -60,7 +60,7 @@ foam.CLASS({
     align-items: center;
   }
   ^ .foam-u2-ActionView-languageChoice > span {
-    font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 16px;
     font-weight: 300;
     letter-spacing: 0.2px;
