@@ -60,7 +60,7 @@ foam.CLASS({
         }
       
         // Personal onboarding must be true for this capability to be satisfied
-        if (!SafetyUtil.equals(getFlinksLoginType(), "PERSONAL") &&  !getOverrideFlinksLoginType()) {
+        if ( !SafetyUtil.equals(getFlinksLoginType(), "Personal") &&  !getOverrideFlinksLoginType() ) {
           throw new IllegalArgumentException("Flinks login type is not compatible with onboarding type: " + getFlinksLoginType() + ". Override to force personal of onboarding");
         }
       `
