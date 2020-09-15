@@ -46,7 +46,7 @@ foam.CLASS({
       display: table-cell;
     }
     ^ .accountName {
-      font-family: Roboto;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       font-weight: 500;
       line-height: 1.33;
@@ -59,7 +59,7 @@ foam.CLASS({
       padding: 0;
     }
     ^ .accountNo {
-      font-family: Roboto;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       letter-spacing: 0.3px;
       text-align: left;
@@ -69,7 +69,7 @@ foam.CLASS({
       margin-top: 4px;
       width: 100%;
       height: 30px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 20px;
       font-weight: 300;
       line-height: 1.5;

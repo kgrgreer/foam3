@@ -42,7 +42,7 @@ foam.CLASS({
       padding-left: 40px;
     }
     ^ .statusDate {
-      font-family: Roboto;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 8px;
       line-height: 1.33;
       letter-spacing: 0.1px;
@@ -51,7 +51,7 @@ foam.CLASS({
       position: relative;
     }
     ^ .statusTitle {
-      font-family: Roboto;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       line-height: 1.33;
       letter-spacing: 0.2px;

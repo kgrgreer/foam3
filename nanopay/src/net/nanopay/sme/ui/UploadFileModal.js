@@ -74,7 +74,7 @@ foam.CLASS({
     ^ .inputText{
       width: 177px;
       height: 40px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: normal;
       font-style: normal;
@@ -88,7 +88,7 @@ foam.CLASS({
       width: 480px;
       height: 16px;
       opacity: 0.7;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       font-weight: normal;
       font-style: normal;

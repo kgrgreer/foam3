@@ -59,10 +59,10 @@ foam.CLASS({
       border-radius: 2px;
       width: 448px;
       margin: auto;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
     ^ .label {
-      font-family: Roboto;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: 300;
       letter-spacing: 0.2px;
@@ -93,7 +93,7 @@ foam.CLASS({
       background-color: #ffffff;
       border: solid 1px rgba(164, 179, 184, 0.5);
       padding: 10px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       line-height: 1.33;
       letter-spacing: 0.2;

@@ -37,7 +37,7 @@ foam.CLASS({
       height: 405px;
     }
     ^ .sub-header {
-      font-family: Roboto;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: 300;
       font-style: normal;
@@ -56,7 +56,7 @@ foam.CLASS({
       padding: 5px;
     }
     ^ .header1 {
-      font-family: Roboto;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: 300;
       font-style: normal;

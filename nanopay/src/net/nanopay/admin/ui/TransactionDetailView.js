@@ -118,7 +118,7 @@ foam.CLASS({
       vertical-align: top;
     }
     ^ .labelTitle {
-      font-family: Roboto;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: bold;
       letter-spacing: 0.2px;

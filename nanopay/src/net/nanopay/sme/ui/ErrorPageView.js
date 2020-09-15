@@ -53,7 +53,7 @@ foam.CLASS({
     ^ .Instructions-Text {
       width: 100%;
       height: 48px;
-      font-family: Lato;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 32px;
       font-weight: 900;
       font-stretch: normal;
@@ -68,7 +68,7 @@ foam.CLASS({
 
     ^ .Message-Content {
       height: 63px;
-      font-family: Lato;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 16px;
       font-weight: normal;
       font-stretch: normal;

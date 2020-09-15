@@ -1,0 +1,5 @@
+p({
+  "class":"net.nanopay.tx.planner.AFEXTransactionPlanner",
+  "id":"13df0d76-ba3e-4287-b42e-c7ceff059dd8",
+  "ruleGroup":"TrevisoPlanner",
+})

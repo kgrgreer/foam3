@@ -120,7 +120,7 @@ foam.CLASS({
     }
     .net-nanopay-ui-modal-UploadModal .buttonBox .foam-u2-ActionView-cancelButton,
     .net-nanopay-ui-modal-UploadModal .buttonBox .foam-u2-ActionView-submitButton {
-      font-family: Lato;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       float: none;
       margin: 0;
     }

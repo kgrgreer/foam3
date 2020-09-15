@@ -78,94 +78,6 @@ foam.CLASS({
           errorMessage: 'SIGNING_OFFICER_EMAIL_ERROR'
         }
       ]
-    },
-
-    // admin info
-    {
-      class: 'String',
-      name: 'adminFirstName',
-      section: 'signingOfficerEmailSection',
-      documentation: 'Signing officer\'s first name',
-      label: 'First Name',
-      width: 100,
-      gridColumns: 6,
-      validationPredicates: [
-        {
-          args: [ 'adminFirstName' ],
-          predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.ADMIN_FIRST_NAME, '');
-          },
-          errorMessage: 'ADMIN_FIRST_NAME_ERROR'
-        }
-      ]
-    },
-    {
-      class: 'String',
-      name: 'adminLastName',
-      label: 'Last Name',
-      section: 'signingOfficerEmailSection',
-      documentation: 'Signing officer\'s last name',
-      width: 100,
-      gridColumns: 6,
-      validationPredicates: [
-        {
-          args: [ 'adminLastName' ],
-          predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.ADMIN_LAST_NAME, '');
-          },
-          errorMessage: 'ADMIN_LAST_NAME_ERROR'
-        }
-      ]
-    },    
-    {
-      class: 'String',
-      name: 'adminJobTitle',
-      label: 'Job Title',
-      section: 'signingOfficerEmailSection',
-      documentation: 'Signing officer\'s job title',
-      width: 100,
-      view: function(args, X) {
-        return {
-          class: 'foam.u2.view.ChoiceWithOtherView',
-          otherKey: 'Other',
-          choiceView: {
-            class: 'foam.u2.view.ChoiceView',
-            placeholder: X.data.PLACE_HOLDER,
-            dao: X.jobTitleDAO,
-            objToChoice: function(a) {
-              return [a.name, a.label];
-            }
-          }
-        };
-      },
-      validationPredicates: [
-        {
-          args: [ 'adminJobTitle' ],
-          predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.ADMIN_JOB_TITLE, '');
-          },
-          errorMessage: 'NO_JOB_TITLE_ERROR'
-        }
-      ],
-      validationTextVisible: true
-    },
-    {
-      class: 'PhoneNumber',
-      name: 'adminPhone',
-      section: 'signingOfficerEmailSection',
-      documentation: 'Signing officer\'s phone number',
-      label: 'Phone Number',
-      validationPredicates: [
-        {
-          args: [ 'adminPhone' ],
-          predicateFactory: function(e) {
-            return e.REG_EXP(
-              net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.ADMIN_PHONE,
-              /^(?:\+?1[-.●]?)?\(?([0-9]{3})\)?[-.●]?([0-9]{3})[-.●]?([0-9]{4})$/);
-          },
-          errorMessage: 'INVALID_PHONE_NUMBER_ERROR'
-        }
-      ]
     }
   ],
 
@@ -286,10 +198,6 @@ foam.CLASS({
           invitation.setCreatedBy(business.getId());
           invitation.setEmail(email);
 
-          invitation.setFirstName(data.getAdminFirstName());
-          invitation.setLastName(data.getAdminLastName());
-          invitation.setJobTitle(data.getAdminJobTitle());
-          invitation.setPhoneNumber(data.getAdminPhone());
           invitation.setIsSigningOfficer(true);
 
           // Send invitation to email to the signing officer

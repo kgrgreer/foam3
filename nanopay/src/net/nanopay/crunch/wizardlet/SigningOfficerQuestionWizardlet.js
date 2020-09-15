@@ -27,6 +27,7 @@ foam.CLASS({
 
   methods: [
     {
+      flags: ['web'],
       name: 'save',
       code: async function() {
         await this.crunchController.save(this);

@@ -34,7 +34,7 @@ foam.CLASS({
       margin-top: 1%;
     }
     body {
-      font-family: 'Lato', sans-serif;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
     .stack-wrapper {
       height: 100vh;
@@ -106,7 +106,7 @@ foam.CLASS({
       border-radius: 3px;
       padding: 12px;
       font-size: 14px;
-      font-family: 'Lato', sans-serif;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
 
     input:focus {
@@ -364,7 +364,7 @@ foam.CLASS({
       color: /*%BLACK%*/ #1e1f21 !important;
       background-color: white !important;
       font-size: 16px !important;
-      font-family: 'Lato', sans-serif;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
     .white-radio.selected {
       border: 1px solid /*%PRIMARY3%*/ #406dea !important;
@@ -382,7 +382,7 @@ foam.CLASS({
       font-weight: 500;
       color: #604aff;
       cursor: pointer;
-      font-family: 'Lato', sans-serif !important;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
       background: none;
       line-height: 16px;
       padding: 0px;
@@ -418,7 +418,7 @@ foam.CLASS({
       font-weight: 500;
       color: var(--blue-grey);
       cursor: pointer;
-      font-family: 'Lato', sans-serif !important;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
       background: none;
       line-height: 16px;
       padding: 0px;
@@ -624,7 +624,7 @@ foam.CLASS({
     .foam-comics-DAOControllerView-title-container span {
       color: #8e9090;
       height: 24px;
-      font-family: 'Lato', sans-serif;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 16px;
     }
 

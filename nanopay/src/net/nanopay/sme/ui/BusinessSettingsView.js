@@ -46,7 +46,7 @@ foam.CLASS({
       width: 109px;
       height: 19px;
       font-size: 16px;
-      font-family: Avenir;
+      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       color: #8e9090;
       margin-right: 20px;
       cursor: pointer;
