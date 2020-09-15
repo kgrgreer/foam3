@@ -54,6 +54,7 @@ foam.CLASS({
     'net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData',
     'net.nanopay.crunch.onboardingModels.SigningOfficerQuestion',
     'net.nanopay.crunch.onboardingModels.TransactionDetailsData',
+    'net.nanopay.crunch.registration.BusinessDetailData',
     'net.nanopay.crunch.registration.PersonalOnboardingTypeData',
     'net.nanopay.crunch.registration.UserRegistrationData',
     'net.nanopay.crunch.registration.UserDetailData',
@@ -305,7 +306,7 @@ foam.CLASS({
         Subject subject = (Subject) x.get("subject");
         DAO userDAO = (DAO) x.get("localUserDAO");
         HolderModel holder = accountDetail.getHolder();
-        User newUser = new User.Builder(x)
+        User user = new User.Builder(x)
           .setEmail(holder.getEmail())
           .setUserName(holder.getEmail())
           .setDesiredPassword(java.util.UUID.randomUUID().toString())
@@ -313,13 +314,13 @@ foam.CLASS({
           .setGroup("personal")
           .setSpid(subject.getRealUser().getSpid())
           .build();
-        newUser = (User) userDAO.put(newUser);
+        user = (User) userDAO.put(user);
         
         // Save the UserId on the request
-        request.setUser(newUser.getId());
+        request.setUser(user.getId());
 
         // Switch contexts to the newly created user
-        Subject newSubject = new Subject.Builder(x).setUser(newUser).build();
+        Subject newSubject = new Subject.Builder(x).setUser(user).build();
         X subjectX = getX().put("subject", newSubject);
 
         AddressModel holderAddress = holder.getAddress();        
@@ -353,7 +354,7 @@ foam.CLASS({
           .setAddress(address)
           .build();
         PersonalOnboardingTypeData onboardingTypeData = new PersonalOnboardingTypeData.Builder(subjectX)
-          .setUser(newUser.getId())
+          .setUser(user.getId())
           .setFlinksLoginType(loginDetail.getType())
           .build();
 
@@ -397,7 +398,7 @@ foam.CLASS({
         }
 
         // Switch contexts to the newly created user
-        Subject newSubject = new Subject.Builder(x).setUser(newUser).build();
+        Subject newSubject = new Subject.Builder(x).setUser(user).build();
         X subjectX = getX().put("subject", newSubject);
 
         HolderModel holder = accountDetail.getHolder();
