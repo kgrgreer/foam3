@@ -285,17 +285,8 @@ foam.CLASS({
           onboardUser(x, request, accountDetail, loginDetail);
         }
         else if ( onboardingType == OnboardingType.BUSINESS ) {
-          // Create the user
-          User user = request.findUser(x);
-          if ( user == null ) {
-            onboardUserForBusiness(x, request, accountDetail);
-          }
-
-          // Create the business
-          Business business = request.findBusiness(x);
-          if ( business == null ) {
-            onboardBusiness(x, request, accountDetail);
-          }
+          onboardUser(x, request, accountDetail, loginDetail);
+          onboardBusiness(x, request, accountDetail);
         }
         else {
           throw new RuntimeException("Unexpected onboarding type: " + request.getType());
@@ -389,87 +380,6 @@ foam.CLASS({
       `
     },
     {
-      name: 'onboardUserForBusiness',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'request', type: 'FlinksLoginIdOnboarding' },
-        { name: 'accountDetail', type: 'AccountWithDetailModel' }
-      ],
-      javaCode: `
-        AgentAuthService agentAuth = (AgentAuthService) x.get("agentAuth");
-        DAO capabilityPayloadDAO = (DAO) x.get("capabilityPayloadDAO");
-        DAO smeUserRegistrationDAO = (DAO) x.get("smeUserRegistrationDAO");
-          
-        HolderModel holder = accountDetail.getHolder();
-        AddressModel holderAddress = holder.getAddress();
-
-        Address address = new Address.Builder(x)
-          .setAddress1(holderAddress.getCivicAddress())
-          .setRegionId(holderAddress.getProvince())
-          .setCountryId(holderAddress.getCountry())
-          .setCity(holderAddress.getCity())
-          .setPostalCode(holderAddress.getPostalCode())
-          .build();
-
-        String fullName = holder.getName();
-        String nameSplit[] = fullName.split(" ", 2);
-        String firstName = nameSplit[0];
-        String lastName = nameSplit[1];
-        String phoneNumber = holder.getPhoneNumber().replaceAll("[^0-9]", "");
-
-        User newUser = new User.Builder(x)
-          .setFirstName(firstName)
-          .setLastName(lastName)
-          .setLegalName(fullName)
-          .setEmail(holder.getEmail())
-          .setUserName(holder.getEmail())
-          .setAddress(address)
-          .setPhoneNumber(phoneNumber)
-          .setDesiredPassword(java.util.UUID.randomUUID().toString())
-          .setEmailVerified(true)
-          .build();
-        newUser = (User) smeUserRegistrationDAO.put(newUser);
-        
-        // Save the UserId on the request
-        request.setUser(newUser.getId());
-
-        // Switch contexts to the newly created user
-        agentAuth.actAs(x, newUser);
-
-        // Add capabilities for the new user
-        Map<String,FObject> userCapabilityDataObjects = new HashMap<>();
-        AbliiPrivacyPolicy privacyPolicy = new AbliiPrivacyPolicy.Builder(x)
-          .setAgreement(true)
-          .build();
-        AbliiTermsAndConditions termsAndConditions = new AbliiTermsAndConditions.Builder(x)
-          .setAgreement(true)
-          .build();
-        UserRegistrationData registrationData = new UserRegistrationData.Builder(x)
-          .setFirstName(newUser.getFirstName())
-          .setLastName(newUser.getLastName())
-          .setPhoneNumber(newUser.getPhoneNumber())
-          .build();
-
-        // userCapabilityDataObjects.put("AbliiPrivacyPolicy", privacyPolicy);
-        // userCapabilityDataObjects.put("AbliiTermsAndConditions", termsAndConditions);
-        userCapabilityDataObjects.put("User Registration", registrationData);
-        userCapabilityDataObjects.put("Nanopay Admission", null);
-        userCapabilityDataObjects.put("API Onboarding User and Business", null);
-
-        CapabilityPayload userCapPayload = new CapabilityPayload.Builder(x)
-          .setId("B98D97EE-4A43-4B03-84C1-9DE2C0109E87")
-          .setCapabilityDataObjects(new HashMap<String,FObject>(userCapabilityDataObjects))
-          .build();
-        userCapPayload = (CapabilityPayload) capabilityPayloadDAO.put(userCapPayload);
-
-        // Query the capabilityPayloadDAO to see what capabilities are still required
-        CapabilityPayload missingPayloads = (CapabilityPayload) capabilityPayloadDAO.find("B98D97EE-4A43-4B03-84C1-9DE2C0109E87");
-
-        // set the remain capabilities to be satisfied
-        request.setMissingUserCapabilityDataObjects(missingPayloads.getCapabilityDataObjects());
-      `
-    },
-    {
       name: 'onboardBusiness',
       args: [
         { name: 'x', type: 'Context' },
@@ -480,99 +390,43 @@ foam.CLASS({
         AgentAuthService agentAuth = (AgentAuthService) x.get("agentAuth");
         DAO accountDAO = (DAO) x.get("accountDAO");
         DAO businessDAO = (DAO) x.get("businessDAO");
-        DAO capabilityPayloadDAO = (DAO) x.get("capabilityPayloadDAO");
-
-        Map<String,FObject> businessCapabilityDataObjects = new HashMap<>();
 
         User user = request.findUser(x);
         if ( user == null ) {
           throw new RuntimeException("User not found for business setup");
         }
 
+        // Switch contexts to the newly created user
+        Subject newSubject = new Subject.Builder(x).setUser(newUser).build();
+        X subjectX = getX().put("subject", newSubject);
+
         HolderModel holder = accountDetail.getHolder();
         AddressModel holderAddress = holder.getAddress();
 
-        InitialBusinessData initialBusinessData = new InitialBusinessData.Builder(x)
-          .setCompanyPhone(user.getPhoneNumber())
-          .setEmail(holder.getEmail())
-          .setSignInAsBusiness(false)
+        BusinessDetailData businessDetailData = new BusinessDetailData.Builder(subjectX)
+          .setBusinessName(holder.getName())
+          .setPhoneNumber(user.getPhoneNumber())
           .setAddress(user.getAddress())
           .setMailingAddress(user.getAddress())
-          .build();
-
-        // TODO: send this capability in as the user to create the business
-        // Query for the business that was created
-        Business business = (Business) businessDAO.find(0);
-        if ( business != null ) {
-          request.setBusiness(business.getId());
-        }
-
-        // TODO: actAs the business for the rest of the code in this method
-
-        SigningOfficerQuestion officerQuestion = new SigningOfficerQuestion.Builder(x)
-          .setIsSigningOfficer(true)
-          .setSigningOfficerEmail(holder.getEmail())
-          .build();
-        SigningOfficerPersonalData soPersonalData = new SigningOfficerPersonalData.Builder(x)
-          .setCountryId(holderAddress.getCountry())
-          .setAddress(user.getAddress())
-          .setPhoneNumber(user.getPhoneNumber())
-          .build();
-
-        // TODO: set this with SecureFact LEV API call
-        BusinessOwnershipData businessOwnershipData = new BusinessOwnershipData.Builder(x)
-          .setAmountOfOwners(1)
-          .setPubliclyTraded(false)
-          .setOwnerSelectionsValidated(true)
-          .build();
-        BusinessInformationData businessInfoData = new BusinessInformationData.Builder(x)
-          .setBusinessTypeId(1)
-          .setBusinessSectorId(1)
-          .setOperatingUnderDifferentName(false)
-          .build();
-        SuggestedUserTransactionInfo txnInfo = new SuggestedUserTransactionInfo.Builder(x)
-          .setBaseCurrency(accountDetail.getCurrency())
-          .build();
-        TransactionDetailsData txnDetailsData = new TransactionDetailsData.Builder(x)
-          .setSuggestedUserTransactionInfo(txnInfo)
-          .build();
-        BusinessDirectorsData businessDirectorsData = new BusinessDirectorsData.Builder(x)
-          .setBusinessTypeId(1)
-          .build();
-        CertifyDirectorsListed certifyDirectorsListed = new CertifyDirectorsListed.Builder(x)
-          .setAgreement(true)
-          .build();
-        CertifyOwnersPercent certifyPercent = new CertifyOwnersPercent.Builder(x)
-          .setAgreement(true)
-          .build();
-        CertifyDataReviewed certifyData = new CertifyDataReviewed.Builder(x)
-          .setReviewed(true)
-          .build();
-        DualPartyAgreementCAD dualPartyAgreement = new DualPartyAgreementCAD.Builder(x)
-          .setAgreement(true)
+          .setEmail(holder.getEmail())
           .build();
         
         // Create the capabilities data map
-        businessCapabilityDataObjects.put("Business Registration", initialBusinessData);
-        businessCapabilityDataObjects.put("Signing Officer", officerQuestion);
-        businessCapabilityDataObjects.put("Business Owner Information", businessOwnershipData);
-        businessCapabilityDataObjects.put("CertifyDirectorsListed", certifyDirectorsListed);
-        businessCapabilityDataObjects.put("Business Details", businessInfoData);
-        businessCapabilityDataObjects.put("Signing Officer Privileges", soPersonalData);
-        businessCapabilityDataObjects.put("Signing Officer Date of Birth", null);
-        businessCapabilityDataObjects.put("Unlock Domestic Payments and Invoicing", null);
-        businessCapabilityDataObjects.put("Transaction Details", txnInfo);
-        businessCapabilityDataObjects.put("Business Directors Data", businessDirectorsData);
-        businessCapabilityDataObjects.put("CertifyOwnersPercent", certifyPercent);
-        businessCapabilityDataObjects.put("DualPartyAgreementCAD", dualPartyAgreement);
-        businessCapabilityDataObjects.put("Certify Data Reviewed", certifyData);
-        businessCapabilityDataObjects.put("API Onboarding Business Payments (CAD to CAD)", null);
+        Map<String,FObject> businessCapabilityDataObjects = new HashMap<>();
+        businessCapabilityDataObjects.put("Business Onboarding Details", businessDetailData);
 
-        CapabilityPayload businessCapPayload = new CapabilityPayload.Builder(x)
-          .setId("CD499238-7854-4125-A04D-7CE7EE15BC74")
+        CapabilityPayload businessCapPayload = new CapabilityPayload.Builder(subjectX)
+          .setId("EC535109-E9C0-4B5D-8D24-31282EF72F8F")
           .setCapabilityDataObjects(new HashMap<String,FObject>(businessCapabilityDataObjects))
           .build();
-        capabilityPayloadDAO.put(businessCapPayload);
+        DAO capabilityPayloadDAO = (DAO) subjectX.get("capabilityPayloadDAO");
+        capabilityPayloadDAO.inX(subjectX).put(businessCapPayload);
+
+        // TODO: Query LEV
+        // TODO: Get business type (sole, corp, etc.)
+        // TODO: Get signing officers
+        // TODO: Get directors
+        // TODO: Get owners
       `
     }
   ]
