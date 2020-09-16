@@ -1261,7 +1261,6 @@ var classes = [
   'net.nanopay.crunch.registration.UserRegistrationData',
 
   // crunch documents
-  'net.nanopay.crunch.document.Documents',
   'net.nanopay.crunch.document.Document',
 
   // crunch wizardlet

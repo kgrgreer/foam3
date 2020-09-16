@@ -1578,7 +1578,6 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerCapabilityInterceptPredicate' },
   { name: 'net/nanopay/crunch/onboardingModels/UserIsSigningOfficerOfBusiness' },
   { name: 'net/nanopay/crunch/onboardingModels/UserBirthDateData' },
-  { name: 'net/nanopay/crunch/document/Documents' },
   { name: 'net/nanopay/crunch/document/Document' },
 
   // crunch notification
@@ -1628,10 +1627,6 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/USCancellationAgreement' },
   { name: 'net/nanopay/crunch/acceptanceDocuments/BaseAcceptanceDocumentCapability' },
 
-  // crunch document
-  { name: 'net/nanopay/crunch/document/Document' },
-  { name: 'net/nanopay/crunch/document/Documents' },
-
   // wizardlets
   { name: 'net/nanopay/crunch/wizardlet/RefreshWizardlet' },
   { name: 'net/nanopay/crunch/wizardlet/SigningOfficerQuestionWizardlet' },
@@ -1670,8 +1665,4 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/tx/TrevisoCreateExchange' },
   { name: 'net/nanopay/partner/treviso/tx/TrevisoLineItemsFromFXSummary' },
   { name: 'net/nanopay/partner/treviso/TrevisoUnlockPaymentTermsAndConditions' },
-
-  // crunch document
-  { name: 'net/nanopay/crunch/document/Documents' },
-  { name: 'net/nanopay/crunch/document/Document' },
 ]);

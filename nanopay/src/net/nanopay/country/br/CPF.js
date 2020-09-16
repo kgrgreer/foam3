@@ -44,7 +44,8 @@ foam.CLASS({
   sections: [
     {
       name: 'collectCpf',
-      title: 'Enter your CPF'
+      title: 'Enter your CPF',
+      help: 'Require your CPF'
     }
   ],
 
