@@ -17,10 +17,19 @@
 
 foam.CLASS({
   package: 'net.nanopay.crunch.registration',
-  name: 'BusinessNameAware',
+  name: 'NamedBusiness',
   abstract: true,
 
   properties: [
-    net.nanopay.model.Business.BUSINESS_NAME.clone().copyFrom()
+    net.nanopay.model.Business.BUSINESS_NAME.clone().copyFrom(),
+    
+    // Question: does this affect the copying to the business record?
+    {
+      class: 'Reference',
+      name: 'business',
+      targetDAOKey: 'businessDAO',
+      of: 'net.nanopay.model.Business',
+      documentation: 'Associated business'
+    }
   ]
 });

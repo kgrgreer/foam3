@@ -55,9 +55,9 @@ foam.CLASS({
           throw new IllegalStateException("Business does not exist: " + getBusiness());
         }
 
-        // There must be at least one owner
+        // There is no minimum for owners
         if ( getBusinessOwners().length == 0 ) {
-          throw new IllegalStateException("Business owners empty");
+          return;
         }
 
         // Validate the owners individually

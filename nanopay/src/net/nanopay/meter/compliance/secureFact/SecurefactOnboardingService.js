@@ -19,23 +19,23 @@
    package: 'net.nanopay.meter.compliance.secureFact',
    name: 'SecurefactOnboardingService',
 
-   documentation: `Securefact service for business onboarding via FlinksLoginId object.`,
+   documentation: `Securefact service for filling business onboarding details.`,
 
    javaImports: [
      'foam.core.FObject',
-     'foam.nanos.crunch.connection.CapabilityPayload',
      'foam.dao.DAO',
      'foam.nanos.auth.Subject',
      'foam.nanos.auth.User',
      'foam.nanos.logger.Logger',
+     'foam.util.SafetyUtil',
      'java.util.ArrayList',
      'java.util.HashMap',
      'java.util.List',
      'java.util.Map',
      'net.nanopay.crunch.registration.BusinessDirectorList',
      'net.nanopay.crunch.registration.BusinessOwnerList',
+     'net.nanopay.crunch.registration.BusinessTypeData',
      'net.nanopay.crunch.registration.SigningOfficerList',
-     'net.nanopay.flinks.external.FlinksLoginId',
      'net.nanopay.meter.compliance.secureFact.SecurefactService',
      'net.nanopay.meter.compliance.secureFact.lev.LEVResponse',
      'net.nanopay.meter.compliance.secureFact.lev.LEVResult',
@@ -44,12 +44,13 @@
      'net.nanopay.meter.compliance.secureFact.lev.document.LEVDocumentParty',
      'net.nanopay.model.BeneficialOwner',
      'net.nanopay.model.Business',
-     'net.nanopay.model.BusinessDirector'
+     'net.nanopay.model.BusinessDirector',
+     'net.nanopay.model.SigningOfficer',
    ],
 
    methods: [
      {
-       name: 'onboardLEVParties',
+       name: 'retrieveLEVCapabilityPayloads',
        type: 'java.util.Map',
        args: [
          {
@@ -57,25 +58,19 @@
            type: 'Context'
          },
          {
-           name: 'flinksLoginId',
-           type: 'net.nanopay.flinks.external.FlinksLoginId'
+           name: 'business',
+           type: 'net.nanopay.model.Business'
          }
        ],
        javaCode: `
-        DAO capabilityPayloadDAO = (DAO) x.get("capabilityPayloadDAO");
-        DAO userDAO = (DAO) x.get("localUserDAO");
-        SecurefactService securefactService = (SecurefactService) x.get("securefactService");
-        Business business = flinksLoginId.findBusiness(x);
         Map<String,FObject> partiesCapabilityDataObjects = new HashMap<>();
-        Map<String,FObject> directorsCapabilityDataObjects = new HashMap<>();
-        Map<String,FObject> officersCapabilityDataObjects = new HashMap<>();
-        Map<String,FObject> ownersCapabilityDataObjects = new HashMap<>();
-
+        
         if ( business == null ) {
-          throw new RuntimeException("SecurefactOnboardingService: Business is null from flinksLoginId object.");
+          throw new RuntimeException("Business is required for LEV document retrieval.");
         }
 
         try {
+          SecurefactService securefactService = (SecurefactService) x.get("securefactService");
           LEVResponse response = securefactService.levSearch(x, business);
           LEVResult[] results = response.getResults();
           LEVResult chosenResult = null;
@@ -87,84 +82,127 @@
             }
           }
 
-          if ( chosenResult != null ) {
-            LEVDocumentOrderResponse orderResponse = securefactService.levDocumentOrder(x, chosenResult.getResultId());
-            LEVDocumentDataResponse dataResponse = securefactService.levDocumentData(x, orderResponse.getOrderId());
-            LEVDocumentParty[] parties = dataResponse.getParties();
-
-            List<BusinessDirector> directorsList = new ArrayList<>();
-            ArrayList<Long> officerIdList = new ArrayList<>();
-            List<BeneficialOwner> ownersList = new ArrayList<>();
-            for ( int i = 0; i < parties.length; i++ ) {
-              LEVDocumentParty party = parties[i];
-              if ( party.getDesignation().equals("Director") ) {
-                BusinessDirector businessDirector = new BusinessDirector.Builder(x)
-                  .setType(party.getType())
-                  .setFirstName(party.getFirstName())
-                  .setLastName(party.getLastName())
-                  .build();
-                directorsList.add(businessDirector);
-              } else if ( party.getDesignation().equals("Officer") ) {
-                User signingOfficer = new User.Builder(x)
-                  .setFirstName(party.getFirstName())
-                  .setLastName(party.getLastName())
-                  .build();
-                signingOfficer = (User) userDAO.put(signingOfficer);
-                officerIdList.add(signingOfficer.getId());
-              } else if ( party.getDesignation().equals("Shareholder") ) {
-                BeneficialOwner owner = new BeneficialOwner.Builder(x)
-                  .setFirstName(party.getFirstName())
-                  .setLastName(party.getLastName())
-                  .build();
-                ownersList.add(owner);
-              }
-            }
-
-            BusinessDirector[] businessDirectorsArray = new BusinessDirector[directorsList.size()];
-            businessDirectorsArray = directorsList.toArray(businessDirectorsArray);
-            BusinessDirectorList businessDirectorList = new BusinessDirectorList.Builder(x)
-              .setBusiness(business.getId())
-              .setBusinessDirectors(businessDirectorsArray)
-              .build();
-
-            SigningOfficerList signingOfficerList = new SigningOfficerList.Builder(x)
-              .setBusiness(business.getId())
-              .setSigningOfficers(officerIdList)
-              .build();
-            
-            BeneficialOwner[] ownersArray = new BeneficialOwner[ownersList.size()];
-            ownersArray = ownersList.toArray(ownersArray);
-            BusinessOwnerList beneficialOwnerList = new BusinessOwnerList.Builder(x)
-              .setBusiness(business.getId())
-              .setBusinessOwners(ownersArray)
-              .build();
-
-            directorsCapabilityDataObjects.put("Business Directors", businessDirectorList);
-            CapabilityPayload businessDirectorsCapPayload = new CapabilityPayload.Builder(x)
-              .setId("F1359801-7D71-4F30-8D36-531B4A674981")
-              .setCapabilityDataObjects(directorsCapabilityDataObjects)
-              .build();
-            
-            officersCapabilityDataObjects.put("Signing Officers", signingOfficerList);
-            CapabilityPayload signingOfficersCapPayload = new CapabilityPayload.Builder(x)
-              .setId("A285FDFA-3C6B-4150-A0F4-B72E664A3A9E")
-              .setCapabilityDataObjects(officersCapabilityDataObjects)
-              .build();
-
-            ownersCapabilityDataObjects.put("Business Owners", beneficialOwnerList);
-            CapabilityPayload businessOwnersCapPayload = new CapabilityPayload.Builder(x)
-              .setId("6DD8D005-7514-432D-BC32-9C5D569A0462")
-              .setCapabilityDataObjects(ownersCapabilityDataObjects)
-              .build();
-
-            capabilityPayloadDAO.inX(x).put(businessDirectorsCapPayload);
-            capabilityPayloadDAO.inX(x).put(signingOfficersCapPayload);
-            capabilityPayloadDAO.inX(x).put(businessOwnersCapPayload);
-
-            partiesCapabilityDataObjects.put("Business Directors", businessDirectorList);
-            partiesCapabilityDataObjects.put("Signing Officers", signingOfficerList);
-            partiesCapabilityDataObjects.put("Business Owners", beneficialOwnerList);
+          // Check if any results were chosen
+          if ( chosenResult == null ) {
+            return partiesCapabilityDataObjects;
           }
+
+          // Get the business type
+          String normalizedEntityType = chosenResult.getNormalizedEntityType();
+          if ( SafetyUtil.isEmpty(normalizedEntityType) ) {
+            throw new RuntimeException("Business type cannot be determined. LEV normalized entity type not supplied");
+          }
+
+          int businessTypeId = 0;
+          if ( SafetyUtil.equals(normalizedEntityType, "Sole Proprietorship") ||
+               SafetyUtil.equals(normalizedEntityType, "Trade Name") ||
+               SafetyUtil.equals(normalizedEntityType, "Sole Proprietorship/Trade Name") ||
+               SafetyUtil.equals(normalizedEntityType, "Sole Proprietorship/Partnership") ) {
+            businessTypeId = 1;
+          }
+          else if ( SafetyUtil.equals(normalizedEntityType, "Partnership") ||
+                    SafetyUtil.equals(normalizedEntityType, "Partnership/Sole Proprietorship/Trade Name") ) {
+            businessTypeId = 2;
+          }
+          else if ( SafetyUtil.equals(normalizedEntityType, "Corporation") )
+          {
+            businessTypeId = 3;
+          }
+          else {
+            throw new RuntimeException("Unexpected normalized entity type from LEV: " + normalizedEntityType);
+          }
+          BusinessTypeData businessTypeData = new BusinessTypeData.Builder(x)
+            .setBusinessTypeId(businessTypeId)
+            .build();
+          partiesCapabilityDataObjects.put("Business Type", businessTypeData);
+          
+          // Only need to collect more information when the business is a corporation
+          if ( businessTypeId != 3 ) {
+            partiesCapabilityDataObjects.put("Extra Business Type Data Not Required", null);
+            return partiesCapabilityDataObjects;
+          }
+
+          // For corporations, director and owner information must be collected
+          partiesCapabilityDataObjects.put("Extra Business Type Data Required", null);
+
+          // Create a document order
+          LEVDocumentOrderResponse orderResponse = securefactService.levDocumentOrder(x, chosenResult.getResultId());
+          
+          // Retrieve document data
+          LEVDocumentDataResponse dataResponse = null;
+          do {
+            if ( dataResponse != null ) {
+              Thread.sleep(1000);
+            }
+            dataResponse = securefactService.levDocumentData(x, orderResponse.getOrderId());
+
+            // TODO: add timeout after 2-5 minutes?
+          } while ( dataResponse != null && dataResponse.getStatus() == "In Progress" );
+          
+          if ( SafetyUtil.equals(dataResponse.getStatus(), "Cancelled") ) {
+            throw new RuntimeException("Company data failed LEV document lookup");
+          }
+
+          // Process the parties
+          LEVDocumentParty[] parties = dataResponse.getParties();
+          if ( parties == null || parties.length == 0 ) {
+            return partiesCapabilityDataObjects;
+          }
+
+          List<SigningOfficer> officerList = new ArrayList<>();
+          List<BeneficialOwner> ownersList = new ArrayList<>();
+          List<BusinessDirector> directorsList = new ArrayList<>();
+          for ( int i = 0; i < parties.length; i++ ) {
+            LEVDocumentParty party = parties[i];
+            if ( party.getDesignation().equals("Director") ) {
+              BusinessDirector businessDirector = new BusinessDirector.Builder(x)
+                .setType(party.getType())
+                .setFirstName(party.getFirstName())
+                .setLastName(party.getLastName())
+                .build();
+              directorsList.add(businessDirector);
+            } else if ( party.getDesignation().equals("Officer") ) {
+              SigningOfficer signingOfficer = new SigningOfficer.Builder(x)
+                .setFirstName(party.getFirstName())
+                .setLastName(party.getLastName())
+                .setPosition(party.getPosition())
+                .build();
+              officerList.add(signingOfficer);
+            } else if ( party.getDesignation().equals("Shareholder") ) {
+              BeneficialOwner owner = new BeneficialOwner.Builder(x)
+                .setFirstName(party.getFirstName())
+                .setLastName(party.getLastName())
+                .setJobTitle(party.getPosition())
+                .setShowValidation(false) // prevent validation on the benefial owner for now
+                .build();
+              ownersList.add(owner);
+            }
+          }
+
+          BusinessDirector[] businessDirectorsArray = new BusinessDirector[directorsList.size()];
+          businessDirectorsArray = directorsList.toArray(businessDirectorsArray);
+          BusinessDirectorList businessDirectorList = new BusinessDirectorList.Builder(x)
+            .setBusiness(business.getId())
+            .setBusinessDirectors(businessDirectorsArray)
+            .build();
+          
+          BeneficialOwner[] ownersArray = new BeneficialOwner[ownersList.size()];
+          ownersArray = ownersList.toArray(ownersArray);
+          BusinessOwnerList beneficialOwnerList = new BusinessOwnerList.Builder(x)
+            .setBusiness(business.getId())
+            .setBusinessOwners(ownersArray)
+            .build();
+
+          SigningOfficer[] signingOfficersArray = new SigningOfficer[officerList.size()];
+          signingOfficersArray = officerList.toArray(signingOfficersArray);
+          SigningOfficerList signingOfficerList = new SigningOfficerList.Builder(x)
+            .setBusiness(business.getId())
+            .setSigningOfficers(signingOfficersArray)
+            .build();
+
+          partiesCapabilityDataObjects.put("Business Directors", businessDirectorList);
+          partiesCapabilityDataObjects.put("Business Owners", beneficialOwnerList);
+          partiesCapabilityDataObjects.put("Signing Officers", signingOfficerList);
         } catch (Exception e) {
           ((Logger) x.get("logger")).warning("SecurefactOnboardingService failed.", e);
         }

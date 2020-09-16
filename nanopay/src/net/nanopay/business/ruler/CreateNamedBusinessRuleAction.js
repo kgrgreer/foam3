@@ -34,7 +34,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.nanos.logger.Logger',
-    'net.nanopay.crunch.registration.BusinessNameAware',
+    'net.nanopay.crunch.registration.NamedBusiness',
     'net.nanopay.model.Business'
   ],
 
@@ -61,19 +61,24 @@ foam.CLASS({
 
           if ( ucj.getStatus() != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) return;
 
-          BusinessNameAware businessNameData = (BusinessNameAware) ((UserCapabilityJunction) obj).getData();
+          NamedBusiness namedBusinessData = (NamedBusiness) ((UserCapabilityJunction) obj).getData();
 
           // Create business with minimal information
           Business business = new Business.Builder(x)
-            .setBusinessName(businessNameData.getBusinessName())
-            .setOrganization(businessNameData.getBusinessName())
+            .setBusinessName(namedBusinessData.getBusinessName())
+            .setOrganization(namedBusinessData.getBusinessName())
             .setSpid(user.getSpid())
             .build();
           
           try {
             DAO localUserDAO = (DAO) x.get("localUserDAO");
             business = (Business) localUserDAO.inX(x).put(business);
+            
+            // Set the business as the source on the UCJ
             ucj.setSourceId(business.getId());
+
+            // Set the business reference on the UCJ payload
+            namedBusinessData.setBusiness(business.getId());
           } catch (Exception e) {
             ((Logger) x.get("logger")).warning(e);
             throw new Error(BUSINESS_CREATE_ERROR);

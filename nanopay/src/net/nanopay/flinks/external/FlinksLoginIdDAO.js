@@ -47,6 +47,7 @@ foam.CLASS({
     'net.nanopay.crunch.registration.PersonalOnboardingTypeData',
     'net.nanopay.crunch.registration.UserRegistrationData',
     'net.nanopay.crunch.registration.UserDetailData',
+    'net.nanopay.crunch.registration.UserDetailExpandedData',
     'net.nanopay.flinks.FlinksAuth',
     'net.nanopay.flinks.FlinksResponseService',
     'net.nanopay.flinks.model.AddressModel',
@@ -55,6 +56,7 @@ foam.CLASS({
     'net.nanopay.flinks.model.FlinksResponse',
     'net.nanopay.flinks.model.LoginModel',
     'net.nanopay.flinks.model.HolderModel',
+    'net.nanopay.meter.compliance.secureFact.SecurefactOnboardingService',
     'net.nanopay.model.Business',
     'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
     'static foam.mlang.MLang.*'
@@ -346,7 +348,7 @@ foam.CLASS({
           .build();
         PersonalOnboardingTypeData onboardingTypeData = new PersonalOnboardingTypeData.Builder(subjectX)
           .setUser(user.getId())
-          .setFlinksLoginType(request.getOnboardingType() != OnboardingType.BUSINESS ? loginDetail.getType() : "Business")
+          .setFlinksLoginType(request.getType() != OnboardingType.BUSINESS ? loginDetail.getType() : "Business")
           .build();
 
         userCapabilityDataObjects.put("AbliiPrivacyPolicy", privacyPolicy);
@@ -411,27 +413,59 @@ foam.CLASS({
         Map<String,FObject> businessCapabilityDataObjects = new HashMap<>();
         businessCapabilityDataObjects.put("Business Onboarding Details", businessDetailData);
 
+        // Business creation capability
         CapabilityPayload businessCapPayload = new CapabilityPayload.Builder(subjectX)
           .setId("EC535109-E9C0-4B5D-8D24-31282EF72F8F")
           .setCapabilityDataObjects(new HashMap<String,FObject>(businessCapabilityDataObjects))
           .build();
         DAO capabilityPayloadDAO = (DAO) subjectX.get("capabilityPayloadDAO");
-        capabilityPayloadDAO.inX(subjectX).put(businessCapPayload);
+        businessCapPayload = (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).put(businessCapPayload);
 
-        // Query for business
-        DAO businessDAO = (DAO) subjectX.get("businessDAO");
-        List businesses = ((ArraySink) businessDAO.inX(subjectX).select(new ArraySink())).getArray();
-        if ( businesses.size() == 0 ) {
-          throw new RuntimeException("Business not created");
+        businessDetailData = (BusinessDetailData) businessCapPayload.getCapabilityDataObjects().get("Business Onboarding Details");
+        Business business = businessDetailData.findBusiness(subjectX);
+        if ( business == null ) {
+          throw new RuntimeException("Failed to create business during onboarding with Flinks");
         }
-        Business business = (Business) businesses.get(0);
+        
+        // Set the business on the request
         request.setBusiness(business.getId());
+        
+        UserDetailExpandedData userDetailsExpanded = new UserDetailExpandedData.Builder(x).build();
+        AbliiPrivacyPolicy privacyPolicy = new AbliiPrivacyPolicy.Builder(subjectX)
+          .setAgreement(false)
+          .build();
+        AbliiTermsAndConditions termsAndConditions = new AbliiTermsAndConditions.Builder(subjectX)
+          .setAgreement(false)
+          .build();
 
-        // TODO: Query LEV
-        // TODO: Get business type (sole, corp, etc.)
-        // TODO: Get signing officers
-        // TODO: Get directors
-        // TODO: Get owners
+        SecurefactOnboardingService securefactOnboardingService = (SecurefactOnboardingService) x.get("securefactOnboardingService");
+        if ( securefactOnboardingService == null ) {
+          throw new RuntimeException("Cannot find securefactOnboardingService");
+        }
+      
+        // Reset the capability data object
+        businessCapabilityDataObjects = null;
+        businessCapabilityDataObjects = securefactOnboardingService.retrieveLEVCapabilityPayloads(x, business);
+        businessCapabilityDataObjects.put("User Signing Officer Capability", null);
+        businessCapabilityDataObjects.put("AbliiPrivacyPolicy", privacyPolicy);
+        businessCapabilityDataObjects.put("AbliiTermsAndConditions", termsAndConditions);
+        businessCapabilityDataObjects.put("Simple User Onboarding", null);
+        businessCapabilityDataObjects.put("Expanded User Details", userDetailsExpanded);
+        businessCapabilityDataObjects.put("API CAD Business Payments Receiving", null);
+
+        // Business CAD payments capability
+        String capabilityId = "18DD6F03-998F-4A21-8938-358183151F96";
+        businessCapPayload = new CapabilityPayload.Builder(subjectX)
+          .setId(capabilityId)
+          .setCapabilityDataObjects(new HashMap<String,FObject>(businessCapabilityDataObjects))
+          .build();
+        businessCapPayload = (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).put(businessCapPayload);
+
+        // Query the capabilityPayloadDAO to see what capabilities are still required
+        CapabilityPayload missingPayloads = (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).find(capabilityId);
+
+        // set the remain capabilities to be satisfied
+        request.setMissingBusinessCapabilityDataObjects(missingPayloads.getCapabilityDataObjects());
       `
     }
   ]

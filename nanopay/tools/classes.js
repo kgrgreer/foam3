@@ -161,6 +161,7 @@ var classes = [
   'net.nanopay.model.IdentificationType',
   'net.nanopay.model.PersonalIdentification',
   'net.nanopay.model.JobTitle',
+  'net.nanopay.model.SigningOfficer',
   'net.nanopay.bank.BankHoliday',
   'net.nanopay.bank.BankHolidayService',
   'net.nanopay.bank.test.USBankAccountTest',
@@ -1273,9 +1274,9 @@ var classes = [
   // crunch registration
   'net.nanopay.crunch.registration.BusinessDetailData',
   'net.nanopay.crunch.registration.BusinessDirectorList',
-  'net.nanopay.crunch.registration.BusinessNameAware',
   'net.nanopay.crunch.registration.BusinessOwnerList',
   'net.nanopay.crunch.registration.BusinessTypeData',
+  'net.nanopay.crunch.registration.NamedBusiness',
   'net.nanopay.crunch.registration.PersonalOnboardingTypeData',
   'net.nanopay.crunch.registration.SigningOfficerList',
   'net.nanopay.crunch.registration.UserRegistrationData',

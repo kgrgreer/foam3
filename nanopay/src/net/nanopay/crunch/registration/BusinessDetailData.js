@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.crunch.registration',
   name: 'BusinessDetailData',
-  extends: 'net.nanopay.crunch.registration.BusinessNameAware',
+  extends: 'net.nanopay.crunch.registration.NamedBusiness',
 
   documentation: `This model represents the basic info of a Business that must be collect for onboarding.`,
   

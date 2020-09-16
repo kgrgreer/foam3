@@ -40,14 +40,10 @@ foam.CLASS({
       documentation: 'Onboarded business'
     },
     {
-      class: 'List',
+      class: 'FObjectArray',
       name: 'signingOfficers',
-      documentation: 'List of user that are signing officers.',
-      javaType: 'java.util.ArrayList<java.lang.Long>',
-      view: {
-        class: 'foam.u2.view.ReferenceArrayView',
-        daoKey: 'userDAO'
-      }
+      of: 'net.nanopay.model.SigningOfficer',
+      documentation: 'Array of signing officers.'
     }
   ],
   
@@ -61,21 +57,17 @@ foam.CLASS({
           throw new IllegalStateException("Business does not exist: " + getBusiness());
         }
 
-        // There must be at least one director
-        if ( getSigningOfficers().size() == 0 ) {
-          throw new IllegalStateException("Signing officers empty");
+        // There is no minimum for signing officers
+        if ( getSigningOfficers().length == 0 ) {
+          return;
         }
 
-        // Validate the directors individually
-        DAO userDAO = (DAO) x.get("localUserDAO");
-        for ( Long userId : getSigningOfficers() ) 
+        // Validate the owners individually
+        for ( net.nanopay.model.SigningOfficer officer : getSigningOfficers() ) 
         {
-          if (userDAO.find(userId) == null) {
-            throw new IllegalArgumentException(userId + " not found for signing officer for business " + getBusiness());
-          }
+          officer.validate(x);  
         }
       `
     }
   ]
 });
-  
