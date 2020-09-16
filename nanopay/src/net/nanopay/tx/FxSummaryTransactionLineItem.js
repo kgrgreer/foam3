@@ -41,7 +41,8 @@ foam.CLASS({
       class: 'DateTime',
       name: 'expiry',
       label: 'Expires',
-      hidden: true
+      hidden: true,
+      javaFactory: 'return new java.util.Date();'
     }
   ],
 
