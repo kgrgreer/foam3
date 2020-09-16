@@ -88,7 +88,7 @@ foam.CLASS({
       readVisibility: 'RO',
       updateVisibility: 'RO',
       section: 'userAgreementDocumentsSection',
-      digTransient: true
+      externalTransient: true
     },
     {
       class: 'Reference',
@@ -98,7 +98,7 @@ foam.CLASS({
       updateVisibility: 'RO',
       documentation: 'Business who created the entry',
       section: 'userAgreementDocumentsSection',
-      digTransient: true
+      externalTransient: true
     },
     {
       class: 'String',
@@ -106,7 +106,7 @@ foam.CLASS({
       readVisibility: 'RO',
       updateVisibility: 'RO',
       section: 'userAgreementDocumentsSection',
-      digTransient: true
+      externalTransient: true
     },
     {
       class: 'String',
@@ -127,7 +127,7 @@ foam.CLASS({
         this.add(date ? date.toISOString().substring(0, 10) : '');
       },
       section: 'userAgreementDocumentsSection',
-      digTransient: true
+      externalTransient: true
     },
     {
       class: 'String',
@@ -143,7 +143,7 @@ foam.CLASS({
       readVisibility: 'RO',
       documentation: 'Type of transaction that acceptance document applies to. This also identifies the Payment Provider',
       section: 'uiAgreementDocumentsSection',
-      digTransient: true
+      externalTransient: true
     },
     {
       class: 'String',
@@ -152,7 +152,7 @@ foam.CLASS({
       readVisibility: 'RO',
       documentation: 'Link to the document ',
       section: 'uiAgreementDocumentsSection',
-      digTransient: true
+      externalTransient: true
     },
     {
       class: 'String',
@@ -161,7 +161,7 @@ foam.CLASS({
       readVisibility: 'RO',
       documentation: 'Text to be displayed for checkbox',
       section: 'uiAgreementDocumentsSection',
-      digTransient: true
+      externalTransient: true
     },
     {
       class: 'String',
@@ -169,7 +169,7 @@ foam.CLASS({
       value: 'n/a',
       readVisibility: 'RO',
       section: 'uiAgreementDocumentsSection',
-      digTransient: true
+      externalTransient: true
     },
     {
       class: 'String',
@@ -177,7 +177,7 @@ foam.CLASS({
       value: 'n/a',
       readVisibility: 'RO',
       section: 'uiAgreementDocumentsSection',
-      digTransient: true
+      externalTransient: true
     },
     {
       class: 'String',
@@ -187,7 +187,7 @@ foam.CLASS({
       documentation: 'Template body',
       view: { class: 'net.nanopay.documents.ui.AcceptanceDocumentView' },
       section: 'uiAgreementDocumentsSection',
-      digTransient: true
+      externalTransient: true
     }
   ],
 
