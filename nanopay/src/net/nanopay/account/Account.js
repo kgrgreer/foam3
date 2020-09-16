@@ -309,7 +309,10 @@ foam.CLASS({
             exchangeFormat = ert.exchangeFormat(denomination, homeDenomination, getBalance());
           } catch(Throwable t) {
             Logger logger = (Logger) getX().get("logger");
-            logger.error(t);
+            // TODO: Investigate why logger is null
+            if ( logger != null ) {
+              logger.error(t);
+            }
           }
           if ( exchangeFormat == null )
             return "";
