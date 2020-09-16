@@ -1338,6 +1338,7 @@ FOAM_FILES([
 
   // securefact
   { name: 'net/nanopay/meter/compliance/secureFact/ResponseError' },
+  { name: 'net/nanopay/meter/compliance/secureFact/SecurefactOnboardingService' },
   { name: 'net/nanopay/meter/compliance/secureFact/SecurefactRequest' },
   { name: 'net/nanopay/meter/compliance/secureFact/SecurefactResponse' },
   { name: 'net/nanopay/meter/compliance/secureFact/SecurefactService' },
@@ -1357,6 +1358,19 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/secureFact/lev/LEVRequest' },
   { name: 'net/nanopay/meter/compliance/secureFact/lev/LEVResponse' },
   { name: 'net/nanopay/meter/compliance/secureFact/lev/LEVResult' },
+
+  // securefact lev document
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/document/LEVDocumentDataEntity' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/document/LEVDocumentDataRequest' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/document/LEVDocumentDataResponse' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/document/LEVDocumentOrderRequest' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/document/LEVDocumentOrderRequest' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/document/LEVDocumentOrderResponse' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/document/LEVDocumentParty' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/document/LEVDocumentPartyShareClass' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/document/LEVEntityAddress' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/document/LEVLastDocumentFiled' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/document/LEVNatureOfBusiness' },
 
   // dow jones
   { name: 'net/nanopay/meter/compliance/dowJones/enums/ContentSet' },

@@ -887,6 +887,7 @@ var classes = [
 
   // securefact
   'net.nanopay.meter.compliance.secureFact.ResponseError',
+  'net.nanopay.meter.compliance.secureFact.SecurefactOnboardingService',
   'net.nanopay.meter.compliance.secureFact.SecurefactRequest',
   'net.nanopay.meter.compliance.secureFact.SecurefactResponse',
   'net.nanopay.meter.compliance.secureFact.SecurefactService',
@@ -906,6 +907,18 @@ var classes = [
   'net.nanopay.meter.compliance.secureFact.lev.LEVRequest',
   'net.nanopay.meter.compliance.secureFact.lev.LEVResponse',
   'net.nanopay.meter.compliance.secureFact.lev.LEVResult',
+
+  // securefact lev document
+  'net.nanopay.meter.compliance.secureFact.lev.document.LEVDocumentDataEntity',
+  'net.nanopay.meter.compliance.secureFact.lev.document.LEVDocumentDataRequest',
+  'net.nanopay.meter.compliance.secureFact.lev.document.LEVDocumentDataResponse',
+  'net.nanopay.meter.compliance.secureFact.lev.document.LEVDocumentOrderRequest',
+  'net.nanopay.meter.compliance.secureFact.lev.document.LEVDocumentOrderResponse',
+  'net.nanopay.meter.compliance.secureFact.lev.document.LEVDocumentParty',
+  'net.nanopay.meter.compliance.secureFact.lev.document.LEVDocumentPartyShareClass',
+  'net.nanopay.meter.compliance.secureFact.lev.document.LEVEntityAddress',
+  'net.nanopay.meter.compliance.secureFact.lev.document.LEVLastDocumentFiled',
+  'net.nanopay.meter.compliance.secureFact.lev.document.LEVNatureOfBusiness',
 
   // dow jones
   'net.nanopay.meter.compliance.dowJones.enums.ContentSet',
