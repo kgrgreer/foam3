@@ -378,6 +378,9 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEXBankUpdatingRule' },
   { name: 'net/nanopay/fx/afex/TransactionInvalidBankAccountRule' },
   { name: 'net/nanopay/fx/afex/TransactionVerifyBankAccountRule' },
+  { name: 'net/nanopay/fx/afex/AFEXFundingTransaction' },
+  { name: 'net/nanopay/fx/afex/AFEXCreateFundingBalancesRule' },
+  { name: 'net/nanopay/fx/afex/AFEXSubmitFundingTxnRule' },
 
   // kotak
   { name: 'net/nanopay/kotak/Kotak' },

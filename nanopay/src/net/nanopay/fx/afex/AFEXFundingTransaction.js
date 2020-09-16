@@ -15,30 +15,41 @@
  * from nanopay Corporation.
  */
 
+/**
+ * @license
+ * Copyright 2018 The FOAM Authors. All Rights Reserved.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 foam.CLASS({
   package: 'net.nanopay.fx.afex',
-  name: 'AFEXSubmitPaymentPredicate',
-  extends: 'foam.mlang.predicate.AbstractPredicate',
-  implements: ['foam.core.Serializable'],
+  name: 'AFEXFundingTransaction',
+  extends: 'net.nanopay.fx.afex.AFEXTransaction',
+  documentation: `Hold AFEX Funding transaction specific properties`,
+
+  implements: [
+    'net.nanopay.tx.PartnerTransaction'
+  ],
 
   javaImports: [
-    'foam.util.SafetyUtil',
-    'static foam.mlang.MLang.*',
-    'net.nanopay.fx.afex.AFEXFundingTransaction',
-    'net.nanopay.fx.afex.AFEXTransaction',
+    'foam.core.X',
+    'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus'
   ],
 
-  methods: [
+  properties: [
     {
-      name: 'f',
-      javaCode: `
-      if ( ! (NEW_OBJ.f(obj) instanceof AFEXTransaction) ) return false;
-      if ( NEW_OBJ.f(obj) instanceof AFEXFundingTransaction ) return false;
-      AFEXTransaction afexTransaction = (AFEXTransaction) NEW_OBJ.f(obj);
-      return afexTransaction.getStatus() == TransactionStatus.PENDING
-        && SafetyUtil.isEmpty( afexTransaction.getReferenceNumber() );
-      `
+      class: 'String',
+      name: 'AccountId',
+    },
+    {
+      class: 'String',
+      name: 'fundingBalanceId',
+      documentation: 'id of the AFEX funding balance response'
+    },
+    {
+      class: 'String',
+      name: 'valueDate'
     }
   ]
 });

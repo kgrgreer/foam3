@@ -9,6 +9,7 @@ import foam.nanos.logger.Logger;
 import java.util.Calendar;
 import java.util.List;
 
+import net.nanopay.fx.afex.AFEXFundingTransaction;
 import net.nanopay.fx.afex.AFEXServiceProvider;
 import net.nanopay.fx.afex.AFEXTransaction;
 import net.nanopay.tx.model.Transaction;
@@ -33,7 +34,10 @@ public class AFEXPaymentStatusCron implements ContextAgent {
     .where(
       AND(
           EQ(Transaction.STATUS, TransactionStatus.SENT),
-          INSTANCE_OF(AFEXTransaction.class)
+          OR(
+            INSTANCE_OF(AFEXTransaction.class),
+            INSTANCE_OF(AFEXFundingTransaction.class)
+          )
         )
       )
     .select(new ArraySink());
@@ -44,7 +48,7 @@ public class AFEXPaymentStatusCron implements ContextAgent {
         if ( transaction.getCompletionDate() != null ) {
           txnCompletionDate.setTime(transaction.getCompletionDate());
           if ( txnCompletionDate.get(Calendar.DAY_OF_YEAR) <= currentDate.get(Calendar.DAY_OF_YEAR) ) {
-            transactionDAO.put(afexServiceProvider.updatePaymentStatus(transaction));
+              transactionDAO.put(afexServiceProvider.updatePaymentStatus(transaction));
           }
         }
       } catch(Throwable t){

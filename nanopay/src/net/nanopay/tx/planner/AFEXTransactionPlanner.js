@@ -34,6 +34,7 @@ foam.CLASS({
     'net.nanopay.fx.afex.AFEXCredentials',
     'net.nanopay.fx.afex.AFEXServiceProvider',
     'net.nanopay.fx.afex.AFEXTransaction',
+    'net.nanopay.fx.afex.AFEXFundingTransaction',
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.fx.ExchangeRateStatus',
     'net.nanopay.fx.FXService',
@@ -116,7 +117,7 @@ foam.CLASS({
             afexTransaction.setSourceAccount(sourceAccount.getId());
             afexTransaction.setDestinationAccount(destinationAccount.getId());
             afexTransaction.setInvoiceId(request.getInvoiceId());
-            summary = getSummaryTx(afexTransaction, sourceAccount, destinationAccount, fxQuote);
+            summary = getSummaryTx(afexTransaction, sourceAccount, destinationAccount, fxQuote, quote);
           }
           
         } catch (Throwable t) {
@@ -194,6 +195,43 @@ foam.CLASS({
       `
     },
     {
+      name: 'createFundingTransaction',
+      args: [
+        {
+          type: 'Transaction',
+          name: 'request'
+        },
+        {
+          type: 'FXQuote',
+          name: 'fxQuote'
+        }
+      ],
+      javaType: 'AFEXFundingTransaction',
+      javaCode: `
+        AFEXFundingTransaction fundingTransaction = new AFEXFundingTransaction();
+  
+        fundingTransaction.copyFrom(request);
+        fundingTransaction.setStatus(TransactionStatus.PENDING);
+        fundingTransaction.setName("AFEX Funding Transaction");
+        fundingTransaction.setFxExpiry(fxQuote.getExpiryTime());
+        fundingTransaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
+        fundingTransaction.setFxRate(fxQuote.getRate());
+        fundingTransaction.setFxExpiry(fxQuote.getExpiryTime());
+        fundingTransaction.setPaymentProvider(PAYMENT_PROVIDER);
+        fundingTransaction.setIsQuoted(true);
+        fundingTransaction.setAmount(fxQuote.getSourceAmount());
+        fundingTransaction.setSourceCurrency(fxQuote.getSourceCurrency());
+        fundingTransaction.setDestinationAmount(fxQuote.getTargetAmount());
+        fundingTransaction.setDestinationCurrency(fxQuote.getTargetCurrency());
+        fundingTransaction.setPlanner(this.getId());
+        fundingTransaction.setIsQuoted(true);
+        fundingTransaction.setValueDate(fxQuote.getValueDate());
+        fundingTransaction.clearLineItems();
+
+        return fundingTransaction;
+      `
+    },
+    {
       name: 'getSummaryTx',
       args: [
         {
@@ -211,7 +249,11 @@ foam.CLASS({
         {
           type: 'FXQuote',
           name: 'fxQuote'
-        }
+        },
+        {
+          type: 'TransactionQuote',
+          name: 'txnQuote'
+        },
       ],
       javaType: 'FXSummaryTransaction',
       javaCode: `
@@ -241,8 +283,15 @@ foam.CLASS({
         afexCT.setIsQuoted(true);
         afexCT.setPayeeId(tx.getPayeeId());
         afexCT.setPayerId(tx.getPayerId());
-        afexCT.addNext(tx);
         afexCT.setPlanner(this.getId());
+
+        if ( txnQuote.getParent() != null ) {
+          AFEXFundingTransaction fundingTxn = createFundingTransaction(tx, fxQuote);
+          afexCT.addNext(fundingTxn);
+          afexCT.addNext(tx);
+        } else {
+          afexCT.addNext(tx);
+        }
         
         summary.addNext(afexCT);
       
