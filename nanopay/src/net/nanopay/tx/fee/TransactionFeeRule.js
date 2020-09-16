@@ -115,6 +115,15 @@ foam.CLASS({
       documentation: 'Set to true if the "rateName" is the inverted rate (converting from destination currency to source currency).'
     },
     {
+      class: 'Reference',
+      of: 'net.nanopay.account.Account',
+      name: 'feeAccount',
+      section: 'basicInfo',
+      documentation: 'Set fee account to create transfers for the fee line item added.',
+      readPermissionRequired: true,
+      writePermissionRequired: true
+    },
+    {
       name: 'priority',
       value: 100,
       visibility: 'HIDDEN'
