@@ -211,20 +211,18 @@ foam.CLASS({
         AFEXFundingTransaction fundingTransaction = new AFEXFundingTransaction();
   
         fundingTransaction.copyFrom(request);
+        fundingTransaction.setId(UUID.randomUUID().toString());
         fundingTransaction.setStatus(TransactionStatus.PENDING);
         fundingTransaction.setName("AFEX Funding Transaction");
         fundingTransaction.setFxExpiry(fxQuote.getExpiryTime());
         fundingTransaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
         fundingTransaction.setFxRate(fxQuote.getRate());
-        fundingTransaction.setFxExpiry(fxQuote.getExpiryTime());
         fundingTransaction.setPaymentProvider(PAYMENT_PROVIDER);
-        fundingTransaction.setIsQuoted(true);
         fundingTransaction.setAmount(fxQuote.getSourceAmount());
         fundingTransaction.setSourceCurrency(fxQuote.getSourceCurrency());
         fundingTransaction.setDestinationAmount(fxQuote.getTargetAmount());
         fundingTransaction.setDestinationCurrency(fxQuote.getTargetCurrency());
         fundingTransaction.setPlanner(this.getId());
-        fundingTransaction.setIsQuoted(true);
         fundingTransaction.setValueDate(fxQuote.getValueDate());
         fundingTransaction.clearLineItems();
 
