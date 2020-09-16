@@ -346,7 +346,7 @@ foam.CLASS({
           .build();
         PersonalOnboardingTypeData onboardingTypeData = new PersonalOnboardingTypeData.Builder(subjectX)
           .setUser(user.getId())
-          .setFlinksLoginType(request.getOnboardingType() != OnboardingType.BUSINESS ? loginDetail.getType() : "Business")
+          .setFlinksLoginType(request.getType() != OnboardingType.BUSINESS ? loginDetail.getType() : "Business")
           .build();
 
         userCapabilityDataObjects.put("AbliiPrivacyPolicy", privacyPolicy);
