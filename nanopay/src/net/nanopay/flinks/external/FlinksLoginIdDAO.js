@@ -323,8 +323,6 @@ foam.CLASS({
           .setPostalCode(holderAddress.getPostalCode())
           .build();
 
-        address.validate(subjectX);
-
         String fullName = holder.getName();
         String nameSplit[] = fullName.split(" ", 2);
         String firstName = nameSplit[0];
@@ -348,7 +346,7 @@ foam.CLASS({
           .build();
         PersonalOnboardingTypeData onboardingTypeData = new PersonalOnboardingTypeData.Builder(subjectX)
           .setUser(newUser.getId())
-          .setFlinksLoginType(loginDetail.getType())
+          .setFlinksLoginType(request.getOnboardingType() != OnboardingType.BUSINESS ? loginDetail.getType() : "Business")
           .build();
 
         userCapabilityDataObjects.put("AbliiPrivacyPolicy", privacyPolicy);
@@ -400,8 +398,6 @@ foam.CLASS({
           .setCity(holderAddress.getCity())
           .setPostalCode(holderAddress.getPostalCode())
           .build();
-
-        address.validate(subjectX);
 
         BusinessDetailData businessDetailData = new BusinessDetailData.Builder(subjectX)
           .setBusinessName(holder.getName())
