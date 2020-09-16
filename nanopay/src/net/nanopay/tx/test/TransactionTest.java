@@ -261,7 +261,6 @@ public class TransactionTest
       .build();
     tq = (TransactionQuote) txnQuoteDAO.put(tq);
 
-    test(tq.getPlan().getIsQuoted(),"verification transaction was quoted");
     test(tq.getPlans().length == 1,"Only 1 plan is created for an Verification Transaction");
     test(tq.getPlan() instanceof VerificationTransaction,"transaction is class of verification transaction");
 

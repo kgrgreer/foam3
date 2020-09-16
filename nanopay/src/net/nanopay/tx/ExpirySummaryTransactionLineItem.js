@@ -15,26 +15,24 @@
  * from nanopay Corporation.
  */
 
+/**
+ * @license
+ * Copyright 2018 The FOAM Authors. All Rights Reserved.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
+
 foam.CLASS({
-  package: 'net.nanopay.tx.ruler',
-  name: 'TransactionQuotedStatusRule',
+  package: 'net.nanopay.tx',
+  name: 'ExpirySummaryTransactionLineItem',
+  extends: 'net.nanopay.tx.SummaryTransactionLineItem',
 
-  documentation: `Flag PAUSED or SCHEDULED transaction as quoted to prevent quoting.`,
-
-  implements: ['foam.nanos.ruler.RuleAction'],
-
-  javaImports: [
-    'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus'
-  ],
-
-  methods: [
+  properties: [
     {
-      name: 'applyAction',
-      javaCode: `
-        Transaction transaction = (Transaction) obj;
-        transaction.setIsQuoted(true);
-      `
+      class: 'DateTime',
+      name: 'expiry',
+      label: 'Expires',
+      hidden: true
     }
   ]
+
 });

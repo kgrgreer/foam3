@@ -38,7 +38,7 @@ foam.CLASS({
       display: flex;
       justify-content: space-between;
       background-color: /*%PRIMARY1%*/ #202341;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
     ^ .logo-wrapper {
       cursor: pointer;
@@ -112,7 +112,7 @@ foam.CLASS({
       background-color: /*%PRIMARY1%*/ #202341;
       height: 60px;
       justify-content: center;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
   `,
 

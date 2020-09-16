@@ -224,7 +224,6 @@ foam.CLASS({
       ascendantFXTransaction.addLineItems( new TransactionLineItem[] {new AscendantFXFeeLineItem.Builder(x).setGroup("fx").setAmount(fxQuote.getFee()).setCurrency(fxQuote.getFeeCurrency()).build()} );
       ascendantFXTransaction.setFxFees(fees);
       ascendantFXTransaction.setPaymentProvider(PAYMENT_PROVIDER);
-      ascendantFXTransaction.setIsQuoted(true);
       ascendantFXTransaction.setPaymentMethod(fxQuote.getPaymentMethod());
       if ( ascendantFXTransaction.getAmount() < 1 ) ascendantFXTransaction.setAmount(fxQuote.getSourceAmount());
       if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()))
@@ -269,7 +268,6 @@ foam.CLASS({
         summary.setFxRate(tx.getFxRate());
         summary.setFxExpiry(tx.getFxExpiry());
         summary.setInvoiceId(tx.getInvoiceId());
-        summary.setIsQuoted(true);
         summary.addNext(tx);
         summary.addNext(createCompliance(tx));
         return summary;

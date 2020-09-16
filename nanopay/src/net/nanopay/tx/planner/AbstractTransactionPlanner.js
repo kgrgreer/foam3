@@ -166,7 +166,6 @@ foam.CLASS({
         if ( getMultiPlan_() ) { // for performance can disallow multiplans on some planners?
           for ( Object altPlanO : quote.getAlternatePlans_() ) {
             Transaction altPlan = (Transaction) altPlanO;
-            altPlan.setIsQuoted(true);
             altPlan.setTransfers((Transfer[]) ArrayUtils.addAll(altPlan.getTransfers(),quote.getMyTransfers_().toArray(new Transfer[0])));
             // add the planner id for validation
             altPlan.setPlanner(this.getId());
@@ -178,7 +177,6 @@ foam.CLASS({
         if ( txn != null ) {
           txn.setId(UUID.randomUUID().toString());
           txn.setTransfers((Transfer[]) quote.getMyTransfers_().toArray(new Transfer[0]));
-          txn.setIsQuoted(true);
           //likely can add logic for setting clearing/completion time based on planners here.
           //auto add fx rate
           txn = applyFee(x, quote, txn);
@@ -263,7 +261,6 @@ foam.CLASS({
         ct.clearLineItems();
         ct.setPlanner(getId());
         ct.clearNext();
-        ct.setIsQuoted(true);
         ct.setId(UUID.randomUUID().toString());
         return ct;
       `
@@ -320,6 +317,7 @@ foam.CLASS({
       javaCode: `
         var txnclone = (Transaction) txn.fclone();
         if ( getIsFeeOnRootCorridors() ) {
+          // TODO: validate Crunch capabilities?
           while ( quote.getParent() != null ){
             quote = quote.getParent();
           }
@@ -329,7 +327,6 @@ foam.CLASS({
           txnclone.setSourceCurrency(quote.getSourceUnit());
           txnclone.setDestinationCurrency(quote.getDestinationUnit());
         }
-
         txnclone = (Transaction) ((DAO) x.get("localFeeEngineDAO")).put(txnclone);
         txn.setLineItems(txnclone.getLineItems());
         return txn;

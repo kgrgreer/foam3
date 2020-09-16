@@ -58,12 +58,11 @@ foam.CLASS({
                 .setSourceAccount(txn.getDestinationAccount())
                 .setAmount(txn.getAmount())
                 .setName("Reversal of DECLINED: "+txn.getId())
-                .setIsQuoted(true)
                 .setAssociateTransaction(txn.getId())
                 .build();
 
               try {
-                ((DAO) x.get("transactionDAO")).put_(x, revTxn);
+                ((DAO) x.get("localTransactionDAO")).put_(x, revTxn);
               }
               catch (Exception e) {
                 //email Support about failure.

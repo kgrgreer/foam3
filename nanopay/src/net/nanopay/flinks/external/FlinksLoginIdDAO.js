@@ -43,17 +43,6 @@ foam.CLASS({
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy',
     'net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiTermsAndConditions',
-    'net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyOwnersPercent',
-    'net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyDirectorsListed',
-    'net.nanopay.crunch.acceptanceDocuments.capabilities.DualPartyAgreementCAD',
-    'net.nanopay.crunch.onboardingModels.BusinessDirectorsData',
-    'net.nanopay.crunch.onboardingModels.BusinessInformationData',
-    'net.nanopay.crunch.onboardingModels.BusinessOwnershipData',
-    'net.nanopay.crunch.onboardingModels.CertifyDataReviewed',
-    'net.nanopay.crunch.onboardingModels.InitialBusinessData',
-    'net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData',
-    'net.nanopay.crunch.onboardingModels.SigningOfficerQuestion',
-    'net.nanopay.crunch.onboardingModels.TransactionDetailsData',
     'net.nanopay.crunch.registration.BusinessDetailData',
     'net.nanopay.crunch.registration.PersonalOnboardingTypeData',
     'net.nanopay.crunch.registration.UserRegistrationData',
@@ -135,6 +124,7 @@ foam.CLASS({
         }
 
         // Create the user if this is an onboarding request
+        // QUESTION: should we check if business is null too?
         if ( user == null && flinksLoginId instanceof FlinksLoginIdOnboarding )
         {
           onboarding(x, (FlinksLoginIdOnboarding) flinksLoginId, accountDetail, loginDetail);
@@ -325,6 +315,7 @@ foam.CLASS({
 
         AddressModel holderAddress = holder.getAddress();        
         Address address = new Address.Builder(subjectX)
+          .setStructured(false)
           .setAddress1(holderAddress.getCivicAddress())
           .setRegionId(holderAddress.getProvince())
           .setCountryId(holderAddress.getCountry())
@@ -355,7 +346,7 @@ foam.CLASS({
           .build();
         PersonalOnboardingTypeData onboardingTypeData = new PersonalOnboardingTypeData.Builder(subjectX)
           .setUser(user.getId())
-          .setFlinksLoginType(loginDetail.getType())
+          .setFlinksLoginType(request.getOnboardingType() != OnboardingType.BUSINESS ? loginDetail.getType() : "Business")
           .build();
 
         userCapabilityDataObjects.put("AbliiPrivacyPolicy", privacyPolicy);
@@ -388,10 +379,6 @@ foam.CLASS({
         { name: 'accountDetail', type: 'AccountWithDetailModel' }
       ],
       javaCode: `
-        AgentAuthService agentAuth = (AgentAuthService) x.get("agentAuth");
-        DAO accountDAO = (DAO) x.get("accountDAO");
-        DAO businessDAO = (DAO) x.get("businessDAO");
-
         User user = request.findUser(x);
         if ( user == null ) {
           throw new RuntimeException("User not found for business setup");
@@ -402,13 +389,21 @@ foam.CLASS({
         X subjectX = getX().put("subject", newSubject);
 
         HolderModel holder = accountDetail.getHolder();
-        AddressModel holderAddress = holder.getAddress();
+        AddressModel holderAddress = holder.getAddress();        
+        Address address = new Address.Builder(subjectX)
+          .setStructured(false)
+          .setAddress1(holderAddress.getCivicAddress())
+          .setRegionId(holderAddress.getProvince())
+          .setCountryId(holderAddress.getCountry())
+          .setCity(holderAddress.getCity())
+          .setPostalCode(holderAddress.getPostalCode())
+          .build();
 
         BusinessDetailData businessDetailData = new BusinessDetailData.Builder(subjectX)
           .setBusinessName(holder.getName())
           .setPhoneNumber(user.getPhoneNumber())
-          .setAddress(user.getAddress())
-          .setMailingAddress(user.getAddress())
+          .setAddress(address)
+          .setMailingAddress(address)
           .setEmail(holder.getEmail())
           .build();
         
@@ -422,6 +417,15 @@ foam.CLASS({
           .build();
         DAO capabilityPayloadDAO = (DAO) subjectX.get("capabilityPayloadDAO");
         capabilityPayloadDAO.inX(subjectX).put(businessCapPayload);
+
+        // Query for business
+        DAO businessDAO = (DAO) subjectX.get("businessDAO");
+        List businesses = ((ArraySink) businessDAO.inX(subjectX).select(new ArraySink())).getArray();
+        if ( businesses.size() == 0 ) {
+          throw new RuntimeException("Business not created");
+        }
+        Business business = (Business) businesses.get(0);
+        request.setBusiness(business.getId());
 
         // TODO: Query LEV
         // TODO: Get business type (sole, corp, etc.)

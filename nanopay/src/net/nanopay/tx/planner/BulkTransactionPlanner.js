@@ -68,7 +68,6 @@ foam.CLASS({
         ct.setSourceAccount(bulkTxn.getSourceAccount());
         ct.setDestinationAccount(bulkTxn.getDestinationAccount());
         ct.setPlanner(getId());
-        ct.setIsQuoted(true);
 
         for (Transaction childTransaction : childTransactions) {
           // Sum amount of child transactions

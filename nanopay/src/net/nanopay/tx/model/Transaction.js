@@ -251,10 +251,13 @@ foam.CLASS({
       tableWidth: 180
     },
     {
-      name: 'isQuoted',
+      name: 'isValid',
       class: 'Boolean',
-      documentation: 'Whether the transaction has been quoted.',
-      hidden: true
+      documentation: 'Whether the transaction has passed capability and planner validation.',
+      hidden: true,
+      value: false,
+      networkTransient: true,
+      storageTransient: true
     },
     {
       name: 'transfers',
@@ -800,13 +803,15 @@ foam.CLASS({
       name: 'planner',
       documentation: 'A reference to the planner that created this transaction.',
       visibility: 'HIDDEN',
-      storageTransient: true
+      storageTransient: true,
+      networkTransient: true
     },
     {
       name: 'next',
       class: 'FObjectArray',
       of: 'net.nanopay.tx.model.Transaction',
       storageTransient: true,
+      networkTransient: true,
       visibility: 'HIDDEN'
     },
     {
@@ -1296,16 +1301,23 @@ foam.CLASS({
   {
     name: 'getTotal',
     type: 'Long',
-    description: 'Sum of transfers on this transaction for a given account',
+    documentation: 'Sum of transfers on this transaction for a given account',
     args: [
       { name: 'x', type: 'Context' },
       { name: 'accountNumber', type: 'Long' }
     ],
     javaCode: `
       Long sum = 0l;
+      //Sum transfers that affect account
       for ( Transfer t : getTransfers() )
         if ( t.getAccount() == accountNumber )
           sum += t.getAmount();
+      //Sum LineItem transfers that affect account
+      for ( TransactionLineItem li : getLineItems() )
+        for ( Transfer t : ((FeeLineItem)li).getTransfers() )
+          if ( t.getAccount() == accountNumber )
+            sum += t.getAmount();
+
       return sum;
     `
   },

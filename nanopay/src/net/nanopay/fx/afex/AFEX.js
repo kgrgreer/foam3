@@ -381,7 +381,7 @@ foam.INTERFACE({
       name: 'getFundingBalance',
       documentation: 'Get funding balance',
       async: true,
-      type: 'net.nanopay.fx.afex.GetFundingBalanceResponse',
+      type: 'net.nanopay.fx.afex.FundingBalance',
       args: [
         {
           class: 'String',

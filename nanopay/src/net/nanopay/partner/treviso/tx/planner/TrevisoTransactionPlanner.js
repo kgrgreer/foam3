@@ -75,7 +75,6 @@ foam.CLASS({
         elt.clearLineItems();
         elt.setPlanner(getId());
         elt.clearNext();
-        elt.setIsQuoted(true);
         elt.setId(UUID.randomUUID().toString());
         return elt;
       `
@@ -107,7 +106,6 @@ foam.CLASS({
       trevisoTxn.setAmount(fxQuote.getSourceAmount());
       trevisoTxn.setName("Treviso transaction");
       trevisoTxn.setPaymentProvider(PAYMENT_PROVIDER);
-      trevisoTxn.setIsQuoted(true);
       trevisoTxn.setPlanner(this.getId());
       this.addLineItems(x, trevisoTxn, requestTxn);
 

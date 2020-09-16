@@ -210,7 +210,6 @@ foam.CLASS({
       bmoCI.setDestinationAccount(bmoAccount.getId());
       bmoCI.setDestinationAmount(afexTransaction.getAmount());
       bmoCI.setDestinationCurrency(bmoAccount.getDenomination());
-      bmoCI.setIsQuoted(true);
 
       // set afexTransaction as child of bmo
       bmoCI.addNext(afexTransaction);
@@ -292,7 +291,6 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, FXQuote fxQuote, 
   afexTransaction.addLineItems( new TransactionLineItem[] {new FeeLineItem.Builder(x).setGroup("fx").setAmount(fxQuote.getFee()).setCurrency(fxQuote.getFeeCurrency()).build()} );
   afexTransaction.setFxFees(fees);
 
-  afexTransaction.setIsQuoted(true);
  // afexTransaction.setPaymentMethod(fxQuote.getPaymentMethod());
 
   afexTransaction.setAmount(fxQuote.getSourceAmount());
@@ -308,7 +306,6 @@ protected AFEXTransaction createAFEXTransaction(foam.core.X x, FXQuote fxQuote, 
   // TODO change estimate based on bmo and afex
   afexTransaction.addLineItems( new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(/* 2 days TODO: calculate*/172800000L).build()} );
   // TODO ADD FEES
-  afexTransaction.setIsQuoted(true);
 
   return afexTransaction;
 }
@@ -320,7 +317,6 @@ public FXSummaryTransaction limitedCopyFrom (FXSummaryTransaction summary, AFEXT
   summary.setDestinationCurrency(tx.getDestinationCurrency());
   summary.setFxQuoteId(tx.getFxQuoteId());
   summary.setFxRate(tx.getFxRate());
-  summary.setIsQuoted(true);
   return summary;
 }
         `);

@@ -123,6 +123,7 @@ foam.CLASS({
       name: 'capableRequirements',
       storageTransient: true,
       networkTransient: true,
+      visibility: 'HIDDEN',
       documentation: `
         Capable object requirements, defined by a subclass of PadCapture.
       `
