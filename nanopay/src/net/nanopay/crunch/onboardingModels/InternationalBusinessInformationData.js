@@ -85,9 +85,9 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['businessRegistrationDate'],
+          args: ['businessIncorporatedDate'],
           predicateFactory: function(e) {
-            return e.LTE(net.nanopay.crunch.onboardingModels.InternationalBusinessInformationData.BUSINESS_REGISTRATION_DATE, new Date());
+            return e.LTE(net.nanopay.crunch.onboardingModels.InternationalBusinessInformationData.BUSINESS_INCORPORATED_DATE, new Date());
           },
           errorMessage: 'BUSINESS_REGISTRATION_DATE_ERROR'
         }
