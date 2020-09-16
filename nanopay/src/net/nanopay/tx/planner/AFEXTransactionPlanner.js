@@ -34,6 +34,7 @@ foam.CLASS({
     'net.nanopay.fx.afex.AFEXCredentials',
     'net.nanopay.fx.afex.AFEXServiceProvider',
     'net.nanopay.fx.afex.AFEXTransaction',
+    'net.nanopay.fx.afex.AFEXFundingTransaction',
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.fx.ExchangeRateStatus',
     'net.nanopay.fx.FXService',
@@ -48,7 +49,8 @@ foam.CLASS({
     'java.util.Date',
     'java.text.DateFormat',
     'java.text.SimpleDateFormat',
-    'java.util.Locale'
+    'java.util.Locale',
+    'java.util.UUID'
   ],
 
   constants: [
@@ -116,7 +118,7 @@ foam.CLASS({
             afexTransaction.setSourceAccount(sourceAccount.getId());
             afexTransaction.setDestinationAccount(destinationAccount.getId());
             afexTransaction.setInvoiceId(request.getInvoiceId());
-            summary = getSummaryTx(afexTransaction, sourceAccount, destinationAccount, fxQuote);
+            summary = getSummaryTx(afexTransaction, sourceAccount, destinationAccount, fxQuote, quote);
           }
           
         } catch (Throwable t) {
@@ -152,6 +154,7 @@ foam.CLASS({
       javaCode: `
         AFEXTransaction afexTransaction = new AFEXTransaction.Builder(x).build();
         afexTransaction.copyFrom(request);
+        afexTransaction.setId(UUID.randomUUID().toString());
         afexTransaction.setStatus(TransactionStatus.PENDING);
         afexTransaction.setName("Foreign Exchange");
         afexTransaction.setFxExpiry(fxQuote.getExpiryTime());
@@ -162,7 +165,6 @@ foam.CLASS({
         afexTransaction.setFxExpiry(fxQuote.getExpiryTime());
 
         afexTransaction.setPaymentProvider(PAYMENT_PROVIDER);
-        afexTransaction.setIsQuoted(true);
       
         afexTransaction.setAmount(fxQuote.getSourceAmount());
         afexTransaction.setSourceCurrency(fxQuote.getSourceCurrency());
@@ -188,9 +190,43 @@ foam.CLASS({
         // TODO move to fee engine
         // add invoice fee
         Boolean sameCurrency = request.getSourceCurrency().equals(request.getDestinationCurrency());
-        afexTransaction.setIsQuoted(true);
       
         return afexTransaction;
+      `
+    },
+    {
+      name: 'createFundingTransaction',
+      args: [
+        {
+          type: 'Transaction',
+          name: 'request'
+        },
+        {
+          type: 'FXQuote',
+          name: 'fxQuote'
+        }
+      ],
+      javaType: 'AFEXFundingTransaction',
+      javaCode: `
+        AFEXFundingTransaction fundingTransaction = new AFEXFundingTransaction();
+  
+        fundingTransaction.copyFrom(request);
+        fundingTransaction.setId(UUID.randomUUID().toString());
+        fundingTransaction.setStatus(TransactionStatus.PENDING);
+        fundingTransaction.setName("AFEX Funding Transaction");
+        fundingTransaction.setFxExpiry(fxQuote.getExpiryTime());
+        fundingTransaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
+        fundingTransaction.setFxRate(fxQuote.getRate());
+        fundingTransaction.setPaymentProvider(PAYMENT_PROVIDER);
+        fundingTransaction.setAmount(fxQuote.getSourceAmount());
+        fundingTransaction.setSourceCurrency(fxQuote.getSourceCurrency());
+        fundingTransaction.setDestinationAmount(fxQuote.getTargetAmount());
+        fundingTransaction.setDestinationCurrency(fxQuote.getTargetCurrency());
+        fundingTransaction.setPlanner(this.getId());
+        fundingTransaction.setValueDate(fxQuote.getValueDate());
+        fundingTransaction.clearLineItems();
+
+        return fundingTransaction;
       `
     },
     {
@@ -211,7 +247,11 @@ foam.CLASS({
         {
           type: 'FXQuote',
           name: 'fxQuote'
-        }
+        },
+        {
+          type: 'TransactionQuote',
+          name: 'txnQuote'
+        },
       ],
       javaType: 'FXSummaryTransaction',
       javaCode: `
@@ -226,11 +266,11 @@ foam.CLASS({
         summary.setFxRate(tx.getFxRate());
         summary.setFxExpiry(tx.getFxExpiry());
         summary.setInvoiceId(tx.getInvoiceId());
-        summary.setIsQuoted(true);
         summary.addNext(createCompliance(tx));
 
         // create AFEXBeneficiaryComplianceTransaction
         AFEXBeneficiaryComplianceTransaction afexCT = new AFEXBeneficiaryComplianceTransaction();
+        afexCT.setId(UUID.randomUUID().toString());
         afexCT.setAmount(tx.getAmount());
         afexCT.setDestinationAmount(tx.getDestinationAmount());
         afexCT.setSourceCurrency(tx.getSourceCurrency());
@@ -238,11 +278,17 @@ foam.CLASS({
         afexCT.setSourceAccount(sourceAccount.getId());
         afexCT.setDestinationAccount(destinationAccount.getId());
         afexCT.setInvoiceId(tx.getInvoiceId());
-        afexCT.setIsQuoted(true);
         afexCT.setPayeeId(tx.getPayeeId());
         afexCT.setPayerId(tx.getPayerId());
-        afexCT.addNext(tx);
         afexCT.setPlanner(this.getId());
+
+        if ( txnQuote.getParent() != null ) {
+          AFEXFundingTransaction fundingTxn = createFundingTransaction(tx, fxQuote);
+          afexCT.addNext(fundingTxn);
+          afexCT.addNext(tx);
+        } else {
+          afexCT.addNext(tx);
+        }
         
         summary.addNext(afexCT);
       

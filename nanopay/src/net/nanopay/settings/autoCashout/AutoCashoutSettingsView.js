@@ -94,7 +94,7 @@ foam.CLASS({
       margin: 0;
     }
     ^ .bankBoxTitle {
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       line-height: 1.33;
       letter-spacing: 0.3px;
@@ -105,7 +105,7 @@ foam.CLASS({
       display: inline-block;
     }
     ^ .cashOutSelectionText {
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       line-height: 1.33;
       letter-spacing: 0.3px;
@@ -115,7 +115,7 @@ foam.CLASS({
       margin-left: 6px;
     }
     ^ .minCashOutText {
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 10px;
       line-height: 1.6;
       letter-spacing: 0.3px;
@@ -125,7 +125,7 @@ foam.CLASS({
       margin-bottom: 20px;
     }
     ^ .learnMore {
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       letter-spacing: 0.3px;
       text-decoration: underline;
@@ -134,7 +134,7 @@ foam.CLASS({
       margin-bottom: 0;
     }
     ^ .updateBtn {
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       width: 136px;
       height: 40px;
       border-radius: 2px;
@@ -162,7 +162,7 @@ foam.CLASS({
       outline: 0;
     }
     ^ .enterPromo {
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       line-height: 16px;
       letter-spacing: 0.3px;

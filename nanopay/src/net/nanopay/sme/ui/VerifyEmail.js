@@ -60,7 +60,7 @@ foam.CLASS({
     }
 
     ^ .header{
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 30px;
       font-weight: bold;
       line-height: 48px;
@@ -85,7 +85,7 @@ foam.CLASS({
       background: none;
       color: #604aff;
       font-size: 16px;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       border: none !important;
     }
 
@@ -98,7 +98,7 @@ foam.CLASS({
     ^ .Instructions-Text{
       height: 16px;
       height: 24px;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 16px;
       font-weight: normal;
       font-style: normal;
@@ -112,7 +112,7 @@ foam.CLASS({
     ^ .Email-Text{
       width: 182px;
       height: 16px;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-weight: 300;
       letter-spacing: 0.2px;
       text-align: left;
@@ -132,7 +132,7 @@ foam.CLASS({
       padding-left: 8px;
       padding-right: 8px;
       margin: 0px;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       text-align: left;
       color: /*%BLACK%*/ #1e1f21;
@@ -155,7 +155,7 @@ foam.CLASS({
       margin-top: 10px;
       text-align: center;
       color: #ffffff;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 16px;
       line-height: 2.86;
       cursor: pointer;

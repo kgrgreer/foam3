@@ -66,7 +66,7 @@ foam.CLASS({
       display: inline-block;
       vertical-align: middle;
       font-size: 16px;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
     ^ .menu-item {
       margin: 14px 16px;

@@ -38,7 +38,7 @@ foam.CLASS({
         }
         ^ h3 {
           opacity: 0.6;
-          font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+          font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
           font-size: 20px;
           font-weight: 300;
           line-height: 1;
@@ -56,7 +56,7 @@ foam.CLASS({
           margin-bottom: 10px;
         }
         ^ .account {
-          font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+          font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
           font-size: 12px;
           line-height: 1.33;
           letter-spacing: 0.2px;
@@ -66,7 +66,7 @@ foam.CLASS({
           display: inline-block;
         }
         ^ .accountBalance {
-          font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+          font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
           font-size: 12px;
           line-height: 1.33;
           letter-spacing: 0.2px;
@@ -114,7 +114,7 @@ foam.CLASS({
           width: 962px;
         }
         ^ thead > tr > th {
-          font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+          font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
           font-size: 14px;
           background-color: rgba(110, 174, 195, 0.2);
           color: #093649;
@@ -134,7 +134,7 @@ foam.CLASS({
           height: 60px;
         }
         ^ .foam-u2-view-TableView th {
-          font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+          font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
           padding-left: 15px;
           font-size: 14px;
           line-height: 1;
@@ -142,7 +142,7 @@ foam.CLASS({
           color: #093649;
         }
         ^ .foam-u2-view-TableView td {
-          font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+          font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
           font-size: 12px;
           line-height: 1.33;
           letter-spacing: 0.2px;

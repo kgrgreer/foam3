@@ -113,7 +113,6 @@ foam.CLASS({
         DigitalAccount payeeDigitalAccount = DigitalAccount.findDefault(getX(), payeeUser, transaction.getDestinationCurrency());
         transaction.setSourceAccount(payerDigitalAccount.getId());
         transaction.setDestinationAccount(payeeDigitalAccount.getId());
-        transaction.setIsQuoted(true);
     
         // Caculate extra charge for the apple pay.
         if ( transaction.getIsRequestingFee() ) {

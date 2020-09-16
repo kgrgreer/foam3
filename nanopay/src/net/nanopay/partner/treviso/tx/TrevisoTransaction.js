@@ -36,7 +36,7 @@ foam.CLASS({
     'foam.core.Currency',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
-
+    'net.nanopay.admin.model.ComplianceStatus',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ'
   ],
@@ -83,7 +83,35 @@ foam.CLASS({
         }
        return ['No status to choose'];
       }
+    },
+  ],
+ methods: [
+   {
+     name: `validate`,
+     args: [
+       { name: 'x', type: 'Context' }
+     ],
+     type: 'Void',
+     javaCode: `
+     super.validate(x);
+
+    // Check source account owner compliance
+    User sourceOwner = findSourceAccount(x).findOwner(x);
+    if ( sourceOwner instanceof Business
+      && ! sourceOwner.getCompliance().equals(ComplianceStatus.PASSED)
+    ) {
+      throw new RuntimeException("Sender needs to pass business compliance.");
     }
+
+    // Check destination account owner compliance
+    User destinationOwner = findDestinationAccount(x).findOwner(x);
+    if ( destinationOwner.getCompliance().equals(ComplianceStatus.FAILED) ) {
+      // We throw when the destination account owner failed compliance, however
+      // we are obligated to not expose this fact to the user.
+      throw new RuntimeException("Receiver needs to pass compliance.");
+    }
+    `
+  }
   ]
 
 });

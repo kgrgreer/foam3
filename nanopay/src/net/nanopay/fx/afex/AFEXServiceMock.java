@@ -154,7 +154,7 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public GetFundingBalanceResponse getFundingBalance(String clientAPIKey, String currency, String spid) {
+  public FundingBalance getFundingBalance(String clientAPIKey, String currency, String spid) {
     return null;
   }
 

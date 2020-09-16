@@ -25,6 +25,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.dao.ProxyDAO',
+    'foam.util.SafetyUtil',
     'foam.nanos.logger.Logger',
     'net.nanopay.account.Account',
     'net.nanopay.account.Balance',
@@ -74,54 +75,30 @@ foam.CLASS({
       type: 'foam.core.FObject',
       javaCode: `
         Transaction txn = (Transaction) obj;
-        // Transaction Quoting
-        if ( ! txn.getIsQuoted() ) {
-          TransactionQuote quote = new TransactionQuote();
-          quote.setRequestTransaction((Transaction) txn.fclone());
-          quote = (TransactionQuote) ((DAO) x.get("localTransactionPlannerDAO")).inX(x).put(quote);
-          validateQuoteTransfers(x, quote);
-          txn = quote.getPlan();
+
+        // find old Txn
+        if ( ! SafetyUtil.isEmpty(txn.getId()) ) {
+          Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(txn.getId());
+          if (oldTxn != null) //old Txn found, this is an update, no quote required
+            return getDelegate().put_(x, txn);
         }
-        Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(((Transaction) obj).getId());
-        if ( oldTxn == null ) {
-          // Transaction Plan Validation
-          AbstractTransactionPlanner atp = (AbstractTransactionPlanner) txn.findPlanner(x);
-          if (atp != null) atp.validatePlan(x, txn);
-          else {
-            Logger logger = (Logger) x.get("logger");
-            logger.warning(txn.getId() + " failed planner validation");
-            return txn;
-          }
-          // Transaction Line Item Validation and Copying
-          for ( TransactionLineItem li : txn.getLineItems() )
-            li.validate();
-          if ( txn instanceof SummaryTransaction || txn instanceof FXSummaryTransaction) {
-            for ( TransactionLineItem li : txn.getLineItems() )
-              replaceLineItem( li, li.findFromChain(txn) );
-          }
+
+        if ( SafetyUtil.isEmpty(txn.getId()) ) { // Transaction planning, no id.
+          TransactionQuote quote = (TransactionQuote) ((DAO) x.get("localTransactionPlannerDAO")).inX(x).put(txn);
+          validateQuoteTransfers(x, quote); // deprecated. should be done in planner validation
+          txn = (Transaction) quote.getPlan(); // transaction is auto-quoted.
         }
-        return getDelegate().put_(x, txn);
-      `
-    },
-    {
-      name: 'replaceLineItem',
-      args: [
-        { name: 'line', type: 'net.nanopay.tx.TransactionLineItem'},
-        { name: 'txn', type: 'net.nanopay.tx.model.Transaction'}
-      ],
-      documentation: 'replace a lineItem on the transaction with an updated line item.',
-      javaCode: `
-        if ( txn == null ) {
-          return;
+
+        Transaction loadedTxn;
+        // txn does not exist in journal, check if plan exists
+        if (txn.getIsValid() == false) {
+          loadedTxn = (Transaction) ((DAO) x.get("localTransactionPlannerDAO")).inX(x).put_(x, txn); // here we do property updates.
+          if (loadedTxn == null) // validation has failed or txn plan not found or expired, need error handling maybe.
+            return txn; // return original transaction back to user.
+
+          return getDelegate().put_(x, loadedTxn); //recovered plan is put in.
         }
-        TransactionLineItem[] tlis = txn.getLineItems();
-        for ( int i =0; i < tlis.length; i++ ) {
-          if (line.getId().equals(tlis[i].getId())) {
-            tlis[i] = line;
-            break;
-          }
-        }
-        txn.setLineItems(tlis);
+        return getDelegate().put_(x, txn); // txn being saved as part of chain here.
       `
     },
     {

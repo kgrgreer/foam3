@@ -48,7 +48,7 @@ foam.CLASS({
         }
       ],
       view: function(args, x) {
-        if ( args.mode$.value.name === 'RO' ) {
+        if ( args.mode$.value && args.mode$.value.name === 'RO' ) {
           return foam.u2.Element.create()
             .start()
               .add(x.data.getPurposeName())

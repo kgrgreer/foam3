@@ -555,7 +555,7 @@ foam.CLASS({
           }
         } else {
           try {
-            transaction.isQuoted = true;
+            //transaction.isQuoted = true; TODO: Investigate why were we doing this
             let tem = await this.transactionDAO.put(transaction);
           } catch ( error ) {
             console.error('@SendRequestMoney (Accept and put transaction quote): ' + error.message);

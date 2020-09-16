@@ -20,7 +20,7 @@ foam.CLASS({
   name: 'Documents',
 
   documentation: `
-    This model is to set the nessary documents for a business capabilities need
+    This model is to set the necessary documents for a business capabilities need
   `,
 
   properties: [

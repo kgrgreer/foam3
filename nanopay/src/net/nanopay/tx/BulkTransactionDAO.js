@@ -36,9 +36,6 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-        if ( ! ( obj instanceof TransactionQuote ) ) {
-          return getDelegate().put_(x, obj);
-        }
 
         var quote = (TransactionQuote) obj;
         if ( quote.getRequestTransaction() instanceof BulkTransaction ) {
@@ -86,5 +83,17 @@ foam.CLASS({
         return getDelegate().put_(x, obj);
       `
     }
+  ],
+
+  axioms: [
+    {
+      buildJavaClass: function(cls) {
+        cls.extras.push(`
+          public BulkTransactionDAO(foam.core.X x, foam.dao.DAO delegate) {
+            setDelegate(delegate);
+          }
+        `);
+      },
+    },
   ]
 });

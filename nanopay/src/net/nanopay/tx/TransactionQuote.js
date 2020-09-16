@@ -114,6 +114,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'showAllLineItems',
       value: true,
+      networkTransient: true,
       documentation: 'Set to false to only show SummaryLineItems and lineItems that require user input'
     }
   ],

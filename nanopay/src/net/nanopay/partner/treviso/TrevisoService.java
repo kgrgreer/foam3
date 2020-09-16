@@ -45,7 +45,7 @@ import net.nanopay.country.br.exchange.Exchange;
 import net.nanopay.country.br.exchange.ExchangeCredential;
 import net.nanopay.country.br.exchange.ExchangeCustomer;
 import net.nanopay.country.br.exchange.ExchangeService;
-import net.nanopay.country.br.FederalRevenueService;
+import net.nanopay.country.br.OpenDataService;
 import net.nanopay.country.br.PTaxRate;
 import net.nanopay.country.br.PTaxDollarRateResponse;
 import net.nanopay.fx.afex.AFEXServiceProvider;
@@ -84,7 +84,7 @@ import net.nanopay.country.br.exchange.UpdateTitularResponse;
 import net.nanopay.payment.Institution;
 import net.nanopay.tx.model.Transaction;
 
-public class TrevisoService extends ContextAwareSupport implements TrevisoServiceInterface, FXService, ExchangeService, FederalRevenueService {
+public class TrevisoService extends ContextAwareSupport implements TrevisoServiceInterface, FXService, ExchangeService {
 
   private FepWeb fepWebService;
   private Exchange exchangeService;
@@ -360,7 +360,7 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
     titular.setCIDADE(user.getAddress().getCity());
     titular.setESTADO(user.getAddress().getRegionId());
     titular.setCEP(user.getAddress().getPostalCode());
-    titular.setPAIS("1058"); // TODO Pais do Cliente – Código Bacen - Brazil
+    titular.setPAIS("1058"); // TODO Pais do Cliente – Código Bacen - Brazil
     titular.setPAISMT("1058"); // TODO Pais Matriz do Cliente - Bacen Code - Brazil
     titular.setLIMITEOP(new Long(amount).doubleValue());
 
@@ -480,64 +480,4 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
       throw new RuntimeException(t);
     }
   }
-
-  public boolean validateCnpj(String cnpj) throws RuntimeException {
-    try {
-      String formattedCnpj = cnpj.replaceAll("[^0-9]", "");
-      TrevisoCredientials credentials = (TrevisoCredientials) getX().get("TrevisoCredientials");
-      if ( null == credentials ) throw new RuntimeException("Invalid credientials. Treviso token required to validate CNPJ");
-      CNPJResponseData data = ((Sintegra) getX().get("sintegraService")).getCNPJData(formattedCnpj, credentials.getSintegraToken());
-      if ( data == null ) throw new RuntimeException("Unable to get a valid response from CNPJ validation.");
-
-      if ( ! "0".equals(data.getCode()) ) throw new RuntimeException(data.getMessage());
-
-      return "ATIVA".equals(data.getSituacao());
-    } catch(Throwable t) {
-      logger_.error("Error validating CNPJ" , t);
-      throw new RuntimeException(t);
-    }
-  }
-
-  public boolean validateUserCpf(String cpf, long userId) throws RuntimeException {
-    User user = (User) ((DAO) getX().get("bareUserDAO")).find(userId);
-    if ( user == null ) throw new RuntimeException("User cannot be null");
-
-    return validateCpf(cpf, findUserBirthDate(userId));
-  }
-
-  public boolean validateCpf(String cpf, Date dateOfBirth) throws RuntimeException {
-    String birthDate = "";
-    try {
-      SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
-      sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-      birthDate = sdf.format(dateOfBirth);
-    } catch(Throwable t) {
-      logger_.error("Unable to parse user birth date: " , t);
-      throw new RuntimeException("Unable to parse user birth date.");
-    }
-
-    try {
-      String formattedCpf = cpf.replaceAll("[^0-9]", "");
-      TrevisoCredientials credentials = (TrevisoCredientials) getX().get("TrevisoCredientials");
-      if ( null == credentials ) throw new RuntimeException("Invalid credientials. Treviso token required to validate CPF");
-      CPFResponseData data = ((Sintegra) getX().get("sintegraService")).getCPFData(formattedCpf, birthDate, credentials.getSintegraToken());
-      if ( data == null ) throw new RuntimeException("Unable to get a valid response from CPF validation.");
-
-      if ( ! "0".equals(data.getCode()) ) throw new RuntimeException(data.getMessage());
-
-      return "REGULAR".equalsIgnoreCase(data.getSituacaoCadastral());
-    } catch(Throwable t) {
-      logger_.error("Error validating CPF" , t);
-      throw new RuntimeException(t);
-    }
-  }
-
-  protected Date findUserBirthDate(long userId) {
-    UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) getX().get("userCapabilityJunctionDAO")).find(AND(
-        EQ(UserCapabilityJunction.TARGET_ID, "8bffdedc-5176-4843-97df-1b75ff6054fb"),
-        EQ(UserCapabilityJunction.SOURCE_ID, userId)
-    ));
-    return (ucj != null && ucj.getData() != null) ? ((net.nanopay.crunch.onboardingModels.UserBirthDateData)ucj.getData()).getBirthday() : null;
-  }
-
 }

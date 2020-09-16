@@ -38,7 +38,6 @@ foam.CLASS({
       javaCode: `
         BucketTransaction tx = (BucketTransaction) requestTxn;
         CompositeTransaction comp = new CompositeTransaction();
-        comp.setIsQuoted(true);
 
         for ( Amount amnt : tx.getSubTransactions() ) {
           Transaction tSub = new Transaction();

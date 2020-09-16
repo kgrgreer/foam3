@@ -47,7 +47,7 @@ foam.CLASS({
     }
     ^ .containerTitle {
       height: 16px;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: bold;
       font-style: normal;
@@ -58,7 +58,7 @@ foam.CLASS({
       color: /*%BLACK%*/ #1e1f21;
     }
     ^ .containerDesc {
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       font-weight: normal;
       font-style: normal;
@@ -77,7 +77,7 @@ foam.CLASS({
 
     ^ .foam-u2-ActionView-viewProfile span,
     ^ .foam-u2-ActionView-goToPortal span {
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: normal;
       font-style: normal;
