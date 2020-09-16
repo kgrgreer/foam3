@@ -49,7 +49,8 @@ foam.CLASS({
     'java.util.Date',
     'java.text.DateFormat',
     'java.text.SimpleDateFormat',
-    'java.util.Locale'
+    'java.util.Locale',
+    'java.util.UUID'
   ],
 
   constants: [
@@ -153,6 +154,7 @@ foam.CLASS({
       javaCode: `
         AFEXTransaction afexTransaction = new AFEXTransaction.Builder(x).build();
         afexTransaction.copyFrom(request);
+        afexTransaction.setId(UUID.randomUUID().toString());
         afexTransaction.setStatus(TransactionStatus.PENDING);
         afexTransaction.setName("Foreign Exchange");
         afexTransaction.setFxExpiry(fxQuote.getExpiryTime());
@@ -163,7 +165,6 @@ foam.CLASS({
         afexTransaction.setFxExpiry(fxQuote.getExpiryTime());
 
         afexTransaction.setPaymentProvider(PAYMENT_PROVIDER);
-        afexTransaction.setIsQuoted(true);
       
         afexTransaction.setAmount(fxQuote.getSourceAmount());
         afexTransaction.setSourceCurrency(fxQuote.getSourceCurrency());
@@ -189,7 +190,6 @@ foam.CLASS({
         // TODO move to fee engine
         // add invoice fee
         Boolean sameCurrency = request.getSourceCurrency().equals(request.getDestinationCurrency());
-        afexTransaction.setIsQuoted(true);
       
         return afexTransaction;
       `
@@ -268,11 +268,11 @@ foam.CLASS({
         summary.setFxRate(tx.getFxRate());
         summary.setFxExpiry(tx.getFxExpiry());
         summary.setInvoiceId(tx.getInvoiceId());
-        summary.setIsQuoted(true);
         summary.addNext(createCompliance(tx));
 
         // create AFEXBeneficiaryComplianceTransaction
         AFEXBeneficiaryComplianceTransaction afexCT = new AFEXBeneficiaryComplianceTransaction();
+        afexCT.setId(UUID.randomUUID().toString());
         afexCT.setAmount(tx.getAmount());
         afexCT.setDestinationAmount(tx.getDestinationAmount());
         afexCT.setSourceCurrency(tx.getSourceCurrency());
@@ -280,7 +280,6 @@ foam.CLASS({
         afexCT.setSourceAccount(sourceAccount.getId());
         afexCT.setDestinationAccount(destinationAccount.getId());
         afexCT.setInvoiceId(tx.getInvoiceId());
-        afexCT.setIsQuoted(true);
         afexCT.setPayeeId(tx.getPayeeId());
         afexCT.setPayerId(tx.getPayerId());
         afexCT.setPlanner(this.getId());

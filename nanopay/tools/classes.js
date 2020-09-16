@@ -76,6 +76,7 @@ var classes = [
   'net.nanopay.payment.PADTypeCheckDAO',
   'net.nanopay.payment.PaymentProviderPrerequisiteRule',
   'net.nanopay.payment.PaymentProviderCorridorAddCountryRule',
+  'net.nanopay.tx.IBAN',
   'net.nanopay.account.Balance',
   'net.nanopay.account.DuplicateEntryRule',
   'net.nanopay.account.DuplicateCABankAccountRule',
@@ -551,13 +552,11 @@ var classes = [
   'net.nanopay.tx.PurposeCodeLineItem',
   'net.nanopay.tx.TransactionQuote',
   'net.nanopay.tx.TransactionQuotes',
-  'net.nanopay.tx.TransactionQuoteDAO',
   'net.nanopay.tx.RefundTransaction',
   'net.nanopay.tx.RetailTransaction',
   'net.nanopay.tx.model.TransactionLimit',
   'net.nanopay.tx.ruler.TransactionLimitProbeInfo',
   'net.nanopay.tx.ruler.TransactionLimitRule',
-  'net.nanopay.tx.ruler.TransactionQuotedStatusRule',
   'net.nanopay.tx.ruler.InvoiceApprovedByRule',
   'net.nanopay.tx.ruler.SlowDownRule',
   'net.nanopay.tx.ruler.LiquidTransactionalBlocks',
@@ -1005,7 +1004,6 @@ var classes = [
   'net.nanopay.tx.gs.GsRowToTx',
   'net.nanopay.script.CsvUploadScript',
   'net.nanopay.tx.gs.GsTxAssembly',
-  'net.nanopay.tx.QuoteFillerDAO',
   'net.nanopay.tx.gs.ProgressBarData',
   'net.nanopay.tx.gs.GSReportAssembly',
 
@@ -1080,6 +1078,12 @@ var classes = [
   'net.nanopay.tx.planner.DebtRepaymentPlanner',
   'net.nanopay.tx.planner.DebtablePlanner',
   'net.nanopay.tx.planner.IntermediaryDestinationAccountSplitPlanner',
+  'net.nanopay.tx.planner.PlanSavingDAO',
+  'net.nanopay.tx.planner.AccessPlannerDAO',
+  'net.nanopay.tx.planner.TransactionPlan',
+  'net.nanopay.tx.planner.TransactionPlannerBlockDAO',
+  'net.nanopay.tx.planner.TransactionQuoteDAO',
+  'net.nanopay.tx.planner.QuoteFillerDAO',
 
   // Fees
   'net.nanopay.tx.fee.Fee',
@@ -1181,11 +1185,9 @@ var classes = [
   'net.nanopay.partner.treviso.tx.TrevisoTransaction',
   'net.nanopay.partner.treviso.tx.planner.TrevisoTransactionPlanner',
   'net.nanopay.partner.treviso.tx.TrevisoCreateExchange',
-  'net.nanopay.partner.treviso.tx.TrevisoSummaryLineItemRule',
   'net.nanopay.tx.EtaSummaryTransactionLineItem',
-  'net.nanopay.tx.planner.SummaryLineItemRule',
-  'net.nanopay.tx.planner.SummaryTotalRateLineItemRule',
   'net.nanopay.country.br.NatureCodePaymentProviderJunction',
+  'net.nanopay.tx.ExpirySummaryTransactionLineItem',
   'net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions',
 
   // crunch onboarding
@@ -1342,7 +1344,6 @@ var classes = [
   'net.nanopay.tx.realex.RealexTransactionDAO',
   'net.nanopay.tx.realex.RealexTransactionPlanDAO',
   'net.nanopay.tx.stripe.StripeTransactionDAO',
-  'net.nanopay.tx.IBAN',
   'net.nanopay.tx.ChainSummary',
   'net.nanopay.tx.TransactionCreateOnInvoiceSubmission',
 

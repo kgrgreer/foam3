@@ -110,7 +110,6 @@ foam.CLASS({
           Long feeAmount = (new Double(fxQuote.getFee())).longValue();
           fxTransaction.addLineItems( new TransactionLineItem[] {new FeeLineItem.Builder(x).setGroup("fx").setNote("FX Broker Fee").setAmount(feeAmount).setDestinationAccount(NANOPAY_FEE_ACCOUNT_ID).build()} );
         }
-        fxTransaction.setIsQuoted(true);
         return fxTransaction;
       }
 

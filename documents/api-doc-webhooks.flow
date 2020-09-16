@@ -40,7 +40,6 @@
     "errorInfo: ""
   },
   "name": "Transaction",
-  "isQuoted": true,
   "id": "02adf86d-b215-4568-9036-98d141732e6e",
   "created": "2020-08-06T20:07:46.552Z",
   "createdBy": 1,

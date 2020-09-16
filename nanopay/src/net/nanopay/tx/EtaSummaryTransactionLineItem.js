@@ -44,6 +44,10 @@ foam.CLASS({
           .add(formatted)
         .end();
       }
+    },
+    {
+      name: 'expiry',
+      hidden: true
     }
   ],
 

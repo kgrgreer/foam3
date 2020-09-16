@@ -51,7 +51,6 @@ foam.CLASS({
     if ( ! (request instanceof RetailTransaction) ) {
       return getDelegate().put_(x, quote);
     }
-    request.setIsQuoted(true);
     quote.addPlan(request);
     quote.setPlan(request);
 

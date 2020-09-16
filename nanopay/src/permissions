@@ -564,3 +564,4 @@ p({"class":"foam.nanos.auth.Permission","id":"service.localSettingDAO","descript
 p({"class":"foam.nanos.auth.Permission","id":"paymentprovidercorridor.read.*","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.fileTypeDAO","description":"Allow user access the fileTypeDAO"})
 p({"class":"foam.nanos.auth.Permission","id":"service.contactService","description":""})
+p({"class":"foam.nanos.auth.Permission","id":"transactionplan.create","description":""})
