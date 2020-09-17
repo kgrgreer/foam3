@@ -425,6 +425,9 @@ foam.CLASS({
               class: 'net.nanopay.ui.banner.Banner',
               data$: this.bannerData$
             })
+            .start(this.StackView.create({data: this.stack, showActions: false}))
+              .style({'margin-top': '55px'})
+            .end()
             .tag(this.StackView, {
               data: this.stack,
               showActions: false
