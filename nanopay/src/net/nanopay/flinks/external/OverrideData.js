@@ -17,8 +17,9 @@
 
 foam.CLASS({
   package: 'net.nanopay.flinks.external',
-  name: 'FlinksOverrideData',
-  documentaiton: 'Override data retrieved from Flinks with data provided in this object.',
+  name: 'OverrideData',
+  abstract: true,
+  documentaiton: 'Override data.',
 
   javaImports: [
     'foam.nanos.auth.Address'
@@ -27,24 +28,19 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'userEmail',
-      documentation: 'User email address'
-    },
-    {
-      class: 'String',
-      name: 'businessEmail',
-      documentation: 'Business email address'
-    },
-    {
-      class: 'String',
-      name: 'businessName',
-      documentation: 'Business name'
+      name: 'email',
+      documentation: 'Email address'
     },
     {
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Address',
-      name: 'businessAddress',
-      documentation: 'Business address'
+      name: 'address',
+      documentation: 'Address'
+    },
+    {
+      class: 'PhoneNumber',
+      name: 'phoneNumber',
+      documentation: 'Phone number'
     }
   ]
 });

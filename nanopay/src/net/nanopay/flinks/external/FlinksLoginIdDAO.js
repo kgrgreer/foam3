@@ -296,9 +296,10 @@ foam.CLASS({
       ],
       javaCode: `
         HolderModel holder = accountDetail.getHolder();  
-        FlinksOverrideData overrides = request.getFlinksOverrideData();
-        String userEmail = overrides != null && !SafetyUtil.isEmpty(overrides.getUserEmail()) ?
-          overrides.getUserEmail() : holder.getEmail();
+        UserOverrideData overrides = null;
+        if ( request.getFlinksOverrides() != null ) overrides = request.getFlinksOverrides().getUserOverrides();
+        String userEmail = overrides != null && !SafetyUtil.isEmpty(overrides.getEmail()) ?
+          overrides.getEmail() : holder.getEmail();
 
         Subject subject = (Subject) x.get("subject");
         DAO userDAO = (DAO) x.get("localUserDAO");
@@ -320,20 +321,22 @@ foam.CLASS({
         X subjectX = getX().put("subject", newSubject);
 
         AddressModel holderAddress = holder.getAddress();        
-        Address address = new Address.Builder(subjectX)
-          .setStructured(false)
-          .setAddress1(holderAddress.getCivicAddress())
-          .setRegionId(holderAddress.getProvince())
-          .setCountryId(holderAddress.getCountry())
-          .setCity(holderAddress.getCity())
-          .setPostalCode(holderAddress.getPostalCode())
-          .build();
+        Address address = overrides != null && overrides.getAddress() != null ?
+          overrides.getAddress() : 
+          new Address.Builder(subjectX)
+            .setStructured(false)
+            .setAddress1(holderAddress.getCivicAddress())
+            .setRegionId(holderAddress.getProvince())
+            .setCountryId(holderAddress.getCountry())
+            .setCity(holderAddress.getCity())
+            .setPostalCode(holderAddress.getPostalCode())
+            .build();
 
         String fullName = holder.getName();
         String nameSplit[] = fullName.split(" ", 2);
-        String firstName = nameSplit[0];
-        String lastName = nameSplit[1];
-        String phoneNumber = holder.getPhoneNumber().replaceAll("[^0-9]", "");
+        String firstName = overrides != null && !SafetyUtil.isEmpty(overrides.getFirstName()) ? overrides.getFirstName() : nameSplit[0];
+        String lastName = overrides != null && !SafetyUtil.isEmpty(overrides.getLastName()) ? overrides.getLastName() : nameSplit[1];
+        String phoneNumber = overrides != null && !SafetyUtil.isEmpty(overrides.getPhoneNumber()) ? overrides.getPhoneNumber() : holder.getPhoneNumber().replaceAll("[^0-9]", "");
 
         // API CAD Personal Payments Under 1000CAD Capability ID
         final String capabilityId = "F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD";
@@ -351,7 +354,8 @@ foam.CLASS({
           .build();
         PersonalOnboardingTypeData onboardingTypeData = new PersonalOnboardingTypeData.Builder(subjectX)
           .setUser(user.getId())
-          .setFlinksLoginType(request.getType() != OnboardingType.BUSINESS ? loginDetail.getType() : "Business")
+          .setFlinksLoginType(loginDetail.getType())
+          .setRequestedOnboardingType(request.getType())
           .build();
 
         // Update properties in the map
@@ -400,13 +404,19 @@ foam.CLASS({
           .setPostalCode(holderAddress.getPostalCode())
           .build();
 
-        FlinksOverrideData overrides = request.getFlinksOverrideData();
+        // Check for overrides
+        BusinessOverrideData overrides = null;
+        if ( request.getFlinksOverrides() != null ) overrides = request.getFlinksOverrides().getBusinessOverrides();
         String businessName = overrides != null && !SafetyUtil.isEmpty(overrides.getBusinessName()) ?
           overrides.getBusinessName() : holder.getName();
-        String businessEmail = overrides != null && !SafetyUtil.isEmpty(overrides.getBusinessEmail()) ?
-          overrides.getBusinessEmail() : holder.getEmail();
-        Address businessAddress = overrides != null && overrides.getBusinessAddress() != null ?
-          overrides.getBusinessAddress() : address;
+        String businessEmail = overrides != null && !SafetyUtil.isEmpty(overrides.getEmail()) ?
+          overrides.getEmail() : holder.getEmail();
+        Address businessAddress = overrides != null && overrides.getAddress() != null ?
+          overrides.getAddress() : address;
+        Address mailingAddress = overrides != null && overrides.getMailingAddress() != null ?
+          overrides.getMailingAddress() : businessAddress;
+        String phoneNumber = overrides != null && !SafetyUtil.isEmpty(overrides.getPhoneNumber()) ? 
+          overrides.getPhoneNumber() : user.getPhoneNumber();
 
         // Create business with minimal information
         Business business = new Business.Builder(x)
@@ -427,9 +437,9 @@ foam.CLASS({
 
         BusinessDetailData businessDetailData = new BusinessDetailData.Builder(subjectX)
           .setBusinessName(businessName)
-          .setPhoneNumber(user.getPhoneNumber())
+          .setPhoneNumber(phoneNumber)
           .setAddress(businessAddress)
-          .setMailingAddress(businessAddress)
+          .setMailingAddress(mailingAddress)
           .setEmail(businessEmail)
           .build();
         

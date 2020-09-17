@@ -26,7 +26,8 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.util.SafetyUtil'
+    'foam.util.SafetyUtil',
+    'net.nanopay.flinks.external.OnboardingType'
   ],
   
   properties: [
@@ -41,6 +42,11 @@ foam.CLASS({
       class: 'String',
       name: 'flinksLoginType',
       documentation: 'Login type returned by Flinks for credentials of user'
+    },
+    {
+      class: 'Enum',
+      of: 'net.nanopay.flinks.external.OnboardingType',
+      name: 'requestedOnboardingType'
     },
     {
       class: 'Boolean',
@@ -58,9 +64,18 @@ foam.CLASS({
         if ( user == null ) {
           throw new IllegalArgumentException("User does not exist: " + getUser());
         }
+        
+        if ( getRequestedOnboardingType() == OnboardingType.BUSINESS ) {
+          throw new IllegalArgumentException("Requested onboarding type is not compatible with personal onboarding type: " + getRequestedOnboardingType() + ". Switch to PERSONAL OnboardingType.");
+        }
+
+        // Check if the user is forcing personal onboarding regardless of onboarding types
+        if ( getOverrideFlinksLoginType() ) {
+          return;
+        }
       
         // Personal onboarding must be true for this capability to be satisfied
-        if ( !SafetyUtil.equals(getFlinksLoginType(), "Personal") &&  !getOverrideFlinksLoginType() ) {
+        if ( !SafetyUtil.equals(getFlinksLoginType(), "Personal") ) {
           throw new IllegalArgumentException("Flinks login type is not compatible with onboarding type: " + getFlinksLoginType() + ". Override to force personal of onboarding");
         }
       `
