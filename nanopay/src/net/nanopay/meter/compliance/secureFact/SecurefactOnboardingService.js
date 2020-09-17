@@ -51,7 +51,6 @@
    methods: [
      {
        name: 'retrieveLEVCapabilityPayloads',
-       type: 'java.util.Map',
        args: [
          {
            name: 'x',
@@ -60,11 +59,13 @@
          {
            name: 'business',
            type: 'net.nanopay.model.Business'
+         },
+         {
+           name: 'partiesCapabilityDataObjects',
+           type: 'java.util.Map'
          }
        ],
        javaCode: `
-        Map<String,FObject> partiesCapabilityDataObjects = new HashMap<>();
-        
         if ( business == null ) {
           throw new RuntimeException("Business is required for LEV document retrieval.");
         }
@@ -84,7 +85,7 @@
 
           // Check if any results were chosen
           if ( chosenResult == null ) {
-            return partiesCapabilityDataObjects;
+            return;
           }
 
           // Get the business type
@@ -119,7 +120,7 @@
           // Only need to collect more information when the business is a corporation
           if ( businessTypeId != 3 ) {
             partiesCapabilityDataObjects.put("Extra Business Type Data Not Required", null);
-            return partiesCapabilityDataObjects;
+            return;
           }
 
           // For corporations, director and owner information must be collected
@@ -137,7 +138,7 @@
             dataResponse = securefactService.levDocumentData(x, orderResponse.getOrderId());
 
             // TODO: add timeout after 2-5 minutes?
-          } while ( dataResponse != null && dataResponse.getStatus() == "In Progress" );
+          } while ( dataResponse != null && SafetyUtil.equals(dataResponse.getStatus(), "In Progress") );
           
           if ( SafetyUtil.equals(dataResponse.getStatus(), "Cancelled") ) {
             throw new RuntimeException("Company data failed LEV document lookup");
@@ -145,37 +146,35 @@
 
           // Process the parties
           LEVDocumentParty[] parties = dataResponse.getParties();
-          if ( parties == null || parties.length == 0 ) {
-            return partiesCapabilityDataObjects;
-          }
-
           List<SigningOfficer> officerList = new ArrayList<>();
           List<BeneficialOwner> ownersList = new ArrayList<>();
           List<BusinessDirector> directorsList = new ArrayList<>();
-          for ( int i = 0; i < parties.length; i++ ) {
-            LEVDocumentParty party = parties[i];
-            if ( party.getDesignation().equals("Director") ) {
-              BusinessDirector businessDirector = new BusinessDirector.Builder(x)
-                .setType(party.getType())
-                .setFirstName(party.getFirstName())
-                .setLastName(party.getLastName())
-                .build();
-              directorsList.add(businessDirector);
-            } else if ( party.getDesignation().equals("Officer") ) {
-              SigningOfficer signingOfficer = new SigningOfficer.Builder(x)
-                .setFirstName(party.getFirstName())
-                .setLastName(party.getLastName())
-                .setPosition(party.getPosition())
-                .build();
-              officerList.add(signingOfficer);
-            } else if ( party.getDesignation().equals("Shareholder") ) {
-              BeneficialOwner owner = new BeneficialOwner.Builder(x)
-                .setFirstName(party.getFirstName())
-                .setLastName(party.getLastName())
-                .setJobTitle(party.getPosition())
-                .setShowValidation(false) // prevent validation on the benefial owner for now
-                .build();
-              ownersList.add(owner);
+          if ( parties != null && parties.length > 0 ) {
+            for ( int i = 0; i < parties.length; i++ ) {
+              LEVDocumentParty party = parties[i];
+              if ( party.getDesignation().equals("Director") ) {
+                BusinessDirector businessDirector = new BusinessDirector.Builder(x)
+                  .setType(party.getType())
+                  .setFirstName(party.getFirstName())
+                  .setLastName(party.getLastName())
+                  .build();
+                directorsList.add(businessDirector);
+              } else if ( party.getDesignation().equals("Officer") ) {
+                SigningOfficer signingOfficer = new SigningOfficer.Builder(x)
+                  .setFirstName(party.getFirstName())
+                  .setLastName(party.getLastName())
+                  .setPosition(party.getPosition())
+                  .build();
+                officerList.add(signingOfficer);
+              } else if ( party.getDesignation().equals("Shareholder") ) {
+                BeneficialOwner owner = new BeneficialOwner.Builder(x)
+                  .setFirstName(party.getFirstName())
+                  .setLastName(party.getLastName())
+                  .setJobTitle(party.getPosition())
+                  .setShowValidation(false) // prevent validation on the benefial owner for now
+                  .build();
+                ownersList.add(owner);
+              }
             }
           }
 
@@ -206,8 +205,6 @@
         } catch (Exception e) {
           ((Logger) x.get("logger")).warning("SecurefactOnboardingService failed.", e);
         }
-        
-        return partiesCapabilityDataObjects;
        `
      }
    ]

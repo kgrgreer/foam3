@@ -31,6 +31,11 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'Boolean',
+      name: 'forceNew'
+      // TODO: remove this!!!
+    },
+    {
       class: 'String',
       name: 'id',
       hidden: true,

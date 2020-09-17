@@ -20,6 +20,10 @@ foam.CLASS({
   name: 'FlinksOverrideData',
   documentaiton: 'Override data retrieved from Flinks with data provided in this object.',
 
+  javaImports: [
+    'foam.nanos.auth.Address'
+  ],
+
   properties: [
     {
       class: 'String',
@@ -35,6 +39,12 @@ foam.CLASS({
       class: 'String',
       name: 'businessName',
       documentation: 'Business name'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Address',
+      name: 'businessAddress',
+      documentation: 'Business address'
     }
   ]
 });
