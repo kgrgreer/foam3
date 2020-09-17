@@ -295,12 +295,16 @@ foam.CLASS({
         { name: 'loginDetail', type: 'LoginModel' }
       ],
       javaCode: `
+        HolderModel holder = accountDetail.getHolder();  
+        FlinksOverrideData overrides = request.getFlinksOverrideData();
+        String userEmail = overrides != null && !SafetyUtil.isEmpty(overrides.getUserEmail()) ?
+          overrides.getUserEmail() : holder.getEmail();
+
         Subject subject = (Subject) x.get("subject");
         DAO userDAO = (DAO) x.get("localUserDAO");
-        HolderModel holder = accountDetail.getHolder();
         User user = new User.Builder(x)
-          .setEmail(holder.getEmail())
-          .setUserName(holder.getEmail())
+          .setEmail(userEmail)
+          .setUserName(userEmail)
           .setDesiredPassword(java.util.UUID.randomUUID().toString())
           .setEmailVerified(true)
           .setGroup("personal")
@@ -401,12 +405,18 @@ foam.CLASS({
           .setPostalCode(holderAddress.getPostalCode())
           .build();
 
+        FlinksOverrideData overrides = request.getFlinksOverrideData();
+        String businessName = overrides != null && !SafetyUtil.isEmpty(overrides.getBusinessName()) ?
+          overrides.getBusinessName() : holder.getName();
+        String businessEmail = overrides != null && !SafetyUtil.isEmpty(overrides.getBusinessEmail()) ?
+          overrides.getBusinessEmail() : holder.getEmail();
+
         BusinessDetailData businessDetailData = new BusinessDetailData.Builder(subjectX)
-          .setBusinessName(holder.getName())
+          .setBusinessName(businessName)
           .setPhoneNumber(user.getPhoneNumber())
           .setAddress(address)
           .setMailingAddress(address)
-          .setEmail(holder.getEmail())
+          .setEmail(businessEmail)
           .build();
         
         // Create the capabilities data map
@@ -430,6 +440,11 @@ foam.CLASS({
         // Set the business on the request
         request.setBusiness(business.getId());
         
+        // Business CAD payments capability
+        String capabilityId = "18DD6F03-998F-4A21-8938-358183151F96";
+        CapabilityPayload missingPayloads = (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).find(capabilityId);
+        ((Logger) x.get("logger")).info(missingPayloads);
+
         UserDetailExpandedData userDetailsExpanded = new UserDetailExpandedData.Builder(x).build();
         AbliiPrivacyPolicy privacyPolicy = new AbliiPrivacyPolicy.Builder(subjectX)
           .setAgreement(false)
@@ -453,8 +468,6 @@ foam.CLASS({
         businessCapabilityDataObjects.put("Expanded User Details", userDetailsExpanded);
         businessCapabilityDataObjects.put("API CAD Business Payments Receiving", null);
 
-        // Business CAD payments capability
-        String capabilityId = "18DD6F03-998F-4A21-8938-358183151F96";
         businessCapPayload = new CapabilityPayload.Builder(subjectX)
           .setId(capabilityId)
           .setCapabilityDataObjects(new HashMap<String,FObject>(businessCapabilityDataObjects))
@@ -462,7 +475,7 @@ foam.CLASS({
         businessCapPayload = (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).put(businessCapPayload);
 
         // Query the capabilityPayloadDAO to see what capabilities are still required
-        CapabilityPayload missingPayloads = (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).find(capabilityId);
+        missingPayloads = (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).find(capabilityId);
 
         // set the remain capabilities to be satisfied
         request.setMissingBusinessCapabilityDataObjects(missingPayloads.getCapabilityDataObjects());
