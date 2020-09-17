@@ -107,7 +107,7 @@ foam.CLASS({
     }
     ^TwoFactAuthIntro {
       font-size: 14px;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       line-height: 1.6;
       height: 63px;
       padding: 0 16px;
@@ -123,7 +123,7 @@ foam.CLASS({
       margin: 0 128px;
     }
     ^ .sub-note {
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px 
     }
   `,

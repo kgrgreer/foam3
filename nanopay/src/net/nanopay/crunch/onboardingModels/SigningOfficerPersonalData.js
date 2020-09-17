@@ -42,12 +42,12 @@ foam.CLASS({
     {
       name: 'signingOfficerPersonalInformationSection',
       title: 'Enter the signing officer\'s personal information',
-      help: 'will require your most convenient phone number.'
+      help: 'Require your most convenient phone number.'
     },
     {
       name: 'signingOfficerAddressSection',
       title: 'Enter the signing officer\'s address',
-      help: 'will require your personal address. Used only to confirm your identity.'
+      help: 'Require your personal address. Used only to confirm your identity.'
     }
   ],
 

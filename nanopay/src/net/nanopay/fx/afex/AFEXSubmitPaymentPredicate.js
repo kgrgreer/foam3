@@ -24,6 +24,7 @@ foam.CLASS({
   javaImports: [
     'foam.util.SafetyUtil',
     'static foam.mlang.MLang.*',
+    'net.nanopay.fx.afex.AFEXFundingTransaction',
     'net.nanopay.fx.afex.AFEXTransaction',
     'net.nanopay.tx.model.TransactionStatus'
   ],
@@ -33,6 +34,7 @@ foam.CLASS({
       name: 'f',
       javaCode: `
       if ( ! (NEW_OBJ.f(obj) instanceof AFEXTransaction) ) return false;
+      if ( NEW_OBJ.f(obj) instanceof AFEXFundingTransaction ) return false;
       AFEXTransaction afexTransaction = (AFEXTransaction) NEW_OBJ.f(obj);
       return afexTransaction.getStatus() == TransactionStatus.PENDING
         && SafetyUtil.isEmpty( afexTransaction.getReferenceNumber() );

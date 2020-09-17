@@ -85,8 +85,8 @@ foam.CLASS({
       // Check destination account owner compliance
       User destinationOwner = findDestinationAccount(x).findOwner(x);
       if ( destinationOwner.getCompliance().equals(ComplianceStatus.FAILED) ) {
-        // We throw when the destination account owner failed compliance however
-        // we obligate to not expose the fact that the user failed compliance.
+      // We throw when the destination account owner failed compliance, however
+      // we are obligated to not expose this fact to the user.
         throw new RuntimeException("Receiver needs to pass compliance.");
       }
       `

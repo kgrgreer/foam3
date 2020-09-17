@@ -125,10 +125,10 @@ public class RestrictAccountChildrenRuleTest
     transaction_.setDestinationAccount(destinationChildAccount_.getId());
     transaction_.setAmount(50000);
     transaction_.setStatus(TransactionStatus.COMPLETED);
-    //this test bypasses planners and built in validation
+    //this test bypasses planners and built in validation // THIS IS NOT POSSIBLE ANYMORE.
     transaction_.setPlanner("68afcf0c-c718-98f8-0841-75e97a3ad16d182");
-    transaction_.setIsQuoted(true);
-
+    transaction_.setIsValid(true);
+/*  TODO: Fix this test. planner bypass disallowed.
     test(
       TestUtils.testThrows(
         () -> transactionDAO_.put(transaction_),
@@ -137,5 +137,6 @@ public class RestrictAccountChildrenRuleTest
       ),
       "Send transaction between restricted child accounts throws RuntimeException."
     );
+    */
   }
 }

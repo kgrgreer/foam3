@@ -28,22 +28,25 @@ foam.CLASS({
   javaImports: [
     'java.util.*',
 
-    'foam.core.FObject',
+
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.core.FObject',
+    'foam.util.SafetyUtil',
     'foam.dao.ReadOnlyDAO',
     'foam.nanos.pm.PM',
     'foam.nanos.logger.Logger',
-    'foam.util.SafetyUtil',
+    'net.nanopay.tx.FeeLineItem',
     'net.nanopay.account.Account',
     'net.nanopay.account.Balance',
     'net.nanopay.account.DebtAccount',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.TransactionStatus'
   ],
 
   messages: [
-    { name: 'TRANS_NOT_QUOTED_AND_MISSING_ID_SET_ERROR_MSG', message: 'Transaction must be quoted and have id set.' },
+    { name: 'TRANS_MISSING_ID_SET_ERROR_MSG', message: 'Transaction must have id set.' },
     { name: 'UNKNOWN_ACCOUNT_ERROR_MSG', message: 'Unknown account: ' },
     { name: 'DEBITS_CREDITS_NOT_MATCH_ERROR_MSG', message: 'Debits and credits don\'t match.' }
   ],
@@ -83,8 +86,8 @@ foam.CLASS({
       try {
         Transaction txn = (Transaction) obj;
 
-        if ( SafetyUtil.isEmpty(txn.getId()) || ! txn.getIsQuoted() ) {
-          throw new RuntimeException(TRANS_NOT_QUOTED_AND_MISSING_ID_SET_ERROR_MSG);
+        if ( SafetyUtil.isEmpty(txn.getId()) ) {
+          throw new RuntimeException(TRANS_MISSING_ID_SET_ERROR_MSG);
         }
 
         Transaction oldTxn = (Transaction) getDelegate().find_(x, obj);
@@ -161,6 +164,15 @@ foam.CLASS({
       javaCode: `
       PM pm = PM.create(x, this.getClass().getSimpleName(), "executeTransaction");
       try {
+        // Copy lineItem transfers to transaction (fees + taxes that were added)
+        TransactionLineItem [] ls = txn.getLineItems();
+        for ( TransactionLineItem li : ls ) {
+          if ( li instanceof FeeLineItem && ((FeeLineItem)li).getTransfers() != null ) {
+            txn.add(((FeeLineItem)li).getTransfers());
+            ((FeeLineItem)li).setTransfers(null);
+          }
+        }
+
         Transfer[] ts = txn.getTransfers();
         return lockAndExecute(x, txn, ts);
       } finally {

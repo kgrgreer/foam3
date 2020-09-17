@@ -49,7 +49,7 @@ foam.CLASS({
     }
     ^ .boxTitle {
       opacity: 0.6;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 20px;
       font-weight: 300;
       line-height: 20px;
@@ -66,7 +66,7 @@ foam.CLASS({
       border-radous: 2px;
       background-color: /*%PRIMARY3%*/ #406dea;
       border-radius: 2px;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       line-height: 2.86;
       letter-spacing: 0.2px;
@@ -82,7 +82,7 @@ foam.CLASS({
       height: 40px;
       border-radius: 2px;
       box-shadow: 0 0 1px 0 rgba(9, 54, 73, 0.8);
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       line-height: 2.86;
       letter-spacing: 0.2px;

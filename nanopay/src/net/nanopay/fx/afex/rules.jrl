@@ -392,3 +392,75 @@ p({
   "saveHistory":true,
   "lifecycleState":1
 })
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"0bc85e00-1961-4fb8-ae74-6646ca1540fc","name":"create funding balance",
+  "documentation":"Rule to create the funding balance for AFEX",
+  "priority":30,
+  "ruleGroup":"AFEX",
+  "daoKey":"afexBusinessDAO",
+  "operation":3,
+  "after":true,
+  "predicate": {
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue": "Active"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+        "propName":"status",
+        "propValue": "Active",
+        isNew: false
+      }
+    ]
+  },
+  "asyncAction":{
+    "class":"net.nanopay.fx.afex.AFEXCreateFundingBalancesRule"
+  },
+  "enabled":true,
+  "saveHistory":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"62ef7828-9ffc-4601-b20f-277dd1688d5e","name":"create funding transaction 2",
+  "documentation":"Rule to create the funding transaction for AFEX",
+  "priority":90,
+  "ruleGroup":"AFEX",
+  "daoKey":"localTransactionDAO",
+  "operation":3,
+  "after":true,
+  "predicate": {
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of":"net.nanopay.fx.afex.AFEXFundingTransaction"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue": {
+          "class": "net.nanopay.tx.model.TransactionStatus",
+          "ordinal":3
+        }
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"referenceNumber",
+        "propValue": ""
+      }
+    ]
+  },
+  "asyncAction":{
+    "class":"net.nanopay.fx.afex.AFEXSubmitFundingTxnRule"
+  },
+  "enabled":true,
+  "saveHistory":true,
+  "lifecycleState":1
+})

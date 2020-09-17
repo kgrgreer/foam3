@@ -68,6 +68,11 @@ foam.CLASS({
       name: 'currency'
     },
     {
+      class: 'Boolean',
+      name: 'alreadyExists',
+      storageTransient: true
+    },
+    {
       class: 'DateTime',
       name: 'created',
       label: 'Creation Date',

@@ -47,8 +47,8 @@ if [ -f "$JOURNAL_HOME/transactions" ]; then
     # Whatever is remaining is Digital
     perl -p -i -e 's/net.nanopay.tx.model.Transaction/net.nanopay.tx.DigitalTransaction/g;' "$JOURNAL_HOME/"transactions
 
-    # Set isQuoted flag, and sourceCurrency
-    perl -p -i -e 's/(.*?)id\":(.*?),(.*?)/\1id\":\2,\"isQuoted\":true,\"sourceCurrency\":\"CAD\",\3/g;' "$JOURNAL_HOME/"transactions
+    # Set sourceCurrency
+    perl -p -i -e 's/(.*?)id\":(.*?),(.*?)/\1id\":\2,\"sourceCurrency\":\"CAD\",\3/g;' "$JOURNAL_HOME/"transactions
 
     # copy data to createdDate and lastModifiedDate
     perl -p -i -e 's/date\":\"(.*?)\"/date\":\"\1\",\"created\":\"\1\",\"lastModified\":\"\1\"/g;' "$JOURNAL_HOME/"transactions

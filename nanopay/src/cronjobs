@@ -173,3 +173,37 @@ p({
   "description": "Send onboarding reminder email to businesses created over 24 hours ago without yet completing their onboarding or setting up their bank account",
   "code": "import net.nanopay.sme.cron.OnboardingReminderCron;\ncron = new OnboardingReminderCron();\ncron.execute(x);\nprint(\"done\");"
 })
+p({
+  "class": "foam.nanos.cron.Cron",
+  "enabled":true,
+  "scheduledTime": "2019-11-19T00:00:00.000Z",
+  "schedule": {"class":"foam.nanos.cron.CronSchedule","minute":0,"hour":-1,"dayOfMonth":-1,"month":-1,"dayOfWeek":-1,"second":-1},
+  "id":"Remove Expired TransactionPlans",
+  "description":"Remove Expired TransactionPlans",
+  "code":"""
+  import foam.mlang.predicate.Predicate;
+  import foam.core.ContextAgent;
+  import foam.core.Detachable;
+  import foam.core.X;
+  import foam.dao.AbstractSink;
+  import foam.dao.DAO;
+  import net.nanopay.tx.Plan;
+  import java.time.LocalDateTime;
+
+  plansDAO = x.get("localTransactionPlannerDAO");
+  plansDAO.select( new AbstractSink() {
+
+      public void put(Object o, Detachable d) {
+          print("a");
+          Plan plan = (Plan) o;
+          LocalDateTime now = LocalDateTime.now();
+          LocalDateTime completion = plan.getExpiry();
+          if ( now.isAfter(completion) ) {
+            plansDAO.remove(plan);
+          }
+      
+      }
+  });
+    
+  """
+})

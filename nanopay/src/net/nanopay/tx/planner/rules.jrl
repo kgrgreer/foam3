@@ -268,7 +268,7 @@ p({
   "name":"AscendantFx Transaction Planner",
   "priority":90,
   "ruleGroup":"transactionPlanner",
-  "enabled":true,
+  "enabled":false,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -893,68 +893,4 @@ p({
     ]
   },
   lifecycleState: 1
-})
-
-p({
-  "class": "foam.nanos.ruler.Rule",
-  "id":"43ec9904-8295-436e-8cb3-44293d729ab6",
-  "name": "ETA Summary line item planner",
-  "documentation": "ETA Summary Transaction line creator",
-  "daoKey": "transactionPlannerDAO",
-  "ruleGroup": "transactionPlanner",
-  "operation": 0,
-  "after": true,
-  "priority": 100,
-   predicate: {
-    class: "foam.mlang.predicate.Or",
-    args: [
-      {
-        class: "foam.nanos.ruler.predicate.PropertyIsInstance",
-        propName: "plan",
-        of: "net.nanopay.tx.SummaryTransaction"
-      },
-      {
-        class: "foam.nanos.ruler.predicate.PropertyIsInstance",
-        propName: "plan",
-        of: "net.nanopay.fx.FXSummaryTransaction"
-      }
-    ]
-  },
-  "action": {
-    "class": "net.nanopay.tx.planner.SummaryLineItemRule"
-  },
-  "enabled": true,
-  "lifecycleState":1
-})
-p({
-  "class": "foam.nanos.ruler.Rule",
-  "id":"8a1e7833-17de-496c-9c1a-3dd60107286b",
-  "name": "Summary total rate line item planner",
-  "daoKey": "transactionPlannerDAO",
-  "ruleGroup": "transactionPlanner",
-  "operation": 0,
-  "after": true,
-  "priority": 100,
-  "predicate": {
-    "class":"foam.mlang.predicate.And",
-    "args":[
-      {
-        class: "foam.nanos.ruler.predicate.PropertyIsInstance",
-        propName: "plan",
-        of: "net.nanopay.fx.FXSummaryTransaction"
-      },
-      {
-        class: "foam.mlang.PredicatedExpr",
-        arg1: {
-          class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
-          of: "net.nanopay.fx.TotalRateLineItem",
-        }
-      }
-    ]
-  },
-  "action": {
-    "class": "net.nanopay.tx.planner.SummaryTotalRateLineItemRule"
-  },
-  "enabled": true,
-  "lifecycleState":1
 })

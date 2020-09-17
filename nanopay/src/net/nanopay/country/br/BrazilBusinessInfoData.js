@@ -30,10 +30,15 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
   ],
 
+  imports: [
+    'brazilVerificationService'
+  ],
+
   sections: [
     {
       name: 'businessInformation',
-      title: `Please enter your Business' Identification Numbers`
+      title: `Please enter your Business' Identification Numbers`,
+      help: `Require Business' Identification Numbers`
     }
   ],
 
@@ -121,15 +126,63 @@ foam.CLASS({
           ]
         })
       }
-    }
+    },
+    {
+      class: 'String',
+      name: 'name',
+      section: 'businessInformation',
+      hidden: true,
+      expression: function(cnpj) {
+        if ( cnpj.length == 14 ) {
+          this.name = "";
+          return this.getCNPJBusinessName(cnpj).then((n) => {
+            this.name = n;
+          });
+        } else { return ""; }
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'verifyName',
+      label: 'Please verify that business name displayed below matches business name attached to your CNPJ.',
+      section: 'businessInformation',
+      view: function(n, X) {
+        var self = X.data$;
+        return foam.u2.CheckBox.create({
+          labelFormatter: function() {
+            this.start('span')
+              .add(self.dot('name'))
+            .end();
+          }
+        });
+      },
+      validationPredicates: [
+        {
+          args: ['verifyName'],
+          predicateFactory: function(e) {
+            return e.EQ(net.nanopay.country.br.BrazilBusinessInfoData.VERIFY_NAME, true);
+          },
+          errorString: 'Click to verify business name.'
+        }
+      ]
+    },
   ],
 
   methods: [
     {
+      name: 'getCNPJBusinessName',
+      code:  async function(cnpj) {
+        return await this.brazilVerificationService.getCNPJName(this.__subContext__, cnpj);
+      }
+    },
+    {
       name: 'validate',
       javaCode: `
+        if ( ! getVerifyName() )
+          throw new IllegalStateException("Must verify business name attached to CNPJ is valid.");
+
         try {
-          if ( ! ((FederalRevenueService) x.get("federalRevenueService")).validateCnpj(getCnpj()) )
+          if ( ! ((BrazilVerificationService) x.get("brazilVerificationService")).validateCnpj(x, getCnpj()) )
             throw new RuntimeException("Invalid CNPJ");
         } catch(Throwable t) {
           throw t;

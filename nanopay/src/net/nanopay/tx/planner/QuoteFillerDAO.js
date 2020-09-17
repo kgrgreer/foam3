@@ -16,7 +16,7 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.tx',
+  package: 'net.nanopay.tx.planner',
   name: 'QuoteFillerDAO',
   extends: 'foam.dao.ProxyDAO',
 
@@ -33,6 +33,7 @@ foam.CLASS({
     'net.nanopay.liquidity.LiquiditySettings',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.TransactionQuote',
     'foam.util.SafetyUtil',
     'foam.nanos.auth.LifecycleState'
   ],
@@ -41,18 +42,10 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-        if ( ! ( obj instanceof TransactionQuote ) ) {
-          return getDelegate().put_(x, obj);
-        }
 
         Logger logger = (Logger) x.get("logger");
         TransactionQuote quote = (TransactionQuote) obj;
         Transaction txn = quote.getRequestTransaction();
-
-        // ---- clear the incoming quote
-        txn.setNext(null);
-        quote.setPlans(new Transaction[] {});
-        quote.setPlan(null);
 
         // ---- set source account
         Account account = txn.findSourceAccount(x);
@@ -114,6 +107,7 @@ foam.CLASS({
 
         quote.setSourceUnit(txn.getSourceCurrency());
         quote.setDestinationUnit(txn.getDestinationCurrency());
+        txn.validate(x); // validate the request txn 1st
         txn.freeze();
         return getDelegate().put_(x, quote);
       `

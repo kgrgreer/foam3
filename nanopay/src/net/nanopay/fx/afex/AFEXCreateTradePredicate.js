@@ -23,6 +23,7 @@ foam.CLASS({
 
   javaImports: [
     'static foam.mlang.MLang.*',
+    'net.nanopay.fx.afex.AFEXFundingTransaction',
     'net.nanopay.fx.afex.AFEXTransaction',
     'net.nanopay.tx.model.TransactionStatus'
   ],
@@ -33,6 +34,7 @@ foam.CLASS({
       javaCode: `
       return AND(
         EQ(DOT(NEW_OBJ, INSTANCE_OF(AFEXTransaction.class)), true),
+        NEQ(DOT(NEW_OBJ, INSTANCE_OF(AFEXFundingTransaction.class)), true),
         EQ(DOT(NEW_OBJ, AFEXTransaction.STATUS), TransactionStatus.PENDING_PARENT_COMPLETED),
         EQ(DOT(NEW_OBJ, AFEXTransaction.AFEX_TRADE_RESPONSE_NUMBER), 0)
       ).f(obj);

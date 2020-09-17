@@ -704,6 +704,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support","targe
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support","targetId":"transactionPurpose.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"support","targetId":"user.read.*"})
 
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"digitalaccount.default.create"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"foam.nanos.auth.user.section.administrative"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"menu.read.users"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"service.agentJunctionDAO"})

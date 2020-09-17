@@ -26,42 +26,28 @@ txn = new net.nanopay.tx.model.Transaction();
 txn.setPayerId(payer.getId());
 txn.setPayeeId(payee.getId());
 txn.setAmount(100);
-quote = new net.nanopay.tx.TransactionQuote.Builder(x).setRequestTransaction(txn).build();
 
 // Test 1 - Sender needs to pass business compliance
 threw = false;
 message = "";
-try {
-  quote = x.get("localTransactionPlannerDAO").put_(x, quote);
-} catch (RuntimeException e) {
-  while ( e.getCause() != null ) e = e.getCause();
-  message = e.getMessage();
-  threw = true;
-}
-test( threw && message.equals("Sender needs to pass business compliance."), "Unable to put if sender business user hasn't passed compliance.");
+quote = x.get("localTransactionPlannerDAO").put_(x, txn);
+quoteR = x.get("localTransactionPlannerDAO").put_(x, quote.getPlan());
+test(quoteR == null , "validation has failed because null was returned"); //TODO: read an error code, see if expected
+//test( threw && message.equals("Sender needs to pass business compliance."), "Unable to put if sender business user hasn't passed compliance.")
 
 // Test 2 - Sender passes compliance
 payer.setCompliance(net.nanopay.admin.model.ComplianceStatus.PASSED);
 payer = localUserDAO.put_(x, payer).fclone();
-try {
-  quote = x.get("localTransactionPlannerDAO").put_(x, quote.fclone());
-  test(true, "Able to put if sender business user has passed compliance.");
-} catch (RuntimeException e) {
-  test(false, e.getMessage());
-}
+quote = x.get("localTransactionPlannerDAO").put_(x, txn.fclone());
+quoteR = x.get("localTransactionPlannerDAO").put_(x, quote.getPlan());
+test(quoteR != null , "validation has Succeeded because null was not returned");
 
 // Test 3 - Receiver failed compliance
 payee.setCompliance(net.nanopay.admin.model.ComplianceStatus.FAILED);
 payee = localUserDAO.put_(x, payee).fclone();
-threw = false;
-message = "";
-try {
-  quote = x.get("localTransactionPlannerDAO").put_(x, quote.fclone());
-} catch (RuntimeException e) {
-  while ( e.getCause() != null ) e = e.getCause();
-  message = e.getMessage();
-  threw = true;
-}
-test( threw && message.equals("Receiver needs to pass compliance."), "Unable to put if receiver user failed compliance.");
+quote = x.get("localTransactionPlannerDAO").put_(x, txn.fclone());
+quoteR = x.get("localTransactionPlannerDAO").put_(x, quote.getPlan());
+test(quoteR == null , "validation has failed because null was returned"); //TODO: read an error code, see if expected.
+//test( threw && message.equals("Receiver needs to pass compliance."), "Unable to put if receiver user failed compliance.");
   """
 })

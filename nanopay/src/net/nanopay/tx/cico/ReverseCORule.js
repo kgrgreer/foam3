@@ -59,7 +59,6 @@ foam.CLASS({
                 .setSourceAccount(TrustAccount.find(x, txn.findSourceAccount(x), txn.getInstitutionNumber()).getId())
                 .setAmount(txn.getAmount())
                 .setName("Reversal of: "+txn.getId())
-                .setIsQuoted(false)
                 .setAssociateTransaction(txn.getId())
                 .build();
 

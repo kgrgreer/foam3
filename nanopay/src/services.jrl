@@ -2152,6 +2152,7 @@ p({
       .setOf(foam.nanos.ruler.Rule.getOwnClassInfo())
       .setCluster(false)
       .setInnerDAO(x.get("localRuleDAO"))
+      .setRuler(false)
       .build();
 
     return dao;
@@ -2511,7 +2512,7 @@ p({
   "serviceScript": """
     return new foam.dao.EasyDAO.Builder(x)
       .setInnerDAO(x.get("countryDAO"))
-      .setDecorator(new net.nanopay.country.PermittedCountryFilterDAO(new String[] { "CA", "US", "BR" }, x, new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.auth.Country.getOwnClassInfo()).build()))
+      .setAuthorize(true)
       .setOf(foam.nanos.auth.Country.getOwnClassInfo())
       .build();
   """,

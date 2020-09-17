@@ -24,6 +24,7 @@ foam.CLASS({
   `,
 
   imports: [
+    'brazilVerificationService',
     'countryDAO'
   ],
 
@@ -33,7 +34,7 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'net.nanopay.country.br.FederalRevenueService',
+    'net.nanopay.country.br.BrazilVerificationService',
   ],
 
   messages: [
@@ -93,6 +94,52 @@ foam.CLASS({
             );
           },
           errorString: 'Please provide a valid CPF number'
+        }
+      ]
+    },
+    {
+      class: 'String',
+      name: 'name',
+      label: '',
+      hidden: true,
+      expression: function(cpf) {
+        if ( cpf.length == 11 ) {
+          this.name = "";
+          return this.getCpfName(cpf).then((n) => {
+            this.name = n;
+          });
+        } else { return ""; }
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'verifyName',
+      label: 'Please verify that name displayed below matches director name.',
+      visibility: function (type) {
+        return type == 'BR' ?
+        foam.u2.DisplayMode.RW :
+        foam.u2.DisplayMode.HIDDEN;
+      },
+      view: function(n, X) {
+        var self = X.data$;
+        return foam.u2.CheckBox.create({
+          labelFormatter: function() {
+            this.start('span')
+              .add(self.dot('name'))
+            .end();
+          }
+        });
+      },
+      validationPredicates: [
+        {
+          args: ['verifyName'],
+          predicateFactory: function(e) {
+            return e.AND(
+              e.EQ(net.nanopay.model.BusinessDirector.VERIFY_NAME, true),
+              e.EQ(net.nanopay.model.BusinessDirector.TYPE, 'BR')
+            );
+          },
+          errorString: 'Click to verify director name.'
         }
       ]
     },
@@ -159,11 +206,22 @@ foam.CLASS({
   ],
   methods: [
     {
+      name: 'getCpfName',
+      code:  async function(cpf) {
+      debugger
+        return await this.brazilVerificationService.getCPFName(this.__subContext__, cpf);
+      }
+    },
+    {
       name: 'validate',
       javaCode: `
         if ( "BR".equals(getType()) ) {
+
+        if ( ! getVerifyName() )
+          throw new IllegalStateException("Must verify name attached to CPF is valid.");
+
           try {
-            if ( ! ((FederalRevenueService) x.get("federalRevenueService")).validateCpf(getCpf(), getBirthday()) )
+            if ( ! ((BrazilVerificationService) x.get("brazilVerificationService")).validateCpf(x, getCpf(), getBirthday()) )
               throw new RuntimeException(INVALID_CPF);
           } catch(Throwable t) {
             throw t;

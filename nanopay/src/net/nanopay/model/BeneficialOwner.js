@@ -43,10 +43,11 @@ foam.CLASS({
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
-    'net.nanopay.country.br.FederalRevenueService',
+    'net.nanopay.country.br.BrazilVerificationService',
   ],
 
   imports: [
+    'brazilVerificationService',
     'complianceHistoryDAO'
   ],
 
@@ -318,6 +319,54 @@ foam.CLASS({
       ]
     },
     {
+      class: 'String',
+      name: 'name',
+      label: '',
+      section: 'requiredSection',
+      hidden: true,
+      expression: function(cpf) {
+        if ( cpf.length == 11 ) {
+          this.name = "";
+          return this.getCpfName(cpf).then((n) => {
+            this.name = n;
+          });
+        } else { return ""; }
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'verifyName',
+      label: 'Please verify that name displayed below matches owner name.',
+      section: 'requiredSection',
+      visibility: function (type) {
+        return type == 'BR' ?
+        foam.u2.DisplayMode.RW :
+        foam.u2.DisplayMode.HIDDEN;
+      },
+      view: function(n, X) {
+        var self = X.data$;
+        return foam.u2.CheckBox.create({
+          labelFormatter: function() {
+            this.start('span')
+              .add(self.dot('name'))
+            .end();
+          }
+        });
+      },
+      validationPredicates: [
+        {
+          args: ['verifyName'],
+          predicateFactory: function(e) {
+            return e.AND(
+              e.EQ(net.nanopay.model.BeneficialOwner.VERIFY_NAME, true),
+              e.EQ(net.nanopay.model.BeneficialOwner.TYPE, 'BR')
+            );
+          },
+          errorString: 'Click to verify owner name.'
+        }
+      ]
+    },
+    {
       class: 'Boolean',
       name: 'PEPHIORelated',
       documentation: `Determines whether the user is a domestic or foreign _Politically
@@ -349,6 +398,13 @@ foam.CLASS({
   ],
 
   methods: [
+    {
+      name: 'getCpfName',
+      code:  async function(cpf) {
+      debugger
+        return await this.brazilVerificationService.getCPFName(this.__subContext__, cpf);
+      }
+    },
     {
       name: 'authorizeOnCreate',
       args: [
@@ -441,8 +497,12 @@ foam.CLASS({
       name: 'validate',
       javaCode: `
         if ( "BR".equals(getType()) ) {
+
+        if ( ! getVerifyName() )
+          throw new IllegalStateException("Must verify name attached to CPF is valid.");
+
           try {
-            if ( ! ((FederalRevenueService) x.get("federalRevenueService")).validateCpf(getCpf(), getBirthday()) )
+            if ( ! ((BrazilVerificationService) x.get("brazilVerificationService")).validateCpf(x, getCpf(), getBirthday()) )
               throw new RuntimeException(INVALID_CPF);
           } catch(Throwable t) {
             throw t;

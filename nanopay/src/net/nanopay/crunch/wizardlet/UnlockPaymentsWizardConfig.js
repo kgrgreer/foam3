@@ -23,9 +23,13 @@ foam.CLASS({
   ],
 
   methods: [
-    async function execute() {
-      this.allowSkipping = await this.subject.user.signingOfficers.dao
-      .find(this.subject.realUser.id) == null;
+    {
+      name: 'execute',
+      flags: ['web'],
+      code: async function execute() {
+        this.allowSkipping = await this.subject.user.signingOfficers.dao
+        .find(this.subject.realUser.id) == null;
+      }
     }
   ]
 });

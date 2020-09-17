@@ -80,7 +80,7 @@ foam.CLASS({
       width: 330px;
       padding: 25px;
       margin: auto;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
     ^ .net-nanopay-sme-ui-CurrencyChoice {
       width: 90px;
