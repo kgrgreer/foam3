@@ -428,10 +428,6 @@ foam.CLASS({
             .start(this.StackView.create({data: this.stack, showActions: false}))
               .style({'margin-top': '55px'})
             .end()
-            .tag(this.StackView, {
-              data: this.stack,
-              showActions: false
-            })
           .end();
       }
     },
