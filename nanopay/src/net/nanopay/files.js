@@ -1627,6 +1627,13 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/USCancellationAgreement' },
   { name: 'net/nanopay/crunch/acceptanceDocuments/BaseAcceptanceDocumentCapability' },
 
+  // crunch document
+  { name: 'net/nanopay/crunch/document/Document' },
+
+  // Capable object testing
+  { name: 'net/nanopay/crunch/test/TestCapable' },
+  { name: 'net/nanopay/crunch/test/TestCapableDAO' },
+
   // wizardlets
   { name: 'net/nanopay/crunch/wizardlet/RefreshWizardlet' },
   { name: 'net/nanopay/crunch/wizardlet/SigningOfficerQuestionWizardlet' },

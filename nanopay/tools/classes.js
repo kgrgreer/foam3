@@ -1214,6 +1214,9 @@ var classes = [
   'net.nanopay.crunch.UCJExpiryReminderCron',
   'net.nanopay.crunch.compliance.SendExpiryNotification',
 
+  'net.nanopay.crunch.test.TestCapable',
+  'net.nanopay.crunch.test.TestCapableDAO',
+
   // crunch compliance
   'net.nanopay.crunch.compliance.SetComplianceOnUser',
   'net.nanopay.crunch.compliance.SetComplianceOnBusiness',
