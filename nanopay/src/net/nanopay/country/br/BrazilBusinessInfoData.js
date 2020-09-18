@@ -91,6 +91,14 @@ foam.CLASS({
       tableCellFormatter: function(val) {
         return foam.String.applyFormat(val, 'xx.xxx.xxx/xxxx-xx');
       },
+      postSet: function(_,n) {
+        this.cnpjName = "";
+        if ( n.length == 14 ) {
+          this.getCNPJBusinessName(n).then((v) => {
+            this.cnpjName = v;
+          });
+        }
+      },
       view: function(_, X) {
         return foam.u2.FragmentedTextField.create({
           delegates: [
@@ -129,17 +137,10 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'name',
-      section: 'businessInformation',
+      name: 'cnpjName',
+      label: '',
       hidden: true,
-      expression: function(cnpj) {
-        if ( cnpj.length == 14 ) {
-          this.name = "";
-          return this.getCNPJBusinessName(cnpj).then((n) => {
-            this.name = n;
-          });
-        } else { return ""; }
-      }
+      section: 'businessInformation',
     },
     {
       class: 'Boolean',
@@ -151,7 +152,7 @@ foam.CLASS({
         return foam.u2.CheckBox.create({
           labelFormatter: function() {
             this.start('span')
-              .add(self.dot('name'))
+              .add(self.dot('cnpjName'))
             .end();
           }
         });

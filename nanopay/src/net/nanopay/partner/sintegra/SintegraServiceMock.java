@@ -37,6 +37,7 @@ public class SintegraServiceMock extends ContextAwareSupport implements Sintegra
       response.setCode("0");
       response.setStatus("OK");
       response.setSituacao("ATIVA");
+      response.setNome("GOOGLE BRASIL INTERNET LTDA.");
       return response;
     } else {
       return new SintegraService(getX()).getCNPJData(cnpj, token);
