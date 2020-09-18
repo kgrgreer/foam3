@@ -52,7 +52,7 @@ foam.CLASS({
         AuthService auth = (AuthService) x.get("auth");
 
         if ( ! SafetyUtil.isEmpty(user.getSpid())
-          && auth.check(x, "spid.create." + user.getSpid())
+          && auth.check(x, "capability.create." + user.getSpid())
         ) {
           return;
         }

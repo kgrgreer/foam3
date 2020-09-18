@@ -2429,8 +2429,9 @@ p({
       .setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo())
       .setInnerDAO(x.get("bareUserCapabilityJunctionDAO"))
       .build();
-    dao = new foam.nanos.crunch.UserCapabilityJunctionDAO.Builder(x).setDelegate(dao).build();
-    return dao;
+    preventMultipleSpidDAO = new foam.nanos.auth.PreventMultipleSpidDAO.Builder(x).setDelegate(dao).build();
+    userCap =  new foam.nanos.crunch.UserCapabilityJunctionDAO.Builder(x).setDelegate(preventMultipleSpidDAO).build();
+    return userCap;
   """,
   "client":"{\"of\":\"foam.nanos.crunch.UserCapabilityJunction\", \"remoteListenerSupport\": false}"
 })
