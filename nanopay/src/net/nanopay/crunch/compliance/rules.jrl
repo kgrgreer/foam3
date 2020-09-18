@@ -130,6 +130,73 @@ p({
 
 p({
   "class":"foam.nanos.ruler.Rule",
+  "id":"crunch-onboard-compliance-expandedUserDetail-dowJones",
+  "name":"Crunch Onboarding - Dow Jones Expanded User Detail KYC",
+  "priority":100,
+  "ruleGroup":"expandedUserDetailOnboarding",
+  "documentation":"Check expanded user detail capability via Dow Jones API",
+  "daoKey:"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class": "foam.nanos.ruler.predicate.PropertyNEQValue",
+        "propName": "data",
+        "propValue": null
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsClass",
+        "propName":"data",
+        "of":"net.nanopay.crunch.registration.UserDetailExpandedData"
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.crunch.compliance.PersonSanctionValidator"
+  },
+  "enabled":true,
+  "saveHistory":true,
+  "validity":1,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"crunch-onboard-compliance-expandedUserDetail-secureFact",
+  "name":"Crunch Onboarding - SecureFact SIDni Expanded User Detail",
+  "priority":100,
+  "ruleGroup":"expandedUserDetailOnboarding",
+  "documentation":"Check expanded user detail capability via SecureFact SIDni",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class": "foam.nanos.ruler.predicate.PropertyNEQValue",
+        "propName": "data",
+        "propValue": null
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsClass",
+        "propName":"data",
+        "of":"net.nanopay.crunch.registration.UserDetailExpandedData"
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.crunch.compliance.SecurefactSIDniValidator"
+  },
+  "enabled":true,
+  "saveHistory":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
   "id":"crunch-onboard-compliance-0",
   "name":"Crunch Onboarding - User Final Compliance Rule",
   "documentation":"Final rule for User compliance.",
