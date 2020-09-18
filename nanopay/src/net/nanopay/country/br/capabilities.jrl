@@ -457,6 +457,12 @@ p({
   "visible":true,
   "reviewRequired":true,
   "keywords":["featured"],
+  "permissionsGranted":[
+    "business.invoice.pay"
+  ],
+  "permissionsIntercepted": [
+    "business.invoice.pay"
+  ],
   "availabilityPredicate": {
     "class":"foam.mlang.predicate.And",
     "args": [

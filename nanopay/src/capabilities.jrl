@@ -9,10 +9,11 @@ p({
   "enabled":true,
   "icon":"/images/capabilityIcons/SigningOfficerIcon.svg",
   "visible":true,
+  "associatedEntity":2,
   "permissionsIntercepted":[
     "businessHasSigningOfficer"
   ],
-  "interceptIf":{"class":"net.nanopay.crunch.onboardingModels.BusinessHasNoSigningOfficers"},
+  "interceptIf":{"class":"net.nanopay.crunch.onboardingModels.SigningOfficerQuestionAnswered"},
   "wizardlet": {
     "class": "net.nanopay.crunch.wizardlet.SigningOfficerQuestionWizardlet"
   },
@@ -38,7 +39,7 @@ p({
   "associatedEntity":2,
   "permissionsGranted":[
     "certifydatareviewed.rw.reviewed",
-    "invoice.pay",
+    "user.invoice.pay",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifyownerspercent.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.dualpartyagreementcad.section.reviewAgreementDocumentsSection",
@@ -58,7 +59,7 @@ p({
   ],
   "permissionsIntercepted": [
     "certifydatareviewed.rw.reviewed",
-    "invoice.pay",
+    "user.invoice.pay",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifyownerspercent.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.dualpartyagreementcad.section.reviewAgreementDocumentsSection",
@@ -81,7 +82,7 @@ p({
   {
     "class":"foam.mlang.predicate.And",
     "args": [
-      { "class":"net.nanopay.crunch.onboardingModels.UserIsSigningOfficerOfBusiness" },
+      { "class":"net.nanopay.crunch.onboardingModels.SigningOfficerPrivilegesRequested" },
       {
         "class": "foam.mlang.predicate.Not",
         "arg1": {
@@ -116,7 +117,7 @@ p({
   "associatedEntity":2,
   "permissionsGranted":[
     "certifydatareviewed.rw.reviewed",
-    "invoice.pay",
+    "user.invoice.pay",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifyownerspercent.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.dualpartyagreementcad.section.reviewAgreementDocumentsSection",
@@ -136,7 +137,7 @@ p({
   ],
   "permissionsIntercepted": [
     "certifydatareviewed.rw.reviewed",
-    "invoice.pay",
+    "user.invoice.pay",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifyownerspercent.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.dualpartyagreementcad.section.reviewAgreementDocumentsSection",
@@ -159,7 +160,7 @@ p({
     {
     "class":"foam.mlang.predicate.And",
     "args": [
-      { "class":"net.nanopay.crunch.onboardingModels.UserIsSigningOfficerOfBusiness" },
+      { "class":"net.nanopay.crunch.onboardingModels.SigningOfficerPrivilegesRequested" },
       {
         "class":"net.nanopay.crunch.onboardingModels.CheckUserCountry",
         "country":"BR"
@@ -258,6 +259,12 @@ p({
   "visible":true,
   "reviewRequired":true,
   "keywords":["featured"],
+  "permissionsGranted":[
+    "business.invoice.pay"
+  ],
+  "permissionsIntercepted": [
+    "business.invoice.pay"
+  ],
   "availabilityPredicate": {
     "class":"foam.mlang.predicate.And",
     "args": [
@@ -288,6 +295,12 @@ p({
   "visible":true,
   "reviewRequired":true,
   "keywords":["featured"],
+  "permissionsGranted":[
+    "business.invoice.pay"
+  ],
+  "permissionsIntercepted": [
+    "business.invoice.pay"
+  ],
   "availabilityPredicate": {
     "class":"foam.mlang.predicate.And",
     "args": [
@@ -315,6 +328,12 @@ p({
   "visible":true,
   "reviewRequired":true,
   "keywords":["featured"],
+  "permissionsGranted":[
+    "business.invoice.pay"
+  ],
+  "permissionsIntercepted": [
+    "business.invoice.pay"
+  ],
   "availabilityPredicate": {
     "class":"foam.mlang.predicate.And",
     "args": [

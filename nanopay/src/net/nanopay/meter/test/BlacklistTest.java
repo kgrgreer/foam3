@@ -1,22 +1,54 @@
 package net.nanopay.meter.test;
 
 import foam.core.X;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
-import foam.nanos.auth.User;
 import foam.nanos.auth.Address;
+import foam.nanos.auth.User;
+import foam.nanos.auth.UserUserJunction;
+import foam.nanos.approval.ApprovalRequest;
+import foam.nanos.approval.ApprovalStatus;
+import foam.nanos.auth.Group;
+import foam.nanos.auth.UserUserJunction;
+import foam.nanos.crunch.AgentCapabilityJunction;
+import foam.nanos.crunch.UserCapabilityJunction;
+import foam.nanos.crunch.CapabilityJunctionStatus;
+import foam.nanos.session.Session;
 import foam.nanos.test.Test;
 import foam.util.Auth;
+
 import net.nanopay.account.Account;
 import net.nanopay.admin.model.ComplianceStatus;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
+import net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy;
+import net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiTermsAndConditions;
+import net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyDirectorsListed;
+import net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyOwnersPercent;
+import net.nanopay.crunch.acceptanceDocuments.capabilities.DualPartyAgreementCAD;
+import net.nanopay.crunch.onboardingModels.BusinessDirectorsData;
+import net.nanopay.crunch.onboardingModels.BusinessInformationData;
+import net.nanopay.crunch.onboardingModels.BusinessOwnershipData;
+import net.nanopay.crunch.onboardingModels.CertifyDataReviewed;
+import net.nanopay.crunch.onboardingModels.InitialBusinessData;
+import net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData;
+import net.nanopay.crunch.onboardingModels.SigningOfficerQuestion;
+import net.nanopay.crunch.onboardingModels.TransactionDetailsData;
+import net.nanopay.crunch.onboardingModels.UserBirthDateData;
+import net.nanopay.crunch.registration.UserRegistrationData;
 import net.nanopay.invoice.model.Invoice;
+import net.nanopay.model.BeneficialOwner;
 import net.nanopay.model.Business;
+import net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo;
 import net.nanopay.tx.model.Transaction;
-import foam.nanos.session.Session;
-import foam.nanos.auth.Group;
-import foam.nanos.auth.UserUserJunction;
 
+import java.lang.Exception;
+import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class BlacklistTest extends Test {
 
@@ -29,31 +61,13 @@ public class BlacklistTest extends Test {
     DAO transactionDAO = (DAO) x.get("transactionDAO");
     DAO groupDAO = (DAO) x.get("groupDAO");
     DAO agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
+    DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
+    DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
+    DAO smeUserRegistrationDAO = (DAO) x.get("smeUserRegistrationDAO");
 
     ////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////// SETUP ////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////
-
-    // Setup the business
-    localBusinessDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "business@example.com")).removeAll();
-    Address myAddress = new Address.Builder(x).setCountryId("CA").build();
-    Business myBusiness = new Business();
-    myBusiness.setBusinessName("MyBusiness");
-    myBusiness.setEmail("busadmin@example.com");
-    myBusiness.setEmailVerified(true); // Required to send or receive money.
-    myBusiness.setAddress(myAddress);
-    myBusiness = (Business) localBusinessDAO.put(myBusiness);
-
-    // Setup the business admin
-    bareUserDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "admin@example.com")).removeAll();
-    User myAdmin = new User();
-    myAdmin.setFirstName("MyAdmin");
-    myAdmin.setEmail("admin@example.com");
-    myAdmin.setGroup("admin");
-    myAdmin.setEmailVerified(true); // Required to send or receive money.
-    myAdmin.setCompliance(ComplianceStatus.PASSED);
-    myAdmin = (User) bareUserDAO.put(myAdmin);
-    X myAdminContext = Auth.sudo(x, myAdmin);
 
     // Setting the external business to pay to
     localBusinessDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "evilcorp@example.com")).removeAll();
@@ -62,20 +76,124 @@ public class BlacklistTest extends Test {
     externalBusiness.setBusinessName("EvilCorp");
     externalBusiness.setEmailVerified(true); // Required to send or receive money.
     externalBusiness.setCompliance(ComplianceStatus.PASSED);
-    externalBusiness = (Business) localBusinessDAO.put(externalBusiness);
+    externalBusiness = (Business) localBusinessDAO.put(externalBusiness);  
 
-    // Creating junctions my business users
-    UserUserJunction adminToBusinessJunc = new UserUserJunction();
-    adminToBusinessJunc.setSourceId(myAdmin.getId());
-    adminToBusinessJunc.setTargetId(myBusiness.getId());
-    adminToBusinessJunc.setGroup(myBusiness.getBusinessPermissionId() + ".admin");
-    agentJunctionDAO.put_(myAdminContext, adminToBusinessJunc);
+    // Setup Admin User
+    User myAdmin = new User();
+    myAdmin.setUserName("Admin321");
+    myAdmin.setEmail("email@admin321.com");
+    myAdmin.setDesiredPassword("password");
+    myAdmin.setGroup("sme");
+    myAdmin.setOrganization("testBusiness");
 
-    // Creating respective contexts with user-agent enabled in their sessions
+    myAdmin = (User) smeUserRegistrationDAO.put(myAdmin);
+    myAdmin.setEmailVerified(true);
+    myAdmin = (User)((DAO)x.get("userDAO")).put(myAdmin);
+
+    // nanopay admission : 554af38a-8225-87c8-dfdf-eeb15f71215e-18
+
+    AbliiTermsAndConditions tc1 = new AbliiTermsAndConditions();
+    tc1.setAgreement(true);
+    UserCapabilityJunction ucjATAC = new UserCapabilityJunction();
+    ucjATAC.setSourceId(myAdmin.getId());
+    ucjATAC.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215e-7");
+    ucjATAC.setData(tc1);
+
+    AbliiPrivacyPolicy tc2 = new AbliiPrivacyPolicy();
+    tc2.setAgreement(true);
+    UserCapabilityJunction ucjAPP = new UserCapabilityJunction();
+    ucjAPP.setSourceId(myAdmin.getId());
+    ucjAPP.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215e-8");
+    ucjAPP.setData(tc2);
+
+    UserRegistrationData tc3 = new UserRegistrationData();
+    tc3.setFirstName("Francis");
+    tc3.setLastName("Filth"); //64
+    tc3.setPhoneNumber("123123123");
+    UserCapabilityJunction ucjURD = new UserCapabilityJunction();
+    ucjURD.setSourceId(myAdmin.getId());
+    ucjURD.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215e-19");
+    ucjURD.setData(tc3);
+
+    UserCapabilityJunction ucjAC = new UserCapabilityJunction();
+    ucjAC.setSourceId(myAdmin.getId());
+    ucjAC.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215e-18");
+
+    userCapabilityJunctionDAO.put(ucjATAC);
+    userCapabilityJunctionDAO.put(ucjAPP);
+    userCapabilityJunctionDAO.put(ucjURD);
+    userCapabilityJunctionDAO.put(ucjAC);
+
+    // Business Registration : 554af38a-8225-87c8-dfdf-eeb15f71215f-76
+    X myAdminContext = Auth.sudo(x, myAdmin);
     Session sessionAdmin = myAdminContext.get(Session.class);
-    sessionAdmin.setUserId(myBusiness.getId());
     sessionAdmin.setAgentId(myAdmin.getId());
     myAdminContext = sessionAdmin.applyTo(myAdminContext);
+
+    Address address = new Address();
+    address.setCountryId("CA");
+    address.setStreetName("Avenue Rd");
+    address.setStreetNumber("123");
+    address.setPostalCode("M1M1M1");
+    address.setCity("Toronto");
+    address.setRegionId("CA-MA");
+    Date birthday = new GregorianCalendar(2000, 1, 1).getTime();
+
+    InitialBusinessData br = new InitialBusinessData();
+    br.setBusinessName("Trees be Free");
+    br.setCompanyPhone("123123123");
+    br.setAddress(address);
+    br.setMailingAddress(address);
+    UserCapabilityJunction ucjBR = new UserCapabilityJunction();
+    ucjBR.setSourceId(myAdmin.getId());
+    ucjBR.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-76");
+    ucjBR.setData(br);
+
+    userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBR);
+
+    // Get MyBusiness
+    foam.dao.ArraySink sink = (foam.dao.ArraySink) agentJunctionDAO.where(foam.mlang.MLang.EQ(UserUserJunction.SOURCE_ID, myAdmin.getId())).select(new foam.dao.ArraySink());
+    List array = (List) sink.getArray();
+    UserUserJunction agentJunction = (UserUserJunction) array.get(0);
+    Business myBusiness = (Business) localBusinessDAO.find(agentJunction.getTargetId());
+
+    // Add Business to Context
+    sessionAdmin = myAdminContext.get(Session.class);
+    sessionAdmin.setUserId(myBusiness.getId());
+    myAdminContext = sessionAdmin.applyTo(myAdminContext);
+
+    // Grant Admin Signing Officer Privileges Capability
+
+    // Signing Officer Question : 554af38a-8225-87c8-dfdf-eeb15f71215f-0
+    SigningOfficerQuestion soq = new SigningOfficerQuestion();
+    soq.setIsSigningOfficer(true);
+    AgentCapabilityJunction ucjSOQ = new AgentCapabilityJunction();
+    ucjSOQ.setSourceId(myAdmin.getId());
+    ucjSOQ.setEffectiveUser(myBusiness.getId());
+    ucjSOQ.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-0");
+    ucjSOQ.setData(soq);
+    userCapabilityJunctionDAO.put(ucjSOQ);
+
+    // Signing Officer Privileges : 554af38a-8225-87c8-dfdf-eeb15f71215f-1a5
+    UserBirthDateData so1 = new UserBirthDateData();
+    so1.setBirthday(birthday);
+    AgentCapabilityJunction ucjSODOB = new AgentCapabilityJunction();
+    ucjSODOB.setSourceId(myAdmin.getId());
+    ucjSODOB.setEffectiveUser(myBusiness.getId());
+    ucjSODOB.setTargetId("8bffdedc-5176-4843-97df-1b75ff6054fb");
+    ucjSODOB.setData(so1);
+    SigningOfficerPersonalData so = new SigningOfficerPersonalData();
+    so.setAddress(address);
+    so.setJobTitle("Accountant");
+    so.setCountryId("CA");
+    so.setPhoneNumber("2899998989");
+    AgentCapabilityJunction ucjSOP = new AgentCapabilityJunction();
+    ucjSOP.setSourceId(myAdmin.getId());
+    ucjSOP.setEffectiveUser(myBusiness.getId());
+    ucjSOP.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-1a5");
+    ucjSOP.setData(so);
+    userCapabilityJunctionDAO.inX(myAdminContext).put(ucjSODOB);
+    userCapabilityJunctionDAO.inX(myAdminContext).put(ucjSOP);
 
     // setting up their respective accounts
     accountDAO.where(foam.mlang.MLang.EQ(Account.NAME, "Blacklist Tests myBusiness test account")).removeAll();
@@ -139,10 +257,139 @@ public class BlacklistTest extends Test {
       test(true, "Invoice not created until business passes compliance passing proper compliance.");
     }
 
-    // Set compliance to passed and will now try putting the invoice and paying it
-    myBusiness = (Business) myBusiness.fclone();
-    myBusiness.setCompliance(ComplianceStatus.PASSED);
-    myBusiness = (Business) localBusinessDAO.put(myBusiness);
+    // Grant Unlock Domestic Payments and Invoicing to pass Business Compliance and try putting the invoice and paying it
+    // Unlock Domestic Payments and Invoicing : 554af38a-8225-87c8-dfdf-eeb15f71215f-11
+    UserCapabilityJunction ucjUDPAI = new UserCapabilityJunction();
+    ucjUDPAI.setSourceId(myBusiness.getId());
+    ucjUDPAI.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-11");
+    ucjUDPAI.setStatus(CapabilityJunctionStatus.GRANTED);
+    userCapabilityJunctionDAO.inX(myAdminContext).put(ucjUDPAI);
+
+    // Business Details : 554af38a-8225-87c8-dfdf-eeb15f71215f-4
+    BusinessInformationData bid = new BusinessInformationData();
+    bid.setBusinessTypeId(2);
+    bid.setBusinessSectorId(21211);
+    bid.setSourceOfFunds("Investment Income");
+    bid.setOperatingUnderDifferentName(false);
+
+    UserCapabilityJunction ucjBD = new UserCapabilityJunction();
+    ucjBD.setSourceId(myBusiness.getId());
+    ucjBD.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-4");
+    ucjBD.setData(bid);
+    userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBD);
+
+    // Transaction Details : 554af38a-8225-87c8-dfdf-eeb15f71215f-6
+    SuggestedUserTransactionInfo suti = new SuggestedUserTransactionInfo();
+    suti.setBaseCurrency("CAD");
+    suti.setAnnualRevenue("$0 to $10,000");
+    suti.setTransactionPurpose("Working capital");
+    suti.setAnnualTransactionFrequency("100 to 199");
+    suti.setAnnualDomesticVolume("$50,001 to $100,000");
+
+    TransactionDetailsData tdd = new TransactionDetailsData();
+    tdd.setTargetCustomers("loyal customers");
+    tdd.setSuggestedUserTransactionInfo(suti);
+
+    UserCapabilityJunction ucjTD = new UserCapabilityJunction();
+    ucjTD.setSourceId(myBusiness.getId());
+    ucjTD.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-6");
+    ucjTD.setData(tdd);
+    userCapabilityJunctionDAO.inX(myAdminContext).put(ucjTD);
+
+    // Business Owner Information : 554af38a-8225-87c8-dfdf-eeb15f71215f-7
+    BeneficialOwner bo = new BeneficialOwner();
+    bo.setFirstName("Francis");
+    bo.setLastName("Filth");
+    bo.setJobTitle("CEO");
+    bo.setBusiness(myBusiness.getId());
+    bo.setAddress(address);
+    bo.setBirthday(birthday);
+    bo.setOwnershipPercent(30);
+
+    int[] chosenOwners = {1};
+
+    BusinessOwnershipData bod = new BusinessOwnershipData.Builder(myAdminContext)
+      .setOwnerSelectionsValidated(true)
+      .setAmountOfOwners(1)
+      .setOwner1(bo)
+      .setChosenOwners(Arrays.stream(chosenOwners).boxed().collect(Collectors.toList()))
+      .build();
+
+    UserCapabilityJunction ucjBOD = new UserCapabilityJunction();
+    ucjBOD.setSourceId(myBusiness.getId());
+    ucjBOD.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-7");
+    ucjBOD.setData(bod);
+    userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBOD);
+
+    // Certify Owners Percent : 554af38a-8225-87c8-dfdf-eeb15f71215e-12
+    CertifyOwnersPercent cop = new CertifyOwnersPercent();
+    cop.setAgreement(true);
+
+    UserCapabilityJunction ucjCOP = new UserCapabilityJunction();
+    ucjCOP.setSourceId(myBusiness.getId());
+    ucjCOP.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215e-12");
+    ucjCOP.setData(cop);
+    userCapabilityJunctionDAO.inX(myAdminContext).put(ucjCOP);
+
+    // Business Directors Data : 554af38a-8225-87c8-dfdf-eeb15f71215f-6-5
+    BusinessDirectorsData bdd = new BusinessDirectorsData();
+
+    UserCapabilityJunction ucjBDD = new UserCapabilityJunction();
+    ucjBDD.setSourceId(myBusiness.getId());
+    ucjBDD.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-6-5");
+    ucjBDD.setData(bdd);
+    userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBDD);
+
+    // Certify Directors Listed : 554af38a-8225-87c8-dfdf-eeb15f71215e-17
+    CertifyDirectorsListed cdl = new CertifyDirectorsListed();
+    cdl.setAgreement(true);
+
+    UserCapabilityJunction ucjCDL = new UserCapabilityJunction();
+    ucjCDL.setSourceId(myBusiness.getId());
+    ucjCDL.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215e-17");
+    ucjCDL.setData(cdl);
+    userCapabilityJunctionDAO.inX(myAdminContext).put(ucjCDL);
+
+    // Dual Party Agreement CAD : 554af38a-8225-87c8-dfdf-eeb15f71215e-3
+    DualPartyAgreementCAD dpac = new DualPartyAgreementCAD();
+    dpac.setAgreement(true);
+
+    UserCapabilityJunction ucjDPAC = new UserCapabilityJunction();
+    ucjDPAC.setSourceId(myBusiness.getId());
+    ucjDPAC.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215e-3");
+    ucjDPAC.setData(dpac);
+    userCapabilityJunctionDAO.inX(myAdminContext).put(ucjDPAC);
+
+    // Certify Data Reviewed : 554af38a-8225-87c8-dfdf-eeb15f71215f-14
+    CertifyDataReviewed cdr = new CertifyDataReviewed();
+    cdr.setReviewed(true);
+
+    UserCapabilityJunction ucjCDR = new UserCapabilityJunction();
+    ucjCDR.setSourceId(myBusiness.getId());
+    ucjCDR.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-14");
+    ucjCDR.setData(cdr);
+    userCapabilityJunctionDAO.inX(myAdminContext).put(ucjCDR);
+
+    List<ApprovalRequest> approvalRequests = ((ArraySink) approvalRequestDAO
+      .where(foam.mlang.MLang.AND( new foam.mlang.predicate.Predicate[] {
+        foam.mlang.MLang.EQ(ApprovalRequest.DAO_KEY, "userCapabilityJunctionDAO"),
+        foam.mlang.MLang.OR( new foam.mlang.predicate.Predicate[] {
+          foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjBOD.getId()),
+          foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjSOP.getId())
+        }),
+        foam.mlang.MLang.EQ(ApprovalRequest.IS_FULFILLED, false)
+      }))
+      .select(new ArraySink()))
+      .getArray();
+
+    for ( ApprovalRequest approvalRequest : approvalRequests ) {
+      approvalRequest.setStatus(ApprovalStatus.APPROVED);
+      try{
+        approvalRequestDAO.put(approvalRequest);
+      } catch(Exception e) {
+        throw e;
+      }
+    }
 
     try {
       invoice2 = (Invoice) invoiceDAO.inX(x).put(invoice2);

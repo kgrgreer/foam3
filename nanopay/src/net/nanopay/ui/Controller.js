@@ -599,7 +599,7 @@ foam.CLASS({
      * It is only required for payables.
      */
     async function check2FAEnalbed() {
-      var canPayInvoice = await this.client.auth.check(null, 'invoice.pay');
+      var canPayInvoice = await this.client.auth.check(null, 'business.invoice.pay') && await this.client.auth.check(null, 'user.invoice.pay');
 
       if ( canPayInvoice && ! this.subject.realUser.twoFactorEnabled ) {
         var TwoFactorNotificationDOM = this.Element.create()
