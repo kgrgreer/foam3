@@ -16,11 +16,31 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.crunch.registration',
-  name: 'BusinessNameAware',
+  package: 'net.nanopay.flinks.external',
+  name: 'OverrideData',
   abstract: true,
+  documentaiton: 'Override data.',
+
+  javaImports: [
+    'foam.nanos.auth.Address'
+  ],
 
   properties: [
-    net.nanopay.model.Business.BUSINESS_NAME.clone().copyFrom()
+    {
+      class: 'String',
+      name: 'email',
+      documentation: 'Email address'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Address',
+      name: 'address',
+      documentation: 'Address'
+    },
+    {
+      class: 'PhoneNumber',
+      name: 'phoneNumber',
+      documentation: 'Phone number'
+    }
   ]
 });

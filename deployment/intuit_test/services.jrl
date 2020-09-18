@@ -89,3 +89,17 @@ p({
     "customerId": "efee890f-e706-4d1e-b18e-a24e89aafb08"
   }
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec", 
+  "name":"securefactService",
+  "lazy":false,
+  "serve":true,
+  "service":{
+    "class":"net.nanopay.meter.compliance.secureFact.SecurefactService",
+    "levUrl":"https://lev3uat.securefact.com/rest/v1/lev/search",
+    "levDocumentOrderUrl":"https://lev3uat.securefact.com/rest/v1/document/order",
+    "levDocumentDataUrl":"https://lev3uat.securefact.com/rest/v1/document/data",
+    "levApiKey":"ODA1NTMyNjA0MTAyNDg2NzIxMzg4NTk0MTQ4ODg0NTI1MDg4NzY4"
+  }
+})

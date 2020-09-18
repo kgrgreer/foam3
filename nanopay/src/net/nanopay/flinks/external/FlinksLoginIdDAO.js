@@ -35,6 +35,7 @@ foam.CLASS({
     'foam.nanos.crunch.connection.CapabilityPayload',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
+    'java.util.ArrayList',
     'java.util.HashMap',
     'java.util.Map',
     'java.util.List',
@@ -45,8 +46,10 @@ foam.CLASS({
     'net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiTermsAndConditions',
     'net.nanopay.crunch.registration.BusinessDetailData',
     'net.nanopay.crunch.registration.PersonalOnboardingTypeData',
+    'net.nanopay.crunch.registration.SigningOfficerList',
     'net.nanopay.crunch.registration.UserRegistrationData',
     'net.nanopay.crunch.registration.UserDetailData',
+    'net.nanopay.crunch.registration.UserDetailExpandedData',
     'net.nanopay.flinks.FlinksAuth',
     'net.nanopay.flinks.FlinksResponseService',
     'net.nanopay.flinks.model.AddressModel',
@@ -55,6 +58,8 @@ foam.CLASS({
     'net.nanopay.flinks.model.FlinksResponse',
     'net.nanopay.flinks.model.LoginModel',
     'net.nanopay.flinks.model.HolderModel',
+    'net.nanopay.meter.compliance.secureFact.SecurefactOnboardingService',
+    'net.nanopay.model.SigningOfficer',
     'net.nanopay.model.Business',
     'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
     'static foam.mlang.MLang.*'
@@ -73,7 +78,7 @@ foam.CLASS({
         FlinksLoginId flinksLoginId = (FlinksLoginId) obj;
 
         // When a user has not been explicitly set
-        if ( flinksLoginId.getUser() == 0 ) {
+        if ( !flinksLoginId.getForceNew() && flinksLoginId.getUser() == 0 ) {
 
           // Check if we have seen the Flinks LoginId before, using the user and business previously provisioned
           List oldRecords = ((ArraySink) getDelegate().where(AND(
@@ -293,12 +298,17 @@ foam.CLASS({
         { name: 'loginDetail', type: 'LoginModel' }
       ],
       javaCode: `
+        HolderModel holder = accountDetail.getHolder();  
+        UserOverrideData overrides = null;
+        if ( request.getFlinksOverrides() != null ) overrides = request.getFlinksOverrides().getUserOverrides();
+        String userEmail = overrides != null && !SafetyUtil.isEmpty(overrides.getEmail()) ?
+          overrides.getEmail() : holder.getEmail();
+
         Subject subject = (Subject) x.get("subject");
         DAO userDAO = (DAO) x.get("localUserDAO");
-        HolderModel holder = accountDetail.getHolder();
         User user = new User.Builder(x)
-          .setEmail(holder.getEmail())
-          .setUserName(holder.getEmail())
+          .setEmail(userEmail)
+          .setUserName(userEmail)
           .setDesiredPassword(java.util.UUID.randomUUID().toString())
           .setEmailVerified(true)
           .setGroup("personal")
@@ -314,30 +324,31 @@ foam.CLASS({
         X subjectX = getX().put("subject", newSubject);
 
         AddressModel holderAddress = holder.getAddress();        
-        Address address = new Address.Builder(subjectX)
-          .setStructured(false)
-          .setAddress1(holderAddress.getCivicAddress())
-          .setRegionId(holderAddress.getProvince())
-          .setCountryId(holderAddress.getCountry())
-          .setCity(holderAddress.getCity())
-          .setPostalCode(holderAddress.getPostalCode())
-          .build();
+        Address address = overrides != null && overrides.getAddress() != null ?
+          overrides.getAddress() : 
+          new Address.Builder(subjectX)
+            .setStructured(false)
+            .setAddress1(holderAddress.getCivicAddress())
+            .setRegionId(holderAddress.getProvince())
+            .setCountryId(holderAddress.getCountry())
+            .setCity(holderAddress.getCity())
+            .setPostalCode(holderAddress.getPostalCode())
+            .build();
 
         String fullName = holder.getName();
         String nameSplit[] = fullName.split(" ", 2);
-        String firstName = nameSplit[0];
-        String lastName = nameSplit[1];
-        String phoneNumber = holder.getPhoneNumber().replaceAll("[^0-9]", "");
+        String firstName = overrides != null && !SafetyUtil.isEmpty(overrides.getFirstName()) ? overrides.getFirstName() : nameSplit[0];
+        String lastName = overrides != null && !SafetyUtil.isEmpty(overrides.getLastName()) ? overrides.getLastName() : nameSplit[1];
+        String phoneNumber = overrides != null && !SafetyUtil.isEmpty(overrides.getPhoneNumber()) ? overrides.getPhoneNumber() : holder.getPhoneNumber().replaceAll("[^0-9]", "");
 
+        // API CAD Personal Payments Under 1000CAD Capability ID
+        final String capabilityId = "F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD";
+        
         // Add capabilities for the new user
         DAO capabilityPayloadDAO = (DAO) subjectX.get("capabilityPayloadDAO");
-        Map<String,FObject> userCapabilityDataObjects = new HashMap<>();
-        AbliiPrivacyPolicy privacyPolicy = new AbliiPrivacyPolicy.Builder(subjectX)
-          .setAgreement(false)
-          .build();
-        AbliiTermsAndConditions termsAndConditions = new AbliiTermsAndConditions.Builder(subjectX)
-          .setAgreement(false)
-          .build();
+        CapabilityPayload missingPayloads = (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).find(capabilityId);
+
+        Map<String,FObject> userCapabilityDataObjects = missingPayloads.getCapabilityDataObjects();
         UserDetailData userData = new UserDetailData.Builder(subjectX)
           .setFirstName(firstName)
           .setLastName(lastName)
@@ -346,18 +357,15 @@ foam.CLASS({
           .build();
         PersonalOnboardingTypeData onboardingTypeData = new PersonalOnboardingTypeData.Builder(subjectX)
           .setUser(user.getId())
-          .setFlinksLoginType(request.getType() != OnboardingType.BUSINESS ? loginDetail.getType() : "Business")
+          .setFlinksLoginType(loginDetail.getType())
+          .setRequestedOnboardingType(request.getType())
           .build();
 
-        userCapabilityDataObjects.put("AbliiPrivacyPolicy", privacyPolicy);
-        userCapabilityDataObjects.put("AbliiTermsAndConditions", termsAndConditions);
+        // Update properties in the map
         userCapabilityDataObjects.put("User Details", userData);
-        userCapabilityDataObjects.put("Simple User Onboarding", null);
         userCapabilityDataObjects.put("Personal Onboarding Type", onboardingTypeData);
-        userCapabilityDataObjects.put("API CAD Personal Payments Under 1000CAD", null);
-
-        // API CAD Personal Payments Under 1000CAD Capability ID
-        String capabilityId = "F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD";
+        
+        // Resubmit the capability payload
         CapabilityPayload userCapPayload = new CapabilityPayload.Builder(subjectX)
           .setId(capabilityId)
           .setCapabilityDataObjects(userCapabilityDataObjects)
@@ -365,7 +373,7 @@ foam.CLASS({
         userCapPayload = (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).put(userCapPayload);
 
         // Query the capabilityPayloadDAO to see what capabilities are still required
-        CapabilityPayload missingPayloads = (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).find(capabilityId);
+        missingPayloads = (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).find(capabilityId);
 
         // set the remain capabilities to be satisfied
         request.setMissingUserCapabilityDataObjects(missingPayloads.getCapabilityDataObjects());
@@ -399,39 +407,141 @@ foam.CLASS({
           .setPostalCode(holderAddress.getPostalCode())
           .build();
 
+        // Check for overrides
+        BusinessOverrideData overrides = null;
+        if ( request.getFlinksOverrides() != null ) overrides = request.getFlinksOverrides().getBusinessOverrides();
+        String businessName = overrides != null && !SafetyUtil.isEmpty(overrides.getBusinessName()) ?
+          overrides.getBusinessName() : holder.getName();
+        String businessEmail = overrides != null && !SafetyUtil.isEmpty(overrides.getEmail()) ?
+          overrides.getEmail() : holder.getEmail();
+        Address businessAddress = overrides != null && overrides.getAddress() != null ?
+          overrides.getAddress() : address;
+        Address mailingAddress = overrides != null && overrides.getMailingAddress() != null ?
+          overrides.getMailingAddress() : businessAddress;
+        String phoneNumber = overrides != null && !SafetyUtil.isEmpty(overrides.getPhoneNumber()) ? 
+          overrides.getPhoneNumber() : user.getPhoneNumber();
+
+        // Create business with minimal information
+        Business business = new Business.Builder(x)
+          .setBusinessName(businessName)
+          .setOrganization(businessName)
+          .setSpid(user.getSpid())
+          .build();
+        DAO localUserDAO = (DAO) subjectX.get("localUserDAO");
+        business = (Business) localUserDAO.inX(subjectX).put(business);
+
+        // Switch to business context
+        Subject currentSubject = (Subject) subjectX.get("subject");
+        currentSubject.setUser(business);
+        subjectX = subjectX.put("subject", currentSubject);
+
+        // Set the business on the request
+        request.setBusiness(business.getId());
+
         BusinessDetailData businessDetailData = new BusinessDetailData.Builder(subjectX)
-          .setBusinessName(holder.getName())
-          .setPhoneNumber(user.getPhoneNumber())
-          .setAddress(address)
-          .setMailingAddress(address)
-          .setEmail(holder.getEmail())
+          .setBusinessName(businessName)
+          .setPhoneNumber(phoneNumber)
+          .setAddress(businessAddress)
+          .setMailingAddress(mailingAddress)
+          .setEmail(businessEmail)
           .build();
         
         // Create the capabilities data map
         Map<String,FObject> businessCapabilityDataObjects = new HashMap<>();
         businessCapabilityDataObjects.put("Business Onboarding Details", businessDetailData);
 
+        // Business creation capability
         CapabilityPayload businessCapPayload = new CapabilityPayload.Builder(subjectX)
           .setId("EC535109-E9C0-4B5D-8D24-31282EF72F8F")
           .setCapabilityDataObjects(new HashMap<String,FObject>(businessCapabilityDataObjects))
           .build();
         DAO capabilityPayloadDAO = (DAO) subjectX.get("capabilityPayloadDAO");
-        capabilityPayloadDAO.inX(subjectX).put(businessCapPayload);
+        businessCapPayload = (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).put(businessCapPayload);
 
-        // Query for business
-        DAO businessDAO = (DAO) subjectX.get("businessDAO");
-        List businesses = ((ArraySink) businessDAO.inX(subjectX).select(new ArraySink())).getArray();
-        if ( businesses.size() == 0 ) {
-          throw new RuntimeException("Business not created");
+        // Retrieve the updated business
+        business = (Business) localUserDAO.inX(subjectX).find(business);
+        if ( business == null ) {
+          throw new RuntimeException("Failed to create business during onboarding with Flinks");
         }
-        Business business = (Business) businesses.get(0);
-        request.setBusiness(business.getId());
+        
+        // Business CAD payments capability
+        String capabilityId = "18DD6F03-998F-4A21-8938-358183151F96";
+        CapabilityPayload missingPayloads = (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).find(capabilityId);
+        businessCapabilityDataObjects = missingPayloads.getCapabilityDataObjects();
 
-        // TODO: Query LEV
-        // TODO: Get business type (sole, corp, etc.)
-        // TODO: Get signing officers
-        // TODO: Get directors
-        // TODO: Get owners
+        SecurefactOnboardingService securefactOnboardingService = (SecurefactOnboardingService) subjectX.get("securefactOnboardingService");
+        if ( securefactOnboardingService == null ) {
+          throw new RuntimeException("Cannot find securefactOnboardingService");
+        }
+      
+        // Reset the capability data object
+        securefactOnboardingService.retrieveLEVCapabilityPayloads(subjectX, business, businessCapabilityDataObjects);
+
+        // Add current user as signing officer
+        SigningOfficerList signingOfficerList = (SigningOfficerList) businessCapabilityDataObjects.get("Signing Officers");
+        if ( signingOfficerList == null) {
+          signingOfficerList = new SigningOfficerList.Builder(subjectX).setBusiness(business.getId()).build();
+          businessCapabilityDataObjects.put("Signing Officers", signingOfficerList);
+        }
+        addSigningOfficerToList(subjectX, user, business, signingOfficerList);
+
+        businessCapPayload = new CapabilityPayload.Builder(subjectX)
+          .setId(capabilityId)
+          .setCapabilityDataObjects(new HashMap<String,FObject>(businessCapabilityDataObjects))
+          .build();
+        businessCapPayload = (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).put(businessCapPayload);
+
+        // Query the capabilityPayloadDAO to see what capabilities are still required
+        missingPayloads = (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).find(capabilityId);
+
+        // set the remain capabilities to be satisfied
+        request.setMissingBusinessCapabilityDataObjects(missingPayloads.getCapabilityDataObjects());
+      `
+    },
+    {
+      name: 'addSigningOfficerToList',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'user', type: 'User' },
+        { name: 'business', type: 'Business' },
+        { name: 'signingOfficerList', type: 'SigningOfficerList' }
+      ],
+      javaCode: `
+        SigningOfficer match = null;
+        for ( SigningOfficer signingOfficer : signingOfficerList.getSigningOfficers() ) {
+          // Check if the signing officer has already been added
+          if ( signingOfficer.getUser() == user.getId() ) {
+            return;
+          }
+          
+          if ( match == null &&
+               SafetyUtil.equals(user.getFirstName(), signingOfficer.getFirstName()) &&
+               SafetyUtil.equals(user.getLastName(), signingOfficer.getLastName()) )
+          {
+            match = signingOfficer;
+          }
+        }
+
+        if ( match != null ) {
+          match.setUser(user.getId());
+        } else {
+          SigningOfficer signingOfficer = new SigningOfficer.Builder(x)
+            .setFirstName(user.getFirstName())
+            .setLastName(user.getLastName())
+            .setPosition(user.getJobTitle())
+            .setSource("FLINKS")
+            .setUser(user.getId())
+            .build();
+          
+          // Add the signing officer to current list of signing officers
+          int size = signingOfficerList.getSigningOfficers() == null ? 0 : signingOfficerList.getSigningOfficers().length;
+          SigningOfficer[] signingOfficersArray = new SigningOfficer[size + 1];
+          if ( size > 0 ) {
+            System.arraycopy(signingOfficerList.getSigningOfficers(), 0, signingOfficersArray, 0, size);
+          }
+          signingOfficersArray[signingOfficersArray.length - 1] = signingOfficer;
+          signingOfficerList.setSigningOfficers(signingOfficersArray);
+        }
       `
     }
   ]

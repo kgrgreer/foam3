@@ -55,6 +55,13 @@ foam.CLASS({
       readPermissionRequired: false,
       writePermissionRequired: true,
       documentation: 'Onboarding capabilities that remain to be satisfied for business'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.flinks.external.FlinksOverrides',
+      name: 'flinksOverrides',
+      documentation: 'Data that will override the data retrieved from Flinks.',
+      
     }
   ]
 });
