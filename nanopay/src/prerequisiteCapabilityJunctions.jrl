@@ -68,12 +68,6 @@ p({
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-13",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-5",
-  "priority":2
-})
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-13",
   "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-6",
   "priority":4
 })
@@ -131,12 +125,6 @@ p({
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-12",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-5",
-  "priority":2
-})
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-12",
   "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-11",
   "priority":3
 })
@@ -159,12 +147,6 @@ p({
   "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-4",
   "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-14",
   "priority":1
-})
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-5",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-14",
-  "priority":3
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
@@ -325,12 +307,6 @@ p({
   "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
   "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-4",
   "priority":1
-})
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-5",
-  "priority":2
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
@@ -536,4 +512,43 @@ p({
   "sourceId":"CD499238-7854-4125-A04D-7CE7EE15BC74",
   "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-76",
   "priority": 16
+})
+
+
+//usBusinessOnboarding
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-13",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-16",
+  "priority":1
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-13",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-18",
+  "priority":1
+})
+
+//brBusinessOnboarding
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-16",
+  "priority":1
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-17",
+  "priority":1
+})
+
+//default
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-11",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-16",
+  "priority":1
 })
