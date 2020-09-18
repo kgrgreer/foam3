@@ -16,7 +16,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'BUSINESS_REGISTRATION_DATE_ERROR', message: 'Cannot be future dated.' }
+    { name: 'BUSINESS_INCORPORATED_DATE_ERROR', message: 'Cannot be future dated.' }
   ],
 
   properties: [
@@ -32,7 +32,7 @@ foam.CLASS({
           predicateFactory: function(e) {
             return e.LTE(net.nanopay.crunch.onboardingModels.BusinessIncorporatedDateData.BUSINESS_INCORPORATED_DATE, new Date());
           },
-          errorMessage: 'BUSINESS_REGISTRATION_DATE_ERROR'
+          errorMessage: 'BUSINESS_INCORPORATED_DATE_ERROR'
         }
       ]
     }
