@@ -1609,7 +1609,6 @@ FOAM_FILES([
 
   // crunch compliance
   { name: 'net/nanopay/crunch/compliance/IsCapabilityOfCertainCategoryAndStatus' },
-  { name: 'net/nanopay/crunch/compliance/OnboardingCapabilityComplianceValidator' },
   { name: 'net/nanopay/crunch/compliance/PersonSanctionValidator' },
   { name: 'net/nanopay/crunch/compliance/EntitySanctionValidator' },
   { name: 'net/nanopay/crunch/compliance/BeneficialOwnerSanctionValidator' },
