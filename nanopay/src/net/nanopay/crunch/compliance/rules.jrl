@@ -166,7 +166,7 @@ p({
   "class":"foam.nanos.ruler.Rule",
   "id":"crunch-onboard-compliance-expandedUserDetail-secureFact",
   "name":"Crunch Onboarding - SecureFact SIDni Expanded User Detail",
-  "priority":100,
+  "priority":110,
   "ruleGroup":"expandedUserDetailOnboarding",
   "documentation":"Check expanded user detail capability via SecureFact SIDni",
   "daoKey":"userCapabilityJunctionDAO",
