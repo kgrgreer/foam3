@@ -405,3 +405,7002 @@ p({
   "enabled":true,
   "visible":false
 })
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "id":"7d362730-b13d-4d0d-98f2-292bcdf6126f",
+  "name":"International travel expenses - abroad - tourism"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45955",
+  "payerType":"9",
+  "approvalType":"6",
+  "payeeType":"90",
+  "id":"68118657-5159-4aef-ab58-b20824e030ff",
+  "name":"Miscellaneous out services - wages and personal guidelines"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72409",
+  "payerType":"0",
+  "approvalType":"5",
+  "payeeType":"90",
+  "id":"6ace13f6-def5-40d5-a327-755807c661cb",
+  "name":"Acquisition of merchandise delivered in the country"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"10007",
+  "payerType":"50",
+  "approvalType":"9",
+  "payeeType":"59",
+  "id":"12343880-1a3e-4108-9783-6779635c8f5f",
+  "name":"Export of goods"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"10078",
+  "payerType":"50",
+  "approvalType":"9",
+  "payeeType":"89",
+  "id":"3688b812-5b7b-4542-8f0f-161798c54bd2",
+  "name":"Export of goods"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"21360",
+  "payerType":"90",
+  "approvalType":"0",
+  "payeeType":"54",
+  "id":"5df87465-c2ff-40a5-a8ac-74c383d51ea6",
+  "name":"Other expenditure / revenue - freight sea"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"22130",
+  "payerType":"90",
+  "approvalType":"0",
+  "payeeType":"54",
+  "id":"745e3918-5d07-4512-ae06-c6f9032df187",
+  "name":"Other expenditure / revenue - freight sea"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37028",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"59",
+  "id":"353607bf-b42f-4921-9817-5bfa659c0892",
+  "name":"Current transfers - taxes"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47159",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"54",
+  "id":"c1a0fbad-b682-4538-a6f6-c74dd7b0d49c",
+  "name":"public. PESQ. MERC. and opinion and PART. fairs EXP."
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47520",
+  "payerType":"90",
+  "approvalType":"0",
+  "payeeType":"59",
+  "id":"c666174e-95e6-4a1e-b53c-a76c7461deb3",
+  "name":"Miscellaneous services and complementary expenses"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47609",
+  "payerType":"55",
+  "approvalType":"0",
+  "payeeType":"59",
+  "id":"e5f1692c-ae53-495f-a729-f4185838ab1c",
+  "name":"Commissions and other expenses on trade transactions"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47740",
+  "payerType":"90",
+  "approvalType":"0",
+  "payeeType":"54",
+  "id":"7273c101-ce2e-4821-a72c-02051f25155b",
+  "name":"Tourist services - return"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67043",
+  "payerType":"0",
+  "approvalType":"5",
+  "payeeType":"69",
+  "id":"61bdba3a-9521-4b43-8833-6773106fc373",
+  "name":"Financial and capital markets - investment funds"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72904",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"59",
+  "id":"ef4ea0e3-091d-466b-ae0b-54b880ea0462",
+  "name":"Acquisition of goods in the country"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72911",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"29",
+  "id":"29d817c4-cd18-486d-a6e1-99a4fc8e9ad1",
+  "name":"Others - buying and selling real estate in the country"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"10007",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"46",
+  "id":"4a1a6224-9a22-4706-9329-a5e0767be7c4",
+  "name":"Export of goods"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"10007",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"49",
+  "id":"b6c44775-952a-40dd-b6b4-dcb57ba38ffe",
+  "name":"Export of goods"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"10007",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"50",
+  "id":"9355ef82-e4cf-4469-9d7f-5def15812d03",
+  "name":"Early payment"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"10007",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"e14bd3c4-df38-43a1-9c86-bafbbfb19208",
+  "name":"Export of goods"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"10007",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"50",
+  "id":"f7184bfd-cd8a-40ca-b8fd-e3176434ac62",
+  "name":"Export of goods"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"10007",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"e2047407-5f0e-48d8-bb1b-0cbdb3ce42fe",
+  "name":"Export of goods"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"10007",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"50",
+  "id":"1e1401a5-6572-4442-b3ca-4288ca9b87b9",
+  "name":"Early payment"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"10007",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"90",
+  "id":"250e0b49-d3fb-4db1-9d1c-7b28b366bcf8",
+  "name":"Export of goods"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"10007",
+  "payerType":"85",
+  "approvalType":"2",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"09b367eb-36c5-41ea-8749-c780523c46bb",
+  "name":"Export of goods"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"10124",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"40",
+  "id":"1c842a57-358a-44cf-911a-44805b0bce91",
+  "name":"Consigned export"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"10409",
+  "payerType":"92",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"779fc72a-d0a5-4dab-a7ce-e07adac77631",
+  "name":"Simplified export - exchange"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"10409",
+  "payerType":"92",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"90",
+  "id":"79fc4901-f779-4d6b-811b-e8c6cb98b563",
+  "name":"Exp / simplified"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"10409",
+  "payerType":"92",
+  "approvalType":"0",
+  "payeeType":"99",
+  "groupCode":"49",
+  "id":"0b0fc06e-0290-461f-bc5d-190281e3f70f",
+  "name":"Simplified exchange export"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"10409",
+  "payerType":"92",
+  "approvalType":"0",
+  "payeeType":"99",
+  "groupCode":"50",
+  "id":"5e5e3a8a-309e-49ca-9150-54f132a307af",
+  "name":"Simplified export - exchange"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"10409",
+  "payerType":"92",
+  "approvalType":"0",
+  "payeeType":"99",
+  "groupCode":"90",
+  "id":"13f8c811-051f-4735-95c2-c5023442039b",
+  "name":"Simplified export - exchange"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"10447",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"50",
+  "id":"687ea86a-0187-4fb0-b36e-3b2d32976829",
+  "name":"Export / back - to - back"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"10447",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"0076ab3b-fcc5-46ed-9062-87b3b9409072",
+  "name":"Exports - back to back operations"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"10447",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"90",
+  "id":"1316cf75-a3e5-4ece-9f44-930856b67469",
+  "name":"Export / back - to - back"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"12005",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"30",
+  "id":"cafb1c6c-9179-46ee-adb3-7cbf7838bcea",
+  "name":"Export goods - anticipated"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"12005",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"46",
+  "id":"0dd7c8f4-fae0-49dd-b4da-4627c7cd3716",
+  "name":"Export of merchandise - conversions"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"12005",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"50",
+  "id":"24e4dcf3-8076-41fc-b71c-0dacc97e30bc",
+  "name":"Export goods - anticipated"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"12005",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"748f08b8-7d91-49aa-b97b-99f158b55b76",
+  "name":"Export of goods"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"12005",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"30",
+  "id":"d7f4cca2-b029-4a8a-b5ee-1b857d01252f",
+  "name":"Export of goods - draw back"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"12005",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"49",
+  "id":"161b3b76-a3f3-4550-b2ca-837641055b32",
+  "name":"Export goods - anticipated"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"12005",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"50",
+  "id":"e4a84877-3f6c-4e2f-aeb1-75d9319bfb5e",
+  "name":"Export goods - anticipated"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"12005",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"51",
+  "id":"8ace2dc7-1e8e-4ea7-a973-730cd7984d0a",
+  "name":"Export goods - PAYMENT. EF. third party"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"12005",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"52",
+  "id":"504db3b7-ade8-4545-a2d4-98da02d5c2f0",
+  "name":"Export goods - PAYMENT. EF. third party"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"12005",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"47e92c35-2450-400e-9f61-5362fd161c59",
+  "name":"Export of goods"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"12012",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"30",
+  "id":"8d46d69c-2824-48db-9179-fbe2d7c87691",
+  "name":"Import of goods - draw back"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"12012",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"50",
+  "id":"6fefcb2e-aba9-4ec2-be68-558d1e441267",
+  "name":"Import of goods"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"12012",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"46",
+  "id":"d28e5d5e-1b6e-4b65-8060-6dea00a4db8d",
+  "name":"Import of goods"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"12012",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"49",
+  "id":"5200277b-b18c-4935-937e-51dc0a232291",
+  "name":"Import of goods"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"12012",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"50",
+  "id":"33039c5e-75bd-4506-aaa0-787a8b700a5f",
+  "name":"Import of goods - early"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"12012",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"e6bc95e2-b19b-439e-be3d-59114a8d0786",
+  "name":"Import of goods"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"12012",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"53",
+  "groupCode":"90",
+  "id":"d7678494-5952-4bd2-971e-b1b1847582f6",
+  "name":"Import of goods"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"12029",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"50",
+  "id":"44a5a353-df76-4538-889c-3006967f0bdf",
+  "name":"Early back to back"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"12029",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"d7ce62fe-3197-40ad-91e8-611772d5ee46",
+  "name":"Back to back operations"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"12036",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"9c0d916d-78aa-43ba-960f-ad9e81b4303e",
+  "name":"Small orders"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"12036",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"4ab92d8c-f980-4ed7-b744-f2fa4a65fba5",
+  "name":"Small orders - international"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"12036",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"49",
+  "id":"e0dced13-fdf5-430b-9fde-50f03b28a6b9",
+  "name":"International orders"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"12036",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"50",
+  "id":"0e0b29e6-d7b8-444c-a14c-712926f1c42e",
+  "name":"International orders"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"12036",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"765c3b7c-431f-48b3-9e94-c6ae5e152129",
+  "name":"International orders"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"12043",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"49",
+  "id":"367856de-d5b9-45b1-b7a3-afb4603dfe0e",
+  "name":"Adjustments in business transactions"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"12043",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"db3adde0-fb40-4ecb-b2e3-8d1dd9b2cc6a",
+  "name":"Adjustments in business transactions"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"15002",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"82",
+  "groupCode":"90",
+  "id":"800a00ab-37e7-4084-8157-5e2944e7e03c",
+  "name":"Goods - IMP. FINIMP"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"15002",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"30",
+  "id":"3d5c8343-c4ef-49e8-92ec-e7cd4572db46",
+  "name":"General import"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"15002",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"49",
+  "id":"44d6ded8-da6f-47c0-889e-472ad48b48f1",
+  "name":"General import"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"15002",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"50",
+  "id":"75bd44e2-c592-4965-a9ed-c6bd7ecf29c5",
+  "name":"Advanced payment"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"15002",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"7a338800-4ef5-4176-98df-61c365115969",
+  "name":"General import"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"15002",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"93",
+  "groupCode":"30",
+  "id":"2e15efa3-9e6b-40c5-a674-b511a6ebd660",
+  "name":"IMP.mercadorias - draw - back"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"15002",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"93",
+  "groupCode":"46",
+  "id":"785c6022-965e-4b21-8489-e51266b59521",
+  "name":"General import"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"15002",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"93",
+  "groupCode":"90",
+  "id":"cb9e5d48-c8e5-45d0-b286-52853aedde67",
+  "name":"Associates - associates"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"15002",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"49",
+  "id":"5652f8af-892d-4262-ab3e-4599a2b05315",
+  "name":"Currency repatriation"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"15002",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"50",
+  "id":"70f847b3-6ce2-434e-9b9d-911bbede74cb",
+  "name":"Advanced payment"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"15002",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"a2927711-ebbf-42c0-88b9-1e442f07487d",
+  "name":"General import"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"15002",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"50",
+  "id":"9c4e933e-45d4-4a56-b92c-148df77cf204",
+  "name":"Advanced payment"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"15002",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"90",
+  "id":"37732e55-877d-44b6-bfe4-dcc0277c6756",
+  "name":"General import"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"15442",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"4debdeba-82c4-49c3-81bc-ca4e0433cdd1",
+  "name":"Import - back to back operations"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"15442",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"d575fd26-8fbb-41b5-835e-ad9bf678e9a5",
+  "name":"Import - back to back operations"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"15442",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"90",
+  "id":"510eb03f-ff3f-4a13-8012-605d80a3054f",
+  "name":"Back to back - out"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"15806",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"1af5b26b-91ba-4d39-a7e8-de44b4799b37",
+  "name":"Simplified / IMP"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"15806",
+  "payerType":"92",
+  "approvalType":"0",
+  "payeeType":"99",
+  "groupCode":"90",
+  "id":"6c09906b-646e-4379-872c-8351f7832241",
+  "name":"Importation - simplified exchange"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"20190",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"d016d868-0d87-408e-a3a3-2d2605a4aa9e",
+  "name":"Other transport revenue / expenses"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"20200",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"71839a3b-01da-482b-b7e0-fcdcc0fb4b13",
+  "name":"Other transport revenues / expenses - maritime"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"20413",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"7559929f-9b7f-4771-9c00-fd577d888e21",
+  "name":"Transp - freight - maritime"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"20619",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"e9a5a6a9-a943-435a-a8a3-4670003834e8",
+  "name":"Transp - fretes - on export - air"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"20619",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"90",
+  "id":"7bf5fb71-0566-4322-bc38-83790abffe53",
+  "name":"Air freight without export"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"20626",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"0ae72c7c-9eb3-4f17-b307-e099befc3a09",
+  "name":"Transp - freight on export - sea"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"20640",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"8e7a1a41-7571-491c-b8f5-7a40db0afe28",
+  "name":"Transp - fretes - about import - air"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"20640",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"eeecfe6d-b6b6-44dd-8991-3c64053ba775",
+  "name":"Air freight without import"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"20640",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"90",
+  "id":"56e43590-2fbc-4dad-b1ed-32388881c4c1",
+  "name":"Freight without import"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"20657",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"859b36f4-5a4d-45b5-98b7-e5f31f83909b",
+  "name":"Transp - fretes - about import - sea"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"20657",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"90",
+  "id":"074699ba-baba-4cf9-8fbd-6c1a2ecfee6e",
+  "name":"Sea freight without import"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"20664",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"dd8f570a-2575-4efa-8918-242768167129",
+  "name":"Transp - fretes - about import - land"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"20671",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"56a74027-0673-43b4-a197-f14543c3721c",
+  "name":"Freight other"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"20688",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"ef0badbd-c830-4e0e-bb19-d5339cc5e7ca",
+  "name":"Other sea freight"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"20695",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"11b7fb20-8d31-4e1b-8955-ad69f3c109b6",
+  "name":"Freight other"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"22002",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"7ccf6798-43ed-4a53-9515-e396d5bd8376",
+  "name":"Air freight without export"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"22019",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"49",
+  "id":"ec693784-398d-485e-9cfd-2d82dc91fb99",
+  "name":"Air freight on imports"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"22019",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"062f55c6-7957-4595-b283-c039a3ef399a",
+  "name":"Air freight on imports"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"22026",
+  "payerType":"0",
+  "approvalType":"9",
+  "payeeType":"0",
+  "groupCode":"59",
+  "id":"ebff1874-8dd2-47ed-ba34-7ecd628cb40e",
+  "name":"Other freight"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"22026",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"03c17d79-f70f-4bcd-b411-a1950e730560",
+  "name":"Other freight"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"22033",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"e79f6d84-12f6-4e39-a3ff-daa5b844baf1",
+  "name":"Other revenue / expenses - air transport"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"22040",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"cac7d2a7-aad8-41a2-a199-89021681649b",
+  "name":"Transport - freight - air"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"22057",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"f273a32d-ffa8-4794-879b-a6edcf6d40cc",
+  "name":"Air - tickets"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"22105",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"c78f83b5-4d44-4f3b-95d5-4a38bdbc9a67",
+  "name":"Sea freight without export"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"22112",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"49",
+  "id":"b676a3e9-f9f3-4e9a-b09a-e2bbf2901079",
+  "name":"Currency repatriation"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"22112",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"79adcce6-f951-4fb2-86c6-8d6b9deac0eb",
+  "name":"Sea freight on imports"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"22129",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"df0722a2-37f4-4db8-949a-79ab7f9babaf",
+  "name":"Sea freight - other freight"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"22136",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"49",
+  "id":"9d456fa1-e827-4c21-925a-687c6f24656a",
+  "name":"Other expenditure / revenue - freight sea"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"22136",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"34a29666-9c28-4014-a3f8-0b20902d4724",
+  "name":"Other transport revenues / expenses - maritime"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"22143",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"fe25f339-771d-413e-b74c-111477ce9026",
+  "name":"Freight"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"22208",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"b92d08e1-0765-4022-b9e8-86868b62f212",
+  "name":"Road - export freight"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"22222",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"cebbc9e4-33a2-4282-9f07-e698241e8dde",
+  "name":"Rodoviario - other freight"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"22239",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"b606d61e-dbb7-4c73-84dc-c5a3be94ae8d",
+  "name":"Other transport revenues / expenses "
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"25009",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"89",
+  "groupCode":"90",
+  "id":"a50501b3-e360-4064-b69a-da09273d3f8e",
+  "name":"Export insurance"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"25009",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"7c02fd59-cb43-4739-a75d-9e0ca5b61e38",
+  "name":"Insurance - TRANSP. INT. MERC - premium without export"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"25016",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"89",
+  "groupCode":"90",
+  "id":"6aa1198d-ee53-4806-a63a-a9cefc354c17",
+  "name":"Insurance - TRANSP. INT. MERC - premium without import"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"25016",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"c0119cad-57bb-4e5e-9f0c-80adfb0e81ef",
+  "name":"Insurance - TRANSP. INT. MERC - premium without import"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"25102",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"89",
+  "groupCode":"90",
+  "id":"80706629-57de-46ff-bc4b-35f8c6ade170",
+  "name":"Other insurance insurance"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"25102",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"87e8b339-4464-4360-888d-3a752e6421d7",
+  "name":"Other insurance insurance"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"25119",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"89",
+  "groupCode":"90",
+  "id":"efce5cb2-f62e-4815-8825-a69de1fb7204",
+  "name":"Insurance - other insurance indemnities"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"25119",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"c428d486-1775-4b16-994c-3d7213e6ee57",
+  "name":"Insurance - other insurance indemnities"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"25119",
+  "payerType":"95",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"3cad9469-4a18-43f5-b359-3c427951a7c1",
+  "name":"Insurance - other insurance indemnities"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"27007",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"58",
+  "groupCode":"90",
+  "id":"a6983d6c-a380-451e-8ca4-f611c64159a3",
+  "name":"Insurance without export"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"27021",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"58",
+  "groupCode":"90",
+  "id":"eda2e163-bab9-4f3e-b0bd-e9e7d91a2be0",
+  "name":"Insurance without import"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"27038",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"58",
+  "groupCode":"90",
+  "id":"dd9fe2fd-1753-4e6c-a6cc-77eacc0dc615",
+  "name":"Other direct insurance - indemnity"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"27045",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"58",
+  "groupCode":"90",
+  "id":"ddc5355d-faa2-410c-918b-dcd4e904e826",
+  "name":"Reinsurance - premium"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"27069",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"58",
+  "groupCode":"90",
+  "id":"1c669159-2978-473b-8b55-0c3d5a83998b",
+  "name":"Life sugures - prize"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"27069",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"fda5565e-5c84-459a-97ad-ee70b804e983",
+  "name":"Life insurance - prizes"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"27076",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"58",
+  "groupCode":"90",
+  "id":"43ada58a-efff-4ade-a755-ae0da58f334d",
+  "name":"Insurance life indemnity"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"27083",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"58",
+  "groupCode":"90",
+  "id":"c0131a37-9f65-4699-95ca-a7be22fdb14e",
+  "name":"Other direct insurance"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"27083",
+  "payerType":"5",
+  "approvalType":"0",
+  "payeeType":"58",
+  "groupCode":"90",
+  "id":"4bc7309b-d6cc-4e57-a431-5b806541b627",
+  "name":"Other direct insurance"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"27083",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"a14c230f-d676-4624-873a-5b8519cbbba0",
+  "name":"Other direct insurance"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"27083",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"58",
+  "groupCode":"90",
+  "id":"eed47fe9-cc2c-4440-8a94-b8a30ca03d0a",
+  "name":"Other direct insurance"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"27083",
+  "payerType":"71",
+  "approvalType":"0",
+  "payeeType":"58",
+  "groupCode":"90",
+  "id":"80721b93-7040-4913-ad73-2a0d03760212",
+  "name":"Other direct insurance"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"27090",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"c06e85fd-2a37-4f54-8149-8d0b411a0f59",
+  "name":"Other direct insurance - indemnity"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"27090",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"58",
+  "groupCode":"90",
+  "id":"f65b3617-f02c-4450-aa89-093b9eaba081",
+  "name":"Other direct insurance - indemnity"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"27904",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"58",
+  "groupCode":"90",
+  "id":"a28d9431-30e0-4e87-ae5d-5b183557f927",
+  "name":"Other claim recovery"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"30166",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"1820df7a-6932-421c-977b-afa5e2809f32",
+  "name":"Intern travel - health treatment"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"30403",
+  "payerType":"99",
+  "approvalType":"0",
+  "payeeType":"99",
+  "groupCode":"90",
+  "id":"b545202a-54dd-4c65-80b3-9851d7a46505",
+  "name":"Tourism - P.F. foreign - shop"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"32009",
+  "payerType":"2",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"77f70d89-9db1-4f18-b13b-2cbb95d358d1",
+  "name":"PF tourism - foreign"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"32016",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"90",
+  "groupCode":"90",
+  "id":"2397ce41-0355-44da-9bb0-102b814c4a53",
+  "name":"PF tourism - Brazilian"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"32023",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"172f53ac-7845-44a6-a26b-c0331a246754",
+  "name":"Acquisition of foreign currency by qualified travelers, with the purpose of meeting expenses abroad with travel"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"32023",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"90",
+  "groupCode":"90",
+  "id":"49e3b71a-5d81-46f0-ad86-25cb794f3563",
+  "name":"Travel expenses abroad - other purposes"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"32023",
+  "payerType":"55",
+  "approvalType":"0",
+  "payeeType":"88",
+  "groupCode":"90",
+  "id":"57ef8b81-4834-4e20-b26a-1846ee18aa5d",
+  "name":"Business training"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"32023",
+  "payerType":"71",
+  "approvalType":"0",
+  "payeeType":"71",
+  "groupCode":"90",
+  "id":"8cd907be-7d25-48a7-a2e9-80d39195534d",
+  "name":"Travel abroad other purposes"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"32023",
+  "payerType":"71",
+  "approvalType":"0",
+  "payeeType":"90",
+  "groupCode":"90",
+  "id":"21817d34-1582-4c41-86a5-034e55f07434",
+  "name":"Abroad other purposes"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"32102",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"b04e8268-8a01-4620-81f2-c23250cbf398",
+  "name":"Cards of international use - acquisition of goods and services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"32205",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"c0b0d617-35ea-47e4-b232-45e418f45513",
+  "name":"International payments facilitators - acquisition of goods and services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"33101",
+  "payerType":"95",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"8f68fca7-2bf6-47fa-9257-f299e7cb3094",
+  "name":"Internal travel - FINS EDUC.CIENT.CULT.OU EV.ESPORTIVOS"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"33149",
+  "payerType":"3",
+  "approvalType":"0",
+  "payeeType":"99",
+  "groupCode":"90",
+  "id":"05191796-2f37-4778-85ca-99b50f482270",
+  "name":"Tourism company not accredited in bacen - matriz"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"33149",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"99",
+  "groupCode":"90",
+  "id":"33fba91d-3fa3-4eec-b690-62d46f8b18ff",
+  "name":"Business services or external training - PJ - matriz"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"33149",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"232d1932-1915-48e2-abf8-d99845765ea5",
+  "name":"Internal travel - business, service or training"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"33149",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"97",
+  "groupCode":"90",
+  "id":"f60e39f6-ff5d-48a9-b832-f8a1dda3cdae",
+  "name":"Internal travel - business, service or training"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"33149",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"90",
+  "id":"811e7c4a-1f9c-4336-997e-896fca177cc3",
+  "name":"Training"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"33455",
+  "payerType":"95",
+  "approvalType":"0",
+  "payeeType":"99",
+  "groupCode":"90",
+  "id":"6b77462c-9215-4a00-af4d-810c8583f0eb",
+  "name":"Tourism - P.F - Brasileira - shop"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"33606",
+  "payerType":"3",
+  "approvalType":"0",
+  "payeeType":"99",
+  "groupCode":"90",
+  "id":"ffe20124-b672-49bd-9638-2cb59e95f60f",
+  "name":"Tourism company accredited in bacen - matriz"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"35082",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"82",
+  "groupCode":"90",
+  "id":"33de5b15-7e3f-48a5-9488-32adadfa1bec",
+  "name":"Interest on import"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"35082",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"2032b0f4-a4d9-48e8-84dc-9f5e0e01b778",
+  "name":"Interest IMP."
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"35422",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"82",
+  "groupCode":"90",
+  "id":"2edaa48b-deb8-4fc2-b1fa-31b6153812a5",
+  "name":"Interest loans"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"35422",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"d5151aca-f2bb-46a4-b92b-98d3675f339f",
+  "name":"Loan interest - direct loans"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"35422",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"03c665e6-94b7-4ead-99ef-f6af2d148235",
+  "name":"Capital income - direct investment"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"35556",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"52",
+  "id":"7de5adc9-c3f7-4fbd-9b26-7f686d90c0a7",
+  "name":"Capital income - interest paid antecip S / exportacoes"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"35635",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"4d8ea4ca-fe2d-44db-8dd0-0a5ae20c84a1",
+  "name":"Juros de financiamento a import"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"35635",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"82",
+  "groupCode":"90",
+  "id":"4188e60f-ac19-47a3-af2c-855e30fd7db4",
+  "name":"Long term finimp"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"35635",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"055cc06d-8691-43bb-ac1a-daaf9730c3b8",
+  "name":"Interest financing"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"35666",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"90",
+  "id":"35366292-0304-4eeb-9f88-6d5fe689df6a",
+  "name":"Interest on export"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"36902",
+  "payerType":"23",
+  "approvalType":"0",
+  "payeeType":"82",
+  "groupCode":"90",
+  "id":"ee8f2242-20fe-4755-9e8f-46945e37cc16",
+  "name":"Out. REND. CAP - INV portfolio (1289/2689) - dividends"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"36957",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"97",
+  "groupCode":"90",
+  "id":"93c0ce0f-e462-4681-ac89-2cd5fa260bf2",
+  "name":"Out. REND. CAP - INV DIR - profits div bonificac"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"36957",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"90",
+  "id":"9b45bae5-d8fe-4a98-8be1-805363bb3276",
+  "name":"Out. REND. CAP - INV DIR - profits div bonificac"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"36957",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"93",
+  "groupCode":"90",
+  "id":"2dcda90c-c8e1-4ee5-8378-99117e376edc",
+  "name":"Out. REND. CAP - direct INV - profits div bonuses"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"36957",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"292bdfa3-d099-4884-b91f-916227c64a2b",
+  "name":"Out. REND. CAP - INV DIR - profits div bonificac"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"36957",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"90",
+  "id":"57c5fb18-ab03-4056-b750-205043e23e57",
+  "name":"Out. REND. CAP - INV DIR - profits div bonificac"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"36971",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"93",
+  "groupCode":"90",
+  "id":"279e8053-76ba-4e43-a92e-853c55bb4675",
+  "name":"Out - REND.CAP - direct INV - remun cap proprio interest"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37004",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"49",
+  "id":"eb2ee894-71ba-41c3-a47e-ff7ed3895bd2",
+  "name":"Resident maintenance"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37004",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"90",
+  "id":"2eb2660b-37ee-446a-a7ec-bdbe9c654333",
+  "name":"Maintenance of residents abroad"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37004",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"49",
+  "id":"c1b4782a-f3a8-4ea4-88ad-2c14a62b6b32",
+  "name":"Resident maintenance"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37004",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"97fd1948-cacd-48c9-8482-4acb2db9f877",
+  "name":"Resident maintenance"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37004",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"90",
+  "id":"ea04a0f8-6137-4783-89f1-bd835e49ea74",
+  "name":"Resident maintenance"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37004",
+  "payerType":"2",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"33a293f8-b892-4050-a2ec-583d7710996a",
+  "name":"Foreign WU"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37004",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"0",
+  "id":"2af6ee01-c151-4727-b754-a58b2910011b",
+  "name":"Shipping - wu"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37011",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"49",
+  "id":"57efa8b8-271b-470c-b8c8-bdc305f05e97",
+  "name":"Student maintenance - return"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37011",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"90",
+  "id":"f52989bb-90ca-4f0a-a308-655a0d0df555",
+  "name":"Student maintenance"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37028",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"73",
+  "groupCode":"90",
+  "id":"7cb606f8-4d80-4baa-927d-704ac4e11abd",
+  "name":"Current transfers - taxes"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37028",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"49",
+  "id":"d726ca8a-d7a8-4b0e-8df5-02c2b1d77c69",
+  "name":"Current transfers - taxes"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37028",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"c40bf8a7-6814-4ced-9fb7-3e3da75e620c",
+  "name":"Current transfers - taxes"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37028",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"73",
+  "groupCode":"90",
+  "id":"152e8ecd-bcca-426f-955f-86543437fbdd",
+  "name":"Current transfers - taxes"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37035",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"921de423-0314-4920-a7ae-f0f35ceb832a",
+  "name":"Social security contributions"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37042",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"58",
+  "groupCode":"90",
+  "id":"a44c332e-df8d-4feb-8f39-036b80ac64df",
+  "name":"Current transfers - contributions to pension funds"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37042",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"73",
+  "groupCode":"90",
+  "id":"5a261152-43fe-47bb-a4d7-bb73d623da22",
+  "name":"Current transfers - contributions"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37042",
+  "payerType":"0",
+  "approvalType":"9",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"6ed614f2-3d3f-469d-a8f1-3abfa9a139a7",
+  "name":"Current transfers - contributions to pension funds"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37042",
+  "payerType":"0",
+  "approvalType":"9",
+  "payeeType":"73",
+  "groupCode":"90",
+  "id":"955690ce-e7c7-4834-8ce5-bfddc8470bed",
+  "name":"Current transfers - contributions"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37042",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"12b5a3ad-c1c0-4bbe-9d0c-0588c278adb0",
+  "name":"Current transfers - contributions to pension funds"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37059",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"88",
+  "groupCode":"90",
+  "id":"879850e6-cf25-4a10-b1af-9efa17fa192f",
+  "name":"Social security receipts"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37066",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"90",
+  "groupCode":"90",
+  "id":"691e8b86-d620-403d-b0c3-e90ecd33abf9",
+  "name":"Checks pension PF"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37080",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"90",
+  "id":"363c0c09-be34-4edd-b9ae-736223bd143e",
+  "name":"Transfers - unilaterals - chain ​​transfers - donations"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37080",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"5ac923e9-6976-4f66-9aa6-16dc66625198",
+  "name":"Donations"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37080",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"6b6a8c8e-a2ca-49d3-9c69-9aeb4e37cfca",
+  "name":"Donations"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37080",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"71",
+  "groupCode":"90",
+  "id":"3b55d7d3-ecd2-4b4e-b7ab-aadb71d26ae2",
+  "name":"Donations"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37080",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"7b105dd4-9fc1-4bf0-afa2-ca58bdeb3ca0",
+  "name":"Current transfers - donation"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37080",
+  "payerType":"71",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"90",
+  "id":"5dc12950-7341-4d7e-8e64-a244e0d0c38c",
+  "name":"Unilateral transfers - TRANSF. chains - donations"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37080",
+  "payerType":"71",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"782ee376-9dd2-4b73-8c06-3c1ae33e3755",
+  "name":"Unilaterial transfers - donations"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37080",
+  "payerType":"71",
+  "approvalType":"0",
+  "payeeType":"71",
+  "groupCode":"49",
+  "id":"46d2acf0-ca11-4718-859d-d80985478991",
+  "name":"Unilateral transfers - TRANSF. chains - donations"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37080",
+  "payerType":"71",
+  "approvalType":"0",
+  "payeeType":"71",
+  "groupCode":"90",
+  "id":"cb3c9d08-f8e5-4868-8656-caf5b6bd4599",
+  "name":"Unilateral transfers - TRANSF. chains - donations"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37107",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"90",
+  "id":"db15cd5c-7372-4ff8-b93f-d2a40aaa8939",
+  "name":"Other unilateral - current transfers"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37107",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"868368c2-e336-4138-b371-b43b187628ea",
+  "name":"Other unilateral - current transfers"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37107",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"49",
+  "id":"a4ea0f19-7259-44ea-b862-5f5c62de3f27",
+  "name":"Other current transfers"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37107",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"7063f239-09ba-4d8d-91a3-0bee594c08d5",
+  "name":"Other current transfers"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37107",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"73",
+  "groupCode":"90",
+  "id":"1fc6b920-340c-441d-b2d4-b07891e52804",
+  "name":"Other current transfers"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37107",
+  "payerType":"2",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"907134c4-57e8-49da-8079-0442fd844555",
+  "name":"Other current transfers"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37107",
+  "payerType":"8",
+  "approvalType":"0",
+  "payeeType":"90",
+  "groupCode":"90",
+  "id":"fc52c042-dbc5-43f4-b803-4609d25c0db8",
+  "name":"Other current transfers"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37107",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"49",
+  "id":"f6e3596d-6108-4c48-87b0-951400d46bf8",
+  "name":"Other current transfers"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37107",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"59ea6268-bee0-4a42-9988-2d1a56501ada",
+  "name":"Other current transfers"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37107",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"8ec4c678-c65e-48d6-afa1-2099c5f03a7b",
+  "name":"Other current transfers"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37107",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"53",
+  "groupCode":"90",
+  "id":"466fe3e7-7eea-468e-ac30-4156febe0917",
+  "name":"Other current transfers"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37217",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"90",
+  "id":"5e71d206-5d26-4f83-bfe7-d74c308eb82d",
+  "name":"Patrimony"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37217",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"6b6c0ddb-9cc3-46e7-91c2-268d6525c011",
+  "name":"Current transfers - heritage"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37217",
+  "payerType":"2",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"80",
+  "id":"8f87c761-bd6f-4d59-b842-1214c644c58d",
+  "name":"Current transfers"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37217",
+  "payerType":"2",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"6a011202-5be1-42e3-a34b-a90c76776881",
+  "name":"Capital transfer - equity"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37224",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"90",
+  "id":"bb99ed41-6cb5-4cb3-9c72-2bdcb296e9dc",
+  "name":"Other capital transfers"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37224",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"5150da01-9813-482c-867a-a240514aca7f",
+  "name":"Other capital transfers"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"37224",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"53",
+  "groupCode":"90",
+  "id":"dececa4a-c986-40c3-9609-ac99914167ab",
+  "name":"Capital transfers - other capital transfers"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"38508",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"80b3733a-c7ea-472c-ad04-9a12364b3b9e",
+  "name":"Other contractual interest"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"44908",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"90",
+  "id":"05c63858-a8b1-4713-8427-42c518fa081b",
+  "name":"Others - wages and other compensation"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45072",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"8b4816d6-28cb-4851-b902-81f5d0c15770",
+  "name":"Miscellaneous out services - rental of buildings"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45010",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"1d5b9738-f338-489e-9fc5-cc6dfee0614e",
+  "name":"Miscellaneous out services - equipment rental"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45096",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"c3a2380f-aa89-4458-b6fa-ef96937e674a",
+  "name":"Miscellaneous out services - subscription newspapers, magazines, etc"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45110",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"b2ed4e06-bf63-4af4-b800-df1c8d911986",
+  "name":"Miscellaneous services EXP / IMP SV - SV TEC ESP - J, C. ASS. EMP. REL. PU"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45110",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"a89a9338-ac04-4680-a7b2-bff3107a66a6",
+  "name":"Miscellaneous services EXP / IMP - SV - SV"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45110",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"90",
+  "id":"a774cb56-5a84-4134-a543-841e110feef1",
+  "name":"Miscellaneous services EXP / IMP - SV - SV"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45110",
+  "payerType":"95",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"49",
+  "id":"0873d91a-11d3-4f67-b2fc-84c4aba69333",
+  "name":"Miscellaneous services EXP / IMP - SV - SV"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45209",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"a2451c39-119c-4451-ba0c-1212c140d3ea",
+  "name":"Commissions on EXP/IMP"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45110",
+  "payerType":"95",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"13b3224f-6a40-41bf-bcda-bde0a3e48e08",
+  "name":"Miscellaneous services EXP / IMP - SV - SV"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45209",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"49",
+  "id":"9e4e6058-4a71-4597-bc98-46155ebc3f33",
+  "name":"Export agent commission"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45209",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"80",
+  "id":"8fe2e82a-23ee-47d4-aad4-3c7ea41530b4",
+  "name":"Commission without export"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45209",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"97",
+  "groupCode":"90",
+  "id":"6102b9b2-3f60-44f4-84bb-bf6c9d7f2270",
+  "name":"Agent commission"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45209",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"49",
+  "id":"ff2a6fff-e83d-4a61-b690-f1bf202d7e9a",
+  "name":"Export agent commission"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45209",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"90",
+  "id":"35a73782-dae5-45ad-bbad-5dd3563a86c2",
+  "name":"Agent commission"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45223",
+  "payerType":"3",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"e1bb1798-6ac8-4d25-9154-0491beb64bdb",
+  "name":"Miscellaneous services out - commission contr - others"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45223",
+  "payerType":"38",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"061f1eef-23ef-4249-b9ea-5cfdf5fbd8f8",
+  "name":"Miscellaneous services out - commission contr - others"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45223",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"b6c365ee-a252-4a4e-a7e0-e211d4c7c945",
+  "name":"Miscellaneous services out - commission contr - others"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45223",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"59beaea9-048c-4b04-90d9-d9e3516b347f",
+  "name":"Commissions / other"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45223",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"90",
+  "id":"3e538edf-f892-4944-9a6d-57349ca07269",
+  "name":"Commissions / other"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45223",
+  "payerType":"95",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"013703da-aa73-40b8-a5f5-bd1c9337d597",
+  "name":"Miscellaneous commission services - contractual - others"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45388",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"6dbe94bb-135f-40f5-b31f-8af0a211ae6d",
+  "name":"Miscellaneous services out. administrative"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45388",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"97",
+  "groupCode":"90",
+  "id":"a55b4fc1-529a-4af7-ae61-1bec7c2f8625",
+  "name":"Miscellaneous services out. administrative"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45388",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"c63b8775-33de-435d-9d19-cb3c768240f6",
+  "name":"Miscellaneous out services - administrative"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45388",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"90",
+  "id":"ba82b0ca-bd17-43e1-b761-c0dfe0820f5b",
+  "name":"Expenses refund"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45388",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"97",
+  "groupCode":"90",
+  "id":"bf353c3a-b450-45e0-b91b-a5ffd095fa64",
+  "name":"Miscellaneous services out. administrative"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45405",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"82",
+  "groupCode":"90",
+  "id":"3deb8c15-b842-42c5-8780-caacfbd607eb",
+  "name":"Bank expenses"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45405",
+  "payerType":"53",
+  "approvalType":"0",
+  "payeeType":"99",
+  "groupCode":"90",
+  "id":"387880ba-6762-4a7d-bc8c-99554000500a",
+  "name":"Miscellaneous out services - banking"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45443",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"94",
+  "groupCode":"49",
+  "id":"64ab1de5-4a66-44f0-b5db-4e41eb4a7fe4",
+  "name":"Copyright"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45443",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"d00c1af0-85e3-4867-8f56-394ad31bf705",
+  "name":"Miscellaneous services out. copyright"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45443",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"855c3c67-ce30-435f-beb9-5c1a270af865",
+  "name":"Copyright"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45443",
+  "payerType":"95",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"49",
+  "id":"5c1a5315-7178-4a97-bda2-479b430deb80",
+  "name":"Currency repatriation"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45443",
+  "payerType":"95",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"b35e36c5-0750-4552-87bc-2f5ca82013f2",
+  "name":"Miscellaneous out services - copyright"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45500",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"579a0bf7-6d51-4d72-ac5f-4471b51f04c6",
+  "name":"Miscellaneous out services - carbon credits"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45539",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"eadb2d25-a157-4f6c-944b-b167cff9199b",
+  "name":"Courses, lectures and seminars"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45539",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"97",
+  "groupCode":"90",
+  "id":"aa6a6e36-1305-47ed-a9ae-b8033d03c3c3",
+  "name":"Miscellaneous remun services for courses, lectures and seminars"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45539",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"90",
+  "id":"64792afb-4bec-479e-8024-26adf9559417",
+  "name":"Training"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45584",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"01bead87-d324-4e46-937b-a2e8e0748ec0",
+  "name":"Miscellaneous services out - IMP SV - FORNEC SERV / COMPLEMENTARY DESP"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45591",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"93",
+  "groupCode":"90",
+  "id":"5226ed48-ac51-401c-9085-b68a0a950659",
+  "name":"Miscellaneous services EXP / IMP SV - franchises"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45601",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"6392f4fe-d253-49ca-98d5-658257015dbe",
+  "name":"Profit and loss"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45601",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"5b62239a-6408-48b5-a3ea-51d484117abc",
+  "name":"Profit and loss"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45618",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"42d4c10f-954b-41cb-9064-46d9367f9adb",
+  "name":"Miscellaneous services EXP / IMP SV - brands - license of use"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45618",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"90",
+  "id":"2bcf5a61-371e-4341-9913-be61662d24a9",
+  "name":"Royalties"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45625",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"93",
+  "groupCode":"90",
+  "id":"82dca643-7456-49da-b0de-153853af6a27",
+  "name":"Miscellaneous services - EXP / IMP of SV. patents - exploration license"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45632",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"07a49475-2e2b-46a8-b2be-68cc9453a55c",
+  "name":"Miscellaneous services EXP / IMP SV - technology supply"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45632",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"90",
+  "id":"6f8fa43f-8b68-4a95-8b36-840b710cfdd3",
+  "name":"Technology supply"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45649",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"c3cd0285-326a-45c0-b485-fca2bb1a7778",
+  "name":"Technical assistance services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45649",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"90",
+  "id":"660519d1-25f2-4a79-9fb0-eb669acf54c6",
+  "name":"Royalties"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45670",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"90",
+  "id":"f99f14d0-40a8-40d5-b3bd-40b364c722dc",
+  "name":"Engineering project installation"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45687",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"0e0b1978-fe79-40f9-8a7e-16a499f91c86",
+  "name":"Other tec services."
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45694",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"49c0ec3d-5c9f-4853-a9c4-d04c5e468464",
+  "name":"Miscellaneous services EXP / IMP SV - SV - SV TEC ESPEC - ENG / ARQU"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45711",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"c2c1d5c8-8a49-44e5-8bb8-2bdc06d80df0",
+  "name":"Miscellaneous services EXP / IMP SV - SV - other SERV REC - PROF."
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45704",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"80",
+  "id":"5a7b64d5-1c49-4836-ac54-a55da6ae0acd",
+  "name":"Services - company assembly"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45711",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"32982304-cd80-46a1-a3db-f08a28485b29",
+  "name":"Miscellaneous services EXP / IMP SV - SV - other SERV REC - PROF."
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45797",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"8832e235-dbe4-4180-b986-32f0eda9dc48",
+  "name":"Miscellaneous services out - out SERV LIG TRANS MERCANTIS C / EXTER"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45711",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"90",
+  "id":"43922e7c-8c81-4b4e-a048-b1f754a4da39",
+  "name":"Technical services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45797",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"90",
+  "id":"c5b49978-1965-4b2f-ba7f-cc9b374bcf9b",
+  "name":"Other services connected to trans.mercantis C / O exterior"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45821",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"3b34c0b7-4d55-4379-876f-63e1c52aeed7",
+  "name":"Miscellaneous out services - brands / patents - registration / deposit / maint"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45821",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"6a03d86d-9563-4e8c-81e1-2d32d435b7ff",
+  "name":"Brands and patents"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45883",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"e65f0bfe-bb5c-4dce-99da-2d0c9bc65148",
+  "name":"Miscellaneous out services - advertising and propaganda"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45883",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"941509e1-6c0b-496b-9ac4-e4dbb7c42d8d",
+  "name":"Advertising and propaganda, marketing"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45883",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"93",
+  "groupCode":"90",
+  "id":"29fcdd68-116b-42e4-9e95-cd2dff9cebb7",
+  "name":"Miscellaneous services out - PUBLIC.PROPAG.MARKET.PESQ.OPINIAO"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45955",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"90",
+  "id":"04c75c1a-db86-432d-a047-02cda2d6eac0",
+  "name":"Wages and salaries - wages"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"45979",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"b5e6b4dd-7975-419e-9101-9bd872e0bd33",
+  "name":"Participation in fairs abroad"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47001",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"bdb71a10-c34a-4f46-bad1-f30ce99ce9f0",
+  "name":"Technical and professional services - postal and courier services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47018",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"dcb12083-fa12-48c3-9081-fd2d287b252b",
+  "name":"Telecommunication services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47025",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"c98902a3-243f-4b6e-9832-38a1141c874f",
+  "name":"Computer services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47025",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"49",
+  "id":"9fdd408f-beb5-4a2e-b1fa-3eb52c742a87",
+  "name":"Computer services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47025",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"ea082950-6a8d-4682-8c42-e597f1490ec1",
+  "name":"Computer services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47025",
+  "payerType":"55",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"27d1a798-ae01-47d4-8e3a-63303ef717a7",
+  "name":"Technical and professional services - computer services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47032",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"53",
+  "groupCode":"90",
+  "id":"c1ec4bcd-c1db-442a-ad78-aae4de66793c",
+  "name":"Financial services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47032",
+  "payerType":"55",
+  "approvalType":"0",
+  "payeeType":"53",
+  "groupCode":"90",
+  "id":"0bdb3e74-48b3-4421-9152-8408fbf49286",
+  "name":"Financial services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47032",
+  "payerType":"61",
+  "approvalType":"0",
+  "payeeType":"53",
+  "groupCode":"49",
+  "id":"0f887860-306c-47b9-a90b-ebd77ea26c66",
+  "name":"Financial services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47056",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"b770e02a-ce38-4607-bda4-998580457705",
+  "name":"Equipment rental"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47063",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"ca94499b-6029-4f49-b58a-c985025813f5",
+  "name":"Research and development"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47070",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"ddb72915-25db-40b9-8c24-d7a6b6422c53",
+  "name":"Engineering services / architecture"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47087",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"8a58ba14-ae94-4f02-8255-5acf67cfd528",
+  "name":"Repairs and maintenance on machines and vehicles"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47128",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"90",
+  "id":"4532b11a-de47-4388-896a-8840dc03646e",
+  "name":"Technical and professional services - legal services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47128",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"a51db293-5d38-4878-afb9-eadd259e01ff",
+  "name":"Technical and professional services - legal services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47128",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"a86bb288-6468-42bf-ad63-5c09d9d11f49",
+  "name":"Technical and professional services - legal services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47128",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"90",
+  "id":"c1861187-0543-48fa-9266-2b0a2b637405",
+  "name":"Technical and professional services - legal services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47128",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"f2bddb93-1029-4e9b-9967-4a541d762f9a",
+  "name":"Technical and professional services - legal services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47128",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"49",
+  "id":"793b6659-878a-432d-891e-680dafeacb25",
+  "name":"Legal services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47128",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"a2832301-71c4-445c-81b3-423c04c4585e",
+  "name":"Technical and professional services - legal services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47128",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"53",
+  "groupCode":"90",
+  "id":"64d96503-ab09-4473-8ef9-2ee1b1259e7c",
+  "name":"Technical and professional services - legal services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47135",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"2cdf55ac-a5f8-4532-9c1e-5f2435dcce94",
+  "name":"Audit, accounting and tax consulting"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47135",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"49",
+  "id":"9a69e22d-5a6f-43d2-af03-885e95f92c01",
+  "name":"Audit, accounting and tax consulting"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47135",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"83eaeb47-9e7f-44c5-87e9-84163ee594a0",
+  "name":"Audit, accounting and tax consulting"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47135",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"53",
+  "groupCode":"90",
+  "id":"f659c060-6e6e-4b7d-b9ac-ac772da80376",
+  "name":"Audit, accounting and tax consulting"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47142",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"47",
+  "id":"b3314a1a-43a1-4cf7-a1b1-12906a161aef",
+  "name":"Business consulting and public relations"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47142",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"7e181a64-1a79-437e-96e5-09b836a068a9",
+  "name":"Business consulting and public relations"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47142",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"25d4a929-1350-47d0-9616-a91d8f5a57ad",
+  "name":"Business consulting and public relations"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47142",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"46",
+  "id":"2e81911b-906d-4b96-876a-dabe0daa2b90",
+  "name":"Business consulting and public relations"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47142",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"47",
+  "id":"80977953-1222-460f-8e8b-1bb6bc886a73",
+  "name":"Business consulting and public relations"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47142",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"d9d5e7f7-c165-4d4e-8442-12e30582c325",
+  "name":"Business consulting and public relations"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47142",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"53",
+  "groupCode":"90",
+  "id":"5247bad2-77f1-4412-a373-aded14986d16",
+  "name":"Business consulting and public relations"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47142",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"73",
+  "groupCode":"90",
+  "id":"438507d2-c89c-475d-90ae-8afc2645c81a",
+  "name":"Business consulting and public relations"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47142",
+  "payerType":"71",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"8e8a1939-7aa6-4e77-af71-d2e5854175c5",
+  "name":"Business consulting and public relations"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47159",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"55531afb-afa1-437c-b719-7498dba4aa91",
+  "name":"public. PESQ. MERC. and opinion and PART. fairs EXP."
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47159",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"90",
+  "id":"28a88144-950f-4500-8b05-ba9e2cd4550e",
+  "name":"public. PESQ. MERC. and opinion and PART. fairs EXP."
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47159",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"12daf5ee-b86a-4b5a-bdd0-de9729f4967a",
+  "name":"public. PESQ. MERC. and opinion and PART. fairs EXP."
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47159",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"49",
+  "id":"96fa2a31-7231-4e9f-8c17-6992c03b7477",
+  "name":"public. PESQ. MERC. and opinion and PART. fairs EXP."
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47159",
+  "payerType":"55",
+  "approvalType":"0",
+  "payeeType":"53",
+  "groupCode":"90",
+  "id":"39a664df-8b5c-4eed-95ae-297e4d43cebc",
+  "name":"public. PESQ. MERC. and opinion and PART. fairs EXP."
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47166",
+  "payerType":"55",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"988973f7-413b-4f03-b982-85244d6172fd",
+  "name":"News agency services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47166",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"c19c11c3-0f3b-4750-8877-bf9947fe0090",
+  "name":"News agency services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47173",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"315a2de8-efbd-4b51-8d68-3a4a455e685b",
+  "name":"Technical and professional services - audiovisuals and related services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47180",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"1d679b48-2ce7-4a22-afe8-3563311b798f",
+  "name":"Other information supply services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47173",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"b3ed4b87-3e32-420b-8fd7-56794401abdd",
+  "name":"Technical and professional services - audiovisuals and related services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47197",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"2dea3d23-6a84-4c79-9053-c06b4408ca13",
+  "name":"Other technical, professional and administrative services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47197",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"fa4157a2-18dc-4c46-b140-787ed5386ee1",
+  "name":"Other technical SERV. professionals and administrative"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47197",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"01620fcb-b615-45c1-b27d-080e7540aba1",
+  "name":"Other technical, professional and administrative services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47197",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"e585eb4f-1b38-4854-bcec-a2d46fc69a51",
+  "name":"Other technical SERV. professionals and administrative"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47197",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"49",
+  "id":"6fd9befb-c154-436c-9b7f-f29a83627a0b",
+  "name":"Technical, professional and adm repatriation services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47197",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"53",
+  "groupCode":"90",
+  "id":"460ec263-870f-44a0-b5c3-af518f4a10c8",
+  "name":"Technical services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47197",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"58",
+  "groupCode":"90",
+  "id":"e1c103ab-66f6-41c2-a36b-12d840a66aac",
+  "name":"Technical services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47197",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"73",
+  "groupCode":"90",
+  "id":"72ff4985-6ecb-48f2-a937-5474c2ad4110",
+  "name":"Technical services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47197",
+  "payerType":"55",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"d3f7d6f7-05a7-409e-a398-a6a25e37bc33",
+  "name":"Other technical SERV. professionals and administrative"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47410",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"6b46d367-f784-4437-b6e5-60e50d9a50ad",
+  "name":"Trademarks - rights of exploitation / use"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47197",
+  "payerType":"55",
+  "approvalType":"0",
+  "payeeType":"53",
+  "groupCode":"90",
+  "id":"f543237c-0c71-4810-8de7-957d3410dc53",
+  "name":"Other technical SERV. professionals and administrative"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47458",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"befec6cc-71bd-4df2-93e4-f72191195efa",
+  "name":"Exploration / use rights"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47506",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"e57e75e6-f7d3-48e5-bc62-8bf667f478ff",
+  "name":"Technology supply"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47513",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"50",
+  "id":"fc14fed4-c21e-468c-83d0-ed28b139c00f",
+  "name":"Supply of technical assistance services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47513",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"21abd898-9f24-4284-915c-c21ae94d598d",
+  "name":"Supply of technical assistance services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47519",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"03fa2afa-765a-4c42-98a1-bb4cb0b4a2db",
+  "name":"Technical and professional services - advertising, market and opinion research and participation in fairs and exhibitions"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47520",
+  "payerType":"0",
+  "approvalType":"9",
+  "payeeType":"0",
+  "groupCode":"59",
+  "id":"57abf829-04bf-40c2-9ede-313fe6a29d54",
+  "name":"Miscellaneous services and complementary expenses"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47520",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"07c9b84f-11cf-4e4c-ae91-8822f6bc4c15",
+  "name":"Miscellaneous services and complementary expenses"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47551",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"90",
+  "id":"b696f8e3-40f9-4aa0-b96f-e208b8c9ec69",
+  "name":"License to copy of distribution of PROG. comput"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47551",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"af8b7d2e-4ddc-475d-af8e-94dc33355844",
+  "name":"License to copy and distribute PROGR.comput"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47551",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"9",
+  "groupCode":"90",
+  "id":"17b2acdc-6f1b-401d-ab6d-aa7f0d2901f5",
+  "name":"License to copy of distribution of PROG. comput"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47551",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"f88e9330-28b8-4458-ac3d-7b303ff5371b",
+  "name":"License to copy and distribute PROGR.comput"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47551",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"49",
+  "id":"207f553e-e39e-4cdf-a90f-bcd2a4b29a99",
+  "name":"License for copying and distribution of PROGR.comput reversion"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47568",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"f519b797-3559-4e29-9731-09011ff481a4",
+  "name":"Copy and distribution license - others"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47575",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"46",
+  "id":"6379df07-dfb4-40a6-9653-7f52640d4bde",
+  "name":"Assignment or use of computer programs"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47575",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"65758c62-655e-42c8-b5e1-cb9bcb1f9a57",
+  "name":"Assignment or use of computer programs"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47575",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"64508678-f32e-4465-9e19-ff24f08ffd26",
+  "name":"Assignment or use of computer programs"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47575",
+  "payerType":"55",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"ccee3b3b-8d39-48ac-bca7-85508839c66c",
+  "name":"Assignment or use of computer programs"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47582",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"6448507c-280f-4afc-9627-e99db2404431",
+  "name":"Assignment or use - others"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47582",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"49",
+  "id":"6463be9a-d822-4adf-a7ac-f6089dcadfb0",
+  "name":"Assignment or use - others"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47582",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"06085016-f711-46f1-aedc-05a5b7fc3b3d",
+  "name":"Assignment or use - others"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47582",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"53",
+  "groupCode":"90",
+  "id":"a27062ba-5348-4304-acb7-2c7f07728fc0",
+  "name":"Assignment or use - others"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47609",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"441f996e-29ec-48a7-a057-58fae463e19a",
+  "name":"Commissions and other expenses on trade transactions"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47609",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"88",
+  "groupCode":"90",
+  "id":"fd319f6a-a487-4fe1-943b-11147f8d7177",
+  "name":"Check commissions"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47609",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"90",
+  "id":"388340e1-0169-40ce-b49d-51b6d5187cec",
+  "name":"Commissions and other expenses on trade transactions"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47609",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"49",
+  "id":"461da37b-255d-4fdc-be7e-b58bd063f153",
+  "name":"Commissions"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47609",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"49",
+  "id":"d035e6a0-a05a-45f5-a606-c2f001d6d537",
+  "name":"Agent commission"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47609",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"13de97a8-9eec-4932-ae48-152f3f0c4a3c",
+  "name":"Miscellaneous services - commercial transactions - commissions"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47609",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"ed4a1b67-259b-4761-8f44-8945318a688e",
+  "name":"Commissions and other expenses on trade transactions"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47609",
+  "payerType":"55",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"c454de0f-150d-4c84-aad9-a9a58b8181bc",
+  "name":"Commissions and other expenses on trade transactions"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47609",
+  "payerType":"71",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"0e847952-a597-47aa-a780-550f4758161d",
+  "name":"Commissions and other expenses on trade transactions"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47702",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"90",
+  "id":"5369511c-cfd2-4579-996c-95f49d72c18f",
+  "name":"Education services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47702",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"b9eb4035-b68b-4a3d-8c93-ec3d0202d70b",
+  "name":"Travel education services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47702",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"49",
+  "id":"0aaa2de7-22b0-446f-b1ee-0069cd10df26",
+  "name":"Travel education services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47702",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"1a1ad96f-9909-4203-9e83-ab0cdd9f2f23",
+  "name":"Travel education services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47702",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"71",
+  "groupCode":"49",
+  "id":"5ca3c36b-af0f-412e-97d4-6c0001288d4b",
+  "name":"Travel education services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47702",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"71",
+  "groupCode":"90",
+  "id":"cf9650d9-1ab0-4b3a-ba55-677608c706e2",
+  "name":"Travel education services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47702",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"73",
+  "groupCode":"90",
+  "id":"e09923c7-5e91-4a63-ae72-112a6eb2fe7f",
+  "name":"Travel education services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47702",
+  "payerType":"2",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"3794079f-33e2-479c-b432-9e17e4e8e1c6",
+  "name":"Travel education services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47702",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"1c307d16-56fb-4b50-a0de-df90332e8b03",
+  "name":"Travel education services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47702",
+  "payerType":"71",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"835425c8-4ed8-4c66-8b30-497877d20cf1",
+  "name":"Travel education services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47719",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"49",
+  "id":"d42f7f0b-2ac4-407d-b2bb-3b52cf04b73a",
+  "name":"Education services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47719",
+  "payerType":"2",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"3dcd036d-7815-4437-a8de-5f433c82d13d",
+  "name":"Education services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47719",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"a70986b1-e04e-4333-af99-20114c3db7e3",
+  "name":"Education services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47719",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"81bf8ae6-dd5c-481e-b3fe-44081cc52878",
+  "name":"Education services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47719",
+  "payerType":"55",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"0d157379-fdd9-4ced-8be0-1be7968f39c3",
+  "name":"Education services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47726",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"707f3ee0-9db3-46c3-934d-b290a40638a9",
+  "name":"Health travel services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47726",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"6053952d-2243-4b15-940e-cb838b35704a",
+  "name":"Travel health services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47726",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"58",
+  "groupCode":"90",
+  "id":"00b382a2-8b00-416d-8dde-a4812b61a468",
+  "name":"Travel health services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47726",
+  "payerType":"2",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"a34a0c26-194f-4398-86fd-cb3d472c959d",
+  "name":"Travel health services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47726",
+  "payerType":"2",
+  "approvalType":"0",
+  "payeeType":"9",
+  "groupCode":"90",
+  "id":"44ad1c8f-1fb1-4704-ad7e-d6403cea0d5a",
+  "name":"Travel health services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47733",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"c2de6544-1c9b-447f-bae9-0ba77407fb65",
+  "name":"Health services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47726",
+  "payerType":"71",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"b09d5db9-ba69-496e-a2b2-b1af2e7e1e79",
+  "name":"Travel health services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47740",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"62c3b413-10cb-408e-a556-984dfa7422c6",
+  "name":"Tourist services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47740",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"e0ca00f9-4619-4bad-b41f-ecf1232d6e0a",
+  "name":"Tourist services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47740",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"49",
+  "id":"69989690-4182-4875-b56b-681c6ebbf607",
+  "name":"Tourist services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47740",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"5c1e67df-8b62-4b7e-8c49-1be2c2aa7a77",
+  "name":"Tourist services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47740",
+  "payerType":"71",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"d318eded-4f91-4fd4-9d57-54d205c6e07c",
+  "name":"Tourist services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47757",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"49",
+  "id":"9a5b6fba-4ef3-4f93-92b1-ebeedd9793ce",
+  "name":"Other personal, cultural and entertainment services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47757",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"824f2ec6-65af-4a6b-94f2-0d482d56ecfc",
+  "name":"Other personal, cultural and entertainment services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47757",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"90",
+  "id":"c7072003-4e21-421d-a7f1-be0095177f49",
+  "name":"Other personal, cultural and entertainment services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47757",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"bc04a8a1-f6e3-4bbd-b594-4bb91a6cdb42",
+  "name":"Other personal, cultural and entertainment services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47757",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"c3e8f74e-75f9-4496-a1b3-12967057f911",
+  "name":"Other personal, cultural and entertainment services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47757",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"76adf6c1-5797-4f49-8d0e-a93b805a6458",
+  "name":"Other personal, cultural and entertainment services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47757",
+  "payerType":"55",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"8ea38da3-23f6-44e5-95db-ba9301849f56",
+  "name":"Other personal, cultural and entertainment services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47774",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"29",
+  "id":"199b524a-a332-48ca-a7f4-645ee73fc392",
+  "name":"Tourist services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47829",
+  "payerType":"84",
+  "approvalType":"0",
+  "payeeType":"73",
+  "groupCode":"90",
+  "id":"78b5fa30-fd36-42b3-b6b4-97734848f268",
+  "name":"Embassy"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47829",
+  "payerType":"84",
+  "approvalType":"0",
+  "payeeType":"90",
+  "groupCode":"90",
+  "id":"ca193bba-1232-4136-8c12-cb83083ae2fa",
+  "name":"Embassy"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47908",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"a4592339-0299-4f2f-b17b-b1e63e130fb2",
+  "name":"Receipt of wages or remuneration due to individuals"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47908",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"90",
+  "id":"c84d7d20-2d5e-437e-aa62-2a8f11f8aa73",
+  "name":"Others - wages and other compensation"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47908",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"f70a17df-2122-45bf-aa3a-8c0f80360660",
+  "name":"Receipt of wages or remuneration due to individuals"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47908",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"060f1e29-127e-49b6-acaa-325822ab95c7",
+  "name":"Other salaries and other compensations"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47915",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"66248b2f-b8e3-4942-940d-217c117ea132",
+  "name":"Others - property rental"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47915",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"26249c13-067c-4e67-a1e3-b84aafa405f3",
+  "name":"Others - property rental"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47915",
+  "payerType":"71",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"288caacd-20b5-49f9-ba32-b28945323257",
+  "name":"Others - property rental"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47939",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"3f234440-8226-4a61-a06a-1fd832badbd3",
+  "name":"Carbon credits / emission rights"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"47922",
+  "payerType":"71",
+  "approvalType":"0",
+  "payeeType":"71",
+  "groupCode":"90",
+  "id":"2d0f20dd-e0be-411e-80f3-73aac585ee53",
+  "name":"Economic and federative rights of professional athletes"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"48010",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"a5b14551-1b9b-46b3-beae-889c4b4a1631",
+  "name":"Guarantees"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"48110",
+  "payerType":"38",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"23c131f5-cc0e-43db-bfcd-946cb5f8e436",
+  "name":"Miscellaneous direct author services on computer prog"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"48110",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"49",
+  "id":"6737aca2-b83a-4c42-9f72-1c33393aa797",
+  "name":"Miscellaneous direct author services on computer prog"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"48110",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"fdcf845f-51ed-455b-bc7f-5377fbf6d2a7",
+  "name":"Miscellaneous direct author services on computer prog"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"48110",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"49",
+  "id":"e063b52b-588e-4b5d-a9ed-29b7ae77df1b",
+  "name":"Miscellaneous direct author services on computer prog"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"48110",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"6e5a9afa-9521-47d8-af48-bf5178328cae",
+  "name":"Miscellaneous direct author services on computer prog"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"48110",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"49",
+  "id":"befe7ea1-ce94-4c59-9b2b-e4f516661e35",
+  "name":"Miscellaneous direct author services on computer prog"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"48110",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"90",
+  "id":"09b5070a-8f1f-4620-ada6-065675893b9c",
+  "name":"Miscellaneous direct author services on computer prog"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"48158",
+  "payerType":"38",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"614c7d4a-6973-42d3-ae14-65d4a889e3ed",
+  "name":"Use of international database"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"48158",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"3df365e9-e5c8-4134-b616-8de1f12aa7a4",
+  "name":"Use of international database"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"48323",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"e7881137-39c9-4442-96c9-b54cc3481c56",
+  "name":"Courses and congress"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"48323",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"b0d50d93-5bf9-40ea-a946-efb11a03a281",
+  "name":"Miscellaneous services courses and congresses"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"48323",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"90",
+  "id":"b6878b52-bf78-40ae-a0c1-5a316edbd3d6",
+  "name":"Courses and congress"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"48385",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"e217cb99-9dab-4f16-a7fa-3c25ef6828a9",
+  "name":"Miscellaneous out services - small commitments"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"48385",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"b7ea8c38-09ea-4c50-a82f-f2ee34b1399d",
+  "name":"Miscellaneous commitments"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"48385",
+  "payerType":"95",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"15e53696-f9af-4472-a57f-8190cb6db7bb",
+  "name":"Small commitments"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"48804",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"50",
+  "id":"12425f89-4250-43a2-bbb9-3dc6c0f785a9",
+  "name":"Small orders"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"48804",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"21214f68-0f4c-44f4-9ee9-d24289361961",
+  "name":"Miscellaneous services international orders"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"48804",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"9f853d94-2df8-4041-9e10-309199a8d988",
+  "name":"Small orders"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"48804",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"90",
+  "id":"f2f1d26a-3656-4442-a700-93479fe79b63",
+  "name":"Small orders"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"49197",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"53",
+  "groupCode":"90",
+  "id":"7fcec6a7-be29-4779-9acd-09391ac30316",
+  "name":"Technical services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"48990",
+  "payerType":"3",
+  "approvalType":"0",
+  "payeeType":"99",
+  "groupCode":"90",
+  "id":"f018f17a-dbaa-47f8-b1de-191b6d214278",
+  "name":"Tourist services"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"50108",
+  "payerType":"95",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"b9a7be9a-7d24-4808-83b2-8b7a2b3ae239",
+  "name":"Donations - PF - matrix"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"50201",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"dd603852-a0d8-47cc-b4bf-88f60eff4c20",
+  "name":"Indemnities and fines"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"50256",
+  "payerType":"95",
+  "approvalType":"0",
+  "payeeType":"92",
+  "groupCode":"90",
+  "id":"1e434890-fef4-4acb-9811-7bd157907de1",
+  "name":"Other taxes and fees"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"52113",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"5eabbf0f-a1c0-4f16-a666-209faa4e5f63",
+  "name":"Debt securities - interest on securities - external market"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"52302",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"46",
+  "id":"1ecdbead-02d8-441c-8423-ce9bbe4b3bc3",
+  "name":"Loans and financing interest on loan"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"52302",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"46",
+  "id":"eda72199-1453-4c81-b989-243c7b736c57",
+  "name":"Loans and financing interest on loan"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"52302",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"47",
+  "id":"e4177607-8bd2-424c-b615-08b42043bb89",
+  "name":"Loans and financing interest on loan"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"52302",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"7d4567b8-2b67-4528-bb46-6e30f660c7e4",
+  "name":"Loans and financing interest on loan"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"52302",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"53",
+  "groupCode":"90",
+  "id":"a366a227-f0ed-40cf-bd2b-917be4f6facc",
+  "name":"Interest on loans / financing"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"52302",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"75",
+  "groupCode":"90",
+  "id":"0cec6683-20df-4e72-b722-643a1ae25146",
+  "name":"Loans and financing interest on loan"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"52333",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"53",
+  "groupCode":"52",
+  "id":"fcd9a15a-82fc-40a4-b69e-dba0eac2f36b",
+  "name":"Export pre payment interest"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"52357",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"02891f24-bd7e-4efc-ad91-4fb28c3e8f4c",
+  "name":"Juros de financiamento a import"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"52357",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"53",
+  "groupCode":"90",
+  "id":"c938dad9-cb9f-4f7c-8437-3fd07cbf3ac9",
+  "name":"Interest on advance and FINANCE. IMPORT. short term"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"52364",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"53",
+  "groupCode":"49",
+  "id":"b6757b4d-cacc-459b-8549-fe2810c33f10",
+  "name":"Interest financing"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"52364",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"53",
+  "groupCode":"90",
+  "id":"595d9ae3-3a6b-44b0-b9b3-6035f6554548",
+  "name":"Interest financing"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"52364",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"fcf2af62-28b5-4c80-8d10-7d7cf249f796",
+  "name":"FINC INTEREST. / IMP."
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"52364",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"75",
+  "groupCode":"90",
+  "id":"0961fc0e-cac0-4ab2-b923-2a5808973be9",
+  "name":"Interest - financing - import"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"52364",
+  "payerType":"52",
+  "approvalType":"0",
+  "payeeType":"53",
+  "groupCode":"90",
+  "id":"d5b52a08-04d1-4cce-9bfc-265ad8b52d38",
+  "name":"Capital income - interest - long - term finc loans"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"52395",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"493b52cf-7108-4afe-a7b8-9ac24653dac8",
+  "name":"Interest on leases"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"52371",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"d83b4cc4-b94d-4be8-9117-68c1f82a0d76",
+  "name":"Interest on advances and financing - other financing"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"52405",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"1afffc86-9215-4567-8cc1-9471c3718750",
+  "name":"Dividends / profit distribution"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"52405",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"4533e806-c2b1-4ac0-b1ae-e1e903eaa3b6",
+  "name":"Dividends / profit distribution"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"52412",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"b0764750-f154-4b27-8365-3d6deba4d3bb",
+  "name":"Interest on own capital"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"52412",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"52b43c6e-0701-4024-8d06-129ec0a05e7d",
+  "name":"Capital income - interest - direct loans"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"52917",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"4a768f88-8a8c-4c72-831e-8cd7b33cee4e",
+  "name":"Default interest"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"52917",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"53",
+  "groupCode":"90",
+  "id":"eefe3520-437c-4dc7-a3f5-d264e11dc995",
+  "name":"Default interest"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"53435",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"7c2d9873-3cc1-4f36-be0e-a7981cad8a66",
+  "name":"Contribution"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"53435",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"38101baf-33de-4f45-b28b-9b36c84a8182",
+  "name":"Class entity"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"53617",
+  "payerType":"95",
+  "approvalType":"0",
+  "payeeType":"92",
+  "groupCode":"90",
+  "id":"21edc315-c376-4b0e-9096-b57b805fdf7d",
+  "name":"Foreign pensions"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"53552",
+  "payerType":"95",
+  "approvalType":"0",
+  "payeeType":"97",
+  "groupCode":"90",
+  "id":"2e696795-d1bd-473d-b6a8-7ed36926dc77",
+  "name":"Unil transfers - heritage and legacies"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"53617",
+  "payerType":"95",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"4951b727-be4a-4e18-903c-87c95bbe30d8",
+  "name":"Retirement - matrix"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"53758",
+  "payerType":"95",
+  "approvalType":"0",
+  "payeeType":"97",
+  "groupCode":"90",
+  "id":"f9f78b3d-e91d-4b63-9981-4ef1289b60b6",
+  "name":"Unil transfers - resident maintenance"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"55000",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"89",
+  "groupCode":"90",
+  "id":"89675a80-b137-4f4d-9424-3f204051f7ae",
+  "name":"CBCP - availability abroad"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"53909",
+  "payerType":"95",
+  "approvalType":"0",
+  "payeeType":"96",
+  "groupCode":"90",
+  "id":"796b15fe-1123-45b1-a4e2-562bbb587373",
+  "name":"Downloads unil - patrimonio"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"53909",
+  "payerType":"95",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"513666ec-4b74-4664-9915-26001cddfa12",
+  "name":"Downloads unil - patrimonio"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"55000",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"20bd3538-efeb-4b05-a2e7-464b2dc53c47",
+  "name":"CBCP - availability abroad"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"55000",
+  "payerType":"95",
+  "approvalType":"0",
+  "payeeType":"96",
+  "groupCode":"90",
+  "id":"be8ebb53-8ba4-4e38-b00b-fbd0bd798a32",
+  "name":"CBCP - availability abroad"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"55505",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"56986d73-9b23-4a09-a1be-c65fff01ed18",
+  "name":"CBCP - EMPR. to residents abroad - EMPR. direct"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"60507",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"47",
+  "id":"2c5fea71-9b0c-4382-9a12-e5edfda484d1",
+  "name":"CECP - Brazilian lending - direct loans"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"60507",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"82",
+  "groupCode":"90",
+  "id":"bfa8ab41-85be-48e1-a4fe-496b70a2f0c2",
+  "name":"Loans"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"60507",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"0a7a6b41-1ac4-4940-8be1-f57458529f09",
+  "name":"Loans"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"60507",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"82",
+  "groupCode":"90",
+  "id":"eae8f040-f3e6-4a7f-b289-d7437b769cfe",
+  "name":"Direct loans"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"65007",
+  "payerType":"95",
+  "approvalType":"0",
+  "payeeType":"97",
+  "groupCode":"90",
+  "id":"5baf7a8c-2d9e-427f-ae42-b034380ebe47",
+  "name":"CBLP - emprest. to residents in EXT - EMPR. direct"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"60507",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"93",
+  "groupCode":"46",
+  "id":"eaf512d3-971d-4951-b446-8bfb14db2058",
+  "name":"CECP - Brazilian lending - direct loans"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"60507",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"93",
+  "groupCode":"47",
+  "id":"1a3c3138-6431-45f0-9ca0-46f97ef60e76",
+  "name":"Direct loan - short term"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67005",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"90",
+  "id":"8e2f0bea-1cb2-43a4-876f-f3195f4636e7",
+  "name":"Financial and capital markets - shares"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67005",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"ad59026e-baf5-436a-ae62-72e377c8631c",
+  "name":"Financial and capital markets - shares"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67005",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"56",
+  "groupCode":"90",
+  "id":"8eb5df1f-7fcb-463f-805a-52a641720656",
+  "name":"Financial and capital markets - shares"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67005",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"60",
+  "groupCode":"90",
+  "id":"e7167999-128f-4c6e-9f8e-3e57fda6be8b",
+  "name":"Financial and capital markets - shares"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67005",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"53",
+  "groupCode":"90",
+  "id":"5202e3a2-9396-4407-b41f-9af6c7f2630c",
+  "name":"Financial and capital markets - shares"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67043",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"60",
+  "groupCode":"90",
+  "id":"50abcb0d-e4c6-4f94-8fbd-2a939ffd4100",
+  "name":"Financial and capital markets - investment funds"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67043",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"56",
+  "groupCode":"90",
+  "id":"2f6051b9-aaf6-41aa-8413-053d7f3264a6",
+  "name":"Financial and capital markets - investment funds"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67043",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"56",
+  "groupCode":"90",
+  "id":"a1274f1f-db99-488c-9f85-30da1491703b",
+  "name":"Financial and capital markets - investment funds"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67043",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"56",
+  "groupCode":"49",
+  "id":"4edb8372-1329-4a87-8c87-0aa42768727f",
+  "name":"Financial and capital markets - investment funds"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67304",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"49",
+  "id":"ddfe9902-2a76-4537-b2c2-3c59f0bd6d50",
+  "name":"CBCP short-term direct loans"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67304",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"90",
+  "id":"070d9d89-254e-41c9-83d4-9e18169deb3f",
+  "name":"Short term loan and financing"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67304",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"c7a917a6-55a5-4696-bca4-0e8ab1eee4ac",
+  "name":"Short term loan and financing"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67304",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"9dd37a48-cfed-4b93-b4ff-cfa10e7541bb",
+  "name":"CBCP short-term direct loans"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67311",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"90",
+  "id":"5fb7d63e-c489-4d87-93c4-65abdb32f50f",
+  "name":"Direct loan - long term"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67311",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"3aaac032-c6ea-4e08-a576-479675c73bff",
+  "name":"Direct loan - long term"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67311",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"d6b1cc91-e10c-49ef-a91b-9e1670080bed",
+  "name":"Direct loan - long term"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67407",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"90",
+  "id":"c1525cd5-c3e5-482f-8c2f-d530a92f4d6e",
+  "name":"Capital increase / reduction"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67407",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"35ff075a-bfe5-43fb-a91c-5bde6566aa9c",
+  "name":"Capital increase / reduction"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67311",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"aed377dd-4d85-4cc8-bcb8-3fe79754b463",
+  "name":"Direct loan - long term"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67407",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"60",
+  "groupCode":"90",
+  "id":"11d7ee70-ec61-45c7-9e1a-be5489229b15",
+  "name":"Capital increase / reduction"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67407",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"fc88fe5e-09c5-43b3-8a4d-8b2cc3a5418d",
+  "name":"Capital increase / reduction"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67414",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"46",
+  "id":"a3221994-9b34-4b44-876c-a1db218f0a7a",
+  "name":"Acquisition / transfer of ownership"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67414",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"fcda86d2-adbe-43c7-a2b6-41b907185336",
+  "name":"Brazilian capital - direct investment - acquisition / transfer of holding"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67414",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"90",
+  "id":"b41d9d6d-bd27-42d0-9dbe-c2b4d3bbc179",
+  "name":"Brazilian capital - direct investment - acquisition / transfer of holding"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67414",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"82020e27-8813-4d63-ad8c-412c36d1d769",
+  "name":"Acquisition / transfer of ownership"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67414",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"5cb0e9f4-67d0-451c-883f-79841753bc79",
+  "name":"Cap. Bras EXT - acquisition / transfer of ownership"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67414",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"46",
+  "id":"b0b07b50-afc4-4a8b-aac6-2d7d03460f1c",
+  "name":"Acquisition / transfer of ownership"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67494",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"9",
+  "id":"483fe23c-d4cc-4c82-a442-d80d769d93c6",
+  "name":"Buying and selling real estate abroad"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67494",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"59d0288d-5a11-4d5a-b6ba-da7d8bcf1f48",
+  "name":"Buying and selling real estate abroad"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67494",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"0",
+  "id":"afb75572-abd4-4741-b080-c634f2c3c81e",
+  "name":"Buying and selling real estate abroad"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67494",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"90",
+  "id":"faeaafe0-0562-40f0-9ad8-2a1a3c326a1c",
+  "name":"Buying and selling real estate abroad"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67494",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"57274ccc-db0b-498f-abac-25248182645b",
+  "name":"Buying and selling real estate abroad"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67500",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"49",
+  "id":"65e62fca-05ba-4af7-b21a-c8a7a14d2410",
+  "name":"Reversion availability"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67500",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"90",
+  "id":"060ecf8c-760e-43a1-89ff-c3f400e25d6b",
+  "name":"Availability abroad"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67500",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"8d584f75-9971-4680-94bf-429eaf1d9ddd",
+  "name":"Availability abroad"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67500",
+  "payerType":"2",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"f50bea08-2910-4e4f-9d98-2227c44cecec",
+  "name":"Availability abroad"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67524",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"5ea03ad1-76fd-47e6-a738-9471d8fafd08",
+  "name":"Deposits and cash equivalents - judicial deposits, deposits, guarantees and other third party resources"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67500",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"cca56c71-158f-4ebe-a306-aa099fb1745e",
+  "name":"Availability abroad"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67500",
+  "payerType":"71",
+  "approvalType":"0",
+  "payeeType":"71",
+  "groupCode":"90",
+  "id":"6775a23f-45e8-4932-a15f-ea7de316859c",
+  "name":"Availability abroad organizations with no profitable purposes"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67524",
+  "payerType":"5",
+  "approvalType":"0",
+  "payeeType":"9",
+  "groupCode":"90",
+  "id":"a22ea931-877c-48b5-8c32-19f276e0e247",
+  "name":"CBLP - cautions"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67524",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"eab06278-bb7c-4159-b890-b03f9d964002",
+  "name":"Caucoes judicial deposits - guarantees of other resources"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67902",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"a9a80ecd-1eda-4353-8b49-6ad2e1d04afd",
+  "name":"Acquisition of merchandise delivered abroad"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67524",
+  "payerType":"62",
+  "approvalType":"0",
+  "payeeType":"53",
+  "groupCode":"90",
+  "id":"bdb753c5-8ee0-4e40-8685-e37a17859a6d",
+  "name":"Deposits and cash equivalents - judicial deposits, deposits, guarantees and other third party resources"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67524",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"7676f748-4da5-42e4-87b0-55259bb008f9",
+  "name":"Deposits and cash equivalents - judicial deposits, deposits, guarantees and other third party resources"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67902",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"32949015-c02f-4ff8-ac30-6bbf9b035f5f",
+  "name":"Acquisition of merchandise delivered abroad"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67902",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"5ada0ee2-70ce-4c51-b82a-f56f08c7c6ed",
+  "name":"Acquisition of merchandise delivered abroad"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67902",
+  "payerType":"71",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"6ee7570c-6b36-423e-af5e-67589c912eee",
+  "name":"Acquisition of merchandise delivered abroad"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67940",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"90",
+  "id":"66549c40-584d-4cdd-8d88-da0e2c61c22f",
+  "name":"Buying and selling real estate abroad"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67940",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"337b74ed-72f4-4eb0-a320-5dba5b8e1556",
+  "name":"Buying and selling real estate abroad"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67940",
+  "payerType":"2",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"0d65f11b-ae6c-458c-ad9e-49772f1a6893",
+  "name":"Buying and selling real estate abroad"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67940",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"51f675be-78eb-4d62-b6dd-f5b9618f6306",
+  "name":"Buying and selling real estate abroad"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67940",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"32c22251-6770-40af-bbec-b37fed922fbb",
+  "name":"Buying and selling real estate abroad"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"67940",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"49",
+  "id":"a86ccb2a-2aa1-4829-b251-079ff3421c68",
+  "name":"Buying and selling real estate abroad"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"68303",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"64cce55e-6d2a-45f7-983b-7b7bf0690c3c",
+  "name":"CBLP - INV. DIR - EXT - participation in companies"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"68303",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"90",
+  "id":"497c7ab6-5a1e-4e89-b7ff-c339f344e522",
+  "name":"CBLP - INV. DIR - EXT - participation in companies"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"68303",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"3b64ca55-267e-4b05-857a-50d6c62932ca",
+  "name":"CBLP - INV. DIR - EXT - participation in companies"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"68509",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"93",
+  "groupCode":"90",
+  "id":"9345371f-9a24-4983-b155-7e0f369c372e",
+  "name":"CBLP - INV. portfolio in EXT. for participating parties"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"68509",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"90",
+  "id":"bf31bce4-954a-45ab-8af0-289c30512a72",
+  "name":"CBLP - INV. portfolio in EXT. for participating parties"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"68509",
+  "payerType":"95",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"d472283d-3d43-49cc-8e0b-f2b898af8ad7",
+  "name":"Actions - matrix"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"68657",
+  "payerType":"95",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"61aebbdf-533d-4634-8f53-7e66df049959",
+  "name":"CBLP - direct investment abroad - other investments"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"70016",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"47",
+  "id":"a8ecbb07-6a3a-4547-9afa-17fb4b96ef64",
+  "name":"CECP - Emprest.Res.Brasil - direct loans"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"70016",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"48cb815e-1d00-4999-be44-5e2ffcfc8acb",
+  "name":"CECP - Emprest.Res.Brasil - direct loans"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"70016",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"82",
+  "groupCode":"90",
+  "id":"48893efe-77da-4248-9446-a793697f5a7a",
+  "name":"Direct loans"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"70016",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"97",
+  "groupCode":"47",
+  "id":"269ed1b7-aff5-4618-825f-6be9c035bca2",
+  "name":"CECP - Emprest.Res.Brasil - direct loans"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"70016",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"97",
+  "groupCode":"90",
+  "id":"df0a26b7-75d1-4005-b256-e68357b1a342",
+  "name":"CECP - Emprest.Res.Brasil - direct loans"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"70016",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"93",
+  "groupCode":"46",
+  "id":"a7101f8a-afe0-4260-b91b-cb11517f44b3",
+  "name":"CECP - Emprest.Res.Brasil - direct loans"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"70016",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"93",
+  "groupCode":"47",
+  "id":"409d8ec6-7c6d-4eb6-8b16-0801e5e2d4d6",
+  "name":"CECP - Emprest.Res.Brasil - direct loans"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"70016",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"93",
+  "groupCode":"90",
+  "id":"6f683ab8-bc29-4630-9eae-892b898e4cf4",
+  "name":"CECP - Emprest.Res.Brasil - direct loans"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"70016",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"47",
+  "id":"e79cadac-9c04-41f4-a324-adfb866eb572",
+  "name":"CECP - Emprest.Res.Brasil - direct loans"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"70016",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"4513c6e0-6662-4382-8ce5-46990a0a6864",
+  "name":"CECP - Emprest.Res.Brasil - direct loans"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"70016",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"90",
+  "id":"113ca082-47b9-4ebd-b010-7bcabeabb7fc",
+  "name":"Direct loans"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"70016",
+  "payerType":"95",
+  "approvalType":"0",
+  "payeeType":"97",
+  "groupCode":"90",
+  "id":"cf9c66e6-3b70-4e96-bea5-72ef44e7e968",
+  "name":"CECP - Emprest.Res.Brasil - direct loans"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"70188",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"46",
+  "id":"f38c7e8d-a507-4764-adaa-7e4ae606a024",
+  "name":"CECP - INV. DIR. Brazil - EMP in the country - capital increase"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"70018",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"47",
+  "id":"d1f0f405-7f69-4b88-9d6d-7adf96777b1b",
+  "name":"Direct loans"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"70188",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"cacc3f82-56c2-4b83-b78c-c960dd4b7a68",
+  "name":"CECP - INV. DIR. Brazil - EMP in the country - capital increase"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"70188",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"97",
+  "groupCode":"90",
+  "id":"06a61f86-86d9-4f34-8140-ffff1f8b5354",
+  "name":"CECP - INV. DIR. Brazil - EMP in the country - capital increase"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"70188",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"93",
+  "groupCode":"46",
+  "id":"11e1beca-41a0-458d-aa66-417f2c890d70",
+  "name":"CECP - INV. DIR. Brazil - EMP in the country - capital increase"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"70188",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"93",
+  "groupCode":"90",
+  "id":"a7fb2c5e-3bac-469c-b2b6-369c8091ce65",
+  "name":"CECP - INV. DIR. Brazil - EMP in the country - capital increase"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"70188",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"7f8373fc-0556-4e39-873f-602d9ef5e306",
+  "name":"CECP - INV. DIR. Brazil - EMP in the country - capital increase"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"70188",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"97",
+  "groupCode":"90",
+  "id":"ca5acbec-e356-4fc8-a513-2440b0ebd889",
+  "name":"CECP - INV. DIR. Brazil - EMP in the country - capital increase"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"70188",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"98",
+  "groupCode":"90",
+  "id":"081d6adc-75a0-4db5-8ee1-d91c4f660897",
+  "name":"External direct investment"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"70205",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"621ca84a-5343-48d2-aa35-3f33d99f4b1f",
+  "name":"CECP - INV. DIR. Brazil - EMP in the country - transfer holding"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"70205",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"97",
+  "groupCode":"90",
+  "id":"be0e3cbe-01ea-4f1b-a9b6-f3d62985a10c",
+  "name":"CECP - INV. DIR. Brazil - EMP in the country - transfer holding"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"70425",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"47",
+  "id":"e526f5ce-f7c8-4dc2-b987-79d0bca67ba9",
+  "name":"CECP - Emprest.Res.Brasil - notes"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"70487",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"82",
+  "groupCode":"90",
+  "id":"d766ed9c-0c39-4514-b4ef-8ae6a87d08da",
+  "name":"CECP - FIN IMP REG BACEN - AMORTIZ - MERC - OTHER"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"70487",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"d4a61a16-62ac-49d3-9ba8-ce068c04e51c",
+  "name":"CECP - FIN IMP REG BACEN - AMORTIZ - MERC - OTHER"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"70487",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"93",
+  "groupCode":"46",
+  "id":"da1fa9e0-7c2a-4e7d-aed7-2cfe0b92a494",
+  "name":"CECP - FIN IMP REG BACEN - AMORTIZ - MERC - OTHER"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"70487",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"93",
+  "groupCode":"90",
+  "id":"b438cf4b-846a-44e5-9af5-cfea140b5b4a",
+  "name":"CECP - FIN IMP REG BACEN - AMORTIZ - MERC - OTHER"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"70487",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"ae26aad0-e1d5-4591-841b-fee55e56b690",
+  "name":"CECP - FIN IMP REG BACEN - AMORTIZ - MERC - OTHER"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"70487",
+  "payerType":"95",
+  "approvalType":"0",
+  "payeeType":"93",
+  "groupCode":"90",
+  "id":"529c7e53-46db-431e-8777-0342d17eedfa",
+  "name":"CECP - FIN IMP REG BACEN - AMORTIZ - MERC - OTHER"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"70542",
+  "payerType":"85",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"dac6d105-d046-45ee-8024-2584e5c9ac11",
+  "name":"Internal market commitments"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72155",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"46",
+  "id":"0483fa10-7adc-42c0-b874-5c7e3a34d52a",
+  "name":"Private debt securities MERC.EXT.L.PRAZO"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72155",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"47",
+  "id":"9fabda90-39fc-493a-bc5f-a218ae5ea38b",
+  "name":"Private debt securities MERC.EXT.L.PRAZO"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72344",
+  "payerType":"5",
+  "approvalType":"0",
+  "payeeType":"53",
+  "groupCode":"90",
+  "id":"fa30cf6c-1272-4ed1-ae73-fe43200e67df",
+  "name":"Direct loan - short term"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72155",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"4f5e84bb-447f-4097-b4b3-c181e28d129d",
+  "name":"Private debt securities MERC.EXT.L.PRAZO"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72344",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"46",
+  "id":"00ab0b69-995a-4b75-b023-4ac57975ce0d",
+  "name":"Direct loan - short term"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72344",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"9fc70102-9351-41f5-8dfe-f90236c8156a",
+  "name":"Direct loan - short term"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72344",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"47",
+  "id":"4f51cbe7-e0a1-40ae-a8c7-4a0c02c92a64",
+  "name":"Direct loan - short term"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72344",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"6e887566-ead3-4310-845d-992e81e20f79",
+  "name":"Direct loan - short term"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72344",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"53",
+  "groupCode":"47",
+  "id":"e3047371-3a13-47b1-92f1-6240fcc1cdab",
+  "name":"Direct loan - short term"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72344",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"53",
+  "groupCode":"90",
+  "id":"40f5a9b1-fc2e-4086-b00a-1bbc77bafc11",
+  "name":"Direct loan - short term"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72351",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"b734c15f-7faa-4631-bd6f-ec9af6ea7c3a",
+  "name":"Direct loan - long term"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72351",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"53",
+  "groupCode":"90",
+  "id":"a34cd37d-b340-4808-a027-4f41341a7732",
+  "name":"Loans and financing"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72351",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"46",
+  "id":"41cb3330-4b28-442e-abae-560647348e0b",
+  "name":"Loans and financing"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72351",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"47",
+  "id":"e703b2cd-be23-4060-b57a-c4f4de0498da",
+  "name":"Loans and financing"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72351",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"83cce86d-04c9-4a37-b917-044679ef36f8",
+  "name":"Direct loan - long term"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72351",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"46",
+  "id":"7267cf2d-8198-42b7-aa11-ab2ed1c91390",
+  "name":"Loans and financing"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72351",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"98177c0c-6ec4-4eff-9f6e-e10f2de6846d",
+  "name":"Direct loan - long term"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72351",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"47",
+  "id":"903c8c70-1ca0-4709-aac6-52b0d7c02f89",
+  "name":"Loans and financing"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72351",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"53",
+  "groupCode":"46",
+  "id":"54f43dca-f3d5-4f3f-adba-1cccb3f3be91",
+  "name":"Loans and financing"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72351",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"53",
+  "groupCode":"47",
+  "id":"39086c73-86f0-42e0-8a5e-cd67257b6790",
+  "name":"Loans and financing"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72351",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"60",
+  "groupCode":"90",
+  "id":"60c3c695-2351-4b2a-8577-b87d5ce970be",
+  "name":"Foreign capital - loans and financing - direct loans - long term"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72351",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"75",
+  "groupCode":"90",
+  "id":"7d18a86c-a38c-4b63-8606-f87ec4aa5ebc",
+  "name":"Direct loan - long term"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72351",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"53",
+  "groupCode":"90",
+  "id":"eb025bbe-a2ad-4c57-983a-9656f89d9e49",
+  "name":"Loans and financing"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72368",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"46",
+  "id":"1a9af57c-3119-4f3b-834a-b77cb9a0f0a9",
+  "name":"FINANC. IMP. L / term"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72368",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"47",
+  "id":"ae78c348-3fc3-4254-900b-17c015493499",
+  "name":"FINANC. IMP. L / term"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72368",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"e77b16cb-de82-44fc-99b5-85a873a9c24b",
+  "name":"FINANC. IMP. L / term"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72368",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"53",
+  "groupCode":"90",
+  "id":"4af7443f-15f5-4186-91e3-89f5339f0c0c",
+  "name":"Financ / IMP. PRINC."
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72368",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"75",
+  "groupCode":"90",
+  "id":"533f5960-5d72-48b7-a146-5f859756406b",
+  "name":"Principal - financing - import"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72399",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"b7288a55-1b0c-4f5a-8d19-b0f946d83ffa",
+  "name":"Financial leasing"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72368",
+  "payerType":"52",
+  "approvalType":"0",
+  "payeeType":"53",
+  "groupCode":"90",
+  "id":"952812b1-d95f-424a-91d9-190ca859e5c4",
+  "name":"Foreign capital - emprest and financ - IMP. long term"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72409",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"9d486bb7-7422-4591-ab41-958149d3e0ac",
+  "name":"Capital increase / reduction"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72409",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"3f2cc805-b374-419c-90b7-efc4cdd727b6",
+  "name":"Capital increase / reduction"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72409",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"90",
+  "id":"05ed8ed0-8fca-47f4-9e32-52f25cbaaf5a",
+  "name":"Capital increase / reduction"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72409",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"46",
+  "id":"1fc7c5b5-c7f1-4759-9351-b082eefad5df",
+  "name":"Capital increase / reduction"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72409",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"47",
+  "id":"7290487c-3052-4796-a0a0-5736cc545f00",
+  "name":"Capital increase / reduction"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72409",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"725b678f-cd7a-41a5-88e4-f965b203f5ef",
+  "name":"Capital increase / reduction"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72409",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"46",
+  "id":"e30eb86b-2829-4048-a409-c6d35df5db1d",
+  "name":"Capital increase / reduction"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72409",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"47",
+  "id":"028203e0-954d-45d5-a3ec-bd28047bc09b",
+  "name":"Capital increase / reduction"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72409",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"37e83a66-61dd-47b1-897a-2ba8f44c3a0a",
+  "name":"Capital increase / reduction"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72409",
+  "payerType":"55",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"ced9fc96-0909-4367-9818-0a44574e502e",
+  "name":"Capital increase / reduction"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72416",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"90",
+  "id":"891d8610-0beb-4bf8-bf8f-956a9d3e62b4",
+  "name":"Acquisition / transfer of ownership"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72416",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"b3edb258-ffec-4faa-93dc-03679dcca9ba",
+  "name":"Acquisition / transfer of ownership"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72416",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"a96170bc-6b25-4c13-ad54-786ac55b0914",
+  "name":"Acquisition / transfer of ownership"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72416",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"02807dc2-2bb7-4c10-8d4a-b0c71b05ad6b",
+  "name":"Acquisition / transfer of ownership"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72416",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"46",
+  "id":"6c1052ea-8fae-492d-8244-aec3f44ad259",
+  "name":"Acquisition / transfer of ownership"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72416",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"46",
+  "id":"a9c7cfce-6ae6-4044-8bee-9ffafa1dd917",
+  "name":"Acquisition / transfer of ownership"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72416",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"b923b932-6846-44dc-bceb-5c555e17a28c",
+  "name":"Acquisition / transfer of ownership"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72502",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"1d0bdd7f-4c9c-4806-87ec-87a7d31c49ab",
+  "name":"Brazilian capitals abroad - acquisition / transfer of holding"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72502",
+  "payerType":"2",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"9414056a-599e-4e1e-b6d8-0b351de950c2",
+  "name":"Availability in the country"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72502",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"90",
+  "id":"41619221-398c-45d6-9071-30ee39b6be82",
+  "name":"Availability in the country"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72502",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"2255b72c-8d67-41e8-9109-07a8efc965fa",
+  "name":"Availability in the country"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72519",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"54fad1aa-df4e-424e-b431-20cfb8e210fb",
+  "name":"Foreign currency availabilities in the country"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72526",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"46",
+  "id":"66351d18-33f5-4a67-bc3e-1bc0e07f2692",
+  "name":"Foreign capital - deposit and availability"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72526",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"47",
+  "id":"210547b7-d351-4e8b-80d6-4f9bcff73763",
+  "name":"Foreign capital - deposit and availability"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72526",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"49",
+  "id":"33e2d36f-79ca-4423-bb58-70aec7da3eb8",
+  "name":"Foreign capital - deposit and availability"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72904",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"0",
+  "groupCode":"59",
+  "id":"f79d59ce-2969-4bea-ba72-3130b10b767c",
+  "name":"Acquisition of goods in the country"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72526",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"2bb26981-e10d-4555-827f-1c764e4ed46a",
+  "name":"Foreign capital - deposit and availability"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72904",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"a1781ae2-7a55-4d2c-a942-2cbc679bc84d",
+  "name":"Acquisition of goods in the country"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72904",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"09781ef4-570a-483d-9fea-7c052f951448",
+  "name":"Acquisition of merchandise delivered in the country"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72911",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"acb9907b-1568-48db-8f31-cfb6b9dd85c1",
+  "name":"Others - buying and selling real estate in the country"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72911",
+  "payerType":"0",
+  "approvalType":"0",
+  "payeeType":"5",
+  "groupCode":"90",
+  "id":"873092f5-912b-4f42-8d22-91982b5dbf3e",
+  "name":"Others - buying and selling real estate in the country"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72911",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"2",
+  "groupCode":"90",
+  "id":"4a1d9c21-01f6-4c07-b5c8-dddda7b29b61",
+  "name":"Others - buying and selling real estate in the country"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"72911",
+  "payerType":"9",
+  "approvalType":"0",
+  "payeeType":"92",
+  "groupCode":"90",
+  "id":"be280360-f2c6-4bff-9f00-a017e324838b",
+  "name":"Others - buying and selling real estate in the country"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"73659",
+  "payerType":"50",
+  "approvalType":"0",
+  "payeeType":"95",
+  "groupCode":"90",
+  "id":"01b53006-81c1-49ad-9c0f-43d01a8edb3a",
+  "name":"Property acquisition"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"73659",
+  "payerType":"95",
+  "approvalType":"0",
+  "payeeType":"97",
+  "groupCode":"90",
+  "id":"94ad8261-27fa-4dd6-9801-b6a93288e9ec",
+  "name":"CECP - property acquisition"
+})
+
+p({
+  "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"90302",
+  "payerType":"66",
+  "approvalType":"0",
+  "payeeType":"66",
+  "groupCode":"90",
+  "id":"5380804d-226e-4761-9f9b-f000b9f80bdd",
+  "name":"Interbancario"
+})
