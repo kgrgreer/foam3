@@ -35,6 +35,7 @@ foam.CLASS({
     'foam.nanos.crunch.connection.CapabilityPayload',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
+    'java.util.ArrayList',
     'java.util.HashMap',
     'java.util.Map',
     'java.util.List',
@@ -45,6 +46,7 @@ foam.CLASS({
     'net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiTermsAndConditions',
     'net.nanopay.crunch.registration.BusinessDetailData',
     'net.nanopay.crunch.registration.PersonalOnboardingTypeData',
+    'net.nanopay.crunch.registration.SigningOfficerList',
     'net.nanopay.crunch.registration.UserRegistrationData',
     'net.nanopay.crunch.registration.UserDetailData',
     'net.nanopay.crunch.registration.UserDetailExpandedData',
@@ -57,6 +59,7 @@ foam.CLASS({
     'net.nanopay.flinks.model.LoginModel',
     'net.nanopay.flinks.model.HolderModel',
     'net.nanopay.meter.compliance.secureFact.SecurefactOnboardingService',
+    'net.nanopay.model.SigningOfficer',
     'net.nanopay.model.Business',
     'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
     'static foam.mlang.MLang.*'
@@ -472,7 +475,15 @@ foam.CLASS({
         }
       
         // Reset the capability data object
-        securefactOnboardingService.retrieveLEVCapabilityPayloads(x, business, businessCapabilityDataObjects);
+        securefactOnboardingService.retrieveLEVCapabilityPayloads(subjectX, business, businessCapabilityDataObjects);
+
+        // Add current user as signing officer
+        SigningOfficerList signingOfficerList = (SigningOfficerList) businessCapabilityDataObjects.get("Signing Officers");
+        if ( signingOfficerList == null) {
+          signingOfficerList = new SigningOfficerList.Builder(subjectX).setBusiness(business.getId()).build();
+          businessCapabilityDataObjects.put("Signing Officers", signingOfficerList);
+        }
+        addSigningOfficerToList(subjectX, user, business, signingOfficerList);
 
         businessCapPayload = new CapabilityPayload.Builder(subjectX)
           .setId(capabilityId)
@@ -485,6 +496,52 @@ foam.CLASS({
 
         // set the remain capabilities to be satisfied
         request.setMissingBusinessCapabilityDataObjects(missingPayloads.getCapabilityDataObjects());
+      `
+    },
+    {
+      name: 'addSigningOfficerToList',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'user', type: 'User' },
+        { name: 'business', type: 'Business' },
+        { name: 'signingOfficerList', type: 'SigningOfficerList' }
+      ],
+      javaCode: `
+        SigningOfficer match = null;
+        for ( SigningOfficer signingOfficer : signingOfficerList.getSigningOfficers() ) {
+          // Check if the signing officer has already been added
+          if ( signingOfficer.getUser() == user.getId() ) {
+            return;
+          }
+          
+          if ( match == null &&
+               SafetyUtil.equals(user.getFirstName(), signingOfficer.getFirstName()) &&
+               SafetyUtil.equals(user.getLastName(), signingOfficer.getLastName()) )
+          {
+            match = signingOfficer;
+          }
+        }
+
+        if ( match != null ) {
+          match.setUser(user.getId());
+        } else {
+          SigningOfficer signingOfficer = new SigningOfficer.Builder(x)
+            .setFirstName(user.getFirstName())
+            .setLastName(user.getLastName())
+            .setPosition(user.getJobTitle())
+            .setSource("FLINKS")
+            .setUser(user.getId())
+            .build();
+          
+          // Add the signing officer to current list of signing officers
+          int size = signingOfficerList.getSigningOfficers() == null ? 0 : signingOfficerList.getSigningOfficers().length;
+          SigningOfficer[] signingOfficersArray = new SigningOfficer[size + 1];
+          if ( size > 0 ) {
+            System.arraycopy(signingOfficerList.getSigningOfficers(), 0, signingOfficersArray, 0, size);
+          }
+          signingOfficersArray[signingOfficersArray.length - 1] = signingOfficer;
+          signingOfficerList.setSigningOfficers(signingOfficersArray);
+        }
       `
     }
   ]

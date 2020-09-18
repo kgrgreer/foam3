@@ -27,33 +27,27 @@ foam.CLASS({
     'foam.mlang.Expressions'
   ],
 
-  messages: [
-    { name: 'UNDER_AGE_LIMIT_ERROR', message: 'Must be at least 18 years old.' }
-  ],
-
   properties: [
     {
       class: 'String',
       name: 'firstName',
+      documentation: 'First name'
     },
     {
       class: 'String',
-      name: 'lastName'
+      name: 'lastName',
+      documentation: 'Last name'
     },
     {
       class: 'String',
-      name: 'position'
+      name: 'position',
+      documentation: 'Position'
     },
-    foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
-      name: 'birthday',
-      label: 'Date of birth'
-    }),
     {
-      class: 'Reference',
-      name: 'business',
-      targetDAOKey: 'businessDAO',
-      of: 'net.nanopay.model.Business',
-      documentation: 'Associated business'
+      class: 'String',
+      name: 'source',
+      documentation: 'Where the signing officer was added from',
+      externalTransient: true
     },
     {
       class: 'Reference',

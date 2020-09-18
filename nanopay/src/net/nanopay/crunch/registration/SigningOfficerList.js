@@ -37,7 +37,8 @@ foam.CLASS({
       name: 'business',
       targetDAOKey: 'businessDAO',
       of: 'net.nanopay.model.Business',
-      documentation: 'Onboarded business'
+      documentation: 'Onboarded business',
+      externalTransient: true
     },
     {
       class: 'FObjectArray',

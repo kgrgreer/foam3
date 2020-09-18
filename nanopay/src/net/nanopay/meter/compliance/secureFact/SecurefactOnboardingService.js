@@ -164,6 +164,7 @@
                   .setFirstName(party.getFirstName())
                   .setLastName(party.getLastName())
                   .setPosition(party.getPosition())
+                  .setSource("SECURE_FACT")
                   .build();
                 officerList.add(signingOfficer);
               } else if ( party.getDesignation().equals("Shareholder") ) {

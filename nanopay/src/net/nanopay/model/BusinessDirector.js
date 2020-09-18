@@ -47,7 +47,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'type',
-      hidden: true
+      hidden: true,
+      externalTransient: true
     },
     {
       class: 'String',
@@ -70,7 +71,8 @@ foam.CLASS({
         return type == 'BR' ?
         foam.u2.DisplayMode.RW :
         foam.u2.DisplayMode.HIDDEN;
-      }
+      },
+      externalTransient: true
     },
     {
       class: 'String',
@@ -95,13 +97,15 @@ foam.CLASS({
           },
           errorString: 'Please provide a valid CPF number'
         }
-      ]
+      ],
+      externalTransient: true
     },
     {
       class: 'String',
       name: 'name',
       label: '',
       hidden: true,
+      externalTransient: true,
       expression: function(cpf) {
         if ( cpf.length == 11 ) {
           this.name = "";
