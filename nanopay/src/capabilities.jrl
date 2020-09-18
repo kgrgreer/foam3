@@ -593,6 +593,16 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"A285FDFA-3C6B-4150-A0F4-B72E664A3A9E",
+  "name":"Business Signing Officer",
+  "description":"Business has a signing officer",
+  "version":"0",
+  "enabled":true,
+  "visible":false
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"7BE7F3EE-D887-42E9-8042-680C6BF1C6AE",
   "name":"Signing Officers",
   "of":"net.nanopay.crunch.registration.SigningOfficerList",
   "version":"0",

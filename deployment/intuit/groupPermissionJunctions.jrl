@@ -44,13 +44,13 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api","ta
 // Intuit session creation
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"group.read.intuit-api-session"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"group.update.intuit-api-session"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"registration.email.enabled"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"session.create.intuit"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"user.create"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"user.update.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"user.remove.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"user.ro.compliance"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"user.rw.emailverified"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"registration.email.enabled"})
 
 // Flinks Login Id
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-session","targetId":"service.read.flinksLoginIdDAO"})

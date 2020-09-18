@@ -24,13 +24,42 @@ foam.CLASS({
   implements: [
     'foam.core.Validatable'
   ],
+
+  messages: [
+    { name: 'UNDER_AGE_LIMIT_ERROR', message: 'Must be at least 18 years old.' },
+    { name: 'JOB_TITLE_REQUIRED', message: 'Job title required.' }
+  ],
   
   properties: [
-    foam.nanos.auth.User.BIRTHDAY.clone().copyFrom(),
-    foam.nanos.auth.User.JOB_TITLE.clone().copyFrom(),
+    foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
+      validationPredicates: [
+        {
+          args: ['birthday'],
+          predicateFactory: function(e) {
+            var limit = new Date();
+            limit.setDate(limit.getDate() - ( 18 * 365 ));
+            return e.AND(
+              e.NEQ(net.nanopay.crunch.registration.UserDetailExpandedData.BIRTHDAY, null),
+              e.LT(net.nanopay.crunch.registration.UserDetailExpandedData.BIRTHDAY, limit)
+            );
+          },
+          errorMessage: 'UNDER_AGE_LIMIT_ERROR'
+        }
+      ]
+    }),
+    foam.nanos.auth.User.JOB_TITLE.clone().copyFrom({
+      validationPredicates: [
+        {
+          args: ['jobTitle'],
+          predicateFactory: function(e) {
+            return e.NEQ(net.nanopay.crunch.registration.UserDetailExpandedData.JOB_TITLE, null);
+          },
+          errorMessage: 'JOB_TITLE_REQUIRED'
+        }
+      ]
+    }),
     foam.nanos.auth.User.PEPHIORELATED.clone().copyFrom(),
-    foam.nanos.auth.User.THIRD_PARTY.clone().copyFrom(),
-    foam.nanos.auth.User.COMPLIANCE.clone().copyFrom()
+    foam.nanos.auth.User.THIRD_PARTY.clone().copyFrom()
   ],
   
   methods: [

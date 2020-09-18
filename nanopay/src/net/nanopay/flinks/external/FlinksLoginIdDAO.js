@@ -129,17 +129,49 @@ foam.CLASS({
         }
 
         // Create the user if this is an onboarding request
-        // QUESTION: should we check if business is null too?
-        if ( user == null && flinksLoginId instanceof FlinksLoginIdOnboarding )
+        if ( flinksLoginId instanceof FlinksLoginIdOnboarding )
         {
-          onboarding(x, (FlinksLoginIdOnboarding) flinksLoginId, accountDetail, loginDetail);
+          FlinksLoginIdOnboarding flinksLoginIdOnboarding = (FlinksLoginIdOnboarding) flinksLoginId;
           
-          // Retrieve the user
-          user = flinksLoginId.findUser(x);
           if ( user == null ) {
-            throw new RuntimeException("User not provisioned: " + flinksLoginId.getUser());
+            // Create the user when they do not exist
+
+            onboarding(x, flinksLoginIdOnboarding, accountDetail, loginDetail);
+            
+            // Retrieve the user and the business
+            user = flinksLoginId.findUser(x);
+            business = flinksLoginId.findBusiness(x);
+            
+            // User must exist
+            if ( user == null ) {
+              throw new RuntimeException("User not provisioned: " + flinksLoginId.getUser());
+            }
+          
+          } else {
+            // Retrieve any missing capabilities from previous calls with this Flinks LoginId
+
+            // API CAD Personal Payments Under 1000CAD Capability ID
+            String capabilityId = "F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD";
+                
+            // Switch contexts to the newly created user
+            Subject newSubject = new Subject.Builder(x).setUser(user).build();
+            if ( flinksLoginIdOnboarding.getType() != OnboardingType.PERSONAL && business != null ) {
+              newSubject.setUser(business);
+
+              // Business CAD payments capability
+              capabilityId = "18DD6F03-998F-4A21-8938-358183151F96";
+            } 
+            X subjectX = getX().put("subject", newSubject);
+
+            DAO capabilityPayloadDAO = (DAO) subjectX.get("capabilityPayloadDAO");
+            CapabilityPayload missingPayloads = (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).find(capabilityId);
+
+            if ( flinksLoginIdOnboarding.getType () != OnboardingType.PERSONAL && business != null ){
+              flinksLoginIdOnboarding.setMissingBusinessCapabilityDataObjects(missingPayloads.getCapabilityDataObjects());
+            } else {
+              flinksLoginIdOnboarding.setMissingUserCapabilityDataObjects(missingPayloads.getCapabilityDataObjects());
+            }
           }
-          business = flinksLoginId.findBusiness(x);
         } else if ( user == null ) {
           throw new RuntimeException("User is required to add a bank account");
         }
