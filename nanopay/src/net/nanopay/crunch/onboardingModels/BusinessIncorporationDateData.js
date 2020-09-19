@@ -30,7 +30,7 @@ foam.CLASS({
         {
           args: ['businessIncorporationDate'],
           predicateFactory: function(e) {
-            return e.LTE(net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData.BUSINESS_INCORPORATED_DATE, new Date());
+            return e.LTE(net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData.BUSINESS_INCORPORATION_DATE, new Date());
           },
           errorMessage: 'BUSINESS_INCORPORATION_DATE_ERROR'
         }

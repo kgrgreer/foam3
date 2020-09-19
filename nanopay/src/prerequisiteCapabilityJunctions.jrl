@@ -533,16 +533,16 @@ p({
 //brBusinessOnboarding
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
+  "sourceId":"63049307-8db4-2437-5c02-b71d6878263c",
   "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-16",
-  "priority":1
+  "priority":2
 })
 
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
+  "sourceId":"63049307-8db4-2437-5c02-b71d6878263c",
   "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-17",
-  "priority":2
+  "priority":14
 })
 
 //default
