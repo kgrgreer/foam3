@@ -932,7 +932,6 @@ p({class:"foam.i18n.Locale",id:"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5.descrip
 p({class:"foam.i18n.Locale",id:"554af38a-8225-87c8-dfdf-eeb15f71215f-4.name",locale:"pt",variant:"PT",locale_variant:"pt-PT",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-4.name",target:"Detalhes da empresa"})
 p({class:"foam.i18n.Locale",id:"554af38a-8225-87c8-dfdf-eeb15f71215f-49.name",locale:"pt",variant:"PT",locale_variant:"pt-PT",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-49.name",target:"Desbloquear pagamentos e faturas nacionais e internacionais"})
 p({class:"foam.i18n.Locale",id:"554af38a-8225-87c8-dfdf-eeb15f71215f-49.description",locale:"pt",variant:"PT",locale_variant:"pt-PT",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-49.description",target:"Desbloquear pagamentos no Brasil"})
-p({class:"foam.i18n.Locale",id:"554af38a-8225-87c8-dfdf-eeb15f71215f-5.name",locale:"pt",variant:"PT",locale_variant:"pt-PT",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-5.name",target:"Detalhes de negócios estendidos"})
 
 p({class:"foam.i18n.Locale",id:"554af38a-8225-87c8-dfdf-eeb15f71215f-6.name",locale:"pt",variant:"PT",locale_variant:"pt-PT",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-6.name",target:"Detalhes da transação"})
 p({class:"foam.i18n.Locale",id:"554af38a-8225-87c8-dfdf-eeb15f71215f-6-5.name",locale:"pt",variant:"PT",locale_variant:"pt-PT",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-6-5.name",target:"Dados de diretores de negócios"})
