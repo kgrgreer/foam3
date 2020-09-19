@@ -534,7 +534,7 @@ p({
   "description":"Business Registration Date",
   "version":"0",
   "enabled":true,
-  "visible":false
+  "visible":true
 })
 
 
@@ -546,7 +546,7 @@ p({
   "description":"Business Incorporated Date",
   "version":"0",
   "enabled":true,
-  "visible":false
+  "visible":true
 })
 
 
@@ -558,5 +558,5 @@ p({
   "description":"Tax Id Number",
   "version":"0",
   "enabled":true,
-  "visible":false
+  "visible":true
 })
