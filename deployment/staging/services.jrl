@@ -57,6 +57,7 @@ p({
       "initParameters": {
         "CONTENT_SECURITY_POLICY": """
           default-src 'none';
+          manifest-src 'self';
           child-src 'self';
           worker-src 'self';
           connect-src 'self' data: blob: filesystem: ws:;

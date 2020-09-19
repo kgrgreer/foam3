@@ -163,7 +163,7 @@ foam.CLASS({
             throw new AuthorizationException(PAY_DRAFT_ERROR_MSG);
           }
 
-          if ( ! auth.check(x, "invoice.pay") ) {
+          if ( ! auth.check(x, "business.invoice.pay") || ! auth.check(x, "user.invoice.pay") ) {
             invoice = (Invoice) invoice.fclone();
             invoice.setPaymentMethod(PaymentStatus.PENDING_APPROVAL);
             invoiceDAO.put(invoice);

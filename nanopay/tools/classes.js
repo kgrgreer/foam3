@@ -1198,8 +1198,9 @@ var classes = [
   'net.nanopay.crunch.onboardingModels.InitialBusinessData',
   'net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData',
   'net.nanopay.crunch.onboardingModels.SigningOfficerQuestion',
-  'net.nanopay.crunch.onboardingModels.BusinessHasNoSigningOfficers',
+  'net.nanopay.crunch.onboardingModels.SigningOfficerQuestionAnswered',
   'net.nanopay.crunch.onboardingModels.SigningOfficerQuestionOnPut',
+  'net.nanopay.crunch.onboardingModels.SigningOfficerPersonalDataOnPut',
   'net.nanopay.crunch.onboardingModels.BusinessInformationData',
   'net.nanopay.crunch.onboardingModels.BusinessOwnershipData',
   'net.nanopay.crunch.onboardingModels.TransactionDetailsData',
@@ -1208,6 +1209,7 @@ var classes = [
   'net.nanopay.crunch.onboardingModels.InternationalBusinessInformationData',
   'net.nanopay.crunch.BusinessOwnershipToBeneficialOwnerDAO',
   'net.nanopay.crunch.onboardingModels.SigningOfficerCapabilityInterceptPredicate',
+  'net.nanopay.crunch.onboardingModels.SigningOfficerPrivilegesRequested',
   'net.nanopay.crunch.onboardingModels.UserIsSigningOfficerOfBusiness',
   'net.nanopay.crunch.onboardingModels.UserBirthDateData',
 
