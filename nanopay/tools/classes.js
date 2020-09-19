@@ -1209,7 +1209,7 @@ var classes = [
   'net.nanopay.crunch.onboardingModels.UserIsSigningOfficerOfBusiness',
   'net.nanopay.crunch.onboardingModels.UserBirthDateData',
   'net.nanopay.crunch.onboardingModels.BusinessRegistrationDateData',
-  'net.nanopay.crunch.onboardingModels.BusinessIncorporatedDateData',
+  'net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData',
   'net.nanopay.crunch.onboardingModels.TaxIdNumberData',
 
 

@@ -1,7 +1,7 @@
 
 foam.CLASS({
   package: 'net.nanopay.crunch.onboardingModels',
-  name: 'BusinessIncorporatedDateData',
+  name: 'BusinessIncorporationDateData',
 
   implements: [
     'foam.core.Validatable',
@@ -10,29 +10,29 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'businessIncorporatedDateSection',
+      name: 'businessIncorporationDateSection',
       title: 'Enter business incorporated date'
     },
   ],
 
   messages: [
-    { name: 'BUSINESS_INCORPORATED_DATE_ERROR', message: 'Cannot be future dated.' }
+    { name: 'BUSINESS_INCORPORATION_DATE_ERROR', message: 'Cannot be future dated.' }
   ],
 
   properties: [
     {
-      section: 'businessIncorporatedDateSection',
-      name: 'businessIncorporatedDate',
+      section: 'businessIncorporationDateSection',
+      name: 'businessIncorporationDate',
       label: 'Date of Incorporation',
       class: 'Date',
       documentation: 'Date of Business Incorporation.',
       validationPredicates: [
         {
-          args: ['businessIncorporatedDate', 'countryOfBusinessRegistration'],
+          args: ['businessIncorporationDate'],
           predicateFactory: function(e) {
-            return e.LTE(net.nanopay.crunch.onboardingModels.BusinessIncorporatedDateData.BUSINESS_INCORPORATED_DATE, new Date());
+            return e.LTE(net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData.BUSINESS_INCORPORATED_DATE, new Date());
           },
-          errorMessage: 'BUSINESS_INCORPORATED_DATE_ERROR'
+          errorMessage: 'BUSINESS_INCORPORATION_DATE_ERROR'
         }
       ]
     }
