@@ -718,4 +718,3 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","tar
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"user.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"user.remove.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"user.update.*"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"country.read.*"})
