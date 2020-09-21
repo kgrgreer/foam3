@@ -28,7 +28,8 @@ foam.CLASS({
   documentation: `Hold AFEX Funding transaction specific properties`,
 
   implements: [
-    'net.nanopay.tx.PartnerTransaction'
+    'net.nanopay.tx.PartnerTransaction',
+    'net.nanopay.iso20022.ISO20022Transaction'
   ],
 
   javaImports: [
@@ -50,6 +51,13 @@ foam.CLASS({
     {
       class: 'String',
       name: 'valueDate'
+    },
+    {
+      documentation: `Defined by ISO 20022 (Pacs008)`,
+      class: 'String',
+      name: 'messageId',
+      visibility: 'RO',
+      hidden: true
     }
   ]
 });

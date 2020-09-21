@@ -839,7 +839,7 @@ PAUSED = 10, CANCELLED = 11, PENDING_PARENT_COMPLETED = 12, SCHEDULED = 13}</p><
     <tr>
       <td>messageId</td>
       <td>String </td>
-      <td>Defined by ISO 20220 (Pacs008)</td>
+      <td>Defined by ISO 20022 (Pacs008)</td>
     </tr>
     <tr>
       <td>sourceCurrency</td>
