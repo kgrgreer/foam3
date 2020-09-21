@@ -1566,7 +1566,7 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/onboardingModels/InitialBusinessData' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerPersonalData' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerQuestion' },
-  { name: 'net/nanopay/crunch/onboardingModels/BusinessHasNoSigningOfficers' },
+  { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerQuestionAnswered' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessInformationData' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessOwnershipData' },
   { name: 'net/nanopay/crunch/onboardingModels/TransactionDetailsData' },
@@ -1576,9 +1576,9 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/PrerequisiteCapabilityJunctionRefine' },
   { name: 'net/nanopay/crunch/BusinessOwnershipToBeneficialOwnerDAO' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerCapabilityInterceptPredicate' },
+  { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerPrivilegesRequested' },
   { name: 'net/nanopay/crunch/onboardingModels/UserIsSigningOfficerOfBusiness' },
   { name: 'net/nanopay/crunch/onboardingModels/UserBirthDateData' },
-  { name: 'net/nanopay/crunch/document/Documents' },
   { name: 'net/nanopay/crunch/document/Document' },
 
   // crunch notification
@@ -1630,7 +1630,10 @@ FOAM_FILES([
 
   // crunch document
   { name: 'net/nanopay/crunch/document/Document' },
-  { name: 'net/nanopay/crunch/document/Documents' },
+
+  // Capable object testing
+  { name: 'net/nanopay/crunch/test/TestCapable' },
+  { name: 'net/nanopay/crunch/test/TestCapableDAO' },
 
   // wizardlets
   { name: 'net/nanopay/crunch/wizardlet/RefreshWizardlet' },
@@ -1668,9 +1671,6 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/tx/TrevisoTransaction' },
   { name: 'net/nanopay/partner/treviso/tx/planner/TrevisoTransactionPlanner' },
   { name: 'net/nanopay/partner/treviso/tx/TrevisoCreateExchange' },
+  { name: 'net/nanopay/partner/treviso/tx/TrevisoLineItemsFromFXSummary' },
   { name: 'net/nanopay/partner/treviso/TrevisoUnlockPaymentTermsAndConditions' },
-
-  // crunch document
-  { name: 'net/nanopay/crunch/document/Documents' },
-  { name: 'net/nanopay/crunch/document/Document' },
 ]);

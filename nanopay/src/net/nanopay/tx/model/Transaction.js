@@ -408,7 +408,7 @@ foam.CLASS({
       `,
       tableWidth: 190,
       view: function(o, x) {
-        if ( o && o.mode$.value.name === 'RO' ) {
+        if ( o && o.mode$.value && o.mode$.value.name === 'RO' ) {
           return foam.u2.Element.create()
             .start()
               .add(x.data.status.label)

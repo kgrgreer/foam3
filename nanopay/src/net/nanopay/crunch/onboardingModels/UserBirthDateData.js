@@ -28,7 +28,7 @@ foam.CLASS({
     {
       name: 'signingOfficerPersonalInformationSection',
       title: 'Please enter the signing officer\'s date of birth',
-      help: 'will require your date of birth.'
+      help: 'Require your date of birth.'
     },
   ],
 

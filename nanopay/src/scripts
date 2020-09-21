@@ -1442,8 +1442,8 @@ p({
     permissionArray.add("transactionreport.read.*");
     permissionArray.add("user.read.*");
     permissionArray.add("service.run.authenticationToken");
-    permissionArray.add("spid.create."+NAME);
-    permissionArray.add("spid.read."+NAME);
+    permissionArray.add("capability.create."+NAME);
+    permissionArray.add("capability.read."+NAME);
 
 
     groupPermissionJunctionDAO = x.get("groupPermissionJunctionDAO");

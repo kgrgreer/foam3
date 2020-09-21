@@ -27,15 +27,18 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.GroupPermissionJunction',
-    'foam.nanos.ruler.Rule',
     'foam.nanos.auth.ServiceProvider',
+    'foam.nanos.auth.User',
+    'foam.nanos.auth.ruler.EnsurePropertyOnCreateRule',
     'foam.nanos.theme.Theme',
     'foam.nanos.theme.ThemeDomain',
-    'foam.nanos.auth.User',
+    'foam.nanos.ruler.Rule',
+    'net.nanopay.account.DigitalAccount',
+    'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.auth.ServiceProviderURL',
     'net.nanopay.auth.UserCreateServiceProviderURLRule',
     'net.nanopay.auth.UserCreateServiceProviderURLRuleAction',
-    'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.tx.fee.TransactionFeeRule',
     'java.util.Arrays',
     'java.util.ArrayList',
     'java.util.List',
@@ -144,10 +147,24 @@ foam.CLASS({
         configList[0] = serviceProviderURL;
 
         // find the UserCreateServiceProviderURLRule and update the configList
-        UserCreateServiceProviderURLRule rule = 
+        UserCreateServiceProviderURLRule rule =
           (UserCreateServiceProviderURLRule) ruleDAO.find(this.getSpidUrlRule());
         rule.setConfig((ServiceProviderURL[]) ArrayUtils.addAll(configList, rule.getConfig()));
         ruleDAO.put(rule);
+
+        // Create spid-admin's default digital account
+        var digitalAccount = DigitalAccount.findDefault(x, adminUser, mspInfo.getDenomination());
+
+        // Create rule to auto-fill feeAccount for TransactionFeeRule created in the spid
+        var ensureFeeAccountRule = new EnsurePropertyOnCreateRule();
+        ensureFeeAccountRule.setName("Auto-fill feeAccount for TransactionFeeRule - " + spid);
+        ensureFeeAccountRule.setDaoKey("localRuleDAO");
+        ensureFeeAccountRule.setRuleGroup("TransactionFeeRule");
+        ensureFeeAccountRule.setTargetClass(TransactionFeeRule.getOwnClassInfo());
+        ensureFeeAccountRule.setPropName("feeAccount");
+        ensureFeeAccountRule.setPropValue(digitalAccount.getId());
+        ensureFeeAccountRule.setSpid(spid);
+        ruleDAO.put(ensureFeeAccountRule);
 
         // Create spid-fraud-ops group
         Group fraudOpsGroup = new Group();

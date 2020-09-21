@@ -16,23 +16,26 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.crunch.document',
-  name: 'Documents',
+  package: 'net.nanopay.partner.treviso.tx',
+  name: 'TrevisoLineItemsFromFXSummary',
 
-  documentation: `
-    This model is to set the necessary documents for a business capabilities need
-  `,
+  implements: [
+    'foam.nanos.ruler.RuleAction'
+  ],
 
-  properties: [
+  documentation: 'Rule to copy line items from FXSummary to Treviso transaction',
+
+  javaImports: [
+    'net.nanopay.tx.model.Transaction',
+  ],
+
+  methods: [
     {
-      class: 'foam.nanos.fs.FileArray',
-      name: 'documents',
-      view: function(_,X) {
-        return {
-          class: 'foam.nanos.fs.fileDropZone.FileDropZone',
-          files$: X.data.documents$
-        }
-      }
+      name: 'applyAction',
+      javaCode: `
+        var txn = (TrevisoTransaction) obj;
+        txn.setLineItems(txn.findRoot(x).getLineItems());
+      `
     }
   ]
 });

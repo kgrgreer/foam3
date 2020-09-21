@@ -44,7 +44,8 @@ foam.CLASS({
   sections: [
     {
       name: 'collectCpf',
-      title: 'Enter your CPF'
+      title: 'Enter your CPF',
+      help: 'Require your CPF'
     }
   ],
 
@@ -69,22 +70,22 @@ foam.CLASS({
           },
           errorMessage: 'Invalid CPF.'
         }
-      ]
+      ],
+      postSet: function(_,n) {
+        this.cpfName = "";
+        if ( n.length == 11 ) {
+          this.getCpfName(n).then((v) => {
+            this.cpfName = v;
+          });
+        }
+      },
     },
     {
       class: 'String',
-      name: 'name',
+      name: 'cpfName',
       label: '',
       section: 'collectCpf',
-      hidden: true,
-      expression: function(data) {
-        if ( data.length == 11 ) {
-          this.name = "";
-          return this.getCpfName(data).then((n) => {
-            this.name = n;
-          });
-        } else { return ""; }
-      }
+      hidden: true
     },
     {
       class: 'Boolean',
@@ -96,7 +97,7 @@ foam.CLASS({
         return foam.u2.CheckBox.create({
           labelFormatter: function() {
             this.start('span')
-              .add(self.dot('name'))
+              .add(self.dot('cpfName'))
             .end();
           }
         });

@@ -19,38 +19,58 @@ foam.CLASS({
   package: 'net.nanopay.crunch.document',
   name: 'Document',
 
-  documentation: `
-    the file document that a business or user capabilities required
-  `,
+  documentation: 'document upload capability',
 
   messages: [
-    { name: 'UPLOAD_REQUEST_MSG', message: 'Please upload a document for ' }
+    { name: 'UPLOAD_REQUEST_MSG', message: 'Please attach a document(s) for' },
+    { name: 'IMAGE_REQUIRED', message: 'Please attach a document(s).' },
+    { name: 'SECTION_HELP_MSG', message: 'Require a document for' },
   ],
 
   sections: [
     {
       name: 'documentUploadSection',
-      title: function(capability) {
-        return `${this.UPLOAD_REQUEST_MSG} ${capability.name}`;
+      subTitle: function(capability) {
+        return capability.description ?
+          `${this.UPLOAD_REQUEST_MSG} ${capability.name} - ${capability.description}` :
+          `${this.UPLOAD_REQUEST_MSG} ${capability.name}`;
       },
       help: function(capability) {
-        return capability.description ? capability.description : capability.name;
+        return `${this.SECTION_HELP_MSG} ${capability.name}`;
       }
     }
   ],
 
   properties: [
     {
-      class: 'Reference',
-      of: 'foam.nanos.fs.File',
-      name: 'document',
-      section: 'documentUploadSection'
+      class: 'foam.nanos.fs.FileArray',
+      name: 'documents',
+      label: '',
+      section: 'documentUploadSection',
+      view: function(_, X) {
+        return {
+          class: 'foam.nanos.fs.fileDropZone.FileDropZone',
+          files$: X.data.documents$
+        };
+      },
+      validateObj: function(documents, isRequired) {
+        if ( isRequired && documents.length === 0 ) {
+          return this.IMAGE_REQUIRED;
+        }
+      },
     },
     {
       class: 'FObjectProperty',
       of: 'foam.nanos.crunch.Capability',
       name: 'capability',
       storageTransient: true,
+      hidden: true
+    },
+    {
+      class: 'Boolean',
+      name: 'isRequired',
+      documentation: 'Whether the file is required or not.',
+      value: true,
       hidden: true
     }
   ]

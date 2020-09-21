@@ -1185,6 +1185,7 @@ var classes = [
   'net.nanopay.partner.treviso.tx.TrevisoTransaction',
   'net.nanopay.partner.treviso.tx.planner.TrevisoTransactionPlanner',
   'net.nanopay.partner.treviso.tx.TrevisoCreateExchange',
+  'net.nanopay.partner.treviso.tx.TrevisoLineItemsFromFXSummary',
   'net.nanopay.tx.EtaSummaryTransactionLineItem',
   'net.nanopay.country.br.NatureCodePaymentProviderJunction',
   'net.nanopay.tx.ExpirySummaryTransactionLineItem',
@@ -1196,8 +1197,9 @@ var classes = [
   'net.nanopay.crunch.onboardingModels.InitialBusinessData',
   'net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData',
   'net.nanopay.crunch.onboardingModels.SigningOfficerQuestion',
-  'net.nanopay.crunch.onboardingModels.BusinessHasNoSigningOfficers',
+  'net.nanopay.crunch.onboardingModels.SigningOfficerQuestionAnswered',
   'net.nanopay.crunch.onboardingModels.SigningOfficerQuestionOnPut',
+  'net.nanopay.crunch.onboardingModels.SigningOfficerPersonalDataOnPut',
   'net.nanopay.crunch.onboardingModels.BusinessInformationData',
   'net.nanopay.crunch.onboardingModels.BusinessOwnershipData',
   'net.nanopay.crunch.onboardingModels.TransactionDetailsData',
@@ -1206,12 +1208,16 @@ var classes = [
   'net.nanopay.crunch.onboardingModels.InternationalBusinessInformationData',
   'net.nanopay.crunch.BusinessOwnershipToBeneficialOwnerDAO',
   'net.nanopay.crunch.onboardingModels.SigningOfficerCapabilityInterceptPredicate',
+  'net.nanopay.crunch.onboardingModels.SigningOfficerPrivilegesRequested',
   'net.nanopay.crunch.onboardingModels.UserIsSigningOfficerOfBusiness',
   'net.nanopay.crunch.onboardingModels.UserBirthDateData',
 
   // crunch notification
   'net.nanopay.crunch.UCJExpiryReminderCron',
   'net.nanopay.crunch.compliance.SendExpiryNotification',
+
+  'net.nanopay.crunch.test.TestCapable',
+  'net.nanopay.crunch.test.TestCapableDAO',
 
   // crunch compliance
   'net.nanopay.crunch.compliance.SetComplianceOnUser',
@@ -1260,7 +1266,6 @@ var classes = [
   'net.nanopay.crunch.registration.UserRegistrationData',
 
   // crunch documents
-  'net.nanopay.crunch.document.Documents',
   'net.nanopay.crunch.document.Document',
 
   // crunch wizardlet

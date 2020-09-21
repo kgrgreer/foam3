@@ -93,5 +93,19 @@ foam.CLASS({
         return SafetyUtil.compare(getAccount(),t.getAccount());
       `
     }
+  ],
+
+  axioms: [
+    {
+      name: 'javaExtras',
+      buildJavaClass: function(cls) {
+        cls.extras.push(`
+          public Transfer(long amount, long account) {
+            setAmount(amount);
+            setAccount(account);
+          }
+        `);
+      }
+    }
   ]
 });

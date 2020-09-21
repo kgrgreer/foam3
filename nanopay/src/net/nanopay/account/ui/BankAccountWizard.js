@@ -84,11 +84,18 @@ foam.CLASS({
     {
       name: 'submit',
       label: 'I agree',
-      isEnabled: function(currentIndex, data$padCapture, data$errors_, data$padCapture$address$errors_, data$padCapture$capablePayloads) {
+      isEnabled: function(currentIndex,
+                          data$errors_,
+                          data$padCapture$address$errors_,
+                          data$padCapture$capablePayloads) {
         if ( data$errors_ || data$padCapture$address$errors_ ) return false;
-        for ( payload of data$padCapture$capablePayloads ) {
-          if ( ! payload.data || ! payload.data.agreement ) return false;
+        
+        if ( data$padCapture$capablePayloads ) {
+          for ( payload of data$padCapture$capablePayloads ) {
+            if ( ! payload.data || ! payload.data.agreement ) return false;
+          }
         }
+
         return true;
       },
       isAvailable: function(nextIndex) {
