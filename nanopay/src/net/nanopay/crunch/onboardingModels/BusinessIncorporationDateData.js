@@ -27,7 +27,8 @@ foam.CLASS({
   sections: [
     {
       name: 'businessIncorporationDateSection',
-      title: 'Enter business incorporated date'
+      title: 'Enter business incorporated date',
+      help: 'Enter business incorporated date'
     },
   ],
 
@@ -39,7 +40,7 @@ foam.CLASS({
     {
       section: 'businessIncorporationDateSection',
       name: 'businessIncorporationDate',
-      label: 'Date of Incorporation',
+      label: 'Date of Business Incorporation',
       class: 'Date',
       documentation: 'Date of Business Incorporation.',
       validationPredicates: [

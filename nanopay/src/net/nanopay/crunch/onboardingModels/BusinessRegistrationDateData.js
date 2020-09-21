@@ -27,7 +27,8 @@ foam.CLASS({
   sections: [
     {
       name: 'businessRegistrationDateSection',
-      title: 'Enter business registration date'
+      title: 'Enter business registration date',
+      help: 'Enter business registration date'
     },
   ],
 

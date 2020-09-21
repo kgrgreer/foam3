@@ -27,7 +27,8 @@ foam.CLASS({
   sections: [
     {
       name: 'taxIdNumberSection',
-      title: 'Enter tax number'
+      title: 'Enter tax number',
+      help: 'Enter tax number'
     },
   ],
 
