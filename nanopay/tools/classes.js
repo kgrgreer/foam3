@@ -783,7 +783,7 @@ var classes = [
   'net.nanopay.iso20022.ISODateTimeTest',
   'net.nanopay.iso20022.ISOTimeTest',
   'net.nanopay.tx.ISO20022Transaction',
-  'net.nanopay.iso20022.PacsTransaction',
+  //'net.nanopay.iso20022.PacsTransaction',
 
   // meter
   'net.nanopay.meter.AdminAccessConfig',
