@@ -38,7 +38,6 @@ foam.CLASS({
     'branchDAO',
     'countryDAO',
     'institutionDAO',
-    'user'
   ],
 
   javaImports: [
