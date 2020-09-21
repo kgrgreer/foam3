@@ -65,7 +65,7 @@ https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31
     One thing to note here is that if the LoginId has been previously seen by the nanopay system, a new user will not be 
     created. Instead, the previous user will be found and will be returned in the 'user' property. Users that are found 
     that have already completed onboarding will be easily identifiable by checking the 'missingUserCapabilityDataObjects' 
-    property, which should return an empty map. Similarly, if the CAD bank account already exists for that user, the it 
+    property, which should return an empty map. Similarly, if the CAD bank account already exists for that user, it 
     will be found and the ID will be returned in the 'account' field.
 </p>
 <p>
@@ -76,10 +76,22 @@ https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31
     "loginId": "2ff467b7-bcde-4346-8996-08d69b30c4d8",
     "accountId": "8cd3e122-4826-4e24-48c4-08d69b30caf5",
     "institution": "FlinksCapital",
-    "type": "DEFAULT"
+    "type": 0,
+    "flinksOverrides": {
+      "userOverrides": {
+        // add user overrides
+        ...
+      }
+    }
 }   </code>
     Note that the class is required to be 'net.nanopay.flinks.external.FlinksLoginIdOnboarding' in order for the onboarding process to be triggered.
 </p>
+<p>
+    If necessary, we have also provided the ability to override data returned from Flinks with your own overrides. Specifically, you can include
+    'userOverrides', which is an object with the following structure:
+</p>
+<h4><a name="user-override-data">UserOverrideData</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.flinks.external.UserOverrideData" />
 <p>
     As part of the response the to flinksLoginIdDAO call, nanopay will include the capabilities that are 
     still required to be completed in order for the user to be onboarded for Personal Payments Under $1000 CAD. 
@@ -108,8 +120,35 @@ https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31
 <h4><a name="flinks-login-id-onboarding">FlinksLoginIdOnboarding</a></h4>
 <p>
   Here is the full structure of the FlinksLoginIdOnboarding object:
-  <foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.flinks.external.FlinksLoginIdOnboarding"  whitelist="['type', 'missingUserCapabilityDataObjects', 'missingBusinessCapabilityDataObjects', 'loginId', 'loginId', 'institution', 'user', 'business', 'account', 'created', 'createdBy']" />
+  <foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.flinks.external.FlinksLoginIdOnboarding"  whitelist="['type', 'missingUserCapabilityDataObjects', 'missingBusinessCapabilityDataObjects', 'loginId', 'institution', 'flinksOverrides', 'user', 'business', 'account', 'created', 'createdBy']" />
 </p>
+<h4><a name="onboarding-type">OnboardingType</a></h4>
+<table>
+  <tbody>
+    <tr>
+      <th>Name</th>
+      <th>Value</th>
+      <th>Documentation</th>
+    </tr>
+    <tr>
+      <td>DEFAULT</td>
+      <td>0</td>
+      <td>Allow the flinks login type to dictate the type of onboarding performed.</td>
+    </tr>
+    <tr>
+      <td>PERSONAL</td>
+      <td>1</td>
+      <td>Personal payments onboarding.</td>
+    </tr>
+    <tr>
+      <td>BUSINESS</td>
+      <td>2</td>
+      <td>Business payments onboarding.</td>
+    </tr>
+  </tbody>
+</table>
+<h4><a name="flinks-overrides">FlinksOverrides</a></h4>
+<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.flinks.external.FlinksOverrides" />
 
 <p>
 <i><b>Session Authentication:</b> Authentication for user provisioning with Flinks LoginId should be done with the administrative session.</i>
@@ -133,7 +172,7 @@ https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31
 
 <p>
 <i><b>Session Authentication:</b> Authentication for user onboarding should be done with a payment session 
-      that was created with the userId and agentId set to the ID of the user created in step 1.</i>
+      that was created with the userId and agentId set to the ID of the user returned in the FlinksLoginId response.</i>
 </p>
 
 <h2>Sending Capabilities to CapabilityPayloadDAO</h2>

@@ -65,7 +65,7 @@ p({
     "label":"API Business Onboarding",
     "handler": {
         "class":"foam.nanos.menu.DocumentFileMenu",
-        "docKey":"api-doc-onboarding-business",
+        "docKey":"api-doc-onboarding-business-flinks",
         "daoKey":"nanopayDocumentDAO"
     },
     "parent":"documentation"

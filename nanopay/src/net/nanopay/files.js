@@ -1574,6 +1574,7 @@ FOAM_FILES([
 
   // crunch registration
   { name: 'net/nanopay/crunch/registration/BusinessDetailData' },
+  { name: 'net/nanopay/crunch/registration/BusinessDetailExpandedData' },
   { name: 'net/nanopay/crunch/registration/BusinessDirectorList' },
   { name: 'net/nanopay/crunch/registration/BusinessOwnerList' },
   { name: 'net/nanopay/crunch/registration/BusinessTypeData' },

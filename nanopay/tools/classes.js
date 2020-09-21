@@ -1272,6 +1272,7 @@ var classes = [
 
   // crunch registration
   'net.nanopay.crunch.registration.BusinessDetailData',
+  'net.nanopay.crunch.registration.BusinessDetailExpandedData',
   'net.nanopay.crunch.registration.BusinessDirectorList',
   'net.nanopay.crunch.registration.BusinessOwnerList',
   'net.nanopay.crunch.registration.BusinessTypeData',
