@@ -37,7 +37,6 @@ foam.CLASS({
     'capabilityDAO',
     'branchDAO',
     'countryDAO',
-    'currencyDAO',
     'institutionDAO',
     'user'
   ],
