@@ -710,7 +710,7 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.tx.TransactionDAO',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.iso20022.ISO20022Transaction',
+    'net.nanopay.iso20022.PacsTransaction',
     'net.nanopay.tx.model.TransactionStatus',
 
     'java.io.*',
