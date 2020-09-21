@@ -22,7 +22,7 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.iso20022',
+  package: 'net.nanopay.tx',
   name: 'PacsTransaction',
   extends: 'net.nanopay.tx.DigitalTransaction',
   documentation: `PACS transaction for legacy interact integration`,

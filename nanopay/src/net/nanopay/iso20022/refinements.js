@@ -282,7 +282,7 @@ foam.CLASS({
     'net.nanopay.model.Branch',
     'net.nanopay.payment.Institution',
     'net.nanopay.tx.TransactionDAO',
-    'net.nanopay.iso20022.PacsTransaction',
+    'net.nanopay.tx.PacsTransaction',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionEntity',
     'net.nanopay.tx.model.TransactionStatus',
@@ -710,7 +710,7 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.tx.TransactionDAO',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.iso20022.PacsTransaction',
+    'net.nanopay.tx.PacsTransaction',
     'net.nanopay.tx.model.TransactionStatus',
 
     'java.io.*',
