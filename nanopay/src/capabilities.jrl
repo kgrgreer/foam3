@@ -209,18 +209,6 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-5",
-  "name":"Extended Business Details",
-  "of":"net.nanopay.crunch.onboardingModels.InternationalBusinessInformationData",
-  "version":"0",
-  "enabled":true,
-  "visible":false,
-  "daoKey":"businessDAO",
-  "contextDAOFindKey":"subject.user"
-})
-
-p({
-  "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-6",
   "name":"Transaction Details",
   "of":"net.nanopay.crunch.onboardingModels.TransactionDetailsData",
@@ -562,4 +550,40 @@ p({
   "wizardlet": {
     "class": "foam.nanos.crunch.ui.CapabilityWizardlet"
   },
+})
+
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-16",
+  "name":"Business Registration Date",
+  "of":"net.nanopay.crunch.onboardingModels.BusinessRegistrationDateData",
+  "description":"Business Registration Date",
+  "version":"0",
+  "enabled":true,
+  "visible":true
+})
+
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-17",
+  "name":"Business Incorporated Date",
+  "of":"net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData",
+  "description":"Business Incorporated Date",
+  "version":"0",
+  "enabled":true,
+  "visible":true
+})
+
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-18",
+  "name":"Tax Id Number",
+  "of":"net.nanopay.crunch.onboardingModels.TaxIdNumberData",
+  "description":"Tax Id Number",
+  "version":"0",
+  "enabled":true,
+  "visible":true
 })
