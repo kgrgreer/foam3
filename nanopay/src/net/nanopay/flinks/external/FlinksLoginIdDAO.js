@@ -77,8 +77,8 @@ foam.CLASS({
 
         FlinksLoginId flinksLoginId = (FlinksLoginId) obj;
 
-        // When a user has not been explicitly set
-        if ( !flinksLoginId.getForceNew() && flinksLoginId.getUser() == 0 ) {
+        // When a user has not been explicitly set, attempt to resolve the loginId against previous calls
+        if ( ! flinksLoginId.getSkipLoginIdResolution() && flinksLoginId.getUser() == 0 ) {
 
           // Check if we have seen the Flinks LoginId before, using the user and business previously provisioned
           List oldRecords = ((ArraySink) getDelegate().where(AND(
