@@ -31,11 +31,6 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Boolean',
-      name: 'forceNew'
-      // TODO: remove this!!!
-    },
-    {
       class: 'String',
       name: 'id',
       hidden: true,
@@ -55,6 +50,12 @@ foam.CLASS({
       class: 'String',
       name: 'institution',
       documentation: 'Flinks Institution'
+    },
+    {
+      class: 'Boolean',
+      name: 'skipLoginIdResolution',
+      documentation: 'Whether to skip resolution of loginId against FlinksLoginId calls',
+      storageTransient: true
     },
     {
       class: 'Reference',

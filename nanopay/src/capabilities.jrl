@@ -512,6 +512,31 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
+  "id":"56D2D946-6085-4EC3-8572-04A17225F86A",
+  "name":"API CAD Business Payments Sending",
+  "description":"Unlock onboarding for sending Canadian payments for a business",
+  "icon":"/images/capabilityIcons/CADOnboardCap.svg",
+  "version":"0",
+  "enabled":true,
+  "visible":false,
+  "keywords":["intuit"]
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"9C6D8CFE-50B8-4507-A595-78DD9E08EA2D",
+  "name":"Expanded Business Onboarding Details",
+  "description": "Extra properties needed to onboarding a business for sending payments",
+  "of":"net.nanopay.crunch.registration.BusinessDetailExpandedData",
+  "version":"0",
+  "enabled":true,
+  "visible":false,
+  "daoKey":"businessDAO",
+  "contextDAOFindKey":"subject.user"
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
   "id":"18DD6F03-998F-4A21-8938-358183151F96",
   "name":"API CAD Business Payments Receiving",
   "description":"Unlock onboarding for receiving Canadian payments for a business",
@@ -593,6 +618,16 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"A285FDFA-3C6B-4150-A0F4-B72E664A3A9E",
+  "name":"Business Signing Officer",
+  "description":"Business has a signing officer",
+  "version":"0",
+  "enabled":true,
+  "visible":false
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"7BE7F3EE-D887-42E9-8042-680C6BF1C6AE",
   "name":"Signing Officers",
   "of":"net.nanopay.crunch.registration.SigningOfficerList",
   "version":"0",

@@ -546,6 +546,21 @@ p({
   "priority": 16
 })
 
+//API CAD Business Payments Sending
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"56D2D946-6085-4EC3-8572-04A17225F86A",
+  "targetId":"18DD6F03-998F-4A21-8938-358183151F96",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"56D2D946-6085-4EC3-8572-04A17225F86A",
+  "targetId":"9C6D8CFE-50B8-4507-A595-78DD9E08EA2D",
+  "priority": 2
+})
+
+
 //API CAD Business Payments Receiving
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
@@ -598,8 +613,14 @@ p({
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"A285FDFA-3C6B-4150-A0F4-B72E664A3A9E",
-  "targetId":"25D9499A-36D3-436A-9C87-3CA41B5FC08F",
+  "targetId":"7BE7F3EE-D887-42E9-8042-680C6BF1C6AE",
   "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"A285FDFA-3C6B-4150-A0F4-B72E664A3A9E",
+  "targetId":"25D9499A-36D3-436A-9C87-3CA41B5FC08F",
+  "priority": 2
 })
 
 //User Signing Officer Capability
