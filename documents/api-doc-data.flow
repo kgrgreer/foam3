@@ -837,11 +837,6 @@ PAUSED = 10, CANCELLED = 11, PENDING_PARENT_COMPLETED = 12, SCHEDULED = 13}</p><
       <td>Date of completion.</td>
     </tr>
     <tr>
-      <td>messageId</td>
-      <td>String </td>
-      <td>Defined by ISO 20022 (Pacs008)</td>
-    </tr>
-    <tr>
       <td>sourceCurrency</td>
       <td>String </td>
       <td>Source currency.</td>
@@ -870,11 +865,6 @@ PAUSED = 10, CANCELLED = 11, PENDING_PARENT_COMPLETED = 12, SCHEDULED = 13}</p><
       <td>scheduledTime</td>
       <td>DateTime </td>
       <td>The scheduled date when transaction should be processed.</td>
-    </tr>
-    <tr>
-      <td>searchName</td>
-      <td>String </td>
-      <td>This property exists only as a means to let users filter transactions by payer or payee name.</td>
     </tr>
     <tr>
       <td>lifecycleState</td>
