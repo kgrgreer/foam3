@@ -408,6 +408,7 @@ p({
 
 p({
   "class":"net.nanopay.country.br.NatureCode",
+  "operationType":"32023",
   "id":"7d362730-b13d-4d0d-98f2-292bcdf6126f",
   "name":"International travel expenses - abroad - tourism"
 })
