@@ -1161,7 +1161,7 @@ FOAM_FILES([
   { name: 'net/nanopay/iso20022/ISODateTest' },
   { name: 'net/nanopay/iso20022/ISODateTimeTest' },
   { name: 'net/nanopay/iso20022/ISOTimeTest' },
-  { name: 'net/nanopay/iso20022/ISO20022Transaction' },
+  { name: 'net/nanopay/tx/ISO20022Transaction' },
   { name: 'net/nanopay/iso20022/PacsTransaction' },
 
   // sme
