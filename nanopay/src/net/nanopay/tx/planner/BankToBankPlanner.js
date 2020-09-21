@@ -101,7 +101,7 @@ foam.CLASS({
               ci.addNext(dp);
               dp.setInitialStatus(TransactionStatus.COMPLETED);
               if (getCreateCompliance()) {
-                ComplianceTransaction ct = createCompliance(txn);
+                ComplianceTransaction ct = createComplianceTransaction(txn);
                 ct.addNext(ci);
                 t.addNext(ct);
               }

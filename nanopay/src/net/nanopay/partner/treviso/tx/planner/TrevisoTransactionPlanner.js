@@ -97,7 +97,7 @@ foam.CLASS({
       );
       txn.setAmount(fxQuote.getSourceAmount());
 
-      txn.addNext(createCompliance(txn));
+      txn.addNext(createComplianceTransaction(txn));
       txn.addNext(createLimit(txn));
 
       TrevisoTransaction trevisoTxn = new TrevisoTransaction();
