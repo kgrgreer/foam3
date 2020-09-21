@@ -98,7 +98,7 @@ foam.CLASS({
           // Inject compliance transaction before each child transaction and
           // add it as the next of the composite transaction
           var quotedChild = quoteTxn(x, childTransaction, quote, false);
-          var compliance = createCompliance(quotedChild);
+          var compliance = createComplianceTransaction(quotedChild);
           compliance.addNext(quotedChild);
           ct.addNext(compliance);
         }

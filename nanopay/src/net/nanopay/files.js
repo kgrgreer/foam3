@@ -313,7 +313,6 @@ FOAM_FILES([
 
   // afex
   { name: 'net/nanopay/fx/FXSummaryTransaction' },
-  { name: 'net/nanopay/iso20022/ISO20022Transaction' },
   { name: 'net/nanopay/fx/afex/AFEXTransaction' },
   { name: 'net/nanopay/fx/afex/AFEX' },
   { name: 'net/nanopay/fx/afex/AFEXBeneficiary' },
@@ -1162,6 +1161,7 @@ FOAM_FILES([
   { name: 'net/nanopay/iso20022/ISODateTest' },
   { name: 'net/nanopay/iso20022/ISODateTimeTest' },
   { name: 'net/nanopay/iso20022/ISOTimeTest' },
+  { name: 'net/nanopay/iso20022/ISO20022Transaction' },
   { name: 'net/nanopay/iso20022/PacsTransaction' },
 
   // sme

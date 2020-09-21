@@ -90,7 +90,7 @@ foam.CLASS({
             fxSummary.setPaymentProvider(paymentProvider);
           }
 
-          fxSummary.addNext(createCompliance(fxSummary));
+          fxSummary.addNext(createComplianceTransaction(fxSummary));
           fxSummary.addNext(leg1.getNext()[0].getNext()[0]);
           fxSummary.addNext(leg2.getNext()[0].getNext()[0]);
           return fxSummary;

@@ -269,7 +269,7 @@ foam.CLASS({
         summary.setFxExpiry(tx.getFxExpiry());
         summary.setInvoiceId(tx.getInvoiceId());
         summary.addNext(tx);
-        summary.addNext(createCompliance(tx));
+        summary.addNext(createComplianceTransaction(tx));
         return summary;
       `
     }
