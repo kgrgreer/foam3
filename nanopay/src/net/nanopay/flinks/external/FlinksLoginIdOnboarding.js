@@ -36,25 +36,12 @@ foam.CLASS({
         If not provided, the login type from Flinks is used to determine the type of onboarding.`
     },
     {
-      class: 'Map',
-      name: 'missingUserCapabilityDataObjects',
-      javaFactory: `
-        return new HashMap<String,FObject>();
-      `,
+      name: 'capabilityPayloads',
+      class: 'FObjectArray',
+      of: 'foam.nanos.crunch.connection.CapabilityPayload',
       readPermissionRequired: false,
       writePermissionRequired: true,
-      documentation: 'Onboarding capabilities that remain to be satisfied for user'
-    }
-    ,
-    {
-      class: 'Map',
-      name: 'missingBusinessCapabilityDataObjects',
-      javaFactory: `
-        return new HashMap<String,FObject>();
-      `,
-      readPermissionRequired: false,
-      writePermissionRequired: true,
-      documentation: 'Onboarding capabilities that remain to be satisfied for business'
+      documentation: 'Onboarding capabilities that remain to be satisfied for top level capabilities'
     },
     {
       class: 'FObjectProperty',
