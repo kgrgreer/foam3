@@ -269,5 +269,7 @@ p({
         }
     });
     print("TransactionPlan Expiry Cron removed " + expiredPlans + " expired plans at " + now );
+    logger = x.get("logger");
+    logger.info(new Object[] {"TransactionPlan Expiry Cron removed " + expiredPlans + " expired plans at " + now});
   """
 })
