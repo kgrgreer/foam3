@@ -37,8 +37,8 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'INVALID_CPF', messages: 'Invalid CPF.' },
-    { name: 'INVALID_NAME', messages: 'Click to verify name.' }
+    { name: 'INVALID_CPF', message: 'Invalid CPF Number' },
+    { name: 'INVALID_NAME', message: 'Click to verify name' }
   ],
 
   sections: [
@@ -58,17 +58,18 @@ foam.CLASS({
       help: `The CPF (Cadastro de Pessoas Físicas or Natural Persons Register) is a number assigned by the Brazilian revenue agency to both Brazilians and resident aliens who are subject to taxes in Brazil.`,
       view: {
         class: 'foam.u2.TextField',
-        placeholder: '12345678910',
-        minLength: 11,
         maxLength: 11
       },
       validationPredicates: [
         {
-          args: ['data'],
+          args: ['data', 'cpfName'],
           predicateFactory: function(e) {
-            return e.EQ(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.CPF.DATA }), 11);
+            return e.AND(
+              e.EQ(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.CPF.DATA }), 11),
+              e.GT(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.CPF.CPF_NAME }), 0)
+            );
           },
-          errorMessage: 'Invalid CPF.'
+          errorMessage: 'INVALID_CPF'
         }
       ],
       postSet: function(_,n) {
@@ -102,6 +103,9 @@ foam.CLASS({
           }
         });
       },
+      visibility: function(cpfName) {
+        return cpfName.length > 0 ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      },  
       validationPredicates: [
         {
           args: ['verifyName'],
