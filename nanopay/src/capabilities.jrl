@@ -124,6 +124,7 @@ p({
   "reviewRequired":true,
   "associatedEntity":2,
   "permissionsGranted":[
+    "net.nanopay.partner.treviso.trevisounlockpaymenttermsandconditions.section.reviewAgreementDocumentsSection",
     "certifydatareviewed.rw.reviewed",
     "user.invoice.pay",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",
@@ -144,6 +145,7 @@ p({
     "net.nanopay.crunch.acceptancedocuments.capabilities.cadafexterms.section.reviewAgreementDocumentsSection"
   ],
   "permissionsIntercepted": [
+    "net.nanopay.partner.treviso.trevisounlockpaymenttermsandconditions.section.reviewAgreementDocumentsSection",
     "certifydatareviewed.rw.reviewed",
     "user.invoice.pay",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",

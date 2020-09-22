@@ -172,10 +172,7 @@ foam.CLASS({
         placeholder: 'Please select',
         choices: [
           ['1', '1st Holder / 1o Titular'],
-          ['2', '2nd Holder / 2o Titular'],
-          ['3', '1st Holder / 1o Titular'],
-          ['4', '2nd Holder / 2o Titular'],
-          ['5', '1st Holder / 1o Titular']
+          ['2', '2nd Holder / 2o Titular']
         ]
       },
       validateObj: function(accountOwnerType) {

@@ -207,8 +207,7 @@ foam.CLASS({
   methods: [
     {
       name: 'getCpfName',
-      code:  async function(cpf) {
-      debugger
+      code: async function(cpf) {
         return await this.brazilVerificationService.getCPFName(this.__subContext__, cpf);
       }
     },
