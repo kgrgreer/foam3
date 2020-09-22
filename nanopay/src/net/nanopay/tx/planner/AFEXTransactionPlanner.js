@@ -266,7 +266,7 @@ foam.CLASS({
         summary.setFxRate(tx.getFxRate());
         summary.setFxExpiry(tx.getFxExpiry());
         summary.setInvoiceId(tx.getInvoiceId());
-        summary.addNext(createCompliance(tx));
+        summary.addNext(createComplianceTransaction(tx));
 
         // create AFEXBeneficiaryComplianceTransaction
         AFEXBeneficiaryComplianceTransaction afexCT = new AFEXBeneficiaryComplianceTransaction();

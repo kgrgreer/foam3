@@ -246,7 +246,7 @@ foam.CLASS({
       `
     },
     {
-      name: 'createCompliance',
+      name: 'createComplianceTransaction',
       documentation: 'Creates a compliance transaction and returns it',
       args: [
         { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }

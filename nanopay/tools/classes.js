@@ -783,6 +783,8 @@ var classes = [
   'net.nanopay.iso20022.ISODateTest',
   'net.nanopay.iso20022.ISODateTimeTest',
   'net.nanopay.iso20022.ISOTimeTest',
+  'net.nanopay.tx.ISO20022Transaction',
+  'net.nanopay.tx.PacsTransaction',
 
   // meter
   'net.nanopay.meter.AdminAccessConfig',
@@ -1206,12 +1208,15 @@ var classes = [
   'net.nanopay.crunch.onboardingModels.TransactionDetailsData',
   'net.nanopay.crunch.onboardingModels.BusinessDirectorsData',
   'net.nanopay.crunch.onboardingModels.CertifyDataReviewed',
-  'net.nanopay.crunch.onboardingModels.InternationalBusinessInformationData',
   'net.nanopay.crunch.BusinessOwnershipToBeneficialOwnerDAO',
   'net.nanopay.crunch.onboardingModels.SigningOfficerCapabilityInterceptPredicate',
   'net.nanopay.crunch.onboardingModels.SigningOfficerPrivilegesRequested',
   'net.nanopay.crunch.onboardingModels.UserIsSigningOfficerOfBusiness',
   'net.nanopay.crunch.onboardingModels.UserBirthDateData',
+  'net.nanopay.crunch.onboardingModels.BusinessRegistrationDateData',
+  'net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData',
+  'net.nanopay.crunch.onboardingModels.TaxIdNumberData',
+
 
   // crunch notification
   'net.nanopay.crunch.UCJExpiryReminderCron',

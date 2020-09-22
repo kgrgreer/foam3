@@ -745,14 +745,6 @@ foam.CLASS({
       tableWidth: 172
     },
     {
-      documentation: `Defined by ISO 20220 (Pacs008)`,
-      class: 'String',
-      name: 'messageId',
-      visibility: 'RO',
-      includeInDigest: true,
-      hidden: true
-    },
-    {
       class: 'String',
       name: 'sourceCurrency',
       includeInDigest: true,
@@ -916,16 +908,6 @@ foam.CLASS({
           foam.u2.DisplayMode.HIDDEN;
       },
       documentation: `The scheduled date when transaction should be processed.`
-    },
-    {
-      // REVIEW - Remove - Why is this on the base Transaction? This should be on a view model.
-      class: 'String',
-      name: 'searchName',
-      label: 'Payer/Payee Name',
-      documentation: 'This property exists only as a means to let users filter transactions by payer or payee name.',
-      transient: true,
-      hidden: true,
-      searchView: { class: 'net.nanopay.tx.ui.PayeePayerSearchView' }
     },
     {
       class: 'foam.core.Enum',

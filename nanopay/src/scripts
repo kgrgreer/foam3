@@ -303,9 +303,11 @@ onboardingGUID = "554af38a-8225-87c8-dfdf-eeb15f71215f";
 
 import foam.nanos.auth.Address;
 import foam.nanos.crunch.UserCapabilityJunction;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
 import net.nanopay.crunch.onboardingModels.BusinessInformationData;
-import net.nanopay.crunch.onboardingModels.InternationalBusinessInformationData;
-
+import net.nanopay.crunch.onboardingModels.BusinessRegistrationDateData;
+import net.nanopay.crunch.onboardingModels.TaxIdNumberData;
 ucj = x.get("userCapabilityJunctionDAO");
 
 entryBuilder = new UserCapabilityJunction.Builder(x)
@@ -317,14 +319,17 @@ data1 = new BusinessInformationData.Builder(x)
   .setAddress(new Address.Builder(x)
     .setStreetName("Street McStreetFace")
     .build())
+data2 = new BusinessRegistrationDateData.Builder(x)
+  .setBusinessRegistrationDate(new GregorianCalendar(1990, Calendar.SEPTEMBER, 19).getTime())
   .build();
-ucj.put(entryBuilder.setTargetId(onboardingGUID+"-4")
-  .setData(data1).build());
-data2 = new InternationalBusinessInformationData.Builder(x)
-  .setCountryOfBusinessRegistration("US")
-  .build();
-ucj.put(entryBuilder.setTargetId(onboardingGUID+"-5")
+ucj.put(entryBuilder.setTargetId(onboardingGUID+"-16")
   .setData(data2).build());
+
+data3 = new TaxIdNumberData.Builder(x)
+  .setTaxIdentificationNumber("111111111")
+  .build();
+ucj.put(entryBuilder.setTargetId(onboardingGUID+"-18")
+  .setData(data3).build());
   """
 })
 p({"class":"foam.nanos.script.Script","id":"testKotakPayment","description":"submit a kotak payment","code":"import net.nanopay.kotak.Test;\nimport net.nanopay.kotak.KotakService;\nimport net.nanopay.kotak.KotakPaymentProcessor;\n\nKotakService kotakService = new KotakService(x);\n\nTest test = new Test();\n\n// kotakService, msgSource, clientCode, myProdCode, payMode, senderAccountNo, txnAmnt, beneAcctNo, beneName,\n// IFSCCode, remitterName, beneACType, remitterAddress, remitterAcNo, remitPurpose\n\n// testing\ntest.paymentTest(kotakService, \"NANOPAY\", \"TESTAPI\", \"NETPAY\", \"IMPS\", \"9411128990\", 500, \"9111175690\", \"HELLO API\", \n                 \"ICIC0000361\", \"NANOPAY\", \"SAVING\", \"905 King St W Suite 300\", \"9411128990\", \"TRANSFER_FROM_SELF\");\n\nprint(\"paymentMessageId: \" + test.paymentMessageId);\nprint(\"paymentResponseStatusCode: \" + test.paymentResponseStatusCode);\nprint(\"paymentResponseStatusRem: \" + test.paymentResponseStatusRem);\nprint(\"done\");"})
