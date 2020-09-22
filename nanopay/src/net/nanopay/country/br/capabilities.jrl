@@ -409,7 +409,7 @@ p({
 p({
   "class":"net.nanopay.country.br.NatureCode",
   "operationType":"32023",
-  "id":"7d362730-b13d-4d0d-98f2-292bcdf6126f",
+  "id":"55bedf8b-6033-49fe-8702-2eab45c0a04d",
   "name":"International travel expenses - abroad - tourism"
 })
 
@@ -419,7 +419,7 @@ p({
   "payerType":"9",
   "approvalType":"6",
   "payeeType":"90",
-  "id":"68118657-5159-4aef-ab58-b20824e030ff",
+  "id":"35238291-53b8-48c5-bdaf-32dc68a9c43c",
   "name":"Miscellaneous out services - wages and personal guidelines"
 })
 
@@ -429,7 +429,7 @@ p({
   "payerType":"0",
   "approvalType":"5",
   "payeeType":"90",
-  "id":"6ace13f6-def5-40d5-a327-755807c661cb",
+  "id":"7de8f371-959a-47b5-98d0-65d022ccf63a",
   "name":"Acquisition of merchandise delivered in the country"
 })
 
@@ -439,7 +439,7 @@ p({
   "payerType":"50",
   "approvalType":"9",
   "payeeType":"59",
-  "id":"12343880-1a3e-4108-9783-6779635c8f5f",
+  "id":"c44f4ae9-7a42-418d-9f6f-767b8a9b07dd",
   "name":"Export of goods"
 })
 
@@ -449,7 +449,7 @@ p({
   "payerType":"50",
   "approvalType":"9",
   "payeeType":"89",
-  "id":"3688b812-5b7b-4542-8f0f-161798c54bd2",
+  "id":"83ac1161-60ce-42ff-b8ec-f3b26f46b6d6",
   "name":"Export of goods"
 })
 
@@ -459,7 +459,7 @@ p({
   "payerType":"90",
   "approvalType":"0",
   "payeeType":"54",
-  "id":"5df87465-c2ff-40a5-a8ac-74c383d51ea6",
+  "id":"af9da965-94d6-4913-9b3f-87f522acde98",
   "name":"Other expenditure / revenue - freight sea"
 })
 
@@ -469,7 +469,7 @@ p({
   "payerType":"90",
   "approvalType":"0",
   "payeeType":"54",
-  "id":"745e3918-5d07-4512-ae06-c6f9032df187",
+  "id":"fd28f784-4887-49bf-85c2-80263143a8f7",
   "name":"Other expenditure / revenue - freight sea"
 })
 
@@ -479,7 +479,7 @@ p({
   "payerType":"9",
   "approvalType":"0",
   "payeeType":"59",
-  "id":"353607bf-b42f-4921-9817-5bfa659c0892",
+  "id":"12ec89f0-e169-4b8c-acd6-f295afbca000",
   "name":"Current transfers - taxes"
 })
 
@@ -489,7 +489,7 @@ p({
   "payerType":"9",
   "approvalType":"0",
   "payeeType":"54",
-  "id":"c1a0fbad-b682-4538-a6f6-c74dd7b0d49c",
+  "id":"efdc3a3f-6f12-4eba-acd1-6e909d6427a0",
   "name":"public. PESQ. MERC. and opinion and PART. fairs EXP."
 })
 
@@ -499,7 +499,7 @@ p({
   "payerType":"90",
   "approvalType":"0",
   "payeeType":"59",
-  "id":"c666174e-95e6-4a1e-b53c-a76c7461deb3",
+  "id":"732b8645-80fc-428f-ab0f-1319cdd86d2f",
   "name":"Miscellaneous services and complementary expenses"
 })
 
@@ -509,7 +509,7 @@ p({
   "payerType":"55",
   "approvalType":"0",
   "payeeType":"59",
-  "id":"e5f1692c-ae53-495f-a729-f4185838ab1c",
+  "id":"a03fd1e2-204f-41cd-954f-f86ccf4d3a25",
   "name":"Commissions and other expenses on trade transactions"
 })
 
@@ -519,7 +519,7 @@ p({
   "payerType":"90",
   "approvalType":"0",
   "payeeType":"54",
-  "id":"7273c101-ce2e-4821-a72c-02051f25155b",
+  "id":"f86f2e0e-60ea-40b2-81a6-47eae320cb58",
   "name":"Tourist services - return"
 })
 
@@ -529,7 +529,7 @@ p({
   "payerType":"0",
   "approvalType":"5",
   "payeeType":"69",
-  "id":"61bdba3a-9521-4b43-8833-6773106fc373",
+  "id":"80fdeaca-8e2a-4318-a8a3-58cc5945c1f7",
   "name":"Financial and capital markets - investment funds"
 })
 
@@ -539,7 +539,7 @@ p({
   "payerType":"9",
   "approvalType":"0",
   "payeeType":"59",
-  "id":"ef4ea0e3-091d-466b-ae0b-54b880ea0462",
+  "id":"898e61d4-bef0-4982-8696-aa4f0e9ca2e8",
   "name":"Acquisition of goods in the country"
 })
 
@@ -549,7 +549,7 @@ p({
   "payerType":"9",
   "approvalType":"0",
   "payeeType":"29",
-  "id":"29d817c4-cd18-486d-a6e1-99a4fc8e9ad1",
+  "id":"fd480351-0ea3-46b3-a189-f17ef8c3e2ae",
   "name":"Others - buying and selling real estate in the country"
 })
 
@@ -560,7 +560,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"46",
-  "id":"4a1a6224-9a22-4706-9329-a5e0767be7c4",
+  "id":"0d5cae38-a6b3-4046-b405-dc225fdb464b",
   "name":"Export of goods"
 })
 
@@ -571,7 +571,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"49",
-  "id":"b6c44775-952a-40dd-b6b4-dcb57ba38ffe",
+  "id":"db19386d-1fe2-47c0-83f1-ff1eb4e48472",
   "name":"Export of goods"
 })
 
@@ -582,7 +582,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"50",
-  "id":"9355ef82-e4cf-4469-9d7f-5def15812d03",
+  "id":"8ad7d11a-44b2-4356-96d5-b39b02013a8a",
   "name":"Early payment"
 })
 
@@ -593,7 +593,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"e14bd3c4-df38-43a1-9c86-bafbbfb19208",
+  "id":"36f76581-d3eb-4781-a165-9316b97a8696",
   "name":"Export of goods"
 })
 
@@ -604,7 +604,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"50",
-  "id":"f7184bfd-cd8a-40ca-b8fd-e3176434ac62",
+  "id":"8a2c7a5a-e4e8-4371-9acf-122525041c34",
   "name":"Export of goods"
 })
 
@@ -615,7 +615,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"e2047407-5f0e-48d8-bb1b-0cbdb3ce42fe",
+  "id":"e0593d6b-9f5c-45e5-9af7-07d9df7162cd",
   "name":"Export of goods"
 })
 
@@ -626,7 +626,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"50",
-  "id":"1e1401a5-6572-4442-b3ca-4288ca9b87b9",
+  "id":"0cc118a1-0a22-4a12-9e50-f58a7de13481",
   "name":"Early payment"
 })
 
@@ -637,7 +637,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"90",
-  "id":"250e0b49-d3fb-4db1-9d1c-7b28b366bcf8",
+  "id":"4f7d6096-c6f7-4a46-8075-c351594dd16b",
   "name":"Export of goods"
 })
 
@@ -648,7 +648,7 @@ p({
   "approvalType":"2",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"09b367eb-36c5-41ea-8749-c780523c46bb",
+  "id":"b945017c-da32-4b1f-b6c1-4f17e647bccf",
   "name":"Export of goods"
 })
 
@@ -659,7 +659,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"40",
-  "id":"1c842a57-358a-44cf-911a-44805b0bce91",
+  "id":"7e14659b-dd8a-4608-8b2c-0200bfad77ef",
   "name":"Consigned export"
 })
 
@@ -670,7 +670,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"779fc72a-d0a5-4dab-a7ce-e07adac77631",
+  "id":"b7c218c1-4f4d-42cd-ac73-6f6d3011fe14",
   "name":"Simplified export - exchange"
 })
 
@@ -681,7 +681,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"90",
-  "id":"79fc4901-f779-4d6b-811b-e8c6cb98b563",
+  "id":"32afc973-b847-4479-9121-8a9e2f24fed8",
   "name":"Exp / simplified"
 })
 
@@ -692,7 +692,7 @@ p({
   "approvalType":"0",
   "payeeType":"99",
   "groupCode":"49",
-  "id":"0b0fc06e-0290-461f-bc5d-190281e3f70f",
+  "id":"68c22c34-249c-4c6a-aaac-56e8ece40e97",
   "name":"Simplified exchange export"
 })
 
@@ -703,7 +703,7 @@ p({
   "approvalType":"0",
   "payeeType":"99",
   "groupCode":"50",
-  "id":"5e5e3a8a-309e-49ca-9150-54f132a307af",
+  "id":"e5287469-56b1-4d06-871b-8fab847a82ac",
   "name":"Simplified export - exchange"
 })
 
@@ -714,7 +714,7 @@ p({
   "approvalType":"0",
   "payeeType":"99",
   "groupCode":"90",
-  "id":"13f8c811-051f-4735-95c2-c5023442039b",
+  "id":"4a598bd9-8db1-40b0-85d2-91c83565a7e4",
   "name":"Simplified export - exchange"
 })
 
@@ -725,7 +725,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"50",
-  "id":"687ea86a-0187-4fb0-b36e-3b2d32976829",
+  "id":"7f4408ef-4c1c-4e5f-a5c4-f7fe205fe73c",
   "name":"Export / back - to - back"
 })
 
@@ -736,7 +736,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"0076ab3b-fcc5-46ed-9062-87b3b9409072",
+  "id":"4e4c3cdf-f5b0-445f-b64f-5c52f0dc660b",
   "name":"Exports - back to back operations"
 })
 
@@ -747,7 +747,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"90",
-  "id":"1316cf75-a3e5-4ece-9f44-930856b67469",
+  "id":"7564656b-6d2a-4815-825a-94c6e421ac3b",
   "name":"Export / back - to - back"
 })
 
@@ -758,7 +758,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"30",
-  "id":"cafb1c6c-9179-46ee-adb3-7cbf7838bcea",
+  "id":"53c642fa-c26f-4411-9447-191bc76e0b85",
   "name":"Export goods - anticipated"
 })
 
@@ -769,7 +769,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"46",
-  "id":"0dd7c8f4-fae0-49dd-b4da-4627c7cd3716",
+  "id":"bc036323-aba2-47a3-97e7-1416e1d0d2bb",
   "name":"Export of merchandise - conversions"
 })
 
@@ -780,7 +780,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"50",
-  "id":"24e4dcf3-8076-41fc-b71c-0dacc97e30bc",
+  "id":"51173cbf-9d35-425a-90ce-e9af68b4952e",
   "name":"Export goods - anticipated"
 })
 
@@ -791,7 +791,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"748f08b8-7d91-49aa-b97b-99f158b55b76",
+  "id":"e8c08a9c-6011-4350-a740-94347fcb645c",
   "name":"Export of goods"
 })
 
@@ -802,7 +802,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"30",
-  "id":"d7f4cca2-b029-4a8a-b5ee-1b857d01252f",
+  "id":"78598e21-1f46-4e8d-8fa0-bbf1583ab667",
   "name":"Export of goods - draw back"
 })
 
@@ -813,7 +813,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"49",
-  "id":"161b3b76-a3f3-4550-b2ca-837641055b32",
+  "id":"a78a6199-be19-43cb-8655-45743ba5510b",
   "name":"Export goods - anticipated"
 })
 
@@ -824,7 +824,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"50",
-  "id":"e4a84877-3f6c-4e2f-aeb1-75d9319bfb5e",
+  "id":"05d33db1-0db6-4bbc-a985-aa15aceaa10f",
   "name":"Export goods - anticipated"
 })
 
@@ -835,7 +835,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"51",
-  "id":"8ace2dc7-1e8e-4ea7-a973-730cd7984d0a",
+  "id":"27f9c6b6-fd1b-4c48-81be-e2acff1e81a9",
   "name":"Export goods - PAYMENT. EF. third party"
 })
 
@@ -846,7 +846,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"52",
-  "id":"504db3b7-ade8-4545-a2d4-98da02d5c2f0",
+  "id":"b74101c9-edac-4a13-bdf1-806cb3dfaf23",
   "name":"Export goods - PAYMENT. EF. third party"
 })
 
@@ -857,7 +857,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"47e92c35-2450-400e-9f61-5362fd161c59",
+  "id":"37fb2e44-000c-4946-9294-04aac7afdf28",
   "name":"Export of goods"
 })
 
@@ -868,7 +868,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"30",
-  "id":"8d46d69c-2824-48db-9179-fbe2d7c87691",
+  "id":"ed4ca3a0-3c2a-4161-93db-48fe963f1729",
   "name":"Import of goods - draw back"
 })
 
@@ -879,7 +879,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"50",
-  "id":"6fefcb2e-aba9-4ec2-be68-558d1e441267",
+  "id":"49b77f74-124e-41a5-9c0c-da3e86102d0b",
   "name":"Import of goods"
 })
 
@@ -890,7 +890,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"46",
-  "id":"d28e5d5e-1b6e-4b65-8060-6dea00a4db8d",
+  "id":"891583e8-c12a-4b33-9f1b-b9510213d456",
   "name":"Import of goods"
 })
 
@@ -901,7 +901,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"49",
-  "id":"5200277b-b18c-4935-937e-51dc0a232291",
+  "id":"7ba9d672-3454-4d95-bc76-6d516fb5049c",
   "name":"Import of goods"
 })
 
@@ -912,7 +912,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"50",
-  "id":"33039c5e-75bd-4506-aaa0-787a8b700a5f",
+  "id":"eecb85f8-66d4-43b9-8c26-a187a5a00b7a",
   "name":"Import of goods - early"
 })
 
@@ -923,7 +923,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"e6bc95e2-b19b-439e-be3d-59114a8d0786",
+  "id":"1fa1c91c-9577-4d46-abc1-7db711b8c965",
   "name":"Import of goods"
 })
 
@@ -934,7 +934,7 @@ p({
   "approvalType":"0",
   "payeeType":"53",
   "groupCode":"90",
-  "id":"d7678494-5952-4bd2-971e-b1b1847582f6",
+  "id":"a42a06ea-6e1d-46f3-9a97-079c98f3003b",
   "name":"Import of goods"
 })
 
@@ -945,7 +945,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"50",
-  "id":"44a5a353-df76-4538-889c-3006967f0bdf",
+  "id":"f7f8b1f4-a0cb-4e13-bca3-bfe936c0b305",
   "name":"Early back to back"
 })
 
@@ -956,7 +956,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"d7ce62fe-3197-40ad-91e8-611772d5ee46",
+  "id":"c3bedf5b-2919-4768-9766-1c2bf00c751b",
   "name":"Back to back operations"
 })
 
@@ -967,7 +967,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"9c0d916d-78aa-43ba-960f-ad9e81b4303e",
+  "id":"70135e05-07f9-4a9e-811b-a045f01af233",
   "name":"Small orders"
 })
 
@@ -978,7 +978,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"4ab92d8c-f980-4ed7-b744-f2fa4a65fba5",
+  "id":"f06cea11-a660-4562-8db0-d521f7354da3",
   "name":"Small orders - international"
 })
 
@@ -989,7 +989,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"49",
-  "id":"e0dced13-fdf5-430b-9fde-50f03b28a6b9",
+  "id":"a84f00ac-9af0-4afe-ad87-076b7d4dc2d3",
   "name":"International orders"
 })
 
@@ -1000,7 +1000,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"50",
-  "id":"0e0b29e6-d7b8-444c-a14c-712926f1c42e",
+  "id":"c01d8a7e-04f1-4525-a123-4c7a3ac44cf4",
   "name":"International orders"
 })
 
@@ -1011,7 +1011,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"765c3b7c-431f-48b3-9e94-c6ae5e152129",
+  "id":"3f131daa-dab6-4bde-bcd5-f0a481f49744",
   "name":"International orders"
 })
 
@@ -1022,7 +1022,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"49",
-  "id":"367856de-d5b9-45b1-b7a3-afb4603dfe0e",
+  "id":"45e9a28b-9b36-4141-a069-bfe492f4223f",
   "name":"Adjustments in business transactions"
 })
 
@@ -1033,7 +1033,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"db3adde0-fb40-4ecb-b2e3-8d1dd9b2cc6a",
+  "id":"499b16b6-96d2-46c6-be6b-e85d9d9ae8ed",
   "name":"Adjustments in business transactions"
 })
 
@@ -1044,7 +1044,7 @@ p({
   "approvalType":"0",
   "payeeType":"82",
   "groupCode":"90",
-  "id":"800a00ab-37e7-4084-8157-5e2944e7e03c",
+  "id":"c59b5c59-7b3e-4e97-8a8b-abe3da1ef0c4",
   "name":"Goods - IMP. FINIMP"
 })
 
@@ -1055,7 +1055,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"30",
-  "id":"3d5c8343-c4ef-49e8-92ec-e7cd4572db46",
+  "id":"c6760282-f765-42ab-a0c8-1cc021571958",
   "name":"General import"
 })
 
@@ -1066,7 +1066,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"49",
-  "id":"44d6ded8-da6f-47c0-889e-472ad48b48f1",
+  "id":"8a993bcd-ba47-4c23-84f2-165708e069bb",
   "name":"General import"
 })
 
@@ -1077,7 +1077,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"50",
-  "id":"75bd44e2-c592-4965-a9ed-c6bd7ecf29c5",
+  "id":"10022fdb-2310-46b9-b359-6678ce55eea9",
   "name":"Advanced payment"
 })
 
@@ -1088,7 +1088,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"7a338800-4ef5-4176-98df-61c365115969",
+  "id":"add64ed6-21f4-48df-8860-8c9fb375f4de",
   "name":"General import"
 })
 
@@ -1099,7 +1099,7 @@ p({
   "approvalType":"0",
   "payeeType":"93",
   "groupCode":"30",
-  "id":"2e15efa3-9e6b-40c5-a674-b511a6ebd660",
+  "id":"cf243897-56fe-47be-80c7-5fc716707a4a",
   "name":"IMP.mercadorias - draw - back"
 })
 
@@ -1110,7 +1110,7 @@ p({
   "approvalType":"0",
   "payeeType":"93",
   "groupCode":"46",
-  "id":"785c6022-965e-4b21-8489-e51266b59521",
+  "id":"c702b3f9-2c85-479e-85f0-f70ed795e755",
   "name":"General import"
 })
 
@@ -1121,7 +1121,7 @@ p({
   "approvalType":"0",
   "payeeType":"93",
   "groupCode":"90",
-  "id":"cb9e5d48-c8e5-45d0-b286-52853aedde67",
+  "id":"5aa41540-d20b-43cb-a808-70e453619630",
   "name":"Associates - associates"
 })
 
@@ -1132,7 +1132,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"49",
-  "id":"5652f8af-892d-4262-ab3e-4599a2b05315",
+  "id":"4cbdb1a5-e012-4959-a463-eb0e06fb4a31",
   "name":"Currency repatriation"
 })
 
@@ -1143,7 +1143,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"50",
-  "id":"70f847b3-6ce2-434e-9b9d-911bbede74cb",
+  "id":"dccd5fdb-6ee5-4ebd-9375-8d377b674afe",
   "name":"Advanced payment"
 })
 
@@ -1154,7 +1154,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"a2927711-ebbf-42c0-88b9-1e442f07487d",
+  "id":"de3e23cb-fc9b-4afc-9359-a8751be62b64",
   "name":"General import"
 })
 
@@ -1165,7 +1165,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"50",
-  "id":"9c4e933e-45d4-4a56-b92c-148df77cf204",
+  "id":"e2b8c2d4-3824-4a30-9843-95037170dd47",
   "name":"Advanced payment"
 })
 
@@ -1176,7 +1176,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"90",
-  "id":"37732e55-877d-44b6-bfe4-dcc0277c6756",
+  "id":"ca228f93-669f-4039-9fcc-d0f9be78e365",
   "name":"General import"
 })
 
@@ -1187,7 +1187,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"4debdeba-82c4-49c3-81bc-ca4e0433cdd1",
+  "id":"639020f2-c271-4d9d-b099-4f53b9888ec0",
   "name":"Import - back to back operations"
 })
 
@@ -1198,7 +1198,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"d575fd26-8fbb-41b5-835e-ad9bf678e9a5",
+  "id":"ecc6d9f2-aa55-41a6-953e-abb1650668ac",
   "name":"Import - back to back operations"
 })
 
@@ -1209,7 +1209,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"90",
-  "id":"510eb03f-ff3f-4a13-8012-605d80a3054f",
+  "id":"6ce3dce1-1006-4f03-af83-c6e40d3dde1c",
   "name":"Back to back - out"
 })
 
@@ -1220,7 +1220,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"1af5b26b-91ba-4d39-a7e8-de44b4799b37",
+  "id":"1ef8df41-f3bc-497b-8b00-f6c0d3a586f4",
   "name":"Simplified / IMP"
 })
 
@@ -1231,7 +1231,7 @@ p({
   "approvalType":"0",
   "payeeType":"99",
   "groupCode":"90",
-  "id":"6c09906b-646e-4379-872c-8351f7832241",
+  "id":"782c4f80-6dd5-4707-b7fa-dbba193dbbd1",
   "name":"Importation - simplified exchange"
 })
 
@@ -1242,7 +1242,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"d016d868-0d87-408e-a3a3-2d2605a4aa9e",
+  "id":"247ef484-129b-4b86-b83e-1e120c9acd2e",
   "name":"Other transport revenue / expenses"
 })
 
@@ -1253,7 +1253,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"71839a3b-01da-482b-b7e0-fcdcc0fb4b13",
+  "id":"430bdcf4-7c88-4c0d-9a28-dc37aeda688e",
   "name":"Other transport revenues / expenses - maritime"
 })
 
@@ -1264,7 +1264,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"7559929f-9b7f-4771-9c00-fd577d888e21",
+  "id":"051fa22b-50ac-4584-a24c-118f7e598b2c",
   "name":"Transp - freight - maritime"
 })
 
@@ -1275,7 +1275,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"e9a5a6a9-a943-435a-a8a3-4670003834e8",
+  "id":"7516c52f-82ca-4b88-aaeb-0b53fb37eba7",
   "name":"Transp - fretes - on export - air"
 })
 
@@ -1286,7 +1286,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"90",
-  "id":"7bf5fb71-0566-4322-bc38-83790abffe53",
+  "id":"71f755c0-da53-40fa-9718-4e20135478c9",
   "name":"Air freight without export"
 })
 
@@ -1297,7 +1297,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"0ae72c7c-9eb3-4f17-b307-e099befc3a09",
+  "id":"8dd6b6b0-e94c-46d2-af47-70798209b53e",
   "name":"Transp - freight on export - sea"
 })
 
@@ -1308,7 +1308,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"8e7a1a41-7571-491c-b8f5-7a40db0afe28",
+  "id":"3d441aeb-d54b-4f6c-8d2e-fec8169e541c",
   "name":"Transp - fretes - about import - air"
 })
 
@@ -1319,7 +1319,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"eeecfe6d-b6b6-44dd-8991-3c64053ba775",
+  "id":"019eaade-5ecb-4722-b1f2-3ce8caacdd1f",
   "name":"Air freight without import"
 })
 
@@ -1330,7 +1330,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"90",
-  "id":"56e43590-2fbc-4dad-b1ed-32388881c4c1",
+  "id":"0e66c7f5-9c45-4014-8fff-66fbe08386c9",
   "name":"Freight without import"
 })
 
@@ -1341,7 +1341,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"859b36f4-5a4d-45b5-98b7-e5f31f83909b",
+  "id":"fbe41fdb-de81-47f9-a558-b3fc50d10b53",
   "name":"Transp - fretes - about import - sea"
 })
 
@@ -1352,7 +1352,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"90",
-  "id":"074699ba-baba-4cf9-8fbd-6c1a2ecfee6e",
+  "id":"126a0fbe-c09d-4ca9-80e8-c6fb1c47d04b",
   "name":"Sea freight without import"
 })
 
@@ -1363,7 +1363,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"dd8f570a-2575-4efa-8918-242768167129",
+  "id":"4ef5bf86-bc25-4db6-80db-6540f1687f2d",
   "name":"Transp - fretes - about import - land"
 })
 
@@ -1374,7 +1374,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"56a74027-0673-43b4-a197-f14543c3721c",
+  "id":"2219404d-223b-4676-9cfe-fea64d1f6264",
   "name":"Freight other"
 })
 
@@ -1385,7 +1385,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"ef0badbd-c830-4e0e-bb19-d5339cc5e7ca",
+  "id":"5190ac45-4ac7-4885-b975-3979aac1bf11",
   "name":"Other sea freight"
 })
 
@@ -1396,7 +1396,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"11b7fb20-8d31-4e1b-8955-ad69f3c109b6",
+  "id":"06eab46a-bedf-4f5c-8b2c-b6741142cdf6",
   "name":"Freight other"
 })
 
@@ -1407,7 +1407,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"7ccf6798-43ed-4a53-9515-e396d5bd8376",
+  "id":"d133c093-9b12-4b25-8fe2-05d7bd5c6128",
   "name":"Air freight without export"
 })
 
@@ -1418,7 +1418,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"49",
-  "id":"ec693784-398d-485e-9cfd-2d82dc91fb99",
+  "id":"8f105bc7-c35b-430e-bde2-ecc2df52830c",
   "name":"Air freight on imports"
 })
 
@@ -1429,7 +1429,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"062f55c6-7957-4595-b283-c039a3ef399a",
+  "id":"97bd1feb-f2e4-45f7-95d2-a4e7dddac024",
   "name":"Air freight on imports"
 })
 
@@ -1440,7 +1440,7 @@ p({
   "approvalType":"9",
   "payeeType":"0",
   "groupCode":"59",
-  "id":"ebff1874-8dd2-47ed-ba34-7ecd628cb40e",
+  "id":"f7b2a790-fe95-495f-8683-7951eb9f0b95",
   "name":"Other freight"
 })
 
@@ -1451,7 +1451,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"03c17d79-f70f-4bcd-b411-a1950e730560",
+  "id":"e14f47ff-76c7-40a5-a1d2-01538fa662d9",
   "name":"Other freight"
 })
 
@@ -1462,7 +1462,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"e79f6d84-12f6-4e39-a3ff-daa5b844baf1",
+  "id":"a7033d80-4f5f-4817-8e94-6e862cb8fd9f",
   "name":"Other revenue / expenses - air transport"
 })
 
@@ -1473,7 +1473,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"cac7d2a7-aad8-41a2-a199-89021681649b",
+  "id":"d2194671-7216-43d5-ae6d-457c7fd1dd9e",
   "name":"Transport - freight - air"
 })
 
@@ -1484,7 +1484,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"f273a32d-ffa8-4794-879b-a6edcf6d40cc",
+  "id":"01bc6bd1-e21c-40b5-ace3-761e0af6b6a5",
   "name":"Air - tickets"
 })
 
@@ -1495,7 +1495,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"c78f83b5-4d44-4f3b-95d5-4a38bdbc9a67",
+  "id":"061bd63a-f5af-4f6e-bea2-2726c21a76e7",
   "name":"Sea freight without export"
 })
 
@@ -1506,7 +1506,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"49",
-  "id":"b676a3e9-f9f3-4e9a-b09a-e2bbf2901079",
+  "id":"19e621fc-ece8-4919-aec8-7bde2fd9ff0f",
   "name":"Currency repatriation"
 })
 
@@ -1517,7 +1517,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"79adcce6-f951-4fb2-86c6-8d6b9deac0eb",
+  "id":"5ae3b480-9648-4704-98d7-0587aaba2d53",
   "name":"Sea freight on imports"
 })
 
@@ -1528,7 +1528,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"df0722a2-37f4-4db8-949a-79ab7f9babaf",
+  "id":"6e65449b-a8ca-43f2-87f6-438e0465d0ed",
   "name":"Sea freight - other freight"
 })
 
@@ -1539,7 +1539,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"49",
-  "id":"9d456fa1-e827-4c21-925a-687c6f24656a",
+  "id":"f1fe180a-4266-4752-be52-8935233c5206",
   "name":"Other expenditure / revenue - freight sea"
 })
 
@@ -1550,7 +1550,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"34a29666-9c28-4014-a3f8-0b20902d4724",
+  "id":"bf953382-2cf5-4240-a75b-4aa3e3d3d35e",
   "name":"Other transport revenues / expenses - maritime"
 })
 
@@ -1561,7 +1561,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"fe25f339-771d-413e-b74c-111477ce9026",
+  "id":"50b097b0-c1af-408b-b981-7c859c27b5ca",
   "name":"Freight"
 })
 
@@ -1572,7 +1572,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"b92d08e1-0765-4022-b9e8-86868b62f212",
+  "id":"26d623e3-995b-4018-b7b6-db35cc8ca9d8",
   "name":"Road - export freight"
 })
 
@@ -1583,7 +1583,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"cebbc9e4-33a2-4282-9f07-e698241e8dde",
+  "id":"a96d000b-5f20-4c94-a012-03dabe41ab0c",
   "name":"Rodoviario - other freight"
 })
 
@@ -1594,7 +1594,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"b606d61e-dbb7-4c73-84dc-c5a3be94ae8d",
+  "id":"ac8baa49-9f29-42db-9465-af3598dd54f3",
   "name":"Other transport revenues / expenses "
 })
 
@@ -1605,7 +1605,7 @@ p({
   "approvalType":"0",
   "payeeType":"89",
   "groupCode":"90",
-  "id":"a50501b3-e360-4064-b69a-da09273d3f8e",
+  "id":"dd2b2fab-0674-4dfd-9d2e-556e95ee25f1",
   "name":"Export insurance"
 })
 
@@ -1616,7 +1616,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"7c02fd59-cb43-4739-a75d-9e0ca5b61e38",
+  "id":"77790574-c17b-4fc3-914a-5f1556196c0a",
   "name":"Insurance - TRANSP. INT. MERC - premium without export"
 })
 
@@ -1627,7 +1627,7 @@ p({
   "approvalType":"0",
   "payeeType":"89",
   "groupCode":"90",
-  "id":"6aa1198d-ee53-4806-a63a-a9cefc354c17",
+  "id":"7c56b82a-cd07-48db-9566-2c0b4d162835",
   "name":"Insurance - TRANSP. INT. MERC - premium without import"
 })
 
@@ -1638,7 +1638,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"c0119cad-57bb-4e5e-9f0c-80adfb0e81ef",
+  "id":"6aa4bb23-cb2d-43e0-ac60-27e2bbf327a0",
   "name":"Insurance - TRANSP. INT. MERC - premium without import"
 })
 
@@ -1649,7 +1649,7 @@ p({
   "approvalType":"0",
   "payeeType":"89",
   "groupCode":"90",
-  "id":"80706629-57de-46ff-bc4b-35f8c6ade170",
+  "id":"6b77ab9d-ced0-41d0-9437-01de78d4bc0b",
   "name":"Other insurance insurance"
 })
 
@@ -1660,7 +1660,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"87e8b339-4464-4360-888d-3a752e6421d7",
+  "id":"38f38460-299a-444f-84ec-5e325f7432d8",
   "name":"Other insurance insurance"
 })
 
@@ -1671,7 +1671,7 @@ p({
   "approvalType":"0",
   "payeeType":"89",
   "groupCode":"90",
-  "id":"efce5cb2-f62e-4815-8825-a69de1fb7204",
+  "id":"4c301ab9-64cd-4911-bf5f-d175129f2c58",
   "name":"Insurance - other insurance indemnities"
 })
 
@@ -1682,7 +1682,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"c428d486-1775-4b16-994c-3d7213e6ee57",
+  "id":"c55be747-62b6-47c7-80df-54184fa31fc1",
   "name":"Insurance - other insurance indemnities"
 })
 
@@ -1693,7 +1693,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"3cad9469-4a18-43f5-b359-3c427951a7c1",
+  "id":"c6e9dbb8-1e83-4004-8a3c-a22a158c3fc7",
   "name":"Insurance - other insurance indemnities"
 })
 
@@ -1704,7 +1704,7 @@ p({
   "approvalType":"0",
   "payeeType":"58",
   "groupCode":"90",
-  "id":"a6983d6c-a380-451e-8ca4-f611c64159a3",
+  "id":"f66ebaaf-ee32-4248-a620-2857dfce7adf",
   "name":"Insurance without export"
 })
 
@@ -1715,7 +1715,7 @@ p({
   "approvalType":"0",
   "payeeType":"58",
   "groupCode":"90",
-  "id":"eda2e163-bab9-4f3e-b0bd-e9e7d91a2be0",
+  "id":"80b31673-947a-4aff-8776-fc474edf12a1",
   "name":"Insurance without import"
 })
 
@@ -1726,7 +1726,7 @@ p({
   "approvalType":"0",
   "payeeType":"58",
   "groupCode":"90",
-  "id":"dd9fe2fd-1753-4e6c-a6cc-77eacc0dc615",
+  "id":"311ab57d-623f-4f5b-a29d-3a5096c2fe75",
   "name":"Other direct insurance - indemnity"
 })
 
@@ -1737,7 +1737,7 @@ p({
   "approvalType":"0",
   "payeeType":"58",
   "groupCode":"90",
-  "id":"ddc5355d-faa2-410c-918b-dcd4e904e826",
+  "id":"2c9fe166-e0c4-48cc-90cc-7425b801c17c",
   "name":"Reinsurance - premium"
 })
 
@@ -1748,7 +1748,7 @@ p({
   "approvalType":"0",
   "payeeType":"58",
   "groupCode":"90",
-  "id":"1c669159-2978-473b-8b55-0c3d5a83998b",
+  "id":"ed4a114d-cc10-453b-bcf3-6d22dc3a79b6",
   "name":"Life sugures - prize"
 })
 
@@ -1759,7 +1759,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"fda5565e-5c84-459a-97ad-ee70b804e983",
+  "id":"4ef46a7d-769c-48fd-83f7-563979d5bd1d",
   "name":"Life insurance - prizes"
 })
 
@@ -1770,7 +1770,7 @@ p({
   "approvalType":"0",
   "payeeType":"58",
   "groupCode":"90",
-  "id":"43ada58a-efff-4ade-a755-ae0da58f334d",
+  "id":"fcdbce7a-7438-4fc4-a559-de9831d02f51",
   "name":"Insurance life indemnity"
 })
 
@@ -1781,7 +1781,7 @@ p({
   "approvalType":"0",
   "payeeType":"58",
   "groupCode":"90",
-  "id":"c0131a37-9f65-4699-95ca-a7be22fdb14e",
+  "id":"2d0d663d-adfb-4eda-a6a0-3cb4540b9b1c",
   "name":"Other direct insurance"
 })
 
@@ -1792,7 +1792,7 @@ p({
   "approvalType":"0",
   "payeeType":"58",
   "groupCode":"90",
-  "id":"4bc7309b-d6cc-4e57-a431-5b806541b627",
+  "id":"808b4edc-538c-408b-8421-129693744d67",
   "name":"Other direct insurance"
 })
 
@@ -1803,7 +1803,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"a14c230f-d676-4624-873a-5b8519cbbba0",
+  "id":"a8271fc0-2650-4917-9830-5d1979134d75",
   "name":"Other direct insurance"
 })
 
@@ -1814,7 +1814,7 @@ p({
   "approvalType":"0",
   "payeeType":"58",
   "groupCode":"90",
-  "id":"eed47fe9-cc2c-4440-8a94-b8a30ca03d0a",
+  "id":"46cd15ed-f0f2-486e-a7ec-fefcb86e41c6",
   "name":"Other direct insurance"
 })
 
@@ -1825,7 +1825,7 @@ p({
   "approvalType":"0",
   "payeeType":"58",
   "groupCode":"90",
-  "id":"80721b93-7040-4913-ad73-2a0d03760212",
+  "id":"fca8a48d-01b9-4299-bef1-b462144be1bb",
   "name":"Other direct insurance"
 })
 
@@ -1836,7 +1836,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"c06e85fd-2a37-4f54-8149-8d0b411a0f59",
+  "id":"d3cd9128-4b68-4f4f-90d0-f3ee1842fe04",
   "name":"Other direct insurance - indemnity"
 })
 
@@ -1847,7 +1847,7 @@ p({
   "approvalType":"0",
   "payeeType":"58",
   "groupCode":"90",
-  "id":"f65b3617-f02c-4450-aa89-093b9eaba081",
+  "id":"91b75c21-e449-4b7f-89c3-a57ecd421dc2",
   "name":"Other direct insurance - indemnity"
 })
 
@@ -1858,7 +1858,7 @@ p({
   "approvalType":"0",
   "payeeType":"58",
   "groupCode":"90",
-  "id":"a28d9431-30e0-4e87-ae5d-5b183557f927",
+  "id":"70ab8f93-190a-43d3-9c05-89669ffe5c01",
   "name":"Other claim recovery"
 })
 
@@ -1869,7 +1869,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"1820df7a-6932-421c-977b-afa5e2809f32",
+  "id":"d7aea21b-988f-41e4-8521-92d40418b2ca",
   "name":"Intern travel - health treatment"
 })
 
@@ -1880,7 +1880,7 @@ p({
   "approvalType":"0",
   "payeeType":"99",
   "groupCode":"90",
-  "id":"b545202a-54dd-4c65-80b3-9851d7a46505",
+  "id":"dfb4b62a-e4f5-4b64-843e-b6b829e65e94",
   "name":"Tourism - P.F. foreign - shop"
 })
 
@@ -1891,7 +1891,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"77f70d89-9db1-4f18-b13b-2cbb95d358d1",
+  "id":"092eba6f-ea6c-4efc-9d30-8ec0c6741e33",
   "name":"PF tourism - foreign"
 })
 
@@ -1902,7 +1902,7 @@ p({
   "approvalType":"0",
   "payeeType":"90",
   "groupCode":"90",
-  "id":"2397ce41-0355-44da-9bb0-102b814c4a53",
+  "id":"965a0c5d-a019-4662-bfea-bc7dba4b85f8",
   "name":"PF tourism - Brazilian"
 })
 
@@ -1913,7 +1913,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"172f53ac-7845-44a6-a26b-c0331a246754",
+  "id":"d193bfe5-5b7e-4823-9128-219c9e6f491b",
   "name":"Acquisition of foreign currency by qualified travelers, with the purpose of meeting expenses abroad with travel"
 })
 
@@ -1924,7 +1924,7 @@ p({
   "approvalType":"0",
   "payeeType":"90",
   "groupCode":"90",
-  "id":"49e3b71a-5d81-46f0-ad86-25cb794f3563",
+  "id":"fe579782-b30f-472f-a5fd-13690dde6dbf",
   "name":"Travel expenses abroad - other purposes"
 })
 
@@ -1935,7 +1935,7 @@ p({
   "approvalType":"0",
   "payeeType":"88",
   "groupCode":"90",
-  "id":"57ef8b81-4834-4e20-b26a-1846ee18aa5d",
+  "id":"c36c3a6f-0e99-4d95-987c-b10ff9ccc93f",
   "name":"Business training"
 })
 
@@ -1946,7 +1946,7 @@ p({
   "approvalType":"0",
   "payeeType":"71",
   "groupCode":"90",
-  "id":"8cd907be-7d25-48a7-a2e9-80d39195534d",
+  "id":"08ad6ab3-7d34-4110-a557-a4fbac02532b",
   "name":"Travel abroad other purposes"
 })
 
@@ -1957,7 +1957,7 @@ p({
   "approvalType":"0",
   "payeeType":"90",
   "groupCode":"90",
-  "id":"21817d34-1582-4c41-86a5-034e55f07434",
+  "id":"8c63b80e-eecf-4609-8842-98ad68b55a2a",
   "name":"Abroad other purposes"
 })
 
@@ -1968,7 +1968,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"b04e8268-8a01-4620-81f2-c23250cbf398",
+  "id":"5c4f10e4-f6d1-4091-97c2-ce07d1fb0cdb",
   "name":"Cards of international use - acquisition of goods and services"
 })
 
@@ -1979,7 +1979,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"c0b0d617-35ea-47e4-b232-45e418f45513",
+  "id":"35e70c59-24dd-4a52-87ea-7a4d3cc3fbff",
   "name":"International payments facilitators - acquisition of goods and services"
 })
 
@@ -1990,7 +1990,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"8f68fca7-2bf6-47fa-9257-f299e7cb3094",
+  "id":"337fc1e5-2db8-4d1a-b921-9f2f4d824880",
   "name":"Internal travel - FINS EDUC.CIENT.CULT.OU EV.ESPORTIVOS"
 })
 
@@ -2001,7 +2001,7 @@ p({
   "approvalType":"0",
   "payeeType":"99",
   "groupCode":"90",
-  "id":"05191796-2f37-4778-85ca-99b50f482270",
+  "id":"5a172ab7-93ee-43cc-8934-a7d5d428aef2",
   "name":"Tourism company not accredited in bacen - matriz"
 })
 
@@ -2012,7 +2012,7 @@ p({
   "approvalType":"0",
   "payeeType":"99",
   "groupCode":"90",
-  "id":"33fba91d-3fa3-4eec-b690-62d46f8b18ff",
+  "id":"da72ef79-5a6b-4190-9cef-0f5dd8eea691",
   "name":"Business services or external training - PJ - matriz"
 })
 
@@ -2023,7 +2023,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"232d1932-1915-48e2-abf8-d99845765ea5",
+  "id":"cbefa4f9-9147-44eb-9070-8c680125ea85",
   "name":"Internal travel - business, service or training"
 })
 
@@ -2034,7 +2034,7 @@ p({
   "approvalType":"0",
   "payeeType":"97",
   "groupCode":"90",
-  "id":"f60e39f6-ff5d-48a9-b832-f8a1dda3cdae",
+  "id":"a5ada7e1-97f7-4055-a421-0cd9e4d4879b",
   "name":"Internal travel - business, service or training"
 })
 
@@ -2045,7 +2045,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"90",
-  "id":"811e7c4a-1f9c-4336-997e-896fca177cc3",
+  "id":"7bb3e7a2-b8bb-4e45-a75b-9f5b8de168fd",
   "name":"Training"
 })
 
@@ -2056,7 +2056,7 @@ p({
   "approvalType":"0",
   "payeeType":"99",
   "groupCode":"90",
-  "id":"6b77462c-9215-4a00-af4d-810c8583f0eb",
+  "id":"309db79a-f514-48cf-844e-0ae032fa2f67",
   "name":"Tourism - P.F - Brasileira - shop"
 })
 
@@ -2067,7 +2067,7 @@ p({
   "approvalType":"0",
   "payeeType":"99",
   "groupCode":"90",
-  "id":"ffe20124-b672-49bd-9638-2cb59e95f60f",
+  "id":"363795f1-a13d-4731-8916-596eec332716",
   "name":"Tourism company accredited in bacen - matriz"
 })
 
@@ -2078,7 +2078,7 @@ p({
   "approvalType":"0",
   "payeeType":"82",
   "groupCode":"90",
-  "id":"33de5b15-7e3f-48a5-9488-32adadfa1bec",
+  "id":"93de0caf-5855-4de8-b53a-a6858c38a2ff",
   "name":"Interest on import"
 })
 
@@ -2089,7 +2089,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"2032b0f4-a4d9-48e8-84dc-9f5e0e01b778",
+  "id":"4601b2c2-2345-46da-b269-80bcbc57e079",
   "name":"Interest IMP."
 })
 
@@ -2100,7 +2100,7 @@ p({
   "approvalType":"0",
   "payeeType":"82",
   "groupCode":"90",
-  "id":"2edaa48b-deb8-4fc2-b1fa-31b6153812a5",
+  "id":"0e0e5e68-ec97-4f46-be16-c84de4818ae4",
   "name":"Interest loans"
 })
 
@@ -2111,7 +2111,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"d5151aca-f2bb-46a4-b92b-98d3675f339f",
+  "id":"78da23cc-d3a8-467f-8882-7c4b5e90f7c9",
   "name":"Loan interest - direct loans"
 })
 
@@ -2122,7 +2122,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"03c665e6-94b7-4ead-99ef-f6af2d148235",
+  "id":"d10020d4-130c-4847-bcac-dbe1846b1b00",
   "name":"Capital income - direct investment"
 })
 
@@ -2133,7 +2133,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"52",
-  "id":"7de5adc9-c3f7-4fbd-9b26-7f686d90c0a7",
+  "id":"d6aefdf2-8d08-4004-953c-f638b236b3de",
   "name":"Capital income - interest paid antecip S / exportacoes"
 })
 
@@ -2144,7 +2144,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"4d8ea4ca-fe2d-44db-8dd0-0a5ae20c84a1",
+  "id":"ce3a7331-2c32-4549-91dd-f0e6e607656d",
   "name":"Juros de financiamento a import"
 })
 
@@ -2155,7 +2155,7 @@ p({
   "approvalType":"0",
   "payeeType":"82",
   "groupCode":"90",
-  "id":"4188e60f-ac19-47a3-af2c-855e30fd7db4",
+  "id":"84c13d7c-3006-42b4-9875-5b3a0bb83692",
   "name":"Long term finimp"
 })
 
@@ -2166,7 +2166,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"055cc06d-8691-43bb-ac1a-daaf9730c3b8",
+  "id":"2024954c-81bd-4c5e-98a8-ca29f5424add",
   "name":"Interest financing"
 })
 
@@ -2177,7 +2177,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"90",
-  "id":"35366292-0304-4eeb-9f88-6d5fe689df6a",
+  "id":"def7fb2e-2837-4c43-a5b3-be2f8cb126ce",
   "name":"Interest on export"
 })
 
@@ -2188,7 +2188,7 @@ p({
   "approvalType":"0",
   "payeeType":"82",
   "groupCode":"90",
-  "id":"ee8f2242-20fe-4755-9e8f-46945e37cc16",
+  "id":"b80e28de-290c-4836-aa43-07f2e4f006d8",
   "name":"Out. REND. CAP - INV portfolio (1289/2689) - dividends"
 })
 
@@ -2199,7 +2199,7 @@ p({
   "approvalType":"0",
   "payeeType":"97",
   "groupCode":"90",
-  "id":"93c0ce0f-e462-4681-ac89-2cd5fa260bf2",
+  "id":"e5df176d-a6d4-40f4-a816-f02efd04321e",
   "name":"Out. REND. CAP - INV DIR - profits div bonificac"
 })
 
@@ -2210,7 +2210,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"90",
-  "id":"9b45bae5-d8fe-4a98-8be1-805363bb3276",
+  "id":"2e4b6117-5adc-4bcd-9f37-786c5089a12d",
   "name":"Out. REND. CAP - INV DIR - profits div bonificac"
 })
 
@@ -2221,7 +2221,7 @@ p({
   "approvalType":"0",
   "payeeType":"93",
   "groupCode":"90",
-  "id":"2dcda90c-c8e1-4ee5-8378-99117e376edc",
+  "id":"b0147915-ab89-43b6-9400-d6999d4e26aa",
   "name":"Out. REND. CAP - direct INV - profits div bonuses"
 })
 
@@ -2232,7 +2232,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"292bdfa3-d099-4884-b91f-916227c64a2b",
+  "id":"c4eed9e7-1429-4361-8656-396b5b87be3d",
   "name":"Out. REND. CAP - INV DIR - profits div bonificac"
 })
 
@@ -2243,7 +2243,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"90",
-  "id":"57c5fb18-ab03-4056-b750-205043e23e57",
+  "id":"135a16d7-ed05-41bf-bf66-0c40d4d4051d",
   "name":"Out. REND. CAP - INV DIR - profits div bonificac"
 })
 
@@ -2254,7 +2254,7 @@ p({
   "approvalType":"0",
   "payeeType":"93",
   "groupCode":"90",
-  "id":"279e8053-76ba-4e43-a92e-853c55bb4675",
+  "id":"2053abd1-f43c-491d-b92c-9391df139973",
   "name":"Out - REND.CAP - direct INV - remun cap proprio interest"
 })
 
@@ -2265,7 +2265,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"49",
-  "id":"eb2ee894-71ba-41c3-a47e-ff7ed3895bd2",
+  "id":"f0224036-2a37-4fa9-8879-a413fe168f34",
   "name":"Resident maintenance"
 })
 
@@ -2276,7 +2276,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"90",
-  "id":"2eb2660b-37ee-446a-a7ec-bdbe9c654333",
+  "id":"408fcdd3-8a6f-4cab-a249-c381b7835033",
   "name":"Maintenance of residents abroad"
 })
 
@@ -2287,7 +2287,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"49",
-  "id":"c1b4782a-f3a8-4ea4-88ad-2c14a62b6b32",
+  "id":"c1eb9db9-be72-42fa-9bfa-9638b9e09c06",
   "name":"Resident maintenance"
 })
 
@@ -2298,7 +2298,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"97fd1948-cacd-48c9-8482-4acb2db9f877",
+  "id":"e3f95361-d61a-419c-882e-cd935d6df4e1",
   "name":"Resident maintenance"
 })
 
@@ -2309,7 +2309,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"90",
-  "id":"ea04a0f8-6137-4783-89f1-bd835e49ea74",
+  "id":"731bf07e-8bb6-46b2-99cd-26838fc4392f",
   "name":"Resident maintenance"
 })
 
@@ -2320,7 +2320,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"33a293f8-b892-4050-a2ec-583d7710996a",
+  "id":"b95dff95-0e4c-4d0b-932c-0b05d73577d1",
   "name":"Foreign WU"
 })
 
@@ -2331,7 +2331,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"0",
-  "id":"2af6ee01-c151-4727-b754-a58b2910011b",
+  "id":"a0012f3c-0eeb-4d57-afc9-e3a33a82f5d5",
   "name":"Shipping - wu"
 })
 
@@ -2342,7 +2342,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"49",
-  "id":"57efa8b8-271b-470c-b8c8-bdc305f05e97",
+  "id":"aea63f05-071a-488f-8642-a530a8f3dfff",
   "name":"Student maintenance - return"
 })
 
@@ -2353,7 +2353,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"90",
-  "id":"f52989bb-90ca-4f0a-a308-655a0d0df555",
+  "id":"e8f9ae0b-9cda-4541-a013-0ca094f975ef",
   "name":"Student maintenance"
 })
 
@@ -2364,7 +2364,7 @@ p({
   "approvalType":"0",
   "payeeType":"73",
   "groupCode":"90",
-  "id":"7cb606f8-4d80-4baa-927d-704ac4e11abd",
+  "id":"9be37280-b130-45db-967b-405e65aa2e81",
   "name":"Current transfers - taxes"
 })
 
@@ -2375,7 +2375,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"49",
-  "id":"d726ca8a-d7a8-4b0e-8df5-02c2b1d77c69",
+  "id":"472bbe5c-36a5-49d8-a67f-b73c5d52504a",
   "name":"Current transfers - taxes"
 })
 
@@ -2386,7 +2386,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"c40bf8a7-6814-4ced-9fb7-3e3da75e620c",
+  "id":"5cc296f0-e1e2-4624-8e4a-3f995aaca993",
   "name":"Current transfers - taxes"
 })
 
@@ -2397,7 +2397,7 @@ p({
   "approvalType":"0",
   "payeeType":"73",
   "groupCode":"90",
-  "id":"152e8ecd-bcca-426f-955f-86543437fbdd",
+  "id":"2d96d0be-2465-4df8-9922-9011df60d722",
   "name":"Current transfers - taxes"
 })
 
@@ -2408,7 +2408,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"921de423-0314-4920-a7ae-f0f35ceb832a",
+  "id":"819ea03e-6054-4770-867a-b85daa278c09",
   "name":"Social security contributions"
 })
 
@@ -2419,7 +2419,7 @@ p({
   "approvalType":"0",
   "payeeType":"58",
   "groupCode":"90",
-  "id":"a44c332e-df8d-4feb-8f39-036b80ac64df",
+  "id":"e416248f-5d76-48ff-890c-5e6d0e5cd774",
   "name":"Current transfers - contributions to pension funds"
 })
 
@@ -2430,7 +2430,7 @@ p({
   "approvalType":"0",
   "payeeType":"73",
   "groupCode":"90",
-  "id":"5a261152-43fe-47bb-a4d7-bb73d623da22",
+  "id":"363c62ea-9385-4331-bb82-9bdf25b77ff6",
   "name":"Current transfers - contributions"
 })
 
@@ -2441,7 +2441,7 @@ p({
   "approvalType":"9",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"6ed614f2-3d3f-469d-a8f1-3abfa9a139a7",
+  "id":"43fae0ba-aaf6-41b1-833c-6f71858aa727",
   "name":"Current transfers - contributions to pension funds"
 })
 
@@ -2452,7 +2452,7 @@ p({
   "approvalType":"9",
   "payeeType":"73",
   "groupCode":"90",
-  "id":"955690ce-e7c7-4834-8ce5-bfddc8470bed",
+  "id":"70de5c2d-eea3-4925-8e3d-79cc8956b9db",
   "name":"Current transfers - contributions"
 })
 
@@ -2463,7 +2463,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"12b5a3ad-c1c0-4bbe-9d0c-0588c278adb0",
+  "id":"818a85af-085f-438e-bc7b-ea1f82265ad1",
   "name":"Current transfers - contributions to pension funds"
 })
 
@@ -2474,7 +2474,7 @@ p({
   "approvalType":"0",
   "payeeType":"88",
   "groupCode":"90",
-  "id":"879850e6-cf25-4a10-b1af-9efa17fa192f",
+  "id":"6dcdb62a-cbaa-427a-81d6-1cb726a64159",
   "name":"Social security receipts"
 })
 
@@ -2485,7 +2485,7 @@ p({
   "approvalType":"0",
   "payeeType":"90",
   "groupCode":"90",
-  "id":"691e8b86-d620-403d-b0c3-e90ecd33abf9",
+  "id":"a91b89f1-5d5c-416d-a5ad-082504ef87f1",
   "name":"Checks pension PF"
 })
 
@@ -2496,7 +2496,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"90",
-  "id":"363c0c09-be34-4edd-b9ae-736223bd143e",
+  "id":"b49a9d15-ee0b-4b4e-8943-6aa0535fa465",
   "name":"Transfers - unilaterals - chain ​​transfers - donations"
 })
 
@@ -2507,7 +2507,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"5ac923e9-6976-4f66-9aa6-16dc66625198",
+  "id":"26499eb3-b069-4a8e-b114-b9c99e1fd341",
   "name":"Donations"
 })
 
@@ -2518,7 +2518,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"6b6a8c8e-a2ca-49d3-9c69-9aeb4e37cfca",
+  "id":"db203c15-6d2a-4dd7-92c4-83ab1cf5dcf6",
   "name":"Donations"
 })
 
@@ -2529,7 +2529,7 @@ p({
   "approvalType":"0",
   "payeeType":"71",
   "groupCode":"90",
-  "id":"3b55d7d3-ecd2-4b4e-b7ab-aadb71d26ae2",
+  "id":"0cc7bd5f-bf3f-48e2-b773-d1fa5b37b90e",
   "name":"Donations"
 })
 
@@ -2540,7 +2540,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"7b105dd4-9fc1-4bf0-afa2-ca58bdeb3ca0",
+  "id":"746f48d1-6609-4e9c-87b2-74dcd58f4136",
   "name":"Current transfers - donation"
 })
 
@@ -2551,7 +2551,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"90",
-  "id":"5dc12950-7341-4d7e-8e64-a244e0d0c38c",
+  "id":"e9669473-5380-4ecd-9dc1-a5295d83713b",
   "name":"Unilateral transfers - TRANSF. chains - donations"
 })
 
@@ -2562,7 +2562,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"782ee376-9dd2-4b73-8c06-3c1ae33e3755",
+  "id":"f5affa0a-2253-485c-825d-93970607ad00",
   "name":"Unilaterial transfers - donations"
 })
 
@@ -2573,7 +2573,7 @@ p({
   "approvalType":"0",
   "payeeType":"71",
   "groupCode":"49",
-  "id":"46d2acf0-ca11-4718-859d-d80985478991",
+  "id":"5e2d6eb4-6082-475e-be67-a3d8f4f77c2e",
   "name":"Unilateral transfers - TRANSF. chains - donations"
 })
 
@@ -2584,7 +2584,7 @@ p({
   "approvalType":"0",
   "payeeType":"71",
   "groupCode":"90",
-  "id":"cb3c9d08-f8e5-4868-8656-caf5b6bd4599",
+  "id":"cb06171f-88c3-41c9-b081-02a9354b171d",
   "name":"Unilateral transfers - TRANSF. chains - donations"
 })
 
@@ -2595,7 +2595,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"90",
-  "id":"db15cd5c-7372-4ff8-b93f-d2a40aaa8939",
+  "id":"3b933641-79df-4877-a575-c05bb8ee55ce",
   "name":"Other unilateral - current transfers"
 })
 
@@ -2606,7 +2606,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"868368c2-e336-4138-b371-b43b187628ea",
+  "id":"6195fe89-bcd7-4fa9-adfa-fad0af14f680",
   "name":"Other unilateral - current transfers"
 })
 
@@ -2617,7 +2617,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"49",
-  "id":"a4ea0f19-7259-44ea-b862-5f5c62de3f27",
+  "id":"5d0d856f-3b34-4061-b86a-a2370b6550c4",
   "name":"Other current transfers"
 })
 
@@ -2628,7 +2628,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"7063f239-09ba-4d8d-91a3-0bee594c08d5",
+  "id":"5c4dcd6b-0b27-444c-a5b7-480de8871b35",
   "name":"Other current transfers"
 })
 
@@ -2639,7 +2639,7 @@ p({
   "approvalType":"0",
   "payeeType":"73",
   "groupCode":"90",
-  "id":"1fc6b920-340c-441d-b2d4-b07891e52804",
+  "id":"4f378f27-3047-4fec-83e5-b3a1b909ce2a",
   "name":"Other current transfers"
 })
 
@@ -2650,7 +2650,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"907134c4-57e8-49da-8079-0442fd844555",
+  "id":"9ca9af89-4952-4545-9537-6105c8fcd80d",
   "name":"Other current transfers"
 })
 
@@ -2661,7 +2661,7 @@ p({
   "approvalType":"0",
   "payeeType":"90",
   "groupCode":"90",
-  "id":"fc52c042-dbc5-43f4-b803-4609d25c0db8",
+  "id":"de4ba63b-a538-4cfc-a0ac-2ff563b23f67",
   "name":"Other current transfers"
 })
 
@@ -2672,7 +2672,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"49",
-  "id":"f6e3596d-6108-4c48-87b0-951400d46bf8",
+  "id":"05014246-5697-43cd-9468-8762b2b4aea7",
   "name":"Other current transfers"
 })
 
@@ -2683,7 +2683,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"59ea6268-bee0-4a42-9988-2d1a56501ada",
+  "id":"d45ff94c-bbfa-4654-9c75-74ab89a22ded",
   "name":"Other current transfers"
 })
 
@@ -2694,7 +2694,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"8ec4c678-c65e-48d6-afa1-2099c5f03a7b",
+  "id":"e20946d5-7170-49fe-a944-c3ca47d03084",
   "name":"Other current transfers"
 })
 
@@ -2705,7 +2705,7 @@ p({
   "approvalType":"0",
   "payeeType":"53",
   "groupCode":"90",
-  "id":"466fe3e7-7eea-468e-ac30-4156febe0917",
+  "id":"ff56a797-075e-4f75-a9a2-bf6e22d1324f",
   "name":"Other current transfers"
 })
 
@@ -2716,7 +2716,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"90",
-  "id":"5e71d206-5d26-4f83-bfe7-d74c308eb82d",
+  "id":"afdb1a96-8fda-425f-b69b-2212013df744",
   "name":"Patrimony"
 })
 
@@ -2727,7 +2727,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"6b6c0ddb-9cc3-46e7-91c2-268d6525c011",
+  "id":"9746ce25-1f55-490e-b4ad-5d7f8a714f4d",
   "name":"Current transfers - heritage"
 })
 
@@ -2738,7 +2738,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"80",
-  "id":"8f87c761-bd6f-4d59-b842-1214c644c58d",
+  "id":"cfe2420b-85dd-4343-b805-3b2c190518f5",
   "name":"Current transfers"
 })
 
@@ -2749,7 +2749,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"6a011202-5be1-42e3-a34b-a90c76776881",
+  "id":"4626444f-c408-4e61-a583-9c55405b7628",
   "name":"Capital transfer - equity"
 })
 
@@ -2760,7 +2760,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"90",
-  "id":"bb99ed41-6cb5-4cb3-9c72-2bdcb296e9dc",
+  "id":"bc015dc8-3f2b-4621-be65-b78747161a2f",
   "name":"Other capital transfers"
 })
 
@@ -2771,7 +2771,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"5150da01-9813-482c-867a-a240514aca7f",
+  "id":"40c429c2-8009-4d8c-94fe-a87647b5563f",
   "name":"Other capital transfers"
 })
 
@@ -2782,7 +2782,7 @@ p({
   "approvalType":"0",
   "payeeType":"53",
   "groupCode":"90",
-  "id":"dececa4a-c986-40c3-9609-ac99914167ab",
+  "id":"be981419-44f3-4ff5-82b4-7d79851c404c",
   "name":"Capital transfers - other capital transfers"
 })
 
@@ -2793,7 +2793,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"80b3733a-c7ea-472c-ad04-9a12364b3b9e",
+  "id":"a76b4120-dce1-41d7-9a86-7aec34e134a9",
   "name":"Other contractual interest"
 })
 
@@ -2804,7 +2804,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"90",
-  "id":"05c63858-a8b1-4713-8427-42c518fa081b",
+  "id":"23d33bfe-1602-4184-bf61-78908ad7d715",
   "name":"Others - wages and other compensation"
 })
 
@@ -2815,7 +2815,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"8b4816d6-28cb-4851-b902-81f5d0c15770",
+  "id":"b8308c7d-8265-4b81-b019-e72359ee2b5e",
   "name":"Miscellaneous out services - rental of buildings"
 })
 
@@ -2826,7 +2826,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"1d5b9738-f338-489e-9fc5-cc6dfee0614e",
+  "id":"a236def8-fb01-4157-a89c-590bca262fa4",
   "name":"Miscellaneous out services - equipment rental"
 })
 
@@ -2837,7 +2837,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"c3a2380f-aa89-4458-b6fa-ef96937e674a",
+  "id":"21cdeba9-9b6e-4243-9211-4413c4e92332",
   "name":"Miscellaneous out services - subscription newspapers, magazines, etc"
 })
 
@@ -2848,7 +2848,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"b2ed4e06-bf63-4af4-b800-df1c8d911986",
+  "id":"f3993222-f5fb-4af6-95b5-62043e911930",
   "name":"Miscellaneous services EXP / IMP SV - SV TEC ESP - J, C. ASS. EMP. REL. PU"
 })
 
@@ -2859,7 +2859,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"a89a9338-ac04-4680-a7b2-bff3107a66a6",
+  "id":"bac1ce21-f8af-465f-976a-6abe7082d480",
   "name":"Miscellaneous services EXP / IMP - SV - SV"
 })
 
@@ -2870,7 +2870,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"90",
-  "id":"a774cb56-5a84-4134-a543-841e110feef1",
+  "id":"f3ae90af-f9ef-49f9-ac65-89afb30a8a0b",
   "name":"Miscellaneous services EXP / IMP - SV - SV"
 })
 
@@ -2881,7 +2881,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"49",
-  "id":"0873d91a-11d3-4f67-b2fc-84c4aba69333",
+  "id":"507ed7a1-f19d-490d-9fd0-b93c37958b7f",
   "name":"Miscellaneous services EXP / IMP - SV - SV"
 })
 
@@ -2892,7 +2892,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"a2451c39-119c-4451-ba0c-1212c140d3ea",
+  "id":"035a0e0c-69b5-4023-a5f3-75c5ab6a1db4",
   "name":"Commissions on EXP/IMP"
 })
 
@@ -2903,7 +2903,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"13b3224f-6a40-41bf-bcda-bde0a3e48e08",
+  "id":"ea82358e-9fe0-4c07-a40b-f611ca0785e4",
   "name":"Miscellaneous services EXP / IMP - SV - SV"
 })
 
@@ -2914,7 +2914,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"49",
-  "id":"9e4e6058-4a71-4597-bc98-46155ebc3f33",
+  "id":"a8dbb3f3-fb33-4eab-af9f-5c64e7f931c0",
   "name":"Export agent commission"
 })
 
@@ -2925,7 +2925,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"80",
-  "id":"8fe2e82a-23ee-47d4-aad4-3c7ea41530b4",
+  "id":"bd76dbc7-a154-452a-bbc2-8da3bda8d667",
   "name":"Commission without export"
 })
 
@@ -2936,7 +2936,7 @@ p({
   "approvalType":"0",
   "payeeType":"97",
   "groupCode":"90",
-  "id":"6102b9b2-3f60-44f4-84bb-bf6c9d7f2270",
+  "id":"fcf20cf6-dd4f-4c32-8aa2-4dd7761a2210",
   "name":"Agent commission"
 })
 
@@ -2947,7 +2947,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"49",
-  "id":"ff2a6fff-e83d-4a61-b690-f1bf202d7e9a",
+  "id":"bc71676e-483b-40a7-b38e-1b4c0bfde192",
   "name":"Export agent commission"
 })
 
@@ -2958,7 +2958,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"90",
-  "id":"35a73782-dae5-45ad-bbad-5dd3563a86c2",
+  "id":"3cec060a-ce83-40c8-8ca4-42100a4c39e3",
   "name":"Agent commission"
 })
 
@@ -2969,7 +2969,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"e1bb1798-6ac8-4d25-9154-0491beb64bdb",
+  "id":"dd8cc63f-6ce5-4111-b266-f50477a4aa25",
   "name":"Miscellaneous services out - commission contr - others"
 })
 
@@ -2980,7 +2980,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"061f1eef-23ef-4249-b9ea-5cfdf5fbd8f8",
+  "id":"3c27dcf5-28ee-4cc8-b0ea-fa90742caf63",
   "name":"Miscellaneous services out - commission contr - others"
 })
 
@@ -2991,7 +2991,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"b6c365ee-a252-4a4e-a7e0-e211d4c7c945",
+  "id":"28e667a6-f5c7-43f7-a4dd-6d04f063e678",
   "name":"Miscellaneous services out - commission contr - others"
 })
 
@@ -3002,7 +3002,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"59beaea9-048c-4b04-90d9-d9e3516b347f",
+  "id":"fcb044bf-5aaa-4318-99ce-d7b50d7977cb",
   "name":"Commissions / other"
 })
 
@@ -3013,7 +3013,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"90",
-  "id":"3e538edf-f892-4944-9a6d-57349ca07269",
+  "id":"5a51e9db-5a03-4954-bd15-51e4e68bcfe5",
   "name":"Commissions / other"
 })
 
@@ -3024,7 +3024,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"013703da-aa73-40b8-a5f5-bd1c9337d597",
+  "id":"a06902dc-1865-44d4-871e-7212d4ae118e",
   "name":"Miscellaneous commission services - contractual - others"
 })
 
@@ -3035,7 +3035,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"6dbe94bb-135f-40f5-b31f-8af0a211ae6d",
+  "id":"bde3c709-ba88-44a0-8996-398a21ce8320",
   "name":"Miscellaneous services out. administrative"
 })
 
@@ -3046,7 +3046,7 @@ p({
   "approvalType":"0",
   "payeeType":"97",
   "groupCode":"90",
-  "id":"a55b4fc1-529a-4af7-ae61-1bec7c2f8625",
+  "id":"2d5b7a0a-b9f6-492c-8a86-a6482787e627",
   "name":"Miscellaneous services out. administrative"
 })
 
@@ -3057,7 +3057,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"c63b8775-33de-435d-9d19-cb3c768240f6",
+  "id":"e4319d54-9374-4f10-bfe2-fe565a72a81a",
   "name":"Miscellaneous out services - administrative"
 })
 
@@ -3068,7 +3068,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"90",
-  "id":"ba82b0ca-bd17-43e1-b761-c0dfe0820f5b",
+  "id":"928388e0-4bbb-4e30-aca1-a430c3b5c1ab",
   "name":"Expenses refund"
 })
 
@@ -3079,7 +3079,7 @@ p({
   "approvalType":"0",
   "payeeType":"97",
   "groupCode":"90",
-  "id":"bf353c3a-b450-45e0-b91b-a5ffd095fa64",
+  "id":"b4f9867b-77b7-4154-a682-e633c2fadc7e",
   "name":"Miscellaneous services out. administrative"
 })
 
@@ -3090,7 +3090,7 @@ p({
   "approvalType":"0",
   "payeeType":"82",
   "groupCode":"90",
-  "id":"3deb8c15-b842-42c5-8780-caacfbd607eb",
+  "id":"b6d827f4-890f-423a-84d0-02d5ad28ca4e",
   "name":"Bank expenses"
 })
 
@@ -3101,7 +3101,7 @@ p({
   "approvalType":"0",
   "payeeType":"99",
   "groupCode":"90",
-  "id":"387880ba-6762-4a7d-bc8c-99554000500a",
+  "id":"bf356e74-10a9-4816-96ce-ed450c662e83",
   "name":"Miscellaneous out services - banking"
 })
 
@@ -3112,7 +3112,7 @@ p({
   "approvalType":"0",
   "payeeType":"94",
   "groupCode":"49",
-  "id":"64ab1de5-4a66-44f0-b5db-4e41eb4a7fe4",
+  "id":"849ae93d-6436-4492-8996-3b244789f8db",
   "name":"Copyright"
 })
 
@@ -3123,7 +3123,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"d00c1af0-85e3-4867-8f56-394ad31bf705",
+  "id":"42d2351d-d103-49bd-a31f-b92b79d31ad9",
   "name":"Miscellaneous services out. copyright"
 })
 
@@ -3134,7 +3134,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"855c3c67-ce30-435f-beb9-5c1a270af865",
+  "id":"ac924621-5d58-40ee-b0f1-d697ce1e3477",
   "name":"Copyright"
 })
 
@@ -3145,7 +3145,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"49",
-  "id":"5c1a5315-7178-4a97-bda2-479b430deb80",
+  "id":"e58031f3-df75-4587-82eb-e88f9fd606b5",
   "name":"Currency repatriation"
 })
 
@@ -3156,7 +3156,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"b35e36c5-0750-4552-87bc-2f5ca82013f2",
+  "id":"c2cd1d4d-8471-454c-9223-89000c02d155",
   "name":"Miscellaneous out services - copyright"
 })
 
@@ -3167,7 +3167,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"579a0bf7-6d51-4d72-ac5f-4471b51f04c6",
+  "id":"50c0aeec-70c2-4c72-903b-df3975d4163b",
   "name":"Miscellaneous out services - carbon credits"
 })
 
@@ -3178,7 +3178,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"eadb2d25-a157-4f6c-944b-b167cff9199b",
+  "id":"38d27bc8-87c8-45b9-8f20-50a28e5a393a",
   "name":"Courses, lectures and seminars"
 })
 
@@ -3189,7 +3189,7 @@ p({
   "approvalType":"0",
   "payeeType":"97",
   "groupCode":"90",
-  "id":"aa6a6e36-1305-47ed-a9ae-b8033d03c3c3",
+  "id":"de1aea3f-5b84-47e7-af3c-90351b6dac65",
   "name":"Miscellaneous remun services for courses, lectures and seminars"
 })
 
@@ -3200,7 +3200,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"90",
-  "id":"64792afb-4bec-479e-8024-26adf9559417",
+  "id":"0c9e9f2b-1900-4455-92e3-adff55d9dd5e",
   "name":"Training"
 })
 
@@ -3211,7 +3211,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"01bead87-d324-4e46-937b-a2e8e0748ec0",
+  "id":"914a65b9-99d0-4ca9-bb41-e277fdde478a",
   "name":"Miscellaneous services out - IMP SV - FORNEC SERV / COMPLEMENTARY DESP"
 })
 
@@ -3222,7 +3222,7 @@ p({
   "approvalType":"0",
   "payeeType":"93",
   "groupCode":"90",
-  "id":"5226ed48-ac51-401c-9085-b68a0a950659",
+  "id":"a408eab7-b2c9-4019-b757-80db296180de",
   "name":"Miscellaneous services EXP / IMP SV - franchises"
 })
 
@@ -3233,7 +3233,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"6392f4fe-d253-49ca-98d5-658257015dbe",
+  "id":"f0311b1f-106a-424d-8871-5e27238bb225",
   "name":"Profit and loss"
 })
 
@@ -3244,7 +3244,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"5b62239a-6408-48b5-a3ea-51d484117abc",
+  "id":"f25ee88b-f7b4-4b6a-89ea-0a726c36a906",
   "name":"Profit and loss"
 })
 
@@ -3255,7 +3255,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"42d4c10f-954b-41cb-9064-46d9367f9adb",
+  "id":"4bd1bef5-1f59-4d9b-a3f3-6230cfb60375",
   "name":"Miscellaneous services EXP / IMP SV - brands - license of use"
 })
 
@@ -3266,7 +3266,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"90",
-  "id":"2bcf5a61-371e-4341-9913-be61662d24a9",
+  "id":"7c5d7db1-c592-49d8-ac34-7d02b9ddcd55",
   "name":"Royalties"
 })
 
@@ -3277,7 +3277,7 @@ p({
   "approvalType":"0",
   "payeeType":"93",
   "groupCode":"90",
-  "id":"82dca643-7456-49da-b0de-153853af6a27",
+  "id":"f434f9e0-eb00-4791-b73d-125502efc342",
   "name":"Miscellaneous services - EXP / IMP of SV. patents - exploration license"
 })
 
@@ -3288,7 +3288,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"07a49475-2e2b-46a8-b2be-68cc9453a55c",
+  "id":"280b9704-d2d5-4e67-bc54-3abc214f51e6",
   "name":"Miscellaneous services EXP / IMP SV - technology supply"
 })
 
@@ -3299,7 +3299,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"90",
-  "id":"6f8fa43f-8b68-4a95-8b36-840b710cfdd3",
+  "id":"0bf4f55a-a996-4414-91bb-fc50af08af8b",
   "name":"Technology supply"
 })
 
@@ -3310,7 +3310,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"c3cd0285-326a-45c0-b485-fca2bb1a7778",
+  "id":"f784f3f9-24a1-4d19-8fce-f8269f67607d",
   "name":"Technical assistance services"
 })
 
@@ -3321,7 +3321,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"90",
-  "id":"660519d1-25f2-4a79-9fb0-eb669acf54c6",
+  "id":"c7694075-62da-4c8a-8027-2aaca1c219bc",
   "name":"Royalties"
 })
 
@@ -3332,7 +3332,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"90",
-  "id":"f99f14d0-40a8-40d5-b3bd-40b364c722dc",
+  "id":"e7efb3f4-72b7-401b-85d0-d30ef8be0d03",
   "name":"Engineering project installation"
 })
 
@@ -3343,7 +3343,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"0e0b1978-fe79-40f9-8a7e-16a499f91c86",
+  "id":"3bad3d82-3962-41fe-97a4-a9e30c9fbf99",
   "name":"Other tec services."
 })
 
@@ -3354,7 +3354,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"49c0ec3d-5c9f-4853-a9c4-d04c5e468464",
+  "id":"1de95f9a-3864-4cf2-8a43-f6fea1c90d3a",
   "name":"Miscellaneous services EXP / IMP SV - SV - SV TEC ESPEC - ENG / ARQU"
 })
 
@@ -3365,7 +3365,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"c2c1d5c8-8a49-44e5-8bb8-2bdc06d80df0",
+  "id":"9f51215d-8572-4996-a42c-ec0a338f41da",
   "name":"Miscellaneous services EXP / IMP SV - SV - other SERV REC - PROF."
 })
 
@@ -3376,7 +3376,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"80",
-  "id":"5a7b64d5-1c49-4836-ac54-a55da6ae0acd",
+  "id":"3e1da801-f8f1-4db7-9e06-64941c1607c8",
   "name":"Services - company assembly"
 })
 
@@ -3387,7 +3387,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"32982304-cd80-46a1-a3db-f08a28485b29",
+  "id":"5d3fce58-406e-42e4-9d35-3c656466455d",
   "name":"Miscellaneous services EXP / IMP SV - SV - other SERV REC - PROF."
 })
 
@@ -3398,7 +3398,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"8832e235-dbe4-4180-b986-32f0eda9dc48",
+  "id":"c2a13dae-5fc0-44e8-b9a1-3424c7a06142",
   "name":"Miscellaneous services out - out SERV LIG TRANS MERCANTIS C / EXTER"
 })
 
@@ -3409,7 +3409,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"90",
-  "id":"43922e7c-8c81-4b4e-a048-b1f754a4da39",
+  "id":"7b59e9f1-2c23-4d33-9956-da73b98958c5",
   "name":"Technical services"
 })
 
@@ -3420,7 +3420,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"90",
-  "id":"c5b49978-1965-4b2f-ba7f-cc9b374bcf9b",
+  "id":"20000667-470a-48eb-a6db-deefab94bb23",
   "name":"Other services connected to trans.mercantis C / O exterior"
 })
 
@@ -3431,7 +3431,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"3b34c0b7-4d55-4379-876f-63e1c52aeed7",
+  "id":"68f666d2-7fcf-4fb9-b05e-65f0989aff2c",
   "name":"Miscellaneous out services - brands / patents - registration / deposit / maint"
 })
 
@@ -3442,7 +3442,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"6a03d86d-9563-4e8c-81e1-2d32d435b7ff",
+  "id":"e0414758-daba-456b-8444-7ed11e7b53c4",
   "name":"Brands and patents"
 })
 
@@ -3453,7 +3453,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"e65f0bfe-bb5c-4dce-99da-2d0c9bc65148",
+  "id":"48dbab21-f4a9-4d18-a35c-54a7e89adccf",
   "name":"Miscellaneous out services - advertising and propaganda"
 })
 
@@ -3464,7 +3464,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"941509e1-6c0b-496b-9ac4-e4dbb7c42d8d",
+  "id":"04a206e5-8a95-4b2f-b48b-48cb273241f5",
   "name":"Advertising and propaganda, marketing"
 })
 
@@ -3475,7 +3475,7 @@ p({
   "approvalType":"0",
   "payeeType":"93",
   "groupCode":"90",
-  "id":"29fcdd68-116b-42e4-9e95-cd2dff9cebb7",
+  "id":"d79d9366-86da-49ce-9c5a-694ad1d5ae30",
   "name":"Miscellaneous services out - PUBLIC.PROPAG.MARKET.PESQ.OPINIAO"
 })
 
@@ -3486,7 +3486,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"90",
-  "id":"04c75c1a-db86-432d-a047-02cda2d6eac0",
+  "id":"5732df2a-4180-4193-aad9-32e849a082b4",
   "name":"Wages and salaries - wages"
 })
 
@@ -3497,7 +3497,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"b5e6b4dd-7975-419e-9101-9bd872e0bd33",
+  "id":"659fedfd-5d72-4b77-adca-33f6b8cf3055",
   "name":"Participation in fairs abroad"
 })
 
@@ -3508,7 +3508,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"bdb71a10-c34a-4f46-bad1-f30ce99ce9f0",
+  "id":"c07f4ec3-ce14-471c-bd3b-f315f74c35d4",
   "name":"Technical and professional services - postal and courier services"
 })
 
@@ -3519,7 +3519,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"dcb12083-fa12-48c3-9081-fd2d287b252b",
+  "id":"0d668a76-5fac-42bd-9f00-acf2d85b1f86",
   "name":"Telecommunication services"
 })
 
@@ -3530,7 +3530,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"c98902a3-243f-4b6e-9832-38a1141c874f",
+  "id":"5597214b-4017-46a0-86d6-bca65dcc8fdb",
   "name":"Computer services"
 })
 
@@ -3541,7 +3541,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"49",
-  "id":"9fdd408f-beb5-4a2e-b1fa-3eb52c742a87",
+  "id":"82355d98-b6ad-427f-b3ec-776b07250c4f",
   "name":"Computer services"
 })
 
@@ -3552,7 +3552,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"ea082950-6a8d-4682-8c42-e597f1490ec1",
+  "id":"27aa55d0-dd2e-4515-a0af-758616c6fab5",
   "name":"Computer services"
 })
 
@@ -3563,7 +3563,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"27d1a798-ae01-47d4-8e3a-63303ef717a7",
+  "id":"d3513121-15b7-4e22-9dd8-850c43f261f2",
   "name":"Technical and professional services - computer services"
 })
 
@@ -3574,7 +3574,7 @@ p({
   "approvalType":"0",
   "payeeType":"53",
   "groupCode":"90",
-  "id":"c1ec4bcd-c1db-442a-ad78-aae4de66793c",
+  "id":"d9153ba0-a89e-404a-935b-325c57fa3a4b",
   "name":"Financial services"
 })
 
@@ -3585,7 +3585,7 @@ p({
   "approvalType":"0",
   "payeeType":"53",
   "groupCode":"90",
-  "id":"0bdb3e74-48b3-4421-9152-8408fbf49286",
+  "id":"dc48e0ef-83c0-4a84-948b-068fcd26000d",
   "name":"Financial services"
 })
 
@@ -3596,7 +3596,7 @@ p({
   "approvalType":"0",
   "payeeType":"53",
   "groupCode":"49",
-  "id":"0f887860-306c-47b9-a90b-ebd77ea26c66",
+  "id":"f488be8c-3ab1-479f-a7e7-1a9f763b2d47",
   "name":"Financial services"
 })
 
@@ -3607,7 +3607,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"b770e02a-ce38-4607-bda4-998580457705",
+  "id":"3cf7a854-b63d-4a3f-b85f-2c0d549f1681",
   "name":"Equipment rental"
 })
 
@@ -3618,7 +3618,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"ca94499b-6029-4f49-b58a-c985025813f5",
+  "id":"e9a2b289-3ad3-42cd-9542-5b047f0bf2d8",
   "name":"Research and development"
 })
 
@@ -3629,7 +3629,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"ddb72915-25db-40b9-8c24-d7a6b6422c53",
+  "id":"17054564-7c01-442f-8490-6d732eac3e5b",
   "name":"Engineering services / architecture"
 })
 
@@ -3640,7 +3640,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"8a58ba14-ae94-4f02-8255-5acf67cfd528",
+  "id":"fd2bd6b2-13ff-4c03-b2a1-c2a6346c7405",
   "name":"Repairs and maintenance on machines and vehicles"
 })
 
@@ -3651,7 +3651,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"90",
-  "id":"4532b11a-de47-4388-896a-8840dc03646e",
+  "id":"68de031a-f1d4-44ca-84f3-f20d3e4d8dd0",
   "name":"Technical and professional services - legal services"
 })
 
@@ -3662,7 +3662,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"a51db293-5d38-4878-afb9-eadd259e01ff",
+  "id":"edeb9605-8b9a-4106-9cb0-31377e19703c",
   "name":"Technical and professional services - legal services"
 })
 
@@ -3673,7 +3673,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"a86bb288-6468-42bf-ad63-5c09d9d11f49",
+  "id":"7a9a4d41-f39c-4cc8-9147-6de2ab3ead5b",
   "name":"Technical and professional services - legal services"
 })
 
@@ -3684,7 +3684,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"90",
-  "id":"c1861187-0543-48fa-9266-2b0a2b637405",
+  "id":"5ac7281a-35b9-4cf0-9e24-73d5a9dbc1fd",
   "name":"Technical and professional services - legal services"
 })
 
@@ -3695,7 +3695,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"f2bddb93-1029-4e9b-9967-4a541d762f9a",
+  "id":"be4e22c9-495f-489b-b4e7-39d5a309d36e",
   "name":"Technical and professional services - legal services"
 })
 
@@ -3706,7 +3706,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"49",
-  "id":"793b6659-878a-432d-891e-680dafeacb25",
+  "id":"fa27048d-a980-4001-bc52-a15ce95d2e16",
   "name":"Legal services"
 })
 
@@ -3717,7 +3717,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"a2832301-71c4-445c-81b3-423c04c4585e",
+  "id":"31d0b2e9-a657-4cc0-905e-c29441bb5e77",
   "name":"Technical and professional services - legal services"
 })
 
@@ -3728,7 +3728,7 @@ p({
   "approvalType":"0",
   "payeeType":"53",
   "groupCode":"90",
-  "id":"64d96503-ab09-4473-8ef9-2ee1b1259e7c",
+  "id":"09ef9fe5-778c-4a3b-a296-235db7113d38",
   "name":"Technical and professional services - legal services"
 })
 
@@ -3739,7 +3739,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"2cdf55ac-a5f8-4532-9c1e-5f2435dcce94",
+  "id":"e6ee6677-58b3-448c-a412-b2fbfb99b440",
   "name":"Audit, accounting and tax consulting"
 })
 
@@ -3750,7 +3750,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"49",
-  "id":"9a69e22d-5a6f-43d2-af03-885e95f92c01",
+  "id":"4e3ac739-f4bf-496c-aec6-380d2337c0f4",
   "name":"Audit, accounting and tax consulting"
 })
 
@@ -3761,7 +3761,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"83eaeb47-9e7f-44c5-87e9-84163ee594a0",
+  "id":"9c56d3f1-2938-45cd-85a6-df40dfe3cfd3",
   "name":"Audit, accounting and tax consulting"
 })
 
@@ -3772,7 +3772,7 @@ p({
   "approvalType":"0",
   "payeeType":"53",
   "groupCode":"90",
-  "id":"f659c060-6e6e-4b7d-b9ac-ac772da80376",
+  "id":"1d86daf1-3e67-4e89-afd7-f9c1ae29d974",
   "name":"Audit, accounting and tax consulting"
 })
 
@@ -3783,7 +3783,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"47",
-  "id":"b3314a1a-43a1-4cf7-a1b1-12906a161aef",
+  "id":"0492f5c9-b7a3-4a2d-a867-56de3c87116b",
   "name":"Business consulting and public relations"
 })
 
@@ -3794,7 +3794,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"7e181a64-1a79-437e-96e5-09b836a068a9",
+  "id":"0c9adcff-cd22-473b-908f-1058e81d3a98",
   "name":"Business consulting and public relations"
 })
 
@@ -3805,7 +3805,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"25d4a929-1350-47d0-9616-a91d8f5a57ad",
+  "id":"3f7338c5-93bd-4cde-897d-c065eb702877",
   "name":"Business consulting and public relations"
 })
 
@@ -3816,7 +3816,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"46",
-  "id":"2e81911b-906d-4b96-876a-dabe0daa2b90",
+  "id":"e7f5e674-0333-41f3-96c3-6df3c7d18b1c",
   "name":"Business consulting and public relations"
 })
 
@@ -3827,7 +3827,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"47",
-  "id":"80977953-1222-460f-8e8b-1bb6bc886a73",
+  "id":"d1353040-d7b0-4109-b62b-dc580397fc3a",
   "name":"Business consulting and public relations"
 })
 
@@ -3838,7 +3838,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"d9d5e7f7-c165-4d4e-8442-12e30582c325",
+  "id":"07d5584c-29fc-4612-b318-8626534e28e9",
   "name":"Business consulting and public relations"
 })
 
@@ -3849,7 +3849,7 @@ p({
   "approvalType":"0",
   "payeeType":"53",
   "groupCode":"90",
-  "id":"5247bad2-77f1-4412-a373-aded14986d16",
+  "id":"c9099547-48dc-49cd-b1f4-d269616e4615",
   "name":"Business consulting and public relations"
 })
 
@@ -3860,7 +3860,7 @@ p({
   "approvalType":"0",
   "payeeType":"73",
   "groupCode":"90",
-  "id":"438507d2-c89c-475d-90ae-8afc2645c81a",
+  "id":"fc01fa9e-5382-4bd2-a73c-c6497039bd7b",
   "name":"Business consulting and public relations"
 })
 
@@ -3871,7 +3871,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"8e8a1939-7aa6-4e77-af71-d2e5854175c5",
+  "id":"98bc47e8-5f5e-42a4-a974-f2c0526d7f41",
   "name":"Business consulting and public relations"
 })
 
@@ -3882,7 +3882,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"55531afb-afa1-437c-b719-7498dba4aa91",
+  "id":"ee6ef1e7-2741-4ac7-bb17-b8589614970d",
   "name":"public. PESQ. MERC. and opinion and PART. fairs EXP."
 })
 
@@ -3893,7 +3893,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"90",
-  "id":"28a88144-950f-4500-8b05-ba9e2cd4550e",
+  "id":"3aba7d40-0cbc-4c8a-9e66-5f50fad9eba4",
   "name":"public. PESQ. MERC. and opinion and PART. fairs EXP."
 })
 
@@ -3904,7 +3904,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"12daf5ee-b86a-4b5a-bdd0-de9729f4967a",
+  "id":"77bc932b-b8aa-46a4-ac06-bdc17c781ab2",
   "name":"public. PESQ. MERC. and opinion and PART. fairs EXP."
 })
 
@@ -3915,7 +3915,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"49",
-  "id":"96fa2a31-7231-4e9f-8c17-6992c03b7477",
+  "id":"b693af0a-50b4-4dc3-811b-4fe37b78bde8",
   "name":"public. PESQ. MERC. and opinion and PART. fairs EXP."
 })
 
@@ -3926,7 +3926,7 @@ p({
   "approvalType":"0",
   "payeeType":"53",
   "groupCode":"90",
-  "id":"39a664df-8b5c-4eed-95ae-297e4d43cebc",
+  "id":"83e9810e-5dc8-47ad-b37a-dfa2470002cc",
   "name":"public. PESQ. MERC. and opinion and PART. fairs EXP."
 })
 
@@ -3937,7 +3937,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"988973f7-413b-4f03-b982-85244d6172fd",
+  "id":"a9c80457-e107-4962-83f2-b36f6971183d",
   "name":"News agency services"
 })
 
@@ -3948,7 +3948,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"c19c11c3-0f3b-4750-8877-bf9947fe0090",
+  "id":"756d609a-d5f0-43ae-83b8-3e1b44b12f6b",
   "name":"News agency services"
 })
 
@@ -3959,7 +3959,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"315a2de8-efbd-4b51-8d68-3a4a455e685b",
+  "id":"496e5a62-f747-4a48-a38d-4c91c4725e70",
   "name":"Technical and professional services - audiovisuals and related services"
 })
 
@@ -3970,7 +3970,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"1d679b48-2ce7-4a22-afe8-3563311b798f",
+  "id":"4918468d-d940-4980-9c82-84923610656d",
   "name":"Other information supply services"
 })
 
@@ -3981,7 +3981,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"b3ed4b87-3e32-420b-8fd7-56794401abdd",
+  "id":"4b96d8eb-a62a-40e1-99b2-d9ba9d353cc2",
   "name":"Technical and professional services - audiovisuals and related services"
 })
 
@@ -3992,7 +3992,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"2dea3d23-6a84-4c79-9053-c06b4408ca13",
+  "id":"cf249108-f8cc-41e2-a8b7-44169c6d815a",
   "name":"Other technical, professional and administrative services"
 })
 
@@ -4003,7 +4003,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"fa4157a2-18dc-4c46-b140-787ed5386ee1",
+  "id":"61d757c6-b223-4821-b504-ed14defb8e40",
   "name":"Other technical SERV. professionals and administrative"
 })
 
@@ -4014,7 +4014,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"01620fcb-b615-45c1-b27d-080e7540aba1",
+  "id":"33935f87-fbe5-4512-b363-7b33356c7c7e",
   "name":"Other technical, professional and administrative services"
 })
 
@@ -4025,7 +4025,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"e585eb4f-1b38-4854-bcec-a2d46fc69a51",
+  "id":"45a17d0b-fa20-4bca-b266-40f018530fca",
   "name":"Other technical SERV. professionals and administrative"
 })
 
@@ -4036,7 +4036,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"49",
-  "id":"6fd9befb-c154-436c-9b7f-f29a83627a0b",
+  "id":"49f17086-cc6b-44f7-abf5-24c712fbbf41",
   "name":"Technical, professional and adm repatriation services"
 })
 
@@ -4047,7 +4047,7 @@ p({
   "approvalType":"0",
   "payeeType":"53",
   "groupCode":"90",
-  "id":"460ec263-870f-44a0-b5c3-af518f4a10c8",
+  "id":"9b8a6ae5-7ffe-4bb1-b355-1fee4c0b02e3",
   "name":"Technical services"
 })
 
@@ -4058,7 +4058,7 @@ p({
   "approvalType":"0",
   "payeeType":"58",
   "groupCode":"90",
-  "id":"e1c103ab-66f6-41c2-a36b-12d840a66aac",
+  "id":"8ea8f8c2-8e38-480b-a0c3-79a3a92c38bd",
   "name":"Technical services"
 })
 
@@ -4069,7 +4069,7 @@ p({
   "approvalType":"0",
   "payeeType":"73",
   "groupCode":"90",
-  "id":"72ff4985-6ecb-48f2-a937-5474c2ad4110",
+  "id":"59118972-2ee9-4096-bc82-cdad29d4722b",
   "name":"Technical services"
 })
 
@@ -4080,7 +4080,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"d3f7d6f7-05a7-409e-a398-a6a25e37bc33",
+  "id":"9b63f0b8-5796-47be-ab23-5dacd8f3ad4d",
   "name":"Other technical SERV. professionals and administrative"
 })
 
@@ -4091,7 +4091,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"6b46d367-f784-4437-b6e5-60e50d9a50ad",
+  "id":"a1b2a735-6f19-426d-8dce-c82096d90732",
   "name":"Trademarks - rights of exploitation / use"
 })
 
@@ -4102,7 +4102,7 @@ p({
   "approvalType":"0",
   "payeeType":"53",
   "groupCode":"90",
-  "id":"f543237c-0c71-4810-8de7-957d3410dc53",
+  "id":"23716c6e-36c7-427e-bb55-b309814e55a1",
   "name":"Other technical SERV. professionals and administrative"
 })
 
@@ -4113,7 +4113,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"befec6cc-71bd-4df2-93e4-f72191195efa",
+  "id":"6747cd55-5000-4470-a0e0-f8967389158a",
   "name":"Exploration / use rights"
 })
 
@@ -4124,7 +4124,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"e57e75e6-f7d3-48e5-bc62-8bf667f478ff",
+  "id":"120333e2-1c15-4f82-a78b-e2e952b548d1",
   "name":"Technology supply"
 })
 
@@ -4135,7 +4135,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"50",
-  "id":"fc14fed4-c21e-468c-83d0-ed28b139c00f",
+  "id":"42ddd167-8333-4955-bfc4-7f287eec4584",
   "name":"Supply of technical assistance services"
 })
 
@@ -4146,7 +4146,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"21abd898-9f24-4284-915c-c21ae94d598d",
+  "id":"7760009e-7b92-475d-abde-f724cd5265ca",
   "name":"Supply of technical assistance services"
 })
 
@@ -4157,7 +4157,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"03fa2afa-765a-4c42-98a1-bb4cb0b4a2db",
+  "id":"04253fa1-c4ce-4b88-b847-3184da9627c2",
   "name":"Technical and professional services - advertising, market and opinion research and participation in fairs and exhibitions"
 })
 
@@ -4168,7 +4168,7 @@ p({
   "approvalType":"9",
   "payeeType":"0",
   "groupCode":"59",
-  "id":"57abf829-04bf-40c2-9ede-313fe6a29d54",
+  "id":"45b28ea8-9c3f-40a7-ad3c-dae58ca98376",
   "name":"Miscellaneous services and complementary expenses"
 })
 
@@ -4179,7 +4179,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"07c9b84f-11cf-4e4c-ae91-8822f6bc4c15",
+  "id":"614ebd57-afd0-446b-9d0f-6d246c17789b",
   "name":"Miscellaneous services and complementary expenses"
 })
 
@@ -4190,7 +4190,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"90",
-  "id":"b696f8e3-40f9-4aa0-b96f-e208b8c9ec69",
+  "id":"9b6d99fd-bc9d-4336-a227-2b45b64c5cae",
   "name":"License to copy of distribution of PROG. comput"
 })
 
@@ -4201,7 +4201,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"af8b7d2e-4ddc-475d-af8e-94dc33355844",
+  "id":"bb0f1ea2-8fac-4f5a-99bd-8c81faf245b8",
   "name":"License to copy and distribute PROGR.comput"
 })
 
@@ -4212,7 +4212,7 @@ p({
   "approvalType":"0",
   "payeeType":"9",
   "groupCode":"90",
-  "id":"17b2acdc-6f1b-401d-ab6d-aa7f0d2901f5",
+  "id":"fd3e230e-4556-4bdc-8868-3c77bdc58ec6",
   "name":"License to copy of distribution of PROG. comput"
 })
 
@@ -4223,7 +4223,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"f88e9330-28b8-4458-ac3d-7b303ff5371b",
+  "id":"e0fcf8cb-ee88-4ae2-b7e8-8c60c5b26089",
   "name":"License to copy and distribute PROGR.comput"
 })
 
@@ -4234,7 +4234,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"49",
-  "id":"207f553e-e39e-4cdf-a90f-bcd2a4b29a99",
+  "id":"29e30f6f-2ad2-4cf5-99ae-30bfbfe2f75d",
   "name":"License for copying and distribution of PROGR.comput reversion"
 })
 
@@ -4245,7 +4245,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"f519b797-3559-4e29-9731-09011ff481a4",
+  "id":"7c7c6c4b-34ff-4cd6-938c-3814d92f34eb",
   "name":"Copy and distribution license - others"
 })
 
@@ -4256,7 +4256,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"46",
-  "id":"6379df07-dfb4-40a6-9653-7f52640d4bde",
+  "id":"4216610f-cf1a-4b81-bf07-715edc3aa8c6",
   "name":"Assignment or use of computer programs"
 })
 
@@ -4267,7 +4267,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"65758c62-655e-42c8-b5e1-cb9bcb1f9a57",
+  "id":"125215a0-b0aa-4bb4-ac26-bc5d4a7a05d1",
   "name":"Assignment or use of computer programs"
 })
 
@@ -4278,7 +4278,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"64508678-f32e-4465-9e19-ff24f08ffd26",
+  "id":"d43de7ea-100a-441a-b1c0-da94a7f1a2cf",
   "name":"Assignment or use of computer programs"
 })
 
@@ -4289,7 +4289,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"ccee3b3b-8d39-48ac-bca7-85508839c66c",
+  "id":"288002cc-58d5-4b49-9f97-052edea1e0a3",
   "name":"Assignment or use of computer programs"
 })
 
@@ -4300,7 +4300,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"6448507c-280f-4afc-9627-e99db2404431",
+  "id":"4ae39447-5ae7-4b86-b518-ee7bd7a401cf",
   "name":"Assignment or use - others"
 })
 
@@ -4311,7 +4311,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"49",
-  "id":"6463be9a-d822-4adf-a7ac-f6089dcadfb0",
+  "id":"86f918c7-a71c-4573-83b0-d1528149f715",
   "name":"Assignment or use - others"
 })
 
@@ -4322,7 +4322,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"06085016-f711-46f1-aedc-05a5b7fc3b3d",
+  "id":"9d82c584-ad73-4961-97a5-32b60edeb9d0",
   "name":"Assignment or use - others"
 })
 
@@ -4333,7 +4333,7 @@ p({
   "approvalType":"0",
   "payeeType":"53",
   "groupCode":"90",
-  "id":"a27062ba-5348-4304-acb7-2c7f07728fc0",
+  "id":"c12a6859-9b30-48b1-a8cc-5c2ae7bb63dc",
   "name":"Assignment or use - others"
 })
 
@@ -4344,7 +4344,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"441f996e-29ec-48a7-a057-58fae463e19a",
+  "id":"4034bf9f-179e-410e-9ca2-ca3d8aee9945",
   "name":"Commissions and other expenses on trade transactions"
 })
 
@@ -4355,7 +4355,7 @@ p({
   "approvalType":"0",
   "payeeType":"88",
   "groupCode":"90",
-  "id":"fd319f6a-a487-4fe1-943b-11147f8d7177",
+  "id":"16f1a532-86e0-47e9-b5eb-7160e9a4a1cb",
   "name":"Check commissions"
 })
 
@@ -4366,7 +4366,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"90",
-  "id":"388340e1-0169-40ce-b49d-51b6d5187cec",
+  "id":"6b5e8749-65d1-41ce-bb0a-0847ec044dd2",
   "name":"Commissions and other expenses on trade transactions"
 })
 
@@ -4377,7 +4377,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"49",
-  "id":"461da37b-255d-4fdc-be7e-b58bd063f153",
+  "id":"751a3e5a-ee85-4a82-aa95-f25711b97a9e",
   "name":"Commissions"
 })
 
@@ -4388,7 +4388,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"49",
-  "id":"d035e6a0-a05a-45f5-a606-c2f001d6d537",
+  "id":"8507103c-7585-46d8-9126-bbd438da846d",
   "name":"Agent commission"
 })
 
@@ -4399,7 +4399,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"13de97a8-9eec-4932-ae48-152f3f0c4a3c",
+  "id":"a89fbbc4-8016-470c-9190-6bdde2640881",
   "name":"Miscellaneous services - commercial transactions - commissions"
 })
 
@@ -4410,7 +4410,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"ed4a1b67-259b-4761-8f44-8945318a688e",
+  "id":"cb9458e6-c1f8-4afb-94dc-123ab94cd372",
   "name":"Commissions and other expenses on trade transactions"
 })
 
@@ -4421,7 +4421,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"c454de0f-150d-4c84-aad9-a9a58b8181bc",
+  "id":"38c73088-d09d-478d-a938-fc4e74fcb281",
   "name":"Commissions and other expenses on trade transactions"
 })
 
@@ -4432,7 +4432,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"0e847952-a597-47aa-a780-550f4758161d",
+  "id":"b6cdae8c-9281-44c3-b045-89c4894e97a8",
   "name":"Commissions and other expenses on trade transactions"
 })
 
@@ -4443,7 +4443,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"90",
-  "id":"5369511c-cfd2-4579-996c-95f49d72c18f",
+  "id":"0fdd3f07-3b9b-46e3-9212-000bae2695aa",
   "name":"Education services"
 })
 
@@ -4454,7 +4454,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"b9eb4035-b68b-4a3d-8c93-ec3d0202d70b",
+  "id":"18ef6987-47f4-496e-8df6-be04718a9499",
   "name":"Travel education services"
 })
 
@@ -4465,7 +4465,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"49",
-  "id":"0aaa2de7-22b0-446f-b1ee-0069cd10df26",
+  "id":"d86ee15c-3228-4bd6-b12a-141e531e954c",
   "name":"Travel education services"
 })
 
@@ -4476,7 +4476,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"1a1ad96f-9909-4203-9e83-ab0cdd9f2f23",
+  "id":"ee2ef2c9-7daf-4be2-955b-71f1bd09921d",
   "name":"Travel education services"
 })
 
@@ -4487,7 +4487,7 @@ p({
   "approvalType":"0",
   "payeeType":"71",
   "groupCode":"49",
-  "id":"5ca3c36b-af0f-412e-97d4-6c0001288d4b",
+  "id":"38e20153-de0e-486f-9d69-d84e3070382c",
   "name":"Travel education services"
 })
 
@@ -4498,7 +4498,7 @@ p({
   "approvalType":"0",
   "payeeType":"71",
   "groupCode":"90",
-  "id":"cf9650d9-1ab0-4b3a-ba55-677608c706e2",
+  "id":"1b15164f-fd09-48f4-85dc-630cacc33a24",
   "name":"Travel education services"
 })
 
@@ -4509,7 +4509,7 @@ p({
   "approvalType":"0",
   "payeeType":"73",
   "groupCode":"90",
-  "id":"e09923c7-5e91-4a63-ae72-112a6eb2fe7f",
+  "id":"d910a276-c641-47d0-bd3e-2e52ca0beed6",
   "name":"Travel education services"
 })
 
@@ -4520,7 +4520,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"3794079f-33e2-479c-b432-9e17e4e8e1c6",
+  "id":"9d438038-925c-45d5-9a48-6c022427465a",
   "name":"Travel education services"
 })
 
@@ -4531,7 +4531,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"1c307d16-56fb-4b50-a0de-df90332e8b03",
+  "id":"75916050-5322-43dd-a43d-49f57fd032b4",
   "name":"Travel education services"
 })
 
@@ -4542,7 +4542,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"835425c8-4ed8-4c66-8b30-497877d20cf1",
+  "id":"c47e1309-2b7c-44a3-b2de-e68cb3f56576",
   "name":"Travel education services"
 })
 
@@ -4553,7 +4553,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"49",
-  "id":"d42f7f0b-2ac4-407d-b2bb-3b52cf04b73a",
+  "id":"45bedf8a-e9da-40e8-8a62-a1675dfd15cd",
   "name":"Education services"
 })
 
@@ -4564,7 +4564,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"3dcd036d-7815-4437-a8de-5f433c82d13d",
+  "id":"09e38b64-5fd4-4562-bddb-4ce157fc6bcb",
   "name":"Education services"
 })
 
@@ -4575,7 +4575,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"a70986b1-e04e-4333-af99-20114c3db7e3",
+  "id":"4fd01bbf-5b0c-44e6-8e91-90378b2c2151",
   "name":"Education services"
 })
 
@@ -4586,7 +4586,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"81bf8ae6-dd5c-481e-b3fe-44081cc52878",
+  "id":"24541b4d-b401-413d-97bf-a13b993094e0",
   "name":"Education services"
 })
 
@@ -4597,7 +4597,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"0d157379-fdd9-4ced-8be0-1be7968f39c3",
+  "id":"dfc854d9-73ee-4a42-9a40-173204a228b8",
   "name":"Education services"
 })
 
@@ -4608,7 +4608,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"707f3ee0-9db3-46c3-934d-b290a40638a9",
+  "id":"818de03c-8e34-47c7-aea9-82d8ff6889a4",
   "name":"Health travel services"
 })
 
@@ -4619,7 +4619,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"6053952d-2243-4b15-940e-cb838b35704a",
+  "id":"7dc3730c-fa14-4a11-9c83-c665b4214448",
   "name":"Travel health services"
 })
 
@@ -4630,7 +4630,7 @@ p({
   "approvalType":"0",
   "payeeType":"58",
   "groupCode":"90",
-  "id":"00b382a2-8b00-416d-8dde-a4812b61a468",
+  "id":"f05fa8cf-1013-4ceb-af83-e753e6e8e73f",
   "name":"Travel health services"
 })
 
@@ -4641,7 +4641,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"a34a0c26-194f-4398-86fd-cb3d472c959d",
+  "id":"3c8d1490-a284-44c5-8d41-ba6258373687",
   "name":"Travel health services"
 })
 
@@ -4652,7 +4652,7 @@ p({
   "approvalType":"0",
   "payeeType":"9",
   "groupCode":"90",
-  "id":"44ad1c8f-1fb1-4704-ad7e-d6403cea0d5a",
+  "id":"ba0a3144-1208-4b9c-9ef8-58e64da825dc",
   "name":"Travel health services"
 })
 
@@ -4663,7 +4663,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"c2de6544-1c9b-447f-bae9-0ba77407fb65",
+  "id":"6010b06b-8b0c-4b83-b9bd-105902713276",
   "name":"Health services"
 })
 
@@ -4674,7 +4674,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"b09d5db9-ba69-496e-a2b2-b1af2e7e1e79",
+  "id":"4658213a-8911-473e-9f62-610da94d98d9",
   "name":"Travel health services"
 })
 
@@ -4685,7 +4685,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"62c3b413-10cb-408e-a556-984dfa7422c6",
+  "id":"c90e07dd-e40a-4eee-bd33-821f6374b225",
   "name":"Tourist services"
 })
 
@@ -4696,7 +4696,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"e0ca00f9-4619-4bad-b41f-ecf1232d6e0a",
+  "id":"80f3cbaa-442b-4582-b9a6-acac50f9222d",
   "name":"Tourist services"
 })
 
@@ -4707,7 +4707,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"49",
-  "id":"69989690-4182-4875-b56b-681c6ebbf607",
+  "id":"f8c42f35-5958-4bd8-9677-dfaa0064ebcd",
   "name":"Tourist services"
 })
 
@@ -4718,7 +4718,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"5c1e67df-8b62-4b7e-8c49-1be2c2aa7a77",
+  "id":"a070833f-36fd-41c5-ae90-ad8c0b97816d",
   "name":"Tourist services"
 })
 
@@ -4729,7 +4729,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"d318eded-4f91-4fd4-9d57-54d205c6e07c",
+  "id":"82e9c708-fca5-4bf5-a969-f51afec1350d",
   "name":"Tourist services"
 })
 
@@ -4740,7 +4740,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"49",
-  "id":"9a5b6fba-4ef3-4f93-92b1-ebeedd9793ce",
+  "id":"ff176003-b325-4241-a2e0-19177d60cc1a",
   "name":"Other personal, cultural and entertainment services"
 })
 
@@ -4751,7 +4751,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"824f2ec6-65af-4a6b-94f2-0d482d56ecfc",
+  "id":"2bdf3f9f-63b5-4636-8885-86cb3bc86b14",
   "name":"Other personal, cultural and entertainment services"
 })
 
@@ -4762,7 +4762,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"90",
-  "id":"c7072003-4e21-421d-a7f1-be0095177f49",
+  "id":"d55e1d80-8fc8-4fcd-845e-f8f08a28a3c9",
   "name":"Other personal, cultural and entertainment services"
 })
 
@@ -4773,7 +4773,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"bc04a8a1-f6e3-4bbd-b594-4bb91a6cdb42",
+  "id":"fb765634-b5e8-4b66-9607-4f07a2fd06b8",
   "name":"Other personal, cultural and entertainment services"
 })
 
@@ -4784,7 +4784,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"c3e8f74e-75f9-4496-a1b3-12967057f911",
+  "id":"771805bd-deb8-4c48-b444-654ce5ee5d5c",
   "name":"Other personal, cultural and entertainment services"
 })
 
@@ -4795,7 +4795,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"76adf6c1-5797-4f49-8d0e-a93b805a6458",
+  "id":"5719c692-6e99-4806-b1ac-28d7f0a9873e",
   "name":"Other personal, cultural and entertainment services"
 })
 
@@ -4806,7 +4806,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"8ea38da3-23f6-44e5-95db-ba9301849f56",
+  "id":"90eadd37-9a30-4610-98da-2e617c09bd50",
   "name":"Other personal, cultural and entertainment services"
 })
 
@@ -4817,7 +4817,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"29",
-  "id":"199b524a-a332-48ca-a7f4-645ee73fc392",
+  "id":"5d53fc44-7938-4637-98e4-01921a66a916",
   "name":"Tourist services"
 })
 
@@ -4828,7 +4828,7 @@ p({
   "approvalType":"0",
   "payeeType":"73",
   "groupCode":"90",
-  "id":"78b5fa30-fd36-42b3-b6b4-97734848f268",
+  "id":"2f2e66b9-44e8-4414-8afa-2d69d34d3d1d",
   "name":"Embassy"
 })
 
@@ -4839,7 +4839,7 @@ p({
   "approvalType":"0",
   "payeeType":"90",
   "groupCode":"90",
-  "id":"ca193bba-1232-4136-8c12-cb83083ae2fa",
+  "id":"33789d68-f609-46e1-bcd6-c6ea3c17f572",
   "name":"Embassy"
 })
 
@@ -4850,7 +4850,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"a4592339-0299-4f2f-b17b-b1e63e130fb2",
+  "id":"3d9d5e41-0e92-4f1d-9c27-3ff37716b98a",
   "name":"Receipt of wages or remuneration due to individuals"
 })
 
@@ -4861,7 +4861,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"90",
-  "id":"c84d7d20-2d5e-437e-aa62-2a8f11f8aa73",
+  "id":"9796b827-a332-4000-a65d-21c7023a9b0e",
   "name":"Others - wages and other compensation"
 })
 
@@ -4872,7 +4872,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"f70a17df-2122-45bf-aa3a-8c0f80360660",
+  "id":"5cc0d569-2643-4386-8198-576a6f48cdff",
   "name":"Receipt of wages or remuneration due to individuals"
 })
 
@@ -4883,7 +4883,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"060f1e29-127e-49b6-acaa-325822ab95c7",
+  "id":"62ef449b-5c44-4d83-a7e8-6d5cbf1f3b5d",
   "name":"Other salaries and other compensations"
 })
 
@@ -4894,7 +4894,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"66248b2f-b8e3-4942-940d-217c117ea132",
+  "id":"7d6dbb97-74c8-45d7-8ab8-d31212f96266",
   "name":"Others - property rental"
 })
 
@@ -4905,7 +4905,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"26249c13-067c-4e67-a1e3-b84aafa405f3",
+  "id":"54262b5c-6019-406f-989e-4b1dea0a157e",
   "name":"Others - property rental"
 })
 
@@ -4916,7 +4916,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"288caacd-20b5-49f9-ba32-b28945323257",
+  "id":"1211908b-7805-42e0-a950-681f3620c0ee",
   "name":"Others - property rental"
 })
 
@@ -4927,7 +4927,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"3f234440-8226-4a61-a06a-1fd832badbd3",
+  "id":"bb4f86aa-30ee-40d2-ad60-e0f31598094b",
   "name":"Carbon credits / emission rights"
 })
 
@@ -4938,7 +4938,7 @@ p({
   "approvalType":"0",
   "payeeType":"71",
   "groupCode":"90",
-  "id":"2d0f20dd-e0be-411e-80f3-73aac585ee53",
+  "id":"8ebc1a1f-5496-4398-b359-89b6de05e198",
   "name":"Economic and federative rights of professional athletes"
 })
 
@@ -4949,7 +4949,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"a5b14551-1b9b-46b3-beae-889c4b4a1631",
+  "id":"1435ffb8-2e60-48ab-9e6b-3bbfc8e4d37b",
   "name":"Guarantees"
 })
 
@@ -4960,7 +4960,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"23c131f5-cc0e-43db-bfcd-946cb5f8e436",
+  "id":"a7dfba97-95a6-46be-a6b7-ffa6f0e05ec4",
   "name":"Miscellaneous direct author services on computer prog"
 })
 
@@ -4971,7 +4971,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"49",
-  "id":"6737aca2-b83a-4c42-9f72-1c33393aa797",
+  "id":"8ce3f0fe-dc43-40f1-93b2-7766e8a4be46",
   "name":"Miscellaneous direct author services on computer prog"
 })
 
@@ -4982,7 +4982,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"fdcf845f-51ed-455b-bc7f-5377fbf6d2a7",
+  "id":"e2d88764-0d79-422b-b470-d6bfd847a592",
   "name":"Miscellaneous direct author services on computer prog"
 })
 
@@ -4993,7 +4993,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"49",
-  "id":"e063b52b-588e-4b5d-a9ed-29b7ae77df1b",
+  "id":"2f13b8e4-86e0-41fc-aaf8-5bff4fb20e43",
   "name":"Miscellaneous direct author services on computer prog"
 })
 
@@ -5004,7 +5004,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"6e5a9afa-9521-47d8-af48-bf5178328cae",
+  "id":"6fcbd5d2-9235-41b1-9503-3f4fd6f215d6",
   "name":"Miscellaneous direct author services on computer prog"
 })
 
@@ -5015,7 +5015,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"49",
-  "id":"befe7ea1-ce94-4c59-9b2b-e4f516661e35",
+  "id":"104c1bc5-14d9-4bc7-ae13-dbb500250197",
   "name":"Miscellaneous direct author services on computer prog"
 })
 
@@ -5026,7 +5026,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"90",
-  "id":"09b5070a-8f1f-4620-ada6-065675893b9c",
+  "id":"6c9a6e4a-aac9-47a5-b3b3-ee05e625299d",
   "name":"Miscellaneous direct author services on computer prog"
 })
 
@@ -5037,7 +5037,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"614c7d4a-6973-42d3-ae14-65d4a889e3ed",
+  "id":"eee0bcea-f65a-4ef6-8b21-dcaf1ec1ec86",
   "name":"Use of international database"
 })
 
@@ -5048,7 +5048,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"3df365e9-e5c8-4134-b616-8de1f12aa7a4",
+  "id":"1b6d2b5f-fa24-40d8-9ab9-15b495b73ee3",
   "name":"Use of international database"
 })
 
@@ -5059,7 +5059,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"e7881137-39c9-4442-96c9-b54cc3481c56",
+  "id":"186fa0eb-f8f3-4201-b029-706d7e0fe380",
   "name":"Courses and congress"
 })
 
@@ -5070,7 +5070,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"b0d50d93-5bf9-40ea-a946-efb11a03a281",
+  "id":"0a171fbc-844f-4a12-85e2-7ed756f41aeb",
   "name":"Miscellaneous services courses and congresses"
 })
 
@@ -5081,7 +5081,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"90",
-  "id":"b6878b52-bf78-40ae-a0c1-5a316edbd3d6",
+  "id":"e8b630c7-7e8e-4496-8da7-97401747d503",
   "name":"Courses and congress"
 })
 
@@ -5092,7 +5092,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"e217cb99-9dab-4f16-a7fa-3c25ef6828a9",
+  "id":"1f1df561-a278-4f40-9bd3-c10c6d916e7a",
   "name":"Miscellaneous out services - small commitments"
 })
 
@@ -5103,7 +5103,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"b7ea8c38-09ea-4c50-a82f-f2ee34b1399d",
+  "id":"a1fa0c2e-073d-4c42-a0f6-78d35ede38e0",
   "name":"Miscellaneous commitments"
 })
 
@@ -5114,7 +5114,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"15e53696-f9af-4472-a57f-8190cb6db7bb",
+  "id":"01fceca7-4f3f-4cb0-947e-c4077d8855ba",
   "name":"Small commitments"
 })
 
@@ -5125,7 +5125,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"50",
-  "id":"12425f89-4250-43a2-bbb9-3dc6c0f785a9",
+  "id":"e9409c4c-2598-4d7d-bd46-63721e7be737",
   "name":"Small orders"
 })
 
@@ -5136,7 +5136,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"21214f68-0f4c-44f4-9ee9-d24289361961",
+  "id":"98517a98-4afc-4c89-8917-44ac011ecb28",
   "name":"Miscellaneous services international orders"
 })
 
@@ -5147,7 +5147,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"9f853d94-2df8-4041-9e10-309199a8d988",
+  "id":"2966b3a5-24a3-4f3c-86e8-493171a67965",
   "name":"Small orders"
 })
 
@@ -5158,7 +5158,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"90",
-  "id":"f2f1d26a-3656-4442-a700-93479fe79b63",
+  "id":"bd1962b6-fc68-4615-8a65-c3c9b5eb79e9",
   "name":"Small orders"
 })
 
@@ -5169,7 +5169,7 @@ p({
   "approvalType":"0",
   "payeeType":"53",
   "groupCode":"90",
-  "id":"7fcec6a7-be29-4779-9acd-09391ac30316",
+  "id":"2ddacf8d-3b7d-4daa-bad5-2266300bc89a",
   "name":"Technical services"
 })
 
@@ -5180,7 +5180,7 @@ p({
   "approvalType":"0",
   "payeeType":"99",
   "groupCode":"90",
-  "id":"f018f17a-dbaa-47f8-b1de-191b6d214278",
+  "id":"2bf45227-563b-4472-a96e-9762abf28aa7",
   "name":"Tourist services"
 })
 
@@ -5191,7 +5191,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"b9a7be9a-7d24-4808-83b2-8b7a2b3ae239",
+  "id":"a3121067-66f6-4628-9ba0-8334f4198825",
   "name":"Donations - PF - matrix"
 })
 
@@ -5202,7 +5202,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"dd603852-a0d8-47cc-b4bf-88f60eff4c20",
+  "id":"864bc2ad-29a9-4284-bed2-1250bf789c2b",
   "name":"Indemnities and fines"
 })
 
@@ -5213,7 +5213,7 @@ p({
   "approvalType":"0",
   "payeeType":"92",
   "groupCode":"90",
-  "id":"1e434890-fef4-4acb-9811-7bd157907de1",
+  "id":"8e7face9-6c08-4dfa-855d-bec6e369baa0",
   "name":"Other taxes and fees"
 })
 
@@ -5224,7 +5224,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"5eabbf0f-a1c0-4f16-a666-209faa4e5f63",
+  "id":"bf567460-83aa-4015-99be-bb298b928cb9",
   "name":"Debt securities - interest on securities - external market"
 })
 
@@ -5235,7 +5235,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"46",
-  "id":"1ecdbead-02d8-441c-8423-ce9bbe4b3bc3",
+  "id":"07639687-59ee-4f7b-8314-425c7bf85f87",
   "name":"Loans and financing interest on loan"
 })
 
@@ -5246,7 +5246,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"46",
-  "id":"eda72199-1453-4c81-b989-243c7b736c57",
+  "id":"477660a5-7d11-4bf4-9535-8ff2e317d1f5",
   "name":"Loans and financing interest on loan"
 })
 
@@ -5257,7 +5257,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"47",
-  "id":"e4177607-8bd2-424c-b615-08b42043bb89",
+  "id":"77bd35dc-aacc-4313-81c6-31d9daa03965",
   "name":"Loans and financing interest on loan"
 })
 
@@ -5268,7 +5268,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"7d4567b8-2b67-4528-bb46-6e30f660c7e4",
+  "id":"cf42fed4-185c-4db4-9798-8b629fd1c2bb",
   "name":"Loans and financing interest on loan"
 })
 
@@ -5279,7 +5279,7 @@ p({
   "approvalType":"0",
   "payeeType":"53",
   "groupCode":"90",
-  "id":"a366a227-f0ed-40cf-bd2b-917be4f6facc",
+  "id":"28f4a742-7924-4fcb-8c89-ed915cac76b2",
   "name":"Interest on loans / financing"
 })
 
@@ -5290,7 +5290,7 @@ p({
   "approvalType":"0",
   "payeeType":"75",
   "groupCode":"90",
-  "id":"0cec6683-20df-4e72-b722-643a1ae25146",
+  "id":"5c824824-0128-45ba-9742-7eb9c7ccfeec",
   "name":"Loans and financing interest on loan"
 })
 
@@ -5301,7 +5301,7 @@ p({
   "approvalType":"0",
   "payeeType":"53",
   "groupCode":"52",
-  "id":"fcd9a15a-82fc-40a4-b69e-dba0eac2f36b",
+  "id":"81c5fd2b-1e84-46b1-ae81-2e4ae46001f7",
   "name":"Export pre payment interest"
 })
 
@@ -5312,7 +5312,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"02891f24-bd7e-4efc-ad91-4fb28c3e8f4c",
+  "id":"47dd6f21-008d-4caf-b27f-ca5254ad225a",
   "name":"Juros de financiamento a import"
 })
 
@@ -5323,7 +5323,7 @@ p({
   "approvalType":"0",
   "payeeType":"53",
   "groupCode":"90",
-  "id":"c938dad9-cb9f-4f7c-8437-3fd07cbf3ac9",
+  "id":"b1b076e4-a837-414a-b016-f5a86bffc474",
   "name":"Interest on advance and FINANCE. IMPORT. short term"
 })
 
@@ -5334,7 +5334,7 @@ p({
   "approvalType":"0",
   "payeeType":"53",
   "groupCode":"49",
-  "id":"b6757b4d-cacc-459b-8549-fe2810c33f10",
+  "id":"fc149826-cd77-4cac-85fe-a1ca912407b4",
   "name":"Interest financing"
 })
 
@@ -5345,7 +5345,7 @@ p({
   "approvalType":"0",
   "payeeType":"53",
   "groupCode":"90",
-  "id":"595d9ae3-3a6b-44b0-b9b3-6035f6554548",
+  "id":"6b9f7b53-88bd-4622-a2b9-f0bf112f02e5",
   "name":"Interest financing"
 })
 
@@ -5356,7 +5356,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"fcf2af62-28b5-4c80-8d10-7d7cf249f796",
+  "id":"f626c33d-6640-47cb-b644-9461faba4743",
   "name":"FINC INTEREST. / IMP."
 })
 
@@ -5367,7 +5367,7 @@ p({
   "approvalType":"0",
   "payeeType":"75",
   "groupCode":"90",
-  "id":"0961fc0e-cac0-4ab2-b923-2a5808973be9",
+  "id":"fac8ad2e-7f94-4627-a964-78f34925e303",
   "name":"Interest - financing - import"
 })
 
@@ -5378,7 +5378,7 @@ p({
   "approvalType":"0",
   "payeeType":"53",
   "groupCode":"90",
-  "id":"d5b52a08-04d1-4cce-9bfc-265ad8b52d38",
+  "id":"a05aa5ee-6fd3-4a71-9b0a-5b543963d557",
   "name":"Capital income - interest - long - term finc loans"
 })
 
@@ -5389,7 +5389,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"493b52cf-7108-4afe-a7b8-9ac24653dac8",
+  "id":"3eee66d0-59ef-4d38-b074-f637ab47b81c",
   "name":"Interest on leases"
 })
 
@@ -5400,7 +5400,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"d83b4cc4-b94d-4be8-9117-68c1f82a0d76",
+  "id":"a0bc48a9-ec51-4eaf-801e-758313cb1484",
   "name":"Interest on advances and financing - other financing"
 })
 
@@ -5411,7 +5411,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"1afffc86-9215-4567-8cc1-9471c3718750",
+  "id":"def10ee1-b0b4-4a1c-85ef-1d70f5f81b4c",
   "name":"Dividends / profit distribution"
 })
 
@@ -5422,7 +5422,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"4533e806-c2b1-4ac0-b1ae-e1e903eaa3b6",
+  "id":"5fc768b2-48b2-4b5a-a120-76f99b69fb8d",
   "name":"Dividends / profit distribution"
 })
 
@@ -5433,7 +5433,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"b0764750-f154-4b27-8365-3d6deba4d3bb",
+  "id":"3e358be0-b06e-46ed-b22f-13c9aabf3ed0",
   "name":"Interest on own capital"
 })
 
@@ -5444,7 +5444,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"52b43c6e-0701-4024-8d06-129ec0a05e7d",
+  "id":"0d2c3b0b-e286-49e5-9380-9972d7b947be",
   "name":"Capital income - interest - direct loans"
 })
 
@@ -5455,7 +5455,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"4a768f88-8a8c-4c72-831e-8cd7b33cee4e",
+  "id":"062eb3c8-cd42-48fa-91f0-14142b9942e3",
   "name":"Default interest"
 })
 
@@ -5466,7 +5466,7 @@ p({
   "approvalType":"0",
   "payeeType":"53",
   "groupCode":"90",
-  "id":"eefe3520-437c-4dc7-a3f5-d264e11dc995",
+  "id":"2ac2883e-1263-4818-9f09-af4ac4f820f2",
   "name":"Default interest"
 })
 
@@ -5477,7 +5477,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"7c2d9873-3cc1-4f36-be0e-a7981cad8a66",
+  "id":"f84a1409-7144-4dd5-af33-17a63e361745",
   "name":"Contribution"
 })
 
@@ -5488,7 +5488,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"38101baf-33de-4f45-b28b-9b36c84a8182",
+  "id":"8592429d-9e30-4ff5-aa2f-e0d81354cddd",
   "name":"Class entity"
 })
 
@@ -5499,7 +5499,7 @@ p({
   "approvalType":"0",
   "payeeType":"92",
   "groupCode":"90",
-  "id":"21edc315-c376-4b0e-9096-b57b805fdf7d",
+  "id":"f57ba8a6-0455-40fd-961c-cca399d618f8",
   "name":"Foreign pensions"
 })
 
@@ -5510,7 +5510,7 @@ p({
   "approvalType":"0",
   "payeeType":"97",
   "groupCode":"90",
-  "id":"2e696795-d1bd-473d-b6a8-7ed36926dc77",
+  "id":"68513ae9-f033-4d58-abe2-bf01a5621661",
   "name":"Unil transfers - heritage and legacies"
 })
 
@@ -5521,7 +5521,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"4951b727-be4a-4e18-903c-87c95bbe30d8",
+  "id":"cdc27481-992a-4db8-8e8d-bc9458197ec8",
   "name":"Retirement - matrix"
 })
 
@@ -5532,7 +5532,7 @@ p({
   "approvalType":"0",
   "payeeType":"97",
   "groupCode":"90",
-  "id":"f9f78b3d-e91d-4b63-9981-4ef1289b60b6",
+  "id":"f973b0f5-4cd1-4c09-a2cf-f5a0edc65fa0",
   "name":"Unil transfers - resident maintenance"
 })
 
@@ -5543,7 +5543,7 @@ p({
   "approvalType":"0",
   "payeeType":"89",
   "groupCode":"90",
-  "id":"89675a80-b137-4f4d-9424-3f204051f7ae",
+  "id":"d413d8aa-c5e2-4b8f-b211-9b3b9da10d05",
   "name":"CBCP - availability abroad"
 })
 
@@ -5554,7 +5554,7 @@ p({
   "approvalType":"0",
   "payeeType":"96",
   "groupCode":"90",
-  "id":"796b15fe-1123-45b1-a4e2-562bbb587373",
+  "id":"7f444f93-a0df-44aa-9bbf-06e0d6dc6ad3",
   "name":"Downloads unil - patrimonio"
 })
 
@@ -5565,7 +5565,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"513666ec-4b74-4664-9915-26001cddfa12",
+  "id":"d157d775-5861-461c-a80c-8609770255ef",
   "name":"Downloads unil - patrimonio"
 })
 
@@ -5576,7 +5576,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"20bd3538-efeb-4b05-a2e7-464b2dc53c47",
+  "id":"6720bde7-b921-4137-a75e-91777bb8f35b",
   "name":"CBCP - availability abroad"
 })
 
@@ -5587,7 +5587,7 @@ p({
   "approvalType":"0",
   "payeeType":"96",
   "groupCode":"90",
-  "id":"be8ebb53-8ba4-4e38-b00b-fbd0bd798a32",
+  "id":"c6c4c245-8fac-421a-aeb7-a6e538638822",
   "name":"CBCP - availability abroad"
 })
 
@@ -5598,7 +5598,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"56986d73-9b23-4a09-a1be-c65fff01ed18",
+  "id":"6905d084-3f2e-4d53-89fc-39424de12763",
   "name":"CBCP - EMPR. to residents abroad - EMPR. direct"
 })
 
@@ -5609,7 +5609,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"47",
-  "id":"2c5fea71-9b0c-4382-9a12-e5edfda484d1",
+  "id":"372fa080-5bc1-4421-b8fe-201908a3e017",
   "name":"CECP - Brazilian lending - direct loans"
 })
 
@@ -5620,7 +5620,7 @@ p({
   "approvalType":"0",
   "payeeType":"82",
   "groupCode":"90",
-  "id":"bfa8ab41-85be-48e1-a4fe-496b70a2f0c2",
+  "id":"5e03aeeb-d2bd-450f-80b1-f68b22b1a3c6",
   "name":"Loans"
 })
 
@@ -5631,7 +5631,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"0a7a6b41-1ac4-4940-8be1-f57458529f09",
+  "id":"669828f3-86fa-4bdf-970f-3cac137a3457",
   "name":"Loans"
 })
 
@@ -5642,7 +5642,7 @@ p({
   "approvalType":"0",
   "payeeType":"82",
   "groupCode":"90",
-  "id":"eae8f040-f3e6-4a7f-b289-d7437b769cfe",
+  "id":"082d220c-c208-4c20-9558-02bbf4fa811a",
   "name":"Direct loans"
 })
 
@@ -5653,7 +5653,7 @@ p({
   "approvalType":"0",
   "payeeType":"97",
   "groupCode":"90",
-  "id":"5baf7a8c-2d9e-427f-ae42-b034380ebe47",
+  "id":"1e5281da-c3ef-406c-8d36-f86505add011",
   "name":"CBLP - emprest. to residents in EXT - EMPR. direct"
 })
 
@@ -5664,7 +5664,7 @@ p({
   "approvalType":"0",
   "payeeType":"93",
   "groupCode":"46",
-  "id":"eaf512d3-971d-4951-b446-8bfb14db2058",
+  "id":"1e2b596a-0b41-451b-a2a9-aa50fbb9b050",
   "name":"CECP - Brazilian lending - direct loans"
 })
 
@@ -5675,7 +5675,7 @@ p({
   "approvalType":"0",
   "payeeType":"93",
   "groupCode":"47",
-  "id":"1a3c3138-6431-45f0-9ca0-46f97ef60e76",
+  "id":"6344620e-f22e-44c8-bc20-d6a855c4b82e",
   "name":"Direct loan - short term"
 })
 
@@ -5686,7 +5686,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"90",
-  "id":"8e2f0bea-1cb2-43a4-876f-f3195f4636e7",
+  "id":"b9a01d85-123b-4f3c-8dd3-4bac85956d39",
   "name":"Financial and capital markets - shares"
 })
 
@@ -5697,7 +5697,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"ad59026e-baf5-436a-ae62-72e377c8631c",
+  "id":"282d9cbf-4377-496a-ab1a-fa77cca8d9e7",
   "name":"Financial and capital markets - shares"
 })
 
@@ -5708,7 +5708,7 @@ p({
   "approvalType":"0",
   "payeeType":"56",
   "groupCode":"90",
-  "id":"8eb5df1f-7fcb-463f-805a-52a641720656",
+  "id":"cdcaadbd-844e-41bd-b8dc-d22fcb613ba0",
   "name":"Financial and capital markets - shares"
 })
 
@@ -5719,7 +5719,7 @@ p({
   "approvalType":"0",
   "payeeType":"60",
   "groupCode":"90",
-  "id":"e7167999-128f-4c6e-9f8e-3e57fda6be8b",
+  "id":"589a033d-aa40-4fc4-99d7-1e9259ca431f",
   "name":"Financial and capital markets - shares"
 })
 
@@ -5730,7 +5730,7 @@ p({
   "approvalType":"0",
   "payeeType":"53",
   "groupCode":"90",
-  "id":"5202e3a2-9396-4407-b41f-9af6c7f2630c",
+  "id":"f274cf37-9f03-4b78-8044-f78e301b364d",
   "name":"Financial and capital markets - shares"
 })
 
@@ -5741,7 +5741,7 @@ p({
   "approvalType":"0",
   "payeeType":"60",
   "groupCode":"90",
-  "id":"50abcb0d-e4c6-4f94-8fbd-2a939ffd4100",
+  "id":"02f636a5-8c14-4656-8b94-8068ec5ed7ff",
   "name":"Financial and capital markets - investment funds"
 })
 
@@ -5752,7 +5752,7 @@ p({
   "approvalType":"0",
   "payeeType":"56",
   "groupCode":"90",
-  "id":"2f6051b9-aaf6-41aa-8413-053d7f3264a6",
+  "id":"b582e6df-9f6d-4b5e-a6c7-20f6e1e12e20",
   "name":"Financial and capital markets - investment funds"
 })
 
@@ -5763,7 +5763,7 @@ p({
   "approvalType":"0",
   "payeeType":"56",
   "groupCode":"90",
-  "id":"a1274f1f-db99-488c-9f85-30da1491703b",
+  "id":"92a6c490-8980-42d0-b5fa-29c352d101ea",
   "name":"Financial and capital markets - investment funds"
 })
 
@@ -5774,7 +5774,7 @@ p({
   "approvalType":"0",
   "payeeType":"56",
   "groupCode":"49",
-  "id":"4edb8372-1329-4a87-8c87-0aa42768727f",
+  "id":"ad48d7f6-cb8c-4378-a024-fc182ac4702e",
   "name":"Financial and capital markets - investment funds"
 })
 
@@ -5785,7 +5785,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"49",
-  "id":"ddfe9902-2a76-4537-b2c2-3c59f0bd6d50",
+  "id":"798c32d0-3f38-4e95-95b3-947aed4d18b3",
   "name":"CBCP short-term direct loans"
 })
 
@@ -5796,7 +5796,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"90",
-  "id":"070d9d89-254e-41c9-83d4-9e18169deb3f",
+  "id":"864a5e74-d8e1-4532-a045-10e4c87e2071",
   "name":"Short term loan and financing"
 })
 
@@ -5807,7 +5807,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"c7a917a6-55a5-4696-bca4-0e8ab1eee4ac",
+  "id":"c7f758df-4e56-4900-b141-76db300a820d",
   "name":"Short term loan and financing"
 })
 
@@ -5818,7 +5818,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"9dd37a48-cfed-4b93-b4ff-cfa10e7541bb",
+  "id":"a41aab9d-0416-4a0e-aab2-40142b0f9b55",
   "name":"CBCP short-term direct loans"
 })
 
@@ -5829,7 +5829,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"90",
-  "id":"5fb7d63e-c489-4d87-93c4-65abdb32f50f",
+  "id":"7e12453f-3ce8-48ca-91b7-abb679fc8776",
   "name":"Direct loan - long term"
 })
 
@@ -5840,7 +5840,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"3aaac032-c6ea-4e08-a576-479675c73bff",
+  "id":"036ecf24-03dd-4ce5-89ba-faa8795cc089",
   "name":"Direct loan - long term"
 })
 
@@ -5851,7 +5851,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"d6b1cc91-e10c-49ef-a91b-9e1670080bed",
+  "id":"a0aa39fa-1ce9-4721-a2dc-c5e4c635d3ab",
   "name":"Direct loan - long term"
 })
 
@@ -5862,7 +5862,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"90",
-  "id":"c1525cd5-c3e5-482f-8c2f-d530a92f4d6e",
+  "id":"c3297325-3b88-474d-9b59-bace9477af36",
   "name":"Capital increase / reduction"
 })
 
@@ -5873,7 +5873,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"35ff075a-bfe5-43fb-a91c-5bde6566aa9c",
+  "id":"cdef8a3b-d8b2-4317-865a-f1eab0db4710",
   "name":"Capital increase / reduction"
 })
 
@@ -5884,7 +5884,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"aed377dd-4d85-4cc8-bcb8-3fe79754b463",
+  "id":"8b9e11ef-527c-4255-b047-93fb5fd42606",
   "name":"Direct loan - long term"
 })
 
@@ -5895,7 +5895,7 @@ p({
   "approvalType":"0",
   "payeeType":"60",
   "groupCode":"90",
-  "id":"11d7ee70-ec61-45c7-9e1a-be5489229b15",
+  "id":"f65f1bd5-48cc-4163-b2e1-08951c83e587",
   "name":"Capital increase / reduction"
 })
 
@@ -5906,7 +5906,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"fc88fe5e-09c5-43b3-8a4d-8b2cc3a5418d",
+  "id":"dbf2dcfb-b694-41ab-92bb-b652993dfd66",
   "name":"Capital increase / reduction"
 })
 
@@ -5917,7 +5917,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"46",
-  "id":"a3221994-9b34-4b44-876c-a1db218f0a7a",
+  "id":"e6e49ba6-231b-4dcd-afdb-8010e860acd9",
   "name":"Acquisition / transfer of ownership"
 })
 
@@ -5928,7 +5928,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"fcda86d2-adbe-43c7-a2b6-41b907185336",
+  "id":"3a11b34b-abf2-4e5a-a851-0f0ca495c1e2",
   "name":"Brazilian capital - direct investment - acquisition / transfer of holding"
 })
 
@@ -5939,7 +5939,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"90",
-  "id":"b41d9d6d-bd27-42d0-9dbe-c2b4d3bbc179",
+  "id":"85e02140-f697-41af-bb46-57a73799293c",
   "name":"Brazilian capital - direct investment - acquisition / transfer of holding"
 })
 
@@ -5950,7 +5950,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"82020e27-8813-4d63-ad8c-412c36d1d769",
+  "id":"abb960a2-e0b7-468c-a639-713ebe38ee88",
   "name":"Acquisition / transfer of ownership"
 })
 
@@ -5961,7 +5961,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"5cb0e9f4-67d0-451c-883f-79841753bc79",
+  "id":"f5608bb9-e918-425c-86b0-9f0c49c4f469",
   "name":"Cap. Bras EXT - acquisition / transfer of ownership"
 })
 
@@ -5972,7 +5972,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"46",
-  "id":"b0b07b50-afc4-4a8b-aac6-2d7d03460f1c",
+  "id":"eecd245d-db50-43b8-96b6-b771631cae6f",
   "name":"Acquisition / transfer of ownership"
 })
 
@@ -5983,7 +5983,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"9",
-  "id":"483fe23c-d4cc-4c82-a442-d80d769d93c6",
+  "id":"79bb7cb9-f9e7-47bd-8166-3eda1ebb9996",
   "name":"Buying and selling real estate abroad"
 })
 
@@ -5994,7 +5994,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"59d0288d-5a11-4d5a-b6ba-da7d8bcf1f48",
+  "id":"e4f8bd83-f825-49dd-ade2-8cf4c3724964",
   "name":"Buying and selling real estate abroad"
 })
 
@@ -6005,7 +6005,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"0",
-  "id":"afb75572-abd4-4741-b080-c634f2c3c81e",
+  "id":"ce79a1fd-6e14-4854-98f8-e725158b8ff1",
   "name":"Buying and selling real estate abroad"
 })
 
@@ -6016,7 +6016,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"90",
-  "id":"faeaafe0-0562-40f0-9ad8-2a1a3c326a1c",
+  "id":"cc1185b6-c0f0-4925-b076-95983ef95cad",
   "name":"Buying and selling real estate abroad"
 })
 
@@ -6027,7 +6027,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"57274ccc-db0b-498f-abac-25248182645b",
+  "id":"c02164a9-0641-4efc-b605-1c04400b6caf",
   "name":"Buying and selling real estate abroad"
 })
 
@@ -6038,7 +6038,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"49",
-  "id":"65e62fca-05ba-4af7-b21a-c8a7a14d2410",
+  "id":"490912ca-a515-461f-bc10-576403e3dbd2",
   "name":"Reversion availability"
 })
 
@@ -6049,7 +6049,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"90",
-  "id":"060ecf8c-760e-43a1-89ff-c3f400e25d6b",
+  "id":"4cfa9007-1d87-4bdd-b6e1-4e3c6fe78a2c",
   "name":"Availability abroad"
 })
 
@@ -6060,7 +6060,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"8d584f75-9971-4680-94bf-429eaf1d9ddd",
+  "id":"d7e5a299-6588-4194-b924-72e0d32ac62d",
   "name":"Availability abroad"
 })
 
@@ -6071,7 +6071,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"f50bea08-2910-4e4f-9d98-2227c44cecec",
+  "id":"e946bf78-1e86-429c-990d-12ecb24e6bca",
   "name":"Availability abroad"
 })
 
@@ -6082,7 +6082,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"5ea03ad1-76fd-47e6-a738-9471d8fafd08",
+  "id":"9d14f7f2-3b18-446e-afe1-acfe4ed28ad3",
   "name":"Deposits and cash equivalents - judicial deposits, deposits, guarantees and other third party resources"
 })
 
@@ -6093,7 +6093,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"cca56c71-158f-4ebe-a306-aa099fb1745e",
+  "id":"a63525a0-ba9e-4efb-b5a5-0a274c961e7c",
   "name":"Availability abroad"
 })
 
@@ -6104,7 +6104,7 @@ p({
   "approvalType":"0",
   "payeeType":"71",
   "groupCode":"90",
-  "id":"6775a23f-45e8-4932-a15f-ea7de316859c",
+  "id":"94bc7bf2-5637-438a-8bca-ad9e8887c84f",
   "name":"Availability abroad organizations with no profitable purposes"
 })
 
@@ -6115,7 +6115,7 @@ p({
   "approvalType":"0",
   "payeeType":"9",
   "groupCode":"90",
-  "id":"a22ea931-877c-48b5-8c32-19f276e0e247",
+  "id":"3ed6bbee-a393-4df4-b5c2-56538a8e7d02",
   "name":"CBLP - cautions"
 })
 
@@ -6126,7 +6126,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"eab06278-bb7c-4159-b890-b03f9d964002",
+  "id":"d4ef7464-88a5-48ac-a2f8-b1c8b4d55904",
   "name":"Caucoes judicial deposits - guarantees of other resources"
 })
 
@@ -6137,7 +6137,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"a9a80ecd-1eda-4353-8b49-6ad2e1d04afd",
+  "id":"55834f86-599b-491b-970e-5d087cdfa47a",
   "name":"Acquisition of merchandise delivered abroad"
 })
 
@@ -6148,7 +6148,7 @@ p({
   "approvalType":"0",
   "payeeType":"53",
   "groupCode":"90",
-  "id":"bdb753c5-8ee0-4e40-8685-e37a17859a6d",
+  "id":"dd4235f0-e4ca-4535-8235-7368e27e2939",
   "name":"Deposits and cash equivalents - judicial deposits, deposits, guarantees and other third party resources"
 })
 
@@ -6159,7 +6159,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"7676f748-4da5-42e4-87b0-55259bb008f9",
+  "id":"8aeac4a2-9e36-4c47-9610-6777cf9e8b5a",
   "name":"Deposits and cash equivalents - judicial deposits, deposits, guarantees and other third party resources"
 })
 
@@ -6170,7 +6170,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"32949015-c02f-4ff8-ac30-6bbf9b035f5f",
+  "id":"03c8b44e-1a29-4271-bcd3-9454a2ca02b0",
   "name":"Acquisition of merchandise delivered abroad"
 })
 
@@ -6181,7 +6181,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"5ada0ee2-70ce-4c51-b82a-f56f08c7c6ed",
+  "id":"740039b1-6f65-4ff8-a7e9-087b46ab47a5",
   "name":"Acquisition of merchandise delivered abroad"
 })
 
@@ -6192,7 +6192,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"6ee7570c-6b36-423e-af5e-67589c912eee",
+  "id":"4fdd4c12-24b2-4eec-9317-8d37ed9ce4e8",
   "name":"Acquisition of merchandise delivered abroad"
 })
 
@@ -6203,7 +6203,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"90",
-  "id":"66549c40-584d-4cdd-8d88-da0e2c61c22f",
+  "id":"9aee9512-866d-4b09-974d-d505dbbc50f4",
   "name":"Buying and selling real estate abroad"
 })
 
@@ -6214,7 +6214,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"337b74ed-72f4-4eb0-a320-5dba5b8e1556",
+  "id":"1dd26353-d3a4-4c12-a6b1-fa416824026b",
   "name":"Buying and selling real estate abroad"
 })
 
@@ -6225,7 +6225,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"0d65f11b-ae6c-458c-ad9e-49772f1a6893",
+  "id":"22f54fc9-a9c9-4a2d-b270-2157a9f7de03",
   "name":"Buying and selling real estate abroad"
 })
 
@@ -6236,7 +6236,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"51f675be-78eb-4d62-b6dd-f5b9618f6306",
+  "id":"6c52404e-14ac-4647-a62f-8d2c1676ceca",
   "name":"Buying and selling real estate abroad"
 })
 
@@ -6247,7 +6247,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"32c22251-6770-40af-bbec-b37fed922fbb",
+  "id":"5499d290-e5a5-40dc-8a94-5b419b506de5",
   "name":"Buying and selling real estate abroad"
 })
 
@@ -6258,7 +6258,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"49",
-  "id":"a86ccb2a-2aa1-4829-b251-079ff3421c68",
+  "id":"085204aa-4c14-48eb-9c32-6a0ee0816730",
   "name":"Buying and selling real estate abroad"
 })
 
@@ -6269,7 +6269,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"64cce55e-6d2a-45f7-983b-7b7bf0690c3c",
+  "id":"60973a3b-9910-45b7-aeda-d73558b1567b",
   "name":"CBLP - INV. DIR - EXT - participation in companies"
 })
 
@@ -6280,7 +6280,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"90",
-  "id":"497c7ab6-5a1e-4e89-b7ff-c339f344e522",
+  "id":"9e1826b8-b82e-4913-8902-d87f35144c70",
   "name":"CBLP - INV. DIR - EXT - participation in companies"
 })
 
@@ -6291,7 +6291,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"3b64ca55-267e-4b05-857a-50d6c62932ca",
+  "id":"8e2da951-7055-4965-86a5-45ce1d229112",
   "name":"CBLP - INV. DIR - EXT - participation in companies"
 })
 
@@ -6302,7 +6302,7 @@ p({
   "approvalType":"0",
   "payeeType":"93",
   "groupCode":"90",
-  "id":"9345371f-9a24-4983-b155-7e0f369c372e",
+  "id":"0e66a252-fd2b-4bde-af45-4bb1a0d4092b",
   "name":"CBLP - INV. portfolio in EXT. for participating parties"
 })
 
@@ -6313,7 +6313,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"90",
-  "id":"bf31bce4-954a-45ab-8af0-289c30512a72",
+  "id":"c269f5ab-9388-4371-b1d7-3173106aefb8",
   "name":"CBLP - INV. portfolio in EXT. for participating parties"
 })
 
@@ -6324,7 +6324,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"d472283d-3d43-49cc-8e0b-f2b898af8ad7",
+  "id":"e5577e5c-9949-434d-98df-806894addf68",
   "name":"Actions - matrix"
 })
 
@@ -6335,7 +6335,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"61aebbdf-533d-4634-8f53-7e66df049959",
+  "id":"87beacde-2ff2-4c98-b1f2-2d9960793d30",
   "name":"CBLP - direct investment abroad - other investments"
 })
 
@@ -6346,7 +6346,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"47",
-  "id":"a8ecbb07-6a3a-4547-9afa-17fb4b96ef64",
+  "id":"f5b55dc8-72dd-4964-8138-82d631116dac",
   "name":"CECP - Emprest.Res.Brasil - direct loans"
 })
 
@@ -6357,7 +6357,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"48cb815e-1d00-4999-be44-5e2ffcfc8acb",
+  "id":"908faeaf-1c38-45c5-b134-6780f0e4c8ef",
   "name":"CECP - Emprest.Res.Brasil - direct loans"
 })
 
@@ -6368,7 +6368,7 @@ p({
   "approvalType":"0",
   "payeeType":"82",
   "groupCode":"90",
-  "id":"48893efe-77da-4248-9446-a793697f5a7a",
+  "id":"1efadb1f-e076-49c5-a449-c7af601fd4d9",
   "name":"Direct loans"
 })
 
@@ -6379,7 +6379,7 @@ p({
   "approvalType":"0",
   "payeeType":"97",
   "groupCode":"47",
-  "id":"269ed1b7-aff5-4618-825f-6be9c035bca2",
+  "id":"f1f39682-6135-463b-8db7-40fcc2ba6ee3",
   "name":"CECP - Emprest.Res.Brasil - direct loans"
 })
 
@@ -6390,7 +6390,7 @@ p({
   "approvalType":"0",
   "payeeType":"97",
   "groupCode":"90",
-  "id":"df0a26b7-75d1-4005-b256-e68357b1a342",
+  "id":"2cd7168d-d0a4-4877-bf8a-76d533c5f8c3",
   "name":"CECP - Emprest.Res.Brasil - direct loans"
 })
 
@@ -6401,7 +6401,7 @@ p({
   "approvalType":"0",
   "payeeType":"93",
   "groupCode":"46",
-  "id":"a7101f8a-afe0-4260-b91b-cb11517f44b3",
+  "id":"dfcecd36-0ff2-4a2f-8082-056dc5872aee",
   "name":"CECP - Emprest.Res.Brasil - direct loans"
 })
 
@@ -6412,7 +6412,7 @@ p({
   "approvalType":"0",
   "payeeType":"93",
   "groupCode":"47",
-  "id":"409d8ec6-7c6d-4eb6-8b16-0801e5e2d4d6",
+  "id":"ac1f0bfc-fc9b-45ec-bd01-b4bccd0bbc81",
   "name":"CECP - Emprest.Res.Brasil - direct loans"
 })
 
@@ -6423,7 +6423,7 @@ p({
   "approvalType":"0",
   "payeeType":"93",
   "groupCode":"90",
-  "id":"6f683ab8-bc29-4630-9eae-892b898e4cf4",
+  "id":"32513b53-b9bd-4b2f-a6ff-c3bfe15aec0c",
   "name":"CECP - Emprest.Res.Brasil - direct loans"
 })
 
@@ -6434,7 +6434,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"47",
-  "id":"e79cadac-9c04-41f4-a324-adfb866eb572",
+  "id":"cc3336c4-1296-4d79-a660-2a9a0ec3859a",
   "name":"CECP - Emprest.Res.Brasil - direct loans"
 })
 
@@ -6445,7 +6445,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"4513c6e0-6662-4382-8ce5-46990a0a6864",
+  "id":"8b57c421-bb27-43c0-b403-c39c0bf33a8f",
   "name":"CECP - Emprest.Res.Brasil - direct loans"
 })
 
@@ -6456,7 +6456,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"90",
-  "id":"113ca082-47b9-4ebd-b010-7bcabeabb7fc",
+  "id":"4db1a378-3a04-490f-89cc-9c4ee64509e7",
   "name":"Direct loans"
 })
 
@@ -6467,7 +6467,7 @@ p({
   "approvalType":"0",
   "payeeType":"97",
   "groupCode":"90",
-  "id":"cf9c66e6-3b70-4e96-bea5-72ef44e7e968",
+  "id":"cf5ca74d-95fa-411d-82bc-a1230910abc1",
   "name":"CECP - Emprest.Res.Brasil - direct loans"
 })
 
@@ -6478,7 +6478,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"46",
-  "id":"f38c7e8d-a507-4764-adaa-7e4ae606a024",
+  "id":"46691494-f8f9-4a6f-8aa0-1faf24073e4a",
   "name":"CECP - INV. DIR. Brazil - EMP in the country - capital increase"
 })
 
@@ -6489,7 +6489,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"47",
-  "id":"d1f0f405-7f69-4b88-9d6d-7adf96777b1b",
+  "id":"a06d458e-b70e-40c0-95c5-53b22932ef05",
   "name":"Direct loans"
 })
 
@@ -6500,7 +6500,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"cacc3f82-56c2-4b83-b78c-c960dd4b7a68",
+  "id":"5b45a808-b93c-492c-864a-014ad1889ec8",
   "name":"CECP - INV. DIR. Brazil - EMP in the country - capital increase"
 })
 
@@ -6511,7 +6511,7 @@ p({
   "approvalType":"0",
   "payeeType":"97",
   "groupCode":"90",
-  "id":"06a61f86-86d9-4f34-8140-ffff1f8b5354",
+  "id":"58b3d913-bdc2-4aff-9212-2ff82227c5e5",
   "name":"CECP - INV. DIR. Brazil - EMP in the country - capital increase"
 })
 
@@ -6522,7 +6522,7 @@ p({
   "approvalType":"0",
   "payeeType":"93",
   "groupCode":"46",
-  "id":"11e1beca-41a0-458d-aa66-417f2c890d70",
+  "id":"01097351-2ac7-45c0-8f5f-ec644c0b93e1",
   "name":"CECP - INV. DIR. Brazil - EMP in the country - capital increase"
 })
 
@@ -6533,7 +6533,7 @@ p({
   "approvalType":"0",
   "payeeType":"93",
   "groupCode":"90",
-  "id":"a7fb2c5e-3bac-469c-b2b6-369c8091ce65",
+  "id":"8b2db02b-f74e-48a8-bb54-d3bb6a5d108b",
   "name":"CECP - INV. DIR. Brazil - EMP in the country - capital increase"
 })
 
@@ -6544,7 +6544,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"7f8373fc-0556-4e39-873f-602d9ef5e306",
+  "id":"3577f478-93f6-433f-b842-dc1c5c58c624",
   "name":"CECP - INV. DIR. Brazil - EMP in the country - capital increase"
 })
 
@@ -6555,7 +6555,7 @@ p({
   "approvalType":"0",
   "payeeType":"97",
   "groupCode":"90",
-  "id":"ca5acbec-e356-4fc8-a513-2440b0ebd889",
+  "id":"10357196-138d-408c-ae7a-6a18123107ca",
   "name":"CECP - INV. DIR. Brazil - EMP in the country - capital increase"
 })
 
@@ -6566,7 +6566,7 @@ p({
   "approvalType":"0",
   "payeeType":"98",
   "groupCode":"90",
-  "id":"081d6adc-75a0-4db5-8ee1-d91c4f660897",
+  "id":"54826974-a7bd-4bf5-bdab-ce9bdc4b7b07",
   "name":"External direct investment"
 })
 
@@ -6577,7 +6577,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"621ca84a-5343-48d2-aa35-3f33d99f4b1f",
+  "id":"e64cc97d-715a-434b-9a70-be9e1dca7c0b",
   "name":"CECP - INV. DIR. Brazil - EMP in the country - transfer holding"
 })
 
@@ -6588,7 +6588,7 @@ p({
   "approvalType":"0",
   "payeeType":"97",
   "groupCode":"90",
-  "id":"be0e3cbe-01ea-4f1b-a9b6-f3d62985a10c",
+  "id":"25ca88a5-3da8-401d-95a7-df2e6f0ecf6b",
   "name":"CECP - INV. DIR. Brazil - EMP in the country - transfer holding"
 })
 
@@ -6599,7 +6599,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"47",
-  "id":"e526f5ce-f7c8-4dc2-b987-79d0bca67ba9",
+  "id":"96ed15e2-312a-4364-9277-dc0f3f290187",
   "name":"CECP - Emprest.Res.Brasil - notes"
 })
 
@@ -6610,7 +6610,7 @@ p({
   "approvalType":"0",
   "payeeType":"82",
   "groupCode":"90",
-  "id":"d766ed9c-0c39-4514-b4ef-8ae6a87d08da",
+  "id":"d1a84550-dc9b-4ea0-922e-5eabe94a817f",
   "name":"CECP - FIN IMP REG BACEN - AMORTIZ - MERC - OTHER"
 })
 
@@ -6621,7 +6621,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"d4a61a16-62ac-49d3-9ba8-ce068c04e51c",
+  "id":"3d2cd5b4-b27f-4a01-a35f-15c3b31b4538",
   "name":"CECP - FIN IMP REG BACEN - AMORTIZ - MERC - OTHER"
 })
 
@@ -6632,7 +6632,7 @@ p({
   "approvalType":"0",
   "payeeType":"93",
   "groupCode":"46",
-  "id":"da1fa9e0-7c2a-4e7d-aed7-2cfe0b92a494",
+  "id":"3e9bb3ea-a30b-435e-a41b-b77d55a87c15",
   "name":"CECP - FIN IMP REG BACEN - AMORTIZ - MERC - OTHER"
 })
 
@@ -6643,7 +6643,7 @@ p({
   "approvalType":"0",
   "payeeType":"93",
   "groupCode":"90",
-  "id":"b438cf4b-846a-44e5-9af5-cfea140b5b4a",
+  "id":"d6391627-55fa-4477-a5e3-258ae599f933",
   "name":"CECP - FIN IMP REG BACEN - AMORTIZ - MERC - OTHER"
 })
 
@@ -6654,7 +6654,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"ae26aad0-e1d5-4591-841b-fee55e56b690",
+  "id":"f63fe5b4-8ff5-457f-90e5-6eec141141a8",
   "name":"CECP - FIN IMP REG BACEN - AMORTIZ - MERC - OTHER"
 })
 
@@ -6665,7 +6665,7 @@ p({
   "approvalType":"0",
   "payeeType":"93",
   "groupCode":"90",
-  "id":"529c7e53-46db-431e-8777-0342d17eedfa",
+  "id":"8c5d869b-0240-4ef4-9cb6-72f05fe88ef9",
   "name":"CECP - FIN IMP REG BACEN - AMORTIZ - MERC - OTHER"
 })
 
@@ -6676,7 +6676,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"dac6d105-d046-45ee-8024-2584e5c9ac11",
+  "id":"56300f67-8cd5-4b13-8457-e29b8176fe0f",
   "name":"Internal market commitments"
 })
 
@@ -6687,7 +6687,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"46",
-  "id":"0483fa10-7adc-42c0-b874-5c7e3a34d52a",
+  "id":"fb3b9103-9cbd-4178-a798-1bc8bc0d70c1",
   "name":"Private debt securities MERC.EXT.L.PRAZO"
 })
 
@@ -6698,7 +6698,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"47",
-  "id":"9fabda90-39fc-493a-bc5f-a218ae5ea38b",
+  "id":"dba305a6-13f7-4ca2-ba0e-053e19cf6468",
   "name":"Private debt securities MERC.EXT.L.PRAZO"
 })
 
@@ -6709,7 +6709,7 @@ p({
   "approvalType":"0",
   "payeeType":"53",
   "groupCode":"90",
-  "id":"fa30cf6c-1272-4ed1-ae73-fe43200e67df",
+  "id":"3368c9d9-3243-4da5-b502-70b6055754bc",
   "name":"Direct loan - short term"
 })
 
@@ -6720,7 +6720,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"4f5e84bb-447f-4097-b4b3-c181e28d129d",
+  "id":"165a929a-36cb-4901-acad-701ae783ace6",
   "name":"Private debt securities MERC.EXT.L.PRAZO"
 })
 
@@ -6731,7 +6731,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"46",
-  "id":"00ab0b69-995a-4b75-b023-4ac57975ce0d",
+  "id":"f5aa60c8-a534-41b3-9acf-fb136c29966b",
   "name":"Direct loan - short term"
 })
 
@@ -6742,7 +6742,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"9fc70102-9351-41f5-8dfe-f90236c8156a",
+  "id":"99301601-da77-42bb-a4d0-b74e377d337a",
   "name":"Direct loan - short term"
 })
 
@@ -6753,7 +6753,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"47",
-  "id":"4f51cbe7-e0a1-40ae-a8c7-4a0c02c92a64",
+  "id":"32f459ee-f0e7-4ed6-8ce4-dab195354e7f",
   "name":"Direct loan - short term"
 })
 
@@ -6764,7 +6764,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"6e887566-ead3-4310-845d-992e81e20f79",
+  "id":"76a5ed3e-770a-4223-892d-2f10a66d1da1",
   "name":"Direct loan - short term"
 })
 
@@ -6775,7 +6775,7 @@ p({
   "approvalType":"0",
   "payeeType":"53",
   "groupCode":"47",
-  "id":"e3047371-3a13-47b1-92f1-6240fcc1cdab",
+  "id":"cd2a0e2a-17b7-428d-86a8-3c616778dd69",
   "name":"Direct loan - short term"
 })
 
@@ -6786,7 +6786,7 @@ p({
   "approvalType":"0",
   "payeeType":"53",
   "groupCode":"90",
-  "id":"40f5a9b1-fc2e-4086-b00a-1bbc77bafc11",
+  "id":"a73b7e40-132f-40ca-8f12-0abca4ee88d4",
   "name":"Direct loan - short term"
 })
 
@@ -6797,7 +6797,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"b734c15f-7faa-4631-bd6f-ec9af6ea7c3a",
+  "id":"756ea8fb-71ac-4cd4-83b9-c0e078a3790d",
   "name":"Direct loan - long term"
 })
 
@@ -6808,7 +6808,7 @@ p({
   "approvalType":"0",
   "payeeType":"53",
   "groupCode":"90",
-  "id":"a34cd37d-b340-4808-a027-4f41341a7732",
+  "id":"18a0f90e-047b-454f-812b-67f1b4a11ad3",
   "name":"Loans and financing"
 })
 
@@ -6819,7 +6819,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"46",
-  "id":"41cb3330-4b28-442e-abae-560647348e0b",
+  "id":"26d908d9-8ba4-418c-9138-8d0e529baedc",
   "name":"Loans and financing"
 })
 
@@ -6830,7 +6830,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"47",
-  "id":"e703b2cd-be23-4060-b57a-c4f4de0498da",
+  "id":"2ae1d0f0-a3b6-4cb7-b36b-ef8a8e8999dc",
   "name":"Loans and financing"
 })
 
@@ -6841,7 +6841,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"83cce86d-04c9-4a37-b917-044679ef36f8",
+  "id":"123bd0b1-c3f1-49bc-b05c-8ef2638d5b8e",
   "name":"Direct loan - long term"
 })
 
@@ -6852,7 +6852,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"46",
-  "id":"7267cf2d-8198-42b7-aa11-ab2ed1c91390",
+  "id":"246f8c59-4bb3-4e88-917e-020d0cf30f02",
   "name":"Loans and financing"
 })
 
@@ -6863,7 +6863,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"98177c0c-6ec4-4eff-9f6e-e10f2de6846d",
+  "id":"9c7a8672-51ad-4f89-bd65-579e93e6381a",
   "name":"Direct loan - long term"
 })
 
@@ -6874,7 +6874,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"47",
-  "id":"903c8c70-1ca0-4709-aac6-52b0d7c02f89",
+  "id":"8463e2e5-f41c-4f25-938f-739b282c3fec",
   "name":"Loans and financing"
 })
 
@@ -6885,7 +6885,7 @@ p({
   "approvalType":"0",
   "payeeType":"53",
   "groupCode":"46",
-  "id":"54f43dca-f3d5-4f3f-adba-1cccb3f3be91",
+  "id":"70641c8b-4fdd-4398-ad47-61ffe9c365f1",
   "name":"Loans and financing"
 })
 
@@ -6896,7 +6896,7 @@ p({
   "approvalType":"0",
   "payeeType":"53",
   "groupCode":"47",
-  "id":"39086c73-86f0-42e0-8a5e-cd67257b6790",
+  "id":"79e42ff0-b3e5-4e45-83c8-20519af42f2c",
   "name":"Loans and financing"
 })
 
@@ -6907,7 +6907,7 @@ p({
   "approvalType":"0",
   "payeeType":"60",
   "groupCode":"90",
-  "id":"60c3c695-2351-4b2a-8577-b87d5ce970be",
+  "id":"e5147b97-1401-4dae-b2f4-70f7b4d13607",
   "name":"Foreign capital - loans and financing - direct loans - long term"
 })
 
@@ -6918,7 +6918,7 @@ p({
   "approvalType":"0",
   "payeeType":"75",
   "groupCode":"90",
-  "id":"7d18a86c-a38c-4b63-8606-f87ec4aa5ebc",
+  "id":"3e976d86-e614-450e-b2b7-1c3cdec9c05f",
   "name":"Direct loan - long term"
 })
 
@@ -6929,7 +6929,7 @@ p({
   "approvalType":"0",
   "payeeType":"53",
   "groupCode":"90",
-  "id":"eb025bbe-a2ad-4c57-983a-9656f89d9e49",
+  "id":"ed65c810-9f5a-45b7-8151-66b9a14da2d9",
   "name":"Loans and financing"
 })
 
@@ -6940,7 +6940,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"46",
-  "id":"1a9af57c-3119-4f3b-834a-b77cb9a0f0a9",
+  "id":"1047e4b8-cf23-4e23-b590-08e74df13f28",
   "name":"FINANC. IMP. L / term"
 })
 
@@ -6951,7 +6951,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"47",
-  "id":"ae78c348-3fc3-4254-900b-17c015493499",
+  "id":"7dbaabff-cd5c-431c-b3e8-9c01c72cd12b",
   "name":"FINANC. IMP. L / term"
 })
 
@@ -6962,7 +6962,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"e77b16cb-de82-44fc-99b5-85a873a9c24b",
+  "id":"db1167a1-3a6c-46eb-b70b-ef9a52c247e4",
   "name":"FINANC. IMP. L / term"
 })
 
@@ -6973,7 +6973,7 @@ p({
   "approvalType":"0",
   "payeeType":"53",
   "groupCode":"90",
-  "id":"4af7443f-15f5-4186-91e3-89f5339f0c0c",
+  "id":"fc8e930f-45de-483c-b085-727cc4bc7ff7",
   "name":"Financ / IMP. PRINC."
 })
 
@@ -6984,7 +6984,7 @@ p({
   "approvalType":"0",
   "payeeType":"75",
   "groupCode":"90",
-  "id":"533f5960-5d72-48b7-a146-5f859756406b",
+  "id":"c265f857-c418-476b-b1b6-c7bb00ef9a4e",
   "name":"Principal - financing - import"
 })
 
@@ -6995,7 +6995,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"b7288a55-1b0c-4f5a-8d19-b0f946d83ffa",
+  "id":"d3d20547-ae50-4eec-abfa-0e30ee129f44",
   "name":"Financial leasing"
 })
 
@@ -7006,7 +7006,7 @@ p({
   "approvalType":"0",
   "payeeType":"53",
   "groupCode":"90",
-  "id":"952812b1-d95f-424a-91d9-190ca859e5c4",
+  "id":"47340af6-66f0-402c-8c72-4b16e33e1378",
   "name":"Foreign capital - emprest and financ - IMP. long term"
 })
 
@@ -7017,7 +7017,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"9d486bb7-7422-4591-ab41-958149d3e0ac",
+  "id":"d07b8ab9-8cbc-4016-a037-d7fb28a0af95",
   "name":"Capital increase / reduction"
 })
 
@@ -7028,7 +7028,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"3f2cc805-b374-419c-90b7-efc4cdd727b6",
+  "id":"86758066-4d43-4703-a0d3-b40de60cc82b",
   "name":"Capital increase / reduction"
 })
 
@@ -7039,7 +7039,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"90",
-  "id":"05ed8ed0-8fca-47f4-9e32-52f25cbaaf5a",
+  "id":"b7a2cb65-8b23-4bd6-9095-5f9f87bf3974",
   "name":"Capital increase / reduction"
 })
 
@@ -7050,7 +7050,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"46",
-  "id":"1fc7c5b5-c7f1-4759-9351-b082eefad5df",
+  "id":"0a1ea89b-8cb0-4a4f-bc41-d6f2ccda4069",
   "name":"Capital increase / reduction"
 })
 
@@ -7061,7 +7061,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"47",
-  "id":"7290487c-3052-4796-a0a0-5736cc545f00",
+  "id":"331e2c8b-aa9f-427d-b46e-abee355a6dee",
   "name":"Capital increase / reduction"
 })
 
@@ -7072,7 +7072,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"725b678f-cd7a-41a5-88e4-f965b203f5ef",
+  "id":"44bf1882-9400-4bb1-8602-1a75df8e4cd6",
   "name":"Capital increase / reduction"
 })
 
@@ -7083,7 +7083,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"46",
-  "id":"e30eb86b-2829-4048-a409-c6d35df5db1d",
+  "id":"fad5bd25-e688-40a4-b38d-2948aa47838d",
   "name":"Capital increase / reduction"
 })
 
@@ -7094,7 +7094,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"47",
-  "id":"028203e0-954d-45d5-a3ec-bd28047bc09b",
+  "id":"3f1a4c59-70d9-45df-b814-acb4559b5df3",
   "name":"Capital increase / reduction"
 })
 
@@ -7105,7 +7105,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"37e83a66-61dd-47b1-897a-2ba8f44c3a0a",
+  "id":"39ee5f7a-a7e4-4530-8fe7-dd5a3091a93b",
   "name":"Capital increase / reduction"
 })
 
@@ -7116,7 +7116,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"ced9fc96-0909-4367-9818-0a44574e502e",
+  "id":"68b37039-68d4-49b2-aa6c-d08eacf7ba95",
   "name":"Capital increase / reduction"
 })
 
@@ -7127,7 +7127,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"90",
-  "id":"891d8610-0beb-4bf8-bf8f-956a9d3e62b4",
+  "id":"66b02004-6496-4da3-ac14-ef074d5b876c",
   "name":"Acquisition / transfer of ownership"
 })
 
@@ -7138,7 +7138,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"b3edb258-ffec-4faa-93dc-03679dcca9ba",
+  "id":"94076ca0-ff84-4308-9248-487c65866911",
   "name":"Acquisition / transfer of ownership"
 })
 
@@ -7149,7 +7149,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"a96170bc-6b25-4c13-ad54-786ac55b0914",
+  "id":"eb4a25f7-edba-4a77-8e06-4411ac50f192",
   "name":"Acquisition / transfer of ownership"
 })
 
@@ -7160,7 +7160,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"02807dc2-2bb7-4c10-8d4a-b0c71b05ad6b",
+  "id":"d3fa7c38-14ab-41cf-b66f-2d18e21b22f1",
   "name":"Acquisition / transfer of ownership"
 })
 
@@ -7171,7 +7171,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"46",
-  "id":"6c1052ea-8fae-492d-8244-aec3f44ad259",
+  "id":"7d81f4d9-89e5-49f9-a03a-a867a63cdcea",
   "name":"Acquisition / transfer of ownership"
 })
 
@@ -7182,7 +7182,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"46",
-  "id":"a9c7cfce-6ae6-4044-8bee-9ffafa1dd917",
+  "id":"ecc58702-7a58-45ea-ba14-f81205696619",
   "name":"Acquisition / transfer of ownership"
 })
 
@@ -7193,7 +7193,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"b923b932-6846-44dc-bceb-5c555e17a28c",
+  "id":"f3eab527-a49c-4a6d-862d-162211cda4f3",
   "name":"Acquisition / transfer of ownership"
 })
 
@@ -7204,7 +7204,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"1d0bdd7f-4c9c-4806-87ec-87a7d31c49ab",
+  "id":"a8a3b1ea-8034-44ea-a2b9-35dd9141ec23",
   "name":"Brazilian capitals abroad - acquisition / transfer of holding"
 })
 
@@ -7215,7 +7215,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"9414056a-599e-4e1e-b6d8-0b351de950c2",
+  "id":"7b574e1b-7f82-4f57-9495-8e41a90af02d",
   "name":"Availability in the country"
 })
 
@@ -7226,7 +7226,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"90",
-  "id":"41619221-398c-45d6-9071-30ee39b6be82",
+  "id":"dff1a807-ec07-4bbe-babc-f54664d7be46",
   "name":"Availability in the country"
 })
 
@@ -7237,7 +7237,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"2255b72c-8d67-41e8-9109-07a8efc965fa",
+  "id":"57a41730-5715-4346-b1ac-4fda565e9f57",
   "name":"Availability in the country"
 })
 
@@ -7248,7 +7248,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"54fad1aa-df4e-424e-b431-20cfb8e210fb",
+  "id":"6482ffe7-7b8c-4198-91f1-a99206c429be",
   "name":"Foreign currency availabilities in the country"
 })
 
@@ -7259,7 +7259,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"46",
-  "id":"66351d18-33f5-4a67-bc3e-1bc0e07f2692",
+  "id":"ef02da6b-52e5-454e-b677-320aefb807fb",
   "name":"Foreign capital - deposit and availability"
 })
 
@@ -7270,7 +7270,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"47",
-  "id":"210547b7-d351-4e8b-80d6-4f9bcff73763",
+  "id":"7e431165-4b57-459f-acdb-32a27da80c74",
   "name":"Foreign capital - deposit and availability"
 })
 
@@ -7281,7 +7281,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"49",
-  "id":"33e2d36f-79ca-4423-bb58-70aec7da3eb8",
+  "id":"0275498a-cf43-4aa0-a593-1f662211f2f8",
   "name":"Foreign capital - deposit and availability"
 })
 
@@ -7292,7 +7292,7 @@ p({
   "approvalType":"0",
   "payeeType":"0",
   "groupCode":"59",
-  "id":"f79d59ce-2969-4bea-ba72-3130b10b767c",
+  "id":"e5ebd16b-726a-4f68-b0f2-30433791d11e",
   "name":"Acquisition of goods in the country"
 })
 
@@ -7303,7 +7303,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"2bb26981-e10d-4555-827f-1c764e4ed46a",
+  "id":"467ac3a5-3bc7-41d0-aa3f-70a4d3295cbf",
   "name":"Foreign capital - deposit and availability"
 })
 
@@ -7314,7 +7314,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"a1781ae2-7a55-4d2c-a942-2cbc679bc84d",
+  "id":"9c69deed-42a1-4518-897e-434509e76f05",
   "name":"Acquisition of goods in the country"
 })
 
@@ -7325,7 +7325,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"09781ef4-570a-483d-9fea-7c052f951448",
+  "id":"1f0599db-d0d1-43ad-995a-a4675100bf75",
   "name":"Acquisition of merchandise delivered in the country"
 })
 
@@ -7336,7 +7336,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"acb9907b-1568-48db-8f31-cfb6b9dd85c1",
+  "id":"d8bde8cb-d5bf-4aad-8277-53589413f998",
   "name":"Others - buying and selling real estate in the country"
 })
 
@@ -7347,7 +7347,7 @@ p({
   "approvalType":"0",
   "payeeType":"5",
   "groupCode":"90",
-  "id":"873092f5-912b-4f42-8d22-91982b5dbf3e",
+  "id":"b11956cd-6d1f-4039-8bc0-b556afebadc6",
   "name":"Others - buying and selling real estate in the country"
 })
 
@@ -7358,7 +7358,7 @@ p({
   "approvalType":"0",
   "payeeType":"2",
   "groupCode":"90",
-  "id":"4a1d9c21-01f6-4c07-b5c8-dddda7b29b61",
+  "id":"93b38c1a-145c-4dfe-848f-0c3096fbba60",
   "name":"Others - buying and selling real estate in the country"
 })
 
@@ -7369,7 +7369,7 @@ p({
   "approvalType":"0",
   "payeeType":"92",
   "groupCode":"90",
-  "id":"be280360-f2c6-4bff-9f00-a017e324838b",
+  "id":"88fa3a6b-95fa-419d-9ae5-1840311c648f",
   "name":"Others - buying and selling real estate in the country"
 })
 
@@ -7380,7 +7380,7 @@ p({
   "approvalType":"0",
   "payeeType":"95",
   "groupCode":"90",
-  "id":"01b53006-81c1-49ad-9c0f-43d01a8edb3a",
+  "id":"41f8097f-4d0a-4252-b293-ae819790c868",
   "name":"Property acquisition"
 })
 
@@ -7391,7 +7391,7 @@ p({
   "approvalType":"0",
   "payeeType":"97",
   "groupCode":"90",
-  "id":"94ad8261-27fa-4dd6-9801-b6a93288e9ec",
+  "id":"c8824e54-65d5-4492-9834-c169eb68096b",
   "name":"CECP - property acquisition"
 })
 
@@ -7402,6 +7402,6 @@ p({
   "approvalType":"0",
   "payeeType":"66",
   "groupCode":"90",
-  "id":"5380804d-226e-4761-9f9b-f000b9f80bdd",
+  "id":"9167ce7b-17f6-495e-ace7-a62f89eb9e71",
   "name":"Interbancario"
 })
