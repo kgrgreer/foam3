@@ -48,10 +48,14 @@ foam.CLASS({
       label: '',
       section: 'documentUploadSection',
       view: function(_, X) {
-        return {
-          class: 'foam.nanos.fs.fileDropZone.FileDropZone',
-          files$: X.data.documents$
-        };
+        return foam.u2.MultiView.create({
+        views: [
+          foam.nanos.fs.fileDropZone.FileDropZone.create({
+            files$: X.data.documents$
+          }, X),
+          foam.nanos.fs.fileDropZone.FilePreview.create()
+        ]
+        });
       },
       validateObj: function(documents, isRequired) {
         if ( isRequired && documents.length === 0 ) {
