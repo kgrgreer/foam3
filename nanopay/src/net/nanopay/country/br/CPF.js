@@ -37,14 +37,15 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'INVALID_CPF', messages: 'Invalid CPF.' },
-    { name: 'INVALID_NAME', messages: 'Click to verify name.' }
+    { name: 'INVALID_CPF', message: 'Invalid CPF Number' },
+    { name: 'INVALID_NAME', message: 'Click to verify name' }
   ],
 
   sections: [
     {
       name: 'collectCpf',
-      title: 'Enter your CPF'
+      title: 'Enter your CPF',
+      help: 'Require your CPF'
     }
   ],
 
@@ -57,34 +58,35 @@ foam.CLASS({
       help: `The CPF (Cadastro de Pessoas Físicas or Natural Persons Register) is a number assigned by the Brazilian revenue agency to both Brazilians and resident aliens who are subject to taxes in Brazil.`,
       view: {
         class: 'foam.u2.TextField',
-        placeholder: '12345678910',
-        minLength: 11,
         maxLength: 11
       },
       validationPredicates: [
         {
-          args: ['data'],
+          args: ['data', 'cpfName'],
           predicateFactory: function(e) {
-            return e.EQ(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.CPF.DATA }), 11);
+            return e.AND(
+              e.EQ(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.CPF.DATA }), 11),
+              e.GT(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.CPF.CPF_NAME }), 0)
+            );
           },
-          errorMessage: 'Invalid CPF.'
+          errorMessage: 'INVALID_CPF'
         }
-      ]
+      ],
+      postSet: function(_,n) {
+        this.cpfName = "";
+        if ( n.length == 11 ) {
+          this.getCpfName(n).then((v) => {
+            this.cpfName = v;
+          });
+        }
+      },
     },
     {
       class: 'String',
-      name: 'name',
+      name: 'cpfName',
       label: '',
       section: 'collectCpf',
-      hidden: true,
-      expression: function(data) {
-        if ( data.length == 11 ) {
-          this.name = "";
-          return this.getCpfName(data).then((n) => {
-            this.name = n;
-          });
-        } else { return ""; }
-      }
+      hidden: true
     },
     {
       class: 'Boolean',
@@ -96,11 +98,14 @@ foam.CLASS({
         return foam.u2.CheckBox.create({
           labelFormatter: function() {
             this.start('span')
-              .add(self.dot('name'))
+              .add(self.dot('cpfName'))
             .end();
           }
         });
       },
+      visibility: function(cpfName) {
+        return cpfName.length > 0 ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      },  
       validationPredicates: [
         {
           args: ['verifyName'],

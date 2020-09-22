@@ -404,10 +404,9 @@ foam.CLASS({
               class: 'net.nanopay.ui.banner.Banner',
               data$: this.bannerData$
             })
-            .tag(this.StackView.create({
-                data: this.stack,
-                showActions: false
-              }))
+            .start(this.StackView.create({data: this.stack, showActions: false}))
+              .style({'margin-top': '55px'})
+            .end()
           .end()
           .start()
             .enableClass('footer-wrapper', this.loginSuccess$)
@@ -425,10 +424,9 @@ foam.CLASS({
               class: 'net.nanopay.ui.banner.Banner',
               data$: this.bannerData$
             })
-            .tag(this.StackView, {
-              data: this.stack,
-              showActions: false
-            })
+            .start(this.StackView.create({data: this.stack, showActions: false}))
+              .style({'margin-top': '55px'})
+            .end()
           .end();
       }
     },
@@ -601,7 +599,7 @@ foam.CLASS({
      * It is only required for payables.
      */
     async function check2FAEnalbed() {
-      var canPayInvoice = await this.client.auth.check(null, 'invoice.pay');
+      var canPayInvoice = await this.client.auth.check(null, 'business.invoice.pay') && await this.client.auth.check(null, 'user.invoice.pay');
 
       if ( canPayInvoice && ! this.subject.realUser.twoFactorEnabled ) {
         var TwoFactorNotificationDOM = this.Element.create()

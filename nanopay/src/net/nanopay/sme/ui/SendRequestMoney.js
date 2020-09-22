@@ -362,9 +362,10 @@ foam.CLASS({
       this.exitLabel = 'Cancel';
       this.hasExitOption = true;
 
-      this.auth.check(this, 'invoice.pay').then((result) => {
-        this.permitToPay = result;
-      });
+      Promise.all([this.auth.check(null, 'business.invoice.pay'), this.auth.check(null, 'user.invoice.pay')])
+        .then((results) => {
+          this.permitToPay = results[0] && results[1];
+        });
 
       this.SUPER();
     },

@@ -128,7 +128,7 @@ foam.CLASS({
 
           if ( group == null || ! group.getEnabled() ) return false;
 
-          if ( group.implies(x, new AuthPermission("invoice.pay")) ) return true;
+          if ( group.implies(x, new AuthPermission("business.invoice.pay")) ) return true;
 
           groupId = group.getParent();
         }

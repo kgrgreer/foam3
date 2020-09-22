@@ -17,12 +17,12 @@
 
 foam.CLASS({
   package: 'net.nanopay.crunch.onboardingModels',
-  name: 'BusinessHasNoSigningOfficers',
+  name: 'SigningOfficerQuestionAnswered',
 
   extends: 'foam.mlang.predicate.AbstractPredicate',
   implements: ['foam.core.Serializable'],
 
-  documentation: `Returns true if the business has no signing officer junctions`,
+  documentation: `Returns true if agent answered the Signing Officer Question.`,
 
   javaImports: [
     'foam.core.X',
@@ -30,9 +30,10 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
+    'foam.nanos.crunch.AgentCapabilityJunction',
+    'foam.nanos.crunch.UserCapabilityJunction',
     'java.util.List',
     'net.nanopay.model.Business',
-    'net.nanopay.model.BusinessUserJunction',
     'static foam.mlang.MLang.*'
   ],
 
@@ -42,15 +43,24 @@ foam.CLASS({
       javaCode: `
         if ( ! ( obj instanceof X ) ) return false;
         X x = (X) obj;
-        DAO signingOfficerJunctionDAO = (DAO) x.get("signingOfficerJunctionDAO");
+        DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
+        User agent = ((Subject) x.get("subject")).getRealUser();
         User user = ((Subject) x.get("subject")).getUser();
-        if ( user == null || ! ( user instanceof Business ) ) return false;
 
-        List<BusinessUserJunction> soJunction = ((ArraySink) signingOfficerJunctionDAO
-          .where(EQ(BusinessUserJunction.SOURCE_ID, user.getId()))
-          .select(new ArraySink()))
-          .getArray();
-        return soJunction.size() == 0;
+        if ( agent == null || user == null || ! ( agent instanceof User ) || ! ( user instanceof Business ) ) return false;
+
+        // Skip intercept if signing officer question answer with No
+        AgentCapabilityJunction signingOfficerQuestionJunction = (AgentCapabilityJunction) userCapabilityJunctionDAO.find(
+          AND(
+            INSTANCE_OF(AgentCapabilityJunction.class),
+            EQ(UserCapabilityJunction.SOURCE_ID, agent.getId()),
+            EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-0"),
+            EQ(AgentCapabilityJunction.EFFECTIVE_USER, user.getId()),
+            EQ(UserCapabilityJunction.STATUS, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED)
+          )
+        );
+  
+        return signingOfficerQuestionJunction == null;
       `
     }
   ]

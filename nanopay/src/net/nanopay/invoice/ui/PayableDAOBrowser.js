@@ -234,7 +234,7 @@ foam.CLASS({
               isAvailable: function() {
                 return this.status === self.InvoiceStatus.PENDING_APPROVAL;
               },
-              availablePermissions: ['invoice.pay'],
+              availablePermissions: ['business.invoice.pay', 'user.invoice.pay'],
               code: function(X) {
                 X.menuDAO.find('sme.quickAction.send').then((menu) => {
                   var clone = menu.clone();

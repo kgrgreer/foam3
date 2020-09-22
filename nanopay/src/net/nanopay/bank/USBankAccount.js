@@ -264,6 +264,9 @@ foam.CLASS({
           return this.IMAGE_REQUIRED;
         }
       },
+      visibility: function(forContact) {
+        return forContact ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      },
       view: function(_, X) {
         return {
           class: 'foam.nanos.fs.fileDropZone.FileDropZone',

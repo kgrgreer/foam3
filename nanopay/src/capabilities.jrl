@@ -1,3 +1,11 @@
+// spid capabilities
+p({"class":"foam.nanos.auth.ServiceProvider","id":"nanopay","description":"nanopay"})
+//p({"class":"foam.nanos.auth.ServiceProvider","id":"connected-city","description":"ConnectedCity"})
+//p({"class":"foam.nanos.auth.ServiceProvider","id":"goldman-sachs","description":"Goldman Sachs"})
+//p({"class":"foam.nanos.auth.ServiceProvider","id":"opentext","description":"OpenText"})
+p({"class":"foam.nanos.auth.ServiceProvider","id":"portal-developer","enabled":true,"description":"API Portal Developer"})
+p({"class":"foam.nanos.auth.ServiceProvider","id":"intuit","enabled":true,"description":"intuit spid"})
+
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-0",
@@ -9,10 +17,11 @@ p({
   "enabled":true,
   "icon":"/images/capabilityIcons/SigningOfficerIcon.svg",
   "visible":true,
+  "associatedEntity":2,
   "permissionsIntercepted":[
     "businessHasSigningOfficer"
   ],
-  "interceptIf":{"class":"net.nanopay.crunch.onboardingModels.BusinessHasNoSigningOfficers"},
+  "interceptIf":{"class":"net.nanopay.crunch.onboardingModels.SigningOfficerQuestionAnswered"},
   "wizardlet": {
     "class": "net.nanopay.crunch.wizardlet.SigningOfficerQuestionWizardlet"
   },
@@ -38,7 +47,7 @@ p({
   "associatedEntity":2,
   "permissionsGranted":[
     "certifydatareviewed.rw.reviewed",
-    "invoice.pay",
+    "user.invoice.pay",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifyownerspercent.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.dualpartyagreementcad.section.reviewAgreementDocumentsSection",
@@ -58,7 +67,7 @@ p({
   ],
   "permissionsIntercepted": [
     "certifydatareviewed.rw.reviewed",
-    "invoice.pay",
+    "user.invoice.pay",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifyownerspercent.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.dualpartyagreementcad.section.reviewAgreementDocumentsSection",
@@ -81,7 +90,7 @@ p({
   {
     "class":"foam.mlang.predicate.And",
     "args": [
-      { "class":"net.nanopay.crunch.onboardingModels.UserIsSigningOfficerOfBusiness" },
+      { "class":"net.nanopay.crunch.onboardingModels.SigningOfficerPrivilegesRequested" },
       {
         "class": "foam.mlang.predicate.Not",
         "arg1": {
@@ -115,8 +124,9 @@ p({
   "reviewRequired":true,
   "associatedEntity":2,
   "permissionsGranted":[
+    "net.nanopay.partner.treviso.trevisounlockpaymenttermsandconditions.section.reviewAgreementDocumentsSection",
     "certifydatareviewed.rw.reviewed",
-    "invoice.pay",
+    "user.invoice.pay",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifyownerspercent.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.dualpartyagreementcad.section.reviewAgreementDocumentsSection",
@@ -135,8 +145,9 @@ p({
     "net.nanopay.crunch.acceptancedocuments.capabilities.cadafexterms.section.reviewAgreementDocumentsSection"
   ],
   "permissionsIntercepted": [
+    "net.nanopay.partner.treviso.trevisounlockpaymenttermsandconditions.section.reviewAgreementDocumentsSection",
     "certifydatareviewed.rw.reviewed",
-    "invoice.pay",
+    "user.invoice.pay",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.certifyownerspercent.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.dualpartyagreementcad.section.reviewAgreementDocumentsSection",
@@ -159,7 +170,7 @@ p({
     {
     "class":"foam.mlang.predicate.And",
     "args": [
-      { "class":"net.nanopay.crunch.onboardingModels.UserIsSigningOfficerOfBusiness" },
+      { "class":"net.nanopay.crunch.onboardingModels.SigningOfficerPrivilegesRequested" },
       {
         "class":"net.nanopay.crunch.onboardingModels.CheckUserCountry",
         "country":"BR"
@@ -191,18 +202,6 @@ p({
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-4",
   "name":"Business Details",
   "of":"net.nanopay.crunch.onboardingModels.BusinessInformationData",
-  "version":"0",
-  "enabled":true,
-  "visible":false,
-  "daoKey":"businessDAO",
-  "contextDAOFindKey":"subject.user"
-})
-
-p({
-  "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-5",
-  "name":"Extended Business Details",
-  "of":"net.nanopay.crunch.onboardingModels.InternationalBusinessInformationData",
   "version":"0",
   "enabled":true,
   "visible":false,
@@ -258,6 +257,12 @@ p({
   "visible":true,
   "reviewRequired":true,
   "keywords":["featured"],
+  "permissionsGranted":[
+    "business.invoice.pay"
+  ],
+  "permissionsIntercepted": [
+    "business.invoice.pay"
+  ],
   "availabilityPredicate": {
     "class":"foam.mlang.predicate.And",
     "args": [
@@ -288,6 +293,12 @@ p({
   "visible":true,
   "reviewRequired":true,
   "keywords":["featured"],
+  "permissionsGranted":[
+    "business.invoice.pay"
+  ],
+  "permissionsIntercepted": [
+    "business.invoice.pay"
+  ],
   "availabilityPredicate": {
     "class":"foam.mlang.predicate.And",
     "args": [
@@ -315,6 +326,12 @@ p({
   "visible":true,
   "reviewRequired":true,
   "keywords":["featured"],
+  "permissionsGranted":[
+    "business.invoice.pay"
+  ],
+  "permissionsIntercepted": [
+    "business.invoice.pay"
+  ],
   "availabilityPredicate": {
     "class":"foam.mlang.predicate.And",
     "args": [
@@ -442,8 +459,8 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"b5f2b020-db0f-11ea-87d0-0242ac130003",
   "name":"Office Consumption",
-  "description":"Office consumption bill includes Energy, Telephone, Water, Cable TV, IPTU or Bank Statement. 3 months of billing documents required.",
-  "of":"net.nanopay.crunch.document.Documents",
+  "description":"Office consumption bill includes energy, telephone, water, cable TV, IPTU or bank statement. 3 months of billing documents required.",
+  "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "enabled":true,
   "visible":true,
@@ -455,7 +472,7 @@ p({
   "id":"26d32e86-db11-11ea-87d0-0242ac130003",
   "name":"Articles Of Incorporation",
   "description":"Document that establishes the existence of a corporation.",
-  "of":"net.nanopay.crunch.document.Documents",
+  "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "enabled":true,
   "visible":true,
@@ -467,7 +484,7 @@ p({
   "id":"7e2739cc-db32-11ea-87d0-0242ac130003",
   "name":"Business Latest Annual Report",
   "description":"Formal financial statements that are published yearly and sent to company stockholders and various other interested parties.",
-  "of":"net.nanopay.crunch.document.Documents",
+  "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "enabled":true,
   "visible":true,
@@ -478,8 +495,8 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"85cee1de-db32-11ea-87d0-0242ac130003",
   "name":"Residence Consumption Bill",
-  "description":"Residence consumption bill includes Energy, Telephone, Water, Cable TV, IPTU or Bank Statement. 3 months of billing documents required.",
-  "of":"net.nanopay.crunch.document.Documents",
+  "description":"Residence consumption bill includes energy, telephone, water, cable TV, IPTU or bank statement. 3 months of billing documents required.",
+  "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "enabled":true,
   "visible":true,
@@ -490,8 +507,8 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"8ad3c898-db32-11ea-87d0-0242ac130003",
   "name":"User Identity",
-  "description":"Identity Document that contains full name, CPF number and photo. Valid until expire date or no longer than 10 years.",
-  "of":"net.nanopay.crunch.document.Documents",
+  "description":"Identity document that contains full name, CPF number and photo. Valid until expire date or no longer than 10 years.",
+  "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "enabled":true,
   "visible":true,
@@ -746,4 +763,40 @@ p({
   "wizardlet": {
     "class": "foam.nanos.crunch.ui.CapabilityWizardlet"
   },
+})
+
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-16",
+  "name":"Business Registration Date",
+  "of":"net.nanopay.crunch.onboardingModels.BusinessRegistrationDateData",
+  "description":"Business Registration Date",
+  "version":"0",
+  "enabled":true,
+  "visible":true
+})
+
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-17",
+  "name":"Business Incorporated Date",
+  "of":"net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData",
+  "description":"Business Incorporated Date",
+  "version":"0",
+  "enabled":true,
+  "visible":true
+})
+
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-18",
+  "name":"Tax Id Number",
+  "of":"net.nanopay.crunch.onboardingModels.TaxIdNumberData",
+  "description":"Tax Id Number",
+  "version":"0",
+  "enabled":true,
+  "visible":true
 })

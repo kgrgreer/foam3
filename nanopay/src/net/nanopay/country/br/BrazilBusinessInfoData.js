@@ -37,7 +37,8 @@ foam.CLASS({
   sections: [
     {
       name: 'businessInformation',
-      title: `Please enter your Business' Identification Numbers`
+      title: `Please enter your Business' Identification Numbers`,
+      help: `Require Business' Identification Numbers`
     }
   ],
 
@@ -78,10 +79,11 @@ foam.CLASS({
       section: 'businessInformation',
       validationPredicates: [
         {
-          args: ['cnpj'],
+          args: ['cnpj','cnpjName'],
           predicateFactory: function(e) {
             return e.AND(
-              e.EQ(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.BrazilBusinessInfoData.CNPJ }), 14)
+              e.EQ(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.BrazilBusinessInfoData.CNPJ }), 14),
+              e.GT(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.BrazilBusinessInfoData.CNPJ_NAME }), 0)
             );
           },
           errorString: 'Please enter 14-digit National Registry of Legal Entities Number'
@@ -89,6 +91,14 @@ foam.CLASS({
       ],
       tableCellFormatter: function(val) {
         return foam.String.applyFormat(val, 'xx.xxx.xxx/xxxx-xx');
+      },
+      postSet: function(_,n) {
+        this.cnpjName = "";
+        if ( n.length == 14 ) {
+          this.getCNPJBusinessName(n).then((v) => {
+            this.cnpjName = v;
+          });
+        }
       },
       view: function(_, X) {
         return foam.u2.FragmentedTextField.create({
@@ -128,17 +138,10 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'name',
-      section: 'businessInformation',
+      name: 'cnpjName',
+      label: '',
       hidden: true,
-      expression: function(cnpj) {
-        if ( cnpj.length == 14 ) {
-          this.name = "";
-          return this.getCNPJBusinessName(cnpj).then((n) => {
-            this.name = n;
-          });
-        } else { return ""; }
-      }
+      section: 'businessInformation',
     },
     {
       class: 'Boolean',
@@ -150,10 +153,13 @@ foam.CLASS({
         return foam.u2.CheckBox.create({
           labelFormatter: function() {
             this.start('span')
-              .add(self.dot('name'))
+              .add(self.dot('cnpjName'))
             .end();
           }
         });
+      },
+      visibility: function(cnpjName) {
+        return cnpjName.length > 0 ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       validationPredicates: [
         {

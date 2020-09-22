@@ -108,7 +108,7 @@ foam.CLASS({
 
       FXSummaryTransaction txn = new FXSummaryTransaction.Builder(x).build();
       txn.copyFrom(requestTxn);
-      txn.addNext(createCompliance(requestTxn));
+      txn.addNext(createComplianceTransaction(requestTxn));
       FXLineItem fxLineItem = new FXLineItem();
       fxLineItem.setRate(fxQuote.getRate());
       fxLineItem.setSourceCurrency(fxQuote.findSourceCurrency(x));

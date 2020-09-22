@@ -59,7 +59,6 @@ foam.CLASS({
       return super.find_(x, id);
       `
     },
-
   ],
 
   axioms: [

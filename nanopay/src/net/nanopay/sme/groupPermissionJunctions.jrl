@@ -94,7 +94,6 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"smeBusinessAdmi
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"smeBusinessAdmin","targetId":"menu.read.sme.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"smeBusinessAdmin","targetId":"useruserjunction.rw.status"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"smeBusinessAdmin","targetId":"business.rw.ispublic"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"smeBusinessAdmin","targetId":"invoice.pay"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"smeBusinessEmployee","targetId":"invoice.holdingAccount"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"smeBusinessEmployee","targetId":"menu.read.sme.main.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"service.businessTypeDAO"})

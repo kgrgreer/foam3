@@ -1162,6 +1162,8 @@ FOAM_FILES([
   { name: 'net/nanopay/iso20022/ISODateTest' },
   { name: 'net/nanopay/iso20022/ISODateTimeTest' },
   { name: 'net/nanopay/iso20022/ISOTimeTest' },
+  { name: 'net/nanopay/tx/ISO20022Transaction' },
+  { name: 'net/nanopay/tx/PacsTransaction' },
 
   // sme
   { name: 'net/nanopay/sme/ui/NavigationView', flags: ['web'] },
@@ -1589,20 +1591,23 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/onboardingModels/InitialBusinessData' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerPersonalData' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerQuestion' },
-  { name: 'net/nanopay/crunch/onboardingModels/BusinessHasNoSigningOfficers' },
+  { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerQuestionAnswered' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessInformationData' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessOwnershipData' },
   { name: 'net/nanopay/crunch/onboardingModels/TransactionDetailsData' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessDirectorsData' },
   { name: 'net/nanopay/crunch/onboardingModels/CertifyDataReviewed' },
-  { name: 'net/nanopay/crunch/onboardingModels/InternationalBusinessInformationData' },
   { name: 'net/nanopay/crunch/PrerequisiteCapabilityJunctionRefine' },
   { name: 'net/nanopay/crunch/BusinessOwnershipToBeneficialOwnerDAO' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerCapabilityInterceptPredicate' },
+  { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerPrivilegesRequested' },
   { name: 'net/nanopay/crunch/onboardingModels/UserIsSigningOfficerOfBusiness' },
   { name: 'net/nanopay/crunch/onboardingModels/UserBirthDateData' },
-  { name: 'net/nanopay/crunch/document/Documents' },
   { name: 'net/nanopay/crunch/document/Document' },
+  { name: 'net/nanopay/crunch/onboardingModels/BusinessIncorporationDateData' },
+  { name: 'net/nanopay/crunch/onboardingModels/BusinessRegistrationDateData' },
+  { name: 'net/nanopay/crunch/onboardingModels/TaxIdNumberData' },
+
 
   // crunch notification
   { name: 'net/nanopay/crunch/UCJExpiryReminderCron' },
@@ -1653,7 +1658,10 @@ FOAM_FILES([
 
   // crunch document
   { name: 'net/nanopay/crunch/document/Document' },
-  { name: 'net/nanopay/crunch/document/Documents' },
+
+  // Capable object testing
+  { name: 'net/nanopay/crunch/test/TestCapable' },
+  { name: 'net/nanopay/crunch/test/TestCapableDAO' },
 
   // wizardlets
   { name: 'net/nanopay/crunch/wizardlet/RefreshWizardlet' },
@@ -1691,9 +1699,6 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/tx/TrevisoTransaction' },
   { name: 'net/nanopay/partner/treviso/tx/planner/TrevisoTransactionPlanner' },
   { name: 'net/nanopay/partner/treviso/tx/TrevisoCreateExchange' },
+  { name: 'net/nanopay/partner/treviso/tx/TrevisoLineItemsFromFXSummary' },
   { name: 'net/nanopay/partner/treviso/TrevisoUnlockPaymentTermsAndConditions' },
-
-  // crunch document
-  { name: 'net/nanopay/crunch/document/Documents' },
-  { name: 'net/nanopay/crunch/document/Document' },
 ]);

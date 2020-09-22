@@ -111,6 +111,7 @@ p({
           child-src 'self' https://cdn.plaid.com/link/ nanopay.net nanopay.net data: chrome-extension-resource:;
           connect-src 'self' data: blob: filesystem: ws: http://localhost:*/service/;
           font-src 'self' https://fonts.gstatic.com data: chrome-extension-resource:;
+          frame-src 'self' data: blob: filesystem:;
           img-src 'self' data: blob: filesystem:;
           manifest-src 'self';
           media-src * data: blob: filesystem:;
@@ -2176,6 +2177,7 @@ p({
       .setServiceProviderAware(true)
       .setOf(foam.nanos.ruler.Rule.getOwnClassInfo())
       .setInnerDAO(x.get("localRuleDAO"))
+      .setRuler(false)
       .build();
 
     return dao;
@@ -2458,8 +2460,9 @@ p({
       .setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo())
       .setInnerDAO(x.get("bareUserCapabilityJunctionDAO"))
       .build();
-    dao = new foam.nanos.crunch.UserCapabilityJunctionDAO.Builder(x).setDelegate(dao).build();
-    return dao;
+    preventMultipleSpidDAO = new foam.nanos.auth.PreventMultipleSpidDAO.Builder(x).setDelegate(dao).build();
+    userCap =  new foam.nanos.crunch.UserCapabilityJunctionDAO.Builder(x).setDelegate(preventMultipleSpidDAO).build();
+    return userCap;
   """,
   "client":"{\"of\":\"foam.nanos.crunch.UserCapabilityJunction\", \"remoteListenerSupport\": false}"
 })
@@ -2530,7 +2533,7 @@ p({
   "serviceScript": """
     return new foam.dao.EasyDAO.Builder(x)
       .setInnerDAO(x.get("countryDAO"))
-      .setDecorator(new net.nanopay.country.PermittedCountryFilterDAO(new String[] { "CA", "US", "BR" }, x, new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.auth.Country.getOwnClassInfo()).build()))
+      .setAuthorize(true)
       .setOf(foam.nanos.auth.Country.getOwnClassInfo())
       .build();
   """,
