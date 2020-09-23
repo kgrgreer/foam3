@@ -736,6 +736,7 @@ p({
   "enabled":true,
   "visible":false,
   "daoKey":"userDAO",
+  "reviewRequired":true,
   "contextDAOFindKey": "subject.realUser",
   "associatedEntity": 1
 })
