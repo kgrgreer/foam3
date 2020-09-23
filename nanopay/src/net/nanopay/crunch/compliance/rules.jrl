@@ -135,7 +135,7 @@ p({
   "priority":100,
   "ruleGroup":"expandedUserDetailOnboarding",
   "documentation":"Check expanded user detail capability via Dow Jones API",
-  "daoKey:"userCapabilityJunctionDAO",
+  "daoKey":"userCapabilityJunctionDAO",
   "operation":3,
   "after":true,
   "predicate":{
