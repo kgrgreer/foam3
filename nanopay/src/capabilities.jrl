@@ -567,6 +567,8 @@ p({
   "name":"Business Registration Date",
   "of":"net.nanopay.crunch.onboardingModels.BusinessRegistrationDateData",
   "description":"Business Registration Date",
+  "daoKey": "businessDAO",
+  "contextDAOFindKey": "subject.user",
   "version":"0",
   "enabled":true,
   "visible":true
@@ -578,6 +580,8 @@ p({
   "name":"Business Incorporated Date",
   "of":"net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData",
   "description":"Business Incorporated Date",
+  "daoKey": "businessDAO",
+  "contextDAOFindKey": "subject.user",
   "version":"0",
   "enabled":true,
   "visible":true
@@ -589,6 +593,8 @@ p({
   "name":"Tax Id Number",
   "of":"net.nanopay.crunch.onboardingModels.TaxIdNumberData",
   "description":"Tax Id Number",
+  "daoKey": "businessDAO",
+  "contextDAOFindKey": "subject.user",
   "version":"0",
   "enabled":true,
   "visible":true
