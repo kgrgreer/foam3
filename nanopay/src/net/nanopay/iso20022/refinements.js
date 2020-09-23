@@ -282,6 +282,7 @@ foam.CLASS({
     'net.nanopay.model.Branch',
     'net.nanopay.payment.Institution',
     'net.nanopay.tx.TransactionDAO',
+    'net.nanopay.tx.PacsTransaction',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionEntity',
     'net.nanopay.tx.model.TransactionStatus',
@@ -588,7 +589,7 @@ foam.CLASS({
                       .build();
 
                     long desAmt = new Double((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getInterbankSettlementAmount().getText()).longValue();
-                    transaction = new Transaction.Builder(getX())
+                    transaction = new PacsTransaction.Builder(getX())
                       .setName("Digital Transfer from PACS")
                       // REVIEW: ACSP and ACSC are pacs status, but not transaction status. 
                       //.setStatus(TransactionStatus.ACSP)
@@ -709,6 +710,7 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.tx.TransactionDAO',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.PacsTransaction',
     'net.nanopay.tx.model.TransactionStatus',
 
     'java.io.*',
@@ -755,7 +757,7 @@ foam.CLASS({
 
                   if ( (this.getFIToFIPmtStsReq().getOriginalGroupInformation())[i].getOriginalMessageIdentification() != null && (this.getFIToFIPmtStsReq().getOriginalGroupInformation())[i].getOriginalCreationDateTime() != null ) {
                     //Transaction txn = (Transaction) txnDAO.find((this.getFIToFIPmtStsReq().getOriginalGroupInformation())[i].getOriginalMessageIdentification());
-                    Transaction txn = (Transaction) txnDAO.find(EQ(Transaction.MESSAGE_ID, (this.getFIToFIPmtStsReq().getOriginalGroupInformation())[i].getOriginalMessageIdentification()));
+                    Transaction txn = (Transaction) txnDAO.find(EQ(PacsTransaction.MESSAGE_ID, (this.getFIToFIPmtStsReq().getOriginalGroupInformation())[i].getOriginalMessageIdentification()));
 
                     TransactionStatus cur_txnStatus = null;
                     String txnStatus  = null;

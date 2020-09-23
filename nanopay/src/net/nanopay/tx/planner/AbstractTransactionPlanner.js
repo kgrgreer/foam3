@@ -126,6 +126,12 @@ foam.CLASS({
       `
     },
     {
+      name: 'getUser',
+      javaCode: `
+        return ((TransactionQuote) obj).getSourceAccount().findOwner(x);
+      `
+    },
+    {
       name: 'applyAction',
       documentation: 'applyAction of the rule is called by rule engine',
       javaCode: `
@@ -246,7 +252,7 @@ foam.CLASS({
       `
     },
     {
-      name: 'createCompliance',
+      name: 'createComplianceTransaction',
       documentation: 'Creates a compliance transaction and returns it',
       args: [
         { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }

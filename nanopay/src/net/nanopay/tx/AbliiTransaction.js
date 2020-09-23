@@ -73,7 +73,7 @@ foam.CLASS({
         super.authorizeOnCreate(x);
 
         AuthService auth = (AuthService) x.get("auth");
-        if ( ! auth.check(x, "invoice.pay") ) {
+        if ( ! auth.check(x, "business.invoice.pay") || ! auth.check(x, "user.invoice.pay") ) {
           throw new AuthorizationException(PROHIBITED_MESSAGE);
         }
       `
@@ -89,7 +89,7 @@ foam.CLASS({
         super.authorizeOnUpdate(x, oldObj);
 
         AuthService auth = (AuthService) x.get("auth");
-        if ( ! auth.check(x, "invoice.pay") ) {
+        if ( ! auth.check(x, "business.invoice.pay") || ! auth.check(x, "user.invoice.pay") ) {
           throw new AuthorizationException(PROHIBITED_MESSAGE);
         }
       `

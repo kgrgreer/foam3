@@ -15,24 +15,35 @@
  * from nanopay Corporation.
  */
 
-foam.CLASS({
-  package: 'net.nanopay.crunch.document',
-  name: 'Documents',
+/**
+ * @license
+ * Copyright 2018 The FOAM Authors. All Rights Reserved.
+ * http://www.apache.org/licenses/LICENSE-2.0
+ */
 
-  documentation: `
-    This model is to set the necessary documents for a business capabilities need
-  `,
+foam.CLASS({
+  package: 'net.nanopay.tx',
+  name: 'PacsTransaction',
+  extends: 'net.nanopay.tx.DigitalTransaction',
+  documentation: `PACS transaction for legacy interact integration`,
+
+  implements: [
+    'net.nanopay.tx.ISO20022Transaction'
+  ],
+
+  javaImports: [
+    'foam.core.X',
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.model.TransactionStatus'
+  ],
 
   properties: [
     {
-      class: 'foam.nanos.fs.FileArray',
-      name: 'documents',
-      view: function(_,X) {
-        return {
-          class: 'foam.nanos.fs.fileDropZone.FileDropZone',
-          files$: X.data.documents$
-        }
-      }
+      documentation: `Defined by ISO 20022 (Pacs008)`,
+      class: 'String',
+      name: 'messageId',
+      visibility: 'RO',
+      hidden: true
     }
   ]
 });

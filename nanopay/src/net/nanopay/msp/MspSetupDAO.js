@@ -22,20 +22,30 @@ foam.CLASS({
 
   documentation: 'A decorator to create msp groups and admin',
 
+  imports: [
+    'DAO localCapabilityDAO',
+    'DAO prerequisiteCapabilityJunctionDAO'
+  ],
+
   javaImports: [
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.GroupPermissionJunction',
-    'foam.nanos.ruler.Rule',
     'foam.nanos.auth.ServiceProvider',
+    'foam.nanos.auth.User',
+    'foam.nanos.auth.ruler.EnsurePropertyOnCreateRule',
+    'foam.nanos.crunch.Capability',
+    'foam.nanos.crunch.CapabilityCapabilityJunction',
     'foam.nanos.theme.Theme',
     'foam.nanos.theme.ThemeDomain',
-    'foam.nanos.auth.User',
+    'foam.nanos.ruler.Rule',
+    'net.nanopay.account.DigitalAccount',
+    'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.auth.ServiceProviderURL',
     'net.nanopay.auth.UserCreateServiceProviderURLRule',
     'net.nanopay.auth.UserCreateServiceProviderURLRuleAction',
-    'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.tx.fee.TransactionFeeRule',
     'java.util.Arrays',
     'java.util.ArrayList',
     'java.util.List',
@@ -54,21 +64,25 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-        String spid = ((MspInfo) obj).getSpid();
+        MspInfo mspInfo = (MspInfo) obj;
+        String spid = mspInfo.getSpid();
         DAO spidDAO = (DAO) x.get("localServiceProviderDAO");
 
         // if the spid already exists, just simply return
         ServiceProvider sp = (ServiceProvider) spidDAO.find(spid);
         if ( sp != null ) throw new RuntimeException("Spid already exists");
+
         spidDAO.put(
           new ServiceProvider.Builder(x)
             .setEnabled(true)
             .setId(spid)
             .setDescription(spid + " spid")
+            .setPermissionsGranted(mspInfo.getCapabilityPermissions())
             .build()
         );
+        addCapabilityPrerequisite(x, spid, "serviceProviderCapability");
 
-        MspInfo mspInfo = (MspInfo) getDelegate().put_(x, obj);
+        mspInfo = (MspInfo) getDelegate().put_(x, obj);
 
         DAO groupDAO = (DAO) x.get("localGroupDAO");
         DAO userDAO = (DAO) x.get("localUserDAO");
@@ -76,6 +90,12 @@ foam.CLASS({
         DAO themeDAO = (DAO) x.get("themeDAO");
         DAO themeDomainDAO = (DAO) x.get("themeDomainDAO");
         DAO ruleDAO = (DAO) x.get("localRuleDAO");
+
+        // Add spid prerequisites
+        addSpidPrerequisites(x, spid, mspInfo.getCountryPermissions(), "countryCapability");
+        addSpidPrerequisites(x, spid, mspInfo.getCountryPermissions(), "currencyCapability");
+        addSpidPrerequisites(x, spid, mspInfo.getCorridorPermissions(), "corridorCapability");
+        addSpidPrerequisites(x, spid, mspInfo.getPlannerPermissions(), "plannerCapability");
 
         // Add theme for the client side - not for back-office
         Theme clientTheme = (Theme) themeDAO.find(mspInfo.getTheme());
@@ -144,10 +164,24 @@ foam.CLASS({
         configList[0] = serviceProviderURL;
 
         // find the UserCreateServiceProviderURLRule and update the configList
-        UserCreateServiceProviderURLRule rule = 
+        UserCreateServiceProviderURLRule rule =
           (UserCreateServiceProviderURLRule) ruleDAO.find(this.getSpidUrlRule());
         rule.setConfig((ServiceProviderURL[]) ArrayUtils.addAll(configList, rule.getConfig()));
         ruleDAO.put(rule);
+
+        // Create spid-admin's default digital account
+        var digitalAccount = DigitalAccount.findDefault(x, adminUser, mspInfo.getDenomination());
+
+        // Create rule to auto-fill feeAccount for TransactionFeeRule created in the spid
+        var ensureFeeAccountRule = new EnsurePropertyOnCreateRule();
+        ensureFeeAccountRule.setName("Auto-fill feeAccount for TransactionFeeRule - " + spid);
+        ensureFeeAccountRule.setDaoKey("localRuleDAO");
+        ensureFeeAccountRule.setRuleGroup("TransactionFeeRule");
+        ensureFeeAccountRule.setTargetClass(TransactionFeeRule.getOwnClassInfo());
+        ensureFeeAccountRule.setPropName("feeAccount");
+        ensureFeeAccountRule.setPropValue(digitalAccount.getId());
+        ensureFeeAccountRule.setSpid(spid);
+        ruleDAO.put(ensureFeeAccountRule);
 
         // Create spid-fraud-ops group
         Group fraudOpsGroup = new Group();
@@ -185,6 +219,41 @@ foam.CLASS({
         groupDAO.put(supportGroup);
 
         return mspInfo;
+      `
+    },
+    {
+      name: 'addSpidPrerequisites',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'spid', type: 'String' },
+        { name: 'permissions', type: 'String[]' },
+        { name: 'baseCapability', type: 'String' }
+      ],
+      javaCode: `
+        var capability = (Capability) getLocalCapabilityDAO().put(
+          new Capability.Builder(x)
+            .setId(spid + baseCapability.substring(0, 1).toUpperCase() + baseCapability.substring(1))
+            .setPermissionsGranted(permissions)
+            .build()
+        );
+
+        addCapabilityPrerequisite(x, spid, capability.getId());
+      `
+    },
+    {
+      name: 'addCapabilityPrerequisite',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'sourceId', type: 'String' },
+        { name: 'targetId', type: 'String' }
+      ],
+      javaCode: `
+        getPrerequisiteCapabilityJunctionDAO().put(
+          new CapabilityCapabilityJunction.Builder(x)
+            .setSourceId(sourceId)
+            .setTargetId(targetId)
+            .build()
+        );
       `
     }
   ]

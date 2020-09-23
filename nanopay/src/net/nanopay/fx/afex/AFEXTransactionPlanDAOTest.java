@@ -93,6 +93,7 @@ public class AFEXTransactionPlanDAOTest
     user1.setEmail("testAFEXTransaction@nanopay.net");
     user1.setAddress(businessAddress);
     user1.setEmailVerified(true);
+    user1.setSpid("nanopay");
     localUserDAO.put(user1);
 
     user2 = new User();
@@ -102,6 +103,7 @@ public class AFEXTransactionPlanDAOTest
     user2.setEmail("testAFEXTransaction1@nanopay.net");
     user2.setAddress(businessAddress);
     user2.setEmailVerified(true);
+    user2.setSpid("nanopay");
     localUserDAO.put(user2);
 
 

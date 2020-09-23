@@ -238,3 +238,38 @@ p({
   print("done");
   """
 })
+p({
+  "class": "foam.nanos.cron.Cron",
+  "enabled": true,
+  "schedule": {
+    "class":"foam.nanos.cron.IntervalSchedule",
+    "start": "1992-04-20",
+    "duration": {
+      "class": "foam.nanos.cron.TimeHMS",
+      "hour": 1
+    }
+  },
+  "id": "TransactionPlan Expiry Cron",
+  "description": "Remove Expired TransactionPlans",
+  "code": """
+    import foam.core.Detachable;
+    import foam.core.X;
+    import foam.dao.AbstractSink;
+    import net.nanopay.tx.planner.TransactionPlan;
+    import foam.nanos.logger.Logger;
+
+    now = java.time.LocalDateTime.now();
+    planDAO = (x.get("localTransactionPlannerDAO")).where( foam.mlang.MLang.LT(TransactionPlan.EXPIRY, now ) );
+    Long expiredPlans = planDAO.select(new foam.mlang.sink.Count()).getValue();
+    planDAO.select( new AbstractSink() {
+
+        public void put(Object o, Detachable d) {
+          TransactionPlan plan = (TransactionPlan) o;
+          planDAO.remove(plan.getId());
+        }
+    });
+    print("TransactionPlan Expiry Cron removed " + expiredPlans + " expired plans at " + now );
+    logger = x.get("logger");
+    logger.info(new Object[] {"TransactionPlan Expiry Cron removed " + expiredPlans + " expired plans at " + now});
+  """
+})

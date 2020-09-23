@@ -408,7 +408,7 @@ foam.CLASS({
       `,
       tableWidth: 190,
       view: function(o, x) {
-        if ( o && o.mode$.value.name === 'RO' ) {
+        if ( o && o.mode$.value && o.mode$.value.name === 'RO' ) {
           return foam.u2.Element.create()
             .start()
               .add(x.data.status.label)
@@ -730,13 +730,6 @@ foam.CLASS({
       tableWidth: 172
     },
     {
-      documentation: `Defined by ISO 20220 (Pacs008)`,
-      class: 'String',
-      name: 'messageId',
-      visibility: 'RO',
-      hidden: true
-    },
-    {
       class: 'String',
       name: 'sourceCurrency',
       aliases: ['sourceDenomination'],
@@ -769,12 +762,12 @@ foam.CLASS({
       of: 'foam.core.FObject',
       createVisibility: 'HIDDEN',
       readVisibility: function(referenceData) {
-        return referenceData.length > 0 ?
+        return referenceData && referenceData.length > 0 ?
           foam.u2.DisplayMode.RO :
           foam.u2.DisplayMode.HIDDEN;
       },
       updateVisibility: function(referenceData) {
-        return referenceData.length > 0 ?
+        return referenceData && referenceData.length > 0 ?
           foam.u2.DisplayMode.RO :
           foam.u2.DisplayMode.HIDDEN;
       },
@@ -821,12 +814,12 @@ foam.CLASS({
       documentation: 'Status history of the transaction.',
       createVisibility: 'HIDDEN',
       readVisibility: function(statusHistory) {
-        return statusHistory.length > 0 ?
+        return statusHistory && statusHistory.length > 0 ?
           foam.u2.DisplayMode.RO :
           foam.u2.DisplayMode.HIDDEN;
       },
       updateVisibility: function(statusHistory) {
-        return statusHistory.length > 0 ?
+        return statusHistory && statusHistory.length > 0 ?
           foam.u2.DisplayMode.RO :
           foam.u2.DisplayMode.HIDDEN;
       },
@@ -893,15 +886,6 @@ foam.CLASS({
           foam.u2.DisplayMode.HIDDEN;
       },
       documentation: `The scheduled date when transaction should be processed.`
-    },
-    {
-      class: 'String',
-      name: 'searchName',
-      label: 'Payer/Payee Name',
-      documentation: 'This property exists only as a means to let users filter transactions by payer or payee name.',
-      transient: true,
-      hidden: true,
-      searchView: { class: 'net.nanopay.tx.ui.PayeePayerSearchView' }
     },
     {
       class: 'foam.core.Enum',

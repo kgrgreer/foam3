@@ -1,0 +1,52 @@
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "trevisoPlannerCapability",
+  version: "0",
+  enabled: true,
+  visible: false,
+  permissionsGranted: [
+    "rule.read.13df0d76-ba3e-4287-b42e-c7ceff059dd8",
+    "rule.read.2775abef-05d4-4460-bea8-7a70e9d544af",
+    "rule.read.519e2a68-a914-444f-b050-2ce01f29fe24"
+  ]
+})
+
+// TODO add "capability.read.{natureCodeId}" to permissionsGranted for treviso Service Provider Capability.
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "trevisoCountryCapability",
+  version: "0",
+  enabled: true,
+  visible: false,
+  permissionsGranted: [
+    "country.read.BR",
+    "country.read.CA",
+    "country.read.US"
+  ]
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "trevisoCorridorCapability",
+  version: "0",
+  enabled: true,
+  visible: false,
+  permissionsGranted: [
+    "capability.read.554af38a-8125-87c8-dfdf-eeb15ftrevisobr-ca",
+    "capability.read.554af38a-8125-87c8-dfdf-eeb1trevisobr-us"
+  ]
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "trevisoCurrencyCapability",
+  version: "0",
+  enabled: true,
+  visible: false,
+  permissionsGranted: [
+    "currency.read.BRL",
+    "currency.read.USD",
+    "currency.read.CAD"
+  ]
+})

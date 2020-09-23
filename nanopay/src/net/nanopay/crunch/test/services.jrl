@@ -1,0 +1,20 @@
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "capableObjectTestDAO",
+  "serve": true,
+  "serviceScript":
+  """
+    foam.core.ClassInfo cls =
+      net.nanopay.crunch.test.TestCapable.getOwnClassInfo();
+    new foam.dao.EasyDAO.Builder(x)
+      .setNullify(true)
+      .setOf(cls)
+      .setDecorator(
+        new net.nanopay.crunch.test.TestCapableDAO.Builder(x)
+          .setOf(cls)
+          .build()
+      )
+      .build()
+  """,
+  "client": "{\"of\":\"net.nanopay.crunch.test.TestCapable\"}"
+})
