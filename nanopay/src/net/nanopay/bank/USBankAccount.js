@@ -259,8 +259,8 @@ foam.CLASS({
           the past 3 months to verify ownership of this bank account.`,
       section: 'accountDetails',
       documentation: 'Supporting documents to verify bank account',
-      validateObj: function(supportingDocuments, plaidResponseItem) {
-        if ( supportingDocuments.length === 0 && ! plaidResponseItem ) {
+      validateObj: function(supportingDocuments, plaidResponseItem, forContact) {
+        if ( supportingDocuments.length === 0 && ! plaidResponseItem && ! forContact ) {
           return this.IMAGE_REQUIRED;
         }
       },
