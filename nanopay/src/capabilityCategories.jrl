@@ -46,9 +46,3 @@ p({
   "name": "Change compliance of entity",
   "visible": false
 })
-p({
-  "class": "foam.nanos.crunch.CapabilityCategory",
-  "id": "expandedUserDetailComplianceSetting",
-  "name": "Change compliance of expanded user detail",
-  "visible": false
-})

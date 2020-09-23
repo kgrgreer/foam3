@@ -139,8 +139,19 @@ p({
   "operation":3,
   "after":true,
   "predicate":{
-    "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
-    "category":"expandedUserDetailComplianceSetting"
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class": "foam.nanos.ruler.predicate.PropertyNEQValue",
+        "propName": "data",
+        "propValue": null
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsClass",
+        "propName":"data",
+        "of":"net.nanopay.crunch.registration.UserDetailExpandedData"
+      }
+    ]
   },
   "asyncAction":{
     "class":"net.nanopay.crunch.compliance.PersonSanctionValidator"
@@ -162,8 +173,19 @@ p({
   "operation":3,
   "after":true,
   "predicate":{
-    "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
-    "category":"expandedUserDetailComplianceSetting"
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class": "foam.nanos.ruler.predicate.PropertyNEQValue",
+        "propName": "data",
+        "propValue": null
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsClass",
+        "propName":"data",
+        "of":"net.nanopay.crunch.registration.UserDetailExpandedData"
+      }
+    ]
   },
   "asyncAction":{
     "class":"net.nanopay.crunch.compliance.SecurefactSIDniValidator"
