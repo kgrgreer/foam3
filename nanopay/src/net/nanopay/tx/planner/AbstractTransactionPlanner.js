@@ -126,6 +126,12 @@ foam.CLASS({
       `
     },
     {
+      name: 'getUser',
+      javaCode: `
+        return ((TransactionQuote) obj).getSourceAccount().findOwner(x);
+      `
+    },
+    {
       name: 'applyAction',
       documentation: 'applyAction of the rule is called by rule engine',
       javaCode: `

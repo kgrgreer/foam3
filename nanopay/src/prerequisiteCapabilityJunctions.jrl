@@ -514,7 +514,6 @@ p({
   "priority": 16
 })
 
-
 //usBusinessOnboarding
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
@@ -551,4 +550,66 @@ p({
   "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-12",
   "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-16",
   "priority":1
+})
+
+// Prerequisites for serviceProviderCapability
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "serviceProviderCapability",
+  targetId: "plannerCapability",
+  priority: 1
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "serviceProviderCapability",
+  targetId: "countryCapability",
+  priority: 2
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "serviceProviderCapability",
+  targetId: "corridorCapability",
+  priority: 3
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "serviceProviderCapability",
+  targetId: "currencyCapability",
+  priority: 4
+})
+
+// Prerequisites for nanopay spid capability
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "nanopay",
+  targetId: "serviceProviderCapability",
+  priority: 1
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "nanopay",
+  targetId: "nanopayPlannerCapability",
+  priority: 2
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "nanopay",
+  targetId: "nanopayCountryCapability",
+  priority: 3
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "nanopay",
+  targetId: "nanopayCorridorCapability",
+  priority: 4
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "nanopay",
+  targetId: "nanopayCurrencyCapability",
+  priority: 5
 })

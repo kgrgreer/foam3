@@ -1,3 +1,10 @@
+// base capabilities
+p({class: "foam.nanos.crunch.Capability", id: "serviceProviderCapability", name: "Service Provider Capability"})
+p({class: "foam.nanos.crunch.Capability", id: "plannerCapability", name: "Planner Capability"})
+p({class: "foam.nanos.crunch.Capability", id: "countryCapability", name: "Country Capability"})
+p({class: "foam.nanos.crunch.Capability", id: "corridorCapability", name: "Corridor Capability"})
+p({class: "foam.nanos.crunch.Capability", id: "currencyCapability", name: "Currency Capability"})
+
 // spid capabilities
 p({"class":"foam.nanos.auth.ServiceProvider","id":"nanopay","description":"nanopay"})
 //p({"class":"foam.nanos.auth.ServiceProvider","id":"connected-city","description":"ConnectedCity"})
@@ -554,7 +561,6 @@ p({
   },
 })
 
-
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-16",
@@ -565,7 +571,6 @@ p({
   "enabled":true,
   "visible":true
 })
-
 
 p({
   "class":"foam.nanos.crunch.Capability",
@@ -578,7 +583,6 @@ p({
   "visible":true
 })
 
-
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-18",
@@ -588,4 +592,57 @@ p({
   "version":"0",
   "enabled":true,
   "visible":true
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "nanopayCountryCapability",
+  version: "0",
+  enabled: true,
+  visible: false,
+  permissionsGranted: [
+    "country.read.CA",
+    "country.read.US"
+  ]
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "nanopayCorridorCapability",
+  version: "0",
+  enabled: true,
+  visible: false,
+  permissionsGranted: [
+    "capability.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
+    "capability.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
+    "capability.read.554af38a-8125-87c8-dfdf-eeb15f7afexus-us",
+    "capability.read.554af38a-8125-87c8-dfdf-eeb15f7bmoca-ca",
+    "capability.read.554af38a-8125-87c8-dfdf-eeb15f7rbcca-ca",
+    "capability.read.554af38a-8125-87c8-dfdf-eeb15kotakca-in",
+    "capability.read.554af38a-8125-87c8-dfdf-eeb15kotakca-in"
+  ]
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "nanopayCurrencyCapability",
+  version: "0",
+  enabled: true,
+  visible: false,
+  permissionsGranted: [
+    "currency.read.CAD",
+    "currency.read.USD",
+    "currency.read.INR"
+  ]
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "nanopayPlannerCapability",
+  version: "0",
+  enabled: true,
+  visible: false,
+  permissionsGranted: [
+    "rule.read.*"
+  ]
 })
