@@ -79,10 +79,11 @@ foam.CLASS({
       section: 'businessInformation',
       validationPredicates: [
         {
-          args: ['cnpj'],
+          args: ['cnpj','cnpjName'],
           predicateFactory: function(e) {
             return e.AND(
-              e.EQ(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.BrazilBusinessInfoData.CNPJ }), 14)
+              e.EQ(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.BrazilBusinessInfoData.CNPJ }), 14),
+              e.GT(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.BrazilBusinessInfoData.CNPJ_NAME }), 0)
             );
           },
           errorString: 'Please enter 14-digit National Registry of Legal Entities Number'
@@ -156,6 +157,9 @@ foam.CLASS({
             .end();
           }
         });
+      },
+      visibility: function(cnpjName) {
+        return cnpjName.length > 0 ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       validationPredicates: [
         {
