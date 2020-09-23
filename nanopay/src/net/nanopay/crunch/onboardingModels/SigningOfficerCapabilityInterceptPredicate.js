@@ -31,8 +31,8 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.crunch.AgentCapabilityJunction',
     'foam.nanos.crunch.UserCapabilityJunction',
+    'net.nanopay.crunch.onboardingModels.SigningOfficerQuestion',
     'net.nanopay.model.Business',
-    'net.nanopay.model.BusinessUserJunction',
     'static foam.mlang.MLang.*'
   ],
 
@@ -49,15 +49,22 @@ foam.CLASS({
 
         if ( agent == null || user == null || ! ( agent instanceof User ) || ! ( user instanceof Business ) ) return false;
 
-        BusinessUserJunction soJunction = (BusinessUserJunction) signingOfficerJunctionDAO.find(
+        // intercept if signing officer question capability is granted
+        AgentCapabilityJunction signingOfficerQuestionJunction = (AgentCapabilityJunction) userCapabilityJunctionDAO.find(
           AND(
-            EQ(BusinessUserJunction.SOURCE_ID, user.getId()),
-            EQ(BusinessUserJunction.TARGET_ID, agent.getId())
+            INSTANCE_OF(AgentCapabilityJunction.class),
+            EQ(UserCapabilityJunction.SOURCE_ID, agent.getId()),
+            EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-0"),
+            EQ(AgentCapabilityJunction.EFFECTIVE_USER, user.getId()),
+            EQ(UserCapabilityJunction.STATUS, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED)
           )
         );
 
+        SigningOfficerQuestion soq = signingOfficerQuestionJunction != null ? (SigningOfficerQuestion) signingOfficerQuestionJunction.getData() : null;
+        Boolean affirmativeSOQAnswer = soq != null ? soq.getIsSigningOfficer() : false;
+
         // do not intercept if the ucj is pending review
-        AgentCapabilityJunction acj = (AgentCapabilityJunction) userCapabilityJunctionDAO.find(
+        AgentCapabilityJunction signingOfficerPrivilegesJunction = (AgentCapabilityJunction) userCapabilityJunctionDAO.find(
           AND(
             INSTANCE_OF(AgentCapabilityJunction.class),
             EQ(UserCapabilityJunction.SOURCE_ID, agent.getId()),
@@ -72,8 +79,7 @@ foam.CLASS({
             )
           )
         );
-    
-        return soJunction != null && acj == null;
+        return signingOfficerQuestionJunction != null && affirmativeSOQAnswer && signingOfficerPrivilegesJunction == null;
       `
     }
   ]

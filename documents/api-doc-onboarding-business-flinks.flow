@@ -139,7 +139,7 @@ https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31
 <h4><a name="flinks-login-id-onboarding">FlinksLoginIdOnboarding</a></h4>
 <p>
   Here is the full structure of the FlinksLoginIdOnboarding object:
-  <foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.flinks.external.FlinksLoginIdOnboarding"  whitelist="['type', 'missingUserCapabilityDataObjects', 'missingBusinessCapabilityDataObjects', 'loginId', 'institution', 'flinksOverrides', 'user', 'business', 'account', 'created', 'createdBy']" />
+  <foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.flinks.external.FlinksLoginIdOnboarding"  whitelist="['type', 'missingUserCapabilityDataObjects', 'missingBusinessCapabilityDataObjects', 'loginId', 'institution', 'skipLoginIdResolution', 'flinksOverrides', 'user', 'business', 'account', 'created', 'createdBy']" />
 </p>
 <h4><a name="onboarding-type">OnboardingType</a></h4>
 <table>

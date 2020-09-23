@@ -354,7 +354,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'canApproveInvoice',
       expression: async function(invoice$status) {
-        let canPay = await this.auth.check(null, 'invoice.pay');
+        let canPay = await this.auth.check(null, 'business.invoice.pay') && await this.auth.check(null, 'user.invoice.pay');
         return canPay && invoice$status === this.InvoiceStatus.PENDING_APPROVAL;
       }
     },
@@ -821,7 +821,7 @@ foam.CLASS({
       isEnabled: function(isPendingApproval, canApproveInvoice) {
         return canApproveInvoice && isPendingApproval;
       },
-      availablePermissions: ['invoice.pay'],
+      availablePermissions: ['business.invoice.pay', 'user.invoice.pay'],
       code: function(X) {
         X.menuDAO.find('sme.quickAction.send').then((menu) => {
           var clone = menu.clone();

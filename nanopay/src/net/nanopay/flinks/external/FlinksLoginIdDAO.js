@@ -164,13 +164,7 @@ foam.CLASS({
             X subjectX = getX().put("subject", newSubject);
 
             DAO capabilityPayloadDAO = (DAO) subjectX.get("capabilityPayloadDAO");
-            CapabilityPayload missingPayloads = (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).find(capabilityId);
-
-            if ( flinksLoginIdOnboarding.getType () != OnboardingType.PERSONAL && business != null ){
-              flinksLoginIdOnboarding.setMissingBusinessCapabilityDataObjects(missingPayloads.getCapabilityDataObjects());
-            } else {
-              flinksLoginIdOnboarding.setMissingUserCapabilityDataObjects(missingPayloads.getCapabilityDataObjects());
-            }
+            addCapabilityPayload(x, flinksLoginIdOnboarding, (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).find(capabilityId));
           }
         } else if ( user == null ) {
           throw new RuntimeException("User is required to add a bank account");
@@ -369,8 +363,10 @@ foam.CLASS({
 
         String fullName = holder.getName();
         String nameSplit[] = fullName.split(" ", 2);
-        String firstName = overrides != null && !SafetyUtil.isEmpty(overrides.getFirstName()) ? overrides.getFirstName() : nameSplit[0];
-        String lastName = overrides != null && !SafetyUtil.isEmpty(overrides.getLastName()) ? overrides.getLastName() : nameSplit[1];
+        String first = nameSplit.length > 0 ? nameSplit[0] : fullName;
+        String last  = nameSplit.length > 1 ? nameSplit[1] : null;
+        String firstName = overrides != null && !SafetyUtil.isEmpty(overrides.getFirstName()) ? overrides.getFirstName() : first;
+        String lastName = overrides != null && !SafetyUtil.isEmpty(overrides.getLastName()) ? overrides.getLastName() : last;
         String phoneNumber = overrides != null && !SafetyUtil.isEmpty(overrides.getPhoneNumber()) ? overrides.getPhoneNumber() : holder.getPhoneNumber().replaceAll("[^0-9]", "");
 
         // API CAD Personal Payments Under 1000CAD Capability ID
@@ -405,10 +401,7 @@ foam.CLASS({
         userCapPayload = (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).put(userCapPayload);
 
         // Query the capabilityPayloadDAO to see what capabilities are still required
-        missingPayloads = (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).find(capabilityId);
-
-        // set the remain capabilities to be satisfied
-        request.setMissingUserCapabilityDataObjects(missingPayloads.getCapabilityDataObjects());
+        addCapabilityPayload(x, request, (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).find(capabilityId));
       `
     },
     {
@@ -524,10 +517,30 @@ foam.CLASS({
         businessCapPayload = (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).put(businessCapPayload);
 
         // Query the capabilityPayloadDAO to see what capabilities are still required
-        missingPayloads = (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).find(capabilityId);
+        addCapabilityPayload(x, request, (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).find(capabilityId));
+      `
+    },
+    {
+      name: 'addCapabilityPayload',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'request', type: 'FlinksLoginIdOnboarding' },
+        { name: 'capabilityPayload', type: 'CapabilityPayload' }
+      ],
+      javaCode: `
+        // Skip adding if the capability payload is empty
+        if ( capabilityPayload == null ) {
+          return;
+        }
 
-        // set the remain capabilities to be satisfied
-        request.setMissingBusinessCapabilityDataObjects(missingPayloads.getCapabilityDataObjects());
+        // Copy the array and add the new entry
+        int size = request.getCapabilityPayloads() == null ? 0 : request.getCapabilityPayloads().length;
+        CapabilityPayload[] capabilityPayloadArray = new CapabilityPayload[size + 1];
+        if ( size > 0 ) {
+          System.arraycopy(request.getCapabilityPayloads(), 0, capabilityPayloadArray, 0, size);
+        }
+        capabilityPayloadArray[capabilityPayloadArray.length - 1] = capabilityPayload;
+        request.setCapabilityPayloads(capabilityPayloadArray);
       `
     },
     {

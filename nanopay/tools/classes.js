@@ -783,6 +783,8 @@ var classes = [
   'net.nanopay.iso20022.ISODateTest',
   'net.nanopay.iso20022.ISODateTimeTest',
   'net.nanopay.iso20022.ISOTimeTest',
+  'net.nanopay.tx.ISO20022Transaction',
+  'net.nanopay.tx.PacsTransaction',
 
   // meter
   'net.nanopay.meter.AdminAccessConfig',
@@ -1199,6 +1201,7 @@ var classes = [
   'net.nanopay.partner.treviso.tx.TrevisoTransaction',
   'net.nanopay.partner.treviso.tx.planner.TrevisoTransactionPlanner',
   'net.nanopay.partner.treviso.tx.TrevisoCreateExchange',
+  'net.nanopay.partner.treviso.tx.TrevisoLineItemsFromFXSummary',
   'net.nanopay.tx.EtaSummaryTransactionLineItem',
   'net.nanopay.country.br.NatureCodePaymentProviderJunction',
   'net.nanopay.tx.ExpirySummaryTransactionLineItem',
@@ -1210,22 +1213,30 @@ var classes = [
   'net.nanopay.crunch.onboardingModels.InitialBusinessData',
   'net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData',
   'net.nanopay.crunch.onboardingModels.SigningOfficerQuestion',
-  'net.nanopay.crunch.onboardingModels.BusinessHasNoSigningOfficers',
+  'net.nanopay.crunch.onboardingModels.SigningOfficerQuestionAnswered',
   'net.nanopay.crunch.onboardingModels.SigningOfficerQuestionOnPut',
+  'net.nanopay.crunch.onboardingModels.SigningOfficerPersonalDataOnPut',
   'net.nanopay.crunch.onboardingModels.BusinessInformationData',
   'net.nanopay.crunch.onboardingModels.BusinessOwnershipData',
   'net.nanopay.crunch.onboardingModels.TransactionDetailsData',
   'net.nanopay.crunch.onboardingModels.BusinessDirectorsData',
   'net.nanopay.crunch.onboardingModels.CertifyDataReviewed',
-  'net.nanopay.crunch.onboardingModels.InternationalBusinessInformationData',
   'net.nanopay.crunch.BusinessOwnershipToBeneficialOwnerDAO',
   'net.nanopay.crunch.onboardingModels.SigningOfficerCapabilityInterceptPredicate',
+  'net.nanopay.crunch.onboardingModels.SigningOfficerPrivilegesRequested',
   'net.nanopay.crunch.onboardingModels.UserIsSigningOfficerOfBusiness',
   'net.nanopay.crunch.onboardingModels.UserBirthDateData',
+  'net.nanopay.crunch.onboardingModels.BusinessRegistrationDateData',
+  'net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData',
+  'net.nanopay.crunch.onboardingModels.TaxIdNumberData',
+
 
   // crunch notification
   'net.nanopay.crunch.UCJExpiryReminderCron',
   'net.nanopay.crunch.compliance.SendExpiryNotification',
+
+  'net.nanopay.crunch.test.TestCapable',
+  'net.nanopay.crunch.test.TestCapableDAO',
 
   // crunch compliance
   'net.nanopay.crunch.compliance.SetComplianceOnUser',
@@ -1276,6 +1287,7 @@ var classes = [
   'net.nanopay.crunch.registration.BusinessDirectorList',
   'net.nanopay.crunch.registration.BusinessOwnerList',
   'net.nanopay.crunch.registration.BusinessTypeData',
+  'net.nanopay.crunch.registration.IsSelectedData',
   'net.nanopay.crunch.registration.PersonalOnboardingTypeData',
   'net.nanopay.crunch.registration.SigningOfficerList',
   'net.nanopay.crunch.registration.UserRegistrationData',
@@ -1283,7 +1295,6 @@ var classes = [
   'net.nanopay.crunch.registration.UserDetailExpandedData',
 
   // crunch documents
-  'net.nanopay.crunch.document.Documents',
   'net.nanopay.crunch.document.Document',
 
   // crunch wizardlet

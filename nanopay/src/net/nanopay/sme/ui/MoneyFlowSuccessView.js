@@ -197,9 +197,10 @@ foam.CLASS({
         .then((currency) => {
         this.formattedAmount_ = currency.format(this.invoice.amount);
       });
-      this.auth.check(null, 'invoice.pay').then((result) => {
-        this.isApprover_ = result;
-      });
+      Promise.all([this.auth.check(null, 'business.invoice.pay'), this.auth.check(null, 'user.invoice.pay')])
+        .then((results) => {
+          this.isApprover_ = results[0] && results[1];
+        });
     },
     function init() {
       this.transactionDAO.find(this.invoice.paymentId).then((transaction) => {

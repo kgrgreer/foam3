@@ -102,14 +102,6 @@ foam.CLASS({
     ) {
       throw new RuntimeException("Sender needs to pass business compliance.");
     }
-
-    // Check destination account owner compliance
-    User destinationOwner = findDestinationAccount(x).findOwner(x);
-    if ( destinationOwner.getCompliance().equals(ComplianceStatus.FAILED) ) {
-      // We throw when the destination account owner failed compliance, however
-      // we are obligated to not expose this fact to the user.
-      throw new RuntimeException("Receiver needs to pass compliance.");
-    }
     `
   }
   ]

@@ -43,6 +43,7 @@ foam.CLASS({
               e.LT(net.nanopay.crunch.registration.UserDetailExpandedData.BIRTHDAY, limit)
             );
           },
+          errorString: 'Must be at least 18 years old.',
           errorMessage: 'UNDER_AGE_LIMIT_ERROR'
         }
       ]
@@ -54,6 +55,7 @@ foam.CLASS({
           predicateFactory: function(e) {
             return e.NEQ(net.nanopay.crunch.registration.UserDetailExpandedData.JOB_TITLE, null);
           },
+          errorString: 'Job title required.',
           errorMessage: 'JOB_TITLE_REQUIRED'
         }
       ]

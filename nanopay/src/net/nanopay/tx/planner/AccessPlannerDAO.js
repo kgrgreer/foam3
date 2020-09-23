@@ -138,17 +138,18 @@ foam.CLASS({
       // --- Transaction Validation ---
       txn.validate(x);
 
+      // TODO: uncomment once invoice capability work is completed
       // --- Planner Validation ---
-      AbstractTransactionPlanner atp = (AbstractTransactionPlanner) txn.findPlanner(x);
-      if (atp == null || ! atp.validatePlan(x, txn)) {
-        Logger logger = (Logger) x.get("logger");
-        logger.warning(txn.getId() + " failed planner validation");
-        throw new RuntimeException(" Planner Validation failed"); // return txn to user on failure
-      }
+      // AbstractTransactionPlanner atp = (AbstractTransactionPlanner) txn.findPlanner(x);
+      // if (atp == null || ! atp.validatePlan(x, txn)) {
+      //   Logger logger = (Logger) x.get("logger");
+      //   logger.warning(txn.getId() + " failed planner validation");
+      //   throw new RuntimeException(" Planner Validation failed"); // return txn to user on failure
+      // }
 
-      // --- Line Item Validation ---
-      for ( TransactionLineItem li : txn.getLineItems() )
-        li.validate();
+      // // --- Line Item Validation ---
+      // for ( TransactionLineItem li : txn.getLineItems() )
+      //   li.validate();
 
       if ( txn.getNext() != null || txn.getNext().length == 0 ) {
         Transaction [] txs = txn.getNext();

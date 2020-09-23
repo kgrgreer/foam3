@@ -98,22 +98,22 @@ foam.CLASS({
           errorString: 'Please provide a valid CPF number'
         }
       ],
-      externalTransient: true
+      externalTransient: true,
+      postSet: function(_,n) {
+        this.cpfName = "";
+        if ( n.length == 11 ) {
+          this.getCpfName(n).then((v) => {
+            this.cpfName = v;
+          });
+        }
+      },
     },
     {
       class: 'String',
-      name: 'name',
+      name: 'cpfName',
       label: '',
       hidden: true,
-      externalTransient: true,
-      expression: function(cpf) {
-        if ( cpf.length == 11 ) {
-          this.name = "";
-          return this.getCpfName(cpf).then((n) => {
-            this.name = n;
-          });
-        } else { return ""; }
-      }
+      externalTransient: true
     },
     {
       class: 'Boolean',
@@ -129,7 +129,7 @@ foam.CLASS({
         return foam.u2.CheckBox.create({
           labelFormatter: function() {
             this.start('span')
-              .add(self.dot('name'))
+              .add(self.dot('cpfName'))
             .end();
           }
         });
@@ -211,8 +211,7 @@ foam.CLASS({
   methods: [
     {
       name: 'getCpfName',
-      code:  async function(cpf) {
-      debugger
+      code: async function(cpf) {
         return await this.brazilVerificationService.getCPFName(this.__subContext__, cpf);
       }
     },

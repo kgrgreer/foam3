@@ -60,6 +60,7 @@ p({
           child-src 'self' https://cdn.plaid.com/link/ nanopay.net nanopay.net data: chrome-extension-resource:;
           connect-src 'self' http://localhost:*/service/;
           font-src 'self' https://fonts.gstatic.com data: chrome-extension-resource:;
+          frame-src 'self' data: blob: filesystem:;
           img-src 'self' data: blob: filesystem:;
           manifest-src 'self';
           media-src * data: blob: filesystem:;
