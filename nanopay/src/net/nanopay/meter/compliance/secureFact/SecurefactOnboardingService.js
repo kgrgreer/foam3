@@ -35,6 +35,7 @@
      'net.nanopay.crunch.registration.BusinessDirectorList',
      'net.nanopay.crunch.registration.BusinessOwnerList',
      'net.nanopay.crunch.registration.BusinessTypeData',
+     'net.nanopay.crunch.registration.IsSelectedData',
      'net.nanopay.crunch.registration.SigningOfficerList',
      'net.nanopay.meter.compliance.secureFact.SecurefactService',
      'net.nanopay.meter.compliance.secureFact.lev.LEVResponse',
@@ -119,12 +120,14 @@
           
           // Only need to collect more information when the business is a corporation
           if ( businessTypeId != 3 ) {
-            partiesCapabilityDataObjects.put("Extra Business Type Data Not Required", null);
+            partiesCapabilityDataObjects.put("Extra Business Type Data Required", new IsSelectedData.Builder(x).setSelected(false).build());
+            partiesCapabilityDataObjects.put("Extra Business Type Data Not Required", new IsSelectedData.Builder(x).setSelected(true).build());
             return;
           }
 
           // For corporations, director and owner information must be collected
-          partiesCapabilityDataObjects.put("Extra Business Type Data Required", null);
+          partiesCapabilityDataObjects.put("Extra Business Type Data Not Required", new IsSelectedData.Builder(x).setSelected(false).build());
+          partiesCapabilityDataObjects.put("Extra Business Type Data Required", new IsSelectedData.Builder(x).setSelected(true).build());
 
           // Create a document order
           LEVDocumentOrderResponse orderResponse = securefactService.levDocumentOrder(x, chosenResult.getResultId());

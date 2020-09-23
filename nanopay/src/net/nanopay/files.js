@@ -1580,6 +1580,7 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/registration/BusinessDirectorList' },
   { name: 'net/nanopay/crunch/registration/BusinessOwnerList' },
   { name: 'net/nanopay/crunch/registration/BusinessTypeData' },
+  { name: 'net/nanopay/crunch/registration/IsSelectedData' },
   { name: 'net/nanopay/crunch/registration/PersonalOnboardingTypeData' },
   { name: 'net/nanopay/crunch/registration/SigningOfficerList' },
   { name: 'net/nanopay/crunch/registration/UserRegistrationData' },

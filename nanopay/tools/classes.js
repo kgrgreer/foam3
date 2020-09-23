@@ -1287,6 +1287,7 @@ var classes = [
   'net.nanopay.crunch.registration.BusinessDirectorList',
   'net.nanopay.crunch.registration.BusinessOwnerList',
   'net.nanopay.crunch.registration.BusinessTypeData',
+  'net.nanopay.crunch.registration.IsSelectedData',
   'net.nanopay.crunch.registration.PersonalOnboardingTypeData',
   'net.nanopay.crunch.registration.SigningOfficerList',
   'net.nanopay.crunch.registration.UserRegistrationData',
