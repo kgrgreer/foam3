@@ -64,7 +64,7 @@ foam.CLASS({
             ));
 
             // UCJ must exist and be granted
-            if ((ucj != null) && (ucj.getStatus() == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED)) {
+            if ((ucj == null) || (ucj.getStatus() != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED)) {
               throw new IllegalStateException("Extra Business Type Data required for business type: " + getBusinessTypeId());
             }
         }
