@@ -56,7 +56,7 @@ p({
     ]
   },
   "asyncAction":{
-    "class": "net.nanopay.crunch.compliance.PersonSanctionValidator",
+    "class":"net.nanopay.crunch.compliance.PersonSanctionValidator",
     "classification":"Validate Signing Officer UserCapabilityJunction Using Dow Jones"
   },
   "enabled":true,
@@ -80,7 +80,10 @@ p({
     "category":"onboarding",
     "isRecurring":false
   },
-  "asyncAction":{"class":"net.nanopay.crunch.compliance.SecurefactLEVValidator"},
+  "asyncAction":{
+    "class":"net.nanopay.crunch.compliance.SecurefactLEVValidator",
+    "classification":"Validate Business Onboarding UserCapabilityJunction Using SecureFact"
+  },
   "enabled":true,
   "saveHistory":true,
   "lifecycleState":1
@@ -101,7 +104,8 @@ p({
     "category":"onboarding"
   },
   "asyncAction":{
-    "class": "net.nanopay.crunch.compliance.EntitySanctionValidator"
+    "class":"net.nanopay.crunch.compliance.EntitySanctionValidator",
+    "classification":"Validate Business Onboarding UserCapabilityJunction Using Dow Jones"
   },
   "enabled":true,
   "saveHistory":true,
@@ -195,6 +199,75 @@ p({
   "asyncAction":{
     "class":"net.nanopay.crunch.compliance.SecurefactSIDniValidator",
     "classification":"Validate Expanded User Detail UserCapabilityJunction Using SecureFact"
+  },
+  "enabled":true,
+  "saveHistory":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"crunch-onboard-compliance-businessDetailData-dowJones",
+  "name":"Crunch Onboarding - Dow Jones Business Detail Data KYC",
+  "priority":100,
+  "ruleGroup":"businessDetailDataOnboarding",
+  "documentation":"Check business detail data capability via Dow Jones API",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class": "foam.nanos.ruler.predicate.PropertyNEQValue",
+        "propName": "data",
+        "propValue": null
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsClass",
+        "propName":"data",
+        "of":"net.nanopay.crunch.registration.BusinessDetailData"
+      }
+    ]
+  },
+  "asyncAction":{
+    "class":"net.nanopay.crunch.compliance.EntitySanctionValidator",
+    "classification":"Validate Busiiness Detail Data UserCapabilityJunction Using Dow Jones"
+  },
+  "enabled":true,
+  "saveHistory":true,
+  "validity":1,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"crunch-onboard-compliance-businessDetailData-secureFact",
+  "name":"Crunch Onboarding - SecureFact LEV Business Detail Data",
+  "priority":110,
+  "ruleGroup":"businessDetailDataOnboarding",
+  "documentation":"Check business detail data capability via SecureFact LEV",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class": "foam.nanos.ruler.predicate.PropertyNEQValue",
+        "propName": "data",
+        "propValue": null
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsClass",
+        "propName":"data",
+        "of":"net.nanopay.crunch.registration.BusinessDetailData"
+      }
+    ]
+  },
+  "asyncAction":{
+    "class":"net.nanopay.crunch.compliance.SecurefactLEVValidator",
+    "classification":"Validate Business Detail Data UserCapabilityJunction Using SecureFact"
   },
   "enabled":true,
   "saveHistory":true,
