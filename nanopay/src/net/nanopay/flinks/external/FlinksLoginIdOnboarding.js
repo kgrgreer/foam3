@@ -47,8 +47,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.flinks.external.FlinksOverrides',
       name: 'flinksOverrides',
-      documentation: 'Data that will override the data retrieved from Flinks.',
-      
+      documentation: 'Data that will override the data retrieved from Flinks.'
     }
   ]
 });

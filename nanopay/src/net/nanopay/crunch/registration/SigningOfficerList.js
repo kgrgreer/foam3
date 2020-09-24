@@ -58,9 +58,9 @@ foam.CLASS({
           throw new IllegalStateException("Business does not exist: " + getBusiness());
         }
 
-        // There is no minimum for signing officers
+        // There must be at least one director
         if ( getSigningOfficers().length == 0 ) {
-          return;
+          throw new IllegalStateException("Signing officers empty");
         }
 
         // Validate the owners individually
