@@ -83,6 +83,18 @@ public class BrazilVerificationService
   }
 
   @Override
+  public String getCPFNameWithBirthDate(X x, String cpf, Date birthDate) throws RuntimeException {
+    try {
+      CPFResponseData data = getCPFResponseData(cpf, birthDate);
+      if ( data != null ) return data.getNome();
+    } catch(Throwable t) {
+      logger_.error("Error getting CPF Data" , t);
+      throw new RuntimeException("Unable to validate CPF");
+    }
+    return "";
+  }
+
+  @Override
   public boolean validateUserCpf(X x, String cpf) throws RuntimeException {
     try {
       User agent = ((Subject) x.get("subject")).getRealUser();
