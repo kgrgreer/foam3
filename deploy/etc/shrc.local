@@ -29,7 +29,7 @@ fi
 
 # memory - heap
 if [ -z "`echo "${JAVA_OPTS}" | grep "Xms"`" ]; then
-  JAVA_OPTS="${JAVA_OPTS} -Xms2048m"
+  JAVA_OPTS="${JAVA_OPTS} -Xms4096m"
 fi
 
 if [ -z "`echo "${JAVA_OPTS}" | grep "Xmx"`" ]; then
@@ -97,6 +97,9 @@ fi
 
 # G1GC options - default in Java 9, 10, 11
 JAVA_OPTS="${JAVA_OPTS} -XX:+UseStringDeduplication"
+
+# Increase String table used for String.intern - used as locks in ConsensusDAO
+#JAVA_OPTS="${JAVA_OPTS} -XX:StringTableSize=100000"
 
 # Garbage Collection logging
 # See https://github.com/eclipse/openj9/issues/8195 - not sure how to set it up. The explicit Print args are not support in java 11. Not sure how to properly fix/replace the gc* options.
