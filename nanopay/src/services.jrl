@@ -946,29 +946,6 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"flinksAuth",
-  "serve":true,
-  "boxClass":"net.nanopay.flinks.FlinksAuthSkeleton", 
-  "serviceClass":"net.nanopay.flinks.FlinksAuthService",
-  "client":"{\"class\":\"net.nanopay.flinks.ClientFlinksAuthService\",\"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/flinksAuth\"}}"
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"flinksCredentials",
-  "lazy":false,
-  "service":{"class":"net.nanopay.flinks.model.FlinksCredentials"}
-})
-
-p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "flinksResponseService",
-  "serve": true,
-  "serviceClass": "net.nanopay.flinks.FlinksResponseServer"
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
   "name":"appConfig",
   "description":"",
   "lazy":false,
@@ -1892,27 +1869,6 @@ p({
 })
 
 p({"class":"foam.nanos.boot.NSpec", "name":"settlementReports",                "authenticate":false, "description":"This generates a PDF file that is downloaded as a zip file. The report contains a dated range for invoices and specific fields from the invoices.", "serviceScript":"return new net.nanopay.invoice.InvoiceFilteredSettlementReport.Builder(x).setDelegate(new foam.nanos.blob.HttpBlobService(x, x.get(\"blobStore\"))).build();"})
-p({"class":"foam.nanos.boot.NSpec","name":"securefactSIDniDAO",                "serve":true,"serviceScript":"ruler = new foam.nanos.ruler.RulerDAO(x, new net.nanopay.security.HashingJDAO(x, \"SHA-256\", false, true, net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse.getOwnClassInfo(), \"securefactSIDni\"), \"securefactSIDniDAO\"); dao = new foam.dao.EasyDAO.Builder(x).setPm(true).setPipelinePm(true).setSeqNo(true).setInnerDAO(ruler).setName(\"securefactSIDni\").setOf(net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse.getOwnClassInfo()).build(); return dao;","client":"{\"of\":\"net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse\"}"})
-p({"class":"foam.nanos.boot.NSpec","name":"securefactLEVDAO",                  "serve":true,"serviceScript":"ruler = new foam.nanos.ruler.RulerDAO(x, new net.nanopay.security.HashingJDAO(x, \"SHA-256\", false, true, net.nanopay.meter.compliance.secureFact.lev.LEVResponse.getOwnClassInfo(), \"securefactLEV\"), \"securefactLEVDAO\"); dao = new foam.dao.EasyDAO.Builder(x).setPm(true).setPipelinePm(true).setSeqNo(true).setInnerDAO(ruler).setName(\"securefactLEV\").setOf(net.nanopay.meter.compliance.secureFact.lev.LEVResponse.getOwnClassInfo()).build(); return dao;","client":"{\"of\":\"net.nanopay.meter.compliance.secureFact.lev.LEVResponse\"}"})
-
-p({
-  "class":"foam.nanos.boot.NSpec", 
-  "name":"securefactService",
-  "lazy":false,
-  "serve":true,
-  "service":{
-    "class":"net.nanopay.meter.compliance.secureFact.SecurefactService"
-  }
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"securefactOnboardingService",
-  "lazy":false,
-  "service":{
-    "class":"net.nanopay.meter.compliance.secureFact.SecurefactOnboardingService"
-  }
-})
 
 p({
   "class": "foam.nanos.boot.NSpec",
