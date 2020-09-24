@@ -239,15 +239,12 @@ p({
     import foam.nanos.analytics.DAOFoldManager;
     import foam.nanos.analytics.FoldManagerDAODecorator;
     import foam.nanos.ruler.RulerDAO;
-    import net.nanopay.tx.stripe.StripeTransactionDAO;
     import net.nanopay.tx.UpdateInvoiceTransactionDAO;
     import net.nanopay.tx.planner.TransactionQuotingDAO;
     import net.nanopay.tx.CompletedTransactionDAO;
-    import net.nanopay.tx.realex.RealexTransactionDAO;
     import net.nanopay.tx.TransactionDAO;
     import net.nanopay.security.HashingJDAO;
     import net.nanopay.security.RandomNonceDAO;
-    import net.nanopay.fx.ascendantfx.AscendantFXTransactionDAO;
 
     MDAO transactionMDao = new MDAO(Transaction.getOwnClassInfo());
     transactionMDao.addIndex(new foam.core.PropertyInfo[] {Transaction.CREATED});
@@ -282,7 +279,7 @@ p({
       .setDelegate(new foam.nanos.auth.CreatedByAwareDAO.Builder(x)
         .setDelegate(new foam.nanos.auth.LastModifiedAwareDAO.Builder(x)
           .setDelegate(new foam.nanos.auth.LastModifiedByAwareDAO.Builder(x)
-            .setDelegate(new foam.dao.GUIDDAO(dao))
+            .setDelegate(dao)
             .build())
           .build())
         .build())

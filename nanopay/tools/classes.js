@@ -1352,7 +1352,6 @@ var classes = [
   'net.nanopay.tx.TransactionNotificationDAO',
   'net.nanopay.tx.UpdateInvoiceTransactionDAO',
   'net.nanopay.tx.realex.RealexTransactionDAO',
-  'net.nanopay.tx.realex.RealexTransactionPlanDAO',
   'net.nanopay.tx.stripe.StripeTransactionDAO',
   'net.nanopay.tx.ChainSummary',
   'net.nanopay.tx.TransactionCreateOnInvoiceSubmission',
