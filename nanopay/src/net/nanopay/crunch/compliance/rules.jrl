@@ -23,7 +23,10 @@ p({
       }
     ]
   },
-  "asyncAction":{"class":"net.nanopay.crunch.compliance.SecurefactSIDniValidator"},
+  "asyncAction":{
+    "class":"net.nanopay.crunch.compliance.SecurefactSIDniValidator",
+    "classification":"Validate Signing Officer UserCapabilityJunction Using SecureFact"
+  },
   "enabled":true,
   "saveHistory":true,
   "lifecycleState":1
@@ -53,7 +56,8 @@ p({
     ]
   },
   "asyncAction":{
-    "class": "net.nanopay.crunch.compliance.PersonSanctionValidator"
+    "class": "net.nanopay.crunch.compliance.PersonSanctionValidator",
+    "classification":"Validate Signing Officer UserCapabilityJunction Using Dow Jones"
   },
   "enabled":true,
   "saveHistory":true,
@@ -154,7 +158,8 @@ p({
     ]
   },
   "asyncAction":{
-    "class":"net.nanopay.crunch.compliance.PersonSanctionValidator"
+    "class":"net.nanopay.crunch.compliance.PersonSanctionValidator",
+    "classification":"Validate Expanded User Detail UserCapabilityJunction Using Dow Jones"
   },
   "enabled":true,
   "saveHistory":true,
@@ -188,7 +193,8 @@ p({
     ]
   },
   "asyncAction":{
-    "class":"net.nanopay.crunch.compliance.SecurefactSIDniValidator"
+    "class":"net.nanopay.crunch.compliance.SecurefactSIDniValidator",
+    "classification":"Validate Expanded User Detail UserCapabilityJunction Using SecureFact"
   },
   "enabled":true,
   "saveHistory":true,
