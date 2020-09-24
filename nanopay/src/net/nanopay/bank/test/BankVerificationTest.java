@@ -150,6 +150,7 @@ public class BankVerificationTest
       user.setLastName("Filth");
       user.setEmailVerified(true);
       user.setGroup("business");
+      user.setSpid("nanopay");
       user = (User) userDAO.put(user);
       user = (User) user.fclone();
     }
@@ -198,6 +199,7 @@ public class BankVerificationTest
       user.setLastName("Filth_US");
       user.setEmailVerified(true);
       user.setGroup("business");
+      user.setSpid("nanopay");
       user = (User) userDAO.put(user);
       user = (User) user.fclone();
     }

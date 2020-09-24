@@ -364,6 +364,7 @@ foam.CLASS({
       documentation: 'True if the user wants to invite the contact to join Ablii.',
       section: 'stepTwo',
       label: '',
+      readPermissionRequired: true,
       createVisibility: function(createBankAccount$country, isEdit) {
         return (createBankAccount$country != 'IN' && ! isEdit) ?
           foam.u2.DisplayMode.RW :

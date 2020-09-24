@@ -37,6 +37,8 @@ import net.nanopay.crunch.registration.UserRegistrationData;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.invoice.model.PaymentStatus;
+import net.nanopay.meter.compliance.dowJones.DowJonesMockService;
+import net.nanopay.meter.compliance.dowJones.DowJonesService;
 import net.nanopay.model.BeneficialOwner;
 import net.nanopay.model.Business;
 import net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo;
@@ -60,12 +62,18 @@ smeUserRegistrationDAO = (DAO) x.get("smeUserRegistrationDAO");
 ///////////////////////////////// SETUP ////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////
 
+// Mock dowJonesRestService
+// TODO setup mock in deployment/test/services.jrl instead
+var dowJonesService = (DowJonesService) x.get("dowJonesService");
+dowJonesService.setDowJonesRestService(new DowJonesMockService());
+
 bareUserDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "externalBusiness@example.com")).removeAll();
 externalBusiness = new Business();
 externalBusiness.setBusinessName("ExternalBusiness");
 externalBusiness.setEmail("externalBusiness@example.com");
 externalBusiness.setEmailVerified(true); // Required to send or receive money.
 externalBusiness.setCompliance(ComplianceStatus.PASSED);
+externalBusiness.setSpid("nanopay");
 externalBusiness = localBusinessDAO.put(externalBusiness);
 
 // Setup Admin User
@@ -75,6 +83,7 @@ myAdmin.setEmail("email@admin123.com");
 myAdmin.setDesiredPassword("password");
 myAdmin.setGroup("sme");
 myAdmin.setOrganization("testBusiness");
+myAdmin.setSpid("nanopay");
 
 myAdmin = smeUserRegistrationDAO.put(myAdmin);
 myAdmin.setEmailVerified(true);
@@ -154,6 +163,7 @@ myApprover.setEmail("approver@example.com");
 myApprover.setGroup(myBusiness.getBusinessPermissionId() + ".employee");
 myApprover.setEmailVerified(true); // Required to send or receive money.
 myApprover.setCompliance(ComplianceStatus.PASSED);
+myApprover.setSpid("nanopay");
 myApprover = bareUserDAO.put(myApprover);
 myApproverContext = Auth.sudo(x, myApprover);
 
@@ -164,6 +174,7 @@ myEmployee.setEmail("employee@example.com");
 myEmployee.setGroup(myBusiness.getBusinessPermissionId() + ".employee");
 myEmployee.setEmailVerified(true); // Required to send or receive money.
 myEmployee.setCompliance(ComplianceStatus.PASSED);
+myEmployee.setSpid("nanopay");
 myEmployee = bareUserDAO.put(myEmployee);
 myEmployeeContext = Auth.sudo(x, myEmployee);
 

@@ -762,12 +762,12 @@ foam.CLASS({
       of: 'foam.core.FObject',
       createVisibility: 'HIDDEN',
       readVisibility: function(referenceData) {
-        return referenceData.length > 0 ?
+        return referenceData && referenceData.length > 0 ?
           foam.u2.DisplayMode.RO :
           foam.u2.DisplayMode.HIDDEN;
       },
       updateVisibility: function(referenceData) {
-        return referenceData.length > 0 ?
+        return referenceData && referenceData.length > 0 ?
           foam.u2.DisplayMode.RO :
           foam.u2.DisplayMode.HIDDEN;
       },
@@ -814,12 +814,12 @@ foam.CLASS({
       documentation: 'Status history of the transaction.',
       createVisibility: 'HIDDEN',
       readVisibility: function(statusHistory) {
-        return statusHistory.length > 0 ?
+        return statusHistory && statusHistory.length > 0 ?
           foam.u2.DisplayMode.RO :
           foam.u2.DisplayMode.HIDDEN;
       },
       updateVisibility: function(statusHistory) {
-        return statusHistory.length > 0 ?
+        return statusHistory && statusHistory.length > 0 ?
           foam.u2.DisplayMode.RO :
           foam.u2.DisplayMode.HIDDEN;
       },

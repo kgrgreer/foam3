@@ -56,6 +56,7 @@ public class TransactionDAOTest
     }
     sender_ = (User) sender_.fclone();
     sender_.setEmailVerified(true);
+    sender_.setSpid("nanopay");
     sender_ = (User) (((DAO) x_.get("localUserDAO")).put_(x_, sender_)).fclone();
 
     receiver_ = (User) ((DAO)x_.get("localUserDAO")).find(EQ(User.EMAIL,"testuser2@nanopay.net" ));
@@ -68,6 +69,7 @@ public class TransactionDAOTest
     receiver_.setGroup("business");
     receiver_.setFirstName("Francis");
     receiver_.setLastName("Filth");
+    receiver_.setSpid("nanopay");
     receiver_ = (User) (((DAO) x_.get("localUserDAO")).put_(x_, receiver_)).fclone();
 
     if ( senderDigitalAccount_ == null ) {

@@ -72,6 +72,8 @@ foam.CLASS({
       margin-top: 0;
       top: 0;
       right: 0;
+      border: 0;
+      display: inline-block;
     }
   `,
 
@@ -90,6 +92,7 @@ foam.CLASS({
     {
       name: 'closeModal',
       icon: 'images/ic-cancelwhite.svg',
+      label: '',
       code: function(X) {
         X.closeDialog();
       }

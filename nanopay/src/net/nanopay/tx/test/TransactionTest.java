@@ -329,7 +329,7 @@ public class TransactionTest
     txn = (Transaction) txnDAO.put(txn).fclone();
     txn.setStatus(COMPLETED);
     txnDAO.put(txn);
-    
+
 
     txn = new Transaction();
     txn.setInvoiceId(inv.getId());
@@ -423,6 +423,7 @@ public class TransactionTest
       user.setLastName("Filth");
       user.setEmailVerified(true);
       user.setGroup("business");
+      user.setSpid("nanopay");
       user = (User) userDAO.put(user);
       user = (User) user.fclone();
     }

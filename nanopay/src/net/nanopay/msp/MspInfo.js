@@ -54,6 +54,10 @@ foam.CLASS({
       required: true
     },
     {
+      class: 'StringArray',
+      name: 'capabilityPermissions'
+    },
+    {
       class: 'Reference',
       of: 'foam.nanos.theme.Theme',
       name: 'theme',
@@ -123,6 +127,22 @@ foam.CLASS({
       name: 'denomination',
       documentation: "Used as the denomination for the spid-admin's default digital account.",
       required: true
-    }
+    },
+    {
+      class: 'StringArray',
+      name: 'countryPermissions'
+    },
+    {
+      class: 'StringArray',
+      name: 'currencyPermissions'
+    },
+    {
+      class: 'StringArray',
+      name: 'corridorPermissions'
+    },
+    {
+      class: 'StringArray',
+      name: 'plannerPermissions'
+    },
   ]
 });
