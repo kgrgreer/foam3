@@ -494,7 +494,7 @@ foam.CLASS({
           throw new RuntimeException("Cannot find securefactOnboardingService");
         }
       
-        // Reset the capability data object
+        // Fill the capability data objects from SecureFact LEV
         securefactOnboardingService.retrieveLEVCapabilityPayloads(subjectX, business, businessCapabilityDataObjects);
 
         // Add current user as signing officer
