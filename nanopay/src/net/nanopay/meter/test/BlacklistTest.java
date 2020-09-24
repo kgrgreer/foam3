@@ -37,6 +37,8 @@ import net.nanopay.crunch.onboardingModels.TransactionDetailsData;
 import net.nanopay.crunch.onboardingModels.UserBirthDateData;
 import net.nanopay.crunch.registration.UserRegistrationData;
 import net.nanopay.invoice.model.Invoice;
+import net.nanopay.meter.compliance.dowJones.DowJonesMockService;
+import net.nanopay.meter.compliance.dowJones.DowJonesService;
 import net.nanopay.model.BeneficialOwner;
 import net.nanopay.model.Business;
 import net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo;
@@ -69,6 +71,11 @@ public class BlacklistTest extends Test {
     ///////////////////////////////// SETUP ////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////
 
+    // Mock dowJonesRestService
+    // TODO setup mock in deployment/test/services.jrl instead
+    var dowJonesService = (DowJonesService) x.get("dowJonesService");
+    dowJonesService.setDowJonesRestService(new DowJonesMockService());
+
     // Setting the external business to pay to
     localBusinessDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "evilcorp@example.com")).removeAll();
     Business externalBusiness = new Business();
@@ -76,7 +83,8 @@ public class BlacklistTest extends Test {
     externalBusiness.setBusinessName("EvilCorp");
     externalBusiness.setEmailVerified(true); // Required to send or receive money.
     externalBusiness.setCompliance(ComplianceStatus.PASSED);
-    externalBusiness = (Business) localBusinessDAO.put(externalBusiness);  
+    externalBusiness.setSpid("nanopay");
+    externalBusiness = (Business) localBusinessDAO.put(externalBusiness);
 
     // Setup Admin User
     User myAdmin = new User();
@@ -85,6 +93,7 @@ public class BlacklistTest extends Test {
     myAdmin.setDesiredPassword("password");
     myAdmin.setGroup("sme");
     myAdmin.setOrganization("testBusiness");
+    myAdmin.setSpid("nanopay");
 
     myAdmin = (User) smeUserRegistrationDAO.put(myAdmin);
     myAdmin.setEmailVerified(true);

@@ -109,11 +109,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             onboardingRequest.setBusinessAddress1(business.getAddress().getAddress());
             onboardingRequest.setBusinessCity(business.getAddress().getCity());
 
-            Country businessFormationCountry = (Country) ((DAO) this.x.get("countryDAO")).find(business.getCountryOfBusinessRegistration());
-            if ( businessFormationCountry != null ) {
-              onboardingRequest.setAccountPrimaryIdentificationIssuer( useHardCoded ? "Canada" : businessFormationCountry.getName());
-            }
-
+            if ( businessCountry != null )
+              onboardingRequest.setAccountPrimaryIdentificationIssuer( useHardCoded ? "Canada" : businessCountry.getName());
             onboardingRequest.setBusinessName(business.getBusinessName());
             onboardingRequest.setBusinessZip(business.getAddress().getPostalCode());
             onboardingRequest.setCompanyType(getAFEXCompanyType(business.getBusinessTypeId()));

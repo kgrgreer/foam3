@@ -143,6 +143,7 @@ public class ReportPredicateTest extends foam.nanos.test.Test {
       user.setLastName("Filth");
       user.setEmailVerified(true);
       user.setGroup("business");
+      user.setSpid("nanopay");
       user = (User) userDAO.put(user);
       user = (User) user.fclone();
     }

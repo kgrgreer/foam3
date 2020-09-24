@@ -51,10 +51,8 @@ foam.CLASS({
         }
       ],
       view: function(args, x) {
-        // TODO: To be replaced by Eric's work on capable transaction
         return foam.u2.view.ChoiceView.create({
-          dao: x.natureCodeDAO.where(
-            x.data.EQ(net.nanopay.country.br.NatureCode.PAYER_TYPE, 'xx')),
+          dao: x.natureCodeDAO,
           placeholder: 'Please select',
           objToChoice: function(natureCode) {
             return [natureCode.operationType, natureCode.name];

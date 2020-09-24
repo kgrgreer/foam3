@@ -56,6 +56,7 @@ public class NanopayLineItemFeeDAOTest
     }
     payee_ = (User) payee_.fclone();
     payee_.setEmailVerified(true);
+    payee_.setSpid("nanopay");
     payee_ = (User) (((DAO) x_.get("localUserDAO")).put_(x_, payee_)).fclone();
 
     payeeBankAccount_ = (CABankAccount) ((DAO) x_.get("localAccountDAO")).find(AND(EQ(CABankAccount.OWNER, payee_.getId()), INSTANCE_OF(CABankAccount.class)));
@@ -140,6 +141,7 @@ public class NanopayLineItemFeeDAOTest
     }
     feeUser_ = (User) feeUser_.fclone();
     feeUser_.setEmailVerified(true);
+    feeUser_.setSpid("nanopay");
     feeUser_ = (User) (((DAO) x_.get("localUserDAO")).put_(x_, feeUser_)).fclone();
 
     DAO lineItemTypeAccountDAO = (DAO) x_.get("lineItemTypeAccountDAO");
