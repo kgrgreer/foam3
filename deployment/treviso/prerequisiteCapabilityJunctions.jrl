@@ -1,3 +1,16 @@
+//menu capability for treviso
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "treviso",
+  targetId: "trevisioMenuPermissionCapability",
+  priority: 1
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "trevisioMenuPermissionCapability",
+  targetId: "menuPermissionCapability",
+  priority: 1
+})
 // Prerequisites for treviso spid capability
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",

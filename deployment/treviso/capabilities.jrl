@@ -1,4 +1,13 @@
 p({
+  "class": "foam.nanos.crunch.Capability",
+  "id": "trevisioMenuPermissionCapability",
+  "name":"Trevisio Menu Permission Capability",
+  "version":"0",
+  "enabled":true,
+  "visible":false,
+  "permissionsGranted":[]
+})
+p({
   class: "foam.nanos.crunch.Capability",
   id: "trevisoPlannerCapability",
   version: "0",

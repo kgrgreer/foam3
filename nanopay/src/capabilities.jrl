@@ -561,6 +561,34 @@ p({
   },
 })
 
+// ServiceProvider menus capabilities
+p({
+  "class": "foam.nanos.crunch.Capability",
+  "id": "nanopayMenuPermissionCapability",
+  "name":"Nanopay Menu Permission Capability",
+  "version":"0",
+  "enabled":true,
+  "visible":false,
+  "permissionsGranted":[
+    "menu.read.capability.menu.search",
+    "menu.read.capability.menu.paymentcode",
+    "menu.read.capability.menu.invitation",
+    "contact.ro.shouldinvite"
+  ]
+})
+
+p({
+  "class": "foam.nanos.crunch.Capability",
+  "id": "menuPermissionCapability",
+  "name":"Menu Permission Capability",
+  "version":"0",
+  "enabled":true,
+  "visible":false,
+  "permissionsGranted":[
+    "menu.read.capability.menu.create",
+  ]
+})
+
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-16",
