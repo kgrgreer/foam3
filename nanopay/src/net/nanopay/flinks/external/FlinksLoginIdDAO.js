@@ -28,7 +28,6 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.auth.Address',
-    'foam.nanos.auth.AgentAuthService',
     'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Subject',
@@ -161,7 +160,7 @@ foam.CLASS({
               // Business CAD payments capability
               capabilityId = "18DD6F03-998F-4A21-8938-358183151F96";
             } 
-            X subjectX = getX().put("subject", newSubject);
+            X subjectX = x.put("subject", newSubject);
 
             DAO capabilityPayloadDAO = (DAO) subjectX.get("capabilityPayloadDAO");
             addCapabilityPayload(x, flinksLoginIdOnboarding, (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).find(capabilityId));
@@ -227,11 +226,7 @@ foam.CLASS({
           { name: 'accountDetail', type: 'AccountWithDetailModel' }
         ],
         javaCode: `
-        AgentAuthService agentAuth = (AgentAuthService) x.get("agentAuth");
         DAO accountDAO = (DAO) x.get("accountDAO");
-        
-        // Act as the owner to create the bank account
-        agentAuth.actAs(x, owner);
 
         // Do not allow a bank account in an other currency
         if ( !accountDetail.getCurrency().equals("CAD") ) {
