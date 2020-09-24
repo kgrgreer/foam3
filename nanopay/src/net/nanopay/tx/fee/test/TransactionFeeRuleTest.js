@@ -478,13 +478,13 @@ foam.CLASS({
       javaCode: `
         var feeDAO = (DAO) x.get("feeDAO");
         feeDAO.where(
-          IN(Fee.ID, testFeeIds)
+          IN(Fee.ID, testFeeIds.toArray())
         ).removeAll();
         testFeeIds.clear();
 
         var ruleDAO = (DAO) x.get("localRuleDAO");
         ruleDAO.where(AND(
-          IN(Rule.ID, testFeeRuleIds),
+          IN(Rule.ID, testFeeRuleIds.toArray()),
           EQ(Rule.LIFECYCLE_STATE, LifecycleState.ACTIVE)
         )).removeAll();
         testFeeRuleIds.clear();
