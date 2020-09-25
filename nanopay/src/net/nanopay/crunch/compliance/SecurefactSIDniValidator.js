@@ -42,8 +42,12 @@ foam.CLASS({
       name: 'response',
       class: 'FObjectProperty',
       of: 'net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse'
+    },
+    {
+      name: 'classification',
+      class: 'String'
     }
-  ],  
+  ],
 
   methods: [
     {
@@ -68,7 +72,7 @@ foam.CLASS({
                     .setObjId(ucj.getId())
                     .setDaoKey("userCapabilityJunctionDAO")
                     .setCauseId(getResponse().getId())
-                    .setClassification("Validate Signing Officer UserCapabilityJunction Using SecureFact")
+                    .setClassification(getClassification())
                     .setCauseDaoKey("securefactSIDniDAO")
                     .build()
                 );
@@ -82,7 +86,7 @@ foam.CLASS({
             .setObjId(ucj.getId())
             .setDaoKey("userCapabilityJunctionDAO")
             .setCauseId(response == null ? 0L : getResponse().getId())
-            .setClassification("Validate Signing Officer UserCapabilityJunction Using SecureFact")
+            .setClassification(getClassification())
             .setCauseDaoKey("securefactSIDniDAO")
             .build());
           ((Logger) x.get("logger")).warning("SIDniValidator failed.", e);

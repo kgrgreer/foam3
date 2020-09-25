@@ -42,6 +42,10 @@ foam.CLASS({
       name: 'response',
       class: 'FObjectProperty',
       of: 'net.nanopay.meter.compliance.secureFact.lev.LEVResponse'
+    },
+    {
+      name: 'classification',
+      class: 'String'
     }
   ],
 
@@ -69,7 +73,7 @@ foam.CLASS({
                     .setRefObjId(business.getId())
                     .setRefDaoKey("businessDAO")
                     .setCauseId(response.getId())
-                    .setClassification("Validate Business Onboarding UserCapabilityJunction Using SecureFact")
+                    .setClassification(getClassification())
                     .setCauseDaoKey("securefactLEVDAO")
                     .build()
                 );
@@ -87,7 +91,7 @@ foam.CLASS({
               .setRefObjId(business.getId())
               .setRefDaoKey("businessDAO")
               .setCauseId(response != null ? response.getId() : 0L)
-              .setClassification("Validate Business Onboarding UserCapabilityJunction Using SecureFact")
+              .setClassification(getClassification())
               .setCauseDaoKey("securefactLEVDAO")
               .build()
           );
