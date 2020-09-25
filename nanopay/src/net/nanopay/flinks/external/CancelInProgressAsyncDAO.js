@@ -54,22 +54,22 @@ foam.CLASS({
       `
     },
     {
-        name: 'find_',
-        javaCode: `
-            if ( ! getInitialized() ) {
-                cancelInProgressAsyncRequests(x);
-            }
-            return super.find_(x, id);
-        `
+      name: 'find_',
+      javaCode: `
+        if ( ! getInitialized() ) {
+            cancelInProgressAsyncRequests(x);
+        }
+        return super.find_(x, id);
+      `
     },
     {
-        name: 'select_',
-        javaCode: `
-            if ( ! getInitialized() ) {
-                cancelInProgressAsyncRequests(x);
-            }
-            return super.select_(x, sink, skip, limit, order, predicate);
-        `
+      name: 'select_',
+      javaCode: `
+        if ( ! getInitialized() ) {
+            cancelInProgressAsyncRequests(x);
+        }
+        return super.select_(x, sink, skip, limit, order, predicate);
+      `
     },
     {
         name: 'cancelInProgressAsyncRequests',
