@@ -68,12 +68,8 @@ foam.CLASS({
       name: 'MostRecentCached'
     },
     {
-      class: 'Boolean',
-      name: 'WithTransactions'
-    },
-    {
-      class: 'Boolean',
-      name: 'WithBalance'
+      class: 'String',
+      name: 'Tag'
     }
   ]
 });

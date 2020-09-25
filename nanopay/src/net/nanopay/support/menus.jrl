@@ -61,11 +61,22 @@ p({
 })
 p({
     "class":"foam.nanos.menu.Menu",
-    "id":"api-doc-32-onboarding",
-    "label":"API Onboarding",
+    "id":"api-doc-32-onboarding-business",
+    "label":"API Business Onboarding",
     "handler": {
         "class":"foam.nanos.menu.DocumentFileMenu",
-        "docKey":"api-doc-onboarding",
+        "docKey":"api-doc-onboarding-business-flinks",
+        "daoKey":"nanopayDocumentDAO"
+    },
+    "parent":"documentation"
+})
+p({
+    "class":"foam.nanos.menu.Menu",
+    "id":"api-doc-33-onboarding-personal",
+    "label":"API Personal Onboarding",
+    "handler": {
+        "class":"foam.nanos.menu.DocumentFileMenu",
+        "docKey":"api-doc-onboarding-personal",
         "daoKey":"nanopayDocumentDAO"
     },
     "parent":"documentation"

@@ -39,8 +39,14 @@ var classes = [
   'net.nanopay.flinks.ClientFlinksAuthService',
   'net.nanopay.flinks.MaskedFlinksAccountDAO',
   'net.nanopay.flinks.RefinedFlinksAccountDAO',
+  'net.nanopay.flinks.external.BusinessOverrideData',
   'net.nanopay.flinks.external.FlinksLoginId',
   'net.nanopay.flinks.external.FlinksLoginIdDAO',
+  'net.nanopay.flinks.external.FlinksLoginIdOnboarding',
+  'net.nanopay.flinks.external.FlinksOverrides',
+  'net.nanopay.flinks.external.OnboardingType',
+  'net.nanopay.flinks.external.OverrideData',
+  'net.nanopay.flinks.external.UserOverrideData',
 ];
 var abstractClasses = [];
 var skeletons = [

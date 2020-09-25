@@ -63,7 +63,7 @@ p({
 
 p({
     class:"foam.nanos.dig.DIG",
-    id:"Send Flinks Login ID",
+    id:"Peronsal Onboarding with Flinks Login ID",
     lastModified:1597333620473,
     createdBy:8023,
     createdByAgent:8023,
@@ -73,9 +73,39 @@ p({
     daoKey:"flinksLoginIdDAO",
     cmd:1,
     data:"""
-    {
-        "loginId":"123456"
-    }
+{
+    "class": "net.nanopay.flinks.external.FlinksLoginIdOnboarding",
+    "loginId": "2ff467b7-bcde-4346-8996-08d69b30c4d8",
+    "accountId": "8cd3e122-4826-4e24-48c4-08d69b30caf5",
+    "institution": "FlinksCapital",
+    "type": "PERSONAL"
+}
     """,
     description:"Send a loginId from Flinks to create an account"
+})
+
+p({
+    class:"foam.nanos.dig.DIG",
+    id:"Add Account with Flinks Login ID",
+    lastModified:1597333620473,
+    createdBy:8023,
+    createdByAgent:8023,
+    created:1595435232977,
+    lastModified:1595435232977,
+    lastModifiedBy:8023,
+    daoKey:"flinksLoginIdDAO",
+    cmd:1,
+    data:"""
+{
+    "class": "net.nanopay.flinks.external.FlinksLoginId",
+    "loginId": "2ff467b7-bcde-4346-8996-08d69b30c4d8",
+    "accountId": "8cd3e122-4826-4e24-48c4-08d69b30caf5",
+    "institution": "FlinksCapital",
+    "user": 8026,
+    "business": 8027
+}
+    """,
+    description:"""
+Send a loginId from Flinks to create an bank account for a given user and business.
+    """
 })

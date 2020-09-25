@@ -1,4 +1,27 @@
 p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"flinksAuth",
+  "serve":true,
+  "boxClass":"net.nanopay.flinks.FlinksAuthSkeleton", 
+  "serviceClass":"net.nanopay.flinks.FlinksAuthService",
+  "client":"{\"class\":\"net.nanopay.flinks.ClientFlinksAuthService\",\"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/flinksAuth\"}}"
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"flinksCredentials",
+  "lazy":false,
+  "service":{"class":"net.nanopay.flinks.model.FlinksCredentials"}
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "flinksResponseService",
+  "serve": true,
+  "serviceClass": "net.nanopay.flinks.FlinksResponseServer"
+})
+
+p({
     "class":"foam.nanos.boot.NSpec",
     "name":"flinksAccountsDetailResponseDAO",
     "serve":true,

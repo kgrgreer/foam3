@@ -32,11 +32,30 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'id'
+      name: 'id',
+      hidden: true,
+      documentation: 'Unique ID'
     },
     {
       class: 'String',
-      name: 'loginId'
+      name: 'loginId',
+      documentation: 'Flinks LoginId'
+    },
+    {
+      class: 'String',
+      name: 'accountId',
+      documentation: 'Flinks AccountId'
+    },
+    {
+      class: 'String',
+      name: 'institution',
+      documentation: 'Flinks Institution'
+    },
+    {
+      class: 'Boolean',
+      name: 'skipLoginIdResolution',
+      documentation: 'Whether to skip resolution of loginId against FlinksLoginId calls',
+      storageTransient: true
     },
     {
       class: 'Reference',
@@ -44,29 +63,46 @@ foam.CLASS({
       of: 'net.nanopay.flinks.model.FlinksAccountsDetailResponse',
       targetDAOKey: 'flinksAccountsDetailResponseDAO',
       readPermissionRequired: true,
-      writePermissionRequired: true
+      writePermissionRequired: true,
+      documentation: 'Response to Flinks account details call'
+    },
+    {
+      class: 'Reference',
+      name: 'user',
+      of: 'foam.nanos.auth.User',
+      targetDAOKey: 'userDAO',
+      documentation: 'User associated to this Flinks LoginId'
+    },
+    {
+      class: 'Reference',
+      name: 'business',
+      of: 'net.nanopay.model.Business',
+      targetDAOKey: 'businessDAO',
+      documentation: 'Business associated to this Flinks LoginId'
     },
     {
       class: 'Reference',
       name: 'account',
       of: 'net.nanopay.account.Account',
       targetDAOKey: 'accountDAO',
-      readPermissionRequired: true,
-      writePermissionRequired: true
+      documentation: 'Account associated to this Flinks AccountId'
     },
     {
       class: 'DateTime',
       name: 'created',
+      documentation: 'Date created'
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
+      documentation: 'Creating user'
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
-      name: 'createdByAgent'
+      name: 'createdByAgent',
+      documentation: 'Creating agent'
     }
   ]
-})
+});

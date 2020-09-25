@@ -40,6 +40,11 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'Type',
+      visibility: 'RO'
+    },
+    {
+      class: 'String',
       name: 'Id',
       visibility: 'RO'
     }

@@ -471,9 +471,7 @@ p({
   "documentation":"Planner for Bank -> bank transactions",
   "priority":95,
   "ruleGroup":"transactionPlanner",
-
   "enabled":true,
-
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[

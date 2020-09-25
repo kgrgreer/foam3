@@ -1071,6 +1071,7 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/BusinessEmployeeDAO' },
   { name: 'net/nanopay/model/BeneficialOwner' },
   { name: 'net/nanopay/model/BusinessDirector' },
+  { name: 'net/nanopay/model/SigningOfficer' },
   { name: 'net/nanopay/sme/ui/FooterView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/MoneyFlowSuccessView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/MoneyFlowRejectView', flags: ['web'] },
@@ -1343,6 +1344,7 @@ FOAM_FILES([
 
   // securefact
   { name: 'net/nanopay/meter/compliance/secureFact/ResponseError' },
+  { name: 'net/nanopay/meter/compliance/secureFact/SecurefactOnboardingService' },
   { name: 'net/nanopay/meter/compliance/secureFact/SecurefactRequest' },
   { name: 'net/nanopay/meter/compliance/secureFact/SecurefactResponse' },
   { name: 'net/nanopay/meter/compliance/secureFact/SecurefactService' },
@@ -1362,6 +1364,19 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/compliance/secureFact/lev/LEVRequest' },
   { name: 'net/nanopay/meter/compliance/secureFact/lev/LEVResponse' },
   { name: 'net/nanopay/meter/compliance/secureFact/lev/LEVResult' },
+
+  // securefact lev document
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/document/LEVDocumentDataEntity' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/document/LEVDocumentDataRequest' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/document/LEVDocumentDataResponse' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/document/LEVDocumentOrderRequest' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/document/LEVDocumentOrderRequest' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/document/LEVDocumentOrderResponse' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/document/LEVDocumentParty' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/document/LEVDocumentPartyShareClass' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/document/LEVEntityAddress' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/document/LEVLastDocumentFiled' },
+  { name: 'net/nanopay/meter/compliance/secureFact/lev/document/LEVNatureOfBusiness' },
 
   // dow jones
   { name: 'net/nanopay/meter/compliance/dowJones/enums/ContentSet' },
@@ -1563,8 +1578,17 @@ FOAM_FILES([
   { name: 'net/nanopay/country/br/ClientBrazilVerificationService' },
 
   // crunch registration
+  { name: 'net/nanopay/crunch/registration/BusinessDetailData' },
+  { name: 'net/nanopay/crunch/registration/BusinessDetailExpandedData' },
+  { name: 'net/nanopay/crunch/registration/BusinessDirectorList' },
+  { name: 'net/nanopay/crunch/registration/BusinessOwnerList' },
+  { name: 'net/nanopay/crunch/registration/BusinessTypeData' },
+  { name: 'net/nanopay/crunch/registration/IsSelectedData' },
+  { name: 'net/nanopay/crunch/registration/PersonalOnboardingTypeData' },
+  { name: 'net/nanopay/crunch/registration/SigningOfficerList' },
   { name: 'net/nanopay/crunch/registration/UserRegistrationData' },
-
+  { name: 'net/nanopay/crunch/registration/UserDetailData' },
+  { name: 'net/nanopay/crunch/registration/UserDetailExpandedData' },
 
   // crunch onboarding
   { name: 'net/nanopay/crunch/onboardingModels/CheckUserCountry' },

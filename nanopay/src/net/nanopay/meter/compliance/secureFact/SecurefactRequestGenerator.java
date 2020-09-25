@@ -4,7 +4,8 @@ import foam.core.X;
 import foam.nanos.auth.Address;
 import foam.nanos.auth.User;
 import foam.util.SafetyUtil;
-import net.nanopay.meter.compliance.secureFact.lev.LEVRequest;
+import net.nanopay.meter.compliance.secureFact.lev.*;
+import net.nanopay.meter.compliance.secureFact.lev.document.*;
 import net.nanopay.meter.compliance.secureFact.sidni.*;
 import net.nanopay.model.Business;
 import net.nanopay.model.BusinessType;
@@ -53,6 +54,22 @@ public class SecurefactRequestGenerator {
     }
     return request;
   }
+
+  public static LEVDocumentOrderRequest getLEVDocumentOrderRequest(int resultId) {
+    LEVDocumentOrderRequest request = new LEVDocumentOrderRequest();
+    request.setResultId(resultId);
+
+    return request;
+  }
+
+  public static LEVDocumentDataRequest getLEVDocumentDataRequest(int orderId) {
+    LEVDocumentDataRequest request = new LEVDocumentDataRequest();
+    request.setOrderId(orderId);
+
+    return request;
+  }
+
+  
 
   private static SIDniCustomer buildCustomer(X x, User user) {
     return new SIDniCustomer.Builder(x)

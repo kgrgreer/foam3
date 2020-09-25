@@ -38,6 +38,8 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'java.util.Arrays',
     'java.util.Base64',
+    'net.nanopay.meter.compliance.secureFact.lev.document.LEVDocumentDataResponse',
+    'net.nanopay.meter.compliance.secureFact.lev.document.LEVDocumentOrderResponse',
     'net.nanopay.meter.compliance.secureFact.lev.LEVResponse',
     'net.nanopay.meter.compliance.secureFact.lev.LEVResult',
     'net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse',
@@ -64,6 +66,16 @@ foam.CLASS({
       class: 'String',
       name: 'levUrl',
       label: 'LEV URL'
+    },
+    {
+      class: 'String',
+      name: 'levDocumentOrderUrl',
+      label: 'LEV DOCUMENT ORDER URL'
+    },
+    {
+      class: 'String',
+      name: 'levDocumentDataUrl',
+      label: 'LEV DOCUMENT DATA URL'
     },
     {
       class: 'String',
@@ -128,6 +140,48 @@ foam.CLASS({
         response.setCloseMatches(closeMatchCounter + "/" + results.length);
         return (LEVResponse)
           ((DAO) getSecurefactLEVDAO()).put(response);
+      `
+    },
+    {
+      name: 'levDocumentOrder',
+      type: 'net.nanopay.meter.compliance.secureFact.lev.document.LEVDocumentOrderResponse',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'resultId',
+          type: 'int'
+        }
+      ],
+      javaCode: `
+        SecurefactRequest request = SecurefactRequestGenerator.getLEVDocumentOrderRequest(resultId);
+        request.setUrl(getLevDocumentOrderUrl());
+        request.setAuthKey(getLevApiKey());
+        LEVDocumentOrderResponse response = (LEVDocumentOrderResponse) sendRequest(x, request, LEVDocumentOrderResponse.class);
+        return response;
+      `
+    },
+    {
+      name: 'levDocumentData',
+      type: 'net.nanopay.meter.compliance.secureFact.lev.document.LEVDocumentDataResponse',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'orderId',
+          type: 'int'
+        }
+      ],
+      javaCode: `
+        SecurefactRequest request = SecurefactRequestGenerator.getLEVDocumentDataRequest(orderId);
+        request.setUrl(getLevDocumentDataUrl());
+        request.setAuthKey(getLevApiKey());
+        LEVDocumentDataResponse response = (LEVDocumentDataResponse) sendRequest(x, request, LEVDocumentDataResponse.class);
+        return response;
       `
     },
     {
