@@ -407,8 +407,8 @@ foam.CLASS({
   methods: [
     {
       name: 'getCpfName',
-      code: async function(cpf) {
-        return await this.brazilVerificationService.getCPFName(this.__subContext__, cpf);
+      code: async function(cpf,) {
+        return await this.brazilVerificationService.getCPFNameWithBirthDate(this.__subContext__, cpf, this.birthday);
       }
     },
     {

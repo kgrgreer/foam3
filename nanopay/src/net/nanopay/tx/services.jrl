@@ -60,12 +60,8 @@ p({
     dao = new net.nanopay.payment.PADTypeCheckDAO.Builder(x)
       .setDelegate(dao)
       .build();
-    dao = new net.nanopay.fx.ascendantfx.AscendantFXTransactionDAO(x, dao);
-    dao = new net.nanopay.tx.realex.RealexTransactionDAO(x, dao);
-    dao = new net.nanopay.tx.stripe.StripeTransactionDAO(x, dao);
     dao = new foam.nanos.ruler.RulerDAO(x, dao, "localTransactionDAO");
     dao = new foam.dao.ValidatingDAO(x, dao, new net.nanopay.tx.TransactionValidator());
-    dao = new foam.dao.GUIDDAO.Builder(x).setDelegate(dao).build();
     dao = new net.nanopay.tx.planner.TransactionQuotingDAO(x, dao);
 
     return new foam.dao.EasyDAO.Builder(x)

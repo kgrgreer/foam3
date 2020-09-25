@@ -74,6 +74,41 @@ foam.CLASS({
       },
       externalTransient: true
     },
+    foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
+      name: 'birthday',
+      label: 'Date of birth',
+      visibility: function (type) {
+        return type == 'BR' ?
+        foam.u2.DisplayMode.RW :
+        foam.u2.DisplayMode.HIDDEN;
+      },
+      validationPredicates: [
+        {
+          args: ['birthday'],
+          predicateFactory: function(e) {
+            var limit = new Date();
+            limit.setDate(limit.getDate() - ( 18 * 365 ));
+            return e.AND(
+              e.NEQ(net.nanopay.model.BusinessDirector.BIRTHDAY, null),
+              e.LT(net.nanopay.model.BusinessDirector.BIRTHDAY, limit)
+            );
+          },
+          errorMessage: 'UNDER_AGE_LIMIT_ERROR'
+        },
+        {
+          args: ['birthday'],
+          predicateFactory: function(e) {
+            var limit = new Date();
+            limit.setDate(limit.getDate() - ( 125 * 365 ));
+            return e.AND(
+              e.NEQ(net.nanopay.model.BusinessDirector.BIRTHDAY, null),
+              e.GT(net.nanopay.model.BusinessDirector.BIRTHDAY, limit)
+            );
+          },
+          errorMessage: 'OVER_AGE_LIMIT_ERROR'
+        }
+      ]
+    }),
     {
       class: 'String',
       name: 'cpf',
@@ -147,41 +182,6 @@ foam.CLASS({
         }
       ]
     },
-    foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
-      name: 'birthday',
-      label: 'Date of birth',
-      visibility: function (type) {
-        return type == 'BR' ?
-        foam.u2.DisplayMode.RW :
-        foam.u2.DisplayMode.HIDDEN;
-      },
-      validationPredicates: [
-        {
-          args: ['birthday'],
-          predicateFactory: function(e) {
-            var limit = new Date();
-            limit.setDate(limit.getDate() - ( 18 * 365 ));
-            return e.AND(
-              e.NEQ(net.nanopay.model.BusinessDirector.BIRTHDAY, null),
-              e.LT(net.nanopay.model.BusinessDirector.BIRTHDAY, limit)
-            );
-          },
-          errorMessage: 'UNDER_AGE_LIMIT_ERROR'
-        },
-        {
-          args: ['birthday'],
-          predicateFactory: function(e) {
-            var limit = new Date();
-            limit.setDate(limit.getDate() - ( 125 * 365 ));
-            return e.AND(
-              e.NEQ(net.nanopay.model.BusinessDirector.BIRTHDAY, null),
-              e.GT(net.nanopay.model.BusinessDirector.BIRTHDAY, limit)
-            );
-          },
-          errorMessage: 'OVER_AGE_LIMIT_ERROR'
-        }
-      ]
-    }),
     {
       class: 'Reference',
       targetDAOKey: 'countryDAO',
@@ -212,7 +212,7 @@ foam.CLASS({
     {
       name: 'getCpfName',
       code: async function(cpf) {
-        return await this.brazilVerificationService.getCPFName(this.__subContext__, cpf);
+        return await this.brazilVerificationService.getCPFNameWithBirthDate(this.__subContext__, cpf, this.birthday);
       }
     },
     {

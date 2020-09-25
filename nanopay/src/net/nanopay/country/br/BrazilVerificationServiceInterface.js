@@ -88,6 +88,26 @@ foam.INTERFACE({
       ]
     },
     {
+      name: 'getCPFNameWithBirthDate',
+      type: 'String',
+      async: true,
+      javaThrows: ['java.lang.RuntimeException'],
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          type: 'String',
+          name: 'cpf'
+        },
+        {
+          type: 'Date',
+          name: 'birthDate'
+        }
+      ]
+    },
+    {
       name: 'getCNPJName',
       type: 'String',
       async: true,
