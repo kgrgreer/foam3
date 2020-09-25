@@ -40,6 +40,10 @@ foam.CLASS({
       name: 'response',
       class: 'FObjectProperty',
       of: 'net.nanopay.meter.compliance.dowJones.DowJonesResponse'
+    },
+    {
+      name: 'classification',
+      class: 'String'
     }
   ],
 
@@ -87,7 +91,7 @@ foam.CLASS({
                     .setRefDaoKey("businessDAO")
                     .setCauseId(response.getId())
                     .setCauseDaoKey("dowJonesResponseDAO")
-                    .setClassification("Validate Business Onboarding UserCapabilityJunction Using Dow Jones")
+                    .setClassification(getClassification())
                     .setMatches(response.getResponseBody().getMatches())
                     .build());
               }
@@ -105,7 +109,7 @@ foam.CLASS({
               .setRefDaoKey("businessDAO")
               .setCauseId(response != null ? response.getId() : 0L)
               .setCauseDaoKey("dowJonesResponseDAO")
-              .setClassification("Validate Business Onboarding UserCapabilityJunction Using Dow Jones")
+              .setClassification(getClassification())
               .setMatches(response != null ? response.getResponseBody().getMatches() : null)
               .build());
           ruler.putResult(ComplianceValidationStatus.PENDING);
