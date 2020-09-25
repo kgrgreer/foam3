@@ -22,10 +22,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'String',
       name: 'id',
-      hidden: true,
-      documentation: 'Unique ID',
       externalTransient: true
     },
     {
