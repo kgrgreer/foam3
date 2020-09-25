@@ -41,6 +41,7 @@ var classes = [
   'net.nanopay.flinks.RefinedFlinksAccountDAO',
   'net.nanopay.flinks.external.AsyncStatus',
   'net.nanopay.flinks.external.BusinessOverrideData',
+  'net.nanopay.flinks.external.CancelInProgressAsyncDAO',
   'net.nanopay.flinks.external.FlinksLoginId',
   'net.nanopay.flinks.external.FlinksLoginIdAsync',
   'net.nanopay.flinks.external.FlinksLoginIdAsyncDAO',

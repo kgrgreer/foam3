@@ -78,7 +78,10 @@ p({
     "serviceScript":"""
       return new foam.dao.EasyDAO.Builder(x)
         .setDecorator(new net.nanopay.flinks.external.FlinksLoginIdAsyncDAO.Builder(x)
-            .setDelegate(new foam.dao.NullDAO(x, net.nanopay.flinks.external.FlinksLoginIdRequest.getOwnClassInfo()))
+            .setDelegate(new net.nanopay.flinks.external.CancelInProgressAsyncDAO.Builder(x)
+                .setDelegate(new foam.dao.NullDAO(x, net.nanopay.flinks.external.FlinksLoginIdRequest.getOwnClassInfo()))
+                .setOf(net.nanopay.flinks.external.FlinksLoginIdRequest.getOwnClassInfo())
+                .build())
             .setOf(net.nanopay.flinks.external.FlinksLoginIdRequest.getOwnClassInfo())
             .build())
         .setPm(true)

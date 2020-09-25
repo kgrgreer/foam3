@@ -37,6 +37,7 @@ FOAM_FILES([
   { name: 'net/nanopay/flinks/RefinedFlinksAccountDAO' },
   { name: 'net/nanopay/flinks/external/AsyncStatus' },
   { name: 'net/nanopay/flinks/external/BusinessOverrideData' },
+  { name: 'net/nanopay/flinks/external/CancelInProgressAsyncDAO' },
   { name: 'net/nanopay/flinks/external/FlinksLoginId' },
   { name: 'net/nanopay/flinks/external/FlinksLoginIdAsync' },
   { name: 'net/nanopay/flinks/external/FlinksLoginIdAsyncDAO' },
