@@ -508,7 +508,7 @@ foam.CLASS({
           throw new IllegalStateException("Must verify name attached to CPF is valid.");
 
           try {
-            if ( ! ((BrazilVerificationService) x.get("brazilVerificationService")).validateCpf(x, getCpf(), getBirthday()) )
+            if ( ! ((BrazilVerificationService) getX().get("brazilVerificationService")).validateCpf(getX(), getCpf(), getBirthday()) )
               throw new RuntimeException(INVALID_CPF);
           } catch(Throwable t) {
             throw t;
