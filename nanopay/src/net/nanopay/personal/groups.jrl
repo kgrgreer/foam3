@@ -1,0 +1,13 @@
+p({
+    "class":"foam.nanos.auth.Group",
+    "id":"personal",
+    "description":"Personal users.",
+    "displayName":"Personal",
+    "from":"noreply@ablii.com",
+    "replyTo":"noreply@ablii.com",
+    "softSessionLimit":600000,
+    "liquiditySettings":{
+        "class":"net.nanopay.liquidity.LiquiditySettings"
+    },
+    "groupCSS":".stack-wrapper{margin-left: 220px;}"
+})

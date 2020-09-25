@@ -1,16 +1,15 @@
-<title>API Onboarding</title>
+<title>API Business Onboarding</title>
 
-<h1>Onboarding</h1>
+<h1>Business Onboarding</h1>
 <p>
-    Onboarding is a key part of the nanopay experience. Users, business and account all have to be setup 
+    Onboarding is a key part of the nanopay experience. Users, businesses and account all have to be setup 
     and the process of creating these entities within the system is called onboarding. Once a user has been
-    setup within the system, they can then participate in a transaction. The level of detail in their onboarding
-    determines whether they can participate in transactions as a payee or as a payer.
+    setup within the system, they can then participate in a transaction.
 </p>
 
-<h2>Onboarding Process</h2>
+<h2>Onboarding Process for a Business</h2>
 <p>
-    There are several steps to completing onboarding.
+    There are several steps to completing onboarding for a business.
     <ol>
         <li><a href="#create-user">Create User</a></li>
         <li><a href="#user-onboarding">Onboard User</a></li>

@@ -47,7 +47,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'type',
-      hidden: true
+      hidden: true,
+      externalTransient: true
     },
     {
       class: 'String',
@@ -70,7 +71,8 @@ foam.CLASS({
         return type == 'BR' ?
         foam.u2.DisplayMode.RW :
         foam.u2.DisplayMode.HIDDEN;
-      }
+      },
+      externalTransient: true
     },
     foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
       name: 'birthday',
@@ -131,6 +133,7 @@ foam.CLASS({
           errorString: 'Please provide a valid CPF number'
         }
       ],
+      externalTransient: true,
       postSet: function(_,n) {
         this.cpfName = "";
         if ( n.length == 11 ) {
@@ -144,7 +147,8 @@ foam.CLASS({
       class: 'String',
       name: 'cpfName',
       label: '',
-      hidden: true
+      hidden: true,
+      externalTransient: true
     },
     {
       class: 'Boolean',

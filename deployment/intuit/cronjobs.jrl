@@ -1,0 +1,11 @@
+p({
+  "class": "foam.nanos.cron.Cron",
+  "id": "generic transaction completion cron",
+  "enabled": true
+})
+
+p({
+  "class": "foam.nanos.cron.Cron",
+  "id": "generic transaction sending cron",
+  "enabled": true
+})

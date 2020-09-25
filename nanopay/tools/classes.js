@@ -161,6 +161,7 @@ var classes = [
   'net.nanopay.model.IdentificationType',
   'net.nanopay.model.PersonalIdentification',
   'net.nanopay.model.JobTitle',
+  'net.nanopay.model.SigningOfficer',
   'net.nanopay.bank.BankHoliday',
   'net.nanopay.bank.BankHolidayService',
   'net.nanopay.bank.test.USBankAccountTest',
@@ -889,6 +890,7 @@ var classes = [
 
   // securefact
   'net.nanopay.meter.compliance.secureFact.ResponseError',
+  'net.nanopay.meter.compliance.secureFact.SecurefactOnboardingService',
   'net.nanopay.meter.compliance.secureFact.SecurefactRequest',
   'net.nanopay.meter.compliance.secureFact.SecurefactResponse',
   'net.nanopay.meter.compliance.secureFact.SecurefactService',
@@ -908,6 +910,18 @@ var classes = [
   'net.nanopay.meter.compliance.secureFact.lev.LEVRequest',
   'net.nanopay.meter.compliance.secureFact.lev.LEVResponse',
   'net.nanopay.meter.compliance.secureFact.lev.LEVResult',
+
+  // securefact lev document
+  'net.nanopay.meter.compliance.secureFact.lev.document.LEVDocumentDataEntity',
+  'net.nanopay.meter.compliance.secureFact.lev.document.LEVDocumentDataRequest',
+  'net.nanopay.meter.compliance.secureFact.lev.document.LEVDocumentDataResponse',
+  'net.nanopay.meter.compliance.secureFact.lev.document.LEVDocumentOrderRequest',
+  'net.nanopay.meter.compliance.secureFact.lev.document.LEVDocumentOrderResponse',
+  'net.nanopay.meter.compliance.secureFact.lev.document.LEVDocumentParty',
+  'net.nanopay.meter.compliance.secureFact.lev.document.LEVDocumentPartyShareClass',
+  'net.nanopay.meter.compliance.secureFact.lev.document.LEVEntityAddress',
+  'net.nanopay.meter.compliance.secureFact.lev.document.LEVLastDocumentFiled',
+  'net.nanopay.meter.compliance.secureFact.lev.document.LEVNatureOfBusiness',
 
   // dow jones
   'net.nanopay.meter.compliance.dowJones.enums.ContentSet',
@@ -1268,7 +1282,17 @@ var classes = [
   'net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability',
 
   // crunch registration
+  'net.nanopay.crunch.registration.BusinessDetailData',
+  'net.nanopay.crunch.registration.BusinessDetailExpandedData',
+  'net.nanopay.crunch.registration.BusinessDirectorList',
+  'net.nanopay.crunch.registration.BusinessOwnerList',
+  'net.nanopay.crunch.registration.BusinessTypeData',
+  'net.nanopay.crunch.registration.IsSelectedData',
+  'net.nanopay.crunch.registration.PersonalOnboardingTypeData',
+  'net.nanopay.crunch.registration.SigningOfficerList',
   'net.nanopay.crunch.registration.UserRegistrationData',
+  'net.nanopay.crunch.registration.UserDetailData',
+  'net.nanopay.crunch.registration.UserDetailExpandedData',
 
   // crunch documents
   'net.nanopay.crunch.document.Document',

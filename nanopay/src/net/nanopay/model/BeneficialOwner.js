@@ -72,25 +72,29 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'id',
-      documentation: 'The ID of the beneficial owner'
+      documentation: 'The ID of the beneficial owner',
+      externalTransient: true
     },
     {
       class: 'String',
       name: 'mode',
       documentation: 'Used to change visibility. ex) "percent" suggests all hidden but this.ownershipPercent.',
       hidden: true,
+      externalTransient: true,
       flags: ['js']
     },
     {
       class: 'String',
       name: 'type',
       documentation: 'Used to change visibility of various country specific properties.',
-      hidden: true
+      hidden: true,
+      externalTransient: true
     },
     {
       class: 'Boolean',
       name: 'showValidation',
-      value: true
+      value: true,
+      externalTransient: true
     },
     {
       class: 'String',
@@ -317,6 +321,7 @@ foam.CLASS({
           errorString: 'Please provide a valid CPF number'
         }
       ],
+      externalTransient: true,
       postSet: function(_,n) {
         this.cpfName = "";
         if ( n.length == 11 ) {
@@ -331,7 +336,8 @@ foam.CLASS({
       name: 'cpfName',
       label: '',
       section: 'requiredSection',
-      hidden: true
+      hidden: true,
+      externalTransient: true
     },
     {
       class: 'Boolean',
@@ -364,7 +370,8 @@ foam.CLASS({
           },
           errorString: 'Click to verify owner name.'
         }
-      ]
+      ],
+      externalTransient: true
     },
     {
       class: 'Boolean',
