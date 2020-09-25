@@ -18,11 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.flinks.external',
   name: 'FlinksLoginId',
-
-  implements: [
-    'foam.nanos.auth.CreatedAware',
-    'foam.nanos.auth.CreatedByAware'
-  ],
+  extends: 'net.nanopay.flinks.external.FlinksLoginIdRequest',
 
   javaImports: [
     'net.nanopay.account.Account',
@@ -30,12 +26,6 @@ foam.CLASS({
   ], 
 
   properties: [
-    {
-      class: 'String',
-      name: 'id',
-      hidden: true,
-      documentation: 'Unique ID'
-    },
     {
       class: 'String',
       name: 'loginId',
@@ -86,23 +76,6 @@ foam.CLASS({
       of: 'net.nanopay.account.Account',
       targetDAOKey: 'accountDAO',
       documentation: 'Account associated to this Flinks AccountId'
-    },
-    {
-      class: 'DateTime',
-      name: 'created',
-      documentation: 'Date created'
-    },
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.User',
-      name: 'createdBy',
-      documentation: 'Creating user'
-    },
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.User',
-      name: 'createdByAgent',
-      documentation: 'Creating agent'
     }
   ]
 });
