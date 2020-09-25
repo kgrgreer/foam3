@@ -96,7 +96,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","ta
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"exchangerate.read.*"})
 
 // Flinks Login Id
-Zp({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"service.read.flinksLoginIdDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"service.read.flinksLoginIdDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"service.flinksLoginIdDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"service.read.flinksLoginIdAsyncDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-dev","targetId":"service.flinksLoginIdAsyncDAO"})
