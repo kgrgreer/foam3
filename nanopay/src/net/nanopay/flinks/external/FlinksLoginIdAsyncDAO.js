@@ -34,24 +34,59 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-        if ( ! (obj instanceof FlinksLoginId) ) {
+        FlinksLoginIdAsync flinksLoginIdAsync = null;
+        FlinksLoginId flinksLoginId = null;
+        
+        if ( obj instanceof FlinksLoginIdAsync ) {
+            flinksLoginIdAsync = (FlinksLoginIdAsync) obj;
+
+            if ( ! SafetyUtil.isEmpty(flinksLoginIdAsync.getRequestId()) ) {
+                FlinksLoginIdAsync asyncResult = (FlinksLoginIdAsync) find_(x, flinksLoginIdAsync.getRequestId());
+                if ( asyncResult != null ) return asyncResult;
+
+                // Synchronize the requestId and the id
+                flinksLoginIdAsync.setId(flinksLoginIdAsync.getRequestId());
+            } else if ( ! SafetyUtil.isEmpty(flinksLoginIdAsync.getId()) ) {
+                FlinksLoginIdAsync asyncResult = (FlinksLoginIdAsync) find_(x, flinksLoginIdAsync.getId());
+                if ( asyncResult != null ) return asyncResult;
+            } else {
+                flinksLoginIdAsync.setId(java.util.UUID.randomUUID().toString());
+            }
+
+            if ( flinksLoginIdAsync.getFlinksLoginIdResult() == null ) {
+                throw new RuntimeException("FlinksLoginIdResult required for new async requests");
+            }
+
+            flinksLoginId = (FlinksLoginId) flinksLoginIdAsync.getFlinksLoginIdResult();
+            flinksLoginId.setId(flinksLoginIdAsync.getId());
+
+            // Clear the result
+            flinksLoginIdAsync.clearFlinksLoginIdResult();
+            flinksLoginIdAsync.setRequestId(flinksLoginId.getId());
+            flinksLoginIdAsync.setStatus(AsyncStatus.IN_PROGRESS.getLabel());
+        }
+        else if ( obj instanceof FlinksLoginId ) {
+            flinksLoginId = (FlinksLoginId) obj;
+
+            if ( ! SafetyUtil.isEmpty(flinksLoginId.getId()) ) {
+                FlinksLoginIdAsync asyncResult = (FlinksLoginIdAsync) find_(x, flinksLoginId.getId());
+                if ( asyncResult != null ) return asyncResult;
+            } else {
+                flinksLoginId.setId(java.util.UUID.randomUUID().toString());
+            }
+
+            flinksLoginIdAsync = new FlinksLoginIdAsync.Builder(x)
+                .setId(flinksLoginId.getId())
+                .setRequestId(flinksLoginId.getId())
+                .setStatus(AsyncStatus.IN_PROGRESS.getLabel())
+                .setCreated(flinksLoginId.getCreated())
+                .setCreatedBy(flinksLoginId.getCreatedBy())
+                .setCreatedByAgent(flinksLoginId.getCreatedByAgent())
+                .build();
+        } else {
             throw new RuntimeException("Unexpected object for PUT operation: " + obj.getClassInfo().getId());
         }
-
-        FlinksLoginId flinksLoginId = (FlinksLoginId) obj;
-        if ( SafetyUtil.isEmpty(flinksLoginId.getId()) ) {
-            flinksLoginId.setId(java.util.UUID.randomUUID().toString());
-        } else {
-            FlinksLoginIdAsync asyncResult = (FlinksLoginIdAsync) find_(x, flinksLoginId.getId());
-            if ( asyncResult != null ) return asyncResult;
-        }
-
-        FlinksLoginIdAsync flinksLoginIdAsync = new FlinksLoginIdAsync.Builder(x)
-            .setId(flinksLoginId.getId())
-            .setRequestId(flinksLoginId.getId())
-            .setStatus(AsyncStatus.IN_PROGRESS.getLabel())
-            .build();
-
+        
         flinksLoginIdAsync = (FlinksLoginIdAsync) super.put_(x, flinksLoginIdAsync);
 
         // Start async call
@@ -89,7 +124,7 @@ foam.CLASS({
                         super.put_(x, flinksLoginIdAsync);
                     }
                 } catch ( Throwable t ) {
-                    ((Logger) x.get("logger")).error("Error saving async result", t);
+                    ((Logger) x.get("logger")).error("Error saving async result: " + flinksLoginId.getId(), t);
                 }
             }, "Async FlinksLoginId: " + flinksLoginId.getId());
         `
