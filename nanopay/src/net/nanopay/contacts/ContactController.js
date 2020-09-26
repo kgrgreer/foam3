@@ -47,6 +47,7 @@ foam.CLASS({
     'subject',
     'pushMenu',
     'publicBusinessDAO',
+    'auth'
   ],
   properties: [
     {
@@ -126,7 +127,8 @@ foam.CLASS({
               },
               isAvailable: async function() {
                 let account = await self.accountDAO.find(this.bankAccount);
-                return this.signUpStatus != self.ContactStatus.ACTIVE && ! self.INBankAccount.isInstance(account);
+                let permission = await self.auth.check(null, 'menu.read.capability.menu.invitation');
+                return this.signUpStatus != self.ContactStatus.ACTIVE && ! self.INBankAccount.isInstance(account) && permission;
               },
               code: function(X) {
                 var invite = net.nanopay.model.Invitation.create({
