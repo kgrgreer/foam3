@@ -27,8 +27,8 @@ p({
   enabled: true,
   visible: false,
   permissionsGranted: [
-    "capability.read.554af38a-8125-87c8-dfdf-eeb15f7bmoca-ca",
-    "capability.read.554af38a-8125-87c8-dfdf-eeb15f7rbcca-ca"
+    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15f7bmoca-ca",
+    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15f7rbcca-ca"
   ]
 })
 
@@ -40,5 +40,19 @@ p({
   visible: false,
   permissionsGranted: [
     "currency.read.CAD"
+  ]
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "gdMenuCapability",
+  version: "0",
+  enabled: true,
+  visible: false,
+  "permissionsGranted":[
+    "menu.read.capability.menu.search",
+    "menu.read.capability.menu.paymentcode",
+    "menu.read.capability.menu.invitation",
+    "contact.ro.shouldinvite"
   ]
 })

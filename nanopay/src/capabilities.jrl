@@ -4,6 +4,7 @@ p({class: "foam.nanos.crunch.Capability", id: "plannerCapability", name: "Planne
 p({class: "foam.nanos.crunch.Capability", id: "countryCapability", name: "Country Capability"})
 p({class: "foam.nanos.crunch.Capability", id: "corridorCapability", name: "Corridor Capability"})
 p({class: "foam.nanos.crunch.Capability", id: "currencyCapability", name: "Currency Capability"})
+p({class: "foam.nanos.crunch.Capability", id: "menuCapability", name: "Menu Capability", permissionsGranted: ["menu.read.capability.menu.create"]})
 
 // spid capabilities
 p({"class":"foam.nanos.auth.ServiceProvider","id":"nanopay","description":"nanopay"})
@@ -847,34 +848,6 @@ p({
   },
 })
 
-// ServiceProvider menus capabilities
-p({
-  "class": "foam.nanos.crunch.Capability",
-  "id": "nanopayMenuPermissionCapability",
-  "name":"Nanopay Menu Permission Capability",
-  "version":"0",
-  "enabled":true,
-  "visible":false,
-  "permissionsGranted":[
-    "menu.read.capability.menu.search",
-    "menu.read.capability.menu.paymentcode",
-    "menu.read.capability.menu.invitation",
-    "contact.ro.shouldinvite"
-  ]
-})
-
-p({
-  "class": "foam.nanos.crunch.Capability",
-  "id": "menuPermissionCapability",
-  "name":"Menu Permission Capability",
-  "version":"0",
-  "enabled":true,
-  "visible":false,
-  "permissionsGranted":[
-    "menu.read.capability.menu.create",
-  ]
-})
-
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-16",
@@ -914,6 +887,7 @@ p({
   "visible":true
 })
 
+// nanopay capabilities
 p({
   class: "foam.nanos.crunch.Capability",
   id: "nanopayCountryCapability",
@@ -933,13 +907,13 @@ p({
   enabled: true,
   visible: false,
   permissionsGranted: [
-    "capability.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
-    "capability.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
-    "capability.read.554af38a-8125-87c8-dfdf-eeb15f7afexus-us",
-    "capability.read.554af38a-8125-87c8-dfdf-eeb15f7bmoca-ca",
-    "capability.read.554af38a-8125-87c8-dfdf-eeb15f7rbcca-ca",
-    "capability.read.554af38a-8125-87c8-dfdf-eeb15kotakca-in",
-    "capability.read.554af38a-8125-87c8-dfdf-eeb15kotakca-in"
+    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
+    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
+    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15f7afexus-us",
+    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15f7bmoca-ca",
+    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15f7rbcca-ca",
+    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15kotakca-in",
+    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15kotakca-in"
   ]
 })
 
@@ -964,5 +938,19 @@ p({
   visible: false,
   permissionsGranted: [
     "rule.read.*"
+  ]
+})
+
+p({
+  "class": "foam.nanos.crunch.Capability",
+  "id": "nanopayMenuCapability",
+  "version":"0",
+  "enabled":true,
+  "visible":false,
+  "permissionsGranted":[
+    "menu.read.capability.menu.search",
+    "menu.read.capability.menu.paymentcode",
+    "menu.read.capability.menu.invitation",
+    "contact.ro.shouldinvite"
   ]
 })

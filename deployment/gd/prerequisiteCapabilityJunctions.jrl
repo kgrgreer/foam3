@@ -33,3 +33,10 @@ p({
   targetId: "gdCurrencyCapability",
   priority: 5
 })
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "gd",
+  targetId: "gdMenuCapability",
+  priority: 6
+})

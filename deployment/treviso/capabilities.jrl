@@ -1,7 +1,6 @@
 p({
   "class": "foam.nanos.crunch.Capability",
-  "id": "trevisioMenuPermissionCapability",
-  "name":"Trevisio Menu Permission Capability",
+  "id": "trevisoMenuCapability",
   "version":"0",
   "enabled":true,
   "visible":false,
@@ -29,9 +28,7 @@ p({
   enabled: true,
   visible: false,
   permissionsGranted: [
-    "country.read.BR",
-    "country.read.CA",
-    "country.read.US"
+    "country.read.BR"
   ]
 })
 
@@ -42,8 +39,8 @@ p({
   enabled: true,
   visible: false,
   permissionsGranted: [
-    "capability.read.554af38a-8125-87c8-dfdf-eeb15ftrevisobr-ca",
-    "capability.read.554af38a-8125-87c8-dfdf-eeb1trevisobr-us"
+    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15ftrevisobr-ca",
+    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb1trevisobr-us"
   ]
 })
 
@@ -54,7 +51,6 @@ p({
   enabled: true,
   visible: false,
   permissionsGranted: [
-    "currency.read.BRL",
     "currency.read.USD",
     "currency.read.CAD"
   ]
