@@ -363,9 +363,12 @@ foam.CLASS({
         {
           args: ['verifyName'],
           predicateFactory: function(e) {
-            return e.AND(
-              e.EQ(net.nanopay.model.BeneficialOwner.VERIFY_NAME, true),
-              e.EQ(net.nanopay.model.BeneficialOwner.TYPE, 'BR')
+            return e.OR(
+              e.AND(
+                e.EQ(net.nanopay.model.BeneficialOwner.VERIFY_NAME, true),
+                e.EQ(net.nanopay.model.BeneficialOwner.TYPE, 'BR')
+              ),
+              e.NEQ(net.nanopay.model.BeneficialOwner.TYPE, 'BR')
             );
           },
           errorString: 'Click to verify owner name.'
