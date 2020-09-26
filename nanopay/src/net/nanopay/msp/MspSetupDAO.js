@@ -92,8 +92,9 @@ foam.CLASS({
         DAO ruleDAO = (DAO) x.get("localRuleDAO");
 
         // Add spid prerequisites
+        addSpidPrerequisites(x, spid, mspInfo.getMenuPermissions(), "menuCapability");
         addSpidPrerequisites(x, spid, mspInfo.getCountryPermissions(), "countryCapability");
-        addSpidPrerequisites(x, spid, mspInfo.getCountryPermissions(), "currencyCapability");
+        addSpidPrerequisites(x, spid, mspInfo.getCurrencyPermissions(), "currencyCapability");
         addSpidPrerequisites(x, spid, mspInfo.getCorridorPermissions(), "corridorCapability");
         addSpidPrerequisites(x, spid, mspInfo.getPlannerPermissions(), "plannerCapability");
 

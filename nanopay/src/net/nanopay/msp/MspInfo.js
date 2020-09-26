@@ -130,6 +130,10 @@ foam.CLASS({
     },
     {
       class: 'StringArray',
+      name: 'menuPermissions'
+    },
+    {
+      class: 'StringArray',
       name: 'countryPermissions'
     },
     {

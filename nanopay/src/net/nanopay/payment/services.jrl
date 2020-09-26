@@ -80,7 +80,6 @@ p({
   """
     return new foam.dao.EasyDAO.Builder(x)
       .setAuthorize(true)
-      .setPermissionPrefix("capability")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setInnerDAO(x.get("localCapabilityDAO"))
       .setValidated(true)
