@@ -114,7 +114,7 @@ foam.CLASS({
                 try {
                     DAO flinksLoginIdDAO = (DAO) x.get("flinksLoginIdDAO");
                     try {
-                        FlinksLoginId flinksLoginIdResult = (FlinksLoginId) flinksLoginIdDAO.put(flinksLoginId);
+                        FlinksLoginId flinksLoginIdResult = (FlinksLoginId) flinksLoginIdDAO.inX(x).put(flinksLoginId);
                         flinksLoginIdAsync.setFlinksLoginIdResult(flinksLoginIdResult);
                         flinksLoginIdAsync.setStatus(AsyncStatus.COMPLETED.getLabel());
                     } catch ( Throwable t ) {

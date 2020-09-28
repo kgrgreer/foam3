@@ -23,8 +23,9 @@ foam.CLASS({
   documentation: `Decorating DAO for cancelling 'In Progress' FlinksLoginId async requests on startup.`,
 
   javaImports: [
+    'foam.core.Detachable',
     'foam.core.X',
-    'foam.dao.ArraySink',
+    'foam.dao.AbstractSink',
     'foam.dao.DAO',
     'foam.dao.Sink',
     'foam.nanos.logger.Logger',
@@ -82,18 +83,20 @@ foam.CLASS({
                 return;
             }
 
-            ((ArraySink) getDelegate().where(EQ(FlinksLoginIdAsync.STATUS, AsyncStatus.IN_PROGRESS.getLabel()))
-                .select(new ArraySink())).getArray().forEach((item) -> {
-                    var flinksLoginIdAsync = (FlinksLoginIdAsync) item;
-                    flinksLoginIdAsync = (FlinksLoginIdAsync) flinksLoginIdAsync.fclone();
-                    flinksLoginIdAsync.setStatus(AsyncStatus.CANCELLED.getLabel());
-                    flinksLoginIdAsync.setErrorMessage(CANCELLED_ERROR_MESSAGE);
-                    try { 
-                        getDelegate().put_(x, flinksLoginIdAsync); 
-                    } catch ( Throwable t ) { 
-                        ((Logger) x.get("logger")).warning("Failed to update status on cancelled async request: " + flinksLoginIdAsync.getId(), t); 
-                    }
-                });
+            getDelegate().where(
+              EQ(FlinksLoginIdAsync.STATUS, AsyncStatus.IN_PROGRESS.getLabel())
+            ).select(new AbstractSink() {
+              public void put(Object obj, Detachable sub) {
+                var flinksLoginIdAsync = (FlinksLoginIdAsync) obj;
+                flinksLoginIdAsync = (FlinksLoginIdAsync) flinksLoginIdAsync.fclone();
+                flinksLoginIdAsync.setStatus(AsyncStatus.CANCELLED.getLabel());
+                flinksLoginIdAsync.setErrorMessage(CANCELLED_ERROR_MESSAGE);
+                try { 
+                  getDelegate().put_(x, flinksLoginIdAsync); 
+                } catch ( Throwable t ) { 
+                  ((Logger) x.get("logger")).warning("Failed to update status on cancelled async request: " + flinksLoginIdAsync.getId(), t); 
+                }
+            }});
 
             // Mark the DAO initialized
             setInitialized(true);

@@ -38,7 +38,8 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       name: 'flinksLoginIdResult',
-      documentation: 'Flinks LoginId result'
+      documentation: 'Flinks LoginId result',
+      of: 'net.nanopay.flinks.external.FlinksLoginId'
     },
     {
       class: 'String',
