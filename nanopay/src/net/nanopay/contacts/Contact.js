@@ -519,43 +519,13 @@ foam.CLASS({
               throw new IllegalStateException("Business Address is required.");
             }
 
-            DAO countryDAO = (DAO) x.get("countryDAO");
-            DAO regionDAO = (DAO) x.get("regionDAO");
-
-            Country country = (Country) countryDAO.find(businessAddress.getCountryId());
-            if ( country == null ) {
-              throw new RuntimeException("Invalid country id.");
-            }
-
-            Region region = (Region) regionDAO.find(businessAddress.getRegionId());
-            if ( region == null ) {
-              throw new RuntimeException("Invalid region id.");
-            }
-
-            if ( businessAddress.getStreetNumber().length() <= 0 ) {
-              throw new RuntimeException("Invalid street number.");
-            }
-
-            if ( SafetyUtil.isEmpty(businessAddress.getStreetName()) ) {
-              throw new RuntimeException("Invalid street name.");
-            } else if ( businessAddress.getStreetName().length() > 100 ) {
-              throw new RuntimeException("Street name cannot exceed 100 characters");
-            }
-            else {
-              businessAddress.setStreetName(businessAddress.getStreetName().trim());
-            }
-
-            if ( SafetyUtil.isEmpty(businessAddress.getCity()) ) {
-              throw new RuntimeException("Invalid city name.");
-            } else if ( businessAddress.getCity().length() > 100 ) {
-              throw new RuntimeException("City cannot exceed 100 characters");
-            } else {
-              businessAddress.setCity(businessAddress.getCity().trim());
-            }
-
-            if ( ! this.validatePostalCode(businessAddress.getPostalCode(), businessAddress.getCountryId()) ) {
-              String codeType = businessAddress.getCountryId().equals("US") ? "zip code" : "postal code";
-              throw new RuntimeException("Invalid " + codeType + ".");
+            java.util.List<foam.core.PropertyInfo> props = businessAddress.getClassInfo().getAxiomsByClass(foam.core.PropertyInfo.class);
+            for ( foam.core.PropertyInfo prop : props ) {
+              try {
+                prop.validateObj(x, businessAddress);
+              } catch ( IllegalStateException e ) {
+                throw e;
+              }
             }
           }
         }
