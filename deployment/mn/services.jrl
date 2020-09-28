@@ -53,3 +53,14 @@ p({
   `,
   "client": "{\"of\":\"foam.nanos.medusa.MedusaEntry\"}"
 })
+
+// disable cron scheduler
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"cronScheduler",
+  "lazy":false,
+  "enabled":false,
+  "serviceScript":"""
+    return new foam.nanos.cron.CronScheduler();
+  """
+})
