@@ -105,6 +105,14 @@ foam.CLASS({
             'status',
             'isDefault'
           ],
+          dblClickListenerAction: function dblClick(account) {
+            if ( account.status === self.BankAccountStatus.UNVERIFIED && self.CABankAccount.isInstance(account) ) {
+              self.ctrl.add(self.Popup.create().tag({
+                class: 'net.nanopay.cico.ui.bankAccount.modalForm.CABankMicroForm',
+                bank: account
+              }));
+            }
+          },
           contextMenuActions: [
             foam.core.Action.create({
               name: 'verifyAccount',
@@ -210,20 +218,6 @@ foam.CLASS({
   methods: [
     function init() {
       this.SUPER();
-    }
-  ],
-
-  listeners: [
-    {
-      name: 'dblclick',
-      code: function onEdit(account) {
-        if ( account.status === this.BankAccountStatus.UNVERIFIED && this.CABankAccount.isInstance(account) ) {
-          this.ctrl.add(this.Popup.create().tag({
-            class: 'net.nanopay.cico.ui.bankAccount.modalForm.CABankMicroForm',
-            bank: account
-          }));
-        }
-      }
     }
   ]
 });
