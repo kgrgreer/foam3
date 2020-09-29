@@ -43,7 +43,8 @@ foam.CLASS({
     'ctrl',
     'notify',
     'stack',
-    'subject'
+    'subject',
+    'auth'
   ],
 
   exports: [
@@ -61,7 +62,7 @@ foam.CLASS({
   ],
 
   css: `
-  ^ .net-nanopay-sme-ui-SMEModal-inner {
+  .net-nanopay-sme-ui-SMEModal-inner {
     width: 515px;
     height: 500px;
   }
@@ -85,6 +86,13 @@ foam.CLASS({
         );
         dao.of = this.BankAccount;
         return dao;
+      }
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'bankAccount',
+      factory: function() {
+        return (foam.lookup(`net.nanopay.bank.${ this.subject.user.address.countryId }BankAccount`)).create({}, this);
       }
     },
     {
@@ -191,9 +199,18 @@ foam.CLASS({
           name: 'addBank',
           label: 'Add bank account',
           code: async function(X) {
-            X.controllerView.stack.push({
-              class: 'net.nanopay.bank.ui.BankPickCurrencyView'
-            }, self);
+            let permission = await this.auth.check(null, 'multi-currency.read');
+            if ( permission ){
+              X.controllerView.stack.push({
+                class: 'net.nanopay.bank.ui.BankPickCurrencyView'
+              }, self);
+            } else {
+              self.ctrl.add(this.SMEModal.create().tag({
+                class: 'net.nanopay.account.ui.BankAccountWizard',
+                data: this.bankAccount,
+                useSections: ['accountDetails', 'pad']
+              }));
+            }
           }
         });
       }

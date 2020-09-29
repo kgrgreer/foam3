@@ -566,3 +566,4 @@ p({"class":"foam.nanos.auth.Permission","id":"paymentprovidercorridor.read.*","d
 p({"class":"foam.nanos.auth.Permission","id":"service.fileTypeDAO","description":"Allow user access the fileTypeDAO"})
 p({"class":"foam.nanos.auth.Permission","id":"service.contactService","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"transactionplan.create","description":""})
+p({"class":"foam.nanos.auth.Permission","id":"multi-currency.read","description":"able to read multi currency"})
