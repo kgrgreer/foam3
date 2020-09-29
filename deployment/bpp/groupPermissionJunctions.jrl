@@ -1,0 +1,3 @@
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bpp-dev","targetId":"spid.read.bpp"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bpp-api-session","targetId":"spid.read.bpp"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bpp-api-session","targetId":"session.create.bpp"})
