@@ -332,7 +332,7 @@ foam.CLASS({
           .setUserName(userEmail)
           .setDesiredPassword(java.util.UUID.randomUUID().toString())
           .setEmailVerified(true)
-          .setGroup("personal")
+          .setGroup("sme")
           .setSpid(subject.getRealUser().getSpid())
           .build();
         user = (User) userDAO.put(user);

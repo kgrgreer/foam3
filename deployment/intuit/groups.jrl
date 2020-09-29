@@ -1,7 +1,7 @@
-p({class:"foam.nanos.auth.Group",id:"intuit-api",description:"intuit api group",parent:"api-base",defaultMenu:"view-accounts"})
-p({class:"foam.nanos.auth.Group",id:"intuit-api-session",description:"intuit api session group",parent:"intuit-api",defaultMenu:"view-users"})
+p({class:"foam.nanos.auth.Group",id:"intuit-api",description:"intuit api group",parent:"external-api",defaultMenu:"view-accounts"})
+p({class:"foam.nanos.auth.Group",id:"intuit-api-session",description:"intuit api session group",parent:"external-api-session",defaultMenu:"view-users"})
 p({class:"foam.nanos.auth.Group",id:"intuit-admin",description:"intuit admin",parent:"intuit-dev",defaultMenu:"view-users",theme:"4d3d59a0-9c98-da42-9cd6-49c278cb9842"})
-p({class:"foam.nanos.auth.Group",id:"intuit-dev",description:"intuit dev group",parent:"intuit-api",defaultMenu:"view-accounts"})
+p({class:"foam.nanos.auth.Group",id:"intuit-dev",description:"intuit dev group",parent:"external-dev",defaultMenu:"view-accounts"})
 
 // First business for Intuit API
 p({class:"foam.nanos.auth.Group",id:"smallbusiness8025.employee",description:"Template group for business employee groups.",parent:"sme",defaultMenu:"sme.accountProfile.switch-business",softSessionLimit:600000,supportEmail:"support@ablii.com",passwordPolicy:{class:"foam.nanos.auth.PasswordPolicy"}})

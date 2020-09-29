@@ -641,7 +641,8 @@ p({
   "version":"0",
   "enabled":true,
   "visible":false,
-  "keywords":["intuit"]
+  "keywords":["intuit"],
+  "reviewRequired":true
 })
 
 p({

@@ -64,6 +64,7 @@ foam.CLASS({
         return {
           class: 'foam.u2.view.ScrollTableView',
           editColumnsEnabled: false,
+          disableUserSelection: true,
           columns: [
             foam.core.Property.create({
               name: 'organization',
@@ -213,15 +214,6 @@ foam.CLASS({
             this.pushMenu('sme.menu.toolbar');
           }
         });
-      }
-    }
-  ],
-
-  listeners: [
-    {
-      name: 'dblclick',
-      code: function onEdit(contact) {
-        // Do nothing.
       }
     }
   ]

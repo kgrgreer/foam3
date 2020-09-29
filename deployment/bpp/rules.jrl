@@ -1,9 +1,9 @@
 p({
     class:"net.nanopay.auth.UserCreateServiceProviderURLRule",
-    id:"fda30583-9ecb-0bf2-38c2-df0c44f3e69a",
-    name:"intuitUserCreateServiceProviderURLRule",
+    id:"6C751066-B628-4906-8461-093090E774BA",
+    name:"bppUserCreateServiceProviderURLRule",
     priority:100,
-    documentation:"Set ServiceProvider on User Create based on AppConfig URL for intuit",
+    documentation:"Set ServiceProvider on User Create based on AppConfig URL for BPP",
     daoKey:"localUserDAO",
     operation:0,
     after:false,
@@ -14,8 +14,8 @@ p({
             spid:"intuit",
             urls:[
                 "api",
-                "intuit",
-                "integration.nanopay.net"
+                "bpp",
+                "bpp.demo.nanopay.net"
             ]
         }
     ],
