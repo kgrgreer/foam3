@@ -641,7 +641,8 @@ p({
   "version":"0",
   "enabled":true,
   "visible":false,
-  "keywords":["intuit"]
+  "keywords":["intuit"],
+  "reviewRequired":true
 })
 
 p({
@@ -653,8 +654,7 @@ p({
   "enabled":true,
   "visible":false,
   "daoKey":"businessDAO",
-  "contextDAOFindKey":"subject.user",
-  "reviewRequired":true
+  "contextDAOFindKey":"subject.user"
 })
 
 p({
