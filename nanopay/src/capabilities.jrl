@@ -927,7 +927,8 @@ p({
   permissionsGranted: [
     "currency.read.CAD",
     "currency.read.USD",
-    "currency.read.INR"
+    "currency.read.INR",
+    "multi-currency.read"
   ]
 })
 
