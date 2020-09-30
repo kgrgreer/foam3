@@ -218,7 +218,7 @@ foam.CLASS({
       label: 'Resend the email',
       code: function(X) {
         var self = this;
-        this.emailToken.generateToken(null, this.user).then(function(result) {
+        X.emailToken.generateToken(null, this.user).then(function(result) {
           if ( ! result ) {
             throw new Error('Error generating reset token');
           }
