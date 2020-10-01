@@ -54,7 +54,9 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        approvalRequest.setGroup(getApproverGroupId());
+        if ( approvalRequest.getGroup() == null ) {
+          approvalRequest.setGroup(getApproverGroupId());
+        }
         ((DAO) x.get("approvalRequestDAO")).put(approvalRequest);
       `
     }

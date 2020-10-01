@@ -647,8 +647,15 @@ foam.CLASS({
     }
 
     .login-stack {
-      margin-bottom: -60px;
-      margin-left: 0;
+      height: calc(100vh - 65px);
+      margin-bottom: 65px;
+      overflow: scroll;
+    }
+
+    .application-stack {
+      height: calc(100vh - 120px);
+      margin-top: 55px;
+      overflow: scroll;
     }
 
     .net-nanopay-auth-ui-UserSelectionView .styleHolder_NameField {
@@ -1020,7 +1027,7 @@ foam.CLASS({
     }
     .foam-u2-view-LoginView .foam-u2-borders-SplitScreenBorder {
       padding-top: 75px;
-      height: calc(100vh - 75px);
+      height: calc(100vh - 140px);
     }
     .foam-u2-filter-FilterSearch-container-search {
       width: 857px;

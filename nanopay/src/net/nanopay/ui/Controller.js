@@ -399,13 +399,13 @@ foam.CLASS({
           }))
           .start()
             .addClass('stack-wrapper')
-            .enableClass('login-stack', this.loginSuccess$.map( ls => ! ls ))
             .tag({
               class: 'net.nanopay.ui.banner.Banner',
               data$: this.bannerData$
             })
             .start(this.StackView.create({data: this.stack, showActions: false}))
-              .style({'margin-top': '55px'})
+              .enableClass('login-stack', this.loginSuccess$.map( ls => ! ls ))
+              .enableClass('application-stack', this.loginSuccess$.map( ls => ls ))
             .end()
           .end()
           .start()
