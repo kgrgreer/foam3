@@ -67,6 +67,7 @@ foam.CLASS({
             agency.submit(x, new ContextAgent() {
               @Override
               public void execute(X x) {
+                String group = user.getSpid() == "nanopay" ? "fraud-ops" : user.getSpid() + "-fraud-ops";
                 requestApproval(x,
                   new ComplianceApprovalRequest.Builder(x)
                     .setObjId(ucj.getId())
@@ -74,6 +75,7 @@ foam.CLASS({
                     .setCauseId(getResponse().getId())
                     .setClassification(getClassification())
                     .setCauseDaoKey("securefactSIDniDAO")
+                    .setGroup(group)
                     .build()
                 );
               }
@@ -82,12 +84,14 @@ foam.CLASS({
           ruler.putResult(status);
         } catch (Exception e) {
           SIDniResponse response = getResponse();
+          String group = user.getSpid() == "nanopay" ? "fraud-ops" : user.getSpid() + "-fraud-ops";
           requestApproval(x, new ComplianceApprovalRequest.Builder(x)
             .setObjId(ucj.getId())
             .setDaoKey("userCapabilityJunctionDAO")
             .setCauseId(response == null ? 0L : getResponse().getId())
             .setClassification(getClassification())
             .setCauseDaoKey("securefactSIDniDAO")
+            .setGroup(group)
             .build());
           ((Logger) x.get("logger")).warning("SIDniValidator failed.", e);
           ruler.putResult(ComplianceValidationStatus.PENDING);
