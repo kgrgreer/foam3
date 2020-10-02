@@ -42,10 +42,12 @@ foam.CLASS({
         while ( ! SafetyUtil.isEmpty(headTx.getParent()) ) {
           headTx = headTx.findParent(x);
         }
+        String spid = ct.findSourceAccount(x).findOwner(x).getSpid();
+        String group = spid == "nanopay" ? "fraud-ops" : spid + "-fraud-ops";
         ComplianceApprovalRequest req = new ComplianceApprovalRequest.Builder(x)
           .setDaoKey("localTransactionDAO")
           .setObjId(ct.getId())
-          .setGroup("fraud-ops")
+          .setGroup(group)
           .setDescription("Main Summary txn: "+headTx.getSummary()+" The Id of Summary txn: "+headTx.getId() )
           .setClassification("Validate Transaction Using Jackie Rule")
           .build();

@@ -91,6 +91,7 @@ foam.CLASS({
             agency.submit(x, new ContextAgent() {
               @Override
               public void execute(X x) {
+                String group = user.getSpid() == "nanopay" ? "fraud-ops" : user.getSpid() + "-fraud-ops";
                 requestApproval(x, 
                   new DowJonesApprovalRequest.Builder(x)
                     .setObjId(ucj.getId())
@@ -99,6 +100,7 @@ foam.CLASS({
                     .setCauseDaoKey("dowJonesResponseDAO")
                     .setClassification(getClassification())
                     .setMatches(response.getResponseBody().getMatches())
+                    .setGroup(group)
                     .build());
               }
             }, "Person Sanction Validator");
@@ -107,6 +109,7 @@ foam.CLASS({
         } catch (Exception e) {
           ((Logger) x.get("logger")).warning("PersonSanctionValidator failed.", e);
           DowJonesResponse response = getResponse();
+          String group = user.getSpid() == "nanopay" ? "fraud-ops" : user.getSpid() + "-fraud-ops";
           requestApproval(x, 
             new DowJonesApprovalRequest.Builder(x)
               .setObjId(ucj.getId())
@@ -115,6 +118,7 @@ foam.CLASS({
               .setCauseDaoKey("dowJonesResponseDAO")
               .setClassification(getClassification())
               .setMatches(response != null ? response.getResponseBody().getMatches() : null)
+              .setGroup(group)
               .build());
           ruler.putResult(ComplianceValidationStatus.PENDING);
         }

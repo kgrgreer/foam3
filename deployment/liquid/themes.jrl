@@ -57,11 +57,6 @@ p({
   "topNavigation":"net.nanopay.ui.TopSideNavigation",
   "customCSS":
   """
-    .foam-u2-stack-StackView {
-      margin: auto;
-      overflow: scroll;
-      height: calc(100vh - 150px);
-    }
     .net-nanopay-ui-Controller {
       overflow: hidden;
     }

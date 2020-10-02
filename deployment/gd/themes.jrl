@@ -64,12 +64,6 @@ p({
   "inputHorizontalPadding":"8px",
   "customCSS":
   """
-    .foam-u2-stack-StackView {
-      margin: auto;
-      padding-bottom: 65px;
-      overflow: scroll;
-      height: calc(100vh - 100px);
-    }
     .net-nanopay-ui-Controller {
       overflow: hidden;
     }
