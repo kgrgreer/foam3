@@ -104,7 +104,7 @@ foam.CLASS({
               class: 'foam.u2.TextField',
               attributes: [ { name: 'maxlength', value: 2 } ],
               data: X.data.data.slice(9,11)
-            },
+            }
           ]
         })
       }
