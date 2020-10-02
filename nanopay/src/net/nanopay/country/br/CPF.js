@@ -56,10 +56,6 @@ foam.CLASS({
       label: 'CPF',
       section: 'collectCpf',
       help: `The CPF (Cadastro de Pessoas Físicas or Natural Persons Register) is a number assigned by the Brazilian revenue agency to both Brazilians and resident aliens who are subject to taxes in Brazil.`,
-      view: {
-        class: 'foam.u2.TextField',
-        maxLength: 11
-      },
       validationPredicates: [
         {
           args: ['data', 'cpfName'],
@@ -72,6 +68,9 @@ foam.CLASS({
           errorMessage: 'INVALID_CPF'
         }
       ],
+      tableCellFormatter: function(val) {
+        return foam.String.applyFormat(val, 'xxx.xxx.xxx-xx');
+      },
       postSet: function(_,n) {
         this.cpfName = "";
         if ( n.length == 11 ) {
@@ -80,6 +79,35 @@ foam.CLASS({
           });
         }
       },
+      view: function(_, X) {
+        return foam.u2.FragmentedTextField.create({
+          delegates: [
+            {
+              class: 'foam.u2.TextField',
+              attributes: [ { name: 'maxlength', value: 3 } ],
+              data: X.data.data.slice(0,3)
+            },
+            '.',
+            {
+              class: 'foam.u2.TextField',
+              attributes: [ { name: 'maxlength', value: 3 } ],
+              data: X.data.data.slice(3,6)
+            },
+            '.',
+            {
+              class: 'foam.u2.TextField',
+              attributes: [ { name: 'maxlength', value: 3 } ],
+              data: X.data.data.slice(6,9)
+            },
+            '-',
+            {
+              class: 'foam.u2.TextField',
+              attributes: [ { name: 'maxlength', value: 2 } ],
+              data: X.data.data.slice(9,11)
+            }
+          ]
+        })
+      }
     },
     {
       class: 'String',
