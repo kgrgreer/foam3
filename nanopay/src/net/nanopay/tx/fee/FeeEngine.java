@@ -31,6 +31,8 @@ import net.nanopay.tx.TransactionLineItem;
 import net.nanopay.tx.Transfer;
 import net.nanopay.tx.model.Transaction;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
 
 public class FeeEngine {
@@ -115,13 +117,21 @@ public class FeeEngine {
         var currencyDAO = (DAO) x.get("currencyDAO");
         var sourceCurrency = (Currency) currencyDAO.find(transaction.getSourceCurrency());
         var destinationCurrency = (Currency) currencyDAO.find(transaction.getDestinationCurrency());
+        var rateExpiry = transactionFeeRule_.getRateExpiry();
+        var expiry = LocalDateTime.now();
+
+        if ( rateExpiry != null ) {
+          expiry = expiry.plusHours(rateExpiry.getHour())
+            .plusMinutes(rateExpiry.getMinute())
+            .plusSeconds(rateExpiry.getSecond());
+        }
 
         transaction.addLineItems(new TransactionLineItem[] {
           new TotalRateLineItem.Builder(x)
             .setRate(transactionFeeRule_.getIsInvertedRate() ? 1.0 / rate : rate)
             .setSourceCurrency(sourceCurrency)
             .setDestinationCurrency(destinationCurrency)
-            .setExpiry(new Date())
+            .setExpiry(Date.from(expiry.atZone(ZoneId.systemDefault()).toInstant()))
             .build()
         });
       }
