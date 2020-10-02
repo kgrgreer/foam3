@@ -112,7 +112,7 @@ foam.CLASS({
         this.sections[1].subTitle = '';
         this.sections[2].title = this.EDIT_STEP_THREE_TITLE;
         this.sections[2].subTitle = '';
-        if ( this.data.bankAccount > 0 ){
+        if ( this.data.bankAccount > 0 ) {
           this.data.createBankAccount = await this.bankAccountDAO.find(this.data.bankAccount);
         }
       }
@@ -290,7 +290,6 @@ foam.CLASS({
         if ( ! await this.addContact() ) return;
         if ( ! await this.addBankAccount() ) return;
         X.closeDialog();
-        location.reload();
       }
     }
   ]
