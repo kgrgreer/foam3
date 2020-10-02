@@ -24,13 +24,14 @@ foam.CLASS({
 
   requires: [
     'foam.log.LogLevel',
-    'foam.u2.Element'
+    'foam.u2.Element',
+    'foam.u2.dialog.NotificationMessage'
   ],
 
   imports: [
     'auth',
+    'ctrl',
     'emailToken',
-    'notify',
     'stack',
     'user'
   ],
@@ -132,6 +133,7 @@ foam.CLASS({
     { name: 'INSTRUCTIONS2', message: ' with a link to activate your account.' },
     { name: 'NO_EMAIL_LINK', message: 'Don\'t see the email?' },
     { name: 'RESEND_EMAIL_LINK', message: 'Resend the email' },
+    { name: 'ERROR_MSG', message: 'There was an issue with resending your verification email.' },
     {
       name: 'NO_EMAIL_INSTRUCTIONS_1', message: 'If you don\'t see an email from us within a few minutes, the following may have happened:'
     },
@@ -222,9 +224,15 @@ foam.CLASS({
           if ( ! result ) {
             throw new Error('Error generating reset token');
           }
-          self.notify('Verification email sent to ' + self.user.email, '', self.LogLevel.INFO, true);
+          self.ctrl.add(self.NotificationMessage.create({
+            message: 'Verification email sent to ' + self.user.email,
+            type: self.LogLevel.INFO
+          }));
         }).catch(function(err) {
-          self.notify(err.message, '', self.LogLevel.ERROR, true);
+          self.ctrl.add(self.NotificationMessage.create({
+            message: err.message || self.ERROR_MSG,
+            type: self.LogLevel.ERROR
+          }));
         });
       }
     }
