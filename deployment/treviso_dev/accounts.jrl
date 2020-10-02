@@ -1,0 +1,43 @@
+p({class:"net.nanopay.account.DigitalAccount",denomination:"BRL",id:201,name:"FeeAccount-treviso",isDefault:true,owner:2001,created:1601392287945,createdBy:1,createdByAgent:1,lastModified:1601392287945,lastModifiedBy:1,lifecycleState:1})
+p({
+  "class":"net.nanopay.bank.BRBankAccount",
+  "id":204,
+  "bankCode":"12345678",
+  "branchCode":"12345",
+  "accountNumber":"1234567890",
+  "status":1,
+  "name":"Bank BRL",
+  "iban":"BR5155245856279572445638416A4",
+  "isDefault":true,
+  "created":"2020-10-02T18:45:41.978Z",
+  "createdBy":1,
+  "createdByAgent":1,
+  "lastModified":"2020-10-02T18:45:41.978Z",
+  "lastModifiedBy":1,
+  "lifecycleState":1,
+  "owner":2005
+})
+p({
+  "class":"net.nanopay.bank.USBankAccount",
+  "id":206,
+  "branchId":"123123123",
+  "accountNumber":"123123",
+  "branch":41,
+  "status":1,
+  "address":{
+    "class":"foam.nanos.auth.Address"
+  },
+  "bankAddress":{
+    "class":"foam.nanos.auth.Address"
+  },
+  "forContact":true,
+  "name":"US contact Bank",
+  "isDefault":true,
+  "created":"2020-10-02T18:51:33.912Z",
+  "createdBy":1,
+  "createdByAgent":1,
+  "lastModified":"2020-10-02T18:51:33.912Z",
+  "lastModifiedBy":1,
+  "lifecycleState":1,
+  "owner":2006
+})

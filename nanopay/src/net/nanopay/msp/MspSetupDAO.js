@@ -102,7 +102,6 @@ foam.CLASS({
         Theme clientTheme = (Theme) themeDAO.find(mspInfo.getTheme());
         clientTheme = clientTheme == null ? new Theme() : (Theme) clientTheme.fclone();
         clientTheme.clearId();
-        clientTheme.clearAdmissionCapability();
         clientTheme.clearPersonalSupportUser();
         clientTheme.setName(mspInfo.getSpid());
         clientTheme.setAppName(mspInfo.getAppName());
