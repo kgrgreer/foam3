@@ -23,7 +23,7 @@ foam.CLASS({
     'foam.log.LogLevel',
     'foam.u2.dialog.Popup',
     'foam.u2.PopupView',
-    'net.nanopay.ui.LoadingSpinner',
+    'foam.u2.LoadingSpinner',
     'net.nanopay.documents.AcceptanceDocument',
     'net.nanopay.documents.AcceptanceDocumentService'
   ],

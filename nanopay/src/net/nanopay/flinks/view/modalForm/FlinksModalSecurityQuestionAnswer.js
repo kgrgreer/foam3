@@ -29,7 +29,7 @@ foam.CLASS({
     'foam.u2.view.PasswordView',
     'foam.u2.view.StringArrayView',
     'net.nanopay.flinks.view.element.StringArrayInput',
-    'net.nanopay.ui.LoadingSpinner'
+    'foam.u2.LoadingSpinner'
   ],
 
   exports: [
