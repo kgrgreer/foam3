@@ -78,16 +78,20 @@ p({
   "serve":true,
   "serviceScript":
   """
-  hashingJDAO = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, net.nanopay.model.Invitation.getOwnClassInfo(), "businessInvitations");
-  ed = new foam.dao.EasyDAO.Builder(x)
-    .setAuthorize(false)
-    .setInnerDAO(hashingJDAO)
-    .setSeqNo(true)
+  mdao = new foam.dao.MDAO(net.nanopay.model.Invitation.getOwnClassInfo());
+  inner = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, mdao, "businessInvitations", "true".equals(System.getProperty("CLUSTER")));
+  decorator = new net.nanopay.auth.PublicUserInfoDAO(x, "createdBy", "inviter",
+    new net.nanopay.partners.AuthenticatedInvitationDAO(x,
+      new net.nanopay.sme.BusinessInvitationDAO(x,
+        new foam.dao.NullDAO(x, net.nanopay.model.Invitation.getOwnClassInfo()))));
+  return new foam.dao.EasyDAO.Builder(x)
     .setOf(net.nanopay.model.Invitation.getOwnClassInfo())
+    .setAuthorize(false)
+    .setSeqNo(true)
+    .setMdao(mdao)
+    .setInnerDAO(inner)
+    .setDecorator(decorator)
     .build();
-  bid = new net.nanopay.sme.BusinessInvitationDAO(x, ed);
-  aid = new net.nanopay.partners.AuthenticatedInvitationDAO(x, bid);
-  return new net.nanopay.auth.PublicUserInfoDAO(x, "createdBy", "inviter", aid);
   """,
   "client":
   """

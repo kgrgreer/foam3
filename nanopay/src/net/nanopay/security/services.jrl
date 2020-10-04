@@ -82,7 +82,26 @@ p({
     return privateKeyDAO;
   """
 })
-p({"class":"foam.nanos.boot.NSpec", "name":"keyPairDAO",                       "serve":true,  "serviceScript":"foam.dao.DAO hashingJDAO = new net.nanopay.security.HashingJDAO(x, \"SHA-256\", false, true, net.nanopay.security.KeyPairEntry.getOwnClassInfo(), \"keyPairs\"); return new net.nanopay.security.KeyPairDAO.Builder(x).setDelegate(new foam.dao.EasyDAO.Builder(x).setAuthorize(false).setInnerDAO(hashingJDAO).setSeqNo(true).setOf(net.nanopay.security.KeyPairEntry.getOwnClassInfo()).build()).build();","client":"{\"of\":\"net.nanopay.security.KeyPairEntry\"}"})
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"keyPairDAO",
+  "serve":true,
+  "serviceScript":"""
+    mdao = new foam.dao.MDAO(net.nanopay.security.KeyPairEntry.getOwnClassInfo());
+    inner = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, mdao, "keyPairs", "true".equals(System.getProperty("CLUSTER")));
+    return new net.nanopay.security.KeyPairDAO.Builder(x)
+      .setDelegate(new foam.dao.EasyDAO.Builder(x)
+        .setAuthorize(false)
+        .setMdao(mdao)
+        .setInnerDAO(inner)
+        .setSeqNo(true)
+        .setOf(net.nanopay.security.KeyPairEntry.getOwnClassInfo())
+        .build())
+    .build();
+  """,
+  "client":"{\"of\":\"net.nanopay.security.KeyPairEntry\"}"
+})
+
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "publicKeyDAO",
