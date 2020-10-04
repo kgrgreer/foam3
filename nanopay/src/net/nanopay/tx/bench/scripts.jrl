@@ -10,8 +10,6 @@ p({
     savedDebug = lc.getLogDebug();
     lc.setLogDebug(false);
     b = new TransactionBenchmark();
-    //b.setDisableRules(true);
-    b.setPurgePerRun(false);
     builder = new BenchmarkRunner.Builder(x)
       .setInvocationCount(1000)
       .setThreadCount(1)
