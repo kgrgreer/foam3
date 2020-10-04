@@ -362,7 +362,7 @@ p({
           for ( key : sink.groupKeys ) {
               printRuleGroup(key, sink.groups.get(key).array);
           }
-          print("\n");
+          print("\\n");
       }
   }
 

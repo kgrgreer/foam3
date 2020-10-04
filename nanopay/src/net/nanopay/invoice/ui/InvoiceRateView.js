@@ -43,7 +43,7 @@ foam.CLASS({
     'net.nanopay.payment.PADTypeLineItem',
     'net.nanopay.tx.AbliiTransaction',
     'net.nanopay.tx.TransactionQuote',
-    'net.nanopay.ui.LoadingSpinner',
+    'foam.u2.LoadingSpinner',
     'net.nanopay.ui.modal.TandCModal',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
@@ -105,10 +105,10 @@ foam.CLASS({
     ^ .amount-container {
       margin-top: 20px;
     }
-    ^ .net-nanopay-ui-LoadingSpinner img{
+    ^ .foam-u2-LoadingSpinner img{
       width: 35px;
     }
-    ^ .net-nanopay-ui-LoadingSpinner {
+    ^ .foam-u2-LoadingSpinner {
       width: 65px;
       position: relative;
       margin: auto;
@@ -136,7 +136,7 @@ foam.CLASS({
     .requote-Spinner {
       text-align: center;
     }
-    .requote-Spinner .net-nanopay-ui-LoadingSpinner img {
+    .requote-Spinner .foam-u2-LoadingSpinner img {
       width: 100px;
     }
     .foam-u2-detail-SectionedDetailView-card-container .foam-u2-borders-CardBorder {

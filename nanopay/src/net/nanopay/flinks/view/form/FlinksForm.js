@@ -40,7 +40,7 @@ foam.CLASS({
   requires: [
     'foam.u2.dialog.NotificationMessage',
     'foam.nanos.auth.Address',
-    'net.nanopay.ui.LoadingSpinner'
+    'foam.u2.LoadingSpinner'
   ],
 
   properties: [

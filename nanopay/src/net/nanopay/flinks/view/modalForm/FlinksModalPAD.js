@@ -26,7 +26,7 @@ foam.CLASS({
     'foam.log.LogLevel',
     'foam.u2.dialog.Popup',
     'net.nanopay.model.PadCapture',
-    'net.nanopay.ui.LoadingSpinner'
+    'foam.u2.LoadingSpinner'
   ],
 
   exports: [

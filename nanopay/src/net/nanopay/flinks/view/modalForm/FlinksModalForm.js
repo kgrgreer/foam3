@@ -66,7 +66,7 @@ foam.CLASS({
 
       height: 100%;
     }
-    ^ .spinner-container .net-nanopay-ui-LoadingSpinner img {
+    ^ .spinner-container .foam-u2-LoadingSpinner img {
       width: 50px;
       height: 50px;
     }

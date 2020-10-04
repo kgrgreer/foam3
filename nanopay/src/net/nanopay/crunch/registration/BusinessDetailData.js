@@ -20,11 +20,15 @@ foam.CLASS({
   name: 'BusinessDetailData',
 
   documentation: `This model represents the basic info of a Business that must be collect for onboarding.`,
-  
+
   implements: [
     'foam.core.Validatable'
   ],
-  
+
+  messages: [
+    { name: 'INVALID_ADDRESS_ERROR', message: 'Invalid address.' }
+  ],
+
   properties: [
     net.nanopay.model.Business.BUSINESS_NAME.clone().copyFrom(),
     net.nanopay.model.Business.PHONE_NUMBER.clone().copyFrom(),
@@ -58,7 +62,7 @@ foam.CLASS({
     }),
     net.nanopay.model.Business.EMAIL.clone().copyFrom()
   ],
-  
+
   methods: [
     {
       name: 'validate',
@@ -75,4 +79,3 @@ foam.CLASS({
     }
   ]
 });
-  

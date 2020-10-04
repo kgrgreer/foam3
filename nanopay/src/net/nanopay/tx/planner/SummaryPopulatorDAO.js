@@ -162,7 +162,7 @@ foam.CLASS({
         for ( FeeLineItem feeLine: feeArray ) {
           totalFee += feeLine.getAmount();
         }
-        feeSummary.setTotalFee(currency.format(totalFee) + currency.getId());
+        feeSummary.setTotalFee(currency.format(totalFee) + " " + currency.getId());
         txn.addLineItems(new TransactionLineItem[]{feeSummary});
       }
       return txn;
@@ -181,6 +181,7 @@ foam.CLASS({
 
       if ( fx.size() > 0 ) {
         FXLineItem[] fxArray = (FXLineItem[]) getTotalRates(fx).orElse(fx).toArray(new FXLineItem[0]);
+        if ( fxArray.length > 0 ) fxSummary.setExpiry(fxArray[0].getExpiry());
         fxSummary.setLineItems(fxArray);
 
         DAO      currencyDAO = (DAO) getX().get("currencyDAO");
@@ -233,7 +234,7 @@ foam.CLASS({
       Date date = cal.getTime();
 
       if ( expiry.size() > 0 ) {
-        ExpiryLineItem[] expiryArray = expiry.toArray((new ExpiryLineItem[expiry.size()]));
+        ExpiryLineItem[] expiryArray = (ExpiryLineItem[]) getTotalRates(expiry).orElse(expiry).toArray(new ExpiryLineItem[0]);
         expirySummary.setLineItems(expiryArray);
         for ( ExpiryLineItem exp: expiryArray ) {
           if ( exp.getExpiry() != null && date.after(exp.getExpiry()) ) {

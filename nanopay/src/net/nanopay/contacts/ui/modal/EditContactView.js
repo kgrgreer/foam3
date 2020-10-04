@@ -26,7 +26,7 @@ foam.CLASS({
 
   requires: [
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.ui.LoadingSpinner',
+    'foam.u2.LoadingSpinner',
   ],
 
   imports: [

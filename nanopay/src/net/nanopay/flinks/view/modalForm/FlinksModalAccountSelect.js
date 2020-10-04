@@ -32,7 +32,7 @@ foam.CLASS({
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.payment.Institution',
-    'net.nanopay.ui.LoadingSpinner'
+    'foam.u2.LoadingSpinner'
   ],
 
   exports: [

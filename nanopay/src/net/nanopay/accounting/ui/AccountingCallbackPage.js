@@ -46,7 +46,7 @@ foam.CLASS({
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.bank.USBankAccount',
-    'net.nanopay.ui.LoadingSpinner',
+    'foam.u2.LoadingSpinner',
     'foam.u2.dialog.Popup'
   ],
 

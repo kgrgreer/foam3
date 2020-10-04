@@ -24,7 +24,7 @@ foam.CLASS({
 
   requires: [
     'foam.u2.CheckBox',
-    'net.nanopay.ui.LoadingSpinner'
+    'foam.u2.LoadingSpinner'
   ],
 
   imports: [

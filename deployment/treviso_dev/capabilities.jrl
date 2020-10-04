@@ -1,0 +1,71 @@
+// Temporary nature codes used in payment flow.
+p({class: "net.nanopay.country.br.NatureCode", operationType: "10001", payerType: "xx", id: "cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-1", name:"Supply and Technology Services"})
+p({class: "net.nanopay.country.br.NatureCode", operationType: "10002", payerType: "xx", id: "cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-2", name:"Telecommunication services"})
+p({class: "net.nanopay.country.br.NatureCode", operationType: "10003", payerType: "xx", id: "cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-3", name:"Computing services"})
+p({class: "net.nanopay.country.br.NatureCode", operationType: "20001", payerType: "xx", id: "cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-4", name:"Export with advance receipt"})
+p({class: "net.nanopay.country.br.NatureCode", operationType: "20002", payerType: "xx", id: "cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-5", name:"Embedded Goods"})
+p({class: "net.nanopay.country.br.NatureCode", operationType: "20003", payerType: "xx", id: "cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-6", name:"Export without RE or DU-E / DSE registration - International Orders"})
+
+// treviso service provider capability and permissions
+p({
+  class: "foam.nanos.auth.ServiceProvider",
+  id: "treviso",
+  description: "treviso",
+  permissionsGranted: [
+    "naturecode.read.cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-1",
+    "naturecode.read.cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-2",
+    "naturecode.read.cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-3",
+  ]
+})
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "trevisoMenuCapability",
+  version: "0",
+  enabled: true,
+  visible: false,
+  permissionsGranted: []
+})
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "trevisoPlannerCapability",
+  version: "0",
+  enabled: true,
+  visible: false,
+  permissionsGranted: [
+    "rule.read.13df0d76-ba3e-4287-b42e-c7ceff059dd8",
+    "rule.read.2775abef-05d4-4460-bea8-7a70e9d544af",
+    "rule.read.519e2a68-a914-444f-b050-2ce01f29fe24"
+  ]
+})
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "trevisoCountryCapability",
+  version: "0",
+  enabled: true,
+  visible: false,
+  permissionsGranted: [
+    "country.read.BR"
+  ]
+})
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "trevisoCorridorCapability",
+  version: "0",
+  enabled: true,
+  visible: false,
+  permissionsGranted: [
+    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15ftrevisobr-ca",
+    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb1trevisobr-us"
+  ]
+})
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "trevisoCurrencyCapability",
+  version: "0",
+  enabled: true,
+  visible: false,
+  permissionsGranted: [
+    "currency.read.USD",
+    "currency.read.CAD"
+  ]
+})

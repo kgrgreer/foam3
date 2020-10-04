@@ -115,6 +115,13 @@ foam.CLASS({
       documentation: 'Set to true if the "rateName" is the inverted rate (converting from destination currency to source currency).'
     },
     {
+      class: 'FObjectProperty',
+      name: 'rateExpiry',
+      of: 'foam.nanos.cron.TimeHMS',
+      section: 'basicInfo',
+      documentation: 'Expiry duration of the generated TotalRateLineItem'
+    },
+    {
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'feeAccount',

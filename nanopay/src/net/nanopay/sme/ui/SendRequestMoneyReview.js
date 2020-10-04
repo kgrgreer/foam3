@@ -60,7 +60,7 @@ foam.CLASS({
     ^ .invoice-details {
       margin-top: 25px;
     }
-    ^ .net-nanopay-ui-LoadingSpinner img{
+    ^ .foam-u2-LoadingSpinner img{
       width: 150px;
       margin: 200px;
     }
