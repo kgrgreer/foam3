@@ -102,10 +102,10 @@ p({
   "realm":"nanopay",
   "region":"Toronto",
   "regionStatus":1,
-  "zone":1,
+  "zone":2,
   "port":8080,
   "sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738",
-  "type":1,
+  "type":2,
   "created":"2020-03-28T14:57:12.959Z",
   "createdBy":2
 })
@@ -121,7 +121,7 @@ p({
   "zone":2,
   "port":8080,
   "sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738",
-  "type":4,
+  "type":2,
   "created":"2020-03-28T14:57:12.959Z",
   "createdBy":2
 })
@@ -134,10 +134,10 @@ p({
   "realm":"nanopay",
   "region":"Toronto",
   "regionStatus":1,
-  "zone":1,
+  "zone":2,
   "port":8080,
   "sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738",
-  "type":4,
+  "type":2,
   "created":"2020-03-28T14:57:12.959Z",
   "createdBy":2
 })
@@ -169,7 +169,7 @@ p({
   "zone":2,
   "port":8080,
   "sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738",
-  "type":3,
+  "type":2,
   "created":"2020-03-28T14:57:12.959Z",
   "createdBy":2
 })
@@ -182,11 +182,11 @@ p({
   "realm":"nanopay",
   "region":"Toronto",
   "regionStatus":1,
-  "zone":0,
+  "zone":2,
   "port":8080,
   "sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738",
-  "type":1,
-  "accessMode":0,
+  "type":4,
+  "accessMode":1,
   "created":"2020-03-28T14:57:12.959Z",
   "createdBy":2
 })
@@ -291,7 +291,7 @@ p({
   "class":"foam.nanos.medusa.ClusterConfig",
   "id":"noc",
   "name":"noc",
-  "enabled":true,
+  "enabled":false,
   "realm":"nanopay",
   "region":"Toronto",
   "regionStatus":1,
