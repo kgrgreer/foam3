@@ -6997,3 +6997,58 @@ p({
   "id":"9167ce7b-17f6-495e-ace7-a62f89eb9e71",
   "name":"Interbancario"
 })
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-14",
+  "name":"Certify Data Reviewed",
+  "of":"net.nanopay.crunch.onboardingModels.CertifyDataReviewed",
+  "description":"Certify all data submitted has been reviewed",
+  "documentation":"""
+    Certify data reviewed for Brazil businesses.
+    Certify data reviewed is expired to expire unlock payments br,
+    it has a duration of 18 months.
+  """,
+  "version":"0",
+  "duration":540,
+  "gracePeriod":7,
+  "enabled":true,
+  "visible":false
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"b5f2b020-db0f-11ea-87d0-0242ac130003",
+  "name":"Office Consumption",
+  "description":"""
+    Office consumption bill includes energy, telephone, water, cable TV, IPTU or bank statement. 
+    3 months of billing documents required.
+    Office Consumption bill has a duration of 3 months
+  """,
+  "of":"net.nanopay.crunch.document.Document",
+  "version":"0",
+  "duration":90,
+  "gracePeriod":7,
+  "enabled":true,
+  "visible":true,
+  "associatedEntity": 0
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"8ad3c898-db32-11ea-87d0-0242ac130003",
+  "name":"User Identity",
+  "description":"""
+    Identity document that contains full name, CPF number and photo. 
+    Valid until expire date or no longer than 10 years.
+    This capability has an Expirable Document and will expire on the date of document expiry,
+    or ten years, which ever comes first.
+  """,
+  "of":"net.nanopay.crunch.document.ExpirableDocument",
+  "version":"0",
+  "duration":3650,
+  "gracePeriod":7,
+  "enabled":true,
+  "visible":true,
+  "associatedEntity": 1
+})

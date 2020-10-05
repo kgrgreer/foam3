@@ -18,6 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.crunch.onboardingModels',
   name: 'CertifyDataReviewed',
+  extends: 'foam.nanos.crunch.RenewableData',
 
   implements: [
     'foam.core.Validatable',
