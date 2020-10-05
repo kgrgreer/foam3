@@ -291,15 +291,16 @@ public class TransactionBenchmark
         PM txnPm = new PM(this.getClass().getSimpleName(), "transaction");
         transactionDAO_.put(transaction);
         txnPm.log(x);
-      } catch (RuntimeException e) {
+      } catch (Throwable e) {
         System.out.println(e.getMessage());
         e.printStackTrace();
         logger_.warning(e.getMessage(), e);
         pm.error(x, e);
+        throw e;
       } finally {
         pm.log(x);
+        logger_.debug("execute", "end");
       }
     }
-    logger_.debug("execute", "end");
   }
 }
