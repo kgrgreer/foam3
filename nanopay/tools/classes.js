@@ -1297,6 +1297,7 @@ var classes = [
 
   // crunch documents
   'net.nanopay.crunch.document.Document',
+  'net.nanopay.crunch.document.ExpirableDocument',
 
   // crunch wizardlet
   'net.nanopay.crunch.wizardlet.SigningOfficerQuestionWizardlet',

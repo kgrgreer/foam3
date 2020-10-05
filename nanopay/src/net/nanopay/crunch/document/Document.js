@@ -18,13 +18,14 @@
 foam.CLASS({
   package: 'net.nanopay.crunch.document',
   name: 'Document',
+  extends: 'foam.nanos.crunch.RenewableData',
 
   documentation: 'document upload capability',
 
   messages: [
     { name: 'UPLOAD_REQUEST_MSG', message: 'Please attach a document(s) for' },
     { name: 'IMAGE_REQUIRED', message: 'Please attach a document(s).' },
-    { name: 'SECTION_HELP_MSG', message: 'Require a document for' },
+    { name: 'SECTION_HELP_MSG', message: 'Require a document for' }
   ],
 
   sections: [

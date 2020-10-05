@@ -1603,7 +1603,6 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerPrivilegesRequested' },
   { name: 'net/nanopay/crunch/onboardingModels/UserIsSigningOfficerOfBusiness' },
   { name: 'net/nanopay/crunch/onboardingModels/UserBirthDateData' },
-  { name: 'net/nanopay/crunch/document/Document' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessIncorporationDateData' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessRegistrationDateData' },
   { name: 'net/nanopay/crunch/onboardingModels/TaxIdNumberData' },
@@ -1659,6 +1658,7 @@ FOAM_FILES([
 
   // crunch document
   { name: 'net/nanopay/crunch/document/Document' },
+  { name: 'net/nanopay/crunch/document/ExpirableDocument' },
 
   // Capable object testing
   { name: 'net/nanopay/crunch/test/TestCapable' },
