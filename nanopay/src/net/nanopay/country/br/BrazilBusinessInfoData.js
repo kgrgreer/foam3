@@ -106,30 +106,35 @@ foam.CLASS({
             {
               class: 'foam.u2.TextField',
               attributes: [ { name: 'maxlength', value: 2 } ],
+              onKey: true,
               data: X.data.cnpj.slice(0,2)
             },
             '.',
             {
               class: 'foam.u2.TextField',
               attributes: [ { name: 'maxlength', value: 3 } ],
+              onKey: true,
               data: X.data.cnpj.slice(2,5)
             },
             '.',
             {
               class: 'foam.u2.TextField',
               attributes: [ { name: 'maxlength', value: 3 } ],
+              onKey: true,
               data: X.data.cnpj.slice(5,8)
             },
             '/',
             {
               class: 'foam.u2.TextField',
               attributes: [ { name: 'maxlength', value: 4 } ],
+              onKey: true,
               data: X.data.cnpj.slice(8,12)
             },
             '-',
             {
               class: 'foam.u2.TextField',
               attributes: [ { name: 'maxlength', value: 2 } ],
+              onKey: true,
               data: X.data.cnpj.slice(12,14)
             },
           ]
