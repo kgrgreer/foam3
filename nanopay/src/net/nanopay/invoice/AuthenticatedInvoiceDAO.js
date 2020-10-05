@@ -115,6 +115,8 @@ foam.CLASS({
         if ( invoice == null ) {
           throw new IllegalArgumentException(NULL_INVOICE_ERROR_MSG);
         }
+        // TODO temporary fix
+        String temp = invoice.getReferenceId();
 
         // Check if the user has invoice.create permission
         Invoice oldInvoice = (Invoice) getDelegate().find(obj);

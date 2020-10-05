@@ -78,7 +78,10 @@ foam.CLASS({
     },
 
     // Array of ViewSpecs.
-    'views',
+    {
+      name: 'views',
+      class: 'Array'
+    },
 
     // The stack that is handled by this Wizard View.
     {
@@ -121,7 +124,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'hasExitOption',
-      value: false
+      value: true
     },
 
     // If true, displays the Next Action
@@ -383,7 +386,7 @@ foam.CLASS({
         return hasNextOption;
       },
       code: function(X) {
-        if ( this.position == this.views.length - 1 ) { // If last page
+        if ( position == this.views.length - 1 ) { // If last page
           this.onComplete ? this.onComplete(this) : X.stack.back();
           return;
         }

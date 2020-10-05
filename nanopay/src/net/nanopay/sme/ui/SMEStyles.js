@@ -46,7 +46,8 @@ foam.CLASS({
       left: 0;
       height: 100vh !important;
       width: 100vw !important;
-      z-index: 1005;
+      /* z-index MUST be LEQ foam.u2.dialog.Popup */
+      z-index: 1000;
       margin: 0 !important;
       padding: 0 !important;
     }

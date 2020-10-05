@@ -272,7 +272,7 @@ foam.CLASS({
             .end()
           .end()
           .start()
-            .add(this.isForm$.map((bool) => {
+            .add(this.isForm$.map(bool => {
               return ! bool ? null :
                this.E().start().addClass('block')
                   .show(this.isForm$)
@@ -285,7 +285,7 @@ foam.CLASS({
                   })
                   .end();
             }))
-            .add(this.isList$.map((bool) => {
+            .add(this.isList$.map(bool => {
               return ! bool ? null :
               this.E().start().addClass('block')
                 .start().addClass('header')
@@ -293,7 +293,7 @@ foam.CLASS({
                 .end()
                 .start()
                   .addClass('invoice-list-wrapper')
-                  .select(this.filteredDAO$proxy, (invoice) => {
+                  .select(this.filteredDAO$proxy, invoice => {
                     return this.E()
                       .start({
                         class: 'net.nanopay.sme.ui.InvoiceRowView',

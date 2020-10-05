@@ -34,7 +34,8 @@ foam.CLASS({
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LastModifiedAware',
-    'foam.nanos.auth.LastModifiedByAware'
+    'foam.nanos.auth.LastModifiedByAware',
+    'foam.nanos.crunch.lite.Capable'
   ],
 
   searchColumns: [
@@ -77,6 +78,9 @@ foam.CLASS({
   ],
 
   properties: [
+    ...(foam.nanos.crunch.lite.CapableObjectData
+      .getOwnAxiomsByClass(foam.core.Property)
+      .map(p => p.clone())),
     {
       name: 'search',
       documentation: `The view and value used to filter invoices.`,
@@ -370,6 +374,7 @@ foam.CLASS({
       documentation: 'The exchange rate captured at the time of payment.'
     },
     {
+      // TODO Ensure client can't change this manually
       class: 'Enum',
       of: 'net.nanopay.invoice.model.PaymentStatus',
       name: 'paymentMethod',
@@ -468,14 +473,28 @@ foam.CLASS({
       },
       javaGetter: `
         if ( getDraft() ) return InvoiceStatus.DRAFT;
-        if ( getPaymentMethod() == PaymentStatus.VOID ) return InvoiceStatus.VOID;
-        if ( getPaymentMethod() == PaymentStatus.PROCESSING ) return InvoiceStatus.PROCESSING;
-        if ( getPaymentMethod() == PaymentStatus.CHEQUE ) return InvoiceStatus.PAID;
-        if ( getPaymentMethod() == PaymentStatus.NANOPAY ) return InvoiceStatus.PAID;
-        if ( getPaymentMethod() == PaymentStatus.TRANSIT_PAYMENT ) return InvoiceStatus.PROCESSING;
-        if ( getPaymentMethod() == PaymentStatus.DEPOSIT_PAYMENT ) return InvoiceStatus.PENDING_ACCEPTANCE;
-        if ( getPaymentMethod() == PaymentStatus.DEPOSIT_MONEY ) return InvoiceStatus.DEPOSITING_MONEY;
-        if ( getPaymentMethod() == PaymentStatus.PENDING_APPROVAL ) return InvoiceStatus.PENDING_APPROVAL;
+
+        switch ( getPaymentMethod() ) {
+          case PROCESSING:
+          case TRANSIT_PAYMENT:
+            return InvoiceStatus.PROCESSING;
+          case CHEQUE:
+          case NANOPAY:
+            return InvoiceStatus.PAID;
+          case VOID:
+            return InvoiceStatus.VOID;
+          case DEPOSIT_PAYMENT:
+            return InvoiceStatus.PENDING_ACCEPTANCE;
+          case DEPOSIT_MONEY:
+            return InvoiceStatus.DEPOSITING_MONEY;
+          case PENDING_APPROVAL:
+            return InvoiceStatus.PENDING_APPROVAL;
+          case QUOTED:
+            return InvoiceStatus.QUOTED;
+          case SUBMIT:
+            return InvoiceStatus.SUBMIT;
+        }
+
         if ( getPaymentDate() != null ){
           if ( getPaymentDate().after(new Date()) && SafetyUtil.isEmpty(getPaymentId()) ) return InvoiceStatus.SCHEDULED;
         }
@@ -585,7 +604,6 @@ foam.CLASS({
         although they are not registered on the platform, can still receive invoices from
         platform users.`,
       view: function(_, X) {
-        var m = foam.mlang.ExpressionsSingleton.create();
         return {
           class: 'foam.u2.view.RichChoiceView',
           selectionView: {
@@ -661,7 +679,29 @@ foam.CLASS({
       of: 'net.nanopay.tx.TransactionLineItem',
       hidden: 'true',
       storageTransient: true
-    }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.TransactionQuote',
+      name: 'quote',
+      hidden: true,
+      storageTransient: true
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.model.Transaction',
+      name: 'requestTransaction',
+      hidden: true,
+      storageTransient: true,
+      networkTransient: true
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.model.Transaction',
+      name: 'plan',
+      hidden: true,
+      storageTransient: true,
+    },
   ],
 
   messages: [
@@ -670,6 +710,9 @@ foam.CLASS({
   ],
 
   methods: [
+    ...(foam.nanos.crunch.lite.CapableObjectData
+      .getOwnAxiomsByClass(foam.core.Method)
+      .map(m => m.clone())),
     {
       name: `validate`,
       args: [

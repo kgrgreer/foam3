@@ -39,7 +39,11 @@ foam.CLASS({
     {
       class: 'String',
       name: 'intermediateCurrency'
-    }
+    },
+    {
+      name: 'status',
+      value: 'PENDING',
+    },
   ],
 
   methods: [

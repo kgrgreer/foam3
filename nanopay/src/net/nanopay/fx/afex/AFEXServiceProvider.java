@@ -525,6 +525,10 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         .build();
     }
 
+    if ( SafetyUtil.isEmpty(bankAddress.getCountryId()) ) {
+      bankAddress.setCountryId(bankAccount.getCountry());
+    }
+
     // Check payee does not already exists on AFEX
     FindBeneficiaryResponse beneficiaryResponse = findBeneficiary(userId,afexBusiness.getApiKey(), user.getSpid());
     if ( null == beneficiaryResponse ) {

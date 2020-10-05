@@ -426,9 +426,11 @@ p({
   "visible":false
 })
 
+//  TODO: remember to remember of after we fix on wizard
 p({
   "class": "foam.nanos.crunch.MinMaxCapability",
   "id":"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode",
+  "of":"foam.nanos.cron.TimeHMS",
   "name":"Nature Code Requirement",
   "min": 1,
   "max": 1,
@@ -475,6 +477,28 @@ p({
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-25",
   "name":"Terms and Conditions",
   "of":"net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions",
+  "version":"0",
+  "enabled":true,
+  "visible":false
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"dfbe9220-ba4e-42d1-9bed-f4b4f8efcbb8",
+  "name":"Treviso Invoice Capability",
+  "description":"The Capable-Specific Capability for Invoices on Treviso",
+  "version":"0",
+  "enabled":true,
+  "visible":false
+})
+
+p({
+  "class": "foam.nanos.crunch.MinMaxCapability",
+  "id":"af7941f3-bd2d-4666-93b3-9e12a2e8023d",
+  "of":"foam.nanos.cron.TimeHMS",
+  "name":"Supply and Technology Services Documents",
+  "min": 1,
+  "max": 3,
   "version":"0",
   "enabled":true,
   "visible":false

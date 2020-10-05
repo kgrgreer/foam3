@@ -285,8 +285,23 @@ p({
     import net.nanopay.invoice.InvoiceNotificationDAO;
     import net.nanopay.invoice.AutoDepositPendingAcceptance;
     import net.nanopay.invoice.PreventRemoveInvoiceDAO;
+    import foam.nanos.crunch.lite.CapableDAO;
+    import foam.dao.PredicatedDualDelegateDAO;
 
     dao = new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.invoice.model.Invoice.getOwnClassInfo()).build();
+    dao = new foam.dao.ProxyDAO(x, dao);
+    
+    optionalDao = dao;
+    dao = new CapableDAO.Builder(x).setDelegate(dao).setDaoKey("invoiceDAO").build();
+    dao = new PredicatedDualDelegateDAO.Builder(x)
+      .setDelegate(dao)
+      .setPredicatedDelegate(optionalDao)
+      .setPredicate(
+        foam.mlang.MLang.EQ(net.nanopay.invoice.model.Invoice.STATUS, net.nanopay.invoice.model.InvoiceStatus.DRAFT)
+      )
+      .setOf(net.nanopay.invoice.model.Invoice.getOwnClassInfo())
+      .build();
+
     dao = new net.nanopay.invoice.PreventRemoveInvoiceDAO(x, dao);
     dao = new InvoiceNotificationDAO.Builder(x).setDelegate(dao).build();
     dao = new AutoDepositPendingAcceptance(x, dao);
@@ -295,9 +310,9 @@ p({
     dao = new InvoiceToContactDAO(x, dao);
     dao = new HistoryDAO(x, "localInvoiceHistoryDAO", dao);
     dao = new AuthenticatedInvoiceDAO(x, dao);
-
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.invoice.model.Invoice.getOwnClassInfo())
+      .setCapable(false) // since we need to add it towards the end instead of the beginning for invoices
       .setDecorator(dao)
       .setValidated(true)
       .setSeqNo(true)

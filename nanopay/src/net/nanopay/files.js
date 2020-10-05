@@ -692,6 +692,8 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/ui/CicoBorder', flags: ['web'] },
 
   // invoice
+  { name: 'net/nanopay/invoice/ruler/CapabilityValidateRule' },
+  { name: 'net/nanopay/invoice/ruler/NoCapabilityCheckRule' },
   { name: 'net/nanopay/invoice/model/PaymentStatus' },
   { name: 'net/nanopay/invoice/model/InvoiceStatus' },
   { name: 'net/nanopay/invoice/model/Invoice' },
@@ -709,7 +711,6 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ui/InvoiceDetailView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/ExpensesDetailView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/SalesDetailView', flags: ['web'] },
-  { name: 'net/nanopay/invoice/ui/InvoiceRateView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/SubscriptionView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/SubscriptionEditView', flags: ['web'] },
   { name: 'net/nanopay/invoice/ui/SubscriptionDetailView', flags: ['web'] },
@@ -735,11 +736,16 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/ruler/SetProcessingDateRule' },
   { name: 'net/nanopay/invoice/ruler/SetReceivedDateRule' },
   { name: 'net/nanopay/invoice/ruler/SetPaymentSentDateRule' },
+  { name: 'net/nanopay/invoice/ruler/TransactionNatureCodeUpdateRule' },
   { name: 'net/nanopay/invoice/service/InvoicePaymentService' },
   { name: 'net/nanopay/invoice/service/ClientInvoicePaymentService' },
   { name: 'net/nanopay/invoice/InvoiceLineItem' },
   { name: 'net/nanopay/invoice/DetailedInvoiceDAO' },
   { name: 'net/nanopay/invoice/util/InvoiceHistoryUtility' },
+  { name: 'net/nanopay/invoice/ruler/InvoiceQuotingRule' },
+  { name: 'net/nanopay/invoice/ruler/InvoiceTransactionSubmitRule' },
+  { name: 'net/nanopay/invoice/ruler/InvoiceRequestTransactionRule' },
+  { name: 'net/nanopay/invoice/ruler/TrevisoInvoiceCapabilityRule' },
 
   // documents
   { name: 'net/nanopay/documents/AcceptanceDocument' },
@@ -1086,7 +1092,6 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/InvoiceRowView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SendRequestMoney', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SendRequestMoneyDetails', flags: ['web'] },
-  { name: 'net/nanopay/sme/ui/SendRequestMoneyPayment', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SendRequestMoneyReview', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/UploadFileModal', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/NewInvoiceForm', flags: ['web'] },
@@ -1702,4 +1707,6 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/tx/TrevisoCreateExchange' },
   { name: 'net/nanopay/partner/treviso/tx/TrevisoLineItemsFromFXSummary' },
   { name: 'net/nanopay/partner/treviso/TrevisoUnlockPaymentTermsAndConditions' },
+  { name: 'net/nanopay/partner/treviso/invoice/TrevisoCapabilityValidateRule' },
+  { name: 'net/nanopay/partner/treviso/invoice/UpdateTransactionOnInvoiceValidationRule' },
 ]);

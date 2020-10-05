@@ -51,7 +51,7 @@ foam.CLASS({
     },
     {
       name: 'status',
-      value: 'COMPLETED',
+      value: 'PENDING',
     },
   ],
 

@@ -81,7 +81,7 @@ foam.CLASS({
 
           var fxSummary = new FXSummaryTransaction();
           fxSummary.copyFrom(requestTxn);
-          fxSummary.setStatus(TransactionStatus.COMPLETED);
+          fxSummary.setStatus(TransactionStatus.PENDING);
           fxSummary.setAmount(leg1.getAmount());
           fxSummary.setIntermediateAmount(leg2.getAmount());
           fxSummary.setIntermediateCurrency(intermediaryAccount.getDenomination());
