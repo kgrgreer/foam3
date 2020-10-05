@@ -25,6 +25,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.nanos.auth.User',
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.dao.DAO',
     'foam.nanos.alarming.Alarm',
@@ -56,6 +57,9 @@ foam.CLASS({
         UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
         Business business = (Business) ucj.findSourceId(x);
 
+        User user = (User) ucj.findSourceId(x);
+        String group = user.getSpid().equals("nanopay") ? "fraud-ops" : user.getSpid() + "-fraud-ops";
+
         SecurefactService securefactService = (SecurefactService) x.get("securefactService");
         try {
           setResponse(securefactService.levSearch(x, business));
@@ -75,6 +79,7 @@ foam.CLASS({
                     .setCauseId(response.getId())
                     .setClassification(getClassification())
                     .setCauseDaoKey("securefactLEVDAO")
+                    .setGroup(group)
                     .build()
                 );
               }
@@ -93,6 +98,7 @@ foam.CLASS({
               .setCauseId(response != null ? response.getId() : 0L)
               .setClassification(getClassification())
               .setCauseDaoKey("securefactLEVDAO")
+              .setGroup(group)
               .build()
           );
           ruler.putResult(ComplianceValidationStatus.PENDING);

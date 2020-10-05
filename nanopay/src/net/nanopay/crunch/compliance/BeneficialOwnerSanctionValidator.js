@@ -25,6 +25,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.nanos.auth.User',
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.nanos.logger.Logger',
     'java.util.Date',
@@ -52,6 +53,8 @@ foam.CLASS({
 
         ComplianceValidationStatus rulerResult = ComplianceValidationStatus.VALIDATED;
         BeneficialOwner owner = null;
+        User user = (User) ucj.findSourceId(x);
+        String group = user.getSpid().equals("nanopay") ? "fraud-ops" : user.getSpid() + "-fraud-ops";
 
         for ( int i = 1 ; i <= data.getAmountOfOwners() ; i++ ) {
           ComplianceValidationStatus status = ComplianceValidationStatus.VALIDATED;
@@ -79,6 +82,7 @@ foam.CLASS({
                     .setClassification("Validate Beneficial Owner " + index + " Using Dow Jones")
                     .setMatches(response != null ? response.getResponseBody().getMatches() : null)
                     .setComments("Further investigation needed for owner: " + index)
+                    .setGroup(group)
                     .build());
               }
             }, "Beneficial Owner Sanction Validator");
