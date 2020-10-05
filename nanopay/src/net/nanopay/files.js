@@ -62,6 +62,7 @@ FOAM_FILES([
   { name: 'net/nanopay/account/DuplicateEntryRule' },
   { name: 'net/nanopay/account/DuplicateCABankAccountRule' },
   { name: 'net/nanopay/account/DuplicateUSBankAccountRule' },
+  { name: 'net/nanopay/account/InsufficientBalanceException' },
   { name: 'net/nanopay/account/ui/BankAccountWizard' },
   { name: 'net/nanopay/account/ui/AccountSummaryView' },
   { name: 'net/nanopay/account/ui/AccountTreeGraph' },
@@ -489,6 +490,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/PartnerTransaction' },
   { name: 'net/nanopay/tx/SummaryTransactionDAO' },
   { name: 'net/nanopay/tx/SummaryTransactionInnerDAO' },
+  { name: 'net/nanopay/tx/TransactionException' },
 
   //integration
   { name: 'net/nanopay/integration/ErrorCode' },
@@ -1555,6 +1557,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/TransactionPlannerBlockDAO' },
   { name: 'net/nanopay/tx/planner/TransactionQuoteDAO' },
   { name: 'net/nanopay/tx/planner/QuoteFillerDAO' },
+  { name: 'net/nanopay/tx/planner/NoPlanException' },
 
   // Fees
   { name: 'net/nanopay/tx/fee/Fee' },

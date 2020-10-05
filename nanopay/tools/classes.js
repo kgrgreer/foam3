@@ -79,6 +79,7 @@ var classes = [
   'net.nanopay.payment.PaymentProviderCorridorAddCountryRule',
   'net.nanopay.tx.IBAN',
   'net.nanopay.account.Balance',
+  'net.nanopay.account.InsufficientBalanceException',
   'net.nanopay.account.DuplicateEntryRule',
   'net.nanopay.account.DuplicateCABankAccountRule',
   'net.nanopay.account.DuplicateUSBankAccountRule',
@@ -594,6 +595,7 @@ var classes = [
   'net.nanopay.tx.SummaryTransactionDAO',
   'net.nanopay.tx.SummaryTransactionInnerDAO',
   'net.nanopay.tx.ruler.ComplianceTransactionPlanner',
+  'net.nanopay.tx.TransactionException',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
   'net.nanopay.retail.model.P2PTxnRequestStatus',
@@ -1101,6 +1103,7 @@ var classes = [
   'net.nanopay.tx.planner.TransactionPlannerBlockDAO',
   'net.nanopay.tx.planner.TransactionQuoteDAO',
   'net.nanopay.tx.planner.QuoteFillerDAO',
+  'net.nanopay.tx.planner.NoPlanException',
 
   // Fees
   'net.nanopay.tx.fee.Fee',
