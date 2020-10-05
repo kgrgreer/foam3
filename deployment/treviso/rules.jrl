@@ -304,11 +304,6 @@ p({
     "action":{
       "class":"foam.nanos.crunch.lite.ruler.CapableCreateApprovalsRuleAction",
       "daoToReput":"invoiceDAO",
-      "capabilitiesToApprove":[
-        "5fdd9025-86e6-45a1-bed5-8962acdf5338-4",
-        "5fdd9025-86e6-45a1-bed5-8962acdf5338-37",
-        "5fdd9025-86e6-45a1-bed5-8962acdf5338-31"
-      ],
       "groupToNotify":"treviso-fraud-ops"
     },
     "enabled":true,
