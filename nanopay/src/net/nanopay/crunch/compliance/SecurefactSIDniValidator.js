@@ -67,7 +67,7 @@ foam.CLASS({
             agency.submit(x, new ContextAgent() {
               @Override
               public void execute(X x) {
-                String group = user.getSpid() == "nanopay" ? "fraud-ops" : user.getSpid() + "-fraud-ops";
+                String group = user.getSpid().equals("nanopay") ? "fraud-ops" : user.getSpid() + "-fraud-ops";
                 requestApproval(x,
                   new ComplianceApprovalRequest.Builder(x)
                     .setObjId(ucj.getId())
@@ -84,7 +84,7 @@ foam.CLASS({
           ruler.putResult(status);
         } catch (Exception e) {
           SIDniResponse response = getResponse();
-          String group = user.getSpid() == "nanopay" ? "fraud-ops" : user.getSpid() + "-fraud-ops";
+          String group = user.getSpid().equals("nanopay") ? "fraud-ops" : user.getSpid() + "-fraud-ops";
           requestApproval(x, new ComplianceApprovalRequest.Builder(x)
             .setObjId(ucj.getId())
             .setDaoKey("userCapabilityJunctionDAO")

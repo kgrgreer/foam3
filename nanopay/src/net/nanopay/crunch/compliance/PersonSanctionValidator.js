@@ -91,7 +91,7 @@ foam.CLASS({
             agency.submit(x, new ContextAgent() {
               @Override
               public void execute(X x) {
-                String group = user.getSpid() == "nanopay" ? "fraud-ops" : user.getSpid() + "-fraud-ops";
+                String group = user.getSpid().equals("nanopay") ? "fraud-ops" : user.getSpid() + "-fraud-ops";
                 requestApproval(x, 
                   new DowJonesApprovalRequest.Builder(x)
                     .setObjId(ucj.getId())
@@ -109,7 +109,7 @@ foam.CLASS({
         } catch (Exception e) {
           ((Logger) x.get("logger")).warning("PersonSanctionValidator failed.", e);
           DowJonesResponse response = getResponse();
-          String group = user.getSpid() == "nanopay" ? "fraud-ops" : user.getSpid() + "-fraud-ops";
+          String group = user.getSpid().equals("nanopay") ? "fraud-ops" : user.getSpid() + "-fraud-ops";
           requestApproval(x, 
             new DowJonesApprovalRequest.Builder(x)
               .setObjId(ucj.getId())
