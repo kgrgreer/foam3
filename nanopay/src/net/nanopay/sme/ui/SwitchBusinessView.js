@@ -184,7 +184,7 @@ foam.CLASS({
           promise: party.entities.dao
             .where(this.NEQ(this.Business.STATUS, this.AccountStatus.DISABLED))
             .select(this.MAP(this.Business.ID))
-            .then((mapSink) => {
+            .then(mapSink => {
               return party.entities.junctionDAO.where(
                 this.AND(
                   this.EQ(this.UserUserJunction.SOURCE_ID, party.id),
@@ -209,7 +209,7 @@ foam.CLASS({
           promise: party.entities.dao
             .where(this.EQ(this.Business.STATUS, this.AccountStatus.DISABLED))
             .select(this.MAP(this.Business.ID))
-            .then((mapSink) => {
+            .then(mapSink => {
               return party.entities.junctionDAO.where(
                 this.AND(
                   this.EQ(this.UserUserJunction.SOURCE_ID, party.id),
@@ -253,22 +253,23 @@ foam.CLASS({
       if ( this.user.cls_ != net.nanopay.model.Business ) {
         this.enabledBusinesses_
           .select()
-          .then(async (sink) => {
+          .then(async sink => {
             var ac = this.theme.admissionCapability;
-              
-            // check if user registration capability is granted
-            var ucj = await this.userCapabilityJunctionDAO.find(
-              this.AND(
-                this.EQ(this.UserCapabilityJunction.SOURCE_ID, this.subject.user.id),
-                this.EQ(this.UserCapabilityJunction.TARGET_ID, ac),
-                this.EQ(this.UserCapabilityJunction.STATUS, this.CapabilityJunctionStatus.GRANTED)
-              )
-            );
-            if ( ! ucj ) {
-              this.onboardingUtil.initUserRegistration(ac);
-              return;
+            if ( ac ) {
+              // check if user registration capability is granted
+              var ucj = await this.userCapabilityJunctionDAO.find(
+                this.AND(
+                  this.EQ(this.UserCapabilityJunction.SOURCE_ID, this.subject.user.id),
+                  this.EQ(this.UserCapabilityJunction.TARGET_ID, ac),
+                  this.EQ(this.UserCapabilityJunction.STATUS, this.CapabilityJunctionStatus.GRANTED)
+                )
+              );
+              if ( ! ucj ) {
+                this.onboardingUtil.initUserRegistration(ac);
+                return;
+              }
             }
-            
+
             if ( sink.array.length === 0 ) {
               this.pushMenu('sme.main.appStore');
               return;
