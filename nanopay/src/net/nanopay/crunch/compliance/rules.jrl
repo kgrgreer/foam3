@@ -590,3 +590,27 @@ p({
   "saveHistory":true,
   "lifecycleState":1
 })
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"12b0c9d0-wwb9-4b26-9d8d-95fff19dfb1e",
+  "name":"Enable business status setting",
+  "documentation":"Set status to active when SetComplianceOnBusiness",
+  "priority":79,
+  "ruleGroup":"crunchOnboarding",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "predicate":{
+    "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+    "category":"onboarding",
+    "isRecurring":false,
+    "status": 1
+  },
+  "asyncAction":{
+    "class":"net.nanopay.crunch.compliance.SetBusinessStatusAction"
+  },
+  "enabled":false,
+  "saveHistory":true,
+  "lifecycleState":1
+})

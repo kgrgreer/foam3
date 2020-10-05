@@ -33,9 +33,9 @@ foam.CLASS({
     'foam.dao.Sink',
     'foam.dao.ProxySink',
     'foam.util.SafetyUtil',
-    'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.model.Business',
+    'foam.nanos.auth.LifecycleState',
     'static foam.mlang.MLang.*'
   ],
 
@@ -46,7 +46,7 @@ foam.CLASS({
         Business business = (Business) super.find_(x, id);
 
         if ( business == null ) return null;
-        
+
         return new PublicBusinessInfo(x, business);
       `
     },
@@ -80,7 +80,7 @@ foam.CLASS({
       ],
       javaCode: `
         return business != null &&
-          SafetyUtil.equals(business.getStatus(), AccountStatus.ACTIVE) &&
+          SafetyUtil.equals(business.getLifecycleState(), LifecycleState.ACTIVE) &&
           SafetyUtil.equals(business.getCompliance(), ComplianceStatus.PASSED) &&
           SafetyUtil.equals(business.getOnboarded(), true) &&
           business.getIsPublic();

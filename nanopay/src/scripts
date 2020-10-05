@@ -217,6 +217,7 @@ import net.nanopay.Account;
 import net.nanopay.bank.BankAccount;
 import net.nanopay.bank.CABankAccount;
 import foam.nanos.auth.UserUserJunction;
+import foam.nanos.auth.LifecycleState;
 
 accountDAO = x.get("accountDAO");
 agentJunctionDAO = x.get("agentJunctionDAO");
@@ -268,7 +269,7 @@ for(int j = 0; j < emails.length; j+=2) {
     UserUserJunction junction = (UserUserJunction) agentJunctionDAO.find(foam.mlang.MLang.EQ(UserUserJunction.SOURCE_ID, user.getId()));
     business = businessDAO.find(junction.getTargetId());
     business = business.fclone();
-    business.setStatus(AccountStatus.ACTIVE);
+    business.setLifecycleState(LifecycleState.ACTIVE);
     business.setAddress(address);
     business.setOnboarded(true);
     business.setCompliance(ComplianceStatus.PASSED);

@@ -1241,6 +1241,7 @@ var classes = [
   // crunch compliance
   'net.nanopay.crunch.compliance.SetComplianceOnUser',
   'net.nanopay.crunch.compliance.SetComplianceOnBusiness',
+  'net.nanopay.crunch.compliance.SetBusinessStatusAction',
   'net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus',
   'net.nanopay.crunch.compliance.PersonSanctionValidator',
   'net.nanopay.crunch.compliance.EntitySanctionValidator',
