@@ -260,12 +260,17 @@ p({
   "ruleGroup":"InvoicePayment",
   "documentation":"Extract nature code from invoice to transaction.",
   "daoKey":"invoiceDAO",
-  "operation":0,
-  "after":true,
+  "operation":3,
+  "after":false,
   "action":{
     "class":"net.nanopay.invoice.ruler.TransactionNatureCodeUpdateRule"
   },
-  "enabled":false,
+  "predicate": {
+    "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+    "propName":"requestTransaction",
+    "propValue": null
+  },
+  "enabled":true,
   "saveHistory":false,
   "lifecycleState":1
 })
