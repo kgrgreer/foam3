@@ -62,11 +62,11 @@ foam.CLASS({
   ],
 
   css: `
-  .net-nanopay-sme-ui-SMEModal-inner {
+  .bank-account-popup .net-nanopay-sme-ui-SMEModal-inner {
     width: 515px;
     height: 500px;
   }
-  .net-nanopay-sme-ui-SMEModal-content {
+  .bank-account-popup .net-nanopay-sme-ui-SMEModal-content {
     overflow: scroll !important;
     padding: 30px;
   }
@@ -179,7 +179,7 @@ foam.CLASS({
                 return ! this.verifiedBy
               },
               code: function(X) {
-                self.ctrl.add(self.SMEModal.create().tag(
+                self.ctrl.add(self.SMEModal.create().addClass('bank-account-popup').tag(
                   {
                     class: 'net.nanopay.account.ui.BankAccountWizard',
                     data: this,
@@ -206,7 +206,7 @@ foam.CLASS({
                 class: 'net.nanopay.bank.ui.BankPickCurrencyView'
               }, self);
             } else {
-              self.ctrl.add(this.SMEModal.create().tag({
+              self.ctrl.add(this.SMEModal.create().addClass('bank-account-popup').tag({
                 class: 'net.nanopay.account.ui.BankAccountWizard',
                 data: this.bankAccount,
                 useSections: ['accountDetails', 'pad']
