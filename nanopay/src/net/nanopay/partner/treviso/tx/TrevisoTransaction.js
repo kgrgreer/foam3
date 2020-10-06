@@ -20,6 +20,10 @@ foam.CLASS({
   name: 'TrevisoTransaction',
   extends: 'net.nanopay.fx.FXTransaction',
 
+  implements: [
+    'net.nanopay.meter.clearing.ClearingTimesTrait'
+  ],
+
   documentation: `Hold Treviso specific properties`,
 
   javaImports: [
@@ -84,6 +88,18 @@ foam.CLASS({
        return ['No status to choose'];
       }
     },
+    {
+      name: 'clearingTimes',
+      javaFactory: 'return new java.util.HashMap<>();'
+    },
+    {
+      name: 'estimatedCompletionDate',
+      javaFactory: 'return null;'
+    },
+    {
+      name: 'processDate',
+      javaFactory: 'return null;'
+    }
   ],
  methods: [
    {

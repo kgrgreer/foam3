@@ -129,13 +129,10 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        if ( transaction instanceof CITransaction ) {
-          return (BankAccount) transaction.findSourceAccount(x);
-        }
         if ( transaction instanceof COTransaction ) {
           return (BankAccount) transaction.findDestinationAccount(x);
         }
-        return null;
+        return (BankAccount) transaction.findSourceAccount(x);
       `
     },
     {
