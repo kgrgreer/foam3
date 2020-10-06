@@ -113,7 +113,8 @@ foam.CLASS({
             'status',
             'isDefault'
           ],
-          dblClickListenerAction: function dblClick(account) {
+          dblClickListenerAction: async function dblClick(account, id) {
+            if ( ! account ) account = await this.__subContext__.accountDAO.find(id);
             if ( account.status === self.BankAccountStatus.UNVERIFIED && self.CABankAccount.isInstance(account) ) {
               self.ctrl.add(self.Popup.create().tag({
                 class: 'net.nanopay.cico.ui.bankAccount.modalForm.CABankMicroForm',

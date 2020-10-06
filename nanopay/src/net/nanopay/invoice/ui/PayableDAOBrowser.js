@@ -96,18 +96,6 @@ foam.CLASS({
 
       imports: [
         'accountingIntegrationUtil'
-      ],
-
-      methods: [
-        async function dblclick(invoice) {
-          let updatedInvoice = await this.accountingIntegrationUtil.forceSyncInvoice(invoice);
-          if ( updatedInvoice === null || updatedInvoice === undefined ) return;
-          this.stack.push({
-            class: 'net.nanopay.sme.ui.InvoiceOverview',
-            invoice: updatedInvoice,
-            isPayable: true
-          });
-        }
       ]
     }
   ],
@@ -151,6 +139,16 @@ foam.CLASS({
         var self = this;
         return {
           class: 'foam.u2.view.ScrollTableView',
+          dblClickListenerAction: async function dblClick(invoice, id) {
+            if ( ! invoice ) invoice = await this.__subContext__.invoiceDAO.find(id);
+            let updatedInvoice = await self.accountingIntegrationUtil.forceSyncInvoice(invoice);
+            if ( updatedInvoice === null || updatedInvoice === undefined ) return;
+            self.stack.push({
+              class: 'net.nanopay.sme.ui.InvoiceOverview',
+              invoice: updatedInvoice,
+              isPayable: true
+            });
+          },
           contextMenuActions: [
             foam.core.Action.create({
               name: 'reconcile',

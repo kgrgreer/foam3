@@ -100,18 +100,6 @@ foam.CLASS({
 
       imports: [
         'accountingIntegrationUtil'
-      ],
-
-      methods: [
-        async function dblclick(invoice) {
-          let updatedInvoice = await this.accountingIntegrationUtil.forceSyncInvoice(invoice);
-          if ( updatedInvoice === null || updatedInvoice === undefined ) return;
-          this.stack.push({
-            class: 'net.nanopay.sme.ui.InvoiceOverview',
-            invoice: updatedInvoice,
-            isPayable: false
-          });
-        }
       ]
     }
   ],
@@ -155,6 +143,16 @@ foam.CLASS({
         var self = this;
         return {
           class: 'foam.u2.view.ScrollTableView',
+          dblClickListenerAction: async function dblclick(invoice, id) {
+            if ( ! invoice ) invoice = await this.__subContext__.invoiceDAO.find(id);
+            let updatedInvoice = await this.accountingIntegrationUtil.forceSyncInvoice(invoice);
+            if ( updatedInvoice === null || updatedInvoice === undefined ) return;
+            this.stack.push({
+              class: 'net.nanopay.sme.ui.InvoiceOverview',
+              invoice: updatedInvoice,
+              isPayable: false
+            });
+          },
           columns: [
             this.Invoice.PAYER_ID.clone().copyFrom({
               label: 'Company',
