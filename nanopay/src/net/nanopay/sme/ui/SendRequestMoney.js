@@ -119,6 +119,10 @@ foam.CLASS({
       line-height: 1.5;
       margin-top: 35px;
     }
+    ^ .foam-u2-LoadingSpinner img{
+      width: 150px;
+      margin: 200px;
+    }
   `,
 
   constants: {
@@ -545,8 +549,13 @@ foam.CLASS({
               }
             }
             this.populatePayerIdOrPayeeId().then(() => {
+              this.subStack.push({ class: 'foam.u2.LoadingSpinner' });
+              this.position = this.subStack.pos - 1;
               this.setTransactionPlanAndQuote().then(
-                () => this.subStack.push(this.views[this.subStack.pos + 1].view)
+                () => {
+                  this.subStack.back();
+                  this.subStack.push(this.views[this.subStack.pos + 1].view);
+                }
               );
             });
             break;
