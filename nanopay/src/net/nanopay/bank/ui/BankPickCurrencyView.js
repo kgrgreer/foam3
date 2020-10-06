@@ -261,6 +261,9 @@ foam.CLASS({
             }
           ]
         };
+      },
+      factory: function() {
+        return this.subject.user.address.countryId;
       }
     },
     {

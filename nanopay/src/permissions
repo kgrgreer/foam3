@@ -98,6 +98,7 @@ p({"class":"foam.nanos.auth.Permission","id":"menu.read.sme.main.dashboard", "de
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.sme.main.invoices", "description":"Permission to see the Ablii invoices menu"})
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.sme.main.invoices.payables", "description":"Permission to see the Ablii payable invoices page"})
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.sme.main.invoices.receivables", "description":"Permission to see the Ablii receivable invoices page"})
+p({"class":"foam.nanos.auth.Permission","id":"menu.read.sme.menu.addBankAccount", "description":"Permission to see add bank account page"})
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.sme.quickAction.*", "description":"Permission to access quick actions menus."})
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.sme.userManagement", "description":"Permission to access user management menu."})
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.report"})
