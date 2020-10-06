@@ -19,5 +19,24 @@ foam.CLASS({
   name: 'NoPlanException',
   package: 'net.nanopay.tx.planner',
   javaExtends: 'net.nanopay.tx.TransactionException',
-  implements: ['foam.core.Exception']
+  implements: ['foam.core.Exception'],
+  
+  axioms: [
+    {
+      name: 'javaExtras',
+      buildJavaClass: function(cls) {
+        cls.extras.push(foam.java.Code.create({
+          data: `
+  public NoPlanException(String message) {
+    super(message);
+  }
+
+  public NoPlanException(String message, Exception cause) {
+    super(message, cause);
+  }
+          `
+        }));
+      }
+    }
+  ]
 });

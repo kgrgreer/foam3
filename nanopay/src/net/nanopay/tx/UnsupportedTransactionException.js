@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2019] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -16,22 +16,22 @@
  */
 
 foam.CLASS({
-  name: 'TransactionException',
+  name: 'UnsupportedTransactionException',
   package: 'net.nanopay.tx',
-  javaExtends: 'RuntimeException',
+  javaExtends: 'net.nanopay.tx.TransactionException',
   implements: ['foam.core.Exception'],
-
+  
   axioms: [
     {
       name: 'javaExtras',
       buildJavaClass: function(cls) {
         cls.extras.push(foam.java.Code.create({
           data: `
-  public TransactionException(String message) {
+  public UnsupportedTransactionException(String message) {
     super(message);
   }
 
-  public TransactionException(String message, Exception cause) {
+  public UnsupportedTransactionException(String message, Exception cause) {
     super(message, cause);
   }
           `

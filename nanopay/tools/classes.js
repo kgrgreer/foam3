@@ -603,6 +603,7 @@ var classes = [
   'net.nanopay.tx.SummaryTransactionInnerDAO',
   'net.nanopay.tx.ruler.ComplianceTransactionPlanner',
   'net.nanopay.tx.TransactionException',
+  'net.nanopay.tx.UnsupportedTransactionException',
   'net.nanopay.retail.model.DeviceStatus',
   'net.nanopay.retail.model.Device',
   'net.nanopay.retail.model.P2PTxnRequestStatus',
