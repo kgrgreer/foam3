@@ -25,6 +25,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.nanos.auth.User',
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.nanos.logger.Logger',
     'java.util.Calendar',
@@ -53,6 +54,9 @@ foam.CLASS({
       javaCode: `
         UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
         Business business = (Business) ucj.findSourceId(x);
+
+        User user = (User) ucj.findSourceId(x);
+        String group = user.getSpid().equals("nanopay") ? "fraud-ops" : user.getSpid() + "-fraud-ops";
         
         DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
         try {
@@ -93,6 +97,7 @@ foam.CLASS({
                     .setCauseDaoKey("dowJonesResponseDAO")
                     .setClassification(getClassification())
                     .setMatches(response.getResponseBody().getMatches())
+                    .setGroup(group)
                     .build());
               }
             }, "Entity Sanction Validator");
@@ -111,6 +116,7 @@ foam.CLASS({
               .setCauseDaoKey("dowJonesResponseDAO")
               .setClassification(getClassification())
               .setMatches(response != null ? response.getResponseBody().getMatches() : null)
+              .setGroup(group)
               .build());
           ruler.putResult(ComplianceValidationStatus.PENDING);
         }

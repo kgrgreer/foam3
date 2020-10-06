@@ -8,6 +8,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.nanos.auth.User',
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.nanos.logger.Logger',
     'java.util.ArrayList',
@@ -37,6 +38,9 @@ foam.CLASS({
       javaCode: `
         UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
         BusinessDirectorsData data = (BusinessDirectorsData) ucj.getData();
+
+        User user = (User) ucj.findSourceId(x);
+        String group = user.getSpid().equals("nanopay") ? "fraud-ops" : user.getSpid() + "-fraud-ops";
 
         if ( data.getBusinessDirectors() == null || data.getBusinessDirectors().length == 0 ) return;
 
@@ -83,6 +87,7 @@ foam.CLASS({
                     .setClassification("Validate Business Director: " + directorName + " Using Dow Jones")
                     .setMatches(response != null ? response.getResponseBody().getMatches() : null)
                     .setComments("Further investigation needed for director: " + directorName)
+                    .setGroup(group)
                     .build());
               }
             }, "Business Director Sanction Validator");

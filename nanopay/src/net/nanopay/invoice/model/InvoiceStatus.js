@@ -85,6 +85,16 @@ foam.ENUM({
         documentation: `A status that indicates that the invoice still needs to be 
           approved and paid.`,
         label: 'Pending approval'
+      },
+      {
+        name: 'QUOTED',
+        documentation: 'A status that indicates that the invoice is being used to create a quote for a transaction',
+        label: 'Quote'
+      },
+      {
+        name: 'SUBMIT',
+        documentation: 'A status that indicates that the quoting invoice is ready to be submited as a transaction',
+        label: 'Submit'
       }
     ]
   });

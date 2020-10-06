@@ -345,6 +345,9 @@ var classes = [
   'net.nanopay.ui.banner.BannerMode',
 
   // invoice
+  'net.nanopay.invoice.ruler.TrevisoInvoiceCapabilityRule',
+  'net.nanopay.invoice.ruler.CapabilityValidateRule',
+  'net.nanopay.invoice.ruler.NoCapabilityCheckRule',
   'net.nanopay.invoice.model.PaymentStatus',
   'net.nanopay.invoice.model.InvoiceStatus',
   'net.nanopay.invoice.model.RecurringInvoice',
@@ -364,8 +367,12 @@ var classes = [
   'net.nanopay.invoice.ruler.SetProcessingDateRule',
   'net.nanopay.invoice.ruler.SetReceivedDateRule',
   'net.nanopay.invoice.ruler.SetPaymentSentDateRule',
+  'net.nanopay.invoice.ruler.TransactionNatureCodeUpdateRule',
   'net.nanopay.invoice.test.invoiceHistoryAuthorizerTest',
   'net.nanopay.invoice.InvoiceHistoryAuthorizer',
+  'net.nanopay.invoice.ruler.InvoiceQuotingRule',
+  'net.nanopay.invoice.ruler.InvoiceTransactionSubmitRule',
+  'net.nanopay.invoice.ruler.InvoiceRequestTransactionRule',
 
    // accounting
    'net.nanopay.accounting.ClientIntegrationService',
@@ -1210,6 +1217,8 @@ var classes = [
   'net.nanopay.country.br.NatureCodePaymentProviderJunction',
   'net.nanopay.tx.ExpirySummaryTransactionLineItem',
   'net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions',
+  'net.nanopay.partner.treviso.invoice.TrevisoCapabilityValidateRule',
+  'net.nanopay.partner.treviso.invoice.UpdateTransactionOnInvoiceValidationRule',
 
   // crunch onboarding
   'net.nanopay.crunch.onboardingModels.CheckUserCountry',
@@ -1245,6 +1254,7 @@ var classes = [
   // crunch compliance
   'net.nanopay.crunch.compliance.SetComplianceOnUser',
   'net.nanopay.crunch.compliance.SetComplianceOnBusiness',
+  'net.nanopay.crunch.compliance.SetBusinessStatusAction',
   'net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus',
   'net.nanopay.crunch.compliance.PersonSanctionValidator',
   'net.nanopay.crunch.compliance.EntitySanctionValidator',
@@ -1300,6 +1310,7 @@ var classes = [
 
   // crunch documents
   'net.nanopay.crunch.document.Document',
+  'net.nanopay.crunch.document.ExpirableDocument',
 
   // crunch wizardlet
   'net.nanopay.crunch.wizardlet.SigningOfficerQuestionWizardlet',

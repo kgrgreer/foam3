@@ -81,7 +81,7 @@ foam.CLASS({
 
           var fxSummary = new FXSummaryTransaction();
           fxSummary.copyFrom(requestTxn);
-          fxSummary.setStatus(TransactionStatus.COMPLETED);
+          fxSummary.setStatus(TransactionStatus.PENDING);
           fxSummary.setAmount(leg1.getAmount());
           fxSummary.setIntermediateAmount(leg2.getAmount());
           fxSummary.setIntermediateCurrency(intermediaryAccount.getDenomination());
@@ -90,9 +90,14 @@ foam.CLASS({
             fxSummary.setPaymentProvider(paymentProvider);
           }
 
-          fxSummary.addNext(createComplianceTransaction(fxSummary));
-          fxSummary.addNext(leg1.getNext()[0].getNext()[0]);
-          fxSummary.addNext(leg2.getNext()[0].getNext()[0]);
+          Transaction l1 = leg1.getNext()[0].getNext()[0];
+          Transaction l2 = leg2.getNext()[0].getNext()[0];
+          Transaction compliance = createComplianceTransaction(fxSummary);
+          l1.setStatus(TransactionStatus.PENDING);
+          l2.setStatus(TransactionStatus.PENDING);
+          l1.addNext(l2);
+          compliance.addNext(l1);
+          fxSummary.addNext(compliance);
           return fxSummary;
         }
         return null;

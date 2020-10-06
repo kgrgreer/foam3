@@ -5,3 +5,111 @@ p({
   "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-25",
   "priority": 17
 })
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "targetId":"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode",
+  "sourceId":"dfbe9220-ba4e-42d1-9bed-f4b4f8efcbb8",
+  "priority": 17
+})
+
+// TODO: Need to properly wire up the nature codes
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "targetId":"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-1",
+  "sourceId":"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode",
+  "priority": 17
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "targetId":"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-2",
+  "sourceId":"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode",
+  "priority": 17
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "targetId":"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-3",
+  "sourceId":"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode",
+  "priority": 17
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "targetId":"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-4",
+  "sourceId":"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode",
+  "priority": 17
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "targetId":"af7941f3-bd2d-4666-93b3-9e12a2e8023d",
+  "sourceId":"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-1",
+  "priority": 17
+})
+
+// TODO: Need to properly wire up the documents
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "targetId":"5fdd9025-86e6-45a1-bed5-8962acdf5338-4",
+  "sourceId":"af7941f3-bd2d-4666-93b3-9e12a2e8023d",
+  "priority": 17
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "targetId":"5fdd9025-86e6-45a1-bed5-8962acdf5338-37",
+  "sourceId":"af7941f3-bd2d-4666-93b3-9e12a2e8023d",
+  "priority": 17
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "targetId":"5fdd9025-86e6-45a1-bed5-8962acdf5338-31",
+  "sourceId":"af7941f3-bd2d-4666-93b3-9e12a2e8023d",
+  "priority": 17
+})
+// add prereq capability junctions needed for br unlock payments flow
+// business registration date
+p({
+  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId:"554af38a-8225-87c8-dfdf-eeb15f71215f-16",
+  targetId:"554af38a-8225-87c8-dfdf-eeb15f71215f-14"
+})
+// business Incorporated Date
+p({
+  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId:"554af38a-8225-87c8-dfdf-eeb15f71215f-17",
+  targetId:"554af38a-8225-87c8-dfdf-eeb15f71215f-14"
+})
+// terms and conditions
+p({
+  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId:"554af38a-8225-87c8-dfdf-eeb15f71215e-25",
+  targetId:"554af38a-8225-87c8-dfdf-eeb15f71215f-14"
+})
+// office consumption
+p({
+  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId:"b5f2b020-db0f-11ea-87d0-0242ac130003",
+  targetId:"554af38a-8225-87c8-dfdf-eeb15f71215f-14"
+})
+// business identification numbers
+p({
+  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId:"688cb7c6-7316-4bbf-8483-fb79f8fdeaaf",
+  targetId:"554af38a-8225-87c8-dfdf-eeb15f71215f-14"
+})
+// business latest annual report
+p({
+  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId:"7e2739cc-db32-11ea-87d0-0242ac130003",
+  targetId:"554af38a-8225-87c8-dfdf-eeb15f71215f-14"
+})
+// articles of incorporation
+p({
+  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId:"26d32e86-db11-11ea-87d0-0242ac130003",
+  targetId:"554af38a-8225-87c8-dfdf-eeb15f71215f-14"
+})

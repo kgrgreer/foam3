@@ -29,7 +29,9 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
-    'foam.dao.DAO'
+    'foam.dao.DAO',
+    'java.util.Calendar',
+    'java.util.Date'
   ],
 
   properties: [
@@ -42,7 +44,11 @@ foam.CLASS({
       name: 'expiry',
       label: 'Expires',
       hidden: true,
-      javaFactory: 'return new java.util.Date();'
+      javaFactory: `
+        Calendar cal = new Calendar.Builder().setInstant(new Date()).build();
+        cal.add(Calendar.HOUR,2);
+        return cal.getTime();
+      `
     }
   ],
 

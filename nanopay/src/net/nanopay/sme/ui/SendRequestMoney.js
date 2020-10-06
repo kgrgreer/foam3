@@ -38,7 +38,6 @@ foam.CLASS({
     'ctrl',
     'fxService',
     'menuDAO',
-    'notificationDAO',
     'notify',
     'pushMenu',
     'stack',
@@ -61,7 +60,6 @@ foam.CLASS({
     'loadingSpin',
     'newButton',
     'predicate',
-    'requestTxn',
     'txnQuote',
     'updateInvoiceDetails',
     'forceUpdate'
@@ -78,6 +76,7 @@ foam.CLASS({
     'net.nanopay.fx.FXLineItem',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
+    'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.tx.AbliiTransaction',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.FxSummaryTransactionLineItem',
@@ -260,21 +259,12 @@ foam.CLASS({
     },
     {
       class: 'Boolean',
-      name: 'forceUpdate',
-      value: false
+      name: 'forceUpdate'
     },
     'updateInvoiceDetails',
     {
-      class: 'FObjectProperty',
-      name: 'requestTxn',
-      factory: function() {
-        return this.AbliiTransaction.create();
-      }
-    },
-    {
       class: 'Boolean',
-      name: 'reQuote',
-      value: false
+      name: 'reQuote'
     },
     {
       class: 'FObjectProperty',
@@ -336,19 +326,6 @@ foam.CLASS({
         }
       ];
 
-      if ( ! this.isApproving ) {
-        this.views.push({
-          parent: 'sendRequestMoney',
-          id: this.PAYMENT_VIEW_ID,
-          label: 'Payment details',
-          subtitle: 'Select payment method',
-          view: {
-            class: 'net.nanopay.sme.ui.SendRequestMoneyPayment',
-            type: this.type
-          }
-        });
-      }
-
       this.views.push({
         parent: 'sendRequestMoney',
         id: this.REVIEW_VIEW_ID,
@@ -363,7 +340,7 @@ foam.CLASS({
       this.hasExitOption = true;
 
       Promise.all([this.auth.check(null, 'business.invoice.pay'), this.auth.check(null, 'user.invoice.pay')])
-        .then((results) => {
+        .then(results => {
           this.permitToPay = results[0] && results[1];
         });
 
@@ -377,7 +354,7 @@ foam.CLASS({
         this.checkAndNotifyAbilityToPay :
         this.checkAndNotifyAbilityToReceive;
 
-      checkAndNotifyAbility().then((result) => {
+      checkAndNotifyAbility().then(result => {
         if ( ! result ) {
           this.pushMenu('sme.main.dashboard');
           return;
@@ -416,55 +393,23 @@ foam.CLASS({
       if ( ! this.viewData.bankAccount || ! foam.util.equals(this.viewData.bankAccount.status, net.nanopay.bank.BankAccountStatus.VERIFIED) ) {
         this.notify(this.BANK_ACCOUNT_REQUIRED, '', this.LogLevel.ERROR, true);
         return false;
-      } else if ( ! this.viewData.quote && this.isPayable ) {
+      } else if ( ! this.txnQuote && this.isPayable ) {
         this.notify(this.QUOTE_ERROR, '', this.LogLevel.ERROR, true);
         return false;
-      }
-
-      // Validate transaction line items
-      if ( this.type === 'payable' ) {
-        try {
-          for ( i =0; i < this.viewData.quote.lineItems.length; i++ ) {
-            if ( this.viewData.quote.lineItems[i].requiresUserInput ) {
-              this.viewData.quote.lineItems[i].validate();
-            }
-          }
-        } catch (e) {
-          this.notify(e, '', this.LogLevel.ERROR, true);
-          return false;
-        }
-
-        for ( i=0; i < this.viewData.quote.lineItems.length; i++ ) {
-          if ( this.viewData.quote.lineItems[i].requiresUserInput ) {
-            this.requestTxn.lineItems.push(this.viewData.quote.lineItems[i]);
-            if ( ! this.requote && this.viewData.quote.lineItems[i].quoteOnChange ) {
-              this.reQuote = true;
-            }
-          }
-        }
-
-        if ( this.reQuote ) {
-          this.isLoading = true;
-          this.updateInvoiceDetails = await this.getQuote();
-          this.forceUpdate = true;
-          this.isLoading = false;
-          this.reQuote = false;
-        }
       }
 
       return true;
     },
 
     function getExpired( time, transaction) {
-
       let quoteExpiry = null;
-      for ( i=0; i < this.viewData.quote.lineItems.length; i++ ) {
-        if ( ( this.FXLineItem.isInstance(this.viewData.quote.lineItems[i]) || this.FxSummaryTransactionLineItem.isInstance(this.viewData.quote.lineItems[i]) ) && this.viewData.quote.lineItems[i].expiry ) {
+      for ( i=0; i < this.txnQuote.lineItems.length; i++ ) {
+        if ( ( this.FXLineItem.isInstance(this.txnQuote.lineItems[i]) || this.FxSummaryTransactionLineItem.isInstance(this.viewData.txn.lineItems[i]) ) && this.viewData.txn.lineItems[i].expiry ) {
           if ( quoteExpiry == null ) {
-            quoteExpiry = this.viewData.quote.lineItems[i].expiry;
+            quoteExpiry = this.txnQuote.lineItems[i].expiry;
             quoteExpiry = Date.UTC(quoteExpiry.getFullYear(), quoteExpiry.getMonth(), quoteExpiry.getDate(), quoteExpiry.getHours(), quoteExpiry.getMinutes(), quoteExpiry.getSeconds());
           } else {
-            let temp = this.viewData.quote.lineItems[i].expiry;
+            let temp = this.txnQuote.lineItems[i].expiry;
             temp = Date.UTC(temp.getFullYear(), temp.getMonth(), temp.getDate(), temp.getHours(), temp.getMinutes(), temp.getSeconds());
             quoteExpiry = quoteExpiry < temp ? quoteExpiry : temp;
           }
@@ -478,114 +423,38 @@ foam.CLASS({
     },
 
     async function getQuote() {
-      var quote = await this.transactionPlannerDAO.put(
-        this.TransactionQuote.create({
-          requestTransaction: this.requestTxn
-        })
-      );
-      this.txnQuote = quote;
-      return quote.plan;
+      this.invoice.quote = null;
+      this.invoice.paymentMethod = this.PaymentStatus.SUBMIT;
+      this.invoice = await this.invoiceDAO.put(this.invoice);
+      return this.invoice.quote.plan;
+    },
+
+    async function setTransactionPlanAndQuote() {
+      this.isLoading = true;
+      if ( this.isPayable ) {
+      // TODO: confirm fxquote is still valid
+      this.txnQuote = ! this.invoice.paymentMethod || this.invoice.paymentMethod != this.PaymentStatus.SUBMIT
+        ? await this.getQuote() : this.invoice.quote && this.invoice.quote.plan;
+      this.invoice = await this.invoiceDAO.find(this.invoice.id);
+      this.notify(this.RATE_REFRESH + ( this.isApproving ? this.RATE_REFRESH_APPROVE : this.RATE_REFRESH_SUBMIT), '', this.LogLevel.WARN, true);
+      }
+      this.isLoading = false;
     },
 
     async function submit() {
       this.isLoading = true;
-      var checkAndNotifyAbility;
-
-      var checkAndNotifyAbility = this.isPayable ?
-        this.checkAndNotifyAbilityToPay :
-        this.checkAndNotifyAbilityToReceive;
-
-      var result = await checkAndNotifyAbility();
-      if ( ! result ) {
-        return;
-      }
-
-      this.invoice.processPaymentOnCreate = false;
-
-      // Confirm Invoice information:
-      if ( this.invoice.draft ) {
-        this.invoice.draft = false;
-        this.invoice = await this.invoiceDAO.put(this.invoice);
-      }
-
-      // invoice payer/payee should be populated from InvoiceSetDestDAO
       try {
-        // Calling put here makes display 'invoice was created' message in invoice history.
-        // We want to show this message only when we are creating a new invoice.
+        // this.invoice.processPaymentOnCreate = false;
 
-        // a flag for determining if we are creating a new invoice
-        const isNewInvoice = this.invoice.id === 0;
-        if ( isNewInvoice ) {
-          this.invoice = await this.invoiceDAO.put(this.invoice);
-        }
-      } catch (error) {
-        console.error('@SendRequestMoney (Invoice put): ' + error.message);
-        this.notify(this.INVOICE_ERROR + this.type, '', this.LogLevel.ERROR, true);
-        this.isLoading = false;
-        return;
-      }
+        // if ( this.invoice.id != 0 ) this.invoice = await this.invoiceDAO.find(this.invoice.id);
+        // else this.invoice = await this.invoiceDAO.put(this.invoice); // Flow for receivable
 
-      // Uses the transaction retrieved from transactionQuoteDAO retrieved from invoiceRateView.
-      if ( this.isPayable ) {
-        var transaction = this.viewData.quote ? this.viewData.quote : null;
-        transaction.invoiceId = this.invoice.id;
-        // confirm fxquote is still valid
-        if ( transaction != null && this.getExpired(new Date(), transaction) ) {
-          transaction = await this.getQuote();
-          transaction.invoiceId = this.invoice.id;
-          this.notify(this.RATE_REFRESH + ( this.isApproving ? this.RATE_REFRESH_APPROVE : this.RATE_REFRESH_SUBMIT), '', this.LogLevel.WARN, true);
-          this.isLoading = false;
-          this.updateInvoiceDetails = transaction;
-          this.forceUpdate = true;
-          return;
-        }
-
-        if ( this.viewData.isDomestic ) {
-          if ( ! transaction ) this.notify(this.QUOTE_ERROR, '', this.LogLevel.ERROR, true);
-          try {
-            let tem = await this.transactionDAO.put(transaction);
-          } catch (error) {
-            console.error('@SendRequestMoney (Transaction put): ' + error.message);
-            if ( error.message && error.message.includes('exceed') ) {
-              this.notify(error.message, '', this.LogLevel.ERROR, true);
-            } else {
-              this.notify(this.TRANSACTION_ERROR + this.type, '', this.LogLevel.ERROR, true);
-            }
-            this.isLoading = false;
-            return;
-          }
-        } else {
-          try {
-            //transaction.isQuoted = true; TODO: Investigate why were we doing this
-            let tem = await this.transactionDAO.put(transaction);
-          } catch ( error ) {
-            console.error('@SendRequestMoney (Accept and put transaction quote): ' + error.message);
-            if ( error.message && error.message.includes('[Transaction Validation error] ') ) {
-              let temp = error.message.split('[Transaction Validation error] ');
-              this.notify(temp[1], '', this.LogLevel.ERROR, true);
-            } else if ( error.message && error.message == 'Exceed INR Transaction limit' ) {
-              this.notify(this.INR_RATE_LIMIT, '', this.LogLevel.ERROR, true);
-            } else {
-              this.notify(this.TRANSACTION_ERROR + this.type, '', this.LogLevel.ERROR, true);
-            }
-            this.isLoading = false;
-            return;
-          }
-        }
-      }
-      // Get the invoice again because the put to the transactionDAO will have
-      // updated the invoice's status and other fields like transactionId.
-
-      try {
-        if ( this.invoice.id != 0 ) this.invoice = await this.invoiceDAO.find(this.invoice.id);
-        else this.invoice = await this.invoiceDAO.put(this.invoice); // Flow for receivable
-
-        let service = null;
+        let service;
         if ( this.invoice.xeroId && this.invoice.status == this.InvoiceStatus.PROCESSING )  service = this.xeroService;
         if ( this.invoice.quickId && this.invoice.status == this.InvoiceStatus.PROCESSING ) service = this.quickbooksService;
 
-        if ( service != null ) service.invoiceResync(null, this.invoice);
-
+        if ( service ) service.invoiceResync(null, this.invoice);
+        this.transactionDAO.put(this.invoice.quote.plan);
         ctrl.stack.push({
           class: 'net.nanopay.sme.ui.MoneyFlowSuccessView',
           invoice: this.invoice
@@ -594,6 +463,7 @@ foam.CLASS({
         this.isLoading = false;
         console.error('@SendRequestMoney (Invoice/Integration Sync): ' + error.message);
         this.notify(this.TRANSACTION_ERROR + this.type, '', this.LogLevel.ERROR, true);
+        this.invoice.quote.plan = null;
         return;
       }
       this.isLoading = false;
@@ -630,9 +500,9 @@ foam.CLASS({
         this.notify(this.CONTACT_NOT_FOUND, '', this.LogLevel.ERROR, true);
       }
     }
-  ],
+    ],
 
-  actions: [
+    actions: [
     {
       name: 'save',
       isAvailable: function(hasSaveOption) {
@@ -649,17 +519,15 @@ foam.CLASS({
     },
     {
       name: 'goNext',
-      isAvailable: function(hasNextOption) {
-        return hasNextOption;
-      },
       isEnabled: function(errors, isLoading) {
-        if ( this.subject.user.address.countryId === 'CA' ) {
-          return ! errors && ! isLoading;
-        } else {
-          return this.auth.check(null, 'strategyreference.read.9319664b-aa92-5aac-ae77-98daca6d754d').then(function(cadPerm) {
-            return cadPerm && ! errors && ! isLoading;
-          });
-        }
+        return ! errors && ! isLoading;
+        // if ( this.subject.user.address.countryId === 'CA' ) {
+        //   return ! errors && ! isLoading;
+        // } else {
+        //   return this.auth.check(null, 'strategyreference.read.9319664b-aa92-5aac-ae77-98daca6d754d').then(function(cadPerm) {
+        //     return cadPerm && ! errors && ! isLoading;
+        //   });
+        // }
       },
       code: async function() {
         var currentViewId = this.views[this.position].id;
@@ -668,7 +536,7 @@ foam.CLASS({
             if ( ! this.invoiceDetailsValidation(this.invoice) ) return;
             if ( ! this.subject.realUser.twoFactorEnabled && this.isPayable && this.permitToPay ) {
               if ( this.appConfig.mode === this.Mode.PRODUCTION ||
-                   this.appConfig.mode === this.Mode.DEMO ) {
+                  this.appConfig.mode === this.Mode.DEMO ) {
                 this.notify(this.TWO_FACTOR_REQUIRED, '', this.LogLevel.ERROR, true);
                 return;
               } else {
@@ -677,24 +545,16 @@ foam.CLASS({
               }
             }
             this.populatePayerIdOrPayeeId().then(() => {
-              this.subStack.push(this.views[this.subStack.pos + 1].view);
-            });
-            break;
-          case this.PAYMENT_VIEW_ID:
-            if ( ! await this.paymentValidation() ) return;
-            this.populatePayerIdOrPayeeId().then(() => {
-              this.subStack.push(this.views[this.subStack.pos + 1].view);
+              this.setTransactionPlanAndQuote().then(
+                () => this.subStack.push(this.views[this.subStack.pos + 1].view)
+              );
             });
             break;
           case this.REVIEW_VIEW_ID:
-            if ( ! this.viewData.quote && this.isPayable && ! this.viewData.isDomestic ) {
-              this.notify(this.WAITING_FOR_RATE, '', this.LogLevel.WARN, true);
-              return;
-            }
             this.submit();
             break;
           /* Redirects users back to dashboard if none
-             of the above conditions are matched */
+            of the above conditions are matched */
           default:
             this.pushMenu('sme.main.dashboard');
         }
@@ -740,6 +600,6 @@ foam.CLASS({
           invoice: this.invoice
         }));
       }
-    },
+    }
   ]
 });

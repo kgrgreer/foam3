@@ -85,24 +85,28 @@ foam.CLASS({
             {
               class: 'foam.u2.TextField',
               attributes: [ { name: 'maxlength', value: 3 } ],
+              onKey: true,
               data: X.data.data.slice(0,3)
             },
             '.',
             {
               class: 'foam.u2.TextField',
               attributes: [ { name: 'maxlength', value: 3 } ],
+              onKey: true,
               data: X.data.data.slice(3,6)
             },
             '.',
             {
               class: 'foam.u2.TextField',
               attributes: [ { name: 'maxlength', value: 3 } ],
+              onKey: true,
               data: X.data.data.slice(6,9)
             },
             '-',
             {
               class: 'foam.u2.TextField',
               attributes: [ { name: 'maxlength', value: 2 } ],
+              onKey: true,
               data: X.data.data.slice(9,11)
             }
           ]

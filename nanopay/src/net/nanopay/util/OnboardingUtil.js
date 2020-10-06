@@ -134,6 +134,9 @@ foam.CLASS({
     },
     
     async function initUserRegistration(cap) {
+      if ( ! cap ) {
+        throw new TypeError('@OnboardingUtil.initUserRegistration(cap) = undefined');
+      }
       return this.Sequence.create(null, this.__subContext__.createSubContext({
         rootCapability: cap
       }))
