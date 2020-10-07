@@ -277,41 +277,53 @@ p({
 
 // TODO: add spid
 p({
-    "class":"foam.nanos.ruler.Rule",
-    "id":"520c5c8a-f3a8-11ea-adc1-0242ac120002",
-    "name":"Capable Create Approvals Rule Action for Invoice",
-    "priority":100,
-    "daoKey":"invoiceDAO",
-    "ruleGroup":"InvoiceNotification",
-    "operation":3,
-    "after":true,
-    "predicate": {
-      "class": "foam.mlang.predicate.And",
-      "args": [
-        {
-          "class":"foam.nanos.ruler.predicate.PropertyEQValue",
-          "propName":"status",
-          "propValue":{
-            "class":"net.nanopay.invoice.model.InvoiceStatus",
-            "ordinal":6
-          }
-        },
-        {
-          "class":"foam.nanos.ruler.predicate.PropertyIsSetPredicate",
-          "propName":"paymentId"
-        },
-        {
-          "class":"foam.nanos.ruler.predicate.PropertyChangePredicate",
-          "propName":"paymentId"
+  "class":"foam.nanos.ruler.Rule",
+  "id":"520c5c8a-f3a8-11ea-adc1-0242ac120002",
+  "name":"Capable Create Approvals Rule Action for Invoice",
+  "priority":100,
+  "daoKey":"invoiceDAO",
+  "ruleGroup":"InvoiceNotification",
+  "operation":3,
+  "after":true,
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue":{
+          "class":"net.nanopay.invoice.model.InvoiceStatus",
+          "ordinal":6
         }
-      ]
-    },
-    "action":{
-      "class":"foam.nanos.crunch.lite.ruler.CapableCreateApprovalsRuleAction",
-      "daoToReput":"invoiceDAO",
-      "groupToNotify":"treviso-fraud-ops"
-    },
-    "enabled":true,
-    "saveHistory":false,
-    "lifecycleState":1
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsSetPredicate",
+        "propName":"paymentId"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyChangePredicate",
+        "propName":"paymentId"
+      }
+    ]
+  },
+  "action":{
+    "class":"foam.nanos.crunch.lite.ruler.CapableCreateApprovalsRuleAction",
+    "daoToReput":"invoiceDAO",
+    "groupToNotify":"treviso-fraud-ops"
+  },
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1
+})
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id":"9d1d9360-c320-4b2c-b813-8482c07a75a1",
+  "name": "Signing Officer manual Approval by Agent",
+  "enabled": true
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"1106f209-e33c-4870-bcad-0b717f831e37",
+  "name":"Business manual Approval by Agent",
+  "enabled": true
 })

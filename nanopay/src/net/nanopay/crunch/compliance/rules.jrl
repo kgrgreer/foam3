@@ -614,3 +614,61 @@ p({
   "saveHistory":true,
   "lifecycleState":1
 })
+p({
+  "class": "foam.nanos.ruler.Rule",
+  "id":"9d1d9360-c320-4b2c-b813-8482c07a75a1",
+  "name": "Signing Officer manual Approval by Agent",
+  "priority": 100,
+  "ruleGroup": "crunchOnboarding",
+  "documentation": "Signing Officer manual Approval by Agent",
+  "daoKey": "userCapabilityJunctionDAO",
+  "operation": 0,
+  "after": true,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+        "category":"complianceSetting",
+        "isRecurring":false
+      },
+      {
+        "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+        "category":"signingOfficerOnboarding",
+        "isRecurring":false
+      }
+    ]
+  },
+  "action": {
+    "class": "net.nanopay.crunch.compliance.GenericSigningOfficerValidator"
+    "classification":"Validate Signing Officer UserCapabilityJunction Using Generic Rule"
+  },
+  "enabled": false,
+  "saveHistory": false,
+  "validity": 1,
+  "lifecycleState":1
+})
+ p({
+   "class":"foam.nanos.ruler.Rule",
+   "id":"1106f209-e33c-4870-bcad-0b717f831e37",
+   "name":"Business manual Approval by Agent",
+   "priority":110,
+   "ruleGroup":"crunchOnboarding",
+   "documentation":"Check business via Generic Rule",
+   "daoKey":"userCapabilityJunctionDAO",
+   "operation":3,
+   "after":true,
+   "predicate":{
+     "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+     "category":"onboarding",
+     "isRecurring":false
+   },
+   "action":{
+     "class":"net.nanopay.crunch.compliance.GenericBusinessValidator",
+     "classification":"Validate Business Onboarding UserCapabilityJunction Using Generic Rule"
+   },
+   "enabled":false,
+   "saveHistory":false,
+   "lifecycleState":1
+ })
+
