@@ -70,6 +70,7 @@ public class ExchangeClient
     }
   }
 
+  @Override
   public SearchBoletoResponse searchBoleto(SearchBoleto request) {
     try {
       SOAPMessage message = createSOAPMessage("searchBoleto", request);
@@ -77,6 +78,19 @@ public class ExchangeClient
       SOAPMessage response = sendMessage("searchBoleto", message);
       logResponse(response, startTime);
       return (SearchBoletoResponse) parseMessage(response, SearchBoletoResponse.class);
+    } catch (Throwable t) {
+      throw new RuntimeException(t);
+    }
+  }
+
+  @Override
+  public BoletoStatusResponse getBoletoStatus(GetBoletoStatus request) {
+    try {
+      SOAPMessage message = createSOAPMessage("BoletoStatus", request);
+      long startTime = logRequest(message);
+      SOAPMessage response = sendMessage("BoletoStatus", message);
+      logResponse(response, startTime);
+      return (BoletoStatusResponse) parseMessage(response, BoletoStatusResponse.class);
     } catch (Throwable t) {
       throw new RuntimeException(t);
     }

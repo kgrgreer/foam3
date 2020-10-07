@@ -64,6 +64,9 @@ import net.nanopay.partner.treviso.api.Document;
 import net.nanopay.partner.treviso.api.Entity;
 import net.nanopay.partner.treviso.api.FepWeb;
 import net.nanopay.partner.treviso.api.FepWebResponse;
+import net.nanopay.country.br.exchange.Boleto;
+import net.nanopay.country.br.exchange.BoletoStatusResponse;
+import net.nanopay.country.br.exchange.GetBoletoStatus;
 import net.nanopay.country.br.exchange.InsertBoleto;
 import net.nanopay.country.br.exchange.InsertBoletoResponse;
 import net.nanopay.country.br.exchange.InsertTitular;
@@ -83,6 +86,7 @@ import net.nanopay.country.br.exchange.UpdateTitular;
 import net.nanopay.country.br.exchange.UpdateTitularResponse;
 import net.nanopay.payment.Institution;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionStatus;
 
 public class TrevisoService extends ContextAwareSupport implements TrevisoServiceInterface, FXService, ExchangeService {
 
@@ -358,10 +362,10 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
     titular.setNOME(getName(user));
     titular.setENDERECO(user.getAddress().getAddress());
     titular.setCIDADE(user.getAddress().getCity());
-    titular.setESTADO(user.getAddress().getRegionId());
+    titular.setESTADO(user.getAddress().getRegionId().substring(3,5));
     titular.setCEP(user.getAddress().getPostalCode());
     titular.setPAIS("1058"); // TODO Pais do Cliente – Código Bacen - Brazil
-    titular.setPAISMT("1058"); // TODO Pais Matriz do Cliente - Bacen Code - Brazil
+    titular.setPAISMT("2496"); // TODO Pais Matriz do Cliente - Bacen Code - United States
     titular.setLIMITEOP(new Long(amount).doubleValue());
 
     return titular;
@@ -429,6 +433,8 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
     dadosBoleto.setRSISB(dadosBoleto.getRSISB());
     dadosBoleto.setSEGMENTO(dadosBoleto.getSEGMENTO());
     dadosBoleto.setTIPO(dadosBoleto.getTIPO());
+    dadosBoleto.setMOEDA(dadosBoleto.getMOEDA());
+    dadosBoleto.setLEILAO(dadosBoleto.getLEILAO());
 
     dadosBoleto.setSTATUS("R"); // "R" - Pre-Boleto
     if ( transaction instanceof FXTransaction ) {
@@ -449,6 +455,45 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
 
     transaction.setReferenceNumber(response.getInsertBoletoResult().getNRREFERENCE());
     return transaction;
+  }
+
+  public Transaction updateTransactionStatus(Transaction transaction) throws RuntimeException {
+    if ( SafetyUtil.isEmpty(transaction.getReferenceNumber()) ) return transaction;
+
+    GetBoletoStatus request = new GetBoletoStatus();
+    request.setNrBoleto(transaction.getReferenceNumber());
+    try {
+      BoletoStatusResponse response = exchangeService.getBoletoStatus(request);
+      if ( response == null || response.getBoletoStatusResult() == null )
+        throw new RuntimeException("Unable to get a valid response from Exchange while calling GetBoletoStatus");
+
+      if ( response.getBoletoStatusResult().getBoleto() == null ||
+        response.getBoletoStatusResult().getBoleto().length < 1 )
+        throw new RuntimeException("GetBoletoStatus failed, transaction not found in exchange");
+
+      transaction = (Transaction) transaction.fclone();
+      Boleto boleto = (Boleto) response.getBoletoStatusResult().getBoleto()[0];
+      transaction.setStatus(mapExchangeTransactionStatus(boleto.getSTATUS(), transaction));
+      return transaction;
+    } catch(Throwable t) {
+      logger_.error("Error getting status of transaction from Exchange" , t);
+      throw new RuntimeException(t);
+    }
+  }
+
+  protected TransactionStatus mapExchangeTransactionStatus(String status, Transaction transaction) {
+    switch (status) {
+      case "E":
+        return TransactionStatus.COMPLETED;
+      case "M":
+        return TransactionStatus.SENT;
+      case "R":
+        return TransactionStatus.SENT;
+      case "F":
+        return TransactionStatus.DECLINED;
+      default:
+        return transaction.getStatus();
+    }
   }
 
   public List searchNatureCode(String natureCode) throws RuntimeException {

@@ -839,8 +839,8 @@ foam.CLASS({
 		{
 			class: "foam.core.String",
 			name: "GIRO",
-			value: "",
-			documentation: "Turn: “Y” - Yes “N” - No"
+			value: "N",
+			documentation: "Turn: “S” - Yes “N” - No"
 		},
 		{
 			class: "foam.core.String",
@@ -937,6 +937,7 @@ foam.CLASS({
 		{
 			class: "foam.core.String",
 			name: "LEILAO",
+			value: "N",
 			documentation: "Auction: “S” - Yes “N” - No"
 		},
 		{
@@ -1020,7 +1021,7 @@ foam.CLASS({
 		{
 			class: "foam.core.String",
 			name: "OPLINHA",
-			value: "",
+			value: "N",
 			documentation: "Line: “Y” - Yes “N” - No"
 		},
 		{
@@ -1112,7 +1113,7 @@ foam.CLASS({
 		{
 			class: "foam.core.String",
 			name: "PLATBMF",
-			value: "",
+			value: "N",
 			documentation: 'BMF Platform: “Y” - Yes “N” - No'
 		},
 		{

@@ -47,6 +47,18 @@ foam.INTERFACE({
       ]
     },
     {
+      name: 'getBoletoStatus',
+      documentation: 'Get Boleto Status',
+      async: true,
+      type: 'net.nanopay.country.br.exchange.BoletoStatusResponse',
+      args: [
+        {
+          type: 'net.nanopay.country.br.exchange.GetBoletoStatus',
+          name: 'request',
+        }
+      ]
+    },
+    {
       name: 'insertTitular',
       documentation: 'Insert Titular',
       async: true,

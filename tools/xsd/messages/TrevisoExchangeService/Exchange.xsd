@@ -855,7 +855,7 @@
   </xs:complexType>
   <xs:complexType name="BoletoStatusResponse">
     <xs:sequence>
-      <xs:element minOccurs="0" name="BoletoStatusResult" nillable="true" type="q89:ArrayOfBoleto" xmlns:q89="http://schemas.datacontract.org/2004/07/Exchange"/>
+      <xs:element minOccurs="0" name="BoletoStatusResult" nillable="true" type="ArrayOfBoleto" xmlns:q89="http://schemas.datacontract.org/2004/07/Exchange"/>
     </xs:sequence>
   </xs:complexType>
   <xs:complexType name="searchOrdensRecebidas">
