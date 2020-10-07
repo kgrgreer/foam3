@@ -65,7 +65,8 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'INVALID_CPF', messages: 'Invalid CPF.' }
+    { name: 'INVALID_CPF', message: 'Invalid CPF Number' },
+    { name: 'INVALID_OWNER_NAME', message: 'Click to verify owner name' }
   ],
 
   properties: [
@@ -184,7 +185,15 @@ foam.CLASS({
           },
           errorString: 'Must be under the age of 125 years old.'
         }
-      ]
+      ],
+      postSet: function(_,n) {
+        this.cpfName = "";
+        if ( this.cpf.length == 11 ) {
+          this.getCpfName(this.cpf).then((v) => {
+            this.cpfName = v;
+          });
+        }
+      }
     },
     {
       class: 'String',
@@ -308,20 +317,23 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['type', 'cpf'],
+          args: ['type', 'cpfName'],
           predicateFactory: function(e) {
             return e.OR(
               e.NEQ(net.nanopay.model.BeneficialOwner.TYPE, 'BR'),
               e.AND(
                 e.EQ(net.nanopay.model.BeneficialOwner.TYPE, 'BR'),
-                e.NEQ(net.nanopay.model.BeneficialOwner.CPF, '')
+                e.GT(net.nanopay.model.BeneficialOwner.CPF_NAME, 0)
               )
             );
           },
-          errorString: 'Please provide a valid CPF number'
+          errorMessage: 'INVALID_CPF'
         }
       ],
       externalTransient: true,
+      tableCellFormatter: function(val) {
+        return foam.String.applyFormat(val, 'xxx.xxx.xxx-xx');
+      },
       postSet: function(_,n) {
         this.cpfName = "";
         if ( n.length == 11 ) {
@@ -330,6 +342,39 @@ foam.CLASS({
           });
         }
       },
+      view: function(_, X) {
+        return foam.u2.FragmentedTextField.create({
+          delegates: [
+            {
+              class: 'foam.u2.TextField',
+              attributes: [ { name: 'maxlength', value: 3 } ],
+              onKey: true,
+              data: X.data.cpf.slice(0,3)
+            },
+            '.',
+            {
+              class: 'foam.u2.TextField',
+              attributes: [ { name: 'maxlength', value: 3 } ],
+              onKey: true,
+              data: X.data.cpf.slice(3,6)
+            },
+            '.',
+            {
+              class: 'foam.u2.TextField',
+              attributes: [ { name: 'maxlength', value: 3 } ],
+              onKey: true,
+              data: X.data.cpf.slice(6,9)
+            },
+            '-',
+            {
+              class: 'foam.u2.TextField',
+              attributes: [ { name: 'maxlength', value: 2 } ],
+              onKey: true,
+              data: X.data.cpf.slice(9,11)
+            }
+          ]
+        })
+      }
     },
     {
       class: 'String',
@@ -344,8 +389,8 @@ foam.CLASS({
       name: 'verifyName',
       label: 'Please verify that name displayed below matches owner name.',
       section: 'requiredSection',
-      visibility: function (type) {
-        return type == 'BR' ?
+      visibility: function (type, cpfName) {
+        return type == 'BR' && cpfName.length > 0 ?
         foam.u2.DisplayMode.RW :
         foam.u2.DisplayMode.HIDDEN;
       },
@@ -371,7 +416,7 @@ foam.CLASS({
               e.NEQ(net.nanopay.model.BeneficialOwner.TYPE, 'BR')
             );
           },
-          errorString: 'Click to verify owner name.'
+          errorMessage: 'INVALID_OWNER_NAME'
         }
       ],
       externalTransient: true
