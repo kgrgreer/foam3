@@ -28,6 +28,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.AuthenticationException',
@@ -152,7 +153,8 @@ foam.CLASS({
           throw new AuthenticationException("User not found.");
         }
 
-        Group group = user.findGroup(x);
+        X userX = x.put("subject", new Subject.Builder(x).setUser(user).build());
+        Group group = user.findGroup(userX);
         String supportEmail = (String) group.getSupportEmail();
 
         if (
