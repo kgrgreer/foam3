@@ -1,7 +1,3 @@
-p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"6e5d623d-d92c-6524-bfdf-8a1edb467-intuit-1","sourceId":8029,"targetId":"554af38a-8125-87c8-dfdf-eeb15f7altca-ca","created":"2020-07-31T03:58:20.081Z","status":1},{"algorithm":"SHA-256","digest":"4b4ca2c4ee25a6230fa6583c27d222c19674428b6bd6af0acf1cd4b08b72e2a7"})
-p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"6e5d623d-d92c-6524-bfdf-8a1edb467-intuit-2","sourceId":8027,"targetId":"554af38a-8125-87c8-dfdf-eeb15f7altca-ca","created":"2020-07-29T18:17:09.406Z","status":1},{"algorithm":"SHA-256","digest":"ad7bb3df504543c261ebe04e8593e514a80e3648908f9e5ce6edc2f2af968b5c"})
-p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"6e5d623d-d92c-6524-bfdf-8a1edb467-intuit-3","sourceId":8033,"targetId":"554af38a-8125-87c8-dfdf-eeb15f7altca-ca","created":"2020-07-31T03:48:44.664Z","status":1},{"algorithm":"SHA-256","digest":"541c62c8d01b7e47a3538da25743f7029ce808b7da4bd91ef95e00e8e602372a"})
-
 // spids
 p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"C9233187-7C24-4DAB-BE04-E661D1F281D1","sourceId":8023,"targetId":"intuit","status":1})
 p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"FFAA7A22-35B6-4BBC-A87E-D74E1BE87D5F","sourceId":8024,"targetId":"intuit","status":1})
@@ -11,9 +7,3 @@ p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"F7B7E01A-C684-4889-A
 p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"4F92603A-2DF7-4ACE-BEE2-3596D32253BA","sourceId":8034,"targetId":"intuit","status":1})
 p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"01327FE5-DFD6-4E8C-9143-8109AF14A6C2","sourceId":8035,"targetId":"intuit","status":1})
 p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"FF1EF762-66A1-4E65-A9A2-80BFB0B93E27","sourceId":9035,"targetId":"intuit","status":1})
-p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"82B573C9-9143-4CD0-9568-6F8E7454262F","sourceId":8026,"targetId":"intuit","status":1})
-p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"328DEB82-952A-40C7-856A-6C5C1BFC82C9","sourceId":8027,"targetId":"intuit","status":1})
-p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"67091166-BC20-453D-BF5C-A08AC9D7FE99","sourceId":8032,"targetId":"intuit","status":1})
-p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"B49BBB66-DFF7-4D3A-B4EE-E79BCAC1F50A","sourceId":8028,"targetId":"intuit","status":1})
-p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"DA2D1328-1A0D-45C0-8192-186B73340DCF","sourceId":8033,"targetId":"intuit","status":1})
-p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"1901FFAA-D1D0-4F2D-B432-F31EF3A276A6","sourceId":8029,"targetId":"intuit","status":1})

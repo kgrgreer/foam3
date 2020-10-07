@@ -29,7 +29,8 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'selected',
-      value: false
+      value: false,
+      documentation: 'Whether the associated capibility is selected'
     }
   ],
   

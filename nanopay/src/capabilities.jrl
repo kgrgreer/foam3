@@ -611,7 +611,7 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"56D2D946-6085-4EC3-8572-04A17225F86A",
   "name":"API CAD Business Payments Sending",
-  "description":"Unlock onboarding for sending Canadian payments for a business",
+  "description":"Unlock capability for sending Canadian payments as a business",
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
   "version":"0",
   "enabled":true,
@@ -636,13 +636,12 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"18DD6F03-998F-4A21-8938-358183151F96",
   "name":"API CAD Business Payments Receiving",
-  "description":"Unlock onboarding for receiving Canadian payments for a business",
+  "description":"Unlock capability for receiving Canadian payments as a business",
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
   "version":"0",
   "enabled":true,
   "visible":false,
-  "keywords":["intuit"],
-  "reviewRequired":true
+  "keywords":["intuit"]
 })
 
 p({
@@ -751,7 +750,7 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"1F0B39AD-934E-462E-A608-D590D1081298",
   "name":"API CAD Personal Payments",
-  "description":"Unlock onboarding for a Canadian personal payments",
+  "description":"Unlock capability for Canadian personal payments",
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
   "version":"0",
   "enabled":true,
@@ -763,7 +762,7 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD",
   "name":"API CAD Personal Payments Under 1000CAD",
-  "description":"Unlock onboarding for a Canadian personal payments under $1000",
+  "description":"Unlock capability for Canadian personal payments under $1000",
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
   "version":"0",
   "enabled":true,
@@ -817,7 +816,6 @@ p({
   "enabled":true,
   "visible":false,
   "daoKey":"userDAO",
-  "reviewRequired":true,
   "contextDAOFindKey": "subject.realUser",
   "associatedEntity": 1
 })

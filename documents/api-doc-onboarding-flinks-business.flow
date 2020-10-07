@@ -64,9 +64,9 @@ https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31
 <p>
     One thing to note here is that if the LoginId has been previously seen by the nanopay system, a new busienss will not be 
     created. Instead, the previously provisioned business and supporting user will be found and will be returned in the 'business' and 'user' properties. 
-    Businesses that are found that have already completed onboarding will be easily identifiable by checking the 'missingBusinessCapabilityDataObjects' 
-    property, which should return an empty map. Similarly, if the CAD bank account already exists for that business, it will be found and the ID will 
-    be returned in the 'account' field.
+    Businesses that are found that have already completed onboarding will be easily identifiable by checking the 'capabilityPayloads' property, which should 
+    return an empty map for the capability you are trying to enable. Similarly, if the CAD bank account already exists for that business, it will be found 
+    and the ID will be returned in the 'account' field.
 </p>
 <p>
     In order to start the provisioning process, the loginId has to be passed in to the flinksLoginIdDAO through DIG.
@@ -101,40 +101,39 @@ https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31
 <p>
     As part of the response the to flinksLoginIdDAO call, nanopay will include the capabilities that are 
     still required to be completed in order for the business to be onboarded for Recieving CAD Payments. 
-    The property that needs to be checked is the missingBusinessCapabilityDataObjects property. Here is an example of a response
-    with the extended user details to be filled in, the privacy policy still needing to be agreed to as well as the terms and conditions agreement:
+    The property that needs to be checked is the capabilityPayloads property. Here is an example of a response
+    with the the privacy policy and the terms and conditions agreements which still needing to be agreed to:
     <code>{
     "class": "net.nanopay.flinks.external.FlinksLoginIdOnboarding",
-    "type": 0,
-    "missingUserCapabilityDataObjects": { ... },    // ignore for business onboarding
-    "missingBusinessCapabilityDataObjects": {
-        "API CAD Business Payments Receiving": null,
-        "AbliiPrivacyPolicy": {
-            "class": "net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy",
-            "title": "Ablii's Privacy Policy",
-            "agreement": false,
-            "version": "1.0"
-        },
-        "AbliiTermsAndConditions": {
-            "class": "net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiTermsAndConditions",
-            "title": "Ablii's Terms and Conditions",
-            "agreement": false,
-            "version": "1.0"
-        },
-        "Business Signing Officer": null,
-        "Expanded User Details": {
-            "class": "net.nanopay.crunch.registration.UserDetailExpandedData",
-            "jobTitle": "",
-            "PEPHIORelated": false,
-            "thirdParty": false
-        },
-        "Simple User Onboarding": null,
-        "User Signing Officer Capability": null
-    },
+    "type": 1,
+    "capabilityPayloads": [
+        {
+            "class": "foam.nanos.crunch.connection.CapabilityPayload",
+            "id": "F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD",
+            "capabilityDataObjects": {
+                "AbliiPrivacyPolicy": {
+                    "class": "net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy",
+                    "title": "Ablii's Privacy Policy",
+                    "agreement": false,
+                    "version": "1.0"
+                },
+                "AbliiTermsAndConditions": {
+                    "class": "net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiTermsAndConditions",
+                    "title": "Ablii's Terms and Conditions",
+                    "agreement": false,
+                    "version": "1.0"
+                }
+            },
+            "capabilityValidationErrors": {
+                "AbliiPrivacyPolicy": "Must acknowledge the agreement.",
+                "AbliiTermsAndConditions": "Must acknowledge the agreement."
+            }
+        }
+    ],
     ...
 }
     </code>
-    This map can be extracted and directly used in the next API call to the capabilityPayloadDAO.
+    This capabilityPayloads can be extracted and directly used in the next API call to the capabilityPayloadDAO.
 </p>
 <h4><a name="flinks-login-id-onboarding">FlinksLoginIdOnboarding</a></h4>
 <p>
@@ -195,7 +194,7 @@ https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31
 </p>
 
 <p>
-<i><b>Session Authentication:</b> Authentication for business onboarding should be done with a payment session 
+<i><b>Session Authentication:</b> Authentication for business onboarding should be done with a transaction session 
       that was created with the userId set the ID of the business and agentId set to the ID of the user returned in the FlinksLoginId response.</i>
 </p>
 
@@ -221,7 +220,7 @@ https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31
 }</code>
 </p>
 <p>
-<i><b>Session Authentication:</b> Authentication for updating business and user information should be done with a payment session 
+<i><b>Session Authentication:</b> Authentication for updating business and user information should be done with a transaction session 
       that was created with the userId set the ID of the business and agentId set to the ID of the user returned in the FlinksLoginId response.</i>
 </p>
 
@@ -247,115 +246,9 @@ https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31
     As stated above in the <a href="#business-onboarding">business onboarding</a> section, the payloads necessary are all objects listed. 
     These objects will be mapped by easily understandable keys in the capabilityDataObjects map.
 </p>
-
-<table border="1px" width="100%">
-  <thead>
-    <tr>
-      <th>Use Case</th>
-      <th>Map Key</th>
-      <th>Payload Class</th>
-      <th>Provided By</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>Receiving Business Payments</td>
-      <td>Business Onboarding Details</td>
-      <td>BusinessDetailData</td>
-      <td>Flinks</td>
-    </tr>
-    <tr>
-      <td>Receiving Business Payments</td>
-      <td>AbliiPrivacyPolicy</td>
-      <td>AbliiPrivacyPolicy</td>
-      <td>API</td>
-    </tr>
-    <tr>
-      <td>Receiving Business Payments</td>
-      <td>AbliiTermsAndConditions</td>
-      <td>AbliiTermsAndConditions</td>
-      <td>API</td>
-    </tr>
-    <tr>
-      <td>Receiving Business Payments</td>
-      <td>User Details</td>
-      <td>UserDetailData</td>
-      <td>Flinks</td>
-    </tr>
-    <tr>
-      <td>Receiving Business Payments</td>
-      <td>Simple User Onboarding</td>
-      <td>n/a</td>
-      <td>API</td>
-    </tr>
-    <tr>
-      <td>Receiving Business Payments</td>
-      <td>Expanded User Details</td>
-      <td>UserDetailExpandedData</td>
-      <td>API</td>
-    </tr>
-    <tr>
-      <td>Receiving Business Payments</td>
-      <td>User Signing Officer Capability</td>
-      <td>n/a</td>
-      <td>API</td>
-    </tr>
-    <tr>
-      <td>Receiving Business Payments</td>
-      <td>Signing Officers</td>
-      <td>SigningOfficerList</td>
-      <td>Flinks</td>
-    </tr>
-    <tr>
-      <td>Receiving Business Payments</td>
-      <td>Business Signing Officer</td>
-      <td>n/a</td>
-      <td>API</td>
-    </tr>
-    <tr>
-      <td>Receiving Business Payments</td>
-      <td>Business Type</td>
-      <td>BusinessTypeData</td>
-      <td>Flinks</td>
-    </tr>
-    <tr>
-      <td>Receiving Business Payments</td>
-      <td>Business Directors</td>
-      <td>BusinessDirectorList</td>
-      <td>Flinks</td>
-    </tr>
-    <tr>
-      <td>Receiving Business Payments</td>
-      <td>Business Owners</td>
-      <td>BusinessOwnerList</td>
-      <td>Flinks</td>
-    </tr>
-    <tr>
-      <td>Receiving Business Payments</td>
-      <td>API CAD Business Payments Receiving</td>
-      <td>n/a</td>
-      <td>API</td>
-    </tr>
-    <tr>
-      <td>Sending Business Payments</td>
-      <td>Dual Party Agreement</td>
-      <td>DualPartyAgreementCAD</td>
-      <td>API</td>
-    </tr>
-    <tr>
-      <td>Sending Business Payments</td>
-      <td>Expanded Business Onboarding Details</td>
-      <td>BusinessDetailExpandedData</td>
-      <td>API</td>
-    </tr>
-    <tr>
-      <td>Sending Business Payments</td>
-      <td>API CAD Business Payments Sending</td>
-      <td>n/a</td>
-      <td>API</td>
-    </tr>
-  </tbody>
-</table>
+<p>
+    Refer to the <a href="/#api-doc-60-capabilities">capability documentation page</a> for more information.
+</p>
 
 <h2>Onboarding Data Objects</h2>
 

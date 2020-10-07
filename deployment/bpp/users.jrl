@@ -28,10 +28,11 @@ p({
     lastName:"Admin",
     email:"admin@bpp.com",
     emailVerified:true,
-    password:"Cf7Jr14Ujk4=:LAANp8rLMkR/vqRlOI7SgW47KtTw8NoWM6KC2WsYyd1JoMY9rZmV0a9vbFmvuKgoKckq7sbQNfEIvCNEZ6AkAw==",
+    password:"rjS7gfPL5Aw=:oRLD/6/Hqj4bniLQBcwxCJGavlq7h6eBqf0awzXT/GdOu+JEiQnyIp0tIqWL8xya17z+Ug3w6E4TTcsJilmV9Q==",
     lifecycleState:1,
-    group:"external-api-admin",
+    group:"bpp-dev",
     status:2,
+    spid:"bpp"
 })
 p({
     class:"foam.nanos.auth.User",
@@ -41,8 +42,9 @@ p({
     lastName:"Admin",
     email:"dev@bpp.com",
     emailVerified:true,
-    password:"WsJlIJDGGGQ=:cnE+tRNtF/yhOheF2POyNuocgKTZDVyXia7dITQFUEVPS9hpuQqp8lVTTm2iQQXbYk/8cBUCOV/prsUkO793Sg==",
+    password:"rjS7gfPL5Aw=:oRLD/6/Hqj4bniLQBcwxCJGavlq7h6eBqf0awzXT/GdOu+JEiQnyIp0tIqWL8xya17z+Ug3w6E4TTcsJilmV9Q==",
     lifecycleState:1,
-    group:"external-api-dev",
-    status:2
+    group:"bpp-dev",
+    status:2,
+    spid:"bpp"
 })

@@ -52,12 +52,6 @@ foam.CLASS({
     {
       name: 'validate',
       javaCode: `
-        // The business must exist
-        Business business = findBusiness(x);
-        if ( business == null ) {
-          throw new IllegalStateException("Business does not exist: " + getBusiness());
-        }
-
         // There must be at least one director
         if ( getSigningOfficers().length == 0 ) {
           throw new IllegalStateException("Signing officers empty");
@@ -67,6 +61,12 @@ foam.CLASS({
         for ( net.nanopay.model.SigningOfficer officer : getSigningOfficers() ) 
         {
           officer.validate(x);  
+        }
+
+        // The business must exist
+        Business business = findBusiness(x);
+        if ( business == null ) {
+          throw new IllegalStateException("Business not set or does not exist: " + getBusiness());
         }
       `
     }

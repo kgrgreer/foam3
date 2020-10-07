@@ -1,0 +1,47 @@
+p({
+    class:"foam.nanos.auth.User",
+    id:8023,
+    password:"0SwZePqkVWo=:HEqebrbbB+4BeFc5/eckr+oz9XSV73nbcR1MlR8dT9f0KxTnRRz0nyVrGtdCKu9UPQ0cmboiXXoOWisRIsq9lw=="
+})
+
+p({
+    "class":"foam.nanos.auth.User",
+    "id":8024,
+    "firstName":"Sojan",
+    "lastName":"Mathew",
+    "jobTitle":"Integrations",
+    "organization":"Intuit",
+    "email":"sojan_mathew@intuit.com",
+    "password":"RoHYwSddY2Y=:sI7jj+dicvddj6vw1/m72QNa5ml71ZPFV/ehDVT8vBzj/Swcfv7RDm42ipXRQ0ao7gekX+FEJX9Lsz9Wj/dA5g==",
+    "passwordLastModified":"2019-10-11T20:18:57.186Z",
+    "created":"2019-10-11T20:18:57.186Z",
+    "lastModified":"2019-10-11T20:18:57.186Z",
+    "nextLoginAttemptAllowedAt":"2019-10-11T20:18:57.186Z",
+    "lastModifiedBy":1348,
+    "createdBy":1348,
+    "spid":"intuit",
+    "group":"intuit-dev",
+    "emailVerified":true,
+    "lifecycleState":1
+})
+
+p({
+    "class":"foam.nanos.auth.User",
+    "id":8025,
+    "firstName":"Aaron",
+    "lastName":"Gourley",
+    "jobTitle":"Solution Engineer",
+    "organization":"Intuit",
+    "email":"aaron_gourley@intuit.com",
+    "password":"N4cD1yLjUZU=:TbeiB+VujXTIsZBp0kyZMl8MkJoUYoYq6FL4qqy70bS3VyTD24VM0pngoGTXEcVh6jl7xGMvSrD183syOIR9cA==",
+    "passwordLastModified":"2019-10-11T20:18:57.186Z",
+    "created":"2019-10-11T20:18:57.186Z",
+    "lastModified":"2019-10-11T20:18:57.186Z",
+    "nextLoginAttemptAllowedAt":"2019-10-11T20:18:57.186Z",
+    "lastModifiedBy":1348,
+    "createdBy":1348,
+    "spid":"intuit",
+    "group":"intuit-dev",
+    "emailVerified":true,
+    "lifecycleState":1
+})

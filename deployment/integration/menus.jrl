@@ -104,7 +104,7 @@ p({
         "type",
         "id",
         "name",
-        "summary"
+        "owner"
       ]
     }
   },
@@ -145,29 +145,6 @@ p({
 })
 p({
   "class":"foam.nanos.menu.Menu",
-  "id":"view-requestmoney",
-  "label":"Request Money",
-  "handler":{
-    "class": "foam.nanos.menu.DAOMenu2",
-    "config": {
-      "class": "foam.comics.v2.DAOControllerConfig",
-      "daoKey":"requestMoneyDAO",
-      "browseTitle": "Request Money Requests",
-      "browseSubtitle": "View all Interac request money requests.",
-      "createTitle": "Create a Request Money request",
-      "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "defaultColumns":[
-        "requestId",
-        "requestAmount",
-        "requesterName",
-        "requesterEmail"
-      ]
-    }
-  },
-  "parent":"data"
-})
-p({
-  "class":"foam.nanos.menu.Menu",
   "id":"view-transactions",
   "label":"Transactions",
   "handler":{
@@ -201,9 +178,32 @@ p({
         "firstName",
         "lastName",
         "email",
-        "signUpStatus"
+        "owner"
       ]
     }
   },
-  "parent":"hidden"
+  "parent":"data"
+})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"view-requestmoney",
+  "label":"Request Money",
+  "handler":{
+    "class": "foam.nanos.menu.DAOMenu2",
+    "config": {
+      "class": "foam.comics.v2.DAOControllerConfig",
+      "daoKey":"requestMoneyDAO",
+      "browseTitle": "Request Money Requests",
+      "browseSubtitle": "View all Interac request money requests.",
+      "createTitle": "Create a Request Money request",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "defaultColumns":[
+        "requestId",
+        "requestAmount",
+        "requesterName",
+        "requesterEmail"
+      ]
+    }
+  },
+  "parent":"data"
 })
