@@ -114,13 +114,29 @@ foam.CLASS({
             'isDefault'
           ],
           dblClickListenerAction: async function dblClick(account, id) {
-            if ( ! account ) account = await this.__subContext__.accountDAO.find(id);
-            if ( account.status === self.BankAccountStatus.UNVERIFIED && self.CABankAccount.isInstance(account) ) {
-              self.ctrl.add(self.Popup.create().tag({
+            if ( ! account ) account = await self.__subContext__.accountDAO.find(id);
+            
+            var popupView = account.status === self.BankAccountStatus.UNVERIFIED && self.CABankAccount.isInstance(account) ?
+              self.Popup.create().tag({
                 class: 'net.nanopay.cico.ui.bankAccount.modalForm.CABankMicroForm',
                 bank: account
-              }));
-            }
+              }) : 
+              self.Popup.create().tag({
+                class: 'foam.comics.v2.DAOSummaryView',
+                id: id,
+                data: account,
+                config: {
+                  class: 'foam.comics.v2.DAOControllerConfig',
+                  dao: self.data,
+                  createPredicate: foam.mlang.predicate.False,
+                  editPredicate: foam.mlang.predicate.False,
+                  deletePredicate: foam.mlang.predicate.False
+                },
+                onBack: function() {
+                  this.closeDialog();
+                }
+              });
+            self.ctrl.add(popupView);
           },
           contextMenuActions: [
             foam.core.Action.create({
@@ -178,11 +194,12 @@ foam.CLASS({
               isAvailable: function() {
                 return ! this.verifiedBy
               },
-              code: function(X) {
+              code: async function(X) {
+                var account = await self.__subContext__.accountDAO.find(this.id);
                 self.ctrl.add(self.SMEModal.create().addClass('bank-account-popup').tag(
                   {
                     class: 'net.nanopay.account.ui.BankAccountWizard',
-                    data: this,
+                    data: account,
                     useSections: ['accountDetails', 'pad']
                   }
                 ));
@@ -201,7 +218,7 @@ foam.CLASS({
           label: 'Add bank account',
           code: async function(X) {
             let permission = await this.auth.check(null, 'multi-currency.read');
-            if ( permission ){
+            if ( permission ) {
               X.controllerView.stack.push({
                 class: 'net.nanopay.bank.ui.BankPickCurrencyView'
               }, self);
