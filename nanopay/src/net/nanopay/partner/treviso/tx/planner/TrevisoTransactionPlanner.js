@@ -104,6 +104,7 @@ foam.CLASS({
       trevisoTxn.copyFrom(requestTxn);
       trevisoTxn.setId(UUID.randomUUID().toString());
       trevisoTxn.setAmount(fxQuote.getSourceAmount());
+      trevisoTxn.setFxRate(fxQuote.getRate());
       trevisoTxn.setName("Treviso transaction");
       trevisoTxn.setPaymentProvider(PAYMENT_PROVIDER);
       trevisoTxn.setPlanner(this.getId());
