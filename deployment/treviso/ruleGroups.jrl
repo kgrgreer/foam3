@@ -38,3 +38,45 @@ p({
   "id":"TrevisoPlanner",
   "enabled":true,
 })
+p({
+  "class":"foam.nanos.ruler.RuleGroup",
+  "id":"FastPay",
+  "enabled":false,
+})
+p({
+  "class":"foam.nanos.ruler.RuleGroup",
+  "id":"Liquidity",
+  "enabled":false,
+})
+p({
+  "class":"foam.nanos.ruler.RuleGroup",
+  "id":"ReverseTransactions",
+  "enabled":false,
+})
+p({
+  "class":"foam.nanos.ruler.RuleGroup",
+  "id":"PruneCicoApprovalCleanup",
+  "enabled":false,
+})
+p({
+  "class":"foam.nanos.ruler.RuleGroup",
+  "id":"PruneCicoApprovalCleanup",
+  "enabled":false,
+})
+p({
+  "class":"foam.nanos.ruler.RuleGroup",
+  "id":"PruneCicoApprovalCleanup",
+  "enabled":false,
+})
+p({
+  "class":"foam.nanos.ruler.RuleGroup",
+  "id":"PruneCicoApprovalCleanup",
+  "enabled":false,
+})
+  String formatRule(rule) {
+      return String.format("id: %s, name: %s, saveHistory: %b, enabled: %b.", new Object[] {
+          rule.id,
+          rule.name,
+          rule.saveHistory,
+          rule.enabled
+      });

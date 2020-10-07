@@ -117,7 +117,6 @@ p({
     "class":"net.nanopay.partner.treviso.tx.TrevisoCreateExchange"
   },
   "enabled":true,
-  "saveHistory":true,
   "lifecycleState":1
 })
 p({
@@ -153,7 +152,6 @@ p({
   "action": {
     "class": "net.nanopay.partner.treviso.tx.TrevisoLineItemsFromFXSummary"
   },
-  "saveHistory": true,
   "enabled": true,
   "spid": "treviso",
   "lifecycleState": 1
