@@ -60,9 +60,7 @@ foam.CLASS({
     'loadingSpin',
     'newButton',
     'predicate',
-    'txnQuote',
-    'updateInvoiceDetails',
-    'forceUpdate'
+    'txnQuote'
   ],
 
   requires: [
@@ -262,15 +260,6 @@ foam.CLASS({
       name: 'permitToPay'
     },
     {
-      class: 'Boolean',
-      name: 'forceUpdate'
-    },
-    'updateInvoiceDetails',
-    {
-      class: 'Boolean',
-      name: 'reQuote'
-    },
-    {
       class: 'FObjectProperty',
       name: 'txnQuote',
     }
@@ -397,7 +386,7 @@ foam.CLASS({
       if ( ! this.viewData.bankAccount || ! foam.util.equals(this.viewData.bankAccount.status, net.nanopay.bank.BankAccountStatus.VERIFIED) ) {
         this.notify(this.BANK_ACCOUNT_REQUIRED, '', this.LogLevel.ERROR, true);
         return false;
-      } else if ( ! this.txnQuote && this.isPayable ) {
+      } else if ( ! this.invoice.quote && this.isPayable ) {
         this.notify(this.QUOTE_ERROR, '', this.LogLevel.ERROR, true);
         return false;
       }
@@ -407,13 +396,13 @@ foam.CLASS({
 
     function getExpired( time, transaction) {
       let quoteExpiry = null;
-      for ( i=0; i < this.txnQuote.lineItems.length; i++ ) {
-        if ( ( this.FXLineItem.isInstance(this.txnQuote.lineItems[i]) || this.FxSummaryTransactionLineItem.isInstance(this.viewData.txn.lineItems[i]) ) && this.viewData.txn.lineItems[i].expiry ) {
+      for ( i=0; i < transaction.lineItems.length; i++ ) {
+        if ( ( this.FXLineItem.isInstance(transaction.lineItems[i]) || this.FxSummaryTransactionLineItem.isInstance(transaction.lineItems[i]) ) && transaction.lineItems[i].expiry ) {
           if ( quoteExpiry == null ) {
-            quoteExpiry = this.txnQuote.lineItems[i].expiry;
+            quoteExpiry = transaction.lineItems[i].expiry;
             quoteExpiry = Date.UTC(quoteExpiry.getFullYear(), quoteExpiry.getMonth(), quoteExpiry.getDate(), quoteExpiry.getHours(), quoteExpiry.getMinutes(), quoteExpiry.getSeconds());
           } else {
-            let temp = this.txnQuote.lineItems[i].expiry;
+            let temp = transaction.lineItems[i].expiry;
             temp = Date.UTC(temp.getFullYear(), temp.getMonth(), temp.getDate(), temp.getHours(), temp.getMinutes(), temp.getSeconds());
             quoteExpiry = quoteExpiry < temp ? quoteExpiry : temp;
           }
@@ -430,24 +419,38 @@ foam.CLASS({
       this.invoice.quote = null;
       this.invoice.paymentMethod = this.PaymentStatus.SUBMIT;
       this.invoice = await this.invoiceDAO.put(this.invoice);
-      return this.invoice.quote.plan;
+      this.txnQuote = this.invoice.quote.plan;
+      return this.txnQuote;
     },
 
     async function setTransactionPlanAndQuote() {
       this.isLoading = true;
       if ( this.isPayable ) {
-      // TODO: confirm fxquote is still valid
-      this.txnQuote = ! this.invoice.paymentMethod || this.invoice.paymentMethod != this.PaymentStatus.SUBMIT
-        ? await this.getQuote() : this.invoice.quote && this.invoice.quote.plan;
-      this.invoice = await this.invoiceDAO.find(this.invoice.id);
-      this.notify(this.RATE_REFRESH + ( this.isApproving ? this.RATE_REFRESH_APPROVE : this.RATE_REFRESH_SUBMIT), '', this.LogLevel.WARN, true);
+        await this.getQuote();
       }
       this.isLoading = false;
     },
 
     async function submit() {
       this.isLoading = true;
+      let transaction = this.invoice.quote.plan;
       try {
+        // confirm fxquote is still valid
+        if ( transaction != null && this.getExpired(new Date(), transaction) ) {
+          transaction = await this.getQuote();
+          this.notify(this.RATE_REFRESH + ( this.isApproving ? this.RATE_REFRESH_APPROVE : this.RATE_REFRESH_SUBMIT), '', this.LogLevel.WARN, true);
+          this.isLoading = false;
+          return;
+        }
+
+        this.invoice.plan = transaction;
+        this.invoice = await this.invoiceDAO.put(this.invoice);
+        if ( ! this.invoice.paymentId ) {
+          debugger;
+          this.isLoading = false;
+          this.notify(this.TRANSACTION_ERROR + this.type, '', this.LogLevel.ERROR, true);
+          return;
+        }
         // this.invoice.processPaymentOnCreate = false;
 
         // if ( this.invoice.id != 0 ) this.invoice = await this.invoiceDAO.find(this.invoice.id);
@@ -458,7 +461,6 @@ foam.CLASS({
         if ( this.invoice.quickId && this.invoice.status == this.InvoiceStatus.PROCESSING ) service = this.quickbooksService;
 
         if ( service ) service.invoiceResync(null, this.invoice);
-        this.transactionDAO.put(this.invoice.quote.plan);
         ctrl.stack.push({
           class: 'net.nanopay.sme.ui.MoneyFlowSuccessView',
           invoice: this.invoice
