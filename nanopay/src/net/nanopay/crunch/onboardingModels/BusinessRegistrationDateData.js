@@ -47,7 +47,14 @@ foam.CLASS({
         {
           args: ['businessRegistrationDate'],
           predicateFactory: function(e) {
-            return e.LTE(net.nanopay.crunch.onboardingModels.BusinessRegistrationDateData.BUSINESS_REGISTRATION_DATE, new Date());
+            var min = new Date();
+            var max = new Date();
+            min.setDate(min.getDate() - ( 350 * 365 ));
+            return e.AND(
+              e.NEQ(net.nanopay.crunch.onboardingModels.BusinessRegistrationDateData.BUSINESS_REGISTRATION_DATE, null),
+              e.GTE(net.nanopay.crunch.onboardingModels.BusinessRegistrationDateData.BUSINESS_REGISTRATION_DATE, min),
+              e.LTE(net.nanopay.crunch.onboardingModels.BusinessRegistrationDateData.BUSINESS_REGISTRATION_DATE, max)
+            );
           },
           errorMessage: 'BUSINESS_REGISTRATION_DATE_ERROR'
         }

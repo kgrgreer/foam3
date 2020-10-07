@@ -372,7 +372,7 @@ foam.CLASS({
       availablePermissions: ['service.complianceHistoryDAO', 'foam.nanos.auth.User.permission.viewComplianceHistory'],
       code: async function(X) {
         var m = foam.mlang.ExpressionsSingleton.create({});
-        this.__context__.stack.push({
+        X.stack.push({
           class: 'foam.comics.BrowserView',
           createEnabled: false,
           editEnabled: true,
@@ -392,7 +392,7 @@ foam.CLASS({
       availablePermissions: ['foam.nanos.auth.User.permission.viewAccounts'],
       code: function(X) {
         var m = foam.mlang.ExpressionsSingleton.create({});
-        this.__context__.stack.push({
+        X.stack.push({
           class: 'foam.comics.BrowserView',
           createEnabled: false,
           editEnabled: true,
@@ -413,7 +413,7 @@ foam.CLASS({
           .where(m.EQ(net.nanopay.account.Account.OWNER, this.id))
           .select(m.MAP(net.nanopay.account.Account.ID))
           .then((sink) => sink.delegate.array);
-        this.__context__.stack.push({
+        X.stack.push({
           class: 'foam.comics.BrowserView',
           createEnabled: false,
           editEnabled: true,

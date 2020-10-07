@@ -57,12 +57,6 @@ foam.CLASS({
                     SafetyUtil.validate(agencyX, invoice);
                     var crunchService = (CrunchService) agencyX.get("crunchService");
 
-                    for (var ucr : invoice.getUserCapabilityRequirements()) {
-                        var junction = crunchService.getJunction(x, ucr);
-                        if (junction == null || junction.getStatus() != CapabilityJunctionStatus.GRANTED )
-                            return;
-                    }
-
                     try {
                         invoice.verifyRequirements(x, new String[]{NATURE_CODE_ID});
                     } catch (IllegalStateException e) {

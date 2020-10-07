@@ -367,7 +367,9 @@ foam.CLASS({
       section: 'accountDetails',
       documentation: `Standard international numbering system developed to
           identify an overseas bank account.`,
-      visibility: 'RW',
+      createVisibility: 'RW',
+      updateVisibility: 'RW',
+      readVisibility: 'RO',
     },
     {
       class: 'String',

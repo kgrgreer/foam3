@@ -34,6 +34,7 @@ foam.CLASS({
     'foam.nanos.approval.ApprovalRequestUtil',
     'foam.nanos.approval.ApprovalStatus',
     'foam.nanos.auth.User',
+    'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.partner.treviso.TrevisoService',
@@ -142,6 +143,9 @@ foam.CLASS({
                 }
               }
             } catch ( Throwable t ) {
+              Logger logger = (Logger) x.get("logger");
+              logger.error("Failed updating exchange limit transaction status", t);
+
               txn.setStatus(TransactionStatus.FAILED);
               txnDAO.put(txn);
             }

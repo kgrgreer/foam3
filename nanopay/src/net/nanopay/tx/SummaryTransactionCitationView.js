@@ -32,7 +32,10 @@ foam.CLASS({
 
   requires: [
     'foam.u2.layout.Cols',
-    'foam.u2.layout.Rows'
+    'foam.u2.layout.Rows',
+    'net.nanopay.tx.ExpirySummaryTransactionLineItem',
+    'net.nanopay.payment.PADTypeLineItem',
+    'net.nanopay.tx.SummaryTransactionLineItem',
   ],
 
   properties: [
@@ -76,7 +79,29 @@ foam.CLASS({
              .end()
           }
         })
-      .end()
+        .start()
+          .add(
+            this.slot( function(data) {
+              if ( ! data ) return;
+              let e = this.E();
+
+              for ( i=0; i < data.lineItems.length; i++ ) {
+                if ( ! data.lineItems[i].requiresUserInput
+                  && (data.showAllLineItems || this.SummaryTransactionLineItem.isInstance(data.lineItems[i]))
+                  && ! this.PADTypeLineItem.isInstance(data.lineItems[i])
+                  && ! this.ExpirySummaryTransactionLineItem.isInstance(data.lineItems[i]) ) {
+                  e.start({
+                    class: 'net.nanopay.tx.LineItemCitationView',
+                    data: data.lineItems[i]
+                  });
+                }
+              }
+
+              return e;
+            })
+          )
+        .end()
+      .end();
     }
   ]
 });

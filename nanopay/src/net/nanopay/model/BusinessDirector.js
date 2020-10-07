@@ -40,7 +40,8 @@ foam.CLASS({
   messages: [
     { name: 'UNDER_AGE_LIMIT_ERROR', message: 'Must be at least 18 years old.' },
     { name: 'OVER_AGE_LIMIT_ERROR', message: 'Must be under the age of 125 years old.' },
-    { name: 'INVALID_CPF', messages: 'Invalid CPF.' }
+    { name: 'INVALID_CPF', message: 'Invalid CPF Number' },
+    { name: 'INVALID_DIRECTOR_NAME', message: 'Click to verify director name' }
   ],
 
   properties: [
@@ -107,11 +108,20 @@ foam.CLASS({
           },
           errorMessage: 'OVER_AGE_LIMIT_ERROR'
         }
-      ]
+      ],
+      postSet: function(_,n) {
+        this.cpfName = "";
+        if ( this.cpf.length == 11 ) {
+          this.getCpfName(this.cpf).then((v) => {
+            this.cpfName = v;
+          });
+        }
+      }
     }),
     {
       class: 'String',
       name: 'cpf',
+      label: 'CPF',
       required: true,
       visibility: function (type) {
         return type == 'BR' ?
@@ -120,20 +130,23 @@ foam.CLASS({
       },
       validationPredicates: [
         {
-          args: ['type', 'cpf'],
+          args: ['type', 'cpfName'],
           predicateFactory: function(e) {
             return e.OR(
               e.NEQ(net.nanopay.model.BusinessDirector.TYPE, 'BR'),
               e.AND(
                 e.EQ(net.nanopay.model.BusinessDirector.TYPE, 'BR'),
-                e.NEQ(net.nanopay.model.BusinessDirector.CPF, '')
+                e.GT(net.nanopay.model.BusinessDirector.CPF_NAME, 0)
               )
             );
           },
-          errorString: 'Please provide a valid CPF number'
+          errorMessage: 'INVALID_CPF'
         }
       ],
       externalTransient: true,
+      tableCellFormatter: function(val) {
+        return foam.String.applyFormat(val, 'xxx.xxx.xxx-xx');
+      },
       postSet: function(_,n) {
         this.cpfName = "";
         if ( n.length == 11 ) {
@@ -142,6 +155,39 @@ foam.CLASS({
           });
         }
       },
+      view: function(_, X) {
+        return foam.u2.FragmentedTextField.create({
+          delegates: [
+            {
+              class: 'foam.u2.TextField',
+              attributes: [ { name: 'maxlength', value: 3 } ],
+              onKey: true,
+              data: X.data.cpf.slice(0,3)
+            },
+            '.',
+            {
+              class: 'foam.u2.TextField',
+              attributes: [ { name: 'maxlength', value: 3 } ],
+              onKey: true,
+              data: X.data.cpf.slice(3,6)
+            },
+            '.',
+            {
+              class: 'foam.u2.TextField',
+              attributes: [ { name: 'maxlength', value: 3 } ],
+              onKey: true,
+              data: X.data.cpf.slice(6,9)
+            },
+            '-',
+            {
+              class: 'foam.u2.TextField',
+              attributes: [ { name: 'maxlength', value: 2 } ],
+              onKey: true,
+              data: X.data.cpf.slice(9,11)
+            }
+          ]
+        })
+      }
     },
     {
       class: 'String',
@@ -154,8 +200,8 @@ foam.CLASS({
       class: 'Boolean',
       name: 'verifyName',
       label: 'Please verify that name displayed below matches director name.',
-      visibility: function (type) {
-        return type == 'BR' ?
+      visibility: function (type, cpfName) {
+        return type == 'BR' && cpfName.length > 0 ?
         foam.u2.DisplayMode.RW :
         foam.u2.DisplayMode.HIDDEN;
       },
@@ -173,12 +219,15 @@ foam.CLASS({
         {
           args: ['verifyName'],
           predicateFactory: function(e) {
-            return e.AND(
-              e.EQ(net.nanopay.model.BusinessDirector.VERIFY_NAME, true),
-              e.EQ(net.nanopay.model.BusinessDirector.TYPE, 'BR')
+            return e.OR(
+              e.NEQ(net.nanopay.model.BusinessDirector.TYPE, 'BR'),
+              e.AND(
+                e.EQ(net.nanopay.model.BusinessDirector.TYPE, 'BR'),
+                e.EQ(net.nanopay.model.BusinessDirector.VERIFY_NAME, true)           
+              )
             );
           },
-          errorString: 'Click to verify director name.'
+          errorMessage: 'INVALID_DIRECTOR_NAME'
         }
       ]
     },

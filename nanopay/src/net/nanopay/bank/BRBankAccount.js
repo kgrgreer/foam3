@@ -144,6 +144,7 @@ foam.CLASS({
       }
     },
     {
+      class: 'String',
       name: 'accountType',
       label: 'Account Type',
       updateVisibility: 'RO',
@@ -163,6 +164,7 @@ foam.CLASS({
       }
     },
     {
+      class: 'String',
       name: 'accountOwnerType',
       label: 'Account Holder',
       updateVisibility: 'RO',
@@ -180,6 +182,14 @@ foam.CLASS({
           return this.ACCOUNT_HOLDER_REQUIRED;
         }
       }
+    },
+    {
+      class: 'String',
+      name: 'iban',
+      label: 'IBAN',
+      required: true,
+      section: 'accountDetails',
+      updateVisibility: 'RO'
     },
     {
       name: 'desc',

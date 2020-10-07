@@ -36,7 +36,8 @@ p({
   "serve":true,
   "serviceScript":"""
     return new net.nanopay.partner.treviso.TrevisoService(x, x.get("fepWebService"), x.get("exchange"));
-  """
+  """,
+  "authNotes":"An instance of fepWebService and exchange are attached to the trevisoService when initialized therefore later changes to those nspecs won't take effect on this service."
 })
 
 p({

@@ -428,7 +428,8 @@ foam.CLASS({
               this.EQ(this.BankAccount.STATUS, this.BankAccountStatus.VERIFIED)
             )
           }
-        ]
+        ],
+        action: this.ACCOUNT_CREATE
       };
 
       this.ctrl
@@ -733,6 +734,14 @@ foam.CLASS({
       icon: 'images/plus-no-bg.svg',
       code: function(X, e) {
         X.pushMenu('sme.menu.toolbar');
+      }
+    },
+    {
+      name: 'accountCreate',
+      label: 'Create a new bank account',
+      icon: 'images/plus-no-bg.svg',
+      code: function(X, e) {
+        X.pushMenu('sme.menu.addBankAccount');
       }
     }
   ]

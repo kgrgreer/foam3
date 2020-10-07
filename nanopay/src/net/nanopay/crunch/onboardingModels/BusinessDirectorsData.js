@@ -77,7 +77,7 @@ properties: [
             enableRemoving: true,
             defaultNewItem: net.nanopay.model.BusinessDirector.create({
               type: x.data.subject.user.address.countryId
-            }, this)
+            }, x)
           }
         },
         visibility: function(businessTypeId, needDirector) {
