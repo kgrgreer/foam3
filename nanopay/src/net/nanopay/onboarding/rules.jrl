@@ -13,3 +13,58 @@ p({
   "enabled":true,
   "lifecycleState":1
 })
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"552fcad2-050f-11eb-adc1-0242ac120002",
+  "name":"set submitby ucj",
+  "priority":800,
+  "ruleGroup":"ucjDAO",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "enabled":true,
+  "saveHistory":true,
+  "action":{"class":"net.nanopay.onboarding.ruler.SetSubmitByRule"},
+  "lifecycleState":1,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.mlang.predicate.Or",
+        "args":[
+          {
+            "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+            "propName":"targetId",
+            "propValue":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
+          },
+          {
+            "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+            "propName":"targetId",
+            "propValue":"554af38a-8225-87c8-dfdf-eeb15f71215f-11",
+          },
+          {
+            "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+            "propName":"targetId",
+            "propValue":"554af38a-8225-87c8-dfdf-eeb15f71215f-12",
+          },
+          {
+            "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+            "propName":"targetId",
+            "propValue":"554af38a-8225-87c8-dfdf-eeb15f71215f-13",
+          }
+        ]
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+        "propName":"status",
+        "propValue":{"class":"foam.nanos.crunch.CapabilityJunctionStatus","ordinal":0},
+        "isNew":false
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue":{"class":"foam.nanos.crunch.CapabilityJunctionStatus","ordinal":0}
+      }
+    ]
+  }
+})

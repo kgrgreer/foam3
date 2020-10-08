@@ -15,29 +15,19 @@
  * from nanopay Corporation.
  */
 
-/**
- * @license
- * Copyright 2020 The FOAM Authors. All Rights Reserved.
- * http://www.apache.org/licenses/LICENSE-2.0
- */
-
 foam.CLASS({
-  package: 'net.nanopay.sme.onboarding',
-  name: 'BusinessDirectorArrayView',
-  extends: 'foam.u2.view.FObjectArrayView',
-
+  package: 'net.nanopay.crunch.onboardingModels',
+  name: 'CustomerBasicInfor',
+  documentation: `Basic information required from business customer or supplier`,
   properties: [
     {
-     name: 'name' 
-    }
-  ],
-
-  methods: [
+      class: 'String',
+      name: 'name',
+      minLength: 1
+    },
     {
-      name: 'init',
-      code: function() {
-        this.ADD_ROW.label = '+ Add ' + this.name;
-      }
-    }
-  ],
+      class: 'FObjectProperty',
+      name: 'telephone',
+    },
+  ]
 });

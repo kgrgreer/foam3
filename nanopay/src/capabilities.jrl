@@ -954,3 +954,13 @@ p({
     "contact.ro.shouldinvite"
   ]
 })
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"7bf54e2d-2bf0-41fe-bc25-31c8de030ffa",
+  "name":"Business Onboarding Addition Infor",
+  "of":"net.nanopay.onboarding.model.BusinessOnboardingExtra",
+  "version":"0",
+  "enabled":true,
+  "visible":false
+})

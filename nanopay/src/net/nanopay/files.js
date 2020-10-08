@@ -255,11 +255,13 @@ FOAM_FILES([
   { name: 'net/nanopay/onboarding/b2b/ui/PasswordChangeForm', flags: ['web'] },
   { name: 'net/nanopay/onboarding/model/Question' },
   { name: 'net/nanopay/onboarding/model/Questionnaire' },
+  { name: 'net/nanopay/onboarding/model/BusinessOnboardingExtra' },
   { name: 'net/nanopay/onboarding/InvitationTokenService' },
   { name: 'net/nanopay/onboarding/FirebaseInvitationTokenService' },
   { name: 'net/nanopay/onboarding/email/NewBankAccountAddedEmailDAO' },
   { name: 'net/nanopay/onboarding/email/NewUserOnboardedEmailDAO' },
   { name: 'net/nanopay/onboarding/ruler/NotificationSettingsRule' },
+  { name: 'net/nanopay/onboarding/ruler/SetSubmitByRule' },
   { name: 'net/nanopay/bank/ruler/AccountAddedNotificationRule' },
   { name: 'net/nanopay/bank/ruler/AccountVerifiedNotificationRule' },
   { name: 'net/nanopay/bank/ruler/AccountDeletedNotificationRule' },
@@ -1611,7 +1613,9 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/onboardingModels/BusinessIncorporationDateData' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessRegistrationDateData' },
   { name: 'net/nanopay/crunch/onboardingModels/TaxIdNumberData' },
-
+  { name: 'net/nanopay/crunch/onboardingModels/BusinessAccountData' },
+  { name: 'net/nanopay/crunch/onboardingModels/CurrencyAmountInfor' },
+  { name: 'net/nanopay/crunch/onboardingModels/CustomerBasicInfor' },
 
   // crunch notification
   { name: 'net/nanopay/crunch/UCJExpiryReminderCron' },
@@ -1695,6 +1699,7 @@ FOAM_FILES([
   { name: 'net/nanopay/country/br/NatureCodeRate' },
   { name: 'net/nanopay/country/PermittedCountryFilterDAO' },
   { name: 'net/nanopay/country/br/NatureCodePaymentProviderJunctionRefinement' },
+  { name: 'net/nanopay/country/br/NatureBusinessRelationship' },
 
 
   // Treviso
