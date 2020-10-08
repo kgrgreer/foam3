@@ -177,7 +177,7 @@ p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d39"
 p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d40","name":"Account Liquification","priority":100,"ruleGroup":"Liquidity","documentation":"Triggers liquidity settings","daoKey":"localTransactionDAO","operation":3,"after":true,"enabled":true,"action":{"class":"net.nanopay.liquidity.LiquidityRule"},"saveHistory":true,"lifecycleState":1})
 p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d41","name":"ReverseCashIn","priority":100,"ruleGroup":"ReverseTransactions","documentation":"Reverses Failed and Declined CI Transactions","daoKey":"localTransactionDAO","operation":1,"action":{"class":"net.nanopay.tx.cico.ReverseCIRule"},"after":false,"enabled":true,"saveHistory":true,"lifecycleState":1})
 p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d42","name":"ReverseCashOut","priority":90,"ruleGroup":"ReverseTransactions","documentation":"Reverses Failed and Declined CO Transactions","daoKey":"localTransactionDAO","operation":1,"action":{"class":"net.nanopay.tx.cico.ReverseCORule"},"after":false,"enabled":true,"saveHistory":true,"lifecycleState":1})
-p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d43","name":"observeStatus","priority":100,"ruleGroup":"Observer","documentation":"Change the last status field to the current time for all transaction status changes","daoKey":"localTransactionDAO","operation":1,"after":false,"predicate":{"class":"foam.nanos.ruler.predicate.PropertyChangePredicate","observedProperty":"status","observedClass":"net.nanopay.tx.model.Transaction"},"enabled":true,"saveHistory":true,"action":{"class":"foam.nanos.ruler.action.ChangePropertyAction","propName":"lastStatusChange","valueExpr":{"class":"foam.mlang.CurrentTime"}},"lifecycleState":1})
+p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d43","name":"observeStatus","priority":100,"ruleGroup":"Observer","documentation":"Change the last status field to the current time for all transaction status changes","daoKey":"localTransactionDAO","operation":1,"after":false,"predicate":{"class":"foam.nanos.ruler.predicate.PropertyChangePredicate","observedProperty":"status","observedClass":"net.nanopay.tx.model.Transaction"},"enabled":true,"action":{"class":"foam.nanos.ruler.action.ChangePropertyAction","propName":"lastStatusChange","valueExpr":{"class":"foam.mlang.CurrentTime"}},"lifecycleState":1})
 p({
   "class":"foam.nanos.ruler.Rule",
   "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d45","name":"Ablii Completed Transaction Notification",
@@ -451,8 +451,7 @@ p({
     "action":{
       "class":"net.nanopay.tx.ruler.AscendantFXTransactionAfterPutRule"
     },
-    "enabled":true,
-    "saveHistory":true,
+    "enabled":false,
     "lifecycleState":1
 })
 
@@ -484,7 +483,6 @@ p({
       "message":"An invoice for this transaction was not provided."
     },
     "enabled":true,
-    "saveHistory":true,
     "lifecycleState":1
 })
 
