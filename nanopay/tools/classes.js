@@ -1221,6 +1221,7 @@ var classes = [
   'net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions',
   'net.nanopay.partner.treviso.invoice.TrevisoCapabilityValidateRule',
   'net.nanopay.partner.treviso.invoice.UpdateTransactionOnInvoiceValidationRule',
+  'net.nanopay.partner.treviso.invoice.TrevisoNotificationRule',
 
   // crunch onboarding
   'net.nanopay.crunch.onboardingModels.CheckUserCountry',
