@@ -65,6 +65,5 @@ p({
     "class": "net.nanopay.business.ruler.InitialBusinessRegistrationRule"
   },
   "enabled":true,
-  "saveHistory":true,
   "lifecycleState":1
 })

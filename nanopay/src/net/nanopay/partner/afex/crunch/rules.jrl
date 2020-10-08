@@ -24,7 +24,6 @@ p({
   },
   "asyncAction":{ "class":"net.nanopay.partner.afex.crunch.AFEXBusinessOnboardingRule"},
   "enabled":true,
-  "saveHistory":true,
   "lifecycleState":1
 })
 

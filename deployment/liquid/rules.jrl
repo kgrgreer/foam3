@@ -202,7 +202,6 @@ p({
   "action" : {
     "class": "net.nanopay.liquidity.crunch.RemoveAccountBasedUCJIfAccountsEmpty"
   },
-  "saveHistory": true,
   "lifecycleState":1
 })
 

@@ -28,7 +28,6 @@ p({
     "classification":"Validate Signing Officer UserCapabilityJunction Using SecureFact"
   },
   "enabled":true,
-  "saveHistory":true,
   "lifecycleState":1
 })
 
@@ -60,7 +59,6 @@ p({
     "classification":"Validate Signing Officer UserCapabilityJunction Using Dow Jones"
   },
   "enabled":true,
-  "saveHistory":true,
   "validity":1,
   "lifecycleState":1
 })
@@ -85,7 +83,6 @@ p({
     "classification":"Validate Business Onboarding UserCapabilityJunction Using SecureFact"
   },
   "enabled":true,
-  "saveHistory":true,
   "lifecycleState":1
 })
 
@@ -108,7 +105,6 @@ p({
     "classification":"Validate Business Onboarding UserCapabilityJunction Using Dow Jones"
   },
   "enabled":true,
-  "saveHistory":true,
   "validity":1,
   "lifecycleState":1
 })
@@ -131,7 +127,6 @@ p({
     "class": "net.nanopay.crunch.compliance.BeneficialOwnerSanctionValidator"
   },
   "enabled":true,
-  "saveHistory":true,
   "validity":1,
   "lifecycleState":1
 })
@@ -166,7 +161,6 @@ p({
     "classification":"Validate Expanded User Detail UserCapabilityJunction Using Dow Jones"
   },
   "enabled":true,
-  "saveHistory":true,
   "validity":1,
   "lifecycleState":1
 })
@@ -201,7 +195,6 @@ p({
     "classification":"Validate Expanded User Detail UserCapabilityJunction Using SecureFact"
   },
   "enabled":true,
-  "saveHistory":true,
   "lifecycleState":1
 })
 
@@ -235,7 +228,6 @@ p({
     "classification":"Validate Busiiness Detail Data UserCapabilityJunction Using Dow Jones"
   },
   "enabled":true,
-  "saveHistory":true,
   "validity":1,
   "lifecycleState":1
 })
@@ -270,7 +262,6 @@ p({
     "classification":"Validate Business Detail Data UserCapabilityJunction Using SecureFact"
   },
   "enabled":true,
-  "saveHistory":true,
   "lifecycleState":1
 })
 
@@ -328,7 +319,6 @@ p({
     "class":"net.nanopay.crunch.compliance.UserComplianceApproval"
   },
   "enabled":true,
-  "saveHistory":true,
   "lifecycleState":1
 })
 
@@ -350,7 +340,6 @@ p({
     "class": "net.nanopay.crunch.compliance.BusinessDirectorSanctionValidator"
   },
   "enabled":true,
-  "saveHistory":true,
   "validity":1,
   "lifecycleState":1
 })
@@ -402,7 +391,6 @@ p({
     "class": "foam.nanos.crunch.ReputDependentUCJs"
   },
   "enabled":true,
-  "saveHistory":true,
   "lifecycleState":1
 })
 
@@ -437,7 +425,6 @@ p({
     "class": "foam.nanos.crunch.ReputDependentUCJs"
   },
   "enabled":true,
-  "saveHistory":true,
   "lifecycleState":1
 })
 
@@ -453,7 +440,6 @@ p({
   "after":true,
   "asyncAction":{"class":"net.nanopay.crunch.compliance.SetFulfilledComplianceApprovalRequest"},
   "enabled":true,
-  "saveHistory":true,
   "lifecycleState":1
 })
 
@@ -528,7 +514,6 @@ p({
   },
   "action":{"class":"net.nanopay.crunch.compliance.SendExpiryNotification"},
   "enabled":true,
-  "saveHistory":true,
   "lifecycleState":1
 })
 
@@ -563,7 +548,6 @@ p({
     "class":"net.nanopay.crunch.compliance.SetComplianceOnUser"
   },
   "enabled":true,
-  "saveHistory":true,
   "lifecycleState":1
 })
 
@@ -587,7 +571,6 @@ p({
     "class":"net.nanopay.crunch.compliance.SetComplianceOnBusiness"
   },
   "enabled":true,
-  "saveHistory":true,
   "lifecycleState":1
 })
 
@@ -611,7 +594,6 @@ p({
     "class":"net.nanopay.crunch.compliance.SetBusinessStatusAction"
   },
   "enabled":false,
-  "saveHistory":true,
   "lifecycleState":1
 })
 p({
@@ -640,35 +622,33 @@ p({
     ]
   },
   "action": {
-    "class": "net.nanopay.crunch.compliance.GenericSigningOfficerValidator"
+    "class": "net.nanopay.crunch.compliance.GenericSigningOfficerValidator",
     "classification":"Validate Signing Officer UserCapabilityJunction Using Generic Rule"
   },
   "enabled": false,
-  "saveHistory": false,
   "validity": 1,
   "lifecycleState":1
 })
- p({
-   "class":"foam.nanos.ruler.Rule",
-   "id":"1106f209-e33c-4870-bcad-0b717f831e37",
-   "name":"Business manual Approval by Agent",
-   "priority":110,
-   "ruleGroup":"crunchOnboarding",
-   "documentation":"Check business via Generic Rule",
-   "daoKey":"userCapabilityJunctionDAO",
-   "operation":3,
-   "after":true,
-   "predicate":{
-     "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
-     "category":"onboarding",
-     "isRecurring":false
-   },
-   "action":{
-     "class":"net.nanopay.crunch.compliance.GenericBusinessValidator",
-     "classification":"Validate Business Onboarding UserCapabilityJunction Using Generic Rule"
-   },
-   "enabled":false,
-   "saveHistory":false,
-   "lifecycleState":1
- })
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"1106f209-e33c-4870-bcad-0b717f831e37",
+  "name":"Business manual Approval by Agent",
+  "priority":110,
+  "ruleGroup":"crunchOnboarding",
+  "documentation":"Check business via Generic Rule",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "predicate":{
+    "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+    "category":"onboarding",
+    "isRecurring":false
+  },
+  "action":{
+    "class":"net.nanopay.crunch.compliance.GenericBusinessValidator",
+    "classification":"Validate Business Onboarding UserCapabilityJunction Using Generic Rule"
+  },
+  "enabled":false,
+  "lifecycleState":1
+})
 
