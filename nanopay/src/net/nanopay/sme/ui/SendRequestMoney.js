@@ -433,23 +433,26 @@ foam.CLASS({
 
     async function submit() {
       this.isLoading = true;
-      let transaction = this.invoice.quote.plan;
       try {
+        if ( this.isPayable ) {
+          let transaction = this.invoice.quote.plan;
         // confirm fxquote is still valid
-        if ( transaction != null && this.getExpired(new Date(), transaction) ) {
-          transaction = await this.getQuote();
-          this.notify(this.RATE_REFRESH + ( this.isApproving ? this.RATE_REFRESH_APPROVE : this.RATE_REFRESH_SUBMIT), '', this.LogLevel.WARN, true);
-          this.isLoading = false;
-          return;
-        }
+          if ( transaction != null && this.getExpired(new Date(), transaction) ) {
+            transaction = await this.getQuote();
+            this.notify(this.RATE_REFRESH + ( this.isApproving ? this.RATE_REFRESH_APPROVE : this.RATE_REFRESH_SUBMIT), '', this.LogLevel.WARN, true);
+            this.isLoading = false;
+            return;
+          }
 
-        this.invoice.plan = transaction;
-        this.invoice = await this.invoiceDAO.put(this.invoice);
-        if ( ! this.invoice.paymentId ) {
-          debugger;
-          this.isLoading = false;
-          this.notify(this.TRANSACTION_ERROR + this.type, '', this.LogLevel.ERROR, true);
-          return;
+          this.invoice.plan = transaction;
+          this.invoice = await this.invoiceDAO.put(this.invoice);
+          if ( ! this.invoice.paymentId ) {
+            this.isLoading = false;
+            this.notify(this.TRANSACTION_ERROR + this.type, '', this.LogLevel.ERROR, true);
+            return;
+          }
+        } else {
+          this.invoiceDAO.put(this.invoice);
         }
         // this.invoice.processPaymentOnCreate = false;
 
