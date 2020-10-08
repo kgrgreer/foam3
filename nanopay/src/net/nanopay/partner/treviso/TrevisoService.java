@@ -454,6 +454,7 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
       throw new RuntimeException("Error while calling insertBoleto: " + response.getInsertBoletoResult().getMENSAGEM());
 
     transaction.setReferenceNumber(response.getInsertBoletoResult().getNRREFERENCE());
+    transaction.setStatus(TransactionStatus.SENT);
     return transaction;
   }
 

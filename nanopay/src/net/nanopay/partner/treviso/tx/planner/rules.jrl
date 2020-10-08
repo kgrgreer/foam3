@@ -107,6 +107,10 @@ p({
         "of":"net.nanopay.partner.treviso.tx.TrevisoTransaction"
       },
       {
+        "class": "foam.nanos.ruler.predicate.PropertyChangePredicate",
+        "propName": "status"
+      },
+      {
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
         "propName":"status",
         "propValue":{"class":"net.nanopay.tx.model.TransactionStatus","ordinal":0}
