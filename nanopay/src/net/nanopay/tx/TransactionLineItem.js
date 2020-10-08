@@ -164,6 +164,11 @@ foam.CLASS({
         //   throw new RuntimeException("FX quote expired.");
         // }
       `
+    },
+    {
+      name: 'deepClone',
+      type: 'FObject',
+      javaCode: 'return this;'
     }
   ]
 });
