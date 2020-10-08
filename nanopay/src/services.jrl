@@ -315,7 +315,7 @@ p({
 
     dao = new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.invoice.model.Invoice.getOwnClassInfo()).build();
     dao = new foam.dao.ProxyDAO(x, dao);
-    
+
     optionalDao = dao;
     dao = new CapableDAO.Builder(x).setDelegate(dao).setDaoKey("invoiceDAO").build();
     dao = new PredicatedDualDelegateDAO.Builder(x)
@@ -1967,7 +1967,7 @@ p({
       .setName("dowJonesResponse")
       .setOf(net.nanopay.meter.compliance.dowJones.DowJonesResponse.getOwnClassInfo())
       .setMdao(mdao)
-      .setInnerDAO(new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, mdao, "dowJonesResponse", "true".equals(System.getProperty("CLUSTER")))
+      .setInnerDAO(new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, mdao, "dowJonesResponse", "true".equals(System.getProperty("CLUSTER"))))
       .setRuler(true)
       .setRulerDaoKey("dowJonesResponseDAO")
       .build()
@@ -2347,29 +2347,6 @@ p({
   "client": """
     {
       "of": "net.nanopay.meter.report.RejectedTransactionReport"
-    }
-  """
-})
-
-// We need to override om1minDAO to add the AlarmingUniqueNameDAO decorator
-p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "om1minDAO",
-  "serve": true,
-  "serviceScript": """
-    return new foam.dao.EasyDAO.Builder(x)
-      .setCluster(false)
-      .setPm(true)
-      .setPipelinePm(true)
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName("OMMinutely")
-      .setOf(foam.nanos.analytics.Candlestick.getOwnClassInfo())
-      .setDecorator(new foam.nanos.alarming.AlarmingUniqueNameDAO.Builder(x).setDelegate(new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.analytics.Candlestick.getOwnClassInfo()).build()).build())
-      .build();
-  """,
-  "client": """
-    {
-      "of":"foam.nanos.analytics.Candlestick"
     }
   """
 })
