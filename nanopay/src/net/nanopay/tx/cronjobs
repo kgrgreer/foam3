@@ -258,14 +258,14 @@ p({
     import net.nanopay.tx.planner.TransactionPlan;
     import foam.nanos.logger.Logger;
 
-    now = java.time.LocalDateTime.now();
+    now = new java.util.Date();
     planDAO = (x.get("localTransactionPlannerDAO")).where( foam.mlang.MLang.LT(TransactionPlan.EXPIRY, now ) );
     Long expiredPlans = planDAO.select(new foam.mlang.sink.Count()).getValue();
     planDAO.select( new AbstractSink() {
 
         public void put(Object o, Detachable d) {
           TransactionPlan plan = (TransactionPlan) o;
-          planDAO.remove(plan.getId());
+          planDAO.remove(plan);
         }
     });
     print("TransactionPlan Expiry Cron removed " + expiredPlans + " expired plans at " + now );
