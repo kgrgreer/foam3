@@ -39,15 +39,17 @@ foam.CLASS({
       documentation: 'Onboarded user'
     },
     {
+      class: 'Enum',
+      of: 'net.nanopay.flinks.external.OnboardingType',
+      name: 'requestedOnboardingType',
+      documentation: 'The type of onboarding type requested'
+    },
+    {
       class: 'String',
       name: 'flinksLoginType',
       documentation: 'Login type returned by Flinks for credentials of user'
     },
-    {
-      class: 'Enum',
-      of: 'net.nanopay.flinks.external.OnboardingType',
-      name: 'requestedOnboardingType'
-    },
+    
     {
       class: 'Boolean',
       name: 'overrideFlinksLoginType',      
@@ -60,13 +62,13 @@ foam.CLASS({
     {
       name: 'validate',
       javaCode: `
-        foam.nanos.auth.User user = this.findUser(x);
-        if ( user == null ) {
-          throw new IllegalArgumentException("User does not exist: " + getUser());
-        }
-        
         if ( getRequestedOnboardingType() == OnboardingType.BUSINESS ) {
           throw new IllegalArgumentException("Requested onboarding type is not compatible with personal onboarding type: " + getRequestedOnboardingType() + ". Switch to PERSONAL OnboardingType.");
+        }
+
+        foam.nanos.auth.User user = this.findUser(x);
+        if ( user == null ) {
+          throw new IllegalArgumentException("User not set or does not exist. ID: " + getUser());
         }
 
         // Check if the user is forcing personal onboarding regardless of onboarding types

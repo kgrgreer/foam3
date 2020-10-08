@@ -54,6 +54,16 @@ public class ExchangeClientMock extends ContextAwareSupport implements Exchange 
   }
 
   @Override
+  public BoletoStatusResponse getBoletoStatus(GetBoletoStatus request) {
+    BoletoStatusResponse response = new BoletoStatusResponse();
+    BoletoStatusResult result = new BoletoStatusResult();
+    Boleto boleto = new Boleto();
+    boleto.setSTATUS("E");
+    result.setBoleto(new Boleto[]{boleto});
+    return response;
+  }
+
+  @Override
   public SearchTitularResponse searchTitular(SearchTitular request) {
     return getStubSearchTitular();
   }

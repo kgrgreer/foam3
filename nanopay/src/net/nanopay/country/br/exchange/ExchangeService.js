@@ -31,6 +31,18 @@ foam.INTERFACE({
       ]
     },
     {
+      name: 'updateTransactionStatus',
+      type: 'net.nanopay.tx.model.Transaction',
+      async: true,
+      javaThrows: ['java.lang.RuntimeException'],
+      args: [
+        {
+          type: 'net.nanopay.tx.model.Transaction',
+          name: 'transaction'
+        },
+      ]
+    },
+    {
       name: 'createExchangeCustomerDefault',
       async: true,
       type: 'net.nanopay.country.br.exchange.ExchangeCustomer',

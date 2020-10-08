@@ -50,12 +50,6 @@ foam.CLASS({
     {
       name: 'validate',
       javaCode: `
-        // The business must exist
-        Business business = findBusiness(x);
-        if ( business == null ) {
-          throw new IllegalStateException("Business does not exist: " + getBusiness());
-        }
-
         // There must be at least one director
         if ( getBusinessDirectors().length == 0 ) {
           throw new IllegalStateException("Business directors empty");
@@ -65,6 +59,12 @@ foam.CLASS({
         for ( net.nanopay.model.BusinessDirector director : getBusinessDirectors() ) 
         {
           director.validate(x);  
+        }
+
+        // The business must exist
+        Business business = findBusiness(x);
+        if ( business == null ) {
+          throw new IllegalStateException("Business not set or does not exist: " + getBusiness());
         }
       `
     }

@@ -3,33 +3,38 @@
 <h1>Business Onboarding</h1>
 <p>
     Onboarding is a key part of the nanopay experience. Users, businesses and account all have to be setup 
-    and the process of creating these entities within the system is called onboarding. Once a user has been
+    and the process of creating these entities within the system is called onboarding. Once a business has been
     setup within the system, they can then participate in a transaction.
 </p>
 
 <h2>Onboarding Process for a Business</h2>
 <p>
-    There are several steps to completing onboarding for a business.
+    There are several steps to completing onboarding for a business so that it can send transactions.
     <ol>
         <li><a href="#create-user">Create User</a></li>
-        <li><a href="#user-onboarding">Onboard User</a></li>
-        <li><a href="#business-onboarding">Onboard Business</a></li>
-        <li><a href="#account-creation">Bank Account Creation</a></li>
+        <li><a href="#create-business">Create Business</a></li>
+        <li><a href="#onboarding-request">Onboard Business</a></li>
+        <li><a href="#create-account">Bank Account Creation</a></li>
+        <li><a href="#create-contact">Contact Creation</a></li>
+        <li><a href="#create-contact-account">Contact Bank Account Creation</a></li>
+        <li><a href="#create-transaction">Transaction Creation</a></li>
     </ol>
 </p>
 
 <h3><a name="create-user">Create User</a></h3>
 <p>
-    Creating a user is necessary in order to start the onboarding process. The user is required to create a session
-    in which all other API calls are authenticated with, this will associate all the objects created with that user.
+    Creating a user is necessary in order to start the onboarding process. A user entity is required to create a transaction session
+    in which other API calls are authenticated against that user. Using this session will also associate the objects created
+    and updated with that user.
 </p>
 <p>
-    The user creation API call is a DIG API call to the smeUserRegistrationDAO with the following payload.
+    The user creation API call is a DIG API call to the userDAO with the following payload.
     <code>{
     "email":"test@domain.com",
-    "emailVerified": true,
     "userName":"username321",
-    "desiredPassword":"p@sSword123"
+    "emailVerified":true,
+    "desiredPassword":"p@sSword123",
+    "group":"sme"
 }   </code>
 </p>
 
@@ -37,264 +42,138 @@
 <i><b>Session Authentication:</b> Authentication for user creation should be done with the administrative session.</i>
 </p>
 
-<h3><a name="user-onboarding">User Onboarding</a></h3>
+<h3><a name="create-business">Create Business</a></h3>
 <p>
-    Once the user has been created, they can be onboarded by providing user data to enable all the capabilities associated with that user.
-    Capabilities are enabled for a user by making a DIG API call to the capabilityPayloadDAO with the ID of the capability to enable 
-    and all of the payloads for the supporting data. To onboard users specifically, the following payloads have to be provided:
-    <ul>
-        <li><a href="#ablii-terms-and-conditions">AbliiTermsAndConditions</a></li>
-        <li><a href="#ablii-privacy-policy">AbliiPrivacyPolicy</a></li>
-        <li><a href="#user-registration-data">UserRegistrationData</a></li>
-        <li><a href="#initial-business-data">InitialBusinessData</a></li>
-    </ul>
-    Providing all of this data will setup the user. The definition of these objects can be found in the <a href="#user-onboarding-objects">user onboarding objects</a> section.
+    Once the user has been created, a business can be created which is associated with the user. Businesses are higher level
+    entities in the system which can be associated to more than one user. Businesses also require more scrutiny by 
+    compliance to perform transactions since the legal requirements on business transactions are more strict. A business entity 
+    is required to create a transaction session in which other API calls are authenticated against that business. Using this session
+    will associate the objects created and updated with that business.
 </p>
 <p>
-    Along with setting up the user, data is also provided here which will setup the business that the user belongs to for business to business transactions.
-</p>
-
-<p>
-<i><b>Session Authentication:</b> Authentication for user onboarding should be done with a payment session that was created with the userId and agentId set to the ID of the user created in step 1.</i>
-</p>
-
-<h3><a name="business-onboarding">Business Onboarding</a></h3>
-<p>
-    Once the business has been created for the user, the business can be onboarded by providing business details, owner details, 
-    signing officer details, and director details to enable all capabilities associated with a business. Capabilities are enabled 
-    for a user by making a DIG API call to the capabilityPayloadDAO with the ID of the capability to enable and all of the payloads 
-    for the supporting data. To onboard the business specifically, the following payloads have to be provided:
-    <ul>
-        <li><a href="#business-information-data">BusinessInformationData</a></li>
-        <li><a href="#business-address-data">BusinessAddressData</a></li>
-        <li><a href="#transaction-details-data">TransactionDetailsData</a></li>
-        <li><a href="#business-ownership-data">BusinessOwnershipData</a></li>
-        <li><a href="#certify-owners-percent">CertifyOwnersPercent</a></li>
-        <li><a href="#business-directors-data">BusinessDirectorsData</a></li>
-        <li><a href="#certify-directors-listed">CertifyDirectorsListed</a></li>
-        <li><a href="#dual-party-agreement-cad">DualPartyAgreementCAD</a></li>
-        <li><a href="#certify-data-reviewed">CertifyDataReviewed</a></li>
-        <li><a href="#signing-officer-question">SigningOfficerQuestion</a></li>
-        <li><a href="#signing-officer-personal-data">SigningOfficerPersonalData</a></li>
-    </ul>
-    Providing all of this information will setup the business. The definition of these objects can be found in the <a href="#business-onboarding-objects">business onboarding objects</a> section.
-</p>
-
-<p>
-<i><b>Session Authentication:</b> Authentication for business onboarding should be done with a payment session that was created with the userId set the businessId of the business created in steps 2 and agentId set to the ID of the user created in step 1.</i>
-</p>
-
-<h3><a name="account-creation">Bank Account Creation</a></h3>
-<p>
-  After setting up a user and a business, the last step necessary to perform is creating a bank account for the Sending
-  or receiving of funds in a transaction. Bank account information is provided through a connection with Flinks, which 
-  provides all necessary account information to complete a transaction. The steps to create an account are as follows:
-  <ol>
-    <li>Allow user to login to bank account through Flinks</li>
-    <li>Capture the LoginId from the Flinks response</li>
-    <li>Send the Flinks LoginId to DIG</li>
-  </ol>
-</p>
-<p>
-    The Flinks LoginId API call is a DIG API call to the flinksLoginIdDAO with the following payload.
+    The business creation API call is a DIG API call to the businessDAO with the following payload.
     <code>{
-    "loginId": "89e91db9-c45b-4771-5a1a-08d53675899d"
+    "class": "net.nanopay.model.Business",
+    "businessName": "Business 12345",
+    "organization": "Business 12345"
 }   </code>
 </p>
 
 <p>
-<i><b>Session Authentication:</b> Authentication for business onboarding should be done with a payment session that was created with the userId set the businessId of the business created in steps 2 and agentId set to the ID of the user created in step 1.</i>
+  <i><b>Session Authentication:</b> Authentication for business creation should be done with a transaction session that was created 
+  with the userId and agentId set to the ID of the newly created user.</i>
 </p>
 
-<h2>Sending Capabilities to CapabilityPayloadDAO</h2>
+<h3><a name="onboarding-request">Onboarding Request</a></h3>
 <p>
-    All functionality is enabled by setting up capabilities. The mechanism that we are providing to create capabilities 
-    through the API is exposing the capabilityPayloadDAO in DIG. The idea behind this DAO is that all of the payloads, or
-    data, necessary to enable a given set of capabilities is provided in a single call, even though the data may be very 
-    different in nature. In order to determine which payloads are necessary to be provided for a given capability, simply
-    query the capabilityPayloadDAO and provide the ID of the capability in the SELECT method. Performing this select call
-    will return an object which contains the necessary structure for saving to the capabilityPayloadDAO. Simply fill in 
-    the data for the given objects and PUT the CapabilityPayload object back to the capabilityPayloadDAO in DIG. The following table
-    describes the structure of the objects inside the capabilityPayloadDAO.
+    Once the user and business have been created, an onboarded request can be made to enable sending payments from the business. The 
+    onboarding request will provide acceptance of user documents, user details, business details, business type, owner details, 
+    signing officer details, and director details to enable all capabilities associated with a business sending transactions. The capability
+    to send payments from a business is enabled by making a DIG API call to the capabilityPayloadDAO with the ID of the capability to send
+    payments for a business along with the supporting payload data for that capability. For the onboard request to allow the sending of payments
+    from a business, the following payloads have to be provided:
+    <ul>
+        <li><a href="/#api-doc-60-capabilities#ablii-privacy-policy">AbliiPrivacyPolicy</a></li>
+        <li><a href="/#api-doc-60-capabilities#ablii-terms-and-conditions">AbliiTermsAndConditions</a></li>
+        <li><a href="/#api-doc-60-capabilities#user-detail-data">UserDetailData</a></li>
+        <li><a href="/#api-doc-60-capabilities#user-detail-expanded-data">UserDetailExpandedData</a></li>
+        <li><a href="/#api-doc-60-capabilities#business-detail-data">BusinessDetailData</a></li>
+        <li><a href="/#api-doc-60-capabilities#business-detail-expanded-data">BusinessDetailExpandedData</a></li>
+        <li><a href="/#api-doc-60-capabilities#business-type-data">BusinessTypeData</a></li>
+        <li><a href="/#api-doc-60-capabilities#business-owner-list">BusinessOwnerList</a></li>
+        <li><a href="/#api-doc-60-capabilities#business-directors-list">BusinessDirectorList</a></li>
+        <li><a href="/#api-doc-60-capabilities#signing-officer-list">SigningOfficerList</a></li>
+    </ul>
+    Providing all of this information will onboard the business. The definition of these objects can be found 
+    on the <a href="/#api-doc-60-capabilities">capability</a> documentation page.
 </p>
-<foam class="foam.flow.widgets.PropertyShortSummary" of="foam.nanos.crunch.connection.CapabilityPayload" />
+
 <p>
-    Depending on your use case, the following capabilities will be the top level capabilities for the given use case:
-    <ol>
-        <li>User Onboarding with Initial Business Creation - Capability ID: <pre>B98D97EE-4A43-4B03-84C1-9DE2C0109E87</pre></li>
-        <li>Complete Business Onboarding - Capability ID: <pre>CD499238-7854-4125-A04D-7CE7EE15BC74</pre></li>
-    </ol>
-    As stated above in the <a href="#user-onboarding">user onboarding</a> section and the <a href="#business-onboarding">business onboarding</a>
-    sections, the payloads necessary are all of the different objects listed. These objects will be mapped by easily understandable keys in the
-    capabilityDataObjects map.
+<i><b>Session Authentication:</b> Authentication for business onboarding should be done with a transaction session that was created with the userId set the businessId of the business and agentId set to the ID of the user.</i>
 </p>
 
-<table border="1px" width="100%">
-  <thead>
-    <tr>
-      <th>Use Case</th>
-      <th>Map Key</th>
-      <th>Payload Class</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td>User Onboarding</td>
-      <td>AbliiPrivacyPolicy</td>
-      <td>AbliiPrivacyPolicy</td>
-    </tr>
-    <tr>
-      <td>User Onboarding</td>
-      <td>AbliiTermsAndConditions</td>
-      <td>AbliiTermsAndConditions</td>
-    </tr>
-    <tr>
-      <td>User Onboarding</td>
-      <td>User Registration</td>
-      <td>UserRegistrationData</td>
-    </tr>
-    <tr>
-      <td>User Onboarding</td>
-      <td>Nanopay Admission</td>
-      <td>n/a</td>
-    </tr>
-    <tr>
-      <td>User Onboarding</td>
-      <td>Business Registration</td>
-      <td>InitialBusinessData</td>
-    </tr>
-    <tr>
-      <td>User Onboarding</td>
-      <td>API Onboarding User and Business</td>
-      <td>n/a</td>
-    </tr>
-    <tr>
-      <td>Business Onboarding</td>
-      <td>Business Owner Information</td>
-      <td>BusinessOwnershipData</td>
-    </tr>
-    <tr>
-      <td>Business Onboarding</td>
-      <td>CertifyDirectorsListed</td>
-      <td>CertifyDirectorsListed</td>
-    </tr>
-    <tr>
-      <td>Business Onboarding</td>
-      <td>Business Details</td>
-      <td>BusinessInformationData</td>
-    </tr>
-    <tr>
-      <td>Business Onboarding</td>
-      <td>Signing Officer Privileges</td>
-      <td>SigningOfficerPersonalData</td>
-    </tr>
-    <tr>
-      <td>Business Onboarding</td>
-      <td>Unlock Domestic Payments and Invoicing</td>
-      <td>n/a</td>
-    </tr>
-    <tr>
-      <td>Business Onboarding</td>
-      <td>Signing Officer</td>
-      <td>SigningOfficerQuestion</td>
-    </tr>
-    <tr>
-      <td>Business Onboarding</td>
-      <td>Transaction Details</td>
-      <td>TransactionDetailsData</td>
-    </tr>
-    <tr>
-      <td>Business Onboarding</td>
-      <td>Business Directors Data</td>
-      <td>BusinessDirectorsData</td>
-    </tr>
-    <tr>
-      <td>Business Onboarding</td>
-      <td>Business Address</td>
-      <td>BusinessAddressData</td>
-    </tr>
-    <tr>
-      <td>Business Onboarding</td>
-      <td>CertifyOwnersPercent</td>
-      <td>CertifyOwnersPercent</td>
-    </tr>
-    <tr>
-      <td>Business Onboarding</td>
-      <td>DualPartyAgreementCAD</td>
-      <td>DualPartyAgreementCAD</td>
-    </tr>
-    <tr>
-      <td>Business Onboarding</td>
-      <td>Certify Data Reviewed</td>
-      <td>CertifyDataReviewed</td>
-    </tr>
-    <tr>
-      <td>Business Onboarding</td>
-      <td>API Onboarding Domestic Business Payments (CAD to CAD)</td>
-      <td>n/a</td>
-    </tr>
-  </tbody>
-</table>
+<h3><a name="create-account">Bank Account Creation</a></h3>
+<p>
+  After setting up a user and a business, the next step necessary to perform is creating a bank account for the sending
+  of funds in a transaction. The bank account API call is a DIG API call to the accountDAO with the following payload.
+  <code>{
+    "class": "net.nanopay.bank.CABankAccount",
+    "owner": {business_id},
+    "accountNumber": "123456",
+    "branchId": "12001",
+    "institutionNumber": "003",
+    "denomination": "CAD",
+    "name": "Checking CAD",
+    "status": 1,
+    "verifiedBy": "API"
+}   </code>
+  The business ID here is the business that was created previously.
+</p>
 
-<h2>Onboarding Data Objects</h2>
+<p>
+<i><b>Session Authentication:</b> Authentication for bank account creation must be done with an administrative session in order to set the status properly.</i>
+</p>
 
-<h3><a name="user-onboarding-objects">User Onboarding Objects</a></h3>
+<h3><a name="create-contact">Contact Creation</a></h3>
+<p>
+  The next step is setting up the destination for the transaction. There are two parts to this setup, the first being the creation of a contact and the second
+  being the creation of a bank account owned by that contact. Once this is done, a transaction from the originating bank account setup in the previos step can 
+  be created to send funds to the destination contact's bank account. The contact API call is a DIG API call to the contactDAO with the following payload.
+  <code>{
+    "class": "net.nanopay.contacts.Contact",
+    "firstName": "John",
+    "lastName": "Doe",
+    "organization": "John and Sons Shop",
+    "owner": {business_id},
+    "email": "johnandsons@shop.com",
+    "group": "sme"
+}   </code>
+  The business ID here is the business that was created previously and makes the contact as being owned by the business.
+</p>
+<p>
+<i><b>Session Authentication:</b> Authentication for contact creation must be done with a transaction session that was created with the userId set the businessId of the business and agentId set to the ID of the user.</i>
+</p>
 
-<h4><a name="ablii-terms-and-conditions">AbliiTermsAndConditions</a></h4>
-<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiTermsAndConditions" whitelist="['title', 'agreement']" />
+<h3><a name="create-contact-account">Contact Bank Account Creation</a></h3>
+<p>
+  With the contact created, a bank account has to be created for that contact which will receive funds in the transaction. Creating the contact
+  bank account is almost the same as the previous account creation API call, except that the owner must be changed to be the contact instead of being
+  the business. The bank account API call is a DIG API call to the accountDAO with the following payload.
+  <code>{
+    "class": "net.nanopay.bank.CABankAccount",
+    "owner": {contact_id},
+    "accountNumber": "5577889910",
+    "branchId": "12007",
+    "institutionNumber": "002",
+    "denomination": "CAD",
+    "name": "Savings CAD",
+    "status": 1,
+    "verifiedBy": "API"
+}   </code>
+  The contact ID here is the contact that was created previously and ensures the account is owned by the contact.
+</p>
 
-<h4><a name="ablii-privacy-policy">AbliiPrivacyPolicy</a></h4>
-<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy" whitelist="['title', 'agreement']" />
+<p>
+<i><b>Session Authentication:</b> Authentication for bank account creation must be done with an administrative session in order to set the status properly.</i>
+</p>
 
-<h4><a name="user-registration-data">UserRegistrationData</a></h4>
-<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.registration.UserRegistrationData" />
+<h3><a name="create-transaction">Transaction Creation</a></h3>
+<p>
+  Now that we have all the pieces necessary, we can create a transaction to transfer money from the source to the destination. The source here will be the business's
+  bank account and the destination will be the contact's bank account. Creating a transaction is a simple matter of setting the source and destination accounts, the 
+  source and destination currencies, and the amount being transferred. The transaction API call is a DIG API call to the summaryTransactionDAO with the following payload.
+  <code>{
+    "class":"net.nanopay.tx.model.Transaction",
+    "sourceAccount":{business_bank_account_id},
+    "sourceCurrency":"CAD",
+    "amount": 10000,
+    "destinationAccount":{{contact_bank_account_id}},
+    "destinationCurrency":"CAD"
+}   </code>
+  The amount in a transaction is set in the smallest unit of the currency. For example, the amount above is $100.00 CAD since the smallest unit in Canadian dollars is the cent, 
+  so $100.00 CAD is 10,000 cents.
+</p>
 
-<h4><a name="initial-business-data">InitialBusinessData</a></h4>
-<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.onboardingModels.InitialBusinessData" whitelist="['businessName', 'companyPhone', 'fax', 'email', 'address', 'mailingAddress']" />
-
-<h3><a name="business-onboarding-objects">Business Onboarding</a></h3>
-
-<h4><a name="business-information-data">BusinessInformationData</a></h4>
-<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.onboardingModels.BusinessInformationData" />
-
-<h4><a name="business-address-data">BusinessAddressData</a></h4>
-<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.onboardingModels.BusinessAddressData" whitelist="['address', 'mailingAddress']" />
-
-<h4><a name="transaction-details-data">TransactionDetailsData</a></h4>
-<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.onboardingModels.TransactionDetailsData" />
-
-<h4><a name="suggested-user-transaction-info">SuggestedUserTransactionInfo</a></h4>
-<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo" whitelist="['annualRevenue', 'transactionPurpose', 'annualTransactionAmount', 'annualTransactionFrequency']" />
-
-<h4><a name="business-ownership-data">BusinessOwnershipData</a></h4>
-<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.onboardingModels.BusinessOwnershipData" whitelist="['amountOfOwners', 'publiclyTraded', 'owner1', 'owner2', 'owner3', 'owner4']" />
-
-<h4><a name="beneficial-owner">BeneficialOwner</a></h4>
-<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.model.BeneficialOwner" whitelist="['firstName', 'middleName', 'lastName', 'birthday', 'jobTitle', 'ownershipPercentage', 'address', 'PEPHIORelated']" />
-
-<h4><a name="certify-owners-percent">CertifyOwnersPercent</a></h4>
-<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyOwnersPercent" whitelist="['title', 'agreement']" />
-
-<h4><a name="business-directors-data">BusinessDirectorsData</a></h4>
-<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.onboardingModels.BusinessDirectorsData" whitelist="['businessDirectors']" />
-
-<h4><a name="certify-directors-listed">CertifyDirectorsListed</a></h4>
-<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyDirectorsListed" whitelist="['title', 'agreement']" />
-
-<h4><a name="dual-party-agreement-cad">DualPartyAgreementCAD</a></h4>
-<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.acceptanceDocuments.capabilities.DualPartyAgreementCAD" whitelist="['title', 'agreement']" />
-
-<h4><a name="certify-data-reviewed">CertifyDataReviewed</a></h4>
-<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.onboardingModels.CertifyDataReviewed" whitelist="['reviewed']" />
-
-<h4><a name="signing-officer-question">SigningOfficerQuestion</a></h4>
-<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.onboardingModels.SigningOfficerQuestion" />
-
-<h4><a name="signing-officer-personal-data">SigningOfficerPersonalData</a></h4>
-<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData" whitelist="['address', 'phone', 'birthday', 'PEPHIORelated', 'thirdParty', 'signingOfficerIdentification']" />
-
-<h4><a name="phone">Phone</a></h4>
-<foam class="foam.flow.widgets.PropertyShortSummary" of="foam.nanos.auth.Phone" />
-
-<h4><a name="personal-identification">PersonalIdentification</a></h4>
-<foam class="foam.flow.widgets.PropertyShortSummary" of="net.nanopay.model.PersonalIdentification" />
+<p>
+<i><b>Session Authentication:</b> Authentication for transactions must be done with a transaction session that was created with the userId set the businessId of the business and agentId set to the ID of the user.</i>
+</p>

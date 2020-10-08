@@ -701,6 +701,41 @@ p({
   "priority":2
 })
 
+//treviso extra
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "554af38a-8225-87c8-dfdf-eeb15f71215f-49",
+  targetId: "9d4d667c-04c3-11eb-adc1-0242ac120002",
+  priority: 3
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "554af38a-8225-87c8-dfdf-eeb15f71215f-49",
+  targetId: "af3d9c28-0674-11eb-adc1-0242ac120002",
+  priority: 4
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "554af38a-8225-87c8-dfdf-eeb15f71215f-49",
+  targetId: "4c46cdb8-06b2-11eb-adc1-0242ac120002",
+  priority: 2
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "9d4d667c-04c3-11eb-adc1-0242ac120002",
+  targetId: "554af38a-8225-87c8-dfdf-eeb15f71215f-14",
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "af3d9c28-0674-11eb-adc1-0242ac120002",
+  targetId: "554af38a-8225-87c8-dfdf-eeb15f71215f-14",
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "4c46cdb8-06b2-11eb-adc1-0242ac120002",
+  targetId: "554af38a-8225-87c8-dfdf-eeb15f71215f-14",
+})
+
 //default
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",

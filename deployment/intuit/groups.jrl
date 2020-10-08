@@ -2,15 +2,3 @@ p({class:"foam.nanos.auth.Group",id:"intuit-api",description:"intuit api group",
 p({class:"foam.nanos.auth.Group",id:"intuit-api-session",description:"intuit api session group",parent:"external-api-session",defaultMenu:"view-users"})
 p({class:"foam.nanos.auth.Group",id:"intuit-admin",description:"intuit admin",parent:"intuit-dev",defaultMenu:"view-users",theme:"4d3d59a0-9c98-da42-9cd6-49c278cb9842"})
 p({class:"foam.nanos.auth.Group",id:"intuit-dev",description:"intuit dev group",parent:"external-dev",defaultMenu:"view-accounts"})
-
-// First business for Intuit API
-p({class:"foam.nanos.auth.Group",id:"smallbusiness8025.employee",description:"Template group for business employee groups.",parent:"sme",defaultMenu:"sme.accountProfile.switch-business",softSessionLimit:600000,supportEmail:"support@ablii.com",passwordPolicy:{class:"foam.nanos.auth.PasswordPolicy"}})
-p({class:"foam.nanos.auth.Group",id:"smallbusiness8025.admin",description:"Template group for business admin groups.",parent:"smallbusiness8025.employee",defaultMenu:"sme.accountProfile.switch-business",softSessionLimit:600000,supportEmail:"support@ablii.com",passwordPolicy:{class:"foam.nanos.auth.PasswordPolicy"}})
-
-// Initech
-p({class:"foam.nanos.auth.Group",id:"initech8029.employee",description:"Template group for business employee groups.",parent:"sme",defaultMenu:"sme.accountProfile.switch-business",softSessionLimit:600000,supportEmail:"support@ablii.com",passwordPolicy:{class:"foam.nanos.auth.PasswordPolicy"}})
-p({class:"foam.nanos.auth.Group",id:"initech8029.admin",description:"Template group for business admin groups.",parent:"initech8029.employee",defaultMenu:"sme.accountProfile.switch-business",softSessionLimit:600000,supportEmail:"support@ablii.com",passwordPolicy:{class:"foam.nanos.auth.PasswordPolicy"}})
-
-// Tiny business
-p({class:"foam.nanos.auth.Group",id:"tinybusiness8033.employee",description:"Employees are the people in your company. They can create invoices and initiate payments, but they require the approvals from the Approvers or Admin.",parent:"sme",defaultMenu:"sme.accountProfile.switch-business",displayName:"Employee",softSessionLimit:600000,supportEmail:"support@ablii.com",passwordPolicy:{class:"foam.nanos.auth.PasswordPolicy"}})
-p({class:"foam.nanos.auth.Group",id:"tinybusiness8033.admin",description:"Admin is a single user who holds the highest level of permissions. Only this person can manage all users and deactivate company account or transfer Admin access to someone else.",parent:"tinybusiness8033.employee",defaultMenu:"sme.accountProfile.switch-business",displayName:"Admin",softSessionLimit:600000,supportEmail:"support@ablii.com",passwordPolicy:{class:"foam.nanos.auth.PasswordPolicy"}})

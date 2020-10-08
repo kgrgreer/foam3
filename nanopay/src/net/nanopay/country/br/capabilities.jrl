@@ -485,6 +485,34 @@ p({
   "visible":false
 })
 
+//addition Requirements unlock Brazil payment
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"9d4d667c-04c3-11eb-adc1-0242ac120002",
+  "name":"Business Capital and Equity",
+  "of":"net.nanopay.crunch.onboardingModels.CurrencyAmountInfor",
+  "version":"0",
+  "enabled":true,
+  "visible":true
+})
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"af3d9c28-0674-11eb-adc1-0242ac120002",
+  "name":"Business Account Information",
+  "of":"net.nanopay.crunch.onboardingModels.BusinessAccountData",
+  "version":"0",
+  "enabled":true,
+  "visible":true
+})
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"4c46cdb8-06b2-11eb-adc1-0242ac120002",
+  "name":"Nature of Business Relationship",
+  "of": "net.nanopay.country.br.NatureBusinessRelationship",
+  "version":"0",
+  "enabled":true,
+  "visible":true
+})
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"dfbe9220-ba4e-42d1-9bed-f4b4f8efcbb8",

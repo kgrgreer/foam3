@@ -107,6 +107,10 @@ p({
         "of":"net.nanopay.partner.treviso.tx.TrevisoTransaction"
       },
       {
+        "class": "foam.nanos.ruler.predicate.PropertyChangePredicate",
+        "propName": "status"
+      },
+      {
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
         "propName":"status",
         "propValue":{"class":"net.nanopay.tx.model.TransactionStatus","ordinal":0}
@@ -117,7 +121,6 @@ p({
     "class":"net.nanopay.partner.treviso.tx.TrevisoCreateExchange"
   },
   "enabled":true,
-  "saveHistory":true,
   "lifecycleState":1
 })
 p({
@@ -153,7 +156,6 @@ p({
   "action": {
     "class": "net.nanopay.partner.treviso.tx.TrevisoLineItemsFromFXSummary"
   },
-  "saveHistory": true,
   "enabled": true,
   "spid": "treviso",
   "lifecycleState": 1

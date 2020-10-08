@@ -333,6 +333,8 @@ var classes = [
   'net.nanopay.onboarding.email.NewBankAccountAddedEmailDAO',
   'net.nanopay.onboarding.email.NewUserOnboardedEmailDAO',
   'net.nanopay.onboarding.ruler.NotificationSettingsRule',
+  'net.nanopay.onboarding.ruler.SetSubmitByRule',
+  'net.nanopay.onboarding.model.BusinessOnboardingExtra',
 
   // sme business setting
   'net.nanopay.sme.ruler.AccessControlChangeNotificationRule',
@@ -1140,10 +1142,13 @@ var classes = [
   'net.nanopay.country.br.exchange.ArrayOfNatureza',
   'net.nanopay.country.br.exchange.ArrayOfParcelas',
   'net.nanopay.country.br.exchange.Boleto',
+  'net.nanopay.country.br.exchange.BoletoStatusResponse',
+  'net.nanopay.country.br.exchange.BoletoStatusResult',
   'net.nanopay.country.br.exchange.Exchange',
   'net.nanopay.country.br.exchange.ExchangeCredential',
   'net.nanopay.country.br.exchange.ExchangeCustomer',
   'net.nanopay.country.br.exchange.ExchangeService',
+  'net.nanopay.country.br.exchange.GetBoletoStatus',
   'net.nanopay.country.br.exchange.InsertBoleto',
   'net.nanopay.country.br.exchange.InsertBoletoResponse',
   'net.nanopay.country.br.exchange.InsertTitular',
@@ -1165,6 +1170,7 @@ var classes = [
   'net.nanopay.country.br.exchange.UpdateTitularResponse',
   'net.nanopay.country.br.NatureCode',
   'net.nanopay.country.br.NatureCodeRate',
+  'net.nanopay.country.br.NatureBusinessRelationship',
   'net.nanopay.country.PermittedCountryFilterDAO',
   'net.nanopay.country.br.OpenData',
   'net.nanopay.country.br.PTaxRate',
@@ -1243,7 +1249,9 @@ var classes = [
   'net.nanopay.crunch.onboardingModels.BusinessRegistrationDateData',
   'net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData',
   'net.nanopay.crunch.onboardingModels.TaxIdNumberData',
-
+  'net.nanopay.crunch.onboardingModels.BusinessAccountData',
+  'net.nanopay.crunch.onboardingModels.CurrencyAmountInfor',
+  'net.nanopay.crunch.onboardingModels.CustomerBasicInfor',
 
   // crunch notification
   'net.nanopay.crunch.UCJExpiryReminderCron',

@@ -1300,7 +1300,8 @@ foam.CLASS({
         mode: 'RW',
         enableAdding: true,
         enableRemoving: true,
-        defaultNewItem: ''
+        defaultNewItem: '',
+        name: 'Directors'
       },
       autoValidate: true,
       validationTextVisible: true,

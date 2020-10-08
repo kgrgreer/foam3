@@ -52,6 +52,9 @@ foam.CLASS({
     'accountDAO',
     'debtAccountDAO'
   ],
+  messages: [
+    { name: 'DIGITAL_ACCOUNT_LABEL', message: 'Digital Account' },
+  ],
 
   properties: [
     {
@@ -135,6 +138,7 @@ foam.CLASS({
               }
 
               account = instance == null ? new DigitalAccount() : instance;
+              account.setName(DIGITAL_ACCOUNT_LABEL);
               account.setDenomination(denomination);
               account.setIsDefault(true);
               account.setOwner(user.getId()); // required until user.getAccounts()

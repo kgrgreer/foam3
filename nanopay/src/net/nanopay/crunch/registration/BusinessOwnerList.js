@@ -50,12 +50,6 @@ foam.CLASS({
     {
       name: 'validate',
       javaCode: `
-        // The business must exist
-        Business business = findBusiness(x);
-        if ( business == null ) {
-          throw new IllegalStateException("Business does not exist: " + getBusiness());
-        }
-
         // There is no minimum for owners
         if ( getBusinessOwners().length == 0 ) {
           return;
@@ -65,6 +59,12 @@ foam.CLASS({
         for ( net.nanopay.model.BeneficialOwner owner : getBusinessOwners() ) 
         {
           owner.validate(x);  
+        }
+        
+        // The business must exist
+        Business business = findBusiness(x);
+        if ( business == null ) {
+          throw new IllegalStateException("Business not set or does not exist: " + getBusiness());
         }
       `
     }

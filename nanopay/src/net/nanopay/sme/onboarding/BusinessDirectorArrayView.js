@@ -26,11 +26,17 @@ foam.CLASS({
   name: 'BusinessDirectorArrayView',
   extends: 'foam.u2.view.FObjectArrayView',
 
+  properties: [
+    {
+     name: 'name' 
+    }
+  ],
+
   methods: [
     {
       name: 'init',
       code: function() {
-        this.ADD_ROW.label = '+ Add Director';
+        this.ADD_ROW.label = '+ Add ' + this.name;
       }
     }
   ],

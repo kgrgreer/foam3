@@ -79,7 +79,6 @@ p({
   spid: "treviso",
   "asyncAction":{ "class":"net.nanopay.country.br.crunch.ExchangeServiceOnboardingRule" },
   "enabled":false,
-  "saveHistory":true,
   "lifecycleState":1
 })
 
@@ -271,7 +270,6 @@ p({
     "propValue": null
   },
   "enabled":true,
-  "saveHistory":false,
   "lifecycleState":1
 })
 
@@ -312,7 +310,6 @@ p({
     "groupToNotify":"treviso-fraud-ops"
   },
   "enabled":true,
-  "saveHistory":false,
   "lifecycleState":1
 })
 p({
@@ -326,4 +323,45 @@ p({
   "id":"1106f209-e33c-4870-bcad-0b717f831e37",
   "name":"Business manual Approval by Agent",
   "enabled": true
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d38",
+  "name":"Create Expedite Aproval Request",
+  "enabled":false
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"crunch-onboard-compliance-so-0",
+  "enabled":false
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"crunch-onboard-compliance-so-1",
+  "enabled":false
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"crunch-onboard-compliance-business-0",
+  "enabled":false
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"crunch-onboard-compliance-business-1",
+  "enabled":false
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"crunch-onboard-compliance-beneficialowner-0",
+  "enabled":false
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"crunch-onboard-compliance-businessdirector-0",
+  "enabled":false
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d77",
+  "enabled":false
 })

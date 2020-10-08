@@ -50,29 +50,29 @@ p({
 })
 p({
     "class":"foam.nanos.menu.Menu",
-    "id":"api-doc-30-data",
-    "label":"API Data",
-    "handler": {
-        "class":"foam.nanos.menu.DocumentFileMenu",
-        "docKey":"api-doc-data",
-        "daoKey":"nanopayDocumentDAO"
-    },
-    "parent":"documentation"
-})
-p({
-    "class":"foam.nanos.menu.Menu",
-    "id":"api-doc-32-onboarding-business",
+    "id":"api-doc-40-onboarding-business",
     "label":"API Business Onboarding",
     "handler": {
         "class":"foam.nanos.menu.DocumentFileMenu",
-        "docKey":"api-doc-onboarding-business-flinks",
+        "docKey":"api-doc-onboarding-business",
         "daoKey":"nanopayDocumentDAO"
     },
     "parent":"documentation"
 })
 p({
     "class":"foam.nanos.menu.Menu",
-    "id":"api-doc-33-onboarding-personal",
+    "id":"api-doc-45-onboarding-flinks-business",
+    "label":"API Business Onboarding with Flinks",
+    "handler": {
+        "class":"foam.nanos.menu.DocumentFileMenu",
+        "docKey":"api-doc-onboarding-flinks-business",
+        "daoKey":"nanopayDocumentDAO"
+    },
+    "parent":"documentation"
+})
+p({
+    "class":"foam.nanos.menu.Menu",
+    "id":"api-doc-50-onboarding-personal",
     "label":"API Personal Onboarding",
     "handler": {
         "class":"foam.nanos.menu.DocumentFileMenu",
@@ -83,7 +83,40 @@ p({
 })
 p({
     "class":"foam.nanos.menu.Menu",
-    "id":"api-doc-35-webhooks",
+    "id":"api-doc-55-onboarding-flinks-personal",
+    "label":"API Personal Onboarding with Flinks",
+    "handler": {
+        "class":"foam.nanos.menu.DocumentFileMenu",
+        "docKey":"api-doc-onboarding-flinks-personal",
+        "daoKey":"nanopayDocumentDAO"
+    },
+    "parent":"documentation"
+})
+p({
+    "class":"foam.nanos.menu.Menu",
+    "id":"api-doc-60-capabilities",
+    "label":"API Capabilities",
+    "handler": {
+        "class":"foam.nanos.menu.DocumentFileMenu",
+        "docKey":"api-doc-capabilities",
+        "daoKey":"nanopayDocumentDAO"
+    },
+    "parent":"documentation"
+})
+p({
+    "class":"foam.nanos.menu.Menu",
+    "id":"api-doc-70-data",
+    "label":"API Data",
+    "handler": {
+        "class":"foam.nanos.menu.DocumentFileMenu",
+        "docKey":"api-doc-data",
+        "daoKey":"nanopayDocumentDAO"
+    },
+    "parent":"documentation"
+})
+p({
+    "class":"foam.nanos.menu.Menu",
+    "id":"api-doc-75-webhooks",
     "label":"API Webhooks",
     "handler": {
         "class":"foam.nanos.menu.DocumentFileMenu",
@@ -94,7 +127,7 @@ p({
 })
 p({
     "class":"foam.nanos.menu.Menu",
-    "id":"api-doc-40-reference",
+    "id":"api-doc-99-reference",
     "label":"Reference",
     "handler": {
         "class":"foam.nanos.menu.DocumentFileMenu",

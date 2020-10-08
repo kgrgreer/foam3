@@ -141,7 +141,7 @@ foam.CLASS({
         }
 
         DAO groupDAO = (DAO) x.get("groupDAO");
-        Group group = (Group) groupDAO.inX(x).find(entity.getGroup());
+        Group group = (Group) groupDAO.inX(getX()).find(entity.getGroup());
         if ( group == null ) {
           throw new AuthorizationException("Entity must exist within a group.");
         } else if ( ! group.getEnabled() ) {

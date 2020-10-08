@@ -423,6 +423,80 @@ p({
   main();
   """
 })
+p({
+  "class":"foam.nanos.script.Script",
+  "id":"Print Rule History generators",
+  "code":"""
+import foam.dao.ProxyDAO;
+  import foam.nanos.ruler.Rule;
+  import foam.nanos.ruler.RulerDAO;
+
+  import static foam.mlang.MLang.*;
+
+  // =============================================================
+  // Setting
+  // =============================================================
+  TARGET_DAO = "localTransactionDAO";     // Target DAO to check against
+
+  // =============================================================
+  // Helper functions
+  // =============================================================
+  void printRules(heading, sink) {
+      if ( ! sink.groupKeys.isEmpty() ) {
+          print("  - " + heading + sink.groupKeys);
+          for ( key : sink.groupKeys ) {
+              printRuleGroup(key, sink.groups.get(key).array);
+          }
+          print("");
+      }
+  }
+
+  void printRuleGroup(key, group) {
+      if ( ! group.isEmpty() ) {
+          for( rule : group ) {
+            if (rule.saveHistory == true && rule.enabled == true)
+              print("      " + formatRule(rule));
+          }
+      }
+  }
+
+ String formatRule(rule) {
+      return String.format("saveHistory: %b, id: %s, name: %s", new Object[] {
+          rule.saveHistory,
+          rule.id,
+          rule.name
+      });
+  }
+
+  // =============================================================
+  // Main
+  // =============================================================
+  void main() {
+      // Print header
+      print("Print " + TARGET_DAO + "'s ENABLED that SAVE HISTORY rules: ");
+
+      // Locate RulerDAO from the TARGET_DAO
+      dao = x.get(TARGET_DAO);
+      while (
+          (dao instanceof ProxyDAO)
+          && ! (dao instanceof RulerDAO)
+      ) { dao = dao.delegate; }
+
+      // Fetch all rules that can be applied to the underlying dao
+      if ( dao instanceof RulerDAO ) {
+          print("- RulerDAO(" + dao.daoKey + ")");
+          printRules("Before CREATE rules:" , dao.rulesList.get(dao.createBefore));
+          printRules("After CREATE rules:"  , dao.rulesList.get(dao.createAfter));
+          printRules("Before UPDATE rules:" , dao.rulesList.get(dao.updateBefore));
+          printRules("After UPDATE rules:"  , dao.rulesList.get(dao.updateAfter));
+          printRules("Before REMOVE rules:" , dao.rulesList.get(dao.removeBefore));
+          printRules("After REMOVE rules:"  , dao.rulesList.get(dao.removeAfter));
+      }
+  }
+  main();
+  """
+})
+
 p({"class":"foam.nanos.script.Script","id":"JackieToMichaelRule","description":"Change all the approval requests whose approver is 8233(Jackie) to the ones whose approver is 1476(Micheal). ","code":"import foam.core.X;\nimport foam.dao.DAO;\nimport foam.dao.ArraySink;\nimport foam.mlang.MLang;\nimport foam.nanos.approval.ApprovalRequest;\nimport foam.nanos.approval.ApprovalStatus;\n\npreApprover = 8233;\nnewApprover = 1476;\n\napprovalRequestDAO = (DAO) x.get(\"approvalRequestDAO\");\n\nprint(\"Updated approval requests:\");\nList requests = (approvalRequestDAO.where(MLang.EQ(ApprovalRequest.STATUS, ApprovalStatus.REQUESTED)).select(new ArraySink())).fclone().getArray();\nfor (ApprovalRequest req : requests) {\n  if (req.approver == preApprover) {\n    req.setApprover(newApprover);\n    approvalRequestDAO.put(req);\n    print(\"id: \" + req.id + \", approver: \" + preApprover + \"  =>  id: \" + req.id + \", approver: \" + req.approver);\n  }\n}"})
 p({
   "class": "foam.nanos.script.Script",

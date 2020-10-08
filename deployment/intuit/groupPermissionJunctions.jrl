@@ -10,40 +10,6 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-sess
 p({class:"foam.nanos.auth.GroupPermissionJunction",s:"intuit-admin",t:"group.update.intuit-admin"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",s:"intuit-admin",t:"group.read.intuit-admin"})
 
-// QBO Business group permissions
-p({class:"foam.nanos.auth.GroupPermissionJunction",s:"smallbusiness8025.employee",t:"invoice.holdingAccount"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",s:"smallbusiness8025.admin",t:"business.add.smallbusiness8025.*"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",s:"smallbusiness8025.admin",t:"business.read.smallbusiness8025.*"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",s:"smallbusiness8025.admin",t:"business.remove.smallbusiness8025.*"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",s:"smallbusiness8025.admin",t:"business.rw.ispublic"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",s:"smallbusiness8025.admin",t:"business.update.smallbusiness8025.*"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",s:"smallbusiness8025.admin",t:"group.update.smallbusiness8025.*"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",s:"smallbusiness8025.admin",t:"menu.read.sme.*"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",s:"smallbusiness8025.admin",t:"useruserjunction.rw.status"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",s:"smallbusiness8025.employee",t:"currency.read.CAD"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",s:"smallbusiness8025.admin",t:"fx.provision.payer"})
-
-// Tiny Business
-p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"tinybusiness8033.employee",targetId:"invoice.holdingAccount"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"tinybusiness8033.admin",targetId:"business.add.tinybusiness8033.*"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"tinybusiness8033.admin",targetId:"business.read.tinybusiness8033.*"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"tinybusiness8033.admin",targetId:"business.remove.tinybusiness8033.*"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"tinybusiness8033.admin",targetId:"business.rw.ispublic"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"tinybusiness8033.admin",targetId:"business.update.tinybusiness8033.*"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"tinybusiness8033.admin",targetId:"group.update.tinybusiness8033.*"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"tinybusiness8033.admin",targetId:"menu.read.sme.*"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"tinybusiness8033.admin",targetId:"useruserjunction.rw.status"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"tinybusiness8033.employee",targetId:"currency.read.CAD"})
-
-// Initech
-p({class:"foam.nanos.auth.GroupPermissionJunction",s:"initech8029.employee",t:"invoice.holdingAccount"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",s:"initech8029.admin",t:"business.add.initech8029.*"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",s:"initech8029.admin",t:"business.read.initech8029.*"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",s:"initech8029.admin",t:"business.remove.initech8029.*"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",s:"initech8029.admin",t:"business.rw.ispublic"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",s:"initech8029.admin",t:"business.update.initech8029.*"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",s:"initech8029.admin",t:"group.update.initech8029.*"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",s:"initech8029.admin",t:"menu.read.sme.*"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",s:"initech8029.admin",t:"useruserjunction.rw.status"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",s:"initech8029.employee",t:"currency.read.CAD"})
-p({class:"foam.nanos.auth.GroupPermissionJunction",s:"initech8029.admin",t:"fx.provision.payer"})
+// Removing documentation around raw provisioning
+r({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"menu.read.api-doc-40-onboarding-business"})
+r({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"menu.read.api-doc-50-onboarding-personal"})

@@ -19,118 +19,66 @@ p({
     "lifecycleState":1
 })
 
-p({
-    "class":"foam.nanos.auth.User",
-    "id":8024,
-    "firstName":"Sojan",
-    "lastName":"Mathew",
-    "jobTitle":"Integrations",
-    "organization":"Intuit",
-    "email":"sojan_mathew@intuit.com",
-    "password":"rjS7gfPL5Aw=:oRLD/6/Hqj4bniLQBcwxCJGavlq7h6eBqf0awzXT/GdOu+JEiQnyIp0tIqWL8xya17z+Ug3w6E4TTcsJilmV9Q==",
-    "passwordLastModified":"2019-10-11T20:18:57.186Z",
-    "created":"2019-10-11T20:18:57.186Z",
-    "lastModified":"2019-10-11T20:18:57.186Z",
-    "nextLoginAttemptAllowedAt":"2019-10-11T20:18:57.186Z",
-    "lastModifiedBy":1348,
-    "createdBy":1348,
-    "spid":"intuit",
-    "group":"intuit-dev",
-    "emailVerified":true,
-    "lifecycleState":1
-})
-
-p({
-    "class":"foam.nanos.auth.User",
-    "id":8025,
-    "firstName":"Aaron",
-    "lastName":"Gourley",
-    "jobTitle":"Solution Engineer",
-    "organization":"Intuit",
-    "email":"aaron_gourley@intuit.com",
-    "password":"rjS7gfPL5Aw=:oRLD/6/Hqj4bniLQBcwxCJGavlq7h6eBqf0awzXT/GdOu+JEiQnyIp0tIqWL8xya17z+Ug3w6E4TTcsJilmV9Q==",
-    "passwordLastModified":"2019-10-11T20:18:57.186Z",
-    "created":"2019-10-11T20:18:57.186Z",
-    "lastModified":"2019-10-11T20:18:57.186Z",
-    "nextLoginAttemptAllowedAt":"2019-10-11T20:18:57.186Z",
-    "lastModifiedBy":1348,
-    "createdBy":1348,
-    "spid":"intuit",
-    "group":"intuit-dev",
-    "emailVerified":true,
-    "lifecycleState":1
-})
-
-p({
-    "class":"foam.nanos.auth.User",
-    "id":8030,
-    "firstName":"Bubbhadeb",
-    "lastName":"Ghosh",
-    "jobTitle":"Software Engineer",
-    "organization":"Intuit",
-    "email":"buddhadeb_ghosh@intuit.com",
-    "password":"rjS7gfPL5Aw=:oRLD/6/Hqj4bniLQBcwxCJGavlq7h6eBqf0awzXT/GdOu+JEiQnyIp0tIqWL8xya17z+Ug3w6E4TTcsJilmV9Q==",
-    "passwordLastModified":"2019-10-11T20:18:57.186Z",
-    "created":"2019-10-11T20:18:57.186Z",
-    "lastModified":"2019-10-11T20:18:57.186Z",
-    "nextLoginAttemptAllowedAt":"2019-10-11T20:18:57.186Z",
-    "lastModifiedBy":1348,
-    "createdBy":1348,
-    "spid":"intuit",
-    "group":"intuit-dev",
-    "emailVerified":true,
-    "lifecycleState":1
-})
-
-p({
-    "class":"foam.nanos.auth.User",
-    "id":8031,
-    "firstName":"Raffi",
-    "lastName":"Norian",
-    "jobTitle":"Product Integration",
-    "organization":"Intuit",
-    "email":"raffi_norian@intuit.com",
-    "password":"rjS7gfPL5Aw=:oRLD/6/Hqj4bniLQBcwxCJGavlq7h6eBqf0awzXT/GdOu+JEiQnyIp0tIqWL8xya17z+Ug3w6E4TTcsJilmV9Q==",
-    "passwordLastModified":"2019-10-11T20:18:57.186Z",
-    "created":"2019-10-11T20:18:57.186Z",
-    "lastModified":"2019-10-11T20:18:57.186Z",
-    "nextLoginAttemptAllowedAt":"2019-10-11T20:18:57.186Z",
-    "lastModifiedBy":1348,
-    "createdBy":1348,
-    "spid":"intuit",
-    "group":"intuit-dev",
-    "emailVerified":true,
-    "lifecycleState":1
-})
-
 // Intuit Admins
-p({class:"foam.nanos.auth.User",id:8034,spid:"intuit",firstName:"Admin",lastName:"Admin",email:"admin@intuit.com",emailVerified:true,password:"Cf7Jr14Ujk4=:LAANp8rLMkR/vqRlOI7SgW47KtTw8NoWM6KC2WsYyd1JoMY9rZmV0a9vbFmvuKgoKckq7sbQNfEIvCNEZ6AkAw==",passwordLastModified:1596213443821,created:1596213443821,lastModified:1596213443821,lifecycleState:1,lastModifiedBy:1,group:"intuit-admin",createdBy:1,createdByAgent:1,status:2,nextLoginAttemptAllowedAt:1596213443748})
-p({class:"foam.nanos.auth.User",id:8035,spid:"intuit",firstName:"Dev",lastName:"Admin",email:"dev@intuit.com",emailVerified:true,password:"WsJlIJDGGGQ=:cnE+tRNtF/yhOheF2POyNuocgKTZDVyXia7dITQFUEVPS9hpuQqp8lVTTm2iQQXbYk/8cBUCOV/prsUkO793Sg==",passwordLastModified:1596216443346,created:1596216443346,lastModified:1596216443346,lifecycleState:1,lastModifiedBy:1,group:"intuit-dev",createdBy:1,createdByAgent:1,status:2,nextLoginAttemptAllowedAt:1596216443297})
-p({class:"foam.nanos.auth.User",id:9035,spid:"intuit",firstName:"API",lastName:"Admin",email:"dev@api.com",emailVerified:true,password:"WsJlIJDGGGQ=:cnE+tRNtF/yhOheF2POyNuocgKTZDVyXia7dITQFUEVPS9hpuQqp8lVTTm2iQQXbYk/8cBUCOV/prsUkO793Sg==",passwordLastModified:1596216443346,created:1596216443346,lastModified:1596216443346,lifecycleState:1,lastModifiedBy:1,group:"intuit-dev",createdBy:1,createdByAgent:1,status:2,nextLoginAttemptAllowedAt:1596216443297})
+p({
+    class:"foam.nanos.auth.User",
+    id:8034,
+    spid:"intuit",
+    firstName:"Admin",
+    lastName:"Admin",
+    email:"admin@intuit.com",
+    emailVerified:true,
+    password:"Cf7Jr14Ujk4=:LAANp8rLMkR/vqRlOI7SgW47KtTw8NoWM6KC2WsYyd1JoMY9rZmV0a9vbFmvuKgoKckq7sbQNfEIvCNEZ6AkAw==",
+    passwordLastModified:1596213443821,
+    created:1596213443821,
+    lastModified:1596213443821,
+    lifecycleState:1,
+    lastModifiedBy:1,
+    group:"intuit-admin",
+    createdBy:1,
+    createdByAgent:1,
+    status:2,
+    nextLoginAttemptAllowedAt:1596213443748
+})
 
-// First Intuit User and Business for sample API calls
-p({class:"foam.nanos.auth.User",id:8026,spid:"intuit",firstName:"QBO",lastName:"Customer",jobTitle:"CEO",organization:"Small Business",userName:"",email:"small@business.com",phoneNumber:"6472222222",password:"YeifeMQdku8=:OGnGP61Mo0FhRR+/TdkQmeeN84MkMBC3AfQPknz8QcB2DueqlHy0e2sVgfqzklxMiXEbLVt2652FVC1pfXU/XA==",passwordLastModified:1594310507888,created:1594310507906,lastModified:1594310507906,lifecycleState:1,lastModifiedBy:1,group:"sme",createdBy:1,createdByAgent:1,status:2,welcomeEmailSent:true,nextLoginAttemptAllowedAt:1594310507895})
-p({class:"net.nanopay.model.Business",businessName:"Small Business",created:1594310509436,emailVerified:true,address:{class:"foam.nanos.auth.Address",countryId:"CA"},id:8027,spid:"intuit",organization:"Small Business",lastModified:1594310509436,lifecycleState:1,lastModifiedBy:8024,createdBy:8024,createdByAgent:8024})
-p({class:"net.nanopay.model.Business",id:8027,passwordHistory:[{class:"foam.nanos.auth.PriorPassword",timeStamp:1594310509456,password:""}],lastModified:1594310509456,group:"smallbusiness8025.admin",nextLoginAttemptAllowedAt:1594310509456})
-p({class:"foam.nanos.auth.User",id:8026,emailVerified:true,lastModified:1594310532064})
-p({class:"foam.nanos.auth.User",id:8026,lastModified:1594310811246,twoFactorSecret:"DXY4LKRVM57ZV3IS"})
-p({class:"foam.nanos.auth.User",id:8026,birthday:315532800000,address:{class:"foam.nanos.auth.Address",countryId:"CA",regionId:"ON",streetNumber:"905",streetName:"King Street W",city:"Toronto",postalCode:"M6G2H3"},lastModified:1594310820402,lastModifiedBy:8024})
-p({class:"net.nanopay.model.Business",id:8027,businessTypeId:3,businessSectorId:51121,phoneNumber:"6472222222",address:{class:"foam.nanos.auth.Address",countryId:"CA",regionId:"ON",streetNumber:"905",streetName:"King Street W",city:"Toronto",postalCode:"M6G2H3"},onboarded:true,sourceOfFunds:"Completion of service contracts",targetCustomers:"SMEs",suggestedUserTransactionInfo:{class:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo",baseCurrency:"CAD",annualRevenue:"Over $1,000,000",transactionPurpose:"Payables for products and/or services",annualTransactionFrequency:"Over 1000",annualDomesticTransactionAmount:"N/A",annualDomesticVolume:"Over $1,000,000"},businessDirectors:[{class:"net.nanopay.model.BusinessDirector",firstName:"QBO",lastName:"Customer"}],lastModified:1594310820536,compliance:2})
-p({class:"foam.nanos.auth.User",id:8026,lastModified:1594310921029,compliance:2})
-p({class:"foam.nanos.auth.User",id:8026,lastModified:1594310924536,lastModifiedBy:1348,compliance:2})
-p({class:"net.nanopay.model.Business",id:8027,phone:{class:"foam.nanos.auth.Phone"},lastModified:1594311004020,lastModifiedBy:1348,status:2,questionnaire:{class:"net.nanopay.onboarding.model.Questionnaire"},compliance:2})
+p({
+    class:"foam.nanos.auth.User",
+    id:8035,
+    spid:"intuit",
+    firstName:"Dev",
+    lastName:"Admin",
+    email:"dev@intuit.com",
+    emailVerified:true,
+    password:"WsJlIJDGGGQ=:cnE+tRNtF/yhOheF2POyNuocgKTZDVyXia7dITQFUEVPS9hpuQqp8lVTTm2iQQXbYk/8cBUCOV/prsUkO793Sg==",
+    passwordLastModified:1596216443346,
+    created:1596216443346,
+    lastModified:1596216443346,
+    lifecycleState:1,
+    lastModifiedBy:1,
+    group:"intuit-dev",
+    createdBy:1,
+    createdByAgent:1,
+    status:2,
+    nextLoginAttemptAllowedAt:1596216443297
+})
 
-// Intuit George User
-p({class:"foam.nanos.auth.User",id:8032,emailVerified:true,spid:"intuit",firstName:"George",lastName:"Smith",email:"george@intuit.com",organization:"Tiny Business",phoneNumber:"1234567890",birthday:582336000000,address:{class:"foam.nanos.auth.Address",countryId:"CA",regionId:"ON",streetNumber:"123",streetName:"Crossover Ave",city:"Toronto",postalCode:"A2C4E6"},password:"XYCz+g131zo=:gVQdSLZ6wkRBrIeFEwJ/qOacUJf8ZeuUeMisZE9Dwi0G25552VtZCcohuhka/WTpS9JJRKlIqB7xSL+SQip6pQ==",passwordLastModified:1596166723241,created:1596166723241,lastModified:1596166723241,lifecycleState:1,lastModifiedBy:1348,group:"sme",createdBy:1348,createdByAgent:1348,status:2,nextLoginAttemptAllowedAt:1596166723189,compliance:2})
-p({class:"net.nanopay.model.Business",businessName:"Tiny Business",created:1596167076703,address:{class:"foam.nanos.auth.Address",countryId:"CA"},id:8033,spid:"intuit",organization:"Tiny Business",lastModified:1596167076703,lifecycleState:1,lastModifiedBy:8032,createdBy:8032,createdByAgent:8032,compliance:2,status:2})
-p({class:"net.nanopay.model.Business",id:8033,emailVerified:true,passwordHistory:[{class:"foam.nanos.auth.PriorPassword",timeStamp:1596167076723,password:""}],lastModified:1596167076722,group:"tinybusiness8033.admin",nextLoginAttemptAllowedAt:1596167076723})
-
-// Initech userName
-p({class:"foam.nanos.auth.User",id:8028,spid:"intuit",firstName:"John",lastName:"Doe",jobTitle:"CEO",organization:"Initech",userName:"",email:"john@initech.com",phoneNumber:"6472222222",password:"k7Nu7zOfGmg=:e/wcf+9nd1ZX2M+4eFhxnfqCJdaTbsXeXYsfm6Nicq1rfxy5BRgu+ItoAWROJeDqhEkI6vkZfdTzMZMsKOIyCg==",passwordLastModified:1594648529536,created:1594648529656,lastModified:1594648529656,lifecycleState:1,lastModifiedBy:1,group:"sme",createdBy:1,createdByAgent:1,status:2,welcomeEmailSent:true,nextLoginAttemptAllowedAt:1594648529615})
-p({class:"net.nanopay.model.Business",businessName:"Initech",created:1594648531594,emailVerified:true,address:{class:"foam.nanos.auth.Address",countryId:"CA"},id:8029,spid:"intuit",organization:"Initech",lastModified:1594648531594,lifecycleState:1,lastModifiedBy:8028,createdBy:8028,createdByAgent:8028})
-p({class:"net.nanopay.model.Business",id:8029,passwordHistory:[{class:"foam.nanos.auth.PriorPassword",timeStamp:1594648531620,password:""}],lastModified:1594648531620,group:"initech8029.admin",nextLoginAttemptAllowedAt:1594648531621})
-p({class:"foam.nanos.auth.User",id:8028,emailVerified:true,lastModified:1594648680024})
-p({class:"foam.nanos.auth.User",id:8028,lastModified:1594648920412,twoFactorSecret:"Z4COPKYXPMML56UK"})
-p({class:"foam.nanos.auth.User",id:8028,birthday:249264000000,address:{class:"foam.nanos.auth.Address",countryId:"CA",regionId:"ON",streetNumber:"905",streetName:"King",city:"Toronto",postalCode:"M6G2H3"},lastModified:1594648924513,lastModifiedBy:8028})
-p({class:"net.nanopay.model.Business",id:8029,businessTypeId:3,businessSectorId:51121,phoneNumber:"6472222222",address:{class:"foam.nanos.auth.Address",countryId:"CA",regionId:"ON",streetNumber:"905",streetName:"King",city:"Toronto",postalCode:"M6G2H3"},onboarded:true,sourceOfFunds:"Purchase of goods produced",targetCustomers:"Small manufacturing",suggestedUserTransactionInfo:{class:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo",baseCurrency:"CAD",annualRevenue:"Over $1,000,000",transactionPurpose:"Payables for products and/or services",annualTransactionFrequency:"Over 1000",annualDomesticTransactionAmount:"N/A",annualDomesticVolume:"Over $1,000,000"},businessDirectors:[{class:"net.nanopay.model.BusinessDirector",firstName:"John",lastName:"Doe"}],lastModified:1594648924671,compliance:2,status:2})
-p({class:"foam.nanos.auth.User",id:8028,lastModified:1594649025259,compliance:2})
+p({
+    class:"foam.nanos.auth.User",
+    id:9035,
+    spid:"intuit",
+    firstName:"API",
+    lastName:"Admin",
+    email:"dev@api.com",
+    emailVerified:true,
+    password:"WsJlIJDGGGQ=:cnE+tRNtF/yhOheF2POyNuocgKTZDVyXia7dITQFUEVPS9hpuQqp8lVTTm2iQQXbYk/8cBUCOV/prsUkO793Sg==",
+    passwordLastModified:1596216443346,
+    created:1596216443346,
+    lastModified:1596216443346,
+    lifecycleState:1,
+    lastModifiedBy:1,
+    group:"intuit-dev",
+    createdBy:1,
+    createdByAgent:1,
+    status:2,
+    nextLoginAttemptAllowedAt:1596216443297
+})

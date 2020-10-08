@@ -26,6 +26,9 @@ foam.CLASS({
   ],
   
   properties: [
+    net.nanopay.model.Business.BUSINESS_SECTOR_ID.clone().copyFrom(),
+    net.nanopay.model.Business.SOURCE_OF_FUNDS.clone().copyFrom(),
+    net.nanopay.model.Business.OPERATING_BUSINESS_NAME.clone().copyFrom(),
     net.nanopay.model.Business.TARGET_CUSTOMERS.clone().copyFrom(),
     net.nanopay.model.Business.SUGGESTED_USER_TRANSACTION_INFO.clone().copyFrom()
   ],
