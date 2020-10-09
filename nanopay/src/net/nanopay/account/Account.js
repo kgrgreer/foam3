@@ -307,13 +307,7 @@ foam.CLASS({
           //catching "Rate Not Found" RuntimeException
           try {
             exchangeFormat = ert.exchangeFormat(denomination, homeDenomination, getBalance());
-          } catch(Throwable t) {
-            Logger logger = (Logger) getX().get("logger");
-            // TODO: Investigate why logger is null
-            if ( logger != null ) {
-              logger.error(t);
-            }
-          }
+          } catch(Throwable t) { }
           if ( exchangeFormat == null )
             return "";
           return exchangeFormat + " " + homeDenomination;
