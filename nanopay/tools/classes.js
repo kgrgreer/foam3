@@ -143,6 +143,7 @@ var classes = [
   'net.nanopay.bank.CanReceiveCurrency',
   'net.nanopay.bank.GetDefaultCurrency',
   'net.nanopay.bank.ruler.VerifyBankRule',
+  'net.nanopay.model.CurrencyAmount',
   'net.nanopay.model.Broker',
   'net.nanopay.model.Business',
   'net.nanopay.model.BusinessUserJunctionRefinement',

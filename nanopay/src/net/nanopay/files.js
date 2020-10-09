@@ -169,6 +169,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/EtaSummaryTransactionLineItem' },
   { name: 'net/nanopay/tx/ExpirySummaryTransactionLineItem' },
 
+  { name: 'net/nanopay/model/CurrencyAmount' },
   { name: 'net/nanopay/model/BusinessSector' },
   { name: 'net/nanopay/model/BusinessType' },
   { name: 'net/nanopay/model/PadAccount' },
