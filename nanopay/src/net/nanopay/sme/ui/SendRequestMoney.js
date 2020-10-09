@@ -418,7 +418,20 @@ foam.CLASS({
     async function getQuote() {
       this.invoice.quote = null;
       this.invoice.paymentMethod = this.PaymentStatus.SUBMIT;
-      this.invoice = await this.invoiceDAO.put(this.invoice);
+
+      try {
+        this.invoice = await this.invoiceDAO.put(this.invoice);
+
+        if ( ! this.invoice.isWizardCompleted ){
+          this.invoice.draft = true;
+          this.saveDraft(this.invoice);
+          return;
+        }
+  
+      } catch(err) {
+        throw new Error(err);
+      }
+
       this.txnQuote = this.invoice.quote.plan;
       return this.txnQuote;
     },
@@ -540,6 +553,7 @@ foam.CLASS({
       },
       code: async function() {
         var currentViewId = this.views[this.position].id;
+        
         switch ( currentViewId ) {
           case this.DETAILS_VIEW_ID:
             if ( ! this.invoiceDetailsValidation(this.invoice) ) return;
