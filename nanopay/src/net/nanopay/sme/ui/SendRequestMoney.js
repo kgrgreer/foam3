@@ -35,6 +35,7 @@ foam.CLASS({
     'checkAndNotifyAbilityToPay',
     'checkAndNotifyAbilityToReceive',
     'contactDAO',
+    'crunchService',
     'ctrl',
     'fxService',
     'menuDAO',
@@ -446,8 +447,13 @@ foam.CLASS({
 
     async function submit() {
       this.isLoading = true;
+      let signingOfficer1 = await this.crunchService.getJunction(null, '554af38a-8225-87c8-dfdf-eeb15f71215f-1a5');
+      let signingOfficer2 = await this.crunchService.getJunction(null, '554af38a-8225-87c8-dfdf-eeb15f71215f-1a5-us');
+      let signingOfficer3 = await this.crunchService.getJunction(null, '777af38a-8225-87c8-dfdf-eeb15f71215f-123');
+      let isSigningOfficer = ( signingOfficer1 && signingOfficer1.status.ordinal == 1 ) || ( signingOfficer2 && signingOfficer2.status.ordinal == 1 ) || ( signingOfficer3 && signingOfficer3.status.ordinal == 1);
+
       try {
-        if ( this.isPayable ) {
+        if ( this.isPayable && isSigningOfficer ) {
           let transaction = this.invoice.quote.plan;
         // confirm fxquote is still valid
           if ( transaction != null && this.getExpired(new Date(), transaction) ) {
@@ -464,6 +470,9 @@ foam.CLASS({
             this.notify(this.TRANSACTION_ERROR + this.type, '', this.LogLevel.ERROR, true);
             return;
           }
+        } else if ( this.isPayable ) {
+          this.invoice.paymentMethod = this.PaymentStatus.PENDING_APPROVAL;
+          this.invoiceDAO.put(this.invoice);
         } else {
           this.invoiceDAO.put(this.invoice);
         }
@@ -479,7 +488,8 @@ foam.CLASS({
         if ( service ) service.invoiceResync(null, this.invoice);
         ctrl.stack.push({
           class: 'net.nanopay.sme.ui.MoneyFlowSuccessView',
-          invoice: this.invoice
+          invoice: this.invoice,
+          isApprover_: isSigningOfficer
         });
       } catch ( error ) {
         this.isLoading = false;
