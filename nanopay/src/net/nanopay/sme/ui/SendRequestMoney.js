@@ -418,6 +418,7 @@ foam.CLASS({
 
     async function getQuote() {
       this.invoice.quote = null;
+      this.invoice.draft = false;
       this.invoice.paymentMethod = this.PaymentStatus.SUBMIT;
 
       try {
