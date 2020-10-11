@@ -35,6 +35,7 @@ foam.CLASS({
     'checkAndNotifyAbilityToPay',
     'checkAndNotifyAbilityToReceive',
     'contactDAO',
+    'crunchService',
     'ctrl',
     'fxService',
     'menuDAO',
@@ -417,8 +418,22 @@ foam.CLASS({
 
     async function getQuote() {
       this.invoice.quote = null;
+      this.invoice.draft = false;
       this.invoice.paymentMethod = this.PaymentStatus.SUBMIT;
-      this.invoice = await this.invoiceDAO.put(this.invoice);
+
+      try {
+        this.invoice = await this.invoiceDAO.put(this.invoice);
+
+        if ( this.invoice.capablePayloads.length > 0 && ! this.invoice.isWizardCompleted ){
+          this.invoice.draft = true;
+          this.saveDraft(this.invoice);
+          return;
+        }
+  
+      } catch(err) {
+        throw new Error(err);
+      }
+
       this.txnQuote = this.invoice.quote.plan;
       return this.txnQuote;
     },
@@ -433,23 +448,34 @@ foam.CLASS({
 
     async function submit() {
       this.isLoading = true;
-      let transaction = this.invoice.quote.plan;
-      try {
-        // confirm fxquote is still valid
-        if ( transaction != null && this.getExpired(new Date(), transaction) ) {
-          transaction = await this.getQuote();
-          this.notify(this.RATE_REFRESH + ( this.isApproving ? this.RATE_REFRESH_APPROVE : this.RATE_REFRESH_SUBMIT), '', this.LogLevel.WARN, true);
-          this.isLoading = false;
-          return;
-        }
+      let signingOfficer1 = await this.crunchService.getJunction(null, '554af38a-8225-87c8-dfdf-eeb15f71215f-1a5');
+      let signingOfficer2 = await this.crunchService.getJunction(null, '554af38a-8225-87c8-dfdf-eeb15f71215f-1a5-us');
+      let signingOfficer3 = await this.crunchService.getJunction(null, '777af38a-8225-87c8-dfdf-eeb15f71215f-123');
+      let isSigningOfficer = ( signingOfficer1 && signingOfficer1.status.ordinal == 1 ) || ( signingOfficer2 && signingOfficer2.status.ordinal == 1 ) || ( signingOfficer3 && signingOfficer3.status.ordinal == 1);
 
-        this.invoice.plan = transaction;
-        this.invoice = await this.invoiceDAO.put(this.invoice);
-        if ( ! this.invoice.paymentId ) {
-          debugger;
-          this.isLoading = false;
-          this.notify(this.TRANSACTION_ERROR + this.type, '', this.LogLevel.ERROR, true);
-          return;
+      try {
+        if ( this.isPayable && isSigningOfficer ) {
+          let transaction = this.invoice.quote.plan;
+        // confirm fxquote is still valid
+          if ( transaction != null && this.getExpired(new Date(), transaction) ) {
+            transaction = await this.getQuote();
+            this.notify(this.RATE_REFRESH + ( this.isApproving ? this.RATE_REFRESH_APPROVE : this.RATE_REFRESH_SUBMIT), '', this.LogLevel.WARN, true);
+            this.isLoading = false;
+            return;
+          }
+
+          this.invoice.plan = transaction;
+          this.invoice = await this.invoiceDAO.put(this.invoice);
+          if ( ! this.invoice.paymentId ) {
+            this.isLoading = false;
+            this.notify(this.TRANSACTION_ERROR + this.type, '', this.LogLevel.ERROR, true);
+            return;
+          }
+        } else if ( this.isPayable ) {
+          this.invoice.paymentMethod = this.PaymentStatus.PENDING_APPROVAL;
+          this.invoiceDAO.put(this.invoice);
+        } else {
+          this.invoiceDAO.put(this.invoice);
         }
         // this.invoice.processPaymentOnCreate = false;
 
@@ -463,7 +489,8 @@ foam.CLASS({
         if ( service ) service.invoiceResync(null, this.invoice);
         ctrl.stack.push({
           class: 'net.nanopay.sme.ui.MoneyFlowSuccessView',
-          invoice: this.invoice
+          invoice: this.invoice,
+          isApprover_: isSigningOfficer
         });
       } catch ( error ) {
         this.isLoading = false;
@@ -537,6 +564,7 @@ foam.CLASS({
       },
       code: async function() {
         var currentViewId = this.views[this.position].id;
+        
         switch ( currentViewId ) {
           case this.DETAILS_VIEW_ID:
             if ( ! this.invoiceDetailsValidation(this.invoice) ) return;

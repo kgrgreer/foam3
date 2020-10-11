@@ -134,6 +134,9 @@ foam.CLASS({
     ^ .reference-id-text {
       font-size: 12px;
     }
+    ^ .note {
+      white-space: pre-line;
+    }
   `,
 
   constants: [
@@ -459,6 +462,7 @@ foam.CLASS({
               if ( invoice$note ) {
                 return self.E()
                   .start()
+                  .addClass('note')
                     .add(invoice$note)
                   .end();
               } else {

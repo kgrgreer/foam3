@@ -1177,12 +1177,11 @@ foam.CLASS({
       type: 'net.nanopay.tx.TransactionLineItem[]',
       javaCode: `
       ArrayList<TransactionLineItem> list1 = new ArrayList<>(Arrays.asList(to));
-      Arrays.asList(from).forEach((item) -> {
-        boolean hasItem = list1.stream().filter(t -> t.getId().equals(item.getId())).toArray().length != 0;
-        if (! hasItem) {
+      for ( var item : from ) {
+        if ( ! list1.contains(item) ) {
           list1.add(item);
         }
-      });
+      }
       return list1.toArray(new TransactionLineItem[list1.size()]);
       `
     },
@@ -1321,11 +1320,13 @@ foam.CLASS({
         if ( t.getAccount() == accountNumber )
           sum += t.getAmount();
       //Sum LineItem transfers that affect account
-      for ( TransactionLineItem li : getLineItems() )
-        for ( Transfer t : ((FeeLineItem)li).getTransfers() )
-          if ( t.getAccount() == accountNumber )
-            sum += t.getAmount();
-
+      for ( TransactionLineItem li : getLineItems() ) {
+        if ( li instanceof FeeLineItem ) {
+          for (Transfer t : ((FeeLineItem) li).getTransfers())
+            if (t.getAccount() == accountNumber)
+              sum += t.getAmount();
+        }
+      }
       return sum;
     `
   },

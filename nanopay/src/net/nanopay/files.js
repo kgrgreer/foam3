@@ -170,6 +170,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/EtaSummaryTransactionLineItem' },
   { name: 'net/nanopay/tx/ExpirySummaryTransactionLineItem' },
 
+  { name: 'net/nanopay/model/CurrencyAmount' },
   { name: 'net/nanopay/model/BusinessSector' },
   { name: 'net/nanopay/model/BusinessType' },
   { name: 'net/nanopay/model/PadAccount' },
@@ -1723,4 +1724,5 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/TrevisoUnlockPaymentTermsAndConditions' },
   { name: 'net/nanopay/partner/treviso/invoice/TrevisoCapabilityValidateRule' },
   { name: 'net/nanopay/partner/treviso/invoice/UpdateTransactionOnInvoiceValidationRule' },
+  { name: 'net/nanopay/partner/treviso/invoice/TrevisoNotificationRule' },
 ]);

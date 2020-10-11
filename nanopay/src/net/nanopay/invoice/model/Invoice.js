@@ -702,6 +702,10 @@ foam.CLASS({
       hidden: true,
       storageTransient: true,
     },
+    {
+      class: 'String',
+      name: 'totalSourceAmount',
+    }
   ],
 
   messages: [

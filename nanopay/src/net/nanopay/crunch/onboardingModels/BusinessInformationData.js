@@ -55,7 +55,7 @@ foam.CLASS({
   messages: [
     { name: 'PLACE_HOLDER', message: 'Please select...' },
     { name: 'BUSINESS_TYPE_ERROR', message: 'Please select type of business.' },
-    { name: 'NATURE_OF_BUSINESS_ERROR', message: 'Please select nature of business.' },
+    { name: 'NATURE_OF_BUSINESS_ERROR', message: 'Please select business sector.' },
     { name: 'SOURCE_OF_FUNDS_ERROR', message: 'Please provide primary source of funds.' },
     { name: 'OPERATING_NAME_ERROR', message: 'Please enter business name.' },
     { name: 'YES', message: 'Yes' },
@@ -63,7 +63,6 @@ foam.CLASS({
     { name: 'OTHER_LABEL', message: 'Other' },
     { name: 'BUSINESS_LABEL', message: 'Does your business operate under a different name?' },
     { name: 'OPERATING_NAME_LABEL', message: 'Enter your operating name' },
-    { name: 'NATURE_LABEL', message: 'Nature of business' },
     { name: 'PRIMARY_LABEL', message: 'Primary source of funds' },
     { name: 'OPTION_ONE', message: 'Purchase of goods produced' },
     { name: 'OPTION_TWO', message: 'Completion of service contracts' },
@@ -106,7 +105,7 @@ foam.CLASS({
       of: 'net.nanopay.model.BusinessSector',
       name: 'businessSectorId',
       documentation: 'The ID of the general economic grouping for the business. This ID is found by querying the businessSectorDAO.',
-      label: this.NATURE_LABEL,
+      label: 'Business Sector',
       view: { class: 'net.nanopay.business.NatureOfBusiness' },
       validationPredicates: [
         {

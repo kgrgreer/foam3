@@ -881,6 +881,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.model.BusinessSector',
       name: 'businessSectorId',
+      label: 'Business Sector',
       section: 'businessDetailsSection',
       documentation: 'Represents the specific economic grouping for the business.',
       label: 'Nature of business',
@@ -894,7 +895,7 @@ foam.CLASS({
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
-          errorString: 'Please select nature of business.'
+          errorMessage: 'SELECT_BUSINESS_SECTOR'
         }
       ]
     },
@@ -1517,6 +1518,10 @@ foam.CLASS({
     {
       name: 'INVITE_SIGNING_OFFICER',
       message: 'Invite a signing officer to complete the onboarding for your business.  Once the signing officer completes their onboarding, your business can start using '
+    },
+    {
+      name: 'SELECT_BUSINESS_SECTOR',
+      message: 'Please select business sector'
     }
   ],
 
@@ -1631,4 +1636,3 @@ foam.CLASS({
     }
   ]
 });
-

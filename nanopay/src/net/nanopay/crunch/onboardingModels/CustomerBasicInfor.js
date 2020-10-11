@@ -26,7 +26,7 @@ foam.CLASS({
       minLength: 1
     },
     {
-      class: 'FObjectProperty',
+      class: 'PhoneNumber',
       name: 'telephone',
     },
   ]

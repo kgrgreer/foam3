@@ -30,7 +30,7 @@ foam.CLASS({
 
   messages: [
     { name: 'PLACE_HOLDER', message: 'Please select...' },
-    { name: 'BUSINESS_TYPE_ERROR', message: 'Please select one of Nature of Businesses' },
+    { name: 'BUSINESS_TYPE_ERROR', message: 'Please select one of Nature Business Relationship' },
   ],
 
   properties: [

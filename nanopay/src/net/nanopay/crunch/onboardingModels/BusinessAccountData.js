@@ -38,7 +38,8 @@ foam.CLASS({
 
   messages: [
     { name: 'NO_CUSTOMERS_INFO', message: 'Please enter main customer\'s information.' },
-    { name: 'NO_SUPPLIERS_INFO', message: 'Please enter main supplier\'s information.' }
+    { name: 'NO_SUPPLIERS_INFO', message: 'Please enter main supplier\'s information.' },
+    { name: 'INVALID_DATE', message: 'Last date cannot be future dated.' }
   ],
 
   properties: [
@@ -47,7 +48,6 @@ foam.CLASS({
       name: 'OwnerOrOutsourced',
       label: 'Are you the Owned or Outsourced?',
       class: 'Boolean',
-      required: true,
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
@@ -55,14 +55,12 @@ foam.CLASS({
           [false, 'No, I\'m not the owner']
         ]
       },
-      value: true
     },
     {
       section: 'accountingSection',
       name: 'ownerManagment',
       label: 'Are you the owner managing the company?',
       class: 'Boolean',
-      required: true,
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
@@ -71,14 +69,12 @@ foam.CLASS({
         ],
         isHorizontal: true
       },
-      value: true
     },
     {
       section: 'accountingSection',
       name: 'simpleTax',
       label: 'Do you opt into Simple Tax?',
       class: 'Boolean',
-      required: true,
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
@@ -102,7 +98,7 @@ foam.CLASS({
           predicateFactory: function(e) {
             return e.LTE(net.nanopay.crunch.onboardingModels.BusinessAccountData.DATE_OF_FILING_TAXES, new Date())
           },
-          errorString: 'Last date cannot be future dated.'
+          errorMessage: 'INVALID_DATE'
         }
       ]
     },

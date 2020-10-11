@@ -42,6 +42,13 @@ foam.CLASS({
     }
   ],
 
+  messages: [
+    { name: 'NO_NIRE_NUMBER', message: 'Please enter NIRE/State Commercial Identification Number' },
+    { name: 'NO_CNPJ', message: 'Please enter 14-digit National Registry of Legal Entities Number' },
+    { name: 'CNPJ_INVALID', message: 'The CNPJ is invalid' },
+    { name: 'VERIFY_BUSINESS_NAME', message: 'Click to verify business name.' },
+  ],
+
   properties: [
     {
       class: 'String',
@@ -49,7 +56,16 @@ foam.CLASS({
       label: 'NIRE/State Commercial Identification Number',
       required: true,
       documentation: `NIRE is the State Commercial Identification Number used by the State Commercial Board.`,
-      section: 'businessInformation'
+      section: 'businessInformation',
+      validationPredicates: [
+        {
+          args: ['nire'],
+          predicateFactory: function(e) {
+            return e.GT(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.BrazilBusinessInfoData.NIRE }), 0);
+          },
+          errorMessage: 'NO_NIRE_NUMBER'
+        }
+      ]
     },
     {
       class: 'String',
@@ -79,15 +95,18 @@ foam.CLASS({
       section: 'businessInformation',
       validationPredicates: [
         {
-          args: ['cnpj','cnpjName'],
+          args: ['cnpj'],
           predicateFactory: function(e) {
-            return e.AND(
-              e.EQ(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.BrazilBusinessInfoData.CNPJ }), 14),
-              e.GT(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.BrazilBusinessInfoData.CNPJ_NAME }), 0)
-            );
+            return e.EQ(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.BrazilBusinessInfoData.CNPJ }), 14)          },
+            errorMessage: 'NO_CNPJ'
+        },
+        {
+          args: ['cnpjName'],
+          predicateFactory: function(e) {
+            return e.GT(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.BrazilBusinessInfoData.CNPJ_NAME }), 0)
           },
-          errorString: 'Please enter 14-digit National Registry of Legal Entities Number'
-        }
+          errorMessage: 'CNPJ_INVALID'
+        },
       ],
       tableCellFormatter: function(val) {
         return foam.String.applyFormat(val, 'xx.xxx.xxx/xxxx-xx');
@@ -172,7 +191,7 @@ foam.CLASS({
           predicateFactory: function(e) {
             return e.EQ(net.nanopay.country.br.BrazilBusinessInfoData.VERIFY_NAME, true);
           },
-          errorString: 'Click to verify business name.'
+          errorMessage: 'VERIFY_BUSINESS_NAME'
         }
       ]
     },

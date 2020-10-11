@@ -145,6 +145,7 @@ var classes = [
   'net.nanopay.bank.CanReceiveCurrency',
   'net.nanopay.bank.GetDefaultCurrency',
   'net.nanopay.bank.ruler.VerifyBankRule',
+  'net.nanopay.model.CurrencyAmount',
   'net.nanopay.model.Broker',
   'net.nanopay.model.Business',
   'net.nanopay.model.BusinessUserJunctionRefinement',
@@ -1226,6 +1227,7 @@ var classes = [
   'net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions',
   'net.nanopay.partner.treviso.invoice.TrevisoCapabilityValidateRule',
   'net.nanopay.partner.treviso.invoice.UpdateTransactionOnInvoiceValidationRule',
+  'net.nanopay.partner.treviso.invoice.TrevisoNotificationRule',
 
   // crunch onboarding
   'net.nanopay.crunch.onboardingModels.CheckUserCountry',

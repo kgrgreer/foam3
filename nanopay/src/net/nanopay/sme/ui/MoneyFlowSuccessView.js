@@ -95,6 +95,9 @@ foam.CLASS({
       width: 300px;
       float: right;
     }
+    pre {
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }    
   `,
 
   properties: [
@@ -153,7 +156,7 @@ foam.CLASS({
       expression: function(isPayable_, isApprover_, formattedAmount_, invoiceName_) {
         if ( isPayable_ ) {
           if ( isApprover_ ) {
-            return `${this.TITLE_SEND1} ${formattedAmount_} ${this.TITLE_SEND2} ${invoiceName_}`;
+            return `${formattedAmount_} ${this.TITLE_SEND} ${invoiceName_}`;
           }
           return this.TITLE_PENDING;
         }
@@ -177,8 +180,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'TITLE_SEND1', message: 'Sent' },
-    { name: 'TITLE_SEND2', message: 'to' },
+    { name: 'TITLE_SEND', message: 'will be sent to' },
     { name: 'TITLE_REC1', message: 'Requested' },
     { name: 'TITLE_REC2', message: 'from' },
     { name: 'TITLE_PENDING', message: 'Payment has been submitted for approval' },
@@ -188,7 +190,19 @@ foam.CLASS({
     { name: 'REF', message: 'Your reference ID ' },
     { name: 'V_PAY', message: 'View this payable' },
     { name: 'V_REC', message: 'View this receivable' },
-    { name: 'TXN_CONFIRMATION_LINK_TEXT', message: 'View AscendantFX Transaction Confirmation' }
+    { name: 'TXN_CONFIRMATION_LINK_TEXT', message: 'View AscendantFX Transaction Confirmation' },
+    { name: 'BODY_SEND_TREVISO_1', message: 'Attention : this transaction is not complete yet!' },
+    { name: 'BODY_SEND_TREVISO_2_0', message: 'To finish it, please send a TED (Brazilian wire) of (' },
+    { name: 'BODY_SEND_TREVISO_2_1', message: ') to :' },
+    { name: 'BODY_SEND_TREVISO_3', message: `
+        Treviso Corretora de Câmbio S.A
+        CNPJ: 02.992.317/0001-87
+        Banco SC Treviso (143)
+        Agencia: 0001
+        Conta: 1-1`
+    },
+    { name: 'BODY_SEND_TREVISO_4', message: 'Not sending the funds will cause this transaction to be automatically canceled.' }
+
   ],
 
   methods: [
@@ -197,10 +211,6 @@ foam.CLASS({
         .then((currency) => {
         this.formattedAmount_ = currency.format(this.invoice.amount);
       });
-      Promise.all([this.auth.check(null, 'business.invoice.pay'), this.auth.check(null, 'user.invoice.pay')])
-        .then((results) => {
-          this.isApprover_ = results[0] && results[1];
-        });
     },
     function init() {
       this.transactionDAO.find(this.invoice.paymentId).then((transaction) => {
@@ -232,7 +242,7 @@ foam.CLASS({
           .end()
           .start('p')
             .addClass('success-body').addClass('subdued-text')
-            .add(this.body_$)
+            .add(this.getBody())
           .end()
           .start('p')
             .addClass('success-body').addClass('subdued-text')
@@ -267,7 +277,28 @@ foam.CLASS({
             .tag(this.DONE)
           .end()
         .end();
-    }
+    },
+    function getBody() {
+      if ( this.isPayable_ && this.isApprover_ ) {
+        return this.E()
+          .start('b')
+            .add(this.BODY_SEND_TREVISO_1)
+          .end()
+          .start()
+            .add(this.BODY_SEND_TREVISO_2_0 + this.invoice.totalSourceAmount + this.BODY_SEND_TREVISO_2_1)
+          .end()
+          .start('pre')
+            .add(this.BODY_SEND_TREVISO_3)
+          .end()
+          .start('b')
+            .add(this.BODY_SEND_TREVISO_4)
+          .end();
+      } else if ( this.isPayable_ ) {
+        return this.BODY_PENDING;
+      } else {
+        return this.BODY_REC;
+      }
+    },
   ],
 
   actions: [
