@@ -30,7 +30,7 @@ p({
   ruleGroup: "TransactionFeeRule",
   targetClass: "net.nanopay.tx.fee.TransactionFeeRule",
   propName: "feeAccount",
-  propValue: 201,
+  propValue: 31,
   created: 1601313462375,
   createdBy: 1,
   createdByAgent: 1,
@@ -42,5 +42,5 @@ p({
 p({
   class: "net.nanopay.tx.fee.TransactionFeeRule",
   id: "91194da9-8391-436a-8468-fa2c706126b8",
-  feeAccount: 201
+  feeAccount: 31
 })
