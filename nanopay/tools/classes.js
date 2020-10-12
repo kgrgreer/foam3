@@ -696,6 +696,7 @@ var classes = [
   'net.nanopay.auth.OneTimeAuthenticationTokenService',
   'net.nanopay.auth.ruler.LogoutUserAction',
   'net.nanopay.security.auth.LoginAttemptAuthService',
+  'net.nanopay.security.auth.LoginAttempts',
   'net.nanopay.security.auth.IPLoggingAuthService',
   'net.nanopay.auth.ServiceProviderURL',
   'net.nanopay.auth.UserCreateServiceProviderURLRule',

@@ -26,28 +26,12 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Short',
-      name: 'loginAttempts',
-      value: 0,
-      createVisibility: 'HIDDEN',
-      section: 'administrative'
-    },
-    {
       documentation: 'Visibility in Global Directory / Parners lookup',
       name: 'isPublic',
       class: 'Boolean',
       value: true,
       writePermissionRequired: true,
       section: 'administrative'
-    },
-    {
-      class: 'DateTime',
-      name: 'nextLoginAttemptAllowedAt',
-      type: 'Date',
-      javaFactory: 'return new Date();',
-      section: 'administrative',
-      // storageOptional ensures user entry is not updated on each successful login. If login fails, then loginAttempts will be non-zero and this property will be persisted.
-      storageOptional: true
     }
   ]
 });

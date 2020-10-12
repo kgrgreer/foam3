@@ -54,6 +54,7 @@ lineItemTypes
 liquiditySettings
 liquidUserCapabilityJunctions
 locales
+loginAttempts
 menus
 mspSetup
 notifications
