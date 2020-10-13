@@ -90,9 +90,15 @@ foam.CLASS({
               label: 'Add Bank',
               isAvailable: async function() {
                 var bank = await this.accounts.find(this.EQ(net.nanopay.bank.BankAccount.OWNER, this.id))
-                return this.signUpStatus !== self.ContactStatus.ACTIVE && ! bank;
+                return this.signUpStatus !== self.ContactStatus.READY && ! bank;
               },
               code: function(X) {
+                // case of save without banking
+                if ((net.nanopay.bank.BankAccount).isInstance(this.createBankAccount) || this.createBankAccount === undefined) {
+                  this.createBankAccount = net.nanopay.bank.CABankAccount.create({ isDefault: true }, X);
+                  controllerMode_ = foam.u2.ControllerMode.CREATE;
+                }
+
                 X.controllerView.add(self.WizardController.create({
                   model: 'net.nanopay.contacts.Contact',
                   data: this,
@@ -104,7 +110,7 @@ foam.CLASS({
               name: 'edit',
               label: 'View details',
               isAvailable: async function() {
-                return this.signUpStatus !== self.ContactStatus.ACTIVE;
+                return this.signUpStatus !== self.ContactStatus.READY;
               },
               code: function(X) {
                 // case of save without banking
@@ -124,12 +130,12 @@ foam.CLASS({
             this.Action.create({
               name: 'invite',
               isEnabled: function() {
-                return this.signUpStatus != self.ContactStatus.ACTIVE;
+                return this.signUpStatus != self.ContactStatus.READY;
               },
               isAvailable: async function() {
                 let account = await self.accountDAO.find(this.bankAccount);
                 let permission = await self.auth.check(null, 'menu.read.capability.menu.invitation');
-                return this.signUpStatus != self.ContactStatus.ACTIVE && ! self.INBankAccount.isInstance(account) && permission;
+                return this.signUpStatus != self.ContactStatus.READY && ! self.INBankAccount.isInstance(account) && permission;
               },
               code: function(X) {
                 var invite = net.nanopay.model.Invitation.create({

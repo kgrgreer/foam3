@@ -246,24 +246,29 @@ foam.CLASS({
       name: 'signUpStatus',
       documentation: `Tracks the registration status of a contact with respect to
         whether a individual person, or real user, can sign in or not.
+        Pending, Ready and Connected
       `,
       visibility: 'HIDDEN',
       label: 'Status',
       tableWidth: 170,
+      value: 'PENDING',
       tableCellFormatter: function(state, obj) {
-        var format = obj.bankAccount && state != net.nanopay.contacts.ContactStatus.ACTIVE ? 'Ready' : 'Pending';
-        var label = state == net.nanopay.contacts.ContactStatus.ACTIVE ? state.label.replace(/\s+/g, '') : format;
-        this.start()
-          .start().show(state != net.nanopay.contacts.ContactStatus.ACTIVE).addClass('contact-status-circle-' + label).end()
-          .start('img')
-            .show(state == net.nanopay.contacts.ContactStatus.ACTIVE)
-            .attrs({ src: this.__subContext__.theme.logo })
-            .style({ 'width': '15px', 'position': 'relative', 'top': '3px', 'right': '4px' })
+        this.__subContext__.contactDAO.find(obj.id).then(contactObj=> {
+          var format = contactObj.bankAccount || contactObj.businessId ? net.nanopay.contacts.ContactStatus.READY : net.nanopay.contacts.ContactStatus.PENDING;
+          var label = state == net.nanopay.contacts.ContactStatus.CONNECTED ? state.label.replace(/\s+/g, '') : format.label.replace(/\s+/g, '');
+
+          this.start()
+            .start().show(state != net.nanopay.contacts.ContactStatus.CONNECTED).addClass('contact-status-circle-' + label).end()
+            .start('img')
+              .show(state == net.nanopay.contacts.ContactStatus.CONNECTED)
+              .attrs({ src: this.__subContext__.theme.logo })
+              .style({ 'width': '15px', 'position': 'relative', 'top': '3px', 'right': '4px' })
+              .end()
+            .start().addClass('contact-status-' + label)
+              .add(label)
             .end()
-          .start().addClass('contact-status-' + label)
-            .add(label)
-          .end()
-        .end();
+          .end();
+        });
       }
     },
     {

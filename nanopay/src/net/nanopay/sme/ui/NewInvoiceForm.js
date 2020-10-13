@@ -482,6 +482,11 @@ foam.CLASS({
               .start().add(this.ADD_BANK).addClass('add-banking-information')
                 .on('click', async function() {
                   self.userDAO.find(self.invoice.contactId).then((contact)=>{
+                    // case of save without banking
+                    if ((net.nanopay.bank.BankAccount).isInstance(contact.createBankAccount) || contact.createBankAccount === undefined) {
+                      contact.createBankAccount = net.nanopay.bank.CABankAccount.create({ isDefault: true }, self);
+                    }
+
                     self.add(self.WizardController.create({
                       model: 'net.nanopay.contacts.Contact',
                       data: contact,

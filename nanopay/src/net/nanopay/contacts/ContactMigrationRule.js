@@ -100,7 +100,7 @@ foam.CLASS({
             )
           )
           .select(new Count());
-        
+
         boolean hasVerifiedBankAccount = count.getValue() > 0;
         boolean justVerifiedBankAccount = false;
 
@@ -166,13 +166,13 @@ foam.CLASS({
         List<Contact> contacts = contactSink.getArray();
 
         /**
-         * Update the contacts based on the original contact's email 
+         * Update the contacts based on the original contact's email
          * which is stored in the external contact token.
          */
         for ( Contact contact : contacts ) {
           Contact updatedContact = (Contact) contact.fclone();
           updatedContact.setBusinessId(business.getId());
-          updatedContact.setSignUpStatus(ContactStatus.ACTIVE);
+          updatedContact.setSignUpStatus(ContactStatus.READY);
           updatedContact.setEmail(business.getEmail());
           localContactDAO.put(updatedContact);
           migrateInvoices(x, contact, business);

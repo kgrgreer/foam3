@@ -796,7 +796,7 @@ foam.CLASS({
       border-radius: 50%;
     }
 
-    .contact-status-Active {
+    .contact-status-Connected {
       color: #07941f;
     }
 
