@@ -1,0 +1,29 @@
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "localLoginAttemptsDAO",
+  "serve": false,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.security.auth.LoginAttempts.getOwnClassInfo())
+      .setAuthorize(false)
+      .setJournalName("loginAttemptAttempts")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .build();
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "loginAttemptsDAO",
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.security.auth.LoginAttempts.getOwnClassInfo())
+      .setAuthorize(true)
+      .setInnerDAO(x.get("localLoginAttemptsDAO"))
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.security.auth.LoginAttempts\"}"
+})
