@@ -287,8 +287,8 @@ p({
 p({
   "class":"foam.nanos.ruler.Rule",
   "id":"efa95ab2-3555-3947-076b-35be8c1cccde",
-  "name":"AFEX Push Signing Officer",
-  "documentation":"Rule to push Business Directos to AFEX after AFEX Business is created.",
+  "name":"AFEX Push Business Directors",
+  "documentation":"Rule to push Business Directors to AFEX after AFEX Business is created.",
   "priority":100,
   "ruleGroup":"AFEX",
   "daoKey":"afexBusinessDAO",

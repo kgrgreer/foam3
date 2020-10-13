@@ -91,6 +91,14 @@ foam.CLASS({
     }
   ],
 
+  properties: [
+    {
+      name: 'quoteKeys',
+      class: 'Boolean',
+      value: true
+    }
+  ],
+
   methods: [
     {
       name: 'runTest',
@@ -116,7 +124,7 @@ foam.CLASS({
         { name: 'x', type: 'Context' }
       ],
       javaCode: `
-        HashingJournal journal = new HashingJournal.Builder(x).build();
+        HashingJournal journal = new HashingJournal.Builder(x).setQuoteKeys(getQuoteKeys()).build();
         MessageDigest digest = new MessageDigest.Builder(x).build();
         test("SHA-256".equals(digest.getAlgorithm()), "Algorithm is set to SHA-256 by default");
         test(journal.getDigestRequired(), "Digest required is set to true by default");
@@ -161,7 +169,7 @@ foam.CLASS({
           HashingJournal journal = new HashingJournal.Builder(storageX)
             .setFilename(file.getName())
             .setDao(dao)
-            .setQuoteKeys(true)
+            .setQuoteKeys(getQuoteKeys())
             .build();
 
           // put to journal
@@ -196,6 +204,7 @@ foam.CLASS({
           X storageX = x.put(foam.nanos.fs.Storage.class, new foam.nanos.fs.FileSystemStorage(file.getParent()));
           HashingJournal journal = new HashingJournal.Builder(storageX)
             .setFilename(file.getName())
+            .setQuoteKeys(getQuoteKeys())
             .setDao(dao)
             .build();
 
@@ -232,6 +241,7 @@ foam.CLASS({
           X storageX = x.put(foam.nanos.fs.Storage.class, new foam.nanos.fs.FileSystemStorage(file.getParent()));
           HashingJournal journal = new HashingJournal.Builder(storageX)
             .setFilename(file.getName())
+            .setQuoteKeys(getQuoteKeys())
             .setDao(dao)
             .build();
 
@@ -246,6 +256,7 @@ foam.CLASS({
           dao = new MDAO(User.getOwnClassInfo());
           journal = new HashingJournal.Builder(storageX)
             .setFilename(file.getName())
+            .setQuoteKeys(getQuoteKeys())
             .setDao(dao)
             .build();
 
@@ -280,6 +291,7 @@ foam.CLASS({
           X storageX = x.put(foam.nanos.fs.Storage.class, new foam.nanos.fs.FileSystemStorage(file.getParent()));
           HashingJournal journal = new HashingJournal.Builder(storageX)
             .setFilename(file.getName())
+            .setQuoteKeys(getQuoteKeys())
             .setDao(dao)
             .build();
 

@@ -2657,3 +2657,91 @@ p({
     print("done");
   """
 })
+
+
+p({
+  class:"foam.nanos.script.Script",
+  id:"Print all rules on all daos",
+  description:"Print all rules on all daos",
+  code:"""
+  import foam.dao.ProxyDAO;
+  import foam.nanos.ruler.Rule;
+  import foam.nanos.ruler.RulerDAO;
+  import foam.dao.ArraySink;
+  import static foam.mlang.MLang.*;
+
+  // =============================================================
+  // Setting
+  // =============================================================
+  nspec = x.get("nSpecDAO");
+  nspecs = nspec.select(new ArraySink()).getArray();
+  //TARGET_DAO = "localTransactionDAO";     // Target DAO to check against
+
+  // =============================================================
+  // Helper functions
+  // =============================================================
+  String printRules(heading, sink) {
+    StringBuilder sb = new StringBuilder("");
+      if ( ! sink.groupKeys.isEmpty() ) {
+        sb.append("  - " + heading + "\\n");
+        for ( key : sink.groupKeys ) {
+          sb.append(printRuleGroup(key, sink.groups.get(key).array));
+        }
+      }
+    return sb.toString();
+  }
+
+  String printRuleGroup(key, group) {
+    StringBuilder sb = new StringBuilder("");
+    if ( ! group.isEmpty() ) {
+      for( rule : group ) {
+        sb.append("      " + formatRule(rule)+"\\n");
+      }
+    }
+    return sb.toString();
+  }
+
+  String formatRule(rule) {
+    return String.format("saveHistory: %b, id: %s, name: %s", new Object[] {
+      rule.saveHistory,
+      rule.id,
+      rule.name
+    });
+  }
+
+  // =============================================================
+  // Main
+  // =============================================================
+  String main(TARGET_DAO) {
+    StringBuilder sb = new StringBuilder("");
+
+    // Locate RulerDAO from the TARGET_DAO
+    dao = x.get(TARGET_DAO);
+    while ( (dao instanceof ProxyDAO) && ! (dao instanceof RulerDAO) ) {
+      dao = dao.delegate;
+    }
+
+    // Fetch all rules that can be applied to the underlying dao
+    if ( dao instanceof RulerDAO ) {
+      sb.append(printRules("Before CREATE rules: \\n" , dao.rulesList.get(dao.createBefore)));
+      sb.append(printRules("After CREATE rules: \\n"  , dao.rulesList.get(dao.createAfter)));
+      sb.append(printRules("Before UPDATE rules: \\n" , dao.rulesList.get(dao.updateBefore)));
+      sb.append(printRules("After UPDATE rules: \\n"  , dao.rulesList.get(dao.updateAfter)));
+      sb.append(printRules("Before REMOVE rules: \\n" , dao.rulesList.get(dao.removeBefore)));
+      sb.append(printRules("After REMOVE rules: \\n"  , dao.rulesList.get(dao.removeAfter)));
+    }
+    if (sb.length() > 0) {
+      sb.append("Print " + TARGET_DAO + "'s rules: \\n");
+      sb.append("- RulerDAO(" + dao.daoKey + ")\\n");
+    }
+  return sb.toString();
+  }
+
+  StringBuilder sb = new StringBuilder("");
+  for ( n : nspecs ) {
+    sb.append(main(n.getName()));
+  }
+  logger = x.get("logger");
+  logger.info(new Object[]{sb.toString()});
+  """
+})

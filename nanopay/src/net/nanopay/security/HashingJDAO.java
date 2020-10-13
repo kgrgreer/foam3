@@ -111,7 +111,6 @@ public class HashingJDAO
                                    .setAlgorithm(algorithm)
                                    //.setProvider()
                                    .setRollDigests(rollDigests)
-                                   //                                   .setPreviousDigest(repo.getMessageDigest().getPreviousDigest())
                                    .build())
                  .build());
       getJournal().replay(x, delegate);
