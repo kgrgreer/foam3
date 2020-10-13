@@ -30,10 +30,13 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
+    'foam.nanos.alarming.Alarm',
+    'foam.nanos.alarming.AlarmReason',
+    'static foam.mlang.MLang.EQ',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
-
-    'net.nanopay.tx.exception.UnsupportedTransactionException',
+    'net.nanopay.tx.UnsupportedTransactionException',
+    'net.nanopay.tx.planner.NoPlanException',
     'net.nanopay.tx.TransactionQuotes',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.TransactionQuote',
@@ -65,7 +68,7 @@ foam.CLASS({
         String message = String.format("Unable to find a plan for transaction with source currency: %s, destination currency: %s, source account: %d, destination account: %d", requestTxn.getSourceCurrency(), requestTxn.getDestinationCurrency(), requestTxn.getSourceAccount(), requestTxn.getDestinationAccount());
         sendNOC(x, message);
         ((Logger) x.get("logger")).error(message);
-        throw new UnsupportedTransactionException("Unable to find a plan for requested transaction.");
+        throw new NoPlanException("Unable to find a plan for requested transaction.");
       }
 
       //if there was only one plan added we do not need to calculate the cost.
@@ -110,8 +113,23 @@ foam.CLASS({
         .setTemplate("NOC")
         .setBody(message)
         .build();
-    ((DAO) x.get("localNotificationDAO")).put(notification);
-    ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), message);
+      ((DAO) x.get("localNotificationDAO")).put(notification);
+      ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), message);
+
+      String name = "Unable to find a plan for requested transaction";
+      DAO alarmDAO = (DAO) x.get("alarmDAO");
+      Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, name));
+      if ( alarm != null &&
+           alarm.getIsActive() ) {
+        return;
+      }
+      alarm = new Alarm.Builder(x)
+                 .setName(name)
+                 .setIsActive(true)
+                 .setReason(AlarmReason.UNSUPPORTED)
+                 .setNote(message)
+                 .build();
+      alarmDAO.put(alarm);
     `
     }
   ],

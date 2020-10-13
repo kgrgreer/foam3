@@ -34,7 +34,7 @@ foam.CLASS({
     'net.nanopay.country.br.NatureCode',
     'net.nanopay.country.br.tx.NatureCodeLineItem',
     'net.nanopay.invoice.model.Invoice',
-    'net.nanopay.tx.exception.UnsupportedTransactionException',
+    'net.nanopay.tx.UnsupportedTransactionException',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.TransactionQuote'
