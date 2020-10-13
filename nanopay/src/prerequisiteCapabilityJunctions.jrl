@@ -819,3 +819,10 @@ p({
   priority: 6
 })
 
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "nanopay",
+  targetId: "nanopayAccountingCapability",
+  priority: 7
+})
+

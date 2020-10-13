@@ -39,12 +39,23 @@ foam.CLASS({
     }
   `,
 
+  properties: [
+    { 
+      class: 'Boolean',
+      name: 'paymentCodePermission'
+    },
+    { 
+      class: 'Boolean',
+      name: 'txnLimitPermission'
+    }
+  ],
+
   methods: [
     function initE() {
       this.addClass(this.myClass())
         .tag({ class: 'net.nanopay.sme.ui.BusinessInformationView' })
-        .tag({ class: 'net.nanopay.sme.ui.PaymentCodeView' })
-        .tag({ class: 'net.nanopay.sme.ui.TransactionLimitView' })
+        .callIf(this.paymentCodePermission, function() { this.tag({ class: 'net.nanopay.sme.ui.PaymentCodeView' }) })
+        .callIf(this.txnLimitPermission, function() { this.tag({ class: 'net.nanopay.sme.ui.TransactionLimitView' }) })
         .tag({ class: 'net.nanopay.sme.ui.BeneficialOwnerView' });
     }
   ]
