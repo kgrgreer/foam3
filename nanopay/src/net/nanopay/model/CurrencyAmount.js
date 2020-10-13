@@ -38,7 +38,15 @@ foam.CLASS({
             }
           ]
         };
-      }
+      },
+      validationPredicates: [
+        {
+          args: ['currency'],
+          predicateFactory: function(e) {
+            return e.NEQ(net.nanopay.model.CurrencyAmount.CURRENCY, null);
+          }
+        }
+      ]
     },
     {
       class: 'UnitValue',
@@ -50,9 +58,18 @@ foam.CLASS({
         if ( unitProp )
           return unitProp.format(val);
         return val;
-      }
+      },
+      validationPredicates: [
+        {
+          args: ['amount'],
+          predicateFactory: function(e) {
+            return e.NEQ(net.nanopay.model.CurrencyAmount.AMOUNT, null);
+          }
+        }
+      ]
     },
     {
+      class: 'foam.dao.DAOProperty',
       name: 'dao',
       documentation: 'DAO used for currency selection',
       visiblility: 'HIDDEN',

@@ -1248,8 +1248,8 @@ var classes = [
   'net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData',
   'net.nanopay.crunch.onboardingModels.TaxIdNumberData',
   'net.nanopay.crunch.onboardingModels.BusinessAccountData',
-  'net.nanopay.crunch.onboardingModels.CurrencyAmountInfor',
-  'net.nanopay.crunch.onboardingModels.CustomerBasicInfor',
+  'net.nanopay.crunch.onboardingModels.CurrencyAmountInformation',
+  'net.nanopay.crunch.onboardingModels.CustomerBasicInformation',
 
   // crunch notification
   'net.nanopay.crunch.UCJExpiryReminderCron',

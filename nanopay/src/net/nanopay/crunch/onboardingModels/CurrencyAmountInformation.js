@@ -17,9 +17,9 @@
 
 foam.CLASS({
   package: 'net.nanopay.crunch.onboardingModels',
-  name: 'CurrencyAmountInfor',
+  name: 'CurrencyAmountInformation',
 
-  documentation: ``,
+  documentation: `Collect equity and capital information for business`,
 
   sections: [
     {
@@ -28,24 +28,49 @@ foam.CLASS({
     }
   ],
 
+  messages: [
+    { name: 'INVALID_CAPITAL', message: 'Invalid Capital' },
+    { name: 'INVALID_EQUITY', message: 'Invalid Equity' }
+  ],
+
   properties: [
     {
       section: 'businessCapital',
-      class: 'Long',
+      class: 'FObjectProperty',
+      of: 'net.nanopay.model.CurrencyAmount',
       name: 'capital',
-      required: true,
       label:'Business Capital',
       documentation: 'Amount currency that Business Capital has been defined',
-      required: true
+      validationPredicates: [
+        {
+          args: ['capital', 'capital$errors_'],
+          predicateFactory: function(e) {
+            return e.EQ(foam.mlang.IsValid.create({
+                arg1: net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.CAPITAL
+              }), true);
+          },
+          errorMessage: 'INVALID_CAPITAL'
+        }
+      ]
     },
     {
       section: 'businessCapital',
-      class: 'Long',
+      class: 'FObjectProperty',
+      of: 'net.nanopay.model.CurrencyAmount',
       name: 'equity',
-      required: true,
       label:'Business Equity',
       documentation: 'Amount currency that Business Equity has been defined',
-      required: true
+      validationPredicates: [
+        {
+          args: ['equity', 'equity$errors_'],
+          predicateFactory: function(e) {
+            return e.EQ(foam.mlang.IsValid.create({
+                arg1: net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.EQUITY
+              }), true);
+          },
+          errorMessage: 'INVALID_EQUITY'
+        }
+      ]
     },
   ],
 });

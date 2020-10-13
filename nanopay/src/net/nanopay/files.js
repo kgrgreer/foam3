@@ -1618,8 +1618,8 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/onboardingModels/BusinessRegistrationDateData' },
   { name: 'net/nanopay/crunch/onboardingModels/TaxIdNumberData' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessAccountData' },
-  { name: 'net/nanopay/crunch/onboardingModels/CurrencyAmountInfor' },
-  { name: 'net/nanopay/crunch/onboardingModels/CustomerBasicInfor' },
+  { name: 'net/nanopay/crunch/onboardingModels/CurrencyAmountInformation' },
+  { name: 'net/nanopay/crunch/onboardingModels/CustomerBasicInformation' },
 
   // crunch notification
   { name: 'net/nanopay/crunch/UCJExpiryReminderCron' },
