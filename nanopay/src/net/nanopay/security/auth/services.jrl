@@ -7,7 +7,7 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.security.auth.LoginAttempts.getOwnClassInfo())
       .setAuthorize(false)
-      .setJournalName("loginAttempts")
+      .setJournalName("loginAttemptAttempts")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .build();
   """
