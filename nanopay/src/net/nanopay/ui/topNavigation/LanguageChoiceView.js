@@ -127,25 +127,21 @@ foam.CLASS({
       factory: function() {
         return [
                 foam.nanos.auth.Language.create({
-                  name:'en',
-                  flagImage:'images/flags/greatBritain.svg'
+                  name:'CA-fr',
+                  flagImage:'images/flags/canada.svg'
                 }),
                 foam.nanos.auth.Language.create({
-                  name:'en-US',
+                  name:'US-en',
                   flagImage:'images/flags/unitedStates.svg'
                 }),
                 foam.nanos.auth.Language.create({
-                  name:'fr',
-                  flagImage:'images/flags/france.svg'
-                }),
-                foam.nanos.auth.Language.create({
-                  name:'pt',
-                  flagImage:'images/flags/portugal.svg'
-                }),
-                foam.nanos.auth.Language.create({
-                  name:'pt-br',
+                  name:'BR-pt',
                   flagImage:'images/flags/brazil.svg'
-                })
+                }),
+                foam.nanos.auth.Language.create({
+                  name:'CA-en',
+                  flagImage:'images/flags/canada.svg'
+                }),
                ]
       }
     },
