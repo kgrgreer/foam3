@@ -721,6 +721,7 @@ var classes = [
   'net.nanopay.security.PKCS11KeyStoreManager',
   'net.nanopay.security.PKCS12KeyStoreManager',
   'net.nanopay.security.HashingJournal',
+  'net.nanopay.security.HashedJSONParser',
   'net.nanopay.security.csp.CSPViolation',
   'net.nanopay.security.csp.CSPReportWebAgent',
 
@@ -746,7 +747,6 @@ var classes = [
   'net.nanopay.security.test.HashedJSONParserTest',
   'net.nanopay.security.test.HashingJournalTest',
   'net.nanopay.security.test.HashingOutputterTest',
-  'net.nanopay.security.test.HashingWriterTest',
   'net.nanopay.security.test.LoginAttemptAuthServiceTest',
   'net.nanopay.security.test.PayerAssentTransactionDAOTest',
   'net.nanopay.security.test.PKCS11KeyStoreManagerTest',

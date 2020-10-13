@@ -820,12 +820,14 @@ FOAM_FILES([
   { name: 'net/nanopay/security/receipt/ReceiptGenerator' },
   { name: 'net/nanopay/security/receipt/ReceiptGeneratingDAO' },
 
+  // security
+  { name: 'net/nanopay/security/HashedJSONParser' },
+
   // security tests
   { name: 'net/nanopay/security/test/EncryptingDAOTest' },
   { name: 'net/nanopay/security/test/HashedJSONParserTest' },
   { name: 'net/nanopay/security/test/HashingJournalTest' },
   { name: 'net/nanopay/security/test/HashingOutputterTest' },
-  { name: 'net/nanopay/security/test/HashingWriterTest' },
   { name: 'net/nanopay/security/test/LoginAttemptAuthServiceTest' },
   { name: 'net/nanopay/security/test/PayerAssentTransactionDAOTest' },
   { name: 'net/nanopay/security/test/PKCS11KeyStoreManagerTest' },
