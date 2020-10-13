@@ -34,6 +34,8 @@ foam.CLASS({
     'foam.nanos.auth.Group',
     'foam.nanos.auth.Permission',
     'foam.nanos.auth.User',
+    'foam.nanos.crunch.CapabilityJunctionStatus',
+    'foam.nanos.crunch.UserCapabilityJunction',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
     'foam.util.SafetyUtil',
@@ -78,6 +80,14 @@ foam.CLASS({
             if ( null != business ) {
               Address businessAddress = business.getAddress();
               if ( null != businessAddress && ! SafetyUtil.isEmpty(businessAddress.getCountryId()) ) {
+
+                // TODO check and remove if currency.read permissions still need to be given here and update rule name
+
+                DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
+                UserCapabilityJunction ucj = (UserCapabilityJunction) ucjDAO.find("554af38a-8225-87c8-dfdf-eeb15f71215f-20");
+                ucj.setStatus(CapabilityJunctionStatus.GRANTED);
+                ucjDAO.put(ucj);
+
                 String permissionString = "currency.read.";
                 permissionString = businessAddress.getCountryId().equals("CA") ? permissionString + "USD" : permissionString + "CAD";
                 Permission permission = new Permission.Builder(x).setId(permissionString).build();
