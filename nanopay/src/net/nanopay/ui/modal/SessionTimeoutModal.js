@@ -39,7 +39,6 @@ foam.CLASS({
   ],
 
   implements: [
-    'net.nanopay.ui.modal.ModalStyling',
     'foam.mlang.Expressions'
   ],
 
@@ -76,23 +75,23 @@ foam.CLASS({
       line-height: normal;
       letter-spacing: normal;
     }
-    
+
     ^ .foam-u2-ActionView-signOut {
-      width: 96px;
-      height: 36px;
+      background: transparent;
+      border-color: white;
+      color: black;
     }
-    
-    ^ .foam-u2-ActionView-staySignIn {
-      width: 120px;
-      height: 36px;
-      margin-left: 16px;
+
+    ^ .foam-u2-ActionView-signOut:hover {
+      background: transparent;
+      border-color: white;
+      color: black;
     }
-    
+
     ^ .actions {
-      height: 68px;
-      width: 328px;
-      padding-left: 71px;
-      padding-top: 26px;
+      float: right;
+      margin-right: 30px;
+      margin-top: 30px;
     }
   `,
 
