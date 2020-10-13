@@ -43,12 +43,12 @@ foam.CLASS({
     {
       name: 'businessRegistration',
       title: 'Business Details',
-      help: `Please enter business details.`
+      help: `Business details`
     },
     {
       name: 'businessAddress',
       title: 'Business Address',
-      help: `Please enter your business' address.`
+      help: `Business address`
     }
   ],
 
