@@ -126,7 +126,7 @@ foam.CLASS({
       name: 'SUB_TITLE_1', message: 'Choose what access control '
     },
     {
-      name: 'SUB_TITLE_2', message: ' will have in nanopay Corporation.'
+      name: 'SUB_TITLE_2', message: ' will have in '
     },
     {
       name: 'ACCESS_CONTROL_CHANGE_SUCCESS', message: 'Access control successfully changed'
@@ -200,10 +200,15 @@ foam.CLASS({
       this.addClass(this.myClass())
         .start()
           .start('h2').addClass(this.myClass('title'))
-            .add(this.isAddUser ? this.INVITE_TITLE : this.TITLE_1).add(this.isAddUser ? this.subject.user.toSummary(): this.subject.realUser.toSummary()).add(this.isAddUser ? '' : this.TITLE_2)
+            .add(this.isAddUser ? this.INVITE_TITLE : this.TITLE_1)
+            .add(this.isAddUser ? this.subject.user.toSummary():(this.junction && this.junction.name !== '') ? this.junction.name : this.THE_USER) 
+            .add(this.isAddUser ? '' : this.TITLE_2)
           .end()
           .start('p').addClass(this.myClass('subTitle'))
-             .add(this.SUB_TITLE_1).add(this.isAddUser ? this.THE_USER : this.subject.realUser.toSummary()).add(this.SUB_TITLE_2)
+             .add(this.SUB_TITLE_1)
+             .add((this.junction && this.junction.name !== '') ? this.junction.name : this.THE_USER)
+             .add(this.SUB_TITLE_2)
+             .add(`${this.subject.user.toSummary()}.`)
           .end()
           .start('table')
             .forEach(accessControlValue.array, function(group) {

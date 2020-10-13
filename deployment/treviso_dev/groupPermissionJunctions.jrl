@@ -18,6 +18,8 @@ p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"business2005.admin"
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"business2005.admin",targetId:"business.rw.ispublic"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"business2005.admin",targetId:"business.update.business2005.*"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"business2005.admin",targetId:"group.update.business2005.*"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"business2005.admin",targetId:"group.read.smeBusinessAdmin"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"business2005.admin",targetId:"group.read.smeBusinessEmployee"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"business2005.admin",targetId:"menu.read.sme.*"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"business2005.admin",targetId:"useruserjunction.rw.status"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"business2005.admin",targetId:"fx.provision.payer"})
