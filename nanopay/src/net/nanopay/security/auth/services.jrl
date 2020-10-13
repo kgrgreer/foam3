@@ -25,5 +25,5 @@ p({
       .setInnerDAO(x.get("localLoginAttemptsDAO"))
       .build();
   """,
-  "client": "{\"of\":\"net.nanopay.security.auth.LocalLoginAttemptsDAO\"}"
+  "client": "{\"of\":\"net.nanopay.security.auth.LoginAttempts\"}"
 })
