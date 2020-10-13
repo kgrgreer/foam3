@@ -908,6 +908,7 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("userHistory")
       .setOf(foam.dao.history.HistoryRecord.getOwnClassInfo())
+      .setCluster(false)
       .build()
       .orderBy(foam.mlang.MLang.DESC(foam.dao.history.HistoryRecord.TIMESTAMP));
   """,
@@ -1688,7 +1689,6 @@ p({
         .setSize(10000)
         .build())
       .setRuler(false)
-      .setCluster(false)
       .build()
       .orderBy(foam.mlang.MLang.DESC(net.nanopay.auth.LoginAttempt.CREATED));
   """,
