@@ -1066,7 +1066,10 @@ p({
   "serve": true,
   "serviceScript":
   """
-    return new foam.nanos.auth.AuthorizationDAO(x, (foam.dao.DAO) x.get("localInvoiceHistoryDAO"), new net.nanopay.invoice.InvoiceHistoryAuthorizer());
+    return new foam.nanos.auth.AuthorizationDAO.Builder(x)
+      .setDelegate((foam.dao.DAO) x.get("localInvoiceHistoryDAO"))
+      .setAuthorizer(new net.nanopay.invoice.InvoiceHistoryAuthorizer())
+      .build();
   """,
   "client": "{\"of\":\"foam.dao.history.HistoryRecord\"}"
 })
@@ -1832,18 +1835,19 @@ p({
   "serve":true,
   "serviceScript":
   """
-    return
-      new foam.nanos.auth.AuthorizationDAO(x,
-      new foam.dao.EasyDAO.Builder(x)
-        .setPm(true)
-        .setPipelinePm(true)
-        .setAuthorize(false)
-        .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-        .setJournalName(\"acceptanceDocuments\")
-        .setSeqNo(true)
-        .setOf(net.nanopay.documents.AcceptanceDocument.getOwnClassInfo())
-      .build(),
-      new foam.nanos.auth.AuthorizableAuthorizer("acceptanceDocument"));
+    dao = new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setAuthorize(false)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("acceptanceDocuments")
+      .setSeqNo(true)
+      .setOf(net.nanopay.documents.AcceptanceDocument.getOwnClassInfo())
+      .build();
+    return new foam.nanos.auth.AuthorizationDAO.Builder(x)
+      .setAuthorizer(new foam.nanos.auth.AuthorizableAuthorizer("acceptanceDocument"))
+      .setDelegate(dao)
+      .build();
     """,
     "client":"{\"of\":\"net.nanopay.documents.AcceptanceDocument\"}"
 })
@@ -1882,7 +1886,10 @@ p({
     l = new foam.nanos.auth.LastModifiedAwareDAO.Builder(x).setDelegate(lb).build();
     cb = new foam.nanos.auth.CreatedByAwareDAO.Builder(x).setDelegate(l).build();
     c = new foam.nanos.auth.CreatedAwareDAO.Builder(x).setDelegate(cb).build();
-    ar = new foam.nanos.auth.AuthorizationDAO(x, c, new foam.nanos.auth.AuthorizableAuthorizer("userAcceptanceDocument"));
+    ar = new foam.nanos.auth.AuthorizationDAO.Builder(x)
+      .setDelegate(c)
+      .setAuthorizer(new foam.nanos.auth.AuthorizableAuthorizer("userAcceptanceDocument"))
+      .build();
     return ar;
   """,
   "client":"{\"of\":\"net.nanopay.documents.UserAcceptanceDocument\"}"
