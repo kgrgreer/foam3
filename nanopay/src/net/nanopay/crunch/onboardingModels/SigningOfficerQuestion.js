@@ -23,6 +23,10 @@ foam.CLASS({
     'foam.core.Validatable'
   ],
 
+  imports: [
+    'subject'
+  ],
+
   sections: [
     {
       name: 'signingOfficerQuestionSection',
@@ -40,7 +44,8 @@ foam.CLASS({
     { name: 'ADMIN_FIRST_NAME_ERROR', message: 'Please enter first name with least 1 character.' },
     { name: 'ADMIN_LAST_NAME_ERROR', message: 'Please enter last name with least 1 character.' },
     { name: 'NO_JOB_TITLE_ERROR', message: 'Please select job title.' },
-    { name: 'INVALID_PHONE_NUMBER_ERROR', message: 'Invalid phone number.' }
+    { name: 'INVALID_PHONE_NUMBER_ERROR', message: 'Invalid phone number.' },
+    { name: 'CANNOT_INVITE_SELF_ERROR', message: 'Cannot invite self as signing officer. If you are a signing officer, please select "YES" in the previous step.' }
   ],
 
   properties: [
@@ -71,13 +76,31 @@ foam.CLASS({
       placeholder: 'example@email.com',
       validationPredicates: [
         {
-          args: ['isSigningOfficer', 'signingOfficerEmail'],
+          args: ['signingOfficerEmail'],
           predicateFactory: function(e) {
             return e.REG_EXP(net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.SIGNING_OFFICER_EMAIL, /.+@.+/);
           },
           errorMessage: 'SIGNING_OFFICER_EMAIL_ERROR'
+        },
+        {
+          args: ['signingOfficerEmail', 'userEmail'],
+          predicateFactory: function(e) {
+            return e.NEQ(net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.SIGNING_OFFICER_EMAIL, net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.USER_EMAIL);
+          },
+          errorMessage: 'CANNOT_INVITE_SELF_ERROR'
         }
       ]
+    },
+    {
+      section: 'signingOfficerEmailSection',
+      name: 'userEmail',
+      class: 'String',
+      documentation: 'Email of user inviting a signing officer',
+      hidden: true,
+      transient: true,
+      factory: function() {
+        return this.subject.realUser.email;
+      }
     }
   ],
 
