@@ -87,7 +87,8 @@ foam.CLASS({
   properties: [
     {
       class: 'Boolean',
-      name: 'isMenuOpen'
+      name: 'isMenuOpen',
+      value: true
     }
   ],
 
