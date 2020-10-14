@@ -434,7 +434,7 @@ p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"777af38a-8225-87c8-dfdf-eeb15f71215f-123",
   "targetId":"fb7d3ca2-62f2-4caf-a84c-860392e4676b",
-  "priority":5
+  "priority":1
 })
 
 // Not BR Signing Officer to Birth date
