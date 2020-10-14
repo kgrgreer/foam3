@@ -49,7 +49,9 @@ foam.CLASS({
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.invoice.notification.NewInvoiceNotification',
     'net.nanopay.model.Invitation',
-    'net.nanopay.tx.ConfirmationFileLineItem'
+    'net.nanopay.tx.ConfirmationFileLineItem',
+    'net.nanopay.tx.FxSummaryTransactionLineItem',
+    'net.nanopay.tx.FeeSummaryTransactionLineItem'
   ],
 
   imports: [
@@ -443,23 +445,18 @@ foam.CLASS({
               transaction.sourceAccount :
               transaction.destinationAccount;
 
-          if ( (transaction.type === 'AscendantFXTransaction' && transaction.fxRate) || this.FXSummaryTransaction.isInstance(transaction) ) {
-            if ( transaction.fxRate !== 1 ) {
-              this.exchangeRateInfo = `1 ${transaction.destinationCurrency} = `
-                + `${(1 / transaction.fxRate).toFixed(4)} ${transaction.sourceCurrency}`;
+          if ( this.FXSummaryTransaction.isInstance(transaction) ) {
+
+            // Find FXLineItems and FeeLineItems
+            let lineItems = transaction.lineItems;
+            for ( i=0; i < lineItems.length; i++ ) {
+              if ( this.FxSummaryTransactionLineItem.isInstance(lineItems[i]) ) {
+                this.exchangeRateInfo = lineItems[i].rate;
+              } else if ( this.FeeSummaryTransactionLineItem.isInstance(lineItems[i]) ) {
+                this.fee = lineItems[i].totalFee;
+              }
             }
 
-            if ( this.FXSummaryTransaction.isInstance(transaction) ) {
-              this.currencyDAO.find(transaction.sourceCurrency)
-              .then((currency) => {
-                this.fee = currency.format(transaction.getCost());
-              });
-            } else {
-              this.currencyDAO.find(transaction.fxFees.totalFeesCurrency)
-                .then((currency) => {
-                  this.fee = currency.format(transaction.fxFees.totalFees);
-                });
-            }
           } else if ( transaction.type === 'AbliiTransaction' ) {
             this.currencyDAO.find(transaction.sourceCurrency)
               .then((currency) => {
