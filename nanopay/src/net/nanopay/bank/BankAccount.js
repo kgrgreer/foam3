@@ -250,6 +250,10 @@ foam.CLASS({
       `,
       section: 'accountDetails',
       visibility: 'RO',
+      view: {
+        class: 'foam.u2.view.ReferencePropertyView',
+        readView: { class: 'foam.u2.view.StringView' }
+      }
     },
     {
       class: 'URL',
