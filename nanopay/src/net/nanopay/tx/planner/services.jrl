@@ -18,7 +18,6 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setDecorator(dao)
       .setOf(net.nanopay.tx.planner.TransactionPlan.getOwnClassInfo())
-      .setStorageOptionalEnabled(false)
       .setRuler(false)
       .setPm(true)
       .setPipelinePm(true)
