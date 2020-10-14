@@ -146,10 +146,7 @@ foam.CLASS({
       await this.subject.user.accounts
         .find(
           this.AND(
-            this.OR(
-              this.INSTANCE_OF(this.CABankAccount),
-              this.INSTANCE_OF(this.USBankAccount)
-            ),
+            this.INSTANCE_OF(this.BankAccount),
             this.NEQ(this.BankAccount.STATUS, this.BankAccountStatus.DISABLED),
             this.EQ(this.Account.IS_DEFAULT, true)
           )
