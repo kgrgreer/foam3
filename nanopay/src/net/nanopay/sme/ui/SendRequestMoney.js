@@ -431,7 +431,11 @@ foam.CLASS({
         }
   
       } catch(err) {
-        throw new Error(err);
+        this.notify(err.message,'', this.LogLevel.ERROR, true);
+        this.pushMenu(this.isPayable
+          ? 'sme.main.invoices.payables'
+          : 'sme.main.invoices.receivables');
+        return;
       }
 
       this.txnQuote = this.invoice.quote.plan;
