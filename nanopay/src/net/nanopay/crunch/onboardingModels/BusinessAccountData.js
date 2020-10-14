@@ -107,7 +107,7 @@ foam.CLASS({
       name: 'customers',
       documentation: 'Array of business main customers.',
       label: '',
-      of: 'net.nanopay.crunch.onboardingModels.CustomerBasicInfor',
+      of: 'net.nanopay.crunch.onboardingModels.CustomerBasicInformation',
       section: 'customerSection',
       required: true,
       view: function(_, x) {
@@ -136,7 +136,7 @@ foam.CLASS({
       name: 'suppliers',
       documentation: 'Array of business main suppliers.',
       label: '',
-      of: 'net.nanopay.crunch.onboardingModels.CustomerBasicInfor',
+      of: 'net.nanopay.crunch.onboardingModels.CustomerBasicInformation',
       section: 'supplierSection',
       autoValidate: true,
       required: true,

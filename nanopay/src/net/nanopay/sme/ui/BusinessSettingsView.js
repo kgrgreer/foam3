@@ -89,11 +89,14 @@ foam.CLASS({
       this.SUPER();
 
       try {
-        const [hasUMPermission, [hasIntegrationPermission], hasPrivacyPermission] = await Promise.all([
-          this.auth.check(null, 'menu.read.sme.userManagement'),
-          this.accountingIntegrationUtil.getPermission(),
-          this.auth.check(null, 'business.rw.ispublic')
-        ]);
+        const [hasUMPermission, [hasIntegrationPermission], hasPrivacyPermission, hasPaymentcodePermission, hasTxnLimitPermission] = 
+          await Promise.all([
+            this.auth.check(null, 'menu.read.sme.userManagement'),
+            this.accountingIntegrationUtil.getPermission(),
+            this.auth.check(null, 'business.rw.ispublic'),
+            this.auth.check(null, 'menu.read.paymentcode'),
+            this.auth.check(null, 'menu.read.transactionlimit')
+          ]);
 
         // display Company Profile tab
         const tabs = this.UnstyledTabs.create()
@@ -101,7 +104,10 @@ foam.CLASS({
             label: this.COMPANY_TAB,
             selected: this.preSelectedTab && this.preSelectedTab === 'COMPANY_TAB'
           })
-            .add(this.CompanyInformationView.create({}, this))
+            .add(this.CompanyInformationView.create({ 
+              paymentCodePermission: hasPaymentcodePermission, 
+              txnLimitPermission: hasTxnLimitPermission 
+            }, this))
           .end();
 
         // display User Management tab if user has permission

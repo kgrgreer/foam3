@@ -320,6 +320,10 @@ foam.CLASS({
     {
       name: 'sync',
       label: 'Sync with Accounting',
+      isAvailable: async function() {
+        var permissions = await this.accountingIntegrationUtil.getPermission();
+        return permissions[0];
+      },
       code: function(X) {
         this.ctrl.add(this.Popup.create().tag({
           class: 'net.invoice.ui.modal.IntegrationModal'

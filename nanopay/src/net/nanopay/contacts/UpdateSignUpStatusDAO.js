@@ -38,7 +38,7 @@ foam.CLASS({
         cls.extras.push(`
           public UpdateSignUpStatusDAO(X x, DAO delegate) {
             super(x, delegate);
-          }    
+          }
         `
         );
       }
@@ -52,20 +52,20 @@ foam.CLASS({
         if ( ! (obj instanceof Contact) ) {
           return super.put_(x, obj);
         }
-    
+
         Contact contact = (Contact) obj;
-    
-        if ( ContactStatus.ACTIVE.equals(contact.getSignUpStatus()) ) {
+
+        if ( ContactStatus.READY.equals(contact.getSignUpStatus()) ) {
           return super.put_(x, obj);
         }
-    
+
         if ( contact.getBusinessId() != 0 ) {
           Business business = (Business) getDelegate().inX(x).find(contact.getBusinessId());
           if ( business != null ) {
-            contact.setSignUpStatus(ContactStatus.ACTIVE);
+            contact.setSignUpStatus(ContactStatus.READY);
           }
         }
-    
+
         return super.put_(x, contact);
       `
     }

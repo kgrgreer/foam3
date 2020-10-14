@@ -169,6 +169,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/FxSummaryTransactionLineItem' },
   { name: 'net/nanopay/tx/EtaSummaryTransactionLineItem' },
   { name: 'net/nanopay/tx/ExpirySummaryTransactionLineItem' },
+  { name: 'net/nanopay/tx/TransactionException' },
+  { name: 'net/nanopay/tx/UnsupportedTransactionException' },
 
   { name: 'net/nanopay/model/CurrencyAmount' },
   { name: 'net/nanopay/model/BusinessSector' },
@@ -1623,8 +1625,8 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/onboardingModels/BusinessRegistrationDateData' },
   { name: 'net/nanopay/crunch/onboardingModels/TaxIdNumberData' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessAccountData' },
-  { name: 'net/nanopay/crunch/onboardingModels/CurrencyAmountInfor' },
-  { name: 'net/nanopay/crunch/onboardingModels/CustomerBasicInfor' },
+  { name: 'net/nanopay/crunch/onboardingModels/CurrencyAmountInformation' },
+  { name: 'net/nanopay/crunch/onboardingModels/CustomerBasicInformation' },
 
   // crunch notification
   { name: 'net/nanopay/crunch/UCJExpiryReminderCron' },

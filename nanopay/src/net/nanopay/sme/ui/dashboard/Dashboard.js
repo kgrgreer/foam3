@@ -261,7 +261,8 @@ foam.CLASS({
     'businessOnboarding',
     'onboardingStatus',
     'businessRegistrationDate',
-    'countryOfBusinessRegistration'
+    'countryOfBusinessRegistration',
+    'showLowerCards'
   ],
 
   methods: [
@@ -279,7 +280,11 @@ foam.CLASS({
         .then(sink => {
           this.bankAccount = sink.array[0];
         });
-     this.userHasPermissionsForAccounting = await this.accountingIntegrationUtil.getPermission();
+
+      this.showLowerCards = await this.auth.check(null, 'menu.read.accountingintegrationcards');
+      this.userHasPermissionsForAccounting = this.showLowerCards ? 
+        await this.accountingIntegrationUtil.getPermission() : 
+        null;
 
       // We need to find the BusinessOnboarding by checking both the userId and
       // the businessId. Previously we were only checking the userId, which
@@ -314,13 +319,15 @@ foam.CLASS({
             .add(this.TITLE)
           .end()
           .add(capStore.renderFeatured())
-          .start()
-            .tag({
-              class: 'net.nanopay.sme.ui.dashboard.LowerCardsView',
-              bankAccount: this.bankAccount,
-              userHasPermissionsForAccounting: this.userHasPermissionsForAccounting
-            })
-          .end();
+          .callIf(this.showLowerCards, function() {
+            this.start()
+              .tag({
+                class: 'net.nanopay.sme.ui.dashboard.LowerCardsView',
+                bankAccount: this.bankAccount,
+                userHasPermissionsForAccounting: this.userHasPermissionsForAccounting
+              })
+              .end();
+          });
 
         var line = this.Element.create()
           .start().addClass('line')

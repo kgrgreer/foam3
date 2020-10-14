@@ -17,7 +17,7 @@
 
 foam.CLASS({
   package: 'net.nanopay.crunch.onboardingModels',
-  name: 'CustomerBasicInfor',
+  name: 'CustomerBasicInformation',
   documentation: `Basic information required from business customer or supplier`,
   properties: [
     {

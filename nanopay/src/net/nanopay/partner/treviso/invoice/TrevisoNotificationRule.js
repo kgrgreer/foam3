@@ -33,6 +33,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
     'foam.nanos.notification.ToastState',
+    'foam.util.SafetyUtil',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.partner.treviso.tx.TrevisoTransaction',
@@ -99,7 +100,8 @@ foam.CLASS({
               .build();
             user.doNotify(x, notify);
 
-            invoice.setNote(TEXT + amount + TEXT2);
+            String note = SafetyUtil.isEmpty(invoice.getNote()) ? "" : invoice.getNote() + "\\n";
+            invoice.setNote(note + TEXT + amount + TEXT2);
             invoice.setTotalSourceAmount(amount);
 
           }

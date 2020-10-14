@@ -890,6 +890,7 @@ p({
 p({
   class: "foam.nanos.crunch.Capability",
   id: "nanopayCountryCapability",
+  name: "Nanopay Country Capability",
   version: "0",
   enabled: true,
   visible: false,
@@ -902,6 +903,7 @@ p({
 p({
   class: "foam.nanos.crunch.Capability",
   id: "nanopayCorridorCapability",
+  name: "Nanopay Corridor Capability",
   version: "0",
   enabled: true,
   visible: false,
@@ -919,6 +921,7 @@ p({
 p({
   class: "foam.nanos.crunch.Capability",
   id: "nanopayCurrencyCapability",
+  name: "Nanopay Currency Capability",
   version: "0",
   enabled: true,
   visible: false,
@@ -933,6 +936,7 @@ p({
 p({
   class: "foam.nanos.crunch.Capability",
   id: "nanopayPlannerCapability",
+  name: "Nanopay Planner Capability",
   version: "0",
   enabled: true,
   visible: false,
@@ -944,6 +948,7 @@ p({
 p({
   "class": "foam.nanos.crunch.Capability",
   "id": "nanopayMenuCapability",
+  "name": "Nanopay Menu Capability",
   "version":"0",
   "enabled":true,
   "visible":false,
@@ -951,7 +956,23 @@ p({
     "menu.read.capability.menu.search",
     "menu.read.capability.menu.paymentcode",
     "menu.read.capability.menu.invitation",
-    "contact.ro.shouldinvite"
+    "contact.ro.shouldinvite",
+    "business.rw.ispublic",
+    "menu.read.accountingintegrationcards",
+    "menu.read.paymentcode",
+    "menu.read.transactionlimit"
+  ]
+})
+
+p({
+  "class": "foam.nanos.crunch.Capability",
+  "id": "nanopayAccountingCapability",
+  "name": "Nanopay Accounting Capability",
+  "version":"0",
+  "enabled":true,
+  "visible":false,
+  "permissionsGranted":[
+    "service.quickbooksService"
   ]
 })
 
