@@ -169,9 +169,15 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-          String errorMsg = parseHttpResponse("onboardCorporateClient", httpResponse);
-          logger.error(errorMsg);
-          throw new RuntimeException(errorMsg);
+          if ( httpResponse.getStatusLine().getStatusCode() / 100 == 5 ) {
+            logger.debug("AFEX onboardCorpateClient failed with 500, retrying.");
+            httpResponse = getHttpClient().execute(httpPost);
+          }
+          if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
+            String errorMsg = parseHttpResponse("getQuote", httpResponse);
+            logger.error(errorMsg);
+            throw new RuntimeException(errorMsg);
+          }
         }
 
         String response = new BasicResponseHandler().handleResponse(httpResponse);
@@ -696,9 +702,15 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-          String errorMsg = parseHttpResponse("getQuote", httpResponse);
-          logger.error(errorMsg);
-          throw new RuntimeException(errorMsg);
+          if ( httpResponse.getStatusLine().getStatusCode() / 100 == 5 ) {
+            logger.debug("AFEX getQuote failed with 500, retrying.");
+            httpResponse = getHttpClient().execute(httpGet);
+          }
+          if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
+            String errorMsg = parseHttpResponse("getQuote", httpResponse);
+            logger.error(errorMsg);
+            throw new RuntimeException(errorMsg);
+          }
         }
         String response = new BasicResponseHandler().handleResponse(httpResponse);
         logMessage(credentials.getApiKey(), "getQuote", response, true);
