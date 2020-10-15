@@ -22,6 +22,7 @@ import foam.core.X;
 import foam.lib.StoragePropertyPredicate;
 import foam.lib.formatter.JSONFObjectFormatter;
 import foam.util.SafetyUtil;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * HashingOutputter hashes all data that goes through it and appends the digest
@@ -33,6 +34,22 @@ public class HashingOutputter
   protected MessageDigest messageDigest_ = null;
   // Formatter for MessageDigest itself.
   protected JSONFObjectFormatter formatter_ = null;
+
+  // NOTE: suppress outputDigest until the entire model is output
+  // output(FObject, ClassInfo) is reentrant when model has
+  // nested FObject properties. @see AbstractFObjectPropertyInfo.format
+  // To suppress outputDigest until entire model is output, track calls
+  // to output(FObject) and only output digest when all calls to output
+  // are complete.
+  protected static final ThreadLocal<AtomicInteger> count_ = new ThreadLocal<AtomicInteger>() {
+      protected AtomicInteger initialValue() {
+        return new AtomicInteger(0);
+      }
+
+      public AtomicInteger get() {
+        return super.get();
+      }
+    };
 
   protected HashingOutputter() {
     setPropertyPredicate(new StoragePropertyPredicate());
@@ -67,9 +84,9 @@ public class HashingOutputter
 
   @Override
   public void output(FObject obj, ClassInfo of) {
+    count_.get().incrementAndGet();
     super.output(obj, of);
-    // @see AbstractFObjectPropertyInfo.format - supress digest on inner FObject output
-    if ( ! ( of instanceof foam.core.EmptyClassInfo ) ) {
+    if ( count_.get().decrementAndGet() == 0 ) {
       outputDigest();
     }
   }
