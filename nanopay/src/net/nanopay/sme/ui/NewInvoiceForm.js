@@ -28,6 +28,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'auth',
     'canReceiveCurrencyDAO',
     'getDefaultCurrencyDAO',
     'currencyDAO',
@@ -745,8 +746,18 @@ foam.CLASS({
       name: 'accountCreate',
       label: 'Create a new bank account',
       icon: 'images/plus-no-bg.svg',
-      code: function(X, e) {
-        X.pushMenu('sme.menu.addBankAccount');
+      code: async function(X, e) {
+        let permission = await X.auth.check(null, 'multi-currency.read');
+        if ( permission ) {
+          X.pushMenu('sme.menu.addBankAccount');
+        } else {
+          let account = (foam.lookup(`net.nanopay.bank.${ X.subject.user.address.countryId }BankAccount`)).create({}, X.ctrl);
+          X.ctrl.add(X.ctrl.SMEModal.create({}, X.ctrl).addClass('bank-account-popup').tag({
+            class: 'net.nanopay.account.ui.BankAccountWizard',
+            data: account,
+            useSections: ['accountDetails', 'pad']
+          }));
+        }
       }
     }
   ]

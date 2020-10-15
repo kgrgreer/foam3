@@ -1066,5 +1066,13 @@ foam.CLASS({
       background-color: white;
       color: /*%PRIMARY3%*/ #604aff;
     }
+    .bank-account-popup .net-nanopay-sme-ui-SMEModal-inner {
+      width: 515px;
+      height: 500px;
+    }
+    .bank-account-popup .net-nanopay-sme-ui-SMEModal-content {
+      overflow: scroll !important;
+      padding: 30px;
+    }
   `
 });

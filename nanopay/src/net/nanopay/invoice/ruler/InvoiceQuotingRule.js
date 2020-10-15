@@ -26,6 +26,7 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.core.ClientRuntimeException',
     'foam.nanos.logger.Logger',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.PaymentStatus',
@@ -43,7 +44,12 @@ foam.CLASS({
             DAO transactionPlannerDAO = (DAO) agencyX.get("localTransactionPlannerDAO");
 
             quote.setRequestTransaction(invoice.getRequestTransaction());
-            quote = (TransactionQuote) transactionPlannerDAO.put(quote);
+
+            try {
+              quote = (TransactionQuote) transactionPlannerDAO.put(quote);
+            } catch(RuntimeException error){
+              throw new ClientRuntimeException(error);
+            }
 
             invoice.setQuote(quote);
             invoice.setRequestTransaction(null);

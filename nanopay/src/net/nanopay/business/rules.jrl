@@ -50,9 +50,9 @@ p({
     "class":"foam.mlang.predicate.And",
     "args":[
       {
-        "class": "foam.nanos.ruler.predicate.PropertyNEQValue",
-        "propName": "data",
-        "propValue": null
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue":{"class":"foam.nanos.crunch.CapabilityJunctionStatus","ordinal":1}
       },
       {
         "class":"foam.nanos.ruler.predicate.PropertyIsClass",
