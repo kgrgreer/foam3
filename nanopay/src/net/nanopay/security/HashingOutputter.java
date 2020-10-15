@@ -68,7 +68,10 @@ public class HashingOutputter
   @Override
   public void output(FObject obj, ClassInfo of) {
     super.output(obj, of);
-    outputDigest();
+    // @see AbstractFObjectPropertyInfo.format - supress digest on inner FObject output
+    if ( ! ( of instanceof foam.core.EmptyClassInfo ) ) {
+      outputDigest();
+    }
   }
 
   /**
