@@ -33,7 +33,7 @@ foam.CLASS({
       name: 'documentUploadSection',
       subTitle: function(capability) {
         return capability.description ?
-          `${this.UPLOAD_REQUEST_MSG} ${capability.name} - ${capability.description}` :
+          `${capability.description}` :
           `${this.UPLOAD_REQUEST_MSG} ${capability.name}`;
       },
       help: function(capability) {

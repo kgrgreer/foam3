@@ -7021,9 +7021,9 @@ p({
   "id":"b5f2b020-db0f-11ea-87d0-0242ac130003",
   "name":"Office Consumption",
   "description":"""
-    Office consumption bill includes energy, telephone, water, cable TV, IPTU or bank statement. 
-    3 months of billing documents required.
-    Office Consumption bill has a duration of 3 months
+    Please provide 3 months of Office Consumption Bills. 
+    These can be electricity, water, telephone, cable TV or IPTU bills. 
+    Bank statements also work.
   """,
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
@@ -7039,10 +7039,7 @@ p({
   "id":"8ad3c898-db32-11ea-87d0-0242ac130003",
   "name":"User Identity",
   "description":"""
-    Identity document that contains full name, CPF number and photo. 
-    Valid until expire date or no longer than 10 years.
-    This capability has an Expirable Document and will expire on the date of document expiry,
-    or ten years, which ever comes first.
+    Please attach a government issued identification document that has your full name, picture, and CPF number.
   """,
   "of":"net.nanopay.crunch.document.ExpirableDocument",
   "version":"0",

@@ -36,7 +36,8 @@ p({
   "wizardletConfig": {
     "class": "foam.u2.wizard.StepWizardConfig",
     "allowSkipping": false
-  }
+  },
+  "requirementViewTitle":"We require a person authorized to act on behalf of the company to provide certain information to us. In this section, we ask if you are such a person, or alternatively, an email address for someone who is."
 })
 
 p({
@@ -263,7 +264,8 @@ p({
   "wizardletConfig": {
     "class": "foam.u2.wizard.StepWizardConfig",
     "allowSkipping": false
-  }
+  },
+  "requirementViewTitle":"In this section, we ask you for certain personal documents and information so we can verify your identity."
 })
 
 p({
@@ -435,7 +437,8 @@ p({
   "wizardletConfig": {
     "class": "net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig",
     "allowSkipping": false
-  }
+  },
+  "requirementViewTitle":"In this section, we ask for more business information to enable us to securely process payments on your behalf."
 })
 
 p({
@@ -490,7 +493,8 @@ p({
   "wizardletConfig": {
     "class": "foam.u2.wizard.StepWizardConfig",
     "allowSkipping": false
-  }
+  },
+  "requirementViewTitle":"In this section, we ask you to enter some details relating to your business."
 })
 
 p({
@@ -539,7 +543,7 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"b5f2b020-db0f-11ea-87d0-0242ac130003",
   "name":"Office Consumption",
-  "description":"Office consumption bill includes energy, telephone, water, cable TV, IPTU or bank statement. 3 months of billing documents required.",
+  "description":"Please provide 3 months of Office Consumption Bills. These can be electricity, water, telephone, cable TV or IPTU bills. Bank statements also work.",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "enabled":true,
@@ -551,7 +555,7 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"26d32e86-db11-11ea-87d0-0242ac130003",
   "name":"Articles Of Incorporation",
-  "description":"Document that establishes the existence of a corporation.",
+  "description":"Please attach your Articles of Incorporation - the document that establishes the existence of your company.",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "enabled":true,
@@ -563,7 +567,7 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"7e2739cc-db32-11ea-87d0-0242ac130003",
   "name":"Business Latest Annual Report",
-  "description":"Formal financial statements that are published yearly and sent to company stockholders and various other interested parties.",
+  "description":"Please provide your company's most recent annual financial statements.",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "enabled":true,
@@ -575,7 +579,7 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"85cee1de-db32-11ea-87d0-0242ac130003",
   "name":"Residence Consumption Bill",
-  "description":"Residence consumption bill includes energy, telephone, water, cable TV, IPTU or bank statement. 3 months of billing documents required.",
+  "description":"Please provide 3 months of Residence Consumption Bills.  These can be electricity, water, telephone, cable TV or IPTU bills. Bank statements also work.",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "enabled":true,
@@ -587,7 +591,7 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"8ad3c898-db32-11ea-87d0-0242ac130003",
   "name":"User Identity",
-  "description":"Identity document that contains full name, CPF number and photo. Valid until expire date or no longer than 10 years.",
+  "description":"Please attach a government issued identification document that has your full name, picture, and CPF number.",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "enabled":true,
