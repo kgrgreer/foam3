@@ -100,7 +100,7 @@ p({
   "asyncAction":{
     "class":"net.nanopay.fx.afex.AFEXBankOnboardingRule"
   },
-  "enabled":true,
+  "enabled":false,
   "saveHistory":true,
   "lifecycleState":1
 })
@@ -164,7 +164,7 @@ p({
       },
       {
         "class": "net.nanopay.meter.compliance.ruler.predicate.BankAccountVerified"
-      }, 
+      },
       {
         "class": "net.nanopay.meter.compliance.ruler.predicate.BankAccountOwnerIsBusiness"
       }
