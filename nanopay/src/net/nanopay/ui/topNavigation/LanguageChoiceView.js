@@ -149,9 +149,9 @@ foam.CLASS({
         let l = this.supportedLanguage.find( e => e.name == foam.locale )
         if ( l !== undefined )
           return l;
-        if ( foam.locale == null ) foam.locale = 'en';
+        if ( foam.locale == null ) foam.locale = 'en-US';
         l = this.supportedLanguage.find( e => e.name == foam.locale.substring(0, foam.locale.indexOf('-')))
-        return l !== undefined ? l : this.supportedLanguage.find( e => e.name == 'en' );
+        return l !== undefined ? l : this.supportedLanguage.find( e => e.name == 'en-US' );
       }
     }
   ],
@@ -172,6 +172,7 @@ foam.CLASS({
       .end();
     },
     function formatLabel(name) {
+      if ( ! name ) return name;
       if ( ! name.includes("-") ) return name;
 
       var temp = name.split("-").reverse();
