@@ -35,7 +35,9 @@ foam.CLASS({
     },
     {
       name: 'link',
-      value: 'https://ablii.com/wp-content/uploads/2019/08/Sep-2019-nanopay-International-Payments-Customer-Agreement.pdf'
+      factory: function() {
+        return '/service/httpFileService/25c8917b-4283-ba9a-8158-533241a09619?sessionId=' + localStorage['defaultSession'];
+      }
     },
     {
       name: 'version',

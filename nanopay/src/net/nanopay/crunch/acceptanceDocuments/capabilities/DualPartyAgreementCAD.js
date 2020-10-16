@@ -41,7 +41,9 @@ foam.CLASS({
     },
     {
       name: 'link',
-      value: 'https://nanopay.net/wp-content/uploads/2019/05/nanopay-Canada-Dual-Agreement.pdf'
+      factory: function() {
+        return '/service/httpFileService/971d0fe5-4e69-311f-87c1-5a06866620b7?sessionId=' + localStorage['defaultSession'];
+      }
     },
     {
       name: 'checkboxText',

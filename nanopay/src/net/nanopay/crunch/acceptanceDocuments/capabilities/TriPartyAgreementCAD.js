@@ -41,7 +41,9 @@ foam.CLASS({
     },
     {
       name: 'link',
-      value: 'https://ablii.com/wp-content/uploads/2019/02/Tri-Party-Agreeement-for-Nanopay.AscendantFX-Service-Canada-01.28.2019-FINAL.pdf'
+      factory: function() {
+        return '/service/httpFileService/327697bc-08af-4cf7-f10d-0d0607060137?sessionId=' + localStorage['defaultSession'];
+      }
     },
     {
       name: 'checkboxText',

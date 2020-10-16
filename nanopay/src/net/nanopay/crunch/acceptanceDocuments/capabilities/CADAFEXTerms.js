@@ -19,7 +19,7 @@ foam.CLASS({
   package: 'net.nanopay.crunch.acceptanceDocuments.capabilities',
   name: 'CADAFEXTerms',
   extends: 'net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability',
-  
+
   messages: [
     { name: 'ACKNOWLEDGE_AGREEMENT', message: 'Must acknowledge the agreement.' }
   ],
@@ -35,7 +35,9 @@ foam.CLASS({
     },
     {
       name: 'link',
-      value: 'https://sf-asset-manager.s3.amazonaws.com/95763/16157/1831.pdf'
+      factory: function() {
+        '/service/httpFileService/11d13e7c-692b-eb6c-22a0-647b4f3ca94e?sessionId=' + localStorage['defaultSession'];
+      }
     },
     {
       name: 'version',

@@ -35,7 +35,9 @@ foam.CLASS({
     },
     {
       name: 'link',
-      value: 'https://sf-asset-manager.s3.amazonaws.com/95763/16388/2328.pdf'
+      factory: function() {
+        return '/service/httpFileService/87278b8b-81b3-6380-6b87-7f46680ba0c3?sessionId=' + localStorage['defaultSession'];
+      }
     },
     {
       name: 'version',
