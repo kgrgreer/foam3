@@ -1099,3 +1099,12 @@ p({
   "subject": "Complete your Transaction",
   "body": "{% extends 'treviso-email-base'%}\n\n{% block content %}\n<h3 style=\"margin-top: 25px\">\n      ATENÇÃO : Esta transação ainda não foi enviada!<br>      Para completar, envie um TED de ({{amount}}) para :<br>      Treviso Corretora de Câmbio S.A<br>       CNPJ: 02.992.317/0001-87<br>       Banco SC Treviso (143)<br>       Agencia: 0001<br>       Conta: 1-1<br>       O não envio dos fundos causará o cancelamento automático desta transação.</a>\n{% endblock content %}"
 })
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": 153,
+  "name": "top-level-capability-status-update",
+  "group": "sme",
+  "displayName":"{{appName}}",
+  "subject": "{{capName}} capability status has been updated",
+  "body": "{% extends 'treviso-email-base_2'%}\n\n{% block content %}\n<p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\">Capability status updated</p>\n<p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">Hello,</p>\n<br>\n<p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">The Capability <b>{{capName}}</b> has been set to {{junctionStatus}} on {{appName}}.</p>\n<a href=\"{{appLink}}\" style=\"text-decoration: none;\"><div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">\n<p style = \"padding: 14px 0 0; margin: 0;\">Go to {{appName}}</p>\n</div></a>\n{% endblock content %}"
+})
