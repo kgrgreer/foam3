@@ -54,8 +54,7 @@ p({
   enabled: true,
   visible: false,
   permissionsGranted: [
-    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15ftrevisobr-ca",
-    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb1trevisobr-us"
+    "paymentprovidercorridor.read.*"
   ]
 })
 p({
