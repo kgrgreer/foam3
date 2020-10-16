@@ -125,14 +125,14 @@ abstract class IncrementalTask extends DefaultTask {
         if (inputs.incremental) {
             println "CHANGED inputs considered out of date"
 
-            StringJoiner modified = new StringJoiner("\",\"", "{\"modified\":[", "\"]")
+            StringJoiner modified = new StringJoiner("\",\"", "{\"modified\":[\"", "\"]")
             inputs.outOfDate { change ->
                 String relPath = project.projectDir.toPath().relativize(change.file.toPath()).toString()
                 println "out of date: ${relPath}"
                 modified.add(change.file.path)
             }
 
-            StringJoiner removed = new StringJoiner("\",\"", ",\"removed\":[", "\"]}")
+            StringJoiner removed = new StringJoiner("\",\"", ",\"removed\":[\"", "\"]}")
             inputs.removed { change ->
                 println "removed: ${change.file.path}"
                 removed.add(change.file.path)
