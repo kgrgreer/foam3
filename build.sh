@@ -173,7 +173,7 @@ function deploy_journals {
         ./tools/findJournals.sh -J${JOURNAL_CONFIG} $journalExtras < $JOURNALS | ./find.sh -O${JOURNAL_OUT}
     else
         ./tools/findJournals.sh -J${JOURNAL_CONFIG} $journalExtras < $JOURNALS > target/journal_files
-        gradle findSH -PjournalOut=${JOURNAL_OUT} -PjournalIn=target/journal_files --daemon $GRADLE_FLAGS
+        gradle findSH -PjournalOut=${JOURNAL_OUT} -PjournalIn=target/journal_files $GRADLE_FLAGS
     fi
 
     if [[ $? -eq 1 ]]; then
@@ -225,9 +225,9 @@ function clean {
 
 function build_jar {
     if [ "$TEST" -eq 1 ] || [ "$RUN_JAR" -eq 1 ]; then
-        gradle --daemon buildJar $GRADLE_FLAGS
+        gradle buildJar $GRADLE_FLAGS
     else
-        gradle --daemon build $GRADLE_FLAGS
+        gradle build $GRADLE_FLAGS
     fi
 
     if [ "${RUN_JAR}" -eq 1 ] || [ "$TEST" -eq 1 ]; then
@@ -238,7 +238,7 @@ function build_jar {
 }
 
 function package_tar {
-    gradle --daemon tarz $GRADLE_FLAGS
+    gradle tarz $GRADLE_FLAGS
 }
 
 function delete_runtime_journals {
@@ -317,7 +317,7 @@ function start_nanos {
     if [ "${RUN_JAR}" -eq 1 ]; then
         OPT_ARGS=
 
-        OPT_ARGS="${OPTARGS} -V$(gradle -q --daemon getVersion)"
+        OPT_ARGS="${OPTARGS} -V$(gradle -q getVersion)"
 
         if [ ! -z ${RUN_USER} ]; then
             OPT_ARGS="${OPT_ARGS} -U${RUN_USER}"
@@ -362,8 +362,8 @@ function start_nanos {
             JAR=$(ls ${NANOPAY_HOME}/lib/nanopay-*.jar | awk '{print $1}')
             exec java -jar "${JAR}"
         elif [ "$RUNTIME_COMPILE" -eq 1 ]; then
-          gradle --daemon genJava
-          gradle --daemon copyLib
+          gradle genJava
+          gradle copyLib
           CLASSPATH="$CLASSPATH":foam2/src:build/src/java:nanopay/src
           JAVA_SOURCES="{sources:[\"nanopay/src\",\"foam2/src\",\"build/src/java\"],\"output\":\"build/classes/java/main\"}"
           javac -cp "$CLASSPATH" -d build/classes/java/main foam2/src/foam/nanos/ccl/CCLoader.java

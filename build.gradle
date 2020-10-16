@@ -21,59 +21,59 @@ repositories {
 }
 
 dependencies {
-  compile "net.schmizz:sshj:0.3.1"
-  compile 'commons-net:commons-net:3.6'
-  compile "org.jtwig:jtwig-core:5.87.0.RELEASE"
-	compile "org.apache.commons:commons-collections4:4.3"
-	compile "xerces:xercesImpl:2.12.0"
-	compile "com.github.xeroapi:xero-java:2.1.3"
-	compile "com.intuit.quickbooks-online:ipp-v3-java-data:5.0.4"
-	compile "com.intuit.quickbooks-online:ipp-v3-java-devkit:5.0.4"
-	compile "com.intuit.quickbooks-online:oauth2-platform-api:5.0.4"
-	compile "javax.json:javax.json-api:1.0"
-	compile "javax.websocket:javax.websocket-api:1.1"
-	compile "javax.mail:javax.mail-api:1.6.2"
-	compile "javax.servlet:javax.servlet-api:3.1.0"
-	compile "jstl:jstl:1.2"
-	compile ("org.apache.commons:commons-dbcp2:2.0.1") {
+    compile "net.schmizz:sshj:0.3.1"
+    compile 'commons-net:commons-net:3.6'
+    compile "org.jtwig:jtwig-core:5.87.0.RELEASE"
+    compile "org.apache.commons:commons-collections4:4.3"
+    compile "xerces:xercesImpl:2.12.0"
+    compile "com.github.xeroapi:xero-java:2.1.3"
+    compile "com.intuit.quickbooks-online:ipp-v3-java-data:5.0.4"
+    compile "com.intuit.quickbooks-online:ipp-v3-java-devkit:5.0.4"
+    compile "com.intuit.quickbooks-online:oauth2-platform-api:5.0.4"
+    compile "javax.json:javax.json-api:1.0"
+    compile "javax.websocket:javax.websocket-api:1.1"
+    compile "javax.mail:javax.mail-api:1.6.2"
+    compile "javax.servlet:javax.servlet-api:3.1.0"
+    compile "jstl:jstl:1.2"
+    compile ("org.apache.commons:commons-dbcp2:2.0.1") {
         exclude group: 'xml-apis'
         exclude module: 'xml-apis'
         exclude group: 'xerces'
         exclude module: 'xerces'
     }
-	compile "org.apache.commons:commons-text:1.1"
-	compile "commons-codec:commons-codec:1.11"
-	compile "com.jcraft:jsch:0.1.54"
-	compile "org.apache-extras.beanshell:bsh:2.0b6"
-	compile "com.google.api-client:google-api-client:1.22.0"
-  compile "com.google.apis:google-api-services-sheets:v4-rev567-1.22.0"
-  compile "com.google.apis:google-api-services-drive:v3-rev72-1.22.0"
-  compile "com.google.oauth-client:google-oauth-client-jetty:1.22.0"
-  compile "org.bouncycastle:bcpg-jdk15on:1.64"
-	compile "org.bouncycastle:bcpkix-jdk15on:1.64"
-	compile "org.bouncycastle:bcprov-jdk15on:1.64"
-	compile "org.mindrot:jbcrypt:0.3m"
-	compile "org.mongodb:mongodb-driver:3.4.2"
-	compile "org.java-websocket:Java-WebSocket:1.3.4"
-	compile "com.twilio.sdk:twilio:7.50.1"
-	compile "com.stripe:stripe-java:5.35.1"
-	compile "com.realexpayments.remote.sdk:rxp-remote-java:1.3.1"
-	compile "javax.xml.bind:jaxb-api:2.1"
-	compile "org.eclipse.jetty:jetty-server:9.4.30.v20200611"
-	compile "org.eclipse.jetty:jetty-servlet:9.4.30.v20200611"
-	compile "org.eclipse.jetty.websocket:websocket-server:9.4.30.v20200611"
-	// compile "com.redhat.victims.maven:security-versions:1.0.6"
-	compile "org.apache.logging.log4j:log4j-slf4j-impl:2.1"
-	compile "org.slf4j:slf4j-api:1.8.0-beta2"
-	compile "org.slf4j:slf4j-jdk14:1.7.25"
-	compile "com.nulab-inc:zxcvbn:1.2.5"
-	compile "com.plaid:plaid-java:3.0.5"
-	compile "com.itextpdf:itextpdf:5.5.12"
-	compile "com.itextpdf:html2pdf:1.0.2"
-	compile "xml-apis:xml-apis:1.4.01"
-	compile "mysql:mysql-connector-java:8.0.16"
-	compile "com.sun.xml.ws:jaxws-ri:2.3.2"
-	compile "io.methvin:directory-watcher:0.9.10"
+    compile "org.apache.commons:commons-text:1.1"
+    compile "commons-codec:commons-codec:1.11"
+    compile "com.jcraft:jsch:0.1.54"
+    compile "org.apache-extras.beanshell:bsh:2.0b6"
+    compile "com.google.api-client:google-api-client:1.22.0"
+    compile "com.google.apis:google-api-services-sheets:v4-rev567-1.22.0"
+    compile "com.google.apis:google-api-services-drive:v3-rev72-1.22.0"
+    compile "com.google.oauth-client:google-oauth-client-jetty:1.22.0"
+    compile "org.bouncycastle:bcpg-jdk15on:1.64"
+    compile "org.bouncycastle:bcpkix-jdk15on:1.64"
+    compile "org.bouncycastle:bcprov-jdk15on:1.64"
+    compile "org.mindrot:jbcrypt:0.3m"
+    compile "org.mongodb:mongodb-driver:3.4.2"
+    compile "org.java-websocket:Java-WebSocket:1.3.4"
+    compile "com.twilio.sdk:twilio:7.50.1"
+    compile "com.stripe:stripe-java:5.35.1"
+    compile "com.realexpayments.remote.sdk:rxp-remote-java:1.3.1"
+    compile "javax.xml.bind:jaxb-api:2.1"
+    compile "org.eclipse.jetty:jetty-server:9.4.30.v20200611"
+    compile "org.eclipse.jetty:jetty-servlet:9.4.30.v20200611"
+    compile "org.eclipse.jetty.websocket:websocket-server:9.4.30.v20200611"
+    // compile "com.redhat.victims.maven:security-versions:1.0.6"
+    compile "org.apache.logging.log4j:log4j-slf4j-impl:2.1"
+    compile "org.slf4j:slf4j-api:1.8.0-beta2"
+    compile "org.slf4j:slf4j-jdk14:1.7.25"
+    compile "com.nulab-inc:zxcvbn:1.2.5"
+    compile "com.plaid:plaid-java:3.0.5"
+    compile "com.itextpdf:itextpdf:5.5.12"
+    compile "com.itextpdf:html2pdf:1.0.2"
+    compile "xml-apis:xml-apis:1.4.01"
+    compile "mysql:mysql-connector-java:8.0.16"
+    compile "com.sun.xml.ws:jaxws-ri:2.3.2"
+    compile "io.methvin:directory-watcher:0.9.10"
 }
 
 configurations.all {
@@ -112,36 +112,33 @@ sourceSets {
     }
 }
 
+
+import org.gradle.api.internal.file.UnionFileCollection
 import java.nio.file.Paths;
+
 abstract class IncrementalTask extends DefaultTask {
-    abstract FileCollection getIncludedFiles()
-
-    abstract File getOutputDirectory()
-
-    String inputsAsJSON = ""
+    protected abstract FileCollection getIncludedFiles()
+    protected abstract File getOutputDirectory()
+    protected String inputsAsJSON = ""
 
     void execute(IncrementalTaskInputs inputs) {
-        inputsAsJSON = ""
         if (inputs.incremental) {
             println "CHANGED inputs considered out of date"
-            inputsAsJSON += '{"modified":['
+
+            StringJoiner modified = new StringJoiner("\",\"", "{\"modified\":[", "\"]")
             inputs.outOfDate { change ->
-                String relPath = project.projectDir.toPath().relativize(change.file.toPath()).toString();
+                String relPath = project.projectDir.toPath().relativize(change.file.toPath()).toString()
                 println "out of date: ${relPath}"
-                inputsAsJSON += "\"${change.file.path}\","
+                modified.add(change.file.path)
             }
-            if (inputsAsJSON[-1] == ',') {
-                inputsAsJSON = inputsAsJSON[0..-2]
-            }
-            inputsAsJSON += '],"removed":['
+
+            StringJoiner removed = new StringJoiner("\",\"", ",\"removed\":[", "\"]}")
             inputs.removed { change ->
                 println "removed: ${change.file.path}"
-                inputsAsJSON += "\"${change.file.path}\","
+                removed.add(change.file.path)
             }
-            if (inputsAsJSON[-1] == ',') {
-                inputsAsJSON = inputsAsJSON[0..-2]
-            }
-            inputsAsJSON += ']}'
+
+            inputsAsJSON = modified.toString() + removed.toString()
         } else {
             println "ALL inputs considered out of date"
             project.delete(getOutputDirectory().listFiles())
@@ -150,20 +147,13 @@ abstract class IncrementalTask extends DefaultTask {
 }
 
 class IncrementalGenTask extends IncrementalTask {
-    Set<File> includeFiles;
-    List<File> classFiles = new ArrayList<>();
-    File outputDir
+    protected Set<File> includeFiles;
+    protected List<File> classFiles = new ArrayList<>();
+    protected File outputDir
 
     @InputFiles
     FileCollection getIncludedFiles() {
-        FileCollection files = getProject().files();
-        for(File f : includeFiles) {
-            files = files + getProject().fileTree(f);
-        }
-        for(File f : classFiles) {
-            files = files + getProject().fileTree(f);
-        }
-        return files;
+        return project.files(includeFiles) + project.files(classFiles)
     }
 
     @OutputDirectory
@@ -178,8 +168,8 @@ class IncrementalGenTask extends IncrementalTask {
 }
 
 class IncrementalFindTask extends IncrementalTask {
-    String journalIn = ""
-    String journalOut = ""
+    protected String journalIn = ""
+    protected String journalOut = ""
 
     @OutputDirectory
     File getOutputDirectory() {
@@ -188,11 +178,7 @@ class IncrementalFindTask extends IncrementalTask {
 
     @InputFiles
     FileCollection getIncludedFiles() {
-        FileCollection files = getProject().files();
-        new File(journalIn).text.split("\n").each { String f ->
-            files = files + getProject().fileTree(new File(f));
-        }
-        return files;
+        return project.files(new File(journalIn).text.split("\n"))
     }
 
     @TaskAction
