@@ -11,11 +11,10 @@ p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"d0bfe00c-9a68-afcc-5
 p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"b050a141-18e6-dbf7-a1ff-8e1115f6fae5","sourceId":2004,"targetId":"trevisoMenuCapability","status":1})
 p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"0844ee43-e2eb-88fd-7c2e-e2bea6fb9909","sourceId":2004,"targetId":"treviso","status":1})
 
-p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"6fb0bc65-cc99-49b6-8c50-2373da28179a","sourceId":2004,"targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-7","data":{"class":"net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiTermsAndConditions","agreement":true,"user":2004,"business":2004,"ipAddress":"127.0.0.1"},"status":1})
-p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"43bf2454-d315-df64-b189-9f5b0cabaa9b","sourceId":2004,"targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-8","data":{"class":"net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy","agreement":true,"user":2004,"business":2004,"ipAddress":"127.0.0.1"},"status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"7d71fee6-d644-d519-bee9-b71403195c00","sourceId":2005,"targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-25","data":{"class":"net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions","agreement":true,"user":2005,"business":2005,"ipAddress":"127.0.0.1"},"status":1})
 p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"0f5e4b9f-7616-bf8d-1185-df9e07dc8806","sourceId":2004,"targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-19","data":{"class":"net.nanopay.crunch.registration.UserRegistrationData","firstName":"Business","lastName":"Treviso","phoneNumber":"1234567890"},"status":1})
 
-p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"fe55162a-c94c-bc09-db95-da43aa5e4512","sourceId":2004,"targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-18","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"fe55162a-c94c-bc09-db95-da43aa5e4512","sourceId":2004,"targetId":"242B00F8-C775-4899-AEBA-F287EC54E901","status":1})
 p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"72777cb6-f1d5-732c-7971-f55c4693ff98","sourceId":2005,"targetId":"plannerCapability","status":1})
 p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"3c7fe806-1f9f-753c-ace9-1546cea8b1e2","sourceId":2005,"targetId":"countryCapability","status":1})
 p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"ba6c4911-f07f-94ab-ddee-af9726c3503a","sourceId":2005,"targetId":"corridorCapability","status":1})
@@ -54,7 +53,6 @@ p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"a8a02e32-166c-7846-b
 p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"e569de40-f91e-ea6d-02ef-f4c860811009","sourceId":2005,"targetId":"520a4120-3bc6-cef9-6635-c32af8219a6a","status":1})
 p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"bef42a2b-56e4-9cf5-f6e8-d9b7145af134","sourceId":2005,"targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-14","data":{"class":"net.nanopay.crunch.onboardingModels.CertifyDataReviewed","reviewed":true,"signingOfficer":2005},"status":1})
 p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"9efc5b40-9f2c-f6a1-cf52-091c42fc461d","sourceId":2005,"targetId":"63049307-8db4-2437-5c02-b71d6878263c","status":1})
-p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"7d71fee6-d644-d519-bee9-b71403195c00","sourceId":2005,"targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-25","data":{"class":"net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions","agreement":true,"user":2005,"business":2005,"ipAddress":"127.0.0.1"},"status":1})
 p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"330ee77f-7074-7f59-a689-9ae6c7009626","sourceId":2005,"targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49","status":1})
 
 p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"e461a2c4-9f9f-484c-d090-bc9ee098b680","sourceId":2006,"targetId":"plannerCapability","status":1})

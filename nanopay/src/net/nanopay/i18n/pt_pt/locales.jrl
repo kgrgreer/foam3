@@ -905,9 +905,10 @@ p({class:"foam.i18n.Locale",id:"554af38a-8225-87c8-dfdf-eeb15f71215e-15.name",lo
 
 p({class:"foam.i18n.Locale",id:"554af38a-8225-87c8-dfdf-eeb15f71215e-16.name",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215e-16.name",target:"AFXWashingtonDisclosure"})
 p({class:"foam.i18n.Locale",id:"554af38a-8225-87c8-dfdf-eeb15f71215e-17.name",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215e-17.name",target:"Certificar diretores listados"})
-p({class:"foam.i18n.Locale",id:"554af38a-8225-87c8-dfdf-eeb15f71215e-18.name",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215e-18.name",target:"Admissão Nanopay"})
+p({class:"foam.i18n.Locale",id:"554af38a-8225-87c8-dfdf-eeb15f71215e-18.name",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215e-18.name",target:"admissão geral"})
 p({class:"foam.i18n.Locale",id:"554af38a-8225-87c8-dfdf-eeb15f71215e-19.name",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215e-19.name",target:"Registro do usuário"})
 p({class:"foam.i18n.Locale",id:"554af38a-8225-87c8-dfdf-eeb15f71215e-2.name",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215e-2.name",target:"AFXCaliforniaDisclosure"})
+p({class:"foam.i18n.Locale",id:"242B00F8-C775-4899-AEBA-F287EC54E901.name",locale:"pt",source:"242B00F8-C775-4899-AEBA-F287EC54E901.name",target:"admissão geral"})
 
 p({class:"foam.i18n.Locale",id:"554af38a-8225-87c8-dfdf-eeb15f71215e-20.name",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215e-20.name",target:"CABankAccountAuthAgreement"})
 p({class:"foam.i18n.Locale",id:"554af38a-8225-87c8-dfdf-eeb15f71215e-21.name",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215e-21.name",target:"Acordo de Recurso"})
