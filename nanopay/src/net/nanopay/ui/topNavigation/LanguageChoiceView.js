@@ -127,20 +127,12 @@ foam.CLASS({
       factory: function() {
         return [
                 foam.nanos.auth.Language.create({
-                  name:'en',
-                  flagImage:'images/flags/greatBritain.svg'
+                  name:'fr-CA',
+                  flagImage:'images/flags/canada.svg'
                 }),
                 foam.nanos.auth.Language.create({
                   name:'en-US',
                   flagImage:'images/flags/unitedStates.svg'
-                }),
-                foam.nanos.auth.Language.create({
-                  name:'fr',
-                  flagImage:'images/flags/france.svg'
-                }),
-                foam.nanos.auth.Language.create({
-                  name:'pt',
-                  flagImage:'images/flags/portugal.svg'
                 }),
                 foam.nanos.auth.Language.create({
                   name:'pt-br',
@@ -166,17 +158,25 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      var self = this
       this
         .addClass(this.myClass())
         .tag('span', null, this.optionsBtn_$)
         .start(this.LANGUAGE_CHOICE, {
-         icon$: this.lastLanguage$.dot('flagImage').map(function(v) { return v || ' ';}),
-          label$: this.lastLanguage$.dot('name')
+          icon$: this.lastLanguage$.dot('flagImage').map(function(v) { return v || ' ';}),
+          label$: this.lastLanguage$.dot('name').map(function(v) { return self.formatLabel(v) })
         })
         .start('div')
           .addClass(this.myClass('carrot'))
         .end()
       .end();
+    },
+    function formatLabel(name) {
+      if ( ! name.includes("-") ) return name;
+
+      var temp = name.split("-").reverse();
+      temp[0] = temp[0].toUpperCase();
+      return temp.join("-");
     }
   ],
 
@@ -203,7 +203,7 @@ foam.CLASS({
                     .attrs({ src: c.flagImage })
                     .addClass('flag')
                   .end()
-                  .add(c.name)
+                  .add(self.formatLabel(c.name))
                   .on('click', function() {
                     self.lastLanguage = c;
                     foam.locale = c.name;
