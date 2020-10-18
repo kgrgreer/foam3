@@ -109,7 +109,7 @@ foam.CLASS({
           editColumnsEnabled: false,
           contextMenuActions: [
             foam.core.Action.create({
-              name: 'Change access control',
+              name: 'changeAccessControl',
               isAvailable: function() {
                 return (this.status === self.AgentJunctionStatus.ACTIVE || this.status === self.AgentJunctionStatus.INVITED) && self.subject.realUser.id != this.sourceId;
               },
@@ -124,7 +124,7 @@ foam.CLASS({
               }
             }),
             foam.core.Action.create({
-              name: 'Deactivate account',
+              name: 'deactivateAccount',
               isAvailable: function() {
                 return this.status === self.AgentJunctionStatus.ACTIVE && self.subject.realUser.id != this.sourceId;
               },
@@ -141,7 +141,7 @@ foam.CLASS({
               }
             }),
             foam.core.Action.create({
-              name: 'Activate account',
+              name: 'activateAccount',
               isAvailable: function() {
                 return this.status === self.AgentJunctionStatus.DISABLED && self.subject.realUser.id != this.sourceId;
               },
@@ -158,7 +158,7 @@ foam.CLASS({
               }
             }),
             foam.core.Action.create({
-              name: 'Resend invitation',
+              name: 'resendInvitation',
               isAvailable: function() {
                 return this.status === self.AgentJunctionStatus.INVITED && self.subject.realUser.id != this.sourceId;
               },
@@ -185,7 +185,7 @@ foam.CLASS({
               }
             }),
             foam.core.Action.create({
-              name: 'Revoke invitation',
+              name: 'revokeInvitation',
               isAvailable: function() {
                 return this.status === self.AgentJunctionStatus.INVITED && self.subject.realUser.id != this.sourceId;
               },

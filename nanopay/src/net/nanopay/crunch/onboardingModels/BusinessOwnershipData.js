@@ -119,7 +119,7 @@ foam.CLASS({
       class: 'Int',
       transient: true,
       hidden: true,
-     value: 1
+      value: 1
     },
     {
       name: 'soUsersDAO',
@@ -556,6 +556,8 @@ foam.CLASS({
           class: 'net.nanopay.crunch.onboardingModels.SelectionViewOwner',
           dao2$: dao2,
           dao: dao,
+          index: this.index,
+          chosenOwners: X.data.chosenOwners,
           choiceView:
           {
             class: 'foam.u2.view.RichChoiceView',
@@ -591,26 +593,39 @@ foam.CLASS({
     'foam.mlang.Expressions'
   ],
 
+  imports: [
+    'notify'
+  ],
+
   requires: [
+    'foam.log.LogLevel',
     'foam.u2.layout.Rows'
   ],
 
   messages: [
     {
-      name: 'OTHER_SELECTION_HAS_SO',
-      message: 'If owner is not a registered Signing Officers, please select the following...'
-    },
-    {
-      name: 'OTHER_SELECTION_NO_SO',
-      message: 'As there are no signing officers, please select this option...'
+      name: 'OTHER_SELECTION',
+      message: 'If owner is not a Signing Officer, please select the following...'
     },
     {
       name: 'SO_SELECTION',
-      message: 'Please select one of the following registered Signing Officers...'
+      message: 'Please select one of the following Signing Officers...'
+    },
+    {
+      name: 'CHOICEDATA_POSTSET_ERR',
+      message: 'Unexpected error @ choiceData_ postset net.nanopay.crunch.onboardingModels.SectionViewOwner'
     }
   ],
 
   properties: [
+    {
+      class: 'Int',
+      name: 'index'
+    },
+    {
+      class: 'List',
+      name: 'chosenOwners'
+    },
     {
       class: 'foam.u2.ViewSpec',
       name: 'choiceView',
@@ -619,12 +634,7 @@ foam.CLASS({
     {
       name: 'dao2',
       class: 'foam.dao.DAOProperty',
-      documentation: 'dao that is used in choiceView, should not change.',
-      postSet: function (_, dao2) {
-        dao2.select(this.COUNT()).then(countSink => {
-          this.updateSections_(countSink.value > 0);
-        })
-      }
+      documentation: 'dao that is used in choiceView, should not change.'
     },
     {
       name: 'dao',
@@ -638,19 +648,31 @@ foam.CLASS({
     {
       name: 'choiceData_',
       documentation: 'Data that is set by choiceView(reference object)',
-      postSet: function(_, n) {
-          if ( this.data && n == this.data.id ) return n;
-          if ( n > 1 ) {
-            this.dao2.find(n).then(
-              (obj) =>
-                this.data = obj ? obj.clone() : obj
-            );
-          } else {
-            this.dao.find(n).then(
-              (obj) =>
-                this.data = obj ? obj.clone() : obj
-            );
+      postSet: async function(o, n) {
+        // checks if data already exists
+        const dataExists = this.data && n === this.data.id;
+
+        try {
+          const numSO = (await this.dao2.select(this.COUNT())).value;
+          // checks if a signing officer is selected
+          // Note: Signing officer id is between 2 and numSO + 1 inclusive while
+          // nonsigning officer data has id > numSO + 1. If n === 1, 'other' is selected
+          // but data doesn't exist.
+          if ( n > 1 && n < numSO + 2 ) {
+            if ( ! dataExists ) {
+              const selectedSO = await this.dao2.find(n);
+              this.data = selectedSO ? selectedSO.clone() : selectedSO;
+            }
+            this.updateSections_(n);
+
+          // 'other' is selected
+          } else if ( ! dataExists ) {
+            const other = await this.dao.find(n);
+            this.data = other ? other.clone() : other;
           }
+        } catch (e) {
+          this.notify(this.CHOICEDATA_POSTSET_ERR, '', this.LogLevel.ERROR, true);
+        }
       }
     },
     {
@@ -681,7 +703,7 @@ foam.CLASS({
     function init() {
       // Pre-initialize with just one section to prevent empty array error
       // thrown by RichChoiceView
-      this.updateSections_(false);
+      this.updateSections_(-1);
     },
     function initE() {
       this.add(this.slot((choiceData_, choiceSections_) => {
@@ -700,22 +722,29 @@ foam.CLASS({
         }
       ));
     },
-    function updateSections_(showDAO2) {
+    function updateSections_(choice) {
       var choiceSections = [];
-      if ( showDAO2 ) {
-        choiceSections.push({
-          heading: this.SO_SELECTION,
-          dao$: this.dao2$
-        });
-      }
+
       choiceSections.push({
-        heading: showDAO2
-          ? this.OTHER_SELECTION_HAS_SO
-          : this.OTHER_SELECTION_NO_SO,
+        heading: this.SO_SELECTION,
+        // filter out all the siging officers except the one chosen by this owner
+        dao: this.dao2.where(
+          this.OR(
+            this.EQ(net.nanopay.model.BeneficialOwner.ID, choice),
+            this.NOT(
+              this.IN(net.nanopay.model.BeneficialOwner.ID, this.chosenOwners)
+            )
+          )
+        ),
+        hideIfEmpty: true
+      });
+
+      choiceSections.push({
+        heading: this.OTHER_SELECTION,
         dao$: this.dao$
       });
-      this.choiceSections_ = choiceSections;
 
+      this.choiceSections_ = choiceSections;
     }
   ]
 });

@@ -39,7 +39,9 @@ foam.CLASS({
     },
     {
       name: 'link',
-      value: '/service/file/9ff66c65-09be-f263-2389-d46ba1b30eb1'
+      factory: function() {
+        return '/service/httpFileService/61ee89ca-19ec-d8fc-0306-380657a38949?sessionId=' + localStorage['defaultSession'];
+      }
     },
     {
       name: 'agreement',

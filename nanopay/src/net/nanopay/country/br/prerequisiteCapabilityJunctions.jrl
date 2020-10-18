@@ -1,13 +1,6 @@
 //Unlock International & Domestic Payments and Invoicing for Brazil
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-25",
-  "priority": 17
-})
-
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "targetId":"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode",
   "sourceId":"dfbe9220-ba4e-42d1-9bed-f4b4f8efcbb8",
   "priority": 17
@@ -81,12 +74,6 @@ p({
 p({
   class:"foam.nanos.crunch.CapabilityCapabilityJunction",
   sourceId:"554af38a-8225-87c8-dfdf-eeb15f71215f-17",
-  targetId:"554af38a-8225-87c8-dfdf-eeb15f71215f-14"
-})
-// terms and conditions
-p({
-  class:"foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId:"554af38a-8225-87c8-dfdf-eeb15f71215e-25",
   targetId:"554af38a-8225-87c8-dfdf-eeb15f71215f-14"
 })
 // office consumption

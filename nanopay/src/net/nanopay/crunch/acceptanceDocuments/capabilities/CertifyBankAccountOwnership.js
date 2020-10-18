@@ -21,13 +21,28 @@ foam.CLASS({
   extends: 'net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability',
 
   messages: [
-    { name: 'ACKNOWLEDGE_STATEMENT', message: 'Must acknowledge the statement above.' }
+    { name: 'ACKNOWLEDGE_STATEMENT', message: 'Must acknowledge the statement above.' },
+    { name: 'TITLE_MSG', message: 'the account belongs to me or my business.' }
   ],
 
   properties: [
     {
       name: 'checkboxText',
-      value: 'I certify that the account belongs to me or my business.'
+      factory: function() {
+        return this.I_CERTIFY;
+      }
+    },
+    {
+      name: 'title',
+      factory: function() {
+        return this.TITLE_MSG;
+      }
+    },
+    {
+      name: 'link',
+      factory: function() {
+        return '/service/httpFileService/488eedba-b34a-4b61-9f6d-1c501f13dcc4?sessionId=' + localStorage['defaultSession'];
+      }
     },
     {
       name: 'agreement',

@@ -23,8 +23,9 @@ foam.CLASS({
 
   messages: [
     { name: 'ACKNOWLEDGE_STATEMENT', message: 'Must acknowledge the statement above.' },
-    { name: 'CHECKBOX_MSG',
-      message: 'I authorize nanopay Corporation (for Canadian domestic transactions) or ' +
+    { name: 'I_AUTHORIZE', message: 'I authorize ' },
+    { name: 'TITLE_MSG',
+      message: 'nanopay Corporation (for Canadian domestic transactions) or ' +
         'AFEX (for international transactions) to withdraw from my (debit) account ' +
         'with the financial institution listed above from time to time for the amount ' +
         'that I specify when processing a one-time ("sporadic") pre-authorized debit. ' +
@@ -38,7 +39,19 @@ foam.CLASS({
     {
       name: 'checkboxText',
       factory: function() {
-        return this.CHECKBOX_MSG;
+        return this.I_AUTHORIZE;
+      }
+    },
+    {
+      name: 'title',
+      factory: function() {
+        return this.TITLE_MSG;
+      }
+    },
+    {
+      name: 'link',
+      factory: function() {
+        return '/service/httpFileService/488eedba-b34a-4b61-9f6d-1c501f13dcc6?sessionId=' + localStorage['defaultSession'];
       }
     },
     {

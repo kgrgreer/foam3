@@ -61,6 +61,15 @@ foam.CLASS({
       }
     },
     {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.country.br.NatureCodeData',
+      name: 'natureCodeData',
+      factory: function() {
+        return net.nanopay.country.br.NatureCodeData.create();
+      },
+      javaFactory: 'return new net.nanopay.country.br.NatureCodeData();'
+    },
+    {
       name: 'id',
       createVisibility: 'HIDDEN',
       readVisibility: 'HIDDEN'
@@ -110,6 +119,16 @@ foam.CLASS({
       if ( this.natureCode === '' ) {
         throw this.INVALID_NATURE_CODE;
       }
+    },
+    {
+      name: 'getCode',
+      type: 'String',
+      code: function() {
+        return this.natureCode + this.natureCodeData.toString();
+      },
+      javaCode: `
+        return getNatureCode() + getNatureCodeData().toString();
+      `
     }
   ]
 });

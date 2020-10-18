@@ -1135,6 +1135,7 @@ var classes = [
 
   // Treviso
   'net.nanopay.country.br.NatureCode',
+  'net.nanopay.country.br.NatureCodeData',
   'net.nanopay.country.br.BrazilBusinessInfoData',
   'net.nanopay.country.br.BrazilVerificationServiceInterface',
   'net.nanopay.country.br.ClientBrazilVerificationService',
@@ -1403,7 +1404,6 @@ var classes = [
   'net.nanopay.tx.TransactionDAO',
   'net.nanopay.tx.TransactionEntitiesDAO',
   'net.nanopay.tx.TransactionLimitCheckDAO',
-  'net.nanopay.tx.TransactionNotificationDAO',
   'net.nanopay.tx.UpdateInvoiceTransactionDAO',
   'net.nanopay.tx.realex.RealexTransactionDAO',
   'net.nanopay.tx.stripe.StripeTransactionDAO',

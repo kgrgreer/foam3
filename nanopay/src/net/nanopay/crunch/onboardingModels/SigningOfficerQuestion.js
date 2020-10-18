@@ -30,7 +30,7 @@ foam.CLASS({
   sections: [
     {
       name: 'signingOfficerQuestionSection',
-      title: 'Are you considered a signing officer at the company?'
+      title: 'Are you a signing officer for your company?'
     },
     {
       name: 'signingOfficerEmailSection',
@@ -60,8 +60,8 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
-          [true, 'Yes, I am a signing officer'],
-          [false, 'No, I am not']
+          [true, 'Yes'],
+          [false, 'No']
         ]
       }
     },

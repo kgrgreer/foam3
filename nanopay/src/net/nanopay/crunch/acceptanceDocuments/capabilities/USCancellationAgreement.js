@@ -24,7 +24,7 @@ foam.CLASS({
   messages: [
     { name: 'ACKNOWLEDGE_STATEMENT', message: 'Must acknowledge the statement above.' },
     {
-      name: 'CHECKBOX_MSG',
+      name: 'TITLE_MSG',
       message: 'This authority is to remain in effect until AFEX has received written ' +
         'notification from me/us of its change or termination. The notification must be ' +
         'received at least 10 business days before the next debit Is scheduled at the ' +
@@ -37,7 +37,19 @@ foam.CLASS({
     {
       name: 'checkboxText',
       factory: function() {
-        return this.CHECKBOX_MSG;
+        return null;
+      }
+    },
+    {
+      name: 'title',
+      factory: function() {
+        return this.TITLE_MSG;
+      }
+    },
+    {
+      name: 'link',
+      factory: function() {
+        return '/service/httpFileService/488eedba-b34a-4b61-9f6d-1c501f13dcc0?sessionId=' + localStorage['defaultSession'];
       }
     },
     {

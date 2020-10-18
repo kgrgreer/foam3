@@ -300,6 +300,18 @@ p({
   "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-19",
   "priority":3
 })
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"242B00F8-C775-4899-AEBA-F287EC54E901",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-19",
+  "priority":3
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"242B00F8-C775-4899-AEBA-F287EC54E901",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-25",
+  "priority":3
+})
 
 // prerequisites for Brazil Initial Onboarding
 p({
@@ -421,12 +433,12 @@ p({
   "priority":3
 })
 
-// BR Signing Officer to Birth date
+// BR CPF to Birth date
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"777af38a-8225-87c8-dfdf-eeb15f71215f-123",
+  "sourceId":"fb7d3ca2-62f2-4caf-a84c-860392e4676b",
   "targetId":"8bffdedc-5176-4843-97df-1b75ff6054fb",
-  "priority":4
+  "priority":1
 })
 
 // BR Signing Officer to CPF
@@ -458,14 +470,6 @@ p({
   "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5-us",
   "targetId":"8ad3c898-db32-11ea-87d0-0242ac130003",
   "priority":3
-})
-
-// Prerequisites for apiUserOnboarding
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"B98D97EF-4A43-4B03-84C1-9DE2C0109E87",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-18",
-  "priority":1
 })
 
 // Prerequisites for apiUserBusinessOnboarding

@@ -39,8 +39,8 @@ foam.CLASS({
     },
     {
       name: 'link',
-      expression: function(appConfig$privacyUrl) {
-        return appConfig$privacyUrl;
+      factory: function() {
+        return '/service/httpFileService/81aaec42-b38e-fb90-3200-58bcb39542b7?sessionId=' + localStorage['defaultSession'];
       }
     },
     {

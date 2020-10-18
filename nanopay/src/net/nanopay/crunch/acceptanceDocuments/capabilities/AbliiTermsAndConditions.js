@@ -39,8 +39,8 @@ foam.CLASS({
     },
     {
       name: 'link',
-      expression: function(appConfig$termsAndCondLink) {
-        return appConfig$termsAndCondLink;
+      factory: function() {
+        return  '/service/httpFileService/eb21ba1e-7bfc-ba96-e9f6-9ad6a6ad83d2?sessionId=' + localStorage['defaultSession'];
       }
     },
     {

@@ -56,7 +56,6 @@ foam.CLASS({
     'auth',
     'capabilityDAO',
     'countryDAO',
-    'paymentProviderCorridorDAO',
     'subject',
     'user'
   ],
@@ -334,16 +333,18 @@ foam.CLASS({
       name: 'availableCountries',
       section: 'stepOne',
       visibility: 'HIDDEN',
-      expression: function(paymentProviderCorridorDAO) {
+      expression: function(capabilityDAO) {
         return this.PromisedDAO.create({
-          promise: paymentProviderCorridorDAO
+          promise: capabilityDAO.where(this.INSTANCE_OF(this.PaymentProviderCorridor))
             .select(this.MAP(this.PaymentProviderCorridor.TARGET_COUNTRY))
             .then((sink) => {
               let unique = [...new Set(sink.delegate.array)];
+              let arr = [];
               for ( i = 0; i < unique.length; i++ ) {
-                unique[i] = foam.lookup(`net.nanopay.bank.${ unique[i] }BankAccount`);
+                model = foam.lookup(`net.nanopay.bank.${ unique[i] }BankAccount`);
+                if ( model ) arr.push(model);
               }
-              this.countries = unique;
+              this.countries = arr;
             })
         });
       }

@@ -26,52 +26,151 @@ foam.CLASS({
 
   properties: [
     {
+      name: 'id'
+    },
+    {
+      name: 'name',
+      required: true
+    },
+    {
       class: 'String',
       name: 'operationType',
-      validateObj: function(code) {
+      validateObj: function(operationType) {
         var regex = /^[0-9]{5}$/;
-        if ( ! regex.test(code) && group != null ) {
+        if ( ! regex.test(operationType) ) {
           return this.ENTER_NATURE_CODE;
         }
-      }
+      },
+      section: 'basicInfo'
     },
     {
-      class: 'String',
-      name: 'payerType',
-      documentation: '00 - Physical person domiciled in the country, 09 - Non-financial company - private'
+      name: 'icon',
+      hidden: true
     },
     {
-      class: 'String',
-      name: 'approvalType'
+      name: 'description',
+      hidden: true
     },
     {
-      class: 'String',
-      name: 'payeeType',
-      documentation: '02 - Physical person domiciled abroad, 05 - Non-financial company - private, 90 - No payer/recipient'
+      name: 'notes',
+      hidden: true
     },
     {
-      class: 'String',
-      name: 'groupCode',
-      value: '90',
-      documentation: '90 - others'
+      name: 'price',
+      hidden: true
+    },
+    {
+      name: 'keywords',
+      hidden: true
+    },
+    {
+      name: 'version',
+      hidden: true
+    },
+    {
+      name: 'enabled',
+      hidden: true
+    },
+    {
+      name: 'visible',
+      hidden: true
+    },
+    {
+      name: 'expiry',
+      hidden: true
+    },
+    {
+      name: 'duration',
+      hidden: true
+    },
+    {
+      name: 'gracePeriod',
+      hidden: true
+    },
+    {
+      name: 'of',
+      hidden: true
+    },
+    {
+      name: 'permissionsGranted',
+      hidden: true
+    },
+    {
+      name: 'permissionsIntercepted',
+      hidden: true
+    },
+    {
+      name: 'daoKey',
+      hidden: true
+    },
+    {
+      name: 'contextDAOFindKey',
+      hidden: true
+    },
+    {
+      name: 'interceptIf',
+      hidden: true
+    },
+    {
+      name: 'availabilityPredicate',
+      hidden: true
+    },
+    {
+      name: 'reviewRequired',
+      hidden: true
+    },
+    {
+      name: 'associatedEntity',
+      hidden: true
+    },
+    {
+      name: 'wizardlet',
+      transient: true,
+      hidden: true
+    },
+    {
+      name: 'wizardletConfig',
+      transient: true,
+      hidden: true
+    },
+    {
+      name: 'dependents',
+      hidden: true
+    },
+    {
+      name: 'prerequisites',
+      hidden: true
+    },
+    {
+      name: 'deprecating',
+      hidden: true
+    },
+    {
+      name: 'deprecated',
+      hidden: true
+    },
+    {
+      name: 'users',
+      hidden: true
+    },
+    {
+      name: 'categories',
+      hidden: true
     }
   ],
 
   methods: [
+    function toSummary() {
+      return this.toString();
+    },
     {
-      name: 'getCode',
+      name: 'toString',
       type: 'String',
       code: function() {
-        return operationType.concat(payerType, approvalType, payeeType, groupCode);
+        return this.operationType + ' - ' + this.name;
       },
       javaCode: `
-        StringBuilder str = new StringBuilder();
-        str.append(getOperationType());
-        str.append(getPayerType());
-        str.append(getApprovalType());
-        str.append(getPayeeType());
-        str.append(getGroupCode());
-        return str.toString();
+        return getOperationType() + " - " + getName();
       `
     }
   ]

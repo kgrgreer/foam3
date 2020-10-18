@@ -28,8 +28,9 @@ foam.CLASS({
       message: 'I have certain recourse rights if any debit does not comply with this agreement. ' +
         'For example, I have right to receive reimbursement for any debit that is not authorized or ' +
         'is not consistent with the PAD agreement. To obtain more information on my recourse rights, ' +
-        'I may contact my financial institution or visit '
-    }
+        'I may contact my financial institution'
+    },
+    { name: 'OR', message: ' or ' }
   ],
 
   properties: [
@@ -44,8 +45,17 @@ foam.CLASS({
       value: 'www.payments.ca',
     },
     {
+      class: 'String',
+      name: 'subLink',
+      value: 'https://www.payments.ca',
+      readVisibility: 'RO',
+      section: 'uiAgreementDocumentsSection'
+    },
+    {
       name: 'link',
-      value: 'https://www.payments.ca'
+      factory: function() {
+        return '/service/httpFileService/488eedba-b34a-4b61-9f6d-1c501f13dcc7?sessionId=' + localStorage['defaultSession'];
+      }
     },
     {
       name: 'agreement',
@@ -58,7 +68,33 @@ foam.CLASS({
           },
           errorMessage: 'ACKNOWLEDGE_STATEMENT'
         }
-      ]
+      ],
+      view: function(_, X) {
+        var self = X.data$;
+        return foam.u2.CheckBox.create({
+          labelFormatter: function() {
+            this.start('span')
+              .start('a')
+                .addClass('link')
+                .add(self.dot('checkboxText'))
+                .attrs({
+                  href: self.dot('link'),
+                  target: '_blank'
+                })
+              .end()
+              .add(' or ')
+              .start('a')
+                .addClass('link')
+                .add(self.dot('title'))
+                .attrs({
+                  href: self.dot('subLink'),
+                  target: '_blank'
+                })
+              .end()
+            .end();
+          }
+        });
+      }
     }
   ]
 });

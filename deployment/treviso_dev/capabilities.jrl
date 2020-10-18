@@ -12,6 +12,7 @@ p({
   id: "treviso",
   description: "treviso",
   permissionsGranted: [
+    "net.nanopay.partner.treviso.trevisounlockpaymenttermsandconditions.section.reviewAgreementDocumentsSection",
     "naturecode.read.cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-1",
     "naturecode.read.cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-2",
     "naturecode.read.cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-3",
@@ -54,8 +55,7 @@ p({
   enabled: true,
   visible: false,
   permissionsGranted: [
-    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15ftrevisobr-ca",
-    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb1trevisobr-us"
+    "paymentprovidercorridor.read.*"
   ]
 })
 p({

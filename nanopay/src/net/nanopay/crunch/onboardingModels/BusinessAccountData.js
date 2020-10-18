@@ -24,7 +24,7 @@ foam.CLASS({
   sections: [
     {
       name: 'accountingSection',
-      title: 'Please answer business account questions'
+      title: 'Ownership and Taxation information'
     },
     {
       name: 'customerSection',
@@ -46,7 +46,7 @@ foam.CLASS({
     {
       section: 'accountingSection',
       name: 'OwnerOrOutsourced',
-      label: 'Are you the Owned or Outsourced?',
+      label: 'Are you the owner of the business?',
       class: 'Boolean',
       view: {
         class: 'foam.u2.view.RadioView',

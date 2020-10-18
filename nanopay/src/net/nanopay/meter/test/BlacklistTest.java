@@ -99,7 +99,7 @@ public class BlacklistTest extends Test {
     myAdmin.setEmailVerified(true);
     myAdmin = (User)((DAO)x.get("userDAO")).put(myAdmin);
 
-    // nanopay admission : 554af38a-8225-87c8-dfdf-eeb15f71215e-18
+    // nanopay admission : 554af38a-8225-87c8-dfdf-eeb15f71215e-18 || 242B00F8-C775-4899-AEBA-F287EC54E901 for treviso
 
     AbliiTermsAndConditions tc1 = new AbliiTermsAndConditions();
     tc1.setAgreement(true);

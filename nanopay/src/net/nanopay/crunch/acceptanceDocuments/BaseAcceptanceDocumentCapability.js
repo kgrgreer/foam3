@@ -36,6 +36,10 @@ foam.CLASS({
     'javax.servlet.http.HttpServletRequest'
   ],
 
+  messages: [
+    { name: 'I_CERTIFY', message: 'I certify that ' }
+  ],
+
   sections: [
     {
       name: 'reviewAgreementDocumentsSection',

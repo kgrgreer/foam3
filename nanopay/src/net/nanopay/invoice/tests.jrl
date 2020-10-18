@@ -116,7 +116,7 @@ ucjURD.setData(tc3);
 
 ucjAC = new UserCapabilityJunction();
 ucjAC.setSourceId(myAdmin.getId());
-ucjAC.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215e-18");
+ucjAC.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215e-18"); // use 242B00F8-C775-4899-AEBA-F287EC54E901 for treviso
 
 userCapabilityJunctionDAO.put(ucjATAC);
 userCapabilityJunctionDAO.put(ucjAPP);

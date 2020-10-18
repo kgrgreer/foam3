@@ -1162,3 +1162,12 @@ p({
   "subject": "Your capability will expire soon",
   "body": "{% extends 'ablii-email-base_2'%}{% block content %} <br> \n <h2>Capability Expired</h2>\n <br>\n <p>\n Hello {{userName}}, <br><br>\n {{body}}</p> <br><br>\n\n <a href=\"{{link}}\"><button  style=\"width: 100%;margin: auto;height: 40px; font-size: 12px; cursor:pointer; border-radius: 2px; border: none; background: #604aff; color: #ffffff; text-align:center;\">Sign in</button></a>\n {% endblock content %}"
 })
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": 151,
+  "name": "top-level-capability-status-update",
+  "group": "sme",
+  "displayName":"{{appName}}",
+  "subject": "{{capName}} capability status has been updated",
+  "body": "{% extends 'ablii-email-base_2'%}\n\n{% block content %}\n<p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\">Capability status updated</p>\n<p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">Hello,</p>\n<br>\n<p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">The Capability <b>{{capName}}</b> has been set to {{junctionStatus}} on {{appName}}.</p>\n<a href=\"{{appLink}}\" style=\"text-decoration: none;\"><div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">\n<p style = \"padding: 14px 0 0; margin: 0;\">Go to {{appName}}</p>\n</div></a>\n{% endblock content %}"
+})
