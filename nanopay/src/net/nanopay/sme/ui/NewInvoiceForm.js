@@ -275,6 +275,13 @@ foam.CLASS({
     },
     { name: 'ACCOUNT_WITHDRAW_LABEL', message: 'Withdraw from' },
     { name: 'ACCOUNT_DEPOSIT_LABEL', message: 'Deposit to' },
+    { name: 'SEND_TO', message: 'Send to' },
+    { name: 'REQUEST_FROM', message: 'Request from' },
+    { name: 'DATE_DUE', message: 'Date Due' },
+    { name: 'PO_NUMBER', message: 'P.O. Number' },
+    { name: 'DATE_ISSUED', message: 'Date issued' },
+    { name: 'INVOICE_NUMBER', message: 'Invoice Number' },
+    { name: 'AMOUNT', message: 'Amount' },
   ],
 
   constants: [
@@ -327,7 +334,7 @@ foam.CLASS({
       class: 'String',
       name: 'contactLabel',
       factory: function() {
-        return this.type === 'payable' ? 'Send to' : 'Request from';
+        return this.type === 'payable' ? this.SEND_TO : this.REQUEST_FROM;
       }
     },
     {
@@ -502,7 +509,7 @@ foam.CLASS({
         .end()
         .startContext({ data: this.invoice })
           .start().addClass('input-wrapper')
-            .start().addClass('input-label').add('Amount').end()
+            .start().addClass('input-label').add(this.AMOUNT).end()
               .start()
                 .on('mouseenter', this.toggleTooltip)
                 .on('mouseleave', this.toggleTooltip)
@@ -565,7 +572,7 @@ foam.CLASS({
             .end()
             .start().addClass('invoice-block')
               .start().addClass('input-wrapper')
-                .start().addClass('input-label').add('Invoice Number').end()
+                .start().addClass('input-label').add(this.INVOICE_NUMBER).end()
                 .start()
                   .on('mouseenter', this.toggleTooltip)
                   .on('mouseleave', this.toggleTooltip)
@@ -578,7 +585,7 @@ foam.CLASS({
               .end()
 
               .start().addClass('input-wrapper')
-                .start().addClass('input-label').add('Date issued').end()
+                .start().addClass('input-label').add(this.DATE_ISSUED).end()
                 .start()
                   .on('mouseenter', this.toggleTooltip)
                   .on('mouseleave', this.toggleTooltip)
@@ -593,14 +600,14 @@ foam.CLASS({
 
             .start().addClass('invoice-block-right')
               .start().addClass('input-wrapper')
-                .start().addClass('input-label').add('P.O. Number').end()
+                .start().addClass('input-label').add(this.PO_NUMBER).end()
                 .start(this.Invoice.PURCHASE_ORDER)
                   .attrs({ placeholder: this.PO_PLACEHOLDER })
                 .end()
               .end()
 
               .start().addClass('input-wrapper')
-                .start().addClass('input-label').add('Date Due').end()
+                .start().addClass('input-label').add(this.DATE_DUE).end()
                 .start()
                   .on('mouseenter', this.toggleTooltip)
                   .on('mouseleave', this.toggleTooltip)

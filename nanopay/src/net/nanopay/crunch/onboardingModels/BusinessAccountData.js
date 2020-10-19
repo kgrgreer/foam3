@@ -39,33 +39,39 @@ foam.CLASS({
   messages: [
     { name: 'NO_CUSTOMERS_INFO', message: 'Please enter main customer\'s information.' },
     { name: 'NO_SUPPLIERS_INFO', message: 'Please enter main supplier\'s information.' },
-    { name: 'INVALID_DATE', message: 'Last date cannot be future dated.' }
+    { name: 'INVALID_DATE', message: 'Last date cannot be future dated.' },
+    { name: 'YES', message: 'Yes' },
+    { name: 'NO', message: 'No' },
+    { name: 'ARE_YOU_BUSINESS_OWNER', message: 'Are you the owner of the business?' },
+    { name: 'ARE_YOU_MANAGING_OWNER', message: 'Are you the owner managing the company?' },
+    { name: 'DO_YOU_OPT_SIMPLE_TAX', message: 'Do you opt into Simple Tax?' },
+    { name: 'WHAT_RECEN_DATE_COMPANY_FILED_TAX', message: 'What is the most recent date the company filed taxes' },
   ],
 
   properties: [
     {
       section: 'accountingSection',
       name: 'OwnerOrOutsourced',
-      label: 'Are you the owner of the business?',
+      label: this.ARE_YOU_BUSINESS_OWNER,
       class: 'Boolean',
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
-          [true, 'Yes, I\'m the owner of the company'],
-          [false, 'No, I\'m not the owner']
+          [true, this.YES],
+          [false, this.NO]
         ]
       },
     },
     {
       section: 'accountingSection',
       name: 'ownerManagment',
-      label: 'Are you the owner managing the company?',
+      label: this.ARE_YOU_MANAGING_OWNER,
       class: 'Boolean',
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
-          [true, 'Yes'],
-          [false, 'No']
+          [true, this.YES],
+          [false, this.NO]
         ],
         isHorizontal: true
       },
@@ -73,13 +79,13 @@ foam.CLASS({
     {
       section: 'accountingSection',
       name: 'simpleTax',
-      label: 'Do you opt into Simple Tax?',
+      label: this.DO_YOU_OPT_SIMPLE_TAX,
       class: 'Boolean',
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
-          [true, 'Yes'],
-          [false, 'No']
+          [true, this.YES],
+          [false, this.NO]
         ],
         isHorizontal: true
       }
@@ -88,7 +94,7 @@ foam.CLASS({
       section: 'accountingSection',
       class: 'Date',
       name: 'dateOfFilingTaxes',
-      label: 'What is the most recent date the company filed taxes',
+      label: this.WHAT_RECEN_DATE_COMPANY_FILED_TAX,
       help: 'The date the last time you filed taxes',
       documentation: 'The date the last time you filed taxes',
       required: true,
