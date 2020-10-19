@@ -1409,6 +1409,10 @@ var classes = [
   'net.nanopay.tx.stripe.StripeTransactionDAO',
   'net.nanopay.tx.ChainSummary',
   'net.nanopay.tx.TransactionCreateOnInvoiceSubmission',
+  'net.nanopay.payment.PayeeCurrencyService',
+  'net.nanopay.payment.ClientPayeeCurrencyService',
+  'net.nanopay.payment.PayeeCurrency',
+
 
   //integration
 
@@ -1431,6 +1435,7 @@ var skeletons = [
   'net.nanopay.auth.passwordutil.PasswordEntropy',
   'net.nanopay.payment.CorridorService',
   'net.nanopay.payment.PaymentService',
+  'net.nanopay.payment.PayeeCurrencyService',
   'net.nanopay.invoice.service.InvoicePaymentService',
   'net.nanopay.liquidity.ucjQuery.AccountUCJQueryService',
   'net.nanopay.fx.ExchangeRateServiceInterface',
@@ -1448,7 +1453,8 @@ var proxies = [
   'net.nanopay.tx.TransactionLimitServiceInterface',
   'net.nanopay.contacts.PaymentCodeServiceInterface',
   'net.nanopay.contacts.ContactServiceInterface',
-  'net.nanopay.country.br.BrazilVerificationServiceInterface'
+  'net.nanopay.country.br.BrazilVerificationServiceInterface',
+  'net.nanopay.payment.PayeeCurrencyService'
 ];
 
 module.exports = {

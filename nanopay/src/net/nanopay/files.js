@@ -1627,6 +1627,10 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/onboardingModels/CustomerBasicInformation' },
   { name: 'net/nanopay/crunch/onboardingModels/IsBusiness' },
 
+  { name: 'net/nanopay/payment/PayeeCurrencyService' },
+  { name: 'net/nanopay/payment/PayeeCurrency' },
+  { name: 'net/nanopay/payment/ClientPayeeCurrencyService' },
+
   // crunch notification
   { name: 'net/nanopay/crunch/UCJExpiryReminderCron' },
   { name: 'net/nanopay/crunch/compliance/SendExpiryNotification' },

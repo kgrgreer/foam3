@@ -321,6 +321,7 @@ p({"class":"foam.nanos.auth.Permission","id":"service.twofactor","description":"
 p({"class":"foam.nanos.auth.Permission","id":"service.userDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.whitelistedEmailDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.xeroService","description":""})
+p({"class":"foam.nanos.auth.Permission","id":"service.payeeCurrencyService","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"capability.remove.goldman-sachs","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"capability.read.goldman-sachs","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"capability.read.nanopay","description":""})

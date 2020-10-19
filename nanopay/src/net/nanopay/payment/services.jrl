@@ -136,3 +136,24 @@ p({
       }
     """
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "payeeCurrencyService",
+  "description": "A service that returns a list of currencies payee can receive in.",
+  "serve": true,
+  "serviceClass": "net.nanopay.payment.PayeeCurrency",
+  "boxClass": "net.nanopay.payment.PayeeCurrencyServiceSkeleton",
+  "client": """
+    {
+      "class": "net.nanopay.payment.ClientPayeeCurrencyService",
+      "delegate": {
+        "class": "foam.box.SessionClientBox",
+        "delegate": {
+          "class": "foam.box.HTTPBox",
+          "url": "service/payeeCurrencyService"
+        }
+      }
+    }
+  """
+})
