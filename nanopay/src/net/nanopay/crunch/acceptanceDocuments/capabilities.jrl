@@ -4,8 +4,7 @@ p({
   "name":"TriPartyAgreementCAD",
   "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.TriPartyAgreementCAD",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -14,8 +13,7 @@ p({
   "name":"AFXCaliforniaDisclosure",
   "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.AFXCaliforniaDisclosure",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -24,8 +22,7 @@ p({
   "name":"Dual Party Agreement CAD",
   "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.DualPartyAgreementCAD",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -34,8 +31,7 @@ p({
   "name":"AFXArizonaDisclosure",
   "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.AFXArizonaDisclosure",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -44,8 +40,7 @@ p({
   "name":"TriPartyAgreementUSD",
   "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.TriPartyAgreementUSD",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -54,8 +49,7 @@ p({
   "name":"AFXColoradoDisclosure",
   "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.AFXColoradoDisclosure",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -65,7 +59,6 @@ p({
   "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiTermsAndConditions",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "associatedEntity": 1
 })
 
@@ -76,7 +69,6 @@ p({
   "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "associatedEntity": 1
 })
 
@@ -86,8 +78,7 @@ p({
   "name":"CADAFEXTerms",
   "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.CADAFEXTerms",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -96,8 +87,7 @@ p({
   "name":"USDAFEXTerms",
   "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -106,8 +96,7 @@ p({
   "name":"NanopayInternationalPaymentsCustomerAgreement",
   "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.NanopayInternationalPaymentsCustomerAgreement",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -116,8 +105,7 @@ p({
   "name":"Certify Owners Percent",
   "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyOwnersPercent",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -126,8 +114,7 @@ p({
   "name":"CertifyBankAccountOwnership",
   "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyBankAccountOwnership",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -136,8 +123,7 @@ p({
   "name":"AFXMassachusettsDisclosure",
   "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.AFXMassachusettsDisclosure",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -146,8 +132,7 @@ p({
   "name":"AFXNewYorkDisclosure",
   "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.AFXNewYorkDisclosure",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -156,8 +141,7 @@ p({
   "name":"AFXWashingtonDisclosure",
   "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.AFXWashingtonDisclosure",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -166,8 +150,7 @@ p({
   "name":"Certify Directors Listed",
   "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyDirectorsListed",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -176,8 +159,7 @@ p({
   "name":"CABankAccountAuthAgreement",
   "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.CABankAccountAuthAgreement",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -186,8 +168,7 @@ p({
   "name":"RecourseAgreement",
   "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.RecourseAgreement",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -196,8 +177,7 @@ p({
   "name":"CACancellationAgreement",
   "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.CACancellationAgreement",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -206,8 +186,7 @@ p({
   "name":"USBankAccountAuthAgreement",
   "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.USBankAccountAuthAgreement",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -216,6 +195,5 @@ p({
   "name":"USCancellationAgreement",
   "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.USCancellationAgreement",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })

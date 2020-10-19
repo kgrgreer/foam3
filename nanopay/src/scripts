@@ -2457,7 +2457,7 @@ p({
           corridor.setSourceCountry(country.getId());
           corridor.setTargetCountry(pairCountry.getId());
           corridor.setEnabled(true);
-          corridor.setVisible(true);
+          corridor.setAvailabilityPredicate(foam.mlang.MLang.TRUE);
           corridor = corridorDAO.put(corridor);
           print("New corridor added: source " + corridor.getSourceCountry() + " target " + corridor.getTargetCountry());
         }
@@ -2472,7 +2472,7 @@ p({
           corridor.setSourceCountry(pairCountry.getId());
           corridor.setTargetCountry(country.getId());
           corridor.setEnabled(true);
-          corridor.setVisible(true);
+          corridor.setAvailabilityPredicate(foam.mlang.MLang.TRUE);
           corridor = corridorDAO.put(corridor);
           print("New corridor added: source " + corridor.getSourceCountry() + " target " + corridor.getTargetCountry());
         }

@@ -24,7 +24,7 @@ p({
   "version":"0",
   "enabled":true,
   "icon":"/images/capabilityIcons/SigningOfficerIcon.svg",
-  "visible":true,
+  "availabilityPredicate":{"class":"foam.mlang.predicate.True"},
   "associatedEntity":2,
   "permissionsIntercepted":[
     "businessHasSigningOfficer"
@@ -49,7 +49,6 @@ p({
   "version":"0",
   "enabled":true,
   "icon":"/images/capabilityIcons/SigningOfficerIcon.svg",
-  "visible":true,
   "daoKey":"userDAO",
   "contextDAOFindKey":"subject.realuser",
   "reviewRequired":true,
@@ -124,7 +123,6 @@ p({
   "version":"0",
   "enabled":true,
   "icon":"/images/capabilityIcons/SigningOfficerIcon.svg",
-  "visible":true,
   "daoKey":"userDAO",
   "contextDAOFindKey":"subject.realuser",
   "reviewRequired":true,
@@ -174,7 +172,7 @@ p({
   {
     "class":"foam.mlang.predicate.And",
     "args": [
-      { "class":"net.nanopay.crunch.onboardingModels.UserIsSigningOfficerOfBusiness" },
+      { "class":"net.nanopay.crunch.onboardingModels.SigningOfficerPrivilegesRequested" },
       {
         "class":"net.nanopay.crunch.onboardingModels.CheckUserCountry",
         "country":"US"
@@ -199,7 +197,6 @@ p({
   "version":"0",
   "enabled":true,
   "icon":"/images/capabilityIcons/SigningOfficerIcon.svg",
-  "visible":true,
   "daoKey":"userDAO",
   "contextDAOFindKey":"subject.realuser",
   "reviewRequired":true,
@@ -246,7 +243,7 @@ p({
   ],
   "interceptIf":{ "class":"net.nanopay.crunch.onboardingModels.SigningOfficerCapabilityInterceptPredicate" },
   "availabilityPredicate":
-    {
+  {
     "class":"foam.mlang.predicate.And",
     "args": [
       { "class":"net.nanopay.crunch.onboardingModels.SigningOfficerPrivilegesRequested" },
@@ -273,8 +270,7 @@ p({
   "of":"net.nanopay.crunch.onboardingModels.CertifyDataReviewed",
   "description":"Certify all data submitted has been reviewed",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -284,7 +280,6 @@ p({
   "of":"net.nanopay.crunch.onboardingModels.BusinessInformationData",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "daoKey":"businessDAO",
   "contextDAOFindKey":"subject.user"
 })
@@ -296,7 +291,6 @@ p({
   "of":"net.nanopay.crunch.onboardingModels.TransactionDetailsData",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "daoKey":"businessDAO",
   "contextDAOFindKey":"subject.user"
 })
@@ -308,7 +302,6 @@ p({
   "of":"net.nanopay.crunch.onboardingModels.BusinessDirectorsData",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "daoKey":"businessDAO",
   "reviewRequired":true,
   "contextDAOFindKey":"subject.user"
@@ -321,7 +314,6 @@ p({
   "of":"net.nanopay.crunch.onboardingModels.BusinessOwnershipData",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "daoKey":"convertOwnerObjectDAO",
   "reviewRequired":true
 })
@@ -334,7 +326,6 @@ p({
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
   "version":"0",
   "enabled":true,
-  "visible":true,
   "reviewRequired":true,
   "keywords":["featured"],
   "permissionsGranted":[
@@ -370,7 +361,6 @@ p({
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
   "version":"0",
   "enabled":true,
-  "visible":true,
   "reviewRequired":true,
   "keywords":["featured"],
   "permissionsGranted":[
@@ -403,7 +393,6 @@ p({
   "icon":"/images/capabilityIcons/USDOnboardCap.svg",
   "version":"0",
   "enabled":true,
-  "visible":true,
   "reviewRequired":true,
   "keywords":["featured"],
   "permissionsGranted":[
@@ -416,6 +405,13 @@ p({
     "class":"foam.mlang.predicate.And",
     "args": [
       { "class":"net.nanopay.crunch.onboardingModels.IsBusiness" },
+      {
+        "class": "foam.mlang.predicate.Not",
+        "arg1": {
+          "class":"net.nanopay.crunch.onboardingModels.CheckUserCountry",
+          "country":""
+        }
+      },
       {
         "class": "foam.mlang.predicate.Not",
         "arg1": {
@@ -447,7 +443,7 @@ p({
   "version":"0",
   "icon":"images/nanopay_logo_blue.png",
   "enabled":true,
-  "visible":true,
+  "availabilityPredicate":{"class":"foam.mlang.predicate.True"},
   "associatedEntity": 1,
   "wizardletConfig": {
     "class": "foam.u2.wizard.StepWizardConfig",
@@ -478,7 +474,7 @@ p({
   "of":"net.nanopay.crunch.registration.UserRegistrationData",
   "version":"0",
   "enabled":true,
-  "visible":true,
+  "availabilityPredicate":{"class":"foam.mlang.predicate.True"},
   "daoKey":"userDAO",
   "contextDAOFindKey": "subject.realUser",
   "associatedEntity": 1
@@ -493,7 +489,6 @@ p({
   "of":"net.nanopay.crunch.onboardingModels.InitialBusinessData",
   "version":"0",
   "enabled":true,
-  "visible":true,
   "keywords":["featured"],
   "availabilityPredicate":{
     "class": "foam.mlang.predicate.Not",
@@ -517,8 +512,7 @@ p({
   type:0,
   id:"520a4120-3bc6-cef9-6635-c32af8219a6a",
   name:"Source Country Capability BR",
-  enabled:true,
-  visible:false
+  enabled:true
 })
 
 p({
@@ -527,8 +521,7 @@ p({
   type:1,
   id:"63049307-8db4-2437-5c02-b71d6878263c",
   name:"Target Country Capability BR",
-  enabled:true,
-  visible:false
+  enabled:true
 })
 
 p({
@@ -538,7 +531,7 @@ p({
   "of":"net.nanopay.country.br.BrazilBusinessInfoData",
   "version":"0",
   "enabled":true,
-  "visible":true,
+  "availabilityPredicate":{"class":"foam.mlang.predicate.True"},
   "associatedEntity": 0
 })
 
@@ -549,7 +542,7 @@ p({
   "of":"net.nanopay.country.br.CPF",
   "version":"0",
   "enabled":true,
-  "visible":true,
+  "availabilityPredicate":{"class":"foam.mlang.predicate.True"},
   "associatedEntity": 1
 })
 
@@ -561,7 +554,7 @@ p({
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "enabled":true,
-  "visible":true,
+  "availabilityPredicate":{"class":"foam.mlang.predicate.True"},
   "associatedEntity": 0
 })
 
@@ -573,7 +566,7 @@ p({
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "enabled":true,
-  "visible":true,
+  "availabilityPredicate":{"class":"foam.mlang.predicate.True"},
   "associatedEntity": 0
 })
 
@@ -585,7 +578,7 @@ p({
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "enabled":true,
-  "visible":true,
+  "availabilityPredicate":{"class":"foam.mlang.predicate.True"},
   "associatedEntity": 0
 })
 
@@ -597,7 +590,7 @@ p({
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "enabled":true,
-  "visible":true,
+  "availabilityPredicate":{"class":"foam.mlang.predicate.True"},
   "associatedEntity": 1
 })
 
@@ -609,7 +602,7 @@ p({
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "enabled":true,
-  "visible":true,
+  "availabilityPredicate":{"class":"foam.mlang.predicate.True"},
   "associatedEntity": 1
 })
 
@@ -621,7 +614,6 @@ p({
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "keywords":["intuit"]
 })
 
@@ -633,7 +625,6 @@ p({
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "keywords":["intuit"]
 })
 
@@ -645,7 +636,6 @@ p({
   "of":"net.nanopay.crunch.registration.BusinessDetailExpandedData",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "daoKey":"businessDAO",
   "contextDAOFindKey":"subject.user"
 })
@@ -658,7 +648,6 @@ p({
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "keywords":["intuit"]
 })
 
@@ -669,7 +658,6 @@ p({
   "of":"net.nanopay.crunch.registration.BusinessDetailData",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "daoKey":"businessDAO",
   "contextDAOFindKey":"subject.user"
 })
@@ -681,7 +669,6 @@ p({
   "of":"net.nanopay.crunch.registration.BusinessTypeData",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "min": 1,
   "max": 1,
   "daoKey":"businessDAO",
@@ -696,7 +683,6 @@ p({
   "of":"net.nanopay.crunch.registration.IsSelectedData",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "keywords":["intuit"]
 })
 
@@ -708,7 +694,6 @@ p({
   "of":"net.nanopay.crunch.registration.IsSelectedData",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "keywords":["intuit"]
 })
 
@@ -718,8 +703,7 @@ p({
   "name":"Business Directors",
   "of":"net.nanopay.crunch.registration.BusinessDirectorList",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -728,8 +712,7 @@ p({
   "name":"Business Owners",
   "of":"net.nanopay.crunch.registration.BusinessOwnerList",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -738,8 +721,7 @@ p({
   "name":"Business Signing Officer",
   "description":"Business has a signing officer",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -748,8 +730,7 @@ p({
   "name":"Signing Officers",
   "of":"net.nanopay.crunch.registration.SigningOfficerList",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -759,7 +740,6 @@ p({
   "description":"User is a signing officer",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "contextDAOFindKey":"subject.realuser",
   "associatedEntity":2
 })
@@ -772,7 +752,6 @@ p({
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "keywords":["intuit"]
 })
 
@@ -784,7 +763,6 @@ p({
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "keywords":["intuit"]
 })
 
@@ -794,8 +772,7 @@ p({
   "name":"Personal Onboarding Type",
   "of":"net.nanopay.crunch.registration.PersonalOnboardingTypeData",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -806,7 +783,6 @@ p({
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "keywords":["intuit"]
 })
 
@@ -817,7 +793,6 @@ p({
   "of":"net.nanopay.crunch.registration.UserDetailData",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "daoKey":"userDAO",
   "contextDAOFindKey": "subject.realUser",
   "associatedEntity": 1
@@ -832,7 +807,6 @@ p({
   "of":"net.nanopay.crunch.registration.UserDetailExpandedData",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "daoKey":"userDAO",
   "contextDAOFindKey": "subject.realUser",
   "associatedEntity": 1
@@ -846,7 +820,6 @@ p({
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "keywords":["intuit"]
 })
 
@@ -858,7 +831,7 @@ p({
   "contextDAOFindKey":"subject.realuser",
   "version":"0",
   "enabled":true,
-  "visible":true,
+  "availabilityPredicate":{"class":"foam.mlang.predicate.True"},
   "associatedEntity": 1,
   "wizardlet": {
     "class": "foam.nanos.crunch.ui.CapabilityWizardlet"
@@ -875,7 +848,7 @@ p({
   "contextDAOFindKey": "subject.user",
   "version":"0",
   "enabled":true,
-  "visible":true
+  "availabilityPredicate":{"class":"foam.mlang.predicate.True"}
 })
 
 p({
@@ -888,7 +861,7 @@ p({
   "contextDAOFindKey": "subject.user",
   "version":"0",
   "enabled":true,
-  "visible":true
+  "availabilityPredicate":{"class":"foam.mlang.predicate.True"}
 })
 
 p({
@@ -901,7 +874,7 @@ p({
   "contextDAOFindKey": "subject.user",
   "version":"0",
   "enabled":true,
-  "visible":true
+  "availabilityPredicate":{"class":"foam.mlang.predicate.True"}
 })
 
 // nanopay capabilities
@@ -911,7 +884,6 @@ p({
   name: "Nanopay Country Capability",
   version: "0",
   enabled: true,
-  visible: false,
   permissionsGranted: [
     "country.read.CA",
     "country.read.US"
@@ -924,7 +896,6 @@ p({
   name: "Nanopay Corridor Capability",
   version: "0",
   enabled: true,
-  visible: false,
   permissionsGranted: [
     "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
     "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
@@ -942,7 +913,6 @@ p({
   name: "Nanopay Currency Capability",
   version: "0",
   enabled: true,
-  visible: false,
   permissionsGranted: [
     "currency.read.CAD",
     "currency.read.USD",
@@ -957,7 +927,6 @@ p({
   name: "Nanopay Planner Capability",
   version: "0",
   enabled: true,
-  visible: false,
   permissionsGranted: [
     "rule.read.*"
   ]
@@ -969,7 +938,6 @@ p({
   "name": "Nanopay Menu Capability",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "permissionsGranted":[
     "menu.read.capability.menu.search",
     "menu.read.capability.menu.paymentcode",
@@ -988,7 +956,6 @@ p({
   "name": "Nanopay Accounting Capability",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "permissionsGranted":[
     "service.quickbooksService"
   ]
@@ -1000,6 +967,5 @@ p({
   "name":"Business Onboarding Addition Infor",
   "of":"net.nanopay.onboarding.model.BusinessOnboardingExtra",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })

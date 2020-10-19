@@ -50,6 +50,9 @@ foam.CLASS({
         X x = (X) obj;
         User user = ((Subject) x.get("subject")).getUser();
         Address address = (Address) user.getAddress();
+        if ( getCountry() == null && getCountry().equals("") ) {
+          return address == null || address.getCountryId() == null || address.getCountryId().equals(getCountry());
+        }
         if ( address != null ) {
           return address.getCountryId() == getCountry();
         }

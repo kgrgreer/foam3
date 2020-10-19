@@ -1624,6 +1624,7 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/onboardingModels/BusinessAccountData' },
   { name: 'net/nanopay/crunch/onboardingModels/CurrencyAmountInformation' },
   { name: 'net/nanopay/crunch/onboardingModels/CustomerBasicInformation' },
+  { name: 'net/nanopay/crunch/onboardingModels/IsBusiness' },
 
   // crunch notification
   { name: 'net/nanopay/crunch/UCJExpiryReminderCron' },

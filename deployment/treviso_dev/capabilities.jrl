@@ -23,7 +23,6 @@ p({
   id: "trevisoMenuCapability",
   version: "0",
   enabled: true,
-  visible: false,
   permissionsGranted: []
 })
 p({
@@ -31,7 +30,6 @@ p({
   id: "trevisoPlannerCapability",
   version: "0",
   enabled: true,
-  visible: false,
   permissionsGranted: [
     "rule.read.13df0d76-ba3e-4287-b42e-c7ceff059dd8",
     "rule.read.2775abef-05d4-4460-bea8-7a70e9d544af",
@@ -43,7 +41,6 @@ p({
   id: "trevisoCountryCapability",
   version: "0",
   enabled: true,
-  visible: false,
   permissionsGranted: [
     "country.read.BR"
   ]
@@ -53,7 +50,6 @@ p({
   id: "trevisoCorridorCapability",
   version: "0",
   enabled: true,
-  visible: false,
   permissionsGranted: [
     "paymentprovidercorridor.read.*"
   ]
@@ -63,7 +59,6 @@ p({
   id: "trevisoCurrencyCapability",
   version: "0",
   enabled: true,
-  visible: false,
   permissionsGranted: [
     "currency.read.USD",
     "currency.read.CAD"

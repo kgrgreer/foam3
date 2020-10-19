@@ -12,8 +12,7 @@ p({
   "version":"0",
   "duration":540,
   "gracePeriod":7,
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -30,7 +29,7 @@ p({
   "duration":90,
   "gracePeriod":7,
   "enabled":true,
-  "visible":true,
+  "availabilityPredicate":{"class":"foam.mlang.predicate.True"},
   "associatedEntity": 0
 })
 
@@ -46,7 +45,7 @@ p({
   "duration":3650,
   "gracePeriod":7,
   "enabled":true,
-  "visible":true,
+  "availabilityPredicate":{"class":"foam.mlang.predicate.True"},
   "associatedEntity": 1
 })
 

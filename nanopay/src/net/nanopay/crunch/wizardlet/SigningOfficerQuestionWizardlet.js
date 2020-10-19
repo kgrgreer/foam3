@@ -21,7 +21,7 @@ foam.CLASS({
   messages: [
     {
       name: 'SUCCESS_SIGNING_OFFICER_QUESTION',
-      message: 'Thank you! Please fill in the additional details required for signing officer priviliges.'
+      message: 'Thank you! Please fill in the additional details required for signing officer privileges.'
     }
   ],
 

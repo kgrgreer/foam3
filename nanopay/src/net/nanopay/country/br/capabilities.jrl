@@ -6,8 +6,7 @@ p({
   "description":"Balance sheet for the relevant period",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -17,8 +16,7 @@ p({
   "description":"Income statement for the relevant period",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -28,8 +26,7 @@ p({
   "description":"Bank domicile for payment of Reasis",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -40,8 +37,7 @@ p({
   "description":"Bank domicile for payment of Foreign Currency",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -51,8 +47,7 @@ p({
   "description":"BL, Airway Bill (AWB), CTR, Courier",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -61,8 +56,7 @@ p({
   "name":"Board authorization for closing",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -71,8 +65,7 @@ p({
   "name":"Company incorporation document",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -82,8 +75,7 @@ p({
   "description":"Company report with bills of lading numbers.",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -93,8 +85,7 @@ p({
   "description":"Contract between the parties",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -104,8 +95,7 @@ p({
   "description":"Social Contract",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -115,8 +105,7 @@ p({
   "description":"Corporate act deliberating on the investment",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -126,8 +115,7 @@ p({
   "description":"Letter of authorization from the foreign company to receive the investment",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -136,8 +124,7 @@ p({
   "name":"Courier voucher",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -146,8 +133,7 @@ p({
   "name":"Debit Note",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -156,8 +142,7 @@ p({
   "name":"Deed of the Property",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -166,8 +151,7 @@ p({
   "name":"Document of proof of kinship",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -176,8 +160,7 @@ p({
   "name":"Document proving the operation",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -186,8 +169,7 @@ p({
   "name":"Import Declaration",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -196,8 +178,7 @@ p({
   "name":"Insurance note",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -206,8 +187,7 @@ p({
   "name":"Invoice with payment details",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -216,8 +196,7 @@ p({
   "name":"Lease Agreement",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -226,8 +205,7 @@ p({
   "name":"Loan Agreement",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -236,8 +214,7 @@ p({
   "name":"Minutes of Profit Distribution of the company",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -246,8 +223,7 @@ p({
   "name":"Policy",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -256,8 +232,7 @@ p({
   "name":"Proof of investment abroad",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -267,8 +242,7 @@ p({
   "description":"Proof of order received from abroad (SWIFT / CCME)",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -278,8 +252,7 @@ p({
   "description":"Proof of payment of taxes on gifts and inheritances",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -288,8 +261,7 @@ p({
   "name":"Property purchase agreement",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -298,8 +270,7 @@ p({
   "name":"Property Sale Agreement",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -308,8 +279,7 @@ p({
   "name":"Property Rental Agreement",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -319,8 +289,7 @@ p({
   "reviewRequired":true,
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -329,8 +298,7 @@ p({
   "name":"Payment scheme",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -339,8 +307,7 @@ p({
   "name":"ROF",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -350,8 +317,7 @@ p({
   "description":"Updated RDE-IED",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -361,8 +327,7 @@ p({
   "description":"Simplified export declaration / DSE (Declaração Simplificada de Exportação)",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -372,8 +337,7 @@ p({
   "description":"Export Registration / RE (registro-de-exportacao)",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -383,8 +347,7 @@ p({
   "reviewRequired":true,
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -393,8 +356,7 @@ p({
   "name":"Service Provision Agreement",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -403,8 +365,7 @@ p({
   "name":"Signed Commercial Invoice",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -414,8 +375,7 @@ p({
   "description":"Document containing the Wills inventory",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -425,8 +385,7 @@ p({
   "description":"Signed Proforma Invoice (containing expected shipping date)",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 //  TODO: remember to remember of after we fix on wizard
@@ -438,8 +397,7 @@ p({
   "min": 1,
   "max": 1,
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -450,7 +408,6 @@ p({
   "icon":"/images/capabilityIcons/BrazilCap.svg",
   "version":"0",
   "enabled":true,
-  "visible":true,
   "reviewRequired":true,
   "keywords":["featured"],
   "permissionsGranted":[
@@ -482,8 +439,7 @@ p({
   "name":"Terms and Conditions",
   "of":"net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 //addition Requirements unlock Brazil payment
@@ -494,7 +450,7 @@ p({
   "of":"net.nanopay.crunch.onboardingModels.CurrencyAmountInformation",
   "version":"0",
   "enabled":true,
-  "visible":true
+  "availabilityPredicate":{"class":"foam.mlang.predicate.True"}
 })
 p({
   "class":"foam.nanos.crunch.Capability",
@@ -503,7 +459,7 @@ p({
   "of":"net.nanopay.crunch.onboardingModels.BusinessAccountData",
   "version":"0",
   "enabled":true,
-  "visible":true
+  "availabilityPredicate":{"class":"foam.mlang.predicate.True"}
 })
 p({
   "class":"foam.nanos.crunch.Capability",
@@ -512,7 +468,7 @@ p({
   "of": "net.nanopay.country.br.NatureBusinessRelationship",
   "version":"0",
   "enabled":true,
-  "visible":true
+  "availabilityPredicate":{"class":"foam.mlang.predicate.True"}
 })
 p({
   "class":"foam.nanos.crunch.Capability",
@@ -520,8 +476,7 @@ p({
   "name":"Treviso Invoice Capability",
   "description":"The Capable-Specific Capability for Invoices on Treviso",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -532,6 +487,5 @@ p({
   "min": 1,
   "max": 3,
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
