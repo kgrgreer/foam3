@@ -25,11 +25,14 @@ foam.CLASS({
   javaImports: [
     'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.cron.Cron',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
     'foam.nanos.notification.Notification',
+    'foam.nanos.theme.Theme',
+    'foam.nanos.theme.Themes',
     'java.util.Date',
     'java.util.HashMap',
     'java.util.List',
@@ -65,24 +68,24 @@ foam.CLASS({
         DAO                  businessDAO    = (DAO) x.get("businessDAO");
 
         // FOR DEFINING THE PERIOD IN WHICH TO CONSIDER SIGN UPS
-        Date                 startInterval  = new Date(new Date().getTime() - (1000 * 60 * this.getThreshold()));
-        Date                 endInterval    = null;
-        Long                 disruptionDiff = 0L;
-        Date                 disruption     = ((Cron)((DAO)x.get("cronDAO")).find("Send Welcome Email to Ablii Business 30min after SignUp")).getLastRun();
+        Date startInterval  = new Date(new Date().getTime() - (1000 * 60 * this.getThreshold()));
+        Date endInterval    = null;
+        Long disruptionDiff = 0L;
+        Date disruption     = ((Cron)((DAO)x.get("cronDAO")).find("Send Welcome Email to Ablii Business 30min after SignUp")).getLastRun();
 
         // Check if there was no service disruption - if so, add/sub diff from endInterval
         disruptionDiff = disruption == null ? 0 : disruption.getTime() - startInterval.getTime();
         endInterval    = new Date(startInterval.getTime() - (1000 * 60 * this.getThreshold()) + disruptionDiff );
 
-        List<Business> businessOnboardedInLastXmin = ( (ArraySink) businessDAO.where(
+        List<Business> businessOnboardedInLastXmin = ((ArraySink) businessDAO.where(
           AND(
             GTE(Business.CREATED, endInterval),
             LT(Business.CREATED, startInterval))
           ).select(new ArraySink())).getArray();
 
         for(Business business : businessOnboardedInLastXmin) {
-          message        = new EmailMessage();
-          args           = new HashMap<>();
+          message = new EmailMessage();
+          args    = new HashMap<>();
 
           message.setTo(new String[]{ business.getEmail() });
           args.put("name", User.FIRST_NAME);
@@ -94,6 +97,9 @@ foam.CLASS({
               .setEmailName("helpsignup")
               .build();
 
+            Subject subject = new Subject.Builder(x).setUser(business).build();
+            Theme theme = new Themes().findTheme(x.put(Subject.class, subject));
+            x = x.put(Theme.class, theme);
             business.doNotify(x, helpSignUpNotification);
 
           } catch (Throwable t) {
