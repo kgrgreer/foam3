@@ -474,7 +474,6 @@ p({
   "of":"net.nanopay.crunch.registration.UserRegistrationData",
   "version":"0",
   "enabled":true,
-  "availabilityPredicate":{"class":"foam.mlang.predicate.True"},
   "daoKey":"userDAO",
   "contextDAOFindKey": "subject.realUser",
   "associatedEntity": 1
@@ -531,7 +530,6 @@ p({
   "of":"net.nanopay.country.br.BrazilBusinessInfoData",
   "version":"0",
   "enabled":true,
-  "availabilityPredicate":{"class":"foam.mlang.predicate.True"},
   "associatedEntity": 0
 })
 
@@ -542,7 +540,6 @@ p({
   "of":"net.nanopay.country.br.CPF",
   "version":"0",
   "enabled":true,
-  "availabilityPredicate":{"class":"foam.mlang.predicate.True"},
   "associatedEntity": 1
 })
 
@@ -554,7 +551,6 @@ p({
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "enabled":true,
-  "availabilityPredicate":{"class":"foam.mlang.predicate.True"},
   "associatedEntity": 0
 })
 
@@ -566,7 +562,6 @@ p({
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "enabled":true,
-  "availabilityPredicate":{"class":"foam.mlang.predicate.True"},
   "associatedEntity": 0
 })
 
@@ -578,7 +573,6 @@ p({
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "enabled":true,
-  "availabilityPredicate":{"class":"foam.mlang.predicate.True"},
   "associatedEntity": 0
 })
 
@@ -590,7 +584,6 @@ p({
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "enabled":true,
-  "availabilityPredicate":{"class":"foam.mlang.predicate.True"},
   "associatedEntity": 1
 })
 
@@ -602,7 +595,6 @@ p({
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "enabled":true,
-  "availabilityPredicate":{"class":"foam.mlang.predicate.True"},
   "associatedEntity": 1
 })
 
@@ -831,7 +823,6 @@ p({
   "contextDAOFindKey":"subject.realuser",
   "version":"0",
   "enabled":true,
-  "availabilityPredicate":{"class":"foam.mlang.predicate.True"},
   "associatedEntity": 1,
   "wizardlet": {
     "class": "foam.nanos.crunch.ui.CapabilityWizardlet"
@@ -847,8 +838,7 @@ p({
   "daoKey": "businessDAO",
   "contextDAOFindKey": "subject.user",
   "version":"0",
-  "enabled":true,
-  "availabilityPredicate":{"class":"foam.mlang.predicate.True"}
+  "enabled":true
 })
 
 p({
@@ -860,8 +850,7 @@ p({
   "daoKey": "businessDAO",
   "contextDAOFindKey": "subject.user",
   "version":"0",
-  "enabled":true,
-  "availabilityPredicate":{"class":"foam.mlang.predicate.True"}
+  "enabled":true
 })
 
 p({
@@ -873,8 +862,7 @@ p({
   "daoKey": "businessDAO",
   "contextDAOFindKey": "subject.user",
   "version":"0",
-  "enabled":true,
-  "availabilityPredicate":{"class":"foam.mlang.predicate.True"}
+  "enabled":true
 })
 
 // nanopay capabilities

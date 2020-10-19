@@ -61,7 +61,6 @@ p({
   "duration":90,
   "gracePeriod":7,
   "enabled":true,
-  "availabilityPredicate":{"class":"foam.mlang.predicate.True"},
   "associatedEntity": 0
 })
 
@@ -77,6 +76,5 @@ p({
   "duration":3650,
   "gracePeriod":7,
   "enabled":true,
-  "availabilityPredicate":{"class":"foam.mlang.predicate.True"},
   "associatedEntity": 1
 })

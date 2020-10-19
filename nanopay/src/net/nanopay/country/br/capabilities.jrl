@@ -449,8 +449,7 @@ p({
   "name":"Business Capital and Equity",
   "of":"net.nanopay.crunch.onboardingModels.CurrencyAmountInformation",
   "version":"0",
-  "enabled":true,
-  "availabilityPredicate":{"class":"foam.mlang.predicate.True"}
+  "enabled":true
 })
 p({
   "class":"foam.nanos.crunch.Capability",
@@ -458,8 +457,7 @@ p({
   "name":"Business Account Information",
   "of":"net.nanopay.crunch.onboardingModels.BusinessAccountData",
   "version":"0",
-  "enabled":true,
-  "availabilityPredicate":{"class":"foam.mlang.predicate.True"}
+  "enabled":true
 })
 p({
   "class":"foam.nanos.crunch.Capability",
@@ -467,8 +465,7 @@ p({
   "name":"Nature of Business Relationship",
   "of": "net.nanopay.country.br.NatureBusinessRelationship",
   "version":"0",
-  "enabled":true,
-  "availabilityPredicate":{"class":"foam.mlang.predicate.True"}
+  "enabled":true
 })
 p({
   "class":"foam.nanos.crunch.Capability",
