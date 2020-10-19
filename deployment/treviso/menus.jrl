@@ -1,0 +1,16 @@
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id": "sme.main.appStore",
+  "label": "Requirements",
+  "activeIcon":"images/ablii/dashboard-icon-active.svg",
+  "icon":"images/ablii/dashboard-icon-resting.svg",
+  "handler":{
+    "class":"foam.nanos.menu.ViewMenu",
+    "view":{
+      "class":"foam.u2.crunch.CapabilityStore",
+      "hideGrantedCapabilities": true,
+    }
+  },
+  "order":499,
+  "parent":"smeNavigation"
+})

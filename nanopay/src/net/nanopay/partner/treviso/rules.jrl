@@ -41,3 +41,22 @@ p({
   "lifecycleState":1,
   "spid": "treviso"
 })
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"38070d3a-7bac-4d7d-8240-d57c66ef6dbd",
+  "name":"Treviso SigningOfficerByDefaultRule",
+  "priority":1,
+  "ruleGroup":"TrevisoConfig",
+  "enabled":true,
+  "after":true,
+  "daoKey":"localUserDAO",
+  "operation":3,
+  "predicate": {
+    "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+    "of": "net.nanopay.model.Business"
+  },
+  "action":{"class":"net.nanopay.crunch.onboardingModels.SigningOfficerByDefaultRule"},
+  "saveHistory":false,
+  "spid": "treviso",
+  "lifecycleState":1
+})
