@@ -1602,8 +1602,12 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/registration/UserDetailExpandedData' },
 
   // crunch onboarding
+  { name: 'net/nanopay/crunch/onboardingModels/BusinessPassedCompliance' },
   { name: 'net/nanopay/crunch/onboardingModels/CheckUserCountry' },
+  { name: 'net/nanopay/crunch/onboardingModels/IsBusiness' },
   { name: 'net/nanopay/crunch/onboardingModels/InitialBusinessData' },
+  { name: 'net/nanopay/crunch/onboardingModels/HasVerifiedBankAccount' },
+  { name: 'net/nanopay/crunch/onboardingModels/RegisterPaymentProviderStatus' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerPersonalData' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerQuestion' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerQuestionAnswered' },

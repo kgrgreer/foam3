@@ -1231,9 +1231,13 @@ var classes = [
   'net.nanopay.partner.treviso.invoice.TrevisoNotificationRule',
 
   // crunch onboarding
+  'net.nanopay.crunch.onboardingModels.BusinessPassedCompliance',
   'net.nanopay.crunch.onboardingModels.CheckUserCountry',
+  'net.nanopay.crunch.onboardingModels.CreateRegisterPaymentProviderUCJ',
   'net.nanopay.crunch.onboardingModels.IsBusiness',
   'net.nanopay.crunch.onboardingModels.InitialBusinessData',
+  'net.nanopay.crunch.onboardingModels.HasVerifiedBankAccount',
+  'net.nanopay.crunch.onboardingModels.RegisterPaymentProviderStatus',
   'net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData',
   'net.nanopay.crunch.onboardingModels.SigningOfficerQuestion',
   'net.nanopay.crunch.onboardingModels.SigningOfficerQuestionAnswered',

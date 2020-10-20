@@ -436,6 +436,43 @@ p({
 })
 
 p({
+  "class": "foam.nanos.crunch.Capability",
+  "min": 1,
+  "id":"1f6b2047-1eef-471d-82e7-d86bdf511375",
+  "name":"Payables Menu Payment Provider Capability(AFEX)",
+  "description":"Payables Menu Payment Provider Capability(AFEX)",
+  "version":"0",
+  "enabled":true,
+  "visible":false,
+})
+
+p({
+  "class": "foam.nanos.crunch.MinMaxCapability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-20",
+  "name":"Registering with Payment Provider",
+  "description":"Registering with Payment Provider",
+  "icon":"images/nanopay_logo_blue.png",
+  "version":"0",
+  "enabled":true,
+  "visible":true,
+  "keywords":["featured"],
+  "permissionsGranted":[
+    "menu.read.capability.main.invoices.payables"
+  ],
+  "availabilityPredicate": {
+    "class":"foam.mlang.predicate.And",
+    "args": [
+      { "class": "net.nanopay.crunch.onboardingModels.BusinessPassedCompliance" },
+      { "class": "net.nanopay.crunch.onboardingModels.HasVerifiedBankAccount" },
+      {
+        "class": "net.nanopay.crunch.onboardingModels.RegisterPaymentProviderStatus",
+        "status":7
+      }
+    ]
+  }
+})
+
+p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-18",
   "name":"General Admission",

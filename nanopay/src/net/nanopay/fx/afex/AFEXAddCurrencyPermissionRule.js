@@ -84,7 +84,14 @@ foam.CLASS({
                 // TODO check and remove if currency.read permissions still need to be given here and update rule name
 
                 DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
-                UserCapabilityJunction ucj = (UserCapabilityJunction) ucjDAO.find("554af38a-8225-87c8-dfdf-eeb15f71215f-20");
+                String afexPaymentMenuCapId = "1f6b2047-1eef-471d-82e7-d86bdf511375";
+                UserCapabilityJunction ucj = (UserCapabilityJunction) ucjDAO.find(afexPaymentMenuCapId);
+                if ( ucj == null ) {
+                  ucj = new UserCapabilityJunction.Builder(x).setSourceId(business.getId())
+                    .setTargetId(afexPaymentMenuCapId)
+                    .build();
+                }
+
                 ucj.setStatus(CapabilityJunctionStatus.GRANTED);
                 ucjDAO.put(ucj);
 
