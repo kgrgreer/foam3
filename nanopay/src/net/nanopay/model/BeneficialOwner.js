@@ -66,7 +66,8 @@ foam.CLASS({
 
   messages: [
     { name: 'INVALID_CPF', message: 'Invalid CPF Number' },
-    { name: 'INVALID_OWNER_NAME', message: 'Click to verify owner name' }
+    { name: 'INVALID_OWNER_NAME', message: 'Click to verify owner name' },
+    { name: 'INVALID_NATIONALITY', message: 'Please select your nationality' }
   ],
 
   properties: [
@@ -302,7 +303,22 @@ foam.CLASS({
             }
           ]
         };
-      }
+      },
+      validationPredicates: [
+        {
+          args: ['nationality', 'showValidation'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.model.BeneficialOwner.SHOW_VALIDATION, false),
+              e.GT(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.model.BeneficialOwner.NATIONALITY
+                }), 0)
+            );
+          },
+          errorMessage: 'INVALID_NATIONALITY'
+        }
+      ]
     },
     {
       class: 'String',
