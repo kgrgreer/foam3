@@ -1604,6 +1604,7 @@ FOAM_FILES([
   // crunch onboarding
   { name: 'net/nanopay/crunch/onboardingModels/BusinessPassedCompliance' },
   { name: 'net/nanopay/crunch/onboardingModels/CheckUserCountry' },
+  { name: 'net/nanopay/crunch/onboardingModels/CreateRegisterPaymentProviderUCJ' },
   { name: 'net/nanopay/crunch/onboardingModels/IsBusiness' },
   { name: 'net/nanopay/crunch/onboardingModels/InitialBusinessData' },
   { name: 'net/nanopay/crunch/onboardingModels/HasVerifiedBankAccount' },
