@@ -213,7 +213,7 @@ task runFoamlink(type: Exec) {
 }
 
 task genJava(type: Exec) {
-//    dependsOn tasks.runFoamlink
+    dependsOn tasks.runFoamlink
     onlyIf {
         !tasks.incrementalGenTask.state.upToDate &&
         !project.hasProperty('foamoptions.skipgenjava')
@@ -351,6 +351,9 @@ clean {
     delete project.targetDir
     delete project.buildDir
     delete project.genJavaDir
+    delete fileTree(project.jsBuildDir).matching {
+      include "**/foam-*.js"
+    }
 }
 
 compileJava {
