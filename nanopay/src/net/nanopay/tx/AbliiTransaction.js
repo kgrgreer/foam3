@@ -116,9 +116,13 @@ foam.CLASS({
     },
     {
       name: 'toSummary',
+      type: 'String',
       code: function(x) {
         return this.DESCRIPTION;
-      }
+      },
+      javaCode: `
+        return "Summary";
+      `
     }
   ]
 });

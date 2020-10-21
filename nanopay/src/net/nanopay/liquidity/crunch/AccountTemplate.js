@@ -79,7 +79,10 @@ foam.CLASS({
       `,
       code: function() {
         return this.templateName || this.id;
-      }
+      },
+      javaCode: `
+        return foam.util.SafetyUtil.isEmpty(getTemplateName()) ? getId() : getTemplateName();
+      `
     },
     {
       name: 'validate',

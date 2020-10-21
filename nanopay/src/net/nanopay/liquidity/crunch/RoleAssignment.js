@@ -132,7 +132,10 @@ foam.CLASS({
       type: 'String',
       code: function(){
         return `(Capability Request #${this.id}) ${this.requestType.label}`
-      }
+      },
+      javaCode: `
+        return ! foam.util.SafetyUtil.isEmpty(getId()) ? "Capability Request #" + getId() + ")" : "";
+      `
     },
     {
       name: 'validate',

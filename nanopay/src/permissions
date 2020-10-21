@@ -591,6 +591,7 @@ p({"class":"foam.nanos.auth.Permission","id":"service.googleSheetsDataExport","d
 p({"class":"foam.nanos.auth.Permission","id":"notification.notify","description":"Permission allows ops team to use resend notification action"})
 p({"class":"foam.nanos.auth.Permission","id":"service.resendNotificationService","description":"Allows user to use resend notification service"})
 p({"class":"foam.nanos.auth.Permission","id":"service.localSettingDAO","description":""})
+p({"class":"foam.nanos.auth.Permission","id":"service.reportTemplateDAO","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"paymentprovidercorridor.read.*","description":""})
 p({"class":"foam.nanos.auth.Permission","id":"service.fileTypeDAO","description":"Allow user access the fileTypeDAO"})
 p({"class":"foam.nanos.auth.Permission","id":"service.contactService","description":""})

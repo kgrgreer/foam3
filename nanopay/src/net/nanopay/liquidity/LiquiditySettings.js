@@ -386,6 +386,7 @@ foam.CLASS({
   methods: [
     {
       name: 'toSummary',
+      type: 'String',
       documentation: `
         When using a reference to the accountDAO, the labels associated to it will show a chosen property
         rather than the first alphabetical string property. In this case, we are using the account name.
@@ -394,6 +395,9 @@ foam.CLASS({
         var self = this;
         return this.name;
       },
+      javaCode: `
+        return getName();
+      `
     },
     {
       name: 'doFolds',

@@ -46,9 +46,13 @@ foam.CLASS({
   methods: [
     {
       name: 'toSummary',
+      type: 'String',
       code: function() {
         return `(${this.classification}:${this.outgoingAccount}) ${this.operation}`;
-      }
+      },
+      javaCode: `
+        return foam.util.SafetyUtil.isEmpty(getClassification()) || getOperation() == null ? "" : "(" + getClassification() + ":" + String.valueOf(getOutgoingAccount()) + ") " + getOperation().toString();
+      `
     }
   ]
 });
