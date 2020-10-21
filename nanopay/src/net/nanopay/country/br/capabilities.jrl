@@ -388,11 +388,9 @@ p({
   "enabled":true
 })
 
-//  TODO: remember to remember of after we fix on wizard
 p({
   "class": "foam.nanos.crunch.MinMaxCapability",
   "id":"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode",
-  "of":"foam.nanos.cron.TimeHMS",
   "name":"Nature Code Requirement",
   "min": 1,
   "max": 1,
@@ -490,7 +488,6 @@ p({
 p({
   "class": "foam.nanos.crunch.MinMaxCapability",
   "id":"af7941f3-bd2d-4666-93b3-9e12a2e8023d",
-  "of":"foam.nanos.cron.TimeHMS",
   "name":"Supply and Technology Services Documents",
   "min": 1,
   "max": 3,
