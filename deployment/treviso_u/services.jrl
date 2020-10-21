@@ -11,6 +11,8 @@ p({
       "treviso",
       "treviso.release.nanopay.net",
       "release.nanopay.net",
+      "treviso.development.nanopay.net",
+      "development.nanopay.net",
       "localhost"
     ],
     "servletMappings": [{
