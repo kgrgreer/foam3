@@ -29,6 +29,8 @@ foam.CLASS({
         'foam.dao.DAO',
         'foam.nanos.crunch.CrunchService',
         'foam.nanos.crunch.Capability',
+        'foam.nanos.crunch.ServerCrunchService',
+        'foam.nanos.crunch.UserCapabilityJunction',
         'foam.util.SafetyUtil',
 
         'net.nanopay.invoice.model.Invoice',
@@ -36,14 +38,17 @@ foam.CLASS({
         'net.nanopay.liquidity.LiquiditySettings',
 
         'java.util.ArrayList',
-        'java.util.Arrays'
+        'java.util.Arrays',
+
+        'static foam.mlang.MLang.*',
+        'static foam.nanos.crunch.CapabilityJunctionStatus.*'
     ],
 
     constants: [
         {
             name: 'USER_CAPABILITY_ID',
             type: 'String',
-            value: '554af38a-8225-87c8-dfdf-eeb15f71215f-49'
+            value: '2910C2C9-3597-42A3-BF85-CFBC8F0E1388'
         },
         {
             name: 'OBJECT_CAPABILITY_ID',
@@ -56,18 +61,35 @@ foam.CLASS({
         {
             name: 'applyAction',
             javaCode: `
-            var invoice = (Invoice) obj;
-            
-            var capabilityDAO = (DAO) x.get("capabilityDAO");
-            SafetyUtil.validate(x, (Capability) capabilityDAO.find(USER_CAPABILITY_ID));
-            
-            var capablePayloadList = new ArrayList<String>(Arrays.asList(invoice.getUserCapabilityRequirements()));
-            if ( ! capablePayloadList.contains(USER_CAPABILITY_ID) ) {
-                capablePayloadList.add(USER_CAPABILITY_ID);
-                invoice.setUserCapabilityRequirements((String[]) capablePayloadList.toArray(new String[0]));
-            }
+              var capabilityDAO = (DAO) x.get("capabilityDAO");
+              var crunchService = (ServerCrunchService) x.get("crunchService");
 
-            invoice.addRequirement(x, OBJECT_CAPABILITY_ID);
+              // Can't use agency here as it would cause this rule's logic to
+              //   run after the capability validate rule. To get around this
+              //   the context is obtained from crunchService.
+              var updateX = crunchService.getX();
+              updateX = updateX.put("subject", x.get("subject"));
+
+              var invoice = (Invoice) obj;
+              
+              SafetyUtil.validate(x, (Capability) capabilityDAO.find(USER_CAPABILITY_ID));
+
+              // Check if user capability is already granted;
+              //   if it is, it should not be included in the intercept
+              UserCapabilityJunction userUCJ = crunchService
+                .getJunction(x, USER_CAPABILITY_ID);
+              if ( userUCJ == null ) userUCJ = crunchService
+                .updateJunction(updateX, USER_CAPABILITY_ID, null);
+
+              boolean isGranted = userUCJ.getStatus() == GRANTED;
+              
+              var userCapabilityList = new ArrayList<String>(Arrays.asList(invoice.getUserCapabilityRequirements()));
+              if ( ! userCapabilityList.contains(USER_CAPABILITY_ID) && ! isGranted ) {
+                userCapabilityList.add(USER_CAPABILITY_ID);
+                invoice.setUserCapabilityRequirements((String[]) userCapabilityList.toArray(new String[0]));
+              }
+
+              invoice.addRequirement(x, OBJECT_CAPABILITY_ID);
             `
         }
     ]

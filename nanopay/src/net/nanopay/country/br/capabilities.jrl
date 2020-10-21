@@ -435,6 +435,16 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
+  "id":"2910C2C9-3597-42A3-BF85-CFBC8F0E1388",
+  "name":"User Invoice Capability",
+  "icon":"/images/capabilityIcons/BrazilCap.svg",
+  "enabled":true,
+  "visible":false,
+  "associatedEntity": 2
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-25",
   "name":"Terms and Conditions",
   "of":"net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions",
