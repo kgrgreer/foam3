@@ -158,7 +158,7 @@ foam.CLASS({
         FeeLineItem[] feeArray = fee.toArray((new FeeLineItem[fee.size()]));
         feeSummary.setLineItems(feeArray);
         Long totalFee = 0l;
-        Currency currency = feeArray[0].getFeeCurrency();
+        Currency currency = (Currency) ((DAO) getX().get("currencyDAO")).find(feeArray[0].getFeeCurrency());
         for ( FeeLineItem feeLine: feeArray ) {
           totalFee += feeLine.getAmount();
         }
@@ -191,8 +191,8 @@ foam.CLASS({
 
         if ( fxArray.length == 1 ) {
           fxRate = fxArray[0].getRate();
-          source = fxArray[0].getSourceCurrency();
-          destination = fxArray[0].getDestinationCurrency();
+          source =(Currency) currencyDAO.find(fxArray[0].getSourceCurrency());
+          destination = (Currency) currencyDAO.find(fxArray[0].getDestinationCurrency());
           fxSummary.setExpiry(fxArray[0].getExpiry());
         } else {
           for ( FXLineItem fxLine : fxArray ) {
