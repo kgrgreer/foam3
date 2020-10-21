@@ -3,6 +3,7 @@ package net.nanopay.tx.test;
 import foam.core.X;
 import foam.dao.DAO;
 import net.nanopay.model.Business;
+import net.nanopay.tx.TransactionQuote;
 import net.nanopay.tx.planner.TransactionPlan;
 
 public class BusinessCompliancyTransactionValidationTests
@@ -40,23 +41,23 @@ public class BusinessCompliancyTransactionValidationTests
     // Test 1 - Sender needs to pass business compliance
     var threw = false;
     var message = "";
-    var quote = (TransactionPlan) localTransactionPlannerDAO.put_(x, txn);
-    var quoteR = localTransactionPlannerDAO.put_(x, quote.getTransaction());
+    var quote = (TransactionQuote) localTransactionPlannerDAO.put_(x, txn);
+    var quoteR = localTransactionPlannerDAO.put_(x, quote.getPlan());
     test(quoteR == null , "validation has failed because null was returned"); //TODO: read an error code, see if expected
     //test( threw && message.equals("Sender needs to pass business compliance."), "Unable to put if sender business user hasn't passed compliance.")
 
     // Test 2 - Sender passes compliance
     payer.setCompliance(net.nanopay.admin.model.ComplianceStatus.PASSED);
     payer = (Business) localUserDAO.put_(x, payer).fclone();
-    quote = (TransactionPlan) localTransactionPlannerDAO.put_(x, txn.fclone());
-    quoteR = localTransactionPlannerDAO.put_(x, quote.getTransaction());
+    quote = (TransactionQuote) localTransactionPlannerDAO.put_(x, txn.fclone());
+    quoteR = localTransactionPlannerDAO.put_(x, quote.getPlan());
     test(quoteR != null , "validation has Succeeded because null was not returned");
 
     // Test 3 - Receiver failed compliance
     payee.setCompliance(net.nanopay.admin.model.ComplianceStatus.FAILED);
     payee = (Business) localUserDAO.put_(x, payee).fclone();
-    quote = (TransactionPlan) localTransactionPlannerDAO.put_(x, txn.fclone());
-    quoteR = localTransactionPlannerDAO.put_(x, quote.getTransaction());
+    quote = (TransactionQuote) localTransactionPlannerDAO.put_(x, txn.fclone());
+    quoteR = localTransactionPlannerDAO.put_(x, quote.getPlan());
     test(quoteR == null , "validation has failed because null was returned"); //TODO: read an error code, see if expected.
     //test( threw && message.equals("Receiver needs to pass compliance."), "Unable to put if receiver user failed compliance.");
   }

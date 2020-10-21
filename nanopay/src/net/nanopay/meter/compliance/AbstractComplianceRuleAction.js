@@ -28,6 +28,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
+    'foam.util.SafetyUtil',
     'static foam.mlang.MLang.EQ'
   ],
 
@@ -54,7 +55,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        if ( approvalRequest.getGroup() == null ) {
+        if ( SafetyUtil.isEmpty(approvalRequest.getGroup()) ) {
           approvalRequest.setGroup(getApproverGroupId());
         }
         ((DAO) x.get("approvalRequestDAO")).put(approvalRequest);
@@ -62,4 +63,4 @@ foam.CLASS({
     }
   ]
 });
- 
+
