@@ -30,6 +30,7 @@ foam.CLASS({
     'foam.log.LogLevel',
     'foam.nanos.auth.UserUserJunction',
     'foam.u2.dialog.Popup',
+    'foam.u2.ConfirmationModal',
     'net.nanopay.auth.AgentJunctionStatus',
     'net.nanopay.model.ClientUserJunction',
     'net.nanopay.model.Invitation',
@@ -127,6 +128,9 @@ foam.CLASS({
               name: 'deactivateAccount',
               isAvailable: function() {
                 return this.status === self.AgentJunctionStatus.ACTIVE && self.subject.realUser.id != this.sourceId;
+              },
+              confirmationView: function(_, X) {
+                return {class: 'foam.u2.ConfirmationModal'};
               },
               code: function(X) {
                 // Disable user junction.
