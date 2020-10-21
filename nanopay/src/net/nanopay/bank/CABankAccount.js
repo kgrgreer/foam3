@@ -321,12 +321,12 @@ foam.CLASS({
     }
   ],
   methods: [
-    async function save() {
+    async function save(stack_back) {
       try {
         await this.padCaptureDAO.put(this.padCapture);
         this.address = this.padCapture.address;
         await this.subject.user.accounts.put(this);
-        if ( this.stack ) this.stack.back();
+        if ( this.stack && stack_back ) this.stack.back();
         this.notify(this.ADD_SUCCESSFUL, '', this.LogLevel.INFO, true);
       } catch (error) {
         this.notify(error.message, '', this.LogLevel.ERROR, true);
