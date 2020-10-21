@@ -186,6 +186,10 @@ foam.CLASS({
                   this.businessStatus !== self.AccountStatus.DISABLED
                 ) || this.bankAccount;
               },
+              isAvailable: async function() {
+                let permission = await self.auth.check(null, 'menu.read.capability.main.invoices.payables');
+                return permission;
+              },
               code: function(X) {
                 self.checkAndNotifyAbilityToPay().then((result) => {
                   if ( result ) {
