@@ -1,34 +1,34 @@
-p({class:"net.nanopay.country.br.NatureCode", id:"125215a0-b0aa-4bb4-ac26-bc5d4a7a05d1", operationType:"47575", name:"Cessão ou uso de programas de computador"})
-p({class:"net.nanopay.country.br.NatureCode", id:"4cfa9007-1d87-4bdd-b6e1-4e3c6fe78a2c", operationType:"67500", name:"Disponibilidades no exterior"})
-p({class:"net.nanopay.country.br.NatureCode", id:"94bc7bf2-5637-438a-8bca-ad9e8887c84f", operationType:"67500", name:"Disponibilidade no exterior organizações sem fins lucrativos"})
-p({class:"net.nanopay.country.br.NatureCode", id:"0492f5c9-b7a3-4a2d-a867-56de3c87116b", operationType:"47142", name:"Consultoria de negocios e relacoes publicas"})
-p({class:"net.nanopay.country.br.NatureCode", id:"9aee9512-866d-4b09-974d-d505dbbc50f4", operationType:"67940", name:"Compra e venda de imoves no exterior"})
-p({class:"net.nanopay.country.br.NatureCode", id:"c3297325-3b88-474d-9b59-bace9477af36", operationType:"67407", name:"Aumento/ Reducao de capital"})
-p({class:"net.nanopay.country.br.NatureCode", id:"5597214b-4017-46a0-86d6-bca65dcc8fdb", operationType:"47025", name:"Servicos de computacao"})
-p({class:"net.nanopay.country.br.NatureCode", id:"0fdd3f07-3b9b-46e3-9212-000bae2695aa", operationType:"47702", name:"Servicos de educacao"})
-p({class:"net.nanopay.country.br.NatureCode", id:"b95dff95-0e4c-4d0b-932c-0b05d73577d1", operationType:"37004", name:"Wu estrangeiro"})
-p({class:"net.nanopay.country.br.NatureCode", id:"49b77f74-124e-41a5-9c0c-da3e86102d0b", operationType:"12012", name:"Importacao de mercadorias"})
-p({class:"net.nanopay.country.br.NatureCode", id:"ed4ca3a0-3c2a-4161-93db-48fe963f1729", operationType:"12012", name:"Importacao de mercadorias - draw back"})
-p({class:"net.nanopay.country.br.NatureCode", id:"eecb85f8-66d4-43b9-8c26-a187a5a00b7a", operationType:"12012", name:"Importacao de mercadorias - antecipado"})
-p({class:"net.nanopay.country.br.NatureCode", id:"a84f00ac-9af0-4afe-ad87-076b7d4dc2d3", operationType:"12036", name:"Encomendas internacionais"})
-p({class:"net.nanopay.country.br.NatureCode", id:"fa27048d-a980-4001-bc52-a15ce95d2e16", operationType:"47128", name:"Serviços jurídicos"})
-p({class:"net.nanopay.country.br.NatureCode", id:"408fcdd3-8a6f-4cab-a249-c381b7835033", operationType:"37004", name:"Manutencao de residentes no exterior"})
-p({class:"net.nanopay.country.br.NatureCode", id:"61d757c6-b223-4821-b504-ed14defb8e40", operationType:"47197", name:"Outros serv.tec. profissionais e administrativo"})
-p({class:"net.nanopay.country.br.NatureCode", id:"cf249108-f8cc-41e2-a8b7-44169c6d815a", operationType:"47197", name:"Outros servicos tecnicos, profissionais e administrativos"})
-p({class:"net.nanopay.country.br.NatureCode", id:"7d6dbb97-74c8-45d7-8ab8-d31212f96266", operationType:"47915", name:"Outros - aluguel de imóveis"})
-p({class:"net.nanopay.country.br.NatureCode", id:"efdc3a3f-6f12-4eba-acd1-6e909d6427a0", operationType:"47159", name:"Public. pesq. merc. e opinião e part. feiras exp."})
-p({class:"net.nanopay.country.br.NatureCode", id:"f0224036-2a37-4fa9-8879-a413fe168f34", operationType:"37004", name:"Manutenção de residente"})
-p({class:"net.nanopay.country.br.NatureCode", id:"490912ca-a515-461f-bc10-576403e3dbd2", operationType:"67500", name:"Disponibilidade reversão"})
-p({class:"net.nanopay.country.br.NatureCode", id:"a0012f3c-0eeb-4d57-afc9-e3a33a82f5d5", operationType:"37004", name:"Remessa - wu"})
-p({class:"net.nanopay.country.br.NatureCode", id:"70135e05-07f9-4a9e-811b-a045f01af233", operationType:"12036", name:"Pequenas encomendas"})
-p({class:"net.nanopay.country.br.NatureCode", id:"f06cea11-a660-4562-8db0-d521f7354da3", operationType:"12036", name:"Pequenas encomendas - internacionais"})
-p({class:"net.nanopay.country.br.NatureCode", id:"e8f9ae0b-9cda-4541-a013-0ca094f975ef", operationType:"37011", name:"Manutencao de estudantes"})
-p({class:"net.nanopay.country.br.NatureCode", id:"aea63f05-071a-488f-8642-a530a8f3dfff", operationType:"37011", name:"Manutencao de estudantes - devolucao"})
-p({class:"net.nanopay.country.br.NatureCode", id:"d3513121-15b7-4e22-9dd8-850c43f261f2", operationType:"47025", name:"Serviços técnicos e profissionais - serviços de computação"})
-p({class:"net.nanopay.country.br.NatureCode", id:"68de031a-f1d4-44ca-84f3-f20d3e4d8dd0", operationType:"47128", name:"Serviços técnicos e profissionais - serviços jurídicos"})
-p({class:"net.nanopay.country.br.NatureCode", id:"9b8a6ae5-7ffe-4bb1-b355-1fee4c0b02e3", operationType:"47197", name:"Servicos tecnicos"})
-p({class:"net.nanopay.country.br.NatureCode", id:"49f17086-cc6b-44f7-abf5-24c712fbbf41", operationType:"47197", name:"Serviços tecnicos, profissionais e adm repatriação"})
-p({class:"net.nanopay.country.br.NatureCode", id:"18ef6987-47f4-496e-8df6-be04718a9499", operationType:"47702", name:"Servicos de educacao em viagem"})
+p({class:"net.nanopay.country.br.NatureCode", id:"125215a0-b0aa-4bb4-ac26-bc5d4a7a05d1", operationType:"47575", name:"Cessão ou uso de programas de computador",reviewRequired:true)}
+p({class:"net.nanopay.country.br.NatureCode", id:"4cfa9007-1d87-4bdd-b6e1-4e3c6fe78a2c", operationType:"67500", name:"Disponibilidades no exterior",reviewRequired:true)}
+p({class:"net.nanopay.country.br.NatureCode", id:"94bc7bf2-5637-438a-8bca-ad9e8887c84f", operationType:"67500", name:"Disponibilidade no exterior organizações sem fins lucrativos",reviewRequired:true)}
+p({class:"net.nanopay.country.br.NatureCode", id:"0492f5c9-b7a3-4a2d-a867-56de3c87116b", operationType:"47142", name:"Consultoria de negocios e relacoes publicas",reviewRequired:true)}
+p({class:"net.nanopay.country.br.NatureCode", id:"9aee9512-866d-4b09-974d-d505dbbc50f4", operationType:"67940", name:"Compra e venda de imoves no exterior",reviewRequired:true)}
+p({class:"net.nanopay.country.br.NatureCode", id:"c3297325-3b88-474d-9b59-bace9477af36", operationType:"67407", name:"Aumento/ Reducao de capital",reviewRequired:true)}
+p({class:"net.nanopay.country.br.NatureCode", id:"5597214b-4017-46a0-86d6-bca65dcc8fdb", operationType:"47025", name:"Servicos de computacao",reviewRequired:true)}
+p({class:"net.nanopay.country.br.NatureCode", id:"0fdd3f07-3b9b-46e3-9212-000bae2695aa", operationType:"47702", name:"Servicos de educacao",reviewRequired:true)}
+p({class:"net.nanopay.country.br.NatureCode", id:"b95dff95-0e4c-4d0b-932c-0b05d73577d1", operationType:"37004", name:"Wu estrangeiro",reviewRequired:true)}
+p({class:"net.nanopay.country.br.NatureCode", id:"49b77f74-124e-41a5-9c0c-da3e86102d0b", operationType:"12012", name:"Importacao de mercadorias",reviewRequired:true)}
+p({class:"net.nanopay.country.br.NatureCode", id:"ed4ca3a0-3c2a-4161-93db-48fe963f1729", operationType:"12012", name:"Importacao de mercadorias - draw back",reviewRequired:true)}
+p({class:"net.nanopay.country.br.NatureCode", id:"eecb85f8-66d4-43b9-8c26-a187a5a00b7a", operationType:"12012", name:"Importacao de mercadorias - antecipado",reviewRequired:true)}
+p({class:"net.nanopay.country.br.NatureCode", id:"a84f00ac-9af0-4afe-ad87-076b7d4dc2d3", operationType:"12036", name:"Encomendas internacionais",reviewRequired:true)}
+p({class:"net.nanopay.country.br.NatureCode", id:"fa27048d-a980-4001-bc52-a15ce95d2e16", operationType:"47128", name:"Serviços jurídicos",reviewRequired:true)}
+p({class:"net.nanopay.country.br.NatureCode", id:"408fcdd3-8a6f-4cab-a249-c381b7835033", operationType:"37004", name:"Manutencao de residentes no exterior",reviewRequired:true)}
+p({class:"net.nanopay.country.br.NatureCode", id:"61d757c6-b223-4821-b504-ed14defb8e40", operationType:"47197", name:"Outros serv.tec. profissionais e administrativo",reviewRequired:true)}
+p({class:"net.nanopay.country.br.NatureCode", id:"cf249108-f8cc-41e2-a8b7-44169c6d815a", operationType:"47197", name:"Outros servicos tecnicos, profissionais e administrativos",reviewRequired:true)}
+p({class:"net.nanopay.country.br.NatureCode", id:"7d6dbb97-74c8-45d7-8ab8-d31212f96266", operationType:"47915", name:"Outros - aluguel de imóveis",reviewRequired:true)}
+p({class:"net.nanopay.country.br.NatureCode", id:"efdc3a3f-6f12-4eba-acd1-6e909d6427a0", operationType:"47159", name:"Public. pesq. merc. e opinião e part. feiras exp.",reviewRequired:true)}
+p({class:"net.nanopay.country.br.NatureCode", id:"f0224036-2a37-4fa9-8879-a413fe168f34", operationType:"37004", name:"Manutenção de residente",reviewRequired:true)}
+p({class:"net.nanopay.country.br.NatureCode", id:"490912ca-a515-461f-bc10-576403e3dbd2", operationType:"67500", name:"Disponibilidade reversão",reviewRequired:true)}
+p({class:"net.nanopay.country.br.NatureCode", id:"a0012f3c-0eeb-4d57-afc9-e3a33a82f5d5", operationType:"37004", name:"Remessa - wu",reviewRequired:true)}
+p({class:"net.nanopay.country.br.NatureCode", id:"70135e05-07f9-4a9e-811b-a045f01af233", operationType:"12036", name:"Pequenas encomendas",reviewRequired:true)}
+p({class:"net.nanopay.country.br.NatureCode", id:"f06cea11-a660-4562-8db0-d521f7354da3", operationType:"12036", name:"Pequenas encomendas - internacionais",reviewRequired:true)}
+p({class:"net.nanopay.country.br.NatureCode", id:"e8f9ae0b-9cda-4541-a013-0ca094f975ef", operationType:"37011", name:"Manutencao de estudantes",reviewRequired:true)}
+p({class:"net.nanopay.country.br.NatureCode", id:"aea63f05-071a-488f-8642-a530a8f3dfff", operationType:"37011", name:"Manutencao de estudantes - devolucao",reviewRequired:true)}
+p({class:"net.nanopay.country.br.NatureCode", id:"d3513121-15b7-4e22-9dd8-850c43f261f2", operationType:"47025", name:"Serviços técnicos e profissionais - serviços de computação",reviewRequired:true)}
+p({class:"net.nanopay.country.br.NatureCode", id:"68de031a-f1d4-44ca-84f3-f20d3e4d8dd0", operationType:"47128", name:"Serviços técnicos e profissionais - serviços jurídicos",reviewRequired:true)}
+p({class:"net.nanopay.country.br.NatureCode", id:"9b8a6ae5-7ffe-4bb1-b355-1fee4c0b02e3", operationType:"47197", name:"Servicos tecnicos",reviewRequired:true)}
+p({class:"net.nanopay.country.br.NatureCode", id:"49f17086-cc6b-44f7-abf5-24c712fbbf41", operationType:"47197", name:"Serviços tecnicos, profissionais e adm repatriação",reviewRequired:true)}
+p({class:"net.nanopay.country.br.NatureCode", id:"18ef6987-47f4-496e-8df6-be04718a9499", operationType:"47702", name:"Servicos de educacao em viagem",reviewRequired:true)}
 
 p({
   "class":"foam.nanos.crunch.Capability",

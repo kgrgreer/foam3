@@ -73,10 +73,7 @@ p({
   "id":"PruneCicoApprovalCleanup",
   "enabled":false,
 })
-  String formatRule(rule) {
-      return String.format("id: %s, name: %s, saveHistory: %b, enabled: %b.", new Object[] {
-          rule.id,
-          rule.name,
-          rule.saveHistory,
-          rule.enabled
-      });
+p({
+  "class":"foam.nanos.ruler.RuleGroup",
+  "id":"NatureCodeApprovals"
+})

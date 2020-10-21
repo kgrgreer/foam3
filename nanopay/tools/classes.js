@@ -1136,6 +1136,9 @@ var classes = [
   // Treviso
   'net.nanopay.country.br.NatureCode',
   'net.nanopay.country.br.NatureCodeData',
+  'net.nanopay.country.br.NatureCodeApprovalRequest',
+  'net.nanopay.country.br.ApprovedNatureCodeApprovalRequestRuleAction',
+  'net.nanopay.country.br.CapableCreateNatureCodeApprovalsRuleAction',
   'net.nanopay.country.br.BrazilBusinessInfoData',
   'net.nanopay.country.br.BrazilVerificationServiceInterface',
   'net.nanopay.country.br.ClientBrazilVerificationService',

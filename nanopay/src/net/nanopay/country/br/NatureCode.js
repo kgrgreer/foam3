@@ -85,7 +85,8 @@ foam.CLASS({
     },
     {
       name: 'of',
-      hidden: true
+      hidden: true,
+      value: net.nanopay.country.br.NatureCodeData
     },
     {
       name: 'permissionsGranted',
