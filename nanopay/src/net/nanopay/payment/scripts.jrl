@@ -80,7 +80,7 @@ for ( country : countries ) {
       trgCorridor.setSourceCountry(pairCountry);
       trgCorridor.setTargetCountry(country);
       trgCorridor.setEnabled(true);
-      trgCorridor.setAvailabilityPredicate(foam.mlang.MLang.TRUE);
+      trgCorridor.setVisible(true)
       trgCorridor.setSourceCurrencies(targetCurrencies);
       trgCorridor.setTargetCurrencies(sourceCurrencies);
       trgCorridor.setProvider(afex.getId());
@@ -132,7 +132,7 @@ p({
     corridor.setSourceCurrencies(availableCurrency);
     corridor.setTargetCurrencies(availableCurrency);
     corridor.setEnabled(true);
-    corridor.setAvailabilityPredicate(foam.mlang.MLang.TRUE);
+    corridor.setVisible(true);
     corridor.setProvider(bmo.getId());
     corridor.setName("CA-CA Corridor BMO");
     corridor = ppcDAO.put(corridor);
@@ -181,7 +181,7 @@ p({
     corridor.setSourceCurrencies(availableCurrency);
     corridor.setTargetCurrencies(availableCurrency);
     corridor.setEnabled(true);
-    corridor.setAvailabilityPredicate(foam.mlang.MLang.TRUE);
+    corridor.setVisible(true);
     corridor.setProvider(rbc.getId());
     corridor.setName("CA-CA Corridor RBC");
     corridor = ppcDAO.put(corridor);
@@ -230,7 +230,7 @@ p({
     corridor.setSourceCurrencies(availableCurrency);
     corridor.setTargetCurrencies(availableCurrency);
     corridor.setEnabled(true);
-    corridor.setAvailabilityPredicate(foam.mlang.MLang.TRUE);
+    corridor.setVisible(true);
     corridor.setProvider(alterna.getId());
     corridor.setName("CA-CA Corridor Alterna");
     corridor = ppcDAO.put(corridor);
@@ -280,7 +280,7 @@ p({
     corridor.setSourceCurrencies(sourceCurrency);
     corridor.setTargetCurrencies(targetCurrency);
     corridor.setEnabled(true);
-    corridor.setAvailabilityPredicate(foam.mlang.MLang.TRUE);
+    corridor.setVisible(true);
     corridor.setProvider(kotak.getId());
     corridor.setName("CA-IN Corridor Kotak");
     corridor = ppcDAO.put(corridor);
@@ -332,7 +332,7 @@ p({
     corridor.setSourceCurrencies(caCurrency);
     corridor.setTargetCurrencies(brCurrency);
     corridor.setEnabled(true);
-    corridor.setAvailabilityPredicate(foam.mlang.MLang.TRUE);
+    corridor.setVisible(true);
     corridor.setProvider(treviso.getId());
     corridor.setName("BR-CA Corridor Treviso");
     corridor = ppcDAO.put(corridor);
@@ -358,7 +358,7 @@ p({
     usCorridor.setSourceCurrencies(caCurrency);
     usCorridor.setTargetCurrencies(usCurrency);
     usCorridor.setEnabled(true);
-    usCorridor.setAvailabilityPredicate(foam.mlang.MLang.TRUE);
+    usCorridor.setVisible(true);
     usCorridor.setProvider(treviso.getId());
     usCorridor.setName("BR-US Corridor Treviso");
     usCorridor = ppcDAO.put(usCorridor);
@@ -409,7 +409,7 @@ p({
     corridor.setSourceCurrencies(caCurrency);
     corridor.setTargetCurrencies(usCurrency);
     corridor.setEnabled(true);
-    corridor.setAvailabilityPredicate(foam.mlang.MLang.TRUE);
+    corridor.setVisible(true);
     corridor.setProvider(afx.getId());
     corridor.setName("CA-US Corridor AscendantFX");
     corridor = ppcDAO.put(corridor);
@@ -435,7 +435,7 @@ p({
     usCorridor.setSourceCurrencies(usCurrency);
     usCorridor.setTargetCurrencies(caCurrency);
     usCorridor.setEnabled(true);
-    usCorridor.setAvailabilityPredicate(foam.mlang.MLang.TRUE);
+    usCorridor.setVisible(true);
     usCorridor.setProvider(afx.getId());
     usCorridor.setName("US-CA Corridor AscendantFX");
     usCorridor = ppcDAO.put(usCorridor);
@@ -461,7 +461,7 @@ p({
     uCorridor.setSourceCurrencies(usCurrency);
     uCorridor.setTargetCurrencies(usCurrency);
     uCorridor.setEnabled(true);
-    uCorridor.setAvailabilityPredicate(foam.mlang.MLang.TRUE);
+    uCorridor.setVisible(true);
     uCorridor.setProvider(afx.getId());
     uCorridor.setName("US-US Corridor AscendantFX");
     uCorridor = ppcDAO.put(uCorridor);
@@ -512,7 +512,7 @@ p({
         sourceCountryCapability.setCountry(corridor.getSourceCountry());
         sourceCountryCapability.setType(SourceTargetType.SOURCE);
         sourceCountryCapability.setName("Source Country Capability " + corridor.getSourceCountry());
-        sourceCountryCapability.setAvailabilityPredicate(foam.mlang.MLang.TRUE);
+        sourceCountryCapability.setVisible(true);
         sourceCountryCapability.setEnabled(true);
         sourceCountryCapability = (CountryCapability) countryCapabilityDAO.put(sourceCountryCapability);
       }
@@ -522,7 +522,7 @@ p({
         targetCountryCapability.setCountry(corridor.getTargetCountry());
         targetCountryCapability.setType(SourceTargetType.TARGET);
         targetCountryCapability.setName("Target Country Capability " + corridor.getTargetCountry());
-        targetCountryCapability.setAvailabilityPredicate(foam.mlang.MLang.TRUE);
+        targetCountryCapability.setVisible(true);
         targetCountryCapability.setEnabled(true);
         targetCountryCapability = (CountryCapability) countryCapabilityDAO.put(targetCountryCapability);
       }

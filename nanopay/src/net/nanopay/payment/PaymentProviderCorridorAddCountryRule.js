@@ -78,7 +78,6 @@ foam.CLASS({
               sourceCountryCapability.setCountry(sourceCountry);
               sourceCountryCapability.setType(SourceTargetType.SOURCE);
               sourceCountryCapability.setName("Source Country Capability " + sourceCountry);
-              sourceCountryCapability.setAvailabilityPredicate(foam.mlang.MLang.TRUE);
               sourceCountryCapability.setEnabled(true);
               try {
                 sourceCountryCapability = (CountryCapability) countryCapabilityDAO.put(sourceCountryCapability);
@@ -93,7 +92,6 @@ foam.CLASS({
               targetCountryCapability.setCountry(targetCountry);
               targetCountryCapability.setType(SourceTargetType.TARGET);
               targetCountryCapability.setName("Target Country Capability " + targetCountry);
-              targetCountryCapability.setAvailabilityPredicate(foam.mlang.MLang.TRUE);
               targetCountryCapability.setEnabled(true);
               try {
                 targetCountryCapability = (CountryCapability) countryCapabilityDAO.put(targetCountryCapability);

@@ -72,6 +72,10 @@ foam.CLASS({
       hidden: true
     },
     {
+      name: 'visible',
+      hidden: true
+    },
+    {
       name: 'expiry',
       hidden: true
     },

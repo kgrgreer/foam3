@@ -407,6 +407,7 @@ p({
   "description":"Unlock payments in Brazil",
   "icon":"/images/capabilityIcons/BrazilCap.svg",
   "version":"0",
+  "visible":true,
   "enabled":true,
   "reviewRequired":true,
   "keywords":["featured"],
