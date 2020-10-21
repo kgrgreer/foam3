@@ -27,6 +27,7 @@ foam.CLASS({
   requires: [
     'foam.log.LogLevel',
     'foam.u2.dialog.Popup',
+    'foam.core.Latch',
     'foam.dao.PromisedDAO',
     'foam.nanos.auth.UserUserJunction',
     'foam.nanos.crunch.UserCapabilityJunction',
@@ -45,6 +46,7 @@ foam.CLASS({
     'capabilityDAO',
     'crunchController',
     'ctrl',
+    'initLayout',
     'menuDAO',
     'notify',
     'onboardingUtil',
@@ -219,6 +221,15 @@ foam.CLASS({
             })
         });
       }
+    },
+    {
+      class: 'foam.core.FObjectProperty',
+      of: 'foam.core.Latch',
+      name: 'loadingComplete',
+      documentation: 'Loading latch.',
+      factory: function() {
+        return this.Latch.create();
+      }
     }
   ],
 
@@ -238,6 +249,7 @@ foam.CLASS({
           this.subject.user = business;
           this.subject.realUser = result;
           this.clearCachedDAOs();
+          this.initLayout.resolve();
           this.pushMenu('sme.main.appStore');
           return;
         }
@@ -249,46 +261,48 @@ foam.CLASS({
       }
     },
 
-    function init() {
+    async function init() {
       if ( this.user.cls_ != net.nanopay.model.Business ) {
-        this.enabledBusinesses_
-          .select()
-          .then(async sink => {
-            var ac = this.theme.admissionCapability;
-            if ( ac ) {
-              // check if user registration capability is granted
-              var ucj = await this.userCapabilityJunctionDAO.find(
-                this.AND(
-                  this.EQ(this.UserCapabilityJunction.SOURCE_ID, this.subject.user.id),
-                  this.EQ(this.UserCapabilityJunction.TARGET_ID, ac),
-                  this.EQ(this.UserCapabilityJunction.STATUS, this.CapabilityJunctionStatus.GRANTED)
-                )
-              );
-              if ( ! ucj ) {
-                this.onboardingUtil.initUserRegistration(ac);
-                return;
-              }
-            }
+        let sink = await this.enabledBusinesses_.select();
+        var ac = this.theme.admissionCapability;
+        if ( ac ) {
+          // check if user registration capability is granted
+          var ucj = await this.userCapabilityJunctionDAO.find(
+            this.AND(
+              this.EQ(this.UserCapabilityJunction.SOURCE_ID, this.subject.user.id),
+              this.EQ(this.UserCapabilityJunction.TARGET_ID, ac),
+              this.EQ(this.UserCapabilityJunction.STATUS, this.CapabilityJunctionStatus.GRANTED)
+            )
+          );
+          if ( ! ucj ) {
+            this.onboardingUtil.initUserRegistration(ac);
+            return;
+          }
+        }
 
-            if ( sink.array.length === 0 ) {
-              this.pushMenu('sme.main.appStore');
-              return;
-            }
+        if ( sink.array.length === 0 ) {
+          this.initLayout.resolve();
+          this.pushMenu('sme.main.appStore');
+          return;
+        }
 
-            if ( sink.array.length === 1 ) {
-              var junction = sink.array[0];
+        if ( sink.array.length === 1 ) {
+          this.initLayout.resolve();
+          var junction = sink.array[0];
 
-              // If the user is only in one business but that business has
-              // disabled them, then don't immediately switch to that business.
-              if ( junction.status === this.AgentJunctionStatus.DISABLED ) return;
-              this.assignBusinessAndLogIn(junction);
-              this.removeAllChildren();
-            }
-          });
+          // If the user is only in one business but that business has
+          // disabled them, then don't immediately switch to that business.
+          if ( junction.status === this.AgentJunctionStatus.DISABLED ) return;
+          await this.assignBusinessAndLogIn(junction);
+          this.removeAllChildren();
+          return;
+        }
       }
+      this.loadingComplete.resolve();
     },
 
-    function initE() {
+    async function initE() {
+      await this.loadingComplete;
       var self = this;
 
       this.start().addClass(this.myClass())
