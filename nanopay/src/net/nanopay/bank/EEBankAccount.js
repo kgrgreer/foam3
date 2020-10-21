@@ -30,6 +30,12 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
+      name: 'denomination',
+      section: 'accountDetails',
+      gridColumns: 12,
+      value: 'EUR',
+    },
+    {
       name: 'flagImage',
       label: '',
       value: 'images/flags/estonia.svg',

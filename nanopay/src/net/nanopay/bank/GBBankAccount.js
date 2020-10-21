@@ -36,6 +36,12 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
+      name: 'denomination',
+      section: 'accountDetails',
+      gridColumns: 12,
+      value: 'GBP',
+    },
+    {
       name: 'sortCode',
       label: 'Sort Code',
       section: 'accountDetails',

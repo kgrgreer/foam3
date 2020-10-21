@@ -17,22 +17,22 @@
 
 foam.CLASS({
   package: 'net.nanopay.bank',
-  name: 'NLBankAccount',
-  label: 'Netherlands Bank Account',
+  name: 'SEBankAccount',
+  label: 'Sweden Bank Account',
   extends: 'net.nanopay.bank.BankAccount',
 
-  documentation: 'Netherlands bank account information.',
+  documentation: 'Sweden bank account information.',
 
   properties: [
     {
       name: 'country',
-      value: 'NL',
+      value: 'SE',
       visibility: 'RO'
     },
     {
       name: 'flagImage',
       label: '',
-      value: 'images/flags/netherlands.svg',
+      value: 'images/flags/sweden.svg',
       visibility: 'RO'
     },
     {
@@ -42,26 +42,12 @@ foam.CLASS({
       value: 'EUR',
     },
     {
-      name: 'bankCode',
-      label: 'Bank Code',
-      updateVisibility: 'RO',
-      validateObj: function(bankCode) {
-        var regex = /^[A-z0-9a-z]{4}$/;
-
-        if ( bankCode === '' ) {
-          return this.BANK_CODE_REQUIRED;
-        } else if ( ! regex.test(bankCode) ) {
-          return this.BANK_CODE_INVALID;
-        }
-      }
-    },
-    {
       name: 'accountNumber',
       label: 'Account No.',
       updateVisibility: 'RO',
       view: {
         class: 'foam.u2.tag.Input',
-        placeholder: '1234567890',
+        placeholder: '12345678901',
         onKey: true
       },
       preSet: function(o, n) {
@@ -75,7 +61,7 @@ foam.CLASS({
         this.tooltip = displayAccountNumber;
       },
       validateObj: function(accountNumber) {
-        var accNumberRegex = /^[0-9]{10}$/;
+        var accNumberRegex = /^[0-9]{11,16}$/;
 
         if ( accountNumber === '' ) {
           return this.ACCOUNT_NUMBER_REQUIRED;
@@ -85,10 +71,18 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
-      name: 'BankName',
-      section: 'accountDetails',
-      updateVisibility: 'RO'
+      name: 'bankCode',
+      label: 'Bank Code',
+      updateVisibility: 'RO',
+      validateObj: function(bankCode) {
+        var bankCodeRegex = /^[A-z0-9a-z]{3}$/;
+
+        if ( bankCode === '' ) {
+          return this.BANK_CODE_REQUIRED;
+        } else if ( ! bankCodeRegex.test(bankCode) ) {
+          return this.BANK_CODE_INVALID;
+        }
+      }
     },
     {
       name: 'desc',

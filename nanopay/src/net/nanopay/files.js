@@ -152,6 +152,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/SIBankAccount' },
   { name: 'net/nanopay/bank/ESBankAccount' },
   { name: 'net/nanopay/bank/CNBankAccount' },
+  { name: 'net/nanopay/bank/SEBankAccount' },
   { name: 'net/nanopay/bank/BankAccountStatus' },
   { name: 'net/nanopay/bank/BankAccountController', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/BankPickCurrencyView', flags: ['web'] },

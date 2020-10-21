@@ -140,6 +140,7 @@ var classes = [
   'net.nanopay.bank.SIBankAccount',
   'net.nanopay.bank.ESBankAccount',
   'net.nanopay.bank.CNBankAccount',
+  'net.nanopay.bank.SEBankAccount',
   'net.nanopay.bank.BankAccountStatus',
   'net.nanopay.bank.CanReceiveCurrency',
   'net.nanopay.bank.GetDefaultCurrency',
