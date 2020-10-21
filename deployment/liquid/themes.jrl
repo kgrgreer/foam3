@@ -70,5 +70,6 @@ p({
     .foam-u2-ActionView-export {
       display: none;
     }
-  """
+  """,
+  "spid":"nanopay.liquid"
 })

@@ -15,8 +15,14 @@ p({
       spid: "nanopay",
       urls: [
         "localhost",
+        "release.nanopay.net"
+      ]
+    },
+    {
+      class: "net.nanopay.auth.ServiceProviderURL",
+      spid: "nanopay.ablii",
+      urls: [
         "ablii",
-        "release.nanopay.net",
         "release.ablii.com"
       ]
     }

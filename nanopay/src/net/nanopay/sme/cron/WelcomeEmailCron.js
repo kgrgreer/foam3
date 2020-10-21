@@ -97,9 +97,6 @@ foam.CLASS({
               .setEmailName("helpsignup")
               .build();
 
-            Subject subject = new Subject.Builder(x).setUser(business).build();
-            Theme theme = new Themes().findTheme(x.put(Subject.class, subject));
-            x = x.put(Theme.class, theme);
             business.doNotify(x, helpSignUpNotification);
 
           } catch (Throwable t) {

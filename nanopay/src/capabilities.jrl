@@ -906,11 +906,12 @@ p({
   "enabled":true
 })
 
-// nanopay capabilities
+// nanopay.ablii capabilities
+p({"class":"foam.nanos.auth.ServiceProvider","id":"nanopay.ablii","description":"nanopay.ablii spid"})
 p({
   class: "foam.nanos.crunch.Capability",
-  id: "nanopayCountryCapability",
-  name: "Nanopay Country Capability",
+  id: "nanopay.abliiCountryCapability",
+  name: "nanopay.ablii Country Capability",
   version: "0",
   enabled: true,
   permissionsGranted: [
@@ -921,8 +922,8 @@ p({
 
 p({
   class: "foam.nanos.crunch.Capability",
-  id: "nanopayCorridorCapability",
-  name: "Nanopay Corridor Capability",
+  id: "nanopay.abliiCorridorCapability",
+  name: "nanopay.ablii Corridor Capability",
   version: "0",
   enabled: true,
   permissionsGranted: [
@@ -938,8 +939,8 @@ p({
 
 p({
   class: "foam.nanos.crunch.Capability",
-  id: "nanopayCurrencyCapability",
-  name: "Nanopay Currency Capability",
+  id: "nanopay.abliiCurrencyCapability",
+  name: "nanopay.ablii Currency Capability",
   version: "0",
   enabled: true,
   permissionsGranted: [
@@ -952,8 +953,8 @@ p({
 
 p({
   class: "foam.nanos.crunch.Capability",
-  id: "nanopayPlannerCapability",
-  name: "Nanopay Planner Capability",
+  id: "nanopay.abliiPlannerCapability",
+  name: "nanopay.ablii Planner Capability",
   version: "0",
   enabled: true,
   permissionsGranted: [
@@ -963,8 +964,8 @@ p({
 
 p({
   "class": "foam.nanos.crunch.Capability",
-  "id": "nanopayMenuCapability",
-  "name": "Nanopay Menu Capability",
+  "id": "nanopay.abliiMenuCapability",
+  "name": "nanopay.ablii Menu Capability",
   "version":"0",
   "enabled":true,
   "permissionsGranted":[
@@ -977,8 +978,8 @@ p({
 
 p({
   "class": "foam.nanos.crunch.Capability",
-  "id": "nanopayAccountingCapability",
-  "name": "Nanopay Accounting Capability",
+  "id": "nanopay.abliiAccountingCapability",
+  "name": "nanopay.ablii Accounting Capability",
   "version":"0",
   "enabled":true,
   "permissionsGranted":[
