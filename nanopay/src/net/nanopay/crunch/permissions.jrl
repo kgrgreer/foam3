@@ -25,3 +25,8 @@ p({"class":"foam.nanos.auth.Permission","id":"menu.read.capability.menu.invitati
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.capability.menu.search","description":"Permission to read search menu"})
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.capability.menu.create","description":"Permission to read create menu"})
 p({"class":"foam.nanos.auth.Permission","id":"menu.read.capability.menu.paymentcode","description":"Permission to read paymentcode menu"})
+p({"class":"foam.nanos.auth.Permission","id":"menu.read.capability.main.invoices.payables","description":"Permission to read payables menu"})
+p({"class":"foam.nanos.auth.Permission","id":"menu.read.capability.main.invoices.receivables","description":"Permission to read receivables menu"})
+p({"class":"foam.nanos.auth.Permission","id":"menu.read.capability.main.dashboard", "description":"Permission to see the Ablii dashboard page"})
+p({"class":"foam.nanos.auth.Permission","id":"menu.read.capability.main.banking", "description":"Permission to see the Ablii banking page"})
+p({"class":"foam.nanos.auth.Permission","id":"menu.read.capability.main.contacts","description":"Permission to see the Ablii contacts page"})

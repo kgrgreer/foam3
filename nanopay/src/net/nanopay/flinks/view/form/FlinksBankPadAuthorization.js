@@ -173,7 +173,7 @@ foam.CLASS({
 
             X.closeDialog();
 
-            location.hash = 'sme.main.banking';
+            location.hash = 'capability.main.banking';
             this.stack.push({
               class: 'net.nanopay.bank.BankAccountController'
             })

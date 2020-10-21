@@ -144,7 +144,7 @@ foam.CLASS({
         this.invoiceDAO.put(this.invoice).then((invoice) => {
          if ( invoice.paymentMethod == this.PaymentStatus.VOID ) {
           X.closeDialog();
-          if ( X.currentMenu.id == 'sme.quickAction.send' || X.currentMenu.id == 'sme.main.dashboard' ) {
+          if ( X.currentMenu.id == 'sme.quickAction.send' || X.currentMenu.id == 'capability.main.dashboard' ) {
             X.stack.push({
               class: 'net.nanopay.sme.ui.MoneyFlowRejectView',
               invoice: this.invoice

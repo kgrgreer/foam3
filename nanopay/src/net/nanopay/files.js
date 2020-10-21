@@ -1459,6 +1459,7 @@ FOAM_FILES([
   { name: 'net/nanopay/business/ruler/JunctionNotificationSettingsRule' },
   { name: 'net/nanopay/business/ruler/RegistrationLoginDisabledRule' },
   { name: 'net/nanopay/business/ruler/InitialBusinessRegistrationRule' },
+  { name: 'net/nanopay/business/ruler/businessCapabilitySetUp' },
 
   // approval
   { name: 'net/nanopay/approval/UserRefines' },

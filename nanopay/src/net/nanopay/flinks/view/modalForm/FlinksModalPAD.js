@@ -180,7 +180,7 @@ foam.CLASS({
         this.ctrl.notify(this.SUCCESS, '', this.LogLevel.INFO, true);
         if ( this.onComplete ) this.onComplete();
         this.closeDialog();
-        location.hash = 'sme.main.banking';
+        location.hash = 'capability.main.banking';
         this.bannerizeCompliance();
         this.stack.push({
           class: 'net.nanopay.bank.BankAccountController'

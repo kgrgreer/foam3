@@ -150,7 +150,7 @@ foam.CLASS({
         args.put("business", business.toSummary());
         args.put("toCurrency", toCurrency);
         args.put("toCountry", toCountry);
-        args.put("link",   config.getUrl() + "#sme.main.dashboard");
+        args.put("link",   config.getUrl() + "#capability.main.dashboard");
         args.put("sendTo", User.EMAIL);
         args.put("name", User.FIRST_NAME);
 

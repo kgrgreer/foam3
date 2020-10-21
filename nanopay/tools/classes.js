@@ -1007,6 +1007,7 @@ var classes = [
   'net.nanopay.business.SetBusinessNameDAO',
   'net.nanopay.business.ruler.JunctionNotificationSettingsRule',
   'net.nanopay.business.ruler.RegistrationLoginDisabledRule',
+  'net.nanopay.business.ruler.businessCapabilitySetUp',
   'net.nanopay.business.ruler.InitialBusinessRegistrationRule',
 
   // settlment Report service

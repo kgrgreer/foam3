@@ -350,7 +350,7 @@ foam.CLASS({
 
       checkAndNotifyAbility().then(result => {
         if ( ! result ) {
-          this.pushMenu('sme.main.dashboard');
+          this.pushMenu('capability.main.dashboard');
           return;
         }
       });
@@ -433,8 +433,8 @@ foam.CLASS({
       } catch(err) {
         this.notify(err.message,'', this.LogLevel.ERROR, true);
         this.pushMenu(this.isPayable
-          ? 'sme.main.invoices.payables'
-          : 'sme.main.invoices.receivables');
+          ? 'capability.main.invoices.payables'
+          : 'capability.main.invoices.receivables');
         return;
       }
 
@@ -513,8 +513,8 @@ foam.CLASS({
         await this.invoiceDAO.put(invoice);
         this.notify(this.DRAFT_SUCCESS, '', this.LogLevel.INFO, true);
         this.pushMenu(this.isPayable
-          ? 'sme.main.invoices.payables'
-          : 'sme.main.invoices.receivables');
+          ? 'capability.main.invoices.payables'
+          : 'capability.main.invoices.receivables');
       } catch (error) {
         console.error('@SendRequestMoney (Invoice put after quote transaction put): ' + error.message);
         this.notify(this.SAVE_DRAFT_ERROR + this.type, '', this.LogLevel.ERROR, true);
@@ -599,7 +599,7 @@ foam.CLASS({
           /* Redirects users back to dashboard if none
             of the above conditions are matched */
           default:
-            this.pushMenu('sme.main.dashboard');
+            this.pushMenu('capability.main.dashboard');
         }
       }
     },
@@ -610,7 +610,7 @@ foam.CLASS({
       },
       code: function() {
         if ( this.stack.depth === 1 ) {
-          this.pushMenu('sme.main.dashboard');
+          this.pushMenu('capability.main.dashboard');
         } else {
           this.stack.back();
         }

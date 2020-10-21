@@ -33,6 +33,7 @@ p({
   targetId: "trevisoCurrencyCapability",
   priority: 5
 })
+
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
   sourceId: "treviso",

@@ -108,7 +108,7 @@ foam.CLASS({
               .endContext();
           }
           return self.MenuRedirectSMEModalView.create({
-            menu: 'sme.main.contacts',
+            menu: 'capability.main.contacts',
             view: {
               class: `net.nanopay.contacts.ui.${self.modelName}WizardView`,
               data: self.model_

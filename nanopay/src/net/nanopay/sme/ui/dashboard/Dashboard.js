@@ -359,7 +359,7 @@ foam.CLASS({
               .add(this.VIEW_ALL)
               .hide(this.payablesCount$.map(value => value == 0))
               .on('click', function() {
-                self.pushMenu('sme.main.invoices.payables');
+                self.pushMenu('capability.main.invoices.payables');
               })
             .end()
           .end()
@@ -428,7 +428,7 @@ foam.CLASS({
               .add(this.VIEW_ALL)
               .hide(this.receivablesCount$.map(value => value == 0))
               .on('click', function() {
-                self.pushMenu('sme.main.invoices.receivables');
+                self.pushMenu('capability.main.invoices.receivables');
               })
             .end()
           .end()

@@ -4,7 +4,7 @@ p({class: "foam.nanos.crunch.Capability", id: "plannerCapability", name: "Planne
 p({class: "foam.nanos.crunch.Capability", id: "countryCapability", name: "Country Capability"})
 p({class: "foam.nanos.crunch.Capability", id: "corridorCapability", name: "Corridor Capability"})
 p({class: "foam.nanos.crunch.Capability", id: "currencyCapability", name: "Currency Capability"})
-p({class: "foam.nanos.crunch.Capability", id: "menuCapability", name: "Menu Capability", permissionsGranted: ["menu.read.capability.menu.create"]})
+p({class: "foam.nanos.crunch.Capability", id: "menuCapability", name: "Menu Capability", permissionsGranted: ["menu.read.capability.menu.create", "menu.read.sme.main.onboarding"]})
 
 // spid capabilities
 p({"class":"foam.nanos.auth.ServiceProvider","id":"nanopay","description":"nanopay"})
@@ -539,7 +539,11 @@ p({
     "class": "foam.u2.wizard.StepWizardConfig",
     "allowSkipping": false
   },
-  "requirementViewTitle":"In this section, we ask you to enter some details relating to your business."
+  "requirementViewTitle":"In this section, we ask you to enter some details relating to your business.",
+  "permissionsGranted":[
+  "menu.read.capability.main.banking",
+  "menu.read.capability.main.contacts",
+  ]
 })
 
 p({
@@ -964,10 +968,6 @@ p({
   "version":"0",
   "enabled":true,
   "permissionsGranted":[
-    "menu.read.capability.menu.search",
-    "menu.read.capability.menu.paymentcode",
-    "menu.read.capability.menu.invitation",
-    "contact.ro.shouldinvite",
     "business.rw.ispublic",
     "menu.read.accountingintegrationcards",
     "menu.read.paymentcode",
@@ -992,5 +992,21 @@ p({
   "name":"Business Onboarding Addition Infor",
   "of":"net.nanopay.onboarding.model.BusinessOnboardingExtra",
   "version":"0",
-  "enabled":true
+  "enabled":true,
+  "visible":false
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"nanopayBusinessMenuCapability",
+  "name":"nanopay business registration granted menu",
+  "version":"0",
+  "enabled":true,
+  "visible":false,
+  "permissionsGranted":[
+  "menu.read.capability.menu.search",
+  "menu.read.capability.menu.paymentcode",
+  "menu.read.capability.menu.invitation",
+  "contact.ro.shouldinvite"
+  ]
 })

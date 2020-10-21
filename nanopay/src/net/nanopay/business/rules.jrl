@@ -67,3 +67,35 @@ p({
   "enabled":true,
   "lifecycleState":1
 })
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"b82fc19c-0f13-11eb-adc1-0242ac120002",
+  "name":"set business capability after business registration",
+  "priority":1,
+  "ruleGroup":"crunchOnboarding",
+  "documentation":"set business capability after business registration",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":0,
+  "after":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class": "foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName": "status",
+        "propValue":{"class":"foam.nanos.crunch.CapabilityJunctionStatus","ordinal":1},
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsClass",
+        "propName":"data",
+        "of":"net.nanopay.crunch.onboardingModels.InitialBusinessData"
+      }
+    ]
+  },
+  "action":{
+    "class": "net.nanopay.business.ruler.businessCapabilitySetUp"
+  },
+  "enabled":true,
+  "lifecycleState":1
+})

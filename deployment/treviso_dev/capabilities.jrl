@@ -64,3 +64,13 @@ p({
     "currency.read.CAD"
   ]
 })
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "trevisoBusinessMenuCapability",
+  name: "treviso business registration granted menu",
+  version: "0",
+  enabled: true,
+  visible: false,
+  permissionsGranted: []
+})
