@@ -262,7 +262,12 @@ foam.CLASS({
     'onboardingStatus',
     'businessRegistrationDate',
     'countryOfBusinessRegistration',
-    'showLowerCards'
+    'showLowerCards',
+    {
+      class: 'Boolean',
+      name: 'requestMoneyPermission',
+      value: false
+    }
   ],
 
   methods: [
@@ -280,7 +285,7 @@ foam.CLASS({
         .then(sink => {
           this.bankAccount = sink.array[0];
         });
-
+      this.requestMoneyPermission = await this.auth.check(null, 'menu.read.capability.main.invoices.receivables');
       this.showLowerCards = await this.auth.check(null, 'menu.read.accountingintegrationcards');
       this.userHasPermissionsForAccounting = this.showLowerCards ? 
         await this.accountingIntegrationUtil.getPermission() : 
@@ -417,7 +422,7 @@ foam.CLASS({
               .end()
           .end();
 
-        var botR = this.Element.create()
+        var botR = ! this.requestMoneyPermission ? null : this.Element.create()
           .start()
             .addClass(this.myClass('separate'))
             .start('h2')
