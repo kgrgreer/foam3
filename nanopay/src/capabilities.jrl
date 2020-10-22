@@ -54,6 +54,7 @@ p({
   "contextDAOFindKey":"subject.realuser",
   "reviewRequired":true,
   "associatedEntity":2,
+  "keywords":["featured"],
   "permissionsGranted":[
     "certifydatareviewed.rw.reviewed",
     "user.invoice.pay",
@@ -129,6 +130,7 @@ p({
   "contextDAOFindKey":"subject.realuser",
   "reviewRequired":true,
   "associatedEntity":2,
+  "keywords":["featured"],
   "permissionsGranted":[
     "certifydatareviewed.rw.reviewed",
     "user.invoice.pay",
@@ -204,6 +206,7 @@ p({
   "contextDAOFindKey":"subject.realuser",
   "reviewRequired":true,
   "associatedEntity":2,
+  "keywords":["featured"],
   "permissionsGranted":[
     "certifydatareviewed.rw.reviewed",
     "user.invoice.pay",
