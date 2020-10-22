@@ -1101,7 +1101,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 153,
+  "id": 151,
   "name": "top-level-capability-status-update",
   "group": "sme",
   "displayName":"{{appName}}",

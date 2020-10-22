@@ -6,6 +6,20 @@ p({
   "priority": 17
 })
 
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
+  "sourceId":"2910C2C9-3597-42A3-BF85-CFBC8F0E1388",
+  "priority": 2
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "targetId":"fb7d3ca2-62f2-4caf-a84c-860392e4676b",
+  "sourceId":"2910C2C9-3597-42A3-BF85-CFBC8F0E1388",
+  "priority": 1
+})
+
 // TODO: Need to properly wire up the nature codes
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",

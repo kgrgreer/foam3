@@ -159,6 +159,10 @@ foam.CLASS({
                   this.businessStatus !== self.AccountStatus.DISABLED
                 ) || this.bankAccount;
               },
+              isAvailable: async function() {
+                let permission = await self.auth.check(null, 'menu.read.capability.main.invoices.receivables');
+                return permission;
+              },
               code: function(X) {
                 self.checkAndNotifyAbilityToReceive().then((result) => {
                   if ( result ) {
@@ -181,6 +185,10 @@ foam.CLASS({
                   this.businessId &&
                   this.businessStatus !== self.AccountStatus.DISABLED
                 ) || this.bankAccount;
+              },
+              isAvailable: async function() {
+                let permission = await self.auth.check(null, 'menu.read.capability.main.invoices.payables');
+                return permission;
               },
               code: function(X) {
                 self.checkAndNotifyAbilityToPay().then((result) => {

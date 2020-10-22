@@ -98,3 +98,7 @@ p({class:"net.nanopay.country.br.NatureCodeData", payerType:"00", approvalType:"
 p({class:"net.nanopay.country.br.NatureCodeData", payerType:"02", approvalType:"0", payeeType:"05", groupCode:"90", natureCode:"18ef6987-47f4-496e-8df6-be04718a9499"})
 p({class:"net.nanopay.country.br.NatureCodeData", payerType:"09", approvalType:"0", payeeType:"05", groupCode:"90", natureCode:"18ef6987-47f4-496e-8df6-be04718a9499"})
 p({class:"net.nanopay.country.br.NatureCodeData", payerType:"71", approvalType:"0", payeeType:"05", groupCode:"90", natureCode:"18ef6987-47f4-496e-8df6-be04718a9499"})
+
+// TODO: remove for testing
+p({class:"net.nanopay.country.br.NatureCodeData", payerType:"12", approvalType:"1", payeeType:"69", groupCode:"90", natureCode:"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-1"})
+p({class:"net.nanopay.country.br.NatureCodeData", payerType:"71", approvalType:"0", payeeType:"05", groupCode:"90", natureCode:"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-1"})

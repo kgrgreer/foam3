@@ -102,7 +102,7 @@ foam.CLASS({
         return nextIndex === -1;
       },
       code: async function(X) {
-        await X.data.data.save();
+        await X.data.data.save(false);
         X.closeDialog();
       }
     }

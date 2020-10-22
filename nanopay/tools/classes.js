@@ -141,6 +141,7 @@ var classes = [
   'net.nanopay.bank.SIBankAccount',
   'net.nanopay.bank.ESBankAccount',
   'net.nanopay.bank.CNBankAccount',
+  'net.nanopay.bank.SEBankAccount',
   'net.nanopay.bank.BankAccountStatus',
   'net.nanopay.bank.CanReceiveCurrency',
   'net.nanopay.bank.GetDefaultCurrency',
@@ -1008,6 +1009,7 @@ var classes = [
   'net.nanopay.business.SetBusinessNameDAO',
   'net.nanopay.business.ruler.JunctionNotificationSettingsRule',
   'net.nanopay.business.ruler.RegistrationLoginDisabledRule',
+  'net.nanopay.business.ruler.businessCapabilitySetUp',
   'net.nanopay.business.ruler.InitialBusinessRegistrationRule',
 
   // settlment Report service
@@ -1136,6 +1138,9 @@ var classes = [
   // Treviso
   'net.nanopay.country.br.NatureCode',
   'net.nanopay.country.br.NatureCodeData',
+  'net.nanopay.country.br.NatureCodeApprovalRequest',
+  'net.nanopay.country.br.ApprovedNatureCodeApprovalRequestRuleAction',
+  'net.nanopay.country.br.CapableCreateNatureCodeApprovalsRuleAction',
   'net.nanopay.country.br.BrazilBusinessInfoData',
   'net.nanopay.country.br.BrazilVerificationServiceInterface',
   'net.nanopay.country.br.ClientBrazilVerificationService',
@@ -1232,14 +1237,19 @@ var classes = [
   'net.nanopay.partner.treviso.invoice.TrevisoNotificationRule',
 
   // crunch onboarding
+  'net.nanopay.crunch.onboardingModels.BusinessPassedCompliance',
   'net.nanopay.crunch.onboardingModels.CheckUserCountry',
+  'net.nanopay.crunch.onboardingModels.CreateRegisterPaymentProviderUCJ',
   'net.nanopay.crunch.onboardingModels.IsBusiness',
   'net.nanopay.crunch.onboardingModels.InitialBusinessData',
+  'net.nanopay.crunch.onboardingModels.HasVerifiedBankAccount',
+  'net.nanopay.crunch.onboardingModels.RegisterPaymentProviderStatus',
   'net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData',
   'net.nanopay.crunch.onboardingModels.SigningOfficerQuestion',
   'net.nanopay.crunch.onboardingModels.SigningOfficerQuestionAnswered',
   'net.nanopay.crunch.onboardingModels.SigningOfficerQuestionOnPut',
   'net.nanopay.crunch.onboardingModels.SigningOfficerPersonalDataOnPut',
+  'net.nanopay.crunch.onboardingModels.SigningOfficerByDefaultRule',
   'net.nanopay.crunch.onboardingModels.BusinessInformationData',
   'net.nanopay.crunch.onboardingModels.BusinessOwnershipData',
   'net.nanopay.crunch.onboardingModels.TransactionDetailsData',
@@ -1409,6 +1419,10 @@ var classes = [
   'net.nanopay.tx.stripe.StripeTransactionDAO',
   'net.nanopay.tx.ChainSummary',
   'net.nanopay.tx.TransactionCreateOnInvoiceSubmission',
+  'net.nanopay.payment.PayeeCurrencyService',
+  'net.nanopay.payment.ClientPayeeCurrencyService',
+  'net.nanopay.payment.PayeeCurrency',
+
 
   //integration
 
@@ -1431,6 +1445,7 @@ var skeletons = [
   'net.nanopay.auth.passwordutil.PasswordEntropy',
   'net.nanopay.payment.CorridorService',
   'net.nanopay.payment.PaymentService',
+  'net.nanopay.payment.PayeeCurrencyService',
   'net.nanopay.invoice.service.InvoicePaymentService',
   'net.nanopay.liquidity.ucjQuery.AccountUCJQueryService',
   'net.nanopay.fx.ExchangeRateServiceInterface',
@@ -1448,7 +1463,8 @@ var proxies = [
   'net.nanopay.tx.TransactionLimitServiceInterface',
   'net.nanopay.contacts.PaymentCodeServiceInterface',
   'net.nanopay.contacts.ContactServiceInterface',
-  'net.nanopay.country.br.BrazilVerificationServiceInterface'
+  'net.nanopay.country.br.BrazilVerificationServiceInterface',
+  'net.nanopay.payment.PayeeCurrencyService'
 ];
 
 module.exports = {

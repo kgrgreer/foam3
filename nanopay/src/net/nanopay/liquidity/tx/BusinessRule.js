@@ -184,13 +184,17 @@ foam.CLASS({
   methods: [
     {
       name: 'toSummary',
+      type: 'String',
       documentation: `When using a reference to the roleDAO, the labels associated
         to it will show a chosen property rather than the first alphabetical string
         property. In this case, we are using the name.
       `,
       code: function(x) {
         return this.name || this.id;
-      }
+      },
+      javaCode: `
+        return foam.util.SafetyUtil.isEmpty(getName()) ? getId() : getName();
+      `
     },
     {
       name: 'validate',

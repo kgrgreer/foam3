@@ -431,7 +431,7 @@ foam.CLASS({
         } else if ( this.user.integrationCode == this.IntegrationCode.QUICKBOOKS ) {
           await this.quickbooksService.removeToken(null);
         }
-        this.pushMenu('sme.main.dashboard');
+        this.pushMenu('capability.main.dashboard');
       }
     }
   ]

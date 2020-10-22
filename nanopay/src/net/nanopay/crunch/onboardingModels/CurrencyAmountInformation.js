@@ -40,6 +40,7 @@ foam.CLASS({
       of: 'net.nanopay.model.CurrencyAmount',
       name: 'capital',
       label:'Business Capital',
+      help: 'What are the businesses\' current assets, i.e. sum of all assets.',
       documentation: 'Amount currency that Business Capital has been defined',
       validationPredicates: [
         {
@@ -59,6 +60,7 @@ foam.CLASS({
       of: 'net.nanopay.model.CurrencyAmount',
       name: 'equity',
       label:'Business Equity',
+      help: 'What is the businesses\' net worth, i.e. sum of all assets minus sum of all liabilities.',
       documentation: 'Amount currency that Business Equity has been defined',
       validationPredicates: [
         {

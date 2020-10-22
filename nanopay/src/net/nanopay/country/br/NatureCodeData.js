@@ -37,6 +37,13 @@ foam.CLASS({
     'natureCode'
   ],
 
+  sections: [
+    {
+      name: '_defaultSection',
+      permissionRequired: true
+    }
+  ],
+
   properties: [
     {
       class: 'String',

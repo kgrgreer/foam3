@@ -42,9 +42,13 @@ foam.CLASS({
   methods: [
     {
       name: 'toSummary',
+      type: 'String',
       code: function(x) {
         return this.name;
       },
+      javaCode: `
+        return getName();
+      `
     },
   ]
 });

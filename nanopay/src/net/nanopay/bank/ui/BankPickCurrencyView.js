@@ -364,7 +364,7 @@ foam.CLASS({
     function createOnComplete() {
       var self = this;
       return function() {
-        var menuLocation = 'sme.main.banking';
+        var menuLocation = 'capability.main.banking';
         window.location.hash.substr(1) != menuLocation ?
           self.pushMenu(menuLocation) : self.stack.back();
         return;

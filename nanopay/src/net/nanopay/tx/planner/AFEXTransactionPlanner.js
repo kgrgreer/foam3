@@ -50,7 +50,8 @@ foam.CLASS({
     'java.text.DateFormat',
     'java.text.SimpleDateFormat',
     'java.util.Locale',
-    'java.util.UUID'
+    'java.util.UUID',
+    'java.util.ArrayList'
   ],
 
   constants: [
@@ -152,6 +153,7 @@ foam.CLASS({
       ],
       javaType: 'AFEXTransaction',
       javaCode: `
+        ArrayList<TransactionLineItem> lines = new ArrayList<TransactionLineItem>();
         AFEXTransaction afexTransaction = new AFEXTransaction.Builder(x).build();
         afexTransaction.copyFrom(request);
         afexTransaction.setId(UUID.randomUUID().toString());
@@ -160,37 +162,45 @@ foam.CLASS({
         afexTransaction.setFxExpiry(fxQuote.getExpiryTime());
         afexTransaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
         afexTransaction.setFxRate(fxQuote.getRate());
-        afexTransaction.addLineItems( new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(String.valueOf(fxQuote.getId())).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).setSourceCurrency(fxQuote.findSourceCurrency(x)).setDestinationCurrency(fxQuote.findTargetCurrency(x)).build()} );
-      
+        FXLineItem fxl = new FXLineItem.Builder(x)
+          .setGroup("fx")
+          .setRate(fxQuote.getRate())
+          .setQuoteId(String.valueOf(fxQuote.getId())).setExpiry(fxQuote.getExpiryTime())
+          .setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()))
+          .setSourceCurrency(fxQuote.getSourceCurrency())
+          .setDestinationCurrency(fxQuote.getTargetCurrency())
+          .build();
+        lines.add(fxl);
+
         afexTransaction.setFxExpiry(fxQuote.getExpiryTime());
 
         afexTransaction.setPaymentProvider(PAYMENT_PROVIDER);
-      
+
         afexTransaction.setAmount(fxQuote.getSourceAmount());
         afexTransaction.setSourceCurrency(fxQuote.getSourceCurrency());
         afexTransaction.setDestinationAmount(fxQuote.getTargetAmount());
         afexTransaction.setDestinationCurrency(fxQuote.getTargetCurrency());
         afexTransaction.setPlanner(this.getId());
-        
+
         if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()))
         {
           afexTransaction.setAccepted(true);
         }
-      
+
         Date date = null;
         try{
           DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss", Locale.ENGLISH);
           date = format.parse(fxQuote.getValueDate());
         } catch ( Exception e) {
-      
+
         }
         if ( date != null )
-          afexTransaction.addLineItems( new TransactionLineItem[] {new ETALineItem.Builder(x).setGroup("fx").setEta(date.getTime() - new  Date().getTime()).build()} );
-        
+          lines.add(new ETALineItem.Builder(x).setGroup("fx").setEta(date.getTime() - new  Date().getTime()).build()) ;
+
         // TODO move to fee engine
         // add invoice fee
         Boolean sameCurrency = request.getSourceCurrency().equals(request.getDestinationCurrency());
-      
+        afexTransaction.addLineItems( lines.toArray(new TransactionLineItem[0]));
         return afexTransaction;
       `
     },

@@ -74,7 +74,13 @@ foam.CLASS({
                   ? `${this.firstName} ${this.lastName}`
                   : this.firstName
                 : 'Unknown';
-      }
+      },
+      javaCode: `
+        return ! foam.util.SafetyUtil.isEmpty(getOperatingBusinessName()) ? getOperatingBusinessName() : 
+          ! foam.util.SafetyUtil.isEmpty(getOperatingBusinessName()) ? getOperatingBusinessName() : 
+          ! foam.util.SafetyUtil.isEmpty(getOrganization()) ? getOrganization() : 
+          ! foam.util.SafetyUtil.isEmpty(getBusinessName()) ? getBusinessName() : "Unknown";
+      `
     }
   ]
 });

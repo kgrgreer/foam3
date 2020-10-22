@@ -4,7 +4,7 @@ p({class: "foam.nanos.crunch.Capability", id: "plannerCapability", name: "Planne
 p({class: "foam.nanos.crunch.Capability", id: "countryCapability", name: "Country Capability"})
 p({class: "foam.nanos.crunch.Capability", id: "corridorCapability", name: "Corridor Capability"})
 p({class: "foam.nanos.crunch.Capability", id: "currencyCapability", name: "Currency Capability"})
-p({class: "foam.nanos.crunch.Capability", id: "menuCapability", name: "Menu Capability", permissionsGranted: ["menu.read.capability.menu.create"]})
+p({class: "foam.nanos.crunch.Capability", id: "menuCapability", name: "Menu Capability", permissionsGranted: ["menu.read.capability.menu.create", "menu.read.sme.main.onboarding"]})
 
 // spid capabilities
 p({"class":"foam.nanos.auth.ServiceProvider","id":"nanopay","description":"nanopay"})
@@ -22,9 +22,9 @@ p({
   "description":"Are you a Signing Officer?",
   "notes":"This capability will intercept its permissions when there are no signingofficerjunctions belonging to the current business",
   "version":"0",
+  "visible":true,
   "enabled":true,
   "icon":"/images/capabilityIcons/SigningOfficerIcon.svg",
-  "visible":true,
   "associatedEntity":2,
   "permissionsIntercepted":[
     "businessHasSigningOfficer"
@@ -47,9 +47,9 @@ p({
   "of":"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData",
   "description":"Unlock signing officer privileges",
   "version":"0",
+  "visible":true,
   "enabled":true,
   "icon":"/images/capabilityIcons/SigningOfficerIcon.svg",
-  "visible":true,
   "daoKey":"userDAO",
   "contextDAOFindKey":"subject.realuser",
   "reviewRequired":true,
@@ -122,9 +122,9 @@ p({
   "of":"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData",
   "description":"Unlock signing officer privileges",
   "version":"0",
+  "visible":true,
   "enabled":true,
   "icon":"/images/capabilityIcons/SigningOfficerIcon.svg",
-  "visible":true,
   "daoKey":"userDAO",
   "contextDAOFindKey":"subject.realuser",
   "reviewRequired":true,
@@ -174,7 +174,7 @@ p({
   {
     "class":"foam.mlang.predicate.And",
     "args": [
-      { "class":"net.nanopay.crunch.onboardingModels.UserIsSigningOfficerOfBusiness" },
+      { "class":"net.nanopay.crunch.onboardingModels.SigningOfficerPrivilegesRequested" },
       {
         "class":"net.nanopay.crunch.onboardingModels.CheckUserCountry",
         "country":"US"
@@ -197,9 +197,9 @@ p({
   "of":"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData",
   "description":"Unlock signing officer privileges",
   "version":"0",
+  "visible":true,
   "enabled":true,
   "icon":"/images/capabilityIcons/SigningOfficerIcon.svg",
-  "visible":true,
   "daoKey":"userDAO",
   "contextDAOFindKey":"subject.realuser",
   "reviewRequired":true,
@@ -246,7 +246,7 @@ p({
   ],
   "interceptIf":{ "class":"net.nanopay.crunch.onboardingModels.SigningOfficerCapabilityInterceptPredicate" },
   "availabilityPredicate":
-    {
+  {
     "class":"foam.mlang.predicate.And",
     "args": [
       { "class":"net.nanopay.crunch.onboardingModels.SigningOfficerPrivilegesRequested" },
@@ -273,8 +273,7 @@ p({
   "of":"net.nanopay.crunch.onboardingModels.CertifyDataReviewed",
   "description":"Certify all data submitted has been reviewed",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -284,7 +283,6 @@ p({
   "of":"net.nanopay.crunch.onboardingModels.BusinessInformationData",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "daoKey":"businessDAO",
   "contextDAOFindKey":"subject.user"
 })
@@ -296,7 +294,6 @@ p({
   "of":"net.nanopay.crunch.onboardingModels.TransactionDetailsData",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "daoKey":"businessDAO",
   "contextDAOFindKey":"subject.user"
 })
@@ -308,7 +305,6 @@ p({
   "of":"net.nanopay.crunch.onboardingModels.BusinessDirectorsData",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "daoKey":"businessDAO",
   "reviewRequired":true,
   "contextDAOFindKey":"subject.user"
@@ -321,7 +317,6 @@ p({
   "of":"net.nanopay.crunch.onboardingModels.BusinessOwnershipData",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "daoKey":"convertOwnerObjectDAO",
   "reviewRequired":true
 })
@@ -333,8 +328,8 @@ p({
   "description":"Unlock payments and invoicing to Canada (CAD to CAD)",
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
   "version":"0",
-  "enabled":true,
   "visible":true,
+  "enabled":true,
   "reviewRequired":true,
   "keywords":["featured"],
   "permissionsGranted":[
@@ -369,8 +364,8 @@ p({
   "description":"Unlock International payments",
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
   "version":"0",
-  "enabled":true,
   "visible":true,
+  "enabled":true,
   "reviewRequired":true,
   "keywords":["featured"],
   "permissionsGranted":[
@@ -402,8 +397,8 @@ p({
   "description":"Unlock payments",
   "icon":"/images/capabilityIcons/USDOnboardCap.svg",
   "version":"0",
-  "enabled":true,
   "visible":true,
+  "enabled":true,
   "reviewRequired":true,
   "keywords":["featured"],
   "permissionsGranted":[
@@ -416,6 +411,13 @@ p({
     "class":"foam.mlang.predicate.And",
     "args": [
       { "class":"net.nanopay.crunch.onboardingModels.IsBusiness" },
+      {
+        "class": "foam.mlang.predicate.Not",
+        "arg1": {
+          "class":"net.nanopay.crunch.onboardingModels.CheckUserCountry",
+          "country":""
+        }
+      },
       {
         "class": "foam.mlang.predicate.Not",
         "arg1": {
@@ -437,6 +439,43 @@ p({
     "allowSkipping": false
   },
   "requirementViewTitle":"In this section, we ask for more business information to enable us to securely process payments on your behalf."
+})
+
+p({
+  "class": "foam.nanos.crunch.Capability",
+  "min": 1,
+  "id":"1f6b2047-1eef-471d-82e7-d86bdf511375",
+  "name":"Payables Menu Payment Provider Capability(AFEX)",
+  "description":"Payables Menu Payment Provider Capability(AFEX)",
+  "version":"0",
+  "enabled":true,
+  "visible":false,
+})
+
+p({
+  "class": "foam.nanos.crunch.MinMaxCapability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-20",
+  "name":"Registering with Payment Provider",
+  "description":"Registering with Payment Provider",
+  "icon":"images/nanopay_logo_blue.png",
+  "version":"0",
+  "enabled":true,
+  "visible":true,
+  "keywords":["featured"],
+  "permissionsGranted":[
+    "menu.read.capability.main.invoices.payables"
+  ],
+  "availabilityPredicate": {
+    "class":"foam.mlang.predicate.And",
+    "args": [
+      { "class": "net.nanopay.crunch.onboardingModels.BusinessPassedCompliance" },
+      { "class": "net.nanopay.crunch.onboardingModels.HasVerifiedBankAccount" },
+      {
+        "class": "net.nanopay.crunch.onboardingModels.RegisterPaymentProviderStatus",
+        "status":7
+      }
+    ]
+  }
 })
 
 p({
@@ -478,7 +517,6 @@ p({
   "of":"net.nanopay.crunch.registration.UserRegistrationData",
   "version":"0",
   "enabled":true,
-  "visible":true,
   "daoKey":"userDAO",
   "contextDAOFindKey": "subject.realUser",
   "associatedEntity": 1
@@ -492,8 +530,8 @@ p({
   "icon":"/images/capabilityIcons/BusinessRegistrationCap.svg",
   "of":"net.nanopay.crunch.onboardingModels.InitialBusinessData",
   "version":"0",
-  "enabled":true,
   "visible":true,
+  "enabled":true,
   "keywords":["featured"],
   "availabilityPredicate":{
     "class": "foam.mlang.predicate.Not",
@@ -508,7 +546,11 @@ p({
     "class": "foam.u2.wizard.StepWizardConfig",
     "allowSkipping": false
   },
-  "requirementViewTitle":"In this section, we ask you to enter some details relating to your business."
+  "requirementViewTitle":"In this section, we ask you to enter some details relating to your business.",
+  "permissionsGranted":[
+  "menu.read.capability.main.banking",
+  "menu.read.capability.main.contacts",
+  ]
 })
 
 p({
@@ -517,8 +559,7 @@ p({
   type:0,
   id:"520a4120-3bc6-cef9-6635-c32af8219a6a",
   name:"Source Country Capability BR",
-  enabled:true,
-  visible:false
+  enabled:true
 })
 
 p({
@@ -527,8 +568,7 @@ p({
   type:1,
   id:"63049307-8db4-2437-5c02-b71d6878263c",
   name:"Target Country Capability BR",
-  enabled:true,
-  visible:false
+  enabled:true
 })
 
 p({
@@ -538,7 +578,6 @@ p({
   "of":"net.nanopay.country.br.BrazilBusinessInfoData",
   "version":"0",
   "enabled":true,
-  "visible":true,
   "associatedEntity": 0
 })
 
@@ -549,7 +588,6 @@ p({
   "of":"net.nanopay.country.br.CPF",
   "version":"0",
   "enabled":true,
-  "visible":true,
   "associatedEntity": 1
 })
 
@@ -561,7 +599,6 @@ p({
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "enabled":true,
-  "visible":true,
   "associatedEntity": 0
 })
 
@@ -573,7 +610,6 @@ p({
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "enabled":true,
-  "visible":true,
   "associatedEntity": 0
 })
 
@@ -585,7 +621,6 @@ p({
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "enabled":true,
-  "visible":true,
   "associatedEntity": 0
 })
 
@@ -597,7 +632,6 @@ p({
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "enabled":true,
-  "visible":true,
   "associatedEntity": 1
 })
 
@@ -609,7 +643,6 @@ p({
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "enabled":true,
-  "visible":true,
   "associatedEntity": 1
 })
 
@@ -621,7 +654,6 @@ p({
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "keywords":["intuit"]
 })
 
@@ -633,7 +665,6 @@ p({
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "keywords":["intuit"]
 })
 
@@ -645,7 +676,6 @@ p({
   "of":"net.nanopay.crunch.registration.BusinessDetailExpandedData",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "daoKey":"businessDAO",
   "contextDAOFindKey":"subject.user"
 })
@@ -658,7 +688,6 @@ p({
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "keywords":["intuit"]
 })
 
@@ -669,7 +698,6 @@ p({
   "of":"net.nanopay.crunch.registration.BusinessDetailData",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "daoKey":"businessDAO",
   "contextDAOFindKey":"subject.user"
 })
@@ -681,7 +709,6 @@ p({
   "of":"net.nanopay.crunch.registration.BusinessTypeData",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "min": 1,
   "max": 1,
   "daoKey":"businessDAO",
@@ -696,7 +723,6 @@ p({
   "of":"net.nanopay.crunch.registration.IsSelectedData",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "keywords":["intuit"]
 })
 
@@ -708,7 +734,6 @@ p({
   "of":"net.nanopay.crunch.registration.IsSelectedData",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "keywords":["intuit"]
 })
 
@@ -718,8 +743,7 @@ p({
   "name":"Business Directors",
   "of":"net.nanopay.crunch.registration.BusinessDirectorList",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -728,8 +752,7 @@ p({
   "name":"Business Owners",
   "of":"net.nanopay.crunch.registration.BusinessOwnerList",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -738,8 +761,7 @@ p({
   "name":"Business Signing Officer",
   "description":"Business has a signing officer",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -748,8 +770,7 @@ p({
   "name":"Signing Officers",
   "of":"net.nanopay.crunch.registration.SigningOfficerList",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -759,7 +780,6 @@ p({
   "description":"User is a signing officer",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "contextDAOFindKey":"subject.realuser",
   "associatedEntity":2
 })
@@ -772,7 +792,6 @@ p({
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "keywords":["intuit"]
 })
 
@@ -784,7 +803,6 @@ p({
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "keywords":["intuit"]
 })
 
@@ -794,8 +812,7 @@ p({
   "name":"Personal Onboarding Type",
   "of":"net.nanopay.crunch.registration.PersonalOnboardingTypeData",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -806,7 +823,6 @@ p({
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "keywords":["intuit"]
 })
 
@@ -817,7 +833,6 @@ p({
   "of":"net.nanopay.crunch.registration.UserDetailData",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "daoKey":"userDAO",
   "contextDAOFindKey": "subject.realUser",
   "associatedEntity": 1
@@ -832,7 +847,6 @@ p({
   "of":"net.nanopay.crunch.registration.UserDetailExpandedData",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "daoKey":"userDAO",
   "contextDAOFindKey": "subject.realUser",
   "associatedEntity": 1
@@ -846,7 +860,6 @@ p({
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "keywords":["intuit"]
 })
 
@@ -858,7 +871,6 @@ p({
   "contextDAOFindKey":"subject.realuser",
   "version":"0",
   "enabled":true,
-  "visible":true,
   "associatedEntity": 1,
   "wizardlet": {
     "class": "foam.nanos.crunch.ui.CapabilityWizardlet"
@@ -874,8 +886,7 @@ p({
   "daoKey": "businessDAO",
   "contextDAOFindKey": "subject.user",
   "version":"0",
-  "enabled":true,
-  "visible":true
+  "enabled":true
 })
 
 p({
@@ -887,8 +898,7 @@ p({
   "daoKey": "businessDAO",
   "contextDAOFindKey": "subject.user",
   "version":"0",
-  "enabled":true,
-  "visible":true
+  "enabled":true
 })
 
 p({
@@ -900,18 +910,72 @@ p({
   "daoKey": "businessDAO",
   "contextDAOFindKey": "subject.user",
   "version":"0",
-  "enabled":true,
-  "visible":true
+  "enabled":true
 })
 
 // nanopay capabilities
 p({
   class: "foam.nanos.crunch.Capability",
   id: "nanopayCountryCapability",
-  name: "Nanopay Country Capability",
+  name: "nanopay Country Capability",
   version: "0",
   enabled: true,
-  visible: false,
+  permissionsGranted: [
+    "country.read.*"
+  ]
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "nanopayCorridorCapability",
+  name: "nanopay Corridor Capability",
+  version: "0",
+  enabled: true,
+  permissionsGranted: [
+    "paymentprovidercorridor.read.*"
+  ]
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "nanopayCurrencyCapability",
+  name: "nanopay Currency Capability",
+  version: "0",
+  enabled: true,
+  permissionsGranted: [
+    "currency.read.*",
+    "multi-currency.read"
+  ]
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "nanopayPlannerCapability",
+  name: "nanopay Planner Capability",
+  version: "0",
+  enabled: true,
+  permissionsGranted: [
+    "rule.read.*"
+  ]
+})
+
+p({
+  "class": "foam.nanos.crunch.Capability",
+  "id": "nanopayMenuCapability",
+  "name": "nanopay Menu Capability",
+  "version":"0",
+  "enabled":true,
+  "permissionsGranted":[]
+})
+
+// nanopay.ablii capabilities
+p({"class":"foam.nanos.auth.ServiceProvider","id":"nanopay.ablii","description":"nanopay.ablii spid"})
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "nanopay.abliiCountryCapability",
+  name: "nanopay.ablii Country Capability",
+  version: "0",
+  enabled: true,
   permissionsGranted: [
     "country.read.CA",
     "country.read.US"
@@ -920,11 +984,10 @@ p({
 
 p({
   class: "foam.nanos.crunch.Capability",
-  id: "nanopayCorridorCapability",
-  name: "Nanopay Corridor Capability",
+  id: "nanopay.abliiCorridorCapability",
+  name: "nanopay.ablii Corridor Capability",
   version: "0",
   enabled: true,
-  visible: false,
   permissionsGranted: [
     "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
     "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
@@ -938,11 +1001,10 @@ p({
 
 p({
   class: "foam.nanos.crunch.Capability",
-  id: "nanopayCurrencyCapability",
-  name: "Nanopay Currency Capability",
+  id: "nanopay.abliiCurrencyCapability",
+  name: "nanopay.ablii Currency Capability",
   version: "0",
   enabled: true,
-  visible: false,
   permissionsGranted: [
     "currency.read.CAD",
     "currency.read.USD",
@@ -953,11 +1015,10 @@ p({
 
 p({
   class: "foam.nanos.crunch.Capability",
-  id: "nanopayPlannerCapability",
-  name: "Nanopay Planner Capability",
+  id: "nanopay.abliiPlannerCapability",
+  name: "nanopay.ablii Planner Capability",
   version: "0",
   enabled: true,
-  visible: false,
   permissionsGranted: [
     "rule.read.*"
   ]
@@ -965,16 +1026,11 @@ p({
 
 p({
   "class": "foam.nanos.crunch.Capability",
-  "id": "nanopayMenuCapability",
-  "name": "Nanopay Menu Capability",
+  "id": "nanopay.abliiMenuCapability",
+  "name": "nanopay.ablii Menu Capability",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "permissionsGranted":[
-    "menu.read.capability.menu.search",
-    "menu.read.capability.menu.paymentcode",
-    "menu.read.capability.menu.invitation",
-    "contact.ro.shouldinvite",
     "business.rw.ispublic",
     "menu.read.accountingintegrationcards",
     "menu.read.paymentcode",
@@ -984,11 +1040,10 @@ p({
 
 p({
   "class": "foam.nanos.crunch.Capability",
-  "id": "nanopayAccountingCapability",
-  "name": "Nanopay Accounting Capability",
+  "id": "nanopay.abliiAccountingCapability",
+  "name": "nanopay.ablii Accounting Capability",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "permissionsGranted":[
     "service.quickbooksService"
   ]
@@ -1002,4 +1057,19 @@ p({
   "version":"0",
   "enabled":true,
   "visible":false
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"nanopayBusinessMenuCapability",
+  "name":"nanopay business registration granted menu",
+  "version":"0",
+  "enabled":true,
+  "visible":false,
+  "permissionsGranted":[
+  "menu.read.capability.menu.search",
+  "menu.read.capability.menu.paymentcode",
+  "menu.read.capability.menu.invitation",
+  "contact.ro.shouldinvite"
+  ]
 })

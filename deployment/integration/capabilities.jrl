@@ -4,7 +4,6 @@ p({
   name: "Integration Base Capability for Service Providers",
   version: "0",
   enabled: true,
-  visible: false,
 })
 
 p({
@@ -13,7 +12,6 @@ p({
   name: "Enable Integration Planners",
   version: "0",
   enabled: true,
-  visible: false,
   permissionsGranted: [
     "rule.read.*"
   ]
@@ -25,7 +23,6 @@ p({
   name: "Enable Integration Countries",
   version: "0",
   enabled: true,
-  visible: false,
   permissionsGranted: [
     "country.read.CA"
   ]
@@ -37,7 +34,6 @@ p({
   name: "Enable Integration Corridors",
   version: "0",
   enabled: true,
-  visible: false,
   permissionsGranted: [
     "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15f7bmoca-ca",
     "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15f7rbcca-ca"
@@ -50,7 +46,6 @@ p({
   name: "Enable Integration Currencies",
   version: "0",
   enabled: true,
-  visible: false,
   permissionsGranted: [
     "currency.read.CAD"
   ]

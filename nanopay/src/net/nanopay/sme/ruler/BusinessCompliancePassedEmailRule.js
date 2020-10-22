@@ -54,7 +54,7 @@ foam.CLASS({
               AppConfig               config         = group != null ? (AppConfig) group.getAppConfig(x) : (AppConfig) x.get("appConfig");
               Map<String, Object>     args           = new HashMap<>();
 
-              args.put("link",   config.getUrl() + "#sme.main.dashboard");
+              args.put("link",   config.getUrl() + "#capability.main.dashboard");
               args.put("sendTo", User.EMAIL);
               args.put("business", business.getOrganization());
               

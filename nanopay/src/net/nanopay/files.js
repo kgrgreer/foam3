@@ -152,6 +152,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/SIBankAccount' },
   { name: 'net/nanopay/bank/ESBankAccount' },
   { name: 'net/nanopay/bank/CNBankAccount' },
+  { name: 'net/nanopay/bank/SEBankAccount' },
   { name: 'net/nanopay/bank/BankAccountStatus' },
   { name: 'net/nanopay/bank/BankAccountController', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/BankPickCurrencyView', flags: ['web'] },
@@ -1462,6 +1463,7 @@ FOAM_FILES([
   { name: 'net/nanopay/business/ruler/JunctionNotificationSettingsRule' },
   { name: 'net/nanopay/business/ruler/RegistrationLoginDisabledRule' },
   { name: 'net/nanopay/business/ruler/InitialBusinessRegistrationRule' },
+  { name: 'net/nanopay/business/ruler/businessCapabilitySetUp' },
 
   // approval
   { name: 'net/nanopay/approval/UserRefines' },
@@ -1605,11 +1607,17 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/registration/UserDetailExpandedData' },
 
   // crunch onboarding
+  { name: 'net/nanopay/crunch/onboardingModels/BusinessPassedCompliance' },
   { name: 'net/nanopay/crunch/onboardingModels/CheckUserCountry' },
+  { name: 'net/nanopay/crunch/onboardingModels/CreateRegisterPaymentProviderUCJ' },
+  { name: 'net/nanopay/crunch/onboardingModels/IsBusiness' },
   { name: 'net/nanopay/crunch/onboardingModels/InitialBusinessData' },
+  { name: 'net/nanopay/crunch/onboardingModels/HasVerifiedBankAccount' },
+  { name: 'net/nanopay/crunch/onboardingModels/RegisterPaymentProviderStatus' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerPersonalData' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerQuestion' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerQuestionAnswered' },
+  { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerByDefaultRule' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessInformationData' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessOwnershipData' },
   { name: 'net/nanopay/crunch/onboardingModels/TransactionDetailsData' },
@@ -1627,6 +1635,11 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/onboardingModels/BusinessAccountData' },
   { name: 'net/nanopay/crunch/onboardingModels/CurrencyAmountInformation' },
   { name: 'net/nanopay/crunch/onboardingModels/CustomerBasicInformation' },
+  { name: 'net/nanopay/crunch/onboardingModels/IsBusiness' },
+
+  { name: 'net/nanopay/payment/PayeeCurrencyService' },
+  { name: 'net/nanopay/payment/PayeeCurrency' },
+  { name: 'net/nanopay/payment/ClientPayeeCurrencyService' },
 
   // crunch notification
   { name: 'net/nanopay/crunch/UCJExpiryReminderCron' },
@@ -1709,6 +1722,9 @@ FOAM_FILES([
   { name: 'net/nanopay/country/br/NatureCode' },
   { name: 'net/nanopay/country/br/NatureCodeData' },
   { name: 'net/nanopay/country/br/NatureCodeRate' },
+  { name: 'net/nanopay/country/br/NatureCodeApprovalRequest' },
+  { name: 'net/nanopay/country/br/CapableCreateNatureCodeApprovalsRuleAction' },
+  { name: 'net/nanopay/country/br/ApprovedNatureCodeApprovalRequestRuleAction' },
   { name: 'net/nanopay/country/PermittedCountryFilterDAO' },
   { name: 'net/nanopay/country/br/NatureCodePaymentProviderJunctionRefinement' },
   { name: 'net/nanopay/country/br/NatureBusinessRelationship' },

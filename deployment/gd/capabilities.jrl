@@ -3,7 +3,6 @@ p({
   id: "gdPlannerCapability",
   version: "0",
   enabled: true,
-  visible: false,
   permissionsGranted: [
     "rule.read.*"
   ]
@@ -14,7 +13,6 @@ p({
   id: "gdCountryCapability",
   version: "0",
   enabled: true,
-  visible: false,
   permissionsGranted: [
     "country.read.CA"
   ]
@@ -25,7 +23,6 @@ p({
   id: "gdCorridorCapability",
   version: "0",
   enabled: true,
-  visible: false,
   permissionsGranted: [
     "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15f7bmoca-ca",
     "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15f7rbcca-ca"
@@ -37,7 +34,6 @@ p({
   id: "gdCurrencyCapability",
   version: "0",
   enabled: true,
-  visible: false,
   permissionsGranted: [
     "currency.read.CAD"
   ]
@@ -48,7 +44,6 @@ p({
   id: "gdMenuCapability",
   version: "0",
   enabled: true,
-  visible: false,
   "permissionsGranted":[
     "menu.read.capability.menu.search",
     "menu.read.capability.menu.paymentcode",

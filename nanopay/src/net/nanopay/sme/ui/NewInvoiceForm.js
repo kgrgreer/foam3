@@ -28,6 +28,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'payeeCurrencyService',
     'auth',
     'canReceiveCurrencyDAO',
     'getDefaultCurrencyDAO',
@@ -400,6 +401,9 @@ foam.CLASS({
           });
         this.currencyType = this.currencies[0];
         this.filteredCurrencyDAO = this.currencyDAO.where(this.IN(this.Currency.ID, this.currencies));
+      } else {
+        let currencies = await this.payeeCurrencyService.query(null, null);
+        this.filteredCurrencyDAO = this.currencyDAO.where(this.IN(this.Currency.ID, currencies));
       }
     },
     function initE() {

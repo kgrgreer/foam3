@@ -61,7 +61,7 @@ foam.CLASS({
     {
       name: 'title',
       expression: function(index) {
-        return `Add for owner #${index}`;
+        return `Add details for owner #${index}`;
       }
     },
     {

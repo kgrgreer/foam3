@@ -240,7 +240,7 @@ foam.CLASS({
             });
 
             this.auth.cache = {};
-            x.pushMenu('sme.main.dashboard');
+            x.pushMenu('capability.main.dashboard');
             x.ctrl.notify(this.SUCCESS_SUBMIT_MESSAGE, '', foam.log.LogLevel.INFO, true);
           }, function(err) {
             console.log('Error during submitting the onboarding info: ' + err);
@@ -260,7 +260,7 @@ foam.CLASS({
           sendInvitation: true
           })).
           then(function() {
-            x.pushMenu('sme.main.dashboard');
+            x.pushMenu('capability.main.dashboard');
             x.ctrl.notify('Progress saved.', '', foam.log.LogLevel.INFO, true);
           }, function() {
             x.ctrl.notify('Error saving progress, please try again shortly.', '', foam.log.LogLevel.ERROR, true);

@@ -7,7 +7,8 @@ p({
       spid: "treviso",
       urls: [
         "treviso",
-        "treviso.release.nanopay.net"
+        "treviso.release.nanopay.net",
+        "treviso.development.nanopay.net"
       ]
     },
     {
@@ -15,8 +16,15 @@ p({
       spid: "nanopay",
       urls: [
         "localhost",
-        "ablii",
         "release.nanopay.net",
+        "development.nanopay.net"
+      ]
+    },
+    {
+      class: "net.nanopay.auth.ServiceProviderURL",
+      spid: "nanopay.ablii",
+      urls: [
+        "ablii",
         "release.ablii.com"
       ]
     }

@@ -115,8 +115,8 @@ public class FeeEngine {
       if ( fee != null ) {
         var rate = new Rate(fee).getValue(transaction);
         var currencyDAO = (DAO) x.get("currencyDAO");
-        var sourceCurrency = (Currency) currencyDAO.find(transaction.getSourceCurrency());
-        var destinationCurrency = (Currency) currencyDAO.find(transaction.getDestinationCurrency());
+        Currency sourceCurrency = (Currency) currencyDAO.find(transaction.getSourceCurrency());
+        Currency destinationCurrency = (Currency) currencyDAO.find(transaction.getDestinationCurrency());
         var rateExpiry = transactionFeeRule_.getRateExpiry();
         var expiry = LocalDateTime.now();
 
@@ -129,8 +129,8 @@ public class FeeEngine {
         transaction.addLineItems(new TransactionLineItem[] {
           new TotalRateLineItem.Builder(x)
             .setRate(transactionFeeRule_.getIsInvertedRate() ? 1.0 / rate : rate)
-            .setSourceCurrency(sourceCurrency)
-            .setDestinationCurrency(destinationCurrency)
+            .setSourceCurrency(sourceCurrency.getId())
+            .setDestinationCurrency(destinationCurrency.getId())
             .setExpiry(Date.from(expiry.atZone(ZoneId.systemDefault()).toInstant()))
             .build()
         });
@@ -185,7 +185,7 @@ public class FeeEngine {
     result.setGroup(getFeeGroup());
     result.setName(name);
     result.setAmount(amount);
-    result.setFeeCurrency(currency);
+    result.setFeeCurrency(currency.getId());
     if ( ! loadedFees_.isEmpty() ) {
       result.setRates(
         loadedFees_.values().stream()

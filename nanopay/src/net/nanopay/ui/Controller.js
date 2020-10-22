@@ -95,6 +95,7 @@ foam.CLASS({
     'findAccount',
     'findBalance',
     'homeDenomination',
+    'initLayout',
     'isIframe',
     'onboardingUtil',
     'privacyUrl',
@@ -240,10 +241,20 @@ foam.CLASS({
     {
       class: 'foam.core.FObjectProperty',
       of: 'foam.core.Latch',
-      name: 'themeUpdated',
-      documentation: 'A latch used to wait on theme update after login.',
+      name: 'initLayout',
+      documentation: 'A latch used to wait on layout initialization.',
       factory: function() {
         return this.Latch.create();
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'layoutInitialized',
+      documentation: 'True if layout has been initialized.',
+      value: false,
+      expression: async function(initLayout) {
+        await initLayout;
+        return true;
       }
     },
     {
@@ -394,7 +405,7 @@ foam.CLASS({
           .addClass(this.myClass())
           .add(this.slot( async function(loginSuccess, topNavigation_) {
             if ( ! loginSuccess ) return null;
-            await this.themeUpdated;
+            await this.initLayout;
             return this.E().tag(topNavigation_);
           }))
           .start()
@@ -404,14 +415,14 @@ foam.CLASS({
               data$: this.bannerData$
             })
             .start(this.StackView.create({data: this.stack, showActions: false}))
-              .enableClass('login-stack', this.loginSuccess$.map( ls => ! ls ))
-              .enableClass('application-stack', this.loginSuccess$.map( ls => ls ))
+              .enableClass('login-stack', this.layoutInitialized$.map( li => ! li ))
+              .enableClass('application-stack', this.layoutInitialized$.map( li => li ))
             .end()
           .end()
           .start()
             .enableClass('footer-wrapper', this.loginSuccess$)
             .add(this.slot( async function(loginSuccess, footerView_) {
-              if ( loginSuccess ) await this.themeUpdated;
+              if ( loginSuccess ) await this.initLayout;
               return this.E().tag(footerView_);
             }))
           .end();
@@ -724,7 +735,6 @@ foam.CLASS({
     function onUserAgentAndGroupLoaded() {
       var self = this;
       this.loginSuccess = true;
-      this.themeUpdated.resolve();
 
       // Listener to check for new toast notifications
       var userNotificationQueryId = this.subject.realUser.id;
@@ -755,6 +765,10 @@ foam.CLASS({
           }
 
           var hash = location.hash.substr(1);
+
+          if ( hash !== 'sme.accountProfile.switch-business' ) {
+            this.initLayout.resolve();
+          }
   
           try {
             menu = await this.client.menuDAO.find(hash);
@@ -794,6 +808,7 @@ foam.CLASS({
       }
 
       else {
+        this.initLayout.resolve();
         // only show B2B onboarding if user is a Business
         if ( this.subject.user.type === 'Business' ) {
           // check account status and show UI accordingly

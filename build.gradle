@@ -126,6 +126,7 @@ abstract class IncrementalTask extends DefaultTask {
             println "CHANGED inputs considered out of date"
 
             StringJoiner modified = new StringJoiner("\",\"", "{\"modified\":[\"", "\"]")
+            modified.setEmptyValue("{\"modified\":[]")
             inputs.outOfDate { change ->
                 String relPath = project.projectDir.toPath().relativize(change.file.toPath()).toString()
                 println "out of date: ${relPath}"
@@ -133,6 +134,7 @@ abstract class IncrementalTask extends DefaultTask {
             }
 
             StringJoiner removed = new StringJoiner("\",\"", ",\"removed\":[\"", "\"]}")
+            removed.setEmptyValue(",\"removed\":[]}")
             inputs.removed { change ->
                 println "removed: ${change.file.path}"
                 removed.add(change.file.path)
@@ -349,6 +351,9 @@ clean {
     delete project.targetDir
     delete project.buildDir
     delete project.genJavaDir
+    delete fileTree(project.jsBuildDir).matching {
+      include "**/foam-*.js"
+    }
 }
 
 compileJava {

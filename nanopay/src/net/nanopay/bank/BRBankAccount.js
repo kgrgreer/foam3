@@ -202,10 +202,10 @@ foam.CLASS({
   ],
 
   methods: [
-    async function save() {
+    async function save(stack_back) {
       try {
         await this.subject.user.accounts.put(this);
-        if ( this.stack ) this.stack.back();
+        if ( this.stack && stack_back ) this.stack.back();
         this.notify(this.BANK_ADDED, '', this.LogLevel.INFO, true);
       } catch (err) {
         this.notify(err.message, '', this.LogLevel.ERROR, true);

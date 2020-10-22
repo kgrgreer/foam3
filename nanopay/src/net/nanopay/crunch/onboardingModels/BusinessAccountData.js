@@ -46,13 +46,13 @@ foam.CLASS({
     {
       section: 'accountingSection',
       name: 'OwnerOrOutsourced',
-      label: 'Are you the owner of the business?',
+      label: 'Is the company accounting outsourced?',
       class: 'Boolean',
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
-          [true, 'Yes, I\'m the owner of the company'],
-          [false, 'No, I\'m not the owner']
+          [true, 'Yes'],
+          [false, 'No']
         ]
       },
     },

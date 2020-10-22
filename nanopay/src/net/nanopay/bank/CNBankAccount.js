@@ -36,6 +36,12 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
+      name: 'denomination',
+      section: 'accountDetails',
+      gridColumns: 12,
+      value: 'CNY',
+    },
+    {
       name: 'swiftCode',
       label: 'SWIFT/BIC',
       updateVisibility: 'RO',

@@ -319,7 +319,7 @@ foam.CLASS({
   ],
 
   methods: [
-    async function save() {
+    async function save(stack_back) {
       try {
         await this.padCaptureDAO.put(this.padCapture);
       } catch (e) {
@@ -335,7 +335,7 @@ foam.CLASS({
             let message = error.display_message !== '' ? error.display_message : error.error_code;
             this.notify(message, '', this.LogLevel.ERROR, true);
           }
-          if ( this.stack ) this.stack.back();
+          if ( this.stack && stack_back ) this.stack.back();
         } catch (e) {
           this.notify(e.message, '', this.LogLevel.ERROR, true);
         }
