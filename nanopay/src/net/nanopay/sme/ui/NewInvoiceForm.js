@@ -149,10 +149,25 @@ foam.CLASS({
       padding: 8px 13px;
       background-color: #ffffff;
     }
-    ^ .foam-nano-fs-fileDropZone-FileDropZone {
-      background-color: #ffffff;
+    ^ .foam-u2-MultiView {
+      width: 100%;
       margin-top: 16px;
       min-height: 264px;
+    }
+    ^ .foam-nanos-fs-fileDropZone-FileDropZone {
+      background-color: #ffffff;
+    }
+    ^ .foam-nanos-fs-fileDropZone-FilePreview {
+      max-width: 150px;
+      max-height: 264px;
+      margin-right: -30px;
+    }
+    ^ .foam-nanos-fs-fileDropZone-FilePreview iframe {
+      width: 228px;
+      max-height: 264px;
+    }
+    ^ .foam-nanos-fs-fileDropZone-FilePreview img {
+      width: 228px;
     }
     ^ .small-error-icon {
       height: 10px;
@@ -313,7 +328,19 @@ foam.CLASS({
       },
       postSet: function(_, n) {
         this.invoice.invoiceFile = n;
-      }
+      },
+      view: function(_, X) {
+        return foam.u2.MultiView.create({
+        views: [
+          foam.nanos.fs.fileDropZone.FileDropZone.create({
+            files$: X.uploadFileData$
+          }, X),
+          foam.nanos.fs.fileDropZone.FilePreview.create({
+            data$: X.uploadFileData$
+          }, X)
+        ]
+        });
+      },
     },
     {
       class: 'Boolean',
@@ -625,10 +652,7 @@ foam.CLASS({
                 .end()
               .end()
             .end()
-            .start({
-              class: 'foam.nanos.fs.fileDropZone.FileDropZone',
-              files$: this.uploadFileData$
-            }).end()
+            .add(this.UPLOAD_FILE_DATA)
             .start().addClass('input-wrapper')
               .start().addClass('input-label').add(this.ADD_NOTE).end()
               .start( this.Invoice.NOTE, {
