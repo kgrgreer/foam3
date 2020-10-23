@@ -174,7 +174,7 @@ foam.CLASS({
               }
             }),
             foam.core.Action.create({
-              name: 'Set as Default',
+              name: 'setAsDefault',
               code: function(X) {
                 if ( this.isDefault ) {
                   self.notify(`${ this.name } ${ self.ALREADY_DEFAULT }`, '', self.LogLevel.WARN, true);
