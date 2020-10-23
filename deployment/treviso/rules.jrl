@@ -91,7 +91,7 @@ p({
     "ruleGroup":"InvoiceNotification",
     "documentation":"Sets proper capabilities and capables on invoice creation",
     "daoKey":"invoiceDAO",
-    "operation":0,
+    "operation":3,
     "after":false,
     "action":{
       "class":"net.nanopay.invoice.ruler.TrevisoInvoiceCapabilityRule"

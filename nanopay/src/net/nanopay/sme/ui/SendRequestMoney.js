@@ -423,9 +423,10 @@ foam.CLASS({
 
       try {
         this.invoice = await this.invoiceDAO.put(this.invoice);
-
+        
         if ( this.invoice.capablePayloads.length > 0 && ! this.invoice.isWizardCompleted ){
           this.invoice.draft = true;
+          this.invoice.capablePayloads = [];
           this.saveDraft(this.invoice);
           return;
         }
