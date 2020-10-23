@@ -1605,11 +1605,14 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/registration/UserDetailData' },
   { name: 'net/nanopay/crunch/registration/UserDetailExpandedData' },
 
+  // crunch predicates - todo move all predicates used in crunch here
+  { name: 'net/nanopay/crunch/onboardingModels/IsBusiness' },
+  { name: 'net/nanopay/crunch/IsSpid' },
+
   // crunch onboarding
   { name: 'net/nanopay/crunch/onboardingModels/BusinessPassedCompliance' },
   { name: 'net/nanopay/crunch/onboardingModels/CheckUserCountry' },
   { name: 'net/nanopay/crunch/onboardingModels/CreateRegisterPaymentProviderUCJ' },
-  { name: 'net/nanopay/crunch/onboardingModels/IsBusiness' },
   { name: 'net/nanopay/crunch/onboardingModels/InitialBusinessData' },
   { name: 'net/nanopay/crunch/onboardingModels/HasVerifiedBankAccount' },
   { name: 'net/nanopay/crunch/onboardingModels/RegisterPaymentProviderStatus' },
@@ -1634,7 +1637,6 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/onboardingModels/BusinessAccountData' },
   { name: 'net/nanopay/crunch/onboardingModels/CurrencyAmountInformation' },
   { name: 'net/nanopay/crunch/onboardingModels/CustomerBasicInformation' },
-  { name: 'net/nanopay/crunch/onboardingModels/IsBusiness' },
 
   { name: 'net/nanopay/payment/PayeeCurrencyService' },
   { name: 'net/nanopay/payment/PayeeCurrency' },

@@ -1237,11 +1237,14 @@ var classes = [
   'net.nanopay.partner.treviso.invoice.UpdateTransactionOnInvoiceValidationRule',
   'net.nanopay.partner.treviso.invoice.TrevisoNotificationRule',
 
+  // crunch predicates - todo move all predicates used in crunch here
+  'net.nanopay.crunch.onboardingModels.IsBusiness',
+  'net.nanopay.crunch.IsSpid',
+
   // crunch onboarding
   'net.nanopay.crunch.onboardingModels.BusinessPassedCompliance',
   'net.nanopay.crunch.onboardingModels.CheckUserCountry',
   'net.nanopay.crunch.onboardingModels.CreateRegisterPaymentProviderUCJ',
-  'net.nanopay.crunch.onboardingModels.IsBusiness',
   'net.nanopay.crunch.onboardingModels.InitialBusinessData',
   'net.nanopay.crunch.onboardingModels.HasVerifiedBankAccount',
   'net.nanopay.crunch.onboardingModels.RegisterPaymentProviderStatus',
