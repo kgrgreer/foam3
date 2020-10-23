@@ -35,11 +35,11 @@ foam.CLASS({
       view: function(_, X) {
         return {
           class: 'foam.u2.view.RichChoiceView',
-          data$: X.data.currency$,
+          search: true,
           sections: [
             {
               heading: 'Available Currencies',
-              dao$: X.data.dao$
+              dao: X.currencyDAO
             }
           ]
         };
@@ -60,9 +60,8 @@ foam.CLASS({
       gridColumns: 6,
       unitPropName: 'currency',
       unitPropValueToString: async function(x, val, unitPropName) {
-        var unitProp = await x.dao.find(unitPropName);
-        if ( unitProp )
-          return unitProp.format(val);
+        var unitProp = await x.currencyDAO.find(unitPropName);
+        if ( unitProp ) return unitProp.format(val);
         return val;
       },
       validationPredicates: [
@@ -77,23 +76,13 @@ foam.CLASS({
           errorMessage: 'NO_AMOUNT_ERROR'
         }
       ]
-    },
-    {
-      class: 'foam.dao.DAOProperty',
-      name: 'dao',
-      documentation: 'DAO used for currency selection',
-      visiblility: 'HIDDEN',
-      factory: function() {
-        return this.currencyDAO;
-      }
     }
   ],
 
   methods: [
     async function toSummary() {
-      var unitProp = await this.dao.find(unitPropName);
-      if ( unitProp )
-        return unitProp.format(val);
+      var unitProp = await this.currencyDAO.find(unitPropName);
+      if ( unitProp ) return unitProp.format(val);
       return val;
     }
   ]
