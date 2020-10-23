@@ -54,8 +54,8 @@ foam.CLASS({
 
   imports: [
     'auth',
-    'capabilityDAO',
     'countryDAO',
+    'paymentProviderCorridorDAO',
     'subject',
     'user'
   ],
@@ -333,9 +333,9 @@ foam.CLASS({
       name: 'availableCountries',
       section: 'stepOne',
       visibility: 'HIDDEN',
-      expression: function(capabilityDAO) {
+      expression: function(paymentProviderCorridorDAO) {
         return this.PromisedDAO.create({
-          promise: capabilityDAO.where(this.INSTANCE_OF(this.PaymentProviderCorridor))
+          promise: paymentProviderCorridorDAO.where(this.INSTANCE_OF(this.PaymentProviderCorridor))
             .select(this.MAP(this.PaymentProviderCorridor.TARGET_COUNTRY))
             .then((sink) => {
               let unique = [...new Set(sink.delegate.array)];

@@ -80,6 +80,7 @@ p({
   """
     return new foam.dao.EasyDAO.Builder(x)
       .setAuthorize(true)
+      .setAuthorizer(new net.nanopay.payment.PaymentProviderCorridorAuthorizer.Builder(x).setPermissionPrefix("paymentprovidercorridor").build())
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setInnerDAO(x.get("localCapabilityDAO"))
       .setValidated(true)

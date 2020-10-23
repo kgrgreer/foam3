@@ -52,6 +52,7 @@ FOAM_FILES([
   { name: 'net/nanopay/payment/InstitutionAuthorizerTest' },
   { name: 'net/nanopay/payment/PaymentProviderPrerequisiteRule' },
   { name: 'net/nanopay/payment/PaymentProviderCorridorAddCountryRule' },
+  { name: 'net/nanopay/payment/PaymentProviderCorridorAuthorizer' },
   { name: 'net/nanopay/account/Account' },
   { name: 'net/nanopay/account/AccountDAOBrowserView' },
   { name: 'net/nanopay/account/AccountDAOCreateView' },

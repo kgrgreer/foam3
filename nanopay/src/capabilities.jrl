@@ -995,10 +995,9 @@ p({
     "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
     "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
     "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15f7afexus-us",
-    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15f7bmoca-ca",
-    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15f7rbcca-ca",
-    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15kotakca-in",
-    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15kotakca-in"
+    "paymentprovidercorridor.read.bmo",
+    "paymentprovidercorridor.read.rbc",
+    "paymentprovidercorridor.read.kotak",
   ]
 })
 

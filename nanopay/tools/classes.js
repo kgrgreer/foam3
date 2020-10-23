@@ -76,6 +76,7 @@ var classes = [
   'net.nanopay.payment.PADTypeCheckDAO',
   'net.nanopay.payment.PaymentProviderPrerequisiteRule',
   'net.nanopay.payment.PaymentProviderCorridorAddCountryRule',
+  'net.nanopay.payment.PaymentProviderCorridorAuthorizer',
   'net.nanopay.tx.IBAN',
   'net.nanopay.account.Balance',
   'net.nanopay.account.InsufficientBalanceException',
