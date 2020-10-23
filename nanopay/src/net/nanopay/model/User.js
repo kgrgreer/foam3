@@ -182,7 +182,8 @@ foam.CLASS({
           .end();
         }
       },
-      section: 'administrative'
+      section: 'administrative',
+      sheetsOutput: true
     },
     {
       class: 'FObjectProperty',
