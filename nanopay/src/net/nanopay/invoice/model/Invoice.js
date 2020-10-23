@@ -95,7 +95,8 @@ foam.CLASS({
       class: 'Long',
       name: 'id',
       documentation: 'The ID for the Invoice.',
-      tableWidth: 60
+      tableWidth: 60,
+      sheetsOutput: true
     },
     {
       class: 'String',
@@ -447,7 +448,6 @@ foam.CLASS({
         is a calculated property used to determine whether an invoice is unpaid,
         void, pending, paid, scheduled, or overdue.
       `,
-      storageTransient: true,
       aliases: [
         's'
       ],

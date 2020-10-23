@@ -34,10 +34,11 @@ foam.CLASS({
   ],
 
   imports: [
-    'capabilityDAO',
     'branchDAO',
+    'capabilityDAO',
     'countryDAO',
     'institutionDAO',
+    'paymentProviderCorridorDAO'
   ],
 
   javaImports: [
@@ -315,7 +316,7 @@ foam.CLASS({
         let propInfoCurrency = forContact ? this.PaymentProviderCorridor.TARGET_CURRENCIES : this.PaymentProviderCorridor.SOURCE_CURRENCIES;
         return this.PromisedDAO.create({
           of: 'foam.core.Currency',
-          promise: this.capabilityDAO.where(this.AND(
+          promise: this.paymentProviderCorridorDAO.where(this.AND(
               this.EQ(propInfo, this.country),
               this.INSTANCE_OF(this.PaymentProviderCorridor)
             ))
@@ -502,7 +503,13 @@ foam.CLASS({
           throw new IllegalStateException("Account name must be less than or equal to 70 characters.");
         }
       `
-    }
+    },
+    {
+      name: 'validateAmount',
+      javaCode: `
+        //NOP
+      `
+    },
   ],
 
   axioms: [

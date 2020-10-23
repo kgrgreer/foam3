@@ -52,6 +52,7 @@ FOAM_FILES([
   { name: 'net/nanopay/payment/InstitutionAuthorizerTest' },
   { name: 'net/nanopay/payment/PaymentProviderPrerequisiteRule' },
   { name: 'net/nanopay/payment/PaymentProviderCorridorAddCountryRule' },
+  { name: 'net/nanopay/payment/PaymentProviderCorridorAuthorizer' },
   { name: 'net/nanopay/account/Account' },
   { name: 'net/nanopay/account/AccountDAOBrowserView' },
   { name: 'net/nanopay/account/AccountDAOCreateView' },
@@ -122,6 +123,7 @@ FOAM_FILES([
   { name: 'net/nanopay/model/Branch' },
   { name: 'net/nanopay/model/ClientUserJunction' },
   { name: 'net/nanopay/tx/Transfer' },
+  { name: 'net/nanopay/tx/ExternalTransfer' },
   { name: 'net/nanopay/tx/AcceptAware' },
   { name: 'net/nanopay/bank/ui/BankPADForm', flags: ['web'] },
   { name: 'net/nanopay/bank/BankAccount' },
@@ -299,7 +301,6 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/AcceptFXRate' },
   { name: 'net/nanopay/fx/FXQuote' },
   { name: 'net/nanopay/fx/FXTransaction' },
-  { name: 'net/nanopay/fx/FXTransfer' },
   { name: 'net/nanopay/fx/FXProvider' },
   { name: 'net/nanopay/fx/FXUserStatus' },
   { name: 'net/nanopay/fx/KotakFxTransaction' },
@@ -324,6 +325,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEXBeneficiary' },
   { name: 'net/nanopay/fx/afex/AFEXBeneficiaryComplianceTransaction' },
   { name: 'net/nanopay/fx/afex/AFEXBusiness' },
+  { name: 'net/nanopay/fx/afex/AFEXPayableMenuCapabilityRule' },
   { name: 'net/nanopay/fx/afex/AFEXAddCurrencyPermissionRule' },
   { name: 'net/nanopay/fx/afex/AFEXBusinessCreatedPredicate' },
   { name: 'net/nanopay/fx/afex/AFEXBusinessCreatedNotificationRule' },
@@ -1606,11 +1608,14 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/registration/UserDetailData' },
   { name: 'net/nanopay/crunch/registration/UserDetailExpandedData' },
 
+  // crunch predicates - todo move all predicates used in crunch here
+  { name: 'net/nanopay/crunch/onboardingModels/IsBusiness' },
+  { name: 'net/nanopay/crunch/IsSpid' },
+
   // crunch onboarding
   { name: 'net/nanopay/crunch/onboardingModels/BusinessPassedCompliance' },
   { name: 'net/nanopay/crunch/onboardingModels/CheckUserCountry' },
   { name: 'net/nanopay/crunch/onboardingModels/CreateRegisterPaymentProviderUCJ' },
-  { name: 'net/nanopay/crunch/onboardingModels/IsBusiness' },
   { name: 'net/nanopay/crunch/onboardingModels/InitialBusinessData' },
   { name: 'net/nanopay/crunch/onboardingModels/HasVerifiedBankAccount' },
   { name: 'net/nanopay/crunch/onboardingModels/RegisterPaymentProviderStatus' },
@@ -1635,7 +1640,6 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/onboardingModels/BusinessAccountData' },
   { name: 'net/nanopay/crunch/onboardingModels/CurrencyAmountInformation' },
   { name: 'net/nanopay/crunch/onboardingModels/CustomerBasicInformation' },
-  { name: 'net/nanopay/crunch/onboardingModels/IsBusiness' },
 
   { name: 'net/nanopay/payment/PayeeCurrencyService' },
   { name: 'net/nanopay/payment/PayeeCurrency' },
@@ -1661,6 +1665,7 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/compliance/GenericSigningOfficerValidator' },
   { name: 'net/nanopay/crunch/compliance/GenericBusinessValidator' },
 
+  { name: 'net/nanopay/partner/afex/AFEXDigitalAccount' },
   // crunch afex
   { name: 'net/nanopay/partner/afex/crunch/BusinessHasVerifiedBankAccount' },
   { name: 'net/nanopay/partner/afex/crunch/AFEXBusinessOnboardingRule' },

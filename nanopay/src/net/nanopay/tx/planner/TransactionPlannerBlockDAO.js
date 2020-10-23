@@ -25,7 +25,9 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.TransactionQuote'
+    'net.nanopay.tx.TransactionQuote',
+    'net.nanopay.tx.UnsupportedTransactionException',
+    'foam.core.ValidationException'
   ],
 
   methods: [
@@ -34,10 +36,10 @@ foam.CLASS({
       javaCode: `
       // TODO: swap runtime errors for Transaction Request Error Codes.
         if ( obj instanceof Transaction && ((Transaction) obj).getId() != null )
-          throw new RuntimeException("Only transactions without an ID can be planned");
+          throw new ValidationException("Only transactions without an ID can be planned");
         if ( obj instanceof Transaction || obj instanceof TransactionQuote )
           return getDelegate().put_(x, obj);
-        throw new RuntimeException("Only transaction and transactionQuotes can be sent for planning");
+        throw new UnsupportedTransactionException("Only transaction and transactionQuotes can be sent for planning");
       `
     },
     {

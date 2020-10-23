@@ -53,7 +53,8 @@ foam.CLASS({
     'java.util.List',
     'static foam.mlang.MLang.EQ',
     'net.nanopay.payment.Institution',
-    'net.nanopay.model.Branch'
+    'net.nanopay.model.Branch',
+    'foam.core.ValidationException'
   ],
 
   methods: [
@@ -277,7 +278,7 @@ System.out.println("createTEstCItransaction before initial put status: "+plan.ge
 System.out.println("createTEstCItransaction after initial put status: "+plan.getStatus());
   return (AlternaCITransaction) plan;
 }
-throw new RuntimeException("Plan transaction not instance of AlternaCITransaction. transaction: "+plan);
+throw new ValidationException("Plan transaction not instance of AlternaCITransaction. transaction: "+plan);
     `
     },
      {

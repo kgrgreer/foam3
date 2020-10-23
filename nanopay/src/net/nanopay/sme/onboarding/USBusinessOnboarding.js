@@ -1344,7 +1344,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'directorsListed',
       section: 'directorsInfoSection',
-      label: 'I certify that all directors have been listed.',
+      label: 'I certify that all directors have been listed or that my business does not require director information.',
       validationPredicates: [
        {
          args: ['businessTypeId', 'directorsListed', 'signingOfficer'],

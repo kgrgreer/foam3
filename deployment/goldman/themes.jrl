@@ -51,6 +51,5 @@ p({
       font-family: Roboto, 'Helvetica Neue', helvetica, sans-serif;
       letter-spacing: 0.2px;
     }
-  """,
-  "spid":"nanopay.liquid"
+  """
 })

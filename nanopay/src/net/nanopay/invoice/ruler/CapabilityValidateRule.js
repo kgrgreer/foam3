@@ -57,20 +57,18 @@ foam.CLASS({
         {
             name: 'applyAction',
             javaCode: `
-            agency.submit(x, agencyX -> {
                 var invoice = (Invoice) obj;
-                var invoiceDAO = (DAO) agencyX.get("invoiceDAO");
-
+                
                 try {
                     // If invoice is valid & capabilities are granted, set status to QUOTING
-                    SafetyUtil.validate(agencyX, invoice);
-                    var crunchService = (CrunchService) agencyX.get("crunchService");
+                    SafetyUtil.validate(x, invoice);
+                    var crunchService = (CrunchService) x.get("crunchService");
                     var cre = new CapabilityRuntimeException();
                     cre.setDaoKey("invoiceDAO");
 
                     Arrays.stream(invoice.getUserCapabilityRequirements())
                         .filter(ucr -> {
-                            var junction = crunchService.getJunction(agencyX, ucr);
+                            var junction = crunchService.getJunction(x, ucr);
                             return junction == null || (
                                 junction.getStatus() != CapabilityJunctionStatus.GRANTED &&
                                 junction.getStatus() != CapabilityJunctionStatus.PENDING
@@ -80,8 +78,8 @@ foam.CLASS({
                     if ( Arrays.stream(invoice.getCapablePayloads()).map(cp -> cp.getCapability().getId()).anyMatch(getObjectCapabilityID()::equals) ) {
                         var reqs = new String[] { getObjectCapabilityID() };
                         if ( 
-                            ! invoice.checkRequirementsStatusNoThrow(agencyX, reqs, CapabilityJunctionStatus.GRANTED) &&
-                            ! invoice.checkRequirementsStatusNoThrow(agencyX, reqs, CapabilityJunctionStatus.PENDING)
+                            ! invoice.checkRequirementsStatusNoThrow(x, reqs, CapabilityJunctionStatus.GRANTED) &&
+                            ! invoice.checkRequirementsStatusNoThrow(x, reqs, CapabilityJunctionStatus.PENDING)
                         ) {
                             cre.addCapable(invoice);
                         }
@@ -90,21 +88,35 @@ foam.CLASS({
                         var logger = (Logger) x.get("logger");
                         logger.error("[CapabilityValidateRule]","Invoice doesn't contain needed Object Capability ID");
                         invoice.setPaymentMethod(PaymentStatus.VOID);
-                        invoiceDAO.put(invoice);
+                        agency.submit(x, agencyX -> {
+                            var invoiceDAO = (DAO) agencyX.get("invoiceDAO");
+                            invoiceDAO.put(invoice);
+                        }, "Reput invoice as VOID");
                         return;
                     }
 
                     if ( cre.getCapabilities().length > 0 || cre.getCapables().length > 0 ) {
+                        // Client expects to get a SUBMIT invoice back for reput, but if wizard is prematurely closed
+                        // then next time the invoice is received it will correctly be in DRAFT status
+                        var newInvoice = (Invoice) invoice.fclone();
+                        newInvoice.setDraft(true);
+                        agency.submit(x, agencyX -> {
+                            var invoiceDAO = (DAO) agencyX.get("invoiceDAO");
+                            invoiceDAO.put(newInvoice);
+                        }, "Reput invoice as DRAFT");
                         throw cre;
                     }
 
                     invoice.setPaymentMethod(PaymentStatus.QUOTED);
-                    invoiceDAO.put(invoice);
+                    agency.submit(x, agencyX -> {
+                        var invoiceDAO = (DAO) agencyX.get("invoiceDAO");
+                        invoiceDAO.put(invoice);
+                    }, "Reput invoice as QUOTED");
                 } catch(IllegalStateException e) {
                     throw e;
                 }
 
-            }, "Sent out approval requests for needed payloads and granted the others");
+            
             `
         }
     ]

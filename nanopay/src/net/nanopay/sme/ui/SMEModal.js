@@ -38,7 +38,7 @@ foam.CLASS({
 
     ^inner {
       position: relative;
-      max-height: 50vw;
+      max-height: 60vw;
     }
 
     ^X:hover {

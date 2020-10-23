@@ -16,17 +16,22 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.crunch.registration',
-  name: 'BusinessDetailExpandedData',
+  package: 'net.nanopay.tx',
+  name: 'ExternalTransfer',
+  extends: 'net.nanopay.tx.Transfer',
+  documentation: 'describes: what amount is added to which account (external)',
 
-  documentation: `This model represents the expanded info of a Business that must be collect for onboarding.`,
-  
-  properties: [
-    net.nanopay.model.Business.BUSINESS_SECTOR_ID.clone().copyFrom(),
-    net.nanopay.model.Business.SOURCE_OF_FUNDS.clone().copyFrom(),
-    net.nanopay.model.Business.OPERATING_BUSINESS_NAME.clone().copyFrom(),
-    net.nanopay.model.Business.TARGET_CUSTOMERS.clone().copyFrom(),
-    net.nanopay.model.Business.SUGGESTED_USER_TRANSACTION_INFO.clone().copyFrom()
+  axioms: [
+    {
+      name: 'javaExtras',
+      buildJavaClass: function(cls) {
+        cls.extras.push(`
+          public ExternalTransfer(long amount, long account) {
+            setAmount(amount);
+            setAccount(account);
+          }
+        `);
+      }
+    }
   ]
 });
-  

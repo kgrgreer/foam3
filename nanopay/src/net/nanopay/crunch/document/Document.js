@@ -31,6 +31,7 @@ foam.CLASS({
   sections: [
     {
       name: 'documentUploadSection',
+      title: 'Document Upload Section',
       subTitle: function(capability) {
         return capability.description ?
           `${capability.description}` :

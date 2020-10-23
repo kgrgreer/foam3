@@ -10,6 +10,7 @@ var classes = [
   'net.nanopay.tx.TxnProcessor',
   'net.nanopay.plaid.config.PlaidCredential',
   'net.nanopay.tx.Transfer',
+  'net.nanopay.tx.ExternalTransfer',
   'net.nanopay.tx.ComplianceTransaction',
   'net.nanopay.tx.CompletedTransactionDAO',
   'net.nanopay.tx.TxnProcessorUserReference',
@@ -77,6 +78,7 @@ var classes = [
   'net.nanopay.payment.PADTypeCheckDAO',
   'net.nanopay.payment.PaymentProviderPrerequisiteRule',
   'net.nanopay.payment.PaymentProviderCorridorAddCountryRule',
+  'net.nanopay.payment.PaymentProviderCorridorAuthorizer',
   'net.nanopay.tx.IBAN',
   'net.nanopay.account.Balance',
   'net.nanopay.account.InsufficientBalanceException',
@@ -214,6 +216,7 @@ var classes = [
   'net.nanopay.fx.afex.AFEX',
   'net.nanopay.fx.afex.AFEXAddCurrencyPermissionRule',
   'net.nanopay.fx.afex.AFEXBusiness',
+  'net.nanopay.fx.afex.AFEXPayableMenuCapabilityRule',
   'net.nanopay.fx.afex.AFEXBusinessCreatedPredicate',
   'net.nanopay.fx.afex.AFEXBusinessDisabledPredicate',
   'net.nanopay.fx.afex.AFEXRemoveCurrencyPermissionRule',
@@ -503,7 +506,6 @@ var classes = [
   'net.nanopay.fx.ExchangeRateQuote',
   'net.nanopay.fx.FixerIOExchangeRate',
   'net.nanopay.fx.FXTransaction',
-  'net.nanopay.fx.FXTransfer',
   'net.nanopay.fx.CurrencyFXService',
   'net.nanopay.fx.FXUserStatus',
   'net.nanopay.fx.KotakFxTransaction',
@@ -1236,11 +1238,14 @@ var classes = [
   'net.nanopay.partner.treviso.invoice.UpdateTransactionOnInvoiceValidationRule',
   'net.nanopay.partner.treviso.invoice.TrevisoNotificationRule',
 
+  // crunch predicates - todo move all predicates used in crunch here
+  'net.nanopay.crunch.onboardingModels.IsBusiness',
+  'net.nanopay.crunch.IsSpid',
+
   // crunch onboarding
   'net.nanopay.crunch.onboardingModels.BusinessPassedCompliance',
   'net.nanopay.crunch.onboardingModels.CheckUserCountry',
   'net.nanopay.crunch.onboardingModels.CreateRegisterPaymentProviderUCJ',
-  'net.nanopay.crunch.onboardingModels.IsBusiness',
   'net.nanopay.crunch.onboardingModels.InitialBusinessData',
   'net.nanopay.crunch.onboardingModels.HasVerifiedBankAccount',
   'net.nanopay.crunch.onboardingModels.RegisterPaymentProviderStatus',
@@ -1290,6 +1295,7 @@ var classes = [
   'net.nanopay.crunch.compliance.GenericSigningOfficerValidator',
   'net.nanopay.crunch.compliance.GenericBusinessValidator',
 
+  'net.nanopay.partner.afex.AFEXDigitalAccount',
 
   // crunch afex
   'net.nanopay.partner.afex.crunch.AFEXBusinessOnboardingRule',
@@ -1410,7 +1416,6 @@ var classes = [
   'net.nanopay.tx.AuthenticatedTransactionDAO',
   'net.nanopay.tx.AutoCashOutForInvoiceTransactionDAO',
   'net.nanopay.tx.GreenfencePlanDAO',
-  'net.nanopay.tx.PreventNotQuotedTransactionDAO',
   'net.nanopay.tx.TransactionDAO',
   'net.nanopay.tx.TransactionEntitiesDAO',
   'net.nanopay.tx.TransactionLimitCheckDAO',

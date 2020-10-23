@@ -43,7 +43,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'NO_NIRE_NUMBER', message: 'Please enter NIRE/State Commercial Identification Number' },
+    { name: 'NO_NIRE_NUMBER', message: 'Please enter 14-digit NIRE/State Commercial Identification Number' },
     { name: 'NO_CNPJ', message: 'Please enter 14-digit National Registry of Legal Entities Number' },
     { name: 'CNPJ_INVALID', message: 'The CNPJ is invalid' },
     { name: 'VERIFY_BUSINESS_NAME', message: 'Click to verify business name.' },
@@ -61,7 +61,7 @@ foam.CLASS({
         {
           args: ['nire'],
           predicateFactory: function(e) {
-            return e.GT(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.BrazilBusinessInfoData.NIRE }), 0);
+            return e.EQ(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.BrazilBusinessInfoData.NIRE }), 14);
           },
           errorMessage: 'NO_NIRE_NUMBER'
         }

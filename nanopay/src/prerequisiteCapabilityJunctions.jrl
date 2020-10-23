@@ -823,58 +823,8 @@ p({
   priority: 6
 })
 
-// Prerequisites for nanopay.ablii spid capability
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "nanopay.ablii",
-  targetId: "serviceProviderCapability",
-  priority: 1
-})
-
-p({
-  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "nanopay.ablii",
-  targetId: "nanopay.abliiPlannerCapability",
-  priority: 2
-})
-
-p({
-  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "nanopay.ablii",
-  targetId: "nanopay.abliiCountryCapability",
-  priority: 3
-})
-
-p({
-  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "nanopay.ablii",
-  targetId: "nanopay.abliiCorridorCapability",
-  priority: 4
-})
-
-p({
-  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "nanopay.ablii",
-  targetId: "nanopay.abliiCurrencyCapability",
-  priority: 5
-})
-
-p({
-  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "nanopay.ablii",
-  targetId: "nanopay.abliiMenuCapability",
-  priority: 6
-})
-
-p({
-  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "nanopay.ablii",
-  targetId: "nanopay.abliiAccountingCapability",
-  priority: 7
-})
-
-p({
-  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "1f6b2047-1eef-471d-82e7-d86bdf511375",
-  targetId: "554af38a-8225-87c8-dfdf-eeb15f71215f-20",
+  sourceId: "554af38a-8225-87c8-dfdf-eeb15f71215f-20",
+  targetId: "1f6b2047-1eef-471d-82e7-d86bdf511375",
 })

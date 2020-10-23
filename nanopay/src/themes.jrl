@@ -1,7 +1,7 @@
 p({
   "class":"foam.nanos.theme.Theme",
   "id":"D306F95E-4C4F-4C2B-BC5F-F67CFFE3EC99",
-  "name":"nanopay",
+  "name":"nanopay Operator",
   "appName":"nanopay",
   "description":"nanopay",
   "navigationRootMenu":"",
@@ -28,14 +28,13 @@ p({
     .foam-comics-BrowserView {
       width: 95%;
     }
-  """,
-  "spid":"nanopay"
+  """
 })
 
 p({
   "class":"foam.nanos.theme.Theme",
   "id":"06B35BA7-C672-4DBC-8788-14922B704DBF",
-  "name":"nanopay",
+  "name":"nanopay Admin",
   "appName":"nanopay",
   "description":"nanopay",
   "navigationRootMenu":"",
@@ -62,8 +61,7 @@ p({
     .foam-comics-BrowserView {
       width: 95%;
     }
-  """,
-  "spid":"nanopay"
+  """
 })
 
 p({
@@ -143,5 +141,5 @@ p({
   "createdBy":1,
   "createdByAgent":1,
   "created":"2020-04-29T22:32:52.685Z",
-  "spid":"nanopay.ablii"
+  "spid":"nanopay"
 })

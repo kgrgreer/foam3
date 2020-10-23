@@ -20,11 +20,7 @@ foam.CLASS({
   name: 'UserDetailData',
 
   documentation: `This model represents the basic info of a User that must be collect for onboarding.`,
-  
-  implements: [
-    'foam.core.Validatable'
-  ],
-  
+
   properties: [
     foam.nanos.auth.User.FIRST_NAME.clone().copyFrom(),
     foam.nanos.auth.User.LAST_NAME.clone().copyFrom(),
@@ -32,22 +28,6 @@ foam.CLASS({
     foam.nanos.auth.User.ADDRESS.clone().copyFrom()
 
     // leaving out username and email and password as they should be set when creating the user
-  ],
-  
-  methods: [
-    {
-      name: 'validate',
-      javaCode: `
-        java.util.List<foam.core.PropertyInfo> props = getClassInfo().getAxiomsByClass(foam.core.PropertyInfo.class);
-        for ( foam.core.PropertyInfo prop : props ) {
-          try {
-            prop.validateObj(x, this);
-          } catch ( IllegalStateException e ) {
-            throw e;
-          }
-        }
-      `
-    }
   ]
 });
   

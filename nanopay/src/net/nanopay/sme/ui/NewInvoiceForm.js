@@ -149,10 +149,25 @@ foam.CLASS({
       padding: 8px 13px;
       background-color: #ffffff;
     }
-    ^ .foam-nano-fs-fileDropZone-FileDropZone {
-      background-color: #ffffff;
+    ^ .foam-u2-MultiView {
+      width: 100%;
       margin-top: 16px;
       min-height: 264px;
+    }
+    ^ .foam-nanos-fs-fileDropZone-FileDropZone {
+      background-color: #ffffff;
+    }
+    ^ .foam-nanos-fs-fileDropZone-FilePreview {
+      max-width: 150px;
+      max-height: 264px;
+      margin-right: -30px;
+    }
+    ^ .foam-nanos-fs-fileDropZone-FilePreview iframe {
+      width: 228px;
+      max-height: 264px;
+    }
+    ^ .foam-nanos-fs-fileDropZone-FilePreview img {
+      width: 228px;
     }
     ^ .small-error-icon {
       height: 10px;
@@ -276,6 +291,15 @@ foam.CLASS({
     },
     { name: 'ACCOUNT_WITHDRAW_LABEL', message: 'Withdraw from' },
     { name: 'ACCOUNT_DEPOSIT_LABEL', message: 'Deposit to' },
+
+    { name: 'SEND_TO', message: 'Send to' },
+    { name: 'REQUEST_FROM', message: 'Request from' },
+    { name: 'AMOUNT', message: 'Amount' },
+    { name: 'INVOICE_NUMBER', message: 'Invoice Number' },
+
+    { name: 'DATE_ISSUED', message: 'Date issued' },
+    { name: 'PO_NUMBER', message: 'P.O. Number' },
+    { name: 'DATE_DUE', message: 'Date Due' },
   ],
 
   constants: [
@@ -304,7 +328,19 @@ foam.CLASS({
       },
       postSet: function(_, n) {
         this.invoice.invoiceFile = n;
-      }
+      },
+      view: function(_, X) {
+        return foam.u2.MultiView.create({
+        views: [
+          foam.nanos.fs.fileDropZone.FileDropZone.create({
+            files$: X.uploadFileData$
+          }, X),
+          foam.nanos.fs.fileDropZone.FilePreview.create({
+            data$: X.uploadFileData$
+          }, X)
+        ]
+        });
+      },
     },
     {
       class: 'Boolean',
@@ -328,7 +364,7 @@ foam.CLASS({
       class: 'String',
       name: 'contactLabel',
       factory: function() {
-        return this.type === 'payable' ? 'Send to' : 'Request from';
+        return this.type === 'payable' ? 'Send to' : 'Request from';//TODO this.SEND_TO : this.REQUEST_FROM;
       }
     },
     {
@@ -506,7 +542,7 @@ foam.CLASS({
         .end()
         .startContext({ data: this.invoice })
           .start().addClass('input-wrapper')
-            .start().addClass('input-label').add('Amount').end()
+            .start().addClass('input-label').add(this.AMOUNT).end()
               .start()
                 .on('mouseenter', this.toggleTooltip)
                 .on('mouseleave', this.toggleTooltip)
@@ -569,7 +605,7 @@ foam.CLASS({
             .end()
             .start().addClass('invoice-block')
               .start().addClass('input-wrapper')
-                .start().addClass('input-label').add('Invoice Number').end()
+                .start().addClass('input-label').add(this.INVOICE_NUMBER).end()
                 .start()
                   .on('mouseenter', this.toggleTooltip)
                   .on('mouseleave', this.toggleTooltip)
@@ -582,7 +618,7 @@ foam.CLASS({
               .end()
 
               .start().addClass('input-wrapper')
-                .start().addClass('input-label').add('Date issued').end()
+                .start().addClass('input-label').add(this.DATE_ISSUED).end()
                 .start()
                   .on('mouseenter', this.toggleTooltip)
                   .on('mouseleave', this.toggleTooltip)
@@ -597,14 +633,14 @@ foam.CLASS({
 
             .start().addClass('invoice-block-right')
               .start().addClass('input-wrapper')
-                .start().addClass('input-label').add('P.O. Number').end()
+                .start().addClass('input-label').add(this.PO_NUMBER).end()
                 .start(this.Invoice.PURCHASE_ORDER)
                   .attrs({ placeholder: this.PO_PLACEHOLDER })
                 .end()
               .end()
 
               .start().addClass('input-wrapper')
-                .start().addClass('input-label').add('Date Due').end()
+                .start().addClass('input-label').add(this.DATE_DUE).end()
                 .start()
                   .on('mouseenter', this.toggleTooltip)
                   .on('mouseleave', this.toggleTooltip)
@@ -616,10 +652,7 @@ foam.CLASS({
                 .end()
               .end()
             .end()
-            .start({
-              class: 'foam.nanos.fs.fileDropZone.FileDropZone',
-              files$: this.uploadFileData$
-            }).end()
+            .add(this.UPLOAD_FILE_DATA)
             .start().addClass('input-wrapper')
               .start().addClass('input-label').add(this.ADD_NOTE).end()
               .start( this.Invoice.NOTE, {
@@ -743,7 +776,12 @@ foam.CLASS({
       label: 'Create new contact',
       icon: 'images/plus-no-bg.svg',
       code: function(X, e) {
-        X.pushMenu('sme.menu.toolbar');
+        let contact = net.nanopay.contacts.Contact.create({}, X.ctrl);
+        X.ctrl.add(net.nanopay.ui.wizard.WizardController.create({
+          model: 'net.nanopay.contacts.Contact',
+          data: contact,
+          controllerMode: foam.u2.ControllerMode.CREATE
+        }, X.ctrl));
       }
     },
     {

@@ -28,6 +28,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'net.nanopay.account.Account',
+    'foam.core.ValidationException',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.tx.model.Transaction'
   ],
@@ -77,7 +78,7 @@ foam.CLASS({
           }
 
           if ( bulkTxn.getChildren().length == 0 ) {
-            throw new RuntimeException("BulkTransaction missing child transactions.");
+            throw new ValidationException("BulkTransaction missing child transactions.");
           }
         }
         return getDelegate().put_(x, obj);

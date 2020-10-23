@@ -23,7 +23,8 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.tx.bmo.BmoFormatUtil',
-    'java.time.LocalDate'
+    'java.time.LocalDate',
+    'foam.core.ValidationException'
   ],
 
   implements: [
@@ -79,7 +80,7 @@ foam.CLASS({
       type: 'Void',
       javaCode: `
       if ( this.getFileCreationNumber() > 9999 ) {
-        throw new RuntimeException("File creation number can not be larger than 9999");
+        throw new ValidationException("File creation number can not be larger than 9999");
       }
       `
     },

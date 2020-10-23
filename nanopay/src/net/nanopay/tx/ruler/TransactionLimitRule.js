@@ -26,6 +26,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.core.ValidationException',
     'net.nanopay.tx.model.Transaction',
     'static foam.mlang.MLang.*'
   ],
@@ -155,7 +156,7 @@ foam.CLASS({
       javaCode: `
       TransactionLimitRule ret = (TransactionLimitRule) rule.fclone();
       if ( ret.getSend() != getSend() ) {
-        throw new RuntimeException("send property cannot be changed");
+        throw new ValidationException("send property cannot be changed");
       }
       ret.clearAction();
       return ret;

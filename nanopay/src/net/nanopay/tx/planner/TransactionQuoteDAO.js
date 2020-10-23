@@ -83,13 +83,12 @@ foam.CLASS({
       planComparators.add(costComparator); // Compare Cost first
       planComparators.add(etaComparator);
       List<Transaction> transactionPlans = new ArrayList<>();
-      Exception cause = null;
 
       for ( Transaction aTransaction : quote.getPlans() ) {
           transactionPlans.add(aTransaction);
       }
       if ( transactionPlans.size() == 0 ) {
-        throw new UnsupportedTransactionException("Unable to find a plan for requested transaction.", cause);
+        throw new NoPlanException("Unable to find a plan for requested transaction.");
       }
       Collections.sort(transactionPlans, planComparators);
       quote.setPlan(transactionPlans.get(0));

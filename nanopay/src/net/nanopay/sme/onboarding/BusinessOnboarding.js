@@ -308,6 +308,11 @@ foam.CLASS({
     }
   ],
 
+  messages: [
+    { name: 'MAKE_A_SELECTION', message: 'Please make a selection.' },
+    { name: 'PROVIDE_TRANSACTION_PURPOSE', message: 'Please provide transaction purpose.' }
+  ],
+
   properties: [
     {
       class: 'Enum',
@@ -1006,7 +1011,7 @@ foam.CLASS({
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
-          errorString: 'Please make a selection.'
+          errorString: 'MAKE_A_SELECTION'
         }
       ]
     }),
@@ -1037,7 +1042,7 @@ foam.CLASS({
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
-          errorString: 'Please make a selection.'
+          errorString: 'MAKE_A_SELECTION'
         }
       ]
     }),
@@ -1068,7 +1073,7 @@ foam.CLASS({
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
-          errorString: 'Please make a selection.'
+          errorString: 'MAKE_A_SELECTION'
         }
       ]
     }),
@@ -1106,7 +1111,7 @@ foam.CLASS({
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
-          errorString: 'Please provide transaction purpose.'
+          errorString: 'PROVIDE_TRANSACTION_PURPOSE'
         }
       ]
     }),
@@ -1317,7 +1322,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'directorsListed',
       section: 'directorsInfoSection',
-      label: 'I certify that all directors have been listed.',
+      label: 'I certify that all directors have been listed or that my business does not require director information.',
       validationPredicates: [
        {
          args: ['businessTypeId', 'directorsListed', 'signingOfficer'],

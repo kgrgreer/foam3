@@ -35,7 +35,8 @@ foam.CLASS({
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.SummaryTransaction',
-    'net.nanopay.fx.FXSummaryTransaction'
+    'net.nanopay.fx.FXSummaryTransaction',
+    'net.nanopay.tx.planner.NoPlanException'
   ],
 
   properties: [
@@ -118,11 +119,14 @@ foam.CLASS({
         Transfer[] transfers = transaction.getTransfers();
 
         for ( Transfer transfer : transfers ) {
-          transfer.validate();
+          try { transfer.validate(); }
+          catch (RuntimeException e) {
+            throw new NoPlanException("Plan is not valid", e);
+          }
           Account account = transfer.findAccount(getX());
           if ( account == null ) {
             logger.error(this.getClass().getSimpleName(), "validateQuoteTransfers", "transfer account not found: " + transfer.getAccount(), transfer);
-            throw new RuntimeException("Plan is not valid");
+            throw new NoPlanException("Plan is not valid");
           }
 
           // Skip validation of amounts for transfers to trust accounts (zero accounts) since we don't

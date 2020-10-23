@@ -32,7 +32,8 @@ foam.CLASS({
       documentation: 'Operations approval status for user.',
       readPermissionRequired: true,
       writePermissionRequired: true,
-      section: 'administrative'
+      section: 'administrative',
+      sheetsOutput: true
     }
   ]
 });
@@ -53,7 +54,8 @@ foam.CLASS({
       name: 'compliance',
       documentation: 'Operations approval status for bank account.',
       readPermissionRequired: true,
-      writePermissionRequired: true
+      writePermissionRequired: true,
+      sheetsOutput: true
     }
   ]
 });
@@ -74,7 +76,8 @@ foam.CLASS({
       name: 'compliance',
       documentation: 'Operations approval status for beneficial owner.',
       readPermissionRequired: true,
-      writePermissionRequired: true
+      writePermissionRequired: true,
+      sheetsOutput: true
     }
   ]
 });

@@ -20,10 +20,6 @@ foam.CLASS({
   name: 'UserDetailExpandedData',
 
   documentation: `This model represents the expanded info of a User that must be collect for onboarding.`,
-  
-  implements: [
-    'foam.core.Validatable'
-  ],
 
   messages: [
     { name: 'UNDER_AGE_LIMIT_ERROR', message: 'Must be at least 18 years old.' },
@@ -62,22 +58,6 @@ foam.CLASS({
     }),
     foam.nanos.auth.User.PEPHIORELATED.clone().copyFrom(),
     foam.nanos.auth.User.THIRD_PARTY.clone().copyFrom()
-  ],
-  
-  methods: [
-    {
-      name: 'validate',
-      javaCode: `
-        java.util.List<foam.core.PropertyInfo> props = getClassInfo().getAxiomsByClass(foam.core.PropertyInfo.class);
-        for ( foam.core.PropertyInfo prop : props ) {
-          try {
-            prop.validateObj(x, this);
-          } catch ( IllegalStateException e ) {
-            throw e;
-          }
-        }
-      `
-    }
   ]
 });
   

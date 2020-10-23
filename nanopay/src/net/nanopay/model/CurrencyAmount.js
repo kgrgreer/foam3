@@ -22,6 +22,11 @@ foam.CLASS({
 
   imports: [ 'currencyDAO' ],
 
+  messages: [
+    { name: 'NO_CURRENCY_ERROR', message: 'Please select a currency.' },
+    { name: 'NO_AMOUNT_ERROR', message: 'Please enter an amount.' }
+  ],
+
   properties: [
     {
       class: 'String',
@@ -30,11 +35,11 @@ foam.CLASS({
       view: function(_, X) {
         return {
           class: 'foam.u2.view.RichChoiceView',
-          data$: X.data.currency$,
+          search: true,
           sections: [
             {
               heading: 'Available Currencies',
-              dao$: X.data.dao$
+              dao: X.currencyDAO
             }
           ]
         };
@@ -44,7 +49,8 @@ foam.CLASS({
           args: ['currency'],
           predicateFactory: function(e) {
             return e.NEQ(net.nanopay.model.CurrencyAmount.CURRENCY, null);
-          }
+          },
+          errorMessage: 'NO_CURRENCY_ERROR'
         }
       ]
     },
@@ -54,36 +60,29 @@ foam.CLASS({
       gridColumns: 6,
       unitPropName: 'currency',
       unitPropValueToString: async function(x, val, unitPropName) {
-        var unitProp = await x.dao.find(unitPropName);
-        if ( unitProp )
-          return unitProp.format(val);
+        var unitProp = await x.currencyDAO.find(unitPropName);
+        if ( unitProp ) return unitProp.format(val);
         return val;
       },
       validationPredicates: [
         {
           args: ['amount'],
           predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.model.CurrencyAmount.AMOUNT, null);
-          }
+            return e.AND(
+              e.NEQ(net.nanopay.model.CurrencyAmount.AMOUNT, null),
+              e.NEQ(net.nanopay.model.CurrencyAmount.AMOUNT, 0)
+            );
+          },
+          errorMessage: 'NO_AMOUNT_ERROR'
         }
       ]
-    },
-    {
-      class: 'foam.dao.DAOProperty',
-      name: 'dao',
-      documentation: 'DAO used for currency selection',
-      visiblility: 'HIDDEN',
-      factory: function() {
-        return this.currencyDAO;
-      }
     }
   ],
 
   methods: [
     async function toSummary() {
-      var unitProp = await this.dao.find(unitPropName);
-      if ( unitProp )
-        return unitProp.format(val);
+      var unitProp = await this.currencyDAO.find(unitPropName);
+      if ( unitProp ) return unitProp.format(val);
       return val;
     }
   ]

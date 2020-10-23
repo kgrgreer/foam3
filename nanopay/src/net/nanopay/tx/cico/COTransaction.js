@@ -24,6 +24,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.LifecycleState',
     'foam.nanos.logger.Logger',
+    'foam.core.ValidationException',
     'net.nanopay.account.Account',
     'net.nanopay.account.TrustAccount',
     'net.nanopay.bank.BankAccountStatus',
@@ -119,7 +120,7 @@ foam.CLASS({
           && oldTxn.getLifecycleState() != LifecycleState.PENDING
         ) {
           logger.error("Unable to update COTransaction, if transaction status is accepted or declined. Transaction id: " + getId());
-          throw new RuntimeException("Unable to update COTransaction, if transaction status is accepted or declined. Transaction id: " + getId());
+          throw new ValidationException("Unable to update COTransaction, if transaction status is accepted or declined. Transaction id: " + getId());
         }
       `
     },
