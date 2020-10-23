@@ -24,7 +24,6 @@ foam.CLASS({
 
   requires: [
     'foam.log.LogLevel',
-    'foam.u2.ControllerMode',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',

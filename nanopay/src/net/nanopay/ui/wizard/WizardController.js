@@ -89,6 +89,11 @@ foam.CLASS({
       class: 'Function',
       name: 'onClose',
       documentation: 'Callback function to be passed on to Popup.'
+    },
+    {
+      class: 'Boolean',
+      name: 'isEdit',
+      documentation: 'isEdit property to be passed to the WizardView'
     }
   ],
   
@@ -103,7 +108,7 @@ foam.CLASS({
                 .tag({
                   class: `net.nanopay.contacts.ui.${self.modelName}WizardView`,
                   data: self.data,
-                  isEdit: true
+                  isEdit: self.isEdit
                 })
               .endContext();
           }

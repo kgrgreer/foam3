@@ -752,7 +752,12 @@ foam.CLASS({
       label: 'Create new contact',
       icon: 'images/plus-no-bg.svg',
       code: function(X, e) {
-        X.pushMenu('sme.menu.toolbar');
+        let contact = net.nanopay.contacts.Contact.create({}, X.ctrl);
+        X.ctrl.add(net.nanopay.ui.wizard.WizardController.create({
+          model: 'net.nanopay.contacts.Contact',
+          data: contact,
+          controllerMode: foam.u2.ControllerMode.CREATE
+        }, X.ctrl));
       }
     },
     {
