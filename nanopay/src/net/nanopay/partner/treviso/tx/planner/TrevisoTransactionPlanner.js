@@ -28,6 +28,7 @@ foam.CLASS({
     'net.nanopay.fx.FXQuote',
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.tx.TransactionLineItem',
+    'net.nanopay.tx.ExternalTransfer',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.country.br.tx.ExchangeLimitTransaction',
@@ -117,6 +118,12 @@ foam.CLASS({
       fxLineItem.setExpiry(fxQuote.getExpiryTime());
       trevisoTxn.addLineItems( new TransactionLineItem[] { fxLineItem } );
       txn.addNext(trevisoTxn);
+
+      ExternalTransfer[] exT = new ExternalTransfer[2];
+      exT[0] = new ExternalTransfer(-trevisoTxn.getAmount(), trevisoTxn.getSourceAccount());
+      exT[1] = new ExternalTransfer(trevisoTxn.getDestinationAmount(), trevisoTxn.getDestinationAccount());
+      trevisoTxn.setTransfers(exT);
+
       return txn;
     `
     },

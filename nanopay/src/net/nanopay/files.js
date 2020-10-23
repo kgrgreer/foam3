@@ -123,6 +123,7 @@ FOAM_FILES([
   { name: 'net/nanopay/model/Branch' },
   { name: 'net/nanopay/model/ClientUserJunction' },
   { name: 'net/nanopay/tx/Transfer' },
+  { name: 'net/nanopay/tx/ExternalTransfer' },
   { name: 'net/nanopay/tx/AcceptAware' },
   { name: 'net/nanopay/bank/ui/BankPADForm', flags: ['web'] },
   { name: 'net/nanopay/bank/BankAccount' },
@@ -300,7 +301,6 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/AcceptFXRate' },
   { name: 'net/nanopay/fx/FXQuote' },
   { name: 'net/nanopay/fx/FXTransaction' },
-  { name: 'net/nanopay/fx/FXTransfer' },
   { name: 'net/nanopay/fx/FXProvider' },
   { name: 'net/nanopay/fx/FXUserStatus' },
   { name: 'net/nanopay/fx/KotakFxTransaction' },
@@ -1660,6 +1660,7 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/compliance/GenericSigningOfficerValidator' },
   { name: 'net/nanopay/crunch/compliance/GenericBusinessValidator' },
 
+  { name: 'net/nanopay/partner/afex/AFEXDigitalAccount' },
   // crunch afex
   { name: 'net/nanopay/partner/afex/crunch/BusinessHasVerifiedBankAccount' },
   { name: 'net/nanopay/partner/afex/crunch/AFEXBusinessOnboardingRule' },

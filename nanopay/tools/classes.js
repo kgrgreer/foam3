@@ -10,6 +10,7 @@ var classes = [
   'net.nanopay.tx.TxnProcessor',
   'net.nanopay.plaid.config.PlaidCredential',
   'net.nanopay.tx.Transfer',
+  'net.nanopay.tx.ExternalTransfer',
   'net.nanopay.tx.ComplianceTransaction',
   'net.nanopay.tx.CompletedTransactionDAO',
   'net.nanopay.tx.TxnProcessorUserReference',
@@ -504,7 +505,6 @@ var classes = [
   'net.nanopay.fx.ExchangeRateQuote',
   'net.nanopay.fx.FixerIOExchangeRate',
   'net.nanopay.fx.FXTransaction',
-  'net.nanopay.fx.FXTransfer',
   'net.nanopay.fx.CurrencyFXService',
   'net.nanopay.fx.FXUserStatus',
   'net.nanopay.fx.KotakFxTransaction',
@@ -1291,6 +1291,7 @@ var classes = [
   'net.nanopay.crunch.compliance.GenericSigningOfficerValidator',
   'net.nanopay.crunch.compliance.GenericBusinessValidator',
 
+  'net.nanopay.partner.afex.AFEXDigitalAccount',
 
   // crunch afex
   'net.nanopay.partner.afex.crunch.AFEXBusinessOnboardingRule',
@@ -1411,7 +1412,6 @@ var classes = [
   'net.nanopay.tx.AuthenticatedTransactionDAO',
   'net.nanopay.tx.AutoCashOutForInvoiceTransactionDAO',
   'net.nanopay.tx.GreenfencePlanDAO',
-  'net.nanopay.tx.PreventNotQuotedTransactionDAO',
   'net.nanopay.tx.TransactionDAO',
   'net.nanopay.tx.TransactionEntitiesDAO',
   'net.nanopay.tx.TransactionLimitCheckDAO',

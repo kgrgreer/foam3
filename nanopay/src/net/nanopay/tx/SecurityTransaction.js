@@ -23,6 +23,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
+    'foam.core.ValidationException',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
 ],
@@ -234,7 +235,7 @@ foam.CLASS({
       Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
       if ( oldTxn != null && oldTxn.getStatus() == TransactionStatus.COMPLETED ) {
         ((Logger) x.get("logger")).error("instanceof SecurityTransaction cannot be updated.");
-        throw new RuntimeException("instanceof SecurityTransaction cannot be updated.");
+        throw new ValidationException("instanceof SecurityTransaction cannot be updated.");
       }
       `
     },

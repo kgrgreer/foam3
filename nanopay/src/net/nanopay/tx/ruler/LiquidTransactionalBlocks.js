@@ -32,6 +32,7 @@ foam.CLASS({
     'net.nanopay.account.ShadowAccount',
     'net.nanopay.account.SecuritiesAccount',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.UnsupportedTransactionException'
   ],
 
   methods: [
@@ -48,14 +49,14 @@ foam.CLASS({
       User user = ((Subject) x.get("subject")).getUser();
       if ( ! user.getGroup().equals("admin") ) {
         if ( ! ( source.getClass() == DigitalAccount.class || source.getClass() == SecuritiesAccount.class) ) {
-          throw new RuntimeException("Unable to send from non-digital account");
+          throw new UnsupportedTransactionException("Unable to send from non-digital account");
         }
       }
       else {
         if ( ! ( source.getClass() == DigitalAccount.class ||
                  source.getClass() == SecuritiesAccount.class ||
                  source.getClass() == ShadowAccount.class ) ) {
-          throw new RuntimeException("Unable to send from non-digital or non-shadow account");
+          throw new UnsupportedTransactionException("Unable to send from non-digital or non-shadow account");
         }
       }
       `

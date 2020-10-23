@@ -25,6 +25,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'java.util.ArrayList',
     'java.util.List',
+    'foam.core.ValidationException',
     'net.nanopay.account.Account',
     'net.nanopay.account.TrustAccount',
     'net.nanopay.bank.BankAccount',
@@ -119,7 +120,7 @@ foam.CLASS({
           && oldTxn.getLifecycleState() != LifecycleState.PENDING
         ) {
           logger.error("Unable to update CITransaction, if transaction status is accepted or declined. Transaction id: " + getId());
-          throw new RuntimeException("Unable to update CITransaction, if transaction status is accepted or declined. Transaction id: " + getId());
+          throw new ValidationException("Unable to update CITransaction, if transaction status is accepted or declined. Transaction id: " + getId());
         }
       `
     },

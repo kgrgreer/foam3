@@ -65,6 +65,8 @@ foam.CLASS({
     'net.nanopay.tx.InterestTransaction',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.Transfer',
+    'net.nanopay.tx.TransactionException',
+    'foam.core.ValidationException',
     'net.nanopay.account.Balance',
     'static foam.mlang.MLang.EQ',
     'net.nanopay.tx.planner.AbstractTransactionPlanner'
@@ -329,7 +331,6 @@ foam.CLASS({
       name: 'createdByAgent',
       documentation: `The id of the agent who created the transaction.`,
       visibility: 'HIDDEN',
-      // visibility: 'RO',
       section: 'basicInfo',
       tableCellFormatter: function(value, obj) {
         obj.userDAO.find(value).then(function(user) {
@@ -1010,31 +1011,31 @@ foam.CLASS({
       AppConfig appConfig = (AppConfig) x.get("appConfig");
       DAO userDAO = (DAO) x.get("bareUserDAO");
       if ( getSourceAccount() == 0 ) {
-        throw new RuntimeException("sourceAccount must be set");
+        throw new ValidationException("sourceAccount must be set");
       }
 
       if ( getDestinationAccount() == 0 ) {
-        throw new RuntimeException("destinationAccount must be set");
+        throw new ValidationException("destinationAccount must be set");
       }
 
       User sourceOwner = (User) userDAO.find(findSourceAccount(x).getOwner());
       if ( sourceOwner == null ) {
-        throw new RuntimeException("Payer user with id " + findSourceAccount(x).getOwner() + " doesn't exist");
+        throw new ValidationException("Payer user with id " + findSourceAccount(x).getOwner() + " doesn't exist");
       }
 
       // TODO: Move user checking to user validation service
       if ( AccountStatus.DISABLED == sourceOwner.getStatus() ) {
-        throw new RuntimeException("Payer user is disabled.");
+        throw new ValidationException("Payer user is disabled.");
       }
 
       User destinationOwner = (User) userDAO.find(findDestinationAccount(x).getOwner());
       if ( destinationOwner == null ) {
-        throw new RuntimeException("Payee user with id "+ findDestinationAccount(x).getOwner() + " doesn't exist");
+        throw new ValidationException("Payee user with id "+ findDestinationAccount(x).getOwner() + " doesn't exist");
       }
 
       // TODO: Move user checking to user validation service
       if ( AccountStatus.DISABLED == destinationOwner.getStatus() ) {
-        throw new RuntimeException("Payee user is disabled.");
+        throw new ValidationException("Payee user is disabled.");
       }
 
       if ( ! sourceOwner.getEmailVerified() ) {
@@ -1046,21 +1047,16 @@ foam.CLASS({
       }
 
       if ( getAmount() < 0) {
-        throw new RuntimeException("Amount cannot be negative");
+        throw new ValidationException("Amount cannot be negative");
       }
 
       if ( ((DAO)x.get("currencyDAO")).find(getSourceCurrency()) == null && ((DAO)x.get("securitiesDAO")).find(getSourceCurrency()) == null) { //TODO switch to just unitDAO
-        throw new RuntimeException("Source denomination is not supported");
+        throw new ValidationException("Source denomination is not supported");
       }
 
       if ( ((DAO)x.get("currencyDAO")).find(getDestinationCurrency()) == null && ((DAO)x.get("securitiesDAO")).find(getDestinationCurrency()) == null ) { //TODO switch to just unitDAO
-        throw new RuntimeException("Destination denomination is not supported");
+        throw new ValidationException("Destination denomination is not supported");
       }
-/* //We currently dont have or use schedueled txns
-      Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
-      if ( oldTxn != null && oldTxn.getStatus() != TransactionStatus.SCHEDULED && getStatus() == TransactionStatus.SCHEDULED ) {
-        throw new RuntimeException("Only new transaction can be scheduled");
-      }*/
       `
     },
     {
@@ -1102,7 +1098,6 @@ foam.CLASS({
       code: async function findRoot() {
         var txnParent = await this.parent$find;
         if ( txnParent ) {
-          // Find the root transaction in the chain
           while ( txnParent.parent != '' ) {
             txnParent = await txnParent.parent$find;
           }
@@ -1116,7 +1111,6 @@ foam.CLASS({
       javaCode: `
         Transaction txnParent = this.findParent(x);
         if ( txnParent != null ) {
-          // Find the root transaction in the chain
           while ( ! SafetyUtil.isEmpty(txnParent.getParent()) ) {
             txnParent = txnParent.findParent(x);
           }
@@ -1221,7 +1215,7 @@ foam.CLASS({
       Transaction tx = this;
       if ( tx.getNext() != null && tx.getNext().length >= 1 ) {
          if ( tx.getNext().length > 1) {
-           throw new RuntimeException("Error, this non-Composite transaction has more then 1 child");
+           throw new TransactionException("Error, this non-Composite transaction has more then 1 child");
          }
          Transaction [] t = tx.getNext();
          t[0].addNext(txn);

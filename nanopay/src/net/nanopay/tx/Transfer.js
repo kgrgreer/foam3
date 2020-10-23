@@ -18,11 +18,13 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'Transfer',
+  documentation: 'describes: what amount is added to which account (internal)',
 
   javaImports: [
     'net.nanopay.account.Account',
     'net.nanopay.account.Balance',
-    'foam.util.SafetyUtil'
+    'foam.util.SafetyUtil',
+    'foam.core.ValidationException'
   ],
 
   javaImplements: [
@@ -30,10 +32,6 @@ foam.CLASS({
   ],
 
   properties: [
-    {
-      name: 'description',
-      class: 'String'
-    },
     {
       name: 'amount',
       class: 'Long'
@@ -47,22 +45,25 @@ foam.CLASS({
       documentation: 'Time transfer was applied. Also reverse transfers are only displayed if they have been executed.',
       name: 'executed',
       class: 'DateTime',
-    },
-    { //DEPRECATED in planners V3: TODO: check that we can safely delete
-      documentation: 'Control which Transfers are visible in customer facing views.  Some transfers such as Reversals, or internal Digital account transfers are not meant to be visible to the customer.',
-      name: 'visible',
-      class: 'Boolean',
-      value: false,
-      hidden: true
     }
   ],
 
   methods: [
-
     {
       name: 'validate',
+      /*args: [
+        { name: 'x', type: 'Context'}
+      ],*/
       type: 'Void',
       javaCode: `
+        if ( getAmount() == 0 )
+          throw new ValidationException("Transfer has no amount set");
+        if ( getAccount() == 0 )
+          throw new ValidationException("No account specified on Transfer");
+          /*// decide if account.find needed..
+        var acc = ((DAO) x.get("localAccountDAO")).find(getAccount());
+        if ( acc == null )
+          throw new RuntimeException("Account not found");*/
       `
     },
     {

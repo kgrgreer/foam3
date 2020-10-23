@@ -28,7 +28,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.PrefixLogger',
     'foam.util.SafetyUtil',
-
+    'foam.core.ValidationException',
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
@@ -564,11 +564,11 @@ foam.CLASS({
       ],
       javaCode:`
       if ( ! (transaction instanceof RbcCITransaction || transaction instanceof RbcCOTransaction || transaction instanceof RbcVerificationTransaction) ) {
-        throw new RuntimeException("Wrong transaction type");
+        throw new ValidationException("Wrong transaction type");
       }
 
       if ( (! transaction.getSourceCurrency().equals("CAD") ) && (! transaction.getDestinationCurrency().equals("CAD")) ) {
-        throw new RuntimeException("Wrong currency type");
+        throw new ValidationException("Wrong currency type");
       }
 
       return true;

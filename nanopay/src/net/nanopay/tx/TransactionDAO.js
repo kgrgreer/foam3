@@ -27,8 +27,6 @@ foam.CLASS({
 
   javaImports: [
     'java.util.*',
-
-
     'foam.core.X',
     'foam.dao.DAO',
     'foam.core.FObject',
@@ -39,8 +37,10 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.account.Balance',
     'net.nanopay.account.DebtAccount',
+    'net.nanopay.tx.ExternalTransfer',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.TransactionLineItem',
+    'net.nanopay.tx.TransactionException',
     'net.nanopay.tx.model.TransactionStatus'
   ],
 
@@ -84,7 +84,7 @@ foam.CLASS({
         Transaction txn = (Transaction) obj;
 
         if ( SafetyUtil.isEmpty(txn.getId()) ) {
-          throw new RuntimeException(TRANS_MISSING_ID_SET_ERROR_MSG);
+          throw new TransactionException(TRANS_MISSING_ID_SET_ERROR_MSG);
         }
 
         Transaction oldTxn = (Transaction) getDelegate().find_(x, obj);
@@ -176,15 +176,24 @@ foam.CLASS({
       javaCode: `
         HashMap hm = new HashMap();
         Logger logger = (Logger) x.get("logger");
+
         for ( Transfer tr : ts ) {
-          tr.validate();
+          //Transfer Level Validation.
+          try { tr.validate(); }
+          catch (RuntimeException e) {
+            throw new TransactionException("Transfer Validation Failed", e);
+          }
+
+          //Account Level Validation
           Account account = tr.findAccount(getX());
           if ( account == null ) {
             logger.error(this.getClass().getSimpleName(), "validateTransfers", txn.getId(), "transfer account not found: " + tr.getAccount(), tr);
-            throw new RuntimeException(UNKNOWN_ACCOUNT_ERROR_MSG + tr.getAccount());
+            throw new TransactionException(UNKNOWN_ACCOUNT_ERROR_MSG + tr.getAccount());
           }
           account.validateAmount(x, (Balance) getBalanceDAO().find(account.getId()), tr.getAmount());
-          if ( ! (account instanceof DebtAccount) )
+
+          //Transfer Matching for internal transfers
+          if ( ! (account instanceof DebtAccount) && ! ( tr instanceof ExternalTransfer) )
             hm.put(account.getDenomination(), (hm.get(account.getDenomination()) == null ? 0 : (Long) hm.get(account.getDenomination())) + tr.getAmount());
         }
 
@@ -194,7 +203,7 @@ foam.CLASS({
             for ( Transfer tr : ts ) {
               logger.error(this.getClass().getSimpleName(), "validateTransfers", txn.getId(), "Transfer", tr);
             }
-            throw new RuntimeException(DEBITS_CREDITS_NOT_MATCH_ERROR_MSG);
+            throw new TransactionException(DEBITS_CREDITS_NOT_MATCH_ERROR_MSG);
           }
         }
       `
@@ -283,7 +292,10 @@ foam.CLASS({
 
         for ( int i = 0 ; i < ts.length ; i++ ) {
           Transfer t = ts[i];
-          t.validate();
+          try { t.validate(); }
+          catch (RuntimeException e) {
+            throw new TransactionException("Transfer Validation Failed", e);
+          }
           Balance balance = finalBalanceArr[i];
           t.execute(balance);
           finalBalanceArr[i] = (Balance) balance.fclone();

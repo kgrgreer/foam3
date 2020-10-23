@@ -241,7 +241,7 @@ foam.CLASS({
       unitPropName: 'denomination',
       name: 'balance',
       label: 'Balance (local)',
-      documentation: 'A numeric value representing the available funds in the bank account.',
+      documentation: 'A numeric value representing the available funds in the account.',
       section: 'balanceDetails',
       storageTransient: true,
       createVisibility: 'HIDDEN', // No point in showing as read-only during create since it'll always be 0
@@ -280,7 +280,7 @@ foam.CLASS({
       label: 'Balance (home)',
       documentation: `
         A numeric value representing the available funds in the
-        bank account converted to home denomination.
+        account converted to the home denomination.
       `,
       section: 'balanceDetails',
       storageTransient: true,
@@ -491,7 +491,6 @@ foam.CLASS({
         },
         {
           name: 'amount',
-
           type: 'Long'
         }
       ],

@@ -89,7 +89,7 @@ foam.CLASS({
 
             Currency currency = (Currency) ((DAO) x.get("currencyDAO")).find(txn.getSourceCurrency());
             Map<String, Object>  args = new HashMap<>();
-            String amount = currency.format(txn.getTotal(x, txn.getSourceAccount()));
+            String amount = currency.format(-txn.getTotal(x, txn.getSourceAccount()));
             args.put("amount", amount);
             Notification notify = new Notification.Builder(x)
               .setBody(TEXT + amount + TEXT2)
