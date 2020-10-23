@@ -17,8 +17,8 @@ p({
   "class":"foam.nanos.menu.Menu",
   "id": "sme.main.appStore",
   "label": "Capabilities",
-  "activeIcon":"images/ablii/dashboard-icon-active.svg",
-  "icon":"images/ablii/dashboard-icon-resting.svg",
+  "activeIcon":"images/ablii/extension-active.svg",
+  "icon":"images/ablii/extension-resting.svg",
   "handler":{
     "class":"foam.nanos.menu.ViewMenu",
     "view":{
