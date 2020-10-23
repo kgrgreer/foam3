@@ -95,7 +95,8 @@ foam.CLASS({
       class: 'Long',
       name: 'id',
       documentation: 'The ID for the Invoice.',
-      tableWidth: 60
+      tableWidth: 60,
+      sheetsOutput: true
     },
     {
       class: 'String',

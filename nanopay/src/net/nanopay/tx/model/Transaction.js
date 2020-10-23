@@ -396,6 +396,7 @@ foam.CLASS({
       value: 'COMPLETED',
       includeInDigest: true,
       writePermissionRequired: true,
+      sheetsOutput: true,
       javaToCSVLabel: `
         // Outputting two columns: "this transaction status" and "Returns childrens status"
         outputter.outputValue("Transaction Status");
@@ -554,6 +555,7 @@ foam.CLASS({
       name: 'amount',
       label: 'Source Amount',
       section: 'amountSelection',
+      unitPropName: 'sourceCurrency',
       required: true,
       gridColumns: 5,
       createVisibility: 'RO',
