@@ -21,32 +21,12 @@ foam.CLASS({
 
   documentation: `This model represents the expanded info of a Business that must be collect for onboarding.`,
   
-  implements: [
-    'foam.core.Validatable'
-  ],
-  
   properties: [
     net.nanopay.model.Business.BUSINESS_SECTOR_ID.clone().copyFrom(),
     net.nanopay.model.Business.SOURCE_OF_FUNDS.clone().copyFrom(),
     net.nanopay.model.Business.OPERATING_BUSINESS_NAME.clone().copyFrom(),
     net.nanopay.model.Business.TARGET_CUSTOMERS.clone().copyFrom(),
     net.nanopay.model.Business.SUGGESTED_USER_TRANSACTION_INFO.clone().copyFrom()
-  ],
-  
-  methods: [
-    {
-      name: 'validate',
-      javaCode: `
-        java.util.List<foam.core.PropertyInfo> props = getClassInfo().getAxiomsByClass(foam.core.PropertyInfo.class);
-        for ( foam.core.PropertyInfo prop : props ) {
-          try {
-            prop.validateObj(x, this);
-          } catch ( IllegalStateException e ) {
-            throw e;
-          }
-        }
-      `
-    }
   ]
 });
   

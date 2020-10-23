@@ -21,6 +21,10 @@ foam.CLASS({
 
   documentation: `Business account information, such as customer or supplier detail and taxes date`,
 
+  javaImports: [
+    'net.nanopay.crunch.onboardingModels.CustomerBasicInformation'
+  ],
+
   sections: [
     {
       name: 'accountingSection',
@@ -39,6 +43,8 @@ foam.CLASS({
   messages: [
     { name: 'NO_CUSTOMERS_INFO', message: 'Please enter main customer\'s information.' },
     { name: 'NO_SUPPLIERS_INFO', message: 'Please enter main supplier\'s information.' },
+    { name: 'CUSTOMER_OBJ_ERROR', message: 'One or more of the customers entered is invalid.' },
+    { name: 'SUPPLIER_OBJ_ERROR', message: 'One or more of the suppliers entered is invalid.' },
     { name: 'INVALID_DATE', message: 'Last date cannot be future dated.' }
   ],
 
@@ -161,4 +167,41 @@ foam.CLASS({
       ]
     }
   ],
+
+  methods: [
+    {
+      name: 'validate',
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      type: 'Void',
+      javaThrows: ['IllegalStateException'],
+      javaCode: `
+        java.util.List<foam.core.PropertyInfo> props = getClassInfo().getAxiomsByClass(foam.core.PropertyInfo.class);
+        for ( foam.core.PropertyInfo prop : props ) {
+          try {
+            prop.validateObj(x, this);
+          } catch ( IllegalStateException e ) {
+            throw e;
+          }
+        }
+
+        // validate the fobjects in the fobjectarray props
+        for ( CustomerBasicInformation customer : getCustomers() ) {
+          try {
+            customer.validate(x);
+          } catch ( IllegalStateException e ) {
+            throw new IllegalStateException(this.CUSTOMER_OBJ_ERROR);
+          }
+        }
+        for ( CustomerBasicInformation supplier : getSuppliers() ) {
+          try {
+            supplier.validate(x);
+          } catch ( IllegalStateException e ) {
+            throw new IllegalStateException(this.SUPPLIER_OBJ_ERROR);
+          }
+        }
+      `,
+    }
+  ]
 });

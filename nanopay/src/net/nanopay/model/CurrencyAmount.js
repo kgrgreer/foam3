@@ -22,6 +22,11 @@ foam.CLASS({
 
   imports: [ 'currencyDAO' ],
 
+  messages: [
+    { name: 'NO_CURRENCY_ERROR', message: 'Please select a currency.' },
+    { name: 'NO_AMOUNT_ERROR', message: 'Please enter an amount.' }
+  ],
+
   properties: [
     {
       class: 'String',
@@ -44,7 +49,8 @@ foam.CLASS({
           args: ['currency'],
           predicateFactory: function(e) {
             return e.NEQ(net.nanopay.model.CurrencyAmount.CURRENCY, null);
-          }
+          },
+          errorMessage: 'NO_CURRENCY_ERROR'
         }
       ]
     },
@@ -63,8 +69,12 @@ foam.CLASS({
         {
           args: ['amount'],
           predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.model.CurrencyAmount.AMOUNT, null);
-          }
+            return e.AND(
+              e.NEQ(net.nanopay.model.CurrencyAmount.AMOUNT, null),
+              e.NEQ(net.nanopay.model.CurrencyAmount.AMOUNT, 0)
+            );
+          },
+          errorMessage: 'NO_AMOUNT_ERROR'
         }
       ]
     },

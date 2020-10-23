@@ -471,7 +471,7 @@ foam.CLASS({
         // validate BeneficialOwner objects
         BeneficialOwner[] owners = new BeneficialOwner[]{ getOwner1(), getOwner2(), getOwner3(), getOwner4() };
         for ( int i = 0 ; i < getAmountOfOwners(); i++ ) owners[i].validate(x);
-      `,
+      `
     }
   ]
 });

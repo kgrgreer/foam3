@@ -23,10 +23,6 @@ foam.CLASS({
     This model represents the transactionDetailsSection of the onboarding model.
   `,
 
-  implements: [
-    'foam.core.Validatable'
-  ],
-
   imports: [
     'user'
   ],
@@ -94,21 +90,5 @@ foam.CLASS({
         }
       ]
     })
-  ],
-
-  methods: [
-    {
-      name: 'validate',
-      javaCode: `
-        java.util.List<foam.core.PropertyInfo> props = getClassInfo().getAxiomsByClass(foam.core.PropertyInfo.class);
-        for ( foam.core.PropertyInfo prop : props ) {
-          try {
-            prop.validateObj(x, this);
-          } catch ( IllegalStateException e ) {
-            throw e;
-          }
-        }
-      `
-    }
   ]
 });

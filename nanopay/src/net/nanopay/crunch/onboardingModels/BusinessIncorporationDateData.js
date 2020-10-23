@@ -19,10 +19,7 @@ foam.CLASS({
   package: 'net.nanopay.crunch.onboardingModels',
   name: 'BusinessIncorporationDateData',
 
-  implements: [
-    'foam.core.Validatable',
-    'foam.mlang.Expressions'
-  ],
+  implements: [ 'foam.mlang.Expressions' ],
 
   sections: [
     {
@@ -59,22 +56,6 @@ foam.CLASS({
           errorMessage: 'BUSINESS_INCORPORATION_DATE_ERROR'
         }
       ]
-    }
-  ],
-
-  methods: [
-    {
-      name: 'validate',
-      javaCode: `
-        java.util.List<foam.core.PropertyInfo> props = getClassInfo().getAxiomsByClass(foam.core.PropertyInfo.class);
-        for ( foam.core.PropertyInfo prop : props ) {
-          try {
-            prop.validateObj(x, this);
-          } catch ( IllegalStateException e ) {
-            throw e;
-          }
-        }
-      `
     }
   ]
 });
