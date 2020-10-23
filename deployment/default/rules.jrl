@@ -6,13 +6,7 @@ p({
       class:"net.nanopay.auth.ServiceProviderURL",
       spid:"nanopay",
       urls:[
-        "localhost"
-      ]
-    },
-    {
-      class:"net.nanopay.auth.ServiceProviderURL",
-      spid:"nanopay.ablii",
-      urls:[
+        "localhost",
         "ablii"
       ]
     }

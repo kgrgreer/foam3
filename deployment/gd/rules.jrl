@@ -6,13 +6,7 @@ p({
       class:"net.nanopay.auth.ServiceProviderURL",
       spid:"nanopay",
       urls:[
-        "portal.nanopay.net"
-      ]
-    },
-    {
-      class:"net.nanopay.auth.ServiceProviderURL",
-      spid:"nanopay.ablii",
-      urls:[
+        "portal.nanopay.net",
         "ablii",
         "app.ablii.com"
       ]

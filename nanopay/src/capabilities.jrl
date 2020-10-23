@@ -936,7 +936,8 @@ p({
   version: "0",
   enabled: true,
   permissionsGranted: [
-    "country.read.*"
+    "country.read.CA",
+    "country.read.US"
   ]
 })
 
@@ -947,7 +948,12 @@ p({
   version: "0",
   enabled: true,
   permissionsGranted: [
-    "paymentprovidercorridor.read.*"
+    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
+    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
+    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15f7afexus-us",
+    "paymentprovidercorridor.read.bmo",
+    "paymentprovidercorridor.read.rbc",
+    "paymentprovidercorridor.read.kotak",
   ]
 })
 
@@ -958,7 +964,9 @@ p({
   version: "0",
   enabled: true,
   permissionsGranted: [
-    "currency.read.*",
+    "currency.read.CAD",
+    "currency.read.USD",
+    "currency.read.INR",
     "multi-currency.read"
   ]
 })
@@ -980,70 +988,6 @@ p({
   "name": "nanopay Menu Capability",
   "version":"0",
   "enabled":true,
-  "permissionsGranted":[]
-})
-
-// nanopay.ablii capabilities
-p({"class":"foam.nanos.auth.ServiceProvider","id":"nanopay.ablii","description":"nanopay.ablii spid"})
-p({
-  class: "foam.nanos.crunch.Capability",
-  id: "nanopay.abliiCountryCapability",
-  name: "nanopay.ablii Country Capability",
-  version: "0",
-  enabled: true,
-  permissionsGranted: [
-    "country.read.CA",
-    "country.read.US"
-  ]
-})
-
-p({
-  class: "foam.nanos.crunch.Capability",
-  id: "nanopay.abliiCorridorCapability",
-  name: "nanopay.ablii Corridor Capability",
-  version: "0",
-  enabled: true,
-  permissionsGranted: [
-    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
-    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
-    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15f7afexus-us",
-    "paymentprovidercorridor.read.bmo",
-    "paymentprovidercorridor.read.rbc",
-    "paymentprovidercorridor.read.kotak",
-  ]
-})
-
-p({
-  class: "foam.nanos.crunch.Capability",
-  id: "nanopay.abliiCurrencyCapability",
-  name: "nanopay.ablii Currency Capability",
-  version: "0",
-  enabled: true,
-  permissionsGranted: [
-    "currency.read.CAD",
-    "currency.read.USD",
-    "currency.read.INR",
-    "multi-currency.read"
-  ]
-})
-
-p({
-  class: "foam.nanos.crunch.Capability",
-  id: "nanopay.abliiPlannerCapability",
-  name: "nanopay.ablii Planner Capability",
-  version: "0",
-  enabled: true,
-  permissionsGranted: [
-    "rule.read.*"
-  ]
-})
-
-p({
-  "class": "foam.nanos.crunch.Capability",
-  "id": "nanopay.abliiMenuCapability",
-  "name": "nanopay.ablii Menu Capability",
-  "version":"0",
-  "enabled":true,
   "permissionsGranted":[
     "business.rw.ispublic",
     "menu.read.accountingintegrationcards",
@@ -1054,8 +998,8 @@ p({
 
 p({
   "class": "foam.nanos.crunch.Capability",
-  "id": "nanopay.abliiAccountingCapability",
-  "name": "nanopay.ablii Accounting Capability",
+  "id": "nanopayAccountingCapability",
+  "name": "nanopay Accounting Capability",
   "version":"0",
   "enabled":true,
   "permissionsGranted":[
