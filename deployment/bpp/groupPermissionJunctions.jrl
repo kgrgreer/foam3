@@ -1,5 +1,5 @@
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bpp-dev","targetId":"spid.read.bpp"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bpp-api-session","targetId":"spid.read.bpp"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bpp-dev","targetId":"serviceprovider.read.bpp"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bpp-api-session","targetId":"serviceprovider.read.bpp"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bpp-api-session","targetId":"session.create.bpp"})
 
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"bpp-api-session","targetId":"business.rw.compliance"})

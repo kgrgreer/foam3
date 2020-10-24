@@ -57,7 +57,7 @@ public class SigningOfficerInvoiceApprovalTest
   public void runTest(X x) {
 
 DAO accountDAO = (DAO) x.get("accountDAO");
-DAO bareUserDAO = (DAO) x.get("bareUserDAO");
+DAO localUserDAO = (DAO) x.get("localUserDAO");
 DAO userDAO = (DAO) x.get("userDAO");
 DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
 DAO invoiceDAO = (DAO) x.get("invoiceDAO");
@@ -76,7 +76,7 @@ DAO smeUserRegistrationDAO = (DAO) x.get("smeUserRegistrationDAO");
 DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
 dowJonesService.setDowJonesRestService(new DowJonesMockService());
 
-bareUserDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "externalBusiness@example.com")).removeAll();
+localUserDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "externalBusiness@example.com")).removeAll();
 Business externalBusiness = new Business();
 externalBusiness.setBusinessName("ExternalBusiness");
 externalBusiness.setEmail("externalBusiness@example.com");
@@ -165,7 +165,7 @@ UserUserJunction agentJunction = (UserUserJunction) sink.getArray().get(0);
 Business myBusiness = (Business)localBusinessDAO.find(agentJunction.getTargetId());
 
 // Setup Approver and Employee Users
-bareUserDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "approver@example.com")).removeAll();
+localUserDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "approver@example.com")).removeAll();
 User myApprover = new User();
 myApprover.setFirstName("MyApprover");
 myApprover.setEmail("approver@example.com");
@@ -173,10 +173,10 @@ myApprover.setGroup(myBusiness.getBusinessPermissionId() + ".employee");
 myApprover.setEmailVerified(true); // Required to send or receive money.
 myApprover.setCompliance(ComplianceStatus.PASSED);
 myApprover.setSpid("nanopay");
-myApprover = (User) bareUserDAO.put(myApprover);
+myApprover = (User) localUserDAO.put(myApprover);
 X myApproverContext = Auth.sudo(x, myApprover);
 
-bareUserDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "employee@example.com")).removeAll();
+localUserDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "employee@example.com")).removeAll();
 User myEmployee = new User();
 myEmployee.setFirstName("MyEmployee");
 myEmployee.setEmail("employee@example.com");
@@ -184,7 +184,7 @@ myEmployee.setGroup(myBusiness.getBusinessPermissionId() + ".employee");
 myEmployee.setEmailVerified(true); // Required to send or receive money.
 myEmployee.setCompliance(ComplianceStatus.PASSED);
 myEmployee.setSpid("nanopay");
-myEmployee = (User) bareUserDAO.put(myEmployee);
+myEmployee = (User) localUserDAO.put(myEmployee);
 X myEmployeeContext = Auth.sudo(x, myEmployee);
 
 // Creating junctions for MyBusiness users
@@ -409,7 +409,7 @@ externalBusinessBankAccount.setStatus(BankAccountStatus.VERIFIED);
 // previously, there where no permissions in place to prevent unauthorized groups from setting bank account statuses
 // after adding bank account status permissions, this test would not work
 // this is because in the normal .put method, despite the bank account status being set to verified in the lines above
-// it goes through a cloning procedure in the permissionedPropertyDAO, where it checks if the employee1's group (sme) 
+// it goes through a cloning procedure in the permissionedPropertyDAO, where it checks if the employee1's group (sme)
 // has permissions to read/write bank account status, since they do not it would instead reset the status property to unverified
 // that is why we must use the override put_, in order to set the employee bank account using the global context permissions
 externalBusinessBankAccount = (CABankAccount) externalBusiness.getAccounts(x).put_(x, externalBusinessBankAccount);
