@@ -16,7 +16,7 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.crunch.onboardingModels',
+  package: 'net.nanopay.crunch.predicate',
   name: 'BusinessPassedCompliance',
 
   extends: 'foam.mlang.predicate.AbstractPredicate',

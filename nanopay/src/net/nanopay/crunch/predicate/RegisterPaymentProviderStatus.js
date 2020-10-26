@@ -16,13 +16,13 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.crunch.onboardingModels',
-  name: 'IsBusiness',
+  package: 'net.nanopay.crunch.predicate',
+  name: 'RegisterPaymentProviderStatus',
 
   extends: 'foam.mlang.predicate.AbstractPredicate',
-  implements: ['foam.core.Serializable'],
+  implements: [ 'foam.core.Serializable' ],
 
-  documentation: `Returns true if user in context is business.`,
+  documentation: `Returns true if register payment provider capability has been granted for current user `,
 
   javaImports: [
     'foam.core.X',
@@ -30,30 +30,38 @@ foam.CLASS({
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.crunch.UserCapabilityJunction',
-    'foam.nanos.crunch.CapabilityJunctionStatus',
     'net.nanopay.model.Business',
     'static foam.mlang.MLang.*'
   ],
 
+  properties: [
+    {
+      name: 'status',
+      class: 'Enum',
+      of: 'foam.nanos.crunch.CapabilityJunctionStatus',
+      javaFactory: `
+        return foam.nanos.crunch.CapabilityJunctionStatus.PENDING;
+      `
+    }
+  ],
+
   methods: [
     {
-      name:'f',
+      name: 'f',
       javaCode: `
         if ( ! ( obj instanceof X ) ) return false;
         X x = (X) obj;
+        DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
         User user = ((Subject) x.get("subject")).getUser();
         if ( user == null || ! ( user instanceof Business ) ) return false;
-
-        //check if business registration has Granted
-        DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
-        UserCapabilityJunction ucj = (UserCapabilityJunction) ucjDAO.find(
+        UserCapabilityJunction ucj = (UserCapabilityJunction) userCapabilityJunctionDAO.find(
           AND(
-            EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-76"),
-            EQ(UserCapabilityJunction.SOURCE_ID, user.getId())
+            EQ(UserCapabilityJunction.SOURCE_ID, user.getId()),
+            EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-20"),
+            EQ(UserCapabilityJunction.STATUS, getStatus())
           )
         );
-        if ( ucj == null || ucj.getStatus() !=  CapabilityJunctionStatus.GRANTED ) return false;
-        return true;
+        return ucj != null;
       `
     }
   ]

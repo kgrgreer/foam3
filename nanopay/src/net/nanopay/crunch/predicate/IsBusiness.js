@@ -16,22 +16,21 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.crunch.onboardingModels',
-  name: 'HasVerifiedBankAccount',
+  package: 'net.nanopay.crunch.predicate',
+  name: 'IsBusiness',
 
   extends: 'foam.mlang.predicate.AbstractPredicate',
   implements: ['foam.core.Serializable'],
 
-  documentation: `Returns true if user in context has a verified bank account.`,
+  documentation: `Returns true if user in context is business.`,
 
   javaImports: [
     'foam.core.X',
     'foam.dao.DAO',
-    'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
-    'net.nanopay.bank.BankAccount',
-    'net.nanopay.bank.BankAccountStatus',
+    'foam.nanos.crunch.UserCapabilityJunction',
+    'foam.nanos.crunch.CapabilityJunctionStatus',
     'net.nanopay.model.Business',
     'static foam.mlang.MLang.*'
   ],
@@ -43,18 +42,17 @@ foam.CLASS({
         if ( ! ( obj instanceof X ) ) return false;
         X x = (X) obj;
         User user = ((Subject) x.get("subject")).getUser();
-        if ( user == null ) return false;
+        if ( user == null || ! ( user instanceof Business ) ) return false;
 
-        //check if user has a verified bank account
-        BankAccount account = (BankAccount) user.getAccounts(x).find(
+        //check if business registration has Granted
+        DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
+        UserCapabilityJunction ucj = (UserCapabilityJunction) ucjDAO.find(
           AND(
-            EQ(BankAccount.OWNER, user.getId()),
-            INSTANCE_OF(BankAccount.class),
-            EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
-            EQ(BankAccount.LIFECYCLE_STATE, LifecycleState.ACTIVE)
+            EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-76"),
+            EQ(UserCapabilityJunction.SOURCE_ID, user.getId())
           )
         );
-        if ( account == null ) return false;
+        if ( ucj == null || ucj.getStatus() !=  CapabilityJunctionStatus.GRANTED ) return false;
         return true;
       `
     }
