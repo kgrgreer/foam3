@@ -223,7 +223,9 @@ foam.CLASS({
                 class: 'net.nanopay.bank.ui.BankPickCurrencyView'
               }, self);
             } else {
-              self.ctrl.add(this.SMEModal.create().addClass('bank-account-popup').tag({
+              self.ctrl.add(this.SMEModal.create({
+                onClose : function() { this.__subContext__.data.clearProperty('bankAccount'); }
+              }).addClass('bank-account-popup').tag({
                 class: 'net.nanopay.account.ui.BankAccountWizard',
                 data: this.bankAccount,
                 useSections: ['accountDetails', 'pad']
