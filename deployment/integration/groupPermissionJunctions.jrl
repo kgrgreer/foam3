@@ -67,6 +67,9 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-se
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"business.create"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"business.update.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"business.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"business.ro.compliance"})
+
+
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"cabankaccount.rw.status"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"capability.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"digitalaccount.default.create"})
@@ -81,7 +84,9 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-se
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"user.update.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"user.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"user.ro.compliance"})
+
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"user.rw.emailverified"})
+
 
 // Flinks Login Id
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"service.read.flinksLoginIdDAO"})

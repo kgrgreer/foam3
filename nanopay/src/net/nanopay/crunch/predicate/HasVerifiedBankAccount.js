@@ -16,47 +16,46 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.crunch.onboardingModels',
-  name: 'CheckUserCountry',
+  package: 'net.nanopay.crunch.predicate',
+  name: 'HasVerifiedBankAccount',
 
   extends: 'foam.mlang.predicate.AbstractPredicate',
   implements: ['foam.core.Serializable'],
 
-  documentation: `Returns true if the business is from canada.`,
+  documentation: `Returns true if user in context has a verified bank account.`,
 
   javaImports: [
     'foam.core.X',
-    'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
-    'foam.nanos.auth.Address',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.BankAccountStatus',
+    'net.nanopay.model.Business',
     'static foam.mlang.MLang.*'
-  ],
-
-  properties: [
-    {
-      class: 'String',
-      name: 'country',
-      documentation: 'Compare passed in string to businesses country'
-    }
   ],
 
   methods: [
     {
-      name: 'f',
+      name:'f',
       javaCode: `
         if ( ! ( obj instanceof X ) ) return false;
         X x = (X) obj;
         User user = ((Subject) x.get("subject")).getUser();
-        Address address = (Address) user.getAddress();
-        if ( getCountry() == null && getCountry().equals("") ) {
-          return address == null || address.getCountryId() == null || address.getCountryId().equals(getCountry());
-        }
-        if ( address != null ) {
-          return address.getCountryId() == getCountry();
-        }
-        return false;
+        if ( user == null ) return false;
+
+        //check if user has a verified bank account
+        BankAccount account = (BankAccount) user.getAccounts(x).find(
+          AND(
+            EQ(BankAccount.OWNER, user.getId()),
+            INSTANCE_OF(BankAccount.class),
+            EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
+            EQ(BankAccount.LIFECYCLE_STATE, LifecycleState.ACTIVE)
+          )
+        );
+        if ( account == null ) return false;
+        return true;
       `
     }
   ]

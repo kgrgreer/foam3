@@ -16,33 +16,22 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.crunch.onboardingModels',
-  name: 'RegisterPaymentProviderStatus',
+  package: 'net.nanopay.crunch.predicate',
+  name: 'UserIsSigningOfficerOfBusiness',
 
   extends: 'foam.mlang.predicate.AbstractPredicate',
   implements: [ 'foam.core.Serializable' ],
 
-  documentation: `Returns true if register payment provider capability has been granted for current user `,
+  documentation: `Returns true if current 'agent' (user) has an signingofficerjunction with 'user' (business) `,
 
   javaImports: [
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
-    'foam.nanos.crunch.UserCapabilityJunction',
     'net.nanopay.model.Business',
+    'net.nanopay.model.BusinessUserJunction',
     'static foam.mlang.MLang.*'
-  ],
-
-  properties: [
-    {
-      name: 'status',
-      class: 'Enum',
-      of: 'foam.nanos.crunch.CapabilityJunctionStatus',
-      javaFactory: `
-        return foam.nanos.crunch.CapabilityJunctionStatus.PENDING;
-      `
-    }
   ],
 
   methods: [
@@ -51,18 +40,20 @@ foam.CLASS({
       javaCode: `
         if ( ! ( obj instanceof X ) ) return false;
         X x = (X) obj;
-        DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
+        DAO signingOfficerJunctionDAO = (DAO) x.get("signingOfficerJunctionDAO");
+        User agent = ((Subject) x.get("subject")).getRealUser();
         User user = ((Subject) x.get("subject")).getUser();
-        if ( user == null || ! ( user instanceof Business ) ) return false;
-        UserCapabilityJunction ucj = (UserCapabilityJunction) userCapabilityJunctionDAO.find(
+        if ( agent == null || user == null || ! ( agent instanceof User ) || ! ( user instanceof Business ) ) return false;
+        BusinessUserJunction soJunction = (BusinessUserJunction) signingOfficerJunctionDAO.find(
           AND(
-            EQ(UserCapabilityJunction.SOURCE_ID, user.getId()),
-            EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-20"),
-            EQ(UserCapabilityJunction.STATUS, getStatus())
+            EQ(BusinessUserJunction.SOURCE_ID, user.getId()),
+            EQ(BusinessUserJunction.TARGET_ID, agent.getId())
           )
         );
-        return ucj != null;
+        return soJunction != null ;
       `
     }
   ]
 });
+
+  

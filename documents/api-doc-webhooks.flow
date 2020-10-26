@@ -63,3 +63,194 @@
 }
 </code>
 </p>
+
+<h2>User Webhook</h2>
+<p>
+  DUG can be configured to send user changes through a webhook. In order to subscribe to user changes, 
+  create a DUG entry and configure the DAO as the userDAO, set the URL and the bearer token and the format,
+  then save the DUG rule. It will be active immediately and start sending any changes to users to the configured
+  URL.
+</p>
+<h3>Message Payload</h3>
+<p>
+  The payload of the user webhook is a serialization of the user entity. See the API data description of the 
+  User for field level descriptions.
+</p>
+<code>{
+  "class": "foam.nanos.auth.User",
+  "id": 9038,
+  "enabled": true,
+  "loginEnabled": true,
+  "firstName": "John",
+  "middleName": "",
+  "lastName": "Doe",
+  "jobTitle": "Programmer",
+  "organization": "",
+  "department": "",
+  "userName": "test521742@test.com",
+  "email": "test521742@test.com",
+  "emailVerified": true,
+  "phoneNumber": "5143337777",
+  "phoneNumberVerified": false,
+  "mobileNumber": "",
+  "mobileNumberVerified": false,
+  "type": "User",
+  "birthday": "1980-08-27T15:31:54.257Z",
+  "address": {
+    "class": "foam.nanos.auth.Address",
+    "structured": false,
+    "address1": "1275 avenue des Canadiens-de-Montréal",
+    "address2": "",
+    "countryId": "CA",
+    "regionId": "QC",
+    "suite": "",
+    "streetNumber": "",
+    "streetName": "",
+    "city": "Montréal",
+    "postalCode": "H3B 5E8",
+    "latitude": 0,
+    "longitude": 0,
+    "propertyType": 0
+  },
+  "language": "en",
+  "timeZone": "",
+  "passwordLastModified": "2020-10-23T18:58:56.465Z",
+  "note": "",
+  "businessName": "",
+  "website": "",
+  "created": "2020-10-23T18:58:56.465Z",
+  "lastModified": "2020-10-23T18:59:30.784Z",
+  "lifecycleState": 1,
+  "spid": "intuit",
+  "deviceToken": "",
+  "twoFactorEnabled": false,
+  "createdBy": 1,
+  "createdByAgent": 1,
+  "lastModifiedBy": 1,
+  "theme": "",
+  "group": "sme",
+  "invited": false,
+  "invitedBy": 0,
+  "status": 0,
+  "thirdParty": false,
+  "PEPHIORelated": false,
+  "loginAttempts": 0,
+  "isPublic": true,
+  "nextLoginAttemptAllowedAt": "2020-10-23T18:58:56.378Z",
+  "integrationCode": 0,
+  "hasIntegrated": false,
+  "compliance": 0
+}
+</code>
+
+<h2>Business Webhook</h2>
+<p>
+  DUG can be configured to send business changes through a webhook. In order to subscribe to business changes, 
+  create a DUG entry and configure the DAO as the businessDAO, set the URL and the bearer token and the format,
+  then save the DUG rule. It will be active immediately and start sending any changes to business to the configured
+  URL.
+</p>
+<h3>Message Payload</h3>
+<p>
+  The payload of the user webhook is a serialization of the business entity. See the API data description of the 
+  Business for field level descriptions.
+</p>
+<code>{
+  "class": "net.nanopay.model.Business",
+  "businessName": "PGWL RESOURCES LTD.",
+  "operatingBusinessName": "",
+  "businessTypeId": 0,
+  "created": "2020-10-23T19:00:36.714Z",
+  "businessSectorId": 0,
+  "businessPermissionId": "pgwlresourcesltd9040",
+  "loginEnabled": false,
+  "emailVerified": true,
+  "desiredPassword": "",
+  "residenceOperated": false,
+  "businessRegistrationAuthority": "",
+  "countryOfBusinessRegistration": "",
+  "fax": "",
+  "phoneNumber": "5143337777",
+  "phoneNumberVerified": false,
+  "address": {
+    "class": "foam.nanos.auth.Address",
+    "structured": false,
+    "address1": "20 King St. W",
+    "address2": "",
+    "countryId": "CA",
+    "regionId": "NS",
+    "suite": "",
+    "streetNumber": "",
+    "streetName": "",
+    "city": "Halifax",
+    "postalCode": "M2R 1L4",
+    "latitude": 0,
+    "longitude": 0,
+    "propertyType": 0
+  },
+  "mailingAddress": {
+    "class": "foam.nanos.auth.Address",
+    "structured": false,
+    "address1": "20 King St. W",
+    "address2": "",
+    "countryId": "CA",
+    "regionId": "NS",
+    "suite": "",
+    "streetNumber": "",
+    "streetName": "",
+    "city": "Halifax",
+    "postalCode": "M2R 1L4",
+    "latitude": 0,
+    "longitude": 0,
+    "propertyType": 0
+  },
+  "businessHoursEnabled": false,
+  "onboarded": false,
+  "holdingCompany": false,
+  "sourceOfFunds": "",
+  "targetCustomers": "",
+  "taxIdentificationNumber": "",
+  "businessIdentificationCode": "",
+  "businessRegistrationNumber": "",
+  "internationalPaymentEnabled": false,
+  "publiclyTraded": false,
+  "firstName": "",
+  "lastName": "",
+  "email": "resources@pgwl.com",
+  "id": 9040,
+  "enabled": true,
+  "middleName": "",
+  "jobTitle": "",
+  "organization": "PGWL RESOURCES LTD.",
+  "department": "",
+  "userName": "",
+  "mobileNumber": "",
+  "mobileNumberVerified": false,
+  "type": "Business",
+  "language": "en",
+  "timeZone": "",
+  "note": "",
+  "website": "",
+  "lastModified": "2020-10-23T19:00:36.823Z",
+  "lifecycleState": 1,
+  "spid": "intuit",
+  "deviceToken": "",
+  "twoFactorEnabled": false,
+  "createdBy": 9039,
+  "createdByAgent": 9039,
+  "lastModifiedBy": 1,
+  "theme": "",
+  "group": "pgwlresourcesltd9040.admin",
+  "invited": false,
+  "invitedBy": 0,
+  "status": 0,
+  "thirdParty": false,
+  "PEPHIORelated": false,
+  "loginAttempts": 0,
+  "isPublic": true,
+  "nextLoginAttemptAllowedAt": "2020-10-23T19:00:36.741Z",
+  "integrationCode": 0,
+  "hasIntegrated": false,
+  "compliance": 0
+}
+</code>

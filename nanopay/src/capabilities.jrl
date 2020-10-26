@@ -29,7 +29,7 @@ p({
   "permissionsIntercepted":[
     "businessHasSigningOfficer"
   ],
-  "interceptIf":{"class":"net.nanopay.crunch.onboardingModels.SigningOfficerQuestionAnswered"},
+  "interceptIf":{"class":"net.nanopay.crunch.predicate.SigningOfficerQuestionAnswered"},
   "wizardlet": {
     "class": "net.nanopay.crunch.wizardlet.SigningOfficerQuestionWizardlet"
   },
@@ -95,14 +95,14 @@ p({
     "net.nanopay.crunch.acceptancedocuments.capabilities.abliiprivacypolicy.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.cadafexterms.section.reviewAgreementDocumentsSection"
   ],
-  "interceptIf": { "class":"net.nanopay.crunch.onboardingModels.SigningOfficerCapabilityInterceptPredicate" },
+  "interceptIf": { "class":"net.nanopay.crunch.predicate.SigningOfficerCapabilityInterceptPredicate" },
   "availabilityPredicate":
   {
     "class":"foam.mlang.predicate.And",
     "args": [
-      { "class":"net.nanopay.crunch.onboardingModels.SigningOfficerPrivilegesRequested" },
+      { "class":"net.nanopay.crunch.predicate.SigningOfficerPrivilegesRequested" },
       {
-        "class":"net.nanopay.crunch.onboardingModels.CheckUserCountry",
+        "class":"net.nanopay.crunch.predicate.CheckUserCountry",
         "country":"CA"
       }
     ]
@@ -171,14 +171,14 @@ p({
     "net.nanopay.crunch.acceptancedocuments.capabilities.abliiprivacypolicy.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.cadafexterms.section.reviewAgreementDocumentsSection"
   ],
-  "interceptIf": { "class":"net.nanopay.crunch.onboardingModels.SigningOfficerCapabilityInterceptPredicate" },
+  "interceptIf": { "class":"net.nanopay.crunch.predicate.SigningOfficerCapabilityInterceptPredicate" },
   "availabilityPredicate":
   {
     "class":"foam.mlang.predicate.And",
     "args": [
-      { "class":"net.nanopay.crunch.onboardingModels.SigningOfficerPrivilegesRequested" },
+      { "class":"net.nanopay.crunch.predicate.SigningOfficerPrivilegesRequested" },
       {
-        "class":"net.nanopay.crunch.onboardingModels.CheckUserCountry",
+        "class":"net.nanopay.crunch.predicate.CheckUserCountry",
         "country":"US"
       }
     ]
@@ -247,14 +247,14 @@ p({
     "net.nanopay.crunch.acceptancedocuments.capabilities.abliiprivacypolicy.section.reviewAgreementDocumentsSection",
     "net.nanopay.crunch.acceptancedocuments.capabilities.cadafexterms.section.reviewAgreementDocumentsSection"
   ],
-  "interceptIf":{ "class":"net.nanopay.crunch.onboardingModels.SigningOfficerCapabilityInterceptPredicate" },
+  "interceptIf":{ "class":"net.nanopay.crunch.predicate.SigningOfficerCapabilityInterceptPredicate" },
   "availabilityPredicate":
   {
     "class":"foam.mlang.predicate.And",
     "args": [
-      { "class":"net.nanopay.crunch.onboardingModels.SigningOfficerPrivilegesRequested" },
+      { "class":"net.nanopay.crunch.predicate.SigningOfficerPrivilegesRequested" },
       {
-        "class":"net.nanopay.crunch.onboardingModels.CheckUserCountry",
+        "class":"net.nanopay.crunch.predicate.CheckUserCountry",
         "country":"BR"
       }
     ]
@@ -344,9 +344,9 @@ p({
   "availabilityPredicate": {
     "class":"foam.mlang.predicate.And",
     "args": [
-      { "class":"net.nanopay.crunch.onboardingModels.IsBusiness" },
+      { "class":"net.nanopay.crunch.predicate.IsBusiness" },
       {
-        "class":"net.nanopay.crunch.onboardingModels.CheckUserCountry",
+        "class":"net.nanopay.crunch.predicate.CheckUserCountry",
         "country":"CA"
       }
     ]
@@ -380,9 +380,9 @@ p({
   "availabilityPredicate": {
     "class":"foam.mlang.predicate.And",
     "args": [
-      { "class":"net.nanopay.crunch.onboardingModels.IsBusiness" },
+      { "class":"net.nanopay.crunch.predicate.IsBusiness" },
       {
-        "class":"net.nanopay.crunch.onboardingModels.CheckUserCountry",
+        "class":"net.nanopay.crunch.predicate.CheckUserCountry",
         "country":"CA"
       }
     ]
@@ -413,25 +413,25 @@ p({
   "availabilityPredicate": {
     "class":"foam.mlang.predicate.And",
     "args": [
-      { "class":"net.nanopay.crunch.onboardingModels.IsBusiness" },
+      { "class":"net.nanopay.crunch.predicate.IsBusiness" },
       {
         "class": "foam.mlang.predicate.Not",
         "arg1": {
-          "class":"net.nanopay.crunch.onboardingModels.CheckUserCountry",
+          "class":"net.nanopay.crunch.predicate.CheckUserCountry",
           "country":""
         }
       },
       {
         "class": "foam.mlang.predicate.Not",
         "arg1": {
-          "class":"net.nanopay.crunch.onboardingModels.CheckUserCountry",
+          "class":"net.nanopay.crunch.predicate.CheckUserCountry",
           "country":"CA"
         }
       },
       {
         "class": "foam.mlang.predicate.Not",
         "arg1": {
-          "class":"net.nanopay.crunch.onboardingModels.CheckUserCountry",
+          "class":"net.nanopay.crunch.predicate.CheckUserCountry",
           "country":"BR"
         }
       }
@@ -471,10 +471,10 @@ p({
   "availabilityPredicate": {
     "class":"foam.mlang.predicate.And",
     "args": [
-      { "class": "net.nanopay.crunch.onboardingModels.BusinessPassedCompliance" },
-      { "class": "net.nanopay.crunch.onboardingModels.HasVerifiedBankAccount" },
+      { "class": "net.nanopay.crunch.predicate.BusinessPassedCompliance" },
+      { "class": "net.nanopay.crunch.predicate.HasVerifiedBankAccount" },
       {
-        "class": "net.nanopay.crunch.onboardingModels.RegisterPaymentProviderStatus",
+        "class": "net.nanopay.crunch.predicate.RegisterPaymentProviderStatus",
         "status":7
       }
     ]
@@ -551,7 +551,7 @@ p({
   "availabilityPredicate":{
     "class": "foam.mlang.predicate.Not",
     "arg1": {
-      "class":"net.nanopay.crunch.onboardingModels.IsBusiness"
+      "class":"net.nanopay.crunch.predicate.IsBusiness"
     }
   },
   "wizardlet": {
