@@ -363,21 +363,6 @@ foam.CLASS({
           class: 'net.invoice.ui.modal.IntegrationModal'
         }));
       }
-    },
-    {
-      name: 'importFromGoogleSheets',
-      isAvailable: async function() {
-        return await this.checkAndNotifyAbilityToPay();
-      },
-      label: 'Import from Google Sheets',
-       code: function(X) {
-        this.ctrl.add(this.Popup.create().tag({
-          class: 'foam.nanos.google.api.sheets.ImportFromGoogleSheetsForm',
-          of: net.nanopay.tx.model.Transaction,
-          dao: 'transactionDAO',
-          importServiceName: 'googleSheetsTransactionsDataImport'
-        }, X));
-      }
     }
   ]
 });
