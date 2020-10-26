@@ -20,7 +20,7 @@ p({
   "id": "signingOfficerOnboarding",
   "name": "Onboarding A Signing Officer",
   "visible": true,
-  "visibilityCondition": { "class": "net.nanopay.crunch.onboardingModels.IsBusiness" }
+  "visibilityCondition": { "class": "net.nanopay.crunch.predicate.IsBusiness" }
 })
 p({
   "class": "foam.nanos.crunch.CapabilityCategory",

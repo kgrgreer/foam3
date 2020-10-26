@@ -1080,8 +1080,8 @@ p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.TaxIdNumberD
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.TaxIdNumberData.TAX_IDENTIFICATION_NUMBER.label",locale:"pt",target:"Número de identificação fiscal federal (EIN)"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.TaxIdNumberData.TAX_IDENTIFICATION_NUMBER.documentation",locale:"pt",source:"net.nanopay.crunch.onboardingModels.TaxIdNumberData.TAX_IDENTIFICATION_NUMBER.documentation",target:"Número de identificação fiscal federal (EIN)"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.TaxIdNumberData.SECTION_TAX_ID_NUMBER_SECTION.title",locale:"pt",target:"Insira o número fiscal"})
-p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.CheckUserCountry.COUNTRY.label",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CheckUserCountry.COUNTRY.label",target:"país"})
-p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.CheckUserCountry.COUNTRY.documentation",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CheckUserCountry.COUNTRY.documentation",target:"Compare a sequência passada para o país das empresas"})
+p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.predicate.CheckUserCountry.COUNTRY.label",locale:"pt",source:"net.nanopay.crunch.predicate.CheckUserCountry.COUNTRY.label",target:"país"})
+p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.predicate.CheckUserCountry.COUNTRY.documentation",locale:"pt",source:"net.nanopay.crunch.predicate.CheckUserCountry.COUNTRY.documentation",target:"Compare a sequência passada para o país das empresas"})
 
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.InitialBusinessData.SECTION_BUSINESS_ADDRESS.title",locale:"pt",source:"net.nanopay.crunch.onboardingModels.InitialBusinessData.SECTION_BUSINESS_ADDRESS.title",target:"Endereço profissional"})
 

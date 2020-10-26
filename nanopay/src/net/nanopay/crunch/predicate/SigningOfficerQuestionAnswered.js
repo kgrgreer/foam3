@@ -16,27 +16,24 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.crunch.onboardingModels',
-  name: 'SigningOfficerPrivilegesRequested',
+  package: 'net.nanopay.crunch.predicate',
+  name: 'SigningOfficerQuestionAnswered',
 
   extends: 'foam.mlang.predicate.AbstractPredicate',
-  implements: [ 'foam.core.Serializable' ],
+  implements: ['foam.core.Serializable'],
 
-  documentation: `
-    Returns true if current 'agent' (user) requested signing officer privileges by answering the signing
-    officer question with "yes".
-  `,
+  documentation: `Returns true if agent answered the Signing Officer Question.`,
 
   javaImports: [
     'foam.core.X',
+    'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.crunch.AgentCapabilityJunction',
     'foam.nanos.crunch.UserCapabilityJunction',
-    'net.nanopay.crunch.onboardingModels.SigningOfficerQuestion',
+    'java.util.List',
     'net.nanopay.model.Business',
-    'net.nanopay.model.BusinessUserJunction',
     'static foam.mlang.MLang.*'
   ],
 
@@ -49,8 +46,11 @@ foam.CLASS({
         DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
         User agent = ((Subject) x.get("subject")).getRealUser();
         User user = ((Subject) x.get("subject")).getUser();
+
         if ( agent == null || user == null || ! ( agent instanceof User ) || ! ( user instanceof Business ) ) return false;
-        AgentCapabilityJunction acj = (AgentCapabilityJunction) userCapabilityJunctionDAO.find(
+
+        // Skip intercept if signing officer question answer with No
+        AgentCapabilityJunction signingOfficerQuestionJunction = (AgentCapabilityJunction) userCapabilityJunctionDAO.find(
           AND(
             INSTANCE_OF(AgentCapabilityJunction.class),
             EQ(UserCapabilityJunction.SOURCE_ID, agent.getId()),
@@ -59,14 +59,10 @@ foam.CLASS({
             EQ(UserCapabilityJunction.STATUS, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED)
           )
         );
-        if ( acj == null ) {
-          return false;
-        }
-        SigningOfficerQuestion soq = (SigningOfficerQuestion) acj.getData();
-        return soq.getIsSigningOfficer();
+  
+        return signingOfficerQuestionJunction == null;
       `
     }
   ]
 });
-
   

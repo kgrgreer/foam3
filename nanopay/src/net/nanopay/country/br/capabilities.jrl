@@ -418,9 +418,9 @@ p({
   "availabilityPredicate": {
     "class":"foam.mlang.predicate.And",
     "args": [
-      { "class":"net.nanopay.crunch.onboardingModels.IsBusiness" },
+      { "class":"net.nanopay.crunch.predicate.IsBusiness" },
       {
-        "class":"net.nanopay.crunch.onboardingModels.CheckUserCountry",
+        "class":"net.nanopay.crunch.predicate.CheckUserCountry",
         "country":"BR"
       }
     ]
