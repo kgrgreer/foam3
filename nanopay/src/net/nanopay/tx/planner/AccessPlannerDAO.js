@@ -33,7 +33,8 @@ foam.CLASS({
     'net.nanopay.tx.planner.TransactionPlan',
     'net.nanopay.tx.Transfer',
     'java.util.ArrayList',
-    'java.util.List'
+    'java.util.List',
+    'net.nanopay.tx.UnsupportedTransactionException'
   ],
 
   methods: [
@@ -65,7 +66,7 @@ foam.CLASS({
             return getDelegate().put_(x, tq);
           }
         }
-        throw new RuntimeException("Error, Only transaction or TransactionQuote objects can be put to the TransactionPlannerDAO");
+        throw new UnsupportedTransactionException("Error, Only transaction or TransactionQuote objects can be put to the TransactionPlannerDAO");
       `
     },
     {
