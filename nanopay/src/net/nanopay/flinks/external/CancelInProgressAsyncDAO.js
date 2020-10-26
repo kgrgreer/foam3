@@ -33,7 +33,7 @@ foam.CLASS({
     'static foam.mlang.MLang.EQ'
   ],
   messages: [
-    { name: 'CANCELLED_ERROR_MESSAGE', message: 'Restart required. Async job cancelled. Please resubmit.' },
+    { name: 'CANCELLED_ERROR_MESSAGE', message: 'Restart was required. Async job cancelled. Please resubmit.' },
   ],  
 
   properties: [

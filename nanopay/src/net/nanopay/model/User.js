@@ -137,7 +137,8 @@ foam.CLASS({
       of: 'net.nanopay.admin.model.AccountStatus',
       name: 'previousStatus',
       documentation: `Tracks the previous status of the User.`,
-      section: 'administrative'
+      section: 'administrative',
+      externalTransient: true
     },
     {
       class: 'Boolean',
@@ -218,7 +219,8 @@ foam.CLASS({
       name: 'welcomeEmailSent',
       documentation: 'Determines whether a welcome email has been sent to the User.',
       value: true,
-      section: 'administrative'
+      section: 'administrative',
+      externalTransient: true
     },
     {
       class: 'Boolean',
@@ -226,6 +228,7 @@ foam.CLASS({
       documentation: 'Determines whether a User was created by an admin user.',
       section: 'administrative',
       value: false,
+      externalTransient: true
     },
     {
       class: 'Boolean',
@@ -233,14 +236,16 @@ foam.CLASS({
       value: false,
       documentation: `Determines whether the User is using its own unique password or one
         that was system-generated.`,
-      section: 'administrative'
+      section: 'administrative',
+      externalTransient: true
     },
     {
       class: 'Int',
       name: 'inviteAttempts',
       value: 0,
       documentation: 'Defines the number of attempts to invite the user.',
-      section: 'administrative'
+      section: 'administrative',
+      externalTransient: true
     },
     {
       class: 'Boolean',
@@ -285,7 +290,8 @@ foam.CLASS({
         backend to verify the email of the User and associate the User with the Contact
         that was created when inviting the User.
       `,
-      section: 'administrative'
+      section: 'administrative',
+      externalTransient: true
     },
     {
       class: 'Boolean',
@@ -295,7 +301,8 @@ foam.CLASS({
       writePermissionRequired: true,
       visibility: 'RO',
       tableWidth: 85,
-      section: 'administrative'
+      section: 'administrative',
+      externalTransient: true
     },
     {
       class: 'foam.nanos.fs.FileProperty',
@@ -324,7 +331,8 @@ foam.CLASS({
       of: 'foam.comics.v2.userfeedback.UserFeedback',
       name: 'userFeedback',
       storageTransient: true,
-      visibility: 'HIDDEN'
+      visibility: 'HIDDEN',
+      externalTransient: true
     },
     {
       class: 'String',

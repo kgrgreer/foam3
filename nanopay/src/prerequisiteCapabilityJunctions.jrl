@@ -674,6 +674,12 @@ p({
   "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-7",
   "priority": 2
 })
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"A62AC209-CD55-4755-9B93-2B9BAE885B85",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-20",
+  "priority": 3
+})
 
 //usBusinessOnboarding
 p({
