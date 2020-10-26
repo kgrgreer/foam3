@@ -345,7 +345,8 @@ foam.CLASS({
       .end()
       .tag(this.DAOBrowser.create({
         config: this.config,
-        summaryView: this.summaryView
+        summaryView: this.summaryView,
+        serviceName: 'invoiceDAO'
       }));
     }
   ],
