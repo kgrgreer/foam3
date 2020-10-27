@@ -28,6 +28,14 @@ foam.CLASS({
     { name: 'ACKNOWLEDGE_BRAZIL_TC', message: 'Must acknowledge the Terms and Conditions.' }
   ],
 
+  sections: [
+    {
+      name: 'reviewAgreementDocumentsSection',
+      title: 'Please review and agree to the following terms and service policy.',
+      permissionRequired: false
+    }
+  ],
+
   properties: [
     {
       name: 'title',
