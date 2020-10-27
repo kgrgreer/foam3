@@ -43,7 +43,7 @@ foam.CLASS({
       help: 'What are the businesses\' current assets, i.e. sum of all assets.',
       documentation: 'Amount currency that Business Capital has been defined',
       factory: function () {
-        return net.nanopay.model.CurrencyAmount.create();
+        return net.nanopay.model.CurrencyAmount.create({}, this);
       },
       validationPredicates: [
         {
@@ -66,7 +66,7 @@ foam.CLASS({
       help: 'What is the businesses\' net worth, i.e. sum of all assets minus sum of all liabilities.',
       documentation: 'Amount currency that Business Equity has been defined',
       factory: function () {
-        return net.nanopay.model.CurrencyAmount.create();
+        return net.nanopay.model.CurrencyAmount.create({}, this);
       },
       validationPredicates: [
         {
