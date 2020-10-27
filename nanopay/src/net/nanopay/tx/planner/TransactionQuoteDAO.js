@@ -37,7 +37,6 @@ foam.CLASS({
     'foam.nanos.notification.Notification',
     'net.nanopay.tx.UnsupportedTransactionException',
     'net.nanopay.tx.planner.NoPlanException',
-    'net.nanopay.tx.TransactionQuotes',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.PlanCostComparator',

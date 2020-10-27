@@ -39,7 +39,7 @@ foam.CLASS({
           throw new ValidationException("Only transactions without an ID can be planned");
         if ( obj instanceof Transaction || obj instanceof TransactionQuote )
           return getDelegate().put_(x, obj);
-        throw new UnsupportedTransactionException("Only transaction and transactionQuotes can be sent for planning");
+        throw new UnsupportedTransactionException("Only Transaction and TransactionQuote can be sent for planning");
       `
     },
     {
