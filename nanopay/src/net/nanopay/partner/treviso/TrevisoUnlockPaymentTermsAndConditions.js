@@ -39,7 +39,7 @@ foam.CLASS({
   properties: [
     {
       name: 'title',
-      value: `Unlock payment Terms and Conditions`
+      value: `the Terms and Conditions`
     },
     {
       name: 'checkboxText',
