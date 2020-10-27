@@ -471,7 +471,6 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/AbliiTransaction' },
   { name: 'net/nanopay/tx/InterestTransaction' },
   { name: 'net/nanopay/tx/TransactionQuote' },
-  { name: 'net/nanopay/tx/TransactionQuotes' },
   { name: 'net/nanopay/tx/JackieRuleOnCreate' },
   { name: 'net/nanopay/tx/JackieRuleOnPut' },
   { name: 'net/nanopay/tx/ClearingTimeTransaction' },
