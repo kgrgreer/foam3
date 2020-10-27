@@ -32,7 +32,9 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.nanos.crunch.UserCapabilityJunction',
-    'foam.nanos.logger.Logger'
+    'foam.nanos.logger.Logger',
+    'static foam.mlang.MLang.AND',
+    'static foam.mlang.MLang.EQ'
   ],
 
   methods: [
@@ -42,9 +44,20 @@ foam.CLASS({
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-            UserCapabilityJunction ucj = new UserCapabilityJunction.Builder(x).setSourceId(((UserCapabilityJunction) obj).getSourceId())
-              .setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-20").setStatus(CapabilityJunctionStatus.PENDING_REVIEW).build();
-            ((DAO) x.get("bareUserCapabilityJunctionDAO")).put_(x, ucj);
+            DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
+            String capId = "554af38a-8225-87c8-dfdf-eeb15f71215f-20";
+            UserCapabilityJunction ucj = (UserCapabilityJunction) ucjDAO.find(AND(
+              EQ(UserCapabilityJunction.TARGET_ID, capId),
+              EQ(UserCapabilityJunction.SOURCE_ID, ((UserCapabilityJunction) obj).getSourceId())
+            ));
+
+            if ( ucj == null ) {
+              ucj = new UserCapabilityJunction.Builder(x).setSourceId(((UserCapabilityJunction) obj).getSourceId())
+                .setTargetId(capId)
+                .setStatus(CapabilityJunctionStatus.PENDING_REVIEW)
+                .build();
+              ucjDAO.put_(x, ucj);
+            }
           }
         }, "Create ucj on user passed compliance");
       `
