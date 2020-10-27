@@ -762,6 +762,7 @@ if [ ${CLEAN_BUILD} -eq 1 ]; then
     GRADLE_FLAGS="${GRADLE_FLAGS} --rerun-tasks"
 fi
 
+echo "INFO :: Journal Config is ${JOURNAL_CONFIG}"
 
 ############################
 # Build steps

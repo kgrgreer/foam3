@@ -42,10 +42,12 @@ public class HashingOutputter
   // to output(FObject) and only output digest when all calls to output
   // are complete.
   protected static final ThreadLocal<AtomicInteger> count_ = new ThreadLocal<AtomicInteger>() {
+      @Override
       protected AtomicInteger initialValue() {
         return new AtomicInteger(0);
       }
 
+      @Override
       public AtomicInteger get() {
         return super.get();
       }
@@ -78,8 +80,11 @@ public class HashingOutputter
 
   @Override
   public void outputDelta(FObject old, FObject obj, ClassInfo of) {
+    count_.get().incrementAndGet();
     super.outputDelta(old, obj, of);
-    outputDigest();
+    if ( count_.get().decrementAndGet() == 0 ) {
+      outputDigest();
+    }
   }
 
   @Override

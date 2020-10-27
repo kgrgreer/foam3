@@ -1172,6 +1172,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/alterna/test/EFTTest' },
   { name: 'net/nanopay/notification/TriggerNotificationTestAction' },
   { name: 'net/nanopay/notification/TriggerDoNotifyTestAction' },
+  { name: 'net/nanopay/security/test/HashingJDAOTestModel' },
 
   // iso20022
   { name: 'net/nanopay/iso20022/ISODateTest' },

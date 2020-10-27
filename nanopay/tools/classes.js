@@ -795,6 +795,9 @@ var classes = [
   'net.nanopay.auth.email.PreventDuplicateEmailDAO',
   'net.nanopay.auth.email.EmailWhitelistEntry',
 
+  'net.nanopay.security.test.HashingJDAOTestModel',
+  'net.nanopay.security.test.HashingJDAOTestElement',
+
   // iso20022 tests
   'net.nanopay.iso20022.ISODateTest',
   'net.nanopay.iso20022.ISODateTimeTest',
