@@ -80,14 +80,14 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'TRANSIT_NUMBER_REQUIRED', message: 'Transit number required.' },
-    { name: 'TRANSIT_NUMBER_FORMAT', message: 'Transit number must contain numbers.' },
-    { name: 'TRANSIT_NUMBER_FIVE', message: 'Transit number must be 5 digits long.' },
-    { name: 'ACCOUNT_NUMBER_REQUIRED', message: 'Account number required.' },
-    { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number must be between 5 and 12 digits long.' },
-    { name: 'INSTITUTION_NUMBER_REQUIRED', message: 'Institution number required.' },
-    { name: 'INSTITUTION_NUMBER_THREE', message: 'Institution number must be 3 digits long.' },
-    { name: 'ADD_SUCCESSFUL', message: 'Bank Account added successfully!' },
+    { name: 'TRANSIT_NUMBER_REQUIRED', message: 'Transit number required' },
+    { name: 'TRANSIT_NUMBER_FORMAT', message: 'Transit number must contain numbers' },
+    { name: 'TRANSIT_NUMBER_FIVE', message: 'Transit number must be 5 digits long' },
+    { name: 'ACCOUNT_NUMBER_REQUIRED', message: 'Account number required' },
+    { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number must be between 5 and 12 digits long' },
+    { name: 'INSTITUTION_NUMBER_REQUIRED', message: 'Institution number required' },
+    { name: 'INSTITUTION_NUMBER_THREE', message: 'Institution number must be 3 digits long' },
+    { name: 'ADD_SUCCESSFUL', message: 'Bank Account successfully added' },
     { name: 'SECTION_DETAILS_TITLE_CONTACT', message: 'Add contact bank account' },
     { name: 'SECTION_DETAILS_TITLE_VOID', message: 'Connect using a void check' }
   ],

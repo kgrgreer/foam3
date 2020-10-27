@@ -30,7 +30,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'BUSINESS_INCORPORATION_DATE_ERROR', message: 'Cannot be future dated.' }
+    { name: 'BUSINESS_INCORPORATION_DATE_ERROR', message: 'Cannot be future dated' }
   ],
 
   properties: [

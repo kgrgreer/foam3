@@ -52,9 +52,9 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'ADD_PERMISSION_ERROR_MSG', message: 'You don\'t have the ability to add users to this business.' },
+    { name: 'ADD_PERMISSION_ERROR_MSG', message: 'You don\'t have the ability to add users to this business' },
     { name: 'DUPLICATE_INVITATION_ERROR_MSG', message: 'Invitation already exists' },
-    { name: 'ENCODING_ERROR_MSG', message: 'Error encoding the email or business name.' }
+    { name: 'ENCODING_ERROR_MSG', message: 'Error encoding the email or business name' }
   ],
 
   properties: [

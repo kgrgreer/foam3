@@ -28,10 +28,10 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'INVALID_ACCOUNT_NUMBER', message: 'Account number must be between 6 and 17 digits long.' },
-    { name: 'ACCOUNT_NUMBER_REQUIRED', message: 'Account number required.' },
-    { name: 'INVALID_BRANCH', message: 'Transit number must be 9 digits long.' },
-    { name: 'BRANCH_REQUIRED', message: 'Transit number required.' }
+    { name: 'INVALID_ACCOUNT_NUMBER', message: 'Account number must be between 6 and 17 digits long' },
+    { name: 'ACCOUNT_NUMBER_REQUIRED', message: 'Account number required' },
+    { name: 'INVALID_BRANCH', message: 'Transit number must be 9 digits long' },
+    { name: 'BRANCH_REQUIRED', message: 'Transit number required' }
   ],
 
   properties: [

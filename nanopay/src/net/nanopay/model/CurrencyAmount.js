@@ -23,8 +23,8 @@ foam.CLASS({
   imports: [ 'currencyDAO' ],
 
   messages: [
-    { name: 'NO_CURRENCY_ERROR', message: 'Please select a currency.' },
-    { name: 'NO_AMOUNT_ERROR', message: 'Please enter an amount.' }
+    { name: 'NO_CURRENCY_ERROR', message: 'Please select a currency' },
+    { name: 'NO_AMOUNT_ERROR', message: 'Please enter an amount' }
   ],
 
   properties: [

@@ -36,11 +36,11 @@ foam.CLASS({
     { name: 'TITLE', message: 'Mark as void?' },
     { name: 'MSG1', message: 'Are you sure you want to void this invoice?' },
     { name: 'MSG2', message: 'Once this invoice is voided, it cannot be edited.' },
-    { name: 'SUCCESS_MESSAGE', message: 'Invoice has been marked as voided.' },
+    { name: 'SUCCESS_MESSAGE', message: 'Invoice has been marked as voided' },
     { name: 'NOTE_LABEL', message: 'Notes' },
     { name: 'NOTE_HINT', message: 'i.e. Why is it voided?' },
-    { name: 'VOID_SUCCESS', message: 'Invoice successfully voided.' },
-    { name: 'VOID_ERROR', message: 'Invoice could not be voided.' }
+    { name: 'VOID_SUCCESS', message: 'Invoice successfully voided' },
+    { name: 'VOID_ERROR', message: 'Invoice could not be voided' }
   ],
 
   css: `

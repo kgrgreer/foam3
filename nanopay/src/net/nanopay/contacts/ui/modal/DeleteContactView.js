@@ -61,7 +61,7 @@ foam.CLASS({
     { name: 'CONFIRM_DELETE_1', message: 'Are you sure you want to delete ' },
     { name: 'CONFIRM_DELETE_2', message: ' from your contacts list?' },
     { name: 'SUCCESS_MSG', message: 'Contact deleted' },
-    { name: 'FAIL_MSG', message: 'Failed to delete contact.' }
+    { name: 'FAIL_MSG', message: 'Failed to delete contact' }
   ],
 
   methods: [

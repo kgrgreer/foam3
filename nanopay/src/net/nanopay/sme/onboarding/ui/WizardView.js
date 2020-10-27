@@ -140,7 +140,7 @@ foam.CLASS({
     }
   ],
   messages: [
-    { name: 'SUCCESS_SUBMIT_MESSAGE', message: 'Business profile submitted successfully.' }
+    { name: 'SUCCESS_SUBMIT_MESSAGE', message: 'Business profile submitted successfully' }
   ],
   reactions: [
     ['data', 'propertyChange', 'saveDraft']

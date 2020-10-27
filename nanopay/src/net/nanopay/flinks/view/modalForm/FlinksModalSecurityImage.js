@@ -138,7 +138,7 @@ foam.CLASS({
 
   messages: [
     { name: 'INSTRUCTIONS', message: 'Please select your personal image below: ' },
-    { name: 'INVALID_FORM', message: 'Please select your personal image to proceed.'}
+    { name: 'INVALID_FORM', message: 'Please select your personal image to proceed'}
   ],
 
   methods: [

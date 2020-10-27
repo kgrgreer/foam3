@@ -80,7 +80,7 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'CONTACT_ADDED', message: 'Personal contact added.' }
+    { name: 'CONTACT_ADDED', message: 'Personal contact added' }
   ],
 
   properties: [

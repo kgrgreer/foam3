@@ -42,8 +42,8 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'NO_TARGET_CUSTOMERS_ERROR', message: 'Please enter target customers.' },
-    { name: 'NO_SUGGESTED_USER_TXN_INFO_ERROR', message: 'Please enter suggested user transaction info.' }
+    { name: 'NO_TARGET_CUSTOMERS_ERROR', message: 'Please enter target customers' },
+    { name: 'NO_SUGGESTED_USER_TXN_INFO_ERROR', message: 'Please enter suggested user transaction info' }
   ],
 
   properties: [

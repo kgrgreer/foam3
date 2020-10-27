@@ -39,8 +39,8 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'ERROR_BUSINESS_PROFILE_NAME_MESSAGE', message: 'Business name required.' },
-    { name: 'INVALID_EMAIL', message: 'Invalid email address.' },
+    { name: 'ERROR_BUSINESS_PROFILE_NAME_MESSAGE', message: 'Business name required' },
+    { name: 'INVALID_EMAIL', message: 'Invalid email address' },
     { name: 'PERMISSION_REQUIRED', message: 'Permission required' }
   ],
 

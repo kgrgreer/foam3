@@ -139,7 +139,7 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'INVALID_FORM', message: 'Please answer all questions.' },
+    { name: 'INVALID_FORM', message: 'Please answer all questions' },
     { name: 'INSTRUCTIONS', message : 'To verify that you own this account, please answer the following question(s).' },
     { name: 'TWO_FACTOR_METHOD', message: 'How would you like to receive your one-time security code?' },
     { name: 'CALL_METHOD', message: 'Call' },

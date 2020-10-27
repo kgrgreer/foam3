@@ -92,7 +92,7 @@ foam.CLASS({
     { name: 'Step',             message: 'Step 2: Select your device type.' },
     { name: 'DeviceTypeLabel',  message: 'Device Type *' },
     { name: 'Instructions',     message: 'Please navigate to the Merchant Web App (for iOS and Android tablets only).' },
-    { name: 'Error',            message: 'Device type required.' }
+    { name: 'Error',            message: 'Device type required' }
   ],
 
   properties: [

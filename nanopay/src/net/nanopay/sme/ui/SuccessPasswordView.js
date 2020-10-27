@@ -155,7 +155,7 @@ foam.CLASS({
     `,
 
     messages: [
-      { name: 'INSTRUCTIONS', message: 'Successfully reset password!' },
+      { name: 'INSTRUCTIONS', message: 'Successfully reset password' },
       { name: 'RESET_PASSWORD', message: 'Reset you password' },
       { name: 'BACK_TO', message: 'Back to sign in' }
     ],

@@ -133,18 +133,18 @@ foam.CLASS({
       name: 'ACCESS_CONTROL_CHANGE_SUCCESS', message: 'Access control successfully changed'
     },
     {
-      name: 'ACCESS_CONTROL_CHANGE_FAILURE', message: 'Failed to change access control : '
+      name: 'ACCESS_CONTROL_CHANGE_FAILURE', message: 'Failed to change access control: '
     },
     {
-      name: 'ACCESS_CONTROL_CHANGE_ERROR', message: 'Please select a different access control.'
+      name: 'ACCESS_CONTROL_CHANGE_ERROR', message: 'Please select a different access control'
     },
     { name: 'INVITE_TITLE', message: 'Invite to ' },
     { name: 'THE_USER', message: 'the user' },
     { name: 'EMAIL_LABEL', message: 'Email'},
     { name: 'INVITATION_SUCCESS', message: 'Invitation sent' },
-    { name: 'INVITATION_ERROR', message: 'Something went wrong with adding the user.' },
-    { name: 'INVALID_EMAIL', message: 'Invalid email address.' },
-    { name: 'INVALID_EMAIL2', message: 'Sorry but the email you are trying to add is already a user within your business.' },
+    { name: 'INVITATION_ERROR', message: 'Something went wrong with adding the user' },
+    { name: 'INVALID_EMAIL', message: 'Invalid email address' },
+    { name: 'INVALID_EMAIL2', message: 'Sorry but the email you are trying to add is already a user within your business' },
     { name: 'INVALID_ACCESS_CONTROL', message: 'Please select an access control' }
   ],
 

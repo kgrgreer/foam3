@@ -22,7 +22,7 @@ foam.CLASS({
   documentation: 'Verifies user understanding of cancellation under pad agreement terms',
 
   messages: [
-    { name: 'ACKNOWLEDGE_STATEMENT', message: 'Must acknowledge the statement above.' },
+    { name: 'ACKNOWLEDGE_STATEMENT', message: 'Must acknowledge the statement above' },
     {
       name: 'TITLE_MSG',
       message: 'This authority is to remain in effect until AFEX has received written ' +

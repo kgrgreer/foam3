@@ -71,8 +71,8 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'CONTACT_ADDED', message: 'Personal contact added.' },
-    { name: 'CONTACT_EXISTS_ERROR', message: 'Contact with this payment code already exists.' },
+    { name: 'CONTACT_ADDED', message: 'Personal contact added' },
+    { name: 'CONTACT_EXISTS_ERROR', message: 'Contact with this payment code already exists' },
   ],
 
   properties: [

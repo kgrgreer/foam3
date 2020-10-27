@@ -30,8 +30,8 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'UNGER_AGE_LIMIT_ERROR', message: 'Must be at least 18 years old.' },
-    { name: 'OVER_AGE_LIMIT_ERROR', message: 'Must be under the age of 125 years old.' }
+    { name: 'UNGER_AGE_LIMIT_ERROR', message: 'Must be at least 18 years old' },
+    { name: 'OVER_AGE_LIMIT_ERROR', message: 'Must be under the age of 125 years old' }
   ],
 
   properties: [

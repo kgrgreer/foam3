@@ -50,7 +50,7 @@ foam.CLASS({
     },
     {
       name: 'BUSINESS_NOT_FOUND',
-      message: 'Business not found.'
+      message: 'Business not found'
     }
   ],
 

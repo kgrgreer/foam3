@@ -38,7 +38,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'DISABLE_RECORD_ERROR_MSG', messages: 'Unexpected error disabling AFEX Beneficiary history record.' },
+    { name: 'DISABLE_RECORD_ERROR_MSG', messages: 'Unexpected error disabling AFEX Beneficiary history record' },
     { name: 'CREATE_AFEX_BENF_ERROR_MSG', messages: 'Error creating AFEX beneficiary.' }
   ],
 

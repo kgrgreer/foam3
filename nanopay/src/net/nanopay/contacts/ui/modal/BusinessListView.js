@@ -29,7 +29,7 @@ foam.CLASS({
 
   messages: [
     { name: 'DEFAULT_RESULT_MSG', message: 'Matching businesses will appear here' },
-    { name: 'FAILED_RESULT_MSG', message: 'We couldn’t find a business with that name.' }
+    { name: 'FAILED_RESULT_MSG', message: 'We couldn’t find a business with that name' }
   ],
 
   methods: [

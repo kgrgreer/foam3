@@ -49,7 +49,7 @@ foam.CLASS({
   messages: [
     { name: 'NULL_REQUEST_ERROR_MSG', message: 'Request can\'t be null.' },
     { name: 'INVALID_REQUEST_ERROR_MSG', message: 'Invalid Request' },
-    { name: 'NO_USER_ERROR_MSG', message: 'User does not exist.' }
+    { name: 'NO_USER_ERROR_MSG', message: 'User does not exist' }
   ],
 
   axioms: [

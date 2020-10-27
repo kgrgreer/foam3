@@ -143,9 +143,9 @@ foam.CLASS({
 
   messages: [
     { name: 'CONNECTING', message: 'Securely connecting you to your institution. Please do not close this window.' },
-    { name: 'ERROR', message: 'An unknown error has occurred.' },
-    { name: 'INVALID_FORM', message: 'Please complete the form before proceeding.' },
-    { name: 'ACCEPT_CONDITIONS', message: 'Please accept the terms and conditions before proceeding.' },
+    { name: 'ERROR', message: 'An unknown error has occurred' },
+    { name: 'INVALID_FORM', message: 'Please complete the form before proceeding' },
+    { name: 'ACCEPT_CONDITIONS', message: 'Please accept the terms and conditions before proceeding' },
     { name: 'LABEL_USERNAME', message: 'Access Card # / Username' },
     { name: 'LABEL_PASSWORD', message: 'Password' },
     { name: 'LEGAL_1', message: 'I agree to the ' },

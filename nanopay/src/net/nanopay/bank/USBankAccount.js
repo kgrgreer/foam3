@@ -76,12 +76,12 @@ foam.CLASS({
 
   messages: [
     { name: 'DROP_ZONE_TITLE', message: 'DRAG & DROP YOUR VOID CHECK OR STATEMENT HERE' },
-    { name: 'ROUTING_NUMBER_REQUIRED', message: 'Routing number required.' },
-    { name: 'ROUTING_NUMBER_INVALID', message: 'Routing number must be 9 digits long.' },
-    { name: 'ACCOUNT_NUMBER_REQUIRED', message: 'Account number required.' },
-    { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number must be between 6 and 17 digits long.' },
-    { name: 'IMAGE_REQUIRED', message: 'Please attach a void check or a 3 month bank statement.' },
-    { name: 'ADD_SUCCESSFUL', message: 'Bank Account added successfully!' },
+    { name: 'ROUTING_NUMBER_REQUIRED', message: 'Routing number required' },
+    { name: 'ROUTING_NUMBER_INVALID', message: 'Routing number must be 9 digits long' },
+    { name: 'ACCOUNT_NUMBER_REQUIRED', message: 'Account number required' },
+    { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number must be between 6 and 17 digits long' },
+    { name: 'IMAGE_REQUIRED', message: 'Please attach a void check or a 3 month bank statement' },
+    { name: 'ADD_SUCCESSFUL', message: 'Bank Account successfully added' },
     { name: 'SECTION_DETAILS_TITLE_CONTACT', message: 'Add contact bank account' },
     { name: 'SECTION_DETAILS_TITLE_VOID', message: 'Connect using a void check' }
   ],

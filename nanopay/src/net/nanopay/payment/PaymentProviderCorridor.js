@@ -50,7 +50,7 @@ foam.CLASS({
     { name: 'MISSING_TARGET_COUNTRY', message: 'Error: Cannot find or missing associated target country in DB: ' },
     { name: 'MISSING_PROVIDER', message: 'Error: Cannot find payment provider in DB: ' },
     { name: 'CURRENCY_NOT_SUPPORTED', message: 'Error: Currency not supported: ' },
-    { name: 'PAYMENT_CORRIDOR_EXISTS', message: 'Error: Payment Provider Corridor already exists.' },
+    { name: 'PAYMENT_CORRIDOR_EXISTS', message: 'Error: Payment Provider Corridor already exists' },
   ],
 
   properties: [

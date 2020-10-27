@@ -130,8 +130,8 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'TWO_FACTOR_NO_TOKEN_ERROR', message: 'Please enter a verification token.' },
-    { name: 'TWO_FACTOR_ENABLE_SUCCESS', message: 'Two-factor authentication enabled.' },
+    { name: 'TWO_FACTOR_NO_TOKEN_ERROR', message: 'Please enter a verification token' },
+    { name: 'TWO_FACTOR_ENABLE_SUCCESS', message: 'Two-factor authentication enabled' },
     { name: 'TWO_FACTOR_ENABLE_ERROR', message: 'Could not enable two-factor authentication. Please try again.' },
     { name: 'TWO_FACTOR_BENEFIT', message: 'Two-factor authentication provides an extra layer of security to your account. Two-factor authentication is enabled at all time to prevent potential unauthorized access to your business and financial information.' },
     { name: 'TWO_FACTOR_LABEL', message: 'Enter verification code' },

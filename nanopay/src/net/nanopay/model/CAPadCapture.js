@@ -28,9 +28,9 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'INVALID_ACCOUNT_NUMBER', message: 'Invalid account number.' },
-    { name: 'INVALID_INSTITUTION_NUMBER', message: 'Invalid institution number.' },
-    { name: 'INVALID_TRANSIT_NUMBER', message: 'Invalid transit number.' }
+    { name: 'INVALID_ACCOUNT_NUMBER', message: 'Invalid account number' },
+    { name: 'INVALID_INSTITUTION_NUMBER', message: 'Invalid institution number' },
+    { name: 'INVALID_TRANSIT_NUMBER', message: 'Invalid transit number' }
   ],
 
   properties: [

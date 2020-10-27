@@ -25,7 +25,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'ACKNOWLEDGE_ABLII_TC', message: 'Must acknowledge the Terms and Conditions.' }
+    { name: 'ACKNOWLEDGE_ABLII_TC', message: 'Must acknowledge the Terms and Conditions' }
   ],
 
   properties: [

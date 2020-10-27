@@ -22,7 +22,7 @@ foam.CLASS({
   documentation: `This model represents the basic info of a Business that must be collect for onboarding.`,
 
   messages: [
-    { name: 'INVALID_ADDRESS_ERROR', message: 'Invalid address.' }
+    { name: 'INVALID_ADDRESS_ERROR', message: 'Invalid address' }
   ],
 
   properties: [

@@ -40,7 +40,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'SUCCESS_MSG', message: 'Successfully deleted.' }
+    { name: 'SUCCESS_MSG', message: 'Successfully deleted' }
   ],
 
   methods: [

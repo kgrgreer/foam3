@@ -41,15 +41,15 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'NO_CUSTOMERS_INFO', message: 'Please enter main customer\'s information.' },
-    { name: 'NO_SUPPLIERS_INFO', message: 'Please enter main supplier\'s information.' },
-    { name: 'CUSTOMER_OBJ_ERROR', message: 'One or more of the customers entered is invalid.' },
-    { name: 'SUPPLIER_OBJ_ERROR', message: 'One or more of the suppliers entered is invalid.' },
-    { name: 'INVALID_DATE', message: 'Last date cannot be future dated.' },
+    { name: 'NO_CUSTOMERS_INFO', message: 'Please enter main customer\'s information' },
+    { name: 'NO_SUPPLIERS_INFO', message: 'Please enter main supplier\'s information' },
+    { name: 'CUSTOMER_OBJ_ERROR', message: 'One or more of the customers entered is invalid' },
+    { name: 'SUPPLIER_OBJ_ERROR', message: 'One or more of the suppliers entered is invalid' },
+    { name: 'INVALID_DATE', message: 'Last date cannot be future dated' },
     { name: 'YES', message: 'Yes' },
     { name: 'NO', message: 'No' },
     { name: 'CUSTOMERS_MSG', message: 'Customers' },
-    { name: 'SUPPLIERS_MSG', message: 'Suppliers' },
+    { name: 'SUPPLIERS_MSG', message: 'Suppliers' }
   ],
 
   properties: [

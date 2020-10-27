@@ -241,7 +241,7 @@ foam.CLASS({
     },
     {
       name: 'RECEIVABLE_ERROR_MSG',
-      message: 'You do not have the ability to receive funds in this currency.'
+      message: 'You do not have the ability to receive funds in this currency'
     },
     {
       name: 'INVOICE_NUMBER_PLACEHOLDER',
@@ -273,11 +273,11 @@ foam.CLASS({
     },
     {
       name: 'TOOLTIP_TITLE',
-      message: `This field can't be edited.`
+      message: `This field can't be edited`
     },
     {
       name: 'TOOLTIP_BODY',
-      message: 'Please edit this invoice in your accounting software and sync again.'
+      message: 'Please edit this invoice in your accounting software and sync again'
     },
     {
       name: 'EXTERNAL_USER_MESSAGE',

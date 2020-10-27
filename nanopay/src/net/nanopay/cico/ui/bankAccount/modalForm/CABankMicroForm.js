@@ -104,7 +104,7 @@ foam.CLASS({
     { name: 'MICRO_PLACEHOLDER', message: 'Enter micro-deposit amount' },
     { name: 'CONNECTING', message: 'Connecting... This may take a few minutes.' },
     { name: 'INVALID_FORM', message: 'You have entered an invalid amount. Please try again.' },
-    { name: 'DEFAULT_ERROR', message: 'An error occurred while processing your request.' },
+    { name: 'DEFAULT_ERROR', message: 'An error occurred while processing your request' },
     { name: 'SUCCESS_ONE', message: 'Your bank account' },
     { name: 'SUCCESS_TWO', message: 'is now verified.' }
   ],

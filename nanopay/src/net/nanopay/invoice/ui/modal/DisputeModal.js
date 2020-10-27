@@ -68,7 +68,7 @@ foam.CLASS({
   messages: [
     {
       name: 'VoidSuccess',
-      message: 'Invoice voided.'
+      message: 'Invoice voided'
     }
   ],
 

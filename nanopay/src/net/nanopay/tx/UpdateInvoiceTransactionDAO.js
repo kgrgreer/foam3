@@ -46,7 +46,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'INVOICE_PAID_ALREADY_ERROR_MSG', message: 'Invoice already paid.' }
+    { name: 'INVOICE_PAID_ALREADY_ERROR_MSG', message: 'Invoice already paid' }
   ],
 
   properties: [

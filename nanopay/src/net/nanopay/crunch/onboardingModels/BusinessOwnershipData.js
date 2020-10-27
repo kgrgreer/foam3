@@ -90,13 +90,13 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'NO_AMOUNT_OF_OWNERS_SELECTED_ERROR', message: 'Please select a number of owners.' },
-    { name: 'INVALID_OWNER_SELECTION_ERROR', message: 'One or more of the owner selection is invalid.' },
-    { name: 'OWNER_1_ERROR', message: 'Owner1 is invalid.' },
-    { name: 'OWNER_2_ERROR', message: 'Owner2 is invalid.' },
-    { name: 'OWNER_3_ERROR', message: 'Owner3 is invalid.' },
-    { name: 'OWNER_4_ERROR', message: 'Owner4 is invalid.' },
-    { name: 'TOTAL_OWNERSHIP_ERROR', message: 'The total ownership should be less than 100%.' }
+    { name: 'NO_AMOUNT_OF_OWNERS_SELECTED_ERROR', message: 'Please select a number of owners' },
+    { name: 'INVALID_OWNER_SELECTION_ERROR', message: 'One or more of the owner selection is invalid' },
+    { name: 'OWNER_1_ERROR', message: 'Owner1 is invalid' },
+    { name: 'OWNER_2_ERROR', message: 'Owner2 is invalid' },
+    { name: 'OWNER_3_ERROR', message: 'Owner3 is invalid' },
+    { name: 'OWNER_4_ERROR', message: 'Owner4 is invalid' },
+    { name: 'TOTAL_OWNERSHIP_ERROR', message: 'The total ownership should be less than 100%' }
   ],
 
   properties: [

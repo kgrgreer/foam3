@@ -46,9 +46,9 @@ foam.CLASS({
 
   messages: [
     { name: 'CANNOT_SELECT_QUEBEC_ERROR', message: 'This application does not currently support businesses in Quebec. We are working hard to change this! If you are based in Quebec, check back for updates.' },
-    { name: 'INVALID_ADDRESS_ERROR', message: 'Invalid address.' },
-    { name: 'UNGER_AGE_LIMIT_ERROR', message: 'Must be at least 18 years old.' },
-    { name: 'OVER_AGE_LIMIT_ERROR', message: 'Must be under the age of 125 years old.' }
+    { name: 'INVALID_ADDRESS_ERROR', message: 'Invalid address' },
+    { name: 'UNGER_AGE_LIMIT_ERROR', message: 'Must be at least 18 years old' },
+    { name: 'OVER_AGE_LIMIT_ERROR', message: 'Must be under the age of 125 years old' }
   ],
 
   properties: [
