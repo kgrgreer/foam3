@@ -45,7 +45,11 @@ foam.CLASS({
     { name: 'NO_SUPPLIERS_INFO', message: 'Please enter main supplier\'s information.' },
     { name: 'CUSTOMER_OBJ_ERROR', message: 'One or more of the customers entered is invalid.' },
     { name: 'SUPPLIER_OBJ_ERROR', message: 'One or more of the suppliers entered is invalid.' },
-    { name: 'INVALID_DATE', message: 'Last date cannot be future dated.' }
+    { name: 'INVALID_DATE', message: 'Last date cannot be future dated.' },
+    { name: 'YES', message: 'Yes' },
+    { name: 'NO', message: 'No' },
+    { name: 'CUSTOMERS_MSG', message: 'Customers' },
+    { name: 'SUPPLIERS_MSG', message: 'Suppliers' },
   ],
 
   properties: [
@@ -54,40 +58,46 @@ foam.CLASS({
       name: 'OwnerOrOutsourced',
       label: 'Is the company accounting outsourced?',
       class: 'Boolean',
-      view: {
-        class: 'foam.u2.view.RadioView',
-        choices: [
-          [true, 'Yes'],
-          [false, 'No']
-        ]
-      },
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RadioView',
+          choices: [
+            [true, X.data.YES],
+            [false, X.data.NO]
+          ]
+        };
+      }
     },
     {
       section: 'accountingSection',
       name: 'ownerManagment',
       label: 'Are you the owner managing the company?',
       class: 'Boolean',
-      view: {
-        class: 'foam.u2.view.RadioView',
-        choices: [
-          [true, 'Yes'],
-          [false, 'No']
-        ],
-        isHorizontal: true
-      },
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RadioView',
+          choices: [
+            [true, X.data.YES],
+            [false, X.data.NO]
+          ],
+          isHorizontal: true
+        };
+      }
     },
     {
       section: 'accountingSection',
       name: 'simpleTax',
       label: 'Do you opt into Simple Tax?',
       class: 'Boolean',
-      view: {
-        class: 'foam.u2.view.RadioView',
-        choices: [
-          [true, 'Yes'],
-          [false, 'No']
-        ],
-        isHorizontal: true
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RadioView',
+          choices: [
+            [true, X.data.YES],
+            [false, X.data.NO]
+          ],
+          isHorizontal: true
+        };
       }
     },
     {
@@ -122,7 +132,7 @@ foam.CLASS({
           mode: 'RW',
           enableAdding: true,
           enableRemoving: true,
-          name: 'Customers'
+          name: x.data.CUSTOMERS_MSG,
         }
       },
       autoValidate: true,
@@ -153,7 +163,7 @@ foam.CLASS({
           mode: 'RW',
           enableAdding: true,
           enableRemoving: true,
-          name: 'Suppliers'
+          name: x.data.CUSTOMERS_MSG,
         }
       },
       validationPredicates: [
