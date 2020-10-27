@@ -1028,6 +1028,7 @@ p({
   "menu.read.capability.menu.search",
   "menu.read.capability.menu.paymentcode",
   "menu.read.capability.menu.invitation",
-  "contact.ro.shouldinvite"
+  "contact.ro.shouldinvite",
+  "group.read.smeBusinessEmployee"
   ]
 })

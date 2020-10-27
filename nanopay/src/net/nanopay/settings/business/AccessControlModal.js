@@ -22,6 +22,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'auth',
     'agentJunctionDAO',
     'businessInvitationDAO',
     'closeDialog',
@@ -192,9 +193,10 @@ foam.CLASS({
       // set default accessControl
       if ( self.junction && self.junction.accessControl )
         self.accessControl = self.junction.accessControl.toLowerCase();
-      else
-        self.accessControl = 'employee';
-
+      else {
+        var employeeReadPermission = await this.auth.check(null, 'group.read.smeBusinessEmployee');
+        self.accessControl = employeeReadPermission? 'employee' : 'admin/signing officer';
+      }
       self.accessControl$.sub(this.updateSigningOfficerCheckBox);
 
       this.addClass(this.myClass())
