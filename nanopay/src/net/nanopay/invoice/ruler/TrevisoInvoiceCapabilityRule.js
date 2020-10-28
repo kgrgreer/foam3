@@ -79,7 +79,7 @@ foam.CLASS({
               UserCapabilityJunction userUCJ = crunchService
                 .getJunction(x, USER_CAPABILITY_ID);
               if ( userUCJ == null ) userUCJ = crunchService
-                .updateJunction(updateX, USER_CAPABILITY_ID, null);
+                .updateJunction(updateX, USER_CAPABILITY_ID, null, null);
 
               boolean isGranted = userUCJ.getStatus() == GRANTED;
               
