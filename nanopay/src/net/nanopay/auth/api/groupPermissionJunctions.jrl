@@ -68,6 +68,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targ
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targetId":"service.sessionService"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targetId":"service.sugarDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targetId":"service.transactionDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targetId":"service.transactionPlannerDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targetId":"service.userDAO"})
 
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targetId":"sugar.create"})
@@ -78,6 +79,6 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targ
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targetId":"transaction.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targetId":"transaction.update.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targetId":"transaction.ro.status"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targetId":"transactionquote.create"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targetId":"transactionquote.read.*"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targetId":"transactionquote.update.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targetId":"transactionplan.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targetId":"transactionplan.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-base","targetId":"transactionplan.update.*"})

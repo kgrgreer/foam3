@@ -904,8 +904,12 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       URIBuilder uriBuilder = new URIBuilder(getCredentials(spid).getAFEXApi()  + "api/payments");
       uriBuilder.setParameter("Id", request.getId());
 
+      String apiKey = request.getClientAPIKey();
+      if ( SafetyUtil.isEmpty(apiKey) ) {
+        apiKey = credentials.getApiKey();
+      }
       HttpGet httpGet = new HttpGet(uriBuilder.build());
-      httpGet.addHeader("API-Key", request.getClientAPIKey());
+      httpGet.addHeader("API-Key", apiKey);
       httpGet.addHeader("Content-Type", "application/json");
 
       logMessage(request.getClientAPIKey(), "checkPaymentStatus", httpGet.toString(), false);

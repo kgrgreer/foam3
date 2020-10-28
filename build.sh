@@ -40,8 +40,6 @@ function install {
 
     npm install
 
-    setup_jce
-
     if [[ $IS_MAC -eq 1 ]]; then
         mkdir -p "$NANOPAY_HOME/journals"
         mkdir -p "$NANOPAY_HOME/logs"
@@ -50,53 +48,6 @@ function install {
     # git hooks
     git config core.hooksPath .githooks
     git config submodule.recurse true
-}
-
-function backup {
-  if [[ ! $PROJECT_HOME == "/pkg/stack/stage/NANOPAY" ]]; then
-    # Preventing this from running on non AWS
-    return
-  fi
-
-  BACKUP_HOME="/opt/backup"
-
-  # backup journals in event of file incompatiblity between versions
-  if [ "$OSTYPE" == "linux-gnu" ] && [ ! -z "${BACKUP_HOME+x}" ] && [ -d "$JOURNAL_HOME" ]; then
-      printf "backup\n"
-      DATE=$(date +%Y%m%d_%H%M%S)
-      mkdir -p "$BACKUP_HOME/$DATE"
-
-      cp -r "$JOURNAL_HOME/" "$BACKUP_HOME/$DATE/"
-  fi
-}
-
-function setup_jce {
-  local JAVA_LIB_SECURITY="$JAVA_HOME/lib/security"
-
-  # For Java 8; including on linux
-  if [[ $JAVA_LIB_SECURITY = *"_"* || $JAVA_LIB_SECURITY = *"java-8-oracle"* ]]; then
-    JAVA_LIB_SECURITY="$JAVA_HOME/jre/lib/security"
-  fi
-
-  if [[ ! -f $JAVA_LIB_SECURITY/local_policy.jar && ! -f $JAVA_LIB_SECURITY/US_export_policy.jar ]]; then
-    mkdir tmp_jce
-    cd tmp_jce
-    curl -L -b "oraclelicense=a" http://download.oracle.com/otn-pub/java/jce/8/jce_policy-8.zip > jce_policy-8.zip
-    unzip jce_policy-8.zip
-    if [[ $IS_MAC -eq 1 ]]; then
-        sudo cp UnlimitedJCEPolicyJDK8/local_policy.jar UnlimitedJCEPolicyJDK8/US_export_policy.jar $JAVA_LIB_SECURITY/
-      elif [[ $IS_LINUX -eq 1 ]]; then
-        cp UnlimitedJCEPolicyJDK8/local_policy.jar UnlimitedJCEPolicyJDK8/US_export_policy.jar $JAVA_LIB_SECURITY/
-      fi
-    cd ..
-    rm -rf tmp_jce
-
-    if [[ $(jrunscript -e "print (javax.crypto.Cipher.getMaxAllowedKeyLength('AES') >= 256)") = "true" ]]; then
-      echo "INFO :: Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy files setup successfully."
-    else
-      echo "ERROR :: Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy files failed to setup successfully."
-    fi
-  fi
 }
 
 function deploy_documents {
@@ -164,15 +115,18 @@ function deploy_journals {
         mkdir -p target
     fi
 
-    journalExtras=""
     if [ "$DISABLE_LIVESCRIPTBUNDLER" -eq 1 ]; then
-        journalExtras=-E"tools/journal_extras/disable_livescriptbundler"
+        if [ -z ${EXPLICIT_JOURNALS} ]; then
+            EXPLICIT_JOURNALS="-E"
+        else
+            EXPLICIT_JOURNALS="${EXPLICIT_JOURNALS}tools/journal_extras/disable_livescriptbundler"
+        fi
     fi
 
     if [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ] || [ $CLEAN_BUILD -eq 1 ]; then
-        ./tools/findJournals.sh -J${JOURNAL_CONFIG} $journalExtras < $JOURNALS | ./find.sh -O${JOURNAL_OUT}
+        ./tools/findJournals.sh -J${JOURNAL_CONFIG} ${EXPLICIT_JOURNALS} < $JOURNALS | ./find.sh -O${JOURNAL_OUT}
     else
-        ./tools/findJournals.sh -J${JOURNAL_CONFIG} $journalExtras < $JOURNALS > target/journal_files
+        ./tools/findJournals.sh -J${JOURNAL_CONFIG} ${EXPLICIT_JOURNALS} < $JOURNALS > target/journal_files
         gradle findSH -PjournalOut=${JOURNAL_OUT} -PjournalIn=target/journal_files $GRADLE_FLAGS
     fi
 
@@ -265,7 +219,7 @@ function stop_nanos {
     RUNNING_PID=$(ps -ef | grep -v grep | grep "java.*-DNANOPAY_HOME" | awk '{print $2}')
     if [ -z "$RUNNING_PID" ]; then
         # production
-        RUNNING_PID=$(ps -ef | grep -v grep | grep "java -server -jar /opt/nanopay/lib/nanopay" | awk '{print $2}')
+        RUNNING_PID=$(ps -ef | grep -v grep | grep "java -server -jar ${NANOPAY_HOME}/lib/nanopay" | awk '{print $2}')
     fi
     if [ -f "$NANOS_PIDFILE" ]; then
         PID=$(cat "$NANOS_PIDFILE")
@@ -295,7 +249,6 @@ function stop_nanos {
 
         rmfile "$NANOS_PIDFILE"
     fi
-    backup
     delete_runtime_journals
     delete_runtime_logs
 }
@@ -323,7 +276,7 @@ function start_nanos {
             OPT_ARGS="${OPT_ARGS} -U${RUN_USER}"
         fi
 
-        ${NANOPAY_HOME}/bin/run.sh -Z${DAEMONIZE} -D${DEBUG} -S${DEBUG_SUSPEND} -P${DEBUG_PORT} -N${NANOPAY_HOME} -W${WEB_PORT} ${OPT_ARGS}
+        ${NANOPAY_HOME}/bin/run.sh -Z${DAEMONIZE} -D${DEBUG} -S${DEBUG_SUSPEND} -P${DEBUG_PORT} -N${NANOPAY_HOME} -W${WEB_PORT} -H${HOST_NAME} -j${PROFILER} -J${PROFILER_PORT} ${OPT_ARGS}
     else
         cd "$PROJECT_HOME"
 
@@ -355,6 +308,7 @@ function start_nanos {
         fi
 
         export JAVA_TOOL_OPTIONS="$JAVA_OPTS"
+        echo "INFO :: ${JAVA_OPTS}"
         echo "INFO :: ${MESSAGE}..."
 
         if [ "$TEST" -eq 1 ]; then
@@ -521,7 +475,7 @@ function setenv {
     # HSM setup
     if [[ $IS_MAC -eq 1 ]]; then
       HSM_HOME=$PROJECT_HOME/tools/hsm
-      HSM_CONFIG_PATH='/opt/nanopay/keys/pkcs11.cfg'
+      HSM_CONFIG_PATH="${NANOPAY_HOME}/keys/pkcs11.cfg"
 
       #softhsm setup
       if [[ -f $HSM_HOME/development.sh ]]; then
@@ -555,6 +509,8 @@ function usage {
     echo "  -d : Run with JDPA debugging enabled on port 8000"
     echo "  -D PORT : JDPA debugging enabled on port PORT."
     echo "  -e : Skipping genJava task."
+    echo "  -E EXPLICIT_JOURNALS : "
+    echo "  -F <rw | ro> : File System Read-Write (default) or Read-Only"
     echo "  -f : Build foam."
     echo "  -g : Output running/notrunning status of daemonized nanos."
     echo "  -h : Print usage information."
@@ -567,8 +523,8 @@ function usage {
     echo "  -m : Run migration scripts."
     echo "  -N NAME : start another instance with given instance name. Deployed to /opt/nanopay_NAME."
     echo "  -o : old maven build"
-    echo "  -p : short cut for setting MODE to PRODUCTION"
-    echo "  -q : short cut for setting MODE to STAGING"
+    echo "  -p : Enable profiling on default port"
+    echo "  -P PORT : JProfiler connection on PORT"
     echo "  -r : Start nanos with whatever was last built."
     echo "  -s : Stop a running daemonized nanos."
     echo "  -S : When debugging, start suspended."
@@ -636,9 +592,12 @@ CLEAN_BUILD=0
 DEBUG=0
 DEBUG_PORT=8000
 DEBUG_SUSPEND=n
+EXPLICIT_JOURNALS=
 export JAVA_OPTS=
 INSTALL=0
 PACKAGE=0
+PROFILER=0
+PROFILER_PORT=8849
 RUN_JAR=0
 RUN_MIGRATION=0
 RESTART_ONLY=0
@@ -659,15 +618,15 @@ LIQUID_DEMO=0
 RUNTIME_COMPILE=0
 RUN_USER=
 
-while getopts "bcdD:eghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz:f" opt ; do
+while getopts "bcdD:E:efghijJ:klmM:N:opP:QrsStT:uU:vV:wW:xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
-        c) CLEAN_BUILD=1
-           ;;
+        c) CLEAN_BUILD=1 ;;
         d) DEBUG=1 ;;
         D) DEBUG=1
            DEBUG_PORT=$OPTARG
            ;;
+        E) EXPLICIT_JOURNALS="-E"$OPTARG ;;
         e) warning "Skipping genJava task"
            skipGenFlag="-Pfoamoptions.skipgenjava=true"
            if [ "$GRADLE_FLAGS" == "" ]; then
@@ -676,6 +635,7 @@ while getopts "bcdD:eghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz:f" opt ; do
                 GRADLE_FLAGS="$GRADLE_FLAGS $skipGenFlag"
            fi
            ;;
+        f) RUNTIME_COMPILE=1;;
         g) STATUS=1 ;;
         h) usage ; quit 0 ;;
         i) INSTALL=1 ;;
@@ -692,12 +652,9 @@ while getopts "bcdD:eghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz:f" opt ; do
         N) INSTANCE=$OPTARG
            HOST_NAME=$OPTARG
            echo "INSTANCE=${INSTANCE}" ;;
-        p) MODE=PRODUCTION
-           echo "MODE=${MODE}"
-           ;;
-        q) MODE=STAGING
-           echo "MODE=${MODE}"
-           ;;
+        p) PROFILER=1 ;;
+        P) PROFILER=1
+           PROFILER_PORT=$OPTARG ;;
         Q) LIQUID_DEMO=1
            JOURNAL_CONFIG=liquid
            JOURNAL_SPECIFIED=1
@@ -744,7 +701,6 @@ while getopts "bcdD:eghijJ:klmM:N:opqQrsStT:uU:vV:wW:xz:f" opt ; do
         z) DAEMONIZE=1 ;;
         S) DEBUG_SUSPEND=y ;;
         x) VULNERABILITY_CHECK=1 ;;
-        f) RUNTIME_COMPILE=1;;
        ?) usage ; quit 1 ;;
     esac
 done

@@ -221,6 +221,7 @@ p({
           AND(new Predicate[] {
               EQ(Transaction.STATUS, TransactionStatus.PENDING),
               INSTANCE_OF(AFEXFundingTransaction.class),
+              EQ(AFEXFundingTransaction.FUNDING_BALANCE_INITIATED, true)
             })
           )
     .select( new AbstractSink() {
@@ -228,7 +229,7 @@ p({
     public void put(Object o, Detachable d) {
       AFEXFundingTransaction txn = (AFEXFundingTransaction) o.fclone();
 
-      AFEXFundingBalance response = afexService.getFundingBalance(x, txn.findSourceAccount(x).getOwner(), txn.getSourceCurrency());
+      AFEXFundingBalance response = afexService.getFundingBalance(x, txn.findDestinationAccount(x).getOwner(), txn.getSourceCurrency());
       txn.setAccountId(response.getAccountId());
       txn.setFundingBalanceId(response.getFundingBalanceId());
       txn.setStatus(TransactionStatus.SENT);

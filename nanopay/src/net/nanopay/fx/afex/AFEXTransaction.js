@@ -104,6 +104,11 @@ foam.CLASS({
       name: 'afexPaymentStatus',
       value: 'PENDING'
     },
+    {
+      class: 'DateTime',
+      name: 'completionDate',
+      storageTransient: false
+    }
   ],
 
   methods: [
