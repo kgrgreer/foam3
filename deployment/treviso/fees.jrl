@@ -1186,3 +1186,38 @@ p({
   },
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
+
+
+// Temporary fees since not all fees are configured
+
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "4d88a81a-2fdf-4f1b-b649-20265603ebed-006",
+  name: "Bank Fee",
+  percentage: 0.7,
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+
+p({
+  class: "net.nanopay.tx.fee.FixedFee",
+  id: "89c62555-f2df-4be5-91b6-c7651e13894b",
+  name: "Spot Rate",
+  fixedFee: 400,
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "38eb7bbb-2966-4b1c-89d6-f0e9a554eb31-0016",
+  name: "Spread Rate Base",
+  percentage: 3.5,
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+
+p({
+  class: "net.nanopay.tx.fee.FixedFee",
+  id: "1545bad0-b88e-40df-886d-98f22532b536",
+  name: "Treviso Fee",
+  fixedFee: 4000,
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})

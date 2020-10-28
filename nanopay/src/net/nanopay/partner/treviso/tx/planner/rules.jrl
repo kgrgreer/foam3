@@ -1,10 +1,9 @@
-// TODO change sourceAccount predicate to check for brazil bank account
 p({
   "class":"net.nanopay.tx.planner.IntermediaryDestinationAccountSplitPlanner",
   "id":"2775abef-05d4-4460-bea8-7a70e9d544af",
   "name":"TrevisoSplitTransactionPlanner",
-  "documentation":"Planner for transaction from BRL to destination currency",
-  "intermediaryAccountId":24,
+  "documentation":"Split Planner for BRL to destination currency via an intermediary Treviso owned AFEX account",
+  "intermediaryAccountId":{"USD":24,"GBP":25,"EUR":26},
   "priority":90,
   "ruleGroup":"TrevisoPlanner",
   "enabled":true,
@@ -19,7 +18,7 @@ p({
       {
         "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"sourceAccount",
-        "of":"net.nanopay.bank.BankAccount"
+        "of":"net.nanopay.bank.BRBankAccount"
       },
       {
         "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
@@ -33,21 +32,18 @@ p({
       },
       {
         "class":"net.nanopay.tx.planner.predicate.IsAccountOwnerAFEXUserPredicate",
-      },
-      {
-        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
-        "provider":"Treviso"
       }
     ]
   },
   "spid": "treviso",
   "lifecycleState":1
 })
+
 p({
   "class":"net.nanopay.partner.treviso.tx.planner.TrevisoTransactionPlanner",
   "id":"519e2a68-a914-444f-b050-2ce01f29fe24",
   "name":"TrevisoTransactionPlanner",
-  "documentation":"Planner for transaction from BRL to USD",
+  "documentation":"Planner for transaction from BRL to USD/EUR/GBP (leg 1)",
   "priority":80,
   "ruleGroup":"TrevisoPlanner",
   "enabled":true,
@@ -67,17 +63,12 @@ p({
       {
         "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"destinationAccount",
-        "of":"net.nanopay.bank.USBankAccount"
+        "of":"net.nanopay.bank.BankAccount"
       },
       {
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
         "propName":"sourceUnit",
         "propValue":"BRL"
-      },
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
-        "propName":"destinationUnit",
-        "propValue":"USD"
       },
       {
         "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",

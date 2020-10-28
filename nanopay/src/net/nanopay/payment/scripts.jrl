@@ -65,6 +65,7 @@ for ( country : countries ) {
       corridor.setSourceCurrencies(sourceCurrencies);
       corridor.setTargetCurrencies(targetCurrencies);
       corridor.setName(country + "-" + pairCountry + " Corridor - AFEX");
+      corridor.setRanking(1000);
       corridor = ppcDAO.put(corridor);
       print("New AFEX corridor added: source " + corridor.getSourceCountry() + " target " + corridor.getTargetCountry());
     }
@@ -85,6 +86,7 @@ for ( country : countries ) {
       trgCorridor.setTargetCurrencies(sourceCurrencies);
       trgCorridor.setProvider(afex.getId());
       trgCorridor.setName(pairCountry + "-" + country + " Corridor AFEX");
+      trgCorridor.setRanking(1000);
       trgCorridor = ppcDAO.put(trgCorridor);
       print("New AFEX corridor added: source " + trgCorridor.getSourceCountry() + " target " + trgCorridor.getTargetCountry());
     }

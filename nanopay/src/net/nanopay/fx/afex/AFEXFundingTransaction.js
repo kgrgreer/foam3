@@ -50,6 +50,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'valueDate'
-    }
+    },
+    {
+      class: 'Boolean',
+      name: 'fundingBalanceInitiated',
+    },
   ]
 });
