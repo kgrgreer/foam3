@@ -1036,9 +1036,11 @@ p({
 
 p({
   class: "foam.nanos.crunch.Capability",
-  id: "googleSheetsExportCapability",
+  id: "googleSheetsImportCapability",
+  "name":"google sheets import capability",
   version: "0",
   enabled: true,
+  "visible":false,
   permissionsGranted: [
     "data.import.googleSheets"
   ]
