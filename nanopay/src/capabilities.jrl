@@ -1032,3 +1032,14 @@ p({
   "group.read.smeBusinessEmployee"
   ]
 })
+
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "googleSheetsExportCapability",
+  version: "0",
+  enabled: true,
+  permissionsGranted: [
+    "data.import.googleSheets"
+  ]
+})
