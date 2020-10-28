@@ -32,6 +32,7 @@ foam.CLASS({
     'net.nanopay.tx.planner.AbstractTransactionPlanner',
     'net.nanopay.tx.planner.TransactionPlan',
     'net.nanopay.tx.Transfer',
+    'net.nanopay.tx.TransactionException',
     'java.util.ArrayList',
     'java.util.List',
     'net.nanopay.tx.UnsupportedTransactionException'
@@ -59,7 +60,7 @@ foam.CLASS({
             // if transaction has been planned already, just load it.
             if ( ! SafetyUtil.isEmpty(t.getId()) )
               return loadPlan(x, t);
-            // other wise make a new clean quote.
+            // otherwise make a new clean quote.
             t.setNext(null);
             TransactionQuote tq = new TransactionQuote();
             tq.setRequestTransaction(t);
@@ -80,9 +81,8 @@ foam.CLASS({
         //find the plan
         TransactionPlan plannedTx = (TransactionPlan) getDelegate().find_(x, txn.getId());
         if ( plannedTx == null ) {
-          Logger logger = (Logger) x.get("logger");
-          logger.debug("Transaction Plan not found for "+ txn);
-          return null;
+          ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), "Plan Not Found", txn.getId());
+          throw new PlanNotFoundException(txn.getId());
         }
 
           /*
@@ -96,15 +96,14 @@ foam.CLASS({
         }
         catch(RuntimeException e) {
           Logger logger = (Logger) x.get("logger");
-          logger.debug("Transaction Plan failed validation for "+ txn + " and transaction plan "+plannedTx);
-          return null; //TODO: return an error code
+          logger.info("Transaction Plan failed validation for "+ txn + " and transaction plan "+plannedTx);
+          throw new TransactionException("Plan validation failure: "+txn.getId(), e);
         }
 
         //remove the plan
         getDelegate().remove_(x, plannedTx);
 
         return (Transaction) plannedTx.getTransaction().fclone();
-
       `
     },
     {

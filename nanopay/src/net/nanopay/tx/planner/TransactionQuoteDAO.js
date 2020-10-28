@@ -37,6 +37,7 @@ foam.CLASS({
     'foam.nanos.notification.Notification',
     'net.nanopay.tx.UnsupportedTransactionException',
     'net.nanopay.tx.planner.NoPlanException',
+    'net.nanopay.tx.TransactionQuotes',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.PlanCostComparator',
@@ -87,7 +88,7 @@ foam.CLASS({
           transactionPlans.add(aTransaction);
       }
       if ( transactionPlans.size() == 0 ) {
-        throw new NoPlanException("Unable to find a plan for requested transaction.");
+        throw new NoPlanException("Unable To Plan.");
       }
       Collections.sort(transactionPlans, planComparators);
       quote.setPlan(transactionPlans.get(0));
