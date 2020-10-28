@@ -31,27 +31,30 @@ foam.CLASS({
     'net.nanopay.bank.BankAccount',
     'net.nanopay.fx.CurrencyFXService',
     'net.nanopay.fx.afex.AFEXBeneficiaryComplianceTransaction',
+    'net.nanopay.fx.afex.AFEXBusiness',
     'net.nanopay.fx.afex.AFEXCredentials',
     'net.nanopay.fx.afex.AFEXServiceProvider',
     'net.nanopay.fx.afex.AFEXTransaction',
     'net.nanopay.fx.afex.AFEXFundingTransaction',
+    'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.fx.ExchangeRateStatus',
     'net.nanopay.fx.FXService',
     'net.nanopay.fx.FXQuote',
     'net.nanopay.fx.FXLineItem',
+    'net.nanopay.partner.afex.AFEXDigitalAccount',
     'net.nanopay.tx.InfoLineItem',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.tx.model.TransactionStatus',
     'java.util.Date',
     'java.text.DateFormat',
     'java.text.SimpleDateFormat',
     'java.util.Locale',
     'java.util.UUID',
-    'java.util.ArrayList'
+    'java.util.ArrayList',
+    'static foam.mlang.MLang.*'
   ],
 
   constants: [
@@ -109,17 +112,18 @@ foam.CLASS({
         logger.debug(this.getClass().getSimpleName(), "generateTransaction", quote);
 
         FXQuote fxQuote = new FXQuote.Builder(x).build();
+        Long owner = quote.getRequestOwner() != 0 ? quote.getRequestOwner(): quote.getSourceAccount().getOwner();
 
         // FX Rate has not yet been fetched
         try {
           fxQuote = afexService.getFXRate(request.getSourceCurrency(), request.getDestinationCurrency(), request.getAmount(), request.getDestinationAmount(),
-            null, null, request.findSourceAccount(x).getOwner(), null);
+            null, null, owner, null);
           if ( fxQuote != null && fxQuote.getId() > 0 ) {
-            AFEXTransaction afexTransaction = createAFEXTransaction(x, request, fxQuote);
+            AFEXTransaction afexTransaction = createAFEXTransaction(x, request, fxQuote, quote);
             afexTransaction.setSourceAccount(sourceAccount.getId());
             afexTransaction.setDestinationAccount(destinationAccount.getId());
             afexTransaction.setInvoiceId(request.getInvoiceId());
-            summary = getSummaryTx(afexTransaction, sourceAccount, destinationAccount, fxQuote, quote);
+            summary = getSummaryTx(afexTransaction, sourceAccount, destinationAccount, fxQuote, quote, x);
           }
           
         } catch (Throwable t) {
@@ -149,6 +153,10 @@ foam.CLASS({
         {
           type: 'FXQuote',
           name: 'fxQuote'
+        },
+        {
+          type: 'TransactionQuote',
+          name: 'quote'
         }
       ],
       javaType: 'AFEXTransaction',
@@ -214,12 +222,21 @@ foam.CLASS({
         {
           type: 'FXQuote',
           name: 'fxQuote'
+        },
+        {
+          type: 'Context',
+          name: 'x'
+        },
+        {
+          type: 'TransactionQuote',
+          name: 'quote'
         }
       ],
       javaType: 'AFEXFundingTransaction',
       javaCode: `
         AFEXFundingTransaction fundingTransaction = new AFEXFundingTransaction();
-  
+        AFEXDigitalAccount afexDigital = createAFEXDigitalAccount(request, x, quote);
+
         fundingTransaction.copyFrom(request);
         fundingTransaction.setId(UUID.randomUUID().toString());
         fundingTransaction.setStatus(TransactionStatus.PENDING);
@@ -230,11 +247,14 @@ foam.CLASS({
         fundingTransaction.setPaymentProvider(PAYMENT_PROVIDER);
         fundingTransaction.setAmount(fxQuote.getSourceAmount());
         fundingTransaction.setSourceCurrency(fxQuote.getSourceCurrency());
+        fundingTransaction.setDestinationAccount(afexDigital.getId());
         fundingTransaction.setDestinationAmount(fxQuote.getTargetAmount());
         fundingTransaction.setDestinationCurrency(fxQuote.getTargetCurrency());
         fundingTransaction.setPlanner(this.getId());
         fundingTransaction.setValueDate(fxQuote.getValueDate());
         fundingTransaction.clearLineItems();
+
+        request.setSourceAccount(afexDigital.getId());
 
         return fundingTransaction;
       `
@@ -262,6 +282,10 @@ foam.CLASS({
           type: 'TransactionQuote',
           name: 'txnQuote'
         },
+        {
+          type: 'Context',
+          name: 'x'
+        }
       ],
       javaType: 'FXSummaryTransaction',
       javaCode: `
@@ -293,7 +317,7 @@ foam.CLASS({
         afexCT.setPlanner(this.getId());
 
         if ( txnQuote.getParent() != null ) {
-          AFEXFundingTransaction fundingTxn = createFundingTransaction(tx, fxQuote);
+          AFEXFundingTransaction fundingTxn = createFundingTransaction(tx, fxQuote, x, txnQuote);
           afexCT.addNext(fundingTxn);
           afexCT.addNext(tx);
         } else {
@@ -304,6 +328,42 @@ foam.CLASS({
       
         return summary;
       `
-    }
+    },
+    {
+      name: 'createAFEXDigitalAccount',
+      args: [
+        {
+          type: 'Transaction',
+          name: 'request'
+        },
+        {
+          type: 'Context',
+          name: 'x'
+        },
+        {
+          type: 'TransactionQuote',
+          name: 'quote'
+        }
+      ],
+      javaType: 'AFEXDigitalAccount',
+      javaCode: `
+        DAO accountDAO = (DAO) x.get("localAccountDAO");
+        AFEXDigitalAccount account = (AFEXDigitalAccount) accountDAO.find(AND(
+          EQ(AFEXDigitalAccount.DENOMINATION, request.getSourceCurrency()),
+          INSTANCE_OF(AFEXDigitalAccount.getOwnClassInfo()),
+          EQ(AFEXDigitalAccount. OWNER, quote.getRequestOwner())
+        ));
+
+        if ( account == null ) {
+          account = new AFEXDigitalAccount.Builder(x)
+            .setOwner(quote.getRequestOwner())
+            .setName(quote.getRequestOwner() + "'s AFEX digital account " + request.getSourceCurrency())
+            .setDenomination(request.getSourceCurrency())
+            .build();
+          account = (AFEXDigitalAccount) accountDAO.put(account);
+        }
+        return account;
+      `
+    },
   ]
 });

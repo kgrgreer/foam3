@@ -116,7 +116,13 @@ foam.CLASS({
       value: true,
       networkTransient: true,
       documentation: 'Set to false to only show SummaryLineItems and lineItems that require user input'
-    }
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'requestOwner',
+      networkTransient: true,
+    },
   ],
 
   methods: [

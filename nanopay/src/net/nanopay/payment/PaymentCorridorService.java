@@ -21,8 +21,6 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.mlang.sink.Count;
-import foam.nanos.auth.User;
-import foam.nanos.NanoService;
 import foam.util.SafetyUtil;
 import java.util.Collections;
 import java.util.List;
@@ -35,7 +33,6 @@ import net.nanopay.tx.TransactionQuote;
 import static foam.mlang.MLang.EQ;
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.CONTAINS_IC;
-import foam.nanos.logger.Logger;
 
 public class PaymentCorridorService implements CorridorService {
 
@@ -130,7 +127,33 @@ public class PaymentCorridorService implements CorridorService {
         CONTAINS_IC(PaymentProviderCorridor.SOURCE_CURRENCIES, sourceCurrency),
         CONTAINS_IC(PaymentProviderCorridor.TARGET_CURRENCIES, targetCurrency)
       )
-    ).select(new ArraySink())).getArray();
+    ).orderBy(PaymentProviderCorridor.RANKING).select(new ArraySink())).getArray();
+
+    return junctions;
+  }
+
+  public List getAllWithSrc(X x, String sourceCurrency) {
+    List junctions = new ArrayList<>();
+    if ( SafetyUtil.isEmpty(sourceCurrency) ) return junctions;
+
+    junctions =  ((ArraySink) ((DAO) x.get("paymentProviderCorridorDAO")).where(
+      AND(
+        CONTAINS_IC(PaymentProviderCorridor.SOURCE_CURRENCIES, sourceCurrency)
+      )
+    ).orderBy(PaymentProviderCorridor.RANKING).select(new ArraySink())).getArray();
+
+    return junctions;
+  }
+
+  public List getAllWithTarget(X x, String targetCurrency) {
+    List junctions = new ArrayList<>();
+    if ( SafetyUtil.isEmpty(targetCurrency) ) return junctions;
+
+    junctions =  ((ArraySink) ((DAO) x.get("paymentProviderCorridorDAO")).where(
+      AND(
+        CONTAINS_IC(PaymentProviderCorridor.TARGET_CURRENCIES, targetCurrency)
+        )
+    ).orderBy(PaymentProviderCorridor.RANKING).select(new ArraySink())).getArray();
 
     return junctions;
   }

@@ -433,22 +433,28 @@ p({
   "documentation":"Rule to create the funding balance for AFEX",
   "priority":30,
   "ruleGroup":"AFEX",
-  "daoKey":"afexBusinessDAO",
+  "daoKey":"localTransactionDAO",
   "operation":3,
   "after":true,
   "predicate": {
     "class":"foam.mlang.predicate.And",
     "args":[
       {
-        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
-        "propName":"status",
-        "propValue": "Active"
+        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of":"net.nanopay.fx.afex.AFEXFundingTransaction"
       },
       {
-        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
         "propName":"status",
-        "propValue": "Active",
-        isNew: false
+        "propValue": {
+          "class": "net.nanopay.tx.model.TransactionStatus",
+          "ordinal":0
+        }
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"fundingBalanceInitiated",
+        "propValue": false
       }
     ]
   },

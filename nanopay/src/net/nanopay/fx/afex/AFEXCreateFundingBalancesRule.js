@@ -23,7 +23,7 @@ foam.CLASS({
     'foam.nanos.ruler.RuleAction'
   ],
 
-  documentation: `Rule to create funding balances when AFEXBusiness is active.`,
+  documentation: `Rule to create funding balances when AFEXFundingTransaction is pending.`,
 
   javaImports: [
     'foam.core.ContextAgent',
@@ -41,13 +41,15 @@ foam.CLASS({
         @Override
         public void execute(X x) {
 
-          AFEXBusiness business = (AFEXBusiness) obj;
+          AFEXFundingTransaction transaction = (AFEXFundingTransaction) obj;
           Logger logger = (Logger) x.get("logger");
           AFEXServiceProvider afexService = (AFEXServiceProvider) x.get("afexServiceProvider");
           try {
-              afexService.createFundingBalance(x, business.getUser(), "USD");
+              afexService.createFundingBalance(x, transaction);
+              transaction.setFundingBalanceInitiated(true);
+              ((DAO) x.get("localTransactionDAO")).put(transaction);
           } catch (Throwable t) {
-            String msg = "Error creating Funding balances for AFEX Business id: " + business.getId();
+            String msg = "Error creating Funding balances for AFEX Funding Transaction id: " + transaction.getId();
             logger.error(msg, t);
             Notification notification = new Notification.Builder(x)
               .setTemplate("NOC")
@@ -56,7 +58,7 @@ foam.CLASS({
               ((DAO) x.get("localNotificationDAO")).put(notification);
           }
         }
-      }, "Rule to create funding balances when AFEXBusiness is active");
+      }, "Rule to create funding balances when AFEXFundingTransaction is pending");
       `
     }
   ]
