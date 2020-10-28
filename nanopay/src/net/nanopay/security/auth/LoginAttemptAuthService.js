@@ -158,8 +158,13 @@ foam.CLASS({
           }
 
           // increment login attempts by 1
+          if ( isAdminUser(user) ) {
+            la.setClusterable(false);
+          }
           la = incrementLoginAttempts(x, la);
-          if ( isAdminUser(user) ) incrementNextLoginAttemptAllowedAt(x, la);
+          if ( isAdminUser(user) ) {
+            incrementNextLoginAttemptAllowedAt(x, la);
+          }
           getLogger().error("Error logging in.", t);
           throw new foam.nanos.auth.AuthenticationException(getErrorMessage(x, user, la, t.getMessage()));
         }
@@ -347,7 +352,7 @@ foam.CLASS({
         if ( user == null ) {
           throw new foam.nanos.auth.AuthenticationException("User not found.");
         }
-        return "admin".equalsIgnoreCase(user.getGroup());
+        return Group.ADMIN_GROUP.equalsIgnoreCase(user.getGroup());
       `
     },
     {

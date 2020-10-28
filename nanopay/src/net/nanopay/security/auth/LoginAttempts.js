@@ -42,6 +42,14 @@ foam.CLASS({
       javaFactory: 'return new Date();',
       section: 'administrative',
       storageOptional: true
+    },
+    {
+      class: 'Boolean',
+      name: 'clusterable',
+      value: true,
+      visibility: 'HIDDEN',
+      storageTransient: true,
+      clusterTransient: true
     }
   ]
 });

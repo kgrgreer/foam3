@@ -22,7 +22,8 @@ foam.CLASS({
   documentation: `Record of login attempt, including IP address`,
 
   implements: [
-    'foam.nanos.auth.CreatedAware'
+    'foam.nanos.auth.CreatedAware',
+    'foam.nanos.medusa.Clusterable'
   ],
 
   properties: [
@@ -86,6 +87,14 @@ foam.CLASS({
             .add(value ? 'Yes' : 'No')
           .end();
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'clusterable',
+      value: true,
+      visibility: 'HIDDEN',
+      storageTransient: true,
+      clusterTransient: true
     }
   ]
 });
