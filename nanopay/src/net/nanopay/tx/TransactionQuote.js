@@ -24,6 +24,7 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.Transfer',
+    'net.nanopay.tx.ExternalTransfer',
     'java.util.ArrayList',
 
   ],
@@ -143,6 +144,20 @@ foam.CLASS({
       } else {
         setPlans(new Transaction[] { plan });
       }
+      `
+    },
+    {
+      name: 'addExternalTransfer',
+      documentation: 'helper function for adding transfers to the plan',
+      args: [
+        { name: 'account', type: 'Long' },
+        { name: 'amount', type: 'Long' }
+      ],
+      javaCode: `
+        ExternalTransfer t = new ExternalTransfer();
+        t.setAccount(account);
+        t.setAmount(amount);
+        getMyTransfers_().add(t);
       `
     },
     {

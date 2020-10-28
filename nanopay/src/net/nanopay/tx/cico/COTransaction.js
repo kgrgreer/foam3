@@ -125,16 +125,6 @@ foam.CLASS({
       `
     },
     {
-      name: 'getTotal',
-      javaCode: `
-        DAO accountDAO = (DAO) x.get("localAccountDAO");
-        Account a = (Account) accountDAO.find(accountNumber);
-        if (a != null && a instanceof BankAccount)
-          return super.getTotal(x, TrustAccount.find(x, a).getId() );
-        return super.getTotal(x, accountNumber);
-      `
-    },
-    {
       documentation: `return true when status change is such that normal Transfers should be executed (applied)`,
       name: 'canTransfer',
       args: [
