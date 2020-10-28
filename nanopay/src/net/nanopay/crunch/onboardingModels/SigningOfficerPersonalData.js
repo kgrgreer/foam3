@@ -48,7 +48,8 @@ foam.CLASS({
     { name: 'CANNOT_SELECT_QUEBEC_ERROR', message: 'This application does not currently support businesses in Quebec. We are working hard to change this! If you are based in Quebec, check back for updates.' },
     { name: 'INVALID_ADDRESS_ERROR', message: 'Invalid address' },
     { name: 'UNGER_AGE_LIMIT_ERROR', message: 'Must be at least 18 years old' },
-    { name: 'OVER_AGE_LIMIT_ERROR', message: 'Must be under the age of 125 years old' }
+    { name: 'OVER_AGE_LIMIT_ERROR', message: 'Must be less than 125 years old' },
+    { name: 'SELECT_JOB_TITLE', message: 'Please select a Job Title' },
   ],
 
   properties: [
@@ -122,7 +123,7 @@ foam.CLASS({
                 arg1: net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.JOB_TITLE
               }), 0);
           },
-          errorString: 'Please select a Job Title.'
+          errorMessage: 'SELECT_JOB_TITLE'
         }
       ]
     },

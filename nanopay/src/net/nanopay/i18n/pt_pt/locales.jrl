@@ -2107,3 +2107,5 @@ p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.SigningOffic
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.BusinessAccountData.DATE_OF_FILING_TAXES.help",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessAccountData.DATE_OF_FILING_TAXES.help",target:"A data da última vez em que você entregou impostos"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.BusinessAccountData.YES",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessAccountData.YES",target:"Sim"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.BusinessAccountData.NO",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessAccountData.NO",target:"Não"})
+
+p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.SELECT_JOB_TITLE",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.SELECT_JOB_TITLE",target:"Selecione um cargo"})
