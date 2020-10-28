@@ -265,7 +265,7 @@ function stop_nanos {
     RUNNING_PID=$(ps -ef | grep -v grep | grep "java.*-DNANOPAY_HOME" | awk '{print $2}')
     if [ -z "$RUNNING_PID" ]; then
         # production
-        RUNNING_PID=$(ps -ef | grep -v grep | grep "java -server -jar /opt/nanopay/lib/nanopay" | awk '{print $2}')
+        RUNNING_PID=$(ps -ef | grep -v grep | grep "java -server -jar ${NANOPAY_HOME}/lib/nanopay" | awk '{print $2}')
     fi
     if [ -f "$NANOS_PIDFILE" ]; then
         PID=$(cat "$NANOS_PIDFILE")
@@ -355,6 +355,7 @@ function start_nanos {
         fi
 
         export JAVA_TOOL_OPTIONS="$JAVA_OPTS"
+        echo "INFO :: ${JAVA_OPTS}"
         echo "INFO :: ${MESSAGE}..."
 
         if [ "$TEST" -eq 1 ]; then
@@ -521,7 +522,7 @@ function setenv {
     # HSM setup
     if [[ $IS_MAC -eq 1 ]]; then
       HSM_HOME=$PROJECT_HOME/tools/hsm
-      HSM_CONFIG_PATH='/opt/nanopay/keys/pkcs11.cfg'
+      HSM_CONFIG_PATH="${NANOPAY_HOME}/keys/pkcs11.cfg"
 
       #softhsm setup
       if [[ -f $HSM_HOME/development.sh ]]; then
