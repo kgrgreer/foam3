@@ -18,6 +18,7 @@
 package net.nanopay.tx.bench;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicLong;
 
 import foam.core.FObject;
 import foam.core.X;
@@ -27,6 +28,8 @@ import foam.mlang.sink.Count;
 import foam.nanos.boot.NSpec;
 import foam.nanos.app.AppConfig;
 import foam.nanos.auth.User;
+import foam.nanos.auth.Group;
+import foam.nanos.auth.GroupPermissionJunction;
 import foam.nanos.bench.Benchmark;
 import foam.nanos.auth.LifecycleState;
 import foam.nanos.logger.PrefixLogger;
@@ -34,6 +37,7 @@ import foam.nanos.logger.Logger;
 import foam.nanos.ruler.Rule;
 import foam.nanos.ruler.RuleGroup;
 import foam.nanos.pm.PM;
+import foam.nanos.session.Session;
 import net.nanopay.account.Account;
 import net.nanopay.account.DigitalAccount;
 import net.nanopay.account.TrustAccount;
@@ -78,10 +82,15 @@ public class TransactionBenchmark
   protected DAO transactionDAO_;
   protected DAO plannerDAO_;
   protected DAO userDAO_;
-  protected DAO mspDAO_;
+  protected DAO groupDAO_;
+  protected DAO groupPermissionJunctionDAO_;
+  protected DAO sessionDAO_;
   protected Long MAX_USERS = 100L;
   protected Long STARTING_BALANCE = 100000L;
   protected String ADMIN_BANK_ACCOUNT_NUMBER = "2131412443534534";
+  protected AtomicLong pass_ = new AtomicLong();
+  protected AtomicLong fail_ = new AtomicLong();
+  protected Boolean setupOnly_ = false;
 
   public void setPurgePerRun(Boolean purge) {
     // nop - legacy script support
@@ -89,6 +98,10 @@ public class TransactionBenchmark
 
   public void setDisableRules(Boolean rules) {
     // nop - legacy script support
+  }
+
+  public void setSetupOnly(Boolean value) {
+    setupOnly_ = value;
   }
 
   @Override
@@ -126,14 +139,15 @@ public class TransactionBenchmark
       }
     }
     logger_.info("teardown", "counts", sb.toString());
+    logger_.info("pass", pass_.get(), "fail", fail_.get());
 
-    // clean up planners
-    PlannerGroup plannerGroup = (PlannerGroup) ruleGroupDAO_.find_(x, "genericPlanner");
-    if ( plannerGroup != null ) {
-      plannerGroup = (PlannerGroup) plannerGroup.fclone();
-      plannerGroup.setEnabled(false);
-      ruleGroupDAO_.put_(x, plannerGroup);
-    }
+    // // clean up planners
+    // PlannerGroup plannerGroup = (PlannerGroup) ruleGroupDAO_.find_(x, "genericPlanner");
+    // if ( plannerGroup != null ) {
+    //   plannerGroup = (PlannerGroup) plannerGroup.fclone();
+    //   plannerGroup.setEnabled(false);
+    //   ruleGroupDAO_.put_(x, plannerGroup);
+    // }
   }
 
   @Override
@@ -153,6 +167,15 @@ public class TransactionBenchmark
     transactionDAO_ = (DAO) x.get("localTransactionDAO");
     plannerDAO_ = (DAO) x.get("localTransactionPlannerDAO");
     userDAO_ = (DAO) x.get("localUserDAO");
+    sessionDAO_ = (DAO) x.get("localSessionDAO");
+
+    groupPermissionJunctionDAO_ = (DAO) x.get("groupPermissionJunctionDAO");
+   //  groupPermissionJunctionDAO_.put(new GroupPermissionJunction.Builder(x).setSourceId("business").setTargetId("service.transactionDAO").build());
+   //  groupPermissionJunctionDAO_.put(new GroupPermissionJunction.Builder(x).setSourceId("business").setTargetId("transactionDAO").build());
+   //  groupPermissionJunctionDAO_.put(new GroupPermissionJunction.Builder(x).setSourceId("business").setTargetId("service.transactionPlannerDAO").build());
+   //  groupPermissionJunctionDAO_.put(new GroupPermissionJunction.Builder(x).setSourceId("business").setTargetId("transactionPlannerDAO").build());
+   // groupPermissionJunctionDAO_.put(new GroupPermissionJunction.Builder(x).setSourceId("business").setTargetId("transactionPlan.create").build());
+    groupPermissionJunctionDAO_.put(new GroupPermissionJunction.Builder(x).setSourceId("api-base").setTargetId("digitalaccount.default.create").build());
 
     String spid = "nanopay";
     User admin = (User) userDAO_.find(EQ(User.EMAIL, "admin@nanopay.net"));
@@ -190,9 +213,17 @@ public class TransactionBenchmark
         user.setEmailVerified(true);
         user.setSpid(spid);
         // NOTE: use 'business' group so default digital account is created below.
-        user.setGroup("business");
+        user.setGroup("api-base");
         user = (User) userDAO_.put(user);
       }
+      Session session = (Session) sessionDAO_.find(user.getId());
+      if ( session != null ) {
+        sessionDAO_.remove(session);
+      }
+      session = new Session();
+      session.setUserId(user.getId());
+      session.setId(String.valueOf(user.getId()));
+      session = (Session) sessionDAO_.put(session);
     }
 
     // If we don't use users with verfied emails, the transactions won't go
@@ -250,6 +281,9 @@ public class TransactionBenchmark
 
   @Override
   public void execute(X x) {
+    if ( setupOnly_ ) {
+      return;
+    }
     if ( users_.size() < 2 ) {
       logger_.warning("execute", "insufficient users", users_.size());
       return;
@@ -291,7 +325,9 @@ public class TransactionBenchmark
         PM txnPm = new PM(this.getClass().getSimpleName(), "transaction");
         transactionDAO_.put(transaction);
         txnPm.log(x);
+        pass_.incrementAndGet();
       } catch (Throwable e) {
+        fail_.incrementAndGet();
         System.out.println(e.getMessage());
         e.printStackTrace();
         logger_.warning(e.getMessage(), e);

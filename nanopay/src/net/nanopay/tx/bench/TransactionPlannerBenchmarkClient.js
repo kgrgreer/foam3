@@ -31,31 +31,25 @@ foam.CLASS({
     {
       name: 'execute',
       javaCode: `
-    AppConfig config = (AppConfig) x.get("appConfig");
-    if ( config.getMode() == foam.nanos.app.Mode.PRODUCTION ) return;
-//    getLogger().info("execute");
-    PM pm = PM.create(x, this.getOwnClassInfo(), getName());
+    PM pm = PM.create(x, getName());
 
-    long range = getMaxAccountId() - getMinAccountId() + 1;
-    long sourceId = (long) (Math.floor(Math.random() * range) + getMinAccountId());
-    long destinationId = (long) (Math.floor(Math.random() * range) + getMinAccountId());
+    long range = getMaxUserId() - getMinUserId() + 1;
+    long payerId = (long) (Math.floor(Math.random() * range) + getMinUserId());
+    long payeeId = (long) (Math.floor(Math.random() * range) + getMinUserId());
     long amount = (long) (Math.random() * 100);
 
     Transaction txn = new Transaction();
-    txn.setSourceAccount(sourceId);
-    txn.setDestinationAccount(destinationId);
+    txn.setPayerId(payerId);
+    txn.setPayeeId(payeeId);
     txn.setAmount(amount);
 
     TransactionQuote quote = new TransactionQuote();
     quote.setRequestTransaction(txn);
 
     try {
-      synchronized (this) {
-        setTransactions(getTransactions() +1);
-      }
-//      getLogger().info("execute", "put", "request");
-      quote = (TransactionQuote) getClient().put(quote);
-//      getLogger().info("execute", "put", "response", "Quote", quote.getRequestTransaction().getId(), "plans", quote.getPlans().length);
+      getLogger().info("execute", "put", "request");
+      quote = (TransactionQuote) getPlannerClient(x, String.valueOf(payerId)).put(quote);
+      getLogger().info("execute", "put", "response", "Quote", quote.getRequestTransaction().getId(), "plans", quote.getPlans().length);
     } catch ( Throwable t ) {
       getLogger().error(t.getMessage(), t);
     } finally {

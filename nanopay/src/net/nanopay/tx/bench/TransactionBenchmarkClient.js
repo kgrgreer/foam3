@@ -42,6 +42,7 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.TransactionQuote',
+    'java.util.concurrent.atomic.AtomicLong'
   ],
 
   properties: [
@@ -51,32 +52,24 @@ foam.CLASS({
       javaFactory: 'return this.getClass().getSimpleName();'
     },
     {
-      name: 'minAccountId',
+      name: 'minUserId',
       class: 'Long',
-      value: 182
+      value: 10001
     },
     {
-      name: 'maxAccountId',
+      name: 'maxUserId',
       class: 'Long',
-      value: 282
+      value: 10100
     },
     {
-      name: 'sessionId',
+      name: 'host',
       class: 'String',
-      value: 'e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738'
+      value: 'localhost'
     },
     {
-      name: 'url',
-      class: 'String',
-      value: 'http://localhost:8080/service/transactionDAO'
-    },
-    {
-      name: 'client',
-      class: 'foam.dao.DAOProperty'
-    },
-    {
-      name: 'transactions',
-      class: 'Long'
+      name: 'port',
+      class: 'Long',
+      value: 80
     },
     {
       name: 'logger',
@@ -92,72 +85,138 @@ foam.CLASS({
     },
   ],
 
+  axioms: [
+    {
+      buildJavaClass: function(cls) {
+        cls.extras.push(`
+  protected AtomicLong pass_ = new AtomicLong();
+  protected AtomicLong fail_ = new AtomicLong();
+        `);
+      }
+    }
+  ],
+
   methods: [
+    {
+      name: 'getTransactionClient',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'sessionId',
+          type: 'String'
+        }
+      ],
+      javaType: 'foam.dao.DAO',
+      javaCode: `
+      return new ClientDAO.Builder(x)
+        .setDelegate(new SessionClientBox.Builder(x)
+          .setSessionID(sessionId)
+          .setDelegate(new HTTPBox.Builder(x)
+            .setAuthorizationType(foam.box.HTTPAuthorizationType.BEARER)
+            .setSessionID(sessionId)
+            .setUrl("http://"+getHost()+":"+getPort()+"/service/transactionDAO")
+            .build())
+          .build())
+        .build();
+      `
+    },
+    {
+      name: 'getPlannerClient',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'sessionId',
+          type: 'String'
+        }
+      ],
+      javaType: 'foam.dao.DAO',
+      javaCode: `
+      return new ClientDAO.Builder(x)
+        .setDelegate(new SessionClientBox.Builder(x)
+          .setSessionID(sessionId)
+          .setDelegate(new HTTPBox.Builder(x)
+            .setAuthorizationType(foam.box.HTTPAuthorizationType.BEARER)
+            .setSessionID(sessionId)
+            .setUrl("http://"+getHost()+":"+getPort()+"/service/transactionPlannerDAO")
+            .build())
+          .build())
+        .build();
+      `
+    },
     {
       name: 'setup',
       javaCode: `
-    AppConfig config = (AppConfig) x.get("appConfig");
-    if ( config.getMode() == foam.nanos.app.Mode.PRODUCTION ) return;
-    getLogger().info("setup");
-    StringBuilder sb = new StringBuilder();
-    sb.append(System.getProperty("hostname", "localhost"));
-    sb.append(":");
-    sb.append(getUrl());
-    String id = sb.toString();
-
-    setClient(
-      new ClientDAO.Builder(x)
-        .setDelegate(new SessionClientBox.Builder(x)
-          .setSessionID(getSessionId())
-          .setDelegate(new HTTPBox.Builder(x)
-            .setAuthorizationType(foam.box.HTTPAuthorizationType.BEARER)
-            .setSessionID(getSessionId())
-            .setUrl(getUrl())
-            .build())
-          .build())
-        .build()
-     );
-
-     setTransactions(0L);
+      getLogger().info("setup");
+      pass_ = new AtomicLong();
+      fail_ = new AtomicLong();
+      if ( getMaxUserId() - getMinUserId() < 2 ) {
+        throw new RuntimeException("Invalid User Range");
+      }
       `
     },
     {
       name: 'teardown',
       javaCode: `
-    getLogger().info("teardown");
-    stats.put("Transactions", getTransactions());
+      getLogger().info("teardown");
+      stats.put("total", pass_.get() + fail_.get());
+      stats.put("pass", pass_.get());
+      stats.put("fail", fail_.get());
       `
     },
     {
       name: 'execute',
       javaCode: `
-    AppConfig config = (AppConfig) x.get("appConfig");
-    if ( config.getMode() == foam.nanos.app.Mode.PRODUCTION ) return;
-//    getLogger().info("execute");
-    PM pm = PM.create(x, this.getOwnClassInfo(), getName());
-
-    long range = getMaxAccountId() - getMinAccountId() + 1;
-    long sourceId = (long) (Math.floor(Math.random() * range) + getMinAccountId());
-    long destinationId = (long) (Math.floor(Math.random() * range) + getMinAccountId());
-    long amount = (long) (Math.random() * 100);
-
-    net.nanopay.tx.model.Transaction txn = new net.nanopay.tx.model.Transaction();
-    txn.setSourceAccount(sourceId);
-    txn.setDestinationAccount(destinationId);
-    txn.setAmount(amount);
-
-    try {
-      synchronized (this) {
-        setTransactions(getTransactions() +1);
+      long range = getMaxUserId() - getMinUserId() + 1;
+      long amount = (long) (Math.random() * 100);
+      long payerId = 0L;
+      long payeeId = 0L;
+      while ( payerId == payeeId ) {
+        payerId = (long) (Math.floor(Math.random() * range) + getMinUserId());
+        payeeId = (long) (Math.floor(Math.random() * range) + getMinUserId());
       }
-//      getLogger().info("execute", "put", "request", "transaction");
-      txn = (Transaction) getClient().put(txn);
-//      getLogger().info("execute", "put", "response", "transaction", txn.getId(), txn.getStatus().getLabel());
-    } catch ( Throwable t ) {
-      getLogger().error(t.getMessage(), t);
-    } finally {
-      pm.log(x);
-    }
+
+      Transaction transaction = new Transaction();
+      transaction.setPayerId(payerId);
+      transaction.setPayeeId(payeeId);
+      transaction.setAmount(amount);
+
+      PM pm = PM.create(x, getName(), "execute");
+      try {
+        TransactionQuote quote = new TransactionQuote();
+        quote.setRequestTransaction(transaction);
+        getLogger().debug("quote", "request");
+        PM quotePm = PM.create(x, getName(), "quote");
+        quote = (TransactionQuote) getPlannerClient(x, String.valueOf(payerId)).put(quote);
+        if ( quote == null ) {
+          quotePm.error(x, "null quote");
+          throw new Exception("null quote returned on request. payerId: "+payerId+", payerId: "+payeeId+", amount: "+amount);
+        }
+        transaction = quote.getPlan();
+        quotePm.log(x);
+        getLogger().debug("quote", "response", transaction.getId());
+        getLogger().debug("transaction", "request");
+        PM txnPm = PM.create(x, getName(), "transaction");
+        transaction = (Transaction) getTransactionClient(x, String.valueOf(payerId)).put(transaction);
+        if ( transaction == null ) {
+          txnPm.error(x, "null transaction");
+          throw new Exception("null transaction returned on request. payerId: "+payerId+", payerId: "+payeeId+", amount: "+amount);
+        }
+        txnPm.log(x);
+        getLogger().debug("transaction", "response", transaction.getId());
+        pass_.incrementAndGet();
+      } catch (Throwable e) {
+        fail_.incrementAndGet();
+        getLogger().warning(e.getMessage(), e);
+        pm.error(x, e);
+      } finally {
+        pm.log(x);
+      }
       `
     },
   ]

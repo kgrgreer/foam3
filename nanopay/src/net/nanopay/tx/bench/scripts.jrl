@@ -35,22 +35,16 @@ p({
     import foam.nanos.bench.*;
     import net.nanopay.tx.bench.*;
 
-    // domain = "172.19.241.156"; //aws-mm1
-    // domain = "172.19.240.89"; //aws-mm2
-    // domain = "172.19.241.252"; //aws-mm3
-    domain = "172.19.5.38"; //aws-mm4
-
     lc = x.get("logLevelFilterLogger");
     lc.setLogInfo(true);
     savedDebug = lc.getLogDebug();
     lc.setLogDebug(false);
-    //x = x.put("pmLogger", null);
     b = new TransactionBenchmarkClient();
     b.setX(x);
-    b.setUrl("http://"+domain+":8080/service/transactionDAO");
-    b.setSessionId("e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738");
-    b.setMinAccountId(182);
-    b.setMaxAccountId(282);
+    b.setHost("moosehead");
+    b.setPort(80);
+    b.setMinUserId(10001);
+    b.setMaxUserId(10100);
     builder = new BenchmarkRunner.Builder(x)
       .setInvocationCount(1000)
       .setRunPerThread(true)
