@@ -1027,20 +1027,6 @@ p({class:"foam.i18n.Locale",id:"RBC.name",locale:"pt",source:"RBC.name",target:"
 p({class:"foam.i18n.Locale",id:"b5f2b020-db0f-11ea-87d0-0242ac130003.name",locale:"pt",source:"b5f2b020-db0f-11ea-87d0-0242ac130003.name",target:"Consumo de escritório"})
 p({class:"foam.i18n.Locale",id:"b5f2b020-db0f-11ea-87d0-0242ac130003.description",locale:"pt",source:"b5f2b020-db0f-11ea-87d0-0242ac130003.description",target:"A conta de consumo do escritório inclui Energia, Telefone, Água, TV a Cabo, IPTU ou Extrato Bancário. 3 meses de documentos de faturamento necessários."})
 
-p({class:"foam.i18n.Locale",id:"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-1.name",locale:"pt",source:"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-1.name",target:"Serviços de abastecimento e tecnologia"})
-p({class:"foam.i18n.Locale",id:"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-101.name",locale:"pt",source:"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-101.name",target:"Serviços de abastecimento e tecnologia"})
-p({class:"foam.i18n.Locale",id:"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-102.name",locale:"pt",source:"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-102.name",target:"Serviços de telecomunicação"})
-p({class:"foam.i18n.Locale",id:"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-103.name",locale:"pt",source:"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-103.name",target:"Serviços de informática"})
-p({class:"foam.i18n.Locale",id:"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-2.name",locale:"pt",source:"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-2.name",target:"Serviços de telecomunicação"})
-
-p({class:"foam.i18n.Locale",id:"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-201.name",locale:"pt",source:"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-201.name",target:"Exportar com recebimento antecipado:"})
-p({class:"foam.i18n.Locale",id:"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-202.name",locale:"pt",source:"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-202.name",target:"Bens Embutidos"})
-p({class:"foam.i18n.Locale",id:"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-203.name",locale:"pt",source:"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-203.name",target:"Export without RE or DU-E / DSE registration - International Orders pt"})
-p({class:"foam.i18n.Locale",id:"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-3.name",locale:"pt",source:"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-3.name",target:"Serviços de informática"})
-p({class:"foam.i18n.Locale",id:"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-4.name",locale:"pt",source:"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-4.name",target:"Exportar com recebimento antecipado"})
-p({class:"foam.i18n.Locale",id:"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-5.name",locale:"pt",source:"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-5.name",target:"Bens Embutidos"})
-p({class:"foam.i18n.Locale",id:"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-6.name",locale:"pt",source:"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-6.name",target:"Export without RE or DU-E / DSE registration - International Orders pt"})
-
 p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.InvoiceDetails.NOTE_LABEL",locale:"pt",source:"net.nanopay.sme.ui.InvoiceDetails.NOTE_LABEL",target:"Notas"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.dashboard.Dashboard.YOUR_LATEST",locale:"pt",source:"net.nanopay.sme.ui.dashboard.Dashboard.YOUR_LATEST",target:"Seus últimos"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.dashboard.Dashboard.ITEMS",locale:"pt",source:"net.nanopay.sme.ui.dashboard.Dashboard.ITEMS",target:"itens"})

@@ -484,13 +484,3 @@ p({
   "version":"0",
   "enabled":true
 })
-
-p({
-  "class": "foam.nanos.crunch.MinMaxCapability",
-  "id":"af7941f3-bd2d-4666-93b3-9e12a2e8023d",
-  "name":"Supply and Technology Services Documents",
-  "min": 1,
-  "max": 3,
-  "version":"0",
-  "enabled":true
-})
