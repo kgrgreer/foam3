@@ -115,17 +115,15 @@ function deploy_journals {
         mkdir -p target
     fi
 
+    EXTRA_JOURNAL=""
     if [ "$DISABLE_LIVESCRIPTBUNDLER" -eq 1 ]; then
-        if [ -z ${EXPLICIT_JOURNALS} ]; then
-            EXPLICIT_JOURNALS="-E"
-        fi
-        EXPLICIT_JOURNALS="${EXPLICIT_JOURNALS}tools/journal_extras/disable_livescriptbundler"
+        EXTRA_JOURNAL="-Atools/journal_extras/disable_livescriptbundler"
     fi
 
     if [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ] || [ $CLEAN_BUILD -eq 1 ]; then
-        ./tools/findJournals.sh -J${JOURNAL_CONFIG} ${EXPLICIT_JOURNALS} < $JOURNALS | ./find.sh -O${JOURNAL_OUT}
+        ./tools/findJournals.sh -J${JOURNAL_CONFIG} ${EXPLICIT_JOURNALS} ${EXTRA_JOURNAL} < $JOURNALS | ./find.sh -O${JOURNAL_OUT}
     else
-        ./tools/findJournals.sh -J${JOURNAL_CONFIG} ${EXPLICIT_JOURNALS} < $JOURNALS > target/journal_files
+        ./tools/findJournals.sh -J${JOURNAL_CONFIG} ${EXPLICIT_JOURNALS} ${EXTRA_JOURNAL} < $JOURNALS > target/journal_files
         gradle findSH -PjournalOut=${JOURNAL_OUT} -PjournalIn=target/journal_files $GRADLE_FLAGS
     fi
 
