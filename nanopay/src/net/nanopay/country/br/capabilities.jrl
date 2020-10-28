@@ -5,6 +5,7 @@ p({
   "name":"Balance Sheet",
   "description":"Balance sheet for the relevant period",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -15,6 +16,7 @@ p({
   "name":"Income Statement",
   "description":"Income statement for the relevant period",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -25,6 +27,7 @@ p({
   "name":"Bank Domicile Reasis",
   "description":"Bank domicile for payment of Reasis",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -33,9 +36,9 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-4",
   "name":"Bank Domicile Foreign Currency",
-  "reviewRequired":true,
   "description":"Bank domicile for payment of Foreign Currency",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -46,6 +49,7 @@ p({
   "name":"Bill Of Lading",
   "description":"BL, Airway Bill (AWB), CTR, Courier",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -55,6 +59,7 @@ p({
   "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-6",
   "name":"Board authorization for closing",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -64,6 +69,7 @@ p({
   "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-7",
   "name":"Company incorporation document",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -74,6 +80,7 @@ p({
   "name":"Company report",
   "description":"Company report with bills of lading numbers.",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -84,6 +91,7 @@ p({
   "name":"Contract",
   "description":"Contract between the parties",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -94,6 +102,7 @@ p({
   "name":"Contract",
   "description":"Social Contract",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -104,6 +113,7 @@ p({
   "name":"Corporate act",
   "description":"Corporate act deliberating on the investment",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -114,6 +124,7 @@ p({
   "name":"Letter of authorization",
   "description":"Letter of authorization from the foreign company to receive the investment",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -123,6 +134,7 @@ p({
   "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-13",
   "name":"Courier voucher",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -132,6 +144,7 @@ p({
   "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-14",
   "name":"Debit Note",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -141,6 +154,7 @@ p({
   "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-15",
   "name":"Deed of the Property",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -150,6 +164,7 @@ p({
   "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-16",
   "name":"Document of proof of kinship",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -159,6 +174,7 @@ p({
   "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-17",
   "name":"Document proving the operation",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -168,6 +184,7 @@ p({
   "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-18",
   "name":"Import Declaration",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -177,6 +194,7 @@ p({
   "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-19",
   "name":"Insurance note",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -186,6 +204,7 @@ p({
   "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-20",
   "name":"Invoice with payment details",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -195,6 +214,7 @@ p({
   "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-21",
   "name":"Lease Agreement",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -204,6 +224,7 @@ p({
   "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-22",
   "name":"Loan Agreement",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -213,6 +234,7 @@ p({
   "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-23",
   "name":"Minutes of Profit Distribution of the company",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -222,6 +244,7 @@ p({
   "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-24",
   "name":"Policy",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -231,6 +254,7 @@ p({
   "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-25",
   "name":"Proof of investment abroad",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -241,6 +265,7 @@ p({
   "name":"Proof of order received from abroad",
   "description":"Proof of order received from abroad (SWIFT / CCME)",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -251,6 +276,7 @@ p({
   "name":"Proof of payment of taxes",
   "description":"Proof of payment of taxes on gifts and inheritances",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -260,6 +286,7 @@ p({
   "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-28",
   "name":"Property purchase agreement",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -269,6 +296,7 @@ p({
   "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-29",
   "name":"Property Sale Agreement",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -278,6 +306,7 @@ p({
   "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-30",
   "name":"Property Rental Agreement",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -286,8 +315,8 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-31",
   "name":"RDE-ROF",
-  "reviewRequired":true,
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -297,6 +326,7 @@ p({
   "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-32",
   "name":"Payment scheme",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -306,6 +336,7 @@ p({
   "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-33",
   "name":"ROF",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -316,6 +347,7 @@ p({
   "name":"RDE-IED",
   "description":"Updated RDE-IED",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -326,6 +358,7 @@ p({
   "name":"Simplified export declaration (DSE)",
   "description":"Simplified export declaration / DSE (Declaração Simplificada de Exportação)",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -336,6 +369,7 @@ p({
   "name":"Export Registration (RE)",
   "description":"Export Registration / RE (registro-de-exportacao)",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -344,8 +378,8 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-37",
   "name":"Sales statement for the period",
-  "reviewRequired":true,
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -355,6 +389,7 @@ p({
   "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-38",
   "name":"Service Provision Agreement",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -364,6 +399,7 @@ p({
   "id":"5fdd9025-86e6-45a1-bed5-8962acdf5338-39",
   "name":"Signed Commercial Invoice",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -374,6 +410,7 @@ p({
   "name":"Wills Inventory",
   "description":"Document containing the Wills inventory",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
@@ -384,6 +421,7 @@ p({
   "name":"Signed Proforma Invoice",
   "description":"Signed Proforma Invoice (containing expected shipping date)",
   "of":"net.nanopay.crunch.document.Document",
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
