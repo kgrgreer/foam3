@@ -118,9 +118,8 @@ function deploy_journals {
     if [ "$DISABLE_LIVESCRIPTBUNDLER" -eq 1 ]; then
         if [ -z ${EXPLICIT_JOURNALS} ]; then
             EXPLICIT_JOURNALS="-E"
-        else
-            EXPLICIT_JOURNALS="${EXPLICIT_JOURNALS}tools/journal_extras/disable_livescriptbundler"
         fi
+        EXPLICIT_JOURNALS="${EXPLICIT_JOURNALS}tools/journal_extras/disable_livescriptbundler"
     fi
 
     if [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ] || [ $CLEAN_BUILD -eq 1 ]; then
