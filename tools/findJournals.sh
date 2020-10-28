@@ -10,9 +10,9 @@ function usage {
     echo ""
     echo "Options are:"
     echo "  -I : Input File, no option defaults to stdin"
-    echo "  -J : Instances"
+    echo "  -J : deployment journals"
     echo "  -O : Output File, no option defaults to stdout"
-    echo "  -E : Specify extra journal source directory"
+    echo "  -E : Specify explicit journal source directories, ignore faom2 and nanopay source directories."
 }
 
 while getopts "I:J:O:E:" opt ; do
@@ -26,17 +26,25 @@ while getopts "I:J:O:E:" opt ; do
 done
 
 declare -a sources=(
-  "foam2/src"
-  "nanopay/src"
 )
 
-IFS=',' read -ra DIRS <<< "$INSTANCES"
-for d in "${DIRS[@]}"; do
-    sources+=("deployment/$(echo "$d" | tr '[:upper:]' '[:lower:]')")
-done
+if [ -z ${EXTRA_FILES} ]; then
+    sources+=("foam2/src")
+    sources+=("nanopay/src")
+fi
 
-if [ ! -z $EXTRA_FILES ]; then
-    sources+=($EXTRA_FILES)
+if [ ! -z ${INSTANCES} ]; then
+    IFS=',' read -ra DIRS <<< "$INSTANCES"
+    for d in "${DIRS[@]}"; do
+        sources+=("deployment/$(echo "$d" | tr '[:upper:]' '[:lower:]')")
+    done
+fi
+
+if [ ! -z ${EXTRA_FILES} ]; then
+    IFS=',' read -ra DIRS <<< "${EXTRA_FILES}"
+    for d in "${DIRS[@]}"; do
+        sources+=("$(echo "$d" | tr '[:upper:]' '[:lower:]')")
+    done
 fi
 
 if [ ! -z $OUT_FILE ]; then
