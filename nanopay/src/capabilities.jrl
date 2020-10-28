@@ -1035,13 +1035,13 @@ p({
 
 
 p({
-  class: "foam.nanos.crunch.Capability",
-  id: "googleSheetsImportCapability",
+  "class":"foam.nanos.crunch.Capability",
+  "id":"googleSheetsImportCapability",
   "name":"google sheets import capability",
   "version":"0",
   "enabled":true,
   "visible":false,
-  permissionsGranted: [
+  "permissionsGranted":[
     "data.import.googleSheets"
   ]
 })
