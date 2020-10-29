@@ -233,7 +233,7 @@ foam.CLASS({
   messages: [
     { name: 'DETAILS_SUBTITLE', message: 'Create new or choose from existing' },
     { name: 'EXISTING_HEADER', message: 'Choose an existing ' },
-    { name: 'DETAILS_HEADER', message: 'Details' },
+    { name: 'DETAILS_HEADER', message: 'Invoice Details' },
     { name: 'BACK', message: 'Back to selection' },
     { name: 'ACCOUNT_WITHDRAW_LABEL', message: 'Withdraw from' },
     { name: 'SELECT_BANK_ACCOUNT', message: 'Please select a bank account' }
