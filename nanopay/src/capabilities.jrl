@@ -540,8 +540,8 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-76",
-  "name":"Business Registration",
-  "description":"Create a business to access payments and invoice on the platform.",
+  "name":"Register your business",
+  "description":"Access payments and invoices",
   "icon":"/images/capabilityIcons/BusinessRegistrationCap.svg",
   "of":"net.nanopay.crunch.onboardingModels.InitialBusinessData",
   "version":"0",
@@ -561,7 +561,7 @@ p({
     "class": "foam.u2.wizard.StepWizardConfig",
     "allowSkipping": false
   },
-  "requirementViewTitle":"In this section, we ask you to enter some details relating to your business.",
+  "requirementViewTitle":"Have your business documents ready. You can save your progress and come back later.",
   "permissionsGranted":[
   "menu.read.capability.main.banking",
   "menu.read.capability.main.contacts",
