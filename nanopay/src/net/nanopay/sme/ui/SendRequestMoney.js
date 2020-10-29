@@ -311,7 +311,7 @@ foam.CLASS({
         {
           parent: 'sendRequestMoney',
           id: this.DETAILS_VIEW_ID,
-          label: 'Details',
+          label: 'Invoice Details',
           subtitle: 'Select payable',
           view: {
             class: 'net.nanopay.sme.ui.SendRequestMoneyDetails',

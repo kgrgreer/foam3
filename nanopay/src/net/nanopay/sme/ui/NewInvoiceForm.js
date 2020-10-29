@@ -295,11 +295,11 @@ foam.CLASS({
     { name: 'SEND_TO', message: 'Send to' },
     { name: 'REQUEST_FROM', message: 'Request from' },
     { name: 'AMOUNT', message: 'Amount' },
-    { name: 'INVOICE_NUMBER', message: 'Invoice Number' },
+    { name: 'INVOICE_NUMBER', message: 'Invoice number' },
 
-    { name: 'DATE_ISSUED', message: 'Date issued' },
-    { name: 'PO_NUMBER', message: 'P.O. Number' },
-    { name: 'DATE_DUE', message: 'Date Due' },
+    { name: 'DATE_ISSUED', message: 'Issue date' },
+    { name: 'PO_NUMBER', message: 'Purchase order number' },
+    { name: 'DATE_DUE', message: 'Due date' },
   ],
 
   constants: [
