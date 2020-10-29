@@ -101,6 +101,10 @@ foam.INTERFACE({
       {
         type: 'foam.nanos.auth.User',
         name: 'currentUser'
+      },
+      {
+        type: 'Boolean',
+        name: 'keepOnlyCADAccounts'
       }
     ]
   },
