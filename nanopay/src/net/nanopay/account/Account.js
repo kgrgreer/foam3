@@ -78,6 +78,10 @@ foam.CLASS({
     }
   ],
 
+  messages: [
+    { name: 'DEFAULT_MSG', message: 'Default' }
+  ],
+
   sections: [
     {
       name: 'accountType',
@@ -224,7 +228,7 @@ foam.CLASS({
         this.add('Default');
       },
       tableHeader: function(axiom) {
-        return 'Default';
+        return this.sourceCls_.DEFAULT_MSG;
       },
       tableCellFormatter: function(value, obj, property) {
         this
