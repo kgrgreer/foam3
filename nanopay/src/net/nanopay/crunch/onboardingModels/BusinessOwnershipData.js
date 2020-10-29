@@ -242,6 +242,8 @@ foam.CLASS({
       class: 'net.nanopay.crunch.onboardingModels.OwnerProperty',
       index: 1,
       documentation: 'First owner',
+      autoValidate: true,
+      validationTextVisible: true,
       validationPredicates: [
       {
         args: ['amountOfOwners', 'owner1$errors_'],
@@ -266,6 +268,8 @@ foam.CLASS({
       class: 'net.nanopay.crunch.onboardingModels.OwnerProperty',
       index: 2,
       documentation: 'Second owner',
+      autoValidate: true,
+      validationTextVisible: true,
       validationPredicates: [
       {
         args: ['amountOfOwners', 'owner2$errors_'],
@@ -290,6 +294,8 @@ foam.CLASS({
       class: 'net.nanopay.crunch.onboardingModels.OwnerProperty',
       index: 3,
       documentation: 'Third owner',
+      autoValidate: true,
+      validationTextVisible: true,
       validationPredicates: [
       {
         args: ['amountOfOwners', 'owner3$errors_'],
@@ -314,6 +320,8 @@ foam.CLASS({
       class: 'net.nanopay.crunch.onboardingModels.OwnerProperty',
       index: 4,
       documentation: 'Forth owner',
+      autoValidate: true,
+      validationTextVisible: true,
       validationPredicates: [
       {
         args: ['amountOfOwners', 'owner4$errors_'],

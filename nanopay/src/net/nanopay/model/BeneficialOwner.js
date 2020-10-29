@@ -287,11 +287,6 @@ foam.CLASS({
       of: 'foam.nanos.auth.Country',
       section: 'requiredSection',
       documentation: `Defined nationality of beneficial owner.`,
-      visibility: function (type) {
-        return type == 'BR' ?
-        foam.u2.DisplayMode.RW :
-        foam.u2.DisplayMode.HIDDEN;
-      },
       view: function(_, X) {
         return {
           class: 'foam.u2.view.RichChoiceView',

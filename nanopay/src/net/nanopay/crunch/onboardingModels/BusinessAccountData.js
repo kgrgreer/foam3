@@ -163,7 +163,7 @@ foam.CLASS({
           mode: 'RW',
           enableAdding: true,
           enableRemoving: true,
-          name: x.data.CUSTOMERS_MSG,
+          name: x.data.SUPPLIERS_MSG,
         }
       },
       validationPredicates: [
