@@ -52,12 +52,14 @@ foam.CLASS({
             ));
 
             if ( ucj == null ) {
-              ucj = new UserCapabilityJunction.Builder(x).setSourceId(((UserCapabilityJunction) obj).getSourceId())
+              ucj = new UserCapabilityJunction.Builder(x)
+                .setSourceId(((UserCapabilityJunction) obj).getSourceId())
                 .setTargetId(capId)
-                .setStatus(CapabilityJunctionStatus.PENDING_REVIEW)
                 .build();
-              ucjDAO.put_(x, ucj);
             }
+
+            ucj.setStatus(CapabilityJunctionStatus.PENDING_REVIEW);
+            ucjDAO.put_(x, ucj);
           }
         }, "Create ucj on user passed compliance");
       `
