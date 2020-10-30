@@ -23,8 +23,9 @@ foam.CLASS({
   imports: [ 'currencyDAO' ],
 
   messages: [
-    { name: 'NO_CURRENCY_ERROR', message: 'Please select a currency' },
-    { name: 'NO_AMOUNT_ERROR', message: 'Please enter an amount' }
+    { name: 'NO_CURRENCY_ERROR', message: 'Currency required' },
+    { name: 'NO_AMOUNT_ERROR', message: 'Amount required' },
+    { name: 'CURRENCY_PLACEHOLDER', message: 'Select currency' }
   ],
 
   properties: [
@@ -36,6 +37,7 @@ foam.CLASS({
         return {
           class: 'foam.u2.view.RichChoiceView',
           search: true,
+          placeholder: this.CURRENCY_PLACEHOLDER,
           sections: [
             {
               heading: 'Available Currencies',
