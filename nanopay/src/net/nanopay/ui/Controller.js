@@ -770,7 +770,7 @@ foam.CLASS({
           var menu;
 
           // Redirect user to switch business if agent doesn't exist.
-          if ( ! this.subject.realUser ) {
+          if ( ! this.subject.realUser || this.subject.realUser.id === this.subject.user.id ) {
             menu = await this.client.menuDAO.find('sme.accountProfile.switch-business');
             menu.launch(this);
             return;

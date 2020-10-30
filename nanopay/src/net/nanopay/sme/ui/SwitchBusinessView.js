@@ -250,7 +250,8 @@ foam.CLASS({
           this.subject.realUser = result;
           this.clearCachedDAOs();
           this.initLayout.resolve();
-          this.pushMenu('sme.main.appStore');
+          await this.pushDefaultMenu();
+
           return;
         }
       } catch (err) {
@@ -259,6 +260,13 @@ foam.CLASS({
           : this.BUSINESS_LOGIN_FAILED;
         this.notify(msg, '', this.LogLevel.ERROR, true);
       }
+    },
+
+    async function pushDefaultMenu() {
+      var defaultMenu = this.theme ? 
+        await this.menuDAO.find(this.theme.defaultMenu) : 
+        'sme.main.appStore';
+      this.pushMenu(defaultMenu);
     },
 
     async function init() {
@@ -282,7 +290,7 @@ foam.CLASS({
 
         if ( sink.array.length === 0 ) {
           this.initLayout.resolve();
-          this.pushMenu('sme.main.appStore');
+          await this.pushDefaultMenu();
           return;
         }
 
