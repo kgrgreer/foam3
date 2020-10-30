@@ -21,17 +21,26 @@ foam.CLASS({
   extends: 'net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability',
 
   messages: [
-    { name: 'ACKNOWLEDGE_AGREEMENT', message: 'Must acknowledge the agreement above' }
+    { name: 'ACKNOWLEDGE_AGREEMENT', message: 'Certification required' }
+  ],
+
+  sections: [
+    {
+      name: 'reviewAgreementDocumentsSection',
+      title: 'Review and accept the customer agreement',
+      navTitle: 'Terms and Conditions',
+      permissionRequired: true
+    },
   ],
 
   properties: [
     {
       name: 'title',
-      value: 'nanopay international Payments Customer Agreement'
+      value: 'nanopay International Payments Customer Agreement'
     },
     {
       name: 'checkboxText',
-      value: 'I acknowledge that I have read and accept the '
+      value: 'I certify that I have read, understood and agree to the '
     },
     {
       name: 'link',

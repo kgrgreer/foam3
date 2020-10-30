@@ -488,6 +488,11 @@ foam.CLASS({
   package: 'net.nanopay.crunch.onboardingModels',
   name: 'OwnerSection',
   extends: 'foam.layout.SectionAxiom',
+
+  messages: [
+    { name: 'OWNER_DETAILS', message: 'Details for owner #' },
+  ],
+
   properties: [
     {
       class: 'Int',
@@ -502,7 +507,7 @@ foam.CLASS({
     {
       name: 'title',
       expression: function(index) {
-        return `Add details for owner #${index}`;
+        return `${this.OWNER_DETAILS}${index}`;
       }
     },
     {
@@ -734,7 +739,6 @@ foam.CLASS({
       var choiceSections = [];
 
       choiceSections.push({
-        heading: this.SO_SELECTION,
         // filter out all the siging officers except the one chosen by this owner
         dao: this.dao2.where(
           this.OR(
@@ -748,7 +752,6 @@ foam.CLASS({
       });
 
       choiceSections.push({
-        heading: this.OTHER_SELECTION,
         dao$: this.dao$
       });
 
