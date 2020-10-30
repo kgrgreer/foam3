@@ -21,7 +21,6 @@ p({
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"localAccountDAO",
-  "lazy":false,
   "serviceScript":
   """
     import net.nanopay.account.Account;
@@ -69,7 +68,6 @@ p({
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"accountDAO",
-  "lazy":false,
   "serve":true,
   "serviceScript":
   """
