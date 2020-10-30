@@ -65,9 +65,18 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'INVALID_CPF', message: 'Invalid CPF Number' },
+    { name: 'INVALID_CPF', message: 'Valid CPF number required' },
     { name: 'INVALID_OWNER_NAME', message: 'Click to verify owner name' },
-    { name: 'INVALID_NATIONALITY', message: 'Please select your nationality' }
+    { name: 'INVALID_NATIONALITY', message: 'Nationality required' },
+    { name: 'INVALID_FIRST_NAME', message: 'First name required' },
+    { name: 'INVALID_LAST_NAME', message: 'Last name required' },
+    { name: 'INVALID_JOB_TITLE', message: 'Job title required' },
+    { name: 'INVALID_OWNER_PERCENT', message: 'Percentage must be a value between 25 and 100' },
+    { name: 'INVALID_AGE_UNDER', message: 'Must be at least 18 years old' },
+    { name: 'INVALID_AGE_OVER', message: 'Must be less than 125 years old' },
+    { name: 'STREET_NUMBER_LABEL', message: 'Street number' },
+    { name: 'STREET_NAME_LABEL', message: 'Street name' },
+    { name: 'PLACEHOLDER', message: 'Select a country' }
   ],
 
   properties: [
@@ -117,7 +126,7 @@ foam.CLASS({
                 }), 0)
             );
           },
-          errorString: 'Please enter first name'
+          errorMessage: 'INVALID_FIRST_NAME'
         }
       ]
     },
@@ -140,7 +149,7 @@ foam.CLASS({
                 }), 0)
             );
           },
-          errorString: 'Please enter last name'
+          errorMessage: 'INVALID_LAST_NAME'
         }
       ]
     },
@@ -169,7 +178,7 @@ foam.CLASS({
               )
             );
           },
-          errorString: 'Must be at least 18 years old.'
+          errorMessage: 'INVALID_AGE_UNDER'
         },
         {
           args: ['birthday', 'showValidation'],
@@ -184,7 +193,7 @@ foam.CLASS({
               )
             );
           },
-          errorString: 'Must be under the age of 125 years old.'
+          errorMessage: 'INVALID_AGE_OVER'
         }
       ],
       postSet: function(_,n) {
@@ -230,13 +239,14 @@ foam.CLASS({
                 }), 0)
             );
           },
-          errorString: 'Please select a Job Title.'
+          errorMessage: 'INVALID_JOB_TITLE'
         }
       ]
     },
     {
       class: 'Int',
       name: 'ownershipPercent',
+      label: 'Percentage of ownership',
       section: 'requiredSection',
       documentation: `
         Represents the percentage of the business that the beneficial owner
@@ -255,7 +265,7 @@ foam.CLASS({
               )
             );
           },
-          errorString: 'Must be between 25 and 100'
+          errorMessage: 'INVALID_OWNER_PERCENT'
         }
       ]
     },
@@ -269,7 +279,10 @@ foam.CLASS({
         return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
       factory: function() {
-        return this.Address.create();
+        let address = this.Address.create();
+        address.streetName$.prop.label = this.STREET_NAME_LABEL;
+        address.streetNumber$.prop.label = this.STREET_NUMBER_LABEL;
+        return address
       },
       view: function(_, X) {
         return {
@@ -291,6 +304,7 @@ foam.CLASS({
         return {
           class: 'foam.u2.view.RichChoiceView',
           search: true,
+          placeholder: X.data.PLACEHOLDER,
           sections: [
             {
               heading: 'Countries',
@@ -318,7 +332,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'cpf',
-      label: 'CPF',
+      label: 'Cadastro de Pessoas Físicas (CPF)',
       section: 'requiredSection',
       documentation: `CPF number of beneficial owner.`,
       visibility: function(type) {
@@ -440,7 +454,7 @@ foam.CLASS({
         related to any such person.
       `,
       section: 'requiredSection',
-      label: 'This owner is a politically exposed person or head of an international organization (PEP/HIO)',
+      label: 'The owner is a politically exposed person (PEP) or head of an international organization (HIO)',
       help: `
         A political exposed person (PEP) or the head of an international organization (HIO)
         is a person entrusted with a prominent position that typically comes with the opportunity

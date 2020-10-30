@@ -70,6 +70,11 @@ FOAM_FILES([
   { name: 'net/nanopay/flinks/view/form/FlinksFailForm', flags: ['web'] },
   { name: 'net/nanopay/flinks/view/form/FlinksImageForm', flages: ['web'] },
   { name: 'net/nanopay/flinks/view/element/StringArrayInput', flages: ['web'] },
+  // flinks widget
+  { name: 'net/nanopay/flinks/widget/FlinksException' },
+  { name: 'net/nanopay/flinks/widget/FlinksWidgetView', flags: ['web'] },
+  { name: 'net/nanopay/flinks/widget/drivers/FlinksDriver' },
+  { name: 'net/nanopay/flinks/widget/drivers/RequestToPayFlinksDriver' },
 
   // modals
   { name: 'net/nanopay/flinks/view/FlinksInstitutionsView', flags: ['web'] },

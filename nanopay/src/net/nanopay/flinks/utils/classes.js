@@ -52,6 +52,10 @@ var classes = [
   'net.nanopay.flinks.external.OnboardingType',
   'net.nanopay.flinks.external.OverrideData',
   'net.nanopay.flinks.external.UserOverrideData',
+  //flinks widget
+  'net.nanopay.flinks.widget.FlinksException',
+  'net.nanopay.flinks.widget.drivers.FlinksDriver',
+  'net.nanopay.flinks.widget.drivers.RequestToPayFlinksDriver'
 ];
 var abstractClasses = [];
 var skeletons = [

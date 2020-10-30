@@ -539,7 +539,7 @@ foam.CLASS({
       section: 'personalInformationSection',
       label: 'I am a politically exposed person or head of an international organization (PEP/HIO)',
       help: `
-        A political exposed person (PEP) or the head of an international organization (HIO)
+        A politically exposed person (PEP) or the head of an international organization (HIO)
         is a person entrusted with a prominent position that typically comes with the opportunity
         to influence decisions and the ability to control resources
       `,

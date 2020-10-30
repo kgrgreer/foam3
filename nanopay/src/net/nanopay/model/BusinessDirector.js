@@ -121,7 +121,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'cpf',
-      label: 'CPF',
+      label: 'Cadastro de Pessoas Físicas (CPF)',
       required: true,
       visibility: function (type) {
         return type == 'BR' ?

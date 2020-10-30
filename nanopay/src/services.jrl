@@ -363,10 +363,14 @@ p({
       "of":"net.nanopay.invoice.model.Invoice",
       "remoteListenerSupport":false,
       "cache": false,
-      "decorators": [{
-        "class":"foam.nanos.fs.FileArrayInCapablePayloadsDecorator",
-        "class":"foam.nanos.fs.FileArrayDAODecorator"
-      }]
+      "decorators": [
+        {
+          "class":"foam.nanos.fs.FileArrayDAODecorator"
+        },
+        {
+          "class":"foam.nanos.fs.FileArrayInCapablePayloadsDecorator"
+        }
+      ]
     }
   """
 })

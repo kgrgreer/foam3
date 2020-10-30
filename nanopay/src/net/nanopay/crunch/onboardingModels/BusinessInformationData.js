@@ -48,22 +48,20 @@ foam.CLASS({
   sections: [
     {
       name: 'businessDetailsSection',
-      title: 'Enter the business details'
+      title: 'Business details'
     }
   ],
 
   messages: [
     { name: 'PLACE_HOLDER', message: 'Please select...' },
-    { name: 'BUSINESS_TYPE_ERROR', message: 'Please select type of business' },
-    { name: 'NATURE_OF_BUSINESS_ERROR', message: 'Please select business sector' },
-    { name: 'SOURCE_OF_FUNDS_ERROR', message: 'Please provide primary source of funds' },
-    { name: 'OPERATING_NAME_ERROR', message: 'Please enter business name' },
+    { name: 'BUSINESS_TYPE_ERROR', message: ' Business type required' },
+    { name: 'NATURE_OF_BUSINESS_ERROR', message: 'Business sector required' },
+    { name: 'SOURCE_OF_FUNDS_ERROR', message: 'Source of funds required' },
+    { name: 'OPERATING_NAME_ERROR', message: 'Operating name required' },
     { name: 'YES', message: 'Yes' },
     { name: 'NO', message: 'No' },
     { name: 'OTHER_LABEL', message: 'Other' },
-    { name: 'BUSINESS_LABEL', message: 'Does your business operate under a different name?' },
     { name: 'OPERATING_NAME_LABEL', message: 'Enter your operating name' },
-    { name: 'PRIMARY_LABEL', message: 'Primary source of funds' },
     { name: 'OPTION_ONE', message: 'Purchase of goods produced' },
     { name: 'OPTION_TWO', message: 'Completion of service contracts' },
     { name: 'OPTION_THREE', message: 'Investment Income' },
@@ -105,7 +103,7 @@ foam.CLASS({
       of: 'net.nanopay.model.BusinessSector',
       name: 'businessSectorId',
       documentation: 'The ID of the general economic grouping for the business. This ID is found by querying the businessSectorDAO.',
-      label: 'Business Sector',
+      label: 'Business sector',
       view: { class: 'net.nanopay.business.NatureOfBusiness' },
       validationPredicates: [
         {
@@ -119,7 +117,7 @@ foam.CLASS({
     },
     net.nanopay.model.Business.SOURCE_OF_FUNDS.clone().copyFrom({
       section: 'businessDetailsSection',
-      label: this.PRIMARY_LABEL,
+      label: 'Source of funds',
       view: function(_, X) {
         return {
           class: 'foam.u2.view.ChoiceWithOtherView',
@@ -158,8 +156,8 @@ foam.CLASS({
       section: 'businessDetailsSection',
       class: 'Boolean',
       name: 'operatingUnderDifferentName',
+      label: 'Is your business operating under a different name?',
       documentation: 'Whether the business operates under a different name.',
-      label: this.BUSINESS_LABEL,
       view: function(_, X) {
         return {
           class: 'foam.u2.view.RadioView',
@@ -173,6 +171,7 @@ foam.CLASS({
     },
     net.nanopay.model.Business.OPERATING_BUSINESS_NAME.clone().copyFrom({
       section: 'businessDetailsSection',
+      label: 'Operating name',
       view: {
         class: 'foam.u2.TextField',
         placeholder: this.OPERATING_NAME_LABEL

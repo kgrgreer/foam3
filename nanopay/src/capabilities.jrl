@@ -195,9 +195,9 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"777af38a-8225-87c8-dfdf-eeb15f71215f-123",
-  "name":"Brazil Signing Officer Privileges",
+  "name":"Complete your signing officer information",
   "of":"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData",
-  "description":"Unlock signing officer privileges",
+  "description":"Authorization to sign on behalf of the business",
   "version":"0",
   "visible":true,
   "enabled":true,
@@ -266,7 +266,7 @@ p({
     "class": "foam.u2.wizard.StepWizardConfig",
     "allowSkipping": false
   },
-  "requirementViewTitle":"In this section, we ask you for certain personal documents and information so we can verify your identity."
+  "requirementViewTitle":"Have your signing officer documents ready. You can save your progress and come back later."
 })
 
 p({
@@ -603,7 +603,7 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"fb7d3ca2-62f2-4caf-a84c-860392e4676b",
-  "name":"CPF",
+  "name":"CPF number",
   "of":"net.nanopay.country.br.CPF",
   "version":"0",
   "enabled":true,
@@ -646,8 +646,8 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"85cee1de-db32-11ea-87d0-0242ac130003",
-  "name":"Residence Consumption Bill",
-  "description":"Please provide 3 months of Residence Consumption Bills.  These can be electricity, water, telephone, cable TV or IPTU bills. Bank statements also work.",
+  "name":"Utility bills",
+  "description":"Provide three months of bills, such as water, electricity, telephone, cable TV, internet, or property tax. Alternatively, you can provide bank statements.",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "enabled":true,
@@ -657,8 +657,8 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"8ad3c898-db32-11ea-87d0-0242ac130003",
-  "name":"User Identity",
-  "description":"Please attach a government issued identification document that has your full name, picture, and CPF number.",
+  "name":"Identification",
+  "description":"Please attach a copy of a piece of government issued identification which shows your full name, picture, and CPF number.",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "enabled":true,
@@ -884,7 +884,7 @@ p({
 
 p({
   "id":"8bffdedc-5176-4843-97df-1b75ff6054fb",
-  "name":"Signing Officer Date of Birth",
+  "name":"Date of birth",
   "of":"net.nanopay.crunch.onboardingModels.UserBirthDateData",
   "daoKey":"userDAO",
   "contextDAOFindKey":"subject.realuser",

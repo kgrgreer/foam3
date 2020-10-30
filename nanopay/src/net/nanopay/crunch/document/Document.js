@@ -23,15 +23,15 @@ foam.CLASS({
   documentation: 'document upload capability',
 
   messages: [
-    { name: 'UPLOAD_REQUEST_MSG', message: 'Please attach a document(s) for' },
-    { name: 'IMAGE_REQUIRED', message: 'Please attach a document(s).' },
+    { name: 'UPLOAD_REQUEST_MSG', message: 'Document(s) required for' },
+    { name: 'IMAGE_REQUIRED', message: 'Document(s) required' },
     { name: 'SECTION_HELP_MSG', message: 'Require a document for' }
   ],
 
   sections: [
     {
       name: 'documentUploadSection',
-      title: 'Document Upload Section',
+      title: 'Document Upload',
       subTitle: function(capability) {
         return capability.description ?
           `${capability.description}` :

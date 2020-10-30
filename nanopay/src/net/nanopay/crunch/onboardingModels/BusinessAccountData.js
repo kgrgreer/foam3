@@ -28,7 +28,7 @@ foam.CLASS({
   sections: [
     {
       name: 'accountingSection',
-      title: 'Ownership and Taxation information'
+      title: 'Ownership and tax information'
     },
     {
       name: 'customerSection',
@@ -45,7 +45,7 @@ foam.CLASS({
     { name: 'NO_SUPPLIERS_INFO', message: 'Please enter main supplier\'s information' },
     { name: 'CUSTOMER_OBJ_ERROR', message: 'One or more of the customers entered is invalid' },
     { name: 'SUPPLIER_OBJ_ERROR', message: 'One or more of the suppliers entered is invalid' },
-    { name: 'INVALID_DATE', message: 'Last date cannot be future dated' },
+    { name: 'INVALID_DATE', message: 'Cannot be a future date' },
     { name: 'YES', message: 'Yes' },
     { name: 'NO', message: 'No' },
     { name: 'CUSTOMERS_MSG', message: 'Customers' },
@@ -56,7 +56,7 @@ foam.CLASS({
     {
       section: 'accountingSection',
       name: 'OwnerOrOutsourced',
-      label: 'Is the company accounting outsourced?',
+      label: 'Do you outsource the accounting for your business?',
       class: 'Boolean',
       view: function(_, X) {
         return {
@@ -64,14 +64,15 @@ foam.CLASS({
           choices: [
             [true, X.data.YES],
             [false, X.data.NO]
-          ]
+          ],
+          isHorizontal: true
         };
       }
     },
     {
       section: 'accountingSection',
       name: 'ownerManagment',
-      label: 'Are you the owner managing the company?',
+      label: 'Does the owner manage the business?',
       class: 'Boolean',
       view: function(_, X) {
         return {
@@ -87,7 +88,7 @@ foam.CLASS({
     {
       section: 'accountingSection',
       name: 'simpleTax',
-      label: 'Do you opt into Simple Tax?',
+      label: 'Does your business opt for Simple Tax?',
       class: 'Boolean',
       view: function(_, X) {
         return {
@@ -104,7 +105,7 @@ foam.CLASS({
       section: 'accountingSection',
       class: 'Date',
       name: 'dateOfFilingTaxes',
-      label: 'What is the most recent date the company filed taxes',
+      label: 'When did the business last file taxes?',
       help: 'The date the last time you filed taxes',
       documentation: 'The date the last time you filed taxes',
       required: true,

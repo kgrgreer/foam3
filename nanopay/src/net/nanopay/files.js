@@ -239,6 +239,8 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/ExpandContainer', flags: ['web'] },
   { name: 'net/nanopay/ui/DataSecurityBanner', flags: ['web'] },
 
+  { name: 'net/nanopay/ui/LoadingSpinner', flags: ['web'] },
+
   // Exchangeable
   { name: 'net/nanopay/exchangeable/Security' },
   { name: 'net/nanopay/exchangeable/AssetClass' },
@@ -1735,6 +1737,12 @@ FOAM_FILES([
   { name: 'net/nanopay/country/br/NatureCodePaymentProviderJunctionRefinement' },
   { name: 'net/nanopay/country/br/NatureBusinessRelationship' },
 
+  //RequestToPay
+  { name: 'net/nanopay/rtp/RequestToPay'},
+  { name: 'net/nanopay/rtp/RtpFlinksView'},
+  { name: 'net/nanopay/rtp/RtpConfirmView'},
+  { name: 'net/nanopay/rtp/RtpView'},
+  { name: 'net/nanopay/rtp/ThankYou', flags: ['web'] },
 
   // Treviso
   { name: 'net/nanopay/partner/treviso/FepWebOnboardingRule'},
