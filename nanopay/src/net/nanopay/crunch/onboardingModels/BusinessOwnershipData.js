@@ -48,7 +48,8 @@ foam.CLASS({
   sections: [
     {
       name: 'ownershipAmountSection',
-      title: 'How many individuals directly or indirectly own 25% or more of the business?',
+      title: 'Enter the number of people who own 25% or more of the business either directly or indirectly.',
+      navTitle: 'Number of owners',
       help: `In accordance with banking laws, we need to document the percentage of ownership of any individual with a 25% + stake in the company.
       Please have owner address and date of birth ready.`,
     },

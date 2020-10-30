@@ -30,19 +30,19 @@ foam.CLASS({
   sections: [
     {
       name: 'transactionSection',
-      title: 'Enter the transaction details',
+      title: 'Transaction details',
       help: `Require details on the company's transactions.`,
       order: 1
     },
     {
       name: 'purposeSection',
-      title: 'Enter target customers',
+      title: 'Target market',
       order: 2
     }
   ],
 
   messages: [
-    { name: 'NO_TARGET_CUSTOMERS_ERROR', message: 'Please enter target customers' },
+    { name: 'NO_TARGET_CUSTOMERS_ERROR', message: 'Target customer description required' },
     { name: 'NO_SUGGESTED_USER_TXN_INFO_ERROR', message: 'Please enter suggested user transaction info' }
   ],
 

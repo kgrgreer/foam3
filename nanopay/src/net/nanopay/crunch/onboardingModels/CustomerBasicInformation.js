@@ -21,18 +21,19 @@ foam.CLASS({
   documentation: `Basic information required from business customer or supplier`,
 
   messages: [
-    { name: 'INVALID_PHONE_ERROR', message: 'Please enter a valid phone number' }
+    { name: 'INVALID_PHONE_ERROR', message: 'Business phone number required' }
   ],
 
   properties: [
     {
       class: 'String',
       name: 'name',
-      minLength: 1
+      required: true
     },
     {
       class: 'PhoneNumber',
       name: 'telephone',
+      label: 'Business phone number',
       validationPredicates: [
         {
           args: ['telephone'],
