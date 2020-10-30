@@ -37,7 +37,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'INVALID_CPF', message: 'Invalid CPF Number' },
+    { name: 'INVALID_CPF', message: 'Valid CPF number required' },
     { name: 'INVALID_NAME', message: 'Click to verify name' }
   ],
 
@@ -45,6 +45,7 @@ foam.CLASS({
     {
       name: 'collectCpf',
       title: 'Enter your CPF',
+      navTitle: 'Signing officer\’s CPF number',
       help: 'Require your CPF'
     }
   ],
@@ -53,7 +54,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'data',
-      label: 'CPF',
+      label: 'Cadastro de Pessoas Físicas (CPF)',
       section: 'collectCpf',
       help: `The CPF (Cadastro de Pessoas Físicas or Natural Persons Register) is a number assigned by the Brazilian revenue agency to both Brazilians and resident aliens who are subject to taxes in Brazil.`,
       validationPredicates: [
@@ -123,7 +124,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'verifyName',
-      label: 'Please verify that name displayed below matches your real name.',
+      label: 'Is this you?',
       section: 'collectCpf',
       view: function(n, X) {
         var self = X.data$;

@@ -21,8 +21,8 @@ foam.CLASS({
   extends: 'net.nanopay.crunch.document.Document',
 
   messages: [
-    { name: 'EXPIRED_DOCUMENT_ERROR', message: 'Document expired. Please upload a new document.' }, 
-    { name: 'EXPIRY_NULL_ERROR', message: 'Please provide the date of expiry as shown on your document' }
+    { name: 'EXPIRED_DOCUMENT_ERROR', message: 'Expiry date must be a future date' }, 
+    { name: 'EXPIRY_NULL_ERROR', message: 'Expiry date required' }
   ],
 
   properties: [
@@ -35,7 +35,7 @@ foam.CLASS({
     {
       name: 'expiry',
       section: 'documentUploadSection',
-      label: 'Date of Expiry',
+      label: 'Expiry date',
       documentation: 'The date of expiry on the document',
       help: `
         Please provide the date of expiry as shown on your identification.

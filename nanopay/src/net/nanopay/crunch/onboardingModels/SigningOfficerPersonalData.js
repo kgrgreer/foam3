@@ -34,12 +34,12 @@ foam.CLASS({
   sections: [
     {
       name: 'signingOfficerPersonalInformationSection',
-      title: 'Enter the signing officer\'s personal information',
+      title: 'Signing officer\’s role information',
       help: 'Require your most convenient phone number.'
     },
     {
       name: 'signingOfficerAddressSection',
-      title: 'Enter the signing officer\'s address',
+      title: 'Signing officer\’s address',
       help: 'Require your personal address. Used only to confirm your identity.'
     }
   ],
@@ -49,7 +49,7 @@ foam.CLASS({
     { name: 'INVALID_ADDRESS_ERROR', message: 'Invalid address' },
     { name: 'UNGER_AGE_LIMIT_ERROR', message: 'Must be at least 18 years old' },
     { name: 'OVER_AGE_LIMIT_ERROR', message: 'Must be less than 125 years old' },
-    { name: 'SELECT_JOB_TITLE', message: 'Please select a Job Title' },
+    { name: 'SELECT_JOB_TITLE', message: 'Job title required' },
   ],
 
   properties: [
@@ -129,16 +129,16 @@ foam.CLASS({
     },
     foam.nanos.auth.User.PHONE_NUMBER.clone().copyFrom({
       section: 'signingOfficerPersonalInformationSection',
-      label: 'Phone',
+      label: 'Phone number',
       visibility: 'RW',
       required: true,
       autoValidate: true
     }),
     foam.nanos.auth.User.PEPHIORELATED.clone().copyFrom({
       section: 'signingOfficerPersonalInformationSection',
-      label: 'I am a politically exposed person or head of an international organization (PEP/HIO)',
+      label: 'The signing officer is a politically exposed person (PEP) or head of an international organization (HIO)',
       help: `
-        A political exposed person (PEP) or the head of an international organization (HIO)
+        A politically exposed person (PEP) or the head of an international organization (HIO)
         is a person entrusted with a prominent position that typically comes with the opportunity
         to influence decisions and the ability to control resources
       `,

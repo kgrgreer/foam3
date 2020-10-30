@@ -417,7 +417,7 @@ p({
   "priority":5
 })
 
-// BR Signing Officer to Residence Consumption Bill
+// BR Signing Officer to Residence Consumption Bill (Utility bills)
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"777af38a-8225-87c8-dfdf-eeb15f71215f-123",
@@ -425,7 +425,7 @@ p({
   "priority":2
 })
 
-// BR Signing Officer to User Identity
+// BR Signing Officer to User Identity (Identification)
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"777af38a-8225-87c8-dfdf-eeb15f71215f-123",
@@ -464,7 +464,7 @@ p({
   "priority":5
 })
 
-// US sigining officer to User Identity
+// US sigining officer to User Identity (Identification)
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5-us",
