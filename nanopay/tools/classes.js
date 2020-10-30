@@ -1431,6 +1431,10 @@ var classes = [
   'net.nanopay.payment.PayeeCurrency',
 
 
+  // rtp
+  'net.nanopay.rtp.RequestToPay',
+  'net.nanopay.rtp.SendRequestToPayDAO',
+
   //integration
 
   'net.nanopay.integration.ErrorCode',

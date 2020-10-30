@@ -129,6 +129,7 @@ public class FlinksAuthService
     }
   }
 
+
   public FlinksResponse getAccountSummary(X x, String requestId, User currentUser, boolean keepOnlyCADAccounts) throws AuthenticationException {
     try {
       RequestMsg reqMsg = FlinksRequestGenerator.getAccountDetailRequest(getX(), requestId);

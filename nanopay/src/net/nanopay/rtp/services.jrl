@@ -1,0 +1,19 @@
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "requestToPayDAO",
+  "serve": true,
+  "serviceScript":
+  """
+    dao =  new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setAuthorize(true)
+      .setGuid(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("requestsToPay")
+      .setOf(net.nanopay.rtp.RequestToPay.getOwnClassInfo())
+      .build();
+      return new net.nanopay.rtp.SendRequestToPayDAO(x, dao);
+  """,
+  "client": "{\"of\":\"net.nanopay.rtp.RequestToPay\"}"
+})

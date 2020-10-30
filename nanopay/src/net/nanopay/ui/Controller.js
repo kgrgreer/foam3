@@ -99,6 +99,8 @@ foam.CLASS({
     'isIframe',
     'onboardingUtil',
     'privacyUrl',
+    'showFooter',
+    'showNav',
     'sme',
     'termsUrl'
   ],
@@ -352,6 +354,16 @@ foam.CLASS({
       class: 'Boolean',
       name: 'sme',
       value: false
+    },
+    {
+      class: 'Boolean',
+      name: 'showFooter',
+      value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'showNav',
+      value: true
     }
   ],
 
@@ -406,7 +418,7 @@ foam.CLASS({
           .add(this.slot( async function(loginSuccess, topNavigation_) {
             if ( ! loginSuccess ) return null;
             await this.initLayout;
-            return this.E().tag(topNavigation_);
+            return this.E().tag(topNavigation_).show(this.showNav$);
           }))
           .start()
             .addClass('stack-wrapper')
@@ -419,7 +431,7 @@ foam.CLASS({
               .enableClass('application-stack', this.layoutInitialized$.map( li => li ))
             .end()
           .end()
-          .start()
+          .start().show(this.showFooter$)
             .enableClass('footer-wrapper', this.loginSuccess$)
             .add(this.slot( async function(loginSuccess, footerView_) {
               if ( loginSuccess ) await this.initLayout;
