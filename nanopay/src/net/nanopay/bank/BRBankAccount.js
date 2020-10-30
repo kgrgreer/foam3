@@ -39,15 +39,15 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number must be 10 digits long.' },
-    { name: 'ACCOUNT_NUMBER_REQUIRED', message: 'Account number required.' },
-    { name: 'ACCOUNT_TYPE_REQUIRED', message: 'Account type required.' },
-    { name: 'ACCOUNT_HOLDER_REQUIRED', message: 'Account holder required.' },
-    { name: 'BANK_ADDED', message: 'Bank Account added successfully!' },
-    { name: 'BANK_CODE_INVALID', message: 'Bank code must be 8 letters and/or digits long.' },
-    { name: 'BANK_CODE_REQUIRED', message: 'Bank code required.' },
-    { name: 'BRANCH_CODE_INVALID', message: 'Branch code must be 5 digits long.' },
-    { name: 'BRANCH_CODE_REQUIRED', message: 'Branch code required.' }
+    { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number must be 10 digits long' },
+    { name: 'ACCOUNT_NUMBER_REQUIRED', message: 'Account number required' },
+    { name: 'ACCOUNT_TYPE_REQUIRED', message: 'Account type required' },
+    { name: 'ACCOUNT_HOLDER_REQUIRED', message: 'Account holder required' },
+    { name: 'BANK_ADDED', message: 'Bank Account successfully added' },
+    { name: 'BANK_CODE_INVALID', message: 'Bank code must be 8 letters and/or digits long' },
+    { name: 'BANK_CODE_REQUIRED', message: 'Bank code required' },
+    { name: 'BRANCH_CODE_INVALID', message: 'Branch code must be 5 digits long' },
+    { name: 'BRANCH_CODE_REQUIRED', message: 'Branch code required' }
   ],
 
   constants: [

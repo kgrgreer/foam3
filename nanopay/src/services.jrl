@@ -364,7 +364,8 @@ p({
       "remoteListenerSupport":false,
       "cache": false,
       "decorators": [{
-        "class":"foam.nanos.fs.FileArrayInCapablePayloadsDecorator"
+        "class":"foam.nanos.fs.FileArrayInCapablePayloadsDecorator",
+        "class":"foam.nanos.fs.FileArrayDAODecorator"
       }]
     }
   """

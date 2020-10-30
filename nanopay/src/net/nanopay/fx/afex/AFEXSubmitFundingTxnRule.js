@@ -51,7 +51,7 @@ foam.CLASS({
           AFEXBeneficiary afexBeneficiary = afexService.getAFEXBeneficiary(x, transaction.findSourceAccount(x).getOwner(), transaction.findSourceAccount(x).getOwner(),true);
           if ( afexBeneficiary == null ) {
             try {
-              afexBeneficiary = afexService.createInstantBeneficiary(x,transaction.findSourceAccount(x).getOwner(),transaction.findSourceAccount(x).getOwner(),transaction.getSourceCurrency());
+              afexBeneficiary = afexService.createInstantBeneficiary(x,transaction);
             } catch (Throwable t) {
               String msg = "Error creating instant beneficiary " + transaction.getId();
               logger.error(msg, t);
@@ -64,7 +64,7 @@ foam.CLASS({
           }
 
           try {
-            AFEXFundingTransaction txn = afexService.submitPayment(transaction);
+            AFEXFundingTransaction txn = afexService.submitInstantPayment(transaction);
             transactionDAO.put(txn);
           } catch (Throwable t) {
             String msg = "Error submitting AfexFundingTransaction " + transaction.getId();

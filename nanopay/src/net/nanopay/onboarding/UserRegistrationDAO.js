@@ -54,13 +54,13 @@ foam.CLASS({
 
   messages: [
     { name: 'EMAIL_REQUIRED_ERROR_MSG', message: 'Email required' },
-    { name: 'UNKNOWN_TOKEN_ERROR_MSG', message: 'Unknown token.' },
-    { name: 'INVITATION_EXPIRED_ERROR_MSG', message: 'Invitation expired. Please request a new one.' },
-    { name: 'EMAIL_NOT_MATCH_INVITED_EMAIL_ERROR_MSG', message: 'Email does not match invited email.' },
-    { name: 'CANNOT_PROCESS_WO_INVITED_EMAIL_ERROR_MSG', message: 'Cannot process without an invited email.' },
-    { name: 'BUSINESS_NOT_EXIST_ERROR_MSG', message: 'Business doesn\'t exist.' },
-    { name: 'BUSINESS_INVITATION_PROCESSED_WHEN_NOT_IN_SENT_STATUS_ERROR_MSG', message: 'Business invitation is not in SENT status but is trying to get processed.' },
-    { name: 'CAD_US_SUPPORTED_ONLY_ERROR_MSG', message: 'Only Canadian and US businesses supported at this time.' },
+    { name: 'UNKNOWN_TOKEN_ERROR_MSG', message: 'Unknown token' },
+    { name: 'INVITATION_EXPIRED_ERROR_MSG', message: 'Invitation expired. Please request a new one' },
+    { name: 'EMAIL_NOT_MATCH_INVITED_EMAIL_ERROR_MSG', message: 'Email does not match invited email' },
+    { name: 'CANNOT_PROCESS_WO_INVITED_EMAIL_ERROR_MSG', message: 'Cannot process without an invited email' },
+    { name: 'BUSINESS_NOT_EXIST_ERROR_MSG', message: 'Business doesn\'t exist' },
+    { name: 'BUSINESS_INVITATION_PROCESSED_WHEN_NOT_IN_SENT_STATUS_ERROR_MSG', message: 'Business invitation is not in SENT status but is trying to get processed' },
+    { name: 'CAD_US_SUPPORTED_ONLY_ERROR_MSG', message: 'Only Canadian and US businesses supported at this time' },
     { name: 'USER_ALREADY_EXISTS_ERROR_MSG', message: 'User with same email address already exists: ' }
   ],
 

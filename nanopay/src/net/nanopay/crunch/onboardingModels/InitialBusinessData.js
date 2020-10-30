@@ -38,21 +38,22 @@ foam.CLASS({
   sections: [
     {
       name: 'businessRegistration',
-      title: 'Business Details',
-      help: `Business details`
+      title: 'Business information',
+      help: `Business information`
     },
     {
       name: 'businessAddress',
-      title: 'Business Address',
+      title: 'Business address',
       help: `Business address`
     }
   ],
 
   messages: [
+    { name: 'BUSINESS_NAME_REQUIRED', message: 'Business name required' },
     { name: 'QUEBEC_NOT_SUPPORTED_ERROR', message: 'This application does not currently support businesses in Quebec. We are working hard to change this! If you are based in Quebec, check back for updates.' },
-    { name: 'INVALID_ADDRESS_ERROR', message: 'Invalid address.' },
-    { name: 'SAME_AS_BUSINESS_ADDRESS_LABEL', message: 'Mailing address is same as business address.' },
-    { name: 'INVALID_FAX_ERROR', message: 'Invalid fax number.' }
+    { name: 'INVALID_ADDRESS_ERROR', message: 'Invalid address' },
+    { name: 'SAME_AS_BUSINESS_ADDRESS_LABEL', message: 'Mailing address is same as business address' },
+    { name: 'INVALID_FAX_ERROR', message: 'Invalid fax number' }
   ],
 
   properties: [
@@ -66,6 +67,7 @@ foam.CLASS({
       class: 'String',
       name: 'businessName',
       documentation: 'Legal name of business.',
+      label: 'Business name',
       section: 'businessRegistration',
       required: true,
       visibility: function() {
@@ -73,6 +75,11 @@ foam.CLASS({
           return foam.u2.DisplayMode.RO;
         } else {
           return foam.u2.DisplayMode.RW;
+        }
+      },
+      validateObj: function(businessName) {
+        if ( businessName.length === 0  ) {
+          return this.BUSINESS_NAME_REQUIRED;
         }
       },
       factory: function() {
@@ -83,7 +90,7 @@ foam.CLASS({
       class: 'PhoneNumber',
       name: 'companyPhone',
       documentation: 'Phone number of the business.',
-      label: 'Company Phone #',
+      label: 'Business phone number',
       section: 'businessRegistration',
       required: true
     },
@@ -91,7 +98,7 @@ foam.CLASS({
       class: 'PhoneNumber',
       name: 'fax',
       documentation: 'Fax number of the business.',
-      label: 'Fax #',
+      label: 'Fax number',
       section: 'businessRegistration',
       validationPredicates: [
         {
@@ -111,7 +118,7 @@ foam.CLASS({
       class: 'EMail',
       name: 'email',
       documentation: 'Company email.',
-      label: 'Email Address',
+      label: 'Email',
       section: 'businessRegistration'
     },
     {
@@ -171,6 +178,7 @@ foam.CLASS({
     },
     net.nanopay.model.Business.MAILING_ADDRESS.clone().copyFrom({
       documentation: 'Business mailing address.',
+      label: 'Mailing address',
       section: 'businessAddress',
       // TODO: Add a JS getter.
       javaGetter: `

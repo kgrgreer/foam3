@@ -87,9 +87,9 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Receivables' },
     { name: 'SUB_TITLE', message: `Here's a list of the funds you've requested from other people` },
-    { name: 'DELETE_DRAFT', message: 'Draft has been deleted.' },
-    { name: 'RECONCILED_SUCCESS', message: 'Invoice has been reconciled by payer.' },
-    { name: 'RECONCILED_ERROR', message: `There was an error reconciling the invoice.` },
+    { name: 'DELETE_DRAFT', message: 'Draft has been deleted' },
+    { name: 'RECONCILED_SUCCESS', message: 'Invoice has been reconciled by payer' },
+    { name: 'RECONCILED_ERROR', message: `There was an error reconciling the invoice` },
     { name: 'INVOICE', message: 'invoice' }
   ],
 

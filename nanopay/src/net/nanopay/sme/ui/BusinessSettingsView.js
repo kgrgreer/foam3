@@ -77,7 +77,7 @@ foam.CLASS({
     { name: 'USER_MANAGEMENT_TAB', message: 'User Management' },
     { name: 'INTEGRATION_TAB', message: 'Integrations' },
     { name: 'PRIVACY_TAB', message: 'Privacy'},
-    { name: 'GENERIC_ERROR', message: 'There was an unexpected error.' }
+    { name: 'GENERIC_ERROR', message: 'There was an unexpected error' }
   ],
 
   properties: [

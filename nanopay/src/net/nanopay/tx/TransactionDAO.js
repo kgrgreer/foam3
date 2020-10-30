@@ -46,9 +46,9 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'TRANS_MISSING_ID_SET_ERROR_MSG', message: 'Transaction must have id set.' },
+    { name: 'TRANS_MISSING_ID_SET_ERROR_MSG', message: 'Transaction must have id set' },
     { name: 'UNKNOWN_ACCOUNT_ERROR_MSG', message: 'Unknown account: ' },
-    { name: 'DEBITS_CREDITS_NOT_MATCH_ERROR_MSG', message: 'Debits and credits don\'t match.' }
+    { name: 'DEBITS_CREDITS_NOT_MATCH_ERROR_MSG', message: 'Debits and credits don\'t match' }
   ],
 
   axioms: [

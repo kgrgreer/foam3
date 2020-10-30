@@ -41,10 +41,10 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'UPDATE_REQUEST_ERROR_MSG', message: 'Unable to update the request.' },
-    { name: 'INVALID_REQUEST_OP_ERROR_MSG', message: 'Invalid operation on the request.' },
-    { name: 'REQUESTEE_INVALID_ACTION_ERROR_MSG', message: 'Requestee can\'t perform this action.' },
-    { name: 'REQUESTOR_INVALID_ACTION_ERRO_MSG', message: 'Requestor can\'t perform this action.' }
+    { name: 'UPDATE_REQUEST_ERROR_MSG', message: 'Unable to update the request' },
+    { name: 'INVALID_REQUEST_OP_ERROR_MSG', message: 'Invalid operation on the request' },
+    { name: 'REQUESTEE_INVALID_ACTION_ERROR_MSG', message: 'Requestee can\'t perform this action' },
+    { name: 'REQUESTOR_INVALID_ACTION_ERRO_MSG', message: 'Requestor can\'t perform this action' }
   ],
 
   axioms: [

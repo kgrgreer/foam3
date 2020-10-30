@@ -36,19 +36,19 @@ foam.CLASS({
   messages: [
     {
       name: 'LACKS_CREATE_PERMISSION',
-      message: 'You do not have permission to create a payment code.'
+      message: 'You do not have permission to create a payment code'
     },
     {
       name: 'LACKS_READ_PERMISSION',
-      message: 'You do not have permission to read this payment code.'
+      message: 'You do not have permission to read this payment code'
     },
     {
       name: 'LACKS_UPDATE_PERMISSION',
-      message: 'You do not have permission to update this payment code.'
+      message: 'You do not have permission to update this payment code'
     },
     {
       name: 'LACKS_REMOVE_PERMISSION',
-      message: 'You do not have permission to remove this payment code.'
+      message: 'You do not have permission to remove this payment code'
     }
   ],
 

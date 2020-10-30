@@ -69,12 +69,12 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'INVOICE_NOT_FOUND_ERROR_MSG', message: 'the invoice associated with this transaction could not be found.' },
-    { name: 'PAY_RECEIVABLE_ERROR_MSG', message: 'You cannot pay a receivable.' },
-    { name: 'UPDATE_RECEIVABLE_ERROR_MSG', message: 'You cannot update a receivable.' },
-    { name: 'PAY_DRAFT_ERROR_MSG', message: 'You cannot pay draft invoices.' },
-    { name: 'USER_NOT_FOUND_ERROR_MSG', message: 'User not found in authenicatedTransactionDAO find_.' },
-    { name: 'USER_NOT_FOUND_ERROR_MSG2', message: 'User not found in authenicatedTransactionDAO select_.' }
+    { name: 'INVOICE_NOT_FOUND_ERROR_MSG', message: 'the invoice associated with this transaction could not be found' },
+    { name: 'PAY_RECEIVABLE_ERROR_MSG', message: 'You cannot pay a receivable' },
+    { name: 'UPDATE_RECEIVABLE_ERROR_MSG', message: 'You cannot update a receivable' },
+    { name: 'PAY_DRAFT_ERROR_MSG', message: 'You cannot pay draft invoices' },
+    { name: 'USER_NOT_FOUND_ERROR_MSG', message: 'User not found in authenicatedTransactionDAO find_' },
+    { name: 'USER_NOT_FOUND_ERROR_MSG2', message: 'User not found in authenicatedTransactionDAO select_' }
   ],
 
   axioms: [

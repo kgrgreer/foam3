@@ -30,7 +30,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'TAX_ID_NUMBER_ERROR', message: 'Please enter valid Federal Tax ID Number (EIN).' }
+    { name: 'TAX_ID_NUMBER_ERROR', message: 'Please enter valid Federal Tax ID Number (EIN)' }
   ],
 
   properties: [

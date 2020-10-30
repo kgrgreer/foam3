@@ -22,7 +22,7 @@ foam.CLASS({
   documentation: 'Verifies if the user has authorized nanopay or afex to debit and credit accounts (CA)',
 
   messages: [
-    { name: 'ACKNOWLEDGE_STATEMENT', message: 'Must acknowledge the statement above.' },
+    { name: 'ACKNOWLEDGE_STATEMENT', message: 'Must acknowledge the statement above' },
     { name: 'I_AUTHORIZE', message: 'I authorize ' },
     { name: 'TITLE_MSG',
       message: 'nanopay Corporation (for Canadian domestic transactions) or ' +

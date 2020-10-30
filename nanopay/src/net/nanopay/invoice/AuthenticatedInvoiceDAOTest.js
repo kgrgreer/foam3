@@ -217,7 +217,7 @@ foam.CLASS({
         message = t.getMessage();
         threw = true;
       }
-      test( threw && message.equals("Cannot update reference Id."), "Payee (Business user) should not be able to update reference Id on an invoice." );
+      test( threw && message.equals("Cannot update reference Id"), "Payee (Business user) should not be able to update reference Id on an invoice." );
 
       // Test select_ method with invoice payee business user
       threw = false;
@@ -293,7 +293,7 @@ foam.CLASS({
         message = t.getMessage();
         threw = true;
       }
-      test( threw && message.equals("Cannot update reference Id."), "Payer (Business user) should not be able to update reference Id on an invoice." );
+      test( threw && message.equals("Cannot update reference Id"), "Payer (Business user) should not be able to update reference Id on an invoice." );
 
       // Test select_ method with invoice payer business user
       threw = false;

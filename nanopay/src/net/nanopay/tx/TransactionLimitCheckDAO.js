@@ -56,7 +56,7 @@ foam.CLASS({
 
   messages: [
     { name: 'PAYER_PAYEE_NOT_PROVIDED_FOR_TRANS_ERROR_MSG', message: 'No payer or payee for transaction' },
-    { name: 'OVERSTEP_TRANS_LIMITS_ERROR_MSG', message: 'Transaction Limits overstepped.' }
+    { name: 'OVERSTEP_TRANS_LIMITS_ERROR_MSG', message: 'Transaction Limits overstepped' }
   ],
 
   axioms: [

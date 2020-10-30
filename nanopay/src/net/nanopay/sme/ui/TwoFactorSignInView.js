@@ -161,9 +161,9 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'TWO_FACTOR_NO_TOKEN', message: 'Please enter a verification code.' },
+    { name: 'TWO_FACTOR_NO_TOKEN', message: 'Please enter a verification code' },
     { name: 'TWO_FACTOR_LABEL', message: 'Enter verification code' },
-    { name: 'TWO_FACTOR_ERROR', message: 'Incorrect code. Please try again.' },
+    { name: 'TWO_FACTOR_ERROR', message: 'Incorrect code. Please try again' },
     { name: 'TWO_FACTOR_TITLE', message: 'Two-factor authentication' },
     { name: 'TWO_FACTOR_EXPLANATION', message: `Open your Google Authenticator app on your mobile device to view the 6-digit code and verify your identity` },
     { name: 'TWO_FACTOR_NOTES_1', message: `Need another way to authenticate?` },

@@ -134,7 +134,7 @@ foam.CLASS({
     },
     {
       name: 'SUCCESS_MESSAGE',
-      message: 'Bank account deleted.'
+      message: 'Bank account deleted'
     }
   ],
 

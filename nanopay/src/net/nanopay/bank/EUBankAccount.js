@@ -16,13 +16,18 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.tx',
-  name: 'TransactionQuotes',
-  extends: 'net.nanopay.tx.TransactionQuote',
+  package: 'net.nanopay.bank',
+  name: 'EUBankAccount',
+  label: 'European Bank Account',
+  extends: 'net.nanopay.bank.BankAccount',
 
-  documentation: `Return all Plans to allow caller to choose.`,
+  documentation: 'European bank account information.',
 
-  javaImports: [
-    'net.nanopay.tx.model.Transaction'
+  properties: [
+    {
+      name: 'country',
+      value: 'DE',
+      visibility: 'RO'
+    }
   ]
 });

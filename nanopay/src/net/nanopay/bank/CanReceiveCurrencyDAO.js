@@ -43,8 +43,8 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'NULL_REQUEST_ERROR_MSG', message: 'Cannot put null.' },
-    { name: 'NO_BANK_INFO_ERROR_MSG', message: 'Banking information for this contact must be provided.' }
+    { name: 'NULL_REQUEST_ERROR_MSG', message: 'Cannot put null' },
+    { name: 'NO_BANK_INFO_ERROR_MSG', message: 'Banking information for this contact must be provided' }
   ],
 
   properties: [

@@ -35,8 +35,8 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'PENDING_SUBMISSION_EMAIL_SEND_ERROR_MSG', message: 'Error sending pending submission email.' },
-    { name: 'ADMIN_NOTIF_SUBMISSION_EMAIL_SEND_ERROR_MSG', message: 'Error sending admin notification submission email.' }
+    { name: 'PENDING_SUBMISSION_EMAIL_SEND_ERROR_MSG', message: 'Error sending pending submission email' },
+    { name: 'ADMIN_NOTIF_SUBMISSION_EMAIL_SEND_ERROR_MSG', message: 'Error sending admin notification submission email' }
   ],
 
   axioms: [

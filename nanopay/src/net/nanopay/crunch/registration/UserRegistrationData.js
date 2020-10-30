@@ -24,7 +24,7 @@ foam.CLASS({
   sections: [
     {
       name: 'userRegistrationSection',
-      title: 'Please fill in the user registration form.'
+      title: 'Your information'
     }
   ],
   

@@ -22,8 +22,8 @@ foam.CLASS({
   documentation: `This model represents the expanded info of a User that must be collect for onboarding.`,
 
   messages: [
-    { name: 'UNDER_AGE_LIMIT_ERROR', message: 'Must be at least 18 years old.' },
-    { name: 'JOB_TITLE_REQUIRED', message: 'Job title required.' }
+    { name: 'UNDER_AGE_LIMIT_ERROR', message: 'Must be at least 18 years old' },
+    { name: 'JOB_TITLE_REQUIRED', message: 'Job title required' }
   ],
   
   properties: [

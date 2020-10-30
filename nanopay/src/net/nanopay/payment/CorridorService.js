@@ -168,5 +168,35 @@ foam.INTERFACE({
         }
       ]
     },
+    {
+      name: 'getAllWithSrc',
+      javaType: 'java.util.List',
+      documentation: 'Returns List of Corridor Payment Provider Corridors that have a source currency as sourceCurrency.',
+      args: [
+        {
+          type: 'Context',
+          name: 'x'
+        },
+        {
+          type: 'String',
+          name: 'sourceCurrency',
+        }
+      ]
+    },
+    {
+      name: 'getAllWithTarget',
+      javaType: 'java.util.List',
+      documentation: 'Returns List of Corridor Payment Provider Corridors that have a target currency as targetCurrency.',
+      args: [
+        {
+          type: 'Context',
+          name: 'x'
+        },
+        {
+          type: 'String',
+          name: 'targetCurrency',
+        }
+      ]
+    }
   ]
 });

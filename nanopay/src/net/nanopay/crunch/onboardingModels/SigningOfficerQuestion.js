@@ -40,11 +40,11 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'SIGNING_OFFICER_EMAIL_ERROR', message: 'Please provide an email for the signing officer.' },
-    { name: 'ADMIN_FIRST_NAME_ERROR', message: 'Please enter first name with least 1 character.' },
-    { name: 'ADMIN_LAST_NAME_ERROR', message: 'Please enter last name with least 1 character.' },
-    { name: 'NO_JOB_TITLE_ERROR', message: 'Please select job title.' },
-    { name: 'INVALID_PHONE_NUMBER_ERROR', message: 'Invalid phone number.' },
+    { name: 'SIGNING_OFFICER_EMAIL_ERROR', message: 'Please provide an email for the signing officer' },
+    { name: 'ADMIN_FIRST_NAME_ERROR', message: 'Please enter first name with least 1 character' },
+    { name: 'ADMIN_LAST_NAME_ERROR', message: 'Please enter last name with least 1 character' },
+    { name: 'NO_JOB_TITLE_ERROR', message: 'Please select job title' },
+    { name: 'INVALID_PHONE_NUMBER_ERROR', message: 'Invalid phone number' },
     { name: 'CANNOT_INVITE_SELF_ERROR', message: 'Cannot invite self as signing officer. If you are a signing officer, please select "YES" in the previous step.' }
   ],
 

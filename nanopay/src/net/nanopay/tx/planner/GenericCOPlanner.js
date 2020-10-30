@@ -53,6 +53,7 @@ foam.CLASS({
 
       quote.addTransfer(trustAccount.getId(), cashOut.getAmount());
       quote.addTransfer(quote.getSourceAccount().getId(), -cashOut.getAmount());
+      quote.addExternalTransfer(quote.getDestinationAccount().getId(), cashOut.getAmount());
 
       if ( getInstantComplete() ) {
         cashOut.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);

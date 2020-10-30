@@ -21,7 +21,7 @@ foam.CLASS({
   extends: 'foam.nanos.crunch.Capability',
 
   messages: [
-    { name: 'ENTER_NATURE_CODE', message: 'Please enter a Nature Code.' }
+    { name: 'ENTER_NATURE_CODE', message: 'Please enter a Nature Code' }
   ],
 
   properties: [

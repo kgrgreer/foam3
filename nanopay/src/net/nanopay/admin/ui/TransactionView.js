@@ -115,7 +115,7 @@ foam.CLASS({
   messages: [
     {
       name: 'noPendingTransactions',
-      message: 'There is no transaction in your network yet.'
+      message: 'There is no transaction in your network yet'
     }
   ],
 

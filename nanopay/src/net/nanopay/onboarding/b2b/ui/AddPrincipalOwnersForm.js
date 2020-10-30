@@ -520,7 +520,7 @@ foam.CLASS({
     { name: 'ProvinceLabel', message: 'Province' },
     { name: 'CityLabel', message: 'City' },
     { name: 'PostalCodeLabel', message: 'Postal Code' },
-    { name: 'PrincipalOwnerError', message: 'A principal owner with that name already exists.' }
+    { name: 'PrincipalOwnerError', message: 'A principal owner with that name already exists' }
   ],
 
   properties: [

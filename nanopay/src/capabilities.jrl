@@ -446,7 +446,6 @@ p({
 
 p({
   "class": "foam.nanos.crunch.Capability",
-  "min": 1,
   "id":"1f6b2047-1eef-471d-82e7-d86bdf511375",
   "name":"Payables Menu Payment Provider Capability(AFEX)",
   "description":"Payables Menu Payment Provider Capability(AFEX)",
@@ -465,6 +464,7 @@ p({
   "enabled":true,
   "visible":true,
   "keywords":["featured"],
+  "min": 1,
   "permissionsGranted":[
     "menu.read.capability.main.invoices.payables"
   ],
@@ -474,8 +474,12 @@ p({
       { "class": "net.nanopay.crunch.predicate.BusinessPassedCompliance" },
       { "class": "net.nanopay.crunch.predicate.HasVerifiedBankAccount" },
       {
-        "class": "net.nanopay.crunch.predicate.RegisterPaymentProviderStatus",
-        "status":7
+        "class": "foam.mlang.predicate.Not",
+        "arg1":
+          {
+            "class":"net.nanopay.crunch.predicate.RegisterPaymentProviderStatus",
+            "status": 1
+          }
       }
     ]
   }
@@ -540,8 +544,8 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-76",
-  "name":"Business Registration",
-  "description":"Create a business to access payments and invoice on the platform.",
+  "name":"Register your business",
+  "description":"Access payments and invoices",
   "icon":"/images/capabilityIcons/BusinessRegistrationCap.svg",
   "of":"net.nanopay.crunch.onboardingModels.InitialBusinessData",
   "version":"0",
@@ -561,7 +565,7 @@ p({
     "class": "foam.u2.wizard.StepWizardConfig",
     "allowSkipping": false
   },
-  "requirementViewTitle":"In this section, we ask you to enter some details relating to your business.",
+  "requirementViewTitle":"Have your business documents ready. You can save your progress and come back later.",
   "permissionsGranted":[
   "menu.read.capability.main.banking",
   "menu.read.capability.main.contacts",
@@ -1028,6 +1032,20 @@ p({
   "menu.read.capability.menu.search",
   "menu.read.capability.menu.paymentcode",
   "menu.read.capability.menu.invitation",
-  "contact.ro.shouldinvite"
+  "contact.ro.shouldinvite",
+  "group.read.smeBusinessEmployee"
+  ]
+})
+
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"googleSheetsImportCapability",
+  "name":"google sheets import capability",
+  "version":"0",
+  "enabled":true,
+  "visible":false,
+  "permissionsGranted":[
+    "data.import.googleSheets"
   ]
 })

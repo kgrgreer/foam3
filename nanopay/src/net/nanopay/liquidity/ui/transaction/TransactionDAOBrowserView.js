@@ -99,7 +99,7 @@ foam.CLASS({
     },
     {
       name: 'NO_TRANSACTIONS',
-      message: 'Selected account has no transactions.'
+      message: 'Selected account has no transactions'
     }
   ],
 

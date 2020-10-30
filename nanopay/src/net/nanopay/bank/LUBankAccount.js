@@ -19,7 +19,7 @@ foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'LUBankAccount',
   label: 'Luxembourg Bank Account',
-  extends: 'net.nanopay.bank.BankAccount',
+  extends: 'net.nanopay.bank.EUBankAccount',
 
   documentation: 'Luxembourg bank account information.',
 

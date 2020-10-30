@@ -25,7 +25,7 @@ foam.CLASS({
   documentation: 'Verifies user understanding of cancellation under pad agreement terms',
 
   messages: [
-    { name: 'ACKNOWLEDGE_STATEMENT', message: 'Must acknowledge the statement above.' },
+    { name: 'ACKNOWLEDGE_STATEMENT', message: 'Must acknowledge the statement above' },
     {
       name: 'CHECKBOX_MSG',
       message: 'This Authorization may be cancelled at any time upon notice being provided by me, ' +

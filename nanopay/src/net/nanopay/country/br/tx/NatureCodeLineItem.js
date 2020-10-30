@@ -31,7 +31,7 @@ foam.CLASS({
   messages: [
     {
       name: 'INVALID_NATURE_CODE',
-      message: 'Please select a nature code.',
+      message: 'Please select a nature code',
     }
   ],
 

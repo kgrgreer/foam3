@@ -54,10 +54,10 @@ foam.CLASS({
 
   messages: [
     { name: 'PLACE_HOLDER', message: 'Please select...' },
-    { name: 'BUSINESS_TYPE_ERROR', message: 'Please select type of business.' },
-    { name: 'NATURE_OF_BUSINESS_ERROR', message: 'Please select business sector.' },
-    { name: 'SOURCE_OF_FUNDS_ERROR', message: 'Please provide primary source of funds.' },
-    { name: 'OPERATING_NAME_ERROR', message: 'Please enter business name.' },
+    { name: 'BUSINESS_TYPE_ERROR', message: 'Please select type of business' },
+    { name: 'NATURE_OF_BUSINESS_ERROR', message: 'Please select business sector' },
+    { name: 'SOURCE_OF_FUNDS_ERROR', message: 'Please provide primary source of funds' },
+    { name: 'OPERATING_NAME_ERROR', message: 'Please enter business name' },
     { name: 'YES', message: 'Yes' },
     { name: 'NO', message: 'No' },
     { name: 'OTHER_LABEL', message: 'Other' },

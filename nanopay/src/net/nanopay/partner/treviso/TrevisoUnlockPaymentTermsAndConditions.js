@@ -25,13 +25,22 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'ACKNOWLEDGE_BRAZIL_TC', message: 'Must acknowledge the Terms and Conditions.' }
+    { name: 'ACKNOWLEDGE_BRAZIL_TC', message: 'Must acknowledge the Terms and Conditions' }
+  ],
+
+  sections: [
+    {
+      name: 'reviewAgreementDocumentsSection',
+      title: 'Review and accept the terms of service',
+      navTitle: 'Terms and Conditions',
+      permissionRequired: false
+    }
   ],
 
   properties: [
     {
       name: 'title',
-      value: `Unlock payment Terms and Conditions`
+      value: `the Terms and Conditions`
     },
     {
       name: 'checkboxText',

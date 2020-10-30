@@ -128,11 +128,11 @@ foam.CLASS({
       message: `You currently have not completed the necessary requirements
           to add an account to your contact. Please visit the capability store to enable payments.`
     },
-    { name: 'ERROR_BUSINESS_PROFILE_NAME_MESSAGE', message: 'Business name required.' },
-    { name: 'INVALID_EMAIL', message: 'Invalid email address.' },
-    { name: 'INVALID_FIRST_NAME', message: 'First name cannot exceed 70 characters.' },
-    { name: 'INVALID_LAST_NAME', message: 'Last name cannot exceed 70 characters.' },
-    { name: 'CONFIRMATION_REQUIRED', message: 'Confirmation required.' },
+    { name: 'ERROR_BUSINESS_PROFILE_NAME_MESSAGE', message: 'Business name required' },
+    { name: 'INVALID_EMAIL', message: 'Invalid email address' },
+    { name: 'INVALID_FIRST_NAME', message: 'First name cannot exceed 70 characters' },
+    { name: 'INVALID_LAST_NAME', message: 'Last name cannot exceed 70 characters' },
+    { name: 'CONFIRMATION_REQUIRED', message: 'Confirmation required' },
   ],
 
   properties: [

@@ -50,10 +50,10 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'PAYER_PAYEE_CANNOT_BE_SAME_ERROR_MSG', message: 'Payer can not be equal to payee.' },
+    { name: 'PAYER_PAYEE_CANNOT_BE_SAME_ERROR_MSG', message: 'Payer can not be equal to payee' },
     { name: 'CANNOT_FIND_PAYMENT_CARD_ERROR_MSG', message: 'Can not find payment card' },
-    { name: 'NOT_SUPPORTED_PAYMENT_TYPE_ERROR_MSG', message: 'Payment Type is not supported.' },
-    { name: 'STRIPE_TRANS_FAIL_ERROR_MSG', message: 'Stripe transaction failed.' }
+    { name: 'NOT_SUPPORTED_PAYMENT_TYPE_ERROR_MSG', message: 'Payment Type is not supported' },
+    { name: 'STRIPE_TRANS_FAIL_ERROR_MSG', message: 'Stripe transaction failed' }
   ],
 
   properties: [

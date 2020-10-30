@@ -21,7 +21,7 @@ foam.CLASS({
   extends: 'net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability',
 
   messages: [
-    { name: 'ACKNOWLEDGE_DISCLOSURE', message: 'Must acknowledge the Disclosure.' }
+    { name: 'ACKNOWLEDGE_DISCLOSURE', message: 'Must acknowledge the Disclosure' }
   ],
 
   properties: [

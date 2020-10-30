@@ -1,0 +1,22 @@
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"hashingJDAOTestDAO",
+  "serve":"false",
+  "serviceScript":"""
+    inner = new foam.dao.MDAO(net.nanopay.security.test.HashingJDAOTestModel.getOwnClassInfo());
+    inner.addIndex(new foam.core.PropertyInfo[] {
+        net.nanopay.security.test.HashingJDAOTestModel.ID
+    });
+    hashingjdao = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, inner, "hashingJDAOTests");	
+    dao = new foam.dao.EasyDAO.Builder(x)
+      .setMdao(inner)
+      .setAuthorize(false)
+      .setGuid(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("hashingJDAOTests")
+      .setInnerDAO(hashingjdao)
+      .setOf(net.nanopay.security.test.HashingJDAOTestModel.getOwnClassInfo())
+      .build();
+    return dao;
+  """
+})

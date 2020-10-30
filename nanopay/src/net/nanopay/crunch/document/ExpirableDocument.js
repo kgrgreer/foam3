@@ -22,7 +22,7 @@ foam.CLASS({
 
   messages: [
     { name: 'EXPIRED_DOCUMENT_ERROR', message: 'Document expired. Please upload a new document.' }, 
-    { name: 'EXPIRY_NULL_ERROR', message: 'Please provide the date of expiry as shown on your document.' }
+    { name: 'EXPIRY_NULL_ERROR', message: 'Please provide the date of expiry as shown on your document' }
   ],
 
   properties: [

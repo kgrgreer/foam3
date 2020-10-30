@@ -25,7 +25,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'ACKNOWLEDGE_PRIVACY_POLICY', message: 'Must acknowledge the Privacy Policy.' }
+    { name: 'ACKNOWLEDGE_PRIVACY_POLICY', message: 'Must acknowledge the Privacy Policy' }
   ],
 
   properties: [

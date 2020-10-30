@@ -167,7 +167,7 @@ foam.CLASS({
     { name: 'GO_BACK', message: 'Go back' },
     { name: 'SELECT_COMPANY', message: 'Select a company' },
     { name: 'DISABLED_BUSINESS_MSG', message: 'This business has been disabled. You cannot switch to it at this time.' },
-    { name: 'ERROR_DISABLED', message: 'Please contact an administrator for this company to enable access.' }
+    { name: 'ERROR_DISABLED', message: 'Please contact an administrator for this company to enable access' }
   ],
 
   properties: [

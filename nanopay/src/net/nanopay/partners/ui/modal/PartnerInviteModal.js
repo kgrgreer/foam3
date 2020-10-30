@@ -138,7 +138,7 @@ foam.CLASS({
     },
     {
       name: 'InviteSendError',
-      message: 'There was a problem sending the invitation.'
+      message: 'There was a problem sending the invitation'
     },
     {
       name: 'ModalTitle',

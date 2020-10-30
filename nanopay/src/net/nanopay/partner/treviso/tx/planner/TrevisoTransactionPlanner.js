@@ -47,7 +47,7 @@ foam.CLASS({
   messages: [
     {
       name: 'INVALID_NATURE_CODE',
-      message: 'Invalid nature code.',
+      message: 'Invalid nature code',
     }
   ],
 
@@ -109,7 +109,7 @@ foam.CLASS({
       trevisoTxn.setName("Treviso transaction");
       trevisoTxn.setPaymentProvider(PAYMENT_PROVIDER);
       trevisoTxn.setPlanner(this.getId());
-      this.addLineItems(x, trevisoTxn, requestTxn);
+      trevisoTxn = addNatureCodeLineItems(x, trevisoTxn, requestTxn);
 
       FXLineItem fxLineItem = new FXLineItem();
       fxLineItem.setRate(fxQuote.getRate());
@@ -118,11 +118,14 @@ foam.CLASS({
       fxLineItem.setExpiry(fxQuote.getExpiryTime());
       trevisoTxn.addLineItems( new TransactionLineItem[] { fxLineItem } );
       txn.addNext(trevisoTxn);
-
+      
+      // TODO: evaluate helper methods on the intended transaction instead of the head.
+      /* quote.addExternalTransfer(quote.getDestinationAccount().getId(), trevisoTxn.getDestinationAmount());
+      quote.addExternalTransfer(quote.getSourceAccount().getId(), - trevisoTxn.getAmount());*/
       ExternalTransfer[] exT = new ExternalTransfer[2];
-      exT[0] = new ExternalTransfer(-trevisoTxn.getAmount(), trevisoTxn.getSourceAccount());
-      exT[1] = new ExternalTransfer(trevisoTxn.getDestinationAmount(), trevisoTxn.getDestinationAccount());
-      trevisoTxn.setTransfers(exT);
+      exT[0] = new ExternalTransfer(- trevisoTxn.getAmount(), quote.getSourceAccount().getId());
+      exT[1] = new ExternalTransfer(trevisoTxn.getDestinationAmount(), quote.getDestinationAccount().getId());
+      trevisoTxn.setTransfers( exT );
 
       return txn;
     `
@@ -156,8 +159,8 @@ foam.CLASS({
       `
     },
     {
-      name: 'addLineItems',
-      javaType: 'Transaction',
+      name: 'addNatureCodeLineItems',
+      javaType: 'TrevisoTransaction',
       args: [
         {
           name: 'x',
@@ -165,11 +168,11 @@ foam.CLASS({
         },
         {
           name: 'txn',
-          type: 'Transaction',
+          type: 'TrevisoTransaction',
         },
         {
           name: 'requestTxn',
-          type: 'net.nanopay.tx.model.Transaction'
+          type: 'Transaction'
         }
       ],
       javaCode: `

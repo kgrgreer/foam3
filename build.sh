@@ -40,8 +40,6 @@ function install {
 
     npm install
 
-    setup_jce
-
     if [[ $IS_MAC -eq 1 ]]; then
         mkdir -p "$NANOPAY_HOME/journals"
         mkdir -p "$NANOPAY_HOME/logs"
@@ -50,53 +48,6 @@ function install {
     # git hooks
     git config core.hooksPath .githooks
     git config submodule.recurse true
-}
-
-function backup {
-  if [[ ! $PROJECT_HOME == "/pkg/stack/stage/NANOPAY" ]]; then
-    # Preventing this from running on non AWS
-    return
-  fi
-
-  BACKUP_HOME="/opt/backup"
-
-  # backup journals in event of file incompatiblity between versions
-  if [ "$OSTYPE" == "linux-gnu" ] && [ ! -z "${BACKUP_HOME+x}" ] && [ -d "$JOURNAL_HOME" ]; then
-      printf "backup\n"
-      DATE=$(date +%Y%m%d_%H%M%S)
-      mkdir -p "$BACKUP_HOME/$DATE"
-
-      cp -r "$JOURNAL_HOME/" "$BACKUP_HOME/$DATE/"
-  fi
-}
-
-function setup_jce {
-  local JAVA_LIB_SECURITY="$JAVA_HOME/lib/security"
-
-  # For Java 8; including on linux
-  if [[ $JAVA_LIB_SECURITY = *"_"* || $JAVA_LIB_SECURITY = *"java-8-oracle"* ]]; then
-    JAVA_LIB_SECURITY="$JAVA_HOME/jre/lib/security"
-  fi
-
-  if [[ ! -f $JAVA_LIB_SECURITY/local_policy.jar && ! -f $JAVA_LIB_SECURITY/US_export_policy.jar ]]; then
-    mkdir tmp_jce
-    cd tmp_jce
-    curl -L -b "oraclelicense=a" http://download.oracle.com/otn-pub/java/jce/8/jce_policy-8.zip > jce_policy-8.zip
-    unzip jce_policy-8.zip
-    if [[ $IS_MAC -eq 1 ]]; then
-        sudo cp UnlimitedJCEPolicyJDK8/local_policy.jar UnlimitedJCEPolicyJDK8/US_export_policy.jar $JAVA_LIB_SECURITY/
-      elif [[ $IS_LINUX -eq 1 ]]; then
-        cp UnlimitedJCEPolicyJDK8/local_policy.jar UnlimitedJCEPolicyJDK8/US_export_policy.jar $JAVA_LIB_SECURITY/
-      fi
-    cd ..
-    rm -rf tmp_jce
-
-    if [[ $(jrunscript -e "print (javax.crypto.Cipher.getMaxAllowedKeyLength('AES') >= 256)") = "true" ]]; then
-      echo "INFO :: Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy files setup successfully."
-    else
-      echo "ERROR :: Java Cryptography Extension (JCE) Unlimited Strength Jurisdiction Policy files failed to setup successfully."
-    fi
-  fi
 }
 
 function deploy_documents {
@@ -164,18 +115,15 @@ function deploy_journals {
         mkdir -p target
     fi
 
+    EXTRA_JOURNAL=""
     if [ "$DISABLE_LIVESCRIPTBUNDLER" -eq 1 ]; then
-        if [ -z ${EXPLICIT_JOURNALS} ]; then
-            EXPLICIT_JOURNALS="-E"
-        else
-            EXPLICIT_JOURNALS="${EXPLICIT_JOURNALS}tools/journal_extras/disable_livescriptbundler"
-        fi
+        EXTRA_JOURNAL="-Atools/journal_extras/disable_livescriptbundler"
     fi
 
     if [ "$DELETE_RUNTIME_JOURNALS" -eq 1 ] || [ $CLEAN_BUILD -eq 1 ]; then
-        ./tools/findJournals.sh -J${JOURNAL_CONFIG} ${EXPLICIT_JOURNALS} < $JOURNALS | ./find.sh -O${JOURNAL_OUT}
+        ./tools/findJournals.sh -J${JOURNAL_CONFIG} ${EXPLICIT_JOURNALS} ${EXTRA_JOURNAL} < $JOURNALS | ./find.sh -O${JOURNAL_OUT}
     else
-        ./tools/findJournals.sh -J${JOURNAL_CONFIG} ${EXPLICIT_JOURNALS} < $JOURNALS > target/journal_files
+        ./tools/findJournals.sh -J${JOURNAL_CONFIG} ${EXPLICIT_JOURNALS} ${EXTRA_JOURNAL} < $JOURNALS > target/journal_files
         gradle findSH -PjournalOut=${JOURNAL_OUT} -PjournalIn=target/journal_files $GRADLE_FLAGS
     fi
 
@@ -268,7 +216,7 @@ function stop_nanos {
     RUNNING_PID=$(ps -ef | grep -v grep | grep "java.*-DNANOPAY_HOME" | awk '{print $2}')
     if [ -z "$RUNNING_PID" ]; then
         # production
-        RUNNING_PID=$(ps -ef | grep -v grep | grep "java -server -jar /opt/nanopay/lib/nanopay" | awk '{print $2}')
+        RUNNING_PID=$(ps -ef | grep -v grep | grep "java -server -jar ${NANOPAY_HOME}/lib/nanopay" | awk '{print $2}')
     fi
     if [ -f "$NANOS_PIDFILE" ]; then
         PID=$(cat "$NANOS_PIDFILE")
@@ -298,7 +246,6 @@ function stop_nanos {
 
         rmfile "$NANOS_PIDFILE"
     fi
-    backup
     delete_runtime_journals
     delete_runtime_logs
 }
@@ -358,6 +305,7 @@ function start_nanos {
         fi
 
         export JAVA_TOOL_OPTIONS="$JAVA_OPTS"
+        echo "INFO :: ${JAVA_OPTS}"
         echo "INFO :: ${MESSAGE}..."
 
         if [ "$TEST" -eq 1 ]; then
@@ -524,7 +472,7 @@ function setenv {
     # HSM setup
     if [[ $IS_MAC -eq 1 ]]; then
       HSM_HOME=$PROJECT_HOME/tools/hsm
-      HSM_CONFIG_PATH='/opt/nanopay/keys/pkcs11.cfg'
+      HSM_CONFIG_PATH="${NANOPAY_HOME}/keys/pkcs11.cfg"
 
       #softhsm setup
       if [[ -f $HSM_HOME/development.sh ]]; then
@@ -771,6 +719,8 @@ fi
 if [ ${CLEAN_BUILD} -eq 1 ]; then
     GRADLE_FLAGS="${GRADLE_FLAGS} --rerun-tasks"
 fi
+
+echo "INFO :: Journal Config is ${JOURNAL_CONFIG}"
 
 ############################
 # Build steps

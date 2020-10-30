@@ -56,12 +56,12 @@ foam.CLASS({
     { name: 'EDIT_STEP_ONE_TITLE', message: 'Edit contact' },
     { name: 'EDIT_STEP_TWO_TITLE', message: 'Edit banking information' },
     { name: 'EDIT_STEP_THREE_TITLE', message: 'Edit business address' },
-    { name: 'CONTACT_ADDED', message: 'Personal contact added.' },
-    { name: 'CONTACT_EDITED', message: 'Personal contact edited.' },
-    { name: 'INVITE_SUCCESS', message: 'Sent a request to connect.' },
+    { name: 'CONTACT_ADDED', message: 'Personal contact added' },
+    { name: 'CONTACT_EDITED', message: 'Personal contact edited' },
+    { name: 'INVITE_SUCCESS', message: 'Sent a request to connect' },
     { name: 'CONTACT_ADDED_INVITE_SUCCESS', message: 'Personal contact added. An email invitation was sent.' },
     { name: 'CONTACT_ADDED_INVITE_FAILURE', message: 'Personal contact added. An email invitation could not be sent.' },
-    { name: 'ACCOUNT_CREATION_ERROR', message: 'Failed to add an account.' },
+    { name: 'ACCOUNT_CREATION_ERROR', message: 'Failed to add an account' },
     {
       name: 'EXISTING_BUSINESS',
       message: `This email has already been registered on Ablii.
@@ -125,7 +125,7 @@ foam.CLASS({
             return self.E().addClass('section-container')
               .start().addClass(self.myClass('step-indicator'))
                 .add(this.slot(function(currentIndex) {
-                  return `Step ${currentIndex + 1} of 3`
+                  return `Step ${currentIndex + 1} of 3`;
                 }))
               .end()
               .tag(self.sectionView, {

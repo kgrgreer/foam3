@@ -21,7 +21,7 @@ foam.CLASS({
     ],
 
     messages: [
-      { name: 'NO_DIRECTOR_INFO', message: 'Please enter director\'s information.' }
+      { name: 'NO_DIRECTOR_INFO', message: 'Please enter director\'s information' }
     ],
 
     sections: [

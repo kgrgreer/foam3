@@ -116,6 +116,7 @@ var classes = [
   'net.nanopay.account.BrokerAccount',
   'net.nanopay.account.CreateDefaultDigitalAccountOnUserCreateRule',
   'net.nanopay.bank.BankAccount',
+  'net.nanopay.bank.EUBankAccount',
   'net.nanopay.bank.CABankAccount',
   'net.nanopay.bank.USBankAccount',
   'net.nanopay.bank.INBankAccount',
@@ -567,7 +568,6 @@ var classes = [
   'net.nanopay.tx.PurposeCode',
   'net.nanopay.tx.PurposeCodeLineItem',
   'net.nanopay.tx.TransactionQuote',
-  'net.nanopay.tx.TransactionQuotes',
   'net.nanopay.tx.RefundTransaction',
   'net.nanopay.tx.RetailTransaction',
   'net.nanopay.tx.model.TransactionLimit',
@@ -796,6 +796,9 @@ var classes = [
   'net.nanopay.auth.email.DoNotSolicit',
   'net.nanopay.auth.email.PreventDuplicateEmailDAO',
   'net.nanopay.auth.email.EmailWhitelistEntry',
+
+  'net.nanopay.security.test.HashingJDAOTestModel',
+  'net.nanopay.security.test.HashingJDAOTestElement',
 
   // iso20022 tests
   'net.nanopay.iso20022.ISODateTest',

@@ -90,13 +90,13 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'NO_AMOUNT_OF_OWNERS_SELECTED_ERROR', message: 'Please select a number of owners.' },
-    { name: 'INVALID_OWNER_SELECTION_ERROR', message: 'One or more of the owner selection is invalid.' },
-    { name: 'OWNER_1_ERROR', message: 'Owner1 is invalid.' },
-    { name: 'OWNER_2_ERROR', message: 'Owner2 is invalid.' },
-    { name: 'OWNER_3_ERROR', message: 'Owner3 is invalid.' },
-    { name: 'OWNER_4_ERROR', message: 'Owner4 is invalid.' },
-    { name: 'TOTAL_OWNERSHIP_ERROR', message: 'The total ownership should be less than 100%.' }
+    { name: 'NO_AMOUNT_OF_OWNERS_SELECTED_ERROR', message: 'Please select a number of owners' },
+    { name: 'INVALID_OWNER_SELECTION_ERROR', message: 'One or more of the owner selection is invalid' },
+    { name: 'OWNER_1_ERROR', message: 'Owner1 is invalid' },
+    { name: 'OWNER_2_ERROR', message: 'Owner2 is invalid' },
+    { name: 'OWNER_3_ERROR', message: 'Owner3 is invalid' },
+    { name: 'OWNER_4_ERROR', message: 'Owner4 is invalid' },
+    { name: 'TOTAL_OWNERSHIP_ERROR', message: 'The total ownership should be less than 100%' }
   ],
 
   properties: [
@@ -242,6 +242,8 @@ foam.CLASS({
       class: 'net.nanopay.crunch.onboardingModels.OwnerProperty',
       index: 1,
       documentation: 'First owner',
+      autoValidate: true,
+      validationTextVisible: true,
       validationPredicates: [
       {
         args: ['amountOfOwners', 'owner1$errors_'],
@@ -266,6 +268,8 @@ foam.CLASS({
       class: 'net.nanopay.crunch.onboardingModels.OwnerProperty',
       index: 2,
       documentation: 'Second owner',
+      autoValidate: true,
+      validationTextVisible: true,
       validationPredicates: [
       {
         args: ['amountOfOwners', 'owner2$errors_'],
@@ -290,6 +294,8 @@ foam.CLASS({
       class: 'net.nanopay.crunch.onboardingModels.OwnerProperty',
       index: 3,
       documentation: 'Third owner',
+      autoValidate: true,
+      validationTextVisible: true,
       validationPredicates: [
       {
         args: ['amountOfOwners', 'owner3$errors_'],
@@ -314,6 +320,8 @@ foam.CLASS({
       class: 'net.nanopay.crunch.onboardingModels.OwnerProperty',
       index: 4,
       documentation: 'Forth owner',
+      autoValidate: true,
+      validationTextVisible: true,
       validationPredicates: [
       {
         args: ['amountOfOwners', 'owner4$errors_'],

@@ -35,7 +35,8 @@ foam.CLASS({
 
   imports: [
     'countryDAO',
-    'regionDAO'
+    'regionDAO',
+    'translationService'
   ],
 
   css: `
@@ -104,12 +105,26 @@ foam.CLASS({
       factory: function() {
         return this.countryDAO;
       }
+    },
+    {
+      class: 'String',
+      name: 'regionLabel'
+    },
+    {
+      class: 'String',
+      name: 'defaultRegionLabel'
+    },
+    {
+      class: 'String',
+      name: 'postalCodeLabel'
+    },
+    {
+      class: 'String',
+      name: 'defaultPostalCodeLabel'
     }
   ],
 
   messages: [
-    { name: 'PROVINCE_LABEL', message: 'Province/State' },
-    { name: 'POSTAL_CODE', message: 'Postal Code/ZIP Code' },
     { name: 'PLACE_HOLDER', message: 'Please select...' },
     { name: 'PO_DISCLAIMER', message: '* PO Boxes are not Allowed' }
   ],
@@ -118,6 +133,19 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
+
+      // default translations
+      self.defaultRegionLabel = self.regionLabel = this.translationService.getTranslation(foam.locale, `${foam.locale}.region.label`);
+      self.defaultPostalCodeLabel = self.postalCodeLabel = this.translationService.getTranslation(foam.locale, `${foam.locale}.postalCode.label`);
+      
+      // update translations
+      this.data$.dot('countryId').sub(() => {
+        const country = self.data.countryId.toLowerCase();
+        let translatedRegionLabel = self.translationService.getTranslation(foam.locale, `${country}.region.label`);
+        self.regionLabel = translatedRegionLabel ? translatedRegionLabel : self.defaultRegionLabel;
+        let translatedPostalCodeLabel = self.translationService.getTranslation(foam.locale, `${country}.postalCode.label`);
+        self.postalCodeLabel = translatedPostalCodeLabel ? translatedPostalCodeLabel : self.defaultPostalCodeLabel;
+      });
 
       // Queried out American states from state/province list that are not supported by AscendantFX
       var choices = this.data$.dot('countryId').map(function(countryId) {
@@ -205,7 +233,7 @@ foam.CLASS({
                     dao$: choices,
                     mode$: this.mode$
                   },
-                  label: this.PROVINCE_LABEL,
+                  label$: this.regionLabel$,
                   validationTextVisible: this.showValidation
                 })
               })
@@ -214,7 +242,7 @@ foam.CLASS({
               .tag(this.SectionedDetailPropertyView, {
                 data$: this.data$,
                 prop: this.Address.POSTAL_CODE.clone().copyFrom({
-                  label: this.POSTAL_CODE,
+                  label$: this.postalCodeLabel$,
                   validationTextVisible: this.showValidation
                 })
               })

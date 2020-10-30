@@ -127,6 +127,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/AcceptAware' },
   { name: 'net/nanopay/bank/ui/BankPADForm', flags: ['web'] },
   { name: 'net/nanopay/bank/BankAccount' },
+  { name: 'net/nanopay/bank/EUBankAccount' },
   { name: 'net/nanopay/bank/CABankAccount' },
   { name: 'net/nanopay/bank/USBankAccount' },
   { name: 'net/nanopay/bank/INBankAccount' },
@@ -472,7 +473,6 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/AbliiTransaction' },
   { name: 'net/nanopay/tx/InterestTransaction' },
   { name: 'net/nanopay/tx/TransactionQuote' },
-  { name: 'net/nanopay/tx/TransactionQuotes' },
   { name: 'net/nanopay/tx/JackieRuleOnCreate' },
   { name: 'net/nanopay/tx/JackieRuleOnPut' },
   { name: 'net/nanopay/tx/ClearingTimeTransaction' },
@@ -1176,6 +1176,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/alterna/test/EFTTest' },
   { name: 'net/nanopay/notification/TriggerNotificationTestAction' },
   { name: 'net/nanopay/notification/TriggerDoNotifyTestAction' },
+  { name: 'net/nanopay/security/test/HashingJDAOTestModel' },
 
   // iso20022
   { name: 'net/nanopay/iso20022/ISODateTest' },

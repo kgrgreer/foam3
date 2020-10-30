@@ -59,9 +59,9 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'UPDATE_PERMISSION_ERROR_MSG', message: 'You do not have permission to update that account.' },
-    { name: 'CREATE_PERMISSION_ERROR_MSG', message: 'You do not have permission to create an account for another user.'},
-    { name: 'DELETE_PERMISSION_ERROR_MSG', message: 'Unable to delete bank account due to insufficient permissions.' }
+    { name: 'UPDATE_PERMISSION_ERROR_MSG', message: 'You do not have permission to update that account' },
+    { name: 'CREATE_PERMISSION_ERROR_MSG', message: 'You do not have permission to create an account for another user'},
+    { name: 'DELETE_PERMISSION_ERROR_MSG', message: 'Unable to delete bank account due to insufficient permissions' }
   ],
 
   axioms: [

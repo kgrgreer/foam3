@@ -344,18 +344,18 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'NO_INFORMATION', message: 'Please fill out all necessary fields before proceeding.' },
-    { name: 'INVALID_PHONE', message: 'Phone Number is invalid.' },
-    { name: 'INVALID_MOBILE', message: 'Mobile Phone Number is invalid.' },
-    { name: 'INFORMATION_UPDATED', message: 'Information has been successfully changed.' },
+    { name: 'NO_INFORMATION', message: 'Please fill out all necessary fields before proceeding' },
+    { name: 'INVALID_PHONE', message: 'Phone Number is invalid' },
+    { name: 'INVALID_MOBILE', message: 'Mobile Phone Number is invalid' },
+    { name: 'INFORMATION_UPDATED', message: 'Information has been successfully changed' },
     { name: 'FORM_ERROR', message: 'Error while saving your changes. Please review your input and try again.' },
     { name: 'JOB_TITLE_EMPTY_ERROR', message: 'Job title can\'t be empty' },
     { name: 'JOB_TITLE_LENGTH_ERROR', message: 'Job title is too long' },
     { name: 'EMAIL_ERROR', message: 'Invalid email address' },
-    { name: 'TWO_FACTOR_NO_TOKEN_ERROR', message: 'Please enter a verification token.' },
-    { name: 'TWO_FACTOR_ENABLE_SUCCESS', message: 'Two-factor authentication enabled.' },
+    { name: 'TWO_FACTOR_NO_TOKEN_ERROR', message: 'Please enter a verification token' },
+    { name: 'TWO_FACTOR_ENABLE_SUCCESS', message: 'Two-factor authentication enabled' },
     { name: 'TWO_FACTOR_ENABLE_ERROR', message: 'Could not enable two-factor authentication. Please try again.' },
-    { name: 'TWO_FACTOR_DISABLE_SUCCESS', message: 'Two-factor authentication disabled.' },
+    { name: 'TWO_FACTOR_DISABLE_SUCCESS', message: 'Two-factor authentication disabled' },
     { name: 'TWO_FACTOR_DISABLE_ERROR', message: 'Could not disable two-factor authentication. Please try again.' }
   ],
 

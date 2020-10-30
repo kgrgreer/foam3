@@ -157,7 +157,7 @@ foam.CLASS({
 
   messages: [
     { name: 'Connecting', message: 'Almost there ...'},
-    { name: 'INVALID_FORM', message: 'Please select an account to proceed.'},
+    { name: 'INVALID_FORM', message: 'Please select an account to proceed'},
     { name: 'INSTRUCTIONS', message : 'Please select the account you wish to connect.'}
   ],
 

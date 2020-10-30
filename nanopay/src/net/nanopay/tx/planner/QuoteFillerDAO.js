@@ -107,6 +107,11 @@ foam.CLASS({
 
         quote.setSourceUnit(txn.getSourceCurrency());
         quote.setDestinationUnit(txn.getDestinationCurrency());
+        if ( quote.getParent() != null && quote.getParent().getRequestOwner() != 0 ){
+          quote.setRequestOwner(quote.getParent().getRequestOwner());
+        } else {
+          quote.setRequestOwner(account.getOwner());
+        }
         txn.validate(x); // validate the request txn 1st
         txn.freeze();
         return getDelegate().put_(x, quote);

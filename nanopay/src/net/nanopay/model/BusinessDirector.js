@@ -38,8 +38,8 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'UNDER_AGE_LIMIT_ERROR', message: 'Must be at least 18 years old.' },
-    { name: 'OVER_AGE_LIMIT_ERROR', message: 'Must be under the age of 125 years old.' },
+    { name: 'UNDER_AGE_LIMIT_ERROR', message: 'Must be at least 18 years old' },
+    { name: 'OVER_AGE_LIMIT_ERROR', message: 'Must be under the age of 125 years old' },
     { name: 'INVALID_CPF', message: 'Invalid CPF Number' },
     { name: 'INVALID_DIRECTOR_NAME', message: 'Click to verify director name' }
   ],

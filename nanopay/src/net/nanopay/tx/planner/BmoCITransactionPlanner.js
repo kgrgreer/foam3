@@ -54,6 +54,7 @@ foam.CLASS({
         t.setPaymentProvider(PAYMENT_PROVIDER);
         quote.addTransfer(trustAccount.getId(), -t.getAmount());
         quote.addTransfer(quote.getDestinationAccount().getId(), t.getAmount());
+        quote.addExternalTransfer(quote.getSourceAccount().getId(), -t.getAmount());
 
         t.addLineItems(new TransactionLineItem[] {
           new ETALineItem.Builder(x).setEta(Duration.ofDays(1).toMillis()).build()

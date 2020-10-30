@@ -60,10 +60,10 @@ foam.CLASS({
     { name: 'MISSING_EMAIL', message: 'Missing Email' },
     { name: 'MISS_ADDRESS', message: 'Missing Business Address' },
     { name: 'OTHER', message: 'Other' },
-    { name: 'EXISTING_USER_CONTACT', message: 'There is a contact who is also a user with that email.' },
-    { name: 'EXISTING_CONTACT', message: 'There is an existing contact with that email.' },
-    { name: 'EXISTING_USER', message: 'There is already a user with that email.' },
-    { name: 'EXISTING_USER_MULTI', message: 'The user belongs to multiple businesses.' },
+    { name: 'EXISTING_USER_CONTACT', message: 'There is a contact who is also a user with that email' },
+    { name: 'EXISTING_CONTACT', message: 'There is an existing contact with that email' },
+    { name: 'EXISTING_USER', message: 'There is already a user with that email' },
+    { name: 'EXISTING_USER_MULTI', message: 'The user belongs to multiple businesses' },
     { name: 'REQUIRE_BUSINESS_1', message: 'These contacts have been added to ' },
     { name: 'REQUIRE_BUSINESS_2', message: ' but require a business address' }
 

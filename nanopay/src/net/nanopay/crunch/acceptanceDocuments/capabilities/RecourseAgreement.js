@@ -22,7 +22,7 @@ foam.CLASS({
   documentation: 'Verifies user understanding of recourse and reimbursement of pad agreement',
 
   messages: [
-    { name: 'ACKNOWLEDGE_STATEMENT', message: 'Must acknowledge the statement above.' },
+    { name: 'ACKNOWLEDGE_STATEMENT', message: 'Must acknowledge the statement above' },
     {
       name: 'CHECKBOX_MSG',
       message: 'I have certain recourse rights if any debit does not comply with this agreement. ' +

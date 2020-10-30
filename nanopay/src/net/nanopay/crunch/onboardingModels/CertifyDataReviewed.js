@@ -35,7 +35,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'REVIEW_REQUIRED_ERROR', message: 'All data must be reviewed by a signing officer.' }
+    { name: 'REVIEW_REQUIRED_ERROR', message: 'All data must be reviewed by a signing officer' }
   ],
 
   sections: [

@@ -4,7 +4,7 @@ foam.CLASS({
   extends: 'net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability',
 
   messages: [
-    { name: 'CERTIFY_DIRECTORS_LISTED', message: 'You must certify that all directors have been listed.' },
+    { name: 'CERTIFY_DIRECTORS_LISTED', message: 'You must certify that all directors have been listed' },
     { name: 'TITLE_MSG', message: 'all directors have been listed.' }
   ],
 

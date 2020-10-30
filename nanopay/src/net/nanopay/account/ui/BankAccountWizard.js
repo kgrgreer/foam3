@@ -52,8 +52,8 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'SUCCESS', message: 'Bank account successfully added.' },
-    { name: 'ERROR', message: 'Bank account error occured.' }
+    { name: 'SUCCESS', message: 'Bank account successfully added' },
+    { name: 'ERROR', message: 'Bank account error occured' }
   ],
 
   methods: [

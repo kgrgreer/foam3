@@ -117,7 +117,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'ONE_BUSINESS_MSG', message: `You're part of only one business.` }
+    { name: 'ONE_BUSINESS_MSG', message: `You're part of only one business` }
   ],
 
   methods: [

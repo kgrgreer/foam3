@@ -218,7 +218,7 @@ foam.CLASS({
     { name: 'TITLE', message: 'Add a new bank' },
     { name: 'SUB_TITLE', message: 'Connect through a banking partner below, or ' },
     { name: 'CONNECT_LABEL', message: 'connect with a void check' },
-    { name: 'BANK_ADDED', message: 'Your bank account was successfully added.' },
+    { name: 'BANK_ADDED', message: 'Your bank account was successfully added' },
     { name: 'CHOOSE_COUNTRY', message: 'Please select the originating country of the bank account you would like to add.' }
   ],
 
