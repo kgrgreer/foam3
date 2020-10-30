@@ -39,7 +39,8 @@ foam.CLASS({
     {
       name: 'account',
       class: 'Reference',
-      of: 'net.nanopay.account.Account'
+      of: 'net.nanopay.account.Account',
+      sourceDAOKey: 'localAccountDAO'
     },
     {
       documentation: 'Time transfer was applied. Also reverse transfers are only displayed if they have been executed.',
