@@ -36,7 +36,10 @@ foam.CLASS({
   properties: [
     {
       class: 'foam.dao.DAOProperty',
-      name: 'transactionDAO'
+      name: 'transactionDAO',
+      javaGetter: `
+        return (DAO) getX().get("localTransactionDAO");
+      `
     },
     {
       class: 'Boolean',
@@ -56,7 +59,6 @@ foam.CLASS({
           public RandomDepositBankAccountDAO(X x, DAO delegate) {
             setX(x);
             setDelegate(delegate);
-            setTransactionDAO((DAO) getX().get("localTransactionDAO"));
             setUseBMO(true);
             setUseRBC(false);
           }   

@@ -1366,7 +1366,6 @@ var classes = [
   // DAO decorators
   'net.nanopay.account.AbliiBankAccountAutoverifyDAO',
   'net.nanopay.account.AuthenticatedAccountDAO',
-  'net.nanopay.account.DigitalAccountInfoPopulateDAO',
   'net.nanopay.admin.AccountStatusUserDAO',
   'net.nanopay.approval.ApprovalRequestNotificationDAO',
   'net.nanopay.approval.AuthenticatedApprovalDAO',
