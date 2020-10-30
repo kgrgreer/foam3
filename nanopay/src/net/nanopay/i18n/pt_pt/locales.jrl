@@ -2128,3 +2128,4 @@ p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.BusinessAcco
 
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.SELECT_JOB_TITLE",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.SELECT_JOB_TITLE",target:"Selecione um cargo"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.account.Account.DEFAULT_MSG",locale:"pt",source:"net.nanopay.account.Account.DEFAULT_MSG",target:"padrão"})
+p({class:"foam.i18n.Locale",id:"net.nanopay.account.Account.SECTION_ACCOUNT_DETAILS.title",locale:"pt",source:"net.nanopay.account.Account.SECTION_ACCOUNT_DETAILS.title",target:"Detalhes da conta"})
