@@ -21,7 +21,8 @@ foam.CLASS({
   extends: 'net.nanopay.crunch.document.Document',
 
   messages: [
-    { name: 'EXPIRED_DOCUMENT_ERROR', message: 'Expiry date must be a future date' }, 
+    { name: 'EXCEED_EXPIRY_LIMIT_ERROR', message: 'Expiry date must not exceed 5 years'},
+    { name: 'EXPIRED_DOCUMENT_ERROR', message: 'Expiry date must be a future date' },
     { name: 'EXPIRY_NULL_ERROR', message: 'Expiry date required' }
   ],
 
@@ -33,6 +34,7 @@ foam.CLASS({
       section: 'documentUploadSection'
     },
     {
+      class: 'Date',
       name: 'expiry',
       section: 'documentUploadSection',
       label: 'Expiry date',
@@ -60,12 +62,24 @@ foam.CLASS({
           args: ['expiry'],
           predicateFactory: function(e) {
             var today = new Date();
-            return e.OR(
-              e.EQ(net.nanopay.crunch.document.ExpirableDocument.EXPIRY, null),
+            return e.AND(
+              e.NEQ(net.nanopay.crunch.document.ExpirableDocument.EXPIRY, null),
               e.GT(net.nanopay.crunch.document.ExpirableDocument.EXPIRY, today)
             );
           },
           errorMessage: 'EXPIRED_DOCUMENT_ERROR'
+        },
+        {
+          args: ['expiry'],
+          predicateFactory: function(e) {
+            var limit = new Date();
+            limit.setDate(limit.getDate() + ( 5 * 365 ));
+            return e.AND(
+              e.NEQ(net.nanopay.crunch.document.ExpirableDocument.EXPIRY, null),
+              e.LT(net.nanopay.crunch.document.ExpirableDocument.EXPIRY, limit)
+            );
+          },
+          errorMessage: 'EXCEED_EXPIRY_LIMIT_ERROR'
         }
       ]
     }
