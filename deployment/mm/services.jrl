@@ -18,6 +18,13 @@ p({
   "service": {"class":"foam.nanos.medusa.MedusaRegistryService"}
 })
 
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"promotedPurgeAgent",
+  "lazy": false,
+  "serviceClass":"foam.nanos.medusa.PromotedPurgeAgent"
+})
+
 // NOTE: see MedusaInternalDAO for access to this DAO.
 p({
   "class": "foam.nanos.boot.NSpec",
