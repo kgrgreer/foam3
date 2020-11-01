@@ -374,7 +374,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'targetCustomers',
-      label: 'Who do you market the products and services to?',
+      label: 'Describe the target customer of your products and services',
       documentation: `The type of clients that the business markets its products and
         services.`,
       section: 'business'

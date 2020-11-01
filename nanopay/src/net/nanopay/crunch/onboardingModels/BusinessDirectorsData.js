@@ -21,13 +21,13 @@ foam.CLASS({
     ],
 
     messages: [
-      { name: 'NO_DIRECTOR_INFO', message: 'Please enter director\'s information' }
+      { name: 'NO_DIRECTOR_INFO', message: 'Director information required' }
     ],
 
     sections: [
       {
         name: 'directorsInfoSection',
-        title: 'Enter the directors information',
+        title: 'Director information',
         help: 'Require business director information'
       }
     ],
@@ -78,7 +78,7 @@ properties: [
             defaultNewItem: net.nanopay.model.BusinessDirector.create({
               type: x.data.subject.user.address.countryId
             }, x),
-            name: 'Directors'
+            name: 'director'
           }
         },
         visibility: function(businessTypeId, needDirector) {

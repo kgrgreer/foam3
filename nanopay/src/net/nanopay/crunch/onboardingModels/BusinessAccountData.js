@@ -32,24 +32,24 @@ foam.CLASS({
     },
     {
       name: 'customerSection',
-      title: 'Main Customer detail'
+      title: 'Customers'
     },
     {
       name: 'supplierSection',
-      title: 'Main Supplier detail'
+      title: 'Suppliers'
     }
   ],
 
   messages: [
-    { name: 'NO_CUSTOMERS_INFO', message: 'Please enter main customer\'s information' },
-    { name: 'NO_SUPPLIERS_INFO', message: 'Please enter main supplier\'s information' },
+    { name: 'NO_CUSTOMERS_INFO', message: 'Customer information required' },
+    { name: 'NO_SUPPLIERS_INFO', message: 'Supplier information required' },
     { name: 'CUSTOMER_OBJ_ERROR', message: 'One or more of the customers entered is invalid' },
     { name: 'SUPPLIER_OBJ_ERROR', message: 'One or more of the suppliers entered is invalid' },
     { name: 'INVALID_DATE', message: 'Cannot be a future date' },
     { name: 'YES', message: 'Yes' },
     { name: 'NO', message: 'No' },
-    { name: 'CUSTOMERS_MSG', message: 'Customers' },
-    { name: 'SUPPLIERS_MSG', message: 'Suppliers' }
+    { name: 'CUSTOMERS_MSG', message: 'customer' },
+    { name: 'SUPPLIERS_MSG', message: 'supplier' }
   ],
 
   properties: [

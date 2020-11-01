@@ -29,7 +29,11 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'PLACE_HOLDER', message: 'Please select...' }
+    { name: 'PLACE_HOLDER', message: 'Please select...' },
+    { name: 'GROSS_ANNUAL_SALES_ERROR', message: 'Gross annual sales required' },
+    { name: 'TRANSACTION_PURPOSE_ERROR', message: 'Transaction purpose required' },
+    { name: 'ANNUAL_NUMBER_ERROR', message: 'Annual number of transactions required' },
+    { name: 'ANNUAL_VOLUME_ERROR', message: 'Annual volume required' }
   ],
 
   properties: [
@@ -42,7 +46,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'annualRevenue',
-      label: 'Gross annual sales (estimated)',
+      label: 'Estimated gross annual sales',
       documentation: `Estimated annual revenue for user or business.`,
       view: function(_, X) {
         return {
@@ -64,14 +68,14 @@ foam.CLASS({
           predicateFactory: function(e) {
             return e.NEQ(net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_REVENUE, null);
           },
-          errorString: 'Please make a selection.'
+          errorMessage: 'GROSS_ANNUAL_SALES_ERROR'
         }
       ]
     },
     {
       class: 'String',
       name: 'transactionPurpose',
-      label: 'Purpose of transactions on application',
+      label: 'Main purpose of transactions',
       documentation: `General transaction purposes.`,
       view: function(_, X) {
         return {
@@ -97,7 +101,7 @@ foam.CLASS({
           predicateFactory: function(e) {
             return e.NEQ(net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.TRANSACTION_PURPOSE, null);
           },
-          errorString: 'Please provide transaction purpose.'
+          errorMessage: 'TRANSACTION_PURPOSE_ERROR'
         }
       ]
     },
@@ -113,7 +117,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'annualTransactionFrequency',
-      label: 'Annual number of transactions (estimated)',
+      label: 'Estimated annual number of transactions',
       documentation: `Estimated annual frequency of transactions the user or business conducts.`,
         view: function(_, X) {
         return {
@@ -134,7 +138,7 @@ foam.CLASS({
           predicateFactory: function(e) {
             return e.NEQ(net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_TRANSACTION_FREQUENCY, '');
           },
-          errorString: 'Please make a selection.'
+          errorMessage: 'ANNUAL_NUMBER_ERROR'
         }
       ]
     },
@@ -166,7 +170,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'annualDomesticVolume',
-      label: 'Annual volume on application (estimated)',
+      label: 'Estimated annual volume',
       documentation: `Estimated annual volume in USD of user or business. baseCurrency of this model.
       US-based company (the information pertains to their domestic transactions, as they will be processed through AFX)`,
       view: function(_, X) {
@@ -189,7 +193,7 @@ foam.CLASS({
           predicateFactory: function(e) {
             return e.NEQ(net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_DOMESTIC_VOLUME, null);
           },
-          errorString: 'Please make a selection.'
+          errorMessage: 'ANNUAL_VOLUME_ERROR'
         }
       ]
     },

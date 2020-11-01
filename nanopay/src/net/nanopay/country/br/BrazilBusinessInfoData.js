@@ -45,8 +45,8 @@ foam.CLASS({
   messages: [
     { name: 'NO_NIRE_NUMBER', message: 'Please enter 14-digit NIRE/State Commercial Identification Number' },
     { name: 'NO_CNPJ', message: 'Please enter 14-digit National Registry of Legal Entities Number' },
-    { name: 'CNPJ_INVALID', message: 'The CNPJ is invalid' },
-    { name: 'VERIFY_BUSINESS_NAME', message: 'Click to verify business name.' },
+    { name: 'CNPJ_INVALID', message: 'CNPJ required' },
+    { name: 'VERIFY_BUSINESS_NAME', message: 'Confirm your business name' }
   ],
 
   properties: [
@@ -170,7 +170,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'verifyName',
-      label: 'Please verify that business name displayed below matches business name attached to your CNPJ.',
+      label: 'Is this your business?',
       section: 'businessInformation',
       view: function(n, X) {
         var self = X.data$;

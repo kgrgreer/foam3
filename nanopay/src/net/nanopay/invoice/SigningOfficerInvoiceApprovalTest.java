@@ -289,7 +289,7 @@ ucjTD.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-6");
 ucjTD.setData(tdd);
 userCapabilityJunctionDAO.inX(myAdminContext).put(ucjTD);
 
-// Business Owner Information : 554af38a-8225-87c8-dfdf-eeb15f71215f-7
+// Business ownership : 554af38a-8225-87c8-dfdf-eeb15f71215f-7
 BeneficialOwner bo = new BeneficialOwner();
 bo.setFirstName("Francis");
 bo.setLastName("Filth");
