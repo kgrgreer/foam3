@@ -79,10 +79,10 @@ if [ $INSTALL_ONLY -eq 0 ]; then
     scp ${SSH_KEY_OPT} ${NANOPAY_TARBALL_PATH} ${REMOTE}:${NANOPAY_REMOTE_OUTPUT}/${NANOPAY_TARBALL}
 
     if [ ! $? -eq 0 ]; then
-        echo "ERROR :: Failed copying tarball to remote server"
+        echo "ERROR :: Failed copying tarball to remote server ${REMOTE_URL}"
         quit
     else
-        echo "INFO :: Successfully copied tarball to remote server"
+        echo "INFO :: Successfully copied tarball to remote server ${REMOTE_URL}"
     fi
 fi
 
@@ -91,7 +91,7 @@ ssh ${SSH_KEY_OPT} ${REMOTE} "sudo bash -s -- -I ${NANOPAY_REMOTE_OUTPUT}/${NANO
 if [ ! $? -eq 0 ]; then
     quit;
 else
-    echo "INFO :: Remote install successful"
+    echo "INFO :: Remote install successful ${REMOTE_URL}"
 fi
 
 exit 0;
