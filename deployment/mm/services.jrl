@@ -69,7 +69,7 @@ p({
       .setRuler(false)
       .setPm(true)
       .setEnableInterfaceDecorators(false)
-      .setDecorator(new foam.nanos.medusa.ReplayDAO.Builder(x)
+      .setDecorator(new foam.nanos.medusa.ReplayMediatorDAO.Builder(x)
         .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.MedusaEntry.getOwnClassInfo()))
       .build())
       .setOrder(new foam.mlang.order.Comparator[] {
