@@ -25,8 +25,10 @@ foam.CLASS({
     'foam.box.Box',
     'foam.box.HTTPBox',
     'foam.box.SessionClientBox',
+    'foam.box.RemoteException',
     'foam.core.FObject',
     'foam.core.X',
+    'foam.core.ValidationException',
     'foam.dao.ArraySink',
     'foam.dao.ClientDAO',
     'foam.dao.DAO',
@@ -212,8 +214,8 @@ foam.CLASS({
         pass_.incrementAndGet();
       } catch (Throwable e) {
         fail_.incrementAndGet();
-        getLogger().warning(e.getMessage(), e);
         pm.error(x, e);
+        getLogger().warning(e.toString(), "payerId", payerId, "payerId", payeeId, "amount", amount);
       } finally {
         pm.log(x);
       }
