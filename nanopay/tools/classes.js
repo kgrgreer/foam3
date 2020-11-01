@@ -728,6 +728,7 @@ var classes = [
   'net.nanopay.security.PKCS11KeyStoreManager',
   'net.nanopay.security.PKCS12KeyStoreManager',
   'net.nanopay.security.HashingJournal',
+  'net.nanopay.security.HashingReplayJournal',
   'net.nanopay.security.HashedJSONParser',
   'net.nanopay.security.csp.CSPViolation',
   'net.nanopay.security.csp.CSPReportWebAgent',
