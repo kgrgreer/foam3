@@ -82,26 +82,6 @@ foam.CLASS({
 
         Transaction transaction = (Transaction) obj;
 
-        if ( (transaction instanceof AbliiTransaction || ( transaction instanceof FXSummaryTransaction && transaction.getInvoiceId() != 0 )) &&
-          ((DAO) x.get("localTransactionDAO")).find(transaction.getId()) == null ) {
-          transaction = (Transaction) super.put_(x, obj);
-
-          Invoice invoice = getInvoice(x, transaction);
-          if ( invoice != null ) {
-            invoice.setPaymentId(transaction.getId());
-            // Invoice status should be processing as default when the transaction is created
-            invoice.setPaymentMethod(PaymentStatus.PROCESSING);
-            // AscendantFXTransaction has its own completion date
-            if ( transaction instanceof AscendantFXTransaction ) {
-              invoice.setPaymentDate(transaction.getCompletionDate());
-            } else {
-              invoice.setPaymentDate(generateEstimatedCreditDate(x, transaction));
-            }
-            invoiceDAO.put(invoice);
-          }
-          return transaction;
-        }
-
         // Since SaveChainedTransactionDAO will save all children transactions, we
         // can copy the invoiceId from the root transaction without having to
         // updateInvoice after the fact.
