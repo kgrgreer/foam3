@@ -42,6 +42,7 @@ foam.CLASS({
       value: 'GBP',
     },
     {
+      class: 'String',
       name: 'sortCode',
       label: 'Sort Code',
       section: 'accountDetails',
@@ -91,7 +92,25 @@ foam.CLASS({
     },
     {
       name: 'bankCode',
-      visibility: 'HIDDEN'
+      updateVisibility: 'RO',
+      validateObj: function(bankCode) {
+        var bankCodeRegex = /^[A-z0-9a-z]{4}$/;
+
+        if ( bankCode === '' ) {
+          return this.BANK_CODE_REQUIRED;
+        } else if ( ! bankCodeRegex.test(bankCode) ) {
+          return this.BANK_CODE_INVALID;
+        }
+      }
+    }
+  ],
+
+  methods: [
+    {
+      name: 'getRoutingCode',
+      javaCode: `
+        return getSortCode();
+      `
     }
   ]
 });

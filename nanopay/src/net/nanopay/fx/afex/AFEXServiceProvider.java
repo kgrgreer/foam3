@@ -27,10 +27,7 @@ import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.admin.model.ComplianceStatus;
-import net.nanopay.bank.BankAccount;
-import net.nanopay.bank.BankAccountStatus;
-import net.nanopay.bank.CABankAccount;
-import net.nanopay.bank.USBankAccount;
+import net.nanopay.bank.*;
 import net.nanopay.contacts.Contact;
 import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
@@ -547,6 +544,10 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       String bankRoutingCode = bankAccount.getRoutingCode(this.x);
       if ( bankAccount instanceof CABankAccount) {
         bankRoutingCode = "0" + bankAccount.getBankCode() + bankRoutingCode;
+      }
+      if ( ! SafetyUtil.isEmpty(bankAccount.getBankCode()) ) {
+        createBeneficiaryRequest.setBankSWIFTBIC(bankAccount.getBankCode());
+        createBeneficiaryRequest.setBankAccountNumber(bankAccount.getIban());
       }
       createBeneficiaryRequest.setBankRoutingCode(bankRoutingCode);
       createBeneficiaryRequest.setBeneficiaryAddressLine1(userAddress.getAddress().replace("#", ""));

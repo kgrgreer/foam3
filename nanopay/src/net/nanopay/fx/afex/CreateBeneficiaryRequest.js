@@ -40,6 +40,10 @@ foam.CLASS({
       name: "BankRoutingCode"
     },
     {
+      class: "String",
+      name: "BankSWIFTBIC"
+    },
+    {
       class: 'String',
       name: "BeneficiaryAddressLine1"
     },
