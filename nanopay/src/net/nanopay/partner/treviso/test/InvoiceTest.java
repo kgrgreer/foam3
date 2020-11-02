@@ -38,7 +38,7 @@ public class InvoiceTest extends Test {
       ) return false;
 
       if ( Arrays.stream(invoice.getCapablePayloads())
-        .map(cp -> cp.getCapability().getId())
+        .map(cp -> cp.getCapability())
         .noneMatch(TrevisoInvoiceCapabilityRule.OBJECT_CAPABILITY_ID::equals)
       ) return false;
 
