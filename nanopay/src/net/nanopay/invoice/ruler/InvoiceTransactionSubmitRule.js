@@ -48,6 +48,7 @@ foam.CLASS({
             try {
               Transaction txn = (Transaction) transactionDAO.put(invoice.getPlan());
               invoice.setPaymentId(txn.getId());
+              invoice.setPaymentMethod(PaymentStatus.PROCESSING);
               invoice.clearPlan();
             } catch (Exception e) {
               logger.log("Could not reput transaction on invoice #" + invoice.getId());

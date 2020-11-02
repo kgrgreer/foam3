@@ -75,7 +75,7 @@ foam.CLASS({
                             );
                         }).forEach(ucr -> cre.addCapabilityId(ucr));
 
-                    if ( Arrays.stream(invoice.getCapablePayloads()).map(cp -> cp.getCapability().getId()).anyMatch(getObjectCapabilityID()::equals) ) {
+                    if ( Arrays.stream(invoice.getCapablePayloads()).map(cp -> cp.getCapability()).anyMatch(getObjectCapabilityID()::equals) ) {
                         var reqs = new String[] { getObjectCapabilityID() };
                         if ( 
                             ! invoice.checkRequirementsStatusNoThrow(x, reqs, CapabilityJunctionStatus.GRANTED) &&

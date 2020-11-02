@@ -266,6 +266,7 @@ foam.CLASS({
       var defaultMenu = this.theme ? 
         await this.menuDAO.find(this.theme.defaultMenu) : 
         'sme.main.appStore';
+      if ( ! defaultMenu ) defaultMenu = 'sme.main.appStore';
       this.pushMenu(defaultMenu);
     },
 

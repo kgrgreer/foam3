@@ -471,6 +471,35 @@ p({
 })
 
 p({
+  "class":"foam.nanos.crunch.extra.ReviewWizard",
+  "id":"25F5C0CC-DD7E-4206-B392-46EAA9332870",
+  "name":"Review Required (International Payments)",
+  "icon":"/images/capabilityIcons/BrazilCap.svg",
+  "keywords":["featured"],
+  "availabilityPredicate": {
+    "class":"foam.mlang.predicate.And",
+    "args": [
+      { "class":"net.nanopay.crunch.predicate.IsBusiness" },
+      {
+        "class":"foam.nanos.crunch.predicate.CapabilityGranted",
+        "capabilityId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49"
+      },
+      {
+        "class":"foam.nanos.crunch.predicate.CapabilityGranted",
+        "capabilityId":"777af38a-8225-87c8-dfdf-eeb15f71215f-123"
+      }
+    ]
+  },
+  "wizardletConfig": {
+    "class": "foam.u2.wizard.StepWizardConfig",
+    "allowSkipping": false
+  },
+  "capabilityToReview": "554af38a-8225-87c8-dfdf-eeb15f71215f-49",
+  "enabled":true,
+  "visible":true
+})
+
+p({
   "class":"foam.nanos.crunch.Capability",
   "id":"2910C2C9-3597-42A3-BF85-CFBC8F0E1388",
   "name":"User Invoice Capability",

@@ -73,7 +73,7 @@ foam.CLASS({
     ^field {
       width: 100%;
       height: 40px;
-      padding: 10px 8px;
+      padding: 10px 8px 10px 0px;
     }
 
     ^bottom-container {
@@ -90,9 +90,9 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'TITLE', message: 'Disable two-factor authentication?' },
-    { name: 'INSTRUCTIONS_1', message: 'Two-factor authentication provides an added layer of security to your account by decreasing the probability that an attacker can impersonate you or gain access to your sensitve account information.' },
-    { name: 'INSTRUCTIONS_2', message: 'We strongly recommend keeping it enabled.' },
+    { name: 'TITLE', message: 'Are you sure?' },
+    { name: 'INSTRUCTIONS_1', message: 'Two-factor authentication provides an added layer of security against impersonation and prevents access to sensitive account information.' },
+    { name: 'INSTRUCTIONS_2', message: 'We highly recommend it.' },
     { name: 'FIELD_LABEL', message: 'Enter verification code' },
     { name: 'FIELD_PLACEHOLDER', message: 'Enter code' },
     { name: 'ERROR_NO_TOKEN', message: 'Please enter a verification token' },
