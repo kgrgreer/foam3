@@ -115,6 +115,13 @@ foam.CLASS({
       ]
     },
     {
+      class: 'EMail',
+      name: 'email',
+      documentation: 'Company email.',
+      label: 'Email',
+      section: 'businessRegistration'
+    },
+    {
       class: 'Boolean',
       name: 'signInAsBusiness',
       value: true,
