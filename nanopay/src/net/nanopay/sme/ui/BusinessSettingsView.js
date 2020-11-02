@@ -72,8 +72,8 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'TITLE', message: 'Business Settings' },
-    { name: 'COMPANY_TAB', message: 'Company Profile' },
+    { name: 'TITLE', message: 'Business settings' },
+    { name: 'COMPANY_TAB', message: 'Profile' },
     { name: 'USER_MANAGEMENT_TAB', message: 'User Management' },
     { name: 'INTEGRATION_TAB', message: 'Integrations' },
     { name: 'PRIVACY_TAB', message: 'Privacy'},
