@@ -33,7 +33,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'brazilVerificationService'
+    'brazilVerificationService',
+    'subject'
   ],
 
   messages: [
@@ -115,6 +116,15 @@ foam.CLASS({
       }
     },
     {
+      class: 'Reference',
+      of: 'foam.nanos.auth.User',
+      name: 'user',
+      hidden: true,
+      factory: function() {
+        return this.subject.realUser;
+      }
+    },
+    {
       class: 'String',
       name: 'cpfName',
       label: '',
@@ -138,7 +148,7 @@ foam.CLASS({
       },
       visibility: function(cpfName) {
         return cpfName.length > 0 ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
-      },  
+      },
       validationPredicates: [
         {
           args: ['verifyName'],
@@ -155,7 +165,7 @@ foam.CLASS({
     {
       name: 'getCpfName',
       code:  async function(data) {
-        return await this.brazilVerificationService.getCPFName(this.__subContext__, data);
+        return await this.brazilVerificationService.getCPFName(this.__subContext__, data, this.user);
       }
     },
     {
@@ -165,7 +175,7 @@ foam.CLASS({
           throw new IllegalStateException("Must verify name attached to CPF is valid.");
 
         try {
-          if ( ! ((BrazilVerificationService) x.get("brazilVerificationService")).validateUserCpf(x, getData()) )
+          if ( ! ((BrazilVerificationService) x.get("brazilVerificationService")).validateUserCpf(x, getData(), getUser()) )
             throw new RuntimeException(INVALID_CPF);
         } catch(Throwable t) {
           throw t;
