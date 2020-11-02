@@ -398,3 +398,28 @@ p({
   "enabled":true,
   "lifecycleState":1
 })
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"ad5a192e-72c5-4037-9149-d9f9e5a433a2",
+  "name":"Capable Payload Status Adjust Approvals",
+  "priority":99,
+  "ruleGroup":"InvoiceNotification",
+  "documentation":"Sets associated transaction status to COMPLETED when the capabilities are granted on invoice",
+  "daoKey":"invoiceDAO",
+  "operation":1,
+  "after":true,
+  "action":{
+    "class":"foam.nanos.crunch.lite.ruler.CapableStatusChangeAdjustApprovalsRuleAction"
+  },
+  "predicate":{
+    "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+    "propName":"status",
+    "propValue":{
+      "class":"net.nanopay.invoice.model.InvoiceStatus",
+      "ordinal":6
+    }
+  },
+  "saveHistory":true,
+  "lifecycleState":1
+})

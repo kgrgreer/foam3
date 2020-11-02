@@ -69,6 +69,13 @@ foam.CLASS({
             labelDecoration: 'Invoice-Status-Void',
             icon: 'images/ic-void.svg'
           };
+        // TODO: probably need to get a label from Logan
+        case this.InvoiceStatus.REJECTED:
+            return {
+              labelText: this.InvoiceStatus.REJECTED.label,
+              labelDecoration: 'Invoice-Status-Void',
+              icon: 'images/ic-void.svg'
+            };
         case this.InvoiceStatus.PROCESSING:
           return {
             labelText: this.InvoiceStatus.PROCESSING.label,
