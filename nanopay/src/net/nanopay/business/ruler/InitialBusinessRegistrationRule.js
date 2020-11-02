@@ -75,7 +75,6 @@ foam.CLASS({
             updatedBusiness.setMailingAddress(businessCapabilityData.getMailingAddress());
             updatedBusiness.setPhoneNumber(businessCapabilityData.getCompanyPhone());
             updatedBusiness.setFax(businessCapabilityData.getFax());
-            updatedBusiness.setEmail(businessCapabilityData.getEmail());
             updatedBusiness.setSpid(user.getSpid());
             localUserDAO.inX(x).put(updatedBusiness);
             return;
@@ -90,7 +89,6 @@ foam.CLASS({
             .setMailingAddress(businessCapabilityData.getMailingAddress())
             .setPhoneNumber(businessCapabilityData.getCompanyPhone())
             .setFax(businessCapabilityData.getFax())
-            .setEmail(businessCapabilityData.getEmail())
             .setSpid(user.getSpid())
             .build();
           try {
