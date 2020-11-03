@@ -128,6 +128,79 @@ foam.CLASS({
     {
       name: 'reset',
       javaCode: 'getMessageDigest().reset();'
+    },
+    {
+      documentation: 'Replays the journal file - single threaded - entries are chained.',
+      name: 'replay',
+      args: [
+        { name: 'x',   type: 'Context' },
+        { name: 'dao', type: 'foam.dao.DAO' }
+      ],
+      javaCode: `
+       HashedJSONParser parser = (HashedJSONParser) getParser(x);
+       MessageDigest md = parser.getMessageDigest();
+       if ( ! md.getRollDigests() ||
+            ! getDigestRequired() ) {
+          super.replay(x, dao);
+          return;
+        }
+
+        // count number of entries successfully read
+        AtomicInteger successReading = new AtomicInteger();
+        AtomicInteger failedReading = new AtomicInteger();
+
+        // NOTE: explicitly calling PM constructor as create only creates
+        // a percentage of PMs, but we want all replay statistics
+        PM pm = new PM(this.getClass().getSimpleName(), ((foam.dao.AbstractDAO)dao).getOf().getId(), "replay", getFilename());
+
+        try ( BufferedReader reader = getReader() ) {
+          if ( reader == null ) {
+            return;
+          }
+          Class defaultClass = dao.getOf().getObjClass();
+          for (  CharSequence entry ; ( entry = getEntry(reader) ) != null ; ) {
+            int length = entry.length();
+            if ( length == 0 ) continue;
+            if ( COMMENT.matcher(entry).matches() ) continue;
+            try {
+              final char operation = entry.charAt(0);
+              final String strEntry = entry.subSequence(2, length - 1).toString();
+              FObject obj = parser.parseString(strEntry, defaultClass);
+              if ( obj == null ) {
+                getLogger().error("Parse error", getParsingErrorMessage(strEntry), "entry:", strEntry);
+                return;
+              }
+              switch ( operation ) {
+                case 'p':
+                  foam.core.FObject old = dao.find(obj.getProperty("id"));
+                  dao.put(old != null ? mergeFObject(old.fclone(), obj) : obj);
+                  break;
+
+                case 'r':
+                  dao.remove(obj);
+                  break;
+              }
+              successReading.incrementAndGet();
+            } catch ( Throwable t ) {
+              getLogger().error("Error replaying journal entry:", entry, t);
+              failedReading.incrementAndGet();
+            }
+          }
+        } catch ( Throwable t) {
+          pm.error(x, t);
+          getLogger().error("Failed to read from journal", t);
+          throw new RuntimeException(t);
+        } finally {
+          if ( failedReading.get() > 0 ) {
+            getLogger().warning("Failed to read " + failedReading.get() + " entries from file: " + getFilename());
+            pm.error(x, "Failed to read " + failedReading.get() + " entries");
+            // TODO/REVIEW: - Throw, halt - indicates MessageDigest failure.
+          } else {
+            pm.log(x);
+          }
+          getLogger().info("Successfully read " + successReading.get() + " entries from file: " + getFilename() + " in: " + pm.getTime() + "(ms)");
+        }
+      `
     }
   ]
 });
