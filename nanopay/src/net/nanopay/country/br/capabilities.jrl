@@ -475,7 +475,7 @@ p({
   "id":"25F5C0CC-DD7E-4206-B392-46EAA9332870",
   "name":"Review Required (International Payments)",
   "icon":"/images/capabilityIcons/BrazilCap.svg",
-  "keywords":["featured"],
+  // "keywords":["featured"],
   "availabilityPredicate": {
     "class":"foam.mlang.predicate.And",
     "args": [
