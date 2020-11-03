@@ -1535,7 +1535,7 @@ p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.INVALID_EMAIL",loca
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.INVALID_FIRST_NAME",locale:"pt",source:"net.nanopay.contacts.Contact.INVALID_FIRST_NAME",target:"O nome não pode ter mais de 70 caracteres."})
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.INVALID_LAST_NAME",locale:"pt",source:"net.nanopay.contacts.Contact.INVALID_LAST_NAME",target:"O sobrenome não pode ter mais de 70 caracteres."})
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.CONFIRMATION_REQUIRED",locale:"pt",source:"net.nanopay.contacts.Contact.CONFIRMATION_REQUIRED",target:"Necessária confirmação."})
-p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.ORGANIZATION.label",locale:"pt",source:"net.nanopay.contacts.Contact.ORGANIZATION.label",target:"O negócio"})
+p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.ORGANIZATION.label",locale:"pt",source:"net.nanopay.contacts.Contact.ORGANIZATION.label",target:"organização"})
 
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.ORGANIZATION.documentation",locale:"pt",source:"net.nanopay.contacts.Contact.ORGANIZATION.documentation",target:"A organização / empresa associada ao contato."})
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.ORGANIZATION.view.placeholder",locale:"pt",source:"net.nanopay.contacts.Contact.ORGANIZATION.view.placeholder",target:"ex. Indústrias Vandelay"})
@@ -1557,7 +1557,7 @@ p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.CONFIRM.label",loca
 
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.BUSINESS_ID.label",locale:"pt",source:"net.nanopay.contacts.Contact.BUSINESS_ID.label",target:"businessId pt"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.SIGN_UP_STATUS.documentation",locale:"pt",source:"net.nanopay.contacts.Contact.SIGN_UP_STATUS.documentation",target:"Rastreia o status de registro de um contato em relação a\n        se uma pessoa, ou um usuário real, pode entrar ou não.\n        Pendente, Pronto e Conectado\n      "})
-p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.SIGN_UP_STATUS.label",locale:"pt",source:"net.nanopay.contacts.Contact.SIGN_UP_STATUS.label",target:"Status"})
+p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.SIGN_UP_STATUS.label",locale:"pt",source:"net.nanopay.contacts.Contact.SIGN_UP_STATUS.label",target:"O negócio"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.CONFIRM.documentation",locale:"pt",source:"net.nanopay.contacts.Contact.CONFIRM.documentation",target:"Verdadeiro se o usuário confirmar seu relacionamento com o contato."})
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.BUSINESS_ID.documentation",locale:"pt",source:"net.nanopay.contacts.Contact.BUSINESS_ID.documentation",target:"Um identificador exclusivo para a empresa associada ao contato."})
 
@@ -2027,7 +2027,7 @@ p({class:"foam.i18n.Locale",id:"7e2739cc-db32-11ea-87d0-0242ac130003.description
 p({class:"foam.i18n.Locale",id:"26d32e86-db11-11ea-87d0-0242ac130003.description",target:"Anexe seu Contrato Social - o documento que estabelece a existência de sua empresa."})
 p({class:"foam.i18n.Locale",id:"net.nanopay.model.BusinessDirector.UNDER_AGE_LIMIT_ERROR",locale:"pt",source:"net.nanopay.model.BusinessDirector.UNDER_AGE_LIMIT_ERROR",target:"Deve ter pelo menos 18 anos."})
 p({class:"foam.i18n.Locale",id:"net.nanopay.model.BusinessDirector.OVER_AGE_LIMIT_ERROR",locale:"pt",source:"net.nanopay.model.BusinessDirector.OVER_AGE_LIMIT_ERROR",target:"Deve ter menos de 125 anos."})
-p({class:"foam.i18n.Locale",id:"net.nanopay.model.BusinessDirector.INVALID_CPF",target:"Invalid CPF Number pt"})
+p({class:"foam.i18n.Locale",id:"net.nanopay.model.BusinessDirector.INVALID_CPF",target:"Número de CPF inválido"})
 
 p({class:"foam.i18n.Locale",id:"net.nanopay.model.BusinessDirector.INVALID_DIRECTOR_NAME",locale:"pt",source:"net.nanopay.model.BusinessDirector.INVALID_DIRECTOR_NAME",target:"Clique para verificar o nome do diretor"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.model.BusinessDirector.TYPE.label",locale:"pt",source:"net.nanopay.model.BusinessDirector.TYPE.label",target:"tipo"})
@@ -2238,3 +2238,14 @@ p({class:"foam.i18n.Locale",id:"4f45c745-1c93-4380-b275-2d2fea091d1f-136.subject
 p({class:"foam.i18n.Locale",id:"4f45c745-1c93-4380-b275-2d2fea091d1f-137.subject",locale:"pt",source:"4f45c745-1c93-4380-b275-2d2fea091d1f-137.subject",target:"Sua conta bancária foi adicionada"})
 p({class:"foam.i18n.Locale",id:"4f45c745-1c93-4380-b275-2d2fea091d1f-156.subject",locale:"pt",source:"4f45c745-1c93-4380-b275-2d2fea091d1f-139.subject",target:"O status da capacidade de {{capName}} foi atualizado"})
 p({class:"foam.i18n.Locale",id:"4f45c745-1c93-4380-b275-2d2fea091d1f-treviso-1.subject",locale:"pt",source:"4f45c745-1c93-4380-b275-2d2fea091d1f-treviso-1.subject",target:"Conclua sua transação"})
+
+
+p({class:"foam.i18n.Locale",id:"foam.core.PhoneNumber.PHONE_NUMBER_REQUIRED",locale:"pt",source:"foam.core.PhoneNumber.PHONE_NUMBER_REQUIRED",target:"Número de telefone obrigatório."})
+p({class:"foam.i18n.Locale",id:"foam.core.PhoneNumber.INVALID_PHONE_NUMBER",locale:"pt",source:"foam.core.PhoneNumber.INVALID_PHONE_NUMBER",target:"Número de telefone inválido."})
+p({class:"foam.i18n.Locale",id:"foam.core.StringPropertyValidationRefinement.REQUIRED.value",locale:"pt",source:"foam.core.StringPropertyValidationRefinement.REQUIRED.value",target:"requeridos"})
+p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.ORGANIZATION.label",locale:"pt",source:"net.nanopay.contacts.Contact.ORGANIZATION.label",target:"organização"})
+p({class:"foam.i18n.Locale",id:"foam.core.String.REQUIRED",locale:"pt",source:"foam.core.String.REQUIRED",target:"requeridos"})
+
+p({class:"foam.i18n.Locale",id:"net.nanopay.model.BusinessDirector.FOREIGN_ID_ERROR",locale:"pt",source:"net.nanopay.model.BusinessDirector.FOREIGN_ID_ERROR",target:"RG / RNE necessário"})
+p({class:"foam.i18n.Locale",id:"net.nanopay.model.BusinessDirector.NATIONALITY_ERROR",locale:"pt",source:"net.nanopay.model.BusinessDirector.NATIONALITY_ERROR",target:"Nacionalidade necessária"})
+p({class:"foam.i18n.Locale",id:"foam.core.FObjectProperty.PLEASE_ENTER_VALID",locale:"pt",source:"foam.core.FObjectProperty.PLEASE_ENTER_VALID",target:"Por favor insira um válido"})
