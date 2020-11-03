@@ -51,7 +51,7 @@ foam.CLASS({
       section: 'reviewDataSection',
       transient: true,
       hidden: true,
-      factory: function() {
+      expression: function() {
         var self = this;
         this.auth.check(this.__subContext__, "certifydatareviewed.rw.reviewed").then((result) => { 
           self.canReview = result;
