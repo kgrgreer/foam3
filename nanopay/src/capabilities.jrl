@@ -996,7 +996,8 @@ p({
     "business.rw.ispublic",
     "menu.read.accountingintegrationcards",
     "menu.read.paymentcode",
-    "menu.read.transactionlimit"
+    "menu.read.transactionlimit",
+    "menu.read.sme.userManagement"
   ]
 })
 
