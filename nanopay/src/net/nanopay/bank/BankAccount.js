@@ -106,7 +106,6 @@ foam.CLASS({
       class: 'String',
       name: 'accountNumber',
       documentation: 'The account number of the bank account.',
-      label: 'Account number',
       updateVisibility: 'RO',
       section: 'accountDetails',
       view: {
@@ -380,7 +379,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'bankCode',
-      label: 'Bank code',
       documentation: `International bank code that identifies banks worldwide. BIC/SWIFT`,
       updateVisibility: 'RO',
       section: 'accountDetails'

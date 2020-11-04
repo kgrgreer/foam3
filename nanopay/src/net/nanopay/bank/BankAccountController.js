@@ -177,7 +177,6 @@ foam.CLASS({
             }),
             foam.core.Action.create({
               name: 'setAsDefault',
-              label: 'Set as default',
               code: function(X) {
                 if ( this.isDefault ) {
                   self.notify(`${ this.name } ${ self.ALREADY_DEFAULT }`, '', self.LogLevel.WARN, true);
@@ -220,7 +219,7 @@ foam.CLASS({
         var self = this;
         return this.Action.create({
           name: 'addBank',
-          label: 'Add account',
+          label: 'Add Account',
           code: async function(X) {
             let permission = await this.auth.check(null, 'multi-currency.read');
             if ( permission ) {

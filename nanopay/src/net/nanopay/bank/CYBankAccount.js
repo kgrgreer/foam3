@@ -57,7 +57,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'branchCode',
-      label: 'Branch code',
       section: 'accountDetails',
       updateVisibility: 'RO',
       validateObj: function(branchCode) {
