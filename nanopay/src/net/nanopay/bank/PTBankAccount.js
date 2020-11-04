@@ -43,7 +43,6 @@ foam.CLASS({
     },
     {
       name: 'bankCode',
-      label: 'Bank code',
       updateVisibility: 'RO',
       validateObj: function(bankCode) {
         var regex = /^[A-z0-9a-z]{4}$/;
@@ -73,7 +72,6 @@ foam.CLASS({
     },
     {
       name: 'accountNumber',
-      label: 'Account number',
       section: 'accountDetails',
       updateVisibility: 'RO',
       view: {
