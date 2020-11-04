@@ -386,11 +386,6 @@ foam.CLASS({
       section: 'accountDetails'
     },
     {
-      name: 'securityPromoteInfo',
-      label: '',
-      view: { class: 'net.nanopay.ui.DataSecurityBanner' }
-    },
-    {
       class: 'String',
       name: 'verifiedBy'
     }
