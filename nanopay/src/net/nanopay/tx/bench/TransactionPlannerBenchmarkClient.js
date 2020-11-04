@@ -22,6 +22,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.nanos.app.AppConfig',
+    'foam.nanos.logger.Logger',
     'foam.nanos.pm.PM',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.TransactionQuote',
@@ -33,6 +34,7 @@ foam.CLASS({
       javaCode: `
     PM pm = PM.create(x, getName());
 
+    Logger logger = (Logger) x.get("logger");
     long range = getMaxUserId() - getMinUserId() + 1;
     long payerId = (long) (Math.floor(Math.random() * range) + getMinUserId());
     long payeeId = (long) (Math.floor(Math.random() * range) + getMinUserId());
@@ -47,11 +49,9 @@ foam.CLASS({
     quote.setRequestTransaction(txn);
 
     try {
-      getLogger().info("execute", "put", "request");
-      quote = (TransactionQuote) getPlannerClient(x, String.valueOf(payerId)).put(quote);
-      getLogger().info("execute", "put", "response", "Quote", quote.getRequestTransaction().getId(), "plans", quote.getPlans().length);
-    } catch ( Throwable t ) {
-      getLogger().error(t.getMessage(), t);
+      logger.info("execute", "put", "request");
+      quote = (TransactionQuote) getClient(x, String.valueOf(payerId), "transactionPlannerDAO").put(quote);
+      logger.info("execute", "put", "response", "Quote", quote.getRequestTransaction().getId(), "plans", quote.getPlans().length);
     } finally {
       pm.log(x);
     }

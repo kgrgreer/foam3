@@ -88,8 +88,6 @@ public class TransactionBenchmark
   protected Long MAX_USERS = 100L;
   protected Long STARTING_BALANCE = 100000L;
   protected String ADMIN_BANK_ACCOUNT_NUMBER = "2131412443534534";
-  protected AtomicLong pass_ = new AtomicLong();
-  protected AtomicLong fail_ = new AtomicLong();
   protected Boolean setupOnly_ = false;
 
   public void setPurgePerRun(Boolean purge) {
@@ -106,7 +104,6 @@ public class TransactionBenchmark
 
   @Override
   public void teardown(X x, java.util.Map stats) {
-    logger_.info("teardown");
     DAO dao = (DAO) x.get("localTransactionDAO");
     Count txns = (Count) dao.select(new Count());
     stats.put("Transactions (M)", (txns.getValue() / 1000000.0));
@@ -138,28 +135,12 @@ public class TransactionBenchmark
         // nop
       }
     }
-    logger_.info("teardown", "counts", sb.toString());
-    logger_.info("pass", pass_.get(), "fail", fail_.get());
-
-    // // clean up planners
-    // PlannerGroup plannerGroup = (PlannerGroup) ruleGroupDAO_.find_(x, "genericPlanner");
-    // if ( plannerGroup != null ) {
-    //   plannerGroup = (PlannerGroup) plannerGroup.fclone();
-    //   plannerGroup.setEnabled(false);
-    //   ruleGroupDAO_.put_(x, plannerGroup);
-    // }
   }
 
   @Override
   public void setup(X x) {
-    AppConfig config = (AppConfig) x.get("appConfig");
-    if ( config.getMode() == foam.nanos.app.Mode.PRODUCTION ) return;
+    logger_ = (Logger) x.get("logger");
 
-    logger_ = new PrefixLogger(new Object[] {
-        this.getClass().getSimpleName()
-      }, (Logger) x.get("logger"));
-
-    logger_.info("setup");
     System.gc();
     ruleDAO_ = (DAO) x.get("ruleDAO");
     ruleGroupDAO_ = (DAO) x.get("ruleGroupDAO");
@@ -170,12 +151,9 @@ public class TransactionBenchmark
     sessionDAO_ = (DAO) x.get("localSessionDAO");
 
     groupPermissionJunctionDAO_ = (DAO) x.get("groupPermissionJunctionDAO");
-   //  groupPermissionJunctionDAO_.put(new GroupPermissionJunction.Builder(x).setSourceId("business").setTargetId("service.transactionDAO").build());
-   //  groupPermissionJunctionDAO_.put(new GroupPermissionJunction.Builder(x).setSourceId("business").setTargetId("transactionDAO").build());
-   //  groupPermissionJunctionDAO_.put(new GroupPermissionJunction.Builder(x).setSourceId("business").setTargetId("service.transactionPlannerDAO").build());
-   //  groupPermissionJunctionDAO_.put(new GroupPermissionJunction.Builder(x).setSourceId("business").setTargetId("transactionPlannerDAO").build());
-   // groupPermissionJunctionDAO_.put(new GroupPermissionJunction.Builder(x).setSourceId("business").setTargetId("transactionPlan.create").build());
     groupPermissionJunctionDAO_.put(new GroupPermissionJunction.Builder(x).setSourceId("api-base").setTargetId("digitalaccount.default.create").build());
+    groupPermissionJunctionDAO_.put(new GroupPermissionJunction.Builder(x).setSourceId("api-base").setTargetId("service.balanceDAO").build());
+    groupPermissionJunctionDAO_.put(new GroupPermissionJunction.Builder(x).setSourceId("api-base").setTargetId("balanceDAO").build());
 
     String spid = "nanopay";
     User admin = (User) userDAO_.find(EQ(User.EMAIL, "admin@nanopay.net"));
@@ -215,6 +193,16 @@ public class TransactionBenchmark
         // NOTE: use 'business' group so default digital account is created below.
         user.setGroup("api-base");
         user = (User) userDAO_.put(user);
+
+        DigitalAccount da = new DigitalAccount();
+        da.setId(user.getId());
+        Account a = (Account) accountDAO_.find(da);
+        if ( a == null ) {
+          da.setDenomination("CAD");
+          da.setOwner(user.getId());
+          da.setIsDefault(true);
+          accountDAO_.put(da);
+        }
       }
       Session session = (Session) sessionDAO_.find(user.getId());
       if ( session != null ) {
@@ -267,7 +255,8 @@ public class TransactionBenchmark
     // distribute the funds to all user digital accounts
     for ( int i = 0 ; i < users_.size() ; i++ ) {
       User user = (User) users_.get(i);
-      DigitalAccount account = DigitalAccount.findDefault(x, user, "CAD");
+      Account account = (Account) accountDAO_.find(user.getId());
+      // DigitalAccount account = DigitalAccount.findDefault(x, user, "CAD");
       accounts_.put(i, account);
       Transaction txn = new Transaction();
       txn.setSourceAccount(bank.getId());
@@ -325,12 +314,7 @@ public class TransactionBenchmark
         PM txnPm = new PM(this.getClass().getSimpleName(), "transaction");
         transactionDAO_.put(transaction);
         txnPm.log(x);
-        pass_.incrementAndGet();
       } catch (Throwable e) {
-        fail_.incrementAndGet();
-        System.out.println(e.getMessage());
-        e.printStackTrace();
-        logger_.warning(e.getMessage(), e);
         pm.error(x, e);
         throw e;
       } finally {
