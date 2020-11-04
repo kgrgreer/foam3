@@ -38,6 +38,13 @@ foam.CLASS({
     'java.util.regex.Pattern',
   ],
 
+  sections: [
+    {
+      name: 'accountDetails',
+      title: 'Add account'
+    }
+  ],
+
   messages: [
     { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number must be 10 digits long' },
     { name: 'ACCOUNT_NUMBER_REQUIRED', message: 'Account number required' },
