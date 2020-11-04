@@ -50,16 +50,14 @@ public class HashedFObjectParser
 
         // parse message digest
         PStream ps2 = ps1.apply(parser2, x);
-        if ( ps2 == null && ! digestRequired ) {
-          return ps.setValue(ps1.value());
-        }
 
-        // check for message digest
-        if ( ps2 == null ) {
-          throw new RuntimeException("Digest not found");
-        }
+        if ( digestRequired ) {
+          if ( ps2 == null ) {
+            throw new RuntimeException("Digest not found");
+          }
 
-        messageDigest.setPreviousDigest(messageDigest.verify(message, (MessageDigest) ps2.value()));
+          messageDigest.setPreviousDigest(messageDigest.verify(message, (MessageDigest) ps2.value()));
+        }
 
         return ps.setValue(ps1.value());
       }

@@ -69,13 +69,15 @@ foam.CLASS({
       documentation: 'Whether the user agrees to the document.',
       view: function(_, X) {
         var self = X.data$;
+        var selfThis = this;
+
         return foam.u2.CheckBox.create({
           labelFormatter: function() {
             this.start('span')
-              .add(self.dot('checkboxText'))
+              .translate(selfThis.forClass_+'.CHECKBOX_TEXT.value',self.dot('checkboxText'))
               .start('a')
                 .addClass('link')
-                .add(self.dot('title'))
+                .translate(selfThis.forClass_+'.TITLE.value',self.dot('title'))
                 .attrs({
                   href: self.dot('link'),
                   target: '_blank'
@@ -83,7 +85,7 @@ foam.CLASS({
               .end()
             .end();
           }
-        });
+        }, X);
       }
     },
     {

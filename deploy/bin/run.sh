@@ -116,8 +116,7 @@ if [[ ${JAVA_OPTS} != *"CLUSTER"* ]]; then
 fi
 if [ "$PROFILER" -eq 1 ]; then
     JAVA_OPTS="${JAVA_OPTS} -agentpath:${PROFILER_AGENT_PATH}=port=$PROFILER_PORT"
-fi
-if [ "$DEBUG" -eq 1 ]; then
+elif [ "$DEBUG" -eq 1 ]; then
     JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=${DEBUG_SUSPEND},address=${DEBUG_PORT} ${JAVA_OPTS}"
 fi
 

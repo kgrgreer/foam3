@@ -22,7 +22,13 @@ foam.INTERFACE({
       name: 'getLatestPTaxRates',
       type: 'net.nanopay.country.br.PTaxDollarRateResponse',
       documentation: 'Get latest PTax rates from Brazil central bank open api: https://olinda.bcb.gov.br/olinda/service/PTAX/version/v1/odata',
-      async: true
+      async: true,
+      args: [
+        {
+          type: 'int',
+          name: 'days'
+        }
+      ]
     },
     {
       name: 'getPTaxRate',

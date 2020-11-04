@@ -212,6 +212,7 @@ foam.CLASS({
           journal.put(x, null, dao, INPUT);
 
           // replay journal
+          journal.reset();
           journal.replay(x, dao);
 
           // verify dao has one element
@@ -225,7 +226,9 @@ foam.CLASS({
           test("Eaton".equals(result.getLastName()), "Stored user last name matches \\"Eaton\\"");
           test("kirk@nanopay.net".equals(result.getEmail()), "Stored user email matches \\"kirk@nanopay.net\\"");
         } catch ( Throwable t ) {
-          test(false, "HashingJournal replay with chaining method should not throw an exception");
+          System.err.println("HashingJournal replay should not throw an exception.");
+          t.printStackTrace();
+          test(false, "HashingJournal replay should not throw an exception. "+t.getMessage());
         }
       `
     },
@@ -275,7 +278,9 @@ foam.CLASS({
           result = (User) dao.find(1001l);
           test(1001 == result.getId(), "Stored user id matches 1001");
         } catch ( Throwable t ) {
-          test(false, "HashingJournal replay with chaining method should not throw an exception");
+          System.err.println("HashingJournal replay with chaining method should not throw an exception");
+          t.printStackTrace();
+          test(false, "HashingJournal replay with chaining method should not throw an exception. "+t.getMessage());
         }
       `
     },
@@ -302,13 +307,50 @@ foam.CLASS({
           }
 
           // replay journal
+          journal.reset();
           journal.replay(x, dao);
 
           // dao should not contain invalid entry
           Count count = (Count) dao.select(new Count());
           test(count.getValue() == 0L, "Replaying a journal with an invalid entry should not add an element to the DAO");
         } catch ( Throwable t ) {
-          test(false, "HashingJournal replay method should not throw an exception");
+          test(true, "HashingJournal replay with invalid digest should throw an exception");
+        }
+      `
+    },
+    {
+      name: 'HashingJournal_ReplayJournalWithInvalidDigestAndDigestNotRequired_Exception',
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      javaCode: `
+        try {
+          DAO dao = new MDAO(User.getOwnClassInfo());
+          File file = File.createTempFile(UUID.randomUUID().toString(), ".tmp");
+          X storageX = x.put(foam.nanos.fs.Storage.class, new foam.nanos.fs.FileSystemStorage(file.getParent()));
+          HashingJournal journal = new HashingJournal.Builder(storageX)
+            .setFilename(file.getName())
+            .setQuoteKeys(getQuoteKeys())
+            .setDigestRequired(false)
+            .setDao(dao)
+            .build();
+
+          // write entry with bad digest to journal
+          try ( BufferedWriter writer = journal.getWriter() ) {
+            writer.write(INVALID);
+            writer.flush();
+          }
+
+          // replay journal
+          journal.reset();
+          journal.replay(x, dao);
+
+          // dao should not contain invalid entry
+          Count count = (Count) dao.select(new Count());
+          test(count.getValue() == 0L, "Replaying a journal with an invalid entry should not add an element to the DAO");
+        } catch ( Throwable t ) {
+          test(false, "HashingJournal replay with invalid digest and digest not required should not throw an exception. "+t.getMessage());
+          t.printStackTrace();
         }
       `
     }
