@@ -1187,6 +1187,7 @@ var classes = [
   'net.nanopay.country.br.OpenData',
   'net.nanopay.country.br.PTaxRate',
   'net.nanopay.country.br.PTaxDollarRateResponse',
+  'net.nanopay.country.br.BeneficiaryType',
   'net.nanopay.country.br.tx.NatureCodeLineItem',
   'net.nanopay.partner.sintegra.CPFResponseData',
   'net.nanopay.partner.sintegra.CNPJResponseData',
