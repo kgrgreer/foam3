@@ -4,8 +4,12 @@ p({
   "lazy":false,
   "serve":true,
   "serviceScript":`
-    mdao =  new foam.nanos.medusa.ReplayingInfoDAO.Builder(x)
+    mdao = new foam.nanos.medusa.ReplayingInfoDAO.Builder(x)
+      .setUpdateIndex(true)
       .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.MedusaEntry.getOwnClassInfo()))
+      .build();
+    mdao = new foam.nanos.medusa.MedusaUniqueDAO.Builder(x)
+      .setDelegate(mdao)
       .build();
     dao = new foam.dao.EasyDAO.Builder(x)
       .setOf(foam.nanos.medusa.MedusaEntry.getOwnClassInfo())
@@ -25,14 +29,12 @@ p({
             .setRollDigests(true)
             .build())
           .build())
-      .setDelegate(new foam.nanos.medusa.MedusaUniqueDAO.Builder(x)
       .setDelegate(new foam.nanos.medusa.MedusaSetNodeDAO.Builder(x)
       .setDelegate(new foam.nanos.medusa.MedusaHashingDAO.Builder(x)
       .setDelegate(new foam.nanos.medusa.MedusaSigningDAO.Builder(x)
       .setDelegate(new foam.nanos.medusa.MedusaBroadcastDAO.Builder(x)
         .setDelegate(new foam.dao.NullDAO(x, foam.nanos.medusa.MedusaEntry.getOwnClassInfo()))
         .build())
-      .build())
       .build())
       .build())
       .build())
