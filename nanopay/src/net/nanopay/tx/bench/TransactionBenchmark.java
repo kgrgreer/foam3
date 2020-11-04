@@ -106,7 +106,7 @@ public class TransactionBenchmark
   public void teardown(X x, java.util.Map stats) {
     DAO dao = (DAO) x.get("localTransactionDAO");
     Count txns = (Count) dao.select(new Count());
-    stats.put("Transactions (M)", (txns.getValue() / 1000000.0));
+    stats.put("Transactions (M)", String.format(".02%", (txns.getValue() / 1000000.0)));
 
     // dump all dao sizes - looking for memory leak
     StringBuilder sb = new StringBuilder();
