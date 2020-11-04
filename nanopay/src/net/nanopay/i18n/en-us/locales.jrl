@@ -11,3 +11,8 @@ p({class:"foam.i18n.Locale",id:"ca.postalCode.label",locale:"en",variant:"US",lo
 p({class:"foam.i18n.Locale",id:"ca.postalCode.error",locale:"en",variant:"US",locale_variant:"en-US",source:"ca.postalCode.error",target:"Postal Code required"})
 p({class:"foam.i18n.Locale",id:"en-US.postalCode.label",locale:"en",variant:"US",locale_variant:"en-US",source:"en-US.postalCode.label",target:"Postal Code"})
 p({class:"foam.i18n.Locale",id:"en-US.postalCode.error",locale:"en",variant:"US",locale_variant:"en-US",source:"en-US.postalCode.error",target:"Postal Code required"})
+
+p({class:"foam.i18n.Locale",id:"net.nanopay.bank.BankAccount.ACCOUNT_NUMBER.label",locale:"en",source:"net.nanopay.bank.BankAccount.ACCOUNT_NUMBER.label",target:"Account number"})
+p({class:"foam.i18n.Locale",id:"net.nanopay.bank.BankAccount.BANK_CODE.label",locale:"en",source:"net.nanopay.bank.BankAccount.BANK_CODE.label",target:"Bank code"})
+p({class:"foam.i18n.Locale",id:"net.nanopay.bank.BRBankAccount.BRANCH_CODE.label",locale:"en",source:"net.nanopay.bank.BRBankAccount.BRANCH_CODE.label",target:"Branch code"})
+p({class:"foam.i18n.Locale",id:"net.nanopay.bank.BRBankAccount.ACCOUNT_TYPE.label",locale:"en",source:"net.nanopay.bank.BRBankAccount.ACCOUNT_TYPE.label",target:"Account type"})
