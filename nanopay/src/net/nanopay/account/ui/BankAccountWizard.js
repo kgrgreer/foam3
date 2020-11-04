@@ -83,7 +83,6 @@ foam.CLASS({
   actions: [
     {
       name: 'submit',
-      label: 'Save',
       isEnabled: function(currentIndex,
                           data$errors_,
                           data$padCapture$address$errors_,

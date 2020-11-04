@@ -86,7 +86,7 @@ foam.CLASS({
     },
     {
       name: 'bankCode',
-      label: 'Bank Code',
+      label: 'Bank code',
       updateVisibility: 'RO',
       validateObj: function(bankCode) {
         var regex = /^[A-z0-9a-z]{8}$/;
@@ -101,7 +101,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'branchCode',
-      label: 'Branch Code',
+      label: 'Branch code',
       section: 'accountDetails',
       updateVisibility: 'RO',
       validateObj: function(branchCode) {
@@ -116,7 +116,7 @@ foam.CLASS({
     },
     {
       name: 'accountNumber',
-      label: 'Account No.',
+      label: 'Account number',
       updateVisibility: 'RO',
       view: {
         class: 'foam.u2.tag.Input',
@@ -146,15 +146,15 @@ foam.CLASS({
     {
       class: 'String',
       name: 'accountType',
-      label: 'Account Type',
+      label: 'Account type',
       updateVisibility: 'RO',
       section: 'accountDetails',
       view: {
         class: 'foam.u2.view.ChoiceView',
         placeholder: 'Please select',
         choices: [
-          ['c', 'Corrente / Current'],
-          ['p', 'Poupança / Savings']
+          ['c', 'Current'],
+          ['p', 'Savings']
         ]
       },
       validateObj: function(accountType) {
@@ -166,15 +166,15 @@ foam.CLASS({
     {
       class: 'String',
       name: 'accountOwnerType',
-      label: 'Account Holder',
+      label: 'Account holder',
       updateVisibility: 'RO',
       section: 'accountDetails',
       view: {
         class: 'foam.u2.view.ChoiceView',
         placeholder: 'Please select',
         choices: [
-          ['1', '1st Holder / 1o Titular'],
-          ['2', '2nd Holder / 2o Titular']
+          ['1', '1st Holder'],
+          ['2', '2nd Holder']
         ]
       },
       validateObj: function(accountOwnerType) {
@@ -186,7 +186,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'iban',
-      label: 'IBAN',
+      label: 'International Bank Account Number (IBAN)',
       required: true,
       section: 'accountDetails',
       updateVisibility: 'RO'

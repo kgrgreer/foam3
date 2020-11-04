@@ -236,12 +236,6 @@ foam.CLASS({
       },
     },
     {
-      name: 'securityPromoteInfo',
-      label: '',
-      section: 'accountDetails',
-      view: { class: 'net.nanopay.ui.DataSecurityBanner' }
-    },
-    {
       class: 'String',
       name: 'summary',
       transient: true,

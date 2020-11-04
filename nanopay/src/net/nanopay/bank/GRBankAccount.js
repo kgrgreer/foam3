@@ -43,7 +43,7 @@ foam.CLASS({
     },
     {
       name: 'accountNumber',
-      label: 'Account No.',
+      label: 'Account number',
       updateVisibility: 'RO',
       view: {
         class: 'foam.u2.tag.Input',
@@ -72,7 +72,7 @@ foam.CLASS({
     },
     {
       name: 'bankCode',
-      label: 'Bank Code',
+      label: 'Bank code',
       updateVisibility: 'RO',
       validateObj: function(bankCode) {
         var regex = /^[A-z0-9a-z]{3}$/;
@@ -86,7 +86,7 @@ foam.CLASS({
     },
     {
       name: 'branchCode',
-      label: 'Branch Code',
+      label: 'Branch code',
       section: 'accountDetails',
       updateVisibility: 'RO',
       validateObj: function(branchCode) {

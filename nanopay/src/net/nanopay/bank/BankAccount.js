@@ -106,7 +106,7 @@ foam.CLASS({
       class: 'String',
       name: 'accountNumber',
       documentation: 'The account number of the bank account.',
-      label: 'Account No.',
+      label: 'Account number',
       updateVisibility: 'RO',
       section: 'accountDetails',
       view: {
@@ -337,6 +337,7 @@ foam.CLASS({
     },
     {
       name: 'denomination',
+      label: 'Currency',
       updateVisibility: 'RO',
       writePermissionRequired: false,
       gridColumns: 12,
@@ -367,7 +368,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'iban',
-      label: 'IBAN',
+      label: 'International Bank Account Number (IBAN)',
       required: true,
       section: 'accountDetails',
       documentation: `Standard international numbering system developed to
@@ -379,7 +380,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'bankCode',
-      label: 'Bank Code',
+      label: 'Bank code',
       documentation: `International bank code that identifies banks worldwide. BIC/SWIFT`,
       updateVisibility: 'RO',
       section: 'accountDetails'
@@ -387,7 +388,6 @@ foam.CLASS({
     {
       name: 'securityPromoteInfo',
       label: '',
-      section: 'accountDetails',
       view: { class: 'net.nanopay.ui.DataSecurityBanner' }
     },
     {
