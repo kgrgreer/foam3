@@ -69,8 +69,8 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.crunch.Capability',
       name: 'capability',
-      storageTransient: true,
-      hidden: true
+      hidden: true,
+      documentation: 'Used by section subTitle and help'
     },
     {
       class: 'Boolean',

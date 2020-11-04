@@ -180,8 +180,8 @@ public class OpenDataService extends ContextAwareSupport implements OpenData {
   public LocalDate previousDaySkipHolidayAndWeekends() {
     BankHolidayService bankHolidayService = (BankHolidayService) getX().get("bankHolidayService");
     Address address = new Address.Builder(getX()).setCountryId("BR").setRegionId("").build();
-    Instant yesterday = Instant.now().minus(1, ChronoUnit.DAYS);
-    Date result = bankHolidayService.skipBankHolidaysBackwards(getX(), Date.from(yesterday), address, 0);
+    Instant today = Instant.now();
+    Date result = bankHolidayService.skipBankHolidaysBackwards(getX(), Date.from(today), address, 0);
     return result.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
   }
 

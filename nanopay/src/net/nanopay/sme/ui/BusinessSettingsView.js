@@ -72,9 +72,9 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'TITLE', message: 'Business Settings' },
-    { name: 'COMPANY_TAB', message: 'Company Profile' },
-    { name: 'USER_MANAGEMENT_TAB', message: 'User Management' },
+    { name: 'TITLE', message: 'Business settings' },
+    { name: 'COMPANY_TAB', message: 'Profile' },
+    { name: 'USER_MANAGEMENT_TAB', message: 'User management' },
     { name: 'INTEGRATION_TAB', message: 'Integrations' },
     { name: 'PRIVACY_TAB', message: 'Privacy'},
     { name: 'GENERIC_ERROR', message: 'There was an unexpected error' }

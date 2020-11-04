@@ -70,10 +70,9 @@ public class BrazilVerificationService
   }
 
   @Override
-  public String getCPFName(X x, String cpf) throws RuntimeException {
+  public String getCPFName(X x, String cpf, long userId) throws RuntimeException {
     try {
-      User agent = ((Subject) x.get("subject")).getRealUser();
-      CPFResponseData data = getCPFResponseData(cpf, agent.getId());
+      CPFResponseData data = getCPFResponseData(cpf, userId);
       if ( data != null ) return data.getNome();
     } catch(Throwable t) {
       logger_.error("Error getting CPF Data" , t);
@@ -95,13 +94,11 @@ public class BrazilVerificationService
   }
 
   @Override
-  public boolean validateUserCpf(X x, String cpf) throws RuntimeException {
+  public boolean validateUserCpf(X x, String cpf, long userId) throws RuntimeException {
     try {
-      User agent = ((Subject) x.get("subject")).getRealUser();
-      CPFResponseData data = getCPFResponseData(cpf, agent.getId());
+      CPFResponseData data = getCPFResponseData(cpf, userId);
       if ( data == null ) throw new RuntimeException("Unable to get a valid response from CPF validation.");
 
-      System.out.println(data.getSituacaoCadastral());
       return "REGULAR".equalsIgnoreCase(data.getSituacaoCadastral());
     } catch(Throwable t) {
       logger_.error("Error getting CPF Data" , t);
@@ -112,11 +109,9 @@ public class BrazilVerificationService
   @Override
   public boolean validateCpf(X x, String cpf, Date birthDate) throws RuntimeException {
     try {
-      User agent = ((Subject) x.get("subject")).getRealUser();
       CPFResponseData data = getCPFResponseData(cpf, birthDate);
       if ( data == null ) throw new RuntimeException("Unable to get a valid response from CPF validation.");
 
-      System.out.println(data.getSituacaoCadastral());
       return "REGULAR".equalsIgnoreCase(data.getSituacaoCadastral());
     } catch(Throwable t) {
       logger_.error("Error getting CPF Data" , t);
@@ -135,6 +130,8 @@ public class BrazilVerificationService
   }
 
   protected CPFResponseData getCPFResponseData(String cpf, Date birthDate) throws RuntimeException {
+    if ( birthDate == null ) return null;
+
     TrevisoCredientials credentials = (TrevisoCredientials) getX().get("TrevisoCredientials");
     if ( null == credentials )
       throw new RuntimeException("Invalid credientials. Treviso token required to validate CPF");

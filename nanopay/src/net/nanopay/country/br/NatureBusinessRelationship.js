@@ -24,13 +24,13 @@ foam.CLASS({
   sections: [
     {
       name: 'businessRelationship',
-      title: 'Nature of Business Relationship'
+      title: 'Purpose of brokerage relationship'
     }
   ],
 
   messages: [
     { name: 'PLACE_HOLDER', message: 'Please select...' },
-    { name: 'BUSINESS_TYPE_ERROR', message: 'Please select one of Nature Business Relationship' },
+    { name: 'BUSINESS_TYPE_ERROR', message: 'Purpose of brokerage relationship required' },
   ],
 
   properties: [
@@ -38,7 +38,7 @@ foam.CLASS({
       section: 'businessRelationship',
       class: 'String',
       name: 'NatureOfBusinessRelationship',
-      label:'Nature of Business Relationship with a Brazilian Brokerage Exchange',
+      label:'Enter the purpose of your relationship with an exchange broker',
       view: function(_, X) {
         return {
           class: 'foam.u2.view.ChoiceView',

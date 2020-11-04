@@ -171,6 +171,8 @@ foam.CLASS({
       this.hideSummary = true;
       let showVoid = ( ! foam.util.equals(self.data.status, self.InvoiceStatus.VOID) ) &&
                    self.data.createdBy === self.user.id;
+      let showRejected = ( ! foam.util.equals(self.data.status, self.InvoiceStatus.REJECTED) ) &&
+                   self.data.createdBy === self.user.id;
       let showRecPay = ( ! foam.util.equals(self.data.status, self.InvoiceStatus.VOID) );
 
       this.addClass(self.myClass())

@@ -70,6 +70,10 @@ foam.CLASS({
     overflow: scroll !important;
     padding: 30px;
   }
+  .bank-account-detail-popup .net-nanopay-sme-ui-SMEModal-inner {
+    max-height: 100vh;
+    overflow: scroll;
+  }
   `,
 
   properties: [
@@ -120,8 +124,8 @@ foam.CLASS({
               self.Popup.create().tag({
                 class: 'net.nanopay.cico.ui.bankAccount.modalForm.CABankMicroForm',
                 bank: account
-              }) : 
-              self.Popup.create().tag({
+              }) :
+              self.Popup.create().addClass('bank-account-detail-popup').tag({
                 class: 'foam.comics.v2.DAOSummaryView',
                 id: id,
                 data: account,

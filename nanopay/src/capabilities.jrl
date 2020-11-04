@@ -625,7 +625,7 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"26d32e86-db11-11ea-87d0-0242ac130003",
   "name":"Articles Of Incorporation",
-  "description":"Please attach your Articles of Incorporation - the document that establishes the existence of your company.",
+  "description":"Provide the articles of incorporation for your business.",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "enabled":true,
@@ -635,8 +635,8 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"7e2739cc-db32-11ea-87d0-0242ac130003",
-  "name":"Business Latest Annual Report",
-  "description":"Please provide your company's most recent annual financial statements.",
+  "name":"Annual Financial Statements",
+  "description":"Provide the most recent annual financial statements for your business.",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "enabled":true,
@@ -996,7 +996,8 @@ p({
     "business.rw.ispublic",
     "menu.read.accountingintegrationcards",
     "menu.read.paymentcode",
-    "menu.read.transactionlimit"
+    "menu.read.transactionlimit",
+    "menu.read.sme.userManagement"
   ]
 })
 

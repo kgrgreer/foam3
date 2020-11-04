@@ -30,7 +30,7 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.crunch.lite.CapablePayload',
-
+    'foam.nanos.crunch.Capability',
     'net.nanopay.country.br.NatureCode',
     'net.nanopay.country.br.tx.NatureCodeLineItem',
     'net.nanopay.invoice.model.Invoice',
@@ -55,9 +55,12 @@ foam.CLASS({
         List<CapablePayload> capablePayloadLst = (List<CapablePayload>) ((ArraySink) capablePayloadDAO.select(new ArraySink())).getArray();
 
         for ( CapablePayload capablePayload : capablePayloadLst ) {
-          if ( capablePayload.getCapability() instanceof NatureCode ) {
+          DAO capabilityDAO = (DAO) x.get("capabilityDAO");
+          Capability cap = (Capability) capabilityDAO.find(capablePayload.getCapability());
+
+          if ( cap instanceof NatureCode ) {
             NatureCodeLineItem lineItem = new NatureCodeLineItem();
-            NatureCode natureCode = (NatureCode) capablePayload.getCapability();
+            NatureCode natureCode = (NatureCode) cap;
             lineItem.setNatureCode(natureCode.getOperationType());
 
             requestTxn.addLineItems(new TransactionLineItem[] { lineItem });

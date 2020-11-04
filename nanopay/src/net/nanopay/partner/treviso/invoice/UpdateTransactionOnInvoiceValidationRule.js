@@ -57,6 +57,25 @@ foam.CLASS({
                     SafetyUtil.validate(agencyX, invoice);
                     var crunchService = (CrunchService) agencyX.get("crunchService");
 
+                    Boolean isRejected = invoice.checkRequirementsStatusNoThrow(x, new String[]{NATURE_CODE_ID}, CapabilityJunctionStatus.REJECTED);
+
+                    if ( isRejected ){
+                        var transactionDAO = (DAO) agencyX.get("transactionDAO");
+                        var transaction = (Transaction) transactionDAO.find(invoice.getPaymentId());
+                        if (transaction != null) {
+                            transaction = (Transaction) transaction.fclone();
+                            transaction.setStatus(TransactionStatus.CANCELLED);
+                            transactionDAO.put(transaction);
+                        }
+                        
+                        var invoiceDAO = (DAO) agencyX.get("invoiceDAO");
+                    
+                        invoice.setPaymentMethod(PaymentStatus.REJECTED);
+
+                        invoiceDAO.put(invoice);
+                        return;
+                    }
+                    
                     try {
                         invoice.verifyRequirements(x, new String[]{NATURE_CODE_ID});
                     } catch (IllegalStateException e) {

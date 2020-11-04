@@ -57,7 +57,8 @@ foam.CLASS({
       ],
       javaCode: `
         CapablePayload capablePayload = (CapablePayload) capablePayloadObj;
-        Capability capability = capablePayload.getCapability();
+        DAO capabilityDAO = (DAO) x.get("capabilityDAO");
+        Capability capability = (Capability) capabilityDAO.find(capablePayload.getCapability());
 
         if ( ! ( capability instanceof NatureCode ) ){
           return request;

@@ -94,7 +94,8 @@ foam.CLASS({
               Invoice invoice = (Invoice) obj;
               if ( isRelated(getX(), invoice) && ! ( invoice.getDraft() && invoice.getCreatedBy() != user_.getId() && ! invoice.getRemoved() ) &&
                   ! ( invoice.getCreatedBy() != user_.getId() && invoice.getStatus() == InvoiceStatus.PENDING_APPROVAL && invoice.getPayeeId() == user_.getId()) &&
-                  ! ( invoice.getCreatedBy() != user_.getId() && invoice.getStatus() == InvoiceStatus.VOID ) ) {
+                  ! ( invoice.getCreatedBy() != user_.getId() && invoice.getStatus() == InvoiceStatus.VOID ) &&
+                  ! ( invoice.getCreatedBy() != user_.getId() && invoice.getStatus() == InvoiceStatus.REJECTED ) ) {
                 getDelegate().put(obj, sub);
               }
             }
