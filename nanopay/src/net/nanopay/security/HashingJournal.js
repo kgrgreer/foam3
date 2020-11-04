@@ -130,28 +130,21 @@ foam.CLASS({
       javaCode: 'getMessageDigest().reset();'
     },
     {
-      documentation: 'Replays the journal file - single threaded - entries are chained.',
+      documentation: 'Replays the journal file, expected to be single threaded, does not use assembly as entries are ordered.',
       name: 'replay',
       args: [
         { name: 'x',   type: 'Context' },
         { name: 'dao', type: 'foam.dao.DAO' }
       ],
       javaCode: `
-       HashedJSONParser parser = (HashedJSONParser) getParser(x);
-       MessageDigest md = parser.getMessageDigest();
-       if ( ! md.getRollDigests() ||
-            ! getDigestRequired() ) {
-          super.replay(x, dao);
-          return;
-        }
+        JSONParser parser = (JSONParser) getParser(x);
 
         // count number of entries successfully read
         AtomicInteger successReading = new AtomicInteger();
-        AtomicInteger failedReading = new AtomicInteger();
 
         // NOTE: explicitly calling PM constructor as create only creates
         // a percentage of PMs, but we want all replay statistics
-        PM pm = new PM(this.getClass().getSimpleName(), ((foam.dao.AbstractDAO)dao).getOf().getId(), "replay", getFilename());
+        PM pm = new PM(this.getClass().getSimpleName(), dao.getOf().getId(), "replay", getFilename());
 
         try ( BufferedReader reader = getReader() ) {
           if ( reader == null ) {
@@ -183,7 +176,7 @@ foam.CLASS({
               successReading.incrementAndGet();
             } catch ( Throwable t ) {
               getLogger().error("Error replaying journal entry:", entry, t);
-              failedReading.incrementAndGet();
+              throw t;
             }
           }
         } catch ( Throwable t) {
@@ -191,13 +184,7 @@ foam.CLASS({
           getLogger().error("Failed to read from journal", t);
           throw new RuntimeException(t);
         } finally {
-          if ( failedReading.get() > 0 ) {
-            getLogger().warning("Failed to read " + failedReading.get() + " entries from file: " + getFilename());
-            pm.error(x, "Failed to read " + failedReading.get() + " entries");
-            // TODO/REVIEW: - Throw, halt - indicates MessageDigest failure.
-          } else {
-            pm.log(x);
-          }
+          pm.log(x);
           getLogger().info("Successfully read " + successReading.get() + " entries from file: " + getFilename() + " in: " + pm.getTime() + "(ms)");
         }
       `

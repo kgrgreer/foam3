@@ -126,9 +126,7 @@ foam.CLASS({
       label: 'Account number',
       updateVisibility: 'RO',
       view: {
-        class: 'foam.u2.tag.Input',
-        placeholder: '1234567890',
-        onKey: true
+        class: 'foam.u2.view.StringView'
       },
       preSet: function(o, n) {
         return /^\d*$/.test(n) ? n : o;

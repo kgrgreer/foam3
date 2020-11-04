@@ -278,7 +278,15 @@ function start_nanos {
         cd "$PROJECT_HOME"
 
         JAVA_OPTS="-Dhostname=${HOST_NAME} ${JAVA_OPTS}"
-        if [ "$DEBUG" -eq 1 ]; then
+        if [ "$PROFILER" -eq 1 ]; then
+            PROFILER_AGENT_PATH=""
+            if [[ $IS_MAC -eq 1 ]]; then
+                PROFILER_AGENT_PATH="/Applications/JProfiler.app/Contents/Resources/app/bin/macos/libjprofilerti.jnilib"
+            elif [[ $IS_LINUX -eq 1 ]]; then
+                PROFILER_AGENT_PATH="/opt/jprofiler11/bin/linux-x64/libjprofilerti.so"
+            fi
+            JAVA_OPTS="${JAVA_OPTS} -agentpath:${PROFILER_AGENT_PATH}=port=$PROFILER_PORT"
+        elif [ "$DEBUG" -eq 1 ]; then
             JAVA_OPTS="-agentlib:jdwp=transport=dt_socket,server=y,suspend=${DEBUG_SUSPEND},address=${DEBUG_PORT} ${JAVA_OPTS}"
         fi
         if [ ! -z "$WEB_PORT" ]; then

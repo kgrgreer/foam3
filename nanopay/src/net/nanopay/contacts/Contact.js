@@ -133,6 +133,7 @@ foam.CLASS({
     { name: 'INVALID_FIRST_NAME', message: 'First name cannot exceed 70 characters' },
     { name: 'INVALID_LAST_NAME', message: 'Last name cannot exceed 70 characters' },
     { name: 'CONFIRMATION_REQUIRED', message: 'Confirmation required' },
+    { name: 'MISSING_BANK_WARNING', message: 'Missing bank information' }
   ],
 
   properties: [
@@ -455,11 +456,11 @@ foam.CLASS({
       name: 'warning',
       label: '',
       tableWidth: 80,
-      javaGetter: `
-        return getBankAccount() == 0 && getBusinessId() == 0 ? "Missing bank information" : null;
-      `,
+      expression: function(bankAccount, businessId) {
+        return ! bankAccount && ! businessId ? this.MISSING_BANK_WARNING : '';
+      },
       tableHeaderFormatter: function() { },
-      tableCellFormatter: function(value, obj, axiom) {
+      tableCellFormatter: function(value, obj) {
         if ( value ) {
           this.start()
             .attrs({ title: value } )
