@@ -205,8 +205,8 @@ foam.CLASS({
           //Account Level Validation
           Account account = tr.findAccount(x); 
           if ( account == null ) {
-            logger.error(this.getClass().getSimpleName(), "validateTransfers", txn.getId(), "transfer account not found: " + tr.getAccount(), tr);
-            throw new TransactionException(UNKNOWN_ACCOUNT_ERROR_MSG + tr.getAccount());
+            logger.error(this.getClass().getSimpleName(), "validateTransfers", txn.getId(), "transfer account not found",tr.getAccount(), tr);
+            throw new TransactionException(UNKNOWN_ACCOUNT_ERROR_MSG + tr.getAccount()); 
           }
           account.validateAmount(x, (Balance) getBalanceDAO().find(account.getId()), tr.getAmount());
 
