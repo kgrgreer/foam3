@@ -1856,7 +1856,6 @@ p({class:"foam.i18n.Locale",id:"admin.cron.name",locale:"pt",source:"admin.cron.
 p({class:"foam.i18n.Locale",id:"admin.crunchlab.name",locale:"pt",source:"admin.crunchlab.label",target:"CRUNCH Laboratório"})
 //p({class:"foam.i18n.Locale",id:"admin.csvUploadScriptDAO.name",locale:"pt",source:"admin.csvUploadScriptDAO.label",target:"CSV UploadScripts pt"})
 //p({class:"foam.i18n.Locale",id:"admin.data.name",locale:"pt",source:"admin.data.label",target:"Data Management pt"})
-p({class:"foam.i18n.Locale",id:"admin.emailmessages.name",locale:"pt",source:"admin.emailmessages.label",target:"Mensagens de Email"})
 p({class:"foam.i18n.Locale",id:"admin.emailtemplates.name",locale:"pt",source:"admin.emailtemplates.label",target:"Modelos de Email"})
 p({class:"foam.i18n.Locale",id:"admin.export.name",locale:"pt",source:"admin.export.label",target:"Drivers de exportação"})
 
@@ -1945,6 +1944,7 @@ p({class:"foam.i18n.Locale",id:"liquidity.name",locale:"pt",source:"liquidity.la
 p({class:"foam.i18n.Locale",id:"operation.name",locale:"pt",source:"operation.label",target:"Operações"})
 p({class:"foam.i18n.Locale",id:"operation.afexBeneficiaries.name",locale:"pt",source:"operation.afexBeneficiaries.label",target:"Beneficiários AFEX"})
 p({class:"foam.i18n.Locale",id:"operation.afexBusiness.name",locale:"pt",source:"operation.afexBusiness.label",target:"AFEX Negócios"})
+p({class:"foam.i18n.Locale",id:"operation.emailmessages.name",locale:"pt",source:"operation.emailmessages.label",target:"Mensagens de Email"})
 p({class:"foam.i18n.Locale",id:"operation.businessOnboarding-cad.name",locale:"pt",source:"operation.businessOnboarding-cad.label",target:"Onboarding de negócios somente canadense"})
 p({class:"foam.i18n.Locale",id:"operation.businessOnboarding-cad-us.name",locale:"pt",source:"operation.businessOnboarding-cad-us.label",target:"Onboarding de negócios atualizado canadense"})
 //p({class:"foam.i18n.Locale",id:"operation.businessOnboarding-us.name",locale:"pt",source:"operation.businessOnboarding-us.label",target:"US only Business Onboarding pt"})

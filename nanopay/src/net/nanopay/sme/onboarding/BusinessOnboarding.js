@@ -1561,7 +1561,7 @@ foam.CLASS({
         Subject subject = (Subject) x.get("subject");
         User user = subject.getRealUser();
         if ( user.getId() == getUserId() ) return;
-        String permission = "businessOnboarding.create." + getId();
+        String permission = "businessonboarding.create." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
         throw new foam.nanos.auth.AuthorizationException();
@@ -1573,7 +1573,7 @@ foam.CLASS({
         Subject subject = (Subject) x.get("subject");
         User user = subject.getRealUser();
         if ( user.getId() == getUserId() ) return;
-        String permission = "businessOnboarding.read." + getId();
+        String permission = "businessonboarding.read." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
         throw new foam.nanos.auth.AuthorizationException();
@@ -1585,7 +1585,7 @@ foam.CLASS({
         Subject subject = (Subject) x.get("subject");
         User user = subject.getRealUser();
         if ( user.getId() == getUserId() ) return;
-        String permission = "businessOnboarding.update." + getId();
+        String permission = "businessonboarding.update." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
         throw new foam.nanos.auth.AuthorizationException();
@@ -1597,7 +1597,7 @@ foam.CLASS({
         Subject subject = (Subject) x.get("subject");
         User user = subject.getRealUser();
         if ( user.getId() == getUserId() ) return;
-        String permission = "businessOnboarding.remove." + getId();
+        String permission = "businessonboarding.remove." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
         throw new foam.nanos.auth.AuthorizationException();
