@@ -107,9 +107,9 @@ foam.CLASS({
             this.BankAccount.NAME.clone().copyFrom({
               tableWidth: 168
             }),
+            'summary',
             'flagImage',
             'denomination',
-            'summary',
             'status',
             'isDefault'
           ],
@@ -156,6 +156,39 @@ foam.CLASS({
               }
             }),
             foam.core.Action.create({
+              name: 'Edit',
+              isAvailable: function() {
+                return ! this.verifiedBy
+              },
+              code: async function(X) {
+                var account = await self.__subContext__.accountDAO.find(this.id);
+                self.ctrl.add(self.SMEModal.create().addClass('bank-account-popup').tag(
+                  {
+                    class: 'net.nanopay.account.ui.BankAccountWizard',
+                    data: account,
+                    useSections: ['accountDetails', 'pad']
+                  }
+                ));
+              }
+            }),
+            foam.core.Action.create({
+              name: 'setAsDefault',
+              label: 'Set as default',
+              code: function(X) {
+                if ( this.isDefault ) {
+                  self.notify(`${ this.name } ${ self.ALREADY_DEFAULT }`, '', self.LogLevel.WARN, true);
+                  return;
+                }
+                this.isDefault = true;
+                self.subject.user.accounts.put(this).then(() =>{
+                  self.notify(`${ this.name } ${ self.IS_DEFAULT }`, '', self.LogLevel.INFO, true);
+                }).catch((err) => {
+                  this.isDefault = false;
+                  self.notify(self.UNABLE_TO_DEFAULT, '', self.LogLevel.ERROR, true);
+                });
+              }
+            }),
+            foam.core.Action.create({
               name: 'delete',
               code: function(X) {
                 if ( this.isDefault ) {
@@ -172,38 +205,6 @@ foam.CLASS({
                   data: this
                 }));
               }
-            }),
-            foam.core.Action.create({
-              name: 'setAsDefault',
-              code: function(X) {
-                if ( this.isDefault ) {
-                  self.notify(`${ this.name } ${ self.ALREADY_DEFAULT }`, '', self.LogLevel.WARN, true);
-                  return;
-                }
-                this.isDefault = true;
-                self.subject.user.accounts.put(this).then(() =>{
-                  self.notify(`${ this.name } ${ self.IS_DEFAULT }`, '', self.LogLevel.INFO, true);
-                }).catch((err) => {
-                  this.isDefault = false;
-                  self.notify(self.UNABLE_TO_DEFAULT, '', self.LogLevel.ERROR, true);
-                });
-              }
-            }),
-            foam.core.Action.create({
-              name: 'Edit',
-              isAvailable: function() {
-                return ! this.verifiedBy
-              },
-              code: async function(X) {
-                var account = await self.__subContext__.accountDAO.find(this.id);
-                self.ctrl.add(self.SMEModal.create().addClass('bank-account-popup').tag(
-                  {
-                    class: 'net.nanopay.account.ui.BankAccountWizard',
-                    data: account,
-                    useSections: ['accountDetails', 'pad']
-                  }
-                ));
-              }
             })
           ]
         };
@@ -215,7 +216,7 @@ foam.CLASS({
         var self = this;
         return this.Action.create({
           name: 'addBank',
-          label: 'Add bank account',
+          label: 'Add account',
           code: async function(X) {
             let permission = await this.auth.check(null, 'multi-currency.read');
             if ( permission ) {
