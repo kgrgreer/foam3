@@ -365,9 +365,6 @@ function setup_dirs {
     if [ ! -d "${NANOPAY_HOME}/etc" ]; then
         mkdir -p "${NANOPAY_HOME}/etc"
     fi
-    if [ ! -d "${NANOPAY_HOME}/keys" ]; then
-        mkdir -p "${NANOPAY_HOME}/keys"
-    fi
     if [ ! -d "${LOG_HOME}" ]; then
         mkdir -p "${LOG_HOME}"
     fi
@@ -426,9 +423,6 @@ function setenv {
 
     export FOAMLINK_DATA="$PROJECT_HOME/.foam/foamlinkoutput.json"
 
-    # Remove $NANOPAY_HOME here and not in setup_dirs step because setup_dirs
-    # will be called again right after clean step; however, we need to keep the
-    # keystore files generated to $NANOPAY_HOME/var/keys/ directory.
     if [ "$TEST" -eq 1 ]; then
         rm -rf "$NANOPAY_HOME"
     fi
@@ -445,49 +439,10 @@ function setenv {
     fi
     export NANOS_PIDFILE="/tmp/${PID_FILE}"
 
-    if beginswith "/pkg/stack/stage" $0 || beginswith "/pkg/stack/stage" $PWD ; then
-        PROJECT_HOME=/pkg/stack/stage/NANOPAY
-        cd "$PROJECT_HOME"
-        cwd=$(pwd)
-
-        # see https://stackoverflow.com/a/22089950
-        #npm install npm --ca=""
-        # works with Netskope disabled.
-        npm install
-
-        CLEAN_BUILD=1
-        IS_AWS=1
-    fi
-
     JAVA_OPTS="${JAVA_OPTS} -DNANOPAY_HOME=$NANOPAY_HOME"
     JAVA_OPTS="${JAVA_OPTS} -DJOURNAL_HOME=$JOURNAL_HOME"
     JAVA_OPTS="${JAVA_OPTS} -DDOCUMENT_HOME=$DOCUMENT_HOME"
     JAVA_OPTS="${JAVA_OPTS} -DLOG_HOME=$LOG_HOME"
-
-    # keystore
-    if [ "$INSTALL" -eq 1 ] || [ "$TEST" -eq 1 ]; then
-        if [[ -f $PROJECT_HOME/tools/keystore.sh ]]; then
-            cd "$PROJECT_HOME"
-            printf "INFO :: Generating keystore...\n"
-            if [[ $TEST -eq 1 ]]; then
-                ./tools/keystore.sh -t
-            else
-                ./tools/keystore.sh
-            fi
-        fi
-    fi
-
-    # HSM setup
-    if [[ $IS_MAC -eq 1 ]]; then
-      HSM_HOME=$PROJECT_HOME/tools/hsm
-      HSM_CONFIG_PATH="${NANOPAY_HOME}/keys/pkcs11.cfg"
-
-      #softhsm setup
-      if [[ -f $HSM_HOME/development.sh ]]; then
-        printf "INFO :: Setting up SoftHSM...\n"
-        $HSM_HOME/development.sh -r $HSM_HOME -d $HSM_CONFIG_PATH
-      fi
-    fi
 
     if [[ -z $JAVA_HOME ]]; then
       if [[ $IS_MAC -eq 1 ]]; then
