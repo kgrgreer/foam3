@@ -32,6 +32,7 @@ foam.CLASS({
     'auth',
     'ctrl',
     'emailToken',
+    'loginVariables',
     'stack',
     'user'
   ],
@@ -114,6 +115,11 @@ foam.CLASS({
       border-top: none;
       border-bottom: 5px solid blue;
     }
+    ^ .centerVertical {
+      padding-top: 3vh; 
+      max-width: 30vw;
+      margin: 0 auto;
+    }
   `,
 
   properties: [
@@ -155,14 +161,14 @@ foam.CLASS({
     function initE() {
       this.SUPER();
       var self = this;
-      var split = foam.u2.borders.SplitScreenBorder.create();
+      var smeImage = this.loginVariables ? this.loginVariables.imgPath : '';
 
-      var left = this.Element.create()
+      var left = smeImage ? this.Element.create()
       .addClass('cover-img-block')
       .start('img')
         .addClass('sme-image')
-        .attr('src', 'images/sign_in_illustration.png')
-      .end();
+        .attr('src', smeImage)
+      .end() : null;
 
       var right = this.Element.create()
         .addClass(this.myClass())
@@ -204,12 +210,18 @@ foam.CLASS({
           .end()
         .end();
 
-        split.leftPanel.add(left);
-        split.rightPanel.add(right);
+        var view = null;
+        if ( smeImage ) {
+          view = foam.u2.borders.SplitScreenBorder.create();
+          view.leftPanel.add(left);
+          view.rightPanel.add(right);
+        } else {
+          view = right.addClass('centerVertical');
+        }
 
         this.start().addClass(this.myClass())
           .tag({ class: 'net.nanopay.sme.ui.TopBarBackToAblii' })
-          .add(split)
+          .add(view)
         .end();
     }
   ],
