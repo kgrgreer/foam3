@@ -91,8 +91,7 @@ foam.CLASS({
       name: 'mode',
       documentation: 'Used to change visibility. ex) "percent" suggests all hidden but this.ownershipPercent.',
       hidden: true,
-      externalTransient: true,
-      flags: ['js']
+      externalTransient: true
     },
     {
       class: 'String',
@@ -335,10 +334,9 @@ foam.CLASS({
       label: 'Cadastro de Pessoas Físicas (CPF)',
       section: 'requiredSection',
       documentation: `CPF number of beneficial owner.`,
-      visibility: function(type) {
-        return type == 'BR' ?
-        foam.u2.DisplayMode.RW :
-        foam.u2.DisplayMode.HIDDEN;
+      visibility: function(type, mode) {
+        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : type == 'BR' ?
+        foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       validationPredicates: [
         {
@@ -414,10 +412,10 @@ foam.CLASS({
       name: 'verifyName',
       label: 'Please verify that name displayed below matches owner name.',
       section: 'requiredSection',
-      visibility: function (type, cpfName) {
-        return type == 'BR' && cpfName.length > 0 ?
-        foam.u2.DisplayMode.RW :
-        foam.u2.DisplayMode.HIDDEN;
+      visibility: function (type, cpfName, mode) {
+        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN :
+          type == 'BR' && cpfName.length > 0 ?
+            foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       view: function(n, X) {
         var self = X.data$;
@@ -461,10 +459,9 @@ foam.CLASS({
         to influence decisions and the ability to control resources
       `,
       value: false,
-      visibility: function (type) {
-        return type == 'BR' ?
-        foam.u2.DisplayMode.RW :
-        foam.u2.DisplayMode.HIDDEN;
+      visibility: function (type, mode) {
+        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : type == 'BR' ?
+          foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       view: {
         class: 'foam.u2.view.RadioView',

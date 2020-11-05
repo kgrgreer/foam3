@@ -196,6 +196,9 @@ foam.CLASS({
       class: 'Int',
       documentation: 'Number of owners',
       label: '',
+      postSet: function(_, n) {
+        if ( n ) this.clearAllOwnerAndPercentData();
+      },
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
@@ -432,7 +435,7 @@ foam.CLASS({
   ],
 
   reactions: [
-    ['', 'propertyChange.amountOfOwners', 'clearAllOwnerAndPercentData']
+    ['', 'propertyChange.amountOfOwners', 'updateTable'],
   ].concat([1, 2, 3, 4].map((i) => [
     [`owner${i}`, 'propertyChange', 'updateTable'],
     ['', `propertyChange.owner${i}`, 'updateTable']
@@ -450,16 +453,6 @@ foam.CLASS({
             }
           }
         });
-      }
-    },
-    {
-      name: 'clearAllOwnerAndPercentData',
-      isFramed: true,
-      code: function() {
-        this.chosenOwners = [];
-        this.ownerSelectionsValidated = false;
-        this.owner1 = this.owner2 = this.owner3 = this.owner4 = undefined;
-        this.beneficialOwnersTable.removeAll();
       }
     }
   ],
@@ -481,6 +474,15 @@ foam.CLASS({
         BeneficialOwner[] owners = new BeneficialOwner[]{ getOwner1(), getOwner2(), getOwner3(), getOwner4() };
         for ( int i = 0 ; i < getAmountOfOwners(); i++ ) owners[i].validate(x);
       `
+    },
+    {
+      name: 'clearAllOwnerAndPercentData',
+      code: function() {
+        this.chosenOwners = [];
+        this.ownerSelectionsValidated = false;
+        this.owner1 = this.owner2 = this.owner3 = this.owner4 = undefined;
+        this.beneficialOwnersTable.removeAll();
+      }
     }
   ]
 });
@@ -527,6 +529,7 @@ foam.CLASS({
   package: 'net.nanopay.crunch.onboardingModels',
   name: 'OwnerProperty',
   extends: 'foam.core.FObjectProperty',
+
   properties: [
     ['of', 'net.nanopay.model.BeneficialOwner'],
     {
@@ -562,7 +565,7 @@ foam.CLASS({
         var obj = net.nanopay.model.BeneficialOwner.create({
             business: X.data.businessId,
             type: user.address.countryId,
-            id: 1
+            id: (this.index * -1)
           }, X);
         obj.toSummary = () => 'Other';
         dao.put(obj);
@@ -585,13 +588,13 @@ foam.CLASS({
       name: 'preSet',
       value: function(o, n) {
         if ( ! n ) return n;
-        if ( ! n.id || n.id === 1 ) {
-          n.id = ++this.index;
-        }
+
         this.chosenOwners.push(n.id);
+
         if ( o ) {
           this.chosenOwners.splice(this.chosenOwners.indexOf(o.id), 1);
         }
+
         return n;
       }
     }
@@ -656,10 +659,6 @@ foam.CLASS({
       documentation: 'dao that is used in choiceView, should not change.',
     },
     {
-      name: 'otherLabel',
-      class: 'String'
-    },
-    {
       name: 'choiceData_',
       documentation: 'Data that is set by choiceView(reference object)',
       postSet: async function(o, n) {
@@ -670,7 +669,7 @@ foam.CLASS({
           const numSO = (await this.dao2.select(this.COUNT())).value;
           // checks if a signing officer is selected
           // Note: Signing officer id is between 2 and numSO + 1 inclusive while
-          // nonsigning officer data has id > numSO + 1. If n === 1, 'other' is selected
+          // nonsigning officer data has id (its index  * -1). If n === 1, 'other' is selected
           // but data doesn't exist.
           if ( n > 1 && n < numSO + 2 ) {
             if ( ! dataExists ) {
@@ -697,7 +696,8 @@ foam.CLASS({
   ],
 
   reactions: [
-    ['', 'propertyChange.data', 'fromData']
+    ['data', 'propertyChange', 'fromData'],
+    ['', 'propertyChange.choiceData_', 'fromData']
   ],
 
   listeners: [
@@ -717,7 +717,12 @@ foam.CLASS({
     function init() {
       // Pre-initialize with just one section to prevent empty array error
       // thrown by RichChoiceView
-      this.updateSections_(-1);
+      if ( this.chosenOwners[this.index-1] != undefined )
+        // set default data if there is
+        this.updateSections_(this.chosenOwners[this.index-1]);
+      else
+        this.updateSections_(-1);
+
     },
     function initE() {
       this.add(this.slot((choiceData_, choiceSections_) => {
@@ -738,7 +743,6 @@ foam.CLASS({
     },
     function updateSections_(choice) {
       var choiceSections = [];
-
       choiceSections.push({
         // filter out all the siging officers except the one chosen by this owner
         dao: this.dao2.where(
