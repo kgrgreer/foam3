@@ -1574,7 +1574,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/TransactionQuoteDAO' },
   { name: 'net/nanopay/tx/planner/QuoteFillerDAO' },
   { name: 'net/nanopay/tx/planner/PlanNotFoundException' },
-  { name: 'net/nanopay/tx/planner/NoPlanException' },
+  { name: 'net/nanopay/tx/planner/UnableToPlanException' },
 
   // Fees
   { name: 'net/nanopay/tx/fee/Fee' },

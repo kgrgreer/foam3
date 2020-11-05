@@ -1122,7 +1122,7 @@ var classes = [
   'net.nanopay.tx.planner.TransactionQuoteDAO',
   'net.nanopay.tx.planner.QuoteFillerDAO',
   'net.nanopay.tx.planner.PlanNotFoundException',
-  'net.nanopay.tx.planner.NoPlanException',
+  'net.nanopay.tx.planner.UnableToPlanException',
 
   // Fees
   'net.nanopay.tx.fee.Fee',

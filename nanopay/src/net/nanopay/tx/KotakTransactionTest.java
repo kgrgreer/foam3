@@ -178,7 +178,12 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
     txn.setAmount(200);
     TransactionQuote quote = new TransactionQuote();
     quote.setRequestTransaction(txn);
-    quote = (TransactionQuote) quoteDAO.put(quote);
-    return quote.getPlan();
+    try {
+      quote = (TransactionQuote) quoteDAO.put(quote);
+      return quote.getPlan();
+    } catch ( net.nanopay.tx.planner.UnableToPlanException e ) {
+      test(false, e.getMessage());
+      throw e;
+    }
   }
 }

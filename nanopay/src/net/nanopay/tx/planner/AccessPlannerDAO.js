@@ -91,13 +91,12 @@ foam.CLASS({
           We will skip this for now because statuses are not done. doing nothing will
           */
 
-        try{
+        try {
           validate_(x, plannedTx.getTransaction());
-        }
-        catch(RuntimeException e) {
+        } catch(foam.core.ValidationException e) {
           Logger logger = (Logger) x.get("logger");
-          logger.info("Transaction Plan failed validation for "+ txn + " and transaction plan "+plannedTx);
-          throw new TransactionException("Plan validation failure: "+txn.getId(), e);
+          logger.warning("Transaction Plan Validation Failed. \\ntxn:", txn, "\\nplan:", plannedTx);
+          throw e;
         }
 
         //remove the plan

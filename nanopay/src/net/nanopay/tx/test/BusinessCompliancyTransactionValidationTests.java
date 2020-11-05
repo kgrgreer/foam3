@@ -6,7 +6,7 @@ import foam.dao.DAO;
 import net.nanopay.model.Business;
 import net.nanopay.tx.TransactionQuote;
 import net.nanopay.tx.planner.TransactionPlan;
-import net.nanopay.tx.planner.NoPlanException;
+import net.nanopay.tx.planner.UnableToPlanException;
 
 public class BusinessCompliancyTransactionValidationTests
   extends foam.nanos.test.Test
@@ -49,11 +49,10 @@ public class BusinessCompliancyTransactionValidationTests
         var quoteR = localTransactionPlannerDAO.put_(x, quote.getPlan());
         test(false , "validation unexpectantly successful");
       } catch (ValidationException e) {
-        test(true , "validation failed: "+e.getMessage()); //TODO: read an error code, see if expected
-        //test( threw && message.equals("Sender needs to pass business compliance."), "Unable to put if sender business user hasn't passed compliance.")
+        test( e.getMessage().equals("Sender needs to pass business compliance."), "Unable to put if sender business user hasn't passed compliance.");
       }
-    } catch (NoPlanException e) {
-      test(true , e.getClass().getSimpleName() + " " + e.getMessage());
+    } catch (UnableToPlanException e) {
+      test(false , e.getClass().getSimpleName() + " " + e.getMessage());
     }
 
     // Test 2 - Sender passes compliance
@@ -67,7 +66,7 @@ public class BusinessCompliancyTransactionValidationTests
       } catch (ValidationException e) {
         test(false, "validation unexpectantly failed: "+e.getMessage());
       }
-    } catch (NoPlanException e) {
+    } catch (UnableToPlanException e) {
       test(false , e.getClass().getSimpleName() + " " + e.getMessage() + " " +e.getCause());
     }
 
@@ -80,11 +79,10 @@ public class BusinessCompliancyTransactionValidationTests
         var quoteR = localTransactionPlannerDAO.put_(x, quote.getPlan());
         test(false , "validation unexpectantly successful");
       } catch (ValidationException e) {
-        test(true , "validation failed: "+e.getMessage()); //TODO: read an error code, see if expected.
-        //test( threw && message.equals("Receiver needs to pass compliance."), "Unable to put if receiver user failed compliance.");
+        test( e.getMessage().equals("Receiver needs to pass compliance."), "Unable to put if receiver user failed compliance.");
       }
-    } catch (NoPlanException e) {
-      test(true , e.getClass().getSimpleName() + " " + e.getMessage());
+    } catch (UnableToPlanException e) {
+      test(false , e.getClass().getSimpleName() + " " + e.getMessage());
     }
   }
 }

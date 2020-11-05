@@ -36,7 +36,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
     'net.nanopay.tx.UnsupportedTransactionException',
-    'net.nanopay.tx.planner.NoPlanException',
+    'net.nanopay.tx.planner.UnableToPlanException',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.PlanCostComparator',
@@ -67,7 +67,7 @@ foam.CLASS({
         String message = String.format("Unable to find a plan for transaction with source currency: %s, destination currency: %s, source account: %d, destination account: %d", requestTxn.getSourceCurrency(), requestTxn.getDestinationCurrency(), requestTxn.getSourceAccount(), requestTxn.getDestinationAccount());
         sendNOC(x, message);
         ((Logger) x.get("logger")).error(message);
-        throw new NoPlanException("Unable to find a plan for requested transaction.");
+        throw new UnableToPlanException("Unable to plan.");
       }
 
       //if there was only one plan added we do not need to calculate the cost.
@@ -87,7 +87,7 @@ foam.CLASS({
           transactionPlans.add(aTransaction);
       }
       if ( transactionPlans.size() == 0 ) {
-        throw new NoPlanException("Unable To Plan.");
+        throw new UnableToPlanException("Unable to plan.");
       }
       Collections.sort(transactionPlans, planComparators);
       quote.setPlan(transactionPlans.get(0));
