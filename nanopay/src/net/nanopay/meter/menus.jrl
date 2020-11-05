@@ -49,7 +49,8 @@ p({
     "class":"foam.nanos.menu.DAOMenu2",
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
-      "daoKey":"doNotSolicitDAO"
+      "daoKey":"doNotSolicitDAO",
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
     }
   },
   "parent":"operation"

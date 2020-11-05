@@ -33,7 +33,8 @@ foam.CLASS({
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LastModifiedAware',
-    'foam.nanos.auth.LastModifiedByAware'
+    'foam.nanos.auth.LastModifiedByAware',
+    'foam.nanos.auth.ServiceProviderAware'
   ],
 
   imports: [
@@ -43,18 +44,21 @@ foam.CLASS({
   tableColumns: [
     'firstName',
     'lastName',
-    'id',
+    'email',
     'doNotSolicit',
     'doNotContact',
   ],
 
   properties: [
     {
-      documentation: 'email of user opting out of solitations.',
-      name: 'id',
       class: 'String',
-      label: 'Email',
-      aliases: ['email'],
+      name: 'id',
+      visibility: 'RO'
+    },
+    {
+      documentation: 'email of user opting out of solitations.',
+      name: 'email',
+      class: 'String',
       required: true
     },
     {
@@ -141,6 +145,13 @@ foam.CLASS({
         }.bind(this));
       }
     },
+    {
+      name: 'spid',
+      class: 'Reference',
+      of: 'foam.nanos.auth.ServiceProvider',
+      value: foam.nanos.auth.ServiceProviderAware.GLOBAL_SPID,
+      readPermissionRequired: true
+    }
   ]
 });
 

@@ -2097,8 +2097,6 @@ p({
   "client": "{\"of\":\"net.nanopay.meter.compliance.ComplianceItem\"}"
 })
 
-p({"class":"foam.nanos.boot.NSpec", "name":"AFEXCredentials",                  "lazy":false,  "service":{"class":"net.nanopay.fx.afex.AFEXCredentials"}})
-
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "liquidityThresholdCandlestickDAO",

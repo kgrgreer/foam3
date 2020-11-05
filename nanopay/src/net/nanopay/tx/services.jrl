@@ -596,21 +596,3 @@ p({
       }
     """
 })
-
-p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "afexCredentialDAO",
-  "serve": true,
-  "serviceScript": """
-    return new foam.dao.EasyDAO.Builder(x)
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName("afexCredentialDAO")
-      .setOf(net.nanopay.fx.afex.AFEXCredentials.getOwnClassInfo())
-      .build();
-  """,
-  "client": """
-    {
-      "of": "net.nanopay.fx.afex.AFEXCredentials"
-    }
-  """
-})
