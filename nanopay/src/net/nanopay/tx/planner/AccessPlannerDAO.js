@@ -32,6 +32,7 @@ foam.CLASS({
     'net.nanopay.tx.planner.AbstractTransactionPlanner',
     'net.nanopay.tx.planner.TransactionPlan',
     'net.nanopay.tx.Transfer',
+    'net.nanopay.tx.TransactionException',
     'java.util.ArrayList',
     'java.util.List',
     'net.nanopay.tx.UnsupportedTransactionException'
@@ -59,7 +60,7 @@ foam.CLASS({
             // if transaction has been planned already, just load it.
             if ( ! SafetyUtil.isEmpty(t.getId()) )
               return loadPlan(x, t);
-            // other wise make a new clean quote.
+            // otherwise make a new clean quote.
             t.setNext(null);
             TransactionQuote tq = new TransactionQuote();
             tq.setRequestTransaction(t);
@@ -80,9 +81,8 @@ foam.CLASS({
         //find the plan
         TransactionPlan plannedTx = (TransactionPlan) getDelegate().find_(x, txn.getId());
         if ( plannedTx == null ) {
-          Logger logger = (Logger) x.get("logger");
-          logger.debug("Transaction Plan not found for "+ txn);
-          return null;
+          ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), "Plan Not Found", txn.getId());
+          throw new PlanNotFoundException(txn.getId());
         }
 
           /*
@@ -91,20 +91,18 @@ foam.CLASS({
           We will skip this for now because statuses are not done. doing nothing will
           */
 
-        try{
+        try {
           validate_(x, plannedTx.getTransaction());
-        }
-        catch(RuntimeException e) {
+        } catch(foam.core.ValidationException e) {
           Logger logger = (Logger) x.get("logger");
-          logger.debug("Transaction Plan failed validation for "+ txn + " and transaction plan "+plannedTx);
-          return null; //TODO: return an error code
+          logger.warning("Transaction Plan Validation Failed. \\ntxn:", txn, "\\nplan:", plannedTx);
+          throw e;
         }
 
         //remove the plan
         getDelegate().remove_(x, plannedTx);
 
         return (Transaction) plannedTx.getTransaction().fclone();
-
       `
     },
     {

@@ -25,6 +25,7 @@ foam.CLASS({
   `,
 
   javaImports: [
+    'foam.core.ValidationException',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
@@ -53,7 +54,7 @@ foam.CLASS({
           User user = (User) ((DAO) x.get("bareUserDAO")).find_(x, txn.getPayerId());
           if ( user == null ) {
             ((Logger) x.get("logger")).error("Payer not found", txn.getId(), "source", txn.getSourceAccount(), "payer", txn.getPayerId());
-            throw new RuntimeException("Payer not found");
+            throw new ValidationException("Payer not found");
           }
           account = DigitalAccount.findDefault(getX(), user, txn.getSourceCurrency());
           txn.setSourceAccount(account.getId());
@@ -68,7 +69,7 @@ foam.CLASS({
           User user = (User) ((DAO) x.get("bareUserDAO")).find_(x, txn.getPayeeId());
           if ( user == null ) {
             ((Logger) x.get("logger")).error("Payee not found", txn.getId(), "source", txn.getDestinationAccount(), "payee", txn.getPayeeId());
-            throw new RuntimeException("Payee not found");
+            throw new ValidationException("Payee not found");
           }
           DigitalAccount accountDigital = DigitalAccount.findDefault(getX(), user, txn.getDestinationCurrency());
           

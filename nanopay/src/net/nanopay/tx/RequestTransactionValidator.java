@@ -1,6 +1,7 @@
 package net.nanopay.tx;
 
 import foam.core.FObject;
+import foam.core.ValidationException;
 import foam.core.Validator;
 import foam.core.X;
 import foam.nanos.logger.PrefixLogger;
@@ -18,12 +19,12 @@ public class RequestTransactionValidator implements Validator {
 
     if ( quote.getDestinationAccount() == null ) {
       logger.error("Destination account must be set for quote", quote);
-      throw new RuntimeException("destinationAccount must be set");
+      throw new ValidationException("destinationAccount must be set");
     }
 
     if ( quote.getSourceAccount() == null ) {
       logger.error("Source account must be set for quote", quote);
-      throw new RuntimeException("sourceAccount must be set");
+      throw new ValidationException("sourceAccount must be set");
     }
 
     Transaction request = quote.getRequestTransaction();
