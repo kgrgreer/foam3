@@ -1736,6 +1736,7 @@ FOAM_FILES([
   { name: 'net/nanopay/country/PermittedCountryFilterDAO' },
   { name: 'net/nanopay/country/br/NatureCodePaymentProviderJunctionRefinement' },
   { name: 'net/nanopay/country/br/NatureBusinessRelationship' },
+  { name: 'net/nanopay/country/br/BeneficiaryType' },
 
   //RequestToPay
   { name: 'net/nanopay/rtp/RequestToPay'},

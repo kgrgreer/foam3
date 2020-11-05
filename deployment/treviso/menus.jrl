@@ -14,3 +14,6 @@ p({
   "order":499,
   "parent":"smeNavigation"
 })
+
+// Remove liquid transactions menu
+r({"class":"foam.nanos.menu.Menu","id":"transactions"})

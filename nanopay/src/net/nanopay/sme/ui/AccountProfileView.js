@@ -122,7 +122,7 @@ foam.CLASS({
 
   methods: [
     function initE() {
-      var dao = this.menuDAO.orderBy(this.Menu.ORDER)
+      var dao = this.menuDAO
           .where(this.STARTS_WITH(this.Menu.ID, 'sme.accountProfile'));
 
       var self = this;

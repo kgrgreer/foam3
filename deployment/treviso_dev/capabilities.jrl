@@ -64,3 +64,14 @@ p({
   visible: false,
   permissionsGranted: []
 })
+
+p({
+  class: "net.nanopay.country.br.BeneficiaryType",
+  id: "trevisoBeneficiaryType",
+  name: "treviso supported beneficiary type",
+  date: "A",
+  version: "0",
+  enabled: true,
+  visible: false,
+  permissionsGranted: []
+})
