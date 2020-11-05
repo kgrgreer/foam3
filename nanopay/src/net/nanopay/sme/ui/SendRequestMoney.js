@@ -67,6 +67,7 @@ foam.CLASS({
   requires: [
     'foam.log.LogLevel',
     'foam.nanos.app.Mode',
+    'foam.nanos.crunch.CapabilityJunctionStatus',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.auth.PublicUserInfo',
@@ -311,7 +312,7 @@ foam.CLASS({
         {
           parent: 'sendRequestMoney',
           id: this.DETAILS_VIEW_ID,
-          label: 'Details',
+          label: 'Invoice Details',
           subtitle: 'Select payable',
           view: {
             class: 'net.nanopay.sme.ui.SendRequestMoneyDetails',
@@ -453,10 +454,13 @@ foam.CLASS({
 
     async function submit() {
       this.isLoading = true;
-      let signingOfficer1 = await this.crunchService.getJunction(null, '554af38a-8225-87c8-dfdf-eeb15f71215f-1a5');
-      let signingOfficer2 = await this.crunchService.getJunction(null, '554af38a-8225-87c8-dfdf-eeb15f71215f-1a5-us');
-      let signingOfficer3 = await this.crunchService.getJunction(null, '777af38a-8225-87c8-dfdf-eeb15f71215f-123');
-      let isSigningOfficer = ( signingOfficer1 && signingOfficer1.status.ordinal == 1 ) || ( signingOfficer2 && signingOfficer2.status.ordinal == 1 ) || ( signingOfficer3 && signingOfficer3.status.ordinal == 1);
+      // TODO: perhaps all of these capabilities should imply something so
+      //   a similar capability can be added without updating this code.
+      let isSigningOfficer = [
+        await this.crunchService.getJunction(null, '554af38a-8225-87c8-dfdf-eeb15f71215f-1a5'),
+        await this.crunchService.getJunction(null, '554af38a-8225-87c8-dfdf-eeb15f71215f-1a5-us'),
+        await this.crunchService.getJunction(null, '777af38a-8225-87c8-dfdf-eeb15f71215f-123')
+      ].some(soUCJ => soUCJ.status === this.CapabilityJunctionStatus.GRANTED);
 
       try {
         if ( this.isPayable && isSigningOfficer ) {

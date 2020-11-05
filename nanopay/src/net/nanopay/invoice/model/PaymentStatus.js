@@ -94,7 +94,11 @@ foam.ENUM({
       name: 'SUBMIT',
       documentation: 'A status that indicates that the quoting invoice is ready to be submited as a transaction',
       label: 'Submit'
+    },
+    {
+      name: 'REJECTED',
+      documentation: 'A status that indicates the invoice has been rejected.',
+      label: 'Rejected'
     }
   ]
 });
-

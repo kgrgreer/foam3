@@ -135,7 +135,8 @@ foam.CLASS({
           if ( prereq.getId().equals("554af38a-8225-87c8-dfdf-eeb15f71215f-76")) continue;
 
           UserCapabilityJunction prereqUcj = crunchService.getJunctionForSubject(x, prereq.getId(), subject);
-          if ( prereqUcj == null ) continue;
+          if ( prereqUcj.getStatus() == CapabilityJunctionStatus.AVAILABLE )
+            continue;
           prereqUcj.setStatus(CapabilityJunctionStatus.ACTION_REQUIRED);
           prereqUcj.clearData();
           prereqUcj.clearGracePeriod();

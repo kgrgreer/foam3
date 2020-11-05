@@ -95,7 +95,7 @@ foam.CLASS({
 
       this
         .addClass(this.myClass()).enableClass('hidden', this.isHidden$)
-        .start({ class: 'foam.u2.tag.Image', data: 'images/ic-loading.svg' }).end()
+        .start({ class: 'foam.u2.tag.Image', data: '/images/ic-loading.svg' }).end()
         .start()
             .show(this.showText$)
             .addClass('processing-notice')

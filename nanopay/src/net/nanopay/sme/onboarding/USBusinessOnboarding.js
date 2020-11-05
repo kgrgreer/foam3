@@ -501,7 +501,7 @@ foam.CLASS({
       section: 'personalInformationSection',
       label: 'I am a politically exposed person or head of an international organization (PEP/HIO)',
       help: `
-        A political exposed person (PEP) or the head of an international organization (HIO)
+        A politically exposed person (PEP) or the head of an international organization (HIO)
         is a person entrusted with a prominent position that typically comes with the opportunity
         to influence decisions and the ability to control resources
       `,
@@ -1613,7 +1613,7 @@ foam.CLASS({
 
         if ( user.getId() == getUserId() ) return;
 
-        String permission = "usBusinessOnboarding.create." + getId();
+        String permission = "usbusinessonboarding.create." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
 
@@ -1628,7 +1628,7 @@ foam.CLASS({
 
         if ( user.getId() == getUserId() ) return;
 
-        String permission = "usBusinessOnboarding.read." + getId();
+        String permission = "usbusinessonboarding.read." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
 
@@ -1643,7 +1643,7 @@ foam.CLASS({
 
         if ( user.getId() == getUserId() ) return;
 
-        String permission = "usBusinessOnboarding.update." + getId();
+        String permission = "usbusinessonboarding.update." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
 
@@ -1658,7 +1658,7 @@ foam.CLASS({
 
         if ( user.getId() == getUserId() ) return;
 
-        String permission = "usBusinessOnboarding.remove." + getId();
+        String permission = "usbusinessonboarding.remove." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
 

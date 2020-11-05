@@ -161,10 +161,10 @@ public class OpenDataService extends ContextAwareSupport implements OpenData {
     logger.debug(sb.toString());
   }
 
-  public PTaxDollarRateResponse getLatestPTaxRates() {
+  public PTaxDollarRateResponse getLatestPTaxRates(int days) {
     try {
       String endpoint = OPEN_DATA_URL + "DollarRateDate(dataCotacao=@dataCotacao)";
-      String latestDate = previousDaySkipHolidayAndWeekends().format(DateTimeFormatter.ofPattern("MM-dd-yyyy"));
+      String latestDate = previousDaySkipHolidayAndWeekends(days).format(DateTimeFormatter.ofPattern("MM-dd-yyyy"));
       Map<String, String> params = Map.of(
         "@dataCotacao", "'" + latestDate + "'",
         "$format", "json"
@@ -177,17 +177,25 @@ public class OpenDataService extends ContextAwareSupport implements OpenData {
     }
   }
 
-  public LocalDate previousDaySkipHolidayAndWeekends() {
+  public LocalDate previousDaySkipHolidayAndWeekends(int days) {
     BankHolidayService bankHolidayService = (BankHolidayService) getX().get("bankHolidayService");
     Address address = new Address.Builder(getX()).setCountryId("BR").setRegionId("").build();
-    Instant yesterday = Instant.now().minus(1, ChronoUnit.DAYS);
+    Instant yesterday = Instant.now().minus(days, ChronoUnit.DAYS);
     Date result = bankHolidayService.skipBankHolidaysBackwards(getX(), Date.from(yesterday), address, 0);
     return result.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
   }
 
   public PTaxRate getPTaxRate() throws RuntimeException {
     try {
-      PTaxDollarRateResponse response = getLatestPTaxRates();
+      // Try with yesterday date first
+      PTaxDollarRateResponse response = getLatestPTaxRates(1);
+      if ( response == null )
+        throw new RuntimeException("Unable to get a valid response from PTax open API");
+
+      if ( response.getValue() != null && response.getValue().length > 0 ) return response.getValue()[0];
+
+      // Invalid response was obtained, so try with todays date
+      response = getLatestPTaxRates(0);
       if ( response == null )
         throw new RuntimeException("Unable to get a valid response from PTax open API");
 

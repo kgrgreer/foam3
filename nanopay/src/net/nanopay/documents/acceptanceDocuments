@@ -16,8 +16,9 @@ p({
   "class":"net.nanopay.documents.AcceptanceDocument",
   "authenticated": false,
   "id": 16,
-  "checkboxText": "I certify that any beneficial owners with 25% or more ownership have been listed and the information included about them is accurate.",
+  "title": "the people who own 25% or more of the business, either directly or indirectly, have been listed and their information is accurate.",
   "name": "certifyOwnersOwnMoreThen25Percent",
+  "checkboxText": "I certify that "
   "printable": false,
   "documentType": 0
 })

@@ -267,7 +267,12 @@ foam.CLASS({
       isFramed: true,
       code: function() {
         this.dao
-            .where(this.NEQ(this.Invoice.STATUS, this.InvoiceStatus.VOID))
+            .where(
+              this.OR(
+                this.NEQ(this.Invoice.STATUS, this.InvoiceStatus.VOID),
+                this.NEQ(this.Invoice.STATUS, this.InvoiceStatus.REJECTED)
+              )
+            )
             .select(this.SUM(this.Invoice.AMOUNT))
             .then((sum) => { this.sumTotal = sum.value.toFixed(2); });
 

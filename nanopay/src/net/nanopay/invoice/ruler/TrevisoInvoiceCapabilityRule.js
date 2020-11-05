@@ -48,12 +48,18 @@ foam.CLASS({
         {
             name: 'USER_CAPABILITY_ID',
             type: 'String',
-            value: '2910C2C9-3597-42A3-BF85-CFBC8F0E1388'
+            value: '2910C2C9-3597-42A3-BF85-CFBC8F0E1388',
+            documentation: `
+              The user requires this capability to submit an invoice.
+            `
         },
         {
             name: 'OBJECT_CAPABILITY_ID',
             type: 'String',
-            value: 'dfbe9220-ba4e-42d1-9bed-f4b4f8efcbb8'
+            value: 'dfbe9220-ba4e-42d1-9bed-f4b4f8efcbb8',
+            documentation: `
+              This invoice requires its own fulfillment of this capability.
+            `
         }
     ],
   

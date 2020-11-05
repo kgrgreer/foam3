@@ -48,7 +48,8 @@ foam.CLASS({
   sections: [
     {
       name: 'ownershipAmountSection',
-      title: 'How many individuals directly or indirectly own 25% or more of the business?',
+      title: 'Enter the number of people who own 25% or more of the business either directly or indirectly.',
+      navTitle: 'Number of owners',
       help: `In accordance with banking laws, we need to document the percentage of ownership of any individual with a 25% + stake in the company.
       Please have owner address and date of birth ready.`,
     },
@@ -242,6 +243,8 @@ foam.CLASS({
       class: 'net.nanopay.crunch.onboardingModels.OwnerProperty',
       index: 1,
       documentation: 'First owner',
+      autoValidate: true,
+      validationTextVisible: true,
       validationPredicates: [
       {
         args: ['amountOfOwners', 'owner1$errors_'],
@@ -266,6 +269,8 @@ foam.CLASS({
       class: 'net.nanopay.crunch.onboardingModels.OwnerProperty',
       index: 2,
       documentation: 'Second owner',
+      autoValidate: true,
+      validationTextVisible: true,
       validationPredicates: [
       {
         args: ['amountOfOwners', 'owner2$errors_'],
@@ -290,6 +295,8 @@ foam.CLASS({
       class: 'net.nanopay.crunch.onboardingModels.OwnerProperty',
       index: 3,
       documentation: 'Third owner',
+      autoValidate: true,
+      validationTextVisible: true,
       validationPredicates: [
       {
         args: ['amountOfOwners', 'owner3$errors_'],
@@ -314,6 +321,8 @@ foam.CLASS({
       class: 'net.nanopay.crunch.onboardingModels.OwnerProperty',
       index: 4,
       documentation: 'Forth owner',
+      autoValidate: true,
+      validationTextVisible: true,
       validationPredicates: [
       {
         args: ['amountOfOwners', 'owner4$errors_'],
@@ -480,6 +489,11 @@ foam.CLASS({
   package: 'net.nanopay.crunch.onboardingModels',
   name: 'OwnerSection',
   extends: 'foam.layout.SectionAxiom',
+
+  messages: [
+    { name: 'OWNER_DETAILS', message: 'Details for owner #' },
+  ],
+
   properties: [
     {
       class: 'Int',
@@ -494,7 +508,7 @@ foam.CLASS({
     {
       name: 'title',
       expression: function(index) {
-        return `Add details for owner #${index}`;
+        return `${this.OWNER_DETAILS}${index}`;
       }
     },
     {
@@ -726,7 +740,6 @@ foam.CLASS({
       var choiceSections = [];
 
       choiceSections.push({
-        heading: this.SO_SELECTION,
         // filter out all the siging officers except the one chosen by this owner
         dao: this.dao2.where(
           this.OR(
@@ -740,7 +753,6 @@ foam.CLASS({
       });
 
       choiceSections.push({
-        heading: this.OTHER_SELECTION,
         dao$: this.dao$
       });
 

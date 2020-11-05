@@ -1188,6 +1188,7 @@ var classes = [
   'net.nanopay.country.br.OpenData',
   'net.nanopay.country.br.PTaxRate',
   'net.nanopay.country.br.PTaxDollarRateResponse',
+  'net.nanopay.country.br.BeneficiaryType',
   'net.nanopay.country.br.tx.NatureCodeLineItem',
   'net.nanopay.partner.sintegra.CPFResponseData',
   'net.nanopay.partner.sintegra.CNPJResponseData',
@@ -1367,7 +1368,6 @@ var classes = [
   // DAO decorators
   'net.nanopay.account.AbliiBankAccountAutoverifyDAO',
   'net.nanopay.account.AuthenticatedAccountDAO',
-  'net.nanopay.account.DigitalAccountInfoPopulateDAO',
   'net.nanopay.admin.AccountStatusUserDAO',
   'net.nanopay.approval.ApprovalRequestNotificationDAO',
   'net.nanopay.approval.AuthenticatedApprovalDAO',
@@ -1431,6 +1431,10 @@ var classes = [
   'net.nanopay.payment.ClientPayeeCurrencyService',
   'net.nanopay.payment.PayeeCurrency',
 
+
+  // rtp
+  'net.nanopay.rtp.RequestToPay',
+  'net.nanopay.rtp.SendRequestToPayDAO',
 
   //integration
 

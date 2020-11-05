@@ -464,6 +464,7 @@ foam.CLASS({
           if (this.user.id === this.payeeId ) return this.InvoiceStatus.UNPAID;
           else return this.InvoiceStatus.PENDING_APPROVAL;
         }
+        if ( paymentMethod === this.PaymentStatus.REJECTED ) return this.InvoiceStatus.REJECTED;
         if ( paymentDate > Date.now() && paymentId == 0 ) return (this.InvoiceStatus.SCHEDULED);
         if ( dueDate ) {
           if ( dueDate.getTime() < Date.now() ) return this.InvoiceStatus.OVERDUE;
@@ -489,6 +490,8 @@ foam.CLASS({
             return InvoiceStatus.DEPOSITING_MONEY;
           case PENDING_APPROVAL:
             return InvoiceStatus.PENDING_APPROVAL;
+          case REJECTED:
+            return InvoiceStatus.REJECTED;
           case QUOTED:
             return InvoiceStatus.QUOTED;
           case SUBMIT:

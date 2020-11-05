@@ -989,11 +989,11 @@ p({
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
 
-// Total Rate = (1 + Bank Fee) * Spot Rate * (1 + Spread Rate)
+// Currency Value Rate = (1 + Bank Fee) * Spot Rate
 p({
   class: "net.nanopay.tx.fee.Fee",
-  id: "94568932-3d64-4257-9804-4eb67c4d6eb4",
-  name: "Total Rate",
+  id: "9369a88e-f1e4-4b64-a12e-0367910bb80a",
+  name: "Currency Value Rate",
   formula: {
     class: "foam.mlang.expr.Multiply",
     args: [
@@ -1013,6 +1013,23 @@ p({
       {
         class: "net.nanopay.tx.fee.FeeExpr",
         feeName: "Spot Rate"
+      }
+    ]
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+
+// Total Rate = Currency Value Rate * (1 + Spread Rate)
+p({
+  class: "net.nanopay.tx.fee.Fee",
+  id: "94568932-3d64-4257-9804-4eb67c4d6eb4",
+  name: "Total Rate",
+  formula: {
+    class: "foam.mlang.expr.Multiply",
+    args: [
+      {
+        class: "net.nanopay.tx.fee.FeeExpr",
+        feeName: "Currency Value Rate"
       },
       {
         class: "foam.mlang.expr.Add",

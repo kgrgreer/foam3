@@ -1,0 +1,13 @@
+p({class:"foam.i18n.Locale",id:"us.region.label",locale:"en",variant:"US",locale_variant:"en-US",source:"us.region.label",target:"State"})
+p({class:"foam.i18n.Locale",id:"us.region.error",locale:"en",variant:"US",locale_variant:"en-US",source:"us.region.error",target:"State required"})
+p({class:"foam.i18n.Locale",id:"ca.region.label",locale:"en",variant:"US",locale_variant:"en-US",source:"ca.region.label",target:"Province"})
+p({class:"foam.i18n.Locale",id:"ca.region.error",locale:"en",variant:"US",locale_variant:"en-US",source:"ca.region.error",target:"Province required"})
+p({class:"foam.i18n.Locale",id:"en-US.region.label",locale:"en",variant:"US",locale_variant:"en-US",source:"en-US.region.label",target:"Region"})
+p({class:"foam.i18n.Locale",id:"en-US.region.error",locale:"en",variant:"US",locale_variant:"en-US",source:"en-US.region.error",target:"Region required"})
+
+p({class:"foam.i18n.Locale",id:"us.postalCode.label",locale:"en",variant:"US",locale_variant:"en-US",source:"us.postalCode.label",target:"ZIP Code"})
+p({class:"foam.i18n.Locale",id:"us.postalCode.error",locale:"en",variant:"US",locale_variant:"en-US",source:"us.postalCode.error",target:"ZIP Code required"})
+p({class:"foam.i18n.Locale",id:"ca.postalCode.label",locale:"en",variant:"US",locale_variant:"en-US",source:"ca.postalCode.label",target:"Postal Code"})
+p({class:"foam.i18n.Locale",id:"ca.postalCode.error",locale:"en",variant:"US",locale_variant:"en-US",source:"ca.postalCode.error",target:"Postal Code required"})
+p({class:"foam.i18n.Locale",id:"en-US.postalCode.label",locale:"en",variant:"US",locale_variant:"en-US",source:"en-US.postalCode.label",target:"Postal Code"})
+p({class:"foam.i18n.Locale",id:"en-US.postalCode.error",locale:"en",variant:"US",locale_variant:"en-US",source:"en-US.postalCode.error",target:"Postal Code required"})

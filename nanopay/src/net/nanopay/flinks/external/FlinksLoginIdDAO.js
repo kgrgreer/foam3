@@ -98,7 +98,7 @@ foam.CLASS({
           throw new RuntimeException("Flinks failed to provide a valid response when provided with login ID: " + flinksLoginId.getLoginId());
         }
         
-        FlinksResponse flinksAuthResponse = flinksAuth.getAccountSummary(x, flinksResponse.getRequestId(), subject.getUser());
+        FlinksResponse flinksAuthResponse = flinksAuth.getAccountSummary(x, flinksResponse.getRequestId(), subject.getUser(), false);
         while ( flinksAuthResponse.getHttpStatusCode() == 202 ) {
           flinksAuthResponse = flinksAuth.pollAsync(x, flinksAuthResponse.getRequestId(), subject.getUser());
         }
@@ -110,7 +110,7 @@ foam.CLASS({
 
         AccountWithDetailModel accountDetail = selectBankAccount(x, flinksLoginId, flinksDetailResponse);
         if ( accountDetail == null ) {
-          throw new RuntimeException("Flinks bank account not found.");
+          throw new RuntimeException("No matching Flinks bank account found. AccountId: " + flinksLoginId.getAccountId());
         }
         LoginModel loginDetail = flinksDetailResponse.getLogin();
         if ( loginDetail == null ) {
@@ -197,9 +197,13 @@ foam.CLASS({
         AccountWithDetailModel[] accounts = flinksDetailResponse.getAccounts();
         for ( int i = 0; i < accounts.length; i++ ) {
           AccountWithDetailModel account = accounts[i];
-          if ( account.getCurrency().equals("CAD") && firstCADAccountDetail == null ) {
+          
+          // When no account ID is specific, take the first CAD account
+          if ( SafetyUtil.isEmpty(request.getAccountId()) && account.getCurrency().equals("CAD") && firstCADAccountDetail == null ) {
             firstCADAccountDetail = account;
           }
+
+          // Find the account specified in the request when it is provided
           if ( !SafetyUtil.isEmpty(request.getAccountId()) && SafetyUtil.equals(request.getAccountId(), account.getId()) ) {
             accountDetail = account;
           }
@@ -209,7 +213,7 @@ foam.CLASS({
         }
 
         // Use first Canadian bank account if accountId cannot be found
-        if ( accountDetail == null ) {
+        if ( accountDetail == null && firstCADAccountDetail != null ) {
           accountDetail = firstCADAccountDetail;
         }
 
@@ -229,8 +233,9 @@ foam.CLASS({
         DAO accountDAO = (DAO) x.get("accountDAO");
 
         // Do not allow a bank account in an other currency
-        if ( !accountDetail.getCurrency().equals("CAD") ) {
-          throw new RuntimeException("Only Canadian dollar bank accounts are supported. Currency of account selected: " + accountDetail.getCurrency());
+        if ( !accountDetail.getCurrency().equals("CAD") &&
+             !accountDetail.getCurrency().equals("USD") ) {
+          throw new RuntimeException("Only USD or Canadian dollar bank accounts are supported. Currency of account selected: " + accountDetail.getCurrency());
         }
 
         CABankAccount bankAccount = new CABankAccount.Builder(x)

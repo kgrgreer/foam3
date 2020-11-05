@@ -24,20 +24,20 @@ foam.CLASS({
   sections: [
     {
       name: 'businessIncorporationDateSection',
-      title: 'Enter business incorporated date',
+      title: 'Business incorporation date',
       help: 'Enter business incorporated date'
     },
   ],
 
   messages: [
-    { name: 'BUSINESS_INCORPORATION_DATE_ERROR', message: 'Cannot be future dated' }
+    { name: 'BUSINESS_INCORPORATION_DATE_ERROR', message: 'Business incorporation cannot be a future date' }
   ],
 
   properties: [
     {
       section: 'businessIncorporationDateSection',
       name: 'businessIncorporationDate',
-      label: 'Date of Business Incorporation',
+      label: 'Business incorporation date',
       class: 'Date',
       documentation: 'Date of Business Incorporation.',
       validationPredicates: [

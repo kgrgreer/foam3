@@ -24,7 +24,7 @@ foam.CLASS({
   sections: [
     {
       name: 'businessCapital',
-      title: 'Business Capital and Business Equity'
+      title: 'Business capital and equity'
     }
   ],
 
@@ -39,10 +39,11 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.model.CurrencyAmount',
       name: 'capital',
-      label:'Business Capital',
-      help: 'What are the businesses\' current assets, i.e. sum of all assets.',
+      label:'Capital',
+      help: 'What are the businesses\' current assets, i.e. sum of all current assets for your business ',
       documentation: 'Amount currency that Business Capital has been defined',
       factory: function () {
+        
         return net.nanopay.model.CurrencyAmount.create({}, this);
       },
       validationPredicates: [
@@ -62,8 +63,8 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.model.CurrencyAmount',
       name: 'equity',
-      label:'Business Equity',
-      help: 'What is the businesses\' net worth, i.e. sum of all assets minus sum of all liabilities.',
+      label:'Equity',
+      help: 'What is the businesses\' net worth, i.e. sum of all assets minus the sum of all liabilities for your business.',
       documentation: 'Amount currency that Business Equity has been defined',
       factory: function () {
         return net.nanopay.model.CurrencyAmount.create({}, this);

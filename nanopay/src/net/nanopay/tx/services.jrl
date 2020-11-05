@@ -21,7 +21,7 @@ p({
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"localTransactionDAO",
-  "lazy":false,
+  "lazy": false,
   "serviceScript":"""
     import net.nanopay.tx.model.Transaction;
     import foam.dao.MDAO;
@@ -80,7 +80,6 @@ p({
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"transactionDAO",
-  "lazy":false,
   "serve":true,
   "serviceScript":
   """

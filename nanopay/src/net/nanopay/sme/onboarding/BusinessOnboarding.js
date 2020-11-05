@@ -539,7 +539,7 @@ foam.CLASS({
       section: 'personalInformationSection',
       label: 'I am a politically exposed person or head of an international organization (PEP/HIO)',
       help: `
-        A political exposed person (PEP) or the head of an international organization (HIO)
+        A politically exposed person (PEP) or the head of an international organization (HIO)
         is a person entrusted with a prominent position that typically comes with the opportunity
         to influence decisions and the ability to control resources
       `,
@@ -1561,7 +1561,7 @@ foam.CLASS({
         Subject subject = (Subject) x.get("subject");
         User user = subject.getRealUser();
         if ( user.getId() == getUserId() ) return;
-        String permission = "businessOnboarding.create." + getId();
+        String permission = "businessonboarding.create." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
         throw new foam.nanos.auth.AuthorizationException();
@@ -1573,7 +1573,7 @@ foam.CLASS({
         Subject subject = (Subject) x.get("subject");
         User user = subject.getRealUser();
         if ( user.getId() == getUserId() ) return;
-        String permission = "businessOnboarding.read." + getId();
+        String permission = "businessonboarding.read." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
         throw new foam.nanos.auth.AuthorizationException();
@@ -1585,7 +1585,7 @@ foam.CLASS({
         Subject subject = (Subject) x.get("subject");
         User user = subject.getRealUser();
         if ( user.getId() == getUserId() ) return;
-        String permission = "businessOnboarding.update." + getId();
+        String permission = "businessonboarding.update." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
         throw new foam.nanos.auth.AuthorizationException();
@@ -1597,7 +1597,7 @@ foam.CLASS({
         Subject subject = (Subject) x.get("subject");
         User user = subject.getRealUser();
         if ( user.getId() == getUserId() ) return;
-        String permission = "businessOnboarding.remove." + getId();
+        String permission = "businessonboarding.remove." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
         throw new foam.nanos.auth.AuthorizationException();

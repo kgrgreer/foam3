@@ -23,146 +23,23 @@ p({
     "class":"foam.nanos.menu.SubMenu"
   }
 })
+
+r({"class":"foam.nanos.menu.Menu", "id":"admin.emailmessages"})
 p({
-  "class":"foam.nanos.menu.Menu",
-  "id":"operation.afexBeneficiaries",
-  "label":"AFEX Beneficiaries",
-  "handler":{
-    "class":"foam.nanos.menu.DAOMenu2",
-    "config":{
-      "class":"foam.comics.v2.DAOControllerConfig",
-      "daoKey":"afexBeneficiaryDAO",
-      "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "editPredicate":{"class":"foam.mlang.predicate.False"},
-      "CRUDEnabledActionsAuth": {
-        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
-        "isEnabled": true,
-        "enabledActionsAuth": {
-          "class": "foam.comics.v2.BasicEnabledActionsAuth",
-          "modelName": "afexbeneficiary"
-        }
+   "class":"foam.nanos.menu.Menu",
+   "id":"operation.emailmessages",
+   "label":"Email Messages",
+   "handler":{
+      "class":"foam.nanos.menu.DAOMenu2",
+      "config":{
+         "class":"foam.comics.v2.DAOControllerConfig",
+         "daoKey":"emailMessageDAO",
+         "createPredicate":{"class":"foam.mlang.predicate.False"},
+         "editPredicate":{"class":"foam.mlang.predicate.False"},
+         "deletePredicate":{"class":"foam.mlang.predicate.False"}
       }
-    }
-  },
-  "parent":"operation"
-})
-p({
-  "class":"foam.nanos.menu.Menu",
-  "id":"operation.afexBusiness",
-  "label":"AFEX Businesses",
-  "handler":{
-    "class":"foam.nanos.menu.DAOMenu2",
-    "config":{
-      "class":"foam.comics.v2.DAOControllerConfig",
-      "daoKey":"afexBusinessDAO",
-      "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "editPredicate":{"class":"foam.mlang.predicate.False"},
-      "CRUDEnabledActionsAuth": {
-        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
-        "isEnabled": true,
-        "enabledActionsAuth": {
-          "class": "foam.comics.v2.BasicEnabledActionsAuth",
-          "modelName": "afexbusiness"
-        }
-      }
-    }
-  },
-  "parent":"operation"
-})
-p({
-  "class":"foam.nanos.menu.Menu",
-  "id":"operation.businessOnboarding-cad",
-  "label":"Canadian only Business Onboarding",
-  "handler": {
-    "class":"foam.nanos.menu.DAOMenu2",
-    "config":{
-      "class":"foam.comics.v2.DAOControllerConfig",
-      "daoKey":"businessOnboardingDAO"
-    }
-  },
-  "parent":"operation"
-})
-p({
-  "class":"foam.nanos.menu.Menu",
-  "id":"operation.businessOnboarding-cad-us",
-  "label":"Canadian Upgraded Business Onboarding",
-  "handler": {
-    "class":"foam.nanos.menu.DAOMenu2",
-    "config":{
-      "class":"foam.comics.v2.DAOControllerConfig",
-      "daoKey":"canadaUsBusinessOnboardingDAO"
-    }
-  },
-  "parent":"operation"
-})
-p({
-  "class":"foam.nanos.menu.Menu",
-  "id":"operation.businessOnboarding-us",
-  "label":"US only Business Onboarding",
-  "handler": {
-    "class":"foam.nanos.menu.DAOMenu2",
-    "config":{
-      "class":"foam.comics.v2.DAOControllerConfig",
-      "daoKey":"uSBusinessOnboardingDAO"
-    }
-  },
-  "parent":"operation"
-})
-p({
-  "class": "foam.nanos.menu.Menu",
-  "id": "operation.clearingTimes",
-  "label": "Clearing Times",
-  "handler": {
-    "class": "foam.nanos.menu.DAOMenu2",
-    "config": {
-      "class": "foam.comics.v2.DAOControllerConfig",
-      "daoKey": "ruleDAO",
-      "factory": "net.nanopay.meter.clearing.ruler.BusinessClearingTimeRule",
-      "predicate": {
-        "class": "foam.mlang.predicate.IsInstanceOf",
-        "targetClass": "net.nanopay.meter.clearing.ruler.ClearingTimeRule"
-      },
-      "of": "net.nanopay.meter.clearing.ruler.ClearingTimeRule"
-    }
-  },
-  "parent": "operation"
-})
-p({
-  "class":"foam.nanos.menu.Menu",
-  "id":"operation.transactions",
-  "label":"Transactions",
-  "handler":{
-    "class": "foam.nanos.menu.DAOMenu2",
-    "config": {
-      "class": "foam.comics.v2.DAOControllerConfig",
-      "daoKey":"tableViewTransactionDAO",
-      "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "defaultColumns":[
-        "type",
-        "status",
-        "summary",
-        "created",
-        "completionDate"
-      ]
-    }
-  },
-  "parent":"operation"
-})
-p({
-  "class":"foam.nanos.menu.Menu",
-  "id":"operation.complianceItem",
-  "label":"Compliance Responses",
-  "handler":{
-    "class":"foam.nanos.menu.DAOMenu2",
-    "config": {
-      "class": "foam.comics.v2.DAOControllerConfig",
-      "browseTitle": "Compliance Responses",
-      "daoKey": "complianceItemDAO",
-      "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "editPredicate":{"class":"foam.mlang.predicate.False"}
-    }
-  },
-  "parent":"operation"
+   },
+   "parent":"operation"
 })
 p({
   "class":"foam.nanos.menu.Menu",
@@ -202,7 +79,8 @@ p({
       "class":"foam.comics.v2.DAOControllerConfig",
       "daoKey":"loginAttemptDAO",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "editPredicate":{"class":"foam.mlang.predicate.False"}
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
     }
   },
   "parent":"operation"
@@ -236,7 +114,16 @@ p({
   "handler": {
     "class": "foam.nanos.menu.DAOMenu2",
     "config": {
-      "daoKey": "reportDAO"
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey": "reportDAO",
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "report"
+        }
+      }
     }
   },
   "parent":  "report"
@@ -352,4 +239,116 @@ p({
     }
   },
   "parent":  "report"
+})
+
+// onboarding
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"onboarding",
+  "label":"Onboarding",
+  "handler":{
+    "class":"foam.nanos.menu.SubMenu"
+  }
+})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"onboarding.businessonboarding-cad",
+  "label":"Canadian only Business Onboarding",
+  "handler": {
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"businessOnboardingDAO",
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "businessonboarding"
+        }
+      }
+    }
+  },
+  "parent":"onboarding"
+})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"onboarding.businessonboarding-cad-us",
+  "label":"Canadian Upgraded Business Onboarding",
+  "handler": {
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"canadaUsBusinessOnboardingDAO",
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "canadausbusinessonboarding"
+        }
+      }
+    }
+  },
+  "parent":"onboarding"
+})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"onboarding.businessonboarding-us",
+  "label":"US only Business Onboarding",
+  "handler": {
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"uSBusinessOnboardingDAO",
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "usbusinessonboarding"
+        }
+      }
+    }
+  },
+  "parent":"onboarding"
+})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"onboarding.complianceitem",
+  "label":"Compliance Responses",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config": {
+      "class": "foam.comics.v2.DAOControllerConfig",
+      "browseTitle": "Compliance Responses",
+      "daoKey": "complianceItemDAO",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
+    }
+  },
+  "parent":"onboarding"
+})
+
+// transactions-2
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"transactions-2",
+  "label":"Transactions",
+  "handler":{
+    "class": "foam.nanos.menu.DAOMenu2",
+    "config": {
+      "class": "foam.comics.v2.DAOControllerConfig",
+      "daoKey":"tableViewTransactionDAO",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "defaultColumns":[
+        "type",
+        "status",
+        "summary",
+        "created",
+        "completionDate"
+      ]
+    }
+  }
 })

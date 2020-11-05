@@ -32,6 +32,7 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.util.SafetyUtil',
     'foam.dao.ReadOnlyDAO',
+    'foam.nanos.pm.PM',
     'foam.nanos.logger.Logger',
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.account.Account',
@@ -81,6 +82,8 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
+      PM pm = PM.create(x, this.getClass().getSimpleName(), "put");
+      try {
         Transaction txn = (Transaction) obj;
 
         if ( SafetyUtil.isEmpty(txn.getId()) ) {
@@ -95,6 +98,9 @@ foam.CLASS({
           txn = (Transaction) super.put_(x, txn);
         }
         return txn;
+      } finally {
+        pm.log(x);
+      }
       `
     },
     {
@@ -131,6 +137,8 @@ foam.CLASS({
       ],
       documentation: 'return true when status change is such that Transfers should be executed (applied)',
       javaCode: `
+      PM pm = PM.create(x, this.getClass().getSimpleName(), "canExecute");
+      try {
         X y = getX().put("transactionDAO", getDelegate());
 
         if ( ( ! SafetyUtil.isEmpty(txn.getId()) ||
@@ -140,6 +148,9 @@ foam.CLASS({
           return true;
         }
         return false;
+      } finally {
+        pm.log(x);
+      }
       `
     },
     {
@@ -151,6 +162,8 @@ foam.CLASS({
         { type: 'Transaction', name: 'txn' }
       ],
       javaCode: `
+      PM pm = PM.create(x, this.getClass().getSimpleName(), "executeTransaction");
+      try {
         // Copy lineItem transfers to transaction (fees + taxes that were added)
         TransactionLineItem [] ls = txn.getLineItems();
         for ( TransactionLineItem li : ls ) {
@@ -162,6 +175,9 @@ foam.CLASS({
 
         Transfer[] ts = txn.getTransfers();
         return lockAndExecute(x, txn, ts);
+      } finally {
+        pm.log(x);
+      }
       `
     },
     {
@@ -174,6 +190,8 @@ foam.CLASS({
         { type: 'Transfer[]', name: 'ts' }
       ],
       javaCode: `
+      PM pm = PM.create(x, this.getClass().getSimpleName(), "validateTransfers");
+      try {
         HashMap hm = new HashMap();
         Logger logger = (Logger) x.get("logger");
 
@@ -185,10 +203,10 @@ foam.CLASS({
           }
 
           //Account Level Validation
-          Account account = tr.findAccount(getX());
+          Account account = tr.findAccount(x); 
           if ( account == null ) {
-            logger.error(this.getClass().getSimpleName(), "validateTransfers", txn.getId(), "transfer account not found: " + tr.getAccount(), tr);
-            throw new TransactionException(UNKNOWN_ACCOUNT_ERROR_MSG + tr.getAccount());
+            logger.error(this.getClass().getSimpleName(), "validateTransfers", txn.getId(), "transfer account not found",tr.getAccount(), tr);
+            throw new TransactionException(UNKNOWN_ACCOUNT_ERROR_MSG + tr.getAccount()); 
           }
           account.validateAmount(x, (Balance) getBalanceDAO().find(account.getId()), tr.getAmount());
 
@@ -206,6 +224,9 @@ foam.CLASS({
             throw new TransactionException(DEBITS_CREDITS_NOT_MATCH_ERROR_MSG);
           }
         }
+      } finally {
+        pm.log(x);
+      }
       `
     },
     {
@@ -219,6 +240,8 @@ foam.CLASS({
       ],
       documentation: 'Sorts array of transfers.',
       javaCode: `
+      PM pm = PM.create(x, this.getClass().getSimpleName(), "lockAndExecute");
+      try {
         // Combine transfers to the same account
         HashMap<Long, Transfer> hm = new HashMap();
 
@@ -235,6 +258,9 @@ foam.CLASS({
         txn.setTransfers(newTs);
         // lock accounts in transfers
         return lockAndExecute_(x, txn, newTs, 0);
+      } finally {
+        pm.log(x);
+      }
       `
     },
     {
@@ -249,6 +275,8 @@ foam.CLASS({
         { type: 'int', name: 'i' }
       ],
       javaCode: `
+      PM pm = PM.create(x, this.getClass().getSimpleName(), "lockAndExecute_");
+      try {
         if ( i > ts.length - 1 ) {
           // validate the transfers we have combined.
           validateTransfers(x, txn, ts);
@@ -258,6 +286,9 @@ foam.CLASS({
         synchronized ( ts[i].getLock() ) {
           return lockAndExecute_(x, txn, ts, i + 1);
         }
+      } finally {
+        pm.log(x);
+      }
       `
     },
     {
@@ -271,6 +302,8 @@ foam.CLASS({
       ],
       documentation: 'Called once all locks are locked.',
       javaCode: `
+      PM pm = PM.create(x, this.getClass().getSimpleName(), "execute");
+      try {
         Balance [] finalBalanceArr = new Balance[ts.length];
         DAO localAccountDAO = (DAO) x.get("localAccountDAO");
         for ( int i = 0 ; i < ts.length ; i++ ) {
@@ -302,6 +335,9 @@ foam.CLASS({
         }
         txn.setBalances(finalBalanceArr);
         return getDelegate().put_(x, txn);
+      } finally {
+        pm.log(x);
+      }
       `
     }
   ]

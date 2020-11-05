@@ -1,0 +1,57 @@
+p({
+    class:"foam.nanos.script.Script",
+    id:"rtpData",
+    code:"""
+    import net.nanopay.rtp.PopulateRtpData;
+    script = new PopulateRtpData();
+    script.populate(x);
+    print("done");
+    """,
+    lastModified:1602784050110
+})
+
+p({
+    class:"foam.nanos.script.Script",
+    id:"RTP - Add Another RequestToPay",
+    code:"""
+        import foam.dao.DAO;
+        import foam.nanos.auth.User;
+        import foam.nanos.session.Session;
+        import net.nanopay.account.Account;
+        import net.nanopay.bank.CABankAccount;
+        import net.nanopay.rtp.RequestToPay;
+
+        lastName = "Hill";
+        firstName = "Daria";
+        organization = "Interac";
+        email = "dhill@interac.ca";
+        amount = 2000000L;
+
+        userDAO = (DAO) x.get("localUserDAO");
+        rtpDAO = (DAO) x.get("requestToPayDAO");
+        sessionDAO = (DAO) x.get("localSessionDAO");
+
+        User user = new User();
+        user.setFirstName(firstName);
+        user.setLastName(lastName);
+        user.setOrganization(organization);
+        user.setEmail(email);
+        user.setGroup("rtp");
+        user = (User) userDAO.put_(x, user);
+
+        Session session = new Session();
+        session.setUserId(user.getId());
+        session.setRemoteHost(" ");
+        session.setTtl(5184000000L); // 60 days * 24 hours * 60 min * 60 sec * 1000 millis
+        sessionDAO.put_(x, session);
+
+        RequestToPay rtp = new RequestToPay();
+        rtp.setAmount(amount);
+        rtp.setPayer(user.getId());
+        rtp.setDestinationAccount(66);
+        rtp = rtpDAO.put_(x, rtp);
+
+        print("done: " + rtp.getUrl());
+    """,
+    lastModified:1602784050110
+})

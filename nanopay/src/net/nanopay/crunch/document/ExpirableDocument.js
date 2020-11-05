@@ -21,8 +21,9 @@ foam.CLASS({
   extends: 'net.nanopay.crunch.document.Document',
 
   messages: [
-    { name: 'EXPIRED_DOCUMENT_ERROR', message: 'Document expired. Please upload a new document.' }, 
-    { name: 'EXPIRY_NULL_ERROR', message: 'Please provide the date of expiry as shown on your document' }
+    { name: 'EXCEED_EXPIRY_LIMIT_ERROR', message: 'Expiry date must not exceed 5 years'},
+    { name: 'EXPIRED_DOCUMENT_ERROR', message: 'Expiry date must be a future date' },
+    { name: 'EXPIRY_NULL_ERROR', message: 'Expiry date required' }
   ],
 
   properties: [
@@ -33,9 +34,10 @@ foam.CLASS({
       section: 'documentUploadSection'
     },
     {
+      class: 'Date',
       name: 'expiry',
       section: 'documentUploadSection',
-      label: 'Date of Expiry',
+      label: 'Expiry date',
       documentation: 'The date of expiry on the document',
       help: `
         Please provide the date of expiry as shown on your identification.
@@ -60,12 +62,24 @@ foam.CLASS({
           args: ['expiry'],
           predicateFactory: function(e) {
             var today = new Date();
-            return e.OR(
-              e.EQ(net.nanopay.crunch.document.ExpirableDocument.EXPIRY, null),
+            return e.AND(
+              e.NEQ(net.nanopay.crunch.document.ExpirableDocument.EXPIRY, null),
               e.GT(net.nanopay.crunch.document.ExpirableDocument.EXPIRY, today)
             );
           },
           errorMessage: 'EXPIRED_DOCUMENT_ERROR'
+        },
+        {
+          args: ['expiry'],
+          predicateFactory: function(e) {
+            var limit = new Date();
+            limit.setDate(limit.getDate() + ( 5 * 365 ));
+            return e.AND(
+              e.NEQ(net.nanopay.crunch.document.ExpirableDocument.EXPIRY, null),
+              e.LT(net.nanopay.crunch.document.ExpirableDocument.EXPIRY, limit)
+            );
+          },
+          errorMessage: 'EXCEED_EXPIRY_LIMIT_ERROR'
         }
       ]
     }

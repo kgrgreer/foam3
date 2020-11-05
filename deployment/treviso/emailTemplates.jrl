@@ -1,44 +1,55 @@
-// The following 1 lines were copied from "foam2/src/emailTemplates"
-p({"class":"foam.nanos.notification.email.EmailTemplate","id":20,"name":"reset-password","group":"*","subject":"Reset Password","body":"\n<tr>\n<td align=\"center\" style=\"background:#FFFFFF; padding-bottom:25px; padding-top:25px;\">\n<p style=\"font-size:16px; margin:15px 25px; color:#777777\">{% if name %}Hi {{ name }}, tap{% else %}Tap{% endif %} the button below to reset your password.</p>\n</td>\n</tr>\n<tr>\n<td class=\"button\" align=\"center\" style=\"background:#FFFFFF; padding-bottom:25px; padding-top:0;\">\n<div><!--[if mso]>\n<v:roundrect xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w=\"urn:schemas-microsoft-com:office:word\" href=\"{{ link }}\" style=\"height:45px;v-text-anchor:middle;width:155px;\" arcsize=\"8%\" stroke=\"f\" fillcolor=\"#F33D3D\">\n<w:anchorlock/>\n<center>\n<![endif]-->\n<a href=\"{{ link }}\"\nstyle=\"background-color:#F33D3D;border-radius:4px;color:#ffffff;display:inline-block;font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:14px;font-weight:500;line-height:54px;text-align:center;text-decoration:none;width:200px;-webkit-text-size-adjust:none;\">Reset Password</a>\n<!--[if mso]>\n</center>\n</v:roundrect>\n<![endif]--></div>\n</td>\n</tr>\n<tr>\n<td align=\"center\" style=\"background:#FFFFFF; padding-bottom:25px; border-radius:0 0 5px 5px;\">\n<p style=\"font-size:16px; margin-bottom:15px; margin: 15px 25px; color:#777777\">Not you? Reply to this email</p>\n</td>\n</tr>\n"})
+// id convention: if the template exists in nanopay/src/emailTemplates or foam2/src/emailTemplates
+// use that id, else append treviso-n at the end where n is a number
+
+// The following 1 entry was copied from "foam2/src/emailTemplates"
+p({
+  "class":"foam.nanos.notification.email.EmailTemplate",
+  "id":"4f45c745-1c93-4380-b275-2d2fea091d1e-1",
+  "name":"reset-password",
+  "group":"*",
+  "subject":"Reset Password",
+  "body":"\n<tr>\n<td align=\"center\" style=\"background:#FFFFFF; padding-bottom:25px; padding-top:25px;\">\n<p style=\"font-size:16px; margin:15px 25px; color:#777777\">{% if name %}Hi {{ name }}, tap{% else %}Tap{% endif %} the button below to reset your password.</p>\n</td>\n</tr>\n<tr>\n<td class=\"button\" align=\"center\" style=\"background:#FFFFFF; padding-bottom:25px; padding-top:0;\">\n<div><!--[if mso]>\n<v:roundrect xmlns:v=\"urn:schemas-microsoft-com:vml\" xmlns:w=\"urn:schemas-microsoft-com:office:word\" href=\"{{ link }}\" style=\"height:45px;v-text-anchor:middle;width:155px;\" arcsize=\"8%\" stroke=\"f\" fillcolor=\"#F33D3D\">\n<w:anchorlock/>\n<center>\n<![endif]-->\n<a href=\"{{ link }}\"\nstyle=\"background-color:#F33D3D;border-radius:4px;color:#ffffff;display:inline-block;font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;font-size:14px;font-weight:500;line-height:54px;text-align:center;text-decoration:none;width:200px;-webkit-text-size-adjust:none;\">Reset Password</a>\n<!--[if mso]>\n</center>\n</v:roundrect>\n<![endif]--></div>\n</td>\n</tr>\n<tr>\n<td align=\"center\" style=\"background:#FFFFFF; padding-bottom:25px; border-radius:0 0 5px 5px;\">\n<p style=\"font-size:16px; margin-bottom:15px; margin: 15px 25px; color:#777777\">Not you? Reply to this email</p>\n</td>\n</tr>\n"
+})
+
 // The following 1113 lines were copied from "nanopay/src/emailTemplates"
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 1,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-1",
   "name": "acceptVtm-email-failure",
   "group": "*",
   "body": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"description\" content=\"\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->\n</head>\n\n<style type=\"text/css\">\n*{margin:0;padding:0;box-sizing:border-box}body{font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif}.message{max-width:100%;width:100%;padding-left:20px;padding-right:20px;text-align:center;position:absolute;display:none;top:45%;left:50%;z-index:1;-webkit-transform:translate(-50%,-50%);-moz-transform:translate(-50%,-50%);-o-transform:translate(-50%,-50%);transform:translate(-50%,-50%)}.message--state{display:block}.message-title{font-size:2rem;margin-top:50px;color:#333;font-weight:500}.message-description{font-size:1.25rem;line-height:2rem;margin-top:10px;color:#999;font-weight:300}.message-image{width:245px;margin-bottom:20px}.message-text{font-size:1.25rem;max-width:80%;margin-left:auto;margin-right:auto;line-height:1.5}.message--nanopay .message-text{color:#9E0B39}.message--mintchip .message-text{color:#2C4389}\n</style>\n\n<body>\n<article class=\"message message--state\">\n<svg width=\"179px\" height=\"179px\" viewBox=\"0 0 179 179\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n<g id=\"iOS\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\n<g id=\"top-up\" transform=\"translate(-118.000000, -219.000000)\" stroke=\"#FE3F35\" stroke-width=\"4\">\n<g id=\"icon-fail\" transform=\"translate(120.000000, 221.000000)\">\n<circle id=\"Oval-126\" fill-opacity=\"0\" fill=\"#D8D8D8\" cx=\"87.5\" cy=\"87.5\" r=\"87.5\"></circle>\n<g id=\"Group\" transform=\"translate(51.000000, 47.000000)\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n<path d=\"M0,0 L74,81\" id=\"Path-2086\" transform=\"translate(37.000000, 40.500000) scale(-1, 1) translate(-37.000000, -40.500000) \"></path>\n<path d=\"M0,0 L74,81\" id=\"Path-2086\"></path>\n</g>\n</g>\n</g>\n</g>\n</svg>\n\n<h1 class=\"message-title\">Oops</h1>\n<h2 class=\"message-description\">{{ error }}.</h2>\n</article>\n</body>\n</html>"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 2,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-2",
   "name": "acceptVtm-email-success",
   "group": "*",
   "body": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<title></title>\n</head>\n\n<style type=\"text/css\">\n* {\nmargin: 0;\npadding: 0;\nbox-sizing: border-box\n}\n\nbody {\nfont-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif\n}\n\n.message {\nmax-width: 100%;\nwidth: 100%;\npadding-left: 20px;\npadding-right: 20px;\ntext-align: center;\nposition: absolute;\ndisplay: none;\ntop: 45%;\nleft: 50%;\nz-index: 1;\n-webkit-transform: translate(-50%, -50%);\n-moz-transform: translate(-50%, -50%);\n-o-transform: translate(-50%, -50%);\ntransform: translate(-50%, -50%)\n}\n\n.message--state {\ndisplay: block\n}\n\n.message-title {\nfont-size: 2rem;\nmargin-top: 50px;\ncolor: #333;\nfont-weight: 500\n}\n\n.message-description {\nfont-size: 1.25rem;\nline-height: 2rem;\nmargin-top: 10px;\ncolor: #999;\nfont-weight: 300\n}\n\n.message-image {\nwidth: 245px;\nmargin-bottom: 20px\n}\n\n.message-text {\nfont-size: 1.25rem;\nmax-width: 80%;\nmargin-left: auto;\nmargin-right: auto;\nline-height: 1.5\n}\n\n.message--nanopay .message-text {\ncolor: #9E0B39\n}\n\n.message--mintchip .message-text {\ncolor: #2C4389\n}\n</style>\n\n<body>\n<article class=\"message message--state\">\n<svg width=\"179px\" height=\"179px\" viewBox=\"0 0 179 179\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n<g id=\"iOS\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\n<g id=\"top-up\" transform=\"translate(-118.000000, -219.000000)\" stroke=\"#35C38D\" stroke-width=\"4\">\n<g id=\"icon-success\" transform=\"translate(120.000000, 221.000000)\">\n<circle id=\"Oval-126\" fill-opacity=\"0\" fill=\"#D8D8D8\" cx=\"87.5\" cy=\"87.5\" r=\"87.5\"></circle>\n<polyline id=\"Path-2086\" stroke-linecap=\"round\" stroke-linejoin=\"round\" points=\"35 89 59 118 140 57\"></polyline>\n</g>\n</g>\n</g>\n</svg>\n\n<h1 class=\"message-title\">Money Accepted Successfully</h1>\n<h2 class=\"message-description\">You have successfully accepted ${{ amount }} from {{ sender }}.</h2>\n</article>\n</body>\n</html>"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 3,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-3",
   "name": "cashout-status-failure",
   "group": "*",
   "body": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"description\" content=\"\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->\n</head>\n\n<style type=\"text/css\">\n*{margin:0;padding:0;box-sizing:border-box}body{font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif}.message{max-width:100%;width:100%;padding-left:20px;padding-right:20px;text-align:center;position:absolute;display:none;top:45%;left:50%;z-index:1;-webkit-transform:translate(-50%,-50%);-moz-transform:translate(-50%,-50%);-o-transform:translate(-50%,-50%);transform:translate(-50%,-50%)}.message--state{display:block}.message-title{font-size:2rem;margin-top:50px;color:#333;font-weight:500}.message-description{font-size:1.25rem;line-height:2rem;margin-top:10px;color:#999;font-weight:300}.message-image{width:245px;margin-bottom:20px}.message-text{font-size:1.25rem;max-width:80%;margin-left:auto;margin-right:auto;line-height:1.5}.message--nanopay .message-text{color:#9E0B39}.message--mintchip .message-text{color:#2C4389}\n</style>\n\n<body>\n<article class=\"message message--state\">\n<svg width=\"179px\" height=\"179px\" viewBox=\"0 0 179 179\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n<g id=\"iOS\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\n<g id=\"top-up\" transform=\"translate(-118.000000, -219.000000)\" stroke=\"#FE3F35\" stroke-width=\"4\">\n<g id=\"icon-fail\" transform=\"translate(120.000000, 221.000000)\">\n<circle id=\"Oval-126\" fill-opacity=\"0\" fill=\"#D8D8D8\" cx=\"87.5\" cy=\"87.5\" r=\"87.5\"></circle>\n<g id=\"Group\" transform=\"translate(51.000000, 47.000000)\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n<path d=\"M0,0 L74,81\" id=\"Path-2086\" transform=\"translate(37.000000, 40.500000) scale(-1, 1) translate(-37.000000, -40.500000) \"></path>\n<path d=\"M0,0 L74,81\" id=\"Path-2086\"></path>\n</g>\n</g>\n</g>\n</g>\n</svg>\n\n<h1 class=\"message-title\">Whoops!</h1>\n<h2 class=\"message-description\">{{ error }}</h2>\n</article>\n</body>\n</html>"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 4,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-4",
   "name": "ct-failure",
   "group": "*",
   "body": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"description\" content=\"\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->\n</head>\n\n<style type=\"text/css\">\n*{margin:0;padding:0;box-sizing:border-box}body{font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif}.message{max-width:100%;width:100%;padding-left:20px;padding-right:20px;text-align:center;position:absolute;display:none;top:45%;left:50%;z-index:1;-webkit-transform:translate(-50%,-50%);-moz-transform:translate(-50%,-50%);-o-transform:translate(-50%,-50%);transform:translate(-50%,-50%)}.message--state{display:block}.message-title{font-size:2rem;margin-top:50px;color:#333;font-weight:500}.message-description{font-size:1.25rem;line-height:2rem;margin-top:10px;color:#999;font-weight:300}.message-image{width:245px;margin-bottom:20px}.message-text{font-size:1.25rem;max-width:80%;margin-left:auto;margin-right:auto;line-height:1.5}.message--nanopay .message-text{color:#9E0B39}.message--mintchip .message-text{color:#2C4389}\n</style>\n\n<body>\n<article class=\"message message--state\">\n<svg width=\"179px\" height=\"179px\" viewBox=\"0 0 179 179\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n<g id=\"iOS\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\n<g id=\"top-up\" transform=\"translate(-118.000000, -219.000000)\" stroke=\"#FE3F35\" stroke-width=\"4\">\n<g id=\"icon-fail\" transform=\"translate(120.000000, 221.000000)\">\n<circle id=\"Oval-126\" fill-opacity=\"0\" fill=\"#D8D8D8\" cx=\"87.5\" cy=\"87.5\" r=\"87.5\"></circle>\n<g id=\"Group\" transform=\"translate(51.000000, 47.000000)\" stroke-linecap=\"round\" stroke-linejoin=\"round\">\n<path d=\"M0,0 L74,81\" id=\"Path-2086\" transform=\"translate(37.000000, 40.500000) scale(-1, 1) translate(-37.000000, -40.500000) \"></path>\n<path d=\"M0,0 L74,81\" id=\"Path-2086\"></path>\n</g>\n</g>\n</g>\n</g>\n</svg>\n\n<h1 class=\"message-title\">Whoops!</h1>\n<h2 class=\"message-description\">Sorry, your Top Up failed. {{ error }}</h2>\n</article>\n</body>\n</html>"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 5,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-5",
   "name": "ct-success",
   "group": "*",
   "body": "<!DOCTYPE html>\n<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n<meta name=\"description\" content=\"\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->\n</head>\n\n<style type=\"text/css\">\n*{margin:0;padding:0;box-sizing:border-box}body{font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif}.message{max-width:100%;width:100%;padding-left:20px;padding-right:20px;text-align:center;position:absolute;display:none;top:45%;left:50%;z-index:1;-webkit-transform:translate(-50%,-50%);-moz-transform:translate(-50%,-50%);-o-transform:translate(-50%,-50%);transform:translate(-50%,-50%)}.message--state{display:block}.message-title{font-size:2rem;margin-top:50px;color:#333;font-weight:500}.message-description{font-size:1.25rem;line-height:2rem;margin-top:10px;color:#999;font-weight:300}.message-image{width:245px;margin-bottom:20px}.message-text{font-size:1.25rem;max-width:80%;margin-left:auto;margin-right:auto;line-height:1.5}.message--nanopay .message-text{color:#9E0B39}.message--mintchip .message-text{color:#2C4389}\n</style>\n\n<body>\n<article class=\"message message--state\">\n<svg width=\"179px\" height=\"179px\" viewBox=\"0 0 179 179\" version=\"1.1\" xmlns=\"http://www.w3.org/2000/svg\" xmlns:xlink=\"http://www.w3.org/1999/xlink\">\n<g id=\"iOS\" stroke=\"none\" stroke-width=\"1\" fill=\"none\" fill-rule=\"evenodd\">\n<g id=\"top-up\" transform=\"translate(-118.000000, -219.000000)\" stroke=\"#35C38D\" stroke-width=\"4\">\n<g id=\"icon-success\" transform=\"translate(120.000000, 221.000000)\">\n<circle id=\"Oval-126\" fill-opacity=\"0\" fill=\"#D8D8D8\" cx=\"87.5\" cy=\"87.5\" r=\"87.5\"></circle>\n<polyline id=\"Path-2086\" stroke-linecap=\"round\" stroke-linejoin=\"round\" points=\"35 89 59 118 140 57\"></polyline>\n</g>\n</g>\n</g>\n</svg>\n\n<h1 class=\"message-title\">Success!</h1>\n<h2 class=\"message-description\">Your Top Up of ${{ amount }} has been completed.</h2>\n</article>\n</body>\n</html>"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 6,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-6",
   "name": "nanopay-email-base",
   "group": "*",
   "subject": "",
@@ -46,28 +57,28 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 7,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-7",
   "name": "mintchip-email-base",
   "group": "*",
   "body": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"><html xmlns=\"http://www.w3.org/1999/xhtml\"><head> <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\"/> <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/> <title>MintChip</title> <style type=\"text/css\"> /* Take care of image borders and formatting, client hacks */ img{max-width: 600px; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic;}a img{border: none;}table{border-collapse: collapse !important;}#outlook a{padding: 0;}.ReadMsgBody{width: 100%;}.ExternalClass{width: 100%;}.backgroundTable{margin: 0 auto; padding: 0; width: 100% !important;}table td{border-collapse: collapse;}.ExternalClass *{line-height: 115%;}.container-for-gmail-android{min-width: 600px;}/* General styling */ *{font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;}body{-webkit-font-smoothing: antialiased; -webkit-text-size-adjust: none; width: 100% !important; margin: 0 !important; height: 100%; color: #676767;}td{font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px; color: #777777; text-align: center; line-height: 21px;}a{color: #676767; text-decoration: none !important;}.pull-left{text-align: left;}.pull-right{text-align: right;}.header-lg, .header-md, .header-sm{font-size: 32px; font-weight: 700; line-height: normal; padding: 35px 0 0; color: #4d4d4d;}.header-md{font-size: 24px;}.header-sm{padding: 5px 0; font-size: 18px; line-height: 1.3;}.content-padding{padding: 20px 0 5px;}.mobile-header-padding-right{width: 290px; text-align: right; padding-left: 10px;}.mobile-header-padding-left{width: 290px; text-align: left; padding-left: 10px;}.free-text{width: 100% !important; padding: 10px 60px 0px;}.button{padding: 30px 0;}.mini-block{border: 1px solid #e5e5e5; border-radius: 2px; background-color: #ffffff; padding: 12px 15px 15px; text-align: left; width: 253px;}.mini-container-left{width: 278px; padding: 10px 0 10px 15px;}.mini-container-right{width: 278px; padding: 10px 14px 10px 15px;}.product{text-align: left; vertical-align: top; width: 175px;}.total-space{padding-bottom: 8px; display: inline-block;}.item-table{padding: 50px 20px; width: 560px;}.item{width: 300px;}.mobile-hide-img{text-align: left; width: 125px;}.mobile-hide-img img{border: 1px solid #e6e6e6; border-radius: 4px;}.title-dark{text-align: left; border-bottom: 1px solid #cccccc; color: #4d4d4d; font-weight: 700; padding-bottom: 5px;}.item-col{padding-top: 20px; text-align: left; vertical-align: top;}.force-width-gmail{min-width: 600px; height: 0px !important; line-height: 1px !important; font-size: 1px !important;}</style> <style type=\"text/css\" media=\"screen\"> @media screen{/* Thanks Outlook 2013! http://goo.gl/XLxpyl */ *{font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif !important;}}</style> <style type=\"text/css\" media=\"only screen and (max-width: 480px)\"> /* Mobile styles */ @media only screen and (max-width: 480px){table[class*=\"container-for-gmail-android\"]{min-width: 290px !important; width: 100% !important;}img[class=\"force-width-gmail\"]{display: none !important; width: 0 !important; height: 0 !important;}table[class=\"w320\"]{width: 320px !important;}table[class=\"w300\"]{width: 280px !important;}td[class*=\"mobile-header-padding-left\"]{width: 160px !important; padding-left: 0 !important;}td[class*=\"mobile-header-padding-right\"]{width: 160px !important; padding-right: 0 !important;}td[class=\"header-lg\"]{font-size: 24px !important; padding-bottom: 5px !important;}td[class=\"content-padding\"]{padding: 5px 0 5px !important;}td[class=\"button\"]{padding: 5px 5px 30px !important;}td[class*=\"free-text\"]{padding: 10px 18px 30px !important;}td[class~=\"mobile-hide-img\"]{display: none !important; height: 0 !important; width: 0 !important; line-height: 0 !important;}td[class~=\"item\"]{width: 140px !important; vertical-align: top !important;}td[class~=\"quantity\"]{width: 50px !important;}td[class~=\"price\"]{width: 90px !important;}td[class=\"item-table\"]{padding: 30px 20px !important;}td[class=\"mini-container-left\"], td[class=\"mini-container-right\"]{padding: 0 15px 15px !important; display: block !important; width: 290px !important;}}</style></head><body bgcolor=\"#EAECED\" style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;\"> <table align=\"center\" cellpadding=\"0\" cellspacing=\"0\" border-collapse=\"collapse\" class=\"container-for-gmail-android\" width=\"100%\" bgcolor=\"#EAECED\" style=\"margin-top: 20px;\"> <tr> <td align=\"center\" valign=\"top\" width=\"100%\" style=\"background-color:#EAECED; padding:10px;\" class=\"content-padding\"> <center> <table cellspacing=\"0\" cellpadding=\"0\" width=\"600\" class=\"w300\"> <tr> <td background=\"https://s3.amazonaws.com/nanopay/mintchip/imgs/invite-bonus-bg_960.png\" bgcolor=\"#252C3D\" width=\"600\" height=\"100\" valign=\"top\" style=\"background: url(https://s3.amazonaws.com/nanopay/mintchip/imgs/invite-bonus-bg_960.png) no-repeat center /100%; border-radius:5px 5px 0 0; background-color:#252C3D;\"><!--[if gte mso 9]> <v:rect xmlns:v=\"urn:schemas-microsoft-com:vml\" fill=\"true\" stroke=\"false\" style=\"width:590px;height:200px;\"> <v:fill type=\"tile\" src=\"https://s3.amazonaws.com/nanopay/mintchip/imgs/invite-bonus-bg_960.png\" color=\"#252C3D\"/> <v:textbox inset=\"0,0,0,0\"><![endif]--> <div> <table cellspacing=\"0\" cellpadding=\"0\" width=\"600\" class=\"w300\"> <tr> <td width=\"300\" height=\"50\"></td><td width=\"300\" height=\"50\"></td><td width=\"300\" height=\"50\"></td></tr><tr> <td width=\"300\" height=\"50\"></td><td width=\"300\" height=\"50\" style=\"text-align:center;\"> <img src=\"https://s3.amazonaws.com/nanopay/mintchip/imgs/MintChip-Logo-White-2x.png\" height=\"90\" width=\"90\" height=\"90\" width=\"90\" style=\"height:90px; width:90px;\" alt=\"MintChip Logo\"> </td><td width=\"300\" height=\"50\"></td></tr><tr> <td width=\"300\" height=\"50\"></td><td width=\"300\" height=\"50\"></td><td width=\"300\" height=\"50\"></td></tr></table> </div><!--[if gte mso 9]> </v:textbox> </v:rect><![endif]--> </td></tr>{% block content %}{% endblock content %}</table> <table width=\"100%\"> <tr width=\"100%\" align=\"center\"> <td align=\"center\" valign=\"top\" width=\"100%\" style=\"background-color:#EAECED; height:100px;\"> <center> <table cellspacing=\"0\" cellpadding=\"0\" width=\"600px\" class=\"w320\"> <tr> <td align=\"center\" style=\"text-align:center; padding-top:15px; padding-bottom:15px; color:#777777\"> <p style=\"margin-bottom:5px; line-height:12px; font-size:14px;\">nanoPay Corporation</p><p style=\"margin-bottom:5px; margin-top:5px; line-height:12px; font-size:14px;\">905 King Street, Suite 300</p><p style=\"margin-top:5px; line-height:12px; font-size:14px;\">Toronto ON, Canada, M6K 3G9</p><a href=\"https://mintchip.ca/privacy-statement\" style=\"font-size:14px;\">Privacy Statement</a> | <a href=\"https://mintchip.ca/termsandconditions\" style=\"font-size:14px;\">Terms and Conditions</a> | <a href=\"http://www.mintchip.ca/\" style=\"font-size:14px;\">About MintChip</a> | <a href=\"http://www.mintchip.ca/contact\" style=\"font-size:14px;\"> Contact Us </a> </td></tr></table> </center> </td></tr></table> </center> </td></tr></table></body></html>"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 8,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-8",
   "name": "cc-merchant-base",
   "group": "*",
   "body": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"> <html xmlns=\"http://www.w3.org/1999/xhtml\"> <head> <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" /> <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" /> <title>ConnectedCity</title> <style type=\"text/css\"> /* Take care of image borders and formatting, client hacks */ img { max-width: 600px; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; } a img { border: none; } table { border-collapse: collapse !important; width: 386px; height: 197.2px; border-radius: 12px; } #outlook a { padding: 0; } .ReadMsgBody { width: 100%; } .ExternalClass { width: 100%; } .backgroundTable { margin: 0 auto; padding: 0; width: 100% !important; } table td { border-collapse: collapse; background-color: rgba(37, 44, 61, 0.75); } .ExternalClass * { line-height: 115%; } .container-for-gmail-android { min-width: 600px; } /* General styling */ * { font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; } body { -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: none; width: 100% !important; margin: 0 !important; height: 100%; color: #676767; } td { font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px; color: #777777; text-align: center; line-height: 21px; } a { color: #676767; text-decoration: none !important; } .pull-left { text-align: left; } .pull-right { text-align: right; } .header-lg, .header-md, .header-sm { font-size: 32px; font-weight: 700; line-height: normal; padding: 35px 0 0; color: #4d4d4d; } .header-md { font-size: 24px; } .header-sm { padding: 5px 0; font-size: 18px; line-height: 1.3; } .content-padding { padding: 20px 0 5px; } .mobile-header-padding-right { width: 290px; text-align: right; padding-left: 10px; } .mobile-header-padding-left { width: 290px; text-align: left; padding-left: 10px; } .free-text { width: 100% !important; padding: 10px 60px 0px; } .button { padding: 30px 0; } .mini-block { border: 1px solid #e5e5e5; border-radius: 2px; background-color: #ffffff; padding: 12px 15px 15px; text-align: left; width: 253px; } .mini-container-left { width: 278px; padding: 10px 0 10px 15px; } .mini-container-right { width: 278px; padding: 10px 14px 10px 15px; } .product { text-align: left; vertical-align: top; width: 175px; } .total-space { padding-bottom: 8px; display: inline-block; } .item-table { padding: 50px 20px; width: 560px; } .item { width: 300px; } .mobile-hide-img { text-align: left; width: 125px; } .mobile-hide-img img { border: 1px solid #e6e6e6; border-radius: 4px; } .title-dark { text-align: left; border-bottom: 1px solid #cccccc; color: #4d4d4d; font-weight: 700; padding-bottom: 5px; } .item-col { padding-top: 20px; text-align: left; vertical-align: top; } .force-width-gmail { min-width: 600px; height: 0px !important; line-height: 1px !important; font-size: 1px !important; } </style> <style type=\"text/css\" media=\"screen\"> @media screen { /* Thanks Outlook 2013! http://goo.gl/XLxpyl */ * { font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif !important; } } </style> <style type=\"text/css\" media=\"only screen and (max-width: 480px)\"> /* Mobile styles */ @media only screen and (max-width: 480px) { table[class*=\"container-for-gmail-android\"] { min-width: 290px !important; width: 100% !important; } img[class=\"force-width-gmail\"] { display: none !important; width: 0 !important; height: 0 !important; } table[class=\"w320\"] { width: 320px !important; } table[class=\"w300\"] { width: 280px !important; } td[class*=\"mobile-header-padding-left\"] { width: 160px !important; padding-left: 0 !important; } td[class*=\"mobile-header-padding-right\"] { width: 160px !important; padding-right: 0 !important; } td[class=\"header-lg\"] { font-size: 24px !important; padding-bottom: 5px !important; } td[class=\"content-padding\"] { padding: 5px 0 5px !important; } td[class=\"button\"] { padding: 5px 5px 30px !important; } td[class*=\"free-text\"] { padding: 10px 18px 30px !important; } td[class~=\"mobile-hide-img\"] { display: none !important; height: 0 !important; width: 0 !important; line-height: 0 !important; } td[class~=\"item\"] { width: 140px !important; vertical-align: top !important; } td[class~=\"quantity\"] { width: 50px !important; } td[class~=\"price\"] { width: 90px !important; } td[class=\"item-table\"] { padding: 30px 20px !important; } td[class=\"mini-container-left\"], td[class=\"mini-container-right\"] { padding: 0 15px 15px !important; display: block !important; width: 290px !important; } } </style> </head> <body bgcolor=\"#EAECED\" style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;\"> <table align=\"center\" cellpadding=\"0\" cellspacing=\"0\" border-collapse=\"collapse\" class=\"container-for-gmail-android\" width=\"100%\" bgcolor=\"#EAECED\" style=\"margin-top: 20px;\"> <tr> <td align=\"center\" valign=\"top\" width=\"100%\" style=\"background-color: #eaeced; padding:10px;\" class=\"content-padding\"> <center> <table cellspacing=\"0\" cellpadding=\"0\" width=\"600\" class=\"w300\"> <tr> <td background=\"https://nanopay.net/wp-content/uploads/heidi-sandstrom-173946@2x.png\" valign=\"top\" style=\"background: url(https://nanopay.net/wp-content/uploads/heidi-sandstrom-173946@2x.png) no-repeat center /100%; border-radius:5px 5px 0 0; color:#252c3d;\"> <!--[if gte mso 9]> <v:rect xmlns:v=\"urn:schemas-microsoft-com:vml\" fill=\"true\" stroke=\"false\" style=\"width:590px;height:200px;\"> <v:fill type=\"tile\" src=\"\" widthcolor=\"#252C3D\"/> <v:textbox inset=\"0,0,0,0\"> <![endif]--> <div> <table cellspacing=\"0\" cellpadding=\"0\" width=\"600\" class=\"w300\"> <tr> <td width=\"300\" height=\"50\" style=\"border-radius: 3px 0px 0px 0px;\"></td> <td width=\"300\" height=\"50\"></td> <td width=\"300\" height=\"50\" style=\"border-radius: 0px 3px 0px 0px;\"></td> </tr> <tr> <td width=\"300\" height=\"50\"></td> <td width=\"300\" height=\"50\" style=\"text-align:center;\"> <img src=\"https://nanopay.net/wp-content/uploads/merchant.png\" height=\"90\" width=\"90\" height=\"90\" width=\"90\" style=\"width: 310px; height: 43px; object-fit: contain; background-color:rgba(37, 44, 61, 0);\" alt=\"ConnectedMerchant Logo\"/> </td> <td width=\"300\" height=\"50\"></td> </tr> <tr> <td width=\"300\" height=\"50\"></td> <td width=\"300\" height=\"50\"></td> <td width=\"300\" height=\"50\"></td> </tr> </table> </div> <!--[if gte mso 9]> </v:textbox> </v:rect> <![endif]--> </td> </tr> {% block content %}{% endblock content %} <tr width=\"100%\"> <td style=\"background-color:#EAECED; height:100px;\"> <p style=\"margin-bottom:5px; margin-top:30px; line-height:12px; font-size:14px; text-align:center;\">#115 - 887 Great Northern Way</p> <p style=\"text-align:center; margin-top:5px; line-height:12px; font-size:14px;\">Vancouver, BC V5T 4T5</p> <p style=\"text-align:center; margin-top:10px;\"> <a href=\"https://www.connectedcity.com/privacy\" style=\" text-align:center; font-size:14px;color: #5e91cb\">Privacy Statement</a> | <a href=\"https://www.connectedcity.com/FAQ\" style=\" text-align:center; font-size:14px;color: #5e91cb\">About ConnectedMerchant</a> </p> <p style=\"text-align:center;\"> <a href=\"mailto:support@connectedcity.com\" style=\"font-size:14px; color: #5e91cb\"> Contact Us </a> | <a href=\"https://www.connectedcity.com/terms\" style=\"font-size:14px;color: #5e91cb\">Terms & Conditions</a> </p> </td> </tr> </table> </center> </td> </tr> </table> </body> </html> "
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 9,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-9",
   "name": "cc-shopper-base",
   "group": "*",
   "body": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"> <html xmlns=\"http://www.w3.org/1999/xhtml\"> <head> <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" /> <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" /> <title>ConnectedCity</title> <style type=\"text/css\"> /* Take care of image borders and formatting, client hacks */ img { max-width: 600px; outline: none; text-decoration: none; -ms-interpolation-mode: bicubic; } a img { border: none; } table { border-collapse: collapse !important; width: 386px; height: 197.2px; border-radius: 12px; } #outlook a { padding: 0; } .ReadMsgBody { width: 100%; } .ExternalClass { width: 100%; } .backgroundTable { margin: 0 auto; padding: 0; width: 100% !important; } table td { border-collapse: collapse; background-color: rgba(37, 44, 61, 0.75); } .ExternalClass * { line-height: 115%; } .container-for-gmail-android { min-width: 600px; } /* General styling */ * { font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; } body { -webkit-font-smoothing: antialiased; -webkit-text-size-adjust: none; width: 100% !important; margin: 0 !important; height: 100%; color: #676767; } td { font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px; color: #777777; text-align: center; line-height: 21px; } a { color: #676767; text-decoration: none !important; } .pull-left { text-align: left; } .pull-right { text-align: right; } .header-lg, .header-md, .header-sm { font-size: 32px; font-weight: 700; line-height: normal; padding: 35px 0 0; color: #4d4d4d; } .header-md { font-size: 24px; } .header-sm { padding: 5px 0; font-size: 18px; line-height: 1.3; } .content-padding { padding: 20px 0 5px; } .mobile-header-padding-right { width: 290px; text-align: right; padding-left: 10px; } .mobile-header-padding-left { width: 290px; text-align: left; padding-left: 10px; } .free-text { width: 100% !important; padding: 10px 60px 0px; } .button { padding: 30px 0; } .mini-block { border: 1px solid #e5e5e5; border-radius: 2px; background-color: #ffffff; padding: 12px 15px 15px; text-align: left; width: 253px; } .mini-container-left { width: 278px; padding: 10px 0 10px 15px; } .mini-container-right { width: 278px; padding: 10px 14px 10px 15px; } .product { text-align: left; vertical-align: top; width: 175px; } .total-space { padding-bottom: 8px; display: inline-block; } .item-table { padding: 50px 20px; width: 560px; } .item { width: 300px; } .mobile-hide-img { text-align: left; width: 125px; } .mobile-hide-img img { border: 1px solid #e6e6e6; border-radius: 4px; } .title-dark { text-align: left; border-bottom: 1px solid #cccccc; color: #4d4d4d; font-weight: 700; padding-bottom: 5px; } .item-col { padding-top: 20px; text-align: left; vertical-align: top; } .force-width-gmail { min-width: 600px; height: 0px !important; line-height: 1px !important; font-size: 1px !important; } </style> <style type=\"text/css\" media=\"screen\"> @media screen { /* Thanks Outlook 2013! http://goo.gl/XLxpyl */ * { font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif !important; } } </style> <style type=\"text/css\" media=\"only screen and (max-width: 480px)\"> /* Mobile styles */ @media only screen and (max-width: 480px) { table[class*=\"container-for-gmail-android\"] { min-width: 290px !important; width: 100% !important; } img[class=\"force-width-gmail\"] { display: none !important; width: 0 !important; height: 0 !important; } table[class=\"w320\"] { width: 320px !important; } table[class=\"w300\"] { width: 280px !important; } td[class*=\"mobile-header-padding-left\"] { width: 160px !important; padding-left: 0 !important; } td[class*=\"mobile-header-padding-right\"] { width: 160px !important; padding-right: 0 !important; } td[class=\"header-lg\"] { font-size: 24px !important; padding-bottom: 5px !important; } td[class=\"content-padding\"] { padding: 5px 0 5px !important; } td[class=\"button\"] { padding: 5px 5px 30px !important; } td[class*=\"free-text\"] { padding: 10px 18px 30px !important; } td[class~=\"mobile-hide-img\"] { display: none !important; height: 0 !important; width: 0 !important; line-height: 0 !important; } td[class~=\"item\"] { width: 140px !important; vertical-align: top !important; } td[class~=\"quantity\"] { width: 50px !important; } td[class~=\"price\"] { width: 90px !important; } td[class=\"item-table\"] { padding: 30px 20px !important; } td[class=\"mini-container-left\"], td[class=\"mini-container-right\"] { padding: 0 15px 15px !important; display: block !important; width: 290px !important; } } </style> </head> <body bgcolor=\"#EAECED\" style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;\"> <table align=\"center\" cellpadding=\"0\" cellspacing=\"0\" border-collapse=\"collapse\" class=\"container-for-gmail-android\" width=\"100%\" bgcolor=\"#EAECED\" style=\"margin-top: 20px;\"> <tr> <td align=\"center\" valign=\"top\" width=\"100%\" style=\"background-color: #eaeced; padding:10px;\" class=\"content-padding\"> <center> <table cellspacing=\"0\" cellpadding=\"0\" width=\"600\" class=\"w300\"> <tr> <td background=\"https://nanopay.net/wp-content/uploads/heidi-sandstrom-173946@2x.png\" valign=\"top\" style=\"background: url(https://nanopay.net/wp-content/uploads/heidi-sandstrom-173946@2x.png) no-repeat center /100%; border-radius:5px 5px 0 0; color:#252c3d;\"> <!--[if gte mso 9]> <v:rect xmlns:v=\"urn:schemas-microsoft-com:vml\" fill=\"true\" stroke=\"false\" style=\"width:590px;height:200px;\"> <v:fill type=\"tile\" src=\"\" widthcolor=\"#252C3D\"/> <v:textbox inset=\"0,0,0,0\"> <![endif]--> <div> <table cellspacing=\"0\" cellpadding=\"0\" width=\"600\" class=\"w300\"> <tr> <td width=\"300\" height=\"50\" style=\"border-radius: 3px 0px 0px 0px;\"></td> <td width=\"300\" height=\"50\"></td> <td width=\"300\" height=\"50\" style=\"border-radius: 0px 3px 0px 0px;\"></td> </tr> <tr> <td width=\"300\" height=\"50\"></td> <td width=\"300\" height=\"50\" style=\"text-align:center;\"> <img src=\"https://nanopay.net/wp-content/uploads/cc-shopper.png\" height=\"90\" width=\"90\" height=\"90\" width=\"90\" style=\"width: 310px; height: 43px; object-fit: contain; background-color:rgba(37, 44, 61, 0);\" alt=\"ConnectedShopper Logo\"/> </td> <td width=\"300\" height=\"50\"></td> </tr> <tr> <td width=\"300\" height=\"50\"></td> <td width=\"300\" height=\"50\"></td> <td width=\"300\" height=\"50\"></td> </tr> </table> </div> <!--[if gte mso 9]> </v:textbox> </v:rect> <![endif]--> </td> </tr> {% block content %}{% endblock content %} <tr width=\"100%\"> <td style=\"background-color:#EAECED; height:100px;\"> <p style=\"margin-bottom:5px; margin-top:30px; line-height:12px; font-size:14px; text-align:center;\">#115 - 887 Great Northern Way</p> <p style=\"text-align:center; margin-top:5px; line-height:12px; font-size:14px;\">Vancouver, BC V5T 4T5</p> <p style=\"text-align:center; margin-top:10px;\"> <a href=\"https://www.connectedcity.com/privacy\" style=\" text-align:center; font-size:14px;color: #5e91cb\">Privacy Statement</a> | <a href=\"https://www.connectedcity.com/FAQ\" style=\" text-align:center; font-size:14px;color: #5e91cb\">About ConnectedShopper</a> </p> <p style=\"text-align:center;\"> <a href=\"mailto:support@connectedcity.com\" style=\"font-size:14px; color: #5e91cb\"> Contact Us </a> | <a href=\"https://www.connectedcity.com/terms\" style=\"font-size:14px;color: #5e91cb\">Terms & Conditions</a> </p> </td> </tr> </table> </center> </td> </tr> </table> </body> </html> "
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 10,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-10",
   "name": "bank-added",
   "group": "*",
   "subject": "",
@@ -75,7 +86,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 11,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-11",
   "name": "exceed-refund",
   "group": "*",
   "subject": "",
@@ -83,14 +94,14 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 12,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-12",
   "name": "invoice",
   "group": "*",
   "body": "<!DOCTYPE html>\n<html>\n<head>\nt<meta http-equiv=\"X-UA-Compatible\" content=\"IE=edge\">\nt<title>MintChip Invoice</title>\nt<script src=\"https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js\"></script>\n</head>\n<body>\nt<h3>Invoice</h3>\nt<div>\ntt{{ vrmData }}\nt</div>\n\nt<div style=\"margin-top:50px\">\ntt<input type=\"checkbox\" name=\"review\" value=\"1\" onclick=\"verifyChecked()\"/> I have reviewed this invoice and want to pay it<br />\n\ntt<div id=\"launchAppInstructions\" style=\"display:none\">\ntttTo complete payment of your invoice, launch the MintChip app and select \"pay invoice\"\ntt</div>\nt</div>\nt\nt<script type=\"text/javascript\">\ntfunction verifyChecked() {\ntt// TODO: bind to socket API, send VRM ID and challenge to user\ntt\ntt$(\"#launchAppInstructions\").toggle(200);\ntt\nt}\nt</script>\n</body>\n</html>"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 13,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-13",
   "name": "manual-cashout",
   "group": "*",
   "subject": "",
@@ -98,7 +109,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 14,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-14",
   "name": "manual-cashout-admin",
   "group": "*",
   "subject": "",
@@ -106,7 +117,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 15,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-15",
   "name": "mintchip-admin-added",
   "group": "*",
   "subject": "",
@@ -114,7 +125,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 16,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-16",
   "name": "mintchip-invite",
   "group": "*",
   "subject": "",
@@ -122,7 +133,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 17,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-17",
   "name": "mintchip-invoice-received",
   "group": "*",
   "subject": "",
@@ -130,7 +141,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 18,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-18",
   "name": "mintchip-money-invite",
   "group": "*",
   "subject": "",
@@ -138,7 +149,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 19,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-19",
   "name": "mintchip-money-invite-sender",
   "group": "*",
   "subject": "",
@@ -146,7 +157,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 20,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-20",
   "name": "mintchip-money-received",
   "group": "*",
   "subject": "",
@@ -154,7 +165,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 21,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-21",
   "name": "mintchip-money-received-reminder",
   "group": "*",
   "subject": "",
@@ -162,7 +173,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 22,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-22",
   "name": "mintchip-uniqueId-set",
   "group": "*",
   "subject": "",
@@ -170,7 +181,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 23,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-23",
   "name": "staff-tip",
   "group": "*",
   "subject": "",
@@ -178,7 +189,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 26,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-24",
   "name": "verify-email-link",
   "group": "*",
   "subject": "",
@@ -186,7 +197,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 27,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-25",
   "name": "verify-email-link",
   "group": "ccMerchant",
   "subject": "",
@@ -194,7 +205,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 28,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-26",
   "name": "verify-email-link",
   "group": "ccShopper",
   "subject": "",
@@ -202,14 +213,14 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 29,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-27",
   "name": "welcome-email",
   "subject": "Welcome to nanopay",
   "body": "{% extends 'nanopay-email-base'%}\n\n{% block content %}\n\n<tr>\n<td style= \"background-color: #FFFFFF;padding: 0 20px;\"> \n\n<div style=\" display: block; margin-top: 20.8px; \"><p style=\"margin-bottom: 1px;font-size: 16px; line-height: 1.38; padding: 0px 10px; text-align: center; color: #252c3d;\">Hi {{name}}, you're invited to join the nanopay Platform! </p></div>\n<div style=\" display: block; margin-top: 10px; \"><p style=\"margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: center; color: #7e8890;\">Sign-in and setup your business profile to start using the portal.</p></div>\n<div style=\" display: block; margin-top: 20px; \"> <p style= \"margin-bottom: 1px;font-size: 14px; font-weight: bold; text-align: center; color: #000000;\">Username: {{email}} </p> <p style= \"margin-top: 1px;font-size: 14px; font-weight: bold; text-align: center; color: #000000;\">{% if password %}Temporary Password: {{ password }}{% else %}Please contact nanopay for password{% endif %}</p> </div> \n<div style=\" display: block; margin-top: 15px; text-align: center; \"><a href=\"{{link}}\"><button  style=\"width: 200px;height: 40px; font-size: 12px; cursor:pointer; border-radius: 2px; border: none; background-color: #59a5d5; color: #ffffff; text-align:center;\">Verify Email and Log Into Portal</button></a> </div>\n<div style=\" display: block; margin-top: 10px; \"><p style=\"margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: center; color: #7e8890;\">*This link is valid for 14 days</p></div>\n<div style=\" display: block; margin-top: 20px; margin-bottom: 20px\"><p style=\"font-size:12px;  margin: 0px 0px; color:#777777\">Learn more at <a href=\"http://www.nanopay.net\" style=\"color:#59a5d5\">nanopay.net</a></p></div>\n\n</td> \n</tr>\n\n{% endblock content %}"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 30,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-28",
   "name": "welcome-email",
   "group": "ccMerchant",
   "subject": "Welcome to ConnectedMerchant™",
@@ -217,7 +228,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 31,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-29",
   "name": "welcome-email",
   "group": "ccShopper",
   "subject": "Welcome to ConnectedShopper™",
@@ -225,7 +236,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 32,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-30",
   "name": "verifyEmail",
   "group": "ccMerchant",
   "subject": "Please verify email",
@@ -233,7 +244,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 33,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-31",
   "name": "verifyEmail",
   "group": "ccShopper",
   "subject": "Please verify email",
@@ -241,14 +252,14 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 34,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-32",
   "name": "verifyEmail",
   "subject": "Please verify email",
   "body": "{% extends 'nanopay-email-base'%}\n\n{% block content %}\n\n<tr>\n<td style= \"background-color: #FFFFFF;padding: 0 20px;\"> \n<div style=\" display: block; margin-top: 20.8px; \"><p style=\"margin-bottom: 1px;font-size: 16px; line-height: 1.38; padding: 0px 10px; text-align: center; color: #252c3d;\">Hi {{name}}, you requested a verification email</p></div>\n<div style=\" display: block; margin-top: 10px; \"><p style=\"margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: center; color: #7e8890;\">Click here to verify your email</p></div>\n<div style=\" display: block; margin-top: 15px; text-align: center; \"><a href=\"{{link}}\"><button  style=\"width: 200px;height: 40px; font-size: 12px; cursor:pointer; border-radius: 2px; border: none; background-color: #59a5d5; color: #ffffff; text-align:center;\">Verify Email</button></a> </div>\n<div style=\" display: block; margin-bottom: 20px; margin-top: 44px;\"><p style=\"font-size:16px; margin-bottom:15px; margin: 15px 25px; color:#777777\">Not you? Contact us at <a href=\"mailto:support@nanopay.net\" style=\"color:#59a5d5\">support@nanopay.net</a></p></div>\n</td> \n</tr>\n\n{% endblock content %}"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 35,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-33",
   "name": "reset-password",
   "group": "ccMerchant",
   "subject": "Your password reset instructions",
@@ -256,7 +267,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 36,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-34",
   "name": "reset-password",
   "group": "ccShopper",
   "subject": "Your password reset instructions",
@@ -264,21 +275,21 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 37,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-35",
   "name": "reset-password",
   "subject": "Your password reset instructions",
   "body": "{% extends 'nanopay-email-base'%}\n\n{% block content %}\n<tr>\n<td style= \"background-color: #FFFFFF;padding: 0 20px;\"> \n\n<div style=\" display: block; margin-top: 20.8px; \"><p style=\"margin-bottom: 1px;font-size: 16px; line-height: 1.38; padding: 0px 10px; text-align: center; color: #252c3d;\"> Hi {{name}}, you have requested a password reset</p></div>\n<div style=\" display: block; margin-top: 10px; \"><p style=\"margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: center; color: #7e8890; padding: 0px 10px;\"><p style=\"font-size:16px; margin:15px 25px; color:#777777\">Click here to reset your password</p></div>\n<div style=\" display: block; margin-top: 15px; text-align: center; \"><a href=\"{{link}}\"><button  style=\"width: 200px;height: 40px; font-size: 12px; cursor:pointer; border-radius: 2px; border: none; background-color: #59a5d5; color: #ffffff; text-align:center;\">Reset Password</button></a> </div>\n<div style=\" display: block; margin-bottom: 20px; margin-top: 44px;\"><p style=\"font-size:16px; margin-bottom:15px; margin: 15px 25px; color:#777777\">Not you? Contact us at <a href=\"mailto:support@nanopay.net\" style=\"color:#59a5d5\">support@nanopay.net</a></p></div>\n\n</td>\n</tr>\n\n{% endblock content %}"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 38,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-36",
   "name": "addBank",
   "subject": "A bank account has been added",
   "body": "{% extends 'nanopay-email-base'%}\n\n{% block content %}\n\n<tr>\n<td style= \"background-color: #FFFFFF;padding: 0 20px;\"> \n\n<div style=\" display: block; \"><p style=\"margin-top: 20.8px ;margin-bottom: 1px;font-size: 16px; line-height: 1.38; padding: 0px 10px; text-align: center; color: #252c3d;\"> Hi {{name}}, you've added a bank account ending in {{account}}</p></div>\n<div style=\" display: block; margin-top: 10px; \"><p style=\"margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: center; color: #7e8890; padding: 0px 10px;\"><p style=\"font-size:16px; margin:15px 25px; color:#777777\">Click here to view the changes</p></div>\n<div style=\" display: block; margin-top: 15px; text-align: center; \"><a href=\"{{link}}\"><button  style=\"width: 200px;height: 40px; font-size: 12px; cursor:pointer; border-radius: 2px; border: none; background-color: #59a5d5; color: #ffffff; text-align:center;\">Go to Portal</button></a> </div>\n<div style=\" display: block; margin-bottom: 20px; margin-top: 44px;\"><p style=\"font-size:16px; margin-bottom:15px; margin: 15px 25px; color:#777777\">Not you? Contact us at <a href=\"mailto:support@nanopay.net\" style=\"color:#59a5d5\">support@nanopay.net</a></p></div>\n\n</td>\n</tr>\n\n\n\n{% endblock content %}"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 39,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-37",
   "name": "addBank",
   "group": "ccMerchant",
   "subject": "A bank account has been added",
@@ -286,14 +297,14 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 40,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-38",
   "name": "verifiedBank",
   "subject": "A bank account has been verified",
   "body": "{% extends 'nanopay-email-base'%}\n\n{% block content %}\n\n<tr>\n<td style= \"background-color: #FFFFFF;padding: 0 20px;\"> \n\n<div style=\" display: block; margin-top: 20.8px; \" > <p style = \"margin-bottom: 1px; font-size: 16px; line-height: 1.38; text-align: center; color: #252c3d;padding: 0 15px;\">Hi {{name}}, the bank account ending in  {{account}} has been verified </p></div> \n<div style=\" display: block; margin-top: 10px; \"><p style=\"margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: center; color: #7e8890; padding: 0px 10px;\"><p style=\"font-size:16px; margin:15px 25px; color:#777777\">Click here to view the changes</p></div>\n<div style=\" display: block; margin-top: 15px; text-align: center; \"><a href=\"{{link}}\"><button  style=\"width: 200px;height: 40px; font-size: 12px; cursor:pointer; border-radius: 2px; border: none; background-color: #59a5d5; color: #ffffff; text-align:center;\">Go to Portal</button></a> </div>\n<div style=\" display: block; margin-bottom: 20px; margin-top: 44px;\"><p style=\"font-size:16px; margin-bottom:15px; margin: 15px 25px; color:#777777\">Not you? Contact us at <a href=\"mailto:support@nanopay.net\" style=\"color:#59a5d5\">support@nanopay.net</a></p></div>\n\n</td> \n</tr>\n\n\n\n{% endblock content %}"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 41,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-39",
   "name": "verifiedBank",
   "group": "ccMerchant",
   "subject": "A bank account has been verified",
@@ -301,14 +312,14 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 42,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-40",
   "name": "deletedBank",
   "subject": "A bank account has been deleted",
   "body": "{% extends 'nanopay-email-base'%}\n\n{% block content %}\n\n<tr>\n<td style= \"background-color: #FFFFFF;padding: 0 20px;\"> \n\n<div style=\" display: block; margin-top: 20.8px; \" > <p style = \"margin-bottom: 1px; font-size: 16px; line-height: 1.38; text-align: center; color: #252c3d;padding: 0 15px;\">Hi {{name}}, the bank account ending in {{account}} has been deleted </p></div> \n<div style=\" display: block; margin-top: 10px; \"><p style=\"margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: center; color: #7e8890; padding: 0px 10px;\"><p style=\"font-size:16px; margin:15px 25px; color:#777777\">Click here to view the changes</p></div>\n<div style=\" display: block; margin-top: 15px; text-align: center; \"><a href=\"{{link}}\"><button  style=\"width: 200px;height: 40px; font-size: 12px; cursor:pointer; border-radius: 2px; border: none; background-color: #59a5d5; color: #ffffff; text-align:center;\">Go to Portal</button></a> </div>\n<div style=\" display: block; margin-bottom: 20px; margin-top: 44px;\"><p style=\"font-size:16px; margin-bottom:15px; margin: 15px 25px; color:#777777\">Not you? Contact us at <a href=\"mailto:support@nanopay.net\" style=\"color:#59a5d5\">support@nanopay.net</a></p></div>\n\n</td> \n</tr>\n\n\n{% endblock content %}"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 43,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-41",
   "name": "deletedBank",
   "group": "ccMerchant",
   "subject": "A bank account has been deleted",
@@ -316,35 +327,35 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 45,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-42",
   "name": "voidInvoice",
   "subject": "An invoice has been voided",
   "body": "{% extends 'nanopay-email-base'%}\n\n{% block content %}\n\n<tr>\n<td style= \"background-color: #FFFFFF;padding: 0 20px;\"> \n\n<div style=\" display: block; margin-top: 28px; \" > <p style = \"margin-bottom: 1px; font-size: 16px; line-height: 1.38; text-align: center; color: #252c3d;padding: 0 15px;\">Hi {{name}}, invoice #{{account}} of amount {{amount}} has been voided</p></div> \n<div style=\" display: block; margin-top: 10px; \"><p style=\"margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: center; color: #7e8890; padding: 0px 10px;\"><p style=\"font-size:16px; margin:15px 25px; color:#777777\">Click here to view the changes</p></div>\n<div style=\" display: block; margin-top: 15px; text-align: center; \"><a href=\"{{link}}\"><button  style=\"width: 200px;height: 40px; font-size: 12px; cursor:pointer; border-radius: 2px; border: none; background-color: #59a5d5; color: #ffffff; text-align:center;\">Go to Portal</button></a> </div>\n<div style=\" display: block; margin-bottom: 20px; margin-top: 44px;\"><p style=\"font-size:16px; margin-bottom:15px; margin: 15px 25px; color:#777777\">Not you? Contact us at <a href=\"mailto:support@nanopay.net\" style=\"color:#59a5d5\">support@nanopay.net</a></p></div>\n\n</td> \n</tr>\n\n\n{% endblock content %}"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 46,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-43",
   "name": "schedule-paid",
   "subject": "You have a scheduled payment",
   "body": "{% extends 'nanopay-email-base'%}\n\n{% block content %}\n\n<tr>\n<td style= \"background-color: #FFFFFF;padding: 0 20px;\"> \n<div style=\" display: block; margin-top: 20.8px; \"><p style=\"margin-bottom: 1px;font-size: 16px; line-height: 1.38; padding: 0px 10px; text-align: center; color: #252c3d;\">Hi {{name}}, a payment of {{amount}} is scheduled for {{date}} to {{toEmail}} (Invoice #{{account}})</p></div>\n<div style=\" display: block; margin-top: 10px; \"><p style=\"margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: center; color: #7e8890;\">Please ensure that you have <b>sufficient funds</b> in your account - No additional action is required. To view the invoice please login to the portal.</p></div>\n<div style=\" display: block; margin-top: 15px; text-align: center; \"><a href=\"{{link}}\"><button  style=\"width: 200px;height: 40px; font-size: 12px; cursor:pointer; border-radius: 2px; border: none; background-color: #59a5d5; color: #ffffff; text-align:center;\">Go to Portal</button></a> </div>\n<div style=\" display: block; margin-bottom: 20px; margin-top: 44px;\"><p style=\"font-size:16px; margin-bottom:15px; margin: 15px 25px; color:#777777\">Contact us at <a href=\"mailto:support@nanopay.net\" style=\"color:#59a5d5\">support@nanopay.net</a></p></div>\n</td>\n</tr>\n\n\n{% endblock content %}\n"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 47,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-44",
   "name": "payable",
   "subject": "An invoice has been paid",
   "body": "{% extends 'nanopay-email-base'%}\n\n{% block content %}\n\n<tr>\n<td style= \"background-color: #FFFFFF;padding: 0 20px;\"> \n<div style=\" display: block; margin-top: 28px; \" > <p style = \"margin-bottom: 1px; font-size: 16px; line-height: 1.38; text-align: center; color: #252c3d;\">Hi {{name}}, you have been paid {{amount}} by {{fromName}}({{fromEmail}}) for invoice #{{account}} </p> </div> \n<div style=\" display: block; margin-top: 10px; \" > <p style =\"margin-bottom: 1px; font-size: 14px; line-height: 1.43; text-align: center; color: #7e8890;\">Your payment will be deposited to your default account in 2-3 business days.</p> </div>\n<div style=\" display: block; margin-top: 15px; text-align: center; \"><a href=\"{{link}}\"><button  style=\"width: 200px;height: 40px; font-size: 12px; cursor:pointer; border-radius: 2px; border: none; background-color: #59a5d5; color: #ffffff; text-align:center;\">Go to Portal</button></a> </div>\n<div style=\" display: block; margin-bottom: 20px; margin-top: 44px;\"><p style=\"font-size:16px; margin-bottom:15px; margin: 15px 25px; color:#777777\">Not you? Contact us at <a href=\"mailto:support@nanopay.net\" style=\"color:#59a5d5\">support@nanopay.net</a></p></div>\n</td> \n</tr>\n\n{% endblock content %}"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 48,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-45",
   "name": "transfer-paid",
   "subject": "You've received money",
   "body": "{% extends 'nanopay-email-base'%}\n\n{% block content %}\n\n<tr>\n<td style= \"background-color: #FFFFFF;padding: 0 20px;\"> \n\n<div style=\" display: block; margin-top: 20.8px; \"><p style=\"margin-bottom: 1px;font-size: 16px; line-height: 1.38; padding: 0px 10px; text-align: center; color: #252c3d;\">Hi {{name}}, you have received <span style=\"color: #1cc2b7\">{{amount}}</span> from nanopay!</p></div>\n<div style=\" display: block; margin-top: 10px; \"><p style=\"margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: center; color: #7e8890;\">Sign in to the nanopay portal to see your balance.</p></div>\n<div style=\" display: block; margin-top: 15px; text-align: center; \"><a href=\"{{link}}\"><button  style=\"width: 200px;height: 40px; font-size: 12px; cursor:pointer; border-radius: 2px; border: none; background-color: #59a5d5; color: #ffffff; text-align:center;\">Log Into Portal</button></a> </div>\n<div style=\" display: block; margin-bottom: 20px; margin-top: 44px;\"><p style=\"font-size:16px; margin-bottom:15px; margin: 15px 25px; color:#777777\">Not you? Contact us at <a href=\"mailto:support@nanopay.net\" style=\"color:#59a5d5\">support@nanopay.net</a></p></div>\n\n</td> \n</tr>\n{% endblock content %}\n"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 49,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-46",
   "name": "transfer-paid",
   "group": "ccMerchant",
   "subject": "You've received money",
@@ -352,7 +363,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 50,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-47",
   "name": "transfer-paid",
   "group": "ccShopper",
   "subject": "You've received money",
@@ -360,48 +371,48 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 51,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-48",
   "name": "reg-pending",
   "subject": "Registration Pending",
   "body": "{% extends 'nanopay-email-base'%}\n\n{% block content %}\n\n<tr>\n<td style= \"background-color: #FFFFFF;padding: 20px 20px;\"> \n<div style=\" display: block;  \"><p style=\"margin-top: 0px; margin-bottom: 1px;font-size: 16px; line-height: 1.38; padding: 0px 10px; text-align: center; color: #252c3d;\">Hi, {{name}}! Your registration profile has been successfully submitted!</p></div>\n<div style=\" display: block; margin-top: 10px; \"><p style=\"margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: center; color: #7e8890;\">You can sign into the portal to view submitted registration or upload addtional documents.</p></div>\n<div style=\" display: block; margin-top: 40px;\"> <p style= \"margin: 0px 0px; font-size: 14px; font-weight: bold; text-align: center; color: #000000;\">Account ID: {{id}} </p> <p style= \"margin-top: 5px;margin-bottom:0px;font-size: 14px; font-weight: bold; text-align: center; color: #000000;\"> Status: Pending</p> </div> \n<div style=\" display: block; margin-top: 30px; text-align: center; \"><a href=\"{{link}}\"><button  style=\"width: 135px;height: 40px; font-size: 14px; cursor:pointer; border-radius: 2px; border: none; background-color: #59a5d5; color: #ffffff; text-align:center;\">Go to Portal</button></a> </div>\n<div style=\" display: block; margin-top: 30px;\"><p style=\"font-size:12px;  margin: 0px 0px; color:#777777\">Learn more at <a href=\"http://www.nanopay.net\" style=\"color:#59a5d5\">nanopay.net</a></p></div>\n\n</td>\n</tr>\n{% endblock content %}"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 53,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-49",
   "name": "receivable",
   "subject": "You have received a new invoice",
   "body": "{% extends 'nanopay-email-base'%}\n\n{% block content %}\n\n<tr>\n<td style= \"background-color: #FFFFFF;padding: 0 20px;\"> \n\n<div style=\" display: block; margin-top: 28px; \" > <p style = \"margin-bottom: 1px; font-size: 16px; padding: 0 15px; line-height: 1.38; text-align: center; color: #252c3d;\">Hi {{name}}, you have recieved a new invoice (Invoice# {{account}}) of {{amount}} from {{fromName}} ({{fromEmail}}) </p></div> \n<div style=\" display: block; margin-top: 10px; \" > <p style =\"margin-bottom: 1px; font-size: 14px; padding: 0 15px; line-height: 1.43; text-align: center; color: #7e8890;\">The payment is due on {{date}} </p> </div>\n<div style=\" display: block; margin-top: 15px; text-align: center; \"><a href=\"{{link}}\"><button  style=\"width: 200px;height: 40px; font-size: 12px; cursor:pointer; border-radius: 2px; border: none; background-color: #59a5d5; color: #ffffff; text-align:center;\">Go to Portal</button></a> </div>\n<div style=\" display: block; margin-bottom: 20px; margin-top: 44px;\"><p style=\"font-size:16px; margin-bottom:15px; margin: 15px 25px; color:#777777\">Not you? Contact us at <a href=\"mailto:support@nanopay.net\" style=\"color:#59a5d5\">support@nanopay.net</a></p></div>\n\n</td> \n</tr>\n\n\n\n{% endblock content %}"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 54,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-50",
   "name": "app-redirect",
   "body": "<?\n\n// Settings\n$scheme = 'mintchip';\n$ios_id = 1051748158;\n$android_package = 'net.nanopay.mintchip_android';\n$auto = false;\n\n// No trailing slash after path, conform to http://x-callback-url.com/specifications/\n$REQUEST_URI = preg_replace('@/(?:?|$)@', '', $_SERVER['REQUEST_URI']);\n\n// Detection\n$HTTP_USER_AGENT = strtolower($_SERVER['HTTP_USER_AGENT']);\n$android = (bool) strpos($HTTP_USER_AGENT, 'android');\n$iphone = !$android && ((bool) strpos($HTTP_USER_AGENT, 'iphone') || (bool) strpos($HTTP_USER_AGENT, 'ipod'));\n$ipad = !$android && !$iphone && (bool) strpos($HTTP_USER_AGENT, 'ipad');\n$ios = $iphone || $ipad;\n$mobile = $android || $ios;\n\n// Install\n$ios_install = 'http://itunes.apple.com/app/id' . $ios_id;\n$android_install = 'http://play.google.com/store/apps/details?id=' . $android_package;\n\n// Open\nif ($ios) {\n$open = $scheme . ':/' . $REQUEST_URI;\n}\nif ($android) {\n$open = 'intent:/' . $REQUEST_URI . '#Intent;package=' . $android_package . ';scheme=' . $scheme . ';launchFlags=268435456;end;';\n}\n\n?>\n<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\"UTF-8\" />\n<title>URL Schemes</title>\n<meta name=\"viewport\" content=\"width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no\" />\n<? if ($ios): ?>\n<meta name=\"apple-itunes-app\" content=\"app-id=<?= $ios_id ?>, app-argument=<?= $open ?>\"/>\n<? endif ?>\n</head>\n<body>\n\n<script>\nfunction open() {\nwindow.location = '<?= $open ?>';\n\n<? if ($ios): ?>\nsetTimeout(function() {\nif (!document.webkitHidden) {\nwindow.location = '<?= $ios_install ?>';\n}\n}, 25);\n<? endif ?>\n}\n</script>\n\n<? if ($mobile): ?>\n\n<? if ($ios): ?>\n<p>Click the banner on top of this screen to <a href=\"<?= $ios_install ?>\">install</a> our app or directly <a href=\"<?= $open ?>\">open</a> this content in our app if you have it installed already.</p>\n\n<? elseif ($android): ?>\n<p>Go ahead and <a href=\"<?= $android_install ?>\">install</a> our app or directly <a href=\"<?= $open ?>\">open</a> this content in our app if you have it installed already.<p>\n<? endif ?>\n\n<? if ($auto): ?>\n<script>open();</script>\n<? endif ?>\n\n<? else: ?>\n<p>Go to the <a href=\"<?= $ios_install ?>\">App Store</a> or <a href=\"<?= $android_install ?>\">Google Play</a> to install and open this content in our app.</p>\n<? endif ?>\n\n</body>\n</html>"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 55,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-51",
   "name": "docEmail",
   "subject": "Terms and Conditions",
   "body": "{{doc}}"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 56,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-52",
   "name": "moneyReminder",
   "subject": "You have received a reminder",
   "body": "{% extends 'nanopay-email-base'%}\n\n{% block content %}\n\n<tr>\n<td style= \"background-color: #FFFFFF;padding: 0 20px;\"> \n\n<div style=\" display: block; margin-top: 28px; \" > <p style = \"margin-bottom: 1px; font-size: 16px; padding: 0 15px; line-height: 1.38; text-align: center; color: #252c3d;\">Hi {{payerName}}, you have recieved a reminder that {{amount}} has been requested from {{payeeName}} ({{payeeEmail}}) </p></div> \n<div style=\" display: block; margin-top: 10px; \" > <p style=\"font-size:16px; margin-bottom:15px; margin: 15px 25px; color:#777777\">Not you? Contact us at <a href=\"mailto:support@nanopay.net\" style=\"color:#59a5d5\">support@nanopay.net</a></p></div>\n\n</td> \n</tr>\n\n\n{% endblock content %}"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 57,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-53",
   "name": "reg-note",
   "subject": "Registration Created",
   "body": "{% extends 'nanopay-email-base'%}\n\n{% block content %}\n\n<tr>\n<td style= \"background-color: #FFFFFF;padding: 20px 20px;\"> \n\n<div style=\" display: block;  \"><p style=\"margin-top: 0px; margin-bottom: 1px;font-size: 16px; line-height: 1.38; padding: 0px 10px; text-align: center; color: #252c3d;\">{{name}} {{lastName}} just submitted the registration profile.</p></div>\n<div style=\" display: block; margin-top: 40px; text-align: center; \"><a href=\"{{memberLink}}\"><button  style=\"width: 135px;height: 40px; font-size: 14px; cursor:pointer; border-radius: 2px; border: none; background-color: #59a5d5; color: #ffffff; text-align:center;\">View Profile</button></a> </div>\n<div style=\" display: block; margin-top: 30px;\"><p style=\"font-size:12px;  margin: 0px 0px; color:#777777\">Learn more at <a href=\"http://www.nanopay.net\" style=\"color:#59a5d5\">nanopay.net</a></p></div>\n\n</td>\n</tr>\n\n{% endblock content %}"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 58,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-54",
   "name": "password-changed",
   "group": "ccMerchant",
   "subject": "Your password has been changed",
@@ -409,7 +420,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 59,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-55",
   "name": "password-changed",
   "group": "ccShopper",
   "subject": "Your password has been changed",
@@ -417,35 +428,35 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 60,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-56",
   "name": "password-changed",
   "subject": "Your password has been changed",
   "body": "{% extends 'nanopay-email-base'%}\n\n{% block content %}\n<tr>\n<td style= \"background-color: #FFFFFF;padding: 0 20px;\"> \n\n<div style=\" display: block; \"><p style=\"margin-top: 20.8px ;margin-bottom: 1px;font-size: 16px; line-height: 1.38; padding: 0px 10px; text-align: center; color: #252c3d;\"> Hi {{name}}, your password has been changed.</p></div>\n<div style=\" display: block; margin-bottom: 20px; margin-top: 44px;\"><p style=\"font-size:16px; margin-bottom:15px; margin: 15px 25px; color:#777777\">Not you? Contact us at <a href=\"mailto:support@nanopay.net\" style=\"color:#59a5d5\">support@nanopay.net</a></p></div>\n\n</td>\n</tr>\n\n{% endblock content %}"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 61,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-57",
   "name": "cashin-reject",
   "subject": "Cash-In Rejected",
   "body": "{% extends 'nanopay-email-base'%}\n\n{% block content %}\n<tr>\n<td style= \"background-color: #FFFFFF;padding: 0 20px;\"> \n<div style=\" display: block; margin-top: 28px; \" > <p style = \"margin-bottom: 1px; font-size: 16px; line-height: 1.38; text-align: center; color: #252c3d;\">Hi {{name}}, your recently cashed in operation amount {{amount}} from bank account ending in ***{{account}} was reject by EFTService. </p> </div> \n<div style=\" display: block; margin-top: 10px; \" > <p style =\"margin-bottom: 1px; font-size: 14px; line-height: 1.43; text-align: center; color: #7e8890;\">We need to take the money out of your digital balance.</p> </div>\n<div style=\" display: block; margin-top: 15px; text-align: center; \"><a href=\"{{link}}\"><button  style=\"width: 200px;height: 40px; font-size: 12px; cursor:pointer; border-radius: 2px; border: none; background-color: #59a5d5; color: #ffffff; text-align:center;\">Go to Portal</button></a> </div>\n<div style=\" display: block; margin-bottom: 20px; margin-top: 44px;\"><p style=\"font-size:16px; margin-bottom:15px; margin: 15px 25px; color:#777777\">Not you? Contact us at <a href=\"mailto:support@nanopay.net\" style=\"color:#59a5d5\">support@nanopay.net</a></p></div>\n</td> \n</tr>\n{% endblock content %}"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 62,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-58",
   "name": "testEmail",
   "subject": "Test Email",
   "body": "{{content}}"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 63,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-59",
   "name": "pay-from-bank-account-reject",
   "subject": "BankAccount Payment Rejected",
   "body": "{% extends 'nanopay-email-base'%}\n\n{% block content %}\n<tr>\n<td style= \"background-color: #FFFFFF;padding: 0 20px;\"> \n<div style=\" display: block; margin-top: 28px; \" > <p style = \"margin-bottom: 1px; font-size: 16px; line-height: 1.38; text-align: center; color: #252c3d;\">Hi {{name}}, the payment amount {{amount}} from bank account #{{account}}, from {{payerName}} to {{payeeName}} are reject by EFTService.</p> </div> \n<div style=\" display: block; margin-top: 10px; \" > <p style =\"margin-bottom: 1px; font-size: 14px; line-height: 1.43; text-align: center; color: #7e8890;\">We need to take the money out of your digital balance.</p> </div>\n<div style=\" display: block; margin-top: 15px; text-align: center; \"><a href=\"{{link}}\"><button  style=\"width: 200px;height: 40px; font-size: 12px; cursor:pointer; border-radius: 2px; border: none; background-color: #59a5d5; color: #ffffff; text-align:center;\">Go to Portal</button></a> </div>\n<div style=\" display: block; margin-bottom: 20px; margin-top: 44px;\"><p style=\"font-size:16px; margin-bottom:15px; margin: 15px 25px; color:#777777\">Not you? Contact us at <a href=\"mailto:support@nanopay.net\" style=\"color:#59a5d5\">support@nanopay.net</a></p></div>\n</td> \n</tr>\n{% endblock content %}"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 64,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-60",
   "name": "customer_created",
   "group": "*",
   "subject": "A Customer record was created",
@@ -453,7 +464,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 65,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-61",
   "name": "customer_transfer_created",
   "group": "*",
   "subject": "A transfer was initiated",
@@ -461,7 +472,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 66,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-62",
   "name": "customer_transfer_cancelled",
   "group": "*",
   "subject": "A pending transfer has been cancelled, and will not process further.",
@@ -469,7 +480,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 67,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-63",
   "name": "customer_transfer_failed",
   "group": "*",
   "subject": "Transaction failed to clear successfully.",
@@ -477,7 +488,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 68,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-64",
   "name": "customer_transfer_completed",
   "group": "*",
   "subject": "A transfer has cleared successfully",
@@ -485,7 +496,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 69,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-65",
   "name": "customer_bank_transfer_created",
   "group": "*",
   "subject": "A transfer was created from or to a Customer's Bank Account",
@@ -493,7 +504,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 70,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-66",
   "name": "customer_bank_transfer_cancelled",
   "group": "*",
   "subject": "A transfer was cancelled from or to a Customer's Bank Account",
@@ -501,7 +512,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 71,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-67",
   "name": "customer_bank_transfer_failed",
   "group": "*",
   "subject": "A transfer failed from or to a Customer's Bank Account",
@@ -509,7 +520,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 72,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-68",
   "name": "customer_funding_source_added",
   "group": "*",
   "subject": "A Funding Source was added to a Customer record",
@@ -517,7 +528,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 73,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-69",
   "name": "customer_funding_source_removed",
   "group": "*",
   "subject": "A Funding Source was removed from a Customer's record",
@@ -525,15 +536,15 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 74,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-70",
   "name": "customer_funding_source_verified",
   "group": "*",
-  "subject": "A Customer recordâ\u0080\u0099s Funding Source was marked as verified",
+  "subject": "A Customer record's Funding Source was marked as verified",
   "body": "{% extends 'nanopay-dwolla-email-base'%}\n\n{% block content %}\n\n<tr>\n<td style= \"background-color: #FFFFFF;padding: 0 20px;\"> \n\n<div style=\" display: block; margin-top: 20.8px; \"><p style=\"margin-bottom: 1px;font-size: 16px; line-height: 1.38; padding: 0px 10px; text-align: center; color: #252c3d;\">Hi {{name}}, a funding source is now verified in your customer record:</p></div>\n<div style=\" display: block; margin-top: 10px; \">\n<p style=\"padding: 0px 10px;margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: left; color: #7e8890;\"><b style=\"color: #252c3d\">Bank Name: </b>{{bank-name}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Bank Account Identifier: </b>{{bank-id}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Date of micro-deposit: </b>{{date}}</p></div>\n<div style=\" display: block; margin-bottom: 20px; margin-top: 40px;\"><p style=\"font-size:12px; margin-bottom:15px; margin: 15px 25px; color:#777777\">For questions or assistance, please reach out to <a href=\"mailto:support@nanopay.net\" style=\"color:#59a5d5\">support@nanopay.net</a></p></div>\n\n</td> \n</tr>\n{% endblock content %}\n"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 75,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-71",
   "name": "customer_microdeposits_added",
   "group": "*",
   "subject": "Micro-deposits were initiated to a Customer's Bank Account",
@@ -541,7 +552,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 76,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-72",
   "name": "customer_microdeposits_completed",
   "group": "*",
   "subject": "Micro-deposits were successfully processed to a Customer's Bank Account",
@@ -549,7 +560,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 77,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-73",
   "name": "customer_microdeposits_failed",
   "group": "*",
   "subject": "Micro-deposits failed to clear into a Customer\u0080\u0099's Bank Account",
@@ -557,7 +568,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 78,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-74",
   "name": "customer_verified",
   "group": "*",
   "subject": "A Customer was verified",
@@ -565,7 +576,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 79,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-75",
   "name": "customer_suspended",
   "group": "*",
   "subject": "A Customer was suspended",
@@ -573,7 +584,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 80,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-76",
   "name": "customer_verification_documentation_needed",
   "group": "*",
   "subject": "Verification documentation is needed for a Customer",
@@ -581,7 +592,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 81,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-77",
   "name": "customer_verification_documentation_uploaded",
   "group": "*",
   "subject": "A verification document was uploaded for a Customer",
@@ -589,7 +600,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 82,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-78",
   "name": "customer_verification_documentation_approved",
   "group": "*",
   "subject": "A verification document was approved for a Customer",
@@ -597,7 +608,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 83,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-79",
   "name": "customer_verification_documentation_failed",
   "group": "*",
   "subject": "A verification document was rejected for a Customer",
@@ -605,7 +616,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 84,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-80",
   "name": "nanopay-dwolla-email-base",
   "group": "*",
   "subject": "",
@@ -613,7 +624,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 85,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-81",
   "name": "notification",
   "group": "*",
   "subject": "Notification from nanopay",
@@ -621,7 +632,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 86,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-82",
   "name": "verifiedBank",
   "sendTo": "{{userEmail}}",
   "group": "sme",
@@ -631,7 +642,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 87,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-83",
   "name": "addBank",
   "group": "shopper",
   "subject": "A bank account has been added",
@@ -639,7 +650,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 88,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-84",
   "name": "deletedBank",
   "group": "shopper",
   "subject": "A bank account has been deleted",
@@ -647,7 +658,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 89,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-85",
   "name": "welcome-email",
   "group": "shopper",
   "subject": "Welcome to MintChip",
@@ -655,7 +666,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 90,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-86",
   "name": "partners-internal-invite",
   "group": "*",
   "subject": "New nanopay connection",
@@ -663,90 +674,90 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 91,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-87",
   "name": "partners-external-invite",
   "subject": "New nanopay invite",
   "body": "{% extends 'nanopay-email-base'%}\n\n{% block content %}\n\n<tr>\n<td style= \"background-color: #FFFFFF;padding: 0 20px;\"> \n\n<div style=\" display: block; margin-top: 20.8px; \"><p style=\"margin-bottom: 1px;font-size: 16px; line-height: 1.38; padding: 0px 10px; text-align: center; color: #252c3d;\">Hi, you've been invited by {{inviterName}} to join the nanopay platform & become a connection.</p></div>\n<div style=\" display: block; margin-top: 10px; \"><p style=\"margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: center; color: #7e8890;\">{{message}}</p></div> \n<div style=\" display: block; margin: 30px 0; text-align: center; \"><a href=\"{{link}}\"><button  style=\"width: 200px;height: 40px; font-size: 12px; cursor:pointer; border-radius: 2px; border: none; background-color: #59a5d5; color: #ffffff; text-align:center;\">Connect</button></a> </div>\n<div style=\"margin-bottom: 15px; text-align: center; color: #7e8890; font-size: 12px; line-height: 1.67;\">Not you? Contact us at <a style=\"color: #59a5d5;\" href=\"mailto:support@nanopay.net\">support@nanopay.net</a></div>\n\n</td> \n</tr>\n\n{% endblock content %}"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 92,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-88",
   "name": "reject-cashin",
   "subject": "Source of funding transfer was rejected",
   "body": "{% extends 'nanopay-email-base'%}\n\n{% block content %}\n\n<tr>\n<td style= \"background-color: #FFFFFF;padding: 0 20px;\"> \n\n\n<div style=\" display: block; margin-top: 20.8px; \"><p style=\"margin-bottom: 1px;font-size: 16px; line-height: 1.38; padding: 0px 10px; text-align: center; color: #252c3d;\">Hi {{name}}, your request to transfer funds from your bank account to nanopay account was rejected.</p></div>\n\n<div style=\" display: block; margin-top: 10px; \"><p style=\"margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: center; color: #7e8890;\"> {need to put in some instructions for the client}.</p></div>\n\n<div style=\" display: block; margin-top: 10px; \">\n<p style=\"padding: 0px 10px;margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: left; color: #7e8890;\"><b style=\"color: #252c3d\">Type of Transaction: </b>{{transaction-type}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Amount: </b>{{amount}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Date: </b>{{date}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Bank Nickname: </b>{{nickname}}</p></div>\n\n<div style=\" display: block; margin-bottom: 20px; margin-top: 37px;\"><p style=\"font-size:12px; margin-bottom:15px; margin: 15px 25px; color:#777777\">For questions or assistance, please reach out to <a href=\"mailto:support@nanopay.net\" style=\"color:#59a5d5\">support@nanopay.net</a></p></div>\n\n</td> \n</tr>\n\n{% endblock content %}"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 93,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-89",
   "name": "reject-cashin2",
   "subject": "Source of funding transfer was rejected",
   "body": "{% extends 'nanopay-email-base'%}\n\n{% block content %}\n\n<tr>\n<td style= \"background-color: #FFFFFF;padding: 0 20px;\"> \n\n\n<div style=\" display: block; margin-top: 20.8px; \"><p style=\"margin-bottom: 1px;font-size: 16px; line-height: 1.38; padding: 0px 10px; text-align: center; color: #252c3d;\">Hi {{name}}, your request to transfer funds from your bank account to nanopay account was rejected.</p></div>\n\n<div style=\" display: block; margin-top: 10px; \"><p style=\"margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: center; color: #7e8890;\"> The transaction will need to be on hold and the funds have been for the amount of this transaction.</p></div>\n\n<div style=\" display: block; margin-top: 10px; \">\n<p style=\"padding: 0px 10px;margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: left; color: #7e8890;\"><b style=\"color: #252c3d\">Type of Transaction: </b>{{transaction-type}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Amount: </b>{{amount}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Date: </b>{{date}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Bank Nickname: </b>{{nickname}}</p></div>\n\n\n\n\n</td> \n</tr>\n\n{% endblock content %}"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 94,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-90",
   "name": "reject-cashin3Client",
   "subject": "Source of funding transfer was rejected",
   "body": "{% extends 'nanopay-email-base'%}\n\n{% block content %}\n\n<tr>\n<td style= \"background-color: #FFFFFF;padding: 0 20px;\"> \n\n<div style=\" display: block; margin-top: 20.8px; \"><p style=\"margin-bottom: 1px;font-size: 16px; line-height: 1.38; padding: 0px 10px; text-align: center; color: #252c3d;\">Hi {{name}}, your request to transfer funds from your bank account to nanopay account was rejected.</p></div>\n\n<div style=\" display: block; margin-top: 10px; \"><p style=\"margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: center; color: #7e8890;\"> Your account has insufficient balance to revert this transaction.</p></div>\n\n\n<div style=\" display: block; margin-top: 10px; \">\n<p style=\"padding: 0px 10px;margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: left; color: #7e8890;\"><b style=\"color: #252c3d\">Type of Transaction: </b>{{transaction-type}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Amount: </b>{{amount}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Date: </b>{{date}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Bank Nickname: </b>{{nickname}}</p></div>\n\n<div style=\" display: block; margin-top: 10px; \"><p style=\"margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: center; color: #7e8890;\"> <b>Please contact nanopay immediately to resolve this issue.</b>\n</p></div>\n\n<div style=\" display: block; margin-bottom: 20px; margin-top: 37px;\"><p style=\"font-size:12px; margin-bottom:15px; margin: 15px 25px; color:#777777\">For questions or assistance, please reach out to <a href=\"mailto:support@nanopay.net\" style=\"color:#59a5d5\">support@nanopay.net</a></p></div>\n\n\n</td> \n</tr>\n\n{% endblock content %}"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 95,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-91",
   "name": "reject-cashin3Ops",
   "subject": "Cash In Rejected Post Holding Period - Insufficient Balance",
   "body": "{% extends 'nanopay-email-base'%}\n\n{% block content %}\n\n<tr>\n<td style= \"background-color: #FFFFFF;padding: 0 20px;\"> \n\n<div style=\" display: block; margin-top: 20.8px; \"><p style=\"margin-bottom: 1px;font-size: 16px; line-height: 1.38; padding: 0px 10px; text-align: center; color: #252c3d;\">The user does not have enough balance to revert a cash in transaction as a reject has been received post 2 day hold.\n</p></div>\n\n<div style=\" display: block; margin-top: 10px; \">\n<p style=\"padding: 0px 10px;margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: left; color: #7e8890;\"><b style=\"color: #252c3d\">User: </b>{{name}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Type of Transaction: </b>{{transaction-type}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Amount: </b>{{amount}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 20px;font-size: 14px;\"><b style=\"color: #252c3d\">Date: </b>{{date}}</p>\n</div>\n\n\n\n\n</td> \n</tr>\n\n{% endblock content %}"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 96,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-92",
   "name": "reject-BAP",
   "subject": "Source of funding transfer was rejected",
   "body": "{% extends 'nanopay-email-base'%}\n\n{% block content %}\n\n<tr>\n<td style= \"background-color: #FFFFFF;padding: 0 20px;\"> \n\n<div style=\" display: block; margin-top: 20.8px; \"><p style=\"margin-bottom: 1px;font-size: 16px; line-height: 1.38; padding: 0px 10px; text-align: center; color: #252c3d;\">Hi {{name}},  your request to transfer funds from your bank account to nanopay account was rejected for this invoice payment. \n</p></div>\n\n<div style=\" display: block; margin-top: 10px; \"><p style=\"margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: center; color: #7e8890;\"> {need to put in some instructions here, retry, contact nanopay}\n</p></div>\n\n<div style=\" display: block; margin-top: 10px; \">\n<p style=\"padding: 0px 10px;margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: left; color: #7e8890;\"><b style=\"color: #252c3d\">Type of Transaction: </b>{{transaction-type}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Amount: </b>{{amount}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Date: </b>{{date}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Bank Nickname: </b>{{nickname}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Invoice #: </b>{{invoice}}</p></div>\n\n<div style=\" display: block; margin-bottom: 20px; margin-top: 37px;\"><p style=\"font-size:12px; margin-bottom:15px; margin: 15px 25px; color:#777777\">For questions or assistance, please reach out to <a href=\"mailto:support@nanopay.net\" style=\"color:#59a5d5\">support@nanopay.net</a></p></div>\n\n\n\n\n</td> \n</tr>\n\n{% endblock content %}"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 97,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-93",
   "name": "reject-BAP2",
   "subject": "Source of funding transfer was rejected",
   "body": "{% extends 'nanopay-email-base'%}\n\n{% block content %}\n\n<tr>\n<td style= \"background-color: #FFFFFF;padding: 0 20px;\"> \n\n<div style=\" display: block; margin-top: 20.8px; \"><p style=\"margin-bottom: 1px;font-size: 16px; line-height: 1.38; padding: 0px 10px; text-align: center; color: #252c3d;\">Hi {{name}},   your request to transfer funds from your bank account to nanopay account was rejected for this invoice payment.\n</p></div>\n\n<div style=\" display: block; margin-top: 10px; \"><p style=\"margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: center; color: #7e8890;\">  Since the invoice has been paid, the amount will be deducted from your balance.\n</p></div>\n\n<div style=\" display: block; margin-top: 10px; \">\n<p style=\"padding: 0px 10px;margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: left; color: #7e8890;\"><b style=\"color: #252c3d\">Type of Transaction: </b>{{transaction-type}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Amount: </b>{{amount}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Date: </b>{{date}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Bank Nickname: </b>{{nickname}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Invoice #: </b>{{invoice}}</p></div>\n\n<div style=\" display: block; margin-bottom: 20px; margin-top: 37px;\"><p style=\"font-size:12px; margin-bottom:15px; margin: 15px 25px; color:#777777\">For questions or assistance, please reach out to <a href=\"mailto:support@nanopay.net\" style=\"color:#59a5d5\">support@nanopay.net</a></p></div>\n\n\n\n\n</td> \n</tr>\n\n{% endblock content %}"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 98,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-94",
   "name": "reject-BAP3Payer",
   "subject": "Source of funding transfer was rejected",
   "body": "{% extends 'nanopay-email-base'%}\n\n{% block content %}\n\n<tr>\n<td style= \"background-color: #FFFFFF;padding: 0 20px;\"> \n\n\n<div style=\" display: block; margin-top: 20.8px; \"><p style=\"margin-bottom: 1px;font-size: 16px; line-height: 1.38; padding: 0px 10px; text-align: center; color: #252c3d;\">Hi {{name}}, your request to transfer funds from your bank account to nanopay account was rejected for this invoice payment.</p></div>\n<div style=\" display: block; margin-top: 10px; \"><p style=\"margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: center; color: #7e8890;\"> Since the invoice has been paid, there is insufficient amount in your account.</p></div>\n\n\n<div style=\" display: block; margin-top: 10px; \">\n<p style=\"padding: 0px 10px;margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: left; color: #7e8890;\"><b style=\"color: #252c3d\">Type of Transaction: </b>{{transaction-type}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Amount: </b>{{amount}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Date: </b>{{date}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Bank Nickname: </b>{{nickname}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Invoice #: </b>{{invoice}}</p>\n</div>\n\n<div style=\" display: block; margin-top: 10px; \"><p style=\"margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: center; color: #7e8890;\"> <b> \nPlease contact nanopay immediately to resolve this issue.\n</b>\n</p></div>\n\n<div style=\" display: block; margin-bottom: 20px; margin-top: 37px;\"><p style=\"font-size:12px; margin-bottom:15px; margin: 15px 25px; color:#777777\">For questions or assistance, please reach out to <a href=\"mailto:support@nanopay.net\" style=\"color:#59a5d5\">support@nanopay.net</a></p></div>\n\n\n</td> \n</tr>\n\n{% endblock content %}"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 99,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-95",
   "name": "reject-BAP3Payee",
   "subject": "Source of funding transfer was rejected",
   "body": "{% extends 'nanopay-email-base'%}\n\n{% block content %}\n\n<tr>\n<td style= \"background-color: #FFFFFF;padding: 0 20px;\"> \n\n\n<div style=\" display: block; margin-top: 20.8px; \"><p style=\"margin-bottom: 1px;font-size: 16px; line-height: 1.38; padding: 0px 10px; text-align: center; color: #252c3d;\">Hi {{name}}, your request to transfer funds from your bank account to nanopay account was rejected for this invoice payment.</p></div>\n<div style=\" display: block; margin-top: 10px; \"><p style=\"margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: center; color: #7e8890;\"> Since the invoice has been paid, there is insufficient amount in your account.</p></div>\n\n\n<div style=\" display: block; margin-top: 10px; \">\n<p style=\"padding: 0px 10px;margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: left; color: #7e8890;\"><b style=\"color: #252c3d\">Type of Transaction: </b>{{transaction-type}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Amount: </b>{{amount}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Date: </b>{{date}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Bank Nickname: </b>{{nickname}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Invoice #: </b>{{invoice}}</p>\n</div>\n\n<div style=\" display: block; margin-top: 10px; \"><p style=\"margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: center; color: #7e8890;\"> <b> \nPlease contact nanopay immediately to resolve this issue.\n</b>\n</p></div>\n\n<div style=\" display: block; margin-bottom: 20px; margin-top: 37px;\"><p style=\"font-size:12px; margin-bottom:15px; margin: 15px 25px; color:#777777\">For questions or assistance, please reach out to <a href=\"mailto:support@nanopay.net\" style=\"color:#59a5d5\">support@nanopay.net</a></p></div>\n\n\n</td> \n</tr>\n\n{% endblock content %}"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 100,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-96",
   "name": "reject-BAP3Ops",
   "subject": " Cash In Rejected Post Holding Period - Insufficient Balance",
   "body": "{% extends 'nanopay-email-base'%}\n\n{% block content %}\n\n<tr>\n<td style= \"background-color: #FFFFFF;padding: 0 20px;\"> \n\n<div style=\" display: block; margin-top: 20.8px; \"><p style=\"margin-bottom: 1px;font-size: 16px; line-height: 1.38; padding: 0px 10px; text-align: center; color: #252c3d;\">TThe user does not have enough balance to revert a cash in transaction as a reject has been received post 2 day hold.\n</p></div>\n\n<div style=\" display: block; margin-top: 10px; \">\n<p style=\"padding: 0px 10px;margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: left; color: #7e8890;\"><b style=\"color: #252c3d\">User: </b>{{name}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Type of Transaction: </b>{{transaction-type}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Amount: </b>{{amount}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Date: </b>{{date}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Bank: </b>{{bank}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 20px;font-size: 14px;\"><b style=\"color: #252c3d\">Invoice #: </b>{{invoice}}</p>\n</div>\n\n\n</td> \n</tr>\n\n{% endblock content %}"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 101,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-97",
   "name": "reject-cashout",
   "subject": " Source of funding transfer was rejected",
   "body": "{% extends 'nanopay-email-base'%}\n\n{% block content %}\n\n<tr>\n<td style= \"background-color: #FFFFFF;padding: 0 20px;\"> \n\n\n<div style=\" display: block; margin-top: 20.8px; \"><p style=\"margin-bottom: 1px;font-size: 16px; line-height: 1.38; padding: 0px 10px; text-align: center; color: #252c3d;\">Hi {{name}}, your request to withdraw funds from your account to was rejected.</p></div>\n\n<div style=\" display: block; margin-top: 10px; \">\n<p style=\"padding: 0px 10px;margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: left; color: #7e8890;\"><b style=\"color: #252c3d\">Type of Transaction: </b>{{transaction-type}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Amount: </b>{{amount}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Date: </b>{{date}}</p>\n<p style=\"margin-top: 3px;padding: 0px 10px;text-align: left;margin-bottom: 1px;font-size: 14px;\"><b style=\"color: #252c3d\">Bank Nickname: </b>{{nickname}}</p></div>\n\n<div style=\" display: block; margin-top: 10px; \"><p style=\"margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: center; color: #7e8890;\"> <b>Please contact nanopay immediately to resolve this issue.</b>\n</p></div>\n\n<div style=\" display: block; margin-bottom: 20px; margin-top: 37px;\"><p style=\"font-size:12px; margin-bottom:15px; margin: 15px 25px; color:#777777\">For questions or assistance, please reach out to <a href=\"mailto:support@nanopay.net\" style=\"color:#59a5d5\">support@nanopay.net</a></p></div>\n\n\n\n</td> \n</tr>\n\n{% endblock content %}"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 102,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-98",
   "name": "treviso-email-base",
   "body": "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\"> \n<html xmlns=\"http://www.w3.org/1999/xhtml\">\n<head>\n<meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n<title>Treviso</title>\n<link href=\"https://fonts.googleapis.com/css?family=Lato:400,400i,700,700i\" rel=\"stylesheet\">\n<style type=\"text/css\"> \n\n</style>\n</head>\n<body style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; background: #f2f2f2;\">\n<div style=\"max-width: 420px; margin: auto; padding: 40px\">\n<div style=\"width: 100%; background: #fff; border-radius: 5px; padding: 20px; text-align: center\">\n<a href=\"#\" title=\"Email logo\" target=\"_blank\" style=\"cursor: default\">\n<img src=\"{{logo}}\" alt=\"\" style=\"width: 100px; padding: 24px; float: left; padding-right: 100%\"/>\n</a>{% block content %}{% endblock content %}\n</div>\n<div style=\"width: 100%; background: #fff; border-radius: 5px; padding: 20px; text-align: center; margin-top: 10px\">\n<div style=\"font-size: 14px; color: #444; line-height: 20px\">\n{{supportAddress}}\n</div>\n</div>\n</div>\n</body>\n</html>"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 103,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-99",
   "name": "external-invoice-payment",
   "group": "sme",
   "subject": "You've received a payment!",
@@ -754,7 +765,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 104,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-100",
   "name": "receivable",
   "group": "sme",
   "displayName": "{{fromName}}",
@@ -763,7 +774,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 105,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-101",
   "name": "reset-password",
   "group": "sme",
   "displayName": "{{appName}}",
@@ -772,7 +783,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 106,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-102",
   "name": "verifyEmail",
   "group": "sme",
   "displayName": "{{appName}}",
@@ -781,7 +792,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 107,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-103",
   "name": "password-changed",
   "group": "sme",
   "displayName": "{{appName}}",
@@ -790,7 +801,7 @@ p({
 })
 p({
   "class":"foam.nanos.notification.email.EmailTemplate",
-  "id": 108,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-104",
   "name":"addBank",
   "group":"sme",
   "displayName":"{{appName}}",
@@ -799,7 +810,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 109,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-105",
   "name": "verifiedBank",
   "displayName": "Treviso",
   "group": "sme",
@@ -808,7 +819,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 110,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-106",
   "name": "deletedBank",
   "group": "sme",
   "displayName": "{{appName}}",
@@ -817,7 +828,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 111,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-107",
   "name": "partners-external-invite",
   "group": "sme",
   "displayName": "{{senderCompany}}",
@@ -826,7 +837,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 112,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-108",
   "name": "transfer-paid",
   "displayName": "{{senderCompany}} (via Treviso)",
   "group": "sme",
@@ -835,7 +846,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 113,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-109",
   "name": "external-payable",
   "displayName": "{{fromName}} (via Treviso)",
   "group": "sme",
@@ -844,7 +855,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 114,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-110",
   "name": "external-receivable",
   "displayName": "{{fromName}} (via Treviso)",
   "group": "sme",
@@ -853,7 +864,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 116,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-111",
   "name": "contact-invite",
   "group": "sme",
   "displayName": "{{senderCompany}}",
@@ -862,7 +873,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 117,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-112",
   "name": "payable",
   "group": "sme",
   "subject": "{{fromName}} sent you a payment using {{appName}}",
@@ -871,7 +882,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 118,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-113",
   "name": "join-business-external",
   "group": "sme",
   "displayName": "{{business}} (via {{appName}})",
@@ -880,7 +891,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 119,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-114",
   "name": "verify-email-link",
   "displayName": "Treviso",
   "group": "sme",
@@ -888,7 +899,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 120,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-115",
   "name": "compliance-notification-to-user",
   "group": "sme",
   "displayName": "{{appName}}",
@@ -897,7 +908,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 121,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-116",
   "name": "notification-to-onboarding-team",
   "sendTo": "enrollment-team@nanopay.net",
   "group": "sme",
@@ -907,14 +918,14 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 122,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-117",
   "name": "liquidityNotification",
   "subject": "Balance alert",
   "body": "{% extends 'nanopay-email-base'%}\n\n{% block content %}\n\n<tr>\n<td style= \"background-color: #FFFFFF;padding: 0 20px;\"> \n\n<div style=\" display: block; \"><p style=\"margin-top: 20.8px ;margin-bottom: 1px;font-size: 16px; line-height: 1.38; padding: 0px 10px; text-align: center; color: #252c3d;\"> {{greeting}} {{name}} {{account}} {{direction}} {{threshold}}</p></div>\n<div style=\" display: block; margin-top: 10px; \"><p style=\"margin-bottom: 1px;font-size: 14px; line-height: 1.43; text-align: center; color: #7e8890; padding: 0px 10px;\"><p style=\"font-size:16px; margin:15px 25px; color:#777777\">Click here to view account</p></div>\n<div style=\" display: block; margin-top: 15px; text-align: center; \"><a href=\"{{link}}\"><button  style=\"width: 200px;height: 40px; font-size: 12px; cursor:pointer; border-radius: 2px; border: none; background-color: #59a5d5; color: #ffffff; text-align:center;\">Go to Portal</button></a> </div>\n<div style=\" display: block; margin-bottom: 20px; margin-top: 44px;\"><p style=\"font-size:16px; margin-bottom:15px; margin: 15px 25px; color:#777777\">Not you? Contact us at <a href=\"mailto:support@nanopay.net\" style=\"color:#59a5d5\">support@nanopay.net</a></p></div>\n\n</td>\n</tr>\n\n\n\n{% endblock content %}"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 123,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-118",
   "name": "invoice-approval-email",
   "group": "sme",
   "displayName": "{{appName}}",
@@ -923,7 +934,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 124,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-119",
   "name": "invoice-transaction-completed",
   "group": "sme",
   "displayName": "{{appName}}",
@@ -932,7 +943,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 125,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-120",
   "name": "voidInvoice",
   "group": "sme",
   "subject": "Payment request from {{fromName}} has been voided",
@@ -941,13 +952,13 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 126,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-121",
   "name": "treviso-email-base_2",
   "body": "<!DOCTYPE html>\n<html>\n\n<head>\n <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n  <title>{{appName}}</title>\n  <link href=\"https://fonts.googleapis.com/css?family=Lato:400,400i,700,700i\" rel=\"stylesheet\">\n</head>\n\n<body style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; background: #f2f2f2; padding: 50px;\">\n  <div style=\"width: 575px; background: #f5f7fa; border-radius: 5px; padding: 20px; text-align: center; margin-top: 10px\">\n    <div style=\"max-width: 505px; filter: drop-shadow(0 0 3px #e2e2e3);\">\n     <div style=\"width: 100%; min-height: 100px; background: #fff; border-radius: 5px; padding: 34px; text-align: left;\">\n   <div style=\"display: flex; justify-content: space-between; align-items: flex-end;\">\n          <a href=\"{{appLink}}\" title=\"Treviso Logo\" target=\"_blank\" style=\"cursor: default\">\n            <img src= \"{{logo}}\"  alt=\"Treviso Logo\" style=\"width: 115px;\" />\n          </a>\n          {% block inlineWithLogoContent %}{% endblock inlineWithLogoContent %}\n        </div>\n        {% block content %}{% endblock content %}\n      </div>\n    </div>\n    <a href=\"https://facebook.com/HelloTreviso\" style=\"text-decoration: none;\">\n      <img src=\"https://i.ibb.co/J3dd9Q3/facebook-logo.png\" alt=\"facebook-logo\" style=\"width: 20px; margin-top: 20px; margin-right: 10px;\" />\n    </a>\n    <a href=\"https://linkedin.com/company/treviso\" style=\"text-decoration: none;\">\n      <img src=\"https://i.ibb.co/qMk76LQ/linkedin-logo.png\" alt=\"linkedin-logo\" style=\"width: 20px;\" />\n    </a>\n    <div style=\"font-size: 10px; color: #8e9090;\">\n      <p>This message was sent to {{sendTo}}</p>\n      <p>{{supportAddress}}</p>\n    </div>\n  </div>\n</body>\n\n</html>"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 127,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-122",
   "name": "failed-transaction",
   "group": "payment-ops",
   "subject": "Failed Transaction",
@@ -956,7 +967,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 128,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-123",
   "name": "pay-from-bank-account-reject",
   "group": "sme",
   "subject": "Declined payment to {{name}}",
@@ -965,7 +976,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 129,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-124",
   "name": "join-business-internal",
   "group": "sme",
   "subject": "{{inviterName}} invited you to join {{business}} on {{appName}}",
@@ -974,7 +985,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 130,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-125",
   "name": "join-business-splash-page",
   "displayName": "Treviso",
   "group": "sme",
@@ -982,7 +993,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 131,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-126",
   "subject": "Invoice #{{account}} has been marked as complete",
   "name": "mark-as-complete",
   "group": "sme",
@@ -991,7 +1002,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 132,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-127",
   "name": "afex-business-created-notification",
   "sendTo": "enrollment-team@nanopay.net",
   "group": "sme",
@@ -1001,7 +1012,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 133,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-128",
   "name": "international-payments-enabled-notification",
   "group": "sme",
   "displayName": "{{appName}}",
@@ -1010,7 +1021,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 134,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-129",
   "name": "scheduledEmail",
   "group": "sme",
   "displayName": "{{appName}}",
@@ -1019,7 +1030,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 135,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-130",
   "name": "user-signup",
   "group": "payment-ops",
   "displayName": "Treviso",
@@ -1028,17 +1039,17 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 136,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-131",
   "name": "helpsignup",
   "group": "sme",
   "replyTo": "{{supportEmail}}",
   "displayName": "{{appName}}",
-  "subject": "Podemos ajudá-lo (a) a se cadastrar no portal da {{appName}} / Can we help with your {{appName}} sign up?",
+  "subject": "Can we help with your {{appName}} sign up?",
   "body": "{% extends 'treviso-email-base_3'%}\n \n {% block content %}\n <div style=\"font-size: 13px;\">\n <p style = \"margin: 0;\"> Olá {{name}},</p>\n <br>\n <p style = \"margin: 0;\"> Muito obrigado por criar sua conta no portal da {{appName}} ! Meu nome é {{personalSupportFirstName}}, da central de atendimento {{appName}}, e estou aqui para ajudá-lo a terminar o seu cadastro.</p>\n <br>\n <p style = \"margin: 0;\">Agora seria um bom momento para conversarmos ?</p>\n <br>\n <p style = \"margin: 0;\">O nosso time está a espera para aprová-lo (a) para que você possa enviar seus pagamentos e remessas internacionais o mais rápido possível.</p>\n <br>\n <p style =  \"margin: 0;\"> Atenciosamente,</p>\n <p style = \"margin: 4px 0 0;\"> Atendimento ao Cliente {{appName}}</p>\n <br>\n <p style = \"margin: 0 0 20px;\"> --</p>\n </div>\n \n <div style=\"font-size: 13px;\">\n <p style = \"margin: 0;\"> Hello {{name}},</p>\n <br>\n <p style = \"margin: 0;\"> Thank you for creating an {{appName}} account! I'm {{personalSupportFirstName}}, the onboarding specialist here at {{appName}}, and I'm here to help you complete your registration.</p>\n <br>\n <p style = \"margin: 0;\">Is now a good time to hop on a call?</p>\n <br>\n <p style = \"margin: 0;\">Our review team is standing by to get your profile approved, so your business can start sending as soon as possible.</p>\n <br>\n <p style =  \"margin: 0;\"> Chat soon,</p>\n <p style = \"margin: 4px 0 0;\"> {{personalSupportFirstName}}</p>\n <br>\n <p style = \"margin: 0 0 20px;\"> --</p>\n </div>\n \n {% endblock content %}"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 137,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-132",
   "name": "signingOfficerReminder",
   "group": "sme",
   "subject": "Invitation from your employee to join Treviso",
@@ -1046,7 +1057,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 138,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-133",
   "name": "micro-deposit-failed",
   "sendTo": "{{userEmail}}",
   "group": "sme",
@@ -1056,7 +1067,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 139,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-134",
   "name": "micro-deposit-successed",
   "sendTo": "{{userEmail}}",
   "group": "sme",
@@ -1066,13 +1077,13 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 140,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-135",
   "name": "treviso-email-base_3",
   "body": "<!DOCTYPE html>\n<html>\n\n<head>\n <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n  <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\" />\n <title>{{appName}}</title>\n</head>\n\n<body>\n<div style=\"max-width: 854px; min-width: 420px; margin: auto; padding: 105px 174px 198px 45px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;\">\n   <div style=\"width: 100%; min-height: 100px;\">\n        {% block content %}{% endblock content %}\n    </div>\n   <img src= \"{{logo}}\"  alt=\"Treviso Logo\" style=\"width: 115px;\" />\n    <div style=\"font-size: 14px; margin: 14px 0;\">\n        <p style=\"font-weight: bold; margin: 0 0 4px;\">{{personalSupportFullName}}</p>\n    <p style=\"margin: 0;\">Onboarding Specialist</p>\n   </div>\n    <div style=\"margin-bottom: 32.5px;\">\n       <pre style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;\">E: <span><a href=\"mailto:{{personalSupportEmail}}\" style=\"color: #1155cc;\">{{personalSupportEmail}}</a></span>   |   P: {{personalSupportPhone}}  |   W: <span><a href=\"{{appLink}}\" style=\"color: #604aff;\">{{appLink}}</a></span>\n </pre>\n   </div>\n   <div style=\"font-size: 12px;\">\n       <a href=\"{{appLink}}\" style=\"color: #1155cc;\">Want more information? Click here.</a>\n      <p style=\"margin: 4px 0 0;\">{{supportAddress}}</p>\n   </div>\n  </div>\n</body>\n\n</html>"
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 141,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-136",
   "name": "onboarding-reminder",
   "group": "sme",
   "displayName": "{{appName}}",
@@ -1081,7 +1092,7 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 142,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-137",
   "name": "micro-deposit-sent",
   "sendTo": "{{userEmail}}",
   "group": "sme",
@@ -1089,22 +1100,22 @@ p({
   "subject": "Your bank account has been added",
   "body": "{% extends 'treviso-email-base_2'%}\n\n{% block content %}\n<p style=\"font-size: 24px; margin-top: 50px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin-bottom: 40px;\"><b>Bank account added</b></p>\n<p style = \"font-size: 16px;\"> Hello {{name}},</p><br>\n<p style = \"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 16px; margin-top: -5px; margin-bottom: 30px;\">Your bank account has been added to your business:</p>\n<br>\n<div style= \"border-radius: 4px; font-size: 14px;\">\n<div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px;\">\n<div class= \"left  \" style= \"float:left  \">\n<span style = \"width: 68px; height: 21px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;font-weight: 900; font-stretch: normal; font-style: normal; line-height: 1.5; letter-spacing: normal; color: #2b2b2b;\">Institution Number</span>\n</div>\n<div class= \"right  \" style= \"float:right; color: #8e9090;\">\n{{institutionNumber}}\n</div>\n</div>\n<div style= \"overflow: hidden; border-bottom: 1px solid #d9d9d9; padding-bottom: 8px; padding-top: 8px;\">\n<div class= \"left  \" style= \"float:left  \">\n<span style = \"width: 68px; height: 21px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 900; font-stretch: normal; font-style: normal; line-height: 1.5; letter-spacing: normal; color: #2b2b2b;\">Institution</span>\n</div>\n<div class= \"right  \" style= \"float:right; color: #8e9090;\">\n{{institutionName}}\n</div>\n </div>\n<div style= \"overflow: hidden; padding-bottom: 8px; padding-top:8px  \"> \n<div class= \"left  \" style= \"float:left  \">\n<span style = \"width: 68px; height: 21px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 14px;font-weight: 900;font-stretch: normal;font-style: normal;line-height: 1.5;letter-spacing: normal;color: #2b2b2b;\">Account Number</span>\n</div>\n<div class= \"right  \" style= \"float:right; color: #8e9090;\">\n***{{accountNumber}}\n</div>\n</div>\n<p style = \"margin-top: 30px;margin-bottom: 20px; line-height: 24px; font-size: 16px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;\">We’ve made a very small deposit into your bank account. The micro-deposit will take 1-3 business days to show up on your statement. The statement description for this deposit will be NANOPAY X-BORDER.</p>\n<p style = \"margin-top: 30px;margin-bottom: 20px; line-height: 24px; font-size: 16px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;\">We will notify you when the micro-deposit arrives in your account. Your bank account will remain unverified until you enter the micro-deposit amount.</p>\n<p style = \"margin-top: 20px;margin-bottom: 30px; line-height: 24px; font-size: 16px; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;\">If you have any questions, contact us at <a style = \" color: #604aff;font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-weight: 900;\">{{supportEmail}}</a> </p>\n</div>\n<a href=\"{{appLink}}\" style=\" text-decoration: none;\">\n<div style=\"margin-top: 30px; padding: 14px 0; text-align: center; width: 504px; border-radius: 4px; font-weight: 600; background: #604aff; border-color: #4a33f4; color: #fff; cursor: pointer;\"> Go to {{appName}}\n</div>\n</a>\n{% endblock content %}"
 })
-
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 152,
-  "name": "tedTransfer",
-  "displayName": "{{appName}}",
-  "group": "sme",
-  "subject": "Complete your Transaction",
-  "body": "{% extends 'treviso-email-base'%}\n\n{% block content %}\n<h3 style=\"margin-top: 25px\">\n      ATENÇÃO : Esta transação ainda não foi enviada!<br>      Para completar, envie um TED de ({{amount}}) para :<br>      Treviso Corretora de Câmbio S.A<br>       CNPJ: 02.992.317/0001-87<br>       Banco SC Treviso (143)<br>       Agencia: 0001<br>       Conta: 1-1<br>       O não envio dos fundos causará o cancelamento automático desta transação.</a>\n{% endblock content %}"
-})
-p({
-  "class": "foam.nanos.notification.email.EmailTemplate",
-  "id": 151,
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-156",
   "name": "top-level-capability-status-update",
   "group": "sme",
   "displayName":"{{appName}}",
   "subject": "{{capName}} capability status has been updated",
   "body": "{% extends 'treviso-email-base_2'%}\n\n{% block content %}\n<p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; font-size: 24px; font-weight: 900; margin: 40px 0;\">Capability status updated</p>\n<p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">Hello,</p>\n<br>\n<p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">The Capability <b>{{capName}}</b> has been set to {{junctionStatus}} on {{appName}}.</p>\n<a href=\"{{appLink}}\" style=\"text-decoration: none;\"><div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">\n<p style = \"padding: 14px 0 0; margin: 0;\">Go to {{appName}}</p>\n</div></a>\n{% endblock content %}"
 })
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-treviso-1",
+  "name": "tedTransfer",
+  "displayName": "{{appName}}",
+  "group": "sme",
+  "subject": "Complete your Transaction",
+  "body": "{% extends 'treviso-email-base'%}\n\n{% block content %}\n<h3 style=\"margin-top: 25px\">\n      ATENÇÃO : Esta transação ainda não foi enviada!<br>      Para completar, envie um TED de ({{amount}}) para :<br>      Treviso Corretora de Câmbio S.A<br>       CNPJ: 02.992.317/0001-87<br>       Banco SC Treviso (143)<br>       Agencia: 0001<br>       Conta: 1-1<br>       O não envio dos fundos causará o cancelamento automático desta transação.</a>\n{% endblock content %}"
+})
+

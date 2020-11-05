@@ -1,21 +1,10 @@
-// Temporary nature codes used in payment flow.
-p({class: "net.nanopay.country.br.NatureCode", operationType: "10001", payerType: "xx", id: "cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-1", name:"Supply and Technology Services", reviewRequired:true})
-p({class: "net.nanopay.country.br.NatureCode", operationType: "10002", payerType: "xx", id: "cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-2", name:"Telecommunication services", reviewRequired:true})
-p({class: "net.nanopay.country.br.NatureCode", operationType: "10003", payerType: "xx", id: "cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-3", name:"Computing services", reviewRequired:true})
-p({class: "net.nanopay.country.br.NatureCode", operationType: "20001", payerType: "xx", id: "cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-4", name:"Export with advance receipt", reviewRequired:true})
-p({class: "net.nanopay.country.br.NatureCode", operationType: "20002", payerType: "xx", id: "cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-5", name:"Embedded Goods", reviewRequired:true})
-p({class: "net.nanopay.country.br.NatureCode", operationType: "20003", payerType: "xx", id: "cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-6", name:"Export without RE or DU-E / DSE registration - International Orders", reviewRequired:true})
-
 // treviso service provider capability and permissions
 p({
   class: "foam.nanos.auth.ServiceProvider",
   id: "treviso",
   description: "treviso",
   permissionsGranted: [
-    "net.nanopay.partner.treviso.trevisounlockpaymenttermsandconditions.section.reviewAgreementDocumentsSection",
-    "naturecode.read.cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-1",
-    "naturecode.read.cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-2",
-    "naturecode.read.cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode-3",
+    "net.nanopay.partner.treviso.trevisounlockpaymenttermsandconditions.section.reviewAgreementDocumentsSection"
   ]
 })
 p({
@@ -70,6 +59,17 @@ p({
   class: "foam.nanos.crunch.Capability",
   id: "trevisoBusinessMenuCapability",
   name: "treviso business registration granted menu",
+  version: "0",
+  enabled: true,
+  visible: false,
+  permissionsGranted: []
+})
+
+p({
+  class: "net.nanopay.country.br.BeneficiaryType",
+  id: "trevisoBeneficiaryType",
+  name: "treviso supported beneficiary type",
+  date: "A",
   version: "0",
   enabled: true,
   visible: false,

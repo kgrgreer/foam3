@@ -40,8 +40,10 @@ foam.CLASS({
   messages: [
     { name: 'UNDER_AGE_LIMIT_ERROR', message: 'Must be at least 18 years old' },
     { name: 'OVER_AGE_LIMIT_ERROR', message: 'Must be under the age of 125 years old' },
-    { name: 'INVALID_CPF', message: 'Invalid CPF Number' },
-    { name: 'INVALID_DIRECTOR_NAME', message: 'Click to verify director name' }
+    { name: 'INVALID_CPF', message: 'Valid CPF number required' },
+    { name: 'INVALID_DIRECTOR_NAME', message: 'Confirm your director\’s name' },
+    { name: 'FOREIGN_ID_ERROR', message: 'RG/RNE required' },
+    { name: 'NATIONALITY_ERROR', message: 'Nationality required' }
   ],
 
   properties: [
@@ -55,13 +57,13 @@ foam.CLASS({
       class: 'String',
       name: 'firstName',
       gridColumns: 6,
-      minLength: 1
+      required: true
     },
     {
       class: 'String',
       name: 'lastName',
       gridColumns: 6,
-      minLength: 1
+      required: true
     },
     {
       class: 'String',
@@ -73,6 +75,15 @@ foam.CLASS({
         foam.u2.DisplayMode.RW :
         foam.u2.DisplayMode.HIDDEN;
       },
+      validationPredicates: [
+        {
+          args: ['foreignId'],
+          predicateFactory: function(e) {
+            return e.GTE(foam.mlang.StringLength.create({ arg1: net.nanopay.model.BusinessDirector.FOREIGN_ID }), 1);
+          },
+          errorMessage: 'FOREIGN_ID_ERROR'
+        }
+      ],
       externalTransient: true
     },
     foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
@@ -121,7 +132,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'cpf',
-      label: 'CPF',
+      label: 'Cadastro de Pessoas Físicas (CPF)',
       required: true,
       visibility: function (type) {
         return type == 'BR' ?
@@ -199,7 +210,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'verifyName',
-      label: 'Please verify that name displayed below matches director name.',
+      label: 'Is this your director?',
       visibility: function (type, cpfName) {
         return type == 'BR' && cpfName.length > 0 ?
         foam.u2.DisplayMode.RW :
@@ -254,7 +265,16 @@ foam.CLASS({
             }
           ]
         };
-      }
+      },
+      validationPredicates: [
+        {
+          args: ['nationality'],
+          predicateFactory: function(e) {
+            return e.GTE(foam.mlang.StringLength.create({ arg1: net.nanopay.model.BusinessDirector.NATIONALITY }), 1);
+          },
+          errorMessage: 'NATIONALITY_ERROR'
+        }
+      ]
     }
   ],
   methods: [

@@ -48,6 +48,10 @@ foam.INTERFACE({
         {
           type: 'String',
           name: 'cpf'
+        },
+        {
+          type: 'long',
+          name: 'userId'
         }
       ]
     },
@@ -84,6 +88,10 @@ foam.INTERFACE({
         {
           type: 'String',
           name: 'cpf'
+        },
+        {
+          type: 'long',
+          name: 'userId'
         }
       ]
     },

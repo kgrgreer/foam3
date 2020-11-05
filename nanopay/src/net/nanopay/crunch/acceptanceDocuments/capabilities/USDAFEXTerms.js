@@ -21,7 +21,16 @@ foam.CLASS({
   extends: 'net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability',
 
   messages: [
-    { name: 'ACKNOWLEDGE_AFEX_AGREEMENT', message: 'Must acknowledge the AFEX agreement' }
+    { name: 'ACKNOWLEDGE_AFEX_AGREEMENT', message: 'Certification required' }
+  ],
+
+  sections: [
+    {
+      name: 'reviewAgreementDocumentsSection',
+      title: 'Review and accept the terms and conditions',
+      navTitle: 'Terms and Conditions',
+      permissionRequired: true
+    },
   ],
 
   properties: [
@@ -31,7 +40,7 @@ foam.CLASS({
     },
     {
       name: 'checkboxText',
-      value: 'I acknowledge that both domestic and international payments are authorized and provided by AFEX and not nanopay. I certify that all statements provided are true and correct and I have obtained consent to submit all personal information provided. I have read, understood and agree to '
+      value: 'I certify that I have consent to submit all personal information provided, and that all information is correct. I have read, understood, and agree to '
     },
     {
       name: 'link',

@@ -118,7 +118,12 @@ foam.CLASS({
               }
 
             } catch (Throwable t) {
-              String msg = "Error getting trade confirmation for AfexTransaction " + transaction.getId();
+              transaction.setStatus(TransactionStatus.DECLINED);
+              transactionDAO.put(transaction);
+              Transaction root = transaction.findRoot(x);
+              root.setStatus(TransactionStatus.DECLINED);
+              transactionDAO.put(root);
+              String msg = "Error creating trade for AfexTransaction " + transaction.getId();
               logger.error(msg, t);
               Notification notification = new Notification.Builder(x)
                 .setTemplate("NOC")

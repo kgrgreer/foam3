@@ -41,6 +41,7 @@ foam.CLASS({
       width: 157px;
       height: 157px;
       justify-content: center;
+      margin-top: 16px;
     }
     ^two-factor-key {
       display: flex;
@@ -133,11 +134,13 @@ foam.CLASS({
     { name: 'TWO_FACTOR_NO_TOKEN_ERROR', message: 'Please enter a verification token' },
     { name: 'TWO_FACTOR_ENABLE_SUCCESS', message: 'Two-factor authentication enabled' },
     { name: 'TWO_FACTOR_ENABLE_ERROR', message: 'Could not enable two-factor authentication. Please try again.' },
-    { name: 'TWO_FACTOR_BENEFIT', message: 'Two-factor authentication provides an extra layer of security to your account. Two-factor authentication is enabled at all time to prevent potential unauthorized access to your business and financial information.' },
+    { name: 'TWO_FACTOR_BENEFIT', message: 'Your account is protected with two-factor authentication' },
     { name: 'TWO_FACTOR_LABEL', message: 'Enter verification code' },
     { name: 'STATUS', message: 'Status' },
     { name: 'ENABLED', message: '• Enabled' },
-    { name: 'DISABLED', message: '• Disabled' }
+    { name: 'DISABLED', message: '• Disabled' },
+    { name: 'QR_LABEL', message: 'QR code' },
+    { name: 'QR_KEY_LABEL', message: 'Key: ' }
   ],
 
   properties: [
@@ -183,12 +186,13 @@ foam.CLASS({
               return this.E().addClass(this.myClass('flex-div'))
                 .start()
                   .addClass(this.myClass('qr-and-key'))
+                  .add(this.QR_LABEL)
                   .start().addClass(this.myClass('two-factor-qr-code'))
                     .start('img').attrs({ src: this.twoFactorQrCode$ }).addClass('image-qr-code').end()
                   .end()
                   .start().addClass(this.myClass('two-factor-key'))
                     .add(this.slot(function(twoFactorKey) {
-                      return (twoFactorKey.match(/.{4}/g) || []).join('-');
+                      return this.QR_KEY_LABEL + (twoFactorKey.match(/.{4}/g) || []).join('-');
                     }))
                   .end()
                 .end()

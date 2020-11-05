@@ -301,6 +301,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       nvps.add(new BasicNameValuePair("BankCountryCode", request.getBankCountryCode()));
       nvps.add(new BasicNameValuePair("BankName", request.getBankName()));
       nvps.add(new BasicNameValuePair("BankRoutingCode", request.getBankRoutingCode()));
+      nvps.add(new BasicNameValuePair( "BankSWIFTBIC", request.getBankSWIFTBIC()));
       nvps.add(new BasicNameValuePair("BeneficiaryAddressLine1", request.getBeneficiaryAddressLine1()));
       nvps.add(new BasicNameValuePair("BeneficiaryCity", request.getBeneficiaryCity()));
       nvps.add(new BasicNameValuePair("BeneficiaryCountryCode", request.getBeneficiaryCountryCode()));

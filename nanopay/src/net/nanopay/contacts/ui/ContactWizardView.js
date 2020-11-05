@@ -125,7 +125,7 @@ foam.CLASS({
             return self.E().addClass('section-container')
               .start().addClass(self.myClass('step-indicator'))
                 .add(this.slot(function(currentIndex) {
-                  return `Step ${currentIndex + 1} of 3`
+                  return `Step ${currentIndex + 1} of 3`;
                 }))
               .end()
               .tag(self.sectionView, {

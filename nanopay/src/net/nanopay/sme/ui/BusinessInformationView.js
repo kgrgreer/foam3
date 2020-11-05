@@ -44,10 +44,10 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'TITLE', message: 'Company information' },
-    { name: 'BUSINESS_NAME_LABEL', message: 'Registered business name' },
-    { name: 'PHONE_LABEL', message: 'Business phone #' },
-    { name: 'ADDRESS_LABEL', message: 'Business address' },
+    { name: 'TITLE', message: 'Business information' },
+    { name: 'BUSINESS_NAME_LABEL', message: 'Name' },
+    { name: 'PHONE_LABEL', message: 'Phone number' },
+    { name: 'ADDRESS_LABEL', message: 'Address' },
     { name: 'WEBSITE_LABEL', message: 'Website' }
   ],
 
