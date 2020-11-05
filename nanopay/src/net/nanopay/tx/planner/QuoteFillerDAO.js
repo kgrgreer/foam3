@@ -48,6 +48,11 @@ foam.CLASS({
         TransactionQuote quote = (TransactionQuote) obj;
         Transaction txn = quote.getRequestTransaction();
 
+        if ( txn.getAmount() == 0 &&
+             txn.getDestinationAmount() == 0 ) {
+          throw new ValidationException("Amount Invalid");
+        }
+
         // ---- set source account
         Account account = txn.findSourceAccount(x);
         if ( account == null ) {
