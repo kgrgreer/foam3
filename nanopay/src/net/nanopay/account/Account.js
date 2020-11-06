@@ -137,7 +137,6 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'id',
-      label: 'Account Number',
       documentation: 'The ID for the account.',
       section: 'administration',
       visibility: 'RO',
