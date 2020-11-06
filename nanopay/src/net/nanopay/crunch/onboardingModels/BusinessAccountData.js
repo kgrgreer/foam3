@@ -45,7 +45,8 @@ foam.CLASS({
     { name: 'NO_SUPPLIERS_INFO', message: 'Supplier information required' },
     { name: 'CUSTOMER_OBJ_ERROR', message: 'One or more of the customers entered is invalid' },
     { name: 'SUPPLIER_OBJ_ERROR', message: 'One or more of the suppliers entered is invalid' },
-    { name: 'INVALID_DATE', message: 'Cannot be a future date' },
+    { name: 'INVALID_DATE_ERROR', message: 'Valid date required' },
+    { name: 'MAX_DATE_ERROR', message: 'Cannot be a future date' },
     { name: 'YES', message: 'Yes' },
     { name: 'NO', message: 'No' },
     { name: 'CUSTOMERS_MSG', message: 'customer' },
@@ -113,9 +114,16 @@ foam.CLASS({
         {
           args: ['dateOfFilingTaxes'],
           predicateFactory: function(e) {
-            return e.LTE(net.nanopay.crunch.onboardingModels.BusinessAccountData.DATE_OF_FILING_TAXES, new Date())
+            return e.NEQ(net.nanopay.crunch.onboardingModels.BusinessAccountData.DATE_OF_FILING_TAXES, null);
           },
-          errorMessage: 'INVALID_DATE'
+          errorMessage: 'INVALID_DATE_ERROR'
+        },
+        {
+          args: ['dateOfFilingTaxes'],
+          predicateFactory: function(e) {
+            return e.LTE(net.nanopay.crunch.onboardingModels.BusinessAccountData.DATE_OF_FILING_TAXES, new Date());
+          },
+          errorMessage: 'MAX_DATE_ERROR'
         }
       ]
     },

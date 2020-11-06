@@ -38,8 +38,9 @@ foam.CLASS({
   ],
 
   messages: [
+    { name: 'INVALID_DATE_ERROR', message: 'Valid date of birth required' },
     { name: 'UNDER_AGE_LIMIT_ERROR', message: 'Must be at least 18 years old' },
-    { name: 'OVER_AGE_LIMIT_ERROR', message: 'Must be under the age of 125 years old' },
+    { name: 'OVER_AGE_LIMIT_ERROR', message: 'Must be less than 125 years old' },
     { name: 'INVALID_CPF', message: 'Valid CPF number required' },
     { name: 'INVALID_DIRECTOR_NAME', message: 'Confirm your director\’s name' },
     { name: 'FOREIGN_ID_ERROR', message: 'RG/RNE required' },
@@ -98,12 +99,16 @@ foam.CLASS({
         {
           args: ['birthday'],
           predicateFactory: function(e) {
+            return e.NEQ(net.nanopay.model.BusinessDirector.BIRTHDAY, null);
+          },
+          errorMessage: 'INVALID_DATE_ERROR'
+        },
+        {
+          args: ['birthday'],
+          predicateFactory: function(e) {
             var limit = new Date();
             limit.setDate(limit.getDate() - ( 18 * 365 ));
-            return e.AND(
-              e.NEQ(net.nanopay.model.BusinessDirector.BIRTHDAY, null),
-              e.LT(net.nanopay.model.BusinessDirector.BIRTHDAY, limit)
-            );
+            return e.LT(net.nanopay.model.BusinessDirector.BIRTHDAY, limit);
           },
           errorMessage: 'UNDER_AGE_LIMIT_ERROR'
         },
@@ -112,10 +117,7 @@ foam.CLASS({
           predicateFactory: function(e) {
             var limit = new Date();
             limit.setDate(limit.getDate() - ( 125 * 365 ));
-            return e.AND(
-              e.NEQ(net.nanopay.model.BusinessDirector.BIRTHDAY, null),
-              e.GT(net.nanopay.model.BusinessDirector.BIRTHDAY, limit)
-            );
+            return e.GT(net.nanopay.model.BusinessDirector.BIRTHDAY, limit);
           },
           errorMessage: 'OVER_AGE_LIMIT_ERROR'
         }

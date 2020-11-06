@@ -31,6 +31,7 @@ foam.CLASS({
   ],
 
   messages: [
+    { name: 'INVALID_DATE_ERROR', message: 'Valid date of birth required' },
     { name: 'UNGER_AGE_LIMIT_ERROR', message: 'Must be at least 18 years old' },
     { name: 'OVER_AGE_LIMIT_ERROR', message: 'Must be under the age of 125 years old' }
   ],
@@ -43,12 +44,25 @@ foam.CLASS({
         {
           args: ['birthday'],
           predicateFactory: function(e) {
+            return e.NEQ(net.nanopay.crunch.onboardingModels.UserBirthDateData.BIRTHDAY, null);
+          },
+          errorMessage: 'INVALID_DATE_ERROR'
+        },
+        {
+          args: ['birthday'],
+          predicateFactory: function(e) {
             var limit = new Date();
             limit.setDate(limit.getDate() - ( 18 * 365 ));
-            return e.AND(
-              e.NEQ(net.nanopay.crunch.onboardingModels.UserBirthDateData.BIRTHDAY, null),
-              e.LT(net.nanopay.crunch.onboardingModels.UserBirthDateData.BIRTHDAY, limit)
-            );
+            return e.LT(net.nanopay.crunch.onboardingModels.UserBirthDateData.BIRTHDAY, limit);
+          },
+          errorMessage: 'INVALID_DATE_ERROR'
+        },
+        {
+          args: ['birthday'],
+          predicateFactory: function(e) {
+            var limit = new Date();
+            limit.setDate(limit.getDate() - ( 18 * 365 ));
+            return e.LT(net.nanopay.crunch.onboardingModels.UserBirthDateData.BIRTHDAY, limit);
           },
           errorMessage: 'UNGER_AGE_LIMIT_ERROR'
         },
@@ -57,10 +71,7 @@ foam.CLASS({
           predicateFactory: function(e) {
             var limit = new Date();
             limit.setDate(limit.getDate() - ( 125 * 365 ));
-            return e.AND(
-              e.NEQ(net.nanopay.crunch.onboardingModels.UserBirthDateData.BIRTHDAY, null),
-              e.GT(net.nanopay.crunch.onboardingModels.UserBirthDateData.BIRTHDAY, limit)
-            );
+            return e.GT(net.nanopay.crunch.onboardingModels.UserBirthDateData.BIRTHDAY, limit);
           },
           errorMessage: 'OVER_AGE_LIMIT_ERROR'
         }
