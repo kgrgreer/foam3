@@ -376,6 +376,7 @@ List<ApprovalRequest> approvalRequests = ((ArraySink) approvalRequestDAO
   .getArray();
 
 for ( ApprovalRequest approvalRequest : approvalRequests ) {
+  approvalRequest = (ApprovalRequest) approvalRequest.fclone();
   approvalRequest.setStatus(ApprovalStatus.APPROVED);
   try{
     approvalRequestDAO.put(approvalRequest);

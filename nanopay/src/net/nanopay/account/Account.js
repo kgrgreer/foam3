@@ -138,7 +138,6 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'id',
-      label: 'Account Number',
       includeInDigest: true,
       documentation: 'The ID for the account.',
       section: 'administration',
@@ -202,7 +201,11 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.core.Unit',
       name: 'denomination',
+<<<<<<< HEAD
       includeInDigest: true,
+=======
+      label: 'Currency',
+>>>>>>> a03421a663b5de359eabdfa3c4c7e4e9c9d0b11e
       targetDAOKey: 'currencyDAO',
       documentation: `The unit of measure of the payment type. The payment system can handle
         denominations of any type, from mobile minutes to stocks.

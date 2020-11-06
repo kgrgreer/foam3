@@ -30,7 +30,9 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'BUSINESS_INCORPORATION_DATE_ERROR', message: 'Business incorporation cannot be a future date' }
+    { name: 'INVALID_DATE_ERROR', message: 'Valid business incorporation date required' },
+    { name: 'MIN_DATE_ERROR', message: 'Business incorporation must be a more recent date' },
+    { name: 'MAX_DATE_ERROR', message: 'Business incorporation cannot be a future date' }
   ],
 
   properties: [
@@ -44,16 +46,25 @@ foam.CLASS({
         {
           args: ['businessIncorporationDate'],
           predicateFactory: function(e) {
-            var min = new Date();
-            var max = new Date();
-            min.setDate(min.getDate() - ( 350 * 365 ));
-            return e.AND(
-              e.NEQ(net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData.BUSINESS_INCORPORATION_DATE, null),
-              e.GTE(net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData.BUSINESS_INCORPORATION_DATE, min),
-              e.LTE(net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData.BUSINESS_INCORPORATION_DATE, max)
-            );
+            return e.NEQ(net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData.BUSINESS_INCORPORATION_DATE, null);
           },
-          errorMessage: 'BUSINESS_INCORPORATION_DATE_ERROR'
+          errorMessage: 'INVALID_DATE_ERROR'
+        },
+        {
+          args: ['businessIncorporationDate'],
+          predicateFactory: function(e) {
+            var min = new Date();
+            min.setDate(min.getDate() - ( 350 * 365 ));
+            return e.GTE(net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData.BUSINESS_INCORPORATION_DATE, min);
+          },
+          errorMessage: 'MIN_DATE_ERROR'
+        },
+        {
+          args: ['businessIncorporationDate'],
+          predicateFactory: function(e) {
+            return e.LTE(net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData.BUSINESS_INCORPORATION_DATE, new Date());
+          },
+          errorMessage: 'MAX_DATE_ERROR'
         }
       ]
     }

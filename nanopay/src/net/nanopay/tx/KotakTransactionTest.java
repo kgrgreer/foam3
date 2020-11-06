@@ -47,7 +47,7 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
     approvalDAO = (DAO) x.get("approvalRequestDAO");
     fxQuoteDAO = (DAO) x.get("fxQuoteDAO");
     quoteDAO = (DAO) x.get("localTransactionPlannerDAO");
-    RuleGroup kotak = (RuleGroup) ruleGroupDAO.find("KotakPlanner");
+    RuleGroup kotak = (RuleGroup) ruleGroupDAO.find("KotakPlanner").fclone();
     kotak.setEnabled(true);
     ruleGroupDAO.put(kotak);
     DAO exchangeRateDAO = (DAO) x.get("exchangeRateDAO");
