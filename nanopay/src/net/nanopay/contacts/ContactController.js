@@ -81,13 +81,16 @@ foam.CLASS({
                 }
               }
             }),
-            'signUpStatus',
-            'warning'
+            'firstName',
+            'lastName',
+            'email',
+            'businessAddress.countryId',
+            'bankAccount.denomination',
+            'signUpStatus'
           ],
           contextMenuActions: [
             this.Action.create({
               name: 'addBankAccount',
-              label: 'Add Bank',
               isAvailable: async function() {
                 var bank = await this.accounts.find(this.EQ(net.nanopay.bank.BankAccount.OWNER, this.id))
                 return this.signUpStatus !== self.ContactStatus.READY && ! bank;
@@ -108,7 +111,7 @@ foam.CLASS({
             }),
             this.Action.create({
               name: 'edit',
-              label: 'View details',
+              label: 'View Details',
               isAvailable: async function() {
                 return this.signUpStatus !== self.ContactStatus.READY;
               },
@@ -224,7 +227,6 @@ foam.CLASS({
       factory: function() {
         return this.Action.create({
           name: 'addContact',
-          label: 'Add a Contact',
           code: function() {
             this.pushMenu('sme.menu.toolbar');
           }

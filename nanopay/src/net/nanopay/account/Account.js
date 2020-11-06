@@ -195,6 +195,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.core.Unit',
       name: 'denomination',
+      label: 'Currency',
       targetDAOKey: 'currencyDAO',
       documentation: `The unit of measure of the payment type. The payment system can handle
         denominations of any type, from mobile minutes to stocks.
