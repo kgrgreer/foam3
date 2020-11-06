@@ -392,8 +392,9 @@ public class BlacklistTest extends Test {
       .getArray();
 
     for ( ApprovalRequest approvalRequest : approvalRequests ) {
+      approvalRequest = (ApprovalRequest) approvalRequest.fclone();
       approvalRequest.setStatus(ApprovalStatus.APPROVED);
-      try{
+      try {
         approvalRequestDAO.put(approvalRequest);
       } catch(Exception e) {
         throw e;

@@ -46,7 +46,7 @@ public class ReportPredicateTest extends foam.nanos.test.Test {
 
     setup();
     RuleGroup alterna = (RuleGroup) ruleGroupDAO.find("AlternaPlanner");
-    RuleGroup bmo = (RuleGroup) ruleGroupDAO.find("BMOPlanner");
+    RuleGroup bmo = (RuleGroup) ruleGroupDAO.find("BMOPlanner").fclone();
     alterna.setEnabled(false);
     bmo.setEnabled(false);
     ruleGroupDAO.put(alterna);
