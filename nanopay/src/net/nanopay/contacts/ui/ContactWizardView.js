@@ -266,7 +266,7 @@ foam.CLASS({
     },
     {
       name: 'option',
-      label: 'Save without banking',
+      label: 'Save and close',
       isAvailable: function(currentIndex, data$bankAccount) {
         return currentIndex === 1 && data$bankAccount === 0;
       },

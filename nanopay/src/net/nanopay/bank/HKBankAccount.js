@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'HKBankAccount',
-  label: 'Hong Kong Bank Account',
+  label: 'Hong Kong Bank',
   extends: 'net.nanopay.bank.BankAccount',
 
   documentation: 'Hong Kong bank account information.',
