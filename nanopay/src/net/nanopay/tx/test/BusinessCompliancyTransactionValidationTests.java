@@ -5,6 +5,7 @@ import foam.core.ValidationException;
 import foam.dao.DAO;
 import net.nanopay.model.Business;
 import net.nanopay.tx.TransactionQuote;
+import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.planner.TransactionPlan;
 import net.nanopay.tx.planner.UnableToPlanException;
 
@@ -23,7 +24,6 @@ public class BusinessCompliancyTransactionValidationTests
     payer.setEmailVerified(true);
     payer.setBusinessName("testPayerBusinessName");
     payer.setCompliance(net.nanopay.admin.model.ComplianceStatus.REQUESTED);
-    payer.setSpid("nanopay");
     payer = (Business) localUserDAO.put_(x, payer).fclone();
 
     localUserDAO.where(foam.mlang.MLang.EQ(foam.nanos.auth.User.EMAIL, "businesscheckcompliance1338@nanopay.net")).removeAll();
@@ -32,10 +32,9 @@ public class BusinessCompliancyTransactionValidationTests
     payee.setEmailVerified(true);
     payee.setBusinessName("testPayeeBusinessName");
     payee.setCompliance(net.nanopay.admin.model.ComplianceStatus.NOTREQUESTED);
-    payee.setSpid("nanopay");
     payee = (Business) localUserDAO.put_(x, payee).fclone();
 
-    var txn = new net.nanopay.tx.model.Transaction();
+    Transaction txn = new net.nanopay.tx.model.Transaction();
     txn.setPayerId(payer.getId());
     txn.setPayeeId(payee.getId());
     txn.setAmount(100);

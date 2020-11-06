@@ -214,12 +214,11 @@ public class TransactionDAOTest
     txn.setPayerId(sender_.getId());
     txn.setDestinationAccount(senderBankAccount_.getId());
     txn.setAmount(1l);
-    try {
-    test( ! SafetyUtil.isEmpty(((Transaction) txnDAO.put_(x_, txn)).getId() ), "Validation of the plan has failed and returned a txn with an id");// validation failure returns null
-    } catch ( RuntimeException e ) {
-      e.printStackTrace();
-    }
-    test( txnDAO.find_(x_, txn.getId()) == null , "Validation of the plan has indeed failed because find produces null.");// validation failure returned null
+    test(TestUtils.testThrows(
+      () -> txnDAO.put_(x_, txn),
+      "Bank account must be verified",
+      RuntimeException.class
+      ),"Bank account must be verified to cash out.");
     setBankAccount(BankAccountStatus.VERIFIED);
     long senderInitialBalance = (long) DigitalAccount.findDefault(x_, sender_, "CAD").findBalance(x_);
     Transaction tx = (Transaction) txnDAO.put_(x_, txn.fclone()).fclone();
