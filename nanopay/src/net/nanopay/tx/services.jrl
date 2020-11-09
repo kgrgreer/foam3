@@ -150,7 +150,6 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo())
       .setInnerDAO(innerDAO)
-      .setDecorator(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo()).build())
       .setAuthorize(false)
       .setPm(true)
       .setPipelinePm(true)
