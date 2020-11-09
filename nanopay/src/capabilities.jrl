@@ -614,7 +614,7 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"b5f2b020-db0f-11ea-87d0-0242ac130003",
   "name":"Office Consumption",
-  "description":"Please provide 3 months of Office Consumption Bills. These can be electricity, water, telephone, cable TV or IPTU bills. Bank statements also work.",
+  "description":"Provide three months of bills, such as water, electricity, telephone, cable TV, internet, or property tax. Alternatively, you can provide bank statements.",
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "enabled":true,
