@@ -30,7 +30,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.ui.topNavigation.LanguageChoiceView'
+    'foam.nanos.auth.LanguageChoiceView'
   ],
 
   css: `
@@ -135,7 +135,7 @@ foam.CLASS({
               .tag({ class: 'foam.nanos.u2.navigation.ApplicationLogoView' })
             .end()
             .start().addClass('navigation-components')
-              .tag({ class: 'net.nanopay.ui.topNavigation.LanguageChoiceView' })
+              .tag({ class: 'foam.nanos.auth.LanguageChoiceView' })
               .callIf( ! this.theme.disableCurrencyChoice, function() {
                 this.tag({ class: 'net.nanopay.ui.topNavigation.CurrencyChoiceView' });
               })

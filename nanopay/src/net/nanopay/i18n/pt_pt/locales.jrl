@@ -1236,6 +1236,11 @@ p({class:"foam.i18n.Locale",id:"pt-br.br.postalCode.error",locale:"pt",source:"b
 p({class:"foam.i18n.Locale",id:"pt-br.postalCode.label",locale:"pt",source:"pt-br.postalCode.label",target:"CEP"})
 p({class:"foam.i18n.Locale",id:"pt-br.postalCode.error",locale:"pt",source:"pt-br.postalCode.error",target:"CEP requerido"})
 
+p({class:"foam.i18n.Locale",id:"pt-br.country.Brazil",locale:"pt",source:"pt-br.country.Brazil",target:"Brasil"})
+p({class:"foam.i18n.Locale",id:"pt-br.country.Canada",locale:"pt",source:"pt-br.country.Canada",target:"Canadá"})
+p({class:"foam.i18n.Locale",id:"pt-br.country.USA",locale:"pt",source:"pt-br.country.USA",target:"USA"})
+p({class:"foam.i18n.Locale",id:"pt-br.country.Portugal",locale:"pt",source:"pt-br.country.Portugal",target:"Portugal"})
+
 p({class:"foam.i18n.Locale",id:"foam.nanos.auth.Address.STRUCTURED.label",locale:"pt",source:"foam.nanos.auth.Address.STRUCTURED.label",target:"estruturada"})
 p({class:"foam.i18n.Locale",id:"foam.nanos.auth.Region.ALTERNATIVE_NAMES.label",locale:"pt",source:"foam.nanos.auth.Region.ALTERNATIVE_NAMES.label",target:"Nomes alternativos"})
 p({class:"foam.i18n.Locale",id:"foam.nanos.auth.Address.STRUCTURED.value",locale:"pt",source:"foam.nanos.auth.Address.STRUCTURED.value",target:"verdade"})
