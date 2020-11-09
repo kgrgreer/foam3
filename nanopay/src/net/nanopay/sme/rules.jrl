@@ -31,6 +31,11 @@ p({
         "of":"net.nanopay.model.Business"
       },
       {
+        "class":"net.nanopay.crunch.predicate.CheckUserCountry",
+        "user":{"class":"foam.mlang.ContextObject","key":"NEW"},
+        "country":"CA"
+      },
+      {
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
         "propName":"compliance",
         "propValue":{"class": "net.nanopay.admin.model.ComplianceStatus", "ordinal":2}
