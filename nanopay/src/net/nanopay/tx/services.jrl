@@ -63,6 +63,7 @@ p({
     dao = new foam.nanos.ruler.RulerDAO(x, dao, "localTransactionDAO");
     dao = new foam.dao.ValidatingDAO(x, dao, new net.nanopay.tx.TransactionValidator());
     dao = new net.nanopay.tx.planner.TransactionQuotingDAO(x, dao);
+    dao = new net.nanopay.tx.SummaryTransactionDAO(x, dao);
 
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo())
@@ -149,7 +150,7 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo())
       .setInnerDAO(innerDAO)
-      .setDecorator(new net.nanopay.tx.SummaryTransactionDAO(x, new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo()).build()))
+      .setDecorator(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo()).build())
       .setAuthorize(false)
       .setPm(true)
       .setPipelinePm(true)
