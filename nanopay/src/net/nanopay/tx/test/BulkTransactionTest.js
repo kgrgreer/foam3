@@ -263,12 +263,14 @@ foam.CLASS({
     BulkTransaction bulk = new BulkTransaction();
     bulk.setPayerId(sender.getId());
 
+    long amount = 0L;
     List<Transaction> children = new ArrayList<>();
     for ( int i = 0; i < receivers.length; i++) {
       User u = receivers[i];
       Transaction dest = new Transaction();
       dest.setPayeeId(u.getId());
       dest.setAmount(100);
+      amount += 100;
       children.add(dest);
     }
     bulk.setChildren(children.toArray(new Transaction[children.size()]));

@@ -21,6 +21,7 @@ foam.CLASS({
   extends: 'net.nanopay.tx.model.Transaction',
 
   javaImports: [
+    'foam.core.ValidationException',
     'foam.dao.DAO',
     'foam.nanos.auth.LifecycleState',
     'foam.nanos.logger.Logger',
@@ -70,8 +71,8 @@ foam.CLASS({
         && oldTxn.getStatus() == TransactionStatus.COMPLETED
         && oldTxn.getLifecycleState() != LifecycleState.PENDING
       ) {
-        ((Logger) x.get("logger")).error("instanceof DigitalTransaction cannot be updated.");
-        throw new RuntimeException("instanceof DigitalTransaction cannot be updated.");
+        ((Logger) x.get("logger")).error("DigitalTransaction cannot be updated.");
+        throw new ValidationException("DigitalTransaction cannot be updated.");
       }
 
       // Check source account owner compliance
@@ -79,7 +80,7 @@ foam.CLASS({
       if ( sourceOwner instanceof Business
         && ! sourceOwner.getCompliance().equals(ComplianceStatus.PASSED)
       ) {
-        throw new RuntimeException("Sender needs to pass business compliance.");
+        throw new ValidationException("Sender needs to pass business compliance.");
       }
 
       // Check destination account owner compliance
@@ -87,7 +88,7 @@ foam.CLASS({
       if ( destinationOwner.getCompliance().equals(ComplianceStatus.FAILED) ) {
       // We throw when the destination account owner failed compliance, however
       // we are obligated to not expose this fact to the user.
-        throw new RuntimeException("Receiver needs to pass compliance.");
+        throw new ValidationException("Receiver needs to pass compliance.");
       }
       `
     },

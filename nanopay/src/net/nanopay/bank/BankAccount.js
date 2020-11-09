@@ -386,6 +386,17 @@ foam.CLASS({
     {
       class: 'String',
       name: 'verifiedBy'
+    },
+    {
+      class: 'String',
+      name: 'ownerType',
+      flags: ['js'],
+      tableCellFormatter: function(_, obj) {
+        obj.owner$find.then((user) => {
+          this.add(user.cls_.name);
+        });
+      },
+      visibility: 'HIDDEN'
     }
   ],
   methods: [

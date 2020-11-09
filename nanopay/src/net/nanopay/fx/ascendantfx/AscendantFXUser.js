@@ -39,8 +39,6 @@ foam.CLASS({
     'static foam.mlang.MLang.EQ'
   ],
 
-  searchColumns: [],
-
   tableColumns: [
     'id',
     'name',

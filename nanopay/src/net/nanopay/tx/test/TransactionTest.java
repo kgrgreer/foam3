@@ -170,11 +170,10 @@ public class TransactionTest
     try {
       txnDAO.put(finalTxn);
       test(false,"Exception: try to exceed principal");
+    } catch (net.nanopay.tx.planner.UnableToPlanException e) {
+      test(true, "try to exceed principal");
     } catch (RuntimeException e) {
-      // test(e.getMessage().contains("Transaction Exceeds Loan Account Principal Limit"), "try to exceed principal");
-      test(e.getMessage().contains("Unable to find a plan for requested transaction") ||
-           e.getMessage().contains("Transaction Exceeds Loan Account Principal Limit"),
-           "try to exceed principal");
+      test(e.getMessage().contains("Transaction Exceeds Loan Account Principal Limit"), "try to exceed principal");
     }
 
     // test trying to repay more then borrowed

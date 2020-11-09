@@ -44,7 +44,7 @@ p({
   "ruleGroup":"crunchOnboarding",
   "documentation":"Create business on initial business data submit",
   "daoKey":"userCapabilityJunctionDAO",
-  "operation":0,
+  "operation":3,
   "after":false,
   "predicate":{
     "class":"foam.mlang.predicate.And",

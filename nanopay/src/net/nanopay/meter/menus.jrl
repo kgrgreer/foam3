@@ -3,15 +3,29 @@ p({
   "id":"bankaccounts",
   "label":"Bank Accounts",
   "handler":{
-    "class":"foam.nanos.menu.DAOMenu",
-    "daoKey":"accountDAO",
-    "title":"Bank Accounts",
-    "customDAOController":"net.nanopay.meter.BankAccountController",
-    "detailView":{
-      "class":"net.nanopay.meter.BankAccountDetailView"
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"accountDAO",
+      "factory": "net.nanopay.bank.BankAccount",
+      "predicate": {
+        "class": "foam.mlang.predicate.IsInstanceOf",
+        "targetClass": "net.nanopay.bank.BankAccount"
+      },
+      "of": "net.nanopay.bank.BankAccount",
+      "defaultColumns": [
+        "name",
+        "owner",
+        "flagImage",
+        "accountNumber",
+        "status",
+        "ownerType"
+      ],
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
     }
-  },
-  "parent":""
+  }
 })
 
 // operations
@@ -49,7 +63,8 @@ p({
     "class":"foam.nanos.menu.DAOMenu2",
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
-      "daoKey":"doNotSolicitDAO"
+      "daoKey":"doNotSolicitDAO",
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
     }
   },
   "parent":"operation"

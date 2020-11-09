@@ -72,8 +72,9 @@ foam.CLASS({
     { name: 'INVALID_LAST_NAME', message: 'Last name required' },
     { name: 'INVALID_JOB_TITLE', message: 'Job title required' },
     { name: 'INVALID_OWNER_PERCENT', message: 'Percentage must be a value between 25 and 100' },
-    { name: 'INVALID_AGE_UNDER', message: 'Must be at least 18 years old' },
-    { name: 'INVALID_AGE_OVER', message: 'Must be less than 125 years old' },
+    { name: 'INVALID_DATE_ERROR', message: 'Valid date of birth required' },
+    { name: 'UNGER_AGE_LIMIT_ERROR', message: 'Must be at least 18 years old' },
+    { name: 'OVER_AGE_LIMIT_ERROR', message: 'Must be less than 125 years old' },
     { name: 'STREET_NUMBER_LABEL', message: 'Street number' },
     { name: 'STREET_NAME_LABEL', message: 'Street name' },
     { name: 'PLACEHOLDER', message: 'Select a country' }
@@ -91,8 +92,7 @@ foam.CLASS({
       name: 'mode',
       documentation: 'Used to change visibility. ex) "percent" suggests all hidden but this.ownershipPercent.',
       hidden: true,
-      externalTransient: true,
-      flags: ['js']
+      externalTransient: true
     },
     {
       class: 'String',
@@ -168,17 +168,24 @@ foam.CLASS({
         {
           args: ['birthday', 'showValidation'],
           predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(net.nanopay.model.BeneficialOwner.SHOW_VALIDATION, false),
+              e.NEQ(net.nanopay.model.BeneficialOwner.BIRTHDAY, null)
+            );
+          },
+          errorMessage: 'INVALID_DATE_ERROR'
+        },
+        {
+          args: ['birthday', 'showValidation'],
+          predicateFactory: function(e) {
             var limit = new Date();
             limit.setDate(limit.getDate() - ( 18 * 365 ));
             return e.OR(
               e.EQ(net.nanopay.model.BeneficialOwner.SHOW_VALIDATION, false),
-              e.AND(
-                e.NEQ(net.nanopay.model.BeneficialOwner.BIRTHDAY, null),
-                e.LT(net.nanopay.model.BeneficialOwner.BIRTHDAY, limit)
-              )
+              e.LT(net.nanopay.model.BeneficialOwner.BIRTHDAY, limit)
             );
           },
-          errorMessage: 'INVALID_AGE_UNDER'
+          errorMessage: 'UNGER_AGE_LIMIT_ERROR'
         },
         {
           args: ['birthday', 'showValidation'],
@@ -187,14 +194,11 @@ foam.CLASS({
             limit.setDate(limit.getDate() - ( 125 * 365 ));
             return e.OR(
               e.EQ(net.nanopay.model.BeneficialOwner.SHOW_VALIDATION, false),
-              e.AND(
-                e.NEQ(net.nanopay.model.BeneficialOwner.BIRTHDAY, null),
-                e.GT(net.nanopay.model.BeneficialOwner.BIRTHDAY, limit)
-              )
+              e.GT(net.nanopay.model.BeneficialOwner.BIRTHDAY, limit)
             );
           },
-          errorMessage: 'INVALID_AGE_OVER'
-        }
+          errorMessage: 'OVER_AGE_LIMIT_ERROR'
+        },
       ],
       postSet: function(_,n) {
         this.cpfName = "";
@@ -335,10 +339,9 @@ foam.CLASS({
       label: 'Cadastro de Pessoas Físicas (CPF)',
       section: 'requiredSection',
       documentation: `CPF number of beneficial owner.`,
-      visibility: function(type) {
-        return type == 'BR' ?
-        foam.u2.DisplayMode.RW :
-        foam.u2.DisplayMode.HIDDEN;
+      visibility: function(type, mode) {
+        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : type == 'BR' ?
+        foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       validationPredicates: [
         {
@@ -414,10 +417,10 @@ foam.CLASS({
       name: 'verifyName',
       label: 'Please verify that name displayed below matches owner name.',
       section: 'requiredSection',
-      visibility: function (type, cpfName) {
-        return type == 'BR' && cpfName.length > 0 ?
-        foam.u2.DisplayMode.RW :
-        foam.u2.DisplayMode.HIDDEN;
+      visibility: function (type, cpfName, mode) {
+        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN :
+          type == 'BR' && cpfName.length > 0 ?
+            foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       view: function(n, X) {
         var self = X.data$;
@@ -461,10 +464,9 @@ foam.CLASS({
         to influence decisions and the ability to control resources
       `,
       value: false,
-      visibility: function (type) {
-        return type == 'BR' ?
-        foam.u2.DisplayMode.RW :
-        foam.u2.DisplayMode.HIDDEN;
+      visibility: function (type, mode) {
+        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : type == 'BR' ?
+          foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       view: {
         class: 'foam.u2.view.RadioView',

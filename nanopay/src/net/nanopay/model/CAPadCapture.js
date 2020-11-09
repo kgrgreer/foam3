@@ -43,7 +43,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'branchId',
-      label: 'Transit No.',
       documentation: 'Transit/Branch associated with PAD capture.',
       visibility: 'DISABLED',
       gridColumns: 4,
@@ -58,7 +57,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'institutionNumber',
-      label: 'Inst No.',
       documentation: 'Institution associated with PAD capture.',
       visibility: 'DISABLED',
       gridColumns: 2,

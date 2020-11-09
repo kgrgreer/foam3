@@ -16,7 +16,7 @@
  */
 
 foam.CLASS({
-  name: 'NoPlanException',
+  name: 'UnableToPlanException',
   package: 'net.nanopay.tx.planner',
   javaExtends: 'net.nanopay.tx.TransactionException',
   implements: ['foam.core.Exception'],
@@ -27,16 +27,24 @@ foam.CLASS({
       buildJavaClass: function(cls) {
         cls.extras.push(foam.java.Code.create({
           data: `
-  public NoPlanException(String message) {
+  public UnableToPlanException(String message) {
     super(message);
   }
 
-  public NoPlanException(String message, Exception cause) {
+  public UnableToPlanException(String message, Exception cause) {
     super(message, cause);
   }
           `
         }));
       }
+    }
+  ],
+
+  methods: [
+    {
+      name: 'getClientRethrowException',
+      type: 'RuntimeException',
+      javaCode: 'return this;'
     }
   ]
 });

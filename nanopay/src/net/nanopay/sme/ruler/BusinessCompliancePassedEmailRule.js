@@ -48,7 +48,7 @@ foam.CLASS({
             Business business = (Business) obj;
             Address businessAddress = business.getAddress();
 
-            if( businessAddress != null && ! businessAddress.getCountryId().equals("US") ){
+            if ( businessAddress != null ) {
               Logger                  logger         = (Logger) x.get("logger");
               Group                   group          = business.findGroup(x);
               AppConfig               config         = group != null ? (AppConfig) group.getAppConfig(x) : (AppConfig) x.get("appConfig");

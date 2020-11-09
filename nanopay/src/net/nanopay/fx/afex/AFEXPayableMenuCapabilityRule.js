@@ -23,7 +23,7 @@ foam.CLASS({
     'foam.nanos.ruler.RuleAction'
   ],
 
-  documentation: `Grants AFEX Payable Meny Capability after Afex  business is created and approved.`,
+  documentation: `Grants AFEX Payable Menu Capability after Afex business is created and approved.`,
 
   javaImports: [
     'foam.core.ContextAgent',
@@ -33,11 +33,14 @@ foam.CLASS({
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.Permission',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
+    'foam.nanos.theme.Theme',
+    'foam.nanos.theme.Themes',
     'foam.util.SafetyUtil',
     'java.util.HashMap',
     'java.util.Map',
@@ -121,21 +124,38 @@ foam.CLASS({
         Group                group          = business.findGroup(x);
         AppConfig            config         = group != null ? group.getAppConfig(x) : (AppConfig) x.get("appConfig");
 
+        String toCountry = business.getAddress().findCountryId(x).getName();
         args.put("business", business.toSummary());
+        args.put("toCountry", toCountry);
         args.put("link",   config.getUrl() + "#capability.main.dashboard");
         args.put("sendTo", User.EMAIL);
         args.put("name", User.FIRST_NAME);
 
         try {
+
           if ( group == null ) throw new RuntimeException("Group is null");
-          Notification notification = new Notification.Builder(x)
-            .setBody("This business can now make international payments")
-            .setNotificationType("Latest_Activity")
-            .setGroupId(group.toString())
-            .setEmailArgs(args)
-            .setEmailName("compliance-notification-to-user")
-            .build();
-          business.doNotify(x, notification);
+
+          Notification notification = business.getAddress().getCountryId().equals("CA") ?
+            new Notification.Builder(x)
+              .setBody("AFEX Business can make international payments.")
+              .setNotificationType("AFEXBusinessInternationalPaymentsEnabled")
+              .setGroupId(group.toString())
+              .setEmailArgs(args)
+              .setEmailName("international-payments-enabled-notification")
+              .build() :
+            new Notification.Builder(x)
+              .setBody("This business can now make international payments")
+              .setNotificationType("Latest_Activity")
+              .setGroupId(group.toString())
+              .setEmailArgs(args)
+              .setEmailName("compliance-notification-to-user")
+              .build();
+          
+          Themes themes = (Themes) x.get("themes");
+          Theme theme = themes.findThemeBySpid(((X) x.put("subject", new Subject.Builder(x).setUser(business).build())));
+          X notificationX = theme != null ? (X) x.put("theme", theme) : x;
+          business.doNotify(notificationX, notification);
+
         } catch (Throwable t) {
           String msg = String.format("Email meant for business Error: User (id = %1$s) has been enabled for international payments.", business.getId());
           ((Logger) x.get("logger")).error(msg, t);

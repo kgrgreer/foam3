@@ -177,6 +177,15 @@ foam.CLASS({
       color: rgb(0, 153, 229);
       text-decoration-line: none;
     }
+
+    @media print {
+      ^ .foam-nanos-menu-VerticalMenu {
+        display: none !important; 
+      }
+      ^ .foam-u2-stack-StackView {
+        padding-left: 0 !important;
+      }
+    }
   `,
 
   messages: [

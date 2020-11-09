@@ -1,10 +1,13 @@
 package net.nanopay.tx.test;
 
 import foam.core.X;
+import foam.core.ValidationException;
 import foam.dao.DAO;
 import net.nanopay.model.Business;
 import net.nanopay.tx.TransactionQuote;
+import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.planner.TransactionPlan;
+import net.nanopay.tx.planner.UnableToPlanException;
 
 public class BusinessCompliancyTransactionValidationTests
   extends foam.nanos.test.Test
@@ -21,7 +24,6 @@ public class BusinessCompliancyTransactionValidationTests
     payer.setEmailVerified(true);
     payer.setBusinessName("testPayerBusinessName");
     payer.setCompliance(net.nanopay.admin.model.ComplianceStatus.REQUESTED);
-    payer.setSpid("nanopay");
     payer = (Business) localUserDAO.put_(x, payer).fclone();
 
     localUserDAO.where(foam.mlang.MLang.EQ(foam.nanos.auth.User.EMAIL, "businesscheckcompliance1338@nanopay.net")).removeAll();
@@ -30,10 +32,9 @@ public class BusinessCompliancyTransactionValidationTests
     payee.setEmailVerified(true);
     payee.setBusinessName("testPayeeBusinessName");
     payee.setCompliance(net.nanopay.admin.model.ComplianceStatus.NOTREQUESTED);
-    payee.setSpid("nanopay");
     payee = (Business) localUserDAO.put_(x, payee).fclone();
 
-    var txn = new net.nanopay.tx.model.Transaction();
+    Transaction txn = new net.nanopay.tx.model.Transaction();
     txn.setPayerId(payer.getId());
     txn.setPayeeId(payee.getId());
     txn.setAmount(100);
@@ -41,24 +42,46 @@ public class BusinessCompliancyTransactionValidationTests
     // Test 1 - Sender needs to pass business compliance
     var threw = false;
     var message = "";
-    var quote = (TransactionQuote) localTransactionPlannerDAO.put_(x, txn);
-    var quoteR = localTransactionPlannerDAO.put_(x, quote.getPlan());
-    test(quoteR == null , "validation has failed because null was returned"); //TODO: read an error code, see if expected
-    //test( threw && message.equals("Sender needs to pass business compliance."), "Unable to put if sender business user hasn't passed compliance.")
+    try {
+      var quote = (TransactionQuote) localTransactionPlannerDAO.put_(x, txn);
+      try {
+        var quoteR = localTransactionPlannerDAO.put_(x, quote.getPlan());
+        test(false , "validation unexpectantly successful");
+      } catch (ValidationException e) {
+        test( e.getMessage().equals("Sender needs to pass business compliance."), "Unable to put if sender business user hasn't passed compliance.");
+      }
+    } catch (UnableToPlanException e) {
+      test(false , e.getClass().getSimpleName() + " " + e.getMessage());
+    }
 
     // Test 2 - Sender passes compliance
     payer.setCompliance(net.nanopay.admin.model.ComplianceStatus.PASSED);
     payer = (Business) localUserDAO.put_(x, payer).fclone();
-    quote = (TransactionQuote) localTransactionPlannerDAO.put_(x, txn.fclone());
-    quoteR = localTransactionPlannerDAO.put_(x, quote.getPlan());
-    test(quoteR != null , "validation has Succeeded because null was not returned");
+    try {
+      var quote = (TransactionQuote) localTransactionPlannerDAO.put_(x, txn.fclone());
+      try {
+        var quoteR = localTransactionPlannerDAO.put_(x, quote.getPlan());
+        test(quoteR != null , "validation successful");
+      } catch (ValidationException e) {
+        test(false, "validation unexpectantly failed: "+e.getMessage());
+      }
+    } catch (UnableToPlanException e) {
+      test(false , e.getClass().getSimpleName() + " " + e.getMessage() + " " +e.getCause());
+    }
 
     // Test 3 - Receiver failed compliance
     payee.setCompliance(net.nanopay.admin.model.ComplianceStatus.FAILED);
     payee = (Business) localUserDAO.put_(x, payee).fclone();
-    quote = (TransactionQuote) localTransactionPlannerDAO.put_(x, txn.fclone());
-    quoteR = localTransactionPlannerDAO.put_(x, quote.getPlan());
-    test(quoteR == null , "validation has failed because null was returned"); //TODO: read an error code, see if expected.
-    //test( threw && message.equals("Receiver needs to pass compliance."), "Unable to put if receiver user failed compliance.");
+    try {
+      var quote = (TransactionQuote) localTransactionPlannerDAO.put_(x, txn.fclone());
+      try {
+        var quoteR = localTransactionPlannerDAO.put_(x, quote.getPlan());
+        test(false , "validation unexpectantly successful");
+      } catch (ValidationException e) {
+        test( e.getMessage().equals("Receiver needs to pass compliance."), "Unable to put if receiver user failed compliance.");
+      }
+    } catch (UnableToPlanException e) {
+      test(false , e.getClass().getSimpleName() + " " + e.getMessage());
+    }
   }
 }

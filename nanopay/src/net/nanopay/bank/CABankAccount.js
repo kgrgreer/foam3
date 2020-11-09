@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'CABankAccount',
-  label: 'Canadian Bank Account',
+  label: 'Canada Bank',
   extends: 'net.nanopay.bank.BankAccount',
 
   imports: [
@@ -63,10 +63,8 @@ foam.CLASS({
     {
       name: 'accountDetails',
       title: function(forContact) {
-        return forContact ? this.SECTION_DETAILS_TITLE_CONTACT : this.SECTION_DETAILS_TITLE_VOID;
+        return forContact ? '' : this.SECTION_DETAILS_TITLE_VOID;
       },
-      subTitle: `Connect to the account without signing in to online banking.
-          Please ensure the details are entered properly.`
     },
     {
       name: 'pad',
@@ -85,10 +83,9 @@ foam.CLASS({
     { name: 'TRANSIT_NUMBER_FIVE', message: 'Transit number must be 5 digits long' },
     { name: 'ACCOUNT_NUMBER_REQUIRED', message: 'Account number required' },
     { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number must be between 5 and 12 digits long' },
-    { name: 'INSTITUTION_NUMBER_REQUIRED', message: 'Institution number required' },
+    { name: 'INSTITUTION_NUMBER_REQUIRED', message: 'Institution required' },
     { name: 'INSTITUTION_NUMBER_THREE', message: 'Institution number must be 3 digits long' },
     { name: 'ADD_SUCCESSFUL', message: 'Bank Account successfully added' },
-    { name: 'SECTION_DETAILS_TITLE_CONTACT', message: 'Add contact bank account' },
     { name: 'SECTION_DETAILS_TITLE_VOID', message: 'Connect using a void check' }
   ],
 
@@ -148,7 +145,7 @@ foam.CLASS({
     {
       name: 'branchId',
       type: 'String',
-      label: 'Transit No.',
+      label: 'Transit',
       section: 'accountDetails',
       updateVisibility: 'RO',
       gridColumns: 4,
@@ -180,13 +177,13 @@ foam.CLASS({
     {
       class: 'String',
       name: 'institutionNumber',
-      label: 'Inst. No.',
+      label: 'Institution',
       documentation: `Provides backward compatibilty for mobile call flow.
           BankAccountInstitutionDAO will lookup the institutionNumber and set the institution property.`,
       updateVisibility: 'RO',
       section: 'accountDetails',
       storageTransient: true,
-      gridColumns: 2,
+      gridColumns: 3,
       view: {
         class: 'foam.u2.tag.Input',
         placeholder: '123',
@@ -216,7 +213,7 @@ foam.CLASS({
       name: 'accountNumber',
       updateVisibility: 'RO',
       section: 'accountDetails',
-      gridColumns: 6,
+      gridColumns: 5,
       view: {
         class: 'foam.u2.tag.Input',
         placeholder: '1234567',

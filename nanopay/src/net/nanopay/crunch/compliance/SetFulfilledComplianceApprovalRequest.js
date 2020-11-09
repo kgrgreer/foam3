@@ -59,6 +59,7 @@ foam.CLASS({
               .getArray();
 
             for ( ApprovalRequest ar : fulfilledApprovals ) {
+              ar = (ApprovalRequest) ar.fclone();
               ar.setIsFulfilled(true);
               approvalRequestDAO.put(ar);
             }

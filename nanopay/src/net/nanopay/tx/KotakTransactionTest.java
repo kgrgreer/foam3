@@ -47,7 +47,7 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
     approvalDAO = (DAO) x.get("approvalRequestDAO");
     fxQuoteDAO = (DAO) x.get("fxQuoteDAO");
     quoteDAO = (DAO) x.get("localTransactionPlannerDAO");
-    RuleGroup kotak = (RuleGroup) ruleGroupDAO.find("KotakPlanner");
+    RuleGroup kotak = (RuleGroup) ruleGroupDAO.find("KotakPlanner").fclone();
     kotak.setEnabled(true);
     ruleGroupDAO.put(kotak);
     DAO exchangeRateDAO = (DAO) x.get("exchangeRateDAO");
@@ -178,7 +178,12 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
     txn.setAmount(200);
     TransactionQuote quote = new TransactionQuote();
     quote.setRequestTransaction(txn);
-    quote = (TransactionQuote) quoteDAO.put(quote);
-    return quote.getPlan();
+    try {
+      quote = (TransactionQuote) quoteDAO.put(quote);
+      return quote.getPlan();
+    } catch ( net.nanopay.tx.planner.UnableToPlanException e ) {
+      test(false, e.getMessage());
+      throw e;
+    }
   }
 }

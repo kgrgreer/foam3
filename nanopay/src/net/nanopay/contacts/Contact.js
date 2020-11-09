@@ -83,37 +83,24 @@ foam.CLASS({
   sections: [
     {
       name: 'stepOne',
-      title: 'Create a contact',
-      subTitle: `
-        Create a new contact by entering in their business information below.
-        If you have their banking information, you can start sending payments
-        to the contact right away.
-      `
+      title: ' Add contact'
     },
     {
       name: 'stepTwo',
-      title: 'Add banking information',
-      subTitle: `
-        Enter the contact’s bank account information. Please make sure that this is
-        accurate as payments will go directly to the specified account.
-      `
+      title: 'Add bank account',
+      subTitle: `Payments made to this contact will be deposited to the account you provide below.`
     },
     {
       name: 'stepThree',
       title: 'Add business address',
-      subTitle: `
-        In order to send payments to this business, we’ll need you to verify their
-        business address below.
-      `
+      subTitle: `Enter the contact’s business address. PO boxes are not accepted.`
     }
   ],
 
   messages: [
     {
       name: 'CONFIRM_RELATIONSHIP',
-      message: `I confirm that I have a business relationship with this contact and
-        acknowledge that the bank account info entered by the contact
-        business will be used for all deposits to their account.`
+      message: `I have a business relationship with this contact.`
     },
     {
       name: 'INVITE_LABEL',
@@ -129,10 +116,11 @@ foam.CLASS({
           to add an account to your contact. Please visit the capability store to enable payments.`
     },
     { name: 'ERROR_BUSINESS_PROFILE_NAME_MESSAGE', message: 'Business name required' },
-    { name: 'INVALID_EMAIL', message: 'Invalid email address' },
+    { name: 'INVALID_EMAIL', message: 'Valid email required' },
     { name: 'INVALID_FIRST_NAME', message: 'First name cannot exceed 70 characters' },
     { name: 'INVALID_LAST_NAME', message: 'Last name cannot exceed 70 characters' },
     { name: 'CONFIRMATION_REQUIRED', message: 'Confirmation required' },
+    { name: 'PLACEHOLDER', message: 'Please select....' },
     { name: 'MISSING_BANK_WARNING', message: 'Missing bank information' }
   ],
 
@@ -141,8 +129,7 @@ foam.CLASS({
       name: 'organization',
       documentation: 'The organization/business associated with the Contact.',
       section: 'stepOne',
-      label: 'Business',
-      view: { class: 'foam.u2.tag.Input', placeholder: 'ex. Vandelay Industries', focused: true },
+      view: { class: 'foam.u2.tag.Input', focused: true },
       validateObj: function(organization) {
         if (
           typeof organization !== 'string' ||
@@ -175,7 +162,7 @@ foam.CLASS({
       documentation: 'The email address of the Contact.',
       section: 'stepOne',
       label: 'Email',
-      view: { class: 'foam.u2.tag.Input', placeholder: 'ex. example@domain.com' },
+      view: { class: 'foam.u2.tag.Input' },
       validateObj: function(email) {
         if ( ! this.businessId ) {
           var emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
@@ -189,7 +176,7 @@ foam.CLASS({
       name: 'firstName',
       section: 'stepOne',
       gridColumns: 6,
-      view: { class: 'foam.u2.tag.Input', placeholder: 'Optional' },
+      view: { class: 'foam.u2.tag.Input' },
       validateObj: function(firstName) {
         if ( !! firstName ) {
           if ( firstName.length > this.NAME_MAX_LENGTH ) {
@@ -207,7 +194,7 @@ foam.CLASS({
       name: 'lastName',
       section: 'stepOne',
       gridColumns: 6,
-      view: { class: 'foam.u2.tag.Input', placeholder: 'Optional' },
+      view: { class: 'foam.u2.tag.Input' },
       validateObj: function(lastName) {
         if ( !! lastName ) {
           if ( lastName.length > this.NAME_MAX_LENGTH ) {
@@ -323,6 +310,7 @@ foam.CLASS({
         var v = foam.u2.view.FObjectView.create({
           of: net.nanopay.bank.BankAccount,
           predicate: pred,
+          placeholder: X.data.PLACEHOLDER,
           copyOldData: function(o) { return { isDefault: o.isDefault, forContact: o.forContact }; }
         }, X);
         v.data$.sub(function() { v.data.forContact = true; });
@@ -400,7 +388,7 @@ foam.CLASS({
         };
       },
       factory: function() {
-        return this.Address.create();
+        return  this.Address.create();
       }
     },
     {

@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'SIBankAccount',
-  label: 'Slovenia Bank Account',
+  label: 'Slovenia Bank',
   extends: 'net.nanopay.bank.EUBankAccount',
 
   documentation: 'Slovenia bank account information.',

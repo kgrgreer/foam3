@@ -23,6 +23,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.auth.Subject',
@@ -42,6 +43,10 @@ foam.CLASS({
   ],
 
   documentation: 'Send Welcome Email to Ablii Business 30min after SignUp',
+
+  messages: [
+    { name: 'WELCOME_NOTIFICATION_MESSAGE', message: 'To complete the registration, reach out to our onboarding specialist at ' }
+  ],
 
   properties: [
     {
@@ -66,6 +71,8 @@ foam.CLASS({
         EmailMessage         message        = null;
         Map<String, Object>  args           = null;
         DAO                  businessDAO    = (DAO) x.get("businessDAO");
+        Theme                theme          = null;
+        Themes               themes         = (Themes) x.get("themes");
 
         // FOR DEFINING THE PERIOD IN WHICH TO CONSIDER SIGN UPS
         Date startInterval  = new Date(new Date().getTime() - (1000 * 60 * this.getThreshold()));
@@ -87,11 +94,14 @@ foam.CLASS({
           message = new EmailMessage();
           args    = new HashMap<>();
 
+          theme = themes.findThemeBySpid(((X) x.put("subject", new Subject.Builder(x).setUser(business).build())));
+          User psUser = theme.findPersonalSupportUser(x);
+
           message.setTo(new String[]{ business.getEmail() });
           args.put("name", User.FIRST_NAME);
           try {
             Notification helpSignUpNotification = new Notification.Builder(x)
-              .setBody("Send Welcome Email After 30 Minutes.")
+              .setBody(this.WELCOME_NOTIFICATION_MESSAGE + ( psUser == null ? "" : psUser.getPhoneNumber() ))
               .setNotificationType("WelcomeEmail")
               .setEmailArgs(args)
               .setEmailName("helpsignup")

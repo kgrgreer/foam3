@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'LTBankAccount',
-  label: 'Lithuanian Bank Account',
+  label: 'Lithuania Bank',
   extends: 'net.nanopay.bank.EUBankAccount',
 
   documentation: 'Lithuanian bank account information.',
