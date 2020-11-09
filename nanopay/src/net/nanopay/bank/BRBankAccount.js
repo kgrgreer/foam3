@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'BRBankAccount',
-  label: 'Brazilian Bank Account',
+  label: 'Brazil Bank',
   extends: 'net.nanopay.bank.BankAccount',
 
   documentation: 'Brazilian bank account information.',

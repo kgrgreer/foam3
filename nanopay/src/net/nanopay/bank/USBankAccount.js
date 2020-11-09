@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'USBankAccount',
-  label: 'US Bank Account',
+  label: 'United States Bank',
   extends: 'net.nanopay.bank.BankAccount',
 
   imports: [
@@ -45,10 +45,8 @@ foam.CLASS({
     {
       name: 'accountDetails',
       title: function(forContact) {
-        return forContact ? this.SECTION_DETAILS_TITLE_CONTACT : this.SECTION_DETAILS_TITLE_VOID;
-      },
-      subTitle: `Connect to the account without signing in to online banking.
-          Please ensure the details are entered properly.`
+        return forContact ? '' : this.SECTION_DETAILS_TITLE_VOID;
+      }
     },
     {
       name: 'pad',
@@ -82,7 +80,6 @@ foam.CLASS({
     { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number must be between 6 and 17 digits long' },
     { name: 'IMAGE_REQUIRED', message: 'Please attach a void check or a 3 month bank statement' },
     { name: 'ADD_SUCCESSFUL', message: 'Bank Account successfully added' },
-    { name: 'SECTION_DETAILS_TITLE_CONTACT', message: 'Add contact bank account' },
     { name: 'SECTION_DETAILS_TITLE_VOID', message: 'Connect using a void check' }
   ],
 

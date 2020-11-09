@@ -96,6 +96,7 @@ foam.CLASS({
     'findBalance',
     'homeDenomination',
     'initLayout',
+    'isMenuOpen',
     'isIframe',
     'onboardingUtil',
     'privacyUrl',
@@ -180,7 +181,7 @@ foam.CLASS({
 
     @media print {
       ^ .foam-nanos-menu-VerticalMenu {
-        display: none !important; 
+        display: none !important;
       }
       ^ .foam-u2-stack-StackView {
         padding-left: 0 !important;
@@ -373,6 +374,16 @@ foam.CLASS({
       class: 'Boolean',
       name: 'showNav',
       value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'isMenuOpen',
+      factory: function() {
+        if ( window.localStorage.getItem('isMenuOpen') === 'false' )
+          return false;
+        else
+          return true;
+      }
     }
   ],
 
@@ -547,6 +558,16 @@ foam.CLASS({
             self.client.authenticationTokenService.processToken(null, null, tokenParam)
               .then(() => {
                 location = locHash == '#onboarding' ? '/' : '/' + locHash;
+              })
+              .catch((err) => {
+                if ( err.message && err.message === "Token has already been used" ) {
+                  view = {
+                      class: 'net.nanopay.sme.ui.SuccessPasswordView'
+                  };
+                  self.stack.push(view, self);
+                } else {
+                  throw err;
+                }
               });
           }
         }
@@ -756,7 +777,6 @@ foam.CLASS({
     function onUserAgentAndGroupLoaded() {
       var self = this;
       this.loginSuccess = true;
-
       // Listener to check for new toast notifications
       var userNotificationQueryId = this.subject.realUser.id;
       this.__subSubContext__.notificationDAO.where(
@@ -790,7 +810,7 @@ foam.CLASS({
           if ( hash !== 'sme.accountProfile.switch-business' ) {
             this.initLayout.resolve();
           }
-  
+
           try {
             menu = await this.client.menuDAO.find(hash);
           }

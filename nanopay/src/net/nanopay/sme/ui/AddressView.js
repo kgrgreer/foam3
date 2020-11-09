@@ -126,7 +126,7 @@ foam.CLASS({
 
   messages: [
     { name: 'PLACE_HOLDER', message: 'Please select...' },
-    { name: 'PO_DISCLAIMER', message: '* PO Boxes are not Allowed' }
+    { name: 'STREET_NUMBER_LABEL', message: 'Number' }
   ],
 
   methods: [
@@ -186,7 +186,8 @@ foam.CLASS({
               .tag(this.SectionedDetailPropertyView, {
                 data$: this.data$,
                 prop: this.Address.STREET_NUMBER.clone().copyFrom({
-                  validationTextVisible: this.showValidation
+                  validationTextVisible: this.showValidation,
+                  label: this.STREET_NUMBER_LABEL
                 })
               })
             .end()
@@ -249,12 +250,6 @@ foam.CLASS({
             .end()
           .end()
         .end()
-        .callIf( this.showDisclaimer, () => {
-          this.start().addClass(this.myClass('container'))
-            .addClass(this.myClass('disclaimer'))
-            .add(this.PO_DISCLAIMER)
-          .end();
-        })
       .end();
     }
   ]

@@ -50,7 +50,7 @@ p({
   "class":"foam.nanos.ruler.Rule",
   "id":"5d12a5bb-2952-44ed-a8eb-be3582de7ab1",
   "name":"Grant AFEX Payable Menu Capability",
-  "documentation":"Grants AFEX Payable Meny Capability after Afex  business is created and approved.",
+  "documentation":"Grants AFEX Payable Menu Capability after Afex business is created and approved.",
   "priority":100,
   "ruleGroup":"onboarding",
   "daoKey":"approvalRequestDAO",

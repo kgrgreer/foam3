@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'MTBankAccount',
-  label: 'Malta Bank Account',
+  label: 'Malta Bank',
   extends: 'net.nanopay.bank.EUBankAccount',
 
   documentation: 'Malta bank account information.',

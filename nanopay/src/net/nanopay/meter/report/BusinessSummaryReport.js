@@ -31,8 +31,6 @@ foam.CLASS({
     Locked                |
   `,
 
-  searchColumns: [],
-
   tableColumns: [
     'typeDate',
     'daily',

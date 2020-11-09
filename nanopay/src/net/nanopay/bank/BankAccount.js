@@ -106,7 +106,6 @@ foam.CLASS({
       class: 'String',
       name: 'accountNumber',
       documentation: 'The account number of the bank account.',
-      label: 'Account No.',
       updateVisibility: 'RO',
       section: 'accountDetails',
       view: {
@@ -337,6 +336,7 @@ foam.CLASS({
     },
     {
       name: 'denomination',
+      label: 'Currency',
       updateVisibility: 'RO',
       writePermissionRequired: false,
       gridColumns: 12,
@@ -385,14 +385,19 @@ foam.CLASS({
       section: 'accountDetails'
     },
     {
-      name: 'securityPromoteInfo',
-      label: '',
-      section: 'accountDetails',
-      view: { class: 'net.nanopay.ui.DataSecurityBanner' }
+      class: 'String',
+      name: 'verifiedBy'
     },
     {
       class: 'String',
-      name: 'verifiedBy'
+      name: 'ownerType',
+      flags: ['js'],
+      tableCellFormatter: function(_, obj) {
+        obj.owner$find.then((user) => {
+          this.add(user.cls_.name);
+        });
+      },
+      visibility: 'HIDDEN'
     }
   ],
   methods: [
