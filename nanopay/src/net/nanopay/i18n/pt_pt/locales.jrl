@@ -2255,6 +2255,10 @@ p({class:"foam.i18n.Locale",id:"net.nanopay.model.BusinessDirector.FOREIGN_ID_ER
 p({class:"foam.i18n.Locale",id:"net.nanopay.model.BusinessDirector.NATIONALITY_ERROR",locale:"pt",source:"net.nanopay.model.BusinessDirector.NATIONALITY_ERROR",target:"Nacionalidade necessária"})
 p({class:"foam.i18n.Locale",id:"foam.core.FObjectProperty.PLEASE_ENTER_VALID",locale:"pt",source:"foam.core.FObjectProperty.PLEASE_ENTER_VALID",target:"Por favor insira um válido"})
 
+p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.InitialBusinessData.SECTION_BUSINESS_REGISTRATION.title",locale:"pt",source:"net.nanopay.crunch.onboardingModels.InitialBusinessData.SECTION_BUSINESS_REGISTRATION.title",target:"Informação de negócios"})
+p({class:"foam.i18n.Locale",id:"net.nanopay.bank.BankAccountController.ADD_BANK_ACCOUNT",locale:"pt",source:"net.nanopay.bank.BankAccountController.ADD_BANK_ACCOUNT",target:"Adicionar conta bancária"})
+p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ContactController.ADD_CONTACT",locale:"pt",source:"net.nanopay.contacts.ContactController.ADD_CONTACT",target:"Adicionar um contato"})
+
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.InvitationWizardView.INVITE_SUCCESS",locale:"pt",source:"net.nanopay.contacts.ui.InvitationWizardView.INVITE_SUCCESS",target:"Enviou um pedido de conexão"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.InvitationWizardView.INVITE_FAILURE",locale:"pt",source:"net.nanopay.contacts.ui.InvitationWizardView.INVITE_FAILURE",target:"Ocorreu um problema ao enviar o convite"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.InvitationWizardView.EXISTING_BUSINESS",locale:"pt",source:"net.nanopay.contacts.ui.InvitationWizardView.EXISTING_BUSINESS",target:"Este email já foi cadastrado no Ablii. Você pode estabelecer uma conexão com este usuário e sua empresa usando seu código de pagamento ou localizando-o no menu de pesquisa de negócios ao adicionar um contato."})
