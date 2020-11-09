@@ -93,7 +93,6 @@ foam.CLASS({
     },
     {
       name: 'bankCode',
-      label: 'Bank code',
       updateVisibility: 'RO',
       validateObj: function(bankCode) {
         var regex = /^[A-z0-9a-z]{8}$/;
@@ -108,6 +107,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'branchCode',
+      label: 'Branch code',
       section: 'accountDetails',
       updateVisibility: 'RO',
       validateObj: function(branchCode) {
@@ -122,7 +122,6 @@ foam.CLASS({
     },
     {
       name: 'accountNumber',
-      label: 'Account number',
       updateVisibility: 'RO',
       view: {
         class: 'foam.u2.view.StringView'
@@ -150,6 +149,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'accountType',
+      label: 'Account type',
       updateVisibility: 'RO',
       section: 'accountDetails',
       view: {
