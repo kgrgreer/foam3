@@ -96,6 +96,7 @@ foam.CLASS({
     'findBalance',
     'homeDenomination',
     'initLayout',
+    'isMenuOpen',
     'isIframe',
     'onboardingUtil',
     'privacyUrl',
@@ -373,6 +374,16 @@ foam.CLASS({
       class: 'Boolean',
       name: 'showNav',
       value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'isMenuOpen',
+      factory: function() {
+        if ( window.localStorage.getItem('isMenuOpen') === 'false' )
+          return false;
+        else
+          return true;
+      }
     }
   ],
 
@@ -766,7 +777,6 @@ foam.CLASS({
     function onUserAgentAndGroupLoaded() {
       var self = this;
       this.loginSuccess = true;
-
       // Listener to check for new toast notifications
       var userNotificationQueryId = this.subject.realUser.id;
       this.__subSubContext__.notificationDAO.where(
