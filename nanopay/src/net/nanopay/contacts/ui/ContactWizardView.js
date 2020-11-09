@@ -50,6 +50,9 @@ foam.CLASS({
       position: relative;
       float: right;
     }
+    .wizard {
+      width: 650px;
+    }
   `,
 
   messages: [

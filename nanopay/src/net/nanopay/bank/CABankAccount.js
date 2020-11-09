@@ -183,7 +183,7 @@ foam.CLASS({
       updateVisibility: 'RO',
       section: 'accountDetails',
       storageTransient: true,
-      gridColumns: 2,
+      gridColumns: 3,
       view: {
         class: 'foam.u2.tag.Input',
         placeholder: '123',
@@ -213,7 +213,7 @@ foam.CLASS({
       name: 'accountNumber',
       updateVisibility: 'RO',
       section: 'accountDetails',
-      gridColumns: 6,
+      gridColumns: 5,
       view: {
         class: 'foam.u2.tag.Input',
         placeholder: '1234567',
