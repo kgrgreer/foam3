@@ -19,7 +19,7 @@ foam.CLASS({
   package: 'net.nanopay.flinks.external',
   name: 'BusinessOverrideData',
   extends: 'net.nanopay.flinks.external.OverrideData',
-  documentaiton: 'Business override data.',
+  documentation: 'Business override data.',
 
   properties: [
     {
