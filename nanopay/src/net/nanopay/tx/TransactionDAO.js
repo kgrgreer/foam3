@@ -39,7 +39,6 @@ foam.CLASS({
     'net.nanopay.account.DebtAccount',
     'net.nanopay.tx.ExternalTransfer',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.TransactionException',
     'net.nanopay.tx.model.TransactionStatus'
   ],

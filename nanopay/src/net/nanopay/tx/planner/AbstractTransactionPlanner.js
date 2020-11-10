@@ -43,6 +43,7 @@ foam.CLASS({
     'static foam.mlang.MLang.EQ',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.FeeLineItem',
+    'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.Transaction',
     'org.apache.commons.lang.ArrayUtils'
   ],
