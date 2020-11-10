@@ -287,6 +287,20 @@ foam.CLASS({
       `
     },
     {
+      name: 'postPlanning',
+      documentation: 'Run any planner specific logic that needs to happen after planning and then run validation logic',
+      type: 'boolean',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' },
+        { name: 'root', type: 'net.nanopay.tx.model.Transaction' }
+      ],
+      javaCode: `
+        return validatePlan(x,txn);
+        // To be filled out in extending class.
+      `
+    },
+    {
       name: 'createSummaryLineItems',
       documentation: 'group up similar line items',
       type: 'net.nanopay.tx.model.Transaction',

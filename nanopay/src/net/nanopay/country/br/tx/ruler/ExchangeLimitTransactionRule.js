@@ -36,6 +36,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
+    'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.partner.treviso.TrevisoService',
     'net.nanopay.country.br.tx.ExchangeLimitTransaction',
@@ -58,12 +59,14 @@ foam.CLASS({
             TrevisoService trevisoService = (TrevisoService) x.get("trevisoService");
             DAO txnDAO = (DAO) x.get("localTransactionDAO");
 
+            Transaction trevisoTxn = (Transaction) txnDAO.find(EQ(Transaction.PARENT,txn.getId()));
+
             try {
               User sender = txn.findSourceAccount(x).findOwner(x);
               long limit = trevisoService.getTransactionLimit(sender.getId());
 
               // check the limit
-              if ( txn.getDestinationAmount() <= limit ) {
+              if ( (-trevisoTxn.getTotal(x, trevisoTxn.getSourceAccount())) <= limit ) {
                 txn.setStatus(TransactionStatus.COMPLETED);
                 txnDAO.put(txn);
               } else {
