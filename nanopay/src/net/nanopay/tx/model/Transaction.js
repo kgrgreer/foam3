@@ -1291,14 +1291,6 @@ foam.CLASS({
       for ( Transfer t : getTransfers() )
         if ( t.getAccount() == accountNumber )
           sum += t.getAmount();
-      //Sum LineItem transfers that affect account
-      for ( TransactionLineItem li : getLineItems() ) {
-        if ( li instanceof FeeLineItem ) {
-          for (Transfer t : ((FeeLineItem) li).getTransfers())
-            if (t.getAccount() == accountNumber)
-              sum += t.getAmount();
-        }
-      }
       return sum;
     `
   },

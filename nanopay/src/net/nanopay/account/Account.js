@@ -32,10 +32,10 @@ foam.CLASS({
   ],
 
   imports: [
-    'exchangeRateService',
-    'user',
-    'balanceService',
-    'currencyDAO'
+    'exchangeRateService?',
+    'user?',
+    'balanceService?',
+    'currencyDAO?'
   ],
 
   javaImports: [

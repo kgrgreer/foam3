@@ -28,6 +28,7 @@ import net.nanopay.model.Business;
 import net.nanopay.model.PersonalIdentification;
 import net.nanopay.payment.Institution;
 import net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo;
+import foam.nanos.auth.LanguageId;
 
 public class AFEXServiceProviderTest
     extends foam.nanos.test.Test {
@@ -103,7 +104,7 @@ public class AFEXServiceProviderTest
       user1.setType("Business");
       user1.setOrganization("Test Company");
       user1.setBusinessName("Test Company");
-      user1.setLanguage("en");
+      user1.setLanguage(new LanguageId.Builder(null).setCode("en").build());
       user1.setBirthday(new Date());
       user1.setAddress(address);
       PersonalIdentification identification = new PersonalIdentification();

@@ -31,6 +31,7 @@ foam.CLASS({
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.planner.AbstractTransactionPlanner',
     'net.nanopay.tx.planner.TransactionPlan',
+    'foam.core.ValidationException',
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.TransactionException',
     'java.util.ArrayList',
@@ -78,19 +79,14 @@ foam.CLASS({
         { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
       ],
       javaCode: `
-        //find the plan
+        // --- Find the plan ---
         TransactionPlan plannedTx = (TransactionPlan) getDelegate().find_(x, txn.getId());
         if ( plannedTx == null ) {
           ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), "Plan Not Found", txn.getId());
           throw new PlanNotFoundException(txn.getId());
         }
 
-          /*
-        if ( Transaction instanceof Capable )
-          //TODO: do capability checks to see if user filled them all out, if not return to user to get capabilities first.
-          We will skip this for now because statuses are not done. doing nothing will
-          */
-
+       // --- Validate the plan ---
         try {
           validate_(x, plannedTx.getTransaction());
         } catch(foam.core.ValidationException e) {
@@ -99,9 +95,8 @@ foam.CLASS({
           throw e;
         }
 
-        //remove the plan
+        // --- Remove the plan ---
         getDelegate().remove_(x, plannedTx);
-
         return (Transaction) plannedTx.getTransaction().fclone();
       `
     },
@@ -142,7 +137,7 @@ foam.CLASS({
       if (atp == null || ! atp.validatePlan(x, txn)) {
         Logger logger = (Logger) x.get("logger");
         logger.warning(txn.getId() + " failed planner validation");
-        throw new RuntimeException(" Planner Validation failed"); // return txn to user on failure
+        throw new ValidationException("Planner Validation failed"); // return txn to user on failure
       }
 
       // --- Line Item Validation ---

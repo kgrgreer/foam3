@@ -19,7 +19,7 @@ foam.CLASS({
   package: 'net.nanopay.flinks.external',
   name: 'UserOverrideData',
   extends: 'net.nanopay.flinks.external.OverrideData',
-  documentaiton: 'User override data.',
+  documentation: 'User override data.',
 
   properties: [
     {

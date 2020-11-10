@@ -47,6 +47,7 @@ foam.CLASS({
     'crunchController',
     'ctrl',
     'initLayout',
+    'isMenuOpen',
     'menuDAO',
     'notify',
     'onboardingUtil',
@@ -244,6 +245,9 @@ foam.CLASS({
       var business = await this.businessDAO.find(junction.targetId);
       try {
         var result = await this.agentAuth.actAs(this, business);
+        // set default menuState as open
+        window.localStorage.setItem('isMenuOpen', 'true');
+
         if ( result ) {
           await this.ctrl.fetchGroup();
           this.subject.user = business;
@@ -263,8 +267,8 @@ foam.CLASS({
     },
 
     async function pushDefaultMenu() {
-      var defaultMenu = this.theme ? 
-        await this.menuDAO.find(this.theme.defaultMenu) : 
+      var defaultMenu = this.theme ?
+        await this.menuDAO.find(this.theme.defaultMenu) :
         'sme.main.appStore';
       if ( ! defaultMenu ) defaultMenu = 'sme.main.appStore';
       this.pushMenu(defaultMenu);
