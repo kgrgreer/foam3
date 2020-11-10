@@ -29,18 +29,16 @@ foam.CLASS({
     'java.util.*',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.nanos.pm.PM',
     'foam.core.FObject',
     'foam.util.SafetyUtil',
     'foam.dao.ReadOnlyDAO',
-    'foam.nanos.pm.PM',
     'foam.nanos.logger.Logger',
-    'net.nanopay.tx.FeeLineItem',
     'net.nanopay.account.Account',
     'net.nanopay.account.Balance',
     'net.nanopay.account.DebtAccount',
     'net.nanopay.tx.ExternalTransfer',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.TransactionException',
     'net.nanopay.tx.model.TransactionStatus'
   ],
@@ -164,15 +162,6 @@ foam.CLASS({
       javaCode: `
       PM pm = PM.create(x, this.getClass().getSimpleName(), "executeTransaction");
       try {
-        // Copy lineItem transfers to transaction (fees + taxes that were added)
-        TransactionLineItem [] ls = txn.getLineItems();
-        for ( TransactionLineItem li : ls ) {
-          if ( li instanceof FeeLineItem && ((FeeLineItem)li).getTransfers() != null ) {
-            txn.add(((FeeLineItem)li).getTransfers());
-            ((FeeLineItem)li).setTransfers(null);
-          }
-        }
-
         Transfer[] ts = txn.getTransfers();
         return lockAndExecute(x, txn, ts);
       } finally {
