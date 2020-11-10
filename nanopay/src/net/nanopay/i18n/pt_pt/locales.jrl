@@ -702,12 +702,10 @@ p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.capabilit
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.capabilities.CADAFEXTerms.COUNTRY.label",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.CADAFEXTerms.COUNTRY.label",target:"país"})
 
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.capabilities.CADAFEXTerms.AGREEMENT.label",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.CADAFEXTerms.AGREEMENT.label",target:"acordo"})
-p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.ACKNOWLEDGE_AFEX_AGREEMENT",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.ACKNOWLEDGE_AFEX_AGREEMENT",target:"Deve reconhecer o acordo AFEX."})
+p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.ACKNOWLEDGE_AFEX_AGREEMENT",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.ACKNOWLEDGE_AFEX_AGREEMENT",target:"Deve reconhecer o acordo AFEX"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.TITLE.label",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.TITLE.label",target:"título"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.TITLE.value",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.TITLE.value",target:"Termos e condições AFEX"})
-p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.CHECKBOX_TEXT.value",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.CHECKBOX_TEXT.value",target:"Eu reconheço que os pagamentos domésticos e internacionais são autorizados e fornecidos pelo AFEX e não pelo nanopay. Certifico que todas as declarações fornecidas são verdadeiras e corretas e obtive consentimento para enviar todas as informações pessoais fornecidas. Eu li, entendi e concordo com"})
-p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.LINK.label",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.LINK.label",target:"ligação"})
-p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.LINK.value",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.LINK.value",target:"https://sf-asset-manager.s3.amazonaws.com/95763/16388/2328.pdf pt"})
+p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.CHECKBOX_TEXT.value",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.CHECKBOX_TEXT.value",target:"Eu reconheço que os pagamentos domésticos e internacionais são autorizados e fornecidos pelo AFEX e não pelo nanopay. Certifico que todas as declarações fornecidas são verdadeiras e corretas e obtive consentimento para enviar todas as informações pessoais fornecidas. Eu li, entendi e concordo com "})
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.VERSION.label",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.VERSION.label",target:"versão"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.ISSUED_DATE.label",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.ISSUED_DATE.label",target:"data de emissão"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.TRANSACTION_TYPE.label",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.TRANSACTION_TYPE.label",target:"transactionType pt"})
@@ -896,7 +894,7 @@ p({class:"foam.i18n.Locale",id:"554af38a-8125-87c8-dfdf-eeb1trevisobr-us.name",l
 p({class:"foam.i18n.Locale",id:"554af38a-8125-87c8-dfdf-eeb1trevisobr-us.description",locale:"pt",source:"554af38a-8125-87c8-dfdf-eeb1trevisobr-us.description",target:"BR to US corridor via Treviso"})
 p({class:"foam.i18n.Locale",id:"554af38a-8225-87c8-dfdf-eeb15f71215e-1.name",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215e-1.name",target:"TriPartyAgreementCAD"})
 
-p({class:"foam.i18n.Locale",id:"554af38a-8225-87c8-dfdf-eeb15f71215e-10.name",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215e-10.name",target:"USDAFEXTerms"})
+p({class:"foam.i18n.Locale",id:"554af38a-8225-87c8-dfdf-eeb15f71215e-10.name",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215e-10.name",target:"Termos e Condições AFEX"})
 p({class:"foam.i18n.Locale",id:"554af38a-8225-87c8-dfdf-eeb15f71215e-11.name",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215e-11.name",target:"Nanopay Contrato de cliente de pagamentos internacionais"})
 p({class:"foam.i18n.Locale",id:"554af38a-8225-87c8-dfdf-eeb15f71215e-12.name",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215e-12.name",target:"Porcentagem de Certificar Proprietários"})
 p({class:"foam.i18n.Locale",id:"554af38a-8225-87c8-dfdf-eeb15f71215e-13.name",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215e-13.name",target:"Certificar propriedade de conta bancária"})
@@ -1827,7 +1825,6 @@ p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.capabilit
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyDirectorsListed.CERTIFY_DIRECTORS_LISTED",target:"Você deve certificar-se de que todos os diretores foram listados."})
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyDirectorsListed.TITLE_MSG",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyDirectorsListed.TITLE_MSG",target:"todos os diretores foram listados."})
 
-p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.AGREEMENT.label",target:"acordo"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyOwnersPercent.CERTIFY_OWNER_PERCENTAGE",target:"Você deve certificar que todos os proprietários beneficiários com 25% ou mais de propriedade foram listados."})
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyOwnersPercent.TITLE_MSG",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyOwnersPercent.TITLE_MSG",target:"quaisquer proprietários beneficiários com 25% ou mais de propriedade foram listados e as informações incluídas sobre eles são precisas."})
 
@@ -1835,7 +1832,9 @@ p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.capabilit
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.capabilities.CADAFEXTerms.AGREEMENT.label",target:"acordo"})
 
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.TITLE.value",target:"Termos e condições AFEX"})
-p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.ACKNOWLEDGE_AFEX_AGREEMENT",target:"Deve reconhecer o acordo AFEX."})
+p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.AGREEMENT_HASH",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.AGREEMENT_HASH",target:"0c43f921-1be2-5b9d-7dd8-8b46ad930463"})
+p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.SECTION_REVIEW_AGREEMENT_DOCUMENTS_SECTION.title",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.SECTION_REVIEW_AGREEMENT_DOCUMENTS_SECTION.title",target:"Revisão da seção de documentos do contrato"})
+p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.AGREEMENT.label",target:"acordo"})
 
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.capabilities.NanopayInternationalPaymentsCustomerAgreement.CHECKBOX_TEXT.value",target:"Eu reconheço que li e aceito o "})
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.capabilities.NanopayInternationalPaymentsCustomerAgreement.ACKNOWLEDGE_AGREEMENT",target:"Deve reconhecer o acordo acima."})
