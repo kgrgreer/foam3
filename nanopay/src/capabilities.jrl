@@ -457,7 +457,7 @@ p({
 p({
   "class": "foam.nanos.crunch.MinMaxCapability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-20",
-  "name":"Registering with Payment Provider",
+  "name":"Final approval",
   "description":"Registering with Payment Provider",
   "icon":"images/nanopay_logo_blue.png",
   "version":"0",
