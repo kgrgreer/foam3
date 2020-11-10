@@ -54,8 +54,8 @@ foam.CLASS({
             {
               if (obj instanceof SummaryTransaction) {
                 obj = doChainCalculation((SummaryTransaction) obj);
-                getDelegate().put(obj, sub);
               }
+              getDelegate().put(obj, sub);
             }
           }
 
