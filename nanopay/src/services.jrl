@@ -2173,7 +2173,6 @@ p({
       .setEnableInterfaceDecorators(false)
       .setServiceProviderAware(true)
       .setOf(foam.nanos.ruler.Rule.getOwnClassInfo())
-      .setCluster(false)
       .setInnerDAO(x.get("localRuleDAO"))
       .setRuler(false)
       .build();
@@ -2377,9 +2376,8 @@ p({
       .setGuid(true)
       .setOf(net.nanopay.script.CsvUploadScript.getOwnClassInfo())
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName(\"csvUploadScripts\")
+      .setJournalName("csvUploadScripts")
       .setAuthorize(false)
-      .setCluster(false)
       .setDecorator(new foam.nanos.script.ScriptRunnerDAO(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.script.CsvUploadScript.getOwnClassInfo()).build()))
       .setOrder(new foam.core.PropertyInfo[] {foam.nanos.script.Script.ID})
       .setIndex(new foam.core.PropertyInfo[] {foam.nanos.script.Script.ID})
@@ -2410,7 +2408,6 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.tx.gs.ProgressBarData.getOwnClassInfo())
       .setAuthorize(false)
-      .setCluster(false)
       .setPm(true)
       .setPipelinePm(false)
       .setRuler(false)
@@ -2428,46 +2425,6 @@ p({
     "ttlSelectPurgeTime": 0
   }
   """
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"userCapabilityJunctionDAO",
-  "serve":true,
-  "serviceScript":"""
-    dao = new foam.dao.EasyDAO.Builder(x)
-      .setAuthorize(false)
-      .setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo())
-      .setInnerDAO(x.get("bareUserCapabilityJunctionDAO"))
-      .build();
-    userCap =  new foam.nanos.crunch.UserCapabilityJunctionDAO.Builder(x).setDelegate(dao).build();
-    return userCap;
-  """,
-  "client":"{\"of\":\"foam.nanos.crunch.UserCapabilityJunction\", \"remoteListenerSupport\": false}"
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
-  "name":"bareUserCapabilityJunctionDAO",
-  "serviceScript":"""
-    mdao = new foam.dao.MDAO(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo());
-    mdao.addIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.SOURCE_ID, foam.nanos.crunch.UserCapabilityJunction.TARGET_ID });
-    mdao.addIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.SOURCE_ID });
-    inner = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, mdao, "userCapabilityJunctions", "true".equals(System.getProperty("CLUSTER")));
-    decorator = new foam.dao.history.HistoryDAO(x, "userCapabilityJunctionHistoryDAO", new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo()).build());
-    dao = new foam.dao.EasyDAO.Builder(x)
-      .setMdao(mdao)
-      .setAuthorize(false)
-      .setGuid(true)
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setJournalName("userCapabilityJunctions")
-      .setInnerDAO(inner)
-      .setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo())
-      .setDecorator(decorator)
-      .build();
-    return dao;
-  """,
-  "client":"{\"of\":\"foam.nanos.crunch.UserCapabilityJunction\", \"remoteListenerSupport\": false}"
 })
 
 // transaction history of invoiceDAO
