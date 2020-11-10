@@ -1752,7 +1752,6 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/tx/TrevisoTransaction' },
   { name: 'net/nanopay/partner/treviso/tx/planner/TrevisoTransactionPlanner' },
   { name: 'net/nanopay/partner/treviso/tx/TrevisoCreateExchange' },
-  { name: 'net/nanopay/partner/treviso/tx/TrevisoLineItemsFromFXSummary' },
   { name: 'net/nanopay/partner/treviso/TrevisoUnlockPaymentTermsAndConditions' },
   { name: 'net/nanopay/partner/treviso/invoice/TrevisoCapabilityValidateRule' },
   { name: 'net/nanopay/partner/treviso/invoice/UpdateTransactionOnInvoiceValidationRule' },

@@ -1233,7 +1233,6 @@ var classes = [
   'net.nanopay.partner.treviso.tx.TrevisoTransaction',
   'net.nanopay.partner.treviso.tx.planner.TrevisoTransactionPlanner',
   'net.nanopay.partner.treviso.tx.TrevisoCreateExchange',
-  'net.nanopay.partner.treviso.tx.TrevisoLineItemsFromFXSummary',
   'net.nanopay.tx.EtaSummaryTransactionLineItem',
   'net.nanopay.country.br.NatureCodePaymentProviderJunction',
   'net.nanopay.tx.ExpirySummaryTransactionLineItem',

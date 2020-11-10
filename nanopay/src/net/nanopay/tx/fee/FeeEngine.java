@@ -26,6 +26,7 @@ import foam.mlang.Expr;
 import foam.mlang.Formula;
 import foam.nanos.logger.Logger;
 import net.nanopay.fx.TotalRateLineItem;
+import net.nanopay.tx.ExternalTransfer;
 import net.nanopay.tx.FeeLineItem;
 import net.nanopay.tx.TransactionLineItem;
 import net.nanopay.tx.Transfer;
@@ -195,8 +196,8 @@ public class FeeEngine {
     }
     if ( transactionFeeRule_.getFeeAccount() > 0 ) {
       result.setTransfers(new Transfer[] {
-        new Transfer(-amount, sourceAccount),
-        new Transfer( amount, transactionFeeRule_.getFeeAccount())
+        new ExternalTransfer(-amount, sourceAccount),
+        new ExternalTransfer( amount, transactionFeeRule_.getFeeAccount())
       });
     }
     return result;

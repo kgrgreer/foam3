@@ -175,7 +175,7 @@ public class KotakTransactionTest extends foam.nanos.test.Test {
     txn.setSourceCurrency("CAD");
     txn.setDestinationAccount(destinationAccount.getId());
     txn.setDestinationCurrency("INR");
-    txn.setAmount(200);
+    txn.setDestinationAmount(200);
     TransactionQuote quote = new TransactionQuote();
     quote.setRequestTransaction(txn);
     try {

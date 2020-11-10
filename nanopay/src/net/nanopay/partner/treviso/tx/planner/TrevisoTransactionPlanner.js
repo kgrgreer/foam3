@@ -27,14 +27,16 @@ foam.CLASS({
     'net.nanopay.fx.FXLineItem',
     'net.nanopay.fx.FXQuote',
     'net.nanopay.fx.FXSummaryTransaction',
-    'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.ExternalTransfer',
+    'net.nanopay.tx.TransactionLineItem',
+    'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.country.br.tx.ExchangeLimitTransaction',
     'net.nanopay.partner.treviso.TrevisoService',
     'net.nanopay.country.br.tx.NatureCodeLineItem',
     'net.nanopay.partner.treviso.tx.TrevisoTransaction',
+    'org.apache.commons.lang.ArrayUtils'
   ],
 
   properties: [
@@ -90,13 +92,7 @@ foam.CLASS({
       txn.setStatus(TransactionStatus.COMPLETED);
       txn.clearLineItems();
 
-      TrevisoService service = (TrevisoService) x.get("trevisoService");
-      FXQuote fxQuote = service.getFXRate(
-        requestTxn.getSourceCurrency(), requestTxn.getDestinationCurrency(),
-        0, requestTxn.getDestinationAmount(),
-        null, null, requestTxn.findSourceAccount(x).getOwner(), null
-      );
-      txn.setAmount(fxQuote.getSourceAmount());
+      txn.setAmount(0);
 
       txn.addNext(createComplianceTransaction(txn));
       txn.addNext(createLimit(txn));
@@ -104,27 +100,19 @@ foam.CLASS({
       TrevisoTransaction trevisoTxn = new TrevisoTransaction();
       trevisoTxn.copyFrom(requestTxn);
       trevisoTxn.setId(UUID.randomUUID().toString());
-      trevisoTxn.setAmount(fxQuote.getSourceAmount());
-      trevisoTxn.setFxRate(fxQuote.getRate());
+      trevisoTxn.setAmount(0);
       trevisoTxn.setName("Treviso transaction");
       trevisoTxn.setPaymentProvider(PAYMENT_PROVIDER);
       trevisoTxn.setPlanner(this.getId());
       trevisoTxn = addNatureCodeLineItems(x, trevisoTxn, requestTxn);
 
-      FXLineItem fxLineItem = new FXLineItem();
-      fxLineItem.setRate(fxQuote.getRate());
-      fxLineItem.setSourceCurrency(fxQuote.getSourceCurrency());
-      fxLineItem.setDestinationCurrency(fxQuote.getTargetCurrency());
-      fxLineItem.setExpiry(fxQuote.getExpiryTime());
-      trevisoTxn.addLineItems( new TransactionLineItem[] { fxLineItem } );
       txn.addNext(trevisoTxn);
       
       // TODO: evaluate helper methods on the intended transaction instead of the head.
       /* quote.addExternalTransfer(quote.getDestinationAccount().getId(), trevisoTxn.getDestinationAmount());
       quote.addExternalTransfer(quote.getSourceAccount().getId(), - trevisoTxn.getAmount());*/
-      ExternalTransfer[] exT = new ExternalTransfer[2];
-      exT[0] = new ExternalTransfer(- trevisoTxn.getAmount(), quote.getSourceAccount().getId());
-      exT[1] = new ExternalTransfer(trevisoTxn.getDestinationAmount(), quote.getDestinationAccount().getId());
+      ExternalTransfer[] exT = new ExternalTransfer[1];
+      exT[0] = new ExternalTransfer(trevisoTxn.getDestinationAmount(), quote.getDestinationAccount().getId());
       trevisoTxn.setTransfers( exT );
 
       return txn;
@@ -156,6 +144,27 @@ foam.CLASS({
         }
 
         return true;
+      `
+    },
+    {
+      name: 'postPlanning',
+      javaCode: `
+        if ( txn instanceof TrevisoTransaction ) {
+          TrevisoTransaction transaction =(TrevisoTransaction) txn;
+
+          // -- Copy line items
+          transaction.setLineItems(root.getLineItems());
+          
+          // Add transfer for source amount
+          ExternalTransfer ext = new ExternalTransfer(- root.getAmount(), transaction.getSourceAccount());
+          Transfer[] transfers = (Transfer[]) ArrayUtils.add(transaction.getTransfers(), ext);
+
+          // Add transfers for fees from summary
+          transfers =  (Transfer[]) ArrayUtils.addAll(transfers, root.getTransfers());
+          transaction.setTransfers(transfers);
+          root.setTransfers(null);
+        }
+        return super.postPlanning(x,txn,root);
       `
     },
     {
