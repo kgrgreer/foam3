@@ -334,7 +334,16 @@ foam.CLASS({
           txnclone.setDestinationCurrency(quote.getDestinationUnit());
         }
         txnclone = (Transaction) ((DAO) x.get("localFeeEngineDAO")).put(txnclone);
-        txn.setLineItems(txnclone.getLineItems());
+
+        // Copy lineItem transfers to transaction (fees + taxes that were added)
+        TransactionLineItem [] ls = txnclone.getLineItems();
+        for ( TransactionLineItem li : ls ) {
+          if ( li instanceof FeeLineItem && ((FeeLineItem)li).getTransfers() != null ) {
+            txn.add(((FeeLineItem)li).getTransfers());
+            ((FeeLineItem)li).setTransfers(null);
+          }
+        }
+        txn.setLineItems(ls);
         return txn;
       `
     }

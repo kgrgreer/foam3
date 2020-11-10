@@ -164,15 +164,6 @@ foam.CLASS({
       javaCode: `
       PM pm = PM.create(x, this.getClass().getSimpleName(), "executeTransaction");
       try {
-        // Copy lineItem transfers to transaction (fees + taxes that were added)
-        TransactionLineItem [] ls = txn.getLineItems();
-        for ( TransactionLineItem li : ls ) {
-          if ( li instanceof FeeLineItem && ((FeeLineItem)li).getTransfers() != null ) {
-            txn.add(((FeeLineItem)li).getTransfers());
-            ((FeeLineItem)li).setTransfers(null);
-          }
-        }
-
         Transfer[] ts = txn.getTransfers();
         return lockAndExecute(x, txn, ts);
       } finally {
