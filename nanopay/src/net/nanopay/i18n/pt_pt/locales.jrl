@@ -1207,6 +1207,7 @@ p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.BusinessAcco
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.BusinessAccountData.INVALID_DATE_ERROR",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessAccountData.INVALID_DATE_ERROR",target:"Data válida necessária"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.BusinessAccountData.MAX_DATE_ERROR",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessAccountData.MAX_DATE_ERROR",target:"Não pode ser uma data futura"})
 
+p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.BusinessAccountData.INVALID_DATE_ERROR",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessAccountData.INVALID_DATE_ERROR",target:"Data válida necessária"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.BusinessAccountData.CUSTOMERS.label",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessAccountData.CUSTOMERS.label",target:"clientes"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.BusinessAccountData.CUSTOMERS.documentation",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessAccountData.CUSTOMERS.documentation",target:"Matriz dos principais clientes empresariais."})
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.BusinessAccountData.SUPPLIERS.label",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessAccountData.SUPPLIERS.label",target:"fornecedores"})
@@ -1224,6 +1225,8 @@ p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.CurrencyAmou
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.SECTION_BUSINESS_CAPITAL.title",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.SECTION_BUSINESS_CAPITAL.title",target:"Moeda da quantia em que o patrimônio líquido foi definido"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.EQUITY.documentation",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.EQUITY.documentation",target:"Moeda da quantia em que o patrimônio líquido foi definido"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.CustomerBasicInformation.NAME.label",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CustomerBasicInformation.NAME.label",target:"nome"})
+
+p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.CustomerBasicInformation.INVALID_PHONE_ERROR",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CustomerBasicInformation.INVALID_PHONE_ERROR",target:"Número de telefone comercial obrigatório"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.CustomerBasicInformation.TELEPHONE.label",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CustomerBasicInformation.TELEPHONE.label",target:"Número de telefone comercial"})
 
 p({class:"foam.i18n.Locale",id:"foam.core.EMail.EMAIL_REQUIRED_MSG",locale:"pt",source:"foam.core.EMail.EMAIL_REQUIRED_MSG",target:"Telefone"})
