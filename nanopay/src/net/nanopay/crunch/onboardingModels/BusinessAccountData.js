@@ -105,7 +105,7 @@ foam.CLASS({
     {
       section: 'accountingSection',
       name: 'isTaxFiled',
-      label: 'I have filed taxes for this business.',
+      label: 'Has this business filed taxes?',
       class: 'Boolean',
       postSet: function(_, n) {
         if ( ! n )
