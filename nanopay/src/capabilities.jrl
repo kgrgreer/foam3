@@ -459,7 +459,7 @@ p({
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-20",
   "name":"Final approval",
   "description":"Registering with Payment Provider",
-  "icon":"images/nanopay_logo_blue.png",
+  "icon":"/images/capabilityIcons/BusinessRegistrationCap.svg",
   "version":"0",
   "enabled":true,
   "visible":true,
