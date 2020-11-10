@@ -1724,6 +1724,7 @@ FOAM_FILES([
   { name: 'net/nanopay/country/br/crunch/ExchangeServiceOnboardingRule' },
   { name: 'net/nanopay/country/br/exchange/ExchangeCredential' },
   { name: 'net/nanopay/country/br/exchange/ExchangeCustomer' },
+  { name: 'net/nanopay/country/br/exchange/ExchangeClientValues' },
   { name: 'net/nanopay/country/br/NatureCode' },
   { name: 'net/nanopay/country/br/NatureCodeData' },
   { name: 'net/nanopay/country/br/NatureCodeRate' },
@@ -1733,7 +1734,6 @@ FOAM_FILES([
   { name: 'net/nanopay/country/PermittedCountryFilterDAO' },
   { name: 'net/nanopay/country/br/NatureCodePaymentProviderJunctionRefinement' },
   { name: 'net/nanopay/country/br/NatureBusinessRelationship' },
-  { name: 'net/nanopay/country/br/BeneficiaryType' },
 
   //RequestToPay
   { name: 'net/nanopay/rtp/RequestToPay'},
