@@ -19,7 +19,7 @@ foam.CLASS({
   package: 'net.nanopay.flinks.external',
   name: 'OverrideData',
   abstract: true,
-  documentaiton: 'Override data.',
+  documentation: 'Override data.',
 
   javaImports: [
     'foam.nanos.auth.Address'

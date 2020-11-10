@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.flinks.external',
   name: 'FlinksOverrides',
-  documentaiton: 'Override data retrieved from Flinks with data provided in this object.',
+  documentation: 'Override data retrieved from Flinks with data provided in this object.',
 
   properties: [
     {

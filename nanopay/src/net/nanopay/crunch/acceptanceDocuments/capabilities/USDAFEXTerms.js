@@ -21,7 +21,8 @@ foam.CLASS({
   extends: 'net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability',
 
   messages: [
-    { name: 'ACKNOWLEDGE_AFEX_AGREEMENT', message: 'Certification required' }
+    { name: 'ACKNOWLEDGE_AFEX_AGREEMENT', message: 'Certification required' },
+    { name: 'AGREEMENT_HASH', message: '87278b8b-81b3-6380-6b87-7f46680ba0c3'}
   ],
 
   sections: [
@@ -44,8 +45,8 @@ foam.CLASS({
     },
     {
       name: 'link',
-      factory: function() {
-        return '/service/httpFileService/87278b8b-81b3-6380-6b87-7f46680ba0c3?sessionId=' + localStorage['defaultSession'];
+      getter: function() {
+        return '/service/httpFileService/' + this.AGREEMENT_HASH + '?sessionId=' + localStorage['defaultSession'];
       }
     },
     {

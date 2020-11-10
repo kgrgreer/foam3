@@ -30,8 +30,9 @@ currencies
 currencyfxServices
 deprecatedCapabilityJunctions
 digs
-exchangeRates
 emailTemplates
+exchangeRates
+exchangeClientValueDAO
 exportDriverRegistrys
 fees
 fundTransferSystems

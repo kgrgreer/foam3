@@ -104,24 +104,53 @@ foam.CLASS({
     },
     {
       section: 'accountingSection',
+      name: 'isTaxFiled',
+      label: 'I have filed taxes for this business.',
+      class: 'Boolean',
+      postSet: function(_, n) {
+        if ( ! n )
+          this.dateOfFilingTaxes = null;
+      },
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RadioView',
+          choices: [
+            [true, X.data.YES],
+            [false, X.data.NO]
+          ],
+          isHorizontal: true
+        };
+      }
+    },
+    {
+      section: 'accountingSection',
       class: 'Date',
       name: 'dateOfFilingTaxes',
       label: 'When did the business last file taxes?',
       help: 'The date the last time you filed taxes',
       documentation: 'The date the last time you filed taxes',
+      visibility: function(isTaxFiled) {
+        return isTaxFiled ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      },
       required: true,
       validationPredicates: [
         {
-          args: ['dateOfFilingTaxes'],
+          args: ['dateOfFilingTaxes', 'isTaxFiled'],
           predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.crunch.onboardingModels.BusinessAccountData.DATE_OF_FILING_TAXES, null);
+            return  e.OR(
+                e.NEQ(net.nanopay.crunch.onboardingModels.BusinessAccountData.DATE_OF_FILING_TAXES, null),
+                e.EQ(net.nanopay.crunch.onboardingModels.BusinessAccountData.IS_TAX_FILED, false)
+            );
           },
           errorMessage: 'INVALID_DATE_ERROR'
         },
         {
-          args: ['dateOfFilingTaxes'],
+          args: ['dateOfFilingTaxes', 'isTaxFiled'],
           predicateFactory: function(e) {
-            return e.LTE(net.nanopay.crunch.onboardingModels.BusinessAccountData.DATE_OF_FILING_TAXES, new Date());
+            return e.OR(
+              e.LTE(net.nanopay.crunch.onboardingModels.BusinessAccountData.DATE_OF_FILING_TAXES, new Date()),
+              e.EQ(net.nanopay.crunch.onboardingModels.BusinessAccountData.IS_TAX_FILED, false)
+            );
           },
           errorMessage: 'MAX_DATE_ERROR'
         }
