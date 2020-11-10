@@ -367,7 +367,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'iban',
-      label: 'IBAN',
+      label: 'International Bank Account Number (IBAN)',
       required: true,
       section: 'accountDetails',
       documentation: `Standard international numbering system developed to
@@ -379,7 +379,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'bankCode',
-      label: 'Bank Code',
       documentation: `International bank code that identifies banks worldwide. BIC/SWIFT`,
       updateVisibility: 'RO',
       section: 'accountDetails'

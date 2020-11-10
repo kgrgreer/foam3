@@ -106,7 +106,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'beneAccountType',
-      label: 'Account Type',
+      label: 'Account type',
       section: 'accountDetails',
       view: {
         class: 'foam.u2.view.ChoiceView',

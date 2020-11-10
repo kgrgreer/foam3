@@ -58,7 +58,6 @@ foam.CLASS({
     },
     {
       name: 'accountNumber',
-      label: 'Account No.',
       updateVisibility: 'RO',
       section: 'accountDetails',
       view: {

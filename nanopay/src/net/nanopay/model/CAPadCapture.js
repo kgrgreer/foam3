@@ -71,7 +71,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'accountNumber',
-      label: 'Account No.',
       documentation: 'Account associated with PAD capture.',
       visibility: 'DISABLED',
       gridColumns: 6,
