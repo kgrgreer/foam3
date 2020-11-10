@@ -20,7 +20,7 @@ foam.CLASS({
     name: 'UserRefines',
     refines: 'foam.nanos.auth.User',
     imports: [
-      'approvalRequestDAO'
+      'approvalRequestDAO?'
     ],
     actions: [
       {

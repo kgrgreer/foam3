@@ -40,10 +40,3 @@ p({
   targetId: "trevisoMenuCapability",
   priority: 6
 })
-
-p({
-  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "treviso",
-  targetId: "trevisoBeneficiaryType",
-  priority: 7
-})

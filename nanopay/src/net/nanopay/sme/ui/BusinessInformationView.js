@@ -33,7 +33,7 @@ foam.CLASS({
       padding: 24px;
     }
     ^ .info-container {
-      width: 25%;
+      width: 20%;
       display: inline-grid;
       height: 40px;
       margin-top: 30px;
@@ -48,6 +48,7 @@ foam.CLASS({
     { name: 'BUSINESS_NAME_LABEL', message: 'Name' },
     { name: 'PHONE_LABEL', message: 'Phone number' },
     { name: 'ADDRESS_LABEL', message: 'Address' },
+    { name: 'EMAIL_LABEL', message: 'Email' },
     { name: 'WEBSITE_LABEL', message: 'Website' }
   ],
 
@@ -67,6 +68,10 @@ foam.CLASS({
         .start().addClass('info-container')
           .start().addClass('table-content').add(this.ADDRESS_LABEL).end()
           .start().addClass('table-content').addClass('subdued-text').add(this.user.address.getAddress()).end()
+        .end()
+        .start().addClass('info-container')
+          .start().addClass('table-content').add(this.EMAIL_LABEL).end()
+          .start().addClass('table-content').addClass('subdued-text').add(this.user.email).end()
         .end()
         .start().addClass('info-container')
           .start().addClass('table-content').add(this.WEBSITE_LABEL).end()

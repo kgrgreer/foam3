@@ -21,8 +21,6 @@ foam.CLASS({
 
   documentation: 'Broker user information.',
 
-  searchColumns: [],
-
   properties: [
     {
       class: 'Long',

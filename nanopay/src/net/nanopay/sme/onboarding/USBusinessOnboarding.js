@@ -101,8 +101,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'net.nanopay.model.BeneficialOwner',
     'net.nanopay.model.Business',
-    'net.nanopay.model.PersonalIdentification',
-    'net.nanopay.sme.onboarding.USBusinessOnboarding',
+    'net.nanopay.model.PersonalIdentification'
   ],
 
   imports: [
