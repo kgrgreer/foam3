@@ -1,0 +1,47 @@
+p({
+  "class":"foam.nanos.session.Session",
+  "id":"4BFDD224-774E-4716-8508-43FA72E003D9",
+  "userId":2,
+  "created":"2020-11-10T14:57:12.959Z",
+  "ttl":22118400000
+})
+
+p({
+  "class":"foam.nanos.session.Session",
+  "id":"F6797936-27F2-4D61-A51E-3B7CB7EC9AB6",
+  "userId":2,
+  "created":"2019-11-26T06:57:13.534Z",
+  "ttl":22118400000
+})
+
+p({
+  "class":"foam.nanos.session.Session",
+  "id":"48C15AED-29D5-4D06-AA96-3EED8BEBBC9F",
+  "userId":2,
+  "created":"2020-11-10T14:57:12.959Z",
+  "ttl":22118400000
+})
+
+p({
+  "class":"foam.nanos.session.Session",
+  "id":"CE6E014A-3DAE-4F6F-965B-EC8601CB9FC1",
+  "userId":2,
+  "created":"2020-11-10T14:57:12.959Z",
+  "ttl":22118400000
+})
+
+p({
+  "class":"foam.nanos.session.Session",
+  "id":"6274B610-F3FF-4287-842E-80C66306F726",
+  "userId":2,
+  "created":"2020-11-10T14:57:12.959Z",
+  "ttl":22118400000
+})
+
+p({
+  "class":"foam.nanos.session.Session",
+  "id":"19AEFD71-2E92-4BFC-A837-E54CCD0668E2",
+  "userId":2,
+  "created":"2020-11-10T14:57:12.959Z",
+  "ttl":22118400000
+})
