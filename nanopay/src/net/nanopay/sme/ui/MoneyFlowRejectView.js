@@ -116,7 +116,7 @@ foam.CLASS({
 
   messages: [
     { name: 'TITLE', message: 'This invoice has been voided' },
-    { name: 'V_PAY', message: 'View this payable' },
+    { name: 'V_PAY', message: 'View this invoice' },
     { name: 'V_REC', message: 'View this receivable' }
   ],
 

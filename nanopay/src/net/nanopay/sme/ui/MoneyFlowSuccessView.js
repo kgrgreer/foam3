@@ -40,7 +40,8 @@ foam.CLASS({
     'menuDAO',
     'stack',
     'transactionDAO',
-    'subject'
+    'subject',
+    'crunchService'
   ],
 
   css: `
@@ -126,7 +127,7 @@ foam.CLASS({
         return {
           class: 'foam.u2.tag.Image',
           data: isApprover_ ?
-            'images/checkmark-large-green.svg' :
+            'images/exclamation-large-orange.svg' :
             'images/pending-icon.svg'
         };
       }
@@ -156,7 +157,7 @@ foam.CLASS({
       expression: function(isPayable_, isApprover_, formattedAmount_, invoiceName_) {
         if ( isPayable_ ) {
           if ( isApprover_ ) {
-            return `${formattedAmount_} ${this.TITLE_SEND} ${invoiceName_}`;
+            return this.TITLE_SEND;
           }
           return this.TITLE_PENDING;
         }
@@ -176,11 +177,15 @@ foam.CLASS({
       name: 'transactionConfirmationPDF',
       documentation: `Order confirmation, as a PDF, for the Payer.
     `
+    },
+    {
+      class: 'String',
+      name: 'cnpj'
     }
   ],
 
   messages: [
-    { name: 'TITLE_SEND', message: 'will be sent to' },
+    { name: 'TITLE_SEND', message: 'You’re almost there!' },
     { name: 'TITLE_REC1', message: 'Requested' },
     { name: 'TITLE_REC2', message: 'from' },
     { name: 'TITLE_PENDING', message: 'Payment has been submitted for approval' },
@@ -188,20 +193,21 @@ foam.CLASS({
     { name: 'BODY_REC', message: 'Your request has been sent to your contact and is now pending payment.' },
     { name: 'BODY_PENDING', message: 'This payable requires approval before it can be processed.' },
     { name: 'REF', message: 'Your reference ID ' },
-    { name: 'V_PAY', message: 'View this payable' },
+    { name: 'V_PAY', message: 'View this invoice' },
     { name: 'V_REC', message: 'View this receivable' },
     { name: 'TXN_CONFIRMATION_LINK_TEXT', message: 'View AscendantFX Transaction Confirmation' },
     { name: 'BODY_SEND_TREVISO_1', message: 'Attention : this transaction is not complete yet!' },
-    { name: 'BODY_SEND_TREVISO_2_0', message: 'To finish it, please send a TED (Brazilian wire) of (' },
-    { name: 'BODY_SEND_TREVISO_2_1', message: ') to :' },
-    { name: 'BODY_SEND_TREVISO_3', message: `
-        Treviso Corretora de Câmbio S.A
-        CNPJ: 02.992.317/0001-87
-        Banco SC Treviso (143)
-        Agencia: 0001
-        Conta: 1-1`
-    },
-    { name: 'BODY_SEND_TREVISO_4', message: 'Not sending the funds will cause this transaction to be automatically canceled.' }
+    { name: 'BODY_SEND_TREVISO_2_0', message: 'Send a TED of ' },
+    { name: 'BODY_SEND_TREVISO_2_1', message: ' within 4 hours to:' },
+    { name: 'BODY_SEND_TREVISO_3', message: 'Company: Treviso Corretora de Câmbio S.A' },
+    { name: 'BODY_SEND_TREVISO_4', message: 'CNPJ: 02.992.317/0001-87' },
+    { name: 'BODY_SEND_TREVISO_5', message: 'Bank: Banco SC Treviso (143)' },
+    { name: 'BODY_SEND_TREVISO_6', message: 'Institution: 0001' },
+    { name: 'BODY_SEND_TREVISO_7', message: 'Account: 1-1' },
+    { name: 'BODY_SEND_TREVISO_8', message: 'Reference: ' },
+    { name: 'BODY_SEND_TREVISO_9_0', message: 'If the TED above is not received within 4 hours, the payment of ' },
+    { name: 'BODY_SEND_TREVISO_9_1', message: ' to ' },
+    { name: 'BODY_SEND_TREVISO_9_2', message: ' will be cancelled.' },
 
   ],
 
@@ -210,6 +216,11 @@ foam.CLASS({
       this.currencyDAO.find(this.invoice.destinationCurrency)
         .then((currency) => {
         this.formattedAmount_ = currency.format(this.invoice.amount);
+      });
+
+      this.crunchService.getJunction(null,"688cb7c6-7316-4bbf-8483-fb79f8fdeaaf")
+        .then((ucj) => {
+          this.cnpj = ucj.data.cnpj;
       });
     },
     function init() {
@@ -244,11 +255,6 @@ foam.CLASS({
             .addClass('success-body').addClass('subdued-text')
             .add(this.getBody())
           .end()
-          .start('p')
-            .addClass('success-body').addClass('subdued-text')
-            .add(this.REF)
-            .add(this.invoice.referenceId)
-          .end()
           .start('a')
             .addClass('link')
             .add(this.isPayable_$.map((value) => value ? this.V_PAY : this.V_REC))
@@ -281,17 +287,21 @@ foam.CLASS({
     function getBody() {
       if ( this.isPayable_ && this.isApprover_ ) {
         return this.E()
-          .start('b')
-            .add(this.BODY_SEND_TREVISO_1)
-          .end()
           .start()
             .add(this.BODY_SEND_TREVISO_2_0 + this.invoice.totalSourceAmount + this.BODY_SEND_TREVISO_2_1)
           .end()
-          .start('pre')
-            .add(this.BODY_SEND_TREVISO_3)
+          .start().add(this.BODY_SEND_TREVISO_3).end()
+          .start().add(this.BODY_SEND_TREVISO_4).end()
+          .start().add(this.BODY_SEND_TREVISO_5).end()
+          .start().add(this.BODY_SEND_TREVISO_6).end()
+          .start().add(this.BODY_SEND_TREVISO_7).end()
+          .start()
+            .add(this.BODY_SEND_TREVISO_8)
+            .add(this.cnpj$)
           .end()
           .start('b')
-            .add(this.BODY_SEND_TREVISO_4)
+            .add(this.BODY_SEND_TREVISO_9_0 + this.invoice.totalSourceAmount + this.BODY_SEND_TREVISO_9_1 +
+              this.invoice.payee.businessName + this.BODY_SEND_TREVISO_9_2)
           .end();
       } else if ( this.isPayable_ ) {
         return this.BODY_PENDING;
