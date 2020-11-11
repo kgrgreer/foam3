@@ -33,7 +33,7 @@ foam.CLASS({
         'foam.nanos.crunch.CrunchService',
         'foam.nanos.crunch.Capability',
         'foam.nanos.crunch.CapabilityJunctionStatus',
-        'foam.nanos.crunch.CapabilityRuntimeException',
+        'foam.nanos.crunch.CapabilityIntercept',
         'foam.nanos.logger.Logger',
         'foam.util.SafetyUtil',
 
@@ -63,7 +63,7 @@ foam.CLASS({
                     // If invoice is valid & capabilities are granted, set status to QUOTING
                     SafetyUtil.validate(x, invoice);
                     var crunchService = (CrunchService) x.get("crunchService");
-                    var cre = new CapabilityRuntimeException();
+                    var cre = new CapabilityIntercept();
                     cre.setDaoKey("invoiceDAO");
 
                     Arrays.stream(invoice.getUserCapabilityRequirements())
