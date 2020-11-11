@@ -64,7 +64,6 @@ foam.CLASS({
         return {
           class: 'foam.u2.view.ScrollTableView',
           editColumnsEnabled: false,
-          disableUserSelection: true,
           columns: [
             foam.core.Property.create({
               name: 'organization',
