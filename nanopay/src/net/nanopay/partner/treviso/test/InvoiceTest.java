@@ -3,7 +3,7 @@ package net.nanopay.partner.treviso.test;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.crunch.CapabilityJunctionStatus;
-import foam.nanos.crunch.CapabilityRuntimeException;
+import foam.nanos.crunch.CapabilityIntercept;
 import foam.nanos.crunch.UserCapabilityJunction;
 import foam.nanos.test.Test;
 import net.nanopay.invoice.model.Invoice;
@@ -32,7 +32,7 @@ public class InvoiceTest extends Test {
 
     try {
       invoiceDAO.remove(invoiceDAO.put(invoice));
-    } catch (CapabilityRuntimeException e) {
+    } catch (CapabilityIntercept e) {
       if ( Arrays.stream(e.getCapabilities())
         .noneMatch(TrevisoInvoiceCapabilityRule.USER_CAPABILITY_ID::equals)
       ) return false;

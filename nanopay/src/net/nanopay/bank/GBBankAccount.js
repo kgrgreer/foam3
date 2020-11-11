@@ -59,7 +59,6 @@ foam.CLASS({
     },
     {
       name: 'accountNumber',
-      label: 'Account No.',
       updateVisibility: 'RO',
       view: {
         class: 'foam.u2.tag.Input',

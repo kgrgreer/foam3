@@ -86,9 +86,9 @@ foam.CLASS({
           throw new PlanNotFoundException(txn.getId());
         }
 
-       // --- Validate the plan ---
+       // --- Run post planning & validate the plan ---
         try {
-          validate_(x, plannedTx.getTransaction());
+          postPlanning_(x, plannedTx.getTransaction(), plannedTx.getTransaction());
         } catch(foam.core.ValidationException e) {
           Logger logger = (Logger) x.get("logger");
           logger.warning("Transaction Plan Validation Failed. \\ntxn:", txn, "\\nplan:", plannedTx);
@@ -122,10 +122,11 @@ foam.CLASS({
       `
     },
     {
-    name: 'validate_',
+    name: 'postPlanning_',
     args: [
       { name: 'x', type: 'Context' },
-      { name: 'txn', type: 'net.nanopay.tx.model.Transaction'}
+      { name: 'txn', type: 'net.nanopay.tx.model.Transaction' },
+      { name: 'root', type: 'net.nanopay.tx.model.Transaction'}
     ],
     documentation: 'recursive tree validation: 1. Validate Transaction 2. Validate against transactions Planner 3. validate transaction line Items ',
     javaCode: `
@@ -134,7 +135,7 @@ foam.CLASS({
 
       // --- Planner Validation ---
       AbstractTransactionPlanner atp = (AbstractTransactionPlanner) txn.findPlanner(x);
-      if (atp == null || ! atp.validatePlan(x, txn)) {
+      if (atp == null || ! atp.postPlanning(x, txn, root)) {
         Logger logger = (Logger) x.get("logger");
         logger.warning(txn.getId() + " failed planner validation");
         throw new ValidationException("Planner Validation failed"); // return txn to user on failure
@@ -147,7 +148,7 @@ foam.CLASS({
       if ( txn.getNext() != null || txn.getNext().length == 0 ) {
         Transaction [] txs = txn.getNext();
         for ( Transaction tx : txs ) {
-          validate_(x, tx);
+          postPlanning_(x, tx, root);
         }
       }
 

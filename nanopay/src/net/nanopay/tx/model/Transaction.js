@@ -62,6 +62,7 @@ foam.CLASS({
     'net.nanopay.tx.AbliiTransaction',
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.tx.FeeLineItem',
+    'net.nanopay.tx.FeeSummaryTransactionLineItem',
     'net.nanopay.tx.InterestTransaction',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.Transfer',
@@ -206,6 +207,10 @@ foam.CLASS({
     }
   ],
 
+  messages: [
+    { name: 'INVALID_AMOUNT', message: 'Amount cannot be negative' },
+    { name: 'BOTH_INVALID_AMOUNT', message: 'Both amount and destination amount cannot be 0' },
+  ],
 
   // relationships: parent, children
 
@@ -571,8 +576,6 @@ foam.CLASS({
       label: 'Source Amount',
       section: 'amountSelection',
       unitPropName: 'sourceCurrency',
-      required: true,
-      includeInDigest: true,
       gridColumns: 5,
       createVisibility: 'RO',
       readVisibility: 'RO',
@@ -614,6 +617,26 @@ foam.CLASS({
         outputter.outputValue("Source Amount");
         outputter.outputValue("Source Currency");
       `,
+      includeInDigest: true,
+      validationPredicates: [
+        {
+          args: ['amount'],
+          predicateFactory: function(e) {
+            return e.GTE(net.nanopay.tx.model.Transaction.AMOUNT, 0);
+          },
+          errorMessage: 'INVALID_AMOUNT'
+        },
+        {
+          args: ['amount', 'destinationAmount'],
+          predicateFactory: function(e) {
+            return e.NOT(e.AND(
+              e.EQ(net.nanopay.tx.model.Transaction.AMOUNT, 0),
+              e.EQ(net.nanopay.tx.model.Transaction.DESTINATION_AMOUNT, 0)
+            ));
+          },
+          errorMessage: 'BOTH_INVALID_AMOUNT'
+        }
+      ]
     },
     {
       class: 'String',
@@ -710,7 +733,26 @@ foam.CLASS({
         // Outputting two columns: "amount", "Currency"
         outputter.outputValue("Destination Amount");
         outputter.outputValue("Destination Currency");
-      `
+      `,
+      validationPredicates: [
+      {
+        args: ['destinationAmount'],
+        predicateFactory: function(e) {
+          return e.GTE(net.nanopay.tx.model.Transaction.DESTINATION_AMOUNT, 0);
+        },
+        errorMessage: 'INVALID_AMOUNT'
+      },
+      {
+        args: ['amount', 'destinationAmount'],
+        predicateFactory: function(e) {
+          return e.NOT(e.AND(
+            e.EQ(net.nanopay.tx.model.Transaction.AMOUNT, 0),
+            e.EQ(net.nanopay.tx.model.Transaction.DESTINATION_AMOUNT, 0)
+          ));
+        },
+        errorMessage: 'BOTH_INVALID_AMOUNT'
+      }
+    ]
     },
     {
       // REVIEW: processDate and completionDate are Alterna specific?
@@ -1070,10 +1112,6 @@ foam.CLASS({
         throw new AuthorizationException("Receiver must verify email to receive money.");
       }
 
-      if ( getAmount() < 0) {
-        throw new ValidationException("Amount cannot be negative");
-      }
-
       if ( ((DAO)x.get("currencyDAO")).find(getSourceCurrency()) == null && ((DAO)x.get("securitiesDAO")).find(getSourceCurrency()) == null) { //TODO switch to just unitDAO
         throw new ValidationException("Source denomination is not supported");
       }
@@ -1081,6 +1119,8 @@ foam.CLASS({
       if ( ((DAO)x.get("currencyDAO")).find(getDestinationCurrency()) == null && ((DAO)x.get("securitiesDAO")).find(getDestinationCurrency()) == null ) { //TODO switch to just unitDAO
         throw new ValidationException("Destination denomination is not supported");
       }
+
+      validateAmounts(x);
       `
     },
     {
@@ -1092,6 +1132,26 @@ foam.CLASS({
       type: 'net.nanopay.tx.model.TransactionStatus',
       javaCode: `
         return getStateTxn(x).getStatus();
+      `
+    },
+    {
+      name: `validateAmounts`,
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      type: 'Void',
+      javaCode: `
+        if ( getAmount() < 0) {
+          throw new ValidationException("Amount cannot be negative");
+        }
+
+        if ( getDestinationAmount() < 0) {
+          throw new ValidationException("Destination amount cannot be negative");
+        }
+
+        if ( getAmount() == 0 && getDestinationAmount() == 0) {
+          throw new ValidationException("Both amount and destination amount cannot be 0");
+        }
       `
     },
     {

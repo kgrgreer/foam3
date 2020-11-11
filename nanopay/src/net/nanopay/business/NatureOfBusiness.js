@@ -38,12 +38,22 @@ foam.CLASS({
       name: 'parentChoice'
     },
     {
+      class: 'Reference',
+      of: 'foam.nanos.auth.Country',
+      name: 'country',
+      value: '',
+      visibility: 'HIDDEN'
+    },
+    {
       class: 'FObjectProperty',
       of: 'foam.mlang.predicate.Predicate',
       name: 'predicate',
-      expression: function(parentChoice) {
+      expression: function(parentChoice, country) {
         return parentChoice ?
-          this.EQ(this.BusinessSector.PARENT, parentChoice) :
+          this.AND(
+            this.EQ(this.BusinessSector.PARENT, parentChoice),
+            this.EQ(this.BusinessSector.COUNTRY_ID, country)
+          ):
           this.FALSE;
       }
     },

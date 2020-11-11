@@ -34,7 +34,8 @@ foam.CLASS({
   ],
 
   imports: [
-    'businessTypeDAO'
+    'businessTypeDAO',
+    'subject'
   ],
 
   javaImports: [
@@ -104,7 +105,10 @@ foam.CLASS({
       name: 'businessSectorId',
       documentation: 'The ID of the general economic grouping for the business. This ID is found by querying the businessSectorDAO.',
       label: 'Business sector',
-      view: { class: 'net.nanopay.business.NatureOfBusiness' },
+      view: function(_, X) {
+        var c = X.data.subject.user.address.countryId;
+        return { class: 'net.nanopay.business.NatureOfBusiness', country:  c == 'BR' ? c : '' }
+      },
       validationPredicates: [
         {
           args: ['businessSectorId'],

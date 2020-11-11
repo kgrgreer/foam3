@@ -16,26 +16,21 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.partner.treviso.tx',
-  name: 'TrevisoLineItemsFromFXSummary',
-
-  implements: [
-    'foam.nanos.ruler.RuleAction'
-  ],
-
-  documentation: 'Rule to copy line items from FXSummary to Treviso transaction',
-
-  javaImports: [
-    'net.nanopay.tx.model.Transaction',
-  ],
-
-  methods: [
-    {
-      name: 'applyAction',
-      javaCode: `
-        var txn = (TrevisoTransaction) obj;
-        txn.setLineItems(txn.findRoot(x).getLineItems());
-      `
-    }
-  ]
+	package: 'net.nanopay.country.br',
+	name: 'CNAEDivision',
+	properties: [
+		{
+			class: 'String',
+			name: 'id'
+		},
+		{
+			class: 'String',
+			name: 'descricao'
+		},
+		{
+			class: 'FObjectProperty',
+			of: 'net.nanopay.country.br.CNAESection',
+			name: 'secao'
+		}
+	]
 });

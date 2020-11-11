@@ -111,9 +111,9 @@ foam.CLASS({
             this.BankAccount.NAME.clone().copyFrom({
               tableWidth: 168
             }),
+            'summary',
             'flagImage',
             'denomination',
-            'summary',
             'status',
             'isDefault'
           ],
@@ -160,21 +160,19 @@ foam.CLASS({
               }
             }),
             foam.core.Action.create({
-              name: 'delete',
-              code: function(X) {
-                if ( this.isDefault ) {
-                  self.notify(self.DELETE_DEFAULT, '', self.LogLevel.ERROR, true);
-                  return;
-                }
-                
-                this.deleted = true;
-                this.status = self.BankAccountStatus.DISABLED;
-
-                self.ctrl.add(self.Popup.create().tag({
-                  class: 'foam.u2.DeleteModal',
-                  dao: self.subject.user.accounts,
-                  data: this
-                }));
+              name: 'Edit',
+              isAvailable: function() {
+                return ! this.verifiedBy
+              },
+              code: async function(X) {
+                var account = await self.__subContext__.accountDAO.find(this.id);
+                self.ctrl.add(self.SMEModal.create().addClass('bank-account-popup').tag(
+                  {
+                    class: 'net.nanopay.account.ui.BankAccountWizard',
+                    data: account,
+                    useSections: ['accountDetails', 'pad']
+                  }
+                ));
               }
             }),
             foam.core.Action.create({
@@ -194,19 +192,21 @@ foam.CLASS({
               }
             }),
             foam.core.Action.create({
-              name: 'Edit',
-              isAvailable: function() {
-                return ! this.verifiedBy
-              },
-              code: async function(X) {
-                var account = await self.__subContext__.accountDAO.find(this.id);
-                self.ctrl.add(self.SMEModal.create().addClass('bank-account-popup').tag(
-                  {
-                    class: 'net.nanopay.account.ui.BankAccountWizard',
-                    data: account,
-                    useSections: ['accountDetails', 'pad']
-                  }
-                ));
+              name: 'delete',
+              code: function(X) {
+                if ( this.isDefault ) {
+                  self.notify(self.DELETE_DEFAULT, '', self.LogLevel.ERROR, true);
+                  return;
+                }
+                
+                this.deleted = true;
+                this.status = self.BankAccountStatus.DISABLED;
+
+                self.ctrl.add(self.Popup.create().tag({
+                  class: 'foam.u2.DeleteModal',
+                  dao: self.subject.user.accounts,
+                  data: this
+                }));
               }
             })
           ]
@@ -219,7 +219,7 @@ foam.CLASS({
         var self = this;
         return this.Action.create({
           name: 'addBank',
-          label: 'Add bank account',
+          label: 'Add Account',
           code: async function(X) {
             let permission = await this.auth.check(null, 'multi-currency.read');
             if ( permission ) {
