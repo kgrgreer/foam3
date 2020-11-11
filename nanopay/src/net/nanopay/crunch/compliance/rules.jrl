@@ -604,7 +604,7 @@ p({
   "ruleGroup": "crunchOnboarding",
   "documentation": "Signing Officer manual Approval by Agent",
   "daoKey": "userCapabilityJunctionDAO",
-  "operation": 0,
+  "operation": 3,
   "after": true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
