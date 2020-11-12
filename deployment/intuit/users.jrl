@@ -82,3 +82,25 @@ p({
     status:2,
     nextLoginAttemptAllowedAt:1596216443297
 })
+
+// Intuit Fraud Ops
+p({
+    class:"foam.nanos.auth.User",
+    id:9100,
+    spid:"intuit",
+    firstName:"Fraud",
+    lastName:"Ops",
+    email:"fraudops@intuit.com",
+    emailVerified:true,
+    password:"Cf7Jr14Ujk4=:LAANp8rLMkR/vqRlOI7SgW47KtTw8NoWM6KC2WsYyd1JoMY9rZmV0a9vbFmvuKgoKckq7sbQNfEIvCNEZ6AkAw==",
+    passwordLastModified:1596213443821,
+    created:1596213443821,
+    lastModified:1596213443821,
+    lifecycleState:1,
+    lastModifiedBy:1,
+    group:"intuit-fraud-ops",
+    createdBy:1,
+    createdByAgent:1,
+    status:2,
+    nextLoginAttemptAllowedAt:1596213443748
+})

@@ -131,9 +131,11 @@ foam.CLASS({
       class: 'foam.mlang.predicate.PredicateProperty',
       name: 'accountSelectionPredicate',
       expression: function(accountSelection) {
-        return this.OR(
-          this.EQ(net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT, accountSelection),
-          this.EQ(net.nanopay.tx.model.Transaction.DESTINATION_ACCOUNT, accountSelection));
+        return ((!! accountSelection) && accountSelection != 0) ?
+          this.OR(
+            this.EQ(net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT, accountSelection),
+            this.EQ(net.nanopay.tx.model.Transaction.DESTINATION_ACCOUNT, accountSelection)) :
+          this.TRUE;
       }
     },
     {
@@ -144,13 +146,9 @@ foam.CLASS({
         sec = [
           {
             dao: X.accountDAO.where(X.data.AND( // TODO confirm these filters.***
-              X.data.EQ(net.nanopay.account.Account.DELETED, false),
-              X.data.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE),
-              X.data.OR(
-                foam.mlang.predicate.IsClassOf.create({ targetClass: 'net.nanopay.account.DigitalAccount' }),
-                X.data.INSTANCE_OF(net.nanopay.account.ShadowAccount),
-                X.data.INSTANCE_OF(net.nanopay.account.SecuritiesAccount),
-              ))).orderBy(net.nanopay.account.Account.NAME),
+                X.data.EQ(net.nanopay.account.Account.DELETED, false),
+                X.data.EQ(net.nanopay.account.Account.LIFECYCLE_STATE, foam.nanos.auth.LifecycleState.ACTIVE)
+              )).orderBy(net.nanopay.account.Account.NAME),
             objToChoice: function(a) {
               return [a.id, a.summary];
             }

@@ -46,3 +46,15 @@ p({
   "name": "Change compliance of entity",
   "visible": false
 })
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "userComplianceCheck",
+  "name": "Check Compliance of User",
+  "visible": false
+})
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "businessComplianceCheck",
+  "name": "Check Compliance of Business",
+  "visible": false
+})

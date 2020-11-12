@@ -707,7 +707,9 @@ p({
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
   "version":"0",
   "enabled":true,
-  "keywords":["intuit"]
+  "keywords":["intuit"],
+  "daoKey":"businessDAO",
+  "contextDAOFindKey":"subject.user"
 })
 
 p({
@@ -718,7 +720,8 @@ p({
   "version":"0",
   "enabled":true,
   "daoKey":"businessDAO",
-  "contextDAOFindKey":"subject.user"
+  "contextDAOFindKey":"subject.user",
+  "reviewRequired":true,
 })
 
 p({
@@ -868,7 +871,8 @@ p({
   "enabled":true,
   "daoKey":"userDAO",
   "contextDAOFindKey": "subject.realUser",
-  "associatedEntity": 1
+  "associatedEntity": 1,
+  "reviewRequired":true
 })
 
 p({
