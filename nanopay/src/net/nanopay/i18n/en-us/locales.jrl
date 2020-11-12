@@ -27,6 +27,15 @@ p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.ContactW
 //BankAccount
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.BankAccount.ACCOUNT_NUMBER.label",target:"Account number"})
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.BankAccount.BANK_CODE.label",target:"Bank code"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.BRBankAccount.ACCOUNT_NUMBER.label",target:"Account number"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.BRBankAccount.BANK_CODE.label",target:"Bank code"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.BRBankAccount.BRANCH_CODE.label",target:"Branch code"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.BRBankAccount.ACCOUNT_TYPE.label",target:"Account type"})
 
 //PadCapture
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.model.PadCapture.ACCOUNT_NUMBER.label",target:"Account number"})
+
+//UserRegistration
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.crunch.registration.UserRegistrationData.FIRST_NAME.label",target:"First name"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.crunch.registration.UserRegistrationData.LAST_NAME.label",target:"Last name"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.crunch.registration.UserRegistrationData.PHONE_NUMBER.label",target:"Phone number"})
