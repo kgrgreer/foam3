@@ -35,6 +35,9 @@ p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.BRBankAccount.A
 //PadCapture
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.model.PadCapture.ACCOUNT_NUMBER.label",target:"Account number"})
 
+//server message
+p({class:"foam.i18n.Locale",locale:"en",source:"foam.core.ClientRuntimeException: Unable to plan.",target:"Sorry, we are unable to satisfy your request at this time. [xxxx]"})
+
 //UserRegistration
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.crunch.registration.UserRegistrationData.FIRST_NAME.label",target:"First name"})
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.crunch.registration.UserRegistrationData.LAST_NAME.label",target:"Last name"})
