@@ -46,7 +46,7 @@ foam.CLASS({
       javaCode: `
         Invoice invoice = (Invoice) obj;
         if ( invoice == null ) {
-          throw new UnsupportedTransactionException("Unable to find the invoice for requested transaction.");
+          throw new UnsupportedTransactionException("Invoice not found");
         }
 
         Transaction requestTxn = (Transaction) invoice.getRequestTransaction();

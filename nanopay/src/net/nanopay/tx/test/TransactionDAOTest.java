@@ -98,8 +98,8 @@ public class TransactionDAOTest
 
     test(TestUtils.testThrows(
       () -> txnDAO.put_(x_, txn),
-      "You must verify email to send money.",
-      RuntimeException.class
+      "You must verify email to send money",
+      foam.nanos.auth.AuthorizationException.class
       ),
       "Exception: email must be verified");
   }
