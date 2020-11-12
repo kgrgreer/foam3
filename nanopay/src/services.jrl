@@ -1940,7 +1940,25 @@ p({
 
 p({"class":"foam.nanos.boot.NSpec", "name":"dowjonesCredentials",              "lazy":false,  "service":{"class":"net.nanopay.meter.compliance.dowJones.DowJonesCredentials"}})
 p({"class":"foam.nanos.boot.NSpec", "name":"dowJonesService",                  "serve":true,  "boxClass":"net.nanopay.meter.compliance.dowJones.DowJonesSkeleton", "serviceClass":"net.nanopay.meter.compliance.dowJones.DowJonesService","client":"{\"class\":\"net.nanopay.meter.compliance.dowJones.ClientDowJonesService\",\"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/dowJonesService\"}}"})
-p({"class":"foam.nanos.boot.NSpec", "name":"emailConfig",                      "lazy":false,  "service":{"class":"foam.nanos.app.EmailConfig", "from":"noreply@nanopay.net", "displayName":"nanopay Corporation", "replyTo":"noreply@nanopay.net"}})
+p({"class":"foam.nanos.boot.NSpec", "name":"nanopayEmailConfig",                "lazy":false,  "service":{"class":"foam.nanos.app.EmailConfig", "from":"noreply@nanopay.net", "displayName":"nanopay Corporation", "replyTo":"noreply@nanopay.net"}})
+p({"class":"foam.nanos.boot.NSpec", "name":"trevisoEmailConfig",                "lazy":false,  "service":{"class":"foam.nanos.app.EmailConfig", "from":"noreply@treviso.com.br", "displayName":"Treviso", "replyTo":"noreply@treviso.com.br"}})
+p({
+  class: "foam.nanos.boot.NSpec",
+  name: "emailConfig",
+  lazy: true,
+  service: null,
+  serviceScript: """
+    import foam.mlang.predicate.ContextUserPredicate;
+    import foam.nanos.auth.User;
+    import foam.mlang.MLang;
+
+    emailConfig = new foam.nanos.boot.AltFactory("nanopayEmailConfig");
+    emailConfig.addDelegate(new ContextUserPredicate(MLang.EQ(User.SPID, "nanopay")), "nanopayEmailConfig");
+    emailConfig.addDelegate(new ContextUserPredicate(MLang.EQ(User.SPID, "treviso")), "trevisoEmailConfig");
+
+    return emailConfig;
+  """
+})
 
 p({
   "class": "foam.nanos.boot.NSpec",
