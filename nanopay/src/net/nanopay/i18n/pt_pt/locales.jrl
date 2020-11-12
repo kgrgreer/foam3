@@ -2360,3 +2360,40 @@ p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.BusinessAcco
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.CustomerBasicInformation.INVALID_PHONE_ERROR",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CustomerBasicInformation.INVALID_PHONE_ERROR",target:"Número de telefone comercial obrigatório"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions.SECTION_REVIEW_AGREEMENT_DOCUMENTS_SECTION.title",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions.SECTION_REVIEW_AGREEMENT_DOCUMENTS_SECTION.title",target:"Leia e aceite os termos de serviço"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.account.ui.BankAccountWizard.SUBMIT.label",locale:"pt",source:"net.nanopay.account.ui.BankAccountWizard.SUBMIT.label",target:"Enviar"})
+
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.model_.label",target:"Banco Canadense"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ATBankAccount.model_.label",target:"Banco Austria"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BEBankAccount.model_.label",target:"Banco Bélgica"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.model_.label",target:"Banco Brasil"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.EEBankAccount.model_.label",target:"Banco Estônia"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CNBankAccount.model_.label",target:"Banco China"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CYBankAccount.model_.label",target:"Banco Chipre"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.DEBankAccount.model_.label",target:"Banco Alemanha"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ESBankAccount.model_.label",target:"Banco Espanha"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.EUBankAccount.model_.label",target:"Banco Europeia"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.FIBankAccount.model_.label",target:"Banco Finlândia"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.FRBankAccount.model_.label",target:"Banco França"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.GBBankAccount.model_.label",target:"Banco Reino Unido"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.GRBankAccount.model_.label",target:"Banco Grécia"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.HKBankAccount.model_.label",target:"Banco Hong Kong"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.IEBankAccount.model_.label",target:"Banco Irlanda"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.INBankAccount.model_.label",target:"Banco Índia"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ITBankAccount.model_.label",target:"Banco Itália"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.LTBankAccount.model_.label",target:"Banco Lituânia"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.LUBankAccount.model_.label",target:"Banco Luxemburgo"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.LVBankAccount.model_.label",target:"Banco Letônia"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.MTBankAccount.model_.label",target:"Banco Malta"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.NLBankAccount.model_.label",target:"Banco Países Baixos"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.PKBankAccount.model_.label",target:"Banco Paquistão"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.PTBankAccount.model_.label",target:"Banco Portugal"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.SEBankAccount.model_.label",target:"Banco Suécia"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.SIBankAccount.model_.label",target:"Banco Eslovênia"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.SKBankAccount.model_.label",target:"Banco Eslováquia"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.model_.label",target:"Banco Estados Unidos"})
