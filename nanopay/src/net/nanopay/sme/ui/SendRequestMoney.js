@@ -290,7 +290,13 @@ foam.CLASS({
       name: 'TWO_FACTOR_REQUIRED',
       message: `You require two-factor authentication to continue this payment.
           Please go to the Personal Settings page to set up two-factor authentication.`
-    }
+    },
+    { name: 'SEND_PAYMENT', message: 'Send payment' },
+    { name: 'REQUEST_PAYMENT', message: 'Request payment' },
+    { name: 'INVOICE_DETAILS', message: 'Invoice details' },
+    { name: 'SELECT_PAYABLE', message: 'Select payable' },
+    { name: 'REVIEW_MSG', message: 'Review' },
+    { name: 'REVIEW_PAYMENT', message: 'Review payment'},
   ],
 
   methods: [
@@ -302,7 +308,7 @@ foam.CLASS({
       if ( this.isApproving ) {
         this.title = 'Approve payment';
       } else {
-        this.title = this.isPayable === true ? 'Send payment' : 'Request payment';
+        this.title = this.isPayable === true ? this.SEND_PAYMENT : this.REQUEST_PAYMENT;
       }
 
       this.type = this.isPayable ? 'payable' : 'receivable';
@@ -311,8 +317,8 @@ foam.CLASS({
         {
           parent: 'sendRequestMoney',
           id: this.DETAILS_VIEW_ID,
-          label: 'Invoice Details',
-          subtitle: 'Select payable',
+          label: this.INVOICE_DETAILS,
+          subtitle: this.SELECT_PAYABLE,
           view: {
             class: 'net.nanopay.sme.ui.SendRequestMoneyDetails',
             type: this.type
@@ -323,8 +329,8 @@ foam.CLASS({
       this.views.push({
         parent: 'sendRequestMoney',
         id: this.REVIEW_VIEW_ID,
-        label: 'Review',
-        subtitle: 'Review payment',
+        label: this.REVIEW_MSG,
+        subtitle: this.REVIEW_PAYMENT,
         view: {
           class: 'net.nanopay.sme.ui.SendRequestMoneyReview'
         }
@@ -423,14 +429,14 @@ foam.CLASS({
 
       try {
         this.invoice = await this.invoiceDAO.put(this.invoice);
-        
+
         if ( this.invoice.capablePayloads.length > 0 && ! this.invoice.isWizardCompleted ){
           this.invoice.draft = true;
           this.invoice.capablePayloads = [];
           this.saveDraft(this.invoice);
           return;
         }
-  
+
       } catch(err) {
         this.notify(err.message,'', this.LogLevel.ERROR, true);
         this.pushMenu(this.isPayable
@@ -572,7 +578,7 @@ foam.CLASS({
       },
       code: async function() {
         var currentViewId = this.views[this.position].id;
-        
+
         switch ( currentViewId ) {
           case this.DETAILS_VIEW_ID:
             if ( ! this.invoiceDetailsValidation(this.invoice) ) return;
