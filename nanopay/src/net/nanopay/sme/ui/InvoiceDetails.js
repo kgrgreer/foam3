@@ -267,8 +267,8 @@ foam.CLASS({
           .addClass('inline')
           .add(this.slot(function(invoice$invoiceNumber) {
             return isBillingInvoice ?
-              self.BILLING_INVOICE_NUMBER_LABEL + invoice$invoiceNumber :
-              self.INVOICE_NUMBER_LABEL + invoice$invoiceNumber;
+              `${self.BILLING_INVOICE_NUMBER_LABEL} ${invoice$invoiceNumber}` :
+              `${self.INVOICE_NUMBER_LABEL} ${invoice$invoiceNumber}`;
           }))
         .end()
         .start()
