@@ -52,7 +52,7 @@ foam.CLASS({
             return [a.id, a.name];
           },
           placeholder: '- Please select -'
-        });
+        }, X);
       },
       validateObj: function(identificationTypeId) {
         if ( ! identificationTypeId ) {
@@ -90,7 +90,7 @@ foam.CLASS({
             return [a.id, a.name];
           },
           placeholder: '- Please select -'
-        });
+        }, X);
       }
     },
     {
@@ -111,7 +111,7 @@ foam.CLASS({
             return [region.id, region.name];
           },
           dao$: choices
-        });
+        }, X);
       },
       validateObj: function(regionId, identificationTypeId) {
         var isPassport = identificationTypeId === 3;
