@@ -123,7 +123,7 @@ foam.CLASS({
           transactionDAO_.put(txn);
           test(false, message);
         } catch ( RuntimeException e ) {
-          test(e.getMessage().contains("Payer user is disabled.") ||
+          test(e.getMessage().contains("Payer user is disabled") ||
                e.getMessage().contains("Unable to find a plan for requested transaction"),
                message);
         }
@@ -141,7 +141,7 @@ foam.CLASS({
           transactionDAO_.put(txn);
           test(false, message);
         } catch ( RuntimeException e ) {
-          test(e.getMessage().contains("Payee user is disabled.") ||
+          test(e.getMessage().contains("Payee user is disabled") ||
                e.getMessage().contains("Unable to find a plan for requested transaction"),
                message);
         }

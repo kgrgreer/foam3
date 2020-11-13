@@ -1,7 +1,7 @@
 p({
   "class":"foam.nanos.menu.Menu",
   "id": "sme.main.appStore",
-  "label": "Requirements",
+  "label": "Registration",
   "activeIcon":"images/ablii/dashboard-icon-active.svg",
   "icon":"images/ablii/dashboard-icon-resting.svg",
   "handler":{

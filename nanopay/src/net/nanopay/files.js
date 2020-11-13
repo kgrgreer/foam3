@@ -1558,6 +1558,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/BankDigitalPlanner' },
   { name: 'net/nanopay/tx/planner/DigitalBankPlanner' },
   { name: 'net/nanopay/tx/planner/BankToBankPlanner' },
+  { name: 'net/nanopay/tx/planner/IntuitBankToBankPlanner' },
   { name: 'net/nanopay/tx/planner/VerificationPlanner' },
   { name: 'net/nanopay/tx/planner/AlternaCITransactionPlanner' },
   { name: 'net/nanopay/tx/planner/AlternaCOTransactionPlanner' },
@@ -1654,6 +1655,8 @@ FOAM_FILES([
 
   // crunch compliance
   { name: 'net/nanopay/crunch/compliance/IsCapabilityOfCertainCategoryAndStatus' },
+  { name: 'net/nanopay/crunch/compliance/IsCapabilityReviewRequired' },
+  { name: 'net/nanopay/crunch/compliance/PassCompliance' },
   { name: 'net/nanopay/crunch/compliance/PersonSanctionValidator' },
   { name: 'net/nanopay/crunch/compliance/EntitySanctionValidator' },
   { name: 'net/nanopay/crunch/compliance/BeneficialOwnerSanctionValidator' },

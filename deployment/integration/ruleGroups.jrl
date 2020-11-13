@@ -1,57 +1,11 @@
+// Disable crunch onboarding. Use expandedOnboarding instead for API.
 p({
-  "class":"net.nanopay.tx.planner.PlannerGroup",
-  "id":"Planner",
-  "enabled":false
-})
-p({
-  "class":"net.nanopay.tx.planner.PlannerGroup",
-  "id":"SecurityPlanner",
-  "enabled":false
-})
-p({
-  "class":"net.nanopay.tx.planner.PlannerGroup",
-  "id":"transactionPlanner",
-  "enabled":false
-})
-p({
-  "class":"net.nanopay.tx.planner.PlannerGroup",
-  "id":"genericPlanner",
-  "enabled":false
-})
-
-p({
-  "class":"net.nanopay.tx.planner.PlannerGroup",
-  "id":"FeeEngine",
-  "enabled":false
-})
-
-p({
-  "class":"net.nanopay.tx.planner.PlannerGroup",
-  "id":"AlternaPlanner",
+  "class":"foam.nanos.ruler.RuleGroup",
+  "id":"crunchOnboarding",
   "enabled":false,
 })
 p({
-  "class":"net.nanopay.tx.planner.PlannerGroup",
-  "id":"BMOPlanner",
-  "enabled":false,
-})
-p({
-  "class":"net.nanopay.tx.planner.PlannerGroup",
-  "id":"RBCPlanner",
-  "enabled":false,
-})
-p({
-  "class":"net.nanopay.tx.planner.PlannerGroup",
-  "id":"KotakPlanner",
-  "enabled":false,
-})
-p({
-  "class":"net.nanopay.tx.planner.PlannerGroup",
-  "id":"TrevisoPlanner",
-  "enabled":false,
-})
-p({
-  "class":"net.nanopay.tx.planner.PlannerGroup",
-  "id":"SandBoxPlanner",
+  "class":"foam.nanos.ruler.RuleGroup",
+  "id":"expandedOnboarding",
   "enabled":true
 })

@@ -34,6 +34,7 @@ foam.CLASS({
       'foam.nanos.logger.Logger',
       'foam.nanos.notification.Notification',
       'foam.nanos.notification.email.EmailMessage',
+      'foam.nanos.app.SupportConfig',
       'foam.nanos.theme.Theme',
       'foam.nanos.theme.Themes',
       'foam.util.SafetyUtil',
@@ -59,6 +60,7 @@ foam.CLASS({
             AppConfig       config     = (AppConfig) payerGroup.getAppConfig(x);
             Subject         subject    = new Subject.Builder(x).setUser(payer).build();
             Theme           theme      = ((Themes) x.get("themes")).findTheme(x.put("subject", subject));
+            SupportConfig supportConfig = theme.getSupportConfig();
             EmailMessage    message    = new EmailMessage();
             NumberFormat    formatter  = NumberFormat.getCurrencyInstance();
 
@@ -87,7 +89,7 @@ foam.CLASS({
             args.put("note",         voidNote);
             args.put("toName",       User.FIRST_NAME);
             args.put("sendTo",       User.EMAIL);
-            args.put("supportEmail", theme.getSupportEmail());
+            args.put("supportEmail", supportConfig.getSupportEmail());
 
             try{
 

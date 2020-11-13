@@ -36,10 +36,13 @@ foam.CLASS({
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.notification.email.EmailMessage',
+    'foam.nanos.app.SupportConfig',
     'foam.nanos.session.Session',
     'foam.util.Emails.EmailsUtility',
     'foam.util.Password',
     'foam.util.SafetyUtil',
+    'foam.nanos.theme.Theme',
+    'foam.nanos.theme.Themes',
 
     'java.util.HashMap',
 
@@ -155,7 +158,9 @@ foam.CLASS({
 
         X userX = x.put("subject", new Subject.Builder(x).setUser(user).build());
         Group group = user.findGroup(userX);
-        String supportEmail = (String) group.getSupportEmail();
+        Theme theme = ((Themes) x.get("themes")).findTheme(userX);
+        SupportConfig supportConfig = theme.getSupportConfig();
+        String supportEmail = (String) supportConfig.getSupportEmail();
 
         if (
           ! user.getLoginEnabled() ||

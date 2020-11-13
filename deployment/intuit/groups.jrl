@@ -2,3 +2,5 @@ p({class:"foam.nanos.auth.Group",id:"intuit-api",description:"intuit api group",
 p({class:"foam.nanos.auth.Group",id:"intuit-api-session",description:"intuit api session group",parent:"external-api-session",defaultMenu:"view-users"})
 p({class:"foam.nanos.auth.Group",id:"intuit-admin",description:"intuit admin",parent:"intuit-dev",defaultMenu:"view-users",theme:"4d3d59a0-9c98-da42-9cd6-49c278cb9842"})
 p({class:"foam.nanos.auth.Group",id:"intuit-dev",description:"intuit dev group",parent:"external-dev",defaultMenu:"view-accounts"})
+p({class:"foam.nanos.auth.Group",id:"intuit-fraud-ops",description:"Intuit Fraud Operations Group",parent:"fraud-ops",defaultMenu:"accounts"})
+p({class:"foam.nanos.auth.Group",id:"intuit-payment-ops",description:"Intuit Payment Operations Group",parent:"payment-ops",defaultMenu:"accounts"})

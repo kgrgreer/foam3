@@ -783,6 +783,7 @@ foam.CLASS({
         this.EQ(this.Notification.USER_ID, userNotificationQueryId)
       ).on.put.sub((sub, on, put, obj) => {
         if ( obj.toastState == this.ToastState.REQUESTED ) {
+          obj.toastMessage = this.__subContext__.translationService.getTranslation(foam.locale, obj.toastMessage, obj.toastMessage);
           this.add(this.NotificationMessage.create({
             message: obj.toastMessage,
             type: obj.severity,

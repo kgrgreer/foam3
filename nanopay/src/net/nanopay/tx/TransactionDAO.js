@@ -45,7 +45,7 @@ foam.CLASS({
 
   messages: [
     { name: 'TRANS_MISSING_ID_SET_ERROR_MSG', message: 'Transaction must have id set' },
-    { name: 'UNKNOWN_ACCOUNT_ERROR_MSG', message: 'Unknown account: ' },
+    { name: 'UNKNOWN_ACCOUNT_ERROR_MSG', message: 'Unknown account' },
     { name: 'DEBITS_CREDITS_NOT_MATCH_ERROR_MSG', message: 'Debits and credits don\'t match' }
   ],
 
@@ -195,7 +195,7 @@ foam.CLASS({
           Account account = tr.findAccount(x); 
           if ( account == null ) {
             logger.error(this.getClass().getSimpleName(), "validateTransfers", txn.getId(), "transfer account not found",tr.getAccount(), tr);
-            throw new TransactionException(UNKNOWN_ACCOUNT_ERROR_MSG + tr.getAccount()); 
+            throw new TransactionException(UNKNOWN_ACCOUNT_ERROR_MSG);
           }
           account.validateAmount(x, (Balance) getBalanceDAO().find(account.getId()), tr.getAmount());
 

@@ -491,6 +491,35 @@ p({
   "lifecycleState":1
 })
 p({
+  "class":"net.nanopay.tx.planner.IntuitBankToBankPlanner",
+  "id":"8A9B2980-F6C5-4A67-966E-760FE6649B56",
+  "name":"Intuit Bank to Bank Planner",
+  "documentation":"Planner for Bank -> Bank Transactions for Intuit",
+  "priority":95,
+  "ruleGroup":"transactionPlanner",
+  "enabled":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+       "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.bank.BankAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.bank.BankAccount"
+      }
+    ]
+  },
+  "lifecycleState":1,
+  "sourceCapabilityList": ["56D2D946-6085-4EC3-8572-04A17225F86A", "1F0B39AD-934E-462E-A608-D590D1081298"],
+  "sourceCapabilityExceptionListUpperLimit": 100000,
+  "sourceCapabilityExceptionList": ["F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD"],
+  "destinationCapabilityList": ["18DD6F03-998F-4A21-8938-358183151F96", "1F0B39AD-934E-462E-A608-D590D1081298"]
+})
+p({
   "class":"net.nanopay.tx.planner.VerificationPlanner",
   "id":"9577e4ae-c3c3-41a2-b479-43d91a12b2a0",
   "name":"Verification Transaction Planner",

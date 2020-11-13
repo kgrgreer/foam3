@@ -116,3 +116,14 @@ p({
 "sourceId": "complianceSetting",
 "targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-1a5-us"
 })
+
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "userComplianceCheck",
+"targetId": "FB1C8CF2-34B9-40FE-A4AA-58CFA2FDBA15"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "businessComplianceCheck",
+"targetId": "EC535109-E9C0-4B5D-8D24-31282EF72F8F"
+})

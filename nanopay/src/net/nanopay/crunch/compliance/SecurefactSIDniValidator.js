@@ -31,6 +31,7 @@ foam.CLASS({
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.nanos.crunch.UserCapabilityJunctionDAO',
     'foam.nanos.logger.Logger',
+    'foam.util.SafetyUtil',
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
     'net.nanopay.meter.compliance.secureFact.SecurefactService',
@@ -83,8 +84,10 @@ foam.CLASS({
           }
           ruler.putResult(status);
         } catch (Exception e) {
+          ((Logger) x.get("logger")).warning("SIDniValidator failed.", e);
+
           SIDniResponse response = getResponse();
-          String group = user.getSpid().equals("nanopay") ? "fraud-ops" : user.getSpid() + "-fraud-ops";
+          String group = SafetyUtil.isEmpty(user.getSpid()) || user.getSpid().equals("nanopay") ? "fraud-ops" : user.getSpid() + "-fraud-ops";
           requestApproval(x, new ComplianceApprovalRequest.Builder(x)
             .setObjId(ucj.getId())
             .setDaoKey("userCapabilityJunctionDAO")
@@ -93,7 +96,6 @@ foam.CLASS({
             .setCauseDaoKey("securefactSIDniDAO")
             .setGroup(group)
             .build());
-          ((Logger) x.get("logger")).warning("SIDniValidator failed.", e);
           ruler.putResult(ComplianceValidationStatus.PENDING);
         }
       `

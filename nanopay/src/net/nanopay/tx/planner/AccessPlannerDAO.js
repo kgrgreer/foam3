@@ -83,7 +83,7 @@ foam.CLASS({
         TransactionPlan plannedTx = (TransactionPlan) getDelegate().find_(x, txn.getId());
         if ( plannedTx == null ) {
           ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), "Plan Not Found", txn.getId());
-          throw new PlanNotFoundException(txn.getId());
+          throw new PlanNotFoundException("Plan not found");
         }
 
        // --- Run post planning & validate the plan ---
@@ -138,7 +138,7 @@ foam.CLASS({
       if (atp == null || ! atp.postPlanning(x, txn, root)) {
         Logger logger = (Logger) x.get("logger");
         logger.warning(txn.getId() + " failed planner validation");
-        throw new ValidationException("Planner Validation failed"); // return txn to user on failure
+        throw new ValidationException("Planner validation failed"); // return txn to user on failure
       }
 
       // --- Line Item Validation ---

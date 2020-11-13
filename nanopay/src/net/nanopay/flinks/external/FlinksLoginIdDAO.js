@@ -450,6 +450,8 @@ foam.CLASS({
         Business business = new Business.Builder(x)
           .setBusinessName(businessName)
           .setOrganization(businessName)
+          .setPhoneNumber(phoneNumber)
+          .setAddress(businessAddress)
           .setSpid(user.getSpid())
           .build();
         DAO localUserDAO = (DAO) subjectX.get("localUserDAO");

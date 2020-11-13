@@ -31,6 +31,7 @@ foam.CLASS({
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.nanos.crunch.UserCapabilityJunctionDAO',
     'foam.nanos.logger.Logger',
+    'foam.util.SafetyUtil',
     'java.util.Date',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
     'net.nanopay.meter.compliance.dowJones.*',
@@ -109,7 +110,7 @@ foam.CLASS({
         } catch (Exception e) {
           ((Logger) x.get("logger")).warning("PersonSanctionValidator failed.", e);
           DowJonesResponse response = getResponse();
-          String group = user.getSpid().equals("nanopay") ? "fraud-ops" : user.getSpid() + "-fraud-ops";
+          String group = SafetyUtil.isEmpty(user.getSpid()) || user.getSpid().equals("nanopay") ? "fraud-ops" : user.getSpid() + "-fraud-ops";
           requestApproval(x, 
             new DowJonesApprovalRequest.Builder(x)
               .setObjId(ucj.getId())

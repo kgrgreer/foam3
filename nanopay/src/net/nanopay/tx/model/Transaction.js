@@ -1086,30 +1086,30 @@ foam.CLASS({
 
       User sourceOwner = (User) userDAO.find(findSourceAccount(x).getOwner());
       if ( sourceOwner == null ) {
-        throw new ValidationException("Payer user with id " + findSourceAccount(x).getOwner() + " doesn't exist");
+        throw new ValidationException("Payer not found");
       }
 
       // TODO: Move user checking to user validation service
       if ( AccountStatus.DISABLED == sourceOwner.getStatus() ) {
-        throw new ValidationException("Payer user is disabled.");
+        throw new ValidationException("Payer user is disabled");
       }
 
       User destinationOwner = (User) userDAO.find(findDestinationAccount(x).getOwner());
       if ( destinationOwner == null ) {
-        throw new ValidationException("Payee user with id "+ findDestinationAccount(x).getOwner() + " doesn't exist");
+        throw new ValidationException("Payee not found");
       }
 
       // TODO: Move user checking to user validation service
       if ( AccountStatus.DISABLED == destinationOwner.getStatus() ) {
-        throw new ValidationException("Payee user is disabled.");
+        throw new ValidationException("Payee user is disabled");
       }
 
       if ( ! sourceOwner.getEmailVerified() ) {
-        throw new AuthorizationException("You must verify email to send money.");
+        throw new AuthorizationException("You must verify email to send money");
       }
 
       if ( ! (destinationOwner instanceof Contact) && ! destinationOwner.getEmailVerified() ) {
-        throw new AuthorizationException("Receiver must verify email to receive money.");
+        throw new AuthorizationException("Receiver must verify email to receive money");
       }
 
       if ( ((DAO)x.get("currencyDAO")).find(getSourceCurrency()) == null && ((DAO)x.get("securitiesDAO")).find(getSourceCurrency()) == null) { //TODO switch to just unitDAO

@@ -9,6 +9,21 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-api-sess
 // Intuit SPID Extras
 p({class:"foam.nanos.auth.GroupPermissionJunction",s:"intuit-admin",t:"group.update.intuit-admin"})
 p({class:"foam.nanos.auth.GroupPermissionJunction",s:"intuit-admin",t:"group.read.intuit-admin"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"intuit-admin",t:"group.update.intuit-fraud-ops"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"intuit-admin",t:"group.read.intuit-fraud-ops"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"intuit-admin",t:"group.update.intuit-payment-ops"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",s:"intuit-admin",t:"group.read.intuit-payment-ops"})
+
+// ********** FRAUD OPS ***************
+
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"group.update.intuit-fraud-ops"})
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-fraud-ops",targetId:"group.update.intuit-payment-ops"})
+
+// ********** PAYMENT OPS ***************
+
+p({class:"foam.nanos.auth.GroupPermissionJunction",sourceId:"intuit-payment-ops",targetId:"group.update.intuit-payment-ops"})
+
+// ********** REMOVALS *****************
 
 // Removing documentation around raw provisioning
 r({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"menu.read.api-doc-40-onboarding-business"})
