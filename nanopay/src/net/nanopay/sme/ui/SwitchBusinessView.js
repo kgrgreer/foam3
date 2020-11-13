@@ -45,6 +45,7 @@ foam.CLASS({
     'businessDAO',
     'capabilityDAO',
     'crunchController',
+    'crunchService',
     'ctrl',
     'initLayout',
     'isMenuOpen',
@@ -279,15 +280,8 @@ foam.CLASS({
         let sink = await this.enabledBusinesses_.select();
         var ac = this.theme.admissionCapability;
         if ( ac ) {
-          // check if user registration capability is granted
-          var ucj = await this.userCapabilityJunctionDAO.find(
-            this.AND(
-              this.EQ(this.UserCapabilityJunction.SOURCE_ID, this.subject.user.id),
-              this.EQ(this.UserCapabilityJunction.TARGET_ID, ac),
-              this.EQ(this.UserCapabilityJunction.STATUS, this.CapabilityJunctionStatus.GRANTED)
-            )
-          );
-          if ( ! ucj ) {
+          var ucj = await this.crunchService.getJunction(null, ac);
+          if ( ucj.status !==  this.CapabilityJunctionStatus.GRANTED ) {
             this.onboardingUtil.initUserRegistration(ac);
             return;
           }
