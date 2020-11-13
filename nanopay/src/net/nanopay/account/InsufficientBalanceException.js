@@ -18,8 +18,8 @@
 foam.CLASS({
   package: 'net.nanopay.account',
   name: 'InsufficientBalanceException',
-  javaExtends: 'RuntimeException',
-  implements: ['foam.core.Exception'],
+  extends: 'foam.core.FOAMException',
+  javaGenerateConvenienceConstructor: false,
 
   properties: [
     {

@@ -19,7 +19,6 @@ foam.CLASS({
   name: 'UnsupportedTransactionException',
   package: 'net.nanopay.tx',
   javaExtends: 'net.nanopay.tx.TransactionException',
-  implements: ['foam.core.Exception'],
   
   axioms: [
     {
