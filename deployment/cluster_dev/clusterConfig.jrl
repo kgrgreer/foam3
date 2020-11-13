@@ -1,10 +1,10 @@
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
-  "id":"us-east-1a-nanopay-development-primary-mediator-1",
-  "name":"us-east-1a-nanopay-development-primary-mediator-1",
+  "id":"us-east-1c-nanopay-development-primary-mediator-1",
+  "name":"us-east-1c-nanopay-development-primary-mediator-1",
   "enabled":true,
   "realm":"non-production",
-  "region":"us-east-1a",
+  "region":"us-east-1c",
   "regionStatus":1,
   "zone":0,
   "port":8080,
@@ -16,11 +16,11 @@ p({
 
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
-  "id":"us-east-1a-nanopay-development-primary-mediator-2",
-  "name":"us-east-1a-nanopay-development-primary-mediator-2",
+  "id":"us-east-1c-nanopay-development-primary-mediator-2",
+  "name":"us-east-1c-nanopay-development-primary-mediator-2",
   "enabled":true,
   "realm":"non-production",
-  "region":"us-east-1a",
+  "region":"us-east-1c",
   "regionStatus":1,
   "zone":0,
   "port":8080,
@@ -32,11 +32,11 @@ p({
 
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
-  "id":"us-east-1a-nanopay-development-primary-node-1",
-  "name":"us-east-1a-nanopay-development-primary-node-1",
+  "id":"us-east-1c-nanopay-development-primary-node-1",
+  "name":"us-east-1c-nanopay-development-primary-node-1",
   "enabled":true,
   "realm":"non-production",
-  "region":"us-east-1a",
+  "region":"us-east-1c",
   "regionStatus":1,
   "zone":0,
   "port":8080,
@@ -48,11 +48,11 @@ p({
 
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
-  "id":"us-east-1a-nanopay-development-primary-node-2",
-  "name":"us-east-1a-nanopay-development-primary-node-2",
+  "id":"us-east-1c-nanopay-development-primary-node-2",
+  "name":"us-east-1c-nanopay-development-primary-node-2",
   "enabled":true,
   "realm":"non-production",
-  "region":"us-east-1a",
+  "region":"us-east-1c",
   "regionStatus":1,
   "zone":0,
   "port":8080,
@@ -64,11 +64,11 @@ p({
 
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
-  "id":"us-east-1a-nanopay-development-primary-node-3",
-  "name":"us-east-1a-nanopay-development-primary-node-3",
+  "id":"us-east-1c-nanopay-development-primary-node-3",
+  "name":"us-east-1c-nanopay-development-primary-node-3",
   "enabled":true,
   "realm":"non-production",
-  "region":"us-east-1a",
+  "region":"us-east-1c",
   "regionStatus":1,
   "zone":0,
   "port":8080,
@@ -80,11 +80,11 @@ p({
 
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
-  "id":"us-east-1a-nanopay-development-primary-node-4",
-  "name":"us-east-1a-nanopay-development-primary-node-4",
+  "id":"us-east-1c-nanopay-development-primary-node-4",
+  "name":"us-east-1c-nanopay-development-primary-node-4",
   "enabled":true,
   "realm":"non-production",
-  "region":"us-east-1a",
+  "region":"us-east-1c",
   "regionStatus":1,
   "zone":0,
   "port":8080,
