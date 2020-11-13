@@ -48,7 +48,7 @@ foam.CLASS({
             try {
               quote = (TransactionQuote) transactionPlannerDAO.put(quote);
             } catch(RuntimeException error){
-              throw new ClientRuntimeException(error);
+              throw new ClientRuntimeException(error.getMessage(), error);
             }
 
             invoice.setQuote(quote);

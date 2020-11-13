@@ -35,12 +35,13 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'totalFee'
+      name: 'totalFee',
+      label: 'Total'
     }
   ],
 
   messages: [
-    { name: 'FEE', message: 'Fee' }
+    { name: 'FEE', message: 'Service fees' }
   ],
 
   methods: [

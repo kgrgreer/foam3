@@ -2397,3 +2397,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.SIBankAccount.m
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.SKBankAccount.model_.label",target:"Banco Eslováquia"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.model_.label",target:"Banco Estados Unidos"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.TITLE",target:"Revise os detalhes da fatura"})
+

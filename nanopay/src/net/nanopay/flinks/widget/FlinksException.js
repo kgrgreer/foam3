@@ -18,10 +18,10 @@
 foam.CLASS({
   package: 'net.nanopay.flinks.widget',
   name: 'FlinksException',
-  
+  extends: 'foam.core.FOAMException',
   implements: [ 'foam.core.ExceptionInterface' ],
-  javaExtends: 'RuntimeException',
-    
+  javaGenerateConvenienceConstructor: false,
+
   axioms: [
     {
       name: 'javaExtras',
@@ -29,7 +29,7 @@ foam.CLASS({
         cls.extras.push(`
           public FlinksException(String message) {
             super(message);
-          }   
+          } 
         `
         );
       }

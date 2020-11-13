@@ -38,6 +38,10 @@ foam.CLASS({
     'net.nanopay.tx.SummaryTransactionLineItem',
   ],
 
+  messages: [
+    { name: 'TITLE', message: 'Review invoice details' }
+  ],
+
   properties: [
     'data',
     {
@@ -45,7 +49,7 @@ foam.CLASS({
       expression: function(data) {
         var of = this.data.cls_;
         var props = of.getAxiomsByClass(foam.core.Property);
-        var candidates = [ 'amount', 'destinationAmount', 'sourceAccount', 'summary' ];
+        var candidates = [ 'amount', 'destinationAmount', 'sourceAccount' ];
         var newProps = [];
 
         for ( var i = 0; i < props.length; i++ ) {
@@ -67,18 +71,21 @@ foam.CLASS({
 
   methods: [
     function initE() {
+      this.SUPER();
       var self = this;
-      this.addClass(this.myClass());
-      this.start()
-        this.start('h3').add(this.data.toSummary()).end()
-        this.forEach(self.prop, function(p) {
-          if ( p.label && ! p.hidden && ! p.visibility ) {
-             self.start(self.Cols)
-               .add(p.label)
-               .start(p, { mode: foam.u2.DisplayMode.RO }).end()
-             .end()
-          }
-        })
+      this.start().addClass(this.myClass())
+        .start('h2').add(this.TITLE).end()
+        .start('h3').add(this.data.toSummary()).end()
+        .forEach(self.prop, function(p) {
+            if ( p.label && ! p.hidden && ! p.visibility ) {
+              p.label = self.toSentenceCase(p.label);
+              self.start(self.Cols)
+                .add(p.label)
+                .start(p, { mode: foam.u2.DisplayMode.RO }).end()
+              .end();
+            }
+          })
+        .end()
         .start()
           .add(
             this.slot( function(data) {
@@ -90,6 +97,11 @@ foam.CLASS({
                   && (data.showAllLineItems || this.SummaryTransactionLineItem.isInstance(data.lineItems[i]))
                   && ! this.PADTypeLineItem.isInstance(data.lineItems[i])
                   && ! this.ExpirySummaryTransactionLineItem.isInstance(data.lineItems[i]) ) {
+                  
+                  const curItemLabel = data.lineItems[i].toSummary();
+                  data.lineItems[i].toSummary = function(s) {
+                    return this.toSentenceCase(s);
+                  }.bind(this, curItemLabel);
                   e.start({
                     class: 'net.nanopay.tx.LineItemCitationView',
                     data: data.lineItems[i]
@@ -102,6 +114,10 @@ foam.CLASS({
           )
         .end()
       .end();
+    },
+
+    function toSentenceCase(s) {
+      return s[0].toUpperCase() + s.slice(1).toLowerCase();
     }
   ]
 });

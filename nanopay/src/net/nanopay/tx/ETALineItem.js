@@ -29,7 +29,7 @@ foam.CLASS({
     {
       documentation: 'The longest estimated time of arrival or completion of Transaction.  An Alterna CI, for example, has a 2 day ETA.',
       name: 'eta',
-      label: 'ETA',
+      label: 'Time',
       class: 'Long',
       tableCellFormatter: function(eta, X) {
         var self = this;
@@ -49,7 +49,7 @@ foam.CLASS({
   ],
 
   messages: [
-      { name: 'DESCRIPTION', message: 'Estimated time of Arrival' }
+      { name: 'DESCRIPTION', message: 'Estimated time until payment is received' }
   ],
 
   methods: [

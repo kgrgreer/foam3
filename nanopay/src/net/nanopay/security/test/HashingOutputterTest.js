@@ -165,7 +165,10 @@ foam.CLASS({
         try {
           StringBuilder builder = sb.get().append(EXPECTED).append(",{algorithm:\\"").append(algorithm).append("\\",provider:\\"\\",digest:\\"").append(digest).append("\\"}");
           HashingOutputter outputter = new HashingOutputter(getX(), true, new MessageDigest.Builder(getX()).setAlgorithm(algorithm).setRollDigests(false).build());
-          test(outputter.stringify(INPUT.fclone()).equals(builder.toString()), "HashingOutputter using " + algorithm + " produces correct output of: " + builder.toString()+" input: "+outputter.stringify(INPUT.fclone()));
+          String produced = outputter.stringify(INPUT.fclone());
+          // strip out possible passwordHistory
+          produced = produced.replaceAll(",\\"passwordHistory\\":.*}]", "");
+          test(produced.equals(builder.toString()), "HashingOutputter using " + algorithm + " produces correct output of: " + builder.toString()+" input: "+produced);
         } catch ( Throwable t ) {
 t.printStackTrace();
           test(false, "HashingOutputter should not throw an exception");
