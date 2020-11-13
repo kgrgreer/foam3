@@ -20,14 +20,18 @@ foam.CLASS({
   name: 'UserRefine',
   refines: 'foam.nanos.auth.User',
 
-   imports: [
-     'ruleDAO?'
-   ],
+  imports: [
+    'ruleDAO?'
+  ],
 
-   requires: [
-     'net.nanopay.liquidity.tx.TxLimitRule',
-     'net.nanopay.liquidity.tx.TxLimitEntityType'
-   ],
+  requires: [
+    'net.nanopay.liquidity.tx.TxLimitRule',
+    'net.nanopay.liquidity.tx.TxLimitEntityType'
+  ],
+
+  messages: [
+    { name: 'TRANSACTION_LIMITS_MSG', message: 'Transaction Limits' }
+  ],
 
   actions: [
     {
@@ -74,12 +78,15 @@ foam.CLASS({
         );
         dao.of = this.TxLimitRule;
         this.__context__.stack.push({
-          class: 'foam.comics.BrowserView',
-          createEnabled: false,
-          editEnabled: true,
-          exportEnabled: true,
-          title: 'Transaction Limits',
-          data: dao
+          class: 'foam.comics.v2.DAOBrowseControllerView',
+          data: dao,
+          config: {
+            class: 'foam.comics.v2.DAOControllerConfig',
+            dao: dao,
+            createPredicate: foam.mlang.predicate.False,
+            editPredicate: foam.mlang.predicate.True,
+            browseTitle: `${this.legalName}'s ${this.TRANSACTION_LIMITS_MSG}`
+          }
         });
       }
     }

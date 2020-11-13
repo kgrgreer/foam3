@@ -33,6 +33,10 @@ foam.CLASS({
     'publicBusinessDAO'
   ],
 
+  messages: [
+    { name: 'BENEFICIARIES_MSG', message: 'Beneficiaries' }
+  ],
+
   properties: [
     {
       class: 'Boolean',
@@ -110,18 +114,22 @@ foam.CLASS({
       code: function(X) {
         var m = foam.mlang.ExpressionsSingleton.create({});
         var self = this;
-          X.userDAO.find(this.user).then(function(user) {
-            if ( user ) {
-              self.__context__.stack.push({
-                class: 'foam.comics.BrowserView',
-                createEnabled: false,
-                editEnabled: true,
-                exportEnabled: true,
-                title: `${user.businessName}'s Beneficiaries`,
-                data: X.afexBeneficiaryDAO.where(m.EQ(net.nanopay.fx.afex.AFEXBeneficiary.OWNER, self.user))
-              });
-            }
-          });
+        X.userDAO.find(this.user).then(function(user) {
+          if ( user ) {
+            var dao = X.afexBeneficiaryDAO.where(m.EQ(net.nanopay.fx.afex.AFEXBeneficiary.OWNER, self.user));
+            self.__context__.stack.push({
+              class: 'foam.comics.v2.DAOBrowseControllerView',
+              data: dao,
+              config: {
+                class: 'foam.comics.v2.DAOControllerConfig',
+                dao: dao,
+                createPredicate: foam.mlang.predicate.False,
+                editPredicate: foam.mlang.predicate.True,
+                browseTitle: `${user.businessName}'s ${self.BENEFICIARIES_MSG}`
+              }
+            });
+          }
+        });
       }
     },
   ]
