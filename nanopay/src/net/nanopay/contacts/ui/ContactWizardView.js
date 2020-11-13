@@ -281,7 +281,7 @@ foam.CLASS({
     },
     {
       name: 'save',
-      label: 'Save',
+      label: 'Submit',
       isEnabled: function(data$businessAddress$errors_, isConnecting) {
         return ! data$businessAddress$errors_ && ! isConnecting;
       },

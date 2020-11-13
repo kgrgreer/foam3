@@ -290,8 +290,7 @@ foam.CLASS({
       name: 'TWO_FACTOR_REQUIRED',
       message: `You require two-factor authentication to continue this payment.
           Please go to the Personal Settings page to set up two-factor authentication.`
-    },
-    { name: 'INR_RATE_LIMIT', message: 'This transaction exceeds your total daily limit for payments to India. For help, contact support at support@ablii.com' }
+    }
   ],
 
   methods: [

@@ -26,6 +26,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.nanos.app.SupportConfig',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.cron.Cron',
@@ -95,7 +96,8 @@ foam.CLASS({
           args    = new HashMap<>();
 
           theme = themes.findThemeBySpid(((X) x.put("subject", new Subject.Builder(x).setUser(business).build())));
-          User psUser = theme.findPersonalSupportUser(x);
+          SupportConfig supportConfig = theme.getSupportConfig();
+          User psUser = supportConfig.findPersonalSupportUser(x);
 
           message.setTo(new String[]{ business.getEmail() });
           args.put("name", User.FIRST_NAME);
