@@ -25,17 +25,18 @@ foam.CLASS({
   messages: [
     { name: 'UPLOAD_REQUEST_MSG', message: 'Document(s) required for' },
     { name: 'IMAGE_REQUIRED', message: 'Document(s) required' },
-    { name: 'SECTION_HELP_MSG', message: 'Require a document for' }
+    { name: 'SECTION_HELP_MSG', message: 'Require a document for' },
+    { name: 'DOC_UPLOAD_SECTION', message: '${UPLOAD_REQUEST_MSG} ${capability.name}' }
   ],
 
   sections: [
     {
       name: 'documentUploadSection',
       title: 'Document Upload',
-      subTitle: function(capability) {
-        return capability.description ?
-          `${capability.description}` :
-          `${this.UPLOAD_REQUEST_MSG} ${capability.name}`;
+      subTitle: function(helper) {
+          return this.capability.description ?
+              this.capability.description :
+              helper(this.DOC_UPLOAD_SECTION);
       },
       help: function(capability) {
         return `${this.SECTION_HELP_MSG} ${capability.name}`;
