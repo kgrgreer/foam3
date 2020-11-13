@@ -274,3 +274,75 @@ p({
     logger.info(new Object[] {"TransactionPlan Expiry Cron removed " + expiredPlans + " expired plans at " + now});
   """
 })
+
+p({
+  "class":"foam.nanos.cron.Cron",
+  "schedule":{
+    "class":"foam.nanos.cron.TimeOfDaySchedule",
+    "time":{
+      "class":"foam.nanos.cron.TimeHMS",
+      "hour":8
+    }
+  },
+  "id":"Stuck transaction detector cron2",
+  "description":"Sound an alarm if transaction get stuck",
+  "status":1,
+  "enabled": true,
+  code: """
+    import foam.mlang.predicate.Predicate;
+    import foam.core.ContextAgent;
+    import foam.core.Detachable;
+    import foam.core.X;
+    import foam.dao.AbstractSink;
+    import foam.dao.DAO;
+    import net.nanopay.tx.model.Transaction;
+    import net.nanopay.tx.model.TransactionStatus;
+    import java.time.LocalDateTime;
+    import static foam.mlang.MLang.*;
+    import java.time.ZoneId;
+    import foam.nanos.alarming.Alarm;
+    import foam.nanos.alarming.AlarmReason;
+
+    DAO transactionDAO = (DAO) x.get("localTransactionDAO");
+    alarmDAO = x.get("alarmDAO");
+    stuckIds = "";
+    stuckCount = 0;
+    LocalDateTime now = LocalDateTime.now();
+    
+    transactionDAO.where(
+        EQ(Transaction.STATUS, TransactionStatus.PENDING_PARENT_COMPLETED)
+      ).select( new AbstractSink() {
+
+      public void put(Object o, Detachable d) {
+
+        Transaction txn = (Transaction) o.fclone();
+        Transaction parent = txn.findParent(x);
+        lastModified = parent.getLastModified();
+        if ( lastModified != null  && parent.getStatus() == TransactionStatus.COMPLETED ) {
+          LocalDateTime lastUpdated = LocalDateTime.ofInstant(lastModified.toInstant(), ZoneId.systemDefault());
+          lastUpdated = lastUpdated.plusHours(1);
+          if ( now.isAfter(lastUpdated) ) {
+            stuckCount++;
+            stuckIds += txn.getId() + "\\n";
+          }
+        }
+
+      }
+    });
+    
+    if ( stuckCount > 0 ) {
+      note = "Transactions stuck in PendingParentComplete: " + stuckCount + ": \\n" + stuckIds;
+      print(note);
+      Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, "Transaction Alarm"));
+      if ( alarm == null ) {
+        alarm = new Alarm();
+        alarm.setName("Transaction Alarm");
+      }
+      alarm.setIsActive(true);
+      alarm.setReason(AlarmReason.TRANSACTION);
+      alarm.setNote(note);
+      alarmDAO.put(alarm);
+    }
+    print("done");
+  """
+})
