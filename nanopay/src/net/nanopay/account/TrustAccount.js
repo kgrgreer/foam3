@@ -53,7 +53,7 @@ foam.CLASS({
           objToChoice: function(a) {
             return [a.id, a.name];
           }
-        });
+        }, X);
       }
     }
   ],
