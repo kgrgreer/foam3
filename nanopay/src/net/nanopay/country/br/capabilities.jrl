@@ -439,8 +439,8 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
-  "name":"Unlock International Payments",
-  "description":"Unlock payments in Brazil",
+  "name":"Enable international payments",
+  "description":"Enable international payments in Brazil",
   "icon":"/images/capabilityIcons/BrazilCap.svg",
   "version":"0",
   "visible":true,
@@ -467,7 +467,7 @@ p({
     "class": "net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig",
     "allowSkipping": false
   },
-  "requirementViewTitle":"In this section, we ask for more business information to enable us to securely process payments on your behalf."
+  "requirementViewTitle":"Have your business documents ready. You can save your progress and come back later."
 })
 
 p({
