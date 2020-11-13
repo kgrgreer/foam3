@@ -40,6 +40,11 @@ foam.CLASS({
     'status'
   ],
 
+  messages: [
+    { name: 'USER_INFO_MSG', message: 'User Info' },
+    { name: 'BUSINESS_INFO_MSG', message: 'Business Info' }
+  ],
+
   properties: [
     {
       class: 'Long',
@@ -119,14 +124,16 @@ foam.CLASS({
       },
       code: function(X) {
         var m = foam.mlang.ExpressionsSingleton.create();
+        var dao = X.userDAO.where(m.EQ(foam.nanos.auth.User.ID, this.userId));
         this.__context__.stack.push({
-          class: 'foam.comics.BrowserView',
-          createEnabled: false,
-          exportEnabled: true,
-          title: `${this.nameSearched}'s User Info`,
-          data: X.userDAO.where(
-            m.EQ(foam.nanos.auth.User.ID, this.userId)
-          )
+          class: 'foam.comics.v2.DAOBrowseControllerView',
+          data: dao,
+          config: {
+            class: 'foam.comics.v2.DAOControllerConfig',
+            dao: dao,
+            createPredicate: foam.mlang.predicate.False,
+            browseTitle: `${this.nameSearched}'s ${this.USER_INFO_MSG}`
+          }
         });
       }
     },
@@ -139,14 +146,16 @@ foam.CLASS({
       },
       code: function(X) {
         var m = foam.mlang.ExpressionsSingleton.create();
+        var dao = X.userDAO.where(m.EQ(net.nanopay.model.Business.ID, this.userId));
         this.__context__.stack.push({
-          class: 'foam.comics.BrowserView',
-          createEnabled: false,
-          exportEnabled: true,
-          title: `${this.nameSearched}'s Business Info`,
-          data: X.businessDAO.where(
-            m.EQ(net.nanopay.model.Business.ID, this.userId)
-          )
+          class: 'foam.comics.v2.DAOBrowseControllerView',
+          data: dao,
+          config: {
+            class: 'foam.comics.v2.DAOControllerConfig',
+            dao: dao,
+            createPredicate: foam.mlang.predicate.False,
+            browseTitle: `${this.nameSearched}'s ${this.BUSINESS_INFO_MSG}`
+          }
         });
       }
     }

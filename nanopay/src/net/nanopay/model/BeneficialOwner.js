@@ -77,7 +77,8 @@ foam.CLASS({
     { name: 'OVER_AGE_LIMIT_ERROR', message: 'Must be less than 125 years old' },
     { name: 'STREET_NUMBER_LABEL', message: 'Street number' },
     { name: 'STREET_NAME_LABEL', message: 'Street name' },
-    { name: 'PLACEHOLDER', message: 'Select a country' }
+    { name: 'PLACEHOLDER', message: 'Select a country' },
+    { name: 'COMPLIANCE_HISTORY_MSG', message: 'Compliance History' }
   ],
 
   properties: [
@@ -599,16 +600,20 @@ foam.CLASS({
       availablePermissions: ['service.compliancehistorydao'],
       code: async function(X) {
         var m = foam.mlang.ExpressionsSingleton.create({});
+        var dao = this.complianceHistoryDAO.where(m.AND(
+          m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_ID, this.id + ''),
+          m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_DAO_KEY, 'beneficialOwnerDAO')
+        ));
         this.__context__.stack.push({
-          class: 'foam.comics.BrowserView',
-          createEnabled: false,
-          editEnabled: true,
-          exportEnabled: true,
-          title: `${this.legalName}'s Compliance History`,
-          data: this.complianceHistoryDAO.where(m.AND(
-              m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_ID, this.id + ''),
-              m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_DAO_KEY, 'beneficialOwnerDAO')
-          ))
+          class: 'foam.comics.v2.DAOBrowseControllerView',
+          data: dao,
+          config: {
+            class: 'foam.comics.v2.DAOControllerConfig',
+            dao: dao,
+            createPredicate: foam.mlang.predicate.False,
+            editPredicate: foam.mlang.predicate.True,
+            browseTitle:`${this.legalName}'s ${this.COMPLIANCE_HISTORY_MSG}`
+          }
         });
       }
     }

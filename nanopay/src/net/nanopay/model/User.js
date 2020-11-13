@@ -101,6 +101,12 @@ foam.CLASS({
     }
   ],
 
+  messages: [
+    { name: 'COMPLIANCE_HISTORY_MSG', message: 'Compliance History' },
+    { name: 'PAYABLES_MSG', message: 'Payables' },
+    { name: 'RECEIVABLES_MSG', message: 'Receivables' }
+  ],
+
   properties: [
     {
       class: 'String',
@@ -389,16 +395,20 @@ foam.CLASS({
       availablePermissions: ['service.complianceHistoryDAO', 'foam.nanos.auth.User.permission.viewComplianceHistory'],
       code: async function(X) {
         var m = foam.mlang.ExpressionsSingleton.create({});
+        var dao = X.complianceHistoryDAO.where(m.AND(
+          m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_ID, this.id),
+          m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_DAO_KEY, 'localUserDAO')
+        ));
         X.stack.push({
-          class: 'foam.comics.BrowserView',
-          createEnabled: false,
-          editEnabled: true,
-          exportEnabled: true,
-          title: `${this.legalName}'s Compliance History`,
-          data: this.complianceHistoryDAO.where(m.AND(
-              m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_ID, this.id),
-              m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_DAO_KEY, 'localUserDAO')
-          ))
+          class: 'foam.comics.v2.DAOBrowseControllerView',
+          data: dao,
+          config: {
+            class: 'foam.comics.v2.DAOControllerConfig',
+            dao: dao,
+            createPredicate: foam.mlang.predicate.False,
+            editPredicate: foam.mlang.predicate.True,
+            browseTitle: `${this.toSummary()}'s ${this.COMPLIANCE_HISTORY_MSG}`
+          }
         });
       }
     },
@@ -409,13 +419,17 @@ foam.CLASS({
       availablePermissions: ['foam.nanos.auth.User.permission.viewAccounts'],
       code: function(X) {
         var m = foam.mlang.ExpressionsSingleton.create({});
+        var dao = X.accountDAO.where(m.EQ(net.nanopay.account.Account.OWNER, this.id));
         X.stack.push({
-          class: 'foam.comics.BrowserView',
-          createEnabled: false,
-          editEnabled: true,
-          exportEnabled: true,
-          title: `${this.businessName}'s Accounts`,
-          data: X.accountDAO.where(m.EQ(net.nanopay.account.Account.OWNER, this.id))
+          class: 'foam.comics.v2.DAOBrowseControllerView',
+          data: dao,
+          config: {
+            class: 'foam.comics.v2.DAOControllerConfig',
+            dao: dao,
+            createPredicate: foam.mlang.predicate.False,
+            editPredicate: foam.mlang.predicate.True,
+            browseTitle: `${this.toSummary()}'s ${dao.of.model_.plural}`
+          }
         });
       }
     },
@@ -430,18 +444,22 @@ foam.CLASS({
           .where(m.EQ(net.nanopay.account.Account.OWNER, this.id))
           .select(m.MAP(net.nanopay.account.Account.ID))
           .then((sink) => sink.delegate.array);
-        X.stack.push({
-          class: 'foam.comics.BrowserView',
-          createEnabled: false,
-          editEnabled: true,
-          exportEnabled: true,
-          title: `${this.toSummary()}'s Transactions`,
-          data: X.transactionDAO.where(
-            m.OR(
-              m.IN(net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT, ids),
-              m.IN(net.nanopay.tx.model.Transaction.DESTINATION_ACCOUNT, ids)
-            )
+        var dao = X.transactionDAO.where(
+          m.OR(
+            m.IN(net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT, ids),
+            m.IN(net.nanopay.tx.model.Transaction.DESTINATION_ACCOUNT, ids)
           )
+        );
+        X.stack.push({
+          class: 'foam.comics.v2.DAOBrowseControllerView',
+          data: dao,
+          config: {
+            class: 'foam.comics.v2.DAOControllerConfig',
+            dao: dao,
+            createPredicate: foam.mlang.predicate.False,
+            editPredicate: foam.mlang.predicate.True,
+            browseTitle: `${this.toSummary()}'s ${dao.of.model_.plural}`
+          }
         });
       }
     },
@@ -450,13 +468,17 @@ foam.CLASS({
       label: 'View Payables',
       availablePermissions: ['foam.nanos.auth.User.permission.viewPayables'],
       code: async function(X) {
+        var dao = this.expenses;
         this.__context__.stack.push({
-          class: 'foam.comics.BrowserView',
-          createEnabled: false,
-          editEnabled: true,
-          exportEnabled: true,
-          title: `${this.toSummary()}'s Payables`,
-          data: this.expenses
+          class: 'foam.comics.v2.DAOBrowseControllerView',
+          data: dao,
+          config: {
+            class: 'foam.comics.v2.DAOControllerConfig',
+            dao: dao,
+            createPredicate: foam.mlang.predicate.False,
+            editPredicate: foam.mlang.predicate.True,
+            browseTitle: `${this.toSummary()}'s ${this.PAYABLES_MSG}`
+          }
         });
       }
     },
@@ -465,13 +487,17 @@ foam.CLASS({
       label: 'View Receivables',
       availablePermissions: ['foam.nanos.auth.User.permission.viewReceivables'],
       code: async function(X) {
+        var dao = this.sales;
         this.__context__.stack.push({
-          class: 'foam.comics.BrowserView',
-          createEnabled: false,
-          editEnabled: true,
-          exportEnabled: true,
-          title: `${this.toSummary()}'s Receivables`,
-          data: this.sales
+          class: 'foam.comics.v2.DAOBrowseControllerView',
+          data: dao,
+          config: {
+            class: 'foam.comics.v2.DAOControllerConfig',
+            dao: dao,
+            createPredicate: foam.mlang.predicate.False,
+            editPredicate: foam.mlang.predicate.True,
+            browseTitle: `${this.toSummary()}'s ${this.RECEIVABLES_MSG}`
+          }
         });
       }
     }

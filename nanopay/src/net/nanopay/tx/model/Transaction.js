@@ -210,6 +210,7 @@ foam.CLASS({
   messages: [
     { name: 'INVALID_AMOUNT', message: 'Amount cannot be negative' },
     { name: 'BOTH_INVALID_AMOUNT', message: 'Both amount and destination amount cannot be 0' },
+    { name: 'COMPLIANCE_HISTORY_MSG', message: 'Compliance History' }
   ],
 
   // relationships: parent, children
@@ -1411,16 +1412,20 @@ foam.CLASS({
       availablePermissions: ['service.compliancehistorydao'],
       code: async function(X) {
         var m = foam.mlang.ExpressionsSingleton.create({});
+        var dao = this.complianceHistoryDAO.where(m.AND(
+          m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_ID, this.id),
+          m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_DAO_KEY, 'localTransactionDAO')
+        ));
         this.stack.push({
-          class: 'foam.comics.BrowserView',
-          createEnabled: false,
-          editEnabled: true,
-          exportEnabled: true,
-          title: `${this.id}'s Compliance History`,
-          data: this.complianceHistoryDAO.where(m.AND(
-            m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_ID, this.id),
-            m.EQ(foam.nanos.ruler.RuleHistory.OBJECT_DAO_KEY, 'localTransactionDAO')
-          ))
+          class: 'foam.comics.v2.DAOBrowseControllerView',
+          data: dao,
+          config: {
+            class: 'foam.comics.v2.DAOControllerConfig',
+            dao: dao,
+            createPredicate: foam.mlang.predicate.False,
+            editPredicate: foam.mlang.predicate.True,
+            browseTitle: `${this.id}'s ${this.COMPLIANCE_HISTORY_MSG}`
+          }
         });
       }
     }
