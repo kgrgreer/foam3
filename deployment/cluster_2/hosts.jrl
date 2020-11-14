@@ -1,12 +1,17 @@
 p({
   "class":"foam.net.Host",
-  "id":"mediator",
+  "id":"mediator1",
+  "address":"localhost",
+})
+p({
+  "class":"foam.net.Host",
+  "id":"mediator2",
   "address":"localhost",
 })
 
 p({
   "class":"foam.net.Host",
-  "id":"node",
+  "id":"node1",
   "address":"localhost",
 })
 
@@ -19,11 +24,5 @@ p({
 p({
   "class":"foam.net.Host",
   "id":"client",
-  "address":"localhost",
-})
-
-p({
-  "class":"foam.net.Host",
-  "id":"client2",
   "address":"localhost",
 })
