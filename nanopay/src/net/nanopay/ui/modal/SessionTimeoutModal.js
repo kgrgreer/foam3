@@ -144,6 +144,7 @@ foam.CLASS({
           clearTimeout(this.sessionTimer.timer);
           await this.auth.logout();
           window.location.assign(window.location.origin);
+          localStorage.removeItem('defaultSession');
         } catch (e) {
           this.notify(e.toString(), '', this.LogLevel.ERROR, true);
           window.location.assign(window.location.origin);
