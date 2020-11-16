@@ -51,8 +51,8 @@ foam.CLASS({
       targetDAOKey: 'currencyDAO',
       hidden: true,
       javaSetter: `
-        feeCurrency_ = val;
-        feeCurrencyIsSet_ = true;
+        creditCurrency_ = val;
+        creditCurrencyIsSet_ = true;
         calculateView_();
       `
     },
@@ -98,7 +98,7 @@ foam.CLASS({
       javaCode: `
         DAO currDAO = (DAO) getX().get("currencyDAO");
         if (currDAO != null) {
-          Currency cur = (Currency) currDAO.find(getFeeCurrency());
+          Currency cur = (Currency) currDAO.find(getCreditCurrency());
           if (cur != null ) {
             setAmountView(""+cur.format(getAmount()));
             return;
