@@ -16,8 +16,8 @@ mediator
 ./build.sh -uJcluster,cluster_2,mm -Nmediator2 -W8110 -Ctrue
 
 mediator treviso
-./build.sh -uJbr,treviso,treviso_dev,afex_dev,cluster,cluster_2,mm -Nmediator1 -W8100 -Ctrue -c
-./build.sh -uJbr,treviso,treviso_dev,afex_dev,cluster,cluster_2,mm -Nmediator2 -W8110 -Ctrue
+./build.sh -uJbr,treviso,treviso_dev,cluster,cluster_2,mm -Nmediator1 -W8100 -Ctrue -c
+./build.sh -uJbr,treviso,treviso_dev,cluster,cluster_2,mm -Nmediator2 -W8110 -Ctrue
 
 Instructions
 You’ll notice the capability store is not working (issue 1), so go through
