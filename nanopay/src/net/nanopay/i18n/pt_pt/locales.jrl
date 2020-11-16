@@ -2397,5 +2397,18 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.SKBankAccount.m
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.model_.label",target:"Banco Estados Unidos"})
 
+// Review Invoice Details
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.SummaryTransactionCitationView.TITLE",target:"Revise os detalhes da fatura"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.FXSummaryTransaction.DESCRIPTION",target:"Resumo"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.AMOUNT.label",target:"Quantidade de fonte"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.DESTINATION_AMOUNT.label",target:"Conta de destino"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT.label",target:"Conta de origem"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.EtaSummaryTransactionLineItem.ETA_MESSAGE",target:"Tempo estimado até o pagamento ser recebido"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.EtaSummaryTransactionLineItem.ETA.label",target:"Tempo"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.FxSummaryTransactionLineItem.FX",target:"Informação Cambial"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.FxSummaryTransactionLineItem.RATE.label",target:"Taxa"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.FeeSummaryTransactionLineItem.FEE",target:"Taxas de serviço"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.FeeSummaryTransactionLineItem.TOTAL_FEE.label",target:"Total"})
+
+
 
