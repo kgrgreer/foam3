@@ -78,12 +78,12 @@ foam.CLASS({
       hidden: true
     },
     {
-      name: 'senderAccount'
+      name: 'senderAccount',
       class: 'Long',
       hidden: true,
     },
     {
-      name: 'receiverAccount'
+      name: 'receiverAccount',
       class: 'Long',
       hidden: true,
     },
