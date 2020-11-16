@@ -1142,6 +1142,9 @@ var classes = [
   'net.nanopay.tx.fee.test.TransactionFeeRuleTest',
   'net.nanopay.country.br.tx.fee.PTaxRate',
 
+  // Transaction Reversal
+  'net.nanopay.tx.ReversalRequest',
+
   // Treviso
   'net.nanopay.country.br.NatureCode',
   'net.nanopay.country.br.NatureCodeData',

@@ -580,3 +580,25 @@ p({
       }
     """
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "TransactionReversalDAO",
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.tx.ReversalRequest.getOwnClassInfo())
+      .setPm(true)
+      .setPipelinePm(true)
+      .setJournalName("transactionReversalRequestDAO")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .build();
+  """,
+  "client":
+    """
+      {
+        "of":"net.nanopay.tx.ReversalRequest"
+      }
+    """
+})

@@ -499,6 +499,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/PartnerTransaction' },
   { name: 'net/nanopay/tx/SummaryTransactionDAO' },
   { name: 'net/nanopay/tx/SummaryTransactionInnerDAO' },
+  { name: 'net/nanopay/tx/ReversalRequest' },
 
   //integration
   { name: 'net/nanopay/integration/ErrorCode' },
