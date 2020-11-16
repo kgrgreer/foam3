@@ -24,7 +24,7 @@ foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'CreditLineItem',
   extends: 'net.nanopay.tx.TransactionLineItem',
-  documentation: 'A line item for giving discounts/credits.'
+  documentation: 'A line item for giving discounts/credits.',
 
   javaImports:[
     'foam.core.Currency',
@@ -80,12 +80,12 @@ foam.CLASS({
     {
       name: 'senderAccount'
       class: 'Long',
-      hidden: true
+      hidden: true,
     },
     {
       name: 'receiverAccount'
       class: 'Long',
-      hidden: true
+      hidden: true,
     },
     {
       name: 'note',
