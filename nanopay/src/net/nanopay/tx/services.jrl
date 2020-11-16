@@ -593,7 +593,6 @@ p({
       .setOf(net.nanopay.tx.ReversalRequest.getOwnClassInfo())
       .setPm(true)
       .setPipelinePm(true)
-      .setJournalName("transactionReversalRequestDAO")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .build();
   """,
