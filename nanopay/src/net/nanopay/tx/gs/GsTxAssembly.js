@@ -145,8 +145,6 @@ foam.CLASS({
           setTransaction(t);
         }
         catch( Exception e ){
-          Logger logger = (Logger) getX().get("logger");
-          logger.error(e);
           getTrackingJob().setFailed(true);
           if ( getRow1() != null && getRow1().getTransactionId() != null ) {
              getTrackingJob().setFailText("File Upload Failure, \\nDuring transaction parsing. \\nOn row "+ getRow1().getTransactionId());
@@ -166,7 +164,6 @@ foam.CLASS({
             verifyBalance(getX(),getTransaction());
             addAllTransfers(getTransaction());
             getOutputDAO().put(getTransaction());
-            Thread.sleep(100);
             if ( getPbd() != null )
               ((DAO) getX().get("ProgressBarDAO")).put(getPbd());
             getTrackingJob().incrementTxnCounter(getTxnCount());
