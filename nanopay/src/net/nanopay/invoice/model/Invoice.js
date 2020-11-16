@@ -611,7 +611,7 @@ foam.CLASS({
           class: 'foam.u2.view.RichChoiceView',
           selectionView: {
             class: 'net.nanopay.auth.ui.UserSelectionView',
-            emptySelectionLabel: 'Select from contacts'
+            emptySelectionLabel: this.SELECT_CONTACTS
           },
           rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
           sections: [
@@ -713,7 +713,8 @@ foam.CLASS({
 
   messages: [
     // used in MarkAsVoidModal and InvoiceVoidEmailRule
-    { name: 'ON_VOID_NOTE', message: 'On Void Note: ' }
+    { name: 'ON_VOID_NOTE', message: 'On Void Note: ' },
+    { name: 'SELECT_CONTACTS', message: 'Select from contacts' }
   ],
 
   methods: [

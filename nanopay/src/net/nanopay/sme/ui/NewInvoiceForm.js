@@ -300,6 +300,10 @@ foam.CLASS({
     { name: 'DATE_ISSUED', message: 'Issue date' },
     { name: 'PO_NUMBER', message: 'Purchase order number' },
     { name: 'DATE_DUE', message: 'Due date' },
+
+    { name: 'PAYMENT', message: 'payment' },
+    { name: 'REQUEST', message: 'request' },
+    { name: 'START_SEARCH', message: 'Start typing company name to search' }
   ],
 
   constants: [
@@ -357,14 +361,14 @@ foam.CLASS({
       class: 'String',
       name: 'notePlaceHolder',
       factory: function() {
-        return this.type === 'payable' ? 'payment' : 'request';
+        return this.type === 'payable' ? this.PAYMENT : this.REQUEST;
       }
     },
     {
       class: 'String',
       name: 'contactLabel',
       factory: function() {
-        return this.type === 'payable' ? 'Send to' : 'Request from';//TODO this.SEND_TO : this.REQUEST_FROM;
+        return this.type === 'payable' ? this.SEND_TO : this.REQUEST_FROM;
       }
     },
     {
@@ -499,7 +503,7 @@ foam.CLASS({
               .start(this.invoice.CONTACT_ID, {
                 action: this.ADD_CONTACT,
                 search: true,
-                searchPlaceholder: 'Start typing company name to search',
+                searchPlaceholder: this.START_SEARCH,
                 mode: displayMode
               })
                 .enableClass('invalid', this.slot(
