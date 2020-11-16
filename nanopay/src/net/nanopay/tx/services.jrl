@@ -593,6 +593,7 @@ p({
       .setPipelinePm(true)
       .setJournalName("transactionReversalRequestDAO")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setDecorator(new foam.dao.NullDAO(x, net.nanopay.tx.ReversalRequest.getOwnClassInfo()))
       .build();
   """,
   "client":
