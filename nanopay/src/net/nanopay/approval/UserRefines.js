@@ -23,7 +23,7 @@ foam.CLASS({
       'approvalRequestDAO?'
     ],
     messages: [
-      { name: 'APPROVAL_REQUESTS_MSG', message: 'Approval Requests' }
+      { name: 'APPROVAL_REQUESTS_MSG', message: 'Approval Requests for' }
     ],
     actions: [
       {
@@ -44,7 +44,7 @@ foam.CLASS({
               dao: dao,
               createPredicate: foam.mlang.predicate.False,
               editPredicate: foam.mlang.predicate.True,
-              browseTitle: `${this.toSummary()}'s ${this.APPROVAL_REQUESTS_MSG}`
+              browseTitle: `${this.APPROVAL_REQUESTS_MSG} ${this.toSummary()}`
             }
           });
         }

@@ -30,7 +30,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'TRANSACTION_LIMITS_MSG', message: 'Transaction Limits' }
+    { name: 'TRANSACTION_LIMITS_MSG', message: 'Transaction Limits for' }
   ],
 
   actions: [
@@ -85,7 +85,7 @@ foam.CLASS({
             dao: dao,
             createPredicate: foam.mlang.predicate.False,
             editPredicate: foam.mlang.predicate.True,
-            browseTitle: `${this.toSummary()}'s ${this.TRANSACTION_LIMITS_MSG}`
+            browseTitle: `${this.TRANSACTION_LIMITS_MSG} ${this.toSummary()}`
           }
         });
       }
