@@ -28,6 +28,7 @@ foam.CLASS({
     currency.`,
 
   javaImports: [
+    'foam.core.FObject',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.MDAO',
@@ -86,7 +87,7 @@ foam.CLASS({
             for (int j=0;j<temp.getTargetCurrencies().length;j++) {
               List corridorPaymentProviders = cs.getCorridorPaymentProviders(x, temp.getTargetCountry(), ((BankAccount) requestTxn.findDestinationAccount(x)).getCountry(), temp.getTargetCurrencies()[j], requestTxn.getDestinationCurrency());
               for ( int k=0; k< corridorPaymentProviders.size(); k++ ) {
-                PaymentProviderCorridor temp2 = (PaymentProviderCorridor) corridorPaymentProviders.get(k);
+                PaymentProviderCorridor temp2 = (PaymentProviderCorridor) ((FObject) corridorPaymentProviders.get(k)).fclone();
                 temp2.setRanking(temp.getRanking()+temp2.getRanking());
                 temp2.setCurrency(temp.getTargetCurrencies()[j]);
                 ppcDAO.put(temp2);
@@ -99,7 +100,7 @@ foam.CLASS({
             for (int j=0;j<temp.getSourceCurrencies().length;j++) {
               List corridorPaymentProviders = cs.getCorridorPaymentProviders(x, ((BankAccount) requestTxn.findSourceAccount(x)).getCountry(), temp.getSourceCountry(), requestTxn.getSourceCurrency(), temp.getSourceCurrencies()[j]);
               for ( int k=0; k< corridorPaymentProviders.size(); k++ ) {
-                PaymentProviderCorridor temp2 = (PaymentProviderCorridor) corridorPaymentProviders.get(k);
+                PaymentProviderCorridor temp2 = (PaymentProviderCorridor) ((FObject) corridorPaymentProviders.get(k)).fclone();
                 temp2.setRanking(temp.getRanking() + temp2.getRanking());
                 temp2.setCurrency(temp.getSourceCurrencies()[j]);
                 ppcDAO.put(temp2);

@@ -37,6 +37,10 @@ foam.CLASS({
     'user'
   ],
 
+  messages: [
+      { name: 'INVOICE_CREATED', message: 'Invoice was created' }
+  ],
+
   properties: [
     'name'
   ],
@@ -91,7 +95,7 @@ foam.CLASS({
           .start('div')
             .style({ 'padding-left': '30px' })
             .start('span').addClass('statusTitle')
-              .add('Invoice was created')
+              .add(this.INVOICE_CREATED)
             .end()
           .end()
           .start('div')

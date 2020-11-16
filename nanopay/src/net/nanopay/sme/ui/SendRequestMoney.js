@@ -297,6 +297,7 @@ foam.CLASS({
     { name: 'SELECT_PAYABLE', message: 'Select payable' },
     { name: 'REVIEW_MSG', message: 'Review' },
     { name: 'REVIEW_PAYMENT', message: 'Review payment'},
+    { name: 'CANCEL', message: 'Cancel'}
   ],
 
   methods: [
@@ -336,7 +337,7 @@ foam.CLASS({
         }
       });
 
-      this.exitLabel = 'Cancel';
+      this.exitLabel = this.CANCEL;
       this.hasExitOption = true;
 
       Promise.all([this.auth.check(null, 'business.invoice.pay'), this.auth.check(null, 'user.invoice.pay')])
