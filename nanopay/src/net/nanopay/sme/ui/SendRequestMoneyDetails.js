@@ -231,7 +231,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'DETAILS_SUBTITLE', message: 'Create new or choose from existing' },
+    { name: 'DETAILS_SUBTITLE', message: 'Create new payable or choose from existing' },
     { name: 'EXISTING_HEADER', message: 'Choose an existing ' },
     { name: 'DETAILS_HEADER', message: 'Invoice Details' },
     { name: 'BACK', message: 'Back to selection' },
