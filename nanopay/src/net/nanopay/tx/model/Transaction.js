@@ -319,7 +319,7 @@ foam.CLASS({
       },
       tableWidth: 172,
       includeInDigest: true
-     },
+    },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
