@@ -29,6 +29,10 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
+      name: 'id'
+    },
+    {
+      class: 'String',
       name: 'requestTransaction',
       documentation: `Id of transaction requiring reversal`
     },
