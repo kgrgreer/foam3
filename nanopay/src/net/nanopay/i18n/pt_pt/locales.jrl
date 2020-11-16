@@ -459,7 +459,7 @@ p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.InvoiceRowView.IS_MOUSEOVER.l
 p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.InvoiceRowView.IS_PAYABLE.label",locale:"pt",source:"net.nanopay.sme.ui.InvoiceRowView.IS_PAYABLE.label",target:"isPayable pt"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.InvoiceRowView.SHOW_QUICK_ACTION.label",locale:"pt",source:"net.nanopay.sme.ui.InvoiceRowView.SHOW_QUICK_ACTION.label",target:"showQuickAction pt"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.InvoiceRowView.SHOW_QUICK_ACTION.documentation",locale:"pt",source:"net.nanopay.sme.ui.InvoiceRowView.SHOW_QUICK_ACTION.documentation",target:"Determine when to show the QuickAction in the payables/receivables lists.\n                      Hide the reminder button temporarily. To enable the reminder button for\n                      receivables, please remove the 'isPayable' condition in the expression. pt"})
-p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.SendRequestMoneyDetails.DETAILS_SUBTITLE",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoneyDetails.DETAILS_SUBTITLE",target:"Crie um novo ou escolha um existente"})
+p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.SendRequestMoneyDetails.DETAILS_SUBTITLE",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoneyDetails.DETAILS_SUBTITLE",target:"Crie um novo pagamento ou escolha um existente"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.SendRequestMoneyDetails.EXISTING_HEADER",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoneyDetails.EXISTING_HEADER",target:"Escolher uma existente"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.SendRequestMoneyDetails.DETAILS_HEADER",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoneyDetails.DETAILS_HEADER",target:"Detalhes"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.SendRequestMoneyDetails.BACK",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoneyDetails.BACK",target:"Voltar à seleção"})
@@ -494,7 +494,7 @@ p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.NewInvoiceForm.RECEIVABLE_ERR
 p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.NewInvoiceForm.INVOICE_NUMBER_PLACEHOLDER",locale:"pt",source:"net.nanopay.sme.ui.NewInvoiceForm.INVOICE_NUMBER_PLACEHOLDER",target:"Insira um número de fatura"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.NewInvoiceForm.PO_PLACEHOLDER",locale:"pt",source:"net.nanopay.sme.ui.NewInvoiceForm.PO_PLACEHOLDER",target:"Opcional"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.NewInvoiceForm.NOTE_PLACEHOLDER",locale:"pt",source:"net.nanopay.sme.ui.NewInvoiceForm.NOTE_PLACEHOLDER",target:"Adicione uma nota a isto"})
-p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.NewInvoiceForm.ADD_NOTE",locale:"pt",source:"net.nanopay.sme.ui.NewInvoiceForm.ADD_NOTE",target:"Nota"})
+p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.NewInvoiceForm.ADD_NOTE",locale:"pt",source:"net.nanopay.sme.ui.NewInvoiceForm.ADD_NOTE",target:"Notas"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.NewInvoiceForm.ADD_BANK",locale:"pt",source:"net.nanopay.sme.ui.NewInvoiceForm.ADD_BANK",target:"Adicionar informações bancárias"})
 
 p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.NewInvoiceForm.UNSUPPORTED_CURRENCY1",locale:"pt",source:"net.nanopay.sme.ui.NewInvoiceForm.UNSUPPORTED_CURRENCY1",target:"Desculpe, não oferecemos suporte"})
@@ -1710,8 +1710,8 @@ p({class:"foam.i18n.Locale",id:"foam.u2.crunch.wizardflow.CheckPendingAgent.CANN
 p({class:"foam.i18n.Locale",id:"foam.u2.crunch.wizardflow.CheckPendingAgent.CANNOT_OPEN_PENDING",locale:"pt",source:"foam.u2.crunch.wizardflow.CheckPendingAgent.CANNOT_OPEN_PENDING",target:"Este recurso está aguardando aprovação; atualizações não são permitidas no momento."})
 p({class:"foam.i18n.Locale",id:"foam.u2.crunch.wizardflow.CheckPendingAgent.CANNOT_OPEN_ACTION_PENDING",locale:"pt",source:"foam.u2.crunch.wizardflow.CheckPendingAgent.CANNOT_OPEN_ACTION_PENDING",target:"Este recurso está aguardando revisão; atualizações não são permitidas no momento."})
 
-p({class:"foam.i18n.Locale",id:"foam.nanos.fs.fileDropZone.FileDropZone.LABEL_DEFAULT_TITLE",locale:"pt",source:"foam.nanos.fs.fileDropZone.FileDropZone.LABEL_DEFAULT_TITLE",target:"ARRASTE E SOLTE SEU ARQUIVO AQUI"})
-p({class:"foam.i18n.Locale",id:"foam.nanos.fs.fileDropZone.FileDropZone.LABEL_BROWSE",locale:"pt",source:"foam.nanos.fs.fileDropZone.FileDropZone.LABEL_BROWSE",target:"navegue"})
+p({class:"foam.i18n.Locale",id:"foam.nanos.fs.fileDropZone.FileDropZone.LABEL_DEFAULT_TITLE",locale:"pt",source:"foam.nanos.fs.fileDropZone.FileDropZone.LABEL_DEFAULT_TITLE",target:"Arraste seu arquivo aqui"})
+p({class:"foam.i18n.Locale",id:"foam.nanos.fs.fileDropZone.FileDropZone.LABEL_BROWSE",locale:"pt",source:"foam.nanos.fs.fileDropZone.FileDropZone.LABEL_BROWSE",target:"selecione do seu dispositivo"})
 p({class:"foam.i18n.Locale",id:"foam.nanos.fs.fileDropZone.FileDropZone.LABEL_MAX_SIZE",locale:"pt",source:"foam.nanos.fs.fileDropZone.FileDropZone.LABEL_MAX_SIZE",target:"Tamanho máximo:"})
 p({class:"foam.i18n.Locale",id:"foam.nanos.fs.fileDropZone.FileDropZone.LABEL_OR",locale:"pt",source:"foam.nanos.fs.fileDropZone.FileDropZone.LABEL_OR",target:"ou"})
 
@@ -1847,11 +1847,11 @@ p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.capabilit
 
 p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.NewInvoiceForm.SEND_TO",locale:"pt",source:"net.nanopay.sme.ui.NewInvoiceForm.SEND_TO",target:"Enviar para"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.NewInvoiceForm.REQUEST_FROM",locale:"pt",source:"net.nanopay.sme.ui.NewInvoiceForm.REQUEST_FROM",target:"Pedido de"})
-p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.NewInvoiceForm.DATE_DUE",locale:"pt",source:"net.nanopay.sme.ui.NewInvoiceForm.DATE_DUE",target:"Data de vencimento"})
+p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.NewInvoiceForm.DATE_DUE",locale:"pt",source:"net.nanopay.sme.ui.NewInvoiceForm.DATE_DUE",target:"Data de Vencimento"})
 
-p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.NewInvoiceForm.PO_NUMBER",locale:"pt",source:"net.nanopay.sme.ui.NewInvoiceForm.PO_NUMBER",target:"P.O. Número"})
-p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.NewInvoiceForm.DATE_ISSUED",locale:"pt",source:"net.nanopay.sme.ui.NewInvoiceForm.DATE_ISSUED",target:"data de emissão"})
-p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.NewInvoiceForm.INVOICE_NUMBER",locale:"pt",source:"net.nanopay.sme.ui.NewInvoiceForm.INVOICE_NUMBER",target:"número da fatura"})
+p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.NewInvoiceForm.PO_NUMBER",locale:"pt",source:"net.nanopay.sme.ui.NewInvoiceForm.PO_NUMBER",target:"Número do pedido de compra"})
+p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.NewInvoiceForm.DATE_ISSUED",locale:"pt",source:"net.nanopay.sme.ui.NewInvoiceForm.DATE_ISSUED",target:"Data de emissão"})
+p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.NewInvoiceForm.INVOICE_NUMBER",locale:"pt",source:"net.nanopay.sme.ui.NewInvoiceForm.INVOICE_NUMBER",target:"Número da fatura"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.NewInvoiceForm.AMOUNT",locale:"pt",source:"net.nanopay.sme.ui.NewInvoiceForm.AMOUNT",target:"montante"})
 
 p({class:"foam.i18n.Locale",id:"accounts.name",locale:"pt",source:"accounts.label",target:"Contas"})
@@ -2572,7 +2572,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.history.I
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.FXSummaryTransaction.DESCRIPTION",target:"Resumo"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.SELECT_CONTACTS",target:"Selecione a partir de contatos"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.SELECT_CONTACT",target:"Selecione o contato"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.history.InvoiceStatusHistoryItemView.INVOICE_STATUS_CHNGE_TO",target:"Invoice status changed to"})
 
@@ -2606,3 +2606,5 @@ p({class:"foam.i18n.Locale",locale:"pt",variant:"pt",source:"net.nanopay.invoice
 p({class:"foam.i18n.Locale",locale:"pt",variant:"pt",source:"net.nanopay.invoice.model.InvoiceStatus.SUBMIT.documentation",target:"A status that indicates that the quoting invoice is ready to be submited as a transaction"})//TODO
 p({class:"foam.i18n.Locale",locale:"pt",variant:"pt",source:"net.nanopay.invoice.model.InvoiceStatus.REJECTED.documentation",target:"Um status que indica que a fatura foi rejeitada."})
 p({class:"foam.i18n.Locale",locale:"pt",variant:"pt",source:"net.nanopay.invoice.model.InvoiceStatus.REJECTED.label",target:"Rejeitado"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ui.BankAccountSelectionView.DEFAULT_LABEL",target:"Selecione a conta bancária"})

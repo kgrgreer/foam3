@@ -257,7 +257,7 @@ foam.CLASS({
     },
     {
       name: 'ADD_NOTE',
-      message: 'Note'
+      message: 'Notes'
     },
     {
       name: 'ADD_BANK',

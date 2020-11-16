@@ -61,14 +61,14 @@ foam.CLASS({
           }
           
           DAO transactionDAO = ((DAO) x.get("localTransactionDAO")).inX(x);
-          AFEXTransaction transaction = (AFEXTransaction) obj;
+          AFEXTransaction transaction = (AFEXTransaction) obj.fclone();
           
           AFEXServiceProvider afexService = (AFEXServiceProvider) x.get("afexServiceProvider");
           if ( transaction.getAfexTradeResponseNumber() == 0 ) {
             try {
               int result = afexService.createTrade(transaction);
               transaction.setAfexTradeResponseNumber(result);
-              transactionDAO.put(transaction);
+              transaction = (AFEXTransaction) transactionDAO.put(transaction).fclone();
 
               if ( transaction.getAfexTradeResponseNumber() != 0 ) {
                 try {
@@ -87,7 +87,7 @@ foam.CLASS({
     
                   File pdf = (File) fileDAO.inX(x).put(thePDF);
                   transaction.addLineItems( new TransactionLineItem[]{new ConfirmationFileLineItem.Builder(x).setGroup("fx").setFile(pdf).build()} );
-                  transactionDAO.put(transaction);
+                  transaction = (AFEXTransaction) transactionDAO.put(transaction);
                 
                   // Append file to related invoice.
                   Transaction root = transaction.findRootTransaction(x, transaction);
@@ -118,11 +118,12 @@ foam.CLASS({
               }
 
             } catch (Throwable t) {
+              transaction = (AFEXTransaction) transaction.fclone();
               transaction.setStatus(TransactionStatus.DECLINED);
-              transactionDAO.put(transaction);
-              Transaction root = transaction.findRoot(x);
+              transaction = (AFEXTransaction) transactionDAO.put(transaction);
+              Transaction root = (Transaction) transaction.findRoot(x).fclone();
               root.setStatus(TransactionStatus.DECLINED);
-              transactionDAO.put(root);
+              root = (Transaction) transactionDAO.put(root);
               String msg = "Error creating trade for AfexTransaction " + transaction.getId();
               logger.error(msg, t);
               Notification notification = new Notification.Builder(x)
