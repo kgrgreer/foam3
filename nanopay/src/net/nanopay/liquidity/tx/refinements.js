@@ -85,7 +85,7 @@ foam.CLASS({
             dao: dao,
             createPredicate: foam.mlang.predicate.False,
             editPredicate: foam.mlang.predicate.True,
-            browseTitle: `${this.legalName}'s ${this.TRANSACTION_LIMITS_MSG}`
+            browseTitle: `${this.toSummary()}'s ${this.TRANSACTION_LIMITS_MSG}`
           }
         });
       }
