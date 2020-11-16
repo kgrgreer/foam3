@@ -34,5 +34,8 @@ You’ll notice the capability store is not working (issue 1), so go through
 That’s as far as I can get.
 
 Signup at mediator1:8080 or mediator2:8080
-and login as admin@nanopay/adminAb1 on the other to perform the Approval Requests and get Email signup token.
+and login as admin@nanopay/adminAb1 on same instance to perform the Approval Requests and get Email signup token.
 Regarding the email signup token, as admin find the email message, copy out the http.... url and paste it into the 'user' sign up site, then proceed.
+
+NOTE:
+EmailMessageDAO is not clustered.
