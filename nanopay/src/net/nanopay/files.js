@@ -659,6 +659,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ExpiryLineItem' },
   { name: 'net/nanopay/tx/FeeLineItem' },
   { name: 'net/nanopay/tx/InfoLineItem' },
+  { name: 'net/nanopay/tx/CreditLineItem' },
   { name: 'net/nanopay/tx/ExpediteCICOApprovalRequest' },
   { name: 'net/nanopay/tx/ExpenseLineItem' },
   { name: 'net/nanopay/tx/PurposeCode' },
