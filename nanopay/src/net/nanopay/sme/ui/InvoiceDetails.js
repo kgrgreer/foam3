@@ -254,6 +254,7 @@ foam.CLASS({
     { name: 'CYCLE_LABEL', message: 'Billing Cycle: '},
     { name: 'SAVE_AS_PDF_FAIL', message: 'There was an unexpected error when creating the PDF. Please contact support.' },
     { name: 'NO_ATTACHEMENT_PROVIDED', message: 'No attachments provided'},
+    { name: 'NO_NOTES_PROVIDED', message: 'No notes provided'},
   ],
 
   methods: [
@@ -469,7 +470,7 @@ foam.CLASS({
               } else {
                 return self.E()
                   .start().addClass(this.myClass('italic'))
-                    .add('No notes provided')
+                    .add(this.NO_NOTES_PROVIDED)
                   .end();
               }
             }))

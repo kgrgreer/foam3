@@ -87,6 +87,8 @@ foam.CLASS({
                 ucj = new UserCapabilityJunction.Builder(x).setSourceId(business.getId())
                   .setTargetId(afexPaymentMenuCapId)
                   .build();
+              } else {
+                ucj = (UserCapabilityJunction) ucj.fclone();
               }
               ucj.setStatus(CapabilityJunctionStatus.GRANTED);
               ucjDAO.put(ucj);
@@ -95,7 +97,7 @@ foam.CLASS({
               UserCapabilityJunction ucj2 = (UserCapabilityJunction) ucjDAO.find(AND(
                 EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-20"),
                 EQ(UserCapabilityJunction.SOURCE_ID, business.getId())
-              ));
+              )).fclone();
               ucj2.setStatus(CapabilityJunctionStatus.GRANTED);
               ucjDAO.put(ucj2);
 
@@ -150,7 +152,7 @@ foam.CLASS({
               .setEmailArgs(args)
               .setEmailName("compliance-notification-to-user")
               .build();
-          
+
           Themes themes = (Themes) x.get("themes");
           Theme theme = themes.findThemeBySpid(((X) x.put("subject", new Subject.Builder(x).setUser(business).build())));
           X notificationX = theme != null ? (X) x.put("theme", theme) : x;
