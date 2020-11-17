@@ -2608,3 +2608,13 @@ p({class:"foam.i18n.Locale",locale:"pt",variant:"pt",source:"net.nanopay.invoice
 p({class:"foam.i18n.Locale",locale:"pt",variant:"pt",source:"net.nanopay.invoice.model.InvoiceStatus.REJECTED.label",target:"Rejeitado"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ui.BankAccountSelectionView.DEFAULT_LABEL",target:"Selecione a conta bancária"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.COMPLIANCE_HISTORY_MSG",target:"Histórico de conformidade para"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AFEXBusiness.BENEFICIARIES_MSG",target:"Beneficiários para"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.COMPLIANCE_HISTORY_MSG",target:"Histórico de conformidade para"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.User.APPROVAL_REQUESTS_MSG",target:"Pedidos de aprovação para"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.User.TRANSACTION_LIMITS_MSG",target:"Limites de transação para"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.User.COMPLIANCE_HISTORY_MSG",target:"Histórico de conformidade para"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.User.PAYABLES_MSG",target:"Contas a pagar para"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.User.RECEIVABLES_MSG",target:"Recebíveis para"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.User.FOR_MSG",target:"para"})
+
