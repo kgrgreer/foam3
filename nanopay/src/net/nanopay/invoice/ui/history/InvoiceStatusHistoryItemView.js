@@ -38,6 +38,10 @@ foam.CLASS({
 
   documentation: 'View for displaying history for invoice status',
 
+  messages: [
+    { name: 'INVOICE_STATUS_CHANGED_TO', message: 'Invoice status changed to ' }
+  ],
+
   properties: [
     'paymentDate',
     'name'
@@ -131,7 +135,7 @@ foam.CLASS({
                 this.add(`${self.name} marks invoice as `);
               })
               .callIf( ! completedByPayee && ! emplyeeChanges && ! markAsVoid, function() {
-                this.add('Invoice status changed to ');
+                this.add(this.INVOICE_STATUS_CHANGED_TO);
               })
             .end()
             .callIf( ! emplyeeChanges, function() {

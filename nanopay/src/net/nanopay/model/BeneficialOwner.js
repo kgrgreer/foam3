@@ -78,6 +78,8 @@ foam.CLASS({
     { name: 'STREET_NUMBER_LABEL', message: 'Street number' },
     { name: 'STREET_NAME_LABEL', message: 'Street name' },
     { name: 'PLACEHOLDER', message: 'Select a country' },
+    { name: 'YES', message: 'Yes' },
+    { name: 'NO', message: 'No' },
     { name: 'COMPLIANCE_HISTORY_MSG', message: 'Compliance History for' }
   ],
 
@@ -469,13 +471,15 @@ foam.CLASS({
         return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : type == 'BR' ?
           foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
-      view: {
-        class: 'foam.u2.view.RadioView',
-        choices: [
-          [true, 'Yes'],
-          [false, 'No']
-        ],
-        isHorizontal: true
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RadioView',
+          choices: [
+            [true, X.data.YES],
+            [false, X.data.NO]
+          ],
+          isHorizontal: true
+        };
       }
     }
   ],
