@@ -42,7 +42,7 @@ p({
   "action":{
     "class":"net.nanopay.fx.afex.AFEXAddCurrencyPermissionRule"
   },
-  "enabled":true,
+  "enabled":false,
   "saveHistory":true,
   "lifecycleState":1
 })

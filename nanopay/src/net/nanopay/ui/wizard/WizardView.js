@@ -52,6 +52,10 @@ foam.CLASS({
     'net.nanopay.ui.wizard.WizardOverview'
   ],
 
+  imports: [
+    'translationService'
+  ],
+
   axioms: [
     { class: 'net.nanopay.ui.wizard.WizardCssAxiom' },
   ],
@@ -304,7 +308,7 @@ foam.CLASS({
                   if ( hasSaveOption ) {
                     return this.E()
                       .tag(self.SAVE, {
-                        label$: self.saveLabel$,
+                        label: self.translationService.getTranslation(foam.locale, `${self.saveLabel$.prop.forClass_}.${foam.String.constantize(self.saveLabel$.prop.name)}.value`),
                         buttonStyle: 'SECONDARY',
                         size: 'LARGE'
                       });
@@ -346,7 +350,7 @@ foam.CLASS({
         self.position = this.subStack.pos;
       }
     },
-    
+
     function onDragOver(e) {
       e.preventDefault();
     },

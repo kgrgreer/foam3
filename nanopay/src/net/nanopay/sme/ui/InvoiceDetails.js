@@ -252,7 +252,8 @@ foam.CLASS({
     { name: 'PAYER_LABEL', message: 'Payment from' },
     { name: 'PO_NO_LABEL', message: 'Purchase order number' },
     { name: 'CYCLE_LABEL', message: 'Billing Cycle: '},
-    { name: 'SAVE_AS_PDF_FAIL', message: 'There was an unexpected error when creating the PDF. Please contact support.' }
+    { name: 'SAVE_AS_PDF_FAIL', message: 'There was an unexpected error when creating the PDF. Please contact support.' },
+    { name: 'NO_ATTACHEMENT_PROVIDED', message: 'No attachments provided'},
   ],
 
   methods: [
@@ -443,7 +444,7 @@ foam.CLASS({
                     .addClass(this.myClass('invoice-content-block'))
                     .addClass(this.myClass('invoice-content-text'))
                     .addClass(this.myClass('italic'))
-                    .add('No attachments provided')
+                    .add(this.NO_ATTACHEMENT_PROVIDED)
                   .end();
               }
             }))
