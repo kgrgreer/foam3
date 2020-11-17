@@ -2352,6 +2352,7 @@ p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.CustomerBasi
 p({class:"foam.i18n.Locale",id:"net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions.SECTION_REVIEW_AGREEMENT_DOCUMENTS_SECTION.title",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions.SECTION_REVIEW_AGREEMENT_DOCUMENTS_SECTION.title",target:"Leia e aceite os termos de serviço"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.account.ui.BankAccountWizard.SUBMIT.label",locale:"pt",source:"net.nanopay.account.ui.BankAccountWizard.SUBMIT.label",target:"Enviar"})
 
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.BusinessDirectorArrayView.ADD_MSG",target:"+ Adicionar"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.model_.label",target:"Banco Canadense"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ATBankAccount.model_.label",target:"Banco Austria"})
