@@ -36,35 +36,43 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.auth.Address',
-    'foam.nanos.auth.AuthService',
     'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.AuthService',
     'foam.nanos.auth.Country',
     'foam.nanos.auth.Region',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
-
     'java.util.regex.Pattern',
     'javax.mail.internet.AddressException',
     'javax.mail.internet.InternetAddress',
-
     'net.nanopay.bank.BankAccount',
     'net.nanopay.model.Business'
   ],
 
   imports: [
+    'accountDAO',
     'auth',
+    'checkAndNotifyAbilityToPay',
+    'checkAndNotifyAbilityToReceive',
     'countryDAO',
     'paymentProviderCorridorDAO',
+    'pushMenu',
     'subject',
     'user'
   ],
 
   requires: [
-    'net.nanopay.payment.PaymentProviderCorridor',
-    'foam.nanos.auth.Country',
     'foam.dao.PromisedDAO',
-    'foam.u2.DisplayMode'
+    'foam.nanos.auth.Country',
+    'foam.u2.dialog.Popup',
+    'foam.u2.DisplayMode',
+    'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.bank.INBankAccount',
+    'net.nanopay.contacts.ContactStatus',
+    'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.payment.PaymentProviderCorridor',
+    'net.nanopay.ui.wizard.WizardController'
   ],
 
   constants: [
@@ -127,6 +135,7 @@ foam.CLASS({
   properties: [
     {
       name: 'organization',
+      label: 'Business',
       documentation: 'The organization/business associated with the Contact.',
       section: 'stepOne',
       view: { class: 'foam.u2.tag.Input', focused: true },
@@ -140,6 +149,17 @@ foam.CLASS({
       },
       postSet: function(_,n) {
         this.businessName = n;
+      },
+      tableCellFormatter: function(X, obj) {
+        if ( ! obj.businessId ) {
+          this.start().add(obj.organization).end();
+        } else {
+          this.publicBusinessDAO
+            .find(obj.businessId)
+            .then( (business) =>
+              this.start().add(business.toSummary()).end()
+          );
+        }
       }
     },
     {
@@ -455,6 +475,138 @@ foam.CLASS({
             .start({ class: 'foam.u2.tag.Image', data: 'images/warning.svg' }).end()
           .end();
         }
+      }
+    }
+  ],
+
+  actions: [
+    {
+      name: 'addBankAccount',
+      isAvailable: async function() {
+        var bank = await this.accounts.find(this.EQ(net.nanopay.bank.BankAccount.OWNER, this.id))
+        return this.signUpStatus !== this.ContactStatus.READY && ! bank;
+      },
+      code: function(X) {
+        // case of save without banking
+        if ((net.nanopay.bank.BankAccount).isInstance(this.createBankAccount) || this.createBankAccount === undefined) {
+          this.createBankAccount = net.nanopay.bank.CABankAccount.create({ isDefault: true }, X);
+        }
+
+        X.controllerView.add(this.WizardController.create({
+          model: 'net.nanopay.contacts.Contact',
+          data: this,
+          controllerMode: foam.u2.ControllerMode.CREATE,
+          isEdit: true
+        }, X));
+      }
+    },
+    {
+      name: 'edit',
+      label: 'View Details',
+      isAvailable: async function() {
+        return this.signUpStatus !== this.ContactStatus.READY;
+      },
+      code: function(X) {
+        // case of save without banking
+        controllerMode_ = foam.u2.ControllerMode.EDIT;
+        if ( (net.nanopay.bank.BankAccount).isInstance(this.createBankAccount) || this.createBankAccount === undefined ) {
+          this.createBankAccount = net.nanopay.bank.CABankAccount.create({ isDefault: true }, X);
+          controllerMode_ = foam.u2.ControllerMode.CREATE;
+        }
+
+        X.controllerView.add(this.WizardController.create({
+          model: 'net.nanopay.contacts.Contact',
+          data: this,
+          controllerMode: controllerMode_,
+          isEdit: true
+        }, X));
+      }
+    },
+    {
+      name: 'invite',
+      isEnabled: function() {
+        return this.signUpStatus != this.ContactStatus.READY;
+      },
+      isAvailable: async function() {
+        let account = await this.accountDAO.find(this.bankAccount);
+        let permission = await this.auth.check(null, 'menu.read.capability.menu.invitation');
+        return this.signUpStatus != this.ContactStatus.READY && ! this.INBankAccount.isInstance(account) && permission;
+      },
+      code: function(X) {
+        var invite = net.nanopay.model.Invitation.create({
+          email: this.email,
+          businessName: this.organization,
+          createdBy: this.subject.user.id,
+          isContact: true
+        }, X);
+        X.controllerView.add(this.WizardController.create({
+          model: 'net.nanopay.model.Invitation',
+          data: invite,
+          controllerMode: foam.u2.ControllerMode.EDIT
+        }, X))
+      }
+    },
+    {
+      name: 'requestMoney',
+      isEnabled: function() {
+        return (
+          this.businessId &&
+          this.businessStatus !== this.AccountStatus.DISABLED
+        ) || this.bankAccount;
+      },
+      isAvailable: async function() {
+        let permission = await this.auth.check(null, 'menu.read.capability.main.invoices.receivables');
+        return permission;
+      },
+      code: function(X) {
+        this.checkAndNotifyAbilityToReceive().then((result) => {
+          if ( result ) {
+            X.menuDAO.find('sme.quickAction.request').then((menu) => {
+              var clone = menu.clone();
+              Object.assign(clone.handler.view, {
+                invoice: this.Invoice.create({ contactId: this.id }),
+                isPayable: false
+              });
+              clone.launch(X, X.controllerView);
+            });
+          }
+        });
+      }
+    },
+    {
+      name: 'sendMoney',
+      isEnabled: function() {
+        return (
+          this.businessId &&
+          this.businessStatus !== this.AccountStatus.DISABLED
+        ) || this.bankAccount;
+      },
+      isAvailable: async function() {
+        let permission = await this.auth.check(null, 'menu.read.capability.main.invoices.payables');
+        return permission;
+      },
+      code: function(X) {
+        this.checkAndNotifyAbilityToPay().then((result) => {
+          if ( result ) {
+            X.menuDAO.find('sme.quickAction.send').then((menu) => {
+              var clone = menu.clone();
+              Object.assign(clone.handler.view, {
+                invoice: this.Invoice.create({ contactId: this.id }),
+                isPayable: true
+              });
+              clone.launch(X, X.controllerView);
+            });
+          }
+        });
+      }
+    },
+    {
+      name: 'delete',
+      code: function(X) {
+        X.controllerView.add(this.Popup.create(null, X).tag({
+          class: 'net.nanopay.contacts.ui.modal.DeleteContactView',
+          data: this
+        }));
       }
     }
   ],
