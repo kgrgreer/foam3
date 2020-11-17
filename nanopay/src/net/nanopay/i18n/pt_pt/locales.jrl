@@ -74,6 +74,8 @@ p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.registration.UserRegistration
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.registration.UserRegistrationData.PHONE.documentation",locale:"pt",source:"net.nanopay.crunch.registration.UserRegistrationData.PHONE.documentation",target:"Número de telefone do usuário."})
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.registration.UserRegistrationData.SECTION_USER_REGISTRATION_SECTION.title",locale:"pt",source:"net.nanopay.crunch.registration.UserRegistrationData.SECTION_USER_REGISTRATION_SECTION.title",target:"Sua informação"})
 
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.registration.UserRegistrationData.PHONE_NUMBER.label",target:"Número de telefone"})
+
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.OwnerSection.INDEX.label",locale:"pt",source:"net.nanopay.crunch.onboardingModels.OwnerSection.INDEX.label",target:"índice"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.OwnerSection.NAME.label",locale:"pt",source:"net.nanopay.crunch.onboardingModels.OwnerSection.NAME.label",target:"nome"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.OwnerSection.TITLE.label",locale:"pt",source:"net.nanopay.crunch.onboardingModels.OwnerSection.TITLE.label",target:"título"})
