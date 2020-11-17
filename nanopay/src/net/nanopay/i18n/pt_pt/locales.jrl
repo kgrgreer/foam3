@@ -1610,6 +1610,7 @@ p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.BUSINESS_PHONE_NUMB
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.SECTION_STEP_ONE.subTitle",locale:"pt",source:"net.nanopay.contacts.Contact.SECTION_STEP_ONE.subTitle",target:"\n        Crie um novo contato inserindo suas informações comerciais abaixo.\n        Se você tiver suas informações bancárias, pode começar a enviar pagamentos\n        para o contato imediatamente.\n      "})
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.SECTION_STEP_TWO.title",locale:"pt",source:"net.nanopay.contacts.Contact.SECTION_STEP_TWO.title",target:"Adicionar informações bancárias"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.SECTION_STEP_TWO.subTitle",locale:"pt",source:"net.nanopay.contacts.Contact.SECTION_STEP_TWO.subTitle",target:"\n        Insira as informações da conta bancária do contato. Certifique-se de que este é\n        precisos, pois os pagamentos irão diretamente para a conta especificada.\n      "})
+p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.ORGANIZATION.label",locale:"pt",source:"net.nanopay.contacts.Contact.ORGANIZATION.label",target:"empresa"})
 
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.SECTION_STEP_THREE.title",locale:"pt",source:"net.nanopay.contacts.Contact.SECTION_STEP_THREE.title",target:"Adicionar endereço comercial"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ExternalContactToken.BUSINESS_ID.label",locale:"pt",source:"net.nanopay.contacts.ExternalContactToken.BUSINESS_ID.label",target:"businessId pt"})
@@ -1620,9 +1621,6 @@ p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ExternalContactToken.BUSINE
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ContactMigrationRule.PROPERTY.label",locale:"pt",source:"net.nanopay.contacts.ContactMigrationRule.PROPERTY.label",target:"propriedade"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ContactMigrationRule.BUSINESS_NOT_FOUND",locale:"pt",source:"net.nanopay.contacts.ContactMigrationRule.BUSINESS_NOT_FOUND",target:"Empresa não encontrada."})
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ContactMigrationRule.PROPERTY.documentation",locale:"pt",source:"net.nanopay.contacts.ContactMigrationRule.PROPERTY.documentation",target:"A propriedade que faz referência ao Negócio."})
-p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ContactController.SUMMARY_VIEW.label",locale:"pt",source:"net.nanopay.contacts.ContactController.SUMMARY_VIEW.label",target:"summaryView pt"})
-p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ContactController.DATA.label",locale:"pt",source:"net.nanopay.contacts.ContactController.DATA.label",target:"dadas"})
-p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ContactController.PRIMARY_ACTION.label",locale:"pt",source:"net.nanopay.contacts.ContactController.PRIMARY_ACTION.label",target:"primaryAction pt"})
 
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.modal.DeleteContactView.TITLE",locale:"pt",source:"net.nanopay.contacts.ui.modal.DeleteContactView.TITLE",target:"Excluir contato?"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.modal.DeleteContactView.CONFIRM_DELETE_1",locale:"pt",source:"net.nanopay.contacts.ui.modal.DeleteContactView.CONFIRM_DELETE_1",target:"Tem certeza de que deseja excluir "})
@@ -1920,6 +1918,9 @@ p({class:"foam.i18n.Locale",id:"bankaccounts.name",locale:"pt",source:"bankaccou
 p({class:"foam.i18n.Locale",id:"businesses.name",locale:"pt",source:"businesses.label",target:"negócios"})
 p({class:"foam.i18n.Locale",id:"capability.main.banking.name",locale:"pt",source:"capability.main.banking.label",target:"contas bancárias"})
 p({class:"foam.i18n.Locale",id:"capability.main.contacts.name",locale:"pt",source:"capability.main.contacts.label",target:"Contatos"})
+p({class:"foam.i18n.Locale",id:"capability.main.contacts.handler.title",locale:"pt",source:"capability.main.contacts.handler.title",target:"Contatos"})
+p({class:"foam.i18n.Locale",id:"capability.main.contacts.handler.createLabel",locale:"pt",source:"capability.main.contacts.handler.createLabel",target:"Adicionar um contato"})
+p({class:"foam.i18n.Locale",id:"capability.main.contacts.handler.createControllerView.view.title",locale:"pt",source:"capability.main.contacts.handler.createControllerView.view.title",target:"Adicionar um contato"})
 p({class:"foam.i18n.Locale",id:"capability.main.dashboard.name",locale:"pt",source:"capability.main.dashboard.label",target:"painel de controle"})
 
 p({class:"foam.i18n.Locale",id:"capability.main.invoices.payables.name",locale:"pt",source:"capability.main.invoices.payables.label",target:"Pagáveis"})
@@ -2264,7 +2265,6 @@ p({class:"foam.i18n.Locale",id:"foam.core.FObjectProperty.PLEASE_ENTER_VALID",lo
 
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.InitialBusinessData.SECTION_BUSINESS_REGISTRATION.title",locale:"pt",source:"net.nanopay.crunch.onboardingModels.InitialBusinessData.SECTION_BUSINESS_REGISTRATION.title",target:"Informação de negócios"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.bank.BankAccountController.ADD_BANK_ACCOUNT",locale:"pt",source:"net.nanopay.bank.BankAccountController.ADD_BANK_ACCOUNT",target:"Adicionar conta bancária"})
-p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ContactController.ADD_CONTACT",locale:"pt",source:"net.nanopay.contacts.ContactController.ADD_CONTACT",target:"Adicionar um contato"})
 
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.InvitationWizardView.INVITE_SUCCESS",locale:"pt",source:"net.nanopay.contacts.ui.InvitationWizardView.INVITE_SUCCESS",target:"Enviou um pedido de conexão"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.InvitationWizardView.INVITE_FAILURE",locale:"pt",source:"net.nanopay.contacts.ui.InvitationWizardView.INVITE_FAILURE",target:"Ocorreu um problema ao enviar o convite"})
