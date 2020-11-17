@@ -62,7 +62,7 @@ p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.BaseAccep
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability.BODY.label",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability.BODY.label",target:"corpo"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability.BODY.value",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability.BODY.value",target:"n/a"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability.BODY.documentation",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability.BODY.documentation",target:"Corpo do modelo"})
-p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability.SECTION_REVIEW_AGREEMENT_DOCUMENTS_SECTION.title",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability.SECTION_REVIEW_AGREEMENT_DOCUMENTS_SECTION.title",target:"Leia e aceite os termos de serviço"})
+p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability.SECTION_REVIEW_AGREEMENT_DOCUMENTS_SECTION.title",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability.SECTION_REVIEW_AGREEMENT_DOCUMENTS_SECTION.title",target:"Leia e aceite os termos e condições"})
 
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.registration.UserRegistrationData.FIRST_NAME.label",locale:"pt",source:"net.nanopay.crunch.registration.UserRegistrationData.FIRST_NAME.label",target:"primeiro nome"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.registration.UserRegistrationData.FIRST_NAME.documentation",locale:"pt",source:"net.nanopay.crunch.registration.UserRegistrationData.FIRST_NAME.documentation",target:"Nome do usuário."})
@@ -1012,7 +1012,7 @@ p({class:"foam.i18n.Locale",id:"7e2739cc-db32-11ea-87d0-0242ac130003.description
 p({class:"foam.i18n.Locale",id:"85cee1de-db32-11ea-87d0-0242ac130003.name",locale:"pt",source:"85cee1de-db32-11ea-87d0-0242ac130003.name",target:"Contas de serviços públicos"})
 p({class:"foam.i18n.Locale",id:"85cee1de-db32-11ea-87d0-0242ac130003.description",locale:"pt",source:"85cee1de-db32-11ea-87d0-0242ac130003.description",target:"Fornece três meses de contas, como água, luz, telefone, TV a cabo, internet ou IPTU. Como alternativa, você pode fornecer extratos bancários."})
 p({class:"foam.i18n.Locale",id:"8ad3c898-db32-11ea-87d0-0242ac130003.name",locale:"pt",source:"8ad3c898-db32-11ea-87d0-0242ac130003.name",target:"Identificação"})
-p({class:"foam.i18n.Locale",id:"8ad3c898-db32-11ea-87d0-0242ac130003.description",locale:"pt",source:"8ad3c898-db32-11ea-87d0-0242ac130003.description",target:"Anexe cópia de documento de identidade oficial contendo nome completo, foto e número do CPF."})
+p({class:"foam.i18n.Locale",id:"8ad3c898-db32-11ea-87d0-0242ac130003.description",locale:"pt",source:"8ad3c898-db32-11ea-87d0-0242ac130003.description",target:"Forneça cópia de documento de identidade oficial com nome completo, foto e número do CPF."})
 p({class:"foam.i18n.Locale",id:"8bffdedc-5176-4843-97df-1b75ff6054fb.name",locale:"pt",source:"8bffdedc-5176-4843-97df-1b75ff6054fb.name",target:"Data de nascimento"})
 p({class:"foam.i18n.Locale",id:"Alterna.name",locale:"pt",source:"Alterna.name",target:"Alterna Savings and Credit Union pt"})
 p({class:"foam.i18n.Locale",id:"AscendantFX.name",locale:"pt",source:"AscendantFX.name",target:"AscendantFX pt"})
@@ -2347,7 +2347,7 @@ p({class:"foam.i18n.Locale",id:"net.nanopay.bank.BankAccount.STATUS.label",local
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.BusinessAccountData.CUSTOMERS_MSG",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessAccountData.CUSTOMERS_MSG",target:"cliente"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.BusinessAccountData.SUPPLIERS_MSG",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessAccountData.SUPPLIERS_MSG",target:"fornecedor"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.CustomerBasicInformation.INVALID_PHONE_ERROR",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CustomerBasicInformation.INVALID_PHONE_ERROR",target:"Número de telefone comercial obrigatório"})
-p({class:"foam.i18n.Locale",id:"net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions.SECTION_REVIEW_AGREEMENT_DOCUMENTS_SECTION.title",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions.SECTION_REVIEW_AGREEMENT_DOCUMENTS_SECTION.title",target:"Leia e aceite os termos de serviço"})
+p({class:"foam.i18n.Locale",id:"net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions.SECTION_REVIEW_AGREEMENT_DOCUMENTS_SECTION.title",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions.SECTION_REVIEW_AGREEMENT_DOCUMENTS_SECTION.title",target:"Leia e aceite os termos e condições"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.account.ui.BankAccountWizard.SUBMIT.label",locale:"pt",source:"net.nanopay.account.ui.BankAccountWizard.SUBMIT.label",target:"Enviar"})
 
 
@@ -2607,5 +2607,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.User.COMPLIANCE_
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.User.PAYABLES_MSG",target:"Contas a pagar para"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.User.RECEIVABLES_MSG",target:"Recebíveis para"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.User.FOR_MSG",target:"para"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.u2.navigation.EMAIL_AVAILABILITY_ERR",target:"Esse email já está em uso. Faça login ou use um e-mail diferente"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CertifyDataReviewed.SECTION_REVIEW_DATA_SECTION.title",target:"revisar a seção de dados"})
