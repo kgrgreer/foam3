@@ -1233,16 +1233,6 @@ p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.CustomerBasi
 p({class:"foam.i18n.Locale",id:"foam.core.EMail.EMAIL_REQUIRED_MSG",locale:"pt",source:"foam.core.EMail.EMAIL_REQUIRED_MSG",target:"Telefone"})
 p({class:"foam.i18n.Locale",id:"foam.core.EMail.VALID_EMAIL_REQUIRED_MSG",locale:"pt",source:"foam.core.EMail.VALID_EMAIL_REQUIRED_MSG",target:"Telefone"})
 
-p({class:"foam.i18n.Locale",id:"pt-br.br.region.label",locale:"pt",source:"br.region.label",target:"Estado"})
-p({class:"foam.i18n.Locale",id:"pt-br.br.region.error",locale:"pt",source:"br.region.error",target:"Estado requerido"})
-p({class:"foam.i18n.Locale",id:"pt-br.region.label",locale:"pt",source:"pt-br.region.label",target:"Região"})
-p({class:"foam.i18n.Locale",id:"pt-br.region.error",locale:"pt",source:"pt-br.region.error",target:"Região requerido"})
-
-p({class:"foam.i18n.Locale",id:"pt-br.br.postalCode.label",locale:"pt",source:"br.postalCode.label",target:"CEP"})
-p({class:"foam.i18n.Locale",id:"pt-br.br.postalCode.error",locale:"pt",source:"br.postalCode.error",target:"CEP requerido"})
-p({class:"foam.i18n.Locale",id:"pt-br.postalCode.label",locale:"pt",source:"pt-br.postalCode.label",target:"CEP"})
-p({class:"foam.i18n.Locale",id:"pt-br.postalCode.error",locale:"pt",source:"pt-br.postalCode.error",target:"CEP requerido"})
-
 p({class:"foam.i18n.Locale",id:"pt-br.country.Brazil",locale:"pt",source:"pt-br.country.Brazil",target:"Brasil"})
 p({class:"foam.i18n.Locale",id:"pt-br.country.Canada",locale:"pt",source:"pt-br.country.Canada",target:"Canadá"})
 p({class:"foam.i18n.Locale",id:"pt-br.country.USA",locale:"pt",source:"pt-br.country.USA",target:"USA"})
