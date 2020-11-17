@@ -78,7 +78,7 @@ foam.CLASS({
     { name: 'STREET_NUMBER_LABEL', message: 'Street number' },
     { name: 'STREET_NAME_LABEL', message: 'Street name' },
     { name: 'PLACEHOLDER', message: 'Select a country' },
-    { name: 'COMPLIANCE_HISTORY_MSG', message: 'Compliance History' }
+    { name: 'COMPLIANCE_HISTORY_MSG', message: 'Compliance History for' }
   ],
 
   properties: [
@@ -612,7 +612,7 @@ foam.CLASS({
             dao: dao,
             createPredicate: foam.mlang.predicate.False,
             editPredicate: foam.mlang.predicate.True,
-            browseTitle:`${this.legalName}'s ${this.COMPLIANCE_HISTORY_MSG}`
+            browseTitle:`${this.COMPLIANCE_HISTORY_MSG} ${this.legalName}`
           }
         });
       }
