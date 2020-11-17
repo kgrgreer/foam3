@@ -22,6 +22,10 @@ foam.CLASS({
 
   documentation: 'document upload capability',
 
+  imports: [
+    'translationService'
+  ],
+
   messages: [
     { name: 'UPLOAD_REQUEST_MSG', message: 'Document(s) required for' },
     { name: 'IMAGE_REQUIRED', message: 'Document(s) required' },
@@ -35,7 +39,7 @@ foam.CLASS({
       title: 'Document Upload',
       subTitle: function(helper) {
           return this.capability.description ?
-              this.capability.description :
+              this.translationService.getTranslation(foam.locale, `${this.capability.id}.description`):
               helper(this.DOC_UPLOAD_SECTION);
       },
       help: function(capability) {
