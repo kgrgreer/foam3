@@ -1,5 +1,49 @@
 p({"class":"foam.nanos.menu.Menu","id":"capability.main.dashboard","label":"Dashboard","icon":"images/ablii/dashboard-icon-resting.svg","activeIcon":"images/ablii/dashboard-icon-active.svg","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.sme.ui.dashboard.Dashboard"}},"order":500,"parent":"smeNavigation"})
-p({"class":"foam.nanos.menu.Menu","id":"capability.main.contacts","label":"Contacts","icon":"images/ablii/contacts-icon-resting.svg","activeIcon":"images/ablii/contacts-icon-active.svg","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"contactDAO","title":"Contacts","customDAOController":"net.nanopay.contacts.ContactController","searchMode":2,"editPredicate":{"class":"foam.mlang.predicate.False"},"createPredicate":{"class":"foam.mlang.predicate.False"},"exportEnabled":false,"createEnabled":false,"editEnabled":false},"order":503,"parent":"smeNavigation"})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"capability.main.contacts",
+  "label":"Contacts",
+  "icon":"images/ablii/contacts-icon-resting.svg",
+  "activeIcon":"images/ablii/contacts-icon-active.svg",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu",
+    "daoKey":"contactDAO",
+    "title":"Contacts",
+    "searchMode":2,
+    "editPredicate":{"class":"foam.mlang.predicate.False"},
+    "createPredicate":{"class":"foam.mlang.predicate.True"},
+    "exportEnabled":false,
+    "createEnabled":true,
+    "editEnabled":false,
+    "summaryView":{
+      "class":"foam.u2.view.ScrollTableView",
+      "editColumnsEnabled":false,
+      "disableUserSelection":true,
+      "columns":[
+        "organization",
+        "firstName",
+        "lastName",
+        "email",
+        "businessAddress.countryId",
+        "bankAccount.denomination",
+        "signUpStatus"
+      ]
+    },
+    "createLabel":"Add a Contact",
+    "createControllerView":{
+      "class":"net.nanopay.sme.ui.MenuRedirectSMEModalView",
+      "menu":"capability.main.contacts",
+      "view":{
+        "class":"foam.nanos.menu.MenuToolBar",
+        "classification":"capability.menu",
+        "parent":"sme",
+        "title":"Add a Contact"
+      }
+    }
+  },
+  "order":503,
+  "parent":"smeNavigation"
+})
 p({"class":"foam.nanos.menu.Menu","id":"capability.main.banking","label":"Bank accounts","icon":"images/ablii/bankaccount-icon-resting.svg","activeIcon":"images/ablii/bankaccount-icon-active.svg","handler":{"class":"foam.nanos.menu.DAOMenu","daoKey":"accountDAO","title":"Bank accounts","customDAOController":"net.nanopay.bank.BankAccountController","searchMode":2,"editPredicate":{"class":"foam.mlang.predicate.False"},"createPredicate":{"class":"foam.mlang.predicate.False"},"exportEnabled":false,"createEnabled":false,"editEnabled":false},"order":504,"parent":"smeNavigation"})
 p({
   "class": "foam.nanos.menu.Menu",
