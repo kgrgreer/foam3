@@ -31,7 +31,7 @@ foam.CLASS({
   sections: [
     {
       name: 'reviewAgreementDocumentsSection',
-      title: 'Review and accept the terms of service',
+      title: 'Review and accept the terms and conditions',
       navTitle: 'Terms and Conditions',
       permissionRequired: false
     }
