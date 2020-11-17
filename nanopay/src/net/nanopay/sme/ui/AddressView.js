@@ -135,16 +135,14 @@ foam.CLASS({
       var self = this;
 
       // default translations
-      self.defaultRegionLabel = self.regionLabel = this.translationService.getTranslation(foam.locale, `${foam.locale}.region.label`);
-      self.defaultPostalCodeLabel = self.postalCodeLabel = this.translationService.getTranslation(foam.locale, `${foam.locale}.postalCode.label`);
+      self.defaultRegionLabel = self.regionLabel = this.translationService.getTranslation(foam.locale, '*.foam.nanos.auth.Address.REGION.label');
+      self.defaultPostalCodeLabel = self.postalCodeLabel = this.translationService.getTranslation(foam.locale, '*.foam.nanos.auth.Address.POSTAL_CODE.label');
       
       // update translations
       this.data$.dot('countryId').sub(() => {
         const country = self.data.countryId.toLowerCase();
-        let translatedRegionLabel = self.translationService.getTranslation(foam.locale, `${country}.region.label`);
-        self.regionLabel = translatedRegionLabel ? translatedRegionLabel : self.defaultRegionLabel;
-        let translatedPostalCodeLabel = self.translationService.getTranslation(foam.locale, `${country}.postalCode.label`);
-        self.postalCodeLabel = translatedPostalCodeLabel ? translatedPostalCodeLabel : self.defaultPostalCodeLabel;
+        self.regionLabel = self.translationService.getTranslation(foam.locale, `${country}.foam.nanos.auth.Address.REGION.label`, self.defaultRegionLabel);
+        self.postalCodeLabel = self.translationService.getTranslation(foam.locale, `${country}.foam.nanos.auth.Address.POSTAL_CODE.label`, self.defaultPostalCodeLabel);
       });
 
       // Queried out American states from state/province list that are not supported by AscendantFX

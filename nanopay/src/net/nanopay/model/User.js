@@ -102,9 +102,10 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'COMPLIANCE_HISTORY_MSG', message: 'Compliance History' },
-    { name: 'PAYABLES_MSG', message: 'Payables' },
-    { name: 'RECEIVABLES_MSG', message: 'Receivables' }
+    { name: 'COMPLIANCE_HISTORY_MSG', message: 'Compliance History for' },
+    { name: 'PAYABLES_MSG', message: 'Payables for' },
+    { name: 'RECEIVABLES_MSG', message: 'Receivables for' },
+    { name: 'FOR_MSG', message: 'for' }
   ],
 
   properties: [
@@ -407,7 +408,7 @@ foam.CLASS({
             dao: dao,
             createPredicate: foam.mlang.predicate.False,
             editPredicate: foam.mlang.predicate.True,
-            browseTitle: `${this.toSummary()}'s ${this.COMPLIANCE_HISTORY_MSG}`
+            browseTitle: `${this.COMPLIANCE_HISTORY_MSG} ${this.toSummary()}`
           }
         });
       }
@@ -428,7 +429,7 @@ foam.CLASS({
             dao: dao,
             createPredicate: foam.mlang.predicate.False,
             editPredicate: foam.mlang.predicate.True,
-            browseTitle: `${this.toSummary()}'s ${dao.of.model_.plural}`
+            browseTitle: `${dao.of.model_.plural} ${this.FOR_MSG} ${this.toSummary()}`
           }
         });
       }
@@ -458,7 +459,7 @@ foam.CLASS({
             dao: dao,
             createPredicate: foam.mlang.predicate.False,
             editPredicate: foam.mlang.predicate.True,
-            browseTitle: `${this.toSummary()}'s ${dao.of.model_.plural}`
+            browseTitle: `${dao.of.model_.plural} ${this.FOR_MSG} ${this.toSummary()}`
           }
         });
       }
@@ -477,7 +478,7 @@ foam.CLASS({
             dao: dao,
             createPredicate: foam.mlang.predicate.False,
             editPredicate: foam.mlang.predicate.True,
-            browseTitle: `${this.toSummary()}'s ${this.PAYABLES_MSG}`
+            browseTitle: `${this.PAYABLES_MSG} ${this.toSummary()}`
           }
         });
       }
@@ -496,7 +497,7 @@ foam.CLASS({
             dao: dao,
             createPredicate: foam.mlang.predicate.False,
             editPredicate: foam.mlang.predicate.True,
-            browseTitle: `${this.toSummary()}'s ${this.RECEIVABLES_MSG}`
+            browseTitle: `${this.RECEIVABLES_MSG} ${this.toSummary()}`
           }
         });
       }

@@ -210,7 +210,7 @@ foam.CLASS({
   messages: [
     { name: 'INVALID_AMOUNT', message: 'Amount cannot be negative' },
     { name: 'BOTH_INVALID_AMOUNT', message: 'Both amount and destination amount cannot be 0' },
-    { name: 'COMPLIANCE_HISTORY_MSG', message: 'Compliance History' }
+    { name: 'COMPLIANCE_HISTORY_MSG', message: 'Compliance History for' }
   ],
 
   // relationships: parent, children
@@ -1424,7 +1424,7 @@ foam.CLASS({
             dao: dao,
             createPredicate: foam.mlang.predicate.False,
             editPredicate: foam.mlang.predicate.True,
-            browseTitle: `${this.id}'s ${this.COMPLIANCE_HISTORY_MSG}`
+            browseTitle: `${this.COMPLIANCE_HISTORY_MSG} ${this.id}`
           }
         });
       }

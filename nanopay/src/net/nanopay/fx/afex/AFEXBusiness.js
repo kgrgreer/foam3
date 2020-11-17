@@ -34,7 +34,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'BENEFICIARIES_MSG', message: 'Beneficiaries' }
+    { name: 'BENEFICIARIES_MSG', message: 'Beneficiaries for' }
   ],
 
   properties: [
@@ -125,7 +125,7 @@ foam.CLASS({
                 dao: dao,
                 createPredicate: foam.mlang.predicate.False,
                 editPredicate: foam.mlang.predicate.True,
-                browseTitle: `${user.businessName}'s ${self.BENEFICIARIES_MSG}`
+                browseTitle: `${self.BENEFICIARIES_MSG} ${user.businessName}`
               }
             });
           }
