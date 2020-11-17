@@ -29,6 +29,8 @@ foam.CLASS({
   documentation: 'Generate an Approval Request for priveledge access.',
 
   javaImports: [
+    'foam.nanos.alarming.Alarm',
+    'foam.nanos.alarming.AlarmReason',
     'java.util.List'
   ],
 
@@ -61,9 +63,13 @@ foam.CLASS({
       type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
-        super.validate(x);
         if ( getApprovers().size() == 0 ) {
-          throw new IllegalStateException("SudoTicketApprovalRequestRule approvers not set.");
+        super.validate(x);
+          Alarm alarm = new Alarm(this.getClass().getSimpleName(), AlarmReason.CONFIGURATION);
+          alarm.setNote("No Approvers");
+          ((foam.dao.DAO) x.get("alarmDAO")).put(alarm);
+
+          throw new IllegalStateException("SudoTicketApprovalRequestRule no approvers");
         }
       `
     }
