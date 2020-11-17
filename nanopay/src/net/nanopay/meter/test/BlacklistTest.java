@@ -194,7 +194,6 @@ public class BlacklistTest extends Test {
     SigningOfficerPersonalData so = new SigningOfficerPersonalData();
     so.setAddress(address);
     so.setJobTitle("Accountant");
-    so.setCountryId("CA");
     so.setPhoneNumber("2899998989");
     AgentCapabilityJunction ucjSOP = new AgentCapabilityJunction();
     ucjSOP.setSourceId(myAdmin.getId());
