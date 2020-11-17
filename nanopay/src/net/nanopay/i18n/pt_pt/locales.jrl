@@ -2609,3 +2609,12 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.User.RECEIVABLES
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.User.FOR_MSG",target:"para"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CertifyDataReviewed.SECTION_REVIEW_DATA_SECTION.title",target:"revisar a seção de dados"})
+
+p({class:"foam.i18n.Locale",locale:"pt",variant:"pt",source:"foam.nanos.crunch.CapabilityJunctionStatus.GRANTED.documentation",target:"A informação que você forneceu foi aprovada"})
+p({class:"foam.i18n.Locale",locale:"pt",variant:"pt",source:"foam.nanos.crunch.CapabilityJunctionStatus.EXPIRED.documentation",target:"As informações necessárias mudaram ou suas entradas não são mais válidas"})
+p({class:"foam.i18n.Locale",locale:"pt",variant:"pt",source:"foam.nanos.crunch.CapabilityJunctionStatus.PENDING.documentation",target:"Nossa equipe está revisando. As aprovações podem levar até 24 horas"})
+p({class:"foam.i18n.Locale",locale:"pt",variant:"pt",source:"foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED.documentation",target:"Faltam informações para os campos obrigatórios"})
+p({class:"foam.i18n.Locale",locale:"pt",variant:"pt",source:"foam.nanos.crunch.CapabilityJunctionStatus.PENDING_REVIEW.documentation",target:"A informação que você forneceu está pendente de revisão oficial de assinatura"})
+p({class:"foam.i18n.Locale",locale:"pt",variant:"pt",source:"foam.nanos.crunch.CapabilityJunctionStatus.AVAILABLE.documentation",target:"Você está pronto para começar"})
+p({class:"foam.i18n.Locale",locale:"pt",variant:"pt",source:"foam.nanos.crunch.CapabilityJunctionStatus.APPROVED.documentation",target:"- não visto pelos usuários - Indicando que um UCJ que requer revisão foi aprovado. Ele precisaria passar pelas regras do ucjDAO antes de ser definido como concedido."})
+p({class:"foam.i18n.Locale",locale:"pt",variant:"pt",source:"foam.nanos.crunch.CapabilityJunctionStatus.REJECTED.documentation",target:"- não visto pelos usuários - Denotando uma junção que requer revisão foi rejeitada. Destina-se a marcar itens em um estado FINAL rejeitado em que não se espera que vá para EXPIRED e que o usuário preencha mais informações. Usado nas junções de objeto Capable."})
