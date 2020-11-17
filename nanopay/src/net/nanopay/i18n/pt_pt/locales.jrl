@@ -2608,3 +2608,5 @@ p({class:"foam.i18n.Locale",locale:"pt",variant:"pt",source:"net.nanopay.invoice
 p({class:"foam.i18n.Locale",locale:"pt",variant:"pt",source:"net.nanopay.invoice.model.InvoiceStatus.REJECTED.label",target:"Rejeitado"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ui.BankAccountSelectionView.DEFAULT_LABEL",target:"Selecione a conta bancária"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CertifyDataReviewed.SECTION_REVIEW_DATA_SECTION.title",target:"revisar a seção de dados"})
