@@ -503,7 +503,7 @@ foam.CLASS({
     {
       name: 'edit',
       label: 'View Details',
-      isAvailable: async function() {
+      isAvailable: function() {
         return this.signUpStatus !== this.ContactStatus.READY;
       },
       code: function(X) {
