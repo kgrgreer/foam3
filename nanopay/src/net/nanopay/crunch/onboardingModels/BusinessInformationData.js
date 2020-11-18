@@ -107,7 +107,13 @@ foam.CLASS({
       label: 'Business sector',
       view: function(_, X) {
         var c = X.data.subject.user.address.countryId;
-        return { class: 'net.nanopay.business.NatureOfBusiness', country:  c == 'BR' ? c : '' }
+        var d = X.data.businessSectorId;
+
+        return {
+          class: 'net.nanopay.business.NatureOfBusiness',
+          country:  c == 'BR' ? c : '',
+          data: d ? d : 0
+        };
       },
       validationPredicates: [
         {
