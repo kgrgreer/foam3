@@ -93,7 +93,7 @@ foam.CLASS({
       name: 'administrative',
       help: 'Properties that are used internally by the system.',
       permissionRequired: true
-    },
+    }
   ],
 
   properties: [
@@ -168,7 +168,7 @@ foam.CLASS({
       `,
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
-      section: 'administrative'
+      section: 'systemInformation'
     },
     {
       class: 'Boolean',
@@ -215,7 +215,7 @@ foam.CLASS({
           documents$: X.data.beneficialOwnerDocuments$
         };
       },
-      section: 'business'
+      section: 'ownerInformation'
     },
     {
       class: 'String',
@@ -347,7 +347,7 @@ foam.CLASS({
         dictates portal views after compliance and account approval.`,
       value: false,
       writePermissionRequired: true,
-      section: 'administrative'
+      section: 'operationsInformation'
     },
     {
       class: 'FObjectArray',
@@ -356,7 +356,7 @@ foam.CLASS({
       documentation: 'Represents the people who own the majority shares in a business.',
       view: { class: 'foam.u2.view.DAOtoFObjectArrayView' },
       createVisibility: 'HIDDEN',
-      section: 'business'
+      section: 'ownerInformation'
     },
     {
       class: 'Boolean',
@@ -369,7 +369,7 @@ foam.CLASS({
       class: 'String',
       name: 'sourceOfFunds',
       documentation: 'The entities that provide funding to the business.',
-      section: 'business'
+      section: 'complianceInformation'
     },
     {
       class: 'String',
@@ -377,7 +377,7 @@ foam.CLASS({
       label: 'Describe the target customer of your products and services',
       documentation: `The type of clients that the business markets its products and
         services.`,
-      section: 'business'
+      section: 'complianceInformation'
     },
     {
       class: 'FObjectProperty',
@@ -388,7 +388,7 @@ foam.CLASS({
         information is required for KYC purposes.  It is drawn from the
         suggestedUserTransactionInfo object.
         `,
-      section: 'business',
+      section: 'complianceInformation',
       factory: function() {
         return net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.create();
       },
@@ -447,7 +447,7 @@ foam.CLASS({
       class: 'FObjectArray',
       name: 'businessDirectors',
       of: 'net.nanopay.model.BusinessDirector',
-      section: 'business'
+      section: 'ownerInformation'
     },
     {
       class: 'foam.nanos.fs.FileProperty',
@@ -466,11 +466,12 @@ foam.CLASS({
       value: false,
       documentation: `Determines whether a user has been onboarded to
         a partner platform to support international payments.`,
-      section: 'business'
+      section: 'operationsInformation'
     },
     {
       class: 'Boolean',
-      name: 'publiclyTraded'
+      name: 'publiclyTraded',
+      section: 'business'
     },
     // Overwrite validateObj on firstName, lastName, and email so we can create
     // businesses through the GUI.
@@ -712,6 +713,7 @@ foam.CLASS({
   actions: [
     {
       name: 'exportComplianceDocuments',
+      section: 'complianceInformation',
       code: function() {
         if ( this.compliance === this.ComplianceStatus.NOTREQUESTED
           || ! this.onboarded ) {
@@ -725,6 +727,7 @@ foam.CLASS({
     },
     {
       name: 'exportSettlementDocuments',
+      section: 'complianceInformation',
       code: function() {
         // Let us assume that we want to search for invoices with a field 3 days before and 3 days after today.
         var sDate = new Date(Date.now() - (1000*60*60*24*3));

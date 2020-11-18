@@ -211,7 +211,7 @@ foam.RELATIONSHIP({
   targetDAOKey: 'accountDAO',
   unauthorizedTargetDAOKey: 'localAccountDAO',
   sourceProperty: {
-    hidden: true
+    section: 'accountInformation'
   },
   targetProperty: {
     view: function(_, X) {
@@ -294,7 +294,7 @@ foam.RELATIONSHIP({
   cardinality: '1:*',
   sourceProperty: {
     readPermissionRequired: true,
-    section: 'administrative'
+    section: 'operationsInformation'
   }
 });
 
@@ -318,7 +318,7 @@ foam.CLASS({
       name: 'transactionLimits',
       of: 'net.nanopay.tx.model.TransactionLimit',
       createVisibility: 'HIDDEN',
-      section: 'administrative'
+      section: 'operationsInformation'
     }
   ]
 });
@@ -409,11 +409,11 @@ foam.RELATIONSHIP({
   junctionDAOKey: 'partnerJunctionDAO',
   sourceProperty: {
     createVisibility: 'HIDDEN',
-    section: 'administrative'
+    section: 'contactInformation'
   },
   targetProperty: {
     createVisibility: 'HIDDEN',
-    section: 'administrative'
+    section: 'contactInformation'
   }
 });
 
@@ -669,6 +669,10 @@ foam.RELATIONSHIP({
   inverseName: 'owner',
   targetDAOKey: 'contactDAO',
   unauthorizedTargetDAOKey: 'localContactDAO',
+  sourceProperty: {
+    readPermissionRequired: true,
+    section: 'contactInformation'
+  }
 });
 
 foam.RELATIONSHIP({
@@ -733,7 +737,7 @@ foam.RELATIONSHIP({
   inverseName: 'businessesInWhichThisUserIsASigningOfficer',
   sourceProperty: {
     createVisibility: 'HIDDEN',
-    section: 'business'
+    section: 'ownerInformation'
   },
   targetProperty: { hidden: true },
   junctionDAOKey: 'signingOfficerJunctionDAO'
@@ -801,7 +805,10 @@ foam.RELATIONSHIP({
   targetModel: 'net.nanopay.model.BeneficialOwner',
   forwardName: 'beneficialOwners',
   inverseName: 'business',
-  targetDAOKey: 'beneficialOwnerDAO'
+  targetDAOKey: 'beneficialOwnerDAO',
+  sourceProperty: {
+    section: 'ownerInformation'
+  }
 });
 
 foam.RELATIONSHIP({
@@ -1009,7 +1016,7 @@ foam.RELATIONSHIP({
   },
   sourceProperty: {
     readPermissionRequired: true,
-    section: 'administrative'
+    section: 'complianceInformation'
   }
 });
 
@@ -1028,7 +1035,7 @@ foam.RELATIONSHIP({
   },
   sourceProperty: {
     readPermissionRequired: true,
-    section: 'administrative'
+    section: 'complianceInformation'
   }
 });
 
@@ -1097,6 +1104,9 @@ foam.RELATIONSHIP({
   forwardName: 'paymentCode',
   inverseName: 'owner',
   cardinality: '1:*',
+  sourceProperty: {
+    section: 'business'
+  }
 });
 
 foam.RELATIONSHIP({
