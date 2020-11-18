@@ -1,0 +1,34 @@
+p({
+  "class":"foam.net.Host",
+  "id":"us-east-1c-nanopay-development-primary-mediator-1",
+  "address":"172.35.2.179",
+})
+p({
+  "class":"foam.net.Host",
+  "id":"us-east-1c-nanopay-development-primary-mediator-2",
+  "address":"172.35.2.165",
+})
+
+p({
+  "class":"foam.net.Host",
+  "id":"us-east-1c-nanopay-development-primary-node-1",
+  "address":"172.35.2.76",
+})
+
+p({
+  "class":"foam.net.Host",
+  "id":"us-east-1c-nanopay-development-primary-node-2",
+  "address":"172.35.2.221",
+})
+
+p({
+  "class":"foam.net.Host",
+  "id":"us-east-1c-nanopay-development-primary-node-3",
+  "address":"172.35.2.181",
+})
+
+p({
+  "class":"foam.net.Host",
+  "id":"us-east-1c-nanopay-development-primary-node-4",
+  "address":"172.35.2.6",
+})
