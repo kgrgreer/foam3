@@ -245,9 +245,9 @@ public class AFEXServiceProviderTest
   private void testOnboardBusiness() {
     Business businessNoCompliance = (Business) business.fclone();
     businessNoCompliance.setCompliance(ComplianceStatus.FAILED);
-    boolean onbarded = afexServiceProvider.onboardBusiness(businessNoCompliance, user1CABankAccount);
+    boolean onbarded = afexServiceProvider.onboardBusiness(businessNoCompliance);
     test( ! onbarded, "Business was not onboarded" );
-    onbarded = afexServiceProvider.onboardBusiness(business, user1CABankAccount);
+    onbarded = afexServiceProvider.onboardBusiness(business);
     test( onbarded, "Business was onboarded" );
     AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, business.getId()));
     if ( afexBusiness != null ) {

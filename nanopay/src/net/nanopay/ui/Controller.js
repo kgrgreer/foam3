@@ -431,6 +431,7 @@ foam.CLASS({
       });
 
       await this.themeInstalled;
+      await this.languageInstalled;
 
       if ( ! this.isIframe() ) {
         this
