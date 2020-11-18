@@ -104,7 +104,8 @@ foam.CLASS({
                   }.bind(this, curItemLabel);
                   e.start({
                     class: 'net.nanopay.tx.LineItemCitationView',
-                    data: data.lineItems[i]
+                    data: data.lineItems[i],
+                    hideInnerLineItems: true
                   });
                 }
               }
