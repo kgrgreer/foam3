@@ -35,7 +35,11 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'net.nanopay.model.BusinessSector',
-      name: 'parentChoice'
+      name: 'parentChoice',
+      postSet: function(o, n) {
+        if ( o != n && o !== 0 )
+          this.data = 0;
+      },
     },
     {
       class: 'Reference',
@@ -69,8 +73,7 @@ foam.CLASS({
       of: 'net.nanopay.model.BusinessSector',
       name: 'data',
       postSet: function(_, n) {
-        if ( ! n ) return;
-        this.data$find.then((o) => this.parentChoice = o.parent);
+        this.data$find.then((o) => { if (o) this.parentChoice = o.parent });
       }
     }
   ],
@@ -99,7 +102,6 @@ foam.CLASS({
               searchPlaceholder: 'Search...',
               choosePlaceholder: this.PLACE_HOLDER
             })
-
           .end()
 
           .start()
