@@ -84,33 +84,25 @@ foam.CLASS({
       view: function(_, X) {
         return foam.u2.FragmentedTextField.create({
           delegates: [
-            {
-              class: 'foam.u2.TextField',
-              attributes: [ { name: 'maxlength', value: 3 } ],
-              onKey: true,
-              data: X.data.data.slice(0,3)
-            },
+            foam.u2.FragmentedTextFieldFragment.create({
+              data: X.data.data.slice(0,3),
+              maxLength: 3
+            }),
             '.',
-            {
-              class: 'foam.u2.TextField',
-              attributes: [ { name: 'maxlength', value: 3 } ],
-              onKey: true,
-              data: X.data.data.slice(3,6)
-            },
+            foam.u2.FragmentedTextFieldFragment.create({
+              data: X.data.data.slice(3,6),
+              maxLength: 3
+            }),
             '.',
-            {
-              class: 'foam.u2.TextField',
-              attributes: [ { name: 'maxlength', value: 3 } ],
-              onKey: true,
-              data: X.data.data.slice(6,9)
-            },
+            foam.u2.FragmentedTextFieldFragment.create({
+              data: X.data.data.slice(6,9),
+              maxLength: 3
+            }),
             '-',
-            {
-              class: 'foam.u2.TextField',
-              attributes: [ { name: 'maxlength', value: 2 } ],
-              onKey: true,
-              data: X.data.data.slice(9,11)
-            }
+            foam.u2.FragmentedTextFieldFragment.create({
+              data: X.data.data.slice(9,11),
+              maxLength: 2
+            })
           ]
         })
       }
