@@ -249,7 +249,7 @@ foam.CLASS({
         else if ( this.currentIndex > 0 ) {
           this.currentIndex = this.prevIndex;
         } else {
-          X.pushMenu('sme.menu.toolbar');
+          X.closeDialog();
         }
       }
     },
