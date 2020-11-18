@@ -43,6 +43,36 @@ p({
   "associatedEntity": 1
 })
 
+p({
+  "class": "foam.nanos.crunch.MinMaxCapability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-20",
+  "name":"Final approval",
+  "description":"Registering with Payment Provider",
+  "icon":"/images/capabilityIcons/BusinessRegistrationCap.svg",
+  "version":"0",
+  "enabled":true,
+  "visible":true,
+  "keywords":["featured"],
+  "min": 1,
+  "permissionsGranted":[
+    "menu.read.capability.main.invoices.payables"
+  ],
+  "availabilityPredicate": {
+    "class":"foam.mlang.predicate.And",
+    "args": [
+      { "class": "net.nanopay.crunch.predicate.BusinessPassedCompliance" },
+      {
+        "class": "foam.mlang.predicate.Not",
+        "arg1":
+          {
+            "class":"net.nanopay.crunch.predicate.RegisterPaymentProviderStatus",
+            "status": 1
+          }
+      }
+    ]
+  }
+})
+
 p({class:"net.nanopay.payment.PaymentProviderCorridor",provider:"AFEX",sourceCountry:"CA",targetCountry:"CA",sourceCurrencies:["CAD","USD"],targetCurrencies:["CAD","USD"],id:"1cfb91e7-9c63-6e8a-b848-5b0656feeb59",name:"CA-CA Corridor - AFEX",enabled:true,availabilityPredicate:{class:"foam.mlang.predicate.True"},lastModified:1603233049278,lastModifiedBy:1})
 p({class:"net.nanopay.payment.CountryCapability",country:"CA",type:0,id:"9acf76e3-f0c6-931c-ee81-af1cc5e6943b",name:"Source Country Capability CA",enabled:true,availabilityPredicate:{class:"foam.mlang.predicate.True"},lastModified:1603233049306,lastModifiedBy:1})
 p({class:"net.nanopay.payment.CountryCapability",country:"CA",type:1,id:"53e09eba-cffa-5080-4f25-ad4268819b07",name:"Target Country Capability CA",enabled:true,availabilityPredicate:{class:"foam.mlang.predicate.True"},lastModified:1603233049307,lastModifiedBy:1})
@@ -720,4 +750,4 @@ p({class:"net.nanopay.payment.PaymentProviderCorridor",provider:"AFEX",sourceCou
 // Treviso config
 p({class:"net.nanopay.payment.PaymentProviderCorridor",ranking:1,provider:"Treviso",sourceCountry:"BR",targetCountry:"US",sourceCurrencies:["BRL"],targetCurrencies:["USD"],id:"f9c7ce45-c076-4f55-93d2-867c011ee6ca",name:"BR-USD Corridor - Treviso",enabled:true,visible:true,lastModified:1602783690373,lastModifiedBy:1})
 p({class:"net.nanopay.payment.PaymentProviderCorridor",ranking:2,provider:"Treviso",sourceCountry:"BR",targetCountry:"DE",sourceCurrencies:["BRL"],targetCurrencies:["EUR"],id:"ddcdada6-90de-4729-aa22-94a60b629faf",name:"BR-EUR Corridor - Treviso",enabled:true,visible:true,lastModified:1602783690373,lastModifiedBy:1})
-p({class:"net.nanopay.payment.PaymentProviderCorridor",ranking:3,provider:"Treviso",sourceCountry:"BR",targetCountry:"GB",sourceCurrencies:["BRL"],targetCurrencies:["GBP"],id:"5466bee2-1639-461d-a8d4-84c152cfb235",name:"BR-GBP Corridor - Treviso",enabled:true,visible:true,lastModified:1602783690373,lastModifiedBy:1}) 
+p({class:"net.nanopay.payment.PaymentProviderCorridor",ranking:3,provider:"Treviso",sourceCountry:"BR",targetCountry:"GB",sourceCurrencies:["BRL"],targetCurrencies:["GBP"],id:"5466bee2-1639-461d-a8d4-84c152cfb235",name:"BR-GBP Corridor - Treviso",enabled:true,visible:true,lastModified:1602783690373,lastModifiedBy:1})
