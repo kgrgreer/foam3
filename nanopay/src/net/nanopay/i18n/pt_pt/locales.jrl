@@ -2266,7 +2266,7 @@ p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.InvitationWizardView.IS_
 
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.InvitationWizardView.BACK.label",locale:"pt",source:"net.nanopay.contacts.ui.InvitationWizardView.BACK.label",target:"Volte"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.InvitationWizardView.NEXT.label",locale:"pt",source:"net.nanopay.contacts.ui.InvitationWizardView.NEXT.label",target:"Enviar Convite"})
-p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.BusinessNameSearchWizardView.CONTACT_ADDED",locale:"pt",source:"net.nanopay.contacts.ui.BusinessNameSearchWizardView.CONTACT_ADDED",target:"Contato pessoal adicionado"})
+p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.BusinessNameSearchWizardView.CONTACT_ADDED",locale:"pt",source:"net.nanopay.contacts.ui.BusinessNameSearchWizardView.CONTACT_ADDED",target:"Contato adicionado com sucesso"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.BusinessNameSearchWizardView.IS_CONNECTING.documentation",locale:"pt",source:"net.nanopay.contacts.ui.BusinessNameSearchWizardView.IS_CONNECTING.documentation",target:"True enquanto espera a conclusão de uma chamada de método DAO."})
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.BusinessNameSearchWizardView.IS_CONNECTING.label",locale:"pt",source:"net.nanopay.contacts.ui.BusinessNameSearchWizardView.IS_CONNECTING.label",target:"isConnecting pt"})
 
@@ -2275,12 +2275,12 @@ p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.BusinessNameSearchWizard
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.ContactWizardView.EDIT_STEP_ONE_TITLE",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.EDIT_STEP_ONE_TITLE",target:"Editar contato"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.ContactWizardView.EDIT_STEP_TWO_TITLE",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.EDIT_STEP_TWO_TITLE",target:"Editar informações bancárias"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.ContactWizardView.EDIT_STEP_THREE_TITLE",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.EDIT_STEP_THREE_TITLE",target:"Editar endereço comercial"})
-p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.ContactWizardView.CONTACT_ADDED",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.CONTACT_ADDED",target:"Contato pessoal adicionado"})
+p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.ContactWizardView.CONTACT_ADDED",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.CONTACT_ADDED",target:"Contato adicionado com sucesso"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.ContactWizardView.INVITE_SUCCESS",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.INVITE_SUCCESS",target:"Enviou um pedido de conexão"})
 
-p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.ContactWizardView.CONTACT_EDITED",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.CONTACT_EDITED",target:"Contato pessoal editado"})
-p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.ContactWizardView.CONTACT_ADDED_INVITE_SUCCESS",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.CONTACT_ADDED_INVITE_SUCCESS",target:"Contato pessoal adicionado. Um convite por email foi enviado."})
-p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.ContactWizardView.CONTACT_ADDED_INVITE_FAILURE",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.CONTACT_ADDED_INVITE_FAILURE",target:"Contato pessoal adicionado. Não foi possível enviar um convite por e-mail."})
+p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.ContactWizardView.CONTACT_EDITED",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.CONTACT_EDITED",target:"Contato editado"})
+p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.ContactWizardView.CONTACT_ADDED_INVITE_SUCCESS",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.CONTACT_ADDED_INVITE_SUCCESS",target:"Contato adicionado com sucesso. Um convite por email foi enviado."})
+p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.ContactWizardView.CONTACT_ADDED_INVITE_FAILURE",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.CONTACT_ADDED_INVITE_FAILURE",target:"Contato adicionado com sucesso. Não foi possível enviar um convite por e-mail."})
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.ContactWizardView.ACCOUNT_CREATION_ERROR",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.ACCOUNT_CREATION_ERROR",target:"Falha ao adicionar uma conta"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.ContactWizardView.EXISTING_BUSINESS",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.EXISTING_BUSINESS",target:"Este email já foi cadastrado no Ablii. Você pode estabelecer uma conexão com este usuário e sua empresa usando seu código de pagamento ou localizando-o no menu de pesquisa de negócios ao adicionar um contato."})
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.ContactWizardView.GENERIC_PUT_FAILED",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.GENERIC_PUT_FAILED",target:"Falha ao adicionar uma conta."})
@@ -2297,7 +2297,7 @@ p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.ContactWizardView.BACK.l
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.ContactWizardView.NEXT.label",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.NEXT.label",target:"próximo"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.ContactWizardView.SAVE.label",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.SAVE.label",target:"Salve"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.ContactWizardView.OPTION.label",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.OPTION.label",target:"Economize sem banco"})
-p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.PaymentCodeSearchWizardView.CONTACT_ADDED",locale:"pt",source:"net.nanopay.contacts.ui.PaymentCodeSearchWizardView.CONTACT_ADDED",target:"Contato pessoal adicionado"})
+p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.PaymentCodeSearchWizardView.CONTACT_ADDED",locale:"pt",source:"net.nanopay.contacts.ui.PaymentCodeSearchWizardView.CONTACT_ADDED",target:"Contato adicionado com sucesso"})
 
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.PaymentCodeSearchWizardView.CONTACT_EXISTS_ERROR",locale:"pt",source:"net.nanopay.contacts.ui.PaymentCodeSearchWizardView.CONTACT_EXISTS_ERROR",target:"Já existe contato com este código de pagamento"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.ui.PaymentCodeSearchWizardView.IS_CONNECTING.label",locale:"pt",source:"net.nanopay.contacts.ui.PaymentCodeSearchWizardView.IS_CONNECTING.label",target:"isConnecting pt"})
@@ -2735,7 +2735,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.CapabilityJunc
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.CapabilityJunctionStatus.EXPIRED.documentation",target:"As informações necessárias mudaram ou suas entradas não são mais válidas"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.CapabilityJunctionStatus.PENDING.documentation",target:"Nossa equipe está revisando. As aprovações podem levar até 24 horas"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED.documentation",target:"Faltam informações para os campos obrigatórios"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.CapabilityJunctionStatus.PENDING_REVIEW.documentation",target:"A informação que você forneceu está pendente de revisão oficial de assinatura"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.CapabilityJunctionStatus.PENDING_REVIEW.documentation",target:"As informações fornecidas estão com revisão final pendente"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.CapabilityJunctionStatus.AVAILABLE.documentation",target:"Você está pronto para começar"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.CapabilityJunctionStatus.APPROVED.documentation",target:"- não visto pelos usuários - Indicando que um UCJ que requer revisão foi aprovado. Ele precisaria passar pelas regras do ucjDAO antes de ser definido como concedido."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.CapabilityJunctionStatus.REJECTED.documentation",target:"- não visto pelos usuários - Denotando uma junção que requer revisão foi rejeitada. Destina-se a marcar itens em um estado FINAL rejeitado em que não se espera que vá para EXPIRED e que o usuário preencha mais informações. Usado nas junções de objeto Capable."})
