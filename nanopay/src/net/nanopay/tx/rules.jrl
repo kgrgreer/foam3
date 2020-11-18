@@ -114,8 +114,7 @@ p({
     "class":"foam.mlang.predicate.And",
     "args":[
       {
-        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
-        "of":"net.nanopay.tx.ComplianceTransaction"
+        "class":"net.nanopay.meter.compliance.ruler.predicate.IsComplianceTransaction"
       },
       {
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
