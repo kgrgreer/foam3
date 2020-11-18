@@ -12,23 +12,23 @@ p({
 p({
   "class":"foam.net.Host",
   "id":"us-east-1c-nanopay-development-primary-node-1",
-  "address":"172.35.2.63",
+  "address":"172.35.2.81",
 })
 
 p({
   "class":"foam.net.Host",
   "id":"us-east-1c-nanopay-development-primary-node-2",
-  "address":"172.35.2.87",
+  "address":"172.35.2.4",
 })
 
 p({
   "class":"foam.net.Host",
   "id":"us-east-1c-nanopay-development-primary-node-3",
-  "address":"172.35.2.35",
+  "address":"172.35.2.66",
 })
 
 p({
   "class":"foam.net.Host",
   "id":"us-east-1c-nanopay-development-primary-node-4",
-  "address":"172.35.2.235",
+  "address":"172.35.2.98",
 })
