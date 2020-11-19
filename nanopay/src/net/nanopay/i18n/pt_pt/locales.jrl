@@ -1986,7 +1986,7 @@ p({class:"foam.i18n.Locale",id:"sme.accountProfile.personal-settings.name",local
 p({class:"foam.i18n.Locale",id:"sme.menu.addBankAccount.name",locale:"pt",source:"sme.menu.addBankAccount.label",target:"Adicionar conta bancária"})
 
 p({class:"foam.i18n.Locale",id:"smeNavigation.name",locale:"pt",source:"smeNavigation.label",target:"Navegação Ablii"})
-p({class:"foam.i18n.Locale",id:"sme.main.appStore.name",locale:"pt",source:"sme.main.appStore.label",target:"Requisitos"})
+p({class:"foam.i18n.Locale",id:"sme.main.appStore.label",locale:"pt",source:"sme.main.appStore.label",target:"Cadastro"})
 p({class:"foam.i18n.Locale",id:"sme.quickAction.request.name",locale:"pt",source:"sme.quickAction.request.label",target:"Solicitar pagamento"})
 p({class:"foam.i18n.Locale",id:"sme.menu.toolbar.name",locale:"pt",source:"sme.menu.toolbar.label",target:"Barra de Ferramentas do Menu"})
 p({class:"foam.i18n.Locale",id:"sme.quickAction.send.name",locale:"pt",source:"sme.quickAction.send.label",target:"Mande o pagamento"})
@@ -2002,7 +2002,7 @@ p({class:"foam.i18n.Locale",id:"net.nanopay.invoice.ui.ReceivableDAOBrowser.SUB_
 
 p({class:"foam.i18n.Locale",id:"net.nanopay.invoice.ui.ReceivableDAOBrowser.SYNC.label",locale:"pt",source:"net.nanopay.invoice.ui.ReceivableDAOBrowser.SYNC.label",target:"Sincronizar com contabilidade"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.invoice.ui.PayableDAOBrowser.SYNC.label",locale:"pt",source:"net.nanopay.invoice.ui.PayableDAOBrowser.SYNC.label",target:"Sincronizar com contabilidade"})
-p({class:"foam.i18n.Locale",id:"foam.u2.crunch.CapabilityStore.TITLE",locale:"pt",source:"foam.u2.crunch.CapabilityStore.TITLE",target:"Capacidades"})
+p({class:"foam.i18n.Locale",id:"foam.u2.crunch.CapabilityStore.TITLE",locale:"pt",source:"foam.u2.crunch.CapabilityStore.TITLE",target:"Cadastro"})
 p({class:"foam.i18n.Locale",id:"foam.u2.crunch.CapabilityStore.SUBTITLE",locale:"pt",source:"foam.u2.crunch.CapabilityStore.SUBTITLE",target:"Para habilitar totalmente nossa plataforma, precisamos de um pouco mais de informações sobre você e sua empresa."})
 
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.document.Document.SECTION_DOCUMENT_UPLOAD_SECTION.title",locale:"pt",source:"net.nanopay.crunch.document.Document.SECTION_DOCUMENT_UPLOAD_SECTION.title",target:"Envio de Documento"})
@@ -2726,3 +2726,12 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.CapabilityJunc
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.CapabilityJunctionStatus.AVAILABLE.documentation",target:"Você está pronto para começar"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.CapabilityJunctionStatus.APPROVED.documentation",target:"- não visto pelos usuários - Indicando que um UCJ que requer revisão foi aprovado. Ele precisaria passar pelas regras do ucjDAO antes de ser definido como concedido."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.CapabilityJunctionStatus.REJECTED.documentation",target:"- não visto pelos usuários - Denotando uma junção que requer revisão foi rejeitada. Destina-se a marcar itens em um estado FINAL rejeitado em que não se espera que vá para EXPIRED e que o usuário preencha mais informações. Usado nas junções de objeto Capable."})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.INVALID_DATE_ERROR",target:"Data de nascimento válida exigida"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.UNGER_AGE_LIMIT_ERROR",target:"Deve ter pelo menos 18 anos."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.OVER_AGE_LIMIT_ERROR",target:"Deve ter menos de 125 anos."})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirector.INVALID_DATE_ERROR",target:"Data de nascimento válida exigida"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.UserBirthDateData.INVALID_DATE_ERROR",target:"Data de nascimento válida exigida"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.UserBirthDateData.UNGER_AGE_LIMIT_ERROR",target:"Deve ter pelo menos 18 anos."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.UserBirthDateData.OVER_AGE_LIMIT_ERROR",target:"Deve ter menos de 125 anos."})
