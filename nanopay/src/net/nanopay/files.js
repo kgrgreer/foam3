@@ -1466,9 +1466,6 @@ FOAM_FILES([
   { name: 'net/nanopay/business/ruler/InitialBusinessRegistrationRule' },
   { name: 'net/nanopay/business/ruler/businessCapabilitySetUp' },
 
-  // approval
-  { name: 'net/nanopay/approval/UserRefines' },
-
   // bmo
   { name: 'net/nanopay/tx/bmo/BmoAssignedClientValue' },
   { name: 'net/nanopay/tx/bmo/eftfile/BmoEftFile' },
