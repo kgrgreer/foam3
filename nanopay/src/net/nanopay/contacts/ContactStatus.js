@@ -27,19 +27,19 @@ foam.ENUM({
   values: [
     {
       name: 'PENDING',
-      label: 'Pending',
+      label: { en: 'Pending', pt: 'Pendente'},
       documentation: 'Default Status',
       ordinal: 0
     },
     {
       name: 'CONNECTED',
-      label: 'Connected',
+      label: { en: 'Connected', pt: 'Conectado'},
       documentation: 'Added via payment code or business name',
       ordinal: 1
     },
     {
       name: 'READY',
-      label: 'Ready',
+      label: { en: 'Ready', pt: 'Pronto'},
       documentation: 'Either business id or bankAccount associated',
       ordinal: 2
     }

@@ -60,22 +60,13 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     this.logger_ = (Logger) x.get("logger");
   }
 
-  public boolean onboardBusiness(Business business) {
-    BankAccount bankAccount = (BankAccount) ((DAO) this.x.get("localAccountDAO")).find(AND(
-      EQ(BankAccount.OWNER,business.getId()),
-      INSTANCE_OF(BankAccount.class)));
-    return onboardBusiness(business, bankAccount);
-  }
-
   public boolean onboardBusiness(BankAccount bankAccount) {
     Business business = (Business) ((DAO) this.x.get("localBusinessDAO")).find(bankAccount.getOwner());
-    return onboardBusiness(business, bankAccount);
+    return onboardBusiness(business);
   }
 
-  public boolean onboardBusiness(Business business, BankAccount bankAccount) throws RuntimeException {
+  public boolean onboardBusiness(Business business) throws RuntimeException {
     if ( business == null ||  ! business.getCompliance().equals(ComplianceStatus.PASSED) ) return false;
-
-    if ( bankAccount == null ||  bankAccount.getStatus() != BankAccountStatus.VERIFIED ) return false;
 
     try {
       if  ( business.getOnboarded() ) {
@@ -815,7 +806,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       throw new RuntimeException("Business has not been completely onboarded on partner system. " + sourceAccount.getOwner());
     }
 
-    AFEXBeneficiary afexBeneficiary = getAFEXBeneficiary(x, destinationAccount.getOwner(), sourceAccount.getOwner()); 
+    AFEXBeneficiary afexBeneficiary = getAFEXBeneficiary(x, destinationAccount.getOwner(), sourceAccount.getOwner());
     if ( null == afexBeneficiary ) {
       logger_.error("Contact has not been completely onboarded on partner system as a Beneficiary. " + destinationAccount.getOwner());
       throw new RuntimeException("Contact has not been completely onboarded on partner system as a Beneficiary. " + destinationAccount.getOwner());

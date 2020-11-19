@@ -1,0 +1,28 @@
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "accounts-support",
+  "label": "Accounts",
+  "parent": ""
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "businesses-support",
+  "label": "Merchants",
+  "parent": ""
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "transactions-support",
+  "label": "Transactions",
+  "parent": ""
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "users-support",
+  "label": "Users",
+  "parent": ""
+})

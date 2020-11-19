@@ -234,7 +234,6 @@ ucjSODOB.setData(so1);
 SigningOfficerPersonalData so = new SigningOfficerPersonalData();
 so.setAddress(address);
 so.setJobTitle("Accountant");
-so.setCountryId("CA");
 so.setPhoneNumber("2899998989");
 AgentCapabilityJunction ucjSOP = new AgentCapabilityJunction();
 ucjSOP.setSourceId(myApprover.getId());

@@ -524,7 +524,7 @@ foam.CLASS({
                 .start()
                   .addClass(this.myClass('header-align-top'))
                   .addClass('x-large-header')
-                  .add('Invoice #' + this.invoice.invoiceNumber)
+                  .add(this.PART_ONE_SAVE + this.invoice.invoiceNumber)
                 .end()
                 // Dynamic create the primary action
                 .start()

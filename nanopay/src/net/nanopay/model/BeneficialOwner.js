@@ -78,7 +78,9 @@ foam.CLASS({
     { name: 'STREET_NUMBER_LABEL', message: 'Street number' },
     { name: 'STREET_NAME_LABEL', message: 'Street name' },
     { name: 'PLACEHOLDER', message: 'Select a country' },
-    { name: 'COMPLIANCE_HISTORY_MSG', message: 'Compliance History' }
+    { name: 'YES', message: 'Yes' },
+    { name: 'NO', message: 'No' },
+    { name: 'COMPLIANCE_HISTORY_MSG', message: 'Compliance History for' }
   ],
 
   properties: [
@@ -374,33 +376,25 @@ foam.CLASS({
       view: function(_, X) {
         return foam.u2.FragmentedTextField.create({
           delegates: [
-            {
-              class: 'foam.u2.TextField',
-              attributes: [ { name: 'maxlength', value: 3 } ],
-              onKey: true,
-              data: X.data.cpf.slice(0,3)
-            },
+            foam.u2.FragmentedTextFieldFragment.create({
+              data: X.data.cpf.slice(0,3),
+              maxLength: 3
+            }),
             '.',
-            {
-              class: 'foam.u2.TextField',
-              attributes: [ { name: 'maxlength', value: 3 } ],
-              onKey: true,
-              data: X.data.cpf.slice(3,6)
-            },
+            foam.u2.FragmentedTextFieldFragment.create({
+              data: X.data.cpf.slice(3,6),
+              maxLength: 3
+            }),
             '.',
-            {
-              class: 'foam.u2.TextField',
-              attributes: [ { name: 'maxlength', value: 3 } ],
-              onKey: true,
-              data: X.data.cpf.slice(6,9)
-            },
+            foam.u2.FragmentedTextFieldFragment.create({
+              data: X.data.cpf.slice(6,9),
+              maxLength: 3
+            }),
             '-',
-            {
-              class: 'foam.u2.TextField',
-              attributes: [ { name: 'maxlength', value: 2 } ],
-              onKey: true,
-              data: X.data.cpf.slice(9,11)
-            }
+            foam.u2.FragmentedTextFieldFragment.create({
+              data: X.data.cpf.slice(9,11),
+              maxLength: 2
+            })
           ]
         })
       }
@@ -469,13 +463,15 @@ foam.CLASS({
         return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : type == 'BR' ?
           foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
-      view: {
-        class: 'foam.u2.view.RadioView',
-        choices: [
-          [true, 'Yes'],
-          [false, 'No']
-        ],
-        isHorizontal: true
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RadioView',
+          choices: [
+            [true, X.data.YES],
+            [false, X.data.NO]
+          ],
+          isHorizontal: true
+        };
       }
     }
   ],
@@ -612,7 +608,7 @@ foam.CLASS({
             dao: dao,
             createPredicate: foam.mlang.predicate.False,
             editPredicate: foam.mlang.predicate.True,
-            browseTitle:`${this.legalName}'s ${this.COMPLIANCE_HISTORY_MSG}`
+            browseTitle:`${this.COMPLIANCE_HISTORY_MSG} ${this.legalName}`
           }
         });
       }

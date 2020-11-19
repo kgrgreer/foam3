@@ -744,7 +744,8 @@ p({
         "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
         "category":"signingOfficerOnboarding",
         "isRecurring":false
-      }
+      },
+      { "class":"net.nanopay.crunch.compliance.IsCapabilityReviewRequired" }
     ]
   },
   "action": {
