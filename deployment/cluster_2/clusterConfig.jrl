@@ -8,7 +8,7 @@ p({
   "regionStatus":1,
   "zone":0,
   "port":8100,
-  "sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738",
+  "sessionId":"4BFDD224-774E-4716-8508-43FA72E003D9",
   "type":0,
   "created":"2020-03-28T14:57:12.959Z",
   "createdBy":2
@@ -24,7 +24,7 @@ p({
   "regionStatus":1,
   "zone":0,
   "port":8110,
-  "sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738",
+  "sessionId":"4BFDD224-774E-4716-8508-43FA72E003D9",
   "type":0,
   "created":"2020-03-28T14:57:12.959Z",
   "createdBy":2
@@ -40,7 +40,7 @@ p({
   "regionStatus":1,
   "zone":0,
   "port":8200,
-  "sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738",
+  "sessionId":"4BFDD224-774E-4716-8508-43FA72E003D9",
   "type":1,
   "created":"2020-03-28T14:57:12.959Z",
   "createdBy":2
@@ -56,7 +56,7 @@ p({
   "regionStatus":1,
   "zone":0,
   "port":8210,
-  "sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738",
+  "sessionId":"4BFDD224-774E-4716-8508-43FA72E003D9",
   "type":1,
   "created":"2020-03-28T14:57:12.959Z",
   "createdBy":2
@@ -72,7 +72,7 @@ p({
   "regionStatus":1,
   "zone":1,
   "port":8080,
-  "sessionId":"e6a6f1d4-94dd-82db-ecd8-f3f4ea9ef738",
+  "sessionId":"4BFDD224-774E-4716-8508-43FA72E003D9",
   "type":4,
   "created":"2020-03-28T14:57:12.959Z",
   "createdBy":2
