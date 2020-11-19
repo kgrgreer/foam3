@@ -134,7 +134,7 @@ foam.CLASS({
 
         if ( user != null &&
              isLoginAttemptsExceeded(la) ) {
-          if ( isAdminUser(user) ) {
+          if ( isAdminUser(x, user) ) {
             if ( ! loginFreezeWindowReached(la) ) {
               throw new foam.nanos.auth.AuthenticationException("Account temporarily locked. You can attempt to login after " + getDateFormat().format(la.getNextLoginAttemptAllowedAt()));
             }
@@ -158,11 +158,11 @@ foam.CLASS({
           }
 
           // increment login attempts by 1
-          if ( isAdminUser(user) ) {
+          if ( isAdminUser(x, user) ) {
             la.setClusterable(false);
           }
           la = incrementLoginAttempts(x, la);
-          if ( isAdminUser(user) ) {
+          if ( isAdminUser(x, user) ) {
             incrementNextLoginAttemptAllowedAt(x, la);
           }
           getLogger().error("Error logging in.", t);
@@ -263,7 +263,7 @@ foam.CLASS({
         if ( remaining > 0 ) {
           return "Login failed (" + reason + "). " + ( remaining ) + " attempts remaining.";
         } else {
-          if ( isAdminUser(user) ){
+          if ( isAdminUser(x, user) ){
             return "Account temporarily locked. You can attempt to login after " + getDateFormat().format(loginAttempts.getNextLoginAttemptAllowedAt());
           } else {
             return "Account locked. Please contact customer service." ;
@@ -344,6 +344,10 @@ foam.CLASS({
       type: 'Boolean',
       args: [
         {
+          name: 'x',
+          type: 'Context'
+        },
+        {
           name: 'user',
           type: 'User'
         }
@@ -352,7 +356,8 @@ foam.CLASS({
         if ( user == null ) {
           throw new foam.nanos.auth.AuthenticationException("User not found.");
         }
-        return Group.ADMIN_GROUP.equalsIgnoreCase(user.getGroup());
+        return checkUser(x, user, "*");
+//        return Group.ADMIN_GROUP.equalsIgnoreCase(user.getGroup());
       `
     },
     {
