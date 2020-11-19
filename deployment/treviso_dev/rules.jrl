@@ -8,7 +8,8 @@ p({
       urls: [
         "treviso",
         "treviso.release.nanopay.net",
-        "treviso.development.nanopay.net"
+        "treviso.development.nanopay.net",
+        "treviso.development.medusa.nanopay.net"
       ]
     },
     {
