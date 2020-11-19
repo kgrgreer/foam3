@@ -1090,6 +1090,9 @@ FOAM_FILES([
   { name: 'net/nanopay/model/BeneficialOwner' },
   { name: 'net/nanopay/model/BusinessDirector' },
   { name: 'net/nanopay/model/SigningOfficer' },
+  { name: 'net/nanopay/sme/ui/AddressView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/StructuredAddressView', flags: ['web'] },
+  { name: 'net/nanopay/sme/ui/UnstructuredAddressView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/FooterView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/MoneyFlowSuccessView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/MoneyFlowRejectView', flags: ['web'] },
@@ -1113,7 +1116,6 @@ FOAM_FILES([
   { name: 'net/nanopay/sme/ui/NewInvoiceForm', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/InvoiceDetails', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/CurrencyChoice', flags: ['web'] },
-  { name: 'net/nanopay/sme/ui/AddressView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/SwitchBusinessView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/BusinessJunctionRowView', flags: ['web'] },
   { name: 'net/nanopay/sme/ui/BusinessRowView', flags: ['web'] },
@@ -1469,9 +1471,6 @@ FOAM_FILES([
   { name: 'net/nanopay/business/ruler/InitialBusinessRegistrationRule' },
   { name: 'net/nanopay/business/ruler/businessCapabilitySetUp' },
 
-  // approval
-  { name: 'net/nanopay/approval/UserRefines' },
-
   // bmo
   { name: 'net/nanopay/tx/bmo/BmoAssignedClientValue' },
   { name: 'net/nanopay/tx/bmo/eftfile/BmoEftFile' },
@@ -1762,4 +1761,10 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/invoice/TrevisoCapabilityValidateRule' },
   { name: 'net/nanopay/partner/treviso/invoice/UpdateTransactionOnInvoiceValidationRule' },
   { name: 'net/nanopay/partner/treviso/invoice/TrevisoNotificationRule' },
+
+  // support
+  { name: 'net/nanopay/support/SupportAccount' },
+  { name: 'net/nanopay/support/SupportBusiness' },
+  { name: 'net/nanopay/support/SupportTransaction' },
+  { name: 'net/nanopay/support/SupportUser' }
 ]);

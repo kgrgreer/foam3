@@ -1439,14 +1439,18 @@ var classes = [
   'net.nanopay.payment.PayeeCurrencyService',
   'net.nanopay.payment.ClientPayeeCurrencyService',
   'net.nanopay.payment.PayeeCurrency',
-
+  
+  // support
+  'net.nanopay.support.SupportAccount',
+  'net.nanopay.support.SupportBusiness',
+  'net.nanopay.support.SupportTransaction',
+  'net.nanopay.support.SupportUser',
 
   // rtp
   'net.nanopay.rtp.RequestToPay',
   'net.nanopay.rtp.SendRequestToPayDAO',
 
   //integration
-
   'net.nanopay.integration.ErrorCode',
 ];
 

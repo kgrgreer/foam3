@@ -1,3 +1,90 @@
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "accounts-support",
+  "label": "Accounts (Support)",
+  "handler":
+    {
+      "class": "foam.nanos.menu.DAOMenu2",
+      "config":
+        {
+          "class": "foam.comics.v2.DAOControllerConfig",
+          "daoKey": "supportAccountDAO",
+          "browseTitle": "Accounts",
+          "createTitle": "Create an Account",
+          "createPredicate":{"class":"foam.mlang.predicate.False"},
+          "editPredicate":{"class":"foam.mlang.predicate.False"},
+          "deletePredicate":{"class":"foam.mlang.predicate.False"}
+        }
+    },
+  "parent": "hidden"
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "businesses-support",
+  "label": "Businesses (Support)",
+  "handler":
+    {
+      "class": "foam.nanos.menu.DAOMenu2",
+      "config":
+        {
+          "class": "foam.comics.v2.DAOControllerConfig",
+          "daoKey": "supportBusinessDAO",
+          "browseTitle": "Businesses",
+          "createTitle": "Create a Business",
+          "createPredicate":{"class":"foam.mlang.predicate.False"},
+          "editPredicate":{"class":"foam.mlang.predicate.True"},
+          "deletePredicate":{"class":"foam.mlang.predicate.False"}
+        }
+    },
+  "parent": "hidden"
+})
+
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"transactions-support",
+  "label":"Transactions (Support)",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"supportTransactionDAO",
+      "browseTitle": "Transactions",
+      "createTitle": "Create a Transaction",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"},
+      "defaultColumns":[
+        "id",
+        "amount",
+        "referenceNumber"
+      ]
+    }
+  },
+  "parent":"hidden"
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "users-support",
+  "label": "Users (Support)",
+  "handler":
+    {
+      "class": "foam.nanos.menu.DAOMenu2",
+      "config":
+        {
+          "class": "foam.comics.v2.DAOControllerConfig",
+          "daoKey": "supportUserDAO",
+          "browseTitle": "Users",
+          "createTitle": "Create a User",
+          "createPredicate":{"class":"foam.mlang.predicate.False"},
+          "editPredicate":{"class":"foam.mlang.predicate.True"},
+          "deletePredicate":{"class":"foam.mlang.predicate.False"}
+        }
+    },
+  "parent": "hidden"
+})
+
 p({"class":"foam.nanos.menu.Menu","id":"integration.overview","label":"Overview","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"overview","daoKey":"nanopayDocumentDAO"},"parent":"integration"})
 p({"class":"foam.nanos.menu.Menu","id":"integration.uml-doc","label":"UML Documents","handler":{"class":"foam.nanos.menu.DocumentFileMenu","docKey":"uml-doc","daoKey":"nanopayDocumentDAO"},"parent":"integration"})
 p({"class":"foam.nanos.menu.Menu","id":"documentation","label":"Documentation","handler":{"class":"foam.nanos.menu.SubMenu"},"parent":""})

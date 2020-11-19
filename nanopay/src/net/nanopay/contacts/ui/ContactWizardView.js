@@ -28,7 +28,8 @@ foam.CLASS({
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.contacts.Contact',
-    'net.nanopay.model.Invitation'
+    'net.nanopay.model.Invitation',
+    'foam.layout.Section'
   ],
 
   imports: [
@@ -99,8 +100,39 @@ foam.CLASS({
 
   methods: [
     async function init() {
-      // filter out inherited sections
-      this.sections = this.sections.filter((section) => section.fromClass === 'Contact');
+      var sectionOne = this.Section.create({
+        title: 'Add Contact',
+        properties: [ 
+          net.nanopay.contacts.Contact.ORGANIZATION,
+          net.nanopay.contacts.Contact.EMAIL,
+          net.nanopay.contacts.Contact.FIRST_NAME,
+          net.nanopay.contacts.Contact.LAST_NAME,
+          net.nanopay.contacts.Contact.CONFIRM,
+          net.nanopay.contacts.Contact.AVAILABLE_COUNTRIES
+        ],
+        fromClass: 'net.nanopay.contacts.Contact'
+      });
+      var sectionTwo = this.Section.create({
+        title: 'Add Bank Account',
+        subTitle: 'Payments made to this contact will be deposited to the account you provide below.',
+        properties: [
+          net.nanopay.contacts.Contact.CREATE_BANK_ACCOUNT,
+          net.nanopay.contacts.Contact.NO_CORRIDORS_AVAILABLE,
+          net.nanopay.contacts.Contact.SHOULD_INVITE
+        ],
+        fromClass: 'net.nanopay.contacts.Contact'
+      });
+      var sectionThree = this.Section.create({
+        title: 'Add Business Address',
+        subTitle: `Enter the contact’s business address. PO boxes are not accepted.`,
+        properties: [
+          net.nanopay.contacts.Contact.BUSINESS_ADDRESS
+        ],
+        fromClass: 'net.nanopay.contacts.Contact'
+      });
+
+      // custom sections for contact wizard
+      this.sections = [ sectionOne, sectionTwo, sectionThree ];
       this.data.copyFrom({
         type: 'Contact',
         group: 'sme'

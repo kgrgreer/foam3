@@ -125,6 +125,21 @@ foam.CLASS({
       section: 'personal'
     },
     {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Address',
+      name: 'address',
+      documentation: 'Returns the postal address from the Address model.',
+      factory: function() {
+        return this.Address.create();
+      },
+      view: function(_, X) {
+        return {
+          class: 'net.nanopay.sme.ui.AddressView'
+        };
+      },
+      section: 'personal'
+    },
+    {
       class: 'Boolean',
       name: 'invited',
       value: false,
