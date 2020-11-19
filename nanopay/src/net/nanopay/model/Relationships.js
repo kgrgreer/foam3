@@ -1105,7 +1105,7 @@ foam.RELATIONSHIP({
   inverseName: 'owner',
   cardinality: '1:*',
   sourceProperty: {
-    section: 'business'
+    section: 'businessInformation'
   }
 });
 

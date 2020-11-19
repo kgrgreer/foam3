@@ -82,25 +82,6 @@ foam.CLASS({
     'email',
   ],
 
-  sections: [
-    {
-      name: 'personal',
-      title: 'User Information',
-      order: 1
-    },
-    {
-      name: 'business',
-      title: 'Business Information',
-      order: 2
-    },
-    {
-      name: 'administrative',
-      help: 'Properties that are used internally by the system.',
-      permissionRequired: true,
-      order: 3
-    }
-  ],
-
   messages: [
     { name: 'COMPLIANCE_HISTORY_MSG', message: 'Compliance History for' },
     { name: 'PAYABLES_MSG', message: 'Payables for' },
@@ -109,21 +90,6 @@ foam.CLASS({
   ],
 
   properties: [
-    {
-      class: 'String',
-      name: 'firstName',
-      section: 'personal'
-    },
-    {
-      class: 'String',
-      name: 'lastName',
-      section: 'personal'
-    },
-    {
-      class: 'EMail',
-      name: 'email',
-      section: 'personal'
-    },
     {
       class: 'Boolean',
       name: 'invited',
@@ -156,7 +122,7 @@ foam.CLASS({
       `,
       // NOTE: '_enabled_ is deprecated; use _status_ instead.',
       hidden: true,
-      section: 'administrative'
+      section: 'systemInformation'
     },
     {
       class: 'foam.core.Enum',
@@ -215,13 +181,6 @@ foam.CLASS({
       section: 'ownerInformation'
     },
     {
-      class: 'String',
-      name: 'jobTitle',
-      label: 'Job Title',
-      documentation: 'The job title of the individual person, or real user.',
-      section: 'ownerInformation'
-    },
-    {
       class: 'Boolean',
       name: 'welcomeEmailSent',
       documentation: 'Determines whether a welcome email has been sent to the User.',
@@ -275,7 +234,7 @@ foam.CLASS({
         return this.PersonalIdentification.create();
       },
       view: { class: 'foam.u2.detail.VerticalDetailView' },
-      section: 'personal'
+      section: 'complianceInformation'
     },
     {
       class: 'Boolean',
@@ -321,7 +280,7 @@ foam.CLASS({
         placeholderImage: 'images/ic-placeholder.png'
       },
       createVisibility: 'HIDDEN',
-      section: 'personal'
+      section: 'userInformation'
     },
     {
       class: 'foam.core.Enum',
@@ -349,7 +308,7 @@ foam.CLASS({
       displayWidth: 80,
       width: 100,
       tableWidth: 160,
-      section: 'ownerInformation',
+      section: 'businessInformation',
       label: 'Company Name'
     },
     {
