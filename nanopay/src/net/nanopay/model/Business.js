@@ -310,7 +310,12 @@ foam.CLASS({
           },
           errorString: 'Invalid address.'
         }
-      ]
+      ],
+      view: function(_, X) {
+        return {
+          class: 'net.nanopay.sme.ui.AddressView'
+        };
+      }
     },
     {
       class: 'FObjectProperty',
@@ -331,7 +336,12 @@ foam.CLASS({
           },
           errorString: 'Invalid address.'
         }
-      ]
+      ],
+      view: function(_, X) {
+        return {
+          class: 'net.nanopay.sme.ui.AddressView'
+        };
+      }
     },
     {
       class: 'Boolean',
