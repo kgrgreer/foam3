@@ -359,6 +359,7 @@ foam.CLASS({
     {
       class: 'FObjectArray',
       name: 'approvalRequests',
+      section: 'operationsInformation',
       of: 'foam.nanos.approval.ApprovalRequest',
       view: { class: 'foam.u2.view.DAOtoFObjectArrayView' },
       visibility: 'RO',
