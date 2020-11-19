@@ -356,8 +356,7 @@ foam.CLASS({
         if ( user == null ) {
           throw new foam.nanos.auth.AuthenticationException("User not found.");
         }
-        return checkUser(x, user, "*");
-//        return Group.ADMIN_GROUP.equalsIgnoreCase(user.getGroup());
+        return Group.ADMIN_GROUP.equalsIgnoreCase(user.getGroup());
       `
     },
     {
