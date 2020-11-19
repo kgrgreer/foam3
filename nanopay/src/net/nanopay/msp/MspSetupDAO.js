@@ -123,7 +123,6 @@ foam.CLASS({
         adminGroup.setParent("msp-admin");
         adminGroup.setDefaultMenu("users");
         adminGroup.setDescription(mspInfo.getSpid() +" admin");
-        adminGroup.setTheme(clientTheme.getId());
         groupDAO.put(adminGroup);
 
         // Create spid-admin user
@@ -190,7 +189,6 @@ foam.CLASS({
         fraudOpsGroup.setParent("fraud-ops");
         fraudOpsGroup.setDefaultMenu("accounts");
         fraudOpsGroup.setDescription(mspInfo.getSpid() + " fraud-ops group");
-        fraudOpsGroup.setTheme(clientTheme.getId());
         groupDAO.put(fraudOpsGroup);
 
         // Create spid-payment-ops group
@@ -199,7 +197,6 @@ foam.CLASS({
         paymentOpsGroup.setParent("payment-ops");
         paymentOpsGroup.setDefaultMenu("accounts");
         paymentOpsGroup.setDescription(mspInfo.getSpid() + " payment-ops group");
-        paymentOpsGroup.setTheme(clientTheme.getId());
         groupDAO.put(paymentOpsGroup);
 
         List<String> fraudPermissionArray = new ArrayList<>();
@@ -219,7 +216,6 @@ foam.CLASS({
         supportGroup.setParent("support");
         supportGroup.setDefaultMenu("contacts");
         supportGroup.setDescription(mspInfo.getSpid() + " support group");
-        supportGroup.setTheme(clientTheme.getId());
         groupDAO.put(supportGroup);
 
         return mspInfo;

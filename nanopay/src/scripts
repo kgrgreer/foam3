@@ -2744,5 +2744,3 @@ p({
   logger.info(new Object[]{sb.toString()});
   """
 })
-
-p({class:"foam.nanos.script.Script",id:"Assign theme to group if group don't have one",description:"Assign theme to back office group base on spid",code:"import foam.dao.DAO;\nimport foam.dao.ArraySink;\nimport foam.mlang.MLang;\nimport foam.nanos.auth.Group;\nimport foam.nanos.theme.Theme;\n\n//defined spid;\nString spid = \"treviso\";\nDAO themeDAO = (DAO) x.get(\"themeDAO\");\nTheme spidTheme = (Theme) themeDAO.find(MLang.EQ(Theme.NAME, spid));\n//set group theme\ngroupDAO = (DAO) x.get(\"localGroupDAO\");\nList groups = ((ArraySink) groupDAO\n  .where(\n    MLang.CONTAINS_IC(Group.ID, spid)\n  ).select(new ArraySink())).getArray();\n\nfor ( Group group : groups ){\n   Theme theme = group.findTheme(x);\n  if ( theme == null ){\n   group = group.fclone();\n   group.setTheme(spidTheme.getId());\n   groupDAO.put(group);\n   print(group);\n }\n}\nprint(\"done\");",lastModifiedBy:1348,lastModified:1605815942857})
