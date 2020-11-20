@@ -107,8 +107,8 @@ p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.BusinessOwne
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.PUBLICLY_TRADED.label",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.PUBLICLY_TRADED.label",target:"Esta é uma empresa de capital aberto"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.PUBLICLY_TRADED.documentation",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.PUBLICLY_TRADED.documentation",target:"Se esta é uma empresa de capital aberto."})
 
-p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.SuccessPasswordView.INSTRUCTIONS",locale:"pt",source:"net.nanopay.sme.ui.SuccessPasswordView.INSTRUCTIONS",target:"Successfully reset passwordRedefinir senha com sucesso!"})
-p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.SuccessPasswordView.RESET_PASSWORD",locale:"pt",source:"net.nanopay.sme.ui.SuccessPasswordView.RESET_PASSWORD",target:"Redefinir sua senha"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SuccessPasswordView.INSTRUCTIONS",target:"Sua senha foi redefinida com sucesso"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SuccessPasswordView.RESET_PASSWORD",target:"Redefina sua senha"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.SuccessPasswordView.BACK_TO",locale:"pt",source:"net.nanopay.sme.ui.SuccessPasswordView.BACK_TO",target:"Voltar para fazer login"})
 p({class:"foam.i18n.Locale",id:"net.nanopay.sme.ui.AbliiOverlayActionListView.ACTIVE_IMAGE_URL.label",locale:"pt",source:"net.nanopay.sme.ui.AbliiOverlayActionListView.ACTIVE_IMAGE_URL.label",target:"activeImageURL"})
 
@@ -1526,6 +1526,8 @@ p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.INVALID_EMAIL",loca
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.INVALID_FIRST_NAME",locale:"pt",source:"net.nanopay.contacts.Contact.INVALID_FIRST_NAME",target:"O nome não pode ter mais de 70 caracteres."})
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.INVALID_LAST_NAME",locale:"pt",source:"net.nanopay.contacts.Contact.INVALID_LAST_NAME",target:"O sobrenome não pode ter mais de 70 caracteres."})
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.CONFIRMATION_REQUIRED",locale:"pt",source:"net.nanopay.contacts.Contact.CONFIRMATION_REQUIRED",target:"Necessária confirmação."})
+p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.HEADER",locale:"pt",source:"net.nanopay.contacts.Contact.HEADER",target:"país da conta bancária"})
+p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.PLACEHOLDER",locale:"pt",source:"net.nanopay.contacts.Contact.PLACEHOLDER",target:"por favor selecione..."})
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.ORGANIZATION.label",locale:"pt",source:"net.nanopay.contacts.Contact.ORGANIZATION.label",target:"organização"})
 
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.ORGANIZATION.documentation",locale:"pt",source:"net.nanopay.contacts.Contact.ORGANIZATION.documentation",target:"A organização / empresa associada ao contato."})
@@ -2721,7 +2723,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.CapabilityJunc
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.CapabilityJunctionStatus.EXPIRED.documentation",target:"As informações necessárias mudaram ou suas entradas não são mais válidas"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.CapabilityJunctionStatus.PENDING.documentation",target:"Nossa equipe está revisando. As aprovações podem levar até 24 horas"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED.documentation",target:"Faltam informações para os campos obrigatórios"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.CapabilityJunctionStatus.PENDING_REVIEW.documentation",target:"As informações fornecidas estão com revisão final pendente"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.CapabilityJunctionStatus.PENDING_REVIEW.documentation",target:"As informações que você forneceu estão com revisão pendente"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.CapabilityJunctionStatus.AVAILABLE.documentation",target:"Você está pronto para começar"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.CapabilityJunctionStatus.APPROVED.documentation",target:"- não visto pelos usuários - Indicando que um UCJ que requer revisão foi aprovado. Ele precisaria passar pelas regras do ucjDAO antes de ser definido como concedido."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.CapabilityJunctionStatus.REJECTED.documentation",target:"- não visto pelos usuários - Denotando uma junção que requer revisão foi rejeitada. Destina-se a marcar itens em um estado FINAL rejeitado em que não se espera que vá para EXPIRED e que o usuário preencha mais informações. Usado nas junções de objeto Capable."})
