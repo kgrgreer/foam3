@@ -1,4 +1,4 @@
-w/**
+/**
  * NANOPAY CONFIDENTIAL
  *
  * [2020] nanopay Corporation

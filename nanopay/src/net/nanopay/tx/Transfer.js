@@ -46,6 +46,11 @@ foam.CLASS({
       documentation: 'Time transfer was applied. Also reverse transfers are only displayed if they have been executed.',
       name: 'executed',
       class: 'DateTime',
+    },
+    {
+      name: 'stage',
+      class: 'Long',
+      value: 0
     }
   ],
 
@@ -61,10 +66,7 @@ foam.CLASS({
           throw new ValidationException("Transfer has no amount set");
         if ( getAccount() == 0 )
           throw new ValidationException("No account specified on Transfer");
-          /*// decide if account.find needed..
-        var acc = ((DAO) x.get("localAccountDAO")).find(getAccount());
-        if ( acc == null )
-          throw new RuntimeException("Account not found");*/
+
       `
     },
     {
@@ -105,6 +107,11 @@ foam.CLASS({
           public Transfer(long amount, long account) {
             setAmount(amount);
             setAccount(account);
+          }
+          public Transfer(long amount, long account, long stage) {
+            setAmount(amount);
+            setAccount(account);
+            setStage(stage);
           }
         `);
       }

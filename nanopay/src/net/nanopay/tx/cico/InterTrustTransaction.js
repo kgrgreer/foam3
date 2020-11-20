@@ -19,8 +19,7 @@ foam.CLASS({
   package: 'net.nanopay.tx.cico',
   name: 'InterTrustTransaction',
   extends: 'net.nanopay.tx.ClearingTimeTransaction',
-  documentation: ` This transaction is for sending between two accounts that are represented by different trustAccounts. extending transactions must fulfill eft and actual sending functions
-  `
+  documentation: ` This transaction is for sending between two accounts that are represented by different trustAccounts. extending transactions must fulfill eft and actual sending functions`,
 
   javaImports: [
     'foam.dao.DAO',

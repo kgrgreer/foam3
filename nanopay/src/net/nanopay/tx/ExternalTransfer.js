@@ -31,6 +31,13 @@ foam.CLASS({
             setAccount(account);
           }
         `);
+        cls.extras.push(`
+          public ExternalTransfer(long amount, long account, long stage) {
+            setAmount(amount);
+            setAccount(account);
+            setStage(stage);
+          }
+        `);
       }
     }
   ]

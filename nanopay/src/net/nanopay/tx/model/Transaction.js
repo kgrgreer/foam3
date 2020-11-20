@@ -1374,6 +1374,38 @@ foam.CLASS({
       DAO rulerDAO = (DAO) x.get("ruleDAO");
       return (AbstractTransactionPlanner) rulerDAO.find(getPlanner());
     `,
+  },
+  {
+    name: 'getCurrentStageTransfers',
+    documentation: 'Find the transfers that belong to the current stage',
+    type: 'net.nanopay.tx.Transfer[]',
+    javaCode: `
+      Transfer[] tr = getTransfers();
+      //TODO: verify the more efficient staged check works.
+      Long stage = getStage();
+      for (int i = 0; i < tr.length; i++ ){
+        if (tr[i] != stage ) {
+          Transfer[] tr2 = new Transfer[tr - 1];
+          system.arraycopy();
+          for (int j = i ; j < tr.length; i++ ) {
+            if (tr[j].getStage() == stage ){
+              tr2[i] = tr[j];
+              i++;
+            }
+          }
+          return tr2;
+        }
+      }
+      return tr;
+    `,
+  },
+  {
+    name: 'getStage',
+    documentation: 'The current transaction transfer execution stage',
+    type: 'Long',
+    javaCode: `
+      return 0;
+    `,
   }
 ],
   actions: [
