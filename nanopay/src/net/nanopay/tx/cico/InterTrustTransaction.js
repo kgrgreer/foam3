@@ -28,6 +28,7 @@ foam.CLASS({
     'java.util.List',
     'foam.core.ValidationException',
     'net.nanopay.account.Account',
+    'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.TrustAccount',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
