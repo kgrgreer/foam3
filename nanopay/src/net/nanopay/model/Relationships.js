@@ -739,7 +739,10 @@ foam.RELATIONSHIP({
     createVisibility: 'HIDDEN',
     section: 'ownerInformation'
   },
-  targetProperty: { hidden: true },
+  targetProperty: { 
+    createVisibility: 'HIDDEN',
+    section: 'ownerInformation'
+  },
   junctionDAOKey: 'signingOfficerJunctionDAO'
 });
 

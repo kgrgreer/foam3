@@ -159,8 +159,8 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
       (xeroMobilePhone.getPhoneAreaCode() != null ? xeroMobilePhone.getPhoneAreaCode() : "") +
       (xeroMobilePhone.getPhoneNumber() != null ? xeroMobilePhone.getPhoneNumber() : "");
 
-      newContact.setBusinessPhoneNumber(phoneNumber);
-      newContact.setBusinessPhoneNumberVerified(! SafetyUtil.isEmpty(phoneNumber));
+      newContact.setPhoneNumber(phoneNumber);
+      newContact.setPhoneNumberVerified(! SafetyUtil.isEmpty(phoneNumber));
       newContact.setMobileNumber(mobileNumber);
       newContact.setMobileNumberVerified(! SafetyUtil.isEmpty(mobileNumber));
     }

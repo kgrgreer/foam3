@@ -121,8 +121,7 @@ foam.CLASS({
         return net.nanopay.admin.model.AccountStatus.DISABLED != getStatus();
       `,
       // NOTE: '_enabled_ is deprecated; use _status_ instead.',
-      hidden: true,
-      section: 'systemInformation'
+      section: 'deprecatedInformation'
     },
     {
       class: 'foam.core.Enum',

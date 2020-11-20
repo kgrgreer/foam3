@@ -61,7 +61,7 @@ foam.RELATIONSHIP({
   forwardName: 'ipHistories',
   inverseName: 'user',
   sourceProperty: {
-    hidden: true,
+    section: 'operationsInformation',
     transient: true
   },
   targetProperty: {

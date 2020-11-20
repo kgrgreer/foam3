@@ -33,9 +33,8 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'hasIntegrated',
-      value: false,
-      hidden: true,
-      section: 'systemInformation'
+      section: 'systemInformation',
+      value: false
     },
   ]
 });
