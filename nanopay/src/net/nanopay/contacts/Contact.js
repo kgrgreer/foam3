@@ -121,6 +121,7 @@ foam.CLASS({
     { name: 'INVALID_LAST_NAME', message: 'Last name cannot exceed 70 characters' },
     { name: 'CONFIRMATION_REQUIRED', message: 'Confirmation required' },
     { name: 'PLACEHOLDER', message: 'Please select....' },
+    { name: 'HEADER', message: 'Country of bank account' },
     { name: 'MISSING_BANK_WARNING', message: 'Missing bank information' }
   ],
 
@@ -311,6 +312,7 @@ foam.CLASS({
           of: net.nanopay.bank.BankAccount,
           predicate: pred,
           placeholder: X.data.PLACEHOLDER,
+          header: X.data.HEADER,
           copyOldData: function(o) { return { isDefault: o.isDefault, forContact: o.forContact }; }
         }, X);
         v.data$.sub(function() { v.data.forContact = true; });

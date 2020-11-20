@@ -1526,6 +1526,8 @@ p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.INVALID_EMAIL",loca
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.INVALID_FIRST_NAME",locale:"pt",source:"net.nanopay.contacts.Contact.INVALID_FIRST_NAME",target:"O nome não pode ter mais de 70 caracteres."})
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.INVALID_LAST_NAME",locale:"pt",source:"net.nanopay.contacts.Contact.INVALID_LAST_NAME",target:"O sobrenome não pode ter mais de 70 caracteres."})
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.CONFIRMATION_REQUIRED",locale:"pt",source:"net.nanopay.contacts.Contact.CONFIRMATION_REQUIRED",target:"Necessária confirmação."})
+p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.HEADER",locale:"pt",source:"net.nanopay.contacts.Contact.HEADER",target:"país da conta bancária"})
+p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.PLACEHOLDER",locale:"pt",source:"net.nanopay.contacts.Contact.PLACEHOLDER",target:"por favor selecione..."})
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.ORGANIZATION.label",locale:"pt",source:"net.nanopay.contacts.Contact.ORGANIZATION.label",target:"organização"})
 
 p({class:"foam.i18n.Locale",id:"net.nanopay.contacts.Contact.ORGANIZATION.documentation",locale:"pt",source:"net.nanopay.contacts.Contact.ORGANIZATION.documentation",target:"A organização / empresa associada ao contato."})
