@@ -107,7 +107,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'branchCode',
-      section: 'accountDetails',
+      section: 'accountInformation',
       updateVisibility: 'RO',
       validateObj: function(branchCode) {
         var regex = /^[0-9]{5}$/;
@@ -149,7 +149,7 @@ foam.CLASS({
       class: 'String',
       name: 'accountType',
       updateVisibility: 'RO',
-      section: 'accountDetails',
+      section: 'accountInformation',
       view: {
         class: 'foam.u2.view.ChoiceView',
         placeholder: 'Please select',
@@ -169,7 +169,7 @@ foam.CLASS({
       name: 'accountOwnerType',
       label: 'Account holder',
       updateVisibility: 'RO',
-      section: 'accountDetails',
+      section: 'accountInformation',
       view: {
         class: 'foam.u2.view.ChoiceView',
         placeholder: 'Please select',
