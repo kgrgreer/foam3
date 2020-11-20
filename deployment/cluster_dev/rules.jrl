@@ -6,6 +6,7 @@ p({
       class: "net.nanopay.auth.ServiceProviderURL",
       spid: "treviso",
       urls: [
+        "localhost",
         "treviso.development.medusa.nanopay.net"
       ]
     },
@@ -13,7 +14,6 @@ p({
       class: "net.nanopay.auth.ServiceProviderURL",
       spid: "nanopay",
       urls: [
-        "localhost",
         "development.medusa.nanopay.net"
       ]
     }
