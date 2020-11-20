@@ -24,6 +24,7 @@ p({
   "version":"0",
   "visible":true,
   "enabled":true,
+  "keywords":["featured"],
   "icon":"/images/capabilityIcons/SigningOfficerIcon.svg",
   "associatedEntity":2,
   "permissionsIntercepted":[
