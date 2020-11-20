@@ -20,6 +20,7 @@ var classes = [
   'net.nanopay.tx.cico.VerificationTransaction',
   'net.nanopay.tx.cico.CITransaction',
   'net.nanopay.tx.cico.COTransaction',
+  'net.nanopay.tx.cico.InterTrustTransaction',
   'net.nanopay.tx.cico.EFTFile',
   'net.nanopay.tx.cico.EFTFileGenerator',
   'net.nanopay.tx.cico.EFTFileStatus',

@@ -17,8 +17,10 @@
 
 foam.CLASS({
   package: 'net.nanopay.tx.cico',
-  name: 'CITransaction',
+  name: 'InterTrustTransaction',
   extends: 'net.nanopay.tx.ClearingTimeTransaction',
+  documentation: ` This transaction is for sending between two accounts that are represented by different trustAccounts. extending transactions must fulfill eft and actual sending functions
+  `
 
   javaImports: [
     'foam.dao.DAO',
@@ -38,10 +40,10 @@ foam.CLASS({
     {
       name: 'name',
       factory: function() {
-        return 'Cash In';
+        return 'InterTrust Transaction';
       },
       javaFactory: `
-        return "Cash In";
+        return "InterTrust Transaction";
       `
     },
     {
@@ -105,11 +107,21 @@ foam.CLASS({
         super.validate(x);
         Logger logger = (Logger) x.get("logger");
 
-        // Check source account
-        if ( BankAccountStatus.UNVERIFIED.equals(((BankAccount)findSourceAccount(x)).getStatus())) {
-          logger.error("Source bank account must be verified");
-          throw new ValidationException("Source bank account must be verified");
-        }
+
+        Account source = findSourceAccount(x);
+        Account destination = findDestinationAccount(x);
+
+        // source and destination must be digitals
+        if ( ! (source instanceof DigitalAccount) )
+          throw new ValidationException("Source must be digital");
+        if ( ! (destination instanceof DigitalAccount) )
+          throw new ValidationException("Destination must be digital");
+
+        // Transaction must be between different trusts
+        TrustAccount sourceTrust = TrustAccount.find(x, source);
+        TrustAccount destinationTrust = TrustAccount.find(x, destination);
+        if (sourceTrust.getId() == destinationTrust.getId())
+          throw new ValidationException("This transaction can only be used between trust accounts. ");
 
         // Check transaction status and lifecycleState
         Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
@@ -119,7 +131,7 @@ foam.CLASS({
           && ! getStatus().equals(TransactionStatus.DECLINED)
           && oldTxn.getLifecycleState() != LifecycleState.PENDING
         ) {
-          logger.error("Unable to update CITransaction, if transaction status is completed or declined. Transaction id: " + getId());
+          logger.error("Unable to update InterTrustTransaction, if transaction status is completed or declined. Transaction id: " + getId());
           throw new ValidationException("Unable to update CITransaction, if transaction status is completed or declined. Transaction id: " + getId());
         }
       `

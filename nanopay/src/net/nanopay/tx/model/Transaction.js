@@ -1015,7 +1015,7 @@ foam.CLASS({
       `
     },
     {
-      documentation: `return true when status change is such that normal Transfers should be executed (applied)`,
+      documentation: `return true when status change is such that Transfers should be executed (applied)`,
       name: 'canTransfer',
       args: [
         {

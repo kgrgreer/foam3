@@ -107,8 +107,8 @@ foam.CLASS({
         // Check destination account
         Account account = findDestinationAccount(x);
         if ( account instanceof BankAccount && BankAccountStatus.UNVERIFIED.equals(((BankAccount)findDestinationAccount(x)).getStatus())) {
-          logger.error("Bank account must be verified");
-          throw new RuntimeException("Bank account must be verified");
+          logger.error("Destination bank account must be verified");
+          throw new ValidationException("Destination bank account must be verified");
         }
 
         // Check transaction status and lifecycleState
@@ -119,8 +119,8 @@ foam.CLASS({
           && ! getStatus().equals(TransactionStatus.DECLINED)
           && oldTxn.getLifecycleState() != LifecycleState.PENDING
         ) {
-          logger.error("Unable to update COTransaction, if transaction status is accepted or declined. Transaction id: " + getId());
-          throw new ValidationException("Unable to update COTransaction, if transaction status is accepted or declined. Transaction id: " + getId());
+          logger.error("Unable to update COTransaction, if transaction status is completed or declined. Transaction id: " + getId());
+          throw new ValidationException("Unable to update COTransaction, if transaction status is completed or declined. Transaction id: " + getId());
         }
       `
     },

@@ -641,6 +641,7 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/ui/CicoView', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/AlternaEFTDownload', flags: ['web'] },
   { name: 'net/nanopay/tx/cico/CITransaction' },
+  { name: 'net/nanopay/tx/cico/InterTrustTransaction' },
   { name: 'net/nanopay/tx/cico/EFTFile' },
   { name: 'net/nanopay/tx/cico/EFTFileGenerator' },
   { name: 'net/nanopay/tx/cico/EFTFileStatus' },
