@@ -39,7 +39,7 @@ foam.CLASS({
     'data',
     {
       name: 'prop',
-      expression: function(data) {
+      expression: function(data, hideInnerLineItems) {
         var of = this.data.cls_;
         var props = of.getAxiomsByClass(foam.core.Property);
         var candidates = [];
@@ -48,13 +48,17 @@ foam.CLASS({
           var p = props[i];
 
           // filter unnecessary properties
-          if ( p.name !== 'id' && p.name !== 'name' ) {
+          if ( p.name !== 'id' && p.name !== 'name' && ! (hideInnerLineItems && p.name == 'lineItems') ) {
             candidates.push(p);
           }
         }
 
         return candidates;
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'hideInnerLineItems'
     }
   ],
 
