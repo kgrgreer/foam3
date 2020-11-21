@@ -153,10 +153,7 @@ foam.CLASS({
               .setEmailName("compliance-notification-to-user")
               .build();
 
-          Themes themes = (Themes) x.get("themes");
-          Theme theme = themes.findThemeBySpid(((X) x.put("subject", new Subject.Builder(x).setUser(business).build())));
-          X notificationX = theme != null ? (X) x.put("theme", theme) : x;
-          business.doNotify(notificationX, notification);
+          business.doNotify(x, notification);
 
         } catch (Throwable t) {
           String msg = String.format("Email meant for business Error: User (id = %1$s) has been enabled for international payments.", business.getId());
