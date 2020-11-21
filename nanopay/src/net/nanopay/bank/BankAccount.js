@@ -107,7 +107,7 @@ foam.CLASS({
       name: 'accountNumber',
       documentation: 'The account number of the bank account.',
       updateVisibility: 'RO',
-      section: 'accountDetails',
+      section: 'accountInformation',
       view: {
         class: 'foam.u2.tag.Input',
         placeholder: '1234567',
@@ -158,7 +158,7 @@ foam.CLASS({
       name: 'status',
       documentation: 'Tracks the status of the bank account.',
       tableWidth: 82,
-      section: 'administration',
+      section: 'operationsInformation',
       writePermissionRequired: true,
       tableCellFormatter: function(a) {
         var backgroundColour = 'transparent';
@@ -211,19 +211,19 @@ foam.CLASS({
     { // REVIEW: remove
       class: 'String',
       name: 'institutionNumber',
-      section: 'administration',
+      section: 'accountInformation',
     },
     { // REVIEW: remove
       class: 'String',
       name: 'branchId',
-      section: 'administration',
+      section: 'accountInformation',
     },
     {
       class: 'Long',
       name: 'randomDepositAmount',
       documentation:`A small financial sum deposited into a bank account to test
         onboarding onto our system.`,
-      section: 'administration',
+      section: 'operationsInformation',
       networkTransient: true
     },
     {
@@ -232,14 +232,14 @@ foam.CLASS({
       documentation: `Defines the number of times it is attempted to verify
         ownership of the bank account.`,
       value: 0,
-      section: 'administration',
+      section: 'operationsInformation',
       writePermissionRequired: true
     },
     {
       class: 'DateTime',
       name: 'microVerificationTimestamp',
       documentation: 'The date and time of when ownership of the bank account is verified.',
-      section: 'administration',
+      section: 'operationsInformation'
     },
     {
       class: 'Reference',
@@ -248,7 +248,7 @@ foam.CLASS({
       documentation: `The name of the country associated with the bank account.
         This should be set by the child class.
       `,
-      section: 'accountDetails',
+      section: 'accountInformation',
       visibility: 'RO',
       view: {
         class: 'foam.u2.view.ReferencePropertyView',
@@ -281,12 +281,13 @@ foam.CLASS({
       name: 'integrationId',
       documentation:`A unique identifier for a bank account within the
         client's accounting software.`,
-      section: 'administration'
+      section: 'systemInformation'
     },
     {
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Address',
       name: 'address',
+      section: 'ownerInformation',
       documentation: `User pad authorization address.`,
       // section: 'pad',
       // Note: To be removed
@@ -298,6 +299,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Address',
       name: 'bankAddress',
+      section: 'accountInformation',
       documentation: `Returns the bank account address from the Address model.`,
       // section: 'pad',
       factory: function() {
@@ -331,6 +333,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'forContact',
+      section: 'ownerInformation',
       documentation: `Flag for whether bank account is owned by a contact.
           Required for visibility property expressions.`
     },
@@ -357,6 +360,7 @@ foam.CLASS({
     {
       name: 'name',
       label: 'Nickname',
+      section: 'accountInformation',
       order: 4,
       validateObj: function(name) {
         if ( name === '' || ! name ) {
@@ -369,7 +373,7 @@ foam.CLASS({
       name: 'iban',
       label: 'International Bank Account Number (IBAN)',
       required: true,
-      section: 'accountDetails',
+      section: 'accountInformation',
       documentation: `Standard international numbering system developed to
           identify an overseas bank account.`,
       createVisibility: 'RW',
@@ -381,11 +385,12 @@ foam.CLASS({
       name: 'bankCode',
       documentation: `International bank code that identifies banks worldwide. BIC/SWIFT`,
       updateVisibility: 'RO',
-      section: 'accountDetails'
+      section: 'accountInformation'
     },
     {
       class: 'String',
-      name: 'verifiedBy'
+      name: 'verifiedBy',
+      section: 'operationsInformation'
     },
     {
       class: 'String',

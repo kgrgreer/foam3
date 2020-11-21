@@ -90,7 +90,7 @@ foam.CLASS({
       order: 1
     },
     {
-      name: 'accountDetails',
+      name: 'accountInformation',
       order: 2
     },
     {
@@ -105,15 +105,32 @@ foam.CLASS({
       order: 4
     },
     {
-      name: 'administration',
-      permissionRequired: true,
+      name: 'complianceInformation',
+      title: 'Compliance',
       order: 5
     },
     {
-      name: '_defaultSection',
-      title: 'Relationships',
-      permissionRequired: true,
+      name: 'operationsInformation',
+      title: 'Operations',
       order: 6
+    },
+    {
+      name: 'ownerInformation',
+      title: 'Owner',
+      order: 7
+    },
+    {
+      name: 'transactionInformation',
+      title: 'Transaction',
+      order: 8
+    },
+    {
+      name: 'systemInformation',
+      order: 9
+    },
+     {
+       name: 'deprecated',
+       order: 10
      }
   ],
 
@@ -132,7 +149,7 @@ foam.CLASS({
         return getClass().getSimpleName();
       `,
       tableWidth: 150,
-      section: 'accountType',
+      section: 'accountInformation',
       visibility: 'RO'
     },
     {
@@ -140,7 +157,7 @@ foam.CLASS({
       name: 'id',
       includeInDigest: true,
       documentation: 'The ID for the account.',
-      section: 'administration',
+      section: 'accountInformation',
       visibility: 'RO',
       tableWidth: 150
     },
@@ -150,7 +167,7 @@ foam.CLASS({
       documentation: 'Determines whether the account is deleted.',
       value: false,
       includeInDigest: false,
-      section: 'administration',
+      section: 'deprecated',
       writePermissionRequired: true,
       visibility: 'RO',
       tableWidth: 85
@@ -167,7 +184,7 @@ foam.CLASS({
           return 'Account name may not consist of only whitespace.';
         }
       },
-      section: 'accountDetails',
+      section: 'accountInformation',
       order: 1,
       tableWidth: 200
     },
@@ -178,7 +195,7 @@ foam.CLASS({
       documentation: `The given description of the account, provided by
         the individual person, or real user.`,
       label: 'Memo',
-      section: 'accountDetails',
+      section: 'accountInformation',
       order: 2
     },
     {
@@ -187,7 +204,7 @@ foam.CLASS({
       documentation: 'Determines whether an account can receive transfers.',
       value: true,
       includeInDigest: false,
-      section: 'administration'
+      section: 'systemInformation'
     },
     {
       class: 'Boolean',
@@ -195,7 +212,7 @@ foam.CLASS({
       documentation: 'Determines whether an account can make transfers out.',
       value: true,
       includeInDigest: false,
-      section: 'administration'
+      section: 'systemInformation'
     },
     {
       class: 'Reference',
@@ -209,7 +226,7 @@ foam.CLASS({
       `,
       tableWidth: 127,
       writePermissionRequired: true,
-      section: 'accountDetails',
+      section: 'accountInformation',
       order: 3,
       view: function(_, X) {
         return {
@@ -232,7 +249,7 @@ foam.CLASS({
       label: 'Set As Default',
       value: false,
       includeInDigest: false,
-      section: 'administration',
+      section: 'operationsInformation',
       tableHeaderFormatter: function(axiom) {
         this.add('Default');
       },
@@ -337,7 +354,7 @@ foam.CLASS({
       name: 'created',
       includeInDigest: true,
       documentation: 'The date and time of when the account was created in the system.',
-      section: 'administration',
+      section: 'accountInformation',
       visibility: 'RO',
     },
     {
@@ -346,7 +363,7 @@ foam.CLASS({
       name: 'createdBy',
       includeInDigest: true,
       documentation: 'The ID of the User who created the account.',
-      section: 'administration',
+      section: 'accountInformation',
       visibility: 'RO',
     },
     {
@@ -355,7 +372,7 @@ foam.CLASS({
       name: 'createdByAgent',
       includeInDigest: true,
       documentation: 'The ID of the Agent who created the account.',
-      section: 'administration',
+      section: 'accountInformation',
       // visibility: 'RO',
       visibility: 'HIDDEN'
     },
@@ -364,7 +381,7 @@ foam.CLASS({
       name: 'lastModified',
       includeInDigest: true,
       documentation: 'The date and time of when the account was last changed in the system.',
-      section: 'administration',
+      section: 'accountInformation',
       visibility: 'RO',
     },
     {
@@ -374,7 +391,7 @@ foam.CLASS({
       includeInDigest: true,
       documentation: `The unique identifier of the individual person, or real user,
         who last modified this account.`,
-      section: 'administration',
+      section: 'accountInformation',
       visibility: 'RO',
       tableCellFormatter: function(value, obj, axiom) {
         this.__subSubContext__.userDAO
@@ -388,6 +405,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'summary',
+      section: 'accountInformation',
       visibility: 'RO',
       transient: true,
       documentation: `
@@ -419,7 +437,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
       includeInDigest: true,
-      section: 'administration',
+      section: 'systemInformation',
       value: foam.nanos.auth.LifecycleState.PENDING,
       writePermissionRequired: true,
       createVisibility: 'HIDDEN',
