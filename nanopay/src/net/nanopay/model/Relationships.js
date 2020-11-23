@@ -159,6 +159,9 @@ foam.RELATIONSHIP({
   cardinality: '1:*',
   sourceProperty: {
     section: 'parentSection'
+  },
+  targetProperty: {
+    section: 'parentSection'
   }
 });
 

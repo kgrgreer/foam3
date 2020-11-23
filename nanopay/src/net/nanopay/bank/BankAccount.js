@@ -263,7 +263,7 @@ foam.CLASS({
         display purposes. This should be set by the child class.
       `,
       tableWidth: 91,
-      section: 'accountDetails',
+      section: 'accountInformation',
       visibility: 'RO',
       view: function(_, X) {
         return {
@@ -300,6 +300,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.Address',
       name: 'bankAddress',
       section: 'accountInformation',
+      visibility: 'HIDDEN',
       documentation: `Returns the bank account address from the Address model.`,
       // section: 'pad',
       factory: function() {
@@ -311,7 +312,7 @@ foam.CLASS({
       name: 'availableCurrencies',
       documentation: `Contains list of available currencies to receive or send in selected account country`,
       visibility: 'HIDDEN',
-      section: 'accountDetails',
+      section: 'accountInformation',
       expression: function(user, currencyDAO, forContact) {
         let propInfo = forContact ? this.PaymentProviderCorridor.TARGET_COUNTRY : this.PaymentProviderCorridor.SOURCE_COUNTRY;
         let propInfoCurrency = forContact ? this.PaymentProviderCorridor.TARGET_CURRENCIES : this.PaymentProviderCorridor.SOURCE_CURRENCIES;
@@ -343,7 +344,7 @@ foam.CLASS({
       updateVisibility: 'RO',
       writePermissionRequired: false,
       gridColumns: 12,
-      section: 'accountDetails',
+      section: 'accountInformation',
       view: function(_, X) {
         return {
           class: 'foam.u2.view.RichChoiceView',
