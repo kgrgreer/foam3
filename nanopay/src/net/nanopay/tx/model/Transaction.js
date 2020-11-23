@@ -1386,7 +1386,7 @@ foam.CLASS({
       for (int i = 0; i < tr.length; i++ ){
         if (tr[i].getStage() != stage ) {
           Transfer[] tr2 = new Transfer[tr.length - 1];
-          system.arraycopy(tr,0,tr2,0,i);
+          System.arraycopy(tr,0,tr2,0,i);
           for (int j = i ; j < tr.length; j++ ) {
             if (tr[j].getStage() == stage ){
               tr2[i] = tr[j];

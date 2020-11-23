@@ -147,7 +147,7 @@ foam.CLASS({
         // New transaction, can transfer when
         // 1. COMPLETED
         // 2. PENDING and has no parent or parent is COMPLETED.
-        if ( oldTxn == null ) {
+        if ( oldTxn == null ) { // TODO rethink this as its not really correct.
           if ( getStatus() == TransactionStatus.COMPLETED ) return true;
           if ( getStatus() == TransactionStatus.PENDING ) {
             if ( SafetyUtil.isEmpty(getParent()) ) return true;

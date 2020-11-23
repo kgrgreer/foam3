@@ -135,6 +135,50 @@ foam.CLASS({
           throw new ValidationException("Unable to update CITransaction, if transaction status is completed or declined. Transaction id: " + getId());
         }
       `
-    }
+    },
+    {
+      name: 'getStage',
+      documentation: 'Intertrust transactions have multi-stage transfers, 0 on pending, 1 when completed.',
+      type: 'Long',
+      javaCode: `
+        if ( getStatus() == TransactionStatus.COMPLETED)
+          return 1;
+        return 0;
+      `,
+    },
+    {
+      name: 'canTransfer',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'oldTxn',
+          type: 'net.nanopay.tx.model.Transaction'
+        }
+      ],
+      type: 'Boolean',
+      javaCode: `
+        /* Allow transfers when:
+        1. (stage 1) status=COMPLETED and lifecycleState=ACTIVE and old txn not in this combo.
+        2. (stage 0) status=PENDING and lifecycleState=ACTIVE, old txn was in PPC, paused or scheduled.
+        */
+        if (
+          ( getStatus() == TransactionStatus.COMPLETED
+          && getLifecycleState() == LifecycleState.ACTIVE
+          && ( oldTxn.getStatus() != TransactionStatus.COMPLETED
+            || oldTxn.getLifecycleState() != LifecycleState.ACTIVE )
+          ) ||
+          ( getStatus() == TransactionStatus.PENDING && (
+            oldTxn.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED
+            || oldTxn.getStatus() == TransactionStatus.PAUSED
+            || oldTxn.getStatus() == TransactionStatus.SCHEDULED)
+          )
+        ) return true;
+
+        return false;
+      `
+    },
   ]
 });
