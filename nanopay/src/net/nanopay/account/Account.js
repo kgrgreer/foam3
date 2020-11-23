@@ -112,26 +112,31 @@ foam.CLASS({
     {
       name: 'operationsInformation',
       title: 'Operations',
+      permissionRequired: true,
       order: 6
     },
     {
       name: 'ownerInformation',
       title: 'Owner',
+      permissionRequired: true,
       order: 7
     },
     {
       name: 'transactionInformation',
       title: 'Transaction',
+      permissionRequired: true,
       order: 8
     },
     {
       name: 'systemInformation',
+      permissionRequired: true,
       order: 9
     },
-     {
-       name: 'deprecated',
-       order: 10
-     }
+    {
+      name: 'deprecated',
+      permissionRequired: true,
+      order: 10
+    }
   ],
 
   properties: [
@@ -158,7 +163,8 @@ foam.CLASS({
       includeInDigest: true,
       documentation: 'The ID for the account.',
       section: 'accountInformation',
-      visibility: 'RO',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
       tableWidth: 150
     },
     {
@@ -355,7 +361,8 @@ foam.CLASS({
       includeInDigest: true,
       documentation: 'The date and time of when the account was created in the system.',
       section: 'accountInformation',
-      visibility: 'RO',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
     },
     {
       class: 'Reference',
@@ -364,7 +371,8 @@ foam.CLASS({
       includeInDigest: true,
       documentation: 'The ID of the User who created the account.',
       section: 'accountInformation',
-      visibility: 'RO',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
     },
     {
       class: 'Reference',
@@ -382,7 +390,8 @@ foam.CLASS({
       includeInDigest: true,
       documentation: 'The date and time of when the account was last changed in the system.',
       section: 'accountInformation',
-      visibility: 'RO',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
     },
     {
       class: 'Reference',
@@ -392,7 +401,8 @@ foam.CLASS({
       documentation: `The unique identifier of the individual person, or real user,
         who last modified this account.`,
       section: 'accountInformation',
-      visibility: 'RO',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
       tableCellFormatter: function(value, obj, axiom) {
         this.__subSubContext__.userDAO
           .find(value)
@@ -406,7 +416,8 @@ foam.CLASS({
       class: 'String',
       name: 'summary',
       section: 'accountInformation',
-      visibility: 'RO',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
       transient: true,
       documentation: `
         Used to display a lot of information in a visually compact way in table views`,
