@@ -1032,6 +1032,7 @@ var classes = [
   'net.nanopay.tx.bmo.BmoAssignedClientValue',
   'net.nanopay.tx.bmo.cico.BmoCITransaction',
   'net.nanopay.tx.bmo.cico.BmoCOTransaction',
+  'net.nanopay.tx.bmo.cico.BmoInterTrustTransaction',
   'net.nanopay.tx.bmo.cico.BmoTransaction',
   'net.nanopay.tx.bmo.cico.BmoVerificationTransaction',
   'net.nanopay.tx.bmo.BmoSFTPCredential',
@@ -1049,6 +1050,7 @@ var classes = [
   // RBC
   'net.nanopay.tx.rbc.RbcCITransaction',
   'net.nanopay.tx.rbc.RbcCOTransaction',
+  'net.nanopay.tx.rbc.RbcInterTrustTransaction',
   'net.nanopay.tx.rbc.RbcVerificationTransaction',
   'net.nanopay.tx.rbc.ftps.RbcFTPSCredential',
   'net.nanopay.tx.rbc.RBCTransactionISO20022Util',
