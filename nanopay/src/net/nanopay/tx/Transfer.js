@@ -105,11 +105,11 @@ foam.CLASS({
       name: 'javaExtras',
       buildJavaClass: function(cls) {
         cls.extras.push(`
-          public Transfer(long amount, long account) {
+          public Transfer(long account, long amount) {
             setAmount(amount);
             setAccount(account);
           }
-          public Transfer(long amount, long account, long stage) {
+          public Transfer(long account, long amount, long stage) {
             setAmount(amount);
             setAccount(account);
             setStage(stage);
