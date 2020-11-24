@@ -38,6 +38,10 @@ p({
     "class": "foam.u2.wizard.StepWizardConfig",
     "allowSkipping": false
   },
+  "visibilityPredicate": {
+    "class":"net.nanopay.crunch.predicate.CheckUserCountry",
+    "country":"CA"
+  },
   "requirementViewTitle":"We require a person authorized to act on behalf of the company to provide certain information to us. In this section, we ask if you are such a person, or alternatively, an email address for someone who is."
 })
 
