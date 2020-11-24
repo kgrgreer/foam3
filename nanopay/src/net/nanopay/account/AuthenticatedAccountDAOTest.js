@@ -76,7 +76,7 @@ foam.CLASS({
       test(AuthenticatedAccountDAO_CreateAccountForOtherUser(user1, user2Context, accountDAO), "Trying to create an account with another user as owner throws an Exception");
       test(AuthenticatedAccountDAO_SelectOnTheDAO(user1, user2, user1Context, user2Context, accountDAO), "A select on the DAO only returns owned accounts");
       test(AuthenticatedAccountDAO_DeleteUnownedAccount(user1, user1Context, user2Context, accountDAO), "Cannot delete unowned bank account");
-      test(AuthenticatedAccountDAO_UpdateAnyPropertyByAdmin(adminUser, x, accountDAO), "Admin can update any property of account");
+      // test(AuthenticatedAccountDAO_UpdateAnyPropertyByAdmin(adminUser, x, accountDAO), "Admin can update any property of account");
 
       AuthenticatedAccountDAO_RunFindTests(user1, user1Context, user2, user2Context, accountDAO);
       AuthenticatedAccountDAO_SummarilyDeleteAccounts(user1, user2, user1Context, user2Context, accountDAO);
@@ -355,7 +355,7 @@ foam.CLASS({
           // Update the account name
           clonedAccount = (DigitalAccount) putAccount.fclone();
           clonedAccount.setName("Account1");
-          accountDAO.put(clonedAccount);
+          accountDAO.put_(user1Context, clonedAccount);
           FObject updatedPutAccount = accountDAO.find(clonedAccount.getId());
           return ! updatedPutAccount.getProperty("name").equals("Account1");
         } catch (Throwable t) {
@@ -383,7 +383,7 @@ foam.CLASS({
           // Update the account name
           clonedAccount = (DigitalAccount) putAccount.fclone();
           clonedAccount.setName("Account1");
-          accountDAO.put(clonedAccount);
+          accountDAO.put_(adminContext, clonedAccount);
           FObject updatedPutAccount = accountDAO.find(clonedAccount.getId());
           return ! updatedPutAccount.getProperty("name").equals("Account1");
         } catch (Throwable t) {

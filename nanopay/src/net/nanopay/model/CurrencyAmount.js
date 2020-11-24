@@ -25,7 +25,8 @@ foam.CLASS({
   messages: [
     { name: 'NO_CURRENCY_ERROR', message: 'Currency required' },
     { name: 'NO_AMOUNT_ERROR', message: 'Amount required' },
-    { name: 'CURRENCY_PLACEHOLDER', message: 'Select currency' }
+    { name: 'CURRENCY_PLACEHOLDER', message: 'Select currency' },
+    { name: 'AVAILABLE_CURRENCIES', message: 'Available Currencies' }
   ],
 
   properties: [
@@ -40,7 +41,7 @@ foam.CLASS({
           placeholder: this.CURRENCY_PLACEHOLDER,
           sections: [
             {
-              heading: 'Available Currencies',
+              heading: this.sourceCls_.AVAILABLE_CURRENCIES,
               dao$: X.data.customCurrencyDAO$
             }
           ]

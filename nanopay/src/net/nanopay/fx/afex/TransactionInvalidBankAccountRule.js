@@ -106,7 +106,10 @@ foam.CLASS({
 
             HashMap<String, Object> destinationArgs = new HashMap<>();
             destinationArgs.put("contactBusiness", txn.getPayer());
-            destinationArgs.put("name", destinationAccountOwner.BUSINESS_NAME);
+            destinationArgs.put("name", destinationAccountOwner.getOrganization() != null ? 
+              destinationAccountOwner.getOrganization() : 
+              destinationAccountOwner.getBusinessName()
+            );
             destinationArgs.put("institutionNumber", destinationAccount.getInstitutionNumber());
             destinationArgs.put("institutionName", destinationAccountInstitutionName);
             destinationArgs.put("accountNumber", destinationAccount.getAccountNumber().substring(destinationAccount.getAccountNumber().length() - 4));

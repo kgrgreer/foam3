@@ -148,6 +148,7 @@ foam.CLASS({
       label: 'Transit',
       section: 'accountDetails',
       updateVisibility: 'RO',
+      createVisibility: 'RW',
       gridColumns: 4,
       view: {
         class: 'foam.u2.tag.Input',
@@ -181,6 +182,7 @@ foam.CLASS({
       documentation: `Provides backward compatibilty for mobile call flow.
           BankAccountInstitutionDAO will lookup the institutionNumber and set the institution property.`,
       updateVisibility: 'RO',
+      createVisibility: 'RW',
       section: 'accountDetails',
       storageTransient: true,
       gridColumns: 3,
@@ -290,7 +292,7 @@ foam.CLASS({
           country: this.country,
           firstName: this.subject.realUser.firstName,
           lastName: this.subject.realUser.lastName,
-          companyName: this.subject.user.businessName,
+          companyName: this.subject.user.organization || this.subject.user.businessName,
           address: this.subject.user.address
         }, this);
       },

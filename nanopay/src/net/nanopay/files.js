@@ -844,6 +844,8 @@ FOAM_FILES([
   { name: 'net/nanopay/security/test/ViewPIIRequestDAOTest' },
   { name: 'net/nanopay/security/test/RollingJournalTest' },
 
+  { name: 'net/nanopay/test/AbliiOnboardingSupport' },
+
   // password entropy
   { name: 'net/nanopay/auth/passwordutil/ClientPasswordEntropy' },
   { name: 'net/nanopay/auth/passwordutil/PasswordEntropy' },
@@ -1466,9 +1468,6 @@ FOAM_FILES([
   { name: 'net/nanopay/business/ruler/RegistrationLoginDisabledRule' },
   { name: 'net/nanopay/business/ruler/InitialBusinessRegistrationRule' },
   { name: 'net/nanopay/business/ruler/businessCapabilitySetUp' },
-
-  // approval
-  { name: 'net/nanopay/approval/UserRefines' },
 
   // bmo
   { name: 'net/nanopay/tx/bmo/BmoAssignedClientValue' },
