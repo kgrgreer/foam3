@@ -22,7 +22,8 @@ foam.CLASS({
   implements: [ 'foam.mlang.Expressions' ],
 
   imports: [
-    'subject'
+    'subject',
+    'translationService'
   ],
 
   requires: [
@@ -50,6 +51,7 @@ foam.CLASS({
     { name: 'UNGER_AGE_LIMIT_ERROR', message: 'Must be at least 18 years old' },
     { name: 'OVER_AGE_LIMIT_ERROR', message: 'Must be less than 125 years old' },
     { name: 'SELECT_JOB_TITLE', message: 'Job title required' },
+    { name: 'PLEASE_SELECT', message: 'Please select...' },
     { name: 'YES', message: 'Yes' },
     { name: 'NO', message: 'No' },
   ],
@@ -96,10 +98,10 @@ foam.CLASS({
           otherKey: 'Other',
           choiceView: {
             class: 'foam.u2.view.ChoiceView',
-            placeholder: 'Please select...',
+            placeholder: X.data.PLEASE_SELECT,
             dao: X.jobTitleDAO,
             objToChoice: function(a) {
-              return [a.name, a.label];
+              return [a.name, X.translationService.getTranslation(foam.locale, `${a.name}.label`, a.label)];
             }
           }
         };

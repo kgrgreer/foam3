@@ -61,6 +61,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'afexTradeResponseNumber',
+      section: 'basicInfo',
       documentation: 'id of the AFEX trade response'
     },
     {
@@ -102,6 +103,7 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.fx.afex.AFEXPaymentStatus',
       name: 'afexPaymentStatus',
+      section: 'basicInfo',
       value: 'PENDING'
     },
     {

@@ -108,7 +108,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.PUBLICLY_TRADED.documentation",target:"Se esta é uma empresa de capital aberto."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SuccessPasswordView.INSTRUCTIONS",target:"Sua senha foi redefinida com sucesso"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SuccessPasswordView.RESET_PASSWORD",target:"Redefina sua senha"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SuccessPasswordView.RESET_PASSWORD",target:"Redefinição de senha"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SuccessPasswordView.BACK_TO",target:"Voltar para fazer login"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.AbliiOverlayActionListView.ACTIVE_IMAGE_URL.label",target:"activeImageURL"})
 
@@ -2039,7 +2039,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirect
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.OWNERSHIP_PERCENT.label",target:"porcentagem de propriedade"})
 p({class:"foam.i18n.Locale",target:"Adicionar detalhes para o proprietário #"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.INVALID_OWNER_NAME",target:"Clique para verificar o nome do proprietário"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.INVALID_OWNER_NAME",target:"Confirme o nome do proprietário da empresa"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.INVALID_NATIONALITY",target:"Selecione sua nacionalidade"})
 //p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.ID.label",target:"id pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.ID.documentation",target:"O ID do beneficiário"})
@@ -2067,7 +2067,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwne
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.CPF.documentation",target:"Número do CPF do beneficiário."})
 
 //p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.CPF_NAME.label",target:"cpfName pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.VERIFY_NAME.label",target:"Verifique se o nome exibido abaixo corresponde ao nome do proprietário."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.VERIFY_NAME.label",target:"Este é o proprietário da empresa?"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.PEPHIORELATED.label",target:"Este proprietário é uma pessoa politicamente exposta ou chefe de uma organização internacional (PEP / HIO)"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.PEPHIORELATED.documentation",target:"Determina se o usuário é uma pessoa _Politicamente Exposta (PEP), Chefe de uma Organização Internacional (HIO) _ nacional ou estrangeira, ou parente dessa pessoa."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.VIEW_COMPLIANCE_HISTORY.label",target:"Ver Histórico de Conformidade"})
@@ -2120,6 +2120,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessAccountData.YES",target:"Sim"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessAccountData.NO",target:"Não"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.SELECT_JOB_TITLE",target:"Cargo obrigatório"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.PLEASE_SELECT",target:"Por favor selecione..."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.account.Account.DEFAULT_MSG",target:"padrão"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.account.Account.SECTION_ACCOUNT_DETAILS.title",target:"Detalhes da conta"})
@@ -2518,7 +2519,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.SOURCE_CURRENCY.label",target:"sourceCurrency"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.SOURCE_CURRENCY.documentation",target:"Source currency"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.REFERENCE_DATA.label",target:"referenceData"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.REFERENCE_DATA.documentation",target:"referenceData holds entities such as the pacs008 message."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.REFERENCE_DATA.documentation",target:"Transaction reference key value data."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.DST_ACCOUNT_ERROR.label",target:"dstAccountError"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.DST_ACCOUNT_ERROR.documentation",target:"This is used strictly for the synchronizing of dstAccount errors on create."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.DESTINATION_CURRENCY.label",target:"destinationCurrency"})
@@ -2941,3 +2942,42 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.RichChoiceView.CHOO
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.RichChoiceView.CLEAR_SELECTION",target:"Claro"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.RichChoiceView.SEARCH_PLACEHOLDER.value",target:"pesquisa"})
+
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"Accountant.label",target:"Contador"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Accounts Manager.label",target:"Gerente de contas"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Accounts Payable Clerk.label",target:"Escriturário de contas a pagar"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"Accounts Payable Manager.label",target:"Gerente de contas a pagar"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Accounts Receivable Clerk.label",target:"Escriturário de contas a receber"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Accounts Receivable Manager.label",target:"Gerente de Contas a Receber"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Cash Manager.label",target:"Gerente de Caixa"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"CEO.label",target:"CEO"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"CFO.label",target:"CFO"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Chairman.label",target:"Chairman"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Company Secretary.label",target:"Secretária da companhia"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Comptroller.label",target:"Controladoria"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Controller.label",target:"Controladoria"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"COO.label",target:"COO"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Director.label",target:"Director"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Finance Manager.label",target:"Gerente de finanças"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Finance Officer.label",target:"Oficial de Finanças"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Financial Controller.label",target:"Controlador financeiro"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"Financial Director.label",target:"Diretor financeiro"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"General Manager.label",target:"Director Geral"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"Group Finance Director.label",target:"Diretor Financeiro do Grupo"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Group Treasury Manager.label",target:"Gerente de Tesouraria do Grupo"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Head of Finance.label",target:"Chefe de finanças"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Head of Treasury.label",target:"Chefe do tesouro"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"Managing Director.label",target:"Diretor Geral"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Office Manager.label",target:"Gerente"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Other.label",target:"De outros"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Owner.label",target:"Proprietário"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"President.label",target:"Presidente"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Treasury Manager.label",target:"Gerente de tesouraria"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"VP of Finance.label",target:"VP de finanças"})
