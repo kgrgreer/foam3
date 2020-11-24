@@ -52,7 +52,7 @@ foam.CLASS({
       class: 'String',
       name: 'sourceCurrency',
       aliases: ['sourceDenomination'],
-      section: 'paymentInfoSource',
+      section: 'basicInfo',
       gridColumns: 5,
       visibility: 'RO',
       factory: function() {
@@ -75,7 +75,7 @@ foam.CLASS({
       class: 'UnitValue',
       name: 'amount',
       label: 'Source Amount',
-      section: 'amountSelection',
+      section: 'basicInfo',
       required: true,
       gridColumns: 5,
       visibility: 'RO',
@@ -136,7 +136,7 @@ foam.CLASS({
         };
       },
       documentation: 'Amount in Receiver Currency',
-      section: 'amountSelection',
+      section: 'basicInfo',
       unitPropValueToString: async function(x, val, unitPropName) {
         var unitProp = await x.securitiesDAO.find(unitPropName);
         if ( unitProp )
