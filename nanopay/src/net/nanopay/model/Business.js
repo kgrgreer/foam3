@@ -86,7 +86,8 @@ foam.CLASS({
     },
     {
       name: 'userInformation',
-      order: 2
+      order: 2,
+      permissionRequired: true
     }
   ],
 
