@@ -98,10 +98,10 @@ foam.CLASS({
       factory: function() {
         return this.Address.create();
       },
-      view: function(_, X) {	
-        return {	
-          class: 'net.nanopay.sme.ui.AddressView'	
-        };	
+      view: function(_, X) {
+        return {
+          class: 'net.nanopay.sme.ui.AddressView'
+        };
       },
       section: 'userInformation'
     },
