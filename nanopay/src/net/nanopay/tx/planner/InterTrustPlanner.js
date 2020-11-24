@@ -50,13 +50,13 @@ foam.CLASS({
         TrustAccount trustAccountTo = TrustAccount.find(x, quote.getDestinationAccount());
 
         //Stage 0 CO transfers
-        quote.addTransferAdvanced(true, trustAccountFrom.getId(), t.getAmount(), 0);
-        quote.addTransferAdvanced(true, quote.getSourceAccount().getId(), -t.getAmount(), 0);
-        quote.addTransferAdvanced(false, trustAccountTo.getReserveAccount(), t.getAmount(), 0);
+        quote.addTransfer(true, trustAccountFrom.getId(), t.getAmount(), 0);
+        quote.addTransfer(true, quote.getSourceAccount().getId(), -t.getAmount(), 0);
+        quote.addTransfer(false, trustAccountTo.getReserveAccount(), t.getAmount(), 0);
         //Stage 1 CI Transfers
-        quote.addTransferAdvanced(true, trustAccountTo.getId(), -t.getAmount(), 1);
-        quote.addTransferAdvanced(true, quote.getDestinationAccount().getId(), t.getAmount(), 1);
-        quote.addTransferAdvanced(false, trustAccountFrom.getReserveAccount(), -t.getAmount(), 1);
+        quote.addTransfer(true, trustAccountTo.getId(), -t.getAmount(), 1);
+        quote.addTransfer(true, quote.getDestinationAccount().getId(), t.getAmount(), 1);
+        quote.addTransfer(false, trustAccountFrom.getReserveAccount(), -t.getAmount(), 1);
       `
     }
   ]

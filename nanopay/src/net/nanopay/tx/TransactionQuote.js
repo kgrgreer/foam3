@@ -147,31 +147,7 @@ foam.CLASS({
       `
     },
     {
-      name: 'addExternalTransfer',
-      documentation: 'helper function for adding transfers to the plan',
-      args: [
-        { name: 'account', type: 'Long' },
-        { name: 'amount', type: 'Long' }
-      ],
-      javaCode: `
-        ExternalTransfer t = new ExternalTransfer(account, amount);
-        getMyTransfers_().add(t);
-      `
-    },
-    {
       name: 'addTransfer',
-      documentation: 'helper function for adding transfers to the plan',
-      args: [
-        { name: 'account', type: 'Long' },
-        { name: 'amount', type: 'Long' }
-      ],
-      javaCode: `
-        Transfer t = new Transfer(account, amount);
-        getMyTransfers_().add(t);
-      `
-    },
-    {
-      name: 'addTransferAdvanced',
       documentation: 'helper function for adding transfers to the plan',
       args: [
         { name: 'internal', type: 'Boolean' },
