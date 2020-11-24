@@ -1774,10 +1774,10 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.Expi
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.ExpirableDocument.EXPIRY.label",target:"Data de validade"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureBusinessRelationship.BUSINESS_TYPE_INFO",target:"Natureza da relação comercial com uma bolsa de corretagem brasileira"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.BrazilBusinessInfoData.NO_NIRE_NUMBER",target:"Por favor, insira o NIRE / número de identificação comercial estadual"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.BrazilBusinessInfoData.NO_NIRE_NUMBER",target:"Por favor, insira o NIRE / número de Identificação do Registro de Empresas"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.BrazilBusinessInfoData.NO_CNPJ",target:"Insira o número do Registro Nacional de Pessoas Jurídicas de 14 dígitos"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.BrazilBusinessInfoData.CNPJ_INVALID",target:"CNPJ obrigatório"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.BrazilBusinessInfoData.STATE_COMMERCIAL_IDENTIFICATION_NUMBER",target:"NIRE / Número de identificação comercial estadual"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.BrazilBusinessInfoData.STATE_COMMERCIAL_IDENTIFICATION_NUMBER",target:"NIRE / número de Identificação do Registro de Empresas"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.BrazilBusinessInfoData.VERIFY_BUSINESS_NAME",target:"Confirme o nome da sua empresa"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.BrazilBusinessInfoData.STATE_INSCRIPTION",target:"IE / Inscrição Estadual"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.BrazilBusinessInfoData.MUNICIPAL_INSCRIPTION",target:"IM / Inscrição Municipal"})
@@ -2943,6 +2943,12 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.RichChoiceView.CLEA
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.view.RichChoiceView.SEARCH_PLACEHOLDER.value",target:"pesquisa"})
 
+p({class:"foam.i18n.Locale",locale:"pt",source:"1.name",target:"Agriculture, Forestry, Fishing and Hunting pt"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.BrazilBusinessInfoData.IM.label",target:"Inscrição Municipal"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.BrazilBusinessInfoData.NIRE.label",target:"Número de Identificação do Registro de Empresas"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.BrazilBusinessInfoData.IE.label",target:"Inscrição Estadual"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.OwnerSection.OWNER_DETAILS",target:"ADetalhes do proprietário número"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"Accountant.label",target:"Contador"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Accounts Manager.label",target:"Gerente de contas"})
