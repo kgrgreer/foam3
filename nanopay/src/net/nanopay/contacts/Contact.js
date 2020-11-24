@@ -291,7 +291,7 @@ foam.CLASS({
       storageTransient: true,
       label: '',
       visibility: function() {
-        return this.countries <= 0 ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+        return this.countries.length == 0 ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
       view: function(_, X) {
         let e = foam.mlang.Expressions.create();
@@ -338,7 +338,8 @@ foam.CLASS({
       flags: ['web'],
       name: 'countries',
       visibility: 'HIDDEN',
-      documentation: `Stores available countries contact can have account domicilied in.`
+      documentation: `Stores available countries contact can have account domicilied in.`,
+      factory: function() { return []; }
     },
     {
       transient: true,
@@ -347,7 +348,7 @@ foam.CLASS({
       documentation: 'GUI when no corridor capabilities have been added to user.',
       section: 'stepTwo',
       visibility: function() {
-        return this.countries <= 0 ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
+        return this.countries.length == 0 ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
       },
       view: function(_, X) {
         return X.E().start().add(X.data.UNABLE_TO_ADD_BANK_ACCOUNT).end();
