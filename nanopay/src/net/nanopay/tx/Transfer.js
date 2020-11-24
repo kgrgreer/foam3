@@ -50,6 +50,7 @@ foam.CLASS({
     {
       name: 'stage',
       class: 'Long',
+      documentation: 'The transaction stage at which to execute this transfer',
       value: 0
     }
   ],
