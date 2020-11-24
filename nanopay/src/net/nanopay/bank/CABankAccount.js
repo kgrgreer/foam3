@@ -118,7 +118,16 @@ foam.CLASS({
       },
       javaGetter: `
         return getAccountNumber();
-      `
+      `,
+      validateObj: function(iban) {
+      }
+    },
+    {
+      name: 'swiftCode',
+      visibility: 'HIDDEN',
+      required: false,
+      validateObj: function(swiftCode) {
+      }
     },
     {
       name: 'bankCode',
