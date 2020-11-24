@@ -57,6 +57,7 @@ foam.CLASS({
     'checkAndNotifyAbilityToReceive',
     'countryDAO',
     'paymentProviderCorridorDAO',
+    'publicBusinessDAO',
     'pushMenu',
     'subject',
     'user'
