@@ -108,7 +108,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.PUBLICLY_TRADED.documentation",target:"Se esta é uma empresa de capital aberto."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SuccessPasswordView.INSTRUCTIONS",target:"Sua senha foi redefinida com sucesso"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SuccessPasswordView.RESET_PASSWORD",target:"Redefina sua senha"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SuccessPasswordView.RESET_PASSWORD",target:"Redefinição de senha"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SuccessPasswordView.BACK_TO",target:"Voltar para fazer login"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.AbliiOverlayActionListView.ACTIVE_IMAGE_URL.label",target:"activeImageURL"})
 
@@ -2039,7 +2039,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirect
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.OWNERSHIP_PERCENT.label",target:"porcentagem de propriedade"})
 p({class:"foam.i18n.Locale",target:"Adicionar detalhes para o proprietário #"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.INVALID_OWNER_NAME",target:"Clique para verificar o nome do proprietário"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.INVALID_OWNER_NAME",target:"Confirme o nome do proprietário da empresa"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.INVALID_NATIONALITY",target:"Selecione sua nacionalidade"})
 //p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.ID.label",target:"id pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.ID.documentation",target:"O ID do beneficiário"})
@@ -2067,7 +2067,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwne
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.CPF.documentation",target:"Número do CPF do beneficiário."})
 
 //p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.CPF_NAME.label",target:"cpfName pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.VERIFY_NAME.label",target:"Verifique se o nome exibido abaixo corresponde ao nome do proprietário."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.VERIFY_NAME.label",target:"Este é o proprietário da empresa?"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.PEPHIORELATED.label",target:"Este proprietário é uma pessoa politicamente exposta ou chefe de uma organização internacional (PEP / HIO)"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.PEPHIORELATED.documentation",target:"Determina se o usuário é uma pessoa _Politicamente Exposta (PEP), Chefe de uma Organização Internacional (HIO) _ nacional ou estrangeira, ou parente dessa pessoa."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.VIEW_COMPLIANCE_HISTORY.label",target:"Ver Histórico de Conformidade"})
