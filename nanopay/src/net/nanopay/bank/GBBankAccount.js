@@ -45,7 +45,7 @@ foam.CLASS({
       class: 'String',
       name: 'sortCode',
       label: 'Sort Code',
-      section: 'accountDetails',
+      section: 'accountInformation',
       updateVisibility: 'RO',
       validateObj: function(sortCode) {
         var sortCodeRegex = /^[A-z0-9a-z]{6}$/;

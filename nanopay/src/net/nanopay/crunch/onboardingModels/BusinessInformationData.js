@@ -222,7 +222,7 @@ foam.CLASS({
         User businessUser = (User) (userDAO.find(businessId)).fclone();
         Business business = (Business) businessUser;
         business.setBusinessTypeId(getBusinessTypeId());
-        userDAO.put(business);
+        userDAO.inX(x).put(business);
       `,
     }
   ]

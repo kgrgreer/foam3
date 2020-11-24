@@ -378,6 +378,12 @@ public class BlacklistTest extends Test {
     ucjCDR.setData(cdr);
     userCapabilityJunctionDAO.inX(myAdminContext).put(ucjCDR);
 
+    ucjCDR = new UserCapabilityJunction();
+    ucjCDR.setSourceId(myAdmin.getId());
+    ucjCDR.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-1a5");
+    ucjCDR.setStatus(CapabilityJunctionStatus.GRANTED);
+    userCapabilityJunctionDAO.inX(myAdminContext).put(ucjCDR);
+
     List<ApprovalRequest> approvalRequests = ((ArraySink) approvalRequestDAO
       .where(foam.mlang.MLang.AND( new foam.mlang.predicate.Predicate[] {
         foam.mlang.MLang.EQ(ApprovalRequest.DAO_KEY, "userCapabilityJunctionDAO"),
