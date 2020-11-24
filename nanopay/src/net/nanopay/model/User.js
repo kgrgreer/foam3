@@ -111,6 +111,7 @@ foam.CLASS({
       name: 'previousStatus',
       documentation: `Tracks the previous status of the User.`,
       section: 'operationsInformation',
+      order: 11,
       externalTransient: true
     },
     {
@@ -121,7 +122,8 @@ foam.CLASS({
         return net.nanopay.admin.model.AccountStatus.DISABLED != getStatus();
       `,
       // NOTE: '_enabled_ is deprecated; use _status_ instead.',
-      section: 'deprecatedInformation'
+      section: 'deprecatedInformation',
+      order: 10
     },
     {
       class: 'foam.core.Enum',
@@ -156,6 +158,7 @@ foam.CLASS({
         }
       },
       section: 'operationsInformation',
+      order: 10,
       sheetsOutput: true
     },
     {
@@ -267,6 +270,7 @@ foam.CLASS({
       visibility: 'RO',
       tableWidth: 85,
       section: 'deprecatedInformation',
+      order: 20,
       externalTransient: true
     },
     {
@@ -318,6 +322,7 @@ foam.CLASS({
       class: 'FObjectArray',
       name: 'approvalRequests',
       section: 'operationsInformation',
+      order: 40,
       of: 'foam.nanos.approval.ApprovalRequest',
       view: { class: 'foam.u2.view.DAOtoFObjectArrayView' },
       visibility: 'RO',

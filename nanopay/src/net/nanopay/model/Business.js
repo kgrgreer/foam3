@@ -81,8 +81,12 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'userInformation'
-      //isAvailable: () => false
+      name: 'businessInformation',
+      order: 1
+    },
+    {
+      name: 'userInformation',
+      order: 2
     }
   ],
 
@@ -367,7 +371,8 @@ foam.CLASS({
       documentation: 'Represents the people who own the majority shares in a business.',
       view: { class: 'foam.u2.view.DAOtoFObjectArrayView' },
       createVisibility: 'HIDDEN',
-      section: 'ownerInformation'
+      section: 'ownerInformation',
+      order: 20
     },
     {
       class: 'Boolean',
@@ -458,7 +463,8 @@ foam.CLASS({
       class: 'FObjectArray',
       name: 'businessDirectors',
       of: 'net.nanopay.model.BusinessDirector',
-      section: 'ownerInformation'
+      section: 'ownerInformation',
+      order: 50
     },
     {
       class: 'foam.nanos.fs.FileProperty',
@@ -496,6 +502,7 @@ foam.CLASS({
     },
     {
       name: 'email',
+      section: 'businessInformation',
       validateObj: function() {}
     },
     {

@@ -83,7 +83,12 @@ foam.CLASS({
   sections: [
     {
       name: 'userInformation',
-      title: 'Contact Information'
+      title: 'Contact Information',
+      order: 1
+    },
+    {
+      name: 'businessInformation',
+      order: 2
     }
   ],
 
@@ -194,6 +199,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'confirm',
       documentation: `True if the user confirms their relationship with the contact.`,
+      section: 'operationsInformation',
       label: '',
       updateVisibility: function() {
         return foam.u2.DisplayMode.HIDDEN;

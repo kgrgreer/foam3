@@ -672,6 +672,9 @@ foam.RELATIONSHIP({
   sourceProperty: {
     readPermissionRequired: true,
     section: 'contactInformation'
+  },
+  targetProperty: {
+    section: 'contactInformation'
   }
 });
 
@@ -737,11 +740,14 @@ foam.RELATIONSHIP({
   inverseName: 'businessesInWhichThisUserIsASigningOfficer',
   sourceProperty: {
     createVisibility: 'HIDDEN',
-    section: 'ownerInformation'
+    section: 'ownerInformation',
+    order: 30
   },
-  targetProperty: { 
+  targetProperty: {
+    label: 'Businesses User is Signing Officer',
     createVisibility: 'HIDDEN',
-    section: 'ownerInformation'
+    section: 'ownerInformation',
+    order: 31
   },
   junctionDAOKey: 'signingOfficerJunctionDAO'
 });
@@ -810,7 +816,8 @@ foam.RELATIONSHIP({
   inverseName: 'business',
   targetDAOKey: 'beneficialOwnerDAO',
   sourceProperty: {
-    section: 'ownerInformation'
+    section: 'ownerInformation',
+    order: 40
   }
 });
 
@@ -1019,7 +1026,8 @@ foam.RELATIONSHIP({
   },
   sourceProperty: {
     readPermissionRequired: true,
-    section: 'complianceInformation'
+    section: 'complianceInformation',
+    order: 2
   }
 });
 
