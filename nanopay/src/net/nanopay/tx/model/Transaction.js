@@ -446,7 +446,6 @@ foam.CLASS({
       label: 'Reference Number',
       section: 'basicInfo',
       includeInDigest: true,
-      networkTransient: true,
       tableWidth: 50
     },
      {
@@ -796,21 +795,9 @@ foam.CLASS({
       }
     },
     {
-      documentation: `referenceData holds entities such as the pacs008 message.`,
+      class: 'Map',
       name: 'referenceData',
-      class: 'FObjectArray',
-      of: 'foam.core.FObject',
-      createVisibility: 'HIDDEN',
-      readVisibility: function(referenceData) {
-        return referenceData && referenceData.length > 0 ?
-          foam.u2.DisplayMode.RO :
-          foam.u2.DisplayMode.HIDDEN;
-      },
-      updateVisibility: function(referenceData) {
-        return referenceData && referenceData.length > 0 ?
-          foam.u2.DisplayMode.RO :
-          foam.u2.DisplayMode.HIDDEN;
-      },
+      section: 'basicInfo'
     },
     {
       class: 'String',

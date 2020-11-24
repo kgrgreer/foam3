@@ -3,7 +3,7 @@ p({
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-20",
   "name":"Final approval",
   "description":"Registering with Payment Provider",
-  "icon":"/images/capabilityIcons/BusinessRegistrationCap.svg",
+  "icon":"/images/capabilityIcons/finalApprovalCap.svg",
   "version":"0",
   "enabled":true,
   "visible":true,
