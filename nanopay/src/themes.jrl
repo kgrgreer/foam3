@@ -1,9 +1,7 @@
 p({
   "class":"foam.nanos.theme.Theme",
   "id":"D306F95E-4C4F-4C2B-BC5F-F67CFFE3EC99",
-  "name":"nanopay Operator",
-  "appName":"nanopay",
-  "description":"nanopay",
+  "name":"Operator",
   "navigationRootMenu":"",
   "settingsRootMenu":"settings",
   "logoRedirect":"accounts",

@@ -84,7 +84,7 @@ foam.CLASS({
     },
     {
       name: 'branchCode',
-      section: 'accountDetails',
+      section: 'accountInformation',
       updateVisibility: 'RO',
       validateObj: function(branchCode) {
         var branchCodeRegex = /^[0-9]{4}$/;

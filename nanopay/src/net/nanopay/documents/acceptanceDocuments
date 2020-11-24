@@ -18,7 +18,7 @@ p({
   "id": 16,
   "title": "the people who own 25% or more of the business, either directly or indirectly, have been listed and their information is accurate.",
   "name": "certifyOwnersOwnMoreThen25Percent",
-  "checkboxText": "I certify that "
+  "checkboxText": "I certify that ",
   "printable": false,
   "documentType": 0
 })

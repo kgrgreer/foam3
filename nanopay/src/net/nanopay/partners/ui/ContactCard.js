@@ -231,7 +231,7 @@ foam.CLASS({
         }).addClass('profilePicture').end()
         .start().addClass('companyInfoDiv')
           .start('h2').addClass('companyName')
-            .add(i.businessName ? i.businessName : '')
+            .add(i.organization ? i.organization : '')
           .end()
           .start('h2').addClass('companyAddress')
             .add(this.addressLine1)

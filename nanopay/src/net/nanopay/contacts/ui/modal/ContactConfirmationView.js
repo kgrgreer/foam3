@@ -86,7 +86,7 @@ foam.CLASS({
               .add(this.BUSINESS_NAME_LABEL)
             .end()
             .start().addClass(this.myClass('info-slot-value'))
-              .add(this.data.businessName)
+              .add(this.data.organization)
             .end()
           .end()
           .start().addClass(this.myClass('info-slot'))

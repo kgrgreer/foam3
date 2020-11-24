@@ -697,7 +697,7 @@ foam.CLASS({
 
   reactions: [
     ['data', 'propertyChange', 'fromData'],
-    ['', 'propertyChange.choiceData_', 'fromData']
+    ['', 'propertyChange.data', 'fromData']
   ],
 
   listeners: [

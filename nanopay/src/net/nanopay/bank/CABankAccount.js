@@ -61,7 +61,7 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'accountDetails',
+      name: 'accountInformation',
       title: function(forContact) {
         return forContact ? '' : this.SECTION_DETAILS_TITLE_VOID;
       },
@@ -93,19 +93,19 @@ foam.CLASS({
     {
       name: 'country',
       value: 'CA',
-      section: 'accountDetails',
+      section: 'accountInformation',
       visibility: 'RO'
     },
     {
       name: 'flagImage',
-      section: 'accountDetails',
+      section: 'accountInformation',
       label: '',
       value: 'images/flags/cad.png',
       visibility: 'RO'
     },
     {
       name: 'denomination',
-      section: 'accountDetails',
+      section: 'accountInformation',
       gridColumns: 12,
       value: 'CAD',
     },
@@ -129,7 +129,7 @@ foam.CLASS({
       class: 'String',
       label: '',
       value: 'images/Canada-Check.png',
-      section: 'accountDetails',
+      section: 'accountInformation',
       visibility: 'RO',
       transient: true,
       view: function(_, X) {
@@ -146,8 +146,9 @@ foam.CLASS({
       name: 'branchId',
       type: 'String',
       label: 'Transit',
-      section: 'accountDetails',
+      section: 'accountInformation',
       updateVisibility: 'RO',
+      createVisibility: 'RW',
       gridColumns: 4,
       view: {
         class: 'foam.u2.tag.Input',
@@ -181,7 +182,8 @@ foam.CLASS({
       documentation: `Provides backward compatibilty for mobile call flow.
           BankAccountInstitutionDAO will lookup the institutionNumber and set the institution property.`,
       updateVisibility: 'RO',
-      section: 'accountDetails',
+      createVisibility: 'RW',
+      section: 'accountInformation',
       storageTransient: true,
       gridColumns: 3,
       view: {
@@ -212,7 +214,7 @@ foam.CLASS({
       class: 'String',
       name: 'accountNumber',
       updateVisibility: 'RO',
-      section: 'accountDetails',
+      section: 'accountInformation',
       gridColumns: 5,
       view: {
         class: 'foam.u2.tag.Input',
@@ -290,7 +292,7 @@ foam.CLASS({
           country: this.country,
           firstName: this.subject.realUser.firstName,
           lastName: this.subject.realUser.lastName,
-          companyName: this.subject.user.businessName,
+          companyName: this.subject.user.organization || this.subject.user.businessName,
           address: this.subject.user.address
         }, this);
       },
