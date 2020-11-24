@@ -1536,7 +1536,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.ORG
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.ORGANIZATION.documentation",target:"A organização / empresa associada ao contato."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.ORGANIZATION.view.placeholder",target:"ex. Indústrias Vandelay"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.OPERATING_BUSINESS_NAME.label",target:"operatingBusinessName pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.OPERATING_BUSINESS_NAME.documentation",target:"O nome comercial operacional da empresa para o qual o contato é\n        Associado a."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.OPERATING_BUSINESS_NAME.documentation",target:"Este é o nome opcional que a empresa deseja exibir em nossa plataforma (usado para pesquisa),\nem oposição ao nome da empresa / organização, que é o nome legal da empresa."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.LEGAL_NAME.label",target:"nome"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.LEGAL_NAME.documentation",target:"Um campo para o nome e o sobrenome legais do contato,\n        se diferente do primeiro nome fornecido. O campo será o primeiro padrão\n        nome último nome."})
@@ -1557,8 +1557,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.SIG
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.CONFIRM.documentation",target:"Verdadeiro se o usuário confirmar seu relacionamento com o contato."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.BUSINESS_ID.documentation",target:"Um identificador exclusivo para a empresa associada ao contato."})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.REAL_USER.label",target:"realUser pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.REAL_USER.documentation",target:"O ID para a pessoa individual ou usuário real,\n        quem se registra em nossa plataforma."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.BANK_ACCOUNT.label",target:"conta bancária"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.LOGIN_ENABLED.label",target:"loginEnabled pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.LOGIN_ENABLED.documentation",target:"Determina se o contato pode fazer login na plataforma."})

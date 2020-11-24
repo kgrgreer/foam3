@@ -293,7 +293,7 @@ foam.CLASS({
           country: this.country,
           firstName: this.subject.realUser.firstName,
           lastName: this.subject.realUser.lastName,
-          companyName: this.subject.user.businessName,
+          companyName: this.subject.user.organization || this.subject.user.businessName,
           address: this.subject.user.address
         }, this);
       },
