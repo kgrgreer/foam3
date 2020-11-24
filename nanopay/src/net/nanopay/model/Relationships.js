@@ -341,6 +341,7 @@ foam.RELATIONSHIP({
   forwardName: 'children',
   inverseName: 'parent',
   sourceProperty: {
+    section: 'basicInfo',
     updateVisibility: function(parent) {
       return parent ?
         foam.u2.DisplayMode.RO :
@@ -354,6 +355,7 @@ foam.RELATIONSHIP({
     createVisibility: 'HIDDEN'
   },
   targetProperty: {
+    section: 'basicInfo',
     updateVisibility: function(children) {
       return children ?
         foam.u2.DisplayMode.RO :
@@ -375,6 +377,7 @@ foam.RELATIONSHIP({
   forwardName: 'associatedTransactions',
   inverseName: 'associateTransaction',
   sourceProperty: {
+    section: 'basicInfo',
     createVisibility: 'HIDDEN',
     readVisibility: function(associateTransaction) {
       return associateTransaction ?
@@ -389,6 +392,7 @@ foam.RELATIONSHIP({
     view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' }
   },
   targetProperty: {
+    section: 'basicInfo',
     createVisibility: 'HIDDEN',
     readVisibility: function(associatedTransactions) {
       return associatedTransactions ?
@@ -884,7 +888,7 @@ foam.RELATIONSHIP({
       };
     },
     updateVisibility: 'RO',
-    section: 'paymentInfoSource',
+    section: 'basicInfo',
     tableWidth: 180,
     tableCellFormatter: function(value, obj) {
       this.add(value);
@@ -942,7 +946,7 @@ foam.RELATIONSHIP({
     readVisibility: 'RO',
     updateVisibility: 'RO',
     view: { class: 'foam.u2.view.IntView' },
-    section: 'paymentInfoDestination',
+    section: 'basicInfo',
     postSet: function(o, n) {
       if ( this.mode == 'create' ) { // validation check for users manually creating a Transaction
         // setup
@@ -1070,6 +1074,25 @@ foam.RELATIONSHIP({
 
 foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.tx.model.Transaction',
+  targetModel: 'foam.nanos.ruler.RuleHistory',
+  forwardName: 'complianceHistories',
+  inverseName: 'entityId',
+  cardinality: '1:*',
+  sourceDAOKey: 'transactionDAO',
+  unauthorizedSourceDAOKey: 'localTransactionDAO',
+  targetDAOKey: 'complianceHistoryDAO',
+  targetProperty: {
+    readVisibility: 'RO',
+    updateVisibility: 'RO'
+  },
+  sourceProperty: {
+    readPermissionRequired: true,
+    section: 'complianceInformation'
+  }
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.tx.model.Transaction',
   targetModel: 'net.nanopay.meter.compliance.ComplianceItem',
   forwardName: 'complianceResponses',
   inverseName: 'transactionId',
@@ -1079,6 +1102,7 @@ foam.RELATIONSHIP({
   targetDAOKey: 'complianceItemDAO',
   targetProperty: { visibility: 'RO' },
   sourceProperty: {
+    section: 'complianceInformation',
     createVisibility: 'HIDDEN',
     readVisibility: function(complianceResponses) {
       return complianceResponses.length > 0 ?
@@ -1113,6 +1137,7 @@ foam.RELATIONSHIP({
   sourceDAOKey: 'transactionDAO',
   targetDAOKey: 'transactionEventDAO',
   sourceProperty: {
+    section: 'basicInfo',
     createVisibility: 'HIDDEN',
     readVisibility: function(transactionEvents) {
       return transactionEvents.length > 0 ?
