@@ -312,6 +312,7 @@ foam.CLASS({
       width: 100,
       tableWidth: 160,
       section: 'businessInformation',
+      order: 15,
       label: 'Company Name'
     },
     {

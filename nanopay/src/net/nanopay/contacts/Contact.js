@@ -346,7 +346,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'shouldInvite',
       documentation: 'True if the user wants to invite the contact to join Ablii.',
-      section: 'contactInformation',
+      section: 'userInformation',
       label: '',
       readPermissionRequired: true,
       createVisibility: function(createBankAccount$country, isEdit) {

@@ -686,7 +686,7 @@ foam.RELATIONSHIP({
     section: 'contactInformation'
   },
   targetProperty: {
-    section: 'contactInformation'
+    section: 'userInformation'
   }
 });
 

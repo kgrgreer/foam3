@@ -93,17 +93,20 @@ foam.CLASS({
   properties: [
     {
       name: 'id',
-      section: 'businessInformation'
+      section: 'businessInformation',
+      order: 1
     },
     {
       name: 'type',
-      section: 'businessInformation'
+      section: 'businessInformation',
+      order: 2
     },
     {
       class: 'String',
       name: 'businessName',
       documentation: 'Legal name of business.',
       section: 'businessInformation',
+      order: 10,
       visibility: 'RW',
       width: 50
     },
@@ -114,7 +117,8 @@ foam.CLASS({
       documentation: `The business name displayed to the public. This may differ
         from the organization name.`,
           // Is displayed on client if present taking place of organziation name.
-      section: 'businessInformation'
+      section: 'businessInformation',
+      order: 11
     },
     {
       class: 'Reference',
@@ -263,17 +267,6 @@ foam.CLASS({
       class: 'Date',
       name: 'businessRegistrationDate',
       documentation: 'The date that the business was registered by their issuing authority.',
-      section: 'businessInformation'
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'foam.nanos.auth.Phone',
-      name: 'phone',
-      documentation: 'The phone number of the business.',
-      factory: function() {
-        return this.Phone.create();
-      },
-      view: { class: 'foam.u2.detail.VerticalDetailView' },
       section: 'businessInformation'
     },
     {
@@ -503,6 +496,7 @@ foam.CLASS({
     {
       name: 'email',
       section: 'businessInformation',
+      order: 20,
       validateObj: function() {}
     },
     {
