@@ -50,6 +50,8 @@ foam.CLASS({
     { name: 'UNGER_AGE_LIMIT_ERROR', message: 'Must be at least 18 years old' },
     { name: 'OVER_AGE_LIMIT_ERROR', message: 'Must be less than 125 years old' },
     { name: 'SELECT_JOB_TITLE', message: 'Job title required' },
+    { name: 'YES', message: 'Yes' },
+    { name: 'NO', message: 'No' },
   ],
 
   properties: [
@@ -131,13 +133,15 @@ foam.CLASS({
         to influence decisions and the ability to control resources
       `,
       value: false,
-      view: {
-        class: 'foam.u2.view.RadioView',
-        choices: [
-          [true, 'Yes'],
-          [false, 'No']
-        ],
-        isHorizontal: true
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RadioView',
+          choices: [
+            [true, X.data.YES],
+            [false, X.data.NO]
+          ],
+          isHorizontal: true
+        };
       },
       visibility: 'RW',
     }),
@@ -149,13 +153,15 @@ foam.CLASS({
         to conduct an activity or financial transaction on their behalf
       `,
       value: false,
-      view: {
-        class: 'foam.u2.view.RadioView',
-        choices: [
-          [true, 'Yes'],
-          [false, 'No']
-        ],
-        isHorizontal: true
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RadioView',
+          choices: [
+            [true, X.data.YES],
+            [false, X.data.NO]
+          ],
+          isHorizontal: true
+        };
       },
       visibility: 'RW'
     }),

@@ -1087,6 +1087,9 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.SECTION_SIGNING_OFFICER_PERSONAL_INFORMATION_SECTION.title",target:"Informações sobre a função do oficial de assinatura"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.SECTION_SIGNING_OFFICER_ADDRESS_SECTION.title",target:"Endereço do oficial assinante"})
 
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.YES",target:"Sim"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.NO",target:"Não"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.SIGNING_OFFICER_EMAIL_ERROR",target:"Forneça um e-mail para o oficial de assinatura."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.ADMIN_FIRST_NAME_ERROR",target:"Insira o primeiro nome com pelo menos 1 caractere."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.ADMIN_LAST_NAME_ERROR",target:"Insira o sobrenome com pelo menos 1 caractere."})
@@ -2343,7 +2346,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.account.ui.BankAccou
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.BusinessDirectorArrayView.ADD_MSG",target:"+ Adicionar"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.model_.label",target:"Banco Canadense"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.model_.label",target:"Banco Canada"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ATBankAccount.model_.label",target:"Banco Austria"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BEBankAccount.model_.label",target:"Banco Bélgica"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.model_.label",target:"Banco Brasil"})
