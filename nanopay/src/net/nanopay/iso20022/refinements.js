@@ -603,8 +603,10 @@ foam.CLASS({
 
                       .setAmount(longTxAmt)
                       .setMessageId(this.getFIToFICstmrCdtTrf().getGroupHeader().getMessageIdentification())
-                      .setReferenceData(new FObject[]{this})
                       .build();
+
+                      // Add the pacs message to the reference data
+                      transaction.getReferenceData().put("Digital Transfer from PACS", this);
 
                       fObjTxn = txnDAO.put(transaction);
 

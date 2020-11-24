@@ -2518,7 +2518,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.SOURCE_CURRENCY.label",target:"sourceCurrency"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.SOURCE_CURRENCY.documentation",target:"Source currency"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.REFERENCE_DATA.label",target:"referenceData"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.REFERENCE_DATA.documentation",target:"referenceData holds entities such as the pacs008 message."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.REFERENCE_DATA.documentation",target:"Transaction reference key value data."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.DST_ACCOUNT_ERROR.label",target:"dstAccountError"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.DST_ACCOUNT_ERROR.documentation",target:"This is used strictly for the synchronizing of dstAccount errors on create."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.model.Transaction.DESTINATION_CURRENCY.label",target:"destinationCurrency"})
