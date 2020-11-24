@@ -97,11 +97,11 @@ foam.CLASS({
 
         if ( isUpdate ) {
           boolean ownsAccount = newAccount.getOwner() == user.getId() && oldAccount.getOwner() == user.getId();
-          if ( ! isUpdateDefault(oldAccount, newAccount) ) {
-                  if (auth.check(x, GLOBAL_ACCOUNT_UPDATE)) {
-                    throw new AuthorizationException("User can update only isDefault property");
-                  }
-                }
+          // TODO: explicitly check for update on status, verifiedBy for admin
+          if ( ! isUpdateDefault(oldAccount, newAccount) &&
+               ! auth.check(x, GLOBAL_ACCOUNT_UPDATE) ) {
+            throw new AuthorizationException("User can update only isDefault property");
+          }
 
           if (
             ! ownsAccount &&

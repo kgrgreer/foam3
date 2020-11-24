@@ -53,6 +53,7 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.admin.model.ComplianceStatus',
       name: 'compliance',
+      section: 'complianceInformation',
       documentation: 'Operations approval status for bank account.',
       readPermissionRequired: true,
       writePermissionRequired: true,

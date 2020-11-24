@@ -24,6 +24,7 @@ foam.RELATIONSHIP({
   targetDAOKey: 'accountDAO',
   unauthorizedTargetDAOKey: 'localAccountDAO',
   targetProperty: {
+    section: 'deprecated',
     label: 'Transit No.',
     view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' },
     tableCellFormatter: function(value, obj, axiom) {
@@ -47,6 +48,7 @@ foam.RELATIONSHIP({
   targetDAOKey: 'accountDAO',
   unauthorizedTargetDAOKey: 'localAccountDAO',
   targetProperty: {
+    section: 'deprecated',
     view: function(_, X) {
       return foam.u2.view.ChoiceView.create({
         dao: X.institutionDAO,
@@ -103,6 +105,9 @@ foam.RELATIONSHIP({
   inverseName: 'parent',
   forwardName: 'children',
   cardinality: '1:*',
+  sourceProperty: {
+    section: 'parentSection'
+  },
   targetProperty: {
     section: 'parentSection',
     order: 4,
@@ -152,6 +157,12 @@ foam.RELATIONSHIP({
   targetDAOKey: 'accountDAO',
   sourceDAOKey: 'accountDAO',
   cardinality: '1:*',
+  sourceProperty: {
+    section: 'parentSection'
+  },
+  targetProperty: {
+    section: 'parentSection'
+  }
 });
 
 foam.RELATIONSHIP({
@@ -214,6 +225,7 @@ foam.RELATIONSHIP({
     section: 'accountInformation'
   },
   targetProperty: {
+    section: 'ownerInformation',
     view: function(_, X) {
       return foam.u2.view.RichChoiceView.create({
         search: true,
@@ -831,6 +843,9 @@ foam.RELATIONSHIP({
   unauthorizedSourceDAOKey: 'localAccountDAO',
   targetDAOKey: 'transactionDAO',
   unauthorizedTargetDAOKey: 'localTransactionDAO',
+  sourceProperty: {
+    section: 'transactionInformation'
+  },
   targetProperty: {
     help: `Set this to the account you would like to withdraw funds from.
     Selection of shadow accounts is only available for admin of group.`,
@@ -916,8 +931,9 @@ foam.RELATIONSHIP({
   targetDAOKey: 'transactionDAO',
   unauthorizedTargetDAOKey: 'localTransactionDAO',
   sourceProperty: {
-  readVisibility: 'RO',
-  updateVisibility: 'RO'
+    section: 'transactionInformation',
+    readVisibility: 'RO',
+    updateVisibility: 'RO'
   },
   targetProperty: {
     help: `Please input your payee's account id. Confirm account id with contact externally.`,
@@ -996,6 +1012,7 @@ foam.RELATIONSHIP({
   sourceDAOKey: 'accountDAO',
   unauthorizedSourceDAOKey: 'localAccountDAO',
   targetDAOKey: 'flinksAccountsDetailResponseDAO',
+  sourceProperty: { section: 'complianceInformation' },
   targetProperty: { visibility: 'RO' }
 });
 
@@ -1008,6 +1025,7 @@ foam.RELATIONSHIP({
   sourceDAOKey: 'accountDAO',
   unauthorizedSourceDAOKey: 'localAccountDAO',
   targetDAOKey: 'plaidAccountDetailDAO',
+  sourceProperty: { section: 'complianceInformation' },
   targetProperty: { visibility: 'RO' }
 });
 

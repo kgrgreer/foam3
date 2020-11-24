@@ -82,7 +82,7 @@ https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31
         // add user overrides
         ...
       },
-      "buseinssOverrides": {
+      "businessOverrides": {
         "businessName": "--Custom Business Name--",
         ...
       }
