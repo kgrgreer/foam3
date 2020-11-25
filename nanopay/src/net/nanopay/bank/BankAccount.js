@@ -81,6 +81,10 @@ foam.CLASS({
       isAvailable: function(forContact) {
         return ! forContact;
       }
+    },
+    {
+      name: 'complianceInformation',
+      permissionRequired: true
     }
   ],
 
@@ -103,6 +107,36 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      name: 'id',
+      readPermissionRequired: true,
+      writePermissionRequired: true
+    },
+    {
+      name: 'summary',
+      readPermissionRequired: true,
+      writePermissionRequired: true
+    },
+    {
+      name: 'created',
+      readPermissionRequired: true,
+      writePermissionRequired: true
+    },
+    {
+      name: 'createdBy',
+      readPermissionRequired: true,
+      writePermissionRequired: true
+    },
+    {
+      name: 'lastModified',
+      readPermissionRequired: true,
+      writePermissionRequired: true
+    },
+    {
+      name: 'lastModifiedBy',
+      readPermissionRequired: true,
+      writePermissionRequired: true
+    },
     {
       class: 'String',
       name: 'accountNumber',
