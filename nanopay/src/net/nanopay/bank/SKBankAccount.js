@@ -37,7 +37,7 @@ foam.CLASS({
     },
     {
       name: 'denomination',
-      section: 'accountDetails',
+      section: 'accountInformation',
       gridColumns: 12,
       value: 'EUR',
     },
@@ -45,7 +45,7 @@ foam.CLASS({
       class: 'String',
       name: 'accountPrefix',
       label: 'AccountPrefix',
-      section: 'accountDetails',
+      section: 'accountInformation',
       updateVisibility: 'RO'
     },
     {
