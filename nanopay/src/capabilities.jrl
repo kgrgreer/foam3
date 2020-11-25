@@ -39,8 +39,12 @@ p({
     "allowSkipping": false
   },
   "visibilityPredicate": {
-    "class":"net.nanopay.crunch.predicate.CheckUserCountry",
-    "country":"CA"
+    "class": "foam.mlang.predicate.Not",
+    "arg1":
+      {
+        "class":"net.nanopay.crunch.IsSpid",
+        "spid": "treviso"
+      }
   },
   "requirementViewTitle":"We require a person authorized to act on behalf of the company to provide certain information to us. In this section, we ask if you are such a person, or alternatively, an email address for someone who is."
 })
