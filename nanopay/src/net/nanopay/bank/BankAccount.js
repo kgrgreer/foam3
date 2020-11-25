@@ -99,6 +99,7 @@ foam.CLASS({
     { name: 'BRANCH_CODE_INVALID', message: 'Branch code invalid' },
     { name: 'SWIFT_CODE_REQUIRED', message: 'SWIFT/BIC code required' },
     { name: 'SWIFT_CODE_INVALID', message: 'SWIFT/BIC code invalid' },
+    { name: 'SWIFT_CODE_OR_IBAN_REQUIRED', message: 'SWIFT/BIC or IBAN required' }
   ],
 
   properties: [
@@ -107,7 +108,7 @@ foam.CLASS({
       name: 'accountNumber',
       documentation: 'The account number of the bank account.',
       updateVisibility: 'RO',
-      section: 'accountDetails',
+      section: 'accountInformation',
       view: {
         class: 'foam.u2.tag.Input',
         placeholder: '1234567',
@@ -158,7 +159,7 @@ foam.CLASS({
       name: 'status',
       documentation: 'Tracks the status of the bank account.',
       tableWidth: 82,
-      section: 'administration',
+      section: 'operationsInformation',
       writePermissionRequired: true,
       tableCellFormatter: function(a) {
         var backgroundColour = 'transparent';
@@ -211,19 +212,19 @@ foam.CLASS({
     { // REVIEW: remove
       class: 'String',
       name: 'institutionNumber',
-      section: 'administration',
+      section: 'accountInformation',
     },
     { // REVIEW: remove
       class: 'String',
       name: 'branchId',
-      section: 'administration',
+      section: 'accountInformation',
     },
     {
       class: 'Long',
       name: 'randomDepositAmount',
       documentation:`A small financial sum deposited into a bank account to test
         onboarding onto our system.`,
-      section: 'administration',
+      section: 'operationsInformation',
       networkTransient: true
     },
     {
@@ -232,14 +233,14 @@ foam.CLASS({
       documentation: `Defines the number of times it is attempted to verify
         ownership of the bank account.`,
       value: 0,
-      section: 'administration',
+      section: 'operationsInformation',
       writePermissionRequired: true
     },
     {
       class: 'DateTime',
       name: 'microVerificationTimestamp',
       documentation: 'The date and time of when ownership of the bank account is verified.',
-      section: 'administration',
+      section: 'operationsInformation'
     },
     {
       class: 'Reference',
@@ -248,7 +249,7 @@ foam.CLASS({
       documentation: `The name of the country associated with the bank account.
         This should be set by the child class.
       `,
-      section: 'accountDetails',
+      section: 'accountInformation',
       visibility: 'RO',
       view: {
         class: 'foam.u2.view.ReferencePropertyView',
@@ -263,7 +264,7 @@ foam.CLASS({
         display purposes. This should be set by the child class.
       `,
       tableWidth: 91,
-      section: 'accountDetails',
+      section: 'accountInformation',
       visibility: 'RO',
       view: function(_, X) {
         return {
@@ -281,12 +282,13 @@ foam.CLASS({
       name: 'integrationId',
       documentation:`A unique identifier for a bank account within the
         client's accounting software.`,
-      section: 'administration'
+      section: 'systemInformation'
     },
     {
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Address',
       name: 'address',
+      section: 'ownerInformation',
       documentation: `User pad authorization address.`,
       // section: 'pad',
       // Note: To be removed
@@ -298,6 +300,8 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Address',
       name: 'bankAddress',
+      section: 'accountInformation',
+      visibility: 'HIDDEN',
       documentation: `Returns the bank account address from the Address model.`,
       // section: 'pad',
       factory: function() {
@@ -309,7 +313,7 @@ foam.CLASS({
       name: 'availableCurrencies',
       documentation: `Contains list of available currencies to receive or send in selected account country`,
       visibility: 'HIDDEN',
-      section: 'accountDetails',
+      section: 'accountInformation',
       expression: function(user, currencyDAO, forContact) {
         let propInfo = forContact ? this.PaymentProviderCorridor.TARGET_COUNTRY : this.PaymentProviderCorridor.SOURCE_COUNTRY;
         let propInfoCurrency = forContact ? this.PaymentProviderCorridor.TARGET_CURRENCIES : this.PaymentProviderCorridor.SOURCE_CURRENCIES;
@@ -331,6 +335,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'forContact',
+      section: 'ownerInformation',
       documentation: `Flag for whether bank account is owned by a contact.
           Required for visibility property expressions.`
     },
@@ -340,7 +345,7 @@ foam.CLASS({
       updateVisibility: 'RO',
       writePermissionRequired: false,
       gridColumns: 12,
-      section: 'accountDetails',
+      section: 'accountInformation',
       view: function(_, X) {
         return {
           class: 'foam.u2.view.RichChoiceView',
@@ -357,6 +362,7 @@ foam.CLASS({
     {
       name: 'name',
       label: 'Nickname',
+      section: 'accountInformation',
       order: 4,
       validateObj: function(name) {
         if ( name === '' || ! name ) {
@@ -365,27 +371,51 @@ foam.CLASS({
       }
     },
     {
+      name: 'swiftCode',
+      label: 'SWIFT/BIC',
+      updateVisibility: 'RO',
+      section: 'accountInformation',
+      validateObj: function(swiftCode, iban) {
+        var regex = /^[A-z0-9a-z]{8,11}$/;
+ 
+        if ( swiftCode && swiftCode != '' && ! regex.test(swiftCode) ) {
+          return this.SWIFT_CODE_INVALID;
+        } else if ( ( !swiftCode || swiftCode === '' ) && ( !iban || iban === "" ) ) {
+          return this.SWIFT_CODE_OR_IBAN_REQUIRED;
+        }
+      }
+    },
+    {
       class: 'String',
       name: 'iban',
       label: 'International Bank Account Number (IBAN)',
-      required: true,
-      section: 'accountDetails',
+      section: 'accountInformation',
       documentation: `Standard international numbering system developed to
           identify an overseas bank account.`,
       createVisibility: 'RW',
       updateVisibility: 'RW',
       readVisibility: 'RO',
+      validateObj: function(iban, swiftCode) {
+        var regex = /^[A-z0-9a-z]{8,11}$/;
+        if (
+          ( !iban || iban === "" ) &&
+          ( !swiftCode || swiftCode === '' || ! regex.test(swiftCode) )
+        ) {
+          return this.SWIFT_CODE_OR_IBAN_REQUIRED;
+        }
+      }
     },
     {
       class: 'String',
       name: 'bankCode',
       documentation: `International bank code that identifies banks worldwide. BIC/SWIFT`,
       updateVisibility: 'RO',
-      section: 'accountDetails'
+      section: 'accountInformation'
     },
     {
       class: 'String',
-      name: 'verifiedBy'
+      name: 'verifiedBy',
+      section: 'operationsInformation'
     },
     {
       class: 'String',

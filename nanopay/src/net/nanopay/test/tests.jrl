@@ -12,3 +12,160 @@ p({"class":"net.nanopay.test.api.PostMethodTest","id":"PostMethodTest"})
 p({"class":"net.nanopay.test.api.DAOSecurityTest.DAOSecurityTestFind","id":"DAOSecurityTestFind"})
 p({"class":"net.nanopay.test.api.DAOSecurityTest.DAOSecurityTestSelect","id":"DAOSecurityTestSelect"})
 p({"class":"net.nanopay.test.api.DAOSecurityTest.DAOSecurityTestRemoveAll","id":"DAOSecurityTestRemoveAll"})
+
+p({
+  class:"foam.nanos.test.Test",
+  id:"AbliiOnboardingTest",
+  description: "AbliiOnboardingTest",
+  server: false,
+  code:"""
+/* Ablii Onboarding Test */
+/* Run this script symultaniously from at least two machines */
+
+/* Number of times to execute this script */
+runs = 10;
+
+/* see deployment/test/sessions.jrl for unattended test session associated with admin user 1348 */
+adminSession = 'DBFDD224-774E-4716-8508-43FA72E003D9'
+/* support both attended and unattended runs */
+defaultSession = localStorage && localStorage['defaultSession'] || adminSession;
+realUser = x.subject.realUser;
+user = x.subject.user;
+
+/* model with helper methods for sudo, creating user, sessions... */
+support = net.nanopay.test.AbliiOnboardingSupport.create({
+  adminSessionId: defaultSession,
+    adminSubject: foam.nanos.auth.Subject.create({
+      realUser: realUser,
+      user: user
+    }, x),
+    subject: foam.nanos.auth.Subject.create({
+      realUser: realUser,
+      user: user
+    }, x)
+  }, x);
+
+async function execute(x) {
+    try {
+      support.setup(x);
+      console.info('start');
+      let n = Math.floor(Math.random() * 10000);
+
+      // create user under admin
+      var u;
+      try {
+        u = await support.createUser(x, 'test-'+support.uid+'-'+n, 'password', 'sme');
+        test(true, 'createUser');
+      } catch (e) {
+        test(false, 'createUser: '+(e.message || e));
+        throw e;
+      }
+      var s;
+      try {
+        s = await support.createSession(x, u.id, u.id);
+        test(true, 'createSession');
+      } catch (e) {
+        test(false, 'createSession: '+(e.message || e));
+        throw e;
+      }
+
+      // switch to user.
+      support.sudoStore(x);
+      x = support.sudo(x, s.id, u, u);
+      // try {
+      //   let cap = await support.abliiUserOnboardingCapability(x, u);
+      //   test(true, 'abliiUserOnboardingCapability');
+      // } catch (e) {
+      //   test(false, 'abliiUserOnboardingCapability: '+(e.message || e));
+      //   throw e;
+      // }
+      // try {
+      //   u = await support.updateUserComplianceStatus(x, u);
+      //   test(true, 'updateUserComplianceStatus');
+      // } catch (e) {
+      //   test(false, 'updateUserComplianceStatus: '+(e.message || e));
+      //   throw e;
+      // }
+      var business;
+      try {
+        business = await support.createBusiness(x, u);
+        test(true, 'createBusiness');
+      } catch (e) {
+        test(false, 'createBusiness: '+(e.message || e));
+        throw e;
+      }
+      var businessSession;
+      try {
+        businessSession = await support.createSession(x, u.id, business.id);
+        test(true, 'createBusinessSession');
+      } catch (e) {
+        test(false, 'createBusinessSession: '+(e.message || e));
+        throw e;
+      }
+
+      // switch to business
+      support.sudoStore(x);
+      support.sudo(x, businessSession.id, u, business);
+/*
+// REVIEW throws NPE server side
+// 2020-11-23T09:26:21.002-0500,qtp-728584102-3436,DEBUG,[Service],capabilityPayloadDAO,admin admin (1348),returning skeleton exception,java.lang.NullPointerException
+//      at foam.nanos.crunch.connection.CapabilityPayloadDAO.put_(CapabilityPayloadDAO.java:223)
+//      at foam.nanos.ruler.RulerDAO.put_(RulerDAO.java:955)
+//      at foam.dao.ProxyDAO.put_(ProxyDAO.java:323)
+
+      try {
+        let cap = await support.abliiBusinessOnboardingCapability(x, u, business);
+        test(true, 'abliiBusinessOnboardingCapability');
+      } catch (e) {
+        test(false, 'abliiBusinessOnboardingCapability: '+(e.message || e));
+        throw e;
+      }
+*/
+      try {
+        business = await support.updateBusinessComplianceStatus(x, business);
+        test(true, 'updateBusinessComplianceStatus');
+      } catch (e) {
+        test(false, 'updateBusinessComplianceStatus: '+(e.message || e));
+        throw e;
+      }
+      try {
+        let bank = await support.createBankAccount(x, business);
+        test(true, 'createBusinessBankAccount');
+      } catch (e) {
+        test(false, 'createBusinessBankAccount: '+(e.message || e));
+        throw e;
+      }
+      var contact;
+      try {
+        contact = await support.createContact(x, business);
+        test(true, 'createBusinessContact');
+      } catch (e) {
+        test(false, 'createBusinessContact: '+(e.message || e));
+        throw e;
+      }
+      try {
+        let contactbank = await support.createBankAccount(x, contact);
+        test(true, 'createBusinessContactBankAccount');
+      } catch (e) {
+        test(false, 'createBusinessContactBankAccount: '+(e.message || e));
+        throw e;
+      }
+
+      console.info('done');
+      support.teardown(x);
+    } catch (e) {
+      console.error(e.message || e);
+      support.teardown(x);
+    }
+}
+
+async function run(x) {
+  var i;
+  for ( i = 0; i < runs; i++ ) {
+    await execute(x);
+  }
+}
+
+run(x);
+  """
+})

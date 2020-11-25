@@ -66,7 +66,7 @@ foam.CLASS({
 
   messages: [
     { name: 'INVALID_CPF', message: 'Valid CPF number required' },
-    { name: 'INVALID_OWNER_NAME', message: 'Click to verify owner name' },
+    { name: 'INVALID_OWNER_NAME', message: 'Confirm the name of the business owner' },
     { name: 'INVALID_NATIONALITY', message: 'Nationality required' },
     { name: 'INVALID_FIRST_NAME', message: 'First name required' },
     { name: 'INVALID_LAST_NAME', message: 'Last name required' },
@@ -410,7 +410,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'verifyName',
-      label: 'Please verify that name displayed below matches owner name.',
+      label: 'Is this the business owner?',
       section: 'requiredSection',
       visibility: function (type, cpfName, mode) {
         return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN :

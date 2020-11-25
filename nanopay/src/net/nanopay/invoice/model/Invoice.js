@@ -516,7 +516,7 @@ foam.CLASS({
         }
       },
       tableCellFormatter: function(state, obj, rel) {
-        var status = state.label;
+        var name = state.name;
         var label = state.label;
         if ( state === net.nanopay.invoice.model.InvoiceStatus.SCHEDULED ) {
           label = label + ' ' + obj.paymentDate.toISOString().substring(0, 10);
@@ -524,8 +524,8 @@ foam.CLASS({
 
         this.start()
           .addClass('invoice-status-container')
-          .start().addClass('generic-status-circle').addClass(status.replace(/\W+/g, '-')).end()
-          .start().addClass('Invoice-Status').addClass(status.replace(/\W+/g, '-'))
+          .start().addClass('generic-status-circle').addClass(name.replace(/\W+/g, '-')).end()
+          .start().addClass('Invoice-Status').addClass(name.replace(/\W+/g, '-'))
             .add(label)
           .end()
         .end();
@@ -616,9 +616,9 @@ foam.CLASS({
           rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
           sections: [
             {
-              dao: X.user.contacts.orderBy(foam.nanos.auth.User.BUSINESS_NAME),
+              dao: X.user.contacts.orderBy(foam.nanos.auth.User.ORGANIZATION),
               searchBy: [
-                net.nanopay.contacts.Contact.BUSINESS_NAME,
+                net.nanopay.contacts.Contact.ORGANIZATION,
                 net.nanopay.contacts.Contact.OPERATING_BUSINESS_NAME
               ]
             }
@@ -820,7 +820,7 @@ foam.RELATIONSHIP({
   targetDAOKey: 'invoiceDAO',
   sourceDAOKey: 'bareUserDAO',
   sourceProperty: {
-    hidden: true
+    section: 'accountInformation'
   },
   targetProperty: {
     label: 'Vendor',
@@ -874,7 +874,7 @@ foam.RELATIONSHIP({
   targetDAOKey: 'invoiceDAO',
   sourceDAOKey: 'bareUserDAO',
   sourceProperty: {
-    hidden: true
+    section: 'accountInformation'
   },
   targetProperty: {
     label: 'Customer',

@@ -95,15 +95,15 @@ foam.CLASS({
           message = new EmailMessage();
           args    = new HashMap<>();
 
-          theme = themes.findThemeBySpid(((X) x.put("subject", new Subject.Builder(x).setUser(business).build())));
+          theme = themes.findTheme((X) x.put("subject", new Subject.Builder(x).setUser(business).build()));
           SupportConfig supportConfig = theme.getSupportConfig();
-          User psUser = supportConfig.findPersonalSupportUser(x);
+          String supportPhone = supportConfig.getSupportPhone();
 
           message.setTo(new String[]{ business.getEmail() });
           args.put("name", User.FIRST_NAME);
           try {
             Notification helpSignUpNotification = new Notification.Builder(x)
-              .setBody(this.WELCOME_NOTIFICATION_MESSAGE + ( psUser == null ? "" : psUser.getPhoneNumber() ))
+              .setBody(this.WELCOME_NOTIFICATION_MESSAGE + supportPhone)
               .setNotificationType("WelcomeEmail")
               .setEmailArgs(args)
               .setEmailName("helpsignup")

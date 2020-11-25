@@ -38,7 +38,7 @@ foam.CLASS({
       name: 'documentUploadSection',
       title: 'Document Upload',
       subTitle: function(helper) {
-        let capDescription = this.translationService.getTranslation(foam.locale, `${this.capability.id}.description`, this.capability.description);
+        let capDescription = this.translationService.getTranslation(foam.locale, `${this.capability.source}.description`, this.capability.description);
         return capDescription ? capDescription : helper(this.DOC_UPLOAD_SECTION);
       },
       help: function(capability) {

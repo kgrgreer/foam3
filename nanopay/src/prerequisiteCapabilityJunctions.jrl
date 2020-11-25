@@ -203,7 +203,6 @@ p({
   "priority":11
 })
 
-
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"78dd1e83-c9ce-dd72-0a96-452cbaf6aec6",
@@ -310,6 +309,20 @@ p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"242B00F8-C775-4899-AEBA-F287EC54E901",
   "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215e-25",
+  "priority":3
+})
+
+// top-level Brazil Onboarding prerequisites
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"05a663b8-2b48-11eb-adc1-0242ac120002",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
+  "priority":3
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"05a663b8-2b48-11eb-adc1-0242ac120002",
+  "targetId":"7b41a164-29bd-11eb-adc1-0242ac120002",
   "priority":3
 })
 
@@ -500,27 +513,6 @@ p({
   "priority":3
 })
 
-//Unlock Domestic Payments and Invoicing
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-11",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-76",
-  "priority": 16
-})
-//Unlock International & Domestic Payments and Invoicing
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-13",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-76",
-  "priority": 16
-})
-//Unlock International & Domestic Payments and Invoicing for brazil
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-76",
-  "priority": 16
-})
 //API Onboarding Domestic Business Payments (CAD to CAD)
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",

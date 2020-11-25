@@ -96,7 +96,7 @@ foam.CLASS({
           }
         }
 
-        return getDelegate().inX(x).put_(x, obj);
+        return getDelegate().inX(x).put(obj);
       `
     }
   ]
