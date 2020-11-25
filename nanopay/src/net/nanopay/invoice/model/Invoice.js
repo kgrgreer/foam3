@@ -820,7 +820,7 @@ foam.RELATIONSHIP({
   targetDAOKey: 'invoiceDAO',
   sourceDAOKey: 'bareUserDAO',
   sourceProperty: {
-    section: 'accountInformation'
+    hidden: true
   },
   targetProperty: {
     label: 'Vendor',
@@ -874,7 +874,7 @@ foam.RELATIONSHIP({
   targetDAOKey: 'invoiceDAO',
   sourceDAOKey: 'bareUserDAO',
   sourceProperty: {
-    section: 'accountInformation'
+    hidden: true
   },
   targetProperty: {
     label: 'Customer',
