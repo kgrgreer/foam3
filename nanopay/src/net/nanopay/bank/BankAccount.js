@@ -109,33 +109,27 @@ foam.CLASS({
   properties: [
     {
       name: 'id',
-      readPermissionRequired: true,
-      writePermissionRequired: true
+      updateVisibility: 'HIDDEN'
     },
     {
       name: 'summary',
-      readPermissionRequired: true,
-      writePermissionRequired: true
+      updateVisibility: 'HIDDEN'
     },
     {
       name: 'created',
-      readPermissionRequired: true,
-      writePermissionRequired: true
+      updateVisibility: 'HIDDEN'
     },
     {
       name: 'createdBy',
-      readPermissionRequired: true,
-      writePermissionRequired: true
+      updateVisibility: 'HIDDEN'
     },
     {
       name: 'lastModified',
-      readPermissionRequired: true,
-      writePermissionRequired: true
+      updateVisibility: 'HIDDEN'
     },
     {
       name: 'lastModifiedBy',
-      readPermissionRequired: true,
-      writePermissionRequired: true
+      updateVisibility: 'HIDDEN'
     },
     {
       class: 'String',

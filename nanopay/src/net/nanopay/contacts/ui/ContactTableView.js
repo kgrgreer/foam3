@@ -67,10 +67,9 @@ foam.CLASS({
           }).end()
         .end();
     },
-    
+
     function dblclick() {
-      this.__subContext__.contactDAO.find(this.selection.id).then((contact) => {
-        if ( contact) {
+        if ( this.selection) {
           controllerMode_ = foam.u2.ControllerMode.EDIT;
           if ( this.selection.createBankAccount === undefined ) {
             this.data.createBankAccount = net.nanopay.bank.CABankAccount.create({ isDefault: true }, X);
@@ -83,7 +82,6 @@ foam.CLASS({
             isEdit: controllerMode_ === foam.u2.ControllerMode.EDIT
           }, this.__subContext__));
         }
-      })
     }
   ]
 });
