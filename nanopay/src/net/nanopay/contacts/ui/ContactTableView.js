@@ -18,10 +18,10 @@
 foam.CLASS({
   package: 'net.nanopay.contacts.ui',
   name: 'ContactTableView',
-  extends: 'foam.u2.view.ScrollTableView',
+  extends: 'foam.u2.View',
 
-  exports: [
-    'dblclick'
+  imports: [
+    'contactDAO'
   ],
 
   properties: [
@@ -43,19 +43,47 @@ foam.CLASS({
     }
   ],
 
-  listeners: [
+  methods: [
+    function initE() {
+      this.SUPER();
+
+      this
+        .start().addClass(this.myClass())
+          .start({
+            class: 'foam.u2.view.ScrollTableView',
+            enableDynamicTableHeight: false,
+            editColumnsEnabled: false,
+            columns: [
+              'organization',
+              'firstName',
+              'lastName',
+              'email',
+              'businessAddress.countryId',
+              'bankAccount.denomination',
+              'signUpStatus'
+            ],
+            data$: this.data$,
+            dblClickListenerAction: this.dblclick
+          }).end()
+        .end();
+    },
+    
     function dblclick() {
-      controllerMode_ = foam.u2.ControllerMode.EDIT;
-      if ( this.selection.createBankAccount === undefined ) {
-        this.data.createBankAccount = net.nanopay.bank.CABankAccount.create({ isDefault: true }, X);
-        controllerMode_ = foam.u2.ControllerMode.CREATE;
-      }
-      this.add(net.nanopay.ui.wizard.WizardController.create({
-        model: 'net.nanopay.contacts.Contact',
-        data: this.selection,
-        controllerMode: controllerMode_,
-        isEdit: controllerMode_ === foam.u2.ControllerMode.EDIT
-      }, this.__subContext__));
+      this.__subContext__.contactDAO.find(this.selection.id).then((contact) => {
+        if ( contact) {
+          controllerMode_ = foam.u2.ControllerMode.EDIT;
+          if ( this.selection.createBankAccount === undefined ) {
+            this.data.createBankAccount = net.nanopay.bank.CABankAccount.create({ isDefault: true }, X);
+            controllerMode_ = foam.u2.ControllerMode.CREATE;
+          }
+          this.add(net.nanopay.ui.wizard.WizardController.create({
+            model: 'net.nanopay.contacts.Contact',
+            data: this.selection,
+            controllerMode: controllerMode_,
+            isEdit: controllerMode_ === foam.u2.ControllerMode.EDIT
+          }, this.__subContext__));
+        }
+      })
     }
   ]
 });
