@@ -74,11 +74,6 @@ foam.CLASS({
                `
     },
     { name: 'GENERIC_PUT_FAILED', message: 'Failed to add an account.' },
-    { name: 'SECTION_ONE_TITLE', message: 'Add Contact' },
-    { name: 'SECTION_TWO_TITLE', message: 'Add Bank Account' },
-    { name: 'SECTION_TWO_SUBTITLE', message: 'Payments made to this contact will be deposited to the account you provide.' },
-    { name: 'SECTION_THREE_TITLE', message: 'Add Business Address' },
-    { name: 'SECTION_THREE_SUBTITLE', message: 'Enter the contact’s business address. PO boxes are not accepted.' }
   ],
 
   properties: [
@@ -106,7 +101,7 @@ foam.CLASS({
   methods: [
     async function init() {
       var sectionOne = this.Section.create({
-        title: this.SECTION_ONE_TITLE,
+        title: 'Add Contact',
         properties: [ 
           net.nanopay.contacts.Contact.ORGANIZATION,
           net.nanopay.contacts.Contact.EMAIL,
@@ -118,8 +113,8 @@ foam.CLASS({
         fromClass: 'net.nanopay.contacts.Contact'
       });
       var sectionTwo = this.Section.create({
-        title: this.SECTION_TWO_TITLE,
-        subTitle: this.SECTION_TWO_SUBTITLE,
+        title: 'Add Bank Account',
+        subTitle: 'Payments made to this contact will be deposited to the account you provide below.',
         properties: [
           net.nanopay.contacts.Contact.CREATE_BANK_ACCOUNT,
           net.nanopay.contacts.Contact.NO_CORRIDORS_AVAILABLE,
@@ -128,8 +123,8 @@ foam.CLASS({
         fromClass: 'net.nanopay.contacts.Contact'
       });
       var sectionThree = this.Section.create({
-        title: this.SECTION_THREE_TITLE,
-        subTitle: this.SECTION_THREE_SUBTITLE,
+        title: 'Add Business Address',
+        subTitle: `Enter the contact’s business address. PO boxes are not accepted.`,
         properties: [
           net.nanopay.contacts.Contact.BUSINESS_ADDRESS
         ],
@@ -190,16 +185,7 @@ foam.CLASS({
       this.isConnecting = true;
       try {
         let canInvite = this.data.createBankAccount.country != 'IN';
-        // TODO this needs to be fixed for real elsewhere - 
-        // the payloads here are all empty objects except for the first one in the array
-        // and causing issues when going through the parser
-        var payloads = this.data.createBankAccount.padCapture.capablePayloads;
-        for ( let j = 0; j < payloads.length; j++ ) {
-          if ( payloads[j].data && ( Object.keys(payloads[j].data.instance_).length === 0 ) ){
-            payloads[j].instance_.data = null;
-          }
-        } 
-        this.data.createBankAccount.padCapture.capablePayloads = payloads;
+        
         if ( this.data.shouldInvite && canInvite ) {
           // check if it is already joined
           var isExisting = await this.contactService.checkExistingContact(this.__subContext__, this.data.email, false);
@@ -303,8 +289,8 @@ foam.CLASS({
     {
       name: 'next',
       label: 'Next',
-      isEnabled: function(data$errors_, data$createBankAccount, data$createBankAccount$errors_, currentIndex) {
-        if ( currentIndex === 1 ) return data$createBankAccount && ! data$createBankAccount$errors_;
+      isEnabled: function(data$errors_, data$createBankAccount$errors_, currentIndex) {
+        if ( currentIndex === 1 ) return ! data$createBankAccount$errors_;
         return ! data$errors_;
       },
       isAvailable: function(nextIndex) {

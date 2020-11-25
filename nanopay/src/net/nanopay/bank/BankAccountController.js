@@ -170,7 +170,7 @@ foam.CLASS({
                   {
                     class: 'net.nanopay.account.ui.BankAccountWizard',
                     data: account,
-                    useSections: ['accountDetails', 'pad']
+                    useSections: ['accountInformation', 'pad']
                   }
                 ));
               }

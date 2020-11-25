@@ -1901,9 +1901,9 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"bankaccounts.label",target:"Cont
 p({class:"foam.i18n.Locale",locale:"pt",source:"businesses.label",target:"negócios"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"capability.main.banking.label",target:"contas bancárias"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"capability.main.contacts.label",target:"Contatos"})
-p({class:"foam.i18n.Locale",id:"capability.main.contacts.handler.title",locale:"pt",source:"capability.main.contacts.handler.title",target:"Contatos"})
-p({class:"foam.i18n.Locale",id:"capability.main.contacts.handler.createLabel",locale:"pt",source:"capability.main.contacts.handler.createLabel",target:"Adicionar um contato"})
-p({class:"foam.i18n.Locale",id:"capability.main.contacts.handler.createControllerView.view.title",locale:"pt",source:"capability.main.contacts.handler.createControllerView.view.title",target:"Adicionar um contato"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"capability.main.contacts.handler.title",target:"Contatos"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"capability.main.contacts.handler.createLabel",target:"Adicionar um contato"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"capability.main.contacts.handler.createControllerView.view.title",target:"Adicionar um contato"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"capability.main.dashboard.label",target:"painel de controle"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"capability.main.invoices.payables.label",target:"Pagáveis"})
@@ -2289,14 +2289,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactW
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.NEXT.label",target:"próximo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.SAVE.label",target:"Salve"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.OPTION.label",target:"Economize sem banco"})
-
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.SECTION_ONE_TITLE",target:"Adicionar contato"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.SECTION_TWO_TITLE",target:"Adicionar conta bancária"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.SECTION_TWO_SUBTITLE",target:"Os pagamentos feitos a este contato serão depositados na conta que você fornecer."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.SECTION_THREE_TITLE",target:"Adicionar endereço comercial"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.SECTION_THREE_SUBTITLE",target:"Insira o endereço comercial do contato. Caixas postais não são aceitas."})
-
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.PaymentCodeSearchWizardView.CONTACT_ADDED",target:"Contato adicionado com sucesso"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.PaymentCodeSearchWizardView.CONTACT_EXISTS_ERROR",target:"Já existe contato com este código de pagamento"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.PaymentCodeSearchWizardView.IS_CONNECTING.label",target:"isConnecting pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.PaymentCodeSearchWizardView.BACK.label",target:"Volte"})
@@ -2996,3 +2990,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"Treasury Manager.label",target:"
 p({class:"foam.i18n.Locale",locale:"pt",source:"VP of Finance.label",target:"VP de finanças"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.business.NatureOfBusiness.PLACE_HOLDER",target:"Por favor selecione..."})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.OwnerProperty.OTHER_MSG",target:"De outros"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.OwnerProperty.PLEASE_SELECT_ONE",target:"Selecione um dos seguintes ..."})
