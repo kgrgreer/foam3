@@ -49,7 +49,7 @@ foam.CLASS({
       validateObj: function(swiftCode) {
         var regex = /^[A-z0-9a-z]{8,11}$/;
 
-        if ( swiftCode === '' ) {
+        if ( !swiftCode || swiftCode === '' ) {
           return this.SWIFT_CODE_REQUIRED;
         } else if ( ! regex.test(swiftCode) ) {
           return this.SWIFT_CODE_INVALID;
@@ -92,7 +92,9 @@ foam.CLASS({
     {
       name: 'iban',
       required: false,
-      visibility: 'HIDDEN'
+      visibility: 'HIDDEN',
+      validateObj: function(iban) {
+      }
     },
     {
       name: 'desc',

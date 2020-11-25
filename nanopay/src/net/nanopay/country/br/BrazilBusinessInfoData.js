@@ -37,7 +37,7 @@ foam.CLASS({
   sections: [
     {
       name: 'businessInformation',
-      title: `Enter your business’ identification numbers`,
+      title: `Enter the identification numbers for your business`,
       help: `Require Business' Identification Numbers`
     }
   ],
