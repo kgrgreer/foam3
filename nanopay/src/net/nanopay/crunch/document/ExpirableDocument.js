@@ -71,7 +71,7 @@ foam.CLASS({
           predicateFactory: function(e) {
             var limit = new Date();
             limit.setFullYear(new Date().getFullYear() + 10);
-            limit.setDate(limit.getDate() - 1);
+            limit.setDate(limit.getDate());
             return e.LT(net.nanopay.crunch.document.ExpirableDocument.EXPIRY, limit);
           },
           errorMessage: 'EXCEED_EXPIRY_LIMIT_ERROR'
