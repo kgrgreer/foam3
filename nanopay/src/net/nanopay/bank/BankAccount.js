@@ -99,6 +99,7 @@ foam.CLASS({
     { name: 'BRANCH_CODE_INVALID', message: 'Branch code invalid' },
     { name: 'SWIFT_CODE_REQUIRED', message: 'SWIFT/BIC code required' },
     { name: 'SWIFT_CODE_INVALID', message: 'SWIFT/BIC code invalid' },
+    { name: 'SWIFT_CODE_OR_IBAN_REQUIRED', message: 'SWIFT/BIC or IBAN required' }
   ],
 
   properties: [
@@ -370,16 +371,39 @@ foam.CLASS({
       }
     },
     {
+      name: 'swiftCode',
+      label: 'SWIFT/BIC',
+      updateVisibility: 'RO',
+      section: 'accountInformation',
+      validateObj: function(swiftCode, iban) {
+        var regex = /^[A-z0-9a-z]{8,11}$/;
+ 
+        if ( swiftCode && swiftCode != '' && ! regex.test(swiftCode) ) {
+          return this.SWIFT_CODE_INVALID;
+        } else if ( ( !swiftCode || swiftCode === '' ) && ( !iban || iban === "" ) ) {
+          return this.SWIFT_CODE_OR_IBAN_REQUIRED;
+        }
+      }
+    },
+    {
       class: 'String',
       name: 'iban',
       label: 'International Bank Account Number (IBAN)',
-      required: true,
       section: 'accountInformation',
       documentation: `Standard international numbering system developed to
           identify an overseas bank account.`,
       createVisibility: 'RW',
       updateVisibility: 'RW',
       readVisibility: 'RO',
+      validateObj: function(iban, swiftCode) {
+        var regex = /^[A-z0-9a-z]{8,11}$/;
+        if (
+          ( !iban || iban === "" ) &&
+          ( !swiftCode || swiftCode === '' || ! regex.test(swiftCode) )
+        ) {
+          return this.SWIFT_CODE_OR_IBAN_REQUIRED;
+        }
+      }
     },
     {
       class: 'String',

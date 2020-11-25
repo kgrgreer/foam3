@@ -125,7 +125,7 @@ foam.CLASS({
                 dao: dao,
                 createPredicate: foam.mlang.predicate.False,
                 editPredicate: foam.mlang.predicate.True,
-                browseTitle: `${self.BENEFICIARIES_MSG} ${user.businessName}`
+                browseTitle: `${self.BENEFICIARIES_MSG} ${user.businessName || user.organization}`
               }
             });
           }

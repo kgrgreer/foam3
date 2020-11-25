@@ -8,10 +8,6 @@
 # Exit on first failure
 set -e
 
-function warning {
-    echo -e "\033[0;33mWARNING :: ${1}\033[0;0m"
-}
-
 function rmdir {
     if test -d "$1" ; then
         rm -rf "$1"
@@ -28,6 +24,15 @@ function quit {
   # Unset error on exit
   set +e
   exit $1
+}
+
+function warning {
+    echo -e "\033[0;33mWARNING :: ${1}\033[0;0m"
+}
+
+function error {
+    echo -e "\033[0;31mERROR :: ${1}\033[0;0m"
+    quit
 }
 
 function install {
@@ -446,7 +451,7 @@ function setenv {
 
     if [[ -z $JAVA_HOME ]]; then
       if [[ $IS_MAC -eq 1 ]]; then
-        JAVA_HOME=$($(dirname $(readlink $(which javac)))/java_home)
+        warning "Java home isn't properly configured!"
       elif [[ $IS_LINUX -eq 1 ]]; then
         JAVA_HOME=$(dirname $(dirname $(readlink -f $(which javac))))
       fi

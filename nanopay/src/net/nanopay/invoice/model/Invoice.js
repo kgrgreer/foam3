@@ -616,9 +616,9 @@ foam.CLASS({
           rowView: { class: 'net.nanopay.auth.ui.UserCitationView' },
           sections: [
             {
-              dao: X.user.contacts.orderBy(foam.nanos.auth.User.BUSINESS_NAME),
+              dao: X.user.contacts.orderBy(foam.nanos.auth.User.ORGANIZATION),
               searchBy: [
-                net.nanopay.contacts.Contact.BUSINESS_NAME,
+                net.nanopay.contacts.Contact.ORGANIZATION,
                 net.nanopay.contacts.Contact.OPERATING_BUSINESS_NAME
               ]
             }
@@ -820,7 +820,7 @@ foam.RELATIONSHIP({
   targetDAOKey: 'invoiceDAO',
   sourceDAOKey: 'bareUserDAO',
   sourceProperty: {
-    hidden: true
+    section: 'accountInformation'
   },
   targetProperty: {
     label: 'Vendor',
@@ -874,7 +874,7 @@ foam.RELATIONSHIP({
   targetDAOKey: 'invoiceDAO',
   sourceDAOKey: 'bareUserDAO',
   sourceProperty: {
-    hidden: true
+    section: 'accountInformation'
   },
   targetProperty: {
     label: 'Customer',

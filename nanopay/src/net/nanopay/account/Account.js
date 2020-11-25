@@ -154,7 +154,8 @@ foam.CLASS({
       `,
       tableWidth: 150,
       section: 'accountInformation',
-      visibility: 'RO'
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
     },
     {
       class: 'Long',
