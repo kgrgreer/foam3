@@ -34,15 +34,18 @@ foam.CLASS({
     {
       class: 'UnitValue',
       name: 'intermediateAmount',
-      unitPropName: 'intermediateCurrency'
+      unitPropName: 'intermediateCurrency',
+      section: 'basicInfo'
     },
     {
       class: 'String',
-      name: 'intermediateCurrency'
+      name: 'intermediateCurrency',
+      section: 'basicInfo'
     },
     {
       name: 'status',
       value: 'PENDING',
+      section: 'basicInfo'
     },
   ],
 

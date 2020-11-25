@@ -1,9 +1,7 @@
 p({
   "class":"foam.nanos.theme.Theme",
   "id":"D306F95E-4C4F-4C2B-BC5F-F67CFFE3EC99",
-  "name":"nanopay Operator",
-  "appName":"nanopay",
-  "description":"nanopay",
+  "name":"Operator",
   "navigationRootMenu":"",
   "settingsRootMenu":"settings",
   "logoRedirect":"accounts",
@@ -135,7 +133,7 @@ p({
       margin-top: 30px;
     }
   """,
-  supportConfig:{class:"foam.nanos.app.SupportConfig",emailConfig:{class:"foam.nanos.app.EmailConfig",from:"noreply@ablii.com",displayName:"Ablii",replyTo:"noreply@ablii.com"},supportEmail:"support@ablii.com",supportPhone:"+1.647.496.1526",personalSupportUser:1030,}},
+  supportConfig:{class:"foam.nanos.app.SupportConfig",emailConfig:{class:"foam.nanos.app.EmailConfig",from:"noreply@ablii.com",displayName:"Ablii",replyTo:"noreply@ablii.com"},supportEmail:"support@ablii.com",supportPhone:"+1.647.496.1526",personalSupportUser:1030},
   "createdBy":1,
   "createdByAgent":1,
   "created":"2020-04-29T22:32:52.685Z",

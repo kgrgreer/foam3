@@ -1,21 +1,44 @@
-// Northcard
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"group.read.api-northcard"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"group.update.api-northcard"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"menu.read.api-doc-northcard"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"menu.read.view-contacts"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"menu.read.view-requestmoney"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"menu.read.view-transactions"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"requestmoney.create"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"requestmoney.update.*"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"requestmoney.read.*"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"requestmoney.remove.*"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"service.read.requestMoneyDAO"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"service.requestMoneyDAO"})
+// External Support
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"group.read.external-support"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"group.update.external-support"})
 
+// Support permission
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"business.rw.ispublic"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"business.rw.compliance"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"business.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"service.agentJunctionDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"service.businessDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"service.summaryTransactionDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"summarytransaction.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"summarytransaction.rw.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"transaction.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"transaction.rw.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"user.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"user.rw.compliance"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"useruserjunction.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-support","targetId":"useruserjunction.rw.status"})
 
 // External API
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"group.read.external-api"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"group.update.external-api"})
+
+// Agent Junction (User - Business Junction)
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"service.read.agentJunctionDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"service.agentJunctionDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"useruserjunction.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"useruserjunction.rw.status"})
+
+// Business
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"menu.read.view-businesses"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"service.read.businessDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"business.rw.ispublic"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"business.rw.compliance"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"business.read.*"})
+
+// User
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"menu.read.view-users"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"user.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"user.rw.compliance"})
 
 // Documentation
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"menu.read.documentation"})
@@ -37,24 +60,6 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"service.read.userAcceptanceDocumentDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"service.userAcceptanceDocumentDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"useracceptancedocument.read.*"})
-
-// Agent Junction (User - Business Junction)
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"service.read.agentJunctionDAO"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"service.agentJunctionDAO"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"useruserjunction.*"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"useruserjunction.rw.status"})
-
-// Business
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"menu.read.view-businesses"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"service.read.businessDAO"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"business.rw.ispublic"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"business.rw.compliance"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"business.read.*"})
-
-// User
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"menu.read.view-users"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"user.read.*"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"user.rw.compliance"})
 
 // ******** SESSION *********
 
@@ -213,3 +218,17 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targ
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targetId":"service.read.flinksLoginIdDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targetId":"service.read.summaryTransactionDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"personal","targetId":"service.run.dig"})
+
+// Northcard
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"group.read.api-northcard"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"group.update.api-northcard"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"menu.read.api-doc-northcard"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"menu.read.view-contacts"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"menu.read.view-requestmoney"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"menu.read.view-transactions"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"requestmoney.create"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"requestmoney.update.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"requestmoney.read.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"requestmoney.remove.*"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"service.read.requestMoneyDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"api-northcard","targetId":"service.requestMoneyDAO"})

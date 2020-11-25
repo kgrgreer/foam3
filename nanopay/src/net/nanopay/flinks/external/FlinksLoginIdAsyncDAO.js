@@ -121,7 +121,8 @@ foam.CLASS({
                         flinksLoginIdAsync.setStatus(AsyncStatus.FAILURE.getLabel());
                         flinksLoginIdAsync.setErrorMessage(t.getMessage());
                     } finally {
-                        super.put_(x, flinksLoginIdAsync);
+                        // Ensure that the put_ operation runs through the RulerDAO so that any rules on the entity get fired (e.g. DUGRule)
+                        new foam.nanos.ruler.RulerDAO(x, getDelegate(), "flinksLoginIdAsyncDAO").put_(x, flinksLoginIdAsync);
                     }
                 } catch ( Throwable t ) {
                     ((Logger) x.get("logger")).error("Error saving async result: " + flinksLoginId.getId(), t);

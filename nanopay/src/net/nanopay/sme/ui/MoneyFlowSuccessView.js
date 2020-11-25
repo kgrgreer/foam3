@@ -301,7 +301,7 @@ foam.CLASS({
           .end()
           .start('b')
             .add(this.BODY_SEND_TREVISO_9_0 + this.invoice.totalSourceAmount + this.BODY_SEND_TREVISO_9_1 +
-              this.invoice.payee.businessName + this.BODY_SEND_TREVISO_9_2)
+              this.invoice.payee.organization || this.invoice.payee.businessName + this.BODY_SEND_TREVISO_9_2)
           .end();
       } else if ( this.isPayable_ ) {
         return this.BODY_PENDING;

@@ -43,7 +43,7 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'accountDetails',
+      name: 'accountInformation',
       title: function(forContact) {
         return forContact ? '' : this.SECTION_DETAILS_TITLE_VOID;
       }
@@ -128,7 +128,7 @@ foam.CLASS({
       class: 'String',
       label: '',
       value: 'images/USA-Check.png',
-      section: 'accountDetails',
+      section: 'accountInformation',
       visibility: 'RO',
       transient: true,
       view: function(_, X) {
@@ -145,7 +145,7 @@ foam.CLASS({
     {
       name: 'branchId',
       label: 'ACH Routing Number',
-      section: 'accountDetails',
+      section: 'accountInformation',
       updateVisibility: 'RO',
       view: {
         class: 'foam.u2.tag.Input',
@@ -214,7 +214,7 @@ foam.CLASS({
       class: 'String',
       name: 'wireRouting',
       documentation: 'The ACH wire routing number for the account, if available.',
-      section: 'accountDetails',
+      section: 'accountInformation',
       visibility: 'HIDDEN'
     },
     {
@@ -254,7 +254,7 @@ foam.CLASS({
       name: 'supportingDocuments',
       label: `Please upload either an image of a void check or a bank statement from within
           the past 3 months to verify ownership of this bank account.`,
-      section: 'accountDetails',
+      section: 'accountInformation',
       documentation: 'Supporting documents to verify bank account',
       validateObj: function(supportingDocuments, plaidResponseItem, forContact) {
         if ( supportingDocuments.length === 0 && ! plaidResponseItem && ! forContact ) {
@@ -293,7 +293,7 @@ foam.CLASS({
           country: this.country,
           firstName: this.subject.realUser.firstName,
           lastName: this.subject.realUser.lastName,
-          companyName: this.subject.user.businessName,
+          companyName: this.subject.user.organization || this.subject.user.businessName,
           address: this.subject.user.address
         }, this);
       },

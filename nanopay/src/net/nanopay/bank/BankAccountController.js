@@ -232,7 +232,7 @@ foam.CLASS({
               }).addClass('bank-account-popup').tag({
                 class: 'net.nanopay.account.ui.BankAccountWizard',
                 data: this.bankAccount,
-                useSections: ['accountDetails', 'pad']
+                useSections: ['accountInformation', 'pad']
               }));
             }
           }

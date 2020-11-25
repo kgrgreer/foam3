@@ -1,0 +1,6 @@
+// Whitelist IPs for integration
+p({
+    class:"foam.nanos.session.Session",
+    id:"2c2d88af-cba8-9549-05e9-18be400a0aed",
+    remoteHostWhiteList:["99.244.39.194","24.130.69.94","73.71.153.193"]
+})

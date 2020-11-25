@@ -1,0 +1,6 @@
+p({
+    "class":"foam.nanos.auth.Group",
+    "id":"support-base",
+    "enabled":true,
+    "description":"Support Base Group"
+})

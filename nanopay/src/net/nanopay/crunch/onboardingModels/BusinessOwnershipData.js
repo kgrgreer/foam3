@@ -248,32 +248,25 @@ foam.CLASS({
       documentation: 'First owner',
       autoValidate: true,
       validationTextVisible: true,
-//      validationPredicates: [
-//      {
-//        args: ['amountOfOwners', 'owner1$errors_'],
-//        predicateFactory: function(e) {
-//          return e.OR(
-//            e.LT(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
-//              .AMOUNT_OF_OWNERS, 1),
-//            e.AND(
-//              e.GTE(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
-//                .AMOUNT_OF_OWNERS, 1),
-//              e.EQ(foam.mlang.IsValid.create({
-//                arg1: net.nanopay.crunch.onboardingModels.BusinessOwnershipData['OWNER1']
-//              }), true)
-//            )
-//          );
-//        },
-//        errorMessage: 'OWNER_1_ERROR'
-//      }
-//      ]
-//validateObj: function(owner1, owner1$errors_) {
-//debugger;
-//console.log("valid error : " + owner1$errors_);
-//        if ( owner1 && owner1$errors_ ) {
-//          return owner1$errors_[0][1];
-//        }
-//      }
+      validationPredicates: [
+      {
+        args: ['amountOfOwners', 'owner1$errors_'],
+        predicateFactory: function(e) {
+          return e.OR(
+            e.LT(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
+              .AMOUNT_OF_OWNERS, 1),
+            e.AND(
+              e.GTE(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
+                .AMOUNT_OF_OWNERS, 1),
+              e.EQ(foam.mlang.IsValid.create({
+                arg1: net.nanopay.crunch.onboardingModels.BusinessOwnershipData['OWNER1']
+              }), true)
+            )
+          );
+        },
+        errorMessage: 'OWNER_1_ERROR'
+      }
+     ]
     },
     {
       class: 'net.nanopay.crunch.onboardingModels.OwnerProperty',
@@ -537,6 +530,10 @@ foam.CLASS({
   name: 'OwnerProperty',
   extends: 'foam.core.FObjectProperty',
 
+  messages: [
+    { name: 'PLACE_HOLDER', message: 'Please select one of the following...' },
+  ],
+
   properties: [
     ['of', 'net.nanopay.model.BeneficialOwner'],
     {
@@ -563,18 +560,11 @@ foam.CLASS({
       name: 'view',
       value: function(_, X) {
       debugger;
-        //var dao2 = X.data.slot((soUsersDAO) => soUsersDAO);
-        var dao2 = X.data.soUsersDAO;
+        var dao2 = X.data.slot((soUsersDAO) => soUsersDAO);
+        //var dao2 = X.data.soUsersDAO;
         var dao = foam.dao.MDAO.create({
             of: net.nanopay.model.BeneficialOwner
           });
-
-//        dao2.select().then(dao_=>{
-//          for (var i=0; i< dao_.array.size; i++) {
-//          console.log("i : " + dao_.array[i].id);
-//            dao.put(dao_.array[i]);
-//          }
-//        })
 
         var user = X.data.subject.user;
           // note: the one access to businessId(below) ensures the prop is set on obj as it travels through network
@@ -587,14 +577,14 @@ foam.CLASS({
         dao.put(obj);
         return {
           class: 'net.nanopay.crunch.onboardingModels.SelectionViewOwner',
-          dao2: dao2,
+          dao2$: dao2,
           dao: dao,
           index: this.index,
           chosenOwners: X.data.chosenOwners,
           choiceView:
           {
             class: 'foam.u2.view.RichChoiceView',
-            choosePlaceholder: 'Please select one of the following...',
+            choosePlaceholder: this.PLACE_HOLDER,
             sections: ['Owner type']
           }
         };
@@ -685,8 +675,6 @@ foam.CLASS({
       },
       postSet: async function(o, n) {
         // checks if data already exists
-        debugger;
-        console.log("postSet : " + n);
         let dataExists = this.data && n === this.data.id;
 
         try {
@@ -719,17 +707,16 @@ foam.CLASS({
     }
   ],
 
-//  reactions: [
-//    ['data', 'propertyChange', 'fromData'],
-//    ['', 'propertyChange.choiceData_', 'fromData']
-//  ],
+  reactions: [
+    ['data', 'propertyChange', 'fromData'],
+    ['', 'propertyChange.data', 'fromData']
+  ],
+
 
   listeners: [
     {
       name: 'fromData',
       code: function() {
-      debugger;
-      console.log("listner : " + this.chosenOwners[this.index-1]);
           if ( ! this.data ) {
             this.choiceData_ = undefined;
           } else if ( ! this.choiceData_ ) {
@@ -743,26 +730,15 @@ foam.CLASS({
     function init() {
       // Pre-initialize with just one section to prevent empty array error
       // thrown by RichChoiceView
-      console.log("init chosenOwner : " + this.chosenOwners);
       if ( this.chosenOwners[this.index-1] != undefined ) {
         // set default data if there is
-        //this.choiceData_ = this.chosenOwners[this.index-1];
         this.updateSections_(this.chosenOwners[this.index-1]);
       } else {
-        //this.choiceData_ = undefined;
         this.updateSections_(-1);
       }
 
     },
     function initE() {
-      debugger;
-//      if ( this.chosenOwners[this.index-1] != undefined )
-//        this.choiceData_ = this.chosenOwners[this.index-1];
-//      console.log("init choiceData_ : " + this.choiceData_);
-
-//      for (var i=0; i<this.choiceSections_.length; i++)
-//      console.log("init for choiceSections_ : " + this.choiceSections.get);
-
       this.add(this.slot((choiceData_, choiceSections_) => {
         return this.Rows.create()
           .tag(this.choiceView, {
@@ -781,27 +757,8 @@ foam.CLASS({
     },
     function updateSections_(choice) {
       var choiceSections = [];
-      var choiceSections_ = [];
+      var choiceSectionsNonSoFirst = [];
 
-//      this.dao.select().then(dao_=>{
-//console.log("iiiiiiii : " + dao_.array[0].id);
-//                  this.dao2.put(dao_.array[0]);
-//              })
-
-//    this.dao2.where(
-//              this.OR(
-//                this.EQ(net.nanopay.model.BeneficialOwner.ID, choice),
-//                this.NOT(
-//                  this.IN(net.nanopay.model.BeneficialOwner.ID, this.chosenOwners)
-//                )
-//              )).select().then(d=> {
-//                for (var i=0; i< d.array.size; i++) {
-//                  console.log("i : " + d.array[i].id);
-//                  dao.put(d.array[i]);
-//                }
-//              })
-//const numSO = (await this.dao2.select(this.COUNT())).value;
-      if ( choice < 1000 ) {
       choiceSections.push({
         // filter out all the siging officers except the one chosen by this owner
         dao: this.dao2.where(
@@ -814,29 +771,28 @@ foam.CLASS({
         ),
         hideIfEmpty: true
       });
-      }
 
       choiceSections.push({
         dao$: this.dao$
       });
 
-//      choiceSections_.push({
-//        dao$: this.dao$
-//      });
-//      choiceSections_.push({
-//        // filter out all the siging officers except the one chosen by this owner
-//        dao: this.dao2.where(
-//          this.OR(
-//            this.EQ(net.nanopay.model.BeneficialOwner.ID, choice),
-//            this.NOT(
-//              this.IN(net.nanopay.model.BeneficialOwner.ID, this.chosenOwners)
-//            )
-//          )
-//        ),
-//        hideIfEmpty: true
-//      });
+      choiceSectionsNonSoFirst.push({
+        dao$: this.dao$
+      });
+      choiceSectionsNonSoFirst.push({
+        // filter out all the siging officers except the one chosen by this owner
+        dao: this.dao2.where(
+          this.OR(
+            this.EQ(net.nanopay.model.BeneficialOwner.ID, choice),
+            this.NOT(
+              this.IN(net.nanopay.model.BeneficialOwner.ID, this.chosenOwners)
+            )
+          )
+        ),
+        hideIfEmpty: true
+      });
 
-      this.choiceSections_ = choiceSections; //choice >= 1000 ? choiceSections_ : choiceSections;
+      this.choiceSections_ = choice < 1000 ? choiceSections : choiceSectionsNonSoFirst;
     }
   ]
 });
