@@ -457,7 +457,7 @@ function setenv {
       fi
     fi
 
-    if [ -z "$MODE" ] || [ "$MODE" == "DEVELOPMENT" ] || [ "$MODE" == "STAGING" ] || [ "$MODE" == "TEST" ]; then
+    if [ "$MODE" == "TEST" ]; then
         JAVA_OPTS="-enableassertions ${JAVA_OPTS}"
     fi
 
@@ -471,7 +471,6 @@ function usage {
     echo "Options are:"
     echo "  -b : Build but don't start nanos."
     echo "  -c : Clean generated code before building.  Required if generated classes have been removed."
-    echo "  -C <true | false> : Enable clustering"
     echo "  -d : Run with JDPA debugging enabled on port 8000"
     echo "  -D PORT : JDPA debugging enabled on port PORT."
     echo "  -e : Skipping genJava task."
@@ -485,8 +484,7 @@ function usage {
     echo "  -J JOURNAL_CONFIG : additional journal configuration. See find.sh - deployment/CONFIG i.e. deployment/staging"
     echo "  -k : Package up a deployment tarball."
     echo "  -l : Delete runtime logs."
-    echo "  -M MODE: one of DEVELOPMENT, PRODUCTION, STAGING, TEST, DEMO"
-    echo "  -m : Run migration scripts."
+    echo "  -m : run as Medusa Mediator, CLUSTER=true (legacy)"
     echo "  -N NAME : start another instance with given instance name. Deployed to /opt/nanopay_NAME."
     echo "  -o : old maven build"
     echo "  -p : Enable profiling on default port"
@@ -553,7 +551,6 @@ INSTANCE=
 HOST_NAME=`hostname -s`
 VERSION=
 MODE=
-#MODE=DEVELOPMENT
 BUILD_ONLY=0
 CLEAN_BUILD=0
 CLUSTER=false
@@ -567,7 +564,6 @@ PACKAGE=0
 PROFILER=0
 PROFILER_PORT=8849
 RUN_JAR=0
-RUN_MIGRATION=0
 RESTART_ONLY=0
 TEST=0
 IS_AWS=0
@@ -586,11 +582,10 @@ LIQUID_DEMO=0
 RUNTIME_COMPILE=0
 RUN_USER=
 
-while getopts "bcC:dD:E:efF:ghijJ:klmM:N:opP:QrsStT:uU:vV:wW:xz" opt ; do
+while getopts "bcdD:E:efF:ghijJ:klmN:opP:QrsStT:uU:vV:wW:xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;
-        C) CLUSTER=$OPTARG ;;
         d) DEBUG=1 ;;
         D) DEBUG=1
            DEBUG_PORT=$OPTARG
@@ -615,10 +610,7 @@ while getopts "bcC:dD:E:efF:ghijJ:klmM:N:opP:QrsStT:uU:vV:wW:xz" opt ; do
         k) PACKAGE=1
            BUILD_ONLY=1 ;;
         l) DELETE_RUNTIME_LOGS=1 ;;
-        m) RUN_MIGRATION=1 ;;
-        M) MODE=$OPTARG
-           echo "MODE=${MODE}"
-           ;;
+        m) CLUSTER=true ;;
         N) INSTANCE=$OPTARG
            HOST_NAME=$OPTARG
            echo "INSTANCE=${INSTANCE}" ;;
@@ -676,6 +668,7 @@ while getopts "bcC:dD:E:efF:ghijJ:klmM:N:opP:QrsStT:uU:vV:wW:xz" opt ; do
 done
 
 if [ "${MODE}" == "TEST" ]; then
+    JAVA_OPTS="-enableassertions ${JAVA_OPTS}"
     if [ $JOURNAL_SPECIFIED -ne 1 ]; then
         echo "INFO :: Mode is TEST, setting JOURNAL_CONFIG to TEST"
         JOURNAL_CONFIG=test
@@ -708,11 +701,6 @@ fi
 
 if [ "$STATUS" -eq 1 ]; then
     status_nanos
-    quit 0
-fi
-
-if [ "$RUN_MIGRATION" -eq 1 ]; then
-    migrate_journals
     quit 0
 fi
 
