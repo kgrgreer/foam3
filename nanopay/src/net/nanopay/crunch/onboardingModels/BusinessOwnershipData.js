@@ -530,6 +530,11 @@ foam.CLASS({
   name: 'OwnerProperty',
   extends: 'foam.core.FObjectProperty',
 
+  messages: [
+    { name: 'PLEASE_SELECT_ONE', message: 'Please select one of the following...' },
+    { name: 'OTHER_MSG', message: 'Other' },
+  ],
+
   properties: [
     ['of', 'net.nanopay.model.BeneficialOwner'],
     {
@@ -567,7 +572,7 @@ foam.CLASS({
             type: user.address.countryId,
             id: (this.index * -1)
           }, X);
-        obj.toSummary = () => 'Other';
+        obj.toSummary = () => this.OTHER_MSG;
         dao.put(obj);
         return {
           class: 'net.nanopay.crunch.onboardingModels.SelectionViewOwner',
@@ -578,7 +583,7 @@ foam.CLASS({
           choiceView:
           {
             class: 'foam.u2.view.RichChoiceView',
-            choosePlaceholder: 'Please select one of the following...',
+            choosePlaceholder: this.PLEASE_SELECT_ONE,
             sections: ['Owner type']
           }
         };

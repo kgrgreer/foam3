@@ -2994,3 +2994,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"Owner.label",target:"Proprietár
 p({class:"foam.i18n.Locale",locale:"pt",source:"President.label",target:"Presidente"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Treasury Manager.label",target:"Gerente de tesouraria"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"VP of Finance.label",target:"VP de finanças"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.OwnerProperty.OTHER_MSG",target:"De outros"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.OwnerProperty.PLEASE_SELECT_ONE",target:"Selecione um dos seguintes ..."})
