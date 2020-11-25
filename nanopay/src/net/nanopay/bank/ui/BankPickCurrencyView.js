@@ -322,7 +322,7 @@ foam.CLASS({
                   this.add(this.SMEModal.create().tag({
                     class: 'net.nanopay.account.ui.BankAccountWizard',
                     data: this.bankAccount,
-                    useSections: ['accountDetails', 'pad']
+                    useSections: ['accountInformation', 'pad']
                   }));
                 })
               .end()

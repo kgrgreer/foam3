@@ -33,12 +33,14 @@ foam.CLASS({
       class: 'Short',
       name: 'loginAttempts',
       createVisibility: 'HIDDEN',
+      section: 'administrative'
     },
     {
       class: 'DateTime',
       name: 'nextLoginAttemptAllowedAt',
       type: 'Date',
       javaFactory: 'return new Date();',
+      section: 'administrative',
       storageOptional: true
     }
   ]

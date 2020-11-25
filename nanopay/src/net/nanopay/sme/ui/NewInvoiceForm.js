@@ -801,7 +801,7 @@ foam.CLASS({
           X.ctrl.add(X.ctrl.SMEModal.create({}, X.ctrl).addClass('bank-account-popup').tag({
             class: 'net.nanopay.account.ui.BankAccountWizard',
             data: account,
-            useSections: ['accountDetails', 'pad']
+            useSections: ['accountInformation', 'pad']
           }));
         }
       }
