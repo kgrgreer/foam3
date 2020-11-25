@@ -31,7 +31,7 @@ foam.CLASS({
       class: 'Boolean',
       value: true,
       writePermissionRequired: true,
-      section: 'operationsInformation'
+      section: 'administrative'
     }
   ]
 });
