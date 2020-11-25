@@ -61,8 +61,7 @@ foam.RELATIONSHIP({
   forwardName: 'ipHistories',
   inverseName: 'user',
   sourceProperty: {
-    section: 'operationsInformation',
-    order: 31,
+    hidden: true,
     transient: true
   },
   targetProperty: {
@@ -81,7 +80,7 @@ foam.RELATIONSHIP({
   forwardName: 'ipHistories',
   inverseName: 'business',
   sourceProperty: {
-    section: 'operationsInformation'
+    hidden: false
   },
   targetProperty: {
     visibility: 'RO',
