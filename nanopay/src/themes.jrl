@@ -37,6 +37,7 @@ p({
   "description":"nanopay",
   "navigationRootMenu":"",
   "settingsRootMenu":"settings",
+  "topNavigation":"net.nanopay.ui.TopSideNavigation",
   "logoRedirect":"admin.data",
   "defaultMenu":"admin.data",
   "largeLogoEnabled": true,
