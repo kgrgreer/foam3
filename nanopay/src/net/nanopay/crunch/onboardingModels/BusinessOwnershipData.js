@@ -531,7 +531,8 @@ foam.CLASS({
   extends: 'foam.core.FObjectProperty',
 
   messages: [
-    { name: 'PLACE_HOLDER', message: 'Please select one of the following...' },
+    { name: 'PLEASE_SELECT_ONE', message: 'Please select one of the following...' },
+    { name: 'OTHER_MSG', message: 'Other' }
   ],
 
   properties: [
@@ -559,9 +560,7 @@ foam.CLASS({
     {
       name: 'view',
       value: function(_, X) {
-      debugger;
         var dao2 = X.data.slot((soUsersDAO) => soUsersDAO);
-        //var dao2 = X.data.soUsersDAO;
         var dao = foam.dao.MDAO.create({
             of: net.nanopay.model.BeneficialOwner
           });
@@ -573,7 +572,7 @@ foam.CLASS({
             type: user.address.countryId,
             id: (this.index * 1000)
           }, X);
-        obj.toSummary = () => 'Other';
+        obj.toSummary = () => this.OTHER_MSG;
         dao.put(obj);
         return {
           class: 'net.nanopay.crunch.onboardingModels.SelectionViewOwner',
@@ -584,7 +583,7 @@ foam.CLASS({
           choiceView:
           {
             class: 'foam.u2.view.RichChoiceView',
-            choosePlaceholder: this.PLACE_HOLDER,
+            choosePlaceholder: this.PLEASE_SELECT_ONE,
             sections: ['Owner type']
           }
         };
@@ -730,12 +729,11 @@ foam.CLASS({
     function init() {
       // Pre-initialize with just one section to prevent empty array error
       // thrown by RichChoiceView
-      if ( this.chosenOwners[this.index-1] != undefined ) {
+      if ( this.chosenOwners[this.index-1] != undefined )
         // set default data if there is
         this.updateSections_(this.chosenOwners[this.index-1]);
-      } else {
+      else
         this.updateSections_(-1);
-      }
 
     },
     function initE() {

@@ -1901,9 +1901,9 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"bankaccounts.label",target:"Cont
 p({class:"foam.i18n.Locale",locale:"pt",source:"businesses.label",target:"negócios"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"capability.main.banking.label",target:"contas bancárias"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"capability.main.contacts.label",target:"Contatos"})
-p({class:"foam.i18n.Locale",id:"capability.main.contacts.handler.title",locale:"pt",source:"capability.main.contacts.handler.title",target:"Contatos"})
-p({class:"foam.i18n.Locale",id:"capability.main.contacts.handler.createLabel",locale:"pt",source:"capability.main.contacts.handler.createLabel",target:"Adicionar um contato"})
-p({class:"foam.i18n.Locale",id:"capability.main.contacts.handler.createControllerView.view.title",locale:"pt",source:"capability.main.contacts.handler.createControllerView.view.title",target:"Adicionar um contato"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"capability.main.contacts.handler.title",target:"Contatos"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"capability.main.contacts.handler.createLabel",target:"Adicionar um contato"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"capability.main.contacts.handler.createControllerView.view.title",target:"Adicionar um contato"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"capability.main.dashboard.label",target:"painel de controle"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"capability.main.invoices.payables.label",target:"Pagáveis"})
@@ -2988,4 +2988,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"Owner.label",target:"Proprietár
 p({class:"foam.i18n.Locale",locale:"pt",source:"President.label",target:"Presidente"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Treasury Manager.label",target:"Gerente de tesouraria"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"VP of Finance.label",target:"VP de finanças"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.OwnerProperty.PLACE_HOLDER",target:"Selecione um dos seguintes ..."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.OwnerProperty.OTHER_MSG",target:"De outros"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.OwnerProperty.PLEASE_SELECT_ONE",target:"Selecione um dos seguintes ..."})
+
