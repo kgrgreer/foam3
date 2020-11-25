@@ -37,7 +37,7 @@ foam.CLASS({
     },
     {
       name: 'denomination',
-      section: 'accountDetails',
+      section: 'accountInformation',
       gridColumns: 12,
       value: 'HKD',
     },
@@ -45,7 +45,7 @@ foam.CLASS({
       name: 'swiftCode',
       label: 'SWIFT/BIC',
       updateVisibility: 'RO',
-      section: 'accountDetails',
+      section: 'accountInformation',
       validateObj: function(swiftCode) {
         var regex = /^[A-z0-9a-z]{8,11}$/;
 
@@ -59,7 +59,7 @@ foam.CLASS({
     {
       name: 'accountNumber',
       updateVisibility: 'RO',
-      section: 'accountDetails',
+      section: 'accountInformation',
       view: {
         class: 'foam.u2.tag.Input',
         placeholder: '1234567890',
