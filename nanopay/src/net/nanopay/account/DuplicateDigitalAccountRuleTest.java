@@ -47,7 +47,7 @@ public class DuplicateDigitalAccountRuleTest
       .setOwner(user.getId())
       .build();
     dA.setParent(dParent.getId());
-    test(0 == dA.getId(), "dA id == 0");
+    test("".equals(dA.getId()), "dA id shold be empty");
     dA = (DigitalAccount) accountDAO.put(dA);
 
     DigitalAccount dB = new DigitalAccount.Builder(x_)
@@ -58,7 +58,7 @@ public class DuplicateDigitalAccountRuleTest
       .setOwner(user.getId())
       .build();
     dB.setParent(dParent.getId());
-    test(0 == dB.getId(), "dB id == 0");
+    test("".equals(dB.getId()), "dB id shold be empty");
 
     // FIXME: I can't make this trigger, the rule is only receiving on update, not create.
     // test(TestUtils.testThrows(

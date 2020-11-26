@@ -158,7 +158,7 @@ foam.CLASS({
       updateVisibility: 'RO'
     },
     {
-      class: 'Long',
+      class: 'String',
       name: 'id',
       documentation: 'The ID for the account.',
       section: 'accountInformation',
