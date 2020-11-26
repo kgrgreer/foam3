@@ -33,6 +33,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
+    'foam.nanos.auth.AccessDeniedException',
     'foam.nanos.auth.AuthenticationException',
     'foam.nanos.auth.Group',
     'foam.nanos.logger.PrefixLogger',
@@ -148,6 +149,9 @@ foam.CLASS({
           User u = super.login(x, identifier, password);
           resetLoginAttempts(x, la);
           return u;
+        } catch ( AccessDeniedException t ) {
+          // don't allow admin to be locked out when accessed from restricted network.
+          throw t;
         } catch ( Throwable t ) {
           if ( user == null ) {
             /*
