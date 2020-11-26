@@ -72,7 +72,7 @@ foam.CLASS({
         if ( this.selection) {
           controllerMode_ = foam.u2.ControllerMode.EDIT;
           if ( this.selection.createBankAccount === undefined ) {
-            this.data.createBankAccount = net.nanopay.bank.CABankAccount.create({ isDefault: true }, X);
+            this.data.createBankAccount = net.nanopay.bank.CABankAccount.create({ isDefault: true }, this.__subContext__);
             controllerMode_ = foam.u2.ControllerMode.CREATE;
           }
           this.add(net.nanopay.ui.wizard.WizardController.create({
