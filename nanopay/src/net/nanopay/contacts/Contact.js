@@ -91,13 +91,18 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'userInformation',
-      title: 'Contact Information',
-      order: 1
+      name: 'stepOne',
+      title: ' Add contact'
     },
     {
-      name: 'businessInformation',
-      order: 2
+      name: 'stepTwo',
+      title: 'Add bank account',
+      subTitle: `Payments made to this contact will be deposited to the account you provide below.`
+    },
+    {
+      name: 'stepThree',
+      title: 'Add business address',
+      subTitle: `Enter the contact’s business address. PO boxes are not accepted.`
     }
   ],
 
@@ -134,6 +139,7 @@ foam.CLASS({
       name: 'organization',
       label: 'Business',
       documentation: 'The organization/business associated with the Contact.',
+      section: 'stepOne',
       view: { class: 'foam.u2.tag.Input', focused: true },
       validateObj: function(organization) {
         if (
@@ -178,6 +184,7 @@ foam.CLASS({
     {
       name: 'email',
       documentation: 'The email address of the Contact.',
+      section: 'stepOne',
       label: 'Email',
       view: { class: 'foam.u2.tag.Input' },
       validateObj: function(email) {
@@ -191,6 +198,7 @@ foam.CLASS({
     },
     {
       name: 'firstName',
+      section: 'stepOne',
       gridColumns: 6,
       view: { class: 'foam.u2.tag.Input' },
       validateObj: function(firstName) {
@@ -208,6 +216,7 @@ foam.CLASS({
     },
     {
       name: 'lastName',
+      section: 'stepOne',
       gridColumns: 6,
       view: { class: 'foam.u2.tag.Input' },
       validateObj: function(lastName) {
@@ -222,7 +231,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'confirm',
       documentation: `True if the user confirms their relationship with the contact.`,
-      section: 'operationsInformation',
+      section: 'stepOne',
       label: '',
       updateVisibility: function() {
         return foam.u2.DisplayMode.HIDDEN;
@@ -280,12 +289,13 @@ foam.CLASS({
       javaValue: '0',
       name: 'businessId',
       documentation: `A unique identifier for the business associated with the Contact.`,
-      section: 'businessInformation'
+      visibility: 'HIDDEN'
     },
     {
       class: 'Boolean',
       name: 'loginEnabled',
       documentation: 'Determines whether the Contact can login to the platform.',
+      visibility: 'HIDDEN',
       value: false
     },
     {
@@ -294,13 +304,14 @@ foam.CLASS({
       name: 'bankAccount',
       documentation: `The unique identifier for the bank account of the Contact
         if created while registering the Contact.`,
-      section: 'accountInformation'
+      visibility: 'HIDDEN'
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.bank.BankAccount',
       name: 'createBankAccount',
       documentation: 'A before put bank account object a user creates for the contact.',
+      section: 'stepTwo',
       storageTransient: true,
       label: '',
       visibility: function() {
@@ -329,6 +340,7 @@ foam.CLASS({
       transient: true,
       flags: ['web'],
       name: 'availableCountries',
+      section: 'stepOne',
       visibility: 'HIDDEN',
       expression: function(paymentProviderCorridorDAO) {
         return this.PromisedDAO.create({
@@ -359,6 +371,7 @@ foam.CLASS({
       flags: ['web'],
       name: 'noCorridorsAvailable',
       documentation: 'GUI when no corridor capabilities have been added to user.',
+      section: 'stepTwo',
       visibility: function() {
         return this.countries.length == 0 ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
       },
@@ -372,7 +385,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'shouldInvite',
       documentation: 'True if the user wants to invite the contact to join Ablii.',
-      section: 'userInformation',
+      section: 'stepTwo',
       label: '',
       readPermissionRequired: true,
       createVisibility: function(createBankAccount$country, isEdit) {
@@ -392,7 +405,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.Address',
       name: 'businessAddress',
       documentation: 'The postal address of the business associated with the Contact.',
-      section: 'businessInformation',
+      section: 'stepThree',
       label: '',
       view: function(_, X) {
         // Removing auth checks. TODO: solution on what to show based on what.
@@ -410,7 +423,7 @@ foam.CLASS({
       of: 'net.nanopay.admin.model.AccountStatus',
       name: 'businessStatus',
       documentation: 'Tracks the status of a business.',
-      section: 'systemInformation',
+      visibility: 'HIDDEN',
       storageTransient: true
     },
     {
@@ -428,12 +441,34 @@ foam.CLASS({
         If the email address is not verified the transaction validation logic will
         throw an error when a Contact is either the Payer or Payee of an invoice.
       `,
-      section: 'systemInformation'
+      visibility: 'HIDDEN'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Phone',
+      name: 'businessPhone',
+      documentation: 'The phone number of the business.',
+      visibility: 'HIDDEN',
+      factory: function() {
+        return this.Phone.create();
+      },
+      view: { class: 'foam.u2.detail.VerticalDetailView' }
+    },
+    {
+      class: 'PhoneNumber',
+      name: 'businessPhoneNumber',
+      documentation: 'The phone number of the business.',
+      visibility: 'HIDDEN'
+    },
+    {
+      class: 'Boolean',
+      name: 'businessPhoneNumberVerified',
+      writePermissionRequired: true,
+      visibility: 'HIDDEN'
     },
     {
       class: 'String',
       name: 'warning',
-      section: 'systemInformation',
       label: '',
       tableWidth: 80,
       expression: function(bankAccount, businessId) {
