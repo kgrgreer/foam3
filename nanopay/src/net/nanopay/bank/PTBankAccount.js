@@ -37,7 +37,7 @@ foam.CLASS({
     },
     {
       name: 'denomination',
-      section: 'accountDetails',
+      section: 'accountInformation',
       gridColumns: 12,
       value: 'EUR',
     },
@@ -71,7 +71,7 @@ foam.CLASS({
     },
     {
       name: 'accountNumber',
-      section: 'accountDetails',
+      section: 'accountInformation',
       updateVisibility: 'RO',
       view: {
         class: 'foam.u2.tag.Input',
@@ -102,7 +102,7 @@ foam.CLASS({
       class: 'String',
       name: 'checkDigit',
       label: 'Check Digit',
-      section: 'accountDetails',
+      section: 'accountInformation',
       updateVisibility: 'RO'
     },
     {
