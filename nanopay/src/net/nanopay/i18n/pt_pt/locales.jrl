@@ -1312,8 +1312,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.SWI
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.SUMMARY.label",target:"resumo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.STATUS.documentation",target:"Rastreia o status da conta bancária."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.INSTITUTION_NUMBER.label",target:"institutionNumber pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.BRANCH_ID.label",target:"branchId pt"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.INSTITUTION_NUMBER.label",target:"Número do Banco"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.BRANCH_ID.label",target:"Número da Agência"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.RANDOM_DEPOSIT_AMOUNT.label",target:"randomDepositAmount pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.RANDOM_DEPOSIT_AMOUNT.documentation",target:"Uma pequena quantia financeira depositada em uma conta bancária para testar a integração em nosso sistema."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.VERIFICATION_ATTEMPTS.label",target:"verificationAttempts pt"})
@@ -1439,7 +1439,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.C
 //p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.FLAG_IMAGE.value",target:"images/flags/us.png pt"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.DENOMINATION.label",target:"denominação"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.INSTITUTION_NUMBER.label",target:"institutionNumber pt"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.INSTITUTION_NUMBER.label",target:"Número do Banco"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.BANK_CODE.label",target:"bankCode pt"})
 //p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.IBAN.label",target:"iban pt"})
 //p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.DESC.label",target:"desc pt"})
@@ -2988,6 +2988,16 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"Owner.label",target:"Proprietár
 p({class:"foam.i18n.Locale",locale:"pt",source:"President.label",target:"Presidente"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Treasury Manager.label",target:"Gerente de tesouraria"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"VP of Finance.label",target:"VP de finanças"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.UserCapabilityJunctionDAO.ERROR_ONE",target:"UserCapabilityJunction deve ser desativado por meio de mudança de status."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.UserCapabilityJunctionDAO.ERROR_TWO",target:"A capacidade do usuário não pode ser reatribuída"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.UserCapabilityJunctionDAO.ERROR_THREE",target:"A capacidade não pode ser alterada."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.UserCapabilityJunctionDAO.ERROR_FOUR",target:"Os dados de capacidade fornecidos não são os corretos. CapacidadeID: "})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.StructuredAddressView.PLACE_HOLDER",target:"Por favor selecione..."})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.STEP",target:"Degrau"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.OF_MGS",target:"do"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.OwnerProperty.OTHER_MSG",target:"De outros"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.OwnerProperty.PLEASE_SELECT_ONE",target:"Selecione um dos seguintes ..."})
