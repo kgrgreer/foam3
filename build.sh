@@ -484,7 +484,8 @@ function usage {
     echo "  -J JOURNAL_CONFIG : additional journal configuration. See find.sh - deployment/CONFIG i.e. deployment/staging"
     echo "  -k : Package up a deployment tarball."
     echo "  -l : Delete runtime logs."
-    echo "  -m : run as Medusa Mediator, CLUSTER=true (legacy)"
+    echo "  -m : Enable Medusa clustering. Not required for 'nodes'."
+    # -M reserve for potential Medusa instance type: Mediator, Node, NERF,
     echo "  -N NAME : start another instance with given instance name. Deployed to /opt/nanopay_NAME."
     echo "  -o : old maven build"
     echo "  -p : Enable profiling on default port"

@@ -44,7 +44,7 @@ function usage {
     echo "Usage: $0 [OPTIONS]"
     echo ""
     echo "Options are:"
-    echo "  -C <true>           : enable cluster"
+    echo "  -C <true>           : enable clustering"
     echo "  -D 0 or 1           : Debug mode."
     echo "  -F <rw | ro>       : File System mode"
     echo "  -H <hostname>       : hostname "
