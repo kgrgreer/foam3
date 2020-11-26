@@ -471,6 +471,7 @@ function usage {
     echo "Options are:"
     echo "  -b : Build but don't start nanos."
     echo "  -c : Clean generated code before building.  Required if generated classes have been removed."
+    echo "  -C <true | false> Enable Medusa clustering."
     echo "  -d : Run with JDPA debugging enabled on port 8000"
     echo "  -D PORT : JDPA debugging enabled on port PORT."
     echo "  -e : Skipping genJava task."
@@ -484,7 +485,7 @@ function usage {
     echo "  -J JOURNAL_CONFIG : additional journal configuration. See find.sh - deployment/CONFIG i.e. deployment/staging"
     echo "  -k : Package up a deployment tarball."
     echo "  -l : Delete runtime logs."
-    echo "  -m : Enable Medusa clustering. Not required for 'nodes'."
+    echo "  -m : Enable Medusa clustering. Not required for 'nodes'. Same as -Ctrue"
     # -M reserve for potential Medusa instance type: Mediator, Node, NERF,
     echo "  -N NAME : start another instance with given instance name. Deployed to /opt/nanopay_NAME."
     echo "  -o : old maven build"
@@ -583,10 +584,11 @@ LIQUID_DEMO=0
 RUNTIME_COMPILE=0
 RUN_USER=
 
-while getopts "bcdD:E:efF:ghijJ:klmN:opP:QrsStT:uU:vV:wW:xz" opt ; do
+while getopts "bcC:dD:E:efF:ghijJ:klmN:opP:QrsStT:uU:vV:wW:xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;
+        C) CLUSTER=${OPTARG} ;;
         d) DEBUG=1 ;;
         D) DEBUG=1
            DEBUG_PORT=$OPTARG
