@@ -146,7 +146,7 @@ function installFiles {
         echo '#!/bin/bash' > ${CONF_HOME}/shrc.custom
         echo '  JAVA_OPTS="${JAVA_OPTS} -Xmx4096m"' >> ${CONF_HOME}/shrc.custom
         if [[ ${CLUSTER} = "true" ]]; then
-            echo '  JAVA_OPTS="${JAVA_OPTS} -CLUSTER=true"' >> ${CONF_HOME}/shrc.custom
+            echo '  JAVA_OPTS="${JAVA_OPTS} -DCLUSTER=true"' >> ${CONF_HOME}/shrc.custom
         fi
     fi
     chown -R nanopay:nanopay ${CONF_HOME}
