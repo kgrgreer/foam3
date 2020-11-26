@@ -35,7 +35,7 @@ foam.CLASS({
       buildJavaClass: function(cls) {
         cls.extras.push(foam.java.Code.create({
           data: `
-  public InsufficientBalanceException(Long accountId) {
+  public InsufficientBalanceException(String accountId) {
     setAccount(accountId);
   }
           `
