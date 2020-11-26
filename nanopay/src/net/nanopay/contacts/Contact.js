@@ -495,7 +495,7 @@ foam.CLASS({
       },
       code: function(X) {
         // case of save without banking
-        if ( this.createBankAccount === undefined) {
+        if ( this.createBankAccount === undefined ) {
           this.createBankAccount = net.nanopay.bank.CABankAccount.create({ isDefault: true }, X);
         }
 
