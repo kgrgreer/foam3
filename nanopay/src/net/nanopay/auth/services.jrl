@@ -45,7 +45,7 @@ p({
         .setComparator(foam.mlang.MLang.DESC(net.nanopay.auth.LoginAttempt.CREATED))
         .setSize(10000)
         .build())
-      .setIndex(new foam.core.PropertyInfo[] {foam.nanos.auth.LoginAttempt.CREATED})
+      .setIndex(new foam.core.PropertyInfo[] {net.nanopay.auth.LoginAttempt.CREATED})
       .setRuler(false)
       .build()
   """
@@ -59,13 +59,13 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.auth.LoginAttempt.getOwnClassInfo())
       .setInnerDAO(((foam.dao.DAO) x.get("localLoginAttemptDAO")))
-      .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(foam.nanos.auth.LoginAttempt.CREATED).build() })
+      .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(net.nanopay.auth.LoginAttempt.CREATED).build() })
       .setRuler(false)
       .build();
   """,
   "client": """
     {
-      "of": "foam.nanos.auth.LoginAttempt"
+      "of": "net.nanopay.auth.LoginAttempt"
     }
   """
 })
