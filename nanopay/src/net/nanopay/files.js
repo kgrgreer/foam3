@@ -277,6 +277,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/ruler/AccountDeletedNotificationRule' },
   { name: 'net/nanopay/bank/ruler/CorridorAuthorizationRule' },
   { name: 'net/nanopay/bank/ruler/VerifyBankRule' },
+  { name: 'net/nanopay/bank/ruler/ExternalGrantBRBankAccountCapabilityRule' },
 
   // fx
   { name: 'net/nanopay/fx/ExchangeRateStatus' },
