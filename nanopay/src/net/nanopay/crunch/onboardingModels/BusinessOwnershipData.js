@@ -600,8 +600,6 @@ foam.CLASS({
           this.chosenOwners.push(n.id);
         }
 
-        console.log("pre chosenOwners : " + this.chosenOwners);
-
         return n;
       }
     }
