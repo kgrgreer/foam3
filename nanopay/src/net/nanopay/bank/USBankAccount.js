@@ -285,7 +285,7 @@ foam.CLASS({
       of: 'net.nanopay.model.USPadCapture',
       name: 'padCapture',
       section: 'pad',
-      storageTransient: true,
+      transient: true,
       label: '',
       updateVisibility: 'HIDDEN',
       factory: function() {
