@@ -54,7 +54,7 @@ foam.CLASS({
       name: 'denomination',
       documentation: 'The security that this account stores.',
       tableWidth: 127,
-      section: 'accountDetails',
+      section: 'accountInformation',
       order: 3
     },
     {

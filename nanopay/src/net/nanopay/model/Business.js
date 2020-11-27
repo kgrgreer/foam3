@@ -81,27 +81,33 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'business',
-      title: 'Business Information'
+      name: 'businessInformation',
+      order: 1
     },
     {
-      name: 'personal',
-      title: 'Personal Information',
-      isAvailable: () => false
-    },
-    {
-      name: 'administrative',
-      help: 'Properties that are used internally by the system.',
+      name: 'userInformation',
+      order: 2,
       permissionRequired: true
-    },
+    }
   ],
 
   properties: [
     {
+      name: 'id',
+      section: 'businessInformation',
+      order: 1
+    },
+    {
+      name: 'type',
+      section: 'businessInformation',
+      order: 2
+    },
+    {
       class: 'String',
       name: 'businessName',
       documentation: 'Legal name of business.',
-      section: 'business',
+      section: 'businessInformation',
+      order: 10,
       visibility: 'RW',
       width: 50
     },
@@ -112,7 +118,8 @@ foam.CLASS({
       documentation: `The business name displayed to the public. This may differ
         from the organization name.`,
           // Is displayed on client if present taking place of organziation name.
-      section: 'business'
+      section: 'businessInformation',
+      order: 11
     },
     {
       class: 'Reference',
@@ -120,16 +127,7 @@ foam.CLASS({
       name: 'businessTypeId',
       of: 'net.nanopay.model.BusinessType',
       documentation: 'The ID of the proprietary details of the business.',
-      section: 'business'
-    },
-    {
-      class: 'DateTime',
-      name: 'created',
-      documentation: `This refines the "created" property in
-        foam.nanos.auth.user and changes the section from administrative to
-        business, so that paymentops and other groups can see this property.
-      `,
-      section: 'business'
+      section: 'businessInformation'
     },
     {
       class: 'Reference',
@@ -151,7 +149,7 @@ foam.CLASS({
           search: true
         };
       },
-      section: 'business'
+      section: 'businessInformation'
     },
     {
       class: 'String',
@@ -168,7 +166,15 @@ foam.CLASS({
       `,
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
-      section: 'administrative'
+      section: 'systemInformation'
+    },
+    {
+      name: 'note',
+      section: 'businessInformation'
+    },
+    {
+      name: 'website',
+      section: 'businessInformation'
     },
     {
       class: 'Boolean',
@@ -202,7 +208,11 @@ foam.CLASS({
       class: 'Boolean',
       name: 'residenceOperated',
       documentation: 'Determines whether a business is operated at the residence of the owner.',
-      section: 'business'
+      section: 'businessInformation'
+    },
+    {
+      name: 'additionalDocuments',
+      section: 'ownerInformation'
     },
     {
       class: 'foam.nanos.fs.FileArray',
@@ -215,7 +225,7 @@ foam.CLASS({
           documents$: X.data.beneficialOwnerDocuments$
         };
       },
-      section: 'business'
+      section: 'ownerInformation'
     },
     {
       class: 'String',
@@ -230,7 +240,7 @@ foam.CLASS({
           return 'Invalid issuing authority.';
         }
       },
-      section: 'business'
+      section: 'businessInformation'
     },
     {
       class: 'String',
@@ -245,49 +255,38 @@ foam.CLASS({
       },
       javaGetter: `return getBusinessRegistrationAuthority();`,
       javaSetter: `setBusinessRegistrationAuthority(val);`,
-      section: 'business'
+      section: 'businessInformation'
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.Country',
       name: 'countryOfBusinessRegistration',
       documentation: `Country where business was registered.`,
-      section: 'business'
+      section: 'businessInformation'
     },
     {
       class: 'Date',
       name: 'businessRegistrationDate',
       documentation: 'The date that the business was registered by their issuing authority.',
-      section: 'business'
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'foam.nanos.auth.Phone',
-      name: 'phone',
-      documentation: 'The phone number of the business.',
-      factory: function() {
-        return this.Phone.create();
-      },
-      view: { class: 'foam.u2.detail.VerticalDetailView' },
-      section: 'business'
+      section: 'businessInformation'
     },
     {
       class: 'PhoneNumber',
       name: 'fax',
       documentation: 'The fax number of the business.',
-      section: 'business'
+      section: 'businessInformation'
     },
     {
       class: 'PhoneNumber',
       name: 'phoneNumber',
       documentation: 'The phone number of the business.',
-      section: 'business'
+      section: 'businessInformation'
     },
     {
       class: 'Boolean',
       name: 'phoneNumberVerified',
       writePermissionRequired: true,
-      section: 'business'
+      section: 'businessInformation'
     },
     {
       class: 'FObjectProperty',
@@ -296,7 +295,7 @@ foam.CLASS({
       label: 'Commercial Address',
       documentation: `Returns the postal address of the business associated with the
         User from the Address model.`,
-      section: 'business',
+      section: 'businessInformation',
       factory: function() {
         return this.Address.create();
       },
@@ -322,7 +321,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.Address',
       name: 'mailingAddress',
       documentation: `Mailing address of business`,
-      section: 'business',
+      section: 'businessInformation',
       factory: function() {
         return this.Address.create();
       },
@@ -348,7 +347,7 @@ foam.CLASS({
       name: 'businessHoursEnabled',
       documentation: 'Determines whether business hours are enabled for the User to set.',
       value: false,
-      section: 'business'
+      section: 'businessInformation'
     },
     {
       class: 'Boolean',
@@ -357,7 +356,7 @@ foam.CLASS({
         dictates portal views after compliance and account approval.`,
       value: false,
       writePermissionRequired: true,
-      section: 'administrative'
+      section: 'operationsInformation'
     },
     {
       class: 'FObjectArray',
@@ -366,20 +365,21 @@ foam.CLASS({
       documentation: 'Represents the people who own the majority shares in a business.',
       view: { class: 'foam.u2.view.DAOtoFObjectArrayView' },
       createVisibility: 'HIDDEN',
-      section: 'business'
+      section: 'ownerInformation',
+      order: 20
     },
     {
       class: 'Boolean',
       name: 'holdingCompany',
       documentation: `Determines whether a Business is a holding company.  A holding company
         represent a corporate group which owns shares of multiple companies.`,
-      section: 'business'
+      section: 'businessInformation'
     },
     {
       class: 'String',
       name: 'sourceOfFunds',
       documentation: 'The entities that provide funding to the business.',
-      section: 'business'
+      section: 'complianceInformation'
     },
     {
       class: 'String',
@@ -387,7 +387,7 @@ foam.CLASS({
       label: 'Describe the target customer of your products and services',
       documentation: `The type of clients that the business markets its products and
         services.`,
-      section: 'business'
+      section: 'complianceInformation'
     },
     {
       class: 'FObjectProperty',
@@ -398,7 +398,7 @@ foam.CLASS({
         information is required for KYC purposes.  It is drawn from the
         suggestedUserTransactionInfo object.
         `,
-      section: 'business',
+      section: 'complianceInformation',
       factory: function() {
         return net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.create();
       },
@@ -409,13 +409,13 @@ foam.CLASS({
       name: 'taxIdentificationNumber',
       documentation: `The tax identification number associated with the business of
       the User.`,
-      section: 'business'
+      section: 'businessInformation'
     },
     {
       name: 'businessIdentificationCode',
       documentation: 'ISO 9362 Business Identification Code (BIC) (regulated by SWIFT). see https://en.wikipedia.org/wiki/ISO_9362.',
       class: 'String',
-      section: 'business'
+      section: 'businessInformation'
     },
     {
       class: 'String',
@@ -433,7 +433,7 @@ foam.CLASS({
           return 'Invalid registration number.';
         }
       },
-      section: 'business'
+      section: 'businessInformation'
     },
     {
       class: 'String',
@@ -451,13 +451,14 @@ foam.CLASS({
       },
       javaGetter: `return getBusinessRegistrationNumber();`,
       javaSetter: `setBusinessRegistrationNumber(val);`,
-      section: 'business'
+      section: 'businessInformation'
     },
     {
       class: 'FObjectArray',
       name: 'businessDirectors',
       of: 'net.nanopay.model.BusinessDirector',
-      section: 'business'
+      section: 'ownerInformation',
+      order: 50
     },
     {
       class: 'foam.nanos.fs.FileProperty',
@@ -468,7 +469,7 @@ foam.CLASS({
         class: 'foam.nanos.auth.ProfilePictureView',
         placeholderImage: 'images/business-placeholder.png'
       },
-      section: 'business'
+      section: 'businessInformation'
     },
     {
       class: 'Boolean',
@@ -476,11 +477,12 @@ foam.CLASS({
       value: false,
       documentation: `Determines whether a user has been onboarded to
         a partner platform to support international payments.`,
-      section: 'business'
+      section: 'operationsInformation'
     },
     {
       class: 'Boolean',
-      name: 'publiclyTraded'
+      name: 'publiclyTraded',
+      section: 'businessInformation'
     },
     // Overwrite validateObj on firstName, lastName, and email so we can create
     // businesses through the GUI.
@@ -494,7 +496,29 @@ foam.CLASS({
     },
     {
       name: 'email',
+      section: 'businessInformation',
+      order: 20,
       validateObj: function() {}
+    },
+    {
+      name: 'created',
+      section: 'businessInformation'
+    },
+    {
+      name: 'createdBy',
+      section: 'businessInformation'
+    },
+    {
+      name: 'createdByAgent',
+      section: 'businessInformation'
+    },
+    {
+      name: 'lastModified',
+      section: 'businessInformation'
+    },
+    {
+      name: 'lastModifiedBy',
+      section: 'businessInformation'
     }
  ],
 
@@ -722,6 +746,7 @@ foam.CLASS({
   actions: [
     {
       name: 'exportComplianceDocuments',
+      section: 'complianceInformation',
       code: function() {
         if ( this.compliance === this.ComplianceStatus.NOTREQUESTED
           || ! this.onboarded ) {
@@ -735,6 +760,7 @@ foam.CLASS({
     },
     {
       name: 'exportSettlementDocuments',
+      section: 'complianceInformation',
       code: function() {
         // Let us assume that we want to search for invoices with a field 3 days before and 3 days after today.
         var sDate = new Date(Date.now() - (1000*60*60*24*3));

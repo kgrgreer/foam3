@@ -35,11 +35,11 @@ foam.CLASS({
         fx.copyFrom(requestTxn);
         fx.setName("Foreign Exchange "+quote.getSourceUnit()+" to "+quote.getDestinationUnit());
 
-        quote.addTransfer(TrustAccount.find(x, quote.getSourceAccount()).getId(), fx.getAmount());
-        quote.addTransfer(quote.getSourceAccount().getId(), -fx.getAmount());
+        quote.addTransfer(true, TrustAccount.find(x, quote.getSourceAccount()).getId(), fx.getAmount(), 0);
+        quote.addTransfer(true, quote.getSourceAccount().getId(), -fx.getAmount(), 0);
 
-        quote.addTransfer(TrustAccount.find(x, quote.getDestinationAccount()).getId(), - fx.getDestinationAmount());
-        quote.addTransfer(quote.getDestinationAccount().getId(), fx.getDestinationAmount());
+        quote.addTransfer(true, TrustAccount.find(x, quote.getDestinationAccount()).getId(), - fx.getDestinationAmount(), 0);
+        quote.addTransfer(true, quote.getDestinationAccount().getId(), fx.getDestinationAmount(), 0);
 
         fx.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);
 

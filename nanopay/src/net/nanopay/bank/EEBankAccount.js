@@ -31,7 +31,7 @@ foam.CLASS({
     },
     {
       name: 'denomination',
-      section: 'accountDetails',
+      section: 'accountInformation',
       gridColumns: 12,
       value: 'EUR',
     },
@@ -73,7 +73,7 @@ foam.CLASS({
       class: 'String',
       name: 'checkDigit',
       label: 'Check/Control Digits',
-      section: 'accountDetails',
+      section: 'accountInformation',
       updateVisibility: 'RO'
     },
     {

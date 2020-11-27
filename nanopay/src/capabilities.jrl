@@ -30,6 +30,7 @@ p({
   "permissionsIntercepted":[
     "businessHasSigningOfficer"
   ],
+  "keywords":["featured"],
   "interceptIf":{"class":"net.nanopay.crunch.predicate.SigningOfficerQuestionAnswered"},
   "wizardlet": {
     "class": "net.nanopay.crunch.wizardlet.SigningOfficerQuestionWizardlet"

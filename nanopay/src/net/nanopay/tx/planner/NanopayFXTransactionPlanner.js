@@ -101,10 +101,10 @@ foam.CLASS({
           fxTransaction.setAccepted(true);
         }
 
-        quote.addTransfer(sourceAccount.getId(), -requestTxn.getAmount());
-        quote.addTransfer(brokerSourceAccount.getId(), requestTxn.getAmount());
-        quote.addTransfer(brokerDestinationAccount.getId(), -fxTransaction.getDestinationAmount());
-        quote.addTransfer(destinationAccount.getId(), fxTransaction.getDestinationAmount());
+        quote.addTransfer(true, sourceAccount.getId(), -requestTxn.getAmount(), 0);
+        quote.addTransfer(true, brokerSourceAccount.getId(), requestTxn.getAmount(), 0);
+        quote.addTransfer(true, brokerDestinationAccount.getId(), -fxTransaction.getDestinationAmount(), 0);
+        quote.addTransfer(true, destinationAccount.getId(), fxTransaction.getDestinationAmount(), 0);
 
         if ( fxQuote.getFee() > 0 ) {
           Long feeAmount = (new Double(fxQuote.getFee())).longValue();

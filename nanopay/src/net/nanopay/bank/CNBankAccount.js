@@ -37,7 +37,7 @@ foam.CLASS({
     },
     {
       name: 'denomination',
-      section: 'accountDetails',
+      section: 'accountInformation',
       gridColumns: 12,
       value: 'CNY',
     },
@@ -45,11 +45,11 @@ foam.CLASS({
       name: 'swiftCode',
       label: 'SWIFT/BIC',
       updateVisibility: 'RO',
-      section: 'accountDetails',
+      section: 'accountInformation',
       validateObj: function(swiftCode) {
         var regex = /^[A-z0-9a-z]{8,11}$/;
 
-        if ( swiftCode === '' ) {
+        if ( !swiftCode || swiftCode === '' ) {
           return this.SWIFT_CODE_REQUIRED;
         } else if ( ! regex.test(swiftCode) ) {
           return this.SWIFT_CODE_INVALID;
@@ -91,7 +91,9 @@ foam.CLASS({
     {
       name: 'iban',
       required: false,
-      visibility: 'HIDDEN'
+      visibility: 'HIDDEN',
+      validateObj: function(iban) {
+      }
     },
     {
       name: 'desc',

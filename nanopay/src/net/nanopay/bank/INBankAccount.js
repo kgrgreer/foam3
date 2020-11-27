@@ -72,7 +72,7 @@ foam.CLASS({
       name: 'rbiLink',
       label: '',
       value: 'https://www.rbi.org.in/Scripts/IFSCMICRDetails.aspx',
-      section: 'accountDetails',
+      section: 'accountInformation',
       view: {
         class: 'net.nanopay.sme.ui.Link',
         data: this.value,
@@ -101,13 +101,13 @@ foam.CLASS({
           errorString: 'IFSC Code must be in the following format four letters, 0, 6 numbers. eg: ABCD0123456.'
         }
       ],
-      section: 'accountDetails'
+      section: 'accountInformation'
     },
     {
       class: 'String',
       name: 'beneAccountType',
       label: 'Account type',
-      section: 'accountDetails',
+      section: 'accountInformation',
       view: {
         class: 'foam.u2.view.ChoiceView',
         placeholder: 'Please select',
