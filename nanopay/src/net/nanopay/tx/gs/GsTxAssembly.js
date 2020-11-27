@@ -64,8 +64,8 @@ foam.CLASS({
   constants: [
     {
       name: 'BROKER_ID',
-      type: 'Long',
-      value: 20
+      type: 'String',
+      value: '20'
     }
   ],
 
@@ -399,7 +399,7 @@ foam.CLASS({
         { name: 'row', type: 'net.nanopay.tx.gs.GsTxCsvRow' },
         { name: 'cash', type: 'Boolean' }
       ],
-      type: 'long',
+      type: 'String',
       javaCode: `
       String name = cash ?
         row.getCompany() + " CASH (" + row.getCurrency() + ")" :
