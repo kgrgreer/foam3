@@ -17,44 +17,42 @@
 
 foam.CLASS({
   package: 'net.nanopay.tx.planner',
-  name: 'BmoCITransactionPlanner',
-  extends: 'net.nanopay.tx.planner.AbstractTransactionPlanner',
+  name: 'BmoInterTrustPlanner',
+  extends: 'net.nanopay.tx.planner.InterTrustPlanner',
+  documentation: 'The Bmo implementation of the InterTrustPlanner',
 
   javaImports: [
     'java.time.Duration',
-    'net.nanopay.account.TrustAccount',
     'net.nanopay.payment.PADTypeLineItem',
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.tx.TransactionLineItem',
-    'net.nanopay.tx.bmo.cico.BmoCITransaction'
+    'net.nanopay.tx.bmo.cico.BmoInterTrustTransaction'
   ],
 
   constants: [
-    {
-      name: 'INSTITUTION_NUMBER',
-      type: 'String',
-      value: '001'
-    },
-    {
-      name: 'PAYMENT_PROVIDER',
-      type: 'String',
-      value: 'BMO'
-    }
-  ],
+      {
+        name: 'INSTITUTION_NUMBER',
+        type: 'String',
+        value: '001'
+      },
+      {
+        name: 'PAYMENT_PROVIDER',
+        type: 'String',
+        value: 'BMO'
+      }
+    ],
 
   methods: [
     {
       name: 'plan',
       javaCode: `
-        TrustAccount trustAccount = TrustAccount.find(x, quote.getSourceAccount(), INSTITUTION_NUMBER);
-        BmoCITransaction t = new BmoCITransaction();
+        BmoInterTrustTransaction t = new BmoInterTrustTransaction();
         t.copyFrom(requestTxn);
         t.setStatus(net.nanopay.tx.model.TransactionStatus.PENDING);
         t.setInstitutionNumber(INSTITUTION_NUMBER);
         t.setPaymentProvider(PAYMENT_PROVIDER);
-        quote.addTransfer(true, trustAccount.getId(), -t.getAmount(), 0);
-        quote.addTransfer(true, quote.getDestinationAccount().getId(), t.getAmount(), 0);
-        quote.addTransfer(false, quote.getSourceAccount().getId(), -t.getAmount(), 0);
+
+        addInterTrustTransfers(x, t, quote);
 
         t.addLineItems(new TransactionLineItem[] {
           new ETALineItem.Builder(x).setEta(Duration.ofDays(1).toMillis()).build()
@@ -62,8 +60,9 @@ foam.CLASS({
         if ( PADTypeLineItem.getPADTypeFrom(x, t) == null ) {
           PADTypeLineItem.addEmptyLineTo(t);
         }
+
         return t;
     `
-    }
+    },
   ]
 });
