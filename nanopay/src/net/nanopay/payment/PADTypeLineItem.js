@@ -116,5 +116,13 @@ foam.CLASS({
           `);
       }
     }
+  ],
+  methods: [
+    {
+      name: 'showLineItem',
+      code: function() {
+        return false;
+      }
+    }
   ]
 });
