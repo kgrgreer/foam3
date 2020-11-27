@@ -2613,7 +2613,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData.MIN_DATE_ERROR",target:"A incorporação da empresa deve ser uma data mais recente"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData.MAX_DATE_ERROR",target:"A incorporação da empresa não pode ser uma data futura"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.SELECT_CONTACT",target:"Select contact"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.SELECT_CONTACT",target:"Selecione o contato."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.ON_VOID_NOTE",target:"On Void Note:"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.IS_WIZARD_COMPLETED.view.label",target:"Is Wizard Completed"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.SEARCH.label",target:"search"})
