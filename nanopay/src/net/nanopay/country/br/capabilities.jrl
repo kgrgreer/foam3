@@ -443,7 +443,7 @@ p({
   "description":"Enable international payments in Brazil",
   "icon":"/images/capabilityIcons/BrazilCap.svg",
   "version":"0",
-  "visible":true,
+  "visibilityPredicate":  { class: "foam.mlang.predicate.True" }, 
   "enabled":true,
   "keywords":["featured"],
   "availabilityPredicate": {
@@ -469,7 +469,6 @@ p({
   "name":"Brazil onboarding",
   "description":"Brazil onboarding",
   "version":"0",
-  "visible":false,
   "enabled":true,
   "reviewRequired":true,
   "permissionsGranted":[
@@ -506,7 +505,7 @@ p({
   },
   "capabilityToReview": "554af38a-8225-87c8-dfdf-eeb15f71215f-49",
   "enabled":true,
-  "visible":true
+  "visibilityPredicate":  { class: "foam.mlang.predicate.True" },
 })
 
 p({
@@ -515,7 +514,6 @@ p({
   "name":"User Invoice Capability",
   "icon":"/images/capabilityIcons/BrazilCap.svg",
   "enabled":true,
-  "visible":false,
   "associatedEntity": 2
 })
 
@@ -525,8 +523,7 @@ p({
   "name":"Brazil Bank Account",
   "of":"net.nanopay.bank.BRBankAccount",
   "daoKey":"accountDAO",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({

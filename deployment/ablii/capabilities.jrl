@@ -6,7 +6,7 @@ p({
   "icon":"/images/capabilityIcons/finalApprovalCap.svg",
   "version":"0",
   "enabled":true,
-  "visible":true,
+  "visibilityPredicate":  { class: "foam.mlang.predicate.True" },  
   "keywords":["featured"],
   "min": 1,
   "permissionsGranted":[
