@@ -94,7 +94,7 @@ foam.CLASS({
           for (Object f : fees ) {
             LineItemFee fee = (LineItemFee) f;
             User payee = applyTo.findDestinationAccount(x).findOwner(x);
-            Long feeAccountId = 0L;
+            String feeAccountId = "";
             LineItemTypeAccount lineItemTypeAccount = (LineItemTypeAccount) typeAccountDAO.find(
               MLang.AND(
                 MLang.EQ(LineItemTypeAccount.ENABLED, true),
@@ -110,7 +110,7 @@ foam.CLASS({
               feeAccountId = lineItemTypeAccount.getAccount();
             }
             Long amount = fee.getFeeAmount(lineItem.getAmount());
-            if ( feeAccountId > 0 &&
+            if ( ! "".equals(feeAccountId) &&
                  amount > 0L ) {
               LineItemType lineItemType = fee.findFeeType(x);
               FeeLineItem[] forward = new FeeLineItem [] {
