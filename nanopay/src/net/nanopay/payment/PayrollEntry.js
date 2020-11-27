@@ -46,7 +46,7 @@ foam.CLASS({
       name: 'bankAccountNo',
     },
     {
-      class: 'Long',
+      class: 'String',
       name: 'dcaNo',
     },
     {
