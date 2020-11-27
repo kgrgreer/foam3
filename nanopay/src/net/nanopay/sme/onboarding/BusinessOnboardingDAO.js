@@ -172,7 +172,7 @@ foam.CLASS({
               notification.setBody("A PEP/HIO related user with Id: " + user.getId() + ", Business Name: " +
                                     business.getOrganization() + " and Business Id: " + business.getId() + " has been Onboarded.");
               notification.setNotificationType("A PEP/HIO related user has been Onboarded");
-              notification.setGroupId("fraud-ops");
+              notification.setGroupId(user.getSpid() + "-fraud-ops");
               localNotificationDAO.put(notification);
             }
             user.setPEPHIORelated(businessOnboarding.getPEPHIORelated());

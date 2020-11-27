@@ -56,7 +56,7 @@ foam.CLASS({
         Business business = (Business) ucj.findSourceId(x);
 
         User user = (User) ucj.findSourceId(x);
-        String group = user.getSpid().equals("nanopay") ? "fraud-ops" : user.getSpid() + "-fraud-ops";
+        String group = user.getSpid() + "-fraud-ops";
         
         DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
         try {

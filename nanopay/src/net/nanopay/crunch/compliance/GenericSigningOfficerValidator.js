@@ -50,7 +50,7 @@ foam.CLASS({
             Capability capability = (Capability) ucj.findTargetId(x);
             User user = (User) ucj.saveDataToDAO(x, capability, false);
 
-            String group = user.getSpid().equals("nanopay") ? "fraud-ops" : user.getSpid() + "-fraud-ops";
+            String group = user.getSpid() + "-fraud-ops";
 
             requestApproval(x,
               new ApprovalRequest.Builder(x)

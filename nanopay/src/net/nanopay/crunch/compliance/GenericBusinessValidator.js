@@ -48,7 +48,7 @@ foam.CLASS({
             UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
             Business business = (Business) ucj.findSourceId(x);
 
-            String group = business.getSpid().equals("nanopay") ? "fraud-ops" : business.getSpid() + "-fraud-ops";
+            String group = business.getSpid() + "-fraud-ops";
 
             requestApproval(x,
               new ApprovalRequest.Builder(x)

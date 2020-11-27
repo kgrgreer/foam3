@@ -40,7 +40,7 @@ foam.CLASS({
         BusinessDirectorsData data = (BusinessDirectorsData) ucj.getData();
 
         User user = (User) ucj.findSourceId(x);
-        String group = user.getSpid().equals("nanopay") ? "fraud-ops" : user.getSpid() + "-fraud-ops";
+        String group = user.getSpid() + "-fraud-ops";
 
         if ( data.getBusinessDirectors() == null || data.getBusinessDirectors().length == 0 ) return;
 

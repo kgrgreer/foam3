@@ -68,7 +68,7 @@ foam.CLASS({
             agency.submit(x, new ContextAgent() {
               @Override
               public void execute(X x) {
-                String group = user.getSpid().equals("nanopay") ? "fraud-ops" : user.getSpid() + "-fraud-ops";
+                String group = user.getSpid() + "-fraud-ops";
                 requestApproval(x,
                   new ComplianceApprovalRequest.Builder(x)
                     .setObjId(ucj.getId())
@@ -87,7 +87,7 @@ foam.CLASS({
           ((Logger) x.get("logger")).warning("SIDniValidator failed.", e);
 
           SIDniResponse response = getResponse();
-          String group = SafetyUtil.isEmpty(user.getSpid()) || user.getSpid().equals("nanopay") ? "fraud-ops" : user.getSpid() + "-fraud-ops";
+          String group = SafetyUtil.isEmpty(user.getSpid()) || user.getSpid() + "-fraud-ops";
           requestApproval(x, new ComplianceApprovalRequest.Builder(x)
             .setObjId(ucj.getId())
             .setDaoKey("userCapabilityJunctionDAO")
