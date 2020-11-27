@@ -33,9 +33,6 @@ foam.CLASS({
   requires: [
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
-    'net.nanopay.tx.EtaSummaryTransactionLineItem',
-    'net.nanopay.tx.ExpirySummaryTransactionLineItem',
-    'net.nanopay.payment.PADTypeLineItem',
     'net.nanopay.tx.SummaryTransactionLineItem',
   ],
 
