@@ -179,7 +179,7 @@ public class FeeEngine {
     return transactionFeeRule_.getFees(x);
   }
 
-  private FeeLineItem newFeeLineItem(String name, long amount, Currency currency, long sourceAccount)
+  private FeeLineItem newFeeLineItem(String name, long amount, Currency currency, String sourceAccount)
     throws InstantiationException, IllegalAccessException
   {
     var result = (FeeLineItem) transactionFeeRule_.getFeeClass().newInstance();
