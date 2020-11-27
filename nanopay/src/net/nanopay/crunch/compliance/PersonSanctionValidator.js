@@ -110,7 +110,7 @@ foam.CLASS({
         } catch (Exception e) {
           ((Logger) x.get("logger")).warning("PersonSanctionValidator failed.", e);
           DowJonesResponse response = getResponse();
-          String group = SafetyUtil.isEmpty(user.getSpid()) || user.getSpid() + "-fraud-ops";
+          String group = SafetyUtil.isEmpty(user.getSpid()) ? "fraud-ops" : user.getSpid() + "-fraud-ops";
           requestApproval(x, 
             new DowJonesApprovalRequest.Builder(x)
               .setObjId(ucj.getId())
