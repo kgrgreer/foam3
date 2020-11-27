@@ -22,7 +22,6 @@ p({
   "description":"Are you a Signing Officer?",
   "notes":"This capability will intercept its permissions when there are no signingofficerjunctions belonging to the current business",
   "version":"0",
-  "visibilityPredicate":  { class: "foam.mlang.predicate.True" },
   "enabled":true,
   "keywords":["featured"],
   "icon":"/images/capabilityIcons/SigningOfficerIcon.svg",
@@ -39,14 +38,8 @@ p({
     "class": "foam.u2.wizard.StepWizardConfig",
     "allowSkipping": false
   },
-  "capabilityVisibilityPredicate": {
-    "class": "foam.mlang.predicate.Not",
-    "arg1":
-      {
-        "class":"net.nanopay.crunch.IsSpid",
-        "spid": "treviso"
-      }
-  },
+  "visibilityPredicate": { class: "foam.mlang.predicate.True" },
+  }
   "requirementViewTitle":"We require a person authorized to act on behalf of the company to provide certain information to us. In this section, we ask if you are such a person, or alternatively, an email address for someone who is."
 })
 
