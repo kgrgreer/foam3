@@ -371,13 +371,14 @@ foam.CLASS({
       }
     },
     {
+      class: 'String',
       name: 'swiftCode',
       label: 'SWIFT/BIC',
       updateVisibility: 'RO',
       section: 'accountInformation',
       validateObj: function(swiftCode, iban) {
         var regex = /^[A-z0-9a-z]{8,11}$/;
- 
+
         if ( swiftCode && swiftCode != '' && ! regex.test(swiftCode) ) {
           return this.SWIFT_CODE_INVALID;
         } else if ( ( !swiftCode || swiftCode === '' ) && ( !iban || iban === "" ) ) {
