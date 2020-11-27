@@ -335,6 +335,7 @@ foam.CLASS({
         try {
           this.sudoAdmin(x);
           var cap = await this.client(x, 'capabilityPayloadDAO', foam.nanos.crunch.connection.CapabilityPayload).put_(x, foam.nanos.crunch.connection.CapabilityPayload.create({
+            'id': '1F0B39AD-934E-462E-A608-D590D1081298',
             'capabilityDataObjects': {
               'AbliiPrivacyPolicy': {
                 'class': 'net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy',
@@ -365,15 +366,8 @@ foam.CLASS({
                 'class': 'net.nanopay.crunch.registration.UserDetailData',
                 'firstName': user.firstName,
                 'lastName': user.lastName,
-                'phoneNumber': '6472223333',
-                'address': {
-                  'structured': false,
-                  'address1': '21 King St. W',
-                  'regionId': 'ON',
-                  'countryId': 'CA',
-                  'city': 'Toronto',
-                  'postalCode': 'M9B 5X6'
-                }
+                'phoneNumber': user.phoneNumber || '6472223333',
+                'address': user.address
               }
             }
           }, x));
@@ -412,6 +406,7 @@ foam.CLASS({
         try {
           this.sudoAdmin(x);
           var cap = await this.client(x, 'capabilityPayloadDAO', foam.nanos.crunch.connection.CapabilityPayload).put_(x, foam.nanos.crunch.connection.CapabilityPayload.create({
+            'id': '56D2D946-6085-4EC3-8572-04A17225F86A',
             'capabilityDataObjects': {
               'AbliiPrivacyPolicy': {
                 'class': 'net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy',
@@ -429,19 +424,12 @@ foam.CLASS({
                 'class': 'net.nanopay.crunch.registration.UserDetailData',
                 'firstName': user.firstName,
                 'lastName': user.lastName,
-                'phoneNumber': '6472223333',
-                'address': {
-                  'structured': false,
-                  'address1': '20 King St. W',
-                  'regionId': 'ON',
-                  'countryId': 'CA',
-                  'city': 'Toronto',
-                  'postalCode': 'M9B 5X6'
-                }
+                'phoneNumber': user.phoneNumber || '6472223333',
+                'address': user.address
               },
               'Expanded User Details': {
                 'class': 'net.nanopay.crunch.registration.UserDetailExpandedData',
-                'birthday': '1988-06-15T00:00:00.000Z',
+                'birthday': user.birthday || '1988-06-15T00:00:00.000Z',
                 'jobTitle': 'Treasurer',
                 'PEPHIORelated': false,
                 'thirdParty': false
@@ -449,24 +437,9 @@ foam.CLASS({
               'Business Onboarding Details': {
                 'class': 'net.nanopay.crunch.registration.BusinessDetailData',
                 'businessName': business.businessName,
-                'phoneNumber': '6472223333',
-                'email': 'business12345@corp.com',
-                'address': {
-                  'structured': false,
-                  'address1': '20 King St. W',
-                  'regionId': 'ON',
-                  'countryId': 'CA',
-                  'city': 'Toronto',
-                  'postalCode': 'M9B 5X6'
-                },
-                'mailingAddress': {
-                  'structured': false,
-                  'address1': '20 King St. W',
-                  'regionId': 'ON',
-                  'countryId': 'CA',
-                  'city': 'Toronto',
-                  'postalCode': 'M9B 5X6'
-                }
+                'phoneNumber': business.phoneNumber || '6472223333',
+                'address': business.address,
+                'mailAddress': business.address
               },
               'Expanded Business Onboarding Details': {
                 'class': 'net.nanopay.crunch.registration.BusinessDetailExpandedData',

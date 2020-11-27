@@ -106,13 +106,6 @@ async function execute(x) {
       // switch to business
       support.sudoStore(x);
       support.sudo(x, businessSession.id, u, business);
-/*
-// REVIEW throws NPE server side
-// 2020-11-23T09:26:21.002-0500,qtp-728584102-3436,DEBUG,[Service],capabilityPayloadDAO,admin admin (1348),returning skeleton exception,java.lang.NullPointerException
-//      at foam.nanos.crunch.connection.CapabilityPayloadDAO.put_(CapabilityPayloadDAO.java:223)
-//      at foam.nanos.ruler.RulerDAO.put_(RulerDAO.java:955)
-//      at foam.dao.ProxyDAO.put_(ProxyDAO.java:323)
-
       try {
         let cap = await support.abliiBusinessOnboardingCapability(x, u, business);
         test(true, 'abliiBusinessOnboardingCapability');
@@ -120,7 +113,6 @@ async function execute(x) {
         test(false, 'abliiBusinessOnboardingCapability: '+(e.message || e));
         throw e;
       }
-*/
       try {
         business = await support.updateBusinessComplianceStatus(x, business);
         test(true, 'updateBusinessComplianceStatus');
