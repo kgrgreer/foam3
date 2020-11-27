@@ -1036,11 +1036,11 @@ foam.CLASS({
 
       AppConfig appConfig = (AppConfig) x.get("appConfig");
       DAO userDAO = (DAO) x.get("bareUserDAO");
-      if ( getSourceAccount() == 0 ) {
+      if ( "".equals(getSourceAccount()) ) {
         throw new ValidationException("sourceAccount must be set");
       }
 
-      if ( getDestinationAccount() == 0 ) {
+      if ( "".equals(getDestinationAccount()) ) {
         throw new ValidationException("destinationAccount must be set");
       }
 
@@ -1316,7 +1316,7 @@ foam.CLASS({
   },
   {
     name: 'getOutgoingAccount',
-    type: 'Long',
+    type: 'String',
     javaCode: `
       return getSourceAccount();
     `
@@ -1327,13 +1327,13 @@ foam.CLASS({
     documentation: 'Sum of transfers on this transaction for a given account',
     args: [
       { name: 'x', type: 'Context' },
-      { name: 'accountNumber', type: 'Long' }
+      { name: 'accountId', type: 'String' }
     ],
     javaCode: `
       Long sum = 0l;
       //Sum transfers that affect account
       for ( Transfer t : getTransfers() )
-        if ( t.getAccount() == accountNumber )
+        if ( t.getAccount().equals(accountId) )
           sum += t.getAmount();
       return sum;
     `

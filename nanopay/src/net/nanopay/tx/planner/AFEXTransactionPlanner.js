@@ -218,7 +218,7 @@ foam.CLASS({
           name: 'fxQuote'
         },
         {
-          type: 'Long',
+          type: 'String',
           name: 'destination'
         }
       ],
@@ -267,7 +267,7 @@ foam.CLASS({
           name: 'fxQuote'
         },
         {
-          type: 'Long',
+          type: 'String',
           name: 'source'
         }
       ],

@@ -59,7 +59,7 @@ foam.CLASS({
       javaCode: `
         if ( getAmount() == 0 )
           throw new ValidationException("Transfer has no amount set");
-        if ( getAccount() == 0 )
+        if ( "".equals(getAccount()) )
           throw new ValidationException("No account specified on Transfer");
           /*// decide if account.find needed..
         var acc = ((DAO) x.get("localAccountDAO")).find(getAccount());
@@ -102,7 +102,7 @@ foam.CLASS({
       name: 'javaExtras',
       buildJavaClass: function(cls) {
         cls.extras.push(`
-          public Transfer(long amount, long account) {
+          public Transfer(long amount, String account) {
             setAmount(amount);
             setAccount(account);
           }

@@ -150,7 +150,7 @@ foam.CLASS({
       name: 'addExternalTransfer',
       documentation: 'helper function for adding transfers to the plan',
       args: [
-        { name: 'account', type: 'Long' },
+        { name: 'account', type: 'String' },
         { name: 'amount', type: 'Long' }
       ],
       javaCode: `
@@ -164,7 +164,7 @@ foam.CLASS({
       name: 'addTransfer',
       documentation: 'helper function for adding transfers to the plan',
       args: [
-        { name: 'account', type: 'Long' },
+        { name: 'account', type: 'String' },
         { name: 'amount', type: 'Long' }
       ],
       javaCode: `

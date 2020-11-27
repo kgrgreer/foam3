@@ -488,7 +488,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     return true;
   }
 
-  public void addPayee(long userId, long bankAccountId, long sourceUser) throws RuntimeException {
+  public void addPayee(long userId, String bankAccountId, long sourceUser) throws RuntimeException {
     User user = User.findUser(x, userId);
     if ( null == user ) throw new RuntimeException("Unable to find User " + userId);
 
@@ -605,7 +605,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     return (AFEXBeneficiary) afexBeneficiaryDAO.put(afexBeneficiary);
   }
 
-  public void updatePayee(long userId, long bankAccountId, long sourceUser) throws RuntimeException {
+  public void updatePayee(long userId, String bankAccountId, long sourceUser) throws RuntimeException {
     User user = User.findUser(x, userId);
     if ( null == user ) throw new RuntimeException("Unable to find User " + userId);
 
