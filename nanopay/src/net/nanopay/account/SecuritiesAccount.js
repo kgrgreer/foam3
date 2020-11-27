@@ -77,7 +77,7 @@ foam.CLASS({
         synchronized ( lock ) {
           SecurityAccount sa = (SecurityAccount) accountDAO.find(EQ(
           SecurityAccount.DENOMINATION,unit));
-          if (sa == null || sa.getId() == 0)
+          if ( sa == null || "".equals(sa.getId()) )
             return createSecurityAccount_(x,unit);
           return sa;
         }
