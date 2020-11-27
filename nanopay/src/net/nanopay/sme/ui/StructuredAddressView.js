@@ -82,6 +82,12 @@ foam.CLASS({
       grid-template-columns: 1.5fr 2.5fr 1fr;
       grid-gap: 16px;
     }
+    ^ .region-postal-code-column {
+      display: grid;
+      /* vertically align street number and region by giving same width */
+      grid-template-columns: calc((100% - 32px) * 0.3) auto;
+      grid-gap: 16px;
+    }
   `,
 
   properties: [
@@ -211,7 +217,7 @@ foam.CLASS({
           .end()
         .end()
         .start().addClass(this.myClass('container'))
-          .start().addClass('one-two-column')
+          .start().addClass('region-postal-code-column')
             .start().addClass('label-input')
               .tag(this.SectionedDetailPropertyView, {
                 data$: this.data$,
