@@ -292,7 +292,8 @@ foam.CLASS({
       javaGetter: `
         return (new TxLimitPredicate.Builder(getX()))
           .setEntityType(this.getApplyLimitTo())
-          .setId(this.getApplyLimitTo() == TxLimitEntityType.ACCOUNT ? this.getAccountToLimit() :
+          //TODO: check liquidity for stringId
+          .setId(this.getApplyLimitTo() == TxLimitEntityType.ACCOUNT ? String.valueOf(this.getAccountToLimit()) :
                  this.getApplyLimitTo() == TxLimitEntityType.BUSINESS ? this.getBusinessToLimit() :
                  this.getApplyLimitTo() == TxLimitEntityType.USER ? this.getUserToLimit() : 0)
           .setSend(this.getSend())
@@ -343,7 +344,7 @@ foam.CLASS({
               throw new IllegalStateException("Business to limit must be set");
         }
         else if (this.getApplyLimitTo() == TxLimitEntityType.ACCOUNT &&
-                 this.getAccountToLimit() == 0) {
+                 "".equals(this.getAccountToLimit())) {
               throw new IllegalStateException("Account to limit must be set");
         }
       `

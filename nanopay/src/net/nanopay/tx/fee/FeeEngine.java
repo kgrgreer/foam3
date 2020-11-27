@@ -194,7 +194,7 @@ public class FeeEngine {
           .toArray(Rate[]::new)
       );
     }
-    if ( transactionFeeRule_.getFeeAccount() > 0 ) {
+    if ( ! "".equals(transactionFeeRule_.getFeeAccount()) ) {
       result.setTransfers(new Transfer[] {
         new ExternalTransfer(-amount, sourceAccount),
         new ExternalTransfer( amount, transactionFeeRule_.getFeeAccount())
