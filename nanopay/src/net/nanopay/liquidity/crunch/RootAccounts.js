@@ -30,8 +30,8 @@ foam.CLASS({
     { 
       name: 'rootAccounts',
       class: 'List',
-      of: 'Long',
-      javaType: 'java.util.List<Long>',
+      of: 'String',
+      javaType: 'java.util.List<String>',
       required: true
     }
   ]

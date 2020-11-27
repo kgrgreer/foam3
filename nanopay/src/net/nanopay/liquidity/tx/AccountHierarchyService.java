@@ -15,8 +15,8 @@ import static foam.mlang.MLang.TRUE;
 public class AccountHierarchyService
   implements AccountHierarchy
 {
-  protected Map<String, Set<Long>> map_;
-  public Map<Long, List<Long>> userToViewableRootAccountsMap_;
+  protected Map<String, Set<String>> map_;
+  public Map<Long, List<String>> userToViewableRootAccountsMap_;
 
   public AccountHierarchyService() { }
 
@@ -26,48 +26,48 @@ public class AccountHierarchyService
 
     List<Account> ret = new ArrayList<Account>();
 
-    Set<Long> roots = new HashSet<Long>(getViewableRootAccountIds(x, userId));
+    Set<String> roots = new HashSet<String>(getViewableRootAccountIds(x, userId));
 
-    for ( Long root : roots ) {
+    for ( String root : roots ) {
       ret.add((Account) accountDAO.find(root));
     }
     return ret;
   }
 
-  public List<Long> getViewableRootAccountIds(X x, long userId) {
+  public List<String> getViewableRootAccountIds(X x, long userId) {
     if ( ! getUserToViewableRootAccountsMap().containsKey(userId) ) {
       // if not in map, get from dao and put in map
       DAO dao = (DAO) x.get("rootAccountsDAO");
       RootAccounts userRootAccounts = (RootAccounts) dao.find(userId);
       if ( userRootAccounts == null ) {
-        return new ArrayList<Long>();
+        return new ArrayList<String>();
       }
       
       userRootAccounts = (RootAccounts) userRootAccounts.fclone();
-      userToViewableRootAccountsMap_.put(userId, (ArrayList<Long>) userRootAccounts.getRootAccounts());
+      userToViewableRootAccountsMap_.put(userId, (ArrayList<String>) userRootAccounts.getRootAccounts());
     }
     return getUserToViewableRootAccountsMap().get(userId);
   }
 
   @Override
-  public void addViewableRootAccounts(X x, List<Long> userIds, List<Long> rootAccountIds) {
+  public void addViewableRootAccounts(X x, List<Long> userIds, List<String> rootAccountIds) {
     DAO rootAccountsDAO = (DAO) x.get("rootAccountsDAO");
 
     for (  Long userId : userIds ){
       RootAccounts userRootAccounts = (RootAccounts) rootAccountsDAO.find(userId);
 
-      List<Long> userRootAccountIds;
+      List<String> userRootAccountIds;
 
       if ( userRootAccounts == null ){
-        userRootAccountIds = new ArrayList<Long>();
+        userRootAccountIds = new ArrayList<String>();
       } else {
         userRootAccountIds = userRootAccounts.getRootAccounts();
       }
 
       // need to ensure each element is unique
-      Set<Long> userRootAccountIdsSet = new HashSet<Long>(userRootAccountIds);
+      Set<String> userRootAccountIdsSet = new HashSet<String>(userRootAccountIds);
       userRootAccountIdsSet.addAll(rootAccountIds);
-      userRootAccountIds = new ArrayList<Long>(userRootAccountIdsSet);
+      userRootAccountIds = new ArrayList<String>(userRootAccountIdsSet);
 
       userRootAccounts = new RootAccounts.Builder(x).setUserId(userId).setRootAccounts(userRootAccountIds).build();
 
@@ -76,7 +76,7 @@ public class AccountHierarchyService
     }
   }
 
-  protected Map<String, Set<Long>> getChildMap(X x) {
+  protected Map<String, Set<String>> getChildMap(X x) {
     DAO accountDAO = (DAO) x.get("localAccountDAO");
 
     if ( map_ != null ) {
@@ -101,39 +101,39 @@ public class AccountHierarchyService
     };
 
     accountDAO.listen(purgeSink, TRUE);
-    map_ = new ConcurrentHashMap<String, Set<Long>>();
+    map_ = new ConcurrentHashMap<String, Set<String>>();
     return map_;
   }
 
-  protected Map<Long, List<Long>> getUserToViewableRootAccountsMap() {
+  protected Map<Long, List<String>> getUserToViewableRootAccountsMap() {
     if ( userToViewableRootAccountsMap_ == null ) {
-      userToViewableRootAccountsMap_ = new ConcurrentHashMap<Long, List<Long>>();
+      userToViewableRootAccountsMap_ = new ConcurrentHashMap<Long, List<String>>();
     }
     return userToViewableRootAccountsMap_;
   }
 
   @Override
-  public Set<Long> getChildAccountIds(X x, long parentId) {
-    Map <String, Set<Long>> map = getChildMap(x);
+  public Set<String> getChildAccountIds(X x, String parentId) {
+    Map <String, Set<String>> map = getChildMap(x);
     DAO accountDAO = (DAO) x.get("localAccountDAO");
-    String parentIdString = Long.toString(parentId);
+    String parentIdString = parentId;
 
     // Check if parentId exists in map, if it doesn't fetch children and add them to map
     if ( ! map.containsKey(parentIdString) ) {
       Account parentAccount = (Account) accountDAO.find(parentId);
       List<Account> children = new ArrayList<Account>();
-      List<Long> childIdList = new ArrayList<Long>();
+      List<String> childIdList = new ArrayList<String>();
 
       children = getChildAccounts(x, parentAccount);
 
       if ( children.size() > 0 ) {
         for ( int i = 0; i < children.size(); i++ ) {
-          long childId = children.get(i).getId();
+          String childId = children.get(i).getId();
           childIdList.add(childId);
         }
       }
 
-      Set<Long> childIdSet = new HashSet<>(childIdList);
+      Set<String> childIdSet = new HashSet<>(childIdList);
       map.put(parentIdString, childIdSet);
     }
 
@@ -160,15 +160,15 @@ public class AccountHierarchyService
   }
 
   @Override
-  public void removeRootFromUser(X x, long user, long account) {  
-    List<Long> userRoots = getViewableRootAccountIds(x, user);
+  public void removeRootFromUser(X x, long user, String account) {  
+    List<String> userRoots = getViewableRootAccountIds(x, user);
 
     if ( userRoots.contains(account) ) {
       userToViewableRootAccountsMap_.remove(user);
       userRoots.removeIf( accountId -> accountId.equals(account) );
 
       DAO dao = (DAO) x.get("rootAccountsDAO");
-      RootAccounts obj = new RootAccounts.Builder(x).setUserId(user).setRootAccounts((ArrayList<Long>) userRoots).build();
+      RootAccounts obj = new RootAccounts.Builder(x).setUserId(user).setRootAccounts((ArrayList<String>) userRoots).build();
       dao.put(obj);
     }
   }
