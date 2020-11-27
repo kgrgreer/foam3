@@ -80,7 +80,7 @@ foam.CLASS({
       ],
       javaCode: `
         List<String> currencies = new ArrayList<>();
-        if ( contact.getBusinessId() == 0 && contact.getBankAccount() != 0 ) {
+        if ( contact.getBusinessId() == 0 && ! "".equals(contact.getBankAccount()) ) {
           BankAccount account = (BankAccount) contact.findBankAccount(x);
           currencies.add(account.getDenomination());
         }
