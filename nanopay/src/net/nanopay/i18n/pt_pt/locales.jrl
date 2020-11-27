@@ -2289,8 +2289,14 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactW
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.NEXT.label",target:"próximo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.SAVE.label",target:"Salve"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.OPTION.label",target:"Economize sem banco"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.PaymentCodeSearchWizardView.CONTACT_ADDED",target:"Contato adicionado com sucesso"})
 
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.SECTION_ONE_TITLE",target:"Adicionar contato"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.SECTION_TWO_TITLE",target:"Adicionar conta bancária"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.SECTION_TWO_SUBTITLE",target:"Os pagamentos feitos a este contato serão depositados na conta que você fornecer."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.SECTION_THREE_TITLE",target:"Adicionar endereço comercial"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.SECTION_THREE_SUBTITLE",target:"Insira o endereço comercial do contato. Caixas postais não são aceitas."})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.PaymentCodeSearchWizardView.CONTACT_ADDED",target:"Contato adicionado com sucesso"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.PaymentCodeSearchWizardView.CONTACT_EXISTS_ERROR",target:"Já existe contato com este código de pagamento"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.PaymentCodeSearchWizardView.IS_CONNECTING.label",target:"isConnecting pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.PaymentCodeSearchWizardView.BACK.label",target:"Volte"})
@@ -2991,6 +2997,11 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"VP of Finance.label",target:"VP 
 
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.business.NatureOfBusiness.PLACE_HOLDER",target:"Por favor selecione..."})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.UserCapabilityJunctionDAO.ERROR_ONE",target:"UserCapabilityJunction deve ser desativado por meio de mudança de status."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.UserCapabilityJunctionDAO.ERROR_TWO",target:"A capacidade do usuário não pode ser reatribuída"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.UserCapabilityJunctionDAO.ERROR_THREE",target:"A capacidade não pode ser alterada."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.UserCapabilityJunctionDAO.ERROR_FOUR",target:"Os dados de capacidade fornecidos não são os corretos. CapacidadeID: "})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.StructuredAddressView.PLACE_HOLDER",target:"Por favor selecione..."})
 

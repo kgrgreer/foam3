@@ -17,8 +17,9 @@
 
 foam.CLASS({
   package: 'net.nanopay.tx.cico',
-  name: 'CITransaction',
+  name: 'InterTrustTransaction',
   extends: 'net.nanopay.tx.ClearingTimeTransaction',
+  documentation: ` This transaction is for sending between two accounts that are represented by different trustAccounts. extending transactions must fulfill eft and actual sending functions`,
 
   javaImports: [
     'foam.dao.DAO',
@@ -27,6 +28,7 @@ foam.CLASS({
     'java.util.List',
     'foam.core.ValidationException',
     'net.nanopay.account.Account',
+    'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.TrustAccount',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
@@ -38,10 +40,10 @@ foam.CLASS({
     {
       name: 'name',
       factory: function() {
-        return 'Cash In';
+        return 'InterTrust Transaction';
       },
       javaFactory: `
-        return "Cash In";
+        return "InterTrust Transaction";
       `
     },
     {
@@ -105,11 +107,21 @@ foam.CLASS({
         super.validate(x);
         Logger logger = (Logger) x.get("logger");
 
-        // Check source account
-        if ( BankAccountStatus.UNVERIFIED.equals(((BankAccount)findSourceAccount(x)).getStatus())) {
-          logger.error("Source bank account must be verified");
-          throw new ValidationException("Source bank account must be verified");
-        }
+
+        Account source = findSourceAccount(x);
+        Account destination = findDestinationAccount(x);
+
+        // source and destination must be digitals
+        if ( ! (source instanceof DigitalAccount) )
+          throw new ValidationException("Source must be digital");
+        if ( ! (destination instanceof DigitalAccount) )
+          throw new ValidationException("Destination must be digital");
+
+        // Transaction must be between different trusts
+        TrustAccount sourceTrust = TrustAccount.find(x, source);
+        TrustAccount destinationTrust = TrustAccount.find(x, destination);
+        if (sourceTrust.getId() == destinationTrust.getId())
+          throw new ValidationException("This transaction can only be used between trust accounts. ");
 
         // Check transaction status and lifecycleState
         Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
@@ -119,10 +131,54 @@ foam.CLASS({
           && ! getStatus().equals(TransactionStatus.DECLINED)
           && oldTxn.getLifecycleState() != LifecycleState.PENDING
         ) {
-          logger.error("Unable to update CITransaction, if transaction status is completed or declined. Transaction id: " + getId());
+          logger.error("Unable to update InterTrustTransaction, if transaction status is completed or declined. Transaction id: " + getId());
           throw new ValidationException("Unable to update CITransaction, if transaction status is completed or declined. Transaction id: " + getId());
         }
       `
-    }
+    },
+    {
+      name: 'getStage',
+      documentation: 'Intertrust transactions have multi-stage transfers, 0 on pending, 1 when completed.',
+      type: 'Long',
+      javaCode: `
+        if ( getStatus() == TransactionStatus.COMPLETED)
+          return 1;
+        return 0;
+      `,
+    },
+    {
+      name: 'canTransfer',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'oldTxn',
+          type: 'net.nanopay.tx.model.Transaction'
+        }
+      ],
+      type: 'Boolean',
+      javaCode: `
+        /* Allow transfers when:
+        1. (stage 1) status=COMPLETED and lifecycleState=ACTIVE and old txn not in this combo.
+        2. (stage 0) status=PENDING and lifecycleState=ACTIVE, old txn was in PPC, paused or scheduled.
+        */
+        if (
+          ( getStatus() == TransactionStatus.COMPLETED
+          && getLifecycleState() == LifecycleState.ACTIVE
+          && ( oldTxn.getStatus() != TransactionStatus.COMPLETED
+            || oldTxn.getLifecycleState() != LifecycleState.ACTIVE )
+          ) ||
+          ( getStatus() == TransactionStatus.PENDING && (
+            oldTxn.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED
+            || oldTxn.getStatus() == TransactionStatus.PAUSED
+            || oldTxn.getStatus() == TransactionStatus.SCHEDULED)
+          )
+        ) return true;
+
+        return false;
+      `
+    },
   ]
 });
