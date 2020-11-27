@@ -1095,7 +1095,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.ADMIN_LAST_NAME_ERROR",target:"Insira o sobrenome com pelo menos 1 caractere."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.NO_JOB_TITLE_ERROR",target:"Selecione o cargo."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.INVALID_PHONE_NUMBER_ERROR",target:"Número de telefone inválido. pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.IS_SIGNING_OFFICER.label",target:"isSigningOfficer pt"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.IS_SIGNING_OFFICER.label",target:"é oficial de assinatura"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.IS_SIGNING_OFFICER.documentation",target:"Um oficial de assinatura é uma pessoa legalmente autorizada a agir em nome da empresa (por exemplo, CEO, COO, diretor do conselho)"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.SIGNING_OFFICER_EMAIL.label",target:"Digite o e-mail do oficial de assinatura"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.SIGNING_OFFICER_EMAIL.documentation",target:"Emails do oficial de assinatura de negócios. Para receber convites para aderir à plataforma."})
@@ -3003,3 +3003,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.OwnerProperty.PLEASE_SELECT_ONE",target:"Selecione um dos seguintes ..."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.AVAILABLE_CURRENCIES",target:"Moedas Disponíveis"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.CPF.DATA.help",target:"O CPF (Cadastro de Pessoas Físicas ou Cadastro de Pessoas Físicas) é um número atribuído pelo órgão tributário brasileiro tanto a brasileiros quanto a estrangeiros residentes que estão sujeitos a impostos no Brasil."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.ExpirableDocument.EXPIRY.help",target:"Forneça a data de validade conforme mostrado em sua identificação. Este documento de identificação terá validade até a data de vencimento, em até dez anos."})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.ExpirableDocument.INVALID_EXPIRY_ERROR",target:"Data de validade válida exigida"})
