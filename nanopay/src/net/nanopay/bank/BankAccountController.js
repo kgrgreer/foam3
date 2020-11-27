@@ -180,16 +180,18 @@ foam.CLASS({
               code: function(X) {
                 if ( this.isDefault ) {
                   self.notify(`${ this.name } ${ self.ALREADY_DEFAULT }`, '', self.LogLevel.WARN, true);
-                }
-                this.isDefault = true;
-                self.subject.user.accounts.put(this).then(() =>{
-                  self.notify(`${ this.name } ${ self.IS_DEFAULT }`, '', self.LogLevel.INFO, true);
-                }).catch((err) => {
-                  this.isDefault = false;
-                  self.notify(self.UNABLE_TO_DEFAULT, '', self.LogLevel.ERROR, true);
-                });
+                  return;
+                } else {
+                  this.isDefault = true;
+                  self.subject.user.accounts.put(this).then(() =>{
+                    self.notify(`${ this.name } ${ self.IS_DEFAULT }`, '', self.LogLevel.INFO, true);
+                  }).catch((err) => {
+                    this.isDefault = false;
+                    self.notify(self.UNABLE_TO_DEFAULT, '', self.LogLevel.ERROR, true);
+                  });
 
-                self.purgeCachedDAOs();
+                  self.purgeCachedDAOs();
+                }
               }
             }),
             foam.core.Action.create({
