@@ -58,7 +58,8 @@ foam.CLASS({
     { name: 'IS_DEFAULT', message: 'is now your default bank account. Funds will be automatically transferred to and from this account.' },
     { name: 'UNABLE_TO_DEFAULT', message: 'Unable to set non verified bank accounts as default' },
     { name: 'ALREADY_DEFAULT', message: 'is already a default bank account.' },
-    { name: 'BANK_ACCOUNT_LABEL', message: 'Bank Account' }
+    { name: 'BANK_ACCOUNT_LABEL', message: 'Bank Account' },
+    { name: 'ADD_ACCOUNT_MSG', message: 'Add account'}
   ],
 
   css: `
@@ -219,7 +220,6 @@ foam.CLASS({
         var self = this;
         return this.Action.create({
           name: 'addBank',
-          label: 'Add Account',
           code: async function(X) {
             let permission = await this.auth.check(null, 'multi-currency.read');
             if ( permission ) {
@@ -238,6 +238,10 @@ foam.CLASS({
           }
         });
       }
+    },
+    {
+      name: 'createLabel',
+      factory: function() { return this.ADD_ACCOUNT_MSG; }
     },
     {
       class: 'FObjectProperty',

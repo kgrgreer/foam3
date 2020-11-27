@@ -90,7 +90,8 @@ foam.CLASS({
     { name: 'DELETE_DRAFT', message: 'Draft has been deleted' },
     { name: 'RECONCILED_SUCCESS', message: 'Invoice has been reconciled by payer' },
     { name: 'RECONCILED_ERROR', message: `There was an error reconciling the invoice` },
-    { name: 'INVOICE', message: 'invoice' }
+    { name: 'INVOICE', message: 'invoice' },
+    { name: 'REQUEST_PAYMENT_MSG', message: 'Request payment'}
   ],
 
   classes: [
@@ -270,7 +271,6 @@ foam.CLASS({
         var self = this;
         return this.Action.create({
           name: 'reqMoney',
-          label: 'Request payment',
           code: function(X) {
             self.checkAndNotifyAbilityToReceive().then((result) => {
               if ( result ) {
@@ -290,6 +290,10 @@ foam.CLASS({
           }
         });
       }
+    },
+    {
+      name: 'createLabel',
+      factory: function() { return this.REQUEST_PAYMENT_MSG; }
     }
   ],
 
