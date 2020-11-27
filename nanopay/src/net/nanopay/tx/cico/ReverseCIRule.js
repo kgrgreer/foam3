@@ -29,6 +29,7 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.nanos.auth.User',
     'foam.nanos.notification.Notification',
     'net.nanopay.account.TrustAccount',
     'net.nanopay.tx.DigitalTransaction',
@@ -66,10 +67,11 @@ foam.CLASS({
               }
               catch (Exception e) {
                 //email Support about failure.
+                User user = User.findUser(x, oldTxn.findSourceAccount(x).getOwner());
                 Notification notification = new Notification();
                 notification.setBody("Cash in transaction id: " + txn.getId() + " was declined but failed to revert the balance.");
                 notification.setNotificationType("Cashin transaction declined");
-                notification.setGroupId("support");
+                notification.setGroupId(user.getSpid() + "-support");
                 ((DAO) x.get("notificationDAO")).put(notification);
               }
             }

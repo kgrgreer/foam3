@@ -28,6 +28,7 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.PrefixLogger',
     'foam.nanos.notification.Notification',
@@ -157,10 +158,8 @@ foam.CLASS({
               .setTransactionId(transaction.getId())
               .setInvoiceId(invoice.getId())
               .setEmailArgs(args)
+              .setGroupId(user.getSpid() + "-payment-ops")
               .build();
-            if ( user != null ) {
-              notification.setGroupId(user.getSpid() + "-payment-ops");
-            }
             DAO notificationDAO = ((DAO) x.get("localNotificationDAO")).inX(x);
             notificationDAO.put(notification);
           } else if ( state == TransactionStatus.COMPLETED ) {
