@@ -267,10 +267,6 @@ foam.CLASS({
     {
       name: 'primaryAction',
       factory: function() { return this.REQ_MONEY; }
-    },
-    {
-      name: 'createLabel',
-      factory: function() { return this.REQUEST_PAYMENT_MSG; }
     }
   ],
 
