@@ -491,7 +491,7 @@ foam.CLASS({
         },
         {
           name: 'accountId',
-          type: 'Long'
+          type: 'String'
         }
       ],
       javaCode: `
