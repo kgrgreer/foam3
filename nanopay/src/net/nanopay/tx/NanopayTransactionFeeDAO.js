@@ -109,9 +109,9 @@ foam.CLASS({
               if ( fee.getFee().getIsPassThroughFee() ) {
                 continue;
               }
-              Long feeAccount = fee.getFeeAccount();
-              if ( feeAccount > 0 ) {
-                Long debit = fee.getSourcePaysFees() ? transaction.getSourceAccount() : transaction.getDestinationAccount();
+              String feeAccount = fee.getFeeAccount();
+              if ( ! "".equals(feeAccount) ) {
+                String debit = fee.getSourcePaysFees() ? transaction.getSourceAccount() : transaction.getDestinationAccount();
 
                 FeeLineItem[] forward = new FeeLineItem [] {
                   new FeeLineItem.Builder(x).setNote(fee.getName()).setDestinationAccount(feeAccount).setAmount(fee.getFee().getFee(transaction)).setSourceAccount(debit).build()
