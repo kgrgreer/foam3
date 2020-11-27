@@ -293,7 +293,7 @@ foam.CLASS({
         return (new TxLimitPredicate.Builder(getX()))
           .setEntityType(this.getApplyLimitTo())
           //TODO: check liquidity for stringId
-          .setId(this.getApplyLimitTo() == TxLimitEntityType.ACCOUNT ? String.valueOf(this.getAccountToLimit()) :
+          .setId(this.getApplyLimitTo() == TxLimitEntityType.ACCOUNT ? Long.parseLong(this.getAccountToLimit()) :
                  this.getApplyLimitTo() == TxLimitEntityType.BUSINESS ? this.getBusinessToLimit() :
                  this.getApplyLimitTo() == TxLimitEntityType.USER ? this.getUserToLimit() : 0)
           .setSend(this.getSend())
