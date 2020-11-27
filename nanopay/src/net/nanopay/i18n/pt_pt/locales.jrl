@@ -3016,6 +3016,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactW
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.OwnerProperty.OTHER_MSG",target:"De outros"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.OwnerProperty.PLEASE_SELECT_ONE",target:"Selecione um dos seguintes ..."})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccountController.ADD_ACCOUNT_MSG",target:"Adicionar Conta"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.PayableDAOBrowser.SEND_PAYMENT_MSG",target:"Mande o pagamento"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.ReceivableDAOBrowser.REQUEST_PAYMENT_MSG",target:"Solicitar pagamento"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccountController.ADD_BANK.label",target:"Adicionar Conta"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.PayableDAOBrowser.SEND_MONEY.label",target:"Mande o pagamento"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.ReceivableDAOBrowser.REQ_MONEY.label",target:"Solicitar pagamento"})

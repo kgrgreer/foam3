@@ -58,8 +58,7 @@ foam.CLASS({
     { name: 'IS_DEFAULT', message: 'is now your default bank account. Funds will be automatically transferred to and from this account.' },
     { name: 'UNABLE_TO_DEFAULT', message: 'Unable to set non verified bank accounts as default' },
     { name: 'ALREADY_DEFAULT', message: 'is already a default bank account' },
-    { name: 'BANK_ACCOUNT_LABEL', message: 'Bank Account' },
-    { name: 'ADD_ACCOUNT_MSG', message: 'Add account'}
+    { name: 'BANK_ACCOUNT_LABEL', message: 'Bank Account' }
   ],
 
   css: `
@@ -219,32 +218,7 @@ foam.CLASS({
     },
     {
       name: 'primaryAction',
-      factory: function() {
-        var self = this;
-        return this.Action.create({
-          name: 'addBank',
-          code: async function(X) {
-            let permission = await this.auth.check(null, 'multi-currency.read');
-            if ( permission ) {
-              X.controllerView.stack.push({
-                class: 'net.nanopay.bank.ui.BankPickCurrencyView'
-              }, self);
-            } else {
-              self.ctrl.add(this.SMEModal.create({
-                onClose : function() { this.__subContext__.data.clearProperty('bankAccount'); }
-              }).addClass('bank-account-popup').tag({
-                class: 'net.nanopay.account.ui.BankAccountWizard',
-                data: this.bankAccount,
-                useSections: ['accountInformation', 'pad']
-              }));
-            }
-          }
-        });
-      }
-    },
-    {
-      name: 'createLabel',
-      factory: function() { return this.ADD_ACCOUNT_MSG; }
+      factory: function() { return this.ADD_BANK; }
     },
     {
       class: 'FObjectProperty',
@@ -271,6 +245,29 @@ foam.CLASS({
     function purgeCachedDAOs() {
       this.__subContext__.accountDAO.cmd_(this, foam.dao.CachingDAO.PURGE);
       this.__subContext__.accountDAO.cmd_(this, foam.dao.AbstractDAO.RESET_CMD);
+    }
+  ],
+
+  actions: [
+    {
+      name: 'addBank',
+      label: 'Add account',
+      code: async function(X) {
+        let permission = await this.auth.check(null, 'multi-currency.read');
+        if ( permission ) {
+          X.controllerView.stack.push({
+            class: 'net.nanopay.bank.ui.BankPickCurrencyView'
+          }, self);
+        } else {
+          self.ctrl.add(this.SMEModal.create({
+            onClose : function() { this.__subContext__.data.clearProperty('bankAccount'); }
+          }).addClass('bank-account-popup').tag({
+            class: 'net.nanopay.account.ui.BankAccountWizard',
+            data: this.bankAccount,
+            useSections: ['accountInformation', 'pad']
+          }));
+        }
+      }
     }
   ]
 });

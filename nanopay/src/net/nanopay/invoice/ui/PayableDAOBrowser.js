@@ -86,8 +86,7 @@ foam.CLASS({
     { name: 'DELETE_DRAFT', message: 'Draft has been deleted' },
     { name: 'RECONCILED_SUCCESS', message: 'Invoice has been reconciled by payer' },
     { name: 'RECONCILED_ERROR', message: `There was an error reconciling the invoice` },
-    { name: 'INVOICE', message: 'invoice' },
-    { name: 'SEND_PAYMENT_MSG', message: 'Send payment' }
+    { name: 'INVOICE', message: 'invoice' }
   ],
 
   classes: [
@@ -295,33 +294,7 @@ foam.CLASS({
     },
     {
       name: 'primaryAction',
-      factory: function() {
-        var self = this;
-        return this.Action.create({
-          name: 'sendMoney',
-          code: function(X) {
-            self.checkAndNotifyAbilityToPay().then((result) => {
-              if ( result ) {
-                X.menuDAO.find('sme.quickAction.send').then((menu) => {
-                  var clone = menu.clone();
-                  Object.assign(clone.handler.view, {
-                    invoice: self.Invoice.create({}),
-                    isPayable: true,
-                    isForm: true,
-                    isList: false,
-                    isDetailView: false
-                  });
-                  clone.launch(X, X.controllerView);
-                });
-              }
-            });
-          }
-        });
-      }
-    },
-    {
-      name: 'createLabel',
-      factory: function() { return this.SEND_PAYMENT_MSG; }
+      factory: function() { return this.SEND_MONEY; }
     }
   ],
 
@@ -355,6 +328,27 @@ foam.CLASS({
     }
   ],
   actions: [
+    {
+      name: 'sendMoney',
+      label: 'Send payment',
+      code: function(X) {
+        self.checkAndNotifyAbilityToPay().then((result) => {
+          if ( result ) {
+            X.menuDAO.find('sme.quickAction.send').then((menu) => {
+              var clone = menu.clone();
+              Object.assign(clone.handler.view, {
+                invoice: self.Invoice.create({}),
+                isPayable: true,
+                isForm: true,
+                isList: false,
+                isDetailView: false
+              });
+              clone.launch(X, X.controllerView);
+            });
+          }
+        });
+      }
+    },
     {
       name: 'sync',
       label: 'Sync with Accounting',
