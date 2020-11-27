@@ -61,9 +61,9 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'accountDetails',
-      title: function(forContact) {
-        return forContact ? '' : this.SECTION_DETAILS_TITLE_VOID;
+      name: 'accountInformation',
+      title: function() {
+        return this.forContact ? '' : this.SECTION_DETAILS_TITLE_VOID;
       },
     },
     {
@@ -93,19 +93,19 @@ foam.CLASS({
     {
       name: 'country',
       value: 'CA',
-      section: 'accountDetails',
+      section: 'accountInformation',
       visibility: 'RO'
     },
     {
       name: 'flagImage',
-      section: 'accountDetails',
+      section: 'accountInformation',
       label: '',
       value: 'images/flags/cad.png',
       visibility: 'RO'
     },
     {
       name: 'denomination',
-      section: 'accountDetails',
+      section: 'accountInformation',
       gridColumns: 12,
       value: 'CAD',
     },
@@ -118,7 +118,16 @@ foam.CLASS({
       },
       javaGetter: `
         return getAccountNumber();
-      `
+      `,
+      validateObj: function(iban) {
+      }
+    },
+    {
+      name: 'swiftCode',
+      visibility: 'HIDDEN',
+      required: false,
+      validateObj: function(swiftCode) {
+      }
     },
     {
       name: 'bankCode',
@@ -129,12 +138,14 @@ foam.CLASS({
       class: 'String',
       label: '',
       value: 'images/Canada-Check.png',
-      section: 'accountDetails',
+      section: 'accountInformation',
       visibility: 'RO',
       transient: true,
       view: function(_, X) {
         return {
-          class: 'foam.u2.tag.Image'
+          class: 'foam.u2.tag.Image',
+          displayWidth: '540px',
+          displayHeight: 'auto'
         };
       },
     },
@@ -146,7 +157,7 @@ foam.CLASS({
       name: 'branchId',
       type: 'String',
       label: 'Transit',
-      section: 'accountDetails',
+      section: 'accountInformation',
       updateVisibility: 'RO',
       createVisibility: 'RW',
       gridColumns: 4,
@@ -183,9 +194,9 @@ foam.CLASS({
           BankAccountInstitutionDAO will lookup the institutionNumber and set the institution property.`,
       updateVisibility: 'RO',
       createVisibility: 'RW',
-      section: 'accountDetails',
+      section: 'accountInformation',
       storageTransient: true,
-      gridColumns: 3,
+      gridColumns: 2,
       view: {
         class: 'foam.u2.tag.Input',
         placeholder: '123',
@@ -214,8 +225,8 @@ foam.CLASS({
       class: 'String',
       name: 'accountNumber',
       updateVisibility: 'RO',
-      section: 'accountDetails',
-      gridColumns: 5,
+      section: 'accountInformation',
+      gridColumns: 6,
       view: {
         class: 'foam.u2.tag.Input',
         placeholder: '1234567',

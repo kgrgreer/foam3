@@ -107,8 +107,8 @@ foam.CLASS({
 
         // Check source account
         if ( BankAccountStatus.UNVERIFIED.equals(((BankAccount)findSourceAccount(x)).getStatus())) {
-          logger.error("Bank account must be verified");
-          throw new RuntimeException("Bank account must be verified");
+          logger.error("Source bank account must be verified");
+          throw new ValidationException("Source bank account must be verified");
         }
 
         // Check transaction status and lifecycleState
@@ -119,8 +119,8 @@ foam.CLASS({
           && ! getStatus().equals(TransactionStatus.DECLINED)
           && oldTxn.getLifecycleState() != LifecycleState.PENDING
         ) {
-          logger.error("Unable to update CITransaction, if transaction status is accepted or declined. Transaction id: " + getId());
-          throw new ValidationException("Unable to update CITransaction, if transaction status is accepted or declined. Transaction id: " + getId());
+          logger.error("Unable to update CITransaction, if transaction status is completed or declined. Transaction id: " + getId());
+          throw new ValidationException("Unable to update CITransaction, if transaction status is completed or declined. Transaction id: " + getId());
         }
       `
     }

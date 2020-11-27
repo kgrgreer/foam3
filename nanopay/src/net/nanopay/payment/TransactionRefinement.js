@@ -24,7 +24,12 @@ foam.CLASS({
     'net.nanopay.payment.PaymentProviderAware'
   ],
 
-  properties: [ 'paymentProvider' ]
+  properties: [
+    {
+      name: 'paymentProvider',
+      section: 'basicInfo'
+    }
+  ]
 });
 
 foam.CLASS({
@@ -36,13 +41,35 @@ foam.CLASS({
     'net.nanopay.payment.PaymentProviderAware'
   ],
 
-  properties: [ 'paymentProvider' ]
+  properties: [
+    {
+      name: 'paymentProvider',
+      section: 'basicInfo'
+    }
+  ]
 });
 
 foam.CLASS({
   package: 'net.nanopay.payment',
   name: 'FXTransactionRefinement',
   refines: 'net.nanopay.fx.FXTransaction',
+
+  implements: [
+    'net.nanopay.payment.PaymentProviderAware'
+  ],
+
+  properties: [
+    {
+      name: 'paymentProvider',
+      section: 'basicInfo'
+    }
+  ]
+});
+
+foam.CLASS({
+  package: 'net.nanopay.payment',
+  name: 'InterTrustTransactionRefinement',
+  refines: 'net.nanopay.tx.cico.InterTrustTransaction',
 
   implements: [
     'net.nanopay.payment.PaymentProviderAware'

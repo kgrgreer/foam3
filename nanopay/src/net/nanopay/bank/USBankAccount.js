@@ -43,9 +43,9 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'accountDetails',
-      title: function(forContact) {
-        return forContact ? '' : this.SECTION_DETAILS_TITLE_VOID;
+      name: 'accountInformation',
+      title: function() {
+        return this.forContact ? '' : this.SECTION_DETAILS_TITLE_VOID;
       }
     },
     {
@@ -128,12 +128,14 @@ foam.CLASS({
       class: 'String',
       label: '',
       value: 'images/USA-Check.png',
-      section: 'accountDetails',
+      section: 'accountInformation',
       visibility: 'RO',
       transient: true,
       view: function(_, X) {
         return {
-          class: 'foam.u2.tag.Image'
+          class: 'foam.u2.tag.Image',
+          displayWidth: '540px',
+          displayHeight: 'auto'
         };
       }
     },
@@ -141,11 +143,14 @@ foam.CLASS({
       class: 'foam.nanos.fs.FileProperty',
       name: 'voidCheckImage',
       documentation: 'void check image for this bank account',
+      visibility: function(forContact) {
+        return forContact ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      }
     },
     {
       name: 'branchId',
       label: 'ACH Routing Number',
-      section: 'accountDetails',
+      section: 'accountInformation',
       updateVisibility: 'RO',
       view: {
         class: 'foam.u2.tag.Input',
@@ -173,6 +178,7 @@ foam.CLASS({
     {
       name: 'accountNumber',
       label: 'ACH Account Number',
+      section: 'accountInformation',
       updateVisibility: 'RO',
       postSet: function(o, n) {
         this.padCapture.accountNumber = n;
@@ -214,7 +220,7 @@ foam.CLASS({
       class: 'String',
       name: 'wireRouting',
       documentation: 'The ACH wire routing number for the account, if available.',
-      section: 'accountDetails',
+      section: 'accountInformation',
       visibility: 'HIDDEN'
     },
     {
@@ -254,7 +260,7 @@ foam.CLASS({
       name: 'supportingDocuments',
       label: `Please upload either an image of a void check or a bank statement from within
           the past 3 months to verify ownership of this bank account.`,
-      section: 'accountDetails',
+      section: 'accountInformation',
       documentation: 'Supporting documents to verify bank account',
       validateObj: function(supportingDocuments, plaidResponseItem, forContact) {
         if ( supportingDocuments.length === 0 && ! plaidResponseItem && ! forContact ) {
