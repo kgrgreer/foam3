@@ -541,7 +541,7 @@ foam.CLASS({
     },
     {
       name: 'getOutgoingAccountCreate',
-      type: 'Long',
+      type: 'String',
       args: [
         {
           type: 'Context',
@@ -549,16 +549,12 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        //TODO: update code in liquidity side as account id type change from long to String
-        //return getParent();
-        Logger logger = (Logger) getX().get("logger");
-        logger.warning("getOutgoingAccountCreate method in Account should not be used, before we have fixed bugs that cause by changing account id from long to String in Liquidity");
-        return 0L;
+        return getParent();
       `
     },
     {
       name: 'getOutgoingAccountRead',
-      type: 'Long',
+      type: 'String',
       args: [
         {
           type: 'Context',
@@ -566,16 +562,12 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        //TODO: update code in liquidity side as account id type change from long to String
-        //return getId();
-        Logger logger = (Logger) getX().get("logger");
-        logger.warning("getOutgoingAccountRead method in Account should not be used, before we have fixed bugs that cause by changing account id from long to String in Liquidity");
-        return 0L;
+        return getId();
       `
     },
     {
       name: 'getOutgoingAccountUpdate',
-      type: 'Long',
+      type: 'String',
       args: [
         {
           type: 'Context',
@@ -583,16 +575,12 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        //TODO: update code in liquidity side as account id type change from long to String
-        //return getId();
-        Logger logger = (Logger) getX().get("logger");
-        logger.warning("getOutgoingAccountUpdate method in Account should not be used, before we have fixed bugs that cause by changing account id from long to String in Liquidity");
-        return 0L;
+        return getId();
       `
     },
     {
       name: 'getOutgoingAccountDelete',
-      type: 'Long',
+      type: 'String',
       args: [
         {
           type: 'Context',
@@ -600,11 +588,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        //TODO: update code in liquidity side as account id type change from long to String
-        //return getId();
-        Logger logger = (Logger) getX().get("logger");
-        logger.warning("getOutgoingAccountDelete method in Account should not be used, before we have fixed bugs that cause by changing account id from long to String in Liquidity");
-        return 0L;
+        return getId();
       `
     }
   ]

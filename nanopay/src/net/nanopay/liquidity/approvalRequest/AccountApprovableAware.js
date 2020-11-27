@@ -30,7 +30,7 @@ foam.INTERFACE({
   methods: [
     {
       name: 'getOutgoingAccountCreate',
-      type: 'Long',
+      type: 'String',
       args: [
         {
           type: 'Context',
@@ -40,7 +40,7 @@ foam.INTERFACE({
     },
     {
       name: 'getOutgoingAccountRead',
-      type: 'Long',
+      type: 'String',
       args: [
         {
           type: 'Context',
@@ -50,7 +50,7 @@ foam.INTERFACE({
     },
     {
       name: 'getOutgoingAccountUpdate',
-      type: 'Long',
+      type: 'String',
       args: [
         {
           type: 'Context',
@@ -60,7 +60,7 @@ foam.INTERFACE({
     },
     {
       name: 'getOutgoingAccountDelete',
-      type: 'Long',
+      type: 'String',
       args: [
         {
           type: 'Context',

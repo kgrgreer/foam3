@@ -116,10 +116,10 @@ foam.CLASS({
 
         AccountUCJQueryService ucjQueryService = (AccountUCJQueryService) x.get("accountUcjQueryService");
         AccountApprovableAware aaaObj = (AccountApprovableAware) obj;
-        Long outgoingAccount = operation == Operations.CREATE ? aaaObj.getOutgoingAccountCreate(x) : 
+        String outgoingAccount = operation == Operations.CREATE ? aaaObj.getOutgoingAccountCreate(x) : 
                                 operation == Operations.UPDATE ? aaaObj.getOutgoingAccountUpdate(x) : 
                                                                 aaaObj.getOutgoingAccountDelete(x);
-        
+        //TODO: Does this approverIds refer to accountId? 
         List<Long> approverIds = ucjQueryService.getAllApprovers(x, modelName, outgoingAccount);
           
         if ( approverIds == null || approverIds.size() <= 0 ) {
