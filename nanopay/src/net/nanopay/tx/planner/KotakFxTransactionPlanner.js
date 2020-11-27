@@ -60,9 +60,9 @@ foam.CLASS({
       value: 1021
     },
     {
-      type: 'Long',
+      type: 'String',
       name: 'KOTAK_CO_DESTINATION_ACCOUNT_ID',
-      value: 9
+      value: '9'
     },
     {
       name: 'PAYMENT_PROVIDER',
