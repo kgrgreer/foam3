@@ -105,7 +105,7 @@ foam.CLASS({
               if ( business != null ) {
                 recipient.setSignUpStatus(ContactStatus.READY);
               }
-            } else if ( recipient.getBankAccount() != 0 ) {
+            } else if ( ! "".equals(recipient.getBankAccount()) ) {
               recipient.setSignUpStatus(ContactStatus.READY);
             }
 
