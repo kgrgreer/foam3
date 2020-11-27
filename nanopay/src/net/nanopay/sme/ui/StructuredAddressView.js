@@ -77,6 +77,11 @@ foam.CLASS({
       grid-template-columns: 1fr 2fr;
       grid-gap: 16px;
     }
+    ^ .three-five-two-column {
+      display: grid;
+      grid-template-columns: 1.5fr 2.5fr 1fr;
+      grid-gap: 16px;
+    }
   `,
 
   properties: [
@@ -168,7 +173,7 @@ foam.CLASS({
           .end();
         })
         .start().addClass(this.myClass('container'))
-          .start().addClass('one-three-one-column')
+          .start().addClass('three-five-two-column')
             .start().addClass('label-input')
               .tag(this.SectionedDetailPropertyView, {
                 data$: this.data$,
