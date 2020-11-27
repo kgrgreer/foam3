@@ -76,6 +76,11 @@ foam.CLASS({
       name: 'BRANCH_CODE_PATTERN',
       type: 'Regex',
       javaValue: 'Pattern.compile("^[0-9]{5}$")'
+    },
+    {
+      name: 'SWIFT_CODE_PATTERN',
+      type: 'Regex',
+      javaValue: 'Pattern.compile("^[A-z0-9a-z]{8,11}$")'
     }
   ],
 
@@ -236,6 +241,7 @@ foam.CLASS({
         validateBankCode();
         validateBranchCode();
         validateAccountNumber();
+        validateSwiftCodeAndIban();
         if ( getOwner() == 0 ) {
           setOwner(((foam.nanos.auth.Subject) x.get("subject")).getUser().getId());
         }
@@ -245,7 +251,7 @@ foam.CLASS({
       name: 'validateBankCode',
       type: 'Void',
       javaThrows: ['IllegalStateException'],
-      javaCode: `     
+      javaCode: `
         String bankCode = this.getBankCode();
 
         if ( SafetyUtil.isEmpty(bankCode) ) {
@@ -261,7 +267,7 @@ foam.CLASS({
       name: 'validateBranchCode',
       type: 'Void',
       javaThrows: ['IllegalStateException'],
-      javaCode: `     
+      javaCode: `
         String branchCode = this.getBranchCode();
 
         if ( SafetyUtil.isEmpty(branchCode) ) {
@@ -284,6 +290,22 @@ foam.CLASS({
         }
         if ( ! ACCOUNT_NUMBER_PATTERN.matcher(accountNumber).matches() ) {
           throw new IllegalStateException(this.ACCOUNT_NUMBER_INVALID);
+        }
+      `
+    },
+    {
+      name: 'validateSwiftCodeAndIban',
+      type: 'Void',
+      javaThrows: ['IllegalStateException'],
+      javaCode: `
+        String swiftCode = this.getSwiftCode();
+        String iban = this.getIban();
+
+        if ( SafetyUtil.isEmpty(swiftCode) && SafetyUtil.isEmpty(iban) ) {
+          throw new IllegalStateException(this.SWIFT_CODE_OR_IBAN_REQUIRED);
+        }
+        if ( ! SafetyUtil.isEmpty(swiftCode) && ! SWIFT_CODE_PATTERN.matcher(swiftCode).matches() ) {
+          throw new IllegalStateException(this.SWIFT_CODE_INVALID);
         }
       `
     }
