@@ -235,9 +235,9 @@ public class LiquidityService
       args.put("src_account_name",    account.getName());
       args.put("src_account_id",      account.getId());
 
-      var dstAccount = (Account) ((DAO)getX().get("localAccountDAO")).find(liquidity.getPushPullAccount());
-      var dstAccountName = "";
-      var dstAccountId = 0L;
+      Account dstAccount = (Account) ((DAO)getX().get("localAccountDAO")).find(liquidity.getPushPullAccount());
+      String dstAccountName = "";
+      String dstAccountId = "";
       if ( dstAccount != null ) {
         dstAccountName = dstAccount.getName();
         dstAccountId = dstAccount.getId();
@@ -280,7 +280,7 @@ public class LiquidityService
 
   //Add cash in and cash out transaction, set transaction type to separate if it is an cash in or cash out transaction
 
-  public void addCICOTransaction(long amount, long source, long destination, LiquiditySettings ls)
+  public void addCICOTransaction(long amount, String source, String destination, LiquiditySettings ls)
     throws RuntimeException
   {
     Transaction transaction = new Transaction.Builder(x_)

@@ -13,7 +13,8 @@ import net.nanopay.tx.model.Transaction;
 import static foam.mlang.MLang.*;
 
 public class PayrollDAOTest extends foam.nanos.test.Test {
-  long PAYER_ID, PAYER_ACCOUNT;
+  long PAYER_ID;
+  String PAYER_ACCOUNT;
   String PAYER_EMAIL = "payroll@nanopay.net";
   DAO payrollDAO, userDAO, accountDAO, txnDAO;
   Payroll payroll;
