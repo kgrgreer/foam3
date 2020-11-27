@@ -1020,7 +1020,7 @@ foam.CLASS({
       `
     },
     {
-      documentation: `return true when status change is such that normal Transfers should be executed (applied)`,
+      documentation: `return true when status change is such that Transfers should be executed (applied)`,
       name: 'canTransfer',
       args: [
         {
@@ -1378,6 +1378,38 @@ foam.CLASS({
       //TODO: once plannerDAO is a thing this method can go away as itll be auto generated.
       DAO rulerDAO = (DAO) x.get("ruleDAO");
       return (AbstractTransactionPlanner) rulerDAO.find(getPlanner());
+    `,
+    },
+    {
+      name: 'getCurrentStageTransfers',
+      documentation: 'Find the transfers that belong to the current stage',
+      type: 'net.nanopay.tx.Transfer[]',
+      javaCode: `
+      Transfer[] tr = getTransfers();
+      //TODO: verify the more efficient staged check works.
+      Long stage = getStage();
+      for (int i = 0; i < tr.length; i++ ){
+        if (tr[i].getStage() != stage ) {
+          Transfer[] tr2 = new Transfer[tr.length - 1];
+          System.arraycopy(tr,0,tr2,0,i);
+          for (int j = i ; j < tr.length; j++ ) {
+            if (tr[j].getStage() == stage ){
+              tr2[i] = tr[j];
+              i++;
+            }
+          }
+          return tr2;
+        }
+      }
+      return tr;
+    `,
+    },
+    {
+      name: 'getStage',
+      documentation: 'The current transaction transfer execution stage',
+      type: 'Long',
+      javaCode: `
+      return 0;
     `,
     }
   ]
