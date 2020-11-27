@@ -43,7 +43,7 @@ foam.CLASS({
       name: 'includeChildAccounts'
     },
     {
-      class: 'Long',
+      class: 'String',
       name: 'parentId'
     },
     {

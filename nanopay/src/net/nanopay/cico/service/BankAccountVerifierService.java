@@ -27,7 +27,7 @@ public class BankAccountVerifierService
   protected DAO bankAccountDAO;
 
   @Override
-  public boolean verify(X x, long bankAccountId, long randomDepositAmount)
+  public boolean verify(X x, String bankAccountId, long randomDepositAmount)
       throws RuntimeException {
     // To test auto depoit of the ablii app
     if ( randomDepositAmount == -1000000 ) {
@@ -42,7 +42,7 @@ public class BankAccountVerifierService
     PM pm = new PM(this.getClass(), "bankAccountVerify");
 
     try {
-      if (bankAccountId <= 0) {
+      if ( "".equals(bankAccountId) ) {
         throw new RuntimeException("Invalid Bank Account Id");
       }
 
