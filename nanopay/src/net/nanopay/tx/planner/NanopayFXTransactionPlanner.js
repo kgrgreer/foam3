@@ -55,9 +55,9 @@ foam.CLASS({
       value: 'localFXService'
     },
     {
-      type: 'Long',
+      type: 'String',
       name: 'NANOPAY_FEE_ACCOUNT_ID',
-      value: 2
+      value: '2'
     },
     {
       type: 'Long',

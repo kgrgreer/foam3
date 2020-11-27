@@ -107,8 +107,8 @@ foam.CLASS({
         }
 
 
-        Object firstLock  = String.valueOf(((Account)transaction.findSourceAccount(x)).getId() < ((Account)transaction.findDestinationAccount(x)).getId() ? transaction.findSourceAccount(x) : transaction.findDestinationAccount(x)).intern();
-        Object secondLock = String.valueOf(((Account)transaction.findSourceAccount(x)).getId() < ((Account)transaction.findDestinationAccount(x)).getId() ? transaction.findDestinationAccount(x) : transaction.findSourceAccount(x)).intern();
+        Object firstLock  = String.valueOf(((Account)transaction.findSourceAccount(x)).getId().compareTo(((Account)transaction.findDestinationAccount(x)).getId()) < 0 ? transaction.findSourceAccount(x) : transaction.findDestinationAccount(x)).intern();
+        Object secondLock = String.valueOf(((Account)transaction.findSourceAccount(x)).getId().compareTo(((Account)transaction.findDestinationAccount(x)).getId()) >= 0 ? transaction.findDestinationAccount(x) : transaction.findSourceAccount(x)).intern();
 
         synchronized ( firstLock ) {
           synchronized ( secondLock ) {
