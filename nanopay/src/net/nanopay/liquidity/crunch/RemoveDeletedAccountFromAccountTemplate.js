@@ -45,13 +45,13 @@ foam.CLASS({
               if ( ((LifecycleAware) obj).getLifecycleState() != foam.nanos.auth.LifecycleState.DELETED ) return;
 
               Logger logger = (Logger) x.get("logger");
-              Long accountId =((Account) obj).getId();
+              String accountId =((Account) obj).getId();
 
               DAO accountTemplateDAO = (DAO) x.get("accountTemplateDAO");
 
               List<AccountTemplate> accountTemplates = ((ArraySink) accountTemplateDAO.select(new ArraySink())).getArray();
               
-              List<Long> accounts;
+              List<String> accounts;
               for ( AccountTemplate template : accountTemplates ) {
                 accounts = template.getAccounts();
                 accounts.remove(accountId);
