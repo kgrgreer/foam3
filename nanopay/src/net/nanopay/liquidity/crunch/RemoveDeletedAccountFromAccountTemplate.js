@@ -42,8 +42,6 @@ foam.CLASS({
           agency.submit(x, new ContextAgent() {
             @Override
             public void execute(X x) {
-              //TODO: fix numberSet for string id
-              if ( true ) throw new RuntimeException("fix numberSet for string id in RemoveDeletedAccountFromAccountTemplate");
               if ( ((LifecycleAware) obj).getLifecycleState() != foam.nanos.auth.LifecycleState.DELETED ) return;
 
               Logger logger = (Logger) x.get("logger");
