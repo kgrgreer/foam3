@@ -439,6 +439,17 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"05a663b8-2b48-11eb-adc1-0242ac120002",
+  "name":"Business Prerequisites for Brazil",
+  "description":"Business prerequisites for payments in Brazil",
+  "icon":"/images/capabilityIcons/BrazilCap.svg",
+  "version":"0",
+  "enabled":true,
+  "requirementViewTitle":"Have your business documents ready. You can save your progress and come back later."
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"0B2E7305-B898-43F2-9C1B-63FB2CE38B2D",
   "name":"Enable international payments",
   "description":"Enable international payments in Brazil",
   "icon":"/images/capabilityIcons/BrazilCap.svg",
@@ -460,7 +471,8 @@ p({
     "class": "net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig",
     "allowSkipping": false
   },
-  "requirementViewTitle":"Have your business documents ready. You can save your progress and come back later."
+  "requirementViewTitle":"Have your business documents ready. You can save your progress and come back later.",
+  "associatedEntity": 2
 })
 
 p({
