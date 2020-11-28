@@ -91,7 +91,7 @@ foam.INTERFACE({
         },
         {
           name: 'accountId',
-          type: 'Long'
+          type: 'String'
         },
         {
           name: 'level',

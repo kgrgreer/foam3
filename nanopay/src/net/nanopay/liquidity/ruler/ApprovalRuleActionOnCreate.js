@@ -143,7 +143,7 @@ foam.CLASS({
 
           AccountUCJQueryService ucjQueryService = (AccountUCJQueryService) x.get("accountUcjQueryService");
           MethodInfo method = (MethodInfo) obj.getClassInfo().getAxiomByName(getOutgoingAccountFinder());
-          long accountId = ((Long) method.call(x, obj, null)).longValue();
+          String accountId = (String) method.call(x, obj, null);
 
           List<Long> approvers = ucjQueryService.getApproversByLevel(
             x, modelName, accountId, getApproverLevel());

@@ -322,7 +322,7 @@ foam.CLASS({
         },
         {
           name: 'accountId',
-          type: 'Long'
+          type: 'String'
         },
         {
           name: 'level',
