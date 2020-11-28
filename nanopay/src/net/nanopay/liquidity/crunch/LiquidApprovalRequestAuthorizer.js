@@ -40,13 +40,13 @@ foam.CLASS({
       name: 'createApprovePermission',
       args: [
         { name: 'className', class: 'String' },
-        { name: 'outgoingAccountId', class: 'Long' }
+        { name: 'outgoingAccountId', class: 'String' }
       ],
       type: 'String',
       javaCode: `
         String permission = "canApprove";
         permission += className.substring(0, 1).toUpperCase() + className.substring(1);
-        if ( outgoingAccountId > 0 ) permission += "." + outgoingAccountId;
+        if ( ! "".equals(outgoingAccountId) ) permission += "." + outgoingAccountId;
         return permission;
       `
     },
@@ -106,7 +106,7 @@ foam.CLASS({
           throw new AuthorizationException("You cannot reset an already Approved, Rejected or Cancelled request back to Requested");
         }
 
-        Long accountId = oldObj instanceof AccountRoleApprovalRequest ? ((AccountRoleApprovalRequest) oldObj).getOutgoingAccount() : 0;
+        String accountId = oldObj instanceof AccountRoleApprovalRequest ? ((AccountRoleApprovalRequest) oldObj).getOutgoingAccount() : "";
 
         String daoKey = request.getDaoKey();
         if ( SafetyUtil.equals(request.getDaoKey(),"approvableDAO") ){
@@ -132,7 +132,7 @@ foam.CLASS({
 
         ApprovalRequest request = (ApprovalRequest) obj;
 
-        Long accountId = obj instanceof AccountRoleApprovalRequest ? ((AccountRoleApprovalRequest) obj).getOutgoingAccount() : 0;
+        String accountId = obj instanceof AccountRoleApprovalRequest ? ((AccountRoleApprovalRequest) obj).getOutgoingAccount() : "";
 
         String daoKey = request.getDaoKey();
         if ( SafetyUtil.equals(request.getDaoKey(),"approvableDAO") ){
