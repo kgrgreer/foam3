@@ -29,6 +29,9 @@ p({
   "permissionsIntercepted":[
     "businessHasSigningOfficer"
   ],
+  "availabilityPredicate": {
+    "class": "net.nanopay.crunch.predicate.IsBusiness"
+  },
   "keywords":["featured"],
   "interceptIf":{"class":"net.nanopay.crunch.predicate.SigningOfficerQuestionAnswered"},
   "wizardlet": {
