@@ -24,8 +24,8 @@ foam.INTERFACE({
       name: 'liquifyAccount',
       args: [
         {
-          name: 'account',
-          type: 'Long'
+          name: 'accountId',
+          type: 'String'
         },
         {
           name: 'frequency',

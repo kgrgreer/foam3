@@ -84,7 +84,7 @@ public class LiquidityService
   }
 
   @Override
-  public void liquifyAccount(long accountId, Frequency frequency, long txnAmount) {
+  public void liquifyAccount(String accountId, Frequency frequency, long txnAmount) {
     LiquiditySettings ls;
     DigitalAccount account = (DigitalAccount) ((DAO) x_.get("localAccountDAO")).find(accountId);
     ls = account.findLiquiditySetting(getX());
