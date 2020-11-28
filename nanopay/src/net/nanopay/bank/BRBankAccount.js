@@ -45,7 +45,9 @@ foam.CLASS({
   sections: [
     {
       name: 'accountInformation',
-      title: 'Add account'
+      title: function() {
+        return this.SECTION_ACCOUNT_INFORMATION_TITLE;
+      }
     }
   ],
 
@@ -58,7 +60,8 @@ foam.CLASS({
     { name: 'BANK_CODE_INVALID', message: 'Bank code must be 8 letters and/or digits long' },
     { name: 'BANK_CODE_REQUIRED', message: 'Bank code required' },
     { name: 'BRANCH_CODE_INVALID', message: 'Branch code must be 5 digits long' },
-    { name: 'BRANCH_CODE_REQUIRED', message: 'Branch code required' }
+    { name: 'BRANCH_CODE_REQUIRED', message: 'Branch code required' },
+    { name: 'SECTION_ACCOUNT_INFORMATION_TITLE', message: 'Add account' }
   ],
 
   constants: [

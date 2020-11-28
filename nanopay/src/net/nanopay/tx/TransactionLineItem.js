@@ -169,6 +169,12 @@ foam.CLASS({
       name: 'deepClone',
       type: 'FObject',
       javaCode: 'return this;'
+    },
+    {
+      name: 'showLineItem',
+      code: function() {
+        return true;
+      }
     }
   ]
 });
