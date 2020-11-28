@@ -54,7 +54,7 @@ foam.CLASS({
           Eq eq = (Eq) predicate;
           if ( eq.getArg1().toString().equals("net.nanopay.tx.model.Transaction.destinationAccount") || eq.getArg1().toString().equals("net.nanopay.tx.model.Transaction.sourceAccount") ) {
             Constant    c              = (Constant) eq.getArg2();
-            Long        accountId      = (Long) c.getValue();
+            String        accountId      = (String) c.getValue();
             String      readPermission = createPermission(getPermissionPrefix(), "view", accountId);
             AuthService authService    = (AuthService) x.get("auth");
 
@@ -92,7 +92,7 @@ foam.CLASS({
     {
       name: 'authorizeOnRead',
       javaCode:  `
-        Long accountId = ((Transaction) obj).getDestinationAccount();
+        String accountId = ((Transaction) obj).getDestinationAccount();
         String readPermission = createPermission(getPermissionPrefix(), "view", accountId);
         AuthService authService = (AuthService) x.get("auth");
 
