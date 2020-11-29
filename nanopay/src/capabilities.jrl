@@ -30,7 +30,7 @@ p({
     "businessHasSigningOfficer"
   ],
   "availabilityPredicate": {
-    "class": "net.nanopay.crunch.predicate.IsBusiness"
+    "class": "foam.nanos.crunch.predicate.IsAgent"
   },
   "keywords":["featured"],
   "interceptIf":{"class":"net.nanopay.crunch.predicate.SigningOfficerQuestionAnswered"},
@@ -262,6 +262,15 @@ p({
         "class":"net.nanopay.crunch.predicate.CheckUserCountry",
         "country":"BR"
       }
+    ]
+  },
+  "visibilityPredicate": {
+    "class": "foam.mlang.predicate.PassContext",
+    "args": [
+      {
+        "class":"foam.nanos.crunch.predicate.CapabilityGranted",
+        "capabilityId":"777af38a-8225-87c8-dfdf-eeb15f71215f-123"
+      },
     ]
   },
   "wizardlet": {
