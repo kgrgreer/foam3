@@ -61,7 +61,6 @@ foam.CLASS({
     {
       name: 'f',
       javaCode: `
-        if (true) throw new RuntimeException("TODO: fix id == compare for accout string id");
         Transaction tx = (Transaction) NEW_OBJ.f(obj);
 
         // Only check digital transactions
@@ -95,7 +94,7 @@ foam.CLASS({
           User user = ((Subject) ((X) obj).get("subject")).getUser();
           if (this.getEntityType() == TxLimitEntityType.BUSINESS) {
             return
-              (user instanceof Business) ? (Long) user.getId() == this.getId() :
+              (user instanceof Business) ? ((Long) user.getId()).equals(this.getId()) :
               false;
           }
 
@@ -104,7 +103,7 @@ foam.CLASS({
           if (this.getEntityType() == TxLimitEntityType.USER) {
             return
               (user instanceof Business && agent != null) ? (Long) agent.getId() == this.getId() :
-              (user != null) ? (Long) user.getId() == this.getId() :
+              (user != null) ? ((Long) user.getId()).equals(this.getId()) :
               false;
           }
         } else {
@@ -112,7 +111,7 @@ foam.CLASS({
           User user = account.findOwner((X) obj);
           if (this.getEntityType() == TxLimitEntityType.USER ||
              (this.getEntityType() == TxLimitEntityType.BUSINESS && user instanceof Business)) {
-            return (Long) user.getId() == this.getId();
+            return ((Long) user.getId()).equals(this.getId());
           }
         }
 
