@@ -64,7 +64,7 @@ foam.CLASS({
       //if no plans found throw exception
       if ( quote.getPlans().length == 0 ) {
         Transaction requestTxn = quote.getRequestTransaction();
-        String message = String.format("Unable to find a plan for transaction with source currency: %s, destination currency: %s, source account: %d, destination account: %d", requestTxn.getSourceCurrency(), requestTxn.getDestinationCurrency(), requestTxn.getSourceAccount(), requestTxn.getDestinationAccount());
+        String message = String.format("Unable to find a plan for transaction with source currency: %s, destination currency: %s, source account: %s, destination account: %s", requestTxn.getSourceCurrency(), requestTxn.getDestinationCurrency(), requestTxn.getSourceAccount(), requestTxn.getDestinationAccount());
         sendNOC(x, message);
         ((Logger) x.get("logger")).error(message);
         throw new UnableToPlanException("Unable to plan");
