@@ -55,7 +55,7 @@ p({
       .setDecorator(dao)
       .setAuthorize(false)
       .setPm(true)
-      .setSeqNo(true)
+      .setGuid(true)
       .setOf(Account.getOwnClassInfo())
       .setRuler(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
