@@ -24,7 +24,7 @@ p({
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
   sourceId: "0B2E7305-B898-43F2-9C1B-63FB2CE38B2D",
-  targetId: "554af38a-8225-87c8-dfdf-eeb15f71215f-1a5",
+  targetId: "777af38a-8225-87c8-dfdf-eeb15f71215f-123",
   precondition: true
 })
 
