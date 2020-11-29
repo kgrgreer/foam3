@@ -28,6 +28,13 @@ p({
   precondition: true
 })
 
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "0B2E7305-B898-43F2-9C1B-63FB2CE38B2D",
+  targetId: "05a663b8-2b48-11eb-adc1-0242ac120002"
+})
+
 // add prereq capability junctions needed for br unlock payments flow
 // business registration date
 p({
