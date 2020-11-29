@@ -268,9 +268,13 @@ p({
     "class": "foam.mlang.predicate.PassContext",
     "args": [
       {
-        "class":"foam.nanos.crunch.predicate.CapabilityGranted",
-        "capabilityId":"777af38a-8225-87c8-dfdf-eeb15f71215f-123"
-      },
+        "class":"foam.mlang.predicate.Not",
+        "arg1": {
+          "class":"foam.nanos.crunch.predicate.CapabilityGranted",
+          "capabilityId":"777af38a-8225-87c8-dfdf-eeb15f71215f-123",
+          "subjectFromUCJ":false
+        }
+      }
     ]
   },
   "wizardlet": {
