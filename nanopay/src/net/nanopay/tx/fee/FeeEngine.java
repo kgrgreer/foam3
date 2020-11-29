@@ -196,8 +196,8 @@ public class FeeEngine {
     }
     if ( ! "".equals(transactionFeeRule_.getFeeAccount()) ) {
       result.setTransfers(new Transfer[] {
-        new ExternalTransfer(-amount, sourceAccount),
-        new ExternalTransfer( amount, transactionFeeRule_.getFeeAccount())
+        new ExternalTransfer(sourceAccount, -amount),
+        new ExternalTransfer(transactionFeeRule_.getFeeAccount(), amount)
       });
     }
     return result;

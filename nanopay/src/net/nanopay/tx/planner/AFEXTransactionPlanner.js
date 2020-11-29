@@ -244,8 +244,8 @@ foam.CLASS({
         fundingTransaction.clearLineItems();
 
         ExternalTransfer[] exT = new ExternalTransfer[2];
-        exT[0] = new ExternalTransfer( -fundingTransaction.getAmount(), fundingTransaction.getSourceAccount() );
-        exT[1] = new ExternalTransfer( fundingTransaction.getDestinationAmount(), fundingTransaction.getDestinationAccount() );
+        exT[0] = new ExternalTransfer( fundingTransaction.getSourceAccount(), -fundingTransaction.getAmount() );
+        exT[1] = new ExternalTransfer( fundingTransaction.getDestinationAccount(), fundingTransaction.getDestinationAmount() );
         fundingTransaction.setTransfers( exT );
 
         return fundingTransaction;
@@ -309,8 +309,8 @@ foam.CLASS({
         afexTransaction.setInvoiceId(request.getInvoiceId()); // should this not be already copied?
 
         ExternalTransfer[] exT = new ExternalTransfer[2];
-        exT[0] = new ExternalTransfer( -afexTransaction.getAmount(), afexTransaction.getSourceAccount() );
-        exT[1] = new ExternalTransfer( afexTransaction.getDestinationAmount(), afexTransaction.getDestinationAccount() );
+        exT[0] = new ExternalTransfer( afexTransaction.getSourceAccount(), -afexTransaction.getAmount() );
+        exT[1] = new ExternalTransfer( afexTransaction.getDestinationAccount(), afexTransaction.getDestinationAmount() );
         afexTransaction.setTransfers( exT );
 
         //--- Find completion date estimate ---
