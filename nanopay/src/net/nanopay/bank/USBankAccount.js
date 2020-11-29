@@ -44,15 +44,22 @@ foam.CLASS({
   sections: [
     {
       name: 'accountInformation',
-      title: function(forContact) {
-        return forContact ? '' : this.SECTION_DETAILS_TITLE_VOID;
+      title: function() {
+        return this.forContact ? '' : this.SECTION_DETAILS_TITLE_VOID;
       }
     },
     {
       name: 'pad',
-      title: `Connect using a void check`,
-      subTitle: `Connect to your account without signing in to online banking.
-          Please ensure your details are entered properly.`,
+      title: function() {
+        return this.plaidResponseItem ?
+          this.SECTION_DETAILS_TITLE_PLAID :
+          this.SECTION_DETAILS_TITLE_VOID;
+      },
+      subTitle: function() {
+        return this.plaidResponseItem ?
+          this.SECTION_DETAILS_SUBTITLE_PLAID :
+          this.SECTION_DETAILS_SUBTITLE_VOID;
+      },
       isAvailable: function(forContact) {
         return ! forContact;
       }
@@ -80,7 +87,10 @@ foam.CLASS({
     { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number must be between 6 and 17 digits long' },
     { name: 'IMAGE_REQUIRED', message: 'Please attach a void check or a 3 month bank statement' },
     { name: 'ADD_SUCCESSFUL', message: 'Bank Account successfully added' },
-    { name: 'SECTION_DETAILS_TITLE_VOID', message: 'Connect using a void check' }
+    { name: 'SECTION_DETAILS_TITLE_VOID', message: 'Connect using a void check' },
+    { name: 'SECTION_DETAILS_SUBTITLE_VOID', message: 'Connect to your account without signing in to online banking. Please ensure your details are entered properly.' },
+    { name: 'SECTION_DETAILS_TITLE_PLAID', message: 'Finish adding your bank account' },
+    { name: 'SECTION_DETAILS_SUBTITLE_PLAID', message: 'Please confirm some banking details to securely interact with your account.' }
   ],
 
   properties: [
@@ -133,7 +143,9 @@ foam.CLASS({
       transient: true,
       view: function(_, X) {
         return {
-          class: 'foam.u2.tag.Image'
+          class: 'foam.u2.tag.Image',
+          displayWidth: '540px',
+          displayHeight: 'auto'
         };
       }
     },
@@ -141,6 +153,9 @@ foam.CLASS({
       class: 'foam.nanos.fs.FileProperty',
       name: 'voidCheckImage',
       documentation: 'void check image for this bank account',
+      visibility: function(forContact) {
+        return forContact ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      }
     },
     {
       name: 'branchId',
@@ -173,6 +188,7 @@ foam.CLASS({
     {
       name: 'accountNumber',
       label: 'ACH Account Number',
+      section: 'accountInformation',
       updateVisibility: 'RO',
       postSet: function(o, n) {
         this.padCapture.accountNumber = n;

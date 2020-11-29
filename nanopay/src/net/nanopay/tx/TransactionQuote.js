@@ -147,31 +147,19 @@ foam.CLASS({
       `
     },
     {
-      name: 'addExternalTransfer',
-      documentation: 'helper function for adding transfers to the plan',
-      args: [
-        { name: 'account', type: 'String' },
-        { name: 'amount', type: 'Long' }
-      ],
-      javaCode: `
-        ExternalTransfer t = new ExternalTransfer();
-        t.setAccount(account);
-        t.setAmount(amount);
-        getMyTransfers_().add(t);
-      `
-    },
-    {
       name: 'addTransfer',
       documentation: 'helper function for adding transfers to the plan',
       args: [
+        { name: 'internal', type: 'Boolean' },
         { name: 'account', type: 'String' },
-        { name: 'amount', type: 'Long' }
+        { name: 'amount', type: 'Long' },
+        { name: 'stage', type: 'Long' }
       ],
       javaCode: `
-        Transfer t = new Transfer();
-        t.setAccount(account);
-        t.setAmount(amount);
-        getMyTransfers_().add(t);
+        if (internal)
+          getMyTransfers_().add( new Transfer(account, amount, stage) );
+        else
+          getMyTransfers_().add( new ExternalTransfer(account, amount, stage) );
       `
     },
   ]
