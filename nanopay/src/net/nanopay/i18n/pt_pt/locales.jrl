@@ -1212,9 +1212,9 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.INVALID_EQUITY",target:"Patrimônio Inválido"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.INVALID_CAPITAL",target:"Capital Inválido"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.CAPITAL.label",target:"Capital de Negócios"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.CAPITAL.label",target:"Capital"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.CAPITAL.documentation",target:"Moeda da quantia em que o Capital de Negócios foi definido "})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.EQUITY.label",target:"Patrimônio de negócios"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.EQUITY.label",target:"Equidade"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.SECTION_BUSINESS_CAPITAL.title",target:"Moeda da quantia em que o patrimônio líquido foi definido"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.EQUITY.documentation",target:"Moeda da quantia em que o patrimônio líquido foi definido"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CustomerBasicInformation.NAME.label",target:"nome"})
@@ -1802,7 +1802,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureBus
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureBusinessRelationship.BUSINESS_TYPE_ERROR",target:"Objetivo da relação de corretagem necessária"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureBusinessRelationship.NATURE_OF_BUSINESS_RELATIONSHIP.label",target:"Insira o objetivo do seu relacionamento com um corretor de câmbio"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureBusinessRelationship.SECTION_BUSINESS_RELATIONSHIP.title",target:"Objetivo da relação de corretagem"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.SECTION_BUSINESS_CAPITAL.title",target:"Capital de Negócios e Patrimônio de Negócios"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.SECTION_BUSINESS_CAPITAL.title",target:"Capital de negócios e patrimônio líquido"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.Document.UPLOAD_REQUEST_MSG",target:"Anexe documento (s) para"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.Document.IMAGE_REQUIRED",target:"Anexe um (s) documento (s)."})
@@ -3001,3 +3001,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactW
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.OwnerProperty.OTHER_MSG",target:"De outros"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.OwnerProperty.PLEASE_SELECT_ONE",target:"Selecione um dos seguintes ..."})
+
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.CANCEL",target:"Cancel ..."})
