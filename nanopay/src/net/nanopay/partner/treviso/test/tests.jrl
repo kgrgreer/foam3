@@ -135,14 +135,6 @@ async function execute(x) {
         test(false, 'signingOfficerPersonalData: '+(e.message || e));
         throw e;
       }
-
-      try {
-        await support.signingOfficerPersonalData(x, u, business);
-        test(true, 'signingOfficerPersonalData');
-      } catch (e) {
-        test(false, 'signingOfficerPersonalData: '+(e.message || e));
-        throw e;
-      }
       try {
         let cap = await support.abliiBusinessOnboardingCapability(x, u, business);
         test(true, 'abliiBusinessOnboardingCapability');
