@@ -60,6 +60,8 @@ foam.CLASS({
     { name: 'EDIT_STEP_ONE_TITLE', message: 'Edit contact' },
     { name: 'EDIT_STEP_TWO_TITLE', message: 'Edit banking information' },
     { name: 'EDIT_STEP_THREE_TITLE', message: 'Edit business address' },
+    { name: 'STEP', message: 'Step' },
+    { name: 'OF_MSG', message: 'of' },
     { name: 'CONTACT_ADDED', message: 'Contact added successfully' },
     { name: 'CONTACT_EDITED', message: 'Contact edited' },
     { name: 'INVITE_SUCCESS', message: 'Sent a request to connect' },
@@ -165,7 +167,7 @@ foam.CLASS({
             return self.E().addClass('section-container')
               .start().addClass(self.myClass('step-indicator'))
                 .add(this.slot(function(currentIndex) {
-                  return `${self.STEP} ${currentIndex + 1} ${self.OF_MGS} 3`;
+                  return `${self.STEP} ${currentIndex + 1} ${self.OF_MSG} 3`;
                 }))
               .end()
               .tag(self.sectionView, {
