@@ -114,14 +114,6 @@ async function execute(x) {
         test(false, 'createBusiness: '+(e.message || e));
         throw e;
       }
-      // try {
-      //   await support.signingOfficerPersonalData(x, u, business);
-      //   test(true, 'signingOfficerPersonalData');
-      // } catch (e) {
-      //   test(false, 'signingOfficerPersonalData: '+(e.message || e));
-      //   throw e;
-      // }
-
       var businessSession;
       try {
         businessSession = await support.createSession(x, u.id, business.id);
@@ -134,6 +126,15 @@ async function execute(x) {
       // switch to business
       support.sudoStore(x);
       x = support.sudo(x, businessSession.id, u, business);
+
+      try {
+        await support.signingOfficerPersonalData(x, u, business);
+        test(true, 'signingOfficerPersonalData');
+      } catch (e) {
+        test(false, 'signingOfficerPersonalData: '+(e.message || e));
+        throw e;
+      }
+
       try {
         let cap = await support.abliiBusinessOnboardingCapability(x, u, business);
         test(true, 'abliiBusinessOnboardingCapability');
@@ -237,6 +238,13 @@ async function execute(x) {
         test(true, 'transactionDetailsData');
       } catch (e) {
         test(false, 'transactionDetailsData: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.businessDirectorsData(x, business);
+        test(true, 'businessDirectorsData');
+      } catch (e) {
+        test(false, 'businessDirectorsData: '+(e.message || e));
         throw e;
       }
       try {

@@ -23,6 +23,61 @@ foam.CLASS({
 
   methods: [
     {
+      name: 'createUser',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'userName',
+          type: 'String',
+        },
+        {
+          name: 'password',
+          type: 'String',
+        },
+        {
+          name: 'group',
+          type: 'String',
+        }
+      ],
+      type: 'foam.nanos.auth.User',
+      code: async function(x, userName, password, group) {
+        const E = foam.mlang.ExpressionsSingleton.create();
+        let email = userName+'@nanopay.net';
+        var u = await this.client(x, 'userDAO', foam.nanos.auth.User).find(E.OR(
+          E.EQ(foam.nanos.auth.User.USER_NAME, userName),
+          E.EQ(foam.nanos.auth.User.EMAIL, email)
+        ));
+        if ( ! u ) {
+          u = await this.client(x, 'userDAO', foam.nanos.auth.User).put_(x, foam.nanos.auth.User.create({
+            email: email,
+            userName: userName,
+            firstName: userName,
+            lastName: userName,
+            desiredPassword: password,
+            group: group || 'sme',
+            emailVerified: true,
+            phoneNumber: '9055551212',
+            address: {
+              'structured': false,
+              'address1': '20 King St. W',
+              'regionId': 'SP',
+              'countryId': 'BR',
+              'city': 'Sao Paulo',
+              'postalCode': '01310000'
+            }
+          }, x));
+          if ( ! u ||
+               ! u.id ) {
+            throw 'User not created ('+userName+')';
+          }
+        }
+        return u;
+      }
+    },
+    {
       name: 'generalAdmission',
       code: async function(x, user) {
         var id = '554af38a-8225-87c8-dfdf-eeb15f71215e-19';
@@ -226,6 +281,25 @@ foam.CLASS({
           var now = new Date();
           var cap = net.nanopay.country.br.NatureBusinessRelationship.create({
             NatureOfBusinessRelationship: 'Intermediação Brokerage'
+          });
+          ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
+        }
+      }
+    },
+    {
+      name: 'businessAnnualFinancialStatement',
+      code: async function(x, business) {
+        var id;
+        var ucj;
+
+        id = '7e2739cc-db32-11ea-87d0-0242ac130003';
+        ucj = await this.crunchService.getJunction(x, id);
+        if ( ! ucj ||
+             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          var now = new Date();
+          var cap = net.nanopay.crunch.document.Document.create({
+            reviewed: true,
+            expiry: new Date(now.getFullYear() + 5)
           });
           ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
         }

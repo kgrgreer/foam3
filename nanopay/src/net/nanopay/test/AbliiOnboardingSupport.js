@@ -953,6 +953,22 @@ foam.CLASS({
       }
     },
     {
+      name: 'businessDirectorsData',
+      code: async function(x, business) {
+        var id;
+        var ucj;
+        id = '554af38a-8225-87c8-dfdf-eeb15f71215f-6-5';
+        ucj = await this.crunchService.getJunction(x, id);
+        if ( ! ucj ||
+             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          var cap = net.nanopay.crunch.onboardingModels.BusinessDirectorsData.create({
+            needDirectory: false
+          });
+          ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
+        }
+      }
+    },
+    {
       name: 'certifyDirectorsListed',
       code: async function(x, business) {
         var id;
