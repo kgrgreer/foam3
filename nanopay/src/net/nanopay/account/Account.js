@@ -369,9 +369,9 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'createdByAgent',
       documentation: 'The ID of the Agent who created the account.',
-      section: 'accountInformation',
-      // visibility: 'RO',
-      visibility: 'HIDDEN'
+      section: 'operationsInformation',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
     },
     {
       class: 'DateTime',

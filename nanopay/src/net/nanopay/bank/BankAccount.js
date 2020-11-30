@@ -81,6 +81,10 @@ foam.CLASS({
       isAvailable: function(forContact) {
         return ! forContact;
       }
+    },
+    {
+      name: 'complianceInformation',
+      permissionRequired: true
     }
   ],
 
@@ -104,6 +108,14 @@ foam.CLASS({
   ],
 
   properties: [
+    {
+      name: 'id',
+      updateVisibility: 'RO'
+    },
+    {
+      name: 'summary',
+      updateVisibility: 'RO'
+    },
     {
       class: 'String',
       name: 'accountNumber',
