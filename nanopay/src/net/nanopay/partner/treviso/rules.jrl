@@ -50,7 +50,7 @@ p({
   "enabled":true,
   "after":true,
   "daoKey":"localUserDAO",
-  "operation":3,
+  "operation":0,
   "predicate": {
     "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
     "of": "net.nanopay.model.Business"
