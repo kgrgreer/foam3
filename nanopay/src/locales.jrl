@@ -724,8 +724,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"Regulation, Licensing, and Inspe
 p({class:"foam.i18n.Locale",locale:"pt",source:"Space Research and Technology",target:"Pesquisa Espacial h e Tecnologia"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"National Security",target:"Segurança Nacional"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"International Affairs",target:"Assuntos Internacionais"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"",target:""})
-p({class:"foam.i18n.Locale",locale:"pt",source:"",target:""})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Cultivation Of Cereals",target:"Cultivo de Cereais"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Cultivation Of Herbaceous Cotton And Other Temporary Farming Fibers",target:"Cultivo de Algodão Herbáceo e Outras Fibras Agrícolas Temporárias Cultivo de"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Sugarcane Cultivation",target:"Cana-de-Açúcar Cultivo de"})
