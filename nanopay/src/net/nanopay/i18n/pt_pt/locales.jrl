@@ -223,7 +223,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SwitchBusines
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SwitchBusinessView.ENABLED_BUSINESSES_.documentation",target:"\n        DAO costumava preencher as empresas ativadas na lista.\n       pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SwitchBusinessView.DISABLED_BUSINESSES_.label",target:"disabledBusinesses_ pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SwitchBusinessView.DISABLED_BUSINESSES_.documentation",target:"\n        O DAO costumava preencher as empresas desativadas na lista.\n       pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SwitchBusinessView.CREATE_BUSINESS.label",target:"Clique aqui para criar um novo negócio ... pt"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SwitchBusinessView.CREATE_BUSINESS.label",target:"Clique aqui para criar um novo negócio ..."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.BusinessSettingsView.TITLE",target:"Configurações de negócios"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.BusinessSettingsView.COMPANY_TAB",target:"Perfil"})
 
