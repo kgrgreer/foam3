@@ -1,5 +1,3 @@
-p({"class":"foam.nanos.boot.NSpec", "name":"whitelistedEmailDAO", "serve":true, "serviceScript":"new foam.dao.EasyDAO.Builder(x).setJournalType(foam.dao.JournalType.SINGLE_JOURNAL).setJournalName(\"whitelistedEmails\").setName(\"whitelistedEmail\").setOf(net.nanopay.auth.email.EmailWhitelistEntry.getOwnClassInfo()).build();","client":"{\"of\":\"net.nanopay.auth.email.EmailWhitelistEntry\"\}"})
-
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"doNotSolicitDAO",
