@@ -125,11 +125,6 @@ foam.CLASS({
       `
     },
     {
-      name: 'bankCode',
-      visibility: 'HIDDEN'
-    },
-    { // REVIEW: remove
-      class: 'String',
       name: 'institutionNumber',
       hidden: true
     },

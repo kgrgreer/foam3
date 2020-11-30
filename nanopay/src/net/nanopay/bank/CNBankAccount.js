@@ -85,10 +85,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'bankCode',
-      visibility: 'HIDDEN'
-    },
-    {
       name: 'iban',
       required: false,
       visibility: 'HIDDEN',
