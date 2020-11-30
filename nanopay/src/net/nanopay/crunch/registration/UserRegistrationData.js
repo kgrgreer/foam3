@@ -38,7 +38,8 @@ foam.CLASS({
         placeholder: 'Jane'
       },
       required: true,
-      documentation: 'First name of the user.'
+      documentation: 'First name of the user.',
+      exampleValue: 'First'
     },
     {
       class: 'String',
@@ -49,14 +50,16 @@ foam.CLASS({
         placeholder: 'Doe'
       },
       required: true,
-      documentation: 'Last name of the user.'
+      documentation: 'Last name of the user.',
+      exampleValue: 'Last'
     },
     {
       class: 'PhoneNumber',
       name: 'phoneNumber',
       section: 'userRegistrationSection',
       required: true,
-      documentation: 'Phone number of the user.'
+      documentation: 'Phone number of the user.',
+      exampleValue: '12341234'
     }
   ]
 });

@@ -56,6 +56,7 @@ foam.CLASS({
       class: 'String',
       name: 'data',
       label: 'Cadastro de Pessoas Físicas (CPF)',
+      exampleValue: '10786348070',
       section: 'collectCpf',
       help: `The CPF (Cadastro de Pessoas Físicas or Natural Persons Register) is a number assigned by the Brazilian revenue agency to both Brazilians and resident aliens who are subject to taxes in Brazil.`,
       validationPredicates: [
@@ -126,6 +127,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'verifyName',
+      exampleValue: true,
       label: 'Is this you?',
       section: 'collectCpf',
       view: function(n, X) {

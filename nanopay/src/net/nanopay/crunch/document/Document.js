@@ -92,7 +92,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'isRequired',
       documentation: 'Whether the file is required or not.',
-      value: true,
+      // value: true,
       hidden: true
     }
   ],
