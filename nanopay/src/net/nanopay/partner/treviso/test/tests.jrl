@@ -1,25 +1,10 @@
-// p({"class":"net.nanopay.test.ModelledTest","id":"modelledTest"})
-p({"class":"net.nanopay.test.DateAndPlaceOfBirthDAOTest","id":"DateAndPlaceOfBirthDAOTest"})
-p({"class":"net.nanopay.test.BranchDAOTest","id":"BranchDAO-Test"})
-p({"class":"net.nanopay.test.BranchDAOAuthorizationTest","id":"BranchDAOAuthorizationTest"})
-p({"class":"net.nanopay.test.BusinessSectorDAOTest","id":"BusinessSectorDAOTest"})
-p({"class":"net.nanopay.test.api.AuthenticationApiTest","id":"AuthenticationApiTest"})
-p({"class":"net.nanopay.test.api.AuthenticationFailureApiTest","id":"AuthenticationFailureApiTest"})
-p({"class":"net.nanopay.test.api.SessionAuthenticationFailureApiTest","id":"SessionAuthenticationFailureApiTest"})
-p({"class":"net.nanopay.test.api.PostMethodTest","id":"PostMethodTest"})
-
-// DAO Security Tests
-p({"class":"net.nanopay.test.api.DAOSecurityTest.DAOSecurityTestFind","id":"DAOSecurityTestFind"})
-p({"class":"net.nanopay.test.api.DAOSecurityTest.DAOSecurityTestSelect","id":"DAOSecurityTestSelect"})
-p({"class":"net.nanopay.test.api.DAOSecurityTest.DAOSecurityTestRemoveAll","id":"DAOSecurityTestRemoveAll"})
-
 p({
   class:"foam.nanos.test.Test",
-  id:"AbliiOnboardingTest",
-  description: "AbliiOnboardingTest",
+  id:"TrevisoOnboardingTest",
+  description: "TrevisoOnboardingTest",
   server: false,
   code:"""
-/* Ablii Onboarding Test */
+/* Treviso Onboarding Test */
 /* Run this script symultaniously from at least two machines */
 
 /* Number of times to execute this script */
@@ -33,7 +18,7 @@ realUser = x.subject.realUser;
 user = x.subject.user;
 
 /* model with helper methods for sudo, creating user, sessions... */
-support = net.nanopay.test.AbliiOnboardingSupport.create({
+support = net.nanopay.partner.treviso.test.TrevisoOnboardingSupport.create({
   adminSessionId: defaultSession,
     adminSubject: foam.nanos.auth.Subject.create({
       realUser: realUser,
@@ -73,7 +58,7 @@ async function execute(x) {
       support.sudoStore(x);
       x = support.sudo(x, s.id, u, u);
 
-      // general admission 'ablii'
+      // general admission
       try {
         await support.generalAdmission(x, u);
         test(true, 'generalAdmission');
@@ -81,7 +66,7 @@ async function execute(x) {
         test(false, 'generalAdmission: '+(e.message || e));
         throw e;
       }
-      
+
       try {
         await support.userDateOfBirth(x, u);
         test(true, 'userDateOfBirth');
@@ -89,21 +74,6 @@ async function execute(x) {
         test(false, 'userDateOfBirth: '+(e.message || e));
         throw e;
       }
-            
-      // try {
-      //   let cap = await support.abliiUserOnboardingCapability(x, u);
-      //   test(true, 'abliiUserOnboardingCapability');
-      // } catch (e) {
-      //   test(false, 'abliiUserOnboardingCapability: '+(e.message || e));
-      //   throw e;
-      // }
-      // try {
-      //   u = await support.updateUserComplianceStatus(x, u);
-      //   test(true, 'updateUserComplianceStatus');
-      // } catch (e) {
-      //   test(false, 'updateUserComplianceStatus: '+(e.message || e));
-      //   throw e;
-      // }
 
       // Required for business onboarding
       try {
@@ -111,6 +81,28 @@ async function execute(x) {
         test(true, 'userDetails');
       } catch (e) {
         test(false, 'userDetails: '+(e.message || e));
+        throw e;
+      }
+
+      try {
+        await support.trevisoUserIdentification(x, u);
+        test(true, 'trevisoUserIdentification');
+      } catch (e) {
+        test(false, 'trevisoUserIdentification: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.trevisoUserCNF(x, u);
+        test(true, 'trevisoUserCNF');
+      } catch (e) {
+        test(false, 'trevisoUserCNF: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.trevisoUserUtilityBill(x, u);
+        test(true, 'trevisoUserUtilityBill');
+      } catch (e) {
+        test(false, 'trevisoUserUtilityBill: '+(e.message || e));
         throw e;
       }
 
@@ -122,13 +114,13 @@ async function execute(x) {
         test(false, 'createBusiness: '+(e.message || e));
         throw e;
       }
-     try {
-       await support.signingOfficerPersonalData(x, u, business);
-       test(true, 'signingOfficerPersonalData');
-     } catch (e) {
-       test(false, 'signingOfficerPersonalData: '+(e.message || e));
-       throw e;
-     }
+      // try {
+      //   await support.signingOfficerPersonalData(x, u, business);
+      //   test(true, 'signingOfficerPersonalData');
+      // } catch (e) {
+      //   test(false, 'signingOfficerPersonalData: '+(e.message || e));
+      //   throw e;
+      // }
 
       var businessSession;
       try {
@@ -147,6 +139,13 @@ async function execute(x) {
         test(true, 'abliiBusinessOnboardingCapability');
       } catch (e) {
         test(false, 'abliiBusinessOnboardingCapability: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.updateBusinessComplianceStatus(x, business);
+        test(true, 'updateBusinessComplianceStatus');
+      } catch (e) {
+        test(false, 'updateBusinessComplianceStatus: '+(e.message || e));
         throw e;
       }
       try {
@@ -185,17 +184,52 @@ async function execute(x) {
         throw e;
       }
       try {
-        await support.businessArticleOfIncoporation(x, business);
-        test(true, 'businessArticleOfIncoporation');
+        await support.businessArticleOfIncorporation(x, business);
+        test(true, 'businessArticleOfIncorporation');
       } catch (e) {
-        test(false, 'businessArticleOfIncoporation: '+(e.message || e));
+        test(false, 'businessArticleOfIncorporation: '+(e.message || e));
         throw e;
       }
       try {
-        await support.updateBusinessComplianceStatus(x, business);
-        test(true, 'updateBusinessComplianceStatus');
+        await support.businessNatureOfBusiness(x, business);
+        test(true, 'businessNatureOfBusiness');
       } catch (e) {
-        test(false, 'updateBusinessComplianceStatus: '+(e.message || e));
+        test(false, 'businessNatureOfBusiness: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.businessInformationData(x, business);
+        test(true, 'businessInformationData');
+      } catch (e) {
+        test(false, 'businessInformationData: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.businessOfficeConsumptionDocument(x, business);
+        test(true, 'businessOfficeConsumption');
+      } catch (e) {
+        test(false, 'businessOfficeConsumption: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.trevisoBusinessIdentificationNumbers(x, business);
+        test(true, 'trevisoBusinessIdentificationNumbers');
+      } catch (e) {
+        test(false, 'trevisoBusinessIdentificationNumbers: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.businessCapitalAndEquity(x, business);
+        test(true, 'businessCaptialAndEquity');
+      } catch (e) {
+        test(false, 'businessCapitalAndEquity: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.businessAccountData(x, business);
+        test(true, 'businessCaptialAndEquity');
+      } catch (e) {
+        test(false, 'businessCapitalAndEquity: '+(e.message || e));
         throw e;
       }
       try {
@@ -227,7 +261,15 @@ async function execute(x) {
         throw e;
       }
       try {
-        let bank = await support.createUSBankAccount(x, business);
+        await support.trevisoDataReviewed(x, u);
+        test(true, 'trevisoDataReviewed');
+      } catch (e) {
+        test(false, 'trevisoDataReviewed: '+(e.message || e));
+        throw e;
+      }
+
+      try {
+        let bank = await support.createBRBankAccount(x, business);
         test(true, 'createBusinessBankAccount');
       } catch (e) {
         test(false, 'createBusinessBankAccount: '+(e.message || e));
