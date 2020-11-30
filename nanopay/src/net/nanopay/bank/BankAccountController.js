@@ -57,7 +57,7 @@ foam.CLASS({
     { name: 'SUCCESSFULLY_DELETED', message: 'Bank account deleted' },
     { name: 'IS_DEFAULT', message: 'is now your default bank account. Funds will be automatically transferred to and from this account.' },
     { name: 'UNABLE_TO_DEFAULT', message: 'Unable to set non verified bank accounts as default' },
-    { name: 'ALREADY_DEFAULT', message: 'is already a default bank account.' },
+    { name: 'ALREADY_DEFAULT', message: 'is already a default bank account' },
     { name: 'BANK_ACCOUNT_LABEL', message: 'Bank Account' }
   ],
 
@@ -119,7 +119,7 @@ foam.CLASS({
           ],
           dblClickListenerAction: async function dblClick(account, id) {
             if ( ! account ) account = await self.__subContext__.accountDAO.find(id);
-            
+
             var popupView = account.status === self.BankAccountStatus.UNVERIFIED && self.CABankAccount.isInstance(account) ?
               self.Popup.create().tag({
                 class: 'net.nanopay.cico.ui.bankAccount.modalForm.CABankMicroForm',
@@ -181,14 +181,17 @@ foam.CLASS({
                 if ( this.isDefault ) {
                   self.notify(`${ this.name } ${ self.ALREADY_DEFAULT }`, '', self.LogLevel.WARN, true);
                   return;
+                } else {
+                  this.isDefault = true;
+                  self.subject.user.accounts.put(this).then(() =>{
+                    self.notify(`${ this.name } ${ self.IS_DEFAULT }`, '', self.LogLevel.INFO, true);
+                  }).catch((err) => {
+                    this.isDefault = false;
+                    self.notify(self.UNABLE_TO_DEFAULT, '', self.LogLevel.ERROR, true);
+                  });
+
+                  self.purgeCachedDAOs();
                 }
-                this.isDefault = true;
-                self.subject.user.accounts.put(this).then(() =>{
-                  self.notify(`${ this.name } ${ self.IS_DEFAULT }`, '', self.LogLevel.INFO, true);
-                }).catch((err) => {
-                  this.isDefault = false;
-                  self.notify(self.UNABLE_TO_DEFAULT, '', self.LogLevel.ERROR, true);
-                });
               }
             }),
             foam.core.Action.create({
@@ -198,7 +201,7 @@ foam.CLASS({
                   self.notify(self.DELETE_DEFAULT, '', self.LogLevel.ERROR, true);
                   return;
                 }
-                
+
                 this.deleted = true;
                 this.status = self.BankAccountStatus.DISABLED;
 
@@ -259,6 +262,11 @@ foam.CLASS({
   methods: [
     function init() {
       this.SUPER();
+    },
+
+    function purgeCachedDAOs() {
+      this.__subContext__.accountDAO.cmd_(this, foam.dao.CachingDAO.PURGE);
+      this.__subContext__.accountDAO.cmd_(this, foam.dao.AbstractDAO.RESET_CMD);
     }
   ]
 });

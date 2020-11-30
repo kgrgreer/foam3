@@ -277,6 +277,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/ruler/AccountDeletedNotificationRule' },
   { name: 'net/nanopay/bank/ruler/CorridorAuthorizationRule' },
   { name: 'net/nanopay/bank/ruler/VerifyBankRule' },
+  { name: 'net/nanopay/bank/ruler/ExternalGrantBRBankAccountCapabilityRule' },
 
   // fx
   { name: 'net/nanopay/fx/ExchangeRateStatus' },
@@ -484,6 +485,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/DebtRepaymentTransaction' },
   { name: 'net/nanopay/tx/cico/ReverseCIRule'},
   { name: 'net/nanopay/tx/cico/ReverseCORule'},
+  { name: 'net/nanopay/tx/cico/ReverseInterTrustRule'},
   { name: 'net/nanopay/tx/RepayDebtOnCIRule' },
   { name: 'net/nanopay/tx/ParentCompleteToPendingRule' },
   { name: 'net/nanopay/tx/ModifyCicoStatus' },
@@ -641,6 +643,7 @@ FOAM_FILES([
   { name: 'net/nanopay/cico/ui/CicoView', flags: ['web'] },
   { name: 'net/nanopay/cico/ui/AlternaEFTDownload', flags: ['web'] },
   { name: 'net/nanopay/tx/cico/CITransaction' },
+  { name: 'net/nanopay/tx/cico/InterTrustTransaction' },
   { name: 'net/nanopay/tx/cico/EFTFile' },
   { name: 'net/nanopay/tx/cico/EFTFileGenerator' },
   { name: 'net/nanopay/tx/cico/EFTFileStatus' },
@@ -1480,6 +1483,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/bmo/eftfile/BmoBatchRecord' },
   { name: 'net/nanopay/tx/bmo/eftfile/BmoDetailRecord' },
   { name: 'net/nanopay/tx/bmo/cico/BmoCITransaction' },
+  { name: 'net/nanopay/tx/bmo/cico/BmoInterTrustTransaction' },
   { name: 'net/nanopay/tx/bmo/cico/BmoCOTransaction' },
   { name: 'net/nanopay/tx/bmo/cico/BmoTransaction' },
   { name: 'net/nanopay/tx/bmo/cico/BmoVerificationTransaction' },
@@ -1491,6 +1495,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/rbc/RbcTransaction' },
   { name: 'net/nanopay/tx/rbc/RbcCITransaction' },
   { name: 'net/nanopay/tx/rbc/RbcCOTransaction' },
+  { name: 'net/nanopay/tx/rbc/RbcInterTrustTransaction' },
   { name: 'net/nanopay/tx/rbc/RbcVerificationTransaction' },
   { name: 'net/nanopay/tx/rbc/RbcAssignedClientValue' },
   { name: 'net/nanopay/tx/rbc/RbcReferenceNumber' },
@@ -1576,6 +1581,9 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/QuoteFillerDAO' },
   { name: 'net/nanopay/tx/planner/PlanNotFoundException' },
   { name: 'net/nanopay/tx/planner/UnableToPlanException' },
+  { name: 'net/nanopay/tx/planner/InterTrustPlanner' },
+  { name: 'net/nanopay/tx/planner/RbcInterTrustPlanner' },
+  { name: 'net/nanopay/tx/planner/BmoInterTrustPlanner' },
 
   // Fees
   { name: 'net/nanopay/tx/fee/Fee' },

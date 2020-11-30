@@ -52,8 +52,8 @@ foam.CLASS({
         secTx.setName("Security CI of "+quote.getSourceUnit());
         secTx.setDestinationAmount(secTx.getAmount());
 
-        quote.addTransfer(secTrust.getSecurityAccount(x, quote.getDestinationUnit()).getId(), -secTx.getAmount());
-        quote.addTransfer(transferAccount, secTx.getAmount());
+        quote.addTransfer(true, secTrust.getSecurityAccount(x, quote.getDestinationUnit()).getId(), -secTx.getAmount(), 0);
+        quote.addTransfer(true, transferAccount, secTx.getAmount(), 0);
 
         return secTx;
       `

@@ -26,6 +26,10 @@ foam.CLASS({
   name: 'EtaSummaryTransactionLineItem',
   extends: 'net.nanopay.tx.SummaryTransactionLineItem',
 
+  imports: [
+    'theme'
+  ],
+
   javaImports: [
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
@@ -58,6 +62,15 @@ foam.CLASS({
   methods: [
     function toSummary() {
       return this.ETA_MESSAGE;
+    },
+    {
+      name: 'showLineItem',
+      code: function() {
+        if ( this.theme.appName === 'Treviso' ) {
+          return false;
+        }
+        return true;
+      }
     }
   ]
 
