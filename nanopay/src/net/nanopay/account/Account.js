@@ -351,7 +351,7 @@ foam.CLASS({
       class: 'DateTime',
       name: 'created',
       documentation: 'The date and time of when the account was created in the system.',
-      section: 'accountInformation',
+      section: 'operationsInformation',
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO'
     },
@@ -360,7 +360,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
       documentation: 'The ID of the User who created the account.',
-      section: 'accountInformation',
+      section: 'operationsInformation',
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO'
     },
@@ -377,7 +377,7 @@ foam.CLASS({
       class: 'DateTime',
       name: 'lastModified',
       documentation: 'The date and time of when the account was last changed in the system.',
-      section: 'accountInformation',
+      section: 'operationsInformation',
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO'
     },
@@ -387,7 +387,7 @@ foam.CLASS({
       name: 'lastModifiedBy',
       documentation: `The unique identifier of the individual person, or real user,
         who last modified this account.`,
-      section: 'accountInformation',
+      section: 'operationsInformation',
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       tableCellFormatter: function(value, obj, axiom) {
