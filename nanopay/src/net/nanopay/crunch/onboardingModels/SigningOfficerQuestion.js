@@ -19,7 +19,7 @@ foam.CLASS({
   package: 'net.nanopay.crunch.onboardingModels',
   name: 'SigningOfficerQuestion',
 
-  implements: [ 
+  implements: [
     'foam.core.Validatable'
   ],
 
@@ -45,7 +45,9 @@ foam.CLASS({
     { name: 'ADMIN_LAST_NAME_ERROR', message: 'Please enter last name with least 1 character' },
     { name: 'NO_JOB_TITLE_ERROR', message: 'Please select job title' },
     { name: 'INVALID_PHONE_NUMBER_ERROR', message: 'Invalid phone number' },
-    { name: 'CANNOT_INVITE_SELF_ERROR', message: 'Cannot invite self as signing officer. If you are a signing officer, please select "YES" in the previous step.' }
+    { name: 'CANNOT_INVITE_SELF_ERROR', message: 'Cannot invite self as signing officer. If you are a signing officer, please select "YES" in the previous step.' },
+    { name: 'YES', message: 'Yes' },
+    { name: 'NO', message: 'No' }
   ],
 
   properties: [
@@ -57,12 +59,15 @@ foam.CLASS({
       help: `A signing officer is a person legally authorized to act on behalf of the business (e.g CEO, COO, board director)`,
       documentation: `A signing officer is a person legally authorized to act on behalf of the business (e.g CEO, COO, board director)`,
       label: '',
-      view: {
-        class: 'foam.u2.view.RadioView',
-        choices: [
-          [true, 'Yes'],
-          [false, 'No']
-        ]
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RadioView',
+          choices: [
+            [true, X.data.YES],
+            [false, X.data.NO]
+          ],
+          isHorizontal: true
+        };
       }
     },
 
