@@ -167,8 +167,8 @@ foam.CLASS({
           class: 'foam.u2.view.ChoiceView',
           placeholder: X.data.PLEASE_SELECT,
           choices: [
-            [true, X.data.CURRENT],
-            [false, X.data.SAVINGS]
+            ['c', X.data.CURRENT],
+            ['p', X.data.SAVINGS]
           ]
         };
       },
@@ -189,8 +189,8 @@ foam.CLASS({
           class: 'foam.u2.view.ChoiceView',
           placeholder: X.data.PLEASE_SELECT,
           choices: [
-            [true, X.data.HOLDER1],
-            [false, X.data.HOLDER2]
+            ['1', X.data.HOLDER1],
+            ['2', X.data.HOLDER2]
           ]
         };
       },
