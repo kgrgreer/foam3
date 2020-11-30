@@ -65,7 +65,7 @@ foam.CLASS({
       javaCode: `
         if ( getAmount() == 0 )
           throw new ValidationException("Transfer has no amount set");
-        if ( "".equals(getAccount()) )
+        if ( SafetyUtil.isEmpty(getAccount()) )
           throw new ValidationException("No account specified on Transfer");
 
       `

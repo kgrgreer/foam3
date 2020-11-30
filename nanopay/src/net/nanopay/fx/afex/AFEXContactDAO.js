@@ -79,7 +79,7 @@ foam.CLASS({
         String contactOwnerCountryId = contactOwner.getAddress() == null ? "" : contactOwner.getAddress().getCountryId();
     
         // Check if contact has a bank account
-        BankAccount contactBankAccount = "".equals(contact.getBankAccount()) ? 
+        BankAccount contactBankAccount = foam.util.SafetyUtil.isEmpty(contact.getBankAccount()) ? 
           ((BankAccount) localAccountDAO.find(AND(EQ(BankAccount.OWNER, contact.getId()), INSTANCE_OF(BankAccount.class)))) 
           : ((BankAccount) localAccountDAO.find(contact.getBankAccount()));
         if ( contactBankAccount != null ) {

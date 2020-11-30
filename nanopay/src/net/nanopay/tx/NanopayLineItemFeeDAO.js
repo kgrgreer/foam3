@@ -29,7 +29,8 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'java.util.List',
     'net.nanopay.account.Account',
-    'net.nanopay.account.DigitalAccount'
+    'net.nanopay.account.DigitalAccount',
+    'foam.util.SafetyUtil'
   ],
 
   properties: [
@@ -110,7 +111,7 @@ foam.CLASS({
               feeAccountId = lineItemTypeAccount.getAccount();
             }
             Long amount = fee.getFeeAmount(lineItem.getAmount());
-            if ( ! "".equals(feeAccountId) &&
+            if ( ! foam.util.SafetyUtil.isEmpty(feeAccountId) &&
                  amount > 0L ) {
               LineItemType lineItemType = fee.findFeeType(x);
               FeeLineItem[] forward = new FeeLineItem [] {

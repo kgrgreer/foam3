@@ -36,7 +36,8 @@ foam.CLASS({
 
     'net.nanopay.tx.model.TransactionFee',
 
-    'java.util.List'
+    'java.util.List',
+    'foam.util.SafetyUtil'
   ],
 
   properties: [
@@ -110,7 +111,7 @@ foam.CLASS({
                 continue;
               }
               String feeAccount = fee.getFeeAccount();
-              if ( ! "".equals(feeAccount) ) {
+              if ( ! SafetyUtil.isEmpty(feeAccount) ) {
                 String debit = fee.getSourcePaysFees() ? transaction.getSourceAccount() : transaction.getDestinationAccount();
 
                 FeeLineItem[] forward = new FeeLineItem [] {

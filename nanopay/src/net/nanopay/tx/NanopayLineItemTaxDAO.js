@@ -41,7 +41,8 @@ foam.CLASS({
     'net.nanopay.account.DigitalAccount',
 
     'java.util.List',
-    'java.util.ArrayList'
+    'java.util.ArrayList',
+    'foam.util.SafetyUtil'
   ],
 
   properties: [
@@ -139,13 +140,13 @@ foam.CLASS({
             taxAccount = lineItemTypeAccount.getAccount();
           }
 
-          if ( "".equals(taxAccount) ) {
+          if ( SafetyUtil.isEmpty(taxAccount) ) {
             Account account = DigitalAccount.findDefault(x, payee, "CAD");
             taxAccount = account.getId();
           }
 
           Long amount = quotedTaxItem.getTax();
-          if ( ! "".equals(taxAccount) &&
+          if ( ! SafetyUtil.isEmpty(taxAccount) &&
                amount > 0L ) {
             forward.add(new TaxLineItem.Builder(x).setNote(quotedTaxItem.getDescription()).setSourceAccount(transaction.getSourceAccount()).setDestinationAccount(taxAccount).setAmount(amount).setType(quotedTaxItem.getType()).build());
             reverse.add(new InfoLineItem.Builder(x).setNote(quotedTaxItem.getDescription()+" - Non-refundable").setAmount(amount).build());

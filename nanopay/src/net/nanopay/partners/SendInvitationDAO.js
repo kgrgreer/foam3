@@ -46,7 +46,8 @@ foam.CLASS({
     'java.util.Date',
     'java.util.HashMap',
     'java.util.Map',
-    'java.util.UUID'
+    'java.util.UUID',
+    'foam.util.SafetyUtil'
   ],
 
   axioms: [
@@ -105,7 +106,7 @@ foam.CLASS({
               if ( business != null ) {
                 recipient.setSignUpStatus(ContactStatus.READY);
               }
-            } else if ( ! "".equals(recipient.getBankAccount()) ) {
+            } else if ( ! SafetyUtil.isEmpty(recipient.getBankAccount()) ) {
               recipient.setSignUpStatus(ContactStatus.READY);
             }
 

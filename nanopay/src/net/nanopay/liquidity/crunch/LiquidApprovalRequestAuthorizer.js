@@ -46,7 +46,7 @@ foam.CLASS({
       javaCode: `
         String permission = "canApprove";
         permission += className.substring(0, 1).toUpperCase() + className.substring(1);
-        if ( ! "".equals(outgoingAccountId) ) permission += "." + outgoingAccountId;
+        if ( ! foam.util.SafetyUtil.isEmpty(outgoingAccountId) ) permission += "." + outgoingAccountId;
         return permission;
       `
     },

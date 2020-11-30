@@ -35,6 +35,7 @@ import net.nanopay.tx.model.Transaction;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import foam.util.SafetyUtil;
 
 public class FeeEngine {
   /**
@@ -194,7 +195,7 @@ public class FeeEngine {
           .toArray(Rate[]::new)
       );
     }
-    if ( ! "".equals(transactionFeeRule_.getFeeAccount()) ) {
+    if ( ! SafetyUtil.isEmpty(transactionFeeRule_.getFeeAccount()) ) {
       result.setTransfers(new Transfer[] {
         new ExternalTransfer(sourceAccount, -amount),
         new ExternalTransfer(transactionFeeRule_.getFeeAccount(), amount)

@@ -34,7 +34,8 @@ foam.CLASS({
     'net.nanopay.model.Business',
     'net.nanopay.tx.DigitalTransaction',
     'net.nanopay.tx.model.Transaction',
-    'static foam.mlang.MLang.*'
+    'static foam.mlang.MLang.*',
+    'foam.util.SafetyUtil'
   ],
   properties: [
     {
@@ -94,7 +95,7 @@ foam.CLASS({
           User user = ((Subject) ((X) obj).get("subject")).getUser();
           if (this.getEntityType() == TxLimitEntityType.BUSINESS) {
             return
-              (user instanceof Business) ? ((Long) user.getId()).equals(this.getId()) :
+              (user instanceof Business) ? SafetyUtil.equals((Long) user.getId(), this.getId()) :
               false;
           }
 
@@ -102,8 +103,8 @@ foam.CLASS({
           User agent = ((Subject) ((X) obj).get("subject")).getRealUser();
           if (this.getEntityType() == TxLimitEntityType.USER) {
             return
-              (user instanceof Business && agent != null) ? (Long) agent.getId() == this.getId() :
-              (user != null) ? ((Long) user.getId()).equals(this.getId()) :
+              (user instanceof Business && agent != null) ? SafetyUtil.equals((Long) agent.getId(), this.getId()) :
+              (user != null) ? SafetyUtil.equals((Long) user.getId(), this.getId()) :
               false;
           }
         } else {
@@ -111,7 +112,7 @@ foam.CLASS({
           User user = account.findOwner((X) obj);
           if (this.getEntityType() == TxLimitEntityType.USER ||
              (this.getEntityType() == TxLimitEntityType.BUSINESS && user instanceof Business)) {
-            return ((Long) user.getId()).equals(this.getId());
+            return SafetyUtil.equals((Long) user.getId(), this.getId());
           }
         }
 

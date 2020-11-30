@@ -25,7 +25,8 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'static foam.mlang.MLang.EQ',
-    'foam.nanos.auth.LifecycleState'
+    'foam.nanos.auth.LifecycleState',
+    'foam.util.SafetyUtil'
   ],
 
   searchColumns: [
@@ -77,7 +78,7 @@ foam.CLASS({
         synchronized ( lock ) {
           SecurityAccount sa = (SecurityAccount) accountDAO.find(EQ(
           SecurityAccount.DENOMINATION,unit));
-          if ( sa == null || "".equals(sa.getId()) )
+          if ( sa == null || SafetyUtil.isEmpty(sa.getId()) )
             return createSecurityAccount_(x,unit);
           return sa;
         }

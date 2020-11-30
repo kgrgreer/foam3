@@ -52,7 +52,7 @@ foam.CLASS({
       `,
       javaCode: `
         String permission = permissionPrefix + "." + op;
-        if ( ! "".equals(outgoingAccountId) ) permission += "." + outgoingAccountId;
+        if ( ! foam.util.SafetyUtil.isEmpty(outgoingAccountId) ) permission += "." + outgoingAccountId;
         return permission;
       `
     },

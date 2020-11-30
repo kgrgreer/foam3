@@ -1036,11 +1036,11 @@ foam.CLASS({
 
       AppConfig appConfig = (AppConfig) x.get("appConfig");
       DAO userDAO = (DAO) x.get("bareUserDAO");
-      if ( "".equals(getSourceAccount()) ) {
+      if ( SafetyUtil.isEmpty(getSourceAccount()) ) {
         throw new ValidationException("sourceAccount must be set");
       }
 
-      if ( "".equals(getDestinationAccount()) ) {
+      if ( SafetyUtil.isEmpty(getDestinationAccount()) ) {
         throw new ValidationException("destinationAccount must be set");
       }
 

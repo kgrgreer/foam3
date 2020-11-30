@@ -622,7 +622,7 @@ foam.CLASS({
             throw new IllegalStateException("Business name is required.");
           }
 
-          if ( ! "".equals(this.getBankAccount()) ) {
+          if ( ! foam.util.SafetyUtil.isEmpty(this.getBankAccount()) ) {
             BankAccount bankAccount = (BankAccount) this.findBankAccount(x);
 
             if ( bankAccount == null ) throw new RuntimeException("Bank account not found.");
