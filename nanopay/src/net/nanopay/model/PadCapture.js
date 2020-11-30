@@ -126,6 +126,10 @@ foam.CLASS({
       documentation: `
         Capable object requirements, defined by a subclass of PadCapture.
       `
+    },
+    {
+      class: 'StringArray',
+      name: 'capabilityIds'
     }
   ],
 
