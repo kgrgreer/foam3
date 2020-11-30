@@ -1,2 +1,2 @@
 // Intuit Trust Account
-p({"class":"net.nanopay.account.TrustAccount", "id":11, "owner":8034, "denomination":"CAD", "name":"Intuit Trust Account CAD","lifecycleState":1})
+p({"class":"net.nanopay.account.TrustAccount", "id":"11", "owner":8034, "denomination":"CAD", "name":"Intuit Trust Account CAD","lifecycleState":1})
