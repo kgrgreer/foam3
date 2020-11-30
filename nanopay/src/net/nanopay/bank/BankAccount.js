@@ -110,27 +110,11 @@ foam.CLASS({
   properties: [
     {
       name: 'id',
-      updateVisibility: 'HIDDEN'
+      updateVisibility: 'RO'
     },
     {
       name: 'summary',
-      updateVisibility: 'HIDDEN'
-    },
-    {
-      name: 'created',
-      updateVisibility: 'HIDDEN'
-    },
-    {
-      name: 'createdBy',
-      updateVisibility: 'HIDDEN'
-    },
-    {
-      name: 'lastModified',
-      updateVisibility: 'HIDDEN'
-    },
-    {
-      name: 'lastModifiedBy',
-      updateVisibility: 'HIDDEN'
+      updateVisibility: 'RO'
     },
     {
       class: 'String',
