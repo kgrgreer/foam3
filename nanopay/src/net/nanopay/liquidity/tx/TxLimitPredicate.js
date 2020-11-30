@@ -87,7 +87,7 @@ foam.CLASS({
           }
 
           // Check if account IDs match exactly
-          return account.getId().equals(this.getId());
+          return SafetyUtil.equals(account.getId(), this.getId());
         }
 
         if (this.getSend()) {

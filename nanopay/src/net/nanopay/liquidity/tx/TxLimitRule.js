@@ -32,6 +32,7 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.tx.ruler.TransactionLimitState',
     'static foam.mlang.MLang.*',
+    'foam.util.SafetyUtil'
   ],
 
   searchColumns: [
@@ -344,7 +345,7 @@ foam.CLASS({
               throw new IllegalStateException("Business to limit must be set");
         }
         else if (this.getApplyLimitTo() == TxLimitEntityType.ACCOUNT &&
-                 "".equals(this.getAccountToLimit())) {
+                  SafetyUtil.isEmpty(this.getAccountToLimit())) {
               throw new IllegalStateException("Account to limit must be set");
         }
       `
