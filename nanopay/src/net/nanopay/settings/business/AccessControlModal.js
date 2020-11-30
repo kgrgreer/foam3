@@ -35,8 +35,7 @@ foam.CLASS({
 
   css: `
     ^ {
-      width: 650px;
-      height: 745px;
+      width: 600px;
     }
     ^title {
       margin: 24px;
@@ -53,7 +52,7 @@ foam.CLASS({
       margin: 24px;
     }
     ^button-container {
-      width: 650px;
+      width: 600px;
       justify-content: flex-end;
       align-items: center;
       display: flex;
@@ -203,7 +202,7 @@ foam.CLASS({
         .start()
           .start('h2').addClass(this.myClass('title'))
             .add(this.isAddUser ? this.INVITE_TITLE : this.TITLE_1)
-            .add(this.isAddUser ? this.subject.user.toSummary():(this.junction && this.junction.name !== '') ? this.junction.name : this.THE_USER) 
+            .add(this.isAddUser ? this.subject.user.toSummary():(this.junction && this.junction.name !== '') ? this.junction.name : this.THE_USER)
             .add(this.isAddUser ? '' : this.TITLE_2)
           .end()
           .start('p').addClass(this.myClass('subTitle'))

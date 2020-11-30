@@ -45,7 +45,9 @@ foam.CLASS({
   sections: [
     {
       name: 'accountInformation',
-      title: 'Add account'
+      title: function() {
+        return this.SECTION_ACCOUNT_INFORMATION_TITLE;
+      }
     }
   ],
 
@@ -58,7 +60,13 @@ foam.CLASS({
     { name: 'BANK_CODE_INVALID', message: 'Bank code must be 8 letters and/or digits long' },
     { name: 'BANK_CODE_REQUIRED', message: 'Bank code required' },
     { name: 'BRANCH_CODE_INVALID', message: 'Branch code must be 5 digits long' },
-    { name: 'BRANCH_CODE_REQUIRED', message: 'Branch code required' }
+    { name: 'BRANCH_CODE_REQUIRED', message: 'Branch code required' },
+    { name: 'HOLDER1', message: '1st Holder' },
+    { name: 'HOLDER2', message: '2nd Holder' },
+    { name: 'CURRENT', message: 'Current' },
+    { name: 'SAVINGS', message: 'Savings' },
+    { name: 'PLEASE_SELECT', message: 'Please select' },
+    { name: 'SECTION_ACCOUNT_INFORMATION_TITLE', message: 'Add account' }
   ],
 
   constants: [
@@ -154,13 +162,15 @@ foam.CLASS({
       name: 'accountType',
       updateVisibility: 'RO',
       section: 'accountInformation',
-      view: {
-        class: 'foam.u2.view.ChoiceView',
-        placeholder: 'Please select',
-        choices: [
-          ['c', 'Current'],
-          ['p', 'Savings']
-        ]
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.ChoiceView',
+          placeholder: X.data.PLEASE_SELECT,
+          choices: [
+            [true, X.data.CURRENT],
+            [false, X.data.SAVINGS]
+          ]
+        };
       },
       validateObj: function(accountType) {
         if ( accountType === '' || accountType === undefined ) {
@@ -174,13 +184,15 @@ foam.CLASS({
       label: 'Account holder',
       updateVisibility: 'RO',
       section: 'accountInformation',
-      view: {
-        class: 'foam.u2.view.ChoiceView',
-        placeholder: 'Please select',
-        choices: [
-          ['1', '1st Holder'],
-          ['2', '2nd Holder']
-        ]
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.ChoiceView',
+          placeholder: X.data.PLEASE_SELECT,
+          choices: [
+            [true, X.data.HOLDER1],
+            [false, X.data.HOLDER2]
+          ]
+        };
       },
       validateObj: function(accountOwnerType) {
         if ( accountOwnerType === '' || accountOwnerType === undefined ) {
@@ -245,7 +257,7 @@ foam.CLASS({
       name: 'validateBankCode',
       type: 'Void',
       javaThrows: ['IllegalStateException'],
-      javaCode: `     
+      javaCode: `
         String bankCode = this.getBankCode();
 
         if ( SafetyUtil.isEmpty(bankCode) ) {
@@ -261,7 +273,7 @@ foam.CLASS({
       name: 'validateBranchCode',
       type: 'Void',
       javaThrows: ['IllegalStateException'],
-      javaCode: `     
+      javaCode: `
         String branchCode = this.getBranchCode();
 
         if ( SafetyUtil.isEmpty(branchCode) ) {

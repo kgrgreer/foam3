@@ -74,6 +74,11 @@ foam.CLASS({
                `
     },
     { name: 'GENERIC_PUT_FAILED', message: 'Failed to add an account.' },
+    { name: 'SECTION_ONE_TITLE', message: 'Add Contact' },
+    { name: 'SECTION_TWO_TITLE', message: 'Add Bank Account' },
+    { name: 'SECTION_TWO_SUBTITLE', message: 'Payments made to this contact will be deposited to the account you provide.' },
+    { name: 'SECTION_THREE_TITLE', message: 'Add Business Address' },
+    { name: 'SECTION_THREE_SUBTITLE', message: 'Enter the contact’s business address. PO boxes are not accepted.' }
   ],
 
   properties: [
@@ -101,7 +106,7 @@ foam.CLASS({
   methods: [
     async function init() {
       var sectionOne = this.Section.create({
-        title: 'Add Contact',
+        title: this.SECTION_ONE_TITLE,
         properties: [ 
           net.nanopay.contacts.Contact.ORGANIZATION,
           net.nanopay.contacts.Contact.EMAIL,
@@ -113,8 +118,8 @@ foam.CLASS({
         fromClass: 'net.nanopay.contacts.Contact'
       });
       var sectionTwo = this.Section.create({
-        title: 'Add Bank Account',
-        subTitle: 'Payments made to this contact will be deposited to the account you provide below.',
+        title: this.SECTION_TWO_TITLE,
+        subTitle: this.SECTION_TWO_SUBTITLE,
         properties: [
           net.nanopay.contacts.Contact.CREATE_BANK_ACCOUNT,
           net.nanopay.contacts.Contact.NO_CORRIDORS_AVAILABLE,
@@ -123,8 +128,8 @@ foam.CLASS({
         fromClass: 'net.nanopay.contacts.Contact'
       });
       var sectionThree = this.Section.create({
-        title: 'Add Business Address',
-        subTitle: `Enter the contact’s business address. PO boxes are not accepted.`,
+        title: this.SECTION_THREE_TITLE,
+        subTitle: this.SECTION_THREE_SUBTITLE,
         properties: [
           net.nanopay.contacts.Contact.BUSINESS_ADDRESS
         ],
@@ -160,7 +165,7 @@ foam.CLASS({
             return self.E().addClass('section-container')
               .start().addClass(self.myClass('step-indicator'))
                 .add(this.slot(function(currentIndex) {
-                  return `Step ${currentIndex + 1} of 3`;
+                  return `${self.STEP} ${currentIndex + 1} ${self.OF_MGS} 3`;
                 }))
               .end()
               .tag(self.sectionView, {
@@ -185,7 +190,7 @@ foam.CLASS({
       this.isConnecting = true;
       try {
         let canInvite = this.data.createBankAccount.country != 'IN';
-        // TODO this needs to be fixed for real elsewhere - 
+        // TODO this needs to be fixed for real elsewhere -
         // the payloads here are all empty objects except for the first one in the array
         // and causing issues when going through the parser
         var payloads = this.data.createBankAccount.padCapture.capablePayloads;
@@ -193,7 +198,7 @@ foam.CLASS({
           if ( payloads[j].data && ( Object.keys(payloads[j].data.instance_).length === 0 ) ){
             payloads[j].instance_.data = null;
           }
-        } 
+        }
         this.data.createBankAccount.padCapture.capablePayloads = payloads;
         if ( this.data.shouldInvite && canInvite ) {
           // check if it is already joined
@@ -298,8 +303,8 @@ foam.CLASS({
     {
       name: 'next',
       label: 'Next',
-      isEnabled: function(data$errors_, data$createBankAccount$errors_, currentIndex) {
-        if ( currentIndex === 1 ) return ! data$createBankAccount$errors_;
+      isEnabled: function(data$errors_, data$createBankAccount, data$createBankAccount$errors_, currentIndex) {
+        if ( currentIndex === 1 ) return data$createBankAccount && ! data$createBankAccount$errors_;
         return ! data$errors_;
       },
       isAvailable: function(nextIndex) {

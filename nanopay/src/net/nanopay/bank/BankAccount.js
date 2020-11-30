@@ -99,7 +99,8 @@ foam.CLASS({
     { name: 'BRANCH_CODE_INVALID', message: 'Branch code invalid' },
     { name: 'SWIFT_CODE_REQUIRED', message: 'SWIFT/BIC code required' },
     { name: 'SWIFT_CODE_INVALID', message: 'SWIFT/BIC code invalid' },
-    { name: 'SWIFT_CODE_OR_IBAN_REQUIRED', message: 'SWIFT/BIC or IBAN required' }
+    { name: 'SWIFT_CODE_OR_IBAN_REQUIRED', message: 'SWIFT/BIC or IBAN required' },
+    { name: 'AVAILABLE_CURRENCIES_MSG', message: 'Available Currencies' }
   ],
 
   properties: [
@@ -352,7 +353,7 @@ foam.CLASS({
           data$: X.data.denomination$,
           sections: [
             {
-              heading: 'Available Currencies',
+              heading: X.data.AVAILABLE_CURRENCIES_MSG,
               dao$: X.data.availableCurrencies$
             }
           ]
@@ -377,7 +378,7 @@ foam.CLASS({
       section: 'accountInformation',
       validateObj: function(swiftCode, iban) {
         var regex = /^[A-z0-9a-z]{8,11}$/;
- 
+
         if ( swiftCode && swiftCode != '' && ! regex.test(swiftCode) ) {
           return this.SWIFT_CODE_INVALID;
         } else if ( ( !swiftCode || swiftCode === '' ) && ( !iban || iban === "" ) ) {

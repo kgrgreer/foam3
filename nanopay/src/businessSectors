@@ -1129,7 +1129,7 @@ p({"class": "net.nanopay.model.BusinessSector", "id": 93212, "name":  "Wooden Wh
 p({"class": "net.nanopay.model.BusinessSector", "id": 93213, "name":  "Hardware And Tools Wholesalers", "code":  "4672946", "countryId":  "BR", "parent": 6})
 p({"class": "net.nanopay.model.BusinessSector", "id": 93214, "name":  "Electrical Material Wholesaler", "code":  "4673746", "countryId":  "BR", "parent": 6})
 p({"class": "net.nanopay.model.BusinessSector", "id": 93215, "name":  "Cement Wholesaler", "code":  "4674546", "countryId":  "BR", "parent": 6})
-p({"class": "net.nanopay.model.BusinessSector", "id": 93216, "name":  "Specialized Wholesaler Of Pre-Specified Construction Materials And General Construction Materials", "code":  "4679646", "countryId":  " BR",, "parent": 6})
+p({"class": "net.nanopay.model.BusinessSector", "id": 93216, "name":  "Specialized Wholesaler Of Pre-Specified Construction Materials And General Construction Materials", "code":  "4679646", "countryId": "BR", "parent": 6})
 p({"class": "net.nanopay.model.BusinessSector", "id": 93217, "name":  "Solid, Liquid And Gaseous Fuel Wholesalers, Except Natural Gas And Lpg", "code":  "4681846", "countryId":  "BR", "parent": 6 })
 p({"class": "net.nanopay.model.BusinessSector", "id": 93218, "name":  "Liquid Petroleum Gas Wholesale (Lpg)", "code":  "4682646", "countryId":  "BR", "parent": 6})
 p({"class": "net.nanopay.model.BusinessSector", "id": 93219, "name":  "Wholesalers Of Agricultural Defensives, Fertilizers And Correctives", "code":  "4683446", "countryId":  "BR", "parent": 6})

@@ -620,8 +620,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       if ( importContact.getFamilyName() != null ) {
         newContact.setLastName(importContact.getFamilyName());
       }
-      newContact.setBusinessPhoneNumber(businessPhone);
-      newContact.setBusinessPhoneNumberVerified(businessPhoneNumberVerified);
+      newContact.setPhoneNumber(businessPhone);
+      newContact.setPhoneNumberVerified(businessPhoneNumberVerified);
       newContact.setMobileNumber(mobilePhone);
       newContact.setMobileNumberVerified(mobilePhoneVerified);
     }
