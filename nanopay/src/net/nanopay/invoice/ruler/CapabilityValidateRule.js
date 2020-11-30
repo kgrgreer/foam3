@@ -34,6 +34,7 @@ foam.CLASS({
         'foam.nanos.crunch.Capability',
         'foam.nanos.crunch.CapabilityJunctionStatus',
         'foam.nanos.crunch.CapabilityIntercept',
+        'foam.nanos.crunch.lite.Capable',
         'foam.nanos.logger.Logger',
         'foam.util.SafetyUtil',
 
@@ -58,6 +59,7 @@ foam.CLASS({
             name: 'applyAction',
             javaCode: `
                 var invoice = (Invoice) obj;
+                var capable = (Capable) obj;
                 
                 try {
                     // If invoice is valid & capabilities are granted, set status to QUOTING
@@ -95,7 +97,7 @@ foam.CLASS({
                         return;
                     }
 
-                    if ( cre.getCapabilities().length > 0 || cre.getCapables().length > 0 ) {
+                    if ( cre.getCapabilities().length > 0 || cre.getCapables().length > 0 || capable.getCapabilityIds().length > 0 ) {
                         // Client expects to get a SUBMIT invoice back for reput, but if wizard is prematurely closed
                         // then next time the invoice is received it will correctly be in DRAFT status
                         var newInvoice = (Invoice) invoice.fclone();
