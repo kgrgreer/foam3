@@ -236,7 +236,7 @@ foam.CLASS({
         FObject nu = (FObject) newAccount.fclone();
         FObject old = (FObject) oldAccount.fclone();
         for ( String propName : ignore.split("\\\\s*,\\\\s*") ) {
-          PropertyInfo prop = (PropertyInfo) nu.getClassInfo().getAxiomByName("isDefault");
+          PropertyInfo prop = (PropertyInfo) nu.getClassInfo().getAxiomByName(propName);
           if (prop != null) {
             prop.clear(nu);
             prop.clear(old);

@@ -112,7 +112,7 @@ foam.CLASS({
       /* quote.addExternalTransfer(quote.getDestinationAccount().getId(), trevisoTxn.getDestinationAmount());
       quote.addExternalTransfer(quote.getSourceAccount().getId(), - trevisoTxn.getAmount());*/
       ExternalTransfer[] exT = new ExternalTransfer[1];
-      exT[0] = new ExternalTransfer(trevisoTxn.getDestinationAmount(), quote.getDestinationAccount().getId());
+      exT[0] = new ExternalTransfer(quote.getDestinationAccount().getId(), trevisoTxn.getDestinationAmount());
       trevisoTxn.setTransfers( exT );
 
       return txn;
@@ -156,7 +156,7 @@ foam.CLASS({
           transaction.setLineItems(root.getLineItems());
           
           // Add transfer for source amount
-          ExternalTransfer ext = new ExternalTransfer(- root.getAmount(), transaction.getSourceAccount());
+          ExternalTransfer ext = new ExternalTransfer(transaction.getSourceAccount(), -root.getAmount());
           Transfer[] transfers = (Transfer[]) ArrayUtils.add(transaction.getTransfers(), ext);
 
           // Add transfers for fees from summary

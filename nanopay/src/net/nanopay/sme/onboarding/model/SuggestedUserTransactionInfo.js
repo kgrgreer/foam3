@@ -23,8 +23,8 @@ foam.CLASS({
     Suggested user information relating to expected transaction types,
     frequency, amount and currencies. Required for KYC purposes.
 
-    todo: Legacy Property-as of April 2020 needed to be removed and 
-      adjustmented to at least AdcendantFXReportsWebAgent. 
+    todo: Legacy Property-as of April 2020 needed to be removed and
+      adjustmented to at least AdcendantFXReportsWebAgent.
       Can't test for awhile so leaving for future.
   `,
 
@@ -33,7 +33,13 @@ foam.CLASS({
     { name: 'GROSS_ANNUAL_SALES_ERROR', message: 'Gross annual sales required' },
     { name: 'TRANSACTION_PURPOSE_ERROR', message: 'Transaction purpose required' },
     { name: 'ANNUAL_NUMBER_ERROR', message: 'Annual number of transactions required' },
-    { name: 'ANNUAL_VOLUME_ERROR', message: 'Annual volume required' }
+    { name: 'ANNUAL_VOLUME_ERROR', message: 'Annual volume required' },
+    { name: 'PAYABLES_PRODUCTS_SERVICES', message: 'Payables for products and/or services' },
+    { name: 'WORKING_CAPITAL', message: 'Working capital' },
+    { name: 'BILL_PAYMENTS', message: 'Bill payments' },
+    { name: 'INTRACOMPANY_BANK_TRANSFERS', message: 'Intracompany bank transfers' },
+    { name: 'GOVERNMENT_FEE_TAXES', message: 'Government fee and taxes' },
+    { name: 'OTHER', message: 'Other' },
   ],
 
   properties: [
@@ -85,12 +91,12 @@ foam.CLASS({
             class: 'foam.u2.view.ChoiceView',
             placeholder: X.data.PLACE_HOLDER,
             choices: [
-              'Payables for products and/or services',
-              'Working capital',
-              'Bill payments',
-              'Intracompany bank transfers',
-              'Government fee and taxes',
-              'Other'
+              X.data.PAYABLES_PRODUCTS_SERVICES,
+              X.data.WORKING_CAPITAL,
+              X.data.BILL_PAYMENTS,
+              X.data.INTRACOMPANY_BANK_TRANSFERS,
+              X.data.GOVERNMENT_FEE_TAXES,
+              X.data.OTHER,
             ]
           }
         };
