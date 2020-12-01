@@ -3135,3 +3135,11 @@ p({class:"foam.i18n.Locale",locale:"pt","source":"4c46cdb8-06b2-11eb-adc1-0242ac
 
 p({class:"foam.i18n.Locale",locale:"pt","source":"dfbe9220-ba4e-42d1-9bed-f4b4f8efcbb8.name","target":"Capacidade de fatura Treviso"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"dfbe9220-ba4e-42d1-9bed-f4b4f8efcbb8.description","target":"A capacidade específica capaz para faturas em Treviso"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.EDIT.label",target:"Ver detalhes"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.ADD_BANK_ACCOUNT.label",target:"Adicionar conta bancária"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.INVITE.label",target:"Convite"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.REQUEST_MONEY.label",target:"Pedir dinheiro"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.SEND_MONEY.label",target:"Enviar dinheiro"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.DELETE.label",target:"Excluir"})
