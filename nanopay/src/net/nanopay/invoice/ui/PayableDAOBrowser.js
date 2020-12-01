@@ -294,30 +294,7 @@ foam.CLASS({
     },
     {
       name: 'primaryAction',
-      factory: function() {
-        var self = this;
-        return this.Action.create({
-          name: 'sendMoney',
-          label: 'Send payment',
-          code: function(X) {
-            self.checkAndNotifyAbilityToPay().then((result) => {
-              if ( result ) {
-                X.menuDAO.find('sme.quickAction.send').then((menu) => {
-                  var clone = menu.clone();
-                  Object.assign(clone.handler.view, {
-                    invoice: self.Invoice.create({}),
-                    isPayable: true,
-                    isForm: true,
-                    isList: false,
-                    isDetailView: false
-                  });
-                  clone.launch(X, X.controllerView);
-                });
-              }
-            });
-          }
-        });
-      }
+      factory: function() { return this.SEND_MONEY; }
     }
   ],
 
@@ -351,6 +328,27 @@ foam.CLASS({
     }
   ],
   actions: [
+    {
+      name: 'sendMoney',
+      label: 'Send payment',
+      code: function(X) {
+        self.checkAndNotifyAbilityToPay().then((result) => {
+          if ( result ) {
+            X.menuDAO.find('sme.quickAction.send').then((menu) => {
+              var clone = menu.clone();
+              Object.assign(clone.handler.view, {
+                invoice: self.Invoice.create({}),
+                isPayable: true,
+                isForm: true,
+                isList: false,
+                isDetailView: false
+              });
+              clone.launch(X, X.controllerView);
+            });
+          }
+        });
+      }
+    },
     {
       name: 'sync',
       label: 'Sync with Accounting',

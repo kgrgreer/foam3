@@ -86,7 +86,7 @@ foam.CLASS({
       }
     },
     {
-      name: 'bankCode',
+      name: 'institutionNumber',
       visibility: 'HIDDEN'
     },
     {
