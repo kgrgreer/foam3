@@ -44,9 +44,9 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5",
-  "name":"Signing Officer Privileges",
+  "name":"Complete your signing officer information",
   "of":"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData",
-  "description":"Unlock signing officer privileges",
+  "description":"Authorization to sign on behalf of the business",
   "version":"0",
   "visible":true,
   "enabled":true,
@@ -109,7 +109,7 @@ p({
     ]
   },
   "wizardlet": {
-    "class": "foam.nanos.crunch.ui.CapabilityWizardlet"
+    "class": "net.nanopay.crunch.wizardlet.RefreshWizardlet"
   },
   "wizardletConfig": {
     "class": "foam.u2.wizard.StepWizardConfig",
@@ -120,9 +120,9 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5-us",
-  "name":"US Signing Officer Privileges",
+  "name":"Complete your signing officer information",
   "of":"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData",
-  "description":"Unlock signing officer privileges",
+  "description":"Authorization to sign on behalf of the business",
   "version":"0",
   "visible":true,
   "enabled":true,
@@ -185,7 +185,7 @@ p({
     ]
   },
   "wizardlet": {
-    "class": "foam.nanos.crunch.ui.CapabilityWizardlet"
+    "class": "net.nanopay.crunch.wizardlet.RefreshWizardlet"
   },
   "wizardletConfig": {
     "class": "foam.u2.wizard.StepWizardConfig",
@@ -260,7 +260,7 @@ p({
     ]
   },
   "wizardlet": {
-    "class": "foam.nanos.crunch.ui.CapabilityWizardlet",
+    "class": "net.nanopay.crunch.wizardlet.RefreshWizardlet"
   },
   "wizardletConfig": {
     "class": "foam.u2.wizard.StepWizardConfig",
