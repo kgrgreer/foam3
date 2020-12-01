@@ -194,6 +194,7 @@ foam.CLASS({
       this.isConnecting = true;
       try {
         let canInvite = this.data.createBankAccount.country != 'IN';
+
         if ( this.data.shouldInvite && canInvite ) {
           // check if it is already joined
           var isExisting = await this.contactService.checkExistingContact(this.__subContext__, this.data.email, false);
