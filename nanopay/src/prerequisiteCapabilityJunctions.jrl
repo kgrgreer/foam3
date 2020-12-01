@@ -820,10 +820,3 @@ p({
   sourceId: "554af38a-8225-87c8-dfdf-eeb15f71215f-20",
   targetId: "1f6b2047-1eef-471d-82e7-d86bdf511375",
 })
-
-p({
-  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "554af38a-8225-87c8-dfdf-eeb15f71215f-0",
-  targetId: "554af38a-8225-87c8-dfdf-eeb15f71215f-76",
-  precondition: true
-})
