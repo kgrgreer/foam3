@@ -70,15 +70,15 @@ foam.CLASS({
       }
     },
     {
-      name: 'bankCode',
+      name: 'institutionNumber',
       updateVisibility: 'RO',
-      validateObj: function(bankCode) {
-        var bankCodeRegex = /^[A-z0-9a-z]{3}$/;
+      validateObj: function(institutionNumber) {
+        var regex = /^[A-z0-9a-z]{3}$/;
 
-        if ( bankCode === '' ) {
-          return this.BANK_CODE_REQUIRED;
-        } else if ( ! bankCodeRegex.test(bankCode) ) {
-          return this.BANK_CODE_INVALID;
+        if ( institutionNumber === '' ) {
+          return this.INSTITUTION_NUMBER_REQUIRED;
+        } else if ( ! regex.test(institutionNumber) ) {
+          return this.INSTITUTION_NUMBER_INVALID;
         }
       }
     },

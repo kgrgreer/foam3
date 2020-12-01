@@ -93,14 +93,14 @@ foam.CLASS({
     { name: 'ACCOUNT_NUMBER_REQUIRED', message: 'Account number required' },
     { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number invalid' },
     { name: 'NICKNAME_REQUIRED', message: 'Nickname required' },
-    { name: 'BANK_CODE_REQUIRED', message: 'Bank code required' },
-    { name: 'BANK_CODE_INVALID', message: 'Bank code invalid' },
+    { name: 'INSTITUTION_NUMBER_REQUIRED', message: 'Institution number required' },
+    { name: 'INSTITUTION_NUMBER_INVALID', message: 'Institution number invalid' },
     { name: 'SORT_CODE_REQUIRED', message: 'Sort code required' },
     { name: 'SORT_CODE_INVALID', message: 'Sort code invalid' },
     { name: 'CHECK_DIGIT_REQUIRED', message: 'Check digit required' },
     { name: 'CHECK_DIGIT_INVALID', message: 'Check digit invalid' },
-    { name: 'BRANCH_CODE_REQUIRED', message: 'Branch code required' },
-    { name: 'BRANCH_CODE_INVALID', message: 'Branch code invalid' },
+    { name: 'BRANCH_ID_REQUIRED', message: 'Branch id required' },
+    { name: 'BRANCH_ID_INVALID', message: 'Branch id invalid' },
     { name: 'SWIFT_CODE_REQUIRED', message: 'SWIFT/BIC code required' },
     { name: 'SWIFT_CODE_INVALID', message: 'SWIFT/BIC code invalid' },
     { name: 'SWIFT_CODE_OR_IBAN_REQUIRED', message: 'SWIFT/BIC or IBAN required' },
@@ -122,6 +122,7 @@ foam.CLASS({
       documentation: 'The account number of the bank account.',
       updateVisibility: 'RO',
       section: 'accountInformation',
+      storageTransient: true,
       view: {
         class: 'foam.u2.tag.Input',
         placeholder: '1234567',
@@ -222,15 +223,19 @@ foam.CLASS({
         .end();
       }
     },
-    { // REVIEW: remove
+    {
       class: 'String',
       name: 'institutionNumber',
       section: 'accountInformation',
+      documentation: `International bank code that identifies banks worldwide. BIC/SWIFT`,
+     updateVisibility: 'RO',
+     storageTransient: true
     },
-    { // REVIEW: remove
+    {
       class: 'String',
       name: 'branchId',
       section: 'accountInformation',
+      storageTransient: true
     },
     {
       class: 'Long',
@@ -420,13 +425,6 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'bankCode',
-      documentation: `International bank code that identifies banks worldwide. BIC/SWIFT`,
-      updateVisibility: 'RO',
-      section: 'accountInformation'
-    },
-    {
-      class: 'String',
       name: 'verifiedBy',
       section: 'operationsInformation'
     },
@@ -455,7 +453,7 @@ foam.CLASS({
       `,
       code: function() {
         var requiredDigits = 10 - this.accountNumber.length;
-        var numericCode = this.replaceChars(this.bankCode) + "0".repeat(requiredDigits >= 0 ? requiredDigits : 0) + this.accountNumber + this.replaceChars(this.country) + '00';
+        var numericCode = this.replaceChars(this.institutionNumber) + "0".repeat(requiredDigits >= 0 ? requiredDigits : 0) + this.accountNumber + this.replaceChars(this.country) + '00';
         while ( numericCode.length > 10 ) {
           var part = numericCode.substring(0, 10);
           numericCode = (part % 97) + numericCode.substring(10);
@@ -465,7 +463,7 @@ foam.CLASS({
       },
       javaCode: `
         int requiredDigits = 10 - getAccountNumber().length();
-        String numericCode = replaceChars(getBankCode() + "0".repeat(requiredDigits >= 0 ? requiredDigits : 0) + getAccountNumber() + replaceChars(getCountry()) + "00");
+        String numericCode = replaceChars(getInstitutionNumber() + "0".repeat(requiredDigits >= 0 ? requiredDigits : 0) + getAccountNumber() + replaceChars(getCountry()) + "00");
         while ( numericCode.length() > 10 ) {
           long part = Long.parseLong(numericCode.substring(0, 10));
           numericCode = Long.toString(part % 97) + numericCode.substring(10);
@@ -505,7 +503,7 @@ foam.CLASS({
       `
     },
     {
-      name: 'getBankCode',
+      name: 'getInstitutionNumber',
       type: 'String',
       args: [
         {
@@ -513,7 +511,7 @@ foam.CLASS({
         }
       ],
       javaCode: `
-        return getBankCode();
+        return getInstitutionNumber();
       `
     },
     {

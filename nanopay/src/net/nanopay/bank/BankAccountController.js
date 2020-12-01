@@ -218,29 +218,7 @@ foam.CLASS({
     },
     {
       name: 'primaryAction',
-      factory: function() {
-        var self = this;
-        return this.Action.create({
-          name: 'addBank',
-          label: 'Add Account',
-          code: async function(X) {
-            let permission = await this.auth.check(null, 'multi-currency.read');
-            if ( permission ) {
-              X.controllerView.stack.push({
-                class: 'net.nanopay.bank.ui.BankPickCurrencyView'
-              }, self);
-            } else {
-              self.ctrl.add(this.SMEModal.create({
-                onClose : function() { this.__subContext__.data.clearProperty('bankAccount'); }
-              }).addClass('bank-account-popup').tag({
-                class: 'net.nanopay.account.ui.BankAccountWizard',
-                data: this.bankAccount,
-                useSections: ['accountInformation', 'pad']
-              }));
-            }
-          }
-        });
-      }
+      factory: function() { return this.ADD_BANK; }
     },
     {
       class: 'FObjectProperty',
@@ -267,6 +245,29 @@ foam.CLASS({
     function purgeCachedDAOs() {
       this.__subContext__.accountDAO.cmd_(this, foam.dao.CachingDAO.PURGE);
       this.__subContext__.accountDAO.cmd_(this, foam.dao.AbstractDAO.RESET_CMD);
+    }
+  ],
+
+  actions: [
+    {
+      name: 'addBank',
+      label: 'Add account',
+      code: async function(X) {
+        let permission = await this.auth.check(null, 'multi-currency.read');
+        if ( permission ) {
+          X.controllerView.stack.push({
+            class: 'net.nanopay.bank.ui.BankPickCurrencyView'
+          }, self);
+        } else {
+          self.ctrl.add(this.SMEModal.create({
+            onClose : function() { this.__subContext__.data.clearProperty('bankAccount'); }
+          }).addClass('bank-account-popup').tag({
+            class: 'net.nanopay.account.ui.BankAccountWizard',
+            data: this.bankAccount,
+            useSections: ['accountInformation', 'pad']
+          }));
+        }
+      }
     }
   ]
 });
