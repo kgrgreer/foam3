@@ -57,13 +57,6 @@ foam.CLASS({
     { name: 'ENCODING_ERROR_MSG', message: 'Error encoding the email or business name' }
   ],
 
-  properties: [
-    {
-      class: 'foam.dao.DAOProperty',
-      name: 'whitelistedEmailDAO'
-    }
-  ],
-
   axioms: [
     {
       name: 'javaExtras',
@@ -71,7 +64,6 @@ foam.CLASS({
         cls.extras.push(`
           public BusinessInvitationDAO(X x, DAO delegate) {
             super(x, delegate);
-            setWhitelistedEmailDAO((DAO) x.get("whitelistedEmailDAO"));
           }    
         `
         );
@@ -169,12 +161,6 @@ foam.CLASS({
           joinBusiness.generateTokenWithParameters(x, invitee, parameters);
         } else {
           // Inviting a user who's not on our platform to join a business.
-
-          // Add invited user to the email whitelist.
-          EmailWhitelistEntry entry = new EmailWhitelistEntry();
-          entry.setId(invite.getEmail());
-          getWhitelistedEmailDAO().inX(getX()).put(entry);
-
           sendInvitationEmail(x, business, invite);
         }
 

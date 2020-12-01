@@ -317,6 +317,7 @@ foam.CLASS({
           predicate: pred,
           placeholder: X.data.PLACEHOLDER,
           header: X.data.HEADER,
+          classIsFinal: true,
           copyOldData: function(o) { return { isDefault: o.isDefault, forContact: o.forContact }; }
         }, X);
         v.data$.sub(function() { v.data.forContact = true; });
@@ -459,7 +460,7 @@ foam.CLASS({
       },
       code: function(X) {
         // case of save without banking
-        if ((net.nanopay.bank.BankAccount).isInstance(this.createBankAccount) || this.createBankAccount === undefined) {
+        if ( this.createBankAccount === undefined ) {
           this.createBankAccount = net.nanopay.bank.CABankAccount.create({ isDefault: true }, X);
         }
 
@@ -480,7 +481,7 @@ foam.CLASS({
       code: function(X) {
         // case of save without banking
         controllerMode_ = foam.u2.ControllerMode.EDIT;
-        if ( (net.nanopay.bank.BankAccount).isInstance(this.createBankAccount) || this.createBankAccount === undefined ) {
+        if ( this.createBankAccount === undefined ) {
           this.createBankAccount = net.nanopay.bank.CABankAccount.create({ isDefault: true }, X);
           controllerMode_ = foam.u2.ControllerMode.CREATE;
         }
