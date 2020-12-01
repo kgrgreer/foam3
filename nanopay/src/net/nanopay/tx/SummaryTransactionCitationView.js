@@ -33,8 +33,6 @@ foam.CLASS({
   requires: [
     'foam.u2.layout.Cols',
     'foam.u2.layout.Rows',
-    'net.nanopay.tx.ExpirySummaryTransactionLineItem',
-    'net.nanopay.payment.PADTypeLineItem',
     'net.nanopay.tx.SummaryTransactionLineItem',
   ],
 
@@ -95,8 +93,7 @@ foam.CLASS({
               for ( i=0; i < data.lineItems.length; i++ ) {
                 if ( ! data.lineItems[i].requiresUserInput
                   && (data.showAllLineItems || this.SummaryTransactionLineItem.isInstance(data.lineItems[i]))
-                  && ! this.PADTypeLineItem.isInstance(data.lineItems[i])
-                  && ! this.ExpirySummaryTransactionLineItem.isInstance(data.lineItems[i]) ) {
+                  && data.lineItems[i].showLineItem() ) {
                   
                   const curItemLabel = data.lineItems[i].toSummary();
                   data.lineItems[i].toSummary = function(s) {

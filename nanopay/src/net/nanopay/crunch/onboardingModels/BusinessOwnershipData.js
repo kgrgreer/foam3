@@ -705,8 +705,7 @@ foam.CLASS({
   ],
 
   reactions: [
-    ['data', 'propertyChange', 'fromData'],
-    ['', 'propertyChange.data', 'fromData']
+    ['', 'propertyChange.choiceData_', 'fromData']
   ],
 
 
@@ -714,11 +713,7 @@ foam.CLASS({
     {
       name: 'fromData',
       code: function() {
-          if ( ! this.data ) {
-            this.choiceData_ = undefined;
-          } else if ( ! this.choiceData_ ) {
-            this.choiceData_ = this.data.id;
-          }
+          this.updateSections_(this.choiceData_);
       }
     }
   ],
@@ -788,7 +783,7 @@ foam.CLASS({
         hideIfEmpty: true
       });
 
-      this.choiceSections_ = choice < 1000 ? choiceSections : choiceSectionsNonSoFirst;
+      this.choiceSections_ = choice < 1000 && choice != -1 ? choiceSections : choiceSectionsNonSoFirst;
     }
   ]
 });

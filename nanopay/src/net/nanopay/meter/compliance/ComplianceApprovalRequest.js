@@ -28,6 +28,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'causeId',
+      section: 'complianceInformation',
       visibility: function(causeDaoKey) {
         return causeDaoKey !== ''
           ? 'RW'
@@ -37,6 +38,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'causeDaoKey',
+      section: 'complianceInformation',
       visibility: function(causeDaoKey) {
         return causeDaoKey !== ''
           ? 'RW'
@@ -46,6 +48,7 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       name: 'causeObjectHelper',
+      section: 'complianceInformation',
       transient: true,
       visibility: 'HIDDEN',
       expression: function(causeId, causeDaoKey) {
@@ -66,6 +69,7 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       name: 'causeObject',
+      section: 'complianceInformation',
       transient: true,
       visibility: function(causeDaoKey) {
         return causeDaoKey !== ''

@@ -45,7 +45,9 @@ foam.CLASS({
   sections: [
     {
       name: 'accountInformation',
-      title: 'Add account'
+      title: function() {
+        return this.SECTION_ACCOUNT_INFORMATION_TITLE;
+      }
     }
   ],
 
@@ -55,10 +57,16 @@ foam.CLASS({
     { name: 'ACCOUNT_TYPE_REQUIRED', message: 'Account type required' },
     { name: 'ACCOUNT_HOLDER_REQUIRED', message: 'Account holder required' },
     { name: 'BANK_ADDED', message: 'Bank Account successfully added' },
-    { name: 'BANK_CODE_INVALID', message: 'Bank code must be 8 letters and/or digits long' },
-    { name: 'BANK_CODE_REQUIRED', message: 'Bank code required' },
-    { name: 'BRANCH_CODE_INVALID', message: 'Branch code must be 5 digits long' },
-    { name: 'BRANCH_CODE_REQUIRED', message: 'Branch code required' }
+    { name: 'INSTITUTION_NUMBER_INVALID', message: 'Institution number must be 8 letters and/or digits long' },
+    { name: 'INSTITUTION_NUMBER_REQUIRED', message: 'Institution number required' },
+    { name: 'BRANCH_ID_INVALID', message: 'Branch id must be 5 digits long' },
+    { name: 'BRANCH_ID_REQUIRED', message: 'Branch id required' },
+    { name: 'HOLDER1', message: '1st Holder' },
+    { name: 'HOLDER2', message: '2nd Holder' },
+    { name: 'CURRENT', message: 'Current' },
+    { name: 'SAVINGS', message: 'Savings' },
+    { name: 'PLEASE_SELECT', message: 'Please select' },
+    { name: 'SECTION_ACCOUNT_INFORMATION_TITLE', message: 'Add account' }
   ],
 
   constants: [
@@ -68,12 +76,12 @@ foam.CLASS({
       javaValue: 'Pattern.compile("^[0-9]{10}$")'
     },
     {
-      name: 'BANK_CODE_PATTERN',
+      name: 'INSTITUTION_NUMBER_PATTERN',
       type: 'Regex',
       javaValue: 'Pattern.compile("^[A-z0-9a-z]{8}")'
     },
     {
-      name: 'BRANCH_CODE_PATTERN',
+      name: 'BRANCH_ID_PATTERN',
       type: 'Regex',
       javaValue: 'Pattern.compile("^[0-9]{5}$")'
     }
@@ -96,30 +104,30 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
-      name: 'bankCode',
+      name: 'institutionNumber',
       updateVisibility: 'RO',
-      validateObj: function(bankCode) {
+      section: 'accountInformation',
+      validateObj: function(institutionNumber) {
         var regex = /^[A-z0-9a-z]{8}$/;
 
-        if ( bankCode === '' ) {
-          return this.BANK_CODE_REQUIRED;
-        } else if ( ! regex.test(bankCode) ) {
-          return this.BANK_CODE_INVALID;
+        if ( institutionNumber === '' ) {
+          return this.INSTITUTION_NUMBER_REQUIRED;
+        } else if ( ! regex.test(institutionNumber) ) {
+          return this.INSTITUTION_NUMBER_INVALID;
         }
       }
     },
     {
-      class: 'String',
-      name: 'branchCode',
+      name: 'branchId',
       section: 'accountInformation',
       updateVisibility: 'RO',
-      validateObj: function(branchCode) {
+      validateObj: function(branchId) {
         var regex = /^[0-9]{5}$/;
 
-        if ( branchCode === '' ) {
-          return this.BRANCH_CODE_REQUIRED;
-        } else if ( ! regex.test(branchCode) ) {
-          return this.BRANCH_CODE_INVALID;
+        if ( branchId === '' ) {
+          return this.BRANCH_ID_REQUIRED;
+        } else if ( ! regex.test(branchId) ) {
+          return this.BRANCH_ID_INVALID;
         }
       }
     },
@@ -154,13 +162,15 @@ foam.CLASS({
       name: 'accountType',
       updateVisibility: 'RO',
       section: 'accountInformation',
-      view: {
-        class: 'foam.u2.view.ChoiceView',
-        placeholder: 'Please select',
-        choices: [
-          ['c', 'Current'],
-          ['p', 'Savings']
-        ]
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.ChoiceView',
+          placeholder: X.data.PLEASE_SELECT,
+          choices: [
+            ['c', X.data.CURRENT],
+            ['p', X.data.SAVINGS]
+          ]
+        };
       },
       validateObj: function(accountType) {
         if ( accountType === '' || accountType === undefined ) {
@@ -174,13 +184,15 @@ foam.CLASS({
       label: 'Account holder',
       updateVisibility: 'RO',
       section: 'accountInformation',
-      view: {
-        class: 'foam.u2.view.ChoiceView',
-        placeholder: 'Please select',
-        choices: [
-          ['1', '1st Holder'],
-          ['2', '2nd Holder']
-        ]
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.ChoiceView',
+          placeholder: X.data.PLEASE_SELECT,
+          choices: [
+            ['1', X.data.HOLDER1],
+            ['2', X.data.HOLDER2]
+          ]
+        };
       },
       validateObj: function(accountOwnerType) {
         if ( accountOwnerType === '' || accountOwnerType === undefined ) {
@@ -189,20 +201,11 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
       name: 'iban',
       label: 'International Bank Account Number (IBAN)',
       required: true,
       section: 'accountInformation',
       updateVisibility: 'RO'
-    },
-    {
-      name: 'institutionNumber',
-      visibility: 'HIDDEN'
-    },
-    {
-      name: 'branchId',
-      visibility: 'HIDDEN'
     },
     {
       name: 'desc',
@@ -233,8 +236,8 @@ foam.CLASS({
       javaThrows: ['IllegalStateException'],
       javaCode: `
         super.validate(x);
-        validateBankCode();
-        validateBranchCode();
+        validateInstitutionNumber();
+        validateBranchId();
         validateAccountNumber();
         if ( getOwner() == 0 ) {
           setOwner(((foam.nanos.auth.Subject) x.get("subject")).getUser().getId());
@@ -242,33 +245,33 @@ foam.CLASS({
       `
     },
     {
-      name: 'validateBankCode',
+      name: 'validateInstitutionNumber',
       type: 'Void',
       javaThrows: ['IllegalStateException'],
-      javaCode: `     
-        String bankCode = this.getBankCode();
+      javaCode: `
+        String institutionNumber = this.getInstitutionNumber();
 
-        if ( SafetyUtil.isEmpty(bankCode) ) {
-          throw new IllegalStateException(this.BANK_CODE_REQUIRED);
+        if ( SafetyUtil.isEmpty(institutionNumber) ) {
+          throw new IllegalStateException(this.INSTITUTION_NUMBER_REQUIRED);
         }
 
-        if ( ! BANK_CODE_PATTERN.matcher(bankCode).matches() ) {
-          throw new IllegalStateException(this.BANK_CODE_INVALID);
+        if ( ! INSTITUTION_NUMBER_PATTERN.matcher(institutionNumber).matches() ) {
+          throw new IllegalStateException(this.INSTITUTION_NUMBER_INVALID);
         }
       `
     },
     {
-      name: 'validateBranchCode',
+      name: 'validateBranchId',
       type: 'Void',
       javaThrows: ['IllegalStateException'],
-      javaCode: `     
-        String branchCode = this.getBranchCode();
+      javaCode: `
+        String branchId = this.getBranchId();
 
-        if ( SafetyUtil.isEmpty(branchCode) ) {
-          throw new IllegalStateException(this.BRANCH_CODE_REQUIRED);
+        if ( SafetyUtil.isEmpty(branchId) ) {
+          throw new IllegalStateException(this.BRANCH_ID_REQUIRED);
         }
-        if ( ! BRANCH_CODE_PATTERN.matcher(branchCode).matches() ) {
-          throw new IllegalStateException(this.BRANCH_CODE_INVALID);
+        if ( ! BRANCH_ID_PATTERN.matcher(branchId).matches() ) {
+          throw new IllegalStateException(this.BRANCH_ID_INVALID);
         }
       `
     },

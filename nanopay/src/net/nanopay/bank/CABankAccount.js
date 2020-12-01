@@ -62,8 +62,8 @@ foam.CLASS({
   sections: [
     {
       name: 'accountInformation',
-      title: function(forContact) {
-        return forContact ? '' : this.SECTION_DETAILS_TITLE_VOID;
+      title: function() {
+        return this.forContact ? '' : this.SECTION_DETAILS_TITLE_VOID;
       },
     },
     {
@@ -130,10 +130,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'bankCode',
-      visibility: 'HIDDEN'
-    },
-    {
       name: 'voidChequeImage',
       class: 'String',
       label: '',
@@ -143,7 +139,9 @@ foam.CLASS({
       transient: true,
       view: function(_, X) {
         return {
-          class: 'foam.u2.tag.Image'
+          class: 'foam.u2.tag.Image',
+          displayWidth: '540px',
+          displayHeight: 'auto'
         };
       },
     },
@@ -185,7 +183,6 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
       name: 'institutionNumber',
       label: 'Institution',
       documentation: `Provides backward compatibilty for mobile call flow.
@@ -194,7 +191,7 @@ foam.CLASS({
       createVisibility: 'RW',
       section: 'accountInformation',
       storageTransient: true,
-      gridColumns: 3,
+      gridColumns: 2,
       view: {
         class: 'foam.u2.tag.Input',
         placeholder: '123',
@@ -224,7 +221,7 @@ foam.CLASS({
       name: 'accountNumber',
       updateVisibility: 'RO',
       section: 'accountInformation',
-      gridColumns: 5,
+      gridColumns: 6,
       view: {
         class: 'foam.u2.tag.Input',
         placeholder: '1234567',
@@ -293,7 +290,7 @@ foam.CLASS({
       of: 'net.nanopay.model.CAPadCapture',
       name: 'padCapture',
       section: 'pad',
-      storageTransient: true,
+      transient: true,
       label: '',
       updateVisibility: 'HIDDEN',
       factory: function() {

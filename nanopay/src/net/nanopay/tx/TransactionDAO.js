@@ -162,7 +162,7 @@ foam.CLASS({
       javaCode: `
       PM pm = PM.create(x, this.getClass().getSimpleName(), "executeTransaction");
       try {
-        Transfer[] ts = txn.getTransfers();
+        Transfer[] ts = txn.getCurrentStageTransfers();
         return lockAndExecute(x, txn, ts);
       } finally {
         pm.log(x);
@@ -244,6 +244,7 @@ foam.CLASS({
         // sort the transfer array
         java.util.Arrays.sort(newTs);
         // persist condensed transfers
+        //TODO: setTransfers will overwrite multi stage transfers, either need to not set, or smartly replace.
         txn.setTransfers(newTs);
         // lock accounts in transfers
         return lockAndExecute_(x, txn, newTs, 0);

@@ -23,7 +23,7 @@ p({
 /* Run this script symultaniously from at least two machines */
 
 /* Number of times to execute this script */
-runs = 10;
+runs = 1;
 
 /* see deployment/test/sessions.jrl for unattended test session associated with admin user 1348 */
 adminSession = 'DBFDD224-774E-4716-8508-43FA72E003D9'
@@ -72,6 +72,17 @@ async function execute(x) {
       // switch to user.
       support.sudoStore(x);
       x = support.sudo(x, s.id, u, u);
+
+      // general admission 'ablii'
+      try {
+        await support.generalAdmission(x, u);
+        test(true, 'generalAdmission');
+      } catch (e) {
+        test(false, 'generalAdmission: '+(e.message || e));
+        throw e;
+      }
+      
+            
       // try {
       //   let cap = await support.abliiUserOnboardingCapability(x, u);
       //   test(true, 'abliiUserOnboardingCapability');
@@ -86,6 +97,16 @@ async function execute(x) {
       //   test(false, 'updateUserComplianceStatus: '+(e.message || e));
       //   throw e;
       // }
+
+      // Required for business onboarding
+      try {
+        await support.userDetails(x, u);
+        test(true, 'userDetails');
+      } catch (e) {
+        test(false, 'userDetails: '+(e.message || e));
+        throw e;
+      }
+
       var business;
       try {
         business = await support.createBusiness(x, u);
@@ -94,6 +115,7 @@ async function execute(x) {
         test(false, 'createBusiness: '+(e.message || e));
         throw e;
       }
+
       var businessSession;
       try {
         businessSession = await support.createSession(x, u.id, business.id);
@@ -105,14 +127,23 @@ async function execute(x) {
 
       // switch to business
       support.sudoStore(x);
-      support.sudo(x, businessSession.id, u, business);
-/*
-// REVIEW throws NPE server side
-// 2020-11-23T09:26:21.002-0500,qtp-728584102-3436,DEBUG,[Service],capabilityPayloadDAO,admin admin (1348),returning skeleton exception,java.lang.NullPointerException
-//      at foam.nanos.crunch.connection.CapabilityPayloadDAO.put_(CapabilityPayloadDAO.java:223)
-//      at foam.nanos.ruler.RulerDAO.put_(RulerDAO.java:955)
-//      at foam.dao.ProxyDAO.put_(ProxyDAO.java:323)
+      x = support.sudo(x, businessSession.id, u, business);
 
+      try {
+        await support.userDateOfBirth(x, u);
+        test(true, 'userDateOfBirth');
+      } catch (e) {
+        test(false, 'userDateOfBirth: '+(e.message || e));
+        throw e;
+      }
+
+      try {
+        await support.signingOfficerPersonalData(x, u, business);
+        test(true, 'signingOfficerPersonalData');
+      } catch (e) {
+        test(false, 'signingOfficerPersonalData: '+(e.message || e));
+        throw e;
+      }
       try {
         let cap = await support.abliiBusinessOnboardingCapability(x, u, business);
         test(true, 'abliiBusinessOnboardingCapability');
@@ -120,16 +151,99 @@ async function execute(x) {
         test(false, 'abliiBusinessOnboardingCapability: '+(e.message || e));
         throw e;
       }
-*/
       try {
-        business = await support.updateBusinessComplianceStatus(x, business);
+        await support.businessInitialData(x, business);
+        test(true, 'businessInitialData');
+      } catch (e) {
+        test(false, 'businessInitialData: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.businessRegistrationDate(x, business);
+        test(true, 'businessRegistrationDate');
+      } catch (e) {
+        test(false, 'businessRegistrationDate: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.businessIncorporationDate(x, business);
+        test(true, 'businessIncorporationDate');
+      } catch (e) {
+        test(false, 'businessIncorporationDate: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.businessTaxIdNumber(x, business);
+        test(true, 'businessTaxIdNumber');
+      } catch (e) {
+        test(false, 'businessTaxIdNumber: '+(e.message || e));
+        throw e;
+      }
+//      try {
+//        await support.businessAnnualFinancialStatement(x, business);
+//        test(true, 'businessAnnualFinancialStatement');
+//      } catch (e) {
+//        test(false, 'businessAnnualFinancialStatement: '+(e.message || e));
+//        throw e;
+//      }
+//      try {
+//        await support.businessArticleOfIncoporation(x, business);
+//        test(true, 'businessArticleOfIncoporation');
+//      } catch (e) {
+//        test(false, 'businessArticleOfIncoporation: '+(e.message || e));
+//        throw e;
+//      }
+      try {
+        await support.updateBusinessComplianceStatus(x, business);
         test(true, 'updateBusinessComplianceStatus');
       } catch (e) {
         test(false, 'updateBusinessComplianceStatus: '+(e.message || e));
         throw e;
       }
       try {
-        let bank = await support.createBankAccount(x, business);
+        await support.transactionDetailsData(x, business);
+        test(true, 'transactionDetailsData');
+      } catch (e) {
+        test(false, 'transactionDetailsData: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.businessDirectorsData(x, business);
+        test(true, 'businessDirectorsData');
+      } catch (e) {
+        test(false, 'businessDirectorsData: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.certifyDirectorsListed(x, business);
+        test(true, 'certifyDirectorsListed');
+      } catch (e) {
+        test(false, 'certifyDirectorsListed: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.ownersPercent(x, business);
+        test(true, 'ownersPercent');
+      } catch (e) {
+        test(false, 'ownersPercent: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.certifyOwnersPercent(x, business);
+        test(true, 'certifyOwnersPercent');
+      } catch (e) {
+        test(false, 'certifyOwnersPercent: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.internationalPaymentsAgreement(x, business);
+        test(true, 'internationalPaymentsAgreement');
+      } catch (e) {
+        test(false, 'internationalPaymentsAgreement: '+(e.message || e));
+        throw e;
+      }
+      try {
+        let bank = await support.createUSBankAccount(x, business);
         test(true, 'createBusinessBankAccount');
       } catch (e) {
         test(false, 'createBusinessBankAccount: '+(e.message || e));
@@ -144,7 +258,7 @@ async function execute(x) {
         throw e;
       }
       try {
-        let contactbank = await support.createBankAccount(x, contact);
+        let contactbank = await support.createUSBankAccount(x, contact);
         test(true, 'createBusinessContactBankAccount');
       } catch (e) {
         test(false, 'createBusinessContactBankAccount: '+(e.message || e));

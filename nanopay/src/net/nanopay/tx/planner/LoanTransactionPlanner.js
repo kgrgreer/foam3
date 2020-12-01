@@ -66,8 +66,8 @@ foam.CLASS({
         Transaction txn = (Transaction) requestTxn.fclone();
         if ( txn instanceof InterestTransaction ){
           txn.setStatus(TransactionStatus.COMPLETED);
-          quote.addTransfer(txn.getSourceAccount(), -txn.getAmount());
-          quote.addTransfer(txn.getDestinationAccount(), txn.getAmount());
+          quote.addTransfer(true, txn.getSourceAccount(), -txn.getAmount(), 0);
+          quote.addTransfer(true, txn.getDestinationAccount(), txn.getAmount(), 0);
           return txn;
         }
 
@@ -91,8 +91,8 @@ foam.CLASS({
             ((Logger) x.get("logger")).error("Total Loan Account not found");
             throw new RuntimeException("Total Loan Account not found");
           }
-          quote.addTransfer(theLoanAccount.getId(), -txn.getAmount());
-          quote.addTransfer(globalLoanAccount.getId(), txn.getAmount());
+          quote.addTransfer(true, theLoanAccount.getId(), -txn.getAmount(), 0);
+          quote.addTransfer(true, globalLoanAccount.getId(), txn.getAmount(), 0);
           withdrawLineItem = new TransactionLineItem.Builder(x)
             .setSourceAccount( theLoanAccount.getId() )
             .setDestinationAccount( globalLoanAccount.getId() )
@@ -116,8 +116,8 @@ foam.CLASS({
             ((Logger) x.get("logger")).error("Total Loan Account not found");
             throw new RuntimeException("Total Loan Account not found");
           }
-          quote.addTransfer(globalLoanAccount.getId(), -txn.getAmount());
-          quote.addTransfer(theLoanAccount.getId(), txn.getAmount());
+          quote.addTransfer(true, globalLoanAccount.getId(), -txn.getAmount(), 0);
+          quote.addTransfer(true, theLoanAccount.getId(), txn.getAmount(), 0);
           depositLineItem = new TransactionLineItem.Builder(x)
             .setSourceAccount( globalLoanAccount.getId() )
             .setDestinationAccount( theLoanAccount.getId() )
