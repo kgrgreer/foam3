@@ -40,6 +40,7 @@ foam.CLASS({
     'java.io.InputStream',
     'net.nanopay.fx.afex.AFEXServiceProvider',
     'net.nanopay.fx.afex.AFEXTransaction',
+    'net.nanopay.fx.FXQuote',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.tx.ConfirmationFileLineItem',
     'net.nanopay.tx.model.Transaction',
@@ -64,11 +65,26 @@ foam.CLASS({
           AFEXTransaction transaction = (AFEXTransaction) obj.fclone();
           
           AFEXServiceProvider afexService = (AFEXServiceProvider) x.get("afexServiceProvider");
-          if ( transaction.getAfexTradeResponseNumber() == 0 ) {
+          if ( transaction.getAfexTradeResponseNumber() == 0 ) {  
             try {
-              int result = afexService.createTrade(transaction);
-              transaction.setAfexTradeResponseNumber(result);
-              transaction = (AFEXTransaction) transactionDAO.put(transaction).fclone();
+              try {
+                int result = afexService.createTrade(transaction);
+                transaction.setAfexTradeResponseNumber(result);
+                transaction = (AFEXTransaction) transactionDAO.put(transaction).fclone();
+              } catch (Exception e) {
+                if ( e.getMessage().contains("Quote has expired") && transaction.getSourceCurrency().equals(transaction.getDestinationCurrency())  ) {
+                  // Quote most likely expired, get a new quote and try again
+                  // same currency so there is no fx to worry about
+                  long owner = transaction.findRootTransaction(x, transaction).findSourceAccount(x).getOwner();
+                  FXQuote quote = afexService.getFXRate(transaction.getSourceCurrency(), transaction.getDestinationCurrency(), transaction.getAmount(), transaction.getDestinationAmount(), null, null, owner, null);
+                  transaction.setFxQuoteId(String.valueOf(quote.getId()));
+                  int result = afexService.createTrade(transaction);
+                  transaction.setAfexTradeResponseNumber(result);
+                  transaction = (AFEXTransaction) transactionDAO.put(transaction).fclone();
+                } else {
+                  throw e;
+                }
+              }
 
               if ( transaction.getAfexTradeResponseNumber() != 0 ) {
                 try {
