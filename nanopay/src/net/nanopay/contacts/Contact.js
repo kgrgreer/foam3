@@ -306,17 +306,9 @@ foam.CLASS({
       visibility: function() {
         return this.countries.length == 0 ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
-      view: function(aaa, X) {
-        debugger;
-        // if ( X.data.createBankAccount ) return foam.u2.view.FObjectView.create({
-        //   of: net.nanopay.bank.BankAccount,
-        //   objectClass: X.data.createBankAccount.cls_,
-        //   dataWasProvided_: true,
-        //   data: X.data.createBankAccount,
-        //   header: X.data.HEADER
-        // })
+      view: function(_, X) {
         let e = foam.mlang.Expressions.create();
-        var pred = X.data.createBankAccount  ? null : e.AND(
+        var pred = e.AND(
             e.EQ(foam.strategy.StrategyReference.DESIRED_MODEL_ID, 'net.nanopay.bank.BankAccount'),
             e.IN(foam.strategy.StrategyReference.STRATEGY, X.data.countries)
         );
@@ -324,7 +316,7 @@ foam.CLASS({
           of: net.nanopay.bank.BankAccount,
           predicate: pred,
           placeholder: X.data.PLACEHOLDER,
-          classIsFinal: pred === null,
+          classIsFinal: true,
           header: X.data.HEADER,
           classIsFinal: true,
           copyOldData: function(o) { return { isDefault: o.isDefault, forContact: o.forContact }; }
