@@ -50,6 +50,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'net.nanopay.model.PersonalIdentification',
     'net.nanopay.onboarding.model.Questionnaire'
   ],
@@ -440,6 +441,39 @@ foam.CLASS({
             browseTitle: `${this.RECEIVABLES_MSG} ${this.toSummary()}`
           }
         });
+      }
+    },
+    {
+      name: 'resetLoginAttempts',
+      section: 'userInformation',
+      code: async function(X) {
+        var loginAttempts = await X.loginAttemptsDAO.find(this.id);
+        if ( loginAttempts == undefined || loginAttempts.loginAttempts == 0 ) {
+          X.notify('Login attempts already reset', '', this.LogLevel.WARN, true);
+        } else {
+          loginAttempts.loginAttempts = 0;
+          X.loginAttemptsDAO.put(loginAttempts)
+            .then(result => {
+              X.notify('Login attempts successfully reset', '', this.LogLevel.INFO, true);
+            });
+        }
+      }
+    },
+    {
+      name: 'disableTwoFactor',
+      label: 'Disable TFA',
+      section: 'userInformation',
+      code: async function(X) {
+        var user = await X.userDAO.find(this.id);
+        if ( ! user.twoFactorEnabled ) {
+          X.notify('Two factor authentication already disabled', '', this.LogLevel.WARN, true);
+        } else {
+          user.twoFactorEnabled = false;
+          X.userDAO.put(user)
+            .then(() => {
+              X.notify('Two factor authentication successfully disabled', '', this.LogLevel.INFO, true);
+            });
+        }
       }
     }
   ],

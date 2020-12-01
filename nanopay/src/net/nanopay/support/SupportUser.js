@@ -145,7 +145,7 @@ foam.CLASS({
       code: async function(X) {
         var loginAttempts = await X.loginAttemptsDAO.find(this.id);
         if ( loginAttempts == undefined || loginAttempts.loginAttempts == 0 ) {
-          X.notify('Login attempts already at 0', '', this.LogLevel.WARN, true);
+          X.notify('Login attempts already reset', '', this.LogLevel.WARN, true);
         } else {
           loginAttempts.loginAttempts = 0;
           X.loginAttemptsDAO.put(loginAttempts)
