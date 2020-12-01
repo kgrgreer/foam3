@@ -82,13 +82,6 @@ async function execute(x) {
         throw e;
       }
       
-      try {
-        await support.userDateOfBirth(x, u);
-        test(true, 'userDateOfBirth');
-      } catch (e) {
-        test(false, 'userDateOfBirth: '+(e.message || e));
-        throw e;
-      }
             
       // try {
       //   let cap = await support.abliiUserOnboardingCapability(x, u);
@@ -137,6 +130,14 @@ async function execute(x) {
       x = support.sudo(x, businessSession.id, u, business);
 
       try {
+        await support.userDateOfBirth(x, u);
+        test(true, 'userDateOfBirth');
+      } catch (e) {
+        test(false, 'userDateOfBirth: '+(e.message || e));
+        throw e;
+      }
+
+      try {
         await support.signingOfficerPersonalData(x, u, business);
         test(true, 'signingOfficerPersonalData');
       } catch (e) {
@@ -178,20 +179,20 @@ async function execute(x) {
         test(false, 'businessTaxIdNumber: '+(e.message || e));
         throw e;
       }
-      try {
-        await support.businessAnnualFinancialStatement(x, business);
-        test(true, 'businessAnnualFinancialStatement');
-      } catch (e) {
-        test(false, 'businessAnnualFinancialStatement: '+(e.message || e));
-        throw e;
-      }
-      try {
-        await support.businessArticleOfIncoporation(x, business);
-        test(true, 'businessArticleOfIncoporation');
-      } catch (e) {
-        test(false, 'businessArticleOfIncoporation: '+(e.message || e));
-        throw e;
-      }
+//      try {
+//        await support.businessAnnualFinancialStatement(x, business);
+//        test(true, 'businessAnnualFinancialStatement');
+//      } catch (e) {
+//        test(false, 'businessAnnualFinancialStatement: '+(e.message || e));
+//        throw e;
+//      }
+//      try {
+//        await support.businessArticleOfIncoporation(x, business);
+//        test(true, 'businessArticleOfIncoporation');
+//      } catch (e) {
+//        test(false, 'businessArticleOfIncoporation: '+(e.message || e));
+//        throw e;
+//      }
       try {
         await support.updateBusinessComplianceStatus(x, business);
         test(true, 'updateBusinessComplianceStatus');
@@ -232,6 +233,13 @@ async function execute(x) {
         test(true, 'certifyOwnersPercent');
       } catch (e) {
         test(false, 'certifyOwnersPercent: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.internationalPaymentsAgreement(x, business);
+        test(true, 'internationalPaymentsAgreement');
+      } catch (e) {
+        test(false, 'internationalPaymentsAgreement: '+(e.message || e));
         throw e;
       }
       try {

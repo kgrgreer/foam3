@@ -1017,21 +1017,38 @@ foam.CLASS({
         return ucj;
       }
     },
-    // {
-    //   name: 'certifyReviewed',
-    //   code: async function(x, business) {
-    //     var id;
-    //     var ucj;
-    //     id = '554af38a-8225-87c8-dfdf-eeb15f71215f-49';
-    //     ucj = await this.crunchService.getJunction(x, id);
-    //     if ( ! ucj ||
-    //          ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-    //      var cap = net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyOwnersPercent.create({
-    //         agreement: true
-    //       });
-    //       ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
-    //     }
-    //   }
-    // }
+    {
+      name: 'certifyReviewed',
+      code: async function(x, user) {
+        var id;
+        var ucj;
+        id = '554af38a-8225-87c8-dfdf-eeb15f71215f-14';
+        ucj = await this.crunchService.getJunction(x, id);
+        if ( ! ucj ||
+             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          var cap = net.nanopay.crunch.onboardingModels.CertifyDataReviewed.create({
+            reviewed: true,
+            signingOfficer: user.id
+          });
+          ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
+        }
+      }
+    },
+    {
+      name: 'internationalPaymentsAgreement',
+      code: async function(x) {
+        var id;
+        var ucj;
+        id = '554af38a-8225-87c8-dfdf-eeb15f71215e-10';
+        ucj = await this.crunchService.getJunction(x, id);
+        if ( ! ucj ||
+             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          var cap = net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.create({
+            agreement: true
+          });
+          ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
+        }
+      }
+    }
   ]
 });
