@@ -59,11 +59,11 @@ foam.CLASS({
       name: 'denomination',
       value: 'INR'
     },
-    { // REVIEW: remove
+    {
       name: 'institutionNumber',
       hidden: true
     },
-    { // REVIEW: remove
+    {
       name: 'branchId',
       hidden: true
     },
@@ -158,10 +158,6 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.tx.PurposeCode',
       label: 'Purpose of Transfer',
-      visibility: 'HIDDEN'
-    },
-    {
-      name: 'bankCode',
       visibility: 'HIDDEN'
     },
     {
