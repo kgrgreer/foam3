@@ -78,7 +78,9 @@ foam.CLASS({
     { name: 'SECTION_TWO_TITLE', message: 'Add Bank Account' },
     { name: 'SECTION_TWO_SUBTITLE', message: 'Payments made to this contact will be deposited to the account you provide.' },
     { name: 'SECTION_THREE_TITLE', message: 'Add Business Address' },
-    { name: 'SECTION_THREE_SUBTITLE', message: 'Enter the contact’s business address. PO boxes are not accepted.' }
+    { name: 'SECTION_THREE_SUBTITLE', message: 'Enter the contact’s business address. PO boxes are not accepted.' },
+    { name: 'STEP', message: 'Step' },
+    { name: 'OF_MGS', message: 'of' }
   ],
 
   properties: [
