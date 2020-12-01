@@ -60,6 +60,8 @@ foam.CLASS({
     { name: 'EDIT_STEP_ONE_TITLE', message: 'Edit contact' },
     { name: 'EDIT_STEP_TWO_TITLE', message: 'Edit banking information' },
     { name: 'EDIT_STEP_THREE_TITLE', message: 'Edit business address' },
+    { name: 'STEP', message: 'Step' },
+    { name: 'OF_MSG', message: 'of' },
     { name: 'CONTACT_ADDED', message: 'Contact added successfully' },
     { name: 'CONTACT_EDITED', message: 'Contact edited' },
     { name: 'INVITE_SUCCESS', message: 'Sent a request to connect' },
@@ -78,7 +80,8 @@ foam.CLASS({
     { name: 'SECTION_TWO_TITLE', message: 'Add Bank Account' },
     { name: 'SECTION_TWO_SUBTITLE', message: 'Payments made to this contact will be deposited to the account you provide.' },
     { name: 'SECTION_THREE_TITLE', message: 'Add Business Address' },
-    { name: 'SECTION_THREE_SUBTITLE', message: 'Enter the contact’s business address. PO boxes are not accepted.' }
+    { name: 'SECTION_THREE_SUBTITLE', message: 'Enter the contact’s business address. PO boxes are not accepted.' },
+    { name: 'OF_MGS', message: 'of' }
   ],
 
   properties: [
@@ -165,7 +168,7 @@ foam.CLASS({
             return self.E().addClass('section-container')
               .start().addClass(self.myClass('step-indicator'))
                 .add(this.slot(function(currentIndex) {
-                  return `${self.STEP} ${currentIndex + 1} ${self.OF_MGS} 3`;
+                  return `${self.STEP} ${currentIndex + 1} ${self.OF_MSG} 3`;
                 }))
               .end()
               .tag(self.sectionView, {
@@ -190,16 +193,7 @@ foam.CLASS({
       this.isConnecting = true;
       try {
         let canInvite = this.data.createBankAccount.country != 'IN';
-        // TODO this needs to be fixed for real elsewhere -
-        // the payloads here are all empty objects except for the first one in the array
-        // and causing issues when going through the parser
-        var payloads = this.data.createBankAccount.padCapture.capablePayloads;
-        for ( let j = 0; j < payloads.length; j++ ) {
-          if ( payloads[j].data && ( Object.keys(payloads[j].data.instance_).length === 0 ) ){
-            payloads[j].instance_.data = null;
-          }
-        }
-        this.data.createBankAccount.padCapture.capablePayloads = payloads;
+
         if ( this.data.shouldInvite && canInvite ) {
           // check if it is already joined
           var isExisting = await this.contactService.checkExistingContact(this.__subContext__, this.data.email, false);

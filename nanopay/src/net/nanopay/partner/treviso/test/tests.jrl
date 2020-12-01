@@ -67,14 +67,6 @@ async function execute(x) {
         throw e;
       }
 
-      try {
-        await support.userDateOfBirth(x, u);
-        test(true, 'userDateOfBirth');
-      } catch (e) {
-        test(false, 'userDateOfBirth: '+(e.message || e));
-        throw e;
-      }
-
       // Required for business onboarding
       try {
         await support.userDetails(x, u);
@@ -92,10 +84,10 @@ async function execute(x) {
         throw e;
       }
       try {
-        await support.trevisoUserCNF(x, u);
-        test(true, 'trevisoUserCNF');
+        await support.trevisoUserCPF(x, u);
+        test(true, 'trevisoUserCPF');
       } catch (e) {
-        test(false, 'trevisoUserCNF: '+(e.message || e));
+        test(false, 'trevisoUserCPF: '+(e.message || e));
         throw e;
       }
       try {
@@ -129,13 +121,6 @@ async function execute(x) {
       x = support.sudo(x, businessSession.id, u, business);
 
       try {
-        await support.signingOfficerPersonalData(x, u, business);
-        test(true, 'signingOfficerPersonalData');
-      } catch (e) {
-        test(false, 'signingOfficerPersonalData: '+(e.message || e));
-        throw e;
-      }
-      try {
         let cap = await support.abliiBusinessOnboardingCapability(x, u, business);
         test(true, 'abliiBusinessOnboardingCapability');
       } catch (e) {
@@ -149,6 +134,50 @@ async function execute(x) {
         test(false, 'updateBusinessComplianceStatus: '+(e.message || e));
         throw e;
       }
+      try {
+        let bank = await support.createBRBankAccount(x, business);
+        test(true, 'createBusinessBankAccount');
+      } catch (e) {
+        test(false, 'createBusinessBankAccount: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.userDateOfBirth(x, u);
+        test(true, 'userDateOfBirth');
+      } catch (e) {
+        test(false, 'userDateOfBirth: '+(e.message || e));
+        throw e;
+      }
+
+      try {
+        await support.signingOfficerPersonalData(x, u, business);
+        test(true, 'signingOfficerPersonalData');
+      } catch (e) {
+        test(false, 'signingOfficerPersonalData: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.internationalPaymentsAgreement(x);
+        test(true, 'internationalPaymentsAgreement');
+      } catch (e) {
+        test(false, 'internationalPaymentsAgreement: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.sourceCountryCapabilityBR(x);
+        test(true, 'sourceCountryCapabilityBR');
+      } catch (e) {
+        test(false, 'sourceCountryCapabilityBR: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.targetCountryCapabilityBR(x);
+        test(true, 'targetCountryCapabilityBR');
+      } catch (e) {
+        test(false, 'targetCountryCapabilityBR: '+(e.message || e));
+        throw e;
+      }
+
       try {
         await support.businessInitialData(x, business);
         test(true, 'businessInitialData');
@@ -268,21 +297,22 @@ async function execute(x) {
         test(false, 'certifyOwnersPercent: '+(e.message || e));
         throw e;
       }
+
       try {
-        await support.trevisoDataReviewed(x, u);
-        test(true, 'trevisoDataReviewed');
+        await support.certifyReviewed(x, u);
+        test(true, 'certifyReviewed');
       } catch (e) {
-        test(false, 'trevisoDataReviewed: '+(e.message || e));
+        test(false, 'certifyReviewed: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.brazilOnboardingReviewed(x, u);
+        test(true, 'brazilOnboardingReviewed');
+      } catch (e) {
+        test(false, 'brazilOnboardingReviewed: '+(e.message || e));
         throw e;
       }
 
-      try {
-        let bank = await support.createBRBankAccount(x, business);
-        test(true, 'createBusinessBankAccount');
-      } catch (e) {
-        test(false, 'createBusinessBankAccount: '+(e.message || e));
-        throw e;
-      }
       var contact;
       try {
         contact = await support.createContact(x, business);
