@@ -150,26 +150,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'trevisoUserIdentification',
-      code: async function(x, user) {
-        var id;
-        var ucj;
-
-        // Identification
-        id = '8ad3c898-db32-11ea-87d0-0242ac130003';
-        ucj = await this.crunchService.getJunction(x, id);
-        if ( ! ucj ||
-             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-          var now = new Date();
-          var cap = net.nanopay.crunch.document.ExpirableDocument.create({
-            reviewed: true,
-            expiry: new Date(now.getFullYear() + 5)
-          });
-          ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
-        }
-      }
-    },
-    {
       name: 'trevisoUserUtilityBill',
       code: async function(x, user) {
         var id;
@@ -190,12 +170,32 @@ foam.CLASS({
       }
     },
     {
-      name: 'trevisoUserCNF',
+      name: 'trevisoUserIdentification',
       code: async function(x, user) {
         var id;
         var ucj;
 
-        // CNF
+        // Identification
+        id = '8ad3c898-db32-11ea-87d0-0242ac130003';
+        ucj = await this.crunchService.getJunction(x, id);
+        if ( ! ucj ||
+             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          var now = new Date();
+          var cap = net.nanopay.crunch.document.ExpirableDocument.create({
+            reviewed: true,
+            expiry: new Date(now.getFullYear() + 5)
+          });
+          ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
+        }
+      }
+    },
+    {
+      name: 'trevisoUserCPF',
+      code: async function(x, user) {
+        var id;
+        var ucj;
+
+        // CPF
         id = 'fb7d3ca2-62f2-4caf-a84c-860392e4676b';
         ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
@@ -203,6 +203,34 @@ foam.CLASS({
           var cap = net.nanopay.country.br.CPF.create({
             data: '10786348070',
             verifyName: true
+          });
+          ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
+        }
+      }
+    },
+    {
+      // REVIEW: having a lot of trouble with this one, getting the cap type correct.
+      name: 'signingOfficerPersonalData',
+      code: async function(x, user, business) {
+        var id = '777af38a-8225-87c8-dfdf-eeb15f71215f-123';
+        //var id = '554af38a-8225-87c8-dfdf-eeb15f71215f-1a5';
+        var ucj = await this.crunchService.getJunction(x, id);
+        if ( ! ucj ||
+             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          var cap =  net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.create({
+            address: {
+              class: 'foam.nanos.auth.Address',
+              structured: true,
+              countryId: 'BR',
+              regionId: 'BR-AC',
+              streetNumber: '1',
+              streetName: 'name',
+              city: 'city',
+              postalCode: '12345321',
+            },
+            jobTitle: 'Treasury Manager',
+            phoneNumber: user.phoneNumber,
+            businessId: business.id
           });
           ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
         }
@@ -306,6 +334,28 @@ foam.CLASS({
       }
     },
     {
+      name: 'sourceCountryCapabilityBR',
+      code: async function(x) {
+        var id = '520a4120-3bc6-cef9-6635-c32af8219a6a';
+        var ucj = await this.crunchService.getJunction(x, id);
+        if ( ! ucj ||
+             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          ucj = await this.crunchService.updateJunction(x, id, null, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
+        }
+      }
+    },
+    {
+      name: 'targetCountryCapabilityBR',
+      code: async function(x) {
+        var id = '63049307-8db4-2437-5c02-b71d6878263c';
+        var ucj = await this.crunchService.getJunction(x, id);
+        if ( ! ucj ||
+             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          ucj = await this.crunchService.updateJunction(x, id, null, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
+        }
+      }
+    },
+    {
       name: 'createBRBankAccount',
       type: 'net.nanopay.bank.BankAccount',
       code: async function(x, user) {
@@ -346,24 +396,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'trevisoDataReviewed',
-      code: async function(x, user) {
-        var id;
-        var ucj;
-
-        id = '554af38a-8225-87c8-dfdf-eeb15f71215f-14';
-        ucj = await this.crunchService.getJunction(x, id);
-        if ( ! ucj ||
-             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-          var cap = net.nanopay.crunch.onboardingModels.CertifyDataReviewed.create({
-            reviewed: true,
-            signingOfficer: user.id
-          });
-          ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
-        }
-      }
-    },
-    {
       name: 'brazilOnboardingReviewed',
       code: async function(x, user) {
         var id;
@@ -374,34 +406,6 @@ foam.CLASS({
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
           ucj = await this.crunchService.updateJunction(x, id, null, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
-        }
-      }
-    },
-    {
-      // REVIEW: having a lot of trouble with this one, getting the cap type correct.
-      name: 'signingOfficerPersonalData',
-      code: async function(x, user, business) {
-        var id = '777af38a-8225-87c8-dfdf-eeb15f71215f-123';
-        //var id = '554af38a-8225-87c8-dfdf-eeb15f71215f-1a5';
-        var ucj = await this.crunchService.getJunction(x, id);
-        if ( ! ucj ||
-             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-          var cap =  net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.create({
-            address: {
-              class: 'foam.nanos.auth.Address',
-              structured: true,
-              countryId: 'BR',
-              regionId: 'BR-AC',
-              streetNumber: '1',
-              streetName: 'name',
-              city: 'city',
-              postalCode: '12345321',
-            },
-            jobTitle: 'Treasury Manager',
-            phoneNumber: user.phoneNumber,
-            businessId: business.id
-          });
-          ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
         }
       }
     },
