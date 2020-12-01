@@ -1069,6 +1069,7 @@ FOAM_FILES([
   { name: 'net/nanopay/contacts/ContactStatus' },
   { name: 'net/nanopay/contacts/ContactMigrationRule' },
   { name: 'net/nanopay/contacts/ExternalContactToken' },
+  { name: 'net/nanopay/contacts/ui/ContactTableView', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/DeleteContactView', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/modal/EditContactView', flags: ['web'] },
   { name: 'net/nanopay/contacts/ui/InvitationWizardView', flags: ['web'] },
@@ -1767,6 +1768,7 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/invoice/TrevisoCapabilityValidateRule' },
   { name: 'net/nanopay/partner/treviso/invoice/UpdateTransactionOnInvoiceValidationRule' },
   { name: 'net/nanopay/partner/treviso/invoice/TrevisoNotificationRule' },
+  { name: 'net/nanopay/partner/treviso/test/TrevisoOnboardingSupport' },
 
   // support
   { name: 'net/nanopay/support/SupportAccount' },

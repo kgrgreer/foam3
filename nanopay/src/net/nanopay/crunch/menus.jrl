@@ -15,20 +15,7 @@ p({
     "exportEnabled":false,
     "createEnabled":true,
     "editEnabled":false,
-    "summaryView":{
-      "class":"foam.u2.view.ScrollTableView",
-      "editColumnsEnabled":false,
-      "disableUserSelection":true,
-      "columns":[
-        "organization",
-        "firstName",
-        "lastName",
-        "email",
-        "businessAddress.countryId",
-        "bankAccount.denomination",
-        "signUpStatus"
-      ]
-    },
+    "summaryView":{ "class":"net.nanopay.contacts.ui.ContactTableView" },
     "createLabel":"Add a Contact",
     "createControllerView":{
       "class":"net.nanopay.sme.ui.MenuRedirectSMEModalView",

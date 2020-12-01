@@ -100,19 +100,6 @@ p({
   },
   "parent":"operation"
 })
-p({
-  "class":"foam.nanos.menu.Menu",
-  "id":"operation.whitelistedemail",
-  "label":"Email Whitelist",
-  "handler": {
-    "class":"foam.nanos.menu.DAOMenu2",
-    "config":{
-      "class":"foam.comics.v2.DAOControllerConfig",
-      "daoKey":"whitelistedEmailDAO"
-    }
-  },
-  "parent":"operation"
-})
 
 // reports
 p({
