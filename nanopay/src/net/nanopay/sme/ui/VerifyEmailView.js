@@ -98,6 +98,7 @@ foam.CLASS({
       left: 10vw;
     }
     ^ .sme-image {
+      width: 34vw;
       margin-top: 15vh !important;
     }
     ^ .bold {
