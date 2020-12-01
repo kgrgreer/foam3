@@ -12,10 +12,10 @@ p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.ContactW
 
 //BankAccount
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.BankAccount.ACCOUNT_NUMBER.label",target:"Account number"})
-p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.BankAccount.BANK_CODE.label",target:"Bank code"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.BankAccount.INSTITUTION_NUMBER.label",target:"Institution number"})
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.BRBankAccount.ACCOUNT_NUMBER.label",target:"Account number"})
-p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.BRBankAccount.BANK_CODE.label",target:"Bank code"})
-p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.BRBankAccount.BRANCH_CODE.label",target:"Branch code"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.BRBankAccount.INSTITUTION_NUMBER.label",target:"Institution number"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.BRBankAccount.BRANCH_ID.label",target:"Branch id"})
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.BRBankAccount.ACCOUNT_TYPE.label",target:"Account type"})
 
 //PadCapture
