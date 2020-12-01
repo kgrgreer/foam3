@@ -3140,6 +3140,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.EDI
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.ADD_BANK_ACCOUNT.label",target:"Adicionar conta bancária"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.INVITE.label",target:"Convite"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.REQUEST_MONEY.label",target:"Request Money"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.REQUEST_MONEY.label",target:"Pedir dinheiro"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.SEND_MONEY.label",target:"Enviar dinheiro"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.DELETE.label",target:"Excluir"})
