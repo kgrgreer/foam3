@@ -122,7 +122,6 @@ foam.CLASS({
       documentation: 'The account number of the bank account.',
       updateVisibility: 'RO',
       section: 'accountInformation',
-      storageTransient: true,
       view: {
         class: 'foam.u2.tag.Input',
         placeholder: '1234567',
