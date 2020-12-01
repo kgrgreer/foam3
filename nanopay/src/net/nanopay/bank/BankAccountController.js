@@ -25,6 +25,7 @@ foam.CLASS({
   requires: [
     'foam.core.Action',
     'foam.log.LogLevel',
+    'foam.u2.ControllerMode',
     'foam.u2.dialog.Popup',
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
@@ -125,21 +126,14 @@ foam.CLASS({
                 class: 'net.nanopay.cico.ui.bankAccount.modalForm.CABankMicroForm',
                 bank: account
               }) :
-              self.Popup.create().addClass('bank-account-detail-popup').tag({
-                class: 'foam.comics.v2.DAOSummaryView',
-                id: id,
-                data: account,
-                config: {
-                  class: 'foam.comics.v2.DAOControllerConfig',
-                  dao: self.data,
-                  createPredicate: foam.mlang.predicate.False,
-                  editPredicate: foam.mlang.predicate.False,
-                  deletePredicate: foam.mlang.predicate.False
-                },
-                onBack: function() {
-                  this.closeDialog();
-                }
-              });
+              self.SMEModal.create().addClass('bank-account-popup')
+                .startContext({ controllerMode: self.ControllerMode.EDIT })
+                  .tag({
+                    class: 'net.nanopay.account.ui.BankAccountWizard',
+                    data: account,
+                    useSections: ['accountInformation', 'pad']
+                  })
+                .endContext();
             self.ctrl.add(popupView);
           },
           contextMenuActions: [
@@ -166,13 +160,15 @@ foam.CLASS({
               },
               code: async function(X) {
                 var account = await self.__subContext__.accountDAO.find(this.id);
-                self.ctrl.add(self.SMEModal.create().addClass('bank-account-popup').tag(
-                  {
-                    class: 'net.nanopay.account.ui.BankAccountWizard',
-                    data: account,
-                    useSections: ['accountInformation', 'pad']
-                  }
-                ));
+                self.ctrl.add(self.SMEModal.create().addClass('bank-account-popup')
+                  .startContext({ controllerMode: self.ControllerMode.EDIT })
+                    .tag({
+                      class: 'net.nanopay.account.ui.BankAccountWizard',
+                      data: account,
+                      useSections: ['accountInformation', 'pad']
+                    })
+                  .endContext()
+                  );
               }
             }),
             foam.core.Action.create({
