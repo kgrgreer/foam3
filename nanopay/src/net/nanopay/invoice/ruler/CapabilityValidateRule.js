@@ -77,7 +77,10 @@ foam.CLASS({
                             );
                         }).forEach(ucr -> cre.addCapabilityId(ucr));
 
-                    if ( Arrays.stream(invoice.getCapablePayloads()).map(cp -> cp.getCapability()).anyMatch(getObjectCapabilityID()::equals) ) {
+                    if (
+                        Arrays.stream(invoice.getCapablePayloads()).map(cp -> cp.getCapability()).anyMatch(getObjectCapabilityID()::equals) ||
+                        ( invoice.getCapablePayloads().length == 0 && Arrays.stream(capable.getCapabilityIds()).anyMatch(getObjectCapabilityID()::equals))
+                        ) {
                         var reqs = new String[] { getObjectCapabilityID() };
                         if ( 
                             ! invoice.checkRequirementsStatusNoThrow(x, reqs, CapabilityJunctionStatus.GRANTED) &&
@@ -97,7 +100,7 @@ foam.CLASS({
                         return;
                     }
 
-                    if ( cre.getCapabilities().length > 0 || cre.getCapables().length > 0 || capable.getCapabilityIds().length > 0 ) {
+                    if ( cre.getCapabilities().length > 0 || cre.getCapables().length > 0 ) {
                         // Client expects to get a SUBMIT invoice back for reput, but if wizard is prematurely closed
                         // then next time the invoice is received it will correctly be in DRAFT status
                         var newInvoice = (Invoice) invoice.fclone();

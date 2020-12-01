@@ -431,7 +431,7 @@ foam.CLASS({
       try {
         this.invoice = await this.invoiceDAO.put(this.invoice);
 
-        if ( ( this.invoice.capabilityIds.length > 0 || this.invoice.capablePayloads.length > 0 ) && this.invoice.isWizardIncomplete ){
+        if ( this.invoice.capablePayloads.length > 0 && this.invoice.isWizardIncomplete ){
           this.invoice.draft = true;
           this.invoice.capablePayloads = [];
           this.saveDraft(this.invoice);
