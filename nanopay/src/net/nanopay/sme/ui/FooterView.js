@@ -29,7 +29,6 @@ foam.CLASS({
 
   css: `
     ^ {
-      display: none !important;
       width: 100vw;
       height: 65px;
       margin: auto;
