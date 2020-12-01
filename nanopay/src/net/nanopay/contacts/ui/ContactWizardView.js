@@ -192,15 +192,7 @@ foam.CLASS({
       this.isConnecting = true;
       try {
         let canInvite = this.data.createBankAccount.country != 'IN';
-        // TODO this needs to be fixed for real elsewhere -
-        // the payloads here are all empty objects except for the first one in the array
-        // and causing issues when going through the parser
-        var payloads = this.data.createBankAccount.padCapture.capablePayloads;
-        for ( let j = 0; j < payloads.length; j++ ) {
-          if ( payloads[j].data && ( Object.keys(payloads[j].data.instance_).length === 0 ) ){
-            payloads[j].instance_.data = null;
-          }
-        }
+
         this.data.createBankAccount.padCapture.capablePayloads = payloads;
         if ( this.data.shouldInvite && canInvite ) {
           // check if it is already joined

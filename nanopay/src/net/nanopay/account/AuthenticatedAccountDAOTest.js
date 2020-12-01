@@ -352,12 +352,12 @@ foam.CLASS({
           account.setName("Account");
           account.setOwner(user1.getId());
           FObject putAccount = accountDAO.put_(user1Context, account);
-          // Update the account name
+          // Update the account type
           clonedAccount = (DigitalAccount) putAccount.fclone();
-          clonedAccount.setName("Account1");
+          clonedAccount.setType("Invalid");
           accountDAO.put_(user1Context, clonedAccount);
           FObject updatedPutAccount = accountDAO.find(clonedAccount.getId());
-          return ! updatedPutAccount.getProperty("name").equals("Account1");
+          return ! updatedPutAccount.getProperty("type").equals("Invalid");
         } catch (Throwable t) {
           return true;
         } finally {
@@ -380,12 +380,12 @@ foam.CLASS({
           account.setName("Account");
           account.setOwner(adminUser.getId());
           FObject putAccount = accountDAO.put_(adminContext, account);
-          // Update the account name
+          // Update the account type
           clonedAccount = (DigitalAccount) putAccount.fclone();
-          clonedAccount.setName("Account1");
+          clonedAccount.setType("Invalid");
           accountDAO.put_(adminContext, clonedAccount);
           FObject updatedPutAccount = accountDAO.find(clonedAccount.getId());
-          return ! updatedPutAccount.getProperty("name").equals("Account1");
+          return ! updatedPutAccount.getProperty("type").equals("Invalid");
         } catch (Throwable t) {
           return true;
         } finally {
