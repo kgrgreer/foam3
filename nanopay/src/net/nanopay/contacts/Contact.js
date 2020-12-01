@@ -316,7 +316,6 @@ foam.CLASS({
           of: net.nanopay.bank.BankAccount,
           predicate: pred,
           placeholder: X.data.PLACEHOLDER,
-          classIsFinal: true,
           header: X.data.HEADER,
           classIsFinal: true,
           copyOldData: function(o) { return { isDefault: o.isDefault, forContact: o.forContact }; }
