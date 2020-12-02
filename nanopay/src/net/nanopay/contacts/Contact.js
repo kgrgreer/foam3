@@ -367,9 +367,7 @@ foam.CLASS({
           foam.u2.DisplayMode.HIDDEN;
       },
       view: function(_, X) {
-        return X.data.createBankAccount ? 
-        null :
-         X.E().start().add(X.data.UNABLE_TO_ADD_BANK_ACCOUNT).end();
+        return X.data.createBankAccount ? null : X.E().start().add(X.data.UNABLE_TO_ADD_BANK_ACCOUNT).end();
       }
     },
     {
