@@ -326,13 +326,13 @@ async function execute(x) {
         test(false, 'certifyDirectorsListed: '+(e.message || e));
         throw e;
       }
-      try {
-        await support.businessOwners(x, business);
-        test(true, 'businessOwners');
-      } catch (e) {
-        test(false, 'businessOwners: '+(e.message || e));
-        throw e;
-      }
+      // try {
+      //   await support.businessOwners(x, business);
+      //   test(true, 'businessOwners');
+      // } catch (e) {
+      //   test(false, 'businessOwners: '+(e.message || e));
+      //   throw e;
+      // }
       try {
         await support.ownersPercent(x, business);
         test(true, 'ownersPercent');
