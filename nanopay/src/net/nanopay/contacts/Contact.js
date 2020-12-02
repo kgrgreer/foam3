@@ -304,7 +304,14 @@ foam.CLASS({
       storageTransient: true,
       label: '',
       visibility: function() {
-        return this.countries.length == 0 ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+        return this.countries.length == 0 && ! this.createBankAccount ? 
+          foam.u2.DisplayMode.HIDDEN : 
+          foam.u2.DisplayMode.RW;
+      },
+      factory: function() {
+        if ( this.bankAccount ) {
+          return this.accountDAO.find(this.bankAccount).then((res) => this.createBankAccount = res);
+        }
       },
       view: function(_, X) {
         let e = foam.mlang.Expressions.create();
@@ -331,6 +338,7 @@ foam.CLASS({
       name: 'availableCountries',
       visibility: 'HIDDEN',
       expression: function(paymentProviderCorridorDAO) {
+        if ( this.createBankAccount && this.createBankAccount.country ) return [];
         return this.PromisedDAO.create({
           promise: paymentProviderCorridorDAO.where(this.INSTANCE_OF(this.PaymentProviderCorridor))
             .select(this.MAP(this.PaymentProviderCorridor.TARGET_COUNTRY))
@@ -360,10 +368,12 @@ foam.CLASS({
       name: 'noCorridorsAvailable',
       documentation: 'GUI when no corridor capabilities have been added to user.',
       visibility: function() {
-        return this.countries.length == 0 ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
+        return this.countries.length == 0 && ! this.createBankAccount ? 
+          foam.u2.DisplayMode.RO : 
+          foam.u2.DisplayMode.HIDDEN;
       },
       view: function(_, X) {
-        return X.E().start().add(X.data.UNABLE_TO_ADD_BANK_ACCOUNT).end();
+        return X.data.createBankAccount ? null : X.E().start().add(X.data.UNABLE_TO_ADD_BANK_ACCOUNT).end();
       }
     },
     {
