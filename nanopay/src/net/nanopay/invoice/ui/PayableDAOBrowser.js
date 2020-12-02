@@ -339,7 +339,7 @@ foam.CLASS({
             X.menuDAO.find('sme.quickAction.send').then((menu) => {
               var clone = menu.clone();
               Object.assign(clone.handler.view, {
-                invoice: self.Invoice.create({}),
+                invoice: this.Invoice.create({}),
                 isPayable: true,
                 isForm: true,
                 isList: false,
