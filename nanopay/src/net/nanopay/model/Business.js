@@ -612,7 +612,8 @@ foam.CLASS({
       javaCode: `
         User user = ((Subject) x.get("subject")).getUser();
         Group group = (Group) x.get("group");
-        if ( ! SafetyUtil.equals(group.getId(), "admin") ) {
+        if ( ! SafetyUtil.equals(group.getId(), "admin") && 
+            ! SafetyUtil.equals(group.getId(), user.getSpid() + "-admin") ) {
           throw new AuthorizationException("Businesses cannot be deleted.");
         }
       `

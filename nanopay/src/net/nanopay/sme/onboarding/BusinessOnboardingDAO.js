@@ -98,7 +98,7 @@ foam.CLASS({
                * In NewUserCreateBusinessDAO.java, it generates the business specific group
                * in the format of: businessName+businessId.admin. (such as: nanopay8010.admin).
                */
-              invitation.setGroup("admin");
+              invitation.setGroup(user.getSpid() + "-admin");
               invitation.setCreatedBy(businessOnboarding.getBusinessId());
               invitation.setEmail(businessOnboarding.getSigningOfficerEmail());
 
