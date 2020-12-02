@@ -292,6 +292,7 @@ var classes = [
   'net.nanopay.fx.afex.AFEXFundingTransaction',
   'net.nanopay.fx.afex.AFEXCreateFundingBalancesRule',
   'net.nanopay.fx.afex.AFEXSubmitFundingTxnRule',
+  'net.nanopay.fx.afex.AFEXGetPDFRule',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
