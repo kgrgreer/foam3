@@ -39,8 +39,8 @@ async function execute(x) {
       // create user under admin
       var u;
       try {
-        u = await support.createUser(x, 'test-'+support.uid+'-'+n, 'password', 'sme');
-        test(true, 'createUser');
+        u = await support.createUser(x, 'u-'+support.uid+'-'+n, 'password', 'sme');
+        test(true, 'createUser: '+u.id+', '+u.userName);
       } catch (e) {
         test(false, 'createUser: '+(e.message || e));
         throw e;
@@ -48,7 +48,7 @@ async function execute(x) {
       var s;
       try {
         s = await support.createSession(x, u.id, u.id);
-        test(true, 'createSession');
+        test(true, 'createSession: '+s.id);
       } catch (e) {
         test(false, 'createSession: '+(e.message || e));
         throw e;
@@ -99,18 +99,26 @@ async function execute(x) {
       }
 
       var business;
+      // try {
+      //   business = await support.createBusiness(x, u);
+      //   test(true, 'createBusiness: '+business.id);
+      // } catch (e) {
+      //   test(false, 'createBusiness: '+(e.message || e));
+      //   throw e;
+      // }
+
       try {
-        business = await support.createBusiness(x, u);
-        test(true, 'createBusiness');
+        business = await support.businessInitialData(x, u);
+        test(true, 'businessInitialData: '+business.id);
       } catch (e) {
-        test(false, 'createBusiness: '+(e.message || e));
+        test(false, 'businessInitialData: '+(e.message || e));
         throw e;
       }
 
       var businessSession;
       try {
         businessSession = await support.createSession(x, u.id, business.id);
-        test(true, 'createBusinessSession');
+        test(true, 'createBusinessSession: '+businessSession.id);
       } catch (e) {
         test(false, 'createBusinessSession: '+(e.message || e));
         throw e;
@@ -178,13 +186,6 @@ async function execute(x) {
         throw e;
       }
 
-      try {
-        await support.businessInitialData(x, business);
-        test(true, 'businessInitialData');
-      } catch (e) {
-        test(false, 'businessInitialData: '+(e.message || e));
-        throw e;
-      }
       try {
         await support.businessRegistrationDate(x, business);
         test(true, 'businessRegistrationDate');
