@@ -462,7 +462,7 @@ foam.CLASS({
       this.isLoading = true;
       // TODO: perhaps all of these capabilities should imply something so
       //   a similar capability can be added without updating this code.
-      let isSigningOfficer = await this.crunchService.atLeastOneInCategory("complianceSetting");
+      let isSigningOfficer = await this.crunchService.atLeastOneInCategory(null, "complianceSetting");
 
       try {
         if ( this.isPayable && isSigningOfficer ) {
