@@ -36,6 +36,7 @@ foam.CLASS({
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.crunch.CapabilityJunctionStatus',
+    'foam.nanos.crunch.CrunchService',
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
@@ -61,6 +62,7 @@ foam.CLASS({
       agency.submit(x, new ContextAgent() {
         @Override
         public void execute(X x) {
+          var crunchService = (CrunchService) x.get("crunchService");
           Logger logger = (Logger) x.get("logger");
 
           if ( ! (obj instanceof AFEXBusinessApprovalRequest) ) {
@@ -77,29 +79,18 @@ foam.CLASS({
             Address businessAddress = business.getAddress();
             if ( null != businessAddress && ! SafetyUtil.isEmpty(businessAddress.getCountryId()) ) {
 
+              var subject = new Subject(x);
+              subject.setUser(business);
+              subject.setUser(business);
+
+              var subjectX = x.put("subject", subject);
+
               DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
               String afexPaymentMenuCapId = "1f6b2047-1eef-471d-82e7-d86bdf511375";
-              UserCapabilityJunction ucj = (UserCapabilityJunction) ucjDAO.find(AND(
-                EQ(UserCapabilityJunction.TARGET_ID, afexPaymentMenuCapId),
-                EQ(UserCapabilityJunction.SOURCE_ID, business.getId())
-              ));
-              if ( ucj == null ) {
-                ucj = new UserCapabilityJunction.Builder(x).setSourceId(business.getId())
-                  .setTargetId(afexPaymentMenuCapId)
-                  .build();
-              } else {
-                ucj = (UserCapabilityJunction) ucj.fclone();
-              }
-              ucj.setStatus(CapabilityJunctionStatus.GRANTED);
-              ucjDAO.put(ucj);
+              crunchService.updateJunction(subjectX, afexPaymentMenuCapId, null, CapabilityJunctionStatus.GRANTED);
 
               // Temporary pending when MinMax Cap is fixed
-              UserCapabilityJunction ucj2 = (UserCapabilityJunction) ucjDAO.find(AND(
-                EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-20"),
-                EQ(UserCapabilityJunction.SOURCE_ID, business.getId())
-              )).fclone();
-              ucj2.setStatus(CapabilityJunctionStatus.GRANTED);
-              ucjDAO.put(ucj2);
+              crunchService.updateJunction(subjectX, "554af38a-8225-87c8-dfdf-eeb15f71215f-20", null, CapabilityJunctionStatus.GRANTED);
 
               sendUserNotification(x, business);
             }
