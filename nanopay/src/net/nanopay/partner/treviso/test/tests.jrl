@@ -60,6 +60,27 @@ async function execute(x) {
 
       // general admission
       try {
+        await support.userRegistrationData(x, u);
+        test(true, 'userRegistrationData');
+      } catch (e) {
+        test(false, 'userRegistrationData: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.abliiPrivacyPolicy(x, u);
+        test(true, 'abliiPrivacyPolicy');
+      } catch (e) {
+        test(false, 'abliiPrivacyPolicy: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.abliiTermsAndConditions(x, u);
+        test(true, 'abliiTermsAndConditions');
+      } catch (e) {
+        test(false, 'abliiTermsAndConditions: '+(e.message || e));
+        throw e;
+      }
+      try {
         await support.generalAdmission(x, u);
         test(true, 'generalAdmission');
       } catch (e) {
@@ -129,13 +150,6 @@ async function execute(x) {
       x = support.sudo(x, businessSession.id, u, business);
 
       try {
-        let cap = await support.abliiBusinessOnboardingCapability(x, u, business);
-        test(true, 'abliiBusinessOnboardingCapability');
-      } catch (e) {
-        test(false, 'abliiBusinessOnboardingCapability: '+(e.message || e));
-        throw e;
-      }
-      try {
         await support.updateBusinessComplianceStatus(x, business);
         test(true, 'updateBusinessComplianceStatus');
       } catch (e) {
@@ -186,6 +200,34 @@ async function execute(x) {
         throw e;
       }
 
+      try {
+        await support.businessDetailExpandedData(x, business);
+        test(true, 'businessDetailExpandedData');
+      } catch (e) {
+        test(false, 'businessDetailExpandedData: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.businessTypeData(x, business);
+        test(true, 'businessTypeData');
+      } catch (e) {
+        test(false, 'businessTypeData: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.businessExtraBusinessTypeDataNotRequired(x, business);
+        test(true, 'businessExtraBusinessTypeDataNotRequired');
+      } catch (e) {
+        test(false, 'businessExtraBusinessTypeDataNotRequired: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.businessExtraBusinessTypeDataRequired(x, business);
+        test(true, 'businessExtraBusinessTypeDataRequired');
+      } catch (e) {
+        test(false, 'businessExtraBusinessTypeDataRequired: '+(e.message || e));
+        throw e;
+      }
       try {
         await support.businessRegistrationDate(x, business);
         test(true, 'businessRegistrationDate');
@@ -282,6 +324,13 @@ async function execute(x) {
         test(true, 'certifyDirectorsListed');
       } catch (e) {
         test(false, 'certifyDirectorsListed: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.businessOwners(x, business);
+        test(true, 'businessOwners');
+      } catch (e) {
+        test(false, 'businessOwners: '+(e.message || e));
         throw e;
       }
       try {
