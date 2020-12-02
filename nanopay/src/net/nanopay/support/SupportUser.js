@@ -44,6 +44,13 @@ foam.CLASS({
     }
   ],
 
+  messages: [
+    { name: 'TWO_FACTOR_SUCCESS', message: 'Two factor authentication successfully disabled' },
+    { name: 'TWO_FACTOR_INFO', message: 'Two factor authentication already disabled' },
+    { name: 'RESET_LOGIN_SUCCESS', message: 'Login attempts successfully reset' },
+    { name: 'RESET_LOGIN_INFO', message: 'Login attempts already reset' }
+  ],
+
   properties: [
     foam.nanos.auth.User.ID.clone().copyFrom({
       section: 'userInformation',
@@ -145,12 +152,12 @@ foam.CLASS({
       code: async function(X) {
         var loginAttempts = await X.loginAttemptsDAO.find(this.id);
         if ( loginAttempts == undefined || loginAttempts.loginAttempts == 0 ) {
-          X.notify('Login attempts already reset', '', this.LogLevel.WARN, true);
+          X.notify(this.RESET_LOGIN_INFO, '', this.LogLevel.WARN, true);
         } else {
           loginAttempts.loginAttempts = 0;
           X.loginAttemptsDAO.put(loginAttempts)
             .then(result => {
-              X.notify('Login attempts successfully reset', '', this.LogLevel.INFO, true);
+              X.notify(this.RESET_LOGIN_SUCCESS, '', this.LogLevel.INFO, true);
             });
         }
       }
@@ -162,12 +169,12 @@ foam.CLASS({
       code: async function(X) {
         var user = await X.userDAO.find(this.id);
         if ( ! user.twoFactorEnabled ) {
-          X.notify('Two factor authentication already disabled', '', this.LogLevel.WARN, true);
+          X.notify(this.TWO_FACTOR_INFO, '', this.LogLevel.WARN, true);
         } else {
           user.twoFactorEnabled = false;
           X.userDAO.put(user)
             .then(() => {
-              X.notify('Two factor authentication successfully disabled', '', this.LogLevel.INFO, true);
+              X.notify(this.TWO_FACTOR_SUCCESS, '', this.LogLevel.INFO, true);
             });
         }
       }
