@@ -253,9 +253,9 @@ foam.CLASS({
         if ( permission ) {
           X.controllerView.stack.push({
             class: 'net.nanopay.bank.ui.BankPickCurrencyView'
-          }, self);
+          }, this);
         } else {
-          self.ctrl.add(this.SMEModal.create({
+          this.ctrl.add(this.SMEModal.create({
             onClose : function() { this.__subContext__.data.clearProperty('bankAccount'); }
           }).addClass('bank-account-popup').tag({
             class: 'net.nanopay.account.ui.BankAccountWizard',
