@@ -195,12 +195,17 @@ foam.CLASS({
     },
     {
       name: 'reset',
+      documentation: 'Reset hashing chain, used for journal reset.',
       javaCode: `
-      java.security.MessageDigest md = (java.security.MessageDigest) getMd();
-      md.reset();
+      resetMessageDigest();
       setDigest(null);
       setPreviousDigest(null);
       `
+    },
+    {
+      name: 'resetMessageDigest',
+      documentation: 'Reset internal hash, used for outputter string builder reset.',
+      javaCode: '((java.security.MessageDigest) getMd()).reset();'
     },
     {
       name: 'setPrevious',

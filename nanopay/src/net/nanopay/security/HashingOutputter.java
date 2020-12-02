@@ -21,7 +21,6 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.lib.StoragePropertyPredicate;
 import foam.lib.formatter.JSONFObjectFormatter;
-import foam.util.SafetyUtil;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -79,12 +78,13 @@ public class HashingOutputter
   }
 
   @Override
-  public void outputDelta(FObject old, FObject obj, ClassInfo of) {
+  public boolean maybeOutputDelta(FObject old, FObject obj, ClassInfo of) {
     count_.get().incrementAndGet();
-    super.outputDelta(old, obj, of);
-    if ( count_.get().decrementAndGet() == 0 ) {
+    var ret = super.maybeOutputDelta(old, obj, of);
+    if ( count_.get().decrementAndGet() == 0 && ret ) {
       outputDigest();
     }
+    return ret;
   }
 
   @Override
@@ -117,5 +117,13 @@ public class HashingOutputter
     formatter_.reset();
     formatter_.output(messageDigest_.get(), MessageDigest.getOwnClassInfo());
     builder().append(formatter_.builder().toString());
+  }
+
+  @Override
+  public void reset() {
+    if ( messageDigest_ != null ) {
+      messageDigest_.resetMessageDigest();
+    }
+    super.reset();
   }
 }
