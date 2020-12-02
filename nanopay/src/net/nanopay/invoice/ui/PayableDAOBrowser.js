@@ -294,30 +294,7 @@ foam.CLASS({
     },
     {
       name: 'primaryAction',
-      factory: function() {
-        var self = this;
-        return this.Action.create({
-          name: 'sendMoney',
-          label: 'Send payment',
-          code: function(X) {
-            self.checkAndNotifyAbilityToPay().then((result) => {
-              if ( result ) {
-                X.menuDAO.find('sme.quickAction.send').then((menu) => {
-                  var clone = menu.clone();
-                  Object.assign(clone.handler.view, {
-                    invoice: self.Invoice.create({}),
-                    isPayable: true,
-                    isForm: true,
-                    isList: false,
-                    isDetailView: false
-                  });
-                  clone.launch(X, X.controllerView);
-                });
-              }
-            });
-          }
-        });
-      }
+      factory: function() { return this.SEND_MONEY; }
     }
   ],
 
@@ -326,9 +303,11 @@ foam.CLASS({
       this.start().addClass(this.myClass())
       .start('div').addClass(this.myClass('row'))
         .start('h1').add(this.TITLE).end()
-        .tag(this.primaryAction, {
-          size: 'LARGE'
-        })
+        .startContext({ data: this })
+          .tag(this.primaryAction, {
+            size: 'LARGE'
+          })
+        .endContext()
       .end()
       .start('div').addClass(this.myClass('row'))
         .start('h3').addClass('subdued-text').add(this.SUB_TITLE).end()
@@ -351,6 +330,27 @@ foam.CLASS({
     }
   ],
   actions: [
+    {
+      name: 'sendMoney',
+      label: 'Send payment',
+      code: function(X) {
+        this.checkAndNotifyAbilityToPay().then((result) => {
+          if ( result ) {
+            X.menuDAO.find('sme.quickAction.send').then((menu) => {
+              var clone = menu.clone();
+              Object.assign(clone.handler.view, {
+                invoice: this.Invoice.create({}),
+                isPayable: true,
+                isForm: true,
+                isList: false,
+                isDetailView: false
+              });
+              clone.launch(X, X.controllerView);
+            });
+          }
+        });
+      }
+    },
     {
       name: 'sync',
       label: 'Sync with Accounting',

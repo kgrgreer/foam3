@@ -398,7 +398,7 @@ foam.CLASS({
         // Removing auth checks. TODO: solution on what to show based on what.
         return {
           class: 'net.nanopay.sme.ui.AddressView',
-          showDisclaimer: true
+          showDisclaimer: false
         };
       },
       factory: function() {

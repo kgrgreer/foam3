@@ -535,10 +535,10 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       createBeneficiaryRequest.setBankName(bankName);
       String bankRoutingCode = bankAccount.getRoutingCode(this.x);
       if ( bankAccount instanceof CABankAccount) {
-        bankRoutingCode = "0" + bankAccount.getBankCode() + bankRoutingCode;
+        bankRoutingCode = "0" + bankAccount.getInstitutionNumber() + bankRoutingCode;
       }
-      if ( ! SafetyUtil.isEmpty(bankAccount.getBankCode()) ) {
-        createBeneficiaryRequest.setBankSWIFTBIC(bankAccount.getBankCode());
+      if ( ! SafetyUtil.isEmpty(bankAccount.getInstitutionNumber()) ) {
+        createBeneficiaryRequest.setBankSWIFTBIC(bankAccount.getInstitutionNumber());
         createBeneficiaryRequest.setBankAccountNumber(bankAccount.getIban());
       }
       createBeneficiaryRequest.setBankRoutingCode(bankRoutingCode);
@@ -632,7 +632,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     updateBeneficiaryRequest.setBankName(bankName);
     String bankRoutingCode = bankAccount.getRoutingCode(this.x);
     if ( bankAccount instanceof CABankAccount) {
-      bankRoutingCode = "0" + bankAccount.getBankCode() + bankRoutingCode;
+      bankRoutingCode = "0" + bankAccount.getInstitutionNumber() + bankRoutingCode;
     }
     updateBeneficiaryRequest.setBankRoutingCode(bankRoutingCode);
     updateBeneficiaryRequest.setBeneficiaryAddressLine1(bankAddress.getAddress());
