@@ -1314,7 +1314,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.SWI
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.SUMMARY.label",target:"resumo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.STATUS.documentation",target:"Rastreia o status da conta bancária."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.INSTITUTION_NUMBER.label",target:"Número do Banco"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.INSTITUTION_NUMBER.label",target:"Instituição"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.BRANCH_ID.label",target:"Número da Agência"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.RANDOM_DEPOSIT_AMOUNT.label",target:"randomDepositAmount pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.RANDOM_DEPOSIT_AMOUNT.documentation",target:"Uma pequena quantia financeira depositada em uma conta bancária para testar a integração em nosso sistema."})
@@ -1412,7 +1412,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.B
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.DESC.label",target:"desc pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.BRANCH_ID.label",target:"Número da Agência"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.INSTITUTION_NUMBER.label",target:"Número do Banco"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.INSTITUTION_NUMBER.label",target:"Instituição"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.INSTITUTION_NUMBER.documentation",target:"Fornece compatibilidade com versões anteriores para o fluxo de chamadas móveis.\n          BankAccountInstitutionDAO pesquisará o número da instituição e definirá a propriedade da instituição."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.ACCOUNT_NUMBER.label",target:"Número da conta"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.SUMMARY.label",target:"resumo"})
@@ -1442,7 +1442,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.C
 //p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.FLAG_IMAGE.value",target:"images/flags/us.png pt"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.DENOMINATION.label",target:"denominação"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.INSTITUTION_NUMBER.label",target:"Número do Banco"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.INSTITUTION_NUMBER.label",target:"Instituição"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.BANK_CODE.label",target:"bankCode pt"})
 //p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.IBAN.label",target:"iban pt"})
 //p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.DESC.label",target:"desc pt"})
