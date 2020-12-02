@@ -308,6 +308,11 @@ foam.CLASS({
           foam.u2.DisplayMode.HIDDEN : 
           foam.u2.DisplayMode.RW;
       },
+      factory: function() {
+        if ( this.bankAccount ) {
+          return this.accountDAO.find(this.bankAccount).then((res) => this.createBankAccount = res);
+        }
+      },
       view: function(_, X) {
         let e = foam.mlang.Expressions.create();
         var pred = e.AND(
