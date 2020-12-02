@@ -50,6 +50,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'net.nanopay.model.PersonalIdentification',
     'net.nanopay.onboarding.model.Questionnaire'
   ],
@@ -86,7 +87,11 @@ foam.CLASS({
     { name: 'COMPLIANCE_HISTORY_MSG', message: 'Compliance History for' },
     { name: 'PAYABLES_MSG', message: 'Payables for' },
     { name: 'RECEIVABLES_MSG', message: 'Receivables for' },
-    { name: 'FOR_MSG', message: 'for' }
+    { name: 'FOR_MSG', message: 'for' },
+    { name: 'TWO_FACTOR_SUCCESS', message: 'Two factor authentication successfully disabled' },
+    { name: 'TWO_FACTOR_INFO', message: 'Two factor authentication already disabled' },
+    { name: 'RESET_LOGIN_SUCCESS', message: 'Login attempts successfully reset' },
+    { name: 'RESET_LOGIN_INFO', message: 'Login attempts already reset' }
   ],
 
   properties: [
@@ -440,6 +445,39 @@ foam.CLASS({
             browseTitle: `${this.RECEIVABLES_MSG} ${this.toSummary()}`
           }
         });
+      }
+    },
+    {
+      name: 'resetLoginAttempts',
+      section: 'userInformation',
+      code: async function(X) {
+        var loginAttempts = await X.loginAttemptsDAO.find(this.id);
+        if ( loginAttempts == undefined || loginAttempts.loginAttempts == 0 ) {
+          X.notify(this.RESET_LOGIN_INFO, '', this.LogLevel.WARN, true);
+        } else {
+          loginAttempts.loginAttempts = 0;
+          X.loginAttemptsDAO.put(loginAttempts)
+            .then(result => {
+              X.notify(this.RESET_LOGIN_SUCCESS, '', this.LogLevel.INFO, true);
+            });
+        }
+      }
+    },
+    {
+      name: 'disableTwoFactor',
+      label: 'Disable TFA',
+      section: 'userInformation',
+      code: async function(X) {
+        var user = await X.userDAO.find(this.id);
+        if ( ! user.twoFactorEnabled ) {
+          X.notify(this.TWO_FACTOR_INFO, '', this.LogLevel.WARN, true);
+        } else {
+          user.twoFactorEnabled = false;
+          X.userDAO.put(user)
+            .then(() => {
+              X.notify(this.TWO_FACTOR_SUCCCESS, '', this.LogLevel.INFO, true);
+            });
+        }
       }
     }
   ],
