@@ -303,9 +303,11 @@ foam.CLASS({
       this.start().addClass(this.myClass())
       .start('div').addClass(this.myClass('row'))
         .start('h1').add(this.TITLE).end()
-        .tag(this.primaryAction, {
-          size: 'LARGE'
-        })
+        .startContext({ data: this })
+          .tag(this.primaryAction, {
+            size: 'LARGE'
+          })
+        .endContext()
       .end()
       .start('div').addClass(this.myClass('row'))
         .start('h3').addClass('subdued-text').add(this.SUB_TITLE).end()
@@ -332,7 +334,7 @@ foam.CLASS({
       name: 'sendMoney',
       label: 'Send payment',
       code: function(X) {
-        self.checkAndNotifyAbilityToPay().then((result) => {
+        this.checkAndNotifyAbilityToPay().then((result) => {
           if ( result ) {
             X.menuDAO.find('sme.quickAction.send').then((menu) => {
               var clone = menu.clone();
