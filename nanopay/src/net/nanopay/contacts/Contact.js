@@ -333,6 +333,7 @@ foam.CLASS({
       name: 'availableCountries',
       visibility: 'HIDDEN',
       expression: function(paymentProviderCorridorDAO) {
+        if ( this.createBankAccount && this.createBankAccount.country ) return [];
         return this.PromisedDAO.create({
           promise: paymentProviderCorridorDAO.where(this.INSTANCE_OF(this.PaymentProviderCorridor))
             .select(this.MAP(this.PaymentProviderCorridor.TARGET_COUNTRY))
