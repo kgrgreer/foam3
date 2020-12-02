@@ -70,7 +70,7 @@ foam.CLASS({
                 Notification notification = new Notification();
                 notification.setBody("Cash Out transaction id: " + txn.getId() + " was declined but the balance was not restored.");
                 notification.setNotificationType("Cashout transaction declined");
-                notification.setGroupId("support");
+                notification.setGroupId(txn.findSourceAccount(x).findOwner(x).getSpid() + "-support");
                 ((DAO) x.get("notificationDAO")).put(notification);
               }
             }
