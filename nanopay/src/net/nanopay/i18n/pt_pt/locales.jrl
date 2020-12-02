@@ -298,7 +298,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMo
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.REQUEST_TXN.label",target:"requestTxn pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.RE_QUOTE.label",target:"reQuote pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.TXN_QUOTE.label",target:"txnQuote pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.SAVE.label",target:"save pt"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.SAVE.label",target:"Salve"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.GO_NEXT.label",target:"goNext pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.EXIT.label",target:"exit pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.GO_BACK.label",target:"goBack pt"})
@@ -3017,7 +3017,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccountController.ADD_BANK.label",target:"Adicionar Conta"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.PayableDAOBrowser.SEND_MONEY.label",target:"Mande o pagamento"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.ReceivableDAOBrowser.REQ_MONEY.label",target:"Solicitar pagamento"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.CANCEL",target:"Cancel ..."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.CANCEL",target:"Cancelar"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"4c46cdb8-06b2-11eb-adc1-0242ac120002.name",target:"Natureza da relação comercial"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"9d4d667c-04c3-11eb-adc1-0242ac120002.name",target:"Capital de negócios e patrimônio líquido"})
@@ -3143,3 +3143,14 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.INV
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.REQUEST_MONEY.label",target:"Pedir dinheiro"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.SEND_MONEY.label",target:"Enviar dinheiro"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.DELETE.label",target:"Excluir"})
+
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoneyDetails.NEXT",target:"Próximo"})
+
+p({class:"foam.i18n.Locale",locale:"pt","source":"capability.main.contacts.createLabel","target":"Adicionar um contato"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"sme.quickAction.send.label","target":"Mande o pagamento"})
+
+p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.bank.BankAccountController.DELETE.label","target":"Excluir"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.bank.BankAccountController.EDIT_MENU.label","target":"Editar"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.bank.BankAccountController.SET_AS_DEFAULT.label","target":"definir como padrão"})
+
