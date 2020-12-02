@@ -462,11 +462,7 @@ foam.CLASS({
       this.isLoading = true;
       // TODO: perhaps all of these capabilities should imply something so
       //   a similar capability can be added without updating this code.
-      let isSigningOfficer = [
-        await this.crunchService.getJunction(null, '554af38a-8225-87c8-dfdf-eeb15f71215f-1a5'),
-        await this.crunchService.getJunction(null, '554af38a-8225-87c8-dfdf-eeb15f71215f-1a5-us'),
-        await this.crunchService.getJunction(null, '777af38a-8225-87c8-dfdf-eeb15f71215f-123')
-      ].some(soUCJ => soUCJ.status === this.CapabilityJunctionStatus.GRANTED);
+      let isSigningOfficer = await this.crunchService.atLeastOneInCategory("complianceSetting");
 
       try {
         if ( this.isPayable && isSigningOfficer ) {
