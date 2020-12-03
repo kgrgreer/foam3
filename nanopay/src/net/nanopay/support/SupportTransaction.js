@@ -54,14 +54,14 @@ foam.CLASS({
   ],
 
   tableColumns :[
-    "id",
-    "amount",
-    "referenceNumber",
-    "chainSummary.summary",
-    "chainSummary.status",
-    "chainSummary.errorCode"
+    'id',
+    'amount',
+    'referenceNumber',
+    'chainSummary.summary',
+    'chainSummary.status',
+    'chainSummary.errorCode'
   ],
-  
+
   messages: [
     { name: 'DESCRIPTION', message: 'Transaction Summary' }
   ],
