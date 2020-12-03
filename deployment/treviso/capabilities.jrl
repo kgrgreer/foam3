@@ -73,6 +73,12 @@ p({
   }
 })
 
+// These capabilities do not have approval requests in Treviso
+p({class:"foam.nanos.crunch.Capability",id:"554af38a-8225-87c8-dfdf-eeb15f71215f-7",reviewRequired:false})
+p({class:"foam.nanos.crunch.Capability",id:"554af38a-8225-87c8-dfdf-eeb15f71215f-6-5",reviewRequired:false})
+p({class:"foam.nanos.crunch.Capability",id:"554af38a-8225-87c8-dfdf-eeb15f71215e-17",reviewRequired:false})
+p({class:"foam.nanos.crunch.Capability",id:"554af38a-8225-87c8-dfdf-eeb15f71215e-12",reviewRequired:false})
+
 p({class:"net.nanopay.payment.PaymentProviderCorridor",provider:"AFEX",sourceCountry:"CA",targetCountry:"CA",sourceCurrencies:["CAD","USD"],targetCurrencies:["CAD","USD"],id:"1cfb91e7-9c63-6e8a-b848-5b0656feeb59",name:"CA-CA Corridor - AFEX",enabled:true,availabilityPredicate:{class:"foam.mlang.predicate.True"},lastModified:1603233049278,lastModifiedBy:1})
 p({class:"net.nanopay.payment.CountryCapability",country:"CA",type:0,id:"9acf76e3-f0c6-931c-ee81-af1cc5e6943b",name:"Source Country Capability CA",enabled:true,availabilityPredicate:{class:"foam.mlang.predicate.True"},lastModified:1603233049306,lastModifiedBy:1})
 p({class:"net.nanopay.payment.CountryCapability",country:"CA",type:1,id:"53e09eba-cffa-5080-4f25-ad4268819b07",name:"Target Country Capability CA",enabled:true,availabilityPredicate:{class:"foam.mlang.predicate.True"},lastModified:1603233049307,lastModifiedBy:1})
