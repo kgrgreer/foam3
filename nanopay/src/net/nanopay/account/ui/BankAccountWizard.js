@@ -31,7 +31,7 @@ foam.CLASS({
     }
     ^ .checkBoxText {
       font-size: 10px;
-      color: /*%GREY1%*/ #8e9090;
+      color: /*%GREY1%*/ #5e6061;
     }
     ^ .net-nanopay-documents-AcceptanceDocumentUserInputView .checkBox {
       display: none;
@@ -47,7 +47,7 @@ foam.CLASS({
       padding: 0px;
     }
     ^ .sectioned-detail-property-supportingDocuments m3 {
-      color: /*%GREY2%*/ #8e9090;
+      color: /*%GREY2%*/ #9ba1a6;
     }
   `,
 
