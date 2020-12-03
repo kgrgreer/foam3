@@ -153,12 +153,12 @@ foam.CLASS({
             invoiceDAO.put(invoice);
 
             // Send a notification to the payment-ops team.
-            User user = User.findUser(x, transaction.findSourceAccount(x).getOwner());
+            String spid = transaction.findSourceAccount(x).findOwner(x).getSpid();
             FailedTransactionNotification notification = new FailedTransactionNotification.Builder(x)
               .setTransactionId(transaction.getId())
               .setInvoiceId(invoice.getId())
               .setEmailArgs(args)
-              .setGroupId(user.getSpid() + "-payment-ops")
+              .setGroupId(spid + "-payment-ops")
               .build();
             DAO notificationDAO = ((DAO) x.get("localNotificationDAO")).inX(x);
             notificationDAO.put(notification);

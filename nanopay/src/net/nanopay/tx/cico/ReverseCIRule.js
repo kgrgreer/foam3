@@ -67,11 +67,11 @@ foam.CLASS({
               }
               catch (Exception e) {
                 //email Support about failure.
-                User user = User.findUser(x, oldTxn.findSourceAccount(x).getOwner());
+                String spid = oldTxn.findSourceAccount(x).findOwner(x).getSpid();
                 Notification notification = new Notification();
                 notification.setBody("Cash in transaction id: " + txn.getId() + " was declined but failed to revert the balance.");
                 notification.setNotificationType("Cashin transaction declined");
-                notification.setGroupId(user.getSpid() + "-support");
+                notification.setGroupId(spid + "-support");
                 ((DAO) x.get("notificationDAO")).put(notification);
               }
             }
