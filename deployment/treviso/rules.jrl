@@ -495,12 +495,6 @@ p({
       },
       {
         "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
-        "category":"userComplianceCheck",
-        "isRecurring":false,
-        "statusChanged":false
-      },
-      {
-        "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
         "category":"businessComplianceCheck",
         "isRecurring":false,
         "statusChanged":false
