@@ -381,7 +381,7 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
     Boleto dadosBoleto = new Boleto();
     ExchangeCredential credentials = (ExchangeCredential) getX().get("exchangeCredential");
     dadosBoleto.setAGENCIA(credentials.getExchangeAgencia());
-    dadosBoleto.setBANCO(bankAccount.getBankCode());
+    dadosBoleto.setBANCO(bankAccount.getInstitutionNumber());
 
     Institution institution = (Institution) ((DAO) getX().get("institutionDAO")).find(bankAccount.getInstitution());
     if ( institution != null ) {

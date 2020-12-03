@@ -22,13 +22,16 @@ p({
   "description":"Are you a Signing Officer?",
   "notes":"This capability will intercept its permissions when there are no signingofficerjunctions belonging to the current business",
   "version":"0",
-  "visible":true,
   "enabled":true,
+  "keywords":["featured"],
   "icon":"/images/capabilityIcons/SigningOfficerIcon.svg",
   "associatedEntity":2,
   "permissionsIntercepted":[
     "businessHasSigningOfficer"
   ],
+  "availabilityPredicate": {
+    "class": "foam.nanos.crunch.predicate.IsAgent"
+  },
   "keywords":["featured"],
   "interceptIf":{"class":"net.nanopay.crunch.predicate.SigningOfficerQuestionAnswered"},
   "wizardlet": {
@@ -38,17 +41,25 @@ p({
     "class": "foam.u2.wizard.StepWizardConfig",
     "allowSkipping": false
   },
+  "visibilityPredicate": {
+    "class": "foam.mlang.predicate.Not",
+    "arg1":
+      {
+        "class":"net.nanopay.crunch.IsSpid",
+        "spid": "treviso"
+      }
+  },
   "requirementViewTitle":"We require a person authorized to act on behalf of the company to provide certain information to us. In this section, we ask if you are such a person, or alternatively, an email address for someone who is."
 })
 
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5",
-  "name":"Signing Officer Privileges",
+  "name":"Complete your signing officer information",
   "of":"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData",
-  "description":"Unlock signing officer privileges",
+  "description":"Authorization to sign on behalf of the business",
   "version":"0",
-  "visible":true,
+  "visibilityPredicate":  { class: "foam.mlang.predicate.True" },
   "enabled":true,
   "icon":"/images/capabilityIcons/SigningOfficerIcon.svg",
   "daoKey":"userDAO",
@@ -109,7 +120,7 @@ p({
     ]
   },
   "wizardlet": {
-    "class": "foam.nanos.crunch.ui.CapabilityWizardlet"
+    "class": "net.nanopay.crunch.wizardlet.RefreshWizardlet"
   },
   "wizardletConfig": {
     "class": "foam.u2.wizard.StepWizardConfig",
@@ -120,11 +131,11 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5-us",
-  "name":"US Signing Officer Privileges",
+  "name":"Complete your signing officer information",
   "of":"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData",
-  "description":"Unlock signing officer privileges",
+  "description":"Authorization to sign on behalf of the business",
   "version":"0",
-  "visible":true,
+  "visibilityPredicate":  { class: "foam.mlang.predicate.True" },
   "enabled":true,
   "icon":"/images/capabilityIcons/SigningOfficerIcon.svg",
   "daoKey":"userDAO",
@@ -185,7 +196,7 @@ p({
     ]
   },
   "wizardlet": {
-    "class": "foam.nanos.crunch.ui.CapabilityWizardlet"
+    "class": "net.nanopay.crunch.wizardlet.RefreshWizardlet"
   },
   "wizardletConfig": {
     "class": "foam.u2.wizard.StepWizardConfig",
@@ -200,7 +211,7 @@ p({
   "of":"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData",
   "description":"Authorization to sign on behalf of the business",
   "version":"0",
-  "visible":true,
+  "visibilityPredicate":  { class: "foam.mlang.predicate.True" },
   "enabled":true,
   "icon":"/images/capabilityIcons/SigningOfficerIcon.svg",
   "daoKey":"userDAO",
@@ -259,8 +270,16 @@ p({
       }
     ]
   },
+  "visibilityPredicate": {
+    "class":"foam.mlang.predicate.Not",
+    "arg1": {
+      "class":"foam.nanos.crunch.predicate.CapabilityGranted",
+      "capabilityId":"777af38a-8225-87c8-dfdf-eeb15f71215f-123",
+      "subjectFromUCJ":false
+    }
+  },
   "wizardlet": {
-    "class": "foam.nanos.crunch.ui.CapabilityWizardlet",
+    "class": "net.nanopay.crunch.wizardlet.RefreshWizardlet"
   },
   "wizardletConfig": {
     "class": "foam.u2.wizard.StepWizardConfig",
@@ -331,7 +350,7 @@ p({
   "description":"Unlock payments and invoicing to Canada (CAD to CAD)",
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
   "version":"0",
-  "visible":true,
+  "visibilityPredicate":  { class: "foam.mlang.predicate.True" },
   "enabled":true,
   "reviewRequired":true,
   "keywords":["featured"],
@@ -367,7 +386,7 @@ p({
   "description":"Enable international payments",
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
   "version":"0",
-  "visible":true,
+  "visibilityPredicate":  { class: "foam.mlang.predicate.True" },
   "enabled":true,
   "reviewRequired":true,
   "keywords":["featured"],
@@ -400,7 +419,7 @@ p({
   "description":"Unlock payments",
   "icon":"/images/capabilityIcons/USDOnboardCap.svg",
   "version":"0",
-  "visible":true,
+  "visibilityPredicate":  { class: "foam.mlang.predicate.True" },
   "enabled":true,
   "reviewRequired":true,
   "keywords":["featured"],
@@ -450,8 +469,7 @@ p({
   "name":"Payables Menu Payment Provider Capability(AFEX)",
   "description":"Payables Menu Payment Provider Capability(AFEX)",
   "version":"0",
-  "enabled":true,
-  "visible":false,
+  "enabled":true
 })
 
 p({
@@ -518,7 +536,7 @@ p({
   "icon":"/images/capabilityIcons/BusinessRegistrationCap.svg",
   "of":"net.nanopay.crunch.onboardingModels.InitialBusinessData",
   "version":"0",
-  "visible":true,
+  "visibilityPredicate":  { class: "foam.mlang.predicate.True" },
   "enabled":true,
   "keywords":["featured"],
   "availabilityPredicate":{
@@ -991,8 +1009,7 @@ p({
   "name":"Business Onboarding Addition Infor",
   "of":"net.nanopay.onboarding.model.BusinessOnboardingExtra",
   "version":"0",
-  "enabled":true,
-  "visible":false
+  "enabled":true
 })
 
 p({
@@ -1001,7 +1018,6 @@ p({
   "name":"nanopay business registration granted menu",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "permissionsGranted":[
   "menu.read.capability.menu.search",
   "menu.read.capability.menu.paymentcode",
@@ -1018,7 +1034,6 @@ p({
   "name":"google sheets import capability",
   "version":"0",
   "enabled":true,
-  "visible":false,
   "permissionsGranted":[
     "data.import.googleSheets"
   ]

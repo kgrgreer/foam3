@@ -42,30 +42,29 @@ foam.CLASS({
       value: 'EUR',
     },
     {
-      name: 'bankCode',
+      name: 'institutionNumber',
       updateVisibility: 'RO',
-      validateObj: function(bankCode) {
+      validateObj: function(institutionNumber) {
         var regex = /^[A-z0-9a-z]{4}$/;
 
-        if ( bankCode === '' ) {
-          return this.BANK_CODE_REQUIRED;
-        } else if ( ! regex.test(bankCode) ) {
-          return this.BANK_CODE_INVALID;
+        if ( institutionNumber === '' ) {
+          return this.INSTITUTION_NUMBER_REQUIRED;
+        } else if ( ! regex.test(institutionNumber) ) {
+          return this.INSTITUTION_NUMBER_INVALID;
         }
       }
     },
     {
-      class: 'String',
-      name: 'branchCode',
+      name: 'branchId',
       section: 'accountInformation',
       updateVisibility: 'RO',
-      validateObj: function(branchCode) {
+      validateObj: function(branchId) {
         var regex = /^[0-9]{4}$/;
 
-        if ( branchCode === '' ) {
-          return this.BRANCH_CODE_REQUIRED;
-        } else if ( ! regex.test(branchCode) ) {
-          return this.BRANCH_CODE_INVALID;
+        if ( branchId === '' ) {
+          return this.BRANCH_ID_REQUIRED;
+        } else if ( ! regex.test(branchId) ) {
+          return this.BRANCH_ID_INVALID;
         }
       }
     },

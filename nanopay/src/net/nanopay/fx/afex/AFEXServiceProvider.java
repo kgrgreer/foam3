@@ -69,7 +69,6 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     if ( business == null ||  ! business.getCompliance().equals(ComplianceStatus.PASSED) ) return false;
 
     try {
-      if  ( business.getOnboarded() ) {
         DAO afexBusinessDAO = (DAO) this.x.get("afexBusinessDAO");
         AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, business.getId()));
 
@@ -163,14 +162,10 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             }
             return true;
           }
-      }
-
     } catch(Exception e) {
       logger_.error("Failed to onboard client to AFEX.", e);
     }
-
     return false;
-
   }
 
   public void pushSigningOfficers(Business business, String clientKey) {
@@ -535,10 +530,10 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       createBeneficiaryRequest.setBankName(bankName);
       String bankRoutingCode = bankAccount.getRoutingCode(this.x);
       if ( bankAccount instanceof CABankAccount) {
-        bankRoutingCode = "0" + bankAccount.getBankCode() + bankRoutingCode;
+        bankRoutingCode = "0" + bankAccount.getInstitutionNumber() + bankRoutingCode;
       }
-      if ( ! SafetyUtil.isEmpty(bankAccount.getBankCode()) ) {
-        createBeneficiaryRequest.setBankSWIFTBIC(bankAccount.getBankCode());
+      if ( ! SafetyUtil.isEmpty(bankAccount.getInstitutionNumber()) ) {
+        createBeneficiaryRequest.setBankSWIFTBIC(bankAccount.getInstitutionNumber());
         createBeneficiaryRequest.setBankAccountNumber(bankAccount.getIban());
       }
       createBeneficiaryRequest.setBankRoutingCode(bankRoutingCode);
@@ -632,7 +627,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     updateBeneficiaryRequest.setBankName(bankName);
     String bankRoutingCode = bankAccount.getRoutingCode(this.x);
     if ( bankAccount instanceof CABankAccount) {
-      bankRoutingCode = "0" + bankAccount.getBankCode() + bankRoutingCode;
+      bankRoutingCode = "0" + bankAccount.getInstitutionNumber() + bankRoutingCode;
     }
     updateBeneficiaryRequest.setBankRoutingCode(bankRoutingCode);
     updateBeneficiaryRequest.setBeneficiaryAddressLine1(bankAddress.getAddress());

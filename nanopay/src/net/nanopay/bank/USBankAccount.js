@@ -125,11 +125,6 @@ foam.CLASS({
       `
     },
     {
-      name: 'bankCode',
-      visibility: 'HIDDEN'
-    },
-    { // REVIEW: remove
-      class: 'String',
       name: 'institutionNumber',
       hidden: true
     },
@@ -301,7 +296,7 @@ foam.CLASS({
       of: 'net.nanopay.model.USPadCapture',
       name: 'padCapture',
       section: 'pad',
-      storageTransient: true,
+      transient: true,
       label: '',
       updateVisibility: 'HIDDEN',
       factory: function() {

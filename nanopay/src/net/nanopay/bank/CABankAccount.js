@@ -130,10 +130,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'bankCode',
-      visibility: 'HIDDEN'
-    },
-    {
       name: 'voidChequeImage',
       class: 'String',
       label: '',
@@ -187,7 +183,6 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
       name: 'institutionNumber',
       label: 'Institution',
       documentation: `Provides backward compatibilty for mobile call flow.
@@ -278,7 +273,6 @@ foam.CLASS({
             });
           }))
         .end()
-
         .start()
           .add(obj.slot((accountNumber) => {
               if ( accountNumber ) {
@@ -295,7 +289,7 @@ foam.CLASS({
       of: 'net.nanopay.model.CAPadCapture',
       name: 'padCapture',
       section: 'pad',
-      storageTransient: true,
+      transient: true,
       label: '',
       updateVisibility: 'HIDDEN',
       factory: function() {

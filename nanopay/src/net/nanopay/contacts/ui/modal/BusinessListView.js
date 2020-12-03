@@ -117,7 +117,7 @@ foam.CLASS({
       name: 'createNewContact',
       label: 'Create New',
       code: function() {
-        this.pushMenu('sme.menu.create');
+        this.pushMenu('capability.menu.create');
       }
     },
   ]

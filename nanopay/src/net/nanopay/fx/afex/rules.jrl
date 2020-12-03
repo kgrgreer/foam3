@@ -236,7 +236,7 @@ p({
   "class":"foam.nanos.ruler.Rule",
   "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d17","name":"AFEX Create Trade Rule",
   "documentation":"Rule to create trade on AFEX system when transaction is PENDING_PARENT_COMPLETED and trade not yet created.",
-  "priority":100,
+  "priority":3000,
   "ruleGroup":"AFEX",
   "daoKey":"localTransactionDAO",
   "operation":0,
@@ -249,6 +249,46 @@ p({
   },
   "enabled":true,
   "saveHistory":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"9a36be15-7ac9-4044-9905-47e4788889b3",
+  "name":"AFEX Get PDF Rule",
+  "documentation":"Rule to get pdf confirmation from AFEX",
+  "priority":10,
+  "ruleGroup":"AFEX",
+  "daoKey":"localTransactionDAO",
+  "operation":0,
+  "after":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of":"net.nanopay.fx.afex.AFEXTransaction"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+        "propName":"afexTradeResponseNumber",
+        "propValue":0
+      },
+      {
+        "class": "foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName": "status",
+        "propValue": {
+          "class": "net.nanopay.tx.model.TransactionStatus",
+          "ordinal":12
+        }
+     }
+    ]
+  },
+  "asyncAction":{
+    "class":"net.nanopay.fx.afex.AFEXGetPDFRule"
+  },
+  "enabled":true,
+  "saveHistory":false,
   "lifecycleState":1
 })
 
