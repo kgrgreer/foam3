@@ -49,10 +49,19 @@ foam.CLASS({
     'net.nanopay.tx.HistoricStatus',
    ],
 
-   javaImports: [
+  javaImports: [
     'java.util.Date'
-   ],
+  ],
 
+  tableColumns :[
+    "id",
+    "amount",
+    "referenceNumber",
+    "chainSummary.summary",
+    "chainSummary.status",
+    "chainSummary.errorCode"
+  ],
+  
   messages: [
     { name: 'DESCRIPTION', message: 'Transaction Summary' }
   ],
