@@ -455,3 +455,61 @@ p({
   "enabled":true,
   "lifecycleState":1
 })
+
+// No compliance approvals for beneficialOwnerOnboarding or businessDirectorOnboarding
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"crunch-onboard-compliance-0",
+  "name":"Crunch Onboarding - User Final Compliance Rule",
+  "documentation":"Final rule for User compliance.",
+  "priority":50,
+  "ruleGroup":"crunchOnboarding",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.Or",
+    "args":[
+      {
+        "class":"foam.mlang.predicate.And",
+        "args":[
+          {
+            "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+            "category":"complianceSetting",
+            "isRecurring":false,
+            "statusChanged":false
+          },
+          {
+            "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+            "category":"signingOfficerOnboarding",
+            "isRecurring":false,
+            "statusChanged":false
+          }
+        ]
+      },
+      {
+        "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+        "category":"onboarding",
+        "isRecurring":false,
+        "statusChanged":false
+      },
+      {
+        "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+        "category":"userComplianceCheck",
+        "isRecurring":false,
+        "statusChanged":false
+      },
+      {
+        "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+        "category":"businessComplianceCheck",
+        "isRecurring":false,
+        "statusChanged":false
+      }
+    ]
+  },
+  "asyncAction":{
+    "class":"net.nanopay.crunch.compliance.UserComplianceApproval"
+  },
+  "enabled":true,
+  "lifecycleState":1
+})
