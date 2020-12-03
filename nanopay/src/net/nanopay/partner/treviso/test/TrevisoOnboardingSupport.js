@@ -61,12 +61,14 @@ foam.CLASS({
             emailVerified: true,
             phoneNumber: '9055551212',
             address: {
-              'structured': false,
-              'address1': '20 King St. W',
-              'regionId': 'SP',
-              'countryId': 'BR',
-              'city': 'Sao Paulo',
-              'postalCode': '01310000'
+              class: 'foam.nanos.auth.Address',
+              structured: true,
+              countryId: 'BR',
+              regionId: 'BR-SP',
+              streetNumber: '1',
+              streetName: 'Grand',
+              city: 'São Paulo',
+              postalCode: '01310000'
             }
           }, x));
           if ( ! u ||
@@ -121,32 +123,6 @@ foam.CLASS({
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
           ucj = await this.crunchService.updateJunction(x, id, null, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
         }
-      }
-    },
-    {
-      name: 'createBusiness',
-      type: 'net.nanopay.model.Business',
-      code: async function(x, user) {
-        const E = foam.mlang.ExpressionsSingleton.create();
-        var b = await this.client(x, 'businessDAO', net.nanopay.model.Business).find(
-          E.EQ(net.nanopay.model.Business.BUSINESS_NAME, user.userName),
-        );
-        if ( ! b ) {
-          b = await this.client(x, 'businessDAO', net.nanopay.model.Business).put_(x, net.nanopay.model.Business.create({
-            businessName: 'business-'+user.userName,
-            organization: 'business-'+user.userName,
-            phoneNumber: user.phoneNumber,
-            address: {
-              'structured': false,
-              'address1': '20 King St. W',
-              'regionId': 'SP',
-              'countryId': 'BR',
-              'city': 'Sao Paulo',
-              'postalCode': '01310000'
-            }
-          }));
-        }
-        return b;
       }
     },
     {
@@ -209,7 +185,6 @@ foam.CLASS({
       }
     },
     {
-      // REVIEW: having a lot of trouble with this one, getting the cap type correct.
       name: 'signingOfficerPersonalData',
       code: async function(x, user, business) {
         var id = '777af38a-8225-87c8-dfdf-eeb15f71215f-123';
@@ -218,16 +193,7 @@ foam.CLASS({
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
           var cap =  net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.create({
-            address: {
-              class: 'foam.nanos.auth.Address',
-              structured: true,
-              countryId: 'BR',
-              regionId: 'BR-AC',
-              streetNumber: '1',
-              streetName: 'name',
-              city: 'city',
-              postalCode: '12345321',
-            },
+            address: user.address,
             jobTitle: 'Treasury Manager',
             phoneNumber: user.phoneNumber,
             businessId: business.id

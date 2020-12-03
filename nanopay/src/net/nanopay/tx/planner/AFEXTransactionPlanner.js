@@ -121,7 +121,7 @@ foam.CLASS({
             null, null, owner, null);
 
           if ( fxQuote != null && fxQuote.getId() > 0 ) {
-            return buildChain( fxQuote, quote, x);
+            return buildChain( fxQuote, quote, x, afexService);
           }
 
         }
@@ -152,6 +152,10 @@ foam.CLASS({
         {
           type: 'Context',
           name: 'x'
+        },
+        {
+          type: 'AFEXServiceProvider',
+          name: 'afexService'
         }
       ],
       javaType: 'FXSummaryTransaction',
@@ -178,7 +182,10 @@ foam.CLASS({
 
           AFEXDigitalAccount afexDigital = findAFEXDigitalAccount(request, x, txnQuote);
           afexCT.addNext( createFundingTransaction(x, request, fxQuote, afexDigital.getId()) );
-          afexCT.addNext( createAFEXTransaction(x, request, fxQuote, afexDigital.getId()) );
+          AFEXTransaction afexTransaction = createAFEXTransaction(x, request, fxQuote, afexDigital.getId());
+          int result = afexService.createTrade(afexTransaction);
+          afexTransaction.setAfexTradeResponseNumber(result);
+          afexCT.addNext(afexTransaction);
         }
         else {
           afexCT.addNext( createAFEXTransaction(x, request, fxQuote, request.getSourceAccount()) );

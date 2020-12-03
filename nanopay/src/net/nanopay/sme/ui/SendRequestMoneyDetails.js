@@ -239,6 +239,7 @@ foam.CLASS({
     { name: 'SELECT_BANK_ACCOUNT', message: 'Please select a bank account' },
     { name: 'NEW_MSG', message: 'New' },
     { name: 'EXISTING_MSG', message: 'Existing' },
+    { name: 'NEXT', message: 'Next' },
   ],
 
   methods: [
@@ -248,7 +249,7 @@ foam.CLASS({
       var existingButtonLabel = this.EXISTING_MSG;
       this.hasBackOption = false;
       // Update the next button label
-      this.nextLabel = 'Next';
+      this.nextLabel = this.NEXT;
 
       this.addClass(this.myClass())
       .startContext({ data: this })

@@ -285,7 +285,6 @@ foam.CLASS({
       javaJSONParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.json.StringParser())`,
       javaCSVParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.csv.CSVStringParser())`,
       javaToCSVLabel: 'outputter.outputValue("Transaction ID");',
-      tableWidth: 150,
       includeInDigest: true
     },
     {
@@ -445,8 +444,7 @@ foam.CLASS({
       name: 'referenceNumber',
       label: 'Reference Number',
       section: 'basicInfo',
-      includeInDigest: true,
-      tableWidth: 50
+      includeInDigest: true
     },
      {
       // FIXME: move to a ViewTransaction used on the client

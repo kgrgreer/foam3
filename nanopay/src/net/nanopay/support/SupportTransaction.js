@@ -49,11 +49,9 @@ foam.CLASS({
     'net.nanopay.tx.HistoricStatus',
    ],
 
-  tableColumns: [
-    'id',
-    'amount',
-    'referenceNumber'
-  ],
+   javaImports: [
+    'java.util.Date'
+   ],
 
   messages: [
     { name: 'DESCRIPTION', message: 'Transaction Summary' }
@@ -70,13 +68,14 @@ foam.CLASS({
 
   properties: [
     net.nanopay.tx.model.Transaction.ID.clone().copyFrom({
+      label: 'Transaction ID',
       section: 'transactionInformation',
       order: 1
     }),
     net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT.clone().copyFrom({
       label: 'Payer Account',
       gridColumns:4,
-      help: 'Bank account of the payer',
+      help: '',
       targetDAOKey: 'supportAccountDAO',
       view: {
         class: 'foam.u2.view.ReadReferenceView'
@@ -87,6 +86,7 @@ foam.CLASS({
     net.nanopay.tx.model.Transaction.AMOUNT.clone().copyFrom({
       label: 'Payer Amount',
       gridColumns:4,
+      help: 'Amount sent by payer in the payer currency.',
       validationPredicates: [],
       section: 'transactionInformation',
       order: 3
@@ -100,7 +100,7 @@ foam.CLASS({
     net.nanopay.tx.model.Transaction.DESTINATION_ACCOUNT.clone().copyFrom({
       label: 'Payee Account',
       gridColumns:4,
-      help: 'Bank account of the payee',
+      help: '',
       targetDAOKey: 'supportAccountDAO',
       view: {
         class: 'foam.u2.view.ReadReferenceView'
@@ -111,6 +111,7 @@ foam.CLASS({
     net.nanopay.tx.model.Transaction.DESTINATION_AMOUNT.clone().copyFrom({
       label: 'Payee Amount',
       gridColumns:4,
+      help: 'Amount requested by payee in the payee currency.',
       validationPredicates: [],
       section: 'transactionInformation',
       order: 6
@@ -121,25 +122,48 @@ foam.CLASS({
       section: 'transactionInformation',
       order: 7
     }),
-    net.nanopay.tx.model.Transaction.CREATED_BY.clone().copyFrom({
+    net.nanopay.tx.model.Transaction.CREATED.clone().copyFrom({
       gridColumns:4,
       section: 'transactionInformation',
       order: 8
     }),
+    net.nanopay.tx.model.Transaction.STATUS_HISTORY.clone().copyFrom({
+      hidden: true
+    }),
     net.nanopay.tx.model.Transaction.LAST_MODIFIED.clone().copyFrom({
-      gridColumns:4,
+      gridColumns:6,
       section: 'transactionInformation',
       order: 9
     }),
-    net.nanopay.tx.model.Transaction.REFERENCE_NUMBER.clone().copyFrom({
-      visibility: 'RO',
+    net.nanopay.tx.model.Transaction.CREATED_BY.clone().copyFrom({
       gridColumns:4,
       section: 'transactionInformation',
       order: 10
     }),
-    net.nanopay.tx.SummaryTransaction.CHAIN_SUMMARY.clone().copyFrom({
+    net.nanopay.tx.model.Transaction.LAST_MODIFIED_BY.clone().copyFrom({
+      gridColumns:6,
       section: 'transactionInformation',
       order: 11
+    }),
+    net.nanopay.tx.model.Transaction.REFERENCE_NUMBER.clone().copyFrom({
+      visibility: 'RO',
+      gridColumns: 4,
+      section: 'transactionInformation',
+      order: 12
+    }),
+    net.nanopay.tx.model.Transaction.STATUS.clone().copyFrom({
+      label: 'Submission Status',
+      gridColumns:6,
+      section: 'transactionInformation',
+      order: 13,
+      view: { class: 'foam.u2.view.ReadOnlyEnumView' }
+    }),
+    net.nanopay.tx.model.Transaction.LIFECYCLE_STATE.clone().copyFrom({
+      hidden: true
+    }),
+    net.nanopay.tx.SummaryTransaction.CHAIN_SUMMARY.clone().copyFrom({
+      section: 'transactionInformation',
+      order: 13
     }),
     net.nanopay.tx.model.Transaction.DST_ACCOUNT_ERROR.clone(),
     net.nanopay.tx.model.Transaction.LINE_ITEMS.clone().copyFrom({

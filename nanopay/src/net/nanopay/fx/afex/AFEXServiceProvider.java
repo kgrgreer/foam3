@@ -69,7 +69,6 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     if ( business == null ||  ! business.getCompliance().equals(ComplianceStatus.PASSED) ) return false;
 
     try {
-      if  ( business.getOnboarded() ) {
         DAO afexBusinessDAO = (DAO) this.x.get("afexBusinessDAO");
         AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, business.getId()));
 
@@ -163,14 +162,10 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             }
             return true;
           }
-      }
-
     } catch(Exception e) {
       logger_.error("Failed to onboard client to AFEX.", e);
     }
-
     return false;
-
   }
 
   public void pushSigningOfficers(Business business, String clientKey) {
