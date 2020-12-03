@@ -167,4 +167,11 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
   public ValidateInstantBenefiaryResponse validateInstantBenefiaryRequest(ValidateInstantBenefiaryRequest validateInstantBenefiary, String spid)  {
     return null;
   }
+
+  @Override
+  public IsIbanResponse isiban(IsIbanRequest request, String spid) {
+    IsIbanResponse response = new IsIbanResponse();
+    response.setIsIban(true);
+    return response;
+  }
 }

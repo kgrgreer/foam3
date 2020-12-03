@@ -392,6 +392,8 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEXFundingTransaction' },
   { name: 'net/nanopay/fx/afex/AFEXCreateFundingBalancesRule' },
   { name: 'net/nanopay/fx/afex/AFEXSubmitFundingTxnRule' },
+  { name: 'net/nanopay/fx/afex/IsIbanRequest' },
+  { name: 'net/nanopay/fx/afex/IsIbanResponse' },
 
   // kotak
   { name: 'net/nanopay/kotak/Kotak' },

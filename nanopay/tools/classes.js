@@ -292,6 +292,8 @@ var classes = [
   'net.nanopay.fx.afex.AFEXFundingTransaction',
   'net.nanopay.fx.afex.AFEXCreateFundingBalancesRule',
   'net.nanopay.fx.afex.AFEXSubmitFundingTxnRule',
+  'net.nanopay.fx.afex.IsIbanRequest',
+  'net.nanopay.fx.afex.IsIbanResponse',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
@@ -1445,7 +1447,7 @@ var classes = [
   'net.nanopay.payment.PayeeCurrencyService',
   'net.nanopay.payment.ClientPayeeCurrencyService',
   'net.nanopay.payment.PayeeCurrency',
-  
+
   // support
   'net.nanopay.support.SupportAccount',
   'net.nanopay.support.SupportBusiness',

@@ -1133,6 +1133,19 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     }
   }
 
+  public IsIbanResponse isiban(String iban, String country, String spid) {
+    IsIbanRequest isIbanRequest = new IsIbanRequest();
+    isIbanRequest.setIban(iban);
+    isIbanRequest.setCountry(country);
+    IsIbanResponse isIbanResponse = null;
+    try {
+      isIbanResponse = this.afexClient.isiban(isIbanRequest, spid);
+    } catch(Throwable t) {
+      logger_.debug("Iban validation failed. The given iban is : " + iban + " for " + country);
+    }
+    return isIbanResponse;
+  }
+
   protected User getSigningOfficer(X x, Business business) {
     java.util.List<User> signingOfficers = ((ArraySink) business.getSigningOfficers(x).getDAO().select(new ArraySink())).getArray();
     return signingOfficers.isEmpty() ? null : signingOfficers.get(0);
