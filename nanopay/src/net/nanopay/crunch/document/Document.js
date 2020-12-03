@@ -27,7 +27,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'UPLOAD_REQUEST_MSG', message: 'Document(s) required for' },
+    { name: 'UPLOAD_REQUEST_MSG', message: 'Provide' },
     { name: 'IMAGE_REQUIRED', message: 'Document(s) required' },
     { name: 'SECTION_HELP_MSG', message: 'Require a document for' },
     { name: 'DOC_UPLOAD_SECTION', message: '${UPLOAD_REQUEST_MSG} ${capability.name}' }
