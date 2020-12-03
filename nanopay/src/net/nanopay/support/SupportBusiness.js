@@ -39,11 +39,16 @@ foam.CLASS({
     },
     {
       name: 'bankAccounts'
+    },
+    {
+      name: 'transactionLimitsInformation',
+      title: 'Transaction Limits'
     }
   ],
 
   properties: [
     foam.nanos.auth.User.ID.clone().copyFrom({
+      label: 'Business ID',
       section: 'businessInformation',
       order: 1
     }),
@@ -76,13 +81,46 @@ foam.CLASS({
       section: 'businessInformation',
       order: 6
     }),
-    foam.nanos.auth.User.COMPLIANCE.clone().copyFrom({
+    net.nanopay.model.Business.CREATED.clone().copyFrom({
       section: 'businessInformation',
       order: 7
+    }),
+    net.nanopay.model.Business.LAST_MODIFIED.clone().copyFrom({
+      section: 'businessInformation',
+      order: 8
+    }),
+    net.nanopay.model.Business.CREATED_BY.clone().copyFrom({
+      section: 'businessInformation',
+      order: 9,
+      view: {
+        class: 'foam.u2.view.ReferenceView'
+      }
+    }),
+    net.nanopay.model.Business.LAST_MODIFIED_BY.clone().copyFrom({
+      section: 'businessInformation',
+      order: 10,
+      view: {
+        class: 'foam.u2.view.ReferenceView'
+      }
+    }),
+    foam.nanos.auth.User.COMPLIANCE.clone().copyFrom({
+      label: 'Compliance Status',
+      gridColumns: 6,
+      section: 'businessInformation',
+      order: 11
+    }),
+    foam.nanos.auth.User.STATUS.clone().copyFrom({
+      label: 'Registration Status',
+      gridColumns: 6,
+      section: 'businessInformation',
+      order: 12
     }),
     foam.nanos.auth.User.ACCOUNTS.clone().copyFrom({
       hidden: false,
       section: 'bankAccounts'
+    }),
+    foam.nanos.auth.User.TRANSACTION_LIMITS.clone().copyFrom({
+      section: 'transactionLimitsInformation'
     })
   ],
 

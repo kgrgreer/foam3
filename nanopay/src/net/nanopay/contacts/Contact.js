@@ -165,7 +165,7 @@ foam.CLASS({
         associated to.
         This is the opt-in name the business wants to display on our platform (used for searching), 
         as opposed to businessName / organization which is the company’s legal name.`,
-      visibility: 'HIDDEN',
+      visibility: 'HIDDEN'
     },
     {
       name: 'legalName',
@@ -191,7 +191,6 @@ foam.CLASS({
     },
     {
       name: 'firstName',
-      gridColumns: 6,
       view: { class: 'foam.u2.tag.Input' },
       validateObj: function(firstName) {
         if ( !! firstName ) {
@@ -208,7 +207,6 @@ foam.CLASS({
     },
     {
       name: 'lastName',
-      gridColumns: 6,
       view: { class: 'foam.u2.tag.Input' },
       validateObj: function(lastName) {
         if ( !! lastName ) {
@@ -223,6 +221,7 @@ foam.CLASS({
       name: 'confirm',
       documentation: `True if the user confirms their relationship with the contact.`,
       section: 'operationsInformation',
+      gridColumns: 6,
       label: '',
       updateVisibility: function() {
         return foam.u2.DisplayMode.HIDDEN;
@@ -280,7 +279,8 @@ foam.CLASS({
       javaValue: '0',
       name: 'businessId',
       documentation: `A unique identifier for the business associated with the Contact.`,
-      section: 'businessInformation'
+      section: 'businessInformation',
+      gridColumns: 6
     },
     {
       class: 'Boolean',
@@ -294,7 +294,8 @@ foam.CLASS({
       name: 'bankAccount',
       documentation: `The unique identifier for the bank account of the Contact
         if created while registering the Contact.`,
-      section: 'accountInformation'
+      section: 'accountInformation',
+      gridColumns: 6
     },
     {
       class: 'FObjectProperty',
@@ -304,7 +305,14 @@ foam.CLASS({
       storageTransient: true,
       label: '',
       visibility: function() {
-        return this.countries.length == 0 ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+        return this.countries.length == 0 && ! this.createBankAccount ? 
+          foam.u2.DisplayMode.HIDDEN : 
+          foam.u2.DisplayMode.RW;
+      },
+      factory: function() {
+        if ( this.bankAccount ) {
+          return this.accountDAO.find(this.bankAccount).then((res) => this.createBankAccount = res);
+        }
       },
       view: function(_, X) {
         let e = foam.mlang.Expressions.create();
@@ -331,6 +339,7 @@ foam.CLASS({
       name: 'availableCountries',
       visibility: 'HIDDEN',
       expression: function(paymentProviderCorridorDAO) {
+        if ( this.createBankAccount && this.createBankAccount.country ) return [];
         return this.PromisedDAO.create({
           promise: paymentProviderCorridorDAO.where(this.INSTANCE_OF(this.PaymentProviderCorridor))
             .select(this.MAP(this.PaymentProviderCorridor.TARGET_COUNTRY))
@@ -360,10 +369,12 @@ foam.CLASS({
       name: 'noCorridorsAvailable',
       documentation: 'GUI when no corridor capabilities have been added to user.',
       visibility: function() {
-        return this.countries.length == 0 ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
+        return this.countries.length == 0 && ! this.createBankAccount ? 
+          foam.u2.DisplayMode.RO : 
+          foam.u2.DisplayMode.HIDDEN;
       },
       view: function(_, X) {
-        return X.E().start().add(X.data.UNABLE_TO_ADD_BANK_ACCOUNT).end();
+        return X.data.createBankAccount ? null : X.E().start().add(X.data.UNABLE_TO_ADD_BANK_ACCOUNT).end();
       }
     },
     {
@@ -411,6 +422,7 @@ foam.CLASS({
       name: 'businessStatus',
       documentation: 'Tracks the status of a business.',
       section: 'systemInformation',
+      gridColumns: 6,
       storageTransient: true
     },
     {

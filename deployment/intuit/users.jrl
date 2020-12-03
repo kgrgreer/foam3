@@ -85,7 +85,7 @@ p({
 
 p({
     class:"foam.nanos.auth.User",
-    id:9036,
+    id:7036,
     spid:"intuit",
     firstName:"Support",
     lastName:"User",

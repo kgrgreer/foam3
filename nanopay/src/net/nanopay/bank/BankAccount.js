@@ -113,10 +113,6 @@ foam.CLASS({
       updateVisibility: 'RO'
     },
     {
-      name: 'summary',
-      updateVisibility: 'RO'
-    },
-    {
       class: 'String',
       name: 'accountNumber',
       documentation: 'The account number of the bank account.',
@@ -149,6 +145,7 @@ foam.CLASS({
     },
     {
       name: 'summary',
+      updateVisibility: 'RO',
       networkTransient: false,
       tableCellFormatter: function(_, obj) {
         this.start()
@@ -365,14 +362,18 @@ foam.CLASS({
       section: 'accountInformation',
       view: function(_, X) {
         return {
-          class: 'foam.u2.view.RichChoiceView',
-          data$: X.data.denomination$,
-          sections: [
-            {
-              heading: X.data.AVAILABLE_CURRENCIES_MSG,
-              dao$: X.data.availableCurrencies$
-            }
-          ]
+          class: 'foam.u2.view.ModeAltView',
+          readView: { class: 'foam.u2.view.ReferenceView' },
+          writeView: {
+            class: 'foam.u2.view.RichChoiceView',
+            data$: X.data.denomination$,
+            sections: [
+              {
+                heading: X.data.AVAILABLE_CURRENCIES_MSG,
+                dao$: X.data.availableCurrencies$
+              }
+            ]
+          }
         };
       }
     },

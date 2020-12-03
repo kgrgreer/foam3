@@ -292,6 +292,7 @@ var classes = [
   'net.nanopay.fx.afex.AFEXFundingTransaction',
   'net.nanopay.fx.afex.AFEXCreateFundingBalancesRule',
   'net.nanopay.fx.afex.AFEXSubmitFundingTxnRule',
+  'net.nanopay.fx.afex.AFEXGetPDFRule',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
@@ -706,6 +707,12 @@ var classes = [
   'net.nanopay.auth.ServiceProviderURL',
   'net.nanopay.auth.UserCreateServiceProviderURLRule',
   'net.nanopay.auth.UserCreateServiceProviderURLRuleAction',
+
+  // SSO
+  'net.nanopay.auth.openid.SSOToken',
+  'net.nanopay.auth.openid.OTLoginToken',
+  'net.nanopay.auth.openid.ClientTokenLoginService',
+  'net.nanopay.auth.openid.TokenLoginService',
 
   // PII
   'net.nanopay.security.pii.PII',
@@ -1486,7 +1493,8 @@ var skeletons = [
   'net.nanopay.contacts.PaymentCodeServiceInterface',
   'net.nanopay.interac.service.InteracTransactionDAO',
   'net.nanopay.contacts.ContactServiceInterface',
-  'net.nanopay.country.br.BrazilVerificationServiceInterface'
+  'net.nanopay.country.br.BrazilVerificationServiceInterface',
+  'net.nanopay.auth.openid.TokenLoginService'
 ];
 
 var proxies = [

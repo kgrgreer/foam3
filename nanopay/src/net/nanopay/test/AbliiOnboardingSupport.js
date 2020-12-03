@@ -299,12 +299,13 @@ foam.CLASS({
             emailVerified: true,
             phoneNumber: '9055551212',
             address: {
-              'structured': false,
-              'address1': '20 King St. W',
-              'regionId': 'ON',
-              'countryId': 'CA',
-              'city': 'Toronto',
-              'postalCode': 'M9B 5X6'
+              class: 'foam.nanos.auth.Address',
+              structured: false,
+              address1: '20 King St. W',
+              regionId: 'ON',
+              countryId: 'CA',
+              city: 'Toronto',
+              postalCode: 'M9B 5X6'
             }
           }, x));
           if ( ! u ||
@@ -320,13 +321,14 @@ foam.CLASS({
       type: 'net.nanopay.model.Business',
       code: async function(x, user) {
         const E = foam.mlang.ExpressionsSingleton.create();
+        let businessName = 'b-'+user.userName;
         var b = await this.client(x, 'businessDAO', net.nanopay.model.Business).find(
-          E.EQ(net.nanopay.model.Business.BUSINESS_NAME, user.userName),
+          E.EQ(net.nanopay.model.Business.BUSINESS_NAME, businessName)
         );
         if ( ! b ) {
           b = await this.client(x, 'businessDAO', net.nanopay.model.Business).put_(x, net.nanopay.model.Business.create({
-            businessName: 'business-'+user.userName,
-            organization: 'business-'+user.userName,
+            businessName: businessName,
+            organization: businessName,
             phoneNumber: user.phoneNumber,
             address: user.address
           }));
@@ -466,7 +468,7 @@ foam.CLASS({
                 'businessName': business.businessName,
                 'phoneNumber': user.phoneNumber || '6472223333',
                 'address': business.address,
-                'mailAddress': business.address
+                'mailingAddress': business.address
               },
               'Expanded Business Onboarding Details': {
                 'class': 'net.nanopay.crunch.registration.BusinessDetailExpandedData',
@@ -533,7 +535,7 @@ foam.CLASS({
     },
     {
       name: 'businessInitialData',
-      code: async function(x, business) {
+      code: async function(x, user) {
         var id;
         var ucj;
 
@@ -543,13 +545,13 @@ foam.CLASS({
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
           var cap = net.nanopay.crunch.onboardingModels.InitialBusinessData.create({
-            businessId: business.id,
-            businessName: business.businessName,
-            phoneNumber: business.phoneNumber,
-            businessAddress: business.address,
-            sameAsBusinessAddress: true
+            businessName: 'b-'+user.userName,
+            phoneNumber: user.phoneNumber,
+            address: user.address,
+            mailingAddress: user.address
           });
           ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
+          return await this.createBusiness(x, user);
         }
       }
     },
@@ -913,7 +915,7 @@ foam.CLASS({
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
           var cap =  net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.create({
-            address: business.address,
+            address: user.address,
             jobTitle: 'Treasurer',
             phoneNumber: user.phoneNumber,
             PEPHIORelated: false,
