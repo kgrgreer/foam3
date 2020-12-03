@@ -41,60 +41,127 @@ foam.CLASS({
     },
     {
       name: 'bankAccounts'
+    },
+    {
+      name: 'transactionLimitsInformation',
+      title: 'Transaction Limits'
     }
+  ],
+
+  messages: [
+    { name: 'TWO_FACTOR_SUCCESS', message: 'Two factor authentication successfully disabled' },
+    { name: 'TWO_FACTOR_INFO', message: 'Two factor authentication already disabled' },
+    { name: 'RESET_LOGIN_SUCCESS', message: 'Login attempts successfully reset' },
+    { name: 'RESET_LOGIN_INFO', message: 'Login attempts already reset' }
   ],
 
   properties: [
     foam.nanos.auth.User.ID.clone().copyFrom({
+      label: 'User ID',
       section: 'userInformation',
-      order: 1
+      gridColumns: 12,
+      order: 10
     }),
     foam.nanos.auth.User.FIRST_NAME.clone().copyFrom({
       gridColumns:6,
       section: 'userInformation',
-      order: 2
+      order: 20
+    }),
+    foam.nanos.auth.User.MIDDLE_NAME.clone().copyFrom({
+      gridColumns:6,
+      section: 'userInformation',
+      order: 25
     }),
     foam.nanos.auth.User.LAST_NAME.clone().copyFrom({
       gridColumns:6,
       section: 'userInformation',
-      order: 3
+      order: 30
     }),
     foam.nanos.auth.User.EMAIL.clone().copyFrom({
       gridColumns:6,
       section: 'userInformation',
-      order: 4
+      order: 40
     }),
     foam.nanos.auth.User.PHONE_NUMBER.clone().copyFrom({
       gridColumns:6,
       section: 'userInformation',
-      order: 5
+      order: 50
+    }),
+    foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
+      label: 'Date of Birth',
+      gridColumns:6,
+      section: 'userInformation',
+      order: 55
     }),
     foam.nanos.auth.User.ADDRESS.clone().copyFrom({
       section: 'userInformation',
-      order: 6
+      order: 60
     }),
     foam.nanos.auth.User.COMPLIANCE.clone().copyFrom({
+      label: 'Compliance Status',
       gridColumns:6,
       section: 'userInformation',
-      order: 7
+      order: 100
+    }),
+    foam.nanos.auth.User.STATUS.clone().copyFrom({
+      label: 'Registration Status',
+      gridColumns:6,
+      section: 'userInformation',
+      order: 110
     }),
     foam.nanos.auth.User.TWO_FACTOR_ENABLED.clone().copyFrom({
-      label: 'Two Factor Auth Enabled',
+      label: 'Two Factor Authentication Enabled',
       gridColumns:6,
       section: 'userInformation',
-      order: 8
+      order: 120
     }),
     foam.nanos.auth.User.GROUP.clone().copyFrom({
       hidden: false,
       view: {
         class: 'foam.u2.view.ReferenceView'
       },
+      gridColumns: 6,
       section: 'userInformation',
-      order: 9
+      order: 130
+    }),
+    foam.nanos.auth.User.PEPHIORELATED.clone().copyFrom({
+      label: 'Politically Exposed Person',
+      gridColumns:6,
+      section: 'userInformation',
+      order: 140
+    }),
+    foam.nanos.auth.User.THIRD_PARTY.clone().copyFrom({
+      label: "Acting on Behalf of Third Party",
+      gridColumns:6,
+      section: 'userInformation',
+      order: 150
+    }),
+    foam.nanos.auth.User.JOB_TITLE.clone().copyFrom({
+      gridColumns:6,
+      section: 'userInformation',
+      order: 160
+    }),
+    foam.nanos.auth.User.CREATED_BY.clone().copyFrom({
+      section: 'userInformation',
+      order: 170,
+      view: {
+        class: 'foam.u2.view.ReferenceView'
+      }
+    }),
+    foam.nanos.auth.User.CREATED.clone().copyFrom({
+      section: 'userInformation',
+      order: 180
+    }),
+    foam.nanos.auth.User.LAST_MODIFIED.clone().copyFrom({
+      section: 'userInformation',
+      order: 190
     }),
     foam.nanos.auth.User.ACCOUNTS.clone().copyFrom({
       hidden: false,
       section: 'bankAccounts'
+    }),
+    foam.nanos.auth.User.TRANSACTION_LIMITS.clone().copyFrom({
+      section: 'transactionLimitsInformation'
     })
   ],
 
@@ -145,12 +212,12 @@ foam.CLASS({
       code: async function(X) {
         var loginAttempts = await X.loginAttemptsDAO.find(this.id);
         if ( loginAttempts == undefined || loginAttempts.loginAttempts == 0 ) {
-          X.notify('Login attempts already at 0', '', this.LogLevel.WARN, true);
+          X.notify(this.RESET_LOGIN_INFO, '', this.LogLevel.WARN, true);
         } else {
           loginAttempts.loginAttempts = 0;
           X.loginAttemptsDAO.put(loginAttempts)
             .then(result => {
-              X.notify('Login attempts successfully reset', '', this.LogLevel.INFO, true);
+              X.notify(this.RESET_LOGIN_SUCCESS, '', this.LogLevel.INFO, true);
             });
         }
       }
@@ -162,12 +229,12 @@ foam.CLASS({
       code: async function(X) {
         var user = await X.userDAO.find(this.id);
         if ( ! user.twoFactorEnabled ) {
-          X.notify('Two factor authentication already disabled', '', this.LogLevel.WARN, true);
+          X.notify(this.TWO_FACTOR_INFO, '', this.LogLevel.WARN, true);
         } else {
           user.twoFactorEnabled = false;
           X.userDAO.put(user)
             .then(() => {
-              X.notify('Two factor authentication successfully disabled', '', this.LogLevel.INFO, true);
+              X.notify(this.TWO_FACTOR_SUCCESS, '', this.LogLevel.INFO, true);
             });
         }
       }

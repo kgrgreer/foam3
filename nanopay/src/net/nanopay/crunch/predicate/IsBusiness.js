@@ -42,18 +42,7 @@ foam.CLASS({
         if ( ! ( obj instanceof X ) ) return false;
         X x = (X) obj;
         User user = ((Subject) x.get("subject")).getUser();
-        if ( user == null || ! ( user instanceof Business ) ) return false;
-
-        //check if business registration has Granted
-        DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
-        UserCapabilityJunction ucj = (UserCapabilityJunction) ucjDAO.find(
-          AND(
-            EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-76"),
-            EQ(UserCapabilityJunction.SOURCE_ID, user.getId())
-          )
-        );
-        if ( ucj == null || ucj.getStatus() !=  CapabilityJunctionStatus.GRANTED ) return false;
-        return true;
+        return user != null && user instanceof Business;
       `
     }
   ]

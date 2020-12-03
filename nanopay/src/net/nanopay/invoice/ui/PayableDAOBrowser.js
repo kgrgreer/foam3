@@ -51,8 +51,18 @@ foam.CLASS({
 
   css: `
     ^ {
-      margin: auto;
-      padding: 32px;
+      margin: 30px auto 0 auto;
+      padding: 0 32px;
+    }
+    ^top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    ^label-subtitle {
+      color: #9ba1a6;
+      font-size: 18px;
     }
     ^row {
       display: flex;
@@ -71,8 +81,9 @@ foam.CLASS({
     ^ .foam-u2-ActionView-secondary {
       border: 1px solid lightgrey;
     }
-    ^ h3 {
-      font-weight: 200;
+    ^ h1 {
+      color: /*%BLACK%*/ #1e1f21;
+      margin: 0;
     }
     ^ .DAOBrowser .foam-u2-filter-BooleanFilterView-container .foam-u2-md-CheckBox:checked {
       background-color: /*%WHITE%*/ #ffffff;
@@ -301,14 +312,20 @@ foam.CLASS({
   methods: [
     function initE() {
       this.start().addClass(this.myClass())
-      .start('div').addClass(this.myClass('row'))
-        .start('h1').add(this.TITLE).end()
-        .tag(this.primaryAction, {
-          size: 'LARGE'
-        })
+      .start()
+        .start().addClass(this.myClass('top-row'))  
+          .start('h1').add(this.TITLE).end()
+          .start()
+            .startContext({ data: this })
+              .tag(this.primaryAction, {
+                size: 'LARGE'
+              })
+            .endContext()
+          .end()
+        .end()
+        .start().addClass(this.myClass('label-subtitle')).add(this.SUB_TITLE).end()
       .end()
-      .start('div').addClass(this.myClass('row'))
-        .start('h3').addClass('subdued-text').add(this.SUB_TITLE).end()
+      .start()
         .startContext({ data: this })
           .tag(this.IMPORT_FROM_GOOGLE_SHEETS, {
             size: 'MEDIUM'
@@ -332,12 +349,12 @@ foam.CLASS({
       name: 'sendMoney',
       label: 'Send payment',
       code: function(X) {
-        self.checkAndNotifyAbilityToPay().then((result) => {
+        this.checkAndNotifyAbilityToPay().then((result) => {
           if ( result ) {
             X.menuDAO.find('sme.quickAction.send').then((menu) => {
               var clone = menu.clone();
               Object.assign(clone.handler.view, {
-                invoice: self.Invoice.create({}),
+                invoice: this.Invoice.create({}),
                 isPayable: true,
                 isForm: true,
                 isList: false,

@@ -11,7 +11,8 @@ foam.CLASS({
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.crunch.CrunchService',
-    'net.nanopay.crunch.onboardingModels.SigningOfficerQuestion'
+    'net.nanopay.crunch.onboardingModels.SigningOfficerQuestion',
+    'static foam.nanos.crunch.CapabilityJunctionStatus.*'
   ],
 
   methods: [
@@ -30,7 +31,7 @@ foam.CLASS({
 
           CrunchService crunchService = (CrunchService) x.get("crunchService");
           crunchService.updateJunction(
-            subjectX, "554af38a-8225-87c8-dfdf-eeb15f71215f-0", data, null);
+            subjectX, "554af38a-8225-87c8-dfdf-eeb15f71215f-0", data, GRANTED);
         }, "Add signing officer capability");
       `
     }
