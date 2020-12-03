@@ -20,13 +20,6 @@ p({
           "value": "liquidBasic"
         }
       },
-      "browseViews": [
-        {
-          "class": "foam.comics.v2.namedViews.NamedViewCollection",
-          "name": "Users",
-          "view": { "class": "foam.nanos.auth.UserDAOBrowserView" }
-        }
-      ],
       "CRUDEnabledActionsAuth": {
         "class": "foam.comics.v2.CRUDEnabledActionsAuth",
         "isEnabled": true,

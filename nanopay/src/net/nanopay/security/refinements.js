@@ -31,7 +31,9 @@ foam.CLASS({
       class: 'Boolean',
       value: true,
       writePermissionRequired: true,
-      section: 'operationsInformation'
+      section: 'operationsInformation',
+      gridColumns: 6,
+      order: 45
     }
   ]
 });

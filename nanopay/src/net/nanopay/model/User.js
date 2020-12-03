@@ -116,14 +116,18 @@ foam.CLASS({
       value: false,
       documentation: `Determines whether the User was invited to the platform by
         an invitation email.`,
-      section: 'operationsInformation'
+      section: 'operationsInformation',
+      gridColumns: 6,
+      order: 50
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'invitedBy',
       documentation: 'The ID of the person who invited the User to the platform.',
-      section: 'operationsInformation'
+      section: 'operationsInformation',
+      gridColumns: 6,
+      order: 55
     },
     {
       class: 'foam.core.Enum',
@@ -132,6 +136,7 @@ foam.CLASS({
       documentation: `Tracks the previous status of the User.`,
       section: 'operationsInformation',
       order: 11,
+      gridColumns: 6,
       externalTransient: true
     },
     {
@@ -143,7 +148,8 @@ foam.CLASS({
       `,
       // NOTE: '_enabled_ is deprecated; use _status_ instead.',
       section: 'deprecatedInformation',
-      order: 10
+      order: 10,
+      gridColumns: 6
     },
     {
       class: 'foam.core.Enum',
@@ -179,6 +185,7 @@ foam.CLASS({
       },
       section: 'operationsInformation',
       order: 10,
+      gridColumns: 6,
       sheetsOutput: true
     },
     {
@@ -208,6 +215,8 @@ foam.CLASS({
       documentation: 'Determines whether a welcome email has been sent to the User.',
       value: true,
       section: 'operationsInformation',
+      gridColumns: 6,
+      order: 60,
       externalTransient: true
     },
     {
@@ -215,6 +224,8 @@ foam.CLASS({
       name: 'portalAdminCreated',
       documentation: 'Determines whether a User was created by an admin user.',
       section: 'operationsInformation',
+      gridColumns: 6,
+      order: 65,
       value: false,
       externalTransient: true
     },
@@ -225,6 +236,8 @@ foam.CLASS({
       documentation: `Determines whether the User is using its own unique password or one
         that was system-generated.`,
       section: 'operationsInformation',
+      gridColumns: 6,
+      order: 70,
       externalTransient: true
     },
     {
@@ -233,6 +246,8 @@ foam.CLASS({
       value: 0,
       documentation: 'Defines the number of attempts to invite the user.',
       section: 'operationsInformation',
+      gridColumns: 6,
+      order: 57,
       externalTransient: true
     },
     {
@@ -242,7 +257,8 @@ foam.CLASS({
         on behalf of a 3rd party.
       `,
       createVisibility: 'HIDDEN',
-      section: 'ownerInformation'
+      section: 'ownerInformation',
+      gridColumns: 6
     },
     {
       class: 'FObjectProperty',
@@ -252,10 +268,6 @@ foam.CLASS({
         passport, of the individual person, or real user.
       `,
       createVisibility: 'HIDDEN',
-      factory: function() {
-        return this.PersonalIdentification.create();
-      },
-      view: { class: 'foam.u2.detail.VerticalDetailView' },
       section: 'complianceInformation'
     },
     {
@@ -266,7 +278,8 @@ foam.CLASS({
         related to any such person.
       `,
       createVisibility: 'HIDDEN',
-      section: 'ownerInformation'
+      section: 'ownerInformation',
+      gridColumns: 6
     },
     {
       class: 'String',
@@ -279,6 +292,7 @@ foam.CLASS({
         that was created when inviting the User.
       `,
       section: 'operationsInformation',
+      gridColumns: 6,
       externalTransient: true
     },
     {
@@ -291,6 +305,7 @@ foam.CLASS({
       tableWidth: 85,
       section: 'deprecatedInformation',
       order: 20,
+      gridColumns: 6,
       externalTransient: true
     },
     {
@@ -303,13 +318,15 @@ foam.CLASS({
         placeholderImage: 'images/ic-placeholder.png'
       },
       createVisibility: 'HIDDEN',
-      section: 'userInformation'
+      section: 'systemInformation',
+      gridColumns: 6
     },
     {
       class: 'foam.core.Enum',
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
       section: 'systemInformation',
+      gridColumns: 6,
       value: foam.nanos.auth.LifecycleState.PENDING,
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
@@ -333,17 +350,19 @@ foam.CLASS({
       tableWidth: 160,
       section: 'businessInformation',
       order: 15,
+      gridColumns: 6,
       label: 'Company Name'
     },
     {
       name: 'checkerPredicate',
-      javaFactory: 'return foam.mlang.MLang.FALSE;'
+      javaFactory: 'return foam.mlang.MLang.FALSE;',
+      hidden: true
     },
     {
       class: 'FObjectArray',
       name: 'approvalRequests',
       section: 'operationsInformation',
-      order: 40,
+      order: 110,
       of: 'foam.nanos.approval.ApprovalRequest',
       view: { class: 'foam.u2.view.DAOtoFObjectArrayView' },
       visibility: 'RO',

@@ -62,7 +62,7 @@ foam.RELATIONSHIP({
   inverseName: 'user',
   sourceProperty: {
     section: 'operationsInformation',
-    order: 31,
+    order: 100,
     transient: true
   },
   targetProperty: {

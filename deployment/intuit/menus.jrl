@@ -9,7 +9,7 @@ p({
 p({
   "class": "foam.nanos.menu.Menu",
   "id": "businesses-support",
-  "label": "Merchants",
+  "label": "Businesses",
   "parent": ""
 })
 

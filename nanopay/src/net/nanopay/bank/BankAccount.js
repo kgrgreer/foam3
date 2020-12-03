@@ -113,10 +113,6 @@ foam.CLASS({
       updateVisibility: 'RO'
     },
     {
-      name: 'summary',
-      updateVisibility: 'RO'
-    },
-    {
       class: 'String',
       name: 'accountNumber',
       documentation: 'The account number of the bank account.',
@@ -149,6 +145,7 @@ foam.CLASS({
     },
     {
       name: 'summary',
+      updateVisibility: 'RO',
       networkTransient: false,
       tableCellFormatter: function(_, obj) {
         this.start()
