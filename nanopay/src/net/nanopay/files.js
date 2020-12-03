@@ -241,6 +241,12 @@ FOAM_FILES([
 
   { name: 'net/nanopay/ui/LoadingSpinner', flags: ['web'] },
 
+  // SSO
+  { name: 'net/nanopay/auth/openid/SSOToken' },
+  { name: 'net/nanopay/auth/openid/OTLoginToken' },
+  { name: 'net/nanopay/auth/openid/TokenLoginService' },
+  { name: 'net/nanopay/auth/openid/ClientTokenLoginService' },
+
   // Exchangeable
   { name: 'net/nanopay/exchangeable/Security' },
   { name: 'net/nanopay/exchangeable/AssetClass' },
@@ -1052,11 +1058,6 @@ FOAM_FILES([
    { name: 'net/nanopay/liquidity/ui/account/ThresholdRules' },
    { name: 'net/nanopay/liquidity/ui/account/AccountDetailView' },
    { name: 'net/nanopay/liquidity/ui/account/AccountDAOUpdateView' },
-   { name: 'net/nanopay/liquidity/ui/user/LiquidUserDAOBrowserView' },
-   { name: 'net/nanopay/liquidity/ui/user/LiquidUserDAOCreateView' },
-   { name: 'net/nanopay/liquidity/ui/user/LiquidUserDAOUpdateView' },
-   { name: 'net/nanopay/liquidity/ui/user/LiquidUserDAOSummaryView' },
-   { name: 'net/nanopay/liquidity/ui/user/LiquidUserDetailView' },
    { name: 'net/nanopay/liquidity/ui/liquidity/LiquidityDetailView' },
    { name: 'net/nanopay/liquidity/ui/transaction/LiquidSourceAccountFilterBorder' },
    { name: 'net/nanopay/liquidity/ui/transaction/TransactionDAOBrowserView' },

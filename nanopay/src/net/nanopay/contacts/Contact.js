@@ -165,7 +165,7 @@ foam.CLASS({
         associated to.
         This is the opt-in name the business wants to display on our platform (used for searching), 
         as opposed to businessName / organization which is the company’s legal name.`,
-      visibility: 'HIDDEN',
+      visibility: 'HIDDEN'
     },
     {
       name: 'legalName',
@@ -191,7 +191,6 @@ foam.CLASS({
     },
     {
       name: 'firstName',
-      gridColumns: 6,
       view: { class: 'foam.u2.tag.Input' },
       validateObj: function(firstName) {
         if ( !! firstName ) {
@@ -208,7 +207,6 @@ foam.CLASS({
     },
     {
       name: 'lastName',
-      gridColumns: 6,
       view: { class: 'foam.u2.tag.Input' },
       validateObj: function(lastName) {
         if ( !! lastName ) {
@@ -223,6 +221,7 @@ foam.CLASS({
       name: 'confirm',
       documentation: `True if the user confirms their relationship with the contact.`,
       section: 'operationsInformation',
+      gridColumns: 6,
       label: '',
       updateVisibility: function() {
         return foam.u2.DisplayMode.HIDDEN;
@@ -280,7 +279,8 @@ foam.CLASS({
       javaValue: '0',
       name: 'businessId',
       documentation: `A unique identifier for the business associated with the Contact.`,
-      section: 'businessInformation'
+      section: 'businessInformation',
+      gridColumns: 6
     },
     {
       class: 'Boolean',
@@ -294,7 +294,8 @@ foam.CLASS({
       name: 'bankAccount',
       documentation: `The unique identifier for the bank account of the Contact
         if created while registering the Contact.`,
-      section: 'accountInformation'
+      section: 'accountInformation',
+      gridColumns: 6
     },
     {
       class: 'FObjectProperty',
@@ -421,6 +422,7 @@ foam.CLASS({
       name: 'businessStatus',
       documentation: 'Tracks the status of a business.',
       section: 'systemInformation',
+      gridColumns: 6,
       storageTransient: true
     },
     {

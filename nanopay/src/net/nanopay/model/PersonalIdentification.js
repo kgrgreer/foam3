@@ -58,7 +58,8 @@ foam.CLASS({
         if ( ! identificationTypeId ) {
           return 'Identification type is required';
         }
-      }
+      },
+      gridColumns: 6
     },
     {
       class: 'String',
@@ -68,7 +69,8 @@ foam.CLASS({
         if ( ! identificationNumber || ! identificationNumber.trim() ) {
           return 'Identification number is required';
         }
-      }
+      },
+      gridColumns: 6
     },
     {
       class: 'Reference',
@@ -91,7 +93,8 @@ foam.CLASS({
           },
           placeholder: '- Please select -'
         }, X);
-      }
+      },
+      gridColumns: 6
     },
     {
       class: 'Reference',
@@ -122,7 +125,8 @@ foam.CLASS({
       visibility: function(identificationTypeId) {
         var isPassport = identificationTypeId === 3;
         return isPassport ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
-      }
+      },
+      gridColumns: 6
     },
     {
       class: 'Date',
