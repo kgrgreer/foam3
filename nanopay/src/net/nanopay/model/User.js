@@ -534,3 +534,21 @@ foam.CLASS({
     }
   ]
 });
+
+foam.RELATIONSHIP({
+  cardinality: '1:*',
+  
+  forwardName: 'user',
+  targetModel: 'foam.nanos.auth.User',
+  targetDAOKey: 'localUserDAO',
+  targetProperty: {
+    hidden: true
+  },
+
+  inverseName: 'token',
+  sourceModel: 'net.nanopay.auth.openid.SSOToken',
+  sourceDAOKey: 'ssoTokenDAO',
+  sourceProperty: {
+    hidden: true
+  }
+});

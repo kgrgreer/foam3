@@ -147,12 +147,12 @@
 <p>
   DUG can be configured to send business changes through a webhook. In order to subscribe to business changes, 
   create a DUG entry and configure the DAO as the businessDAO, set the URL and the bearer token and the format,
-  then save the DUG rule. It will be active immediately and start sending any changes to business to the configured
+  then save the DUG rule. It will be active immediately and start sending any changes to businesses to the configured
   URL.
 </p>
 <h3>Message Payload</h3>
 <p>
-  The payload of the user webhook is a serialization of the business entity. See the API data description of the 
+  The payload of the business webhook is a serialization of the business entity. See the API data description of the 
   Business for field level descriptions.
 </p>
 <code>{
@@ -252,5 +252,98 @@
   "integrationCode": 0,
   "hasIntegrated": false,
   "compliance": 0
+}
+</code>
+
+<h2>Asynchronous FlinksLoginId Webhooks</h2>
+<p>
+  DUG can be configured to send updates for asynchronous Flinks onboarding calls through a webhook. In order to
+  subscribe to FlinksLoginIdAsync updates, create a DUG entry and configure the DAO as the FlinksLoginIdAsyncDAO,
+  set the URL and the bearer token and the format, then save the DUG rule. It will be active immediately and start 
+  sending any changes to Flinks onboarding calls to the configured URL.
+</p>
+<h3>Message Payloads</h3>
+<p>
+  The payload of the asynchronous Flinks onboarding calls is a serialization of the FlinksLoginIdAsync entity. The
+  first payload is an asynchronous call that is in progress, while the second one is a complete call.
+</p>
+<h4>In Progress Flinks Onboarding Call</h4>
+<code> 
+{
+  "class": "net.nanopay.flinks.external.FlinksLoginIdAsync",
+  "requestId": "79a01bb5-30f4-dfd3-237a-ccf54aed7142",
+  "status": "In Progress",
+  "errorMessage": "",
+  "created": "2020-11-20T19:56:59.889Z",
+  "createdBy": 8023,
+  "createdByAgent": 8023
+}
+</code>
+<h4>Complete Flinks Onboardin Call</h4>
+<code>
+{
+  "class": "net.nanopay.flinks.external.FlinksLoginIdAsync",
+  "requestId": "79a01bb5-30f4-dfd3-237a-ccf54aed7142",
+  "status": "Completed",
+  "flinksLoginIdResult": {
+    "class": "net.nanopay.flinks.external.FlinksLoginIdOnboarding",
+    "type": 1,
+    "capabilityPayloads": [
+      {
+        "class": "foam.nanos.crunch.connection.CapabilityPayload",
+        "id": "F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD",
+        "capabilityDataObjects": {
+          "AbliiPrivacyPolicy": {
+            "class": "net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy",
+            "title": "Ablii's Privacy Policy",
+            "agreement": false,
+            "version": "1.0"
+          },
+          "AbliiTermsAndConditions": {
+            "class": "net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiTermsAndConditions",
+            "title": "Ablii's Terms and Conditions",
+            "agreement": false,
+            "version": "1.0"
+          },
+          "CABankAccountAuthAgreement": {
+            "class": "net.nanopay.crunch.acceptanceDocuments.capabilities.CABankAccountAuthAgreement",
+            "agreement": false,
+            "version": "1.0",
+            "title": ""
+          }
+        },
+        "capabilityValidationErrors": {
+          "AbliiPrivacyPolicy": "Must acknowledge the agreement.",
+          "AbliiTermsAndConditions": "Must acknowledge the agreement.",
+          "CABankAccountAuthAgreement": "Must acknowledge the agreement."
+        }
+      }
+    ],
+    "flinksOverrides": {
+      "class": "net.nanopay.flinks.external.FlinksOverrides",
+      "userOverrides": {
+        "class": "net.nanopay.flinks.external.UserOverrideData",
+        "firstName": "",
+        "lastName": "",
+        "email": "test198044@test.com",
+        "phoneNumber": ""
+      }
+    },
+    "loginId": "2ff467b7-bcde-4346-8996-08d69b30c4d8",
+    "accountId": "8cd3e122-4826-4e24-48c4-08d69b30caf5",
+    "institution": "FlinksCapital",
+    "skipLoginIdResolution": true,
+    "user": 9036,
+    "business": 0,
+    "account": 183,
+    "id": "79a01bb5-30f4-dfd3-237a-ccf54aed7142",
+    "created": "2020-11-20T19:56:59.931Z",
+    "createdBy": 8023,
+    "createdByAgent": 8023
+  },
+  "errorMessage": "",
+  "created": "2020-11-20T19:56:59.889Z",
+  "createdBy": 8023,
+  "createdByAgent": 8023
 }
 </code>
