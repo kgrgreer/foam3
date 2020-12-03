@@ -492,7 +492,7 @@ p({
         "category":"onboarding",
         "isRecurring":false,
         "statusChanged":false
-      },
+      }
     ]
   },
   "asyncAction":{
