@@ -221,7 +221,6 @@ foam.CLASS({
             foam.core.Action.create({
               name: 'edit',
               label: 'Edit',
-              confirmationRequired: true,
               isAvailable: function() {
                 return this.status === self.InvoiceStatus.DRAFT;
               },
@@ -286,7 +285,6 @@ foam.CLASS({
             foam.core.Action.create({
               name: 'delete',
               label: 'Delete',
-              confirmationRequired: true,
               isAvailable: function() {
                 return this.status === self.InvoiceStatus.DRAFT;
               },
