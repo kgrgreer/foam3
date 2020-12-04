@@ -31,8 +31,8 @@ p({
   "class": "foam.nanos.menu.Menu",
   "id": "businesses-support",
   "label": "Businesses (Support)",
-  "icon":"images/Businesses-24px-resting.svg",
-  "activeIcon":"images/Businesses-24px-active.svg",
+  "icon":"images/businesses-24px-resting.svg",
+  "activeIcon":"images/businesses-24px-active.svg",
   "handler":
     {
       "class": "foam.nanos.menu.DAOMenu2",
