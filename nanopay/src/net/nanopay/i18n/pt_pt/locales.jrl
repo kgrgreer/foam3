@@ -1412,10 +1412,10 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.C
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.DENOMINATION.label",target:"denominação"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.DESC.label",target:"desc pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.BRANCH_ID.label",target:"Número da Agência"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.BRANCH_ID.label",target:"Agência"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.INSTITUTION_NUMBER.label",target:"Instituição"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.INSTITUTION_NUMBER.documentation",target:"Fornece compatibilidade com versões anteriores para o fluxo de chamadas móveis.\n          BankAccountInstitutionDAO pesquisará o número da instituição e definirá a propriedade da instituição."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.ACCOUNT_NUMBER.label",target:"Número da conta"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.ACCOUNT_NUMBER.label",target:"Conta"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.SUMMARY.label",target:"resumo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.SECURITY_PROMOTE_INFO.label",target:"segurança Promova informações"})
 
