@@ -350,8 +350,8 @@ foam.CLASS({
                 String addrLine   = "";
                 long senderId     = 0 ;
                 long receiverId   = 0;
-                long senderBkId   = 0;
-                long receiverBkId = 0;
+                String senderBkId   = "";
+                String receiverBkId = "";
                 String txnId = null;
 
                 FObject fObjSender       = null;
@@ -422,7 +422,7 @@ foam.CLASS({
                       if ( (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtorAccount() != null ) {
                         senderBankAcct = new CABankAccount();
 
-                        senderBankAcct.setId(senderId);
+                        senderBankAcct.setId(String.valueOf(senderId));
                         senderBankAcct.setName(senderId + "Account");
                         senderBankAcct.setX(getX());
                         senderBankAcct.setOwner(senderId);
@@ -517,7 +517,7 @@ foam.CLASS({
                       // Create a Receiver's BankAccount
                       if ( (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditorAccount() != null ) {
                         receiverBankAcct = new INBankAccount();
-                        receiverBankAcct.setId(receiverId);
+                        receiverBankAcct.setId(String.valueOf(receiverId));
                         receiverBankAcct.setName(receiverId + "Account");
                         receiverBankAcct.setX(getX());
                         receiverBankAcct.setOwner(receiverId);

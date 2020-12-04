@@ -109,7 +109,7 @@ public class NanopayTransactionFeeDAOTest
     fee.setDenomination("CAD");
     fee.setMinAmount(0L);
     fee.setMaxAmount(1000000000L);
-    fee.setFeeAccount(999); // just needs to be non-null
+    fee.setFeeAccount("999"); // just needs to be non-null
     fee.setFee(new PercentageFee.Builder(x_).setPercentage(1).build());
     feeDAO.put(fee);
   }

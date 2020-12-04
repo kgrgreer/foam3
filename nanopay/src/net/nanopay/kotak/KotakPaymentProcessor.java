@@ -175,7 +175,7 @@ public class KotakPaymentProcessor implements ContextAgent {
     ((DAO) x.get("localNotificationDAO")).put(notification);
   }
 
-  public INBankAccount getAccountById(X x, long id) {
+  public INBankAccount getAccountById(X x, String id) {
     DAO accountDAO = (DAO) x.get("localAccountDAO");
 
     Account account = (Account) accountDAO.inX(x).find(id);
