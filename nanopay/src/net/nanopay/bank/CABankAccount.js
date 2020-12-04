@@ -123,13 +123,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'swiftCode',
-      visibility: 'HIDDEN',
-      required: false,
-      validateObj: function(swiftCode) {
-      }
-    },
-    {
       name: 'voidChequeImage',
       class: 'String',
       label: '',
@@ -159,7 +152,6 @@ foam.CLASS({
       gridColumns: 4,
       view: {
         class: 'foam.u2.tag.Input',
-        placeholder: '12345',
         onKey: true
       },
       preSet: function(o, n) {
@@ -194,7 +186,6 @@ foam.CLASS({
       gridColumns: 2,
       view: {
         class: 'foam.u2.tag.Input',
-        placeholder: '123',
         maxLength: 3,
         onKey: true
       },
@@ -224,7 +215,6 @@ foam.CLASS({
       gridColumns: 6,
       view: {
         class: 'foam.u2.tag.Input',
-        placeholder: '1234567',
         onKey: true
       },
       postSet: function(o, n) {
@@ -315,6 +305,14 @@ foam.CLASS({
             }
           ]
         }, X);
+      }
+    },
+    {
+      name: 'swiftCode',
+      label: 'SWIFT/BIC',
+      updateVisibility: 'RO',
+      section: 'accountInformation',
+      validateObj: function(swiftCode) {
       }
     }
   ],

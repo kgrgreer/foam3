@@ -493,7 +493,7 @@ foam.CLASS({
   extends: 'foam.layout.SectionAxiom',
 
   messages: [
-    { name: 'OWNER_DETAILS', message: 'Details for owner #' },
+    { name: 'OWNER_DETAILS', message: 'Details for owner number ' },
   ],
 
   properties: [
@@ -532,7 +532,7 @@ foam.CLASS({
 
   messages: [
     { name: 'PLEASE_SELECT_ONE', message: 'Please select one of the following...' },
-    { name: 'OTHER_MSG', message: 'Other' },
+    { name: 'OTHER_MSG', message: 'Other' }
   ],
 
   properties: [
@@ -570,7 +570,7 @@ foam.CLASS({
         var obj = net.nanopay.model.BeneficialOwner.create({
             business: X.data.businessId,
             type: user.address.countryId,
-            id: (this.index * -1)
+            id: (this.index * 1000)
           }, X);
         obj.toSummary = () => this.OTHER_MSG;
         dao.put(obj);
@@ -594,10 +594,10 @@ foam.CLASS({
       value: function(o, n) {
         if ( ! n ) return n;
 
-        this.chosenOwners.push(n.id);
-
         if ( o ) {
-          this.chosenOwners.splice(this.chosenOwners.indexOf(o.id), 1);
+          this.chosenOwners.splice(this.chosenOwners.indexOf(o.id), 1, n.id);
+        } else {
+          this.chosenOwners.push(n.id);
         }
 
         return n;
@@ -666,15 +666,19 @@ foam.CLASS({
     {
       name: 'choiceData_',
       documentation: 'Data that is set by choiceView(reference object)',
+      factory: function() {
+        if ( this.chosenOwners[this.index-1] )
+          return this.chosenOwners[this.index-1];
+      },
       postSet: async function(o, n) {
         // checks if data already exists
-        const dataExists = this.data && n === this.data.id;
+        let dataExists = this.data && n === this.data.id;
 
         try {
           const numSO = (await this.dao2.select(this.COUNT())).value;
           // checks if a signing officer is selected
           // Note: Signing officer id is between 2 and numSO + 1 inclusive while
-          // nonsigning officer data has id (its index  * -1). If n === 1, 'other' is selected
+          // nonsigning officer data has id (its index  * 1000). If n === 1, 'other' is selected
           // but data doesn't exist.
           if ( n > 1 && n < numSO + 2 ) {
             if ( ! dataExists ) {
@@ -701,19 +705,15 @@ foam.CLASS({
   ],
 
   reactions: [
-    ['data', 'propertyChange', 'fromData'],
-    ['', 'propertyChange.data', 'fromData']
+    ['', 'propertyChange.choiceData_', 'fromData']
   ],
+
 
   listeners: [
     {
       name: 'fromData',
       code: function() {
-        if ( ! this.data ) {
-          this.choiceData_ = undefined;
-        } else if ( ! this.choiceData_ ) {
-          this.choiceData_ = this.data.id;
-        }
+          this.updateSections_(this.choiceData_);
       }
     }
   ],
@@ -748,6 +748,8 @@ foam.CLASS({
     },
     function updateSections_(choice) {
       var choiceSections = [];
+      var choiceSectionsNonSoFirst = [];
+
       choiceSections.push({
         // filter out all the siging officers except the one chosen by this owner
         dao: this.dao2.where(
@@ -765,7 +767,23 @@ foam.CLASS({
         dao$: this.dao$
       });
 
-      this.choiceSections_ = choiceSections;
+      choiceSectionsNonSoFirst.push({
+        dao$: this.dao$
+      });
+      choiceSectionsNonSoFirst.push({
+        // filter out all the siging officers except the one chosen by this owner
+        dao: this.dao2.where(
+          this.OR(
+            this.EQ(net.nanopay.model.BeneficialOwner.ID, choice),
+            this.NOT(
+              this.IN(net.nanopay.model.BeneficialOwner.ID, this.chosenOwners)
+            )
+          )
+        ),
+        hideIfEmpty: true
+      });
+
+      this.choiceSections_ = choice < 1000 && choice != -1 ? choiceSections : choiceSectionsNonSoFirst;
     }
   ]
 });
