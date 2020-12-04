@@ -23,6 +23,24 @@ foam.CLASS({
 
   documentation: 'Ireland bank account information.',
 
+  constants: [
+    {
+      name: 'SORT_CODE_PATTERN',
+      type: 'Regex',
+      factory: function() { return /^[0-9]{6}$/; }
+    },
+    {
+      name: 'ACCOUNT_NUMBER_PATTERN',
+      type: 'Regex',
+      factory: function() { return /^[0-9]{8}$/; }
+    },
+    {
+      name: 'INSTITUTION_NUMBER_PATTERN',
+      type: 'Regex',
+      factory: function() { return /^[A-z0-9a-z]{4}$/; }
+    }
+  ],
+
   properties: [
     {
       name: 'country',
@@ -46,7 +64,6 @@ foam.CLASS({
       updateVisibility: 'RO',
       view: {
         class: 'foam.u2.tag.Input',
-        placeholder: '12345678',
         onKey: true
       },
       preSet: function(o, n) {
@@ -59,47 +76,41 @@ foam.CLASS({
           .add(displayAccountNumber);
         this.tooltip = displayAccountNumber;
       },
-      validateObj: function(accountNumber) {
-        var accNumberRegex = /^[0-9]{8}$/;
+      validateObj: function(accountNumber, iban) {
+        if ( iban )
+          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
-        if ( accountNumber === '' ) {
-          return this.ACCOUNT_NUMBER_REQUIRED;
-        } else if ( ! accNumberRegex.test(accountNumber) ) {
-          return this.ACCOUNT_NUMBER_INVALID;
+        if ( ! iban || (iban && ibanMsg != 'passed') ) {
+          if ( accountNumber === '' ) {
+            return this.ACCOUNT_NUMBER_REQUIRED;
+          } else if ( ! this.ACCOUNT_NUMBER_PATTERN.test(accountNumber) ) {
+            return this.ACCOUNT_NUMBER_INVALID;
+          }
         }
       }
     },
     {
       name: 'institutionNumber',
       updateVisibility: 'RO',
-      validateObj: function(institutionNumber) {
-        var regex = /^[A-z0-9a-z]{4}$/;
+      validateObj: function(institutionNumber, iban) {
+        if ( iban )
+          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
-        if ( institutionNumber === '' ) {
-          return this.INSTITUTION_NUMBER_REQUIRED;
-        } else if ( ! regex.test(institutionNumber) ) {
-          return this.INSTITUTION_NUMBER_INVALID;
-        }
-      }
-    },
-    {
-      class: 'String',
-      name: 'sortCode',
-      label: 'Sort Code',
-      section: 'accountInformation',
-      updateVisibility: 'RO',
-      validateObj: function(sortCode) {
-        var sortCodeRegex = /^[0-9]{6}$/;
-
-        if ( sortCode === '' ) {
-          return this.SORT_CODE_REQUIRED;
-        } else if ( ! sortCodeRegex.test(sortCode) ) {
-          return this.SORT_CODE_INVALID;
+        if ( ! iban || (iban && ibanMsg != 'passed') ) {
+          if ( institutionNumber === '' ) {
+            return this.INSTITUTION_NUMBER_REQUIRED;
+          } else if ( ! this.INSTITUTION_NUMBER_PATTERN.test(institutionNumber) ) {
+            return this.INSTITUTION_NUMBER_INVALID;
+          }
         }
       }
     },
     {
       name: 'desc',
+      visibility: 'HIDDEN'
+    },
+    {
+      name: 'branchId',
       visibility: 'HIDDEN'
     }
   ]

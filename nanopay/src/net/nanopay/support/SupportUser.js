@@ -35,6 +35,17 @@ foam.CLASS({
     'foam.nanos.auth.Phone'
   ],
 
+  tableColumns: [
+    'id',
+    'firstName',
+    'lastName',
+    'email',
+    'phoneNumber',
+    'status',
+    'compliance',
+    'group'
+  ],
+
   sections: [
     {
       name: 'userInformation'

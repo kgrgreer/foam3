@@ -207,8 +207,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       request.setCompanyOfficerIdentificationIssuingType(getAFEXIdentificationType(identification.getIdentificationTypeId()));
       request.setCompanyOfficerIdentificationNumber(identification.getIdentificationNumber());
       request.setCompanyOfficerIdentificationIssuingCountry(identification.getCountryId());
-      String regionId = identification.getRegionId() != null ?
-        identification.getRegionId().substring(3,identification.getRegionId().length()) : "";
+      String regionId = identification.getRegionId() != null ? identification.getRegionId() : "";
+      if ( regionId.length() > 3 ) regionId =  regionId.substring(3, regionId.length());
       request.setCompanyOfficerIdentificationIssuingRegion(regionId);
       try {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
@@ -1126,6 +1126,19 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       logger_.error("Error creating instant beneficiary " + userId , t);
       throw new RuntimeException("Error creating instant beneficiary. ");
     }
+  }
+
+  public IsIbanResponse isiban(String iban, String country, String spid) {
+    IsIbanRequest isIbanRequest = new IsIbanRequest();
+    isIbanRequest.setIban(iban);
+    isIbanRequest.setCountry(country);
+    IsIbanResponse isIbanResponse = null;
+    try {
+      isIbanResponse = this.afexClient.isiban(isIbanRequest, spid);
+    } catch(Throwable t) {
+      logger_.debug("Iban validation failed. The given iban is : " + iban + " for " + country);
+    }
+    return isIbanResponse;
   }
 
   protected User getSigningOfficer(X x, Business business) {

@@ -39,6 +39,8 @@ foam.CLASS({
 
   javaImports: [
     'foam.util.SafetyUtil',
+    'net.nanopay.fx.afex.AFEXServiceProvider',
+    'net.nanopay.fx.afex.IsIbanResponse',
     'java.util.regex.Pattern',
   ],
 
@@ -73,17 +75,17 @@ foam.CLASS({
     {
       name: 'ACCOUNT_NUMBER_PATTERN',
       type: 'Regex',
-      javaValue: 'Pattern.compile("^[0-9]{10}$")'
+      factory: function() { return /^[0-9]{10}$/; }
     },
     {
       name: 'INSTITUTION_NUMBER_PATTERN',
       type: 'Regex',
-      javaValue: 'Pattern.compile("^[A-z0-9a-z]{8}")'
+      factory: function() { return /^[A-z0-9a-z]{8}$/; }
     },
     {
       name: 'BRANCH_ID_PATTERN',
       type: 'Regex',
-      javaValue: 'Pattern.compile("^[0-9]{5}$")'
+      factory: function() { return /^[0-9]{5}$/; }
     }
   ],
 
@@ -107,13 +109,16 @@ foam.CLASS({
       name: 'institutionNumber',
       updateVisibility: 'RO',
       section: 'accountInformation',
-      validateObj: function(institutionNumber) {
-        var regex = /^[A-z0-9a-z]{8}$/;
+      validateObj: function(institutionNumber, iban) {
+        if ( iban )
+          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
-        if ( institutionNumber === '' ) {
-          return this.INSTITUTION_NUMBER_REQUIRED;
-        } else if ( ! regex.test(institutionNumber) ) {
-          return this.INSTITUTION_NUMBER_INVALID;
+        if ( ! iban || (iban && ibanMsg != 'passed') ) {
+          if ( institutionNumber === '' ) {
+            return this.INSTITUTION_NUMBER_REQUIRED;
+          } else if ( ! this.INSTITUTION_NUMBER_PATTERN.test(institutionNumber) ) {
+            return this.INSTITUTION_NUMBER_INVALID;
+          }
         }
       }
     },
@@ -121,13 +126,16 @@ foam.CLASS({
       name: 'branchId',
       section: 'accountInformation',
       updateVisibility: 'RO',
-      validateObj: function(branchId) {
-        var regex = /^[0-9]{5}$/;
+      validateObj: function(branchId, iban) {
+        if ( iban )
+          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
-        if ( branchId === '' ) {
-          return this.BRANCH_ID_REQUIRED;
-        } else if ( ! regex.test(branchId) ) {
-          return this.BRANCH_ID_INVALID;
+        if ( ! iban || (iban && ibanMsg != 'passed') ) {
+          if ( branchId === '' ) {
+            return this.BRANCH_ID_REQUIRED;
+          } else if ( ! this.BRANCH_ID_PATTERN.test(branchId) ) {
+            return this.BRANCH_ID_INVALID;
+          }
         }
       }
     },
@@ -147,13 +155,16 @@ foam.CLASS({
           .add(displayAccountNumber);
         this.tooltip = displayAccountNumber;
       },
-      validateObj: function(accountNumber) {
-        var accNumberRegex = /^[0-9]{10}$/;
+      validateObj: function(accountNumber, iban) {
+        if ( iban )
+          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
-        if ( accountNumber === '' ) {
-          return this.ACCOUNT_NUMBER_REQUIRED;
-        } else if ( ! accNumberRegex.test(accountNumber) ) {
-          return this.ACCOUNT_NUMBER_INVALID;
+        if ( ! iban || (iban && ibanMsg != 'passed') ) {
+          if ( accountNumber === '' ) {
+            return this.ACCOUNT_NUMBER_REQUIRED;
+          } else if ( ! this.ACCOUNT_NUMBER_PATTERN.test(accountNumber) ) {
+            return this.ACCOUNT_NUMBER_INVALID;
+          }
         }
       }
     },
@@ -201,13 +212,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'iban',
-      label: 'International Bank Account Number (IBAN)',
-      required: true,
-      section: 'accountInformation',
-      updateVisibility: 'RO'
-    },
-    {
       name: 'desc',
       visibility: 'HIDDEN'
     },
@@ -235,10 +239,23 @@ foam.CLASS({
       type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
+        String iban = this.getIban();
+        String spid = ((foam.nanos.auth.Subject) x.get("subject")).getUser().getSpid();
+        String country = this.getCountry();
+
+        AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
+        IsIbanResponse isIbanResponse = afexServiceProvider.isiban(iban, country, spid);
+
         super.validate(x);
-        validateInstitutionNumber();
-        validateBranchId();
-        validateAccountNumber();
+        validateIban(x, isIbanResponse);
+
+        if ( isIbanResponse != null && ! isIbanResponse.getIsIban() ) {
+          validateInstitutionNumber();
+          validateBranchId();
+          validateAccountNumber();
+          validateSwiftCode();
+        }
+
         if ( getOwner() == 0 ) {
           setOwner(((foam.nanos.auth.Subject) x.get("subject")).getUser().getId());
         }
@@ -288,6 +305,42 @@ foam.CLASS({
         if ( ! ACCOUNT_NUMBER_PATTERN.matcher(accountNumber).matches() ) {
           throw new IllegalStateException(this.ACCOUNT_NUMBER_INVALID);
         }
+      `
+    },
+    {
+      name: 'validateSwiftCode',
+      type: 'Void',
+      javaThrows: ['IllegalStateException'],
+      javaCode: `
+        String swiftCode = this.getSwiftCode();
+
+        if ( SafetyUtil.isEmpty(swiftCode) ) {
+          throw new IllegalStateException(this.SWIFT_CODE_REQUIRED);
+        }
+        if ( ! SWIFT_CODE_PATTERN.matcher(swiftCode).matches() ) {
+          throw new IllegalStateException(this.SWIFT_CODE_INVALID);
+        }
+      `
+    },
+    {
+      name: 'validateIban',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'isIbanResponse', type: 'net.nanopay.fx.afex.IsIbanResponse' }
+      ],
+      type: 'Void',
+      javaThrows: ['IllegalStateException'],
+      javaCode: `
+          String iban = this.getIban();
+
+          if ( SafetyUtil.isEmpty(iban) )
+            throw new IllegalStateException(this.IBAN_REQUIRED);
+
+          if ( isIbanResponse == null )
+            throw new IllegalStateException(this.IBAN_INVALIDATION_FAILED);
+
+          if ( isIbanResponse != null && ! isIbanResponse.getIsIban() )
+            throw new IllegalStateException(this.IBAN_INVALID);
       `
     }
  ]
