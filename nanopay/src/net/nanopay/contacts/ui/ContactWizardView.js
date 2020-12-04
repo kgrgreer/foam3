@@ -58,9 +58,8 @@ foam.CLASS({
       position: relative;
       float: right;
     }
-    ^ .sectioned-detail-property-confirm,
-    ^ .sectioned-detail-property-shouldInvite {
-      margin-bottom: 24px;
+    ^ .button-container {
+      margin-top: 24px;
     }
   `,
 
