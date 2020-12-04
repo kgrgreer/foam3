@@ -62,6 +62,7 @@ foam.CLASS({
       position: relative;
       width: 585px;
       right: 30px;
+      top: 30px;
     }
     ^ .button-container {
       margin-top: 24px;
