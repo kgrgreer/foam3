@@ -27,7 +27,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'UPLOAD_REQUEST_MSG', message: 'Document(s) required for' },
+    { name: 'UPLOAD_REQUEST_MSG', message: 'Provide' },
     { name: 'IMAGE_REQUIRED', message: 'Document(s) required' },
     { name: 'SECTION_HELP_MSG', message: 'Require a document for' },
     { name: 'DOC_UPLOAD_SECTION', message: '${UPLOAD_REQUEST_MSG} ${capability.name}' }
@@ -37,9 +37,9 @@ foam.CLASS({
     {
       name: 'documentUploadSection',
       title: 'Document Upload',
-      subTitle: function(helper) {
+      subTitle: function(evaluateMessage) {
         let capDescription = this.translationService.getTranslation(foam.locale, `${this.capability.id}.description`, this.capability.description);
-        return capDescription ? capDescription : helper(this.DOC_UPLOAD_SECTION);
+        return capDescription ? capDescription : evaluateMessage(this.DOC_UPLOAD_SECTION);
       },
       help: function(capability) {
         return `${this.SECTION_HELP_MSG} ${capability.name}`;

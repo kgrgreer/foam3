@@ -15,7 +15,13 @@ p({
           "createTitle": "Create an Account",
           "createPredicate":{"class":"foam.mlang.predicate.False"},
           "editPredicate":{"class":"foam.mlang.predicate.False"},
-          "deletePredicate":{"class":"foam.mlang.predicate.False"}
+          "deletePredicate":{"class":"foam.mlang.predicate.False"},
+          "defaultColumns": [
+            "id",
+            "owner",
+            "summary",
+            "name"
+          ]
         }
     },
   "parent": "hidden"
@@ -37,8 +43,15 @@ p({
           "browseTitle": "Businesses",
           "createTitle": "Create a Business",
           "createPredicate":{"class":"foam.mlang.predicate.False"},
-          "editPredicate":{"class":"foam.mlang.predicate.True"},
-          "deletePredicate":{"class":"foam.mlang.predicate.False"}
+          "editPredicate":{"class":"foam.mlang.predicate.False"},
+          "deletePredicate":{"class":"foam.mlang.predicate.False"},
+          "defaultColumns": [
+            "id",
+            "businessName",
+            "email",
+            "phoneNumber",
+            "compliance"
+          ]
         }
     },
   "parent": "hidden"
@@ -63,7 +76,10 @@ p({
       "defaultColumns":[
         "id",
         "amount",
-        "referenceNumber"
+        "referenceNumber",
+        "chainSummary.summary",
+        "chainSummary.status",
+        "chainSummary.errorCode"
       ]
     }
   },
@@ -86,8 +102,18 @@ p({
           "browseTitle": "Users",
           "createTitle": "Create a User",
           "createPredicate":{"class":"foam.mlang.predicate.False"},
-          "editPredicate":{"class":"foam.mlang.predicate.True"},
-          "deletePredicate":{"class":"foam.mlang.predicate.False"}
+          "editPredicate":{"class":"foam.mlang.predicate.False"},
+          "deletePredicate":{"class":"foam.mlang.predicate.False"},
+          "defaultColumns": [
+            "id",
+            "firstName",
+            "lastName",
+            "email",
+            "phoneNumber",
+            "status",
+            "compliance",
+            "group"
+          ]
         }
     },
   "parent": "hidden"

@@ -273,7 +273,6 @@ foam.CLASS({
             });
           }))
         .end()
-
         .start()
           .add(obj.slot((accountNumber) => {
               if ( accountNumber ) {

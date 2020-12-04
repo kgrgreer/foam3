@@ -484,6 +484,29 @@ foam.CLASS({
       }
     },
 
+    async function fetchSubject() {
+      /** Get current user, else show login. */
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const otLoginToken = urlParams.get('otltoken');
+
+        if ( otLoginToken != null ) {
+          await this.client.otLoginService.loginTokenId(null, otLoginToken);
+          urlParams.delete(otLoginToken);
+        }
+
+        var result = await this.client.auth.getCurrentSubject(null);
+
+        if ( ! result || ! result.user) throw new Error();
+
+        this.subject = result;
+      } catch (err) {
+        this.languageInstalled.resolve();
+        await this.requestLogin();
+        return await this.fetchSubject();
+      }
+    },
+
     function bannerizeTwoFactorAuth() {
       if ( ! this.subject.user.twoFactorEnabled ) {
         this.setBanner(this.BannerMode.NOTICE, 'Please enable Two-Factor Authentication in Personal Settings.');

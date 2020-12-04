@@ -292,6 +292,7 @@ var classes = [
   'net.nanopay.fx.afex.AFEXFundingTransaction',
   'net.nanopay.fx.afex.AFEXCreateFundingBalancesRule',
   'net.nanopay.fx.afex.AFEXSubmitFundingTxnRule',
+  'net.nanopay.fx.afex.AFEXGetPDFRule',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
@@ -706,6 +707,12 @@ var classes = [
   'net.nanopay.auth.ServiceProviderURL',
   'net.nanopay.auth.UserCreateServiceProviderURLRule',
   'net.nanopay.auth.UserCreateServiceProviderURLRuleAction',
+
+  // SSO
+  'net.nanopay.auth.openid.SSOToken',
+  'net.nanopay.auth.openid.OTLoginToken',
+  'net.nanopay.auth.openid.ClientTokenLoginService',
+  'net.nanopay.auth.openid.TokenLoginService',
 
   // PII
   'net.nanopay.security.pii.PII',
@@ -1204,6 +1211,12 @@ var classes = [
   'net.nanopay.country.br.PTaxRate',
   'net.nanopay.country.br.PTaxDollarRateResponse',
   'net.nanopay.country.br.tx.NatureCodeLineItem',
+  'net.nanopay.partner.soawebservices.PessoaFisicaSimplificada',
+  'net.nanopay.partner.soawebservices.PessoaJuridicaSimplificada',
+  'net.nanopay.partner.soawebservices.PessoaResponse',
+  'net.nanopay.partner.soawebservices.SoaCredenciais',
+  'net.nanopay.partner.soawebservices.SoaWebService',
+  'net.nanopay.partner.soawebservices.Transacao',
   'net.nanopay.partner.sintegra.CPFResponseData',
   'net.nanopay.partner.sintegra.CNPJResponseData',
   'net.nanopay.partner.sintegra.Sintegra',
@@ -1445,7 +1458,7 @@ var classes = [
   'net.nanopay.payment.PayeeCurrencyService',
   'net.nanopay.payment.ClientPayeeCurrencyService',
   'net.nanopay.payment.PayeeCurrency',
-  
+
   // support
   'net.nanopay.support.SupportAccount',
   'net.nanopay.support.SupportBusiness',
@@ -1486,7 +1499,8 @@ var skeletons = [
   'net.nanopay.contacts.PaymentCodeServiceInterface',
   'net.nanopay.interac.service.InteracTransactionDAO',
   'net.nanopay.contacts.ContactServiceInterface',
-  'net.nanopay.country.br.BrazilVerificationServiceInterface'
+  'net.nanopay.country.br.BrazilVerificationServiceInterface',
+  'net.nanopay.auth.openid.TokenLoginService'
 ];
 
 var proxies = [

@@ -11,7 +11,7 @@ p({
 p({
   "class": "foam.nanos.menu.Menu",
   "id": "businesses-support",
-  "label": "Merchants",
+  "label": "Businesses",
   "icon":"images/Businesses-24px-resting.svg",
   "activeIcon":"images/Businesses-24px-active.svg",
   "parent": ""

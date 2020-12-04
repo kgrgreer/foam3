@@ -207,8 +207,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       request.setCompanyOfficerIdentificationIssuingType(getAFEXIdentificationType(identification.getIdentificationTypeId()));
       request.setCompanyOfficerIdentificationNumber(identification.getIdentificationNumber());
       request.setCompanyOfficerIdentificationIssuingCountry(identification.getCountryId());
-      String regionId = identification.getRegionId() != null ?
-        identification.getRegionId().substring(3,identification.getRegionId().length()) : "";
+      String regionId = identification.getRegionId() != null ? identification.getRegionId() : "";
+      if ( regionId.length() > 3 ) regionId =  regionId.substring(3, regionId.length());
       request.setCompanyOfficerIdentificationIssuingRegion(regionId);
       try {
         SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");

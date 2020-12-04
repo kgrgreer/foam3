@@ -1,0 +1,18 @@
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"SoaWebServiceCredientials",
+  "lazy":false,
+  "service": {
+    "class":"net.nanopay.partner.soawebservices.SoaCredenciais"
+  }
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"soaWebService",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.partner.soawebservices.SoaWebServiceClient(x);
+  """
+})
