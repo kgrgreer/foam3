@@ -1312,8 +1312,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.ACC
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.IBAN_REQUIRED",target:"IBAN necessário"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.IBAN_INVALID",target:"IBAN inválido"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.IBAN_INVALIDATION_FAILED",target:"A validação do IBAN falhou"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.IBAN_COUNTRY_MISMATCHED",target:"
-Código de país IBAN incompatível"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.IBAN_COUNTRY_MISMATCHED",target:"Código de país IBAN incompatível"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.SUMMARY.label",target:"resumo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.STATUS.documentation",target:"Rastreia o status da conta bancária."})
@@ -3124,7 +3123,7 @@ p({class:"foam.i18n.Locale",locale:"pt","source":"5fdd9025-86e6-45a1-bed5-8962ac
 p({class:"foam.i18n.Locale",locale:"pt","source":"5fdd9025-86e6-45a1-bed5-8962acdf5338-40.description","target":"Documento contendo o inventário de testamentos"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"5fdd9025-86e6-45a1-bed5-8962acdf5338-41.name","target":"Fatura proforma assinada"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"5fdd9025-86e6-45a1-bed5-8962acdf5338-41.description","target":"Fatura proforma assinada (contendo a data de envio prevista)"})
-p({class:"foam.i18n.Locale",locale:"pt","source":"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode","target":"Requisito do código da natureza\"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode","target":"Requisito do código da natureza"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"05a663b8-2b48-11eb-adc1-0242ac120002.name","target":"Ativar pagamentos internacionais"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"05a663b8-2b48-11eb-adc1-0242ac120002.description","target":"Habilitar pagamentos internacionais no Brasil"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"05a663b8-2b48-11eb-adc1-0242ac120002.requirementViewTitle","target":"Prepare seus documentos comerciais. Você pode salvar seu progresso e voltar mais tarde"})
@@ -3166,4 +3165,10 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.iban.ValidationIBAN.L
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.iban.ValidationIBAN.INVALID_CHARACTER",target:"Caráter inválido na posição"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.iban.ValidationIBAN.INVALID_CHECKSUM",target:"Checksum inválido"})
 
-
+p({class:"foam.i18n.Locale",locale:"pt",source:"Sole Proprietorship.name",target:"Propriedade individual"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Partnership.name",target:"Parceria"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Corporation.name",target:"Corporação"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Nonprofit/Charitable Organization.name",target:"Organização sem fins lucrativos / beneficente"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Limited Liability Company.name",target:"Empresa de responsabilidade limitada"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Publicly Traded Corporation.name",target:"Corporação de capital aberto"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Trust.name",target:"Confiar em"})
