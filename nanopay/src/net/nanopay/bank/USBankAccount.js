@@ -122,7 +122,9 @@ foam.CLASS({
       },
       javaGetter: `
         return getAccountNumber();
-      `
+      `,
+      validateObj: function(iban) {
+      }
     },
     {
       name: 'institutionNumber',
@@ -158,7 +160,6 @@ foam.CLASS({
       updateVisibility: 'RO',
       view: {
         class: 'foam.u2.tag.Input',
-        placeholder: '123456789',
         onKey: true
       },
       gridColumns: 6,
@@ -321,6 +322,13 @@ foam.CLASS({
             }
           ]
         }, X);
+      }
+    },
+    {
+      name: 'swiftCode',
+      visibility: 'HIDDEN',
+      required: false,
+      validateObj: function(swiftCode) {
       }
     }
   ],
