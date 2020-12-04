@@ -66,7 +66,6 @@ foam.CLASS({
       updateVisibility: 'RO',
       view: {
         class: 'foam.u2.tag.Input',
-        placeholder: '1234567890123456',
         onKey: true
       },
       preSet: function(o, n) {

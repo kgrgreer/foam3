@@ -120,7 +120,6 @@ foam.CLASS({
       section: 'accountInformation',
       view: {
         class: 'foam.u2.tag.Input',
-        placeholder: '1234567',
         onKey: true
       },
       preSet: function(o, n) {
