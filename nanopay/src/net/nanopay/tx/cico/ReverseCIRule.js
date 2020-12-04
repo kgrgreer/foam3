@@ -67,7 +67,7 @@ foam.CLASS({
               }
               catch (Exception e) {
                 //email Support about failure.
-                String spid = oldTxn.findSourceAccount(x).findOwner(x).getSpid();
+                String spid = txn.findSourceAccount(x).findOwner(x).getSpid();
                 Notification notification = new Notification();
                 notification.setBody("Cash in transaction id: " + txn.getId() + " was declined but failed to revert the balance.");
                 notification.setNotificationType("Cashin transaction declined");
