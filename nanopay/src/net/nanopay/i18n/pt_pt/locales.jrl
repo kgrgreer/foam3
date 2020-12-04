@@ -1758,7 +1758,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.CPF.VERIF
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.CPF.INVALID_CPF",target:"Número válido de CPF obrigatório"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.CPF.INVALID_NAME",target:"Clique para verificar o nome"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.Document.UPLOAD_REQUEST_MSG",target:"Documento (s) necessário (s) para"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.Document.IMAGE_REQUIRED",target:"Documentos necessários"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.Document.SECTION_HELP_MSG",target:"Exigir um documento para"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.Document.CAPABILITY.label",target:"capacidade"})
@@ -1806,7 +1805,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureBus
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureBusinessRelationship.SECTION_BUSINESS_RELATIONSHIP.title",target:"Objetivo da relação de corretagem"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.SECTION_BUSINESS_CAPITAL.title",target:"Capital de negócios e patrimônio líquido"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.Document.UPLOAD_REQUEST_MSG",target:"Anexe documento (s) para"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.Document.UPLOAD_REQUEST_MSG",target:"Providenciar"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.Document.IMAGE_REQUIRED",target:"Anexe um (s) documento (s)."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyOwnersPercent.AGREEMENT.label",target:"acordo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyDirectorsListed.CERTIFY_DIRECTORS_LISTED",target:"Você deve certificar-se de que todos os diretores foram listados."})
