@@ -334,13 +334,16 @@ foam.CLASS({
         this.invoice.invoiceFile = n;
       },
       view: function(_, X) {
+        let selectSlot = foam.core.SimpleSlot.create({value: 0});
         return foam.u2.MultiView.create({
         views: [
           foam.nanos.fs.fileDropZone.FileDropZone.create({
-            files$: X.uploadFileData$
+            files$: X.uploadFileData$,
+            selected$: selectSlot
           }, X),
           foam.nanos.fs.fileDropZone.FilePreview.create({
-            data$: X.uploadFileData$
+            data$: X.uploadFileData$,
+            selected$: selectSlot
           }, X)
         ]
         });
