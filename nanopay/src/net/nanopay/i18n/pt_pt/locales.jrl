@@ -1573,7 +1573,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.COU
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.NO_CORRIDORS_AVAILABLE.label",target:"noCorridorsAvailable pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.NO_CORRIDORS_AVAILABLE.documentation",target:"GUI quando nenhum recurso de corredor foi adicionado ao usuário."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.SHOULD_INVITE.documentation",target:"Verdadeiro se o usuário quiser convidar o contato para ingressar no Ablii."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.SHOULD_INVITE.label",target:"shouldInvite pt"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.BUSINESS_ADDRESS.label",target:"endereço profissional"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.BUSINESS_ADDRESS.documentation",target:"O endereço postal da empresa associada ao contato."})
