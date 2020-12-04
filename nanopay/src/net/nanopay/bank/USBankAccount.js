@@ -122,7 +122,9 @@ foam.CLASS({
       },
       javaGetter: `
         return getAccountNumber();
-      `
+      `,
+      validateObj: function(iban) {
+      }
     },
     {
       name: 'institutionNumber',
@@ -321,6 +323,13 @@ foam.CLASS({
             }
           ]
         }, X);
+      }
+    },
+    {
+      name: 'swiftCode',
+      visibility: 'HIDDEN',
+      required: false,
+      validateObj: function(swiftCode) {
       }
     }
   ],

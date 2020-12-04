@@ -123,13 +123,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'swiftCode',
-      visibility: 'HIDDEN',
-      required: false,
-      validateObj: function(swiftCode) {
-      }
-    },
-    {
       name: 'voidChequeImage',
       class: 'String',
       label: '',
@@ -312,6 +305,14 @@ foam.CLASS({
             }
           ]
         }, X);
+      }
+    },
+    {
+      name: 'swiftCode',
+      label: 'SWIFT/BIC',
+      updateVisibility: 'RO',
+      section: 'accountInformation',
+      validateObj: function(swiftCode) {
       }
     }
   ],

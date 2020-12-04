@@ -30,6 +30,7 @@ foam.CLASS({
     'foam.core.Currency',
     'foam.dao.PromisedDAO',
     'foam.nanos.auth.Address',
+    'foam.nanos.iban.ValidationIBAN',
     'net.nanopay.payment.PaymentProviderCorridor'
   ],
 
@@ -53,6 +54,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'java.util.List',
+    'java.util.regex.Pattern',
     'net.nanopay.account.Account',
     'static foam.mlang.MLang.*'
   ],
@@ -71,6 +73,11 @@ foam.CLASS({
       name: 'ACCOUNT_NAME_MAX_LENGTH',
       type: 'Integer',
       value: 70
+    },
+    {
+      name: 'SWIFT_CODE_PATTERN',
+      type: 'Regex',
+      factory: function() { return /^[A-z0-9a-z]{8,11}$/; }
     }
   ],
 
@@ -103,7 +110,10 @@ foam.CLASS({
     { name: 'BRANCH_ID_INVALID', message: 'Branch id invalid' },
     { name: 'SWIFT_CODE_REQUIRED', message: 'SWIFT/BIC code required' },
     { name: 'SWIFT_CODE_INVALID', message: 'SWIFT/BIC code invalid' },
-    { name: 'SWIFT_CODE_OR_IBAN_REQUIRED', message: 'SWIFT/BIC or IBAN required' },
+    { name: 'IBAN_REQUIRED', message: 'IBAN required' },
+    { name: 'IBAN_INVALID', message: 'IBAN invalid' },
+    { name: 'IBAN_INVALIDATION_FAILED', message: 'IBAN validation failed' },
+    { name: 'IBAN_COUNTRY_MISMATCHED', message: 'IBAN country code mismatched' },
     { name: 'AVAILABLE_CURRENCIES_MSG', message: 'Available Currencies' }
   ],
 
@@ -223,8 +233,8 @@ foam.CLASS({
       name: 'institutionNumber',
       section: 'accountInformation',
       documentation: `International bank code that identifies banks worldwide. BIC/SWIFT`,
-     updateVisibility: 'RO',
-     storageTransient: true
+      updateVisibility: 'RO',
+      storageTransient: true
     },
     {
       class: 'String',
@@ -388,17 +398,21 @@ foam.CLASS({
       }
     },
     {
+      class: 'String',
       name: 'swiftCode',
       label: 'SWIFT/BIC',
       updateVisibility: 'RO',
       section: 'accountInformation',
       validateObj: function(swiftCode, iban) {
-        var regex = /^[A-z0-9a-z]{8,11}$/;
+        if ( iban )
+          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
-        if ( swiftCode && swiftCode != '' && ! regex.test(swiftCode) ) {
-          return this.SWIFT_CODE_INVALID;
-        } else if ( ( !swiftCode || swiftCode === '' ) && ( !iban || iban === "" ) ) {
-          return this.SWIFT_CODE_OR_IBAN_REQUIRED;
+        if ( ! iban || (iban && ibanMsg != 'passed') ) {
+          if ( ! swiftCode || swiftCode === '' ) {
+            return this.SWIFT_CODE_REQUIRED;
+          } else if ( ! this.SWIFT_CODE_PATTERN.test(swiftCode) ) {
+            return this.SWIFT_CODE_INVALID;
+          }
         }
       }
     },
@@ -406,20 +420,21 @@ foam.CLASS({
       class: 'String',
       name: 'iban',
       label: 'International Bank Account Number (IBAN)',
+      updateVisibility: 'RO',
       section: 'accountInformation',
       documentation: `Standard international numbering system developed to
           identify an overseas bank account.`,
-      createVisibility: 'RW',
-      updateVisibility: 'RW',
-      readVisibility: 'RO',
-      validateObj: function(iban, swiftCode) {
-        var regex = /^[A-z0-9a-z]{8,11}$/;
-        if (
-          ( !iban || iban === "" ) &&
-          ( !swiftCode || swiftCode === '' || ! regex.test(swiftCode) )
-        ) {
-          return this.SWIFT_CODE_OR_IBAN_REQUIRED;
-        }
+      validateObj: function(iban, swiftCode, country) {
+        var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
+
+        if ( ! ibanMsg )
+          return this.IBAN_REQUIRED;
+
+        if ( country !== iban.substring(0, 2) )
+          return this.IBAN_COUNTRY_MISMATCHED;
+
+        if ( ibanMsg && ibanMsg != 'passed')
+          return ibanMsg;
       }
     },
     {

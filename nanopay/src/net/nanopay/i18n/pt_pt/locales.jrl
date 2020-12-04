@@ -1309,8 +1309,11 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.SWI
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.SWIFT_CODE_INVALID",target:"Código SWIFT / BIC inválido."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.ACCOUNT_NUMBER.label",target:"Nº da conta"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.ACCOUNT_NUMBER.documentation",target:"O número da conta bancária."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.SWIFT_CODE_OR_IBAN_REQUIRED",target:"SWIFT / BIC ou IBAN necessário."})
-
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.IBAN_REQUIRED",target:"IBAN necessário"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.IBAN_INVALID",target:"IBAN inválido"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.IBAN_INVALIDATION_FAILED",target:"A validação do IBAN falhou"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.IBAN_COUNTRY_MISMATCHED",target:"
+Código de país IBAN incompatível"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.SUMMARY.label",target:"resumo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.STATUS.documentation",target:"Rastreia o status da conta bancária."})
@@ -3147,7 +3150,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.REQ
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.SEND_MONEY.label",target:"Enviar dinheiro"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.DELETE.label",target:"Excluir"})
 
-
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoneyDetails.NEXT",target:"Próximo"})
 
 p({class:"foam.i18n.Locale",locale:"pt","source":"capability.main.contacts.createLabel","target":"Adicionar um contato"})
@@ -3156,4 +3158,12 @@ p({class:"foam.i18n.Locale",locale:"pt","source":"sme.quickAction.send.label","t
 p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.bank.BankAccountController.DELETE.label","target":"Excluir"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.bank.BankAccountController.EDIT_MENU.label","target":"Editar"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.bank.BankAccountController.SET_AS_DEFAULT.label","target":"definir como padrão"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.iban.ValidationIBAN.IBAN_REQUIRED",target:"IBAN necessário"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.iban.ValidationIBAN.UNKNOWN_COUNTRY_CODE",target:"Código de país desconhecido"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.iban.ValidationIBAN.LENGTH_MISMATCHED_1",target:"Comprimento do IBAN incompatível com o código do país. Estava esperando"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.iban.ValidationIBAN.LENGTH_MISMATCHED_2",target:"carta mas encontrada"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.iban.ValidationIBAN.INVALID_CHARACTER",target:"Caráter inválido na posição"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.iban.ValidationIBAN.INVALID_CHECKSUM",target:"Checksum inválido"})
+
 
