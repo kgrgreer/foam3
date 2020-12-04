@@ -111,10 +111,11 @@ foam.CLASS({
         double totalPayroll = 0;
         String group        = payroll.getGroup();
         String spid         = payroll.getSpid();
-        long sourceAccount  = payroll.getSourceAccount();
+        String sourceAccount  = payroll.getSourceAccount();
         String note         = payroll.getNote();
         String firstName, lastName, institutionNo, branchId, bankAccountNo;
-        long payeeId, dcaNo;
+        long payeeId;
+        String dcaNo;
         double pay;
         Transaction transaction;
         String transactionId;
@@ -194,7 +195,7 @@ foam.CLASS({
       name: 'createTransaction',
       type: 'Transaction',
       args: [
-        { type: 'long', name: 'sourceAccount' },
+        { type: 'String', name: 'sourceAccount' },
         { type: 'long', name: 'payeeId' },
         { type: 'long', name: 'amount' },
         { type: 'String', name: 'note' },
@@ -218,7 +219,7 @@ foam.CLASS({
         { type: 'String', name: 'institutionNo' },
         { type: 'String', name: 'branchId' },
         { type: 'String', name: 'bankAccountNo' },
-        { type: 'long', name: 'destinationAccount' },
+        { type: 'String', name: 'destinationAccount' },
       ],
       javaCode: `
         CABankAccount account = (CABankAccount) getAccountDAO()
@@ -252,7 +253,7 @@ foam.CLASS({
       type: 'void',
       args: [
         { type: 'CABankAccount', name: 'bankAccount' },
-        { type: 'long', name: 'destinationAccount' }
+        { type: 'String', name: 'destinationAccount' }
       ],
       javaCode: `
         DigitalAccount digitalAccount = (DigitalAccount) getAccountDAO().find(destinationAccount);

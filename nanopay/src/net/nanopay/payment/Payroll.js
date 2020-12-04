@@ -61,7 +61,7 @@ foam.CLASS({
       value: 'payblii.nanopay'
     },
     {
-      class: 'Long',
+      class: 'String',
       name: 'sourceAccount'
     },
     {
