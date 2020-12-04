@@ -144,7 +144,7 @@ foam.CLASS({
     {
       name: 'branchId',
       type: 'String',
-      label: 'Transit No.',
+      label: 'Transit',
       section: 'accountInformation',
       updateVisibility: 'RO',
       createVisibility: 'RW',
@@ -175,7 +175,7 @@ foam.CLASS({
     },
     {
       name: 'institutionNumber',
-      label: 'Inst. No.',
+      label: 'Institution',
       documentation: `Provides backward compatibilty for mobile call flow.
           BankAccountInstitutionDAO will lookup the institutionNumber and set the institution property.`,
       updateVisibility: 'RO',
@@ -209,7 +209,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'accountNumber',
-      label: 'Account No.',
+      label: 'Account',
       updateVisibility: 'RO',
       section: 'accountInformation',
       gridColumns: 5,
