@@ -264,7 +264,9 @@ foam.CLASS({
       visibility: 'HIDDEN',
       label: 'Status',
       tableWidth: 170,
-      value: 'PENDING',
+      expression: function(bankAccount, businessId) {
+        return bankAccount || businessId ? net.nanopay.contacts.ContactStatus.READY : net.nanopay.contacts.ContactStatus.PENDING;
+      },
       tableCellFormatter: function(state, obj) {
         this.__subContext__.contactDAO.find(obj.id).then(contactObj=> {
           var format = contactObj.bankAccount || contactObj.businessId ? net.nanopay.contacts.ContactStatus.READY : net.nanopay.contacts.ContactStatus.PENDING;
@@ -506,11 +508,6 @@ foam.CLASS({
         return this.signUpStatus !== this.ContactStatus.READY && ! bank;
       },
       code: function(X) {
-        // case of save without banking
-        if ( this.createBankAccount === undefined ) {
-          this.createBankAccount = net.nanopay.bank.CABankAccount.create({ isDefault: true }, X);
-        }
-
         X.controllerView.add(this.WizardController.create({
           model: 'net.nanopay.contacts.Contact',
           data: this,
@@ -521,22 +518,15 @@ foam.CLASS({
     },
     {
       name: 'edit',
-      label: 'View Details',
+      label: 'Edit Details',
       isAvailable: function() {
-        return this.signUpStatus !== this.ContactStatus.READY;
+        return this.signUpStatus === this.ContactStatus.READY;
       },
       code: function(X) {
-        // case of save without banking
-        controllerMode_ = foam.u2.ControllerMode.EDIT;
-        if ( this.createBankAccount === undefined ) {
-          this.createBankAccount = net.nanopay.bank.CABankAccount.create({ isDefault: true }, X);
-          controllerMode_ = foam.u2.ControllerMode.CREATE;
-        }
-
         X.controllerView.add(this.WizardController.create({
           model: 'net.nanopay.contacts.Contact',
           data: this,
-          controllerMode: controllerMode_,
+          controllerMode: foam.u2.ControllerMode.EDIT,
           isEdit: true
         }, X));
       }
