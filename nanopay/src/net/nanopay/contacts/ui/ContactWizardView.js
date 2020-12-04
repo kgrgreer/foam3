@@ -65,7 +65,6 @@ foam.CLASS({
       top: 30px;
     }
     ^ .button-container {
-      margin-top: 24px;
       padding: 0 30px;
     }
   `,
