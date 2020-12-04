@@ -3161,3 +3161,10 @@ p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.bank.BankAccountCo
 p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.bank.BankAccountController.EDIT_MENU.label","target":"Editar"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.bank.BankAccountController.SET_AS_DEFAULT.label","target":"definir como padrão"})
 
+p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.RECONCILE.label","target":"Conciliar"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.VIEW_DETAILS.label","target":"Ver detalhes"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.PAY_NOW.label","target":"Pague agora"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.EDIT.label","target":"editar"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.APPROVE.label","target":"aprovar"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.MARK_VOID.label","target":"Marcar como nulo"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.DELETE.label","target":"Excluir"})
