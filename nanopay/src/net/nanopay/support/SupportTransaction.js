@@ -49,9 +49,18 @@ foam.CLASS({
     'net.nanopay.tx.HistoricStatus',
    ],
 
-   javaImports: [
+  javaImports: [
     'java.util.Date'
-   ],
+  ],
+
+  tableColumns :[
+    'id',
+    'amount',
+    'referenceNumber',
+    'chainSummary.summary',
+    'chainSummary.status',
+    'chainSummary.errorCode'
+  ],
 
   messages: [
     { name: 'DESCRIPTION', message: 'Transaction Summary' }
@@ -63,6 +72,10 @@ foam.CLASS({
     },
     {
       name: 'transactionLineItems'
+    },
+    {
+      name: 'referenceInformation',
+      title: 'Transaction Metadata'
     }
   ],
 
@@ -168,6 +181,9 @@ foam.CLASS({
     net.nanopay.tx.model.Transaction.DST_ACCOUNT_ERROR.clone(),
     net.nanopay.tx.model.Transaction.LINE_ITEMS.clone().copyFrom({
       section: 'transactionLineItems'
+    }),
+    net.nanopay.tx.model.Transaction.REFERENCE_DATA.clone().copyFrom({
+      section: 'referenceInformation'
     })
   ],
 

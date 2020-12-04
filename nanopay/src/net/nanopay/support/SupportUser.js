@@ -35,6 +35,17 @@ foam.CLASS({
     'foam.nanos.auth.Phone'
   ],
 
+  tableColumns: [
+    'id',
+    'firstName',
+    'lastName',
+    'email',
+    'phoneNumber',
+    'status',
+    'compliance',
+    'group'
+  ],
+
   sections: [
     {
       name: 'userInformation'
@@ -87,24 +98,15 @@ foam.CLASS({
       section: 'userInformation',
       order: 50
     }),
+    foam.nanos.auth.User.BIRTHDAY.clone().copyFrom({
+      label: 'Date of Birth',
+      gridColumns:6,
+      section: 'userInformation',
+      order: 55
+    }),
     foam.nanos.auth.User.ADDRESS.clone().copyFrom({
       section: 'userInformation',
       order: 60
-    }),
-    foam.nanos.auth.User.CREATED.clone().copyFrom({
-      section: 'userInformation',
-      order: 65
-    }),
-    foam.nanos.auth.User.LAST_MODIFIED.clone().copyFrom({
-      section: 'userInformation',
-      order: 66
-    }),
-    foam.nanos.auth.User.CREATED_BY.clone().copyFrom({
-      section: 'userInformation',
-      order: 67,
-      view: {
-        class: 'foam.u2.view.ReferenceView'
-      }
     }),
     foam.nanos.auth.User.COMPLIANCE.clone().copyFrom({
       label: 'Compliance Status',
@@ -118,6 +120,12 @@ foam.CLASS({
       section: 'userInformation',
       order: 110
     }),
+    foam.nanos.auth.User.TWO_FACTOR_ENABLED.clone().copyFrom({
+      label: 'Two Factor Authentication Enabled',
+      gridColumns:6,
+      section: 'userInformation',
+      order: 120
+    }),
     foam.nanos.auth.User.GROUP.clone().copyFrom({
       hidden: false,
       view: {
@@ -125,13 +133,39 @@ foam.CLASS({
       },
       gridColumns: 6,
       section: 'userInformation',
-      order: 120
+      order: 130
     }),
-    foam.nanos.auth.User.TWO_FACTOR_ENABLED.clone().copyFrom({
-      label: 'Two Factor Authentication Enabled',
+    foam.nanos.auth.User.PEPHIORELATED.clone().copyFrom({
+      label: 'Politically Exposed Person',
       gridColumns:6,
       section: 'userInformation',
-      order: 130
+      order: 140
+    }),
+    foam.nanos.auth.User.THIRD_PARTY.clone().copyFrom({
+      label: "Acting on Behalf of Third Party",
+      gridColumns:6,
+      section: 'userInformation',
+      order: 150
+    }),
+    foam.nanos.auth.User.JOB_TITLE.clone().copyFrom({
+      gridColumns:6,
+      section: 'userInformation',
+      order: 160
+    }),
+    foam.nanos.auth.User.CREATED_BY.clone().copyFrom({
+      section: 'userInformation',
+      order: 170,
+      view: {
+        class: 'foam.u2.view.ReferenceView'
+      }
+    }),
+    foam.nanos.auth.User.CREATED.clone().copyFrom({
+      section: 'userInformation',
+      order: 180
+    }),
+    foam.nanos.auth.User.LAST_MODIFIED.clone().copyFrom({
+      section: 'userInformation',
+      order: 190
     }),
     foam.nanos.auth.User.ACCOUNTS.clone().copyFrom({
       hidden: false,

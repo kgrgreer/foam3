@@ -55,22 +55,17 @@ foam.CLASS({
 
             ApprovalStatus approval = getApprovalState(x, ucj);
 
-            if ( approval == null || approval != ApprovalStatus.REQUESTED ) {
+            var isRequested = approval == null || approval == ApprovalStatus.REQUESTED;
+
+            if ( ! isRequested ) {
               status = ApprovalStatus.REJECTED == approval ? CapabilityJunctionStatus.ACTION_REQUIRED : CapabilityJunctionStatus.APPROVED;
               ucj.setStatus(status);
 
               if ( approval == ApprovalStatus.REJECTED ) clearData(x, ucj);
 
-              DAO userDAO = (DAO) x.get("localUserDAO");
-              User user = (User) userDAO.find(ucj.getSourceId());
-              Subject subject = new Subject.Builder(x).build();
-              subject.setUser(user);
-              if ( ucj instanceof AgentCapabilityJunction ) {
-                User effectiveUser = (User) userDAO.find(((AgentCapabilityJunction) ucj).getEffectiveUser());
-                subject.setUser(effectiveUser);
-              }
+              // Update junction
+              Subject subject = ucj.getSubject(x);
               X ownerContext = x.put("subject", subject);
-
               ((DAO) x.get("userCapabilityJunctionDAO")).inX(ownerContext).put(ucj);
             }
             ruler.putResult(status);

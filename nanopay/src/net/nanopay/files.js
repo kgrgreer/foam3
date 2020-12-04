@@ -399,6 +399,8 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEXCreateFundingBalancesRule' },
   { name: 'net/nanopay/fx/afex/AFEXSubmitFundingTxnRule' },
   { name: 'net/nanopay/fx/afex/AFEXGetPDFRule' },
+  { name: 'net/nanopay/fx/afex/IsIbanRequest' },
+  { name: 'net/nanopay/fx/afex/IsIbanResponse' },
 
   // kotak
   { name: 'net/nanopay/kotak/Kotak' },
@@ -1757,6 +1759,7 @@ FOAM_FILES([
   { name: 'net/nanopay/rtp/ThankYou', flags: ['web'] },
 
   // Treviso
+  { name: 'net/nanopay/partner/soawebservices/SoaCredenciais' },
   { name: 'net/nanopay/partner/treviso/FepWebOnboardingRule'},
   { name: 'net/nanopay/partner/treviso/FepWebUserUpdatingRule'},
   { name: 'net/nanopay/partner/treviso/TrevisoCredientials' },
