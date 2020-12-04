@@ -139,8 +139,7 @@ foam.CLASS({
       view: function(_, X) {
         return {
           class: 'foam.u2.tag.Image',
-          displayWidth: '540px',
-          displayHeight: 'auto'
+          displayWidth: '100%'
         };
       }
     },
