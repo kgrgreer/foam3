@@ -133,6 +133,7 @@ foam.CLASS({
     {
       name: 'organization',
       label: 'Business',
+      gridColumns: 12,
       documentation: 'The organization/business associated with the Contact.',
       view: { class: 'foam.u2.tag.Input', focused: true },
       validateObj: function(organization) {
@@ -179,6 +180,7 @@ foam.CLASS({
       name: 'email',
       documentation: 'The email address of the Contact.',
       label: 'Email',
+      gridColumns: 12,
       view: { class: 'foam.u2.tag.Input' },
       validateObj: function(email) {
         if ( ! this.businessId ) {
@@ -221,7 +223,7 @@ foam.CLASS({
       name: 'confirm',
       documentation: `True if the user confirms their relationship with the contact.`,
       section: 'operationsInformation',
-      gridColumns: 6,
+      gridColumns: 12,
       label: '',
       updateVisibility: function() {
         return foam.u2.DisplayMode.HIDDEN;
