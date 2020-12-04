@@ -58,8 +58,14 @@ foam.CLASS({
       position: relative;
       float: right;
     }
+    ^ .button-container-wrapper {
+      position: relative;
+      width: 585px;
+      right: 30px;
+    }
     ^ .button-container {
       margin-top: 24px;
+      padding: 0 30px;
     }
   `,
 
@@ -186,13 +192,15 @@ foam.CLASS({
               });
           }))
           .startContext({ data: this })
-            .start().addClass('button-container')
-              .tag(this.BACK, { buttonStyle: 'TERTIARY' })
-              .start().addClass(this.myClass('button-sub-container'))
-                .tag(this.OPTION, { buttonStyle: 'SECONDARY' })
-                .start(this.NEXT).end()
+            .start().addClass('button-container-wrapper')
+              .start().addClass('button-container')
+                .tag(this.BACK, { buttonStyle: 'TERTIARY' })
+                .start().addClass(this.myClass('button-sub-container'))
+                  .tag(this.OPTION, { buttonStyle: 'SECONDARY' })
+                  .start(this.NEXT).end()
+                .end()
+                .start(this.SAVE).end()
               .end()
-              .start(this.SAVE).end()
             .end()
           .endContext()
         .end();
