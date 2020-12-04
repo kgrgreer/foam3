@@ -1538,7 +1538,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.PLA
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.ORGANIZATION.label",target:"organização"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.ORGANIZATION.documentation",target:"A organização / empresa associada ao contato."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.ORGANIZATION.view.placeholder",target:"ex. Indústrias Vandelay"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.OPERATING_BUSINESS_NAME.label",target:"operatingBusinessName pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.OPERATING_BUSINESS_NAME.documentation",target:"Este é o nome opcional que a empresa deseja exibir em nossa plataforma (usado para pesquisa),\nem oposição ao nome da empresa / organização, que é o nome legal da empresa."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.LEGAL_NAME.label",target:"nome"})
@@ -1546,13 +1545,10 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.LEG
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.LEGAL_NAME.documentation",target:"Um campo para o nome e o sobrenome legais do contato,\n        se diferente do primeiro nome fornecido. O campo será o primeiro padrão\n        nome último nome."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.EMAIL.label",target:"O email"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.EMAIL.documentation",target:"O endereço de e-mail do contato."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.EMAIL.view.placeholder",target:"ex. example@domain.com"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.FIRST_NAME.view.placeholder",target:"Opcional"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.MIDDLE_NAME.label",target:"nome do meio"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.FIRST_NAME.label",target:"primeiro nome"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.LAST_NAME.label",target:"último nome"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.LAST_NAME.view.placeholder",target:"Opcional"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.CONFIRM.label",target:"confirme"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.BUSINESS_ID.label",target:"businessId pt"})
