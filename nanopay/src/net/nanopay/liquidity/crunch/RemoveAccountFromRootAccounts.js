@@ -47,14 +47,14 @@ foam.CLASS({
             if ( ((LifecycleAware) obj).getLifecycleState() == foam.nanos.auth.LifecycleState.DELETED ) {
               DAO rootAccountsDAO = (DAO) x.get("rootAccountsDAO");
 
-              Long id = ((Account) obj).getId();
+              String id = ((Account) obj).getId();
 
               List<RootAccounts> rootAccountsList= ((ArraySink) rootAccountsDAO
                 .select(new ArraySink()))
                 .getArray();
 
               for ( RootAccounts ra : rootAccountsList ) {
-                List<Long> accountsList = (List<Long>) ra.getRootAccounts();
+                List<String> accountsList = (List<String>) ra.getRootAccounts();
                 if ( accountsList.contains(id.toString()) ) {
                   accountsList.remove(id.toString());
 

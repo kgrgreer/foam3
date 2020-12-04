@@ -67,7 +67,7 @@ foam.CLASS({
               regionId: 'BR-SP',
               streetNumber: '1',
               streetName: 'Grand',
-              city: 'São Paulo',
+              city: 'Sao Paulo',
               postalCode: '01310000'
             }
           }, x));
@@ -82,47 +82,14 @@ foam.CLASS({
     {
       name: 'generalAdmission',
       code: async function(x, user) {
-        var id = '554af38a-8225-87c8-dfdf-eeb15f71215e-19';
-        var ucj = await this.crunchService.getJunction(x, id);
-        if ( ! ucj ||
-             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-          var cap = net.nanopay.crunch.registration.UserRegistrationData.create({
-            firstName: user.firstName,
-            lastName: user.lastName,
-            phoneNumber: user.phoneNumber
-          });
-          ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
-        }
-
-        id = '554af38a-8225-87c8-dfdf-eeb15f71215e-8';
-        ucj = await this.crunchService.getJunction(x, id);
-        if ( ! ucj ||
-             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-          var cap = net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy.create({
-            user: user.id,
-            agreement: true,
-          });
-          ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
-        }
-
-        id = '554af38a-8225-87c8-dfdf-eeb15f71215e-7';
-        ucj = await this.crunchService.getJunction(x, id);
-        if ( ! ucj ||
-             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-          var cap = net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiTermsAndConditions.create({
-            user: user.id,
-            agreement: true,
-          });
-          ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
-        }
-
         // GeneralAdmission-Treviso
-        id = '242B00F8-C775-4899-AEBA-F287EC54E901';
-        ucj = await this.crunchService.getJunction(x, id);
+        var id = '242B00F8-C775-4899-AEBA-F287EC54E901';
+        var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
           ucj = await this.crunchService.updateJunction(x, id, null, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
         }
+        return ucj;
       }
     },
     {

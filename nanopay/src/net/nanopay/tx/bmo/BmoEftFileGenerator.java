@@ -311,7 +311,7 @@ public class BmoEftFileGenerator implements EFTFileGenerator {
     return referenceNumber.getId();
   }
 
-  public CABankAccount getAccountById(long id) {
+  public CABankAccount getAccountById(String id) {
     DAO accountDAO = (DAO) x.get("localAccountDAO");
 
     Account account = (Account) accountDAO.inX(x).find(id);

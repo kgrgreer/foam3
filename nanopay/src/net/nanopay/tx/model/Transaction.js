@@ -1056,11 +1056,11 @@ foam.CLASS({
 
       AppConfig appConfig = (AppConfig) x.get("appConfig");
       DAO userDAO = (DAO) x.get("bareUserDAO");
-      if ( getSourceAccount() == 0 ) {
+      if ( SafetyUtil.isEmpty(getSourceAccount()) ) {
         throw new ValidationException("sourceAccount must be set");
       }
 
-      if ( getDestinationAccount() == 0 ) {
+      if ( SafetyUtil.isEmpty(getDestinationAccount()) ) {
         throw new ValidationException("destinationAccount must be set");
       }
 
@@ -1333,27 +1333,27 @@ foam.CLASS({
       javaCode: `
       // TODO: Move logic in AuthenticatedTransactionDAO here.
     `
-    },
-    {
-      name: 'getOutgoingAccount',
-      type: 'Long',
-      javaCode: `
+  },
+  {
+    name: 'getOutgoingAccount',
+    type: 'String',
+    javaCode: `
       return getSourceAccount();
     `
-    },
-    {
-      name: 'getTotal',
-      type: 'Long',
-      documentation: 'Sum of transfers on this transaction for a given account',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'accountNumber', type: 'Long' }
-      ],
-      javaCode: `
+  },
+  {
+    name: 'getTotal',
+    type: 'Long',
+    documentation: 'Sum of transfers on this transaction for a given account',
+    args: [
+      { name: 'x', type: 'Context' },
+      { name: 'accountId', type: 'String' }
+    ],
+    javaCode: `
       Long sum = 0l;
       //Sum transfers that affect account
       for ( Transfer t : getTransfers() )
-        if ( t.getAccount() == accountNumber )
+        if ( SafetyUtil.equals(t.getAccount(), accountId) )
           sum += t.getAmount();
       return sum;
     `

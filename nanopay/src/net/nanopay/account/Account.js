@@ -159,7 +159,7 @@ foam.CLASS({
       updateVisibility: 'RO'
     },
     {
-      class: 'Long',
+      class: 'String',
       name: 'id',
       includeInDigest: true,
       documentation: 'The ID for the account.',
@@ -556,7 +556,7 @@ foam.CLASS({
     },
     {
       name: 'getOutgoingAccountCreate',
-      type: 'Long',
+      type: 'String',
       args: [
         {
           type: 'Context',
@@ -569,7 +569,7 @@ foam.CLASS({
     },
     {
       name: 'getOutgoingAccountRead',
-      type: 'Long',
+      type: 'String',
       args: [
         {
           type: 'Context',
@@ -582,7 +582,7 @@ foam.CLASS({
     },
     {
       name: 'getOutgoingAccountUpdate',
-      type: 'Long',
+      type: 'String',
       args: [
         {
           type: 'Context',
@@ -595,7 +595,7 @@ foam.CLASS({
     },
     {
       name: 'getOutgoingAccountDelete',
-      type: 'Long',
+      type: 'String',
       args: [
         {
           type: 'Context',

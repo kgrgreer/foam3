@@ -44,38 +44,45 @@ foam.CLASS({
     {
       name: 'institutionNumber',
       updateVisibility: 'RO',
-      validateObj: function(institutionNumber) {
+      validateObj: function(institutionNumber, iban) {
         var regex = /^[A-z0-9a-z]{3}$/;
 
-        if ( institutionNumber === '' ) {
-          return this.INSTITUTION_NUMBER_REQUIRED;
-        } else if ( ! regex.test(institutionNumber) ) {
-          return this.INSTITUTION_NUMBER_INVALID;
+        if ( iban )
+          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
+
+        if ( ! iban || (iban && ibanMsg != 'passed') ) {
+          if ( institutionNumber === '' ) {
+            return this.INSTITUTION_NUMBER_REQUIRED;
+          } else if ( ! regex.test(institutionNumber) ) {
+            return this.INSTITUTION_NUMBER_INVALID;
+          }
         }
       }
     },
     {
       name: 'accountNumber',
       updateVisibility: 'RO',
-      validateObj: function(accountNumber) {
+      validateObj: function(accountNumber, iban) {
         var accNumberRegex = /^[0-9]{7}$/;
 
-        if ( accountNumber === '' ) {
-          return this.ACCOUNT_NUMBER_REQUIRED;
-        } else if ( ! accNumberRegex.test(accountNumber) ) {
-          return this.ACCOUNT_NUMBER_INVALID;
+        if ( iban )
+          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
+
+        if ( ! iban || (iban && ibanMsg != 'passed') ) {
+          if ( accountNumber === '' ) {
+            return this.ACCOUNT_NUMBER_REQUIRED;
+          } else if ( ! accNumberRegex.test(accountNumber) ) {
+            return this.ACCOUNT_NUMBER_INVALID;
+          }
         }
       }
     },
     {
-      class: 'String',
-      name: 'checkDigit',
-      section: 'accountInformation',
-      label: 'Check Digit',
-      updateVisibility: 'RO'
+      name: 'desc',
+      visibility: 'HIDDEN'
     },
     {
-      name: 'desc',
+      name: 'branchId',
       visibility: 'HIDDEN'
     }
   ]

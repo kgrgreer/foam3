@@ -124,7 +124,8 @@ foam.CLASS({
       label: 'Phone number',
       visibility: 'RW',
       required: true,
-      autoValidate: true
+      autoValidate: true,
+      gridColumns: 12
     }),
     foam.nanos.auth.User.PEPHIORELATED.clone().copyFrom({
       section: 'signingOfficerPersonalInformationSection',
@@ -146,6 +147,7 @@ foam.CLASS({
         };
       },
       visibility: 'RW',
+      gridColumns: 12
     }),
     foam.nanos.auth.User.THIRD_PARTY.clone().copyFrom({
       section: 'signingOfficerPersonalInformationSection',
@@ -165,7 +167,8 @@ foam.CLASS({
           isHorizontal: true
         };
       },
-      visibility: 'RW'
+      visibility: 'RW',
+      gridColumns: 12
     }),
     {
       name: 'businessId',

@@ -232,7 +232,7 @@ foam.CLASS({
       PM pm = PM.create(x, this.getClass().getSimpleName(), "lockAndExecute");
       try {
         // Combine transfers to the same account
-        HashMap<Long, Transfer> hm = new HashMap();
+        HashMap<String, Transfer> hm = new HashMap();
 
         for ( Transfer tr : ts ) {
           if ( hm.get(tr.getAccount()) != null ) {

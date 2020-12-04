@@ -68,6 +68,7 @@ foam.CLASS({
     'foam.nanos.auth.Country',
     'foam.u2.dialog.Popup',
     'foam.u2.DisplayMode',
+    'foam.u2.LoadingSpinner',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.bank.INBankAccount',
     'net.nanopay.contacts.ContactStatus',
@@ -128,6 +129,17 @@ foam.CLASS({
     { name: 'HEADER', message: 'Country of bank account' },
     { name: 'MISSING_BANK_WARNING', message: 'Missing bank information' }
   ],
+
+  css: `
+    .spinner {
+      text-align: center;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+    .spinner img {
+      width: 60px;
+    }
+  `,
 
   properties: [
     {
@@ -304,8 +316,8 @@ foam.CLASS({
       documentation: 'A before put bank account object a user creates for the contact.',
       storageTransient: true,
       label: '',
-      visibility: function() {
-        return this.countries.length == 0 && ! this.createBankAccount ? 
+      visibility: function(countries) {
+        return countries.length == 0 && ! this.createBankAccount ? 
           foam.u2.DisplayMode.HIDDEN : 
           foam.u2.DisplayMode.RW;
       },
@@ -351,6 +363,7 @@ foam.CLASS({
                 if ( model ) arr.push(model);
               }
               this.countries = arr;
+              this.showSpinner = false;
             })
         });
       }
@@ -368,14 +381,36 @@ foam.CLASS({
       flags: ['web'],
       name: 'noCorridorsAvailable',
       documentation: 'GUI when no corridor capabilities have been added to user.',
-      visibility: function() {
-        return this.countries.length == 0 && ! this.createBankAccount ? 
+      visibility: function(showSpinner, countries, createBankAccount) {
+        return ! showSpinner && countries.length == 0 && ! createBankAccount ? 
           foam.u2.DisplayMode.RO : 
           foam.u2.DisplayMode.HIDDEN;
       },
       view: function(_, X) {
-        return X.data.createBankAccount ? null : X.E().start().add(X.data.UNABLE_TO_ADD_BANK_ACCOUNT).end();
+        return X.E().start().add(X.data.UNABLE_TO_ADD_BANK_ACCOUNT).end();
       }
+    },
+    {
+      transient: true,
+      flags: ['web'],
+      name: 'loadingSpinner',
+      label: '',
+      visibility: function(showSpinner, createBankAccount) {
+        return showSpinner && ! createBankAccount ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
+      },
+      factory: function() {
+        return this.LoadingSpinner.create().addClass('spinner');
+      },
+      view: function(_, X) {
+        return X.E().start().add(X.data.loadingSpinner).end();
+      }
+    },
+    {
+      transient: true,
+      flags: ['web'],
+      class: 'Boolean',
+      name: 'showSpinner',
+      value: true
     },
     {
       transient: true,
@@ -635,7 +670,7 @@ foam.CLASS({
             throw new IllegalStateException("Business name is required.");
           }
 
-          if ( this.getBankAccount() != 0 ) {
+          if ( ! foam.util.SafetyUtil.isEmpty(this.getBankAccount()) ) {
             BankAccount bankAccount = (BankAccount) this.findBankAccount(x);
 
             if ( bankAccount == null ) throw new RuntimeException("Bank account not found.");

@@ -47,29 +47,31 @@ foam.CLASS({
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
+            //TODO: fix numberSet for string id
+            if ( true ) throw new RuntimeException("fix numberSet for string id in AddAccountToUserCapabilityJunctionOnCreate");
 
-            Account account = (Account) obj;
-            Long accountId = account.getId();
-            Long parentId = account.getParent();
+            // Account account = (Account) obj;
+            // Long accountId = account.getId();
+            // Long parentId = account.getParent();
 
-            // get all ucjs where it is account-based
-            DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
+            // // get all ucjs where it is account-based
+            // DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
             
-            // non account-based capabilities do not store anything in data
-            List<UserCapabilityJunction> ucjs = ((ArraySink) ucjDAO
-              .where(MLang.NEQ(UserCapabilityJunction.DATA, null))
-              .select(new ArraySink())).getArray();
+            // // non account-based capabilities do not store anything in data
+            // List<UserCapabilityJunction> ucjs = ((ArraySink) ucjDAO
+            //   .where(MLang.NEQ(UserCapabilityJunction.DATA, null))
+            //   .select(new ArraySink())).getArray();
 
-            for ( UserCapabilityJunction ucj : ucjs ) {
-              if ( ! ( ucj.getData() instanceof NumberSet ) ) continue;              
-              NumberSet numberSet = (NumberSet) ucj.getData();
+            // for ( UserCapabilityJunction ucj : ucjs ) {
+            //   if ( ! ( ucj.getData() instanceof NumberSet ) ) continue;              
+            //   NumberSet numberSet = (NumberSet) ucj.getData();
                             
-              if ( numberSet.contains(parentId) ) {
-                numberSet.add(accountId);
-                ucj.setData((numberSet));
-                ucjDAO.put(ucj);
-              }
-            }
+            //   if ( numberSet.contains(parentId) ) {
+            //     numberSet.add(accountId);
+            //     ucj.setData((numberSet));
+            //     ucjDAO.put(ucj);
+            //   }
+            // }
           }
         }, "Add account to ucj data on account create");
       `

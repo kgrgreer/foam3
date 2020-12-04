@@ -2,6 +2,8 @@ p({
   "class": "foam.nanos.menu.Menu",
   "id": "accounts-support",
   "label": "Accounts (Support)",
+  "icon":"images/accounts-24px-resting.svg",
+  "activeIcon":"images/accounts-24px-active.svg",
   "handler":
     {
       "class": "foam.nanos.menu.DAOMenu2",
@@ -29,6 +31,8 @@ p({
   "class": "foam.nanos.menu.Menu",
   "id": "businesses-support",
   "label": "Businesses (Support)",
+  "icon":"images/businesses-24px-resting.svg",
+  "activeIcon":"images/businesses-24px-active.svg",
   "handler":
     {
       "class": "foam.nanos.menu.DAOMenu2",
@@ -57,6 +61,8 @@ p({
   "class":"foam.nanos.menu.Menu",
   "id":"transactions-support",
   "label":"Transactions (Support)",
+  "icon":"images/transactions-24px-resting.svg",
+  "activeIcon":"images/transactions-24px-active.svg",
   "handler":{
     "class":"foam.nanos.menu.DAOMenu2",
     "config":{
@@ -84,6 +90,8 @@ p({
   "class": "foam.nanos.menu.Menu",
   "id": "users-support",
   "label": "Users (Support)",
+  "icon":"images/users-24px-resting.svg",
+  "activeIcon":"images/users-24px-active.svg",
   "handler":
     {
       "class": "foam.nanos.menu.DAOMenu2",

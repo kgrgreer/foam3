@@ -57,7 +57,7 @@ p({
       .setDecorator(dao)
       .setAuthorize(false)
       .setPm(true)
-      .setSeqNo(true)
+      .setGuid(true)
       .setRuler(true)
       .setApprovableAware(false)
      .build();
