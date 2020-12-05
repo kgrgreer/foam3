@@ -71,14 +71,19 @@ foam.CLASS({
                 InputStream inStream = new ByteArrayInputStream(outStream.toByteArray());
 
                 // Save the PDF on disk.
-                BlobService blobStore = (BlobService) x.get("blobStore");
-                foam.blob.Blob data = blobStore.put(new foam.blob.InputStreamBlob(inStream, size));
+                // BlobService blobStore = (BlobService) x.get("blobStore");
+                // foam.blob.Blob data = blobStore.put(new foam.blob.InputStreamBlob(inStream, size));
+                foam.blob.Blob data = new foam.blob.InputStreamBlob(inStream, size);
 
                 // Save the file in fileDAO.
                 DAO fileDAO = (DAO) x.get("fileDAO");
-                foam.nanos.fs.File thePDF = new foam.nanos.fs.File.Builder(x).setData(data)
-                    .setOwner(txn.findSourceAccount(x).getOwner()).setFilesize(size)
-                    .setFilename("TransactionConfirmation_" + txn.getId() + ".pdf").setMimeType("application/pdf").build();
+                foam.nanos.fs.File thePDF = new foam.nanos.fs.File.Builder(x)
+                    .setData(data)
+                    .setOwner(txn.findSourceAccount(x).getOwner())
+                    .setFilesize(size)
+                    .setFilename("TransactionConfirmation_" + txn.getId() + ".pdf")
+                    .setMimeType("application/pdf")
+                    .build();
 
                 File pdf = (File) fileDAO.inX(x).put(thePDF);
                 txn.addLineItems( new TransactionLineItem[] {new ConfirmationFileLineItem.Builder(x).setGroup("fx").setFile(pdf).build()} );

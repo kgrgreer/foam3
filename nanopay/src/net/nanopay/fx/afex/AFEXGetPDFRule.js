@@ -69,16 +69,17 @@ foam.CLASS({
             try {
               byte[] bytes = afexService.getConfirmationPDF(transaction);
               InputStream inStream = new ByteArrayInputStream(bytes);
-
-              // Save the PDF on disk.
-              BlobService blobStore = (BlobService) x.get("blobStore");
-              foam.blob.Blob data = blobStore.put(new foam.blob.InputStreamBlob(inStream, bytes.length));
-
+              foam.blob.Blob data = new foam.blob.InputStreamBlob(inStream, bytes.length);
               // Save the file in fileDAO.
               DAO fileDAO = (DAO) x.get("fileDAO");
-              foam.nanos.fs.File thePDF = new foam.nanos.fs.File.Builder(x).setData(data)
-                .setOwner(transaction.findSourceAccount(x).getOwner()).setFilesize(bytes.length)
-                .setFilename("TransactionConfirmation_" + transaction.getId() + ".pdf").setMimeType("application/pdf").build();
+              foam.nanos.fs.File thePDF = new foam.nanos.fs.File.Builder(x)
+                .setData(data)
+                .setOwner(transaction.findSourceAccount(x)
+                .getOwner())
+                .setFilesize(bytes.length)
+                .setFilename("AFEXTradeConfirmation.pdf")
+                .setMimeType("application/pdf")
+                .build();
 
               File pdf = (File) fileDAO.inX(x).put(thePDF);
               transaction.addLineItems( new TransactionLineItem[]{new ConfirmationFileLineItem.Builder(x).setGroup("fx").setFile(pdf).build()} );
@@ -104,6 +105,12 @@ foam.CLASS({
             } catch (Throwable t) {
               String msg = "Error getting trade confirmation for AfexTransaction " + transaction.getId();
               logger.error(msg, t);
+              ((DAO) x.get("alarmDAO")).put(new foam.nanos.alarming.Alarm.Builder(x)
+                .setName("AFEX Trade Confirmation")
+                .setReason(foam.nanos.alarming.AlarmReason.TIMEOUT)
+                .setSeverity(foam.log.LogLevel.ERROR)
+                .setNote(msg)
+                .build());
               Notification notification = new Notification.Builder(x)
                 .setTemplate("NOC")
                 .setBody(msg + " " + t.getMessage())
