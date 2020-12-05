@@ -51,7 +51,6 @@ public class EFTFileUtil {
       File file = new File.Builder(x)
           .setMimeType(mimeType)
           .setFilename(fileName)
-          .setMimeType(mimeType)
           .setFilesize(fileSize)
           .setData(data)
           .build();
