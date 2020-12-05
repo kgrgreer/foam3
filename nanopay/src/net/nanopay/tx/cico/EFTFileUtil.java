@@ -86,6 +86,7 @@ public class EFTFileUtil {
         ((DAO) x.get("alarmDAO")).put(new Alarm.Builder(x)
                                       .setName("EFF Get File")
                                       .setReason(foam.nanos.alarming.AlarmReason.UNSPECIFIED)
+                                      .setSeverity(foam.log.LogLevel.ERROR)
                                       .setNote(t.getMessage())
                                       .build());
         throw new foam.core.FOAMException(t);
