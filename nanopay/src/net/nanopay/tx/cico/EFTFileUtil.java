@@ -47,7 +47,7 @@ public class EFTFileUtil {
     try {
       DAO fileDAO = ((DAO) x.get("fileDAO")).inX(x);
       BlobService blobStore  = (BlobService) x.get("blobStore");
-      Blob data = blobStore.put_(x, new InputStreamBlob(in, fileSize));
+      Blob data = new InputStreamBlob(in, fileSize);
       File file = new File.Builder(x)
           .setMimeType(mimeType)
           .setFilename(fileName)
