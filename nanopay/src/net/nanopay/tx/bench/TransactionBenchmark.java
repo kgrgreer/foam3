@@ -195,7 +195,7 @@ public class TransactionBenchmark
         user = (User) userDAO_.put(user);
 
         DigitalAccount da = new DigitalAccount();
-        da.setId(user.getId());
+        da.setId(String.valueOf(user.getId()));
         Account a = (Account) accountDAO_.find(da);
         if ( a == null ) {
           da.setDenomination("CAD");

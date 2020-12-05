@@ -174,11 +174,11 @@ foam.CLASS({
       Logger logger = (Logger) x.get("logger");
       long range = getMaxUserId() - getMinUserId() + 1;
       long amount = (long) (Math.random() * 100);
-      String payerId = 0L;
-      String payeeId = 0L;
+      Long payerId = 0L;
+      Long payeeId = 0L;
       while ( payerId == payeeId ) {
-        payerId = String.valueOf(Math.floor(Math.random() * range) + getMinUserId());
-        payeeId = String.valueOf(Math.floor(Math.random() * range) + getMinUserId());
+        payerId = (long) (Math.floor(Math.random() * range) + getMinUserId());
+        payeeId = (long) (Math.floor(Math.random() * range) + getMinUserId());
       }
 
       Transaction transaction = new Transaction();
