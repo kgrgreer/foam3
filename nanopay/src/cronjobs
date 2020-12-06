@@ -57,7 +57,7 @@ p({
 })
 p({
   "class": "foam.nanos.cron.Cron",
-  "enabled": false,
+  "enabled": true,
   "schedule": {
     "class": "foam.nanos.cron.CronSchedule",
     "dayOfMonth": 1,
