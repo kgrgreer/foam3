@@ -153,7 +153,7 @@ p({
 })
 p({
   "class": "foam.nanos.cron.Cron",
-  "enabled":false,
+  "enabled":true,
   "scheduledTime": "2019-11-25T00:00:00.000Z",
   "schedule": {"class":"foam.nanos.cron.CronSchedule","minute":59,"hour":23,"dayOfMonth":-1,"month":-1,"dayOfWeek":-1,"second":-1},
   "id":"Send Reminder Email to SigningOfficer",
