@@ -247,7 +247,7 @@ foam.CLASS({
         IsIbanResponse isIbanResponse = afexServiceProvider.isiban(iban, country, spid);
 
         super.validate(x);
-        validateIban(x, isIbanResponse);
+        // validateIban(x, isIbanResponse);
 
         if ( isIbanResponse != null && ! isIbanResponse.getIsIban() ) {
           validateInstitutionNumber();
