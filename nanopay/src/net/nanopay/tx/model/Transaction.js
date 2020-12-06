@@ -1143,8 +1143,9 @@ foam.CLASS({
           while ( txnParent.parent != '' ) {
             txnParent = await txnParent.parent$find;
           }
+          return txnParent;
         }
-        return txnParent;
+        return this;
       },
       args: [
         { name: 'x', type: 'Context' }
@@ -1156,8 +1157,9 @@ foam.CLASS({
           while ( ! SafetyUtil.isEmpty(txnParent.getParent()) ) {
             txnParent = txnParent.findParent(x);
           }
+          return txnParent;
         }
-        return txnParent;
+        return this;
       `
     },
     {
