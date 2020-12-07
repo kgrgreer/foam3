@@ -347,8 +347,8 @@ p({
   "keywords":["featured"],
   "permissionsGranted":[
     "business.invoice.pay",
-    "capability.main.invoices.receivables",
-    "capability.main.invoices.payables",
+    "menu.read.capability.main.invoices.receivables",
+    "menu.read.capability.main.invoices.payables",
     "paymentprovidercorridor.read.bmo",
     "paymentprovidercorridor.read.rbc"
   ],
@@ -387,8 +387,8 @@ p({
   "keywords":["featured"],
   "permissionsGranted":[
     "business.invoice.pay",
-    "capability.main.invoices.receivables",
-    "capability.main.invoices.payables",
+    "menu.read.capability.main.invoices.receivables",
+    "menu.read.capability.main.invoices.payables",
     "paymentprovidercorridor.read.bmo",
     "paymentprovidercorridor.read.rbc",
     "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
@@ -428,8 +428,8 @@ p({
   "keywords":["featured"],
   "permissionsGranted":[
     "business.invoice.pay",
-    "capability.main.invoices.receivables",
-    "capability.main.invoices.payables",
+    "menu.read.capability.main.invoices.receivables",
+    "menu.read.capability.main.invoices.payables",
     "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
     "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
     "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15f7afexus-us",
