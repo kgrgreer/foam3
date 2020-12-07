@@ -1042,7 +1042,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.InitialBusinessData.MAILING_ADDRESS.documentation",target:"Endereço postal comercial."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.InitialBusinessData.SECTION_BUSINESS_REGISTRATION.title",target:"Detalhes de negócios"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.BENEFICIAL_OWNERS_TABLE.label",target:"Tabela do proprietário benéfico"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.TOTAL_OWNERSHIP.label",target:"totalOwnership pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.SECTION_OWNERSHIP_AMOUNT_SECTION.title",target:"Insira o número de pessoas que possuem 25% ou mais da empresa, direta ou indiretamente."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.SECTION_REVIEW_OWNERS_SECTION.title",target:"Reveja a lista de proprietários"})
@@ -1316,7 +1315,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.IBA
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.SUMMARY.label",target:"resumo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.STATUS.documentation",target:"Rastreia o status da conta bancária."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.INSTITUTION_NUMBER.label",target:"Número do Banco"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.INSTITUTION_NUMBER.label",target:"Instituição"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.INSTITUTION_NUMBER.documentation",target:"Código bancário internacional que identifica bancos em todo o mundo. BIC / SWIFT"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.BRANCH_ID.label",target:"Número da Agência"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.RANDOM_DEPOSIT_AMOUNT.label",target:"randomDepositAmount pt"})
@@ -1411,10 +1410,10 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.C
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.DENOMINATION.label",target:"denominação"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.DESC.label",target:"desc pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.BRANCH_ID.label",target:"Número da Agência"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.INSTITUTION_NUMBER.label",target:"Número do Banco"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.BRANCH_ID.label",target:"Agência"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.INSTITUTION_NUMBER.label",target:"Instituição"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.INSTITUTION_NUMBER.documentation",target:"Fornece compatibilidade com versões anteriores para o fluxo de chamadas móveis.\n          BankAccountInstitutionDAO pesquisará o número da instituição e definirá a propriedade da instituição."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.ACCOUNT_NUMBER.label",target:"Número da conta"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.ACCOUNT_NUMBER.label",target:"Conta"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.SUMMARY.label",target:"resumo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.SECURITY_PROMOTE_INFO.label",target:"segurança Promova informações"})
 
@@ -1442,7 +1441,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.C
 //p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.FLAG_IMAGE.value",target:"images/flags/us.png pt"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.DENOMINATION.label",target:"denominação"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.INSTITUTION_NUMBER.label",target:"Número do Banco"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.INSTITUTION_NUMBER.label",target:"Instituição"})
 //p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.IBAN.label",target:"iban pt"})
 //p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.DESC.label",target:"desc pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.USBankAccount.DENOMINATION.value",target:"USD pt"})
@@ -1572,7 +1571,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.COU
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.NO_CORRIDORS_AVAILABLE.label",target:"noCorridorsAvailable pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.NO_CORRIDORS_AVAILABLE.documentation",target:"GUI quando nenhum recurso de corredor foi adicionado ao usuário."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.SHOULD_INVITE.documentation",target:"Verdadeiro se o usuário quiser convidar o contato para ingressar no Ablii."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.SHOULD_INVITE.label",target:"shouldInvite pt"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.BUSINESS_ADDRESS.label",target:"endereço profissional"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.BUSINESS_ADDRESS.documentation",target:"O endereço postal da empresa associada ao contato."})
@@ -2292,7 +2290,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactW
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.SECTION_ONE_TITLE",target:"Adicionar contato"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.SECTION_TWO_TITLE",target:"Adicionar conta bancária"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.SECTION_TWO_SUBTITLE",target:"Os pagamentos feitos a este contato serão depositados na conta que você fornecer."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.SECTION_TWO_SUBTITLE",target:"Insira as informações da conta bancária do contato. Certifique-se de que está correto, pois os pagamentos irão diretamente para a conta especificada."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.SECTION_THREE_TITLE",target:"Adicionar endereço comercial"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.SECTION_THREE_SUBTITLE",target:"Insira o endereço comercial do contato. Caixas postais não são aceitas."})
 
