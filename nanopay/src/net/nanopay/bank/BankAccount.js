@@ -348,8 +348,10 @@ foam.CLASS({
             ))
             .select(this.MAP(propInfoCurrency))
             .then((sink) => {
+              let currencies = sink.delegate.array ? sink.delegate.array : [];
+              currencies.push(this.denomination);
               return currencyDAO.where(
-                this.IN(this.Currency.ID, sink.delegate.array.flat())
+                this.IN(this.Currency.ID, currencies.flat())
               );
             })
         });
