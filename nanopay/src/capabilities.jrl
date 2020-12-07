@@ -348,7 +348,9 @@ p({
   "permissionsGranted":[
     "business.invoice.pay",
     "capability.main.invoices.receivables",
-    "capability.main.invoices.payables"
+    "capability.main.invoices.payables",
+    "paymentprovidercorridor.read.bmo",
+    "paymentprovidercorridor.read.rbc"
   ],
   "permissionsIntercepted": [
     "business.invoice.pay"
@@ -386,7 +388,13 @@ p({
   "permissionsGranted":[
     "business.invoice.pay",
     "capability.main.invoices.receivables",
-    "capability.main.invoices.payables"
+    "capability.main.invoices.payables",
+    "paymentprovidercorridor.read.bmo",
+    "paymentprovidercorridor.read.rbc",
+    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
+    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
+    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15f7afexus-us",
+    "paymentprovidercorridor.read.kotak"
   ],
   "permissionsIntercepted": [
     "business.invoice.pay"
@@ -421,7 +429,11 @@ p({
   "permissionsGranted":[
     "business.invoice.pay",
     "capability.main.invoices.receivables",
-    "capability.main.invoices.payables"
+    "capability.main.invoices.payables",
+    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
+    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
+    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15f7afexus-us",
+    "paymentprovidercorridor.read.kotak"
   ],
   "permissionsIntercepted": [
     "business.invoice.pay"
@@ -938,15 +950,7 @@ p({
   id: "nanopayCorridorCapability",
   name: "nanopay Corridor Capability",
   version: "0",
-  enabled: true,
-  permissionsGranted: [
-    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
-    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
-    "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15f7afexus-us",
-    "paymentprovidercorridor.read.bmo",
-    "paymentprovidercorridor.read.rbc",
-    "paymentprovidercorridor.read.kotak",
-  ]
+  enabled: true
 })
 
 p({
