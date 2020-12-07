@@ -422,13 +422,10 @@ foam.CLASS({
       documentation: `Standard international numbering system developed to
           identify a bank account.`,
       validateObj: function(iban, swiftCode, country) {
-        console.log("country: " + country);
-
         if ( ! iban )
           return this.IBAN_REQUIRED;
 
         if ( iban && country !== iban.substring(0, 2) ) {
-          console.log("here");
           return this.IBAN_COUNTRY_MISMATCHED;
         }
 
