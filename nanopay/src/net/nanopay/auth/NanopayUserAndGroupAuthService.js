@@ -30,6 +30,8 @@ foam.CLASS({
   javaImports: [
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.nanos.alarming.Alarm',
+    'foam.nanos.alarming.AlarmReason',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.AuthenticationException',
     'foam.nanos.auth.Group',
@@ -158,6 +160,13 @@ foam.CLASS({
 
         X userX = x.put("subject", new Subject.Builder(x).setUser(user).build());
         Group group = user.findGroup(userX);
+        if ( group == null ) {
+          Alarm alarm = new Alarm("User Configuration", AlarmReason.CONFIGURATION);
+          alarm.setNote("User " + user.getId() + " does not have a group assigned");
+          ((DAO) x.get("alarmDAO")).put(alarm);
+          throw new AuthenticationException("There was an issue logging in");
+        }
+
         Theme theme = ((Themes) x.get("themes")).findTheme(userX);
         SupportConfig supportConfig = theme.getSupportConfig();
         String supportEmail = (String) supportConfig.getSupportEmail();

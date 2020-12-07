@@ -50,13 +50,13 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.country.br.NatureCode',
       name: 'natureCode',
-      section: 'supportDetails'
+      section: 'requestDetails'
     },
     {
       class: 'Reference',
       of: 'net.nanopay.country.br.NatureCodeData',
       name: 'natureCodeData',
-      section: 'supportDetails',
+      section: 'requestDetails',
       view: function(_, X) {
         var E = foam.mlang.Expressions.create();
 

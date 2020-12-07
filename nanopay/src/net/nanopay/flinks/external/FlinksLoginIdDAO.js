@@ -339,6 +339,7 @@ foam.CLASS({
           .setEmailVerified(true)
           .setGroup("sme")
           .setSpid(subject.getRealUser().getSpid())
+          .setStatus(net.nanopay.admin.model.AccountStatus.ACTIVE)
           .build();
         user = (User) userDAO.put(user);
         
@@ -453,6 +454,7 @@ foam.CLASS({
           .setPhoneNumber(phoneNumber)
           .setAddress(businessAddress)
           .setSpid(user.getSpid())
+          .setStatus(net.nanopay.admin.model.AccountStatus.ACTIVE)
           .build();
         DAO localUserDAO = (DAO) subjectX.get("localUserDAO");
         business = (Business) localUserDAO.inX(subjectX).put(business);

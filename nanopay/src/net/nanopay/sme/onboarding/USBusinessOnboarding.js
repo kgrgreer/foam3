@@ -421,8 +421,6 @@ foam.CLASS({
         }
       },
     },
-    // TODO: remove phone property after phone number migration
-    foam.nanos.auth.User.PHONE.clone(),
     foam.nanos.auth.User.PHONE_NUMBER.clone().copyFrom({
       section: 'personalInformationSection',
       label: '',

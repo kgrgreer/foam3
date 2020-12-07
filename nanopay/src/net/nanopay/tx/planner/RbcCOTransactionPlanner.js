@@ -54,9 +54,9 @@ foam.CLASS({
         t.setStatus(net.nanopay.tx.model.TransactionStatus.PENDING);
         t.setInstitutionNumber(INSTITUTION_NUMBER);
         t.setPaymentProvider(PAYMENT_PROVIDER);
-        quote.addTransfer(trustAccount.getId(), t.getAmount());
-        quote.addTransfer(quote.getSourceAccount().getId(), -t.getAmount());
-        quote.addExternalTransfer(quote.getDestinationAccount().getId(), t.getAmount());
+        quote.addTransfer(true, trustAccount.getId(), t.getAmount(), 0);
+        quote.addTransfer(true, quote.getSourceAccount().getId(), -t.getAmount(), 0);
+        quote.addTransfer(false, quote.getDestinationAccount().getId(), t.getAmount(), 0);
 
         t.addLineItems(new TransactionLineItem[] {
           new ETALineItem.Builder(x).setEta(Duration.ofDays(1).toMillis()).build()

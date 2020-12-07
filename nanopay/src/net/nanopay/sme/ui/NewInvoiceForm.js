@@ -334,13 +334,16 @@ foam.CLASS({
         this.invoice.invoiceFile = n;
       },
       view: function(_, X) {
+        let selectSlot = foam.core.SimpleSlot.create({value: 0});
         return foam.u2.MultiView.create({
         views: [
           foam.nanos.fs.fileDropZone.FileDropZone.create({
-            files$: X.uploadFileData$
+            files$: X.uploadFileData$,
+            selected$: selectSlot
           }, X),
           foam.nanos.fs.fileDropZone.FilePreview.create({
-            data$: X.uploadFileData$
+            data$: X.uploadFileData$,
+            selected$: selectSlot
           }, X)
         ]
         });
@@ -527,11 +530,6 @@ foam.CLASS({
               .start().add(this.ADD_BANK).addClass('add-banking-information')
                 .on('click', async function() {
                   self.userDAO.find(self.invoice.contactId).then((contact)=>{
-                    // case of save without banking
-                    if ((net.nanopay.bank.BankAccount).isInstance(contact.createBankAccount) || contact.createBankAccount === undefined) {
-                      contact.createBankAccount = net.nanopay.bank.CABankAccount.create({ isDefault: true }, self);
-                    }
-
                     self.add(self.WizardController.create({
                       model: 'net.nanopay.contacts.Contact',
                       data: contact,

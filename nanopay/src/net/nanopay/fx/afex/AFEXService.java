@@ -37,6 +37,7 @@ import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
 import foam.nanos.om.OMLogger;
 import foam.util.SafetyUtil;
+import foam.util.StringUtil;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -149,7 +150,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       StringEntity params = null;
 
       try(Outputter jsonOutputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false)) {
-    	  String requestJson = jsonOutputter.stringify(request);
+    	  String requestJson = StringUtil.normalize(jsonOutputter.stringify(request));
           params = new StringEntity(requestJson);
       }
 
@@ -299,13 +300,13 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       List<NameValuePair> nvps = new ArrayList<>();
       nvps.add(new BasicNameValuePair("BankAccountNumber", request.getBankAccountNumber()));
       nvps.add(new BasicNameValuePair("BankCountryCode", request.getBankCountryCode()));
-      nvps.add(new BasicNameValuePair("BankName", request.getBankName()));
+      nvps.add(new BasicNameValuePair("BankName", StringUtil.normalize(request.getBankName())));
       nvps.add(new BasicNameValuePair("BankRoutingCode", request.getBankRoutingCode()));
       nvps.add(new BasicNameValuePair( "BankSWIFTBIC", request.getBankSWIFTBIC()));
-      nvps.add(new BasicNameValuePair("BeneficiaryAddressLine1", request.getBeneficiaryAddressLine1()));
-      nvps.add(new BasicNameValuePair("BeneficiaryCity", request.getBeneficiaryCity()));
+      nvps.add(new BasicNameValuePair("BeneficiaryAddressLine1", StringUtil.normalize(request.getBeneficiaryAddressLine1())));
+      nvps.add(new BasicNameValuePair("BeneficiaryCity", StringUtil.normalize(request.getBeneficiaryCity())));
       nvps.add(new BasicNameValuePair("BeneficiaryCountryCode", request.getBeneficiaryCountryCode()));
-      nvps.add(new BasicNameValuePair("BeneficiaryName", request.getBeneficiaryName()));
+      nvps.add(new BasicNameValuePair("BeneficiaryName", StringUtil.normalize(request.getBeneficiaryName())));
       nvps.add(new BasicNameValuePair("BeneficiaryPostalCode", request.getBeneficiaryPostalCode()));
       nvps.add(new BasicNameValuePair("BeneficiaryRegion", request.getBeneficiaryRegion()));
       nvps.add(new BasicNameValuePair("Currency", request.getCurrency()));
@@ -361,12 +362,12 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       List<NameValuePair> nvps = new ArrayList<>();
       nvps.add(new BasicNameValuePair("BankAccountNumber", request.getBankAccountNumber()));
       nvps.add(new BasicNameValuePair("BankCountryCode", request.getBankCountryCode()));
-      nvps.add(new BasicNameValuePair("BankName", request.getBankName()));
+      nvps.add(new BasicNameValuePair("BankName", StringUtil.normalize(request.getBankName())));
       nvps.add(new BasicNameValuePair("BankRoutingCode", request.getBankRoutingCode()));
-      nvps.add(new BasicNameValuePair("BeneficiaryAddressLine1", request.getBeneficiaryAddressLine1()));
-      nvps.add(new BasicNameValuePair("BeneficiaryCity", request.getBeneficiaryCity()));
+      nvps.add(new BasicNameValuePair("BeneficiaryAddressLine1", StringUtil.normalize(request.getBeneficiaryAddressLine1())));
+      nvps.add(new BasicNameValuePair("BeneficiaryCity", StringUtil.normalize(request.getBeneficiaryCity())));
       nvps.add(new BasicNameValuePair("BeneficiaryCountryCode", request.getBeneficiaryCountryCode()));
-      nvps.add(new BasicNameValuePair("BeneficiaryName", request.getBeneficiaryName()));
+      nvps.add(new BasicNameValuePair("BeneficiaryName", StringUtil.normalize(request.getBeneficiaryName())));
       nvps.add(new BasicNameValuePair("BeneficiaryPostalCode", request.getBeneficiaryPostalCode()));
       nvps.add(new BasicNameValuePair("BeneficiaryRegion", request.getBeneficiaryRegion()));
       nvps.add(new BasicNameValuePair("Currency", request.getCurrency()));
@@ -1000,7 +1001,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       StringEntity params = null;
 
       try(Outputter jsonOutputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false)) {
-        String requestJson = jsonOutputter.stringify(directDebitRequest);
+        String requestJson = StringUtil.normalize(jsonOutputter.stringify(directDebitRequest));
         params =new StringEntity(requestJson);
       } catch(Exception e) {
         logger.error(e);
@@ -1053,7 +1054,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       StringEntity params = null;
 
       try(Outputter jsonOutputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false)) {
-        String requestJson = jsonOutputter.stringify(directDebitUnenrollmentRequest);
+        String requestJson = StringUtil.normalize(jsonOutputter.stringify(directDebitUnenrollmentRequest));
         params = new StringEntity(requestJson);
       } catch (Exception e) {
         logger.error(e);
@@ -1107,7 +1108,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       StringEntity params = null;
 
       try(Outputter jsonOutputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false)) {
-        String requestJson = jsonOutputter.stringify(addCompanyOfficerRequest);
+        String requestJson = StringUtil.normalize(jsonOutputter.stringify(addCompanyOfficerRequest));
         params =new StringEntity(requestJson);
       } catch(Exception e) {
         logger.error(e);
@@ -1157,7 +1158,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       StringEntity params = null;
       try(Outputter jsonOutputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false)) {
-        String requestJson = jsonOutputter.stringify(createFundingBalanceRequest);
+        String requestJson = StringUtil.normalize(jsonOutputter.stringify(createFundingBalanceRequest));
         params =new StringEntity(requestJson);
       } catch(Exception e) {
         logger.error(e);
@@ -1242,7 +1243,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       StringEntity params = null;
       try(Outputter jsonOutputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false)) {
-        String requestJson = jsonOutputter.stringify(createInstantBenefiaryRequest);
+        String requestJson = StringUtil.normalize(jsonOutputter.stringify(createInstantBenefiaryRequest));
         params =new StringEntity(requestJson);
       } catch(Exception e) {
         logger.error(e);
@@ -1290,7 +1291,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       StringEntity params = null;
       try(Outputter jsonOutputter = new Outputter(getX()).setPropertyPredicate(new NetworkPropertyPredicate()).setOutputClassNames(false)) {
-        String requestJson = jsonOutputter.stringify(validateInstantBenefiary);
+        String requestJson = StringUtil.normalize(jsonOutputter.stringify(validateInstantBenefiary));
         params =new StringEntity(requestJson);
       } catch(Exception e) {
         logger.error(e);
@@ -1325,6 +1326,49 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       logger.error(e);
     }
 
+    return null;
+  }
+
+  @Override
+  public IsIbanResponse isiban(IsIbanRequest request, String spid) {
+    try {
+      credentials = getCredentials(spid);
+      URIBuilder uriBuilder = new URIBuilder(credentials.getAFEXApi()  + "api/beneficiary/isiban");
+      uriBuilder.setParameter("Iban", request.getIban());
+      uriBuilder.setParameter("Country", request.getCountry());
+
+      HttpGet httpGet = new HttpGet(uriBuilder.build());
+
+      httpGet.addHeader("API-Key", credentials.getApiKey());
+      httpGet.addHeader("Content-Type", "application/json");
+      httpGet.addHeader("Authorization", "bearer " + getToken(spid).getAccess_token());
+
+      logMessage(credentials.getApiKey(), "isiban", httpGet.toString(), false);
+
+      omLogger.log("AFEX isiban starting");
+      CloseableHttpResponse httpResponse = getHttpClient().execute(httpGet);
+      omLogger.log("AFEX isiban completed");
+
+      try {
+        if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
+          String errorMsg = parseHttpResponse("isiban", httpResponse);
+          logger.error(errorMsg);
+          throw new RuntimeException(errorMsg);
+        }
+
+        String response = new BasicResponseHandler().handleResponse(httpResponse);
+        logMessage(credentials.getApiKey(), "isiban", response, true);
+        return (IsIbanResponse) jsonParser.parseString(response, IsIbanResponse.class);
+      } finally {
+        httpResponse.close();
+      }
+
+    } catch (IOException e  ) {
+      omLogger.log("AFEX isiban timeout");
+      logger.error(e);
+    } catch (URISyntaxException e) {
+      logger.error(e);
+    }
     return null;
   }
 

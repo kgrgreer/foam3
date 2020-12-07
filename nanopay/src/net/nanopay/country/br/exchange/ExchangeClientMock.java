@@ -27,6 +27,7 @@ public class ExchangeClientMock extends ContextAwareSupport implements Exchange 
   // Stub searchTitular which contains exchange limit in
   // searchTitularResult.titular.LIMITEOP
   private SearchTitularResponse stubSearchTitular = new SearchTitularResponse();
+  private SearchTitularCapFinResponse stubSearchTitularCapFin = new SearchTitularCapFinResponse();
 
   public ExchangeClientMock(X x) {
     setX(x);
@@ -69,6 +70,11 @@ public class ExchangeClientMock extends ContextAwareSupport implements Exchange 
   }
 
   @Override
+  public SearchTitularCapFinResponse searchTitularCapFin(SearchTitularCapFin request) {
+    return getStubSearchTitularCapFin();
+  }
+
+  @Override
   public InsertTitularResponse insertTitular(InsertTitular request) {
     InsertTitularResponse response = new InsertTitularResponse();
     return response;
@@ -83,10 +89,29 @@ public class ExchangeClientMock extends ContextAwareSupport implements Exchange 
   @Override
   public SearchNaturezaResponse searchNatureza(SearchNatureza request) {
     SearchNaturezaResponse response = new SearchNaturezaResponse();
+    ResponseNatureza res = new ResponseNatureza();
+    ServiceStatus status = new ServiceStatus();
+    status.setCODRETORNO(0);
+    res.setServiceStatus(status);
+    response.setSearchNaturezaResult(res);
     return response;
   }
+
+  @Override
+  public SearchMoedaResponse searchMoeda(SearchMoeda request)  { return new SearchMoedaResponse(); }
+
+  @Override
+  public SearchPaisResponse searchPais(SearchPais request) { return new SearchPaisResponse(); }
+
+  @Override
+  public CotacaoTaxaCambioResponse cotacaoTaxaCambio(GetCotacaoTaxaCambio request) { return new CotacaoTaxaCambioResponse(); }
 
   public SearchTitularResponse getStubSearchTitular() {
     return this.stubSearchTitular;
   }
+
+  public SearchTitularCapFinResponse getStubSearchTitularCapFin() {
+    return this.stubSearchTitularCapFin;
+  }
+
 }

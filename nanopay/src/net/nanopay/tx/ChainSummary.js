@@ -71,7 +71,7 @@ foam.CLASS({
       name: 'toSummary',
       type: 'String',
       code: function() {
-        return this.category + ' ' + this.status.getName();
+        return this.category + ' ' + this.status.name;
       },
       javaCode: `
         return getCategory() + ' ' + getStatus().getName();

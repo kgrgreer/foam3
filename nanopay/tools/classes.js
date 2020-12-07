@@ -20,11 +20,13 @@ var classes = [
   'net.nanopay.tx.cico.VerificationTransaction',
   'net.nanopay.tx.cico.CITransaction',
   'net.nanopay.tx.cico.COTransaction',
+  'net.nanopay.tx.cico.InterTrustTransaction',
   'net.nanopay.tx.cico.EFTFile',
   'net.nanopay.tx.cico.EFTFileGenerator',
   'net.nanopay.tx.cico.EFTFileStatus',
   'net.nanopay.tx.cico.ReverseCIRule',
   'net.nanopay.tx.cico.ReverseCORule',
+  'net.nanopay.tx.cico.ReverseInterTrustRule',
   'net.nanopay.tx.client.ClientTransactionLimitService',
   'net.nanopay.tx.alterna.AlternaFormat',
   'net.nanopay.tx.alterna.SFTPService',
@@ -148,6 +150,7 @@ var classes = [
   'net.nanopay.bank.CanReceiveCurrency',
   'net.nanopay.bank.GetDefaultCurrency',
   'net.nanopay.bank.ruler.VerifyBankRule',
+  'net.nanopay.bank.ruler.ExternalGrantBRBankAccountCapabilityRule',
   'net.nanopay.model.CurrencyAmount',
   'net.nanopay.model.Broker',
   'net.nanopay.model.Business',
@@ -289,6 +292,9 @@ var classes = [
   'net.nanopay.fx.afex.AFEXFundingTransaction',
   'net.nanopay.fx.afex.AFEXCreateFundingBalancesRule',
   'net.nanopay.fx.afex.AFEXSubmitFundingTxnRule',
+  'net.nanopay.fx.afex.AFEXGetPDFRule',
+  'net.nanopay.fx.afex.IsIbanRequest',
+  'net.nanopay.fx.afex.IsIbanResponse',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
@@ -704,6 +710,12 @@ var classes = [
   'net.nanopay.auth.UserCreateServiceProviderURLRule',
   'net.nanopay.auth.UserCreateServiceProviderURLRuleAction',
 
+  // SSO
+  'net.nanopay.auth.openid.SSOToken',
+  'net.nanopay.auth.openid.OTLoginToken',
+  'net.nanopay.auth.openid.ClientTokenLoginService',
+  'net.nanopay.auth.openid.TokenLoginService',
+
   // PII
   'net.nanopay.security.pii.PII',
   'net.nanopay.security.pii.PIIReportGenerator',
@@ -1030,6 +1042,7 @@ var classes = [
   'net.nanopay.tx.bmo.BmoAssignedClientValue',
   'net.nanopay.tx.bmo.cico.BmoCITransaction',
   'net.nanopay.tx.bmo.cico.BmoCOTransaction',
+  'net.nanopay.tx.bmo.cico.BmoInterTrustTransaction',
   'net.nanopay.tx.bmo.cico.BmoTransaction',
   'net.nanopay.tx.bmo.cico.BmoVerificationTransaction',
   'net.nanopay.tx.bmo.BmoSFTPCredential',
@@ -1047,6 +1060,7 @@ var classes = [
   // RBC
   'net.nanopay.tx.rbc.RbcCITransaction',
   'net.nanopay.tx.rbc.RbcCOTransaction',
+  'net.nanopay.tx.rbc.RbcInterTrustTransaction',
   'net.nanopay.tx.rbc.RbcVerificationTransaction',
   'net.nanopay.tx.rbc.ftps.RbcFTPSCredential',
   'net.nanopay.tx.rbc.RBCTransactionISO20022Util',
@@ -1124,6 +1138,9 @@ var classes = [
   'net.nanopay.tx.planner.QuoteFillerDAO',
   'net.nanopay.tx.planner.PlanNotFoundException',
   'net.nanopay.tx.planner.UnableToPlanException',
+  'net.nanopay.tx.planner.InterTrustPlanner',
+  'net.nanopay.tx.planner.RbcInterTrustPlanner',
+  'net.nanopay.tx.planner.BmoInterTrustPlanner',
 
   // Fees
   'net.nanopay.tx.fee.Fee',
@@ -1163,24 +1180,38 @@ var classes = [
   'net.nanopay.country.br.exchange.Boleto',
   'net.nanopay.country.br.exchange.BoletoStatusResponse',
   'net.nanopay.country.br.exchange.BoletoStatusResult',
+  'net.nanopay.country.br.exchange.CotacaoTaxaCambio',
+  'net.nanopay.country.br.exchange.CotacaoTaxaCambioResponse',
   'net.nanopay.country.br.exchange.Exchange',
   'net.nanopay.country.br.exchange.ExchangeClientValues',
   'net.nanopay.country.br.exchange.ExchangeCredential',
   'net.nanopay.country.br.exchange.ExchangeCustomer',
   'net.nanopay.country.br.exchange.ExchangeService',
   'net.nanopay.country.br.exchange.GetBoletoStatus',
+  'net.nanopay.country.br.exchange.GetCotacaoTaxaCambio',
   'net.nanopay.country.br.exchange.InsertBoleto',
   'net.nanopay.country.br.exchange.InsertBoletoResponse',
   'net.nanopay.country.br.exchange.InsertTitular',
   'net.nanopay.country.br.exchange.InsertTitularResponse',
+  'net.nanopay.country.br.exchange.Moeda',
   'net.nanopay.country.br.exchange.Natureza',
+  'net.nanopay.country.br.exchange.Pais',
   'net.nanopay.country.br.exchange.Parcelas',
   'net.nanopay.country.br.exchange.ResponseBoleto',
+  'net.nanopay.country.br.exchange.ResponseCotacaoTaxa',
   'net.nanopay.country.br.exchange.ResponseTitular',
+  'net.nanopay.country.br.exchange.ResponseMoeda',
   'net.nanopay.country.br.exchange.ResponseNatureza',
+  'net.nanopay.country.br.exchange.ResponsePais',
+  'net.nanopay.country.br.exchange.SearchMoeda',
+  'net.nanopay.country.br.exchange.SearchMoedaResponse',
   'net.nanopay.country.br.exchange.SearchNatureza',
   'net.nanopay.country.br.exchange.SearchNaturezaResponse',
+  'net.nanopay.country.br.exchange.SearchPais',
+  'net.nanopay.country.br.exchange.SearchPaisResponse',
   'net.nanopay.country.br.exchange.SearchTitular',
+  'net.nanopay.country.br.exchange.SearchTitularCapFin',
+  'net.nanopay.country.br.exchange.SearchTitularCapFinResponse',
   'net.nanopay.country.br.exchange.SearchTitularResponse',
   'net.nanopay.country.br.exchange.ServiceStatus',
   'net.nanopay.country.br.exchange.SearchBoleto',
@@ -1196,6 +1227,12 @@ var classes = [
   'net.nanopay.country.br.PTaxRate',
   'net.nanopay.country.br.PTaxDollarRateResponse',
   'net.nanopay.country.br.tx.NatureCodeLineItem',
+  'net.nanopay.partner.soawebservices.PessoaFisicaSimplificada',
+  'net.nanopay.partner.soawebservices.PessoaJuridicaSimplificada',
+  'net.nanopay.partner.soawebservices.PessoaResponse',
+  'net.nanopay.partner.soawebservices.SoaCredenciais',
+  'net.nanopay.partner.soawebservices.SoaWebService',
+  'net.nanopay.partner.soawebservices.Transacao',
   'net.nanopay.partner.sintegra.CPFResponseData',
   'net.nanopay.partner.sintegra.CNPJResponseData',
   'net.nanopay.partner.sintegra.Sintegra',
@@ -1437,7 +1474,7 @@ var classes = [
   'net.nanopay.payment.PayeeCurrencyService',
   'net.nanopay.payment.ClientPayeeCurrencyService',
   'net.nanopay.payment.PayeeCurrency',
-  
+
   // support
   'net.nanopay.support.SupportAccount',
   'net.nanopay.support.SupportBusiness',
@@ -1478,7 +1515,8 @@ var skeletons = [
   'net.nanopay.contacts.PaymentCodeServiceInterface',
   'net.nanopay.interac.service.InteracTransactionDAO',
   'net.nanopay.contacts.ContactServiceInterface',
-  'net.nanopay.country.br.BrazilVerificationServiceInterface'
+  'net.nanopay.country.br.BrazilVerificationServiceInterface',
+  'net.nanopay.auth.openid.TokenLoginService'
 ];
 
 var proxies = [

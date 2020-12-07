@@ -65,3 +65,15 @@ foam.CLASS({
     }
   ]
 });
+
+foam.CLASS({
+  package: 'net.nanopay.payment',
+  name: 'InterTrustTransactionRefinement',
+  refines: 'net.nanopay.tx.cico.InterTrustTransaction',
+
+  implements: [
+    'net.nanopay.payment.PaymentProviderAware'
+  ],
+
+  properties: [ 'paymentProvider' ]
+});

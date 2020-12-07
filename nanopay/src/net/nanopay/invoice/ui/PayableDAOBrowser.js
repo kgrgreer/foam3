@@ -51,8 +51,18 @@ foam.CLASS({
 
   css: `
     ^ {
-      margin: auto;
-      padding: 32px;
+      margin: 30px auto 0 auto;
+      padding: 0 32px;
+    }
+    ^top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 8px;
+    }
+    ^label-subtitle {
+      color: #9ba1a6;
+      font-size: 18px;
     }
     ^row {
       display: flex;
@@ -71,8 +81,9 @@ foam.CLASS({
     ^ .foam-u2-ActionView-secondary {
       border: 1px solid lightgrey;
     }
-    ^ h3 {
-      font-weight: 200;
+    ^ h1 {
+      color: /*%BLACK%*/ #1e1f21;
+      margin: 0;
     }
     ^ .DAOBrowser .foam-u2-filter-BooleanFilterView-container .foam-u2-md-CheckBox:checked {
       background-color: /*%WHITE%*/ #ffffff;
@@ -150,188 +161,40 @@ foam.CLASS({
             });
           },
           contextMenuActions: [
-            foam.core.Action.create({
-              name: 'reconcile',
-              label: 'Reconcile',
-              isAvailable: function() {
-                return ! this.payerReconciled && this.status === this.InvoiceStatus.PAID;
-              },
-              code: async function(X) {
-                this.payerReconciled = true;
-                self.subject.user.expenses.put(this).then(() => {
-                  self.notify(self.RECONCILED_SUCCESS, '', self.LogLevel.INFO, true);
-                }).catch((err) => {
-                  self.notify(self.RECONCILED_ERROR, '', self.LogLevel.ERROR, true);
-                });
-              }
-            }),
-            foam.core.Action.create({
-              name: 'viewDetails',
-              label: 'View details',
-              code: async function(X) {
-                let updatedInvoice = await X.accountingIntegrationUtil.forceSyncInvoice(this);
-                X.stack.push({
-                  class: 'net.nanopay.sme.ui.InvoiceOverview',
-                  invoice: updatedInvoice,
-                  isPayable: true
-                });
-              }
-            }),
-            foam.core.Action.create({
-              name: 'payNow',
-              label: 'Pay now',
-              isAvailable: function() {
-                return this.status === self.InvoiceStatus.UNPAID ||
-                  this.status === self.InvoiceStatus.OVERDUE;
-              },
-              code: async function(X) {
-                let updatedInvoice = await X.accountingIntegrationUtil.forceSyncInvoice(this);
-
-                if (! updatedInvoice) {
-                  return;
-                }
-                self.checkAndNotifyAbilityToPay().then((result) => {
-                  if ( result ) {
-                    X.menuDAO.find('sme.quickAction.send').then((menu) => {
-                      var clone = menu.clone();
-                      Object.assign(clone.handler.view, {
-                        invoice: updatedInvoice,
-                        isForm: false,
-                        isList: false,
-                        isDetailView: true,
-                        isPayable: true
-                      });
-                      clone.launch(X, X.controllerView);
-                    });
-                  }
-                });
-              }
-            }),
-            foam.core.Action.create({
-              name: 'edit',
-              label: 'Edit',
-              confirmationRequired: true,
-              isAvailable: function() {
-                return this.status === self.InvoiceStatus.DRAFT;
-              },
-              code: function(X) {
-                X.menuDAO.find('sme.quickAction.send').then((menu) => {
-                  var clone = menu.clone();
-                  Object.assign(clone.handler.view, {
-                    isPayable: true,
-                    isForm: true,
-                    isDetailView: false,
-                    invoice: this
-                  });
-                  clone.launch(X, X.controllerView);
-                });
-              }
-            }),
-            foam.core.Action.create({
-              name: 'approve',
-              isAvailable: function() {
-                return this.status === self.InvoiceStatus.PENDING_APPROVAL;
-              },
-              availablePermissions: ['business.invoice.pay', 'user.invoice.pay'],
-              code: function(X) {
-                X.menuDAO.find('sme.quickAction.send').then((menu) => {
-                  var clone = menu.clone();
-                  Object.assign(clone.handler.view, {
-                    isApproving: true,
-                    isForm: false,
-                    isDetailView: true,
-                    invoice: this
-                  });
-                  clone.launch(X, X.controllerView);
-                }).catch((err) => {
-                  console.warn('Error occurred when redirecting to approval payment flow: ', err);
-                });
-              }
-            }),
-            foam.core.Action.create({
-              name: 'markVoid',
-              label: 'Mark as Void',
-              isEnabled: function() {
-                return self.subject.user.id === this.createdBy &&
-                  ( this.status === self.InvoiceStatus.UNPAID ||
-                  this.status === self.InvoiceStatus.OVERDUE ||
-                  this.status === self.InvoiceStatus.PENDING_APPROVAL ) && !
-                  ( self.QuickbooksInvoice.isInstance(this) || self.XeroInvoice.isInstance(this) );
-              },
-              isAvailable: function() {
-                return this.status === self.InvoiceStatus.UNPAID ||
-                  this.status === self.InvoiceStatus.PAID ||
-                  this.status === self.InvoiceStatus.PROCESSING ||
-                  this.status === self.InvoiceStatus.OVERDUE ||
-                  this.status === self.InvoiceStatus.PENDING_APPROVAL;
-              },
-              code: function() {
-                self.ctrl.add(self.Popup.create().tag({
-                  class: 'net.nanopay.invoice.ui.modal.MarkAsVoidModal',
-                  invoice: this
-                }));
-              }
-            }),
-            foam.core.Action.create({
-              name: 'delete',
-              label: 'Delete',
-              confirmationRequired: true,
-              isAvailable: function() {
-                return this.status === self.InvoiceStatus.DRAFT;
-              },
-              code: function() {
-                ctrl.add(self.Popup.create().tag({
-                  class: 'foam.u2.DeleteModal',
-                  dao: self.subject.user.expenses,
-                  data: this,
-                  label: self.INVOICE
-                }));
-              }
-            })
+            this.RECONCILE,
+            this.VIEW_DETAILS,
+            this.PAY_NOW,
+            this.EDIT,
+            this.APPROVE,
+            this.MARK_VOID,
+            this.DELETE
           ]
         };
       }
     },
     {
       name: 'primaryAction',
-      factory: function() {
-        var self = this;
-        return this.Action.create({
-          name: 'sendMoney',
-          label: 'Send payment',
-          code: function(X) {
-            self.checkAndNotifyAbilityToPay().then((result) => {
-              if ( result ) {
-                X.menuDAO.find('sme.quickAction.send').then((menu) => {
-                  var clone = menu.clone();
-                  Object.assign(clone.handler.view, {
-                    invoice: self.Invoice.create({}),
-                    isPayable: true,
-                    isForm: true,
-                    isList: false,
-                    isDetailView: false
-                  });
-                  clone.launch(X, X.controllerView);
-                });
-              }
-            });
-          }
-        });
-      }
+      factory: function() { return this.SEND_MONEY; }
     }
   ],
 
   methods: [
     function initE() {
       this.start().addClass(this.myClass())
-      .start('div').addClass(this.myClass('row'))
-        .start('h1').add(this.TITLE).end()
-        .tag(this.primaryAction, {
-          size: 'LARGE'
-        })
+      .start()
+        .start().addClass(this.myClass('top-row'))
+          .start('h1').add(this.TITLE).end()
+          .start()
+            .startContext({ data: this })
+              .tag(this.primaryAction, {
+                size: 'LARGE'
+              })
+            .endContext()
+          .end()
+        .end()
+        .start().addClass(this.myClass('label-subtitle')).add(this.SUB_TITLE).end()
       .end()
-      .start('div').addClass(this.myClass('row'))
-        .start('h3').addClass('subdued-text').add(this.SUB_TITLE).end()
+      .start()
         .startContext({ data: this })
           .tag(this.IMPORT_FROM_GOOGLE_SHEETS, {
             size: 'MEDIUM'
@@ -352,6 +215,27 @@ foam.CLASS({
   ],
   actions: [
     {
+      name: 'sendMoney',
+      label: 'Send payment',
+      code: function(X) {
+        this.checkAndNotifyAbilityToPay().then((result) => {
+          if ( result ) {
+            X.menuDAO.find('sme.quickAction.send').then((menu) => {
+              var clone = menu.clone();
+              Object.assign(clone.handler.view, {
+                invoice: this.Invoice.create({}),
+                isPayable: true,
+                isForm: true,
+                isList: false,
+                isDetailView: false
+              });
+              clone.launch(X, X.controllerView);
+            });
+          }
+        });
+      }
+    },
+    {
       name: 'sync',
       label: 'Sync with Accounting',
       isAvailable: async function() {
@@ -361,6 +245,153 @@ foam.CLASS({
       code: function(X) {
         this.ctrl.add(this.Popup.create().tag({
           class: 'net.invoice.ui.modal.IntegrationModal'
+        }));
+      }
+    },
+    {
+      name: 'reconcile',
+      label: 'Reconcile',
+      isAvailable: function() {
+        var self = this.private_;
+        return ! this.payerReconciled && this.status === this.InvoiceStatus.PAID;
+      },
+      code: async function(X) {
+        this.payerReconciled = true;
+        self.subject.user.expenses.put(this).then(() => {
+          self.notify(self.RECONCILED_SUCCESS, '', self.LogLevel.INFO, true);
+        }).catch((err) => {
+          self.notify(self.RECONCILED_ERROR, '', self.LogLevel.ERROR, true);
+        });
+      }
+    },
+    {
+      name: 'viewDetails',
+      label: 'View details',
+      code: async function(X) {
+        let updatedInvoice = await X.accountingIntegrationUtil.forceSyncInvoice(this);
+        X.stack.push({
+          class: 'net.nanopay.sme.ui.InvoiceOverview',
+          invoice: updatedInvoice,
+          isPayable: true
+        });
+      }
+    },
+    {
+      name: 'payNow',
+      label: 'Pay now',
+      isAvailable: function() {
+        var self = this.private_;
+        return this.status === self.InvoiceStatus.UNPAID ||
+          this.status === self.InvoiceStatus.OVERDUE;
+      },
+      code: async function(X) {
+        let updatedInvoice = await X.accountingIntegrationUtil.forceSyncInvoice(this);
+
+        if (! updatedInvoice) {
+          return;
+        }
+        self.checkAndNotifyAbilityToPay().then((result) => {
+          if ( result ) {
+            X.menuDAO.find('sme.quickAction.send').then((menu) => {
+              var clone = menu.clone();
+              Object.assign(clone.handler.view, {
+                invoice: updatedInvoice,
+                isForm: false,
+                isList: false,
+                isDetailView: true,
+                isPayable: true
+              });
+              clone.launch(X, X.controllerView);
+            });
+          }
+        });
+      }
+    },
+    {
+      name: 'edit',
+      label: 'Edit',
+      confirmationRequired: true,
+      isAvailable: function() {
+        var self = this.private_;
+        return this.status === self.InvoiceStatus.DRAFT;
+      },
+      code: function(X) {
+        X.menuDAO.find('sme.quickAction.send').then((menu) => {
+          var clone = menu.clone();
+          Object.assign(clone.handler.view, {
+            isPayable: true,
+            isForm: true,
+            isDetailView: false,
+            invoice: this
+          });
+          clone.launch(X, X.controllerView);
+        });
+      }
+    },
+    {
+      name: 'approve',
+      isAvailable: function() {
+        var self = this.private_;
+        return this.status === self.InvoiceStatus.PENDING_APPROVAL;
+      },
+      availablePermissions: ['business.invoice.pay', 'user.invoice.pay'],
+      code: function(X) {
+        X.menuDAO.find('sme.quickAction.send').then((menu) => {
+          var clone = menu.clone();
+          Object.assign(clone.handler.view, {
+            isApproving: true,
+            isForm: false,
+            isDetailView: true,
+            invoice: this
+          });
+          clone.launch(X, X.controllerView);
+        }).catch((err) => {
+          console.warn('Error occurred when redirecting to approval payment flow: ', err);
+        });
+      }
+    },
+    {
+      name: 'markVoid',
+      label: 'Mark as Void',
+      isEnabled: function() {
+      var self = this.private_;
+        return this.__subContext__.subject.user.id === this.createdBy &&
+          ( this.status === self.InvoiceStatus.UNPAID ||
+          this.status === self.InvoiceStatus.OVERDUE ||
+          this.status === self.InvoiceStatus.PENDING_APPROVAL ) && !
+          ( self.QuickbooksInvoice.isInstance(this) || self.XeroInvoice.isInstance(this) );
+      },
+      isAvailable: function() {
+        var self = this.private_;
+        return this.status === self.InvoiceStatus.UNPAID ||
+          this.status === self.InvoiceStatus.PAID ||
+          this.status === self.InvoiceStatus.PROCESSING ||
+          this.status === self.InvoiceStatus.OVERDUE ||
+          this.status === self.InvoiceStatus.PENDING_APPROVAL;
+      },
+      code: function() {
+        var self = this.__subContext__.data;
+        self.ctrl.add(self.Popup.create().tag({
+          class: 'net.nanopay.invoice.ui.modal.MarkAsVoidModal',
+          invoice: this
+        }));
+      }
+    },
+    {
+      name: 'delete',
+      label: 'Delete',
+      confirmationRequired: true,
+      isAvailable: function() {
+        var self = this.private_;
+        return this.status === self.InvoiceStatus.DRAFT;
+      },
+      code: function() {
+        var self = this.__subContext__.data;
+        ctrl.add(self.Popup.create().tag({
+          class: 'foam.u2.DeleteModal',
+          dao: self.subject.user.expenses,
+          data: this,
+          label: self.INVOICE
         }));
       }
     }

@@ -222,7 +222,7 @@ foam.RELATIONSHIP({
   targetDAOKey: 'accountDAO',
   unauthorizedTargetDAOKey: 'localAccountDAO',
   sourceProperty: {
-    hidden: true
+    section: 'accountInformation'
   },
   targetProperty: {
     section: 'ownerInformation',
@@ -306,7 +306,7 @@ foam.RELATIONSHIP({
   cardinality: '1:*',
   sourceProperty: {
     readPermissionRequired: true,
-    section: 'administrative'
+    section: 'operationsInformation'
   }
 });
 
@@ -330,7 +330,7 @@ foam.CLASS({
       name: 'transactionLimits',
       of: 'net.nanopay.tx.model.TransactionLimit',
       createVisibility: 'HIDDEN',
-      section: 'administrative'
+      section: 'operationsInformation'
     }
   ]
 });
@@ -425,11 +425,11 @@ foam.RELATIONSHIP({
   junctionDAOKey: 'partnerJunctionDAO',
   sourceProperty: {
     createVisibility: 'HIDDEN',
-    section: 'administrative'
+    section: 'contactInformation'
   },
   targetProperty: {
     createVisibility: 'HIDDEN',
-    section: 'administrative'
+    section: 'contactInformation'
   }
 });
 
@@ -685,6 +685,13 @@ foam.RELATIONSHIP({
   inverseName: 'owner',
   targetDAOKey: 'contactDAO',
   unauthorizedTargetDAOKey: 'localContactDAO',
+  sourceProperty: {
+    readPermissionRequired: true,
+    section: 'contactInformation'
+  },
+  targetProperty: {
+    section: 'userInformation'
+  }
 });
 
 foam.RELATIONSHIP({
@@ -749,9 +756,15 @@ foam.RELATIONSHIP({
   inverseName: 'businessesInWhichThisUserIsASigningOfficer',
   sourceProperty: {
     createVisibility: 'HIDDEN',
-    section: 'business'
+    section: 'ownerInformation',
+    order: 30
   },
-  targetProperty: { hidden: true },
+  targetProperty: {
+    label: 'Businesses User is Signing Officer',
+    createVisibility: 'HIDDEN',
+    section: 'ownerInformation',
+    order: 31
+  },
   junctionDAOKey: 'signingOfficerJunctionDAO'
 });
 
@@ -817,7 +830,11 @@ foam.RELATIONSHIP({
   targetModel: 'net.nanopay.model.BeneficialOwner',
   forwardName: 'beneficialOwners',
   inverseName: 'business',
-  targetDAOKey: 'beneficialOwnerDAO'
+  targetDAOKey: 'beneficialOwnerDAO',
+  sourceProperty: {
+    section: 'ownerInformation',
+    order: 40
+  }
 });
 
 foam.RELATIONSHIP({
@@ -1031,7 +1048,8 @@ foam.RELATIONSHIP({
   },
   sourceProperty: {
     readPermissionRequired: true,
-    section: 'administrative'
+    section: 'complianceInformation',
+    order: 2
   }
 });
 
@@ -1050,7 +1068,7 @@ foam.RELATIONSHIP({
   },
   sourceProperty: {
     readPermissionRequired: true,
-    section: 'administrative'
+    section: 'complianceInformation'
   }
 });
 
@@ -1140,6 +1158,9 @@ foam.RELATIONSHIP({
   forwardName: 'paymentCode',
   inverseName: 'owner',
   cardinality: '1:*',
+  sourceProperty: {
+    section: 'businessInformation'
+  }
 });
 
 foam.RELATIONSHIP({

@@ -41,7 +41,8 @@ foam.CLASS({
     'net.nanopay.account.DigitalAccount',
 
     'java.util.List',
-    'java.util.ArrayList'
+    'java.util.ArrayList',
+    'foam.util.SafetyUtil'
   ],
 
   properties: [
@@ -126,7 +127,7 @@ foam.CLASS({
         List<TaxLineItem> forward = new ArrayList<TaxLineItem>();
         List<InfoLineItem> reverse = new ArrayList<InfoLineItem>();
         for ( TaxItem quotedTaxItem : taxQuote.getTaxItems() ) {
-          Long taxAccount = 0L;
+          String taxAccount = "";
           LineItemTypeAccount lineItemTypeAccount = (LineItemTypeAccount) typeAccountDAO.find(
             MLang.AND(
               MLang.EQ(LineItemTypeAccount.ENABLED, true),
@@ -139,13 +140,13 @@ foam.CLASS({
             taxAccount = lineItemTypeAccount.getAccount();
           }
 
-          if ( taxAccount <= 0 ) {
+          if ( SafetyUtil.isEmpty(taxAccount) ) {
             Account account = DigitalAccount.findDefault(x, payee, "CAD");
             taxAccount = account.getId();
           }
 
           Long amount = quotedTaxItem.getTax();
-          if ( taxAccount > 0 &&
+          if ( ! SafetyUtil.isEmpty(taxAccount) &&
                amount > 0L ) {
             forward.add(new TaxLineItem.Builder(x).setNote(quotedTaxItem.getDescription()).setSourceAccount(transaction.getSourceAccount()).setDestinationAccount(taxAccount).setAmount(amount).setType(quotedTaxItem.getType()).build());
             reverse.add(new InfoLineItem.Builder(x).setNote(quotedTaxItem.getDescription()+" - Non-refundable").setAmount(amount).build());

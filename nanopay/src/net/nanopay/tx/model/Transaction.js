@@ -286,7 +286,6 @@ foam.CLASS({
       javaJSONParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.json.StringParser())`,
       javaCSVParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.csv.CSVStringParser())`,
       javaToCSVLabel: 'outputter.outputValue("Transaction ID");',
-      tableWidth: 150,
       includeInDigest: true
     },
     {
@@ -446,8 +445,7 @@ foam.CLASS({
       name: 'referenceNumber',
       label: 'Reference Number',
       section: 'basicInfo',
-      includeInDigest: true,
-      tableWidth: 50
+      includeInDigest: true
     },
      {
       // FIXME: move to a ViewTransaction used on the client
@@ -1017,7 +1015,7 @@ foam.CLASS({
       `
     },
     {
-      documentation: `return true when status change is such that normal Transfers should be executed (applied)`,
+      documentation: `return true when status change is such that Transfers should be executed (applied)`,
       name: 'canTransfer',
       args: [
         {
@@ -1055,11 +1053,11 @@ foam.CLASS({
 
       AppConfig appConfig = (AppConfig) x.get("appConfig");
       DAO userDAO = (DAO) x.get("bareUserDAO");
-      if ( getSourceAccount() == 0 ) {
+      if ( SafetyUtil.isEmpty(getSourceAccount()) ) {
         throw new ValidationException("sourceAccount must be set");
       }
 
-      if ( getDestinationAccount() == 0 ) {
+      if ( SafetyUtil.isEmpty(getDestinationAccount()) ) {
         throw new ValidationException("destinationAccount must be set");
       }
 
@@ -1164,8 +1162,9 @@ foam.CLASS({
           while ( txnParent.parent != '' ) {
             txnParent = await txnParent.parent$find;
           }
+          return txnParent;
         }
-        return txnParent;
+        return this;
       },
       args: [
         { name: 'x', type: 'Context' }
@@ -1177,8 +1176,9 @@ foam.CLASS({
           while ( ! SafetyUtil.isEmpty(txnParent.getParent()) ) {
             txnParent = txnParent.findParent(x);
           }
+          return txnParent;
         }
-        return txnParent;
+        return this;
       `
     },
     {
@@ -1335,7 +1335,7 @@ foam.CLASS({
   },
   {
     name: 'getOutgoingAccount',
-    type: 'Long',
+    type: 'String',
     javaCode: `
       return getSourceAccount();
     `
@@ -1346,13 +1346,13 @@ foam.CLASS({
     documentation: 'Sum of transfers on this transaction for a given account',
     args: [
       { name: 'x', type: 'Context' },
-      { name: 'accountNumber', type: 'Long' }
+      { name: 'accountId', type: 'String' }
     ],
     javaCode: `
       Long sum = 0l;
       //Sum transfers that affect account
       for ( Transfer t : getTransfers() )
-        if ( t.getAccount() == accountNumber )
+        if ( SafetyUtil.equals(t.getAccount(), accountId) )
           sum += t.getAmount();
       return sum;
     `
@@ -1375,6 +1375,38 @@ foam.CLASS({
       //TODO: once plannerDAO is a thing this method can go away as itll be auto generated.
       DAO rulerDAO = (DAO) x.get("ruleDAO");
       return (AbstractTransactionPlanner) rulerDAO.find(getPlanner());
+    `,
+  },
+  {
+    name: 'getCurrentStageTransfers',
+    documentation: 'Find the transfers that belong to the current stage',
+    type: 'net.nanopay.tx.Transfer[]',
+    javaCode: `
+      Transfer[] tr = getTransfers();
+      //TODO: verify the more efficient staged check works.
+      Long stage = getStage();
+      for (int i = 0; i < tr.length; i++ ){
+        if (tr[i].getStage() != stage ) {
+          Transfer[] tr2 = new Transfer[tr.length - 1];
+          System.arraycopy(tr,0,tr2,0,i);
+          for (int j = i ; j < tr.length; j++ ) {
+            if (tr[j].getStage() == stage ){
+              tr2[i] = tr[j];
+              i++;
+            }
+          }
+          return tr2;
+        }
+      }
+      return tr;
+    `,
+  },
+  {
+    name: 'getStage',
+    documentation: 'The current transaction transfer execution stage',
+    type: 'Long',
+    javaCode: `
+      return 0;
     `,
   }
 ]

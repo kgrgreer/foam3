@@ -191,11 +191,9 @@ foam.CLASS({
   ^ h1 {
     margin-bottom: 0px;
   }
-  ^ .foam-u2-view-RichChoiceView-selection-view {
-    width: 200px;
-  }
   ^ .property-selectedCountry {
     display: inline-block;
+    width: 200px;
   }
   ^ .DefaultRowView-row {
     height: 30px;
@@ -209,7 +207,9 @@ foam.CLASS({
     height: 500px;
   }
   ^ .net-nanopay-sme-ui-SMEModal-content {
-    overflow: scroll;
+    box-sizing: border-box;
+    width: 600px;
+    overflow-y: scroll;
     padding: 30px;
   }
   `,

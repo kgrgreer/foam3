@@ -38,6 +38,7 @@ foam.CLASS({
 
   tableColumns: [
     'id',
+    'owner',
     'summary',
     'name'
   ],
@@ -53,46 +54,57 @@ foam.CLASS({
 
   properties: [
     net.nanopay.account.Account.ID.clone().copyFrom({
-      label: 'Account Id',
+      label: 'Account ID',
       section: 'accountInformation',
-      order: 1
+      order: 10
     }),
     net.nanopay.bank.CABankAccount.SUMMARY.clone().copyFrom({
       label: 'Account Number',
       section: 'accountInformation',
-      order: 2
+      order: 20,
+      gridColumns: 6
     }),
     net.nanopay.bank.BankAccount.ACCOUNT_NUMBER.clone().copyFrom({
       hidden: true,
       section: 'accountInformation',
     }),
+    net.nanopay.account.Account.OWNER.clone().copyFrom({
+      view: {
+        class: 'foam.u2.view.ReferenceView'
+      },
+      section: 'accountInformation',
+      order: 30,
+      gridColumns: 6
+    }),
     net.nanopay.bank.BankAccount.BRANCH.clone().copyFrom({
+      label: 'Transit Number',
       gridColumns:6,
       visibility: 'RO',
       section: 'accountInformation',
-      order: 3
+      order: 40
     }),
     net.nanopay.bank.BankAccount.INSTITUTION.clone().copyFrom({
+      label: 'Institution Number',
       gridColumns:6,
       visibility: 'RO',
       section: 'accountInformation',
-      order: 4
+      order: 50
     }),
     net.nanopay.account.Account.NAME.clone().copyFrom({
       gridColumns:6,
       section: 'accountInformation',
-      order: 5
+      order: 60
     }),
     net.nanopay.account.Account.DENOMINATION.clone().copyFrom({
       label: 'Currency',
       gridColumns:6,
       visibility: 'RO',
       section: 'accountInformation',
-      order: 6
+      order: 70
     }),
     net.nanopay.account.Account.DESC.clone().copyFrom({
       section: 'accountInformation',
-      order: 7
+      order: 80
     }),
     net.nanopay.account.Account.CREATED_BY.clone().copyFrom({
       gridColumns:6,
@@ -100,7 +112,7 @@ foam.CLASS({
         class: 'foam.u2.view.ReferenceView'
       },
       section: 'accountInformation',
-      order: 8
+      order: 90
     }),
     net.nanopay.account.Account.LAST_MODIFIED_BY.clone().copyFrom({
       gridColumns:6,
@@ -108,24 +120,17 @@ foam.CLASS({
         class: 'foam.u2.view.ReferenceView'
       },
       section: 'accountInformation',
-      order: 9
+      order: 100
     }),
     net.nanopay.account.Account.CREATED.clone().copyFrom({
       gridColumns:6,
       section: 'accountInformation',
-      order: 10
+      order: 110
     }),
     net.nanopay.account.Account.LAST_MODIFIED.clone().copyFrom({
       gridColumns:6,
       section: 'accountInformation',
-      order: 11
-    }),
-    net.nanopay.account.Account.OWNER.clone().copyFrom({
-      view: {
-        class: 'foam.u2.view.ReferenceView'
-      },
-      section: 'accountInformation',
-      order: 12
+      order: 120
     }),
     net.nanopay.account.Account.CREDITS.clone().copyFrom({
       section: 'transactions'

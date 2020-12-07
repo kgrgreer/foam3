@@ -68,6 +68,7 @@ foam.CLASS({
     'foam.nanos.auth.Country',
     'foam.u2.dialog.Popup',
     'foam.u2.DisplayMode',
+    'foam.u2.LoadingSpinner',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.bank.INBankAccount',
     'net.nanopay.contacts.ContactStatus',
@@ -91,18 +92,13 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'stepOne',
-      title: ' Add contact'
+      name: 'userInformation',
+      title: 'Contact Information',
+      order: 1
     },
     {
-      name: 'stepTwo',
-      title: 'Add bank account',
-      subTitle: `Payments made to this contact will be deposited to the account you provide below.`
-    },
-    {
-      name: 'stepThree',
-      title: 'Add business address',
-      subTitle: `Enter the contact’s business address. PO boxes are not accepted.`
+      name: 'businessInformation',
+      order: 2
     }
   ],
 
@@ -134,12 +130,22 @@ foam.CLASS({
     { name: 'MISSING_BANK_WARNING', message: 'Missing bank information' }
   ],
 
+  css: `
+    .spinner {
+      text-align: center;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+    .spinner img {
+      width: 60px;
+    }
+  `,
+
   properties: [
     {
       name: 'organization',
       label: 'Business',
       documentation: 'The organization/business associated with the Contact.',
-      section: 'stepOne',
       view: { class: 'foam.u2.tag.Input', focused: true },
       validateObj: function(organization) {
         if (
@@ -156,7 +162,7 @@ foam.CLASS({
         if ( ! obj.businessId ) {
           this.start().add(obj.organization).end();
         } else {
-          this.publicBusinessDAO
+          obj.publicBusinessDAO
             .find(obj.businessId)
             .then( (business) =>
               this.start().add(business ? business.toSummary() : obj.organization).end()
@@ -171,7 +177,7 @@ foam.CLASS({
         associated to.
         This is the opt-in name the business wants to display on our platform (used for searching), 
         as opposed to businessName / organization which is the company’s legal name.`,
-      visibility: 'HIDDEN',
+      visibility: 'HIDDEN'
     },
     {
       name: 'legalName',
@@ -184,7 +190,6 @@ foam.CLASS({
     {
       name: 'email',
       documentation: 'The email address of the Contact.',
-      section: 'stepOne',
       label: 'Email',
       view: { class: 'foam.u2.tag.Input' },
       validateObj: function(email) {
@@ -198,8 +203,6 @@ foam.CLASS({
     },
     {
       name: 'firstName',
-      section: 'stepOne',
-      gridColumns: 6,
       view: { class: 'foam.u2.tag.Input' },
       validateObj: function(firstName) {
         if ( !! firstName ) {
@@ -216,8 +219,6 @@ foam.CLASS({
     },
     {
       name: 'lastName',
-      section: 'stepOne',
-      gridColumns: 6,
       view: { class: 'foam.u2.tag.Input' },
       validateObj: function(lastName) {
         if ( !! lastName ) {
@@ -231,7 +232,8 @@ foam.CLASS({
       class: 'Boolean',
       name: 'confirm',
       documentation: `True if the user confirms their relationship with the contact.`,
-      section: 'stepOne',
+      section: 'operationsInformation',
+      gridColumns: 6,
       label: '',
       updateVisibility: function() {
         return foam.u2.DisplayMode.HIDDEN;
@@ -262,7 +264,9 @@ foam.CLASS({
       visibility: 'HIDDEN',
       label: 'Status',
       tableWidth: 170,
-      value: 'PENDING',
+      expression: function(bankAccount, businessId) {
+        return bankAccount || businessId ? net.nanopay.contacts.ContactStatus.READY : net.nanopay.contacts.ContactStatus.PENDING;
+      },
       tableCellFormatter: function(state, obj) {
         this.__subContext__.contactDAO.find(obj.id).then(contactObj=> {
           var format = contactObj.bankAccount || contactObj.businessId ? net.nanopay.contacts.ContactStatus.READY : net.nanopay.contacts.ContactStatus.PENDING;
@@ -289,13 +293,13 @@ foam.CLASS({
       javaValue: '0',
       name: 'businessId',
       documentation: `A unique identifier for the business associated with the Contact.`,
-      visibility: 'HIDDEN'
+      section: 'businessInformation',
+      gridColumns: 6
     },
     {
       class: 'Boolean',
       name: 'loginEnabled',
       documentation: 'Determines whether the Contact can login to the platform.',
-      visibility: 'HIDDEN',
       value: false
     },
     {
@@ -304,18 +308,25 @@ foam.CLASS({
       name: 'bankAccount',
       documentation: `The unique identifier for the bank account of the Contact
         if created while registering the Contact.`,
-      visibility: 'HIDDEN'
+      section: 'accountInformation',
+      gridColumns: 6
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.bank.BankAccount',
       name: 'createBankAccount',
       documentation: 'A before put bank account object a user creates for the contact.',
-      section: 'stepTwo',
       storageTransient: true,
       label: '',
-      visibility: function() {
-        return this.countries.length == 0 ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      visibility: function(countries) {
+        return countries.length == 0 && ! this.createBankAccount ? 
+          foam.u2.DisplayMode.HIDDEN : 
+          foam.u2.DisplayMode.RW;
+      },
+      factory: function() {
+        if ( this.bankAccount ) {
+          return this.accountDAO.find(this.bankAccount).then((res) => this.createBankAccount = res);
+        }
       },
       view: function(_, X) {
         let e = foam.mlang.Expressions.create();
@@ -328,6 +339,7 @@ foam.CLASS({
           predicate: pred,
           placeholder: X.data.PLACEHOLDER,
           header: X.data.HEADER,
+          classIsFinal: true,
           copyOldData: function(o) { return { isDefault: o.isDefault, forContact: o.forContact }; }
         }, X);
         v.data$.sub(function() { v.data.forContact = true; });
@@ -339,9 +351,9 @@ foam.CLASS({
       transient: true,
       flags: ['web'],
       name: 'availableCountries',
-      section: 'stepOne',
       visibility: 'HIDDEN',
       expression: function(paymentProviderCorridorDAO) {
+        if ( this.createBankAccount && this.createBankAccount.country ) return [];
         return this.PromisedDAO.create({
           promise: paymentProviderCorridorDAO.where(this.INSTANCE_OF(this.PaymentProviderCorridor))
             .select(this.MAP(this.PaymentProviderCorridor.TARGET_COUNTRY))
@@ -353,6 +365,7 @@ foam.CLASS({
                 if ( model ) arr.push(model);
               }
               this.countries = arr;
+              this.showSpinner = false;
             })
         });
       }
@@ -370,9 +383,10 @@ foam.CLASS({
       flags: ['web'],
       name: 'noCorridorsAvailable',
       documentation: 'GUI when no corridor capabilities have been added to user.',
-      section: 'stepTwo',
-      visibility: function() {
-        return this.countries.length == 0 ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
+      visibility: function(showSpinner, countries, createBankAccount) {
+        return ! showSpinner && countries.length == 0 && ! createBankAccount ? 
+          foam.u2.DisplayMode.RO : 
+          foam.u2.DisplayMode.HIDDEN;
       },
       view: function(_, X) {
         return X.E().start().add(X.data.UNABLE_TO_ADD_BANK_ACCOUNT).end();
@@ -381,10 +395,32 @@ foam.CLASS({
     {
       transient: true,
       flags: ['web'],
+      name: 'loadingSpinner',
+      label: '',
+      visibility: function(showSpinner, createBankAccount) {
+        return showSpinner && ! createBankAccount ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
+      },
+      factory: function() {
+        return this.LoadingSpinner.create().addClass('spinner');
+      },
+      view: function(_, X) {
+        return X.E().start().add(X.data.loadingSpinner).end();
+      }
+    },
+    {
+      transient: true,
+      flags: ['web'],
+      class: 'Boolean',
+      name: 'showSpinner',
+      value: true
+    },
+    {
+      transient: true,
+      flags: ['web'],
       class: 'Boolean',
       name: 'shouldInvite',
       documentation: 'True if the user wants to invite the contact to join Ablii.',
-      section: 'stepTwo',
+      section: 'userInformation',
       label: '',
       readPermissionRequired: true,
       createVisibility: function(createBankAccount$country, isEdit) {
@@ -404,13 +440,13 @@ foam.CLASS({
       of: 'foam.nanos.auth.Address',
       name: 'businessAddress',
       documentation: 'The postal address of the business associated with the Contact.',
-      section: 'stepThree',
+      section: 'businessInformation',
       label: '',
       view: function(_, X) {
         // Removing auth checks. TODO: solution on what to show based on what.
         return {
           class: 'net.nanopay.sme.ui.AddressView',
-          showDisclaimer: true
+          showDisclaimer: false
         };
       },
       factory: function() {
@@ -422,7 +458,8 @@ foam.CLASS({
       of: 'net.nanopay.admin.model.AccountStatus',
       name: 'businessStatus',
       documentation: 'Tracks the status of a business.',
-      visibility: 'HIDDEN',
+      section: 'systemInformation',
+      gridColumns: 6,
       storageTransient: true
     },
     {
@@ -440,34 +477,12 @@ foam.CLASS({
         If the email address is not verified the transaction validation logic will
         throw an error when a Contact is either the Payer or Payee of an invoice.
       `,
-      visibility: 'HIDDEN'
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'foam.nanos.auth.Phone',
-      name: 'businessPhone',
-      documentation: 'The phone number of the business.',
-      visibility: 'HIDDEN',
-      factory: function() {
-        return this.Phone.create();
-      },
-      view: { class: 'foam.u2.detail.VerticalDetailView' }
-    },
-    {
-      class: 'PhoneNumber',
-      name: 'businessPhoneNumber',
-      documentation: 'The phone number of the business.',
-      visibility: 'HIDDEN'
-    },
-    {
-      class: 'Boolean',
-      name: 'businessPhoneNumberVerified',
-      writePermissionRequired: true,
-      visibility: 'HIDDEN'
+      section: 'systemInformation'
     },
     {
       class: 'String',
       name: 'warning',
+      section: 'systemInformation',
       label: '',
       tableWidth: 80,
       expression: function(bankAccount, businessId) {
@@ -493,11 +508,6 @@ foam.CLASS({
         return this.signUpStatus !== this.ContactStatus.READY && ! bank;
       },
       code: function(X) {
-        // case of save without banking
-        if ((net.nanopay.bank.BankAccount).isInstance(this.createBankAccount) || this.createBankAccount === undefined) {
-          this.createBankAccount = net.nanopay.bank.CABankAccount.create({ isDefault: true }, X);
-        }
-
         X.controllerView.add(this.WizardController.create({
           model: 'net.nanopay.contacts.Contact',
           data: this,
@@ -508,22 +518,15 @@ foam.CLASS({
     },
     {
       name: 'edit',
-      label: 'View Details',
+      label: 'Edit Details',
       isAvailable: function() {
-        return this.signUpStatus !== this.ContactStatus.READY;
+        return this.signUpStatus === this.ContactStatus.READY && this.businessId === 0;
       },
       code: function(X) {
-        // case of save without banking
-        controllerMode_ = foam.u2.ControllerMode.EDIT;
-        if ( (net.nanopay.bank.BankAccount).isInstance(this.createBankAccount) || this.createBankAccount === undefined ) {
-          this.createBankAccount = net.nanopay.bank.CABankAccount.create({ isDefault: true }, X);
-          controllerMode_ = foam.u2.ControllerMode.CREATE;
-        }
-
         X.controllerView.add(this.WizardController.create({
           model: 'net.nanopay.contacts.Contact',
           data: this,
-          controllerMode: controllerMode_,
+          controllerMode: foam.u2.ControllerMode.EDIT,
           isEdit: true
         }, X));
       }
@@ -614,6 +617,14 @@ foam.CLASS({
           data: this
         }));
       }
+    },
+    {
+      name: 'resetLoginAttempts',
+      isAvailable: () => false
+    },
+    {
+      name: 'disableTwoFactor',
+      isAvailable: () => false
     }
   ],
 
@@ -657,7 +668,7 @@ foam.CLASS({
             throw new IllegalStateException("Business name is required.");
           }
 
-          if ( this.getBankAccount() != 0 ) {
+          if ( ! foam.util.SafetyUtil.isEmpty(this.getBankAccount()) ) {
             BankAccount bankAccount = (BankAccount) this.findBankAccount(x);
 
             if ( bankAccount == null ) throw new RuntimeException("Bank account not found.");

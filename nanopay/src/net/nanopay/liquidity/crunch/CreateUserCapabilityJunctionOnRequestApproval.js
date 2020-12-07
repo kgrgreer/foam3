@@ -102,18 +102,19 @@ foam.CLASS({
                       throw new RuntimeException("Cannot assign the following capability without an account group: " + property.getName()); 
                     }
 
-                    Set<Long> dataSet = new HashSet<Long>(accountTemplate.getAccounts());
+                    Set<String> dataSet = new HashSet<String>(accountTemplate.getAccounts());
+                    //TODO: fix for account string id.
+                    if ( true ) throw new RuntimeException("TODO: fix numberset in CreateUserCapabilityJunctionOnRequestApproval");
+                    // if ( oldUcj != null ){
+                    //   NumberSet oldData = (NumberSet) oldUcj.getData();
+                    //   Set<Long> oldDataSet = (HashSet<Long>) oldData.getAsRealSet();
+                    //   dataSet.addAll(oldDataSet);
+                    // }
 
-                    if ( oldUcj != null ){
-                      NumberSet oldData = (NumberSet) oldUcj.getData();
-                      Set<Long> oldDataSet = (HashSet<Long>) oldData.getAsRealSet();
-                      dataSet.addAll(oldDataSet);
-                    }
+                    // NumberSet newData = new NumberSet();
+                    // newData.setAsRealSet(dataSet);
 
-                    NumberSet newData = new NumberSet();
-                    newData.setAsRealSet(dataSet);
-
-                    ucj.setData(newData);
+                    // ucj.setData(newData);
                   }
 
                   ucj.setStatus(foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);

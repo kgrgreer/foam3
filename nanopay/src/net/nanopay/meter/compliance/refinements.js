@@ -32,7 +32,8 @@ foam.CLASS({
       documentation: 'Operations approval status for user.',
       readPermissionRequired: true,
       writePermissionRequired: true,
-      section: 'administrative',
+      section: 'complianceInformation',
+      order: 1,
       sheetsOutput: true
     }
   ]

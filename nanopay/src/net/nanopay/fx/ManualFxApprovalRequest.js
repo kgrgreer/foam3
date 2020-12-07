@@ -26,15 +26,18 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'dealId'
+      name: 'dealId',
+      section: 'requestDetails'
     },
     {
       class: 'Double',
-      name: 'fxRate'
+      name: 'fxRate',
+      section: 'requestDetails'
     },
     {
       class: 'DateTime',
       name: 'valueDate',
+      section: 'requestDetails',
       visibility: function(valueDate) {
         return valueDate ?
           foam.u2.DisplayMode.RO :
@@ -44,6 +47,7 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'expiryDate',
+      section: 'requestDetails',
       visibility: function(expiryDate) {
         return expiryDate ?
           foam.u2.DisplayMode.RO :

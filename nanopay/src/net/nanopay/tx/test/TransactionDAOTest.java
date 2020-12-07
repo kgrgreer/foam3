@@ -216,7 +216,7 @@ public class TransactionDAOTest
     txn.setAmount(1l);
     test(TestUtils.testThrows(
       () -> txnDAO.put_(x_, txn),
-      "Bank account must be verified",
+      "Destination bank account must be verified",
       RuntimeException.class
       ),"Bank account must be verified to cash out.");
     setBankAccount(BankAccountStatus.VERIFIED);

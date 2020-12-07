@@ -42,26 +42,10 @@ foam.CLASS({
       value: 'CNY',
     },
     {
-      name: 'swiftCode',
-      label: 'SWIFT/BIC',
-      updateVisibility: 'RO',
-      section: 'accountInformation',
-      validateObj: function(swiftCode) {
-        var regex = /^[A-z0-9a-z]{8,11}$/;
-
-        if ( !swiftCode || swiftCode === '' ) {
-          return this.SWIFT_CODE_REQUIRED;
-        } else if ( ! regex.test(swiftCode) ) {
-          return this.SWIFT_CODE_INVALID;
-        }
-      }
-    },
-    {
       name: 'accountNumber',
       updateVisibility: 'RO',
       view: {
         class: 'foam.u2.tag.Input',
-        placeholder: '123456789012',
         onKey: true
       },
       preSet: function(o, n) {
@@ -85,8 +69,18 @@ foam.CLASS({
       }
     },
     {
-      name: 'bankCode',
-      visibility: 'HIDDEN'
+      name: 'institutionNumber',
+      updateVisibility: 'RO',
+      section: 'accountInformation',
+      validateObj: function(institutionNumber) {
+        var regex = /^[A-z0-9a-z]{4}$/;
+
+        if ( institutionNumber === '' ) {
+          return this.INSTITUTION_NUMBER_REQUIRED;
+        } else if ( ! regex.test(institutionNumber) ) {
+          return this.INSTITUTION_NUMBER_INVALID;
+        }
+      }
     },
     {
       name: 'iban',
@@ -97,6 +91,10 @@ foam.CLASS({
     },
     {
       name: 'desc',
+      visibility: 'HIDDEN'
+    },
+    {
+      name: 'branchId',
       visibility: 'HIDDEN'
     }
   ]
