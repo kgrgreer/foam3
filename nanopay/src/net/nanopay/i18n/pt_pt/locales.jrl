@@ -1042,7 +1042,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.InitialBusinessData.MAILING_ADDRESS.documentation",target:"Endereço postal comercial."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.InitialBusinessData.SECTION_BUSINESS_REGISTRATION.title",target:"Detalhes de negócios"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.BENEFICIAL_OWNERS_TABLE.label",target:"Tabela do proprietário benéfico"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.TOTAL_OWNERSHIP.label",target:"totalOwnership pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.SECTION_OWNERSHIP_AMOUNT_SECTION.title",target:"Insira o número de pessoas que possuem 25% ou mais da empresa, direta ou indiretamente."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.SECTION_REVIEW_OWNERS_SECTION.title",target:"Reveja a lista de proprietários"})
