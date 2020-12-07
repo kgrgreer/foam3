@@ -627,6 +627,14 @@ foam.CLASS({
           data: this
         }));
       }
+    },
+    {
+      name: 'resetLoginAttempts',
+      isAvailable: () => false
+    },
+    {
+      name: 'disableTwoFactor',
+      isAvailable: () => false
     }
   ],
 
