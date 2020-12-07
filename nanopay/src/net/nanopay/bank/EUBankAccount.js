@@ -26,7 +26,6 @@ foam.CLASS({
   properties: [
     {
       name: 'country',
-      value: 'DE',
       visibility: 'RO'
     }
   ]

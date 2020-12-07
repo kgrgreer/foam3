@@ -208,7 +208,6 @@ foam.CLASS({
       },
     },
     {
-      class: 'String',
       name: 'accountNumber',
       updateVisibility: 'RO',
       section: 'accountInformation',
