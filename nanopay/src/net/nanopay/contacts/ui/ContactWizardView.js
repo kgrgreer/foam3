@@ -209,7 +209,7 @@ foam.CLASS({
     async function addContact() {
       this.isConnecting = true;
       try {
-        let canInvite = this.data.createBankAccount.country != 'IN';
+        let canInvite = this.data.createBankAccount && this.data.createBankAccount.country != 'IN';
 
         if ( this.data.shouldInvite && canInvite ) {
           // check if it is already joined
@@ -332,7 +332,6 @@ foam.CLASS({
         return currentIndex === 1 && data$bankAccount === 0;
       },
       code: async function(X) {
-        this.data.createBankAccount = net.nanopay.bank.BankAccount.create({ isDefault: true }, X);
         if ( ! await this.addContact() ) return;
         X.closeDialog();
       }
