@@ -1111,6 +1111,36 @@ p({
 })
 p({
   "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-143",
+  "name": "ucjExpiredNotification",
+  "sendTo": "{{userEmail}}",
+  "group": "sme",
+  "displayName": "{{appName}}",
+  "subject": "Your capability has expired",
+  "body": "{% extends 'treviso-email-base_2'%}{% block content %} <br> \n <h2>Capability Expired</h2>\n <br>\n <p>\n Hello {{userName}}, <br><br>\n {{body}}</p> <br><br>\n\n <a href=\"{{link}}\"><button  style=\"width: 100%;margin: auto;height: 40px; font-size: 12px; cursor:pointer; border-radius: 2px; border: none; background: #604aff; color: #ffffff; text-align:center;\">Sign in</button></a>\n {% endblock content %}"
+})
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-144",
+  "name": "ucjGracePeriodNotification",
+  "sendTo": "{{userEmail}}",
+  "group": "sme",
+  "displayName": "{{appName}}",
+  "subject": "Your capability has transitioned to grace period",
+  "body": "{% extends 'treviso-email-base_2'%}{% block content %} <br> \n <h2>Capability In Grace Period</h2>\n <br>\n <p>\n Hello {{userName}}, <br><br>\n {{body}}</p> <br><br>\n\n <a href=\"{{link}}\"><button  style=\"width: 100%;margin: auto;height: 40px; font-size: 12px; cursor:pointer; border-radius: 2px; border: none; background: #604aff; color: #ffffff; text-align:center;\">Sign in</button></a>\n {% endblock content %}"
+})
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
+  "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-155",
+  "name": "ucjExpiryReminder",
+  "sendTo": "{{userEmail}}",
+  "group": "sme",
+  "displayName": "{{appName}}",
+  "subject": "Your capability will expire soon",
+  "body": "{% extends 'treviso-email-base_2'%}{% block content %} <br> \n <h2>Capability Expired</h2>\n <br>\n <p>\n Hello {{userName}}, <br><br>\n {{body}}</p> <br><br>\n\n <a href=\"{{link}}\"><button  style=\"width: 100%;margin: auto;height: 40px; font-size: 12px; cursor:pointer; border-radius: 2px; border: none; background: #604aff; color: #ffffff; text-align:center;\">Sign in</button></a>\n {% endblock content %}"
+})
+p({
+  "class": "foam.nanos.notification.email.EmailTemplate",
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-treviso-1",
   "name": "tedTransfer",
   "displayName": "{{appName}}",
@@ -1118,4 +1148,3 @@ p({
   "subject": "Complete your Transaction",
   "body": "{% extends 'treviso-email-base'%}\n\n{% block content %}\n<h3 style=\"margin-top: 25px\">\n      ATENÇÃO : Esta transação ainda não foi enviada!<br>      Para completar, envie um TED de ({{amount}}) para :<br>      Treviso Corretora de Câmbio S.A<br>       CNPJ: 02.992.317/0001-87<br>       Banco SC Treviso (143)<br>       Agencia: 0001<br>       Conta: 1-1<br>       O não envio dos fundos causará o cancelamento automático desta transação.</a>\n{% endblock content %}"
 })
-
