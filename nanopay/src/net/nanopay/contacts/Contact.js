@@ -162,7 +162,7 @@ foam.CLASS({
         if ( ! obj.businessId ) {
           this.start().add(obj.organization).end();
         } else {
-          this.publicBusinessDAO
+          obj.publicBusinessDAO
             .find(obj.businessId)
             .then( (business) =>
               this.start().add(business ? business.toSummary() : obj.organization).end()
@@ -520,7 +520,7 @@ foam.CLASS({
       name: 'edit',
       label: 'Edit Details',
       isAvailable: function() {
-        return this.signUpStatus === this.ContactStatus.READY;
+        return this.signUpStatus === this.ContactStatus.READY && this.businessId === 0;
       },
       code: function(X) {
         X.controllerView.add(this.WizardController.create({
