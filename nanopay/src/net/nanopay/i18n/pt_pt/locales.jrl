@@ -3178,3 +3178,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"Nonprofit/Charitable Organizatio
 p({class:"foam.i18n.Locale",locale:"pt",source:"Limited Liability Company.name",target:"Empresa de responsabilidade limitada"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Publicly Traded Corporation.name",target:"Corporação de capital aberto"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Trust.name",target:"Confiar em"})
+
+p({class:"foam.i18n.Locale",locale:"pt","source":"0B2E7305-B898-43F2-9C1B-63FB2CE38B2D.name","target":"Ativar pagamentos internacionais"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"0B2E7305-B898-43F2-9C1B-63FB2CE38B2D.description","target":"Habilitar pagamentos internacionais no Brasil"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"0B2E7305-B898-43F2-9C1B-63FB2CE38B2D.requirementViewTitle","target":"Prepare seus documentos comerciais. Você pode salvar seu progresso e voltar mais tarde."})
