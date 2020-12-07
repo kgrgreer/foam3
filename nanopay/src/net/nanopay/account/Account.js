@@ -28,6 +28,7 @@ foam.CLASS({
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.LastModifiedByAware',
+    'foam.nanos.auth.ServiceProviderAware',
     'net.nanopay.liquidity.approvalRequest.AccountApprovableAware',
   ],
 
@@ -451,6 +452,24 @@ foam.CLASS({
     {
       name: 'checkerPredicate',
       javaFactory: 'return foam.mlang.MLang.FALSE;'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.ServiceProvider',
+      name: 'spid',
+      section: 'systemInformation',
+      writePermissionRequired: true,
+      documentation: `
+        Need to override getter to return "" because its trying to
+        return null (probably as a result of moving order of files
+        in nanos), which breaks tests
+      `,
+      javaGetter: `
+        if ( ! spidIsSet_ ) {
+          return "";
+        }
+        return spid_;
+      `
     }
   ],
 

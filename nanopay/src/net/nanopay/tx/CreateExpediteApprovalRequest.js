@@ -50,7 +50,7 @@ foam.CLASS({
         ExpediteCICOApprovalRequest req = new ExpediteCICOApprovalRequest.Builder(x)
           .setObjId(ci.getId())
           .setDescription("Transaction ID: "+ci.getId())
-          .setGroup(ci.findSourceAccount(x).findOwner(x).getSpid() + "-payment-ops")
+          .setGroup(ci.getSpid() + "-payment-ops")
           .build();
 
         agency.submit(x, new ContextAgent() {

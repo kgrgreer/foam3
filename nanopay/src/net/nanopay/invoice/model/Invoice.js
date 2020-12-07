@@ -35,7 +35,8 @@ foam.CLASS({
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.LastModifiedByAware',
-    'foam.nanos.crunch.lite.Capable'
+    'foam.nanos.auth.ServiceProviderAware',
+    'foam.nanos.crunch.lite.Capable',
   ],
 
   searchColumns: [
@@ -708,6 +709,23 @@ foam.CLASS({
     {
       class: 'String',
       name: 'totalSourceAmount',
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.ServiceProvider',
+      name: 'spid',
+      writePermissionRequired: true,
+      documentation: `
+        Need to override getter to return "" because its trying to
+        return null (probably as a result of moving order of files
+        in nanos), which breaks tests
+      `,
+      javaGetter: `
+        if ( ! spidIsSet_ ) {
+          return "";
+        }
+        return spid_;
+      `
     }
   ],
 

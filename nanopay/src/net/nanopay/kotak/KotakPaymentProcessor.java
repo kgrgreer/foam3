@@ -151,7 +151,7 @@ public class KotakPaymentProcessor implements ContextAgent {
               kotakTransaction.setStatus(TransactionStatus.FAILED);
               kotakTransaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Transaction Failed.").build());
               sendNotification(x, "Kotak payment initialization failed. TransactionId: " + kotakTransaction.getId() +
-                ". Reason: " + kotakTransaction.getPaymentStatusRem() + ".", payer);
+                ". Reason: " + kotakTransaction.getPaymentStatusRem() + ".", payer.getSpid());
             }
 
             transactionDAO.put(kotakTransaction);
@@ -166,10 +166,10 @@ public class KotakPaymentProcessor implements ContextAgent {
     });
   }
 
-  private void sendNotification(X x, String body, User payer) {
+  private void sendNotification(X x, String body, String spid) {
     Notification notification = new Notification.Builder(x)
       .setNotificationType(body)
-      .setGroupId(payer.getSpid() + "-payment-ops")
+      .setGroupId(spid + "-payment-ops")
       .build();
 
     ((DAO) x.get("localNotificationDAO")).put(notification);
