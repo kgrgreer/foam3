@@ -425,9 +425,8 @@ foam.CLASS({
         if ( ! iban )
           return this.IBAN_REQUIRED;
 
-        if ( iban && country !== iban.substring(0, 2) ) {
+        if ( iban && country !== iban.substring(0, 2) )
           return this.IBAN_COUNTRY_MISMATCHED;
-        }
 
         var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
