@@ -112,6 +112,7 @@ foam.CLASS({
       .getOwnAxiomsByClass(foam.core.Property)
       .map(p => p.clone())),
     {
+      // TODO: remove
       name: 'search',
       section: 'systemInformation',
       documentation: `The view and value used to filter invoices.`,
@@ -140,12 +141,14 @@ foam.CLASS({
         'invoice',
         'i'
       ],
+      includeInDigest: true,
       updateVisibility: 'RO',
       tableWidth: 110
     },
     {
       class: 'String',
       name: 'purchaseOrder',
+      includeInDigest: true,
       section: 'invoiceInformation',
       documentation: `The identifying number from the purchase order as stated
         on the invoice.
@@ -160,6 +163,7 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'issueDate',
+      includeInDigest: true,
       section: 'invoiceInformation',
       documentation: `The date that the invoice was issued (created).`,
       label: 'Date Issued',
@@ -193,9 +197,12 @@ foam.CLASS({
         'issued'
       ]
     },
+    // TODO/REVIEW: all of the following dates could just be
+    // InvoiceEvents, or could have a Date Array - name, date
     {
       class: 'Date',
       name: 'dueDate',
+      includeInDigest: true,
       section: 'invoiceInformation',
       documentation: `The date by which the invoice must be paid.`,
       label: 'Date Due',
@@ -208,6 +215,7 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'paymentDate',
+      includeInDigest: true,
       section: 'invoiceInformation',
       documentation: `The date and time of when the invoice payment was fully completed.`,
       label: 'Received',
@@ -216,6 +224,7 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'processingDate',
+      includeInDigest: true,
       section: 'invoiceInformation',
       documentation: `The date by which the invoice payment begun.`,
       tableCellFormatter: function(val) {
@@ -225,6 +234,7 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'approvalDate',
+      includeInDigest: true,
       section: 'invoiceInformation',
       documentation: `The date by which the invoice approval occured.`,
       tableCellFormatter: function(val) {
@@ -234,6 +244,7 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'paymentSentDate',
+      includeInDigest: true,
       section: 'invoiceInformation',
       documentation: `The date by which the invoice payment was sent.`,
       tableCellFormatter: function(val) {
@@ -243,6 +254,7 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'paymentReceivedDate',
+      includeInDigest: true,
       section: 'invoiceInformation',
       documentation: `The date by which the invoice payment was received.`,
       tableCellFormatter: function(val) {
@@ -252,6 +264,7 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'created',
+      includeInDigest: true,
       section: 'invoiceInformation',
       documentation: `The date and time of when the invoice was created.`,
     },
@@ -259,6 +272,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
+      includeInDigest: true,
       section: 'invoiceInformation',
       documentation: `The ID of the User who created the Invoice.`,
       view: function(_, X) {
@@ -279,6 +293,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdByAgent',
+      includeInDigest: true,
       section: 'invoiceInformation',
       documentation: `The ID of the Agent who created the Invoice.`,
       view: function(_, X) {
@@ -298,6 +313,7 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'lastModified',
+      includeInDigest: true,
       section: 'invoiceInformation',
       documentation: `The date and time that the Invoice was last modified.`,
       tableWidth: 140
@@ -306,6 +322,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy',
+      includeInDigest: true,
       section: 'invoiceInformation',
       documentation: `The ID of the individual person, or real user,
         who last modified the Invoice.`,
@@ -313,6 +330,7 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'lastDateUpdated',
+      includeInDigest: true,
       section: 'invoiceInformation',
       documentation: 'Last time a XeroInvoice or QuickbooksInvoice was updated.'
     },
@@ -320,6 +338,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.auth.PublicUserInfo',
       name: 'payee',
+      includeInDigest: true,
       section: 'invoiceInformation',
       documentation: `Returns the name of the party receiving the payment from the
         Public User Info model.`,
@@ -329,6 +348,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.auth.PublicUserInfo',
       name: 'payer',
+      includeInDigest: true,
       section: 'invoiceInformation',
       documentation: `Returns the name of the party making the payment from the
         Public User Info model.`,
@@ -337,6 +357,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'paymentId',
+      includeInDigest: true,
       section: 'invoiceInformation',
       documentation: `The transaction ID used to pay the invoice.`,
     },
@@ -345,18 +366,21 @@ foam.CLASS({
       name: 'draft',
       section: 'invoiceInformation',
       documentation: `Determines whether the Invoice is finalized.`,
-      value: false
+      value: false,
+      includeInDigest: false
     },
-    {
-      class: 'String',
-      name: 'invoiceFileUrl',
-      section: 'invoiceInformation',
-      documentation: 'A URL link to the online location of the invoice.'
-      // invoiceFileUrl is not used. All references are commented out.
-    },
+    // {
+    //   class: 'String',
+    //   name: 'invoiceFileUrl',
+    //   section: 'invoiceInformation',
+    //   documentation: 'A URL link to the online location of the invoice.',
+    //   // invoiceFileUrl is not used. All references are commented out.
+    //   includeInDigest: false
+    // },
     {
       class: 'String',
       name: 'note',
+      includeInDigest: true,
       section: 'invoiceInformation',
       documentation: `A written note that the user may add to the invoice.`,
       view: 'foam.u2.tag.TextArea'
@@ -364,12 +388,14 @@ foam.CLASS({
     {
       class: 'UnitValue',
       name: 'chequeAmount',
+      includeInDigest: true,
       section: 'invoiceInformation',
       documentation: `The amount paid for an invoice using an external transaction system.`
     },
     {
       class: 'String',
       name: 'chequeCurrency',
+      includeInDigest: true,
       section: 'invoiceInformation',
       documentation: `The currency of a transaction using by external transaction system.`,
       value: 'CAD'
@@ -377,6 +403,7 @@ foam.CLASS({
     {
       class: 'UnitValue',
       name: 'amount',
+      includeInDigest: true,
       section: 'invoiceInformation',
       unitPropName: 'destinationCurrency',
       documentation: `
@@ -412,24 +439,27 @@ foam.CLASS({
         outputter.outputValue("Destination Currency");
       `
     },
-    { // How is this used? - display only?,
+    { // REVIEW: How is this used? - display only?,
       class: 'UnitValue',
       name: 'sourceAmount',
       section: 'invoiceInformation',
       unitPropName: 'sourceCurrency',
       documentation: `The amount paid to the invoice, prior to exchange rates & fees.
-      `
+      `,
+      includeInDigest: true,
     },
     {
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'destinationAccount',
+      includeInDigest: true,
       section: 'invoiceInformation',
       documentation: `The bank account into which funds are to be deposited.`
     },
     {
       class: 'UnitValue',
       name: 'exchangeRate',
+      includeInDigest: true,
       section: 'invoiceInformation',
       documentation: 'The exchange rate captured at the time of payment.'
     },
@@ -438,12 +468,14 @@ foam.CLASS({
       class: 'Enum',
       of: 'net.nanopay.invoice.model.PaymentStatus',
       name: 'paymentMethod',
+      includeInDigest: true,
       section: 'invoiceInformation',
       documentation: `Tracks the payment instrument or method used to pay the invoice.`
     },
     {
       class: 'String',
       name: 'destinationCurrency',
+      includeInDigest: true,
       section: 'invoiceInformation',
       value: 'CAD',
       documentation: `The currency of the bank account into which funds are to
@@ -453,6 +485,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'sourceCurrency',
+      includeInDigest: true,
       section: 'invoiceInformation',
       value: 'CAD',
       documentation: `The currency of the bank account from which funds are to be
@@ -460,25 +493,29 @@ foam.CLASS({
     },
     {
       name: 'iso20022',
-      section: 'invoiceInformation'
+      section: 'invoiceInformation',
+      includeInDigest: false
     },
     {
       class: 'Boolean',
       name: 'external',
       section: 'invoiceInformation',
-      documentation: 'Determines whether the invoice was created for an external user.'
+      documentation: 'Determines whether the invoice was created for an external user.',
+      includeInDigest: false
     },
     {
+      // TODO
       class: 'Boolean',
       name: 'autoPay',
       section: 'invoiceInformation',
-      documentation: 'Determines whether the invoice can be paid automatically.'
-      // TODO
+      documentation: 'Determines whether the invoice can be paid automatically.',
+      includeInDigest: true
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'approvedBy',
+      includeInDigest: true,
       section: 'invoiceInformation',
       documentation: 'the ID of the user that approved this invoice within the business.',
       view: function(_, X) {
@@ -499,6 +536,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'account',
+      includeInDigest: true,
       section: 'invoiceInformation',
       aliases: [
         'sourceAccount'
@@ -511,6 +549,7 @@ foam.CLASS({
       class: 'Enum',
       of: 'net.nanopay.invoice.model.InvoiceStatus',
       name: 'status',
+      includeInDigest: true,
       section: 'invoiceInformation',
       documentation: `A list of the types of status for an invoice regarding payment. This
         is a calculated property used to determine whether an invoice is unpaid,
@@ -649,13 +688,15 @@ foam.CLASS({
       section: 'invoiceInformation',
       documentation: `Determines whether an email has been sent to the Payer
         informing them that the payment they scheduled is due.`,
-      value: false
+      value: false,
+      includeInDigest: true
     },
     {
       class: 'String',
       name: 'referenceId',
       section: 'invoiceInformation',
       documentation: `The unique identifier for sent and received form email.`,
+      includeInDigest: true,
       factory: function() {
         return foam.uuid.randomGUID();
       },
@@ -664,10 +705,12 @@ foam.CLASS({
       `
     },
     {
+      // TODO/REVIEW - used?
       class: 'Boolean',
       name: 'removed',
       section: 'invoiceInformation',
-      documentation: 'Determines whether an invoice has been removed.'
+      documentation: 'Determines whether an invoice has been removed.',
+      includeInDigest: false
     },
     {
       class: 'Reference',
@@ -679,6 +722,7 @@ foam.CLASS({
       documentation: `The unique identifier for the Contact, representing people who,
         although they are not registered on the platform, can still receive invoices from
         platform users.`,
+      includeInDigest: true,
       view: function(_, X) {
         return {
           class: 'foam.u2.view.RichChoiceView',
@@ -708,7 +752,8 @@ foam.CLASS({
         net.nanopay.accounting.quickbooks.model.QuickbooksInvoice.isInstance(this);
       },
       documentation: 'Checks if invoice has been synced with accounting software.',
-      visibility: 'RO'
+      visibility: 'RO',
+      includeInDigest: false,
     },
     {
       name: 'lineItems',
@@ -716,6 +761,7 @@ foam.CLASS({
       section: 'invoiceInformation',
       of: 'net.nanopay.invoice.InvoiceLineItem',
       javaValue: 'new InvoiceLineItem[] {}',
+      includeInDigest: false,
       visibility: 'RO',
       view: {
         class: 'foam.u2.view.FObjectArrayView',
@@ -725,6 +771,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'payeeReconciled',
+      includeInDigest: true,
       section: 'accountingInformation',
       documentation: `Determines whether invoice has been reconciled by payee.
           Verifies that the receive amount is correct.`
@@ -732,6 +779,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'payerReconciled',
+      includeInDigest: true,
       section: 'accountingInformation',
       documentation: `Determines whether invoice has been reconciled by payer.
           Verifies that the sent amount is correct.`
@@ -739,6 +787,7 @@ foam.CLASS({
     {
       class: 'FObjectArray',
       name: 'transactionHistory',
+      includeInDigest: false,
       section: 'transactionInformation',
       of: 'net.nanopay.tx.model.Transaction',
       view: { class: 'foam.u2.view.DAOtoFObjectArrayView' },
@@ -787,6 +836,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'totalSourceAmount',
+      includeInDigest: false,
       section: 'invoiceInformation'
     }
   ],

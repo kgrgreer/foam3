@@ -146,6 +146,7 @@ foam.CLASS({
       name: 'organization',
       label: 'Business',
       documentation: 'The organization/business associated with the Contact.',
+      includeInDigest: false,
       view: { class: 'foam.u2.tag.Input', focused: true },
       validateObj: function(organization) {
         if (
@@ -177,6 +178,7 @@ foam.CLASS({
         associated to.
         This is the opt-in name the business wants to display on our platform (used for searching), 
         as opposed to businessName / organization which is the company’s legal name.`,
+      includeInDigest: false,
       visibility: 'HIDDEN'
     },
     {
@@ -229,9 +231,12 @@ foam.CLASS({
       }
     },
     {
+      // REVIEW: this should be storageTransient - believe it's just used for
+      // capability input.
       class: 'Boolean',
       name: 'confirm',
       documentation: `True if the user confirms their relationship with the contact.`,
+      includeInDigest: false,
       section: 'operationsInformation',
       gridColumns: 6,
       label: '',
@@ -261,6 +266,7 @@ foam.CLASS({
         whether a individual person, or real user, can sign in or not.
         Pending, Ready and Connected
       `,
+      includeInDigest: true,
       visibility: 'HIDDEN',
       label: 'Status',
       tableWidth: 170,
@@ -291,6 +297,7 @@ foam.CLASS({
       javaValue: '0',
       name: 'businessId',
       documentation: `A unique identifier for the business associated with the Contact.`,
+      includeInDigest: false,
       section: 'businessInformation',
       gridColumns: 6
     },
@@ -304,6 +311,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       name: 'bankAccount',
+      includeInDigest: true,
       documentation: `The unique identifier for the bank account of the Contact
         if created while registering the Contact.`,
       section: 'accountInformation',
@@ -438,6 +446,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.Address',
       name: 'businessAddress',
       documentation: 'The postal address of the business associated with the Contact.',
+      includeInDigest: false,
       section: 'businessInformation',
       label: '',
       view: function(_, X) {
@@ -478,10 +487,12 @@ foam.CLASS({
       section: 'systemInformation'
     },
     {
+      // TODO/REVIEW: this should be transient. 
       class: 'String',
       name: 'warning',
       section: 'systemInformation',
       label: '',
+      includeInDigest: false,
       tableWidth: 80,
       expression: function(bankAccount, businessId) {
         return ! bankAccount && ! businessId ? this.MISSING_BANK_WARNING : '';

@@ -101,6 +101,7 @@ foam.CLASS({
     {
       name: 'type',
       section: 'businessInformation',
+      includeInDigest: false,
       order: 2,
       gridColumns: 6
     },
@@ -108,6 +109,7 @@ foam.CLASS({
       class: 'String',
       name: 'businessName',
       documentation: 'Legal name of business.',
+      includeInDigest: true,
       section: 'businessInformation',
       order: 10,
       width: 50
@@ -119,6 +121,7 @@ foam.CLASS({
       documentation: `The business name displayed to the public. This may differ
         from the organization name.`,
           // Is displayed on client if present taking place of organziation name.
+      includeInDigest: false,
       section: 'businessInformation',
       order: 11,
       gridColumns: 6
@@ -126,6 +129,7 @@ foam.CLASS({
     {
       name: 'email',
       section: 'businessInformation',
+      includeInDigest: false,
       order: 20,
       validateObj: function() {}
     },
@@ -135,6 +139,7 @@ foam.CLASS({
       name: 'businessTypeId',
       of: 'net.nanopay.model.BusinessType',
       documentation: 'The ID of the proprietary details of the business.',
+      includeInDigest: true,
       section: 'businessInformation',
       gridColumns: 6
     },
@@ -144,6 +149,7 @@ foam.CLASS({
       name: 'businessSectorId',
       of: 'net.nanopay.model.BusinessSector',
       documentation: 'The ID of the general economic grouping for the business.',
+      includeInDigest: true,
       view: function(args, X) {
         return {
           class: 'foam.u2.view.RichChoiceView',
@@ -162,11 +168,13 @@ foam.CLASS({
       gridColumns: 6
     },
     {
+      //TODO/REVIEW: should be storageTransient
       class: 'String',
       name: 'businessPermissionId',
       documentation: `A generated name used in permission strings related to the business.
         The name does not contain any special characters.
       `,
+      includeInDigest: false,
       expression: function(businessName, id) {
         return businessName.replace(/\W/g, '').toLowerCase() + id;
       },
@@ -179,10 +187,10 @@ foam.CLASS({
       section: 'systemInformation',
       gridColumns: 6
     },
-    
     {
       name: 'website',
-      section: 'businessInformation'
+      section: 'businessInformation',
+      includeInDigest: false,
     },
     {
       class: 'Boolean',
@@ -221,7 +229,8 @@ foam.CLASS({
     },
     {
       name: 'additionalDocuments',
-      section: 'ownerInformation'
+      section: 'ownerInformation',
+      includeInDigest: false,
     },
     {
       class: 'foam.nanos.fs.FileArray',
@@ -234,13 +243,15 @@ foam.CLASS({
           documents$: X.data.beneficialOwnerDocuments$
         };
       },
-      section: 'ownerInformation'
+      section: 'ownerInformation',
+      includeInDigest: false
     },
     {
       class: 'String',
       name: 'businessRegistrationAuthority',
       documentation: `An organization that has the power to issue and process a
         business registration.`,
+      includeInDigest: false,
       width: 35,
       validateObj: function(businessRegistrationAuthority) {
         var re = /^[a-zA-Z0-9 ]{1,35}$/;
@@ -273,6 +284,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.Country',
       name: 'countryOfBusinessRegistration',
       documentation: `Country where business was registered.`,
+      includeInDigest: true,
       section: 'businessInformation',
       gridColumns: 6
     },
@@ -280,6 +292,7 @@ foam.CLASS({
       class: 'Date',
       name: 'businessRegistrationDate',
       documentation: 'The date that the business was registered by their issuing authority.',
+      includeInDigest: true,
       section: 'businessInformation',
       gridColumns: 6
     },
@@ -287,12 +300,14 @@ foam.CLASS({
       class: 'PhoneNumber',
       name: 'phoneNumber',
       documentation: 'The phone number of the business.',
+      includeInDigest: false,
       section: 'businessInformation'
     },
     {
       class: 'PhoneNumber',
       name: 'fax',
       documentation: 'The fax number of the business.',
+      includeInDigest: false,
       section: 'businessInformation',
       gridColumns: 6
     },
@@ -300,6 +315,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'phoneNumberVerified',
       writePermissionRequired: true,
+      includeInDigest: false,
       section: 'operationsInformation',
       gridColumns: 6
     },
@@ -310,6 +326,7 @@ foam.CLASS({
       label: 'Commercial Address',
       documentation: `Returns the postal address of the business associated with the
         User from the Address model.`,
+      includeInDigest: false,
       section: 'businessInformation',
       factory: function() {
         return this.Address.create();
@@ -336,6 +353,7 @@ foam.CLASS({
       of: 'foam.nanos.auth.Address',
       name: 'mailingAddress',
       documentation: `Mailing address of business`,
+      includeInDigest: false,
       section: 'businessInformation',
       factory: function() {
         return this.Address.create();
@@ -362,6 +380,7 @@ foam.CLASS({
       name: 'businessHoursEnabled',
       documentation: 'Determines whether business hours are enabled for the User to set.',
       value: false,
+      includeInDigest: false,
       section: 'businessInformation',
       gridColumns: 6
     },
@@ -371,15 +390,19 @@ foam.CLASS({
       documentation: `Determines whether completed business registration. This property
         dictates portal views after compliance and account approval.`,
       value: false,
+      includeInDigest: false,
       writePermissionRequired: true,
       section: 'operationsInformation',
       gridColumns: 6
     },
+    // REVIEW: includeInDigest - many of the following are UCJ entries on the
+    // business, or will be, hence marked as false - assuming they will move. 
     {
       class: 'FObjectArray',
       of: 'foam.nanos.auth.User',
       name: 'principalOwners',
       documentation: 'Represents the people who own the majority shares in a business.',
+      includeInDigest: false,
       view: { class: 'foam.u2.view.DAOtoFObjectArrayView' },
       createVisibility: 'HIDDEN',
       section: 'ownerInformation',
@@ -388,8 +411,9 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'holdingCompany',
-      documentation: `Determines whether a Business is a holding company.  A holding company
+      documentation: `Determines whether a Business is a holding company.  A holding c2ompany
         represent a corporate group which owns shares of multiple companies.`,
+      includeInDigest: false,
       section: 'businessInformation',
       gridColumns: 6
     },
@@ -397,6 +421,7 @@ foam.CLASS({
       class: 'String',
       name: 'sourceOfFunds',
       documentation: 'The entities that provide funding to the business.',
+      includeInDigest: false,
       section: 'complianceInformation',
       gridColumns: 6
     },
@@ -406,6 +431,7 @@ foam.CLASS({
       label: 'Describe the target customer of your products and services',
       documentation: `The type of clients that the business markets its products and
         services.`,
+      includeInDigest: false,
       section: 'complianceInformation',
       gridColumns: 6
     },
@@ -418,6 +444,7 @@ foam.CLASS({
         information is required for KYC purposes.  It is drawn from the
         suggestedUserTransactionInfo object.
         `,
+      includeInDigest: false,
       section: 'complianceInformation',
       factory: function() {
         return net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.create();
@@ -429,6 +456,7 @@ foam.CLASS({
       name: 'taxIdentificationNumber',
       documentation: `The tax identification number associated with the business of
       the User.`,
+      includeInDigest: true,
       section: 'businessInformation',
       gridColumns: 6
     },
@@ -436,6 +464,7 @@ foam.CLASS({
       name: 'businessIdentificationCode',
       documentation: 'ISO 9362 Business Identification Code (BIC) (regulated by SWIFT). see https://en.wikipedia.org/wiki/ISO_9362.',
       class: 'String',
+      includeInDigest: true,
       section: 'businessInformation',
       gridColumns: 6
     },
@@ -448,6 +477,7 @@ foam.CLASS({
         for tax purposes. This number is typically issued by an Issuing Authority such as
         the CRA.`,
 
+      includeInDigest: true,
       validateObj: function(businessRegistrationNumber) {
         var re = /^[a-zA-Z0-9 ]{1,35}$/;
         if ( businessRegistrationNumber.length > 0 &&
@@ -466,6 +496,7 @@ foam.CLASS({
         to federal, provincial or municipal governments and is used by the business
         for tax purposes. This number is typically issued by an Issuing Authority such as
         the CRA.`,
+      includeInDigest: false,
       getter: function() {
         return this.businessRegistrationNumber;
       },
@@ -481,6 +512,7 @@ foam.CLASS({
       class: 'FObjectArray',
       name: 'businessDirectors',
       of: 'net.nanopay.model.BusinessDirector',
+      includeInDigest: false,
       section: 'ownerInformation',
       order: 50
     },
@@ -489,6 +521,7 @@ foam.CLASS({
       name: 'businessProfilePicture',
       documentation: `The profile picture of the business, such as a logo, initially
         defaulting to a placeholder picture.`,
+      includeInDigest: false,
       view: {
         class: 'foam.nanos.auth.ProfilePictureView',
         placeholderImage: 'images/business-placeholder.png'
@@ -502,12 +535,14 @@ foam.CLASS({
       value: false,
       documentation: `Determines whether a user has been onboarded to
         a partner platform to support international payments.`,
+      includeInDigest: false,
       section: 'operationsInformation',
       gridColumns: 6
     },
     {
       class: 'Boolean',
       name: 'publiclyTraded',
+      includeInDigest: false,
       section: 'ownerInformation',
       gridColumns: 6,
       order: 55
