@@ -709,6 +709,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'totalSourceAmount',
+      section: 'invoiceInformation'
     },
     {
       class: 'Reference',
