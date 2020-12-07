@@ -313,7 +313,7 @@ foam.CLASS({
 
         if ( SafetyUtil.isEmpty(swiftCode) ) {
           throw new IllegalStateException(this.SWIFT_CODE_REQUIRED);
-        }OBR
+        }
         if ( ! SWIFT_CODE_PATTERN.matcher(swiftCode).matches() ) {
           throw new IllegalStateException(this.SWIFT_CODE_INVALID);
         }
