@@ -36,8 +36,8 @@ foam.CLASS({
         dt.setLineItems(requestTxn.getLineItems());
         dt.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);
         dt.setName(dt.getSourceCurrency() + " Digital Transaction");
-        quote.addTransfer(dt.getSourceAccount(), -dt.getAmount());
-        quote.addTransfer(dt.getDestinationAccount(), dt.getAmount());
+        quote.addTransfer(true, dt.getSourceAccount(), -dt.getAmount(), 0);
+        quote.addTransfer(true, dt.getDestinationAccount(), dt.getAmount(), 0);
         return dt;
       `
     },

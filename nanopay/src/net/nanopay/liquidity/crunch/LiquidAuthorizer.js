@@ -44,7 +44,7 @@ foam.CLASS({
       args: [
         { name: 'permissionPrefix', class: 'String' },
         { name: 'op', class: 'String' },
-        { name: 'outgoingAccountId', class: 'Long' }
+        { name: 'outgoingAccountId', class: 'String' }
       ],
       type: 'String',
       documentation: `
@@ -52,14 +52,14 @@ foam.CLASS({
       `,
       javaCode: `
         String permission = permissionPrefix + "." + op;
-        if ( outgoingAccountId > 0 ) permission += "." + outgoingAccountId;
+        if ( ! foam.util.SafetyUtil.isEmpty(outgoingAccountId) ) permission += "." + outgoingAccountId;
         return permission;
       `
     },
     {
       name: 'authorizeOnCreate',
       javaCode:  `
-        Long accountId = obj instanceof AccountApprovableAware ? ((AccountApprovableAware) obj).getOutgoingAccountCreate(x) : 0;
+        String accountId = obj instanceof AccountApprovableAware ? ((AccountApprovableAware) obj).getOutgoingAccountCreate(x) : "";
         accountId = obj instanceof Transaction ? ((Transaction) obj).getOutgoingAccount() : accountId;
 
         String permission = createPermission(getPermissionPrefix(), "make", accountId);
@@ -78,13 +78,13 @@ foam.CLASS({
 
         String permissionPrefix = obj instanceof ShadowAccount ? "shadowaccount" : getPermissionPrefix();
 
-        Long accountId =
+        String accountId =
           (
             obj instanceof AccountApprovableAware &&
             ! ( obj instanceof ShadowAccount )
           ) ?
           ((AccountApprovableAware) obj).getOutgoingAccountRead(x) :
-          0;
+          "";
         accountId = obj instanceof Transaction ? ((Transaction) obj).getOutgoingAccount() : accountId;
 
         if ( obj instanceof User ) {
@@ -106,7 +106,7 @@ foam.CLASS({
     {
       name: 'authorizeOnUpdate',
       javaCode:  `
-        Long accountId = oldObj instanceof AccountApprovableAware ? ((AccountApprovableAware) oldObj).getOutgoingAccountUpdate(x) : 0;
+        String accountId = oldObj instanceof AccountApprovableAware ? ((AccountApprovableAware) oldObj).getOutgoingAccountUpdate(x) : "";
         accountId = oldObj instanceof Transaction ? ((Transaction) oldObj).getOutgoingAccount() : accountId;
 
         String permission = createPermission(getPermissionPrefix(), "make", accountId);
@@ -128,7 +128,7 @@ foam.CLASS({
     {
       name: 'authorizeOnDelete',
       javaCode:  `
-        Long accountId = obj instanceof AccountApprovableAware ? ((AccountApprovableAware) obj).getOutgoingAccountDelete(x) : 0;
+        String accountId = obj instanceof AccountApprovableAware ? ((AccountApprovableAware) obj).getOutgoingAccountDelete(x) : "";
         accountId = obj instanceof Transaction ? ((Transaction) obj).getOutgoingAccount() : accountId;
 
         String permission = createPermission(getPermissionPrefix(), "make", accountId);

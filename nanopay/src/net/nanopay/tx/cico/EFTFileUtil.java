@@ -21,7 +21,6 @@ import java.io.FileOutputStream;
 import java.io.InputStream;
 import java.util.Base64;
 
-import org.apache.commons.io.IOUtils;
 
 public class EFTFileUtil {
 
@@ -47,39 +46,14 @@ public class EFTFileUtil {
     try {
       DAO fileDAO = ((DAO) x.get("fileDAO")).inX(x);
       BlobService blobStore  = (BlobService) x.get("blobStore");
-      File file = null;
-      if ( fileSize > 3 * 1024 * 1024 ){
-        Blob data = blobStore.put_(x, new InputStreamBlob(in, fileSize));
-        file = new File.Builder(x)
+      Blob data = new InputStreamBlob(in, fileSize);
+      File file = new File.Builder(x)
           .setMimeType(mimeType)
           .setFilename(fileName)
           .setFilesize(fileSize)
           .setData(data)
           .build();
-      } else {
-        try {
-          String base64 = Base64.getEncoder().encodeToString(IOUtils.toByteArray(in));
-          String fileExtension = "";
-          if ( fileName.lastIndexOf(".") != -1 && fileName.lastIndexOf(".") != 0)
-            fileExtension = fileName.substring(fileName.lastIndexOf(".")+1);
-          String data = "data:/" + fileExtension +";base64," + base64;
-          file = new File.Builder(x)
-            .setMimeType(mimeType)
-            .setFilename(fileName)
-            .setFilesize(fileSize)
-            .setDataString(data)
-            .build();
-        } catch(IOException t) {
-          Logger logger = (Logger) x.get("logger");
-          logger.warning(t);
-          ((DAO) x.get("alarmDAO")).put(new Alarm.Builder(x)
-            .setName("EFF Save File")
-            .setReason(AlarmReason.CREDENTIALS)
-            .setNote(t.getMessage())
-            .build());
-        }
-      }
-      return (File) fileDAO.inX(x).put(file);
+      return (File) fileDAO.put(file);
     } catch(Throwable t) {
       throw t;
     }
@@ -88,34 +62,35 @@ public class EFTFileUtil {
   public static java.io.File getFile(X x, File file) {
     if ( file == null ) return null;
 
-    try {
-      if ( SafetyUtil.isEmpty(file.getDataString()) ){
-        IdentifiedBlob ib = (IdentifiedBlob) file.getData();
-        FileBlob blob = (FileBlob) ((BlobService) x.get("blobStore")).find(ib.getId());
-        if ( blob != null ) return blob.getFile();
-      } else {
-        try {
-          InputStreamBlob blob = (InputStreamBlob) file.getData();
-          InputStream inputStream = (ByteArrayInputStream) blob.getInputStream();
-          byte[] byteArray = new byte[inputStream.available()];
-          inputStream.read(byteArray);
-          java.io.File tempFile = java.io.File.createTempFile(file.getFilename(), file.getMimeType());
-          FileOutputStream fos = new FileOutputStream(tempFile);
-          fos.write(byteArray);
-          return tempFile;
-        } catch(IOException t) {
-          Logger logger = (Logger) x.get("logger");
-          logger.warning(t);
-          ((DAO) x.get("alarmDAO")).put(new Alarm.Builder(x)
-            .setName("EFF Get File")
-            .setReason(AlarmReason.CREDENTIALS)
-            .setNote(t.getMessage())
-            .build());
-        }
+    if ( SafetyUtil.isEmpty(file.getDataString()) ){
+      BlobService store = (BlobService) x.get("blobStore");
+      FileBlob blob = (FileBlob) store.find(file.getId());
+      if ( blob != null ) {
+        return blob.getFile();
       }
-    } catch(Throwable t) {
-      throw t;
+      ((foam.nanos.logger.Logger) x.get("logger")).error("File not found", file.getId());
+      throw new foam.core.FOAMException(new IOException("File not found"));
+    } else {
+      try {
+        InputStreamBlob blob = (InputStreamBlob) file.getData();
+        InputStream inputStream = (ByteArrayInputStream) blob.getInputStream();
+        byte[] byteArray = new byte[inputStream.available()];
+        inputStream.read(byteArray);
+        java.io.File tempFile = java.io.File.createTempFile(file.getFilename(), file.getMimeType());
+        FileOutputStream fos = new FileOutputStream(tempFile);
+        fos.write(byteArray);
+        return tempFile;
+      } catch(IOException t) {
+        Logger logger = (Logger) x.get("logger");
+        logger.warning("File", file.getId(), t);
+        ((DAO) x.get("alarmDAO")).put(new Alarm.Builder(x)
+                                      .setName("EFF Get File")
+                                      .setReason(foam.nanos.alarming.AlarmReason.UNSPECIFIED)
+                                      .setSeverity(foam.log.LogLevel.ERROR)
+                                      .setNote(t.getMessage())
+                                      .build());
+        throw new foam.core.FOAMException(t);
+      }
     }
-    return null;
   }
 }

@@ -504,12 +504,12 @@ foam.CLASS({
 			name: "PAI"
 		},
 		{
-			class: "foam.core.String",
+			class: "foam.core.Int",
 			name: "PAIS",
 			required: false
 		},
 		{
-			class: "foam.core.String",
+			class: "foam.core.Int",
 			name: "PAISMT",
 			required: false
 		},

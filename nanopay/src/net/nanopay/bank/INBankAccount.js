@@ -59,11 +59,11 @@ foam.CLASS({
       name: 'denomination',
       value: 'INR'
     },
-    { // REVIEW: remove
+    {
       name: 'institutionNumber',
       hidden: true
     },
-    { // REVIEW: remove
+    {
       name: 'branchId',
       hidden: true
     },
@@ -161,11 +161,12 @@ foam.CLASS({
       visibility: 'HIDDEN'
     },
     {
-      name: 'bankCode',
+      name: 'iban',
+      required: false,
       visibility: 'HIDDEN'
     },
     {
-      name: 'iban',
+      name: 'swiftCode',
       required: false,
       visibility: 'HIDDEN'
     }

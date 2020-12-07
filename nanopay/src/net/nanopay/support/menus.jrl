@@ -2,6 +2,8 @@ p({
   "class": "foam.nanos.menu.Menu",
   "id": "accounts-support",
   "label": "Accounts (Support)",
+  "icon":"images/accounts-24px-resting.svg",
+  "activeIcon":"images/accounts-24px-active.svg",
   "handler":
     {
       "class": "foam.nanos.menu.DAOMenu2",
@@ -13,7 +15,13 @@ p({
           "createTitle": "Create an Account",
           "createPredicate":{"class":"foam.mlang.predicate.False"},
           "editPredicate":{"class":"foam.mlang.predicate.False"},
-          "deletePredicate":{"class":"foam.mlang.predicate.False"}
+          "deletePredicate":{"class":"foam.mlang.predicate.False"},
+          "defaultColumns": [
+            "id",
+            "owner",
+            "summary",
+            "name"
+          ]
         }
     },
   "parent": "hidden"
@@ -23,6 +31,8 @@ p({
   "class": "foam.nanos.menu.Menu",
   "id": "businesses-support",
   "label": "Businesses (Support)",
+  "icon":"images/businesses-24px-resting.svg",
+  "activeIcon":"images/businesses-24px-active.svg",
   "handler":
     {
       "class": "foam.nanos.menu.DAOMenu2",
@@ -33,8 +43,15 @@ p({
           "browseTitle": "Businesses",
           "createTitle": "Create a Business",
           "createPredicate":{"class":"foam.mlang.predicate.False"},
-          "editPredicate":{"class":"foam.mlang.predicate.True"},
-          "deletePredicate":{"class":"foam.mlang.predicate.False"}
+          "editPredicate":{"class":"foam.mlang.predicate.False"},
+          "deletePredicate":{"class":"foam.mlang.predicate.False"},
+          "defaultColumns": [
+            "id",
+            "businessName",
+            "email",
+            "phoneNumber",
+            "compliance"
+          ]
         }
     },
   "parent": "hidden"
@@ -44,6 +61,8 @@ p({
   "class":"foam.nanos.menu.Menu",
   "id":"transactions-support",
   "label":"Transactions (Support)",
+  "icon":"images/transactions-24px-resting.svg",
+  "activeIcon":"images/transactions-24px-active.svg",
   "handler":{
     "class":"foam.nanos.menu.DAOMenu2",
     "config":{
@@ -57,7 +76,10 @@ p({
       "defaultColumns":[
         "id",
         "amount",
-        "referenceNumber"
+        "referenceNumber",
+        "chainSummary.summary",
+        "chainSummary.status",
+        "chainSummary.errorCode"
       ]
     }
   },
@@ -68,6 +90,8 @@ p({
   "class": "foam.nanos.menu.Menu",
   "id": "users-support",
   "label": "Users (Support)",
+  "icon":"images/users-24px-resting.svg",
+  "activeIcon":"images/users-24px-active.svg",
   "handler":
     {
       "class": "foam.nanos.menu.DAOMenu2",
@@ -78,8 +102,18 @@ p({
           "browseTitle": "Users",
           "createTitle": "Create a User",
           "createPredicate":{"class":"foam.mlang.predicate.False"},
-          "editPredicate":{"class":"foam.mlang.predicate.True"},
-          "deletePredicate":{"class":"foam.mlang.predicate.False"}
+          "editPredicate":{"class":"foam.mlang.predicate.False"},
+          "deletePredicate":{"class":"foam.mlang.predicate.False"},
+          "defaultColumns": [
+            "id",
+            "firstName",
+            "lastName",
+            "email",
+            "phoneNumber",
+            "status",
+            "compliance",
+            "group"
+          ]
         }
     },
   "parent": "hidden"
@@ -96,18 +130,6 @@ p({
     "handler":{
         "class":"foam.nanos.menu.DocumentFileMenu",
         "docKey":"google-api-export",
-        "daoKey":"nanopayDocumentDAO"
-    },
-    "parent":"documentation"
-})
-
-p({
-    "class":"foam.nanos.menu.Menu",
-    "id":"api-documentation-northcard",
-    "label":"API Documentation",
-    "handler": {
-        "class":"foam.nanos.menu.DocumentFileMenu",
-        "docKey":"api-doc-northcard",
         "daoKey":"nanopayDocumentDAO"
     },
     "parent":"documentation"

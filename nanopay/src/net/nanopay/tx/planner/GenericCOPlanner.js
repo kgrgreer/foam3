@@ -51,9 +51,9 @@ foam.CLASS({
       // use destinations trust, need system context.
       TrustAccount trustAccount = TrustAccount.find(getX(), quote.getDestinationAccount());
 
-      quote.addTransfer(trustAccount.getId(), cashOut.getAmount());
-      quote.addTransfer(quote.getSourceAccount().getId(), -cashOut.getAmount());
-      quote.addExternalTransfer(quote.getDestinationAccount().getId(), cashOut.getAmount());
+      quote.addTransfer(true, trustAccount.getId(), cashOut.getAmount(), 0);
+      quote.addTransfer(true, quote.getSourceAccount().getId(), -cashOut.getAmount(), 0);
+      quote.addTransfer(false, quote.getDestinationAccount().getId(), cashOut.getAmount(), 0);
 
       if ( getInstantComplete() ) {
         cashOut.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);

@@ -26,9 +26,16 @@ foam.CLASS({
       name: 'javaExtras',
       buildJavaClass: function(cls) {
         cls.extras.push(`
-          public ExternalTransfer(long amount, long account) {
+          public ExternalTransfer(String account, long amount) {
             setAmount(amount);
             setAccount(account);
+          }
+        `);
+        cls.extras.push(`
+          public ExternalTransfer(String account, long amount, long stage) {
+            setAmount(amount);
+            setAccount(account);
+            setStage(stage);
           }
         `);
       }

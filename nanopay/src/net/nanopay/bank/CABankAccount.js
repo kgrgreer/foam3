@@ -62,9 +62,9 @@ foam.CLASS({
   sections: [
     {
       name: 'accountInformation',
-      title: function(forContact) {
-        return forContact ? '' : this.SECTION_DETAILS_TITLE_VOID;
-      },
+      title: function() {
+        return this.forContact ? '' : this.SECTION_DETAILS_TITLE_VOID;
+      }
     },
     {
       name: 'pad',
@@ -123,27 +123,17 @@ foam.CLASS({
       }
     },
     {
-      name: 'swiftCode',
-      visibility: 'HIDDEN',
-      required: false,
-      validateObj: function(swiftCode) {
-      }
-    },
-    {
-      name: 'bankCode',
-      visibility: 'HIDDEN'
-    },
-    {
       name: 'voidChequeImage',
       class: 'String',
       label: '',
-      value: 'images/Canada-Check.png',
+      value: 'images/Canada-Check3.svg',
       section: 'accountInformation',
       visibility: 'RO',
       transient: true,
       view: function(_, X) {
         return {
-          class: 'foam.u2.tag.Image'
+          class: 'foam.u2.tag.Image',
+          displayWidth: '100%'
         };
       },
     },
@@ -161,7 +151,6 @@ foam.CLASS({
       gridColumns: 4,
       view: {
         class: 'foam.u2.tag.Input',
-        placeholder: '12345',
         onKey: true
       },
       preSet: function(o, n) {
@@ -185,7 +174,6 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
       name: 'institutionNumber',
       label: 'Institution',
       documentation: `Provides backward compatibilty for mobile call flow.
@@ -197,7 +185,6 @@ foam.CLASS({
       gridColumns: 3,
       view: {
         class: 'foam.u2.tag.Input',
-        placeholder: '123',
         maxLength: 3,
         onKey: true
       },
@@ -222,12 +209,12 @@ foam.CLASS({
     {
       class: 'String',
       name: 'accountNumber',
+      label: 'Account',
       updateVisibility: 'RO',
       section: 'accountInformation',
       gridColumns: 5,
       view: {
         class: 'foam.u2.tag.Input',
-        placeholder: '1234567',
         onKey: true
       },
       postSet: function(o, n) {
@@ -276,7 +263,6 @@ foam.CLASS({
             });
           }))
         .end()
-
         .start()
           .add(obj.slot((accountNumber) => {
               if ( accountNumber ) {
@@ -293,7 +279,7 @@ foam.CLASS({
       of: 'net.nanopay.model.CAPadCapture',
       name: 'padCapture',
       section: 'pad',
-      storageTransient: true,
+      transient: true,
       label: '',
       updateVisibility: 'HIDDEN',
       factory: function() {
@@ -319,6 +305,14 @@ foam.CLASS({
             }
           ]
         }, X);
+      }
+    },
+    {
+      name: 'swiftCode',
+      label: 'SWIFT/BIC',
+      updateVisibility: 'RO',
+      section: 'accountInformation',
+      validateObj: function(swiftCode) {
       }
     }
   ],

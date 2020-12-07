@@ -41,6 +41,13 @@ foam.CLASS({
   ],
 
   css: `
+    ^ {
+      box-sizing: border-box;
+      width: 600px;
+      padding: 30px;
+      max-height: 570px;
+      overflow-y: scroll;
+    }
     ^step-indicator {
       display: flex;
       justify-content: flex-end;
@@ -51,8 +58,14 @@ foam.CLASS({
       position: relative;
       float: right;
     }
-    .wizard {
-      width: 650px;
+    ^ .button-container-wrapper {
+      position: relative;
+      width: 585px;
+      right: 30px;
+      top: 30px;
+    }
+    ^ .button-container {
+      padding: 0 30px;
     }
   `,
 
@@ -60,6 +73,8 @@ foam.CLASS({
     { name: 'EDIT_STEP_ONE_TITLE', message: 'Edit contact' },
     { name: 'EDIT_STEP_TWO_TITLE', message: 'Edit banking information' },
     { name: 'EDIT_STEP_THREE_TITLE', message: 'Edit business address' },
+    { name: 'STEP', message: 'Step' },
+    { name: 'OF_MSG', message: 'of' },
     { name: 'CONTACT_ADDED', message: 'Contact added successfully' },
     { name: 'CONTACT_EDITED', message: 'Contact edited' },
     { name: 'INVITE_SUCCESS', message: 'Sent a request to connect' },
@@ -74,6 +89,12 @@ foam.CLASS({
                `
     },
     { name: 'GENERIC_PUT_FAILED', message: 'Failed to add an account.' },
+    { name: 'SECTION_ONE_TITLE', message: 'Add Contact' },
+    { name: 'SECTION_TWO_TITLE', message: 'Add Bank Account' },
+    { name: 'SECTION_TWO_SUBTITLE', message: 'Enter the contact’s bank account information.  Please make sure that this is accurate as payments will go directly to the specified account.' },
+    { name: 'SECTION_THREE_TITLE', message: 'Add Business Address' },
+    { name: 'SECTION_THREE_SUBTITLE', message: 'Enter the contact’s business address. PO boxes are not accepted.' },
+    { name: 'OF_MGS', message: 'of' }
   ],
 
   properties: [
@@ -101,7 +122,7 @@ foam.CLASS({
   methods: [
     async function init() {
       var sectionOne = this.Section.create({
-        title: 'Add Contact',
+        title: this.SECTION_ONE_TITLE,
         properties: [ 
           net.nanopay.contacts.Contact.ORGANIZATION,
           net.nanopay.contacts.Contact.EMAIL,
@@ -113,18 +134,19 @@ foam.CLASS({
         fromClass: 'net.nanopay.contacts.Contact'
       });
       var sectionTwo = this.Section.create({
-        title: 'Add Bank Account',
-        subTitle: 'Payments made to this contact will be deposited to the account you provide below.',
+        title: this.SECTION_TWO_TITLE,
+        subTitle: this.SECTION_TWO_SUBTITLE,
         properties: [
           net.nanopay.contacts.Contact.CREATE_BANK_ACCOUNT,
           net.nanopay.contacts.Contact.NO_CORRIDORS_AVAILABLE,
+          net.nanopay.contacts.Contact.LOADING_SPINNER,
           net.nanopay.contacts.Contact.SHOULD_INVITE
         ],
         fromClass: 'net.nanopay.contacts.Contact'
       });
       var sectionThree = this.Section.create({
-        title: 'Add Business Address',
-        subTitle: `Enter the contact’s business address. PO boxes are not accepted.`,
+        title: this.SECTION_THREE_TITLE,
+        subTitle: this.SECTION_THREE_SUBTITLE,
         properties: [
           net.nanopay.contacts.Contact.BUSINESS_ADDRESS
         ],
@@ -153,14 +175,15 @@ foam.CLASS({
     },
     function initE() {
       var self = this;
-      this.addClass('wizard');
+
       self
+        .addClass(this.myClass())
         .start(self.Rows)
           .add(self.slot(function(sections, currentIndex) {
-            return self.E().addClass('section-container')
+            return self.E()
               .start().addClass(self.myClass('step-indicator'))
                 .add(this.slot(function(currentIndex) {
-                  return `Step ${currentIndex + 1} of 3`;
+                  return `${self.STEP} ${currentIndex + 1} ${self.OF_MSG} 3`;
                 }))
               .end()
               .tag(self.sectionView, {
@@ -169,13 +192,15 @@ foam.CLASS({
               });
           }))
           .startContext({ data: this })
-            .start().addClass('button-container')
-              .tag(this.BACK, { buttonStyle: 'TERTIARY' })
-              .start().addClass(this.myClass('button-sub-container'))
-                .tag(this.OPTION, { buttonStyle: 'SECONDARY' })
-                .start(this.NEXT).end()
+            .start().addClass('button-container-wrapper')
+              .start().addClass('button-container')
+                .tag(this.BACK, { buttonStyle: 'TERTIARY' })
+                .start().addClass(this.myClass('button-sub-container'))
+                  .tag(this.OPTION, { buttonStyle: 'SECONDARY' })
+                  .start(this.NEXT).end()
+                .end()
+                .start(this.SAVE).end()
               .end()
-              .start(this.SAVE).end()
             .end()
           .endContext()
         .end();
@@ -184,17 +209,8 @@ foam.CLASS({
     async function addContact() {
       this.isConnecting = true;
       try {
-        let canInvite = this.data.createBankAccount.country != 'IN';
-        // TODO this needs to be fixed for real elsewhere - 
-        // the payloads here are all empty objects except for the first one in the array
-        // and causing issues when going through the parser
-        var payloads = this.data.createBankAccount.padCapture.capablePayloads;
-        for ( let j = 0; j < payloads.length; j++ ) {
-          if ( payloads[j].data && ( Object.keys(payloads[j].data.instance_).length === 0 ) ){
-            payloads[j].instance_.data = null;
-          }
-        } 
-        this.data.createBankAccount.padCapture.capablePayloads = payloads;
+        let canInvite = this.data.createBankAccount && this.data.createBankAccount.country != 'IN';
+
         if ( this.data.shouldInvite && canInvite ) {
           // check if it is already joined
           var isExisting = await this.contactService.checkExistingContact(this.__subContext__, this.data.email, false);
@@ -298,8 +314,8 @@ foam.CLASS({
     {
       name: 'next',
       label: 'Next',
-      isEnabled: function(data$errors_, data$createBankAccount$errors_, currentIndex) {
-        if ( currentIndex === 1 ) return ! data$createBankAccount$errors_;
+      isEnabled: function(data$errors_, data$createBankAccount, data$createBankAccount$errors_, currentIndex) {
+        if ( currentIndex === 1 ) return data$createBankAccount && ! data$createBankAccount$errors_;
         return ! data$errors_;
       },
       isAvailable: function(nextIndex) {
@@ -316,7 +332,6 @@ foam.CLASS({
         return currentIndex === 1 && data$bankAccount === 0;
       },
       code: async function(X) {
-        this.data.createBankAccount = net.nanopay.bank.BankAccount.create({ isDefault: true }, X);
         if ( ! await this.addContact() ) return;
         X.closeDialog();
       }

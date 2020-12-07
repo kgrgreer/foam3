@@ -137,8 +137,8 @@ foam.CLASS({
     PM pm = PM.create(x, this.getOwnClassInfo(), getName());
 
     long range = getMaxAccountId() - getMinAccountId() + 1;
-    long sourceId = (long) (Math.floor(Math.random() * range) + getMinAccountId());
-    long destinationId = (long) (Math.floor(Math.random() * range) + getMinAccountId());
+    String sourceId = String.valueOf(Math.floor(Math.random() * range) + getMinAccountId());
+    String destinationId = String.valueOf(Math.floor(Math.random() * range) + getMinAccountId());
     long amount = (long) (Math.random() * 100);
 
     net.nanopay.tx.model.Transaction txn = new net.nanopay.tx.model.Transaction();

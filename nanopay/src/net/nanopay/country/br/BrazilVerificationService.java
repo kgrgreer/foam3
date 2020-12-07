@@ -31,10 +31,10 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import static foam.mlang.MLang.*;
 
-import net.nanopay.partner.sintegra.Sintegra;
-import net.nanopay.partner.sintegra.CPFResponseData;
-import net.nanopay.partner.sintegra.CNPJResponseData;
-import net.nanopay.partner.treviso.TrevisoCredientials;
+import net.nanopay.partner.soawebservices.SoaWebService;
+import net.nanopay.partner.soawebservices.PessoaFisicaSimplificada;
+import net.nanopay.partner.soawebservices.PessoaJuridicaSimplificada;
+import net.nanopay.partner.soawebservices.PessoaResponse;
 
 public class BrazilVerificationService
   extends    ContextAwareSupport
@@ -46,10 +46,10 @@ public class BrazilVerificationService
   @Override
   public boolean validateCnpj(X x, String cnpj) throws RuntimeException {
     try {
-      CNPJResponseData data = getCNPJResponseData(cnpj);
+      PessoaResponse data = getCNPJResponseData(cnpj);
       if ( data == null ) throw new RuntimeException("Unable to get a valid response from CNPJ validation.");
 
-      return "ATIVA".equals(data.getSituacao());
+      return data.getStatus();
     } catch(Throwable t) {
       logger_.error("Error getting CNPJ Data" , t);
       throw new RuntimeException("Unable to validate CNPJ");
@@ -59,7 +59,7 @@ public class BrazilVerificationService
   @Override
   public String getCNPJName(X x, String cnpj) throws RuntimeException {
     try {
-      CNPJResponseData data = getCNPJResponseData(cnpj);
+      PessoaResponse data = getCNPJResponseData(cnpj);
       if ( data != null ) return data.getNome();
 
     } catch(Throwable t) {
@@ -72,7 +72,7 @@ public class BrazilVerificationService
   @Override
   public String getCPFName(X x, String cpf, long userId) throws RuntimeException {
     try {
-      CPFResponseData data = getCPFResponseData(cpf, userId);
+      PessoaResponse data = getCPFResponseData(cpf, userId);
       if ( data != null ) return data.getNome();
     } catch(Throwable t) {
       logger_.error("Error getting CPF Data" , t);
@@ -84,7 +84,7 @@ public class BrazilVerificationService
   @Override
   public String getCPFNameWithBirthDate(X x, String cpf, Date birthDate) throws RuntimeException {
     try {
-      CPFResponseData data = getCPFResponseData(cpf, birthDate);
+      PessoaResponse data = getCPFResponseData(cpf, birthDate);
       if ( data != null ) return data.getNome();
     } catch(Throwable t) {
       logger_.error("Error getting CPF Data" , t);
@@ -96,10 +96,10 @@ public class BrazilVerificationService
   @Override
   public boolean validateUserCpf(X x, String cpf, long userId) throws RuntimeException {
     try {
-      CPFResponseData data = getCPFResponseData(cpf, userId);
+      PessoaResponse data = getCPFResponseData(cpf, userId);
       if ( data == null ) throw new RuntimeException("Unable to get a valid response from CPF validation.");
 
-      return "REGULAR".equalsIgnoreCase(data.getSituacaoCadastral());
+      return data.getStatus();
     } catch(Throwable t) {
       logger_.error("Error getting CPF Data" , t);
       throw new RuntimeException("Unable to validate CPF");
@@ -109,10 +109,10 @@ public class BrazilVerificationService
   @Override
   public boolean validateCpf(X x, String cpf, Date birthDate) throws RuntimeException {
     try {
-      CPFResponseData data = getCPFResponseData(cpf, birthDate);
+      PessoaResponse data = getCPFResponseData(cpf, birthDate);
       if ( data == null ) throw new RuntimeException("Unable to get a valid response from CPF validation.");
 
-      return "REGULAR".equalsIgnoreCase(data.getSituacaoCadastral());
+      return data.getStatus();
     } catch(Throwable t) {
       logger_.error("Error getting CPF Data" , t);
       throw new RuntimeException("Unable to validate CPF");
@@ -125,16 +125,12 @@ public class BrazilVerificationService
     this.logger_ = (Logger) getX().get("logger");
   }
 
-  protected CPFResponseData getCPFResponseData(String cpf, long userId) throws RuntimeException {
+  protected PessoaResponse getCPFResponseData(String cpf, long userId) throws RuntimeException {
     return getCPFResponseData(cpf, findUserBirthDate(userId));
   }
 
-  protected CPFResponseData getCPFResponseData(String cpf, Date birthDate) throws RuntimeException {
+  protected PessoaResponse getCPFResponseData(String cpf, Date birthDate) throws RuntimeException {
     if ( birthDate == null ) return null;
-
-    TrevisoCredientials credentials = (TrevisoCredientials) getX().get("TrevisoCredientials");
-    if ( null == credentials )
-      throw new RuntimeException("Invalid credientials. Treviso token required to validate CPF");
 
     String birthDateString = "";
     try {
@@ -146,17 +142,19 @@ public class BrazilVerificationService
     }
 
     String formattedCpf = cpf.replaceAll("[^0-9]", "");
-    return ((Sintegra) getX().get("sintegraService"))
-      .getCPFData(formattedCpf, birthDateString, credentials.getSintegraToken());
+    PessoaFisicaSimplificada request = new PessoaFisicaSimplificada();
+    request.setDocumento(formattedCpf);
+    request.setDataNascimento(birthDateString);
+    return ((SoaWebService) getX().get("soaWebService"))
+      .pessoaFisicaSimplificada(request);
   }
 
-  protected CNPJResponseData getCNPJResponseData(String cnpj) throws RuntimeException {
-    TrevisoCredientials credentials = (TrevisoCredientials) getX().get("TrevisoCredientials");
-    if ( null == credentials )
-      throw new RuntimeException("Invalid credientials. Treviso token required to validate CNPJ");
-
+  protected PessoaResponse getCNPJResponseData(String cnpj) throws RuntimeException {
     String formattedCnpj = cnpj.replaceAll("[^0-9]", "");
-    return ((Sintegra) getX().get("sintegraService")).getCNPJData(formattedCnpj, credentials.getSintegraToken());
+    PessoaJuridicaSimplificada request = new PessoaJuridicaSimplificada();
+    request.setDocumento(formattedCnpj);
+
+    return ((SoaWebService) getX().get("soaWebService")).pessoaJuridicaSimplificada(request);
   }
 
   protected Date findUserBirthDate(long userId) {

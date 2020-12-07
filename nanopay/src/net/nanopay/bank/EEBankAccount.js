@@ -42,46 +42,28 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
-      name: 'bankCode',
+      name: 'institutionNumber',
       updateVisibility: 'RO',
-      validateObj: function(bankCode) {
+      validateObj: function(institutionNumber, iban) {
         var regex = /^[A-z0-9a-z]{2}$/;
 
-        if ( bankCode === '' ) {
-          return this.BANK_CODE_REQUIRED;
-        } else if ( ! regex.test(bankCode) ) {
-          return this.BANK_CODE_INVALID;
-        }
-      }
-    },
-    {
-      class: 'String',
-      name: 'branchCode',
-      section: 'accountInformation',
-      updateVisibility: 'RO',
-      validateObj: function(branchCode) {
-        var regex = /^[0-9]{2}$/;
+        if ( iban )
+          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
-        if ( branchCode === '' ) {
-          return this.BRANCH_CODE_REQUIRED;
-        } else if ( ! regex.test(branchCode) ) {
-          return this.BRANCH_CODE_INVALID;
+        if ( ! iban || (iban && ibanMsg != 'passed') ) {
+          if ( institutionNumber === '' ) {
+            return this.INSTITUTION_NUMBER_REQUIRED;
+          } else if ( ! regex.test(institutionNumber) ) {
+            return this.INSTITUTION_NUMBER_INVALID;
+          }
         }
       }
-    },
-    {
-      class: 'String',
-      name: 'checkDigit',
-      label: 'Check/Control Digits',
-      section: 'accountInformation',
-      updateVisibility: 'RO'
     },
     {
       name: 'accountNumber',
       updateVisibility: 'RO',
       view: {
         class: 'foam.u2.tag.Input',
-        placeholder: '12345678901',
         onKey: true
       },
       preSet: function(o, n) {
@@ -94,18 +76,27 @@ foam.CLASS({
           .add(displayAccountNumber);
         this.tooltip = displayAccountNumber;
       },
-      validateObj: function(accountNumber) {
+      validateObj: function(accountNumber, iban) {
         var accNumberRegex = /^[0-9]{11}$/;
 
-        if ( accountNumber === '' ) {
-          return this.ACCOUNT_NUMBER_REQUIRED;
-        } else if ( ! accNumberRegex.test(accountNumber) ) {
-          return this.ACCOUNT_NUMBER_INVALID;
+        if ( iban )
+          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
+
+        if ( ! iban || (iban && ibanMsg != 'passed') ) {
+          if ( accountNumber === '' ) {
+            return this.ACCOUNT_NUMBER_REQUIRED;
+          } else if ( ! accNumberRegex.test(accountNumber) ) {
+            return this.ACCOUNT_NUMBER_INVALID;
+          }
         }
       }
     },
     {
       name: 'desc',
+      visibility: 'HIDDEN'
+    },
+    {
+      name: 'branchId',
       visibility: 'HIDDEN'
     }
   ]
