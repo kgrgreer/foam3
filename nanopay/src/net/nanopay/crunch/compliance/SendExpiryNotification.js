@@ -36,6 +36,7 @@ foam.CLASS({
     'java.util.Date',
     'java.util.HashMap',
     'java.util.List',
+    'net.nanopay.model.Business',
     'static foam.mlang.MLang.*'
   ],
 
@@ -67,13 +68,14 @@ foam.CLASS({
 
             // if the UserCapabilityJunction belongs to an actual user, send the notification to the user.
             // otherwise, send the notification to the group the user is under
-            if ( user.getClass().equals(User.class) ) {
+            if ( ! user.getClass().equals(Business.class) ) {
+              String userName = user.getLegalName() != null && ! user.getLegalName().trim().isEmpty() ?
+                user.getLegalName() : user.getOrganization();
               notification.setUserId(user.getId());
-              args.put("userName", user.getLegalName());
-            }
-            else { 
+              args.put("userName", userName);
+            } else {
               notification.setGroupId(user.getGroup());
-              args.put("userName", ((net.nanopay.model.Business) user).getBusinessName());
+              args.put("userName", ((Business) user).getBusinessName());
             }
 
             notification.setNotificationType("Capability Expiry Reminder");

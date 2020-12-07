@@ -37,6 +37,7 @@ foam.CLASS({
     'java.util.Date',
     'java.util.HashMap',
     'java.util.List',
+    'net.nanopay.model.Business',
     'static foam.mlang.MLang.*'
   ],
 
@@ -108,13 +109,14 @@ foam.CLASS({
           args.put("link", user.findGroup(x).getAppConfig(x).getUrl());
           notification.setBody(body);
 
-          if ( user.getClass().equals(User.class) ) {
+          if ( ! user.getClass().equals(Business.class) ) {
+            String userName = user.getLegalName() != null && ! user.getLegalName().trim().isEmpty() ?
+              user.getLegalName() : user.getOrganization();
             notification.setUserId(user.getId());
-            args.put("userName", user.getLegalName());
-          }
-          else {
+            args.put("userName", userName);
+          } else {
             notification.setGroupId(user.getGroup());
-            args.put("userName", ((net.nanopay.model.Business) user).getBusinessName());
+            args.put("userName", ((Business) user).getBusinessName());
           }
 
           notification.setEmailArgs(args);
