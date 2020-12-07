@@ -137,18 +137,6 @@ p({
 
 p({
     "class":"foam.nanos.menu.Menu",
-    "id":"api-documentation-northcard",
-    "label":"API Documentation",
-    "handler": {
-        "class":"foam.nanos.menu.DocumentFileMenu",
-        "docKey":"api-doc-northcard",
-        "daoKey":"nanopayDocumentDAO"
-    },
-    "parent":"documentation"
-})
-
-p({
-    "class":"foam.nanos.menu.Menu",
     "id":"api-doc-10-introduction",
     "label":"Introduction",
     "handler": {

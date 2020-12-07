@@ -1,3 +1,24 @@
+// Remove the parent menu
+r({"class":"foam.nanos.menu.Menu", "id": "liquid" })
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "dashboard",
+  "parent": ""
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "rules",
+  "parent": ""
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "fileupload",
+  "parent": ""
+})
+
 p({
   "class": "foam.nanos.menu.Menu",
   "id": "users",
@@ -216,7 +237,8 @@ p({
           }
         }
     },
-  "registrations":[]
+  "registrations":[],
+  "parent": ""
 })
 
 p({
@@ -273,7 +295,8 @@ p({
             "class": "net.nanopay.liquidity.ui.transaction.LiquidSourceAccountFilterBorder"
           }
         }
-    }
+    },
+  "parent": ""
 })
 
 p({
@@ -296,7 +319,8 @@ p({
         }
       },
     }
-  }
+  },
+  "parent": ""
 })
 
 p({
