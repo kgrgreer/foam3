@@ -156,7 +156,7 @@ foam.CLASS({
           return this.ERROR_BUSINESS_PROFILE_NAME_MESSAGE;
         }
       },
-      postSet: function(_,n) {
+      postSet: function(_, n) {
         this.businessName = n;
       },
       tableCellFormatter: function(X, obj) {
@@ -165,8 +165,10 @@ foam.CLASS({
         } else {
           obj.publicBusinessDAO
             .find(obj.businessId)
-            .then( (business) =>
-              this.start().add(business ? business.toSummary() : obj.organization).end()
+            .then(business =>
+              this.start()
+                .add(business ? business.toSummary() : obj.organization)
+              .end()
           );
         }
       }
@@ -365,7 +367,7 @@ foam.CLASS({
         return this.PromisedDAO.create({
           promise: paymentProviderCorridorDAO.where(this.INSTANCE_OF(this.PaymentProviderCorridor))
             .select(this.MAP(this.PaymentProviderCorridor.TARGET_COUNTRY))
-            .then((sink) => {
+            .then(sink => {
               let unique = [...new Set(sink.delegate.array)];
               let arr = [];
               for ( i = 0; i < unique.length; i++ ) {
@@ -392,8 +394,8 @@ foam.CLASS({
       name: 'noCorridorsAvailable',
       documentation: 'GUI when no corridor capabilities have been added to user.',
       visibility: function(showSpinner, countries, createBankAccount) {
-        return ! showSpinner && countries.length == 0 && ! createBankAccount ? 
-          foam.u2.DisplayMode.RO : 
+        return ! showSpinner && countries.length == 0 && ! createBankAccount ?
+          foam.u2.DisplayMode.RO :
           foam.u2.DisplayMode.HIDDEN;
       },
       view: function(_, X) {

@@ -52,39 +52,6 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'nire',
-      label: 'NIRE/State Commercial Identification Number',
-      required: true,
-      documentation: `NIRE is the State Commercial Identification Number used by the State Commercial Board.`,
-      section: 'businessInformation',
-      validationPredicates: [
-        {
-          args: ['nire'],
-          predicateFactory: function(e) {
-            return e.EQ(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.BrazilBusinessInfoData.NIRE }), 14);
-          },
-          errorMessage: 'NO_NIRE_NUMBER'
-        }
-      ]
-    },
-    {
-      class: 'String',
-      name: 'ie',
-      label: 'IE/State Inscription',
-      documentation: `IE is the State Tax Identification Number used by the State Department of Taxation.
-          Businesses that sell goods are required to have an IE, used mainly to pay ICMS, tax on the distribution of goods and services.`,
-      section: 'businessInformation'
-    },
-    {
-      class: 'String',
-      name: 'im',
-      label: 'IM/Municipal Inscription',
-      documentation: `IM is the Municipal Tax Identification Number used by the City Department of Taxation.
-          Businesses that sell services are required to have an IM, used mainly to pay ISS, Sales Tax on Services.`,
-      section: 'businessInformation'
-    },
-    {
-      class: 'String',
       name: 'cnpj',
       label: 'CNPJ',
       required: true,
@@ -147,8 +114,41 @@ foam.CLASS({
               maxLength: 2
             })
           ]
-        })
+        });
       }
+    },
+    {
+      class: 'String',
+      name: 'nire',
+      label: 'NIRE/State Commercial Identification Number',
+      required: true,
+      documentation: `NIRE is the State Commercial Identification Number used by the State Commercial Board.`,
+      section: 'businessInformation',
+      validationPredicates: [
+        {
+          args: ['nire'],
+          predicateFactory: function(e) {
+            return e.EQ(foam.mlang.StringLength.create({ arg1: net.nanopay.country.br.BrazilBusinessInfoData.NIRE }), 14);
+          },
+          errorMessage: 'NO_NIRE_NUMBER'
+        }
+      ]
+    },
+    {
+      class: 'String',
+      name: 'ie',
+      label: 'IE/State Inscription',
+      documentation: `IE is the State Tax Identification Number used by the State Department of Taxation.
+          Businesses that sell goods are required to have an IE, used mainly to pay ICMS, tax on the distribution of goods and services.`,
+      section: 'businessInformation'
+    },
+    {
+      class: 'String',
+      name: 'im',
+      label: 'IM/Municipal Inscription',
+      documentation: `IM is the Municipal Tax Identification Number used by the City Department of Taxation.
+          Businesses that sell services are required to have an IM, used mainly to pay ISS, Sales Tax on Services.`,
+      section: 'businessInformation'
     },
     {
       class: 'String',
