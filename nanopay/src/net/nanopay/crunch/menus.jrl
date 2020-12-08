@@ -42,14 +42,19 @@ p({
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
       "daoKey":"accountDAO",
+      "of":"net.nanopay.bank.BankAccount",
       "browseTitle": "Bank accounts",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
       "editPredicate":{"class":"foam.mlang.predicate.False"},
       "searchMode": 2,
       "primaryAction": {"class":"net.nanopay.bank.AddBankAccountAction"},
-      "summaryView": {
-        "class":"foam.comics.v2.DAOSummaryView"
-      }
+      "browseViews": [
+        {
+          "class": "foam.comics.v2.namedViews.NamedViewCollection",
+          "name": "BankAccountTableView",
+          "view": { "class":"net.nanopay.bank.BankAccountTableView" }
+        }
+      ]
     }
   },
   "order": 504,
