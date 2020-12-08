@@ -212,6 +212,7 @@ public class BlacklistTest extends Test {
     myBusinessBankAccount.setInstitution(1);
     myBusinessBankAccount.setBranchId("12345");
     myBusinessBankAccount.setStatus(BankAccountStatus.VERIFIED);
+    myBusinessBankAccount.setSpid("nanopay");
     myBusinessBankAccount = (CABankAccount) myBusiness.getAccounts(x).put_(x, myBusinessBankAccount);
 
     accountDAO.where(foam.mlang.MLang.EQ(Account.NAME, "Blacklist Tests externalBusiness test account")).removeAll();
@@ -222,6 +223,7 @@ public class BlacklistTest extends Test {
     externalBusinessBankAccount.setInstitution(1);
     externalBusinessBankAccount.setBranchId("54321");
     externalBusinessBankAccount.setStatus(BankAccountStatus.VERIFIED);
+    externalBusinessBankAccount.setSpid("nanopay");
     externalBusinessBankAccount = (CABankAccount) externalBusiness.getAccounts(x).put_(x, externalBusinessBankAccount);
 
     ///////////////////////////////////////////////////////////////////////////////////////
@@ -234,6 +236,7 @@ public class BlacklistTest extends Test {
     invoice.setPayeeId(externalBusiness.getId());
     invoice.setDestinationCurrency("CAD");
     invoice.setAccount(myBusinessBankAccount.getId());
+    invoice.setSpid("nanopay");
 
     // Use system context to create invoice since invoice must exist for testing
     // the `transaction` below.
@@ -246,6 +249,7 @@ public class BlacklistTest extends Test {
     transaction.setPayeeId(invoice.getPayeeId());
     transaction.setAmount(invoice.getAmount());
     transaction.setInvoiceId(invoice.getId());
+    transaction.setSpid("nanopay");
     try {
       Transaction result = (Transaction) transactionDAO.inX(myAdminContext).put(transaction);
       test(result == null, "Transaction not created until business passes compliance passing proper compliance.");
@@ -259,6 +263,7 @@ public class BlacklistTest extends Test {
     invoice2.setPayeeId(externalBusiness.getId());
     invoice2.setDestinationCurrency("CAD");
     invoice2.setAccount(myBusinessBankAccount.getId());
+    invoice2.setSpid("nanopay");
     try {
       invoiceDAO.inX(x).put(invoice2);
     } catch (Throwable t) {
@@ -312,7 +317,7 @@ public class BlacklistTest extends Test {
     bo.setBusiness(myBusiness.getId());
     bo.setAddress(address);
     bo.setBirthday(birthday);
-    bo.setOwnershipPercent(30);
+    bo.setOwnershipPercent(30);  
 
     int[] chosenOwners = {1};
 
@@ -378,11 +383,12 @@ public class BlacklistTest extends Test {
     ucjCDR.setData(cdr);
     userCapabilityJunctionDAO.inX(myAdminContext).put(ucjCDR);
 
-    ucjCDR = new UserCapabilityJunction();
-    ucjCDR.setSourceId(myAdmin.getId());
-    ucjCDR.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-1a5");
-    ucjCDR.setStatus(CapabilityJunctionStatus.GRANTED);
-    userCapabilityJunctionDAO.inX(myAdminContext).put(ucjCDR);
+    UserCapabilityJunction ucjSOPD = new UserCapabilityJunction();
+    ucjSOPD.setSourceId(myAdmin.getId());
+    ucjSOPD.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-1a5");
+    ucjSOPD.setData(so);
+    ucjSOPD.setStatus(CapabilityJunctionStatus.GRANTED);
+    userCapabilityJunctionDAO.inX(myAdminContext).put(ucjSOPD);
 
     List<ApprovalRequest> approvalRequests = ((ArraySink) approvalRequestDAO
       .where(foam.mlang.MLang.AND( new foam.mlang.predicate.Predicate[] {
@@ -419,6 +425,7 @@ public class BlacklistTest extends Test {
     transaction2.setPayeeId(invoice2.getPayeeId());
     transaction2.setAmount(invoice2.getAmount());
     transaction2.setInvoiceId(invoice2.getId());
+    transaction2.setSpid("nanopay");
 
     try {
       Transaction result = (Transaction) transactionDAO.inX(myAdminContext).put(transaction2);
