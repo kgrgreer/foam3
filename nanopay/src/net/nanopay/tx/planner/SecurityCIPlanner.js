@@ -48,7 +48,7 @@ foam.CLASS({
 
         DAO accountDAO = (DAO) x.get("localAccountDAO");
         SecuritiesTrustAccount secTrust = (SecuritiesTrustAccount) accountDAO.find(this.getSecurityTrustId());
-        Long transferAccount = ((SecuritiesAccount) quote.getDestinationAccount()).getSecurityAccount(x, quote.getDestinationUnit()).getId();
+        String transferAccount = ((SecuritiesAccount) quote.getDestinationAccount()).getSecurityAccount(x, quote.getDestinationUnit()).getId();
         secTx.setName("Security CI of "+quote.getSourceUnit());
         secTx.setDestinationAmount(secTx.getAmount());
 

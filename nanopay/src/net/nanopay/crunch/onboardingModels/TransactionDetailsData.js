@@ -65,7 +65,8 @@ foam.CLASS({
           },
           errorMessage: 'NO_TARGET_CUSTOMERS_ERROR'
         }
-      ]
+      ],
+      gridColumns: 12
     }),
     net.nanopay.model.Business.SUGGESTED_USER_TRANSACTION_INFO.clone().copyFrom({
       label: '',

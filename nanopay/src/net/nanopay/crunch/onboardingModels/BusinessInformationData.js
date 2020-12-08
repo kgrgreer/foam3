@@ -96,7 +96,8 @@ foam.CLASS({
           },
           errorMessage: 'BUSINESS_TYPE_ERROR'
         }
-      ]
+      ],
+      gridColumns: 12
     }),
     {
       section: 'businessDetailsSection',
@@ -160,7 +161,8 @@ foam.CLASS({
           },
           errorMessage: 'SOURCE_OF_FUNDS_ERROR'
         }
-      ]
+      ],
+      gridColumns: 12
     }),
     {
       section: 'businessDetailsSection',

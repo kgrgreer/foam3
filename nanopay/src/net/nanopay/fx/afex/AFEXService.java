@@ -1329,6 +1329,49 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
     return null;
   }
 
+  @Override
+  public IsIbanResponse isiban(IsIbanRequest request, String spid) {
+    try {
+      credentials = getCredentials(spid);
+      URIBuilder uriBuilder = new URIBuilder(credentials.getAFEXApi()  + "api/beneficiary/isiban");
+      uriBuilder.setParameter("Iban", request.getIban());
+      uriBuilder.setParameter("Country", request.getCountry());
+
+      HttpGet httpGet = new HttpGet(uriBuilder.build());
+
+      httpGet.addHeader("API-Key", credentials.getApiKey());
+      httpGet.addHeader("Content-Type", "application/json");
+      httpGet.addHeader("Authorization", "bearer " + getToken(spid).getAccess_token());
+
+      logMessage(credentials.getApiKey(), "isiban", httpGet.toString(), false);
+
+      omLogger.log("AFEX isiban starting");
+      CloseableHttpResponse httpResponse = getHttpClient().execute(httpGet);
+      omLogger.log("AFEX isiban completed");
+
+      try {
+        if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
+          String errorMsg = parseHttpResponse("isiban", httpResponse);
+          logger.error(errorMsg);
+          throw new RuntimeException(errorMsg);
+        }
+
+        String response = new BasicResponseHandler().handleResponse(httpResponse);
+        logMessage(credentials.getApiKey(), "isiban", response, true);
+        return (IsIbanResponse) jsonParser.parseString(response, IsIbanResponse.class);
+      } finally {
+        httpResponse.close();
+      }
+
+    } catch (IOException e  ) {
+      omLogger.log("AFEX isiban timeout");
+      logger.error(e);
+    } catch (URISyntaxException e) {
+      logger.error(e);
+    }
+    return null;
+  }
+
   protected void logMessage(String apiKey, String methodName, String msg, boolean isResponse) {
     String msgType = isResponse ? "Response" : "Request";
     StringBuilder sb = new StringBuilder();

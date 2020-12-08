@@ -151,7 +151,7 @@ foam.CLASS({
       documentation: 'helper function for adding transfers to the plan',
       args: [
         { name: 'internal', type: 'Boolean' },
-        { name: 'account', type: 'Long' },
+        { name: 'account', type: 'String' },
         { name: 'amount', type: 'Long' },
         { name: 'stage', type: 'Long' }
       ],

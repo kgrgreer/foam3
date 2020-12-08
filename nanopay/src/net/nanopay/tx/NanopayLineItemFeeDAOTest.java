@@ -17,6 +17,7 @@ import net.nanopay.bank.CABankAccount;
 import net.nanopay.fx.FXService;
 import net.nanopay.payment.Institution;
 import net.nanopay.tx.model.Transaction;
+import foam.util.SafetyUtil;
 
 public class NanopayLineItemFeeDAOTest
     extends foam.nanos.test.Test {
@@ -148,7 +149,7 @@ public class NanopayLineItemFeeDAOTest
     LineItemTypeAccount lineItemTypeAccount = new LineItemTypeAccount.Builder(x_)
       .setUser(payee_.getId())
       .setType(type3.getId())
-      .setAccount(feeUser_.getId())
+      .setAccount(String.valueOf(feeUser_.getId()))
       .build();
     lineItemTypeAccount = (LineItemTypeAccount) lineItemTypeAccountDAO.put(lineItemTypeAccount);
   }
@@ -217,7 +218,7 @@ public class NanopayLineItemFeeDAOTest
       logger.info(this.getClass().getSimpleName(), "FeeApplied", feeApplied);
       test( feeApplied.getAmount() > 0L, "Fee was applied." );
       test( feeApplied.getAmount() == SERVICE_FEE, "Correct fee applied");
-      test( feeApplied.getDestinationAccount() == feeUser_.getId(), "Correct fee account");
+      test( foam.util.SafetyUtil.equals(feeApplied.getDestinationAccount(), String.valueOf(feeUser_.getId())), "Correct fee account");
     } else {
       //applied only to InvoiceTransaction, the test generates AlternaCOTransaction
       //test(false, "Fee not applied");

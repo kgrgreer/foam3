@@ -1,5 +1,11 @@
 p({
   "class": "foam.nanos.menu.Menu",
+  "id": "liquid",
+  "label": "Liquid"
+})
+
+p({
+  "class": "foam.nanos.menu.Menu",
   "id": "dashboard",
   "label": "Dashboard",
   "handler": {
@@ -7,7 +13,8 @@ p({
     "view": {
       "class": "net.nanopay.liquidity.ui.dashboard.Dashboard"
     }
-  }
+  },
+  "parent": "liquid"
 })
 
 p({
@@ -66,7 +73,8 @@ p({
       "targetName":"net.nanopay.account.AccountDAOSummaryView",
       "className":"foam.comics.v2.DAOSummaryView"
     }
-  ]
+  ],
+  "parent": "liquid"
 })
 
 p({
@@ -120,7 +128,8 @@ p({
             }
           ]
         }
-    }
+    },
+  "parent": "liquid"
 })
 
 p({
@@ -167,7 +176,8 @@ p({
         }
       },
     }
-  }
+  },
+  "parent": "liquid"
 })
 
 p({
@@ -203,7 +213,8 @@ p({
   "label": "Business Rules",
   "handler": {
     "class": "foam.nanos.menu.SubMenu"
-  }
+  },
+  "parent": "liquid"
 })
 
 p({
@@ -440,5 +451,6 @@ p({
     "view": {
       "class": "net.nanopay.tx.gs.GSFileUploadScreen"
     }
-  }
+  },
+  "parent": "liquid"
 })

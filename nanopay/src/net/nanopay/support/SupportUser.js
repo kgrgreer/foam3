@@ -35,6 +35,17 @@ foam.CLASS({
     'foam.nanos.auth.Phone'
   ],
 
+  tableColumns: [
+    'id',
+    'firstName',
+    'lastName',
+    'email',
+    'phoneNumber',
+    'status',
+    'compliance',
+    'group'
+  ],
+
   sections: [
     {
       name: 'userInformation'
@@ -108,12 +119,6 @@ foam.CLASS({
       gridColumns:6,
       section: 'userInformation',
       order: 110
-    }),
-    foam.nanos.auth.User.TWO_FACTOR_ENABLED.clone().copyFrom({
-      label: 'Two Factor Authentication Enabled',
-      gridColumns:6,
-      section: 'userInformation',
-      order: 120
     }),
     foam.nanos.auth.User.GROUP.clone().copyFrom({
       hidden: false,
@@ -204,39 +209,6 @@ foam.CLASS({
             browseTitle: `${this.toSummary()}'s Transactions`
           }
         });
-      }
-    },
-    {
-      name: 'resetLoginAttempts',
-      section: 'userInformation',
-      code: async function(X) {
-        var loginAttempts = await X.loginAttemptsDAO.find(this.id);
-        if ( loginAttempts == undefined || loginAttempts.loginAttempts == 0 ) {
-          X.notify(this.RESET_LOGIN_INFO, '', this.LogLevel.WARN, true);
-        } else {
-          loginAttempts.loginAttempts = 0;
-          X.loginAttemptsDAO.put(loginAttempts)
-            .then(result => {
-              X.notify(this.RESET_LOGIN_SUCCESS, '', this.LogLevel.INFO, true);
-            });
-        }
-      }
-    },
-    {
-      name: 'disableTwoFactor',
-      label: 'Disable TFA',
-      section: 'userInformation',
-      code: async function(X) {
-        var user = await X.userDAO.find(this.id);
-        if ( ! user.twoFactorEnabled ) {
-          X.notify(this.TWO_FACTOR_INFO, '', this.LogLevel.WARN, true);
-        } else {
-          user.twoFactorEnabled = false;
-          X.userDAO.put(user)
-            .then(() => {
-              X.notify(this.TWO_FACTOR_SUCCESS, '', this.LogLevel.INFO, true);
-            });
-        }
       }
     }
   ]

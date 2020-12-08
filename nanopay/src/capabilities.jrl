@@ -119,9 +119,6 @@ p({
       }
     ]
   },
-  "wizardlet": {
-    "class": "net.nanopay.crunch.wizardlet.RefreshWizardlet"
-  },
   "wizardletConfig": {
     "class": "foam.u2.wizard.StepWizardConfig",
     "allowSkipping": false
@@ -194,9 +191,6 @@ p({
         "country":"US"
       }
     ]
-  },
-  "wizardlet": {
-    "class": "net.nanopay.crunch.wizardlet.RefreshWizardlet"
   },
   "wizardletConfig": {
     "class": "foam.u2.wizard.StepWizardConfig",
@@ -278,9 +272,6 @@ p({
       "subjectFromUCJ":false
     }
   },
-  "wizardlet": {
-    "class": "net.nanopay.crunch.wizardlet.RefreshWizardlet"
-  },
   "wizardletConfig": {
     "class": "foam.u2.wizard.StepWizardConfig",
     "allowSkipping": false
@@ -355,7 +346,9 @@ p({
   "reviewRequired":true,
   "keywords":["featured"],
   "permissionsGranted":[
-    "business.invoice.pay"
+    "business.invoice.pay",
+    "capability.main.invoices.receivables",
+    "capability.main.invoices.payables"
   ],
   "permissionsIntercepted": [
     "business.invoice.pay"
@@ -391,7 +384,9 @@ p({
   "reviewRequired":true,
   "keywords":["featured"],
   "permissionsGranted":[
-    "business.invoice.pay"
+    "business.invoice.pay",
+    "capability.main.invoices.receivables",
+    "capability.main.invoices.payables"
   ],
   "permissionsIntercepted": [
     "business.invoice.pay"
@@ -424,7 +419,9 @@ p({
   "reviewRequired":true,
   "keywords":["featured"],
   "permissionsGranted":[
-    "business.invoice.pay"
+    "business.invoice.pay",
+    "capability.main.invoices.receivables",
+    "capability.main.invoices.payables"
   ],
   "permissionsIntercepted": [
     "business.invoice.pay"

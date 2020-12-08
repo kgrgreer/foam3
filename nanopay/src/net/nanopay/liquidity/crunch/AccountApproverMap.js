@@ -44,7 +44,7 @@ foam.CLASS({
     {
       name: 'addAccount',
       args: [
-        { name: 'accountId', class: 'Long' },
+        { name: 'accountId', class: 'String' },
         { name: 'data', javaType: 'net.nanopay.liquidity.crunch.CapabilityAccountData' }
       ],
       documentation: `
@@ -54,16 +54,16 @@ foam.CLASS({
         return;
       },
       javaCode: `
-        getAccounts().put(String.valueOf(accountId), data);
+        getAccounts().put(accountId, data);
       `
     },
     {
       name: 'impliesChildAccount',
       args: [
         { name: 'x', javaType: 'foam.core.X' },
-        { name: 'childId', class: 'Long' },
+        { name: 'childId', class: 'String' },
       ],
-      type: 'Long',
+      type: 'String',
       javaCode: `
         DAO accountDAO = (DAO) x.get("localAccountDAO");
         Account child = (Account) accountDAO.find(childId);
@@ -75,20 +75,20 @@ foam.CLASS({
             if ( data != null && data.getIsIncluded() && data.getIsCascading() ) {
               return child.getId();
             } 
-            return 0L;
+            return "";
           } 
-          Long parentId = child.getParent();
+          String parentId = child.getParent();
           child = (Account) accountDAO.find(parentId);
         }
 
-        return 0L;
+        return "";
         
       `
     },
     {
       name: 'removeAccount',
       args: [
-        { name: 'accountId', class: 'Long' },
+        { name: 'accountId', class: 'String' },
       ],
       documentation: `
       remove an account from the map, abiding the the following rules : 
@@ -103,8 +103,8 @@ foam.CLASS({
         }
       },
       javaCode: `
-        if ( getAccounts().containsKey(String.valueOf(accountId))) {
-          getAccounts().remove(String.valueOf(accountId));
+        if ( getAccounts().containsKey(accountId) ) {
+          getAccounts().remove(accountId);
         } else {
           throw new RuntimeException("Account provided is not an entry in the account map");
         }
@@ -114,7 +114,7 @@ foam.CLASS({
       name: 'hasAccount',
       args: [
         { name: 'x', javaType: 'foam.core.X' },
-        { name: 'childAccountId', class: 'Long' }
+        { name: 'childAccountId', class: 'String' }
       ],
       javaType: 'Boolean',
       code: function hasAccount(x, childAccountId) {
@@ -123,14 +123,14 @@ foam.CLASS({
       },
       javaCode: `
         Map<String, CapabilityAccountData> map = getAccounts();
-        return map != null && map.containsKey(String.valueOf(childAccountId));
+        return map != null && map.containsKey(childAccountId);
       `
     },
     {
       name: 'hasAccountByApproverLevel',
       args: [
         { name: 'x', javaType: 'foam.core.X' },
-        { name: 'childAccountId', class: 'Long' },
+        { name: 'childAccountId', class: 'String' },
         { name: 'level', javaType: 'Integer' }
       ],
       javaType: 'Boolean',
@@ -140,7 +140,7 @@ foam.CLASS({
       },
       javaCode: `
       Map<String, CapabilityAccountData> map = getAccounts();
-      return map != null && map.containsKey(String.valueOf(childAccountId)) && map.get(String.valueOf(childAccountId)).getApproverLevel().getApproverLevel() == level;
+      return map != null && map.containsKey(childAccountId) && map.get(childAccountId).getApproverLevel().getApproverLevel() == level;
       `
     }
   ]

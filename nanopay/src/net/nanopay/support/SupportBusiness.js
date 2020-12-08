@@ -26,6 +26,7 @@ foam.CLASS({
   imports: [
     'agentJunctionDAO',
     'supportAccountDAO',
+    'supportTransactionDAO',
     'supportUserDAO'
   ],
 
@@ -147,10 +148,10 @@ foam.CLASS({
           .where(this.EQ(net.nanopay.account.Account.OWNER, this.id))
           .select(this.MAP(net.nanopay.account.Account.ID))
           .then((sink) => sink.delegate.array);
-        var dao = X.summaryTransactionDAO.where(
+        var dao = X.supportTransactionDAO.where(
           this.OR(
-            this.IN(net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT, ids),
-            this.IN(net.nanopay.tx.model.Transaction.DESTINATION_ACCOUNT, ids)
+            this.IN(net.nanopay.support.SupportTransaction.SOURCE_ACCOUNT, ids),
+            this.IN(net.nanopay.support.SupportTransaction.DESTINATION_ACCOUNT, ids)
           )
         );
         X.stack.push({
@@ -178,7 +179,7 @@ foam.CLASS({
           .where(this.EQ(foam.nanos.auth.UserUserJunction.TARGET_ID, this.id))
           .select(this.MAP(foam.nanos.auth.UserUserJunction.SOURCE_ID))
           .then((sink) => sink.delegate.array);
-        var dao = X.userDAO.where(this.IN(foam.nanos.auth.User.ID, junctionSourceIds));
+        var dao = X.supportUserDAO.where(this.IN(net.nanopay.support.SupportUser.ID, junctionSourceIds));
         X.stack.push({
           class: 'foam.comics.v2.DAOBrowseControllerView',
           data: dao,

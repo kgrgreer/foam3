@@ -41,7 +41,8 @@ foam.CLASS({
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.INSTANCE_OF',
-    'static foam.mlang.MLang.OR'
+    'static foam.mlang.MLang.OR',
+    'foam.util.SafetyUtil'
   ],
 
   methods: [
@@ -80,7 +81,7 @@ foam.CLASS({
       ],
       javaCode: `
         List<String> currencies = new ArrayList<>();
-        if ( contact.getBusinessId() == 0 && contact.getBankAccount() != 0 ) {
+        if ( contact.getBusinessId() == 0 && ! SafetyUtil.isEmpty(contact.getBankAccount()) ) {
           BankAccount account = (BankAccount) contact.findBankAccount(x);
           currencies.add(account.getDenomination());
         }
