@@ -3171,6 +3171,10 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.iban.ValidationIBAN.L
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.iban.ValidationIBAN.INVALID_CHARACTER",target:"Caráter inválido na posição"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.iban.ValidationIBAN.INVALID_CHECKSUM",target:"Checksum inválido"})
 
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.StrategizedBankAccount.PLACEHOLDER",target:"Por favor selecione"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.StrategizedBankAccount.INVALID_BANK",target:"Banco inválido"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.StrategizedBankAccount.SECTION_ACCOUNT_INFORMATION_TITLE",target:"Criar conta bancária"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"Sole Proprietorship.name",target:"Propriedade individual"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Partnership.name",target:"Parceria"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Corporation.name",target:"Corporação"})

@@ -1039,3 +1039,14 @@ p({
     "data.import.googleSheets"
   ]
 })
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"24602528-34c1-11eb-adc1-0242ac120002",
+  "name":"Add Bank Acccount",
+  "of":"net.nanopay.bank.StrategizedBankAccount",
+  "enabled":true,
+  "permissionsGranted":[
+    "menu.read.capability.main.invoices.receivables"
+  ]
+})
