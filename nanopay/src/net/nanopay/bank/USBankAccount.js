@@ -158,10 +158,6 @@ foam.CLASS({
       label: 'ACH Routing Number',
       section: 'accountInformation',
       updateVisibility: 'RO',
-      view: {
-        class: 'foam.u2.tag.Input',
-        onKey: true
-      },
       gridColumns: 6,
       preSet: function(o, n) {
         if ( n === '' ) return n;
