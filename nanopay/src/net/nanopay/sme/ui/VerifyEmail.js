@@ -195,7 +195,8 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Verify your email' },
     { name: 'INSTRUCTIONS1', message: `We've sent a verification link to your email. Click on the link to get started!` },
-    { name: 'INSTRUCTIONS2', message: `If the email doesn’t arrive soon, check your spam folder or have us` }
+    { name: 'INSTRUCTIONS2', message: `If the email doesn’t arrive soon, check your spam folder or have us` },
+    { name: 'VERIFICATION_EMAIL', message: 'Verification email sent to' }
   ],
 
   methods: [
@@ -234,7 +235,7 @@ foam.CLASS({
           if ( ! result ) {
             throw new Error('Error generating reset token');
           }
-          self.notify('Verification email sent to ' + self.user.email, '', self.LogLevel.INFO, true);
+          self.notify(self.VERIFICATION_EMAIL + ' ' + self.user.email, '', self.LogLevel.INFO, true);
         }).catch(function(err) {
           self.notify(err.message, '', this.LogLevel.ERROR, true);
         });
