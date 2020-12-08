@@ -129,7 +129,13 @@ foam.CLASS({
     },
     {
       class: 'StringArray',
-      name: 'capabilityIds'
+      name: 'capabilityIds',
+      visibility: 'HIDDEN',
+    },
+    {
+      class: 'String',
+      name: 'daoKey',
+      visibility: 'HIDDEN',
     }
   ],
 
