@@ -117,7 +117,7 @@ foam.CLASS({
       border-bottom: 5px solid blue;
     }
     ^ .centerVertical {
-      padding-top: 3vh; 
+      padding-top: 3vh;
       max-width: 30vw;
       margin: 0 auto;
     }
@@ -146,7 +146,8 @@ foam.CLASS({
     },
     {
       name: 'NO_EMAIL_INSTRUCTIONS_2', message: '\u2022 Verify the email address above is correct'
-    }
+    },
+    { name: 'VERIFICATION_EMAIL', message: 'Verification email sent to' }
   ],
 
   methods: [
@@ -224,7 +225,7 @@ foam.CLASS({
             throw new Error('Error generating reset token');
           }
           self.ctrl.add(self.NotificationMessage.create({
-            message: 'Verification email sent to ' + self.user.email,
+            message: self.VERIFICATION_EMAIL+ ' ' + self.user.email,
             type: self.LogLevel.INFO
           }));
         }).catch(function(err) {

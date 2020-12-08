@@ -3178,3 +3178,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"Nonprofit/Charitable Organizatio
 p({class:"foam.i18n.Locale",locale:"pt",source:"Limited Liability Company.name",target:"Empresa de responsabilidade limitada"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Publicly Traded Corporation.name",target:"Corporação de capital aberto"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Trust.name",target:"Confiar em"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmail.VERIFICATION_EMAIL",target:"Email de verificação enviado para"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailView.VERIFICATION_EMAIL",target:"Email de verificação enviado para"})
