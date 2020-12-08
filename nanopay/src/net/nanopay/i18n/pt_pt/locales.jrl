@@ -1382,7 +1382,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.C
 //p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.FLAG_IMAGE.value",target:"images/flags/brazil.png pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.INSTITUTION_NUMBER.label",target:"número da instituição"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.BRANCH_ID.label",target:"id da filial"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.ACCOUNT_NUMBER.label",target:"NNúmeroº da conta"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.ACCOUNT_NUMBER.label",target:"Númeroº da conta"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.ACCOUNT_TYPE.label",target:"tipo de conta"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.ACCOUNT_TYPE.view.placeholder",target:"Por favor selecione"})
