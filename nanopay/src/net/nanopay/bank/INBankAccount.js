@@ -164,6 +164,11 @@ foam.CLASS({
       name: 'iban',
       required: false,
       visibility: 'HIDDEN'
+    },
+    {
+      name: 'swiftCode',
+      required: false,
+      visibility: 'HIDDEN'
     }
   ],
 

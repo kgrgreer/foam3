@@ -19,7 +19,7 @@ foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'SEBankAccount',
   label: 'Sweden Bank',
-  extends: 'net.nanopay.bank.BankAccount',
+  extends: 'net.nanopay.bank.EUBankAccount',
 
   documentation: 'Sweden bank account information.',
 
@@ -42,13 +42,26 @@ foam.CLASS({
       value: 'EUR',
     },
     {
+      name: 'institutionNumber',
+      updateVisibility: 'RO',
+      validateObj: function(institutionNumber, iban) {
+        var regex = /^[A-z0-9a-z]{3}$/;
+
+        if ( iban )
+          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
+
+        if ( ! iban || (iban && ibanMsg != 'passed') ) {
+          if ( institutionNumber === '' ) {
+            return this.INSTITUTION_NUMBER_REQUIRED;
+          } else if ( ! regex.test(institutionNumber) ) {
+            return this.INSTITUTION_NUMBER_INVALID;
+          }
+        }
+      }
+    },
+    {
       name: 'accountNumber',
       updateVisibility: 'RO',
-      view: {
-        class: 'foam.u2.tag.Input',
-        placeholder: '12345678901',
-        onKey: true
-      },
       preSet: function(o, n) {
         return /^\d*$/.test(n) ? n : o;
       },
@@ -59,31 +72,27 @@ foam.CLASS({
           .add(displayAccountNumber);
         this.tooltip = displayAccountNumber;
       },
-      validateObj: function(accountNumber) {
+      validateObj: function(accountNumber, iban) {
         var accNumberRegex = /^[0-9]{11,16}$/;
 
-        if ( accountNumber === '' ) {
-          return this.ACCOUNT_NUMBER_REQUIRED;
-        } else if ( ! accNumberRegex.test(accountNumber) ) {
-          return this.ACCOUNT_NUMBER_INVALID;
-        }
-      }
-    },
-    {
-      name: 'institutionNumber',
-      updateVisibility: 'RO',
-      validateObj: function(institutionNumber) {
-        var regex = /^[A-z0-9a-z]{3}$/;
+        if ( iban )
+          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
-        if ( institutionNumber === '' ) {
-          return this.INSTITUTION_NUMBER_REQUIRED;
-        } else if ( ! regex.test(institutionNumber) ) {
-          return this.INSTITUTION_NUMBER_INVALID;
+        if ( ! iban || (iban && ibanMsg != 'passed') ) {
+          if ( accountNumber === '' ) {
+            return this.ACCOUNT_NUMBER_REQUIRED;
+          } else if ( ! accNumberRegex.test(accountNumber) ) {
+            return this.ACCOUNT_NUMBER_INVALID;
+          }
         }
       }
     },
     {
       name: 'desc',
+      visibility: 'HIDDEN'
+    },
+    {
+      name: 'branchId',
       visibility: 'HIDDEN'
     }
   ]

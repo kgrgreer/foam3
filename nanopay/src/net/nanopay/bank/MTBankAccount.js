@@ -44,27 +44,18 @@ foam.CLASS({
     {
       name: 'institutionNumber',
       updateVisibility: 'RO',
-      validateObj: function(institutionNumber) {
+      validateObj: function(institutionNumber, iban) {
         var regex = /^[A-z0-9a-z]{4}$/;
 
-        if ( institutionNumber === '' ) {
-          return this.INSTITUTION_NUMBER_REQUIRED;
-        } else if ( ! regex.test(institutionNumber) ) {
-          return this.INSTITUTION_NUMBER_INVALID;
-        }
-      }
-    },
-    {
-      name: 'branchId',
-      section: 'accountInformation',
-      updateVisibility: 'RO',
-      validateObj: function(branchId) {
-        var regex = /^[0-9]{5}$/;
+        if ( iban )
+          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
-        if ( branchId === '' ) {
-          return this.BRANCH_ID_REQUIRED;
-        } else if ( ! regex.test(branchId) ) {
-          return this.BRANCH_ID_INVALID;
+        if ( ! iban || (iban && ibanMsg != 'passed') ) {
+          if ( institutionNumber === '' ) {
+            return this.INSTITUTION_NUMBER_REQUIRED;
+          } else if ( ! regex.test(institutionNumber) ) {
+            return this.INSTITUTION_NUMBER_INVALID;
+          }
         }
       }
     },
@@ -72,33 +63,37 @@ foam.CLASS({
       name: 'accountNumber',
       section: 'accountInformation',
       updateVisibility: 'RO',
-      view: {
-         class: 'foam.u2.tag.Input',
-         placeholder: '123456789012345678',
-         onKey: true
-       },
-       preSet: function(o, n) {
-         return /^\d*$/.test(n) ? n : o;
-       },
-       tableCellFormatter: function(str) {
-         if ( ! str ) return;
-         var displayAccountNumber = '***' + str.substring(str.length - 4, str.length)
-         this.start()
-           .add(displayAccountNumber);
-         this.tooltip = displayAccountNumber;
-       },
-      validateObj: function(accountNumber) {
+      preSet: function(o, n) {
+        return /^\d*$/.test(n) ? n : o;
+      },
+      tableCellFormatter: function(str) {
+        if ( ! str ) return;
+        var displayAccountNumber = '***' + str.substring(str.length - 4, str.length)
+        this.start()
+          .add(displayAccountNumber);
+        this.tooltip = displayAccountNumber;
+      },
+      validateObj: function(accountNumber, iban) {
         var accNumberRegex = /^[0-9]{18}$/;
 
-        if ( accountNumber === '' ) {
-          return this.ACCOUNT_NUMBER_REQUIRED;
-        } else if ( ! accNumberRegex.test(accountNumber) ) {
-          return this.ACCOUNT_NUMBER_INVALID;
+        if ( iban )
+          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
+
+        if ( ! iban || (iban && ibanMsg != 'passed') ) {
+          if ( accountNumber === '' ) {
+            return this.ACCOUNT_NUMBER_REQUIRED;
+          } else if ( ! accNumberRegex.test(accountNumber) ) {
+            return this.ACCOUNT_NUMBER_INVALID;
+          }
         }
       }
     },
     {
       name: 'desc',
+      visibility: 'HIDDEN'
+    },
+    {
+      name: 'branchId',
       visibility: 'HIDDEN'
     }
   ]

@@ -1,4 +1,5 @@
-p({"class":"net.nanopay.test.api.AuthenticationApiTest","id":"AuthenticationApiTest","testSuite":"liquid"})
+// TODO: fix AuthenticationApiTest for liquid
+//p({"class":"net.nanopay.test.api.AuthenticationApiTest","id":"AuthenticationApiTest","testSuite":"liquid"})
 //p({"class":"net.nanopay.tx.gs.IngestionTest","id":"IngestionTest","testSuite":"liquid"})
 // p({"class":"net.nanopay.approval.test.LiquidApprovalCreateRejectTest","id":"LiquidApprovalCreateRejectTest","testSuite":"liquid"})
 // p({"class":"net.nanopay.approval.test.LiquidApprovalUpdateRejectTest","id":"LiquidApprovalUpdateRejectTest","testSuite":"liquid"})

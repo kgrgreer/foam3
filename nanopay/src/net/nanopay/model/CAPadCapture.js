@@ -43,6 +43,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'branchId',
+      label: 'Transit',
       documentation: 'Transit/Branch associated with PAD capture.',
       visibility: 'DISABLED',
       gridColumns: 4,
@@ -57,9 +58,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'institutionNumber',
+      label: 'Institution',
       documentation: 'Institution associated with PAD capture.',
       visibility: 'DISABLED',
-      gridColumns: 2,
+      gridColumns: 3,
       validateObj: function(institutionNumber) {
         var instNumRegex = /^[0-9]{3}$/;
 
@@ -71,9 +73,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'accountNumber',
+      label: 'Account',
       documentation: 'Account associated with PAD capture.',
       visibility: 'DISABLED',
-      gridColumns: 6,
+      gridColumns: 5,
       tableCellFormatter: function(str) {
         this.start()
           .add('***' + str.substring(str.length - 4, str.length));
@@ -87,6 +90,7 @@ foam.CLASS({
       }
     },
     {
+      class: 'StringArray',
       name: 'capableRequirements',
       factory: () => {
         return [

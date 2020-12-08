@@ -38,6 +38,7 @@ foam.CLASS({
 
   tableColumns: [
     'id',
+    'owner',
     'summary',
     'name'
   ],
