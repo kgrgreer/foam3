@@ -20,6 +20,10 @@ foam.CLASS({
   name: 'BankAccountWizard',
   extends: 'foam.u2.detail.WizardSectionsView',
 
+  imports: [
+    'stack'
+  ],
+
   css: `
     ^ .foam-u2-detail-SectionedDetailView .inner-card {
       padding: 0px;
@@ -103,6 +107,13 @@ foam.CLASS({
       code: async function(X) {
         await X.data.data.save(false);
         X.closeDialog();
+
+        // redirect to bank account lists view if you added a bank account
+        // on BankPickCurrencyView
+        const curView = this.stack.stack_[this.stack.pos]; // top view on the stack
+        if ( curView[0].class === 'net.nanopay.bank.ui.BankPickCurrencyView' ) {
+          this.stack.back();
+        }
       }
     }
   ]
