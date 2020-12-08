@@ -3186,3 +3186,8 @@ p({class:"foam.i18n.Locale",locale:"pt","source":"0B2E7305-B898-43F2-9C1B-63FB2C
 p({class:"foam.i18n.Locale",locale:"pt","source":"0B2E7305-B898-43F2-9C1B-63FB2CE38B2D.description","target":"Habilitar pagamentos internacionais no Brasil"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"0B2E7305-B898-43F2-9C1B-63FB2CE38B2D.requirementViewTitle","target":"Prepare seus documentos comerciais. Você pode salvar seu progresso e voltar mais tarde."})
 
+// Brazil Business Info Data
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.BrazilBusinessInfoData.CNPJ.label",target:"Cadastro Nacional da Pessoa Jurídica (CNPJ)"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.BrazilBusinessInfoData.NIRE.label",target:"Número de Identificação do Registro de Empresas (NIRE)"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.BrazilBusinessInfoData.IE.label",target:"Inscrição Estadual (IE)"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.BrazilBusinessInfoData.IM.label",target:"Inscrição Municipal (IM)"})
