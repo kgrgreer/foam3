@@ -124,11 +124,11 @@ foam.CLASS({
       var sectionOne = this.Section.create({
         title: this.SECTION_ONE_TITLE,
         properties: [ 
-          net.nanopay.contacts.Contact.ORGANIZATION,
-          net.nanopay.contacts.Contact.EMAIL,
+          net.nanopay.contacts.Contact.ORGANIZATION.clone().copyFrom({ gridColumns: 12 }),
+          net.nanopay.contacts.Contact.EMAIL.clone().copyFrom({ gridColumns: 12 }),
           net.nanopay.contacts.Contact.FIRST_NAME,
           net.nanopay.contacts.Contact.LAST_NAME,
-          net.nanopay.contacts.Contact.CONFIRM,
+          net.nanopay.contacts.Contact.CONFIRM.clone().copyFrom({ gridColumns: 12 }),
           net.nanopay.contacts.Contact.AVAILABLE_COUNTRIES
         ],
         fromClass: 'net.nanopay.contacts.Contact'
