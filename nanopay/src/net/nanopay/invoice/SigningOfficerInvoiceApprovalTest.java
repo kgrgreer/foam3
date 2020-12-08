@@ -394,6 +394,7 @@ myBusinessBankAccount.setInstitution(1);
 myBusinessBankAccount.setBranchId("54321");
 myBusinessBankAccount.setOwner(myBusiness.getId());
 myBusinessBankAccount.setStatus(BankAccountStatus.VERIFIED);
+myBusinessBankAccount.setSpid("nanopay");
 myBusinessBankAccount = (CABankAccount) myBusiness.getAccounts(x).put_(x, myBusinessBankAccount);
 
 accountDAO.where(foam.mlang.MLang.EQ(Account.NAME, "Approval Tests externalBusiness test account")).removeAll();
@@ -405,6 +406,7 @@ externalBusinessBankAccount.setInstitution(1);
 externalBusinessBankAccount.setOwner(externalBusiness.getId());
 externalBusinessBankAccount.setBranchId("12345");
 externalBusinessBankAccount.setStatus(BankAccountStatus.VERIFIED);
+externalBusinessBankAccount.setSpid("nanopay");
 
 // previously, there where no permissions in place to prevent unauthorized groups from setting bank account statuses
 // after adding bank account status permissions, this test would not work
@@ -426,6 +428,7 @@ invoice.setPayerId(myBusiness.getId());
 invoice.setPayeeId(externalBusiness.getId());
 invoice.setDestinationCurrency("CAD");
 invoice.setAccount(myBusinessBankAccount.getId());
+invoice.setSpid("nanopay");
 invoice = (Invoice) invoiceDAO.inX(myEmployeeContext).put(invoice);
 Boolean invoiceStatusIsCorrect = invoice.getStatus() == InvoiceStatus.UNPAID;
 Boolean paymentStatusIsCorrect = invoice.getPaymentMethod() == PaymentStatus.NONE;
@@ -445,6 +448,7 @@ transaction.setPayerId(invoice.getPayerId());
 transaction.setPayeeId(invoice.getPayeeId());
 transaction.setAmount(invoice.getAmount());
 transaction.setInvoiceId(invoice.getId());
+transaction.setSpid("nanopay");
 Boolean threw = false;
 String message = "";
 try {
@@ -472,6 +476,7 @@ invoice.setPayerId(myBusiness.getId());
 invoice.setPayeeId(externalBusiness.getId());
 invoice.setDestinationCurrency("CAD");
 invoice.setAccount(myBusinessBankAccount.getId());
+invoice.setSpid("nanopay");
 invoice = (Invoice) invoiceDAO.inX(myApproverContext).put(invoice);
 test(invoice.getStatus() == InvoiceStatus.UNPAID && invoice.getPaymentMethod() == PaymentStatus.NONE, "When an approver creates an invoice, the invoice status is UNPAID and the payment status is NONE.");
 
@@ -483,6 +488,7 @@ transaction.setPayerId(invoice.getPayerId());
 transaction.setPayeeId(invoice.getPayeeId());
 transaction.setAmount(invoice.getAmount());
 transaction.setInvoiceId(invoice.getId());
+transaction.setSpid("nanopay");
 threw = false;
 message = "";
 try {

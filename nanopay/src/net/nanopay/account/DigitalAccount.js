@@ -143,6 +143,7 @@ foam.CLASS({
               account.setIsDefault(true);
               account.setOwner(user.getId()); // required until user.getAccounts()
               account.setLifecycleState(LifecycleState.ACTIVE);
+              account.setSpid(user.getSpid());
               account = (DigitalAccount) accountDAO.put(account);
             }
           }
