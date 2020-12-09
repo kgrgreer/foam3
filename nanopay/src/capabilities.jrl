@@ -350,7 +350,11 @@ p({
     "menu.read.capability.main.invoices.receivables",
     "menu.read.capability.main.invoices.payables",
     "paymentprovidercorridor.read.bmo",
-    "paymentprovidercorridor.read.rbc"
+    "paymentprovidercorridor.read.rbc",
+    "paymentprovidercorridor.source.read.bmo",
+    "paymentprovidercorridor.source.read.rbc",
+    "paymentprovidercorridor.target.read.bmo",
+    "paymentprovidercorridor.target.read.rbc"
   ],
   "permissionsIntercepted": [
     "business.invoice.pay"
@@ -391,10 +395,21 @@ p({
     "menu.read.capability.main.invoices.payables",
     "paymentprovidercorridor.read.bmo",
     "paymentprovidercorridor.read.rbc",
+    "paymentprovidercorridor.source.read.bmo",
+    "paymentprovidercorridor.source.read.rbc",
+    "paymentprovidercorridor.target.read.bmo",
+    "paymentprovidercorridor.target.read.rbc"
     "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
+    "paymentprovidercorridor.source.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
+    "paymentprovidercorridor.target.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
     "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
+    "paymentprovidercorridor.source.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
+    "paymentprovidercorridor.target.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
     "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15f7afexus-us",
-    "paymentprovidercorridor.read.kotak"
+    "paymentprovidercorridor.source.read.554af38a-8125-87c8-dfdf-eeb15f7afexus-us",
+    "paymentprovidercorridor.target.read.554af38a-8125-87c8-dfdf-eeb15f7afexus-us",
+    "paymentprovidercorridor.read.kotak",
+    "paymentprovidercorridor.target.read.kotak"
   ],
   "permissionsIntercepted": [
     "business.invoice.pay"
@@ -431,9 +446,16 @@ p({
     "menu.read.capability.main.invoices.receivables",
     "menu.read.capability.main.invoices.payables",
     "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
+    "paymentprovidercorridor.source.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
+    "paymentprovidercorridor.target.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
     "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
+    "paymentprovidercorridor.source.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
+    "paymentprovidercorridor.target.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
     "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15f7afexus-us",
-    "paymentprovidercorridor.read.kotak"
+    "paymentprovidercorridor.source.read.554af38a-8125-87c8-dfdf-eeb15f7afexus-us",
+    "paymentprovidercorridor.target.read.554af38a-8125-87c8-dfdf-eeb15f7afexus-us",
+    "paymentprovidercorridor.read.kotak",
+    "paymentprovidercorridor.target.read.kotak"
   ],
   "permissionsIntercepted": [
     "business.invoice.pay"
