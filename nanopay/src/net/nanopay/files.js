@@ -156,6 +156,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/ESBankAccount' },
   { name: 'net/nanopay/bank/CNBankAccount' },
   { name: 'net/nanopay/bank/SEBankAccount' },
+  { name: 'net/nanopay/bank/StrategizedBankAccount' },
   { name: 'net/nanopay/bank/BankAccountStatus' },
   { name: 'net/nanopay/bank/BankAccountController', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/BankPickCurrencyView', flags: ['web'] },
@@ -283,6 +284,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/ruler/AccountDeletedNotificationRule' },
   { name: 'net/nanopay/bank/ruler/CorridorAuthorizationRule' },
   { name: 'net/nanopay/bank/ruler/VerifyBankRule' },
+  { name: 'net/nanopay/bank/ruler/CapabilityAddBankAccountRule' },
   { name: 'net/nanopay/bank/ruler/ExternalGrantBRBankAccountCapabilityRule' },
 
   // fx

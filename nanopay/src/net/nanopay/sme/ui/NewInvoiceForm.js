@@ -688,7 +688,7 @@ foam.CLASS({
   listeners: [
     async function onContactIdChange() {
       this.contact = await this.subject.user.contacts.find(this.invoice.contactId);
-      if ( this.contact && ( this.contact.bankAccount > 0 || this.contact.businessId > 0 ) ) {
+      if ( this.contact && ( this.contact.bankAccount || this.contact.businessId > 0 ) ) {
         if ( this.type == 'payable' )
           await this.setDefaultCurrency();
 
@@ -742,7 +742,7 @@ foam.CLASS({
       }
     },
     async function setChosenBankAccount() {
-      var isPayable = this.type === 'payable' ? true : false ;
+      var isPayable = this.type === 'payable';
 
       if ( isPayable ) {
         this.chosenBankAccount = await this.subject.user.accounts.find(
