@@ -50,21 +50,7 @@ foam.CLASS({
   messages: [
     { name: 'PLACE_HOLDER', message: 'Please select...' },
     { name: 'BUSINESS_TYPE_ERROR', message: ' Business type required' },
-    { name: 'NATURE_OF_BUSINESS_ERROR', message: 'Business sector required' },
-    // { name: 'SOURCE_OF_FUNDS_ERROR', message: 'Source of funds required' },
-    // { name: 'OPERATING_NAME_ERROR', message: 'Operating name required' },
-    // { name: 'YES', message: 'Yes' },
-    // { name: 'NO', message: 'No' },
-    // { name: 'OTHER_LABEL', message: 'Other' },
-    // { name: 'OPERATING_NAME_LABEL', message: 'Enter your operating name' },
-    // { name: 'OPTION_ONE', message: 'Purchase of goods produced' },
-    // { name: 'OPTION_TWO', message: 'Completion of service contracts' },
-    // { name: 'OPTION_THREE', message: 'Investment Income' },
-    // { name: 'OPTION_FOUR', message: 'Brokerage Fees' },
-    // { name: 'OPTION_FIVE', message: 'Consulting Fees' },
-    // { name: 'OPTION_SIX', message: 'Sale of investments' },
-    // { name: 'OPTION_SEVEN', message: 'Inheritance' },
-    // { name: 'OPTION_EIGHT', message: 'Grants, loans, and other sources of financing' }
+    { name: 'NATURE_OF_BUSINESS_ERROR', message: 'Business sector required' }
   ],
 
   properties: [
@@ -119,85 +105,7 @@ foam.CLASS({
           errorMessage: 'NATURE_OF_BUSINESS_ERROR'
         }
       ]
-    },
-    // net.nanopay.model.Business.SOURCE_OF_FUNDS.clone().copyFrom({
-    //   section: 'businessDetailsSection',
-    //   label: 'Source of funds',
-    //   view: function(_, X) {
-    //     return {
-    //       class: 'foam.u2.view.ChoiceWithOtherView',
-    //       otherKey: X.data.OTHER_LABEL,
-    //       choiceView: {
-    //         class: 'foam.u2.view.ChoiceView',
-    //         placeholder: X.data.PLACE_HOLDER,
-    //         choices: [
-    //           X.data.OPTION_ONE,
-    //           X.data.OPTION_TWO,
-    //           X.data.OPTION_THREE,
-    //           X.data.OPTION_FOUR,
-    //           X.data.OPTION_FIVE,
-    //           X.data.OPTION_SIX,
-    //           X.data.OPTION_SEVEN,
-    //           X.data.OPTION_EIGHT,
-    //           X.data.OTHER_LABEL
-    //         ]
-    //       }
-    //     };
-    //   },
-    //   validationPredicates: [
-    //     {
-    //       args: ['sourceOfFunds'],
-    //       predicateFactory: function(e) {
-    //         return e.GT(
-    //           foam.mlang.StringLength.create({
-    //             arg1: net.nanopay.crunch.onboardingModels.BusinessTypeAndSector.SOURCE_OF_FUNDS
-    //           }), 0);
-    //       },
-    //       errorMessage: 'SOURCE_OF_FUNDS_ERROR'
-    //     }
-    //   ],
-    //   gridColumns: 12
-    // }),
-    // {
-    //   section: 'businessDetailsSection',
-    //   class: 'Boolean',
-    //   name: 'operatingUnderDifferentName',
-    //   label: 'Is your business operating under a different name?',
-    //   documentation: 'Whether the business operates under a different name.',
-    //   view: function(_, X) {
-    //     return {
-    //       class: 'foam.u2.view.RadioView',
-    //       choices: [
-    //         [true, X.data.YES],
-    //         [false, X.data.NO]
-    //       ],
-    //       isHorizontal: true
-    //     };
-    //   }
-    // },
-  //   net.nanopay.model.Business.OPERATING_BUSINESS_NAME.clone().copyFrom({
-  //     section: 'businessDetailsSection',
-  //     label: 'Operating name',
-  //     view: {
-  //       class: 'foam.u2.TextField',
-  //       placeholder: this.OPERATING_NAME_LABEL
-  //     },
-  //     visibility: function(operatingUnderDifferentName) {
-  //       return operatingUnderDifferentName ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
-  //     },
-  //     validationPredicates: [
-  //       {
-  //         args: ['operatingUnderDifferentName', 'operatingBusinessName'],
-  //         predicateFactory: function(e) {
-  //           return e.OR(
-  //             e.EQ(net.nanopay.crunch.onboardingModels.BusinessTypeAndSector.OPERATING_UNDER_DIFFERENT_NAME, false),
-  //             e.NEQ(net.nanopay.crunch.onboardingModels.BusinessTypeAndSector.OPERATING_BUSINESS_NAME, '')
-  //           );
-  //         },
-  //         errorMessage: 'OPERATING_NAME_ERROR'
-  //       }
-  //     ]
-  //   })
+    }
   ],
 
   methods: [
