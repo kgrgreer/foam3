@@ -1717,6 +1717,7 @@ FOAM_FILES([
   // crunch document
   { name: 'net/nanopay/crunch/document/Document' },
   { name: 'net/nanopay/crunch/document/ExpirableDocument' },
+  { name: 'net/nanopay/crunch/document/DateOfIssue' },
 
   // Capable object testing
   { name: 'net/nanopay/crunch/test/TestCapable' },

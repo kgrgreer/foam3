@@ -134,7 +134,7 @@ public class BrazilVerificationService
 
     String birthDateString = "";
     try {
-      SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
+      SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
       sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
       birthDateString = sdf.format(birthDate);
     } catch(Throwable t) {

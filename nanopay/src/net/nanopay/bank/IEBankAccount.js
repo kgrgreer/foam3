@@ -25,11 +25,6 @@ foam.CLASS({
 
   constants: [
     {
-      name: 'SORT_CODE_PATTERN',
-      type: 'Regex',
-      factory: function() { return /^[0-9]{6}$/; }
-    },
-    {
       name: 'ACCOUNT_NUMBER_PATTERN',
       type: 'Regex',
       factory: function() { return /^[0-9]{8}$/; }
@@ -62,10 +57,6 @@ foam.CLASS({
     {
       name: 'accountNumber',
       updateVisibility: 'RO',
-      view: {
-        class: 'foam.u2.tag.Input',
-        onKey: true
-      },
       preSet: function(o, n) {
         return /^\d*$/.test(n) ? n : o;
       },

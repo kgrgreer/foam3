@@ -181,7 +181,7 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
     request.setCnpjCpf(cnpj);
     request.setIe(region.getName());
     request.setIm(user.getAddress().getCity());
-    TrevisoCredientials credentials = (TrevisoCredientials) x.get("TrevisoCredientials");
+    TrevisoCredientials credentials = (TrevisoCredientials) x.get("trevisoCredientials");
     ResponsibleArea area = new ResponsibleArea();
     if ( credentials != null ) {
       area.setExtCode(credentials.getFepWebCode());
