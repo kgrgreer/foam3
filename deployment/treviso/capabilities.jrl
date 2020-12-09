@@ -40,7 +40,6 @@ p({
   "enabled":true,
   "associatedEntity":1
 })
-// TODO - change this
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"8ad3c898-db32-11ea-87d0-0242ac130003",
