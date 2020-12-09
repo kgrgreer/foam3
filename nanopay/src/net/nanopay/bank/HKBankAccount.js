@@ -42,13 +42,23 @@ foam.CLASS({
       value: 'HKD',
     },
     {
+      name: 'institutionNumber',
+      updateVisibility: 'RO',
+      section: 'accountInformation',
+      validateObj: function(institutionNumber) {
+        var regex = /^[0-9]{3}$/;
+
+        if ( institutionNumber === '' ) {
+          return this.INSTITUTION_NUMBER_REQUIRED;
+        } else if ( ! regex.test(institutionNumber) ) {
+          return this.INSTITUTION_NUMBER_INVALID;
+        }
+      }
+    },
+    {
       name: 'accountNumber',
       updateVisibility: 'RO',
       section: 'accountInformation',
-      view: {
-        class: 'foam.u2.tag.Input',
-        onKey: true
-      },
       preSet: function(o, n) {
         return /^\d*$/.test(n) ? n : o;
       },
@@ -66,20 +76,6 @@ foam.CLASS({
           return this.ACCOUNT_NUMBER_REQUIRED;
         } else if ( ! accNumberRegex.test(accountNumber) ) {
           return this.ACCOUNT_NUMBER_INVALID;
-        }
-      }
-    },
-    {
-      name: 'institutionNumber',
-      updateVisibility: 'RO',
-      section: 'accountInformation',
-      validateObj: function(institutionNumber) {
-        var regex = /^[0-9]{3}$/;
-
-        if ( institutionNumber === '' ) {
-          return this.INSTITUTION_NUMBER_REQUIRED;
-        } else if ( ! regex.test(institutionNumber) ) {
-          return this.INSTITUTION_NUMBER_INVALID;
         }
       }
     },

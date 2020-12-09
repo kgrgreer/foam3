@@ -20,7 +20,7 @@ foam.CLASS({
   name: 'AddBankAccountAction',
   extends: 'foam.core.Action',
 
-  documentation: '',
+  documentation: 'An action that displays the view to add a bank account.',
 
   requires: [
     'net.nanopay.sme.ui.SMEModal'
@@ -46,17 +46,16 @@ foam.CLASS({
       class: 'Function',
       name: 'code',
       value: async function(X) {
-        let permission = await this.auth.check(null, 'multi-currency.read');
+        let permission = await X.auth.check(null, 'multi-currency.read');
         if ( permission ) {
           X.controllerView.stack.push({
             class: 'net.nanopay.bank.ui.BankPickCurrencyView'
-          }, this);
+          }, X);
         } else {
-          this.ctrl.add(this.SMEModal.create({
-            onClose : function() { this.__subContext__.data.clearProperty('bankAccount'); }
-          }).addClass('bank-account-popup').tag({
+          X.ctrl.add(net.nanopay.sme.ui.SMEModal.create({}, X)
+          .addClass('bank-account-popup').tag({
             class: 'net.nanopay.account.ui.BankAccountWizard',
-            data: (foam.lookup(`net.nanopay.bank.${ this.subject.user.address.countryId }BankAccount`)).create({}, this),
+            data: (foam.lookup(`net.nanopay.bank.${ X.subject.user.address.countryId }BankAccount`)).create({}, X),
             useSections: ['accountInformation', 'pad']
           }));
         }

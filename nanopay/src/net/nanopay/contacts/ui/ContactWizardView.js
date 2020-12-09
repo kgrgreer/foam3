@@ -124,11 +124,11 @@ foam.CLASS({
       var sectionOne = this.Section.create({
         title: this.SECTION_ONE_TITLE,
         properties: [ 
-          net.nanopay.contacts.Contact.ORGANIZATION,
-          net.nanopay.contacts.Contact.EMAIL,
+          net.nanopay.contacts.Contact.ORGANIZATION.clone().copyFrom({ gridColumns: 12 }),
+          net.nanopay.contacts.Contact.EMAIL.clone().copyFrom({ gridColumns: 12 }),
           net.nanopay.contacts.Contact.FIRST_NAME,
           net.nanopay.contacts.Contact.LAST_NAME,
-          net.nanopay.contacts.Contact.CONFIRM,
+          net.nanopay.contacts.Contact.CONFIRM.clone().copyFrom({ gridColumns: 12 }),
           net.nanopay.contacts.Contact.AVAILABLE_COUNTRIES
         ],
         fromClass: 'net.nanopay.contacts.Contact'
@@ -209,7 +209,7 @@ foam.CLASS({
     async function addContact() {
       this.isConnecting = true;
       try {
-        let canInvite = this.data.createBankAccount.country != 'IN';
+        let canInvite = this.data.createBankAccount && this.data.createBankAccount.country != 'IN';
 
         if ( this.data.shouldInvite && canInvite ) {
           // check if it is already joined
@@ -332,7 +332,6 @@ foam.CLASS({
         return currentIndex === 1 && data$bankAccount === 0;
       },
       code: async function(X) {
-        this.data.createBankAccount = net.nanopay.bank.BankAccount.create({ isDefault: true }, X);
         if ( ! await this.addContact() ) return;
         X.closeDialog();
       }

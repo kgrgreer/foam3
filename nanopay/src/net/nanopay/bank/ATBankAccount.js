@@ -42,12 +42,26 @@ foam.CLASS({
       value: 'EUR',
     },
     {
+      name: 'institutionNumber',
+      updateVisibility: 'RO',
+      validateObj: function(institutionNumber, iban) {
+        var regex = /^[A-z0-9a-z]{5}$/;
+
+        if ( iban )
+          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
+
+        if ( iban === '' || (iban && ibanMsg != 'passed') ) {
+          if ( institutionNumber === '' ) {
+            return this.INSTITUTION_NUMBER_REQUIRED;
+          } else if ( ! regex.test(institutionNumber) ) {
+            return this.INSTITUTION_NUMBER_INVALID;
+          }
+        }
+      }
+    },
+    {
       name: 'accountNumber',
       updateVisibility: 'RO',
-      view: {
-        class: 'foam.u2.tag.Input',
-        onKey: true
-      },
       preSet: function(o, n) {
         return /^\d*$/.test(n) ? n : o;
       },
@@ -69,24 +83,6 @@ foam.CLASS({
             return this.ACCOUNT_NUMBER_REQUIRED;
           } else if ( ! accNumberRegex.test(accountNumber) ) {
             return this.ACCOUNT_NUMBER_INVALID;
-          }
-        }
-      }
-    },
-    {
-      name: 'institutionNumber',
-      updateVisibility: 'RO',
-      validateObj: function(institutionNumber, iban) {
-        var regex = /^[A-z0-9a-z]{5}$/;
-
-        if ( iban )
-          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
-
-        if ( iban === '' || (iban && ibanMsg != 'passed') ) {
-          if ( institutionNumber === '' ) {
-            return this.INSTITUTION_NUMBER_REQUIRED;
-          } else if ( ! regex.test(institutionNumber) ) {
-            return this.INSTITUTION_NUMBER_INVALID;
           }
         }
       }

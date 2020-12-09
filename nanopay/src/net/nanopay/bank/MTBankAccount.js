@@ -63,20 +63,16 @@ foam.CLASS({
       name: 'accountNumber',
       section: 'accountInformation',
       updateVisibility: 'RO',
-      view: {
-         class: 'foam.u2.tag.Input',
-         onKey: true
-       },
-       preSet: function(o, n) {
-         return /^\d*$/.test(n) ? n : o;
-       },
-       tableCellFormatter: function(str) {
-         if ( ! str ) return;
-         var displayAccountNumber = '***' + str.substring(str.length - 4, str.length)
-         this.start()
-           .add(displayAccountNumber);
-         this.tooltip = displayAccountNumber;
-       },
+      preSet: function(o, n) {
+        return /^\d*$/.test(n) ? n : o;
+      },
+      tableCellFormatter: function(str) {
+        if ( ! str ) return;
+        var displayAccountNumber = '***' + str.substring(str.length - 4, str.length)
+        this.start()
+          .add(displayAccountNumber);
+        this.tooltip = displayAccountNumber;
+      },
       validateObj: function(accountNumber, iban) {
         var accNumberRegex = /^[0-9]{18}$/;
 

@@ -16,7 +16,7 @@ p({
     "createEnabled":true,
     "editEnabled":false,
     "summaryView":{ "class":"net.nanopay.contacts.ui.ContactTableView" },
-    "createLabel":"Add a Contact",
+    "createLabel":"Add contact",
     "createControllerView":{
       "class":"net.nanopay.sme.ui.MenuRedirectSMEModalView",
       "menu":"capability.main.contacts",
@@ -24,7 +24,7 @@ p({
         "class":"foam.nanos.menu.MenuToolBar",
         "classification":"capability.menu",
         "parent":"sme",
-        "title":"Add a Contact"
+        "title":"Add contact"
       }
     }
   },
@@ -48,6 +48,7 @@ p({
       "editPredicate":{"class":"foam.mlang.predicate.False"},
       "searchMode": 2,
       "primaryAction": {"class":"net.nanopay.bank.AddBankAccountAction"},
+      "disableBrowseViewDataSet": true,
       "browseViews": [
         {
           "class": "foam.comics.v2.namedViews.NamedViewCollection",

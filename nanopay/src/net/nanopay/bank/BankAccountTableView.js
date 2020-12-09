@@ -21,17 +21,10 @@ foam.CLASS({
   extends: 'foam.u2.View',
 
   requires: [
-    'foam.core.Action',
-    'foam.log.LogLevel',
-    'foam.u2.ControllerMode',
-    'foam.u2.dialog.Popup',
-    'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.BRBankAccount',
     'net.nanopay.bank.CABankAccount',
-    'net.nanopay.bank.USBankAccount',
-    'net.nanopay.sme.ui.SMEModal'
+    'net.nanopay.bank.USBankAccount'
   ],
 
   implements: [
@@ -39,35 +32,21 @@ foam.CLASS({
   ],
 
   imports: [
-    'ctrl',
-    'notify',
-    'stack',
-    'subject',
-    'auth'
+    'subject'
   ],
 
   properties: [
     {
-      name: 'editColumnsEnabled',
-      value: false
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'foam.comics.v2.DAOControllerConfig',
-      name: 'config'
-    },
-    {
       class: 'foam.dao.DAOProperty',
       name: 'data',
       factory: function() {
-        var dao = this.subject.user.accounts;
-        // .where(
-        //   this.OR(
-        //     this.INSTANCE_OF(this.CABankAccount),
-        //     this.INSTANCE_OF(this.USBankAccount),
-        //     this.INSTANCE_OF(this.BRBankAccount)
-        //   )
-        // );
+        var dao = this.subject.user.accounts.where(
+          this.OR(
+            this.INSTANCE_OF(this.CABankAccount),
+            this.INSTANCE_OF(this.USBankAccount),
+            this.INSTANCE_OF(this.BRBankAccount)
+          )
+        );
         dao.of = 'net.nanopay.bank.BankAccount';
         return dao;
       }
@@ -77,7 +56,6 @@ foam.CLASS({
   methods: [
     function initE() {
       this.SUPER();
-      // this.config.dao = this.data;
 
       this
         .start().addClass(this.myClass())
@@ -96,16 +74,28 @@ foam.CLASS({
               'isDefault'
             ],
             data$: this.data$,
-            // config$: this.config$,
-            // dblClickListenerAction: this.dblclick
+            dblClickListenerAction: this.dblclick
           }).end()
         .end();
     },
 
-    // function dblclick() {
-    //     if ( this.selection) {
-    //       debugger;
-    //     }
-    // }
+    function dblclick() {
+      if ( this.selection) {
+        var popupView = this.selection.status === net.nanopay.bank.BankAccountStatus.UNVERIFIED && net.nanopay.bank.CABankAccount.isInstance(this.selection) ?
+          foam.u2.dialog.Popup.create({}, this.__subContext__).tag({
+            class: 'net.nanopay.cico.ui.bankAccount.modalForm.CABankMicroForm',
+            bank: this.selection
+          }) :
+          net.nanopay.sme.ui.SMEModal.create({}, this.__subContext__).addClass('bank-account-popup')
+            .startContext({ controllerMode: foam.u2.ControllerMode.EDIT })
+              .tag({
+                class: 'net.nanopay.account.ui.BankAccountWizard',
+                data: this.selection,
+                useSections: ['accountInformation', 'pad']
+              })
+            .endContext();
+        this.add(popupView);
+      }
+    }
   ]
 });

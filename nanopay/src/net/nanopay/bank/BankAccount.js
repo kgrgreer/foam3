@@ -31,7 +31,13 @@ foam.CLASS({
     'foam.dao.PromisedDAO',
     'foam.nanos.auth.Address',
     'foam.nanos.iban.ValidationIBAN',
-    'net.nanopay.payment.PaymentProviderCorridor'
+    'net.nanopay.payment.PaymentProviderCorridor',
+
+    'net.nanopay.bank.BankAccountStatus',
+    'net.nanopay.bank.CABankAccount',
+    'net.nanopay.sme.ui.SMEModal',
+    'foam.u2.ControllerMode',
+    'foam.u2.dialog.Popup',
   ],
 
   imports: [
@@ -102,8 +108,6 @@ foam.CLASS({
     { name: 'NICKNAME_REQUIRED', message: 'Nickname required' },
     { name: 'INSTITUTION_NUMBER_REQUIRED', message: 'Institution number required' },
     { name: 'INSTITUTION_NUMBER_INVALID', message: 'Institution number invalid' },
-    { name: 'SORT_CODE_REQUIRED', message: 'Sort code required' },
-    { name: 'SORT_CODE_INVALID', message: 'Sort code invalid' },
     { name: 'CHECK_DIGIT_REQUIRED', message: 'Check digit required' },
     { name: 'CHECK_DIGIT_INVALID', message: 'Check digit invalid' },
     { name: 'BRANCH_ID_REQUIRED', message: 'Branch id required' },
@@ -114,8 +118,31 @@ foam.CLASS({
     { name: 'IBAN_INVALID', message: 'IBAN invalid' },
     { name: 'IBAN_INVALIDATION_FAILED', message: 'IBAN validation failed' },
     { name: 'IBAN_COUNTRY_MISMATCHED', message: 'IBAN country code mismatched' },
-    { name: 'AVAILABLE_CURRENCIES_MSG', message: 'Available Currencies' }
+    { name: 'AVAILABLE_CURRENCIES_MSG', message: 'Available Currencies' },
+
+
+    { name: 'DELETE_DEFAULT', message: 'Unable to delete default accounts. Please select a new default account if one exists.' },
+    { name: 'UNABLE_TO_DELETE', message: 'Error deleting account: ' },
+    { name: 'SUCCESSFULLY_DELETED', message: 'Bank account deleted' },
+    { name: 'IS_DEFAULT', message: 'is now your default bank account. Funds will be automatically transferred to and from this account.' },
+    { name: 'UNABLE_TO_DEFAULT', message: 'Unable to set non verified bank accounts as default' },
+    { name: 'ALREADY_DEFAULT', message: 'is already a default bank account' }
   ],
+
+  css: `
+    .bank-account-popup .net-nanopay-sme-ui-SMEModal-inner {
+      width: 515px;
+      height: 500px;
+    }
+    .bank-account-popup .net-nanopay-sme-ui-SMEModal-content {
+      overflow: scroll !important;
+      padding: 30px;
+    }
+    .bank-account-detail-popup .net-nanopay-sme-ui-SMEModal-inner {
+      max-height: 100vh;
+      overflow: scroll;
+    }
+  `,
 
   properties: [
     {
@@ -129,8 +156,7 @@ foam.CLASS({
       updateVisibility: 'RO',
       section: 'accountInformation',
       view: {
-        class: 'foam.u2.tag.Input',
-        onKey: true
+          class: 'foam.u2.view.StringView'
       },
       preSet: function(o, n) {
         return /^\d*$/.test(n) ? n : o;
@@ -348,8 +374,10 @@ foam.CLASS({
             ))
             .select(this.MAP(propInfoCurrency))
             .then((sink) => {
+              let currencies = sink.delegate.array ? sink.delegate.array : [];
+              currencies.push(this.denomination);
               return currencyDAO.where(
-                this.IN(this.Currency.ID, sink.delegate.array.flat())
+                this.IN(this.Currency.ID, currencies.flat())
               );
             })
         });
@@ -423,15 +451,15 @@ foam.CLASS({
       updateVisibility: 'RO',
       section: 'accountInformation',
       documentation: `Standard international numbering system developed to
-          identify an overseas bank account.`,
+          identify a bank account.`,
       validateObj: function(iban, swiftCode, country) {
-        var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
-
-        if ( ! ibanMsg )
+        if ( ! iban )
           return this.IBAN_REQUIRED;
 
-        if ( country !== iban.substring(0, 2) )
+        if ( iban && country !== iban.substring(0, 2) )
           return this.IBAN_COUNTRY_MISMATCHED;
+
+        var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
         if ( ibanMsg && ibanMsg != 'passed')
           return ibanMsg;
@@ -454,6 +482,81 @@ foam.CLASS({
       visibility: 'HIDDEN'
     }
   ],
+
+  actions: [
+    {
+      name: 'verifyAccount',
+      isAvailable: function() {
+        return this.cls_.id == this.CABankAccount.id;
+      },
+      isEnabled: function() {
+        return this.status === this.BankAccountStatus.UNVERIFIED;
+      },
+      code: function(X) {
+        this.ctrl.add(this.Popup.create().tag({
+          class: 'net.nanopay.cico.ui.bankAccount.modalForm.CABankMicroForm',
+          bank: this
+        }));
+      }
+    },
+    {
+      name: 'edit',
+      isAvailable: function() {
+        return ! this.verifiedBy
+      },
+      code: async function(X) {
+        var self = this.__subContext__;
+        var account = await self.accountDAO.find(this.id);
+        self.ctrl.add(this.SMEModal.create().addClass('bank-account-popup')
+          .startContext({ controllerMode: this.ControllerMode.EDIT })
+            .tag({
+              class: 'net.nanopay.account.ui.BankAccountWizard',
+              data: account,
+              useSections: ['accountInformation', 'pad']
+            })
+          .endContext()
+          );
+      }
+    },
+    {
+      name: 'setAsDefault',
+      code: function(X) {
+        if ( this.isDefault ) {
+          this.notify(`${ this.name } ${ this.ALREADY_DEFAULT }`, '', this.LogLevel.WARN, true);
+          return;
+        } else {
+          this.isDefault = true;
+          this.subject.user.accounts.put(this).then(() =>{
+            this.notify(`${ this.name } ${ this.IS_DEFAULT }`, '', this.LogLevel.INFO, true);
+          }).catch((err) => {
+            this.isDefault = false;
+            this.notify(this.UNABLE_TO_DEFAULT, '', this.LogLevel.ERROR, true);
+          });
+
+          this.purgeCachedDAOs(X);
+        }
+      }
+    },
+    {
+      name: 'delete',
+      code: function(X) {
+        if ( this.isDefault ) {
+          this.notify(this.DELETE_DEFAULT, '', this.LogLevel.ERROR, true);
+          return;
+        }
+
+        this.deleted = true;
+        this.status = this.BankAccountStatus.DISABLED;
+
+        this.__subContext__.ctrl.add(this.Popup.create().tag({
+          class: 'foam.u2.DeleteModal',
+          dao: this.subject.user.accounts,
+          data: this
+        }));
+      }
+    }
+  ],
+
   methods: [
     function toSummary() {
       return `${ this.name } ${ this.country } ${ this.BANK_ACCOUNT_LABEL } (${this.denomination})`;
@@ -540,6 +643,11 @@ foam.CLASS({
         return "";
       `
     },
+    function purgeCachedDAOs(X) {
+      debugger;
+      this.__subContext__.accountDAO.cmd_(X, foam.dao.CachingDAO.PURGE);
+      this.__subContext__.accountDAO.cmd_(X, foam.dao.AbstractDAO.RESET_CMD);
+    },
     {
       name: 'validate',
       args: [
@@ -561,6 +669,8 @@ foam.CLASS({
         if ( name.length() > ACCOUNT_NAME_MAX_LENGTH ) {
           throw new IllegalStateException("Account name must be less than or equal to 70 characters.");
         }
+
+        //To-do : IBAN validation
       `
     },
     {
