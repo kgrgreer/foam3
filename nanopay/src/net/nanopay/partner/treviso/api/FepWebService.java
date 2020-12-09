@@ -69,7 +69,7 @@ public class FepWebService extends ContextAwareSupport implements FepWeb {
 
   protected TrevisoCredientials getCredentials() {
     if ( credentials == null ) {
-      credentials = (TrevisoCredientials) getX().get("TrevisoCredientials");
+      credentials = (TrevisoCredientials) getX().get("trevisoCredientials");
       if ( ! isCredientialsValid() ) {
         credentials = null;
         logger.error(this.getClass().getSimpleName(), "Invalid credentials");
