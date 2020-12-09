@@ -3213,7 +3213,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BEBankAccount.C
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CYBankAccount.COUNTRY.label",target:"país"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.DateOfIssue.SECTION_DATE_OF_ISSUE_SECTION.title",target:"Data de emissão"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.DateOfIssue.SECTION_DATE_OF_ISSUE_SECTION.subTitle",target:"Insira a data de emissão do seu documento de identificação"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.DateOfIssue.SECTION_DATE_OF_ISSUE_SECTION.help",target:"Insira a data de emissão do seu documento de identificação"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.DateOfIssue.DATE_OF_ISSUE.label",target:"Data de emissão"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.DateOfIssue.DATE_OF_ISSUE.documentation",target:"A data de emissão no documento"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.DateOfIssue.DATE_OF_ISSUE.help",target:"Forneça a data de emissão conforme mostrado em sua identificação"})
