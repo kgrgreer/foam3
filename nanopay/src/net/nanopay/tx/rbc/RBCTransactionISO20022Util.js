@@ -680,31 +680,31 @@ foam.CLASS({
       javaCode:`
         RbcAssignedClientValue rbcValues = (RbcAssignedClientValue) x.get("rbcAssignedClientValue");
         Logger log = (Logger) x.get("logger");
-        Long padtype = 0;
+        int padtype = 0;
         for ( var lItem : transaction.getLineItems() ) {
           if ( lItem instanceof PADTypeLineItem ) {
-            padtype = ((PADTypeLineItem) lItem).getPadType();
+            padtype = (int) ((PADTypeLineItem) lItem).getPadType();
             break;
           }
         }
         switch ( padtype ) {
-          case 200l:
+          case 200:
             return "SALA";
-          case 230l:
+          case 230:
             return "PENS";
-          case 250l:
+          case 250:
             return "DIVI";
-          case 280l:
+          case 280:
             return "INTE";
-          case 350l:
+          case 350:
             return "LOAN";
-          case 380l:
+          case 380:
             return "TAXS";
-          case 420l:
+          case 420:
             return "CASH";
-          case 450l:
+          case 450:
             return "CASH";
-          case 600l:
+          case 600:
             return "GOVT";
           default:
             logger.warning("Pad Type not found", padtype);

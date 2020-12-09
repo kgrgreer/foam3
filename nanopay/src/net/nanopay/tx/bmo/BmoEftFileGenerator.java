@@ -377,7 +377,7 @@ public class BmoEftFileGenerator implements EFTFileGenerator {
     HashMap<Integer, List<Transaction>> result = new HashMap<>();
 
     for ( Transaction transaction : transactions ) {
-      int type = PADTypeLineItem.getPADTypeFrom(x, transaction) == null ? -1l : PADTypeLineItem.getPADTypeFrom(x, transaction).getId();
+      int type = PADTypeLineItem.getPADTypeFrom(x, transaction) == null ? -1 : (int) PADTypeLineItem.getPADTypeFrom(x, transaction).getId();
 
       if ( ! result.containsKey(type) ) {
         ArrayList<Transaction> newList = new ArrayList<>();
