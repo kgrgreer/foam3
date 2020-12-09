@@ -591,16 +591,16 @@ foam.CLASS({
       }
     },
     {
-      name: 'businessInformationData',
+      name: 'businessTypeAndSector',
       code: async function(x, business) {
         var id;
         var ucj;
 
-        id = '554af38a-8225-87c8-dfdf-eeb15f71215f-4';
+        id = '554af38a-8225-87c8-dfdf-eebsdf3225y-4';
         ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-          var cap = net.nanopay.crunch.onboardingModels.BusinessInformationData.create({
+          var cap = net.nanopay.crunch.onboardingModels.BusinessTypeAndSector.create({
             businessTypeId: 1,
             businessSectorId: 1,
             businessDetailsSection: 'Purchase of goods produced'

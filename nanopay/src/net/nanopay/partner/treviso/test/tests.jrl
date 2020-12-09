@@ -271,10 +271,10 @@ async function execute(x) {
         throw e;
       }
       try {
-        await support.businessInformationData(x, business);
-        test(true, 'businessInformationData');
+        await support.businessTypeAndSector(x, business);
+        test(true, 'businessTypeAndSector');
       } catch (e) {
-        test(false, 'businessInformationData: '+(e.message || e));
+        test(false, 'businessTypeAndSector: '+(e.message || e));
         throw e;
       }
       try {
