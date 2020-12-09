@@ -1646,6 +1646,7 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerQuestion' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerByDefaultRule' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessInformationData' },
+  { name: 'net/nanopay/crunch/onboardingModels/BusinessTypeAndSector' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessOwnershipData' },
   { name: 'net/nanopay/crunch/onboardingModels/TransactionDetailsData' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessDirectorsData' },

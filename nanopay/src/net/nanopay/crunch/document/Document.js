@@ -26,6 +26,10 @@ foam.CLASS({
     'translationService'
   ],
 
+  implements: [
+    'foam.core.Validatable'
+  ],
+
   messages: [
     { name: 'UPLOAD_REQUEST_MSG', message: 'Provide' },
     { name: 'IMAGE_REQUIRED', message: 'Document(s) required' },
@@ -72,7 +76,7 @@ foam.CLASS({
         if ( isRequired && documents.length === 0 ) {
           return this.IMAGE_REQUIRED;
         }
-      },
+      }
     },
     {
       class: 'FObjectProperty',
@@ -87,6 +91,16 @@ foam.CLASS({
       documentation: 'Whether the file is required or not.',
       value: true,
       hidden: true
+    }
+  ],
+  methods: [
+    {
+      name: 'validate',
+      javaCode: `
+      if ( getIsRequired() && getDocuments().length == 0 ) {
+        throw new foam.core.ValidationException(IMAGE_REQUIRED);
+      }
+      `
     }
   ]
 });
