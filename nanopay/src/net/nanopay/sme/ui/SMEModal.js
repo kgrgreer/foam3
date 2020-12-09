@@ -24,7 +24,7 @@ foam.CLASS({
 
   css: `
     ^X {
-      top: 32px !important;
+      top: 24px !important;
       right: 24px !important;
     }
 
