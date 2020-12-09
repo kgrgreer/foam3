@@ -98,7 +98,7 @@ foam.CLASS({
       name: 'validate',
       javaCode: `
       if ( getIsRequired() && getDocuments().length == 0 ) {
-        throw new IllegalStateException("Document is empty");
+        throw new foam.core.ValidationException(IMAGE_REQUIRED);
       }
       `
     }
