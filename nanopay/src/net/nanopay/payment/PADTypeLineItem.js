@@ -79,10 +79,10 @@ foam.CLASS({
       buildJavaClass: function(cls) {
         cls.extras.push(`
   public static void addEmptyLineTo(Transaction transaction) {
-    addTo(transaction, 0);
+    addTo(transaction, 0l);
   }
 
-  public static void addTo(Transaction transaction, int padType) {
+  public static void addTo(Transaction transaction, long padType) {
     boolean set = false;
     for (TransactionLineItem lineItem : transaction.getLineItems()) {
       if ( lineItem instanceof PADTypeLineItem ) {
