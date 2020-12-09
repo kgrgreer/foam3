@@ -42,6 +42,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.core.Currency',
+    'foam.nanos.auth.ServiceProviderAwareSupport',
     'foam.nanos.logger.Logger',
     'foam.nanos.session.LocalSetting',
     'foam.nanos.session.Session',
@@ -458,17 +459,14 @@ foam.CLASS({
       of: 'foam.nanos.auth.ServiceProvider',
       name: 'spid',
       section: 'systemInformation',
-      writePermissionRequired: true,
-      documentation: `
-        Need to override getter to return "" because its trying to
-        return null (probably as a result of moving order of files
-        in nanos), which breaks tests
-      `,
-      javaGetter: `
-        if ( ! spidIsSet_ ) {
-          return "";
-        }
-        return spid_;
+      javaFactory: `
+        var accountSpidMap = new java.util.HashMap() {{
+          put(
+            Account.class.getName(),
+            new foam.core.PropertyInfo[] { Account.OWNER }
+          );
+        }};
+        return new ServiceProviderAwareSupport().findSpid(getX(), accountSpidMap, this);
       `
     }
   ],

@@ -29,7 +29,6 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
-    'foam.nanos.auth.User',
     'foam.nanos.notification.Notification',
     'net.nanopay.account.TrustAccount',
     'net.nanopay.tx.DigitalTransaction',

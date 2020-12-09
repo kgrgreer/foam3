@@ -52,6 +52,7 @@ foam.CLASS({
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.LifecycleState',
+    'foam.nanos.auth.ServiceProviderAwareSupport',
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
     'java.util.*',
@@ -932,17 +933,19 @@ foam.CLASS({
       of: 'foam.nanos.auth.ServiceProvider',
       name: 'spid',
       section: 'systemInformation',
-      writePermissionRequired: true,
-      documentation: `
-        Need to override getter to return "" because its trying to
-        return null (probably as a result of moving order of files
-        in nanos), which breaks tests
-      `,
-      javaGetter: `
-        if ( ! spidIsSet_ ) {
-          return "";
-        }
-        return spid_;
+      javaFactory: `
+        var transactionSpidMap = foam.util.Arrays.asMap(new Object[]
+          {
+            Account.class.getName(),
+            new foam.core.PropertyInfo[] { Account.OWNER },
+            Transaction.class.getName(),
+            new foam.core.PropertyInfo[] {
+              Transaction.SOURCE_ACCOUNT,
+              Transaction.DESTINATION_ACCOUNT,
+            }
+          }
+        );
+        return new ServiceProviderAwareSupport().findSpid(getX(), transactionSpidMap, this);
       `
     }
   ],
