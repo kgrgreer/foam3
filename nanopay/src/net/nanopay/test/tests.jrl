@@ -298,19 +298,39 @@ async function execute(x) {
         test(false, 'createBusinessBankAccount: '+(e.message || e));
         throw e;
       }
+
       var contact;
+      var contactbank;
       try {
-        contact = await support.createContact(x, business);
-        test(true, 'createBusinessContact');
+        contact = await support.createUSContact(x, business);
+        test(true, 'createUSBusinessContact');
       } catch (e) {
-        test(false, 'createBusinessContact: '+(e.message || e));
+        test(false, 'createUSBusinessContact: '+(e.message || e));
         throw e;
       }
       try {
-        let contactbank = await support.createUSBankAccount(x, contact);
-        test(true, 'createBusinessContactBankAccount');
+        contactbank = await support.createUSBankAccount(x, contact, true);
+        contact.bankAccount = contactbank.id;
+        await support.updateContact(x, contact);
+        test(true, 'createUSBusinessContactBankAccount');
       } catch (e) {
-        test(false, 'createBusinessContactBankAccount: '+(e.message || e));
+        test(false, 'createUSBusinessContactBankAccount: '+(e.message || e));
+        throw e;
+      }
+      try {
+        contact = await support.createCAContact(x, business);
+        test(true, 'createCABusinessContact');
+      } catch (e) {
+        test(false, 'createCABusinessContact: '+(e.message || e));
+        throw e;
+      }
+      try {
+        contactbank = await support.createCABankAccount(x, contact, true);
+        contact.bankAccount = contactbank.id;
+        await support.updateContact(x, contact);
+        test(true, 'createCABusinessContactBankAccount');
+      } catch (e) {
+        test(false, 'createCABusinessContactBankAccount: '+(e.message || e));
         throw e;
       }
 
