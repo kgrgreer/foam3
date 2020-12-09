@@ -27,6 +27,7 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.i18n.TranslationService',
     'foam.nanos.auth.User',
     'foam.nanos.crunch.Capability',
     'foam.nanos.crunch.CapabilityJunctionStatus',
@@ -86,28 +87,36 @@ foam.CLASS({
           .getArray();
         if ( activeJunctions.size() == 0 ) return;
 
-        DAO notificationDAO = (DAO) x.get("notificationDAO");
-
         Notification notification = new Notification();
         notification.setNotificationType("Capability Expiry Reminder");
         notification.setCreated(today);
         notification.setEmailName("ucjExpiryReminder");
 
         HashMap<String, Object> args = new HashMap<>();
+        TranslationService ts = (TranslationService) x.get("translationService");
 
         for ( UserCapabilityJunction ucj : activeJunctions ) {
           User user = (User) ucj.findSourceId(x);
           Capability capability = (Capability) ucj.findTargetId(x);
+          String locale = user.getLanguage().getCode().toString();
 
-          String body = new StringBuilder(NOTIFICATION_BODY_P1)
-            .append(capability.getName())
-            .append(NOTIFICATION_BODY_P2)
+          String capabilityName = ts.getTranslation(locale, capability.getId() + ".name", capability.getName());
+          
+          String notificationP1 = ts.getTranslation(locale, getClassInfo().getId()+ ".NOTIFICATION_BODY_P1", this.NOTIFICATION_BODY_P1);
+          String notificationP2 = ts.getTranslation(locale, getClassInfo().getId()+ ".NOTIFICATION_BODY_P2", this.NOTIFICATION_BODY_P2);
+          String notificationP3 = ts.getTranslation(locale, getClassInfo().getId()+ ".NOTIFICATION_BODY_P3", this.NOTIFICATION_BODY_P3);
+          String body = new StringBuilder(notificationP1)
+            .append(capabilityName)
+            .append(notificationP2)
             .append(getDaysBeforeNotification())
-            .append(NOTIFICATION_BODY_P3)
+            .append(notificationP3)
             .toString();
-          args.put("body", body);
-          args.put("link", user.findGroup(x).getAppConfig(x).getUrl());
           notification.setBody(body);
+
+          args.put("capabilityName", capabilityName);
+          args.put("capabilityNameEn", capability.getName());
+          args.put("days", getDaysBeforeNotification());
+          args.put("link", user.findGroup(x).getAppConfig(x).getUrl());
 
           if ( ! user.getClass().equals(Business.class) ) {
             String userName = user.getLegalName() != null && ! user.getLegalName().trim().isEmpty() ?

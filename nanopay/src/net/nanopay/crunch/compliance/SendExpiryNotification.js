@@ -22,12 +22,13 @@ foam.CLASS({
     'foam.nanos.ruler.RuleAction'
   ],
 
-  documentation: `end notification to user when UCJ transitions to grace period.`,
+  documentation: `Send notification to user when UCJ transitions to grace period.`,
 
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.i18n.TranslationService',
     'foam.nanos.auth.User',
     'foam.nanos.crunch.Capability',
     'foam.nanos.crunch.CapabilityJunctionStatus',
@@ -55,16 +56,20 @@ foam.CLASS({
           @Override
           public void execute(X x) {
             UserCapabilityJunction junction = (UserCapabilityJunction) obj;
-
             Capability cap = (Capability) junction.findTargetId(x);
             User user = (User) junction.findSourceId(x);
-            
-            DAO notificationDAO = (DAO) x.get("notificationDAO");
+
+            TranslationService ts = (TranslationService) x.get("translationService");
+            String locale = user.getLanguage().getCode().toString();
+            String source = cap.getId() + ".name";
+            String capabilityName = ts.getTranslation(locale, source, cap.getName());
 
             Notification notification = new Notification();
 
             HashMap<String, Object> args = new HashMap<>();
             args.put("link", user.findGroup(x).getAppConfig(x).getUrl());
+            args.put("capabilityName", capabilityName);
+            args.put("capabilityNameEn", cap.getName());
 
             // if the UserCapabilityJunction belongs to an actual user, send the notification to the user.
             // otherwise, send the notification to the group the user is under
@@ -82,21 +87,25 @@ foam.CLASS({
             notification.setCreated(new Date());
 
             if ( junction.getIsInGracePeriod() ) {
-              String body = new StringBuilder(NOTIF_PRE)
-                .append(cap.getName())
-                .append(GRACE_PERIOD_NOTIF_SUF_1)
+              String p1 = ts.getTranslation(locale, getClassInfo().getId()+ ".NOTIF_PRE", NOTIF_PRE);
+              String p2 = ts.getTranslation(locale, getClassInfo().getId()+ ".GRACE_PERIOD_NOTIF_SUF_1", GRACE_PERIOD_NOTIF_SUF_1);
+              String p3 = ts.getTranslation(locale, getClassInfo().getId()+ ".GRACE_PERIOD_NOTIF_SUF_2", GRACE_PERIOD_NOTIF_SUF_2);
+              String body = new StringBuilder(p1)
+                .append(capabilityName)
+                .append(p2)
                 .append(junction.getGracePeriod())
-                .append(GRACE_PERIOD_NOTIF_SUF_2)
+                .append(p3)
                 .toString();
-              args.put("body", body);
+              args.put("gracePeriod", junction.getGracePeriod());
               notification.setBody(body);
               notification.setEmailName("ucjGracePeriodNotification");
             } else {
-              String body = new StringBuilder(NOTIF_PRE)
-                .append(cap.getName())
-                .append(EXPIRY_NOTIF_SUF)
+              String p1 = ts.getTranslation(locale, getClassInfo().getId()+ ".NOTIF_PRE", NOTIF_PRE);
+              String p2 = ts.getTranslation(locale, getClassInfo().getId()+ ".EXPIRY_NOTIF_SUF", EXPIRY_NOTIF_SUF);
+              String body = new StringBuilder(p1)
+                .append(capabilityName)
+                .append(p2)
                 .toString();
-              args.put("body", body);
               notification.setBody(body);
               notification.setEmailName("ucjExpiredNotification");
             }
