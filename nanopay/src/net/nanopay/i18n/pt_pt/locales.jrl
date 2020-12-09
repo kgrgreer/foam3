@@ -925,6 +925,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5.name",target:"Privilégios de oficial de assinatura"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5.description",target:"Desbloquear privilégios de oficial de assinatura"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-4.name",target:"Detalhes da empresa"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eebsdf3225y-4.name",target:"Detalhes da empresa"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eebsdf3225y-4.documentation",target:"Uma versão simplificada de Detalhes de Negócios contendo apenas Tipo de Negócio e Setor de Negócios"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"05a663b8-2b48-11eb-adc1-0242ac120002.name",target:"Ativar pagamentos internacionais"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"05a663b8-2b48-11eb-adc1-0242ac120002.description",target:"Ativar pagamentos internacionais"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-16.name",target:"Data de Registro Comercial"})
