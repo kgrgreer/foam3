@@ -1,4 +1,4 @@
-p({"class":"foam.nanos.boot.NSpec", "name":"TrevisoCredientials", "lazy":false, "service":{"class":"net.nanopay.partner.treviso.TrevisoCredientials"}})
+p({"class":"foam.nanos.boot.NSpec", "name":"trevisoCredientials", "lazy":false, "service":{"class":"net.nanopay.partner.treviso.TrevisoCredientials"}})
 
 p({
   "class": "foam.nanos.boot.NSpec",

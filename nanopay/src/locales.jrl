@@ -1402,6 +1402,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"Sole Proprietorship",target:"Pro
 p({class:"foam.i18n.Locale",locale:"pt",source:"Partnership",target:"Parceria"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Corporation",target:"Corporação"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Nonprofit/Charitable Organization",target:"Organização sem fins lucrativos / beneficente"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"Limited Liability Company",target:"Empresa de responsabilidade limitada ""})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Limited Liability Company",target:"Empresa de responsabilidade limitada "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Publicly Traded Corporation",target:"Corporação de capital aberto"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Trust",target:"Confiar em"})

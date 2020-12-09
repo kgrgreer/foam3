@@ -683,7 +683,7 @@ foam.CLASS({
         int padtype = 0;
         for ( var lItem : transaction.getLineItems() ) {
           if ( lItem instanceof PADTypeLineItem ) {
-            padtype = ((PADTypeLineItem) lItem).getPadType();
+            padtype = (int) ((PADTypeLineItem) lItem).getPadType();
             break;
           }
         }
