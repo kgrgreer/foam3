@@ -1142,6 +1142,15 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.OPERATING_BUSINESS_NAME.documentation",target:"O nome da empresa exibido ao público. Isso pode ser diferente\n        do nome da organização."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.SECTION_BUSINESS_DETAILS_SECTION.title",target:"Insira os detalhes da empresa"})
 
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessTypeAndSector.PLACE_HOLDER",target:"Por favor selecione..."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessTypeAndSector.BUSINESS_TYPE_ERROR",target:"Selecione o tipo de negócio."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessTypeAndSector.NATURE_OF_BUSINESS_ERROR",target:"Selecione o setor empresarial."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessTypeAndSector.BUSINESS_TYPE_ID.label",target:"Tipo de negócios"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessTypeAndSector.BUSINESS_TYPE_ID.documentation",target:"O ID dos detalhes proprietários da empresa. Este ID é encontrado consultando o businessTypeDAO."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessTypeAndSector.BUSINESS_SECTOR_ID.documentation",target:"O ID do agrupamento econômico geral para a empresa. Este ID é encontrado consultando o businessSectorDAO."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessTypeAndSector.BUSINESS_SECTOR_ID.label",target:"Setor de negócios"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessTypeAndSector.SECTION_BUSINESS_DETAILS_SECTION.title",target:"Insira os detalhes da empresa"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SelectionViewOwner.OTHER_SELECTION",target:"Se o proprietário não for um oficial de assinatura, selecione o seguinte ..."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SelectionViewOwner.SO_SELECTION",target:"Selecione um dos seguintes agentes de assinatura ..."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SelectionViewOwner.CHOICEDATA_POSTSET_ERR",target:"erro inesperado @ choiceData_ postset net.nanopay.crunch.onboardingModels.SectionViewOwner"})
