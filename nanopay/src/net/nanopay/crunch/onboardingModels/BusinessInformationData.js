@@ -28,11 +28,6 @@ foam.CLASS({
     'foam.core.Validatable'
   ],
 
-  requires: [
-    'foam.nanos.auth.User',
-    'net.nanopay.model.Business'
-  ],
-
   imports: [
     'businessTypeDAO',
     'subject'
