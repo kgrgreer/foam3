@@ -7,22 +7,36 @@ p({
   "handler":
     {
       "class": "foam.nanos.menu.DAOMenu2",
-      "config":
-        {
-          "class": "foam.comics.v2.DAOControllerConfig",
-          "daoKey": "supportAccountDAO",
-          "browseTitle": "Accounts",
-          "createTitle": "Create an Account",
-          "createPredicate":{"class":"foam.mlang.predicate.False"},
-          "editPredicate":{"class":"foam.mlang.predicate.False"},
-          "deletePredicate":{"class":"foam.mlang.predicate.False"},
-          "defaultColumns": [
-            "id",
-            "owner",
-            "summary",
-            "name"
+      "config": {
+        "class": "foam.comics.v2.DAOControllerConfig",
+        "daoKey": "supportAccountDAO",
+        "browseTitle": "Accounts",
+        "createTitle": "Create an Account",
+        "createPredicate":{"class":"foam.mlang.predicate.False"},
+        "editPredicate":{"class":"foam.mlang.predicate.False"},
+        "deletePredicate":{"class":"foam.mlang.predicate.False"},
+        "defaultColumns": [
+          "id",
+          "owner",
+          "summary",
+          "name"
+        ],
+        "filterExportPredicate": {
+          "class": "foam.mlang.predicate.Or",
+          "args": [
+            {
+              "class": "foam.mlang.predicate.Eq",
+              "arg1": { "class": "__Property__", "forClass_": "foam.nanos.export.ExportDriverRegistry", "name": "id" },
+              "arg2": { "class": "foam.mlang.Constant", "value": "CSV" }
+            },
+            {
+              "class": "foam.mlang.predicate.Eq",
+              "arg1": { "class": "__Property__", "forClass_": "foam.nanos.export.ExportDriverRegistry", "name": "id" },
+              "arg2": { "class": "foam.mlang.Constant", "value": "JSON" }
+            }
           ]
         }
+      }
     },
   "parent": "hidden"
 })
@@ -36,23 +50,37 @@ p({
   "handler":
     {
       "class": "foam.nanos.menu.DAOMenu2",
-      "config":
-        {
-          "class": "foam.comics.v2.DAOControllerConfig",
-          "daoKey": "supportBusinessDAO",
-          "browseTitle": "Businesses",
-          "createTitle": "Create a Business",
-          "createPredicate":{"class":"foam.mlang.predicate.False"},
-          "editPredicate":{"class":"foam.mlang.predicate.False"},
-          "deletePredicate":{"class":"foam.mlang.predicate.False"},
-          "defaultColumns": [
-            "id",
-            "businessName",
-            "email",
-            "phoneNumber",
-            "compliance"
+      "config": {
+        "class": "foam.comics.v2.DAOControllerConfig",
+        "daoKey": "supportBusinessDAO",
+        "browseTitle": "Businesses",
+        "createTitle": "Create a Business",
+        "createPredicate":{"class":"foam.mlang.predicate.False"},
+        "editPredicate":{"class":"foam.mlang.predicate.False"},
+        "deletePredicate":{"class":"foam.mlang.predicate.False"},
+        "defaultColumns": [
+          "id",
+          "businessName",
+          "email",
+          "phoneNumber",
+          "compliance"
+        ],
+        "filterExportPredicate": {
+          "class": "foam.mlang.predicate.Or",
+          "args": [
+            {
+              "class": "foam.mlang.predicate.Eq",
+              "arg1": { "class": "__Property__", "forClass_": "foam.nanos.export.ExportDriverRegistry", "name": "id" },
+              "arg2": { "class": "foam.mlang.Constant", "value": "CSV" }
+            },
+            {
+              "class": "foam.mlang.predicate.Eq",
+              "arg1": { "class": "__Property__", "forClass_": "foam.nanos.export.ExportDriverRegistry", "name": "id" },
+              "arg2": { "class": "foam.mlang.Constant", "value": "JSON" }
+            }
           ]
         }
+      }
     },
   "parent": "hidden"
 })
@@ -80,7 +108,22 @@ p({
         "chainSummary.summary",
         "chainSummary.status",
         "chainSummary.errorCode"
-      ]
+      ],
+      "filterExportPredicate": {
+        "class": "foam.mlang.predicate.Or",
+        "args": [
+          {
+            "class": "foam.mlang.predicate.Eq",
+            "arg1": { "class": "__Property__", "forClass_": "foam.nanos.export.ExportDriverRegistry", "name": "id" },
+            "arg2": { "class": "foam.mlang.Constant", "value": "CSV" }
+          },
+          {
+            "class": "foam.mlang.predicate.Eq",
+            "arg1": { "class": "__Property__", "forClass_": "foam.nanos.export.ExportDriverRegistry", "name": "id" },
+            "arg2": { "class": "foam.mlang.Constant", "value": "JSON" }
+          }
+        ]
+      }
     }
   },
   "parent":"hidden"
@@ -113,7 +156,22 @@ p({
             "status",
             "compliance",
             "group"
-          ]
+          ],
+          "filterExportPredicate": {
+            "class": "foam.mlang.predicate.Or",
+            "args": [
+              {
+                "class": "foam.mlang.predicate.Eq",
+                "arg1": { "class": "__Property__", "forClass_": "foam.nanos.export.ExportDriverRegistry", "name": "id" },
+                "arg2": { "class": "foam.mlang.Constant", "value": "CSV" }
+              },
+              {
+                "class": "foam.mlang.predicate.Eq",
+                "arg1": { "class": "__Property__", "forClass_": "foam.nanos.export.ExportDriverRegistry", "name": "id" },
+                "arg2": { "class": "foam.mlang.Constant", "value": "JSON" }
+              }
+            ]
+          }
         }
     },
   "parent": "hidden"
@@ -130,18 +188,6 @@ p({
     "handler":{
         "class":"foam.nanos.menu.DocumentFileMenu",
         "docKey":"google-api-export",
-        "daoKey":"nanopayDocumentDAO"
-    },
-    "parent":"documentation"
-})
-
-p({
-    "class":"foam.nanos.menu.Menu",
-    "id":"api-documentation-northcard",
-    "label":"API Documentation",
-    "handler": {
-        "class":"foam.nanos.menu.DocumentFileMenu",
-        "docKey":"api-doc-northcard",
         "daoKey":"nanopayDocumentDAO"
     },
     "parent":"documentation"

@@ -64,7 +64,7 @@ foam.CLASS({
       name: 'accountInformation',
       title: function() {
         return this.forContact ? '' : this.SECTION_DETAILS_TITLE_VOID;
-      },
+      }
     },
     {
       name: 'pad',
@@ -126,15 +126,14 @@ foam.CLASS({
       name: 'voidChequeImage',
       class: 'String',
       label: '',
-      value: 'images/Canada-Check.png',
+      value: 'images/Canada-Check3.svg',
       section: 'accountInformation',
       visibility: 'RO',
       transient: true,
       view: function(_, X) {
         return {
           class: 'foam.u2.tag.Image',
-          displayWidth: '540px',
-          displayHeight: 'auto'
+          displayWidth: '100%'
         };
       },
     },
@@ -183,7 +182,7 @@ foam.CLASS({
       createVisibility: 'RW',
       section: 'accountInformation',
       storageTransient: true,
-      gridColumns: 2,
+      gridColumns: 3,
       view: {
         class: 'foam.u2.tag.Input',
         maxLength: 3,
@@ -208,11 +207,11 @@ foam.CLASS({
       },
     },
     {
-      class: 'String',
       name: 'accountNumber',
+      label: 'Account',
       updateVisibility: 'RO',
       section: 'accountInformation',
-      gridColumns: 6,
+      gridColumns: 5,
       view: {
         class: 'foam.u2.tag.Input',
         onKey: true

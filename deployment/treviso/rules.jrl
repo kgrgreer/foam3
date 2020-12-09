@@ -200,7 +200,7 @@ p({
   },
   "spid": "treviso",
   "asyncAction":{ "class":"net.nanopay.partner.treviso.FepWebOnboardingRule" },
-  "enabled":false,
+  "enabled":true,
   "saveHistory":true,
   "lifecycleState":1
 })

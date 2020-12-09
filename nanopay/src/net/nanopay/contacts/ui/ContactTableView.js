@@ -71,15 +71,14 @@ foam.CLASS({
     function dblclick() {
         if ( this.selection) {
           controllerMode_ = foam.u2.ControllerMode.EDIT;
-          if ( this.selection.createBankAccount === undefined ) {
-            this.data.createBankAccount = net.nanopay.bank.CABankAccount.create({ isDefault: true }, this.__subContext__);
+          if ( ! this.selection.createBankAccount && this.selection.bankAccount === 0 ) {
             controllerMode_ = foam.u2.ControllerMode.CREATE;
           }
           this.add(net.nanopay.ui.wizard.WizardController.create({
             model: 'net.nanopay.contacts.Contact',
             data: this.selection,
             controllerMode: controllerMode_,
-            isEdit: controllerMode_ === foam.u2.ControllerMode.EDIT
+            isEdit: true
           }, this.__subContext__));
         }
     }

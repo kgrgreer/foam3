@@ -149,7 +149,9 @@ var classes = [
   'net.nanopay.bank.BankAccountStatus',
   'net.nanopay.bank.CanReceiveCurrency',
   'net.nanopay.bank.GetDefaultCurrency',
+  'net.nanopay.bank.StrategizedBankAccount',
   'net.nanopay.bank.ruler.VerifyBankRule',
+  'net.nanopay.bank.ruler.CapabilityAddBankAccountRule',
   'net.nanopay.bank.ruler.ExternalGrantBRBankAccountCapabilityRule',
   'net.nanopay.model.CurrencyAmount',
   'net.nanopay.model.Broker',
@@ -1391,6 +1393,7 @@ var classes = [
   // crunch documents
   'net.nanopay.crunch.document.Document',
   'net.nanopay.crunch.document.ExpirableDocument',
+  'net.nanopay.crunch.document.DateOfIssue',
 
   // crunch wizardlet
   'net.nanopay.crunch.wizardlet.SigningOfficerQuestionWizardlet',

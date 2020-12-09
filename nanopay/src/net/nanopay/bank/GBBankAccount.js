@@ -19,13 +19,13 @@ foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'GBBankAccount',
   label: 'United Kingdom Bank',
-  extends: 'net.nanopay.bank.BankAccount',
+  extends: 'net.nanopay.bank.EUBankAccount',
 
   documentation: 'United Kingdom/Great Britain bank account information.',
 
   constants: [
     {
-      name: 'SORT_CODE_PATTERN',
+      name: 'BRANCH_ID_PATTERN',
       type: 'Regex',
       factory: function() { return /^[0-9]{6}$/; }
     },
@@ -66,15 +66,19 @@ foam.CLASS({
       documentation: `Standard international numbering system developed to
           identify an overseas bank account.`,
       updateVisibility: 'RO',
-      validateObj: function(iban, sortCode, accountNumber, institutionNumber) {
-        if ( ! ( (sortCode && this.SORT_CODE_PATTERN.test(sortCode)) &&
+      validateObj: function(iban, branchId, accountNumber, institutionNumber, country) {
+        if ( ! ( (branchId && this.BRANCH_ID_PATTERN.test(branchId)) &&
              (accountNumber && this.ACCOUNT_NUMBER_PATTERN.test(accountNumber)) &&
              (institutionNumber && this.INSTITUTION_NUMBER_PATTERN.test(institutionNumber)) )
         ) {
-          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
-
-          if ( ! ibanMsg )
+          if ( ! iban )
             return this.IBAN_REQUIRED;
+
+          if ( iban && country !== iban.substring(0, 2) ) {
+            return this.IBAN_COUNTRY_MISMATCHED;
+          }
+
+          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
           if ( ibanMsg && ibanMsg != 'passed')
             return ibanMsg;
@@ -82,20 +86,18 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
-      name: 'sortCode',
-      label: 'Sort Code',
+      name: 'branchId',
       section: 'accountInformation',
       updateVisibility: 'RO',
-      validateObj: function(sortCode, iban) {
+      validateObj: function(branchId, iban) {
         if ( iban )
           var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
         if ( ! iban || (iban && ibanMsg != 'passed') ) {
-          if ( sortCode === '' ) {
-            return this.SORT_CODE_REQUIRED;
-          } else if ( ! this.SORT_CODE_PATTERN.test(sortCode) ) {
-            return this.SORT_CODE_INVALID;
+          if ( branchId === '' ) {
+            return this.BRANCH_ID_REQUIRED;
+          } else if ( ! this.BRANCH_ID_PATTERN.test(branchId) ) {
+            return this.BRANCH_ID_INVALID;
           }
         }
       }
@@ -103,10 +105,6 @@ foam.CLASS({
     {
       name: 'accountNumber',
       updateVisibility: 'RO',
-      view: {
-        class: 'foam.u2.tag.Input',
-        onKey: true
-      },
       preSet: function(o, n) {
         return /^\d*$/.test(n) ? n : o;
       },
@@ -149,10 +147,6 @@ foam.CLASS({
           }
         }
       }
-    },
-    {
-      name: 'branchId',
-      visibility: 'HIDDEN'
     }
   ],
 
@@ -160,7 +154,7 @@ foam.CLASS({
     {
       name: 'getRoutingCode',
       javaCode: `
-        return getSortCode();
+        return getBranchId();
       `
     }
   ]

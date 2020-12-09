@@ -102,8 +102,6 @@ foam.CLASS({
     { name: 'NICKNAME_REQUIRED', message: 'Nickname required' },
     { name: 'INSTITUTION_NUMBER_REQUIRED', message: 'Institution number required' },
     { name: 'INSTITUTION_NUMBER_INVALID', message: 'Institution number invalid' },
-    { name: 'SORT_CODE_REQUIRED', message: 'Sort code required' },
-    { name: 'SORT_CODE_INVALID', message: 'Sort code invalid' },
     { name: 'CHECK_DIGIT_REQUIRED', message: 'Check digit required' },
     { name: 'CHECK_DIGIT_INVALID', message: 'Check digit invalid' },
     { name: 'BRANCH_ID_REQUIRED', message: 'Branch id required' },
@@ -129,8 +127,7 @@ foam.CLASS({
       updateVisibility: 'RO',
       section: 'accountInformation',
       view: {
-        class: 'foam.u2.tag.Input',
-        onKey: true
+          class: 'foam.u2.view.StringView'
       },
       preSet: function(o, n) {
         return /^\d*$/.test(n) ? n : o;
@@ -348,8 +345,10 @@ foam.CLASS({
             ))
             .select(this.MAP(propInfoCurrency))
             .then((sink) => {
+              let currencies = sink.delegate.array ? sink.delegate.array : [];
+              currencies.push(this.denomination);
               return currencyDAO.where(
-                this.IN(this.Currency.ID, sink.delegate.array.flat())
+                this.IN(this.Currency.ID, currencies.flat())
               );
             })
         });
@@ -423,15 +422,15 @@ foam.CLASS({
       updateVisibility: 'RO',
       section: 'accountInformation',
       documentation: `Standard international numbering system developed to
-          identify an overseas bank account.`,
+          identify a bank account.`,
       validateObj: function(iban, swiftCode, country) {
-        var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
-
-        if ( ! ibanMsg )
+        if ( ! iban )
           return this.IBAN_REQUIRED;
 
-        if ( country !== iban.substring(0, 2) )
+        if ( iban && country !== iban.substring(0, 2) )
           return this.IBAN_COUNTRY_MISMATCHED;
+
+        var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
         if ( ibanMsg && ibanMsg != 'passed')
           return ibanMsg;
@@ -561,6 +560,8 @@ foam.CLASS({
         if ( name.length() > ACCOUNT_NAME_MAX_LENGTH ) {
           throw new IllegalStateException("Account name must be less than or equal to 70 characters.");
         }
+
+        //To-do : IBAN validation
       `
     },
     {

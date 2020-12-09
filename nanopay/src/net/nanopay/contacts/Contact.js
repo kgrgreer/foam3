@@ -155,17 +155,19 @@ foam.CLASS({
           return this.ERROR_BUSINESS_PROFILE_NAME_MESSAGE;
         }
       },
-      postSet: function(_,n) {
+      postSet: function(_, n) {
         this.businessName = n;
       },
       tableCellFormatter: function(X, obj) {
         if ( ! obj.businessId ) {
           this.start().add(obj.organization).end();
         } else {
-          this.publicBusinessDAO
+          obj.publicBusinessDAO
             .find(obj.businessId)
-            .then( (business) =>
-              this.start().add(business ? business.toSummary() : obj.organization).end()
+            .then(business =>
+              this.start()
+                .add(business ? business.toSummary() : obj.organization)
+              .end()
           );
         }
       }
@@ -264,7 +266,9 @@ foam.CLASS({
       visibility: 'HIDDEN',
       label: 'Status',
       tableWidth: 170,
-      value: 'PENDING',
+      expression: function(bankAccount, businessId) {
+        return bankAccount || businessId ? net.nanopay.contacts.ContactStatus.READY : net.nanopay.contacts.ContactStatus.PENDING;
+      },
       tableCellFormatter: function(state, obj) {
         this.__subContext__.contactDAO.find(obj.id).then(contactObj=> {
           var format = contactObj.bankAccount || contactObj.businessId ? net.nanopay.contacts.ContactStatus.READY : net.nanopay.contacts.ContactStatus.PENDING;
@@ -355,7 +359,7 @@ foam.CLASS({
         return this.PromisedDAO.create({
           promise: paymentProviderCorridorDAO.where(this.INSTANCE_OF(this.PaymentProviderCorridor))
             .select(this.MAP(this.PaymentProviderCorridor.TARGET_COUNTRY))
-            .then((sink) => {
+            .then(sink => {
               let unique = [...new Set(sink.delegate.array)];
               let arr = [];
               for ( i = 0; i < unique.length; i++ ) {
@@ -382,8 +386,8 @@ foam.CLASS({
       name: 'noCorridorsAvailable',
       documentation: 'GUI when no corridor capabilities have been added to user.',
       visibility: function(showSpinner, countries, createBankAccount) {
-        return ! showSpinner && countries.length == 0 && ! createBankAccount ? 
-          foam.u2.DisplayMode.RO : 
+        return ! showSpinner && countries.length == 0 && ! createBankAccount ?
+          foam.u2.DisplayMode.RO :
           foam.u2.DisplayMode.HIDDEN;
       },
       view: function(_, X) {
@@ -506,11 +510,6 @@ foam.CLASS({
         return this.signUpStatus !== this.ContactStatus.READY && ! bank;
       },
       code: function(X) {
-        // case of save without banking
-        if ( this.createBankAccount === undefined ) {
-          this.createBankAccount = net.nanopay.bank.CABankAccount.create({ isDefault: true }, X);
-        }
-
         X.controllerView.add(this.WizardController.create({
           model: 'net.nanopay.contacts.Contact',
           data: this,
@@ -521,22 +520,15 @@ foam.CLASS({
     },
     {
       name: 'edit',
-      label: 'View Details',
+      label: 'Edit Details',
       isAvailable: function() {
-        return this.signUpStatus !== this.ContactStatus.READY;
+        return this.signUpStatus === this.ContactStatus.READY && this.businessId === 0;
       },
       code: function(X) {
-        // case of save without banking
-        controllerMode_ = foam.u2.ControllerMode.EDIT;
-        if ( this.createBankAccount === undefined ) {
-          this.createBankAccount = net.nanopay.bank.CABankAccount.create({ isDefault: true }, X);
-          controllerMode_ = foam.u2.ControllerMode.CREATE;
-        }
-
         X.controllerView.add(this.WizardController.create({
           model: 'net.nanopay.contacts.Contact',
           data: this,
-          controllerMode: controllerMode_,
+          controllerMode: foam.u2.ControllerMode.EDIT,
           isEdit: true
         }, X));
       }
@@ -627,6 +619,14 @@ foam.CLASS({
           data: this
         }));
       }
+    },
+    {
+      name: 'resetLoginAttempts',
+      isAvailable: () => false
+    },
+    {
+      name: 'disableTwoFactor',
+      isAvailable: () => false
     }
   ],
 
