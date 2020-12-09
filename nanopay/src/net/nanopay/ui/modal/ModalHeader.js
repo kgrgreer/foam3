@@ -64,11 +64,6 @@ foam.CLASS({
       border: 0;
       display: inline-block;
     }
-    ^ .foam-u2-dialog-Popup-X {
-      top: 8px;
-      right: 16px;
-      border-bottom: solid 1px #CBCFD4;
-    }
   `,
 
   methods: [
