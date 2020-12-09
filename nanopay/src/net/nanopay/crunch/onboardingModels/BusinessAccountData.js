@@ -163,7 +163,6 @@ foam.CLASS({
       label: '',
       of: 'net.nanopay.crunch.onboardingModels.CustomerBasicInformation',
       section: 'customerSection',
-      required: true,
       view: function(_, x) {
         return {
           class: 'net.nanopay.sme.onboarding.BusinessDirectorArrayView',
@@ -172,18 +171,7 @@ foam.CLASS({
           enableRemoving: true,
           name: x.data.CUSTOMERS_MSG,
         }
-      },
-      autoValidate: true,
-      validationTextVisible: true,
-      validationPredicates: [
-        {
-          args: [ 'customers' ],
-          predicateFactory: function(e) {
-            return e.HAS(net.nanopay.crunch.onboardingModels.BusinessAccountData.CUSTOMERS)
-          },
-          errorMessage: 'NO_CUSTOMERS_INFO'
-        }
-      ]
+      }
     },
     {
       class: 'FObjectArray',
@@ -192,9 +180,6 @@ foam.CLASS({
       label: '',
       of: 'net.nanopay.crunch.onboardingModels.CustomerBasicInformation',
       section: 'supplierSection',
-      autoValidate: true,
-      required: true,
-      validationTextVisible: true,
       view: function(_, x) {
         return {
           class: 'net.nanopay.sme.onboarding.BusinessDirectorArrayView',
@@ -203,16 +188,7 @@ foam.CLASS({
           enableRemoving: true,
           name: x.data.SUPPLIERS_MSG,
         }
-      },
-      validationPredicates: [
-        {
-          args: [ 'suppliers' ],
-          predicateFactory: function(e) {
-            return e.HAS(net.nanopay.crunch.onboardingModels.BusinessAccountData.SUPPLIERS)
-          },
-          errorMessage: 'NO_SUPPLIERS_INFO'
-        }
-      ]
+      }
     }
   ],
 
