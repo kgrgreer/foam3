@@ -178,7 +178,7 @@ p({
   "class":"foam.nanos.medusa.ClusterConfig",
   "id":"artemis",
   "name":"artemis",
-  "enabled":true,
+  "enabled":false,
   "realm":"nanopay",
   "region":"Toronto",
   "regionStatus":1,
