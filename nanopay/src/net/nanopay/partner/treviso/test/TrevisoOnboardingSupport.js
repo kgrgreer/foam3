@@ -117,16 +117,26 @@ foam.CLASS({
       code: async function(x, user) {
         var id;
         var ucj;
+        // Date of Issue
+        id = '8ad3c898-db232-1ea-87d0-0242ac130z0';
+        ucj = await this.crunchService.getJunction(x, id);
+        if ( ! ucj ||
+             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          var now = new Date();
+          var cap = net.nanopay.crunch.document.DateOfIssue.create({
+            reviewed: true,
+            dateOfIssue: new Date(now.getFullYear() - 5)
+          });
+          ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
+        }
 
         // Identification
         id = '8ad3c898-db32-11ea-87d0-0242ac130003';
         ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-          var now = new Date();
-          var cap = net.nanopay.crunch.document.ExpirableDocument.create({
+          var cap = net.nanopay.crunch.document.Document.create({
             reviewed: true,
-            expiry: new Date(now.getFullYear() + 5)
           });
           ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
         }
