@@ -80,5 +80,4 @@ foam.CLASS({
         .start().addClass('title').add(this.title).end();
     }
   ]
-
 });

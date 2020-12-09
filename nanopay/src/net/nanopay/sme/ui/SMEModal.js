@@ -27,6 +27,7 @@ foam.CLASS({
       top: 32px !important;
       right: 24px !important;
     }
+  
     ^inner {
       position: relative;
       max-height: 60vw;
