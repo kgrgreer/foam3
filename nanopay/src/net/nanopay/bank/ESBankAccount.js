@@ -60,28 +60,8 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
-      name: 'checkDigit',
-      label: 'Check/Control Digits',
-      section: 'accountInformation',
-      updateVisibility: 'RO',
-      validateObj: function(checkDigit) {
-        var regex = /^[0-9]{2}$/;
-
-        if ( checkDigit === '' ) {
-          return this.CHECK_DIGIT_REQUIRED;
-        } else if ( ! regex.test(checkDigit) ) {
-          return this.CHECK_DIGIT_INVALID;
-        }
-      }
-    },
-    {
       name: 'accountNumber',
       updateVisibility: 'RO',
-      view: {
-        class: 'foam.u2.tag.Input',
-        onKey: true
-      },
       preSet: function(o, n) {
         return /^\d*$/.test(n) ? n : o;
       },

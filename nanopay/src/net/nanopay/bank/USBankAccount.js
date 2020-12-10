@@ -141,8 +141,7 @@ foam.CLASS({
       view: function(_, X) {
         return {
           class: 'foam.u2.tag.Image',
-          displayWidth: '540px',
-          displayHeight: 'auto'
+          displayWidth: '100%'
         };
       }
     },
@@ -159,10 +158,6 @@ foam.CLASS({
       label: 'ACH Routing Number',
       section: 'accountInformation',
       updateVisibility: 'RO',
-      view: {
-        class: 'foam.u2.tag.Input',
-        onKey: true
-      },
       gridColumns: 6,
       preSet: function(o, n) {
         if ( n === '' ) return n;

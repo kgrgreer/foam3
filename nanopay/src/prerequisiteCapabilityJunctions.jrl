@@ -330,7 +330,7 @@ p({
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-4",
+  "targetId":"554af38a-8225-87c8-dfdf-eebsdf3225y-4",
   "priority":3
 })
 p({
@@ -438,6 +438,18 @@ p({
   "sourceId":"777af38a-8225-87c8-dfdf-eeb15f71215f-123",
   "targetId":"8ad3c898-db32-11ea-87d0-0242ac130003",
   "priority":3
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"777af38a-8225-87c8-dfdf-eeb15f71215f-123",
+  "targetId":"8ad3c898-db232-1ea-87d0-0242ac130z0",
+  "priority":4
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"8ad3c898-db32-11ea-87d0-0242ac130003",
+  "targetId":"8ad3c898-db232-1ea-87d0-0242ac130z0"
 })
 
 // BR CPF to Birth date
@@ -819,4 +831,25 @@ p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
   sourceId: "554af38a-8225-87c8-dfdf-eeb15f71215f-20",
   targetId: "1f6b2047-1eef-471d-82e7-d86bdf511375",
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-11",
+  "targetId":"24602528-34c1-11eb-adc1-0242ac120002",
+  "priority":3
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"24602528-34c1-11eb-adc1-0242ac120002",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-14",
+  "priority":5
+})
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-13",
+  "targetId":"24602528-34c1-11eb-adc1-0242ac120002",
+  "priority":6
 })

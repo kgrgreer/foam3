@@ -530,11 +530,6 @@ foam.CLASS({
               .start().add(this.ADD_BANK).addClass('add-banking-information')
                 .on('click', async function() {
                   self.userDAO.find(self.invoice.contactId).then((contact)=>{
-                    // case of save without banking
-                    if ((net.nanopay.bank.BankAccount).isInstance(contact.createBankAccount) || contact.createBankAccount === undefined) {
-                      contact.createBankAccount = net.nanopay.bank.CABankAccount.create({ isDefault: true }, self);
-                    }
-
                     self.add(self.WizardController.create({
                       model: 'net.nanopay.contacts.Contact',
                       data: contact,
@@ -693,7 +688,7 @@ foam.CLASS({
   listeners: [
     async function onContactIdChange() {
       this.contact = await this.subject.user.contacts.find(this.invoice.contactId);
-      if ( this.contact && ( this.contact.bankAccount > 0 || this.contact.businessId > 0 ) ) {
+      if ( this.contact && ( this.contact.bankAccount || this.contact.businessId > 0 ) ) {
         if ( this.type == 'payable' )
           await this.setDefaultCurrency();
 
@@ -747,7 +742,7 @@ foam.CLASS({
       }
     },
     async function setChosenBankAccount() {
-      var isPayable = this.type === 'payable' ? true : false ;
+      var isPayable = this.type === 'payable';
 
       if ( isPayable ) {
         this.chosenBankAccount = await this.subject.user.accounts.find(

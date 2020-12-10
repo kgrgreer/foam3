@@ -41,6 +41,13 @@ foam.CLASS({
   ],
 
   css: `
+    ^ {
+      box-sizing: border-box;
+      width: 600px;
+      padding: 30px;
+      max-height: 570px;
+      overflow-y: scroll;
+    }
     ^step-indicator {
       display: flex;
       justify-content: flex-end;
@@ -51,8 +58,14 @@ foam.CLASS({
       position: relative;
       float: right;
     }
-    .wizard {
-      width: 650px;
+    ^ .button-container-wrapper {
+      position: relative;
+      width: 585px;
+      right: 30px;
+      top: 30px;
+    }
+    ^ .button-container {
+      padding: 0 30px;
     }
   `,
 
@@ -78,7 +91,7 @@ foam.CLASS({
     { name: 'GENERIC_PUT_FAILED', message: 'Failed to add an account.' },
     { name: 'SECTION_ONE_TITLE', message: 'Add Contact' },
     { name: 'SECTION_TWO_TITLE', message: 'Add Bank Account' },
-    { name: 'SECTION_TWO_SUBTITLE', message: 'Payments made to this contact will be deposited to the account you provide.' },
+    { name: 'SECTION_TWO_SUBTITLE', message: 'Enter the contact’s bank account information.  Please make sure that this is accurate as payments will go directly to the specified account.' },
     { name: 'SECTION_THREE_TITLE', message: 'Add Business Address' },
     { name: 'SECTION_THREE_SUBTITLE', message: 'Enter the contact’s business address. PO boxes are not accepted.' },
     { name: 'OF_MGS', message: 'of' }
@@ -111,11 +124,11 @@ foam.CLASS({
       var sectionOne = this.Section.create({
         title: this.SECTION_ONE_TITLE,
         properties: [ 
-          net.nanopay.contacts.Contact.ORGANIZATION,
-          net.nanopay.contacts.Contact.EMAIL,
+          net.nanopay.contacts.Contact.ORGANIZATION.clone().copyFrom({ gridColumns: 12 }),
+          net.nanopay.contacts.Contact.EMAIL.clone().copyFrom({ gridColumns: 12 }),
           net.nanopay.contacts.Contact.FIRST_NAME,
           net.nanopay.contacts.Contact.LAST_NAME,
-          net.nanopay.contacts.Contact.CONFIRM,
+          net.nanopay.contacts.Contact.CONFIRM.clone().copyFrom({ gridColumns: 12 }),
           net.nanopay.contacts.Contact.AVAILABLE_COUNTRIES
         ],
         fromClass: 'net.nanopay.contacts.Contact'
@@ -162,11 +175,12 @@ foam.CLASS({
     },
     function initE() {
       var self = this;
-      this.addClass('wizard');
+
       self
+        .addClass(this.myClass())
         .start(self.Rows)
           .add(self.slot(function(sections, currentIndex) {
-            return self.E().addClass('section-container')
+            return self.E()
               .start().addClass(self.myClass('step-indicator'))
                 .add(this.slot(function(currentIndex) {
                   return `${self.STEP} ${currentIndex + 1} ${self.OF_MSG} 3`;
@@ -178,13 +192,15 @@ foam.CLASS({
               });
           }))
           .startContext({ data: this })
-            .start().addClass('button-container')
-              .tag(this.BACK, { buttonStyle: 'TERTIARY' })
-              .start().addClass(this.myClass('button-sub-container'))
-                .tag(this.OPTION, { buttonStyle: 'SECONDARY' })
-                .start(this.NEXT).end()
+            .start().addClass('button-container-wrapper')
+              .start().addClass('button-container')
+                .tag(this.BACK, { buttonStyle: 'TERTIARY' })
+                .start().addClass(this.myClass('button-sub-container'))
+                  .tag(this.OPTION, { buttonStyle: 'SECONDARY' })
+                  .start(this.NEXT).end()
+                .end()
+                .start(this.SAVE).end()
               .end()
-              .start(this.SAVE).end()
             .end()
           .endContext()
         .end();
@@ -193,7 +209,7 @@ foam.CLASS({
     async function addContact() {
       this.isConnecting = true;
       try {
-        let canInvite = this.data.createBankAccount.country != 'IN';
+        let canInvite = this.data.createBankAccount && this.data.createBankAccount.country != 'IN';
 
         if ( this.data.shouldInvite && canInvite ) {
           // check if it is already joined
@@ -316,7 +332,6 @@ foam.CLASS({
         return currentIndex === 1 && data$bankAccount === 0;
       },
       code: async function(X) {
-        this.data.createBankAccount = net.nanopay.bank.BankAccount.create({ isDefault: true }, X);
         if ( ! await this.addContact() ) return;
         X.closeDialog();
       }

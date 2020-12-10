@@ -1076,7 +1076,7 @@ foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.tx.model.Transaction',
   targetModel: 'foam.nanos.ruler.RuleHistory',
   forwardName: 'complianceHistories',
-  inverseName: 'entityId',
+  inverseName: 'transactionEntityId',
   cardinality: '1:*',
   sourceDAOKey: 'transactionDAO',
   unauthorizedSourceDAOKey: 'localTransactionDAO',
