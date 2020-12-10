@@ -1496,7 +1496,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.UNA
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.SUCCESSFULLY_DELETED",target:"Conta bancária excluída."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.IS_DEFAULT",target:"agora é sua conta bancária padrão. Os fundos serão automaticamente transferidos de e para esta conta."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.UNABLE_TO_DEFAULT",target:"Não é possível definir contas bancárias não verificadas como padrão."})
-
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.ALREADY_DEFAULT",target:"já é uma conta bancária padrão."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.BANK_ACCOUNT_LABEL",target:"Conta bancária"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccountTableView.DATA.label",target:"dadas"})
@@ -2350,6 +2349,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.RenewableData.
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.STATUS.label",target:"Status"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.STATUS_ACTIVE",target:"Ativo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.STATUS_PENDING",target:"Pendente"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.STATUS_DISABLED",target:"Desativado"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessAccountData.CUSTOMERS_MSG",target:"cliente"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessAccountData.SUPPLIERS_MSG",target:"fornecedor"})

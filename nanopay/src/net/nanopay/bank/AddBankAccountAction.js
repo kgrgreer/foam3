@@ -27,9 +27,9 @@ foam.CLASS({
   ],
 
   imports: [
+    'auth',
     'ctrl',
     'stack',
-    'auth',
     'subject'
   ],
 
