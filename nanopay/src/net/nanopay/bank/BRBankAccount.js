@@ -41,7 +41,7 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'net.nanopay.fx.afex.AFEXServiceProvider',
     'net.nanopay.fx.afex.IsIbanResponse',
-    'java.util.regex.Pattern',
+    'java.util.regex.Pattern'
   ],
 
   sections: [
@@ -240,11 +240,9 @@ foam.CLASS({
       javaThrows: ['IllegalStateException'],
       javaCode: `
         String iban = this.getIban();
-        String spid = ((foam.nanos.auth.Subject) x.get("subject")).getUser().getSpid();
-        String country = this.getCountry();
 
-        AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
-        IsIbanResponse isIbanResponse = afexServiceProvider.isiban(iban, country, spid);
+        foam.nanos.iban.ValidationIBAN validationIban = new foam.nanos.iban.ValidationIBAN();
+        validationIban.validate(iban);
 
         super.validate(x);
         validateIban(x, isIbanResponse);
@@ -331,16 +329,7 @@ foam.CLASS({
       type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
-          String iban = this.getIban();
 
-          if ( SafetyUtil.isEmpty(iban) )
-            throw new IllegalStateException(this.IBAN_REQUIRED);
-
-          if ( isIbanResponse == null )
-            throw new IllegalStateException(this.IBAN_INVALIDATION_FAILED);
-
-          if ( isIbanResponse != null && ! isIbanResponse.getIsIban() )
-            throw new IllegalStateException(this.IBAN_INVALID);
       `
     }
  ]
