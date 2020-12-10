@@ -81,6 +81,7 @@ foam.CLASS({
           property: this.DEAL_ID,
           isModalRequired: true,
           data$: X.data$,
+          propertyData$: X.data.deal_id$,
           title: 'Update Deal Id',
           onExecute: this.requestUpdated.bind(this, X)
         }));
@@ -96,6 +97,7 @@ foam.CLASS({
           property: this.FX_RATE,
           isModalRequired: true,
           data$: X.data$,
+          propertyData$: X.data.fx_rate$,
           title: 'Update Fx Rate',
           onExecute: this.requestUpdated.bind(this, X)
         }));

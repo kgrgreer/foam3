@@ -106,6 +106,7 @@ foam.CLASS({
           property: this.NATURE_CODE_DATA,
           isModalRequired: true,
           data$: X.data$,
+          propertyData$: X.data.natureCodeData$,
           title: "Please select a nature code (required)",
           onExecute: this.approveWithData.bind(this, X)
         }));
