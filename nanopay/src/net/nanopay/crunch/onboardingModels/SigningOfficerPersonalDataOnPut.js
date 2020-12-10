@@ -52,7 +52,7 @@ foam.CLASS({
 
             addSigningOfficer(x, user, business);
           }
-        }, "On SigningOfficerPersonalData completion, add the current agent as signing officer.");
+        }, "On SigningOfficerPersonalData(Treviso) completion, add the current agent as signing officer.");
       `
     },
     {

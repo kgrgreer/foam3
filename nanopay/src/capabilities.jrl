@@ -202,7 +202,7 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"777af38a-8225-87c8-dfdf-eeb15f71215f-123",
   "name":"Complete your signing officer information",
-  "of":"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData",
+  "of":"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalDataTreviso",
   "description":"Authorization to sign on behalf of the business",
   "version":"0",
   "visibilityPredicate":  { class: "foam.mlang.predicate.True" },

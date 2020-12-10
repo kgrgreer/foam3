@@ -169,7 +169,7 @@ foam.CLASS({
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-          var cap =  net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.create({
+          var cap =  net.nanopay.crunch.onboardingModels.SigningOfficerPersonalDataTreviso.create({
             address: user.address,
             jobTitle: 'Treasury Manager',
             phoneNumber: user.phoneNumber,
