@@ -126,6 +126,16 @@ foam.CLASS({
       documentation: `
         Capable object requirements, defined by a subclass of PadCapture.
       `
+    },
+    {
+      class: 'StringArray',
+      name: 'capabilityIds',
+      visibility: 'HIDDEN',
+    },
+    {
+      class: 'String',
+      name: 'daoKey',
+      visibility: 'HIDDEN',
     }
   ],
 

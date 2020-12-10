@@ -277,6 +277,24 @@ foam.CLASS({
       }
     },
     {
+      name: 'businessInformationData',
+      code: async function(x, business) {
+        var id;
+        var ucj;
+
+        id = '554af38a-8225-87c8-dfdf-eebsdf3225y-4';
+        ucj = await this.crunchService.getJunction(x, id);
+        if ( ! ucj ||
+             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          var cap = net.nanopay.crunch.onboardingModels.BusinessTypeAndSector.create({
+            businessTypeId: 1,
+            businessSectorId: 1,
+          });
+          ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
+        }
+      }
+    },
+    {
       name: 'sourceCountryCapabilityBR',
       code: async function(x) {
         var id = '520a4120-3bc6-cef9-6635-c32af8219a6a';
