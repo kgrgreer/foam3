@@ -56,6 +56,7 @@ foam.CLASS({
           }
         }
       ],
+      value: 'BRL'
     },
     {
       class: 'UnitValue',

@@ -1214,13 +1214,16 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessAccountData.SECTION_SUPPLIER_SECTION.title",target:"Fornecedores"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessAccountData.IS_TAX_FILED.label",target:"Esta empresa apresentou declaração de impostos?"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.INVALID_EQUITY",target:"Patrimônio Inválido"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.INVALID_CAPITAL",target:"Capital Inválido"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.INVALID_EQUITY",target:"Equidade necessária"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.INVALID_CAPITAL",target:"Capital necessário"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.CAPITAL.label",target:"Capital"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.CAPITAL.documentation",target:"Moeda da quantia em que o Capital de Negócios foi definido "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.EQUITY.label",target:"Equidade"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.SECTION_BUSINESS_CAPITAL.title",target:"Moeda da quantia em que o patrimônio líquido foi definido"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.EQUITY.documentation",target:"Moeda da quantia em que o patrimônio líquido foi definido"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.INVALID_MONTHLY_REVENUE",target:"Receita média mensal necessária"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.MONTHLY_REVENUE.label",target:"Faturamento médio mensal dos doze (12) meses anteriore"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.MONTHLY_REVENUE.help,",target:"Qual é a receita média mensal das empresas nos doze (12) meses anteriores"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CustomerBasicInformation.NAME.label",target:"nome"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CustomerBasicInformation.INVALID_PHONE_ERROR",target:"Número de telefone comercial obrigatório"})
