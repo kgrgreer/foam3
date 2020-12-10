@@ -16,7 +16,7 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.crunch.onboardingModels',
+  package: 'net.nanopay.partner.treviso',
   name: 'SigningOfficerPersonalDataTreviso',
 
   implements: [ 'foam.mlang.Expressions' ],
@@ -27,6 +27,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.nanos.auth.User',
     'foam.nanos.auth.Phone',
     'foam.nanos.auth.Address',
     'net.nanopay.model.PersonalIdentification'
@@ -72,7 +73,7 @@ foam.CLASS({
         {
           args: ['address', 'address$regionId', 'address$errors_'],
           predicateFactory: function(e) {
-            return e.NEQ(e.DOT(net.nanopay.crunch.onboardingModels.SigningOfficerPersonalDataTreviso.ADDRESS, foam.nanos.auth.Address.REGION_ID), 'QC');
+            return e.NEQ(e.DOT(net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.ADDRESS, foam.nanos.auth.Address.REGION_ID), 'QC');
           },
           errorMessage: 'CANNOT_SELECT_QUEBEC_ERROR'
         },
@@ -80,7 +81,7 @@ foam.CLASS({
           args: ['address', 'address$errors_'],
           predicateFactory: function(e) {
             return e.EQ(foam.mlang.IsValid.create({
-                arg1: net.nanopay.crunch.onboardingModels.SigningOfficerPersonalDataTreviso.ADDRESS
+                arg1: net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.ADDRESS
               }), true);
           },
           errorMessage: 'INVALID_ADDRESS_ERROR'
@@ -112,7 +113,7 @@ foam.CLASS({
           predicateFactory: function(e) {
             return e.GT(
               foam.mlang.StringLength.create({
-                arg1: net.nanopay.crunch.onboardingModels.SigningOfficerPersonalDataTreviso.JOB_TITLE
+                arg1: net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.JOB_TITLE
               }), 0);
           },
           errorMessage: 'SELECT_JOB_TITLE'

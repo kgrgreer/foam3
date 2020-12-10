@@ -1640,7 +1640,7 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/onboardingModels/CreateRegisterPaymentProviderUCJ' },
   { name: 'net/nanopay/crunch/onboardingModels/InitialBusinessData' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerPersonalData' },
-  { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerPersonalDataTreviso' },
+  { name: 'net/nanopay/partner/treviso/SigningOfficerPersonalDataTreviso' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerQuestion' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerByDefaultRule' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessInformationData' },
