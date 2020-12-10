@@ -428,7 +428,6 @@ invoice.setPayerId(myBusiness.getId());
 invoice.setPayeeId(externalBusiness.getId());
 invoice.setDestinationCurrency("CAD");
 invoice.setAccount(myBusinessBankAccount.getId());
-invoice.setSpid("nanopay");
 invoice = (Invoice) invoiceDAO.inX(myEmployeeContext).put(invoice);
 Boolean invoiceStatusIsCorrect = invoice.getStatus() == InvoiceStatus.UNPAID;
 Boolean paymentStatusIsCorrect = invoice.getPaymentMethod() == PaymentStatus.NONE;
@@ -448,7 +447,6 @@ transaction.setPayerId(invoice.getPayerId());
 transaction.setPayeeId(invoice.getPayeeId());
 transaction.setAmount(invoice.getAmount());
 transaction.setInvoiceId(invoice.getId());
-transaction.setSpid("nanopay");
 Boolean threw = false;
 String message = "";
 try {
@@ -476,7 +474,6 @@ invoice.setPayerId(myBusiness.getId());
 invoice.setPayeeId(externalBusiness.getId());
 invoice.setDestinationCurrency("CAD");
 invoice.setAccount(myBusinessBankAccount.getId());
-invoice.setSpid("nanopay");
 invoice = (Invoice) invoiceDAO.inX(myApproverContext).put(invoice);
 test(invoice.getStatus() == InvoiceStatus.UNPAID && invoice.getPaymentMethod() == PaymentStatus.NONE, "When an approver creates an invoice, the invoice status is UNPAID and the payment status is NONE.");
 
@@ -488,7 +485,6 @@ transaction.setPayerId(invoice.getPayerId());
 transaction.setPayeeId(invoice.getPayeeId());
 transaction.setAmount(invoice.getAmount());
 transaction.setInvoiceId(invoice.getId());
-transaction.setSpid("nanopay");
 threw = false;
 message = "";
 try {

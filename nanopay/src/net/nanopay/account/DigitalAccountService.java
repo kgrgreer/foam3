@@ -35,11 +35,9 @@ public class DigitalAccountService
             .setParent(overdraft.getId())
             .setOwner(overdraft.getOwner())
             .setName("DebtAccount for: " + overdraft.getId())
-            .setSpid(user.getSpid())
             .build()).fclone();
        }
        overdraft.setDebtAccount(debtAccount.getId());
-       overdraft.setSpid(user.getSpid());
        overdraft = (OverdraftAccount) accountDAO.put(overdraft).fclone();
 
        return overdraft;

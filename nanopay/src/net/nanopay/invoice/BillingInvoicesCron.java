@@ -89,12 +89,12 @@ public class BillingInvoicesCron implements ContextAgent {
   /**
    * Spid to be billed
    */
-  private String spid_ = "nanopay";
+  protected String spid_ = "nanopay";
 
   /**
    * Error notification group id
    */
-  private String errorNotificationGroupId_ = spid_ + "-payment-ops";
+  protected String errorNotificationGroupId_ = spid_ + "-payment-ops";
 
   /**
    * BillingInvoice by payer/business

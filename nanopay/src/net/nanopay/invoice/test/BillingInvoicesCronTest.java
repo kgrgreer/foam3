@@ -322,7 +322,6 @@ public class BillingInvoicesCronTest extends Test {
       new DigitalAccount.Builder(x)
         .setOwner(user.getId())
         .setDenomination(denomination)
-        .setSpid("nanopay")
         .build()
     ).fclone();
   }
