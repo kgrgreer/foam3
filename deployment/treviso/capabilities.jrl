@@ -767,3 +767,84 @@ p({class:"net.nanopay.payment.PaymentProviderCorridor",provider:"AFEX",sourceCou
 p({class:"net.nanopay.payment.PaymentProviderCorridor",ranking:1,provider:"Treviso",sourceCountry:"BR",targetCountry:"US",sourceCurrencies:["BRL"],targetCurrencies:["USD"],id:"f9c7ce45-c076-4f55-93d2-867c011ee6ca",name:"BR-USD Corridor - Treviso",enabled:true,"visibilityPredicate": { class: "foam.mlang.predicate.True" },lastModified:1602783690373,lastModifiedBy:1})
 p({class:"net.nanopay.payment.PaymentProviderCorridor",ranking:2,provider:"Treviso",sourceCountry:"BR",targetCountry:"DE",sourceCurrencies:["BRL"],targetCurrencies:["EUR"],id:"ddcdada6-90de-4729-aa22-94a60b629faf",name:"BR-EUR Corridor - Treviso",enabled:true,"visibilityPredicate": { class: "foam.mlang.predicate.True" },lastModified:1602783690373,lastModifiedBy:1})
 p({class:"net.nanopay.payment.PaymentProviderCorridor",ranking:3,provider:"Treviso",sourceCountry:"BR",targetCountry:"GB",sourceCurrencies:["BRL"],targetCurrencies:["GBP"],id:"5466bee2-1639-461d-a8d4-84c152cfb235",name:"BR-GBP Corridor - Treviso",enabled:true,"visibilityPredicate": { class: "foam.mlang.predicate.True" },lastModified:1602783690373,lastModifiedBy:1})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"777af38a-8225-87c8-dfdf-eeb15f71215f-123",
+  "name":"Complete your signing officer information",
+  "of":"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso",
+  "description":"Authorization to sign on behalf of the business",
+  "version":"0",
+  "visibilityPredicate":  { class: "foam.mlang.predicate.True" },
+  "enabled":true,
+  "icon":"/images/capabilityIcons/SigningOfficerIcon.svg",
+  "daoKey":"userDAO",
+  "contextDAOFindKey":"subject.realuser",
+  "associatedEntity":2,
+  "keywords":["featured"],
+  "permissionsGranted":[
+    "certifydatareviewed.rw.reviewed",
+    "user.invoice.pay",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.certifyownerspercent.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.dualpartyagreementcad.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.tripartyagreementcad.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.usdafexterms.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.nanopayinternationalpaymentscustomeragreement.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxmassachusettsdisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxnewyorkdisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxwashingtondisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxcaliforniadisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxarizonadisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.tripartyagreementusd.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxcoloradodisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.abliitermsandconditions.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.abliiprivacypolicy.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.cadafexterms.section.reviewAgreementDocumentsSection"
+  ],
+  "permissionsIntercepted": [
+    "certifydatareviewed.rw.reviewed",
+    "user.invoice.pay",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.certifyownerspercent.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.dualpartyagreementcad.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.tripartyagreementcad.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.usdafexterms.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.nanopayinternationalpaymentscustomeragreement.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxmassachusettsdisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxnewyorkdisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxwashingtondisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxcaliforniadisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxarizonadisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.tripartyagreementusd.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxcoloradodisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.abliitermsandconditions.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.abliiprivacypolicy.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.cadafexterms.section.reviewAgreementDocumentsSection"
+  ],
+  "interceptIf":{ "class":"net.nanopay.crunch.predicate.SigningOfficerCapabilityInterceptPredicate" },
+  "availabilityPredicate":
+  {
+    "class":"foam.mlang.predicate.And",
+    "args": [
+      { "class":"net.nanopay.crunch.predicate.SigningOfficerPrivilegesRequested" },
+      {
+        "class":"net.nanopay.crunch.predicate.CheckUserCountry",
+        "country":"BR"
+      }
+    ]
+  },
+  "visibilityPredicate": {
+    "class":"foam.mlang.predicate.Not",
+    "arg1": {
+      "class":"foam.nanos.crunch.predicate.CapabilityGranted",
+      "capabilityId":"777af38a-8225-87c8-dfdf-eeb15f71215f-123",
+      "subjectFromUCJ":false
+    }
+  },
+  "wizardletConfig": {
+    "class": "foam.u2.wizard.StepWizardConfig",
+    "allowSkipping": false
+  },
+  "requirementViewTitle":"Have your signing officer documents ready. You can save your progress and come back later."
+})
