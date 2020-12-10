@@ -290,7 +290,7 @@ foam.CLASS({
       doc.append(\"    <td><b>Client ID:</b></td>\");
       doc.append(\"    <td>\").append(clientId).append(\"</td>\");
       doc.append(\"    <td><b>Transaction Number:</b></td>\");
-      doc.append(\"    <td>\").append(getReferenceNumber()).append(\"</td>\");
+      doc.append(\"    <td>\").append(getExternalInvoiceId()).append(\"</td>\");
       doc.append(\"  </tr>\");
       doc.append(\"  <tr>\");
       doc.append(\"    <td><b>Client Name:</b></td>\");

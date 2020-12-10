@@ -379,7 +379,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
         }
 
         AscendantFXTransaction txn = (AscendantFXTransaction) ascendantTransaction.fclone();
-        txn.setReferenceNumber(submittedDealResult.getDealID());
+        txn.setExternalInvoiceId(submittedDealResult.getDealID());
         txn.setStatus(TransactionStatus.SENT);
         ClearingTimeService clearingTimeService = (ClearingTimeService) x.get("clearingTimeService");
         txn.setCompletionDate(clearingTimeService.estimateCompletionDateSimple(x, txn));
