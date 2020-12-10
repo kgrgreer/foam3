@@ -23,6 +23,8 @@ foam.CLASS({
   documentation: `
     Provides grouped access of a users source corridors using permissions based destination type in permission string.
     Access to a source corridor signifies that a user can create account in the source country defined on the corridor along with source currencies.
+    Access to a target corridor signifies that a user can create a contacts account account in the target country defined on the corridor along with target currencies.
+    *To be implemented*: Target corridors should be considered when connected with other internal users and businesses.
     This was implemented to satisfy using corridors to define permitted account creations while sustaining the ability to grant other corridors required for multi legged transactions.
     ex.(paymentprovidercorridor.source.read.afex provides access to all AFEX payment provider corridors to the user granted the mentioned permission.)
     Id specific permissions such as paymentprovidercorridor.source.read.mycapstringid1234 will provide access to payment provider corridor matching the id
