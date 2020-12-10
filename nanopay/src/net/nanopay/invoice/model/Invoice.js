@@ -808,6 +808,11 @@ foam.CLASS({
         return new ServiceProviderAwareSupport()
           .findSpid(foam.core.XLocator.get(), invoiceSpidMap, this);
       `
+    },
+    {
+      class: 'StringArray',
+      name: 'capabilityIds',
+      section: 'invoiceInformation'
     }
   ],
 

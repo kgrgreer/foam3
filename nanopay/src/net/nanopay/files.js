@@ -176,6 +176,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ExpirySummaryTransactionLineItem' },
   { name: 'net/nanopay/tx/TransactionException' },
   { name: 'net/nanopay/tx/UnsupportedTransactionException' },
+  { name: 'net/nanopay/tx/GrandTotalLineItem' },
 
   { name: 'net/nanopay/model/CurrencyAmount' },
   { name: 'net/nanopay/model/BusinessSector' },
@@ -1643,6 +1644,7 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerQuestion' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerByDefaultRule' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessInformationData' },
+  { name: 'net/nanopay/crunch/onboardingModels/BusinessTypeAndSector' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessOwnershipData' },
   { name: 'net/nanopay/crunch/onboardingModels/TransactionDetailsData' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessDirectorsData' },
@@ -1717,6 +1719,7 @@ FOAM_FILES([
   // crunch document
   { name: 'net/nanopay/crunch/document/Document' },
   { name: 'net/nanopay/crunch/document/ExpirableDocument' },
+  { name: 'net/nanopay/crunch/document/DateOfIssue' },
 
   // Capable object testing
   { name: 'net/nanopay/crunch/test/TestCapable' },

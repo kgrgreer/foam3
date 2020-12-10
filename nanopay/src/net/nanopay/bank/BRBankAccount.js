@@ -142,9 +142,6 @@ foam.CLASS({
     {
       name: 'accountNumber',
       updateVisibility: 'RO',
-      view: {
-        class: 'foam.u2.view.StringView'
-      },
       preSet: function(o, n) {
         return /^\d*$/.test(n) ? n : o;
       },
@@ -239,7 +236,7 @@ foam.CLASS({
       type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
-        String iban = this.getIban();
+        String iban = this.getIban().replaceAll(" ", "");
         String spid = ((foam.nanos.auth.Subject) x.get("subject")).getUser().getSpid();
         String country = this.getCountry();
 
@@ -331,7 +328,7 @@ foam.CLASS({
       type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
-          String iban = this.getIban();
+          String iban = this.getIban().replaceAll(" ", "");
 
           if ( SafetyUtil.isEmpty(iban) )
             throw new IllegalStateException(this.IBAN_REQUIRED);

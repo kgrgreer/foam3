@@ -99,7 +99,7 @@ p({
   "description":"""
     Provide a copy of a piece of government issued identification which shows your full name, picture, and CPF number.
   """,
-  "of":"net.nanopay.crunch.document.ExpirableDocument",
+  "of":"net.nanopay.crunch.document.Document",
   "version":"0",
   "duration":3650,
   "gracePeriod":7,

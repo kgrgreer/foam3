@@ -91,13 +91,11 @@ foam.CLASS({
     },
     {
       class: 'StringArray',
-      name: 'capableRequirements',
+      name: 'capabilityIds',
+      section: 'capabilityInformation',
       factory: () => {
         return [
-          '554af38a-8225-87c8-dfdf-eeb15f71215e-13', // Certify Bank Account Ownership Agreement
-          '554af38a-8225-87c8-dfdf-eeb15f71215e-20', // CA Bank Account Auth Agreement
-          '554af38a-8225-87c8-dfdf-eeb15f71215e-21', // Recourse/Reimbursement Agreement
-          '554af38a-8225-87c8-dfdf-eeb15f71215e-22'  // CA Cancellation Agreement
+          "67d9a3c7-6243-4b80-a8a9-9fe0c05db6d0"
         ];
       }
     },
