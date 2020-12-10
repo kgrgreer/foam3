@@ -83,6 +83,10 @@ foam.CLASS({
 
   actions: [
     {
+      name: 'approveWithMemo',
+      isAvailable: () => false
+    },
+    {
       name: 'approve',
       section: 'requestDetails',
       isAvailable: (isTrackingRequest, status) => {
