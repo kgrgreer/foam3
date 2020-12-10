@@ -1302,6 +1302,7 @@ var classes = [
   'net.nanopay.crunch.onboardingModels.CreateRegisterPaymentProviderUCJ',
   'net.nanopay.crunch.onboardingModels.InitialBusinessData',
   'net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData',
+  'net.nanopay.crunch.onboardingModels.SigningOfficerPersonalDataTreviso',
   'net.nanopay.crunch.onboardingModels.SigningOfficerQuestion',
   'net.nanopay.crunch.onboardingModels.SigningOfficerQuestionOnPut',
   'net.nanopay.crunch.onboardingModels.SigningOfficerPersonalDataOnPut',
