@@ -369,12 +369,12 @@ async function execute(x) {
 
       var contact;
       var contactbank;
-      // Canadian Contact US bank Account
+      // US Contact US-USD bank Account
       try {
-        contact = await support.createContact(x, business, 1);
-        test(true, 'createBusinessContact');
+        contact = await support.createUSContact(x, business);
+        test(true, 'createUSContact');
       } catch (e) {
-        test(false, 'createBusinessContact: '+(e.message || e));
+        test(false, 'createUSContact: '+(e.message || e));
         throw e;
       }
       try {
@@ -387,17 +387,17 @@ async function execute(x) {
       try {
         contact.bankAccount = contactbank.id;
         await business.contacts.put(contact);
-        test(true, 'adding contact & US account to ' + contact.id + ' with account: ' + contactbank.id);
+        test(true, 'adding business US contact: ' + contact.id + ', account: ' + contactbank.id);
       } catch (e) {
-        test(false, 'adding contact & US account to ' + contact.id + ' with account: ' + (contactbank.id || -1) + ' : ' + (e.message || e));
+        test(false, 'adding business US contact: ' + contact.id + ', account: ' + contactbank.id + '. ' +(e.message || e));
         throw e;
       }
-      // Canadian Contact CAD bank Account
+      // CA Contact CA-CAD bank Account
       try {
-        contact = await support.createContact(x, business, 1);
-        test(true, 'createBusinessContact');
+        contact = await support.createCAContact(x, business);
+        test(true, 'createCAContact');
       } catch (e) {
-        test(false, 'createBusinessContact: '+(e.message || e));
+        test(false, 'createCAContact: '+(e.message || e));
         throw e;
       }
       try {
@@ -410,11 +410,12 @@ async function execute(x) {
       try {
         contact.bankAccount = contactbank.id;
         await business.contacts.put(contact);
-        test(true, 'adding contact & CA account to ' + contact.id + ' with account: ' + contactbank.id);
+        test(true, 'adding business CA contact: ' + contact.id + ', account: ' + contactbank.id);
       } catch (e) {
-        test(false, 'adding contact & CA account to ' + contact.id + ' with account: ' + (contactbank.id || -1) + ' : ' + (e.message || e));
+        test(false, 'adding business CA contact: ' + contact.id + ', account: ' + contactbank.id + '. ' +(e.message || e));
         throw e;
       }
+
       console.info('done');
       support.teardown(x);
     } catch (e) {
