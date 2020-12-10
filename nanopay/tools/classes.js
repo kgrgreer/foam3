@@ -1307,6 +1307,7 @@ var classes = [
   'net.nanopay.crunch.onboardingModels.SigningOfficerPersonalDataOnPut',
   'net.nanopay.crunch.onboardingModels.SigningOfficerByDefaultRule',
   'net.nanopay.crunch.onboardingModels.BusinessInformationData',
+  'net.nanopay.crunch.onboardingModels.BusinessTypeAndSector',
   'net.nanopay.crunch.onboardingModels.BusinessOwnershipData',
   'net.nanopay.crunch.onboardingModels.TransactionDetailsData',
   'net.nanopay.crunch.onboardingModels.BusinessDirectorsData',
