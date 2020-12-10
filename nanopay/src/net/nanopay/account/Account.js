@@ -458,15 +458,16 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.ServiceProvider',
       name: 'spid',
+      storageTransient: true,
       section: 'systemInformation',
       javaFactory: `
-        var accountSpidMap = new java.util.HashMap() {{
-          put(
-            Account.class.getName(),
-            new foam.core.PropertyInfo[] { Account.OWNER }
-          );
-        }};
-        return new ServiceProviderAwareSupport().findSpid(getX(), accountSpidMap, this);
+        var accountSpidMap = new java.util.HashMap();
+        accountSpidMap.put(
+          Account.class.getName(),
+          new foam.core.PropertyInfo[] { Account.OWNER }
+        );
+        return new ServiceProviderAwareSupport()
+          .findSpid(foam.core.XLocator.get(), accountSpidMap, this);
       `
     }
   ],

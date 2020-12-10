@@ -795,16 +795,18 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.ServiceProvider',
       name: 'spid',
+      storageTransient: true,
       javaFactory: `
-        var invoiceSpidMap = foam.util.Arrays.asMap(new Object[]
-          {
-            Invoice.class.getName(),
-            new foam.core.PropertyInfo[] {
-              Invoice.PAYER_ID,
-              Invoice.PAYEE_ID,
-            }
-          });
-        return new ServiceProviderAwareSupport().findSpid(getX(), invoiceSpidMap, this);
+        var invoiceSpidMap = new java.util.HashMap();
+        invoiceSpidMap.put(
+          Invoice.class.getName(),
+          new foam.core.PropertyInfo[] {
+            Invoice.PAYER_ID,
+            Invoice.PAYEE_ID,
+          }
+        );
+        return new ServiceProviderAwareSupport()
+          .findSpid(foam.core.XLocator.get(), invoiceSpidMap, this);
       `
     }
   ],

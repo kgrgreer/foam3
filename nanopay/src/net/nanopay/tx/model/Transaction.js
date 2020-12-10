@@ -933,19 +933,22 @@ foam.CLASS({
       of: 'foam.nanos.auth.ServiceProvider',
       name: 'spid',
       section: 'systemInformation',
+      storageTransient: true,
       javaFactory: `
-        var transactionSpidMap = foam.util.Arrays.asMap(new Object[]
-          {
-            Account.class.getName(),
-            new foam.core.PropertyInfo[] { Account.OWNER },
-            Transaction.class.getName(),
-            new foam.core.PropertyInfo[] {
-              Transaction.SOURCE_ACCOUNT,
-              Transaction.DESTINATION_ACCOUNT,
-            }
+        var transactionSpidMap = new java.util.HashMap();
+        transactionSpidMap.put(
+          Account.class.getName(),
+          new foam.core.PropertyInfo[] { Account.OWNER }
+        );
+        transactionSpidMap.put(
+          Transaction.class.getName(),
+          new foam.core.PropertyInfo[] {
+            Transaction.SOURCE_ACCOUNT,
+            Transaction.DESTINATION_ACCOUNT,
           }
         );
-        return new ServiceProviderAwareSupport().findSpid(getX(), transactionSpidMap, this);
+        return new ServiceProviderAwareSupport()
+          .findSpid(foam.core.XLocator.get(), transactionSpidMap, this);
       `
     }
   ],
