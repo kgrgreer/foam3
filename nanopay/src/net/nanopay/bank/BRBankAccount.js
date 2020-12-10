@@ -319,18 +319,6 @@ foam.CLASS({
           throw new IllegalStateException(this.SWIFT_CODE_INVALID);
         }
       `
-    },
-    {
-      name: 'validateIban',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'isIbanResponse', type: 'net.nanopay.fx.afex.IsIbanResponse' }
-      ],
-      type: 'Void',
-      javaThrows: ['IllegalStateException'],
-      javaCode: `
-
-      `
     }
  ]
 });
