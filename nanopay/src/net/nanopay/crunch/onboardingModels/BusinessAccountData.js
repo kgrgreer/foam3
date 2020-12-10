@@ -179,6 +179,9 @@ foam.CLASS({
           isHorizontal: true
         };
       },
+      factory: function() {
+        return this.NATIONAL;
+      },
       validationPredicates: [
         {
           errorMessage: 'NO_CAPITAL_SOURCE',
@@ -220,6 +223,9 @@ foam.CLASS({
           ],
           isHorizontal: true
         };
+      },
+      factory: function() {
+        return this.PRIVATE;
       },
       validationPredicates: [
         {
