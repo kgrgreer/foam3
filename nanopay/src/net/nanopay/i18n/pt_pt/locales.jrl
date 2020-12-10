@@ -1092,6 +1092,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.SECTION_INTRODUCTION.title",target:"Processo de oficial de assinatura."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.SECTION_SIGNING_OFFICER_PERSONAL_INFORMATION_SECTION.title",target:"Informações sobre a função do oficial de assinatura"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.SECTION_SIGNING_OFFICER_ADDRESS_SECTION.title",target:"Endereço do oficial assinante"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.HAS_SIGNED_CONTRATOS_DE_CAMBIO.label",target:"Você assinou os contratos de câmbio?"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.HAS_SIGNED_CONTRATOS_DE_CAMBIO.help",target:"Contratos de câmbio é um acordo legal no qual as partes concordam em transferir entre si uma determinada quantia de moeda estrangeira a uma taxa de câmbio predeterminada e em uma data predeterminada."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.YES",target:"Sim"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.NO",target:"Não"})
@@ -2039,6 +2041,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirect
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirector.TYPE.label",target:"Tipo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirector.FIRST_NAME.label",target:"Primeiro nome"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirector.LAST_NAME.label",target:"último nome"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirector.EMAIL.label",target:"O email"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirector.FOREIGN_ID.label",target:"RG/RNE:(ID nacional / passaporte / estrangeiro)"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirector.BIRTHDAY.label",target:"Data de nascimento"})
 
@@ -2048,6 +2051,11 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirect
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirector.VERIFY_NAME.label",target:"Este é o seu diretor?"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirector.NATIONALITY.label",target:"Nacionalidade"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirector.NATIONALITY.documentation",target:"Nacionalidade definida do diretor de negócios."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirector.HAS_SIGNED_CONTRATOS_DE_CAMBIO.label",target:"A pessoa listada aqui assinou os contratos de câmbio"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirector.HAS_SIGNED_CONTRATOS_DE_CAMBIO.help",target:"Contratos de câmbio é um acordo legal no qual as partes concordam em transferir entre si uma determinada quantia de moeda estrangeira a uma taxa de câmbio predeterminada e em uma data predeterminada."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirector.YES",target:"Sim"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirector.NO",target:"Não"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.OWNERSHIP_PERCENT.label",target:"Porcentagem de propriedade"})
 p({class:"foam.i18n.Locale",target:"Adicionar detalhes para o proprietário #"})
 
@@ -2064,6 +2072,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwne
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.SHOW_VALIDATION.value",target:"Verdade"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.FIRST_NAME.label",target:"Primeiro nome"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.LAST_NAME.label",target:"último nome"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.EMAIL.label",target:"O email"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.BIRTHDAY.label",target:"Data de nascimento"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.BIRTHDAY.documentation",target:"O aniversário do beneficiário"})
@@ -2082,7 +2091,11 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwne
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.VERIFY_NAME.label",target:"Este é o proprietário da empresa?"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.PEPHIORELATED.label",target:"Este proprietário é uma pessoa politicamente exposta ou chefe de uma organização internacional (PEP / HIO)"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.PEPHIORELATED.documentation",target:"Determina se o usuário é uma pessoa _Politicamente Exposta (PEP), Chefe de uma Organização Internacional (HIO) _ nacional ou estrangeira, ou parente dessa pessoa."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.HAS_SIGNED_CONTRATOS_DE_CAMBIO.label",target:"A pessoa listada aqui assinou os contratos de câmbio"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.HAS_SIGNED_CONTRATOS_DE_CAMBIO.help",target:"Contratos de câmbio é um acordo legal no qual as partes concordam em transferir entre si uma determinada quantia de moeda estrangeira a uma taxa de câmbio predeterminada e em uma data predeterminada."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.VIEW_COMPLIANCE_HISTORY.label",target:"Ver Histórico de Conformidade"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.YES",target:"Sim"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.NO",target:"Não"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.PLACE_HOLDER",target:"por favor selecione..."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData.SECTION_BUSINESS_INCORPORATION_DATE_SECTION.title",target:"Insira a data de incorporação da empresa"})
@@ -3243,3 +3256,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.Date
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.DateOfIssue.DATE_OF_ISSUE.help",target:"Forneça a data de emissão conforme mostrado em sua identificação"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.DateOfIssue.FUTURE_DATE_ERROR",target:"A data de emissão não pode ser uma data futura"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.DateOfIssue.INVALID_DATE_ERROR",target:"Forneça a data de emissão conforme mostrado em sua identificação"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.EMail.EMAIL_REQUIRED",target:"Email obrigatório"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.EMail.VALID_EMAIL_REQUIRED",target:"Requer um email válido"})
