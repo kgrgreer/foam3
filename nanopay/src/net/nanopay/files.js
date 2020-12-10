@@ -1652,6 +1652,7 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/onboardingModels/UserBirthDateData' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessIncorporationDateData' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessRegistrationDateData' },
+  { name: 'net/nanopay/crunch/onboardingModels/BusinessLastRegistrationDateData' },
   { name: 'net/nanopay/crunch/onboardingModels/TaxIdNumberData' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessAccountData' },
   { name: 'net/nanopay/crunch/onboardingModels/CurrencyAmountInformation' },
