@@ -838,6 +838,11 @@ foam.CLASS({
       name: 'totalSourceAmount',
       includeInDigest: false,
       section: 'invoiceInformation'
+    },
+    {
+      class: 'StringArray',
+      name: 'capabilityIds',
+      section: 'invoiceInformation'
     }
   ],
 
