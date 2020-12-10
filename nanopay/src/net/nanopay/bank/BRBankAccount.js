@@ -241,11 +241,9 @@ foam.CLASS({
       javaCode: `
         String iban = this.getIban();
 
+        super.validate(x);
         foam.nanos.iban.ValidationIBAN validationIban = new foam.nanos.iban.ValidationIBAN();
         validationIban.validate(iban);
-
-        super.validate(x);
-        validateIban(x, isIbanResponse);
 
         if ( isIbanResponse != null && ! isIbanResponse.getIsIban() ) {
           validateInstitutionNumber();
