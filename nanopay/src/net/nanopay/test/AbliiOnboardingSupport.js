@@ -665,10 +665,9 @@ foam.CLASS({
       }
     },
     {
-      documentation: 'Canadian Bank Account',
-      name: 'createCABankAccount',
+      name: 'createContactCABankAccount',
       type: 'net.nanopay.bank.BankAccount',
-      code: async function(x, user, forContact) {
+      code: async function(x, contact) {
         const E = foam.mlang.ExpressionsSingleton.create();
         var b = await this.client(x, 'accountDAO', net.nanopay.account.Account).find(
           E.AND(
@@ -678,12 +677,11 @@ foam.CLASS({
         );
         if ( ! b ) {
           b = await this.client(x, 'accountDAO', net.nanopay.account.Account).put_(x, net.nanopay.bank.CABankAccount.create({
-            owner: user.id,
-            name: 'CA-CAD',
-            accountNumber: '12345678',
-            institutionNumber: '123',
+            owner: contact.id,
+            name: 'Contact Account',
             branchId: '12345',
-            forContact: forContact,
+            institutionNumber: '122',
+            accountNumber: '12321123',
             bankAddress: {
               class: 'foam.nanos.auth.Address',
               structured: true,
@@ -693,7 +691,8 @@ foam.CLASS({
               countryId: 'CA',
               city: 'Toronto',
               postalCode: 'X1X 1X1'
-            }
+            },
+            forContact: true
           }, x));
 
           this.sudoStore(x);
@@ -726,22 +725,21 @@ foam.CLASS({
         );
         if ( ! b ) {
           b = await this.client(x, 'accountDAO', net.nanopay.account.Account).put_(x, net.nanopay.bank.USBankAccount.create({
-            owner: user.id,
-            name: 'US-USD',
-            accountNumber: '123456',
-            branchId: '123456789',
-            forContact: forContact,
-            bankAddress: {
-              class: 'foam.nanos.auth.Address',
-              structured: true,
-              streetNumber: '1',
-              streetName: 'Street',
-              regionId: 'US-CA',
-              countryId: 'US',
-              city: 'Palto Alto',
-              postalCode: '12345'
-            }
-          }, x));
+              owner: user.id,
+              name: 'savings',
+              accountNumber: '123456',
+              branchId: '123456789',
+              bankAddress: {
+                class: 'foam.nanos.auth.Address',
+                countryId: 'US',
+                regionId: 'US-NY',
+                streetNumber: '1',
+                streetName: 'Main St',
+                city: 'New York',
+                postalCode: '12122'
+              },
+              forContact: true
+            }, x));
 
           this.sudoStore(x);
           try {
@@ -766,7 +764,7 @@ foam.CLASS({
         return await this.client(x, 'contactDAO', net.nanopay.contacts.Contact).put_(x, net.nanopay.contacts.Contact.create({
           owner: business.id,
           businessId: business.id,
-          firstName: 'CAContact',
+          firstName: 'CAContact'+business.id,
           lastName: business.id,
           organization: business.id,
           email: 'ca.contact@nanopay.net',
@@ -792,7 +790,7 @@ foam.CLASS({
         return await this.client(x, 'contactDAO', net.nanopay.contacts.Contact).put_(x, net.nanopay.contacts.Contact.create({
           owner: business.id,
           businessId: business.id,
-          firstName: 'USContact',
+          firstName: 'USContact-'+business.id,
           lastName: business.id,
           organization: business.id,
           email: 'us.contact@nanopay.net',
