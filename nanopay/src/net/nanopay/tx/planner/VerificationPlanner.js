@@ -32,6 +32,10 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'verifierAccount'
+    },
+    {
+      name: 'bestPlan',
+      value: true
     }
   ],
 

@@ -149,7 +149,9 @@ var classes = [
   'net.nanopay.bank.BankAccountStatus',
   'net.nanopay.bank.CanReceiveCurrency',
   'net.nanopay.bank.GetDefaultCurrency',
+  'net.nanopay.bank.StrategizedBankAccount',
   'net.nanopay.bank.ruler.VerifyBankRule',
+  'net.nanopay.bank.ruler.CapabilityAddBankAccountRule',
   'net.nanopay.bank.ruler.ExternalGrantBRBankAccountCapabilityRule',
   'net.nanopay.model.CurrencyAmount',
   'net.nanopay.model.Broker',
@@ -1305,6 +1307,7 @@ var classes = [
   'net.nanopay.crunch.onboardingModels.SigningOfficerPersonalDataOnPut',
   'net.nanopay.crunch.onboardingModels.SigningOfficerByDefaultRule',
   'net.nanopay.crunch.onboardingModels.BusinessInformationData',
+  'net.nanopay.crunch.onboardingModels.BusinessTypeAndSector',
   'net.nanopay.crunch.onboardingModels.BusinessOwnershipData',
   'net.nanopay.crunch.onboardingModels.TransactionDetailsData',
   'net.nanopay.crunch.onboardingModels.BusinessDirectorsData',
@@ -1391,6 +1394,7 @@ var classes = [
   // crunch documents
   'net.nanopay.crunch.document.Document',
   'net.nanopay.crunch.document.ExpirableDocument',
+  'net.nanopay.crunch.document.DateOfIssue',
 
   // crunch wizardlet
   'net.nanopay.crunch.wizardlet.SigningOfficerQuestionWizardlet',

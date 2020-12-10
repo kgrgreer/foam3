@@ -247,7 +247,7 @@ public class LiquidityService
       args.put("dst_account_id",     dstAccountId);
 
       notificationBody = String.format(
-        "The %s for %s has been reached\nFunds have automatically moved between %s & %d and %s & %d",
+        "The %s for %s has been reached\nFunds have automatically moved between %s & %s and %s & %s",
         threshold, ls.getName(), account.getName(), account.getId(), dstAccountName, dstAccountId
       );
     } else {
@@ -257,7 +257,7 @@ public class LiquidityService
       args.put("account_id",      account.getId());
 
       notificationBody = String.format(
-        "The %s for %s has been reached for %s & %d",
+        "The %s for %s has been reached for %s & %s",
         threshold, ls.getName(), account.getName(), account.getId()
       );
     }
