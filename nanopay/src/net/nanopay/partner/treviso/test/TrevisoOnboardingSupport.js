@@ -331,13 +331,9 @@ foam.CLASS({
           b = await this.client(x, 'accountDAO', net.nanopay.account.Account).put_(x, net.nanopay.bank.BRBankAccount.create({
             owner: user.id,
             name: 'savings',
-            bankCode: '12345679',
-            institutionNumber: '12345678',
-            branchCode: '12345',
-            branchId: '12345',
-            accountNumber: '1234567890',
-            iban: '12345678901',
-            swiftCode: '1234578'
+            accountType: 'Current',
+            accountOwnerType: '1st Holder',
+            iban: 'BR1800360305000010009795493C1'
           }, x));
 
           this.sudoStore(x);
