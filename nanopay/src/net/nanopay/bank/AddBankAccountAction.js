@@ -32,6 +32,10 @@ foam.CLASS({
     'auth',
     'subject'
   ],
+
+  messages: [
+    { name: 'ACTION_LABEL', message: 'Add account' },
+  ],
   
   properties: [
     {
@@ -40,7 +44,9 @@ foam.CLASS({
     },
     {
       name: 'label',
-      value: 'Add account'
+      factory: function() {
+        return this.ACTION_LABEL;
+      }
     },
     {
       class: 'Function',
