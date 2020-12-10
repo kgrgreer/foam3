@@ -1840,6 +1840,12 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureBus
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureBusinessRelationship.BUSINESS_TYPE_ERROR",target:"Objetivo da relação de corretagem necessária"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureBusinessRelationship.NATURE_OF_BUSINESS_RELATIONSHIP.label",target:"Insira o objetivo do seu relacionamento com um corretor de câmbio"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureBusinessRelationship.SECTION_BUSINESS_RELATIONSHIP.title",target:"Objetivo da relação de corretagem"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureBusinessRelationship.BROKERAGE_INTERMEDIATION",target:"Intermediação Brokerage"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureBusinessRelationship.BUY_SELL_FOREIGN_CURRENCY",target:"Compra / Venda Moeda Estrangeira"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureBusinessRelationship.PREPAID_CARD",target:"Cartão Pré - Pago Prepaid Card"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureBusinessRelationship.INTERNATIONAL_REMITTANCES",target:"Remessas internacionais"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.NatureBusinessRelationship.WESTERN_UNION",target:"Western Union"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.SECTION_BUSINESS_CAPITAL.title",target:"Capital de negócios e patrimônio líquido"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.Document.UPLOAD_REQUEST_MSG",target:"Providenciar"})
