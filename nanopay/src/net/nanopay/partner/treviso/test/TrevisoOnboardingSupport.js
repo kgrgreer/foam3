@@ -318,8 +318,7 @@ foam.CLASS({
             branchCode: '12345',
             branchId: '12345',
             accountNumber: '1234567890',
-            iban: '12345678901',
-            swiftCode: '1234578'
+            iban: 'BR1500000000000010932840814P2'
           }, x));
 
           this.sudoStore(x);
