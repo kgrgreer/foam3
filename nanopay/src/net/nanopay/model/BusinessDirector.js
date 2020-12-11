@@ -45,8 +45,13 @@ foam.CLASS({
     { name: 'INVALID_DIRECTOR_NAME', message: 'Confirm your director\’s name' },
     { name: 'FOREIGN_ID_ERROR', message: 'RG/RNE required' },
     { name: 'NATIONALITY_ERROR', message: 'Nationality required' },
+<<<<<<< HEAD
     { name: 'PROOF_OF_ADDRESS', message: 'Proof of address documents required' },
     { name: 'PROOF_OF_IDENTIFICATION', message: 'Proof of identication documents required' }
+=======
+    { name: 'YES', message: 'Yes' },
+    { name: 'NO', message: 'No' },
+>>>>>>> 1a8ede60604f970f9f90825848a434e27b6d079b
   ],
 
   properties: [
@@ -67,6 +72,14 @@ foam.CLASS({
       name: 'lastName',
       gridColumns: 6,
       required: true
+    },
+    {
+      class: 'EMail',
+      name: 'email',
+      required: true,
+      visibility: function(type) {
+        return type === 'BR' ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      }
     },
     {
       class: 'String',
@@ -273,6 +286,29 @@ foam.CLASS({
       ]
     },
     {
+      class: 'Boolean',
+      name: 'hasSignedContratosDeCambio',
+      label: 'Has the person listed here signed the \'contratos de câmbio\'?',
+      help: `
+        Contratos de câmbio (foreign exchange contract) is a legal arrangement in which the
+        parties agree to transfer between them a certain amount of foreign exchange at a
+        predetermined rate of exchange, and as of a predetermined date.
+      `,
+      visibility: function(type) {
+        return type === 'BR' ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      },
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RadioView',
+          choices: [
+            [true, X.data.YES],
+            [false, X.data.NO]
+          ],
+          isHorizontal: true
+        };
+      }
+    },
+    {
       class: 'foam.nanos.fs.FileArray',
       name: 'documentsOfAddress',
       label: 'Please upload proof of address',
@@ -328,7 +364,7 @@ foam.CLASS({
           },
           errorMessage: 'PROOF_OF_IDENTIFICATION'
         }
-      ],
+      ]
     }
   ],
   methods: [

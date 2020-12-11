@@ -80,6 +80,7 @@ var classes = [
   'net.nanopay.payment.PaymentProviderPrerequisiteRule',
   'net.nanopay.payment.PaymentProviderCorridorAddCountryRule',
   'net.nanopay.payment.PaymentProviderCorridorAuthorizer',
+  'net.nanopay.payment.DestinationCorridorAuthorizer',
   'net.nanopay.tx.IBAN',
   'net.nanopay.account.Balance',
   'net.nanopay.account.InsufficientBalanceException',
@@ -1316,10 +1317,11 @@ var classes = [
   'net.nanopay.crunch.BusinessOwnershipToBeneficialOwnerDAO',
   'net.nanopay.crunch.onboardingModels.UserBirthDateData',
   'net.nanopay.crunch.onboardingModels.BusinessRegistrationDateData',
+  'net.nanopay.crunch.onboardingModels.BusinessLastRegistrationDateData',
   'net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData',
   'net.nanopay.crunch.onboardingModels.TaxIdNumberData',
-  'net.nanopay.crunch.onboardingModels.BusinessAccountData',
-  'net.nanopay.crunch.onboardingModels.CurrencyAmountInformation',
+  'net.nanopay.partner.treviso.TrevisoBusinessAccountData',
+  'net.nanopay.partner.treviso.TrevisoCurrencyAmountInformation',
   'net.nanopay.crunch.onboardingModels.CustomerBasicInformation',
 
   // crunch notification
