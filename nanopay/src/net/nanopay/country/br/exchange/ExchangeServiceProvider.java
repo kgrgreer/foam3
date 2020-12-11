@@ -367,7 +367,7 @@ public class ExchangeServiceProvider implements ExchangeService {
     if ( response.getInsertBoletoResult().getCODRETORNO() != 0 )
       throw new RuntimeException("Error while calling insertBoleto: " + response.getInsertBoletoResult().getMENSAGEM());
 
-    transaction.setReferenceNumber(response.getInsertBoletoResult().getNRREFERENCE());
+    transaction.setExternalInvoiceId(response.getInsertBoletoResult().getNRREFERENCE());
     transaction.setStatus(TransactionStatus.SENT);
     transaction.setCompletionDate(completionDate);
     return transaction;
@@ -426,10 +426,10 @@ public class ExchangeServiceProvider implements ExchangeService {
   }
 
   public Transaction updateTransactionStatus(Transaction transaction) throws RuntimeException {
-    if ( SafetyUtil.isEmpty(transaction.getReferenceNumber()) ) return transaction;
+    if ( SafetyUtil.isEmpty(transaction.getExternalInvoiceId()) ) return transaction;
 
     GetBoletoStatus request = new GetBoletoStatus();
-    request.setNrBoleto(transaction.getReferenceNumber());
+    request.setNrBoleto(transaction.getExternalInvoiceId());
     try {
       BoletoStatusResponse response = exchangeClient.getBoletoStatus(request);
       if ( response == null || response.getBoletoStatusResult() == null )

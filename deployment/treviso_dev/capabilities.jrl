@@ -41,7 +41,9 @@ p({
   enabled: true,
   permissionsGranted: [
     "paymentprovidercorridor.read.afex",
-    "paymentprovidercorridor.read.treviso"
+    "paymentprovidercorridor.read.treviso",
+    "paymentprovidercorridor.source.read.treviso",
+    "paymentprovidercorridor.target.read.afex"
   ]
 })
 p({

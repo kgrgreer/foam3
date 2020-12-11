@@ -15,43 +15,26 @@
  * from nanopay Corporation.
  */
 
-/**
- * @license
- * Copyright 2018 The FOAM Authors. All Rights Reserved.
- * http://www.apache.org/licenses/LICENSE-2.0
- */
-
 foam.CLASS({
   package: 'net.nanopay.tx',
-  name: 'FeeSummaryTransactionLineItem',
-  extends: 'net.nanopay.tx.SummaryTransactionLineItem',
+  name: 'GrandTotalLineItem',
+  extends: 'net.nanopay.tx.InfoLineItem',
 
-  javaImports: [
-    'net.nanopay.tx.Transfer',
-    'net.nanopay.tx.model.Transaction',
-    'foam.dao.DAO'
+  messages: [
+    { name: 'GRAND_TOTAL', message: 'Grand total' }
   ],
 
   properties: [
     {
-      class: 'String',
-      name: 'totalFee',
-      label: 'Fees'
-    },
-    {
-      name: 'lineItems',
-      hidden: false
-    },
-  ],
-
-  messages: [
-    { name: 'FEE', message: 'Service fees' }
+      name: 'amount',
+      label: 'Total',
+      visibility: 'RO'
+    }
   ],
 
   methods: [
     function toSummary() {
-      return this.FEE;
+      return this.GRAND_TOTAL;
     }
   ]
-
 });

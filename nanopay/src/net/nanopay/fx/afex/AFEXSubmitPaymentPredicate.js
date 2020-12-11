@@ -37,7 +37,7 @@ foam.CLASS({
       if ( NEW_OBJ.f(obj) instanceof AFEXFundingTransaction ) return false;
       AFEXTransaction afexTransaction = (AFEXTransaction) NEW_OBJ.f(obj);
       return afexTransaction.getStatus() == TransactionStatus.PENDING
-        && SafetyUtil.isEmpty( afexTransaction.getReferenceNumber() );
+        && SafetyUtil.isEmpty( afexTransaction.getExternalInvoiceId() );
       `
     }
   ]

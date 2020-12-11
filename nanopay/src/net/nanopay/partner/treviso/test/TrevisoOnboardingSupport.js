@@ -169,7 +169,7 @@ foam.CLASS({
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-          var cap =  net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.create({
+          var cap =  net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.create({
             address: user.address,
             jobTitle: 'Treasury Manager',
             phoneNumber: user.phoneNumber,
@@ -331,13 +331,13 @@ foam.CLASS({
           b = await this.client(x, 'accountDAO', net.nanopay.account.Account).put_(x, net.nanopay.bank.BRBankAccount.create({
             owner: user.id,
             name: 'savings',
-            bankCode: '12345679',
-            institutionNumber: '12345678',
-            branchCode: '12345',
-            branchId: '12345',
-            accountNumber: '1234567890',
-            iban: '12345678901',
-            swiftCode: '1234578'
+            accountType: 'Current',
+            accountOwnerType: '1st Holder',
+            iban: 'BR1800360305000010009795493C1',
+            // TODO: following just to satisfy Branch and Institution decorators
+            accountNumber: '12345678',
+            institutionNumber: '123',
+            branchId: '12345'
           }, x));
 
           this.sudoStore(x);
