@@ -61,13 +61,13 @@ foam.CLASS({
           AFEXServiceProvider afexService = (AFEXServiceProvider) x.get("afexServiceProvider");
 
           if (transaction.getStatus() == TransactionStatus.PENDING 
-            && SafetyUtil.isEmpty( transaction.getReferenceNumber() ) ) {
+            && SafetyUtil.isEmpty( transaction.getExternalInvoiceId() ) ) {
 
               try {
                 Transaction txn = afexService.submitPayment(transaction);
-                if ( ! SafetyUtil.isEmpty(txn.getReferenceNumber()) ) {
+                if ( ! SafetyUtil.isEmpty(txn.getExternalInvoiceId()) ) {
                   transaction.setStatus(TransactionStatus.SENT);
-                  transaction.setReferenceNumber(txn.getReferenceNumber());
+                  transaction.setExternalInvoiceId(txn.getExternalInvoiceId());
                   FXQuote fxQuote = (FXQuote) ((DAO) x.get("fxQuoteDAO")).find(Long.parseLong(transaction.getFxQuoteId()));            
                   if ( null != fxQuote ) {
                     Date date = null;

@@ -606,7 +606,7 @@ foam.CLASS({
                       .build();
 
                       // Add the pacs message to the reference data
-                      transaction.getReferenceData().put("Digital Transfer from PACS", this);
+                      transaction.getExternalData().put("Digital Transfer from PACS", this);
 
                       fObjTxn = txnDAO.put(transaction);
 

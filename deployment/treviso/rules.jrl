@@ -111,32 +111,6 @@ p({
 
 p({
     "class":"foam.nanos.ruler.Rule",
-    "id":"336c6130-373c-46d5-8a8b-dfcd9facc6bc",
-    "name":"Invoice No Capability Check Rule",
-    "priority":110,
-    "ruleGroup":"InvoiceNotification",
-    "documentation":"If invoice status is SUBMIT and there are no capables/capabilities set status to QUOTED",
-    "daoKey":"invoiceDAO",
-    "operation":0,
-    "after":false,
-    "action":{
-      "class":"net.nanopay.invoice.ruler.NoCapabilityCheckRule"
-    },
-    "predicate":{
-      "class":"foam.nanos.ruler.predicate.PropertyEQValue",
-      "propName":"status",
-      "propValue":{
-        "class":"net.nanopay.invoice.model.InvoiceStatus",
-        "ordinal":12
-      }
-    },
-    "enabled":true,
-    "saveHistory":true,
-    "lifecycleState":1
-})
-
-p({
-    "class":"foam.nanos.ruler.Rule",
     "id":"b6043450-fcc9-457a-a283-54dd02c7245e",
     "name":"Invoice Validate Capabilities Rule",
     "priority":100,

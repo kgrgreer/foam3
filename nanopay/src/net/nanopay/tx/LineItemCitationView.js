@@ -69,7 +69,7 @@ foam.CLASS({
       this.start()
         this.start('h3').add(this.data.toSummary()).end()
         this.forEach(self.prop, function(p) {
-          if ( p.label && ! p.hidden && ! p.visibility ) {
+          if ( p.label && ! p.hidden && p.visibility !== foam.u2.DisplayMode.HIDDEN ) {
              self.start(self.Cols)
                .add(p.label)
                .start(p, { mode: this.data.requiresUserInput && p.required ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.RO }).end()
