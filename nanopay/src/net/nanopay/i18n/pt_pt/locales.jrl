@@ -1202,7 +1202,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.UserBirthDateData.BIRTHDAY.documentation",target:"A data de nascimento da pessoa individual ou usuário real."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.UserBirthDateData.SECTION_SIGNING_OFFICER_PERSONAL_INFORMATION_SECTION.title",target:"Por favor, insira a data de nascimento do oficial signatário"})
 
-
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CustomerBasicInformation.NAME.label",target:"nome"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CustomerBasicInformation.INVALID_PHONE_ERROR",target:"Número de telefone comercial obrigatório"})
