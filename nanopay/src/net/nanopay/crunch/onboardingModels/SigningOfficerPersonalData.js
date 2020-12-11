@@ -57,16 +57,6 @@ foam.CLASS({
   ],
 
   properties: [
-    {
-      clss: 'String',
-      name: 'countryId',
-      documentation: 'country id for business',
-      hidden: true,
-      stroageTransient: true,
-      factory: function() {
-        return this.subject.user.address.countryId;
-      }
-    },
     foam.nanos.auth.User.ADDRESS.clone().copyFrom({
       section: 'signingOfficerAddressSection',
       label: '',
@@ -180,31 +170,6 @@ foam.CLASS({
       visibility: 'RW',
       gridColumns: 12
     }),
-    {
-      class: 'Boolean',
-      name: 'hasSignedContratosDeCambio',
-      label: 'Have you signed the \'contratos de câmbio\'?',
-      section: 'signingOfficerPersonalInformationSection',
-      help: `
-        Contratos de câmbio (foreign exchange contract) is a legal arrangement in which the
-        parties agree to transfer between them a certain amount of foreign exchange at a
-        predetermined rate of exchange, and as of a predetermined date.
-      `,
-      visibility: function(countryId) {
-        return countryId === 'BR' ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
-      },
-      view: function(_, X) {
-        return {
-          class: 'foam.u2.view.RadioView',
-          choices: [
-            [true, X.data.YES],
-            [false, X.data.NO]
-          ],
-          isHorizontal: true
-        };
-      },
-      gridColumns: 12
-    },
     {
       name: 'businessId',
       class: 'Reference',
