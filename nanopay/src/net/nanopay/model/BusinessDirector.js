@@ -45,13 +45,10 @@ foam.CLASS({
     { name: 'INVALID_DIRECTOR_NAME', message: 'Confirm your director\’s name' },
     { name: 'FOREIGN_ID_ERROR', message: 'RG/RNE required' },
     { name: 'NATIONALITY_ERROR', message: 'Nationality required' },
-<<<<<<< HEAD
-    { name: 'PROOF_OF_ADDRESS', message: 'Proof of address documents required' },
-    { name: 'PROOF_OF_IDENTIFICATION', message: 'Proof of identication documents required' }
-=======
     { name: 'YES', message: 'Yes' },
     { name: 'NO', message: 'No' },
->>>>>>> 1a8ede60604f970f9f90825848a434e27b6d079b
+    { name: 'PROOF_OF_ADDRESS', message: 'Proof of address documents required' },
+    { name: 'PROOF_OF_IDENTIFICATION', message: 'Proof of identication documents required' }
   ],
 
   properties: [
