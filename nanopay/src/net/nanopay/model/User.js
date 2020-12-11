@@ -370,11 +370,13 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'externalId'
+      name: 'externalId',
+      visibility: 'HIDDEN'
     },
     {
       class: 'Map',
-      name: 'externalData'
+      name: 'externalData',
+      visibility: 'HIDDEN'
     }
   ],
 
