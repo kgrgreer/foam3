@@ -79,6 +79,7 @@ p({
   spid: "treviso",
   "asyncAction":{ "class":"net.nanopay.country.br.crunch.ExchangeServiceOnboardingRule" },
   "enabled":false,
+  "saveHistory":true,
   "lifecycleState":1
 })
 
@@ -427,6 +428,7 @@ p({
   },
   "asyncAction":{ "class":"net.nanopay.partner.afex.crunch.AFEXBusinessOnboardingRule"},
   "enabled":true,
+  "saveHistory":true,
   "lifecycleState":1
 })
 

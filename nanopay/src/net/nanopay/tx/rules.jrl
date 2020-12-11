@@ -158,7 +158,6 @@ p({
   },
   "after":false,
   "enabled":true,
-  "saveHistory":false,
   "lifecycleState":1
 })
 p({
@@ -662,6 +661,7 @@ p({
     "class":"net.nanopay.tx.ruler.CascadingCancelAction",
   },
   "enabled":true,
+  "saveHistory":true,
   "lifecycleState":1
 })
 
