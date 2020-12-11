@@ -52,8 +52,8 @@ foam.CLASS({
       name: 'createPermission',
       args: [
         { name: 'op', class: 'String' },
-        { name: 'paymentProvider', class: 'String' },
-        { name: 'id', class: 'String' }
+        { name: 'paymentProvider', class: 'Object' },
+        { name: 'id', class: 'Object' }
       ],
       type: 'String',
       documentation: `
@@ -62,8 +62,8 @@ foam.CLASS({
       `,
       javaCode: `
         String permission = getPermissionPrefix() + "." + getCorridorType() + "." + op;
-        if ( paymentProvider != null ) permission += "." + paymentProvider.toLowerCase();
-        if ( id != null ) permission += "." + id;
+        if ( paymentProvider != null ) permission += "." + String.valueOf(paymentProvider).toLowerCase();
+        if ( id != null ) permission += "." + String.valueOf(id);
         return permission;
       `
     },
@@ -80,9 +80,9 @@ foam.CLASS({
     {
       name: 'authorizeOnRead',
       javaCode:  `
-        String permission = createPermission("read", String.valueOf(obj.getProperty("provider")), String.valueOf(obj.getProperty("id")));
-        String idPermission = createPermission("read", null, String.valueOf(obj.getProperty("id")));
-        String paymentProviderPermission = createPermission("read", String.valueOf(obj.getProperty("provider")), null);
+        String permission = createPermission("read", obj.getProperty("provider"), obj.getProperty("id"));
+        String idPermission = createPermission("read", null, obj.getProperty("id"));
+        String paymentProviderPermission = createPermission("read", obj.getProperty("provider"), null);
         AuthService authService = (AuthService) x.get("auth");
     
         if ( authService.check(x, permission) || authService.check(x, idPermission) || authService.check(x, paymentProviderPermission) ) {}
@@ -93,9 +93,9 @@ foam.CLASS({
     {
       name: 'authorizeOnUpdate',
       javaCode:  `
-        String permission = createPermission("update", String.valueOf(oldObj.getProperty("provider")), String.valueOf(oldObj.getProperty("id")));
-        String idPermission = createPermission("update", null, String.valueOf(oldObj.getProperty("id")));
-        String paymentProviderPermission = createPermission("update", String.valueOf(oldObj.getProperty("provider")), null);
+        String permission = createPermission("update", oldObj.getProperty("provider"), oldObj.getProperty("id"));
+        String idPermission = createPermission("update", null, oldObj.getProperty("id"));
+        String paymentProviderPermission = createPermission("update", oldObj.getProperty("provider"), null);
         AuthService authService = (AuthService) x.get("auth");
     
         if ( authService.check(x, permission) || authService.check(x, idPermission) || authService.check(x, paymentProviderPermission) ) {}
@@ -106,9 +106,9 @@ foam.CLASS({
     {
       name: 'authorizeOnDelete',
       javaCode:  `
-        String permission = createPermission("remove", String.valueOf(obj.getProperty("provider")), String.valueOf(obj.getProperty("id")));
-        String idPermission  = createPermission("remove", null, String.valueOf(obj.getProperty("id")));
-        String paymentProviderPermission = createPermission("remove", String.valueOf(obj.getProperty("provider")), null);
+        String permission = createPermission("remove", obj.getProperty("provider"), obj.getProperty("id"));
+        String idPermission  = createPermission("remove", null, obj.getProperty("id"));
+        String paymentProviderPermission = createPermission("remove", obj.getProperty("provider"), null);
 
         AuthService authService = (AuthService) x.get("auth");
     
