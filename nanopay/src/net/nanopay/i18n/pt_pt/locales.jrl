@@ -1491,6 +1491,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.GetDefaultCurre
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.GetDefaultCurrency.RESPONSE.documentation",target:"\n          O servidor definirá isso com a denominação da conta bancária verificada do contato.\n    "})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"Bank accounts",target:"Contas bancárias"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"View all bank accounts.",target:"Veja todas as contas bancárias."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.DELETE_DEFAULT",target:"Não foi possível excluir contas padrão. Selecione uma nova conta padrão, se houver."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.UNABLE_TO_DELETE",target:"Erro ao excluir conta: "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.SUCCESSFULLY_DELETED",target:"Conta bancária excluída."})
@@ -1897,8 +1898,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"bankaccounts.label",target:"Cont
 p({class:"foam.i18n.Locale",locale:"pt",source:"businesses.label",target:"Negócios"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"capability.main.banking.label",target:"Contas bancárias"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"capability.main.banking.handler.config.browseTitle",target:"Contas bancárias"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"capability.main.banking.handler.config.browseSubtitle",target:"Veja todas as contas bancárias."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"capability.main.contacts.label",target:"Contatos"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"capability.main.contacts.handler.title",target:"Contatos"})
