@@ -2058,6 +2058,10 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirect
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirector.HAS_SIGNED_CONTRATOS_DE_CAMBIO.help",target:"Contratos de câmbio é um acordo legal no qual as partes concordam em transferir entre si uma determinada quantia de moeda estrangeira a uma taxa de câmbio predeterminada e em uma data predeterminada."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirector.YES",target:"Sim"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirector.NO",target:"Não"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirector.PROOF_OF_ADDRESS",target:"Documentos comprovativos de endereço necessários"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirector.PROOF_OF_IDENTIFICATION",target:"Comprovante de documentos de identificação necessários"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirector.DOCUMENTS_OF_ADDRESS.label",target:"Carregue o comprovante de endereço"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirector.DOCUMENTS_OF_ID.label",target:"Carregue um comprovante de identificação"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.OWNERSHIP_PERCENT.label",target:"Porcentagem de propriedade"})
 p({class:"foam.i18n.Locale",target:"Adicionar detalhes para o proprietário #"})
@@ -2097,6 +2101,10 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwne
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.HAS_SIGNED_CONTRATOS_DE_CAMBIO.label",target:"A pessoa listada aqui assinou os contratos de câmbio"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.HAS_SIGNED_CONTRATOS_DE_CAMBIO.help",target:"Contratos de câmbio é um acordo legal no qual as partes concordam em transferir entre si uma determinada quantia de moeda estrangeira a uma taxa de câmbio predeterminada e em uma data predeterminada."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.VIEW_COMPLIANCE_HISTORY.label",target:"Ver Histórico de Conformidade"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.DOCUMENTS_OF_ADDRESS.label",target:"Carregue o comprovante de endereço"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.DOCUMENTS_OF_ID.label",target:"Carregue um comprovante de identificação"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.PROOF_OF_ADDRESS",target:"Documentos comprovativos de endereço necessários"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.PROOF_OF_IDENTIFICATION",target:"Comprovante de documentos de identificação necessários"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.YES",target:"Sim"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.NO",target:"Não"})
 
