@@ -44,7 +44,9 @@ foam.CLASS({
     { name: 'INVALID_CPF', message: 'Valid CPF number required' },
     { name: 'INVALID_DIRECTOR_NAME', message: 'Confirm your director\’s name' },
     { name: 'FOREIGN_ID_ERROR', message: 'RG/RNE required' },
-    { name: 'NATIONALITY_ERROR', message: 'Nationality required' }
+    { name: 'NATIONALITY_ERROR', message: 'Nationality required' },
+    { name: 'YES', message: 'Yes' },
+    { name: 'NO', message: 'No' },
   ],
 
   properties: [
@@ -65,6 +67,14 @@ foam.CLASS({
       name: 'lastName',
       gridColumns: 6,
       required: true
+    },
+    {
+      class: 'EMail',
+      name: 'email',
+      required: true,
+      visibility: function(type) {
+        return type === 'BR' ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      }
     },
     {
       class: 'String',
@@ -269,6 +279,29 @@ foam.CLASS({
           errorMessage: 'NATIONALITY_ERROR'
         }
       ]
+    },
+    {
+      class: 'Boolean',
+      name: 'hasSignedContratosDeCambio',
+      label: 'Has the person listed here signed the \'contratos de câmbio\'?',
+      help: `
+        Contratos de câmbio (foreign exchange contract) is a legal arrangement in which the
+        parties agree to transfer between them a certain amount of foreign exchange at a
+        predetermined rate of exchange, and as of a predetermined date.
+      `,
+      visibility: function(type) {
+        return type === 'BR' ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      },
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RadioView',
+          choices: [
+            [true, X.data.YES],
+            [false, X.data.NO]
+          ],
+          isHorizontal: true
+        };
+      }
     }
   ],
   methods: [

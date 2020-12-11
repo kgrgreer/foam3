@@ -176,6 +176,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/ExpirySummaryTransactionLineItem' },
   { name: 'net/nanopay/tx/TransactionException' },
   { name: 'net/nanopay/tx/UnsupportedTransactionException' },
+  { name: 'net/nanopay/tx/GrandTotalLineItem' },
 
   { name: 'net/nanopay/model/CurrencyAmount' },
   { name: 'net/nanopay/model/BusinessSector' },
@@ -1640,6 +1641,7 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/onboardingModels/CreateRegisterPaymentProviderUCJ' },
   { name: 'net/nanopay/crunch/onboardingModels/InitialBusinessData' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerPersonalData' },
+  { name: 'net/nanopay/partner/treviso/SigningOfficerPersonalDataTreviso' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerQuestion' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerByDefaultRule' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessInformationData' },
@@ -1653,6 +1655,7 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/onboardingModels/UserBirthDateData' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessIncorporationDateData' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessRegistrationDateData' },
+  { name: 'net/nanopay/crunch/onboardingModels/BusinessLastRegistrationDateData' },
   { name: 'net/nanopay/crunch/onboardingModels/TaxIdNumberData' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessAccountData' },
   { name: 'net/nanopay/crunch/onboardingModels/CurrencyAmountInformation' },

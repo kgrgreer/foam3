@@ -298,19 +298,53 @@ async function execute(x) {
         test(false, 'createBusinessBankAccount: '+(e.message || e));
         throw e;
       }
+
       var contact;
+      var contactbank;
+      // US Contact US-USD bank Account
       try {
-        contact = await support.createContact(x, business);
-        test(true, 'createBusinessContact');
+        contact = await support.createUSContact(x, business, 1);
+        test(true, 'createUSContact');
       } catch (e) {
-        test(false, 'createBusinessContact: '+(e.message || e));
+        test(false, 'createUSContact: '+(e.message || e));
         throw e;
       }
       try {
-        let contactbank = await support.createUSBankAccount(x, contact);
-        test(true, 'createBusinessContactBankAccount');
+        contactbank = await support.createUSBankAccount(x, contact);
+        test(true, 'createUSBankAccount');
       } catch (e) {
-        test(false, 'createBusinessContactBankAccount: '+(e.message || e));
+        test(false, 'createUSBankAccount: '+(e.message || e));
+        throw e;
+      }
+      try {
+        contact.bankAccount = contactbank.id;
+        await business.contacts.put(contact);
+        test(true, 'adding business US contact: ' + contact.id + ', account: ' + contactbank.id);
+      } catch (e) {
+        test(false, 'adding business US contact: ' + contact.id + ', account: ' + contactbank.id + '. ' +(e.message || e));
+        throw e;
+      }
+      // CA Contact CA-CAD bank Account
+      try {
+        contact = await support.createCAContact(x, business, 1);
+        test(true, 'createCAContact');
+      } catch (e) {
+        test(false, 'createCAContact: '+(e.message || e));
+        throw e;
+      }
+      try {
+        contactbank = await support.createContactCABankAccount(x, contact);
+        test(true, 'createContactCABankAccount');
+      } catch (e) {
+        test(false, 'createContactCABankAccount: '+(e.message || e));
+        throw e;
+      }
+      try {
+        contact.bankAccount = contactbank.id;
+        await business.contacts.put(contact);
+        test(true, 'adding business CA contact: ' + contact.id + ', account: ' + contactbank.id);
+      } catch (e) {
+        test(false, 'adding business CA contact: ' + contact.id + ', account: ' + contactbank.id + '. ' +(e.message || e));
         throw e;
       }
 

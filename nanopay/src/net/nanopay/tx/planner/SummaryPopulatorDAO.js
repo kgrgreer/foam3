@@ -205,6 +205,7 @@ foam.CLASS({
           destination = (Currency) currencyDAO.find(quote.getDestinationUnit());
         }
         fxSummary.setRate(formatRate(fxRate, source, destination));
+        fxSummary.setInverseRate(formatRate(1.0 / fxRate, destination, source));
         txn.addLineItems(new TransactionLineItem[] { fxSummary });
 
         // Update txn amount/destinationAmount based on the final fxRate
