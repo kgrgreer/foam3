@@ -3152,8 +3152,9 @@ p({class:"foam.i18n.Locale",locale:"pt","source":"9d4d667c-04c3-11eb-adc1-0242ac
 p({class:"foam.i18n.Locale",locale:"pt","source":"af3d9c28-0674-11eb-adc1-0242ac120002.name","target":"Informações da conta comercial"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"4c46cdb8-06b2-11eb-adc1-0242ac120002.name","target":"Natureza da relação comercial"})
 
-p({class:"foam.i18n.Locale",locale:"pt","source":"dfbe9220-ba4e-42d1-9bed-f4b4f8efcbb8.name","target":"Capacidade de fatura Treviso"})
-p({class:"foam.i18n.Locale",locale:"pt","source":"dfbe9220-ba4e-42d1-9bed-f4b4f8efcbb8.description","target":"A capacidade específica capaz para faturas em Treviso"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"invoice.capable.treviso.name","target":"Requisitos de fatura"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"invoice.capable.treviso.description","target":"A capacidade específica capaz para faturas em Treviso"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"invoice.capable.treviso.requirementViewTitle","target":"Você será solicitado a selecionar um código de natureza para esta transação e fornecer o documento necessário."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.EDIT.label",target:"Ver detalhes"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.ADD_BANK_ACCOUNT.label",target:"Adicionar conta bancária"})
