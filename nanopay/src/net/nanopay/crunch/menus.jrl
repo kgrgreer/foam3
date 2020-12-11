@@ -49,7 +49,6 @@ p({
       "editPredicate":{"class":"foam.mlang.predicate.False"},
       "searchMode": 2,
       "primaryAction": {"class":"net.nanopay.bank.AddBankAccountAction"},
-      "disableBrowseViewDataSet": true,
       "browseViews": [
         {
           "class": "foam.comics.v2.namedViews.NamedViewCollection",

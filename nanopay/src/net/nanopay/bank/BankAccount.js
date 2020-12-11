@@ -419,6 +419,7 @@ foam.CLASS({
       label: 'Nickname',
       section: 'accountInformation',
       order: 4,
+      tableWidth: 168,
       validateObj: function(name) {
         if ( name === '' || ! name ) {
           return this.NICKNAME_REQUIRED;
