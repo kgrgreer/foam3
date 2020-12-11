@@ -1216,6 +1216,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessDirectorsData.NO_DIRECTORS_NEEDED.value",target:"Não são necessários diretores de negócios para este tipo de negócio. Prossiga para a próxima etapa."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessDirectorsData.SECTION_DIRECTORS_INFO_SECTION.title",target:"Informação do diretor"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessDirectorsData.BUSINESS_DIRECTORS.documentation",target:"Conjunto de diretores de negócios."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessDirectorsData.NO_DIR_NEEDED",target:"Não são necessários diretores de negócios para este tipo de negócio. Prossiga para a próxima etapa."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CertifyDataReviewed.REVIEW_REQUIRED_ERROR",target:"Todos os dados devem ser analisados por um oficial de assinatura."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CertifyDataReviewed.REVIEWED.label",target:"Certifico que todos os dados foram revisados."})
@@ -1429,11 +1430,14 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.A
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.ACCOUNT_TYPE.label",target:"tipo de conta"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.ACCOUNT_TYPE.view.placeholder",target:"Por favor selecione"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.ACCOUNT_OWNER_TYPE.label",target:"Titular da conta"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.ACCOUNT_OWNER_TYPE.label",target:"Titularidade"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.ACCOUNT_OWNER_TYPE.view.placeholder",target:"Por favor selecione"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.IBAN.label",target:"Número de conta bancária internacional (IBAN)"})
 //p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.DESC.label",target:"desc pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.TYPE.label",target:"tipo"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.HOLDER2",target:"Conjunta"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.CURRENT",target:"conta corrente"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.SAVINGS",target:"conta poupança"})
 
 //CA
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.TRANSIT_NUMBER_REQUIRED",target:"Número de trânsito obrigatório."})
