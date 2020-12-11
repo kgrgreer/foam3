@@ -200,87 +200,6 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"777af38a-8225-87c8-dfdf-eeb15f71215f-123",
-  "name":"Complete your signing officer information",
-  "of":"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData",
-  "description":"Authorization to sign on behalf of the business",
-  "version":"0",
-  "visibilityPredicate":  { class: "foam.mlang.predicate.True" },
-  "enabled":true,
-  "icon":"/images/capabilityIcons/SigningOfficerIcon.svg",
-  "daoKey":"userDAO",
-  "contextDAOFindKey":"subject.realuser",
-  "associatedEntity":2,
-  "keywords":["featured"],
-  "permissionsGranted":[
-    "certifydatareviewed.rw.reviewed",
-    "user.invoice.pay",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.certifyownerspercent.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.dualpartyagreementcad.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.tripartyagreementcad.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.usdafexterms.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.nanopayinternationalpaymentscustomeragreement.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.afxmassachusettsdisclosure.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.afxnewyorkdisclosure.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.afxwashingtondisclosure.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.afxcaliforniadisclosure.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.afxarizonadisclosure.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.tripartyagreementusd.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.afxcoloradodisclosure.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.abliitermsandconditions.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.abliiprivacypolicy.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.cadafexterms.section.reviewAgreementDocumentsSection"
-  ],
-  "permissionsIntercepted": [
-    "certifydatareviewed.rw.reviewed",
-    "user.invoice.pay",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.certifyownerspercent.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.dualpartyagreementcad.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.tripartyagreementcad.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.usdafexterms.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.nanopayinternationalpaymentscustomeragreement.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.afxmassachusettsdisclosure.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.afxnewyorkdisclosure.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.afxwashingtondisclosure.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.afxcaliforniadisclosure.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.afxarizonadisclosure.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.tripartyagreementusd.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.afxcoloradodisclosure.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.abliitermsandconditions.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.abliiprivacypolicy.section.reviewAgreementDocumentsSection",
-    "net.nanopay.crunch.acceptancedocuments.capabilities.cadafexterms.section.reviewAgreementDocumentsSection"
-  ],
-  "interceptIf":{ "class":"net.nanopay.crunch.predicate.SigningOfficerCapabilityInterceptPredicate" },
-  "availabilityPredicate":
-  {
-    "class":"foam.mlang.predicate.And",
-    "args": [
-      { "class":"net.nanopay.crunch.predicate.SigningOfficerPrivilegesRequested" },
-      {
-        "class":"net.nanopay.crunch.predicate.CheckUserCountry",
-        "country":"BR"
-      }
-    ]
-  },
-  "visibilityPredicate": {
-    "class":"foam.mlang.predicate.Not",
-    "arg1": {
-      "class":"foam.nanos.crunch.predicate.CapabilityGranted",
-      "capabilityId":"777af38a-8225-87c8-dfdf-eeb15f71215f-123",
-      "subjectFromUCJ":false
-    }
-  },
-  "wizardConfig": {
-    "class": "foam.u2.crunch.EasyCrunchWizard",
-    "allowSkipping": false
-  },
-  "requirementViewTitle":"Have your signing officer documents ready. You can save your progress and come back later."
-})
-
-p({
-  "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-14",
   "name":"Certify Data Reviewed",
   "of":"net.nanopay.crunch.onboardingModels.CertifyDataReviewed",
@@ -362,7 +281,11 @@ p({
     "menu.read.capability.main.invoices.receivables",
     "menu.read.capability.main.invoices.payables",
     "paymentprovidercorridor.read.bmo",
-    "paymentprovidercorridor.read.rbc"
+    "paymentprovidercorridor.read.rbc",
+    "paymentprovidercorridor.source.read.bmo",
+    "paymentprovidercorridor.source.read.rbc",
+    "paymentprovidercorridor.target.read.bmo",
+    "paymentprovidercorridor.target.read.rbc"
   ],
   "permissionsIntercepted": [
     "business.invoice.pay"
@@ -403,10 +326,21 @@ p({
     "menu.read.capability.main.invoices.payables",
     "paymentprovidercorridor.read.bmo",
     "paymentprovidercorridor.read.rbc",
+    "paymentprovidercorridor.source.read.bmo",
+    "paymentprovidercorridor.source.read.rbc",
+    "paymentprovidercorridor.target.read.bmo",
+    "paymentprovidercorridor.target.read.rbc"
     "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
+    "paymentprovidercorridor.source.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
+    "paymentprovidercorridor.target.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
     "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
+    "paymentprovidercorridor.source.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
+    "paymentprovidercorridor.target.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
     "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15f7afexus-us",
-    "paymentprovidercorridor.read.kotak"
+    "paymentprovidercorridor.source.read.554af38a-8125-87c8-dfdf-eeb15f7afexus-us",
+    "paymentprovidercorridor.target.read.554af38a-8125-87c8-dfdf-eeb15f7afexus-us",
+    "paymentprovidercorridor.read.kotak",
+    "paymentprovidercorridor.target.read.kotak"
   ],
   "permissionsIntercepted": [
     "business.invoice.pay"
@@ -443,9 +377,16 @@ p({
     "menu.read.capability.main.invoices.receivables",
     "menu.read.capability.main.invoices.payables",
     "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
+    "paymentprovidercorridor.source.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
+    "paymentprovidercorridor.target.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
     "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
+    "paymentprovidercorridor.source.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
+    "paymentprovidercorridor.target.read.554af38a-8125-87c8-dfdf-eeb15fafexus-ca",
     "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15f7afexus-us",
-    "paymentprovidercorridor.read.kotak"
+    "paymentprovidercorridor.source.read.554af38a-8125-87c8-dfdf-eeb15f7afexus-us",
+    "paymentprovidercorridor.target.read.554af38a-8125-87c8-dfdf-eeb15f7afexus-us",
+    "paymentprovidercorridor.read.kotak",
+    "paymentprovidercorridor.target.read.kotak"
   ],
   "permissionsIntercepted": [
     "business.invoice.pay"
@@ -914,6 +855,18 @@ p({
   "name":"Business Registration Date",
   "of":"net.nanopay.crunch.onboardingModels.BusinessRegistrationDateData",
   "description":"Business Registration Date",
+  "daoKey": "businessDAO",
+  "contextDAOFindKey": "subject.user",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-19",
+  "name":"Business Last Registration Date",
+  "of":"net.nanopay.crunch.onboardingModels.BusinessLastRegistrationDateData",
+  "description":"Business Last Registration Date",
   "daoKey": "businessDAO",
   "contextDAOFindKey": "subject.user",
   "version":"0",

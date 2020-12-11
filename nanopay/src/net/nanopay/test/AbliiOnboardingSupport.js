@@ -609,6 +609,7 @@ foam.CLASS({
         }
       }
     },
+    //TODO: move this into TrevisoOnboardingSupport
     {
       name: 'businessCapitalAndEquity',
       code: async function(x, business) {
@@ -619,7 +620,7 @@ foam.CLASS({
         ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-          var cap = net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.create({
+          var cap = net.nanopay.partner.treviso.TrevisoCurrencyAmountInformation.create({
             capital: {
               class: 'net.nanopay.model.CurrencyAmount',
               currency: 'USD',
@@ -635,6 +636,7 @@ foam.CLASS({
         }
       }
     },
+    //TODO: move this into TrevisoOnboardingSupport
     {
       name: 'businessAccountData',
       code: async function(x, business) {
@@ -644,7 +646,7 @@ foam.CLASS({
         ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-          var cap = net.nanopay.crunch.onboardingModels.BusinessAccountData.create({
+          var cap = net.nanopay.partner.treviso.TrevisoBusinessAccountData.create({
             customers: [
               {
                 class: 'net.nanopay.crunch.onboardingModels.CustomerBasicInformation',
@@ -758,32 +760,62 @@ foam.CLASS({
       }
     },
     {
-      name: 'createContact',
+      name: 'createCAContact',
       type: 'net.nanopay.contacts.Contact',
-      code: async function(x, business, num) {
-        if ( ! c ) {
-          c = await this.client(x, 'contactDAO', net.nanopay.contacts.Contact).put_(x, net.nanopay.contacts.Contact.create({
-            owner: business.id,
-            businessId: business.id,
-            firstName: `CAContact${num}`,
-            lastName: business.id,
-            organization: business.id,
-            email: `ca.contact${num}@nanopay.net`,
-            group: 'sme',
-            confirm: true,
-            businessAddress: {
-              class: 'foam.nanos.auth.Address',
-              structured: true,
-              streetNumber: '1',
-              streetName: 'Street',
-              regionId: 'CA-ON',
-              countryId: 'CA',
-              city: 'Toronto',
-              postalCode: 'X1X 1X1'
-            }
-          }, x));
-        }
-        return c;
+      code: async function(x, business) {
+        return await this.client(x, 'contactDAO', net.nanopay.contacts.Contact).put_(x, net.nanopay.contacts.Contact.create({
+          owner: business.id,
+          businessId: business.id,
+          firstName: 'CAContact'+business.id,
+          lastName: business.id,
+          organization: business.id,
+          email: 'ca.contact@nanopay.net',
+          group: 'sme',
+          confirm: true,
+          businessAddress: {
+            class: 'foam.nanos.auth.Address',
+            structured: true,
+            streetNumber: '1',
+            streetName: 'Street',
+            regionId: 'CA-ON',
+            countryId: 'CA',
+            city: 'Toronto',
+            postalCode: 'X1X 1X1'
+          }
+        }, x));
+      }
+    },
+    {
+      name: 'createUSContact',
+      type: 'net.nanopay.contacts.Contact',
+      code: async function(x, business) {
+        return await this.client(x, 'contactDAO', net.nanopay.contacts.Contact).put_(x, net.nanopay.contacts.Contact.create({
+          owner: business.id,
+          businessId: business.id,
+          firstName: 'USContact-'+business.id,
+          lastName: business.id,
+          organization: business.id,
+          email: 'us.contact@nanopay.net',
+          group: 'sme',
+          confirm: true,
+          businessAddress: {
+            class: 'foam.nanos.auth.Address',
+            structured: true,
+            streetNumber: '1',
+            streetName: 'Street',
+            regionId: 'US-CA',
+            countryId: 'US',
+            city: 'Palto Alto',
+            postalCode: '12345'
+          }
+        }, x));
+      }
+    },
+    {
+      name: 'updateContact',
+      type: 'net.nanopay.contacts.Contact',
+      code: async function(x, contact) {
+        return await this.client(x, 'contactDAO', net.nanopay.contacts.Contact).put_(x, contact);
       }
     },
     {

@@ -117,10 +117,10 @@ foam.CLASS({
 
           /**
            * Generate 3 random digits to append to CAXxxx, this will be the
-           * Canadian reference number for the demo
+           * Canadian external invoice Id for the demo
            * */
-          String referenceNumber = "CAxxx" + UUID.randomUUID().toString().substring(0, 3).toUpperCase();
-          completedTransaction.setReferenceNumber(referenceNumber);
+          String externalInvoiceId = "CAxxx" + UUID.randomUUID().toString().substring(0, 3).toUpperCase();
+          completedTransaction.setExternalInvoiceId(externalInvoiceId);
           canadianTransactionDAO.put(completedTransaction);
 
           /**
@@ -132,7 +132,7 @@ foam.CLASS({
             digits[i] = (char) (getRandom().nextInt(10) + '0');
           }
 
-          completedTransaction.setReferenceNumber(new String(digits));
+          completedTransaction.setExternalInvoiceId(new String(digits));
           indiaTransactionDAO.put(completedTransaction);
 
           return completedTransaction;

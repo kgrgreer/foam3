@@ -199,7 +199,7 @@ foam.CLASS({
                 detailView: {
                   class: 'foam.u2.DetailView',
                   properties: [
-                    this.Transaction.REFERENCE_NUMBER,
+                    this.Transaction.EXTERNAL_INVOICE_ID,
                     this.Transaction.DATE,
                     this.Transaction.PAYEE_ID,
                     this.Transaction.AMOUNT,

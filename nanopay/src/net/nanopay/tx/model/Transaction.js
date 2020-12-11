@@ -98,7 +98,7 @@ foam.CLASS({
     'status',
     'created',
     'completionDate',
-    'referenceNumber'
+    'externalInvoiceId'
   ],
 
   tableColumns: [
@@ -109,7 +109,7 @@ foam.CLASS({
     'destinationAccount.name',
     'created',
     'completionDate',
-    'referenceNumber'
+    'externalInvoiceId'
   ],
 
   sections: [
@@ -441,8 +441,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'referenceNumber',
-      label: 'Reference Number',
+      name: 'externalInvoiceId',
+      label: 'External Invoice ID',
       section: 'basicInfo',
       includeInDigest: true
     },
@@ -793,8 +793,13 @@ foam.CLASS({
       }
     },
     {
+      class: 'String',
+      name: 'externalId',
+      section: 'basicInfo'
+    },
+    {
       class: 'Map',
-      name: 'referenceData',
+      name: 'externalData',
       section: 'basicInfo'
     },
     {
@@ -969,8 +974,8 @@ foam.CLASS({
       javaCode: `
       setInvoiceId(other.getInvoiceId());
       setStatus(other.getStatus());
-      setReferenceData(other.getReferenceData());
-      setReferenceNumber(other.getReferenceNumber());
+      setExternalData(other.getExternalData());
+      setExternalInvoiceId(other.getExternalInvoiceId());
       setLifecycleState(other.getLifecycleState());
       setStatusHistory(other.getStatusHistory());
       `

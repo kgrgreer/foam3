@@ -158,7 +158,7 @@ foam.CLASS({
       section: 'transactionInformation',
       order: 11
     }),
-    net.nanopay.tx.model.Transaction.REFERENCE_NUMBER.clone().copyFrom({
+    net.nanopay.tx.model.Transaction.EXTERNAL_INVOICE_ID.clone().copyFrom({
       visibility: 'RO',
       gridColumns: 4,
       section: 'transactionInformation',
@@ -182,7 +182,7 @@ foam.CLASS({
     net.nanopay.tx.model.Transaction.LINE_ITEMS.clone().copyFrom({
       section: 'transactionLineItems'
     }),
-    net.nanopay.tx.model.Transaction.REFERENCE_DATA.clone().copyFrom({
+    net.nanopay.tx.model.Transaction.EXTERNAL_DATA.clone().copyFrom({
       section: 'referenceInformation'
     })
   ],
