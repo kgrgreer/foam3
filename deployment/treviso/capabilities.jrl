@@ -842,8 +842,8 @@ p({
       "subjectFromUCJ":false
     }
   },
-  "wizardletConfig": {
-    "class": "foam.u2.wizard.StepWizardConfig",
+  "wizardConfig": {
+    "class": "foam.u2.crunch.EasyCrunchWizard",
     "allowSkipping": false
   },
   "requirementViewTitle":"Have your signing officer documents ready. You can save your progress and come back later."
