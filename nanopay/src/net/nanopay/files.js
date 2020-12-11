@@ -1657,8 +1657,8 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/onboardingModels/CustomerBasicInformation' },
 
   // crunch onboarding only for treviso
-  { name: 'net/nanopay/country/br/TrevisoBusinessAccountData' },
-  { name: 'net/nanopay/country/br/TrevisoCurrencyAmountInformation' },
+  { name: 'net/nanopay/partner/treviso/TrevisoBusinessAccountData' },
+  { name: 'net/nanopay/partner/treviso/TrevisoCurrencyAmountInformation' },
 
   { name: 'net/nanopay/payment/PayeeCurrencyService' },
   { name: 'net/nanopay/payment/PayeeCurrency' },

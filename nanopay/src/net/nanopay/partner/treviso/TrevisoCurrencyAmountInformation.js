@@ -16,7 +16,7 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.country.br',
+  package: 'net.nanopay.partner.treviso',
   name: 'TrevisoCurrencyAmountInformation',
 
   documentation: `Collect equity and capital information for business`,
@@ -52,7 +52,7 @@ foam.CLASS({
           args: ['capital', 'capital$errors_'],
           predicateFactory: function(e) {
             return e.EQ(foam.mlang.IsValid.create({
-                arg1: net.nanopay.country.br.TrevisoCurrencyAmountInformation.CAPITAL
+                arg1: net.nanopay.partner.treviso.TrevisoCurrencyAmountInformation.CAPITAL
               }), true);
           },
           errorMessage: 'INVALID_CAPITAL'
@@ -76,7 +76,7 @@ foam.CLASS({
           args: ['equity', 'equity$errors_'],
           predicateFactory: function(e) {
             return e.EQ(foam.mlang.IsValid.create({
-                arg1: net.nanopay.country.br.TrevisoCurrencyAmountInformation.EQUITY
+                arg1: net.nanopay.partner.treviso.TrevisoCurrencyAmountInformation.EQUITY
               }), true);
           },
           errorMessage: 'INVALID_EQUITY'
@@ -100,7 +100,7 @@ foam.CLASS({
           args: ['monthlyRevenue', 'monthlyRevenue$errors_'],
           predicateFactory: function(e) {
             return e.EQ(foam.mlang.IsValid.create({
-                arg1: net.nanopay.country.br.TrevisoCurrencyAmountInformation.MONTHLY_REVENUE
+                arg1: net.nanopay.partner.treviso.TrevisoCurrencyAmountInformation.MONTHLY_REVENUE
               }), true);
           },
           errorMessage: 'INVALID_MONTHLY_REVENUE'

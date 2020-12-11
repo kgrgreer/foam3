@@ -620,7 +620,7 @@ foam.CLASS({
         ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-          var cap = net.nanopay.country.br.TrevisoCurrencyAmountInformation.create({
+          var cap = net.nanopay.partner.treviso.TrevisoCurrencyAmountInformation.create({
             capital: {
               class: 'net.nanopay.model.CurrencyAmount',
               currency: 'USD',
@@ -646,7 +646,7 @@ foam.CLASS({
         ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-          var cap = net.nanopay.country.br.TrevisoBusinessAccountData.create({
+          var cap = net.nanopay.partner.treviso.TrevisoBusinessAccountData.create({
             customers: [
               {
                 class: 'net.nanopay.crunch.onboardingModels.CustomerBasicInformation',
