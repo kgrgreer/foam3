@@ -56,7 +56,7 @@ foam.CLASS({
     'checkAndNotifyAbilityToPay',
     'checkAndNotifyAbilityToReceive',
     'countryDAO',
-    'paymentProviderCorridorDAO',
+    'targetCorridorDAO',
     'publicBusinessDAO',
     'pushMenu',
     'subject',
@@ -362,10 +362,10 @@ foam.CLASS({
       flags: ['web'],
       name: 'availableCountries',
       visibility: 'HIDDEN',
-      expression: function(paymentProviderCorridorDAO) {
+      expression: function(targetCorridorDAO) {
         if ( this.createBankAccount && this.createBankAccount.country ) return [];
         return this.PromisedDAO.create({
-          promise: paymentProviderCorridorDAO.where(this.INSTANCE_OF(this.PaymentProviderCorridor))
+          promise: targetCorridorDAO.where(this.INSTANCE_OF(this.PaymentProviderCorridor))
             .select(this.MAP(this.PaymentProviderCorridor.TARGET_COUNTRY))
             .then(sink => {
               let unique = [...new Set(sink.delegate.array)];

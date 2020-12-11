@@ -466,6 +466,14 @@ foam.CLASS({
     {
       name: 'checkerPredicate',
       javaFactory: 'return foam.mlang.MLang.FALSE;'
+    },
+    {
+      class: 'String',
+      name: 'externalId'
+    },
+    {
+      class: 'Map',
+      name: 'externalData'
     }
   ],
 

@@ -120,7 +120,7 @@ foam.CLASS({
                 .setStatus(transaction.getStatus())
                 .setState(transaction.getState(x))
                 .setId(transaction.getId())
-                .setReferenceNumber(transaction.getReferenceNumber())
+                .setReferenceNumber(transaction.getExternalInvoiceId())
                 .setParent(transaction.getParent())
                 .setCreated(transaction.getCreated())
                 .setProcessDate(transaction.getProcessDate())

@@ -25,7 +25,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'paymentProviderCorridorDAO',
+    'sourceCorridorDAO',
     'countryDAO',
     'ctrl',
     'notify',
@@ -229,7 +229,7 @@ foam.CLASS({
       factory: function() {
         return this.PromisedDAO.create({
           of: 'foam.nanos.auth.Country',
-          promise: this.paymentProviderCorridorDAO
+          promise: this.sourceCorridorDAO
             .select(this.MAP(this.PaymentProviderCorridor.SOURCE_COUNTRY))
             .then((sink) => {
               let countries = sink.delegate.array ? sink.delegate.array : [];

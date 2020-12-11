@@ -200,6 +200,28 @@ foam.CLASS({
       gridColumns: 12
     },
     {
+      class: 'Boolean',
+      name: 'hasSignedContratosDeCambio',
+      label: 'Have you signed the \'contratos de câmbio\'?',
+      section: 'signingOfficerPersonalInformationSection',
+      help: `
+        Contratos de câmbio (foreign exchange contract) is a legal arrangement in which the
+        parties agree to transfer between them a certain amount of foreign exchange at a
+        predetermined rate of exchange, and as of a predetermined date.
+      `,
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RadioView',
+          choices: [
+            [true, X.data.YES],
+            [false, X.data.NO]
+          ],
+          isHorizontal: true
+        };
+      },
+      gridColumns: 12
+    },
+    {
       name: 'businessId',
       class: 'Reference',
       of: 'net.nanopay.model.Business',
