@@ -136,8 +136,8 @@ foam.CLASS({
       super.limitedCopyFrom(other);
       setInvoiceId(other.getInvoiceId());
       setStatus(other.getStatus());
-      setReferenceData(other.getReferenceData());
-      setReferenceNumber(other.getReferenceNumber());
+      setExternalData(other.getExternalData());
+      setExternalInvoiceId(other.getExternalInvoiceId());
       if ( other instanceof InvoiceTransaction ) {
         setServiceCompleted(((InvoiceTransaction)other).getServiceCompleted());
       }
