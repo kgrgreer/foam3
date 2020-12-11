@@ -63,9 +63,9 @@ foam.CLASS({
     { name: 'INSTITUTION_NUMBER_REQUIRED', message: 'Institution number required' },
     { name: 'BRANCH_ID_INVALID', message: 'Branch id must be 5 digits long' },
     { name: 'BRANCH_ID_REQUIRED', message: 'Branch id required' },
-    { name: 'HOLDER1', message: '1st Holder' },
-    { name: 'HOLDER2', message: '2nd Holder' },
-    { name: 'CURRENT', message: 'Current' },
+    { name: 'HOLDER1', message: 'Individual' },
+    { name: 'HOLDER2', message: 'Joint' },
+    { name: 'CURRENT', message: 'Checking' },
     { name: 'SAVINGS', message: 'Savings' },
     { name: 'PLEASE_SELECT', message: 'Please select' },
     { name: 'SECTION_ACCOUNT_INFORMATION_TITLE', message: 'Add account' }
@@ -170,6 +170,9 @@ foam.CLASS({
       name: 'accountType',
       updateVisibility: 'RO',
       section: 'accountInformation',
+      factory: function() {
+        return this.CURRENT;
+      },
       view: function(_, X) {
         return {
           class: 'foam.u2.view.ChoiceView',
