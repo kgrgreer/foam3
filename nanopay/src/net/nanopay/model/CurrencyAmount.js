@@ -55,7 +55,7 @@ foam.CLASS({
             return e.NEQ(net.nanopay.model.CurrencyAmount.CURRENCY, null);
           }
         }
-      ],
+      ]
     },
     {
       class: 'UnitValue',
