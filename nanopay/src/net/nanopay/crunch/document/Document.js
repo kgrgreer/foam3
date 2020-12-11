@@ -83,7 +83,10 @@ foam.CLASS({
       of: 'foam.nanos.crunch.Capability',
       name: 'capability',
       hidden: true,
-      documentation: 'Used by section subTitle and help'
+      documentation: 'Used by section subTitle and help',
+      factory: function(){
+        return foam.nanos.crunch.Capability.create();
+      }
     },
     {
       class: 'Boolean',

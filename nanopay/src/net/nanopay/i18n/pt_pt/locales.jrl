@@ -2083,6 +2083,10 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirect
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirector.VERIFY_NAME.label",target:"Este é o seu diretor?"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirector.NATIONALITY.label",target:"Nacionalidade"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirector.NATIONALITY.documentation",target:"Nacionalidade definida do diretor de negócios."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirector.PROOF_OF_ADDRESS",target:"Documentos comprovativos de endereço necessários"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirector.PROOF_OF_IDENTIFICATION",target:"Comprovante de documentos de identificação necessários"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirector.DOCUMENTS_OF_ADDRESS.label",target:"Carregue o comprovante de endereço"})//
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirector.DOCUMENTS_OF_ID.label",target:"Carregue um comprovante de identificação"})//
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.OWNERSHIP_PERCENT.label",target:"Porcentagem de propriedade"})
 p({class:"foam.i18n.Locale",target:"Adicionar detalhes para o proprietário #"})
 
@@ -2118,6 +2122,10 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwne
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.PEPHIORELATED.label",target:"Este proprietário é uma pessoa politicamente exposta ou chefe de uma organização internacional (PEP / HIO)"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.PEPHIORELATED.documentation",target:"Determina se o usuário é uma pessoa _Politicamente Exposta (PEP), Chefe de uma Organização Internacional (HIO) _ nacional ou estrangeira, ou parente dessa pessoa."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.VIEW_COMPLIANCE_HISTORY.label",target:"Ver Histórico de Conformidade"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.DOCUMENTS_OF_ADDRESS.label",target:"Carregue o comprovante de endereço"})//
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.DOCUMENTS_OF_ID.label",target:"Carregue um comprovante de identificação"})//
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.PROOF_OF_ADDRESS",target:"Documentos comprovativos de endereço necessários"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.PROOF_OF_IDENTIFICATION",target:"Comprovante de documentos de identificação necessários"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.PLACE_HOLDER",target:"por favor selecione..."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData.SECTION_BUSINESS_INCORPORATION_DATE_SECTION.title",target:"Insira a data de incorporação da empresa"})
