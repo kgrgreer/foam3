@@ -1210,6 +1210,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.TransactionDetailsData.SECTION_PURPOSE_SECTION.title",target:"Mercado alvo"})
 
+// business directors data
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessDirectorsData.NEED_DIRECTOR.label",target:"needDirector pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessDirectorsData.NO_DIRECTOR_INFO",target:"Informações do diretor necessárias"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessDirectorsData.BUSINESS_TYPE_ID.label",target:"businessTypeId pt"})
@@ -1218,6 +1219,18 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessDirectorsData.NO_DIRECTORS_NEEDED.value",target:"Não são necessários diretores de negócios para este tipo de negócio. Prossiga para a próxima etapa."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessDirectorsData.SECTION_DIRECTORS_INFO_SECTION.title",target:"Informação do diretor"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessDirectorsData.BUSINESS_DIRECTORS.documentation",target:"Conjunto de diretores de negócios."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessDirectorsData.NO_DIRECTOR_INFO_PROCEED_NEXT",target:"Não são necessários diretores de negócios para este tipo de negócio. Prossiga para a próxima etapa."})
+
+// treviso business directors data
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.NEED_DIRECTOR.label",target:"needDirector pt"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.NO_DIRECTOR_INFO",target:"Informações do diretor necessárias"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.BUSINESS_TYPE_ID.label",target:"businessTypeId pt"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.NO_DIRECTORS_NEEDED.label",target:"não são necessários diretores"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.BUSINESS_DIRECTORS.label",target:"diretores de negócios"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.NO_DIRECTORS_NEEDED.value",target:"Não são necessários diretores de negócios para este tipo de negócio. Prossiga para a próxima etapa."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.SECTION_DIRECTORS_INFO_SECTION.title",target:"Informação do diretor"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.BUSINESS_DIRECTORS.documentation",target:"Conjunto de diretores de negócios."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.NO_DIRECTOR_INFO_PROCEED_NEXT",target:"Não são necessários diretores de negócios para este tipo de negócio. Prossiga para a próxima etapa."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CertifyDataReviewed.REVIEW_REQUIRED_ERROR",target:"Todos os dados devem ser analisados por um oficial de assinatura."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CertifyDataReviewed.REVIEWED.label",target:"Certifico que todos os dados foram revisados."})
@@ -2058,7 +2071,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.crunch.CapabilityStore.S
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.Document.SECTION_DOCUMENT_UPLOAD_SECTION.title",target:"Envio de Documento"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability.I_CERTIFY",target:"Certifico que "})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessDirectorsData.NO_DIRECTOR_INFO_PROCEED_NEXT",target:"Não são necessários diretores de negócios para este tipo de negócio. Prossiga para a próxima etapa."})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-13.requirementViewTitle",target:"Nesta seção, pedimos mais informações comerciais para que possamos processar os pagamentos com segurança em seu nome."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-76.requirementViewTitle",target:"Nesta seção, pedimos que você insira alguns detalhes relacionados ao seu negócio."})
@@ -3246,6 +3259,19 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"Nonprofit/Charitable Organizatio
 p({class:"foam.i18n.Locale",locale:"pt",source:"Limited Liability Company.name",target:"Empresa de responsabilidade limitada"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Publicly Traded Corporation.name",target:"Corporação de capital aberto"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Trust.name",target:"Confiar em"})
+
+// treviso business types
+p({class:"foam.i18n.Locale",locale:"pt",source:"Individual Entrepreneur (EI).name",target:"Empresário Individual (EI)"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Individual Microentrepreneur (MEI).name",target:"Microempreendedor Individual (MEI)"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Individual Limited Liability Company (EIRELI).name",target:"Empresa Individual de Responsabilidade Limitada (EIRELI)"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Simple Company (SS).name",target:"Sociedade Simples (SS)"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Limited Business Company (Ltda).name",target:"Sociedade Empresária Limitada (Ltda)"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Limited Company (SA).name",target:"Sociedade Anônima (SA)"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Civil Society (SC).name",target:"Sociedade Civil (SC)"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Small Business (EPP).name",target:"Empresa de Pequeno Porte (EPP)"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Micro Company (ME).name",target:"Micro Empresa (ME)"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"One-Person Limited Company (SLU).name",target:"Sociedade Limitada Unipessoal (SLU)"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Association.name",target:"Associação"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.compliance.SendExpiryNotification.NOTIF_PRE",target:"Sua capacidade \""})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.compliance.SendExpiryNotification.EXPIRY_NOTIF_SUF",target:"\" expirou."})
