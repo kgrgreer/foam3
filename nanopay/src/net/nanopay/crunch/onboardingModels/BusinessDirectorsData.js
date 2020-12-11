@@ -21,7 +21,8 @@ foam.CLASS({
     ],
 
     messages: [
-      { name: 'NO_DIRECTOR_INFO', message: 'Director information required' }
+      { name: 'NO_DIRECTOR_INFO', message: 'Director information required' },
+      { name: 'NO_DIR_NEEDED', message: 'No Business Directors required for this business type. Please proceed to next step.' }
     ],
 
     sections: [
@@ -41,7 +42,7 @@ properties: [
         transient: true,
         getter: function() {
           var self = this;
-          this.businessDAO.find(this.subject.user.id).then((business) => {
+          this.businessDAO.find(this.subject.user.id).then(business => {
             self.businessTypeId = business.businessTypeId;
           });
         }
@@ -57,7 +58,9 @@ properties: [
         class: 'String',
         name: 'noDirectorsNeeded',
         section: 'directorsInfoSection',
-        value: 'No Business Directors required for this business type. Please proceed to next step.',
+        factory: function() {
+          return this.NO_DIR_NEEDED;
+        },
         visibility: function(businessTypeId, needDirector) {
           return businessTypeId === 3 || businessTypeId === 5 || businessTypeId === 6 ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RO;
         }
