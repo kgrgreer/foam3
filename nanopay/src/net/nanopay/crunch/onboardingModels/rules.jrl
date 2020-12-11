@@ -28,19 +28,9 @@ p({
   "after":true,
   "operation":3,
   "predicate":{
-    "class": "foam.mlang.predicate.OR",
-    "args":[
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
-        "propName":"data",
-        "of":"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData"
-      },
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
-        "propName":"data",
-        "of":"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso"
-      }
-    ]
+    "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+    "propName":"data",
+    "of":"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData"
   },
   "action":{"class":"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalDataOnPut"},
   "lifecycleState":1
