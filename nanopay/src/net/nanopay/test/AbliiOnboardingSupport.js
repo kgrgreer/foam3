@@ -609,6 +609,7 @@ foam.CLASS({
         }
       }
     },
+    //TODO: move this into TrevisoOnboardingSupport
     {
       name: 'businessCapitalAndEquity',
       code: async function(x, business) {
@@ -619,7 +620,7 @@ foam.CLASS({
         ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-          var cap = net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.create({
+          var cap = net.nanopay.partner.treviso.TrevisoCurrencyAmountInformation.create({
             capital: {
               class: 'net.nanopay.model.CurrencyAmount',
               currency: 'USD',
@@ -635,6 +636,7 @@ foam.CLASS({
         }
       }
     },
+    //TODO: move this into TrevisoOnboardingSupport
     {
       name: 'businessAccountData',
       code: async function(x, business) {
@@ -644,7 +646,7 @@ foam.CLASS({
         ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-          var cap = net.nanopay.crunch.onboardingModels.BusinessAccountData.create({
+          var cap = net.nanopay.partner.treviso.TrevisoBusinessAccountData.create({
             customers: [
               {
                 class: 'net.nanopay.crunch.onboardingModels.CustomerBasicInformation',

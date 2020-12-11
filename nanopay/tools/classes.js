@@ -1322,8 +1322,8 @@ var classes = [
   'net.nanopay.crunch.onboardingModels.BusinessLastRegistrationDateData',
   'net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData',
   'net.nanopay.crunch.onboardingModels.TaxIdNumberData',
-  'net.nanopay.crunch.onboardingModels.BusinessAccountData',
-  'net.nanopay.crunch.onboardingModels.CurrencyAmountInformation',
+  'net.nanopay.partner.treviso.TrevisoBusinessAccountData',
+  'net.nanopay.partner.treviso.TrevisoCurrencyAmountInformation',
   'net.nanopay.crunch.onboardingModels.CustomerBasicInformation',
 
   // crunch notification
