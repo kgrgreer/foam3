@@ -39,7 +39,8 @@ foam.CLASS({
     'capabilityDAO',
     'countryDAO',
     'institutionDAO',
-    'paymentProviderCorridorDAO'
+    'sourceCorridorDAO',
+    'targetCorridorDAO'
   ],
 
   javaImports: [
@@ -337,9 +338,10 @@ foam.CLASS({
       expression: function(user, currencyDAO, forContact) {
         let propInfo = forContact ? this.PaymentProviderCorridor.TARGET_COUNTRY : this.PaymentProviderCorridor.SOURCE_COUNTRY;
         let propInfoCurrency = forContact ? this.PaymentProviderCorridor.TARGET_CURRENCIES : this.PaymentProviderCorridor.SOURCE_CURRENCIES;
+        let dao = forContact ? this.targetCorridorDAO : this.sourceCorridorDAO;
         return this.PromisedDAO.create({
           of: 'foam.core.Currency',
-          promise: this.paymentProviderCorridorDAO.where(this.AND(
+          promise: dao.where(this.AND(
               this.EQ(propInfo, this.country),
               this.INSTANCE_OF(this.PaymentProviderCorridor)
             ))

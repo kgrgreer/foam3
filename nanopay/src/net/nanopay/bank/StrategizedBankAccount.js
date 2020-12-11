@@ -28,7 +28,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'paymentProviderCorridorDAO',
+    'sourceCorridorDAO',
     'subject'
   ],
 
@@ -93,9 +93,9 @@ foam.CLASS({
       flags: ['web'],
       name: 'availableCountries',
       visibility: 'HIDDEN',
-      expression: function(paymentProviderCorridorDAO) {
+      expression: function(sourceCorridorDAO) {
         return this.PromisedDAO.create({
-          promise: paymentProviderCorridorDAO
+          promise: sourceCorridorDAO
             .select(this.MAP(this.PaymentProviderCorridor.SOURCE_COUNTRY))
             .then((sink) => {
               let countries = sink.delegate.array ? sink.delegate.array : [];
