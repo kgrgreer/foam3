@@ -42,7 +42,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.Trev
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoCurrencyAmountInformation.CAPITAL.label",target:"Capital"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoCurrencyAmountInformation.CAPITAL.documentation",target:"Moeda da quantia em que o Capital de Negócios foi definido "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoCurrencyAmountInformation.EQUITY.label",target:"Equidade"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoCurrencyAmountInformation.SECTION_BUSINESS_CAPITAL.title",target:"Moeda da quantia em que o patrimônio líquido foi definido"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoCurrencyAmountInformation.EQUITY.documentation",target:"Moeda da quantia em que o patrimônio líquido foi definido"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoCurrencyAmountInformation.INVALID_MONTHLY_REVENUE",target:"Receita média mensal necessária"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoCurrencyAmountInformation.MONTHLY_REVENUE.label",target:"Faturamento médio mensal dos doze (12) meses anteriore"})
