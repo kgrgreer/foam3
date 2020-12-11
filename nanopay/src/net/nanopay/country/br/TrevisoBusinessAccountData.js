@@ -16,8 +16,8 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.crunch.onboardingModels',
-  name: 'BusinessAccountData',
+  package: 'net.nanopay.country.br',
+  name: 'TrevisoBusinessAccountData',
 
   documentation: `Business account information, such as customer or supplier detail and taxes date`,
 
@@ -129,8 +129,8 @@ foam.CLASS({
           args: ['dateOfFilingTaxes', 'isTaxFiled'],
           predicateFactory: function(e) {
             return  e.OR(
-                e.NEQ(net.nanopay.crunch.onboardingModels.BusinessAccountData.DATE_OF_FILING_TAXES, null),
-                e.EQ(net.nanopay.crunch.onboardingModels.BusinessAccountData.IS_TAX_FILED, false)
+                e.NEQ(net.nanopay.country.br.TrevisoBusinessAccountData.DATE_OF_FILING_TAXES, null),
+                e.EQ(net.nanopay.country.br.TrevisoBusinessAccountData.IS_TAX_FILED, false)
             );
           },
           errorMessage: 'INVALID_DATE_ERROR'
@@ -139,8 +139,8 @@ foam.CLASS({
           args: ['dateOfFilingTaxes', 'isTaxFiled'],
           predicateFactory: function(e) {
             return e.OR(
-              e.LTE(net.nanopay.crunch.onboardingModels.BusinessAccountData.DATE_OF_FILING_TAXES, new Date()),
-              e.EQ(net.nanopay.crunch.onboardingModels.BusinessAccountData.IS_TAX_FILED, false)
+              e.LTE(net.nanopay.country.br.TrevisoBusinessAccountData.DATE_OF_FILING_TAXES, new Date()),
+              e.EQ(net.nanopay.country.br.TrevisoBusinessAccountData.IS_TAX_FILED, false)
             );
           },
           errorMessage: 'MAX_DATE_ERROR'
@@ -187,7 +187,7 @@ foam.CLASS({
           errorMessage: 'NO_CAPITAL_SOURCE',
           args: ['capitalSource'],
           predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.crunch.onboardingModels.BusinessAccountData.CAPITAL_SOURCE, null);
+            return e.NEQ(net.nanopay.country.br.TrevisoBusinessAccountData.CAPITAL_SOURCE, null);
           }
         }
       ]
@@ -232,7 +232,7 @@ foam.CLASS({
           errorMessage: 'NO_CAPITAL_TYPE',
           args: ['capitalType'],
           predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.crunch.onboardingModels.BusinessAccountData.CAPITAL_TYPE, null);
+            return e.NEQ(net.nanopay.country.br.TrevisoBusinessAccountData.CAPITAL_TYPE, null);
           }
         }
       ]

@@ -16,8 +16,8 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.crunch.onboardingModels',
-  name: 'CurrencyAmountInformation',
+  package: 'net.nanopay.country.br',
+  name: 'TrevisoCurrencyAmountInformation',
 
   documentation: `Collect equity and capital information for business`,
 
@@ -44,14 +44,15 @@ foam.CLASS({
       help: 'What are the businesses\' current assets, i.e. sum of all current assets for your business ',
       documentation: 'Amount currency that Business Capital has been defined',
       factory: function () {
-        return net.nanopay.model.CurrencyAmount.create({}, this);
+        var currency = 'BRL';
+        return net.nanopay.model.CurrencyAmount.create({currency: currency}, this);
       },
       validationPredicates: [
         {
           args: ['capital', 'capital$errors_'],
           predicateFactory: function(e) {
             return e.EQ(foam.mlang.IsValid.create({
-                arg1: net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.CAPITAL
+                arg1: net.nanopay.country.br.TrevisoCurrencyAmountInformation.CAPITAL
               }), true);
           },
           errorMessage: 'INVALID_CAPITAL'
@@ -67,14 +68,15 @@ foam.CLASS({
       help: 'What is the businesses\' net worth, i.e. sum of all assets minus the sum of all liabilities for your business.',
       documentation: 'Amount currency that Business Equity has been defined',
       factory: function () {
-        return net.nanopay.model.CurrencyAmount.create({}, this);
+        var currency = 'BRL';
+        return net.nanopay.model.CurrencyAmount.create({currency: currency}, this);
       },
       validationPredicates: [
         {
           args: ['equity', 'equity$errors_'],
           predicateFactory: function(e) {
             return e.EQ(foam.mlang.IsValid.create({
-                arg1: net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.EQUITY
+                arg1: net.nanopay.country.br.TrevisoCurrencyAmountInformation.EQUITY
               }), true);
           },
           errorMessage: 'INVALID_EQUITY'
@@ -90,14 +92,15 @@ foam.CLASS({
       help: 'What is the businesses\' average monthly revenue for the previous twelve (12) months',
       documentation: 'Amount currency that business average monthly revenue has been defined',
       factory: function () {
-        return net.nanopay.model.CurrencyAmount.create({}, this);
+        var currency = 'BRL';
+        return net.nanopay.model.CurrencyAmount.create({currency: currency}, this);
       },
       validationPredicates: [
         {
           args: ['monthlyRevenue', 'monthlyRevenue$errors_'],
           predicateFactory: function(e) {
             return e.EQ(foam.mlang.IsValid.create({
-                arg1: net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.MONTHLY_REVENUE
+                arg1: net.nanopay.country.br.TrevisoCurrencyAmountInformation.MONTHLY_REVENUE
               }), true);
           },
           errorMessage: 'INVALID_MONTHLY_REVENUE'
