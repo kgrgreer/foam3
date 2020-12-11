@@ -159,6 +159,17 @@ foam.CLASS({
     'middleName',
     'legalName',
     {
+      class: 'EMail',
+      name: 'email',
+      section: 'requiredSection',
+      required: true,
+      visibility: function(mode, type) {
+        if ( mode === 'percent' ) return foam.u2.DisplayMode.HIDDEN;
+
+        return type === 'BR' ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      }
+    },
+    {
       class: 'Date',
       name: 'birthday',
       label: 'Date of birth',
@@ -473,13 +484,39 @@ foam.CLASS({
           isHorizontal: true
         };
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'hasSignedContratosDeCambio',
+      label: 'Has the person listed here signed the \'contratos de câmbio\'?',
+      section: 'requiredSection',
+      help: `
+        Contratos de câmbio (foreign exchange contract) is a legal arrangement in which the
+        parties agree to transfer between them a certain amount of foreign exchange at a
+        predetermined rate of exchange, and as of a predetermined date.
+      `,
+      visibility: function(mode, type) {
+        if ( mode === 'percent' ) return foam.u2.DisplayMode.HIDDEN;
+
+        return type === 'BR' ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      },
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RadioView',
+          choices: [
+            [true, X.data.YES],
+            [false, X.data.NO]
+          ],
+          isHorizontal: true
+        };
+      }
     }
   ],
 
   methods: [
     {
       name: 'getCpfName',
-      code: async function(cpf,) {
+      code: async function(cpf) {
         return await this.brazilVerificationService.getCPFNameWithBirthDate(this.__subContext__, cpf, this.birthday);
       }
     },

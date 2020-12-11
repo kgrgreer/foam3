@@ -53,6 +53,7 @@ FOAM_FILES([
   { name: 'net/nanopay/payment/PaymentProviderPrerequisiteRule' },
   { name: 'net/nanopay/payment/PaymentProviderCorridorAddCountryRule' },
   { name: 'net/nanopay/payment/PaymentProviderCorridorAuthorizer' },
+  { name: 'net/nanopay/payment/DestinationCorridorAuthorizer' },
   { name: 'net/nanopay/account/Account' },
   { name: 'net/nanopay/account/AccountDAOBrowserView' },
   { name: 'net/nanopay/account/AccountDAOCreateView' },
@@ -1655,10 +1656,13 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/onboardingModels/UserBirthDateData' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessIncorporationDateData' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessRegistrationDateData' },
+  { name: 'net/nanopay/crunch/onboardingModels/BusinessLastRegistrationDateData' },
   { name: 'net/nanopay/crunch/onboardingModels/TaxIdNumberData' },
-  { name: 'net/nanopay/crunch/onboardingModels/BusinessAccountData' },
-  { name: 'net/nanopay/crunch/onboardingModels/CurrencyAmountInformation' },
   { name: 'net/nanopay/crunch/onboardingModels/CustomerBasicInformation' },
+
+  // crunch onboarding only for treviso
+  { name: 'net/nanopay/partner/treviso/TrevisoBusinessAccountData' },
+  { name: 'net/nanopay/partner/treviso/TrevisoCurrencyAmountInformation' },
 
   { name: 'net/nanopay/payment/PayeeCurrencyService' },
   { name: 'net/nanopay/payment/PayeeCurrency' },
