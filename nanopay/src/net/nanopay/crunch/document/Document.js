@@ -84,7 +84,7 @@ foam.CLASS({
       name: 'capability',
       hidden: true,
       documentation: 'Used by section subTitle and help',
-      factory: function(){
+      factory: function() {
         return foam.nanos.crunch.Capability.create();
       }
     },
