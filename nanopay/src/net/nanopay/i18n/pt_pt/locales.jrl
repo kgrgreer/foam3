@@ -3257,5 +3257,5 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.Date
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.DateOfIssue.FUTURE_DATE_ERROR",target:"A data de emissão não pode ser uma data futura"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.DateOfIssue.INVALID_DATE_ERROR",target:"Forneça a data de emissão conforme mostrado em sua identificação"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.EMail.EMAIL_REQUIRED",target:"Email obrigatório"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.EMail.VALID_EMAIL_REQUIRED",target:"Requer um email válido"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.EMail.EMAIL_REQUIRED",target:"Endereço de email necessário"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.EMail.VALID_EMAIL_REQUIRED",target:"Endereço de email válido necessário"})
