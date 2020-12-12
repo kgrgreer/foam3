@@ -469,9 +469,19 @@ foam.CLASS({
         if ( ibanMsg && ibanMsg != 'passed')
           return ibanMsg;
       },
+      javaValidateObj: `
+      net.nanopay.bank.BankAccount account = (net.nanopay.bank.BankAccount) obj;
+      foam.nanos.iban.ValidationIBAN vban = new foam.nanos.iban.ValidationIBAN(x);
+      vban.validate(account.getIban());
+      foam.nanos.iban.IBANInfo info = vban.parse(account.getIban());
+      if ( info != null &&
+           ! account.getCountry().equals(info.getCountry())) {
+        throw new foam.core.ValidationException(IBAN_COUNTRY_MISMATCHED);
+      }
+      `,
       javaPostSet: `
-        ValidationIBAN validationIBAN = new ValidationIBAN();
-        IBANInfo info = validationIBAN.parse(getX(), val);
+        ValidationIBAN vban = new ValidationIBAN(getX());
+        IBANInfo info = vban.parse(val);
         if ( info != null ) {
           setAccountNumber(info.getAccountNumber());
           setBranchId(info.getBranch());
