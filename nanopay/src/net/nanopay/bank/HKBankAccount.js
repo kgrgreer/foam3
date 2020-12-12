@@ -84,7 +84,9 @@ foam.CLASS({
       required: false,
       visibility: 'HIDDEN',
       validateObj: function(iban) {
-      }
+      },
+      javaPostSet: `
+      `
     },
     {
       name: 'desc',
