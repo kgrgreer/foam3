@@ -1786,6 +1786,7 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/invoice/TrevisoCapabilityValidateRule' },
   { name: 'net/nanopay/partner/treviso/invoice/UpdateTransactionOnInvoiceValidationRule' },
   { name: 'net/nanopay/partner/treviso/invoice/TrevisoNotificationRule' },
+  { name: 'net/nanopay/partner/treviso/onboarding/BusinessDirectorsData' },
   { name: 'net/nanopay/partner/treviso/test/TrevisoOnboardingSupport' },
 
   // support

@@ -22,6 +22,8 @@ foam.CLASS({
   extends: 'net.nanopay.bank.BankAccount',
 
   javaImports: [
+    'foam.nanos.iban.IBANInfo',
+    'foam.nanos.iban.ValidationIBAN',
     'foam.util.SafetyUtil',
     'java.util.regex.Pattern'
   ],

@@ -50,6 +50,8 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Country',
+    'foam.nanos.iban.IBANInfo',
+    'foam.nanos.iban.ValidationIBAN',
     'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
@@ -436,7 +438,14 @@ foam.CLASS({
 
         if ( ibanMsg && ibanMsg != 'passed')
           return ibanMsg;
-      }
+      },
+      javaPostSet: `
+        ValidationIBAN validationIBAN = new ValidationIBAN();
+        IBANInfo info = validationIBAN.parse(val);
+        setAccountNumber(info.getAccountNumber());
+        setBranchId(info.getBranch());
+        setInstitutionNumber(info.getBankCode());
+      `
     },
     {
       class: 'String',

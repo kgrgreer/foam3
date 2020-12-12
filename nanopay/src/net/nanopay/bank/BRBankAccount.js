@@ -38,10 +38,13 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.nanos.iban.IBANInfo',
+    'foam.nanos.iban.ValidationIBAN',
     'foam.util.SafetyUtil',
     'net.nanopay.fx.afex.AFEXServiceProvider',
     'net.nanopay.fx.afex.IsIbanResponse',
     'java.util.regex.Pattern',
+    'foam.core.ValidationException'
   ],
 
   sections: [
@@ -234,23 +237,20 @@ foam.CLASS({
         { name: 'x', type: 'Context' }
       ],
       type: 'Void',
-      javaThrows: ['IllegalStateException'],
+      javaThrows: ['ValidationException'],
       javaCode: `
-        String iban = this.getIban().replaceAll(" ", "");
-        String spid = ((foam.nanos.auth.Subject) x.get("subject")).getUser().getSpid();
-        String country = this.getCountry();
-
-        AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
-        IsIbanResponse isIbanResponse = afexServiceProvider.isiban(iban, country, spid);
+        String iban = this.getIban();
 
         super.validate(x);
-        // validateIban(x, isIbanResponse);
-
-        if ( isIbanResponse != null && ! isIbanResponse.getIsIban() ) {
+        foam.nanos.iban.ValidationIBAN validationIban = new foam.nanos.iban.ValidationIBAN();
+        try {
+          validationIban.validate(iban);
+        } catch (ValidationException ex) {
           validateInstitutionNumber();
           validateBranchId();
           validateAccountNumber();
           validateSwiftCode();
+          throw ex;
         }
 
         if ( getOwner() == 0 ) {
@@ -261,83 +261,62 @@ foam.CLASS({
     {
       name: 'validateInstitutionNumber',
       type: 'Void',
-      javaThrows: ['IllegalStateException'],
+      javaThrows: ['ValidationException'],
       javaCode: `
         String institutionNumber = this.getInstitutionNumber();
 
         if ( SafetyUtil.isEmpty(institutionNumber) ) {
-          throw new IllegalStateException(this.INSTITUTION_NUMBER_REQUIRED);
+          throw new ValidationException(this.INSTITUTION_NUMBER_REQUIRED);
         }
 
         if ( ! INSTITUTION_NUMBER_PATTERN.matcher(institutionNumber).matches() ) {
-          throw new IllegalStateException(this.INSTITUTION_NUMBER_INVALID);
+          throw new ValidationException(this.INSTITUTION_NUMBER_INVALID);
         }
       `
     },
     {
       name: 'validateBranchId',
       type: 'Void',
-      javaThrows: ['IllegalStateException'],
+      javaThrows: ['ValidationException'],
       javaCode: `
         String branchId = this.getBranchId();
 
         if ( SafetyUtil.isEmpty(branchId) ) {
-          throw new IllegalStateException(this.BRANCH_ID_REQUIRED);
+          throw new ValidationException(this.BRANCH_ID_REQUIRED);
         }
         if ( ! BRANCH_ID_PATTERN.matcher(branchId).matches() ) {
-          throw new IllegalStateException(this.BRANCH_ID_INVALID);
+          throw new ValidationException(this.BRANCH_ID_INVALID);
         }
       `
     },
     {
       name: 'validateAccountNumber',
       type: 'Void',
-      javaThrows: ['IllegalStateException'],
+      javaThrows: ['ValidationException'],
       javaCode: `
         String accountNumber = this.getAccountNumber();
 
         if ( SafetyUtil.isEmpty(accountNumber) ) {
-          throw new IllegalStateException(this.ACCOUNT_NUMBER_REQUIRED);
+          throw new ValidationException(this.ACCOUNT_NUMBER_REQUIRED);
         }
         if ( ! ACCOUNT_NUMBER_PATTERN.matcher(accountNumber).matches() ) {
-          throw new IllegalStateException(this.ACCOUNT_NUMBER_INVALID);
+          throw new ValidationException(this.ACCOUNT_NUMBER_INVALID);
         }
       `
     },
     {
       name: 'validateSwiftCode',
       type: 'Void',
-      javaThrows: ['IllegalStateException'],
+      javaThrows: ['ValidationException'],
       javaCode: `
         String swiftCode = this.getSwiftCode();
 
         if ( SafetyUtil.isEmpty(swiftCode) ) {
-          throw new IllegalStateException(this.SWIFT_CODE_REQUIRED);
+          throw new ValidationException(this.SWIFT_CODE_REQUIRED);
         }
         if ( ! SWIFT_CODE_PATTERN.matcher(swiftCode).matches() ) {
-          throw new IllegalStateException(this.SWIFT_CODE_INVALID);
+          throw new ValidationException(this.SWIFT_CODE_INVALID);
         }
-      `
-    },
-    {
-      name: 'validateIban',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'isIbanResponse', type: 'net.nanopay.fx.afex.IsIbanResponse' }
-      ],
-      type: 'Void',
-      javaThrows: ['IllegalStateException'],
-      javaCode: `
-          String iban = this.getIban().replaceAll(" ", "");
-
-          if ( SafetyUtil.isEmpty(iban) )
-            throw new IllegalStateException(this.IBAN_REQUIRED);
-
-          if ( isIbanResponse == null )
-            throw new IllegalStateException(this.IBAN_INVALIDATION_FAILED);
-
-          if ( isIbanResponse != null && ! isIbanResponse.getIsIban() )
-            throw new IllegalStateException(this.IBAN_INVALID);
       `
     }
  ]

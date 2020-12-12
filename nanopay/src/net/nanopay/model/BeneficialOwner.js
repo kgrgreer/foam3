@@ -80,7 +80,9 @@ foam.CLASS({
     { name: 'PLACEHOLDER', message: 'Select a country' },
     { name: 'YES', message: 'Yes' },
     { name: 'NO', message: 'No' },
-    { name: 'COMPLIANCE_HISTORY_MSG', message: 'Compliance History for' }
+    { name: 'COMPLIANCE_HISTORY_MSG', message: 'Compliance History for' },
+    { name: 'PROOF_OF_ADDRESS', message: 'Proof of address documents required' },
+    { name: 'PROOF_OF_IDENTIFICATION', message: 'Proof of identication documents required' }
   ],
 
   properties: [
@@ -510,6 +512,66 @@ foam.CLASS({
           isHorizontal: true
         };
       }
+    },
+    {
+      class: 'foam.nanos.fs.FileArray',
+      name: 'documentsOfAddress',
+      label: 'Please upload proof of address',
+      section: 'requiredSection',
+      view: function(_, X) {
+        let selectSlot = foam.core.SimpleSlot.create({value: 0});
+        return foam.u2.MultiView.create({
+        views: [
+          foam.nanos.fs.fileDropZone.FileDropZone.create({
+            files$: X.data.documentsOfAddress$,
+            selected$: selectSlot
+          }, X),
+          foam.nanos.fs.fileDropZone.FilePreview.create({
+            data$: X.data.documentsOfAddress$,
+            selected$: selectSlot
+          })
+        ]
+        });
+      },
+      validationPredicates: [
+        {
+          args: ['documentsOfAddress'],
+          predicateFactory: function(e) {
+            return e.HAS(net.nanopay.model.BeneficialOwner.DOCUMENTS_OF_ADDRESS);
+          },
+          errorMessage: 'PROOF_OF_ADDRESS'
+        }
+      ]
+    },
+    {
+      class: 'foam.nanos.fs.FileArray',
+      name: 'documentsOfId',
+      label: 'Please upload proof of identification',
+      section: 'requiredSection',
+      view: function(_, X) {
+        let selectSlot = foam.core.SimpleSlot.create({value: 0});
+        return foam.u2.MultiView.create({
+        views: [
+          foam.nanos.fs.fileDropZone.FileDropZone.create({
+            files$: X.data.documentsOfId$,
+            selected$: selectSlot
+          }, X),
+          foam.nanos.fs.fileDropZone.FilePreview.create({
+            data$: X.data.documentsOfId$,
+            selected$: selectSlot
+          })
+        ]
+        });
+      },
+      validationPredicates: [
+        {
+          args: ['documentsOfId'],
+          predicateFactory: function(e) {
+            return e.HAS(net.nanopay.model.BeneficialOwner.DOCUMENTS_OF_ID);
+          },
+          errorMessage: 'PROOF_OF_IDENTIFICATION'
+        }
+      ]
     }
   ],
 
