@@ -34,6 +34,7 @@ foam.CLASS({
         'foam.nanos.crunch.Capability',
         'foam.nanos.crunch.CapabilityJunctionStatus',
         'foam.nanos.crunch.CapabilityIntercept',
+        'foam.nanos.crunch.lite.Capable',
         'foam.nanos.logger.Logger',
         'foam.util.SafetyUtil',
 
@@ -58,6 +59,7 @@ foam.CLASS({
             name: 'applyAction',
             javaCode: `
                 var invoice = (Invoice) obj;
+                var capable = (Capable) obj;
                 
                 try {
                     // If invoice is valid & capabilities are granted, set status to QUOTING
@@ -75,7 +77,10 @@ foam.CLASS({
                             );
                         }).forEach(ucr -> cre.addCapabilityId(ucr));
 
-                    if ( Arrays.stream(invoice.getCapablePayloads()).map(cp -> cp.getCapability()).anyMatch(getObjectCapabilityID()::equals) ) {
+                    if (
+                        Arrays.stream(invoice.getCapablePayloads()).map(cp -> cp.getCapability()).anyMatch(getObjectCapabilityID()::equals) ||
+                        ( invoice.getCapablePayloads().length == 0 && Arrays.stream(capable.getCapabilityIds()).anyMatch(getObjectCapabilityID()::equals))
+                        ) {
                         var reqs = new String[] { getObjectCapabilityID() };
                         if ( 
                             ! invoice.checkRequirementsStatusNoThrow(x, reqs, CapabilityJunctionStatus.GRANTED) &&

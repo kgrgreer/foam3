@@ -367,6 +367,16 @@ foam.CLASS({
       view: { class: 'foam.u2.view.DAOtoFObjectArrayView' },
       visibility: 'RO',
       storageTransient: true
+    },
+    {
+      class: 'String',
+      name: 'externalId',
+      visibility: 'HIDDEN'
+    },
+    {
+      class: 'Map',
+      name: 'externalData',
+      visibility: 'HIDDEN'
     }
   ],
 

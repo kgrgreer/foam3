@@ -16,23 +16,25 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.payment',
-  name: 'PADType',
+  package: 'net.nanopay.tx',
+  name: 'GrandTotalLineItem',
+  extends: 'net.nanopay.tx.InfoLineItem',
 
-  documentation: `
-  This model defines the transaction codes for use in CICO payment transaction such as BmoCITransaction/BmoCOTransaction.
-  Please see https://www.payments.ca/sites/default/files/standard_007.pdf for the full list
-  `,
+  messages: [
+    { name: 'GRAND_TOTAL', message: 'Grand total' }
+  ],
 
   properties: [
     {
-      class: 'Long',
-      name: 'id',
-      documentation: 'Transaction codes are defined three digit codes used by a Payment Originator to identify a payment.',
-    },
-    {
-      class: 'String',
-      name: 'description'
+      name: 'amount',
+      label: 'Total',
+      visibility: 'RO'
+    }
+  ],
+
+  methods: [
+    function toSummary() {
+      return this.GRAND_TOTAL;
     }
   ]
 });

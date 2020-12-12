@@ -40,6 +40,10 @@ foam.CLASS({
       name: 'rate'
     },
     {
+      class: 'String',
+      name: 'inverseRate'
+    },
+    {
       class: 'DateTime',
       name: 'expiry',
       label: 'Expires',

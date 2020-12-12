@@ -149,7 +149,7 @@ public class ReportTransaction {
             .append(user.getEmail()).append(COMMA_SEPARATOR)
             .append(user.getId()).append(COMMA_SEPARATOR)
             .append(transaction.getId()).append(COMMA_SEPARATOR)
-            .append(transaction.getReferenceNumber()).append(COMMA_SEPARATOR)
+            .append(transaction.getExternalInvoiceId()).append(COMMA_SEPARATOR)
             .append(transaction.getCreated()).append(COMMA_SEPARATOR)
             .append(transaction.getProcessDate()).append(COMMA_SEPARATOR)
             .append(transaction.getCompletionDate()).append(COMMA_SEPARATOR)

@@ -36,7 +36,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'totalFee',
-      label: 'Total'
+      label: 'Fees'
     },
     {
       name: 'lineItems',

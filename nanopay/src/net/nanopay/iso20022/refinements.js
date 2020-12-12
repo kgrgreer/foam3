@@ -61,7 +61,7 @@ foam.CLASS({
                 df.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
                 return df;
               }
-            }
+            };
           `
         })
       ];
@@ -141,7 +141,7 @@ foam.CLASS({
                 df.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
                 return df;
               }
-            }
+            };
           `
         })
       ];
@@ -230,7 +230,7 @@ foam.CLASS({
                 df.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
                 return df;
               }
-            }
+            };
           `
         })
       ];
@@ -591,7 +591,7 @@ foam.CLASS({
                     long desAmt = new Double((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getInterbankSettlementAmount().getText()).longValue();
                     transaction = new PacsTransaction.Builder(getX())
                       .setName("Digital Transfer from PACS")
-                      // REVIEW: ACSP and ACSC are pacs status, but not transaction status. 
+                      // REVIEW: ACSP and ACSC are pacs status, but not transaction status.
                       //.setStatus(TransactionStatus.ACSP)
 
                       .setSourceCurrency((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getInstructedAmount().getCcy())
@@ -606,7 +606,7 @@ foam.CLASS({
                       .build();
 
                       // Add the pacs message to the reference data
-                      transaction.getReferenceData().put("Digital Transfer from PACS", this);
+                      transaction.getExternalData().put("Digital Transfer from PACS", this);
 
                       fObjTxn = txnDAO.put(transaction);
 

@@ -26,6 +26,10 @@ foam.CLASS({
     'translationService'
   ],
 
+  implements: [
+    'foam.core.Validatable'
+  ],
+
   messages: [
     { name: 'UPLOAD_REQUEST_MSG', message: 'Provide' },
     { name: 'IMAGE_REQUIRED', message: 'Document(s) required' },
@@ -72,14 +76,17 @@ foam.CLASS({
         if ( isRequired && documents.length === 0 ) {
           return this.IMAGE_REQUIRED;
         }
-      },
+      }
     },
     {
       class: 'FObjectProperty',
       of: 'foam.nanos.crunch.Capability',
       name: 'capability',
       hidden: true,
-      documentation: 'Used by section subTitle and help'
+      documentation: 'Used by section subTitle and help',
+      factory: function() {
+        return foam.nanos.crunch.Capability.create();
+      }
     },
     {
       class: 'Boolean',
@@ -87,6 +94,16 @@ foam.CLASS({
       documentation: 'Whether the file is required or not.',
       value: true,
       hidden: true
+    }
+  ],
+  methods: [
+    {
+      name: 'validate',
+      javaCode: `
+      if ( getIsRequired() && getDocuments().length == 0 ) {
+        throw new foam.core.ValidationException(IMAGE_REQUIRED);
+      }
+      `
     }
   ]
 });
