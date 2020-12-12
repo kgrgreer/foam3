@@ -41,7 +41,8 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'net.nanopay.fx.afex.AFEXServiceProvider',
     'net.nanopay.fx.afex.IsIbanResponse',
-    'java.util.regex.Pattern'
+    'java.util.regex.Pattern',
+    'foam.core.ValidationException'
   ],
 
   sections: [
@@ -240,13 +241,14 @@ foam.CLASS({
 
         super.validate(x);
         foam.nanos.iban.ValidationIBAN validationIban = new foam.nanos.iban.ValidationIBAN();
-        validationIban.validate(iban);
-
-        if ( isIbanResponse != null && ! isIbanResponse.getIsIban() ) {
+        try {
+          validationIban.validate(iban);
+        } catch (ValidationException ex) {
           validateInstitutionNumber();
           validateBranchId();
           validateAccountNumber();
           validateSwiftCode();
+          throw ex;
         }
 
         if ( getOwner() == 0 ) {
