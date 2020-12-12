@@ -38,6 +38,8 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.nanos.iban.IBANInfo',
+    'foam.nanos.iban.ValidationIBAN',
     'foam.util.SafetyUtil',
     'net.nanopay.fx.afex.AFEXServiceProvider',
     'net.nanopay.fx.afex.IsIbanResponse',
