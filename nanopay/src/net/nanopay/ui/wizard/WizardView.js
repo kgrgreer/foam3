@@ -421,6 +421,9 @@ foam.CLASS({
       name: 'otherOption',
       isAvailable: function(hasOtherOption) {
         return hasOtherOption;
+      },
+      code: function(X) {
+        return;
       }
     },
   ]
