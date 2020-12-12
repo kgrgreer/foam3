@@ -440,8 +440,8 @@ foam.CLASS({
           return ibanMsg;
       },
       javaPostSet: `
-        ValidationIBAN validationIBAN = new ValidationIBAN();
-        IBANInfo info = validationIBAN.parse(getX(), val);
+        ValidationIBAN validationIBAN = new ValidationIBAN(getX());
+        IBANInfo info = validationIBAN.parse(val);
         if ( info != null ) {
           setAccountNumber(info.getAccountNumber());
           setBranchId(info.getBranch());
