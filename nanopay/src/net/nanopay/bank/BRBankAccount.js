@@ -38,6 +38,8 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.nanos.iban.IBANInfo',
+    'foam.nanos.iban.ValidationIBAN',
     'foam.util.SafetyUtil',
     'net.nanopay.fx.afex.AFEXServiceProvider',
     'net.nanopay.fx.afex.IsIbanResponse',
@@ -241,13 +243,6 @@ foam.CLASS({
         super.validate(x);
         foam.nanos.iban.ValidationIBAN validationIban = new foam.nanos.iban.ValidationIBAN();
         validationIban.validate(iban);
-
-        if ( isIbanResponse != null && ! isIbanResponse.getIsIban() ) {
-          validateInstitutionNumber();
-          validateBranchId();
-          validateAccountNumber();
-          validateSwiftCode();
-        }
 
         if ( getOwner() == 0 ) {
           setOwner(((foam.nanos.auth.Subject) x.get("subject")).getUser().getId());
