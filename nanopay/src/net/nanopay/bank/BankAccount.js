@@ -689,6 +689,13 @@ foam.CLASS({
         //NOP
       `
     },
+    {
+      name: 'getApiAccountNumber',
+      type: 'String',
+      javaCode: `
+        return getAccountNumber();
+      `
+    },
   ],
 
   axioms: [
