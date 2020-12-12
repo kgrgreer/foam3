@@ -33,6 +33,8 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.nanos.iban.ValidationIBAN',
+    'foam.nanos.iban.IBANInfo',
     'foam.util.SafetyUtil',
     'java.util.regex.Pattern',
     'net.nanopay.model.Branch',
