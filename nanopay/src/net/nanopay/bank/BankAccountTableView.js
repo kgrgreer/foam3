@@ -38,14 +38,10 @@ foam.CLASS({
   properties: [
     {
       class: 'foam.dao.DAOProperty',
-      name: 'data',
+      name: 'customDAO',
       factory: function() {
         var dao = this.subject.user.accounts.where(
-          this.OR(
-            this.INSTANCE_OF(this.CABankAccount),
-            this.INSTANCE_OF(this.USBankAccount),
-            this.INSTANCE_OF(this.BRBankAccount)
-          )
+          this.INSTANCE_OF(this.BankAccount)
         );
         dao.of = 'net.nanopay.bank.BankAccount';
         return dao;
@@ -64,16 +60,14 @@ foam.CLASS({
             enableDynamicTableHeight: false,
             editColumnsEnabled: false,
             columns: [
-              this.BankAccount.NAME.clone().copyFrom({
-                tableWidth: 168
-              }),
+              'name',
               'summary',
               'flagImage',
               'denomination',
               'status',
               'isDefault'
             ],
-            data$: this.data$,
+            data$: this.customDAO$,
             dblClickListenerAction: this.dblclick
           }).end()
         .end();
@@ -82,11 +76,11 @@ foam.CLASS({
     function dblclick() {
       if ( this.selection) {
         var popupView = this.selection.status === net.nanopay.bank.BankAccountStatus.UNVERIFIED && net.nanopay.bank.CABankAccount.isInstance(this.selection) ?
-          foam.u2.dialog.Popup.create({}, this.__subContext__).tag({
+          foam.u2.dialog.Popup.create({}, this).tag({
             class: 'net.nanopay.cico.ui.bankAccount.modalForm.CABankMicroForm',
             bank: this.selection
           }) :
-          net.nanopay.sme.ui.SMEModal.create({}, this.__subContext__).addClass('bank-account-popup')
+          net.nanopay.sme.ui.SMEModal.create({}, this).addClass('bank-account-popup')
             .startContext({ controllerMode: foam.u2.ControllerMode.EDIT })
               .tag({
                 class: 'net.nanopay.account.ui.BankAccountWizard',

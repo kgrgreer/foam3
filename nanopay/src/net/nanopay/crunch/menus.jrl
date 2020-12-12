@@ -44,11 +44,11 @@ p({
       "daoKey":"accountDAO",
       "of":"net.nanopay.bank.BankAccount",
       "browseTitle": "Bank accounts",
+      "browseSubtitle": "View all bank accounts.",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
       "editPredicate":{"class":"foam.mlang.predicate.False"},
       "searchMode": 2,
       "primaryAction": {"class":"net.nanopay.bank.AddBankAccountAction"},
-      "disableBrowseViewDataSet": true,
       "browseViews": [
         {
           "class": "foam.comics.v2.namedViews.NamedViewCollection",

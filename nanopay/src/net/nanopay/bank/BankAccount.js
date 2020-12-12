@@ -31,13 +31,13 @@ foam.CLASS({
     'foam.dao.PromisedDAO',
     'foam.nanos.auth.Address',
     'foam.nanos.iban.ValidationIBAN',
-    'net.nanopay.payment.PaymentProviderCorridor',
+    'foam.u2.ControllerMode',
+    'foam.u2.dialog.Popup',
 
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
-    'net.nanopay.sme.ui.SMEModal',
-    'foam.u2.ControllerMode',
-    'foam.u2.dialog.Popup',
+    'net.nanopay.payment.PaymentProviderCorridor',
+    'net.nanopay.sme.ui.SMEModal'
   ],
 
   imports: [
@@ -120,14 +120,14 @@ foam.CLASS({
     { name: 'IBAN_INVALIDATION_FAILED', message: 'IBAN validation failed' },
     { name: 'IBAN_COUNTRY_MISMATCHED', message: 'IBAN country code mismatched' },
     { name: 'AVAILABLE_CURRENCIES_MSG', message: 'Available Currencies' },
-
-
     { name: 'DELETE_DEFAULT', message: 'Unable to delete default accounts. Please select a new default account if one exists.' },
     { name: 'UNABLE_TO_DELETE', message: 'Error deleting account: ' },
     { name: 'SUCCESSFULLY_DELETED', message: 'Bank account deleted' },
     { name: 'IS_DEFAULT', message: 'is now your default bank account. Funds will be automatically transferred to and from this account.' },
     { name: 'UNABLE_TO_DEFAULT', message: 'Unable to set non verified bank accounts as default' },
-    { name: 'ALREADY_DEFAULT', message: 'is already a default bank account' }
+    { name: 'STATUS_ACTIVE', message: 'Active' },
+    { name: 'STATUS_PENDING', message: 'Pending' },
+    { name: 'STATUS_DISABLED', message: 'Disabled' }
   ],
 
   css: `
@@ -215,15 +215,15 @@ foam.CLASS({
           case net.nanopay.bank.BankAccountStatus.VERIFIED :
             colour = '#2cab70';
             backgroundColour = colour;
-            label = 'Active';
+            label = net.nanopay.bank.BankAccount.STATUS_ACTIVE;
             break;
           case net.nanopay.bank.BankAccountStatus.DISABLED :
             colour = '#f91c1c';
             backgroundColour = colour;
-            label = a.label;
+            label = net.nanopay.bank.BankAccount.STATUS_DISABLED;
             break;
           case net.nanopay.bank.BankAccountStatus.UNVERIFIED :
-            label = 'Pending';
+            label = net.nanopay.bank.BankAccount.STATUS_PENDING;
             break;
         }
         this.start()
@@ -421,6 +421,7 @@ foam.CLASS({
       label: 'Nickname',
       section: 'accountInformation',
       order: 4,
+      tableWidth: 168,
       validateObj: function(name) {
         if ( name === '' || ! name ) {
           return this.NICKNAME_REQUIRED;
@@ -522,21 +523,19 @@ foam.CLASS({
     },
     {
       name: 'setAsDefault',
+      isEnabled: function() {
+        return ! this.isDefault
+      },
       code: function(X) {
-        if ( this.isDefault ) {
-          this.notify(`${ this.name } ${ this.ALREADY_DEFAULT }`, '', this.LogLevel.WARN, true);
-          return;
-        } else {
-          this.isDefault = true;
-          this.subject.user.accounts.put(this).then(() =>{
-            this.notify(`${ this.name } ${ this.IS_DEFAULT }`, '', this.LogLevel.INFO, true);
-          }).catch((err) => {
-            this.isDefault = false;
-            this.notify(this.UNABLE_TO_DEFAULT, '', this.LogLevel.ERROR, true);
-          });
+        this.isDefault = true;
+        this.subject.user.accounts.put(this).then(() =>{
+          this.notify(`${ this.name } ${ this.IS_DEFAULT }`, '', this.LogLevel.INFO, true);
+        }).catch((err) => {
+          this.isDefault = false;
+          this.notify(this.UNABLE_TO_DEFAULT, '', this.LogLevel.ERROR, true);
+        });
 
-          this.purgeCachedDAOs(X);
-        }
+        this.purgeCachedDAOs();
       }
     },
     {
@@ -645,10 +644,8 @@ foam.CLASS({
         return "";
       `
     },
-    function purgeCachedDAOs(X) {
-      debugger;
-      this.__subContext__.accountDAO.cmd_(X, foam.dao.CachingDAO.PURGE);
-      this.__subContext__.accountDAO.cmd_(X, foam.dao.AbstractDAO.RESET_CMD);
+    function purgeCachedDAOs() {
+      this.__subContext__.accountDAO.cmd_(this, foam.dao.CachingDAO.PURGE);
     },
     {
       name: 'validate',
