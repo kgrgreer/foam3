@@ -777,7 +777,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       CreatePaymentResponse paymentResponse = this.afexClient.createPayment(createPaymentRequest, user.getSpid());
       if ( paymentResponse != null && paymentResponse.getReferenceNumber() > 0 ) {
         txn = (AFEXFundingTransaction) txn.fclone();
-        txn.setReferenceNumber(String.valueOf(paymentResponse.getReferenceNumber()));
+        txn.setExternalInvoiceId(String.valueOf(paymentResponse.getReferenceNumber()));
         txn.setCompletionDate(new Date());
         return txn;
       }
@@ -842,7 +842,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         CreatePaymentResponse paymentResponse = this.afexClient.createPayment(createPaymentRequest, user.getSpid());
         if ( paymentResponse != null && paymentResponse.getReferenceNumber() > 0 ) {
           AFEXTransaction txn = (AFEXTransaction) afexTransaction.fclone();
-          txn.setReferenceNumber(String.valueOf(paymentResponse.getReferenceNumber()));
+          txn.setExternalInvoiceId(String.valueOf(paymentResponse.getReferenceNumber()));
           try {
             Date valueDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(tradeResponse.getValueDate());
             txn.setCompletionDate(valueDate);
@@ -882,7 +882,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         throw new RuntimeException("Business has not been completely onboarded on partner system. " + transaction.getPayerId());
       }
 
-      request.setId(txn.getReferenceNumber());
+      request.setId(txn.getExternalInvoiceId());
 
       try {
         User user = User.findUser(x, userId);

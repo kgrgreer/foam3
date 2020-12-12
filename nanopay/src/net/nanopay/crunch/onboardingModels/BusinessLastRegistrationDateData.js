@@ -17,52 +17,52 @@
 
 foam.CLASS({
   package: 'net.nanopay.crunch.onboardingModels',
-  name: 'BusinessIncorporationDateData',
+  name: 'BusinessLastRegistrationDateData',
 
   implements: [ 'foam.mlang.Expressions' ],
 
   sections: [
     {
-      name: 'businessIncorporationDateSection',
-      title: 'Business incorporation date',
-      help: 'Enter business incorporated date'
+      name: 'businessLastRegistrationDateSection',
+      title: 'Business last registration date',
+      help: 'Enter business last registration date'
     },
   ],
 
   messages: [
-    { name: 'INVALID_DATE_ERROR', message: 'Valid business incorporation date required' },
-    { name: 'MIN_DATE_ERROR', message: 'Business incorporation must be a more recent date' },
-    { name: 'MAX_DATE_ERROR', message: 'Business incorporation cannot be a future date' }
+    { name: 'INVALID_DATE_ERROR', message: 'Please enter the most recent date in which your business was registered' },
+    { name: 'MIN_DATE_ERROR', message: 'Business last registration must be a more recent date' },
+    { name: 'MAX_DATE_ERROR', message: 'Business last registration cannot be a future date' }
   ],
 
   properties: [
     {
-      section: 'businessIncorporationDateSection',
-      name: 'businessRegistrationDate',
-      label: 'Business incorporation date',
+      section: 'businessLastRegistrationDateSection',
+      name: 'businessLastRegistrationDate',
+      label: 'Business last registration date',
       class: 'Date',
-      documentation: 'Date of Business Incorporation.',
+      documentation: 'Date of Business last Registration.',
       validationPredicates: [
         {
-          args: ['businessRegistrationDate'],
+          args: ['businessLastRegistrationDate'],
           predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData.BUSINESS_REGISTRATION_DATE, null);
+            return e.NEQ(net.nanopay.crunch.onboardingModels.BusinessLastRegistrationDateData.BUSINESS_LAST_REGISTRATION_DATE, null);
           },
           errorMessage: 'INVALID_DATE_ERROR'
         },
         {
-          args: ['businessRegistrationDate'],
+          args: ['businessLastRegistrationDate'],
           predicateFactory: function(e) {
             var min = new Date();
             min.setDate(min.getDate() - ( 350 * 365 ));
-            return e.GTE(net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData.BUSINESS_REGISTRATION_DATE, min);
+            return e.GTE(net.nanopay.crunch.onboardingModels.BusinessLastRegistrationDateData.BUSINESS_LAST_REGISTRATION_DATE, min);
           },
           errorMessage: 'MIN_DATE_ERROR'
         },
         {
-          args: ['businessRegistrationDate'],
+          args: ['businessLastRegistrationDate'],
           predicateFactory: function(e) {
-            return e.LTE(net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData.BUSINESS_REGISTRATION_DATE, new Date());
+            return e.LTE(net.nanopay.crunch.onboardingModels.BusinessLastRegistrationDateData.BUSINESS_LAST_REGISTRATION_DATE, new Date());
           },
           errorMessage: 'MAX_DATE_ERROR'
         }

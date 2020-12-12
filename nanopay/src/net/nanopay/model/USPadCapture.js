@@ -73,11 +73,12 @@ foam.CLASS({
       }
     },
     {
-      name: 'capableRequirements',
+      class: 'StringArray',
+      name: 'capabilityIds',
+      section: 'capabilityInformation',
       factory: () => {
         return [
-          '554af38a-8225-87c8-dfdf-eeb15f71215e-23', // US Bank Account Auth Agreement
-          '554af38a-8225-87c8-dfdf-eeb15f71215e-24'  // US Cancellation Agreement
+          "e9e1567f-ef12-4c4e-b8c2-fa614a177adb"
         ];
       }
     },

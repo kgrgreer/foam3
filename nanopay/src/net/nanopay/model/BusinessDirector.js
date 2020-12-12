@@ -44,7 +44,11 @@ foam.CLASS({
     { name: 'INVALID_CPF', message: 'Valid CPF number required' },
     { name: 'INVALID_DIRECTOR_NAME', message: 'Confirm your director\’s name' },
     { name: 'FOREIGN_ID_ERROR', message: 'RG/RNE required' },
-    { name: 'NATIONALITY_ERROR', message: 'Nationality required' }
+    { name: 'NATIONALITY_ERROR', message: 'Nationality required' },
+    { name: 'YES', message: 'Yes' },
+    { name: 'NO', message: 'No' },
+    { name: 'PROOF_OF_ADDRESS', message: 'Proof of address documents required' },
+    { name: 'PROOF_OF_IDENTIFICATION', message: 'Proof of identication documents required' }
   ],
 
   properties: [
@@ -65,6 +69,14 @@ foam.CLASS({
       name: 'lastName',
       gridColumns: 6,
       required: true
+    },
+    {
+      class: 'EMail',
+      name: 'email',
+      required: true,
+      visibility: function(type) {
+        return type === 'BR' ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      }
     },
     {
       class: 'String',
@@ -267,6 +279,87 @@ foam.CLASS({
             return e.GTE(foam.mlang.StringLength.create({ arg1: net.nanopay.model.BusinessDirector.NATIONALITY }), 1);
           },
           errorMessage: 'NATIONALITY_ERROR'
+        }
+      ]
+    },
+    {
+      class: 'Boolean',
+      name: 'hasSignedContratosDeCambio',
+      label: 'Has the person listed here signed the \'contratos de câmbio\'?',
+      help: `
+        Contratos de câmbio (foreign exchange contract) is a legal arrangement in which the
+        parties agree to transfer between them a certain amount of foreign exchange at a
+        predetermined rate of exchange, and as of a predetermined date.
+      `,
+      visibility: function(type) {
+        return type === 'BR' ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      },
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RadioView',
+          choices: [
+            [true, X.data.YES],
+            [false, X.data.NO]
+          ],
+          isHorizontal: true
+        };
+      }
+    },
+    {
+      class: 'foam.nanos.fs.FileArray',
+      name: 'documentsOfAddress',
+      label: 'Please upload proof of address',
+      view: function(_, X) {
+        let selectSlot = foam.core.SimpleSlot.create({value: 0});
+        return foam.u2.MultiView.create({
+        views: [
+          foam.nanos.fs.fileDropZone.FileDropZone.create({
+            files$: X.data.documentsOfAddress$,
+            selected$: selectSlot
+          }, X),
+          foam.nanos.fs.fileDropZone.FilePreview.create({
+            data$: X.data.documentsOfAddress$,
+            selected$: selectSlot
+          })
+        ]
+        });
+      },
+      validationPredicates: [
+        {
+          args: ['documentsOfAddress'],
+          predicateFactory: function(e) {
+            return e.HAS(net.nanopay.model.BusinessDirector.DOCUMENTS_OF_ADDRESS);
+          },
+          errorMessage: 'PROOF_OF_ADDRESS'
+        }
+      ],
+    },
+    {
+      class: 'foam.nanos.fs.FileArray',
+      name: 'documentsOfId',
+      label: 'Please upload proof of identification',
+      view: function(_, X) {
+        let selectSlot = foam.core.SimpleSlot.create({value: 0});
+        return foam.u2.MultiView.create({
+        views: [
+          foam.nanos.fs.fileDropZone.FileDropZone.create({
+            files$: X.data.documentsOfId$,
+            selected$: selectSlot
+          }, X),
+          foam.nanos.fs.fileDropZone.FilePreview.create({
+            data$: X.data.documentsOfId$,
+            selected$: selectSlot
+          })
+        ]
+        });
+      },
+      validationPredicates: [
+        {
+          args: ['documentsOfId'],
+          predicateFactory: function(e) {
+            return e.HAS(net.nanopay.model.BusinessDirector.DOCUMENTS_OF_ID);
+          },
+          errorMessage: 'PROOF_OF_IDENTIFICATION'
         }
       ]
     }

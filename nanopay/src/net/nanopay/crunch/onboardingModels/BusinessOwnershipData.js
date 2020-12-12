@@ -238,7 +238,7 @@ foam.CLASS({
         if ( n ) this.clearAllOwnerAndPercentData();
       },
       visibility: function(amountOfOwners) {
-        return amountOfOwners == 0 ?
+        return this.subject.user.address.countryId != 'BR' && amountOfOwners == 0 ?
           foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       }
     },

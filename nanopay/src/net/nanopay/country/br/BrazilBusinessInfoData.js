@@ -118,6 +118,34 @@ foam.CLASS({
       }
     },
     {
+      class: 'Boolean',
+      name: 'verifyName',
+      label: 'Is this your business?',
+      section: 'businessInformation',
+      view: function(n, X) {
+        var self = X.data$;
+        return foam.u2.CheckBox.create({
+          labelFormatter: function() {
+            this.start('span')
+              .add(self.dot('cnpjName'))
+            .end();
+          }
+        });
+      },
+      visibility: function(cnpjName) {
+        return cnpjName.length > 0 ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      },
+      validationPredicates: [
+        {
+          args: ['verifyName'],
+          predicateFactory: function(e) {
+            return e.EQ(net.nanopay.country.br.BrazilBusinessInfoData.VERIFY_NAME, true);
+          },
+          errorMessage: 'VERIFY_BUSINESS_NAME'
+        }
+      ]
+    },
+    {
       class: 'String',
       name: 'nire',
       label: 'NIRE/State Commercial Identification Number',
@@ -155,36 +183,8 @@ foam.CLASS({
       name: 'cnpjName',
       label: '',
       hidden: true,
-      section: 'businessInformation',
-    },
-    {
-      class: 'Boolean',
-      name: 'verifyName',
-      label: 'Is this your business?',
-      section: 'businessInformation',
-      view: function(n, X) {
-        var self = X.data$;
-        return foam.u2.CheckBox.create({
-          labelFormatter: function() {
-            this.start('span')
-              .add(self.dot('cnpjName'))
-            .end();
-          }
-        });
-      },
-      visibility: function(cnpjName) {
-        return cnpjName.length > 0 ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
-      },
-      validationPredicates: [
-        {
-          args: ['verifyName'],
-          predicateFactory: function(e) {
-            return e.EQ(net.nanopay.country.br.BrazilBusinessInfoData.VERIFY_NAME, true);
-          },
-          errorMessage: 'VERIFY_BUSINESS_NAME'
-        }
-      ]
-    },
+      section: 'businessInformation'
+    }
   ],
 
   methods: [
