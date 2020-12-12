@@ -161,12 +161,6 @@ foam.CLASS({
       javaCode: `
         return getBranchId();
       `
-    },
-    {
-      name: 'getApiAccountNumber',
-      javaCode: `
-        return getAccountNumber();
-      `
-    },
+    }
   ]
 });

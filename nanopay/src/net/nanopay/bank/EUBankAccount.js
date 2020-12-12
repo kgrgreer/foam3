@@ -28,15 +28,5 @@ foam.CLASS({
       name: 'country',
       visibility: 'RO'
     }
-  ],
-
-  methods: [
-    {
-      name: 'getApiAccountNumber',
-      type: 'String',
-      javaCode: `
-        return getIban();
-      `
-    }
   ]
 });
