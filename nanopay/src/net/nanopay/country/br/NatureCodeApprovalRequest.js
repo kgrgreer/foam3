@@ -84,7 +84,8 @@ foam.CLASS({
   actions: [
     {
       name: 'approveWithMemo',
-      isAvailable: () => false
+      isAvailable: () => false,
+      code: () => { return; }
     },
     {
       name: 'approve',
