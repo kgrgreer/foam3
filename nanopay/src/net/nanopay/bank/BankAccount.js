@@ -441,10 +441,12 @@ foam.CLASS({
       },
       javaPostSet: `
         ValidationIBAN validationIBAN = new ValidationIBAN();
-        IBANInfo info = validationIBAN.parse(val);
-        setAccountNumber(info.getAccountNumber());
-        setBranchId(info.getBranch());
-        setInstitutionNumber(info.getBankCode());
+        IBANInfo info = validationIBAN.parse(getX(), val);
+        if ( info != null ) {
+          setAccountNumber(info.getAccountNumber());
+          setBranchId(info.getBranch());
+          setInstitutionNumber(info.getBankCode());
+        }
       `
     },
     {
