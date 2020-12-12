@@ -364,39 +364,12 @@ foam.CLASS({
           var cap = await this.client(y, 'capabilityPayloadDAO', foam.nanos.crunch.connection.CapabilityPayload).put_(y, foam.nanos.crunch.connection.CapabilityPayload.create({
             'id': '1F0B39AD-934E-462E-A608-D590D1081298',
             'capabilityDataObjects': {
-              // NOTE: see userDetails - added by user, not admin
-              // 'AbliiPrivacyPolicy': {
-              //   'class': 'net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy',
-              //   'title': 'Ablii\'s Privacy Policy',
-              //   'agreement': true,
-              //   'version': '1.0'
-              // },
-              // 'AbliiTermsAndConditions': {
-              //   'class': 'net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiTermsAndConditions',
-              //   'title': 'Ablii\'s Terms and Conditions',
-              //   'agreement': true,
-              //   'version': '1.0'
-              // },
-              // 'Expanded User Details': {
-              //   'class': 'net.nanopay.crunch.registration.UserDetailExpandedData',
-              //   'birthday': '1988-06-15T00:00:00.000Z',
-              //   'jobTitle': 'Treasurer',
-              //   'PEPHIORelated': false,
-              //   'thirdParty': false
-              // },
               'Personal Onboarding Type': {
                 'class': 'net.nanopay.crunch.registration.PersonalOnboardingTypeData',
                 'user': user.id,
                 'requestedOnboardingType': 1,
                 'overrideFlinksLoginType': true
               },
-              // 'User Details': {
-              //   'class': 'net.nanopay.crunch.registration.UserDetailData',
-              //   'firstName': user.firstName,
-              //   'lastName': user.lastName,
-              //   'phoneNumber': user.phoneNumber || '6472223333',
-              //   'address': user.address
-              // }
             }
           }, y));
 
@@ -428,112 +401,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'abliiBusinessOnboardingCapability',
-      code: async function(x, user, business) {
-        this.sudoStore(x);
-        try {
-          var y = this.sudoAdmin(x);
-          var cap = await this.client(y, 'capabilityPayloadDAO', foam.nanos.crunch.connection.CapabilityPayload).put_(y, foam.nanos.crunch.connection.CapabilityPayload.create({
-            'id': '56D2D946-6085-4EC3-8572-04A17225F86A',
-            'capabilityDataObjects': {
-              // See userDetails - added by user not admin
-              // 'AbliiPrivacyPolicy': {
-              //   'class': 'net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy',
-              //   'title': 'Ablii\'s Privacy Policy',
-              //   'agreement': true,
-              //   'version': '1.0'
-              // },
-              // 'AbliiTermsAndConditions': {
-              //   'class': 'net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiTermsAndConditions',
-              //   'title': 'Ablii\'s Terms and Conditions',
-              //   'agreement': true,
-              //   'version': '1.0'
-              // },
-              // 'User Details': {
-              //   'class': 'net.nanopay.crunch.registration.UserDetailData',
-              //   'firstName': user.firstName,
-              //   'lastName': user.lastName,
-              //   'phoneNumber': user.phoneNumber || '6472223333',
-              //   'address': user.address
-              // },
-              // 'Expanded User Details': {
-              //   'class': 'net.nanopay.crunch.registration.UserDetailExpandedData',
-              //   'birthday': user.birthday || '1988-06-15T00:00:00.000Z',
-              //   'jobTitle': 'Treasurer',
-              //   'PEPHIORelated': false,
-              //   'thirdParty': false
-              // },
-              'Business Onboarding Details': {
-                'class': 'net.nanopay.crunch.registration.BusinessDetailData',
-                'businessName': business.businessName,
-                'phoneNumber': user.phoneNumber || '6472223333',
-                'address': business.address,
-                'mailingAddress': business.address
-              },
-              'Expanded Business Onboarding Details': {
-                'class': 'net.nanopay.crunch.registration.BusinessDetailExpandedData',
-                'targetCustomers': 'Everyone'
-              },
-              'Business Type': {
-                'class': 'net.nanopay.crunch.registration.BusinessTypeData',
-                'businessTypeId': 1
-              },
-              'Extra Business Type Data Not Required': {
-                'class': 'net.nanopay.crunch.registration.IsSelectedData',
-                'selected': true
-              },
-              'Extra Business Type Data Required': {
-                'class': 'net.nanopay.crunch.registration.IsSelectedData',
-                'selected': false
-              },
-              'Business Directors': {
-                'class': 'net.nanopay.crunch.registration.BusinessDirectorList',
-                'business': business.id,
-                'businessDirectors': [
-                  {
-                    'class': 'net.nanopay.model.BusinessDirector',
-                    'firstName': 'John',
-                    'lastName': 'Smith',
-                    'nationality': 'CA'
-                  },
-                  {
-                    'class': 'net.nanopay.model.BusinessDirector',
-                    'firstName': 'Juan',
-                    'lastName': 'Smith',
-                    'nationality': 'BR'
-                  }
-                ]
-              },
-              'Business Owners': {
-                'class': 'net.nanopay.crunch.registration.BusinessOwnerList',
-                'business': business.id,
-                'businessOwners': [ ]
-              },
-              'Signing Officers': {
-                'class': 'net.nanopay.crunch.registration.SigningOfficerList',
-                'business': business.id,
-                'signingOfficers': [
-                  {
-                    'class': 'net.nanopay.model.SigningOfficer',
-                    'firstName': user.firstName,
-                    'lastName': user.lastName,
-                    'position': 'Treasurer',
-                    'user': user.id
-                  }
-                ]
-              }
-            }
-          }, y));
-          
-          this.sudoRestore(x);
-          return cap;
-        } catch (e) {
-          this.sudoRestore(x);
-          throw e;
-        }
-      }
-    },
-    {
       name: 'businessInitialData',
       code: async function(x, user) {
         var id;
@@ -553,6 +420,82 @@ foam.CLASS({
           ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
           return await this.createBusiness(x, user);
         }
+      }
+    },
+    {
+      name: 'businessDetailExpandedData',
+      code: async function(x, business) {
+        var id = '9C6D8CFE-50B8-4507-A595-78DD9E08EA2D';
+        var ucj = await this.crunchService.getJunction(x, id);
+        if ( ! ucj ||
+             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          var cap = net.nanopay.crunch.registration.BusinessDetailExpandedData.create({
+            targetCustomers: 'Everyone'
+          });
+          ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
+        }
+        return ucj;
+      }
+    },
+    {
+      name: 'businessTypeData',
+      code: async function(x, business) {
+        var id = 'A679CA67-93C2-4597-B92E-4BBA00797E96';
+        var ucj = await this.crunchService.getJunction(x, id);
+        if ( ! ucj ||
+             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          var cap = net.nanopay.crunch.registration.BusinessTypeData.create({
+            businessTypeId: 1
+          });
+          ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
+        }
+        return ucj;
+      }
+    },
+    {
+      name: 'businessExtraBusinessTypeDataNotRequired',
+      code: async function(x, business) {
+        var id = 'ED16359E-628E-4104-83B0-C77BB8544B78';
+        var ucj = await this.crunchService.getJunction(x, id);
+        if ( ! ucj ||
+             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          var cap = net.nanopay.crunch.registration.IsSelectedData.create({
+            selected: true
+          });
+          ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
+        }
+        return ucj;
+      }
+    },
+    {
+      name: 'businessExtraBusinessTypeDataRequired',
+      code: async function(x, business) {
+        var id = '840FC3EB-F826-4AB3-AD92-131CD1C7C8D1';
+        var ucj = await this.crunchService.getJunction(x, id);
+        if ( ! ucj ||
+             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          var cap = net.nanopay.crunch.registration.IsSelectedData.create({
+            selected: false
+          });
+          ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
+        }
+        return ucj;
+      }
+    },
+    {
+      name: 'businessOwners',
+      code: async function(x, business) {
+        
+        var id = '6DD8D005-7514-432D-BC32-9C5D569A0462';
+        var ucj = await this.crunchService.getJunction(x, id);
+        if ( ! ucj ||
+             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          var cap = net.nanopay.crunch.registration.BusinessOwnersList.create({
+            businessOwners: []
+          });
+          ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
+        }
+        return ucj;
       }
     },
     {
@@ -666,6 +609,7 @@ foam.CLASS({
         }
       }
     },
+    //TODO: move this into TrevisoOnboardingSupport
     {
       name: 'businessCapitalAndEquity',
       code: async function(x, business) {
@@ -676,7 +620,7 @@ foam.CLASS({
         ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-          var cap = net.nanopay.crunch.onboardingModels.CurrencyAmountInformation.create({
+          var cap = net.nanopay.partner.treviso.TrevisoCurrencyAmountInformation.create({
             capital: {
               class: 'net.nanopay.model.CurrencyAmount',
               currency: 'USD',
@@ -692,6 +636,7 @@ foam.CLASS({
         }
       }
     },
+    //TODO: move this into TrevisoOnboardingSupport
     {
       name: 'businessAccountData',
       code: async function(x, business) {
@@ -701,7 +646,7 @@ foam.CLASS({
         ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-          var cap = net.nanopay.crunch.onboardingModels.BusinessAccountData.create({
+          var cap = net.nanopay.partner.treviso.TrevisoBusinessAccountData.create({
             customers: [
               {
                 class: 'net.nanopay.crunch.onboardingModels.CustomerBasicInformation',
@@ -722,23 +667,34 @@ foam.CLASS({
       }
     },
     {
-      documentation: 'Use US Bank Account to avoid issues with PadCapture and subject in context.',
-      name: 'createUSBankAccount',
+      name: 'createContactCABankAccount',
       type: 'net.nanopay.bank.BankAccount',
-      code: async function(x, user) {
+      code: async function(x, contact) {
         const E = foam.mlang.ExpressionsSingleton.create();
         var b = await this.client(x, 'accountDAO', net.nanopay.account.Account).find(
           E.AND(
             E.EQ(net.nanopay.account.Account.OWNER, user.id),
-            E.INSTANCE_OF(net.nanopay.bank.USBankAccount)
+            E.INSTANCE_OF(net.nanopay.bank.CABankAccount)
           )
         );
         if ( ! b ) {
-          b = await this.client(x, 'accountDAO', net.nanopay.account.Account).put_(x, net.nanopay.bank.USBankAccount.create({
-            owner: user.id,
-            name: 'savings',
-            accountNumber: '123456',
-            branchId: '123456789'
+          b = await this.client(x, 'accountDAO', net.nanopay.account.Account).put_(x, net.nanopay.bank.CABankAccount.create({
+            owner: contact.id,
+            name: 'Contact Account',
+            branchId: '12345',
+            institutionNumber: '122',
+            accountNumber: '12321123',
+            bankAddress: {
+              class: 'foam.nanos.auth.Address',
+              structured: true,
+              streetNumber: '1',
+              streetName: 'Street',
+              regionId: 'CA-ON',
+              countryId: 'CA',
+              city: 'Toronto',
+              postalCode: 'X1X 1X1'
+            },
+            forContact: true
           }, x));
 
           this.sudoStore(x);
@@ -758,24 +714,108 @@ foam.CLASS({
       }
     },
     {
-      name: 'createContact',
-      type: 'net.nanopay.contacts.Contact',
+      documentation: 'Use US Bank Account to avoid issues with PadCapture and subject in context.',
+      name: 'createUSBankAccount',
+      type: 'net.nanopay.bank.BankAccount',
       code: async function(x, user) {
         const E = foam.mlang.ExpressionsSingleton.create();
-        var c = await this.client(x, 'contactDAO', net.nanopay.contacts.Contact).find(
-          E.EQ(net.nanopay.contacts.Contact.OWNER, user.id),
+        var b = await this.client(x, 'accountDAO', net.nanopay.account.Account).find(
+          E.AND(
+            E.EQ(net.nanopay.account.Account.OWNER, user.id),
+            E.INSTANCE_OF(net.nanopay.bank.USBankAccount)
+          )
         );
-        if ( ! c ) {
-          c = await this.client(x, 'contactDAO', net.nanopay.contacts.Contact).put_(x, net.nanopay.contacts.Contact.create({
-            owner: user.id,
-            firstName: 'Contact',
-            lastName: user.id,
-            organization: user.id,
-            email: 'contact@nanopay.net',
-            group: 'sme'
-          }, x));
+        if ( ! b ) {
+          b = await this.client(x, 'accountDAO', net.nanopay.account.Account).put_(x, net.nanopay.bank.USBankAccount.create({
+              owner: user.id,
+              name: 'savings',
+              accountNumber: '123456',
+              branchId: '123456789',
+              bankAddress: {
+                class: 'foam.nanos.auth.Address',
+                countryId: 'US',
+                regionId: 'US-NY',
+                streetNumber: '1',
+                streetName: 'Main St',
+                city: 'New York',
+                postalCode: '12122'
+              },
+              forContact: true
+            }, x));
+
+          this.sudoStore(x);
+          try {
+            var y = this.sudoAdmin(x);
+            b = b.clone();
+            b.status = 1;
+            b.verifiedBy = 'API';
+            b = await this.client(y, 'accountDAO', net.nanopay.account.Account).put_(y, b);
+            this.sudoRestore(x);
+          } catch (e) {
+            this.sudoRestore(x);
+            throw e;
+          }
+          return b;
         }
-        return c;
+      }
+    },
+    {
+      name: 'createCAContact',
+      type: 'net.nanopay.contacts.Contact',
+      code: async function(x, business) {
+        return await this.client(x, 'contactDAO', net.nanopay.contacts.Contact).put_(x, net.nanopay.contacts.Contact.create({
+          owner: business.id,
+          businessId: business.id,
+          firstName: 'CAContact'+business.id,
+          lastName: business.id,
+          organization: business.id,
+          email: 'ca.contact@nanopay.net',
+          group: 'sme',
+          confirm: true,
+          businessAddress: {
+            class: 'foam.nanos.auth.Address',
+            structured: true,
+            streetNumber: '1',
+            streetName: 'Street',
+            regionId: 'CA-ON',
+            countryId: 'CA',
+            city: 'Toronto',
+            postalCode: 'X1X 1X1'
+          }
+        }, x));
+      }
+    },
+    {
+      name: 'createUSContact',
+      type: 'net.nanopay.contacts.Contact',
+      code: async function(x, business) {
+        return await this.client(x, 'contactDAO', net.nanopay.contacts.Contact).put_(x, net.nanopay.contacts.Contact.create({
+          owner: business.id,
+          businessId: business.id,
+          firstName: 'USContact-'+business.id,
+          lastName: business.id,
+          organization: business.id,
+          email: 'us.contact@nanopay.net',
+          group: 'sme',
+          confirm: true,
+          businessAddress: {
+            class: 'foam.nanos.auth.Address',
+            structured: true,
+            streetNumber: '1',
+            streetName: 'Street',
+            regionId: 'US-CA',
+            countryId: 'US',
+            city: 'Palto Alto',
+            postalCode: '12345'
+          }
+        }, x));
+      }
+    },
+    {
+      name: 'updateContact',
+      type: 'net.nanopay.contacts.Contact',
+      code: async function(x, contact) {
+        return await this.client(x, 'contactDAO', net.nanopay.contacts.Contact).put_(x, contact);
       }
     },
     {
@@ -813,7 +853,7 @@ foam.CLASS({
       }
     },
     {
-      name: 'generalAdmission',
+      name: 'userRegistrationData',
       code: async function(x, user) {
         var id = '554af38a-8225-87c8-dfdf-eeb15f71215e-19';
         var ucj = await this.crunchService.getJunction(x, id);
@@ -826,9 +866,14 @@ foam.CLASS({
           });
           ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
         }
-
-        id = '554af38a-8225-87c8-dfdf-eeb15f71215e-8';
-        ucj = await this.crunchService.getJunction(x, id);
+        return ucj;
+      }
+    },
+    {
+      name: 'abliiPrivacyPolicy',
+      code: async function(x, user) {
+        var id = '554af38a-8225-87c8-dfdf-eeb15f71215e-8';
+        var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
           var cap = net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy.create({
@@ -837,9 +882,14 @@ foam.CLASS({
           });
           ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
         }
-
-        id = '554af38a-8225-87c8-dfdf-eeb15f71215e-7';
-        ucj = await this.crunchService.getJunction(x, id);
+        return ucj;
+      }
+    },
+    {
+      name: 'abliiTermsAndConditions',
+      code: async function(x, user) {
+        var id = '554af38a-8225-87c8-dfdf-eeb15f71215e-7';
+        var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
           var cap = net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiTermsAndConditions.create({
@@ -848,10 +898,14 @@ foam.CLASS({
           });
           ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
         }
-
-        // GeneralAdmission-Ablii
-        id = '554af38a-8225-87c8-dfdf-eeb15f71215e-18';
-        ucj = await this.crunchService.getJunction(x, id);
+        return ucj;
+      }
+    },
+    {
+      name: 'generalAdmission',
+      code: async function(x, user) {
+        var id = '554af38a-8225-87c8-dfdf-eeb15f71215e-18';
+        var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
           ucj = await this.crunchService.updateJunction(x, id, null, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
@@ -951,23 +1005,25 @@ foam.CLASS({
             }
           });
           ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
+          return ucj;
         }
       }
     },
     {
       name: 'businessDirectorsData',
       code: async function(x, business) {
-        var id;
-        var ucj;
-        id = '554af38a-8225-87c8-dfdf-eeb15f71215f-6-5';
-        ucj = await this.crunchService.getJunction(x, id);
+        var id = '554af38a-8225-87c8-dfdf-eeb15f71215f-6-5';
+        var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
           var cap = net.nanopay.crunch.onboardingModels.BusinessDirectorsData.create({
-            needDirectory: false
+            //needDirector: false,
+            businessTypeId: 3,
+            businessDirectors: []
           });
           ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
         }
+        return ucj;
       }
     },
     {

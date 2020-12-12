@@ -26,6 +26,7 @@ foam.CLASS({
   imports: [
     'agentJunctionDAO',
     'supportAccountDAO',
+    'supportTransactionDAO',
     'supportUserDAO'
   ],
 
@@ -39,11 +40,16 @@ foam.CLASS({
     },
     {
       name: 'bankAccounts'
+    },
+    {
+      name: 'transactionLimitsInformation',
+      title: 'Transaction Limits'
     }
   ],
 
   properties: [
     foam.nanos.auth.User.ID.clone().copyFrom({
+      label: 'Business ID',
       section: 'businessInformation',
       order: 1
     }),
@@ -76,13 +82,46 @@ foam.CLASS({
       section: 'businessInformation',
       order: 6
     }),
-    foam.nanos.auth.User.COMPLIANCE.clone().copyFrom({
+    net.nanopay.model.Business.CREATED.clone().copyFrom({
       section: 'businessInformation',
       order: 7
+    }),
+    net.nanopay.model.Business.LAST_MODIFIED.clone().copyFrom({
+      section: 'businessInformation',
+      order: 8
+    }),
+    net.nanopay.model.Business.CREATED_BY.clone().copyFrom({
+      section: 'businessInformation',
+      order: 9,
+      view: {
+        class: 'foam.u2.view.ReferenceView'
+      }
+    }),
+    net.nanopay.model.Business.LAST_MODIFIED_BY.clone().copyFrom({
+      section: 'businessInformation',
+      order: 10,
+      view: {
+        class: 'foam.u2.view.ReferenceView'
+      }
+    }),
+    foam.nanos.auth.User.COMPLIANCE.clone().copyFrom({
+      label: 'Compliance Status',
+      gridColumns: 6,
+      section: 'businessInformation',
+      order: 11
+    }),
+    foam.nanos.auth.User.STATUS.clone().copyFrom({
+      label: 'Registration Status',
+      gridColumns: 6,
+      section: 'businessInformation',
+      order: 12
     }),
     foam.nanos.auth.User.ACCOUNTS.clone().copyFrom({
       hidden: false,
       section: 'bankAccounts'
+    }),
+    foam.nanos.auth.User.TRANSACTION_LIMITS.clone().copyFrom({
+      section: 'transactionLimitsInformation'
     })
   ],
 
@@ -109,10 +148,10 @@ foam.CLASS({
           .where(this.EQ(net.nanopay.account.Account.OWNER, this.id))
           .select(this.MAP(net.nanopay.account.Account.ID))
           .then((sink) => sink.delegate.array);
-        var dao = X.summaryTransactionDAO.where(
+        var dao = X.supportTransactionDAO.where(
           this.OR(
-            this.IN(net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT, ids),
-            this.IN(net.nanopay.tx.model.Transaction.DESTINATION_ACCOUNT, ids)
+            this.IN(net.nanopay.support.SupportTransaction.SOURCE_ACCOUNT, ids),
+            this.IN(net.nanopay.support.SupportTransaction.DESTINATION_ACCOUNT, ids)
           )
         );
         X.stack.push({
@@ -140,7 +179,7 @@ foam.CLASS({
           .where(this.EQ(foam.nanos.auth.UserUserJunction.TARGET_ID, this.id))
           .select(this.MAP(foam.nanos.auth.UserUserJunction.SOURCE_ID))
           .then((sink) => sink.delegate.array);
-        var dao = X.userDAO.where(this.IN(foam.nanos.auth.User.ID, junctionSourceIds));
+        var dao = X.supportUserDAO.where(this.IN(net.nanopay.support.SupportUser.ID, junctionSourceIds));
         X.stack.push({
           class: 'foam.comics.v2.DAOBrowseControllerView',
           data: dao,

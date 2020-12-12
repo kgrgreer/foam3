@@ -28,11 +28,6 @@ foam.CLASS({
     'foam.core.Validatable'
   ],
 
-  requires: [
-    'foam.nanos.auth.User',
-    'net.nanopay.model.Business'
-  ],
-
   imports: [
     'businessTypeDAO',
     'subject'
@@ -96,7 +91,8 @@ foam.CLASS({
           },
           errorMessage: 'BUSINESS_TYPE_ERROR'
         }
-      ]
+      ],
+      gridColumns: 12
     }),
     {
       section: 'businessDetailsSection',
@@ -160,7 +156,8 @@ foam.CLASS({
           },
           errorMessage: 'SOURCE_OF_FUNDS_ERROR'
         }
-      ]
+      ],
+      gridColumns: 12
     }),
     {
       section: 'businessDetailsSection',

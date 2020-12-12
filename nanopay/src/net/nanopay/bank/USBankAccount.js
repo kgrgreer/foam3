@@ -34,6 +34,8 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.nanos.iban.IBANInfo',
+    'foam.nanos.iban.ValidationIBAN',
     'foam.util.SafetyUtil',
     'net.nanopay.model.Branch',
     'java.util.regex.Pattern'
@@ -122,7 +124,9 @@ foam.CLASS({
       },
       javaGetter: `
         return getAccountNumber();
-      `
+      `,
+      validateObj: function(iban) {
+      }
     },
     {
       name: 'institutionNumber',
@@ -139,8 +143,7 @@ foam.CLASS({
       view: function(_, X) {
         return {
           class: 'foam.u2.tag.Image',
-          displayWidth: '540px',
-          displayHeight: 'auto'
+          displayWidth: '100%'
         };
       }
     },
@@ -157,11 +160,6 @@ foam.CLASS({
       label: 'ACH Routing Number',
       section: 'accountInformation',
       updateVisibility: 'RO',
-      view: {
-        class: 'foam.u2.tag.Input',
-        placeholder: '123456789',
-        onKey: true
-      },
       gridColumns: 6,
       preSet: function(o, n) {
         if ( n === '' ) return n;
@@ -322,6 +320,13 @@ foam.CLASS({
             }
           ]
         }, X);
+      }
+    },
+    {
+      name: 'swiftCode',
+      visibility: 'HIDDEN',
+      required: false,
+      validateObj: function(swiftCode) {
       }
     }
   ],

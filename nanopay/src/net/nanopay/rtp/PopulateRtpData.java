@@ -74,7 +74,7 @@ public class PopulateRtpData {
       RequestToPay rtp = new RequestToPay();
       rtp.setAmount(((UserRTPModel) u).amount_);
       rtp.setPayer(user.getId());
-      rtp.setDestinationAccount(66);
+      rtp.setDestinationAccount("66");
       rtpDAO.put_(x, rtp);
     });
   }

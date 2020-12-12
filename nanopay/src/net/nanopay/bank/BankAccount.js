@@ -30,6 +30,7 @@ foam.CLASS({
     'foam.core.Currency',
     'foam.dao.PromisedDAO',
     'foam.nanos.auth.Address',
+    'foam.nanos.iban.ValidationIBAN',
     'net.nanopay.payment.PaymentProviderCorridor'
   ],
 
@@ -38,7 +39,8 @@ foam.CLASS({
     'capabilityDAO',
     'countryDAO',
     'institutionDAO',
-    'paymentProviderCorridorDAO'
+    'sourceCorridorDAO',
+    'targetCorridorDAO'
   ],
 
   javaImports: [
@@ -48,11 +50,14 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Country',
+    'foam.nanos.iban.IBANInfo',
+    'foam.nanos.iban.ValidationIBAN',
     'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'java.util.List',
+    'java.util.regex.Pattern',
     'net.nanopay.account.Account',
     'static foam.mlang.MLang.*'
   ],
@@ -71,6 +76,11 @@ foam.CLASS({
       name: 'ACCOUNT_NAME_MAX_LENGTH',
       type: 'Integer',
       value: 70
+    },
+    {
+      name: 'SWIFT_CODE_PATTERN',
+      type: 'Regex',
+      factory: function() { return /^[A-z0-9a-z]{8,11}$/; }
     }
   ],
 
@@ -95,15 +105,16 @@ foam.CLASS({
     { name: 'NICKNAME_REQUIRED', message: 'Nickname required' },
     { name: 'INSTITUTION_NUMBER_REQUIRED', message: 'Institution number required' },
     { name: 'INSTITUTION_NUMBER_INVALID', message: 'Institution number invalid' },
-    { name: 'SORT_CODE_REQUIRED', message: 'Sort code required' },
-    { name: 'SORT_CODE_INVALID', message: 'Sort code invalid' },
     { name: 'CHECK_DIGIT_REQUIRED', message: 'Check digit required' },
     { name: 'CHECK_DIGIT_INVALID', message: 'Check digit invalid' },
     { name: 'BRANCH_ID_REQUIRED', message: 'Branch id required' },
     { name: 'BRANCH_ID_INVALID', message: 'Branch id invalid' },
     { name: 'SWIFT_CODE_REQUIRED', message: 'SWIFT/BIC code required' },
     { name: 'SWIFT_CODE_INVALID', message: 'SWIFT/BIC code invalid' },
-    { name: 'SWIFT_CODE_OR_IBAN_REQUIRED', message: 'SWIFT/BIC or IBAN required' },
+    { name: 'IBAN_REQUIRED', message: 'IBAN required' },
+    { name: 'IBAN_INVALID', message: 'IBAN invalid' },
+    { name: 'IBAN_INVALIDATION_FAILED', message: 'IBAN validation failed' },
+    { name: 'IBAN_COUNTRY_MISMATCHED', message: 'IBAN country code mismatched' },
     { name: 'AVAILABLE_CURRENCIES_MSG', message: 'Available Currencies' }
   ],
 
@@ -113,19 +124,13 @@ foam.CLASS({
       updateVisibility: 'RO'
     },
     {
-      name: 'summary',
-      updateVisibility: 'RO'
-    },
-    {
       class: 'String',
       name: 'accountNumber',
       documentation: 'The account number of the bank account.',
       updateVisibility: 'RO',
       section: 'accountInformation',
       view: {
-        class: 'foam.u2.tag.Input',
-        placeholder: '1234567',
-        onKey: true
+          class: 'foam.u2.view.StringView'
       },
       preSet: function(o, n) {
         return /^\d*$/.test(n) ? n : o;
@@ -149,6 +154,7 @@ foam.CLASS({
     },
     {
       name: 'summary',
+      updateVisibility: 'RO',
       networkTransient: false,
       tableCellFormatter: function(_, obj) {
         this.start()
@@ -227,8 +233,8 @@ foam.CLASS({
       name: 'institutionNumber',
       section: 'accountInformation',
       documentation: `International bank code that identifies banks worldwide. BIC/SWIFT`,
-     updateVisibility: 'RO',
-     storageTransient: true
+      updateVisibility: 'RO',
+      storageTransient: true
     },
     {
       class: 'String',
@@ -334,16 +340,19 @@ foam.CLASS({
       expression: function(user, currencyDAO, forContact) {
         let propInfo = forContact ? this.PaymentProviderCorridor.TARGET_COUNTRY : this.PaymentProviderCorridor.SOURCE_COUNTRY;
         let propInfoCurrency = forContact ? this.PaymentProviderCorridor.TARGET_CURRENCIES : this.PaymentProviderCorridor.SOURCE_CURRENCIES;
+        let dao = forContact ? this.targetCorridorDAO : this.sourceCorridorDAO;
         return this.PromisedDAO.create({
           of: 'foam.core.Currency',
-          promise: this.paymentProviderCorridorDAO.where(this.AND(
+          promise: dao.where(this.AND(
               this.EQ(propInfo, this.country),
               this.INSTANCE_OF(this.PaymentProviderCorridor)
             ))
             .select(this.MAP(propInfoCurrency))
             .then((sink) => {
+              let currencies = sink.delegate.array ? sink.delegate.array : [];
+              currencies.push(this.denomination);
               return currencyDAO.where(
-                this.IN(this.Currency.ID, sink.delegate.array.flat())
+                this.IN(this.Currency.ID, currencies.flat())
               );
             })
         });
@@ -392,17 +401,21 @@ foam.CLASS({
       }
     },
     {
+      class: 'String',
       name: 'swiftCode',
       label: 'SWIFT/BIC',
       updateVisibility: 'RO',
       section: 'accountInformation',
       validateObj: function(swiftCode, iban) {
-        var regex = /^[A-z0-9a-z]{8,11}$/;
+        if ( iban )
+          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
-        if ( swiftCode && swiftCode != '' && ! regex.test(swiftCode) ) {
-          return this.SWIFT_CODE_INVALID;
-        } else if ( ( !swiftCode || swiftCode === '' ) && ( !iban || iban === "" ) ) {
-          return this.SWIFT_CODE_OR_IBAN_REQUIRED;
+        if ( ! iban || (iban && ibanMsg != 'passed') ) {
+          if ( ! swiftCode || swiftCode === '' ) {
+            return this.SWIFT_CODE_REQUIRED;
+          } else if ( ! this.SWIFT_CODE_PATTERN.test(swiftCode) ) {
+            return this.SWIFT_CODE_INVALID;
+          }
         }
       }
     },
@@ -410,21 +423,29 @@ foam.CLASS({
       class: 'String',
       name: 'iban',
       label: 'International Bank Account Number (IBAN)',
+      updateVisibility: 'RO',
       section: 'accountInformation',
       documentation: `Standard international numbering system developed to
-          identify an overseas bank account.`,
-      createVisibility: 'RW',
-      updateVisibility: 'RW',
-      readVisibility: 'RO',
-      validateObj: function(iban, swiftCode) {
-        var regex = /^[A-z0-9a-z]{8,11}$/;
-        if (
-          ( !iban || iban === "" ) &&
-          ( !swiftCode || swiftCode === '' || ! regex.test(swiftCode) )
-        ) {
-          return this.SWIFT_CODE_OR_IBAN_REQUIRED;
-        }
-      }
+          identify a bank account.`,
+      validateObj: function(iban, swiftCode, country) {
+        if ( ! iban )
+          return this.IBAN_REQUIRED;
+
+        if ( iban && country !== iban.substring(0, 2) )
+          return this.IBAN_COUNTRY_MISMATCHED;
+
+        var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
+
+        if ( ibanMsg && ibanMsg != 'passed')
+          return ibanMsg;
+      },
+      javaPostSet: `
+        ValidationIBAN validationIBAN = new ValidationIBAN();
+        IBANInfo info = validationIBAN.parse(val);
+        setAccountNumber(info.getAccountNumber());
+        setBranchId(info.getBranch());
+        setInstitutionNumber(info.getBankCode());
+      `
     },
     {
       class: 'String',
@@ -550,6 +571,8 @@ foam.CLASS({
         if ( name.length() > ACCOUNT_NAME_MAX_LENGTH ) {
           throw new IllegalStateException("Account name must be less than or equal to 70 characters.");
         }
+
+        //To-do : IBAN validation
       `
     },
     {

@@ -42,17 +42,16 @@ foam.CLASS({
       value: 'HKD',
     },
     {
-      name: 'swiftCode',
-      label: 'SWIFT/BIC',
+      name: 'institutionNumber',
       updateVisibility: 'RO',
       section: 'accountInformation',
-      validateObj: function(swiftCode) {
-        var regex = /^[A-z0-9a-z]{8,11}$/;
+      validateObj: function(institutionNumber) {
+        var regex = /^[0-9]{3}$/;
 
-        if ( !swiftCode || swiftCode === '' ) {
-          return this.SWIFT_CODE_REQUIRED;
-        } else if ( ! regex.test(swiftCode) ) {
-          return this.SWIFT_CODE_INVALID;
+        if ( institutionNumber === '' ) {
+          return this.INSTITUTION_NUMBER_REQUIRED;
+        } else if ( ! regex.test(institutionNumber) ) {
+          return this.INSTITUTION_NUMBER_INVALID;
         }
       }
     },
@@ -60,11 +59,6 @@ foam.CLASS({
       name: 'accountNumber',
       updateVisibility: 'RO',
       section: 'accountInformation',
-      view: {
-        class: 'foam.u2.tag.Input',
-        placeholder: '1234567890',
-        onKey: true
-      },
       preSet: function(o, n) {
         return /^\d*$/.test(n) ? n : o;
       },
@@ -86,18 +80,20 @@ foam.CLASS({
       }
     },
     {
-      name: 'institutionNumber',
-      visibility: 'HIDDEN'
-    },
-    {
       name: 'iban',
       required: false,
       visibility: 'HIDDEN',
       validateObj: function(iban) {
-      }
+      },
+      javaPostSet: `
+      `
     },
     {
       name: 'desc',
+      visibility: 'HIDDEN'
+    },
+    {
+      name: 'branchId',
       visibility: 'HIDDEN'
     }
   ]

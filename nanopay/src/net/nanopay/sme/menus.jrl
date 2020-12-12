@@ -43,7 +43,7 @@ p({
         "class": "foam.nanos.menu.MenuToolBar",
         "classification": "capability.menu",
         "parent": "sme",
-        "title": "Add a contact"
+        "title": "Add contact"
       }
     }
   }

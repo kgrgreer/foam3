@@ -9,5 +9,6 @@ p({
             "theme": "dark",
             "demo": true
         }
-    }
+    },
+    "parent": "admin"
 })

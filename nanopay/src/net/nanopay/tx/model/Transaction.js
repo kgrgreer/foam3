@@ -98,7 +98,7 @@ foam.CLASS({
     'status',
     'created',
     'completionDate',
-    'referenceNumber'
+    'externalInvoiceId'
   ],
 
   tableColumns: [
@@ -109,7 +109,7 @@ foam.CLASS({
     'destinationAccount.name',
     'created',
     'completionDate',
-    'referenceNumber'
+    'externalInvoiceId'
   ],
 
   sections: [
@@ -285,7 +285,6 @@ foam.CLASS({
       javaJSONParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.json.StringParser())`,
       javaCSVParser: `new foam.lib.parse.Alt(new foam.lib.json.LongParser(), new foam.lib.csv.CSVStringParser())`,
       javaToCSVLabel: 'outputter.outputValue("Transaction ID");',
-      tableWidth: 150,
       includeInDigest: true
     },
     {
@@ -442,11 +441,10 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'referenceNumber',
-      label: 'Reference Number',
+      name: 'externalInvoiceId',
+      label: 'External Invoice ID',
       section: 'basicInfo',
-      includeInDigest: true,
-      tableWidth: 50
+      includeInDigest: true
     },
      {
       // FIXME: move to a ViewTransaction used on the client
@@ -795,8 +793,13 @@ foam.CLASS({
       }
     },
     {
+      class: 'String',
+      name: 'externalId',
+      section: 'basicInfo'
+    },
+    {
       class: 'Map',
-      name: 'referenceData',
+      name: 'externalData',
       section: 'basicInfo'
     },
     {
@@ -971,8 +974,8 @@ foam.CLASS({
       javaCode: `
       setInvoiceId(other.getInvoiceId());
       setStatus(other.getStatus());
-      setReferenceData(other.getReferenceData());
-      setReferenceNumber(other.getReferenceNumber());
+      setExternalData(other.getExternalData());
+      setExternalInvoiceId(other.getExternalInvoiceId());
       setLifecycleState(other.getLifecycleState());
       setStatusHistory(other.getStatusHistory());
       `
@@ -1036,11 +1039,11 @@ foam.CLASS({
 
       AppConfig appConfig = (AppConfig) x.get("appConfig");
       DAO userDAO = (DAO) x.get("bareUserDAO");
-      if ( getSourceAccount() == 0 ) {
+      if ( SafetyUtil.isEmpty(getSourceAccount()) ) {
         throw new ValidationException("sourceAccount must be set");
       }
 
-      if ( getDestinationAccount() == 0 ) {
+      if ( SafetyUtil.isEmpty(getDestinationAccount()) ) {
         throw new ValidationException("destinationAccount must be set");
       }
 
@@ -1145,8 +1148,9 @@ foam.CLASS({
           while ( txnParent.parent != '' ) {
             txnParent = await txnParent.parent$find;
           }
+          return txnParent;
         }
-        return txnParent;
+        return this;
       },
       args: [
         { name: 'x', type: 'Context' }
@@ -1158,8 +1162,9 @@ foam.CLASS({
           while ( ! SafetyUtil.isEmpty(txnParent.getParent()) ) {
             txnParent = txnParent.findParent(x);
           }
+          return txnParent;
         }
-        return txnParent;
+        return this;
       `
     },
     {
@@ -1316,7 +1321,7 @@ foam.CLASS({
   },
   {
     name: 'getOutgoingAccount',
-    type: 'Long',
+    type: 'String',
     javaCode: `
       return getSourceAccount();
     `
@@ -1327,13 +1332,13 @@ foam.CLASS({
     documentation: 'Sum of transfers on this transaction for a given account',
     args: [
       { name: 'x', type: 'Context' },
-      { name: 'accountNumber', type: 'Long' }
+      { name: 'accountId', type: 'String' }
     ],
     javaCode: `
       Long sum = 0l;
       //Sum transfers that affect account
       for ( Transfer t : getTransfers() )
-        if ( t.getAccount() == accountNumber )
+        if ( SafetyUtil.equals(t.getAccount(), accountId) )
           sum += t.getAmount();
       return sum;
     `

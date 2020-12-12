@@ -38,8 +38,13 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.nanos.iban.IBANInfo',
+    'foam.nanos.iban.ValidationIBAN',
     'foam.util.SafetyUtil',
+    'net.nanopay.fx.afex.AFEXServiceProvider',
+    'net.nanopay.fx.afex.IsIbanResponse',
     'java.util.regex.Pattern',
+    'foam.core.ValidationException'
   ],
 
   sections: [
@@ -73,17 +78,17 @@ foam.CLASS({
     {
       name: 'ACCOUNT_NUMBER_PATTERN',
       type: 'Regex',
-      javaValue: 'Pattern.compile("^[0-9]{10}$")'
+      factory: function() { return /^[0-9]{10}$/; }
     },
     {
       name: 'INSTITUTION_NUMBER_PATTERN',
       type: 'Regex',
-      javaValue: 'Pattern.compile("^[A-z0-9a-z]{8}")'
+      factory: function() { return /^[A-z0-9a-z]{8}$/; }
     },
     {
       name: 'BRANCH_ID_PATTERN',
       type: 'Regex',
-      javaValue: 'Pattern.compile("^[0-9]{5}$")'
+      factory: function() { return /^[0-9]{5}$/; }
     }
   ],
 
@@ -107,13 +112,16 @@ foam.CLASS({
       name: 'institutionNumber',
       updateVisibility: 'RO',
       section: 'accountInformation',
-      validateObj: function(institutionNumber) {
-        var regex = /^[A-z0-9a-z]{8}$/;
+      validateObj: function(institutionNumber, iban) {
+        if ( iban )
+          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
-        if ( institutionNumber === '' ) {
-          return this.INSTITUTION_NUMBER_REQUIRED;
-        } else if ( ! regex.test(institutionNumber) ) {
-          return this.INSTITUTION_NUMBER_INVALID;
+        if ( ! iban || (iban && ibanMsg != 'passed') ) {
+          if ( institutionNumber === '' ) {
+            return this.INSTITUTION_NUMBER_REQUIRED;
+          } else if ( ! this.INSTITUTION_NUMBER_PATTERN.test(institutionNumber) ) {
+            return this.INSTITUTION_NUMBER_INVALID;
+          }
         }
       }
     },
@@ -121,22 +129,22 @@ foam.CLASS({
       name: 'branchId',
       section: 'accountInformation',
       updateVisibility: 'RO',
-      validateObj: function(branchId) {
-        var regex = /^[0-9]{5}$/;
+      validateObj: function(branchId, iban) {
+        if ( iban )
+          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
-        if ( branchId === '' ) {
-          return this.BRANCH_ID_REQUIRED;
-        } else if ( ! regex.test(branchId) ) {
-          return this.BRANCH_ID_INVALID;
+        if ( ! iban || (iban && ibanMsg != 'passed') ) {
+          if ( branchId === '' ) {
+            return this.BRANCH_ID_REQUIRED;
+          } else if ( ! this.BRANCH_ID_PATTERN.test(branchId) ) {
+            return this.BRANCH_ID_INVALID;
+          }
         }
       }
     },
     {
       name: 'accountNumber',
       updateVisibility: 'RO',
-      view: {
-        class: 'foam.u2.view.StringView'
-      },
       preSet: function(o, n) {
         return /^\d*$/.test(n) ? n : o;
       },
@@ -147,13 +155,16 @@ foam.CLASS({
           .add(displayAccountNumber);
         this.tooltip = displayAccountNumber;
       },
-      validateObj: function(accountNumber) {
-        var accNumberRegex = /^[0-9]{10}$/;
+      validateObj: function(accountNumber, iban) {
+        if ( iban )
+          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
-        if ( accountNumber === '' ) {
-          return this.ACCOUNT_NUMBER_REQUIRED;
-        } else if ( ! accNumberRegex.test(accountNumber) ) {
-          return this.ACCOUNT_NUMBER_INVALID;
+        if ( ! iban || (iban && ibanMsg != 'passed') ) {
+          if ( accountNumber === '' ) {
+            return this.ACCOUNT_NUMBER_REQUIRED;
+          } else if ( ! this.ACCOUNT_NUMBER_PATTERN.test(accountNumber) ) {
+            return this.ACCOUNT_NUMBER_INVALID;
+          }
         }
       }
     },
@@ -201,13 +212,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'iban',
-      label: 'International Bank Account Number (IBAN)',
-      required: true,
-      section: 'accountInformation',
-      updateVisibility: 'RO'
-    },
-    {
       name: 'desc',
       visibility: 'HIDDEN'
     },
@@ -233,12 +237,22 @@ foam.CLASS({
         { name: 'x', type: 'Context' }
       ],
       type: 'Void',
-      javaThrows: ['IllegalStateException'],
+      javaThrows: ['ValidationException'],
       javaCode: `
+        String iban = this.getIban();
+
         super.validate(x);
-        validateInstitutionNumber();
-        validateBranchId();
-        validateAccountNumber();
+        foam.nanos.iban.ValidationIBAN validationIban = new foam.nanos.iban.ValidationIBAN();
+        try {
+          validationIban.validate(iban);
+        } catch (ValidationException ex) {
+          validateInstitutionNumber();
+          validateBranchId();
+          validateAccountNumber();
+          validateSwiftCode();
+          throw ex;
+        }
+
         if ( getOwner() == 0 ) {
           setOwner(((foam.nanos.auth.Subject) x.get("subject")).getUser().getId());
         }
@@ -247,46 +261,61 @@ foam.CLASS({
     {
       name: 'validateInstitutionNumber',
       type: 'Void',
-      javaThrows: ['IllegalStateException'],
+      javaThrows: ['ValidationException'],
       javaCode: `
         String institutionNumber = this.getInstitutionNumber();
 
         if ( SafetyUtil.isEmpty(institutionNumber) ) {
-          throw new IllegalStateException(this.INSTITUTION_NUMBER_REQUIRED);
+          throw new ValidationException(this.INSTITUTION_NUMBER_REQUIRED);
         }
 
         if ( ! INSTITUTION_NUMBER_PATTERN.matcher(institutionNumber).matches() ) {
-          throw new IllegalStateException(this.INSTITUTION_NUMBER_INVALID);
+          throw new ValidationException(this.INSTITUTION_NUMBER_INVALID);
         }
       `
     },
     {
       name: 'validateBranchId',
       type: 'Void',
-      javaThrows: ['IllegalStateException'],
+      javaThrows: ['ValidationException'],
       javaCode: `
         String branchId = this.getBranchId();
 
         if ( SafetyUtil.isEmpty(branchId) ) {
-          throw new IllegalStateException(this.BRANCH_ID_REQUIRED);
+          throw new ValidationException(this.BRANCH_ID_REQUIRED);
         }
         if ( ! BRANCH_ID_PATTERN.matcher(branchId).matches() ) {
-          throw new IllegalStateException(this.BRANCH_ID_INVALID);
+          throw new ValidationException(this.BRANCH_ID_INVALID);
         }
       `
     },
     {
       name: 'validateAccountNumber',
       type: 'Void',
-      javaThrows: ['IllegalStateException'],
+      javaThrows: ['ValidationException'],
       javaCode: `
         String accountNumber = this.getAccountNumber();
 
         if ( SafetyUtil.isEmpty(accountNumber) ) {
-          throw new IllegalStateException(this.ACCOUNT_NUMBER_REQUIRED);
+          throw new ValidationException(this.ACCOUNT_NUMBER_REQUIRED);
         }
         if ( ! ACCOUNT_NUMBER_PATTERN.matcher(accountNumber).matches() ) {
-          throw new IllegalStateException(this.ACCOUNT_NUMBER_INVALID);
+          throw new ValidationException(this.ACCOUNT_NUMBER_INVALID);
+        }
+      `
+    },
+    {
+      name: 'validateSwiftCode',
+      type: 'Void',
+      javaThrows: ['ValidationException'],
+      javaCode: `
+        String swiftCode = this.getSwiftCode();
+
+        if ( SafetyUtil.isEmpty(swiftCode) ) {
+          throw new ValidationException(this.SWIFT_CODE_REQUIRED);
+        }
+        if ( ! SWIFT_CODE_PATTERN.matcher(swiftCode).matches() ) {
+          throw new ValidationException(this.SWIFT_CODE_INVALID);
         }
       `
     }

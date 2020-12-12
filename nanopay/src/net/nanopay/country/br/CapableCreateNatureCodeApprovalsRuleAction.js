@@ -34,7 +34,7 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'foam.nanos.crunch.Capability',
     'foam.nanos.crunch.lite.Capable',
-    'foam.nanos.crunch.lite.CapablePayload',
+    'foam.nanos.crunch.CapabilityJunctionPayload',
     'foam.nanos.logger.Logger',
     'net.nanopay.country.br.NatureCode',
     'net.nanopay.country.br.NatureCodeApprovalRequest',
@@ -53,10 +53,10 @@ foam.CLASS({
         { name: 'x', type: 'Context' },
         { name: 'request', type: 'ApprovalRequest' },
         { name: 'capableObj', type: 'Capable' },
-        { name: 'capablePayloadObj', type: 'CapablePayload' }
+        { name: 'capablePayloadObj', type: 'CapabilityJunctionPayload' }
       ],
       javaCode: `
-        CapablePayload capablePayload = (CapablePayload) capablePayloadObj;
+        CapabilityJunctionPayload capablePayload = (CapabilityJunctionPayload) capablePayloadObj;
         DAO capabilityDAO = (DAO) x.get("capabilityDAO");
         Capability capability = (Capability) capabilityDAO.find(capablePayload.getCapability());
 

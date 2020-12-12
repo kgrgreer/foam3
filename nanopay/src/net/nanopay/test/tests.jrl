@@ -75,6 +75,27 @@ async function execute(x) {
 
       // general admission 'ablii'
       try {
+        await support.userRegistrationData(x, u);
+        test(true, 'userRegistrationData');
+      } catch (e) {
+        test(false, 'userRegistrationData: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.abliiPrivacyPolicy(x, u);
+        test(true, 'abliiPrivacyPolicy');
+      } catch (e) {
+        test(false, 'abliiPrivacyPolicy: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.abliiTermsAndConditions(x, u);
+        test(true, 'abliiTermsAndConditions');
+      } catch (e) {
+        test(false, 'abliiTermsAndConditions: '+(e.message || e));
+        throw e;
+      }
+      try {
         await support.generalAdmission(x, u);
         test(true, 'generalAdmission');
       } catch (e) {
@@ -152,17 +173,45 @@ async function execute(x) {
         throw e;
       }
       try {
-        let cap = await support.abliiBusinessOnboardingCapability(x, u, business);
-        test(true, 'abliiBusinessOnboardingCapability');
-      } catch (e) {
-        test(false, 'abliiBusinessOnboardingCapability: '+(e.message || e));
-        throw e;
-      }
-      try {
         await support.businessRegistrationDate(x, business);
         test(true, 'businessRegistrationDate');
       } catch (e) {
         test(false, 'businessRegistrationDate: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.businessDetailExpandedData(x, business);
+        test(true, 'businessDetailExpandedData');
+      } catch (e) {
+        test(false, 'businessDetailExpandedData: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.businessTypeData(x, business);
+        test(true, 'businessTypeData');
+      } catch (e) {
+        test(false, 'businessTypeData: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.businessExtraBusinessTypeDataNotRequired(x, business);
+        test(true, 'businessExtraBusinessTypeDataNotRequired');
+      } catch (e) {
+        test(false, 'businessExtraBusinessTypeDataNotRequired: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.businessExtraBusinessTypeDataRequired(x, business);
+        test(true, 'businessExtraBusinessTypeDataRequired');
+      } catch (e) {
+        test(false, 'businessExtraBusinessTypeDataRequired: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.businessOwners(x, business);
+        test(true, 'businessOwners');
+      } catch (e) {
+        test(false, 'businessOwners: '+(e.message || e));
         throw e;
       }
       try {
@@ -249,19 +298,53 @@ async function execute(x) {
         test(false, 'createBusinessBankAccount: '+(e.message || e));
         throw e;
       }
+
       var contact;
+      var contactbank;
+      // US Contact US-USD bank Account
       try {
-        contact = await support.createContact(x, business);
-        test(true, 'createBusinessContact');
+        contact = await support.createUSContact(x, business, 1);
+        test(true, 'createUSContact');
       } catch (e) {
-        test(false, 'createBusinessContact: '+(e.message || e));
+        test(false, 'createUSContact: '+(e.message || e));
         throw e;
       }
       try {
-        let contactbank = await support.createUSBankAccount(x, contact);
-        test(true, 'createBusinessContactBankAccount');
+        contactbank = await support.createUSBankAccount(x, contact);
+        test(true, 'createUSBankAccount');
       } catch (e) {
-        test(false, 'createBusinessContactBankAccount: '+(e.message || e));
+        test(false, 'createUSBankAccount: '+(e.message || e));
+        throw e;
+      }
+      try {
+        contact.bankAccount = contactbank.id;
+        await business.contacts.put(contact);
+        test(true, 'adding business US contact: ' + contact.id + ', account: ' + contactbank.id);
+      } catch (e) {
+        test(false, 'adding business US contact: ' + contact.id + ', account: ' + contactbank.id + '. ' +(e.message || e));
+        throw e;
+      }
+      // CA Contact CA-CAD bank Account
+      try {
+        contact = await support.createCAContact(x, business, 1);
+        test(true, 'createCAContact');
+      } catch (e) {
+        test(false, 'createCAContact: '+(e.message || e));
+        throw e;
+      }
+      try {
+        contactbank = await support.createContactCABankAccount(x, contact);
+        test(true, 'createContactCABankAccount');
+      } catch (e) {
+        test(false, 'createContactCABankAccount: '+(e.message || e));
+        throw e;
+      }
+      try {
+        contact.bankAccount = contactbank.id;
+        await business.contacts.put(contact);
+        test(true, 'adding business CA contact: ' + contact.id + ', account: ' + contactbank.id);
+      } catch (e) {
+        test(false, 'adding business CA contact: ' + contact.id + ', account: ' + contactbank.id + '. ' +(e.message || e));
         throw e;
       }
 

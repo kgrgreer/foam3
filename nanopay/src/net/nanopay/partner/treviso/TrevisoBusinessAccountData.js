@@ -16,8 +16,8 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.crunch.onboardingModels',
-  name: 'BusinessAccountData',
+  package: 'net.nanopay.partner.treviso',
+  name: 'TrevisoBusinessAccountData',
 
   documentation: `Business account information, such as customer or supplier detail and taxes date`,
 
@@ -49,27 +49,18 @@ foam.CLASS({
     { name: 'MAX_DATE_ERROR', message: 'Cannot be a future date' },
     { name: 'YES', message: 'Yes' },
     { name: 'NO', message: 'No' },
+    { name: 'FOREIGN', message: 'Foreign' },
+    { name: 'NATIONAL', message: 'National' },
+    { name: 'MIXED', message: 'Mixed' },
+    { name: 'STATE', message: 'State' },
+    { name: 'PRIVATE', message: 'Private' },
+    { name: 'NO_CAPITAL_SOURCE', message: 'Source of capital required' },
+    { name: 'NO_CAPITAL_TYPE', message: 'Capital type required' },
     { name: 'CUSTOMERS_MSG', message: 'customer' },
     { name: 'SUPPLIERS_MSG', message: 'supplier' }
   ],
 
   properties: [
-    {
-      section: 'accountingSection',
-      name: 'OwnerOrOutsourced',
-      label: 'Do you outsource the accounting for your business?',
-      class: 'Boolean',
-      view: function(_, X) {
-        return {
-          class: 'foam.u2.view.RadioView',
-          choices: [
-            [true, X.data.YES],
-            [false, X.data.NO]
-          ],
-          isHorizontal: true
-        };
-      }
-    },
     {
       section: 'accountingSection',
       name: 'ownerManagment',
@@ -138,8 +129,8 @@ foam.CLASS({
           args: ['dateOfFilingTaxes', 'isTaxFiled'],
           predicateFactory: function(e) {
             return  e.OR(
-                e.NEQ(net.nanopay.crunch.onboardingModels.BusinessAccountData.DATE_OF_FILING_TAXES, null),
-                e.EQ(net.nanopay.crunch.onboardingModels.BusinessAccountData.IS_TAX_FILED, false)
+                e.NEQ(net.nanopay.partner.treviso.TrevisoBusinessAccountData.DATE_OF_FILING_TAXES, null),
+                e.EQ(net.nanopay.partner.treviso.TrevisoBusinessAccountData.IS_TAX_FILED, false)
             );
           },
           errorMessage: 'INVALID_DATE_ERROR'
@@ -148,11 +139,101 @@ foam.CLASS({
           args: ['dateOfFilingTaxes', 'isTaxFiled'],
           predicateFactory: function(e) {
             return e.OR(
-              e.LTE(net.nanopay.crunch.onboardingModels.BusinessAccountData.DATE_OF_FILING_TAXES, new Date()),
-              e.EQ(net.nanopay.crunch.onboardingModels.BusinessAccountData.IS_TAX_FILED, false)
+              e.LTE(net.nanopay.partner.treviso.TrevisoBusinessAccountData.DATE_OF_FILING_TAXES, new Date()),
+              e.EQ(net.nanopay.partner.treviso.TrevisoBusinessAccountData.IS_TAX_FILED, false)
             );
           },
           errorMessage: 'MAX_DATE_ERROR'
+        }
+      ]
+    },
+    {
+      section: 'accountingSection',
+      name: 'publiclyTraded',
+      label: 'Publicly held company?',
+      class: 'Boolean',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RadioView',
+          choices: [
+            [true, X.data.YES],
+            [false, X.data.NO]
+          ],
+          isHorizontal: true
+        };
+      }
+    },
+    {
+      section: 'accountingSection',
+      name: 'capitalSource',
+      label: 'Source of capital:',
+      class: 'String',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RadioView',
+          choices: [
+            X.data.FOREIGN,
+            X.data.NATIONAL,
+            X.data.MIXED
+          ],
+          isHorizontal: true
+        };
+      },
+      factory: function() {
+        return this.NATIONAL;
+      },
+      validationPredicates: [
+        {
+          errorMessage: 'NO_CAPITAL_SOURCE',
+          args: ['capitalSource'],
+          predicateFactory: function(e) {
+            return e.NEQ(net.nanopay.partner.treviso.TrevisoBusinessAccountData.CAPITAL_SOURCE, null);
+          }
+        }
+      ]
+    },
+    {
+      section: 'accountingSection',
+      name: 'nonprofitEntity',
+      label: 'Non-profit entity:',
+      class: 'Boolean',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RadioView',
+          choices: [
+            [true, X.data.YES],
+            [false, X.data.NO]
+          ],
+          isHorizontal: true
+        };
+      }
+    },
+    {
+      section: 'accountingSection',
+      name: 'capitalType',
+      label: 'Capital type:',
+      class: 'String',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RadioView',
+          choices: [
+            X.data.STATE,
+            X.data.PRIVATE,
+            X.data.MIXED
+          ],
+          isHorizontal: true
+        };
+      },
+      factory: function() {
+        return this.PRIVATE;
+      },
+      validationPredicates: [
+        {
+          errorMessage: 'NO_CAPITAL_TYPE',
+          args: ['capitalType'],
+          predicateFactory: function(e) {
+            return e.NEQ(net.nanopay.partner.treviso.TrevisoBusinessAccountData.CAPITAL_TYPE, null);
+          }
         }
       ]
     },
@@ -163,7 +244,6 @@ foam.CLASS({
       label: '',
       of: 'net.nanopay.crunch.onboardingModels.CustomerBasicInformation',
       section: 'customerSection',
-      required: true,
       view: function(_, x) {
         return {
           class: 'net.nanopay.sme.onboarding.BusinessDirectorArrayView',
@@ -172,18 +252,7 @@ foam.CLASS({
           enableRemoving: true,
           name: x.data.CUSTOMERS_MSG,
         }
-      },
-      autoValidate: true,
-      validationTextVisible: true,
-      validationPredicates: [
-        {
-          args: [ 'customers' ],
-          predicateFactory: function(e) {
-            return e.HAS(net.nanopay.crunch.onboardingModels.BusinessAccountData.CUSTOMERS)
-          },
-          errorMessage: 'NO_CUSTOMERS_INFO'
-        }
-      ]
+      }
     },
     {
       class: 'FObjectArray',
@@ -192,9 +261,6 @@ foam.CLASS({
       label: '',
       of: 'net.nanopay.crunch.onboardingModels.CustomerBasicInformation',
       section: 'supplierSection',
-      autoValidate: true,
-      required: true,
-      validationTextVisible: true,
       view: function(_, x) {
         return {
           class: 'net.nanopay.sme.onboarding.BusinessDirectorArrayView',
@@ -203,16 +269,7 @@ foam.CLASS({
           enableRemoving: true,
           name: x.data.SUPPLIERS_MSG,
         }
-      },
-      validationPredicates: [
-        {
-          args: [ 'suppliers' ],
-          predicateFactory: function(e) {
-            return e.HAS(net.nanopay.crunch.onboardingModels.BusinessAccountData.SUPPLIERS)
-          },
-          errorMessage: 'NO_SUPPLIERS_INFO'
-        }
-      ]
+      }
     }
   ],
 

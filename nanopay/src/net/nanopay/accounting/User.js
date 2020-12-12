@@ -28,12 +28,14 @@ foam.CLASS({
       visibility: 'RO',
       value: 'NONE',
       label: 'Accounting Integration',
-      section: 'systemInformation'
+      section: 'systemInformation',
+      gridColumns: 6
     },
     {
       class: 'Boolean',
       name: 'hasIntegrated',
       section: 'systemInformation',
+      gridColumns: 6,
       value: false
     },
   ]

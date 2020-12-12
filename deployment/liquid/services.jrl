@@ -160,7 +160,7 @@ p({
 
     return new foam.dao.EasyDAO.Builder(x)
       .setPm(true)
-      .setSeqNo(true)
+      .setGuid(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("accounts")
       .setApprovableAware(false)

@@ -55,7 +55,7 @@ foam.CLASS({
             return e.NEQ(net.nanopay.model.CurrencyAmount.CURRENCY, null);
           }
         }
-      ],
+      ]
     },
     {
       class: 'UnitValue',
@@ -81,7 +81,7 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'customCurrencyDAO',
       documentation: 'DAO used for currency selection',
-      visiblility: 'HIDDEN',
+      visibility: 'HIDDEN',
       preSet: function(_, n) {
         if ( n.of != foam.core.Currency ) {
           console.warn('Custom currency dao provided in CurrencyAmount view is not of currency model.');

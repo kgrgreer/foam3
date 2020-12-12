@@ -95,12 +95,14 @@ foam.CLASS({
     {
       name: 'id',
       section: 'businessInformation',
-      order: 1
+      order: 1,
+      gridColumns: 6
     },
     {
       name: 'type',
       section: 'businessInformation',
-      order: 2
+      order: 2,
+      gridColumns: 6
     },
     {
       class: 'String',
@@ -108,7 +110,6 @@ foam.CLASS({
       documentation: 'Legal name of business.',
       section: 'businessInformation',
       order: 10,
-      visibility: 'RW',
       width: 50
     },
     {
@@ -119,7 +120,14 @@ foam.CLASS({
         from the organization name.`,
           // Is displayed on client if present taking place of organziation name.
       section: 'businessInformation',
-      order: 11
+      order: 11,
+      gridColumns: 6
+    },
+    {
+      name: 'email',
+      section: 'businessInformation',
+      order: 20,
+      validateObj: function() {}
     },
     {
       class: 'Reference',
@@ -127,7 +135,8 @@ foam.CLASS({
       name: 'businessTypeId',
       of: 'net.nanopay.model.BusinessType',
       documentation: 'The ID of the proprietary details of the business.',
-      section: 'businessInformation'
+      section: 'businessInformation',
+      gridColumns: 6
     },
     {
       class: 'Reference',
@@ -149,7 +158,8 @@ foam.CLASS({
           search: true
         };
       },
-      section: 'businessInformation'
+      section: 'businessInformation',
+      gridColumns: 6
     },
     {
       class: 'String',
@@ -166,12 +176,10 @@ foam.CLASS({
       `,
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
-      section: 'systemInformation'
+      section: 'systemInformation',
+      gridColumns: 6
     },
-    {
-      name: 'note',
-      section: 'businessInformation'
-    },
+    
     {
       name: 'website',
       section: 'businessInformation'
@@ -208,7 +216,8 @@ foam.CLASS({
       class: 'Boolean',
       name: 'residenceOperated',
       documentation: 'Determines whether a business is operated at the residence of the owner.',
-      section: 'businessInformation'
+      section: 'businessInformation',
+      gridColumns: 6
     },
     {
       name: 'additionalDocuments',
@@ -240,7 +249,8 @@ foam.CLASS({
           return 'Invalid issuing authority.';
         }
       },
-      section: 'businessInformation'
+      section: 'businessInformation',
+      gridColumns: 6
     },
     {
       class: 'String',
@@ -255,26 +265,23 @@ foam.CLASS({
       },
       javaGetter: `return getBusinessRegistrationAuthority();`,
       javaSetter: `setBusinessRegistrationAuthority(val);`,
-      section: 'businessInformation'
+      section: 'businessInformation',
+      gridColumns: 6
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.Country',
       name: 'countryOfBusinessRegistration',
       documentation: `Country where business was registered.`,
-      section: 'businessInformation'
+      section: 'businessInformation',
+      gridColumns: 6
     },
     {
       class: 'Date',
       name: 'businessRegistrationDate',
       documentation: 'The date that the business was registered by their issuing authority.',
-      section: 'businessInformation'
-    },
-    {
-      class: 'PhoneNumber',
-      name: 'fax',
-      documentation: 'The fax number of the business.',
-      section: 'businessInformation'
+      section: 'businessInformation',
+      gridColumns: 6
     },
     {
       class: 'PhoneNumber',
@@ -283,10 +290,18 @@ foam.CLASS({
       section: 'businessInformation'
     },
     {
+      class: 'PhoneNumber',
+      name: 'fax',
+      documentation: 'The fax number of the business.',
+      section: 'businessInformation',
+      gridColumns: 6
+    },
+    {
       class: 'Boolean',
       name: 'phoneNumberVerified',
       writePermissionRequired: true,
-      section: 'businessInformation'
+      section: 'operationsInformation',
+      gridColumns: 6
     },
     {
       class: 'FObjectProperty',
@@ -347,7 +362,8 @@ foam.CLASS({
       name: 'businessHoursEnabled',
       documentation: 'Determines whether business hours are enabled for the User to set.',
       value: false,
-      section: 'businessInformation'
+      section: 'businessInformation',
+      gridColumns: 6
     },
     {
       class: 'Boolean',
@@ -356,7 +372,8 @@ foam.CLASS({
         dictates portal views after compliance and account approval.`,
       value: false,
       writePermissionRequired: true,
-      section: 'operationsInformation'
+      section: 'operationsInformation',
+      gridColumns: 6
     },
     {
       class: 'FObjectArray',
@@ -373,13 +390,15 @@ foam.CLASS({
       name: 'holdingCompany',
       documentation: `Determines whether a Business is a holding company.  A holding company
         represent a corporate group which owns shares of multiple companies.`,
-      section: 'businessInformation'
+      section: 'businessInformation',
+      gridColumns: 6
     },
     {
       class: 'String',
       name: 'sourceOfFunds',
       documentation: 'The entities that provide funding to the business.',
-      section: 'complianceInformation'
+      section: 'complianceInformation',
+      gridColumns: 6
     },
     {
       class: 'String',
@@ -387,7 +406,8 @@ foam.CLASS({
       label: 'Describe the target customer of your products and services',
       documentation: `The type of clients that the business markets its products and
         services.`,
-      section: 'complianceInformation'
+      section: 'complianceInformation',
+      gridColumns: 6
     },
     {
       class: 'FObjectProperty',
@@ -409,13 +429,15 @@ foam.CLASS({
       name: 'taxIdentificationNumber',
       documentation: `The tax identification number associated with the business of
       the User.`,
-      section: 'businessInformation'
+      section: 'businessInformation',
+      gridColumns: 6
     },
     {
       name: 'businessIdentificationCode',
       documentation: 'ISO 9362 Business Identification Code (BIC) (regulated by SWIFT). see https://en.wikipedia.org/wiki/ISO_9362.',
       class: 'String',
-      section: 'businessInformation'
+      section: 'businessInformation',
+      gridColumns: 6
     },
     {
       class: 'String',
@@ -433,7 +455,8 @@ foam.CLASS({
           return 'Invalid registration number.';
         }
       },
-      section: 'businessInformation'
+      section: 'businessInformation',
+      gridColumns: 6
     },
     {
       class: 'String',
@@ -451,7 +474,8 @@ foam.CLASS({
       },
       javaGetter: `return getBusinessRegistrationNumber();`,
       javaSetter: `setBusinessRegistrationNumber(val);`,
-      section: 'businessInformation'
+      section: 'businessInformation',
+      gridColumns: 6
     },
     {
       class: 'FObjectArray',
@@ -469,7 +493,8 @@ foam.CLASS({
         class: 'foam.nanos.auth.ProfilePictureView',
         placeholderImage: 'images/business-placeholder.png'
       },
-      section: 'businessInformation'
+      section: 'systemInformation',
+      gridColumns: 6
     },
     {
       class: 'Boolean',
@@ -477,12 +502,15 @@ foam.CLASS({
       value: false,
       documentation: `Determines whether a user has been onboarded to
         a partner platform to support international payments.`,
-      section: 'operationsInformation'
+      section: 'operationsInformation',
+      gridColumns: 6
     },
     {
       class: 'Boolean',
       name: 'publiclyTraded',
-      section: 'businessInformation'
+      section: 'ownerInformation',
+      gridColumns: 6,
+      order: 55
     },
     // Overwrite validateObj on firstName, lastName, and email so we can create
     // businesses through the GUI.
@@ -495,29 +523,32 @@ foam.CLASS({
       validateObj: function() {}
     },
     {
-      name: 'email',
-      section: 'businessInformation',
-      order: 20,
-      validateObj: function() {}
-    },
-    {
       name: 'created',
-      section: 'businessInformation'
+      section: 'businessInformation',
+      gridColumns: 6
     },
     {
       name: 'createdBy',
-      section: 'businessInformation'
+      section: 'businessInformation',
+      gridColumns: 6
     },
     {
       name: 'createdByAgent',
-      section: 'businessInformation'
+      section: 'businessInformation',
+      gridColumns: 6
     },
     {
       name: 'lastModified',
-      section: 'businessInformation'
+      section: 'businessInformation',
+      gridColumns: 6
     },
     {
       name: 'lastModifiedBy',
+      section: 'businessInformation',
+      gridColumns: 6
+    },
+    {
+      name: 'note',
       section: 'businessInformation'
     }
  ],
@@ -533,17 +564,6 @@ foam.CLASS({
       javaCode: `
         if ( SafetyUtil.isEmpty(this.getBusinessName()) ) {
           throw new IllegalStateException("Business name cannot be empty.");
-        }
-
-        AuthService auth = (AuthService) x.get("auth");
-
-        // Temporarily prohibit businesses based in Quebec.
-        Address businessAddress = this.getAddress();
-
-        if ( businessAddress != null &&
-             SafetyUtil.equals(businessAddress.getRegionId(), "QC") &&
-             ! auth.check(x, "*") ) {
-          throw new IllegalStateException("Ablii does not currently support businesses in Quebec. We are working hard to change this! If you are based in Quebec, check back for updates.");
         }
       `
     },

@@ -65,7 +65,7 @@ foam.CLASS({
       javaCode: `
         if ( getAmount() == 0 )
           throw new ValidationException("Transfer has no amount set");
-        if ( getAccount() == 0 )
+        if ( SafetyUtil.isEmpty(getAccount()) )
           throw new ValidationException("No account specified on Transfer");
 
       `
@@ -105,11 +105,11 @@ foam.CLASS({
       name: 'javaExtras',
       buildJavaClass: function(cls) {
         cls.extras.push(`
-          public Transfer(long account, long amount) {
+          public Transfer(String account, long amount) {
             setAmount(amount);
             setAccount(account);
           }
-          public Transfer(long account, long amount, long stage) {
+          public Transfer(String account, long amount, long stage) {
             setAmount(amount);
             setAccount(account);
             setStage(stage);
