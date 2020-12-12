@@ -235,7 +235,7 @@ foam.CLASS({
         { name: 'x', type: 'Context' }
       ],
       type: 'Void',
-      javaThrows: ['IllegalStateException'],
+      javaThrows: ['ValidationException'],
       javaCode: `
         String iban = this.getIban();
 
@@ -259,61 +259,61 @@ foam.CLASS({
     {
       name: 'validateInstitutionNumber',
       type: 'Void',
-      javaThrows: ['IllegalStateException'],
+      javaThrows: ['ValidationException'],
       javaCode: `
         String institutionNumber = this.getInstitutionNumber();
 
         if ( SafetyUtil.isEmpty(institutionNumber) ) {
-          throw new IllegalStateException(this.INSTITUTION_NUMBER_REQUIRED);
+          throw new ValidationException(this.INSTITUTION_NUMBER_REQUIRED);
         }
 
         if ( ! INSTITUTION_NUMBER_PATTERN.matcher(institutionNumber).matches() ) {
-          throw new IllegalStateException(this.INSTITUTION_NUMBER_INVALID);
+          throw new ValidationException(this.INSTITUTION_NUMBER_INVALID);
         }
       `
     },
     {
       name: 'validateBranchId',
       type: 'Void',
-      javaThrows: ['IllegalStateException'],
+      javaThrows: ['ValidationException'],
       javaCode: `
         String branchId = this.getBranchId();
 
         if ( SafetyUtil.isEmpty(branchId) ) {
-          throw new IllegalStateException(this.BRANCH_ID_REQUIRED);
+          throw new ValidationException(this.BRANCH_ID_REQUIRED);
         }
         if ( ! BRANCH_ID_PATTERN.matcher(branchId).matches() ) {
-          throw new IllegalStateException(this.BRANCH_ID_INVALID);
+          throw new ValidationException(this.BRANCH_ID_INVALID);
         }
       `
     },
     {
       name: 'validateAccountNumber',
       type: 'Void',
-      javaThrows: ['IllegalStateException'],
+      javaThrows: ['ValidationException'],
       javaCode: `
         String accountNumber = this.getAccountNumber();
 
         if ( SafetyUtil.isEmpty(accountNumber) ) {
-          throw new IllegalStateException(this.ACCOUNT_NUMBER_REQUIRED);
+          throw new ValidationException(this.ACCOUNT_NUMBER_REQUIRED);
         }
         if ( ! ACCOUNT_NUMBER_PATTERN.matcher(accountNumber).matches() ) {
-          throw new IllegalStateException(this.ACCOUNT_NUMBER_INVALID);
+          throw new ValidationException(this.ACCOUNT_NUMBER_INVALID);
         }
       `
     },
     {
       name: 'validateSwiftCode',
       type: 'Void',
-      javaThrows: ['IllegalStateException'],
+      javaThrows: ['ValidationException'],
       javaCode: `
         String swiftCode = this.getSwiftCode();
 
         if ( SafetyUtil.isEmpty(swiftCode) ) {
-          throw new IllegalStateException(this.SWIFT_CODE_REQUIRED);
+          throw new ValidationException(this.SWIFT_CODE_REQUIRED);
         }
         if ( ! SWIFT_CODE_PATTERN.matcher(swiftCode).matches() ) {
-          throw new IllegalStateException(this.SWIFT_CODE_INVALID);
+          throw new ValidationException(this.SWIFT_CODE_INVALID);
         }
       `
     }
