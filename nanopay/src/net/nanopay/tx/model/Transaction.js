@@ -1047,7 +1047,11 @@ foam.CLASS({
         throw new ValidationException("destinationAccount must be set");
       }
 
-      User sourceOwner = (User) userDAO.find(findSourceAccount(x).getOwner());
+      Account sourceAccount = findSourceAccount(x);
+      if ( sourceAccount == null ) {
+        throw new ValidationException("Source account not found");
+      }
+      User sourceOwner = (User) userDAO.find(sourceAccount.getOwner());
       if ( sourceOwner == null ) {
         throw new ValidationException("Payer not found");
       }
@@ -1057,7 +1061,11 @@ foam.CLASS({
         throw new ValidationException("Payer user is disabled");
       }
 
-      User destinationOwner = (User) userDAO.find(findDestinationAccount(x).getOwner());
+      Account destinationAccount = findDestinationAccount(x);
+      if ( destinationAccount == null ) {
+        throw new ValidationException("Destination account not found");
+      }
+      User destinationOwner = (User) userDAO.find(destinationAccount.getOwner());
       if ( destinationOwner == null ) {
         throw new ValidationException("Payee not found");
       }
