@@ -2,7 +2,7 @@
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "targetId":"cbb67837-54ac-49dc-a596-9fdddbc6d806-br-naturecode",
-  "sourceId":"dfbe9220-ba4e-42d1-9bed-f4b4f8efcbb8",
+  "sourceId":"invoice.capable.treviso",
   "priority": 17
 })
 

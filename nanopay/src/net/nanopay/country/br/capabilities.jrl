@@ -454,7 +454,7 @@ p({
   "description":"Enable international payments in Brazil",
   "icon":"/images/capabilityIcons/BrazilCap.svg",
   "version":"0",
-  "visibilityPredicate":  { class: "foam.mlang.predicate.True" }, 
+  "visibilityPredicate":  { class: "foam.mlang.predicate.True" },
   "enabled":true,
   "keywords":["featured"],
   "availabilityPredicate": {
@@ -467,9 +467,10 @@ p({
       }
     ]
   },
-  "wizardletConfig": {
+  "wizardConfig": {
     "class": "net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig",
-    "allowSkipping": false
+    "allowSkipping": false,
+    "skipMode": "HIDE"
   },
   "requirementViewTitle":"Have your business documents ready. You can save your progress and come back later.",
   "associatedEntity": 2
@@ -511,8 +512,8 @@ p({
       }
     ]
   },
-  "wizardletConfig": {
-    "class": "foam.u2.wizard.StepWizardConfig",
+  "wizardConfig": {
+    "class": "foam.u2.crunch.EasyCrunchWizard",
     "allowSkipping": false
   },
   "capabilityToReview": "554af38a-8225-87c8-dfdf-eeb15f71215f-49",
@@ -552,7 +553,7 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"9d4d667c-04c3-11eb-adc1-0242ac120002",
   "name":"Business Capital and Equity",
-  "of":"net.nanopay.crunch.onboardingModels.CurrencyAmountInformation",
+  "of":"net.nanopay.partner.treviso.TrevisoCurrencyAmountInformation",
   "version":"0",
   "enabled":true
 })
@@ -560,7 +561,7 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"af3d9c28-0674-11eb-adc1-0242ac120002",
   "name":"Business Account Information",
-  "of":"net.nanopay.crunch.onboardingModels.BusinessAccountData",
+  "of":"net.nanopay.partner.treviso.TrevisoBusinessAccountData",
   "version":"0",
   "enabled":true
 })
@@ -574,9 +575,10 @@ p({
 })
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"dfbe9220-ba4e-42d1-9bed-f4b4f8efcbb8",
-  "name":"Treviso Invoice Capability",
+  "id":"invoice.capable.treviso",
+  "name":"Invoice Requirements",
   "description":"The Capable-Specific Capability for Invoices on Treviso",
   "version":"0",
+  "requirementViewTitle":"You will be asked to select a nature code for this transaction and provide the required document.",
   "enabled":true
 })

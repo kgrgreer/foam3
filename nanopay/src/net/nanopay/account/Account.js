@@ -469,6 +469,16 @@ foam.CLASS({
         return new ServiceProviderAwareSupport()
           .findSpid(foam.core.XLocator.get(), accountSpidMap, this);
       `
+    },
+    {
+      class: 'String',
+      name: 'externalId',
+      visibility: 'HIDDEN'
+    },
+    {
+      class: 'Map',
+      name: 'externalData',
+      visibility: 'HIDDEN'
     }
   ],
 
