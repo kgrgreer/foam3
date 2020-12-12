@@ -473,7 +473,7 @@ foam.CLASS({
       net.nanopay.bank.BankAccount account = (net.nanopay.bank.BankAccount) obj;
       foam.nanos.iban.ValidationIBAN vban = new foam.nanos.iban.ValidationIBAN(x);
       vban.validate(account.getIban());
-      IBANInfo info = vban.parse(account.getIban());
+      foam.nanos.iban.IBANInfo info = vban.parse(account.getIban());
       if ( info != null &&
            ! account.getCountry().equals(info.getCountry())) {
         throw new foam.core.ValidationException(IBAN_COUNTRY_MISMATCHED);
@@ -697,6 +697,13 @@ foam.CLASS({
       name: 'validateAmount',
       javaCode: `
         //NOP
+      `
+    },
+    {
+      name: 'getApiAccountNumber',
+      type: 'String',
+      javaCode: `
+        return getAccountNumber();
       `
     },
   ],
