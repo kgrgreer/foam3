@@ -154,6 +154,7 @@ var classes = [
   'net.nanopay.bank.ruler.VerifyBankRule',
   'net.nanopay.bank.ruler.CapabilityAddBankAccountRule',
   'net.nanopay.bank.ruler.ExternalGrantBRBankAccountCapabilityRule',
+  'net.nanopay.bank.test.BankAccountIBANTest',
   'net.nanopay.model.CurrencyAmount',
   'net.nanopay.model.Broker',
   'net.nanopay.model.Business',

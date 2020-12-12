@@ -2,3 +2,7 @@ p({"class":"net.nanopay.bank.test.BankAccountCodesTest", "id":"BankAccountCodesT
 p({"class":"net.nanopay.bank.test.BankHolidayServiceTest", "id":"BankHolidayServiceTest"})
 p({"class":"net.nanopay.bank.test.USBankAccountTest", "id":"USBankAccountTest"})
 p({"class":"net.nanopay.bank.test.BankVerificationTest", "id":"BankVerificationTest"})
+p({
+  "class":"net.nanopay.bank.test.BankAccountIBANTest",
+  "id":"BankAccountIBANTest"
+})
