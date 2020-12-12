@@ -945,7 +945,25 @@ foam.RELATIONSHIP({
     required: true,
     readVisibility: 'RO',
     updateVisibility: 'RO',
-    view: { class: 'foam.u2.view.IntView' },
+    view: function(_, X) {
+      sec = [
+        {
+          dao: X.accountDAO.where(X.data.AND(
+            X.data.EQ(net.nanopay.account.Account.DELETED, false),
+            X.data.EQ(net.nanopay.account.Account.LIFECYCLE_STATE,
+              foam.nanos.auth.LifecycleState.ACTIVE)
+          )).orderBy(net.nanopay.account.Account.NAME),
+          objToChoice: function(a) {
+            return [a.id, a.summary];
+          }
+        }
+      ];
+      return {
+        class: 'foam.u2.view.RichChoiceView',
+        search: true,
+        sections: sec
+      };
+    },
     section: 'basicInfo',
     postSet: function(o, n) {
       if ( this.mode == 'create' ) { // validation check for users manually creating a Transaction

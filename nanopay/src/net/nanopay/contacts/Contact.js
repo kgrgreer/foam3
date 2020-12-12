@@ -633,11 +633,17 @@ foam.CLASS({
     },
     {
       name: 'resetLoginAttempts',
-      isAvailable: () => false
+      isAvailable: () => false,
+      code: function(X) {
+        return;
+      }
     },
     {
       name: 'disableTwoFactor',
-      isAvailable: () => false
+      isAvailable: () => false,
+      code: function(X) {
+        return;
+      }
     }
   ],
 

@@ -31,7 +31,13 @@ foam.CLASS({
     'foam.dao.PromisedDAO',
     'foam.nanos.auth.Address',
     'foam.nanos.iban.ValidationIBAN',
-    'net.nanopay.payment.PaymentProviderCorridor'
+    'foam.u2.ControllerMode',
+    'foam.u2.dialog.Popup',
+
+    'net.nanopay.bank.BankAccountStatus',
+    'net.nanopay.bank.CABankAccount',
+    'net.nanopay.payment.PaymentProviderCorridor',
+    'net.nanopay.sme.ui.SMEModal'
   ],
 
   imports: [
@@ -115,8 +121,31 @@ foam.CLASS({
     { name: 'IBAN_INVALID', message: 'IBAN invalid' },
     { name: 'IBAN_INVALIDATION_FAILED', message: 'IBAN validation failed' },
     { name: 'IBAN_COUNTRY_MISMATCHED', message: 'IBAN country code mismatched' },
-    { name: 'AVAILABLE_CURRENCIES_MSG', message: 'Available Currencies' }
+    { name: 'AVAILABLE_CURRENCIES_MSG', message: 'Available Currencies' },
+    { name: 'DELETE_DEFAULT', message: 'Unable to delete default accounts. Please select a new default account if one exists.' },
+    { name: 'UNABLE_TO_DELETE', message: 'Error deleting account: ' },
+    { name: 'SUCCESSFULLY_DELETED', message: 'Bank account deleted' },
+    { name: 'IS_DEFAULT', message: 'is now your default bank account. Funds will be automatically transferred to and from this account.' },
+    { name: 'UNABLE_TO_DEFAULT', message: 'Unable to set non verified bank accounts as default' },
+    { name: 'STATUS_ACTIVE', message: 'Active' },
+    { name: 'STATUS_PENDING', message: 'Pending' },
+    { name: 'STATUS_DISABLED', message: 'Disabled' }
   ],
+
+  css: `
+    .bank-account-popup .net-nanopay-sme-ui-SMEModal-inner {
+      width: 515px;
+      height: 500px;
+    }
+    .bank-account-popup .net-nanopay-sme-ui-SMEModal-content {
+      overflow: scroll !important;
+      padding: 30px;
+    }
+    .bank-account-detail-popup .net-nanopay-sme-ui-SMEModal-inner {
+      max-height: 100vh;
+      overflow: scroll;
+    }
+  `,
 
   properties: [
     {
@@ -188,15 +217,15 @@ foam.CLASS({
           case net.nanopay.bank.BankAccountStatus.VERIFIED :
             colour = '#2cab70';
             backgroundColour = colour;
-            label = 'Active';
+            label = net.nanopay.bank.BankAccount.STATUS_ACTIVE;
             break;
           case net.nanopay.bank.BankAccountStatus.DISABLED :
             colour = '#f91c1c';
             backgroundColour = colour;
-            label = a.label;
+            label = net.nanopay.bank.BankAccount.STATUS_DISABLED;
             break;
           case net.nanopay.bank.BankAccountStatus.UNVERIFIED :
-            label = 'Pending';
+            label = net.nanopay.bank.BankAccount.STATUS_PENDING;
             break;
         }
         this.start()
@@ -394,6 +423,7 @@ foam.CLASS({
       label: 'Nickname',
       section: 'accountInformation',
       order: 4,
+      tableWidth: 168,
       validateObj: function(name) {
         if ( name === '' || ! name ) {
           return this.NICKNAME_REQUIRED;
@@ -441,10 +471,12 @@ foam.CLASS({
       },
       javaPostSet: `
         ValidationIBAN validationIBAN = new ValidationIBAN();
-        IBANInfo info = validationIBAN.parse(val);
-        setAccountNumber(info.getAccountNumber());
-        setBranchId(info.getBranch());
-        setInstitutionNumber(info.getBankCode());
+        IBANInfo info = validationIBAN.parse(getX(), val);
+        if ( info != null ) {
+          setAccountNumber(info.getAccountNumber());
+          setBranchId(info.getBranch());
+          setInstitutionNumber(info.getBankCode());
+        }
       `
     },
     {
@@ -464,6 +496,79 @@ foam.CLASS({
       visibility: 'HIDDEN'
     }
   ],
+
+  actions: [
+    {
+      name: 'verifyAccount',
+      isAvailable: function() {
+        return this.cls_.id == this.CABankAccount.id;
+      },
+      isEnabled: function() {
+        return this.status === this.BankAccountStatus.UNVERIFIED;
+      },
+      code: function(X) {
+        this.ctrl.add(this.Popup.create().tag({
+          class: 'net.nanopay.cico.ui.bankAccount.modalForm.CABankMicroForm',
+          bank: this
+        }));
+      }
+    },
+    {
+      name: 'edit',
+      isAvailable: function() {
+        return ! this.verifiedBy
+      },
+      code: async function(X) {
+        var self = this.__subContext__;
+        var account = await self.accountDAO.find(this.id);
+        self.ctrl.add(this.SMEModal.create().addClass('bank-account-popup')
+          .startContext({ controllerMode: this.ControllerMode.EDIT })
+            .tag({
+              class: 'net.nanopay.account.ui.BankAccountWizard',
+              data: account,
+              useSections: ['accountInformation', 'pad']
+            })
+          .endContext()
+          );
+      }
+    },
+    {
+      name: 'setAsDefault',
+      isEnabled: function() {
+        return ! this.isDefault
+      },
+      code: function(X) {
+        this.isDefault = true;
+        this.subject.user.accounts.put(this).then(() =>{
+          this.notify(`${ this.name } ${ this.IS_DEFAULT }`, '', this.LogLevel.INFO, true);
+        }).catch((err) => {
+          this.isDefault = false;
+          this.notify(this.UNABLE_TO_DEFAULT, '', this.LogLevel.ERROR, true);
+        });
+
+        this.purgeCachedDAOs();
+      }
+    },
+    {
+      name: 'delete',
+      code: function(X) {
+        if ( this.isDefault ) {
+          this.notify(this.DELETE_DEFAULT, '', this.LogLevel.ERROR, true);
+          return;
+        }
+
+        this.deleted = true;
+        this.status = this.BankAccountStatus.DISABLED;
+
+        this.__subContext__.ctrl.add(this.Popup.create().tag({
+          class: 'foam.u2.DeleteModal',
+          dao: this.subject.user.accounts,
+          data: this
+        }));
+      }
+    }
+  ],
+
   methods: [
     function toSummary() {
       return `${ this.name } ${ this.country } ${ this.BANK_ACCOUNT_LABEL } (${this.denomination})`;
@@ -549,6 +654,9 @@ foam.CLASS({
       javaCode: `
         return "";
       `
+    },
+    function purgeCachedDAOs() {
+      this.__subContext__.accountDAO.cmd_(this, foam.dao.CachingDAO.PURGE);
     },
     {
       name: 'validate',

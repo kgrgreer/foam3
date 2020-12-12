@@ -1339,7 +1339,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.IBA
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.IBAN_INVALIDATION_FAILED",target:"A validação do IBAN falhou"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.IBAN_COUNTRY_MISMATCHED",target:"Código de país IBAN incompatível"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.SUMMARY.label",target:"resumo"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.SUMMARY.label",target:"Resumo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.STATUS.documentation",target:"Rastreia o status da conta bancária."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.INSTITUTION_NUMBER.label",target:"Instituição"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.INSTITUTION_NUMBER.documentation",target:"Código bancário internacional que identifica bancos em todo o mundo. BIC / SWIFT"})
@@ -1351,9 +1351,9 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.VER
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.MICRO_VERIFICATION_TIMESTAMP.label",target:"microVerificationTimestamp pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.MICRO_VERIFICATION_TIMESTAMP.documentation",target:"A data e a hora em que a propriedade da conta bancária é verificada."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.COUNTRY.label",target:"país"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.COUNTRY.label",target:"País"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.COUNTRY.documentation",target:"O nome do país associado à conta bancária. Isso deve ser definido pela classe filha.\n"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.FLAG_IMAGE.label",target:"país"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.FLAG_IMAGE.label",target:"País"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.FLAG_IMAGE.documentation",target:"Um link de URL para uma imagem da bandeira do país. Usado para fins de exibição. Isso deve ser definido pela classe filha.\n"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.INTEGRATION_ID.label",target:"integrationId pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.INTEGRATION_ID.documentation",target:"Um identificador exclusivo para uma conta bancária no software de contabilidade do cliente."})
@@ -1370,10 +1370,16 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.FOR
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.NAME.label",target:"Apelido"})
 //p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.IBAN.label",target:"IBAN"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.IBAN.documentation",target:"Sistema de numeração internacional padrão desenvolvido para identificar uma conta bancária no exterior."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.DENOMINATION.label",target:"denominação"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.DENOMINATION.label",target:"Denominação"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.SECURITY_PROMOTE_INFO.label",target:"segurança Promova informações"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.VERIFIED_BY.label",target:"verifiedBy pt"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.VERIFY_ACCOUNT.label",target:"Verificar Conta"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.EDIT.label",target:"Editar"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.SET_AS_DEFAULT.label",target:"Definir Como Padrão"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.DELETE.label",target:"Excluir"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CanReceiveCurrency.USER_ID.label",target:"userId pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CanReceiveCurrency.USER_ID.documentation",target:"\n        Defina isso como um id de usuário. O DAO verificará se este usuário pode receber dinheiro na moeda com id currencyId.\n      "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CanReceiveCurrency.CURRENCY_ID.documentation",target:"currencyId é o id da moeda"})
@@ -1510,24 +1516,17 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.GetDefaultCurre
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.GetDefaultCurrency.RESPONSE.documentation",target:"\n          O servidor definirá isso com a denominação da conta bancária verificada do contato.\n    "})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"Bank accounts",target:"Contas bancárias"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccountController.DELETE_DEFAULT",target:"Não foi possível excluir contas padrão. Selecione uma nova conta padrão, se houver."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccountController.UNABLE_TO_DELETE",target:"Erro ao excluir conta: "})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccountController.SUCCESSFULLY_DELETED",target:"Conta bancária excluída."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccountController.IS_DEFAULT",target:"agora é sua conta bancária padrão. Os fundos serão automaticamente transferidos de e para esta conta."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccountController.UNABLE_TO_DEFAULT",target:"Não é possível definir contas bancárias não verificadas como padrão."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"View all bank accounts.",target:"Veja todas as contas bancárias."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.DELETE_DEFAULT",target:"Não foi possível excluir contas padrão. Selecione uma nova conta padrão, se houver."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.UNABLE_TO_DELETE",target:"Erro ao excluir conta: "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.SUCCESSFULLY_DELETED",target:"Conta bancária excluída."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.IS_DEFAULT",target:"agora é sua conta bancária padrão. Os fundos serão automaticamente transferidos de e para esta conta."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.UNABLE_TO_DEFAULT",target:"Não é possível definir contas bancárias não verificadas como padrão."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.ALREADY_DEFAULT",target:"já é uma conta bancária padrão."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.BANK_ACCOUNT_LABEL",target:"Conta bancária"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccountTableView.DATA.label",target:"dadas"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccountController.ALREADY_DEFAULT",target:"já é uma conta bancária padrão."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccountController.BANK_ACCOUNT_LABEL",target:"Conta bancária"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccountController.DATA.label",target:"dadas"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccountController.BANK_ACCOUNT.label",target:"conta bancária"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccountController.SUMMARY_VIEW.label",target:"summaryView pt"})
-
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccountController.PRIMARY_ACTION.label",target:"primaryAction pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccountController.SELECTED_ACCOUNT.label",target:"selectedAccount pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccountController.SELECTED_ACCOUNT.documentation",target:"\n        A conta que o usuário deseja verificar. Exportado para que o BankForm\n        pode usá-lo.\n      "})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccountController.AVAILABLE.label",target:"acessível"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankHolidayService.CUSTOM_BANK_WEEKENDS.label",target:"customBankWeekends pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccountController.AVAILABLE.documentation",target:"usado para desativar o botão para adicionar uma conta bancária quando o usuário tem uma de cada moeda (CAD && USD)"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankHolidayService.CUSTOM_BANK_WEEKENDS.documentation",target:"Personalizar fins de semana bancários nacionais / regionais"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankHolidayService.WINDOW.label",target:"janela"})
@@ -1926,7 +1925,9 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"api-documentation-northcard.labe
 p({class:"foam.i18n.Locale",locale:"pt",source:"approvals.label",target:"Pedidos de Aprovação"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"bankaccounts.label",target:"Contas bancárias"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"businesses.label",target:"Negócios"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"capability.main.banking.label",target:"Contas bancárias"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"capability.main.contacts.label",target:"Contatos"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"capability.main.contacts.handler.title",target:"Contatos"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"capability.main.contacts.handler.createLabel",target:"Adicionar um contato"})
@@ -2166,7 +2167,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.SELECT_JOB_TITLE",target:"Cargo obrigatório"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.PLEASE_SELECT",target:"Por favor selecione..."})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.account.Account.DEFAULT_MSG",target:"padrão"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.account.Account.DEFAULT_MSG",target:"Padrão"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.account.Account.SECTION_ACCOUNT_DETAILS.title",target:"Detalhes da conta"})
 
 // Email subject translation
@@ -2294,7 +2295,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirect
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.FObjectProperty.PLEASE_ENTER_VALID",target:"Por favor insira um válido"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.InitialBusinessData.SECTION_BUSINESS_REGISTRATION.title",target:"Informação de negócios"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccountController.ADD_BANK_ACCOUNT",target:"Adicionar conta bancária"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.InvitationWizardView.INVITE_SUCCESS",target:"Enviou um pedido de conexão"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.InvitationWizardView.INVITE_FAILURE",target:"Ocorreu um problema ao enviar o convite"})
@@ -2389,6 +2389,9 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.acceptanceDoc
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.crunch.RenewableData.SECTION_REVIEW_DATA_SECTION.title",target:"Rever seção de dados"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.STATUS.label",target:"Status"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.STATUS_ACTIVE",target:"Ativo"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.STATUS_PENDING",target:"Pendente"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.STATUS_DISABLED",target:"Desativado"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CustomerBasicInformation.INVALID_PHONE_ERROR",target:"Número de telefone comercial obrigatório"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions.SECTION_REVIEW_AGREEMENT_DOCUMENTS_SECTION.title",target:"Leia e aceite os termos e condições"})
@@ -3063,7 +3066,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactW
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.OwnerProperty.OTHER_MSG",target:"De outros"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.OwnerProperty.PLEASE_SELECT_ONE",target:"Selecione um dos seguintes ..."})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccountController.ADD_BANK.label",target:"Adicionar Conta"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.AddBankAccountAction.ACTION_LABEL",target:"Adicionar Conta"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.PayableDAOBrowser.SEND_MONEY.label",target:"Mande o pagamento"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.ReceivableDAOBrowser.REQ_MONEY.label",target:"Solicitar pagamento"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.CANCEL",target:"Cancelar"})
@@ -3198,10 +3201,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMo
 
 p({class:"foam.i18n.Locale",locale:"pt","source":"capability.main.contacts.createLabel","target":"Adicionar contato"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"sme.quickAction.send.label","target":"Mande o pagamento"})
-
-p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.bank.BankAccountController.DELETE.label","target":"Excluir"})
-p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.bank.BankAccountController.EDIT_MENU.label","target":"Editar"})
-p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.bank.BankAccountController.SET_AS_DEFAULT.label","target":"definir como padrão"})
 
 p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.RECONCILE.label","target":"Conciliar"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.VIEW_DETAILS.label","target":"Ver detalhes"})
