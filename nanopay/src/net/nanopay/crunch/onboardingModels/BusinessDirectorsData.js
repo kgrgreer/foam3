@@ -35,33 +35,25 @@ foam.CLASS({
 
 properties: [
       {
-        name: 'needDirector',
-        class: 'Boolean',
-        section: 'directorsInfoSection',
-        hidden: true,
-        transient: true,
-        getter: function() {
-          var self = this;
-          this.businessDAO.find(this.subject.user.id).then(business => {
-            self.businessTypeId = business.businessTypeId;
-          });
-        }
-      },
-      {
         name: 'businessTypeId',
         class: 'Long',
         section: 'directorsInfoSection',
         hidden: true,
-        storageTransient: true
+        storageTransient: true,
+        expression: function() {
+          this.businessDAO.find(this.subject.user.id).then(business => {
+            this.businessTypeId = business.businessTypeId;
+          });
+        }
       },
       {
         class: 'String',
         name: 'noDirectorsNeeded',
         section: 'directorsInfoSection',
-        factory: function() {
+        getter: function() {
           return this.NO_DIR_NEEDED;
         },
-        visibility: function(businessTypeId, needDirector) {
+        visibility: function(businessTypeId) {
           return businessTypeId === 3 || businessTypeId === 5 || businessTypeId === 6 ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RO;
         }
       },
@@ -82,9 +74,9 @@ properties: [
               type: x.data.subject.user.address.countryId
             }, x),
             name: 'director'
-          }
+          };
         },
-        visibility: function(businessTypeId, needDirector) {
+        visibility: function(businessTypeId) {
           return businessTypeId === 3 || businessTypeId === 5 || businessTypeId === 6 ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
         },
         autoValidate: true,
