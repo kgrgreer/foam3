@@ -58,7 +58,6 @@ async function execute(x) {
       support.sudoStore(x);
       x = support.sudo(x, s.id, u, u);
 
-      // general admission
       try {
         await support.userRegistrationData(x, u);
         test(true, 'userRegistrationData');
@@ -229,17 +228,17 @@ async function execute(x) {
         throw e;
       }
       try {
-        await support.businessRegistrationDate(x, business);
-        test(true, 'businessRegistrationDate');
-      } catch (e) {
-        test(false, 'businessRegistrationDate: '+(e.message || e));
-        throw e;
-      }
-      try {
         await support.businessIncorporationDate(x, business);
         test(true, 'businessIncorporationDate');
       } catch (e) {
         test(false, 'businessIncorporationDate: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.businessRegistrationDate(x, business);
+        test(true, 'businessRegistrationDate');
+      } catch (e) {
+        test(false, 'businessRegistrationDate: '+(e.message || e));
         throw e;
       }
       try {
@@ -372,21 +371,22 @@ async function execute(x) {
       // US Contact US-USD bank Account
       try {
         contact = await support.createUSContact(x, business);
-        test(true, 'createUSContact');
+        test(true, 'createUSContact: '+contact.id);
       } catch (e) {
         test(false, 'createUSContact: '+(e.message || e));
         throw e;
       }
       try {
-        contactbank = await support.createUSBankAccount(x, contact);
-        test(true, 'createUSBankAccount');
+        contactbank = await support.createUSBankAccount(x, contact, true);
+        test(true, 'createUSBankAccount: '+contactbank.id);
       } catch (e) {
         test(false, 'createUSBankAccount: '+(e.message || e));
         throw e;
       }
       try {
         contact.bankAccount = contactbank.id;
-        await business.contacts.put(contact);
+        await support.updateContact(x, contact);
+        // await business.contacts.put(contact);
         test(true, 'adding business US contact: ' + contact.id + ', account: ' + contactbank.id);
       } catch (e) {
         test(false, 'adding business US contact: ' + contact.id + ', account: ' + contactbank.id + '. ' +(e.message || e));
@@ -395,21 +395,22 @@ async function execute(x) {
       // CA Contact CA-CAD bank Account
       try {
         contact = await support.createCAContact(x, business);
-        test(true, 'createCAContact');
+        test(true, 'createCAContact: '+contact.id);
       } catch (e) {
         test(false, 'createCAContact: '+(e.message || e));
         throw e;
       }
       try {
-        contactbank = await support.createContactCABankAccount(x, contact);
-        test(true, 'createContactCABankAccount');
+        contactbank = await support.createCABankAccount(x, contact, true);
+        test(true, 'createContactCABankAccount: '+contactbank.id);
       } catch (e) {
         test(false, 'createContactCABankAccount: '+(e.message || e));
         throw e;
       }
       try {
         contact.bankAccount = contactbank.id;
-        await business.contacts.put(contact);
+        await support.updateContact(x, contact);
+        // await business.contacts.put(contact);
         test(true, 'adding business CA contact: ' + contact.id + ', account: ' + contactbank.id);
       } catch (e) {
         test(false, 'adding business CA contact: ' + contact.id + ', account: ' + contactbank.id + '. ' +(e.message || e));
