@@ -84,7 +84,7 @@ foam.CLASS({
             SigningOfficerPersonalDataTreviso soData = (SigningOfficerPersonalDataTreviso) soCapJunc.getData();
             User signingOfficer = (User) localUserDAO.find(soJunction.getTargetId());
 
-            if (soData.getHasSignedContratosDeCambio()) sendNotificationToUser(x, business, signingOfficer);
+            if ( soData.getHasSignedContratosDeCambio() ) sendNotificationToUser(x, business, signingOfficer);
           }
 
           // send email to beneficial owners whose hasSignedContratosDeCambio is true
@@ -98,7 +98,7 @@ foam.CLASS({
               .where(EQ(User.EMAIL, beneficialOwner.getEmail()))
               .select(new ArraySink()))
               .getArray();
-            if (beneficialOwnerUser.isEmpty()){
+            if ( beneficialOwnerUser.isEmpty() ){
               sendEmailToNonUser(x, business, beneficialOwner.getFirstName(), beneficialOwner.getEmail());
             } else {
               sendNotificationToUser(x, business, beneficialOwnerUser.get(0));
@@ -107,12 +107,12 @@ foam.CLASS({
 
           // send email to business directors whose hasSignedContratosDeCambio is true
           for ( BusinessDirector businessDirector : business.getBusinessDirectors() ) {
-            if ( ! businessDirector.getHasSignedContratosDeCambio()) continue;
+            if ( ! businessDirector.getHasSignedContratosDeCambio() ) continue;
             List<User> businessDirectorUser = ((ArraySink) localUserDAO
               .where(EQ(User.EMAIL, businessDirector.getEmail()))
               .select(new ArraySink()))
               .getArray();
-            if (businessDirectorUser.isEmpty()){
+            if ( businessDirectorUser.isEmpty() ){
               sendEmailToNonUser(x, business, businessDirector.getFirstName(), businessDirector.getEmail());
             } else {
               sendNotificationToUser(x, business, businessDirectorUser.get(0));
