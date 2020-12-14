@@ -507,7 +507,7 @@ foam.CLASS({
       documentation: 'Check if should shows consent checkbox when adding contact',
       visibility: 'HIDDEN',
       value: true
-    },
+    }
   ],
 
   actions: [
