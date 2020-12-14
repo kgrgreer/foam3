@@ -469,8 +469,7 @@ p({
   },
   "wizardConfig": {
     "class": "net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig",
-    "allowSkipping": false,
-    "skipMode": "HIDE"
+    "allowSkipping": false
   },
   "requirementViewTitle":"Have your business documents ready. You can save your progress and come back later.",
   "associatedEntity": 2
