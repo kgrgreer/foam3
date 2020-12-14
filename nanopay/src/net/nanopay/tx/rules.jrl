@@ -98,7 +98,7 @@ p({
   "after":true,
   "predicate":{"class":"net.nanopay.meter.compliance.ruler.predicate.IsComplianceTransaction"},
   "action":{"class":"net.nanopay.tx.JackieRuleOnCreate"},
-  "enabled":false,
+  "enabled":true,
   "saveHistory":false,
   "lifecycleState":1
 })
