@@ -310,7 +310,6 @@ foam.CLASS({
     {
       name: 'edit',
       label: 'Edit',
-      confirmationRequired: true,
       isAvailable: function() {
         var self = this.private_;
         return this.status === self.InvoiceStatus.DRAFT;
@@ -380,7 +379,6 @@ foam.CLASS({
     {
       name: 'delete',
       label: 'Delete',
-      confirmationRequired: true,
       isAvailable: function() {
         var self = this.private_;
         return this.status === self.InvoiceStatus.DRAFT;
