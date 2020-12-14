@@ -980,12 +980,16 @@ p({
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
 
-// Intermediary Spot Rate from USD to Destination Currency
+// Intermediary Spot Rate from Intermediate Currency (USD, GBP, EUR, etc,...) to Destination Currency
 p({
   class: "net.nanopay.tx.fee.SpotRate",
   id: "f78b6032-eb27-4c4d-a021-9d235b6e97ff",
   name: "Intermediary Spot Rate",
-  sourceCurrency: "USD",
+  sourceCurrencyExpr: {
+    class: "__Property__",
+    forClass_: "net.nanopay.fx.FXSummaryTransaction",
+    name: "intermediateCurrency"
+  },
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
 
