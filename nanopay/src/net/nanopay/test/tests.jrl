@@ -73,12 +73,18 @@ async function execute(x) {
       support.sudoStore(x);
       x = support.sudo(x, s.id, u, u);
 
-      // general admission 'ablii'
       try {
         await support.userRegistrationData(x, u);
         test(true, 'userRegistrationData');
       } catch (e) {
         test(false, 'userRegistrationData: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.userGeneralAdmission(x, u);
+        test(true, 'userGeneralAdmission');
+      } catch (e) {
+        test(false, 'userGeneralAdmission: '+(e.message || e));
         throw e;
       }
       try {
@@ -129,13 +135,13 @@ async function execute(x) {
       }
 
       var business;
-      // try {
-      //   business = await support.createBusiness(x, u);
-      //   test(true, 'createBusiness: '+u.id);
-      // } catch (e) {
-      //   test(false, 'createBusiness: '+(e.message || e));
-      //   throw e;
-      // }
+      try {
+        business = await support.createBusiness(x, u);
+        test(true, 'createBusiness: '+u.id);
+      } catch (e) {
+        test(false, 'createBusiness: '+(e.message || e));
+        throw e;
+      }
       try {
         business = await support.businessInitialData(x, u);
         test(true, 'businessInitialData: '+business.id);
@@ -310,7 +316,7 @@ async function execute(x) {
         throw e;
       }
       try {
-        contactbank = await support.createUSBankAccount(x, contact);
+        contactbank = await support.createUSBankAccount(x, contact, true);
         test(true, 'createUSBankAccount');
       } catch (e) {
         test(false, 'createUSBankAccount: '+(e.message || e));
@@ -333,7 +339,7 @@ async function execute(x) {
         throw e;
       }
       try {
-        contactbank = await support.createContactCABankAccount(x, contact);
+        contactbank = await support.createCABankAccount(x, contact, true);
         test(true, 'createContactCABankAccount');
       } catch (e) {
         test(false, 'createContactCABankAccount: '+(e.message || e));
