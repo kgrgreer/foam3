@@ -141,7 +141,7 @@ foam.CLASS({
         // set the hidden properties from capabilities
         var hasSignedContratosDeCambio = false;
         var pepHioRelated = false;
-        var cpf, verifyName;
+        var cpf, verifyName, cpfName;
 
         if ( this.subject.user.address.countryId == 'BR' ) {
           this.crunchService.getJunction(x, 'fb7d3ca2-62f2-4caf-a84c-860392e4676b').then(cap=> {
@@ -149,6 +149,7 @@ foam.CLASS({
             if ( cap && cap.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
               cpf = cap.data.data;
               verifyName = cap.data.verifyName;
+              cpfName = cap.data.cpfName;
             }
 
             this.crunchService.getJunction(x, '777af38a-8225-87c8-dfdf-eeb15f71215f-123').then(ucj=> {
@@ -177,6 +178,7 @@ foam.CLASS({
               mode: 'percent',
               email: so.email,
               cpf: cpf,
+              cpfName: cpfName,
               verifyName: verifyName,
               hasSignedContratosDeCambio: hasSignedContratosDeCambio,
               PEPHIORelated: pepHioRelated,
