@@ -29,6 +29,7 @@ foam.CLASS({
 
   imports: [
     'businessEmployeeDAO',
+    'crunchService',
     'ctrl',
     'signingOfficerJunctionDAO',
     'subject'
@@ -97,7 +98,8 @@ foam.CLASS({
     { name: 'OWNER_2_ERROR', message: 'Owner2 is invalid' },
     { name: 'OWNER_3_ERROR', message: 'Owner3 is invalid' },
     { name: 'OWNER_4_ERROR', message: 'Owner4 is invalid' },
-    { name: 'TOTAL_OWNERSHIP_ERROR', message: 'The total ownership should be less than 100%' }
+    { name: 'TOTAL_OWNERSHIP_ERROR', message: 'The total ownership should be less than 100%' },
+    { name: 'SIGNINGOFFICER_DATA_FETCHING_ERR', message: 'Failed to find this signing officer info' }
   ],
 
   properties: [
@@ -135,6 +137,33 @@ foam.CLASS({
         var pdao = foam.dao.PromisedDAO.create({
           of: net.nanopay.model.BeneficialOwner
         });
+
+        // set the hidden properties from capabilities
+        var hasSignedContratosDeCambio = false;
+        var pepHioRelated = false;
+        var cpf, verifyName;
+
+        if ( this.subject.user.address.countryId == 'BR' ) {
+          this.crunchService.getJunction(x, 'fb7d3ca2-62f2-4caf-a84c-860392e4676b').then(cap=> {
+            // signing officer's CPF
+            if ( cap && cap.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+              cpf = cap.data.data;
+              verifyName = cap.data.verifyName;
+            }
+
+            this.crunchService.getJunction(x, '777af38a-8225-87c8-dfdf-eeb15f71215f-123').then(ucj=> {
+              // SigningOfficerPersonalData
+              if ( ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+                hasSignedContratosDeCambio = ucj.data.hasSignedContratosDeCambio;
+                pepHioRelated = ucj.data.PEPHIORelated;
+              }
+            })
+
+          }).catch((err) => {
+            this.notify(this.SIGNINGOFFICER_DATA_FETCHING_ERR, '', this.LogLevel.ERROR, true);
+          });
+        }
+
         var sinkFn = so => {
           var obj = net.nanopay.model.BeneficialOwner.create(
             {
@@ -145,7 +174,13 @@ foam.CLASS({
               business: this.subject.user.id,
               address: so.address,
               birthday: so.birthday,
-              mode: 'percent'
+              mode: 'percent',
+              email: so.email,
+              cpf: cpf,
+              verifyName: verifyName,
+              hasSignedContratosDeCambio: hasSignedContratosDeCambio,
+              PEPHIORelated: pepHioRelated,
+              type: this.subject.user.address.countryId
             }, x);
             adao.put(obj);
         };
