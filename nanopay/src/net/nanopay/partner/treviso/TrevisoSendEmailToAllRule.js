@@ -118,7 +118,6 @@ foam.CLASS({
               sendNotificationToUser(x, business, businessDirectorUser.get(0));
             }
           }
-
         }
       }, "When the business account is approved, send emails to all directors, signing officers who have signed contratos de câmbio.");
       `
@@ -147,7 +146,7 @@ foam.CLASS({
         String toCountry = business.getAddress().findCountryId(x).getName();
         args.put("business", business.toSummary());
         args.put("toCountry", toCountry);
-        args.put("link",   config.getUrl());
+        args.put("link", config.getUrl());
         args.put("sendTo", recipient.getEmail());
         args.put("name", recipient.getFirstName());
 
@@ -194,7 +193,7 @@ foam.CLASS({
         String toCountry = business.getAddress().findCountryId(x).getName();
         args.put("business", business.toSummary());
         args.put("toCountry", toCountry);
-        args.put("link",   config.getUrl());
+        args.put("link", config.getUrl());
         args.put("sendTo", email);
         args.put("name", firstName);
 
