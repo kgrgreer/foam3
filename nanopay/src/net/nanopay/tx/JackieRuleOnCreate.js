@@ -49,7 +49,7 @@ foam.CLASS({
           .setObjId(ct.getId())
           .setGroup(group)
           .setDescription("Main Summary txn: "+headTx.getSummary()+" The Id of Summary txn: "+headTx.getId() )
-          .setClassification("Validate Transaction Using Jackie Rule")
+          .setClassification("Compliance Transaction")
           .build();
 
         agency.submit(x, new ContextAgent() {
