@@ -24,9 +24,12 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.nanos.app.AppConfig',
+    'foam.nanos.app.Mode',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.User',
-    'foam.nanos.auth.email.EmailTokenService'
+    'foam.nanos.auth.email.EmailTokenService',
+    'foam.nanos.logger.Logger'
   ],
 
   constants: [
@@ -74,18 +77,31 @@ foam.CLASS({
         if ( ! ((User) obj).getLoginEnabled() ) {
           return super.put_(x, obj);
         }
-    
+
         boolean newUser = getDelegate().find(((User) obj).getId()) == null;
         AuthService auth = (AuthService) x.get("auth");
         boolean registrationEmailEnabled = auth.check(x, REGISTRATION_EMAIL_ENABLED);
         User result = (User) super.put_(x, obj);
-    
+
         // Send email verification if new registered user's email enabled
-        if ( result != null && newUser && ! result.getEmailVerified() && registrationEmailEnabled &&
-            ! result.getInvited() ) {
+        if ( result != null &&
+             newUser &&
+             ! result.getEmailVerified() &&
+             registrationEmailEnabled &&
+             ! result.getInvited() ) {
+          AppConfig appConfig = (AppConfig) x.get("appConfig");
+          if ( appConfig.getMode() == Mode.DEVELOPMENT ||
+               appConfig.getMode() == Mode.STAGING ) {
+            Logger logger = (Logger) x.get("logger");
+            logger.warning(this.getClass().getSimpleName(), "Auto email verified.", "user", result.getId());
+            result = (User) result.fclone();
+            result.setEmailVerified(true);
+            result = (User) getDelegate().put_(x, result);
+          } else {
             getEmailToken().generateToken(x, result);
+          }
         }
-    
+
         return result;
       `
     }

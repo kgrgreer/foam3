@@ -58,7 +58,7 @@ foam.CLASS({
             lastName: userName,
             desiredPassword: password,
             group: group || 'sme',
-            emailVerified: true,
+            // emailVerified: true,
             phoneNumber: '9055551212',
             address: {
               class: 'foam.nanos.auth.Address',
@@ -461,6 +461,25 @@ foam.CLASS({
           ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
         }
         return ucj;
+      }
+    },
+    {
+      name: 'getAFEXBusiness',
+      code: async function(x, business) {
+        const E = foam.mlang.ExpressionsSingleton.create();
+        return await this.client(x, 'afexBusinessDAO', net.nanopay.fx.afex.AFEXBusiness).find(
+          E.EQ(net.nanopay.fx.afex.AFEXBusiness.USER, business.id)
+        );
+      }
+    },
+    {
+      name: 'getApprovalRequest',
+      code: async function(x, daoKey, objId) {
+        const E = foam.mlang.ExpressionsSingleton.create();
+        return await this.client(x, 'approvalRequestDAO', net.nanopay.fx.afex.AFEXBusiness).find(E.AND(
+          E.EQ(foam.nanos.approval.ApprovalRequest.DAO_KEY, daoKey),
+          E.EQ(foam.nanos.approval.ApprovalRequest.OBJ_ID, objId)
+        ));
       }
     },
   ]
