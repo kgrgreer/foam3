@@ -93,6 +93,22 @@ foam.CLASS({
       }
     },
     {
+      name: 'trevisoTermsAndConditions',
+      code: async function(x, user) {
+        var id = '554af38a-8225-87c8-dfdf-eeb15f71215e-25';
+        var ucj = await this.crunchService.getJunction(x, id);
+        if ( ! ucj ||
+             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          var cap = net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions.create({
+            user: user.id,
+            agreement: true,
+          });
+          ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
+        }
+        return ucj;
+      }
+    },
+    {
       name: 'trevisoUserUtilityBill',
       code: async function(x, user) {
         var id;

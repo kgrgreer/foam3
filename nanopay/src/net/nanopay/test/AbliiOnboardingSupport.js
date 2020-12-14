@@ -701,7 +701,6 @@ foam.CLASS({
       code: async function(x, business) {
         var c = net.nanopay.contacts.Contact.create({
           owner: business.id,
-          businessId: business.id,
           firstName: 'CAContact'+business.id,
           lastName: business.id,
           organization: business.id,
@@ -719,8 +718,8 @@ foam.CLASS({
             streetName: 'Street'
           }
         }, x);
-        // return await business.contacts.put_(x, c);
-        return this.updateContact(x, c);
+        return await business.contacts.put_(x, c);
+        // return this.updateContact(x, c);
       }
     },
     {
@@ -729,7 +728,6 @@ foam.CLASS({
       code: async function(x, business) {
         var c = net.nanopay.contacts.Contact.create({
           owner: business.id,
-          businessId: business.id,
           firstName: 'USContact-'+business.id,
           lastName: business.id,
           organization: business.id,
@@ -747,8 +745,8 @@ foam.CLASS({
             streetName: 'Street'
           }
         }, x);
-        //return await business.contacts.put_(x, c);
-        return this.updateContact(x, c);
+        return await business.contacts.put_(x, c);
+        // return this.updateContact(x, c);
       }
     },
     {
