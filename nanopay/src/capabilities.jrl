@@ -312,8 +312,8 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-12",
-  "name":"Enable international payments",
-  "description":"Enable international payments",
+  "name":"International payments",
+  "description":"International payments",
   "icon":"/images/capabilityIcons/CADOnboardCap.svg",
   "version":"0",
   "visibilityPredicate":  { class: "foam.mlang.predicate.True" },
