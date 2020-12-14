@@ -55,7 +55,6 @@ foam.CLASS({
       name: 'cnpj',
       label: 'CNPJ',
       required: true,
-      exampleValue: '06990590000123',
       documentation: `
           CNPJ (short for Cadastro Nacional da Pessoa Jurídica in Portuguese, or National Registry of Legal Entities) is an identification number issued to Brazilian companies by the Department of Federal Revenue of Brazil.
           Format of CNPJ - 14-digit number formatted as 00.000.000/0001-00

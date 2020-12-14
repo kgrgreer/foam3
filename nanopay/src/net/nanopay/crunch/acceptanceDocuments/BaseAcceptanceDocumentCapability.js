@@ -61,7 +61,6 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'agreement',
-      exampleValue: true,
       label: '',
       readVisibility: 'RO',
       updateVisibility: 'RO',

@@ -67,7 +67,6 @@ foam.CLASS({
       class: 'String',
       name: 'businessName',
       documentation: 'Legal name of business.',
-      exampleValue: 'My Business',
       label: 'Business name',
       section: 'businessRegistration',
       required: true,
@@ -91,7 +90,6 @@ foam.CLASS({
       class: 'PhoneNumber',
       name: 'companyPhone',
       documentation: 'Phone number of the business.',
-      exampleValue: '12341234',
       label: 'Business phone number',
       section: 'businessRegistration',
       required: true
@@ -170,7 +168,6 @@ foam.CLASS({
       class: 'Boolean',
       name: 'sameAsBusinessAddress',
       section: 'businessAddress',
-      exampleValue: true,
       documentation: `
         Determines whether the business address and its mailing address are the same.
       `,

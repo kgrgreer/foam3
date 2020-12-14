@@ -457,7 +457,6 @@ foam.CLASS({
       section: 'accountInformation',
       documentation: `Standard international numbering system developed to
           identify a bank account.`,
-      exampleValue: 'BR5155245856279572445638416A4',
       validateObj: function(iban, swiftCode, country) {
         if ( ! iban )
           return this.IBAN_REQUIRED;
