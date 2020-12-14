@@ -91,65 +91,11 @@ foam.CLASS({
 
               // Temporary pending when MinMax Cap is fixed
               crunchService.updateJunction(subjectX, "554af38a-8225-87c8-dfdf-eeb15f71215f-20", null, CapabilityJunctionStatus.GRANTED);
-
-              sendUserNotification(x, business);
             }
           }
         }
 
       }, "Grants AFEX Payable Meny Capability after Afex  business is created and approved.");
-      `
-    },
-    {
-      name: 'sendUserNotification',
-      args: [
-        {
-          name: 'x',
-          type: 'Context',
-        },
-        {
-          name: 'business',
-          type: 'net.nanopay.model.Business'
-        }
-      ],
-      javaCode:`
-        Map<String, Object>  args           = new HashMap<>();
-        Group                group          = business.findGroup(x);
-        AppConfig            config         = group != null ? group.getAppConfig(x) : (AppConfig) x.get("appConfig");
-
-        String toCountry = business.getAddress().findCountryId(x).getName();
-        args.put("business", business.toSummary());
-        args.put("toCountry", toCountry);
-        args.put("link",   config.getUrl() + "#capability.main.dashboard");
-        args.put("sendTo", User.EMAIL);
-        args.put("name", User.FIRST_NAME);
-
-        try {
-
-          if ( group == null ) throw new RuntimeException("Group is null");
-
-          Notification notification = business.getAddress().getCountryId().equals("CA") ?
-            new Notification.Builder(x)
-              .setBody("AFEX Business can make international payments.")
-              .setNotificationType("AFEXBusinessInternationalPaymentsEnabled")
-              .setGroupId(group.toString())
-              .setEmailArgs(args)
-              .setEmailName("international-payments-enabled-notification")
-              .build() :
-            new Notification.Builder(x)
-              .setBody("This business can now make international payments")
-              .setNotificationType("Latest_Activity")
-              .setGroupId(group.toString())
-              .setEmailArgs(args)
-              .setEmailName("compliance-notification-to-user")
-              .build();
-
-          business.doNotify(x, notification);
-
-        } catch (Throwable t) {
-          String msg = String.format("Email meant for business Error: User (id = %1$s) has been enabled for international payments.", business.getId());
-          ((Logger) x.get("logger")).error(msg, t);
-        }
       `
     }
   ]
