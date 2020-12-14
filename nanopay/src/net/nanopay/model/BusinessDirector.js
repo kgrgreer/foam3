@@ -62,15 +62,13 @@ foam.CLASS({
       class: 'String',
       name: 'firstName',
       gridColumns: 6,
-      required: true,
-      autoValidate: true
+      required: true
     },
     {
       class: 'String',
       name: 'lastName',
       gridColumns: 6,
-      required: true,
-      autoValidate: true
+      required: true
     },
     {
       class: 'EMail',
