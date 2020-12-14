@@ -78,28 +78,31 @@ foam.CLASS({
           return super.put_(x, obj);
         }
 
-        boolean newUser = getDelegate().find(((User) obj).getId()) == null;
+        User nu = (User) obj;
+        User old = (User) getDelegate().find(nu.getId());
         AuthService auth = (AuthService) x.get("auth");
         boolean registrationEmailEnabled = auth.check(x, REGISTRATION_EMAIL_ENABLED);
-        User result = (User) super.put_(x, obj);
-
         // Send email verification if new registered user's email enabled
-        if ( result != null &&
-             newUser &&
-             ! result.getEmailVerified() &&
+        if ( old == null &&
              registrationEmailEnabled &&
-             ! result.getInvited() ) {
+             ! nu.getInvited() ) {
           AppConfig appConfig = (AppConfig) x.get("appConfig");
           if ( appConfig.getMode() == Mode.DEVELOPMENT ||
                appConfig.getMode() == Mode.STAGING ) {
             Logger logger = (Logger) x.get("logger");
-            logger.warning(this.getClass().getSimpleName(), "Auto email verified.", "user", result.getId());
-            result = (User) result.fclone();
-            result.setEmailVerified(true);
-            result = (User) getDelegate().put_(x, result);
-          } else {
-            getEmailToken().generateToken(x, result);
+            logger.warning(this.getClass().getSimpleName(), "Auto email verified.", "user", nu.getLegalName());
+            nu.setEmailVerified(true);
           }
+        }
+        User result = (User) super.put_(x, nu);
+
+        // Send email verification if new registered user's email enabled
+        if ( result != null &&
+             old == null &&
+             ! result.getEmailVerified() &&
+             registrationEmailEnabled &&
+             ! result.getInvited() ) {
+          getEmailToken().generateToken(x, result);
         }
 
         return result;
