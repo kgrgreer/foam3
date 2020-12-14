@@ -3283,3 +3283,10 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.Date
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.DateOfIssue.FUTURE_DATE_ERROR",target:"A data de emissão não pode ser uma data futura"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.DateOfIssue.INVALID_DATE_ERROR",target:"Forneça a data de emissão conforme mostrado em sua identificação"})
 
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessLastRegistrationDateData.INVALID_DATE_ERROR",target:"Insira a data mais recente em que sua empresa foi registrada"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessLastRegistrationDateData.MIN_DATE_ERROR",target:"O último registro da empresa deve ser uma data mais recente"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessLastRegistrationDateData.MAX_DATE_ERROR",target:"O último registro da empresa não pode ser uma data futura"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessLastRegistrationDateData.SECTION_BUSINESS_LAST_REGISTRATION_DATE_SECTION.title",target:"Data do último registro da empresa"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessLastRegistrationDateData.BUSINESS_LAST_REGISTRATION_DATE.label",target:"Data do último registro da empresa"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessLastRegistrationDateData.BUSINESS_LAST_REGISTRATION_DATE.documentation",target:"Data do último registro comercial."})
