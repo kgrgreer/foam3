@@ -24,12 +24,9 @@ foam.CLASS({
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
-    'foam.nanos.app.AppConfig',
-    'foam.nanos.app.Mode',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.User',
-    'foam.nanos.auth.email.EmailTokenService',
-    'foam.nanos.logger.Logger'
+    'foam.nanos.auth.email.EmailTokenService'
   ],
 
   constants: [
@@ -77,34 +74,18 @@ foam.CLASS({
         if ( ! ((User) obj).getLoginEnabled() ) {
           return super.put_(x, obj);
         }
-
-        User nu = (User) obj;
-        User old = (User) getDelegate().find(nu.getId());
+    
+        boolean newUser = getDelegate().find(((User) obj).getId()) == null;
         AuthService auth = (AuthService) x.get("auth");
         boolean registrationEmailEnabled = auth.check(x, REGISTRATION_EMAIL_ENABLED);
+        User result = (User) super.put_(x, obj);
+    
         // Send email verification if new registered user's email enabled
-        if ( old == null &&
-             registrationEmailEnabled &&
-             ! nu.getInvited() ) {
-          AppConfig appConfig = (AppConfig) x.get("appConfig");
-          if ( appConfig.getMode() == Mode.DEVELOPMENT ||
-               appConfig.getMode() == Mode.STAGING ) {
-            Logger logger = (Logger) x.get("logger");
-            logger.warning(this.getClass().getSimpleName(), "Auto email verified.", "user", nu.getLegalName());
-            nu.setEmailVerified(true);
-          }
+        if ( result != null && newUser && ! result.getEmailVerified() && registrationEmailEnabled &&
+            ! result.getInvited() ) {
+            getEmailToken().generateToken(x, result);
         }
-        User result = (User) super.put_(x, nu);
-
-        // Send email verification if new registered user's email enabled
-        if ( result != null &&
-             old == null &&
-             ! result.getEmailVerified() &&
-             registrationEmailEnabled &&
-             ! result.getInvited() ) {
-          getEmailToken().generateToken(x, result);
-        }
-
+    
         return result;
       `
     }

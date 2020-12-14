@@ -58,7 +58,7 @@ foam.CLASS({
             lastName: userName,
             desiredPassword: password,
             group: group || 'sme',
-            // emailVerified: true,
+            emailVerified: true,
             phoneNumber: '9055551212',
             address: {
               class: 'foam.nanos.auth.Address',
