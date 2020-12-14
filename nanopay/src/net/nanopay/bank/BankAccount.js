@@ -101,6 +101,9 @@ foam.CLASS({
     {
       name: 'complianceInformation',
       permissionRequired: true
+    },
+    {
+      name: 'contextMenuActions'
     }
   ],
 
@@ -510,6 +513,7 @@ foam.CLASS({
   actions: [
     {
       name: 'verifyAccount',
+      section: 'contextMenuActions',
       isAvailable: function() {
         return this.cls_.id == this.CABankAccount.id;
       },
@@ -525,6 +529,7 @@ foam.CLASS({
     },
     {
       name: 'edit',
+      section: 'contextMenuActions',
       isAvailable: function() {
         return ! this.verifiedBy
       },
@@ -544,6 +549,7 @@ foam.CLASS({
     },
     {
       name: 'setAsDefault',
+      section: 'contextMenuActions',
       isEnabled: function() {
         return ! this.isDefault
       },
@@ -561,6 +567,7 @@ foam.CLASS({
     },
     {
       name: 'delete',
+      section: 'contextMenuActions',
       code: function(X) {
         if ( this.isDefault ) {
           this.notify(this.DELETE_DEFAULT, '', this.LogLevel.ERROR, true);
