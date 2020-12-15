@@ -639,40 +639,40 @@ foam.CLASS({
                       .addClass('table-content')
                       .add(this.DATE_CREDITED)
                     .end()
-                    .start().show(this.isProcess$)
-                      .addClass('table-content')
-                      .add(this.ESTIMATED_CREDIT_DATE)
-                    .end()
-                    .start().show(this.relatedTransaction$)
-                      .add(this.slot(function(invoice$paymentDate) {
-                        if ( invoice$paymentDate ) {
-                          var creditDate =
-                            invoice$paymentDate.toISOString().substring(0, 10);
-                          return this.isPaid ? creditDate : `${creditDate} *`;
-                        } else {
-                          return '--';
-                        }
-                      }))
-                    .end()
+                    // .start().show(this.isProcess$)
+                    //   .addClass('table-content')
+                    //   .add(this.ESTIMATED_CREDIT_DATE)
+                    // .end()
+                    // .start().show(this.relatedTransaction$)
+                    //   .add(this.slot(function(invoice$paymentDate) {
+                    //     if ( invoice$paymentDate ) {
+                    //       var creditDate =
+                    //         invoice$paymentDate.toISOString().substring(0, 10);
+                    //       return this.isPaid ? creditDate : `${creditDate} *`;
+                    //     } else {
+                    //       return '--';
+                    //     }
+                    //   }))
+                    // .end()
                   .end()
-                  .start().show(this.showBankAccount$).addClass('invoice-text')
-                    .start().addClass('table-content').add(this.bankAccountLabel).end()
-                    .add(this.bankAccount$.map((account) => {
-                      if ( account ) {
-                        return `${account.name} ` +
-                          `${'*'.repeat(account.accountNumber.length-4)}` +
-                          `${account.accountNumber.slice(-4)}`;
-                      } else {
-                        return '--';
-                      }
-                    }))
-                  .end()
+                  // .start().show(this.showBankAccount$).addClass('invoice-text')
+                  //   .start().addClass('table-content').add(this.bankAccountLabel).end()
+                  //   .add(this.bankAccount$.map((account) => {
+                  //     if ( account ) {
+                  //       return `${account.name} ` +
+                  //         `${'*'.repeat(account.accountNumber.length-4)}` +
+                  //         `${account.accountNumber.slice(-4)}`;
+                  //     } else {
+                  //       return '--';
+                  //     }
+                  //   }))
+                  // .end()
                 .end()
               .end()
-              .start().show(this.isProcess$)
-                .addClass(this.myClass('annotation'))
-                .add(this.ANNOTATION)
-              .end()
+              // .start().show(this.isProcess$)
+              //   .addClass(this.myClass('annotation'))
+              //   .add(this.ANNOTATION)
+              // .end()
             .end()
 
             .add(this.slot(function(transactionConfirmationPDF) {

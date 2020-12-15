@@ -181,11 +181,6 @@ foam.CLASS({
         .start(self.Rows)
           .add(self.slot(function(sections, currentIndex) {
             return self.E()
-              .start().addClass(self.myClass('step-indicator'))
-                .add(this.slot(function(currentIndex) {
-                  return `${self.STEP} ${currentIndex + 1} ${self.OF_MSG} 3`;
-                }))
-              .end()
               .tag(self.sectionView, {
                 section: sections[currentIndex],
                 data$: self.data$
@@ -195,6 +190,11 @@ foam.CLASS({
             .start().addClass('button-container-wrapper')
               .start().addClass('button-container')
                 .tag(this.BACK, { buttonStyle: 'TERTIARY' })
+                .start().addClass(self.myClass('step-indicator'))
+                  .add(this.slot(function(currentIndex) {
+                    return `${self.STEP} ${currentIndex + 1} ${self.OF_MSG} 3`;
+                  }))
+                .end()
                 .start().addClass(this.myClass('button-sub-container'))
                   .tag(this.OPTION, { buttonStyle: 'SECONDARY' })
                   .start(this.NEXT).end()
