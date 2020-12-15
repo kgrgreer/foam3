@@ -193,8 +193,8 @@ foam.CLASS({
         //afexCT.setAmount(afexCT.getNext().getAmount());
         //--- Create Fx Summary ---
         FXSummaryTransaction summary = new FXSummaryTransaction();
-        summary.setAmount(request.getAmount());
-        summary.setDestinationAmount(request.getDestinationAmount());
+        summary.setAmount(afexCT.getNext[0].getAmount()); // get Summary amounts from afexTransaction
+        summary.setDestinationAmount(afexCT.getNext[0].getDestinationAmount());
         summary.setSourceCurrency(request.getSourceCurrency());
         summary.setDestinationCurrency(request.getDestinationCurrency());
         summary.setFxQuoteId(String.valueOf(fxQuote.getId()));
