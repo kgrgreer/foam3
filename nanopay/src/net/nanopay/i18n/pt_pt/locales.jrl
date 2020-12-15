@@ -1524,7 +1524,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"View all bank accounts.",target:
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.DELETE_DEFAULT",target:"Não foi possível excluir contas padrão. Selecione uma nova conta padrão, se houver."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.UNABLE_TO_DELETE",target:"Erro ao excluir conta: "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.SUCCESSFULLY_DELETED",target:"Conta bancária excluída."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.IS_DEFAULT",target:"agora é sua conta bancária padrão. Os fundos serão automaticamente transferidos de e para esta conta."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.IS_DEFAULT_ACCOUNT",target:"agora é sua conta bancária padrão. Os fundos serão automaticamente transferidos de e para esta conta."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.UNABLE_TO_DEFAULT",target:"Não é possível definir contas bancárias não verificadas como padrão."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.ALREADY_DEFAULT",target:"já é uma conta bancária padrão."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.BANK_ACCOUNT_LABEL",target:"Conta bancária"})
