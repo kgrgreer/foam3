@@ -147,8 +147,7 @@ foam.CLASS({
             var t2 = (Transaction) requestTxn.fclone();
             t2.setDestinationAccount(intermediaryAccount.getId());
             t2.setDestinationCurrency(intermediaryAccount.getDenomination());
-            // Get the AFEX transaction and use the amount from there as the summary amount can have rounding errors.
-            t2.setDestinationAmount(leg2.getNext()[0].getNext()[0].getNext()[0].getAmount());
+            t2.setDestinationAmount(leg2.getAmount());
             var leg1 = quoteTxn(x, t2, quote, false);
 
             var fxSummary = new FXSummaryTransaction();
