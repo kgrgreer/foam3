@@ -101,7 +101,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.SO_USERS_DAO.documentation",target:"esta propriedade converte usuários oficiais de assinatura em proprietários benéficos, \n como uma forma de mini pré-processamento para seleções de proprietários."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.CHOSEN_OWNERS.label",target:"proprietários escolhidos"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.OWNER_SELECTIONS_VALIDATED.label",target:"Seleções do proprietário validadas"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.AMOUNT_OF_OWNERS.label",target:"quantidade de proprietários"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.AMOUNT_OF_OWNERS.value",target:"-1"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.AMOUNT_OF_OWNERS.documentation",target:"Número de proprietários"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.PUBLICLY_TRADED.label",target:"Esta é uma empresa de capital aberto"})
@@ -239,7 +239,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMo
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.QUOTE_ERROR",target:"Ocorreu um erro inesperado ao obter a taxa de câmbio."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.CONTACT_ERROR",target:"É necessário escolher um contato."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.AMOUNT_ERROR",target:"Valor inválido."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.AMOUNT_ERROR",target:"Montante inválido."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.DUE_DATE_ERROR",target:"Data de vencimento inválida."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.ISSUE_DATE_ERROR",target:"Data de emissão inválida."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.DRAFT_SUCCESS",target:"Rascunho salvo com sucesso."})
@@ -3076,7 +3076,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMo
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"4c46cdb8-06b2-11eb-adc1-0242ac120002.name",target:"Natureza da relação comercial"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"9d4d667c-04c3-11eb-adc1-0242ac120002.name",target:"Capital de negócios e patrimônio líquido"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"af3d9c28-0674-11eb-adc1-0242ac120002.name",target:"Referências Comerciais"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-20.name",target:"Aprovação final"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-20.description",target:"Registrando com Provedor de Pagamento"})
@@ -3178,7 +3177,7 @@ p({class:"foam.i18n.Locale",locale:"pt","source":"2910C2C9-3597-42A3-BF85-CFBC8F
 p({class:"foam.i18n.Locale",locale:"pt","source":"7b41a164-29bd-11eb-adc1-0242ac120002.name","target":"Conta no banco do brasil"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"554af38a-8225-87c8-dfdf-eeb15f71215e-25.name","target":"Termos e Condições"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"9d4d667c-04c3-11eb-adc1-0242ac120002.name","target":"Capital de negócios e patrimônio líquido"})
-p({class:"foam.i18n.Locale",locale:"pt","source":"af3d9c28-0674-11eb-adc1-0242ac120002.name","target":"Informações da conta comercial"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"af3d9c28-0674-11eb-adc1-0242ac120002.name","target":"Referências Comerciais"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"4c46cdb8-06b2-11eb-adc1-0242ac120002.name","target":"Natureza da relação comercial"})
 
 p({class:"foam.i18n.Locale",locale:"pt","source":"invoice.capable.treviso.name","target":"Requisitos de fatura"})
