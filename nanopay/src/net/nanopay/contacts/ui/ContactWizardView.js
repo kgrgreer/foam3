@@ -29,6 +29,7 @@ foam.CLASS({
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.contacts.Contact',
     'net.nanopay.model.Invitation',
+    'foam.core.Latch',
     'foam.layout.Section'
   ],
 
@@ -116,7 +117,16 @@ foam.CLASS({
       documentation: `Set to true when editing a contact from
       contact controller.`,
       value: false
-    }
+    },
+    {
+      class: 'foam.core.FObjectProperty',
+      of: 'foam.core.Latch',
+      name: 'initComplete',
+      documentation: 'A latch used to wait on init completion.',
+      factory: function() {
+        return this.Latch.create();
+      }
+    },
   ],
 
   methods: [
@@ -168,12 +178,14 @@ foam.CLASS({
         this.sections[1].subTitle = '';
         this.sections[2].title = this.EDIT_STEP_THREE_TITLE;
         this.sections[2].subTitle = '';
-        if ( this.data.bankAccount > 0 ) {
+        if ( this.data.bankAccount.length != 0 ) {
           this.data.createBankAccount = await this.bankAccountDAO.find(this.data.bankAccount);
         }
       }
+      this.initComplete.resolve();
     },
-    function initE() {
+    async function initE() {
+      await this.initComplete;
       var self = this;
 
       self
