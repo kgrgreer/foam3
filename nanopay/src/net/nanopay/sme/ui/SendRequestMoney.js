@@ -47,6 +47,7 @@ foam.CLASS({
     'transactionPlannerDAO',
     'quickbooksService',
     'xeroService',
+    'crunchController'
   ],
 
   exports: [
@@ -68,6 +69,7 @@ foam.CLASS({
     'foam.log.LogLevel',
     'foam.nanos.app.Mode',
     'foam.nanos.crunch.CapabilityJunctionStatus',
+    'foam.nanos.crunch.CapabilityIntercept',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.auth.PublicUserInfo',
@@ -82,7 +84,7 @@ foam.CLASS({
     'net.nanopay.tx.FxSummaryTransactionLineItem',
     'net.nanopay.tx.TransactionQuote',
     'foam.u2.LoadingSpinner',
-    'foam.u2.dialog.Popup',
+    'foam.u2.dialog.Popup'
   ],
 
   axioms: [
@@ -425,15 +427,29 @@ foam.CLASS({
 
     async function getQuote() {
       this.invoice.quote = null;
-      this.invoice.draft = false;
       this.invoice.paymentMethod = this.PaymentStatus.SUBMIT;
+
+      if ( this.invoice.draft ){
+        this.invoice.draft = false;
+
+        var capabilityIntercept = this.CapabilityIntercept.create();
+        capabilityIntercept.daoKey = "invoiceDAO"
+        
+        var wizardSeq = this.crunchController.createCapableWizardSequence(capabilityIntercept, this.invoice);
+        var wizardContext = await wizardSeq.execute();
+
+        if ( ! wizardContext.submitted ){
+          this.invoice.draft = true;
+          this.saveDraft(this.invoice);
+          return;
+        }
+      }
 
       try {
         this.invoice = await this.invoiceDAO.put(this.invoice);
 
         if ( this.invoice.capablePayloads.length > 0 && this.invoice.isWizardIncomplete ){
           this.invoice.draft = true;
-          this.invoice.capablePayloads = [];
           this.saveDraft(this.invoice);
           return;
         }
