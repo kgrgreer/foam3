@@ -29,7 +29,6 @@ foam.CLASS({
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.contacts.Contact',
     'net.nanopay.model.Invitation',
-
     'foam.layout.Section'
   ],
 
