@@ -69,7 +69,10 @@ foam.CLASS({
             ],
             data$: this.customDAO$,
             dblClickListenerAction: this.dblclick
-          }).end()
+          }).style({
+            'padding-bottom': '0!important'
+          })
+          .end()
         .end();
     },
 

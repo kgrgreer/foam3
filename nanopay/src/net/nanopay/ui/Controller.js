@@ -492,7 +492,7 @@ foam.CLASS({
 
         if ( otLoginToken != null ) {
           await this.client.otLoginService.loginTokenId(null, otLoginToken);
-          urlParams.delete(otLoginToken);
+          window.location.href = "/";
         }
 
         var result = await this.client.auth.getCurrentSubject(null);

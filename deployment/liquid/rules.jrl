@@ -43,7 +43,7 @@ p({
   "class":"foam.nanos.ruler.Rule",
   "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d19",
   "enabled":false,
-  "saveHistory":true
+  "saveHistory":false
 })
 
 // transaction auto approval
@@ -152,7 +152,7 @@ p({
   "ruleGroup": "liquid",
   "documentation": "remove junctions on user removal",
   "daoKey": "localUserDAO",
-  "operation": 1, 
+  "operation": 1,
   "after": true,
   "predicate":{
     "class":"foam.nanos.ruler.predicate.PropertyEQValue",
@@ -175,7 +175,7 @@ p({
   "ruleGroup": "liquid",
   "documentation": "remove junctions on capability removal",
   "daoKey": "localCapabilityDAO",
-  "operation": 1, 
+  "operation": 1,
   "after": true,
   "predicate":{
     "class":"foam.nanos.ruler.predicate.PropertyEQValue",
@@ -336,7 +336,7 @@ p({
     "class":"foam.nanos.approval.ApprovableApprovalRequestsRule"
   },
   "enabled":true,
-  "saveHistory":true,
+  "saveHistory":false,
   "lifecycleState":1
 })
 p({
@@ -487,7 +487,7 @@ p({
   "ruleGroup": "liquid",
   "documentation": "Remove accounts from ucjdata on account removal",
   "daoKey": "localAccountDAO",
-  "operation": 2, 
+  "operation": 2,
   "after": true,
   "action" : { "class": "net.nanopay.liquidity.crunch.RemoveAccountFromUcjDataOnAccountRemoval" },
   "saveHistory": true,
@@ -503,7 +503,7 @@ p({
   "ruleGroup": "liquid",
   "documentation": "On account delete, remove the reference of the account from any account templates/ any roleassignment using template",
   "daoKey": "localAccountDAO",
-  "operation": 2, 
+  "operation": 2,
   "after": true,
   "action" : { "class": "net.nanopay.liquidity.crunch.RemoveDeletedAccountFromAccountTemplate" },
   "saveHistory": true,
@@ -519,7 +519,7 @@ p({
   "ruleGroup": "liquid",
   "documentation": "On account delete, remove the reference of the account from any account templates/ any roleassignment using template",
   "daoKey": "localAccountDAO",
-  "operation": 2, 
+  "operation": 2,
   "after": true,
   "action" : { "class": "net.nanopay.liquidity.crunch.RemoveAccountFromRootAccounts" },
   "saveHistory": true,

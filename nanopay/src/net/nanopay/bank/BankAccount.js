@@ -101,6 +101,9 @@ foam.CLASS({
     {
       name: 'complianceInformation',
       permissionRequired: true
+    },
+    {
+      name: 'contextMenuActions'
     }
   ],
 
@@ -125,7 +128,7 @@ foam.CLASS({
     { name: 'DELETE_DEFAULT', message: 'Unable to delete default accounts. Please select a new default account if one exists.' },
     { name: 'UNABLE_TO_DELETE', message: 'Error deleting account: ' },
     { name: 'SUCCESSFULLY_DELETED', message: 'Bank account deleted' },
-    { name: 'IS_DEFAULT', message: 'is now your default bank account. Funds will be automatically transferred to and from this account.' },
+    { name: 'IS_DEFAULT_ACCOUNT', message: 'is now your default bank account. Funds will be automatically transferred to and from this account.' },
     { name: 'UNABLE_TO_DEFAULT', message: 'Unable to set non verified bank accounts as default' },
     { name: 'STATUS_ACTIVE', message: 'Active' },
     { name: 'STATUS_PENDING', message: 'Pending' },
@@ -510,6 +513,7 @@ foam.CLASS({
   actions: [
     {
       name: 'verifyAccount',
+      section: 'contextMenuActions',
       isAvailable: function() {
         return this.cls_.id == this.CABankAccount.id;
       },
@@ -525,6 +529,7 @@ foam.CLASS({
     },
     {
       name: 'edit',
+      section: 'contextMenuActions',
       isAvailable: function() {
         return ! this.verifiedBy
       },
@@ -544,13 +549,14 @@ foam.CLASS({
     },
     {
       name: 'setAsDefault',
+      section: 'contextMenuActions',
       isEnabled: function() {
         return ! this.isDefault
       },
       code: function(X) {
         this.isDefault = true;
         this.subject.user.accounts.put(this).then(() =>{
-          this.notify(`${ this.name } ${ this.IS_DEFAULT }`, '', this.LogLevel.INFO, true);
+          this.notify(`${ this.name } ${ this.IS_DEFAULT_ACCOUNT }`, '', this.LogLevel.INFO, true);
         }).catch((err) => {
           this.isDefault = false;
           this.notify(this.UNABLE_TO_DEFAULT, '', this.LogLevel.ERROR, true);
@@ -561,6 +567,7 @@ foam.CLASS({
     },
     {
       name: 'delete',
+      section: 'contextMenuActions',
       code: function(X) {
         if ( this.isDefault ) {
           this.notify(this.DELETE_DEFAULT, '', this.LogLevel.ERROR, true);

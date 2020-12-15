@@ -13,7 +13,7 @@
   * Dissemination of this information or reproduction of this material
   * is strictly forbidden unless prior written permission is obtained
   * from nanopay Corporation.
-  */
+*/
 
 foam.CLASS({
   package: 'net.nanopay.partner.treviso.onboarding',
@@ -38,7 +38,8 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'NO_DIRECTOR_INFO', message: 'Director information required' }
+    { name: 'NO_DIRECTOR_INFO', message: 'Director information required' },
+    { name: 'NO_DIR_NEEDED', message: 'No Business Directors required for this business type. Please proceed to next step.' }
   ],
 
   sections: [
@@ -74,7 +75,9 @@ properties: [
       class: 'String',
       name: 'noDirectorsNeeded',
       section: 'directorsInfoSection',
-      value: 'No Business Directors required for this business type. Please proceed to next step.',
+      getter: function() {
+        return this.NO_DIR_NEEDED;
+      },
       visibility: function(businessTypeId, needDirector) {
         return businessTypeId < 4 ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
       }
@@ -105,7 +108,7 @@ properties: [
       validationTextVisible: true,
       validationPredicates: [
         {
-          args: [ 'businessTypeId', 'businessDirectors' ],
+          args: ['businessTypeId', 'businessDirectors'],
           predicateFactory: function(e) {
             return e.OR(
               e.HAS(net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.BUSINESS_DIRECTORS),

@@ -28,6 +28,7 @@ p({
     "classification":"Validate Signing Officer UserCapabilityJunction Using SecureFact"
   },
   "enabled":true,
+  "saveHistory":true,
   "lifecycleState":1
 })
 
@@ -59,6 +60,7 @@ p({
     "classification":"Validate Signing Officer UserCapabilityJunction Using Dow Jones"
   },
   "enabled":true,
+  "saveHistory":true,
   "lifecycleState":1
 })
 
@@ -82,6 +84,7 @@ p({
     "classification":"Validate Business Onboarding UserCapabilityJunction Using SecureFact"
   },
   "enabled":true,
+  "saveHistory":true,
   "lifecycleState":1
 })
 
@@ -105,6 +108,7 @@ p({
   },
   "enabled":true,
   "validity":1,
+  "saveHistory":true,
   "lifecycleState":1
 })
 
@@ -127,6 +131,7 @@ p({
   },
   "enabled":true,
   "validity":1,
+  "saveHistory":true,
   "lifecycleState":1
 })
 
@@ -155,6 +160,7 @@ p({
   },
   "enabled":true,
   "validity":1,
+  "saveHistory":true,
   "lifecycleState":1
 })
 
@@ -182,6 +188,7 @@ p({
     "classification":"Validate Expanded User Detail UserCapabilityJunction Using SecureFact"
   },
   "enabled":true,
+  "saveHistory":true,
   "lifecycleState":1
 })
 
@@ -210,6 +217,7 @@ p({
   },
   "enabled":true,
   "validity":1,
+  "saveHistory":true,
   "lifecycleState":1
 })
 
@@ -237,6 +245,7 @@ p({
     "classification":"Validate Business Detail Data UserCapabilityJunction Using SecureFact"
   },
   "enabled":true,
+  "saveHistory":true,
   "lifecycleState":1
 })
 p({
@@ -271,6 +280,7 @@ p({
     "classification":"Compliance capability granted"
   },
   "enabled":true,
+  "saveHistory":true,
   "lifecycleState":1
 })
 p({
@@ -467,6 +477,7 @@ p({
   },
   "enabled":true,
   "validity":1,
+  "saveHistory":true,
   "lifecycleState":1
 })
 
@@ -674,6 +685,7 @@ p({
     "class":"net.nanopay.crunch.compliance.SetComplianceOnUser"
   },
   "enabled":true,
+  "saveHistory":true,
   "lifecycleState":1
 })
 
@@ -697,6 +709,7 @@ p({
     "class":"net.nanopay.crunch.compliance.SetComplianceOnBusiness"
   },
   "enabled":true,
+  "saveHistory":true,
   "lifecycleState":1
 })
 
@@ -797,6 +810,6 @@ p({
     "classification":"Skip Compliance Check For Testing"
   },
   "enabled":false,
-  "saveHistory":false,
+  "saveHistory":true,
   "lifecycleState":1
 })

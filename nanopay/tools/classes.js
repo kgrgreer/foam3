@@ -718,8 +718,11 @@ var classes = [
   // SSO
   'net.nanopay.auth.openid.SSOToken',
   'net.nanopay.auth.openid.OTLoginToken',
-  'net.nanopay.auth.openid.ClientTokenLoginService',
   'net.nanopay.auth.openid.TokenLoginService',
+  'net.nanopay.auth.openid.ClientTokenLoginService',
+  'net.nanopay.auth.openid.OAuthService',
+  'net.nanopay.auth.openid.ClientOAuthService',
+  'net.nanopay.auth.openid.OAuthProvider',
 
   // PII
   'net.nanopay.security.pii.PII',
@@ -1289,6 +1292,7 @@ var classes = [
   'net.nanopay.partner.treviso.invoice.UpdateTransactionOnInvoiceValidationRule',
   'net.nanopay.partner.treviso.invoice.TrevisoNotificationRule',
   'net.nanopay.partner.treviso.onboarding.BusinessDirectorsData',
+  'net.nanopay.partner.treviso.TrevisoSendEmailToAllRule',
 
   // crunch predicates - todo move all predicates used in crunch here
   'net.nanopay.crunch.predicate.IsBusiness',
@@ -1526,7 +1530,8 @@ var skeletons = [
   'net.nanopay.interac.service.InteracTransactionDAO',
   'net.nanopay.contacts.ContactServiceInterface',
   'net.nanopay.country.br.BrazilVerificationServiceInterface',
-  'net.nanopay.auth.openid.TokenLoginService'
+  'net.nanopay.auth.openid.TokenLoginService',
+  'net.nanopay.auth.openid.OAuthService'
 ];
 
 var proxies = [
