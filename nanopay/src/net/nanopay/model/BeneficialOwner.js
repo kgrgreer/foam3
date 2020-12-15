@@ -533,15 +533,11 @@ foam.CLASS({
         ]
         });
       },
-      validationPredicates: [
-        {
-          args: ['documentsOfAddress'],
-          predicateFactory: function(e) {
-            return e.HAS(net.nanopay.model.BeneficialOwner.DOCUMENTS_OF_ADDRESS);
-          },
-          errorMessage: 'PROOF_OF_ADDRESS'
+      validateObj: function(documentsOfAddress) {
+        if ( documentsOfAddress.length === 0 ) {
+          return this.PROOF_OF_ADDRESS;
         }
-      ]
+      }
     },
     {
       class: 'foam.nanos.fs.FileArray',
@@ -563,15 +559,11 @@ foam.CLASS({
         ]
         });
       },
-      validationPredicates: [
-        {
-          args: ['documentsOfId'],
-          predicateFactory: function(e) {
-            return e.HAS(net.nanopay.model.BeneficialOwner.DOCUMENTS_OF_ID);
-          },
-          errorMessage: 'PROOF_OF_IDENTIFICATION'
+      validateObj: function(documentsOfId) {
+        if ( documentsOfId.length === 0 ) {
+          return this.PROOF_OF_IDENTIFICATION;
         }
-      ]
+      }
     }
   ],
 

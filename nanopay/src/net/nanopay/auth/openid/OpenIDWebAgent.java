@@ -17,6 +17,13 @@
 
 package net.nanopay.auth.openid;
 
+import com.auth0.jwk.JwkException;
+import com.auth0.jwk.JwkProvider;
+import com.auth0.jwk.UrlJwkProvider;
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.algorithms.Algorithm;
+import com.auth0.jwt.exceptions.JWTVerificationException;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import foam.core.ContextAware;
 import foam.core.X;
 import foam.dao.ArraySink;
@@ -40,56 +47,154 @@ import org.apache.http.util.EntityUtils;
 import org.json.JSONObject;
 
 import javax.security.auth.login.LoginException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.HttpHeaders;
 import java.io.IOException;
-import java.time.Instant;
-import java.util.*;
+import java.net.URL;
+import java.security.interfaces.RSAPublicKey;
+import java.util.ArrayList;
+import java.util.StringJoiner;
 
-public class OpenIDWebAgent implements WebAgent, NanoService, ContextAware {
+public class OpenIDWebAgent implements OAuthProvider, WebAgent, NanoService, ContextAware {
 
   protected X x_;
-  protected String AccessTokenUrl;
-  protected String RedirectURI;
-  protected String ClientSecret;
-  protected String ClientID;
-  protected String GroupID;
+  protected String authorizationUrl_;
+  protected String accessTokenUrl_;
+  protected String providerUrl_;
+  protected String redirectUri_;
+  protected String clientSecret_;
+  protected String clientId_;
+  protected String groupId_;
+  protected String spidId_;
+  protected JwkProvider keyProvider_;
 
-  OpenIDWebAgent(String accessTokenUrl, String redirectURI, String clientSecret, String clientId, String groupId) {
-    AccessTokenUrl = accessTokenUrl;
-    RedirectURI = redirectURI;
-    ClientSecret = clientSecret;
-    ClientID = clientId;
-    GroupID = groupId;
+  public String getAuthorizationUrl() {
+    return authorizationUrl_;
   }
 
-  protected long generateUser(X x, JSONObject idToken, SSOToken ssoToken, String password) throws LoginException {
+  public String getRedirectUri() {
+    return redirectUri_;
+  }
+
+  public String getClientId() {
+    return clientId_;
+  }
+
+  public String getClientSecret() {
+    return clientSecret_;
+  }
+
+  protected Logger getLogger(X x) {
+    return new PrefixLogger(new Object[] { "oauth", this.getClass().getSimpleName() }, (Logger) x.get("logger"));
+  }
+
+  OpenIDWebAgent(String authorizationUrl, String accessTokenUrl, String providerUrl, String redirectUri, String clientSecret, String clientId, String groupId, String spidId) {
+    authorizationUrl_ = authorizationUrl;
+    accessTokenUrl_ = accessTokenUrl;
+    providerUrl_ = providerUrl;
+    redirectUri_ = redirectUri;
+    clientSecret_ = clientSecret;
+    clientId_ = clientId;
+    groupId_ = groupId;
+    spidId_ = spidId;
+  }
+
+  protected long generateUser(X x, DecodedJWT jwt, SSOToken ssoToken, String password) {
     var userDAO = (DAO) x.get("localUserDAO");
     var user = new User();
 
-    user.setFirstName(idToken.getString("given_name"));
-    user.setLastName(idToken.getString("family_name"));
-    user.setEmail(idToken.getString("email"));
-    user.setGroup(GroupID);
+    user.setFirstName(jwt.getClaim("given_name").asString());
+    user.setLastName(jwt.getClaim("family_name").asString());
+    user.setEmail(jwt.getClaim("email").asString());
+    user.setGroup(groupId_);
+    if ( ! SafetyUtil.isEmpty(spidId_) ) {
+      user.setSpid(spidId_);
+    }
     user.setEmailVerified(true);
     user.setDesiredPassword(password);
     user.setToken(ssoToken.getId());
 
     userDAO.put(user);
+    getLogger(x).info("Generated user " + jwt.getClaim("email").asString() + "," + ssoToken.getSUB() + "," + user.getGroup() + "," + user.getSpid());
     return user.getId();
   }
 
-  protected void validateIDToken(String header, String body) {
-    // TODO Verify ID token was signed by oauth2 ISS, could use com.auth0 java-jwt package
+  protected RSAPublicKey getRSAPublicKey(String kid) throws JwkException {
+    return (RSAPublicKey) keyProvider_.get(kid).getPublicKey();
   }
 
-  protected JSONObject getIDToken(String idtoken) {
-    var jwt = idtoken.split("\\.");
-    var jwtHeader = new String(Base64.getMimeDecoder().decode(jwt[0]));
-    var jwtBody = new String(Base64.getMimeDecoder().decode(jwt[1]));
-    validateIDToken(jwtHeader, jwtBody);
-    return new JSONObject(jwtBody);
+  protected void validateIDToken(DecodedJWT jwt) throws LoginException {
+    var algtype = jwt.getAlgorithm();
+    var kid = jwt.getKeyId();
+
+    // TODO Verify ID token was signed by oauth2 ISS, could use com.auth0 java-jwt package
+    Algorithm alg = null;
+    getLogger(getX()).info("SSO JWT signed with " + algtype);
+    try {
+      switch (algtype) {
+        case "none":
+          alg = Algorithm.none();
+          break;
+        case "HS256":
+          alg = Algorithm.HMAC256(clientSecret_);
+          break;
+        case "HS384":
+          alg = Algorithm.HMAC384(clientSecret_);
+          break;
+        case "HS512":
+          alg = Algorithm.HMAC512(clientSecret_);
+          break;
+        case "RS256":
+          alg = Algorithm.RSA256(getRSAPublicKey(kid), null);
+          break;
+        case "RS384":
+          alg = Algorithm.RSA384(getRSAPublicKey(kid), null);
+          break;
+        case "RS512":
+          alg = Algorithm.RSA512(getRSAPublicKey(kid), null);
+          break;
+        case "ES256":
+          alg = Algorithm.ECDSA256(null, null);
+          break;
+        case "ES384":
+          alg = Algorithm.ECDSA384(null, null);
+          break;
+        case "ES512":
+          alg = Algorithm.ECDSA512(null, null);
+          break;
+        case "PS256":
+        case "PS384":
+        case "PS512":
+          // Apparently these are outdated/insecure
+          break;
+      }
+    } catch (JwkException e) {
+      getLogger(getX()).error("Jwk Algorith creation failed '" + e.getMessage() + "'");
+      throw new LoginException("There was an error logging in");
+    }
+
+    if ( alg == null ) {
+      getLogger(getX()).error("JWK Validation failure due to unrecognized or invalid algorithm");
+      throw new LoginException("There was an error logging in");
+    }
+
+    var jwtVerifier = JWT.require(alg)
+      .withAudience(clientId_)
+      .acceptLeeway(7200)
+      .build();
+
+    try {
+      jwtVerifier.verify(jwt);
+    } catch (JWTVerificationException e) {
+      getLogger(getX()).log("JWT Verification failed: '" + e.getMessage() + "'");
+      throw new LoginException("Error logging in user");
+    }
+  }
+
+  protected DecodedJWT getJWT(String jwt) throws LoginException {
+    var decJwt = JWT.decode(jwt);
+    validateIDToken(decJwt);
+    return decJwt;
   }
 
   protected void validateState(X x, String state) throws LoginException {
@@ -106,34 +211,32 @@ public class OpenIDWebAgent implements WebAgent, NanoService, ContextAware {
   }
 
   protected long getUser(X x, String code) throws LoginException, IOException {
-    var logger = (Logger) x.get("logger");
-    logger = new PrefixLogger(new Object[] { this.getClass().getSimpleName(), "oauth" }, logger);
     CloseableHttpClient httpclient = HttpClients.createDefault();
-    HttpPost httppost = new HttpPost(AccessTokenUrl);
+    HttpPost httppost = new HttpPost(accessTokenUrl_);
 
     // Check if the redirect URI has already been set in a previous execute call
-    String redirectUri = RedirectURI;
-    if ( SafetyUtil.isEmpty(redirectUri) ) {
-      RedirectURI = ((AppConfig) x.get("appConfig")).getUrl() + "/service/openid";
+    String redirectUri = redirectUri_;
+    if ( SafetyUtil.isEmpty(redirectUri_) ) {
+      redirectUri_ = ((AppConfig) x.get("appConfig")).getUrl() + "/service/openid";
     }
 
     // Get access code & id token
     var params = new ArrayList<NameValuePair>(2);
     params.add(new BasicNameValuePair("grant_type", "authorization_code"));
-    params.add(new BasicNameValuePair("client_id", ClientID));
-    params.add(new BasicNameValuePair("client_secret", ClientSecret));
+    params.add(new BasicNameValuePair("client_id", clientId_));
+    params.add(new BasicNameValuePair("client_secret", clientSecret_));
     params.add(new BasicNameValuePair("code", code));
-    params.add(new BasicNameValuePair("redirect_uri", RedirectURI));
+    params.add(new BasicNameValuePair("redirect_uri", redirectUri_));
     httppost.setEntity(new UrlEncodedFormEntity(params, "UTF-8"));
 
-    httppost.addHeader("content-type", "application/x-www-form-urlencoded");
+
+    httppost.addHeader(HttpHeaders.CONTENT_TYPE, "application/x-www-form-urlencoded");
 
     var response = httpclient.execute(httppost);
     HttpEntity entity = response.getEntity();
 
     if (entity != null) {
       var resp = EntityUtils.toString(entity, "UTF-8");
-      logger.log(resp);
       var jsonObject = new JSONObject(resp);
 
       if ( jsonObject.has("error") ) {
@@ -141,25 +244,16 @@ public class OpenIDWebAgent implements WebAgent, NanoService, ContextAware {
         if ( jsonObject.has("error_description")) {
           errorString = errorString + "," + jsonObject.getString("error");
         }
-        logger.log(errorString);
         throw new LoginException(errorString);
       }
 
-      var idtoken = getIDToken(jsonObject.getString("id_token"));
-
-      if ( idtoken.has("exp") && Instant.now().getEpochSecond() > idtoken.getLong("exp") ) {
-        throw new LoginException("ID Token expired");
-      }
-
-      if ( idtoken.has("iat") && Instant.now().getEpochSecond() < idtoken.getLong("iat") ) {
-        throw new LoginException("ID Token bad issue date");
-      }
+      var jwt = getJWT(jsonObject.getString("id_token"));
 
       // Generate modeled SSO token
       var ssoToken = new SSOToken.Builder(x)
-        .setAUD(idtoken.getString("aud"))
-        .setISS(idtoken.getString("iss"))
-        .setSUB(idtoken.getString("sub"))
+        .setAUD(jwt.getClaim("aud").asString())
+        .setISS(jwt.getClaim("iss").asString())
+        .setSUB(jwt.getClaim("sub").asString())
         .build();
 
       var ssoTokenDAO = (DAO) x.get("ssoTokenDAO");
@@ -168,7 +262,7 @@ public class OpenIDWebAgent implements WebAgent, NanoService, ContextAware {
 
       if ( ssoUserToken == null ) {
         // Generating the user might fail, so we should only put the ssoToken into the ssoTokenDAO iff it succeeds
-        var userId = generateUser(x, idtoken, ssoToken, password);
+        var userId = generateUser(x, jwt, ssoToken, password);
         ssoTokenDAO.put(ssoToken);
         return userId;
       }
@@ -190,8 +284,7 @@ public class OpenIDWebAgent implements WebAgent, NanoService, ContextAware {
 
   @Override
   public void execute(X x) {
-    var logger = (Logger) x.get("logger");
-    logger = new PrefixLogger(new Object[] { this.getClass().getSimpleName(), "oauth" }, logger);
+    var logger = getLogger(x);
     var resp = x.get(HttpServletResponse.class);
     var p = x.get(HttpParameters.class);
     var code = (String) p.get("code");
@@ -200,7 +293,7 @@ public class OpenIDWebAgent implements WebAgent, NanoService, ContextAware {
     try {
       try {
         if (SafetyUtil.isEmpty(code)) {
-          throw new RuntimeException("OpenID redirectURI code required");
+          throw new RuntimeException("OpenID code required");
         }
 
         if ( ! SafetyUtil.isEmpty(state)) {
@@ -210,6 +303,7 @@ public class OpenIDWebAgent implements WebAgent, NanoService, ContextAware {
         var token = generateToken(x, getUser(x, code));
         resp.sendRedirect("/?otltoken=" + token);
       } catch (LoginException le) {
+        logger.error(le.getMessage());
         resp.sendRedirect("/");
       }
     } catch (Throwable t) {
@@ -224,10 +318,13 @@ public class OpenIDWebAgent implements WebAgent, NanoService, ContextAware {
 
   @Override
   public void start() throws Exception {
-    if ( SafetyUtil.isEmpty(RedirectURI) ) {
+    if ( SafetyUtil.isEmpty(redirectUri_) ) {
       var baseUrl = ((AppConfig) getX().get("appConfig")).getUrl();
-      RedirectURI = baseUrl + (baseUrl.endsWith("/") ? "service/openid" : "/service/openid");
+      redirectUri_ = baseUrl + (baseUrl.endsWith("/") ? "service/openid" : "/service/openid");
+      getLogger(getX()).info("Set redirectUri_ to " + redirectUri_);
     }
+
+    keyProvider_ = new UrlJwkProvider(new URL(providerUrl_), null, null);
   }
 
   @Override
