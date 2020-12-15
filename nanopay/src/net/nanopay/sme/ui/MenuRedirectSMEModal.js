@@ -39,7 +39,7 @@ foam.CLASS({
     {
       name: 'closeModal',
       label: '',
-      icon: 'images/ic-cancelwhite.svg',
+      icon: 'images/ic-cancelblack.svg',
       code: function(X) {
         X.pushMenu(X.data.menu);
       }
