@@ -29,7 +29,7 @@ foam.CLASS({
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.contacts.Contact',
     'net.nanopay.model.Invitation',
-    'foam.core.Latch',
+
     'foam.layout.Section'
   ],
 
@@ -118,15 +118,6 @@ foam.CLASS({
       contact controller.`,
       value: false
     },
-    {
-      class: 'foam.core.FObjectProperty',
-      of: 'foam.core.Latch',
-      name: 'initComplete',
-      documentation: 'A latch used to wait on init completion.',
-      factory: function() {
-        return this.Latch.create();
-      }
-    },
   ],
 
   methods: [
@@ -182,10 +173,8 @@ foam.CLASS({
           this.data.createBankAccount = await this.bankAccountDAO.find(this.data.bankAccount);
         }
       }
-      this.initComplete.resolve();
     },
-    async function initE() {
-      await this.initComplete;
+    function initE() {
       var self = this;
 
       self
