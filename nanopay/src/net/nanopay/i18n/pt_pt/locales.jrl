@@ -239,7 +239,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMo
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.QUOTE_ERROR",target:"Ocorreu um erro inesperado ao obter a taxa de câmbio."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.CONTACT_ERROR",target:"É necessário escolher um contato."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.AMOUNT_ERROR",target:"Valor inválido."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.AMOUNT_ERROR",target:"Montante inválido."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.DUE_DATE_ERROR",target:"Data de vencimento inválida."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.ISSUE_DATE_ERROR",target:"Data de emissão inválida."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.DRAFT_SUCCESS",target:"Rascunho salvo com sucesso."})
