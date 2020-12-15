@@ -101,7 +101,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.SO_USERS_DAO.documentation",target:"esta propriedade converte usuários oficiais de assinatura em proprietários benéficos, \n como uma forma de mini pré-processamento para seleções de proprietários."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.CHOSEN_OWNERS.label",target:"proprietários escolhidos"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.OWNER_SELECTIONS_VALIDATED.label",target:"Seleções do proprietário validadas"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.AMOUNT_OF_OWNERS.label",target:"quantidade de proprietários"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.AMOUNT_OF_OWNERS.value",target:"-1"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.AMOUNT_OF_OWNERS.documentation",target:"Número de proprietários"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessOwnershipData.PUBLICLY_TRADED.label",target:"Esta é uma empresa de capital aberto"})
