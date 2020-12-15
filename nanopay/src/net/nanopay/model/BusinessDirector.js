@@ -240,7 +240,7 @@ foam.CLASS({
               e.NEQ(net.nanopay.model.BusinessDirector.TYPE, 'BR'),
               e.AND(
                 e.EQ(net.nanopay.model.BusinessDirector.TYPE, 'BR'),
-                e.EQ(net.nanopay.model.BusinessDirector.VERIFY_NAME, true)           
+                e.EQ(net.nanopay.model.BusinessDirector.VERIFY_NAME, true)
               )
             );
           },
@@ -324,15 +324,11 @@ foam.CLASS({
         ]
         });
       },
-      validationPredicates: [
-        {
-          args: ['documentsOfAddress'],
-          predicateFactory: function(e) {
-            return e.HAS(net.nanopay.model.BusinessDirector.DOCUMENTS_OF_ADDRESS);
-          },
-          errorMessage: 'PROOF_OF_ADDRESS'
+      validateObj: function(documentsOfAddress) {
+        if ( documentsOfAddress.length === 0 ) {
+          return this.PROOF_OF_ADDRESS;
         }
-      ],
+      }
     },
     {
       class: 'foam.nanos.fs.FileArray',
@@ -353,15 +349,11 @@ foam.CLASS({
         ]
         });
       },
-      validationPredicates: [
-        {
-          args: ['documentsOfId'],
-          predicateFactory: function(e) {
-            return e.HAS(net.nanopay.model.BusinessDirector.DOCUMENTS_OF_ID);
-          },
-          errorMessage: 'PROOF_OF_IDENTIFICATION'
+      validateObj: function(documentsOfId) {
+        if ( documentsOfId.length === 0 ) {
+          return this.PROOF_OF_IDENTIFICATION;
         }
-      ]
+      }
     }
   ],
   methods: [

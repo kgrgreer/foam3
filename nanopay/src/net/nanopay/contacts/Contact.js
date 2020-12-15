@@ -127,7 +127,8 @@ foam.CLASS({
     { name: 'CONFIRMATION_REQUIRED', message: 'Confirmation required' },
     { name: 'PLACEHOLDER', message: 'Please select....' },
     { name: 'HEADER', message: 'Country of bank account' },
-    { name: 'MISSING_BANK_WARNING', message: 'Missing bank information' }
+    { name: 'MISSING_BANK_WARNING', message: 'Missing bank information' },
+    { name: 'CONTACT_PERMISSION', message: 'contact.ro.shouldinvite' },
   ],
 
   css: `
@@ -245,8 +246,8 @@ foam.CLASS({
       updateVisibility: function() {
         return foam.u2.DisplayMode.HIDDEN;
       },
-      createVisibility: function(isEdit) {
-        return isEdit ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      createVisibility: function(isEdit, isConsent) {
+        return isEdit || ! isConsent ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
       view: function(_, X) {
         return {
@@ -254,8 +255,8 @@ foam.CLASS({
           label: X.data.CONFIRM_RELATIONSHIP
         };
       },
-      validateObj: function(confirm) {
-        if ( ! confirm ) {
+      validateObj: function(confirm, isConsent) {
+        if ( ! confirm && isConsent) {
           return this.CONFIRMATION_REQUIRED;
         }
       }
@@ -510,6 +511,13 @@ foam.CLASS({
           .end();
         }
       }
+    },
+    {
+      class: 'Boolean',
+      name: 'isConsent',
+      documentation: 'Check if should shows consent checkbox when adding contact',
+      visibility: 'HIDDEN',
+      value: true
     }
   ],
 
@@ -648,6 +656,9 @@ foam.CLASS({
   ],
 
   methods: [
+    async function init() {
+      this.isConsent = await this.auth.check(this.CONTACT_PERMISSION);
+    },
     {
       name: 'validate',
       args: [
