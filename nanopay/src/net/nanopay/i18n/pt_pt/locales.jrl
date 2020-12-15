@@ -1205,7 +1205,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.TransactionDetailsData.TARGET_CUSTOMERS.label",target:"Para quem você comercializa os produtos e serviços?"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.TransactionDetailsData.TARGET_CUSTOMERS.documentation",target:"O tipo de clientes com os quais a empresa comercializa seus produtos e\n        serviços."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.TransactionDetailsData.TARGET_CUSTOMERS.view.placeholder",target:"Exemplo: pequenas empresas de manufatura na América do Norte"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.TransactionDetailsData.SUGGESTED_USER_TRANSACTION_INFO.label",target:"informações de transação do usuário sugeridas"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.TransactionDetailsData.SUGGESTED_USER_TRANSACTION_INFO.documentation",target:"Retorna os tipos de transação esperados, frequência, quantidade e\n        moedas que o usuário espera fazer com a plataforma. Esta\n        as informações são necessárias para fins KYC. É tirado do\n        suggestedUserTransactionInfo objeto."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.TransactionDetailsData.SECTION_TRANSACTION_SECTION.title",target:"Detalhes da transação"})
 
@@ -1775,7 +1774,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.IntPropertyValidationR
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.StringPropertyValidationRefinement.PLEASE_ENTER.value",target:"Por favor, insira"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.PropertyValidationRefinement.PLEASE_ENTER",target:"Por favor, insira"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.InitialBusinessData.SAME_AS_BUSINESS_ADDRESS.label",target:"mesmo que o endereço comercial"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.CPF.SECTION_COLLECT_CPF.title",target:"Insira seu CPF"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.INVALID_CPF",target:"Número válido de CPF obrigatório"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BusinessDirector.INVALID_CPF",target:"Número válido de CPF obrigatório"})
