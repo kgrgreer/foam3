@@ -120,9 +120,8 @@ foam.CLASS({
       border-radius: 4px;
     }
     ^ .actions-wrapper {
-      padding: 23px 0px 34px;
       color: #8e9090;
-      margin-top: 2px;
+      margin: 17px 0px 17px 0px;
     }
     ^ .foam-u2-ActionView {
       width: 158px;
