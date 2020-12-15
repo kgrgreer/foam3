@@ -116,7 +116,7 @@ foam.CLASS({
       documentation: `Set to true when editing a contact from
       contact controller.`,
       value: false
-    },
+    }
   ],
 
   methods: [
