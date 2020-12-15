@@ -110,6 +110,7 @@ foam.CLASS({
     },
     {
       name: 'institutionNumber',
+      createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       section: 'accountInformation',
       validateObj: function(institutionNumber, iban) {
@@ -128,6 +129,7 @@ foam.CLASS({
     {
       name: 'branchId',
       section: 'accountInformation',
+      createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       validateObj: function(branchId, iban) {
         if ( iban )
@@ -144,6 +146,8 @@ foam.CLASS({
     },
     {
       name: 'accountNumber',
+      section: 'accountInformation',
+      createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       preSet: function(o, n) {
         return /^\d*$/.test(n) ? n : o;
@@ -221,6 +225,13 @@ foam.CLASS({
     {
       name: 'type',
       visibility: 'HIDDEN'
+    },
+    {
+      name: 'swiftCode',
+      updateVisibility: 'RO',
+      section: 'accountInformation',
+      validateObj: function(swiftCode) {
+      }
     }
   ],
 
@@ -249,10 +260,10 @@ foam.CLASS({
         try {
           validationIban.validate(iban);
         } catch (ValidationException ex) {
-          validateInstitutionNumber();
-          validateBranchId();
-          validateAccountNumber();
-          validateSwiftCode();
+//          validateInstitutionNumber();
+//          validateBranchId();
+//          validateAccountNumber();
+//          validateSwiftCode();
           throw ex;
         }
 
