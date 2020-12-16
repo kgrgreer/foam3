@@ -105,7 +105,7 @@ foam.CLASS({
   messages: [
     {
       name: 'CONFIRM_RELATIONSHIP',
-      message: `I have a business relationship with this contact.`
+      message: `I have a business relationship with this contact`
     },
     {
       name: 'INVITE_LABEL',
@@ -178,7 +178,7 @@ foam.CLASS({
       name: 'operatingBusinessName',
       documentation: `The operating business name of the business the contact is
         associated to.
-        This is the opt-in name the business wants to display on our platform (used for searching), 
+        This is the opt-in name the business wants to display on our platform (used for searching),
         as opposed to businessName / organization which is the company’s legal name.`,
       visibility: 'HIDDEN'
     },
@@ -322,8 +322,8 @@ foam.CLASS({
       storageTransient: true,
       label: '',
       visibility: function(countries) {
-        return countries.length == 0 && ! this.createBankAccount ? 
-          foam.u2.DisplayMode.HIDDEN : 
+        return countries.length == 0 && ! this.createBankAccount ?
+          foam.u2.DisplayMode.HIDDEN :
           foam.u2.DisplayMode.RW;
       },
       view: function(_, X) {
