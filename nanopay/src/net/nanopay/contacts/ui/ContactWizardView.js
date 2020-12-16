@@ -173,7 +173,7 @@ foam.CLASS({
         }
       }
     },
-    function initE() {
+    function initE() {      
       var self = this;
 
       self
