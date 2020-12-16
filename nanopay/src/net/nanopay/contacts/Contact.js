@@ -509,7 +509,7 @@ foam.CLASS({
     {
       name: 'addBankAccount',
       isAvailable: function() {
-        return this.signUpStatus !== this.ContactStatus.READY && ! bankAccount;
+        return this.signUpStatus !== this.ContactStatus.READY && ! this.bankAccount;
       },
       code: function(X) {
         X.controllerView.add(this.WizardController.create({
