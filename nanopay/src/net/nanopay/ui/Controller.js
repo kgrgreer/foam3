@@ -825,8 +825,9 @@ foam.CLASS({
 
           // Redirect user to switch business if agent doesn't exist.
           if ( ! this.subject.realUser || this.subject.realUser.id === this.subject.user.id ) {
-            menu = await this.client.menuDAO.find('sme.accountProfile.switch-business');
-            menu.launch(this);
+            //by setting memento here we will trigger mementoChange function in ApplicationController
+            //which will find and launch sme.accountProfile.switch-business menu
+            this.memento.value = 'sme.accountProfile.switch-business'
             return;
           }
 
