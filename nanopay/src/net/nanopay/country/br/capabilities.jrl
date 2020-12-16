@@ -578,5 +578,9 @@ p({
   "description":"The Capable-Specific Capability for Invoices on Treviso",
   "version":"0",
   "requirementViewTitle":"You will be asked to select a nature code for this transaction and provide the required document.",
+  "wizardConfig": {
+    "class": "foam.u2.crunch.EasyCrunchWizard",
+    "skipMode":1
+  },
   "enabled":true
 })

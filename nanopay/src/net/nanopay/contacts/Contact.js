@@ -326,11 +326,6 @@ foam.CLASS({
           foam.u2.DisplayMode.HIDDEN :
           foam.u2.DisplayMode.RW;
       },
-      factory: function() {
-        if ( this.bankAccount ) {
-          return this.accountDAO.find(this.bankAccount).then((res) => this.createBankAccount = res);
-        }
-      },
       view: function(_, X) {
         let e = foam.mlang.Expressions.create();
         var pred = e.AND(
@@ -513,9 +508,8 @@ foam.CLASS({
   actions: [
     {
       name: 'addBankAccount',
-      isAvailable: async function() {
-        var bank = await this.accounts.find(this.EQ(net.nanopay.bank.BankAccount.OWNER, this.id))
-        return this.signUpStatus !== this.ContactStatus.READY && ! bank;
+      isAvailable: function() {
+        return this.signUpStatus !== this.ContactStatus.READY && ! this.bankAccount;
       },
       code: function(X) {
         X.controllerView.add(this.WizardController.create({

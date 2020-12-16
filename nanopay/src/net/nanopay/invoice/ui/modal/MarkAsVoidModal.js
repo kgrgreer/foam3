@@ -136,6 +136,7 @@ foam.CLASS({
       name: 'voidMethod',
       label: 'Void',
       code: function(X) {
+        this.invoice.draft = false
         this.invoice.paymentMethod = this.PaymentStatus.VOID;
         // if void note is provided, append it to the end of the existing invoice note
         if ( this.note ) {
