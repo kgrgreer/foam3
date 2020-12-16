@@ -17,6 +17,7 @@ import foam.core.ContextAwareSupport;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
+import foam.i18n.TranslationService;
 import foam.nanos.auth.Address;
 import foam.nanos.auth.AuthService;
 import foam.nanos.auth.Country;
@@ -101,7 +102,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
               onboardingRequest.setAccountPrimaryIdentificationIssuer( useHardCoded ? "Canada" : businessCountry.getName());
             onboardingRequest.setBusinessName(business.getBusinessName());
             onboardingRequest.setBusinessZip(business.getAddress().getPostalCode());
-            onboardingRequest.setCompanyType(getAFEXCompanyType(business.getBusinessTypeId()));
+            onboardingRequest.setCompanyType(getBusinessType(business.getBusinessTypeId()));
             onboardingRequest.setContactBusinessPhone(business.getPhoneNumber());
             String businessRegDate = null;
             try {
@@ -1156,23 +1157,11 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     }
   }
 
-  protected String getAFEXCompanyType(long companyType) {
-    switch((int)companyType) {
-      case 1:
-        return "Sole Proprietorship";
-      case 2:
-        return "Partnership";
-      case 3:
-        return "Corporation";
-      case 4:
-        return "Registered Charity";
-      case 5:
-        return "Limited Liability Company (LLC)";
-      case 6:
-        return "Public Limited Company";
-      default:
-        return "Other";
-    }
+  protected String getBusinessType(long businessTypeId) throws RuntimeException {
+    BusinessType businessType = (BusinessType) ((DAO) x.get("businessTypeDAO")).find(businessTypeId);
+    if ( businessType == null ) throw new RuntimeException("Business Type not found.");
+    return ((TranslationService) x.get("translationService"))
+      .getTranslation("en-AFEX", businessType.getName(), "Other");
   }
 
   private String mapAFEXVolumeEstimates(String estimates) {
