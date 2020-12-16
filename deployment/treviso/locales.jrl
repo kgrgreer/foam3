@@ -1,0 +1,30 @@
+p({class:"foam.i18n.Locale",locale:"en",variant:"AFEX",locale_variant:"en-AFEX",source:"1.name",target:"Sole Proprietorship"})
+p({class:"foam.i18n.Locale",locale:"en",variant:"AFEX",locale_variant:"en-AFEX",source:"2.name",target:"Partnership"})
+p({class:"foam.i18n.Locale",locale:"en",variant:"AFEX",locale_variant:"en-AFEX",source:"3.name",target:"Corporation"})
+p({class:"foam.i18n.Locale",locale:"en",variant:"AFEX",locale_variant:"en-AFEX",source:"4.name",target:"Registered Charity"})
+p({class:"foam.i18n.Locale",locale:"en",variant:"AFEX",locale_variant:"en-AFEX",source:"5.name",target:"Limited Liability Company (LLC)"})
+p({class:"foam.i18n.Locale",locale:"en",variant:"AFEX",locale_variant:"en-AFEX",source:"6.name",target:"Public Limited Company"})
+p({class:"foam.i18n.Locale",locale:"en",variant:"AFEX",locale_variant:"en-AFEX",source:"7.name",target:"Other"})
+p({class:"foam.i18n.Locale",locale:"en",variant:"AFEX",locale_variant:"en-AFEX",source:"8.name",target:"Individual Entrepreneur (EI)"})
+p({class:"foam.i18n.Locale",locale:"en",variant:"AFEX",locale_variant:"en-AFEX",source:"9.name",target:"Individual Microentrepreneur (MEI)"})
+
+//TODO fix the jrl
+
+//    switch((int)companyType) {
+//      case 1:
+//        return "Sole Proprietorship";
+//      case 2:
+//        return "Partnership";
+//      case 3:
+//        return "Corporation";
+//      case 4:
+//        return "Registered Charity";
+//      case 5:
+//        return "Limited Liability Company (LLC)";
+//      case 6:
+//        return "Public Limited Company";
+//      case 7:
+//        return "Other";
+//      default:
+//        return ((BusinessType) ((DAO) this.x.get("businessTypeDAO")).find(companyType)).getName();
+//      }

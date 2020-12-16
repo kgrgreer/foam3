@@ -17,6 +17,7 @@ import foam.core.ContextAwareSupport;
 import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
+import foam.i18n.TranslationService;
 import foam.nanos.auth.Address;
 import foam.nanos.auth.AuthService;
 import foam.nanos.auth.Country;
@@ -1157,24 +1158,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
   }
 
   protected String getAFEXCompanyType(long companyType) {
-    switch((int)companyType) {
-      case 1:
-        return "Sole Proprietorship";
-      case 2:
-        return "Partnership";
-      case 3:
-        return "Corporation";
-      case 4:
-        return "Registered Charity";
-      case 5:
-        return "Limited Liability Company (LLC)";
-      case 6:
-        return "Public Limited Company";
-      case 7:
-        return "Other";
-      default:
-        return ((BusinessType) ((DAO) this.x.get("businessTypeDAO")).find(companyType)).getName();
-    }
+    TranslationService ts = (TranslationService) x.get("translationService");
+    return ts.getTranslation("en-AFEX", companyType+".name", "NOT FOUND");
   }
 
   private String mapAFEXVolumeEstimates(String estimates) {
