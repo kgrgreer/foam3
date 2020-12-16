@@ -31,10 +31,6 @@ foam.CLASS({
     'countryDAO'
   ],
 
-  implements: [
-    'foam.mlang.Expressions'
-  ],
-
   javaImports: [
     'net.nanopay.country.br.BrazilVerificationService',
   ],
