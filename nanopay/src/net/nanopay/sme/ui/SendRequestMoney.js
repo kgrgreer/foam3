@@ -567,8 +567,8 @@ foam.CLASS({
       isAvailable: function(hasSaveOption) {
         return hasSaveOption;
       },
-      isEnabled: function(errors) {
-        return ! errors;
+      isEnabled: function(errors, isLoading) {
+        return ! errors && ! isLoading;
       },
       code: function() {
         this.invoice.paymentMethod = this.PaymentStatus.SUBMIT;
@@ -668,6 +668,9 @@ foam.CLASS({
       isAvailable: function(invoice$id) {
         // invoice exists on backend
         return invoice$id !== 0;
+      },
+      isEnabled: function(isLoading) {
+        return ! isLoading;
       },
       code: function(X) {
         this.ctrl.add(this.Popup.create().tag({
