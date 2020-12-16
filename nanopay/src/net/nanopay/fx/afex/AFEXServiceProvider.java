@@ -1159,7 +1159,12 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
   protected String getAFEXCompanyType(long companyType) {
     TranslationService ts = (TranslationService) x.get("translationService");
-    return ts.getTranslation("en-AFEX", companyType+".name", "NOT FOUND");
+    String tr = ts.getTranslation("en-AFEX", companyType+".name", "NOT FOUND");
+    if ( tr.equals("NOT FOUND") ) {
+      logger_.error("Error to find the company type. Company type not found.");
+      return "Other";
+    }
+    return tr;
   }
 
   private String mapAFEXVolumeEstimates(String estimates) {
