@@ -79,13 +79,13 @@ async function execute(x) {
         test(false, 'trevisoTermsAndConditions: '+(e.message || e));
         throw e;
       }
-      try {
-        await support.generalAdmission(x, u);
-        test(true, 'generalAdmission');
-      } catch (e) {
-        test(false, 'generalAdmission: '+(e.message || e));
-        throw e;
-      }
+      // try {
+      //   await support.generalAdmission(x, u);
+      //   test(true, 'generalAdmission');
+      // } catch (e) {
+      //   test(false, 'generalAdmission: '+(e.message || e));
+      //   throw e;
+      // }
 
       // Required for business onboarding
       try {

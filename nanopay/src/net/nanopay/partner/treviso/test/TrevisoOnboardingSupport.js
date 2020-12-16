@@ -180,15 +180,32 @@ foam.CLASS({
     {
       name: 'signingOfficerPersonalData',
       code: async function(x, user, business) {
-        var id = '777af38a-8225-87c8-dfdf-eeb15f71215f-123';
-        //var id = '554af38a-8225-87c8-dfdf-eeb15f71215f-1a5';
-        var ucj = await this.crunchService.getJunction(x, id);
+        var id;
+        var ucj;
+
+        // SigningOfficerPrivilegesRequested
+        id = '554af38a-8225-87c8-dfdf-eeb15f71215f-0';
+        ucj = await this.crunchService.getJunction(x, id);
+        if ( ! ucj ||
+             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          var cap =  net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.create({
+            isSigningOfficer: true,
+            signgingOfficerEmail: user.email,
+            userEmail: user.email
+          });
+          ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
+        }
+
+        id = '777af38a-8225-87c8-dfdf-eeb15f71215f-123';
+        ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
           var cap =  net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.create({
             address: user.address,
             jobTitle: 'Treasury Manager',
             phoneNumber: user.phoneNumber,
+            fatca: true,
+            hasSignedContratosDeCambio: true,
             businessId: business.id
           });
           ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
