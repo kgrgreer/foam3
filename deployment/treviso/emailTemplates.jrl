@@ -1120,7 +1120,7 @@ p({
       Sua capacidade \"{{capName}}\" foi definido para o status {{junctionStatus}} em {{appName}}.
     </p>
     <br>
-    <a href=\"{{link}}\" style=\"text-decoration: none;\">
+    <a href=\"{{appLink}}\" style=\"text-decoration: none;\">
       <div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">
         <p style = \"padding: 14px 0 0; margin: 0;\">
           Assinar em
@@ -1137,7 +1137,7 @@ p({
     <p style=\"font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;  font-size: 16px; line-height: 1.5; margin: 0;\">
       The Capability \"{{capNameEn}}\" has been set to {{junctionStatusEn}} on {{appName}}.
     </p>
-    <a href=\"{{link}}\" style=\"text-decoration: none;\">
+    <a href=\"{{appLink}}\" style=\"text-decoration: none;\">
       <div style=\"width: 100%; font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif; margin: 40px 0; height: 48px; border-radius: 3px; background: #6c54ff; font-size: 16px; color: #fff; cursor: pointer; text-align: center;\">
         <p style = \"padding: 14px 0 0; margin: 0;\">
           Sign in
