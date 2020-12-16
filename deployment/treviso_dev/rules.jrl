@@ -7,8 +7,11 @@ p({
       spid: "treviso",
       urls: [
         "treviso",
+        "treviso.nanopay.net",
         "treviso.release.nanopay.net",
+        "treviso.release.medusa.nanopay.net",
         "treviso.development.nanopay.net",
+        "treviso.development.medusa.nanopay.net",
       ]
     },
     {
