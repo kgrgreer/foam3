@@ -34,7 +34,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.dashboard.Top
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.dashboard.TopCardsOnDashboard.COMPLETE.label",target:"completa"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.dashboard.Dashboard.COUNT_DEPOSIT_PAYMENT.label",target:"contagem de pagamento de depósito"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability.AGREEMENT.label",target:"Acordo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability.AGREEMENT.documentation",target:"Se o usuário concorda com o documento."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability.USER.label",target:"usuário"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability.BUSINESS.label",target:"empresa"})
