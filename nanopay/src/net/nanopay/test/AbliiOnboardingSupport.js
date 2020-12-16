@@ -911,11 +911,33 @@ foam.CLASS({
       }
     },
     {
+      name: 'signingOfficerQuestion',
+      code: async function(x, user) {
+        var id;
+        var ucj;
+
+        // SigningOfficerPrivilegesRequested
+        id = '554af38a-8225-87c8-dfdf-eeb15f71215f-0';
+        ucj = await this.crunchService.getJunction(x, id);
+        if ( ! ucj ||
+             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          var cap =  net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.create({
+            isSigningOfficer: true,
+            signgingOfficerEmail: 's-'+user.email,
+            userEmail: user.email
+          });
+          ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
+        }
+      }
+    },
+    {
       name: 'signingOfficerPersonalData',
       code: async function(x, user, business) {
-        // var id = '777af38a-8225-87c8-dfdf-eeb15f71215f-123';
-        var id = '554af38a-8225-87c8-dfdf-eeb15f71215f-1a5';
-        var ucj = await this.crunchService.getJunction(x, id);
+        var id;
+        var ucj;
+
+        id = '554af38a-8225-87c8-dfdf-eeb15f71215f-1a5';
+        ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
           var cap =  net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.create({

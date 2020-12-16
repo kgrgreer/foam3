@@ -165,6 +165,13 @@ async function execute(x) {
         throw e;
       }
       try {
+        await support.signingOfficerQuestion(x, u);
+        test(true, 'signingOfficerQuestion');
+      } catch (e) {
+        test(false, 'signingOfficerQuestion: '+(e.message || e));
+        throw e;
+      }
+      try {
         await support.signingOfficerPersonalData(x, u, business);
         test(true, 'signingOfficerPersonalData');
       } catch (e) {
