@@ -195,10 +195,8 @@ foam.CLASS({
                     return `${self.STEP} ${currentIndex + 1} ${self.OF_MSG} 3`;
                   }))
                 .end()
-                .start().addClass(this.myClass('button-sub-container'))
-                  .tag(this.OPTION, { buttonStyle: 'SECONDARY' })
-                  .start(this.NEXT).end()
-                .end()
+                .tag(this.OPTION, { buttonStyle: 'SECONDARY' })
+                .start(this.NEXT).end()
                 .start(this.SAVE).end()
               .end()
             .end()
