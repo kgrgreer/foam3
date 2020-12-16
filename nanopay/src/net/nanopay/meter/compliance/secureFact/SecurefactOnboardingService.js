@@ -110,7 +110,6 @@
               
               if ( party.getDesignation().equals("Director") ) {
                 BusinessDirector businessDirector = new BusinessDirector.Builder(x)
-                  .setType(party.getType())
                   .setFirstName(firstName)
                   .setLastName(lastName)
                   .build();

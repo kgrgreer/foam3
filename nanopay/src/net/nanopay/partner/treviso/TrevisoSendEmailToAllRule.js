@@ -45,8 +45,8 @@ foam.CLASS({
     'java.util.Map',
     'net.nanopay.model.BeneficialOwner',
     'net.nanopay.model.Business',
-    'net.nanopay.model.BusinessDirector',
     'net.nanopay.model.BusinessUserJunction',
+    'net.nanopay.partner.treviso.onboarding.BRBusinessDirector',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
   ],
@@ -106,7 +106,7 @@ foam.CLASS({
           }
 
           // send email to business directors whose hasSignedContratosDeCambio is true
-          for ( BusinessDirector businessDirector : business.getBusinessDirectors() ) {
+          for ( BRBusinessDirector businessDirector : (BRBusinessDirector[]) business.getBusinessDirectors() ) {
             if ( ! businessDirector.getHasSignedContratosDeCambio() ) continue;
             List<User> businessDirectorUser = ((ArraySink) localUserDAO
               .where(EQ(User.EMAIL, businessDirector.getEmail()))
