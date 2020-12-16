@@ -22,7 +22,8 @@ foam.CLASS({
 
   messages: [
     { name: 'ACKNOWLEDGE_AFEX_AGREEMENT', message: 'Certification required' },
-    { name: 'AGREEMENT_HASH', message: '87278b8b-81b3-6380-6b87-7f46680ba0c3'}
+    { name: 'AGREEMENT_HASH', message: '87278b8b-81b3-6380-6b87-7f46680ba0c3'},
+    { name: 'DOCUMENT_READ', message: 'Document should be reviewed' }
   ],
 
   sections: [
@@ -77,6 +78,12 @@ foam.CLASS({
               .USDAFEXTerms.AGREEMENT, true);
           },
           errorMessage: 'ACKNOWLEDGE_AFEX_AGREEMENT'
+        },
+        {
+          predicateFactory: function(e) {
+            return e.EQ(net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability.IS_LINK_CLICKED, true);
+          },
+          errorMessage: 'DOCUMENT_READ'
         }
       ]
     }
