@@ -1366,7 +1366,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.AVA
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.AVAILABLE_CURRENCIES.documentation",target:"Contém uma lista de moedas disponíveis para receber ou enviar no país da conta selecionada"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.FOR_CONTACT.label",target:"forBeneficiário pt"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.FOR_CONTACT.documentation",target:"Sinalizar se a conta bancária pertence a um Beneficiário. Obrigatório para expressões de propriedade de visibilidade."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.FOR_CONTACT.documentation",target:"Sinalizar se a conta bancária pertence a um beneficiário. Obrigatório para expressões de propriedade de visibilidade."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.NAME.label",target:"Apelido"})
 //p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.IBAN.label",target:"IBAN"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.IBAN.documentation",target:"Sistema de numeração internacional padrão desenvolvido para identificar uma conta bancária no exterior."})
@@ -1540,7 +1540,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankWeekend.SUN
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankWeekend.SATURDAY.value",target:"verdade"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankWeekend.SUNDAY.value",target:"verdade"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"Contacts",target:"Beneficiário"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Contacts",target:"Beneficiários"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ContactStatus.PENDING.label",target:"Pendente"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ContactStatus.PENDING.documentation",target:"Status padrão"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ContactStatus.CONNECTED.label",target:"Conectada"})
@@ -1550,7 +1550,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ContactStat
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ClientPaymentCodeService.DELEGATE.label",target:"delegar"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ClientContactService.DELEGATE.label",target:"delegar"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.CONFIRM_RELATIONSHIP",target:"Tenho uma relação comercial com este Beneficiário."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.CONFIRM_RELATIONSHIP",target:"Tenho uma relação comercial com este beneficiário."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.INVITE_LABEL",target:"Convide este beneficiário para participar "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.RESTRICT_INVITE_LABEL",target:"Este beneficiário não pode ser convidado para participar do Ablii"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.UNABLE_TO_ADD_BANK_ACCOUNT",target:"Atualmente você não completou os requisitos necessários\n          para adicionar uma conta ao seu beneficiário. Visite a loja de recursos para permitir pagamentos."})
