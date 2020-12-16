@@ -158,7 +158,7 @@ foam.CLASS({
             .setEmailArgs(args)
             .setEmailName("compliance-notification-to-user")
             .build();  
-          business.doNotify(x, notification);
+          recipient.doNotify(x, notification);
         } catch (Throwable t) {
           String msg = String.format("Email meant for business Error: Business (id = %1$s) has been enabled for international payments.", business.getId());
           ((Logger) x.get("logger")).error(msg, t);
