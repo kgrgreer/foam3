@@ -41,7 +41,7 @@ p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.modal.De
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.modal.DeleteContactView.CONFIRM_DELETE_2",target:" from your beneficiaries list?"})
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.modal.DeleteContactView.SUCCESS_MSG",target:"Beneficiary deleted"})
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.modal.DeleteContactView.FAIL_MSG",target:"Failed to delete beneficiary"})
-\
+
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.modal.EditContactView.TITLE_ON_CREATE",target:"Add Beneficiary"})
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.modal.EditContactView.TITLE_ON_EDIT",target:"Edit Beneficiary"})
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.modal.EditContactView.QUESTION",target:"Would you like to add a bank account to this beneficiary?"})
