@@ -228,9 +228,7 @@ foam.CLASS({
     {
       name: 'hasSaveOption',
       expression: function(isForm, position) {
-        return isForm &&
-          this.invoice.status !== this.InvoiceStatus.DRAFT &&
-          position === 0;
+        return this.invoice.status !== this.InvoiceStatus.DRAFT;
       },
       documentation: `An expression is required for the 1st step of the
         send/request payment flow to show the 'Save as draft' button.`
@@ -299,7 +297,8 @@ foam.CLASS({
     { name: 'SELECT_PAYABLE', message: 'Select payable' },
     { name: 'REVIEW_MSG', message: 'Review' },
     { name: 'REVIEW_PAYMENT', message: 'Review payment'},
-    { name: 'CANCEL', message: 'Cancel'}
+    { name: 'CANCEL', message: 'Cancel'},
+    { name: 'VOID', message: 'Void'}
   ],
 
   methods: [
@@ -340,6 +339,7 @@ foam.CLASS({
       });
 
       this.exitLabel = this.CANCEL;
+      this.optionLabel = this.VOID;
       this.hasExitOption = true;
 
       Promise.all([this.auth.check(null, 'business.invoice.pay'), this.auth.check(null, 'user.invoice.pay')])
@@ -448,12 +448,11 @@ foam.CLASS({
       try {
         this.invoice = await this.invoiceDAO.put(this.invoice);
 
-        if ( this.invoice.capablePayloads.length > 0 && this.invoice.isWizardIncomplete ){
+        if ( this.invoice.capabilityIds.length > 0 && this.invoice.isWizardIncomplete ) {
           this.invoice.draft = true;
           this.saveDraft(this.invoice);
           return;
         }
-
       } catch(err) {
         this.notify(err.message,'', this.LogLevel.ERROR, true);
         this.pushMenu(this.isPayable
@@ -572,8 +571,12 @@ foam.CLASS({
         return ! errors;
       },
       code: function() {
+        this.invoice.paymentMethod = this.PaymentStatus.SUBMIT;
         this.invoice.status = this.InvoiceStatus.DRAFT;
         this.invoice.draft = true;
+        this.invoice.quote = null;
+        this.invoice.plan = null;
+        this.invoice.capablePayloads.forEach(cp => cp.status = this.CapabilityJunctionStatus.ACTION_REQUIRED);
         this.saveDraft(this.invoice);
       }
     },
@@ -628,6 +631,10 @@ foam.CLASS({
     },
     {
       name: 'exit',
+      isAvailable: function(invoice$id){
+        // invoice does not exist on the backend, process of creation
+        return invoice$id === 0;
+      },
       isEnabled: function(errors, isLoading) {
         return ! isLoading;
       },
@@ -657,8 +664,10 @@ foam.CLASS({
     },
     {
       name: 'otherOption',
-      isAvailable: function(hasOtherOption) {
-        return hasOtherOption;
+      label: 'Void',
+      isAvailable: function(invoice$id) {
+        // invoice exists on backend
+        return invoice$id !== 0;
       },
       code: function(X) {
         this.ctrl.add(this.Popup.create().tag({
