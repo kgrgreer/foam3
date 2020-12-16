@@ -23,6 +23,11 @@ foam.CLASS({
 
   documentation: 'United Kingdom/Great Britain bank account information.',
 
+  javaImports: [
+    'foam.nanos.iban.IBANInfo',
+    'foam.nanos.iban.ValidationIBAN',
+  ],
+
   constants: [
     {
       name: 'BRANCH_ID_PATTERN',
@@ -156,6 +161,12 @@ foam.CLASS({
       javaCode: `
         return getBranchId();
       `
-    }
+    },
+    {
+      name: 'getApiAccountNumber',
+      javaCode: `
+        return getAccountNumber();
+      `
+    },
   ]
 });

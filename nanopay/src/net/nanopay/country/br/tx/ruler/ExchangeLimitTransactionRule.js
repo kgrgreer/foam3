@@ -30,12 +30,14 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.AbstractSink',
     'foam.dao.DAO',
+    'foam.mlang.Constant',
     'foam.nanos.approval.ApprovalRequest',
     'foam.nanos.approval.ApprovalRequestUtil',
     'foam.nanos.approval.ApprovalStatus',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
+    'net.nanopay.tx.fee.SpotRate',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.partner.treviso.TrevisoService',
@@ -56,17 +58,15 @@ foam.CLASS({
           @Override
           public void execute(X x) {
             ExchangeLimitTransaction txn = (ExchangeLimitTransaction) obj;
-            TrevisoService trevisoService = (TrevisoService) x.get("trevisoService");
             DAO txnDAO = (DAO) x.get("localTransactionDAO");
 
             Transaction trevisoTxn = (Transaction) txnDAO.find(EQ(Transaction.PARENT,txn.getId()));
 
             try {
               User sender = txn.findSourceAccount(x).findOwner(x);
-              long limit = trevisoService.getTransactionLimit(sender.getId());
 
               // check the limit
-              if ( (-trevisoTxn.getTotal(x, trevisoTxn.getSourceAccount())) <= limit ) {
+              if ( checkExchangeLimit(x, trevisoTxn, sender) ) {
                 txn.setStatus(TransactionStatus.COMPLETED);
                 txnDAO.put(txn);
               } else {
@@ -78,7 +78,7 @@ foam.CLASS({
                     EQ(ApprovalRequest.IS_FULFILLED, false)
                   )
                 );
-                
+
                 ApprovalStatus approval = ApprovalRequestUtil.getState(filteredApprovalRequestDAO);
                 String senderSummary = sender.toSummary();
                 String agentGroup = sender.getSpid() + "-payment-ops";
@@ -94,7 +94,7 @@ foam.CLASS({
                       .setObjId(txn.getId())
                       .setGroup(agentGroup)
                       .setStatus(ApprovalStatus.REQUESTED).build());
-                  
+
                   // Notify the sender that the transaction failed without telling them limit check failed
                   notificationBody = "Your transaction ( transaction id : " + txn.getId()
                     + " ) requires further attention. Please contact the agent. ";
@@ -154,6 +154,25 @@ foam.CLASS({
             }
           }
         }, "Exchange Limit Transaction");
+      `
+    },
+    {
+      name: 'checkExchangeLimit',
+      type: 'Boolean',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'txn', type: 'Transaction' },
+        { name: 'sender', type: 'User' }
+      ],
+      javaCode: `
+        TrevisoService trevisoService = (TrevisoService) x.get("trevisoService");
+        var limit = trevisoService.getTransactionLimit(sender.getId());
+        var spotRate = new SpotRate.Builder(x)
+          .setSourceCurrencyExpr(Transaction.SOURCE_CURRENCY)
+          .setDestinationCurrencyExpr(new Constant("USD"))
+          .build();
+        var totalSourceAmount = -txn.getTotal(x, txn.getSourceAccount());
+        return limit >= totalSourceAmount * spotRate.getRate(txn).doubleValue();
       `
     },
     {

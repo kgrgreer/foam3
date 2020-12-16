@@ -17,7 +17,7 @@ p({
   class:"foam.nanos.test.Test",
   id:"AbliiOnboardingTest",
   description: "AbliiOnboardingTest",
-  server: false,
+  language: 0,
   code:"""
 /* Ablii Onboarding Test */
 /* Run this script symultaniously from at least two machines */

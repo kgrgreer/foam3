@@ -48,8 +48,8 @@ foam.CLASS({
           .setDaoKey("localTransactionDAO")
           .setObjId(ct.getId())
           .setGroup(group)
-          .setDescription("Main Summary txn: "+headTx.getSummary()+" The Id of Summary txn: "+headTx.getId() )
-          .setClassification("Validate Transaction Using Jackie Rule")
+          .setDescription(headTx.getSummary()+"  Summary Transaction Id: "+headTx.getId())
+          .setClassification("Compliance Transaction")
           .build();
 
         agency.submit(x, new ContextAgent() {

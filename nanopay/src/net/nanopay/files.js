@@ -157,9 +157,10 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/ESBankAccount' },
   { name: 'net/nanopay/bank/CNBankAccount' },
   { name: 'net/nanopay/bank/SEBankAccount' },
+  { name: 'net/nanopay/bank/AddBankAccountAction' },
+  { name: 'net/nanopay/bank/BankAccountTableView', flags: ['web'] },
   { name: 'net/nanopay/bank/StrategizedBankAccount' },
   { name: 'net/nanopay/bank/BankAccountStatus' },
-  { name: 'net/nanopay/bank/BankAccountController', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/BankPickCurrencyView', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/BankPickCurrencyDropDownView', flags: ['web'] },
   { name: 'net/nanopay/bank/CanReceiveCurrency' },
@@ -168,6 +169,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/ui/BankAccountCitationView', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/AddINBankAccountView', flags: ['web'] },
   { name: 'net/nanopay/bank/ui/AddPKBankAccountView', flags: ['web'] },
+  { name: 'net/nanopay/bank/test/BankAccountIBANTest' },
   { name: 'net/nanopay/tx/SummaryTransactionCitationView' },
   { name: 'net/nanopay/tx/LineItemCitationView' },
   { name: 'net/nanopay/tx/SummaryTransactionLineItem' },
@@ -201,6 +203,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/IsDefaultRule' },
   { name: 'net/nanopay/admin/model/ComplianceStatus' },
   { name: 'net/nanopay/admin/model/AccountStatus' },
+
   { name: 'net/nanopay/model/User' },
   { name: 'net/nanopay/ui/wizard/WizardCssAxiom', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
@@ -247,8 +250,11 @@ FOAM_FILES([
   // SSO
   { name: 'net/nanopay/auth/openid/SSOToken' },
   { name: 'net/nanopay/auth/openid/OTLoginToken' },
+  { name: 'net/nanopay/auth/openid/OAuthProvider' },
   { name: 'net/nanopay/auth/openid/TokenLoginService' },
   { name: 'net/nanopay/auth/openid/ClientTokenLoginService' },
+  { name: 'net/nanopay/auth/openid/OAuthService' },
+  { name: 'net/nanopay/auth/openid/ClientOAuthService' },
 
   // Exchangeable
   { name: 'net/nanopay/exchangeable/Security' },
@@ -1278,7 +1284,6 @@ FOAM_FILES([
   { name: 'net/nanopay/meter/ContactDetailView', flags: ['web'] },
   { name: 'net/nanopay/meter/UserDetailView', flags: ['web'] },
   { name: 'net/nanopay/meter/InvoiceDetailView', flags: ['web'] },
-  { name: 'net/nanopay/meter/BankAccountController', flags: ['web'] },
   { name: 'net/nanopay/meter/BankAccountDetailView', flags: ['web'] },
 
   // report
@@ -1760,6 +1765,7 @@ FOAM_FILES([
   { name: 'net/nanopay/country/PermittedCountryFilterDAO' },
   { name: 'net/nanopay/country/br/NatureCodePaymentProviderJunctionRefinement' },
   { name: 'net/nanopay/country/br/NatureBusinessRelationship' },
+  { name: 'net/nanopay/country/br/NatureCodeCardSelectView' },
 
   //RequestToPay
   { name: 'net/nanopay/rtp/RequestToPay'},
@@ -1785,6 +1791,7 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/invoice/TrevisoNotificationRule' },
   { name: 'net/nanopay/partner/treviso/onboarding/BusinessDirectorsData' },
   { name: 'net/nanopay/partner/treviso/test/TrevisoOnboardingSupport' },
+  { name: 'net/nanopay/partner/treviso/TrevisoSendEmailToAllRule' },
 
   // support
   { name: 'net/nanopay/support/SupportAccount' },

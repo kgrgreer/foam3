@@ -193,8 +193,8 @@ foam.CLASS({
         //afexCT.setAmount(afexCT.getNext().getAmount());
         //--- Create Fx Summary ---
         FXSummaryTransaction summary = new FXSummaryTransaction();
-        summary.setAmount(request.getAmount());
-        summary.setDestinationAmount(request.getDestinationAmount());
+        summary.setAmount(afexCT.getNext()[0].getAmount()); // get Summary amounts from afexTransaction
+        summary.setDestinationAmount(afexCT.getNext()[0].getDestinationAmount());
         summary.setSourceCurrency(request.getSourceCurrency());
         summary.setDestinationCurrency(request.getDestinationCurrency());
         summary.setFxQuoteId(String.valueOf(fxQuote.getId()));
@@ -244,7 +244,7 @@ foam.CLASS({
         fundingTransaction.setAmount(fxQuote.getSourceAmount());
         fundingTransaction.setSourceCurrency(fxQuote.getSourceCurrency());
         fundingTransaction.setDestinationAccount(destination);
-        fundingTransaction.setDestinationAmount(fxQuote.getTargetAmount());
+        fundingTransaction.setDestinationAmount(fxQuote.getSourceAmount());
         fundingTransaction.setDestinationCurrency(fxQuote.getTargetCurrency());
         fundingTransaction.setPlanner(this.getId());
         fundingTransaction.setValueDate(fxQuote.getValueDate());

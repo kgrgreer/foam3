@@ -76,6 +76,9 @@ foam.CLASS({
       overflow: scroll;
       margin-top: 15px;
     }
+    ^ .foam-u2-view-StringView {
+      width: auto;
+    }
   `,
   messages: [
     {

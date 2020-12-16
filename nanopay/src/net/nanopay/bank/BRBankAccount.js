@@ -38,6 +38,8 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.nanos.iban.IBANInfo',
+    'foam.nanos.iban.ValidationIBAN',
     'foam.util.SafetyUtil',
     'net.nanopay.fx.afex.AFEXServiceProvider',
     'net.nanopay.fx.afex.IsIbanResponse',
@@ -64,9 +66,9 @@ foam.CLASS({
     { name: 'INSTITUTION_NUMBER_REQUIRED', message: 'Institution number required' },
     { name: 'BRANCH_ID_INVALID', message: 'Branch id must be 5 digits long' },
     { name: 'BRANCH_ID_REQUIRED', message: 'Branch id required' },
-    { name: 'HOLDER1', message: '1st Holder' },
-    { name: 'HOLDER2', message: '2nd Holder' },
-    { name: 'CURRENT', message: 'Current' },
+    { name: 'HOLDER1', message: 'Individual' },
+    { name: 'HOLDER2', message: 'Joint' },
+    { name: 'CURRENT', message: 'Checking' },
     { name: 'SAVINGS', message: 'Savings' },
     { name: 'PLEASE_SELECT', message: 'Please select' },
     { name: 'SECTION_ACCOUNT_INFORMATION_TITLE', message: 'Add account' }
@@ -108,6 +110,7 @@ foam.CLASS({
     },
     {
       name: 'institutionNumber',
+      createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       section: 'accountInformation',
       validateObj: function(institutionNumber, iban) {
@@ -126,6 +129,7 @@ foam.CLASS({
     {
       name: 'branchId',
       section: 'accountInformation',
+      createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       validateObj: function(branchId, iban) {
         if ( iban )
@@ -142,6 +146,8 @@ foam.CLASS({
     },
     {
       name: 'accountNumber',
+      section: 'accountInformation',
+      createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       preSet: function(o, n) {
         return /^\d*$/.test(n) ? n : o;
@@ -171,6 +177,9 @@ foam.CLASS({
       name: 'accountType',
       updateVisibility: 'RO',
       section: 'accountInformation',
+      factory: function() {
+        return this.CURRENT;
+      },
       view: function(_, X) {
         return {
           class: 'foam.u2.view.ChoiceView',
@@ -216,6 +225,13 @@ foam.CLASS({
     {
       name: 'type',
       visibility: 'HIDDEN'
+    },
+    {
+      name: 'swiftCode',
+      updateVisibility: 'RO',
+      section: 'accountInformation',
+      validateObj: function(swiftCode) {
+      }
     }
   ],
 
@@ -244,10 +260,10 @@ foam.CLASS({
         try {
           validationIban.validate(iban);
         } catch (ValidationException ex) {
-          validateInstitutionNumber();
-          validateBranchId();
-          validateAccountNumber();
-          validateSwiftCode();
+//          validateInstitutionNumber();
+//          validateBranchId();
+//          validateAccountNumber();
+//          validateSwiftCode();
           throw ex;
         }
 
