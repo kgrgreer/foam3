@@ -219,7 +219,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SwitchBusines
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SwitchBusinessView.SELECT_COMPANY",target:"Selecionar uma empresa"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SwitchBusinessView.DISABLED_BUSINESS_MSG",target:"Esta empresa foi desativada. Você não pode alternar para ela neste momento."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SwitchBusinessView.ERROR_DISABLED",target:"Entre em beneficiário com um administrador desta empresa para ativar o acesso."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SwitchBusinessView.ERROR_DISABLED",target:"Entre em contato com um administrador desta empresa para ativar o acesso."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SwitchBusinessView.ENABLED_BUSINESSES_.label",target:"enabledBusinesses_ pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SwitchBusinessView.ENABLED_BUSINESSES_.documentation",target:"\n        DAO costumava preencher as empresas ativadas na lista.\n       pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SwitchBusinessView.DISABLED_BUSINESSES_.label",target:"disabledBusinesses_ pt"})
@@ -526,7 +526,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.InvoiceDetail
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.InvoiceDetails.PAYER_LABEL",target:"Pagamento de"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.InvoiceDetails.PO_NO_LABEL",target:"P.O. No.  pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.InvoiceDetails.CYCLE_LABEL",target:"Ciclo de faturamento: "})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.InvoiceDetails.SAVE_AS_PDF_FAIL",target:"Ocorreu um erro inesperado ao criar o PDF. Entre em beneficiário com o suporte."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.InvoiceDetails.SAVE_AS_PDF_FAIL",target:"Ocorreu um erro inesperado ao criar o PDF. Entre em contato com o suporte."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.InvoiceDetails.SHOW_ACTIONS.label",target:"showActions pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.InvoiceDetails.SHOW_ACTIONS.value",target:"true pt"})
 
@@ -1612,17 +1612,9 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.BUS
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.BUSINESS_PHONE.documentation",target:"O número de telefone da empresa."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.BUSINESS_PHONE_NUMBER.documentation",target:"O número de telefone da empresa."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.WARNING.label",target:"Atenção"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.SECTION_STEP_ONE.title",target:"Criar um beneficiário"})
-
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.BUSINESS_PHONE_NUMBER.label",target:"businessPhoneNumber pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.BUSINESS_PHONE_NUMBER_VERIFIED.label",target:"businessPhoneNumberVerified pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.SECTION_STEP_ONE.subTitle",target:"\n        Crie um novo beneficiário inserindo suas informações comerciais abaixo.\n        Se você tiver suas informações bancárias, pode começar a enviar pagamentos\n        para o beneficiário imediatamente.\n      "})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.SECTION_STEP_TWO.title",target:"Adicionar informações bancárias"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.SECTION_STEP_TWO.subTitle",target:"\n        Insira as informações da conta bancária do beneficiário. Certifique-se de que este é\n        precisos, pois os pagamentos irão diretamente para a conta especificada.\n      "})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.SECTION_STEP_THREE.title",target:"Adicionar endereço comercial"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ExternalContactToken.BUSINESS_ID.label",target:"businessId pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.SECTION_STEP_THREE.subTitle",target:"\n        Para enviar pagamentos a esta empresa, precisamos que você verifique seu\n        endereço comercial abaixo.\n      "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ContactMigrationRule.DESCRIBE_TEXT",target:"Migra beneficiários e faturas para um negócio recém-integrado com uma conta bancária."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ExternalContactToken.BUSINESS_EMAIL.label",target:"businessEmail pt"})
 
