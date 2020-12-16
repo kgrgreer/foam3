@@ -429,20 +429,40 @@ foam.CLASS({
       this.invoice.quote = null;
       this.invoice.paymentMethod = this.PaymentStatus.SUBMIT;
 
-      if ( this.invoice.draft ){
+      // to be able to adjust capable payloads that were previously saved
+      if ( this.invoice.draft && this.invoice.capabilityIds.length > 0 && this.invoice.capablePayloads.length > 0 ){
         this.invoice.draft = false;
 
         var capabilityIntercept = this.CapabilityIntercept.create();
         capabilityIntercept.daoKey = "invoiceDAO"
         
         var wizardSeq = this.crunchController.createCapableWizardSequence(capabilityIntercept, this.invoice);
-        var wizardContext = await wizardSeq.execute();
+
+        try {
+          var wizardContext = await wizardSeq.execute();
+        } catch (err) {          
+          await this.abortQuoteAndSaveDraft(err);
+          return;
+        }
 
         if ( ! wizardContext.submitted ){
           this.invoice.draft = true;
           this.saveDraft(this.invoice);
           return;
         }
+      }
+
+      this.invoice.draft = false;
+
+      // to preserve any invoice created as a draft in case of failure
+      if ( this.invoice.id === 0 ){
+        this.invoice.draft = true;
+        try{
+          this.invoice = await this.invoiceDAO.put(this.invoice);
+        } catch(error) {
+          await this.abortQuoteAndSaveDraft(err);
+        }
+        this.invoice.draft = false;
       }
 
       try {
@@ -454,15 +474,31 @@ foam.CLASS({
           return;
         }
       } catch(err) {
-        this.notify(err.message,'', this.LogLevel.ERROR, true);
-        this.pushMenu(this.isPayable
-          ? 'capability.main.invoices.payables'
-          : 'capability.main.invoices.receivables');
+        await this.abortQuoteAndSaveDraft(err);
         return;
       }
 
       this.txnQuote = this.invoice.quote.plan;
       return this.txnQuote;
+    },
+
+    /**
+     * Primarily used when receiving an exception from the back-end, to put the invoice
+     * into a resubmittable state and save it as a draft
+     * @param {*} error 
+     */
+    async function abortQuoteAndSaveDraft(error) {
+      this.invoice.paymentMethod = this.PaymentStatus.SUBMIT;
+      this.invoice.status = this.InvoiceStatus.DRAFT;
+      this.invoice.draft = true;
+      this.invoice.quote = null;
+      this.invoice.plan = null;
+      this.invoice.capablePayloads.forEach(cp => cp.status = this.CapabilityJunctionStatus.ACTION_REQUIRED);
+      this.invoiceDAO.put(this.invoice);
+      this.notify(error.message,'', this.LogLevel.ERROR, true);
+      this.pushMenu(this.isPayable
+        ? 'capability.main.invoices.payables'
+        : 'capability.main.invoices.receivables');
     },
 
     async function setTransactionPlanAndQuote() {
