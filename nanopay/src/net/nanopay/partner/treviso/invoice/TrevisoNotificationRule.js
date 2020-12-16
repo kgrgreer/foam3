@@ -94,7 +94,6 @@ foam.CLASS({
             Notification notify = new Notification.Builder(x)
               .setBody(TEXT + amount + TEXT2)
               .setUserId(user.getId())
-              .setToastState(ToastState.REQUESTED)
               .setEmailName("tedTransfer")
               .setEmailArgs(args)
               .build();

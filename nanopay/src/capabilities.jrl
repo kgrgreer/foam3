@@ -329,7 +329,7 @@ p({
     "paymentprovidercorridor.source.read.bmo",
     "paymentprovidercorridor.source.read.rbc",
     "paymentprovidercorridor.target.read.bmo",
-    "paymentprovidercorridor.target.read.rbc"
+    "paymentprovidercorridor.target.read.rbc",
     "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
     "paymentprovidercorridor.source.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
     "paymentprovidercorridor.target.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
