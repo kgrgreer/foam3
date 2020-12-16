@@ -208,12 +208,13 @@ foam.CLASS({
         fxSummary.setInverseRate(formatRate(1.0 / fxRate, destination, source));
         txn.addLineItems(new TransactionLineItem[] { fxSummary });
 
-        // Update txn amount/destinationAmount based on the final fxRate
+        // Update txn amount/destinationAmount based on the final fxRate, if not already done so
         Transaction requestTxn = quote.getRequestTransaction();
-        if ( requestTxn.getAmount() == 0 ) {
+        if ( txn.getAmount() == 0 && requestTxn.getAmount() == 0) {
+          // NOTE ONLY APPROXIMATION ROUNDING ERRORS POSSIBLE
           txn.setAmount((long) (requestTxn.getDestinationAmount() / fxRate));
         }
-        if ( requestTxn.getDestinationAmount() == 0 ) {
+        if ( txn.getDestinationAmount() == 0 && requestTxn.getDestinationAmount() == 0) {
           txn.setDestinationAmount((long) (requestTxn.getAmount() * fxRate));
         }
       }

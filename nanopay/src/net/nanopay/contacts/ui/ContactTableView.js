@@ -71,7 +71,7 @@ foam.CLASS({
     function dblclick() {
         if ( this.selection) {
           controllerMode_ = foam.u2.ControllerMode.EDIT;
-          if ( ! this.selection.createBankAccount && this.selection.bankAccount === 0 ) {
+          if ( ! this.selection.createBankAccount && this.selection.bankAccount.length === 0 ) {
             controllerMode_ = foam.u2.ControllerMode.CREATE;
           }
           this.add(net.nanopay.ui.wizard.WizardController.create({

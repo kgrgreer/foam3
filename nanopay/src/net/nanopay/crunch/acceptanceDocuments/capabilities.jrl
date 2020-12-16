@@ -84,7 +84,7 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-10",
-  "name":"USD AFEX Terms",
+  "name":"AFEX Terms and Conditions",
   "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms",
   "version":"0",
   "enabled":true
