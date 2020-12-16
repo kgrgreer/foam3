@@ -28,15 +28,11 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
-    'foam.dao.DAO',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.crunch.CapabilityJunctionStatus',
-    'foam.nanos.crunch.CapabilityCapabilityJunction',
+    'foam.nanos.crunch.CrunchService',
     'foam.nanos.crunch.UserCapabilityJunction',
-    'foam.dao.ArraySink',
-    'java.util.List',
-    'static foam.mlang.MLang.EQ',
   ],
 
   methods: [
@@ -46,18 +42,14 @@ foam.CLASS({
       agency.submit(x, new ContextAgent() {
         @Override
         public void execute(X x) {
-          UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
-          DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
-          DAO pcjDAO = (DAO) x.get("prerequisiteCapabilityJunctionDAO");
-          User user = ((Subject) x.get("subject")).getUser();
+          var ucj = (UserCapabilityJunction) obj;
+          var subject = ucj.getSubject(x);
+          var user = subject.getUser();
 
-          //granted service provider business capability
-          UserCapabilityJunction spidBusinessPermissionUcj = new UserCapabilityJunction.Builder(x)
-          .setSourceId(ucj.getSourceId())
-          .setTargetId(user.getSpid() + "BusinessMenuCapability")
-          .setStatus(CapabilityJunctionStatus.GRANTED)
-          .build();
-          ucjDAO.put(spidBusinessPermissionUcj);
+          var crunchService = (CrunchService) x.get("crunchService");
+          crunchService.updateUserJunction(
+            ruler.getX(), subject, user.getSpid() + "BusinessMenuCapability",
+            null, CapabilityJunctionStatus.GRANTED);
         }
       }, "set up and granted businessMenuCapability");
       `
