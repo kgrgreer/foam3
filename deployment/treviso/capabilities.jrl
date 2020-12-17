@@ -772,6 +772,7 @@ p({class:"net.nanopay.payment.PaymentProviderCorridor",provider:"AFEX",sourceCou
 p({class:"net.nanopay.payment.PaymentProviderCorridor",provider:"AFEX",sourceCountry:"SE",targetCountry:"ES",sourceCurrencies:["EUR"],targetCurrencies:["EUR"],id:"3e9e304b-7630-cbf0-f50b-42e5185208db",name:"SE-ES Corridor - AFEX",enabled:true,availabilityPredicate:{class:"foam.mlang.predicate.True"},lastModified:1603233050281,lastModifiedBy:1})
 p({class:"net.nanopay.payment.PaymentProviderCorridor",provider:"AFEX",sourceCountry:"ES",targetCountry:"SE",sourceCurrencies:["EUR"],targetCurrencies:["EUR"],id:"e6560134-b2cb-9576-7fb3-7bb98ef8c02c",name:"ES-SE Corridor AFEX",enabled:true,availabilityPredicate:{class:"foam.mlang.predicate.True"},lastModified:1603233050285,lastModifiedBy:1})
 p({class:"net.nanopay.payment.PaymentProviderCorridor",provider:"AFEX",sourceCountry:"ES",targetCountry:"ES",sourceCurrencies:["EUR"],targetCurrencies:["EUR"],id:"d0c28a73-e766-70da-7301-86123e744e65",name:"ES-ES Corridor - AFEX",enabled:true,availabilityPredicate:{class:"foam.mlang.predicate.True"},lastModified:1603233050298,lastModifiedBy:1})
+p({class:"net.nanopay.payment.PaymentProviderCorridor",provider:"AFEX",sourceCountry:"US",targetCountry:"CA",sourceCurrencies:["USD"],targetCurrencies:["USD"],id:"62eee7df-7a8b-46cd-841d-9884572df53f",name:"US-CA Corridor - AFEX",enabled:true,availabilityPredicate:{class:"foam.mlang.predicate.True"},lastModified:1603233049462,lastModifiedBy:1})
 
 
 // Treviso config

@@ -168,7 +168,7 @@ foam.CLASS({
         this.sections[1].subTitle = '';
         this.sections[2].title = this.EDIT_STEP_THREE_TITLE;
         this.sections[2].subTitle = '';
-        if ( this.data.bankAccount > 0 ) {
+        if ( this.data.bankAccount.length != 0 ) {
           this.data.createBankAccount = await this.bankAccountDAO.find(this.data.bankAccount);
         }
       }
@@ -181,11 +181,6 @@ foam.CLASS({
         .start(self.Rows)
           .add(self.slot(function(sections, currentIndex) {
             return self.E()
-              .start().addClass(self.myClass('step-indicator'))
-                .add(this.slot(function(currentIndex) {
-                  return `${self.STEP} ${currentIndex + 1} ${self.OF_MSG} 3`;
-                }))
-              .end()
               .tag(self.sectionView, {
                 section: sections[currentIndex],
                 data$: self.data$
@@ -195,10 +190,13 @@ foam.CLASS({
             .start().addClass('button-container-wrapper')
               .start().addClass('button-container')
                 .tag(this.BACK, { buttonStyle: 'TERTIARY' })
-                .start().addClass(this.myClass('button-sub-container'))
-                  .tag(this.OPTION, { buttonStyle: 'SECONDARY' })
-                  .start(this.NEXT).end()
+                .start().addClass(self.myClass('step-indicator'))
+                  .add(this.slot(function(currentIndex) {
+                    return `${self.STEP} ${currentIndex + 1} ${self.OF_MSG} 3`;
+                  }))
                 .end()
+                .tag(this.OPTION, { buttonStyle: 'SECONDARY' })
+                .start(this.NEXT).end()
                 .start(this.SAVE).end()
               .end()
             .end()

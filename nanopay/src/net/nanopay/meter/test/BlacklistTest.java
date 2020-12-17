@@ -271,7 +271,7 @@ public class BlacklistTest extends Test {
     ucjUDPAI.setSourceId(myBusiness.getId());
     ucjUDPAI.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-11");
     ucjUDPAI.setStatus(CapabilityJunctionStatus.GRANTED);
-    userCapabilityJunctionDAO.inX(myAdminContext).put(ucjUDPAI);
+    userCapabilityJunctionDAO.inX(x).put(ucjUDPAI);
 
     // Business Details : 554af38a-8225-87c8-dfdf-eeb15f71215f-4
     BusinessInformationData bid = new BusinessInformationData();
@@ -382,7 +382,7 @@ public class BlacklistTest extends Test {
     ucjCDR.setSourceId(myAdmin.getId());
     ucjCDR.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-1a5");
     ucjCDR.setStatus(CapabilityJunctionStatus.GRANTED);
-    userCapabilityJunctionDAO.inX(myAdminContext).put(ucjCDR);
+    userCapabilityJunctionDAO.inX(x).put(ucjCDR);
 
     List<ApprovalRequest> approvalRequests = ((ArraySink) approvalRequestDAO
       .where(foam.mlang.MLang.AND( new foam.mlang.predicate.Predicate[] {

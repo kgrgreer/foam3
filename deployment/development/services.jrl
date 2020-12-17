@@ -76,3 +76,30 @@ p({
   }
 })
 r({"class":"foam.nanos.boot.NSpec", "name":"liveScriptBundler"})
+
+// copied from nanopay/src/.  AFEX sandbox is never cleared, unlike our journals, so need to update start sequence number. Will have to do this if we clear staging/test journals
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "bareUserDAO",
+  "lazy": false,
+  "description": "Bare boned userDAO wrapped with essential decorators.",
+  "authenticate": false,
+  "serviceScript":
+  """
+    dao = new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setSeqNo(true)
+      .setSeqStartingValue(20000)
+      .setOf(foam.nanos.auth.User.getOwnClassInfo())
+      .setDecorator(new foam.dao.history.HistoryDAO(x, "userHistoryDAO", new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.auth.User.getOwnClassInfo()).build()))
+      .setJournalName("users")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setAuthorize(false)
+      .setServiceProviderAware(true)
+      .build();
+    dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.User.EMAIL });
+    dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.User.GROUP });
+    return dao;
+  """
+})

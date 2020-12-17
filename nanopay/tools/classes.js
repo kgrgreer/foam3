@@ -718,8 +718,11 @@ var classes = [
   // SSO
   'net.nanopay.auth.openid.SSOToken',
   'net.nanopay.auth.openid.OTLoginToken',
-  'net.nanopay.auth.openid.ClientTokenLoginService',
   'net.nanopay.auth.openid.TokenLoginService',
+  'net.nanopay.auth.openid.ClientTokenLoginService',
+  'net.nanopay.auth.openid.OAuthService',
+  'net.nanopay.auth.openid.ClientOAuthService',
+  'net.nanopay.auth.openid.OAuthProvider',
 
   // PII
   'net.nanopay.security.pii.PII',
@@ -1530,7 +1533,8 @@ var skeletons = [
   'net.nanopay.interac.service.InteracTransactionDAO',
   'net.nanopay.contacts.ContactServiceInterface',
   'net.nanopay.country.br.BrazilVerificationServiceInterface',
-  'net.nanopay.auth.openid.TokenLoginService'
+  'net.nanopay.auth.openid.TokenLoginService',
+  'net.nanopay.auth.openid.OAuthService'
 ];
 
 var proxies = [

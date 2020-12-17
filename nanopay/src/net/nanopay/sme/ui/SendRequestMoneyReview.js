@@ -76,6 +76,9 @@ foam.CLASS({
       overflow: scroll;
       margin-top: 15px;
     }
+    ^ .foam-u2-view-StringView {
+      width: auto;
+    }
   `,
   messages: [
     {
@@ -88,6 +91,10 @@ foam.CLASS({
     }
   ],
 
+  messages: [
+    { name: 'VOID', message: 'Void' }
+  ],
+
   methods: [
     function initE() {
       this.SUPER();
@@ -98,7 +105,7 @@ foam.CLASS({
         ? this.APPROVE_INVOICE_LABEL
         : this.SUBMIT_LABEL;
       this.hasOtherOption = this.isApproving ? true : false;
-      this.optionLabel = 'Reject';
+      this.optionLabel = this.VOID;
       this.start().addClass(this.myClass())
         .start().show(this.loadingSpin.isHidden$)
           /** summaryTransaction area **/

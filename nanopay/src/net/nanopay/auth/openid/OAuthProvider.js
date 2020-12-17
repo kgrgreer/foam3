@@ -15,40 +15,32 @@
  * from nanopay Corporation.
  */
 
-foam.CLASS({
-  package: 'net.nanopay.sme.ui',
-  name: 'MenuRedirectSMEModal',
-  extends: 'net.nanopay.sme.ui.SMEModal',
+foam.INTERFACE({
+    package: 'net.nanopay.auth.openid',
+    name: 'OAuthProvider',
 
-  documentation: 'Overwrites close modal function to redirect to given menu.',
+    documentation: 'Interface to get information about a oauth provider',
 
-  imports: [
-    'pushMenu'
-  ],
-
-  exports: [ 'as data' ],
-
-  properties: [
-    {
-      class: 'String',
-      name: 'menu'
-    }
-  ],
-
-  actions: [
-    {
-      name: 'closeModal',
-      label: '',
-      icon: 'images/ic-cancelblack.svg',
-      code: function(X) {
-        X.pushMenu(X.data.menu);
+    methods: [
+      {
+        name: 'getAuthorizationUrl',
+        async: true,
+        type: 'String'
+      },
+      {
+        name: 'getRedirectUri',
+        async: true,
+        type: 'String'
+      },
+      {
+        name: 'getClientId',
+        async: true,
+        type: 'String'
+      },
+      {
+        name: 'getClientSecret',
+        async: true,
+        type: 'String'
       }
-    }
-  ],
-
-  listeners: [
-    function close() {
-      this.pushMenu(this.menu);
-    }
-  ]
-});
+    ]
+  });

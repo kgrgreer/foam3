@@ -329,7 +329,7 @@ p({
     "paymentprovidercorridor.source.read.bmo",
     "paymentprovidercorridor.source.read.rbc",
     "paymentprovidercorridor.target.read.bmo",
-    "paymentprovidercorridor.target.read.rbc"
+    "paymentprovidercorridor.target.read.rbc",
     "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
     "paymentprovidercorridor.source.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
     "paymentprovidercorridor.target.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
@@ -852,7 +852,7 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-16",
-  "name":"Business Registration Date",
+  "name":"When was your business created?",
   "of":"net.nanopay.crunch.onboardingModels.BusinessRegistrationDateData",
   "description":"Business Registration Date",
   "daoKey": "businessDAO",
@@ -864,7 +864,7 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-19",
-  "name":"Business Last Registration Date",
+  "name":"When was your business last Registered?",
   "of":"net.nanopay.crunch.onboardingModels.BusinessLastRegistrationDateData",
   "description":"Business Last Registration Date",
   "daoKey": "businessDAO",
@@ -876,7 +876,7 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-17",
-  "name":"Business Incorporated Date",
+  "name":"When was your business first incorporated?",
   "of":"net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData",
   "description":"Business Incorporated Date",
   "daoKey": "businessDAO",
