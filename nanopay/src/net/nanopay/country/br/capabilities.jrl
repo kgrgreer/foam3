@@ -38,7 +38,7 @@ p({
   "name":"Bank Domicile Foreign Currency",
   "description":"Provide bank domicile for payment of Foreign Currency",
   "of":"net.nanopay.crunch.document.Document",
-    "reviewRequired":true,
+  "reviewRequired":true,
   "version":"0",
   "enabled":true
 })
