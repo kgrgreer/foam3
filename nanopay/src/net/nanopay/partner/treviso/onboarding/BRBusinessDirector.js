@@ -48,6 +48,8 @@ foam.CLASS({
   ],
 
   properties: [
+    'firstName',
+    'lastName',
     {
       class: 'EMail',
       name: 'email',

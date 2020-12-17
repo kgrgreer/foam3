@@ -51,6 +51,8 @@ foam.CLASS({
   ],
 
   properties: [
+    'firstName',
+    'lastName',
     {
       class: 'EMail',
       name: 'email',
@@ -71,6 +73,10 @@ foam.CLASS({
         }
       }
     },
+    'jobTitle',
+    'ownershipPercent',
+    'address',
+    'nationality',
     {
       class: 'String',
       name: 'cpf',
