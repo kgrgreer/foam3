@@ -37,7 +37,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'MIN_DATE_ERROR', message: 'Business incorporation must be a future date' },
+    { name: 'MIN_DATE_ERROR', message: 'Expected boarding date must be a future date' },
   ],
 
   properties: [
@@ -70,4 +70,3 @@ foam.CLASS({
     }
   ]
 });
-
