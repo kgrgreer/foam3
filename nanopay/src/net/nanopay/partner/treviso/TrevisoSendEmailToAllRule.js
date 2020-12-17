@@ -43,12 +43,11 @@ foam.CLASS({
     'java.util.HashMap',
     'java.util.List',
     'java.util.Map',
-    'net.nanopay.model.BeneficialOwner',
     'net.nanopay.model.Business',
     'net.nanopay.model.BusinessUserJunction',
+    'net.nanopay.partner.treviso.onboarding.BRBeneficialOwner',
     'net.nanopay.partner.treviso.onboarding.BRBusinessDirector',
-    'static foam.mlang.MLang.AND',
-    'static foam.mlang.MLang.EQ',
+    'static foam.mlang.MLang.*'
   ],
 
   methods: [
@@ -88,12 +87,15 @@ foam.CLASS({
           }
 
           // send email to beneficial owners whose hasSignedContratosDeCambio is true
-          List<BeneficialOwner> beneficialOwners = ((ArraySink) business.getBeneficialOwners(x)
-            .where(EQ(BeneficialOwner.HAS_SIGNED_CONTRATOS_DE_CAMBIO, true))
+          List<BRBeneficialOwner> beneficialOwners = (List<BRBeneficialOwner>) ((ArraySink) business.getBeneficialOwners(x)
+            .where(AND(
+              INSTANCE_OF(BRBeneficialOwner.class),
+              EQ(BRBeneficialOwner.HAS_SIGNED_CONTRATOS_DE_CAMBIO, true)
+            ))
             .select(new ArraySink()))
             .getArray();
 
-          for ( BeneficialOwner beneficialOwner : beneficialOwners ) {
+          for ( BRBeneficialOwner beneficialOwner : beneficialOwners ) {
             List<User> beneficialOwnerUser = ((ArraySink) localUserDAO
               .where(EQ(User.EMAIL, beneficialOwner.getEmail()))
               .select(new ArraySink()))
