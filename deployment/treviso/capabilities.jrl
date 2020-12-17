@@ -15,13 +15,6 @@ p({
   "enabled":true
 })
 
-// changing the of to BRBusinessOwnershipData in treviso deployment
-p({
-  "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-7",
-  "of":"net.nanopay.partner.treviso.onboarding.BRBusinessOwnershipData"
-})
-
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"b5f2b020-db0f-11ea-87d0-0242ac130003",
@@ -93,7 +86,13 @@ p({
 })
 
 // These capabilities do not have approval requests in Treviso
-p({class:"foam.nanos.crunch.Capability",id:"554af38a-8225-87c8-dfdf-eeb15f71215f-7",reviewRequired:false})
+// and the of is set to BRBusinessOwnershipData instead of generic BusinessOwnershipData
+p({
+  class:"foam.nanos.crunch.Capability",
+  id:"554af38a-8225-87c8-dfdf-eeb15f71215f-7",
+  of:"net.nanopay.partner.treviso.onboarding.BRBusinessOwnershipData"
+  reviewRequired:false
+})
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-6-5",

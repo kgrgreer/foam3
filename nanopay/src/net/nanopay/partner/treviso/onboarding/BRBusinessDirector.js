@@ -170,6 +170,9 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'verifyName',
+      visibility: function (cpfName) {
+        return cpfName.length > 0 ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      },
       label: 'Is this your director?',
       view: function(n, X) {
         var self = X.data$;
