@@ -3292,5 +3292,17 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessLastRegistrationDateData.BUSINESS_LAST_REGISTRATION_DATE.label",target:"Insira a data da última data de registro"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessLastRegistrationDateData.BUSINESS_LAST_REGISTRATION_DATE.documentation",target:"Data do último registro comercial."})
 
+p({class:"foam.i18n.Locale",locale:"pt","source":"49b77f74-124e-41a5-9c0c-da3e86102d0b.name","target":"Previsão de Embarque"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"ed4ca3a0-3c2a-4161-93db-48fe963f1729.name","target":"Previsão de Embarque  - draw back"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"eecb85f8-66d4-43b9-8c26-a187a5a00b7a.name","target":"Previsão de Embarque  - antecipado"})
+
+p({class:"foam.i18n.Locale",locale:"pt","source":"1d72f804-4019-11eb-b378-0242ac130002.name","target":"Qual é a data prevista de embarque?"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"1d72f804-4019-11eb-b378-0242ac130002.description","target":"Data prevista de embarque"})
+
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.ExpectedBoardingDate.MIN_DATE_ERROR",target:"A data de embarque prevista deve ser uma data futura"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.ExpectedBoardingDate.SECTION_DATE_OF_BOARDING_SECTION.title",target:"Data prevista de embarque"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.ExpectedBoardingDate.BOARDING_DATE.label",target:"Data prevista de embarque"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.VOID",target:"Nulo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoneyReview.VOID",target:"Nulo"})
