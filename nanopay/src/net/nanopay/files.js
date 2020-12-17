@@ -204,12 +204,6 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/model/ComplianceStatus' },
   { name: 'net/nanopay/admin/model/AccountStatus' },
 
-  // SSO
-  { name: 'net/nanopay/auth/openid/SSOToken' },
-  { name: 'net/nanopay/auth/openid/OTLoginToken' },
-  { name: 'net/nanopay/auth/openid/TokenLoginService' },
-  { name: 'net/nanopay/auth/openid/ClientTokenLoginService' },
-
   { name: 'net/nanopay/model/User' },
   { name: 'net/nanopay/ui/wizard/WizardCssAxiom', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
@@ -252,6 +246,15 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/DataSecurityBanner', flags: ['web'] },
 
   { name: 'net/nanopay/ui/LoadingSpinner', flags: ['web'] },
+
+  // SSO
+  { name: 'net/nanopay/auth/openid/SSOToken' },
+  { name: 'net/nanopay/auth/openid/OTLoginToken' },
+  { name: 'net/nanopay/auth/openid/OAuthProvider' },
+  { name: 'net/nanopay/auth/openid/TokenLoginService' },
+  { name: 'net/nanopay/auth/openid/ClientTokenLoginService' },
+  { name: 'net/nanopay/auth/openid/OAuthService' },
+  { name: 'net/nanopay/auth/openid/ClientOAuthService' },
 
   // Exchangeable
   { name: 'net/nanopay/exchangeable/Security' },

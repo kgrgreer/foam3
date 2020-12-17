@@ -748,7 +748,7 @@ foam.CLASS({
         this.chosenBankAccount = await this.subject.user.accounts.find(
           this.AND(
             this.INSTANCE_OF(this.BankAccount),
-            this.EQ(this.BankAccount.IS_DEFAULT, true),
+            this.EQ(this.BankAccount.IS_DEFAULT, true)
           )
         );
       } else {
