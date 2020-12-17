@@ -13,7 +13,6 @@ import foam.mlang.predicate.Predicate;
 import foam.nanos.auth.Address;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.Permission;
-import foam.nanos.auth.Phone;
 import foam.nanos.auth.Region;
 import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
@@ -29,6 +28,7 @@ import net.nanopay.model.Business;
 import net.nanopay.model.PersonalIdentification;
 import net.nanopay.payment.Institution;
 import net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo;
+import foam.nanos.auth.LanguageId;
 
 public class AFEXServiceProviderTest
     extends foam.nanos.test.Test {
@@ -48,6 +48,7 @@ public class AFEXServiceProviderTest
   protected User user2;
   protected BankAccount user1CABankAccount;
   protected BankAccount user2USBankAccount;
+  protected Address address;
   X x;
   protected AFEX afexService;
 
@@ -82,14 +83,15 @@ public class AFEXServiceProviderTest
   }
 
   private void setUpTest() {
-    Address businessAddress = new Address();
-    businessAddress.setCountryId("US");
-    businessAddress.setStreetName("Avenue Rd");
-    businessAddress.setStreetNumber("123");
-    businessAddress.setPostalCode("M1M1M1");
-    businessAddress.setCity("Toronto");
-    businessAddress.setRegionId(((Region)regionDAO.find("ON")).getCode());
+    initAddress();
+    initUser1();
+    initUser2();
+    initBusiness();
+    initCABankAccount();
+    initUSBankAccount();
+  }
 
+  private void initUser1() {
     user1 = (User) ((DAO) x.get("localUserDAO")).find(EQ(User.EMAIL, "afexpayee@nanopay.net"));
     business = null;
     if (user1 == null) {
@@ -98,32 +100,53 @@ public class AFEXServiceProviderTest
       user1.setLastName("AFEXTwo");
       user1.setEmail("afexpayee@nanopay.net");
       user1.setDesiredPassword("AFXTestPassword123$");
-      user1.setAddress(businessAddress);
+      user1.setAddress(address);
       user1.setType("Business");
       user1.setOrganization("Test Company");
       user1.setBusinessName("Test Company");
-      user1.setLanguage("en");
+      user1.setLanguage(new LanguageId.Builder(null).setCode("en").build());
       user1.setBirthday(new Date());
-      user1.setAddress(businessAddress);
+      user1.setAddress(address);
       PersonalIdentification identification = new PersonalIdentification();
       identification.setExpirationDate(new Date());
       user1.setIdentification(identification);
-      Phone phone = new Phone();
-      phone.setNumber("123-456-7890");
-      user1.setPhone(phone);
+      user1.setPhoneNumber("1234567890");
       user1 = (User) smeBusinessRegistrationDAO.put(user1).fclone();
 
       // Set properties that can't be set during registration.
       user1.setEmailVerified(true);
       user1 = (User) localUserDAO.put(user1);
+    } else {
+      user1 = (User) user1.fclone();
+    }
+  }
+
+  private void initUser2() {
+    user2 = (User) ((DAO) x.get("localUserDAO")).find(EQ(User.EMAIL, "afexpayee2@nanopay.net"));
+    if (user2 == null) {
+      user2 = new User();
+      user2.setFirstName("AFEXPayeeTwo");
+      user2.setLastName("AFEX");
+      user2.setGroup("afexpayee2");
+      user2.setEmail("afexpayee2@nanopay.net");
+      user2.setAddress(address);
+      user2.setEmailVerified(true);
+      localUserDAO.put(user2);
+    } else {
+      user2 = (User) user2.fclone();
+    }
+  }
+
+  private void initBusiness() {
+    if ( business == null ) {
       UserUserJunction junction = (UserUserJunction) agentJunctionDAO.find(EQ(UserUserJunction.SOURCE_ID, user1.getId()));
       business = (Business) businessDAO.find(junction.getTargetId());
       business = (Business) business.fclone();
       business.setStatus(AccountStatus.ACTIVE);
-      business.setAddress(businessAddress);
+      business.setAddress(address);
       business.setOnboarded(true);
       business.setCompliance(ComplianceStatus.PASSED);
-      business.setPhone(phone);
+      business.setPhoneNumber("1234567890");
       business.setBusinessRegistrationDate(new Date());
       business.setBusinessTypeId(1);
       SuggestedUserTransactionInfo suggestedUserTransactionInfo = new SuggestedUserTransactionInfo();
@@ -140,38 +163,11 @@ public class AFEXServiceProviderTest
       Permission newPermission = new Permission.Builder(x).setId("fx.provision.payer").build();
       group.getPermissions(x).add(newPermission);
       business.getSigningOfficers(x).add(user1);
-
-    } else {
-      user1 = (User) user1.fclone();
-      user1.setAddress(businessAddress);
-      user1.setEnabled(true);
-      user1.setEmailVerified(true);
-      localUserDAO.put(user1);
     }
 
-    user2 = (User) ((DAO) x.get("localUserDAO")).find(EQ(User.EMAIL, "afexpayee2@nanopay.net"));
-    if (user2 == null) {
-      user2 = new User();
-      user2.setFirstName("AFEXPayeeTwo");
-      user2.setLastName("AFEX");
-      user2.setGroup("afexpayee2");
-      user2.setEmail("testafxpayee20@nanopay.net");
-    } else {
-      user2 = (User) user2.fclone();
-    }
+  }
 
-    user2.setAddress(businessAddress);
-    user2.setEmailVerified(true);
-    localUserDAO.put(user2);
-
-    Address bankAddress = new Address();
-    bankAddress.setCountryId("CA");
-    bankAddress.setStreetName("Avenue Rd");
-    bankAddress.setStreetNumber("123");
-    bankAddress.setPostalCode("M1M1M1");
-    bankAddress.setCity("Toronto");
-    bankAddress.setRegionId(((Region)regionDAO.find("ON")).getCode());
-
+  private void initCABankAccount() {
     user1CABankAccount = (BankAccount) localAccountDAO.find(MLang
         .AND(new Predicate[] { MLang.EQ(BankAccount.OWNER, business.getId()), MLang.INSTANCE_OF(BankAccount.class) }));
     if (user1CABankAccount == null) {
@@ -180,58 +176,61 @@ public class AFEXServiceProviderTest
       user1CABankAccount.setInstitutionNumber("01211230000");
       user1CABankAccount.setOwner(business.getId());
       user1CABankAccount.setDenomination("CAD");
-
-      user1CABankAccount.setAddress(bankAddress);
+      user1CABankAccount.setAddress(address);
+      user1CABankAccount.setInstitution(getInstitution().getId());
+      user1CABankAccount.setStatus(BankAccountStatus.VERIFIED);
+      localAccountDAO.put(user1CABankAccount);
     } else {
       user1CABankAccount = (BankAccount) user1CABankAccount.fclone();
     }
+  }
 
-    user1CABankAccount.setStatus(BankAccountStatus.VERIFIED);
-
+  private void initUSBankAccount() {
     user2USBankAccount = (BankAccount) localAccountDAO.find(MLang
-        .AND(new Predicate[] { MLang.EQ(BankAccount.OWNER, user2.getId()), MLang.INSTANCE_OF(BankAccount.class) }));
+      .AND(new Predicate[] { MLang.EQ(BankAccount.OWNER, user2.getId()), MLang.INSTANCE_OF(BankAccount.class) }));
     if (user2USBankAccount == null) {
       user2USBankAccount = new USBankAccount();
       user2USBankAccount.setAccountNumber("000002000003");
       user2USBankAccount.setInstitutionNumber("0000000340");
       user2USBankAccount.setOwner(user2.getId());
       user2USBankAccount.setDenomination("USD");
-
-      user2USBankAccount.setAddress(bankAddress);
+      user2USBankAccount.setAddress(address);
+      user2USBankAccount.setStatus(BankAccountStatus.VERIFIED);
+      user2USBankAccount.setInstitution(getInstitution().getId());
+      localAccountDAO.put(user2USBankAccount);
     } else {
       user2USBankAccount = (BankAccount) user2USBankAccount.fclone();
     }
-    user2USBankAccount.setStatus(BankAccountStatus.VERIFIED);
+  }
 
+  private Address initAddress() {
+    address = new Address();
+    address.setCountryId("US");
+    address.setStreetName("Avenue Rd");
+    address.setStreetNumber("123");
+    address.setPostalCode("M1M1M1");
+    address.setCity("Toronto");
+    address.setRegionId(((Region)regionDAO.find("US-DE")).getCode());
+    return address;
+  }
+
+  private Institution getInstitution() {
     Institution institution = new Institution();
     DAO institutionDAO = (DAO) x.get("institutionDAO");
     List institutions = ((ArraySink) institutionDAO
-        .where(MLang.EQ(Institution.INSTITUTION_NUMBER, user2USBankAccount.getInstitutionNumber()))
+        .where(MLang.EQ(Institution.INSTITUTION_NUMBER, "0000000340"))
         .select(new ArraySink())).getArray();
-
     if (institutions.isEmpty()) {
       institution = new Institution();
       institution.setName("AFX Test institution");
-      institution.setInstitutionNumber(user2USBankAccount.getInstitutionNumber());
+      institution.setInstitutionNumber("0000000340");
       institution.setSwiftCode("22349921314124435333");
       institution.setCountryId("CA");
       institution = (Institution) institutionDAO.put(institution);
     } else {
       institution = (Institution) institutions.get(0);
     }
-
-    user2USBankAccount.setInstitution(institution.getId());
-    user1CABankAccount.setInstitution(institution.getId());
-
-    localAccountDAO.put(user1CABankAccount);
-    localAccountDAO.put(user2USBankAccount);
-
-    // AFEX Business
-    // afexBusiness  = new AFEXBusiness();
-    // afexBusiness.setUser(business.getId());
-    // afexBusiness.setApiKey("API_KEY");
-    // afexBusiness.setAccountNumber("00012022");
-    // afexBusinessDAO.put(afexBusiness);
+    return institution;
   }
 
   private void tearDownTest() {
@@ -239,17 +238,16 @@ public class AFEXServiceProviderTest
     localAccountDAO.remove(user2USBankAccount);
     AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, business.getId()));
     afexBusinessDAO.remove(afexBusiness);
-    localUserDAO.remove(business);
-    localUserDAO.remove(user1);
-    localUserDAO.remove(user2);
+    localUserDAO.inX(x).remove(user1);
+    localUserDAO.inX(x).remove(user2);
   }
 
   private void testOnboardBusiness() {
     Business businessNoCompliance = (Business) business.fclone();
     businessNoCompliance.setCompliance(ComplianceStatus.FAILED);
-    boolean onbarded = afexServiceProvider.onboardBusiness(businessNoCompliance, user1CABankAccount);
+    boolean onbarded = afexServiceProvider.onboardBusiness(businessNoCompliance);
     test( ! onbarded, "Business was not onboarded" );
-    onbarded = afexServiceProvider.onboardBusiness(business, user1CABankAccount);
+    onbarded = afexServiceProvider.onboardBusiness(business);
     test( onbarded, "Business was onboarded" );
     AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, business.getId()));
     if ( afexBusiness != null ) {
@@ -257,7 +255,7 @@ public class AFEXServiceProviderTest
       afexBusiness.setStatus("Active");
       afexBusinessDAO.put(afexBusiness);
     }
-    
+
   }
 
   public void testGetFXRate() {
@@ -291,7 +289,7 @@ public class AFEXServiceProviderTest
   public void testFindBeneficiary() {
     AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, business.getId()));
     test( afexBusiness != null, "AFEXBusiness is found" );
-    FindBeneficiaryResponse beneficiaryResponse = afexServiceProvider.findBeneficiary(user2.getId(), afexBusiness.getApiKey());
+    FindBeneficiaryResponse beneficiaryResponse = afexServiceProvider.findBeneficiary(user2.getId(), afexBusiness.getApiKey(), user2.getSpid());
     test( beneficiaryResponse != null, "beneficiary is found" );
   }
 

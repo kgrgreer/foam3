@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.auth',
   name: 'PublicUserInfo',
@@ -7,12 +24,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'net.nanopay.model.Business',
-    'net.nanopay.contacts.Contact',
-    'foam.util.SafetyUtil',
-  ],
-
-  imports: [
-    'contactDAO'
+    'foam.util.SafetyUtil'
   ],
 
   tableColumns: [
@@ -91,6 +103,10 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
+      class: 'PhoneNumber',
+      name: 'phoneNumber'
+    },
+    {
       class: 'foam.nanos.fs.FileProperty',
       name: 'businessProfilePicture',
       documentation: `The profile picture of the business, initially defaulting
@@ -108,21 +124,7 @@ foam.CLASS({
   methods: [
     {
       name: 'toSummary',
-      type: 'String',
-      code: async function() {
-        return await this.label();
-      },
-      javaCode: `
-        return this.label();
-      `
-    },
-    {
-      name: 'label',
-      code: async function() {
-        if ( this.type === 'Contact' ) {
-          let contact = await this.contactDAO.find(this.id);
-          return await contact.label();
-        }
+      code: function() {
         return this.operatingBusinessName
           ? this.operatingBusinessName
           : this.organization
@@ -170,7 +172,7 @@ foam.CLASS({
             setEmail(user.getEmail());
             setProfilePicture(user.getProfilePicture());
             setAddress(user.getAddress());
-            setPhone(user.getPhone());
+            setPhoneNumber(user.getPhoneNumber());
             setType(user.getType());
           }
         `);

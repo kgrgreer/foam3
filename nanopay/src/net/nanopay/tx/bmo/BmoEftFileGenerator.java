@@ -76,7 +76,7 @@ public class BmoEftFileGenerator implements EFTFileGenerator {
     try {
       BmoEftFile bmoFile = initFile(transactions);
       bmoFile.setFile(createEftFile(bmoFile).getId());
-      bmoFile.setProvider(2); // TODO set provider appropriately
+      bmoFile.setProvider("BMO"); // TODO set provider appropriately
       return (BmoEftFile) ((DAO) this.x.get("bmoEftFileDAO")).put(bmoFile);
     } catch (Throwable t) {
       this.logger.error("BMO Error generating EFT File. " + t.getMessage(), t);
@@ -222,7 +222,7 @@ public class BmoEftFileGenerator implements EFTFileGenerator {
       batchHeader.setOriginatorLongName      (this.clientValue.getOriginatorLongName());
       batchHeader.setInstitutionIdForReturns (this.clientValue.getInstitutionIdForReturns());
       batchHeader.setAccountNumberForReturns (this.clientValue.getAccountNumberForReturns());
-      if ( PADType != -1 ) {
+      if ( PADType != -1l ) {
         batchHeader.setTransactionTypeCode   (PADType);
       } else {
         batchHeader.setTransactionTypeCode   (clientValue.getTransactionType());
@@ -311,7 +311,7 @@ public class BmoEftFileGenerator implements EFTFileGenerator {
     return referenceNumber.getId();
   }
 
-  public CABankAccount getAccountById(long id) {
+  public CABankAccount getAccountById(String id) {
     DAO accountDAO = (DAO) x.get("localAccountDAO");
 
     Account account = (Account) accountDAO.inX(x).find(id);
@@ -377,7 +377,7 @@ public class BmoEftFileGenerator implements EFTFileGenerator {
     HashMap<Integer, List<Transaction>> result = new HashMap<>();
 
     for ( Transaction transaction : transactions ) {
-      int type = PADTypeLineItem.getPADTypeFrom(x, transaction) == null ? -1 : PADTypeLineItem.getPADTypeFrom(x, transaction).getId();
+      int type = PADTypeLineItem.getPADTypeFrom(x, transaction) == null ? -1 : (int) PADTypeLineItem.getPADTypeFrom(x, transaction).getId();
 
       if ( ! result.containsKey(type) ) {
         ArrayList<Transaction> newList = new ArrayList<>();

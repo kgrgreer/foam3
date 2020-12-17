@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.tx.gs',
   name: 'GsTxAssembly',
@@ -8,6 +25,7 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.Currency',
     'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
@@ -15,36 +33,39 @@ foam.CLASS({
     'foam.dao.MDAO',
     'foam.lib.parse.CSVParser',
     'foam.mlang.MLang',
-    'java.util.HashMap',
     'foam.mlang.sink.Count',
+    'foam.nanos.auth.LifecycleState',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
-    'foam.nanos.auth.LifecycleState',
+    'java.util.HashMap',
     'net.nanopay.account.Account',
+    'net.nanopay.account.BrokerAccount',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.TrustAccount',
-    'net.nanopay.account.BrokerAccount',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.exchangeable.Security',
     'net.nanopay.fx.ExchangeRate',
+    'net.nanopay.fx.ExchangeRateService',
+    'net.nanopay.fx.SecurityPrice',
+    'net.nanopay.tx.DVPTransaction',
     'net.nanopay.tx.InfoLineItem',
+    'net.nanopay.tx.TransactionQuote',
+    'net.nanopay.tx.Transfer',
+    'net.nanopay.tx.SummaryTransaction',
+    'net.nanopay.fx.FXSummaryTransaction',
+    'net.nanopay.tx.gs.GsTxCsvRow',
     'net.nanopay.tx.gs.ProgressBarData',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.tx.TransactionQuote',
-    'net.nanopay.tx.gs.GsTxCsvRow',
-    'net.nanopay.tx.DVPTransaction',
-    'net.nanopay.fx.SecurityPrice',
-    'net.nanopay.fx.ExchangeRateService',
-    'foam.core.Currency',
-    'net.nanopay.tx.Transfer'
+    'net.nanopay.tx.model.TransactionStatus'
   ],
 
   constants: [
     {
       name: 'BROKER_ID',
-      type: 'Long',
-      value: 20
+      type: 'String',
+      value: '20'
     }
   ],
 
@@ -170,10 +191,12 @@ foam.CLASS({
       args: [{ name: 'transaction', type: 'net.nanopay.tx.model.Transaction' }],
       javaCode: `
       HashMap hm = (HashMap<Long,Long>) getMyBalances();
-      for ( Transfer tr : transaction.getTransfers() ) {
-        long add4 = 0;
-        if (hm.get(tr.getAccount()) != null ) add4 = (Long) hm.get(tr.getAccount());
-        hm.put(tr.getAccount(),add4+tr.getAmount());
+      if( ! (transaction instanceof SummaryTransaction || transaction instanceof FXSummaryTransaction ) ) {
+        for ( Transfer tr : transaction.getTransfers() ) {
+          long add4 = 0;
+          if (hm.get(tr.getAccount()) != null ) add4 = (Long) hm.get(tr.getAccount());
+          hm.put(tr.getAccount(),add4+tr.getAmount());
+        }
       }
       if ( transaction.getNext() != null )
         for ( Transaction tx : transaction.getNext() )
@@ -256,7 +279,6 @@ foam.CLASS({
       javaCode: `
       tx = addStatusHistory(tx,stamp);
       setTxnCount(getTxnCount()+1);
-      tx.setReferenceNumber("File Upload");
       Transaction [] ts = tx.getNext();
       if (ts != null)
         for (int i = 0; i < ts.length;i++ )
@@ -377,9 +399,9 @@ foam.CLASS({
         { name: 'row', type: 'net.nanopay.tx.gs.GsTxCsvRow' },
         { name: 'cash', type: 'Boolean' }
       ],
-      type: 'long',
+      type: 'String',
       javaCode: `
-      String name = cash ? 
+      String name = cash ?
         row.getCompany() + " CASH (" + row.getCurrency() + ")" :
         row.getCompany() + " (SECURITIES)";
 
@@ -390,9 +412,10 @@ foam.CLASS({
         logger.info("Missing account: "+name+". Creating ...");
 
         DigitalAccount da = new DigitalAccount.Builder(x)
-          .setDenomination(row.getCurrency())  
+          .setDenomination(row.getCurrency())
           .setOwner(1348) // admin@nanopay.net
           .setName(name)
+          .setLifecycleState(LifecycleState.ACTIVE)
           .build();
         return ((Account) accountDAO.put(da)).getId();
       }
@@ -420,10 +443,9 @@ foam.CLASS({
           txn2.setDestinationAmount(((DVPTransaction) txn).getDestinationPaymentAmount());
           txn2.setDestinationCurrency(txn2.findDestinationAccount(x).getDenomination());
           txn2.setSourceCurrency(txn2.findSourceAccount(x).getDenomination());
-          txn2.setReferenceNumber("System Generated");
           txn2 = walk_(txn2,txn.getCreated().getTime());
           verifyBalance(x,txn2);
-        }  
+        }
 
         DAO accountDAO = ((DAO) x.get("localAccountDAO"));
         DAO currencyDAO = ((DAO) x.get("currencyDAO"));
@@ -435,8 +457,8 @@ foam.CLASS({
         if ( currencyDAO.find(txn.getSourceCurrency()) == null ) {
 
           // For a security CI transaction on the broker account, we dont need topups
-          if ( txn.findSourceAccount(x) instanceof BrokerAccount ) 
-            return true; 
+          if ( txn.findSourceAccount(x) instanceof BrokerAccount )
+            return true;
 
           // Calculate the number of remaining securities and top up the source account
           long addd = 0;
@@ -450,7 +472,6 @@ foam.CLASS({
             secCI.setSourceAccount(BROKER_ID);
             secCI.setSourceCurrency(txn.getSourceCurrency());
             secCI.setDestinationCurrency(txn.getSourceCurrency()); // no trading allowed during top ups.
-            secCI.setReferenceNumber("System Generated");
             TransactionQuote quote = new TransactionQuote();
             quote.setRequestTransaction(secCI);
             secCI = (Transaction) ((TransactionQuote)((DAO) x.get("localTransactionPlannerDAO")).put(quote)).getPlan();
@@ -480,11 +501,15 @@ foam.CLASS({
           b = new BankAccount.Builder(x)
             .setOwner(1348)  // admin@nanopay.net
             .setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED)
+            .setLifecycleState(LifecycleState.ACTIVE)
             .setDenomination(txn.getSourceCurrency())
             .setName(txn.getSourceCurrency() + " Bank Account")
             .setAccountNumber("000000")
+            .setCountry("US")
             .build();
-          b = (BankAccount) accountDAO.put_(x,b).fclone();
+          Subject subject = new Subject.Builder(x).setUser(new User.Builder(x).setId(1).build()).build();
+          X systemX = x.put("subject", subject);
+          b = (BankAccount) accountDAO.put_(systemX,b).fclone();
           logger.info("Created account for cash-in transaction: " + b.getName());
         }
 
@@ -500,7 +525,6 @@ foam.CLASS({
             .setSourceCurrency(b.getDenomination())
             .setDestinationAmount(Math.abs(topUp))
             .setLastStatusChange(txn.getLastStatusChange())
-            .setReferenceNumber("System Generated")
             .build();
 
           if ( SafetyUtil.equals(ci.getSourceCurrency(), ci.getDestinationCurrency())) {
@@ -553,7 +577,7 @@ foam.CLASS({
           txn.addLineItems(new InfoLineItem[] {
             createInfoLineItem("Sending Company",row1.getCompany()),
             createInfoLineItem("Receiving Company",row2.getCompany()),
-          }, null);
+          });
         }
 
         txn.addLineItems(new InfoLineItem[] {
@@ -565,7 +589,7 @@ foam.CLASS({
           createInfoLineItem("Liquidity Hierarchy 2",row1.getProto_Liquidity_Hierarchy2()),
           createInfoLineItem("Liquidity Hierarchy 3",row1.getProto_Liquidity_Hierarchy3()),
           createInfoLineItem("Liquidity Hierarchy 4",row1.getProto_Liquidity_Hierarchy4()),
-        }, null);
+        });
         return txn;
       `
     },
@@ -633,11 +657,11 @@ foam.CLASS({
 
         DAO accountDAO = (DAO) x.get("localAccountDAO");
         DAO currencyDAO = (DAO) x.get("currencyDAO");
-        
+
         // Skip trustee for securities
-        if( currencyDAO.find(txn.getSourceCurrency()) == null ) 
+        if( currencyDAO.find(txn.getSourceCurrency()) == null )
           return;
-        
+
         // Create the source trustee account
         TrustAccount sourceTrust = (TrustAccount) accountDAO.find(MLang.EQ(Account.NAME,"Trust Account "+txn.getSourceCurrency()));
         if( sourceTrust == null ) {
@@ -655,15 +679,18 @@ foam.CLASS({
             .setDenomination(txn.getSourceCurrency())
             .setName(txn.getSourceCurrency() +" Bank Account")
             .setAccountNumber("000000")
+            .setCountry("US")
             .build();
-          accountDAO.put(sourceTrust);
-          accountDAO.put(sourceBank);
+          Subject subject = new Subject.Builder(x).setUser(new User.Builder(x).setId(1).build()).build();
+          X systemX = x.put("subject", subject);
+          accountDAO.inX(systemX).put(sourceTrust);
+          accountDAO.inX(systemX).put(sourceBank);
         }
 
         // Check for currency conversion
         if (SafetyUtil.equals(txn.getSourceCurrency(), txn.getDestinationCurrency()))
             return;
-        
+
         // Create the destination trustee account
         TrustAccount destinationTrust = (TrustAccount) accountDAO.find(MLang.EQ(Account.NAME,"Trust Account "+txn.getDestinationCurrency()));
         if( destinationTrust == null ) {
@@ -681,6 +708,7 @@ foam.CLASS({
             .setLifecycleState(LifecycleState.ACTIVE)
             .setDenomination(txn.getDestinationCurrency())
             .setName(txn.getDestinationCurrency() +" Bank Account")
+            .setCountry("US")
             .build();
           accountDAO.put(destinationTrust);
           accountDAO.put(destBank);
@@ -696,11 +724,11 @@ foam.CLASS({
       ],
       javaCode: `
         DAO securitiesDAO = (DAO) x.get("securitiesDAO");
-        
+
         // Check if security exists
-        if (securitiesDAO.find(security) != null ) 
+        if (securitiesDAO.find(security) != null )
           return;
-        
+
         // Otherwise create the security
         Security newSec = new Security.Builder(x)
           .setName("Security: "+ security) // concurrency issue maybe
@@ -718,9 +746,9 @@ foam.CLASS({
       ],
       type: 'net.nanopay.tx.InfoLineItem',
       javaCode: `
-        if (SafetyUtil.isEmpty(data)) 
+        if (SafetyUtil.isEmpty(data))
           return null;
-        
+
         InfoLineItem ifl = new InfoLineItem();
         ifl.setName(title);
         ifl.setNote(data);

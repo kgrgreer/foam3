@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.ui.dashboard.cards',
   name: 'UnlockPaymentsCard',
@@ -20,13 +37,12 @@ foam.CLASS({
   ],
 
   imports: [
-    'agent',
+    'subject',
     'businessOnboardingDAO',
     'canadaUsBusinessOnboardingDAO',
     'uSBusinessOnboardingDAO',
     'menuDAO',
     'stack',
-    'user',
     'auth',
     'appConfigService'
   ],
@@ -51,7 +67,7 @@ foam.CLASS({
     ^title {
       height: 24px;
       margin: 0;
-      font-family: Lato;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 15px;
       font-weight: 900;
       line-height: 1.5;
@@ -60,12 +76,12 @@ foam.CLASS({
     ^description {
       margin: 0;
       margin-top: 8px;
-      font-family: Lato;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       line-height: 1.5;
       color: #525455;
     }
-    ^ .net-nanopay-sme-ui-AbliiActionView-getStarted {
+    ^ .foam-u2-ActionView-getStarted {
       margin-top: 10px;
     }
     ^complete-container {
@@ -116,7 +132,7 @@ foam.CLASS({
     },
     {
       name: 'DESCRIPTION_INTERNATIONAL',
-      message: 'We are adding the ability to make FX payments around the world using Ablii. '
+      message: 'We are adding the ability to make FX payments around the world using '
     },
     {
       name: 'DESCRIPTION_CAD_INTERNATIONAL',
@@ -159,8 +175,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'flagImgPath',
-      expression: function(user, type) {
-        const country = user.address.countryId;
+      expression: function(subject, type) {
+        const country = subject.user.address.countryId;
         if ( type === this.UnlockPaymentsCardType.INTERNATIONAL ) {
           return 'url(\'images/ablii/InternationalCard.png\')'
         }
@@ -203,7 +219,7 @@ foam.CLASS({
         }
 
         if ( type === this.UnlockPaymentsCardType.INTERNATIONAL ) {
-          return this.DESCRIPTION_INTERNATIONAL;
+          return this.DESCRIPTION_INTERNATIONAL + this.theme.appName;
         }
 
         if ( businessOnboarding.signingOfficer || businessOnboarding.status !== this.OnboardingStatus.SAVED ) {
@@ -230,8 +246,8 @@ foam.CLASS({
     },
     {
       name: 'isCanadianBusiness',
-      expression: function(user) {
-        return user.address.countryId === 'CA';
+      expression: function(subject) {
+        return subject.user.address.countryId === 'CA';
       }
     },
     {
@@ -263,7 +279,7 @@ foam.CLASS({
               .end();
             }
             if ( type === self.UnlockPaymentsCardType.INTERNATIONAL && this.isCanadianBusiness
-                && this.hasFXProvisionPermission && ! this.user.onboarded && ! this.isEmployee ) {
+                && this.hasFXProvisionPermission && ! this.subject.user.onboarded && ! this.isEmployee ) {
               return this.E().start().addClass(self.myClass('complete-container'))
                 .start('p').addClass(self.myClass('complete')).add(self.PENDING).end()
               .end();
@@ -297,9 +313,9 @@ foam.CLASS({
       name: 'getStarted',
       label: 'Get started',
       code: function(x) {
-          var userId = this.agent.id;
-          var businessId = this.user.id;
-          if ( ! this.user.onboarded ) {
+          var userId = this.subject.realUser.id;
+          var businessId = this.subject.user.id;
+          if ( ! this.subject.user.onboarded ) {
             var isDomesticOnboarding = this.type === this.UnlockPaymentsCardType.DOMESTIC;
 
             // We need to find the BusinessOnboarding by checking both the

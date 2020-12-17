@@ -16,6 +16,7 @@ import foam.mlang.predicate.Predicate;
 import foam.mlang.sink.Count;
 import foam.nanos.auth.Group;
 import foam.nanos.auth.User;
+import foam.nanos.auth.LifecycleState;
 import foam.nanos.ruler.Operations;
 import foam.nanos.ruler.Rule;
 import foam.nanos.ruler.RuleAction;
@@ -36,10 +37,10 @@ extends Test {
   private Group group;
   private ApprovalRequest initialRequest;
   private User userToTest;
-  private DAO requestDAO, userDAO, ruleDAO, groupDAO;
+  private DAO requestDAO, userDAO, localRuleDAO, groupDAO;
 
   public void runTest(X x) {
-    x = TestUtils.mockDAO(x, "ruleDAO");
+    x = TestUtils.mockDAO(x, "localRuleDAO");
     x = TestUtils.mockDAO(x, "localUserDAO");
     userDAO = new RulerDAO(x, new MDAO(User.getOwnClassInfo()), "testUserDAO");
     x = x.put("localUserDAO", userDAO);
@@ -53,7 +54,7 @@ extends Test {
     x = x.put("approvalRequestDAO", requestDAO);
     userDAO = ((DAO) x.get("localUserDAO"));
 
-    ruleDAO = ((DAO) x.get("ruleDAO"));
+    localRuleDAO = ((DAO) x.get("localRuleDAO"));
 
     createGroup();
     createUsers();
@@ -141,6 +142,7 @@ DAO unapprovedRequestDAO = ApprovalRequestUtil.getAllRequests(x, userToTest.getI
     rule.setDaoKey("testUserDAO");
     rule.setOperation(Operations.CREATE);
     rule.setAfter(true);
+    rule.setLifecycleState(LifecycleState.ACTIVE);
     Predicate predicate = EQ(DOT(NEW_OBJ, INSTANCE_OF(foam.nanos.auth.User.class)), true);
     rule.setPredicate(predicate);
     RuleAction action = (x, obj, oldObj, ruler, r, agency) -> {
@@ -148,7 +150,7 @@ DAO unapprovedRequestDAO = ApprovalRequestUtil.getAllRequests(x, userToTest.getI
       initialRequest = (ApprovalRequest) requestDAO.inX(ctx).put(initialRequest);
     };
     rule.setAction(action);
-    ruleDAO.put(rule);
+    localRuleDAO.put(rule);
 
     Rule rule2 = new Rule();
     rule2.setId("2");
@@ -160,6 +162,7 @@ DAO unapprovedRequestDAO = ApprovalRequestUtil.getAllRequests(x, userToTest.getI
     rule2.setDaoKey("testUserDAO");
     rule2.setOperation(Operations.UPDATE);
     rule2.setAfter(false);
+    rule2.setLifecycleState(LifecycleState.ACTIVE);
     Predicate predicate2 = EQ(DOT(NEW_OBJ, INSTANCE_OF(foam.nanos.auth.User.class)), true);
     rule.setPredicate(predicate2);
     RuleAction action2 = (RuleAction) (x, obj, oldObj, ruler, r2, agency) -> {
@@ -171,6 +174,6 @@ DAO unapprovedRequestDAO = ApprovalRequestUtil.getAllRequests(x, userToTest.getI
       }
     };
     rule2.setAction(action2);
-    ruleDAO.put(rule2);
+    localRuleDAO.put(rule2);
   }
 }

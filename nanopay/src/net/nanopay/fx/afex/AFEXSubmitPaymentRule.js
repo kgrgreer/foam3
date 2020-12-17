@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.fx.afex',
   name: 'AFEXSubmitPaymentRule',
@@ -44,13 +61,13 @@ foam.CLASS({
           AFEXServiceProvider afexService = (AFEXServiceProvider) x.get("afexServiceProvider");
 
           if (transaction.getStatus() == TransactionStatus.PENDING 
-            && SafetyUtil.isEmpty( transaction.getReferenceNumber() ) ) {
+            && SafetyUtil.isEmpty( transaction.getExternalInvoiceId() ) ) {
 
               try {
                 Transaction txn = afexService.submitPayment(transaction);
-                if ( ! SafetyUtil.isEmpty(txn.getReferenceNumber()) ) {
+                if ( ! SafetyUtil.isEmpty(txn.getExternalInvoiceId()) ) {
                   transaction.setStatus(TransactionStatus.SENT);
-                  transaction.setReferenceNumber(txn.getReferenceNumber());
+                  transaction.setExternalInvoiceId(txn.getExternalInvoiceId());
                   FXQuote fxQuote = (FXQuote) ((DAO) x.get("fxQuoteDAO")).find(Long.parseLong(transaction.getFxQuoteId()));            
                   if ( null != fxQuote ) {
                     Date date = null;

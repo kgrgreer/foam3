@@ -1,15 +1,15 @@
 package net.nanopay.tx.cron;
 
 import foam.core.ContextAgent;
-import foam.dao.DAO;
-import foam.core.X;
 import foam.core.Detachable;
+import foam.core.X;
+import foam.dao.AbstractSink;
+import foam.dao.DAO;
+import foam.nanos.auth.User;
 import foam.nanos.notification.Notification;
+import java.util.Date;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.tx.model.Transaction;
-import foam.dao.AbstractSink;
-
-import java.util.Date;
 
 import static foam.mlang.MLang.*;
 
@@ -32,8 +32,10 @@ public class ScheduledTransactionCron implements ContextAgent {
           Notification notification = new Notification();
           notification.setNotificationType("Scheduled transaction failed");
           notification.setBody("Your scheduled transaction for $" + tx.getAmount() + " failed. Reason: " + e.getMessage());
-          notification.setUserId(tx.findSourceAccount(x).getOwner());
-          ((DAO) x_.get("notificationDAO")).put(notification);
+          DAO userDAO = (DAO) x.get("localUserDAO");
+          User user = (User) userDAO.find(tx.findSourceAccount(x).getOwner());
+          if ( user  != null)
+            user.doNotify(x, notification);
         }
       }
     });

@@ -100,3 +100,9 @@ p({
   "desiredModelId": "net.nanopay.account.Account",
   "strategy": "net.nanopay.account.OverdraftAccount"
 })
+p({
+  "class": "foam.strategy.StrategyReference",
+  "id": "1a96afd0-3ae1-4ea4-b25e-d6a731c03f28",
+  "desiredModelId": "net.nanopay.account.Account",
+  "strategy": "net.nanopay.bank.BankAccount"
+})

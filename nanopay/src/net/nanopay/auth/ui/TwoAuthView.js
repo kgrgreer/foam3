@@ -7,7 +7,7 @@ foam.CLASS({
 
   axioms: [
     foam.u2.CSS.create({
-      code: function CSS() {/*
+      code: `
         ^{
           width: 990px;
           margin: auto;
@@ -21,7 +21,7 @@ foam.CLASS({
           line-height: 1;
           letter-spacing: 0.4px;
           color: /*%BLACK%*/ #1e1f21;
-          font-family: Roboto;
+          font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
           margin: 50px 0;
         }
         ^2-auth-container{
@@ -110,7 +110,7 @@ foam.CLASS({
           margin-right: 3px;
           font-size: 12px;
         }
-      */}
+      `
     })
   ],
 

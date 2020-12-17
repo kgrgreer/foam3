@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.tx.rbc',
   name: 'RBCTransactionISO20022Util',
@@ -11,7 +28,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.PrefixLogger',
     'foam.util.SafetyUtil',
-
+    'foam.core.ValidationException',
     'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
@@ -253,7 +270,7 @@ foam.CLASS({
           cdtrAcct.setIdentification(acctId2);
           cdtTrfTxInf.setCreditorAccount(cdtrAcct);
 
-          // Add credit message 
+          // Add credit message
           cdtTrfTxInfList.add(cdtTrfTxInf);
           transactionCount++;
           transactionVal = transactionVal + txn.getAmount(); // TODO should be getDestinationAmount for future USD purposes
@@ -394,7 +411,7 @@ foam.CLASS({
       StringBuilder memId = new StringBuilder();
       memId.append(insNumber);
       memId.append(branchNum);
-      clrSysMmbId2.setMemberIdentification(memId.toString()); 
+      clrSysMmbId2.setMemberIdentification(memId.toString());
       finInstnId2.setClearingSystemMemberIdentification(clrSysMmbId2);
       finInstnId2.setName(insName);
       cdtrAgt.setFinancialInstitutionIdentification(finInstnId2);
@@ -460,7 +477,7 @@ foam.CLASS({
           }
           clrSysMmbId.setMemberIdentification(institutionNumber + branchNumber);
           finInstnId.setClearingSystemMemberIdentification(clrSysMmbId);
-          finInstnId.setName(institutionName); 
+          finInstnId.setName(institutionName);
           if ( "US".equals(sourceAccount.getCountry()) && payerBankAddress != null ) { // Bank address only mandatory for US
             net.nanopay.iso20022.PostalAddress6 pstlAdr2 = new net.nanopay.iso20022.PostalAddress6();
             String streetName = payerBankAddress.getStreetName() == null ? "" : payerBankAddress.getStreetName();
@@ -503,7 +520,7 @@ foam.CLASS({
           dbtrAcct.setCurrency(txn.getSourceCurrency());
           drctDbtTxInf.setDebtorAccount(dbtrAcct);
 
-          // Add debit message 
+          // Add debit message
           drctDbtTxInfList.add(drctDbtTxInf);
           transactionCount++;
           transactionVal = transactionVal + txn.getAmount();
@@ -547,11 +564,11 @@ foam.CLASS({
       ],
       javaCode:`
       if ( ! (transaction instanceof RbcCITransaction || transaction instanceof RbcCOTransaction || transaction instanceof RbcVerificationTransaction) ) {
-        throw new RuntimeException("Wrong transaction type");
+        throw new ValidationException("Wrong transaction type");
       }
 
       if ( (! transaction.getSourceCurrency().equals("CAD") ) && (! transaction.getDestinationCurrency().equals("CAD")) ) {
-        throw new RuntimeException("Wrong currency type");
+        throw new ValidationException("Wrong currency type");
       }
 
       return true;
@@ -666,7 +683,7 @@ foam.CLASS({
         int padtype = 0;
         for ( var lItem : transaction.getLineItems() ) {
           if ( lItem instanceof PADTypeLineItem ) {
-            padtype = ((PADTypeLineItem) lItem).getPadType();
+            padtype = (int) ((PADTypeLineItem) lItem).getPadType();
             break;
           }
         }

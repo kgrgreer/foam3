@@ -9,7 +9,7 @@
 - hides the unneeded fields of Capability 
 - sets the 'of' property to hidden and factory to return `AccountTemplate`
 
-#### GlobalLiquidCapability
+#### LiquidCapability
 - extends LiquidCapability
 - includes boolean properties for view/make/approve on all of the global objects, which are
     - Rule
@@ -22,7 +22,7 @@
 - overrides the implies method such that it 
     Takes a permission string generated from the LiquidAuthorizer in the form of "className.operation", and returns true if the corresponding boolean in this capabiltiy object is set to true
 
-#### AccountBasedLiquidCapability
+#### LiquidCapability
 - extends LiquidCapability
 - includes boolean properties for view/make/approve on all of the account-based objects, which are
     - Account
@@ -38,8 +38,8 @@
 #### Note on UserCapabilityJunctions (UCJ) from User to These Two Types of LiquidCapabilities
 - When a user is assigned some Capability, i.e., an ucj is created, there is usually some type of data stored in the ucj, which can be a piece of document, a signature, or any piece of info required to grant a user the capability in question. 
 - In the case of LiquidCapabilities, the 'data' represents more 'specific' information for level of access that a user is granted.
-- In an ucj object where the Capability is instanceof AccountBasedLiquidCapability, the data is a map, where the keys are all the accounts for which the user is granted this capability, and the values include the approverlevel granted to the user for each specific account, if this capability were to grant the user the ability to 'approve' some object
-- In an ucj object where the Capability is instanceof GlobalLiquidCapability, the data is simply an 'ApproverLevel' object, which represents the approverLevel granted to the user for that capability, if that capability were to grant the user the ability to 'approve' some object
+- In an ucj object where the Capability is instanceof LiquidCapability, the data is a map, where the keys are all the accounts for which the user is granted this capability, and the values include the approverlevel granted to the user for each specific account, if this capability were to grant the user the ability to 'approve' some object
+- In an ucj object where the Capability is instanceof LiquidCapability, the data is simply an 'ApproverLevel' object, which represents the approverLevel granted to the user for that capability, if that capability were to grant the user the ability to 'approve' some object
 
 ### AccountTemplate.js
 
@@ -100,7 +100,7 @@
 
 ### ApproverLevel.js
 
-- an FObject to put into the `data` of UserCapabilityJunction where the Capability is instanceof GlobalLiquidCapability, this has an `approverLevel` property, which is an Integer with a range [1, 2].
+- an FObject to put into the `data` of UserCapabilityJunction where the Capability is instanceof LiquidCapability, this has an `approverLevel` property, which is an Integer with a range [1, 2].
 - implements `Validatable` to ensure the `approverLevel` property is within range
 - Needed to be modelled since `data` field of ucj is an `FObjectProperty`
 
@@ -151,8 +151,6 @@ Hopefully the titles are self-explanatory
 ### CreateUserCapabilityJunctionOnRequestApproval.js
 
 ### AddAccountToUserCapabilityJunctionOnCreate.js
-
-### AddChildAccountToMakerOnAccountApproval.js
 
 ### RemoveAccountFromUcjDataOnAccountRemoval.js
 

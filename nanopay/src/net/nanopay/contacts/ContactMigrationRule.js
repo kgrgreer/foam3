@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.contacts',
   name: 'ContactMigrationRule',
@@ -33,7 +50,7 @@ foam.CLASS({
     },
     {
       name: 'BUSINESS_NOT_FOUND',
-      message: 'Business not found.'
+      message: 'Business not found'
     }
   ],
 
@@ -83,7 +100,7 @@ foam.CLASS({
             )
           )
           .select(new Count());
-        
+
         boolean hasVerifiedBankAccount = count.getValue() > 0;
         boolean justVerifiedBankAccount = false;
 
@@ -149,13 +166,13 @@ foam.CLASS({
         List<Contact> contacts = contactSink.getArray();
 
         /**
-         * Update the contacts based on the original contact's email 
+         * Update the contacts based on the original contact's email
          * which is stored in the external contact token.
          */
         for ( Contact contact : contacts ) {
           Contact updatedContact = (Contact) contact.fclone();
           updatedContact.setBusinessId(business.getId());
-          updatedContact.setSignUpStatus(ContactStatus.ACTIVE);
+          updatedContact.setSignUpStatus(ContactStatus.READY);
           updatedContact.setEmail(business.getEmail());
           localContactDAO.put(updatedContact);
           migrateInvoices(x, contact, business);

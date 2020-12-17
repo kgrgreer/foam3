@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.tx.ruler',
   name: 'AbliiSendCompletedNotification',
@@ -39,9 +56,9 @@ foam.CLASS({
               DAO currencyDAO = ((DAO) x.get("currencyDAO")).inX(x);
               Currency currency = (Currency) currencyDAO.find(tx.getSourceCurrency());
 
-              StringBuilder sb = new StringBuilder(sender.label())
+              StringBuilder sb = new StringBuilder(sender.toSummary())
                 .append(" just initiated a payment to ")
-                .append(receiver.label())
+                .append(receiver.toSummary())
                 .append(" for ")
                 .append(currency.format(tx.getAmount()))
                 .append(" ")
@@ -49,7 +66,7 @@ foam.CLASS({
 
                 StringBuilder rb = new StringBuilder()
                 .append(" Payment has been initiated by ")
-                .append(sender.label());
+                .append(sender.toSummary());
               
               if (
                 invoice.getInvoiceNumber() != null &&

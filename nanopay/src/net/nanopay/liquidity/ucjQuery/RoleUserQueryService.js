@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.liquidity.ucjQuery',
   name: 'RoleUserQueryService',
@@ -21,9 +38,10 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.dao.DAO',
     'foam.mlang.MLang',
+    'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.nanos.crunch.UserCapabilityJunction',
-    'net.nanopay.liquidity.crunch.ApproverLevel',
-    'net.nanopay.liquidity.crunch.GlobalLiquidCapability'
+    'net.nanopay.liquidity.crunch.LiquidCapability',
+    'foam.nanos.crunch.Capability'
   ],
 
   methods: [
@@ -42,70 +60,54 @@ foam.CLASS({
         }
       ],
       javaCode: `  
-      DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
-      DAO capabilitiesDAO = (DAO) x.get("localCapabilityDAO");
+        DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
+        DAO capabilitiesDAO = (DAO) x.get("localCapabilityDAO");
 
-      Logger logger = (Logger) x.get("logger");
+        Logger logger = (Logger) x.get("logger");
 
-      modelToApprove = modelToApprove.toLowerCase();
+        String capabilityName = "approve" + modelToApprove;
 
-      List<GlobalLiquidCapability> capabilitiesWithAbility;
+        // using a set because we only care about unique approver ids
+        Set<Long> uniqueApprovers = new HashSet<>();
 
-      switch(modelToApprove){
-        case "liquidcapability":
-          capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
-            MLang.EQ(GlobalLiquidCapability.CAN_APPROVE_CAPABILITY, true)
+        List foundCapabilityArray = ((ArraySink) capabilitiesDAO
+          .where(
+            foam.mlang.MLang.EQ(Capability.NAME, capabilityName)
           ).select(new ArraySink())).getArray();
-          break;
-        case "rule":
-          capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
-            MLang.EQ(GlobalLiquidCapability.CAN_APPROVE_RULE, true)
-          ).select(new ArraySink())).getArray();
-          break;
-        case "liquiditysettings":
-          capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
-            MLang.EQ(GlobalLiquidCapability.CAN_APPROVE_LIQUIDITYSETTINGS, true)
-          ).select(new ArraySink())).getArray();
-          break;
-        case "user":
-          capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
-            MLang.EQ(GlobalLiquidCapability.CAN_APPROVE_USER, true)
-          ).select(new ArraySink())).getArray();
-          break;
-        case "capabilityrequest":
-          capabilitiesWithAbility = ((ArraySink) capabilitiesDAO.where(
-            MLang.EQ(GlobalLiquidCapability.CAN_APPROVE_CAPABILITYREQUEST, true)
-          ).select(new ArraySink())).getArray();
-          break;
-        default:
-          capabilitiesWithAbility = null;
-          logger.error("Something went wrong with the requested model: " + modelToApprove);
-          throw new RuntimeException("Something went wrong with the requested model: " + modelToApprove);
-      }
 
-      // using a set because we only care about unique approver ids
-      Set<Long> uniqueApprovers = new HashSet<>();
-      List<String> capabilitiesWithAbilityNameIdOnly = new ArrayList<>();
-
-      for ( int i = 0; i < capabilitiesWithAbility.size(); i++ ){
-        capabilitiesWithAbilityNameIdOnly.add(capabilitiesWithAbility.get(i).getId());
-      }
-
-      List ucjsForApprovers = ((ArraySink) ucjDAO.where(MLang.IN(UserCapabilityJunction.TARGET_ID, capabilitiesWithAbilityNameIdOnly)).select(new ArraySink())).getArray();
-
-      for ( int i = 0; i < ucjsForApprovers.size(); i++ ){
-        UserCapabilityJunction currentUCJ = (UserCapabilityJunction) ucjsForApprovers.get(i);
-
-        if ( currentUCJ.getData() != null ){
-          uniqueApprovers.add(currentUCJ.getSourceId());
-        } else {
-          logger.warning("A UCJ with no data is found: " + currentUCJ.getSourceId() + '-' + currentUCJ.getTargetId());
+        if ( foundCapabilityArray.size() == 0 ) {
+          logger.error("Capability could not be found with name: " + capabilityName);
+          throw new RuntimeException("Capability could not be found with name: " + capabilityName);
         }
-      }
 
-      List uniqueApproversList = new ArrayList(uniqueApprovers);
-      
-      return uniqueApproversList;
+        if ( foundCapabilityArray.size() > 1 ){
+          logger.error("Multiple capabilities exist with the same name: " + capabilityName);
+          throw new RuntimeException("Multiple capabilities exist with the same name: " + capabilityName);
+        }
+
+        LiquidCapability foundCapability = (LiquidCapability) foundCapabilityArray.get(0);
+
+        List ucjsForApprovers = ((ArraySink) ucjDAO.where(
+            MLang.AND(
+              MLang.EQ(UserCapabilityJunction.TARGET_ID, foundCapability.getId()),
+              MLang.EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.GRANTED)
+            )
+          )
+          .select(new ArraySink())).getArray();
+
+        for ( int i = 0; i < ucjsForApprovers.size(); i++ ){
+          UserCapabilityJunction currentUCJ = (UserCapabilityJunction) ucjsForApprovers.get(i);
+
+          if ( currentUCJ.getData() != null ){
+            logger.warning("Expecting null data for: " + currentUCJ.getSourceId() + '-' + currentUCJ.getTargetId());
+          } else {
+            uniqueApprovers.add(currentUCJ.getSourceId());
+          }
+        }
+
+        List uniqueApproversList = new ArrayList(uniqueApprovers);
+
+        return uniqueApproversList;
       `
     }
   ]

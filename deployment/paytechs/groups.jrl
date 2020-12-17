@@ -1,0 +1,8 @@
+p({
+    "class":"foam.nanos.auth.Group",
+    "id":"rtp",
+    "description":"Request to Pay Group",
+    "parent":"",
+    "defaultMenu":"rtp",
+    "theme":"A7FBB672-D395-4C30-B5EE-F737B8079BCD"
+})

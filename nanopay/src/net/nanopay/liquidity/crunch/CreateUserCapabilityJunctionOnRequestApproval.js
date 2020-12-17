@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.liquidity.crunch',
   name: 'CreateUserCapabilityJunctionOnRequestApproval',
@@ -5,13 +22,19 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAwareAgent',
     'foam.core.X',
+    'foam.core.NumberSet',
+    'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.nanos.auth.User',
+    'foam.nanos.crunch.Capability',
     'foam.nanos.crunch.UserCapabilityJunction',
-    'java.util.Map',
-    'java.util.HashMap',
     'java.util.List',
+    'java.util.Set',
+    'java.util.HashSet',
+    'foam.util.SafetyUtil',
     'net.nanopay.account.Account',
+    'foam.nanos.logger.Logger',
+    'foam.core.PropertyInfo',
     'net.nanopay.liquidity.tx.AccountHierarchy',
     'static foam.mlang.MLang.*'
   ],
@@ -28,113 +51,80 @@ foam.CLASS({
           public void execute(X x) {
             DAO userCapabilityJunctionDAO = (DAO) getX().get("userCapabilityJunctionDAO");
             DAO capabilityDAO = (DAO) getX().get("localCapabilityDAO");
+            DAO roleTemplateDAO = (DAO) getX().get("roleTemplateDAO");
+            DAO accountTemplateDAO = (DAO) getX().get("accountTemplateDAO");
+            Logger logger = (Logger) getX().get("logger");
 
-            CapabilityRequest req = (CapabilityRequest) obj;
-            CapabilityRequestOperations requestType = req.getRequestType();
+            RoleAssignment req = (RoleAssignment) obj;
+            RoleTemplate roleTemplate = (RoleTemplate) roleTemplateDAO.find(req.getRoleTemplate());
+            AccountTemplate accountTemplate = (AccountTemplate) accountTemplateDAO.find(req.getAccountTemplate());
             
             List<Long> users = req.getUsers();
-            LiquidCapability capability;
+            List<PropertyInfo> allProps = roleTemplate.getClassInfo().getAxiomsByClass(PropertyInfo.class);
 
-            if ( requestType == CapabilityRequestOperations.ASSIGN_ACCOUNT_BASED ) {
-              capability = (AccountBasedLiquidCapability) capabilityDAO.find(req.getAccountBasedCapability());
+            for ( PropertyInfo property : allProps ){
+              if ( ! SafetyUtil.equals(property.getValueClass().getSimpleName(),"boolean") ) continue;
 
-              Map<String, CapabilityAccountData> newMap;
-              if ( req.getIsUsingTemplate() ) { 
-                newMap = req.getCapabilityAccountTemplateMap();
-                ApproverLevel newApproverLevel = new ApproverLevel.Builder(x).setApproverLevel(req.getApproverLevel()).build();
+              Boolean isCurrentCapabilityIncluded = (Boolean) roleTemplate.getProperty(property.getName());
 
-                for ( String k : newMap.keySet()  ){
-                  CapabilityAccountData cad = new CapabilityAccountData.Builder(x)
-                    .setApproverLevel(newApproverLevel)
-                    .setIsIncluded(((AccountData) newMap.get(k)).getIsIncluded())
-                    .setIsCascading(((AccountData) newMap.get(k)).getIsCascading())
-                    .build();
+              if ( isCurrentCapabilityIncluded ){
+                
+                List foundCapabilityArray = ((ArraySink) capabilityDAO
+                  .where(
+                    foam.mlang.MLang.EQ(Capability.NAME, property.getName())
+                  ).inX(getX()).select(new ArraySink())).getArray();
 
-                  newMap.put(k, cad);
+                if ( foundCapabilityArray.size() == 0 ) {
+                  logger.error("Capability could not be found with name: " + property.getName());
+                  throw new RuntimeException("Capability could not be found with name: " + property.getName());
                 }
-              } else { 
-                CapabilityAccountData data = new CapabilityAccountData.Builder(x)
-                  .setIsCascading(false)
-                  .setIsIncluded(true)
-                  .setApproverLevel(new ApproverLevel.Builder(x).setApproverLevel(req.getApproverLevel()).build())
-                  .build();
-                newMap = new HashMap<String, CapabilityAccountData>();
-                newMap.put(String.valueOf(req.getAccountToAssignTo()), data);
+
+                if ( foundCapabilityArray.size() > 1 ){
+                  logger.error("Multiple capabilities exist with the same name: " + property.getName());
+                  throw new RuntimeException("Multiple capabilities exist with the same name: " + property.getName());
+                }
+
+                LiquidCapability foundCapability = (LiquidCapability) foundCapabilityArray.get(0);
+
+                if ( SafetyUtil.equals(foundCapability.getName(), "viewAccount") ){
+                  AccountHierarchy accountHierarchy = (AccountHierarchy) getX().get("accountHierarchyService");
+                  accountHierarchy.addViewableRootAccounts(x, req.getUsers(), accountTemplate.getRoots());
+                }
+
+                for ( Long userId : users ) {
+                  UserCapabilityJunction ucj = new UserCapabilityJunction.Builder(x).setSourceId(userId).setTargetId(foundCapability.getId()).build();
+
+                  if ( foundCapability.getIsAccountBased() ){
+                    UserCapabilityJunction oldUcj = (UserCapabilityJunction) userCapabilityJunctionDAO.find(ucj.getId());
+
+                    if ( accountTemplate == null ){
+                      logger.error("AccountGroup does not exist " + property.getName());
+                      throw new RuntimeException("Cannot assign the following capability without an account group: " + property.getName()); 
+                    }
+
+                    Set<String> dataSet = new HashSet<String>(accountTemplate.getAccounts());
+                    //TODO: fix for account string id.
+                    if ( true ) throw new RuntimeException("TODO: fix numberset in CreateUserCapabilityJunctionOnRequestApproval");
+                    // if ( oldUcj != null ){
+                    //   NumberSet oldData = (NumberSet) oldUcj.getData();
+                    //   Set<Long> oldDataSet = (HashSet<Long>) oldData.getAsRealSet();
+                    //   dataSet.addAll(oldDataSet);
+                    // }
+
+                    // NumberSet newData = new NumberSet();
+                    // newData.setAsRealSet(dataSet);
+
+                    // ucj.setData(newData);
+                  }
+
+                  ucj.setStatus(foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
+                  userCapabilityJunctionDAO.put_(getX(), ucj);
+
+                }
               }
-              
-              if ( newMap == null || newMap.size() == 0 ) 
-                throw new RuntimeException("User cannot be assigned to a transactional capability without providing account");
-
-              AccountHierarchy accountHierarchy = (AccountHierarchy) getX().get("accountHierarchyService");
-
-              for ( Long user : users )  {
-                UserCapabilityJunction ucj = new UserCapabilityJunction.Builder(x).setSourceId(user).setTargetId(capability.getId()).build();
-                UserCapabilityJunction oldUcj = (UserCapabilityJunction) userCapabilityJunctionDAO.find(ucj.getId());
-                AccountApproverMap oldTemplate = ( oldUcj != null ) ? (AccountApproverMap) oldUcj.getData() : null;
-                AccountApproverMap fullAccountMap = accountHierarchy.getAssignedAccountMap(x, ((AccountBasedLiquidCapability) capability).getCanViewAccount(), user, oldTemplate, newMap);
-                ucj.setData(fullAccountMap);
-                ucj.setStatus(foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
-                userCapabilityJunctionDAO.put(ucj);
-              }
-            } else if ( requestType == CapabilityRequestOperations.ASSIGN_GLOBAL ) {
-              capability = (GlobalLiquidCapability) capabilityDAO.find(req.getGlobalCapability());
-
-              ApproverLevel approverLevel = new net.nanopay.liquidity.crunch.ApproverLevel.Builder(x).setApproverLevel(req.getApproverLevel()).build();
-              UserCapabilityJunction ucj = new UserCapabilityJunction.Builder(x).build();
-
-              ucj.setData(approverLevel);
-
-              for ( Long userId : users ) {
-                ucj.setSourceId(userId);
-                ucj.setTargetId(capability.getId());
-                ucj.setStatus(foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
-                userCapabilityJunctionDAO.put_(getX(), ucj);
-              }
-            /** Commenting out revoke for liquid launch
-            } else if ( requestType == CapabilityRequestOperations.REVOKE_ACCOUNT_BASED ) {
-              capability = (AccountBasedLiquidCapability) capabilityDAO.find(req.getAccountBasedCapability());
-
-              Map<String, CapabilityAccountData> newMap;
-              if ( req.getIsUsingTemplate() ) { 
-                newMap = req.getCapabilityAccountTemplateMap();
-              } else { 
-                CapabilityAccountData data = new CapabilityAccountData.Builder(x)
-                  .setIsCascading(false)
-                  .setIsIncluded(true)
-                  .build();
-                newMap = new HashMap<String, CapabilityAccountData>();
-                newMap.put(String.valueOf(req.getAccountToAssignTo()), data);
-              }
-
-              if ( newMap == null || newMap.size() == 0 ) 
-                throw new RuntimeException("User cannot be assigned to a transactional capability without providing account");
-
-              AccountHierarchy accountHierarchy = (AccountHierarchy) getX().get("accountHierarchyService");
-
-              for ( Long user : users )  {
-                UserCapabilityJunction ucj = new UserCapabilityJunction.Builder(x).setSourceId(user).setTargetId(capability.getId()).build();
-                UserCapabilityJunction oldUcj = (UserCapabilityJunction) userCapabilityJunctionDAO.find(ucj.getId());
-                AccountApproverMap oldTemplate = ( oldUcj != null ) ? (AccountApproverMap) oldUcj.getData() : null;
-                AccountApproverMap fullAccountMap = accountHierarchy.getRevokedAccountsMap(x, ((AccountBasedLiquidCapability) capability).getCanViewAccount(), user, oldTemplate, newMap);
-                ucj.setData(fullAccountMap);
-                userCapabilityJunctionDAO.put(ucj);
-              }
-            } else if ( requestType == CapabilityRequestOperations.REVOKE_GLOBAL ) {
-              capability = (GlobalLiquidCapability) capabilityDAO.find(req.getGlobalCapability());
-
-              for ( Long userId : users ) {
-
-                userCapabilityJunctionDAO.remove((UserCapabilityJunction) userCapabilityJunctionDAO.find(AND(
-                  EQ(UserCapabilityJunction.SOURCE_ID, userId),
-                  EQ(UserCapabilityJunction.TARGET_ID, capability.getId())
-                )));
-              }
-            */
-            } else {
-              throw new RuntimeException("Invalid CapabilityRequest type");
             }
           }
-        }, "Create UserCapabilityJunction on CapabilityRequest Approval");
+        }, "Create UserCapabilityJunction on RoleAssignment Approval");
       `
     }
   ]
@@ -144,7 +134,7 @@ foam.CLASS({
 
 foam.CLASS({
   package: 'net.nanopay.liquidity.crunch',
-  name: 'ApprovedCapabilityRequestPredicate',
+  name: 'ApprovedRoleAssignmentPredicate',
 
   extends: 'foam.mlang.predicate.AbstractPredicate',
   implements: ['foam.core.Serializable'],
@@ -159,7 +149,7 @@ foam.CLASS({
       name: 'f',
       javaCode: `
         return
-          EQ(DOT(NEW_OBJ, CapabilityRequest.LIFECYCLE_STATE), LifecycleState.ACTIVE)
+          EQ(DOT(NEW_OBJ, RoleAssignment.LIFECYCLE_STATE), LifecycleState.ACTIVE)
         .f(obj);
       `
     } 

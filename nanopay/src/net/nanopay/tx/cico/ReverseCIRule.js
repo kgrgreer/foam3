@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.tx.cico',
   name: 'ReverseCIRule',
@@ -41,17 +58,15 @@ foam.CLASS({
                 .setSourceAccount(txn.getDestinationAccount())
                 .setAmount(txn.getAmount())
                 .setName("Reversal of DECLINED: "+txn.getId())
-                .setIsQuoted(true)
                 .setAssociateTransaction(txn.getId())
                 .build();
 
               try {
-                ((DAO) x.get("transactionDAO")).put_(x, revTxn);
+                ((DAO) x.get("localTransactionDAO")).put_(x, revTxn);
               }
               catch (Exception e) {
                 //email Support about failure.
                 Notification notification = new Notification();
-                notification.setEmailIsEnabled(true);
                 notification.setBody("Cash in transaction id: " + txn.getId() + " was declined but failed to revert the balance.");
                 notification.setNotificationType("Cashin transaction declined");
                 notification.setGroupId("support");

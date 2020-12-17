@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.admin.ui',
   name: 'ResendInviteModal',
@@ -10,14 +27,15 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'net.nanopay.ui.modal.ModalHeader'
   ],
 
   imports: [
     'inviteToken',
     'editProfilePopUp',
-    'closeDialog'
+    'closeDialog',
+    'notify'
   ],
 
   css: `
@@ -96,10 +114,10 @@ foam.CLASS({
         this.inviteToken.generateToken(null, this.data).then(function (result) {
           if ( ! result ) throw new Error('Unable to resend invitation.');
           X.closeDialog();
-          self.add(self.NotificationMessage.create({ message: 'Invitation successfully resent.' }));
+          X.notify('Invitation successfully resent.', '', self.LogLevel.INFO, true);
         })
         .catch(function (err) {
-          self.add(self.NotificationMessage.create({ message: 'Unable to resend invitation.', type: 'error' }));
+          X.notify('Unable to resend invitation.', '', self.LogLevel.ERROR, true);
         });
       }
     }

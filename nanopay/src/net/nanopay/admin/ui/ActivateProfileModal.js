@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.admin.ui',
   name: 'ActivateProfileModal',
@@ -10,13 +27,14 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.ui.modal.ModalHeader',
   ],
 
   imports: [
     'userDAO',
+    'notify',
     'closeDialog'
   ],
 
@@ -98,10 +116,10 @@ foam.CLASS({
           if ( ! result ) throw new Error('Unable to activate profile.');
           X.closeDialog();
           self.data.copyFrom(result);
-          self.add(self.NotificationMessage.create({ message: 'Profile successfully activated.' }));
+          self.notify('Profile successfully activated.', '', self.LogLevel.INFO, true);
         })
         .catch(function (err) {
-          self.add(self.NotificationMessage.create({ message: 'Unable to activate profile.', type: 'error' }));
+          self.notify('Unable to activate profile.', '', self.LogLevel.ERROR, true);
         });
       }
     }

@@ -1,3 +1,19 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
 
 foam.CLASS({
   package: 'net.nanopay.ui.modal',
@@ -7,13 +23,14 @@ foam.CLASS({
   documentation: 'Terms and Conditions Modal',
 
   requires: [
+    'foam.log.LogLevel',
     'net.nanopay.ui.modal.ModalHeader',
-    'foam.u2.dialog.NotificationMessage',
   ],
 
   imports: [
     'appConfig',
     'emailDocService',
+    'notify',
     'user'
   ],
 
@@ -113,10 +130,10 @@ foam.CLASS({
           if ( ! result ) {
             throw new Error('Error sending Email');
           }
-          self.add(self.NotificationMessage.create({ message: 'Email sent to ' + self.user.email }));
+          self.notify('Email sent to ' + self.user.email, '', self.LogLevel.INFO, true);
         })
         .catch(function(err) {
-          self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+          self.notify(err.message, '', self.LogLevel.ERROR, true);
         });
       }
     },

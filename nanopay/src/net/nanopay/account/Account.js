@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.account',
   name: 'Account',
@@ -9,23 +26,26 @@ foam.CLASS({
   implements: [
     'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.CreatedByAware',
-    'foam.nanos.auth.DeletedAware', // TODO: need to properly deprecate DeletedAware
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.LastModifiedByAware',
     'net.nanopay.liquidity.approvalRequest.AccountApprovableAware',
   ],
 
   imports: [
-    'homeDenomination',
-    'exchangeRateService',
-    'user',
-    'balanceService',
-    'currencyDAO'
+    'exchangeRateService?',
+    'user?',
+    'balanceService?',
+    'currencyDAO?'
   ],
 
   javaImports: [
     'foam.dao.DAO',
-    'foam.core.Currency'
+    'foam.core.Currency',
+    'foam.nanos.logger.Logger',
+    'foam.nanos.session.LocalSetting',
+    'foam.nanos.session.Session',
+    'net.nanopay.fx.ExchangeRateService',
+    'static foam.mlang.MLang.EQ'
   ],
 
   searchColumns: [
@@ -40,8 +60,7 @@ foam.CLASS({
     'id',
     'type',
     'summary',
-    'balance',
-    'homeBalance'
+    'balance'
   ],
 
   axioms: [
@@ -59,6 +78,10 @@ foam.CLASS({
     }
   ],
 
+  messages: [
+    { name: 'DEFAULT_MSG', message: 'Default' }
+  ],
+
   sections: [
     {
       name: 'accountType',
@@ -67,7 +90,7 @@ foam.CLASS({
       order: 1
     },
     {
-      name: 'accountDetails',
+      name: 'accountInformation',
       order: 2
     },
     {
@@ -82,16 +105,38 @@ foam.CLASS({
       order: 4
     },
     {
-      name: 'administration',
-      permissionRequired: true,
+      name: 'complianceInformation',
+      title: 'Compliance',
       order: 5
     },
     {
-      name: '_defaultSection',
-      title: 'Relationships',
+      name: 'operationsInformation',
+      title: 'Operations',
       permissionRequired: true,
       order: 6
-     }
+    },
+    {
+      name: 'ownerInformation',
+      title: 'Owner',
+      permissionRequired: true,
+      order: 7
+    },
+    {
+      name: 'transactionInformation',
+      title: 'Transaction',
+      permissionRequired: true,
+      order: 8
+    },
+    {
+      name: 'systemInformation',
+      permissionRequired: true,
+      order: 9
+    },
+    {
+      name: 'deprecated',
+      permissionRequired: true,
+      order: 10
+    }
   ],
 
   properties: [
@@ -107,34 +152,26 @@ foam.CLASS({
       javaGetter: `
         return getClass().getSimpleName();
       `,
-      tableWidth: 135,
-      section: 'accountType',
-      visibility: 'RO'
+      tableWidth: 150,
+      section: 'accountInformation',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
     },
     {
-      class: 'Long',
+      class: 'String',
       name: 'id',
-      label: 'Account Number',
       documentation: 'The ID for the account.',
-      section: 'administration',
-      visibility: 'RO',
-      tableWidth: 50
-    },
-    {
-      class: 'Boolean',
-      name: 'enabled',
-      documentation: `Determines whether an account is disabled. Accounts
-        on this platform are disabled rather than deleted.
-      `,
-      value: true,
-      section: 'administration',
+      section: 'accountInformation',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
+      tableWidth: 150
     },
     {
       class: 'Boolean',
       name: 'deleted',
       documentation: 'Determines whether the account is deleted.',
       value: false,
-      section: 'administration',
+      section: 'deprecated',
       writePermissionRequired: true,
       visibility: 'RO',
       tableWidth: 85
@@ -150,8 +187,9 @@ foam.CLASS({
           return 'Account name may not consist of only whitespace.';
         }
       },
-      section: 'accountDetails',
-      order: 1
+      section: 'accountInformation',
+      order: 1,
+      tableWidth: 200
     },
     {
       class: 'String',
@@ -159,7 +197,7 @@ foam.CLASS({
       documentation: `The given description of the account, provided by
         the individual person, or real user.`,
       label: 'Memo',
-      section: 'accountDetails',
+      section: 'accountInformation',
       order: 2
     },
     {
@@ -167,26 +205,27 @@ foam.CLASS({
       name: 'transferIn',
       documentation: 'Determines whether an account can receive transfers.',
       value: true,
-      section: 'administration'
+      section: 'systemInformation'
     },
     {
       class: 'Boolean',
       name: 'transferOut',
       documentation: 'Determines whether an account can make transfers out.',
       value: true,
-      section: 'administration'
+      section: 'systemInformation'
     },
     {
       class: 'Reference',
       of: 'foam.core.Unit',
       name: 'denomination',
+      label: 'Currency',
       targetDAOKey: 'currencyDAO',
       documentation: `The unit of measure of the payment type. The payment system can handle
         denominations of any type, from mobile minutes to stocks.
       `,
       tableWidth: 127,
       writePermissionRequired: true,
-      section: 'accountDetails',
+      section: 'accountInformation',
       order: 3,
       view: function(_, X) {
         return {
@@ -208,9 +247,12 @@ foam.CLASS({
       tableWidth: 87,
       label: 'Set As Default',
       value: false,
-      section: 'administration',
+      section: 'operationsInformation',
       tableHeaderFormatter: function(axiom) {
         this.add('Default');
+      },
+      tableHeader: function(axiom) {
+        return this.sourceCls_.DEFAULT_MSG;
       },
       tableCellFormatter: function(value, obj, property) {
         this
@@ -227,12 +269,18 @@ foam.CLASS({
       unitPropName: 'denomination',
       name: 'balance',
       label: 'Balance (local)',
-      documentation: 'A numeric value representing the available funds in the bank account.',
+      documentation: 'A numeric value representing the available funds in the account.',
       section: 'balanceDetails',
       storageTransient: true,
       createVisibility: 'HIDDEN', // No point in showing as read-only during create since it'll always be 0
       updateVisibility: 'RO',
       readVisibility: 'RO',
+      unitPropValueToString: async function(x, val, unitPropName) {
+        var unitProp = await x.currencyDAO.find(unitPropName);
+        if ( unitProp )
+          return unitProp.format(val);
+        return val;
+      },
       javaToCSV: `
         DAO currencyDAO = (DAO) x.get("currencyDAO");
         long balance  = (Long) ((Account)obj).findBalance(x);
@@ -255,59 +303,83 @@ foam.CLASS({
 
   },
     {
-      class: 'UnitValue',
-      unitPropName: 'homeDenomination',
+      class: 'String',
       name: 'homeBalance',
       label: 'Balance (home)',
       documentation: `
         A numeric value representing the available funds in the
-        bank account converted to home denomination.
+        account converted to the home denomination.
       `,
       section: 'balanceDetails',
       storageTransient: true,
       visibility: 'RO',
+      javaGetter: `
+        Session session = foam.core.XLocator.get().get(Session.class);
+        if ( session == null ) {
+          return "";
+        }
+        foam.dao.DAO localLocalSettingDAO = (foam.dao.DAO)session.getContext().get("localLocalSettingDAO");
+
+        String homeDenomination = "USD";
+
+        if (localLocalSettingDAO != null) {
+          LocalSetting ls = (LocalSetting)localLocalSettingDAO.find(EQ(LocalSetting.ID, "homeDenomination"));
+          if ( ls != null && ! ls.getValue().isEmpty() )
+            homeDenomination = ls.getValue();
+        }
+
+        String denomination = getDenomination();
+        ExchangeRateService ert = (ExchangeRateService)session.getContext().get("exchangeRateService");
+        if ( ert != null ) {
+          String exchangeFormat = null;
+          //catching "Rate Not Found" RuntimeException
+          try {
+            exchangeFormat = ert.exchangeFormat(denomination, homeDenomination, getBalance());
+          } catch(Throwable t) { }
+          if ( exchangeFormat == null )
+            return "";
+          return exchangeFormat + " " + homeDenomination;
+        }
+        return "";
+      `,
       tableWidth: 175,
       tableCellFormatter: function(value, obj, axiom) {
-      var self = this;
-        this.add(obj.slot(function(denomination, homeDenomination, balance) {
-          return self.E().add(foam.core.PromiseSlot.create({
-            promise: this.exchangeRateService.exchangeFormat(denomination, homeDenomination, balance).then((result) => {
-              return self.E().add(result);
-            })
-          }));
-        }))
+        this.add(value);
       }
     },
     {
       class: 'DateTime',
       name: 'created',
       documentation: 'The date and time of when the account was created in the system.',
-      section: 'administration',
-      visibility: 'RO',
+      section: 'operationsInformation',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
       documentation: 'The ID of the User who created the account.',
-      section: 'administration',
-      visibility: 'RO',
+      section: 'operationsInformation',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdByAgent',
       documentation: 'The ID of the Agent who created the account.',
-      section: 'administration',
-      // visibility: 'RO',
-      visibility: 'HIDDEN'
+      section: 'operationsInformation',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
     },
     {
       class: 'DateTime',
       name: 'lastModified',
       documentation: 'The date and time of when the account was last changed in the system.',
-      section: 'administration',
-      visibility: 'RO',
+      section: 'operationsInformation',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO'
     },
     {
       class: 'Reference',
@@ -315,12 +387,13 @@ foam.CLASS({
       name: 'lastModifiedBy',
       documentation: `The unique identifier of the individual person, or real user,
         who last modified this account.`,
-      section: 'administration',
-      visibility: 'RO',
+      section: 'operationsInformation',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
       tableCellFormatter: function(value, obj, axiom) {
         this.__subSubContext__.userDAO
           .find(value)
-          .then((user) => this.add(user.label()))
+          .then((user) => this.add(user.toSummary()))
           .catch((error) => {
             this.add(value);
           });
@@ -329,7 +402,9 @@ foam.CLASS({
     {
       class: 'String',
       name: 'summary',
-      visibility: 'RO',
+      section: 'accountInformation',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
       transient: true,
       documentation: `
         Used to display a lot of information in a visually compact way in table views`,
@@ -359,7 +434,7 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
-      section: 'administration',
+      section: 'systemInformation',
       value: foam.nanos.auth.LifecycleState.PENDING,
       writePermissionRequired: true,
       createVisibility: 'HIDDEN',
@@ -371,6 +446,20 @@ foam.CLASS({
       of: 'foam.comics.v2.userfeedback.UserFeedback',
       name: 'userFeedback',
       storageTransient: true,
+      visibility: 'HIDDEN'
+    },
+    {
+      name: 'checkerPredicate',
+      javaFactory: 'return foam.mlang.MLang.FALSE;'
+    },
+    {
+      class: 'String',
+      name: 'externalId',
+      visibility: 'HIDDEN'
+    },
+    {
+      class: 'Map',
+      name: 'externalData',
       visibility: 'HIDDEN'
     }
   ],
@@ -420,7 +509,15 @@ foam.CLASS({
         return x.balanceService.findBalance(x, this.id);
       },
       javaCode: `
-        return ((BalanceService) x.get("balanceService")).findBalance_(x, this);
+        long balance = 0;
+        //catching "Rate Not Found" RuntimeException
+        try {
+          balance = ((BalanceService) x.get("balanceService")).findBalance_(x, this);
+        } catch(Throwable t) {
+          Logger logger = (Logger) getX().get("logger");
+          logger.error(t);
+        }
+        return balance;
       `
     },
     {
@@ -438,7 +535,6 @@ foam.CLASS({
         },
         {
           name: 'amount',
-
           type: 'Long'
         }
       ],
@@ -449,21 +545,13 @@ foam.CLASS({
              -amount > bal ) {
           foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
           logger.debug(this, "amount", amount, "balance", bal);
-          throw new RuntimeException("Insufficient balance in account " + this.getId());
+          throw new InsufficientBalanceException(this.getId());
         }
       `
     },
     {
-      name: 'getApprovableKey',
-      type: 'String',
-      javaCode: `
-        Long key = getId();
-        return (String) key.toString();
-      `
-    },
-    {
       name: 'getOutgoingAccountCreate',
-      type: 'Long',
+      type: 'String',
       args: [
         {
           type: 'Context',
@@ -476,7 +564,7 @@ foam.CLASS({
     },
     {
       name: 'getOutgoingAccountRead',
-      type: 'Long',
+      type: 'String',
       args: [
         {
           type: 'Context',
@@ -489,7 +577,7 @@ foam.CLASS({
     },
     {
       name: 'getOutgoingAccountUpdate',
-      type: 'Long',
+      type: 'String',
       args: [
         {
           type: 'Context',
@@ -502,7 +590,7 @@ foam.CLASS({
     },
     {
       name: 'getOutgoingAccountDelete',
-      type: 'Long',
+      type: 'String',
       args: [
         {
           type: 'Context',

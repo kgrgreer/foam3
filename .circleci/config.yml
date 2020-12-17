@@ -7,13 +7,14 @@ version: 2
 jobs:
   build:
     docker:
-      - image: 132252763429.dkr.ecr.us-east-1.amazonaws.com/nanopay/java11:latest
+      - image: 132252763429.dkr.ecr.us-east-1.amazonaws.com/nanopay/node:latest
     working_directory: ~/NANOPAY
     steps:
       - checkout
       - run: mkdir -p ~/.ssh && ssh-keyscan github.com >> ~/.ssh/known_hosts
       - run: echo "127.0.0.1  ablii" >> /etc/hosts
       - run: echo "127.0.0.1  liquid" >> /etc/hosts
+      - run: echo `node --version`
       - run: git submodule sync
       - run: git submodule update --init
 

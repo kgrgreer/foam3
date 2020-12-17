@@ -1,0 +1,6 @@
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "flinks",
+  "parameters": true,
+  "serviceScript": "return new net.nanopay.flinks.widget.FlinksWebAgent()"
+})

@@ -47,6 +47,10 @@ public class FXServer extends ContextAwareSupport implements FXService, NanoServ
 
   }
 
+  public double getFXSpotRate(String sourceCurrency, String targetCurrency, long userId) throws RuntimeException {
+    throw new RuntimeException("Missing implementation");
+  }
+
   public boolean acceptFXRate(String quoteId, long userId) throws RuntimeException {
     boolean accepted = false;
     User user = findUser(userId);

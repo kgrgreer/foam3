@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.fx.afex',
   name: 'AFEXComplianceTransactionRule',
@@ -11,6 +28,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.dao.ArraySink',
+    'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'java.util.List',
     'net.nanopay.account.Account',
@@ -27,15 +45,7 @@ foam.CLASS({
         @Override
         public void execute(X x) {
           
-          if ( ! (obj instanceof AFEXBeneficiaryComplianceTransaction) ) {
-            return;
-          }
           AFEXBeneficiaryComplianceTransaction txn = (AFEXBeneficiaryComplianceTransaction) obj;
-
-          if ( txn.getStatus() != TransactionStatus.PENDING ) {
-            return;
-          }
-          
           AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
 
           Account sourceAccount = txn.findSourceAccount(x);
@@ -57,8 +67,8 @@ foam.CLASS({
               ((Logger) x.get("logger")).error("AFEX Business not found for transaction " + txn.getId() + " with owner id " + beneficiary.getOwner() );
               return;
             }
-
-            FindBeneficiaryResponse beneficiaryResponse = afexServiceProvider.findBeneficiary(beneficiary.getContact(),afexBusiness.getApiKey());
+            User user = User.findUser(x, afexBusiness.getUser());
+            FindBeneficiaryResponse beneficiaryResponse = afexServiceProvider.findBeneficiary(beneficiary.getContact(),afexBusiness.getApiKey(), user.getSpid());
             if ( beneficiaryResponse.getStatus().equals("Approved") ) {
               beneficiary = (AFEXBeneficiary) beneficiary.fclone();
               beneficiary.setStatus("Active");

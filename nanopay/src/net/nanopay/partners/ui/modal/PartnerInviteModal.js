@@ -1,4 +1,21 @@
 /**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
+/**
  * Modal to invite partners to the nanopay platform.
  */
 foam.CLASS({
@@ -10,12 +27,13 @@ foam.CLASS({
 
   imports: [
     'invitationDAO',
+    'notify',
     'user',
     'validateEmail'
   ],
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'foam.u2.tag.TextArea',
     'net.nanopay.model.Invitation',
     'net.nanopay.ui.modal.ModalHeader'
@@ -41,10 +59,10 @@ foam.CLASS({
       border-radius: 2px;
       width: 448px;
       margin: auto;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
     ^ .label {
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: 300;
       letter-spacing: 0.2px;
@@ -75,7 +93,7 @@ foam.CLASS({
       background-color: #ffffff;
       border: solid 1px rgba(164, 179, 184, 0.5);
       padding: 10px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       line-height: 1.33;
       letter-spacing: 0.2;
@@ -120,7 +138,7 @@ foam.CLASS({
     },
     {
       name: 'InviteSendError',
-      message: 'There was a problem sending the invitation.'
+      message: 'There was a problem sending the invitation'
     },
     {
       name: 'ModalTitle',
@@ -136,7 +154,7 @@ foam.CLASS({
       code: function(X) {
         var self = this;
         if ( ! this.validateEmail(this.emailAddress) ) {
-          this.add(this.NotificationMessage.create({ message: 'Invalid Email Address.', type: 'error' }));
+          this.notify('Invalid email address.', '', this.LogLevel.ERROR, true);
           return;
         }
         var invite = this.Invitation.create({
@@ -147,15 +165,10 @@ foam.CLASS({
 
         // See SendInvitationDAO.java
         this.invitationDAO.put(invite).then(function(a) {
-          X.ctrl.add(self.NotificationMessage.create({
-            message: self.InviteSendSuccess,
-          }));
+          X.notify(self.InviteSendSuccess, '', self.LogLevel.INFO, true);
           X.closeDialog();
         }).catch(function(err) {
-          X.ctrl.add(self.NotificationMessage.create({
-            message: err.message,
-            type: 'error',
-          }));
+          X.notify(err.message, '', self.LogLevel.ERROR, true);
         });
       }
     }

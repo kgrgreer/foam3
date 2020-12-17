@@ -1,0 +1,55 @@
+<title>API Documentation</title>
+
+<h1>Introduction</h1>
+This API Reference is designed to guide nanopay partners that integrate with our system to use the nanopay API.
+
+<h2>Core Concept - Data Access Objects (DAOs)</h2>
+<p>
+    It is important to note a key feature, and its functions, in the technology used in the nanopay API. 
+    A <b>Data Access Object (DAO)</b> is a generic interface for a collection of objects. 
+    The DAO interface supports fetching and deleting many rows (select, removeAll), fetching and deleting single rows (find, remove) and inserts (put). 
+    The interface also includes a rich and extensible query language for filtering, sorting and aggregation.
+</p>
+<p>
+    DAOs are the primary way that records are accessed through the API. The Digital Integration Gateway (DIG) is a web endpoint that receives requests for DAO actions and supports all DAO operations.
+</p>
+
+<h2>API Gateway - DIG</h2>
+<p>
+    DIG provides a simple unified method for users and systems to interact with Nanopay's Data Access Objects (DAOs). 
+    DIG supports multiple data formats, including: XML, JSON, CSV, HTML, and JSON/J. 
+    DIG is intended as an end-point for programmatic integration, but also includes a simple user interface to aid developers with the creation of their query parameters.
+</p>
+
+<h2>API Gateway - SUGAR</h2>
+<p>
+    Services provide custom functionality and are a secondary way that users will interact with the API when that is not possible through DAOs.
+    They are accessible through the Service Unified GAteway Relay (SUGAR) endpoint. 
+    The SUGAR endpoint performs non-DAO operations against a web service.
+</p>
+
+<h2>API Gateway - DUG</h2>
+<p>
+    The Data Update Gateway (DUG) allows for the creation of subscriptions which invoke web-callbacks when data in the services is updated. 
+    An HTTP post is submitted to the web-callback URL whenever data is created, updated or deleted from the specified DAO.
+</p>
+
+<p>
+    A DUG could be used, for example, to notify an external system when transactions are created, have their statuses updated, or when users are created or deleted.
+</p>
+
+<p>
+    DUGs can be created either through the DUG GUI, or programmatically through DIG. 
+    When a subscription is no longer needed, it should be removed, again, either with the DUG GUI or via DIG.
+</p>
+
+<h2>API Request Formats</h2>
+<p>
+    The nanopay API supports multiple input formats for requesting data, including:
+    <ul>
+        <li>JSON</li>
+        <li>XML</li>
+        <li>CSV</li>
+    </ul>
+</p>
+

@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'NanopayLineItemFeeDAO',
@@ -12,7 +29,8 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'java.util.List',
     'net.nanopay.account.Account',
-    'net.nanopay.account.DigitalAccount'
+    'net.nanopay.account.DigitalAccount',
+    'foam.util.SafetyUtil'
   ],
 
   properties: [
@@ -77,7 +95,7 @@ foam.CLASS({
           for (Object f : fees ) {
             LineItemFee fee = (LineItemFee) f;
             User payee = applyTo.findDestinationAccount(x).findOwner(x);
-            Long feeAccountId = 0L;
+            String feeAccountId = "";
             LineItemTypeAccount lineItemTypeAccount = (LineItemTypeAccount) typeAccountDAO.find(
               MLang.AND(
                 MLang.EQ(LineItemTypeAccount.ENABLED, true),
@@ -93,7 +111,7 @@ foam.CLASS({
               feeAccountId = lineItemTypeAccount.getAccount();
             }
             Long amount = fee.getFeeAmount(lineItem.getAmount());
-            if ( feeAccountId > 0 &&
+            if ( ! foam.util.SafetyUtil.isEmpty(feeAccountId) &&
                  amount > 0L ) {
               LineItemType lineItemType = fee.findFeeType(x);
               FeeLineItem[] forward = new FeeLineItem [] {
@@ -110,7 +128,7 @@ foam.CLASS({
                   new InfoLineItem.Builder(x).setType(fee.getFeeType()).setNote(lineItemType.getName()+ " Non-refundable").setAmount(amount).build()
                 };
               }
-              applyTo.addLineItems(forward, reverse);
+              applyTo.addLineItems(forward);
             }
           }
         }

@@ -33,7 +33,7 @@ if [ -z "`echo "${JAVA_OPTS}" | grep "Xms"`" ]; then
 fi
 
 if [ -z "`echo "${JAVA_OPTS}" | grep "Xmx"`" ]; then
-  JAVA_OPTS="${JAVA_OPTS} -Xmx2048m"
+  JAVA_OPTS="${JAVA_OPTS} -Xmx6144m"
 fi
 
 # memory - stack
@@ -94,6 +94,9 @@ fi
 ##### Garbage Collection
 #JAVA_OPTS="${JAVA_OPTS} -XX:+UseG1GC"
 #JAVA_OPTS="${JAVA_OPTS} -Xgcpolicy.gencon"
+
+# G1GC options - default in Java 9, 10, 11
+JAVA_OPTS="${JAVA_OPTS} -XX:+UseStringDeduplication"
 
 # Garbage Collection logging
 # NOTE: disabled - we are experiencing lockup on GC for 4-5 seconds

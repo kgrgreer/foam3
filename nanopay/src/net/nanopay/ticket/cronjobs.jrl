@@ -9,18 +9,17 @@ p({
     "dayOfWeek": -1,
     "second": 0
   },
-  "scheduledTime": "2019-09-10T05:00:00.000Z",
   "id": "ClosedExpiredSudoTickets",
   "description": "Closed expired Sudo tickets to revert priviledges.",
   "code":
   """
-import foam.mlang.MLang.EQ;
+import foam.mlang.MLang;
 import foam.nanos.ticket.Ticket;
 import foam.nanos.ticket.TicketStatus;
 
 now = System.currentTimeMillis();
 d = x.get("localTicketDAO");
-a = d.where(EQ(Ticket.STATUS, "OPEN")).select().array;
+a = d.where(MLang.EQ(Ticket.STATUS, "OPEN")).select().array;
 for ( t : a ) {
   if ( t.getExpiry().getTime() < now ) {
     t = t.fclone();

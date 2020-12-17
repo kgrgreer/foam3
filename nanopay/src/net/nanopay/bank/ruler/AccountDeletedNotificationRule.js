@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.bank.ruler',
   name: 'AccountDeletedNotificationRule',
@@ -47,12 +64,11 @@ foam.CLASS({
             args.put("account", account.getAccountNumber().substring(account.getAccountNumber().length() - 4));
             args.put("institutionNumber", account.getInstitutionNumber());
             args.put("institutionName", institution == null ? null : institution.toSummary());
-            args.put("business", owner.label());
+            args.put("business", owner.toSummary());
 
             Notification deletedNotification = new Notification.Builder(x)
                     .setBody(account.getName() + " has been deleted.")
                     .setNotificationType("Latest_Activity")
-                    .setEmailIsEnabled(true)
                     .setEmailArgs(args)
                     .setEmailName("deletedBank")
                     .build();

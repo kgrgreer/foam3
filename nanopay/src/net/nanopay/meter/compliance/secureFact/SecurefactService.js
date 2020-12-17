@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.meter.compliance.secureFact',
   name: 'SecurefactService',
@@ -6,8 +23,8 @@ foam.CLASS({
     for individual identity verification and business entity search.`,
 
   imports: [
-    'securefactLEVDAO',
-    'securefactSIDniDAO'
+    'DAO securefactLEVDAO',
+    'DAO securefactSIDniDAO'
   ],
 
   javaImports: [
@@ -21,6 +38,8 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'java.util.Arrays',
     'java.util.Base64',
+    'net.nanopay.meter.compliance.secureFact.lev.document.LEVDocumentDataResponse',
+    'net.nanopay.meter.compliance.secureFact.lev.document.LEVDocumentOrderResponse',
     'net.nanopay.meter.compliance.secureFact.lev.LEVResponse',
     'net.nanopay.meter.compliance.secureFact.lev.LEVResult',
     'net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse',
@@ -47,6 +66,16 @@ foam.CLASS({
       class: 'String',
       name: 'levUrl',
       label: 'LEV URL'
+    },
+    {
+      class: 'String',
+      name: 'levDocumentOrderUrl',
+      label: 'LEV DOCUMENT ORDER URL'
+    },
+    {
+      class: 'String',
+      name: 'levDocumentDataUrl',
+      label: 'LEV DOCUMENT DATA URL'
     },
     {
       class: 'String',
@@ -111,6 +140,48 @@ foam.CLASS({
         response.setCloseMatches(closeMatchCounter + "/" + results.length);
         return (LEVResponse)
           ((DAO) getSecurefactLEVDAO()).put(response);
+      `
+    },
+    {
+      name: 'levDocumentOrder',
+      type: 'net.nanopay.meter.compliance.secureFact.lev.document.LEVDocumentOrderResponse',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'resultId',
+          type: 'int'
+        }
+      ],
+      javaCode: `
+        SecurefactRequest request = SecurefactRequestGenerator.getLEVDocumentOrderRequest(resultId);
+        request.setUrl(getLevDocumentOrderUrl());
+        request.setAuthKey(getLevApiKey());
+        LEVDocumentOrderResponse response = (LEVDocumentOrderResponse) sendRequest(x, request, LEVDocumentOrderResponse.class);
+        return response;
+      `
+    },
+    {
+      name: 'levDocumentData',
+      type: 'net.nanopay.meter.compliance.secureFact.lev.document.LEVDocumentDataResponse',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'orderId',
+          type: 'int'
+        }
+      ],
+      javaCode: `
+        SecurefactRequest request = SecurefactRequestGenerator.getLEVDocumentDataRequest(orderId);
+        request.setUrl(getLevDocumentDataUrl());
+        request.setAuthKey(getLevApiKey());
+        LEVDocumentDataResponse response = (LEVDocumentDataResponse) sendRequest(x, request, LEVDocumentDataResponse.class);
+        return response;
       `
     },
     {

@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
     package: 'net.nanopay.sme.ruler',
     name: 'BusinessCompliancePassedEmailRule',
@@ -31,13 +48,13 @@ foam.CLASS({
             Business business = (Business) obj;
             Address businessAddress = business.getAddress();
 
-            if( ! businessAddress.getCountryId().equals("US") ){
+            if ( businessAddress != null ) {
               Logger                  logger         = (Logger) x.get("logger");
               Group                   group          = business.findGroup(x);
               AppConfig               config         = group != null ? (AppConfig) group.getAppConfig(x) : (AppConfig) x.get("appConfig");
               Map<String, Object>     args           = new HashMap<>();
 
-              args.put("link",   config.getUrl() + "#sme.main.dashboard");
+              args.put("link",   config.getUrl() + "#capability.main.dashboard");
               args.put("sendTo", User.EMAIL);
               args.put("business", business.getOrganization());
               
@@ -51,7 +68,6 @@ foam.CLASS({
                   .setBody("This business can now make payments")
                   .setNotificationType("Latest_Activity")
                   .setGroupId(group.toString())
-                  .setEmailIsEnabled(true)
                   .setEmailArgs(args)
                   .setEmailName("compliance-notification-to-user")
                   .build();

@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.onboarding.email',
   name: 'NewUserOnboardedEmailDAO',
@@ -12,6 +29,7 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.mlang.MLang',
+    'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
@@ -47,7 +65,7 @@ foam.CLASS({
             MLang.AND(
               MLang.INSTANCE_OF(BankAccount.class),
               MLang.EQ(BankAccount.STATUS, BankAccountStatus.VERIFIED),
-              MLang.EQ(BankAccount.ENABLED, true)
+              MLang.EQ(BankAccount.LIFECYCLE_STATE, LifecycleState.ACTIVE)
             ))
             .limit(1).select(new ArraySink())).getArray();
 
@@ -78,7 +96,7 @@ foam.CLASS({
           }
         }
 
-        return getDelegate().inX(x).put_(x, obj);
+        return getDelegate().inX(x).put(obj);
       `
     }
   ]

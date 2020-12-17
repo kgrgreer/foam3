@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.onboarding.b2b.ui',
   name: 'ReviewAndSubmitForm',
@@ -191,7 +208,7 @@ foam.CLASS({
           .start('p').add(this.BusiNameLabel).addClass('wizardBoldLabel').end()
           .start('p').add(this.viewData.user.businessName).end()
           .start('p').add(this.BusiPhoneLabel).addClass('wizardBoldLabel').end()
-          .start('p').add(this.viewData.user.phone.number).end()
+          .start('p').add(this.viewData.user.phoneNumber).end()
           .start('p').add(this.BusiWebsiteLabel).addClass('wizardBoldLabel').end()
           .start('p').add(this.viewData.user.website).end()
           .start('p').add(this.BusiTypeLabel).addClass('wizardBoldLabel').end()
@@ -238,7 +255,7 @@ foam.CLASS({
                 .start('p').add('Email Address').addClass('wizardBoldLabel').end()
                 .start('p').add(data.email).end()
                 .start('p').add('Phone Number').addClass('wizardBoldLabel').end()
-                .start('p').add(data.phone.number).end()
+                .start('p').add(data.phoneNumber).end()
                 .start('p').add('Date of Birth').addClass('wizardBoldLabel').end()
                 .start('p').add(data.birthday.toISOString().substring(0, 10)).end()
                 .start('p').add('Residential Address').addClass('wizardBoldLabel').end()

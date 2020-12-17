@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.contacts.ui',
   name: 'BusinessNameSearchWizardView',
@@ -8,6 +25,10 @@ foam.CLASS({
     If the business exists, then add the existing directly. If the business
     does not exist, then create a new contact.
   `,
+
+  requires: [
+    'foam.log.LogLevel'
+  ],
 
   imports: [
     'auth',
@@ -59,7 +80,7 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'CONTACT_ADDED', message: 'Personal contact added.' }
+    { name: 'CONTACT_ADDED', message: 'Contact added successfully' }
   ],
 
   properties: [
@@ -109,10 +130,10 @@ foam.CLASS({
       this.isConnecting = true;
       try {
       contact = await this.user.contacts.put(this.data.contact);
-      this.ctrl.notify(this.CONTACT_ADDED);
+      this.ctrl.notify(this.CONTACT_ADDED, '', this.LogLevel.INFO, true);
       } catch (e) {
         var msg = e.message || this.GENERIC_PUT_FAILED;
-        this.ctrl.notify(msg, 'error');
+        this.ctrl.notify(msg, '', this.LogLevel.ERROR, true);
         this.isConnecting = false;
         return false;
       }

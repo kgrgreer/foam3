@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.ui.dashboard',
   name: 'TopCardsOnDashboard',
@@ -29,13 +46,12 @@ foam.CLASS({
 
   imports: [
     'accountingIntegrationUtil',
-    'agent',
     'businessDAO',
     'businessOnboardingDAO',
     'businessInvitationDAO',
     'canadaUsBusinessOnboardingDAO',
     'isIframe',
-    'user',
+    'subject',
     'userDAO'
   ],
 
@@ -124,33 +140,33 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'LOWER_LINE_TXT', message: 'Welcome back ' }
+    { name: 'LOWER_LINE_TXT', message: 'Welcome back' }
   ],
 
   methods: [
     async function init() {
-      let business = await this.businessDAO.find(this.user.id);
+      let business = await this.businessDAO.find(this.subject.user.id);
       this.onboardingStatus = business.onboarded;
       this.countryOfBusinessRegistration = business.countryOfBusinessRegistration;
       this.businessRegistrationDate = business.businessRegistrationDate;
     },
     function initE() {
       this.addClass(this.myClass())
-        .start().addClass('subTitle').add(this.LOWER_LINE_TXT + this.user.label() + '!').end()
+        .start().addClass('subTitle').add(this.LOWER_LINE_TXT +' '+ this.subject.user.toSummary() + '!').end()
             .start().addClass('divider').end()
             .start().addClass('radio-as-arrow-margins').add(this.HIDE_PAYMENT_CARDS).end()
             .start().addClass('radio-as-arrow-margins').addClass(this.hidePaymentCards$.map((hide) => hide ? 'radio-as-arrow' : 'radio-as-arrow-down')).end()
             .start().addClass('cards').hide(this.hidePaymentCards$)
               .start('span')
-                .add(this.slot((user$onboarded, businessOnboarding) => {
-                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.DOMESTIC, isComplete: user$onboarded, businessOnboarding: businessOnboarding }).end();
+                .add(this.slot((subject$user$onboarded, businessOnboarding) => {
+                  return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.UnlockPaymentsCard', type: this.UnlockPaymentsCardType.DOMESTIC, isComplete: subject$user$onboarded, businessOnboarding: businessOnboarding }).end();
                 }))
               .end()
               .start('span')
                 .hide(this.isIframe())
                 .addClass('us-business-onboarding')
-                .add(this.slot((user$onboarded, businessOnboarding, complete) => {
-                  let isEmp = user$onboarded && this.businessOnboarding && ! this.businessOnboarding.signingOfficer && this.businessOnboarding.status === this.OnboardingStatus.SUBMITTED;
+                .add(this.slot((subject$user$onboarded, businessOnboarding, complete) => {
+                  let isEmp = subject$user$onboarded && this.businessOnboarding && ! this.businessOnboarding.signingOfficer && this.businessOnboarding.status === this.OnboardingStatus.SUBMITTED;
                   return this.E()
                     .start()
                     .tag({
@@ -173,8 +189,8 @@ foam.CLASS({
           .start('span')
             .hide(this.isIframe())
             .addClass('accounting-software')
-            .add(this.slot((user$hasIntegrated) => {
-              return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.QBIntegrationCard', hasPermission: this.userHasPermissionsForAccounting && this.userHasPermissionsForAccounting[0], hasIntegration: user$hasIntegrated }).end();
+            .add(this.slot((subject$user$hasIntegrated) => {
+              return this.E().start().tag({ class: 'net.nanopay.sme.ui.dashboard.cards.QBIntegrationCard', hasPermission: this.userHasPermissionsForAccounting && this.userHasPermissionsForAccounting[0], hasIntegration: subject$user$hasIntegrated }).end();
             }))
           .end()
         .end();

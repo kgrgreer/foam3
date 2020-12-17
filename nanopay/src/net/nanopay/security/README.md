@@ -16,9 +16,6 @@
 * [HashingOutputter](#hashingoutputter)
 	* [Overview](#overview-3)
 	* [Usage](#usage-3)
-* [HashingWriter](#hashingwriter)
-	* [Overview](#overview-4)
-	* [Usage](#usage-4)
 * [KeyPairDAO](#keypairdao)
 	* [Overview](#overview-5)
 	* [Usage](#usage-5)
@@ -139,7 +136,7 @@ HashingJournal is a journal implementation that appends every journal record wit
 
 ### Usage
 
-HashingJournal extends FileJournal; it requires that an outputter and a parser be set. The outputter and parser must be set to instances of the HashingOutputter and HashedJSONParser respectively. Optionally, the algorithm, the flag to require digests when parsing, and the flag to chain digests may be specified.
+HashingJournal extends FileJournal; it requires a MessageDigest which is in turn used to by the formatter (outputter) and parser. Optionally, the flag to require digests when parsing, and the flag to chain digests (rollDigests) may be specified on the MessageDigest.
 
 ```
 // set up hashing journal with default values
@@ -151,9 +148,12 @@ new net.nanopay.security.HashingJournal.Builder(x)
 // set up hashing journal setting optional parameters
 new net.nanopay.security.HashingJournal.Builder(x)
   .setFilename("hashingjournal")
-  .setAlgorithm("SHA-1")
-  .setRollDigest(true)
   .setDigestRequired(false)
+  .setQuoteKeys(true)
+  .setMessageDigest(new net.nanopay.security.MessageDigest.Builder(x)
+    .setAlgorithm("SHA-512")
+    .setRollDigests(true)
+    .build())
   .build();
 ```
 
@@ -161,44 +161,32 @@ new net.nanopay.security.HashingJournal.Builder(x)
 
 ### Overview
 
-HashingOutputter is an extension on the JSON Outputter that appends a MessageDigest to the end of the output. It uses the HashingWriter class to calculate the digest of the data being appended. The HashingOutputter has the ability to create a hash chain by prepending the previous digest to the new digest before outputting. The HashingOutputter is tightly coupled with the HashingJournal implementation and as such a HashingJournal instance must be provided. The HashingJournal informs the HashingOutputter if it should create a hash chain and it also provides a property for the HashingOutputter to store the previous digest for use in chaining.
+HashingOutputter is an extension on the JSON Outputter that appends a MessageDigest to the end of the output. It uses the MessageDigest class to calculate the digest of the data being appended. The HashingOutputter has the ability to create a hash chain by prepending the previous digest to the new digest before outputting. The HashingOutputter overrides FObjectFormatter.append to intercept and update the digest with pending journal updates.  The MessageDigest enables chaining with rollDigests is true.
 
 ### Usage
 
-HashingOutputter requires a HashingJournal and an OutputterMode for usage. The algorithm that the HashingOutputter uses is the same algorithm that is set in the HashingJournal instance. To enable hash chaining, one must set `rollDigest` to true in the HashingJournal.
+HashingOutputter requires a MessageDigest for usage. To enable hash chaining, one must set `rollDigest` to true in the MessageDigest.
 
 ```
 // set up hashing journal
 foam.core.X x = foam.core.EmptyX.instance();
 net.nanopay.security.HashingJournal journal = new net.nanopay.security.HashingJournal.Builder(x)
-  .setAlgorithm("SHA-256")
+  .setMessageDigest(new net.nanopay.security.MessageDigest.Builder(x)
+    .setAlgorithm("SHA-512")
+    .setRollDigests(true)
+    .build())
   .build();
 
 // set up hashing outputter
-net.nanopay.security.HashingOutputter outputter = net.nanopay.security.HashingOutputter(journal, foam.lib.json.OutputterMode.STORAGE);
+net.nanopay.security.HashingOutputter outputter = net.nanopay.security.HashingOutputter(x, true /*quoteKeys*/, new net.nanopay.security.MessageDigest.Builder(x)
+    .setAlgorithm("SHA-512")
+    .setRollDigests(true)
+    .build());
 foam.nanos.auth.User user = new foam.nanos.auth.User.Builder(x).setId(1000).build();
 System.out.println(outputter.stringify(user));
 
 // should output the following
-// {"class":"foam.nanos.auth.User","id":1000},{"algorithm":"SHA-256","digest":"9eea141b3f4646d2e59ee5b87c93ce43fb26954a5b699b8ccc813bd1e9bf5363"}
-
-```
-
-## HashingWriter
-
-### Overview
-
-HashingWriter is a decorator for a Writer that hashes any data that is appended to it. Its primary use is to avoid having to process data more than once. A developer could use HashingWriter to write out to a file once and then calculate the hash after it is finished writing. It is used in the HashingOutputter to calculate the hashes of outgoing data.
-
-### Usage
-
-HashingWriter is a decorator for a Writer; it requires a Writer delegate and an optional hashing algorithm. SHA-256 is the default hashing algorithm.
-```
-// create hashing writer with default algorithm of SHA-256
-new net.nanopay.security.HashingWriter(new java.io.StringWriter());
-
-// create hashing writer with SHA-1
-new net.nanopay.security.HashingWriter("SHA-1", new java.io.StringWriter());
+// {"class":"foam.nanos.auth.User","id":1000},{algorithm:"SHA-256",provider:"", digest:"9eea141b3f4646d2e59ee5b87c93ce43fb26954a5b699b8ccc813bd1e9bf5363"}
 
 ```
 

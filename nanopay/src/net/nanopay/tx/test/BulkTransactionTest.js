@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.tx.test',
   name: 'BulkTransactionTest',
@@ -8,6 +25,8 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Group',
+    'java.util.ArrayList',
+    'java.util.List',
     'net.nanopay.account.Account',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
@@ -108,7 +127,7 @@ foam.CLASS({
         }
       }
     }
-    
+
     testPADTypeBeforeQuote(x, sender, receiver);
       `
     },
@@ -138,13 +157,13 @@ foam.CLASS({
     TransactionQuote quote = new TransactionQuote.Builder(x).setRequestTransaction(bulk).build();
     quote = (TransactionQuote) transactionQuoteDAO.inX(x).put(quote);
     Transaction next = quote.getPlan(); // BulkTransaction
-    CITransaction ciTransaction = (CITransaction) next.getNext()[0];  
+    CITransaction ciTransaction = (CITransaction) next.getNext()[0];
     next = ciTransaction;
     next = next.getNext()[0]; // Composite
     next = next.getNext()[0]; // Compliance
     next = next.getNext()[0]; // Digital
     COTransaction coTransaction = (COTransaction) next.getNext()[0];
-    
+
     test(PADTypeLineItem.getPADTypeFrom(x, ciTransaction).getId() == 700, "CI Transaction PAD type set to 700.");
     test(PADTypeLineItem.getPADTypeFrom(x, coTransaction).getId() == 700, "CO Transaction PAD type set to 700.");
       `
@@ -243,13 +262,18 @@ foam.CLASS({
       javaCode: `
     BulkTransaction bulk = new BulkTransaction();
     bulk.setPayerId(sender.getId());
+
+    long amount = 0L;
+    List<Transaction> children = new ArrayList<>();
     for ( int i = 0; i < receivers.length; i++) {
       User u = receivers[i];
       Transaction dest = new Transaction();
       dest.setPayeeId(u.getId());
       dest.setAmount(100);
-      bulk.addNext(dest);
+      amount += 100;
+      children.add(dest);
     }
+    bulk.setChildren(children.toArray(new Transaction[children.size()]));
     return bulk;
     `
     }

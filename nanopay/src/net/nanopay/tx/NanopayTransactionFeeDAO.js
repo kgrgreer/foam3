@@ -1,4 +1,21 @@
 /**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
+/**
  * @license
  * Copyright 2018 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -19,7 +36,8 @@ foam.CLASS({
 
     'net.nanopay.tx.model.TransactionFee',
 
-    'java.util.List'
+    'java.util.List',
+    'foam.util.SafetyUtil'
   ],
 
   properties: [
@@ -92,17 +110,17 @@ foam.CLASS({
               if ( fee.getFee().getIsPassThroughFee() ) {
                 continue;
               }
-              Long feeAccount = fee.getFeeAccount();
-              if ( feeAccount > 0 ) {
-                Long debit = fee.getSourcePaysFees() ? transaction.getSourceAccount() : transaction.getDestinationAccount();
-          
+              String feeAccount = fee.getFeeAccount();
+              if ( ! SafetyUtil.isEmpty(feeAccount) ) {
+                String debit = fee.getSourcePaysFees() ? transaction.getSourceAccount() : transaction.getDestinationAccount();
+
                 FeeLineItem[] forward = new FeeLineItem [] {
-                  new FeeLineItem.Builder(x).setNote(fee.getName()).setDestinationAccount(feeAccount).setAmount(fee.getFee().getFee(transaction.getAmount())).setSourceAccount(debit).build()
+                  new FeeLineItem.Builder(x).setNote(fee.getName()).setDestinationAccount(feeAccount).setAmount(fee.getFee().getFee(transaction)).setSourceAccount(debit).build()
                 };
                 InfoLineItem[] reverse = new InfoLineItem [] {
-                  new InfoLineItem.Builder(x).setNote(fee.getName()+" - Non-refundable").setAmount(fee.getFee().getFee(transaction.getAmount())).build()
+                  new InfoLineItem.Builder(x).setNote(fee.getName()+" - Non-refundable").setAmount(fee.getFee().getFee(transaction)).build()
                 };
-                applyTo.addLineItems(forward, reverse);
+                applyTo.addLineItems(forward);
                 logger.debug(this.getClass().getSimpleName(), "applyFees", "forward", forward[0], "reverse", reverse[0], "transaction", transaction);
               }
             }

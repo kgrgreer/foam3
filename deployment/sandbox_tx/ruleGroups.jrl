@@ -1,0 +1,57 @@
+p({
+  "class":"net.nanopay.tx.planner.PlannerGroup",
+  "id":"Planner",
+  "enabled":false
+})
+p({
+  "class":"net.nanopay.tx.planner.PlannerGroup",
+  "id":"SecurityPlanner",
+  "enabled":false
+})
+p({
+  "class":"net.nanopay.tx.planner.PlannerGroup",
+  "id":"transactionPlanner",
+  "enabled":false
+})
+p({
+  "class":"net.nanopay.tx.planner.PlannerGroup",
+  "id":"genericPlanner",
+  "enabled":false
+})
+
+p({
+  "class":"net.nanopay.tx.planner.PlannerGroup",
+  "id":"FeeEngine",
+  "enabled":false
+})
+
+p({
+  "class":"net.nanopay.tx.planner.PlannerGroup",
+  "id":"AlternaPlanner",
+  "enabled":false,
+})
+p({
+  "class":"net.nanopay.tx.planner.PlannerGroup",
+  "id":"BMOPlanner",
+  "enabled":false,
+})
+p({
+  "class":"net.nanopay.tx.planner.PlannerGroup",
+  "id":"RBCPlanner",
+  "enabled":false,
+})
+p({
+  "class":"net.nanopay.tx.planner.PlannerGroup",
+  "id":"KotakPlanner",
+  "enabled":false,
+})
+p({
+  "class":"net.nanopay.tx.planner.PlannerGroup",
+  "id":"TrevisoPlanner",
+  "enabled":false,
+})
+p({
+  "class":"net.nanopay.tx.planner.PlannerGroup",
+  "id":"SandBoxPlanner",
+  "enabled":true
+})

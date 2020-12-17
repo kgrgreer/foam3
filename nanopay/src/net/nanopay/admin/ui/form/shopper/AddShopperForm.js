@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.admin.ui.form.shopper',
   name: 'AddShopperForm',
@@ -6,11 +23,10 @@ foam.CLASS({
   documentation: 'Pop up that extends WizardView for adding a shopper',
 
   requires: [
+    'foam.log.LogLevel',
     'foam.nanos.auth.Address',
-    'foam.nanos.auth.Phone',
     'foam.nanos.auth.User',
     'foam.nanos.notification.email.EmailMessage',
-    'foam.u2.dialog.NotificationMessage',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus'
@@ -22,6 +38,7 @@ foam.CLASS({
     'email',
     'formatCurrency',
     'group',
+    'notify',
     'validateEmail',
     'validateAge',
     'validatePhone',
@@ -54,51 +71,51 @@ foam.CLASS({
       var shopperInfo = this.viewData;
 
       if ( shopperInfo.firstName.length > 70 ) {
-        this.add(this.NotificationMessage.create({ message: 'First name cannot exceed 70 characters.', type: 'error' }));
+        this.notify('First name cannot exceed 70 characters.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( shopperInfo.lastName.length > 70 ) {
-        this.add(this.NotificationMessage.create({ message: 'Last name cannot exceed 70 characters.', type: 'error' }));
+        this.notify('Last name cannot exceed 70 characters.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validateEmail(shopperInfo.emailAddress) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid email address.', type: 'error' }));
+        this.notify('Invalid email address.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validatePhone(shopperInfo.phoneNumber) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid phone number.', type: 'error' }));
+        this.notify('Invalid phone number.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validateAge(shopperInfo.birthday) ) {
-        this.add(this.NotificationMessage.create({ message: 'User should be at least 16 years of age to register.', type: 'error' }));
+        this.notify('User should be at least 16 years of age to register.', '', this.LogLevel.ERROR, true);
         return;
       }
       if ( ! this.validateStreetNumber(shopperInfo.streetNumber) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid street number.', type: 'error' }));
+        this.notify('Invalid street number.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validateAddress(shopperInfo.streetName) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid street name.', type: 'error' }));
+        this.notify('Invalid street name.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( shopperInfo.addressLine.length > 0 && ! this.validateAddress(shopperInfo.addressLine) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid address line.', type: 'error' }));
+        this.notify('Invalid address line.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validateCity(shopperInfo.city) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid city name.', type: 'error' }));
+        this.notify('Invalid city name.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validatePostalCode(shopperInfo.postalCode, 'CA') ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid postal code.', type: 'error' }));
+        this.notify('Invalid postal code.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validatePassword(shopperInfo.password) ) {
-        this.add(this.NotificationMessage.create({ message: 'Password must be at least 6 characters long.', type: 'error' }));
+        this.notify('Password must be at least 6 characters long.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( shopperInfo.password != shopperInfo.confirmPassword ) {
-        this.add(this.NotificationMessage.create({ message: 'Confirmation password does not match.', type: 'error' }));
+        this.notify('Confirmation password does not match.', '', this.LogLevel.ERROR, true);
         return false;
       }
       return true;
@@ -142,7 +159,7 @@ foam.CLASS({
           ( shopperInfo.city == null || shopperInfo.city.trim() == '' ) ||
           ( shopperInfo.postalCode == null || shopperInfo.postalCode.trim() == '' ) ||
           ( shopperInfo.password == null || shopperInfo.password.trim() == '' ) ) {
-            self.add(self.NotificationMessage.create({ message: 'Please fill out all necessary fields before proceeding.', type: 'error' }));
+            this.notify('Please fill out all necessary fields before proceeding.', '', this.LogLevel.ERROR, true);
             return;
           }
 
@@ -159,7 +176,7 @@ foam.CLASS({
           this.balanceDAO.find(this.currentAccount.id).then(function(response) {
             var currentBalance = response;
             if ( shopperInfo.amount > currentBalance.balance ) {
-              self.add(self.NotificationMessage.create({ message: 'Amount entered is more than current balance', type: 'error' }));
+              self.notify('Amount entered is more than current balance', '', self.LogLevel.ERROR, true);
               return;
             }
             if ( shopperInfo.amount == 0 || shopperInfo.amount == null ) {
@@ -173,9 +190,7 @@ foam.CLASS({
         if ( this.position == 2 ) {
           // Review
 
-          var shopperPhone = this.Phone.create({
-            number: shopperInfo.phoneNumber
-          });
+          var shopperPhone = shopperInfo.phoneNumber;
 
           var shopperAddress = this.Address.create({
             address1: shopperInfo.streetNumber + ' ' + shopperInfo.streetName,
@@ -205,15 +220,11 @@ foam.CLASS({
           });
 
           if ( newShopper.errors_ ) {
-            this.add(this.NotificationMessage.create({ message: newShopper.errors_[0][1], type: 'error' }));
-            return;
-          }
-          if ( shopperPhone.errors_ ) {
-            this.add(this.NotificationMessage.create({ message: shopperPhone.errors_[0][1], type: 'error' }));
+            this.notify(newShopper.errors_[0][1], '', this.LogLevel.ERROR, true);
             return;
           }
           if ( shopperAddress.errors_ ) {
-            this.add(this.NotificationMessage.create({ message: shopperAddress.errors_[0][1], type: 'error' }));
+            this.notify(shopperAddress.errors_[0][1], '', this.LogLevel.ERROR, true);
             return;
           }
 
@@ -227,18 +238,18 @@ foam.CLASS({
                 amount: shopperInfo.amount
               });
               return self.transactionDAO.put(transaction).then( function(response) {
-                self.add(self.NotificationMessage.create({ message: 'New shopper ' + shopperInfo.firstName + ' ' + shopperInfo.lastName + 'successfully added and value transfer sent.' }));
+                self.notify('New shopper ' + shopperInfo.firstName + ' ' + shopperInfo.lastName + 'successfully added and value transfer sent.', '', self.LogLevel.INFO, true);
                 self.subStack.push(self.views[self.subStack.pos + 1].view);
                 self.nextLabel = 'Done';
               });
             } else {
-              self.add(self.NotificationMessage.create({ message: 'New shopper ' + shopperInfo.firstName + ' ' + shopperInfo.lastName + ' successfully added.' }));
+              self.notify('New shopper ' + shopperInfo.firstName + ' ' + shopperInfo.lastName + ' successfully added.', '', self.LogLevel.INFO, true);
               self.subStack.push(self.views[self.subStack.pos + 1].view);
               self.nextLabel = 'Done';
               return;
             }
           }).catch(function(error) {
-            self.add(self.NotificationMessage.create({ message: error.message, type: 'error' }));
+            self.notify(error.message, '', self.LogLevel.ERROR, true);
             return;
           });
         }

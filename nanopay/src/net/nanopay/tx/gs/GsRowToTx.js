@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.tx.gs',
   name: 'GsRowToTx',
@@ -37,6 +54,10 @@ foam.CLASS({
       javaCode: `
         Logger logger = (Logger) x.get("logger");
         logger.info(" ** Reading file ... " + blob.getSize());
+
+        // ---- set up x ----
+
+        x = x.put("systemGenerated","fileUpload");
 
         // ---- parse file into GsTxCsvRow Objects ...
         GSReportAssembly finalJob = new GSReportAssembly(x);
@@ -170,15 +191,6 @@ foam.CLASS({
               transactionProcessor.enqueue(job);
             }
           }
-
-          ProgressBarData finalPBD = (ProgressBarData) pbd.fclone();
-          finalPBD.setValue(am);
-          finalPBD.setStatus("File Has Been Ingested");
-          finalJob.setProgressBarData(finalPBD);
-        }
-
-        if ( finalJob.getFailed() ) {
-          finalJob.getProgressBarData().setStatus("File Upload Failed");
         }
         transactionProcessor.enqueue(finalJob);
       `
@@ -227,6 +239,7 @@ foam.CLASS({
             .setDenomination(denomination)
             .setName(denomination +" Bank Account")
             .setAccountNumber("000000")
+            .setCountry("US")
             .build();
           accountDAO.put(sourceTrust);
           accountDAO.put(sourceBank);

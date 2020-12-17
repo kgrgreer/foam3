@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.contacts',
   name: 'Contact',
@@ -23,26 +40,41 @@ foam.CLASS({
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.Country',
     'foam.nanos.auth.Region',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
     'java.util.regex.Pattern',
-    'javax.mail.internet.InternetAddress',
     'javax.mail.internet.AddressException',
+    'javax.mail.internet.InternetAddress',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.model.Business'
   ],
 
   imports: [
+    'accountDAO',
     'auth',
+    'checkAndNotifyAbilityToPay',
+    'checkAndNotifyAbilityToReceive',
     'countryDAO',
+    'targetCorridorDAO',
     'publicBusinessDAO',
+    'pushMenu',
+    'subject',
     'user'
   ],
 
   requires: [
-    'foam.nanos.auth.Country',
     'foam.dao.PromisedDAO',
-    'foam.u2.DisplayMode'
+    'foam.nanos.auth.Country',
+    'foam.u2.dialog.Popup',
+    'foam.u2.DisplayMode',
+    'foam.u2.LoadingSpinner',
+    'net.nanopay.admin.model.AccountStatus',
+    'net.nanopay.bank.INBankAccount',
+    'net.nanopay.contacts.ContactStatus',
+    'net.nanopay.invoice.model.Invoice',
+    'net.nanopay.payment.PaymentProviderCorridor',
+    'net.nanopay.ui.wizard.WizardController'
   ],
 
   constants: [
@@ -60,67 +92,95 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'stepOne',
-      title: 'Create a contact',
-      subTitle: `
-        Create a new contact by entering in their business information below.
-        If you have their banking information, you can start sending payments
-        to the contact right away.
-      `
+      name: 'userInformation',
+      title: 'Contact Information',
+      order: 1
     },
     {
-      name: 'stepTwo',
-      title: 'Add banking information',
-      subTitle: `
-        Enter the contact’s bank account information. Please make sure that this is
-        accurate as payments will go directly to the specified account.
-      `
-    },
-    {
-      name: 'stepThree',
-      title: 'Add business address',
-      subTitle: `
-        In order to send payments to this business, we’ll need you to verify their
-        business address below.
-      `
+      name: 'businessInformation',
+      order: 2
     }
   ],
 
   messages: [
     {
       name: 'CONFIRM_RELATIONSHIP',
-      message: `I confirm that I have a business relationship with this contact and
-        acknowledge that the bank account info entered by the contact
-        business will be used for all deposits to their account.`
+      message: `I have a business relationship with this contact`
     },
     {
       name: 'INVITE_LABEL',
-      message: 'Invite this contact to join Ablii'
+      message: 'Invite this contact to join '
     },
     {
       name: 'RESTRICT_INVITE_LABEL',
       message: 'This contact cannot be invited to join Ablii'
-    }
+    },
+    {
+      name: 'UNABLE_TO_ADD_BANK_ACCOUNT',
+      message: `You currently have not completed the necessary requirements
+          to add an account to your contact. Please visit the capability store to enable payments.`
+    },
+    { name: 'ERROR_BUSINESS_PROFILE_NAME_MESSAGE', message: 'Business name required' },
+    { name: 'INVALID_EMAIL', message: 'Valid email required' },
+    { name: 'INVALID_FIRST_NAME', message: 'First name cannot exceed 70 characters' },
+    { name: 'INVALID_LAST_NAME', message: 'Last name cannot exceed 70 characters' },
+    { name: 'CONFIRMATION_REQUIRED', message: 'Confirmation required' },
+    { name: 'PLACEHOLDER', message: 'Please select....' },
+    { name: 'HEADER', message: 'Country of bank account' },
+    { name: 'MISSING_BANK_WARNING', message: 'Missing bank information' },
+    { name: 'CONTACT_PERMISSION', message: 'contact.ro.shouldinvite' },
   ],
+
+  css: `
+    .spinner {
+      text-align: center;
+      margin-top: 20px;
+      margin-bottom: 20px;
+    }
+    .spinner img {
+      width: 60px;
+    }
+  `,
 
   properties: [
     {
       name: 'organization',
-      documentation: 'The organization/business associated with the Contact.',
-      section: 'stepOne',
       label: 'Business',
-      view: { class: 'foam.u2.tag.Input', placeholder: 'ex. Vandelay Industries' },
+      documentation: 'The organization/business associated with the Contact.',
+      view: { class: 'foam.u2.tag.Input', focused: true },
       validateObj: function(organization) {
         if (
           typeof organization !== 'string' ||
           organization.trim().length === 0
         ) {
-          return 'Business name required';
+          return this.ERROR_BUSINESS_PROFILE_NAME_MESSAGE;
         }
       },
-      postSet: function(_,n) {
+      postSet: function(_, n) {
         this.businessName = n;
+      },
+      tableCellFormatter: function(X, obj) {
+        if ( ! obj.businessId ) {
+          this.start().add(obj.organization).end();
+        } else {
+          obj.publicBusinessDAO
+            .find(obj.businessId)
+            .then(business =>
+              this.start()
+                .add(business ? business.toSummary() : obj.organization)
+              .end()
+          );
+        }
       }
+    },
+    {
+      class: 'String',
+      name: 'operatingBusinessName',
+      documentation: `The operating business name of the business the contact is
+        associated to.
+        This is the opt-in name the business wants to display on our platform (used for searching),
+        as opposed to businessName / organization which is the company’s legal name.`,
+      visibility: 'HIDDEN'
     },
     {
       name: 'legalName',
@@ -133,27 +193,24 @@ foam.CLASS({
     {
       name: 'email',
       documentation: 'The email address of the Contact.',
-      section: 'stepOne',
       label: 'Email',
-      view: { class: 'foam.u2.tag.Input', placeholder: 'ex. example@domain.com' },
+      view: { class: 'foam.u2.tag.Input' },
       validateObj: function(email) {
         if ( ! this.businessId ) {
           var emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
           if ( ! emailRegex.test(email) ) {
-            return 'Invalid email address.';
+            return this.INVALID_EMAIL;
           }
         }
       }
     },
     {
       name: 'firstName',
-      section: 'stepOne',
-      gridColumns: 6,
-      view: { class: 'foam.u2.tag.Input', placeholder: 'Optional' },
+      view: { class: 'foam.u2.tag.Input' },
       validateObj: function(firstName) {
         if ( !! firstName ) {
           if ( firstName.length > this.NAME_MAX_LENGTH ) {
-            return 'First name cannot exceed 70 characters.';
+            return this.INVALID_FIRST_NAME;
           }
         }
       }
@@ -165,13 +222,11 @@ foam.CLASS({
     },
     {
       name: 'lastName',
-      section: 'stepOne',
-      gridColumns: 6,
-      view: { class: 'foam.u2.tag.Input', placeholder: 'Optional' },
+      view: { class: 'foam.u2.tag.Input' },
       validateObj: function(lastName) {
         if ( !! lastName ) {
           if ( lastName.length > this.NAME_MAX_LENGTH ) {
-            return 'Last name cannot exceed 70 characters.';
+            return this.INVALID_LAST_NAME;
           }
         }
       }
@@ -180,23 +235,24 @@ foam.CLASS({
       class: 'Boolean',
       name: 'confirm',
       documentation: `True if the user confirms their relationship with the contact.`,
-      section: 'stepOne',
+      section: 'operationsInformation',
+      gridColumns: 6,
       label: '',
       updateVisibility: function() {
         return foam.u2.DisplayMode.HIDDEN;
       },
-      createVisibility: function(isEdit) {
-        return isEdit ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      createVisibility: function(isEdit, isConsent) {
+        return isEdit || ! isConsent ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
       view: function(_, X) {
         return {
           class: 'foam.u2.CheckBox',
           label: X.data.CONFIRM_RELATIONSHIP
-        }
+        };
       },
-      validateObj: function(confirm) {
-        if ( ! confirm ) {
-          return 'Confirmation required.';
+      validateObj: function(confirm, isConsent) {
+        if ( ! confirm && isConsent) {
+          return this.CONFIRMATION_REQUIRED;
         }
       }
     },
@@ -206,24 +262,31 @@ foam.CLASS({
       name: 'signUpStatus',
       documentation: `Tracks the registration status of a contact with respect to
         whether a individual person, or real user, can sign in or not.
+        Pending, Ready and Connected
       `,
       visibility: 'HIDDEN',
       label: 'Status',
       tableWidth: 170,
+      expression: function(bankAccount, businessId) {
+        return bankAccount || businessId ? net.nanopay.contacts.ContactStatus.READY : net.nanopay.contacts.ContactStatus.PENDING;
+      },
       tableCellFormatter: function(state, obj) {
-        var format = obj.bankAccount && state != net.nanopay.contacts.ContactStatus.ACTIVE ? 'Ready' : 'Pending';
-        var label = state == net.nanopay.contacts.ContactStatus.ACTIVE ? state.label.replace(/\s+/g, '') : format;
-        this.start()
-          .start().show(state != net.nanopay.contacts.ContactStatus.ACTIVE).addClass('contact-status-circle-' + label).end()
-          .start('img')
-            .show(state == net.nanopay.contacts.ContactStatus.ACTIVE)
-            .attrs({ src: this.__subContext__.theme.logo })
-            .style({ 'width': '15px', 'position': 'relative', 'top': '3px', 'right': '4px' })
+        this.__subContext__.contactDAO.find(obj.id).then(contactObj=> {
+          var format = contactObj.bankAccount || contactObj.businessId ? net.nanopay.contacts.ContactStatus.READY : net.nanopay.contacts.ContactStatus.PENDING;
+          var label = state == net.nanopay.contacts.ContactStatus.CONNECTED ? state.label.replace(/\s+/g, '') : format.label.replace(/\s+/g, '');
+
+          this.start()
+            .start().show(state != net.nanopay.contacts.ContactStatus.CONNECTED).addClass('contact-status-circle-' + label).end()
+            .start('img')
+              .show(state == net.nanopay.contacts.ContactStatus.CONNECTED)
+              .attrs({ src: this.__subContext__.theme.logo })
+              .style({ 'width': '15px', 'position': 'relative', 'top': '3px', 'right': '4px' })
+              .end()
+            .start().addClass('contact-status-' + label)
+              .add(label)
             .end()
-          .start().addClass('contact-status-' + label)
-            .add(label)
-          .end()
-        .end();
+          .end();
+        });
       }
     },
     {
@@ -233,21 +296,13 @@ foam.CLASS({
       javaValue: '0',
       name: 'businessId',
       documentation: `A unique identifier for the business associated with the Contact.`,
-      visibility: 'HIDDEN'
-    },
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.User',
-      name: 'realUser',
-      documentation: `The ID for the individual person, or real user,
-        who registers with our platform.`,
-      visibility: 'HIDDEN'
+      section: 'businessInformation',
+      gridColumns: 6
     },
     {
       class: 'Boolean',
       name: 'loginEnabled',
       documentation: 'Determines whether the Contact can login to the platform.',
-      visibility: 'HIDDEN',
       value: false
     },
     {
@@ -256,30 +311,116 @@ foam.CLASS({
       name: 'bankAccount',
       documentation: `The unique identifier for the bank account of the Contact
         if created while registering the Contact.`,
-      visibility: 'HIDDEN'
+      section: 'accountInformation',
+      gridColumns: 6
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.bank.BankAccount',
       name: 'createBankAccount',
       documentation: 'A before put bank account object a user creates for the contact.',
-      section: 'stepTwo',
       storageTransient: true,
       label: '',
-      factory: function() {
-        return net.nanopay.bank.BankAccount.create({ isDefault: true });
+      visibility: function(countries) {
+        return countries.length == 0 && ! this.createBankAccount ?
+          foam.u2.DisplayMode.HIDDEN :
+          foam.u2.DisplayMode.RW;
       },
-      view: {
-        class: 'foam.u2.view.FObjectView',
-        of: 'net.nanopay.bank.BankAccount'
+      view: function(_, X) {
+        let e = foam.mlang.Expressions.create();
+        var pred = e.AND(
+            e.EQ(foam.strategy.StrategyReference.DESIRED_MODEL_ID, 'net.nanopay.bank.BankAccount'),
+            e.IN(foam.strategy.StrategyReference.STRATEGY, X.data.countries)
+        );
+        var v = foam.u2.view.FObjectView.create({
+          of: net.nanopay.bank.BankAccount,
+          predicate: pred,
+          placeholder: X.data.PLACEHOLDER,
+          header: X.data.HEADER,
+          classIsFinal: true,
+          copyOldData: function(o) { return { isDefault: o.isDefault, forContact: o.forContact }; }
+        }, X);
+        v.data$.sub(function() { v.data.forContact = true; });
+
+        return v;
       }
     },
     {
+      transient: true,
+      flags: ['web'],
+      name: 'availableCountries',
+      visibility: 'HIDDEN',
+      expression: function(targetCorridorDAO) {
+        if ( this.createBankAccount && this.createBankAccount.country ) return [];
+        return this.PromisedDAO.create({
+          promise: targetCorridorDAO.where(this.INSTANCE_OF(this.PaymentProviderCorridor))
+            .select(this.MAP(this.PaymentProviderCorridor.TARGET_COUNTRY))
+            .then(sink => {
+              let unique = [...new Set(sink.delegate.array)];
+              let arr = [];
+              for ( i = 0; i < unique.length; i++ ) {
+                model = foam.lookup(`net.nanopay.bank.${ unique[i] }BankAccount`);
+                if ( model ) arr.push(model);
+              }
+              this.countries = arr;
+              this.showSpinner = false;
+            })
+        });
+      }
+    },
+    {
+      transient: true,
+      flags: ['web'],
+      name: 'countries',
+      visibility: 'HIDDEN',
+      documentation: `Stores available countries contact can have account domicilied in.`,
+      factory: function() { return []; }
+    },
+    {
+      transient: true,
+      flags: ['web'],
+      name: 'noCorridorsAvailable',
+      documentation: 'GUI when no corridor capabilities have been added to user.',
+      visibility: function(showSpinner, countries, createBankAccount) {
+        return ! showSpinner && countries.length == 0 && ! createBankAccount ?
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
+      },
+      view: function(_, X) {
+        return X.E().start().add(X.data.UNABLE_TO_ADD_BANK_ACCOUNT).end();
+      }
+    },
+    {
+      transient: true,
+      flags: ['web'],
+      name: 'loadingSpinner',
+      label: '',
+      visibility: function(showSpinner, createBankAccount) {
+        return showSpinner && ! createBankAccount ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
+      },
+      factory: function() {
+        return this.LoadingSpinner.create().addClass('spinner');
+      },
+      view: function(_, X) {
+        return X.E().start().add(X.data.loadingSpinner).end();
+      }
+    },
+    {
+      transient: true,
+      flags: ['web'],
+      class: 'Boolean',
+      name: 'showSpinner',
+      value: true
+    },
+    {
+      transient: true,
+      flags: ['web'],
       class: 'Boolean',
       name: 'shouldInvite',
       documentation: 'True if the user wants to invite the contact to join Ablii.',
-      section: 'stepTwo',
+      section: 'userInformation',
       label: '',
+      readPermissionRequired: true,
       createVisibility: function(createBankAccount$country, isEdit) {
         return (createBankAccount$country != 'IN' && ! isEdit) ?
           foam.u2.DisplayMode.RW :
@@ -289,7 +430,7 @@ foam.CLASS({
         return foam.u2.DisplayMode.HIDDEN;
       },
       view: function(_, X) {
-        return foam.u2.CheckBox.create({ label: X.data.INVITE_LABEL });
+        return foam.u2.CheckBox.create({ label: X.data.INVITE_LABEL + X.theme.appName });
       }
     },
     {
@@ -297,46 +438,17 @@ foam.CLASS({
       of: 'foam.nanos.auth.Address',
       name: 'businessAddress',
       documentation: 'The postal address of the business associated with the Contact.',
-      section: 'stepThree',
+      section: 'businessInformation',
       label: '',
       view: function(_, X) {
+        // Removing auth checks. TODO: solution on what to show based on what.
         return {
           class: 'net.nanopay.sme.ui.AddressView',
-          showDisclaimer: true,
-          customCountryDAO: X.data.PromisedDAO.create({
-            promise: X.data.auth.check(null, 'currency.read.USD').then((hasPermission) => {
-              var q;
-              if ( hasPermission && X.data.user.countryOfBusinessRegistration == 'CA' ) {
-                q = X.data.OR(
-                  X.data.EQ(X.data.Country.ID, 'CA'),
-                  X.data.EQ(X.data.Country.ID, 'US'),
-                  X.data.EQ(X.data.Country.ID, 'IN')
-                );
-              } else if ( hasPermission ) {
-                q = X.data.OR(
-                  X.data.EQ(X.data.Country.ID, 'CA'),
-                  X.data.EQ(X.data.Country.ID, 'US')
-                );
-              } else {
-                return X.data.auth.check(null, 'currency.read.INR').then((inrPermission) => {
-                  if ( inrPermission ) {
-                    q = X.data.OR(
-                      X.data.EQ(X.data.Country.ID, 'CA'),
-                      X.data.EQ(X.data.Country.ID, 'IN')
-                    );
-                  } else {
-                    q = X.data.EQ(X.data.Country.ID, 'CA');
-                  }
-                  return X.data.countryDAO.where(q);
-                });
-              }
-              return X.data.countryDAO.where(q);
-            })
-          })
+          showDisclaimer: false
         };
       },
       factory: function() {
-        return this.Address.create();
+        return  this.Address.create();
       }
     },
     {
@@ -344,7 +456,8 @@ foam.CLASS({
       of: 'net.nanopay.admin.model.AccountStatus',
       name: 'businessStatus',
       documentation: 'Tracks the status of a business.',
-      visibility: 'HIDDEN',
+      section: 'systemInformation',
+      gridColumns: 6,
       storageTransient: true
     },
     {
@@ -362,34 +475,173 @@ foam.CLASS({
         If the email address is not verified the transaction validation logic will
         throw an error when a Contact is either the Payer or Payee of an invoice.
       `,
-      visibility: 'HIDDEN'
+      section: 'systemInformation'
     },
     {
-      class: 'FObjectProperty',
-      of: 'foam.nanos.auth.Phone',
-      name: 'businessPhone',
-      documentation: 'The phone number of the business.',
-      visibility: 'HIDDEN',
-      factory: function() {
-        return this.Phone.create();
+      class: 'String',
+      name: 'warning',
+      section: 'systemInformation',
+      label: '',
+      tableWidth: 80,
+      expression: function(bankAccount, businessId) {
+        return ! bankAccount && ! businessId ? this.MISSING_BANK_WARNING : '';
       },
-      view: { class: 'foam.u2.detail.VerticalDetailView' }
-    },
-    {
-      class: 'PhoneNumber',
-      name: 'businessPhoneNumber',
-      documentation: 'The phone number of the business.',
-      visibility: 'HIDDEN'
+      tableHeaderFormatter: function() { },
+      tableCellFormatter: function(value, obj) {
+        if ( value ) {
+          this.start()
+            .attrs({ title: value } )
+            .start({ class: 'foam.u2.tag.Image', data: 'images/warning.svg' }).end()
+          .end();
+        }
+      }
     },
     {
       class: 'Boolean',
-      name: 'businessPhoneVerified',
-      writePermissionRequired: true,
-      visibility: 'HIDDEN'
+      name: 'isConsent',
+      documentation: 'Check if should shows consent checkbox when adding contact',
+      visibility: 'HIDDEN',
+      value: true
+    }
+  ],
+
+  actions: [
+    {
+      name: 'addBankAccount',
+      isAvailable: function() {
+        return this.signUpStatus !== this.ContactStatus.READY && ! this.bankAccount;
+      },
+      code: function(X) {
+        X.controllerView.add(this.WizardController.create({
+          model: 'net.nanopay.contacts.Contact',
+          data: this,
+          controllerMode: foam.u2.ControllerMode.CREATE,
+          isEdit: true
+        }, X));
+      }
+    },
+    {
+      name: 'edit',
+      label: 'Edit Details',
+      isAvailable: function() {
+        return this.signUpStatus === this.ContactStatus.READY && this.businessId === 0;
+      },
+      code: function(X) {
+        X.controllerView.add(this.WizardController.create({
+          model: 'net.nanopay.contacts.Contact',
+          data: this,
+          controllerMode: foam.u2.ControllerMode.EDIT,
+          isEdit: true
+        }, X));
+      }
+    },
+    {
+      name: 'invite',
+      isEnabled: function() {
+        return this.signUpStatus != this.ContactStatus.READY;
+      },
+      isAvailable: async function() {
+        let account = await this.accountDAO.find(this.bankAccount);
+        let permission = await this.auth.check(null, 'menu.read.capability.menu.invitation');
+        return this.signUpStatus != this.ContactStatus.READY && ! this.INBankAccount.isInstance(account) && permission;
+      },
+      code: function(X) {
+        var invite = net.nanopay.model.Invitation.create({
+          email: this.email,
+          businessName: this.organization,
+          createdBy: this.subject.user.id,
+          isContact: true
+        }, X);
+        X.controllerView.add(this.WizardController.create({
+          model: 'net.nanopay.model.Invitation',
+          data: invite,
+          controllerMode: foam.u2.ControllerMode.EDIT
+        }, X))
+      }
+    },
+    {
+      name: 'requestMoney',
+      isEnabled: function() {
+        return (
+          this.businessId &&
+          this.businessStatus !== this.AccountStatus.DISABLED
+        ) || this.bankAccount;
+      },
+      isAvailable: async function() {
+        let permission = await this.auth.check(null, 'menu.read.capability.main.invoices.receivables');
+        return permission;
+      },
+      code: function(X) {
+        this.checkAndNotifyAbilityToReceive().then((result) => {
+          if ( result ) {
+            X.menuDAO.find('sme.quickAction.request').then((menu) => {
+              var clone = menu.clone();
+              Object.assign(clone.handler.view, {
+                invoice: this.Invoice.create({ contactId: this.id }),
+                isPayable: false
+              });
+              clone.launch(X, X.controllerView);
+            });
+          }
+        });
+      }
+    },
+    {
+      name: 'sendMoney',
+      isEnabled: function() {
+        return (
+          this.businessId &&
+          this.businessStatus !== this.AccountStatus.DISABLED
+        ) || this.bankAccount;
+      },
+      isAvailable: async function() {
+        let permission = await this.auth.check(null, 'menu.read.capability.main.invoices.payables');
+        return permission;
+      },
+      code: function(X) {
+        this.checkAndNotifyAbilityToPay().then((result) => {
+          if ( result ) {
+            X.menuDAO.find('sme.quickAction.send').then((menu) => {
+              var clone = menu.clone();
+              Object.assign(clone.handler.view, {
+                invoice: this.Invoice.create({ contactId: this.id }),
+                isPayable: true
+              });
+              clone.launch(X, X.controllerView);
+            });
+          }
+        });
+      }
+    },
+    {
+      name: 'delete',
+      code: function(X) {
+        X.controllerView.add(this.Popup.create(null, X).tag({
+          class: 'net.nanopay.contacts.ui.modal.DeleteContactView',
+          data: this
+        }));
+      }
+    },
+    {
+      name: 'resetLoginAttempts',
+      isAvailable: () => false,
+      code: function(X) {
+        return;
+      }
+    },
+    {
+      name: 'disableTwoFactor',
+      isAvailable: () => false,
+      code: function(X) {
+        return;
+      }
     }
   ],
 
   methods: [
+    async function init() {
+      this.isConsent = await this.auth.check(this.CONTACT_PERMISSION);
+    },
     {
       name: 'validate',
       args: [
@@ -429,7 +681,7 @@ foam.CLASS({
             throw new IllegalStateException("Business name is required.");
           }
 
-          if ( this.getBankAccount() != 0 ) {
+          if ( ! foam.util.SafetyUtil.isEmpty(this.getBankAccount()) ) {
             BankAccount bankAccount = (BankAccount) this.findBankAccount(x);
 
             if ( bankAccount == null ) throw new RuntimeException("Bank account not found.");
@@ -439,44 +691,18 @@ foam.CLASS({
             }
 
             Address businessAddress = this.getBusinessAddress();
-            DAO countryDAO = (DAO) x.get("countryDAO");
-            DAO regionDAO = (DAO) x.get("regionDAO");
 
-            Country country = (Country) countryDAO.find(businessAddress.getCountryId());
-            if ( country == null ) {
-              throw new RuntimeException("Invalid country id.");
+            if ( businessAddress == null ) {
+              throw new IllegalStateException("Business Address is required.");
             }
 
-            Region region = (Region) regionDAO.find(businessAddress.getRegionId());
-            if ( region == null ) {
-              throw new RuntimeException("Invalid region id.");
-            }
-
-            Pattern streetNumber = Pattern.compile("^[0-9]{1,16}$");
-            if ( ! streetNumber.matcher(businessAddress.getStreetNumber()).matches() ) {
-              throw new RuntimeException("Invalid street number.");
-            }
-
-            if ( SafetyUtil.isEmpty(businessAddress.getStreetName()) ) {
-              throw new RuntimeException("Invalid street name.");
-            } else if ( businessAddress.getStreetName().length() > 100 ) {
-              throw new RuntimeException("Street name cannot exceed 100 characters");
-            }
-            else {
-              businessAddress.setStreetName(businessAddress.getStreetName().trim());
-            }
-
-            if ( SafetyUtil.isEmpty(businessAddress.getCity()) ) {
-              throw new RuntimeException("Invalid city name.");
-            } else if ( businessAddress.getCity().length() > 100 ) {
-              throw new RuntimeException("City cannot exceed 100 characters");
-            } else {
-              businessAddress.setCity(businessAddress.getCity().trim());
-            }
-
-            if ( ! this.validatePostalCode(businessAddress.getPostalCode(), businessAddress.getCountryId()) ) {
-              String codeType = businessAddress.getCountryId().equals("US") ? "zip code" : "postal code";
-              throw new RuntimeException("Invalid " + codeType + ".");
+            java.util.List<foam.core.PropertyInfo> props = businessAddress.getClassInfo().getAxiomsByClass(foam.core.PropertyInfo.class);
+            for ( foam.core.PropertyInfo prop : props ) {
+              try {
+                prop.validateObj(x, businessAddress);
+              } catch ( IllegalStateException e ) {
+                throw e;
+              }
             }
           }
         }
@@ -518,7 +744,7 @@ foam.CLASS({
     {
       name: 'authorizeOnCreate',
       javaCode: `
-        User user = (User) x.get("user");
+        User user = ((Subject) x.get("subject")).getUser();
         AuthService auth = (AuthService) x.get("auth");
 
         if (
@@ -532,7 +758,7 @@ foam.CLASS({
     {
       name: 'authorizeOnRead',
       javaCode: `
-        User user = (User) x.get("user");
+        User user = ((Subject) x.get("subject")).getUser();
         AuthService auth = (AuthService) x.get("auth");
 
         if (
@@ -546,7 +772,7 @@ foam.CLASS({
     {
       name: 'authorizeOnUpdate',
       javaCode: `
-        User user = (User) x.get("user");
+        User user = ((Subject) x.get("subject")).getUser();
         AuthService auth = (AuthService) x.get("auth");
 
         if (
@@ -560,27 +786,23 @@ foam.CLASS({
     {
       name: 'authorizeOnDelete',
       javaCode: `
-        User user = (User) x.get("user");
+        User user = ((Subject) x.get("subject")).getUser();
         AuthService auth = (AuthService) x.get("auth");
 
         if (
           user.getId() != this.getOwner() &&
-          ! auth.check(x, "contact.delete." + this.getId())
+          ! auth.check(x, "contact.remove." + this.getId())
         ) {
           throw new AuthorizationException();
         }
       `
     },
     {
-      name: 'label',
+      name: 'toSummary',
       type: 'String',
-      code: async function label() {
-        if ( this.businessId ) {
-          let business = await this.publicBusinessDAO.find(this.businessId);
-          return business.label();
-        }
+      code: function toSummary() {
+        if ( this.operatingBusinessName ) return this.operatingBusinessName;
         if ( this.organization ) return this.organization;
-        if ( this.businessName ) return this.businessName;
         if ( this.legalName ) return this.legalName;
         if ( this.lastName && this.firstName ) return this.firstName + ' ' + this.lastName;
         if ( this.lastName ) return this.lastName;
@@ -588,13 +810,8 @@ foam.CLASS({
         return '';
       },
       javaCode: `
-        DAO publicBusinessDAO = (DAO) getX().get("publicBusinessDAO");
-        if ( this.getBusinessId() != 0 ) {
-          Business business = (Business) publicBusinessDAO.find(this.getBusinessId());
-          return business.label();
-        }
+        if ( ! SafetyUtil.isEmpty(this.getOperatingBusinessName()) ) return this.getOperatingBusinessName();
         if ( ! SafetyUtil.isEmpty(this.getOrganization()) ) return this.getOrganization();
-        if ( ! SafetyUtil.isEmpty(this.getBusinessName()) ) return this.getBusinessName();
         if ( ! SafetyUtil.isEmpty(this.getLegalName()) ) return this.getLegalName();
         if ( ! SafetyUtil.isEmpty(this.getLastName()) && ! SafetyUtil.isEmpty(this.getFirstName()) ) return this.getFirstName() + " " + this.getLastName();
         if ( ! SafetyUtil.isEmpty(this.getLastName()) ) return this.getLastName();

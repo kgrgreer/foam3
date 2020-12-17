@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'SecurityTransaction',
@@ -6,6 +23,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
+    'foam.core.ValidationException',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
 ],
@@ -34,7 +52,7 @@ foam.CLASS({
       class: 'String',
       name: 'sourceCurrency',
       aliases: ['sourceDenomination'],
-      section: 'paymentInfoSource',
+      section: 'basicInfo',
       gridColumns: 5,
       visibility: 'RO',
       factory: function() {
@@ -57,7 +75,7 @@ foam.CLASS({
       class: 'UnitValue',
       name: 'amount',
       label: 'Source Amount',
-      section: 'amountSelection',
+      section: 'basicInfo',
       required: true,
       gridColumns: 5,
       visibility: 'RO',
@@ -69,6 +87,12 @@ foam.CLASS({
           currency$: X.data.sourceCurrency$,
           linkAmount$: X.data.destinationAmount$
         };
+      },
+      unitPropValueToString: async function(x, val, unitPropName) {
+        var unitProp = await x.securitiesDAO.find(unitPropName);
+        if ( unitProp )
+          return unitProp.format(val);
+        return val;
       },
       tableCellFormatter: function(value, obj) {
         obj.securitiesDAO.find(obj.sourceCurrency).then(function(s) {
@@ -112,7 +136,13 @@ foam.CLASS({
         };
       },
       documentation: 'Amount in Receiver Currency',
-      section: 'amountSelection',
+      section: 'basicInfo',
+      unitPropValueToString: async function(x, val, unitPropName) {
+        var unitProp = await x.securitiesDAO.find(unitPropName);
+        if ( unitProp )
+          return unitProp.format(val);
+        return val;
+      },
       tableCellFormatter: function(value, obj) {
         obj.securitiesDAO.find(obj.destinationCurrency).then(function(s) {
           if ( s ) {
@@ -205,7 +235,7 @@ foam.CLASS({
       Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
       if ( oldTxn != null && oldTxn.getStatus() == TransactionStatus.COMPLETED ) {
         ((Logger) x.get("logger")).error("instanceof SecurityTransaction cannot be updated.");
-        throw new RuntimeException("instanceof SecurityTransaction cannot be updated.");
+        throw new ValidationException("instanceof SecurityTransaction cannot be updated.");
       }
       `
     },

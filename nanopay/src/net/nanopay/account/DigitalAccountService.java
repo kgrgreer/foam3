@@ -3,6 +3,7 @@ package net.nanopay.account;
 import foam.core.ContextAwareSupport;
 import foam.core.X;
 import foam.dao.DAO;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
@@ -13,7 +14,7 @@ public class DigitalAccountService
   implements DigitalAccountServiceInterface {
 
   public DigitalAccount findDefault(X x, String denomination) {
-    User user = (User) x.get("user");
+    User user = ((Subject) x.get("subject")).getUser();
 
      if ( (user instanceof Business || user.getGroup().equals("sme") ) && SafetyUtil.equals("CAD",denomination) )   {
        DAO accountDAO = (DAO) x.get("localAccountDAO");
@@ -30,7 +31,7 @@ public class DigitalAccountService
          debtAccount = (DebtAccount) accountDAO.put(
           new DebtAccount.Builder(x)
             .setDebtorAccount(overdraft.getId())
-            .setCreditorAccount(6)
+            .setCreditorAccount("6")
             .setParent(overdraft.getId())
             .setOwner(overdraft.getOwner())
             .setName("DebtAccount for: " + overdraft.getId())

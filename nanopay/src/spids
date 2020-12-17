@@ -1,5 +1,0 @@
-p({"class":"foam.nanos.auth.ServiceProvider","id":"nanopay","description":"nanopay"})
-//p({"class":"foam.nanos.auth.ServiceProvider","id":"connected-city","description":"ConnectedCity"})
-//p({"class":"foam.nanos.auth.ServiceProvider","id":"goldman-sachs","description":"Goldman Sachs"})
-//p({"class":"foam.nanos.auth.ServiceProvider","id":"opentext","description":"OpenText"})
-p({"class":"foam.nanos.auth.ServiceProvider","id":"portal-developer","enabled":true,"description":"API Portal Developer"})
