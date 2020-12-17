@@ -44,7 +44,7 @@ foam.CLASS({
     {
       section: 'dateOfBoardingSection',
       name: 'boardingDate',
-      label: 'Input date of expect boarding date',
+      label: 'Input expected boarding date',
       class: 'Date',
       documentation: 'Date of boarding date',
       validationPredicates: [

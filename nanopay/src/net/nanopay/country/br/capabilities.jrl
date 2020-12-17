@@ -585,47 +585,10 @@ p({
   "enabled":true
 })
 
-
-p({
-  "class":"foam.nanos.crunch.Capability",
-  "id":"3609bb84-406c-11eb-b378-0242ac130002",
-  "name":"Bank Domicile Foreign Currency Collection",
-  "description":"Bank Domicile Foreign Currency",
-  "version":"0",
-  "enabled":true
-})
-
-p({
-  "class":"foam.nanos.crunch.Capability",
-  "id":"d5ed7d56-4072-11eb-b378-0242ac130002",
-  "name":"Bank Domicile Reasis Collection",
-  "description":"Bank Domicile Reasis",
-  "version":"0",
-  "enabled":true
-})
-
-p({
-  "class":"foam.nanos.crunch.Capability",
-  "id":"df89d346-4072-11eb-b378-0242ac130002",
-  "name":"Bill Of Lading Collection",
-  "description":"Bill Of Lading ",
-  "version":"0",
-  "enabled":true
-})
-
-p({
-  "class":"foam.nanos.crunch.Capability",
-  "id":"e457c306-4072-11eb-b378-0242ac130002",
-  "name":"Signed Commercial Invoice Collection",
-  "description":"Signed Commercial Invoice",
-  "version":"0",
-  "enabled":true
-})
-
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"1d72f804-4019-11eb-b378-0242ac130002",
-  "name":"expectBoardingDate",
+  "name":"What is the Expected Boarding Date?",
   "description":"Expect Boarding Date",
   "of":"net.nanopay.country.br.ExpectedBoardingDate",
   "version":"0",
