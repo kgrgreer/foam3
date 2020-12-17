@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.bank.ruler',
   name: 'VerifyBankRule',
@@ -8,12 +25,14 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.ContextAgent',
-    'net.nanopay.tx.cico.VerificationTransaction',
-    'net.nanopay.bank.BankAccount',
-    'net.nanopay.account.DigitalAccount',
-    'foam.nanos.auth.User',
     'foam.core.X',
-    'foam.dao.DAO'
+    'foam.dao.DAO',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
+
+    'net.nanopay.account.DigitalAccount',
+    'net.nanopay.bank.BankAccount',
+    'net.nanopay.tx.cico.VerificationTransaction'
   ],
 
   methods: [
@@ -29,7 +48,7 @@ foam.CLASS({
           long randomDepositAmount = (long) (1 + Math.floor(Math.random() * 99));
           account.setRandomDepositAmount(randomDepositAmount);
 
-          User user = (User) x.get("user");
+          User user = ((Subject) x.get("subject")).getUser();
 
           VerificationTransaction transaction = new VerificationTransaction();
 

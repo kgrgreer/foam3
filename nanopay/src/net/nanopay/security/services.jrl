@@ -45,8 +45,6 @@ p({
   "serviceClass": "net.nanopay.security.pii.PIIWebAgent"
 })
 
-p({"class":"foam.nanos.boot.NSpec", "name":"encryptedUserDAO",                 "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new net.nanopay.security.EncryptingDAO(x, foam.nanos.auth.User.getOwnClassInfo(), new foam.dao.java.JDAO(x, net.nanopay.security.EncryptedObject.getOwnClassInfo(), \"encryptedUsers\"))));","client":"{\"of\":\"foam.nanos.auth.User\"}"})
-p({"class":"foam.nanos.boot.NSpec", "name":"encryptedBankAccountDAO",          "serve":true,  "serviceScript":"return new foam.dao.PMDAO(x, new foam.dao.PipelinePMDAO(x, new net.nanopay.security.EncryptingDAO(x, net.nanopay.bank.BankAccount.getOwnClassInfo(), new foam.dao.java.JDAO(x, net.nanopay.security.EncryptedObject.getOwnClassInfo(), \"encryptedBankAccounts\"))));","client":"{\"of\":\"net.nanopay.bank.BankAccount\"}"})
 p({
   "class":"foam.nanos.boot.NSpec", 
   "name":"privateKeyDAO",                    

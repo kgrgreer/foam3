@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.meter.compliance',
   name: 'ComplianceItem',
@@ -16,8 +33,10 @@ foam.CLASS({
   tableColumns: [
     'responseId',
     'type',
-    'user',
+    'user.firstName',
+    'user.lastName',
     'entityLabel',
+    'summary',
     'created'
   ],
 
@@ -108,6 +127,31 @@ foam.CLASS({
       class: 'String',
       name: 'type',
       tableWidth: 300
+    },
+    {
+      class: 'String',
+      name: 'summary',
+      expression: function() {
+        return this.toSummary();
+      }
+    }
+  ],
+
+  methods: [
+    {
+      name: 'toSummary',
+      type: 'String',
+      code: async function(x) {
+        if ( this.sidniResponse != 0 ) {
+          let response = await this.sidniResponse$find;
+          return response.toSummary();
+        }
+        return "";
+      },
+      javaCode: `
+        net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse resp = findSidniResponse(foam.core.XLocator.get());
+        return resp == null ? "" : resp.toSummary();
+      `
     }
   ]
 });

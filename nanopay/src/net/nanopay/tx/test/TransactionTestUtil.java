@@ -6,6 +6,7 @@ import static foam.mlang.MLang.INSTANCE_OF;
 
 import foam.core.X;
 import foam.dao.DAO;
+import foam.nanos.auth.LifecycleState;
 import foam.nanos.auth.User;
 import net.nanopay.account.DigitalAccount;
 import net.nanopay.bank.BankAccount;
@@ -43,6 +44,7 @@ public class TransactionTestUtil {
       (DigitalAccount) ((DAO) x.get("localAccountDAO")).find(
         AND(
           EQ(DigitalAccount.OWNER, user.getId()),
+          EQ(DigitalAccount.LIFECYCLE_STATE, LifecycleState.ACTIVE),
           EQ(DigitalAccount.DENOMINATION, currency),
           INSTANCE_OF(DigitalAccount.class)));
     if ( digitalAccount == null ) {
@@ -50,6 +52,7 @@ public class TransactionTestUtil {
       digitalAccount.setName(currency + " Digital Account");
       digitalAccount.setOwner(user.getId());
       digitalAccount.setDenomination(currency);
+      digitalAccount.setLifecycleState(LifecycleState.ACTIVE);
       digitalAccount = (DigitalAccount) ((DAO) x.get("localAccountDAO")).put_(x, digitalAccount);
     }
 
@@ -58,6 +61,7 @@ public class TransactionTestUtil {
       (BankAccount) ((DAO) x.get("localAccountDAO")).find(
         AND(
           EQ(BankAccount.OWNER, user.getId()),
+          EQ(BankAccount.LIFECYCLE_STATE, LifecycleState.ACTIVE),
           INSTANCE_OF(TransactionTestUtil.BankAccountClass(currency))) );
     if ( bankAccount == null ) {
       bankAccount = TransactionTestUtil.BankAccountFactory(currency);
@@ -65,6 +69,7 @@ public class TransactionTestUtil {
       bankAccount.setStatus(BankAccountStatus.VERIFIED);
       bankAccount.setAccountNumber("12345678");
       bankAccount.setOwner(user.getId());
+      bankAccount.setLifecycleState(LifecycleState.ACTIVE);
       bankAccount = (BankAccount) ((DAO) x.get("localAccountDAO")).put_(x, bankAccount);
     }
 
@@ -97,6 +102,7 @@ public class TransactionTestUtil {
         AND(
           EQ(DigitalAccount.OWNER, user.getId()),
           EQ(DigitalAccount.DENOMINATION, currency),
+          EQ(DigitalAccount.LIFECYCLE_STATE, LifecycleState.ACTIVE),
           INSTANCE_OF(DigitalAccount.class)));
   }
 

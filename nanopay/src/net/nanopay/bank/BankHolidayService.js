@@ -1,10 +1,29 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'BankHolidayService',
 
   javaImports: [
+    'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.nanos.auth.Address',
     'foam.util.SafetyUtil',
     'java.time.DayOfWeek',
     'java.time.LocalDate',
@@ -21,6 +40,12 @@ foam.CLASS({
       of: 'net.nanopay.bank.BankWeekend',
       name: 'customBankWeekends',
       documentation: 'Customize country/regional bank weekends'
+    },
+    {
+      class: 'Int',
+      name: 'window',
+      value: 1,
+      documentation: 'Default window in months'
     }
   ],
 
@@ -37,6 +62,7 @@ foam.CLASS({
           - requestedDate : Requested date to check against applicable holidays
           - address       : For determining applicable bank holidays and weekend
           - offset        : The number of business days to skip
+          - window        : Limit holidays to consider to a window period in months
 
         Eg.
 
@@ -62,27 +88,16 @@ foam.CLASS({
         {
           type: 'Integer',
           name: 'offset'
+        },
+        {
+          type: 'Integer',
+          name: 'window'
         }
       ],
       javaCode: `
       LocalDate localDate = requestedDate.toInstant().atZone(ZoneOffset.UTC).toLocalDate();
-      DAO bankHolidayDAO = (DAO) x.get("bankHolidayDAO");
-      List<Date> bankHolidayList = ((ArraySink) ((foam.mlang.sink.Map)
-        bankHolidayDAO
-          .where(AND(
-            OR(
-              AND(
-                EQ(BankHoliday.COUNTRY_ID, address.getCountryId()),
-                EQ(BankHoliday.REGION_ID, address.getRegionId())
-              ),
-              AND(
-                EQ(BankHoliday.COUNTRY_ID, address.getCountryId()),
-                EQ(BankHoliday.REGION_ID, "")
-              )
-            ),
-            GTE(BankHoliday.DATE, getDate(localDate, ZoneOffset.UTC))))
-          .select(MAP(BankHoliday.DATE, new ArraySink()))).getDelegate()).getArray();
-
+      Date limit = getDate(localDate.plusMonths(window), ZoneOffset.UTC);
+      List<Date> bankHolidayList = getBankHolidays(x, address, limit, getDate(localDate, ZoneOffset.UTC));
       BankWeekend bankWeekend = findBankWeekend(address);
       while ( true ) {
         if ( ! (bankWeekend.getSaturday() && localDate.getDayOfWeek() == DayOfWeek.SATURDAY)
@@ -95,6 +110,101 @@ foam.CLASS({
         localDate = localDate.plusDays(1);
       }
       return getDate(localDate, ZoneId.systemDefault());
+      `
+    },
+    {
+      name: 'skipBankHolidaysBackwards',
+      type: 'Date',
+      documentation: `
+        Skip bank holidays, weekend backwards for a given requestedDate.
+
+        Arguments:
+          - x             : Context object
+          - requestedDate : Requested date to check against applicable holidays
+          - address       : For determining applicable bank holidays and weekend
+          - offset        : The number of business days to skip
+          - window        : Limit holidays to consider to a window period in months
+      `,
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          type: 'Date',
+          name: 'requestedDate'
+        },
+        {
+          type: 'foam.nanos.auth.Address',
+          name: 'address'
+        },
+        {
+          type: 'Integer',
+          name: 'offset'
+        },
+        {
+          type: 'Integer',
+          name: 'window'
+        }
+      ],
+      javaCode: `
+      LocalDate localDate = requestedDate.toInstant().atZone(ZoneOffset.UTC).toLocalDate();
+      Date limit = getDate(localDate.minusMonths(window), ZoneOffset.UTC);
+      List<Date> bankHolidayList = getBankHolidays(x, address, getDate(localDate, ZoneOffset.UTC), limit);
+      BankWeekend bankWeekend = findBankWeekend(address);
+      while ( true ) {
+        if ( ! (bankWeekend.getSaturday() && localDate.getDayOfWeek() == DayOfWeek.SATURDAY)
+          && ! (bankWeekend.getSunday() && localDate.getDayOfWeek() == DayOfWeek.SUNDAY)
+          && ! bankHolidayList.contains(getDate(localDate, ZoneOffset.UTC))
+          && --offset < 0
+        ) {
+          break;
+        }
+        localDate = localDate.minusDays(1);
+      }
+      return getDate(localDate, ZoneId.systemDefault());
+      `
+    },
+    {
+      name: 'getBankHolidays',
+      type: 'List',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          type: 'foam.nanos.auth.Address',
+          name: 'address'
+        },
+        {
+          name: 'max',
+          type: 'Date'
+        },
+        {
+          name: 'min',
+          type: 'Date'
+        }
+      ],
+      javaCode: `
+        DAO bankHolidayDAO = (DAO) x.get("bankHolidayDAO");
+        return ((ArraySink) ((foam.mlang.sink.Map)
+        bankHolidayDAO
+          .where(
+            AND(
+              OR(
+                AND(
+                  EQ(BankHoliday.COUNTRY_ID, address.getCountryId()),
+                  EQ(BankHoliday.REGION_ID, address.getRegionId())
+                ),
+              AND(
+                EQ(BankHoliday.COUNTRY_ID, address.getCountryId()),
+                EQ(BankHoliday.REGION_ID, "")
+              )
+            ),
+              LTE(BankHoliday.DATE, max),
+              GTE(BankHoliday.DATE, min)))
+          .select(MAP(BankHoliday.DATE, new ArraySink()))).getDelegate()).getArray();
       `
     },
     {
@@ -141,5 +251,21 @@ foam.CLASS({
         return ret;
       `
     }
+  ],
+
+  axioms: [
+    {
+      buildJavaClass: function(cls) {
+        cls.extras.push(`
+          public Date skipBankHolidays(X x, Date requestedDate, Address address, int offset) {
+            return skipBankHolidays(x, requestedDate, address, offset, getWindow());
+          }
+
+          public Date skipBankHolidaysBackwards(X x, Date requestedDate, Address address, int offset) {
+            return skipBankHolidaysBackwards(x, requestedDate, address, offset, getWindow());
+          }
+        `);
+      },
+    },
   ]
 });

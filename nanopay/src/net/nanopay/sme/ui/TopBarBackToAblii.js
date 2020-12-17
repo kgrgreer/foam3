@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
   name: 'TopBarBackToAblii',
@@ -7,7 +24,8 @@ foam.CLASS({
 
   imports: [
     'auth',
-    'stack'
+    'stack',
+    'theme'
   ],
 
   css: `
@@ -29,7 +47,7 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'GO_BACK', message: 'Back to ablii.com' },
+    { name: 'GO_BACK', message: 'Back to ' },
   ],
 
   methods: [
@@ -44,7 +62,7 @@ foam.CLASS({
               .addClass('inline-block')
               .add('➔')
             .end()
-            .add(this.GO_BACK)
+            .add(self.GO_BACK + self.theme.appName)
             .on('click', () => {
               self.auth.logout();
               self.stack.push({ class: 'foam.u2.view.LoginView', mode_: 'SignIn' }, self);

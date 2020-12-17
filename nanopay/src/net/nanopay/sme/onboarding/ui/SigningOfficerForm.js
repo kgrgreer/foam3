@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.onboarding.ui',
   name: 'SigningOfficerForm',
@@ -12,6 +29,7 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Country',
     'foam.nanos.auth.Region',
@@ -23,11 +41,12 @@ foam.CLASS({
 
   imports: [
     'acceptanceDocumentService',
-    'agent',
+    'subject',
     'ctrl',
     'isSigningOfficer',
     'menuDAO',
-    'user'
+    'user',
+    'theme'
   ],
 
   css: `
@@ -114,7 +133,7 @@ foam.CLASS({
       top: 15px;
     }
 
-    ^ .net-nanopay-sme-ui-fileDropZone-FileDropZone {
+    ^ .foam-nanos-fs-fileDropZone-FileDropZone {
       background-color: white;
       margin-top: 16px;
       min-height: 264px;
@@ -205,10 +224,10 @@ foam.CLASS({
       postSet: function(o, n) {
         this.nextLabel = n === 'Yes' ? 'Next' : 'Complete';
         if ( n === 'Yes' ) {
-          this.user.signingOfficers.add(this.agent);
+          this.user.signingOfficers.add(this.subject.realUser);
           this.isSigningOfficer = true;
         } else {
-          this.user.signingOfficers.remove(this.agent);
+          this.user.signingOfficers.remove(this.subject.realUser);
           this.isSigningOfficer = false;
         }
         this.hasSaveOption = n === 'Yes';
@@ -270,10 +289,10 @@ foam.CLASS({
       name: 'phoneNumberField',
       documentation: 'Phone number field.',
       postSet: function(o, n) {
-        this.viewData.agent.phone.number = n;
+        this.viewData.agent.phoneNumber = n;
       },
       factory: function() {
-        return this.viewData.agent.phone.number;
+        return this.viewData.agent.phoneNumber;
       },
     },
     {
@@ -414,6 +433,13 @@ foam.CLASS({
       },
       displayWidth: 60,
     },
+    {
+      class: 'String',
+      name: 'appName',
+      factory: function() {
+        return this.theme.appName;
+      }
+    }
   ],
 
   messages: [
@@ -452,7 +478,7 @@ foam.CLASS({
     {
       name: 'INVITE_USERS_EXP',
       message: `Invite a signing officer to your business.
-          Recipients will receive a link to join your business on Ablii`
+          Recipients will receive a link to join your business on `
     },
     {
       name: 'SIGNING_OFFICER_UPLOAD_DESC',
@@ -596,7 +622,7 @@ foam.CLASS({
         .start().addClass('borderless-container')
           .start().addClass('medium-header').add(this.INVITE_USERS_HEADING).end()
           .start().addClass('body-paragraph').addClass('subdued-text')
-            .add(this.INVITE_USERS_EXP)
+            .add(this.INVITE_USERS_EXP + this.appName )
           .end()
         .end()
           .tag(this.ADD_USERS, { label: this.ADD_USERS_LABEL })
@@ -605,7 +631,7 @@ foam.CLASS({
     async function updateUserAcceptance(id, val) {
       try {
         this.acceptanceDocumentService
-          .updateUserAcceptanceDocument(this.__context__, this.agent.id, this.user.id, id, val);
+          .updateUserAcceptanceDocument(this.__context__, this.subject.realUser.id, this.user.id, id, val);
       } catch (error) {
         console.warn('Error updating user accepted document: ', error);
       }
@@ -636,7 +662,7 @@ foam.CLASS({
     function checkQuebec(detachable, eventName, propName, propSlot) {
       var regionId = propSlot.get();
       if ( regionId === 'QC' ) {
-        this.ctrl.notify(this.QUEBEC_DISCLAIMER, 'error');
+        this.ctrl.notify(this.QUEBEC_DISCLAIMER, '', this.LogLevel.WARN, true);
       }
     }
   ],

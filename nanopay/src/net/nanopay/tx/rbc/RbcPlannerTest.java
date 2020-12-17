@@ -5,6 +5,7 @@ import static foam.mlang.MLang.EQ;
 
 import java.util.List;
 
+import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
@@ -129,12 +130,9 @@ public class RbcPlannerTest
   }
 
   public void testRbcCOTransaction() {
-    TransactionQuote quote = new TransactionQuote.Builder(x_)
-      .setRequestTransaction(createCOTransaction(testBankAccount,testDigitalAccount))
-      .build();
 
     TransactionQuote resultQuote = (TransactionQuote) ((DAO) x_.get("localTransactionPlannerDAO"))
-      .put(quote);
+      .put(createCOTransaction(testBankAccount,testDigitalAccount));
 
     test(resultQuote != null, "Result CO Quote is not null" );
     test(resultQuote.getPlans() != null && resultQuote.getPlans().length > 0, "Result CO Quote has plane" );
@@ -150,12 +148,9 @@ public class RbcPlannerTest
   }
 
   public void testRbcCITransaction() {
-    TransactionQuote quote = new TransactionQuote.Builder(x_)
-      .setRequestTransaction(createCITransaction(testBankAccount,testDigitalAccount))
-      .build();
 
     TransactionQuote resultQuote = (TransactionQuote) ((DAO) x_.get("localTransactionPlannerDAO"))
-      .put(quote);
+      .put(createCITransaction(testBankAccount,testDigitalAccount));
 
     test(resultQuote != null, "Result CI Quote is not null" );
     test(resultQuote.getPlans() != null && resultQuote.getPlans().length > 0, "Result CI Quote has plane" );
@@ -171,13 +166,10 @@ public class RbcPlannerTest
   }
 
   public void testWrongInstitution() {
-    TransactionQuote quote = new TransactionQuote.Builder(x_)
-      .setRequestTransaction(createCITransaction(testWrongBankAccount,testDigitalAccount))
-      .build();
 
     try {
       TransactionQuote resultQuote = (TransactionQuote) ((DAO) x_.get("localTransactionPlannerDAO"))
-      .put(quote);
+      .put(createCITransaction(testWrongBankAccount,testDigitalAccount));
     } catch(Exception e) {
       test(true, "Unable to find a plan for requested transaction." );
     }

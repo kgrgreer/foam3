@@ -1,4 +1,21 @@
 /**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
+/**
  * @license
  * Copyright 2018 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -36,7 +53,7 @@ Stores all Exchange Rate info.`,
     {
       name: 'fxRate',
       class: 'Double',
-      section: 'amountSelection',
+      section: 'basicInfo',
       visibility: function(fxRate) {
         if ( ! fxRate || fxRate == 1 ) return foam.u2.DisplayMode.HIDDEN;
         return foam.u2.DisplayMode.RO;
@@ -52,7 +69,8 @@ Stores all Exchange Rate info.`,
     },
     {
       name: 'fxExpiry',
-      class: 'DateTime'
+      class: 'DateTime',
+      section: 'basicInfo'
     },
     {
       name: 'accepted',
@@ -61,16 +79,19 @@ Stores all Exchange Rate info.`,
     },
     {
       name: 'fxQuoteId', // or fxQuoteCode
-      class: 'String'
+      class: 'String',
+      section: 'basicInfo'
     },
     {
       name: 'fxFees',
       class: 'FObjectProperty',
-      of: 'net.nanopay.fx.FeesFields'
+      of: 'net.nanopay.fx.FeesFields',
+      section: 'basicInfo'
     },
     {
       name: 'paymentMethod',
-      class: 'String'
+      class: 'String',
+      section: 'basicInfo'
     }
   ],
 

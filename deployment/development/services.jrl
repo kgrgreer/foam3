@@ -7,14 +7,12 @@ p({
     "port": 8080,
     "forwardedForProxyWhitelist": [],
     "welcomeFiles": ["welcome"],
+    "hostDomains": ["ablii", "localhost"],
     "servletMappings": [{
       "class": "foam.nanos.servlet.ServletMapping",
       "servletObject": {
         "class": "foam.nanos.servlet.VirtualHostRoutingServlet",
-        "hostMapping": {
-          "ablii": "/ablii.html",
-          "localhost": "/index.html"
-        },
+        "isResourceStorage": true,
         "defaultHost": "localhost"
       },
       "pathSpec": "/welcome"
@@ -59,20 +57,49 @@ p({
       "initParameters": {
         "CONTENT_SECURITY_POLICY": """
           default-src 'none';
-          child-src 'self';
-          worker-src 'self';
-          connect-src 'self' data: blob: filesystem: ws:;
-          script-src 'self' https://cdn.plaid.com/link/v2/stable/link-initialize.js 'unsafe-eval' 'sha256-HY1JzEwuxkis4xx0ggY23gbYY/MCEAE1T6+OQnWS2vA=' 'sha256-NiNrLgJ8wbIXIi5saiR3XTd1Mxm4k0nju66GJsw4b9U=' 'sha256-FLYDXBkz4oo/H5jEfYXqAGYUwERY44OO1yznaMCdMiU=' 'sha256-G3UfiJBy6rwOk3glkBQuQDFA7IoCtiOT56gTh+IfNF0=';
-          style-src 'self' https://fonts.googleapis.com/css https://fonts.googleapis.com/icon data: chrome-extension-resource: 'unsafe-inline';
+          child-src 'self' https://cdn.plaid.com/link/ nanopay.net nanopay.net data: chrome-extension-resource:;
+          connect-src 'self' http://localhost:*/service/;
           font-src 'self' https://fonts.gstatic.com data: chrome-extension-resource:;
+          frame-src 'self' data: blob: filesystem:;
           img-src 'self' data: blob: filesystem:;
+          manifest-src 'self';
           media-src * data: blob: filesystem:;
           object-src 'self' data: blob: filesystem:;
-          frame-src 'self' https://cdn.plaid.com/link/ nanopay.net nanopay.net data: chrome-extension-resource:;
+          prefetch-src 'self' https://cdn.plaid.com/link/;
           report-uri /service/CSPReportWebAgent;
+          script-src 'self' https://cdn.plaid.com/link/v2/stable/link-initialize.js 'unsafe-eval' 'sha256-HY1JzEwuxkis4xx0ggY23gbYY/MCEAE1T6+OQnWS2vA=' 'sha256-NiNrLgJ8wbIXIi5saiR3XTd1Mxm4k0nju66GJsw4b9U=' 'sha256-FLYDXBkz4oo/H5jEfYXqAGYUwERY44OO1yznaMCdMiU=' 'sha256-G3UfiJBy6rwOk3glkBQuQDFA7IoCtiOT56gTh+IfNF0=';
+          style-src 'self' https://fonts.googleapis.com/css https://fonts.googleapis.com/icon data: chrome-extension-resource: 'unsafe-inline';
+          worker-src 'self';
         """
       }
     }]
   }
 })
 r({"class":"foam.nanos.boot.NSpec", "name":"liveScriptBundler"})
+
+// copied from nanopay/src/.  AFEX sandbox is never cleared, unlike our journals, so need to update start sequence number. Will have to do this if we clear staging/test journals
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "bareUserDAO",
+  "lazy": false,
+  "description": "Bare boned userDAO wrapped with essential decorators.",
+  "authenticate": false,
+  "serviceScript":
+  """
+    dao = new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setSeqNo(true)
+      .setSeqStartingValue(20000)
+      .setOf(foam.nanos.auth.User.getOwnClassInfo())
+      .setDecorator(new foam.dao.history.HistoryDAO(x, "userHistoryDAO", new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.auth.User.getOwnClassInfo()).build()))
+      .setJournalName("users")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setAuthorize(false)
+      .setServiceProviderAware(true)
+      .build();
+    dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.User.EMAIL });
+    dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.User.GROUP });
+    return dao;
+  """
+})

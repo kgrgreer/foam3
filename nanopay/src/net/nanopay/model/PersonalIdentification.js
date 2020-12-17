@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.model',
   name: 'PersonalIdentification',
@@ -35,13 +52,14 @@ foam.CLASS({
             return [a.id, a.name];
           },
           placeholder: '- Please select -'
-        });
+        }, X);
       },
       validateObj: function(identificationTypeId) {
         if ( ! identificationTypeId ) {
           return 'Identification type is required';
         }
-      }
+      },
+      gridColumns: 6
     },
     {
       class: 'String',
@@ -51,7 +69,8 @@ foam.CLASS({
         if ( ! identificationNumber || ! identificationNumber.trim() ) {
           return 'Identification number is required';
         }
-      }
+      },
+      gridColumns: 6
     },
     {
       class: 'Reference',
@@ -68,13 +87,14 @@ foam.CLASS({
       },
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
-          dao: X.countryDAO.where(X.data.IN(X.data.Country.ID, ['US', 'CA'])),
+          dao: X.countryDAO,
           objToChoice: function(a) {
             return [a.id, a.name];
           },
           placeholder: '- Please select -'
-        });
-      }
+        }, X);
+      },
+      gridColumns: 6
     },
     {
       class: 'Reference',
@@ -94,7 +114,7 @@ foam.CLASS({
             return [region.id, region.name];
           },
           dao$: choices
-        });
+        }, X);
       },
       validateObj: function(regionId, identificationTypeId) {
         var isPassport = identificationTypeId === 3;
@@ -105,7 +125,8 @@ foam.CLASS({
       visibility: function(identificationTypeId) {
         var isPassport = identificationTypeId === 3;
         return isPassport ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
-      }
+      },
+      gridColumns: 6
     },
     {
       class: 'Date',
@@ -117,10 +138,10 @@ foam.CLASS({
         {
           args: ['issueDate'],
           predicateFactory: function(e) {
-            return foam.mlang.predicate.OlderThan.create({
-                arg1: net.nanopay.model.PersonalIdentification.ISSUE_DATE,
-                timeMs: 0
-              });
+            return e.AND(
+              e.NEQ(net.nanopay.model.PersonalIdentification.ISSUE_DATE, null),
+              e.LT(net.nanopay.model.PersonalIdentification.ISSUE_DATE, new Date())
+            );
           },
           errorString: 'Must be before today.'
         }
@@ -137,16 +158,8 @@ foam.CLASS({
           args: ['expirationDate'],
           predicateFactory: function(e) {
             return e.AND(
-              e.NOT(
-                foam.mlang.predicate.OlderThan.create({
-                  arg1: net.nanopay.model.PersonalIdentification.EXPIRATION_DATE,
-                  timeMs: 0
-                })
-              ),
-              e.NEQ(
-                net.nanopay.model.PersonalIdentification.EXPIRATION_DATE,
-                null
-              )
+              e.NEQ(net.nanopay.model.PersonalIdentification.EXPIRATION_DATE, null),
+              e.GT(net.nanopay.model.PersonalIdentification.EXPIRATION_DATE, new Date())
             );
           },
           errorString: 'Must be after today.'

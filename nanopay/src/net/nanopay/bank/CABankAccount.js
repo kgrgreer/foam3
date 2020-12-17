@@ -1,10 +1,40 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'CABankAccount',
-  label: 'Canadian Bank Account',
+  label: 'Canada Bank',
   extends: 'net.nanopay.bank.BankAccount',
 
+  imports: [
+    'notify',
+    'padCaptureDAO',
+    'stack',
+    'subject'
+  ],
+
+  requires: [
+    'foam.log.LogLevel'
+  ],
+
   javaImports: [
+    'foam.nanos.iban.ValidationIBAN',
+    'foam.nanos.iban.IBANInfo',
     'foam.util.SafetyUtil',
     'java.util.regex.Pattern',
     'net.nanopay.model.Branch',
@@ -31,119 +61,175 @@ foam.CLASS({
     }
   ],
 
+  sections: [
+    {
+      name: 'accountInformation',
+      title: function() {
+        return this.forContact ? '' : this.SECTION_DETAILS_TITLE_VOID;
+      }
+    },
+    {
+      name: 'pad',
+      title: `Connect using a void check`,
+      subTitle: `Connect to your account without signing in to online banking.
+          Please ensure your details are entered properly.`,
+      isAvailable: function(forContact) {
+        return ! forContact;
+      }
+    }
+  ],
+
+  messages: [
+    { name: 'TRANSIT_NUMBER_REQUIRED', message: 'Transit number required' },
+    { name: 'TRANSIT_NUMBER_FORMAT', message: 'Transit number must contain numbers' },
+    { name: 'TRANSIT_NUMBER_FIVE', message: 'Transit number must be 5 digits long' },
+    { name: 'ACCOUNT_NUMBER_REQUIRED', message: 'Account number required' },
+    { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number must be between 5 and 12 digits long' },
+    { name: 'INSTITUTION_NUMBER_REQUIRED', message: 'Institution required' },
+    { name: 'INSTITUTION_NUMBER_THREE', message: 'Institution number must be 3 digits long' },
+    { name: 'ADD_SUCCESSFUL', message: 'Bank Account successfully added' },
+    { name: 'SECTION_DETAILS_TITLE_VOID', message: 'Connect using a void check' }
+  ],
+
   properties: [
-     {
+    {
       name: 'country',
       value: 'CA',
-      createVisibility: 'HIDDEN'
+      section: 'accountInformation',
+      visibility: 'RO'
     },
     {
       name: 'flagImage',
+      section: 'accountInformation',
       label: '',
       value: 'images/flags/cad.png',
-      createVisibility: 'HIDDEN'
+      visibility: 'RO'
     },
     {
       name: 'denomination',
+      section: 'accountInformation',
+      gridColumns: 12,
       value: 'CAD',
+    },
+    {
+      name: 'iban',
+      visibility: 'HIDDEN',
+      required: false,
+      getter: function() {
+        return this.accountNumber;
+      },
+      javaGetter: `
+        return getAccountNumber();
+      `,
+      validateObj: function(iban) {
+      }
     },
     {
       name: 'voidChequeImage',
       class: 'String',
       label: '',
-      value: 'images/Canada-Check.png',
-      section: 'accountDetails',
+      value: 'images/Canada-Check3.svg',
+      section: 'accountInformation',
       visibility: 'RO',
       transient: true,
       view: function(_, X) {
         return {
-          class: 'foam.u2.tag.Image'
+          class: 'foam.u2.tag.Image',
+          displayWidth: '100%'
         };
       },
     },
     {
       name: 'desc',
-    },
-    {
-      // Relationship
-      name: 'branch',
-      label: 'Transit No.'
+      visibility: 'HIDDEN'
     },
     {
       name: 'branchId',
       type: 'String',
-      label: 'Transit No.',
+      label: 'Transit',
+      section: 'accountInformation',
       updateVisibility: 'RO',
-      section: 'accountDetails',
-      updateVisibility: 'RO',
+      createVisibility: 'RW',
+      gridColumns: 4,
       view: {
         class: 'foam.u2.tag.Input',
-        placeholder: '12345',
-        maxLength: 5,
         onKey: true
       },
-      gridColumns: 4,
       preSet: function(o, n) {
         if ( n === '' ) return n;
         return /^\d+$/.test(n) ? n : o;
+      },
+      postSet: function(o, n) {
+        this.padCapture.branchId = n;
       },
       validateObj: function(branchId, branch) {
         if ( branch ) {
           return;
         }
         if ( branchId === '' ) {
-          return 'Transit number required.';
+          return this.TRANSIT_NUMBER_REQUIRED;
         } else if ( ! /^\d+$/.test(branchId) ) {
-          return 'Transit number must contain only digits.';
+          return this.TRANSIT_NUMBER_FORMAT;
         } else if ( branchId.length !== 5 ) {
-          return 'Transit number must be 5 digits.';
+          return this.TRANSIT_NUMBER_FIVE;
         }
       }
     },
     {
-      documentation: 'Provides backward compatibilty for mobile call flow.  BankAccountInstitutionDAO will lookup the institutionNumber and set the institution property.',
-      class: 'String',
       name: 'institutionNumber',
+      label: 'Institution',
+      documentation: `Provides backward compatibilty for mobile call flow.
+          BankAccountInstitutionDAO will lookup the institutionNumber and set the institution property.`,
       updateVisibility: 'RO',
-      label: 'Inst. No.',
-      section: 'accountDetails',
+      createVisibility: 'RW',
+      section: 'accountInformation',
       storageTransient: true,
+      gridColumns: 3,
       view: {
         class: 'foam.u2.tag.Input',
-        placeholder: '123',
         maxLength: 3,
         onKey: true
       },
       validateObj: function(institutionNumber) {
         if ( institutionNumber === '' ) {
-          return 'Please enter an institution number.';
+          return this.INSTITUTION_NUMBER_REQUIRED;
         }
         var instNumberRegex = /^[0-9]{3}$/;
         if ( ! instNumberRegex.test(institutionNumber) ) {
-          return 'Institution number must be 3 digits long.';
+          return this.INSTITUTION_NUMBER_THREE;
         }
       },
-      gridColumns: 2,
       preSet: function(o, n) {
         if ( n === '' ) return n;
         var reg = /^\d+$/;
         return reg.test(n) ? n : o;
-      }
+      },
+      postSet: function(o, n) {
+        this.padCapture.institutionNumber = n;
+      },
     },
     {
       name: 'accountNumber',
+      label: 'Account',
+      updateVisibility: 'RO',
+      section: 'accountInformation',
+      gridColumns: 5,
+      view: {
+        class: 'foam.u2.tag.Input',
+        onKey: true
+      },
+      postSet: function(o, n) {
+        this.padCapture.accountNumber = n;
+      },
       validateObj: function(accountNumber) {
         if ( accountNumber === '' ) {
-          return 'Please enter an account number.';
+          return this.ACCOUNT_NUMBER_REQUIRED;
         }
         var accNumberRegex = /^[0-9]{5,12}$/;
         if ( ! accNumberRegex.test(accountNumber) ) {
-          return 'Account number must be between 5 and 12 digits long.';
+          return this.ACCOUNT_NUMBER_INVALID;
         }
       },
-      gridColumns: 6,
-      updateVisibility: 'RO',
-      section: 'accountDetails'
     },
     {
       class: 'String',
@@ -178,7 +264,6 @@ foam.CLASS({
             });
           }))
         .end()
-
         .start()
           .add(obj.slot((accountNumber) => {
               if ( accountNumber ) {
@@ -189,9 +274,61 @@ foam.CLASS({
           }))
         .end();
       }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.model.CAPadCapture',
+      name: 'padCapture',
+      section: 'pad',
+      transient: true,
+      label: '',
+      updateVisibility: 'HIDDEN',
+      factory: function() {
+        return net.nanopay.model.CAPadCapture.create({
+          country: this.country,
+          firstName: this.subject.realUser.firstName,
+          lastName: this.subject.realUser.lastName,
+          companyName: this.subject.user.organization || this.subject.user.businessName,
+          address: this.subject.user.address
+        }, this);
+      },
+      view: function(_, X) {
+        return foam.u2.MultiView.create({
+          views: [
+            {
+              class: 'foam.u2.view.FObjectView',
+              of: 'net.nanopay.model.CAPadCapture'
+            },
+            {
+              // displays ca bank account capabilities
+              class: 'foam.nanos.crunch.ui.CapableView',
+              capableObj: X.data.padCapture
+            }
+          ]
+        }, X);
+      }
+    },
+    {
+      name: 'swiftCode',
+      label: 'SWIFT/BIC',
+      updateVisibility: 'RO',
+      section: 'accountInformation',
+      validateObj: function(swiftCode) {
+      }
     }
   ],
   methods: [
+    async function save(stack_back) {
+      try {
+        await this.padCaptureDAO.put(this.padCapture);
+        this.address = this.padCapture.address;
+        await this.subject.user.accounts.put(this);
+        if ( this.stack && stack_back ) this.stack.back();
+        this.notify(this.ADD_SUCCESSFUL, '', this.LogLevel.INFO, true);
+      } catch (error) {
+        this.notify(error.message, '', this.LogLevel.ERROR, true);
+      }
+    },
     {
       name: 'getBankCode',
       type: 'String',
@@ -233,10 +370,10 @@ foam.CLASS({
       String accountNumber = this.getAccountNumber();
 
       if ( SafetyUtil.isEmpty(accountNumber) ) {
-        throw new IllegalStateException("Please enter an account number.");
+        throw new IllegalStateException(this.ACCOUNT_NUMBER_REQUIRED);
       }
       if ( ! ACCOUNT_NUMBER_PATTERN.matcher(accountNumber).matches() ) {
-        throw new IllegalStateException("Account number must be between 5 and 12 digits long.");
+        throw new IllegalStateException(this.ACCOUNT_NUMBER_INVALID);
       }
       `
     },
@@ -266,10 +403,10 @@ foam.CLASS({
       // when the institutionNumber is provided and not the institution
       String institutionNumber = this.getInstitutionNumber();
       if ( SafetyUtil.isEmpty(institutionNumber) ) {
-        throw new IllegalStateException("Please enter an institution number.");
+        throw new IllegalStateException(this.INSTITUTION_NUMBER_REQUIRED);
       }
       if ( ! INSTITUTION_NUMBER_PATTERN.matcher(institutionNumber).matches() ) {
-        throw new IllegalStateException("Please enter a valid institution number.");
+        throw new IllegalStateException(this.INSTITUTION_NUMBER_THREE);
       }
       `
     },
@@ -292,10 +429,10 @@ foam.CLASS({
       // when the branchId is provided and not the branch
       String branchId = this.getBranchId();
       if ( SafetyUtil.isEmpty(branchId) ) {
-        throw new IllegalStateException("Please enter a transit number.");
+        throw new IllegalStateException(this.TRANSIT_NUMBER_REQUIRED);
       }
       if ( ! BRANCH_ID_PATTERN.matcher(branchId).matches() ) {
-        throw new IllegalStateException("Transit number must be 5 digits long.");
+        throw new IllegalStateException(this.TRANSIT_NUMBER_FIVE);
       }
       `
     },
@@ -315,6 +452,6 @@ foam.CLASS({
         }
         return code.toString();
       `
-    },
+    }
   ]
 });

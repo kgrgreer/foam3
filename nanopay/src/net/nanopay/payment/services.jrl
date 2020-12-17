@@ -1,0 +1,216 @@
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "countryCapabilityDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setInnerDAO(x.get("localCapabilityDAO"))
+      .setValidated(true)
+      .setDecorator(
+        new foam.dao.FilteredDAO.Builder(x)
+          .setPredicate(foam.mlang.MLang.INSTANCE_OF(net.nanopay.payment.CountryCapability.class))
+          .setDelegate(new foam.dao.NullDAO(x, net.nanopay.payment.CountryCapability.getOwnClassInfo()))
+        .build())
+      .setOf(net.nanopay.payment.CountryCapability.getOwnClassInfo())
+      .build();
+  """,
+  "client":
+    """
+      {
+        "of":"net.nanopay.payment.CountryCapability"
+      }
+    """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "paymentProviderDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setInnerDAO(x.get("localCapabilityDAO"))
+      .setDecorator(
+        new foam.dao.FilteredDAO.Builder(x)
+          .setPredicate(foam.mlang.MLang.INSTANCE_OF(net.nanopay.payment.PaymentProvider.class))
+          .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.payment.PaymentProvider.getOwnClassInfo()).build())
+        .build())
+      .setOf(net.nanopay.payment.PaymentProvider.getOwnClassInfo())
+      .build();
+  """,
+  "client":
+    """
+      {
+        "of":"net.nanopay.payment.PaymentProvider"
+      }
+    """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "InstitutionPaymentProviderDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(true)
+      .setSeqNo(true)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("InstitutionPaymentProvider")
+      .setOf(net.nanopay.payment.InstitutionPaymentProvider.getOwnClassInfo())
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.payment.InstitutionPaymentProvider\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "paymentProviderCorridorDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(true)
+      .setAuthorizer(new net.nanopay.payment.PaymentProviderCorridorAuthorizer.Builder(x).setPermissionPrefix("paymentprovidercorridor").build())
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setInnerDAO(x.get("localCapabilityDAO"))
+      .setValidated(true)
+      .setDecorator(
+        new foam.dao.FilteredDAO.Builder(x)
+          .setPredicate(foam.mlang.MLang.INSTANCE_OF(net.nanopay.payment.PaymentProviderCorridor.class))
+          .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.payment.PaymentProviderCorridor.getOwnClassInfo()).build())
+        .build())
+      .setOf(net.nanopay.payment.PaymentProviderCorridor.getOwnClassInfo())
+      .build();
+  """,
+  "client":
+    """
+      {
+        "of":"net.nanopay.payment.PaymentProviderCorridor"
+      }
+    """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "sourceCorridorDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(true)
+      .setAuthorizer(new net.nanopay.payment.DestinationCorridorAuthorizer.Builder(x).setPermissionPrefix("paymentprovidercorridor").setCorridorType("source").build())
+      .setInnerDAO(x.get("localCapabilityDAO"))
+      .setValidated(true)
+      .setDecorator(
+        new foam.dao.FilteredDAO.Builder(x)
+          .setPredicate(foam.mlang.MLang.INSTANCE_OF(net.nanopay.payment.PaymentProviderCorridor.class))
+          .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.payment.PaymentProviderCorridor.getOwnClassInfo()).build())
+        .build())
+      .setOf(net.nanopay.payment.PaymentProviderCorridor.getOwnClassInfo())
+      .build();
+  """,
+  "client":
+    """
+      {
+        "of":"net.nanopay.payment.PaymentProviderCorridor"
+      }
+    """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "targetCorridorDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorize(true)
+      .setAuthorizer(new net.nanopay.payment.DestinationCorridorAuthorizer.Builder(x).setPermissionPrefix("paymentprovidercorridor").setCorridorType("target").build())
+      .setInnerDAO(x.get("localCapabilityDAO"))
+      .setValidated(true)
+      .setDecorator(
+        new foam.dao.FilteredDAO.Builder(x)
+          .setPredicate(foam.mlang.MLang.INSTANCE_OF(net.nanopay.payment.PaymentProviderCorridor.class))
+          .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.payment.PaymentProviderCorridor.getOwnClassInfo()).build())
+        .build())
+      .setOf(net.nanopay.payment.PaymentProviderCorridor.getOwnClassInfo())
+      .build();
+  """,
+  "client":
+    """
+      {
+        "of":"net.nanopay.payment.PaymentProviderCorridor"
+      }
+    """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "paymentMethods",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setJournalName("paymentMethods")
+      .setOf(net.nanopay.payment.PaymentMethod.getOwnClassInfo())
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.payment.PaymentMethod\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "corridorService",
+  "serve": true,
+  "serviceClass": "net.nanopay.payment.PaymentCorridorService",
+  "boxClass": "net.nanopay.payment.CorridorService",
+  "client":
+    """
+      {
+        "class":"net.nanopay.payment.ClientCorridorService",
+        "delegate": {
+          "class":"foam.box.SessionClientBox",
+          "delegate": {
+            "class":"foam.box.HTTPBox",
+            "url":
+            "service/corridorService"
+          }
+        }
+      }
+    """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "payeeCurrencyService",
+  "description": "A service that returns a list of currencies payee can receive in.",
+  "serve": true,
+  "serviceClass": "net.nanopay.payment.PayeeCurrency",
+  "boxClass": "net.nanopay.payment.PayeeCurrencyServiceSkeleton",
+  "client": """
+    {
+      "class": "net.nanopay.payment.ClientPayeeCurrencyService",
+      "delegate": {
+        "class": "foam.box.SessionClientBox",
+        "delegate": {
+          "class": "foam.box.HTTPBox",
+          "url": "service/payeeCurrencyService"
+        }
+      }
+    }
+  """
+})

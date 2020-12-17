@@ -2,6 +2,7 @@ package net.nanopay.payment;
 
 import foam.core.X;
 import foam.dao.DAO;
+import foam.nanos.auth.LifecycleState;
 import foam.nanos.auth.User;
 import net.nanopay.account.DigitalAccount;
 import net.nanopay.bank.BankAccount;
@@ -12,7 +13,8 @@ import net.nanopay.tx.model.Transaction;
 import static foam.mlang.MLang.*;
 
 public class PayrollDAOTest extends foam.nanos.test.Test {
-  long PAYER_ID, PAYER_ACCOUNT;
+  long PAYER_ID;
+  String PAYER_ACCOUNT;
   String PAYER_EMAIL = "payroll@nanopay.net";
   DAO payrollDAO, userDAO, accountDAO, txnDAO;
   Payroll payroll;
@@ -34,6 +36,7 @@ public class PayrollDAOTest extends foam.nanos.test.Test {
     addPayeesIfNotFound(x);
     addPayrollEntries(x);
     payroll = new Payroll();
+    payroll.setSpid("payroll");
     payroll.setSourceAccount(PAYER_ACCOUNT);
     payroll.setPayrollEntries(entries);
 
@@ -77,7 +80,7 @@ public class PayrollDAOTest extends foam.nanos.test.Test {
       account.setStatus(BankAccountStatus.VERIFIED);
       account.setOwner(PAYER_ID);
       account.setDenomination("CAD");
-      account.setEnabled(true);
+      account.setLifecycleState(LifecycleState.ACTIVE);
       account.setIsDefault(true);
       account = (CABankAccount) accountDAO.put_(x, account);
     }
@@ -93,6 +96,7 @@ public class PayrollDAOTest extends foam.nanos.test.Test {
       user.setGroup("business");
       user.setEmail(PAYER_EMAIL);
       user.setEmailVerified(true);
+      user.setSpid("nanopay");
       user = (User) userDAO.put_(x, user);
     }
     PAYER_ID = user.getId();
@@ -113,6 +117,7 @@ public class PayrollDAOTest extends foam.nanos.test.Test {
       user.setLastName("Filth");
       user.setEmailVerified(true);
       user.setGroup("business");
+      user.setSpid("nanopay");
       user = (User) userDAO.put_(x, user);
     }
     long userId = user.getId();

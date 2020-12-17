@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.business',
   name: 'NatureOfBusiness',
@@ -18,15 +35,29 @@ foam.CLASS({
     {
       class: 'Reference',
       of: 'net.nanopay.model.BusinessSector',
-      name: 'parentChoice'
+      name: 'parentChoice',
+      postSet: function(o, n) {
+        if ( o != n && o !== 0 )
+          this.data = 0;
+      },
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.Country',
+      name: 'country',
+      value: '',
+      visibility: 'HIDDEN'
     },
     {
       class: 'FObjectProperty',
       of: 'foam.mlang.predicate.Predicate',
       name: 'predicate',
-      expression: function(parentChoice) {
+      expression: function(parentChoice, country) {
         return parentChoice ?
-          this.EQ(this.BusinessSector.PARENT, parentChoice) :
+          this.AND(
+            this.EQ(this.BusinessSector.PARENT, parentChoice),
+            this.EQ(this.BusinessSector.COUNTRY_ID, country)
+          ):
           this.FALSE;
       }
     },
@@ -42,8 +73,7 @@ foam.CLASS({
       of: 'net.nanopay.model.BusinessSector',
       name: 'data',
       postSet: function(_, n) {
-        if ( ! n ) return;
-        this.data$find.then((o) => this.parentChoice = o.parent);
+        this.data$find.then((o) => { if (o) this.parentChoice = o.parent });
       }
     }
   ],
@@ -72,7 +102,6 @@ foam.CLASS({
               searchPlaceholder: 'Search...',
               choosePlaceholder: this.PLACE_HOLDER
             })
-
           .end()
 
           .start()

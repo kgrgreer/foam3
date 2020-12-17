@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.invoice',
   name: 'AuthenticatedInvoiceDAOTest',
@@ -8,16 +25,18 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'foam.dao.DAO',
     'foam.dao.MDAO',
-    'static foam.mlang.MLang.*',
-    'foam.nanos.auth.User',
+    'foam.dao.SequenceNumberDAO',
     'foam.nanos.auth.AuthorizationException',
-    'foam.nanos.auth.UserAndGroupAuthService',
+    'foam.nanos.auth.CreatedByAwareDAO',
     'foam.nanos.auth.LifecycleState',
+    'foam.nanos.auth.Subject',
+    'foam.nanos.auth.User',
+    'foam.nanos.auth.UserAndGroupAuthService',
     'foam.util.Auth',
+
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.tx.model.Transaction',
-    'foam.nanos.auth.CreatedByAwareDAO',
-    'foam.dao.SequenceNumberDAO'
+    'static foam.mlang.MLang.*'
   ],
 
   methods: [{
@@ -198,7 +217,7 @@ foam.CLASS({
         message = t.getMessage();
         threw = true;
       }
-      test( threw && message.equals("Cannot update reference Id."), "Payee (Business user) should not be able to update reference Id on an invoice." );
+      test( threw && message.equals("Cannot update reference Id"), "Payee (Business user) should not be able to update reference Id on an invoice." );
 
       // Test select_ method with invoice payee business user
       threw = false;
@@ -274,7 +293,7 @@ foam.CLASS({
         message = t.getMessage();
         threw = true;
       }
-      test( threw && message.equals("Cannot update reference Id."), "Payer (Business user) should not be able to update reference Id on an invoice." );
+      test( threw && message.equals("Cannot update reference Id"), "Payer (Business user) should not be able to update reference Id on an invoice." );
 
       // Test select_ method with invoice payer business user
       threw = false;
@@ -588,7 +607,7 @@ foam.CLASS({
       Invoice adminPermInvoice = (Invoice) invoiceDAO.put_(x, invoice);
 
       // Admin user from runTest context
-      User admin = (User) x.get("user");
+      User admin = ((Subject) x.get("subject")).getUser();
 
       // Payer Business User
       User payerUser = new User();

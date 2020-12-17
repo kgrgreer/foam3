@@ -17,7 +17,7 @@ import net.nanopay.bank.CABankAccount;
 import net.nanopay.fx.FXService;
 import net.nanopay.payment.Institution;
 import net.nanopay.tx.alterna.AlternaCOTransaction;
-import net.nanopay.tx.model.PercentageFee;
+import net.nanopay.tx.fee.PercentageFee;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionFee;
 
@@ -109,7 +109,7 @@ public class NanopayTransactionFeeDAOTest
     fee.setDenomination("CAD");
     fee.setMinAmount(0L);
     fee.setMaxAmount(1000000000L);
-    fee.setFeeAccount(999); // just needs to be non-null
+    fee.setFeeAccount("999"); // just needs to be non-null
     fee.setFee(new PercentageFee.Builder(x_).setPercentage(1).build());
     feeDAO.put(fee);
   }

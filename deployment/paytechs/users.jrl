@@ -1,0 +1,18 @@
+p({
+    "class":"foam.nanos.auth.User",
+    "id":1666,
+    "spid":"nanopay",
+    "firstName":"rtpFirst",
+    "lastName":"rtpLast",
+    "email":"rtptest@nanopay.net",
+    "language":"en",
+    "password":"RAosri2pHX0=:KmtXlFF9KqA4tdsVqrBdcokHxJJnKbrzItO7kGxAFWZvzLQ+38uPV0p5kL9e29i+c5u2IiRoIiFzWulTshSK9A==",
+    "passwordLastModified":"2017-12-03T18:02:50.968Z",
+    "group":"rtp",
+    "emailVerified":true,
+    "status":2,
+    "compliance":1,
+    "onboarded":true,
+    "isPublic":false,
+    "lifecycleState":1
+})

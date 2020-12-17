@@ -6,6 +6,7 @@ import static foam.mlang.MLang.INSTANCE_OF;
 import static foam.mlang.MLang.NOT;
 import static net.nanopay.tx.model.TransactionStatus.COMPLETED;
 
+import foam.core.CompoundException;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
@@ -165,10 +166,15 @@ public class TransactionTest
       .setDestinationAccount(loaneeTester_Dig.getId())
       .setAmount(100001)
       .build();
-    test(TestUtils.testThrows(
-      () -> txnDAO.put(finalTxn),
-      "Unable to find a plan for requested transaction.",
-      RuntimeException.class), "Exception: try to exceed principal");
+
+    try {
+      txnDAO.put(finalTxn);
+      test(false,"Exception: try to exceed principal");
+    } catch (net.nanopay.tx.planner.UnableToPlanException e) {
+      test(true, "try to exceed principal");
+    } catch (RuntimeException e) {
+      test(e.getMessage().contains("Transaction Exceeds Loan Account Principal Limit"), "try to exceed principal");
+    }
 
     // test trying to repay more then borrowed
     Transaction payment = new Transaction.Builder(x_)
@@ -182,10 +188,14 @@ public class TransactionTest
       .setDestinationAccount(loanAccount.getId())
       .setAmount(300001)
       .build();
-    test(TestUtils.testThrows(
-      () -> txnDAO.put(finalTxn2),
-      "Invalid transfer, LoanedTotalAccount account balance must remain >= 0. nanopay Loan Account CAD",
-      RuntimeException.class), "Exception: try to overpay loan");
+
+    try {
+      txnDAO.put(finalTxn2);
+      test(false,"Try to overpay loan");
+    } catch (RuntimeException e) {
+      test(e.toString().contains("Invalid transfer, LoanedTotalAccount account balance must remain >= 0"), "Try to overpay loan");
+    }
+
   }
 
   public void testFXTransaction(){
@@ -250,7 +260,6 @@ public class TransactionTest
       .build();
     tq = (TransactionQuote) txnQuoteDAO.put(tq);
 
-    test(tq.getPlan().getIsQuoted(),"verification transaction was quoted");
     test(tq.getPlans().length == 1,"Only 1 plan is created for an Verification Transaction");
     test(tq.getPlan() instanceof VerificationTransaction,"transaction is class of verification transaction");
 
@@ -319,7 +328,7 @@ public class TransactionTest
     txn = (Transaction) txnDAO.put(txn).fclone();
     txn.setStatus(COMPLETED);
     txnDAO.put(txn);
-    
+
 
     txn = new Transaction();
     txn.setInvoiceId(inv.getId());
@@ -334,10 +343,9 @@ public class TransactionTest
 
     test(txnNew.getAmount() == 333,"Amount not copied in LimitedClone");
     test(txnNew.getInvoiceId() == txn.getInvoiceId(),"Invoice IDs copied in LimitedClone");
-    test(txnNew.getReferenceData() == txn.getReferenceData(),"Reference Data copied in LimitedClone");
-    test(txnNew.getReferenceNumber().equals(txn.getReferenceNumber()),"Reference Number copied in LimitedClone");
+    test(txnNew.getExternalData() == txn.getExternalData(),"Reference Data copied in LimitedClone");
+    test(txnNew.getExternalInvoiceId().equals(txn.getExternalInvoiceId()),"External Invoice Id copied in LimitedClone");
     test(txnNew.getStatus() == txn.getStatus(),"Status copied in LimitedClone from "+txn.getStatus().getName() +" and "+ txnNew.getStatus().getName());
-    test(! txn.isActive(), "isActive returns false");
 
     int amount = txn.getTransfers().length;
     Transfer transfer = new Transfer();
@@ -357,8 +365,6 @@ public class TransactionTest
     test(! txn.canTransfer(x_, null), "Cannot transfer transaction if status is PENDING");
     txnNew.setStatus(TransactionStatus.PENDING);
     test( ! txn.canTransfer(x_,txnNew),"Cannot transfer transaction in same status as old transaction");
-    test( ! txn.canReverseTransfer(x_,txn), "canReverseTransfer returns false");
-
   }
 
   public void testPADType() {
@@ -416,6 +422,7 @@ public class TransactionTest
       user.setLastName("Filth");
       user.setEmailVerified(true);
       user.setGroup("business");
+      user.setSpid("nanopay");
       user = (User) userDAO.put(user);
       user = (User) user.fclone();
     }

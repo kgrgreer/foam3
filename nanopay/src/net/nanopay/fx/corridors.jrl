@@ -1,6 +1,0 @@
-//p({"class":"net.nanopay.fx.Corridor","id":1,"sourceCountry":"CA","targetCountry":"IN","currencies":["INR"],"payoutOptions":["3"]})
-p({"class":"net.nanopay.fx.Corridor","id":1,"sourceCountry":"CA","targetCountry":"IN","currencies":["INR"]})
-p({"class":"net.nanopay.fx.Corridor","id":2,"sourceCountry":"CA","targetCountry":"US"})
-p({"class":"net.nanopay.fx.Corridor","id":3,"sourceCountry":"US","targetCountry":"CA"})
-p({"class":"net.nanopay.fx.Corridor","id":4,"sourceCountry":"US","targetCountry":"US"})
-p({"class":"net.nanopay.fx.Corridor","id":5,"sourceCountry":"CA","targetCountry":"CA"})

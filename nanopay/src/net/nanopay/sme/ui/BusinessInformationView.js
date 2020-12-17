@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.sme.ui',
   name: 'BusinessInformationView',
@@ -16,7 +33,7 @@ foam.CLASS({
       padding: 24px;
     }
     ^ .info-container {
-      width: 25%;
+      width: 20%;
       display: inline-grid;
       height: 40px;
       margin-top: 30px;
@@ -27,10 +44,11 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'TITLE', message: 'Company information' },
-    { name: 'BUSINESS_NAME_LABEL', message: 'Registered business name' },
-    { name: 'PHONE_LABEL', message: 'Business phone #' },
-    { name: 'ADDRESS_LABEL', message: 'Business address' },
+    { name: 'TITLE', message: 'Business information' },
+    { name: 'BUSINESS_NAME_LABEL', message: 'Name' },
+    { name: 'PHONE_LABEL', message: 'Phone number' },
+    { name: 'ADDRESS_LABEL', message: 'Address' },
+    { name: 'EMAIL_LABEL', message: 'Email' },
     { name: 'WEBSITE_LABEL', message: 'Website' }
   ],
 
@@ -45,11 +63,15 @@ foam.CLASS({
         .end()
         .start().addClass('info-container')
           .start().addClass('table-content').add(this.PHONE_LABEL).end()
-          .start().addClass('table-content').addClass('subdued-text').add(this.user.phone.number).end()
+          .start().addClass('table-content').addClass('subdued-text').add(this.user.phoneNumber).end()
         .end()
         .start().addClass('info-container')
           .start().addClass('table-content').add(this.ADDRESS_LABEL).end()
           .start().addClass('table-content').addClass('subdued-text').add(this.user.address.getAddress()).end()
+        .end()
+        .start().addClass('info-container')
+          .start().addClass('table-content').add(this.EMAIL_LABEL).end()
+          .start().addClass('table-content').addClass('subdued-text').add(this.user.email).end()
         .end()
         .start().addClass('info-container')
           .start().addClass('table-content').add(this.WEBSITE_LABEL).end()

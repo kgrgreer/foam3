@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.bank.ui',
   name: 'BankPADForm',
@@ -149,7 +166,9 @@ foam.CLASS({
       class: 'String',
       name: 'companyName',
       factory: function() {
-        if ( this.viewData.user.businessName ) {
+        if ( this.viewData.user.organization ) {
+          return this.viewData.user.organization
+        } else if ( this.viewData.user.businessName ) {
           return this.viewData.user.businessName;
         }
         return this.viewData.padCompanyName;
@@ -162,7 +181,7 @@ foam.CLASS({
       class: 'FObjectProperty',
       name: 'companyNameDisabled',
       factory: function() {
-        return this.viewData.user.businessName ?
+        return this.viewData.user.businessName || this.viewData.user.organization ?
           foam.u2.DisplayMode.DISABLED :
           foam.u2.DisplayMode.RW;
       }
@@ -191,11 +210,11 @@ foam.CLASS({
 
         .start().addClass('inline')
           .start().add(this.LABEL_FIRST_NAME).addClass(this.myClass('field-label')).end()
-          .start(this.FIRST_NAME).addClass(this.myClass('input-size-half')).end()
+          .start().add(this.FIRST_NAME).addClass(this.myClass('input-size-half')).end()
         .end()
         .start().addClass('inline').addClass('float-right')
           .start().add(this.LABEL_LAST_NAME).addClass(this.myClass('field-label')).end()
-          .start(this.LAST_NAME).addClass(this.myClass('input-size-half')).end()
+          .start().add(this.LAST_NAME).addClass(this.myClass('input-size-half')).end()
         .end()
 
         .start().addClass(this.myClass('divider')).end()

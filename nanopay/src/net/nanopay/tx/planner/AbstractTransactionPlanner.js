@@ -1,12 +1,34 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.tx.planner',
   name: 'AbstractTransactionPlanner',
+  extends: 'foam.nanos.ruler.Rule',
   abstract: true,
 
   documentation: 'Abstract rule action for transaction planning.',
 
   implements: [
     'foam.nanos.ruler.RuleAction'
+  ],
+
+  imports: [
+    'ruleGroupDAO',
   ],
 
   javaImports: [
@@ -20,20 +42,97 @@ foam.CLASS({
     'net.nanopay.tx.Transfer',
     'static foam.mlang.MLang.EQ',
     'net.nanopay.tx.TransactionQuote',
+    'net.nanopay.tx.FeeLineItem',
+    'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.Transaction',
     'org.apache.commons.lang.ArrayUtils'
+  ],
+
+  tableColumns: [
+    'willPlan',
+    'name',
+    'id',
+    'enabled',
+    'bestPlan',
+    'multiPlan_',
+    'ruleGroup.id'
   ],
 
   properties: [
     {
       name: 'multiPlan_',
+      label: 'Multi Planner',
       documentation: 'true for planners which produce more then one plan',
       class: 'Boolean',
       value: false
-    }
+    },
+    {
+      name: 'willPlan',
+      label: 'Planner will Plan',
+      documentation: 'For front end, tells whether this planner will plan or not',
+      class: 'Boolean',
+      expression: async function() {
+        return ( ( await this.ruleGroupDAO.find(this.ruleGroup) ).enabled && this.enabled );
+      },
+      storageTransient: true
+    },
+    {
+      name: 'bestPlan',
+      label: 'Force Best Plan',
+      class: 'Boolean',
+      documentation: 'determines whether to save as best plan',
+      value: false
+    },
+    {
+      name: 'isFeeOnRootCorridors',
+      class: 'Boolean',
+      documentation: `Determines whether fee is applied on the planned
+        transaction with the country and currency corridors from the root quote.
+
+        If set to false (default), fee is applied directly on the transaction.`,
+      value: false
+    },
+    {
+      name: 'action',
+      transient: true,
+      visibility: 'HIDDEN',
+      javaGetter: 'return this;',
+    },
+    {
+      name: 'after',
+      visibility: 'HIDDEN',
+      value: false
+    },
+    {
+      name: 'daoKey',
+      value: 'transactionPlannerDAO',
+      visibility: 'HIDDEN',
+    },
+    {
+      class: 'Enum',
+      of: 'foam.nanos.ruler.Operations',
+      name: 'operation',
+      value: 'CREATE',
+      visibility: 'HIDDEN',
+    },
   ],
 
   methods: [
+    //planners set themselves as rule actions, which would lead to stack overflow on cloning
+    {
+      name: 'fclone',
+      type: 'foam.core.FObject',
+      javaCode: `
+        this.__frozen__ = false;
+        return this;
+      `
+    },
+    {
+      name: 'getUser',
+      javaCode: `
+        return ((TransactionQuote) obj).getSourceAccount().findOwner(x);
+      `
+    },
     {
       name: 'applyAction',
       documentation: 'applyAction of the rule is called by rule engine',
@@ -75,24 +174,27 @@ foam.CLASS({
         if ( getMultiPlan_() ) { // for performance can disallow multiplans on some planners?
           for ( Object altPlanO : quote.getAlternatePlans_() ) {
             Transaction altPlan = (Transaction) altPlanO;
-            altPlan.setIsQuoted(true);
             altPlan.setTransfers((Transfer[]) ArrayUtils.addAll(altPlan.getTransfers(),quote.getMyTransfers_().toArray(new Transfer[0])));
+            // add the planner id for validation
+            altPlan.setPlanner(this.getId());
             altPlan.setId(UUID.randomUUID().toString());
-            altPlan = (Transaction) ((DAO) x.get("localFeeEngineDAO")).put(altPlan);
+            altPlan = applyFee(x, quote, altPlan);
             quote.addPlan(altPlan);
           }
         }
         if ( txn != null ) {
           txn.setId(UUID.randomUUID().toString());
           txn.setTransfers((Transfer[]) quote.getMyTransfers_().toArray(new Transfer[0]));
-          txn.setIsQuoted(true);
           //likely can add logic for setting clearing/completion time based on planners here.
           //auto add fx rate
-          txn = (Transaction) ((DAO) x.get("localFeeEngineDAO")).put(txn);
+          txn = applyFee(x, quote, txn);
           //TODO: hit tax engine
           //TODO: signing
+          // add the planner id for validation
+          txn.setPlanner(this.getId());
+          txn = createSummaryLineItems(x, txn);
           quote.addPlan(txn);
-          if (forceBestPlan()) {
+          if (getBestPlan()) {
             quote.setPlan(txn);
           }
         }
@@ -105,14 +207,13 @@ foam.CLASS({
       documentation: 'Takes care of recursive transactionPlannerDAO calls returns best txn',
       args: [
         { name: 'x', type: 'Context' },
-        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' },
+        { name: 'parent', type: 'net.nanopay.tx.TransactionQuote' },
+        { name: 'clearTLIs', type: 'Boolean' }
       ],
       type: 'net.nanopay.tx.model.Transaction',
       javaCode: `
-        DAO d = (DAO) x.get("localTransactionPlannerDAO");
-        TransactionQuote quote = new TransactionQuote();
-        quote.setRequestTransaction((Transaction) txn.fclone());
-        quote = (TransactionQuote) d.put(quote);
+        var quote = _quoteTxn(x, txn, parent, clearTLIs);
         return quote.getPlan();
       `
     },
@@ -121,19 +222,39 @@ foam.CLASS({
       documentation: 'Takes care of recursive transactionPlannerDAO calls returns ',
       args: [
         { name: 'x', type: 'Context' },
-        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' },
+        { name: 'parent', type: 'net.nanopay.tx.TransactionQuote' },
+        { name: 'clearTLIs', type: 'Boolean' }
       ],
       type: 'net.nanopay.tx.model.Transaction[]',
       javaCode: `
-        DAO d = (DAO) x.get("localTransactionPlannerDAO");
-        TransactionQuote quote = new TransactionQuote();
-        quote.setRequestTransaction((Transaction) txn.fclone());
-        quote = (TransactionQuote) d.put(quote);
+        var quote = _quoteTxn(x, txn, parent, clearTLIs);
         return quote.getPlans();
       `
     },
     {
-      name: 'createCompliance',
+      name: '_quoteTxn',
+      documentation: 'Helper method to quote a transaction. Internal use only.',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' },
+        { name: 'parent', type: 'net.nanopay.tx.TransactionQuote' },
+        { name: 'clearTLIs', type: 'Boolean' }
+      ],
+      type: 'net.nanopay.tx.TransactionQuote',
+      javaCode: `
+        DAO dao = (DAO) x.get("localTransactionPlannerDAO");
+        TransactionQuote quote = new TransactionQuote();
+        quote.setRequestTransaction((Transaction) txn.fclone());
+        quote.setParent(parent);
+        if (clearTLIs) {
+          quote.getRequestTransaction().clearLineItems();
+        }
+        return (TransactionQuote) dao.put(quote);
+      `
+    },
+    {
+      name: 'createComplianceTransaction',
       documentation: 'Creates a compliance transaction and returns it',
       args: [
         { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
@@ -146,19 +267,119 @@ foam.CLASS({
         ct.setName("Compliance Transaction");
         ct.clearTransfers();
         ct.clearLineItems();
+        ct.setPlanner(getId());
         ct.clearNext();
-        ct.setIsQuoted(true);
+        ct.setId(UUID.randomUUID().toString());
         return ct;
       `
     },
     {
-      name: 'forceBestPlan',
-      documentation: 'determines whether to save as best plan',
+      name: 'validatePlan',
+      documentation: 'final step validation to see if there are any line items etc to be filled out',
       type: 'boolean',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
+      ],
       javaCode: `
-        return false;
+        return true;
+        // To be filled out in extending class.
       `
     },
-  ]
+    {
+      name: 'postPlanning',
+      documentation: 'Run any planner specific logic that needs to happen after planning and then run validation logic',
+      type: 'boolean',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' },
+        { name: 'root', type: 'net.nanopay.tx.model.Transaction' }
+      ],
+      javaCode: `
+        return validatePlan(x,txn);
+        // To be filled out in extending class.
+      `
+    },
+    {
+      name: 'createSummaryLineItems',
+      documentation: 'group up similar line items',
+      type: 'net.nanopay.tx.model.Transaction',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
+      ],
+      javaCode: `
+        return txn;
+        `
+    },
+    {
+      name: 'applyFee',
+      type: 'Transaction',
+      documentation: `
+        In the normal flow, fee is applied on the planned transaction that is
+        returned by the planner, which is the head transaction in the chain.
+        However, applyFee() can also be used by and inside the planner logic to
+        send a specific transaction in the chain for fee evaluation.
+
+        The specific transaction might not have the same country and currency
+        corridors as that of the root quote.
+
+        If the 'isFeeOnRootCorridors' flag is set to false (default), fee will
+        be directly applied on the transaction.
+
+        If the 'isFeeOnRootCorridors' flag is set to true, the transaction will
+        use the country and currency corridors from the root quote instead of
+        its own. Therefore, fees targeting those corridors will be applied on
+        the transaction.`,
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'quote', type: 'net.nanopay.tx.TransactionQuote' },
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
+      ],
+      javaCode: `
+        var txnclone = (Transaction) txn.fclone();
+        if ( getIsFeeOnRootCorridors() ) {
+          // TODO: validate Crunch capabilities?
+          while ( quote.getParent() != null ){
+            quote = quote.getParent();
+          }
+
+          txnclone.setSourceAccount(quote.getSourceAccount().getId());
+          txnclone.setDestinationAccount(quote.getDestinationAccount().getId());
+          txnclone.setSourceCurrency(quote.getSourceUnit());
+          txnclone.setDestinationCurrency(quote.getDestinationUnit());
+        }
+        txnclone = (Transaction) ((DAO) x.get("localFeeEngineDAO")).put(txnclone);
+
+        // Copy lineItem transfers to transaction (fees + taxes that were added)
+        TransactionLineItem [] ls = txnclone.getLineItems();
+        for ( TransactionLineItem li : ls ) {
+          if ( li instanceof FeeLineItem && ((FeeLineItem)li).getTransfers() != null ) {
+            txn.add(((FeeLineItem)li).getTransfers());
+            ((FeeLineItem)li).setTransfers(null);
+          }
+        }
+        txn.setLineItems(ls);
+        return txn;
+      `
+    }
+  ],
+  axioms: [
+      {
+        buildJavaClass: function(cls) {
+          cls.extras.push( `
+
+            public Transaction quoteTxn(X x, Transaction txn, TransactionQuote parent) {
+              return quoteTxn(x, txn, parent, true);
+            }
+
+            public Transaction[]  multiQuoteTxn(X x, Transaction txn, TransactionQuote parent) {
+              return multiQuoteTxn(x, txn, parent, true);
+            }
+
+        `);
+        }
+      }
+    ]
 });
 

@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.tx.planner',
   name: 'BankDigitalPlanner',
@@ -24,7 +41,7 @@ foam.CLASS({
       javaCode: `
         Account sourceAccount = quote.getSourceAccount();
         DigitalAccount sourceDigitalAccount = DigitalAccount.findDefault(x, sourceAccount.findOwner(x), sourceAccount.getDenomination());
-        
+
         // Split 1: ABank -> ADigital
         Transaction t1 = new Transaction(x);
         t1.copyFrom(requestTxn);
@@ -35,12 +52,13 @@ foam.CLASS({
         t2.copyFrom(requestTxn);
         t2.setSourceAccount(sourceDigitalAccount.getId());
 
-        Transaction[] digitals = multiQuoteTxn(x, t2);
-        Transaction[] CIs = multiQuoteTxn(x, t1);
+        Transaction[] digitals = multiQuoteTxn(x, t2, quote);
+        Transaction[] CIs = multiQuoteTxn(x, t1, quote);
         for ( Transaction tx1 : digitals ) {
           for ( Transaction tx2 : CIs ) {
-            tx2.addNext(tx1);
-            quote.getAlternatePlans_().add(tx2);
+            Transaction CI = (Transaction) tx2.fclone();
+            CI.addNext((Transaction) tx1.fclone());
+            quote.getAlternatePlans_().add(CI);
           }
         }
         return null;

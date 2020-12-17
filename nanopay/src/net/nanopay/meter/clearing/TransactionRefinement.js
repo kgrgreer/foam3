@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 // TODO: make clearingTimes property storage transient as it could be re-generated
 // via probing assuming the applicable rules for the transaction are un-changed.
 //
@@ -14,8 +31,8 @@
 
 foam.CLASS({
   package: 'net.nanopay.meter.clearing',
-  name: 'CITransactionRefinement',
-  refines: 'net.nanopay.tx.cico.CITransaction',
+  name: 'ClearingTimeTransactionRefinement',
+  refines: 'net.nanopay.tx.ClearingTimeTransaction',
 
   implements: [
     'net.nanopay.meter.clearing.ClearingTimesTrait'
@@ -25,23 +42,14 @@ foam.CLASS({
     {
       name: 'clearingTimes',
       javaFactory: 'return new java.util.HashMap<>();'
-    }
-  ]
-});
-
-foam.CLASS({
-  package: 'net.nanopay.meter.clearing',
-  name: 'COTransactionRefinement',
-  refines: 'net.nanopay.tx.cico.COTransaction',
-
-  implements: [
-    'net.nanopay.meter.clearing.ClearingTimesTrait'
-  ],
-
-  properties: [
+    },
     {
-      name: 'clearingTimes',
-      javaFactory: 'return new java.util.HashMap<>();'
+      name: 'estimatedCompletionDate',
+      javaFactory: 'return null;'
+    },
+    {
+      name: 'processDate',
+      javaFactory: 'return null;'
     }
   ]
 });
@@ -59,6 +67,14 @@ foam.CLASS({
     {
       name: 'clearingTimes',
       javaFactory: 'return new java.util.HashMap<>();'
+    },
+    {
+      name: 'estimatedCompletionDate',
+      javaFactory: 'return null;'
+    },
+    {
+      name: 'processDate',
+      javaFactory: 'return null;'
     }
   ]
 });
@@ -76,6 +92,14 @@ foam.CLASS({
     {
       name: 'clearingTimes',
       javaFactory: 'return new java.util.HashMap<>();'
+    },
+    {
+      name: 'estimatedCompletionDate',
+      javaFactory: 'return null;'
+    },
+    {
+      name: 'processDate',
+      javaFactory: 'return null;'
     }
   ]
 });

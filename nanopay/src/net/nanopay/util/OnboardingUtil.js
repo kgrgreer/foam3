@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.util',
   name: 'OnboardingUtil',
@@ -9,27 +26,41 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.nanos.crunch.UserCapabilityJunction',
     'foam.u2.dialog.Popup',
     'foam.u2.dialog.NotificationMessage',
     'net.nanopay.sme.onboarding.BusinessOnboarding',
     'net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding',
     'net.nanopay.sme.onboarding.USBusinessOnboarding',
     'net.nanopay.sme.onboarding.OnboardingStatus',
-    'net.nanopay.admin.model.ComplianceStatus'
+    'net.nanopay.admin.model.ComplianceStatus',
+    'foam.util.async.Sequence',
+    'foam.u2.crunch.wizardflow.ConfigureFlowAgent',
+    'foam.u2.crunch.wizardflow.CapabilityAdaptAgent',
+    'foam.u2.crunch.wizardflow.LoadCapabilitiesAgent',
+    'foam.u2.crunch.wizardflow.CreateWizardletsAgent',
+    'foam.u2.crunch.wizardflow.LoadWizardletsAgent',
+    'foam.u2.crunch.wizardflow.StepWizardAgent',
+    'foam.u2.crunch.wizardflow.PutFinalJunctionsAgent',
+    'foam.u2.crunch.wizardflow.FilterWizardletsAgent',
+    'foam.u2.crunch.wizardflow.LoadTopConfig'
   ],
 
   imports: [
-    'agent',
+    'subject',
     'auth',
     'businessOnboardingDAO',
     'canadaUsBusinessOnboardingDAO',
+    'crunchController',
     'ctrl',
     'quickbooksService',
+    'pushMenu',
     'stack',
     'userDAO',
     'xeroService',
     'uSBusinessOnboardingDAO',
     'user',
+    'userCapabilityJunctionDAO'
   ],
 
   methods: [
@@ -37,13 +68,13 @@ foam.CLASS({
       return this.ctrl.user.address.countryId === 'CA' ?
         await this.businessOnboardingDAO.find(
           this.AND(
-            this.EQ(this.BusinessOnboarding.USER_ID, this.agent.id),
+            this.EQ(this.BusinessOnboarding.USER_ID, this.subject.realUser.id),
             this.EQ(this.BusinessOnboarding.BUSINESS_ID, this.user.id)
           )
         ) :
         await this.uSBusinessOnboardingDAO.find(
           this.AND(
-            this.EQ(this.USBusinessOnboarding.USER_ID, this.agent.id),
+            this.EQ(this.USBusinessOnboarding.USER_ID, this.subject.realUser.id),
             this.EQ(this.USBusinessOnboarding.BUSINESS_ID, this.user.id)
           )
         );
@@ -57,7 +88,7 @@ foam.CLASS({
     async function createOnboarding() {
       var address = this.user.address.clone();
       var data = {
-        userId: this.agent.id,
+        userId: this.subject.realUser.id,
         businessId: this.user.id,
         businessAddress: address
       };
@@ -87,7 +118,7 @@ foam.CLASS({
     async function initInternationalOnboardingView() {
       await this.canadaUsBusinessOnboardingDAO.find(
         this.AND(
-            this.EQ(this.CanadaUsBusinessOnboarding.USER_ID, this.agent.id),
+            this.EQ(this.CanadaUsBusinessOnboarding.USER_ID, this.subject.realUser.id),
             this.EQ(this.CanadaUsBusinessOnboarding.BUSINESS_ID, this.user.id)
           )
         ).then((businessOnboarding) => {
@@ -100,6 +131,40 @@ foam.CLASS({
               location.hash = 'sme.main.onboarding.international';
             }
           }
+        });
+    },
+    
+    async function initUserRegistration(cap) {
+      if ( ! cap ) {
+        throw new TypeError('@OnboardingUtil.initUserRegistration(cap) = undefined');
+      }
+      return this.Sequence.create(null, this.__subContext__.createSubContext({
+        rootCapability: cap
+      }))
+        .add(this.ConfigureFlowAgent, {
+          popupMode: false
+        })
+        .add(this.CapabilityAdaptAgent)
+        .add(this.LoadCapabilitiesAgent)
+        .add(this.CreateWizardletsAgent)
+        .add(this.FilterWizardletsAgent)
+        .add(this.LoadTopConfig)
+        .add(this.LoadWizardletsAgent)
+        .add(this.StepWizardAgent, {
+          config: foam.u2.wizard.StepWizardConfig.create({ 
+            allowBacktracking: false,
+            allowSkipping: false
+          }),
+          view: {
+            class: 'foam.u2.wizard.StepWizardletView',
+            fullScreen: true,
+            hideX: true,
+            backDisabled: true
+          }
+        })
+        .add(this.PutFinalJunctionsAgent)
+        .execute().then(() => {
+          this.pushMenu('sme.accountProfile.switch-business', true);
         });
     }
   ]

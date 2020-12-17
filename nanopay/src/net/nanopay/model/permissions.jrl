@@ -1,5 +1,5 @@
 p({"class":"foam.nanos.auth.Permission","id":"service.branchDAO","description":"Permission to access"})
 p({"class":"foam.nanos.auth.Permission","id":"branch.create","description":"Permission to create."})
-p({"class":"foam.nanos.auth.Permission","id":"branch.delete.*","description":"Permission to delete any."})
+p({"class":"foam.nanos.auth.Permission","id":"branch.remove.*","description":"Permission to delete any."})
 p({"class":"foam.nanos.auth.Permission","id":"branch.read.*","description":"Permission to read any."})
 p({"class":"foam.nanos.auth.Permission","id":"branch.update.*","description":"Permission to update any."})

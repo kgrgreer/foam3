@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.tx.planner',
   name: 'BankToBankPlanner',
@@ -20,6 +37,11 @@ foam.CLASS({
     {
       name: 'multiPlan_',
       value: true
+    },
+    {
+      name: 'createCompliance',
+      class: 'Boolean',
+      value: true
     }
   ],
 
@@ -33,7 +55,6 @@ foam.CLASS({
         if ( requestTxn.getType().equals("Transaction") ) {
           txn = new SummaryTransaction(x);
           txn.copyFrom(requestTxn);
-          txn.addNext(createCompliance(requestTxn));
         } else {
           txn = (Transaction) requestTxn.fclone();
         }
@@ -45,7 +66,7 @@ foam.CLASS({
         Account destinationAccount = quote.getDestinationAccount();
         DigitalAccount sourceDigitalAccount = DigitalAccount.findDefault(x, sourceAccount.findOwner(x), sourceAccount.getDenomination());
         DigitalAccount destinationDigitalAccount = DigitalAccount.findDefault(x, destinationAccount.findOwner(x), destinationAccount.getDenomination());
-       
+
         // Split 1: ABank -> ADigital
         Transaction t1 = new Transaction(x);
         t1.copyFrom(txn);
@@ -65,9 +86,9 @@ foam.CLASS({
         t3.setDestinationAccount(destinationAccount.getId());
 
         // Put chain transaction together
-        Transaction[] cashInPlans = multiQuoteTxn(x, t1);
-        Transaction[] digitalPlans = multiQuoteTxn(x, t2);
-        Transaction[] cashOutPlans = multiQuoteTxn(x, t3);
+        Transaction[] cashInPlans = multiQuoteTxn(x, t1, quote);
+        Transaction[] digitalPlans = multiQuoteTxn(x, t2, quote);
+        Transaction[] cashOutPlans = multiQuoteTxn(x, t3, quote);
 
         for ( Transaction CIP : cashInPlans ) {
           for ( Transaction DP : digitalPlans ) {
@@ -79,12 +100,17 @@ foam.CLASS({
               dp.addNext(co);
               ci.addNext(dp);
               dp.setInitialStatus(TransactionStatus.COMPLETED);
-              ComplianceTransaction ct = createCompliance(txn);
-              ct.addNext(ci);
-              t.addNext(ct);
-              t.addLineItems(CIP.getLineItems(), CIP.getReverseLineItems());
-              t.addLineItems(DP.getLineItems(), DP.getReverseLineItems());
-              t.addLineItems(COP.getLineItems(), COP.getReverseLineItems());
+              if (getCreateCompliance()) {
+                ComplianceTransaction ct = createComplianceTransaction(txn);
+                ct.addNext(ci);
+                t.addNext(ct);
+              }
+              else{
+                t.addNext(ci);
+              }
+              t.addLineItems(CIP.getLineItems());
+              t.addLineItems(DP.getLineItems());
+              t.addLineItems(COP.getLineItems());
               t.setStatus(TransactionStatus.COMPLETED);
               quote.getAlternatePlans_().add(t);
             }

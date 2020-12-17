@@ -3,6 +3,9 @@ package net.nanopay.tx.alterna;
 import foam.core.ClassInfo;
 import foam.core.FObject;
 import foam.core.X;
+import foam.dao.DAO;
+import foam.nanos.alarming.Alarm;
+import foam.nanos.alarming.AlarmReason;
 import foam.nanos.logger.Logger;
 import net.nanopay.cico.model.EFTReturnRecord;
 import org.apache.commons.io.IOUtils;
@@ -44,6 +47,11 @@ public class EFTReturnFileParser extends EFTFileParser
       parseFile(ret, reader, classInfo, propertyInfos);
     } catch ( IllegalAccessException | IOException | InstantiationException e ) {
       logger.error(e);
+      ((DAO) x.get("alarmDAO")).put(new Alarm.Builder(x)
+        .setName("EFF File Parser")
+        .setReason(AlarmReason.CREDENTIALS)
+        .setNote(e.getMessage())
+        .build());
     }
 
     return ret;

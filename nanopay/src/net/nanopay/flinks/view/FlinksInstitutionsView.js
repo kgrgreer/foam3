@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.flinks.view',
   name: 'FlinksInstitutionsView',
@@ -147,7 +164,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'NO_MATCH_FOUND', message: 'We could not find any banks with that name.' },
+    { name: 'NO_MATCH_FOUND', message: 'We could not find any banks with that name' },
     { name: 'OTHER_BANK', message: 'Don\'t see your bank here?' },
     { name: 'CLICK_HERE', message: 'Connect with a void check' }
   ],

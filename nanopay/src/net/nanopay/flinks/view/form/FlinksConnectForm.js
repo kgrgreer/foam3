@@ -1,17 +1,34 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.flinks.view.form',
   name: 'FlinksConnectForm',
   extends: 'net.nanopay.ui.wizard.WizardSubView',
   requires: [
+    'foam.log.LogLevel',
     'foam.u2.dialog.Popup',
     'foam.u2.PopupView',
-    'net.nanopay.ui.LoadingSpinner',
+    'foam.u2.LoadingSpinner',
     'net.nanopay.documents.AcceptanceDocument',
     'net.nanopay.documents.AcceptanceDocumentService'
   ],
   imports: [
     'acceptanceDocumentService',
-    'agent',
     'bankInstitutions',
     'fail',
     'flinksAuth',
@@ -22,7 +39,7 @@ foam.CLASS({
     'pushViews',
     'rollBackView',
     'success',
-    'user',
+    'subject',
     'window'
   ],
 
@@ -32,7 +49,7 @@ foam.CLASS({
     }
     ^ .text {
       height: 16px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: 300;
       letter-spacing: 0.2px;
@@ -56,7 +73,7 @@ foam.CLASS({
     }
     ^ .conditionText {
       height: 16px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 11px;
       line-height: 0.1;
       letter-spacing: 0.1px;
@@ -117,7 +134,7 @@ foam.CLASS({
     ^ .pStyle {
       width: 428px;
       height: 32px;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       font-weight: normal;
       font-style: normal;
@@ -162,7 +179,7 @@ foam.CLASS({
         this.viewData.check = newValue;
         if ( this.termsAgreementDocument ) {
           this.acceptanceDocumentService.
-            updateUserAcceptanceDocument(this.__context__, this.agent.id, this.user.id, this.termsAgreementDocument.id, newValue); 
+            updateUserAcceptanceDocument(this.__context__, this.subject.realUser.id, this.subject.user.id, this.termsAgreementDocument.id, newValue); 
         }
       },
     },
@@ -243,10 +260,10 @@ foam.CLASS({
           null,
           this.viewData.selectedInstitution.name,
           this.username, this.password,
-          this.user
+          this.subject.user
         );
       } catch (error) {
-        this.notify(`${error.message}. Please try again.`, 'error');
+        this.notify(`${error.message}. Please try again.`, '', this.LogLevel.ERROR, true);
         return;
       } finally {
         this.isConnecting = false;
@@ -263,7 +280,7 @@ foam.CLASS({
           this.pushViews('FlinksSecurityChallenge');
           break;
         case 401:
-          this.notify(response.Message, 'error');
+          this.notify(response.Message, '', this.LogLevel.ERROR, true);
           break;
         default:
           break;

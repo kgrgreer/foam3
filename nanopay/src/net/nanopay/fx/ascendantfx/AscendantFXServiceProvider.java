@@ -147,6 +147,10 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
 
   }
 
+  public double getFXSpotRate(String sourceCurrency, String targetCurrency, long userId) throws RuntimeException {
+    throw new RuntimeException("Missing implementation");
+  }
+
   public boolean acceptFXRate(String quoteId, long user) throws RuntimeException {
     boolean result = false;
     FXQuote quote = (FXQuote) fxQuoteDAO_.find(Long.parseLong(quoteId));
@@ -175,7 +179,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
     return result;
   }
 
-  public void addPayee(long userId, long bankAccount, long sourceUser) throws RuntimeException {
+  public void addPayee(long userId, String bankAccount, long sourceUser) throws RuntimeException {
     User user = User.findUser(x, userId);
     if ( null == user ) {
       throw new RuntimeException("Unable to find User " + userId);
@@ -208,7 +212,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
 
   }
 
-  public void updatePayee(long userId, long bankAccount, long sourceUser) throws RuntimeException {
+  public void updatePayee(long userId, String bankAccount, long sourceUser) throws RuntimeException {
       User user = User.findUser(x, userId);
       if ( null == user ) {
         throw new RuntimeException("Unable to find User " + userId);
@@ -366,16 +370,16 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
         }
 
         if ( submittedDealResult.getErrorCode() != 0 ) {
-          if ( null != submittedDealResult.getErrorMessage() && 
+          if ( null != submittedDealResult.getErrorMessage() &&
               submittedDealResult.getErrorMessage().contains("Deal already submitted")) {
                 logger.info(submittedDealResult.getErrorMessage());
           } else {
             throw new RuntimeException(submittedDealResult.getErrorMessage());
-          }     
+          }
         }
-          
+
         AscendantFXTransaction txn = (AscendantFXTransaction) ascendantTransaction.fclone();
-        txn.setReferenceNumber(submittedDealResult.getDealID());
+        txn.setExternalInvoiceId(submittedDealResult.getDealID());
         txn.setStatus(TransactionStatus.SENT);
         ClearingTimeService clearingTimeService = (ClearingTimeService) x.get("clearingTimeService");
         txn.setCompletionDate(clearingTimeService.estimateCompletionDateSimple(x, txn));
@@ -478,7 +482,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
     return userPayeeJunction;
   }
 
-  private PayeeDetail getPayeeDetail(User user, long bankAccountId, String orgId) {
+  private PayeeDetail getPayeeDetail(User user, String bankAccountId, String orgId) {
     PayeeDetail payee = new PayeeDetail();
     payee.setPayeeID(0);
     payee.setPaymentMethod(DEFAULT_AFX_PAYMENT_METHOD);
@@ -493,8 +497,8 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
       payee.setOriginatorID(orgId);
       if ( user instanceof Business ) {
         payee.setPayeeName(user.getBusinessName());
-      } else if ( user instanceof Contact && ! SafetyUtil.isEmpty(user.getBusinessName()) ) {
-        payee.setPayeeName(user.getBusinessName());
+      } else if ( user instanceof Contact && ! SafetyUtil.isEmpty(user.getOrganization()) ) {
+        payee.setPayeeName(user.getOrganization());
       } else {
         payee.setPayeeName(user.getFirstName() + " " + user.getLastName());
       }
@@ -524,9 +528,9 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
       }
 
       //payee.setPayeeBankSwiftCode(institution.getSwiftCode());
-      payee.setPayeeAccountIBANNumber(bankAccount.getIBAN(x));
+      payee.setPayeeAccountIBANNumber(bankAccount.getIban());
       payee.setPayeeBankRoutingCode(bankAccount.getRoutingCode(x));
-      payee.setPayeeBankBankCode(bankAccount.getBankCode(x));
+      payee.setPayeeBankBankCode(bankAccount.getInstitutionNumber());
       payee.setPayeeBankRoutingType(DEFAULT_AFX_PAYMENT_METHOD); //TODO
       payee.setPayeeInterBankRoutingCodeType(""); // TODO
 
@@ -567,7 +571,7 @@ public class AscendantFXServiceProvider extends ContextAwareSupport implements F
       throw new RuntimeException("The quoted exchange rate expired. Please submit again.");
   }
 
-  private boolean accountDataIsStale(long  bankAccountId, AscendantUserPayeeJunction payeeJunction) throws RuntimeException{
+  private boolean accountDataIsStale(String  bankAccountId, AscendantUserPayeeJunction payeeJunction) throws RuntimeException{
     if ( null == payeeJunction ) return false;
     if ( null == payeeJunction.getLastModified() ) return true; // We want to update existing payee before this update
     BankAccount bankAccount = (BankAccount) ((DAO) x.get("localAccountDAO")).find(bankAccountId);

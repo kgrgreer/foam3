@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.test',
   name: 'TestsReporter',
@@ -79,22 +96,22 @@ if(reportArray.isEmpty()){
       ],
       type: 'Void',
       javaCode: `
-String body = "=====Tests Summary=====\\n";
-if(totalTests == lastReport){
-  body += "_No tests were added or removed._\\n";
-} else if (totalTests < lastReport){
-  body += "*Tests Removed:* " + String.valueOf(lastReport - totalTests) + "\\n";
-} else {
-  body += "*Tests Added:* " + String.valueOf(totalTests - lastReport) + "\\n";
-}
-body += "*Total Tests:* " + String.valueOf(totalTests);
+        String body = "=====Tests Summary=====\\n";
+        if(totalTests == lastReport){
+          body += "_No tests were added or removed._\\n";
+        } else if (totalTests < lastReport){
+          body += "*Tests Removed:* " + String.valueOf(lastReport - totalTests) + "\\n";
+        } else {
+          body += "*Tests Added:* " + String.valueOf(totalTests - lastReport) + "\\n";
+        }
+        body += "*Total Tests:* " + String.valueOf(totalTests);
 
-Notification notification = new Notification.Builder(x)
-  .setTemplate("TestsReporter")
-  .setBody(body)
-  .build();
-DAO notificationDAO = (DAO) x.get("localNotificationDAO");
-notificationDAO.put(notification);`
+        Notification notification = new Notification.Builder(x)
+          .setTemplate("TestsReporter")
+          .setBody(body)
+          .build();
+        DAO notificationDAO = (DAO) x.get("localNotificationDAO");
+        notificationDAO.put(notification);`
     }
   ]
 });

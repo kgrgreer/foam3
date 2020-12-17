@@ -1,4 +1,21 @@
 /**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
+/**
  * @license
  * Copyright 2018 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -24,7 +41,8 @@ foam.CLASS({
     'net.nanopay.account.DigitalAccount',
 
     'java.util.List',
-    'java.util.ArrayList'
+    'java.util.ArrayList',
+    'foam.util.SafetyUtil'
   ],
 
   properties: [
@@ -109,7 +127,7 @@ foam.CLASS({
         List<TaxLineItem> forward = new ArrayList<TaxLineItem>();
         List<InfoLineItem> reverse = new ArrayList<InfoLineItem>();
         for ( TaxItem quotedTaxItem : taxQuote.getTaxItems() ) {
-          Long taxAccount = 0L;
+          String taxAccount = "";
           LineItemTypeAccount lineItemTypeAccount = (LineItemTypeAccount) typeAccountDAO.find(
             MLang.AND(
               MLang.EQ(LineItemTypeAccount.ENABLED, true),
@@ -122,13 +140,13 @@ foam.CLASS({
             taxAccount = lineItemTypeAccount.getAccount();
           }
 
-          if ( taxAccount <= 0 ) {
+          if ( SafetyUtil.isEmpty(taxAccount) ) {
             Account account = DigitalAccount.findDefault(x, payee, "CAD");
             taxAccount = account.getId();
           }
 
           Long amount = quotedTaxItem.getTax();
-          if ( taxAccount > 0 &&
+          if ( ! SafetyUtil.isEmpty(taxAccount) &&
                amount > 0L ) {
             forward.add(new TaxLineItem.Builder(x).setNote(quotedTaxItem.getDescription()).setSourceAccount(transaction.getSourceAccount()).setDestinationAccount(taxAccount).setAmount(amount).setType(quotedTaxItem.getType()).build());
             reverse.add(new InfoLineItem.Builder(x).setNote(quotedTaxItem.getDescription()+" - Non-refundable").setAmount(amount).build());
@@ -137,7 +155,7 @@ foam.CLASS({
         }
         TaxLineItem[] forwardLineItems = new TaxLineItem[forward.size()];
         InfoLineItem[] reverseLineItems = new InfoLineItem[reverse.size()];
-        applyTo.addLineItems(forward.toArray(forwardLineItems), reverse.toArray(reverseLineItems));
+        applyTo.addLineItems( forward.toArray(forwardLineItems) );
       }
 
       return applyTo;

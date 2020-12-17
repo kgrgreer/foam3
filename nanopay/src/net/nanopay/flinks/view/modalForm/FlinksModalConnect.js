@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.flinks.view.modalForm',
   name: 'FlinksModalConnect',
@@ -6,7 +23,8 @@ foam.CLASS({
   documentation: 'Login screen for Flinks',
 
   requires: [
-    'net.nanopay.ui.LoadingSpinner',
+    'foam.log.LogLevel',
+    'foam.u2.LoadingSpinner',
     'foam.u2.dialog.Popup',
     'net.nanopay.documents.AcceptanceDocument',
     'net.nanopay.documents.AcceptanceDocumentService'
@@ -23,15 +41,13 @@ foam.CLASS({
     'institution',
     'isConnecting',
     'notify',
-    'user',
-    'agent'
+    'subject'
   ],
 
   css: `
-    ^ {
-      width: 504px;
-    }
     ^content {
+      box-sizing: border-box;
+      min-width: 615px;
       position: relative;
       padding: 24px;
       padding-top: 0;
@@ -111,7 +127,7 @@ foam.CLASS({
       postSet: function(oldValue, newValue) {
         if ( this.termsAgreementDocument ) {
           this.acceptanceDocumentService.
-            updateUserAcceptanceDocument(this.__context__, this.agent.id, this.user.id, this.termsAgreementDocument.id, newValue);
+            updateUserAcceptanceDocument(this.__context__, this.subject.realUser.id, this.subject.user.id, this.termsAgreementDocument.id, newValue);
         }
       }
     },
@@ -124,9 +140,9 @@ foam.CLASS({
 
   messages: [
     { name: 'CONNECTING', message: 'Securely connecting you to your institution. Please do not close this window.' },
-    { name: 'ERROR', message: 'An unknown error has occurred.' },
-    { name: 'INVALID_FORM', message: 'Please complete the form before proceeding.' },
-    { name: 'ACCEPT_CONDITIONS', message: 'Please accept the terms and conditions before proceeding.' },
+    { name: 'ERROR', message: 'An unknown error has occurred' },
+    { name: 'INVALID_FORM', message: 'Please complete the form before proceeding' },
+    { name: 'ACCEPT_CONDITIONS', message: 'Please accept the terms and conditions before proceeding' },
     { name: 'LABEL_USERNAME', message: 'Access Card # / Username' },
     { name: 'LABEL_PASSWORD', message: 'Password' },
     { name: 'LEGAL_1', message: 'I agree to the ' },
@@ -182,10 +198,10 @@ foam.CLASS({
           null,
           this.institution.name,
           this.username, this.password,
-          this.user
+          this.subject.user
         );
       } catch (error) {
-        this.notify(`${error.message}. Please try again.`, 'error');
+        this.notify(`${error.message}. Please try again.`, '', this.LogLevel.ERROR, true);
         return;
       } finally {
         this.isConnecting = false;
@@ -201,10 +217,10 @@ foam.CLASS({
           this.pushToId('security');
           break;
         case 401:
-          this.notify(response.Message, 'error');
+          this.notify(response.Message, '', this.LogLevel.ERROR, true);
           break;
         default:
-          this.notify(this.ERROR, 'error');
+          this.notify(this.ERROR, '', this.LogLevel.ERROR, true);
           break;
       }
     }
@@ -225,11 +241,11 @@ foam.CLASS({
         var model = X.connect;
         if ( model.isConnecting ) return;
         if ( ! ( model.username.trim().length > 0 && model.password.trim().length > 0 ) ) {
-          X.notify(model.INVALID_FORM, 'error');
+          X.notify(model.INVALID_FORM, '', this.LogLevel.ERROR, true);
           return;
         }
         if ( ! model.isTermsAgreed ) {
-          X.notify(model.ACCEPT_CONDITIONS, 'error');
+          X.notify(model.ACCEPT_CONDITIONS, '', this.LogLevel.ERROR, true);
           return;
         }
         X.connect.connectToBank();

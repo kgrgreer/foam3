@@ -67,6 +67,7 @@ public class CICOUpdatablePropertiesTest
     }
     sender_ = (User) sender_.fclone();
     sender_.setEmailVerified(true);
+    sender_.setSpid("nanopay");
     sender_ = (User) (((DAO) x_.get("localUserDAO")).put_(x_, sender_)).fclone();
     senderDigital_ = DigitalAccount.findDefault(x_, sender_, "CAD");
   }

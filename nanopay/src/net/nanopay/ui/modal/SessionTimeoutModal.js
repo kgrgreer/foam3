@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.ui.modal',
   name: 'SessionTimeoutModal',
@@ -16,12 +33,12 @@ foam.CLASS({
   ],
 
   requires: [
+    'foam.log.LogLevel',
     'foam.nanos.auth.User',
     'net.nanopay.bank.BankAccount'
   ],
 
   implements: [
-    'net.nanopay.ui.modal.ModalStyling',
     'foam.mlang.Expressions'
   ],
 
@@ -36,7 +53,7 @@ foam.CLASS({
       height: 36px;
       margin-left: 24px;
       margin-top: 24px;
-      font-family: Lato;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 24px;
       font-weight: 900;
       font-style: normal;
@@ -50,7 +67,7 @@ foam.CLASS({
       margin-top: 8px;
       width: 282px;
       height: 51px;
-      font-family: Lato;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: normal;
       font-style: normal;
@@ -58,23 +75,23 @@ foam.CLASS({
       line-height: normal;
       letter-spacing: normal;
     }
-    
+
     ^ .foam-u2-ActionView-signOut {
-      width: 96px;
-      height: 36px;
+      background: transparent;
+      border-color: white;
+      color: black;
     }
-    
-    ^ .foam-u2-ActionView-staySignIn {
-      width: 120px;
-      height: 36px;
-      margin-left: 16px;
+
+    ^ .foam-u2-ActionView-signOut:hover {
+      background: transparent;
+      border-color: white;
+      color: black;
     }
-    
+
     ^ .actions {
-      height: 68px;
-      width: 328px;
-      padding-left: 71px;
-      padding-top: 26px;
+      float: right;
+      margin-right: 30px;
+      margin-top: 30px;
     }
   `,
 
@@ -127,8 +144,9 @@ foam.CLASS({
           clearTimeout(this.sessionTimer.timer);
           await this.auth.logout();
           window.location.assign(window.location.origin);
+          localStorage.removeItem('defaultSession');
         } catch (e) {
-          this.notify(e.toString(), 'error');
+          this.notify(e.toString(), '', this.LogLevel.ERROR, true);
           window.location.assign(window.location.origin);
         }
       }
@@ -146,7 +164,7 @@ foam.CLASS({
             this.EQ(this.BankAccount.OWNER, this.user.id),
           ).select();
         } catch (e) {
-          this.notify(e.toString(), 'error');
+          this.notify(e.toString(), '', this.LogLevel.ERROR, true);
           this.signOut();
         }
       }

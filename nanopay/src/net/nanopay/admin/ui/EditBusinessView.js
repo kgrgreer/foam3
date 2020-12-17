@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.admin.ui',
   name: 'EditBusinessView',
@@ -6,12 +23,13 @@ foam.CLASS({
   documentation: 'View for editing a business',
 
   requires: [
-    'foam.nanos.auth.User',
-    'foam.u2.dialog.NotificationMessage'
+    'foam.log.LogLevel',
+    'foam.nanos.auth.User'
   ],
 
   imports: [
     'stack',
+    'notify',
     'userDAO',
     'validatePhone',
     'validateTitleNumOrAuth'
@@ -210,7 +228,7 @@ foam.CLASS({
       postSet: function (oldValue, newValue) {
         this.displayedPhoneNumber = '';
         if ( this.countryCode ) this.displayedPhoneNumber += this.countryCode;
-        if ( this.data.phone.number ) this.displayedPhoneNumber += ' ' + this.data.phone.number;
+        if ( this.data.phoneNumber ) this.displayedPhoneNumber += ' ' + this.data.phoneNumber;
       }
     },
     {
@@ -326,7 +344,7 @@ foam.CLASS({
             .addClass('nameDisplayContainer')
             .enableClass('hidden', this.isEditingPhone$)
             .start('p').add(this.PhoneNumberLabel).addClass('label').end()
-            .start(this.DISPLAYED_PHONE_NUMBER, { data$: this.data.phone.number$})
+            .start(this.DISPLAYED_PHONE_NUMBER, { data$: this.data.phoneNumber$})
               .addClass('legalNameDisplayField')
               .on('focus', function() {
                 this.blur();
@@ -354,7 +372,7 @@ foam.CLASS({
               .enableClass('middleName', this.isEditingPhone$, true)
               .start('p').add(this.PhoneNumberLabel).addClass('label').end()
               .start(this.User.PHONE_NUMBER, {
-                data$: this.data.phone.number$.map( function(a) {
+                data$: this.data.phoneNumber$.map( function(a) {
                   return a.replace( self.countryCode, '' );
                 })
               })
@@ -373,42 +391,42 @@ foam.CLASS({
     },
 
     function validations() {
-      if ( ! this.data.firstName || ! this.data.lastName || ! this.data.jobTitle || ! this.data.phone || ! this.data.phone.number ) {
-        this.add(this.NotificationMessage.create({ message: 'Please fill out all necessary fields before proceeding.', type: 'error' }));
+      if ( ! this.data.firstName || ! this.data.lastName || ! this.data.jobTitle || ! this.data.phoneNumber ) {
+        this.notify('Please fill out all necessary fields before proceeding.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( this.data.firstName.length > 70 ) {
-        this.add(this.NotificationMessage.create({ message: 'First name cannot exceed 70 characters.', type: 'error' }));
+        this.notify('First name cannot exceed 70 characters', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( /\d/.test(this.data.firstName) ) {
-        this.add(this.NotificationMessage.create({ message: 'First name cannot contain numbers', type: 'error' }));
+        this.notify('First name cannot contain numbers.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( this.data.middleName ) {
         if ( this.data.middleName.length > 70 ) {
-          this.add(this.NotificationMessage.create({ message: 'Middle initials cannot exceed 70 characters.', type: 'error' }));
+          this.notify('Middle initials cannoot exceed 70 characters', '', this.LogLevel.ERROR, true);
           return false;
         }
         if ( /\d/.test(this.data.middleName) ) {
-          this.add(this.NotificationMessage.create({ message: 'Middle initials cannot contain numbers', type: 'error' }));
+          this.notify('Middle initials cannot contain numbers.', '', this.LogLevel.ERROR, true);
           return false;
         }
       }
       if ( this.data.lastName.length > 70 ) {
-        this.add(this.NotificationMessage.create({ message: 'Last name cannot exceed 70 characters.', type: 'error' }));
+        this.notify('Last name cannot exceed 70 characters.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( /\d/.test(this.data.lastName) ) {
-        this.add(this.NotificationMessage.create({ message: 'Last name cannot contain numbers.', type: 'error' }));
+        this.notify('Last name cannot contain numbers.', '', this.LogLevel.ERROR, true);
         return false;
       }
       if ( ! this.validateTitleNumOrAuth(this.data.jobTitle) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid job title.', type: 'error' }));
+        this.notify('Invalid job title.', '', this.LogLevel.ERROR, true);
         return false;
       }
-      if ( ! this.validatePhone(this.countryCode + ' ' + this.data.phone.number) ) {
-        this.add(this.NotificationMessage.create({ message: 'Invalid phone number.', type: 'error' }));
+      if ( ! this.validatePhone(this.countryCode + ' ' + this.data.phoneNumber) ) {
+        this.notify('Invalid phone number.', '', this.LogLevel.ERROR, true);
         return false;
       }
       return true;
@@ -433,11 +451,11 @@ foam.CLASS({
         }
 
         this.userDAO.put(this.data).then(function (result) {
-          self.add(self.NotificationMessage.create({ message: 'Successfully updated business profile.' }));
+          self.notify('Successfully updated business profile.', '', self.LogLevel.INFO, true);
           self.stack.back();
         })
         .catch(function (err) {
-          self.add(self.NotificationMessage.create({ message: 'Error updating business profile.', type: 'error' }));
+          self.notify('Error updating business profile.', '', self.LogLevel.ERROR, true);
         });
       }
     }

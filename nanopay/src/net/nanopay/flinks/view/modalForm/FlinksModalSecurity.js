@@ -1,9 +1,30 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.flinks.view.modalForm',
   name: 'FlinksModalSecurity',
   extends: 'net.nanopay.ui.wizardModal.WizardModalSubView',
 
   documentation: 'The main router for dealing with the Multi-Factor Authentication in Flinks',
+
+  requires: [
+    'foam.log.LogLevel'
+  ],
 
   imports: [
     'connectingMessage',
@@ -58,7 +79,7 @@ foam.CLASS({
           this.pushToId('securityQuestionAnswer');
           break;
         default:
-          this.notify(this.UNKNOWN_SECURITY_TYPE, 'error');
+          this.notify(this.UNKNOWN_SECURITY_TYPE, '', this.LogLevel.ERROR, true);
           this.subStack.back();
       }
     },
@@ -80,7 +101,7 @@ foam.CLASS({
           this.user
         );
       } catch (error) {
-        this.notify(`${error.message} Please try again.`, 'error');
+        this.notify(`${error.message} Please try again.`, '', this.LogLevel.ERROR, true);
         this.pushToId('connect');
         return;
       } finally {
@@ -109,11 +130,11 @@ foam.CLASS({
           this.redoChallenge(response);
           break;
         case 401:
-          this.notify(response.Message, 'error');
+          this.notify(response.Message, '', this.LogLevel.ERROR, true);
           if ( this.viewData.redoOnFail ) this.redoChallenge(response);
           break;
         default:
-          this.notify(this.UNKNOWN_SECURITY_TYPE, 'error');
+          this.notify(this.UNKNOWN_SECURITY_TYPE, '', this.LogLevel.ERROR, true);
           this.pushToId('connect');
       }
     },
@@ -126,7 +147,7 @@ foam.CLASS({
           this.user
         );
       } catch (error) {
-        this.notify(`${error.message} Please try again.`, 'error');
+        this.notify(`${error.message} Please try again.`, '', this.LogLevel.ERROR, true);
         this.pushToId('connect');
         return;
       }
@@ -145,7 +166,7 @@ foam.CLASS({
         break;
       default:
         this.isConnecting = false;
-        this.notify(this.UNKNOWN_SECURITY_TYPE, 'error');
+        this.notify(this.UNKNOWN_SECURITY_TYPE, '', this.LogLevel.ERROR, true);
         this.pushToId('connect');
       }
     },

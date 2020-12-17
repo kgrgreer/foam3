@@ -1,4 +1,21 @@
 /**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
+/**
  * @license
  * Copyright 2019 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -12,23 +29,24 @@ foam.CLASS({
   javaImports: [
     'foam.core.FObject',
     'foam.core.X',
-    'foam.dao.DAO',
     'foam.dao.ArraySink',
+    'foam.dao.DAO',
     'foam.nanos.approval.ApprovalRequest',
     'foam.nanos.approval.ApprovalRequestUtil',
     'foam.nanos.approval.ApprovalStatus',
     'foam.nanos.auth.Group',
+    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.PrefixLogger',
+    'foam.nanos.session.Session',
     'foam.nanos.ticket.Ticket',
     'foam.nanos.ticket.TicketStatus',
-    'foam.nanos.session.Session',
-    'net.nanopay.ticket.SudoTicket',
-    'net.nanopay.ticket.SudoTicketApprovalResponseRule',
-    'net.nanopay.ticket.SudoTicketApprovalRequestRule',
     'java.util.ArrayList',
     'java.util.Arrays',
+    'net.nanopay.ticket.SudoTicket',
+    'net.nanopay.ticket.SudoTicketApprovalRequestRule',
+    'net.nanopay.ticket.SudoTicketApprovalResponseRule',
     'static foam.mlang.MLang.*'
   ],
 
@@ -60,7 +78,7 @@ foam.CLASS({
     User user2 = (User) userDAO.put(new User.Builder(x).setGroup("group2").setFirstName("user_two").setLastName("user_two").setEmail("user2@nanopay.net").build());
     User user3 = (User) userDAO.put(new User.Builder(x).setGroup("group3").setFirstName("user_three").setLastName("user_three").setEmail("user3@nanopay.net").build());
 
-    DAO ruleDAO = (DAO) x.get("ruleDAO");
+    DAO ruleDAO = (DAO) x.get("localRuleDAO");
     SudoTicketApprovalRequestRule requestRule = (SudoTicketApprovalRequestRule) ruleDAO.find(EQ(foam.nanos.ruler.Rule.NAME, "SudoTicketApprovalRequestRule")).fclone();
     test(requestRule != null, "Request rule found");
     requestRule.setApprovers(new ArrayList(Arrays.asList(user1.getId())));
@@ -76,7 +94,8 @@ foam.CLASS({
 
    DAO ticketDAO = (DAO) x.get("localTicketDAO");
    SudoTicket ticket = new SudoTicket.Builder(x).setOwner(user2.getId()).setSudoAsUser(user3.getId()).setComment("user2 as user3").build();
-   X y = x.put("user", user2);
+   Subject subject = new Subject.Builder(x).setUser(user2).build();
+   X y = x.put("subject", subject);
    ticket = (SudoTicket) ticketDAO.inX(y).put_(y, ticket).fclone();
 
    String classification = SudoTicket.class.getSimpleName();

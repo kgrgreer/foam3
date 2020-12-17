@@ -1,0 +1,48 @@
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"localFeeEngineDAO",
+  "lazy":false,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setNullify(true)
+      .setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo())
+      .setRuler(true)
+      .setRulerDaoKey("feeEngineDAO")
+      .setPm(true)
+      .setPipelinePm(true)
+      .setAuthorize(false)
+      .setServiceProviderAware(true)
+      .setServiceProviderAwarePropertyInfos(
+        foam.util.Arrays.asMap(new Object[]
+          {
+            net.nanopay.account.Account.class.getName(),
+            new foam.core.PropertyInfo[] { net.nanopay.account.Account.OWNER },
+            net.nanopay.tx.model.Transaction.class.getName(),
+            new foam.core.PropertyInfo[] {
+              net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT,
+              net.nanopay.tx.model.Transaction.DESTINATION_ACCOUNT,
+            }
+          }
+        ))
+      .build();
+  """
+})
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"feeEngineDAO",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new foam.dao.EasyDAO.Builder(x)
+      .setInnerDAO(x.get("localFeeEngineDAO"))
+      .setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo())
+      .setRuler(false)
+      .setAuthorize(true)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setEnableInterfaceDecorators(false)
+      .build();
+    """,
+  "client":"{\"of\":\"net.nanopay.tx.model.Transaction\"}"
+})

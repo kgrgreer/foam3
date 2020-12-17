@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.business',
   name: 'SetBusinessNameDAO',
@@ -6,8 +23,8 @@ foam.CLASS({
   documentation: 'A decorator to look up a business and set its name on another property.',
 
   imports: [
-    'localBusinessDAO',
-    'logger',
+    'DAO localBusinessDAO',
+    'Logger logger',
   ],
 
   javaImports: [
@@ -64,7 +81,7 @@ foam.CLASS({
         }
 
         FObject clone = (FObject) obj.fclone();
-        getNameProperty().set(clone, business.label());
+        getNameProperty().set(clone, business.toSummary());
         return super.put_(x, clone);
       `
     }

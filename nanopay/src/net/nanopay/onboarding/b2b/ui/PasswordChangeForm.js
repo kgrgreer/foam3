@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.onboarding.b2b.ui',
   name: 'PasswordChangeForm',
@@ -6,11 +23,12 @@ foam.CLASS({
   documentation: 'Password change form for onboarding',
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'net.nanopay.admin.model.AccountStatus'
   ],
 
   imports: [
+    'notify',
     'user',
     'userDAO',
     'stack',
@@ -92,7 +110,7 @@ foam.CLASS({
     { name: 'emptyOriginal', message: 'Please enter your original password' },
     { name: 'emptyPassword', message: 'Please enter your new password' },
     { name: 'emptyConfirmation', message: 'Please re-enter your new password' },
-    { name: 'invalidPassword', message: 'Password must be at least 6 characters long.' },
+    { name: 'invalidPassword', message: 'Password must be at least 6 characters long' },
     { name: 'passwordMismatch', message: 'Passwords do not match' },
     { name: 'passwordSuccess', message: 'Password successfully updated' },
     { name: 'passwordDescription', message: 'Please change you password before you start using the nanopay platform.'}
@@ -133,30 +151,30 @@ foam.CLASS({
 
         // check if original password entered
         if ( ! this.originalPassword ) {
-          this.add(this.NotificationMessage.create({ message: this.emptyOriginal, type: 'error' }));
+          this.notify(this.emptyOriginal, '', this.LogLevel.ERROR, true);
           return;
         }
 
         // validate new password
         if ( ! this.newPassword ) {
-          this.add(this.NotificationMessage.create({ message: this.emptyPassword, type: 'error' }));
+          this.notify(this.emptyPassword, '', this.LogLevel.ERROR, true);
           return;
         }
 
         if ( ! this.validatePassword(this.newPassword) ) {
-          this.add(self.NotificationMessage.create({ message: this.invalidPassword, type: 'error' }));
+          this.notify(this.invalidPassword, '', this.LogLevel.ERROR, true);
           return;
         }
 
         // check if confirmation entered
         if ( ! this.confirmPassword ) {
-          this.add(self.NotificationMessage.create({ message: this.emptyConfirmation, type: 'error' }));
+          this.notify(this.emptyConfirmation, '', this.LogLevel.ERROR, true);
           return;
         }
 
         // check if passwords match
         if ( ! this.confirmPassword.trim() || this.confirmPassword !== this.newPassword ) {
-          this.add(self.NotificationMessage.create({ message: this.passwordMismatch, type: 'error' }));
+          this.notify(this.passwordMismatch, '', this.LogLevel.ERROR, true);
           return;
         }
 
@@ -164,15 +182,15 @@ foam.CLASS({
         this.user.onboarded = true;
         this.userDAO.put(this.user).then( function(result) {
           self.auth.updatePassword(null, self.originalPassword, self.newPassword).then(function(a) {
-            self.add(self.NotificationMessage.create({ message: self.passwordSuccess }));
+            self.notify(self.passwordSuccess, '', self.LogLevel.INFO, true);
             this.window.location.hash = '';
             this.window.location.reload();
           }).catch(function(err) {
-            self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+            self.notify(err.message, '', self.LogLevel.ERROR, true);
           });
         })
         .catch( function(err) {
-          self.add(self.NotificationMessage.create({ message: err.message, type: 'error' }));
+          self.notify(err.message, '', self.LogLevel.ERROR, true);
         });
       }
     }

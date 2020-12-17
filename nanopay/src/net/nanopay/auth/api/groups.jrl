@@ -1,0 +1,7 @@
+p({
+    "class":"foam.nanos.auth.Group",
+    "id":"api-base",
+    "enabled":true,
+    "description":"API Base Group",
+    "defaultMenu":"integration.api-dig"
+})

@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'ManualFxRule',
@@ -30,6 +47,9 @@ foam.CLASS({
         @Override
         public void execute(X x) {
           ManualFxApprovalRequest request = (ManualFxApprovalRequest) obj;
+          if ( request.getStatus() == ApprovalStatus.REQUESTED ) {
+            return;
+          }
           DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
           DAO transactionDAO = ((DAO) x.get("transactionDAO"));
           DAO fxQuoteDAO = (DAO) x.get("fxQuoteDAO");
@@ -48,6 +68,13 @@ foam.CLASS({
           if ( list != null && list.size() > 0 ) {
             KotakFxTransaction kotakFxTransaction = (KotakFxTransaction) list.get(0);
             double rate = request.getFxRate();
+
+            if ( request.getStatus() == ApprovalStatus.REJECTED ) {
+              kotakFxTransaction.setStatus(TransactionStatus.DECLINED);
+              transactionDAO.put_(x, kotakFxTransaction);
+              return;
+            }
+
             if ( rate <= 0 ) {
               request.setStatus(ApprovalStatus.REQUESTED);
               request = (ManualFxApprovalRequest) approvalRequestDAO.put_(x, request);

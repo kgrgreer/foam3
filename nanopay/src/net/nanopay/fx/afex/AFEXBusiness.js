@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.fx.afex',
   name: 'AFEXBusiness',
@@ -14,6 +31,10 @@ foam.CLASS({
     'afexBeneficiaryDAO',
     'userDAO',
     'publicBusinessDAO'
+  ],
+
+  messages: [
+    { name: 'BENEFICIARIES_MSG', message: 'Beneficiaries for' }
   ],
 
   properties: [
@@ -93,18 +114,22 @@ foam.CLASS({
       code: function(X) {
         var m = foam.mlang.ExpressionsSingleton.create({});
         var self = this;
-          X.userDAO.find(this.user).then(function(user) {
-            if ( user ) {
-              self.__context__.stack.push({
-                class: 'foam.comics.BrowserView',
-                createEnabled: false,
-                editEnabled: true,
-                exportEnabled: true,
-                title: `${user.businessName}'s Beneficiaries`,
-                data: X.afexBeneficiaryDAO.where(m.EQ(net.nanopay.fx.afex.AFEXBeneficiary.OWNER, self.user))
-              });
-            }
-          });
+        X.userDAO.find(this.user).then(function(user) {
+          if ( user ) {
+            var dao = X.afexBeneficiaryDAO.where(m.EQ(net.nanopay.fx.afex.AFEXBeneficiary.OWNER, self.user));
+            self.__context__.stack.push({
+              class: 'foam.comics.v2.DAOBrowseControllerView',
+              data: dao,
+              config: {
+                class: 'foam.comics.v2.DAOControllerConfig',
+                dao: dao,
+                createPredicate: foam.mlang.predicate.False,
+                editPredicate: foam.mlang.predicate.True,
+                browseTitle: `${self.BENEFICIARIES_MSG} ${user.businessName || user.organization}`
+              }
+            });
+          }
+        });
       }
     },
   ]

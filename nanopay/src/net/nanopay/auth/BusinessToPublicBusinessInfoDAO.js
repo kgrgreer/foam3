@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.auth',
   name: 'BusinessToPublicBusinessInfoDAO',
@@ -16,9 +33,9 @@ foam.CLASS({
     'foam.dao.Sink',
     'foam.dao.ProxySink',
     'foam.util.SafetyUtil',
-    'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.model.Business',
+    'foam.nanos.auth.LifecycleState',
     'static foam.mlang.MLang.*'
   ],
 
@@ -29,7 +46,7 @@ foam.CLASS({
         Business business = (Business) super.find_(x, id);
 
         if ( business == null ) return null;
-        
+
         return new PublicBusinessInfo(x, business);
       `
     },
@@ -63,7 +80,7 @@ foam.CLASS({
       ],
       javaCode: `
         return business != null &&
-          SafetyUtil.equals(business.getStatus(), AccountStatus.ACTIVE) &&
+          SafetyUtil.equals(business.getLifecycleState(), LifecycleState.ACTIVE) &&
           SafetyUtil.equals(business.getCompliance(), ComplianceStatus.PASSED) &&
           SafetyUtil.equals(business.getOnboarded(), true) &&
           business.getIsPublic();

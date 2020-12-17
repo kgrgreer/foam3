@@ -6,7 +6,7 @@ p({
   "ruleGroup": "auth",
   "documentation": "remove sessions on user removal",
   "daoKey": "localUserDAO",
-  "operation": 1, 
+  "operation": 1,
   "after": true,
   "predicate":{
     "class":"foam.nanos.ruler.predicate.PropertyEQValue",
@@ -17,5 +17,6 @@ p({
     }
   },
   "action":{ "class":"net.nanopay.auth.ruler.LogoutUserAction" },
-  "saveHistory": true
+  "saveHistory": false,
+  "lifecycleState":1
 })

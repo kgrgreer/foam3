@@ -1,0 +1,16 @@
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"convertOwnerObjectDAO",
+  "description":"A pseudo DAO that uses Rules to migrate data to other daos",
+  "serve":true,
+  "serviceScript":
+  """
+    nullDAO = new foam.dao.NullDAO.Builder(x)
+      .setOf(net.nanopay.crunch.onboardingModels.BusinessOwnershipData.getOwnClassInfo())
+      .build();
+    return new net.nanopay.crunch.BusinessOwnershipToBeneficialOwnerDAO.Builder(x)
+      .setDelegate(nullDAO)
+      .build();
+  """,
+  "client":"{\"of\": \"net.nanopay.crunch.onboardingModels.BusinessOwnershipData\"}"
+})

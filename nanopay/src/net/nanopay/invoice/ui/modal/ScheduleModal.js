@@ -1,3 +1,20 @@
+/**
+ * NANOPAY CONFIDENTIAL
+ *
+ * [2020] nanopay Corporation
+ * All Rights Reserved.
+ *
+ * NOTICE:  All information contained herein is, and remains
+ * the property of nanopay Corporation.
+ * The intellectual and technical concepts contained
+ * herein are proprietary to nanopay Corporation
+ * and may be covered by Canadian and Foreign Patents, patents
+ * in process, and are protected by trade secret or copyright law.
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from nanopay Corporation.
+ */
+
 foam.CLASS({
   package: 'net.nanopay.invoice.ui.modal',
   name: 'ScheduleModal',
@@ -6,7 +23,7 @@ foam.CLASS({
   documentation: 'Schedule Payment Modal',
 
   requires: [
-    'foam.u2.dialog.NotificationMessage',
+    'foam.log.LogLevel',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.ui.modal.ModalHeader'
@@ -20,6 +37,7 @@ foam.CLASS({
   imports: [
     'account',
     'invoiceDAO',
+    'notify',
     'user'
   ],
 
@@ -30,8 +48,8 @@ foam.CLASS({
       documentation: `The name of the other party involved with the invoice.`,
       expression: function(invoice, user) {
         return user.id !== invoice.payeeId ?
-            this.invoice.payee.label() :
-            this.invoice.payer.label();
+            this.invoice.payee.toSummary() :
+            this.invoice.payer.toSummary();
       }
     },
     {
@@ -76,7 +94,7 @@ foam.CLASS({
     ^{
       width: 448px;
       margin: auto;
-      font-family: Roboto;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
     ^ .blue-button{
       margin: 20px 20px;
@@ -232,25 +250,15 @@ foam.CLASS({
       code: function(X) {
         var paymentDate = X.data.paymentDate;
         if ( ! X.data.paymentDate ) {
-          this.add(this.NotificationMessage.create({
-            message: 'Please select a Schedule Date.',
-            type: 'error'
-          }));
+          this.notify('Please select a schedule date.', '', this.LogLevel.ERROR, true);
           return;
         } else if ( X.data.paymentDate < Date.now() ) {
-          this.add(this.NotificationMessage.create({
-            message: 'Cannot schedule a payment date for the past. Please try' +
-                ' again.',
-            type: 'error'
-          }));
+          this.notify('Cannot schedule a payment date for the past. Please try again.', '', this.LogLevel.ERROR, true);
           return;
         }
 
         if ( isNaN(paymentDate) && paymentDate != null ) {
-          this.add(foam.u2.dialog.NotificationMessage.create({
-            message: 'Please Enter Valid Due Date yyyy-mm-dd.',
-            type: 'error'
-          }));
+          this.notify('Please enter a valid due date yyyy-mm-dd.', '', this.LogLevel.ERROR, true);
           return;
         }
 
@@ -267,11 +275,7 @@ foam.CLASS({
 
         this.invoiceDAO.put(this.invoice);
 
-        ctrl.add(this.NotificationMessage.create({
-          message: 'Invoice payment has been scheduled.',
-          type: ''
-        }));
-
+        this.notify('Invoice payment has been scheduled.', '', this.LogLevel.INFO, true);
         X.closeDialog();
       }
     }
