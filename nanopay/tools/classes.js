@@ -1359,6 +1359,11 @@ var classes = [
   'net.nanopay.crunch.compliance.SetFulfilledComplianceApprovalRequest',
   'net.nanopay.crunch.compliance.GenericSigningOfficerValidator',
   'net.nanopay.crunch.compliance.GenericBusinessValidator',
+  'net.nanopay.crunch.compliance.AbstractManualValidator',
+  'net.nanopay.crunch.compliance.ManualPersonSanctionValidator',
+  'net.nanopay.crunch.compliance.ManualEntitySanctionValidator',
+  'net.nanopay.crunch.compliance.ManualSecurefactSIDniValidator',
+  'net.nanopay.crunch.compliance.ManualSecurefactLEVValidator',
 
   'net.nanopay.partner.afex.AFEXDigitalAccount',
 

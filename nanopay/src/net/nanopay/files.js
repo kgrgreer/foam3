@@ -1694,6 +1694,12 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/compliance/SetBusinessStatusAction' },
   { name: 'net/nanopay/crunch/compliance/GenericSigningOfficerValidator' },
   { name: 'net/nanopay/crunch/compliance/GenericBusinessValidator' },
+  { name: 'net/nanopay/crunch/compliance/AbstractManualValidator' },
+  { name: 'net/nanopay/crunch/compliance/ManualEntitySanctionValidator' },
+  { name: 'net/nanopay/crunch/compliance/ManualPersonSanctionValidator' },
+  { name: 'net/nanopay/crunch/compliance/ManualSecurefactSIDniValidator' },
+  { name: 'net/nanopay/crunch/compliance/ManualSecurefactLEVValidator' },
+  
 
   { name: 'net/nanopay/partner/afex/AFEXDigitalAccount' },
   // crunch afex
