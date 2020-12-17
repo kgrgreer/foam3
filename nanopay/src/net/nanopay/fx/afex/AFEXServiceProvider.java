@@ -533,7 +533,11 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       if ( bankAccount instanceof CABankAccount) {
         bankRoutingCode = "0" + bankAccount.getInstitutionNumber() + bankRoutingCode;
       }
-      createBeneficiaryRequest.setBankSWIFTBIC(bankAccount.getInstitutionNumber());
+      String swift = bankAccount.getSwiftCode();
+      if ( SafetyUtil.isEmpty(swift) ) {
+        swift = bankAccount.getInstitutionNumber();
+      }
+      createBeneficiaryRequest.setBankSWIFTBIC(swift);
       createBeneficiaryRequest.setBankRoutingCode(bankRoutingCode);
       createBeneficiaryRequest.setBeneficiaryAddressLine1(userAddress.getAddress().replace("#", ""));
       createBeneficiaryRequest.setBeneficiaryCity(userAddress.getCity());
