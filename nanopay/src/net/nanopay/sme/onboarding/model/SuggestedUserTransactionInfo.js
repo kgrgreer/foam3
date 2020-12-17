@@ -46,6 +46,11 @@ foam.CLASS({
     { name: 'LESS_THEN_500000', message: '$100,001 to $500,000' },
     { name: 'LESS_THEN_1000000', message: '$500,001 to $1,000,000' },
     { name: 'OVER_THEN_1000000', message: 'Over $1,000,000' },
+    { name: 'LESS_THEN_100', message: '1 to 99' },
+    { name: 'LESS_THEN_200', message: '100 to 199' },
+    { name: 'LESS_THEN_500', message: '200 to 499' },
+    { name: 'LESS_THEN_1000', message: '500 to 999' },
+    { name: 'OVER_THEN_1000', message: 'Over 1000' }
   ],
 
   properties: [
@@ -136,11 +141,11 @@ foam.CLASS({
           class: 'foam.u2.view.ChoiceView',
           placeholder: X.data.PLACE_HOLDER,
           choices: [
-            '1 to 99',
-            '100 to 199',
-            '200 to 499',
-            '500 to 999',
-            'Over 1000'
+            X.data.LESS_THEN_100,
+            X.data.LESS_THEN_200,
+            X.data.LESS_THEN_500,
+            X.data.LESS_THEN_1000,
+            X.data.OVER_THEN_1000
           ]
         };
       },

@@ -3084,6 +3084,12 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.LESS_THEN_1000000",target:"$500,001 a $1,000,000"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.OVER_THEN_1000000",target:"Sobre $1,000,000"})
 
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.LESS_THEN_100",target:"1 a 99"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.LESS_THEN_200",target:"100 a 199"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.LESS_THEN_500",target:"200 a 499"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.LESS_THEN_1000",target:"500 a 999"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.OVER_THEN_1000",target:"Sobre 1000"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.AVAILABLE_CURRENCIES",target:"Moedas Disponíveis"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.CPF.DATA.help",target:"O CPF (Cadastro de Pessoas Físicas ou Cadastro de Pessoas Físicas) é um número atribuído pelo órgão tributário brasileiro tanto a brasileiros quanto a estrangeiros residentes que estão sujeitos a impostos no Brasil."})
