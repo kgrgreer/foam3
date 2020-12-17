@@ -32,7 +32,7 @@ foam.CLASS({
   sections: [
     {
       name: 'dateOfBoardingSection',
-      title: 'Expect date of boarding'
+      title: 'Expected date of boarding'
     }
   ],
 
