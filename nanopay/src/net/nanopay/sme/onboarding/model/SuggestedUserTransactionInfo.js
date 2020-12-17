@@ -40,6 +40,12 @@ foam.CLASS({
     { name: 'INTRACOMPANY_BANK_TRANSFERS', message: 'Intracompany bank transfers' },
     { name: 'GOVERNMENT_FEE_TAXES', message: 'Government fee and taxes' },
     { name: 'OTHER', message: 'Other' },
+    { name: 'LESS_THEN_10000', message: '$0 to $10,000' },
+    { name: 'LESS_THEN_50000', message: '$10,001 to $50,000' },
+    { name: 'LESS_THEN_100000', message: '$50,001 to $100,000' },
+    { name: 'LESS_THEN_500000', message: '$100,001 to $500,000' },
+    { name: 'LESS_THEN_1000000', message: '$500,001 to $1,000,000' },
+    { name: 'OVER_THEN_1000000', message: 'Over $1,000,000' },
   ],
 
   properties: [
@@ -59,12 +65,12 @@ foam.CLASS({
           class: 'foam.u2.view.ChoiceView',
           placeholder: X.data.PLACE_HOLDER,
           choices: [
-            '$0 to $10,000',
-            '$10,001 to $50,000',
-            '$50,001 to $100,000',
-            '$100,001 to $500,000',
-            '$500,001 to $1,000,000',
-            'Over $1,000,000'
+            X.data.LESS_THEN_10000,
+            X.data.LESS_THEN_50000,
+            X.data.LESS_THEN_100000,
+            X.data.LESS_THEN_500000,
+            X.data.LESS_THEN_1000000,
+            X.data.OVER_THEN_1000000
           ]
         };
       },
@@ -184,12 +190,12 @@ foam.CLASS({
           class: 'foam.u2.view.ChoiceView',
           placeholder: X.data.PLACE_HOLDER,
           choices: [
-            '$0 to $10,000',
-            '$10,001 to $50,000',
-            '$50,001 to $100,000',
-            '$100,001 to $500,000',
-            '$500,001 to $1,000,000',
-            'Over $1,000,000'
+            X.data.LESS_THEN_10000,
+            X.data.LESS_THEN_50000,
+            X.data.LESS_THEN_100000,
+            X.data.LESS_THEN_500000,
+            X.data.LESS_THEN_1000000,
+            X.data.OVER_THEN_1000000
           ]
         };
       },
