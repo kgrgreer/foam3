@@ -127,7 +127,7 @@ p({
   "operation":1,
   "after":false,
   "action":{"class":"net.nanopay.tx.JackieRuleOnPut"},
-  "enabled":false,
+  "enabled":true,
   "saveHistory":true,
   "lifecycleState":1
 })
