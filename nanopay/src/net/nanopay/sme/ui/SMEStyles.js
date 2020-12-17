@@ -884,7 +884,7 @@ foam.CLASS({
       color: #406dea !important;
     }
 
-    .generic-status-circle.Complete {
+    .generic-status-circle.Paid {
       background: #07941f;
     }
 
@@ -904,7 +904,7 @@ foam.CLASS({
       background: #cf6f0a;
     }
 
-    .Invoice-Status.Complete {
+    .Invoice-Status.Paid {
       color: #07941f !important;
     }
 
