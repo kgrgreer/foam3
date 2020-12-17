@@ -3077,12 +3077,12 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.GOVERNMENT_FEE_TAXES",target:"Taxas e impostos governamentais"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.OTHER",target:"De outros"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.LESS_THEN_10000",target:"$0 a $10.000"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.LESS_THEN_50000",target:"$10.001 a $50.000"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.LESS_THEN_100000",target:"$50.001 a $100.000"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.LESS_THEN_500000",target:"$100.001 a $500.000"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.LESS_THEN_1000000",target:"$500.001 a $1.000.000"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.OVER_THEN_1000000",target:"Sobre $1.000.000"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.LESS_THEN_10000",target:"USD 0 a USD 10.000"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.LESS_THEN_50000",target:"USD 10.001 a USD 50.000"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.LESS_THEN_100000",target:"USD 50.001 a USD 100.000"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.LESS_THEN_500000",target:"USD 100.001 a USD 500.000"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.LESS_THEN_1000000",target:"USD 500.001 a USD 1.000.000"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.OVER_THEN_1000000",target:"Sobre USD 1.000.000"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.LESS_THEN_100",target:"1 a 99"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.LESS_THEN_200",target:"100 a 199"})
