@@ -271,18 +271,19 @@ foam.CLASS({
         return bankAccount || businessId ? net.nanopay.contacts.ContactStatus.READY : net.nanopay.contacts.ContactStatus.PENDING;
       },
       tableCellFormatter: function(state, obj) {
+        var color = state.color;
+
         this.__subContext__.contactDAO.find(obj.id).then(contactObj=> {
           var format = contactObj.bankAccount || contactObj.businessId ? net.nanopay.contacts.ContactStatus.READY : net.nanopay.contacts.ContactStatus.PENDING;
           var label = state == net.nanopay.contacts.ContactStatus.CONNECTED ? state.label.replace(/\s+/g, '') : format.label.replace(/\s+/g, '');
 
           this.start()
-            .start().show(state != net.nanopay.contacts.ContactStatus.CONNECTED).addClass('contact-status-circle-' + label).end()
             .start('img')
               .show(state == net.nanopay.contacts.ContactStatus.CONNECTED)
               .attrs({ src: this.__subContext__.theme.logo })
               .style({ 'width': '15px', 'position': 'relative', 'top': '3px', 'right': '4px' })
-              .end()
-            .start().addClass('contact-status-' + label)
+            .end()
+            .start().style({ color : color })
               .add(label)
             .end()
           .end();
