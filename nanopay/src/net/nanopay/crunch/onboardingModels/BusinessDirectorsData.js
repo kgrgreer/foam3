@@ -28,10 +28,6 @@ foam.CLASS({
     'subject'
   ],
 
-  requires: [
-    'net.nanopay.model.BusinessUserJunction'
-  ],
-
   javaImports: [
     'net.nanopay.model.BusinessDirector',
   ],
@@ -94,9 +90,7 @@ foam.CLASS({
           mode: 'RW',
           enableAdding: true,
           enableRemoving: true,
-          defaultNewItem: net.nanopay.model.BusinessDirector.create({
-            type: x.data.subject.user.address.countryId
-          }, x),
+          defaultNewItem: net.nanopay.model.BusinessDirector.create({}, x),
           name: 'director'
         };
       },

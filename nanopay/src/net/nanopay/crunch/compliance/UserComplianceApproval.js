@@ -43,6 +43,14 @@ foam.CLASS({
     'static foam.mlang.MLang.*'
   ],
 
+  properties: [
+    {
+      name:  'clearDataOnRejection',
+      class: 'Boolean',
+      value: true
+    }
+  ],
+
   methods: [
     {
       name: 'applyAction',
@@ -61,7 +69,9 @@ foam.CLASS({
               status = ApprovalStatus.REJECTED == approval ? CapabilityJunctionStatus.ACTION_REQUIRED : CapabilityJunctionStatus.APPROVED;
               ucj.setStatus(status);
 
-              if ( approval == ApprovalStatus.REJECTED ) clearData(x, ucj);
+              if ( approval == ApprovalStatus.REJECTED && getClearDataOnRejection() ) {
+                clearData(x, ucj);
+              }
 
               // Update junction
               Subject subject = ucj.getSubject(x);

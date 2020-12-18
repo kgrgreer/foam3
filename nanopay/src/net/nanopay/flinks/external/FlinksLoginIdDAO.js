@@ -349,6 +349,7 @@ foam.CLASS({
         // Switch contexts to the newly created user
         Subject newSubject = new Subject.Builder(x).setUser(user).build();
         X subjectX = getX().put("subject", newSubject);
+        subjectX = subjectX.put("group", null);
 
         AddressModel holderAddress = holder.getAddress();        
         Address address = overrides != null && overrides.getAddress() != null ?
@@ -463,6 +464,7 @@ foam.CLASS({
         Subject currentSubject = (Subject) subjectX.get("subject");
         currentSubject.setUser(business);
         subjectX = subjectX.put("subject", currentSubject);
+        subjectX = subjectX.put("group", null);
 
         // Set the business on the request
         request.setBusiness(business.getId());

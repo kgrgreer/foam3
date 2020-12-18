@@ -58,7 +58,7 @@ foam.CLASS({
                 .build();
             }
 
-            ucj.setStatus(CapabilityJunctionStatus.PENDING_REVIEW);
+            ucj.setStatus(CapabilityJunctionStatus.PENDING);
             ucjDAO.put_(x, ucj);
           }
         }, "Create ucj on user passed compliance");
