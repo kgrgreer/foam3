@@ -2348,7 +2348,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactW
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.SECTION_ONE_TITLE",target:"Adicionar beneficiário"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.SECTION_TWO_TITLE",target:"Adicionar conta bancária"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.SECTION_TWO_SUBTITLE",target:"Os pagamentos feitos a este contato serão depositados na conta fornecida abaixo."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.SECTION_TWO_SUBTITLE",target:"Os pagamentos feitos a este beneficiário serão depositados na conta fornecida abaixo."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.SECTION_THREE_TITLE",target:"Adicionar endereço comercial"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.ContactWizardView.SECTION_THREE_SUBTITLE",target:"Para enviar pagamentos a esta empresa, precisamos que você verifique seu endereço comercial abaixo."})
 
