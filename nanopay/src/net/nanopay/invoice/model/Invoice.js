@@ -586,16 +586,15 @@ foam.CLASS({
       tableCellFormatter: function(state, obj, rel) {
         var name = state.name;
         var label = state.label;
+        var color = state.color;
         if ( state === net.nanopay.invoice.model.InvoiceStatus.SCHEDULED ) {
           label = label + ' ' + obj.paymentDate.toISOString().substring(0, 10);
         }
 
         this.start()
           .addClass('invoice-status-container')
-          .start().addClass('generic-status-circle').addClass(name.replace(/\W+/g, '-')).end()
-          .start().addClass('Invoice-Status').addClass(name.replace(/\W+/g, '-'))
-            .add(label)
-          .end()
+          .start().addClass('generic-status-circle').style({ background : color }).end()
+          .start().style({ color : color }).add(label).end()
         .end();
       },
       tableWidth: 130
