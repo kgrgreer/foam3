@@ -447,6 +447,8 @@ foam.CLASS({
           overrides.getMailingAddress() : businessAddress;
         String phoneNumber = overrides != null && !SafetyUtil.isEmpty(overrides.getPhoneNumber()) ? 
           overrides.getPhoneNumber() : user.getPhoneNumber();
+        String externalId = overrides != null && !SafetyUtil.isEmpty(overrides.getExternalId()) ?
+          overrides.getExternalId() : "";
 
         // Create business with minimal information
         Business business = new Business.Builder(x)
@@ -454,6 +456,7 @@ foam.CLASS({
           .setOrganization(businessName)
           .setPhoneNumber(phoneNumber)
           .setAddress(businessAddress)
+          .setExternalId(externalId)
           .setSpid(user.getSpid())
           .setStatus(net.nanopay.admin.model.AccountStatus.ACTIVE)
           .build();

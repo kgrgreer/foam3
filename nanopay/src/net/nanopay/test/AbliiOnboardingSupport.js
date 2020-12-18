@@ -1015,7 +1015,7 @@ foam.CLASS({
       }
     },
     {
-      name: 'ownersPercent',
+      name: 'businessOwnershipData',
       code: async function(x, business) {
         var id = '554af38a-8225-87c8-dfdf-eeb15f71215f-7';
         var ucj = await this.crunchService.getJunction(x, id);
