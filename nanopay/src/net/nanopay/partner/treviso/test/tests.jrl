@@ -316,10 +316,10 @@ async function execute(x) {
         throw e;
       }
       try {
-        await support.ownersPercent(x, business);
-        test(true, 'ownersPercent');
+        await support.businessOwnershipData(x, business);
+        test(true, 'businessOwnershipData');
       } catch (e) {
-        test(false, 'ownersPercent: '+(e.message || e));
+        test(false, 'businessOwnershipData: '+(e.message || e));
         throw e;
       }
       try {

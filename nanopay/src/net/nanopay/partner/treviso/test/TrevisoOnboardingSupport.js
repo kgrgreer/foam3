@@ -488,6 +488,22 @@ foam.CLASS({
       }
     },
     {
+      name: 'businessOwnershipData',
+      code: async function(x, business) {
+        var id = '554af38a-8225-87c8-dfdf-eeb15f71215f-7';
+        var ucj = await this.crunchService.getJunction(x, id);
+        if ( ! ucj ||
+             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          var cap = net.nanopay.partner.treviso.onboarding.BRBusinessOwnershipData.create({
+            ownersSelectionsValidated: true,
+            amountOfOwners: 0
+          });
+          ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
+        }
+        return ucj;
+      }
+    },
+    {
       name: 'getAFEXBusiness',
       code: async function(x, business) {
         const E = foam.mlang.ExpressionsSingleton.create();
