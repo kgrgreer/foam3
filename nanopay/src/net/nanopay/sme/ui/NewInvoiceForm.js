@@ -231,9 +231,6 @@ foam.CLASS({
     }
     ^ .foam-u2-DateView {
       width: 100%;
-    },
-    ^input-wrapper {
-      display: inline-block;
     }
   `,
 
