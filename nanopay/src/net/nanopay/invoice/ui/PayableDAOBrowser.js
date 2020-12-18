@@ -209,7 +209,7 @@ foam.CLASS({
       .tag(this.DAOBrowser.create({
         config: this.config,
         summaryView: this.summaryView,
-        serviceName: 'invoiceDAO'
+        serviceName: 'expensesDAO'
       }));
     }
   ],

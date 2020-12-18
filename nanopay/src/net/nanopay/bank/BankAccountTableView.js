@@ -42,7 +42,7 @@ foam.CLASS({
       factory: function() {
         var dao = this.subject.user.accounts.where(
           this.INSTANCE_OF(this.BankAccount)
-        );
+        ).orderBy(this.BankAccount.CREATED);
         dao.of = 'net.nanopay.bank.BankAccount';
         return dao;
       }
