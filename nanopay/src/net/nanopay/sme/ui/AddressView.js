@@ -22,6 +22,10 @@ foam.CLASS({
 
   documentation: 'SME specific address view used in forms.',
 
+  requires: [
+    'foam.nanos.auth.Country'
+  ],
+
   imports: [
     'countryDAO'
   ],
@@ -50,7 +54,7 @@ foam.CLASS({
       name: 'customCountryDAO',
       documentation: 'Can be set if you want a filtered version of countryDAO.',
       factory: function() {
-        return this.countryDAO;
+        return this.countryDAO.orderBy(this.Country.NAME);
       }
     }
   ],
