@@ -230,11 +230,7 @@ foam.CLASS({
             break;
         }
 
-        this.start()
-          .addClass('status-container')
-          .start().addClass('generic-status-circle').style({ background : colour }).end()
-          .start().style({ color : colour }).add(label).end()
-        .end();
+        this.start().style({ color : colour }).add(label).end();
       }
     },
     {

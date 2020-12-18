@@ -591,11 +591,7 @@ foam.CLASS({
           label = label + ' ' + obj.paymentDate.toISOString().substring(0, 10);
         }
 
-        this.start()
-          .addClass('invoice-status-container')
-          .start().addClass('generic-status-circle').style({ background : color }).end()
-          .start().style({ color : color }).add(label).end()
-        .end();
+        this.start().style({ color : color }).add(label).end();
       },
       tableWidth: 130
     },

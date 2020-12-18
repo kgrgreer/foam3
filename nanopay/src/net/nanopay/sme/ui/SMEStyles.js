@@ -978,9 +978,5 @@ foam.CLASS({
       overflow: scroll !important;
       padding: 30px;
     }
-    .status-container {
-      display: inline-flex;
-      align-items: center;
-    }
   `
 });
