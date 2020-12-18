@@ -911,8 +911,8 @@ foam.CLASS({
       }
     },
     {
-      name: 'signingOfficerPersonalData',
-      code: async function(x, user, business) {
+      name: 'signingOfficerQuestion',
+      code: async function(x, user) {
         var id;
         var ucj;
 
@@ -921,9 +921,21 @@ foam.CLASS({
         ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-          ucj = await this.crunchService.updateJunction(x, id, null, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
+          var cap =  net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.create({
+            isSigningOfficer: true,
+            signgingOfficerEmail: 's-'+user.email,
+            userEmail: user.email
+          });
+          ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
         }
-       
+      }
+    },
+    {
+      name: 'signingOfficerPersonalData',
+      code: async function(x, user, business) {
+        var id;
+        var ucj;
+
         id = '554af38a-8225-87c8-dfdf-eeb15f71215f-1a5';
         ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||

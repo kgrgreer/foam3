@@ -79,13 +79,13 @@ async function execute(x) {
         test(false, 'trevisoTermsAndConditions: '+(e.message || e));
         throw e;
       }
-      // try {
-      //   await support.generalAdmission(x, u);
-      //   test(true, 'generalAdmission');
-      // } catch (e) {
-      //   test(false, 'generalAdmission: '+(e.message || e));
-      //   throw e;
-      // }
+      try {
+        await support.generalAdmission(x, u);
+        test(true, 'generalAdmission');
+      } catch (e) {
+        test(false, 'generalAdmission: '+(e.message || e));
+        throw e;
+      }
 
       // Required for business onboarding
       try {
@@ -162,6 +162,13 @@ async function execute(x) {
         test(true, 'trevisoUserIdentification');
       } catch (e) {
         test(false, 'trevisoUserIdentification: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.signingOfficerQuestion(x, u);
+        test(true, 'signingOfficerQuestion');
+      } catch (e) {
+        test(false, 'signingOfficerQuestion: '+(e.message || e));
         throw e;
       }
       try {
