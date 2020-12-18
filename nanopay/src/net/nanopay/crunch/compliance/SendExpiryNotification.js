@@ -31,7 +31,6 @@ foam.CLASS({
     'foam.i18n.TranslationService',
     'foam.nanos.auth.User',
     'foam.nanos.crunch.Capability',
-    'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.nanos.notification.Notification',
     'java.util.Date',
