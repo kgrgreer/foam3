@@ -718,8 +718,11 @@ var classes = [
   // SSO
   'net.nanopay.auth.openid.SSOToken',
   'net.nanopay.auth.openid.OTLoginToken',
-  'net.nanopay.auth.openid.ClientTokenLoginService',
   'net.nanopay.auth.openid.TokenLoginService',
+  'net.nanopay.auth.openid.ClientTokenLoginService',
+  'net.nanopay.auth.openid.OAuthService',
+  'net.nanopay.auth.openid.ClientOAuthService',
+  'net.nanopay.auth.openid.OAuthProvider',
 
   // PII
   'net.nanopay.security.pii.PII',
@@ -1224,6 +1227,7 @@ var classes = [
   'net.nanopay.country.br.exchange.Titular',
   'net.nanopay.country.br.exchange.UpdateTitular',
   'net.nanopay.country.br.exchange.UpdateTitularResponse',
+  'net.nanopay.country.br.ExpectedBoardingDate',
   'net.nanopay.country.br.NatureCode',
   'net.nanopay.country.br.NatureCodeRate',
   'net.nanopay.country.br.NatureBusinessRelationship',
@@ -1288,8 +1292,11 @@ var classes = [
   'net.nanopay.partner.treviso.invoice.TrevisoCapabilityValidateRule',
   'net.nanopay.partner.treviso.invoice.UpdateTransactionOnInvoiceValidationRule',
   'net.nanopay.partner.treviso.invoice.TrevisoNotificationRule',
-  'net.nanopay.partner.treviso.onboarding.BusinessDirectorsData',
   'net.nanopay.partner.treviso.TrevisoSendEmailToAllRule',
+  'net.nanopay.partner.treviso.onboarding.BusinessDirectorsData',
+  'net.nanopay.partner.treviso.onboarding.BRBusinessDirector',
+  'net.nanopay.partner.treviso.onboarding.BRBeneficialOwner',
+  'net.nanopay.partner.treviso.onboarding.BRBusinessOwnershipData',
 
   // crunch predicates - todo move all predicates used in crunch here
   'net.nanopay.crunch.predicate.IsBusiness',
@@ -1352,6 +1359,11 @@ var classes = [
   'net.nanopay.crunch.compliance.SetFulfilledComplianceApprovalRequest',
   'net.nanopay.crunch.compliance.GenericSigningOfficerValidator',
   'net.nanopay.crunch.compliance.GenericBusinessValidator',
+  'net.nanopay.crunch.compliance.AbstractManualValidator',
+  'net.nanopay.crunch.compliance.ManualPersonSanctionValidator',
+  'net.nanopay.crunch.compliance.ManualEntitySanctionValidator',
+  'net.nanopay.crunch.compliance.ManualSecurefactSIDniValidator',
+  'net.nanopay.crunch.compliance.ManualSecurefactLEVValidator',
 
   'net.nanopay.partner.afex.AFEXDigitalAccount',
 
@@ -1527,7 +1539,8 @@ var skeletons = [
   'net.nanopay.interac.service.InteracTransactionDAO',
   'net.nanopay.contacts.ContactServiceInterface',
   'net.nanopay.country.br.BrazilVerificationServiceInterface',
-  'net.nanopay.auth.openid.TokenLoginService'
+  'net.nanopay.auth.openid.TokenLoginService',
+  'net.nanopay.auth.openid.OAuthService'
 ];
 
 var proxies = [

@@ -329,7 +329,7 @@ p({
     "paymentprovidercorridor.source.read.bmo",
     "paymentprovidercorridor.source.read.rbc",
     "paymentprovidercorridor.target.read.bmo",
-    "paymentprovidercorridor.target.read.rbc"
+    "paymentprovidercorridor.target.read.rbc",
     "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
     "paymentprovidercorridor.source.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
     "paymentprovidercorridor.target.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
@@ -663,14 +663,33 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
+  "id":"manual.compliance.securefact.business",
+  "name":"SecureFact Business Validation",
+  "description":"Validate a business against SecureFact LEF.",
+  "version":"0",
+  "enabled":true,
+  "grantMode": 1
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"manual.compliance.dowjones.business",
+  "name":"Dow Jones Business Validation",
+  "description":"Validate a user against Dow Jones.",
+  "version":"0",
+  "enabled":true,
+  "grantMode": 1
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
   "id":"EC535109-E9C0-4B5D-8D24-31282EF72F8F",
   "name":"Business Onboarding Details",
   "of":"net.nanopay.crunch.registration.BusinessDetailData",
   "version":"0",
   "enabled":true,
   "daoKey":"businessDAO",
-  "contextDAOFindKey":"subject.user",
-  "reviewRequired":true,
+  "contextDAOFindKey":"subject.user"
 })
 
 p({
@@ -791,10 +810,8 @@ p({
   "id":"A62AC209-CD55-4755-9B93-2B9BAE885B85",
   "name":"Simple User Onboarding",
   "description":"Basic information for user onboarding",
-  "icon":"/images/capabilityIcons/CADOnboardCap.svg",
   "version":"0",
-  "enabled":true,
-  "keywords":["intuit"]
+  "enabled":true
 })
 
 p({
@@ -811,6 +828,32 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
+  "id":"manual.compliance.securefact.user",
+  "name":"SecureFact User Validation",
+  "description":"Validate a user against SecureFact SIDni.",
+  "version":"0",
+  "enabled":true,
+  "grantMode": 1,
+  "daoKey":"userDAO",
+  "contextDAOFindKey": "subject.realUser",
+  "associatedEntity": 1
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"manual.compliance.dowjones.user",
+  "name":"Dow Jones User Validation",
+  "description":"Validate a user against Dow Jones.",
+  "version":"0",
+  "enabled":true,
+  "grantMode": 1,
+  "daoKey":"userDAO",
+  "contextDAOFindKey": "subject.realUser",
+  "associatedEntity": 1
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
   "id":"FB1C8CF2-34B9-40FE-A4AA-58CFA2FDBA15",
   "name":"Expanded User Details",
   "description":"Advanced information for expanded user onboarding",
@@ -820,8 +863,7 @@ p({
   "enabled":true,
   "daoKey":"userDAO",
   "contextDAOFindKey": "subject.realUser",
-  "associatedEntity": 1,
-  "reviewRequired":true
+  "associatedEntity": 1
 })
 
 p({
@@ -829,10 +871,8 @@ p({
   "id":"CD499238-7854-4125-A04D-7CE7EE15BC74",
   "name":"API Onboarding Domestic Business Payments (CAD to CAD)",
   "description":"Unlock domestic payments through the API for a business.",
-  "icon":"/images/capabilityIcons/CADOnboardCap.svg",
   "version":"0",
-  "enabled":true,
-  "keywords":["intuit"]
+  "enabled":true
 })
 
 p({

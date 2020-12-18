@@ -204,12 +204,6 @@ FOAM_FILES([
   { name: 'net/nanopay/admin/model/ComplianceStatus' },
   { name: 'net/nanopay/admin/model/AccountStatus' },
 
-  // SSO
-  { name: 'net/nanopay/auth/openid/SSOToken' },
-  { name: 'net/nanopay/auth/openid/OTLoginToken' },
-  { name: 'net/nanopay/auth/openid/TokenLoginService' },
-  { name: 'net/nanopay/auth/openid/ClientTokenLoginService' },
-
   { name: 'net/nanopay/model/User' },
   { name: 'net/nanopay/ui/wizard/WizardCssAxiom', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardView', flags: ['web'] },
@@ -252,6 +246,15 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/DataSecurityBanner', flags: ['web'] },
 
   { name: 'net/nanopay/ui/LoadingSpinner', flags: ['web'] },
+
+  // SSO
+  { name: 'net/nanopay/auth/openid/SSOToken' },
+  { name: 'net/nanopay/auth/openid/OTLoginToken' },
+  { name: 'net/nanopay/auth/openid/OAuthProvider' },
+  { name: 'net/nanopay/auth/openid/TokenLoginService' },
+  { name: 'net/nanopay/auth/openid/ClientTokenLoginService' },
+  { name: 'net/nanopay/auth/openid/OAuthService' },
+  { name: 'net/nanopay/auth/openid/ClientOAuthService' },
 
   // Exchangeable
   { name: 'net/nanopay/exchangeable/Security' },
@@ -1691,6 +1694,12 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/compliance/SetBusinessStatusAction' },
   { name: 'net/nanopay/crunch/compliance/GenericSigningOfficerValidator' },
   { name: 'net/nanopay/crunch/compliance/GenericBusinessValidator' },
+  { name: 'net/nanopay/crunch/compliance/AbstractManualValidator' },
+  { name: 'net/nanopay/crunch/compliance/ManualEntitySanctionValidator' },
+  { name: 'net/nanopay/crunch/compliance/ManualPersonSanctionValidator' },
+  { name: 'net/nanopay/crunch/compliance/ManualSecurefactSIDniValidator' },
+  { name: 'net/nanopay/crunch/compliance/ManualSecurefactLEVValidator' },
+  
 
   { name: 'net/nanopay/partner/afex/AFEXDigitalAccount' },
   // crunch afex
@@ -1759,6 +1768,7 @@ FOAM_FILES([
   { name: 'net/nanopay/country/br/NatureCodeApprovalRequest' },
   { name: 'net/nanopay/country/br/CapableCreateNatureCodeApprovalsRuleAction' },
   { name: 'net/nanopay/country/br/ApprovedNatureCodeApprovalRequestRuleAction' },
+  { name: 'net/nanopay/country/br/ExpectedBoardingDate' },
   { name: 'net/nanopay/country/PermittedCountryFilterDAO' },
   { name: 'net/nanopay/country/br/NatureCodePaymentProviderJunctionRefinement' },
   { name: 'net/nanopay/country/br/NatureBusinessRelationship' },
@@ -1787,6 +1797,9 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/invoice/UpdateTransactionOnInvoiceValidationRule' },
   { name: 'net/nanopay/partner/treviso/invoice/TrevisoNotificationRule' },
   { name: 'net/nanopay/partner/treviso/onboarding/BusinessDirectorsData' },
+  { name: 'net/nanopay/partner/treviso/onboarding/BRBusinessDirector' },
+  { name: 'net/nanopay/partner/treviso/onboarding/BRBeneficialOwner' },
+  { name: 'net/nanopay/partner/treviso/onboarding/BRBusinessOwnershipData' },
   { name: 'net/nanopay/partner/treviso/test/TrevisoOnboardingSupport' },
   { name: 'net/nanopay/partner/treviso/TrevisoSendEmailToAllRule' },
 
