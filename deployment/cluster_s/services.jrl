@@ -185,7 +185,6 @@ p({
       .setStandAlone(true)
       .setIsPrimary(true)
       .setNodeQuorum(1)
-      .setNodeRedundancy(0)
       .build();
   """,
   "client": "{\"of\":\"foam.nanos.medusa.ClusterConfigSupport\"}"
