@@ -109,6 +109,11 @@ foam.CLASS({
       name: 'accountId'
     },
     {
+      class: 'String',
+      name: 'accountSelectorCurrency',
+      value: 'cad'
+    },
+    {
       class: 'FObjectProperty',
       of: 'net.nanopay.flinks.external.FlinksLoginId',
       name: 'response'
@@ -129,7 +134,8 @@ foam.CLASS({
                   '&demo=' + this.demo + 
                   '&tag=' + this.tag + 
                   '&consentEnable=' + this.consentEnabled + 
-                  '&accountSelectorEnable=' + this.accountSelectorEnabled;
+                  '&accountSelectorEnable=' + this.accountSelectorEnabled +
+                  '&accountSelectorCurrency=' + this.accountSelectorCurrency;
 
         if ( ! this.redirectUrl && this.redirectUrl != '' ) {
           // Redirect to thank you page while waiting for java script stack.push in listener

@@ -105,7 +105,7 @@ foam.CLASS({
   messages: [
     {
       name: 'CONFIRM_RELATIONSHIP',
-      message: `I have a business relationship with this contact.`
+      message: `I have a business relationship with this contact`
     },
     {
       name: 'INVITE_LABEL',
@@ -178,7 +178,7 @@ foam.CLASS({
       name: 'operatingBusinessName',
       documentation: `The operating business name of the business the contact is
         associated to.
-        This is the opt-in name the business wants to display on our platform (used for searching), 
+        This is the opt-in name the business wants to display on our platform (used for searching),
         as opposed to businessName / organization which is the company’s legal name.`,
       visibility: 'HIDDEN'
     },
@@ -271,18 +271,19 @@ foam.CLASS({
         return bankAccount || businessId ? net.nanopay.contacts.ContactStatus.READY : net.nanopay.contacts.ContactStatus.PENDING;
       },
       tableCellFormatter: function(state, obj) {
+        var color = state.color;
+
         this.__subContext__.contactDAO.find(obj.id).then(contactObj=> {
           var format = contactObj.bankAccount || contactObj.businessId ? net.nanopay.contacts.ContactStatus.READY : net.nanopay.contacts.ContactStatus.PENDING;
           var label = state == net.nanopay.contacts.ContactStatus.CONNECTED ? state.label.replace(/\s+/g, '') : format.label.replace(/\s+/g, '');
 
           this.start()
-            .start().show(state != net.nanopay.contacts.ContactStatus.CONNECTED).addClass('contact-status-circle-' + label).end()
             .start('img')
               .show(state == net.nanopay.contacts.ContactStatus.CONNECTED)
               .attrs({ src: this.__subContext__.theme.logo })
               .style({ 'width': '15px', 'position': 'relative', 'top': '3px', 'right': '4px' })
-              .end()
-            .start().addClass('contact-status-' + label)
+            .end()
+            .start().style({ color : color })
               .add(label)
             .end()
           .end();
@@ -322,14 +323,9 @@ foam.CLASS({
       storageTransient: true,
       label: '',
       visibility: function(countries) {
-        return countries.length == 0 && ! this.createBankAccount ? 
-          foam.u2.DisplayMode.HIDDEN : 
+        return countries.length == 0 && ! this.createBankAccount ?
+          foam.u2.DisplayMode.HIDDEN :
           foam.u2.DisplayMode.RW;
-      },
-      factory: function() {
-        if ( this.bankAccount ) {
-          return this.accountDAO.find(this.bankAccount).then((res) => this.createBankAccount = res);
-        }
       },
       view: function(_, X) {
         let e = foam.mlang.Expressions.create();
@@ -513,9 +509,8 @@ foam.CLASS({
   actions: [
     {
       name: 'addBankAccount',
-      isAvailable: async function() {
-        var bank = await this.accounts.find(this.EQ(net.nanopay.bank.BankAccount.OWNER, this.id))
-        return this.signUpStatus !== this.ContactStatus.READY && ! bank;
+      isAvailable: function() {
+        return this.signUpStatus !== this.ContactStatus.READY && ! this.bankAccount;
       },
       code: function(X) {
         X.controllerView.add(this.WizardController.create({

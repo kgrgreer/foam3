@@ -77,6 +77,7 @@ foam.CLASS({
               .translate(selfThis.forClass_+'.CHECKBOX_TEXT.value',self.dot('checkboxText'))
               .start('a')
                 .addClass('link')
+                .on('click', () => { self.dot('isLinkClicked').set(true); })
                 .translate(selfThis.forClass_+'.TITLE.value',self.dot('title'))
                 .attrs({
                   href: self.dot('link'),
@@ -197,6 +198,14 @@ foam.CLASS({
       view: { class: 'net.nanopay.documents.ui.AcceptanceDocumentView' },
       section: 'uiAgreementDocumentsSection',
       externalTransient: true
+    },
+    {
+      class: 'Boolean',
+      name: 'isLinkClicked',
+      value: false,
+      documentation: 'Check if the document link was clicked',
+      createVisibility: 'HIDDEN',
+      readVisibility: 'HIDDEN'
     }
   ],
 

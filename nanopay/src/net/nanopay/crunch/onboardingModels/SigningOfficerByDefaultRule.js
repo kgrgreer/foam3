@@ -26,29 +26,24 @@ foam.CLASS({
           subject.setUser((User) obj.fclone());
           X subjectX = agencyX.put("subject", subject);
 
+          SigningOfficerQuestion data = new SigningOfficerQuestion(agencyX);
+          data.setIsSigningOfficer(true);
 
           CrunchService crunchService = (CrunchService) x.get("crunchService");
 
           // Signing officer question
-          {
-            var data = new SigningOfficerQuestion.Builder(agencyX)
-              .setIsSigningOfficer(true)
-              .build();
-            crunchService.updateUserJunction(
-              ruler.getX(), subject, "554af38a-8225-87c8-dfdf-eeb15f71215f-0",
-              data, GRANTED);
-          }
+          crunchService.updateJunction(
+            subjectX, "554af38a-8225-87c8-dfdf-eeb15f71215f-0", data, GRANTED);
 
           // Certify data reviewed
-          {
-            var data = new CertifyDataReviewed.Builder(subjectX)
+          crunchService.updateJunction(
+            subjectX, "554af38a-8225-87c8-dfdf-eeb15f71215f-14",
+            new CertifyDataReviewed.Builder(subjectX)
               .setReviewed(true)
               .setSigningOfficer(realUser.getId())
-              .build();
-            crunchService.updateUserJunction(
-              ruler.getX(), subject, "554af38a-8225-87c8-dfdf-eeb15f71215f-14",
-              data, GRANTED);
-          }
+              .build(),
+            GRANTED
+          );
 
         }, "Add signing officer capability");
       `

@@ -47,6 +47,7 @@ foam.CLASS({
     'transactionPlannerDAO',
     'quickbooksService',
     'xeroService',
+    'crunchController'
   ],
 
   exports: [
@@ -68,6 +69,7 @@ foam.CLASS({
     'foam.log.LogLevel',
     'foam.nanos.app.Mode',
     'foam.nanos.crunch.CapabilityJunctionStatus',
+    'foam.nanos.crunch.CapabilityIntercept',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.auth.PublicUserInfo',
@@ -82,7 +84,7 @@ foam.CLASS({
     'net.nanopay.tx.FxSummaryTransactionLineItem',
     'net.nanopay.tx.TransactionQuote',
     'foam.u2.LoadingSpinner',
-    'foam.u2.dialog.Popup',
+    'foam.u2.dialog.Popup'
   ],
 
   axioms: [
@@ -122,6 +124,9 @@ foam.CLASS({
     ^ .foam-u2-LoadingSpinner img{
       width: 150px;
       margin: 200px;
+    }
+    ^ .stackColumn .foam-u2-stack-StackView {
+      padding-left: 0 !important;
     }
   `,
 
@@ -226,9 +231,7 @@ foam.CLASS({
     {
       name: 'hasSaveOption',
       expression: function(isForm, position) {
-        return isForm &&
-          this.invoice.status !== this.InvoiceStatus.DRAFT &&
-          position === 0;
+        return this.invoice.status !== this.InvoiceStatus.DRAFT;
       },
       documentation: `An expression is required for the 1st step of the
         send/request payment flow to show the 'Save as draft' button.`
@@ -297,7 +300,8 @@ foam.CLASS({
     { name: 'SELECT_PAYABLE', message: 'Select payable' },
     { name: 'REVIEW_MSG', message: 'Review' },
     { name: 'REVIEW_PAYMENT', message: 'Review payment'},
-    { name: 'CANCEL', message: 'Cancel'}
+    { name: 'CANCEL', message: 'Cancel'},
+    { name: 'VOID', message: 'Void'}
   ],
 
   methods: [
@@ -338,6 +342,7 @@ foam.CLASS({
       });
 
       this.exitLabel = this.CANCEL;
+      this.optionLabel = this.VOID;
       this.hasExitOption = true;
 
       Promise.all([this.auth.check(null, 'business.invoice.pay'), this.auth.check(null, 'user.invoice.pay')])
@@ -425,29 +430,78 @@ foam.CLASS({
 
     async function getQuote() {
       this.invoice.quote = null;
-      this.invoice.draft = false;
       this.invoice.paymentMethod = this.PaymentStatus.SUBMIT;
+
+      // to be able to adjust capable payloads that were previously saved
+      if ( this.invoice.draft && this.invoice.capabilityIds.length > 0 && this.invoice.capablePayloads.length > 0 ){
+        this.invoice.draft = false;
+
+        var capabilityIntercept = this.CapabilityIntercept.create();
+        capabilityIntercept.daoKey = "invoiceDAO"
+        
+        var wizardSeq = this.crunchController.createCapableWizardSequence(capabilityIntercept, this.invoice);
+
+        try {
+          var wizardContext = await wizardSeq.execute();
+        } catch (err) {          
+          await this.abortQuoteAndSaveDraft(err);
+          return;
+        }
+
+        if ( ! wizardContext.submitted ){
+          this.invoice.draft = true;
+          this.saveDraft(this.invoice);
+          return;
+        }
+      }
+
+      this.invoice.draft = false;
+
+      // to preserve any invoice created as a draft in case of failure
+      if ( this.invoice.id === 0 ){
+        this.invoice.draft = true;
+        try{
+          this.invoice = await this.invoiceDAO.put(this.invoice);
+        } catch(error) {
+          await this.abortQuoteAndSaveDraft(err);
+        }
+        this.invoice.draft = false;
+      }
 
       try {
         this.invoice = await this.invoiceDAO.put(this.invoice);
 
-        if ( this.invoice.capablePayloads.length > 0 && this.invoice.isWizardIncomplete ){
+        if ( this.invoice.capabilityIds.length > 0 && this.invoice.isWizardIncomplete ) {
           this.invoice.draft = true;
-          this.invoice.capablePayloads = [];
           this.saveDraft(this.invoice);
           return;
         }
-
       } catch(err) {
-        this.notify(err.message,'', this.LogLevel.ERROR, true);
-        this.pushMenu(this.isPayable
-          ? 'capability.main.invoices.payables'
-          : 'capability.main.invoices.receivables');
+        await this.abortQuoteAndSaveDraft(err);
         return;
       }
 
       this.txnQuote = this.invoice.quote.plan;
       return this.txnQuote;
+    },
+
+    /**
+     * Primarily used when receiving an exception from the back-end, to put the invoice
+     * into a resubmittable state and save it as a draft
+     * @param {*} error 
+     */
+    async function abortQuoteAndSaveDraft(error) {
+      this.invoice.paymentMethod = this.PaymentStatus.SUBMIT;
+      this.invoice.status = this.InvoiceStatus.DRAFT;
+      this.invoice.draft = true;
+      this.invoice.quote = null;
+      this.invoice.plan = null;
+      this.invoice.capablePayloads.forEach(cp => cp.status = this.CapabilityJunctionStatus.ACTION_REQUIRED);
+      this.invoiceDAO.put(this.invoice);
+      this.notify(error.message,'', this.LogLevel.ERROR, true);
+      this.pushMenu(this.isPayable
+        ? 'capability.main.invoices.payables'
+        : 'capability.main.invoices.receivables');
     },
 
     async function setTransactionPlanAndQuote() {
@@ -552,12 +606,16 @@ foam.CLASS({
       isAvailable: function(hasSaveOption) {
         return hasSaveOption;
       },
-      isEnabled: function(errors) {
-        return ! errors;
+      isEnabled: function(errors, isLoading) {
+        return ! errors && ! isLoading;
       },
       code: function() {
+        this.invoice.paymentMethod = this.PaymentStatus.SUBMIT;
         this.invoice.status = this.InvoiceStatus.DRAFT;
         this.invoice.draft = true;
+        this.invoice.quote = null;
+        this.invoice.plan = null;
+        this.invoice.capablePayloads.forEach(cp => cp.status = this.CapabilityJunctionStatus.ACTION_REQUIRED);
         this.saveDraft(this.invoice);
       }
     },
@@ -612,6 +670,10 @@ foam.CLASS({
     },
     {
       name: 'exit',
+      isAvailable: function(invoice$id){
+        // invoice does not exist on the backend, process of creation
+        return invoice$id === 0;
+      },
       isEnabled: function(errors, isLoading) {
         return ! isLoading;
       },
@@ -641,8 +703,13 @@ foam.CLASS({
     },
     {
       name: 'otherOption',
-      isAvailable: function(hasOtherOption) {
-        return hasOtherOption;
+      label: 'Void',
+      isAvailable: function(invoice$id) {
+        // invoice exists on backend
+        return invoice$id !== 0;
+      },
+      isEnabled: function(isLoading) {
+        return ! isLoading;
       },
       code: function(X) {
         this.ctrl.add(this.Popup.create().tag({
