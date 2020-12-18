@@ -1,0 +1,72 @@
+// Renaming contact to beneficiary
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.sme.ui.NewInvoiceForm.ADD_CONTACT.label",target:"Add beneficiary"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.sme.ui.NewInvoiceForm.PAYABLE_ERROR_MSG",target:"Banking information for this beneficiary must be provided"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.sme.ui.NewInvoiceForm.UNSUPPORTED_CURRENCY2",target:" for this beneficiary"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.sme.ui.NewInvoiceForm.ADD_CONTACT.label",target:"Add beneficiary"})
+
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.sme.ui.SendRequestMoney.CONTACT_ERROR",target:"Need to choose a beneficiary"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.sme.ui.SendRequestMoney.CONTACT_NOT_FOUND",target:"Beneficiary not found"})
+
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.sme.ui.MoneyFlowSuccessView.BODY_REC",target:"Your request has been sent to your beneficiary and is now pending payment."})
+
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.BankAccount.FOR_CONTACT.label",target:"For Beneficiary"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.BankAccount.FOR_CONTACT.documentation",target:"Flag for whether bank account is owned by a beneficiary. Required for visibility property expressions."})
+
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.GetDefaultCurrency.CONTACT_ID.documentation",target:"The DAO will find the beneficiary associated to the given beneficiary id and search the beneficiary's verified bank accounts to return a default currency for payments to the beneficiary."})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.bank.GetDefaultCurrency.RESPONSE.documentation",target:"The server will set this to the denomination of the beneficiary's verified bank account."})
+
+p({class:"foam.i18n.Locale",locale:"en",source:"Contacts",target:"Beneficiaries"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.Contact.CONFIRM_RELATIONSHIP",target:"I have a business relationship with this beneficiary"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.Contact.INVITE_LABEL",target:"Invite this beneficiary to join "})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.Contact.RESTRICT_INVITE_LABEL",target:"This beneficiary cannot be invited to join Ablii"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.Contact.UNABLE_TO_ADD_BANK_ACCOUNT",target:"You currently have not completed the necessary requirements to add an account to your beneficiary. Please visit the capability store to enable payments."})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.Contact.ORGANIZATION.documentation",target:"The organization/business associated with the beneficiary."})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.Contact.LEGAL_NAME.documentation",target:"A field for the legal first and last name of the beneficiary, if different than the provided first name.  The field will default to first name, last name."})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.Contact.EMAIL.documentation",target:"The email address of the beneficiary."})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.Contact.SIGN_UP_STATUS.documentation",target:"Tracks the registration status of a beneficiary with respect to whether a individual person, or real user, can sign in or not. Pending, Ready and Connected"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.Contact.CONFIRM.documentation",target:"True if the user confirms their relationship with the beneficiary."})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.Contact.BUSINESS_ID.documentation",target:"A unique identifier for the business associated with the beneficiary."})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.Contact.LOGIN_ENABLED.documentation",target:"Determines whether the Beneficiary can login to the platform."})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.Contact.BANK_ACCOUNT.documentation",target:"The unique identifier for the bank account of the beneficiary if created while registering the beneficiary."})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.Contact.CREATE_BANK_ACCOUNT.documentation",target:"A before put bank account object a user creates for the beneficiary."})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.Contact.COUNTRIES.documentation",target:"Stores available countries beneficiary can have account domicilied in."})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.Contact.SHOULD_INVITE.documentation",target:"True if the user wants to invite the beneficiary to join Ablii."})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.Contact.BUSINESS_ADDRESS.documentation",target:"The postal address of the business associated with the beneficiary."})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.Contact.IS_EDIT.documentation",target:"True if the beneficiary is being edited"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.Contact.EMAIL_VERIFIED.documentation",target:"Verifies that the email address of the beneficiary is valid. If the email address is not verified the transaction validation logic will throw an error when a beneficiary is either the Payer or Payee of an invoice."})
+
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ContactMigrationRule.DESCRIBE_TEXT",target:"Migrates beneficiaries and invoices to a newly onboarded Business with a bank account."})
+
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.modal.DeleteContactView.TITLE",target:"Delete beneficiary?"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.modal.DeleteContactView.CONFIRM_DELETE_2",target:" from your beneficiaries list?"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.modal.DeleteContactView.SUCCESS_MSG",target:"Beneficiary deleted"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.modal.DeleteContactView.FAIL_MSG",target:"Failed to delete beneficiary"})
+
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.modal.EditContactView.TITLE_ON_CREATE",target:"Add Beneficiary"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.modal.EditContactView.TITLE_ON_EDIT",target:"Edit Beneficiary"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.modal.EditContactView.QUESTION",target:"Would you like to add a bank account to this beneficiary?"})
+
+p({class:"foam.i18n.Locale",locale:"en",source:"capability.main.contacts.label", target:"Beneficiaries"})
+p({class:"foam.i18n.Locale",locale:"en","source":"capability.main.contacts.createLabel","target":"Add Beneficiary"})
+p({class:"foam.i18n.Locale",locale:"en",source:"capability.main.contacts.handler.title",target:"Beneficiaries"})
+p({class:"foam.i18n.Locale",locale:"en",source:"capability.main.contacts.handler.createLabel",target:"Add Beneficiary"})
+p({class:"foam.i18n.Locale",locale:"en",source:"capability.main.contacts.handler.createControllerView.view.title",target:"Add Beneficiary"})
+
+
+p({class:"foam.i18n.Locale",locale:"en",source:"contacts.label",target:"Beneficiaries"})
+
+
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.ContactWizardView.EDIT_STEP_ONE_TITLE",target:"Edit Beneficiary"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.ContactWizardView.CONTACT_ADDED",target:"Beneficiary added successfully"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.ContactWizardView.CONTACT_EDITED",target:"Beneficiary edited"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.ContactWizardView.CONTACT_ADDED_INVITE_SUCCESS",target:"Beneficiary added successfully. An email invitation was sent."})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.ContactWizardView.CONTACT_ADDED_INVITE_FAILURE",target:"Beneficiary added successfully. An email invitation could not be sent."})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.ContactWizardView.EXISTING_BUSINESS",target:"This email has already been registered on Ablii. You can set up a connection with this user and their business by using their payment code or finding them in the search business menu when adding a beneficiary."})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.ContactWizardView.CONTACT.label",target:"Beneficiary"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.ContactWizardView.CONTACT.documentation",target:"The beneficiary returned after put to contactDAO."})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.ContactWizardView.IS_EDIT.documentation",target:"Set to true when editing a beneficiary from contact controller."})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.ContactWizardView.SECTION_ONE_TITLE",target:"Add Beneficiary"})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.ContactWizardView.SECTION_TWO_SUBTITLE",target:"Payments made to this contact will be deposited to the account you provide below."})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.ContactWizardView.SECTION_THREE_SUBTITLE",target:"In order to send payments to this business, we’ll need you to verify their business address below."})
+
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.invoice.model.Invoice.SELECT_CONTACT",target:"Select beneficiary"})
