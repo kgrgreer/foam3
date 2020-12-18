@@ -149,13 +149,18 @@ p({
     "class":"foam.mlang.predicate.And",
     "args":[
       {
+        "class":"foam.nanos.crunch.predicate.CapabilityPrerequisitesGranted"
+      },
+      {
         "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
-        "category":"userComplianceCheck"
+        "category":"dowJonesUserValidation",
+        "status": 3,
+        "statusChanged": false
       }
     ]
   },
   "asyncAction":{
-    "class":"net.nanopay.crunch.compliance.PersonSanctionValidator",
+    "class":"net.nanopay.crunch.compliance.ManualPersonSanctionValidator",
     "classification":"Validate Expanded User Detail UserCapabilityJunction Using Dow Jones"
   },
   "enabled":true,
@@ -178,13 +183,18 @@ p({
     "class":"foam.mlang.predicate.And",
     "args":[
       {
+        "class":"foam.nanos.crunch.predicate.CapabilityPrerequisitesGranted"
+      },
+      {
         "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
-        "category":"userComplianceCheck"
+        "category":"secureFactUserValidation",
+        "status": 3,
+        "statusChanged": false
       }
     ]
   },
   "asyncAction":{
-    "class":"net.nanopay.crunch.compliance.SecurefactSIDniValidator",
+    "class":"net.nanopay.crunch.compliance.ManualSecurefactSIDniValidator",
     "classification":"Validate Expanded User Detail UserCapabilityJunction Using SecureFact"
   },
   "enabled":true,
@@ -206,13 +216,18 @@ p({
     "class":"foam.mlang.predicate.And",
     "args":[
       {
+        "class":"foam.nanos.crunch.predicate.CapabilityPrerequisitesGranted"
+      },
+      {
         "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
-        "category":"businessComplianceCheck"
+        "category":"dowJonesBusinessValidation",
+        "status": 3,
+        "statusChanged": false
       }
     ]
   },
   "asyncAction":{
-    "class":"net.nanopay.crunch.compliance.EntitySanctionValidator",
+    "class":"net.nanopay.crunch.compliance.ManualEntitySanctionValidator",
     "classification":"Validate Busiiness Detail Data UserCapabilityJunction Using Dow Jones"
   },
   "enabled":true,
@@ -235,13 +250,18 @@ p({
     "class":"foam.mlang.predicate.And",
     "args":[
       {
+        "class":"foam.nanos.crunch.predicate.CapabilityPrerequisitesGranted"
+      },
+      {
         "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
-        "category":"businessComplianceCheck"
+        "category":"secureFactBusinessValidation",
+        "status": 3,
+        "statusChanged": false
       }
     ]
   },
   "asyncAction":{
-    "class":"net.nanopay.crunch.compliance.SecurefactLEVValidator",
+    "class":"net.nanopay.crunch.compliance.ManualSecurefactLEVValidator",
     "classification":"Validate Business Detail Data UserCapabilityJunction Using SecureFact"
   },
   "enabled":true,
@@ -259,21 +279,9 @@ p({
   "operation":3,
   "after":true,
   "predicate":{
-    "class":"foam.mlang.predicate.Or",
-    "args":[
-      {
-        "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
-        "category":"userComplianceCheck",
-        "isRecurring":false,
-        "status": 1
-      },
-      {
-        "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
-        "category":"businessComplianceCheck",
-        "isRecurring":false,
-        "status": 1
-      }
-    ]
+    "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+    "category":"compliancePassed",
+    "status": 1
   },
   "asyncAction":{
     "class":"net.nanopay.crunch.compliance.PassCompliance",
@@ -283,6 +291,7 @@ p({
   "saveHistory":true,
   "lifecycleState":1
 })
+
 p({
   "class":"foam.nanos.ruler.Rule",
   "id":"expanded-onboarding-compliance-approval-0",
@@ -298,24 +307,38 @@ p({
     "args":[
       {
         "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
-        "category":"userComplianceCheck",
-        "isRecurring":false,
-        "statusChanged":false
+        "category":"secureFactUserValidation",
+        "statusChanged":false,
+        "status": 7
       },
       {
         "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
-        "category":"businessComplianceCheck",
-        "isRecurring":false,
-        "statusChanged":false
+        "category":"dowJonesUserValidation",
+        "statusChanged":false,
+        "status": 7
+      },
+      {
+        "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+        "category":"secureFactBusinessValidation",
+        "statusChanged":false,
+        "status": 7
+      },
+      {
+        "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+        "category":"dowJonesBusinessValidation",
+        "statusChanged":false,
+        "status": 7
       }
     ]
   },
   "asyncAction":{
-    "class":"net.nanopay.crunch.compliance.UserComplianceApproval"
+    "class":"net.nanopay.crunch.compliance.UserComplianceApproval",
+    "clearDataOnRejection": false
   },
   "enabled":true,
   "lifecycleState":1
 })
+
 p({
   "class":"foam.nanos.ruler.Rule",
   "id":"expanded-onboarding-compliance-passed-reput-create",
@@ -434,18 +457,6 @@ p({
       {
         "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
         "category":"businessDirectorOnboarding",
-        "isRecurring":false,
-        "statusChanged":false
-      },
-      {
-        "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
-        "category":"userComplianceCheck",
-        "isRecurring":false,
-        "statusChanged":false
-      },
-      {
-        "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
-        "category":"businessComplianceCheck",
         "isRecurring":false,
         "statusChanged":false
       }
@@ -789,27 +800,5 @@ p({
     "classification":"Validate Business Onboarding UserCapabilityJunction Using Generic Rule"
   },
   "enabled":false,
-  "lifecycleState":1
-})
-
-p({
-  "class":"foam.nanos.ruler.Rule",
-  "id":"expanded-onboarding-pass-compliance-intuit-test",
-  "name":"Crunch Onboarding - Pass Compliance Intuit Test",
-  "priority":1,
-  "ruleGroup":"expandedOnboarding",
-  "documentation":"Pass compliance for user associated to ucj",
-  "daoKey":"userCapabilityJunctionDAO",
-  "operation":3,
-  "after":true,
-  "predicate":{
-    "class":"net.nanopay.crunch.compliance.IsCapabilityReviewRequired"
-  },
-  "asyncAction":{
-    "class":"net.nanopay.crunch.compliance.PassCompliance",
-    "classification":"Skip Compliance Check For Testing"
-  },
-  "enabled":false,
-  "saveHistory":true,
   "lifecycleState":1
 })

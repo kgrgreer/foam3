@@ -29,12 +29,8 @@ foam.CLASS({
     'subject'
   ],
 
-  requires: [
-    'net.nanopay.model.BusinessUserJunction'
-  ],
-
   javaImports: [
-    'net.nanopay.model.BusinessDirector',
+    'net.nanopay.partner.treviso.onboarding.BRBusinessDirector',
   ],
 
   messages: [
@@ -87,7 +83,7 @@ properties: [
       name: 'businessDirectors',
       documentation: 'Array of business directors.',
       label: '',
-      of: 'net.nanopay.model.BusinessDirector',
+      of: 'net.nanopay.partner.treviso.onboarding.BRBusinessDirector',
       section: 'directorsInfoSection',
       view: function(_, x) {
         return {
@@ -95,9 +91,7 @@ properties: [
           mode: 'RW',
           enableAdding: true,
           enableRemoving: true,
-          defaultNewItem: net.nanopay.model.BusinessDirector.create({
-            type: x.data.subject.user.address.countryId
-          }, x),
+          defaultNewItem: net.nanopay.partner.treviso.onboarding.BRBusinessDirector.create({}, x),
           name: 'director'
         };
       },
@@ -137,7 +131,7 @@ properties: [
           }
         }
 
-        for ( BusinessDirector director : getBusinessDirectors()  ) director.validate(x);
+        for ( BRBusinessDirector director : getBusinessDirectors()  ) director.validate(x);
       `
     }
   ]

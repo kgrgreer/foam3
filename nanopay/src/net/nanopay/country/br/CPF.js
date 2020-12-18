@@ -45,7 +45,7 @@ foam.CLASS({
   sections: [
     {
       name: 'collectCpf',
-      title: 'Enter your CPF',
+      title: 'Enter your Cadastro de Pessoas Físicas(CPF)',
       navTitle: 'Signing officer\’s CPF number',
       help: 'Require your CPF'
     }

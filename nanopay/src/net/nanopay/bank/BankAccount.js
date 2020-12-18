@@ -214,16 +214,14 @@ foam.CLASS({
       writePermissionRequired: true,
       tableCellFormatter: function(a) {
         var backgroundColour = 'transparent';
-        var colour = '#545d87';
+        var colour = a.color;
         var label = a.label;
         switch ( a ) {
           case net.nanopay.bank.BankAccountStatus.VERIFIED :
-            colour = '#2cab70';
             backgroundColour = colour;
             label = net.nanopay.bank.BankAccount.STATUS_ACTIVE;
             break;
           case net.nanopay.bank.BankAccountStatus.DISABLED :
-            colour = '#f91c1c';
             backgroundColour = colour;
             label = net.nanopay.bank.BankAccount.STATUS_DISABLED;
             break;
@@ -231,33 +229,8 @@ foam.CLASS({
             label = net.nanopay.bank.BankAccount.STATUS_PENDING;
             break;
         }
-        this.start()
-          .start()
-            .style({
-              'display': 'inline-block',
-              'vertical-align': 'middle',
-              'box-sizing': 'border-box',
-              'width': '6px',
-              'height': '6px',
-              'margin-right': '6px',
-              'background-color': backgroundColour,
-              'border': '1px solid',
-              'border-color': colour,
-              'border-radius': '6px'
-            })
-          .end()
-          .start()
-            .style({
-              'display': 'inline-block',
-              'vertical-align': 'middle',
-              'font-size': '11px',
-              'color': colour,
-              'text-transform': 'capitalize',
-              'line-height': '11px'
-            })
-            .add(label)
-          .end()
-        .end();
+
+        this.start().style({ color : colour }).add(label).end();
       }
     },
     {

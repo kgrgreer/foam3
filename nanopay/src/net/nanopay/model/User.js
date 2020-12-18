@@ -523,19 +523,13 @@ foam.CLASS({
               Contact contact = null;
               try{
                 contact = (Contact) contactDAO.find(userId);
-                if ( contact != null && contact.getBusinessId() == 0 ) {
-                  user = (User) bareUserDAO.find(AND(
-                    EQ(User.EMAIL, contact.getEmail()),
-                    NOT(INSTANCE_OF(Contact.class)),
-                    EQ(User.DELETED, false)));
-                  if ( user == null ) { // when a real user is not present the the transaction is to an external user.
-                    user = contact;
-                  }
-                } else if ( contact != null && contact.getBusinessId() > 0 ){
-                  user = (User) localBusinessDAO.find(contact.getBusinessId());
-                } else {
-                  user = (User) bareUserDAO.find(userId);
+                if ( contact != null && contact.getBusinessId() > 0 ){
+                  return (User) localBusinessDAO.find(contact.getBusinessId());
+                } else if (contact == null) {
+                  return (User) bareUserDAO.find(userId);
                 }
+                user = (User) contact;
+                return user;
               } catch(Exception e) {}
               return user;
             }
