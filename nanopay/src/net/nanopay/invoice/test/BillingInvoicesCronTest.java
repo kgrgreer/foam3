@@ -297,7 +297,6 @@ public class BillingInvoicesCronTest extends Test {
             .setCurrency(payerAccount.getDenomination())
             .build() })
         .setStatus(TransactionStatus.COMPLETED)
-        .setSpid("nanopay")
         .build()
     );
   }
@@ -312,7 +311,6 @@ public class BillingInvoicesCronTest extends Test {
       new User.Builder(x)
         .setFirstName(name)
         .setAddress(new Address())
-        .setSpid("nanopay")
         .build()
     ).fclone();
   }

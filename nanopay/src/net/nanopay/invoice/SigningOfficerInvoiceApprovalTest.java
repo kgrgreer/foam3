@@ -394,7 +394,6 @@ myBusinessBankAccount.setInstitution(1);
 myBusinessBankAccount.setBranchId("54321");
 myBusinessBankAccount.setOwner(myBusiness.getId());
 myBusinessBankAccount.setStatus(BankAccountStatus.VERIFIED);
-myBusinessBankAccount.setSpid("nanopay");
 myBusinessBankAccount = (CABankAccount) myBusiness.getAccounts(x).put_(x, myBusinessBankAccount);
 
 accountDAO.where(foam.mlang.MLang.EQ(Account.NAME, "Approval Tests externalBusiness test account")).removeAll();
@@ -406,7 +405,6 @@ externalBusinessBankAccount.setInstitution(1);
 externalBusinessBankAccount.setOwner(externalBusiness.getId());
 externalBusinessBankAccount.setBranchId("12345");
 externalBusinessBankAccount.setStatus(BankAccountStatus.VERIFIED);
-externalBusinessBankAccount.setSpid("nanopay");
 
 // previously, there where no permissions in place to prevent unauthorized groups from setting bank account statuses
 // after adding bank account status permissions, this test would not work
