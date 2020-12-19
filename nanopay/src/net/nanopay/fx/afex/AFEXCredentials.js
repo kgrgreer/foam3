@@ -79,7 +79,7 @@ foam.CLASS({
       name: 'spid'
     },
     {
-      class: 'Reference',
+      class: 'Enum',
       of: 'net.nanopay.fx.afex.AFEXKeyType',
       name: 'purpose'
     }
