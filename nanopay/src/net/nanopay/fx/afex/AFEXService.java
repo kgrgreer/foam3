@@ -65,7 +65,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   protected AFEXCredentials getCredentials(String spid, AFEXKeyType keyType) {
     DAO credentialDAO = (DAO) getX().get("afexCredentialDAO");
     ArraySink arraySink = new ArraySink();
-    credentialDAO.where(MLang.OR(
+    credentialDAO.where(MLang.AND(
       MLang.EQ(AFEXCredentials.SPID, spid),
       MLang.EQ(AFEXCredentials.PURPOSE, keyType)
       )).select(arraySink);
@@ -179,7 +179,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
             httpResponse = getHttpClient().execute(httpPost);
           }
           if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-            String errorMsg = parseHttpResponse("getQuote", httpResponse);
+            String errorMsg = parseHttpResponse("onboardCorporateClient", httpResponse);
             logger.error(errorMsg);
             throw new RuntimeException(errorMsg);
           }
@@ -1386,7 +1386,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
     sb.append(methodName);
     sb.append(", " + msgType +" : ");
     sb.append(msg);
-    logger.debug(sb.toString());
+    logger.info(sb.toString());
   }
 
   protected String parseHttpPost(HttpPost httpPost) {
