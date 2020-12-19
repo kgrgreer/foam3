@@ -61,10 +61,13 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
     jsonParser.setX(x);
   }
 
-  protected AFEXCredentials getCredentials(String spid) {
+  protected AFEXCredentials getCredentials(String spid, AFEXKeyType keyType) {
     DAO credentialDAO = (DAO) getX().get("afexCredentialDAO");
     ArraySink arraySink = new ArraySink();
-    credentialDAO.where(MLang.EQ(AFEXCredentials.SPID, spid)).select(arraySink);
+    credentialDAO.where(MLang.OR(
+      MLang.EQ(AFEXCredentials.SPID, spid),
+      MLang.EQ(AFEXCredentials.KEY_TYPE, keyType)
+      )).select(arraySink);
     credentials = (AFEXCredentials) (arraySink.getArray()).get(0);
     if ( ! isCredientialsValid() ) {
       credentials = null;
@@ -95,7 +98,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   public Token getToken(String spid) {
     try {
 
-      credentials = getCredentials(spid);
+      credentials = getCredentials(spid, AFEXKeyType.ONBOARDING);
       HttpPost httpPost = new HttpPost(credentials.getPartnerApi() + "token");
 
       httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
@@ -140,7 +143,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   @Override
   public OnboardCorporateClientResponse onboardCorporateClient(OnboardCorporateClientRequest request, String spid) {
     try {
-      credentials = getCredentials(spid);
+      credentials = getCredentials(spid, AFEXKeyType.ONBOARDING);
       HttpPost httpPost = new HttpPost(credentials.getPartnerApi() + "api/v1/corporateClient");
 
       httpPost.addHeader("API-Key", credentials.getApiKey());
