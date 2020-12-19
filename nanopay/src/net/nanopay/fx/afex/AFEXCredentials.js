@@ -78,5 +78,10 @@ foam.CLASS({
       of: 'foam.nanos.auth.ServiceProvider',
       name: 'spid'
     },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.fx.afex.AFEXKeyType',
+      name: 'purpose'
+    }
   ]
 });
