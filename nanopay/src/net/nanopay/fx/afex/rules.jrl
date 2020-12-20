@@ -498,7 +498,7 @@ p({
       }
     ]
   },
-  "asyncAction":{
+  "action":{
     "class":"net.nanopay.fx.afex.AFEXCreateFundingBalancesRule"
   },
   "enabled":true,
@@ -532,12 +532,12 @@ p({
       },
       {
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
-        "propName":"referenceNumber",
+        "propName":"externalInvoiceId",
         "propValue": ""
       }
     ]
   },
-  "asyncAction":{
+  "action":{
     "class":"net.nanopay.fx.afex.AFEXSubmitFundingTxnRule"
   },
   "enabled":true,

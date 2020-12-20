@@ -81,21 +81,18 @@ p({
   "enabled":false,
   "schedule":{
     "class":"foam.nanos.cron.CronSchedule",
-    "minute":-1,
+    "minute":0,
     "hour":-1,
     "dayOfMonth":-1,
     "month":-1,
     "dayOfWeek":-1,
-    "second":0
+    "second":45
   },
   "code":"""
     import net.nanopay.fx.afex.cron.AFEXBeneficiaryStatusCron;
-    date = new Date();
-    if ( date.getMinutes() == 30 || date.getMinutes() == 0 ) {
-      print("running AFEXBeneficiaryStatusCron");
-      cron = new AFEXBeneficiaryStatusCron();
-      cron.execute(x);
-    }
+    print("running AFEXBeneficiaryStatusCron");
+    cron = new AFEXBeneficiaryStatusCron();
+    cron.execute(x);
     print("done");
   """
 })
@@ -108,11 +105,11 @@ p({
   "schedule":{
     "class":"foam.nanos.cron.CronSchedule",
     "minute":0,
-    "hour":0,
+    "hour":-1,
     "dayOfMonth":-1,
     "month":-1,
     "dayOfWeek":-1,
-    "second":0
+    "second":23 
   },
   "code":"""
     import net.nanopay.fx.afex.cron.AFEXPaymentStatusCron;
