@@ -1,4 +1,4 @@
-// test user
+// test group
 p({
   class:"foam.nanos.auth.Group",
   id:"business2005.employee",

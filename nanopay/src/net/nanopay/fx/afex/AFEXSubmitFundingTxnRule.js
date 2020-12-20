@@ -48,7 +48,7 @@ foam.CLASS({
           AFEXFundingTransaction transaction = (AFEXFundingTransaction) obj;
           AFEXServiceProvider afexService = (AFEXServiceProvider) x.get("afexServiceProvider");
 
-          AFEXBeneficiary afexBeneficiary = afexService.getAFEXBeneficiary(x, transaction.findSourceAccount(x).getOwner(), transaction.findSourceAccount(x).getOwner(),true);
+          AFEXBeneficiary afexBeneficiary = afexService.getAFEXBeneficiary(x, transaction.findDestinationAccount(x).getOwner(), transaction.findDestinationAccount(x).getOwner(),true);
           if ( afexBeneficiary == null ) {
             try {
               afexBeneficiary = afexService.createInstantBeneficiary(x,transaction);
