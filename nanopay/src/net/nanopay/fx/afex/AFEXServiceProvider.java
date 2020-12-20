@@ -1057,7 +1057,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
   }
 
   protected AFEXFundingBalance saveFundingBalance(X x, long userId, String fundingBalanceId, String accountId, String currency) {
-    AFEXFundingBalance fundingBalance = getUserFundingBalance(x, userId, currency);
+    AFEXFundingBalance fundingBalance =(AFEXFundingBalance) getUserFundingBalance(x, userId, currency).fclone();
     if ( null == fundingBalance ) {
       fundingBalance = new AFEXFundingBalance();
     }
