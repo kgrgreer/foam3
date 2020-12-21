@@ -60,6 +60,7 @@ foam.CLASS({
             group: group || 'sme',
             emailVerified: true,
             phoneNumber: '9055551212',
+            birthday: new Date(0),
             address: {
               class: 'foam.nanos.auth.Address',
               structured: true,
@@ -121,6 +122,7 @@ foam.CLASS({
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
           var now = new Date();
           var cap = net.nanopay.crunch.document.Document.create({
+            isRequired: false,
             reviewed: true,
             expiry: new Date(now.getFullYear() + 5)
           });
@@ -152,6 +154,7 @@ foam.CLASS({
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
           var cap = net.nanopay.crunch.document.Document.create({
+            isRequired: false,
             reviewed: true,
           });
           ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
@@ -245,33 +248,14 @@ foam.CLASS({
         var id;
         var ucj;
 
-        // Office Consumption
         id = 'b5f2b020-db0f-11ea-87d0-0242ac130003';
         ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
           var now = new Date();
           var cap = net.nanopay.crunch.document.Document.create({
-            reviewed: true,
-            expiry: new Date(now.getFullYear() + 5)
-          });
-          ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED);
-        }
-      }
-    },
-    {
-      name: 'businessOfficeConsumptionDocument',
-      code: async function(x, business) {
-        var id;
-        var ucj;
-
-        // Office Consumption
-        id = 'b5f2b020-db0f-11ea-87d0-0242ac130003';
-        ucj = await this.crunchService.getJunction(x, id);
-        if ( ! ucj ||
-             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-          var now = new Date();
-          var cap = net.nanopay.crunch.document.Document.create({
+            isRequired: false,
+//            documents: Array(1).fill(foam.nanos.fs.File.create({ aid: '971d0fe5-4e69-311f-87c1-5a06866620b7' })),
             reviewed: true,
             expiry: new Date(now.getFullYear() + 5)
           });
@@ -309,6 +293,7 @@ foam.CLASS({
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
           var now = new Date();
           var cap = net.nanopay.crunch.document.Document.create({
+            isRequired: false,
             reviewed: true,
             expiry: new Date(now.getFullYear() + 5)
           });
@@ -375,6 +360,8 @@ foam.CLASS({
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
           var cap = net.nanopay.partner.treviso.TrevisoBusinessAccountData.create({
+            capitalSource: 'Mixed',
+            capitalType: 'Mixed',
             customers: [
               {
                 class: 'net.nanopay.crunch.onboardingModels.CustomerBasicInformation',
