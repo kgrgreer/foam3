@@ -39,6 +39,7 @@ public class ExchangeClientMock extends ContextAwareSupport implements Exchange 
     InsertBoletoResponse response = new InsertBoletoResponse();
     ServiceStatus result = new ServiceStatus();
     result.setCODRETORNO(0);
+    result.setNRREFERENCE("0");
     response.setInsertBoletoResult(result);
     return response;
   }
@@ -61,6 +62,7 @@ public class ExchangeClientMock extends ContextAwareSupport implements Exchange 
     Boleto boleto = new Boleto();
     boleto.setSTATUS("E");
     result.setBoleto(new Boleto[]{boleto});
+    response.setBoletoStatusResult(result);
     return response;
   }
 
