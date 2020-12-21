@@ -181,6 +181,7 @@ foam.CLASS({
         if ( txnQuote.getParent() != null ) { //this is not standalone txn
 
           AFEXDigitalAccount afexDigital = findAFEXDigitalAccount(request, x, txnQuote);
+          afexCT.setSourceAccount(afexDigital.getId());
           afexCT.addNext( createFundingTransaction(x, request, fxQuote, afexDigital.getId()) );
           AFEXTransaction afexTransaction = createAFEXTransaction(x, request, fxQuote, afexDigital.getId());
           int result = afexService.createTrade(afexTransaction);

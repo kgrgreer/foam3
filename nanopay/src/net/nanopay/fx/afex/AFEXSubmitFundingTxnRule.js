@@ -44,6 +44,7 @@ foam.CLASS({
         public void execute(X x) {
 
           Logger logger = (Logger) x.get("logger");
+          DAO transactionDAO = ((DAO) x.get("localTransactionDAO")).inX(x);
           AFEXFundingTransaction transaction = (AFEXFundingTransaction) obj;
           AFEXServiceProvider afexService = (AFEXServiceProvider) x.get("afexServiceProvider");
 
@@ -64,6 +65,7 @@ foam.CLASS({
 
           try {
             AFEXFundingTransaction txn = afexService.submitInstantPayment(transaction);
+            transactionDAO.put(txn);
           } catch (Throwable t) {
             String msg = "Error submitting AfexFundingTransaction " + transaction.getId();
             logger.error(msg, t);
