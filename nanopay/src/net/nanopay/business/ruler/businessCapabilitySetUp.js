@@ -57,7 +57,7 @@ foam.CLASS({
           .setTargetId(user.getSpid() + "BusinessMenuCapability")
           .setStatus(CapabilityJunctionStatus.GRANTED)
           .build();
-          ucjDAO.put(spidBusinessPermissionUcj);
+          ucjDAO.inX(ruler.getX()).put(spidBusinessPermissionUcj);
         }
       }, "set up and granted businessMenuCapability");
       `
