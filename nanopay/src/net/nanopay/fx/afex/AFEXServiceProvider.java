@@ -473,7 +473,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
   private String getValueDate(String targetCurrency, String sourceCurrency, String apiKey, String spid) {
     String valueDate = null;
     try {
-      valueDate = this.afexClient.getValueDate(targetCurrency + sourceCurrency, "SPOT", apiKey, spid);
+      valueDate = this.afexClient.getValueDate(targetCurrency + sourceCurrency, "TOM", apiKey, spid);
     } catch(Exception e) {
       // Log here
     }
