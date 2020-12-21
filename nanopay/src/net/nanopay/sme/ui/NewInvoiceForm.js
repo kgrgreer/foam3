@@ -655,7 +655,7 @@ foam.CLASS({
               .end()
             .end()
             .add(this.UPLOAD_FILE_DATA)
-            .start().addClass('input-wrapper')
+            .start().addClass('input-wrapper').style({ display: 'inline-block'})
               .start().addClass('input-label').add(this.ADD_NOTE).end()
               .start( this.Invoice.NOTE, {
                 class: 'foam.u2.tag.TextArea',

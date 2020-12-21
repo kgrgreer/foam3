@@ -44,11 +44,10 @@ foam.CLASS({
         public void execute(X x) {
 
           Logger logger = (Logger) x.get("logger");
-          DAO transactionDAO = ((DAO) x.get("localTransactionDAO")).inX(x);
           AFEXFundingTransaction transaction = (AFEXFundingTransaction) obj;
           AFEXServiceProvider afexService = (AFEXServiceProvider) x.get("afexServiceProvider");
 
-          AFEXBeneficiary afexBeneficiary = afexService.getAFEXBeneficiary(x, transaction.findSourceAccount(x).getOwner(), transaction.findSourceAccount(x).getOwner(),true);
+          AFEXBeneficiary afexBeneficiary = afexService.getAFEXBeneficiary(x, transaction.findDestinationAccount(x).getOwner(), transaction.findDestinationAccount(x).getOwner(),true);
           if ( afexBeneficiary == null ) {
             try {
               afexBeneficiary = afexService.createInstantBeneficiary(x,transaction);
@@ -65,7 +64,6 @@ foam.CLASS({
 
           try {
             AFEXFundingTransaction txn = afexService.submitInstantPayment(transaction);
-            transactionDAO.put(txn);
           } catch (Throwable t) {
             String msg = "Error submitting AfexFundingTransaction " + transaction.getId();
             logger.error(msg, t);

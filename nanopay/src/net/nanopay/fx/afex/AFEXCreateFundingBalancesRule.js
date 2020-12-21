@@ -47,7 +47,6 @@ foam.CLASS({
           try {
               afexService.createFundingBalance(x, transaction);
               transaction.setFundingBalanceInitiated(true);
-              ((DAO) x.get("localTransactionDAO")).put(transaction);
           } catch (Throwable t) {
             String msg = "Error creating Funding balances for AFEX Funding Transaction id: " + transaction.getId();
             logger.error(msg, t);

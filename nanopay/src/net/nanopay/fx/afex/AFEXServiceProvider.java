@@ -438,6 +438,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
   }
 
   public double getFXSpotRate(String sourceCurrency, String targetCurrency, long userId) throws RuntimeException {
+    if ( sourceCurrency.equals(targetCurrency) ) return 1.0;
     User user = User.findUser(x, userId);
     if ( null == user ) throw new RuntimeException("Unable to find User " + userId);
 
@@ -766,13 +767,12 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
   public AFEXFundingTransaction submitInstantPayment(AFEXFundingTransaction txn) {
 
     Account destinationAccount = txn.findDestinationAccount(x);
-    Account sourceAccount = txn.findSourceAccount(x);
     AFEXBeneficiary afexBeneficiary = getAFEXBeneficiary(x, destinationAccount.getOwner(), destinationAccount.getOwner(), true);
 
     User user = User.findUser(x, txn.findDestinationAccount(x).getOwner());
     CreatePaymentRequest createPaymentRequest = new CreatePaymentRequest();
     createPaymentRequest.setPaymentDate(txn.getValueDate());
-    createPaymentRequest.setAmount(String.valueOf(txn.getAmount()));
+    createPaymentRequest.setAmount(String.valueOf(toDecimal(txn.getAmount())));
     createPaymentRequest.setCurrency(txn.getSourceCurrency());
     createPaymentRequest.setVendorId(String.valueOf(afexBeneficiary.getContact()));
     try {
@@ -780,7 +780,9 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       if ( paymentResponse != null && paymentResponse.getReferenceNumber() > 0 ) {
         txn = (AFEXFundingTransaction) txn.fclone();
         txn.setExternalInvoiceId(String.valueOf(paymentResponse.getReferenceNumber()));
-        txn.setCompletionDate(new Date());
+        LocalDateTime date = LocalDateTime.now();
+        date = date.plusMinutes(5);
+        txn.setCompletionDate(Date.from(date.atZone(ZoneId.systemDefault()).toInstant()));
         return txn;
       }
     } catch(Throwable t) {
@@ -1055,11 +1057,12 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
   }
 
   protected AFEXFundingBalance saveFundingBalance(X x, long userId, String fundingBalanceId, String accountId, String currency) {
-    AFEXFundingBalance fundingBalance = getUserFundingBalance(x, userId, currency);
+    AFEXFundingBalance fundingBalance =(AFEXFundingBalance) getUserFundingBalance(x, userId, currency);
     if ( null == fundingBalance ) {
       fundingBalance = new AFEXFundingBalance();
+    } else {
+      fundingBalance = (AFEXFundingBalance) fundingBalance.fclone();
     }
-    fundingBalance = (AFEXFundingBalance) fundingBalance.fclone();
     fundingBalance.setUser(userId);
     fundingBalance.setAccountId(accountId);
     fundingBalance.setFundingBalanceId(fundingBalanceId);
@@ -1116,7 +1119,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     CreateInstantBenefiaryRequest request = new CreateInstantBenefiaryRequest();
     request.setAccountId(fundingBalance.getAccountId());
     request.setFundingBalanceId(fundingBalance.getFundingBalanceId());
-    request.setVendorId(String.valueOf(userId));
+    request.setVendorId(String.valueOf(userId) + "instant");
     try {
       CreateInstantBenefiaryResponse response = afexClient.createInstantBenefiary(request, user.getSpid());
       if ( response == null ) throw new RuntimeException("Unable to get a valid response from  CreateInstantBeneficiary API" );

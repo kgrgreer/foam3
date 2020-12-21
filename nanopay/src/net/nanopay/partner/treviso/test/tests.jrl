@@ -58,7 +58,6 @@ async function execute(x) {
       support.sudoStore(x);
       x = support.sudo(x, s.id, u, u);
 
-      // general admission
       try {
         await support.userRegistrationData(x, u);
         test(true, 'userRegistrationData');
@@ -74,10 +73,10 @@ async function execute(x) {
         throw e;
       }
       try {
-        await support.abliiTermsAndConditions(x, u);
-        test(true, 'abliiTermsAndConditions');
+        await support.trevisoTermsAndConditions(x, u);
+        test(true, 'trevisoTermsAndConditions');
       } catch (e) {
-        test(false, 'abliiTermsAndConditions: '+(e.message || e));
+        test(false, 'trevisoTermsAndConditions: '+(e.message || e));
         throw e;
       }
       try {
@@ -97,28 +96,6 @@ async function execute(x) {
         throw e;
       }
 
-      try {
-        await support.trevisoUserIdentification(x, u);
-        test(true, 'trevisoUserIdentification');
-      } catch (e) {
-        test(false, 'trevisoUserIdentification: '+(e.message || e));
-        throw e;
-      }
-      try {
-        await support.trevisoUserCPF(x, u);
-        test(true, 'trevisoUserCPF');
-      } catch (e) {
-        test(false, 'trevisoUserCPF: '+(e.message || e));
-        throw e;
-      }
-      try {
-        await support.trevisoUserUtilityBill(x, u);
-        test(true, 'trevisoUserUtilityBill');
-      } catch (e) {
-        test(false, 'trevisoUserUtilityBill: '+(e.message || e));
-        throw e;
-      }
-
       var business;
       // try {
       //   business = await support.createBusiness(x, u);
@@ -127,7 +104,6 @@ async function execute(x) {
       //   test(false, 'createBusiness: '+(e.message || e));
       //   throw e;
       // }
-
       try {
         business = await support.businessInitialData(x, u);
         test(true, 'businessInitialData: '+business.id);
@@ -135,6 +111,7 @@ async function execute(x) {
         test(false, 'businessInitialData: '+(e.message || e));
         throw e;
       }
+
 
       var businessSession;
       try {
@@ -156,13 +133,8 @@ async function execute(x) {
         test(false, 'updateBusinessComplianceStatus: '+(e.message || e));
         throw e;
       }
-      try {
-        let bank = await support.createBRBankAccount(x, business);
-        test(true, 'createBusinessBankAccount');
-      } catch (e) {
-        test(false, 'createBusinessBankAccount: '+(e.message || e));
-        throw e;
-      }
+
+      // Signing Officer
       try {
         await support.userDateOfBirth(x, u);
         test(true, 'userDateOfBirth');
@@ -172,12 +144,43 @@ async function execute(x) {
       }
 
       try {
+        await support.trevisoUserCPF(x, u);
+        test(true, 'trevisoUserCPF');
+      } catch (e) {
+        test(false, 'trevisoUserCPF: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.trevisoUserUtilityBill(x, u);
+        test(true, 'trevisoUserUtilityBill');
+      } catch (e) {
+        test(false, 'trevisoUserUtilityBill: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.trevisoUserIdentification(x, u);
+        test(true, 'trevisoUserIdentification');
+      } catch (e) {
+        test(false, 'trevisoUserIdentification: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.signingOfficerQuestion(x, u);
+        test(true, 'signingOfficerQuestion');
+      } catch (e) {
+        test(false, 'signingOfficerQuestion: '+(e.message || e));
+        throw e;
+      }
+      try {
         await support.signingOfficerPersonalData(x, u, business);
         test(true, 'signingOfficerPersonalData');
       } catch (e) {
         test(false, 'signingOfficerPersonalData: '+(e.message || e));
         throw e;
       }
+
+
+      // payments
       try {
         await support.internationalPaymentsAgreement(x);
         test(true, 'internationalPaymentsAgreement');
@@ -229,27 +232,6 @@ async function execute(x) {
         throw e;
       }
       try {
-        await support.businessRegistrationDate(x, business);
-        test(true, 'businessRegistrationDate');
-      } catch (e) {
-        test(false, 'businessRegistrationDate: '+(e.message || e));
-        throw e;
-      }
-      try {
-        await support.businessIncorporationDate(x, business);
-        test(true, 'businessIncorporationDate');
-      } catch (e) {
-        test(false, 'businessIncorporationDate: '+(e.message || e));
-        throw e;
-      }
-      try {
-        await support.businessTaxIdNumber(x, business);
-        test(true, 'businessTaxIdNumber');
-      } catch (e) {
-        test(false, 'businessTaxIdNumber: '+(e.message || e));
-        throw e;
-      }
-      try {
         await support.businessAnnualFinancialStatement(x, business);
         test(true, 'businessAnnualFinancialStatement');
       } catch (e) {
@@ -263,19 +245,32 @@ async function execute(x) {
         test(false, 'businessArticleOfIncorporation: '+(e.message || e));
         throw e;
       }
-      // removed from treviso onboarding
-      // try {
-      //   await support.businessNatureOfBusiness(x, business);
-      //   test(true, 'businessNatureOfBusiness');
-      // } catch (e) {
-      //   test(false, 'businessNatureOfBusiness: '+(e.message || e));
-      //   throw e;
-      // }
       try {
-        await support.businessInformationData(x, business);
-        test(true, 'businessInformationData');
+        await support.businessIncorporationDate(x, business);
+        test(true, 'businessIncorporationDate');
       } catch (e) {
-        test(false, 'businessInformationData: '+(e.message || e));
+        test(false, 'businessIncorporationDate: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.businessRegistrationDate(x, business);
+        test(true, 'businessRegistrationDate');
+      } catch (e) {
+        test(false, 'businessRegistrationDate: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.businessTaxIdNumber(x, business);
+        test(true, 'businessTaxIdNumber');
+      } catch (e) {
+        test(false, 'businessTaxIdNumber: '+(e.message || e));
+        throw e;
+      }
+      try {
+        await support.businessTypeAndSector(x, business);
+        test(true, 'businessTypeAndSector');
+      } catch (e) {
+        test(false, 'businessTypeAndSector: '+(e.message || e));
         throw e;
       }
       try {
@@ -320,38 +315,13 @@ async function execute(x) {
         test(false, 'businessDirectorsData: '+(e.message || e));
         throw e;
       }
-      // Removed from treviso onboarding
-      // try {
-      //  await support.certifyDirectorsListed(x, business);
-      //   test(true, 'certifyDirectorsListed');
-      // } catch (e) {
-      //   test(false, 'certifyDirectorsListed: '+(e.message || e));
-      //   throw e;
-      // }
-
-      // try {
-      //   await support.businessOwners(x, business);
-      //   test(true, 'businessOwners');
-      // } catch (e) {
-      //   test(false, 'businessOwners: '+(e.message || e));
-      //   throw e;
-      // }
       try {
-        await support.ownersPercent(x, business);
-        test(true, 'ownersPercent');
+        await support.businessOwnershipData(x, business);
+        test(true, 'businessOwnershipData');
       } catch (e) {
-        test(false, 'ownersPercent: '+(e.message || e));
+        test(false, 'businessOwnershipData: '+(e.message || e));
         throw e;
       }
-      // removed from treviso onboarding
-      // try {
-      //   await support.certifyOwnersPercent(x, business);
-      //   test(true, 'certifyOwnersPercent');
-      // } catch (e) {
-      //   test(false, 'certifyOwnersPercent: '+(e.message || e));
-      //   throw e;
-      // }
-
       try {
         await support.certifyReviewed(x, u);
         test(true, 'certifyReviewed');
@@ -367,26 +337,36 @@ async function execute(x) {
         throw e;
       }
 
+      // business bank account
+      try {
+        let bank = await support.createBRBankAccount(x, business);
+        test(true, 'createBusinessBankAccount');
+      } catch (e) {
+        test(false, 'createBusinessBankAccount: '+(e.message || e));
+        throw e;
+      }
+
       var contact;
       var contactbank;
       // US Contact US-USD bank Account
       try {
         contact = await support.createUSContact(x, business);
-        test(true, 'createUSContact');
+        test(true, 'createUSContact: '+contact.id);
       } catch (e) {
         test(false, 'createUSContact: '+(e.message || e));
         throw e;
       }
       try {
-        contactbank = await support.createUSBankAccount(x, contact);
-        test(true, 'createUSBankAccount');
+        contactbank = await support.createUSBankAccount(x, contact, true);
+        test(true, 'createUSBankAccount: '+contactbank.id);
       } catch (e) {
         test(false, 'createUSBankAccount: '+(e.message || e));
         throw e;
       }
       try {
         contact.bankAccount = contactbank.id;
-        await business.contacts.put(contact);
+        await support.updateContact(x, contact);
+        // await business.contacts.put(contact);
         test(true, 'adding business US contact: ' + contact.id + ', account: ' + contactbank.id);
       } catch (e) {
         test(false, 'adding business US contact: ' + contact.id + ', account: ' + contactbank.id + '. ' +(e.message || e));
@@ -395,27 +375,49 @@ async function execute(x) {
       // CA Contact CA-CAD bank Account
       try {
         contact = await support.createCAContact(x, business);
-        test(true, 'createCAContact');
+        test(true, 'createCAContact: '+contact.id);
       } catch (e) {
         test(false, 'createCAContact: '+(e.message || e));
         throw e;
       }
       try {
-        contactbank = await support.createContactCABankAccount(x, contact);
-        test(true, 'createContactCABankAccount');
+        contactbank = await support.createCABankAccount(x, contact, true);
+        test(true, 'createContactCABankAccount: '+contactbank.id);
       } catch (e) {
         test(false, 'createContactCABankAccount: '+(e.message || e));
         throw e;
       }
       try {
         contact.bankAccount = contactbank.id;
-        await business.contacts.put(contact);
+        await support.updateContact(x, contact);
+        // await business.contacts.put(contact);
         test(true, 'adding business CA contact: ' + contact.id + ', account: ' + contactbank.id);
       } catch (e) {
         test(false, 'adding business CA contact: ' + contact.id + ', account: ' + contactbank.id + '. ' +(e.message || e));
         throw e;
       }
 
+      let afexBusiness;
+      try {
+        afexBusiness = support.getAFEXBusiness(x, business);
+        test(true, 'getAFEXBusiness:'+afexBusiness.id);
+      } catch (e) {
+        test(false, 'getAFEXBusiness: '+(e.message || e));
+      }
+
+      let afexBusinessApproval;
+      try {
+        afexBusinessApproval = support.getApprovalRequest(x, 'afexBusinessDAO', afexBusiness.id);
+        test(true, 'getApproval(AFEXBusiness):'+afexBusinessApproval.id);
+      } catch (e) {
+        test(false, 'getApproval(AFEXBusiness): '+(e.message || e));
+      }
+
+      // // check every 10 seconds until approved.
+      // var startTime = Date.now();
+      // while ( afexBusinessApproval.status != foam.nanos.approval.ApprovalStatus.APPROVED ) {
+
+      // }
       console.info('done');
       support.teardown(x);
     } catch (e) {
