@@ -99,6 +99,11 @@ foam.CLASS({
     {
       name: 'processDate',
       javaFactory: 'return null;'
+    },
+    {
+      class: 'DateTime',
+      name: 'completionDate',
+      storageTransient: false
     }
   ],
  methods: [

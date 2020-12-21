@@ -275,8 +275,10 @@ public class ExchangeServiceProvider implements ExchangeService {
     sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
     String today = sdf.format(new Date());
     Date completionDate = transaction.getCompletionDate();
-    if ( completionDate == null )
+    if ( completionDate == null ) {
       completionDate = ((ClearingTimeService) this.x.get("clearingTimeService")).estimateCompletionDateSimple(this.x, transaction);
+      transaction.setCompletionDate(completionDate);
+    }
 
     try {
       String completionDateString = sdf.format(completionDate);
