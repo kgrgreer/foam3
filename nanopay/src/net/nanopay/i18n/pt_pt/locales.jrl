@@ -3302,3 +3302,4 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMo
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.business.NatureOfBusiness.SPECIFIC_INDUSTRIES",target:"Indústrias específicas"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.business.NatureOfBusiness.INDUSTRIES",target:"Indústrias"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.business.NatureOfBusiness.SEARCH",target:"Pesquisa..."})
