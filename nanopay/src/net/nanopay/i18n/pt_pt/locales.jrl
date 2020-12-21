@@ -3299,3 +3299,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.ExpectedB
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.VOID",target:"Nulo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoneyReview.VOID",target:"Nulo"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.business.NatureOfBusiness.SPECIFIC_INDUSTRIES",target:"Indústrias específicas"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.business.NatureOfBusiness.INDUSTRIES",target:"Indústrias"})
