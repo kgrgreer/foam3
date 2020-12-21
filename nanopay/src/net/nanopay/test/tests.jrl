@@ -241,20 +241,20 @@ async function execute(x) {
         test(false, 'businessTaxIdNumber: '+(e.message || e));
         throw e;
       }
-//      try {
-//        await support.businessAnnualFinancialStatement(x, business);
-//        test(true, 'businessAnnualFinancialStatement');
-//      } catch (e) {
-//        test(false, 'businessAnnualFinancialStatement: '+(e.message || e));
-//        throw e;
-//      }
-//      try {
-//        await support.businessArticleOfIncoporation(x, business);
-//        test(true, 'businessArticleOfIncoporation');
-//      } catch (e) {
-//        test(false, 'businessArticleOfIncoporation: '+(e.message || e));
-//        throw e;
-//      }
+      // try {
+      //   await support.businessOfficeConsumptionDocument(x, business);
+      //   test(true, 'businessOfficeConsumption');
+      // } catch (e) {
+      //   test(false, 'businessOfficeConsumption: '+(e.message || e));
+      //   throw e;
+      // }
+     // try {
+     //   await support.businessArticleOfIncoporation(x, business);
+     //   test(true, 'businessArticleOfIncoporation');
+     // } catch (e) {
+     //   test(false, 'businessArticleOfIncoporation: '+(e.message || e));
+     //   throw e;
+     // }
       try {
         await support.updateBusinessComplianceStatus(x, business);
         test(true, 'updateBusinessComplianceStatus');
