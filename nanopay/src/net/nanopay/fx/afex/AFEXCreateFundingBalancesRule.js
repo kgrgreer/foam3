@@ -41,12 +41,13 @@ foam.CLASS({
         @Override
         public void execute(X x) {
 
-          AFEXFundingTransaction transaction = (AFEXFundingTransaction) obj;
+          AFEXFundingTransaction transaction = (AFEXFundingTransaction) obj.fclone();
           Logger logger = (Logger) x.get("logger");
           AFEXServiceProvider afexService = (AFEXServiceProvider) x.get("afexServiceProvider");
           try {
               afexService.createFundingBalance(x, transaction);
               transaction.setFundingBalanceInitiated(true);
+              ((DAO) x.get("localTransactionDAO")).put(transaction);
           } catch (Throwable t) {
             String msg = "Error creating Funding balances for AFEX Funding Transaction id: " + transaction.getId();
             logger.error(msg, t);
