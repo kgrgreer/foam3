@@ -537,6 +537,10 @@ p({
               },
               {
                 "class":"foam.nanos.ruler.predicate.PropertyChangePredicate",
+                "propName":"isInGracePeriod"
+              },
+              {
+                "class":"foam.nanos.ruler.predicate.PropertyEQValue",
                 "propName":"isInGracePeriod",
                 "propValue":true
               }
