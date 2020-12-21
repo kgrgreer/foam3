@@ -58,13 +58,11 @@ foam.CLASS({
               EQ(UserCapabilityJunction.SOURCE_ID, user.getId())
             )
           );
-
           if ( ucj == null ) {
             ucj = new UserCapabilityJunction.Builder(x).setSourceId(user.getId()).setTargetId("7b41a164-29bd-11eb-adc1-0242ac120002").build();
             ucj.setStatus(CapabilityJunctionStatus.GRANTED);
             ucjDAO.put_(x, ucj);
-          }
-          if ( ucj.getStatus() !=  CapabilityJunctionStatus.GRANTED ) {
+          } else if ( ucj.getStatus() !=  CapabilityJunctionStatus.GRANTED ) {
             ucj = (UserCapabilityJunction) ucj.fclone();
             ucj.setStatus(CapabilityJunctionStatus.GRANTED);
             ucjDAO.put_(x, ucj);
