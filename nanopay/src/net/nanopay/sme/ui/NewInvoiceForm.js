@@ -430,6 +430,14 @@ foam.CLASS({
       of: 'net.nanopay.bank.BankAccount',
       name: 'chosenBankAccount'
     },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.contacts.Contact',
+      name: 'tempContact',
+      factory: function() {
+        return net.nanopay.contacts.Contact.create({}, this.ctrl);
+      }
+    },
   ],
 
   methods: [
@@ -505,6 +513,7 @@ foam.CLASS({
             .startContext({ data: this.invoice })
               .start(this.invoice.CONTACT_ID, {
                 action: this.ADD_CONTACT,
+                actionContext: this,
                 search: true,
                 searchPlaceholder: this.START_SEARCH,
                 mode: displayMode
@@ -530,6 +539,7 @@ foam.CLASS({
               .start().add(this.ADD_BANK).addClass('add-banking-information')
                 .on('click', async function() {
                   self.userDAO.find(self.invoice.contactId).then((contact)=>{
+                    debugger;
                     self.add(self.WizardController.create({
                       model: 'net.nanopay.contacts.Contact',
                       data: contact,
@@ -682,6 +692,12 @@ foam.CLASS({
           self.showAddBank = self.type === 'payable';
         }
       });
+    },
+    function testo() {
+      if ( this.tempContact.id ) {
+        this.invoice.contactId = this.tempContact.id;
+      }
+      this.tempContact = undefined;
     }
   ],
 
@@ -778,11 +794,13 @@ foam.CLASS({
       label: 'Create new contact',
       icon: 'images/plus-no-bg.svg',
       code: function(X, e) {
-        let contact = net.nanopay.contacts.Contact.create({}, X.ctrl);
+        debugger;
+        var self = X.data;
         X.ctrl.add(net.nanopay.ui.wizard.WizardController.create({
           model: 'net.nanopay.contacts.Contact',
-          data: contact,
-          controllerMode: foam.u2.ControllerMode.CREATE
+          data$: self.tempContact$,
+          controllerMode: foam.u2.ControllerMode.CREATE,
+          onClose: self.testo.bind(self)
         }, X.ctrl));
       }
     },
