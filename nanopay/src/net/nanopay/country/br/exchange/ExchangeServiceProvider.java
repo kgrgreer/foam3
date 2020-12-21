@@ -276,7 +276,7 @@ public class ExchangeServiceProvider implements ExchangeService {
     String today = sdf.format(new Date());
     Date completionDate = transaction.getCompletionDate();
     if ( completionDate == null ) {
-      completionDate = new Date();
+      completionDate = ((ClearingTimeService) this.x.get("clearingTimeService")).estimateCompletionDateSimple(this.x, transaction);
       transaction.setCompletionDate(completionDate);
     }
 
