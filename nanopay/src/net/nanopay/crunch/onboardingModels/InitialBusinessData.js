@@ -78,12 +78,12 @@ foam.CLASS({
         }
       },
       validateObj: function(businessName) {
-        if ( businessName.length === 0  ) {
+        if ( businessName.length === 0 ) {
           return this.BUSINESS_NAME_REQUIRED;
         }
       },
       factory: function() {
-        return this.subject.user.businessName
+        return this.subject.user.businessName;
       }
     },
     {
@@ -134,7 +134,7 @@ foam.CLASS({
       view: function(_, X) {
         var m = foam.mlang.Expressions.create();
         var countryId = X.data ? X.data.countryId : null;
-        var dao = countryId ? 
+        var dao = countryId ?
           X.permittedCountryDAO.where(m.EQ(foam.nanos.auth.Country.ID, countryId)) :
           X.permittedCountryDAO;
 
@@ -168,6 +168,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'sameAsBusinessAddress',
       section: 'businessAddress',
+      value: true,
       documentation: `
         Determines whether the business address and its mailing address are the same.
       `,
@@ -186,7 +187,7 @@ foam.CLASS({
       `,
       visibility: function(sameAsBusinessAddress) {
         return sameAsBusinessAddress ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
-      },  
+      },
       view: function(_, X) {
         return {
           class: 'net.nanopay.sme.ui.AddressView',
