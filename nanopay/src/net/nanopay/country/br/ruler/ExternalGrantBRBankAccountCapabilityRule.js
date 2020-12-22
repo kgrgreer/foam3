@@ -16,7 +16,7 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.bank.ruler',
+  package: 'net.nanopay.country.br.ruler',
   name: 'ExternalGrantBRBankAccountCapabilityRule',
 
   documentation: 'Grant BRBankAccountCapability when BRBankAccount is created outside of Brazilian onboarding.',
@@ -34,6 +34,7 @@ foam.CLASS({
     'foam.util.SafetyUtil',
 
     'net.nanopay.model.Business',
+    'net.nanopay.bank.BRBankAccount',
     'static foam.mlang.MLang.*'
   ],
 
@@ -51,6 +52,8 @@ foam.CLASS({
 
           DAO ucjDAO = (DAO) (x.get("userCapabilityJunctionDAO"));
 
+          BRBankAccount account = (BRBankAccount) obj;
+
           // lookup BRBankAccountCapability ucj entry
           UserCapabilityJunction ucj = (UserCapabilityJunction) ucjDAO.find(
             AND(
@@ -60,13 +63,11 @@ foam.CLASS({
           );
 
           if ( ucj == null ) {
-            ucj = new UserCapabilityJunction.Builder(x).setSourceId(user.getId()).setTargetId("7b41a164-29bd-11eb-adc1-0242ac120002").build();
-            ucj.setStatus(CapabilityJunctionStatus.GRANTED);
-            ucjDAO.put_(x, ucj);
-          }
-          if ( ucj.getStatus() !=  CapabilityJunctionStatus.GRANTED ) {
-            ucj = (UserCapabilityJunction) ucj.fclone();
-            ucj.setStatus(CapabilityJunctionStatus.GRANTED);
+            ucj = new UserCapabilityJunction.Builder(x)
+              .setSourceId(user.getId())
+              .setTargetId("7b41a164-29bd-11eb-adc1-0242ac120002")
+              .setData(account)
+              .build();
             ucjDAO.put_(x, ucj);
           }
          }

@@ -293,7 +293,8 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/ruler/CorridorAuthorizationRule' },
   { name: 'net/nanopay/bank/ruler/VerifyBankRule' },
   { name: 'net/nanopay/bank/ruler/CapabilityAddBankAccountRule' },
-  { name: 'net/nanopay/bank/ruler/ExternalGrantBRBankAccountCapabilityRule' },
+  { name: 'net/nanopay/country/br/ruler/ExternalGrantBRBankAccountCapabilityRule' },
+  { name: 'net/nanopay/country/br/ruler/BRBankAccountCapabilityOnGrantRule' },
 
   // fx
   { name: 'net/nanopay/fx/ExchangeRateStatus' },
