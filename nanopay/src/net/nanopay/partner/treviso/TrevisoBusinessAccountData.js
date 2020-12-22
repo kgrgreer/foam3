@@ -29,22 +29,10 @@ foam.CLASS({
     {
       name: 'accountingSection',
       title: 'Ownership and tax information'
-    },
-    {
-      name: 'customerSection',
-      title: 'Customers'
-    },
-    {
-      name: 'supplierSection',
-      title: 'Suppliers'
     }
   ],
 
   messages: [
-    { name: 'NO_CUSTOMERS_INFO', message: 'Customer information required' },
-    { name: 'NO_SUPPLIERS_INFO', message: 'Supplier information required' },
-    { name: 'CUSTOMER_OBJ_ERROR', message: 'One or more of the customers entered is invalid' },
-    { name: 'SUPPLIER_OBJ_ERROR', message: 'One or more of the suppliers entered is invalid' },
     { name: 'INVALID_DATE_ERROR', message: 'Valid date required' },
     { name: 'MAX_DATE_ERROR', message: 'Cannot be a future date' },
     { name: 'YES', message: 'Yes' },
@@ -55,9 +43,7 @@ foam.CLASS({
     { name: 'STATE', message: 'State' },
     { name: 'PRIVATE', message: 'Private' },
     { name: 'NO_CAPITAL_SOURCE', message: 'Source of capital required' },
-    { name: 'NO_CAPITAL_TYPE', message: 'Capital type required' },
-    { name: 'CUSTOMERS_MSG', message: 'customer' },
-    { name: 'SUPPLIERS_MSG', message: 'supplier' }
+    { name: 'NO_CAPITAL_TYPE', message: 'Capital type required' }
   ],
 
   properties: [
@@ -236,40 +222,6 @@ foam.CLASS({
           }
         }
       ]
-    },
-    {
-      class: 'FObjectArray',
-      name: 'customers',
-      documentation: 'Array of business main customers.',
-      label: '',
-      of: 'net.nanopay.crunch.onboardingModels.CustomerBasicInformation',
-      section: 'customerSection',
-      view: function(_, x) {
-        return {
-          class: 'net.nanopay.sme.onboarding.BusinessDirectorArrayView',
-          mode: 'RW',
-          enableAdding: true,
-          enableRemoving: true,
-          name: x.data.CUSTOMERS_MSG,
-        }
-      }
-    },
-    {
-      class: 'FObjectArray',
-      name: 'suppliers',
-      documentation: 'Array of business main suppliers.',
-      label: '',
-      of: 'net.nanopay.crunch.onboardingModels.CustomerBasicInformation',
-      section: 'supplierSection',
-      view: function(_, x) {
-        return {
-          class: 'net.nanopay.sme.onboarding.BusinessDirectorArrayView',
-          mode: 'RW',
-          enableAdding: true,
-          enableRemoving: true,
-          name: x.data.SUPPLIERS_MSG,
-        }
-      }
     }
   ],
 
@@ -288,22 +240,6 @@ foam.CLASS({
             prop.validateObj(x, this);
           } catch ( IllegalStateException e ) {
             throw e;
-          }
-        }
-
-        // validate the fobjects in the fobjectarray props
-        for ( CustomerBasicInformation customer : getCustomers() ) {
-          try {
-            customer.validate(x);
-          } catch ( IllegalStateException e ) {
-            throw new IllegalStateException(this.CUSTOMER_OBJ_ERROR);
-          }
-        }
-        for ( CustomerBasicInformation supplier : getSuppliers() ) {
-          try {
-            supplier.validate(x);
-          } catch ( IllegalStateException e ) {
-            throw new IllegalStateException(this.SUPPLIER_OBJ_ERROR);
           }
         }
       `,
