@@ -36,6 +36,10 @@ foam.CLASS({
     'javax.servlet.http.HttpServletRequest'
   ],
 
+  imports: [
+    'fileDAO'
+  ],
+
   messages: [
     { name: 'I_CERTIFY', message: 'I certify that ' }
   ],
@@ -75,15 +79,13 @@ foam.CLASS({
           labelFormatter: function() {
             this.start('span')
               .translate(selfThis.forClass_+'.CHECKBOX_TEXT.value',self.dot('checkboxText'))
-              .start('a')
-                .addClass('link')
-                .on('click', () => { self.dot('isLinkClicked').set(true); })
                 .translate(selfThis.forClass_+'.TITLE.value',self.dot('title'))
-                .attrs({
-                  href: self.dot('link'),
-                  target: '_blank'
-                })
               .end()
+            .end()
+            .start('div')
+              .add(foam.u2.view.agreementView.create({
+                fileId: self.dot('fileId').value
+              }))
             .end();
           }
         }, X);
@@ -157,7 +159,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'link',
+      name: 'fileId',
       value: 'n/a',
       readVisibility: 'RO',
       documentation: 'Link to the document ',
@@ -198,14 +200,6 @@ foam.CLASS({
       view: { class: 'net.nanopay.documents.ui.AcceptanceDocumentView' },
       section: 'uiAgreementDocumentsSection',
       externalTransient: true
-    },
-    {
-      class: 'Boolean',
-      name: 'isLinkClicked',
-      value: false,
-      documentation: 'Check if the document link was clicked',
-      createVisibility: 'HIDDEN',
-      readVisibility: 'HIDDEN'
     }
   ],
 
