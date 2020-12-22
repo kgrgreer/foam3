@@ -1676,6 +1676,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.filterView.LABEL_
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.filterView.MESSAGE_ADVANCEDMODE",target:"Usando filtros avançados"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.filterView.MESSAGE_VIEWADVANCED",target:"Usando filtros simples"})
 
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.Contact.ORGANIZATION.label",target:"Nome da empresa"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.booleanFilterView.BOOL_T.label",target:"Verdadeiro"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.booleanFilterView.BOOL_F.label",target:"Falso"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.propertyFilterView.LABEL_PROPERTY_ALL",target:"Todos"})
