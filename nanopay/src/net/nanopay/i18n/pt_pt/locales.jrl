@@ -1667,21 +1667,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.modal.Bu
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.modal.BusinessNameSearch.CONNECTED_COUNT.documentation",target:"\n        O número de empresas conectadas no\n        connctedBusiness dao após a filtragem.\n       pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.modal.BusinessNameSearch.FILTER.placeholder",target:"Pesquise o nome da empresa"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.modal.BusinessNameSearch.CONNECTED_COUNT.label",target:"connectedCount pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.filterView.LABEL_CLEAR",target:"Limpe o filtro"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.filterView.LINK_ADVANCED",target:"Filtros avançados"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.filterView.LINK_SIMPLE",target:"Filtros simples"})
-
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.filterView.LABEL_FILTER",target:"Filtros"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.filterView.LABEL_RESULTS",target:"Resultados do filtro"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.filterView.MESSAGE_ADVANCEDMODE",target:"Usando filtros avançados"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.filterView.MESSAGE_VIEWADVANCED",target:"Usando filtros simples"})
-
-p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.Contact.ORGANIZATION.label",target:"Nome da empresa"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.booleanFilterView.BOOL_T.label",target:"Verdadeiro"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.booleanFilterView.BOOL_F.label",target:"Falso"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.propertyFilterView.LABEL_PROPERTY_ALL",target:"Todos"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.propertyFilterView.LABEL_PROPERTY_FILTER",target:"Filtrando"})
-
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.modal.BusinessNameSearch.UNCONNECTED_COUNT.label",target:"unconnectedCount pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.modal.BusinessNameSearch.UNCONNECTED_COUNT.documentation",target:"\n        O número de empresas não conectadas no\n        negócio desconectado dao dao após a filtragem.\n       "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.modal.BusinessNameSearch.COUNT_BUSINESSES.documentation",target:"\n        Número total de empresas após a filtragem\n        incluindo as empresas conectadas e não conectadas.\n       "})
