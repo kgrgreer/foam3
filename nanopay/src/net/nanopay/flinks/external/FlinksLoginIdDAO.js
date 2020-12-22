@@ -349,6 +349,7 @@ foam.CLASS({
         // Switch contexts to the newly created user
         Subject newSubject = new Subject.Builder(x).setUser(user).build();
         X subjectX = getX().put("subject", newSubject);
+        subjectX = subjectX.put("group", null);
 
         AddressModel holderAddress = holder.getAddress();        
         Address address = overrides != null && overrides.getAddress() != null ?
@@ -446,6 +447,8 @@ foam.CLASS({
           overrides.getMailingAddress() : businessAddress;
         String phoneNumber = overrides != null && !SafetyUtil.isEmpty(overrides.getPhoneNumber()) ? 
           overrides.getPhoneNumber() : user.getPhoneNumber();
+        String externalId = overrides != null && !SafetyUtil.isEmpty(overrides.getExternalId()) ?
+          overrides.getExternalId() : "";
 
         // Create business with minimal information
         Business business = new Business.Builder(x)
@@ -453,6 +456,7 @@ foam.CLASS({
           .setOrganization(businessName)
           .setPhoneNumber(phoneNumber)
           .setAddress(businessAddress)
+          .setExternalId(externalId)
           .setSpid(user.getSpid())
           .setStatus(net.nanopay.admin.model.AccountStatus.ACTIVE)
           .build();
@@ -463,6 +467,7 @@ foam.CLASS({
         Subject currentSubject = (Subject) subjectX.get("subject");
         currentSubject.setUser(business);
         subjectX = subjectX.put("subject", currentSubject);
+        subjectX = subjectX.put("group", null);
 
         // Set the business on the request
         request.setBusiness(business.getId());

@@ -300,6 +300,7 @@ var classes = [
   'net.nanopay.fx.afex.AFEXGetPDFRule',
   'net.nanopay.fx.afex.IsIbanRequest',
   'net.nanopay.fx.afex.IsIbanResponse',
+  'net.nanopay.fx.afex.AFEXKeyType',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
@@ -1227,6 +1228,7 @@ var classes = [
   'net.nanopay.country.br.exchange.Titular',
   'net.nanopay.country.br.exchange.UpdateTitular',
   'net.nanopay.country.br.exchange.UpdateTitularResponse',
+  'net.nanopay.country.br.ExpectedBoardingDate',
   'net.nanopay.country.br.NatureCode',
   'net.nanopay.country.br.NatureCodeRate',
   'net.nanopay.country.br.NatureBusinessRelationship',
@@ -1291,8 +1293,11 @@ var classes = [
   'net.nanopay.partner.treviso.invoice.TrevisoCapabilityValidateRule',
   'net.nanopay.partner.treviso.invoice.UpdateTransactionOnInvoiceValidationRule',
   'net.nanopay.partner.treviso.invoice.TrevisoNotificationRule',
-  'net.nanopay.partner.treviso.onboarding.BusinessDirectorsData',
   'net.nanopay.partner.treviso.TrevisoSendEmailToAllRule',
+  'net.nanopay.partner.treviso.onboarding.BusinessDirectorsData',
+  'net.nanopay.partner.treviso.onboarding.BRBusinessDirector',
+  'net.nanopay.partner.treviso.onboarding.BRBeneficialOwner',
+  'net.nanopay.partner.treviso.onboarding.BRBusinessOwnershipData',
 
   // crunch predicates - todo move all predicates used in crunch here
   'net.nanopay.crunch.predicate.IsBusiness',
@@ -1355,6 +1360,11 @@ var classes = [
   'net.nanopay.crunch.compliance.SetFulfilledComplianceApprovalRequest',
   'net.nanopay.crunch.compliance.GenericSigningOfficerValidator',
   'net.nanopay.crunch.compliance.GenericBusinessValidator',
+  'net.nanopay.crunch.compliance.AbstractManualValidator',
+  'net.nanopay.crunch.compliance.ManualPersonSanctionValidator',
+  'net.nanopay.crunch.compliance.ManualEntitySanctionValidator',
+  'net.nanopay.crunch.compliance.ManualSecurefactSIDniValidator',
+  'net.nanopay.crunch.compliance.ManualSecurefactLEVValidator',
 
   'net.nanopay.partner.afex.AFEXDigitalAccount',
 

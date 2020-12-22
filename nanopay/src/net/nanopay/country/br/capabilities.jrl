@@ -584,3 +584,13 @@ p({
   },
   "enabled":true
 })
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"1d72f804-4019-11eb-b378-0242ac130002",
+  "name":"What is the Expected Boarding Date?",
+  "description":"Expect Boarding Date",
+  "of":"net.nanopay.country.br.ExpectedBoardingDate",
+  "version":"0",
+  "enabled":true
+})

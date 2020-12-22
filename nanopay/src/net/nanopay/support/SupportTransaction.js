@@ -164,11 +164,17 @@ foam.CLASS({
       section: 'transactionInformation',
       order: 12
     }),
+    net.nanopay.tx.model.Transaction.EXTERNAL_ID.clone().copyFrom({
+      visibility: 'RO',
+      gridColumns: 4,
+      section: 'transactionInformation',
+      order: 13
+    }),
     net.nanopay.tx.model.Transaction.STATUS.clone().copyFrom({
       label: 'Submission Status',
-      gridColumns:6,
+      gridColumns:4,
       section: 'transactionInformation',
-      order: 13,
+      order: 14,
       view: { class: 'foam.u2.view.ReadOnlyEnumView' }
     }),
     net.nanopay.tx.model.Transaction.LIFECYCLE_STATE.clone().copyFrom({
@@ -176,7 +182,7 @@ foam.CLASS({
     }),
     net.nanopay.tx.SummaryTransaction.CHAIN_SUMMARY.clone().copyFrom({
       section: 'transactionInformation',
-      order: 13
+      order: 15
     }),
     net.nanopay.tx.model.Transaction.DST_ACCOUNT_ERROR.clone(),
     net.nanopay.tx.model.Transaction.LINE_ITEMS.clone().copyFrom({

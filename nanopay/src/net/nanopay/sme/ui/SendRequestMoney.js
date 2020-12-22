@@ -125,6 +125,9 @@ foam.CLASS({
       width: 150px;
       margin: 200px;
     }
+    ^ .stackColumn .foam-u2-stack-StackView {
+      padding-left: 0 !important;
+    }
   `,
 
   constants: {

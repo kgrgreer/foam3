@@ -35,6 +35,10 @@ foam.CLASS({
     position: absolute;
     margin: 16px;
   }
+  ^innerFlexer {
+    min-width: -webkit-fill-available;
+    text-align: left;
+  }
   `,
 
   properties: [
@@ -50,22 +54,22 @@ foam.CLASS({
   methods: [
     function initE() {
       this
-        .addClass(this.myClass('innerFlexer')).style({ 'text-align': 'left' })
-        .start(this.CardBorder)
-          // .addClass(this.myClass('bob'))
-          .enableClass(this.myClass('selected'), this.slot((data, mode) => {
-            return data && mode !== foam.u2.DisplayMode.DISABLED;
-          }))
-          .enableClass(this.myClass('disabled'), this.slot((data, mode) => {
-            return ! data && mode === foam.u2.DisplayMode.DISABLED;
-          }))
-          .enableClass(this.myClass('selected-disabled'), this.slot((data, mode) => {
-            return data && mode === foam.u2.DisplayMode.DISABLED;
-          }))
-          .on('click', this.onClick)
-          .add(this.label)
-          .start().addClass(this.myClass('operation')).add(this.operationType).end()
-        .end();
+      .addClass(this.myClass())
+      .addClass(this.myClass('innerFlexer'))
+      .start(this.CardBorder)
+        .enableClass(this.myClass('selected'), this.slot((data, mode) => {
+          return data && mode !== foam.u2.DisplayMode.DISABLED;
+        }))
+        .enableClass(this.myClass('disabled'), this.slot((data, mode) => {
+          return ! data && mode === foam.u2.DisplayMode.DISABLED;
+        }))
+        .enableClass(this.myClass('selected-disabled'), this.slot((data, mode) => {
+          return data && mode === foam.u2.DisplayMode.DISABLED;
+        }))
+        .on('click', this.onClick)
+        .add(this.label)
+        .start().addClass(this.myClass('operation')).add(this.operationType).end()
+      .end();
     }
   ]
 });

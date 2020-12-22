@@ -45,7 +45,7 @@ foam.CLASS({
   sections: [
     {
       name: 'collectCpf',
-      title: 'Enter your CPF',
+      title: 'Enter your Cadastro de Pessoas Físicas(CPF)',
       navTitle: 'Signing officer\’s CPF number',
       help: 'Require your CPF'
     }
@@ -168,7 +168,9 @@ foam.CLASS({
 
         try {
           if ( ! ((BrazilVerificationService) x.get("brazilVerificationService")).validateUserCpf(x, getData(), getUser()) )
-            throw new RuntimeException(INVALID_CPF);
+            throw new foam.core.ValidationException(INVALID_CPF);
+        } catch (foam.core.ValidationException e) {
+          throw new foam.core.ValidationException(INVALID_CPF, e);
         } catch(Throwable t) {
           throw t;
         }
