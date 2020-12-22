@@ -488,27 +488,6 @@ async function execute(x) {
         throw e;
       }
 
-      let afexBusiness;
-      try {
-        afexBusiness = support.getAFEXBusiness(x, business);
-        test(true, 'getAFEXBusiness:'+afexBusiness.id);
-      } catch (e) {
-        test(false, 'getAFEXBusiness: '+(e.message || e));
-      }
-
-      let afexBusinessApproval;
-      try {
-        afexBusinessApproval = support.getApprovalRequest(x, 'afexBusinessDAO', afexBusiness.id);
-        test(true, 'getApproval(AFEXBusiness):'+afexBusinessApproval.id);
-      } catch (e) {
-        test(false, 'getApproval(AFEXBusiness): '+(e.message || e));
-      }
-
-      // // check every 10 seconds until approved.
-      // var startTime = Date.now();
-      // while ( afexBusinessApproval.status != foam.nanos.approval.ApprovalStatus.APPROVED ) {
-
-      // }
       console.info('done');
       support.teardown(x);
     } catch (e) {

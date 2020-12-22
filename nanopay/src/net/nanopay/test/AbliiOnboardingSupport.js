@@ -762,7 +762,7 @@ foam.CLASS({
     {
       name: 'approveRequest',
       type: 'foam.nanos.approval.ApprovalRequest',
-      code: async function(x, groupId, objectId) {
+      code: async function(x, groupId, refObjId) {
         let y = this.sudoStore(x);
         let z = this.sudoAdmin(x);
         const E = foam.mlang.ExpressionsSingleton.create();
@@ -770,7 +770,7 @@ foam.CLASS({
         var u = await this.client(z, 'userDAO', foam.nanos.auth.User).find(E.EQ(foam.nanos.auth.User.GROUP, groupId));
         if ( u ) {
           console.info('approveRequest', 'approver', u.id);
-          var r = await this.findApprovalRequest(z, u, objectId);
+          var r = await this.findApprovalRequest(z, u, refObjId);
           if ( r ) {
             console.info('approveRequest', 'approval', r.id);
             r = fclone();
@@ -780,7 +780,7 @@ foam.CLASS({
             return r;
           }
           this.sudoRestore(y);
-          throw 'ApprovalRequest not found for objId '+objectId;
+          throw 'ApprovalRequest not found for refObjId '+refObjId;
         }
         this.sudoRestore(y);
         throw 'ApprovalRequest user not found in group '+groupId;
@@ -789,12 +789,12 @@ foam.CLASS({
     {
       name: 'findApprovalRequest',
       type: 'foam.nanos.approval.ApprovalRequest',
-      code: async function(x, approver, objectId) {
+      code: async function(x, approver, refObjId) {
         const E = foam.mlang.ExpressionsSingleton.create();
         return await this.client(x, 'approvalRequestDAO', foam.nanos.approval.ApprovalRequest).find(
           E.AND(
             E.EQ(foam.nanos.approval.ApprovalRequest.APPROVER, approver.id),
-            E.EQ(foam.nanos.approval.ApprovalRequest.OBJ_ID, objectId)
+            E.EQ(foam.nanos.approval.ApprovalRequest.REF_OBJ_ID, refObjId)
           )
         );
       }
