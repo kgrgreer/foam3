@@ -36,10 +36,6 @@ foam.CLASS({
     'javax.servlet.http.HttpServletRequest'
   ],
 
-  imports: [
-    'fileDAO'
-  ],
-
   messages: [
     { name: 'I_CERTIFY', message: 'I certify that ' }
   ],
