@@ -471,22 +471,22 @@ async function execute(x) {
         throw e;
       }
 
-      // Validate Business Onboarding UserCapabilityJunction
-      try {
-        let approval = support.approveRequest(x, business.spid+'-payment-ops', business.id);
-        test(approval && approval.status == foam.nanos.approval.ApprovalStatus.APPROVED, 'approveBusiness: '+approval.status);
-      } catch (e) {
-        test(false, 'approveBusiness: '+(e.message || e));
-      }
+      // // Validate Business Onboarding UserCapabilityJunction
+      // try {
+      //   let approval = support.approveRequest(x, business.spid+'-payment-ops', business.id);
+      //   test(approval && approval.status == foam.nanos.approval.ApprovalStatus.APPROVED, 'approveBusiness: '+approval.status);
+      // } catch (e) {
+      //   test(false, 'approveBusiness: '+(e.message || e));
+      // }
 
-      name = 'brazilOnboardingReviewed: ';
-      try {
-        ucj = await support.brazilOnboardingReviewed(x, u);
-        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
-      } catch (e) {
-        test(false, name+(e.message || e));
-        throw e;
-      }
+      // name = 'brazilOnboardingReviewed: ';
+      // try {
+      //   ucj = await support.brazilOnboardingReviewed(x, u);
+      //   test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      // } catch (e) {
+      //   test(false, name+(e.message || e));
+      //   throw e;
+      // }
 
       console.info('done');
       support.teardown(x);
