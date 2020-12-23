@@ -90,7 +90,7 @@ foam.CLASS({
       EmailMessage message = new EmailMessage.Builder(x).build();
       Map<String, Object>  args = new HashMap<>();
 
-      args.put("userId", owner.getId());
+      args.put("userId", String.valueOf(owner.getId()));
       args.put("userEmail", owner.getEmail());
       args.put("userCo", owner.getOrganization());
       args.put("subTitle2", "BankAccount Information:");

@@ -1404,7 +1404,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.A
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.ACCOUNT_HOLDER_REQUIRED",target:"É necessário titular da conta."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.BANK_ADDED",target:"Conta bancária adicionada com sucesso!"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.INSTITUTION_NUMBER_INVALID",target:"O número da instituição deve ter 8 letras e / ou dígitos"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.SECTION_ACCOUNT_INFORMATION_TITLE",target:"Adicionar Conta"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.INSTITUTION_NUMBER_REQUIRED",target:"Número da instituição obrigatório"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.BRANCH_ID_INVALID",target:"O ID da agência deve ter 5 dígitos"})
@@ -1667,6 +1666,20 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.modal.Bu
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.modal.BusinessNameSearch.CONNECTED_COUNT.documentation",target:"\n        O número de empresas conectadas no\n        connctedBusiness dao após a filtragem.\n       pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.modal.BusinessNameSearch.FILTER.placeholder",target:"Pesquise o nome da empresa"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.modal.BusinessNameSearch.CONNECTED_COUNT.label",target:"connectedCount pt"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.filterView.LABEL_CLEAR",target:"Limpe o filtro"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.filterView.LINK_ADVANCED",target:"Filtros avançados"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.filterView.LINK_SIMPLE",target:"Filtros simples"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.filterView.LABEL_FILTER",target:"Filtros"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.filterView.LABEL_RESULTS",target:"Resultados do filtro"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.filterView.MESSAGE_ADVANCEDMODE",target:"Usando filtros avançados"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.filterView.MESSAGE_VIEWADVANCED",target:"Usando filtros simples"})
+
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.Contact.ORGANIZATION.label",target:"Nome da empresa"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.booleanFilterView.BOOL_T.label",target:"Verdadeiro"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.booleanFilterView.BOOL_F.label",target:"Falso"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.propertyFilterView.LABEL_PROPERTY_ALL",target:"Todos"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.propertyFilterView.LABEL_PROPERTY_FILTER",target:"Filtrando"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.modal.BusinessNameSearch.UNCONNECTED_COUNT.label",target:"unconnectedCount pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.modal.BusinessNameSearch.UNCONNECTED_COUNT.documentation",target:"\n        O número de empresas não conectadas no\n        negócio desconectado dao dao após a filtragem.\n       "})
@@ -1760,6 +1773,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.Address.STATE_RE
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.Address.REGION_REQUIRED",target:"Região necessária."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.Address.INVALID_STREET_NAME",target:"Nome de rua inválido."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.Address.INVALID_STREET_NUMBER",target:"Número de rua inválido."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.Address.POSTAL_CODE_REQUIRE",target:"CEP requerido"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.EmailPropertyValidationRefinement.PLEASE_ENTER_VALID_ADDRESS.value",target:"Por favor insira o endereço de email"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.EmailPropertyValidationRefinement.PLEASE_ENTER_VALID_EMAIL.value",target:"Por favor insira o endereço de e-mail válido"})
@@ -2094,6 +2108,9 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onbo
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBeneficialOwner.PEPHIORELATED.help",target:"Uma pessoa politicamente exposta (PEP) ou o chefe de uma organização internacional (HIO) é uma pessoa a quem foi confiada uma posição de destaque que normalmente vem com a oportunidade de influenciar decisões e a capacidade de controlar recursos"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBeneficialOwner.HAS_SIGNED_CONTRATOS_DE_CAMBIO.label",target:"A pessoa listada aqui assinou os contratos de câmbio"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBeneficialOwner.HAS_SIGNED_CONTRATOS_DE_CAMBIO.help",target:"Contratos de câmbio é um acordo legal no qual as partes concordam em transferir entre si uma determinada quantia de moeda estrangeira a uma taxa de câmbio predeterminada e em uma data predeterminada."})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBankAccountData.NO_BANK_NEEDED",target:"Nenhuma informação de conta bancária necessária. Prossiga para a próxima etapa."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBankAccountData.ADD_ACCOUNT_TITLE",target:"Adicionar Conta"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.INVALID_DATE_ERROR",target:"Data de nascimento válida exigida"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.UNGER_AGE_LIMIT_ERROR",target:"Deve ter pelo menos 18 anos."})
@@ -2668,7 +2685,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.ON_VOID_NOTE",target:"On Void Note:"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.IS_WIZARD_COMPLETED.view.label",target:"Is Wizard Completed"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.SEARCH.label",target:"search"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.SEARCH.label",target:"pesquisa"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.CAPABLE_PAYLOADS.label",target:"Capable Payloads"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.IS_WIZARD_COMPLETED.label",target:"Is Wizard Completed"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.USER_CAPABILITY_REQUIREMENTS.label",target:"User Capability Requirements"})
@@ -2678,6 +2695,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoic
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.INVOICE_NUMBER.label",target:"Fatura número"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.PURCHASE_ORDER.label",target:"PO número"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.INVOICE_NUMBER.documentation",target:"The identifying number stated on the invoice."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.PAYER_RECONCILED.label",target:"Pagador Reconciliou"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.PAYEE_RECONCILED.label",target:"Beneficiário Reconciliou"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.PURCHASE_ORDER.documentation",target:"The identifying number from the purchase order as stated\n        on the invoice.\n      "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.ISSUE_DATE.label",target:"Data de Emissão"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.ISSUE_DATE.documentation",target:"The date that the invoice was issued (created)."})
@@ -2747,6 +2766,10 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoic
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.ACCOUNT.label",target:"account"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.ACCOUNT.documentation",target:"As the invoiced account, this is the bank account from which\n        funds will be withdrawn to pay an invoice.\n      "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.STATUS.documentation",target:"A list of the types of status for an invoice regarding payment. This\n        is a calculated property used to determine whether an invoice is unpaid,\n        void, pending, paid, scheduled, or overdue.\n      "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.STATUS.label",target:"posição"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.PAYEE_ID.label",target:"fornecedor"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.PAYER_ID.label",target:"cliente"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.INVOICE_FILE.label",target:"Attachment"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.INVOICE_FILE.documentation",target:"A stored copy of the original invoice document."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.SCHEDULED_EMAIL_SENT.label",target:"scheduledEmailSent"})
@@ -2760,9 +2783,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoic
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.IS_SYNCED_WITH_ACCOUNTING.label",target:"isSyncedWithAccounting"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.IS_SYNCED_WITH_ACCOUNTING.documentation",target:"Checks if invoice has been synced with accounting software."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.LINE_ITEMS.label",target:"lineItems"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.PAYEE_RECONCILED.label",target:"payeeReconciled"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.PAYEE_RECONCILED.documentation",target:"Determines whether invoice has been reconciled by payee.\n          Verifies that the receive amount is correct."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.PAYER_RECONCILED.label",target:"payerReconciled"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.PAYER_RECONCILED.documentation",target:"Determines whether invoice has been reconciled by payer.\n          Verifies that the sent amount is correct."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.TRANSACTION_HISTORY.label",target:"transactionHistory"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.PROCESS_PAYMENT_ON_CREATE.label",target:"processPaymentOnCreate"})
@@ -3269,8 +3290,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BEBankAccount.A
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BEBankAccount.COUNTRY.label",target:"país"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CYBankAccount.COUNTRY.label",target:"país"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.DateOfIssue.SECTION_DATE_OF_ISSUE_SECTION.title",target:"Data de emissão"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.DateOfIssue.SECTION_DATE_OF_ISSUE_SECTION.help",target:"Insira a data de emissão do seu documento de identificação"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.DateOfIssue.SECTION_DATE_OF_ISSUE_SECTION.title",target:"Quando foi emitido o seu documento de identificação"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.DateOfIssue.SECTION_DATE_OF_ISSUE_SECTION.help",target:"Forneça a data de emissão conforme mostrado em sua identificação"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.DateOfIssue.DATE_OF_ISSUE.label",target:"Data de emissão"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.DateOfIssue.DATE_OF_ISSUE.documentation",target:"A data de emissão no documento"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.DateOfIssue.DATE_OF_ISSUE.help",target:"Forneça a data de emissão conforme mostrado em sua identificação"})
@@ -3306,3 +3327,4 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.business.NatureOfBus
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions.DOCUMENT_READ",target:"O documento deve ser revisado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.DOCUMENT_READ",target:"O documento deve ser revisado"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.security.auth.LoginAttemptAuthService.ACCOUNT_LOCKED",target:"Conta bloqueada. Entre em contato com o atendimento ao cliente."})

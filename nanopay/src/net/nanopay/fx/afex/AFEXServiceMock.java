@@ -110,7 +110,9 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
 
   @Override
   public CreateTradeResponse createTrade(CreateTradeRequest request, String spid) {
-    return null;
+    CreateTradeResponse response = new CreateTradeResponse();
+    response.setTradeNumber(3);
+    return response;
   }
 
   @Override
