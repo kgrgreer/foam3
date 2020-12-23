@@ -11,6 +11,7 @@ import foam.dao.DAO;
 import foam.mlang.MLang;
 import foam.mlang.predicate.Eq;
 import net.nanopay.fx.afex.AFEXKeyType;
+import net.nanopay.tx.UnsupportedDateException;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
@@ -577,6 +578,9 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
           String errorMsg = parseHttpResponse("getValueDate", httpResponse);
           logger.error(errorMsg);
+          if ( errorMsg.contains("currency is not allowed for Cash date") || errorMsg.contains("currency is not allowed for Tom date") ) {
+            throw new UnsupportedDateException(errorMsg);
+          }
           throw new RuntimeException(errorMsg);
         }
 
@@ -715,6 +719,9 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
           if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
             String errorMsg = parseHttpResponse("getQuote", httpResponse);
             logger.error(errorMsg);
+            if ( errorMsg.contains("currency is not allowed for Cash date") || errorMsg.contains("currency is not allowed for Tom date") ) {
+              throw new UnsupportedDateException(errorMsg);
+            }
             throw new RuntimeException(errorMsg);
           }
         }
@@ -785,6 +792,9 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
             if (httpResponse2.getStatusLine().getStatusCode() / 100 != 2) {
               String errorMsg2 = parseHttpResponse("createTrade2", httpResponse2);
               logger.error(errorMsg2);
+              if ( errorMsg2.contains("currency is not allowed for Cash date") || errorMsg2.contains("currency is not allowed for Tom date") ) {
+                throw new UnsupportedDateException(errorMsg2);
+              }
               throw new RuntimeException(errorMsg2);
             }
             httpResponse = httpResponse2;

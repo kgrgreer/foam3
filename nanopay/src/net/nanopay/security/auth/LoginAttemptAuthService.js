@@ -52,6 +52,10 @@ foam.CLASS({
     'java.text.SimpleDateFormat'
   ],
 
+  messages: [
+    { name: 'ACCOUNT_LOCKED', message: 'Account locked. Please contact customer service.'}
+  ],
+
   properties: [
     {
       class: 'Short',
@@ -140,7 +144,7 @@ foam.CLASS({
               throw new foam.nanos.auth.AuthenticationException("Account temporarily locked. You can attempt to login after " + getDateFormat().format(la.getNextLoginAttemptAllowedAt()));
             }
           }  else {
-            throw new foam.nanos.auth.AuthenticationException("Account locked. Please contact customer service.");
+            throw new foam.nanos.auth.AuthenticationException(ACCOUNT_LOCKED);
           }
         }
 
@@ -270,7 +274,7 @@ foam.CLASS({
           if ( isAdminUser(x, user) ){
             return "Account temporarily locked. You can attempt to login after " + getDateFormat().format(loginAttempts.getNextLoginAttemptAllowedAt());
           } else {
-            return "Account locked. Please contact customer service." ;
+            return ACCOUNT_LOCKED;
           }
         }
       `

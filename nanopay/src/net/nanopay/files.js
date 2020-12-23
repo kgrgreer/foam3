@@ -524,6 +524,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/SummaryTransactionInnerDAO' },
   { name: 'net/nanopay/tx/TransactionException' },
   { name: 'net/nanopay/tx/UnsupportedTransactionException' },
+  { name: 'net/nanopay/tx/UnsupportedDateException' },
 
   //integration
   { name: 'net/nanopay/integration/ErrorCode' },

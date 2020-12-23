@@ -45,6 +45,11 @@ foam.CLASS({
       class: 'String',
       name: 'errorMessage',
       documentation: 'Any Flinks LoginId error messages.'
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'exception',
+      of: 'foam.core.FOAMException'
     }
   ]
 });
