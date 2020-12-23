@@ -773,7 +773,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     createPaymentRequest.setPaymentDate(txn.getValueDate());
     createPaymentRequest.setAmount(String.valueOf(toDecimal(txn.getAmount())));
     createPaymentRequest.setCurrency(txn.getSourceCurrency());
-    createPaymentRequest.setVendorId(String.valueOf(afexBeneficiary.getContact()));
+    createPaymentRequest.setVendorId(String.valueOf(afexBeneficiary.getContact()+"instant"));
     try {
       CreatePaymentResponse paymentResponse = this.afexClient.createPayment(createPaymentRequest, user.getSpid());
       if ( paymentResponse != null && paymentResponse.getReferenceNumber() > 0 ) {
