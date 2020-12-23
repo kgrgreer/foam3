@@ -293,7 +293,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/ruler/CorridorAuthorizationRule' },
   { name: 'net/nanopay/bank/ruler/VerifyBankRule' },
   { name: 'net/nanopay/bank/ruler/CapabilityAddBankAccountRule' },
-  { name: 'net/nanopay/bank/ruler/ExternalGrantBRBankAccountCapabilityRule' },
+  { name: 'net/nanopay/country/br/ruler/BRBankAccountCapabilityOnGrantRule' },
 
   // fx
   { name: 'net/nanopay/fx/ExchangeRateStatus' },
@@ -1802,6 +1802,7 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/onboarding/BRBusinessDirector' },
   { name: 'net/nanopay/partner/treviso/onboarding/BRBeneficialOwner' },
   { name: 'net/nanopay/partner/treviso/onboarding/BRBusinessOwnershipData' },
+  { name: 'net/nanopay/partner/treviso/onboarding/BRBankAccountData' },
   { name: 'net/nanopay/partner/treviso/test/TrevisoOnboardingSupport' },
   { name: 'net/nanopay/partner/treviso/TrevisoSendEmailToAllRule' },
 
