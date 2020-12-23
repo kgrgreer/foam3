@@ -50,7 +50,9 @@ foam.CLASS({
   sections: [
     {
       name: 'accountInformation',
-      title: ''
+      title: function() {
+        return this.SECTION_ACCOUNT_INFORMATION_TITLE;
+      }
     }
   ],
 
@@ -68,7 +70,8 @@ foam.CLASS({
     { name: 'HOLDER2', message: 'Joint' },
     { name: 'CURRENT', message: 'Checking' },
     { name: 'SAVINGS', message: 'Savings' },
-    { name: 'PLEASE_SELECT', message: 'Please select' }
+    { name: 'PLEASE_SELECT', message: 'Please select' },
+    { name: 'SECTION_ACCOUNT_INFORMATION_TITLE', message: 'Add account' }
   ],
 
   constants: [
