@@ -30,7 +30,8 @@ foam.CLASS({
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.nanos.crunch.CapabilityJunctionStatus',
 
-    'net.nanopay.bank.BRBankAccount'
+    'net.nanopay.bank.BRBankAccount',
+    'net.nanopay.partner.treviso.onboarding.BRBankAccountData'
   ],
 
   methods: [
@@ -48,10 +49,10 @@ foam.CLASS({
               return;
             }
 
-            BRBankAccount account = (BRBankAccount) n.getData();
+            BRBankAccountData data = (BRBankAccountData) n.getData();
+            BRBankAccount account = (BRBankAccount) data.getBankAccount();
 
-            // skip put if capability granted outside of onboarding
-            if ( account != null && ! account.getId().isEmpty() ) {
+            if ( data.getHasBankAccount() ) {
               return;
             }
             accountDAO.put_(x, account);
