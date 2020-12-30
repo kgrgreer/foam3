@@ -53,8 +53,8 @@ foam.CLASS({
   tableColumns: [
     'id',
     'invoiceNumber',
-    'payerId.businessName',
-    'payeeId.businessName',
+    'payer',
+    'payee',
     'issueDate',
     'amount',
     'status'
@@ -320,19 +320,25 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.auth.PublicUserInfo',
       name: 'payee',
+      label: 'Vendor',
       section: 'invoiceInformation',
       documentation: `Returns the name of the party receiving the payment from the
         Public User Info model.`,
-      hidden: true
+      tableCellFormatter: function(value, obj, rel) {
+        this.add(value && value.toSummary ? value.toSummary() : 'N/A');
+      },
     },
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.auth.PublicUserInfo',
       name: 'payer',
+      label: 'Customer',
       section: 'invoiceInformation',
       documentation: `Returns the name of the party making the payment from the
         Public User Info model.`,
-      hidden: true
+      tableCellFormatter: function(value, obj, rel) {
+        this.add(value && value.toSummary ? value.toSummary() : 'N/A');
+      },
     },
     {
       class: 'String',
@@ -983,7 +989,7 @@ foam.RELATIONSHIP({
       viewSpec: { class: 'foam.u2.view.ChoiceView', size: 14 }
     },
     tableCellFormatter: function(value, obj, rel) {
-      this.add(value ? value.toSummary() : 'N/A');
+      this.add(value && value.toSummary ? value.toSummary() : 'N/A');
     },
     javaToCSV: `
       User payee = ((Invoice)obj).findPayeeId(x);
@@ -1038,7 +1044,7 @@ foam.RELATIONSHIP({
       viewSpec: { class: 'foam.u2.view.ChoiceView', size: 14 }
     },
     tableCellFormatter: function(value, obj, rel) {
-      this.add(value ? value.toSummary() : 'N/A');
+      this.add(value && value.toSummary ? value.toSummary() : 'N/A');
     },
     javaToCSV: `
     User payer = ((Invoice)obj).findPayerId(x);
