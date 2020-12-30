@@ -312,6 +312,18 @@ foam.CLASS({
       }
     },
     {
+      name: 'targetCountryCapabilityBR',
+      code: async function(x, business) {
+        var id = '63049307-8db4-2437-5c02-b71d6878263c';
+        var ucj = await this.crunchService.getJunction(x, id);
+        if ( ! ucj ||
+             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          ucj = await this.crunchService.updateJunction(x, id, null, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
+        }
+        return ucj;
+      }
+    },
+    {
       name: 'businessInformationData',
       code: async function(x, business) {
         var id;
@@ -398,18 +410,6 @@ foam.CLASS({
       name: 'sourceCountryCapabilityBR',
       code: async function(x) {
         var id = '520a4120-3bc6-cef9-6635-c32af8219a6a';
-        var ucj = await this.crunchService.getJunction(x, id);
-        if ( ! ucj ||
-             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-          ucj = await this.crunchService.updateJunction(x, id, null, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
-        }
-        return ucj;
-      }
-    },
-    {
-      name: 'targetCountryCapabilityBR',
-      code: async function(x) {
-        var id = '63049307-8db4-2437-5c02-b71d6878263c';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
