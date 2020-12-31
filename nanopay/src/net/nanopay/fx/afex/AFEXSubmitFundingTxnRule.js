@@ -23,16 +23,19 @@ foam.CLASS({
     'foam.nanos.ruler.RuleAction'
   ],
 
-  documentation: `Rule to submit funding transaction on AFEX system when transaction is pending and balance is completed.`,
+  documentation: `Rule to submit funding transaction on AFEX system when transaction is sent and balance is completed.`,
 
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.nanos.alarming.Alarm',
+    'foam.nanos.alarming.AlarmReason',
     'foam.nanos.notification.Notification',
     'foam.nanos.logger.Logger',
     'net.nanopay.fx.afex.AFEXServiceProvider',
     'net.nanopay.fx.afex.AFEXFundingTransaction',
+    'net.nanopay.tx.TransactionEvent',
   ],
 
   methods: [
@@ -52,6 +55,7 @@ foam.CLASS({
           if ( afexBeneficiary == null ) {
             try {
               afexBeneficiary = afexService.createInstantBeneficiary(x,transaction);
+              transaction.getTransactionEvents(x).put_(x, new TransactionEvent("Instant beneficiary created."));
             } catch (Throwable t) {
               String msg = "Error creating instant beneficiary " + transaction.getId();
               logger.error(msg, t);
@@ -60,11 +64,14 @@ foam.CLASS({
                 .setBody(msg + " " + t.getMessage())
                 .build();
               ((DAO) x.get("localNotificationDAO")).put(notification);
+              ((DAO) x.get("alarmDAO")).put_(x, new Alarm("BeneficiaryCreationFailed", AlarmReason.UNSPECIFIED));
+              return;
             }
           }
 
           try {
             AFEXFundingTransaction txn = afexService.submitInstantPayment(transaction);
+            txn.getTransactionEvents(x).put_(x, new TransactionEvent("Instant payment submitted."));
             transactionDAO.put(txn);
           } catch (Throwable t) {
             String msg = "Error submitting AfexFundingTransaction " + transaction.getId();

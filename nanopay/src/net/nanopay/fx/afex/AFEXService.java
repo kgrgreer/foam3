@@ -10,7 +10,6 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.mlang.MLang;
 import foam.mlang.predicate.Eq;
-import net.nanopay.fx.afex.AFEXKeyType;
 import net.nanopay.tx.UnsupportedDateException;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.config.RequestConfig;
