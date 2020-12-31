@@ -29,8 +29,6 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
-    'foam.nanos.alarming.Alarm',
-    'foam.nanos.alarming.AlarmReason',
     'foam.nanos.notification.Notification',
     'foam.nanos.logger.Logger',
     'net.nanopay.fx.afex.AFEXServiceProvider',
@@ -64,7 +62,6 @@ foam.CLASS({
                 .setBody(msg + " " + t.getMessage())
                 .build();
               ((DAO) x.get("localNotificationDAO")).put(notification);
-              ((DAO) x.get("alarmDAO")).put_(x, new Alarm("BeneficiaryCreationFailed", AlarmReason.UNSPECIFIED));
               return;
             }
           }
