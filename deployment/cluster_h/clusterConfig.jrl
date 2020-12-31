@@ -96,8 +96,8 @@ p({
 
 p({
   "class":"foam.nanos.medusa.ClusterConfig",
-  "id":"demeter",
-  "name":"demeter",
+  "id":"prometheus",
+  "name":"prometheus",
   "enabled":true,
   "realm":"nanopay",
   "region":"Toronto",
