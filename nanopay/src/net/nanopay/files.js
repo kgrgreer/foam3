@@ -411,7 +411,6 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEXGetPDFRule' },
   { name: 'net/nanopay/fx/afex/IsIbanRequest' },
   { name: 'net/nanopay/fx/afex/IsIbanResponse' },
-  { name: 'net/nanopay/fx/afex/AFEXKeyType' },
 
   // kotak
   { name: 'net/nanopay/kotak/Kotak' },

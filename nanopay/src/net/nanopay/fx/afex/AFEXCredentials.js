@@ -31,7 +31,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'apiKey'
+      name: 'apiKey',
+      documentation: 'Default API key, used mostly for onboarding related api calls'
     },
     {
       class: 'String',
@@ -79,9 +80,16 @@ foam.CLASS({
       name: 'spid'
     },
     {
-      class: 'Enum',
-      of: 'net.nanopay.fx.afex.AFEXKeyType',
-      name: 'purpose'
-    }
+      class: 'String',
+      name: 'quoteAndTradeApiKey'
+    },
+    {
+      class: 'String',
+      name: 'InstantPaymentApiKey'
+    },
+    {
+      class: 'String',
+      name: 'FundingBalanceApiKey'
+    },
   ]
 });
