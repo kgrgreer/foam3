@@ -85,11 +85,11 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'InstantPaymentApiKey'
+      name: 'instantPaymentApiKey'
     },
     {
       class: 'String',
-      name: 'FundingBalanceApiKey'
+      name: 'fundingBalanceApiKey'
     },
   ]
 });
