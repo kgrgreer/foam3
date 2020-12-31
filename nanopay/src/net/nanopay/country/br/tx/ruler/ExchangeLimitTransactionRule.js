@@ -166,6 +166,7 @@ foam.CLASS({
                   txn.getTransactionEvents(x).put_(x, new TransactionEvent("ExchangeService timeout"));
                   break;
                 }
+                cause = cause.getCause();
               }
               if ( cause == null) {
                 cause = t.getCause(); // thrown is RuntimeException
