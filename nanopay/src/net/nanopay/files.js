@@ -1757,6 +1757,8 @@ FOAM_FILES([
   // exchange limit
   { name: 'net/nanopay/country/br/tx/ruler/ExchangeLimitTransactionRule'},
   { name: 'net/nanopay/country/br/tx/ExchangeLimitTransaction'},
+  { name: 'net/nanopay/country/br/tx/ExchangeLimitTransactionCronAgent'},
+  { name: 'net/nanopay/country/br/tx/ExchangeLimitTransactionCronAgentSink'},
 
   { name: 'net/nanopay/country/br/CPF' },
   { name: 'net/nanopay/country/br/BrazilBusinessInfoData' },
