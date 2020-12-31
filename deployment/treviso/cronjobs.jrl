@@ -41,3 +41,22 @@ p({
     second:38
   }
 })
+
+p({
+  class:"foam.nanos.cron.Cron",
+  id:"ExchangeLimitTransactionCron",
+  description:"Check for stalled ExchangeLimitTransactions",
+  enabled:false,
+  code:"""
+    new net.nanopay.country.br.tx.ExchangeLimitTransactionCronAgent().execute(x);
+  """,
+  schedule:{
+    class:"foam.nanos.cron.IntervalSchedule",
+    duration:{
+      class:"foam.nanos.cron.TimeHMS",
+      hour:0,
+      minute:5,
+      second:0
+    }
+  }
+})
