@@ -150,10 +150,12 @@ foam.CLASS({
                 }
               }
               DAO alarmDAO = (DAO) x.get("alarmDAO");
-              Alarm alarm = (Alarm) alarmDAO.find_(x, "ExchangeService");
+              Alarm alarm = (Alarm) alarmDAO.find_(x, new Alarm("ExchangeServer"));
               if ( alarm != null &&
                    alarm.getIsActive() ) {
-                alarmDAO.put_(x, new Alarm("ExchangeService", false));
+                alarm = (Alarm) alarm.fclone();
+                alarm.setIsActive(false);
+                alarmDAO.put_(x, alarm);
               }
             } catch ( Throwable t ) {
               Logger logger = (Logger) x.get("logger");
