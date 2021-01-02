@@ -301,7 +301,6 @@ var classes = [
   'net.nanopay.fx.afex.AFEXGetPDFRule',
   'net.nanopay.fx.afex.IsIbanRequest',
   'net.nanopay.fx.afex.IsIbanResponse',
-  'net.nanopay.fx.afex.AFEXKeyType',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
