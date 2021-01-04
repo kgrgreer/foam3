@@ -49,6 +49,9 @@ foam.CLASS({
     },
     {
       name: 'transactions'
+    },
+    {
+      name: 'referenceInformation'
     }
   ],
 
@@ -137,6 +140,10 @@ foam.CLASS({
     }),
     net.nanopay.account.Account.DEBITS.clone().copyFrom({
       section: 'transactions'
+    }),
+    net.nanopay.account.Account.EXTERNAL_DATA.clone().copyFrom({
+      section: 'referenceInformation',
+      visibility: 'RO'
     })
   ],
 
