@@ -139,7 +139,7 @@ public class FlinksAuthService
       } catch ( Throwable t ) {
         Logger logger = (Logger) x.get("logger");
         logger.error("Exception [Account Detail]: " + t);
-        throw new AuthenticationException("An error has occurred in an attempt to connect to Flinks");
+        throw new AuthenticationException("An error has occurred in an attempt to connect to Flinks: " + t.getMessage(), t);
       }
       int httpCode = respMsg.getHttpStatusCode();
       FlinksResponse feedback;
@@ -160,10 +160,12 @@ public class FlinksAuthService
         logger.error("Flinks AccountSummary: [ HttpStatusCode: " + feedback.getHttpStatusCode() + ", FlinksCode: " + feedback.getFlinksCode() + ", Message: " + feedback.getMessage() + "]");
       }
       return feedback;
+    } catch ( AuthenticationException ae ) {
+      throw ae; 
     } catch ( Throwable t ) {
       Logger logger = (Logger) x.get("logger");
       logger.error("Flinks AccountSummary: [ " + t.toString() + "]");
-      throw new AuthenticationException("UnknownError");
+      throw new AuthenticationException("UnknownError: " + t.getMessage(), t);
     }
   }
 

@@ -190,6 +190,8 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
       platform.setExtCode(credentials.getFepWebCode()); // Set from where?
       platform.setPltfrmNm(credentials.getFepWebCodeName()); // TODO should this be hardcoded?
       area.setCurrentPlatform(platform);
+    } else {
+      throw new RuntimeException("Invalid credentials");
     }
     request.setResponsibleArea(area);
     request.setDocuments(buildCustomerDocuments(user));

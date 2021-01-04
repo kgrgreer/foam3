@@ -16,40 +16,35 @@
  */
 
 foam.CLASS({
+  name: 'UnsupportedDateException',
   package: 'net.nanopay.tx',
-  name: 'TransactionEvent',
-
-  implements: [
-    'foam.nanos.auth.CreatedAware'
-  ],
-
+  javaExtends: 'net.nanopay.tx.TransactionException',
+  implements: ['foam.core.Exception'],
+  
   axioms: [
     {
       name: 'javaExtras',
       buildJavaClass: function(cls) {
         cls.extras.push(foam.java.Code.create({
           data: `
-  public TransactionEvent(String event) {
-    setEvent(event);
-  }
+            public UnsupportedDateException(String message) {
+              super(message);
+            }
+
+            public UnsupportedDateException(String message, Exception cause) {
+              super(message, cause);
+            }
           `
         }));
       }
     }
   ],
 
-  properties: [
+  methods: [
     {
-      class: 'Long',
-      name: 'id'
-    },
-    {
-      class: 'String',
-      name: 'event'
-    },
-    {
-      class: 'DateTime',
-      name: 'created'
+      name: 'getClientRethrowException',
+      type: 'RuntimeException',
+      javaCode: 'return this;'
     }
   ]
-  });
+});

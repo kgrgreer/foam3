@@ -66,7 +66,7 @@ p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.ContactW
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.ContactWizardView.CONTACT.documentation",target:"The beneficiary returned after put to contactDAO."})
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.ContactWizardView.IS_EDIT.documentation",target:"Set to true when editing a beneficiary from contact controller."})
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.ContactWizardView.SECTION_ONE_TITLE",target:"Add Beneficiary"})
-p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.ContactWizardView.SECTION_TWO_SUBTITLE",target:"Enter the beneficiary’s bank account information.  Please make sure that this is accurate as payments will go directly to the specified account."})
-p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.ContactWizardView.SECTION_THREE_SUBTITLE",target:"Enter the beneficiary’s business address. PO boxes are not accepted."})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.ContactWizardView.SECTION_TWO_SUBTITLE",target:"Payments made to this beneficiary will be deposited to the account you provide below."})
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.ContactWizardView.SECTION_THREE_SUBTITLE",target:"In order to send payments to this business, we’ll need you to verify their business address below."})
 
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.invoice.model.Invoice.SELECT_CONTACT",target:"Select beneficiary"})

@@ -31,6 +31,13 @@ foam.CLASS({
     'businessSectorDAO'
   ],
 
+  messages: [
+    { name: 'PLACE_HOLDER', message: 'Please select...' },
+    { name: 'SPECIFIC_INDUSTRIES', message: 'Specific Industries' },
+    { name: 'INDUSTRIES', message: 'Industries' },
+    { name: 'SEARCH', message: 'Search...' },
+  ],
+
   properties: [
     {
       class: 'Reference',
@@ -78,10 +85,6 @@ foam.CLASS({
     }
   ],
 
-  messages: [
-    { name: 'PLACE_HOLDER', message: 'Please select...' }
-  ],
-
   methods: [
     function initE() {
       this.SUPER();
@@ -94,12 +97,12 @@ foam.CLASS({
               data$: this.parentChoice$,
               sections: [
                 {
-                  heading: 'Industries',
+                  heading: this.INDUSTRIES,
                   dao: this.businessSectorDAO.where(this.EQ(this.BusinessSector.PARENT, 0))
                 }
               ],
               search: true,
-              searchPlaceholder: 'Search...',
+              searchPlaceholder: this.SEARCH,
               choosePlaceholder: this.PLACE_HOLDER
             })
           .end()
@@ -113,12 +116,12 @@ foam.CLASS({
                   data$: this.data$,
                   sections: [
                     {
-                      heading: 'Specific Industries',
+                      heading: this.SPECIFIC_INDUSTRIES,
                       dao: this.filteredDAO$proxy
                     }
                   ],
                   search: true,
-                  searchPlaceholder: 'Search...',
+                  searchPlaceholder: this.SEARCH,
                   choosePlaceholder: this.PLACE_HOLDER
                 });
             }))

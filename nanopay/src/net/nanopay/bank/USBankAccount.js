@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'USBankAccount',
-  label: 'United States Bank',
+  label: 'United States',
   extends: 'net.nanopay.bank.BankAccount',
 
   imports: [
@@ -157,7 +157,7 @@ foam.CLASS({
     },
     {
       name: 'branchId',
-      label: 'ACH Routing Number',
+      label: 'Routing Number',
       section: 'accountInformation',
       updateVisibility: 'RO',
       gridColumns: 6,
@@ -180,7 +180,7 @@ foam.CLASS({
     },
     {
       name: 'accountNumber',
-      label: 'ACH Account Number',
+      label: 'Account Number',
       section: 'accountInformation',
       updateVisibility: 'RO',
       postSet: function(o, n) {

@@ -49,7 +49,6 @@ public class SoaWebServiceClient extends ContextAwareSupport implements SoaWebSe
   private JSONParser jsonParser;
   private Logger logger;
   private OMLogger omLogger;
-  private SoaCredenciais credentials;
 
   public SoaWebServiceClient(X x) {
     setX(x);
@@ -90,22 +89,15 @@ public class SoaWebServiceClient extends ContextAwareSupport implements SoaWebSe
   }
 
   protected SoaCredenciais getCredentials() {
-    if ( credentials == null ) {
-      credentials = (SoaCredenciais) getX().get("SoaWebServiceCredientials");
-      if ( ! isCredientialsValid() ) {
-        credentials = null;
-        logger.error(this.getClass().getSimpleName(), "Invalid credentials");
-        throw new RuntimeException("Invalid credentials" );
-      }
+    SoaCredenciais credentials = (SoaCredenciais) getX().get("SoaWebServiceCredientials");
+    if ( credentials == null ||
+         SafetyUtil.isEmpty(credentials.getUrl()) ||
+         SafetyUtil.isEmpty(credentials.getEmail()) ||
+         SafetyUtil.isEmpty(credentials.getSenha()) ) {
+      logger.error(this.getClass().getSimpleName(), "Invalid credentials");
+      throw new RuntimeException("Invalid credentials" );
     }
     return credentials;
-  }
-
-  protected boolean isCredientialsValid() {
-    return credentials != null &&
-      ! SafetyUtil.isEmpty(credentials.getUrl()) &&
-      ! SafetyUtil.isEmpty(credentials.getEmail()) &&
-      ! SafetyUtil.isEmpty(credentials.getSenha());
   }
 
   protected CloseableHttpClient getHttpClient() {

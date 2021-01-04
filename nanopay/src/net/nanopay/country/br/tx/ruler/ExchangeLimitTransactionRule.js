@@ -31,6 +31,8 @@ foam.CLASS({
     'foam.dao.AbstractSink',
     'foam.dao.DAO',
     'foam.mlang.Constant',
+    'foam.nanos.alarming.Alarm',
+    'foam.nanos.alarming.AlarmReason',
     'foam.nanos.approval.ApprovalRequest',
     'foam.nanos.approval.ApprovalRequestUtil',
     'foam.nanos.approval.ApprovalStatus',
@@ -40,6 +42,7 @@ foam.CLASS({
     'net.nanopay.tx.fee.SpotRate',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
+    'net.nanopay.tx.TransactionEvent',
     'net.nanopay.partner.treviso.TrevisoService',
     'net.nanopay.country.br.tx.ExchangeLimitTransaction',
 
@@ -135,6 +138,7 @@ foam.CLASS({
 
                 } else if ( approval == ApprovalStatus.REJECTED ) {
                   txn.setStatus(TransactionStatus.DECLINED);
+                  txn.getTransactionEvents(x).put_(x, new TransactionEvent("Approval Rejected"));
                   txnDAO.put(txn);
 
                   // Send notifications
@@ -145,12 +149,34 @@ foam.CLASS({
 
                 }
               }
+              DAO alarmDAO = (DAO) x.get("alarmDAO");
+              Alarm alarm = (Alarm) alarmDAO.find_(x, new Alarm("ExchangeServer"));
+              if ( alarm != null &&
+                   alarm.getIsActive() ) {
+                alarm = (Alarm) alarm.fclone();
+                alarm.setIsActive(false);
+                alarmDAO.put_(x, alarm);
+              }
             } catch ( Throwable t ) {
               Logger logger = (Logger) x.get("logger");
-              logger.error("Failed updating exchange limit transaction status", t);
 
-              txn.setStatus(TransactionStatus.FAILED);
-              txnDAO.put(txn);
+              Throwable cause = t.getCause();
+              while ( cause != null ) {
+                if ( cause instanceof java.net.ConnectException ) {
+                  // timeout - do nothing.
+                  ((DAO) x.get("alarmDAO")).put_(x, new Alarm("ExchangeService", AlarmReason.TIMEOUT));
+                  txn.getTransactionEvents(x).put_(x, new TransactionEvent("ExchangeService timeout"));
+                  break;
+                }
+                cause = cause.getCause();
+              }
+              if ( cause == null) {
+                cause = t.getCause(); // thrown is RuntimeException
+                logger.error("Failed updating exchange limit transaction status", cause);
+                txn.setStatus(TransactionStatus.FAILED);
+                txn.getTransactionEvents(x).put_(x, new TransactionEvent(cause.getMessage()));
+                txnDAO.put(txn);
+              }
             }
           }
         }, "Exchange Limit Transaction");
