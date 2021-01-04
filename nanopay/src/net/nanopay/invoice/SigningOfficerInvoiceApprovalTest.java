@@ -18,6 +18,7 @@ import net.nanopay.account.Account;
 import net.nanopay.admin.model.ComplianceStatus;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
+import net.nanopay.bank.StrategizedBankAccount;
 import net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy;
 import net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiTermsAndConditions;
 import net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyDirectorsListed;
@@ -296,6 +297,7 @@ bo.setJobTitle("CEO");
 bo.setBusiness(myBusiness.getId());
 bo.setAddress(address);
 bo.setBirthday(birthday);
+bo.setNationality("CA");
 bo.setOwnershipPercent(30);
 
 int[] chosenOwners = {1};
@@ -362,28 +364,6 @@ ucjCDR.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-14");
 ucjCDR.setData(cdr);
 userCapabilityJunctionDAO.inX(myAdminContext).put(ucjCDR);
 
-List<ApprovalRequest> approvalRequests = ((ArraySink) approvalRequestDAO
-  .where(foam.mlang.MLang.AND( new foam.mlang.predicate.Predicate[] {
-    foam.mlang.MLang.EQ(ApprovalRequest.DAO_KEY, "userCapabilityJunctionDAO"),
-    foam.mlang.MLang.OR( new foam.mlang.predicate.Predicate[] {
-      foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjBOD.getId()),
-      foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjSOP.getId())
-    }),
-    foam.mlang.MLang.EQ(ApprovalRequest.IS_FULFILLED, false)
-  }))
-  .select(new ArraySink()))
-  .getArray();
-
-for ( ApprovalRequest approvalRequest : approvalRequests ) {
-  approvalRequest = (ApprovalRequest) approvalRequest.fclone();
-  approvalRequest.setStatus(ApprovalStatus.APPROVED);
-  try{
-    approvalRequestDAO.put(approvalRequest);
-  } catch(Exception e) {
-    throw e;
-  }
-}
-
 // Creating an account for my business and the external busienss I am sending to
 accountDAO.where(foam.mlang.MLang.EQ(Account.NAME, "Approval Tests myBusiness test account")).removeAll();
 CABankAccount myBusinessBankAccount = new CABankAccount();
@@ -394,7 +374,17 @@ myBusinessBankAccount.setInstitution(1);
 myBusinessBankAccount.setBranchId("54321");
 myBusinessBankAccount.setOwner(myBusiness.getId());
 myBusinessBankAccount.setStatus(BankAccountStatus.VERIFIED);
-myBusinessBankAccount = (CABankAccount) myBusiness.getAccounts(x).put_(x, myBusinessBankAccount);
+// add bankaccount capability to myBusiness 
+StrategizedBankAccount sba = new StrategizedBankAccount.Builder(x)
+  .setBankAccount(myBusinessBankAccount)
+  .build();
+UserCapabilityJunction ucjABA = new UserCapabilityJunction.Builder(x)
+  .setSourceId(myBusiness.getId())
+  .setTargetId("24602528-34c1-11eb-adc1-0242ac120002")
+  .setData(sba)
+  .build();
+userCapabilityJunctionDAO.inX(myAdminContext).put(ucjABA);
+
 
 accountDAO.where(foam.mlang.MLang.EQ(Account.NAME, "Approval Tests externalBusiness test account")).removeAll();
 CABankAccount externalBusinessBankAccount = new CABankAccount();
@@ -414,6 +404,46 @@ externalBusinessBankAccount.setStatus(BankAccountStatus.VERIFIED);
 // that is why we must use the override put_, in order to set the employee bank account using the global context permissions
 externalBusinessBankAccount = (CABankAccount) externalBusiness.getAccounts(x).put_(x, externalBusinessBankAccount);
 
+List<ApprovalRequest> approvalRequests = ((ArraySink) approvalRequestDAO
+  .where(foam.mlang.MLang.AND( new foam.mlang.predicate.Predicate[] {
+    foam.mlang.MLang.EQ(ApprovalRequest.DAO_KEY, "userCapabilityJunctionDAO"),
+    foam.mlang.MLang.OR( new foam.mlang.predicate.Predicate[] {
+      foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjBOD.getId()),
+      foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjSOP.getId())
+    }),
+    foam.mlang.MLang.EQ(ApprovalRequest.IS_FULFILLED, false)
+  }))
+  .select(new ArraySink()))
+  .getArray();
+
+for ( ApprovalRequest approvalRequest : approvalRequests ) {
+  approvalRequest = (ApprovalRequest) approvalRequest.fclone();
+  approvalRequest.setStatus(ApprovalStatus.APPROVED);
+  try{
+    approvalRequest = (ApprovalRequest) approvalRequestDAO.put(approvalRequest);
+  } catch(Exception e) {
+    throw e;
+  }
+}
+
+// approve business approvalrequests after beneficial owner/signing officers approved
+approvalRequests = ((ArraySink) approvalRequestDAO
+  .where(foam.mlang.MLang.AND( new foam.mlang.predicate.Predicate[] {
+    foam.mlang.MLang.EQ(ApprovalRequest.DAO_KEY, "userCapabilityJunctionDAO"),
+    foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjUDPAI.getId()),
+    foam.mlang.MLang.EQ(ApprovalRequest.IS_FULFILLED, false)
+  }))
+  .select(new ArraySink()))
+  .getArray();
+for ( ApprovalRequest approvalRequest : approvalRequests ) {
+  approvalRequest = (ApprovalRequest) approvalRequest.fclone();
+  approvalRequest.setStatus(ApprovalStatus.APPROVED);
+  try{
+    approvalRequest = (ApprovalRequest) approvalRequestDAO.put(approvalRequest);
+  } catch(Exception e) {
+    throw e;
+  }
+}
 
 ///////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// TEST CODE ///////////////////////////////////////////
