@@ -31,30 +31,23 @@ public class ExchangeClient
   implements Exchange
 {
   protected Logger logger;
-  private ExchangeCredential credentials;
 
   public ExchangeClient(X x) {
     setX(x);
     logger = (Logger) x.get("logger");
+    getCredentials();
   }
 
   protected ExchangeCredential getCredentials() {
-    if ( credentials == null ) {
-      credentials = (ExchangeCredential) getX().get("exchangeCredential");
-      if ( ! isCredientialsValid() ) {
-        credentials = null;
-        logger.error(this.getClass().getSimpleName(), "Invalid credentials");
-        throw new RuntimeException("Invalid credentials" );
-      }
+    ExchangeCredential credentials = (ExchangeCredential) getX().get("exchangeCredential");
+    if ( credentials == null ||
+         SafetyUtil.isEmpty(credentials.getExchangeUsername()) ||
+         SafetyUtil.isEmpty(credentials.getExchangePassword()) ||
+         SafetyUtil.isEmpty(credentials.getExchangeUrl()) ) {
+      logger.error(this.getClass().getSimpleName(), "Invalid credentials");
+      throw new RuntimeException("Invalid credentials" );
     }
     return credentials;
-  }
-
-  protected boolean isCredientialsValid() {
-    return credentials != null &&
-      ! SafetyUtil.isEmpty(credentials.getExchangeUsername()) &&
-      ! SafetyUtil.isEmpty(credentials.getExchangePassword()) &&
-      ! SafetyUtil.isEmpty(credentials.getExchangeUrl());
   }
 
   @Override

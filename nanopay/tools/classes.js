@@ -153,7 +153,7 @@ var classes = [
   'net.nanopay.bank.StrategizedBankAccount',
   'net.nanopay.bank.ruler.VerifyBankRule',
   'net.nanopay.bank.ruler.CapabilityAddBankAccountRule',
-  'net.nanopay.country.br.ruler.BRBankAccountCapabilityOnGrantRule',
+  'net.nanopay.bank.ruler.ExternalGrantBRBankAccountCapabilityRule',
   'net.nanopay.bank.test.BankAccountIBANTest',
   'net.nanopay.model.CurrencyAmount',
   'net.nanopay.model.Broker',
@@ -300,7 +300,6 @@ var classes = [
   'net.nanopay.fx.afex.AFEXGetPDFRule',
   'net.nanopay.fx.afex.IsIbanRequest',
   'net.nanopay.fx.afex.IsIbanResponse',
-  'net.nanopay.fx.afex.AFEXKeyType',
 
   // Partners
   'net.nanopay.partners.ui.PartnerInvitationNotification',
@@ -1299,7 +1298,6 @@ var classes = [
   'net.nanopay.partner.treviso.onboarding.BRBusinessDirector',
   'net.nanopay.partner.treviso.onboarding.BRBeneficialOwner',
   'net.nanopay.partner.treviso.onboarding.BRBusinessOwnershipData',
-  'net.nanopay.partner.treviso.onboarding.BRBankAccountData',
 
   // crunch predicates - todo move all predicates used in crunch here
   'net.nanopay.crunch.predicate.IsBusiness',
@@ -1434,6 +1432,8 @@ var classes = [
   // exchange limit
   'net.nanopay.country.br.tx.ruler.ExchangeLimitTransactionRule',
   'net.nanopay.country.br.tx.ExchangeLimitTransaction',
+  'net.nanopay.country.br.tx.ExchangeLimitTransactionCronAgent',
+  'net.nanopay.country.br.tx.ExchangeLimitTransactionCronAgentSink',
 
   // DAO decorators
   'net.nanopay.account.AbliiBankAccountAutoverifyDAO',

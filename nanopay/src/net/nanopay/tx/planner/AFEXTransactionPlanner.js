@@ -153,22 +153,28 @@ foam.CLASS({
         Long owner = txnQuote.getRequestOwner() != 0 ? txnQuote.getRequestOwner(): txnQuote.getSourceAccount().getOwner();
         AFEXTransaction afexTransaction = null;
         int result = 0;
+        String sourceAccountId =  request.getSourceAccount();
+        AFEXDigitalAccount afexDigital = null;
+        if ( txnQuote.getParent() != null ) { //this is not standalone txn
+          afexDigital = findAFEXDigitalAccount(request, x, txnQuote);
+          sourceAccountId = afexDigital.getId();
+        }
 
         // --- Plan AFEXTransaction first as it might take multiple quotes to find a working one ---
         try {
           fxQuote = afexService.getFXRate(request.getSourceCurrency(), request.getDestinationCurrency(), request.getAmount(), request.getDestinationAmount(), null, "CASH", owner, null);
-          afexTransaction = createAFEXTransaction(x, request, fxQuote, request.getSourceAccount());
+          afexTransaction = createAFEXTransaction(x, request, fxQuote, sourceAccountId);
           result = afexService.createTrade(afexTransaction);
           afexTransaction.setAfexTradeResponseNumber(result);
         } catch (UnsupportedDateException e) {
           try {
             fxQuote = afexService.getFXRate(request.getSourceCurrency(), request.getDestinationCurrency(), request.getAmount(), request.getDestinationAmount(), null, "TOM", owner, null);
-            afexTransaction = createAFEXTransaction(x, request, fxQuote, request.getSourceAccount());
+            afexTransaction = createAFEXTransaction(x, request, fxQuote, sourceAccountId);
             result = afexService.createTrade(afexTransaction);
             afexTransaction.setAfexTradeResponseNumber(result);
           } catch (UnsupportedDateException e2) {
             fxQuote = afexService.getFXRate(request.getSourceCurrency(), request.getDestinationCurrency(), request.getAmount(), request.getDestinationAmount(), null, "SPOT", owner, null);
-            afexTransaction = createAFEXTransaction(x, request, fxQuote, request.getSourceAccount());
+            afexTransaction = createAFEXTransaction(x, request, fxQuote, sourceAccountId);
             result = afexService.createTrade(afexTransaction);
             afexTransaction.setAfexTradeResponseNumber(result);
           }
@@ -190,8 +196,6 @@ foam.CLASS({
         afexCT.setPlanner(this.getId());
 
         if ( txnQuote.getParent() != null ) { //this is not standalone txn
-
-          AFEXDigitalAccount afexDigital = findAFEXDigitalAccount(request, x, txnQuote);
           afexCT.setSourceAccount(afexDigital.getId());
           afexCT.addNext( createFundingTransaction(x, request, fxQuote, afexDigital.getId()) );
           afexCT.addNext(afexTransaction);

@@ -46,6 +46,7 @@ p({
   import net.nanopay.fx.afex.AFEXFundingBalance;
   import net.nanopay.fx.afex.AFEXServiceProvider;
   import net.nanopay.tx.model.Transaction;
+  import net.nanopay.tx.TransactionEvent;
   import net.nanopay.tx.model.TransactionStatus;
   import static foam.mlang.MLang.*;
 
@@ -68,6 +69,7 @@ p({
       txn.setAccountId(response.getAccountId());
       txn.setFundingBalanceId(response.getFundingBalanceId());
       txn.setStatus(TransactionStatus.SENT);
+      txn.getTransactionEvents(x).put_(x, new TransactionEvent("Funding balance created."));
       transactionDAO.put(txn);
     }
   });

@@ -293,7 +293,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/ruler/CorridorAuthorizationRule' },
   { name: 'net/nanopay/bank/ruler/VerifyBankRule' },
   { name: 'net/nanopay/bank/ruler/CapabilityAddBankAccountRule' },
-  { name: 'net/nanopay/country/br/ruler/BRBankAccountCapabilityOnGrantRule' },
+  { name: 'net/nanopay/bank/ruler/ExternalGrantBRBankAccountCapabilityRule' },
 
   // fx
   { name: 'net/nanopay/fx/ExchangeRateStatus' },
@@ -411,7 +411,6 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEXGetPDFRule' },
   { name: 'net/nanopay/fx/afex/IsIbanRequest' },
   { name: 'net/nanopay/fx/afex/IsIbanResponse' },
-  { name: 'net/nanopay/fx/afex/AFEXKeyType' },
 
   // kotak
   { name: 'net/nanopay/kotak/Kotak' },
@@ -1757,6 +1756,8 @@ FOAM_FILES([
   // exchange limit
   { name: 'net/nanopay/country/br/tx/ruler/ExchangeLimitTransactionRule'},
   { name: 'net/nanopay/country/br/tx/ExchangeLimitTransaction'},
+  { name: 'net/nanopay/country/br/tx/ExchangeLimitTransactionCronAgent'},
+  { name: 'net/nanopay/country/br/tx/ExchangeLimitTransactionCronAgentSink'},
 
   { name: 'net/nanopay/country/br/CPF' },
   { name: 'net/nanopay/country/br/BrazilBusinessInfoData' },
@@ -1802,7 +1803,6 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/onboarding/BRBusinessDirector' },
   { name: 'net/nanopay/partner/treviso/onboarding/BRBeneficialOwner' },
   { name: 'net/nanopay/partner/treviso/onboarding/BRBusinessOwnershipData' },
-  { name: 'net/nanopay/partner/treviso/onboarding/BRBankAccountData' },
   { name: 'net/nanopay/partner/treviso/test/TrevisoOnboardingSupport' },
   { name: 'net/nanopay/partner/treviso/TrevisoSendEmailToAllRule' },
 

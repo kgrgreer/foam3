@@ -91,7 +91,8 @@ public class ExchangeServiceProvider implements ExchangeService {
   }
 
   public ExchangeCustomer createExchangeCustomerDefault(long userId) throws RuntimeException {
-    return createExchangeCustomer(userId, 1000000L); // Default limit
+    ExchangeCredential credential = (ExchangeCredential) x.get("exchangeCredential");
+    return createExchangeCustomer(userId, credential.getDefaultLimit());
   }
 
   public ExchangeCustomer createExchangeCustomer(long userId, long amount) throws RuntimeException {
