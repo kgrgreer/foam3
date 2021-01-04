@@ -266,7 +266,7 @@ p({
 p({
   "class":"foam.nanos.crunch.MinMaxCapability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-6-5",
-  "name":"Business Directors Data",
+  "name":"Business Directors",
   "min":1,
   "max":1,
   "version":"0",
@@ -295,7 +295,7 @@ p({
 p({
   "class":"foam.nanos.crunch.MinMaxCapability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-7",
-  "name":"Business Ownership Data",
+  "name":"Business Ownership",
   "min":1,
   "max":1,
   "version":"0",
