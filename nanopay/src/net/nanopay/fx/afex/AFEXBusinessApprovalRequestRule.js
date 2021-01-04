@@ -42,7 +42,7 @@ foam.CLASS({
             AFEXBusiness afexBusiness = (AFEXBusiness) obj;
             DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
             String spid = afexBusiness.findUser(x).getSpid();
-            String group = spid.equals("nanopay") ? "payment-ops" : spid + "-payment-ops";
+            String group = spid + "-payment-ops";
             approvalRequestDAO.put_(x,
               new AFEXBusinessApprovalRequest.Builder(x)
                 .setDaoKey("afexBusinessDAO")
