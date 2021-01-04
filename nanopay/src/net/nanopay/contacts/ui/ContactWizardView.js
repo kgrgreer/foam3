@@ -238,9 +238,7 @@ foam.CLASS({
         this.isConnecting = false;
         return false;
       }
-      debugger;
       this.data.copyFrom(this.contact);
-      debugger;
       this.isConnecting = false;
       return true;
     },
@@ -347,12 +345,9 @@ foam.CLASS({
         return nextIndex === -1;
       },
       code: async function(X) {
-        debugger;
         if ( ! await this.addContact() ) return;
         if ( ! await this.addBankAccount() ) return;
-        debugger;
         X.closeDialog();
-        debugger;
       }
     }
   ]

@@ -175,7 +175,7 @@ p({
   "documentation":"Grant BRBankAccountCapability when BRBankAccount is created outside of Brazilian onboarding.",
   "daoKey":"localAccountDAO",
   "operation":0,
-  "after": after,
+  "after":false,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[

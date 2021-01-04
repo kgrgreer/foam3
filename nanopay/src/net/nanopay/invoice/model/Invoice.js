@@ -681,7 +681,6 @@ foam.CLASS({
         platform users.`,
       view: function(_, X) {
         return foam.u2.view.RichChoiceView.create({
-          // class: 'foam.u2.view.RichChoiceView',
           selectionView: {
             class: 'net.nanopay.auth.ui.UserSelectionView',
             emptySelectionLabel: X.data.SELECT_CONTACT
@@ -696,8 +695,7 @@ foam.CLASS({
               ]
             }
           ]
-        }, X
-      );
+        }, X);
       }
     },
     {

@@ -433,7 +433,7 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       of: 'net.nanopay.contacts.Contact',
-      name: 'tempContact',
+      name: 'addedContact',
       factory: function() {
         return net.nanopay.contacts.Contact.create({}, this.ctrl);
       }
@@ -693,11 +693,11 @@ foam.CLASS({
         }
       });
     },
-    function testo() {
-      if ( this.tempContact.id ) {
-        this.invoice.contactId = this.tempContact.id;
+    function setContactIdOnContactAdd() {
+      if ( this.addedContact.id ) {
+        this.invoice.contactId = this.addedContact.id;
       }
-      this.tempContact = undefined;
+      this.addedContact = undefined;
     }
   ],
 
@@ -794,13 +794,12 @@ foam.CLASS({
       label: 'Create new contact',
       icon: 'images/plus-no-bg.svg',
       code: function(X, e) {
-        debugger;
         var self = X.data;
         X.ctrl.add(net.nanopay.ui.wizard.WizardController.create({
           model: 'net.nanopay.contacts.Contact',
-          data$: self.tempContact$,
+          data$: self.addedContact$,
           controllerMode: foam.u2.ControllerMode.CREATE,
-          onClose: self.testo.bind(self)
+          onClose: self.setContactIdOnContactAdd.bind(self)
         }, X.ctrl));
       }
     },
