@@ -186,7 +186,7 @@ foam.CLASS({
           // Set user email verified & login enabled to true to enable log in.
           user.setEmailVerified(true);
           user.setLoginEnabled(true);
-          user.setGroup("sme");
+          user.setGroup(user.getSpid() + "-sme");
           userUserDAO.put(user);
 
           // Set token processed to true.

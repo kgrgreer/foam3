@@ -86,7 +86,7 @@ foam.CLASS({
         Group employeeGroup = new Group();
         employeeGroup.copyFrom(employeeTemplateGroup);
         employeeGroup.setId(safeBusinessName + ".employee");
-        employeeGroup.setParent("sme");
+        employeeGroup.setParent(business.getSpid() + "-sme");
         employeeGroup = (Group) getGroupDAO().put(employeeGroup);
         generatePermissions(x, employeeTemplateGroup, employeeGroup, safeBusinessName);
     

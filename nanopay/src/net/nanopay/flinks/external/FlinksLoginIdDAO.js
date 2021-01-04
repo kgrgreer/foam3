@@ -340,13 +340,14 @@ foam.CLASS({
 
         Subject subject = (Subject) x.get("subject");
         DAO userDAO = (DAO) x.get("localUserDAO");
+        String spid = subject.getRealUser().getSpid();
         User user = new User.Builder(x)
           .setEmail(userEmail)
           .setUserName(userEmail)
           .setDesiredPassword(java.util.UUID.randomUUID().toString())
           .setEmailVerified(true)
-          .setGroup("sme")
-          .setSpid(subject.getRealUser().getSpid())
+          .setGroup(spid + "-sme")
+          .setSpid(spid)
           .setStatus(net.nanopay.admin.model.AccountStatus.ACTIVE)
           .build();
         user = (User) userDAO.put(user);
