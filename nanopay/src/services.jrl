@@ -548,6 +548,7 @@ p({
       .setSeqNo(true)
       .setSeqStartingValue(1000)
       .setOf(foam.nanos.auth.User.getOwnClassInfo())
+      .setDecorator(new foam.dao.history.HistoryDAO(x, "userHistoryDAO", new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.auth.User.getOwnClassInfo()).build()))
       .setJournalName("users")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setAuthorize(false)
@@ -558,7 +559,6 @@ p({
     return dao;
   """
 })
-//      .setDecorator(new foam.dao.history.HistoryDAO(x, "userHistoryDAO", new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.auth.User.getOwnClassInfo()).build()))
 
 p({
   "class": "foam.nanos.boot.NSpec",
