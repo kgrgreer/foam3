@@ -26,3 +26,9 @@ p({
   parent:"support",
   defaultMenu:"contacts"
 })
+p({
+  class:"foam.nanos.auth.Group",
+  id:"treviso-sme",
+  description:"treviso sme group",
+  parent:"sme"
+})

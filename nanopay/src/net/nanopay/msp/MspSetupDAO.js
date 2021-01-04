@@ -218,6 +218,13 @@ foam.CLASS({
         supportGroup.setDescription(mspInfo.getSpid() + " support group");
         groupDAO.put(supportGroup);
 
+        // Create spid-sme group
+        Group smeGroup = new Group();
+        smeGroup.setId(mspInfo.getSpid() + "-sme");
+        smeGroup.setParent("sme");
+        smeGroup.setDescription(mspInfo.getSpid() + " sme group");
+        groupDAO.put(smeGroup);
+
         return mspInfo;
       `
     },
