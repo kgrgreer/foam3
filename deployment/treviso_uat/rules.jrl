@@ -35,7 +35,7 @@ p({
   ruleGroup: "TransactionFeeRule",
   targetClass: "net.nanopay.tx.fee.TransactionFeeRule",
   propName: "feeAccount",
-  propValue: 31,
+  propValue: "31",
   created: 1601313462375,
   createdBy: 1,
   createdByAgent: 1,
