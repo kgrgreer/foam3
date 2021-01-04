@@ -3,3 +3,8 @@ p({
   "id":"jhughes",
   "address":"10.22.41.111"
 })
+p({
+  "class":"foam.net.Host",
+  "id":"asteria",
+  "address":"10.22.41.250"
+})
