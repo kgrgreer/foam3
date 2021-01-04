@@ -539,7 +539,6 @@ foam.CLASS({
               .start().add(this.ADD_BANK).addClass('add-banking-information')
                 .on('click', async function() {
                   self.userDAO.find(self.invoice.contactId).then((contact)=>{
-                    debugger;
                     self.add(self.WizardController.create({
                       model: 'net.nanopay.contacts.Contact',
                       data: contact,
