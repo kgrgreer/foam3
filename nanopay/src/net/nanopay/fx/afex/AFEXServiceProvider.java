@@ -44,6 +44,7 @@ import net.nanopay.partner.afex.AFEXDigitalAccount;
 import net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding;
 import net.nanopay.payment.Institution;
 import net.nanopay.payment.PaymentService;
+import net.nanopay.tx.UnsupportedDateException;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
@@ -400,7 +401,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     if ( business == null ) {
       throw new RuntimeException("No afexBusiness found for user " + user);
     }
-    quoteRequest.setValueDate(getValueDate(targetCurrency, sourceCurrency, business.getApiKey(), userObj.getSpid()));
+    quoteRequest.setValueDate(getValueDate(targetCurrency, sourceCurrency, business.getApiKey(), userObj.getSpid(), valueDate));
     quoteRequest.setClientAPIKey(business.getApiKey());
 
     if ( SafetyUtil.isEmpty(quoteRequest.getClientAPIKey()) ) {
@@ -430,6 +431,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         fxQuote = (FXQuote) fxQuoteDAO_.put_(x, fxQuote);
       }
 
+    } catch(UnsupportedDateException e) {
+      throw e;
     } catch(Exception e) {
       logger_.error("Error to get FX Rate from AFEX.", e);
     }
@@ -470,14 +473,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     }
   }
 
-  private String getValueDate(String targetCurrency, String sourceCurrency, String apiKey, String spid) {
-    String valueDate = null;
-    try {
-      valueDate = this.afexClient.getValueDate(targetCurrency + sourceCurrency, "SPOT", apiKey, spid);
-    } catch(Exception e) {
-      // Log here
-    }
-    return valueDate;
+  private String getValueDate(String targetCurrency, String sourceCurrency, String apiKey, String spid, String valueDate) {
+    return this.afexClient.getValueDate(targetCurrency + sourceCurrency, valueDate, apiKey, spid);
   }
 
   public boolean acceptFXRate(String quoteId, long user) throws RuntimeException {
@@ -756,6 +753,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       return tradeResponse.getTradeNumber();
 
       }
+    } catch(UnsupportedDateException e) {
+      throw e;
     } catch(Throwable t) {
       logger_.error("Error creating AFEX Trade.", t);
       throw new RuntimeException(t);
@@ -774,7 +773,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     createPaymentRequest.setPaymentDate(txn.getValueDate());
     createPaymentRequest.setAmount(String.valueOf(toDecimal(txn.getAmount())));
     createPaymentRequest.setCurrency(txn.getSourceCurrency());
-    createPaymentRequest.setVendorId(String.valueOf(afexBeneficiary.getContact()));
+    createPaymentRequest.setVendorId(String.valueOf(afexBeneficiary.getContact()+"instant"));
     try {
       CreatePaymentResponse paymentResponse = this.afexClient.createPayment(createPaymentRequest, user.getSpid());
       if ( paymentResponse != null && paymentResponse.getReferenceNumber() > 0 ) {

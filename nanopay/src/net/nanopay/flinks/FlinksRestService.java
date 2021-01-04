@@ -172,7 +172,7 @@ public class FlinksRestService
         response = client.execute(post);
       }
 
-      int statusCode =  response.getStatusLine().getStatusCode();
+      int statusCode = response.getStatusLine().getStatusCode();
       responseEntity = response.getEntity();
       
       StringBuilder res = builders.get();

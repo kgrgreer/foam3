@@ -417,13 +417,6 @@ p({
   "priority":15
 })
 
-p({
-  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"63049307-8db4-2437-5c02-b71d6878263c",
-  "targetId":"b5f2b020-db0f-11ea-87d0-0242ac130003",
-  "priority":5
-})
-
 // BR Signing Officer to Residence Consumption Bill (Utility bills)
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",

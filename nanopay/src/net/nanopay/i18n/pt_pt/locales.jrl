@@ -1759,6 +1759,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.Address.STATE_RE
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.Address.REGION_REQUIRED",target:"Região necessária."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.Address.INVALID_STREET_NAME",target:"Nome de rua inválido."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.Address.INVALID_STREET_NUMBER",target:"Número de rua inválido."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.auth.Address.POSTAL_CODE_REQUIRE",target:"CEP requerido"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.EmailPropertyValidationRefinement.PLEASE_ENTER_VALID_ADDRESS.value",target:"Por favor insira o endereço de email"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.core.EmailPropertyValidationRefinement.PLEASE_ENTER_VALID_EMAIL.value",target:"Por favor insira o endereço de e-mail válido"})
@@ -3272,8 +3273,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BEBankAccount.A
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BEBankAccount.COUNTRY.label",target:"país"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CYBankAccount.COUNTRY.label",target:"país"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.DateOfIssue.SECTION_DATE_OF_ISSUE_SECTION.title",target:"Data de emissão"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.DateOfIssue.SECTION_DATE_OF_ISSUE_SECTION.help",target:"Insira a data de emissão do seu documento de identificação"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.DateOfIssue.SECTION_DATE_OF_ISSUE_SECTION.title",target:"Quando foi emitido o seu documento de identificação"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.DateOfIssue.SECTION_DATE_OF_ISSUE_SECTION.help",target:"Forneça a data de emissão conforme mostrado em sua identificação"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.DateOfIssue.DATE_OF_ISSUE.label",target:"Data de emissão"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.DateOfIssue.DATE_OF_ISSUE.documentation",target:"A data de emissão no documento"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.DateOfIssue.DATE_OF_ISSUE.help",target:"Forneça a data de emissão conforme mostrado em sua identificação"})
@@ -3309,3 +3310,4 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.business.NatureOfBus
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions.DOCUMENT_READ",target:"O documento deve ser revisado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.DOCUMENT_READ",target:"O documento deve ser revisado"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.security.auth.LoginAttemptAuthService.ACCOUNT_LOCKED",target:"Conta bloqueada. Entre em contato com o atendimento ao cliente."})

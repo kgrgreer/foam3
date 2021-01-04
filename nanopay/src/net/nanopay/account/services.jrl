@@ -84,17 +84,6 @@ p({
       .setPipelinePm(true)
       .setEnableInterfaceDecorators(false)
       .setRuler(false)
-      .setServiceProviderAware(true)
-      .setServiceProviderAwarePropertyInfos(
-        new java.util.HashMap() {{
-          put(
-            net.nanopay.account.Account.class.getName(),
-            new foam.core.PropertyInfo[] {
-              net.nanopay.account.Account.OWNER
-            }
-          );
-        }}
-      ) 
       .build();
   """,
   "client":

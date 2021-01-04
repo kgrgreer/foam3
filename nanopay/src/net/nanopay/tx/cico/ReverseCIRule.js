@@ -69,7 +69,7 @@ foam.CLASS({
                 Notification notification = new Notification();
                 notification.setBody("Cash in transaction id: " + txn.getId() + " was declined but failed to revert the balance.");
                 notification.setNotificationType("Cashin transaction declined");
-                notification.setGroupId("support");
+                notification.setGroupId(txn.getSpid() + "-support");
                 ((DAO) x.get("notificationDAO")).put(notification);
               }
             }
