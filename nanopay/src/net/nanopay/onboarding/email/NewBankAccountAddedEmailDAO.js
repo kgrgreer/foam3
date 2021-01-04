@@ -90,7 +90,7 @@ foam.CLASS({
       EmailMessage message = new EmailMessage.Builder(x).build();
       Map<String, Object>  args = new HashMap<>();
 
-      args.put("userId", owner.getId());
+      args.put("userId", String.valueOf(owner.getId()));
       args.put("userEmail", owner.getEmail());
       args.put("userCo", owner.getOrganization());
       args.put("subTitle2", "BankAccount Information:");
@@ -109,7 +109,7 @@ foam.CLASS({
       try {
         EmailsUtility.sendEmailFromTemplate(x, owner, message, "notification-to-onboarding-team", args);
       } catch (Throwable t) {
-        String msg = String.format("Email meant for complaince team Error: User (id = %1$s) has added a BankAccount (id = %2$d).", owner.getId(), account.getId());
+        String msg = String.format("Email meant for complaince team Error: User (id = %1$s) has added a BankAccount (id = %2$s).", owner.getId(), account.getId());
         ((Logger) x.get("logger")).error(msg, t);
       }
 

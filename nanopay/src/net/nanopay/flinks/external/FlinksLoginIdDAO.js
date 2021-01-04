@@ -32,6 +32,9 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.auth.Subject',
     'foam.nanos.crunch.connection.CapabilityPayload',
+    'foam.nanos.dig.exception.ExternalAPIException',
+    'foam.nanos.dig.exception.GeneralException',
+    'foam.nanos.dig.exception.UnknownIdException',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'java.util.ArrayList',
@@ -95,7 +98,7 @@ foam.CLASS({
         
         FlinksResponse flinksResponse = (FlinksResponse) flinksResponseService.getFlinksResponse(x, flinksLoginId);
         if ( flinksResponse == null ) {
-          throw new RuntimeException("Flinks failed to provide a valid response when provided with login ID: " + flinksLoginId.getLoginId());
+          throw new ExternalAPIException("Flinks failed to provide a valid response when provided with login ID: " + flinksLoginId.getLoginId());
         }
         
         FlinksResponse flinksAuthResponse = flinksAuth.getAccountSummary(x, flinksResponse.getRequestId(), subject.getUser(), false);
@@ -103,14 +106,14 @@ foam.CLASS({
           flinksAuthResponse = flinksAuth.pollAsync(x, flinksAuthResponse.getRequestId(), subject.getUser());
         }
         if ( flinksAuthResponse.getHttpStatusCode() != 200 ) {
-          throw new RuntimeException("Flinks failed to provide valid account detials " + flinksAuthResponse);
+          throw new ExternalAPIException("Flinks failed to provide valid account detials " + flinksAuthResponse);
         }
         FlinksAccountsDetailResponse flinksDetailResponse = (FlinksAccountsDetailResponse) flinksAuthResponse;
         flinksLoginId.setFlinksAccountsDetails(flinksDetailResponse.getId());
 
         AccountWithDetailModel accountDetail = selectBankAccount(x, flinksLoginId, flinksDetailResponse);
         if ( accountDetail == null ) {
-          throw new RuntimeException("No matching Flinks bank account found. AccountId: " + flinksLoginId.getAccountId());
+          throw new UnknownIdException("No matching Flinks bank account found. AccountId: " + flinksLoginId.getAccountId());
         }
         LoginModel loginDetail = flinksDetailResponse.getLogin();
         if ( loginDetail == null ) {
@@ -120,11 +123,11 @@ foam.CLASS({
         // Find the user and business if they already exist
         User user = flinksLoginId.findUser(x);
         if ( user == null && flinksLoginId.getUser() != 0 ) {
-          throw new RuntimeException("User not found: " + flinksLoginId.getUser());
+          throw new UnknownIdException("User not found: " + flinksLoginId.getUser());
         }
         Business business = flinksLoginId.findBusiness(x);
         if ( business == null && flinksLoginId.getBusiness() != 0 ) {
-          throw new RuntimeException("Business not found: " + flinksLoginId.getBusiness());
+          throw new UnknownIdException("Business not found: " + flinksLoginId.getBusiness());
         }
 
         // Create the user if this is an onboarding request
@@ -143,7 +146,7 @@ foam.CLASS({
             
             // User must exist
             if ( user == null ) {
-              throw new RuntimeException("User not provisioned: " + flinksLoginId.getUser());
+              throw new GeneralException("User not provisioned: " + flinksLoginId.getUser());
             }
           
           } else {
@@ -166,7 +169,7 @@ foam.CLASS({
             addCapabilityPayload(x, flinksLoginIdOnboarding, (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).find(capabilityId));
           }
         } else if ( user == null ) {
-          throw new RuntimeException("User is required to add a bank account");
+          throw new UnknownIdException("User is required to add a bank account");
         }
 
         // Set bank account owner to business, if it exists
@@ -174,7 +177,7 @@ foam.CLASS({
         BankAccount bankAccount = findBankAccount(x, owner, flinksLoginId, accountDetail);
         if ( bankAccount == null ) {
           // Create the bank account owned by the business if it exists, otherwise by the user
-          bankAccount = createBankAccount(x, owner, flinksLoginId, accountDetail);
+          bankAccount = createBankAccount(x, owner, flinksLoginId, accountDetail, loginDetail);
         }
         flinksLoginId.setAccount(bankAccount.getId());
 
@@ -227,7 +230,8 @@ foam.CLASS({
           { name: 'x', type: 'Context' },
           { name: 'owner', type: 'User' },
           { name: 'request', type: 'FlinksLoginId' },
-          { name: 'accountDetail', type: 'AccountWithDetailModel' }
+          { name: 'accountDetail', type: 'AccountWithDetailModel' },
+          { name: 'loginDetail', type: 'LoginModel' }
         ],
         javaCode: `
         DAO accountDAO = (DAO) x.get("accountDAO");
@@ -235,7 +239,7 @@ foam.CLASS({
         // Do not allow a bank account in an other currency
         if ( !accountDetail.getCurrency().equals("CAD") &&
              !accountDetail.getCurrency().equals("USD") ) {
-          throw new RuntimeException("Only USD or Canadian dollar bank accounts are supported. Currency of account selected: " + accountDetail.getCurrency());
+          throw new GeneralException("Only USD or Canadian dollar bank accounts are supported. Currency of account selected: " + accountDetail.getCurrency());
         }
 
         CABankAccount bankAccount = new CABankAccount.Builder(x)
@@ -248,6 +252,10 @@ foam.CLASS({
           .setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED)
           .setVerifiedBy("FLINKS")
           .build();
+
+        // Save the login type for future reference
+        bankAccount.getExternalData().put("FlinksLoginUsername", loginDetail.getUsername());
+        bankAccount.getExternalData().put("FlinksLoginType", loginDetail.getType());
 
         return (BankAccount) accountDAO.put(bankAccount);
       `
@@ -287,7 +295,7 @@ foam.CLASS({
         OnboardingType onboardingType = request.getType();
         if ( onboardingType == OnboardingType.DEFAULT ) {
           if ( loginDetail == null ) {
-            throw new RuntimeException("Flinks login information not found. Cannot determine onboarding type automatically.");
+            throw new ExternalAPIException("Flinks login information not found. Cannot determine onboarding type automatically.");
           }
 
           // Determine onboarding type
@@ -299,7 +307,7 @@ foam.CLASS({
           }
 
           if ( onboardingType == OnboardingType.DEFAULT ) {
-            throw new RuntimeException("Cannot determine onboarding type with login type: " + loginDetail.getType());
+            throw new ExternalAPIException("Cannot determine onboarding type with login type: " + loginDetail.getType());
           }
         }
 
@@ -311,7 +319,7 @@ foam.CLASS({
           onboardBusiness(x, request, accountDetail);
         }
         else {
-          throw new RuntimeException("Unexpected onboarding type: " + request.getType());
+          throw new GeneralException("Unexpected onboarding type: " + request.getType());
         }
       `
     },
@@ -447,6 +455,8 @@ foam.CLASS({
           overrides.getMailingAddress() : businessAddress;
         String phoneNumber = overrides != null && !SafetyUtil.isEmpty(overrides.getPhoneNumber()) ? 
           overrides.getPhoneNumber() : user.getPhoneNumber();
+        String externalId = overrides != null && !SafetyUtil.isEmpty(overrides.getExternalId()) ?
+          overrides.getExternalId() : "";
 
         // Create business with minimal information
         Business business = new Business.Builder(x)
@@ -454,6 +464,7 @@ foam.CLASS({
           .setOrganization(businessName)
           .setPhoneNumber(phoneNumber)
           .setAddress(businessAddress)
+          .setExternalId(externalId)
           .setSpid(user.getSpid())
           .setStatus(net.nanopay.admin.model.AccountStatus.ACTIVE)
           .build();
@@ -492,7 +503,7 @@ foam.CLASS({
         // Retrieve the updated business
         business = (Business) localUserDAO.inX(subjectX).find(business);
         if ( business == null ) {
-          throw new RuntimeException("Failed to create business during onboarding with Flinks");
+          throw new ExternalAPIException("Failed to create business during onboarding with Flinks");
         }
         
         // Business CAD payments capability
@@ -502,7 +513,7 @@ foam.CLASS({
 
         SecurefactOnboardingService securefactOnboardingService = (SecurefactOnboardingService) subjectX.get("securefactOnboardingService");
         if ( securefactOnboardingService == null ) {
-          throw new RuntimeException("Cannot find securefactOnboardingService");
+          throw new GeneralException("Cannot find securefactOnboardingService");
         }
       
         // Fill the capability data objects from SecureFact LEV

@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'CYBankAccount',
-  label: 'Cyprus Bank',
+  label: 'Cyprus',
   extends: 'net.nanopay.bank.EUBankAccount',
 
   documentation: 'Cyprus bank account information.',

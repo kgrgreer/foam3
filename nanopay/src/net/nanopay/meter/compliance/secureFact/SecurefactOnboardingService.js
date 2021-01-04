@@ -26,6 +26,7 @@
      'foam.dao.DAO',
      'foam.nanos.auth.Subject',
      'foam.nanos.auth.User',
+     'foam.nanos.dig.exception.ExternalAPIException',
      'foam.nanos.logger.Logger',
      'foam.util.SafetyUtil',
      'java.util.ArrayList',
@@ -250,12 +251,12 @@
           dataResponse = securefactService.levDocumentData(x, orderResponse.getOrderId());
 
           if ( System.currentTimeMillis() - startTime > DOCUMENT_DATA_TIMEOUT ) {
-            throw new RuntimeException("Timeout retrieving party data for " + business.getBusinessName());
+            throw new ExternalAPIException("Timeout retrieving party data for " + business.getBusinessName());
           }
         } while ( dataResponse != null && SafetyUtil.equals(dataResponse.getStatus(), "In Progress") );
         
         if ( SafetyUtil.equals(dataResponse.getStatus(), "Cancelled") ) {
-          throw new RuntimeException("Company data failed LEV document lookup");
+          throw new ExternalAPIException("Company data failed document lookup for " + business.getBusinessName());
         }
 
         return dataResponse;

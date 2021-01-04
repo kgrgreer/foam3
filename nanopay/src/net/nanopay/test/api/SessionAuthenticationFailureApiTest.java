@@ -56,7 +56,7 @@ public class SessionAuthenticationFailureApiTest extends ApiTestBase {
       responseCode = connection.getResponseCode();
       responseData = this.getResponseData(connection);
       test(200 == responseCode, "Response status when using an invalid session ID is still 200, but response data should not be empty - actual: " + responseCode);
-      test(!SafetyUtil.isEmpty(responseData), "Response data should not be empty It should redirect to the login screen: (" + responseData + ")");
+      test(SafetyUtil.isEmpty(responseData), "Response data should be empty. It should not redirect to the login screen: (" + responseData + ")");
 
       // Disable the test user.
       user.setLoginEnabled(false);

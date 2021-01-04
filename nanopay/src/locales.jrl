@@ -1,5 +1,5 @@
 p({class:"foam.i18n.Locale",locale:"pt",source:"Agriculture, Forestry, Fishing and Hunting",target:"Agricultura, Silvicultura, Pesca e Caça"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"Mining, Quarrying, and Oil and Gas Extraction",target:"minas e pedreiras, e Oil and Gas Extraction"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Mining, Quarrying, and Oil and Gas Extraction",target:"minas e pedreiras, e Extração de óleo e gás"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Utilities",target:"Serviços de utilidade pública"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Construction",target:"Construção"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"Manufacturing",target:"Manufatura"})

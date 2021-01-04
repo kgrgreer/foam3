@@ -51,7 +51,15 @@ foam.CLASS({
     foam.nanos.auth.User.ID.clone().copyFrom({
       label: 'Business ID',
       section: 'businessInformation',
+      gridColumns:6,
       order: 1
+    }),
+    foam.nanos.auth.User.EXTERNAL_ID.clone().copyFrom({
+      label: 'External ID',
+      section: 'businessInformation',
+      gridColumns:6,
+      order: 1,
+      visibility: 'RO'
     }),
     net.nanopay.model.Business.BUSINESS_NAME.clone().copyFrom({
       gridColumns:6,

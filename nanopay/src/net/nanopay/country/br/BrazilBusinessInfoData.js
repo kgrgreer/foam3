@@ -53,11 +53,11 @@ foam.CLASS({
     {
       class: 'String',
       name: 'cnpj',
-      label: 'CNPJ',
+      label: 'National Registry of Legal Entities(CNPJ)',
       required: true,
       documentation: `
           CNPJ (short for Cadastro Nacional da Pessoa Jurídica in Portuguese, or National Registry of Legal Entities) is an identification number issued to Brazilian companies by the Department of Federal Revenue of Brazil.
-          Format of CNPJ - 14-digit number formatted as 00.000.000/0001-00
+          Format of CNPJ - 14Insira seu CPF-digit number formatted as 00.000.000/0001-00
           The first eight digits identify the company, the four digits after the slash identify the branch or subsidiary ("0001" defaults to the headquarters), and the last two are check digits`,
       section: 'businessInformation',
       validationPredicates: [
@@ -148,7 +148,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'nire',
-      label: 'NIRE/State Commercial Identification Number',
+      label: 'State Commercial Identification Number(NIRE)',
       required: true,
       documentation: `NIRE is the State Commercial Identification Number used by the State Commercial Board.`,
       section: 'businessInformation',
@@ -165,7 +165,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'ie',
-      label: 'IE/State Inscription',
+      label: 'State Inscription(IE)',
       documentation: `IE is the State Tax Identification Number used by the State Department of Taxation.
           Businesses that sell goods are required to have an IE, used mainly to pay ICMS, tax on the distribution of goods and services.`,
       section: 'businessInformation'
@@ -173,7 +173,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'im',
-      label: 'IM/Municipal Inscription',
+      label: 'Municipal Inscription(IM)',
       documentation: `IM is the Municipal Tax Identification Number used by the City Department of Taxation.
           Businesses that sell services are required to have an IM, used mainly to pay ISS, Sales Tax on Services.`,
       section: 'businessInformation'

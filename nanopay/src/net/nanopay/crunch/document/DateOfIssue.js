@@ -27,8 +27,8 @@ foam.CLASS({
   sections: [
     {
       name: 'dateOfIssueSection',
-      title: 'Date of Issue',
-      help: 'Enter the date of issue of your identification document'
+      title: 'When was your identification document Issued',
+      help: 'Enter the date of issue of your identification document, previously loaded.'
     }
   ],
 

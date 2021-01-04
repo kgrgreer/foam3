@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'GBBankAccount',
-  label: 'United Kingdom Bank',
+  label: 'United Kingdom',
   extends: 'net.nanopay.bank.EUBankAccount',
 
   documentation: 'United Kingdom/Great Britain bank account information.',

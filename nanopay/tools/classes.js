@@ -661,6 +661,7 @@ var classes = [
   'net.nanopay.tx.FeeSummaryTransactionLineItem',
   'net.nanopay.tx.FxSummaryTransactionLineItem',
   'net.nanopay.tx.EtaSummaryTransactionLineItem',
+  'net.nanopay.tx.UnsupportedDateException',
 
   'net.nanopay.fx.FXService',
   'net.nanopay.fx.client.ClientFXService',
@@ -1431,6 +1432,8 @@ var classes = [
   // exchange limit
   'net.nanopay.country.br.tx.ruler.ExchangeLimitTransactionRule',
   'net.nanopay.country.br.tx.ExchangeLimitTransaction',
+  'net.nanopay.country.br.tx.ExchangeLimitTransactionCronAgent',
+  'net.nanopay.country.br.tx.ExchangeLimitTransactionCronAgentSink',
 
   // DAO decorators
   'net.nanopay.account.AbliiBankAccountAutoverifyDAO',
