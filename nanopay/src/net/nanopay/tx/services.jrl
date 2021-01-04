@@ -109,19 +109,6 @@ p({
       .setRuler(false)
       .setCluster(false)
       .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(net.nanopay.tx.model.Transaction.CREATED).build() })
-      .setServiceProviderAware(true)
-      .setServiceProviderAwarePropertyInfos(
-        foam.util.Arrays.asMap(new Object[]
-          {
-            net.nanopay.account.Account.class.getName(),
-            new foam.core.PropertyInfo[] { net.nanopay.account.Account.OWNER },
-            net.nanopay.tx.model.Transaction.class.getName(),
-            new foam.core.PropertyInfo[] {
-                net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT,
-                net.nanopay.tx.model.Transaction.DESTINATION_ACCOUNT,
-              }
-          }
-        ))
       .build());
   """,
   "client": "{\"of\":\"net.nanopay.tx.model.Transaction\", \"remoteListenerSupport\": false, \"serverBox\":{ \"class\":\"foam.box.SessionClientBox\", \"url\":\"service/transactionDAO\", \"delegate\":{ \"class\":\"foam.box.TimeoutBox\", \"timeout\":60000,\"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/transactionDAO\"}}}}"

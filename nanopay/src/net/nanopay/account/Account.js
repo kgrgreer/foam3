@@ -28,6 +28,7 @@ foam.CLASS({
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.LastModifiedByAware',
+    'foam.nanos.auth.ServiceProviderAware',
     'net.nanopay.liquidity.approvalRequest.AccountApprovableAware',
   ],
 
@@ -41,6 +42,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.core.Currency',
+    'foam.nanos.auth.ServiceProviderAwareSupport',
     'foam.nanos.logger.Logger',
     'foam.nanos.session.LocalSetting',
     'foam.nanos.session.Session',
@@ -466,6 +468,22 @@ foam.CLASS({
     {
       name: 'checkerPredicate',
       javaFactory: 'return foam.mlang.MLang.FALSE;'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.ServiceProvider',
+      name: 'spid',
+      storageTransient: true,
+      section: 'systemInformation',
+      javaFactory: `
+        var accountSpidMap = new java.util.HashMap();
+        accountSpidMap.put(
+          Account.class.getName(),
+          new foam.core.PropertyInfo[] { Account.OWNER }
+        );
+        return new ServiceProviderAwareSupport()
+          .findSpid(foam.core.XLocator.get(), accountSpidMap, this);
+      `
     },
     {
       class: 'String',

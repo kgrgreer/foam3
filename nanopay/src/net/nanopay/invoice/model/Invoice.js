@@ -36,7 +36,8 @@ foam.CLASS({
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.LastModifiedByAware',
-    'foam.nanos.crunch.lite.Capable'
+    'foam.nanos.auth.ServiceProviderAware',
+    'foam.nanos.crunch.lite.Capable',
   ],
 
   searchColumns: [
@@ -64,6 +65,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Group',
+    'foam.nanos.auth.ServiceProviderAwareSupport',
     'foam.util.SafetyUtil',
     'java.util.Date',
     'java.util.UUID',
@@ -839,6 +841,24 @@ foam.CLASS({
       name: 'totalSourceAmount',
       includeInDigest: false,
       section: 'invoiceInformation'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.ServiceProvider',
+      name: 'spid',
+      storageTransient: true,
+      javaFactory: `
+        var invoiceSpidMap = new java.util.HashMap();
+        invoiceSpidMap.put(
+          Invoice.class.getName(),
+          new foam.core.PropertyInfo[] {
+            Invoice.PAYER_ID,
+            Invoice.PAYEE_ID,
+          }
+        );
+        return new ServiceProviderAwareSupport()
+          .findSpid(foam.core.XLocator.get(), invoiceSpidMap, this);
+      `
     },
     {
       class: 'StringArray',
