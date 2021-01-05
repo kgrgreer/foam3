@@ -44,7 +44,7 @@ foam.CLASS({
           public void execute(X x) {
           UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
           User user = ucj.getSubject(x).getUser();
-          if ( ! user instanceof Business ) throw new RuntimeException("Error in ucj source user - Not a business.");
+          if ( ! ( user instanceof Business ) ) throw new RuntimeException("Error in ucj source user - Not a business.");
           
           StrategizedBankAccount bankInfo = (StrategizedBankAccount) ucj.getData();
           BankAccount bank = (BankAccount) (bankInfo.getBankAccount()).fclone();
