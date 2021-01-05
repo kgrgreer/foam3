@@ -320,11 +320,6 @@ ucjBOD.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-7");
 ucjBOD.setData(bod);
 userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBOD);
 
-foam.nanos.crunch.Capability bodrrCapability = (foam.nanos.crunch.Capability) ((DAO) x.get("localCapabilityDAO")).find("554af38a-8225-87c8-dfdf-eeb15f71215f-7-reviewRequired");
-foam.nanos.crunch.Capability bodCapability = (foam.nanos.crunch.Capability) ((DAO) x.get("localCapabilityDAO")).find("554af38a-8225-87c8-dfdf-eeb15f71215f-7");
-test(false, "*** bodrrCapability - " + bodrrCapability);
-test(false, "*** bodCapability - " + bodCapability);
-
 // Certify Owners Percent : 554af38a-8225-87c8-dfdf-eeb15f71215e-12
 CertifyOwnersPercent cop = new CertifyOwnersPercent();
 cop.setAgreement(true);
