@@ -238,6 +238,7 @@ foam.CLASS({
         this.isConnecting = false;
         return false;
       }
+      this.data.copyFrom(this.contact);
       this.isConnecting = false;
       return true;
     },

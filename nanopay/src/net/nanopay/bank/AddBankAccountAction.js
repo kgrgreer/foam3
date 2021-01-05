@@ -54,7 +54,7 @@ foam.CLASS({
       value: async function(X) {
         let permission = await X.auth.check(null, 'multi-currency.read');
         if ( permission ) {
-          X.controllerView.stack.push({
+          X.stack.push({
             class: 'net.nanopay.bank.ui.BankPickCurrencyView'
           }, X);
         } else {
