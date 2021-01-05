@@ -112,7 +112,11 @@ public class RbcPlannerTest
   private DigitalAccount createTestDigitalAccount(BankAccount testBankAccount){
     DAO userDAO = (DAO) x_.get("localUserDAO");
     User user = (User) userDAO.find_(x_, testBankAccount.getOwner());
-    return DigitalAccount.findDefault(x_, user, "CAD");
+    DigitalAccount d =  (DigitalAccount) DigitalAccount.findDefault(x_, user, "CAD").fclone();
+    d.setTrustAccount("11");
+    DAO dao = (DAO) x_.get("accountDAO");
+    d = (DigitalAccount) (dao.put(d)).fclone();
+    return d;
   }
 
   private Transaction createCOTransaction(BankAccount testBankAccount, DigitalAccount testDigitalAccount){
@@ -135,7 +139,7 @@ public class RbcPlannerTest
       .put(createCOTransaction(testBankAccount,testDigitalAccount));
 
     test(resultQuote != null, "Result CO Quote is not null" );
-    test(resultQuote.getPlans() != null && resultQuote.getPlans().length > 0, "Result CO Quote has plane" );
+    test(resultQuote.getPlans() != null && resultQuote.getPlans().length > 0, "Result CO Quote has plan" );
     
     boolean hasRbcCOTransaction = false;
     for ( Transaction plan : resultQuote.getPlans() ) {
@@ -153,7 +157,7 @@ public class RbcPlannerTest
       .put(createCITransaction(testBankAccount,testDigitalAccount));
 
     test(resultQuote != null, "Result CI Quote is not null" );
-    test(resultQuote.getPlans() != null && resultQuote.getPlans().length > 0, "Result CI Quote has plane" );
+    test(resultQuote.getPlans() != null && resultQuote.getPlans().length > 0, "Result CI Quote has plan" );
     
     boolean hasRbcCITransaction = false;
     for ( Transaction plan : resultQuote.getPlans() ) {

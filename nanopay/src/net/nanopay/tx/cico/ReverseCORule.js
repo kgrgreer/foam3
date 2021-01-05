@@ -30,6 +30,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.notification.Notification',
+    'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.TrustAccount',
     'net.nanopay.tx.DigitalTransaction',
     'net.nanopay.tx.KotakPaymentTransaction',
@@ -56,7 +57,7 @@ foam.CLASS({
             public void execute(X x) {
               DigitalTransaction revTxn = new DigitalTransaction.Builder(x)
                 .setDestinationAccount(txn.getSourceAccount())
-                .setSourceAccount(TrustAccount.find(x, txn.findSourceAccount(x), txn.getInstitutionNumber()).getId())
+                .setSourceAccount(((DigitalAccount) txn.findSourceAccount(x)).getTrustAccount())
                 .setAmount(txn.getAmount())
                 .setName("Reversal of: "+txn.getId())
                 .setAssociateTransaction(txn.getId())

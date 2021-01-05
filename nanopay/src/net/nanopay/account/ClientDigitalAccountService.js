@@ -32,7 +32,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'serviceName',
-      value: 'digitalAccount'
+      value: 'digitalAccountService'
     },
     {
       class: 'Stub',

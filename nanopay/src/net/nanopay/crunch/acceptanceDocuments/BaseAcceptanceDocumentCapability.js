@@ -79,9 +79,9 @@ foam.CLASS({
               .end()
             .end()
             .start('div')
-              .add(foam.u2.view.agreementView.create({
+              .add(foam.nanos.fs.AgreementView.create({
                 fileId: self.dot('fileId').value
-              }))
+              }, X))
             .end();
           }
         }, X);
