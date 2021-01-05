@@ -39,7 +39,7 @@ foam.CLASS({
       javaCode: `
         FObject nu  = (FObject) NEW_OBJ.f(obj);
         if ( ! (nu instanceof DigitalAccount) ) return false;
-        if ( ((DigitalAccount) nu).getLiquiditySetting() == 0 ) return false;
+        if ( SafetyUtil.isEmpty(((DigitalAccount) nu).getLiquiditySetting()) ) return false;
         LiquiditySettings ls = ((DigitalAccount) nu).findLiquiditySetting((X) obj);
 
         if (ls.getHighLiquidity().getRebalancingEnabled() == true)

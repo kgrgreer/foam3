@@ -181,7 +181,6 @@ foam.RELATIONSHIP({
   targetProperty: {
     section: 'liquiditySettingsSection',
     label: '',
-    value: 0,
     tableCellFormatter: function(value, obj, axiom) {
       this.__subSubContext__.liquiditySettingsDAO
         .find(value)
@@ -1197,4 +1196,14 @@ foam.RELATIONSHIP({
   forwardName: 'paymentProviders',
   inverseName: 'natureCodes',
   junctionDAOKey: 'NatureCodePaymentProviderJunctionDAO'
+});
+
+foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.account.TrustAccount',
+  targetModel: 'net.nanopay.account.DigitalAccount',
+  forwardName: 'digitalAccounts',
+  inverseName: 'trustAccount',
+  cardinality: '1:*',
+  sourceDAOKey: 'accountDAO',
+  targetDAOKey: 'accountDAO',
 });

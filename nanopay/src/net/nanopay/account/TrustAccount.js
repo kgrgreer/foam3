@@ -59,6 +59,20 @@ foam.CLASS({
     }
   ],
 
+  methods: [
+    {
+      name: 'findTrustAccount',
+      type: 'net.nanopay.account.TrustAccount',
+      args: [
+        {
+          type: 'Context',
+          name: 'x'
+        }
+      ],
+      javaCode: 'return this;'
+    }
+  ],
+
   axioms: [
     {
       buildJavaClass: function(cls) {
