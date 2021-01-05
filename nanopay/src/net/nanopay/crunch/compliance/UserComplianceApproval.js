@@ -74,9 +74,21 @@ foam.CLASS({
               }
 
               // Update junction
-              Subject subject = ucj.getSubject(x);
-              X ownerContext = x.put("subject", subject);
-              ((DAO) x.get("userCapabilityJunctionDAO")).inX(ownerContext).put(ucj);
+              Subject subject = ucj.getSubject(x);              
+              X ownerContext = x.put("subject", subject);              
+              Subject systemSubject = new Subject.Builder(x).setUser(new User.Builder(x).setId(1).build()).build();
+              X systemX = x.put("subject", systemSubject);
+              ((CrunchService) x.get("crunchService")).updateUserJunction(systemX, subject, ucj.getTargetId(), null, status);
+            }
+            if ( approval == null ) {
+              // if approval is null, means no approval was sent so set the ucj to approved
+              // usage : ucj with (valid) empty list of business directors, or beneficial owners
+              // for which beneficialownersanctionvalidator/businessdirectorsanctionvalidator does not send any approvalrequests
+              Subject userSubject = ucj.getSubject(x);
+              Subject systemSubject = new Subject.Builder(x).setUser(new User.Builder(x).setId(1).build()).build();
+              X systemX = x.put("subject", systemSubject);
+              status = CapabilityJunctionStatus.APPROVED;
+              ((CrunchService) x.get("crunchService")).updateUserJunction(systemX, userSubject, ucj.getTargetId(), null, status);
             }
             ruler.putResult(status);
           }
