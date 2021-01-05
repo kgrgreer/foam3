@@ -320,8 +320,8 @@ ucjBOD.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-7");
 ucjBOD.setData(bod);
 userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBOD);
 
-Capability bodrr = ((DAO) x.get("localCapabilityDAO")).find("554af38a-8225-87c8-dfdf-eeb15f71215f-7-reviewRequired");
-Capability bod = ((DAO) x.get("localCapabilityDAO")).find("554af38a-8225-87c8-dfdf-eeb15f71215f-7");
+foam.nanos.crunch.Capability bodrr = (foam.nanos.crunch.Capability) ((DAO) x.get("localCapabilityDAO")).find("554af38a-8225-87c8-dfdf-eeb15f71215f-7-reviewRequired");
+foam.nanos.crunch.Capability bod = (foam.nanos.crunch.Capability) ((DAO) x.get("localCapabilityDAO")).find("554af38a-8225-87c8-dfdf-eeb15f71215f-7");
 test(false, "*** bodrr - " + bodrr);
 test(false, "*** bod - " + bod);
 
