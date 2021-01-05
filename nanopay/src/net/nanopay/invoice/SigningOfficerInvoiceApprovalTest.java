@@ -378,7 +378,7 @@ myBusinessBankAccount.setInstitution(1);
 myBusinessBankAccount.setBranchId("54321");
 myBusinessBankAccount.setOwner(myBusiness.getId());
 myBusinessBankAccount.setStatus(BankAccountStatus.VERIFIED);
-myBusinessBankAccount = (CABankAccount) myBusiness.getAccounts(x).put_(x, myBusinessBankAccount);
+// myBusinessBankAccount = (CABankAccount) myBusiness.getAccounts(x).put_(x, myBusinessBankAccount);
 
 // add bankaccount capability to myBusiness so that ucjUPDAI can be reput and granted
 StrategizedBankAccount sba = new StrategizedBankAccount.Builder(x)
