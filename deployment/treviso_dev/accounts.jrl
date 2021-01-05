@@ -1,4 +1,3 @@
-p({class:"net.nanopay.account.DigitalAccount",denomination:"BRL",id:"31",name:"FeeAccount-treviso",isDefault:true,owner:2001,created:1601392287945,createdBy:1,createdByAgent:1,lastModified:1601392287945,lastModifiedBy:1,lifecycleState:1})
 p({
   "class":"net.nanopay.bank.BRBankAccount",
   "id":"34",
