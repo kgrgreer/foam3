@@ -513,7 +513,7 @@ foam.CLASS({
             .startContext({ data: this.invoice })
               .start(this.invoice.CONTACT_ID, {
                 action: this.ADD_CONTACT,
-                actionContext: this,
+                actionData: this,
                 search: true,
                 searchPlaceholder: this.START_SEARCH,
                 mode: displayMode
