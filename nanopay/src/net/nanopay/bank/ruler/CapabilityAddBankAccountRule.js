@@ -50,8 +50,7 @@ foam.CLASS({
           BankAccount bank = (BankAccount) (bankInfo.getBankAccount()).fclone();
           bank.setOwner(user.getId());
           
-          DAO accountDAO = (DAO) x.get("localAccountDAO");
-          accountDAO.put(bank);
+          user.getAccounts(x).put_(x, bank);
 
          }
         }, "Create bank account for a user submitting a strategized bank account capability");
