@@ -34,7 +34,8 @@ foam.CLASS({
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
-    'foam.nanos.auth.LifecycleState'
+    'foam.nanos.auth.LifecycleState',
+    'foam.util.SafetyUtil',
   ],
   properties: [
     {
@@ -117,11 +118,12 @@ foam.CLASS({
         if ( ! (destination instanceof DigitalAccount) )
           throw new ValidationException("Destination must be digital");
 
+
         // Transaction must be between different trusts
-        TrustAccount sourceTrust = TrustAccount.find(x, source);
-        TrustAccount destinationTrust = TrustAccount.find(x, destination);
-        if (sourceTrust.getId() == destinationTrust.getId())
-          throw new ValidationException("This transaction can only be used between trust accounts. ");
+        TrustAccount sourceTrust = ((DigitalAccount) source).findTrustAccount(x);
+        TrustAccount destinationTrust = ((DigitalAccount) destination).findTrustAccount(x);
+        if (SafetyUtil.equals(sourceTrust.getId(),destinationTrust.getId()))
+          throw new ValidationException(sourceTrust.getId()+"  "+destinationTrust.getId()+" This transaction can only be used between different trust accounts. ");
 
         // Check transaction status and lifecycleState
         Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
@@ -164,6 +166,9 @@ foam.CLASS({
         1. (stage 1) status=COMPLETED and lifecycleState=ACTIVE and old txn not in this combo.
         2. (stage 0) status=PENDING and lifecycleState=ACTIVE, old txn was in PPC, paused or scheduled.
         */
+        if ( (getStatus() == TransactionStatus.COMPLETED) && (oldTxn == null) )
+          throw new ValidationException("InterTrustTransaction Impossible state reached.");
+
         if (
           ( getStatus() == TransactionStatus.COMPLETED
           && getLifecycleState() == LifecycleState.ACTIVE
@@ -171,7 +176,8 @@ foam.CLASS({
             || oldTxn.getLifecycleState() != LifecycleState.ACTIVE )
           ) ||
           ( getStatus() == TransactionStatus.PENDING && (
-            oldTxn.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED
+            oldTxn == null
+            || oldTxn.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED
             || oldTxn.getStatus() == TransactionStatus.PAUSED
             || oldTxn.getStatus() == TransactionStatus.SCHEDULED)
           )

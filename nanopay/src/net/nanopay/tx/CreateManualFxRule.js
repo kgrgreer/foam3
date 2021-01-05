@@ -48,7 +48,7 @@ foam.CLASS({
                 .setDescription("Kotak Manul FX transfer is comlpeted")
                 .setDaoKey("transactionDAO")
                 .setObjId(kotakFxTransaction.getId())
-                .setGroup("payment-ops")
+                .setGroup(kotakFxTransaction.getSpid() + "-payment-ops")
                 .setStatus(ApprovalStatus.REQUESTED).build());
           }
         }, "Create Manual FX Rule");

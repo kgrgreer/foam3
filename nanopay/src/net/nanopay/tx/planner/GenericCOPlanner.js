@@ -23,6 +23,7 @@ foam.CLASS({
   documentation: 'Planner for doing Cash outs for any currency instantly.',
 
   javaImports: [
+    'net.nanopay.account.DigitalAccount',
     'net.nanopay.tx.cico.COTransaction',
     'net.nanopay.account.TrustAccount',
   ],
@@ -49,7 +50,7 @@ foam.CLASS({
       cashOut.setLineItems(requestTxn.getLineItems());
       cashOut.setName("Cash Out of "+cashOut.getSourceCurrency());
       // use destinations trust, need system context.
-      TrustAccount trustAccount = TrustAccount.find(getX(), quote.getDestinationAccount());
+      TrustAccount trustAccount = ((DigitalAccount) quote.getSourceAccount()).findTrustAccount(x);
 
       quote.addTransfer(true, trustAccount.getId(), cashOut.getAmount(), 0);
       quote.addTransfer(true, quote.getSourceAccount().getId(), -cashOut.getAmount(), 0);

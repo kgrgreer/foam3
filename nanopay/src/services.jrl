@@ -320,16 +320,6 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setAuthorize(false)
       .setEnableInterfaceDecorators(true)
-      .setServiceProviderAware(true)
-      .setServiceProviderAwarePropertyInfos(
-        foam.util.Arrays.asMap(new Object[]
-        {
-          net.nanopay.invoice.model.Invoice.class.getName(),
-          new foam.core.PropertyInfo[] {
-            net.nanopay.invoice.model.Invoice.PAYER_ID,
-            net.nanopay.invoice.model.Invoice.PAYEE_ID,
-          }
-        }))
       .build()
       .orderBy(foam.mlang.MLang.DESC(net.nanopay.invoice.model.Invoice.CREATED));
   """,
@@ -1036,7 +1026,7 @@ p({
 
   return new foam.dao.EasyDAO.Builder(x)
     .setPm(true)
-    .setSeqNo(true)
+    .setGuid(true)
     .setRuler(false) // TODO: needs to be set to true https://nanopay.atlassian.net/browse/NP-652
     .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
     .setJournalName("liquiditySettings")

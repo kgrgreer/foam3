@@ -25,8 +25,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'ACKNOWLEDGE_BRAZIL_TC', message: 'Must acknowledge the Terms and Conditions' },
-    { name: 'DOCUMENT_READ', message: 'Document should be reviewed' }
+    { name: 'ACKNOWLEDGE_BRAZIL_TC', message: 'Must acknowledge the Terms and Conditions' }
   ],
 
   sections: [
@@ -48,9 +47,9 @@ foam.CLASS({
       value: 'I agree to '
     },
     {
-      name: 'link',
+      name: 'fileId',
       factory: function() {
-        return '/service/httpFileService/61ee89ca-19ec-d8fc-0306-380657a38949?sessionId=' + localStorage['defaultSession'];
+        return '61ee89ca-19ec-d8fc-0306-380657a38949';
       }
     },
     {
@@ -63,12 +62,6 @@ foam.CLASS({
               .TrevisoUnlockPaymentTermsAndConditions.AGREEMENT, true);
           },
           errorMessage: 'ACKNOWLEDGE_BRAZIL_TC'
-        },
-        {
-          predicateFactory: function(e) {
-            return e.EQ(net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability.IS_LINK_CLICKED, true);
-          },
-          errorMessage: 'DOCUMENT_READ'
         }
       ]
     }

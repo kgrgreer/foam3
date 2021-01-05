@@ -25,6 +25,7 @@ import foam.mlang.Constant;
 import foam.mlang.Expr;
 import foam.mlang.Formula;
 import foam.nanos.logger.Logger;
+import net.nanopay.account.DigitalAccount;
 import net.nanopay.fx.TotalRateLineItem;
 import net.nanopay.tx.ExternalTransfer;
 import net.nanopay.tx.FeeLineItem;
@@ -96,7 +97,7 @@ public class FeeEngine {
         }
 
         transaction.addLineItems(new TransactionLineItem[]{
-          newFeeLineItem(fee.getLabel(), feeAmount, getCurrency(x, transaction), transaction.getSourceAccount())
+          newFeeLineItem(x, fee.getLabel(), feeAmount, getCurrency(x, transaction), transaction.getSourceAccount())
         });
       }
     } catch ( Exception e ) {
@@ -180,7 +181,7 @@ public class FeeEngine {
     return transactionFeeRule_.getFees(x);
   }
 
-  private FeeLineItem newFeeLineItem(String name, long amount, Currency currency, String sourceAccount)
+  private FeeLineItem newFeeLineItem(X x, String name, long amount, Currency currency, String sourceAccount)
     throws InstantiationException, IllegalAccessException
   {
     var result = (FeeLineItem) transactionFeeRule_.getFeeClass().newInstance();
@@ -197,8 +198,8 @@ public class FeeEngine {
     }
     if ( ! SafetyUtil.isEmpty(transactionFeeRule_.getFeeAccount()) ) {
       result.setTransfers(new Transfer[] {
-        new ExternalTransfer(sourceAccount, -amount),
-        new ExternalTransfer(transactionFeeRule_.getFeeAccount(), amount)
+        new ExternalTransfer(sourceAccount, -amount, 0),
+        new ExternalTransfer(transactionFeeRule_.getFeeAccount(), amount, 0)
       });
     }
     return result;

@@ -43,9 +43,9 @@ foam.CLASS({
       value: 'I certify that I have read, understood and agree to the '
     },
     {
-      name: 'link',
+      name: 'fileId',
       factory: function() {
-        return '/service/httpFileService/25c8917b-4283-ba9a-8158-533241a09619?sessionId=' + localStorage['defaultSession'];
+        return '25c8917b-4283-ba9a-8158-533241a09619';
       }
     },
     {

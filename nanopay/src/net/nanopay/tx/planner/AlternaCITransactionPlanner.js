@@ -21,6 +21,7 @@ foam.CLASS({
   extends: 'net.nanopay.tx.planner.AbstractTransactionPlanner',
 
   javaImports: [
+    'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.TrustAccount',
     'net.nanopay.payment.PADTypeLineItem',
     'net.nanopay.tx.alterna.AlternaCITransaction',
@@ -45,7 +46,7 @@ foam.CLASS({
     {
       name: 'plan',
       javaCode: `
-        TrustAccount trustAccount = TrustAccount.find(x, quote.getSourceAccount(), INSTITUTION_NUMBER);
+        TrustAccount trustAccount = ((DigitalAccount) quote.getDestinationAccount()).findTrustAccount(x);
         AlternaCITransaction t = new AlternaCITransaction();
         t.copyFrom(requestTxn);
         t.setStatus(net.nanopay.tx.model.TransactionStatus.PENDING);

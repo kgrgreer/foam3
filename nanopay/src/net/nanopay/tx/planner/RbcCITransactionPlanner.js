@@ -24,6 +24,7 @@ foam.CLASS({
 
   javaImports: [
     'java.time.Duration',
+    'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.TrustAccount',
     'net.nanopay.payment.PADTypeLineItem',
     'net.nanopay.tx.ETALineItem',
@@ -48,7 +49,7 @@ foam.CLASS({
     {
       name: 'plan',
       javaCode: `
-      TrustAccount trustAccount = TrustAccount.find(x, quote.getSourceAccount(), INSTITUTION_NUMBER);
+      TrustAccount trustAccount = ((DigitalAccount) quote.getDestinationAccount()).findTrustAccount(x);
       RbcCITransaction t = new RbcCITransaction();
       t.copyFrom(requestTxn);
       t.setStatus(net.nanopay.tx.model.TransactionStatus.PENDING);

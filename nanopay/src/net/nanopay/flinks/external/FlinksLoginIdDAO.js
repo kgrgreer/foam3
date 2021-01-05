@@ -177,7 +177,7 @@ foam.CLASS({
         BankAccount bankAccount = findBankAccount(x, owner, flinksLoginId, accountDetail);
         if ( bankAccount == null ) {
           // Create the bank account owned by the business if it exists, otherwise by the user
-          bankAccount = createBankAccount(x, owner, flinksLoginId, accountDetail);
+          bankAccount = createBankAccount(x, owner, flinksLoginId, accountDetail, loginDetail);
         }
         flinksLoginId.setAccount(bankAccount.getId());
 
@@ -230,7 +230,8 @@ foam.CLASS({
           { name: 'x', type: 'Context' },
           { name: 'owner', type: 'User' },
           { name: 'request', type: 'FlinksLoginId' },
-          { name: 'accountDetail', type: 'AccountWithDetailModel' }
+          { name: 'accountDetail', type: 'AccountWithDetailModel' },
+          { name: 'loginDetail', type: 'LoginModel' }
         ],
         javaCode: `
         DAO accountDAO = (DAO) x.get("accountDAO");
@@ -251,6 +252,10 @@ foam.CLASS({
           .setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED)
           .setVerifiedBy("FLINKS")
           .build();
+
+        // Save the login type for future reference
+        bankAccount.getExternalData().put("FlinksLoginUsername", loginDetail.getUsername());
+        bankAccount.getExternalData().put("FlinksLoginType", loginDetail.getType());
 
         return (BankAccount) accountDAO.put(bankAccount);
       `

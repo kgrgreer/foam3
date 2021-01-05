@@ -246,6 +246,7 @@ public class BlacklistTest extends Test {
     transaction.setPayeeId(invoice.getPayeeId());
     transaction.setAmount(invoice.getAmount());
     transaction.setInvoiceId(invoice.getId());
+
     try {
       Transaction result = (Transaction) transactionDAO.inX(myAdminContext).put(transaction);
       test(result == null, "Transaction not created until business passes compliance passing proper compliance.");
@@ -312,7 +313,7 @@ public class BlacklistTest extends Test {
     bo.setBusiness(myBusiness.getId());
     bo.setAddress(address);
     bo.setBirthday(birthday);
-    bo.setOwnershipPercent(30);
+    bo.setOwnershipPercent(30);  
 
     int[] chosenOwners = {1};
 
