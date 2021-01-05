@@ -36,6 +36,7 @@ foam.CLASS({
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.LastModifiedByAware',
+    'foam.nanos.auth.LifecycleAware',
     'foam.nanos.auth.ServiceProviderAware',
     'foam.nanos.crunch.lite.Capable',
   ],
@@ -813,6 +814,14 @@ foam.CLASS({
       class: 'StringArray',
       name: 'capabilityIds',
       section: 'invoiceInformation'
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'foam.nanos.auth.LifecycleState',
+      name: 'lifecycleState',
+      value: foam.nanos.auth.LifecycleState.ACTIVE,
+      writePermissionRequired: true,
+      readPermissionRequired: true
     }
   ],
 
