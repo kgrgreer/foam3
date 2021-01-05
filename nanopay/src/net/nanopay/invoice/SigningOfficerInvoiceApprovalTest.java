@@ -523,7 +523,7 @@ transaction.setInvoiceId(invoice.getId());
 threw = false;
 message = "";
 try {
-  transactionDAO.inX(myApproverContext).put(transaction);
+  transactionDAO.inX(myAdminContext).put(transaction);
 } catch (Throwable t) {
   threw = true;
   message = t.getMessage();
