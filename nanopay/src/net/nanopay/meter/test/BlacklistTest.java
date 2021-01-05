@@ -385,12 +385,6 @@ public class BlacklistTest extends Test {
     ucjCDR.setData(cdr);
     userCapabilityJunctionDAO.inX(myAdminContext).put(ucjCDR);
 
-    ucjCDR = new UserCapabilityJunction();
-    ucjCDR.setSourceId(myAdmin.getId());
-    ucjCDR.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-1a5");
-    ucjCDR.setStatus(CapabilityJunctionStatus.GRANTED);
-    userCapabilityJunctionDAO.inX(x).put(ucjCDR);
-
     // add bankaccount capability so ucjUPDAI can be reput and granted
     StrategizedBankAccount sba = new StrategizedBankAccount.Builder(x)
       .setBankAccount(myBusinessBankAccount)
