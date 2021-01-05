@@ -494,7 +494,7 @@ foam.CLASS({
         return this.status === this.BankAccountStatus.UNVERIFIED;
       },
       code: function(X) {
-        this.ctrl.add(this.Popup.create().tag({
+        X.ctrl.add(this.Popup.create().tag({
           class: 'net.nanopay.cico.ui.bankAccount.modalForm.CABankMicroForm',
           bank: this
         }));
