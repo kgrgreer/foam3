@@ -35,7 +35,10 @@ foam.CLASS({
       javaCode: `
         return AND(
           EQ(OLD_OBJ, null),
-          new EndsWith(DOT(NEW_OBJ, User.GROUP), prepare("-sme")),
+          new EndsWith.Builder(getX())
+            .setArg1(DOT(NEW_OBJ, User.GROUP))
+            .setArg2(prepare("-sme"))
+            .build(),
           EQ(DOT(NEW_OBJ, CLASS_OF(User.class)), true)
         ).f(obj);
       `

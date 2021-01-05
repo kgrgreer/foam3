@@ -35,7 +35,10 @@ foam.CLASS({
       javaCode: `
         return AND(
           EQ(DOT(NEW_OBJ, LoginAttempt.LOGIN_SUCCESSFUL), true),
-          new EndsWith(DOT(NEW_OBJ, LoginAttempt.GROUP), prepare("-sme")),
+          new EndsWith.Builder(getX())
+            .setArg1(DOT(NEW_OBJ, LoginAttempt.GROUP))
+            .setArg2(prepare("-sme"))
+            .build(),
           EQ(OLD_OBJ, null)
         ).f(obj);
       `
