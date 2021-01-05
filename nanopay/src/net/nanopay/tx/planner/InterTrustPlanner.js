@@ -23,6 +23,7 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.account.TrustAccount',
+    'net.nanopay.account.DigitalAccount',
     'net.nanopay.tx.cico.InterTrustTransaction'
   ],
 
@@ -34,7 +35,7 @@ foam.CLASS({
         t.copyFrom(requestTxn);
         t.setStatus(net.nanopay.tx.model.TransactionStatus.PENDING);
         addInterTrustTransfers(x, t, quote);
-
+        t.setPlanCost(t.getPlanCost() + 1);
         return t;
     `
     },
@@ -46,8 +47,8 @@ foam.CLASS({
         { name: 'quote', type: 'net.nanopay.tx.TransactionQuote' },
       ],
       javaCode: `
-        TrustAccount trustAccountFrom = TrustAccount.find(x, quote.getSourceAccount());
-        TrustAccount trustAccountTo = TrustAccount.find(x, quote.getDestinationAccount());
+        TrustAccount trustAccountFrom = ((DigitalAccount) quote.getSourceAccount()).findTrustAccount(x);
+        TrustAccount trustAccountTo = ((DigitalAccount) quote.getDestinationAccount()).findTrustAccount(x);
 
         //Stage 0 CO transfers
         quote.addTransfer(true, trustAccountFrom.getId(), t.getAmount(), 0);

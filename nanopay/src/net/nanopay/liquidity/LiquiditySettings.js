@@ -78,9 +78,8 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Long',
       name: 'id',
-      hidden: true
+      class: 'String'
     },
     {
       class: 'String',

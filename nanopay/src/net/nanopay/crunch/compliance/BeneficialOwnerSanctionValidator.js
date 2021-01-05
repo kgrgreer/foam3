@@ -54,7 +54,7 @@ foam.CLASS({
         ComplianceValidationStatus rulerResult = ComplianceValidationStatus.VALIDATED;
         BeneficialOwner owner = null;
         User user = (User) ucj.findSourceId(x);
-        String group = user.getSpid().equals("nanopay") ? "fraud-ops" : user.getSpid() + "-fraud-ops";
+        String group = user.getSpid() + "-fraud-ops";
 
         for ( int i = 1 ; i <= data.getAmountOfOwners() ; i++ ) {
           ComplianceValidationStatus status = ComplianceValidationStatus.VALIDATED;

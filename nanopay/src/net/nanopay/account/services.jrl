@@ -84,17 +84,6 @@ p({
       .setPipelinePm(true)
       .setEnableInterfaceDecorators(false)
       .setRuler(false)
-      .setServiceProviderAware(true)
-      .setServiceProviderAwarePropertyInfos(
-        new java.util.HashMap() {{
-          put(
-            net.nanopay.account.Account.class.getName(),
-            new foam.core.PropertyInfo[] {
-              net.nanopay.account.Account.OWNER
-            }
-          );
-        }}
-      ) 
       .build();
   """,
   "client":
@@ -159,14 +148,14 @@ p({
 
 p({
   "class":"foam.nanos.boot.NSpec", 
-  "name":"digitalAccount",
+  "name":"digitalAccountService",
   "serve":true, 
   "boxClass":"net.nanopay.account.DigitalAccountServiceInterfaceSkeleton", 
-  "serviceClass":"net.nanopay.account.DigitalAccountService",
+  "serviceClass":"net.nanopay.account.MultiTrustDigitalAccountService",
   "client": """
   { 
     "class":"net.nanopay.account.ClientDigitalAccountService", 
-    "serviceName": "service/digitalAccount" 
+    "serviceName": "service/digitalAccountService"
   }
   """
 })

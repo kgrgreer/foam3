@@ -136,14 +136,7 @@ foam.CLASS({
       if ( kotakPlan != null ) {
 
         // add transfer to update CI trust account
-        TrustAccount trustAccount = null;
-        if ( cashinPlan instanceof BmoCITransaction ) {
-          trustAccount = TrustAccount.find(x, quote.getSourceAccount(), BMO_INSTITUTION_NUMBER);
-        } else if ( cashinPlan instanceof RbcCITransaction ) {
-          trustAccount = TrustAccount.find(x, quote.getSourceAccount(), RBC_INSTITUTION_NUMBER);
-        } else {
-          trustAccount = TrustAccount.find(x, quote.getSourceAccount(), ALTERNA_INSTITUTION_NUMBER);
-        }
+        TrustAccount trustAccount =  ((DigitalAccount) cashinPlan.findDestinationAccount(x)).findTrustAccount(x);
         Transfer t = new Transfer();
         t.setAccount(trustAccount.getId());
         t.setAmount(requestTxn.getAmount());
