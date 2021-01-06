@@ -500,7 +500,7 @@ try {
   message = t.getMessage();
   print("DEBUG: " + message);
 }
-test(! threw && invoiceStatusIsCorrect && paymentStatusIsCorrect, "When an employee tries to pay an invoice the invoice is set to a PENDING_APPROVAL state.");
+test(! threw && invoiceStatusIsCorrect && paymentStatusIsCorrect, "When an employee tries to pay an invoice the invoice is set to a PENDING_APPROVAL state. MESSAGE = " + message);
 
 
 invoice = new Invoice();
@@ -529,6 +529,6 @@ try {
   message = t.getMessage();
   print("DEBUG: " + message);
 }
-test(! threw, "When an approver tries to pay an invoice, it works as expected.");
+test(! threw, "When an approver tries to pay an invoice, it works as expected. MESSAGE = " + message);
   }
 }
