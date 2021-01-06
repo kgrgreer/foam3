@@ -153,7 +153,7 @@ foam.CLASS({
   properties: [
     {
       name: 'id',
-      updateVisibility: 'RO'
+      updateVisibility: 'HIDDEN'
     },
     {
       class: 'String',
@@ -186,7 +186,7 @@ foam.CLASS({
     },
     {
       name: 'summary',
-      updateVisibility: 'RO',
+      updateVisibility: 'HIDDEN',
       networkTransient: false,
       tableCellFormatter: function(_, obj) {
         this.start()
