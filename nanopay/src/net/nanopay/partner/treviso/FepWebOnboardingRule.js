@@ -25,6 +25,9 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.dao.DAO',
+    'foam.nanos.alarming.Alarm',
+    'foam.nanos.alarming.AlarmReason',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
     'foam.nanos.crunch.UserCapabilityJunction',
@@ -42,14 +45,34 @@ foam.CLASS({
             Business business = (Business) obj;
             try {
               ((TrevisoService) x.get("trevisoService")).createEntity(x, business.getId());
+              DAO alarmDAO = (DAO) x.get("alarmDAO");
+              Alarm alarm = (Alarm) alarmDAO.find_(x, new Alarm(this.getClass().getSimpleName()));
+              if ( alarm != null && alarm.getIsActive() ) {
+                alarm = (Alarm) alarm.fclone();
+                alarm.setIsActive(false);
+                alarmDAO.put_(x, alarm);
+              }
             } catch ( Throwable t ) {
               Logger logger = (Logger) x.get("logger");
 
               Throwable cause = t.getCause();
-              if ( cause instanceof java.net.ConnectException ) {
-                throw new RuntimeException(t);
-              } else {
-                // if not connection error, stop retrying
+              while ( cause != null ) {
+                if ( cause instanceof java.net.ConnectException ) {
+                  Alarm alarm = new Alarm.Builder(x)
+                    .setName(this.getClass().getSimpleName())
+                    .setSeverity(foam.log.LogLevel.ERROR)
+                    .setReason(AlarmReason.TIMEOUT)
+                    .setNote(t.getMessage())
+                    .build();
+                  ((DAO) getX().get("alarmDAO")).put(alarm);
+                  break;
+                }
+                cause = cause.getCause();
+              }
+
+              if ( cause == null) {
+                // if not connection exception
+                cause = t.getCause();
                 logger.error("FepWeb Onboarding Failed", cause);
               }
             }
