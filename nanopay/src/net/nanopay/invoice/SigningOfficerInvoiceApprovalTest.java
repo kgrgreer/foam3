@@ -497,7 +497,7 @@ try {
   }
 } catch (Throwable t) {
   threw = true;
-  message = t;
+  message = t.getMessage() + ":::" + t.getStackTrace();
   print("DEBUG: " + message);
 }
 test(! threw && invoiceStatusIsCorrect && paymentStatusIsCorrect, "When an employee tries to pay an invoice the invoice is set to a PENDING_APPROVAL state. MESSAGE = " + message);
@@ -526,7 +526,7 @@ try {
   transactionDAO.inX(myAdminContext).put(transaction);
 } catch (Throwable t) {
   threw = true;
-  message = t;
+  message = t.getMessage() + ":::" + t.getStackTrace();
   print("DEBUG: " + message);
 }
 test(! threw, "When an approver tries to pay an invoice, it works as expected. MESSAGE = " + message);
