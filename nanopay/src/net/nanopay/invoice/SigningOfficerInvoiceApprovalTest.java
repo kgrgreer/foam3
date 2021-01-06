@@ -170,7 +170,7 @@ localUserDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "approver@example.com")).remo
 User myApprover = new User();
 myApprover.setFirstName("MyApprover");
 myApprover.setEmail("approver@example.com");
-myApprover.setGroup("sme");
+myApprover.setGroup(myBusiness.getBusinessPermissionId() + ".employee");
 myApprover.setEmailVerified(true); // Required to send or receive money.
 myApprover.setCompliance(ComplianceStatus.PASSED);
 myApprover.setSpid("nanopay");
@@ -192,7 +192,7 @@ X myEmployeeContext = Auth.sudo(x, myEmployee);
 UserUserJunction approverToBusinessJunc = new UserUserJunction();
 approverToBusinessJunc.setSourceId(myApprover.getId());
 approverToBusinessJunc.setTargetId(myBusiness.getId());
-approverToBusinessJunc.setGroup(myBusiness.getBusinessPermissionId() + ".admin");
+approverToBusinessJunc.setGroup(myBusiness.getBusinessPermissionId() + ".employee");
 agentJunctionDAO.put(approverToBusinessJunc);
 
 UserUserJunction employeeToBusinessJunc = new UserUserJunction();
@@ -523,7 +523,7 @@ transaction.setInvoiceId(invoice.getId());
 threw = false;
 message = "";
 try {
-  transactionDAO.inX(myApproverContext).put(transaction);
+  transactionDAO.inX(myAdminContext).put(transaction);
 } catch (Throwable t) {
   threw = true;
   message = t.getMessage();
