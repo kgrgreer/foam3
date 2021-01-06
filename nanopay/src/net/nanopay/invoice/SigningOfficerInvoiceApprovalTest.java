@@ -5,6 +5,7 @@ import foam.dao.*;
 import foam.nanos.approval.ApprovalRequest;
 import foam.nanos.approval.ApprovalStatus;
 import foam.nanos.auth.Address;
+import foam.nanos.auth.Group;
 import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
@@ -180,6 +181,9 @@ myApprover.setCompliance(ComplianceStatus.PASSED);
 myApprover.setSpid("nanopay");
 myApprover = (User) localUserDAO.put(myApprover);
 X myApproverContext = Auth.sudo(x, myApprover);
+Session sessionApprover = myApproverContext.get(Session.class);
+sessionApprover.setAgentId(myApprover.getId());
+myApproverContext = sessionApprover.applyTo(myApproverContext);
 
 localUserDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "employee@example.com")).removeAll();
 User myEmployee = new User();
@@ -540,7 +544,7 @@ transaction.setInvoiceId(invoice.getId());
 threw = false;
 message = "";
 try {
-  transactionDAO.inX(myAdminContext).put(transaction);
+  transactionDAO.inX(myApproverContext).put(transaction);
 } catch (Throwable t) {
   threw = true;
   message = t.getMessage();
