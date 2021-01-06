@@ -5,7 +5,6 @@ import foam.dao.*;
 import foam.nanos.approval.ApprovalRequest;
 import foam.nanos.approval.ApprovalStatus;
 import foam.nanos.auth.Address;
-import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
 import foam.nanos.crunch.AgentCapabilityJunction;
@@ -513,6 +512,7 @@ invoice.setAccount(myBusinessBankAccount.getId());
 invoice = (Invoice) invoiceDAO.inX(myApproverContext).put(invoice);
 test(invoice.getStatus() == InvoiceStatus.UNPAID && invoice.getPaymentMethod() == PaymentStatus.NONE, "When an approver creates an invoice, the invoice status is UNPAID and the payment status is NONE.");
 
+
 transaction = new Transaction();
 transaction.setSourceAccount(invoice.getAccount());
 transaction.setDestinationAccount(invoice.getDestinationAccount());
@@ -523,12 +523,12 @@ transaction.setInvoiceId(invoice.getId());
 threw = false;
 message = "";
 try {
-  transactionDAO.inX(myAdminContext).put(transaction);
+  transactionDAO.inX(myApproverContext).put(transaction);
 } catch (Throwable t) {
   threw = true;
   message = t.getMessage();
   print("DEBUG: " + message);
 }
-test(! threw, "When an approver tries to pay an invoice, it works as expected." + message + " source = " + transaction.getSourceAccount() + "dest = " + transaction.getDestinationAccount());
+test(! threw, "When an approver tries to pay an invoice, it works as expected.");
   }
 }
