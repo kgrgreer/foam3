@@ -26,6 +26,7 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.nanos.auth.User',
+    'foam.nanos.logger.Logger',
     'foam.nanos.crunch.UserCapabilityJunction',
     'net.nanopay.partner.treviso.TrevisoService',
     'net.nanopay.model.Business'
