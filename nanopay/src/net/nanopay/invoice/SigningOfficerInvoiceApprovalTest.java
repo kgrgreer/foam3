@@ -170,7 +170,7 @@ localUserDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "approver@example.com")).remo
 User myApprover = new User();
 myApprover.setFirstName("MyApprover");
 myApprover.setEmail("approver@example.com");
-myApprover.setGroup(myBusiness.getBusinessPermissionId() + ".employee");
+myApprover.setGroup(myBusiness.getBusinessPermissionId() + ".approver");
 myApprover.setEmailVerified(true); // Required to send or receive money.
 myApprover.setCompliance(ComplianceStatus.PASSED);
 myApprover.setSpid("nanopay");
