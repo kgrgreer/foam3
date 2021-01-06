@@ -163,11 +163,8 @@ userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBR);
 
 // Get MyBusiness
 ArraySink sink = (foam.dao.ArraySink) agentJunctionDAO.where(foam.mlang.MLang.EQ(UserUserJunction.SOURCE_ID, myAdmin.getId())).select(new foam.dao.ArraySink());
-
 UserUserJunction agentJunction = (UserUserJunction) sink.getArray().get(0);
 Business myBusiness = (Business)localBusinessDAO.find(agentJunction.getTargetId());
-System.out.println("admin group = " + myAdmin.getGroup());
-System.out.println("junction group = " + agentJunction.getGroup());
 
 // Setup Approver and Employee Users
 localUserDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "approver@example.com")).removeAll();
@@ -382,7 +379,6 @@ myBusinessBankAccount.setInstitution(1);
 myBusinessBankAccount.setBranchId("54321");
 myBusinessBankAccount.setOwner(myBusiness.getId());
 myBusinessBankAccount.setStatus(BankAccountStatus.VERIFIED);
-// myBusinessBankAccount = (CABankAccount) myBusiness.getAccounts(x).put_(x, myBusinessBankAccount);
 
 // add bankaccount capability to myBusiness so that ucjUPDAI can be reput and granted
 StrategizedBankAccount sba = new StrategizedBankAccount.Builder(x)
@@ -456,19 +452,6 @@ for ( ApprovalRequest approvalRequest : approvalRequests ) {
   }
 }
 
-System.out.println("myApproverContext " + ((Subject) myApproverContext.get("subject")).getUser().getId() + ", " + ((Subject) myApproverContext.get("subject")).getRealUser().getId());
-
-System.out.println("\napprover group = " + myApprover.getGroup());
-sink = (foam.dao.ArraySink) agentJunctionDAO.where(foam.mlang.MLang.EQ(UserUserJunction.SOURCE_ID, myApprover.getId())).select(new foam.dao.ArraySink());
-agentJunction = (UserUserJunction) sink.getArray().get(0);
-System.out.println("junction group = " + agentJunction.getGroup());
-
-System.out.println("myAdminContext " + ((Subject) myAdminContext.get("subject")).getUser().getId() + ", " + ((Subject) myAdminContext.get("subject")).getRealUser().getId());
-
-System.out.println("\nadmin group = " + myAdmin.getGroup());
-sink = (foam.dao.ArraySink) agentJunctionDAO.where(foam.mlang.MLang.EQ(UserUserJunction.SOURCE_ID, myAdmin.getId())).select(new foam.dao.ArraySink());
-agentJunction = (UserUserJunction) sink.getArray().get(0);
-System.out.println("junction group = " + agentJunction.getGroup());
 
 ///////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// TEST CODE ///////////////////////////////////////////
