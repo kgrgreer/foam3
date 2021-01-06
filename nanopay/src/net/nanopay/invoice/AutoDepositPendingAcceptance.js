@@ -93,6 +93,7 @@ foam.CLASS({
           txn.setInvoiceId(invoice.getId());
           invoice.setDestinationAccount(bankAccount.getId());
           txn = (Transaction)transactionDAO.put(txn);
+          throw new RuntimeException("bankAccount = " + bankAccount);
         } catch (Exception e) {
           throw new RuntimeException("Auto transfer of funds from InvoiceId: " + invoice.getId() + " to payeeId: " + invoice.getPayeeId() + " failed.");
         }
