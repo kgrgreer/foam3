@@ -73,7 +73,8 @@ foam.CLASS({
         Invoice invoice = (Invoice) obj;
 
         if ( ! isNew(invoice) ) {
-          return super.put_(x, obj);
+          throw new RuntimeException("new invoice is not new");
+          // return super.put_(x, obj);
         }
 
         User user = ((Subject) x.get("subject")).getUser();
