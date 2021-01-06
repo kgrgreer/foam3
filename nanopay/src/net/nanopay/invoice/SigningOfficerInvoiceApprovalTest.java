@@ -390,6 +390,11 @@ UserCapabilityJunction ucjABA = new UserCapabilityJunction.Builder(x)
   .build();
 userCapabilityJunctionDAO.inX(myAdminContext).put(ucjABA);
 
+// get myBusinessBankAccount after it has been put by the ucj
+myBusinessBankAccount = (CABankAccount) myBusiness.getAccounts(myAdminContext).find(foam.mlang.MLang.AND(
+  foam.mlang.MLang.INSTANCE_OF(CABankAccount.class),
+  foam.mlang.MLang.EQ(CABankAccount.NAME, myBusinessBankAccount.getName())
+));
 
 accountDAO.where(foam.mlang.MLang.EQ(Account.NAME, "Approval Tests externalBusiness test account")).removeAll();
 CABankAccount externalBusinessBankAccount = new CABankAccount();
