@@ -95,7 +95,7 @@ foam.CLASS({
                           ) {
         if ( data$errors_ || data$padCapture$address$errors_ ) return false;
 
-        if (data$padCapture$capabilityIds.length > data$padCapture$capablePayloads.length) return false;
+        if ( data$padCapture$capabilityIds && data$padCapture$capabilityIds.length > data$padCapture$capablePayloads.length) return false;
         
         if ( data$padCapture$capablePayloads ) {
           for ( payload of data$padCapture$capablePayloads ) {

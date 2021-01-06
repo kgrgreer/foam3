@@ -7,15 +7,16 @@ p({
       class: "net.nanopay.auth.ServiceProviderURL",
       spid: "treviso",
       urls: [
-        "treviso"
+        "treviso",
+        "treviso.nanopay.net",
+        "treviso.backoffice.nanopay.net"
       ]
     },
     {
       class: "net.nanopay.auth.ServiceProviderURL",
       spid: "nanopay",
       urls: [
-        "localhost",
-        "ablii"
+        "localhost"
       ]
     }
   ],
