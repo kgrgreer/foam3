@@ -1123,7 +1123,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.Sign
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.PLEASE_READ_IMPORTANT_INFORMATION.label",target:"pleaseReadImportantInformation pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.PLEASE_READ_IMPORTANT_INFORMATION.value",target:"Obrigado por nos informar que você é o oficial de assinatura desta empresa. Devemos coletar\n          suas informações antes de processar quaisquer pagamentos ou requisitos de integração para você.\n          Isso garante a proteção de todos os membros que operam na plataforma.\n          Sua empresa não conseguirá desbloquear totalmente os recursos de faturamento e pagamento até pelo menos um oficial de assinatura\n          preenche este formulário e sua identidade é totalmente revisada e aprovada.\n      "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.COUNTRY_ID.label",target:"countryId pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.ADDRESS.label",target:"endereço"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.ADDRESS.documentation",target:"Retorna o endereço postal do modelo de endereço."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.JOB_TITLE.label",target:"Titulo do trabalho"})
@@ -1144,6 +1143,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.Sign
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.YES",target:"Sim"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.NO",target:"Não"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.SELECT_JOB_TITLE",target:"Titulo do trabalho obrigatório"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.PLACE_HOLDER",target:"Por favor selecione..."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.BUSINESS_TYPE_ERROR",target:"Selecione o tipo de negócio."})
@@ -3170,7 +3170,7 @@ p({class:"foam.i18n.Locale",locale:"pt","source":"cbb67837-54ac-49dc-a596-9fdddb
 p({class:"foam.i18n.Locale",locale:"pt","source":"Nature Code Requirement","target":"Propósito do Pagamento"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"05a663b8-2b48-11eb-adc1-0242ac120002.name","target":"Ativar pagamentos internacionais"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"05a663b8-2b48-11eb-adc1-0242ac120002.description","target":"Habilitar pagamentos internacionais no Brasil"})
-p({class:"foam.i18n.Locale",locale:"pt","source":"05a663b8-2b48-11eb-adc1-0242ac120002.requirementViewTitle","target":"Prepare seus documentos comerciais. Você pode salvar seu progresso e voltar mais tarde"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"05a663b8-2b48-11eb-adc1-0242ac120002.requirementViewTitle","target":"Preparar seus documentos comerciais. Você pode salvar seu progresso e voltar mais tarde"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"554af38a-8225-87c8-dfdf-eeb15f71215f-49.name","target":"Brasil onboarding"})
 
 p({class:"foam.i18n.Locale",locale:"pt","source":"554af38a-8225-87c8-dfdf-eeb15f71215f-49.description","target":"Brasil onboarding"})
@@ -3255,7 +3255,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.NewInvoiceFor
 
 p({class:"foam.i18n.Locale",locale:"pt","source":"0B2E7305-B898-43F2-9C1B-63FB2CE38B2D.name","target":"Pagamentos internacionais"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"0B2E7305-B898-43F2-9C1B-63FB2CE38B2D.description","target":"Pagamentos internacionais do Brasil"})
-p({class:"foam.i18n.Locale",locale:"pt","source":"0B2E7305-B898-43F2-9C1B-63FB2CE38B2D.requirementViewTitle","target":"Prepare seus documentos comerciais. Você pode salvar seu progresso e voltar mais tarde."})
+p({class:"foam.i18n.Locale",locale:"pt","source":"0B2E7305-B898-43F2-9C1B-63FB2CE38B2D.requirementViewTitle","target":"Preparar seus documentos comerciais. Você pode salvar seu progresso e voltar mais tarde."})
 
 // Brazil Business Info Data
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.BrazilBusinessInfoData.CNPJ.label",target:"Cadastro Nacional da Pessoa Jurídica (CNPJ)"})
