@@ -8,11 +8,14 @@ p({
     "privacyUrl":"/service/file/d6a408c6-587d-b00f-6e04-6a4b933f7495",
     "copyright":"Copyright © 2017-@{currentYear} nanopay Corp. All rights reserved.",
     "termsAndCondLink":"/service/file/1f406b9b-bde4-58ff-f171-657627581f61",
-    "url":"http://treviso:8080",
+    "url":"https://treviso.development.nanopay.net",
     "mode":0
   }
 })
 
+p({class:"foam.nanos.boot.NSpec",id:"dowjonesCredentials",service:{class:"net.nanopay.meter.compliance.dowJones.DowJonesCredentials",namespace:"18",username:"nanoAPI",password:"4ZszDP3c51Va",baseUrl:"https://djrc.api.test.dowjones.com/v1/search/"}})
+p({class:"foam.nanos.boot.NSpec",id:"securefactService",service:{class:"net.nanopay.meter.compliance.secureFact.SecurefactService",sidniUrl:"https://qa2-sidni.securefact.com/rest/v3/verifyIndividual",sidniApiKey:"NTc5MDk0MDc5OTUyNzMxMDYwNzg1NDgxMTQ3OTkwNDI4MDkwMzY4",levUrl:"https://lev3uat.securefact.com/rest/v1/lev/search",levApiKey:"ODA1NTMyNjA0MTAyNDg2NzIxMzg4NTk0MTQ4ODg0NTI1MDg4NzY4"}})
+p({class:"foam.nanos.boot.NSpec",id:"identityMindService",service:{class:"net.nanopay.meter.compliance.identityMind.IdentityMindService",baseUrl:"https://staging.identitymind.com/im",apiUser:"nanopay",apiKey:"80c264cb0c381fbc995763982b35e965f37347eb",hashingSalt:"54l73D47"}})
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"trevisoService",
@@ -56,6 +59,19 @@ p({
     return mockExchange;
   """
 })
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"SoaWebServiceCredientials",
+  "lazy":false,
+  "service": {
+    "class":"net.nanopay.partner.soawebservices.SoaCredenciais",
+    "Email":"suporte@trevisocc.com.br",
+    "Senha":"auFHK3STb",
+    "url":"http://www.soawebservices.com.br/restservices/producao/cdc/"
+  }
+})
+
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"soaWebService",
@@ -65,3 +81,6 @@ p({
     return new net.nanopay.partner.soawebservices.SoaWebServiceClientMock(x);
   """
 })
+
+p({"class":"foam.nanos.boot.NSpec", "name":"exchangeCredential", "lazy":false, "service":{"class":"net.nanopay.country.br.exchange.ExchangeCredential",exchangeUrl:"http://10.11.9.148:8383/Exchange.svc",exchangeAgencia:1,exchangeUsername:"1204",exchangePassword:"102030"}})
+p({"class":"foam.nanos.boot.NSpec", "name":"trevisoCredientials", "lazy":false, "service":{"class":"net.nanopay.partner.treviso.TrevisoCredientials",fepWebUsername:"trevisocc",fepWebPassword:"Treviso4321#@!",fepWebApi:"https://client-uat.fepweb.com.br/fepwebws/api/",fepWebCode:"100001",fepWebCodeName:"Treviso Matriz - Nanopay"}})
