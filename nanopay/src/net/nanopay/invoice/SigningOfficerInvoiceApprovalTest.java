@@ -497,10 +497,10 @@ try {
   }
 } catch (Throwable t) {
   threw = true;
-  message = t.getMessage() + ":::" + t.getStackTrace();
+  message = t.getMessage();
   print("DEBUG: " + message);
 }
-test(! threw && invoiceStatusIsCorrect && paymentStatusIsCorrect, "When an employee tries to pay an invoice the invoice is set to a PENDING_APPROVAL state. MESSAGE = " + message);
+test(! threw && invoiceStatusIsCorrect && paymentStatusIsCorrect, "When an employee tries to pay an invoice the invoice is set to a PENDING_APPROVAL state.");
 
 
 invoice = new Invoice();
@@ -523,12 +523,12 @@ transaction.setInvoiceId(invoice.getId());
 threw = false;
 message = "";
 try {
-  transactionDAO.inX(myAdminContext).put(transaction);
+  transactionDAO.inX(myApproverContext).put(transaction);
 } catch (Throwable t) {
   threw = true;
-  message = t.getMessage() + ":::" + t.getStackTrace();
+  message = t.getMessage();
   print("DEBUG: " + message);
 }
-test(! threw, "When an approver tries to pay an invoice, it works as expected. MESSAGE = " + message);
+test(! threw, "When an approver tries to pay an invoice, it works as expected.");
   }
 }
