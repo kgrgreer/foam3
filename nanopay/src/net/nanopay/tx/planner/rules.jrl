@@ -48,6 +48,10 @@ p({
     "class":"foam.mlang.predicate.And",
     "args":[
       {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"RBC"
+      },
+      {
         "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"sourceAccount",
         "of":"net.nanopay.account.DigitalAccount"
@@ -95,6 +99,10 @@ p({
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"BMO"
+      },
       {
         "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"sourceAccount",
@@ -221,6 +229,9 @@ p({
     "class":"foam.mlang.predicate.And",
     "args":[
       {
+        "class":"net.nanopay.tx.ruler.IsSecurityQuote"
+      },
+      {
         "class":"foam.nanos.ruler.predicate.PropertyEQProperty",
         "prop1":"sourceUnit",
         "prop2":"destinationUnit"
@@ -248,6 +259,9 @@ p({
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
+      {
+        "class":"net.nanopay.tx.ruler.IsSecurityQuote"
+      },
       {
         "class":"foam.nanos.ruler.predicate.PropertyEQProperty",
         "prop1":"sourceUnit",
@@ -636,6 +650,10 @@ p({
     "class":"foam.mlang.predicate.And",
     "args":[
       {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"Alterna"
+      },
+      {
         "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"sourceAccount",
         "of":"net.nanopay.bank.CABankAccount"
@@ -672,6 +690,10 @@ p({
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"Alterna"
+      },
       {
         "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"sourceAccount",
@@ -718,6 +740,10 @@ p({
     "class":"foam.mlang.predicate.And",
     "args":[
       {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"BMO"
+      },
+      {
         "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"sourceAccount",
         "of":"net.nanopay.bank.CABankAccount"
@@ -760,6 +786,10 @@ p({
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"BMO"
+      },
       {
         "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"sourceAccount",
@@ -897,6 +927,10 @@ p({
     "class":"foam.mlang.predicate.And",
     "args":[
       {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"RBC"
+      },
+      {
         "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"sourceAccount",
         "of":"net.nanopay.bank.CABankAccount"
@@ -939,6 +973,10 @@ p({
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"RBC"
+      },
       {
         "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"sourceAccount",

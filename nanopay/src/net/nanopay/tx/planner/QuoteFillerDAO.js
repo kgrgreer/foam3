@@ -115,6 +115,10 @@ foam.CLASS({
         }
         txn.validate(x); // validate the request txn 1st
         txn.freeze();
+        if ( tq.getSourceAccount() instanceof SecuritiesAccount &&
+        tq.getDestinationAccount() instanceof SecuritiesAccount ) {
+         throw new ValidationException(" Securities quotes are not currently accepted here"); //TODO: for now just block securities. will need to make sure they dont hit the regular transaction planners. maybe by redirection to a rule engine that only has securities rules.
+        }
         return getDelegate().put_(x, quote);
       `
     },
