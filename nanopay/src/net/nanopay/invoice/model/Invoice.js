@@ -36,6 +36,7 @@ foam.CLASS({
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.LastModifiedByAware',
+    'foam.nanos.auth.LifecycleAware',
     'foam.nanos.auth.ServiceProviderAware',
     'foam.nanos.crunch.lite.Capable',
   ],
@@ -727,8 +728,7 @@ foam.CLASS({
         platform users.`,
       includeInDigest: true,
       view: function(_, X) {
-        return {
-          class: 'foam.u2.view.RichChoiceView',
+        return foam.u2.view.RichChoiceView.create({
           selectionView: {
             class: 'net.nanopay.auth.ui.UserSelectionView',
             emptySelectionLabel: X.data.SELECT_CONTACT
@@ -743,7 +743,7 @@ foam.CLASS({
               ]
             }
           ]
-        };
+        }, X);
       }
     },
     {
@@ -864,6 +864,14 @@ foam.CLASS({
       class: 'StringArray',
       name: 'capabilityIds',
       section: 'invoiceInformation'
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'foam.nanos.auth.LifecycleState',
+      name: 'lifecycleState',
+      value: foam.nanos.auth.LifecycleState.ACTIVE,
+      writePermissionRequired: true,
+      readPermissionRequired: true
     }
   ],
 

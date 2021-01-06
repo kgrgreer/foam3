@@ -48,7 +48,7 @@ foam.CLASS({
       }
     },
     {
-      name: 'link',
+      name: 'fileId',
       factory: function() {
         return '488eedba-b34a-4b61-9f6d-1c501f13dcc5';
       }
