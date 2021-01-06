@@ -70,7 +70,7 @@ foam.CLASS({
           doTransactionToBankAccount(x, invoice, payee);
           return invoice;
         } else {
-          throw new RuntimeException("a=",a,"b=",b,"c=",c)
+          throw new RuntimeException("a=",a,"b=",b,"c=",c);
         }
         return super.put_(x, invoice);
       `
