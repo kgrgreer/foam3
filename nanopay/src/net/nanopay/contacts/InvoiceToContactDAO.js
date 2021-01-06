@@ -69,9 +69,8 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
         if ( obj == null ) throw new RuntimeException(NULL_INVOICE_ERROR_MSG);
+
         Invoice invoice = (Invoice) obj;
-        foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
-        logger.error("Rubys debug ........ ", invoice, x.get("user"));
 
         if ( ! isNew(invoice) ) {
           return super.put_(x, obj);
@@ -83,7 +82,6 @@ foam.CLASS({
         boolean isReceivable = invoice.getPayeeId() == user.getId();
 
         if ( invoice.getContactId() != 0 ) {
-          logger.error("Rubys debug ........ ", "invoice.getcontactId != 0");
           User contact = (User) getLocalUserDAO().inX(x).find(invoice.getContactId());
           long idToSet;
           long businessId = ((Contact) contact).getBusinessId();
@@ -99,8 +97,6 @@ foam.CLASS({
           }  else if ( isReceivable ) {
             invoice.setPayerId(idToSet);
           }
-        } else {
-          logger.error("Rubys debug ........ ", "invoice.getcontactId == 0");
         }
 
         return super.put_(x, obj);
