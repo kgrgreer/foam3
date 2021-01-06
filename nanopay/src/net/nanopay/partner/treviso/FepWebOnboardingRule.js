@@ -39,7 +39,19 @@ foam.CLASS({
           @Override
           public void execute(X x) {
             Business business = (Business) obj;
-            ((TrevisoService) x.get("trevisoService")).createEntity(x, business.getId());
+            try {
+              ((TrevisoService) x.get("trevisoService")).createEntity(x, business.getId());
+            } catch ( Throwable t ) {
+              Logger logger = (Logger) x.get("logger");
+
+              Throwable cause = t.getCause();
+              if ( cause instanceof java.net.ConnectException ) {
+                throw new RuntimeException(t);
+              } else {
+                // if not connection error, stop retrying
+                logger.error("FepWeb Onboarding Failed", cause);
+              }
+            }
           }
         }, "Onboards business to FepWeb if onboarding ucj is passed.");
       `
