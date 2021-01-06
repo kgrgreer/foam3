@@ -388,7 +388,7 @@ UserCapabilityJunction ucjABA = new UserCapabilityJunction.Builder(x)
   .setTargetId("24602528-34c1-11eb-adc1-0242ac120002")
   .setData(sba)
   .build();
-userCapabilityJunctionDAO.inX(myAdminContext).put(ucjABA);
+userCapabilityJunctionDAO.inX(myApproverContext).put(ucjABA);
 
 // get myBusinessBankAccount after it has been put by the ucj
 myBusinessBankAccount = (CABankAccount) myBusiness.getAccounts(myAdminContext).find(foam.mlang.MLang.AND(
