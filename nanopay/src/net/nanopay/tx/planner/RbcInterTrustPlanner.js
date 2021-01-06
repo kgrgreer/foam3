@@ -51,6 +51,7 @@ foam.CLASS({
         t.setStatus(net.nanopay.tx.model.TransactionStatus.PENDING);
         t.setInstitutionNumber(INSTITUTION_NUMBER);
         t.setPaymentProvider(PAYMENT_PROVIDER);
+        t.setPlanCost(t.getPlanCost() + 1);
 
         addInterTrustTransfers(x, t, quote);
 

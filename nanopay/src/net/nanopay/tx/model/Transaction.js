@@ -58,6 +58,7 @@ foam.CLASS({
     'java.util.*',
     'java.util.Arrays',
     'java.util.List',
+    'java.util.ArrayList',
     'net.nanopay.account.Account',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.contacts.Contact',
@@ -934,6 +935,12 @@ foam.CLASS({
       networkTransient: true
     },
     {
+      class: 'Long',
+      name: 'planCost',
+      transient: true,
+      visibility: 'HIDDEN'
+    },
+    {
       class: 'Reference',
       of: 'foam.nanos.auth.ServiceProvider',
       name: 'spid',
@@ -1264,6 +1271,13 @@ foam.CLASS({
 `
     },
     {
+      name: 'getTotalPlanCost',
+      type: 'Long',
+      javaCode: `
+        return getPlanCost() + getCost();
+      `
+    },
+    {
       name: 'getEta',
       code: function getEta() {
         var value = 0;
@@ -1402,22 +1416,12 @@ foam.CLASS({
     type: 'net.nanopay.tx.Transfer[]',
     javaCode: `
       Transfer[] tr = getTransfers();
-      //TODO: verify the more efficient staged check works.
       Long stage = getStage();
-      for (int i = 0; i < tr.length; i++ ){
-        if (tr[i].getStage() != stage ) {
-          Transfer[] tr2 = new Transfer[tr.length - 1];
-          System.arraycopy(tr,0,tr2,0,i);
-          for (int j = i ; j < tr.length; j++ ) {
-            if (tr[j].getStage() == stage ){
-              tr2[i] = tr[j];
-              i++;
-            }
-          }
-          return tr2;
-        }
-      }
-      return tr;
+      List<Transfer> ltr = new ArrayList<Transfer>();
+      for (Transfer t : tr)
+        if (SafetyUtil.equals(t.getStage(), stage) )
+          ltr.add(t);
+      return ltr.toArray(new Transfer[0]);
     `,
   },
   {

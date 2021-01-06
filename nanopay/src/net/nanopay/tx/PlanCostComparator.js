@@ -45,7 +45,7 @@ foam.CLASS({
         if ( o1 instanceof Transaction &&  o2 instanceof Transaction ) {
           Transaction plan1 = (Transaction) o1;
           Transaction plan2 = (Transaction) o2;
-          return Long.compare(plan1.getCost(), plan2.getCost());
+          return Long.compare(plan1.getTotalPlanCost(), plan2.getTotalPlanCost());
         }
         return 0;
       `

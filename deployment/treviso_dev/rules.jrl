@@ -7,8 +7,10 @@ p({
       spid: "treviso",
       urls: [
         "treviso",
+        "treviso.development.nanopay.net",
         "treviso.release.nanopay.net",
-        "treviso.development.nanopay.net"
+        "treviso.medusa.development.nanopay.net",
+        "treviso.medusa.release.nanopay.net"
       ]
     },
     {
@@ -16,36 +18,14 @@ p({
       spid: "nanopay",
       urls: [
         "localhost",
-        "release.nanopay.net",
-        "development.nanopay.net",
         "ablii",
-        "release.ablii.com"
+        "development.nanopay.net",
+        "release.nanopay.net",
+        "medusa.development.nanopay.net",
+        "medusa.release.nanopay.net"
       ]
     }
   ],
   lastModified: 1601313462323,
   lastModifiedBy: 1
-})
-
-p({
-  class: "foam.nanos.auth.ruler.EnsurePropertyOnCreateRule",
-  id: "ab1d31f3-64fe-56d8-9a6d-dd2a7d2a4d5a",
-  name: "Auto-fill feeAccount for TransactionFeeRule - treviso",
-  daoKey: "localRuleDAO",
-  ruleGroup: "TransactionFeeRule",
-  targetClass: "net.nanopay.tx.fee.TransactionFeeRule",
-  propName: "feeAccount",
-  propValue: 31,
-  created: 1601313462375,
-  createdBy: 1,
-  createdByAgent: 1,
-  lastModified: 1601313462375,
-  lastModifiedBy: 1,
-  spid: "treviso",
-  lifecycleState: 1
-})
-p({
-  class: "net.nanopay.tx.fee.TransactionFeeRule",
-  id: "91194da9-8391-436a-8468-fa2c706126b8",
-  feeAccount: 31
 })

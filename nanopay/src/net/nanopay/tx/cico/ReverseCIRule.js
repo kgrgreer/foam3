@@ -30,6 +30,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.notification.Notification',
+    'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.TrustAccount',
     'net.nanopay.tx.DigitalTransaction',
     'net.nanopay.tx.cico.CITransaction',
@@ -54,7 +55,7 @@ foam.CLASS({
               txn.setStatus(TransactionStatus.COMPLETED);
 
               DigitalTransaction revTxn = new DigitalTransaction.Builder(x)
-                .setDestinationAccount(TrustAccount.find(x, txn.findSourceAccount(x), txn.getInstitutionNumber()).getId())
+                .setDestinationAccount(((DigitalAccount) txn.findDestinationAccount(x)).getTrustAccount())
                 .setSourceAccount(txn.getDestinationAccount())
                 .setAmount(txn.getAmount())
                 .setName("Reversal of DECLINED: "+txn.getId())

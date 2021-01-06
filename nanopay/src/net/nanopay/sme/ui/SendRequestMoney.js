@@ -70,6 +70,7 @@ foam.CLASS({
     'foam.nanos.app.Mode',
     'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.nanos.crunch.CapabilityIntercept',
+    'foam.nanos.auth.LifecycleState',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.auth.PublicUserInfo',
@@ -231,7 +232,7 @@ foam.CLASS({
     {
       name: 'hasSaveOption',
       expression: function(isForm, position) {
-        return this.invoice.status !== this.InvoiceStatus.DRAFT;
+        return this.invoice.status !== this.InvoiceStatus.PROCESSING;
       },
       documentation: `An expression is required for the 1st step of the
         send/request payment flow to show the 'Save as draft' button.`
@@ -281,6 +282,7 @@ foam.CLASS({
     { name: 'DUE_DATE_ERROR', message: 'Invalid Due Date' },
     { name: 'ISSUE_DATE_ERROR', message: 'Invalid Issue Date' },
     { name: 'DRAFT_SUCCESS', message: 'Draft saved successfully' },
+    { name: 'CANCEL_SUCCESS', message: 'Invoice cancelled successfully' },
     { name: 'COMPLIANCE_ERROR', message: 'Business must pass compliance to make a payment' },
     { name: 'CONTACT_NOT_FOUND', message: 'Contact not found' },
     { name: 'INVOICE_AMOUNT_ERROR', message: 'This amount exceeds your sending limit' },
@@ -670,19 +672,18 @@ foam.CLASS({
     },
     {
       name: 'exit',
-      isAvailable: function(invoice$id){
-        // invoice does not exist on the backend, process of creation
-        return invoice$id === 0;
-      },
       isEnabled: function(errors, isLoading) {
         return ! isLoading;
       },
       code: function() {
-        if ( this.stack.depth === 1 ) {
-          this.pushMenu('capability.main.dashboard');
-        } else {
-          this.stack.back();
+        if ( this.invoice.id !== 0 ){
+          this.invoiceDAO.remove(this.invoice);
         }
+
+        this.notify(this.CANCEL_SUCCESS,'', this.LogLevel.INFO, true);
+        this.pushMenu(this.isPayable
+          ? 'capability.main.invoices.payables'
+          : 'capability.main.invoices.receivables');
       }
     },
     {
@@ -699,23 +700,6 @@ foam.CLASS({
           return;
         }
         this.subStack.back();
-      }
-    },
-    {
-      name: 'otherOption',
-      label: 'Void',
-      isAvailable: function(invoice$id) {
-        // invoice exists on backend
-        return invoice$id !== 0;
-      },
-      isEnabled: function(isLoading) {
-        return ! isLoading;
-      },
-      code: function(X) {
-        this.ctrl.add(this.Popup.create().tag({
-          class: 'net.nanopay.invoice.ui.modal.MarkAsVoidModal',
-          invoice: this.invoice
-        }));
       }
     }
   ]
