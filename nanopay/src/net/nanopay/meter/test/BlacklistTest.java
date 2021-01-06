@@ -215,6 +215,23 @@ public class BlacklistTest extends Test {
     myBusinessBankAccount.setStatus(BankAccountStatus.VERIFIED);
     myBusinessBankAccount = (CABankAccount) myBusiness.getAccounts(x).put_(x, myBusinessBankAccount);
 
+    // add bankaccount capability so ucjUPDAI can be reput and granted
+    StrategizedBankAccount sba = new StrategizedBankAccount.Builder(x)
+      .setBankAccount(myBusinessBankAccount)
+      .build();
+    UserCapabilityJunction ucjABA = new UserCapabilityJunction.Builder(x)
+      .setSourceId(myBusiness.getId())
+      .setTargetId("24602528-34c1-11eb-adc1-0242ac120002")
+      .setData(sba)
+      .build();
+    userCapabilityJunctionDAO.inX(myAdminContext).put(ucjABA);
+    
+    // get myBusinessBankAccount after it has been put by the ucj
+    myBusinessBankAccount = (CABankAccount) myBusiness.getAccounts(myAdminContext).find(foam.mlang.MLang.AND(
+      foam.mlang.MLang.INSTANCE_OF(CABankAccount.class),
+      foam.mlang.MLang.EQ(CABankAccount.NAME, myBusinessBankAccount.getName())
+    ));
+
     accountDAO.where(foam.mlang.MLang.EQ(Account.NAME, "Blacklist Tests externalBusiness test account")).removeAll();
     CABankAccount externalBusinessBankAccount = new CABankAccount();
     externalBusinessBankAccount.setName("Blacklist Tests externalBusiness test account");
@@ -384,23 +401,6 @@ public class BlacklistTest extends Test {
     ucjCDR.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-14");
     ucjCDR.setData(cdr);
     userCapabilityJunctionDAO.inX(myAdminContext).put(ucjCDR);
-
-    // add bankaccount capability so ucjUPDAI can be reput and granted
-    StrategizedBankAccount sba = new StrategizedBankAccount.Builder(x)
-      .setBankAccount(myBusinessBankAccount)
-      .build();
-    UserCapabilityJunction ucjABA = new UserCapabilityJunction.Builder(x)
-      .setSourceId(myBusiness.getId())
-      .setTargetId("24602528-34c1-11eb-adc1-0242ac120002")
-      .setData(sba)
-      .build();
-    userCapabilityJunctionDAO.inX(myAdminContext).put(ucjABA);
-    
-    // get myBusinessBankAccount after it has been put by the ucj
-    myBusinessBankAccount = (CABankAccount) myBusiness.getAccounts(myAdminContext).find(foam.mlang.MLang.AND(
-      foam.mlang.MLang.INSTANCE_OF(CABankAccount.class),
-      foam.mlang.MLang.EQ(CABankAccount.NAME, myBusinessBankAccount.getName())
-    ));
 
     // approve signinofficer and owners
     List<ApprovalRequest> approvalRequests = ((ArraySink) approvalRequestDAO
