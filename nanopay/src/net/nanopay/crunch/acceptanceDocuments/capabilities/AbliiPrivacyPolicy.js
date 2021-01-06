@@ -25,7 +25,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'ACKNOWLEDGE_PRIVACY_POLICY', message: 'Must acknowledge the Privacy Policy.' }
+    { name: 'ACKNOWLEDGE_PRIVACY_POLICY', message: 'Must acknowledge the Privacy Policy' }
   ],
 
   properties: [
@@ -38,9 +38,9 @@ foam.CLASS({
       value: 'I agree to '
     },
     {
-      name: 'link',
-      expression: function(appConfig$privacyUrl) {
-        return appConfig$privacyUrl;
+      name: 'fileId',
+      factory: function() {
+        return '81aaec42-b38e-fb90-3200-58bcb39542b7';
       }
     },
     {

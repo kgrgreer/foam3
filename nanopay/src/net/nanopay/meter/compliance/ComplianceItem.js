@@ -140,13 +140,18 @@ foam.CLASS({
   methods: [
     {
       name: 'toSummary',
+      type: 'String',
       code: async function(x) {
         if ( this.sidniResponse != 0 ) {
           let response = await this.sidniResponse$find;
           return response.toSummary();
         }
         return "";
-      }
+      },
+      javaCode: `
+        net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse resp = findSidniResponse(foam.core.XLocator.get());
+        return resp == null ? "" : resp.toSummary();
+      `
     }
   ]
 });

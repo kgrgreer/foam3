@@ -29,10 +29,12 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.admin.model.ComplianceStatus',
       name: 'compliance',
-      documentation: 'Admin user account approval status.',
+      documentation: 'Operations approval status for user.',
       readPermissionRequired: true,
       writePermissionRequired: true,
-      section: 'administrative'
+      section: 'complianceInformation',
+      order: 1,
+      sheetsOutput: true
     }
   ]
 });
@@ -51,9 +53,11 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.admin.model.ComplianceStatus',
       name: 'compliance',
-      documentation: 'Admin bank account approval status.',
+      section: 'complianceInformation',
+      documentation: 'Operations approval status for bank account.',
       readPermissionRequired: true,
-      writePermissionRequired: true
+      writePermissionRequired: true,
+      sheetsOutput: true
     }
   ]
 });
@@ -72,9 +76,10 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.admin.model.ComplianceStatus',
       name: 'compliance',
-      documentation: 'Beneficial owner compliance status.',
+      documentation: 'Operations approval status for beneficial owner.',
       readPermissionRequired: true,
-      writePermissionRequired: true
+      writePermissionRequired: true,
+      sheetsOutput: true
     }
   ]
 });

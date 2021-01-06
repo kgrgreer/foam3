@@ -1,0 +1,4 @@
+// remove ucjs from users not in production
+r({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"CC5F0DEE-A09C-4E0C-A91F-F4F496EF497E","sourceId":1010,"targetId":"portal-developer","status":1})
+r({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"7B5C0B5B-86F5-408F-83B4-3AC712C9A5E3","sourceId":1011,"targetId":"nanopay","status":1})
+r({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"598C923A-3F21-44D0-B575-E2625112FC61","sourceId":1012,"targetId":"nanopay","status":1})

@@ -24,20 +24,20 @@ import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import javax.servlet.http.HttpServletRequest;
 import foam.core.X;
+import foam.dao.DAO;
 import foam.lib.StoragePropertyPredicate;
 import foam.lib.json.JSONParser;
 import foam.lib.json.Outputter;
+import foam.nanos.auth.Subject;
 import foam.nanos.logger.Logger;
+import foam.nanos.notification.Notification;
 import net.nanopay.flinks.external.FlinksLoginId;
 import net.nanopay.flinks.model.FlinksAuthRequest;
+import net.nanopay.flinks.model.FlinksCredentials;
 import net.nanopay.flinks.model.FlinksResponse;
 
 public class FlinksResponseServer implements FlinksResponseService {
-
-  public static final String FLINKS_HOST =
-      "https://nanopay-api.private.fin.ag/v3/8bc4718b-3780-46d0-82fd-b217535229f1/BankingServices/Authorize";
 
   public static final ThreadLocal<StringBuilder> sb = new ThreadLocal<StringBuilder>() {
     @Override
@@ -58,16 +58,31 @@ public class FlinksResponseServer implements FlinksResponseService {
     HttpURLConnection conn = null;
     FlinksResponse response = null;
     Logger logger = (Logger) x.get("logger");
+    Subject subject = (Subject) x.get("subject");
+    DAO notificationDAO = (DAO) x.get("notificationDAO");
 
     try {
+      FlinksCredentials credentials = (FlinksCredentials) x.get("flinksCredentials");
+
+      if ( "".equals(credentials.getUrl()) || "".equals(credentials.getCustomerId()) ) {
+        logger.error("Flinks credentials not found");
+        Notification notification = new Notification.Builder(x)
+          .setTemplate("NOC")
+          .setBody("Flinks credentials not found")
+          .build();
+        notificationDAO.put(notification);
+        return null;
+      }
+      String flinksHost = credentials.getUrl() + "/" + credentials.getCustomerId() + "/BankingServices/Authorize";
+      
       FlinksAuthRequest authRequest = new FlinksAuthRequest.Builder(x)
           .setLoginId(flinksLoginId.getLoginId())
           .setLanguage("en")
-          .setWithTransactions(false)
-          .setWithBalance(false)
+          .setMostRecentCached(true)
+          .setTag(subject.getUser().getSpid())
           .build();
 
-      URL url = new URL(FLINKS_HOST);
+      URL url = new URL(flinksHost);
       conn = (HttpURLConnection) url.openConnection();
       conn.setRequestMethod("POST");
       conn.setConnectTimeout(20 * 1000);
@@ -76,8 +91,7 @@ public class FlinksResponseServer implements FlinksResponseService {
       conn.setDoOutput(true);
       conn.setRequestProperty("Content-Type", "application/json; charset=utf-8");
 
-      try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(
-          conn.getOutputStream(), StandardCharsets.UTF_8))) {
+      try (BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(conn.getOutputStream(), StandardCharsets.UTF_8))) {
         writer.write(new Outputter(x).setPropertyPredicate(new StoragePropertyPredicate()).stringify(authRequest));
         writer.flush();
       }
@@ -85,16 +99,14 @@ public class FlinksResponseServer implements FlinksResponseService {
       int code = conn.getResponseCode();
       StringBuilder builder = sb.get();
 
-      try (BufferedReader reader = new BufferedReader(new InputStreamReader(
-          code >= 200 && code < 300 ? conn.getInputStream() : conn.getErrorStream()))) {
+      try (BufferedReader reader = new BufferedReader(new InputStreamReader(code >= 200 && code < 300 ? conn.getInputStream() : conn.getErrorStream()))) {
         while ((line = reader.readLine()) != null) {
           builder.append(line);
         }
       }
 
       JSONParser parser = x.create(JSONParser.class);
-      response = (FlinksResponse)
-          parser.parseString(builder.toString(), FlinksResponse.class);
+      response = (FlinksResponse) parser.parseString(builder.toString(), FlinksResponse.class);
     } catch (Throwable throwable) {
       logger.error(throwable.getMessage(), throwable);
     } finally {

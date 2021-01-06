@@ -44,7 +44,7 @@ foam.CLASS({
   messages: [
     {
       name: 'MISSING_REQUIRED_CORRIDOR',
-      message: 'We do not support creating a bank account in this country with the denomination selected.'
+      message: 'We do not support creating a bank account in this country with the denomination selected'
     },
     {
       name: 'BUSINESS_REQUIRED',

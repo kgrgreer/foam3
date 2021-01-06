@@ -23,10 +23,6 @@ foam.CLASS({
     This model represents the transactionDetailsSection of the onboarding model.
   `,
 
-  implements: [
-    'foam.core.Validatable'
-  ],
-
   imports: [
     'user'
   ],
@@ -34,20 +30,20 @@ foam.CLASS({
   sections: [
     {
       name: 'transactionSection',
-      title: 'Enter the transaction details',
+      title: 'Transaction details',
       help: `Require details on the company's transactions.`,
       order: 1
     },
     {
       name: 'purposeSection',
-      title: 'Enter target customers',
+      title: 'Target market',
       order: 2
     }
   ],
 
   messages: [
-    { name: 'NO_TARGET_CUSTOMERS_ERROR', message: 'Please enter target customers.' },
-    { name: 'NO_SUGGESTED_USER_TXN_INFO_ERROR', message: 'Please enter suggested user transaction info.' }
+    { name: 'NO_TARGET_CUSTOMERS_ERROR', message: 'Target customer description required' },
+    { name: 'NO_SUGGESTED_USER_TXN_INFO_ERROR', message: 'Please enter suggested user transaction info' }
   ],
 
   properties: [
@@ -69,7 +65,8 @@ foam.CLASS({
           },
           errorMessage: 'NO_TARGET_CUSTOMERS_ERROR'
         }
-      ]
+      ],
+      gridColumns: 12
     }),
     net.nanopay.model.Business.SUGGESTED_USER_TRANSACTION_INFO.clone().copyFrom({
       label: '',
@@ -94,21 +91,5 @@ foam.CLASS({
         }
       ]
     })
-  ],
-
-  methods: [
-    {
-      name: 'validate',
-      javaCode: `
-        java.util.List<foam.core.PropertyInfo> props = getClassInfo().getAxiomsByClass(foam.core.PropertyInfo.class);
-        for ( foam.core.PropertyInfo prop : props ) {
-          try {
-            prop.validateObj(x, this);
-          } catch ( IllegalStateException e ) {
-            throw e;
-          }
-        }
-      `
-    }
   ]
 });

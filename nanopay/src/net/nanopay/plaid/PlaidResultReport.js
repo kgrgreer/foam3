@@ -44,7 +44,7 @@ foam.CLASS({
       name: 'plaidId'
     },
     {
-      class: 'Long',
+      class: 'String',
       name: 'nanopayAccountId',
       hidden: true
     },

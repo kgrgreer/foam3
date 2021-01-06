@@ -1,0 +1,14 @@
+p({
+    "class":"foam.nanos.menu.Menu",
+    "id":"flinks-widget",
+    "label":"Flinks Widget",
+    "handler":{
+        "class":"foam.nanos.menu.ViewMenu",
+        "view":{
+            "class":"net.nanopay.flinks.widget.FlinksWidgetView",
+            "theme": "dark",
+            "demo": true
+        }
+    },
+    "parent": "admin"
+})

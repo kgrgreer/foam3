@@ -54,8 +54,8 @@ foam.CLASS({
             {
               if (obj instanceof SummaryTransaction) {
                 obj = doChainCalculation((SummaryTransaction) obj);
-                getDelegate().put(obj, sub);
               }
+              getDelegate().put(obj, sub);
             }
           }
 
@@ -76,9 +76,8 @@ foam.CLASS({
         FObject obj = getDelegate().find_(x, id);
         if( obj != null && obj instanceof SummaryTransaction ) {
           obj = doChainCalculation((SummaryTransaction) obj);
-          return obj;
         }
-        return null;
+        return obj;
       `
     },
     {

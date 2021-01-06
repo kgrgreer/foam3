@@ -62,7 +62,7 @@ foam.CLASS({
     ^ .popUpTitle {
       width: 198px;
       height: 40px;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       line-height: 40.5px;
       letter-spacing: 0.2px;
@@ -90,7 +90,7 @@ foam.CLASS({
       background-color: transparent;
     }
     ^ .label {
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: 300;
       letter-spacing: 0.2px;
@@ -109,7 +109,7 @@ foam.CLASS({
       padding: 10px;
     }
     ^ .foam-u2-ActionView-nextButton {
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       width: 136px;
       height: 40px;
       border-radius: 2px;
@@ -135,7 +135,7 @@ foam.CLASS({
     ^ .foam-u2-ActionView-goToBank {
       width: 118.3px;
       height: 14px;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       line-height: 1.33;
       letter-spacing: 0.3px;

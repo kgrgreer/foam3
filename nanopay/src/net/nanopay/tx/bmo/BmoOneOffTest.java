@@ -40,7 +40,6 @@ public class BmoOneOffTest {
     BmoCITransaction ciTransaction = new BmoCITransaction();
     ciTransaction.setStatus              (TransactionStatus.PENDING);
     ciTransaction.setInitialStatus       (TransactionStatus.PENDING);
-    ciTransaction.setIsQuoted            (true);
     ciTransaction.setPayeeId             (testUser.getId());
     ciTransaction.setPayerId             (testUser.getId());
     ciTransaction.setAmount              (amount);
@@ -61,7 +60,6 @@ public class BmoOneOffTest {
     BmoCOTransaction coTransaction = new BmoCOTransaction();
     coTransaction.setStatus              (TransactionStatus.PENDING);
     coTransaction.setInitialStatus       (TransactionStatus.PENDING);
-    coTransaction.setIsQuoted            (true);
     coTransaction.setPayeeId             (testUser.getId());
     coTransaction.setPayerId             (testUser.getId());
     coTransaction.setAmount              (amount);

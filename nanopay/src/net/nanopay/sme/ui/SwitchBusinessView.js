@@ -27,6 +27,7 @@ foam.CLASS({
   requires: [
     'foam.log.LogLevel',
     'foam.u2.dialog.Popup',
+    'foam.core.Latch',
     'foam.dao.PromisedDAO',
     'foam.nanos.auth.UserUserJunction',
     'foam.nanos.crunch.UserCapabilityJunction',
@@ -44,7 +45,10 @@ foam.CLASS({
     'businessDAO',
     'capabilityDAO',
     'crunchController',
+    'crunchService',
     'ctrl',
+    'initLayout',
+    'isMenuOpen',
     'menuDAO',
     'notify',
     'onboardingUtil',
@@ -165,7 +169,7 @@ foam.CLASS({
     { name: 'GO_BACK', message: 'Go back' },
     { name: 'SELECT_COMPANY', message: 'Select a company' },
     { name: 'DISABLED_BUSINESS_MSG', message: 'This business has been disabled. You cannot switch to it at this time.' },
-    { name: 'ERROR_DISABLED', message: 'Please contact an administrator for this company to enable access.' }
+    { name: 'ERROR_DISABLED', message: 'Please contact an administrator for this company to enable access' }
   ],
 
   properties: [
@@ -184,7 +188,7 @@ foam.CLASS({
           promise: party.entities.dao
             .where(this.NEQ(this.Business.STATUS, this.AccountStatus.DISABLED))
             .select(this.MAP(this.Business.ID))
-            .then((mapSink) => {
+            .then(mapSink => {
               return party.entities.junctionDAO.where(
                 this.AND(
                   this.EQ(this.UserUserJunction.SOURCE_ID, party.id),
@@ -209,7 +213,7 @@ foam.CLASS({
           promise: party.entities.dao
             .where(this.EQ(this.Business.STATUS, this.AccountStatus.DISABLED))
             .select(this.MAP(this.Business.ID))
-            .then((mapSink) => {
+            .then(mapSink => {
               return party.entities.junctionDAO.where(
                 this.AND(
                   this.EQ(this.UserUserJunction.SOURCE_ID, party.id),
@@ -218,6 +222,15 @@ foam.CLASS({
               );
             })
         });
+      }
+    },
+    {
+      class: 'foam.core.FObjectProperty',
+      of: 'foam.core.Latch',
+      name: 'loadingComplete',
+      documentation: 'Loading latch.',
+      factory: function() {
+        return this.Latch.create();
       }
     }
   ],
@@ -233,12 +246,17 @@ foam.CLASS({
       var business = await this.businessDAO.find(junction.targetId);
       try {
         var result = await this.agentAuth.actAs(this, business);
+        // set default menuState as open
+        window.localStorage.setItem('isMenuOpen', 'true');
+
         if ( result ) {
           await this.ctrl.fetchGroup();
           this.subject.user = business;
           this.subject.realUser = result;
           this.clearCachedDAOs();
-          this.pushMenu('sme.main.appStore');
+          this.initLayout.resolve();
+          await this.pushDefaultMenu();
+
           return;
         }
       } catch (err) {
@@ -249,45 +267,49 @@ foam.CLASS({
       }
     },
 
-    function init() {
-      if ( this.user.cls_ != net.nanopay.model.Business ) {
-        this.enabledBusinesses_
-          .select()
-          .then(async (sink) => {
-            var ac = this.theme.admissionCapability;
-              
-            // check if user registration capability is granted
-            var ucj = await this.userCapabilityJunctionDAO.find(
-              this.AND(
-                this.EQ(this.UserCapabilityJunction.SOURCE_ID, this.subject.user.id),
-                this.EQ(this.UserCapabilityJunction.TARGET_ID, ac),
-                this.EQ(this.UserCapabilityJunction.STATUS, this.CapabilityJunctionStatus.GRANTED)
-              )
-            );
-            if ( ! ucj ) {
-              this.onboardingUtil.initUserRegistration(ac);
-              return;
-            }
-            
-            if ( sink.array.length === 0 ) {
-              this.pushMenu('sme.main.appStore');
-              return;
-            }
-
-            if ( sink.array.length === 1 ) {
-              var junction = sink.array[0];
-
-              // If the user is only in one business but that business has
-              // disabled them, then don't immediately switch to that business.
-              if ( junction.status === this.AgentJunctionStatus.DISABLED ) return;
-              this.assignBusinessAndLogIn(junction);
-              this.removeAllChildren();
-            }
-          });
-      }
+    async function pushDefaultMenu() {
+      var defaultMenu = this.theme ?
+        await this.menuDAO.find(this.theme.defaultMenu) :
+        'sme.main.appStore';
+      if ( ! defaultMenu ) defaultMenu = 'sme.main.appStore';
+      this.pushMenu(defaultMenu);
     },
 
-    function initE() {
+    async function init() {
+      if ( this.user.cls_ != net.nanopay.model.Business ) {
+        let sink = await this.enabledBusinesses_.select();
+        var ac = this.theme.admissionCapability;
+        if ( ac ) {
+          var ucj = await this.crunchService.getJunction(null, ac);
+          if ( ucj.status !==  this.CapabilityJunctionStatus.GRANTED ) {
+            this.onboardingUtil.initUserRegistration(ac);
+            return;
+          }
+        }
+
+        if ( sink.array.length === 0 ) {
+          this.initLayout.resolve();
+          await this.pushDefaultMenu();
+          return;
+        }
+
+        if ( sink.array.length === 1 ) {
+          this.initLayout.resolve();
+          var junction = sink.array[0];
+
+          // If the user is only in one business but that business has
+          // disabled them, then don't immediately switch to that business.
+          if ( junction.status === this.AgentJunctionStatus.DISABLED ) return;
+          await this.assignBusinessAndLogIn(junction);
+          this.removeAllChildren();
+          return;
+        }
+      }
+      this.loadingComplete.resolve();
+    },
+
+    async function initE() {
+      await this.loadingComplete;
       var self = this;
 
       this.start().addClass(this.myClass())

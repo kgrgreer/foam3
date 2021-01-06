@@ -84,7 +84,7 @@ foam.CLASS({
 
   messages: [
     { name: 'BOOLEAN_ERROR', message: 'There was an issue updating' },
-    { name: 'BOOLEAN_SUCCESS', message: 'was successfully updated.' }
+    { name: 'BOOLEAN_SUCCESS', message: 'was successfully updated' }
   ],
 
   methods: [

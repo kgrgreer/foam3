@@ -19,19 +19,32 @@ foam.ENUM({
   package: 'net.nanopay.contacts',
   name: 'ContactStatus',
 
-  documentation: `The base model for tracking the registration status of a 
-    Contact.  A Contact is defined as a person who is not registered on the 
+  documentation: `The base model for tracking the registration status of a
+    Contact.  A Contact is defined as a person who is not registered on the
     platform, but can still receive invoices from platform users.
   `,
 
   values: [
     {
-      name: 'NOT_CONNECTED',
-      label: 'Not Connected'
+      name: 'PENDING',
+      label: { en: 'Pending', pt: 'Pendente'},
+      documentation: 'Default Status',
+      ordinal: 0,
+      color: '/*%GREY3%*/ #cbcfd4'
     },
     {
-      name: 'ACTIVE',
-      label: 'Connected'
+      name: 'CONNECTED',
+      label: { en: 'Connected', pt: 'Conectado'},
+      documentation: 'Added via payment code or business name',
+      ordinal: 1,
+      color: '#07941f'
     },
+    {
+      name: 'READY',
+      label: { en: 'Ready', pt: 'Pronto'},
+      documentation: 'Either business id or bankAccount associated',
+      ordinal: 2,
+      color: '/*%APPROVAL3%*/ #32bf5e'
+    }
   ]
 });

@@ -46,7 +46,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'INVOICE_PAID_ALREADY_ERROR_MSG', message: 'Invoice already paid.' }
+    { name: 'INVOICE_PAID_ALREADY_ERROR_MSG', message: 'Invoice already paid' }
   ],
 
   properties: [
@@ -81,26 +81,6 @@ foam.CLASS({
         DAO invoiceDAO = ((DAO) x.get("invoiceDAO")).inX(x);
 
         Transaction transaction = (Transaction) obj;
-
-        if ( (transaction instanceof AbliiTransaction || ( transaction instanceof FXSummaryTransaction && transaction.getInvoiceId() != 0 )) &&
-          ((DAO) x.get("localTransactionDAO")).find(transaction.getId()) == null ) {
-          transaction = (Transaction) super.put_(x, obj);
-
-          Invoice invoice = getInvoice(x, transaction);
-          if ( invoice != null ) {
-            invoice.setPaymentId(transaction.getId());
-            // Invoice status should be processing as default when the transaction is created
-            invoice.setPaymentMethod(PaymentStatus.PROCESSING);
-            // AscendantFXTransaction has its own completion date
-            if ( transaction instanceof AscendantFXTransaction ) {
-              invoice.setPaymentDate(transaction.getCompletionDate());
-            } else {
-              invoice.setPaymentDate(generateEstimatedCreditDate(x, transaction));
-            }
-            invoiceDAO.put(invoice);
-          }
-          return transaction;
-        }
 
         // Since SaveChainedTransactionDAO will save all children transactions, we
         // can copy the invoiceId from the root transaction without having to
@@ -170,11 +150,13 @@ foam.CLASS({
             invoice.clearPaymentMethod();
             invoice.clearPaymentDate();
             invoiceDAO.put(invoice);
+
             // Send a notification to the payment-ops team.
             FailedTransactionNotification notification = new FailedTransactionNotification.Builder(x)
               .setTransactionId(transaction.getId())
               .setInvoiceId(invoice.getId())
               .setEmailArgs(args)
+              .setGroupId(transaction.getSpid() + "-payment-ops")
               .build();
             DAO notificationDAO = ((DAO) x.get("localNotificationDAO")).inX(x);
             notificationDAO.put(notification);

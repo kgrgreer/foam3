@@ -57,7 +57,7 @@ foam.CLASS({
       vertical-align: top;
       }
     ^ h5 {
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-weight: normal;
       letter-spacing: 0.2px;
       padding-bottom: 4px;
@@ -231,7 +231,7 @@ foam.CLASS({
         }).addClass('profilePicture').end()
         .start().addClass('companyInfoDiv')
           .start('h2').addClass('companyName')
-            .add(i.businessName ? i.businessName : '')
+            .add(i.organization ? i.organization : '')
           .end()
           .start('h2').addClass('companyAddress')
             .add(this.addressLine1)
@@ -360,11 +360,11 @@ foam.CLASS({
     },
     {
       name: 'InviteSendError',
-      message: 'There was a problem sending the invitation.'
+      message: 'There was a problem sending the invitation'
     },
     {
       name: 'DisconnectSuccess',
-      message: 'You have successfully disconnected.'
+      message: 'You have successfully disconnected'
     },
     {
       name: 'DisconnectError',

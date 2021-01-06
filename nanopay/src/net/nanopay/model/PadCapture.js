@@ -89,7 +89,6 @@ foam.CLASS({
     {
       class: 'String',
       name: 'accountNumber',
-      label: 'Account Number',
       documentation: 'Account associated with PAD capture.',
       visibility: 'DISABLED',
       gridColumns: 6,
@@ -123,9 +122,20 @@ foam.CLASS({
       name: 'capableRequirements',
       storageTransient: true,
       networkTransient: true,
+      visibility: 'HIDDEN',
       documentation: `
         Capable object requirements, defined by a subclass of PadCapture.
       `
+    },
+    {
+      class: 'StringArray',
+      name: 'capabilityIds',
+      visibility: 'HIDDEN',
+    },
+    {
+      class: 'String',
+      name: 'daoKey',
+      visibility: 'HIDDEN',
     }
   ],
 

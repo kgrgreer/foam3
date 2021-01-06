@@ -24,7 +24,7 @@ p({
   },
   "asyncAction":{"class":"net.nanopay.country.br.tx.ruler.ExchangeLimitTransactionRule"},
   "enabled":true,
-  "saveHistory":true,
+  "saveHistory":false,
   "lifecycleState":1
 })
 

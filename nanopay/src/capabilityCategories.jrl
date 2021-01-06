@@ -20,7 +20,7 @@ p({
   "id": "signingOfficerOnboarding",
   "name": "Onboarding A Signing Officer",
   "visible": true,
-  "visibilityCondition": { "class": "net.nanopay.crunch.onboardingModels.IsBusiness" }
+  "visibilityCondition": { "class": "net.nanopay.crunch.predicate.IsBusiness" }
 })
 p({
   "class": "foam.nanos.crunch.CapabilityCategory",
@@ -44,5 +44,35 @@ p({
   "class": "foam.nanos.crunch.CapabilityCategory",
   "id": "complianceSetting",
   "name": "Change compliance of entity",
+  "visible": false
+})
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "secureFactUserValidation",
+  "name": "Check Compliance of User Against SecureFact",
+  "visible": false
+})
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "dowJonesUserValidation",
+  "name": "Check Compliance of User Against Dow Jone",
+  "visible": false
+})
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "secureFactBusinessValidation",
+  "name": "Check Compliance of Business Against SecureFact",
+  "visible": false
+})
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "dowJonesBusinessValidation",
+  "name": "Check Compliance of Business Against Dow Jones",
+  "visible": false
+})
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "compliancePassed",
+  "name": "Capabilities that are granted once compliance has been passed",
   "visible": false
 })

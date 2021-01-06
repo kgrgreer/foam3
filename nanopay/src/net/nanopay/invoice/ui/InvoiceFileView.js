@@ -111,6 +111,7 @@ foam.CLASS({
       object-fit: contain;
       background: white;
       border: none;
+      display: inline-block;
     }
     ^ .foam-u2-ActionView-remove img {
       position: relative;
@@ -163,6 +164,7 @@ foam.CLASS({
     {
       name: 'remove',
       icon: 'images/ic-delete.svg',
+      label: '',
       code: function(X) {
         this.onInvoiceFileRemoved(X.data.fileNumber);
       }

@@ -35,10 +35,10 @@ foam.CLASS({
     'checkAndNotifyAbilityToPay',
     'checkAndNotifyAbilityToReceive',
     'contactDAO',
+    'crunchService',
     'ctrl',
     'fxService',
     'menuDAO',
-    'notificationDAO',
     'notify',
     'pushMenu',
     'stack',
@@ -47,6 +47,7 @@ foam.CLASS({
     'transactionPlannerDAO',
     'quickbooksService',
     'xeroService',
+    'crunchController'
   ],
 
   exports: [
@@ -61,15 +62,15 @@ foam.CLASS({
     'loadingSpin',
     'newButton',
     'predicate',
-    'requestTxn',
-    'txnQuote',
-    'updateInvoiceDetails',
-    'forceUpdate'
+    'txnQuote'
   ],
 
   requires: [
     'foam.log.LogLevel',
     'foam.nanos.app.Mode',
+    'foam.nanos.crunch.CapabilityJunctionStatus',
+    'foam.nanos.crunch.CapabilityIntercept',
+    'foam.nanos.auth.LifecycleState',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.admin.model.ComplianceStatus',
     'net.nanopay.auth.PublicUserInfo',
@@ -78,12 +79,13 @@ foam.CLASS({
     'net.nanopay.fx.FXLineItem',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.InvoiceStatus',
+    'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.tx.AbliiTransaction',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.FxSummaryTransactionLineItem',
     'net.nanopay.tx.TransactionQuote',
-    'net.nanopay.ui.LoadingSpinner',
-    'foam.u2.dialog.Popup',
+    'foam.u2.LoadingSpinner',
+    'foam.u2.dialog.Popup'
   ],
 
   axioms: [
@@ -119,6 +121,13 @@ foam.CLASS({
       font-size: 14px;
       line-height: 1.5;
       margin-top: 35px;
+    }
+    ^ .foam-u2-LoadingSpinner img{
+      width: 150px;
+      margin: 200px;
+    }
+    ^ .stackColumn .foam-u2-stack-StackView {
+      padding-left: 0 !important;
     }
   `,
 
@@ -223,9 +232,7 @@ foam.CLASS({
     {
       name: 'hasSaveOption',
       expression: function(isForm, position) {
-        return isForm &&
-          this.invoice.status !== this.InvoiceStatus.DRAFT &&
-          position === 0;
+        return this.invoice.status !== this.InvoiceStatus.PROCESSING;
       },
       documentation: `An expression is required for the 1st step of the
         send/request payment flow to show the 'Save as draft' button.`
@@ -259,24 +266,6 @@ foam.CLASS({
       name: 'permitToPay'
     },
     {
-      class: 'Boolean',
-      name: 'forceUpdate',
-      value: false
-    },
-    'updateInvoiceDetails',
-    {
-      class: 'FObjectProperty',
-      name: 'requestTxn',
-      factory: function() {
-        return this.AbliiTransaction.create();
-      }
-    },
-    {
-      class: 'Boolean',
-      name: 'reQuote',
-      value: false
-    },
-    {
       class: 'FObjectProperty',
       name: 'txnQuote',
     }
@@ -286,17 +275,18 @@ foam.CLASS({
     { name: 'SAVE_DRAFT_ERROR', message: 'An error occurred while saving the draft ' },
     { name: 'INVOICE_ERROR', message: 'Invoice Error: An error occurred while saving the ' },
     { name: 'TRANSACTION_ERROR', message: 'Transaction Error: An error occurred while saving the ' },
-    { name: 'BANK_ACCOUNT_REQUIRED', message: 'Please select a bank account that has been verified.' },
-    { name: 'QUOTE_ERROR', message: 'An unexpected error occurred while fetching the exchange rate.' },
-    { name: 'CONTACT_ERROR', message: 'Need to choose a contact.' },
-    { name: 'AMOUNT_ERROR', message: 'Invalid Amount.' },
-    { name: 'DUE_DATE_ERROR', message: 'Invalid Due Date.' },
-    { name: 'ISSUE_DATE_ERROR', message: 'Invalid Issue Date.' },
-    { name: 'DRAFT_SUCCESS', message: 'Draft saved successfully.' },
-    { name: 'COMPLIANCE_ERROR', message: 'Business must pass compliance to make a payment.' },
-    { name: 'CONTACT_NOT_FOUND', message: 'Contact not found.' },
-    { name: 'INVOICE_AMOUNT_ERROR', message: 'This amount exceeds your sending limit.' },
-    { name: 'WAITING_FOR_RATE', message: 'Waiting for FX quote.' },
+    { name: 'BANK_ACCOUNT_REQUIRED', message: 'Please select a bank account that has been verified' },
+    { name: 'QUOTE_ERROR', message: 'An unexpected error occurred while fetching the exchange rate' },
+    { name: 'CONTACT_ERROR', message: 'Need to choose a contact' },
+    { name: 'AMOUNT_ERROR', message: 'Invalid Amount' },
+    { name: 'DUE_DATE_ERROR', message: 'Invalid Due Date' },
+    { name: 'ISSUE_DATE_ERROR', message: 'Invalid Issue Date' },
+    { name: 'DRAFT_SUCCESS', message: 'Draft saved successfully' },
+    { name: 'CANCEL_SUCCESS', message: 'Invoice cancelled successfully' },
+    { name: 'COMPLIANCE_ERROR', message: 'Business must pass compliance to make a payment' },
+    { name: 'CONTACT_NOT_FOUND', message: 'Contact not found' },
+    { name: 'INVOICE_AMOUNT_ERROR', message: 'This amount exceeds your sending limit' },
+    { name: 'WAITING_FOR_RATE', message: 'Waiting for FX quote' },
     { name: 'RATE_REFRESH', message: 'The exchange rate expired, please ' },
     { name: 'RATE_REFRESH_SUBMIT', message: ' submit again.' },
     { name: 'RATE_REFRESH_APPROVE', message: ' approve again.' },
@@ -306,7 +296,14 @@ foam.CLASS({
       message: `You require two-factor authentication to continue this payment.
           Please go to the Personal Settings page to set up two-factor authentication.`
     },
-    { name: 'INR_RATE_LIMIT', message: 'This transaction exceeds your total daily limit for payments to India. For help, contact support at support@ablii.com' }
+    { name: 'SEND_PAYMENT', message: 'Send payment' },
+    { name: 'REQUEST_PAYMENT', message: 'Request payment' },
+    { name: 'INVOICE_DETAILS', message: 'Invoice details' },
+    { name: 'SELECT_PAYABLE', message: 'Select payable' },
+    { name: 'REVIEW_MSG', message: 'Review' },
+    { name: 'REVIEW_PAYMENT', message: 'Review payment'},
+    { name: 'CANCEL', message: 'Cancel'},
+    { name: 'VOID', message: 'Void'}
   ],
 
   methods: [
@@ -318,7 +315,7 @@ foam.CLASS({
       if ( this.isApproving ) {
         this.title = 'Approve payment';
       } else {
-        this.title = this.isPayable === true ? 'Send payment' : 'Request payment';
+        this.title = this.isPayable === true ? this.SEND_PAYMENT : this.REQUEST_PAYMENT;
       }
 
       this.type = this.isPayable ? 'payable' : 'receivable';
@@ -327,8 +324,8 @@ foam.CLASS({
         {
           parent: 'sendRequestMoney',
           id: this.DETAILS_VIEW_ID,
-          label: 'Details',
-          subtitle: 'Select payable',
+          label: this.INVOICE_DETAILS,
+          subtitle: this.SELECT_PAYABLE,
           view: {
             class: 'net.nanopay.sme.ui.SendRequestMoneyDetails',
             type: this.type
@@ -336,35 +333,24 @@ foam.CLASS({
         }
       ];
 
-      if ( ! this.isApproving ) {
-        this.views.push({
-          parent: 'sendRequestMoney',
-          id: this.PAYMENT_VIEW_ID,
-          label: 'Payment details',
-          subtitle: 'Select payment method',
-          view: {
-            class: 'net.nanopay.sme.ui.SendRequestMoneyPayment',
-            type: this.type
-          }
-        });
-      }
-
       this.views.push({
         parent: 'sendRequestMoney',
         id: this.REVIEW_VIEW_ID,
-        label: 'Review',
-        subtitle: 'Review payment',
+        label: this.REVIEW_MSG,
+        subtitle: this.REVIEW_PAYMENT,
         view: {
           class: 'net.nanopay.sme.ui.SendRequestMoneyReview'
         }
       });
 
-      this.exitLabel = 'Cancel';
+      this.exitLabel = this.CANCEL;
+      this.optionLabel = this.VOID;
       this.hasExitOption = true;
 
-      this.auth.check(this, 'invoice.pay').then((result) => {
-        this.permitToPay = result;
-      });
+      Promise.all([this.auth.check(null, 'business.invoice.pay'), this.auth.check(null, 'user.invoice.pay')])
+        .then(results => {
+          this.permitToPay = results[0] && results[1];
+        });
 
       this.SUPER();
     },
@@ -376,9 +362,9 @@ foam.CLASS({
         this.checkAndNotifyAbilityToPay :
         this.checkAndNotifyAbilityToReceive;
 
-      checkAndNotifyAbility().then((result) => {
+      checkAndNotifyAbility().then(result => {
         if ( ! result ) {
-          this.pushMenu('sme.main.dashboard');
+          this.pushMenu('capability.main.dashboard');
           return;
         }
       });
@@ -415,55 +401,23 @@ foam.CLASS({
       if ( ! this.viewData.bankAccount || ! foam.util.equals(this.viewData.bankAccount.status, net.nanopay.bank.BankAccountStatus.VERIFIED) ) {
         this.notify(this.BANK_ACCOUNT_REQUIRED, '', this.LogLevel.ERROR, true);
         return false;
-      } else if ( ! this.viewData.quote && this.isPayable ) {
+      } else if ( ! this.invoice.quote && this.isPayable ) {
         this.notify(this.QUOTE_ERROR, '', this.LogLevel.ERROR, true);
         return false;
-      }
-
-      // Validate transaction line items
-      if ( this.type === 'payable' ) {
-        try {
-          for ( i =0; i < this.viewData.quote.lineItems.length; i++ ) {
-            if ( this.viewData.quote.lineItems[i].requiresUserInput ) {
-              this.viewData.quote.lineItems[i].validate();
-            }
-          }
-        } catch (e) {
-          this.notify(e, '', this.LogLevel.ERROR, true);
-          return false;
-        }
-
-        for ( i=0; i < this.viewData.quote.lineItems.length; i++ ) {
-          if ( this.viewData.quote.lineItems[i].requiresUserInput ) {
-            this.requestTxn.lineItems.push(this.viewData.quote.lineItems[i]);
-            if ( ! this.requote && this.viewData.quote.lineItems[i].quoteOnChange ) {
-              this.reQuote = true;
-            }
-          }
-        }
-
-        if ( this.reQuote ) {
-          this.isLoading = true;
-          this.updateInvoiceDetails = await this.getQuote();
-          this.forceUpdate = true;
-          this.isLoading = false;
-          this.reQuote = false;
-        }
       }
 
       return true;
     },
 
     function getExpired( time, transaction) {
-
       let quoteExpiry = null;
-      for ( i=0; i < this.viewData.quote.lineItems.length; i++ ) {
-        if ( ( this.FXLineItem.isInstance(this.viewData.quote.lineItems[i]) || this.FxSummaryTransactionLineItem.isInstance(this.viewData.quote.lineItems[i]) ) && this.viewData.quote.lineItems[i].expiry ) {
+      for ( i=0; i < transaction.lineItems.length; i++ ) {
+        if ( ( this.FXLineItem.isInstance(transaction.lineItems[i]) || this.FxSummaryTransactionLineItem.isInstance(transaction.lineItems[i]) ) && transaction.lineItems[i].expiry ) {
           if ( quoteExpiry == null ) {
-            quoteExpiry = this.viewData.quote.lineItems[i].expiry;
+            quoteExpiry = transaction.lineItems[i].expiry;
             quoteExpiry = Date.UTC(quoteExpiry.getFullYear(), quoteExpiry.getMonth(), quoteExpiry.getDate(), quoteExpiry.getHours(), quoteExpiry.getMinutes(), quoteExpiry.getSeconds());
           } else {
-            let temp = this.viewData.quote.lineItems[i].expiry;
+            let temp = transaction.lineItems[i].expiry;
             temp = Date.UTC(temp.getFullYear(), temp.getMonth(), temp.getDate(), temp.getHours(), temp.getMinutes(), temp.getSeconds());
             quoteExpiry = quoteExpiry < temp ? quoteExpiry : temp;
           }
@@ -477,122 +431,139 @@ foam.CLASS({
     },
 
     async function getQuote() {
-      var quote = await this.transactionPlannerDAO.put(
-        this.TransactionQuote.create({
-          requestTransaction: this.requestTxn
-        })
-      );
-      this.txnQuote = quote;
-      return quote.plan;
+      this.invoice.quote = null;
+      this.invoice.paymentMethod = this.PaymentStatus.SUBMIT;
+
+      // to be able to adjust capable payloads that were previously saved
+      if ( this.invoice.draft && this.invoice.capabilityIds.length > 0 && this.invoice.capablePayloads.length > 0 ){
+        this.invoice.draft = false;
+
+        var capabilityIntercept = this.CapabilityIntercept.create();
+        capabilityIntercept.daoKey = "invoiceDAO"
+        
+        var wizardSeq = this.crunchController.createCapableWizardSequence(capabilityIntercept, this.invoice);
+
+        try {
+          var wizardContext = await wizardSeq.execute();
+        } catch (err) {          
+          await this.abortQuoteAndSaveDraft(err);
+          return;
+        }
+
+        if ( ! wizardContext.submitted ){
+          this.invoice.draft = true;
+          this.saveDraft(this.invoice);
+          return;
+        }
+      }
+
+      this.invoice.draft = false;
+
+      // to preserve any invoice created as a draft in case of failure
+      if ( this.invoice.id === 0 ){
+        this.invoice.draft = true;
+        try{
+          this.invoice = await this.invoiceDAO.put(this.invoice);
+        } catch(error) {
+          await this.abortQuoteAndSaveDraft(err);
+        }
+        this.invoice.draft = false;
+      }
+
+      try {
+        this.invoice = await this.invoiceDAO.put(this.invoice);
+
+        if ( this.invoice.capabilityIds.length > 0 && this.invoice.isWizardIncomplete ) {
+          this.invoice.draft = true;
+          this.saveDraft(this.invoice);
+          return;
+        }
+      } catch(err) {
+        await this.abortQuoteAndSaveDraft(err);
+        return;
+      }
+
+      this.txnQuote = this.invoice.quote.plan;
+      return this.txnQuote;
+    },
+
+    /**
+     * Primarily used when receiving an exception from the back-end, to put the invoice
+     * into a resubmittable state and save it as a draft
+     * @param {*} error 
+     */
+    async function abortQuoteAndSaveDraft(error) {
+      this.invoice.paymentMethod = this.PaymentStatus.SUBMIT;
+      this.invoice.status = this.InvoiceStatus.DRAFT;
+      this.invoice.draft = true;
+      this.invoice.quote = null;
+      this.invoice.plan = null;
+      this.invoice.capablePayloads.forEach(cp => cp.status = this.CapabilityJunctionStatus.ACTION_REQUIRED);
+      this.invoiceDAO.put(this.invoice);
+      this.notify(error.message,'', this.LogLevel.ERROR, true);
+      this.pushMenu(this.isPayable
+        ? 'capability.main.invoices.payables'
+        : 'capability.main.invoices.receivables');
+    },
+
+    async function setTransactionPlanAndQuote() {
+      this.isLoading = true;
+      if ( this.isPayable ) {
+        await this.getQuote();
+      }
+      this.isLoading = false;
     },
 
     async function submit() {
       this.isLoading = true;
-      var checkAndNotifyAbility;
+      // TODO: perhaps all of these capabilities should imply something so
+      //   a similar capability can be added without updating this code.
+      let isSigningOfficer = await this.crunchService.atLeastOneInCategory(null, "complianceSetting");
 
-      var checkAndNotifyAbility = this.isPayable ?
-        this.checkAndNotifyAbilityToPay :
-        this.checkAndNotifyAbilityToReceive;
-
-      var result = await checkAndNotifyAbility();
-      if ( ! result ) {
-        return;
-      }
-
-      this.invoice.processPaymentOnCreate = false;
-
-      // Confirm Invoice information:
-      if ( this.invoice.draft ) {
-        this.invoice.draft = false;
-        this.invoice = await this.invoiceDAO.put(this.invoice);
-      }
-
-      // invoice payer/payee should be populated from InvoiceSetDestDAO
       try {
-        // Calling put here makes display 'invoice was created' message in invoice history.
-        // We want to show this message only when we are creating a new invoice.
-
-        // a flag for determining if we are creating a new invoice
-        const isNewInvoice = this.invoice.id === 0;
-        if ( isNewInvoice ) {
-          this.invoice = await this.invoiceDAO.put(this.invoice);
-        }
-      } catch (error) {
-        console.error('@SendRequestMoney (Invoice put): ' + error.message);
-        this.notify(this.INVOICE_ERROR + this.type, '', this.LogLevel.ERROR, true);
-        this.isLoading = false;
-        return;
-      }
-
-      // Uses the transaction retrieved from transactionQuoteDAO retrieved from invoiceRateView.
-      if ( this.isPayable ) {
-        var transaction = this.viewData.quote ? this.viewData.quote : null;
-        transaction.invoiceId = this.invoice.id;
+        if ( this.isPayable && isSigningOfficer ) {
+          let transaction = this.invoice.quote.plan;
         // confirm fxquote is still valid
-        if ( transaction != null && this.getExpired(new Date(), transaction) ) {
-          transaction = await this.getQuote();
-          transaction.invoiceId = this.invoice.id;
-          this.notify(this.RATE_REFRESH + ( this.isApproving ? this.RATE_REFRESH_APPROVE : this.RATE_REFRESH_SUBMIT), '', this.LogLevel.WARN, true);
-          this.isLoading = false;
-          this.updateInvoiceDetails = transaction;
-          this.forceUpdate = true;
-          return;
-        }
-
-        if ( this.viewData.isDomestic ) {
-          if ( ! transaction ) this.notify(this.QUOTE_ERROR, '', this.LogLevel.ERROR, true);
-          try {
-            let tem = await this.transactionDAO.put(transaction);
-          } catch (error) {
-            console.error('@SendRequestMoney (Transaction put): ' + error.message);
-            if ( error.message && error.message.includes('exceed') ) {
-              this.notify(error.message, '', this.LogLevel.ERROR, true);
-            } else {
-              this.notify(this.TRANSACTION_ERROR + this.type, '', this.LogLevel.ERROR, true);
-            }
+          if ( transaction != null && this.getExpired(new Date(), transaction) ) {
+            transaction = await this.getQuote();
+            this.notify(this.RATE_REFRESH + ( this.isApproving ? this.RATE_REFRESH_APPROVE : this.RATE_REFRESH_SUBMIT), '', this.LogLevel.WARN, true);
             this.isLoading = false;
             return;
           }
+
+          this.invoice.plan = transaction;
+          this.invoice = await this.invoiceDAO.put(this.invoice);
+          if ( ! this.invoice.paymentId ) {
+            this.isLoading = false;
+            this.notify(this.TRANSACTION_ERROR + this.type, '', this.LogLevel.ERROR, true);
+            return;
+          }
+        } else if ( this.isPayable ) {
+          this.invoice.paymentMethod = this.PaymentStatus.PENDING_APPROVAL;
+          this.invoiceDAO.put(this.invoice);
         } else {
-          try {
-            transaction.isQuoted = true;
-            let tem = await this.transactionDAO.put(transaction);
-          } catch ( error ) {
-            console.error('@SendRequestMoney (Accept and put transaction quote): ' + error.message);
-            if ( error.message && error.message.includes('[Transaction Validation error] ') ) {
-              let temp = error.message.split('[Transaction Validation error] ');
-              this.notify(temp[1], '', this.LogLevel.ERROR, true);
-            } else if ( error.message && error.message == 'Exceed INR Transaction limit' ) {
-              this.notify(this.INR_RATE_LIMIT, '', this.LogLevel.ERROR, true);
-            } else {
-              this.notify(this.TRANSACTION_ERROR + this.type, '', this.LogLevel.ERROR, true);
-            }
-            this.isLoading = false;
-            return;
-          }
+          this.invoiceDAO.put(this.invoice);
         }
-      }
-      // Get the invoice again because the put to the transactionDAO will have
-      // updated the invoice's status and other fields like transactionId.
+        // this.invoice.processPaymentOnCreate = false;
 
-      try {
-        if ( this.invoice.id != 0 ) this.invoice = await this.invoiceDAO.find(this.invoice.id);
-        else this.invoice = await this.invoiceDAO.put(this.invoice); // Flow for receivable
+        // if ( this.invoice.id != 0 ) this.invoice = await this.invoiceDAO.find(this.invoice.id);
+        // else this.invoice = await this.invoiceDAO.put(this.invoice); // Flow for receivable
 
-        let service = null;
+        let service;
         if ( this.invoice.xeroId && this.invoice.status == this.InvoiceStatus.PROCESSING )  service = this.xeroService;
         if ( this.invoice.quickId && this.invoice.status == this.InvoiceStatus.PROCESSING ) service = this.quickbooksService;
 
-        if ( service != null ) service.invoiceResync(null, this.invoice);
-
+        if ( service ) service.invoiceResync(null, this.invoice);
         ctrl.stack.push({
           class: 'net.nanopay.sme.ui.MoneyFlowSuccessView',
-          invoice: this.invoice
+          invoice: this.invoice,
+          isApprover_: isSigningOfficer
         });
       } catch ( error ) {
         this.isLoading = false;
         console.error('@SendRequestMoney (Invoice/Integration Sync): ' + error.message);
         this.notify(this.TRANSACTION_ERROR + this.type, '', this.LogLevel.ERROR, true);
+        this.invoice.quote.plan = null;
         return;
       }
       this.isLoading = false;
@@ -605,8 +576,8 @@ foam.CLASS({
         await this.invoiceDAO.put(invoice);
         this.notify(this.DRAFT_SUCCESS, '', this.LogLevel.INFO, true);
         this.pushMenu(this.isPayable
-          ? 'sme.main.invoices.payables'
-          : 'sme.main.invoices.receivables');
+          ? 'capability.main.invoices.payables'
+          : 'capability.main.invoices.receivables');
       } catch (error) {
         console.error('@SendRequestMoney (Invoice put after quote transaction put): ' + error.message);
         this.notify(this.SAVE_DRAFT_ERROR + this.type, '', this.LogLevel.ERROR, true);
@@ -629,45 +600,48 @@ foam.CLASS({
         this.notify(this.CONTACT_NOT_FOUND, '', this.LogLevel.ERROR, true);
       }
     }
-  ],
+    ],
 
-  actions: [
+    actions: [
     {
       name: 'save',
       isAvailable: function(hasSaveOption) {
         return hasSaveOption;
       },
-      isEnabled: function(errors) {
-        return ! errors;
+      isEnabled: function(errors, isLoading) {
+        return ! errors && ! isLoading;
       },
       code: function() {
+        this.invoice.paymentMethod = this.PaymentStatus.SUBMIT;
         this.invoice.status = this.InvoiceStatus.DRAFT;
         this.invoice.draft = true;
+        this.invoice.quote = null;
+        this.invoice.plan = null;
+        this.invoice.capablePayloads.forEach(cp => cp.status = this.CapabilityJunctionStatus.ACTION_REQUIRED);
         this.saveDraft(this.invoice);
       }
     },
     {
       name: 'goNext',
-      isAvailable: function(hasNextOption) {
-        return hasNextOption;
-      },
       isEnabled: function(errors, isLoading) {
-        if ( this.subject.user.address.countryId === 'CA' ) {
-          return ! errors && ! isLoading;
-        } else {
-          return this.auth.check(null, 'strategyreference.read.9319664b-aa92-5aac-ae77-98daca6d754d').then(function(cadPerm) {
-            return cadPerm && ! errors && ! isLoading;
-          });
-        }
+        return ! errors && ! isLoading;
+        // if ( this.subject.user.address.countryId === 'CA' ) {
+        //   return ! errors && ! isLoading;
+        // } else {
+        //   return this.auth.check(null, 'strategyreference.read.9319664b-aa92-5aac-ae77-98daca6d754d').then(function(cadPerm) {
+        //     return cadPerm && ! errors && ! isLoading;
+        //   });
+        // }
       },
       code: async function() {
         var currentViewId = this.views[this.position].id;
+
         switch ( currentViewId ) {
           case this.DETAILS_VIEW_ID:
             if ( ! this.invoiceDetailsValidation(this.invoice) ) return;
             if ( ! this.subject.realUser.twoFactorEnabled && this.isPayable && this.permitToPay ) {
               if ( this.appConfig.mode === this.Mode.PRODUCTION ||
-                   this.appConfig.mode === this.Mode.DEMO ) {
+                  this.appConfig.mode === this.Mode.DEMO ) {
                 this.notify(this.TWO_FACTOR_REQUIRED, '', this.LogLevel.ERROR, true);
                 return;
               } else {
@@ -676,26 +650,23 @@ foam.CLASS({
               }
             }
             this.populatePayerIdOrPayeeId().then(() => {
-              this.subStack.push(this.views[this.subStack.pos + 1].view);
-            });
-            break;
-          case this.PAYMENT_VIEW_ID:
-            if ( ! await this.paymentValidation() ) return;
-            this.populatePayerIdOrPayeeId().then(() => {
-              this.subStack.push(this.views[this.subStack.pos + 1].view);
+              this.subStack.push({ class: 'foam.u2.LoadingSpinner' });
+              this.position = this.subStack.pos - 1;
+              this.setTransactionPlanAndQuote().then(
+                () => {
+                  this.subStack.back();
+                  this.subStack.push(this.views[this.subStack.pos + 1].view);
+                }
+              );
             });
             break;
           case this.REVIEW_VIEW_ID:
-            if ( ! this.viewData.quote && this.isPayable && ! this.viewData.isDomestic ) {
-              this.notify(this.WAITING_FOR_RATE, '', this.LogLevel.WARN, true);
-              return;
-            }
             this.submit();
             break;
           /* Redirects users back to dashboard if none
-             of the above conditions are matched */
+            of the above conditions are matched */
           default:
-            this.pushMenu('sme.main.dashboard');
+            this.pushMenu('capability.main.dashboard');
         }
       }
     },
@@ -705,11 +676,14 @@ foam.CLASS({
         return ! isLoading;
       },
       code: function() {
-        if ( this.stack.depth === 1 ) {
-          this.pushMenu('sme.main.dashboard');
-        } else {
-          this.stack.back();
+        if ( this.invoice.id !== 0 ){
+          this.invoiceDAO.remove(this.invoice);
         }
+
+        this.notify(this.CANCEL_SUCCESS,'', this.LogLevel.INFO, true);
+        this.pushMenu(this.isPayable
+          ? 'capability.main.invoices.payables'
+          : 'capability.main.invoices.receivables');
       }
     },
     {
@@ -727,18 +701,6 @@ foam.CLASS({
         }
         this.subStack.back();
       }
-    },
-    {
-      name: 'otherOption',
-      isAvailable: function(hasOtherOption) {
-        return hasOtherOption;
-      },
-      code: function(X) {
-        this.ctrl.add(this.Popup.create().tag({
-          class: 'net.nanopay.invoice.ui.modal.MarkAsVoidModal',
-          invoice: this.invoice
-        }));
-      }
-    },
+    }
   ]
 });

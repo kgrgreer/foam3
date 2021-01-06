@@ -22,6 +22,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.FObject',
+    'foam.core.PropertyInfo',
     'foam.core.X',
     'foam.dao.DAO',
     'foam.dao.Sink',
@@ -58,9 +59,9 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'UPDATE_PERMISSION_ERROR_MSG', message: 'You do not have permission to update that account.' },
-    { name: 'CREATE_PERMISSION_ERROR_MSG', message: 'You do not have permission to create an account for another user.'},
-    { name: 'DELETE_PERMISSION_ERROR_MSG', message: 'Unable to delete bank account due to insufficient permissions.' }
+    { name: 'UPDATE_PERMISSION_ERROR_MSG', message: 'You do not have permission to update that account' },
+    { name: 'CREATE_PERMISSION_ERROR_MSG', message: 'You do not have permission to create an account for another user'},
+    { name: 'DELETE_PERMISSION_ERROR_MSG', message: 'Unable to delete bank account due to insufficient permissions' }
   ],
 
   axioms: [
@@ -96,6 +97,11 @@ foam.CLASS({
 
         if ( isUpdate ) {
           boolean ownsAccount = newAccount.getOwner() == user.getId() && oldAccount.getOwner() == user.getId();
+          // TODO: explicitly check for update on status, verifiedBy for admin
+          if ( ! isUpdateDefault(oldAccount, newAccount) &&
+               ! auth.check(x, GLOBAL_ACCOUNT_UPDATE) ) {
+            throw new AuthorizationException("User can update only isDefault property");
+          }
 
           if (
             ! ownsAccount &&
@@ -216,6 +222,27 @@ foam.CLASS({
         User user = ((Subject) x.get("subject")).getUser();
         User owner = account.findOwner(x);
         return owner instanceof Contact && ((Contact) owner).getOwner() == user.getId();
+      `
+    },
+    {
+      name: 'isUpdateDefault',
+      type: 'Boolean',
+      args: [
+        { type: 'Account', name: 'oldAccount' },
+        { type: 'Account', name: 'newAccount' }
+      ],
+      javaCode: `
+        String ignore = "isDefault, name, description";
+        FObject nu = (FObject) newAccount.fclone();
+        FObject old = (FObject) oldAccount.fclone();
+        for ( String propName : ignore.split("\\\\s*,\\\\s*") ) {
+          PropertyInfo prop = (PropertyInfo) nu.getClassInfo().getAxiomByName(propName);
+          if (prop != null) {
+            prop.clear(nu);
+            prop.clear(old);
+          }
+        }
+        return nu.equals(old);
       `
     }
   ]

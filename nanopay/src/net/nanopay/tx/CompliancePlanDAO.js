@@ -45,7 +45,6 @@ foam.CLASS({
             ct.setInitialStatus(TransactionStatus.PENDING);
             ct.setStatus(TransactionStatus.PENDING_PARENT_COMPLETED);
             ct.clearLineItems();
-            ct.setIsQuoted(true);
             plan.setNext(new Transaction[] { ct });
           }
         }

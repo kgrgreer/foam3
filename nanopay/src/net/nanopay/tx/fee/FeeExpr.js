@@ -67,6 +67,9 @@
     {
       name: 'toString',
       type: 'String',
+      code: function() {
+        return 'FeeExpr(\'' + this.feeName + '\')';
+      },
       javaCode: ' return "FeeExpr(\'" + getFeeName() + "\')"; '
     }
   ],

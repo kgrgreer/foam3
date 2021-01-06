@@ -269,7 +269,7 @@ css: `
 
     ^ .address2Hint {
       height: 14px;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       line-height: 1.17;
       letter-spacing: 0.2px;
@@ -299,7 +299,7 @@ css: `
     ^ .label-beside {
       margin-top: 15px;
       display: inline;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
     ^ .intTextBox {
       width: 10%;
@@ -611,7 +611,7 @@ messages: [
   },
   {
     name: 'NO_ADDITIONAL_OWNERS',
-    message: `I certify that all beneficial owners with 25% or more ownership have been listed and the information included about them is accurate.`
+    message: `I certify that the people who own 25% or more of the business, either directly or indirectly, have been listed and their information is accurate.`
   },
   { name: 'BENEFICIAL_OWNER_SUCCESS', message: 'Beneficial owner added successfully.' },
   { name: 'BENEFICIAL_OWNER_FAILURE', message: 'Unexpected error when adding beneficial owner.' },

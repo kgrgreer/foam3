@@ -22,6 +22,7 @@ foam.CLASS({
   ],
 
   imports: [
+    'auth',
     'agentJunctionDAO',
     'businessInvitationDAO',
     'closeDialog',
@@ -34,8 +35,7 @@ foam.CLASS({
 
   css: `
     ^ {
-      width: 650px;
-      height: 745px;
+      width: 600px;
     }
     ^title {
       margin: 24px;
@@ -52,7 +52,7 @@ foam.CLASS({
       margin: 24px;
     }
     ^button-container {
-      width: 650px;
+      width: 600px;
       justify-content: flex-end;
       align-items: center;
       display: flex;
@@ -126,24 +126,24 @@ foam.CLASS({
       name: 'SUB_TITLE_1', message: 'Choose what access control '
     },
     {
-      name: 'SUB_TITLE_2', message: ' will have in nanopay Corporation.'
+      name: 'SUB_TITLE_2', message: ' will have in '
     },
     {
       name: 'ACCESS_CONTROL_CHANGE_SUCCESS', message: 'Access control successfully changed'
     },
     {
-      name: 'ACCESS_CONTROL_CHANGE_FAILURE', message: 'Failed to change access control : '
+      name: 'ACCESS_CONTROL_CHANGE_FAILURE', message: 'Failed to change access control: '
     },
     {
-      name: 'ACCESS_CONTROL_CHANGE_ERROR', message: 'Please select a different access control.'
+      name: 'ACCESS_CONTROL_CHANGE_ERROR', message: 'Please select a different access control'
     },
     { name: 'INVITE_TITLE', message: 'Invite to ' },
     { name: 'THE_USER', message: 'the user' },
     { name: 'EMAIL_LABEL', message: 'Email'},
     { name: 'INVITATION_SUCCESS', message: 'Invitation sent' },
-    { name: 'INVITATION_ERROR', message: 'Something went wrong with adding the user.' },
-    { name: 'INVALID_EMAIL', message: 'Invalid email address.' },
-    { name: 'INVALID_EMAIL2', message: 'Sorry but the email you are trying to add is already a user within your business.' },
+    { name: 'INVITATION_ERROR', message: 'Something went wrong with adding the user' },
+    { name: 'INVALID_EMAIL', message: 'Invalid email address' },
+    { name: 'INVALID_EMAIL2', message: 'Sorry but the email you are trying to add is already a user within your business' },
     { name: 'INVALID_ACCESS_CONTROL', message: 'Please select an access control' }
   ],
 
@@ -192,18 +192,24 @@ foam.CLASS({
       // set default accessControl
       if ( self.junction && self.junction.accessControl )
         self.accessControl = self.junction.accessControl.toLowerCase();
-      else
-        self.accessControl = 'employee';
-
+      else {
+        var employeeReadPermission = await this.auth.check(null, 'group.read.smeBusinessEmployee');
+        self.accessControl = employeeReadPermission? 'employee' : 'admin/signing officer';
+      }
       self.accessControl$.sub(this.updateSigningOfficerCheckBox);
 
       this.addClass(this.myClass())
         .start()
           .start('h2').addClass(this.myClass('title'))
-            .add(this.isAddUser ? this.INVITE_TITLE : this.TITLE_1).add(this.isAddUser ? this.subject.user.toSummary(): this.subject.realUser.toSummary()).add(this.isAddUser ? '' : this.TITLE_2)
+            .add(this.isAddUser ? this.INVITE_TITLE : this.TITLE_1)
+            .add(this.isAddUser ? this.subject.user.toSummary():(this.junction && this.junction.name !== '') ? this.junction.name : this.THE_USER)
+            .add(this.isAddUser ? '' : this.TITLE_2)
           .end()
           .start('p').addClass(this.myClass('subTitle'))
-             .add(this.SUB_TITLE_1).add(this.isAddUser ? this.THE_USER : this.subject.realUser.toSummary()).add(this.SUB_TITLE_2)
+             .add(this.SUB_TITLE_1)
+             .add((this.junction && this.junction.name !== '') ? this.junction.name : this.THE_USER)
+             .add(this.SUB_TITLE_2)
+             .add(`${this.subject.user.toSummary()}.`)
           .end()
           .start('table')
             .forEach(accessControlValue.array, function(group) {

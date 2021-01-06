@@ -29,6 +29,7 @@ foam.CLASS({
 
   imports: [
     'businessEmployeeDAO',
+    'crunchService',
     'ctrl',
     'signingOfficerJunctionDAO',
     'subject'
@@ -48,7 +49,8 @@ foam.CLASS({
   sections: [
     {
       name: 'ownershipAmountSection',
-      title: 'How many individuals directly or indirectly own 25% or more of the business?',
+      title: 'Enter the number of people who own 25% or more of the business either directly or indirectly.',
+      navTitle: 'Number of owners',
       help: `In accordance with banking laws, we need to document the percentage of ownership of any individual with a 25% + stake in the company.
       Please have owner address and date of birth ready.`,
     },
@@ -90,13 +92,14 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'NO_AMOUNT_OF_OWNERS_SELECTED_ERROR', message: 'Please select a number of owners.' },
-    { name: 'INVALID_OWNER_SELECTION_ERROR', message: 'One or more of the owner selection is invalid.' },
-    { name: 'OWNER_1_ERROR', message: 'Owner1 is invalid.' },
-    { name: 'OWNER_2_ERROR', message: 'Owner2 is invalid.' },
-    { name: 'OWNER_3_ERROR', message: 'Owner3 is invalid.' },
-    { name: 'OWNER_4_ERROR', message: 'Owner4 is invalid.' },
-    { name: 'TOTAL_OWNERSHIP_ERROR', message: 'The total ownership should be less than 100%.' }
+    { name: 'NO_AMOUNT_OF_OWNERS_SELECTED_ERROR', message: 'Please select a number of owners' },
+    { name: 'INVALID_OWNER_SELECTION_ERROR', message: 'One or more of the owner selection is invalid' },
+    { name: 'OWNER_1_ERROR', message: 'Owner1 is invalid' },
+    { name: 'OWNER_2_ERROR', message: 'Owner2 is invalid' },
+    { name: 'OWNER_3_ERROR', message: 'Owner3 is invalid' },
+    { name: 'OWNER_4_ERROR', message: 'Owner4 is invalid' },
+    { name: 'TOTAL_OWNERSHIP_ERROR', message: 'The total ownership should be less than 100%' },
+    { name: 'SIGNINGOFFICER_DATA_FETCHING_ERR', message: 'Failed to find this signing officer info' }
   ],
 
   properties: [
@@ -119,7 +122,7 @@ foam.CLASS({
       class: 'Int',
       transient: true,
       hidden: true,
-     value: 1
+      value: 1
     },
     {
       name: 'soUsersDAO',
@@ -134,6 +137,7 @@ foam.CLASS({
         var pdao = foam.dao.PromisedDAO.create({
           of: net.nanopay.model.BeneficialOwner
         });
+
         var sinkFn = so => {
           var obj = net.nanopay.model.BeneficialOwner.create(
             {
@@ -195,7 +199,9 @@ foam.CLASS({
       class: 'Int',
       documentation: 'Number of owners',
       label: '',
-      value: -1,
+      postSet: function(_, n) {
+        if ( n ) this.clearAllOwnerAndPercentData();
+      },
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
@@ -235,14 +241,15 @@ foam.CLASS({
         if ( n ) this.clearAllOwnerAndPercentData();
       },
       visibility: function(amountOfOwners) {
-        return amountOfOwners == 0 ?
-          foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+        return amountOfOwners == 0 ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       }
     },
     {
       class: 'net.nanopay.crunch.onboardingModels.OwnerProperty',
       index: 1,
       documentation: 'First owner',
+      autoValidate: true,
+      validationTextVisible: false,
       validationPredicates: [
       {
         args: ['amountOfOwners', 'owner1$errors_'],
@@ -267,6 +274,8 @@ foam.CLASS({
       class: 'net.nanopay.crunch.onboardingModels.OwnerProperty',
       index: 2,
       documentation: 'Second owner',
+      autoValidate: true,
+      validationTextVisible: false,
       validationPredicates: [
       {
         args: ['amountOfOwners', 'owner2$errors_'],
@@ -291,6 +300,8 @@ foam.CLASS({
       class: 'net.nanopay.crunch.onboardingModels.OwnerProperty',
       index: 3,
       documentation: 'Third owner',
+      autoValidate: true,
+      validationTextVisible: false,
       validationPredicates: [
       {
         args: ['amountOfOwners', 'owner3$errors_'],
@@ -315,6 +326,8 @@ foam.CLASS({
       class: 'net.nanopay.crunch.onboardingModels.OwnerProperty',
       index: 4,
       documentation: 'Forth owner',
+      autoValidate: true,
+      validationTextVisible: false,
       validationPredicates: [
       {
         args: ['amountOfOwners', 'owner4$errors_'],
@@ -424,7 +437,7 @@ foam.CLASS({
   ],
 
   reactions: [
-    ['', 'propertyChange.amountOfOwners', 'clearAllOwnerAndPercentData']
+    ['', 'propertyChange.amountOfOwners', 'updateTable'],
   ].concat([1, 2, 3, 4].map((i) => [
     [`owner${i}`, 'propertyChange', 'updateTable'],
     ['', `propertyChange.owner${i}`, 'updateTable']
@@ -442,16 +455,6 @@ foam.CLASS({
             }
           }
         });
-      }
-    },
-    {
-      name: 'clearAllOwnerAndPercentData',
-      isFramed: true,
-      code: function() {
-        this.chosenOwners = [];
-        this.ownerSelectionsValidated = false;
-        this.owner1 = this.owner2 = this.owner3 = this.owner4 = undefined;
-        this.beneficialOwnersTable.removeAll();
       }
     }
   ],
@@ -472,7 +475,16 @@ foam.CLASS({
         // validate BeneficialOwner objects
         BeneficialOwner[] owners = new BeneficialOwner[]{ getOwner1(), getOwner2(), getOwner3(), getOwner4() };
         for ( int i = 0 ; i < getAmountOfOwners(); i++ ) owners[i].validate(x);
-      `,
+      `
+    },
+    {
+      name: 'clearAllOwnerAndPercentData',
+      code: function() {
+        this.chosenOwners = [];
+        this.ownerSelectionsValidated = false;
+        this.owner1 = this.owner2 = this.owner3 = this.owner4 = undefined;
+        this.beneficialOwnersTable.removeAll();
+      }
     }
   ]
 });
@@ -481,6 +493,11 @@ foam.CLASS({
   package: 'net.nanopay.crunch.onboardingModels',
   name: 'OwnerSection',
   extends: 'foam.layout.SectionAxiom',
+
+  messages: [
+    { name: 'OWNER_DETAILS', message: 'Details for owner number ' },
+  ],
+
   properties: [
     {
       class: 'Int',
@@ -495,7 +512,7 @@ foam.CLASS({
     {
       name: 'title',
       expression: function(index) {
-        return `Add for owner #${index}`;
+        return `${this.OWNER_DETAILS}${index}`;
       }
     },
     {
@@ -514,6 +531,12 @@ foam.CLASS({
   package: 'net.nanopay.crunch.onboardingModels',
   name: 'OwnerProperty',
   extends: 'foam.core.FObjectProperty',
+
+  messages: [
+    { name: 'PLEASE_SELECT_ONE', message: 'Please select one of the following...' },
+    { name: 'OTHER_MSG', message: 'Other' }
+  ],
+
   properties: [
     ['of', 'net.nanopay.model.BeneficialOwner'],
     {
@@ -537,30 +560,37 @@ foam.CLASS({
       value: ''
     },
     {
+      class: 'String',
+      name: 'ownerModel',
+      factory: () => 'net.nanopay.model.BeneficialOwner'
+    },
+    {
       name: 'view',
       value: function(_, X) {
+        var ownerCls = this.__context__.lookup(this.ownerModel);
         var dao2 = X.data.slot((soUsersDAO) => soUsersDAO);
         var dao = foam.dao.MDAO.create({
-            of: net.nanopay.model.BeneficialOwner
+            of: ownerCls
           });
 
-        var user = X.data.subject.user;
-          // note: the one access to businessId(below) ensures the prop is set on obj as it travels through network
-        var obj = net.nanopay.model.BeneficialOwner.create({
+        // note: the one access to businessId(below) ensures the prop is set on obj as it travels through network
+        var obj = ownerCls.create({
             business: X.data.businessId,
-            type: user.address.countryId,
-            id: 1
+            id: (this.index * 1000)
           }, X);
-        obj.toSummary = () => 'Other';
+        obj.toSummary = () => this.OTHER_MSG;
         dao.put(obj);
         return {
           class: 'net.nanopay.crunch.onboardingModels.SelectionViewOwner',
+          ownerModel: this.ownerModel,
           dao2$: dao2,
           dao: dao,
+          index: this.index,
+          chosenOwners: X.data.chosenOwners,
           choiceView:
           {
             class: 'foam.u2.view.RichChoiceView',
-            choosePlaceholder: 'Please select one of the following...',
+            choosePlaceholder: this.PLEASE_SELECT_ONE,
             sections: ['Owner type']
           }
         };
@@ -570,13 +600,13 @@ foam.CLASS({
       name: 'preSet',
       value: function(o, n) {
         if ( ! n ) return n;
-        if ( ! n.id || n.id === 1 ) {
-          n.id = ++this.index;
-        }
-        this.chosenOwners.push(n.id);
+
         if ( o ) {
-          this.chosenOwners.splice(this.chosenOwners.indexOf(o.id), 1);
+          this.chosenOwners.splice(this.chosenOwners.indexOf(o.id), 1, n.id);
+        } else {
+          this.chosenOwners.push(n.id);
         }
+
         return n;
       }
     }
@@ -592,26 +622,44 @@ foam.CLASS({
     'foam.mlang.Expressions'
   ],
 
+  imports: [
+    'notify'
+  ],
+
   requires: [
+    'foam.log.LogLevel',
     'foam.u2.layout.Rows'
   ],
 
   messages: [
     {
-      name: 'OTHER_SELECTION_HAS_SO',
-      message: 'If owner is not a registered Signing Officers, please select the following...'
-    },
-    {
-      name: 'OTHER_SELECTION_NO_SO',
-      message: 'As there are no signing officers, please select this option...'
+      name: 'OTHER_SELECTION',
+      message: 'If owner is not a Signing Officer, please select the following...'
     },
     {
       name: 'SO_SELECTION',
-      message: 'Please select one of the following registered Signing Officers...'
+      message: 'Please select one of the following Signing Officers...'
+    },
+    {
+      name: 'CHOICEDATA_POSTSET_ERR',
+      message: 'Unexpected error @ choiceData_ postset net.nanopay.crunch.onboardingModels.SectionViewOwner'
     }
   ],
 
   properties: [
+    {
+      class: 'Int',
+      name: 'index'
+    },
+    {
+      class: 'String',
+      name: 'ownerModel',
+      factory: () => 'net.nanopay.model.BeneficialOwner'
+    },
+    {
+      class: 'List',
+      name: 'chosenOwners'
+    },
     {
       class: 'foam.u2.ViewSpec',
       name: 'choiceView',
@@ -620,12 +668,7 @@ foam.CLASS({
     {
       name: 'dao2',
       class: 'foam.dao.DAOProperty',
-      documentation: 'dao that is used in choiceView, should not change.',
-      postSet: function (_, dao2) {
-        dao2.select(this.COUNT()).then(countSink => {
-          this.updateSections_(countSink.value > 0);
-        })
-      }
+      documentation: 'dao that is used in choiceView, should not change.'
     },
     {
       name: 'dao',
@@ -633,25 +676,37 @@ foam.CLASS({
       documentation: 'dao that is used in choiceView, should not change.',
     },
     {
-      name: 'otherLabel',
-      class: 'String'
-    },
-    {
       name: 'choiceData_',
       documentation: 'Data that is set by choiceView(reference object)',
-      postSet: function(_, n) {
-          if ( this.data && n == this.data.id ) return n;
-          if ( n > 1 ) {
-            this.dao2.find(n).then(
-              (obj) =>
-                this.data = obj ? obj.clone() : obj
-            );
-          } else {
-            this.dao.find(n).then(
-              (obj) =>
-                this.data = obj ? obj.clone() : obj
-            );
+      factory: function() {
+        if ( this.chosenOwners[this.index-1] )
+          return this.chosenOwners[this.index-1];
+      },
+      postSet: async function(o, n) {
+        // checks if data already exists
+        let dataExists = this.data && n === this.data.id;
+
+        try {
+          const numSO = (await this.dao2.select(this.COUNT())).value;
+          // checks if a signing officer is selected
+          // Note: Signing officer id is between 2 and numSO + 1 inclusive while
+          // nonsigning officer data has id (its index  * 1000). If n === 1, 'other' is selected
+          // but data doesn't exist.
+          if ( n > 1 && n < numSO + 2 ) {
+            if ( ! dataExists ) {
+              const selectedSO = await this.dao2.find(n);
+              this.data = selectedSO ? selectedSO.clone() : selectedSO;
+            }
+            this.updateSections_(n);
+
+          // 'other' is selected
+          } else if ( ! dataExists ) {
+            const other = await this.dao.find(n);
+            this.data = other ? other.clone() : other;
           }
+        } catch (e) {
+          this.notify(this.CHOICEDATA_POSTSET_ERR, '', this.LogLevel.ERROR, true);
+        }
       }
     },
     {
@@ -662,18 +717,15 @@ foam.CLASS({
   ],
 
   reactions: [
-    ['', 'propertyChange.data', 'fromData']
+    ['', 'propertyChange.choiceData_', 'fromData']
   ],
+
 
   listeners: [
     {
       name: 'fromData',
       code: function() {
-        if ( ! this.data ) {
-          this.choiceData_ = undefined;
-        } else if ( ! this.choiceData_ ) {
-          this.choiceData_ = this.data.id;
-        }
+          this.updateSections_(this.choiceData_);
       }
     }
   ],
@@ -682,7 +734,12 @@ foam.CLASS({
     function init() {
       // Pre-initialize with just one section to prevent empty array error
       // thrown by RichChoiceView
-      this.updateSections_(false);
+      if ( this.chosenOwners[this.index-1] != undefined )
+        // set default data if there is
+        this.updateSections_(this.chosenOwners[this.index-1]);
+      else
+        this.updateSections_(-1);
+
     },
     function initE() {
       this.add(this.slot((choiceData_, choiceSections_) => {
@@ -701,22 +758,46 @@ foam.CLASS({
         }
       ));
     },
-    function updateSections_(showDAO2) {
+    function updateSections_(choice) {
       var choiceSections = [];
-      if ( showDAO2 ) {
-        choiceSections.push({
-          heading: this.SO_SELECTION,
-          dao$: this.dao2$
-        });
-      }
+      var choiceSectionsNonSoFirst = [];
+
+      var ownerCls = this.__context__.lookup(this.ownerModel);
+
       choiceSections.push({
-        heading: showDAO2
-          ? this.OTHER_SELECTION_HAS_SO
-          : this.OTHER_SELECTION_NO_SO,
+        // filter out all the siging officers except the one chosen by this owner
+        dao: this.dao2.where(
+          this.OR(
+            this.EQ(ownerCls.ID, choice),
+            this.NOT(
+              this.IN(ownerCls.ID, this.chosenOwners)
+            )
+          )
+        ),
+        hideIfEmpty: true
+      });
+
+      choiceSections.push({
         dao$: this.dao$
       });
-      this.choiceSections_ = choiceSections;
 
+      choiceSectionsNonSoFirst.push({
+        dao$: this.dao$
+      });
+      choiceSectionsNonSoFirst.push({
+        // filter out all the siging officers except the one chosen by this owner
+        dao: this.dao2.where(
+          this.OR(
+            this.EQ(ownerCls.ID, choice),
+            this.NOT(
+              this.IN(ownerCls.ID, this.chosenOwners)
+            )
+          )
+        ),
+        hideIfEmpty: true
+      });
+
+      this.choiceSections_ = choice < 1000 && choice != -1 ? choiceSections : choiceSectionsNonSoFirst;
     }
   ]
 });

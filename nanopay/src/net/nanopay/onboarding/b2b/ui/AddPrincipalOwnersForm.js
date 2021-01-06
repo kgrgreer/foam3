@@ -489,7 +489,7 @@ foam.CLASS({
 
     ^ .address2Hint {
       height: 14px;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       line-height: 1.17;
       letter-spacing: 0.2px;
@@ -520,7 +520,7 @@ foam.CLASS({
     { name: 'ProvinceLabel', message: 'Province' },
     { name: 'CityLabel', message: 'City' },
     { name: 'PostalCodeLabel', message: 'Postal Code' },
-    { name: 'PrincipalOwnerError', message: 'A principal owner with that name already exists.' }
+    { name: 'PrincipalOwnerError', message: 'A principal owner with that name already exists' }
   ],
 
   properties: [

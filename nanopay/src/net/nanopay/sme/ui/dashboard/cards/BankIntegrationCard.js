@@ -146,10 +146,7 @@ foam.CLASS({
       await this.subject.user.accounts
         .find(
           this.AND(
-            this.OR(
-              this.INSTANCE_OF(this.CABankAccount),
-              this.INSTANCE_OF(this.USBankAccount)
-            ),
+            this.INSTANCE_OF(this.BankAccount),
             this.NEQ(this.BankAccount.STATUS, this.BankAccountStatus.DISABLED),
             this.EQ(this.Account.IS_DEFAULT, true)
           )
@@ -189,14 +186,14 @@ foam.CLASS({
       name: 'viewAccount',
       label: 'View',
       code: function() {
-        this.pushMenu('sme.main.banking');
+        this.pushMenu('capability.main.banking');
       }
     },
     {
       name: 'verifyAccount',
       label: 'Pending',
       code: function() {
-        this.pushMenu('sme.main.banking');
+        this.pushMenu('capability.main.banking');
       }
     },
     {

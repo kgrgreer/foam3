@@ -25,6 +25,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.nanos.auth.User',
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.dao.DAO',
     'foam.nanos.alarming.Alarm',
@@ -42,6 +43,10 @@ foam.CLASS({
       name: 'response',
       class: 'FObjectProperty',
       of: 'net.nanopay.meter.compliance.secureFact.lev.LEVResponse'
+    },
+    {
+      name: 'classification',
+      class: 'String'
     }
   ],
 
@@ -51,6 +56,9 @@ foam.CLASS({
       javaCode: `
         UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
         Business business = (Business) ucj.findSourceId(x);
+
+        User user = (User) ucj.findSourceId(x);
+        String group = user.getSpid() + "-fraud-ops";
 
         SecurefactService securefactService = (SecurefactService) x.get("securefactService");
         try {
@@ -66,9 +74,12 @@ foam.CLASS({
                   new ComplianceApprovalRequest.Builder(x)
                     .setObjId(ucj.getId())
                     .setDaoKey("userCapabilityJunctionDAO")
+                    .setRefObjId(business.getId())
+                    .setRefDaoKey("businessDAO")
                     .setCauseId(response.getId())
-                    .setClassification("Validate Business Onboarding UserCapabilityJunction Using SecureFact")
+                    .setClassification(getClassification())
                     .setCauseDaoKey("securefactLEVDAO")
+                    .setGroup(group)
                     .build()
                 );
               }
@@ -82,9 +93,12 @@ foam.CLASS({
             new ComplianceApprovalRequest.Builder(x)
               .setObjId(ucj.getId())
               .setDaoKey("userCapabilityJunctionDAO")
+              .setRefObjId(business.getId())
+              .setRefDaoKey("businessDAO")
               .setCauseId(response != null ? response.getId() : 0L)
-              .setClassification("Validate Business Onboarding UserCapabilityJunction Using SecureFact")
+              .setClassification(getClassification())
               .setCauseDaoKey("securefactLEVDAO")
+              .setGroup(group)
               .build()
           );
           ruler.putResult(ComplianceValidationStatus.PENDING);

@@ -34,7 +34,7 @@ foam.CLASS({
       margin-top: 1%;
     }
     body {
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
     .stack-wrapper {
       height: 100vh;
@@ -46,7 +46,8 @@ foam.CLASS({
       left: 0;
       height: 100vh !important;
       width: 100vw !important;
-      z-index: 1005;
+      /* z-index MUST be LEQ foam.u2.dialog.Popup */
+      z-index: 1000;
       margin: 0 !important;
       padding: 0 !important;
     }
@@ -106,7 +107,7 @@ foam.CLASS({
       border-radius: 3px;
       padding: 12px;
       font-size: 14px;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
 
     input:focus {
@@ -364,7 +365,7 @@ foam.CLASS({
       color: /*%BLACK%*/ #1e1f21 !important;
       background-color: white !important;
       font-size: 16px !important;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
     .white-radio.selected {
       border: 1px solid /*%PRIMARY3%*/ #406dea !important;
@@ -382,7 +383,7 @@ foam.CLASS({
       font-weight: 500;
       color: #604aff;
       cursor: pointer;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
       background: none;
       line-height: 16px;
       padding: 0px;
@@ -418,7 +419,7 @@ foam.CLASS({
       font-weight: 500;
       color: var(--blue-grey);
       cursor: pointer;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
       background: none;
       line-height: 16px;
       padding: 0px;
@@ -624,7 +625,7 @@ foam.CLASS({
     .foam-comics-DAOControllerView-title-container span {
       color: #8e9090;
       height: 24px;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 16px;
     }
 
@@ -647,8 +648,15 @@ foam.CLASS({
     }
 
     .login-stack {
-      margin-bottom: -60px;
-      margin-left: 0;
+      height: calc(100vh - 65px);
+      margin-bottom: 65px;
+      overflow: scroll;
+    }
+
+    .application-stack {
+      height: calc(100vh - 120px);
+      margin-top: 55px;
+      overflow: scroll;
     }
 
     .net-nanopay-auth-ui-UserSelectionView .styleHolder_NameField {
@@ -788,7 +796,7 @@ foam.CLASS({
       border-radius: 50%;
     }
 
-    .contact-status-Active {
+    .contact-status-Connected {
       color: #07941f;
     }
 
@@ -868,102 +876,6 @@ foam.CLASS({
       display: inline-block;
     }
 
-    .generic-status-circle.Scheduled {
-      background: #406dea;
-    }
-
-    .Invoice-Status.Scheduled {
-      color: #406dea !important;
-    }
-
-    .generic-status-circle.Complete {
-      background: #07941f;
-    }
-
-    .generic-status-circle.Pending-acceptance {
-      background: #cf6f0a;
-    }
-
-    .Invoice-Status.Pending-acceptance {
-      color: #cf6f0a !important;
-    }
-
-    .Invoice-Status.Processing {
-      color: #cf6f0a !important;
-    }
-
-    .generic-status-circle.Processing {
-      background: #cf6f0a;
-    }
-
-    .Invoice-Status.Complete {
-      color: #07941f !important;
-    }
-
-    .generic-status-circle.Unpaid {
-      background: #545d87;
-    }
-
-    .Invoice-Status.Unpaid {
-      color: #545d87 !important;
-    }
-
-    .generic-status-circle.Overdue {
-      background: #d42035;
-    }
-
-    .Invoice-Status.Overdue {
-      color: #d42035 !important;
-    }
-
-    .generic-status-circle.draft {
-      border-color: #8b90a6;
-      border-style: solid;
-      border-width: 1.5px;
-      height: 4px;
-      width: 4px;
-    }
-
-    .Invoice-Status.draft {
-      color: #8b90a6 !important;
-    }
-
-    .generic-status-circle.pending-approval {
-      border-color: #545d87;
-      border-style: solid;
-      border-width: 1.5px;
-      height: 4px;
-      width: 4px;
-    }
-
-    .Invoice-Status.pending-approval {
-      color: #545d87 !important;
-    }
-
-    .generic-status-circle.depositing-money {
-      background: #cf6f0a;
-    }
-
-    .Invoice-Status.depositing-money {
-      color: #cf6f0a !important;
-    }
-
-    .generic-status-circle.pending {
-      background: #cf6f0a;
-    }
-
-    .Invoice-Status.pending {
-      color: #cf6f0a !important;
-    }
-
-    .generic-status-circle.void {
-      background: #424242;
-    }
-
-    .Invoice-Status.void {
-      color: #424242 !important;
-    }
-
     /* BankForm Override */
     .net-nanopay-cico-ui-bankAccount-form-BankForm  {
       position: fixed;
@@ -1020,7 +932,7 @@ foam.CLASS({
     }
     .foam-u2-view-LoginView .foam-u2-borders-SplitScreenBorder {
       padding-top: 75px;
-      height: calc(100vh - 75px);
+      height: calc(100vh - 140px);
     }
     .foam-u2-filter-FilterSearch-container-search {
       width: 857px;
@@ -1057,6 +969,14 @@ foam.CLASS({
       border-style: none;
       background-color: white;
       color: /*%PRIMARY3%*/ #604aff;
+    }
+    .bank-account-popup .net-nanopay-sme-ui-SMEModal-inner {
+      width: 515px;
+      height: 500px;
+    }
+    .bank-account-popup .net-nanopay-sme-ui-SMEModal-content {
+      overflow: scroll !important;
+      padding: 30px;
     }
   `
 });

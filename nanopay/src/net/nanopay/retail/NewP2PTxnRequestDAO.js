@@ -34,12 +34,12 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'CUR_USER_NOT_REQUESTOR_ERROR_MSG', message: 'Current user is not the requestor.' },
-    { name: 'EMAIL_VERIF_REUQUIRED_FOR_MONEY_REQUEST_ERROR_MSG', message: 'Email verification is required to send a money request.' },
-    { name: 'CANNOT_REQUEST_MONEY_FOR_YOURSELF_ERROR_MSG', message: 'Cannot request money from yourself.' },
-    { name: 'INVALID_REQUESTEE_EMAIL_ERROR_MSG', message: 'Requestee\'s Email is invalid.' },
-    { name: 'INVALID_AMOUNT_PROVIDED_FOR_REQUEST_ERROR_MSG', message: 'Invalid amount provided for the request.' },
-    { name: 'MESSAGE_TOO_LONG_ERROR_MSG', message: 'Messages can\'t be more than 250 characters.' }
+    { name: 'CUR_USER_NOT_REQUESTOR_ERROR_MSG', message: 'Current user is not the requestor' },
+    { name: 'EMAIL_VERIF_REUQUIRED_FOR_MONEY_REQUEST_ERROR_MSG', message: 'Email verification is required to send a money request' },
+    { name: 'CANNOT_REQUEST_MONEY_FOR_YOURSELF_ERROR_MSG', message: 'Cannot request money from yourself' },
+    { name: 'INVALID_REQUESTEE_EMAIL_ERROR_MSG', message: 'Requestee\'s Email is invalid' },
+    { name: 'INVALID_AMOUNT_PROVIDED_FOR_REQUEST_ERROR_MSG', message: 'Invalid amount provided for the request' },
+    { name: 'MESSAGE_TOO_LONG_ERROR_MSG', message: 'Messages can\'t be more than 250 characters' }
   ],
 
   axioms: [

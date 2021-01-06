@@ -36,12 +36,19 @@ foam.CLASS({
   ],
 
   imports: [
+    'isMenuOpen',
     'menuListener',
-    'loginSuccess',
+    'loginSuccess'
   ],
 
   css: `
-    ^ .foam-u2-view-TreeViewRow-label {
+    ^ {
+      position: absolute;
+      top: 0;
+      width: 100%;
+    }
+
+^ .foam-u2-view-TreeViewRow-label {
       display: inline-flex;
       justify-content: space-between;
       align-items: center;
@@ -78,12 +85,6 @@ foam.CLASS({
       background-color: /*%PRIMARY1%*/ #202341;
     }
   `,
-  properties: [
-    {
-      class: 'Boolean',
-      name: 'isMenuOpen'
-    }
-  ],
 
   listeners: [
     function setViewDimentions(event) {
@@ -98,6 +99,8 @@ foam.CLASS({
     },
     function toggleMenu(event) {
       this.isMenuOpen = ! this.isMenuOpen;
+
+      window.localStorage.setItem('isMenuOpen', this.isMenuOpen);
       this.setViewDimentions();
     }
   ],

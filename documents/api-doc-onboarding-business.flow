@@ -1,0 +1,179 @@
+<title>API Business Onboarding</title>
+
+<h1>Business Onboarding</h1>
+<p>
+    Onboarding is a key part of the nanopay experience. Users, businesses and account all have to be setup 
+    and the process of creating these entities within the system is called onboarding. Once a business has been
+    setup within the system, they can then participate in a transaction.
+</p>
+
+<h2>Onboarding Process for a Business</h2>
+<p>
+    There are several steps to completing onboarding for a business so that it can send transactions.
+    <ol>
+        <li><a href="#create-user">Create User</a></li>
+        <li><a href="#create-business">Create Business</a></li>
+        <li><a href="#onboarding-request">Onboard Business</a></li>
+        <li><a href="#create-account">Bank Account Creation</a></li>
+        <li><a href="#create-contact">Contact Creation</a></li>
+        <li><a href="#create-contact-account">Contact Bank Account Creation</a></li>
+        <li><a href="#create-transaction">Transaction Creation</a></li>
+    </ol>
+</p>
+
+<h3><a name="create-user">Create User</a></h3>
+<p>
+    Creating a user is necessary in order to start the onboarding process. A user entity is required to create a transaction session
+    in which other API calls are authenticated against that user. Using this session will also associate the objects created
+    and updated with that user.
+</p>
+<p>
+    The user creation API call is a DIG API call to the userDAO with the following payload.
+    <code>{
+    "email":"test@domain.com",
+    "userName":"username321",
+    "emailVerified":true,
+    "desiredPassword":"p@sSword123",
+    "group":"sme"
+}   </code>
+</p>
+
+<p>
+<i><b>Session Authentication:</b> Authentication for user creation should be done with the administrative session.</i>
+</p>
+
+<h3><a name="create-business">Create Business</a></h3>
+<p>
+    Once the user has been created, a business can be created which is associated with the user. Businesses are higher level
+    entities in the system which can be associated to more than one user. Businesses also require more scrutiny by 
+    compliance to perform transactions since the legal requirements on business transactions are more strict. A business entity 
+    is required to create a transaction session in which other API calls are authenticated against that business. Using this session
+    will associate the objects created and updated with that business.
+</p>
+<p>
+    The business creation API call is a DIG API call to the businessDAO with the following payload.
+    <code>{
+    "class": "net.nanopay.model.Business",
+    "businessName": "Business 12345",
+    "organization": "Business 12345"
+}   </code>
+</p>
+
+<p>
+  <i><b>Session Authentication:</b> Authentication for business creation should be done with a transaction session that was created 
+  with the userId and agentId set to the ID of the newly created user.</i>
+</p>
+
+<h3><a name="onboarding-request">Onboarding Request</a></h3>
+<p>
+    Once the user and business have been created, an onboarded request can be made to enable sending payments from the business. The 
+    onboarding request will provide acceptance of user documents, user details, business details, business type, owner details, 
+    signing officer details, and director details to enable all capabilities associated with a business sending transactions. The capability
+    to send payments from a business is enabled by making a DIG API call to the capabilityPayloadDAO with the ID of the capability to send
+    payments for a business along with the supporting payload data for that capability. For the onboard request to allow the sending of payments
+    from a business, the following payloads have to be provided:
+    <ul>
+        <li><a href="/#api-doc-60-capabilities#ablii-privacy-policy">AbliiPrivacyPolicy</a></li>
+        <li><a href="/#api-doc-60-capabilities#ablii-terms-and-conditions">AbliiTermsAndConditions</a></li>
+        <li><a href="/#api-doc-60-capabilities#user-detail-data">UserDetailData</a></li>
+        <li><a href="/#api-doc-60-capabilities#user-detail-expanded-data">UserDetailExpandedData</a></li>
+        <li><a href="/#api-doc-60-capabilities#business-detail-data">BusinessDetailData</a></li>
+        <li><a href="/#api-doc-60-capabilities#business-detail-expanded-data">BusinessDetailExpandedData</a></li>
+        <li><a href="/#api-doc-60-capabilities#business-type-data">BusinessTypeData</a></li>
+        <li><a href="/#api-doc-60-capabilities#business-owner-list">BusinessOwnerList</a></li>
+        <li><a href="/#api-doc-60-capabilities#business-directors-list">BusinessDirectorList</a></li>
+        <li><a href="/#api-doc-60-capabilities#signing-officer-list">SigningOfficerList</a></li>
+    </ul>
+    Providing all of this information will onboard the business. The definition of these objects can be found 
+    on the <a href="/#api-doc-60-capabilities">capability</a> documentation page.
+</p>
+
+<p>
+<i><b>Session Authentication:</b> Authentication for business onboarding should be done with a transaction session that was created with the userId set the businessId of the business and agentId set to the ID of the user.</i>
+</p>
+
+<h3><a name="create-account">Bank Account Creation</a></h3>
+<p>
+  After setting up a user and a business, the next step necessary to perform is creating a bank account for the sending
+  of funds in a transaction. The bank account API call is a DIG API call to the accountDAO with the following payload.
+  <code>{
+    "class": "net.nanopay.bank.CABankAccount",
+    "owner": {business_id},
+    "accountNumber": "123456",
+    "branchId": "12001",
+    "institutionNumber": "003",
+    "denomination": "CAD",
+    "name": "Checking CAD",
+    "status": 1,
+    "verifiedBy": "API"
+}   </code>
+  The business ID here is the business that was created previously.
+</p>
+
+<p>
+<i><b>Session Authentication:</b> Authentication for bank account creation must be done with an administrative session in order to set the status properly.</i>
+</p>
+
+<h3><a name="create-contact">Contact Creation</a></h3>
+<p>
+  The next step is setting up the destination for the transaction. There are two parts to this setup, the first being the creation of a contact and the second
+  being the creation of a bank account owned by that contact. Once this is done, a transaction from the originating bank account setup in the previos step can 
+  be created to send funds to the destination contact's bank account. The contact API call is a DIG API call to the contactDAO with the following payload.
+  <code>{
+    "class": "net.nanopay.contacts.Contact",
+    "firstName": "John",
+    "lastName": "Doe",
+    "organization": "John and Sons Shop",
+    "owner": {business_id},
+    "email": "johnandsons@shop.com",
+    "group": "sme"
+}   </code>
+  The business ID here is the business that was created previously and makes the contact as being owned by the business.
+</p>
+<p>
+<i><b>Session Authentication:</b> Authentication for contact creation must be done with a transaction session that was created with the userId set the businessId of the business and agentId set to the ID of the user.</i>
+</p>
+
+<h3><a name="create-contact-account">Contact Bank Account Creation</a></h3>
+<p>
+  With the contact created, a bank account has to be created for that contact which will receive funds in the transaction. Creating the contact
+  bank account is almost the same as the previous account creation API call, except that the owner must be changed to be the contact instead of being
+  the business. The bank account API call is a DIG API call to the accountDAO with the following payload.
+  <code>{
+    "class": "net.nanopay.bank.CABankAccount",
+    "owner": {contact_id},
+    "accountNumber": "5577889910",
+    "branchId": "12007",
+    "institutionNumber": "002",
+    "denomination": "CAD",
+    "name": "Savings CAD",
+    "status": 1,
+    "verifiedBy": "API"
+}   </code>
+  The contact ID here is the contact that was created previously and ensures the account is owned by the contact.
+</p>
+
+<p>
+<i><b>Session Authentication:</b> Authentication for bank account creation must be done with an administrative session in order to set the status properly.</i>
+</p>
+
+<h3><a name="create-transaction">Transaction Creation</a></h3>
+<p>
+  Now that we have all the pieces necessary, we can create a transaction to transfer money from the source to the destination. The source here will be the business's
+  bank account and the destination will be the contact's bank account. Creating a transaction is a simple matter of setting the source and destination accounts, the 
+  source and destination currencies, and the amount being transferred. The transaction API call is a DIG API call to the summaryTransactionDAO with the following payload.
+  <code>{
+    "class":"net.nanopay.tx.model.Transaction",
+    "sourceAccount":{business_bank_account_id},
+    "sourceCurrency":"CAD",
+    "amount": 10000,
+    "destinationAccount":{{contact_bank_account_id}},
+    "destinationCurrency":"CAD"
+}   </code>
+  The amount in a transaction is set in the smallest unit of the currency. For example, the amount above is $100.00 CAD since the smallest unit in Canadian dollars is the cent, 
+  so $100.00 CAD is 10,000 cents.
+</p>
+
+<p>
+<i><b>Session Authentication:</b> Authentication for transactions must be done with a transaction session that was created with the userId set the businessId of the business and agentId set to the ID of the user.</i>
+</p>

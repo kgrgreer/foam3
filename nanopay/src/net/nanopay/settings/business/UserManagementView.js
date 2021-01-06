@@ -30,6 +30,7 @@ foam.CLASS({
     'foam.log.LogLevel',
     'foam.nanos.auth.UserUserJunction',
     'foam.u2.dialog.Popup',
+    'foam.u2.ConfirmationModal',
     'net.nanopay.auth.AgentJunctionStatus',
     'net.nanopay.model.ClientUserJunction',
     'net.nanopay.model.Invitation',
@@ -109,7 +110,7 @@ foam.CLASS({
           editColumnsEnabled: false,
           contextMenuActions: [
             foam.core.Action.create({
-              name: 'Change access control',
+              name: 'changeAccessControl',
               isAvailable: function() {
                 return (this.status === self.AgentJunctionStatus.ACTIVE || this.status === self.AgentJunctionStatus.INVITED) && self.subject.realUser.id != this.sourceId;
               },
@@ -124,9 +125,12 @@ foam.CLASS({
               }
             }),
             foam.core.Action.create({
-              name: 'Deactivate account',
+              name: 'deactivateAccount',
               isAvailable: function() {
                 return this.status === self.AgentJunctionStatus.ACTIVE && self.subject.realUser.id != this.sourceId;
+              },
+              confirmationView: function(_, X) {
+                return {class: 'foam.u2.ConfirmationModal'};
               },
               code: function(X) {
                 // Disable user junction.
@@ -141,7 +145,7 @@ foam.CLASS({
               }
             }),
             foam.core.Action.create({
-              name: 'Activate account',
+              name: 'activateAccount',
               isAvailable: function() {
                 return this.status === self.AgentJunctionStatus.DISABLED && self.subject.realUser.id != this.sourceId;
               },
@@ -158,7 +162,7 @@ foam.CLASS({
               }
             }),
             foam.core.Action.create({
-              name: 'Resend invitation',
+              name: 'resendInvitation',
               isAvailable: function() {
                 return this.status === self.AgentJunctionStatus.INVITED && self.subject.realUser.id != this.sourceId;
               },
@@ -185,7 +189,7 @@ foam.CLASS({
               }
             }),
             foam.core.Action.create({
-              name: 'Revoke invitation',
+              name: 'revokeInvitation',
               isAvailable: function() {
                 return this.status === self.AgentJunctionStatus.INVITED && self.subject.realUser.id != this.sourceId;
               },

@@ -37,7 +37,6 @@ foam.CLASS({
 
       RbcVerificationTransaction t = new RbcVerificationTransaction.Builder(x).build();
       t.copyFrom(requestTxn);
-      t.setIsQuoted(true);
 
       return t;
 

@@ -11,7 +11,7 @@ p({
         "class":"net.nanopay.sme.ruler.OnboardingPaymentOperationNotification"
     },
     "enabled":true,
-    "saveHistory":true,
+    "saveHistory":false,
     "lifecycleState":1
 })
 p({
@@ -31,6 +31,11 @@ p({
         "of":"net.nanopay.model.Business"
       },
       {
+        "class":"net.nanopay.crunch.predicate.CheckUserCountry",
+        "user":{"class":"foam.mlang.ContextObject","key":"NEW"},
+        "country":"CA"
+      },
+      {
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
         "propName":"compliance",
         "propValue":{"class": "net.nanopay.admin.model.ComplianceStatus", "ordinal":2}
@@ -47,7 +52,7 @@ p({
     "class": "net.nanopay.sme.ruler.BusinessCompliancePassedEmailRule"
   },
   "enabled":true,
-  "saveHistory":true,
+  "saveHistory":false,
   "lifecycleState":1
 })
 
@@ -89,7 +94,7 @@ p({
     "class": "net.nanopay.sme.ruler.CheckUserNameAvailabilityRule"
   },
   "enabled":false,
-  "saveHistory":true,
+  "saveHistory":false,
   "lifecycleState":1
 })
 
@@ -107,7 +112,7 @@ p({
     "class": "net.nanopay.sme.ruler.BusinessInvitationAndTokenCancelRule"
   },
   "enabled":true,
-  "saveHistory":true,
+  "saveHistory":false,
   "lifecycleState":1
 })
 
@@ -125,7 +130,7 @@ p({
     "class": "net.nanopay.sme.ruler.InvitationAntiSpamCheckRule"
   },
   "enabled":true,
-  "saveHistory":true
+  "saveHistory":false
 })
 
 p({
@@ -151,6 +156,6 @@ p({
   },
   "enabled":true,
   "after":true,
-  "saveHistory":true,
+  "saveHistory":false,
   "lifecycleState":1
 })

@@ -73,9 +73,13 @@ foam.CLASS({
   methods: [
     {
       name: 'toSummary',
+      type: 'String',
       code: function(x) {
         return this.verified ? "VERIFIED" : "NOT VERIFIED, " + this.reason;
       },
+      javaCode: `
+        return getVerified() ? "VERIFIED" : "NOT VERIFIED, " + getReason();
+      `
     },
   ]
 });

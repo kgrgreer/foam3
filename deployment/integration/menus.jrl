@@ -1,10 +1,3 @@
-// Move documentation to the top level
-p({
-  "class":"foam.nanos.menu.Menu",
-  "id":"api-doc-northcard",
-  "parent":""
-})
-
 // API Gateway
 p({
   "class": "foam.nanos.menu.Menu",
@@ -67,7 +60,7 @@ p({
           "daoKey": "businessDAO",
           "createPredicate":{"class":"foam.mlang.predicate.False"},
           "editPredicate":{"class":"foam.mlang.predicate.False"},
-      "deletePredicate":{"class":"foam.mlang.predicate.False"}
+          "deletePredicate":{"class":"foam.mlang.predicate.False"}
         }
     },
   "parent":"data"
@@ -104,7 +97,7 @@ p({
         "type",
         "id",
         "name",
-        "summary"
+        "owner"
       ]
     }
   },
@@ -145,29 +138,6 @@ p({
 })
 p({
   "class":"foam.nanos.menu.Menu",
-  "id":"view-requestmoney",
-  "label":"Request Money",
-  "handler":{
-    "class": "foam.nanos.menu.DAOMenu2",
-    "config": {
-      "class": "foam.comics.v2.DAOControllerConfig",
-      "daoKey":"requestMoneyDAO",
-      "browseTitle": "Request Money Requests",
-      "browseSubtitle": "View all Interac request money requests.",
-      "createTitle": "Create a Request Money request",
-      "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "defaultColumns":[
-        "requestId",
-        "requestAmount",
-        "requesterName",
-        "requesterEmail"
-      ]
-    }
-  },
-  "parent":"data"
-})
-p({
-  "class":"foam.nanos.menu.Menu",
   "id":"view-transactions",
   "label":"Transactions",
   "handler":{
@@ -201,9 +171,32 @@ p({
         "firstName",
         "lastName",
         "email",
-        "signUpStatus"
+        "owner"
       ]
     }
   },
-  "parent":"hidden"
+  "parent":"data"
+})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"view-requestmoney",
+  "label":"Request Money",
+  "handler":{
+    "class": "foam.nanos.menu.DAOMenu2",
+    "config": {
+      "class": "foam.comics.v2.DAOControllerConfig",
+      "daoKey":"requestMoneyDAO",
+      "browseTitle": "Request Money Requests",
+      "browseSubtitle": "View all Interac request money requests.",
+      "createTitle": "Create a Request Money request",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "defaultColumns":[
+        "requestId",
+        "requestAmount",
+        "requesterName",
+        "requesterEmail"
+      ]
+    }
+  },
+  "parent":"data"
 })

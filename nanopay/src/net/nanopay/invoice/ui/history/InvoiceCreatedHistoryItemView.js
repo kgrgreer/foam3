@@ -37,6 +37,10 @@ foam.CLASS({
     'user'
   ],
 
+  messages: [
+      { name: 'INVOICE_CREATED', message: 'Invoice was created' }
+  ],
+
   properties: [
     'name'
   ],
@@ -58,7 +62,7 @@ foam.CLASS({
       padding-left: 40px;
     }
     ^ .statusDate {
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 8px;
       line-height: 1.33;
       letter-spacing: 0.1px;
@@ -67,7 +71,7 @@ foam.CLASS({
       position: relative;
     }
     ^ .statusTitle {
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       line-height: 1.33;
       letter-spacing: 0.2px;
@@ -91,7 +95,7 @@ foam.CLASS({
           .start('div')
             .style({ 'padding-left': '30px' })
             .start('span').addClass('statusTitle')
-              .add('Invoice was created')
+              .add(this.INVOICE_CREATED)
             .end()
           .end()
           .start('div')

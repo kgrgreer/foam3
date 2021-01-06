@@ -32,7 +32,7 @@ p({
     "class":"net.nanopay.bank.DefaultBankAccountRule"
   },
   "enabled":true,
-  "saveHistory":true,
+  "saveHistory":false,
   "lifecycleState":1
 })
 
@@ -67,7 +67,7 @@ p({
     "class":"net.nanopay.bank.IsDefaultRule"
   },
   "enabled":true,
-  "saveHistory":true,
+  "saveHistory":false,
   "lifecycleState":1
 })
 
@@ -106,7 +106,7 @@ p({
   },
   "enabled":true,
   "after":true,
-  "saveHistory":true,
+  "saveHistory":false,
   "lifecycleState":1
 })
 
@@ -129,7 +129,7 @@ p({
     "class": "net.nanopay.bank.ruler.AccountDeletedNotificationRule"
   },
   "enabled":true,
-  "saveHistory":true,
+  "saveHistory":false,
   "lifecycleState":1
 })
 
@@ -146,7 +146,7 @@ p({
   },
   "enabled":true,
   "after":true,
-  "saveHistory":true,
+  "saveHistory":false,
   "lifecycleState":1
 })
 
@@ -163,6 +163,36 @@ p({
     "class": "net.nanopay.bank.ruler.CorridorAuthorizationRule"
   },
   "enabled":false,
-  "saveHistory":true,
+  "saveHistory":false,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"62911a22-3012-11eb-adc1-0242ac120002",
+  "name":"external BRBankAccountCapability grant rule",
+  "priority":100,
+  "ruleGroup":"treviso",
+  "documentation":"Grant BRBankAccountCapability when BRBankAccount is created outside of Brazilian onboarding.",
+  "daoKey":"localAccountDAO",
+  "operation":0,
+  "after":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"net.nanopay.crunch.IsSpid",
+        "spid": "treviso"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of":"net.nanopay.bank.BRBankAccount"
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.bank.ruler.ExternalGrantBRBankAccountCapabilityRule"
+  },
+  "enabled":true,
+  "saveHistory":false,
   "lifecycleState":1
 })

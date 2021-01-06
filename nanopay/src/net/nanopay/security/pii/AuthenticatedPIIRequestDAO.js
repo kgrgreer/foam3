@@ -57,7 +57,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'DELETE_ERROR_MSG', message: 'Unable to delete PII Request due to insufficient permissions.' }
+    { name: 'DELETE_ERROR_MSG', message: 'Unable to delete PII Request due to insufficient permissions' }
   ],
 
   axioms: [

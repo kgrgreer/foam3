@@ -18,10 +18,14 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'BRBankAccount',
-  label: 'Brazilian Bank Account',
+  label: 'Brazil',
   extends: 'net.nanopay.bank.BankAccount',
 
   documentation: 'Brazilian bank account information.',
+
+  implements: [
+    'foam.core.Validatable'
+  ],
 
   imports: [
     'notify',
@@ -34,37 +38,57 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.nanos.iban.IBANInfo',
+    'foam.nanos.iban.ValidationIBAN',
     'foam.util.SafetyUtil',
+    'net.nanopay.fx.afex.AFEXServiceProvider',
+    'net.nanopay.fx.afex.IsIbanResponse',
     'java.util.regex.Pattern',
+    'foam.core.ValidationException'
+  ],
+
+  sections: [
+    {
+      name: 'accountInformation',
+      title: function() {
+        return this.SECTION_ACCOUNT_INFORMATION_TITLE;
+      }
+    }
   ],
 
   messages: [
-    { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number must be 10 digits long.' },
-    { name: 'ACCOUNT_NUMBER_REQUIRED', message: 'Account number required.' },
-    { name: 'ACCOUNT_TYPE_REQUIRED', message: 'Account type required.' },
-    { name: 'ACCOUNT_HOLDER_REQUIRED', message: 'Account holder required.' },
-    { name: 'BANK_ADDED', message: 'Bank Account added successfully!' },
-    { name: 'BANK_CODE_INVALID', message: 'Bank code must be 8 letters and/or digits long.' },
-    { name: 'BANK_CODE_REQUIRED', message: 'Bank code required.' },
-    { name: 'BRANCH_CODE_INVALID', message: 'Branch code must be 5 digits long.' },
-    { name: 'BRANCH_CODE_REQUIRED', message: 'Branch code required.' }
+    { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number must be 10 digits long' },
+    { name: 'ACCOUNT_NUMBER_REQUIRED', message: 'Account number required' },
+    { name: 'ACCOUNT_TYPE_REQUIRED', message: 'Account type required' },
+    { name: 'ACCOUNT_HOLDER_REQUIRED', message: 'Account holder required' },
+    { name: 'BANK_ADDED', message: 'Bank Account successfully added' },
+    { name: 'INSTITUTION_NUMBER_INVALID', message: 'Institution number must be 8 letters and/or digits long' },
+    { name: 'INSTITUTION_NUMBER_REQUIRED', message: 'Institution number required' },
+    { name: 'BRANCH_ID_INVALID', message: 'Branch id must be 5 digits long' },
+    { name: 'BRANCH_ID_REQUIRED', message: 'Branch id required' },
+    { name: 'HOLDER1', message: 'Individual' },
+    { name: 'HOLDER2', message: 'Joint' },
+    { name: 'CURRENT', message: 'Checking' },
+    { name: 'SAVINGS', message: 'Savings' },
+    { name: 'PLEASE_SELECT', message: 'Please select' },
+    { name: 'SECTION_ACCOUNT_INFORMATION_TITLE', message: 'Add account' }
   ],
 
   constants: [
     {
       name: 'ACCOUNT_NUMBER_PATTERN',
       type: 'Regex',
-      javaValue: 'Pattern.compile("^[0-9]{10}$")'
+      factory: function() { return /^[0-9]{10}$/; }
     },
     {
-      name: 'BANK_CODE_PATTERN',
+      name: 'INSTITUTION_NUMBER_PATTERN',
       type: 'Regex',
-      javaValue: 'Pattern.compile("^[A-z0-9a-z]{8}")'
+      factory: function() { return /^[A-z0-9a-z]{8}$/; }
     },
     {
-      name: 'BRANCH_CODE_PATTERN',
+      name: 'BRANCH_ID_PATTERN',
       type: 'Regex',
-      javaValue: 'Pattern.compile("^[0-9]{5}$")'
+      factory: function() { return /^[0-9]{5}$/; }
     }
   ],
 
@@ -85,46 +109,48 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
-      name: 'bankCode',
-      label: 'Bank Code',
+      name: 'institutionNumber',
+      createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
-      validateObj: function(bankCode) {
-        var regex = /^[A-z0-9a-z]{8}$/;
+      section: 'accountInformation',
+      validateObj: function(institutionNumber, iban) {
+        if ( iban )
+          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
-        if ( bankCode === '' ) {
-          return this.BANK_CODE_REQUIRED;
-        } else if ( ! regex.test(bankCode) ) {
-          return this.BANK_CODE_INVALID;
+        if ( ! iban || (iban && ibanMsg != 'passed') ) {
+          if ( institutionNumber === '' ) {
+            return this.INSTITUTION_NUMBER_REQUIRED;
+          } else if ( ! this.INSTITUTION_NUMBER_PATTERN.test(institutionNumber) ) {
+            return this.INSTITUTION_NUMBER_INVALID;
+          }
         }
       }
     },
     {
-      class: 'String',
-      name: 'branchCode',
-      label: 'Branch Code',
-      section: 'accountDetails',
+      name: 'branchId',
+      section: 'accountInformation',
+      createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
-      validateObj: function(branchCode) {
-        var regex = /^[0-9]{5}$/;
+      validateObj: function(branchId, iban) {
+        if ( iban )
+          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
-        if ( branchCode === '' ) {
-          return this.BRANCH_CODE_REQUIRED;
-        } else if ( ! regex.test(branchCode) ) {
-          return this.BRANCH_CODE_INVALID;
+        if ( ! iban || (iban && ibanMsg != 'passed') ) {
+          if ( branchId === '' ) {
+            return this.BRANCH_ID_REQUIRED;
+          } else if ( ! this.BRANCH_ID_PATTERN.test(branchId) ) {
+            return this.BRANCH_ID_INVALID;
+          }
         }
       }
     },
     {
       name: 'accountNumber',
-      label: 'Account No.',
+      section: 'accountInformation',
+      createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
-      view: {
-        class: 'foam.u2.tag.Input',
-        placeholder: '1234567890',
-        onKey: true
-      },
       preSet: function(o, n) {
-        return /^\d*$/.test(n) ? n : o;
+        return /^[\d\w]*$/.test(n) ? n : o;
       },
       tableCellFormatter: function(str) {
         if ( ! str ) return;
@@ -133,28 +159,36 @@ foam.CLASS({
           .add(displayAccountNumber);
         this.tooltip = displayAccountNumber;
       },
-      validateObj: function(accountNumber) {
-        var accNumberRegex = /^[0-9]{10}$/;
+      validateObj: function(accountNumber, iban) {
+        if ( iban )
+          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
-        if ( accountNumber === '' ) {
-          return this.ACCOUNT_NUMBER_REQUIRED;
-        } else if ( ! accNumberRegex.test(accountNumber) ) {
-          return this.ACCOUNT_NUMBER_INVALID;
+        if ( ! iban || (iban && ibanMsg != 'passed') ) {
+          if ( accountNumber === '' ) {
+            return this.ACCOUNT_NUMBER_REQUIRED;
+          } else if ( ! this.ACCOUNT_NUMBER_PATTERN.test(accountNumber) ) {
+            return this.ACCOUNT_NUMBER_INVALID;
+          }
         }
       }
     },
     {
+      class: 'String',
       name: 'accountType',
-      label: 'Account Type',
       updateVisibility: 'RO',
-      section: 'accountDetails',
-      view: {
-        class: 'foam.u2.view.ChoiceView',
-        placeholder: 'Please select',
-        choices: [
-          ['c', 'Corrente / Current'],
-          ['p', 'Poupança / Savings']
-        ]
+      section: 'accountInformation',
+      factory: function() {
+        return this.CURRENT;
+      },
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.ChoiceView',
+          placeholder: X.data.PLEASE_SELECT,
+          choices: [
+            ['c', X.data.CURRENT],
+            ['p', X.data.SAVINGS]
+          ]
+        };
       },
       validateObj: function(accountType) {
         if ( accountType === '' || accountType === undefined ) {
@@ -163,20 +197,20 @@ foam.CLASS({
       }
     },
     {
+      class: 'String',
       name: 'accountOwnerType',
-      label: 'Account Holder',
+      label: 'Account holder',
       updateVisibility: 'RO',
-      section: 'accountDetails',
-      view: {
-        class: 'foam.u2.view.ChoiceView',
-        placeholder: 'Please select',
-        choices: [
-          ['1', '1st Holder / 1o Titular'],
-          ['2', '2nd Holder / 2o Titular'],
-          ['3', '1st Holder / 1o Titular'],
-          ['4', '2nd Holder / 2o Titular'],
-          ['5', '1st Holder / 1o Titular']
-        ]
+      section: 'accountInformation',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.ChoiceView',
+          placeholder: X.data.PLEASE_SELECT,
+          choices: [
+            ['1', X.data.HOLDER1],
+            ['2', X.data.HOLDER2]
+          ]
+        };
       },
       validateObj: function(accountOwnerType) {
         if ( accountOwnerType === '' || accountOwnerType === undefined ) {
@@ -191,14 +225,21 @@ foam.CLASS({
     {
       name: 'type',
       visibility: 'HIDDEN'
+    },
+    {
+      name: 'swiftCode',
+      updateVisibility: 'RO',
+      section: 'accountInformation',
+      validateObj: function(swiftCode) {
+      }
     }
   ],
 
   methods: [
-    async function save() {
+    async function save(stack_back) {
       try {
         await this.subject.user.accounts.put(this);
-        if ( this.stack ) this.stack.back();
+        if ( this.stack && stack_back ) this.stack.back();
         this.notify(this.BANK_ADDED, '', this.LogLevel.INFO, true);
       } catch (err) {
         this.notify(err.message, '', this.LogLevel.ERROR, true);
@@ -210,57 +251,85 @@ foam.CLASS({
         { name: 'x', type: 'Context' }
       ],
       type: 'Void',
-      javaThrows: ['IllegalStateException'],
+      javaThrows: ['ValidationException'],
       javaCode: `
+        String iban = this.getIban();
+
         super.validate(x);
-        validateBankCode();
-        validateBranchCode();
-        validateAccountNumber();
-      `
-    },
-    {
-      name: 'validateBankCode',
-      type: 'Void',
-      javaThrows: ['IllegalStateException'],
-      javaCode: `     
-        String bankCode = this.getBankCode();
-
-        if ( SafetyUtil.isEmpty(bankCode) ) {
-          throw new IllegalStateException(this.BANK_CODE_REQUIRED);
+        foam.nanos.iban.ValidationIBAN validationIban = new foam.nanos.iban.ValidationIBAN();
+        try {
+          validationIban.validate(iban);
+        } catch (ValidationException ex) {
+//          validateInstitutionNumber();
+//          validateBranchId();
+//          validateAccountNumber();
+//          validateSwiftCode();
+          throw ex;
         }
 
-        if ( ! BANK_CODE_PATTERN.matcher(bankCode).matches() ) {
-          throw new IllegalStateException(this.BANK_CODE_INVALID);
+        if ( getOwner() == 0 ) {
+          setOwner(((foam.nanos.auth.Subject) x.get("subject")).getUser().getId());
         }
       `
     },
     {
-      name: 'validateBranchCode',
+      name: 'validateInstitutionNumber',
       type: 'Void',
-      javaThrows: ['IllegalStateException'],
-      javaCode: `     
-        String branchCode = this.getBranchCode();
+      javaThrows: ['ValidationException'],
+      javaCode: `
+        String institutionNumber = this.getInstitutionNumber();
 
-        if ( SafetyUtil.isEmpty(branchCode) ) {
-          throw new IllegalStateException(this.BRANCH_CODE_REQUIRED);
+        if ( SafetyUtil.isEmpty(institutionNumber) ) {
+          throw new ValidationException(this.INSTITUTION_NUMBER_REQUIRED);
         }
-        if ( ! BRANCH_CODE_PATTERN.matcher(branchCode).matches() ) {
-          throw new IllegalStateException(this.BRANCH_CODE_INVALID);
+
+        if ( ! INSTITUTION_NUMBER_PATTERN.matcher(institutionNumber).matches() ) {
+          throw new ValidationException(this.INSTITUTION_NUMBER_INVALID);
+        }
+      `
+    },
+    {
+      name: 'validateBranchId',
+      type: 'Void',
+      javaThrows: ['ValidationException'],
+      javaCode: `
+        String branchId = this.getBranchId();
+
+        if ( SafetyUtil.isEmpty(branchId) ) {
+          throw new ValidationException(this.BRANCH_ID_REQUIRED);
+        }
+        if ( ! BRANCH_ID_PATTERN.matcher(branchId).matches() ) {
+          throw new ValidationException(this.BRANCH_ID_INVALID);
         }
       `
     },
     {
       name: 'validateAccountNumber',
       type: 'Void',
-      javaThrows: ['IllegalStateException'],
+      javaThrows: ['ValidationException'],
       javaCode: `
         String accountNumber = this.getAccountNumber();
 
         if ( SafetyUtil.isEmpty(accountNumber) ) {
-          throw new IllegalStateException(this.ACCOUNT_NUMBER_REQUIRED);
+          throw new ValidationException(this.ACCOUNT_NUMBER_REQUIRED);
         }
         if ( ! ACCOUNT_NUMBER_PATTERN.matcher(accountNumber).matches() ) {
-          throw new IllegalStateException(this.ACCOUNT_NUMBER_INVALID);
+          throw new ValidationException(this.ACCOUNT_NUMBER_INVALID);
+        }
+      `
+    },
+    {
+      name: 'validateSwiftCode',
+      type: 'Void',
+      javaThrows: ['ValidationException'],
+      javaCode: `
+        String swiftCode = this.getSwiftCode();
+
+        if ( SafetyUtil.isEmpty(swiftCode) ) {
+          throw new ValidationException(this.SWIFT_CODE_REQUIRED);
+        }
+        if ( ! SWIFT_CODE_PATTERN.matcher(swiftCode).matches() ) {
+          throw new ValidationException(this.SWIFT_CODE_INVALID);
         }
       `
     }

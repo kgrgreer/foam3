@@ -61,7 +61,7 @@ public class FlinksAuthService
       if ( httpCode == 200 ) {
         //forward to fetch account
         FlinksAuthResponse resp = (FlinksAuthResponse) respMsg.getModel();
-        return getAccountSummary(x, resp.getRequestId(), currentUser);
+        return getAccountSummary(x, resp.getRequestId(), currentUser, true);
       } else if ( httpCode == 203 ) {
         FlinksMFAResponse resp = (FlinksMFAResponse) respMsg.getModel();
         resp.validate();
@@ -105,7 +105,7 @@ public class FlinksAuthService
       if ( httpCode == 200 ) {
         //forward to get account info
         FlinksAuthResponse resp = (FlinksAuthResponse) respMsg.getModel();
-        return getAccountSummary(x, resp.getRequestId(), currentUser);
+        return getAccountSummary(x, resp.getRequestId(), currentUser, true);
       } else if ( httpCode == 203 || httpCode == 401) {
         FlinksMFAResponse resp = (FlinksMFAResponse) respMsg.getModel();
         resp.validate();
@@ -129,7 +129,8 @@ public class FlinksAuthService
     }
   }
 
-  public FlinksResponse getAccountSummary(X x, String requestId, User currentUser) throws AuthenticationException {
+
+  public FlinksResponse getAccountSummary(X x, String requestId, User currentUser, boolean keepOnlyCADAccounts) throws AuthenticationException {
     try {
       RequestMsg reqMsg = FlinksRequestGenerator.getAccountDetailRequest(getX(), requestId);
       ResponseMsg respMsg = null;
@@ -138,7 +139,7 @@ public class FlinksAuthService
       } catch ( Throwable t ) {
         Logger logger = (Logger) x.get("logger");
         logger.error("Exception [Account Detail]: " + t);
-        throw new AuthenticationException("An error has occurred in an attempt to connect to Flinks");
+        throw new AuthenticationException("An error has occurred in an attempt to connect to Flinks: " + t.getMessage(), t);
       }
       int httpCode = respMsg.getHttpStatusCode();
       FlinksResponse feedback;
@@ -146,7 +147,9 @@ public class FlinksAuthService
         //send accounts to the client
         FlinksAccountsDetailResponse resp = (FlinksAccountsDetailResponse) respMsg.getModel();
 
-        resp.setAccounts(filterAccounts(resp.getAccounts()));
+        if ( keepOnlyCADAccounts ) {
+          resp.setAccounts(filterAccounts(resp.getAccounts()));
+        }
 
         // save flinks response
         resp.setUserId(currentUser.getId());
@@ -157,10 +160,12 @@ public class FlinksAuthService
         logger.error("Flinks AccountSummary: [ HttpStatusCode: " + feedback.getHttpStatusCode() + ", FlinksCode: " + feedback.getFlinksCode() + ", Message: " + feedback.getMessage() + "]");
       }
       return feedback;
+    } catch ( AuthenticationException ae ) {
+      throw ae; 
     } catch ( Throwable t ) {
       Logger logger = (Logger) x.get("logger");
       logger.error("Flinks AccountSummary: [ " + t.toString() + "]");
-      throw new AuthenticationException("UnknownError");
+      throw new AuthenticationException("UnknownError: " + t.getMessage(), t);
     }
   }
 

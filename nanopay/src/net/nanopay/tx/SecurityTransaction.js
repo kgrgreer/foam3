@@ -23,6 +23,7 @@ foam.CLASS({
   javaImports: [
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
+    'foam.core.ValidationException',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
 ],
@@ -51,7 +52,7 @@ foam.CLASS({
       class: 'String',
       name: 'sourceCurrency',
       aliases: ['sourceDenomination'],
-      section: 'paymentInfoSource',
+      section: 'basicInfo',
       gridColumns: 5,
       visibility: 'RO',
       factory: function() {
@@ -74,7 +75,7 @@ foam.CLASS({
       class: 'UnitValue',
       name: 'amount',
       label: 'Source Amount',
-      section: 'amountSelection',
+      section: 'basicInfo',
       required: true,
       gridColumns: 5,
       visibility: 'RO',
@@ -135,7 +136,7 @@ foam.CLASS({
         };
       },
       documentation: 'Amount in Receiver Currency',
-      section: 'amountSelection',
+      section: 'basicInfo',
       unitPropValueToString: async function(x, val, unitPropName) {
         var unitProp = await x.securitiesDAO.find(unitPropName);
         if ( unitProp )
@@ -234,7 +235,7 @@ foam.CLASS({
       Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
       if ( oldTxn != null && oldTxn.getStatus() == TransactionStatus.COMPLETED ) {
         ((Logger) x.get("logger")).error("instanceof SecurityTransaction cannot be updated.");
-        throw new RuntimeException("instanceof SecurityTransaction cannot be updated.");
+        throw new ValidationException("instanceof SecurityTransaction cannot be updated.");
       }
       `
     },

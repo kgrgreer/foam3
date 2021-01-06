@@ -40,16 +40,16 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
         agency.submit(x, new ContextAgent() {
+          private final X systemX = ruler.getX();
           @Override
           public void execute(X x) {
-            DAO userDAO = ((DAO) x.get("localUserDAO"));
+            DAO userDAO = ((DAO) x.get("localUserDAO")).inX(systemX);
 
             User user = (User) userDAO.find(((UserCapabilityJunction) obj).getSourceId());
             try {
               Business business = (Business) user.fclone();
               business.setCompliance(ComplianceStatus.PASSED); // for access into the invoicing
               business.setOnboarded(true); // for afex business create
-              business.setStatus(net.nanopay.admin.model.AccountStatus.ACTIVE); // FOR contact search
               userDAO.put(business);
             } catch(Exception e) {
               throw new UnsupportedOperationException("Business : " + user.getId() + " compliance not set - but UCJ granted" + "Error: " + e);

@@ -390,7 +390,7 @@ foam.CLASS({
           this.notify('Accounts have been successfully linked.', '', this.LogLevel.INFO, true);
           self.accountingBankList = -1;
           if ( ! self.isLandingPage ) {
-            self.pushMenu('sme.main.dashboard');
+            self.pushMenu('capability.main.dashboard');
           }
         });
         this.bankMatched = true;

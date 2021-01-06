@@ -1,0 +1,29 @@
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"trevisoEmailConfig",
+  "lazy":false,
+  "service":
+    {
+      "class":"foam.nanos.app.EmailConfig",
+      "from":"noreply@treviso.com.br",
+      "displayName":"Treviso",
+      "replyTo":"noreply@treviso.com.br"
+    }
+})
+
+p({
+  class: "foam.nanos.boot.NSpec",
+  name: "emailConfig",
+  lazy: true,
+  service: null,
+  serviceScript: """
+    import foam.mlang.predicate.ContextUserPredicate;
+    import foam.nanos.auth.User;
+    import foam.mlang.MLang;
+
+    emailConfig = new foam.nanos.boot.AltFactory("nanopayEmailConfig");
+    emailConfig.addDelegate(new ContextUserPredicate(MLang.EQ(User.SPID, "nanopay")), "nanopayEmailConfig");
+    emailConfig.addDelegate(new ContextUserPredicate(MLang.EQ(User.SPID, "treviso")), "trevisoEmailConfig");
+    return emailConfig;
+  """
+})

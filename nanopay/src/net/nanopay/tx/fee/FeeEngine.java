@@ -25,12 +25,18 @@ import foam.mlang.Constant;
 import foam.mlang.Expr;
 import foam.mlang.Formula;
 import foam.nanos.logger.Logger;
+import net.nanopay.account.DigitalAccount;
 import net.nanopay.fx.TotalRateLineItem;
+import net.nanopay.tx.ExternalTransfer;
 import net.nanopay.tx.FeeLineItem;
 import net.nanopay.tx.TransactionLineItem;
+import net.nanopay.tx.Transfer;
 import net.nanopay.tx.model.Transaction;
 
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.*;
+import foam.util.SafetyUtil;
 
 public class FeeEngine {
   /**
@@ -91,7 +97,7 @@ public class FeeEngine {
         }
 
         transaction.addLineItems(new TransactionLineItem[]{
-          newFeeLineItem(fee.getLabel(), feeAmount, getCurrency(x, transaction))
+          newFeeLineItem(x, fee.getLabel(), feeAmount, getCurrency(x, transaction), transaction.getSourceAccount())
         });
       }
     } catch ( Exception e ) {
@@ -112,15 +118,23 @@ public class FeeEngine {
       if ( fee != null ) {
         var rate = new Rate(fee).getValue(transaction);
         var currencyDAO = (DAO) x.get("currencyDAO");
-        var sourceCurrency = (Currency) currencyDAO.find(transaction.getSourceCurrency());
-        var destinationCurrency = (Currency) currencyDAO.find(transaction.getDestinationCurrency());
+        Currency sourceCurrency = (Currency) currencyDAO.find(transaction.getSourceCurrency());
+        Currency destinationCurrency = (Currency) currencyDAO.find(transaction.getDestinationCurrency());
+        var rateExpiry = transactionFeeRule_.getRateExpiry();
+        var expiry = LocalDateTime.now();
+
+        if ( rateExpiry != null ) {
+          expiry = expiry.plusHours(rateExpiry.getHour())
+            .plusMinutes(rateExpiry.getMinute())
+            .plusSeconds(rateExpiry.getSecond());
+        }
 
         transaction.addLineItems(new TransactionLineItem[] {
           new TotalRateLineItem.Builder(x)
             .setRate(transactionFeeRule_.getIsInvertedRate() ? 1.0 / rate : rate)
-            .setSourceCurrency(sourceCurrency)
-            .setDestinationCurrency(destinationCurrency)
-            .setExpiry(new Date())
+            .setSourceCurrency(sourceCurrency.getId())
+            .setDestinationCurrency(destinationCurrency.getId())
+            .setExpiry(Date.from(expiry.atZone(ZoneId.systemDefault()).toInstant()))
             .build()
         });
       }
@@ -167,20 +181,26 @@ public class FeeEngine {
     return transactionFeeRule_.getFees(x);
   }
 
-  private FeeLineItem newFeeLineItem(String name, long amount, Currency currency)
+  private FeeLineItem newFeeLineItem(X x, String name, long amount, Currency currency, String sourceAccount)
     throws InstantiationException, IllegalAccessException
   {
     var result = (FeeLineItem) transactionFeeRule_.getFeeClass().newInstance();
     result.setGroup(getFeeGroup());
     result.setName(name);
     result.setAmount(amount);
-    result.setFeeCurrency(currency);
+    result.setFeeCurrency(currency.getId());
     if ( ! loadedFees_.isEmpty() ) {
       result.setRates(
         loadedFees_.values().stream()
           .map(Rate::new)
           .toArray(Rate[]::new)
       );
+    }
+    if ( ! SafetyUtil.isEmpty(transactionFeeRule_.getFeeAccount()) ) {
+      result.setTransfers(new Transfer[] {
+        new ExternalTransfer(sourceAccount, -amount, 0),
+        new ExternalTransfer(transactionFeeRule_.getFeeAccount(), amount, 0)
+      });
     }
     return result;
   }

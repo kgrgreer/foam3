@@ -57,7 +57,6 @@ foam.CLASS({
       name: 'dao',
       expression: function(loginSuccess){
         return this.menuDAO
-          .orderBy(this.Menu.ORDER)
           .where(this.STARTS_WITH(this.Menu.ID, 'sme.quickAction'));
       }
     }

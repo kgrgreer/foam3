@@ -3,6 +3,7 @@
 IN_FILE=
 INSTANCES=
 OUT_FILE=
+EXPLICIT_FILES=
 EXTRA_FILES=
 
 function usage {
@@ -10,33 +11,50 @@ function usage {
     echo ""
     echo "Options are:"
     echo "  -I : Input File, no option defaults to stdin"
-    echo "  -J : Instances"
+    echo "  -J : deployment journals"
     echo "  -O : Output File, no option defaults to stdout"
-    echo "  -E : Specify extra journal source directory"
+    echo "  -E : Specify explicit journal source directories, ignore faom2 and nanopay source directories."
+    echo "  -A : Extra journal files to include in the build"
 }
 
-while getopts "I:J:O:E:" opt ; do
+while getopts "A:I:J:O:E:" opt ; do
     case $opt in
+        A) EXTRA_FILES=$OPTARG ;;
         I) IN_FILE=$OPTARG ;;
         J) INSTANCES=$OPTARG ;;
         O) OUT_FILE=$OPTARG ;;
-        E) EXTRA_FILES=$OPTARG ;;
+        E) EXPLICIT_FILES=$OPTARG ;;
         ?) usage ; exit 1;;
     esac
 done
 
 declare -a sources=(
-  "foam2/src"
-  "nanopay/src"
 )
 
-IFS=',' read -ra DIRS <<< "$INSTANCES"
-for d in "${DIRS[@]}"; do
-    sources+=("deployment/$(echo "$d" | tr '[:upper:]' '[:lower:]')")
-done
+if [ -z ${EXPLICIT_FILES} ]; then
+    sources+=("foam2/src")
+    sources+=("nanopay/src")
+fi
 
-if [ ! -z $EXTRA_FILES ]; then
-    sources+=($EXTRA_FILES)
+if [ ! -z ${EXTRA_FILES} ]; then
+    IFS=',' read -ra DIRS <<< "$EXTRA_FILES"
+    for d in "${DIRS[@]}"; do
+        sources+=("$(echo "$d" | tr '[:upper:]' '[:lower:]')")
+    done
+fi
+
+if [ ! -z ${INSTANCES} ]; then
+    IFS=',' read -ra DIRS <<< "$INSTANCES"
+    for d in "${DIRS[@]}"; do
+        sources+=("deployment/$(echo "$d" | tr '[:upper:]' '[:lower:]')")
+    done
+fi
+
+if [ ! -z ${EXPLICIT_FILES} ]; then
+    IFS=',' read -ra DIRS <<< "${EXPLICIT_FILES}"
+    for d in "${DIRS[@]}"; do
+        sources+=("$(echo "$d" | tr '[:upper:]' '[:lower:]')")
+    done
 fi
 
 if [ ! -z $OUT_FILE ]; then

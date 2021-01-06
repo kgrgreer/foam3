@@ -63,7 +63,7 @@ foam.CLASS({
       align-items: center;
     }
     ^ .foam-u2-ActionView-currencyChoice > span{
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       position: relative;
       font-weight: 300;

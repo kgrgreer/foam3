@@ -32,4 +32,7 @@ foam.RELATIONSHIP({
   inverseName: 'account',
   targetDAOKey: 'publicKeyDAO',
   cardinality: '1:*',
+  sourceProperty: {
+    section: 'systemInformation'
+  }
 });

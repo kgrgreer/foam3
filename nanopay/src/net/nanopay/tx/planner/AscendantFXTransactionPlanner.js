@@ -155,8 +155,8 @@ foam.CLASS({
       type: 'String',
       javaCode: `
       String pacsEndToEndId = null;
-      if ( null != transaction.getReferenceData() && transaction.getReferenceData().length > 0 ) {
-        for ( FObject obj : transaction.getReferenceData() ) {
+      if ( null != transaction.getExternalData() ) {
+        for ( Object obj : transaction.getExternalData().values() ) {
           if ( obj instanceof Pacs00800106 ) {
             Pacs00800106 pacs = (Pacs00800106) obj;
             FIToFICustomerCreditTransferV06 fi = pacs.getFIToFICstmrCdtTrf();
@@ -182,8 +182,8 @@ foam.CLASS({
       javaType: 'FXQuote',
       javaCode: `
         FXQuote fxQuote = null;
-        if ( null != request.getReferenceData() && request.getReferenceData().length > 0 ) {
-          for ( Object obj : request.getReferenceData() ) {
+        if ( null != request.getExternalData() ) {
+          for ( Object obj : request.getExternalData().values() ) {
             if ( obj instanceof FXQuote ) {
               fxQuote = (FXQuote) obj;
               break;
@@ -216,7 +216,7 @@ foam.CLASS({
       ascendantFXTransaction.setFxExpiry(fxQuote.getExpiryTime());
       ascendantFXTransaction.setFxQuoteId(String.valueOf(fxQuote.getId()));
       ascendantFXTransaction.setFxRate(fxQuote.getRate());
-      ascendantFXTransaction.addLineItems( new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(String.valueOf(fxQuote.getId())).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).setSourceCurrency(fxQuote.findSourceCurrency(x)).setDestinationCurrency(fxQuote.findTargetCurrency(x)).build()} );
+      ascendantFXTransaction.addLineItems( new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(String.valueOf(fxQuote.getId())).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).setSourceCurrency(fxQuote.getSourceCurrency()).setDestinationCurrency(fxQuote.getTargetCurrency()).build()} );
       ascendantFXTransaction.setDestinationAmount((new Double(fxQuote.getTargetAmount())).longValue());
       FeesFields fees = new FeesFields.Builder(x).build();
       fees.setTotalFees(fxQuote.getFee());
@@ -224,7 +224,6 @@ foam.CLASS({
       ascendantFXTransaction.addLineItems( new TransactionLineItem[] {new AscendantFXFeeLineItem.Builder(x).setGroup("fx").setAmount(fxQuote.getFee()).setCurrency(fxQuote.getFeeCurrency()).build()} );
       ascendantFXTransaction.setFxFees(fees);
       ascendantFXTransaction.setPaymentProvider(PAYMENT_PROVIDER);
-      ascendantFXTransaction.setIsQuoted(true);
       ascendantFXTransaction.setPaymentMethod(fxQuote.getPaymentMethod());
       if ( ascendantFXTransaction.getAmount() < 1 ) ascendantFXTransaction.setAmount(fxQuote.getSourceAmount());
       if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()))
@@ -269,9 +268,8 @@ foam.CLASS({
         summary.setFxRate(tx.getFxRate());
         summary.setFxExpiry(tx.getFxExpiry());
         summary.setInvoiceId(tx.getInvoiceId());
-        summary.setIsQuoted(true);
         summary.addNext(tx);
-        summary.addNext(createCompliance(tx));
+        summary.addNext(createComplianceTransaction(tx));
         return summary;
       `
     }

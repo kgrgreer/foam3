@@ -101,8 +101,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'net.nanopay.model.BeneficialOwner',
     'net.nanopay.model.Business',
-    'net.nanopay.model.PersonalIdentification',
-    'net.nanopay.sme.onboarding.USBusinessOnboarding',
+    'net.nanopay.model.PersonalIdentification'
   ],
 
   imports: [
@@ -145,7 +144,7 @@ foam.CLASS({
     },
     {
       name: 'signingOfficerQuestionSection',
-      title: 'Are you considered a signing officer at your company?',
+      title: 'Are you a signing officer for your company?',
       help: 'Alright, let’s do this! First off, I’m going to need to know if you are a signing officer at the company…',
       //permissionRequired: true
     },
@@ -363,8 +362,8 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
-          [true, 'Yes, I am a signing officer'],
-          [false, 'No, I am not'],
+          [true, 'Yes'],
+          [false, 'No'],
         ],
       },
       postSet: function() {
@@ -422,8 +421,6 @@ foam.CLASS({
         }
       },
     },
-    // TODO: remove phone property after phone number migration
-    foam.nanos.auth.User.PHONE.clone(),
     foam.nanos.auth.User.PHONE_NUMBER.clone().copyFrom({
       section: 'personalInformationSection',
       label: '',
@@ -501,7 +498,7 @@ foam.CLASS({
       section: 'personalInformationSection',
       label: 'I am a politically exposed person or head of an international organization (PEP/HIO)',
       help: `
-        A political exposed person (PEP) or the head of an international organization (HIO)
+        A politically exposed person (PEP) or the head of an international organization (HIO)
         is a person entrusted with a prominent position that typically comes with the opportunity
         to influence decisions and the ability to control resources
       `,
@@ -1328,7 +1325,8 @@ foam.CLASS({
         mode: 'RW',
         enableAdding: true,
         enableRemoving: true,
-        defaultNewItem: ''
+        defaultNewItem: '',
+        name: 'Directors'
       },
       autoValidate: true,
       validationTextVisible: true,
@@ -1343,7 +1341,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'directorsListed',
       section: 'directorsInfoSection',
-      label: 'I certify that all directors have been listed.',
+      label: 'I certify that all directors have been listed or that my business does not require director information.',
       validationPredicates: [
        {
          args: ['businessTypeId', 'directorsListed', 'signingOfficer'],
@@ -1612,7 +1610,7 @@ foam.CLASS({
 
         if ( user.getId() == getUserId() ) return;
 
-        String permission = "usBusinessOnboarding.create." + getId();
+        String permission = "usbusinessonboarding.create." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
 
@@ -1627,7 +1625,7 @@ foam.CLASS({
 
         if ( user.getId() == getUserId() ) return;
 
-        String permission = "usBusinessOnboarding.read." + getId();
+        String permission = "usbusinessonboarding.read." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
 
@@ -1642,7 +1640,7 @@ foam.CLASS({
 
         if ( user.getId() == getUserId() ) return;
 
-        String permission = "usBusinessOnboarding.update." + getId();
+        String permission = "usbusinessonboarding.update." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
 
@@ -1657,7 +1655,7 @@ foam.CLASS({
 
         if ( user.getId() == getUserId() ) return;
 
-        String permission = "usBusinessOnboarding.remove." + getId();
+        String permission = "usbusinessonboarding.remove." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
 

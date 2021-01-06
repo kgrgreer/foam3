@@ -61,7 +61,7 @@ foam.CLASS({
     {
       name: 'title',
       expression: function(index) {
-        return `Add for owner #${index}`;
+        return `Add details for owner #${index}`;
       }
     },
     {
@@ -206,7 +206,7 @@ foam.CLASS({
     },
     {
       name: 'signingOfficerQuestionSection',
-      title: 'Are you considered a signing officer at the company?',
+      title: 'Are you a signing officer for your company?',
       help: 'Alright, let’s do this! First off, I’m going to need to know if you are a signing officer at the company…',
       //permissionRequired: true
     },
@@ -306,6 +306,11 @@ foam.CLASS({
       help: 'Alright, it looks like that is all of the information we need! Last thing I’ll ask is that you enable two factor authentication. We want to make sure your account is safe!',
       isAvailable: function (signingOfficer) { return signingOfficer }
     }
+  ],
+
+  messages: [
+    { name: 'MAKE_A_SELECTION', message: 'Please make a selection.' },
+    { name: 'PROVIDE_TRANSACTION_PURPOSE', message: 'Please provide transaction purpose.' }
   ],
 
   properties: [
@@ -424,8 +429,8 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
-          [true, 'Yes, I am a signing officer'],
-          [false, 'No, I am not'],
+          [true, 'Yes'],
+          [false, 'No'],
         ],
       },
       postSet: async function() {
@@ -485,8 +490,6 @@ foam.CLASS({
         }
       ]
     },
-    // TODO: remove phone property after phone number migration
-    foam.nanos.auth.User.PHONE.clone(),
     foam.nanos.auth.User.PHONE_NUMBER.clone().copyFrom({
       section: 'personalInformationSection',
       label: '',
@@ -534,7 +537,7 @@ foam.CLASS({
       section: 'personalInformationSection',
       label: 'I am a politically exposed person or head of an international organization (PEP/HIO)',
       help: `
-        A political exposed person (PEP) or the head of an international organization (HIO)
+        A politically exposed person (PEP) or the head of an international organization (HIO)
         is a person entrusted with a prominent position that typically comes with the opportunity
         to influence decisions and the ability to control resources
       `,
@@ -881,6 +884,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.model.BusinessSector',
       name: 'businessSectorId',
+      label: 'Business Sector',
       section: 'businessDetailsSection',
       documentation: 'Represents the specific economic grouping for the business.',
       label: 'Nature of business',
@@ -894,7 +898,7 @@ foam.CLASS({
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
-          errorString: 'Please select nature of business.'
+          errorMessage: 'SELECT_BUSINESS_SECTOR'
         }
       ]
     },
@@ -1005,7 +1009,7 @@ foam.CLASS({
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
-          errorString: 'Please make a selection.'
+          errorString: 'MAKE_A_SELECTION'
         }
       ]
     }),
@@ -1036,7 +1040,7 @@ foam.CLASS({
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
-          errorString: 'Please make a selection.'
+          errorString: 'MAKE_A_SELECTION'
         }
       ]
     }),
@@ -1067,7 +1071,7 @@ foam.CLASS({
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
-          errorString: 'Please make a selection.'
+          errorString: 'MAKE_A_SELECTION'
         }
       ]
     }),
@@ -1105,7 +1109,7 @@ foam.CLASS({
               e.EQ(net.nanopay.sme.onboarding.BusinessOnboarding.SIGNING_OFFICER, false)
             );
           },
-          errorString: 'Please provide transaction purpose.'
+          errorString: 'PROVIDE_TRANSACTION_PURPOSE'
         }
       ]
     }),
@@ -1300,7 +1304,8 @@ foam.CLASS({
         mode: 'RW',
         enableAdding: true,
         enableRemoving: true,
-        defaultNewItem: ''
+        defaultNewItem: '',
+        name: 'Directors'
       },
       autoValidate: true,
       validationTextVisible: true,
@@ -1315,7 +1320,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'directorsListed',
       section: 'directorsInfoSection',
-      label: 'I certify that all directors have been listed.',
+      label: 'I certify that all directors have been listed or that my business does not require director information.',
       validationPredicates: [
        {
          args: ['businessTypeId', 'directorsListed', 'signingOfficer'],
@@ -1516,6 +1521,10 @@ foam.CLASS({
     {
       name: 'INVITE_SIGNING_OFFICER',
       message: 'Invite a signing officer to complete the onboarding for your business.  Once the signing officer completes their onboarding, your business can start using '
+    },
+    {
+      name: 'SELECT_BUSINESS_SECTOR',
+      message: 'Please select business sector'
     }
   ],
 
@@ -1550,7 +1559,7 @@ foam.CLASS({
         Subject subject = (Subject) x.get("subject");
         User user = subject.getRealUser();
         if ( user.getId() == getUserId() ) return;
-        String permission = "businessOnboarding.create." + getId();
+        String permission = "businessonboarding.create." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
         throw new foam.nanos.auth.AuthorizationException();
@@ -1562,7 +1571,7 @@ foam.CLASS({
         Subject subject = (Subject) x.get("subject");
         User user = subject.getRealUser();
         if ( user.getId() == getUserId() ) return;
-        String permission = "businessOnboarding.read." + getId();
+        String permission = "businessonboarding.read." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
         throw new foam.nanos.auth.AuthorizationException();
@@ -1574,7 +1583,7 @@ foam.CLASS({
         Subject subject = (Subject) x.get("subject");
         User user = subject.getRealUser();
         if ( user.getId() == getUserId() ) return;
-        String permission = "businessOnboarding.update." + getId();
+        String permission = "businessonboarding.update." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
         throw new foam.nanos.auth.AuthorizationException();
@@ -1586,7 +1595,7 @@ foam.CLASS({
         Subject subject = (Subject) x.get("subject");
         User user = subject.getRealUser();
         if ( user.getId() == getUserId() ) return;
-        String permission = "businessOnboarding.remove." + getId();
+        String permission = "businessonboarding.remove." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
         throw new foam.nanos.auth.AuthorizationException();
@@ -1630,4 +1639,3 @@ foam.CLASS({
     }
   ]
 });
-

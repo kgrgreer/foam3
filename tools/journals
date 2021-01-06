@@ -1,6 +1,8 @@
 acceptanceDocuments
 accounts
 accountTemplates
+afexBusinesses
+afexCredentialDAO
 agentJunctions
 alarmConfig
 ascendantfxusers
@@ -8,6 +10,7 @@ ascendantUserPayeeJunctions
 assetClasses
 beneficialOwners
 blacklists
+bootscripts
 branches
 brokers
 businessSectors
@@ -26,8 +29,9 @@ currencies
 currencyfxServices
 deprecatedCapabilityJunctions
 digs
-exchangeRates
 emailTemplates
+exchangeRates
+exchangeClientValues
 exportDriverRegistrys
 fees
 fundTransferSystems
@@ -49,14 +53,18 @@ lineItemTypes
 liquiditySettings
 liquidUserCapabilityJunctions
 locales
+loginAttempts
 menus
+moedas
 mspSetup
+natureCodeData
 notifications
 notificationTemplates
 notificationSettings
 notificationSettingDefaults
 payoutOptions
 errorCodes
+paises
 paymentCodes
 paymentMethods
 PADTypes

@@ -381,7 +381,7 @@ foam.INTERFACE({
       name: 'getFundingBalance',
       documentation: 'Get funding balance',
       async: true,
-      type: 'net.nanopay.fx.afex.GetFundingBalanceResponse',
+      type: 'net.nanopay.fx.afex.FundingBalance',
       args: [
         {
           class: 'String',
@@ -429,5 +429,21 @@ foam.INTERFACE({
         }
       ]
     },
+    {
+      name: 'isiban',
+      documentation: 'This method is used to validate a given IBAN',
+      async: true,
+      type: 'net.nanopay.fx.afex.IsIbanResponse',
+      args: [
+        {
+          type: 'net.nanopay.fx.afex.IsIbanRequest',
+          name: 'isIbanRequest'
+        },
+        {
+          type: 'String',
+          name: 'spid'
+        }
+      ]
+    }
   ]
 });

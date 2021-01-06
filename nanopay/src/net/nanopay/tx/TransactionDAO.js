@@ -27,24 +27,26 @@ foam.CLASS({
 
   javaImports: [
     'java.util.*',
-
-    'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.nanos.pm.PM',
+    'foam.core.FObject',
+    'foam.util.SafetyUtil',
     'foam.dao.ReadOnlyDAO',
     'foam.nanos.logger.Logger',
-    'foam.util.SafetyUtil',
     'net.nanopay.account.Account',
     'net.nanopay.account.Balance',
     'net.nanopay.account.DebtAccount',
+    'net.nanopay.tx.ExternalTransfer',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.TransactionException',
     'net.nanopay.tx.model.TransactionStatus'
   ],
 
   messages: [
-    { name: 'TRANS_NOT_QUOTED_AND_MISSING_ID_SET_ERROR_MSG', message: 'Transaction must be quoted and have id set.' },
-    { name: 'UNKNOWN_ACCOUNT_ERROR_MSG', message: 'Unknown account: ' },
-    { name: 'DEBITS_CREDITS_NOT_MATCH_ERROR_MSG', message: 'Debits and credits don\'t match.' }
+    { name: 'TRANS_MISSING_ID_SET_ERROR_MSG', message: 'Transaction must have id set' },
+    { name: 'UNKNOWN_ACCOUNT_ERROR_MSG', message: 'Unknown account' },
+    { name: 'DEBITS_CREDITS_NOT_MATCH_ERROR_MSG', message: 'Debits and credits don\'t match' }
   ],
 
   axioms: [
@@ -78,10 +80,12 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
+      PM pm = PM.create(x, this.getClass().getSimpleName(), "put");
+      try {
         Transaction txn = (Transaction) obj;
 
-        if ( SafetyUtil.isEmpty(txn.getId()) || ! txn.getIsQuoted() ) {
-          throw new RuntimeException(TRANS_NOT_QUOTED_AND_MISSING_ID_SET_ERROR_MSG);
+        if ( SafetyUtil.isEmpty(txn.getId()) ) {
+          throw new TransactionException(TRANS_MISSING_ID_SET_ERROR_MSG);
         }
 
         Transaction oldTxn = (Transaction) getDelegate().find_(x, obj);
@@ -92,6 +96,9 @@ foam.CLASS({
           txn = (Transaction) super.put_(x, txn);
         }
         return txn;
+      } finally {
+        pm.log(x);
+      }
       `
     },
     {
@@ -128,6 +135,8 @@ foam.CLASS({
       ],
       documentation: 'return true when status change is such that Transfers should be executed (applied)',
       javaCode: `
+      PM pm = PM.create(x, this.getClass().getSimpleName(), "canExecute");
+      try {
         X y = getX().put("transactionDAO", getDelegate());
 
         if ( ( ! SafetyUtil.isEmpty(txn.getId()) ||
@@ -137,6 +146,9 @@ foam.CLASS({
           return true;
         }
         return false;
+      } finally {
+        pm.log(x);
+      }
       `
     },
     {
@@ -148,8 +160,13 @@ foam.CLASS({
         { type: 'Transaction', name: 'txn' }
       ],
       javaCode: `
-        Transfer[] ts = txn.getTransfers();
+      PM pm = PM.create(x, this.getClass().getSimpleName(), "executeTransaction");
+      try {
+        Transfer[] ts = txn.getCurrentStageTransfers();
         return lockAndExecute(x, txn, ts);
+      } finally {
+        pm.log(x);
+      }
       `
     },
     {
@@ -162,17 +179,28 @@ foam.CLASS({
         { type: 'Transfer[]', name: 'ts' }
       ],
       javaCode: `
+      PM pm = PM.create(x, this.getClass().getSimpleName(), "validateTransfers");
+      try {
         HashMap hm = new HashMap();
         Logger logger = (Logger) x.get("logger");
+
         for ( Transfer tr : ts ) {
-          tr.validate();
-          Account account = tr.findAccount(getX());
+          //Transfer Level Validation.
+          try { tr.validate(); }
+          catch (RuntimeException e) {
+            throw new TransactionException("Transfer Validation Failed", e);
+          }
+
+          //Account Level Validation
+          Account account = tr.findAccount(x); 
           if ( account == null ) {
-            logger.error(this.getClass().getSimpleName(), "validateTransfers", txn.getId(), "transfer account not found: " + tr.getAccount(), tr);
-            throw new RuntimeException(UNKNOWN_ACCOUNT_ERROR_MSG + tr.getAccount());
+            logger.error(this.getClass().getSimpleName(), "validateTransfers", txn.getId(), "transfer account not found",tr.getAccount(), tr);
+            throw new TransactionException(UNKNOWN_ACCOUNT_ERROR_MSG);
           }
           account.validateAmount(x, (Balance) getBalanceDAO().find(account.getId()), tr.getAmount());
-          if ( ! (account instanceof DebtAccount) )
+
+          //Transfer Matching for internal transfers
+          if ( ! (account instanceof DebtAccount) && ! ( tr instanceof ExternalTransfer) )
             hm.put(account.getDenomination(), (hm.get(account.getDenomination()) == null ? 0 : (Long) hm.get(account.getDenomination())) + tr.getAmount());
         }
 
@@ -182,9 +210,12 @@ foam.CLASS({
             for ( Transfer tr : ts ) {
               logger.error(this.getClass().getSimpleName(), "validateTransfers", txn.getId(), "Transfer", tr);
             }
-            throw new RuntimeException(DEBITS_CREDITS_NOT_MATCH_ERROR_MSG);
+            throw new TransactionException(DEBITS_CREDITS_NOT_MATCH_ERROR_MSG);
           }
         }
+      } finally {
+        pm.log(x);
+      }
       `
     },
     {
@@ -198,8 +229,10 @@ foam.CLASS({
       ],
       documentation: 'Sorts array of transfers.',
       javaCode: `
+      PM pm = PM.create(x, this.getClass().getSimpleName(), "lockAndExecute");
+      try {
         // Combine transfers to the same account
-        HashMap<Long, Transfer> hm = new HashMap();
+        HashMap<String, Transfer> hm = new HashMap();
 
         for ( Transfer tr : ts ) {
           if ( hm.get(tr.getAccount()) != null ) {
@@ -211,9 +244,13 @@ foam.CLASS({
         // sort the transfer array
         java.util.Arrays.sort(newTs);
         // persist condensed transfers
+        //TODO: setTransfers will overwrite multi stage transfers, either need to not set, or smartly replace.
         txn.setTransfers(newTs);
         // lock accounts in transfers
         return lockAndExecute_(x, txn, newTs, 0);
+      } finally {
+        pm.log(x);
+      }
       `
     },
     {
@@ -228,6 +265,8 @@ foam.CLASS({
         { type: 'int', name: 'i' }
       ],
       javaCode: `
+      PM pm = PM.create(x, this.getClass().getSimpleName(), "lockAndExecute_");
+      try {
         if ( i > ts.length - 1 ) {
           // validate the transfers we have combined.
           validateTransfers(x, txn, ts);
@@ -237,6 +276,9 @@ foam.CLASS({
         synchronized ( ts[i].getLock() ) {
           return lockAndExecute_(x, txn, ts, i + 1);
         }
+      } finally {
+        pm.log(x);
+      }
       `
     },
     {
@@ -250,6 +292,8 @@ foam.CLASS({
       ],
       documentation: 'Called once all locks are locked.',
       javaCode: `
+      PM pm = PM.create(x, this.getClass().getSimpleName(), "execute");
+      try {
         Balance [] finalBalanceArr = new Balance[ts.length];
         DAO localAccountDAO = (DAO) x.get("localAccountDAO");
         for ( int i = 0 ; i < ts.length ; i++ ) {
@@ -271,13 +315,19 @@ foam.CLASS({
 
         for ( int i = 0 ; i < ts.length ; i++ ) {
           Transfer t = ts[i];
-          t.validate();
+          try { t.validate(); }
+          catch (RuntimeException e) {
+            throw new TransactionException("Transfer Validation Failed", e);
+          }
           Balance balance = finalBalanceArr[i];
           t.execute(balance);
           finalBalanceArr[i] = (Balance) balance.fclone();
         }
         txn.setBalances(finalBalanceArr);
         return getDelegate().put_(x, txn);
+      } finally {
+        pm.log(x);
+      }
       `
     }
   ]

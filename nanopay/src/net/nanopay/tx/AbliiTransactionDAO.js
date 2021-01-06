@@ -92,7 +92,6 @@ foam.CLASS({
         ( ((Debtable) senderDigitalAccount).findDebtAccount(x).findCreditorAccount(x) ) != null ) {
           CompositeTransaction ct = new CompositeTransaction();
           ct.copyFrom(request);
-          ct.setIsQuoted(true);
           ct.setName("Composite Transaction for FastPay");
           request.addNext(ct);
       }

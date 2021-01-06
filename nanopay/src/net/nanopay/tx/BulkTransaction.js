@@ -20,6 +20,10 @@ foam.CLASS({
   name: 'BulkTransaction',
   extends: 'net.nanopay.tx.SummaryTransaction',
 
+  javaImports: [
+    'foam.core.ValidationException',
+  ],
+
   properties: [
     {
       class: 'Boolean',
@@ -46,6 +50,25 @@ foam.CLASS({
       of: 'net.nanopay.tx.model.Transaction',
       transient: true,
       visibility: 'HIDDEN'
+    }
+  ],
+  methods: [
+    {
+      name: `validateAmounts`,
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      type: 'Void',
+      javaCode: `
+        if ( getAmount() < 0) {
+          throw new ValidationException("Amount cannot be negative");
+        }
+
+        if ( getDestinationAmount() < 0) {
+          throw new ValidationException("Destination amount cannot be negative");
+        }
+
+      `
     }
   ]
 });

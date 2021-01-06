@@ -31,7 +31,7 @@ public class ContactService
       List<Contact> contactList = ((ArraySink) contactDAO.where(EQ(User.EMAIL, email)).select(new ArraySink())).getArray();
 
       for (Contact contact : contactList) {
-        if (ContactStatus.ACTIVE.equals(contact.getSignUpStatus())) {
+        if (ContactStatus.READY.equals(contact.getSignUpStatus())) {
           return true;
         }
       }

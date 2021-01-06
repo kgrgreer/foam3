@@ -41,7 +41,8 @@ foam.CLASS({
       AFEXServiceProvider afexService = (AFEXServiceProvider) ((X) obj).get("afexServiceProvider");
       if ( nu instanceof TransactionQuote ) {
         TransactionQuote tq = (TransactionQuote) nu;
-        return null != afexService.getAFEXBusiness(((X) obj), tq.getSourceAccount().getOwner());
+        Long owner = tq.getRequestOwner() != 0 ? tq.getRequestOwner(): tq.getSourceAccount().getOwner();
+        return null != afexService.getAFEXBusiness(((X) obj), owner) ;
       } else if ( nu instanceof Account ) {
         Account account = (Account) nu;
         return null != afexService.getAFEXBusiness(((X) obj), account.getOwner());

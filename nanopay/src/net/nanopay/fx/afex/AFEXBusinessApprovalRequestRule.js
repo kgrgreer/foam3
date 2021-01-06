@@ -41,11 +41,15 @@ foam.CLASS({
           public void execute(X x) {
             AFEXBusiness afexBusiness = (AFEXBusiness) obj;
             DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
+            String spid = afexBusiness.findUser(x).getSpid();
+            String group = spid + "-payment-ops";
             approvalRequestDAO.put_(x,
               new AFEXBusinessApprovalRequest.Builder(x)
                 .setDaoKey("afexBusinessDAO")
                 .setObjId(afexBusiness.getId())
-                .setGroup("payment-ops")
+                .setClassification("Validate AFEX Business")
+                .setDescription("Approve AFEX business to enable the international payments.")
+                .setGroup(group)
                 .setStatus(ApprovalStatus.REQUESTED).build());
           }
         }, "Create AFEXBusiness Approval Request Rule");

@@ -98,7 +98,7 @@ foam.CLASS({
       args.put("business", business.toSummary());
       args.put("toCurrency", toCurrency);
       args.put("toCountry", toCountry);
-      args.put("link",   url + "#sme.main.dashboard");
+      args.put("link",   url + "#capability.main.dashboard");
       try {
         Notification internationalPaymentsEnabledNotification = new Notification.Builder(x)
           .setBody("AFEX Business has been created and corridor has been enabled.")

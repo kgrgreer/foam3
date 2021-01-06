@@ -40,7 +40,7 @@ foam.CLASS({
   requires: [
     'foam.u2.dialog.NotificationMessage',
     'foam.nanos.auth.Address',
-    'net.nanopay.ui.LoadingSpinner'
+    'foam.u2.LoadingSpinner'
   ],
 
   properties: [
@@ -70,7 +70,7 @@ foam.CLASS({
     }
     ^ .subTitleFlinks {
       height: 16px;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       font-weight: normal;
       font-style: normal;

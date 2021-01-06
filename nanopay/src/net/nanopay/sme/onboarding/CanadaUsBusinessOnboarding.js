@@ -338,7 +338,7 @@ foam.CLASS({
 
         if ( user.getId() == getUserId() ) return;
 
-        String permission = "canadaUsBusinessOnboarding.create." + getId();
+        String permission = "canadausnusinessonboardingcreate." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
 
@@ -353,7 +353,7 @@ foam.CLASS({
 
         if ( user.getId() == getUserId() ) return;
 
-        String permission = "canadaUsBusinessOnboarding.read." + getId();
+        String permission = "canadausnusinessonboardingread." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
 
@@ -368,7 +368,7 @@ foam.CLASS({
 
         if ( user.getId() == getUserId() ) return;
 
-        String permission = "canadaUsBusinessOnboarding.update." + getId();
+        String permission = "canadausnusinessonboardingupdate." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
 
@@ -383,7 +383,7 @@ foam.CLASS({
 
         if ( user.getId() == getUserId() ) return;
 
-        String permission = "canadaUsBusinessOnboarding.remove." + getId();
+        String permission = "canadausnusinessonboardingremove." + getId();
         foam.nanos.auth.AuthService auth = (foam.nanos.auth.AuthService) x.get("auth");
         if ( auth.check(x, permission) ) return;
 

@@ -31,19 +31,40 @@ foam.CLASS({
     'businessSectorDAO'
   ],
 
+  messages: [
+    { name: 'PLACE_HOLDER', message: 'Please select...' },
+    { name: 'SPECIFIC_INDUSTRIES', message: 'Specific Industries' },
+    { name: 'INDUSTRIES', message: 'Industries' },
+    { name: 'SEARCH', message: 'Search...' },
+  ],
+
   properties: [
     {
       class: 'Reference',
       of: 'net.nanopay.model.BusinessSector',
-      name: 'parentChoice'
+      name: 'parentChoice',
+      postSet: function(o, n) {
+        if ( o != n && o !== 0 )
+          this.data = 0;
+      },
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.Country',
+      name: 'country',
+      value: '',
+      visibility: 'HIDDEN'
     },
     {
       class: 'FObjectProperty',
       of: 'foam.mlang.predicate.Predicate',
       name: 'predicate',
-      expression: function(parentChoice) {
+      expression: function(parentChoice, country) {
         return parentChoice ?
-          this.EQ(this.BusinessSector.PARENT, parentChoice) :
+          this.AND(
+            this.EQ(this.BusinessSector.PARENT, parentChoice),
+            this.EQ(this.BusinessSector.COUNTRY_ID, country)
+          ):
           this.FALSE;
       }
     },
@@ -59,14 +80,9 @@ foam.CLASS({
       of: 'net.nanopay.model.BusinessSector',
       name: 'data',
       postSet: function(_, n) {
-        if ( ! n ) return;
-        this.data$find.then((o) => this.parentChoice = o.parent);
+        this.data$find.then((o) => { if (o) this.parentChoice = o.parent });
       }
     }
-  ],
-
-  messages: [
-    { name: 'PLACE_HOLDER', message: 'Please select...' }
   ],
 
   methods: [
@@ -81,15 +97,14 @@ foam.CLASS({
               data$: this.parentChoice$,
               sections: [
                 {
-                  heading: 'Industries',
+                  heading: this.INDUSTRIES,
                   dao: this.businessSectorDAO.where(this.EQ(this.BusinessSector.PARENT, 0))
                 }
               ],
               search: true,
-              searchPlaceholder: 'Search...',
+              searchPlaceholder: this.SEARCH,
               choosePlaceholder: this.PLACE_HOLDER
             })
-
           .end()
 
           .start()
@@ -101,12 +116,12 @@ foam.CLASS({
                   data$: this.data$,
                   sections: [
                     {
-                      heading: 'Specific Industries',
+                      heading: this.SPECIFIC_INDUSTRIES,
                       dao: this.filteredDAO$proxy
                     }
                   ],
                   search: true,
-                  searchPlaceholder: 'Search...',
+                  searchPlaceholder: this.SEARCH,
                   choosePlaceholder: this.PLACE_HOLDER
                 });
             }))

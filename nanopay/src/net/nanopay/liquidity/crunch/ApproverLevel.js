@@ -21,7 +21,7 @@ foam.CLASS({
   implements: [ 'foam.core.Validatable' ],
 
   messages: [
-    { name: 'approverLevelRangeError', message: 'Approver level must be a value between 1 and 2.' },
+    { name: 'approverLevelRangeError', message: 'Approver level must be a value between 1 and 2' },
   ],
 
   properties: [

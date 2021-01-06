@@ -53,10 +53,10 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'NULL_USER_ERROR_MSG', message: 'Cannot put null.' },
-    { name: 'ORGANIZATION_REQ_ERROR_MSG', message: 'Organization is required.' },
-    { name: 'UNABLE_TO_PROCESS_USER_REGISTRATION_ERROR_MSG', message: 'Unable to process user registration.' },
-    { name: 'NO_BUSINESS_ERROR_MSG', message: 'Business doesn\'t exist.' }
+    { name: 'NULL_USER_ERROR_MSG', message: 'Cannot put null' },
+    { name: 'ORGANIZATION_REQ_ERROR_MSG', message: 'Organization is required' },
+    { name: 'UNABLE_TO_PROCESS_USER_REGISTRATION_ERROR_MSG', message: 'Unable to process user registration' },
+    { name: 'NO_BUSINESS_ERROR_MSG', message: 'Business doesn\'t exist' }
   ],
 
   properties: [

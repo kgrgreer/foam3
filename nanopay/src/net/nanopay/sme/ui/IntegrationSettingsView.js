@@ -264,7 +264,7 @@ foam.CLASS({
     { name: 'YOUR', message: 'Your ' },
     { name: 'BANK_ACCOUNT', message: ' bank accounts' },
     { name: 'PLEASE_SELECT_BANK', message: 'Please select a bank account in ' },
-    { name: 'BEFORE_MATCH', message: ' before mathching.' }
+    { name: 'BEFORE_MATCH', message: ' before matching.' }
   ],
 
   properties: [

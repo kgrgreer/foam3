@@ -49,7 +49,7 @@ foam.CLASS({
       margin-bottom: 15px;
     }
     ^step-1 span {
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: normal;
       font-style: normal;
@@ -61,14 +61,13 @@ foam.CLASS({
     ^two-factor-link {
       color: #604aff;
       display: inline-block;
-      margin-top: 8px;
       text-decoration: none;
     }
     ^step-2 {
       margin-top: 32px;
     }
     ^step-2 span {
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: normal;
       font-style: normal;
@@ -123,10 +122,12 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'TITLE', message: 'Personal Settings' },
-    { name: 'TWO_FACTOR_SUBTITLE', message: 'Two-factor Authentication' },
-    { name: 'TWO_FACTOR_INSTR1', message: 'Download and use your Google Authenticator ' },
-    { name: 'TWO_FACTOR_INSTR2', message: ' app on your mobile device to scan the QR code. If you can’t use the QR code, you can enter the provided key into the Google Authenticator app manually.' },
+    { name: 'TITLE', message: 'Personal settings' },
+    { name: 'TWO_FACTOR_SUBTITLE', message: 'Two-factor authentication' },
+    { name: 'TWO_FACTOR_INSTR1', message: 'Two-factor authentication provides an added layer of security against impersonation and prevents access to sensitive account information.' },
+    { name: 'TWO_FACTOR_INSTR2', message: 'Step 1: On your mobile device, download the Google Authenticator ' },
+    { name: 'TWO_FACTOR_INSTR3', message: 'Step 2: Scan the QR code, or type the 16-digit key into the Google Authenticator app' },
+    { name: 'TWO_FACTOR_INSTR4', message: 'Step 3: The app will provide a verification code. Enter the code and select ‘Verify’' },
     { name: 'IOS_NAME', message: 'iOS' },
     { name: 'ANDROID_NAME', message: 'Android' },
     { name: 'OR', message: ' or ' },
@@ -166,6 +167,8 @@ foam.CLASS({
                     .br()
                     .start('span')
                       .add(this.TWO_FACTOR_INSTR1)
+                      .br()
+                      .add(this.TWO_FACTOR_INSTR2)
                       .start('a').addClass(this.myClass('two-factor-link'))
                         .add(this.IOS_NAME)
                         .attrs({ href: this.IOS_LINK, target: '_blank' })
@@ -175,7 +178,10 @@ foam.CLASS({
                         .add(this.ANDROID_NAME)
                         .attrs({ href: this.ANDROID_LINK, target: '_blank' })
                       .end()
-                      .add(this.TWO_FACTOR_INSTR2)
+                      .br()
+                      .add(this.TWO_FACTOR_INSTR3)
+                      .br()
+                      .add(this.TWO_FACTOR_INSTR4)
                     .end()
                   .end()
                 .end()

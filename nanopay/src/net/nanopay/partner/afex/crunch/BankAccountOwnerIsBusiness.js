@@ -51,8 +51,7 @@ foam.CLASS({
         if ( afexOnboarding == null ) return false;
         List<Capability> afexOnboardingCapabilities = (List<Capability>) ( (ArraySink) ( (DAO) afexOnboarding
           .getCapabilities(x)
-          .getJunctionDAO())
-          .where(EQ(CapabilityCategoryCapabilityJunction.SOURCE_ID, afexOnboarding.getId()))
+          .getDAO())
           .select(new ArraySink()))
           .getArray();
         DAO userCapabilityJunctionDAO = ((DAO) x.get("userCapabilityJunctionDAO"))

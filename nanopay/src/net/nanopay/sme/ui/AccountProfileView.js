@@ -117,12 +117,12 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'ONE_BUSINESS_MSG', message: `You're part of only one business.` }
+    { name: 'ONE_BUSINESS_MSG', message: `You're part of only one business` }
   ],
 
   methods: [
     function initE() {
-      var dao = this.menuDAO.orderBy(this.Menu.ORDER)
+      var dao = this.menuDAO
           .where(this.STARTS_WITH(this.Menu.ID, 'sme.accountProfile'));
 
       var self = this;

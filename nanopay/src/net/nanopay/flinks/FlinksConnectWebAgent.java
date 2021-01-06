@@ -54,8 +54,6 @@ public class FlinksConnectWebAgent
       FlinksAuthRequest authRequest = new FlinksAuthRequest.Builder(x)
           .setLoginId(loginId)
           .setLanguage("en")
-          .setWithTransactions(false)
-          .setWithBalance(false)
           .build();
 
       URL url = new URL(FLINKS_HOST);

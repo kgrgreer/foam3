@@ -24,7 +24,8 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.tx.bmo.BmoFormatUtil',
     'java.time.LocalDate',
-    'foam.nanos.logger.Logger'
+    'foam.nanos.logger.Logger',
+    'foam.core.ValidationException'
   ],
 
   implements: [
@@ -85,7 +86,7 @@ foam.CLASS({
       type: 'Void',
       javaCode: `
       if ( this.getAmount() > 9999999999L ) {
-        throw new RuntimeException("Transaction amount is larger than the max.");
+        throw new ValidationException("Transaction amount is larger than the max.");
       }
       
       if ( this.getClientName().length() > 29 ) {
@@ -94,7 +95,7 @@ foam.CLASS({
       }
   
       if ( this.getReferenceNumber().length() > 19 ) {
-        throw new RuntimeException("Transaction reference number is longer than 19 char.");
+        throw new ValidationException("Transaction reference number is longer than 19 char.");
       }
       `
     },

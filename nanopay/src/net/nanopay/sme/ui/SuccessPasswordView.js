@@ -20,10 +20,11 @@ foam.CLASS({
     name: 'SuccessPasswordView',
     extends: 'foam.u2.View',
 
-    documentation: 'Ablii Forgot Password Success View',
+    documentation: 'Forgot Password Success View',
 
     imports: [
-      'stack'
+      'stack',
+      'theme'
     ],
 
     requires: [
@@ -38,7 +39,18 @@ foam.CLASS({
         height: 100%;
         width: 100%;
       }
-  
+      ^top-bar {
+        background: /*%LOGOBACKGROUNDCOLOUR%*/ #202341;
+        width: 100%;
+        height: 12vh;
+        border-bottom: solid 1px #e2e2e3;
+      }
+      ^top-bar img {
+        height: 8vh;
+        padding-top: 2vh;
+        display: block;
+        margin: 0 auto;
+      }
       ^ .Message-Container{
         width: 330px;
         height: 215px;
@@ -46,9 +58,8 @@ foam.CLASS({
         padding-top: 5px;
         margin: auto;
       }
-  
       ^ .Forgot-Password{
-        font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
         font-size: 30px;
         font-weight: bold;
         line-height: 48px;
@@ -57,23 +68,20 @@ foam.CLASS({
         color: /*%BLACK%*/ #1e1f21;
         text-align: center;
         font-weight: 900;
-        margin-bottom: 8px;
+        margin-bottom: 90px;
         padding-top: 160px;
       }
-  
       ^ p{
         display: inline-block;
       }
-  
       ^ .link{
         margin-left: 2px;
         cursor: pointer;
       }
-  
       ^ .Instructions-Text{
         height: 16px;
         height: 24px;
-        font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
         font-size: 16px;
         font-weight: normal;
         font-style: normal;
@@ -83,11 +91,10 @@ foam.CLASS({
         text-align: center;
         color: #525455;
       }
-  
       ^ .Email-Text{
         width: 182px;
         height: 16px;
-        font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
         font-weight: 300;
         letter-spacing: 0.2px;
         text-align: left;
@@ -97,7 +104,6 @@ foam.CLASS({
         margin-left: 0px;
         margin-right: 288px;
       }
-  
       ^ .input-Box{
         width: 100%;
         height: 40px;
@@ -107,7 +113,7 @@ foam.CLASS({
         padding-left: 8px;
         padding-right: 8px;
         margin: 0px;
-        font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
         font-size: 14px;
         text-align: left;
         color: /*%BLACK%*/ #1e1f21;
@@ -118,7 +124,6 @@ foam.CLASS({
         border: solid 1px #8e9090;
         margin-bottom: 32px;
       }
-  
       ^ .Next-Button{
         width: 168px;
         height: 40px;
@@ -130,7 +135,7 @@ foam.CLASS({
         margin-top: 10px;
         text-align: center;
         color: #ffffff;
-        font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
         font-size: 16px;
         line-height: 2.86;
         cursor: pointer;
@@ -141,45 +146,38 @@ foam.CLASS({
         border: solid 1px #4a33f4;
         background-color: #604aff;
       }
-
-      ^ .top-bar {
-        width: 100%;
-        height: 64px;
-        border-bottom: solid 1px #e2e2e3
-    }
-
-    ^ .top-bar img {
-      height: 25px;
-      margin-top: 20px;
-    }
+      ^link {
+        color: /*%PRIMARY3%*/ #604aff;
+        cursor: pointer;
+        text-align: center;
+        padding-top: 1.5vh;
+      }
     `,
 
     messages: [
-      { name: 'INSTRUCTIONS', message: 'Successfully reset password!' },
-      { name: 'RESET_PASSWORD', message: 'Reset you password' },
+      { name: 'INSTRUCTIONS', message: 'Your password has been reset successfully' },
+      { name: 'RESET_PASSWORD', message: 'Password reset' },
       { name: 'BACK_TO', message: 'Back to sign in' }
     ],
 
     methods: [
       function initE() {
         this.SUPER();
-        var self = this;
+        const self = this;
+        const logo = this.theme.largeLogo || this.theme.logo;
 
         this
           .addClass(this.myClass())
           .start()
-          .start()
-                .addClass('top-bar')
-                .start('img')
-                    .attr('src', 'images/ablii-wordmark.svg')
-                .end()
-            .end()
-            .start().addClass('Forgot-Password').add(this.RESET_PASSWORD).end()
-            .start().addClass('Message-Container')
-              .start().addClass('Instructions-Text').add(this.INSTRUCTIONS).end()
-              .br()
+            .addClass(self.myClass('top-bar'))
+            .start('img').attr('src', logo).end()
+          .end()
+          .start().addClass('Forgot-Password').add(this.RESET_PASSWORD).end()
+          .start().addClass('Message-Container')
+            .start().addClass('Instructions-Text').add(this.INSTRUCTIONS).end()
+            .br()
               .start()
-                .add(this.BACK_TO).addClass('sme').addClass('link')
+                .add(this.BACK_TO).addClass(self.myClass('link'))
                 .on('click', function() {
                   window.location.href = '#';
                   self.stack.push({ class: 'foam.u2.view.LoginView', mode_: 'SignIn' }, self);

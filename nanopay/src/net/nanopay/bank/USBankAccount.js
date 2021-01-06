@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'USBankAccount',
-  label: 'US Bank Account',
+  label: 'United States',
   extends: 'net.nanopay.bank.BankAccount',
 
   imports: [
@@ -34,6 +34,8 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.nanos.iban.IBANInfo',
+    'foam.nanos.iban.ValidationIBAN',
     'foam.util.SafetyUtil',
     'net.nanopay.model.Branch',
     'java.util.regex.Pattern'
@@ -43,18 +45,23 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'accountDetails',
-      title: function(forContact) {
-        return forContact ? this.SECTION_DETAILS_TITLE_CONTACT : this.SECTION_DETAILS_TITLE_VOID;
-      },
-      subTitle: `Connect to the account without signing in to online banking.
-          Please ensure the details are entered properly.`
+      name: 'accountInformation',
+      title: function() {
+        return this.forContact ? '' : this.SECTION_DETAILS_TITLE_VOID;
+      }
     },
     {
       name: 'pad',
-      title: `Connect using a void check`,
-      subTitle: `Connect to your account without signing in to online banking.
-          Please ensure your details are entered properly.`,
+      title: function() {
+        return this.plaidResponseItem ?
+          this.SECTION_DETAILS_TITLE_PLAID :
+          this.SECTION_DETAILS_TITLE_VOID;
+      },
+      subTitle: function() {
+        return this.plaidResponseItem ?
+          this.SECTION_DETAILS_SUBTITLE_PLAID :
+          this.SECTION_DETAILS_SUBTITLE_VOID;
+      },
       isAvailable: function(forContact) {
         return ! forContact;
       }
@@ -76,14 +83,16 @@ foam.CLASS({
 
   messages: [
     { name: 'DROP_ZONE_TITLE', message: 'DRAG & DROP YOUR VOID CHECK OR STATEMENT HERE' },
-    { name: 'ROUTING_NUMBER_REQUIRED', message: 'Routing number required.' },
-    { name: 'ROUTING_NUMBER_INVALID', message: 'Routing number must be 9 digits long.' },
-    { name: 'ACCOUNT_NUMBER_REQUIRED', message: 'Account number required.' },
-    { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number must be between 6 and 17 digits long.' },
-    { name: 'IMAGE_REQUIRED', message: 'Please attach a void check or a 3 month bank statement.' },
-    { name: 'ADD_SUCCESSFUL', message: 'Bank Account added successfully!' },
-    { name: 'SECTION_DETAILS_TITLE_CONTACT', message: 'Add contact bank account' },
-    { name: 'SECTION_DETAILS_TITLE_VOID', message: 'Connect using a void check' }
+    { name: 'ROUTING_NUMBER_REQUIRED', message: 'Routing number required' },
+    { name: 'ROUTING_NUMBER_INVALID', message: 'Routing number must be 9 digits long' },
+    { name: 'ACCOUNT_NUMBER_REQUIRED', message: 'Account number required' },
+    { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number must be between 6 and 17 digits long' },
+    { name: 'IMAGE_REQUIRED', message: 'Please attach a void check or a 3 month bank statement' },
+    { name: 'ADD_SUCCESSFUL', message: 'Bank Account successfully added' },
+    { name: 'SECTION_DETAILS_TITLE_VOID', message: 'Connect using a void check' },
+    { name: 'SECTION_DETAILS_SUBTITLE_VOID', message: 'Connect to your account without signing in to online banking. Please ensure your details are entered properly.' },
+    { name: 'SECTION_DETAILS_TITLE_PLAID', message: 'Finish adding your bank account' },
+    { name: 'SECTION_DETAILS_SUBTITLE_PLAID', message: 'Please confirm some banking details to securely interact with your account.' }
   ],
 
   properties: [
@@ -115,14 +124,11 @@ foam.CLASS({
       },
       javaGetter: `
         return getAccountNumber();
-      `
+      `,
+      validateObj: function(iban) {
+      }
     },
     {
-      name: 'bankCode',
-      visibility: 'HIDDEN'
-    },
-    { // REVIEW: remove
-      class: 'String',
       name: 'institutionNumber',
       hidden: true
     },
@@ -131,12 +137,13 @@ foam.CLASS({
       class: 'String',
       label: '',
       value: 'images/USA-Check.png',
-      section: 'accountDetails',
+      section: 'accountInformation',
       visibility: 'RO',
       transient: true,
       view: function(_, X) {
         return {
-          class: 'foam.u2.tag.Image'
+          class: 'foam.u2.tag.Image',
+          displayWidth: '100%'
         };
       }
     },
@@ -144,17 +151,15 @@ foam.CLASS({
       class: 'foam.nanos.fs.FileProperty',
       name: 'voidCheckImage',
       documentation: 'void check image for this bank account',
+      visibility: function(forContact) {
+        return forContact ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      }
     },
     {
       name: 'branchId',
-      label: 'ACH Routing Number',
-      section: 'accountDetails',
+      label: 'Routing Number',
+      section: 'accountInformation',
       updateVisibility: 'RO',
-      view: {
-        class: 'foam.u2.tag.Input',
-        placeholder: '123456789',
-        onKey: true
-      },
       gridColumns: 6,
       preSet: function(o, n) {
         if ( n === '' ) return n;
@@ -175,7 +180,8 @@ foam.CLASS({
     },
     {
       name: 'accountNumber',
-      label: 'ACH Account Number',
+      label: 'Account Number',
+      section: 'accountInformation',
       updateVisibility: 'RO',
       postSet: function(o, n) {
         this.padCapture.accountNumber = n;
@@ -217,7 +223,7 @@ foam.CLASS({
       class: 'String',
       name: 'wireRouting',
       documentation: 'The ACH wire routing number for the account, if available.',
-      section: 'accountDetails',
+      section: 'accountInformation',
       visibility: 'HIDDEN'
     },
     {
@@ -257,12 +263,15 @@ foam.CLASS({
       name: 'supportingDocuments',
       label: `Please upload either an image of a void check or a bank statement from within
           the past 3 months to verify ownership of this bank account.`,
-      section: 'accountDetails',
+      section: 'accountInformation',
       documentation: 'Supporting documents to verify bank account',
-      validateObj: function(supportingDocuments, plaidResponseItem) {
-        if ( supportingDocuments.length === 0 && ! plaidResponseItem ) {
+      validateObj: function(supportingDocuments, plaidResponseItem, forContact) {
+        if ( supportingDocuments.length === 0 && ! plaidResponseItem && ! forContact ) {
           return this.IMAGE_REQUIRED;
         }
+      },
+      visibility: function(forContact) {
+        return forContact ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
       view: function(_, X) {
         return {
@@ -285,7 +294,7 @@ foam.CLASS({
       of: 'net.nanopay.model.USPadCapture',
       name: 'padCapture',
       section: 'pad',
-      storageTransient: true,
+      transient: true,
       label: '',
       updateVisibility: 'HIDDEN',
       factory: function() {
@@ -293,20 +302,37 @@ foam.CLASS({
           country: this.country,
           firstName: this.subject.realUser.firstName,
           lastName: this.subject.realUser.lastName,
-          companyName: this.subject.user.businessName,
+          companyName: this.subject.user.organization || this.subject.user.businessName,
           address: this.subject.user.address
         }, this);
       },
       view: function(_, X) {
-        return foam.u2.view.FObjectView.create({
-          of: net.nanopay.model.USPadCapture
+        return foam.u2.MultiView.create({
+          views: [
+            {
+              class: 'foam.u2.view.FObjectView',
+              of: 'net.nanopay.model.USPadCapture'
+            },
+            {
+              // displays us bank account capabilities
+              class: 'foam.nanos.crunch.ui.CapableView',
+              capableObj: X.data.padCapture
+            }
+          ]
         }, X);
+      }
+    },
+    {
+      name: 'swiftCode',
+      visibility: 'HIDDEN',
+      required: false,
+      validateObj: function(swiftCode) {
       }
     }
   ],
 
   methods: [
-    async function save() {
+    async function save(stack_back) {
       try {
         await this.padCaptureDAO.put(this.padCapture);
       } catch (e) {
@@ -322,7 +348,7 @@ foam.CLASS({
             let message = error.display_message !== '' ? error.display_message : error.error_code;
             this.notify(message, '', this.LogLevel.ERROR, true);
           }
-          if ( this.stack ) this.stack.back();
+          if ( this.stack && stack_back ) this.stack.back();
         } catch (e) {
           this.notify(e.message, '', this.LogLevel.ERROR, true);
         }

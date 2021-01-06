@@ -60,10 +60,10 @@ foam.CLASS({
     { name: 'MISSING_EMAIL', message: 'Missing Email' },
     { name: 'MISS_ADDRESS', message: 'Missing Business Address' },
     { name: 'OTHER', message: 'Other' },
-    { name: 'EXISTING_USER_CONTACT', message: 'There is a contact who is also a user with that email.' },
-    { name: 'EXISTING_CONTACT', message: 'There is an existing contact with that email.' },
-    { name: 'EXISTING_USER', message: 'There is already a user with that email.' },
-    { name: 'EXISTING_USER_MULTI', message: 'The user belongs to multiple businesses.' },
+    { name: 'EXISTING_USER_CONTACT', message: 'There is a contact who is also a user with that email' },
+    { name: 'EXISTING_CONTACT', message: 'There is an existing contact with that email' },
+    { name: 'EXISTING_USER', message: 'There is already a user with that email' },
+    { name: 'EXISTING_USER_MULTI', message: 'The user belongs to multiple businesses' },
     { name: 'REQUIRE_BUSINESS_1', message: 'These contacts have been added to ' },
     { name: 'REQUIRE_BUSINESS_2', message: ' but require a business address' }
 
@@ -204,7 +204,7 @@ foam.CLASS({
       }
 
       let columns = [
-        { header: 'Business', dataKey: 'businessName' },
+        { header: 'Business', dataKey: 'organization' },
         { header: 'Name', dataKey: 'name' },
         { header: 'Message', dataKey: 'message' }
       ];
@@ -215,7 +215,7 @@ foam.CLASS({
 
       for ( let item of mismatch ) {
         data.push({
-          businessName: item.existContact.businessName,
+          organization: item.existContact.organization,
           name: item.existContact.firstName + ' ' + item.existContact.lastName,
           message: this.getMessage(item.resultCode.name)
         });
@@ -233,7 +233,7 @@ foam.CLASS({
 
     function createContactWarningTables(contactErrors, doc) {
       let columns = [
-        { header: 'Business', dataKey: 'businessName' },
+        { header: 'Business', dataKey: 'organization' },
         { header: 'Name', dataKey: 'name' }
       ];
       for ( let key of Object.keys(contactErrors) ) {
@@ -262,7 +262,7 @@ foam.CLASS({
       let printTitle = true;
       let removeLastItem = false;
       let columns = [
-        { header: 'Business', dataKey: 'businessName' },
+        { header: 'Business', dataKey: 'organization' },
         { header: 'Name', dataKey: 'name' }
       ];
       for ( key of Object.keys(contactErrors) ) {

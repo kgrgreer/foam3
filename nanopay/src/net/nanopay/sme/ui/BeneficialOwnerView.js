@@ -49,10 +49,10 @@ foam.CLASS({
   `,
 
   messages: [
-    { name: 'TITLE', message: 'Beneficial owners' },
-    { name: 'LEGAL_NAME_LABEL', message: 'Legal name' },
+    { name: 'TITLE', message: 'Owners' },
+    { name: 'LEGAL_NAME_LABEL', message: 'Name' },
     { name: 'JOB_TITLE_LABEL', message: 'Job title' },
-    { name: 'ADDRESS_LABEL', message: 'Residential address' },
+    { name: 'ADDRESS_LABEL', message: 'Address' },
     { name: 'DATE_OF_BIRTH_LABEL', message: 'Date of birth' },
     { name: 'OWNER_COUNT_LABEL', message: 'Beneficial owner' }
   ],

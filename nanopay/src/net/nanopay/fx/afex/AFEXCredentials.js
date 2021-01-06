@@ -19,6 +19,9 @@ foam.CLASS({
   package: 'net.nanopay.fx.afex',
   name: 'AFEXCredentials',
 
+  implements: [
+    'foam.nanos.auth.ServiceProviderAware'
+  ],
   //axioms: [foam.pattern.Singleton.create()],
 
   properties: [
@@ -28,7 +31,8 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'apiKey'
+      name: 'apiKey',
+      documentation: 'Default API key, used mostly for onboarding related api calls'
     },
     {
       class: 'String',
@@ -74,6 +78,18 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.ServiceProvider',
       name: 'spid'
+    },
+    {
+      class: 'String',
+      name: 'quoteAndTradeApiKey'
+    },
+    {
+      class: 'String',
+      name: 'instantPaymentApiKey'
+    },
+    {
+      class: 'String',
+      name: 'fundingBalanceApiKey'
     },
   ]
 });

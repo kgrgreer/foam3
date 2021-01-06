@@ -1,1 +1,7 @@
-p({"class":"foam.nanos.auth.Group","id":"api-base","enabled":true,"description":"API Base Group","defaultMenu":"integration.api-dig","theme":"06B35BA7-C672-4DBC-8788-14922B704DBF"})
+p({
+    "class":"foam.nanos.auth.Group",
+    "id":"api-base",
+    "enabled":true,
+    "description":"API Base Group",
+    "defaultMenu":"integration.api-dig"
+})

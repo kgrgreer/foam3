@@ -21,13 +21,37 @@ foam.CLASS({
   extends: 'net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability',
 
   messages: [
-    { name: 'CERTIFY_OWNER_PERCENTAGE', message: 'You must certify that all beneficial owners with 25% or more ownership have been listed.' }
+    { name: 'CERTIFY_OWNER_PERCENTAGE', message: 'Certification required' },
+    { name: 'TITLE_MSG', message: 'the people who own 25% or more of the business, either directly or indirectly, have been listed and their information is accurate' },
+
   ],
 
+  sections: [
+    {
+      name: 'reviewAgreementDocumentsSection',
+      title: 'Certify percentage of ownership',
+      navTitle: 'Terms and Conditions',
+      permissionRequired: true
+    },
+  ],
   properties: [
     {
       name: 'checkboxText',
-      value: 'I certify that any beneficial owners with 25% or more ownership have been listed and the information included about them is accurate.'
+      factory: function() {
+        return this.I_CERTIFY;
+      }
+    },
+    {
+      name: 'title',
+      factory: function() {
+        return this.TITLE_MSG;
+      }
+    },
+    {
+      name: 'fileId',
+      factory: function() {
+        return '488eedba-b34a-4b61-9f6d-1c501f13dcc5';
+      }
     },
     {
       name: 'agreement',

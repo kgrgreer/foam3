@@ -52,6 +52,10 @@ foam.CLASS({
     'net.nanopay.ui.wizard.WizardOverview'
   ],
 
+  imports: [
+    'translationService'
+  ],
+
   axioms: [
     { class: 'net.nanopay.ui.wizard.WizardCssAxiom' },
   ],
@@ -78,7 +82,10 @@ foam.CLASS({
     },
 
     // Array of ViewSpecs.
-    'views',
+    {
+      name: 'views',
+      class: 'Array'
+    },
 
     // The stack that is handled by this Wizard View.
     {
@@ -121,7 +128,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'hasExitOption',
-      value: false
+      value: true
     },
 
     // If true, displays the Next Action
@@ -301,7 +308,7 @@ foam.CLASS({
                   if ( hasSaveOption ) {
                     return this.E()
                       .tag(self.SAVE, {
-                        label$: self.saveLabel$,
+                        label: self.translationService.getTranslation(foam.locale, `${self.saveLabel$.prop.forClass_}.${foam.String.constantize(self.saveLabel$.prop.name)}.value`),
                         buttonStyle: 'SECONDARY',
                         size: 'LARGE'
                       });
@@ -343,7 +350,7 @@ foam.CLASS({
         self.position = this.subStack.pos;
       }
     },
-    
+
     function onDragOver(e) {
       e.preventDefault();
     },
@@ -383,7 +390,7 @@ foam.CLASS({
         return hasNextOption;
       },
       code: function(X) {
-        if ( this.position == this.views.length - 1 ) { // If last page
+        if ( position == this.views.length - 1 ) { // If last page
           this.onComplete ? this.onComplete(this) : X.stack.back();
           return;
         }
@@ -414,6 +421,9 @@ foam.CLASS({
       name: 'otherOption',
       isAvailable: function(hasOtherOption) {
         return hasOtherOption;
+      },
+      code: function(X) {
+        return;
       }
     },
   ]

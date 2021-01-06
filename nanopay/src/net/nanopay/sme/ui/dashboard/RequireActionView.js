@@ -85,9 +85,10 @@ foam.CLASS({
       name: 'canPayInvoice',
       documentation: `Check user's ability to pay.`,
       factory: function() {
-        this.auth.check(null, 'invoice.pay').then((p) => {
-          this.canPayInvoice = p;
-        });
+        Promise.all([this.auth.check(null, 'business.invoice.pay'), this.auth.check(null, 'user.invoice.pay')])
+          .then((results) => {
+            this.canPayInvoice = results[0] && results[1];
+          });
       }
     },
     {

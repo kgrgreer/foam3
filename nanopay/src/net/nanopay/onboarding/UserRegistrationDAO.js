@@ -33,10 +33,13 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.auth.UserUserJunction',
     'foam.nanos.auth.token.Token',
+    'foam.nanos.crunch.AgentCapabilityJunction',
+    'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.nanos.logger.Logger',
     'foam.util.Auth',
     'foam.util.SafetyUtil',
     'net.nanopay.contacts.Contact',
+    'net.nanopay.crunch.onboardingModels.SigningOfficerQuestion',
     'net.nanopay.model.Business',
     'net.nanopay.model.BusinessUserJunction',
     'net.nanopay.model.Invitation',
@@ -51,13 +54,13 @@ foam.CLASS({
 
   messages: [
     { name: 'EMAIL_REQUIRED_ERROR_MSG', message: 'Email required' },
-    { name: 'UNKNOWN_TOKEN_ERROR_MSG', message: 'Unknown token.' },
-    { name: 'INVITATION_EXPIRED_ERROR_MSG', message: 'Invitation expired. Please request a new one.' },
-    { name: 'EMAIL_NOT_MATCH_INVITED_EMAIL_ERROR_MSG', message: 'Email does not match invited email.' },
-    { name: 'CANNOT_PROCESS_WO_INVITED_EMAIL_ERROR_MSG', message: 'Cannot process without an invited email.' },
-    { name: 'BUSINESS_NOT_EXIST_ERROR_MSG', message: 'Business doesn\'t exist.' },
-    { name: 'BUSINESS_INVITATION_PROCESSED_WHEN_NOT_IN_SENT_STATUS_ERROR_MSG', message: 'Business invitation is not in SENT status but is trying to get processed.' },
-    { name: 'CAD_US_SUPPORTED_ONLY_ERROR_MSG', message: 'Only Canadian and US businesses supported at this time.' },
+    { name: 'UNKNOWN_TOKEN_ERROR_MSG', message: 'Unknown token' },
+    { name: 'INVITATION_EXPIRED_ERROR_MSG', message: 'Invitation expired. Please request a new one' },
+    { name: 'EMAIL_NOT_MATCH_INVITED_EMAIL_ERROR_MSG', message: 'Email does not match invited email' },
+    { name: 'CANNOT_PROCESS_WO_INVITED_EMAIL_ERROR_MSG', message: 'Cannot process without an invited email' },
+    { name: 'BUSINESS_NOT_EXIST_ERROR_MSG', message: 'Business doesn\'t exist' },
+    { name: 'BUSINESS_INVITATION_PROCESSED_WHEN_NOT_IN_SENT_STATUS_ERROR_MSG', message: 'Business invitation is not in SENT status but is trying to get processed' },
+    { name: 'CAD_US_SUPPORTED_ONLY_ERROR_MSG', message: 'Only Canadian and US businesses supported at this time' },
     { name: 'USER_ALREADY_EXISTS_ERROR_MSG', message: 'User with same email address already exists: ' }
   ],
 
@@ -81,6 +84,10 @@ foam.CLASS({
     {
       class: 'foam.dao.DAOProperty',
       name: 'localBusinessDAO'
+    },
+    {
+      class: 'foam.dao.DAOProperty',
+      name: 'userCapabilityJunctionDAO'
     }
   ],
 
@@ -97,6 +104,7 @@ foam.CLASS({
             setLocalBusinessDAO((DAO) x.get("localBusinessDAO"));
             setInvitationDAO((DAO) x.get("businessInvitationDAO"));
             setAgentJunctionDAO((DAO) x.get("agentJunctionDAO"));
+            setUserCapabilityJunctionDAO((DAO) x.get("userCapabilityJunctionDAO"));
           }    
         `
         );
@@ -195,13 +203,20 @@ foam.CLASS({
 
               // Get a context with the Business in it
               X businessContext = Auth.sudo(sysContext, business);
-
               if ( isSigningOfficer ) {
-                DAO signingOfficerJunctionDAO = (DAO) businessContext.get("signingOfficerJunctionDAO");
-                signingOfficerJunctionDAO.put_(businessContext, new BusinessUserJunction.Builder(businessContext)
-                  .setSourceId(business.getId())
-                  .setTargetId(user.getId())
-                  .build());
+                SigningOfficerQuestion soq = new SigningOfficerQuestion.Builder(x)
+                  .setIsSigningOfficer(true)
+                  .build();
+
+                AgentCapabilityJunction ucj = new AgentCapabilityJunction.Builder(businessContext)
+                  .setSourceId(user.getId())
+                  .setEffectiveUser(business.getId())
+                  .setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-0")
+                  .setStatus(CapabilityJunctionStatus.GRANTED)
+                  .setData(soq)
+                  .build();
+
+                getUserCapabilityJunctionDAO().inX(sysContext).put(ucj);
               }
 
               Invitation invitation = (Invitation) getInvitationDAO()

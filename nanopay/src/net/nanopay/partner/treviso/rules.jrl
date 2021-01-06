@@ -1,92 +1,111 @@
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"treviso-exchange-crunch-onboarding-rule",
-  "name":"Onboard Business to Brazil Exchange",
-  "documentation":"Rule to onboard business to Brazil Exchange if it has passed comliance.",
+  "id":"c1e2dbd5-75e0-4734-9c5e-ddd4247af774",
+  "name":"Treviso TED Transaction Notification",
   "priority":1,
-  "ruleGroup":"TrevisoCrunchOnboarding",
+  "ruleGroup":"Notifications",
+  "documentation":"Sends a notification to the user to make a TED transfer.",
+  "enabled":true,
+  "after":false,
+  "daoKey":"invoiceDAO",
+  "operation":3,
+  "predicate": {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"paymentMethod",
+        "propValue":{
+          "class":"net.nanopay.invoice.model.PaymentStatus",
+          "ordinal":9
+        },
+        "isNew":false
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"paymentMethod",
+        "propValue":{
+          "class":"net.nanopay.invoice.model.PaymentStatus",
+          "ordinal":4
+        }
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+        "propName":"paymentId",
+        "propValue": ""
+      }
+    ]
+  },
+  "action":{"class":"net.nanopay.partner.treviso.invoice.TrevisoNotificationRule"},
+  "saveHistory":false,
+  "lifecycleState":1,
+  "spid": "treviso"
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"38070d3a-7bac-4d7d-8240-d57c66ef6dbd",
+  "name":"Treviso SigningOfficerByDefaultRule",
+  "priority":1,
+  "ruleGroup":"TrevisoConfig",
+  "enabled":true,
+  "after":true,
+  "daoKey":"localUserDAO",
+  "operation":0,
+  "predicate": {
+    "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+    "of": "net.nanopay.model.Business"
+  },
+  "action":{"class":"net.nanopay.crunch.onboardingModels.SigningOfficerByDefaultRule"},
+  "saveHistory":false,
+  "spid": "treviso",
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"ae4aa9c1-2e62-41a2-b5e5-73e5a951ce15",
+  "name":"Treviso addSigningOfficerRule",
+  "priority":100,
+  "ruleGroup":"crunchOnboarding",
+  "daoKey":"userCapabilityJunctionDAO",
+  "enabled":true,
+  "after":true,
+  "operation":3,
+  "predicate":{
+    "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+    "propName":"data",
+    "of":"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso"
+  },
+  "action":{"class":"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalDataOnPut"},
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"9cb36c96-c2e6-4c2a-8b38-f009d44c341a",
+  "name":"Treviso TrevisoSendEmailToAllRule",
+  "priority":1,
+  "ruleGroup":"Notifications",
+  "documentation":"When the business account is approved, send emails to all directors, signing officers who have signed contratos de câmbio.",
+  "enabled":true,
+  "after":true,
   "daoKey":"userCapabilityJunctionDAO",
   "operation":3,
-  "after":true,
-  "predicate": {
-    "class": "foam.mlang.predicate.And",
-    "args": [
-      {
-        "class": "net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
-        "status": 1,
-        "statusChanged": false,
-        "category": "onboarding"
-      }
-    ]
-  },
-  spid: "treviso",
-  "asyncAction":{ "class":"net.nanopay.country.br.crunch.ExchangeServiceOnboardingRule" },
-  "enabled":false,
-  "saveHistory":true,
-  "lifecycleState":1
-})
-
-p({
-  "class":"foam.nanos.ruler.Rule",
-  "id":"fepweb-onboarding-rule",
-  "name":"Onboard Business to FepWeb",
-  "documentation":"Rule to onboard business to FepWeb if it has passed compliance.",
-  "priority":100,
-  "ruleGroup":"FEPWebOnboarding",
-  "daoKey":"localUserDAO",
-  "operation":3,
-  "after":true,
-  "predicate": {
-    "class": "net.nanopay.meter.compliance.ruler.predicate.BusinessCompliancePassed"
-  },
-  "spid": "treviso",
-  "asyncAction":{ "class":"net.nanopay.partner.treviso.FepWebOnboardingRule" },
-  "enabled":false,
-  "saveHistory":true,
-  "lifecycleState":1
-})
-
-p({
-  "class":"foam.nanos.ruler.Rule",
-  "id":"fepweb-update-user-rule",
-  "name":"FepWeb Update User",
-  "priority":100,
-  "ruleGroup":"FEPWebOnboarding",
-  "documentation":"Rule to update the user information to FepWeb when it is changed by Treviso agents",
-  "daoKey":"localUserDAO",
-  "operation":1,
-  "after":true,
   "predicate":{
-    "class": "foam.mlang.predicate.Or",
-    "args": [
+    "class":"foam.mlang.predicate.And",
+    "args":[
       {
-        "class": "foam.nanos.ruler.predicate.PropertyChangePredicate",
-        "propName": "address"
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"targetId",
+        "propValue":"554af38a-8225-87c8-dfdf-eeb15f71215f-20",
       },
       {
-        "class": "foam.mlang.predicate.And",
-        "args": [
-          {
-            "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
-            "of": "net.nanopay.model.Business"
-          },
-          {
-            "class": "foam.nanos.ruler.predicate.PropertyChangePredicate",
-            "propName": "businessName"
-          }
-        ]
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"status",
+        "propValue":{"class":"foam.nanos.crunch.CapabilityJunctionStatus","ordinal":1}
       },
-      {
-        "class": "foam.nanos.ruler.predicate.PropertyChangePredicate",
-        "propName": "legalName"
-      }
     ]
   },
-  "asyncAction":{
-    "class": "net.nanopay.partner.treviso.FepWebUserUpdatingRule"
-  },
-  "enabled":false,
-  "saveHistory":true,
-  "spid": "treviso",
-  "lifecycleState":1
+  "action":{"class":"net.nanopay.partner.treviso.TrevisoSendEmailToAllRule"},
+  "saveHistory":false,
+  "lifecycleState":1,
+  "spid": "treviso"
 })

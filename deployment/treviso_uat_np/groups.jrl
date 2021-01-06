@@ -1,0 +1,15 @@
+// test group
+p({
+  class:"foam.nanos.auth.Group",
+  id:"business2005.employee",
+  parent:"sme",
+  defaultMenu:"sme.accountProfile.switch-business",
+  displayName:"Employee"
+})
+p({
+  class:"foam.nanos.auth.Group",
+  id:"business2005.admin",
+  parent:"business2005.employee",
+  defaultMenu:"sme.accountProfile.switch-business",
+  displayName:"Admin"
+})

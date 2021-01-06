@@ -33,10 +33,11 @@ foam.CLASS({
     'foam.util.Emails.EmailsUtility',
     'net.nanopay.contacts.Contact',
     'net.nanopay.contacts.ContactStatus',
+    'net.nanopay.model.Business',
     'net.nanopay.model.Invitation',
     'net.nanopay.model.InvitationStatus',
     'net.nanopay.partners.ui.PartnerInvitationNotification',
-    
+
     'java.io.UnsupportedEncodingException',
     'java.net.URLEncoder',
     'java.nio.charset.StandardCharsets',
@@ -45,7 +46,8 @@ foam.CLASS({
     'java.util.Date',
     'java.util.HashMap',
     'java.util.Map',
-    'java.util.UUID'
+    'java.util.UUID',
+    'foam.util.SafetyUtil'
   ],
 
   axioms: [
@@ -55,7 +57,7 @@ foam.CLASS({
         cls.extras.push(`
           public SendInvitationDAO(X x, DAO delegate) {
             super(x, delegate);
-          }   
+          }
         `
         );
       }
@@ -98,7 +100,16 @@ foam.CLASS({
             // Update the contact's status to invited.
             DAO contactDAO = (DAO) x.get("localContactDAO");
             Contact recipient = (Contact) contactDAO.find(invite.getInviteeId()).fclone();
-            recipient.setSignUpStatus(ContactStatus.NOT_CONNECTED);
+
+            if ( recipient.getBusinessId() != 0 ) {
+              Business business = (Business) getDelegate().inX(x).find(recipient.getBusinessId());
+              if ( business != null ) {
+                recipient.setSignUpStatus(ContactStatus.READY);
+              }
+            } else if ( ! SafetyUtil.isEmpty(recipient.getBankAccount()) ) {
+              recipient.setSignUpStatus(ContactStatus.READY);
+            }
+
             contactDAO.put(recipient);
           }
 

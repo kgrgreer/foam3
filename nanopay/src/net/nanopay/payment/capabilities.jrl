@@ -126,27 +126,3 @@ p({
   "enabled":true
 })
 
-p({
-  "class": "net.nanopay.payment.PaymentProviderCorridor",
-  "id":"554af38a-8125-87c8-dfdf-eeb15ftrevisobr-ca",
-  "name":"BR-CA (Treviso Corridor)",
-  "provider": "Treviso",
-  "sourceCountry":"BR",
-  "targetCountry":"CA",
-  "sourceCurrencies":["BRL"],
-  "targetCurrencies":["CAD"],
-  "description": "BR to CA corridor via Treviso",
-  "enabled":true
-})
-p({
-  "class": "net.nanopay.payment.PaymentProviderCorridor",
-  "id":"554af38a-8125-87c8-dfdf-eeb1trevisobr-us",
-  "name":"BR-US (Treviso Corridor)",
-  "provider": "Treviso",
-  "sourceCountry":"BR",
-  "targetCountry":"US",
-  "sourceCurrencies":["BRL"],
-  "targetCurrencies":["USD"],
-  "description": "BR to US corridor via Treviso",
-  "enabled":true
-})

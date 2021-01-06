@@ -1,0 +1,3 @@
+p({class:"foam.nanos.auth.Group",id:"bpp-api",description:"BPP API group",parent:"external-api",defaultMenu:"view-accounts"})
+p({class:"foam.nanos.auth.Group",id:"bpp-api-session",description:"BPP API session group",parent:"external-api-session",defaultMenu:"view-users"})
+p({class:"foam.nanos.auth.Group",id:"bpp-dev",description:"BPP API development group",parent:"external-dev",defaultMenu:"view-accounts"})

@@ -18,15 +18,18 @@ import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
 import net.nanopay.fx.FXTransaction;
 import net.nanopay.invoice.model.Invoice;
+import net.nanopay.invoice.model.PaymentStatus;
 import net.nanopay.payment.PADTypeLineItem;
 import net.nanopay.tx.AbliiTransaction;
 import net.nanopay.tx.DigitalTransaction;
 import net.nanopay.tx.TransactionLineItem;
 import net.nanopay.tx.TransactionQuote;
 import net.nanopay.tx.Transfer;
+import net.nanopay.tx.bmo.cico.BmoInterTrustTransaction;
 import net.nanopay.tx.bmo.cico.BmoVerificationTransaction;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
+import net.nanopay.tx.cico.InterTrustTransaction;
 import net.nanopay.tx.cico.VerificationTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
@@ -101,10 +104,6 @@ public class TransactionTest
       AND(
         EQ(CABankAccount.OWNER, loaneeTester.getId()),
         INSTANCE_OF(CABankAccount.class)))).fclone();
-    loaneeTester_Dig = (DigitalAccount) (accDAO.find(
-      AND(
-        EQ(DigitalAccount.OWNER, loaneeTester.getId()),
-        INSTANCE_OF(DigitalAccount.class)))).fclone();
 
     loanerTester_CA = (CABankAccount) (accDAO.find(
       AND(
@@ -114,6 +113,8 @@ public class TransactionTest
       AND(
         EQ(DigitalAccount.OWNER, loanerTester.getId()),
         INSTANCE_OF(DigitalAccount.class)))).fclone();
+
+    loaneeTester_Dig = TransactionTestUtil.RetrieveDigitalAccount(x_, loaneeTester, "CAD", loanerTester_Dig);
   }
 
   public void testLoanTransaction(){
@@ -170,11 +171,10 @@ public class TransactionTest
     try {
       txnDAO.put(finalTxn);
       test(false,"Exception: try to exceed principal");
+    } catch (net.nanopay.tx.planner.UnableToPlanException e) {
+      test(true, "try to exceed principal");
     } catch (RuntimeException e) {
-      // test(e.getMessage().contains("Transaction Exceeds Loan Account Principal Limit"), "try to exceed principal");
-      test(e.getMessage().contains("Unable to find a plan for requested transaction") ||
-           e.getMessage().contains("Transaction Exceeds Loan Account Principal Limit"),
-           "try to exceed principal");
+      test(e.getMessage().contains("Transaction Exceeds Loan Account Principal Limit"), "try to exceed principal");
     }
 
     // test trying to repay more then borrowed
@@ -209,6 +209,7 @@ public class TransactionTest
       uSdigital = new DigitalAccount.Builder(x_)
         .setOwner(receiver_.getId())
         .setDenomination("USD")
+        .setTrustAccount("22")
         .build();
       uSdigital = (DigitalAccount) accDAO.put(uSdigital).fclone();
     }
@@ -261,7 +262,6 @@ public class TransactionTest
       .build();
     tq = (TransactionQuote) txnQuoteDAO.put(tq);
 
-    test(tq.getPlan().getIsQuoted(),"verification transaction was quoted");
     test(tq.getPlans().length == 1,"Only 1 plan is created for an Verification Transaction");
     test(tq.getPlan() instanceof VerificationTransaction,"transaction is class of verification transaction");
 
@@ -303,7 +303,7 @@ public class TransactionTest
     Transaction txn4 = txn3.getNext()[0];
     Transaction txn5 = txn4.getNext()[0];
     test(txn3 instanceof CITransaction, " 2nd child is of type "+txn3.getClass().getName()+" should be CITransaction");
-    test(txn4.getClass() == DigitalTransaction.class, " 3rd child is of type "+txn4.getClass().getName()+" should be DigitalTransaction");
+    test(txn4 instanceof DigitalTransaction," 3rd child is of type "+txn4.getClass().getName()+" should be DigitalTransaction");
     test(txn5 instanceof COTransaction, " 4th child is of type "+txn5.getClass().getName()+" should be COTransaction");
 
     test(txn3.getAmount()== txn5.getAmount(), "CI and CO transactions have same amount");
@@ -330,13 +330,13 @@ public class TransactionTest
     txn = (Transaction) txnDAO.put(txn).fclone();
     txn.setStatus(COMPLETED);
     txnDAO.put(txn);
-    
+
 
     txn = new Transaction();
     txn.setInvoiceId(inv.getId());
     txn.setStatus(TransactionStatus.PAUSED);
     txn.setAmount(333);
-    txn.setPayeeId(receiver_.getId());
+    txn.setPayeeId(receiver_.getId()); //NOTE SINCE USING PAYEE/PAYER IDS NOT ACCOUNTS, INTERTRUST CAN BE PLANNED.
     txn.setPayerId(sender_.getId());
     txn = (Transaction) txnDAO.put(txn).fclone();
 
@@ -345,8 +345,8 @@ public class TransactionTest
 
     test(txnNew.getAmount() == 333,"Amount not copied in LimitedClone");
     test(txnNew.getInvoiceId() == txn.getInvoiceId(),"Invoice IDs copied in LimitedClone");
-    test(txnNew.getReferenceData() == txn.getReferenceData(),"Reference Data copied in LimitedClone");
-    test(txnNew.getReferenceNumber().equals(txn.getReferenceNumber()),"Reference Number copied in LimitedClone");
+    test(txnNew.getExternalData() == txn.getExternalData(),"Reference Data copied in LimitedClone");
+    test(txnNew.getExternalInvoiceId().equals(txn.getExternalInvoiceId()),"External Invoice Id copied in LimitedClone");
     test(txnNew.getStatus() == txn.getStatus(),"Status copied in LimitedClone from "+txn.getStatus().getName() +" and "+ txnNew.getStatus().getName());
 
     int amount = txn.getTransfers().length;
@@ -363,8 +363,8 @@ public class TransactionTest
     test(txn.getTransfers().length == 4+amount, "2 more Transfers added successfully");
     txn.setStatus(TransactionStatus.PENDING_PARENT_COMPLETED);
     test( ! txn.canTransfer(x_,null), "Cannot transfer transaction in PENDING_PARENT_COMPLETED status");
-    txn.setStatus(TransactionStatus.PENDING);
-    test(! txn.canTransfer(x_, null), "Cannot transfer transaction if status is PENDING");
+    txn.setStatus(TransactionStatus.PENDING); //ENSURE WE ACCOUNT FOR POSSIBILITY OF INTERTRUST
+    test( ((txn instanceof DigitalTransaction) && (! txn.canTransfer(x_, null))) || ((txn instanceof InterTrustTransaction) && ( txn.canTransfer(x_, null))), "Cannot transfer transaction if status is PENDING");
     txnNew.setStatus(TransactionStatus.PENDING);
     test( ! txn.canTransfer(x_,txnNew),"Cannot transfer transaction in same status as old transaction");
   }
@@ -424,6 +424,7 @@ public class TransactionTest
       user.setLastName("Filth");
       user.setEmailVerified(true);
       user.setGroup("business");
+      user.setSpid("nanopay");
       user = (User) userDAO.put(user);
       user = (User) user.fclone();
     }
@@ -466,6 +467,7 @@ public class TransactionTest
     inv.setScheduledEmailSent(false);
     inv.setPayeeId(payee.getId());
     inv.setPayerId(payer.getId());
+    inv.setPaymentMethod(PaymentStatus.QUOTED);
     inv = (Invoice) invDAO.put(inv).fclone();
     return inv;
   }

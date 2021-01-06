@@ -1,0 +1,4 @@
+p({"class":"foam.nanos.auth.Permission","id":"requesttopay.create","description":"Permission to create request to pay."})
+p({"class":"foam.nanos.auth.Permission","id":"requesttopay.remove.*","description":"Permission to delete any request to pay."})
+p({"class":"foam.nanos.auth.Permission","id":"requesttopay.read.*","description":"Permission to read any request to pay."})
+p({"class":"foam.nanos.auth.Permission","id":"requesttopay.update.*","description":"Permission to update any request to pay."})

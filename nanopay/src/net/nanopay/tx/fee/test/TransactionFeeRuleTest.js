@@ -166,9 +166,10 @@ foam.CLASS({
         var passed = false;
         try {
           testTransactionFees(x, new long[0]);
+        } catch ( net.nanopay.tx.planner.UnableToPlanException e ) {
+          passed = true;
         } catch ( RuntimeException e ) {
-          passed = e.getMessage().contains("Fee not found. feeName: invalid_fee")
-            || e.getMessage().contains("Unable to find a plan for requested transaction");
+          passed = e.getMessage().contains("Fee not found. feeName: invalid_fee");
         }
         test(passed, "TransactionFeeRuleTest_fee_formula_with_invalid_fee throws runtime exception");
 
@@ -234,9 +235,10 @@ foam.CLASS({
         var passed = false;
         try {
           testTransactionFees(x, new long[0]);
+        } catch ( net.nanopay.tx.planner.UnableToPlanException e ) {
+          passed = true;
         } catch ( RuntimeException e ) {
-          passed = e.getMessage().contains("Found self recursion in fee")
-            || e.getMessage().contains("Unable to find a plan for requested transaction");
+          passed = e.getMessage().contains("Found self recursion in fee");
         }
         test(passed, "TransactionFeeRuleTest_prevent_self_recursion_fee_formula throws runtime exception");
 
@@ -328,9 +330,10 @@ foam.CLASS({
         var passed = false;
         try {
           testTransactionFees(x, new long[0]);
+        } catch ( net.nanopay.tx.planner.UnableToPlanException e ) {
+          passed = true;
         } catch ( RuntimeException e ) {
-          passed = e.getMessage().contains("Failed to evaluate formula:Divide(1.0, 0.0), result:Infinity")
-            || e.getMessage().contains("Unable to find a plan for requested transaction");
+          passed = e.getMessage().contains("Failed to evaluate formula:Divide(1.0, 0.0), result:Infinity");
         }
         test(passed, "TransactionFeeRuleTest_handle_divide_by_zero_in_fee_formula throws runtime exception");
 
@@ -352,9 +355,10 @@ foam.CLASS({
         var passed = false;
         try {
           testTransactionFees(x, new long[0]);
+        } catch ( net.nanopay.tx.planner.UnableToPlanException e ) {
+          passed = true;
         } catch ( RuntimeException e ) {
-          passed = e.getMessage().contains("Failed to evaluate formula:Divide(0.0, 0.0), result:NaN")
-            || e.getMessage().contains("Unable to find a plan for requested transaction");
+          passed = e.getMessage().contains("Failed to evaluate formula:Divide(0.0, 0.0), result:NaN");
         }
         test(passed, "TransactionFeeRuleTest_handle_zero_divide_by_zero_in_fee_formula throws runtime exception");
 
@@ -397,8 +401,8 @@ foam.CLASS({
         var sourceX = x.put("subject", subject);
 
         // fetch source account
-        var sourceAccount = TransactionTestUtil.RetrieveDigitalAccount(x, sourceUser);
-        var destinationAccount = TransactionTestUtil.RetrieveDigitalAccount(x, destinationUser);
+        var sourceAccount = TransactionTestUtil.RetrieveDigitalAccount(x, sourceUser,"CAD","11");
+        var destinationAccount = TransactionTestUtil.RetrieveDigitalAccount(x, destinationUser,"CAD","11");
 
         // create transaction
         var transaction = new Transaction();
@@ -478,13 +482,13 @@ foam.CLASS({
       javaCode: `
         var feeDAO = (DAO) x.get("feeDAO");
         feeDAO.where(
-          IN(Fee.ID, testFeeIds)
+          IN(Fee.ID, testFeeIds.toArray())
         ).removeAll();
         testFeeIds.clear();
 
         var ruleDAO = (DAO) x.get("localRuleDAO");
         ruleDAO.where(AND(
-          IN(Rule.ID, testFeeRuleIds),
+          IN(Rule.ID, testFeeRuleIds.toArray()),
           EQ(Rule.LIFECYCLE_STATE, LifecycleState.ACTIVE)
         )).removeAll();
         testFeeRuleIds.clear();

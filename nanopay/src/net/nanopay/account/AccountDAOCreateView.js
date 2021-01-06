@@ -46,7 +46,7 @@ foam.CLASS({
   messages: [
     {
       name: 'SUCCESS_MESSAGE',
-      message: 'An approval request has been created.'
+      message: 'An approval request has been created'
     }
   ],
 

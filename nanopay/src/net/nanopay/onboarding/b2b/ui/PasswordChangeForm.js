@@ -110,7 +110,7 @@ foam.CLASS({
     { name: 'emptyOriginal', message: 'Please enter your original password' },
     { name: 'emptyPassword', message: 'Please enter your new password' },
     { name: 'emptyConfirmation', message: 'Please re-enter your new password' },
-    { name: 'invalidPassword', message: 'Password must be at least 6 characters long.' },
+    { name: 'invalidPassword', message: 'Password must be at least 6 characters long' },
     { name: 'passwordMismatch', message: 'Passwords do not match' },
     { name: 'passwordSuccess', message: 'Password successfully updated' },
     { name: 'passwordDescription', message: 'Please change you password before you start using the nanopay platform.'}

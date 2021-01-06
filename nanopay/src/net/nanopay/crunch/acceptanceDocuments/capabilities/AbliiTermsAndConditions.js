@@ -25,7 +25,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'ACKNOWLEDGE_ABLII_TC', message: 'Must acknowledge the Terms and Conditions.' }
+    { name: 'ACKNOWLEDGE_ABLII_TC', message: 'Must acknowledge the Terms and Conditions' }
   ],
 
   properties: [
@@ -38,9 +38,9 @@ foam.CLASS({
       value: 'I agree to '
     },
     {
-      name: 'link',
-      expression: function(appConfig$termsAndCondLink) {
-        return appConfig$termsAndCondLink;
+      name: 'fileId',
+      factory: function() {
+        return  'eb21ba1e-7bfc-ba96-e9f6-9ad6a6ad83d2';
       }
     },
     {

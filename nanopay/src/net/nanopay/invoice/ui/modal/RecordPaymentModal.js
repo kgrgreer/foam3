@@ -66,9 +66,9 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Mark as Complete?' },
     { name: 'MSG_1', message: 'Once this invoice is marked as complete, it cannot be edited.' },
-    { name: 'MSG_INVALID_DATE', message: 'Please enter a valid paid date.' },
+    { name: 'MSG_INVALID_DATE', message: 'Please enter a valid paid date' },
     { name: 'MSG_RECEIVE_DATE', message: 'Please enter the date you received payment' },
-    { name: 'SUCCESS_MESSAGE', message: 'Invoice has been marked completed.' },
+    { name: 'SUCCESS_MESSAGE', message: 'Invoice has been marked completed' },
     { name: 'PLACEHOLDER_TEXT', message: '(i.e. What method of payment was it paid in?)' },
     { name: 'DATE_LABEL', message: 'Date Paid' },
     { name: 'AMOUNT_LABEL', message: 'Amount Paid' },
@@ -80,7 +80,7 @@ foam.CLASS({
       width: 330px;
       padding: 25px;
       margin: auto;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
     ^ .net-nanopay-sme-ui-CurrencyChoice {
       width: 90px;

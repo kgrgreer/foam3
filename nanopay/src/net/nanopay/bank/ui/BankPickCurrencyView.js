@@ -25,7 +25,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'capabilityDAO',
+    'sourceCorridorDAO',
     'countryDAO',
     'ctrl',
     'notify',
@@ -191,11 +191,9 @@ foam.CLASS({
   ^ h1 {
     margin-bottom: 0px;
   }
-  ^ .foam-u2-view-RichChoiceView-selection-view {
-    width: 200px;
-  }
   ^ .property-selectedCountry {
     display: inline-block;
+    width: 200px;
   }
   ^ .DefaultRowView-row {
     height: 30px;
@@ -209,7 +207,9 @@ foam.CLASS({
     height: 500px;
   }
   ^ .net-nanopay-sme-ui-SMEModal-content {
-    overflow: scroll;
+    box-sizing: border-box;
+    width: 600px;
+    overflow-y: scroll;
     padding: 30px;
   }
   `,
@@ -218,7 +218,7 @@ foam.CLASS({
     { name: 'TITLE', message: 'Add a new bank' },
     { name: 'SUB_TITLE', message: 'Connect through a banking partner below, or ' },
     { name: 'CONNECT_LABEL', message: 'connect with a void check' },
-    { name: 'BANK_ADDED', message: 'Your bank account was successfully added.' },
+    { name: 'BANK_ADDED', message: 'Your bank account was successfully added' },
     { name: 'CHOOSE_COUNTRY', message: 'Please select the originating country of the bank account you would like to add.' }
   ],
 
@@ -227,18 +227,13 @@ foam.CLASS({
       class: 'foam.dao.DAOProperty',
       name: 'permittedCountries',
       factory: function() {
-        let predicate = this.subject.user.cls_ != net.nanopay.model.Business ?
-            this.INSTANCE_OF(this.PaymentProviderCorridor) :
-            this.AND(
-              this.INSTANCE_OF(this.PaymentProviderCorridor),
-              this.EQ(this.PaymentProviderCorridor.SOURCE_COUNTRY, this.subject.user.address.countryId)
-            );
-
         return this.PromisedDAO.create({
           of: 'foam.nanos.auth.Country',
-          promise: this.capabilityDAO.where(predicate)
+          promise: this.sourceCorridorDAO
             .select(this.MAP(this.PaymentProviderCorridor.SOURCE_COUNTRY))
             .then((sink) => {
+              let countries = sink.delegate.array ? sink.delegate.array : [];
+              countries.push(this.subject.user.address.countryId);
               return this.countryDAO.where(this.IN(this.Country.CODE, sink.delegate.array));
             })
         });
@@ -261,6 +256,9 @@ foam.CLASS({
             }
           ]
         };
+      },
+      factory: function() {
+        return this.subject.user.address.countryId;
       }
     },
     {
@@ -319,7 +317,7 @@ foam.CLASS({
                   this.add(this.SMEModal.create().tag({
                     class: 'net.nanopay.account.ui.BankAccountWizard',
                     data: this.bankAccount,
-                    useSections: ['accountDetails', 'pad']
+                    useSections: ['accountInformation', 'pad']
                   }));
                 })
               .end()
@@ -361,7 +359,7 @@ foam.CLASS({
     function createOnComplete() {
       var self = this;
       return function() {
-        var menuLocation = 'sme.main.banking';
+        var menuLocation = 'capability.main.banking';
         window.location.hash.substr(1) != menuLocation ?
           self.pushMenu(menuLocation) : self.stack.back();
         return;

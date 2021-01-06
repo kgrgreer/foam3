@@ -60,7 +60,10 @@ foam.CLASS({
 
         // Save summary as completed once chain fully saved. but only if its not somewhere within a chain.
         if ( txn instanceof SummaryTransaction && txn.getStatus().equals(TransactionStatus.PENDING) ) {
-          txn.setStatus(TransactionStatus.COMPLETED);
+          // Auto complete summaryTransactions without an invoice
+          if ( txn.getInvoiceId() == 0 ) {
+            txn.setStatus(TransactionStatus.COMPLETED);
+          }
           return getDelegate().put_(x, txn.fclone());
         }
 

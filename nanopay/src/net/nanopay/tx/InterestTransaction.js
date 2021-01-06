@@ -27,6 +27,7 @@ foam.CLASS({
     'net.nanopay.account.LoanAccount',
     'net.nanopay.account.LoanedTotalAccount',
     'net.nanopay.tx.model.Transaction',
+    'foam.core.ValidationException',
     'java.util.List',
     'java.util.ArrayList'
   ],
@@ -60,11 +61,11 @@ foam.CLASS({
       super.validate(x);
       if( ! ( findSourceAccount(x) instanceof LoanAccount ) ) {
         ((Logger)getX().get("logger")).error("Transaction must include a Loan Account as a Source Account");
-        throw new RuntimeException("Transaction must include a Loan Account as a Source Account");
+        throw new ValidationException("Transaction must include a Loan Account as a Source Account");
       }
       if( ! ( findDestinationAccount(x) instanceof LoanedTotalAccount ) ) {
         ((Logger)getX().get("logger")).error("Transaction must include a LoanedTotalAccount as a Destination Account");
-        throw new RuntimeException("Transaction must include a LoanedTotalAccount as a Destination Account");
+        throw new ValidationException("Transaction must include a LoanedTotalAccount as a Destination Account");
       }
       `
     }

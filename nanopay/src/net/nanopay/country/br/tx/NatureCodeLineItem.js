@@ -31,7 +31,7 @@ foam.CLASS({
   messages: [
     {
       name: 'INVALID_NATURE_CODE',
-      message: 'Please select a nature code.',
+      message: 'Please select a nature code',
     }
   ],
 
@@ -51,16 +51,23 @@ foam.CLASS({
         }
       ],
       view: function(args, x) {
-        // TODO: To be replaced by Eric's work on capable transaction
         return foam.u2.view.ChoiceView.create({
-          dao: x.natureCodeDAO.where(
-            x.data.EQ(net.nanopay.country.br.NatureCode.PAYER_TYPE, 'xx')),
+          dao: x.natureCodeDAO,
           placeholder: 'Please select',
           objToChoice: function(natureCode) {
             return [natureCode.operationType, natureCode.name];
           }
         });
       }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.country.br.NatureCodeData',
+      name: 'natureCodeData',
+      factory: function() {
+        return net.nanopay.country.br.NatureCodeData.create();
+      },
+      javaFactory: 'return new net.nanopay.country.br.NatureCodeData();'
     },
     {
       name: 'id',
@@ -112,6 +119,16 @@ foam.CLASS({
       if ( this.natureCode === '' ) {
         throw this.INVALID_NATURE_CODE;
       }
+    },
+    {
+      name: 'getCode',
+      type: 'String',
+      code: function() {
+        return this.natureCode + this.natureCodeData.toString();
+      },
+      javaCode: `
+        return getNatureCode() + getNatureCodeData().toString();
+      `
     }
   ]
 });

@@ -10,6 +10,16 @@ p({
   "after":false,
   "enabled":true,
   "saveHistory":false,
+  config:[
+    {
+      class:"net.nanopay.auth.ServiceProviderURL",
+      spid:"nanopay",
+      urls:[
+        "localhost",
+        "ablii"
+      ]
+    }
+  ],
   "action":{
     "class":"net.nanopay.auth.UserCreateServiceProviderURLRuleAction"
   },

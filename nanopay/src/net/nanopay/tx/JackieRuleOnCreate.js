@@ -42,13 +42,15 @@ foam.CLASS({
         while ( ! SafetyUtil.isEmpty(headTx.getParent()) ) {
           headTx = headTx.findParent(x);
         }
+        String spid = ct.findSourceAccount(x).findOwner(x).getSpid();
+        String group = spid + "-fraud-ops";
         ComplianceApprovalRequest req = new ComplianceApprovalRequest.Builder(x)
           .setDaoKey("transactionDAO")
           .setServerDaoKey("localTransactionDAO")
           .setObjId(ct.getId())
-          .setGroup("fraud-ops")
-          .setDescription("Main Summary txn: "+headTx.getSummary()+" The Id of Summary txn: "+headTx.getId() )
-          .setClassification("Validate Transaction Using Jackie Rule")
+          .setGroup(group)
+          .setDescription(headTx.getSummary()+"  Summary Transaction Id: "+headTx.getId())
+          .setClassification("Compliance Transaction")
           .build();
 
         agency.submit(x, new ContextAgent() {

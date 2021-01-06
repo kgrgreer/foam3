@@ -25,6 +25,7 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.nanos.auth.User',
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.nanos.logger.Logger',
     'java.util.Calendar',
@@ -40,6 +41,10 @@ foam.CLASS({
       name: 'response',
       class: 'FObjectProperty',
       of: 'net.nanopay.meter.compliance.dowJones.DowJonesResponse'
+    },
+    {
+      name: 'classification',
+      class: 'String'
     }
   ],
 
@@ -49,6 +54,9 @@ foam.CLASS({
       javaCode: `
         UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
         Business business = (Business) ucj.findSourceId(x);
+
+        User user = (User) ucj.findSourceId(x);
+        String group = user.getSpid() + "-fraud-ops";
         
         DowJonesService dowJonesService = (DowJonesService) x.get("dowJonesService");
         try {
@@ -83,10 +91,13 @@ foam.CLASS({
                   new DowJonesApprovalRequest.Builder(x)
                     .setObjId(ucj.getId())
                     .setDaoKey("userCapabilityJunctionDAO")
+                    .setRefObjId(business.getId())
+                    .setRefDaoKey("businessDAO")
                     .setCauseId(response.getId())
                     .setCauseDaoKey("dowJonesResponseDAO")
-                    .setClassification("Validate Business Onboarding UserCapabilityJunction Using Dow Jones")
+                    .setClassification(getClassification())
                     .setMatches(response.getResponseBody().getMatches())
+                    .setGroup(group)
                     .build());
               }
             }, "Entity Sanction Validator");
@@ -99,10 +110,13 @@ foam.CLASS({
             new DowJonesApprovalRequest.Builder(x)
               .setObjId(ucj.getId())
               .setDaoKey("userCapabilityJunctionDAO")
+              .setRefObjId(business.getId())
+              .setRefDaoKey("businessDAO")
               .setCauseId(response != null ? response.getId() : 0L)
               .setCauseDaoKey("dowJonesResponseDAO")
-              .setClassification("Validate Business Onboarding UserCapabilityJunction Using Dow Jones")
+              .setClassification(getClassification())
               .setMatches(response != null ? response.getResponseBody().getMatches() : null)
+              .setGroup(group)
               .build());
           ruler.putResult(ComplianceValidationStatus.PENDING);
         }

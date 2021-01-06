@@ -18,11 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.flinks.external',
   name: 'FlinksLoginId',
-
-  implements: [
-    'foam.nanos.auth.CreatedAware',
-    'foam.nanos.auth.CreatedByAware'
-  ],
+  extends: 'net.nanopay.flinks.external.FlinksLoginIdRequest',
 
   javaImports: [
     'net.nanopay.account.Account',
@@ -32,11 +28,24 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'id'
+      name: 'loginId',
+      documentation: 'Flinks LoginId'
     },
     {
       class: 'String',
-      name: 'loginId'
+      name: 'accountId',
+      documentation: 'Flinks AccountId'
+    },
+    {
+      class: 'String',
+      name: 'institution',
+      documentation: 'Flinks Institution'
+    },
+    {
+      class: 'Boolean',
+      name: 'skipLoginIdResolution',
+      documentation: 'Whether to skip resolution of loginId against FlinksLoginId calls',
+      storageTransient: true
     },
     {
       class: 'Reference',
@@ -44,29 +53,29 @@ foam.CLASS({
       of: 'net.nanopay.flinks.model.FlinksAccountsDetailResponse',
       targetDAOKey: 'flinksAccountsDetailResponseDAO',
       readPermissionRequired: true,
-      writePermissionRequired: true
+      writePermissionRequired: true,
+      documentation: 'Response to Flinks account details call'
+    },
+    {
+      class: 'Reference',
+      name: 'user',
+      of: 'foam.nanos.auth.User',
+      targetDAOKey: 'userDAO',
+      documentation: 'User associated to this Flinks LoginId'
+    },
+    {
+      class: 'Reference',
+      name: 'business',
+      of: 'net.nanopay.model.Business',
+      targetDAOKey: 'businessDAO',
+      documentation: 'Business associated to this Flinks LoginId'
     },
     {
       class: 'Reference',
       name: 'account',
       of: 'net.nanopay.account.Account',
       targetDAOKey: 'accountDAO',
-      readPermissionRequired: true,
-      writePermissionRequired: true
-    },
-    {
-      class: 'DateTime',
-      name: 'created',
-    },
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.User',
-      name: 'createdBy',
-    },
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.User',
-      name: 'createdByAgent'
+      documentation: 'Account associated to this Flinks AccountId'
     }
   ]
-})
+});

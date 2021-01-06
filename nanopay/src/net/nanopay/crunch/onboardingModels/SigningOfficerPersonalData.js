@@ -19,13 +19,11 @@ foam.CLASS({
   package: 'net.nanopay.crunch.onboardingModels',
   name: 'SigningOfficerPersonalData',
 
-  implements: [
-    'foam.core.Validatable',
-    'foam.mlang.Expressions'
-  ],
+  implements: [ 'foam.mlang.Expressions' ],
 
   imports: [
-    'subject'
+    'subject',
+    'translationService'
   ],
 
   requires: [
@@ -36,53 +34,29 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'introduction',
-      title: 'Signing Officer Process.'
-    },
-    {
       name: 'signingOfficerPersonalInformationSection',
-      title: 'Enter the signing officer\'s personal information',
-      help: 'will require your most convenient phone number.'
+      title: 'Signing officer\’s role information',
+      help: 'Require your most convenient phone number.'
     },
     {
       name: 'signingOfficerAddressSection',
-      title: 'Enter the signing officer\'s address',
-      help: 'will require your personal address. Used only to confirm your identity.'
+      title: 'Signing officer\’s address',
+      help: 'Require your personal address. Used only to confirm your identity.'
     }
   ],
 
   messages: [
     { name: 'CANNOT_SELECT_QUEBEC_ERROR', message: 'This application does not currently support businesses in Quebec. We are working hard to change this! If you are based in Quebec, check back for updates.' },
-    { name: 'INVALID_ADDRESS_ERROR', message: 'Invalid address.' },
-    { name: 'UNGER_AGE_LIMIT_ERROR', message: 'Must be at least 18 years old.' },
-    { name: 'OVER_AGE_LIMIT_ERROR', message: 'Must be under the age of 125 years old.' }
+    { name: 'INVALID_ADDRESS_ERROR', message: 'Invalid address' },
+    { name: 'UNGER_AGE_LIMIT_ERROR', message: 'Must be at least 18 years old' },
+    { name: 'OVER_AGE_LIMIT_ERROR', message: 'Must be less than 125 years old' },
+    { name: 'SELECT_JOB_TITLE', message: 'Job title required' },
+    { name: 'PLEASE_SELECT', message: 'Please select...' },
+    { name: 'YES', message: 'Yes' },
+    { name: 'NO', message: 'No' },
   ],
 
   properties: [
-    {
-      class: 'String',
-      name: 'pleaseReadImportantInformation',
-      value: `Thank you for letting us know that you are the signing officer of this company. We must collect
-          your information before processing any payments or onboarding requirements for you.
-          This is to ensure the protection of all members operating on the platform.
-          Your business will not be able to fully unlock invoicing and payment capabilities until at least one signing officer
-          completes this form and their identity is fully reviewed and passed.
-      `,
-      section: 'introduction',
-      visibility: 'RO'
-    },
-    {
-      name: 'countryId',
-      class: 'Reference',
-      of: 'foam.nanos.auth.Country',
-      hidden: true,
-      storageTransient: true,
-      writePermissionRequired: true,
-      factory: function() {
-        var userCountry = this.subject.user && this.subject.user.address ? this.subject.user.address.countryId : null;
-        return userCountry;
-      }
-    },
     foam.nanos.auth.User.ADDRESS.clone().copyFrom({
       section: 'signingOfficerAddressSection',
       label: '',
@@ -124,10 +98,10 @@ foam.CLASS({
           otherKey: 'Other',
           choiceView: {
             class: 'foam.u2.view.ChoiceView',
-            placeholder: 'Please select...',
+            placeholder: X.data.PLEASE_SELECT,
             dao: X.jobTitleDAO,
             objToChoice: function(a) {
-              return [a.name, a.label];
+              return [a.name, X.translationService.getTranslation(foam.locale, `${a.name}.label`, a.label)];
             }
           }
         };
@@ -141,35 +115,39 @@ foam.CLASS({
                 arg1: net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.JOB_TITLE
               }), 0);
           },
-          errorString: 'Please select a Job Title.'
+          errorMessage: 'SELECT_JOB_TITLE'
         }
       ]
     },
     foam.nanos.auth.User.PHONE_NUMBER.clone().copyFrom({
       section: 'signingOfficerPersonalInformationSection',
-      label: 'Phone',
+      label: 'Phone number',
       visibility: 'RW',
       required: true,
-      autoValidate: true
+      autoValidate: true,
+      gridColumns: 12
     }),
     foam.nanos.auth.User.PEPHIORELATED.clone().copyFrom({
       section: 'signingOfficerPersonalInformationSection',
-      label: 'I am a politically exposed person or head of an international organization (PEP/HIO)',
+      label: 'The signing officer is a politically exposed person (PEP) or head of an international organization (HIO)',
       help: `
-        A political exposed person (PEP) or the head of an international organization (HIO)
+        A politically exposed person (PEP) or the head of an international organization (HIO)
         is a person entrusted with a prominent position that typically comes with the opportunity
         to influence decisions and the ability to control resources
       `,
       value: false,
-      view: {
-        class: 'foam.u2.view.RadioView',
-        choices: [
-          [true, 'Yes'],
-          [false, 'No']
-        ],
-        isHorizontal: true
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RadioView',
+          choices: [
+            [true, X.data.YES],
+            [false, X.data.NO]
+          ],
+          isHorizontal: true
+        };
       },
       visibility: 'RW',
+      gridColumns: 12
     }),
     foam.nanos.auth.User.THIRD_PARTY.clone().copyFrom({
       section: 'signingOfficerPersonalInformationSection',
@@ -179,37 +157,24 @@ foam.CLASS({
         to conduct an activity or financial transaction on their behalf
       `,
       value: false,
-      view: {
-        class: 'foam.u2.view.RadioView',
-        choices: [
-          [true, 'Yes'],
-          [false, 'No']
-        ],
-        isHorizontal: true
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RadioView',
+          choices: [
+            [true, X.data.YES],
+            [false, X.data.NO]
+          ],
+          isHorizontal: true
+        };
       },
-      visibility: 'RW'
+      visibility: 'RW',
+      gridColumns: 12
     }),
     {
       name: 'businessId',
       class: 'Reference',
       of: 'net.nanopay.model.Business',
       hidden: true
-    }
-  ],
-
-  methods: [
-    {
-      name: 'validate',
-      javaCode: `
-        java.util.List<foam.core.PropertyInfo> props = getClassInfo().getAxiomsByClass(foam.core.PropertyInfo.class);
-        for ( foam.core.PropertyInfo prop : props ) {
-          try {
-            prop.validateObj(x, this);
-          } catch ( IllegalStateException e ) {
-            throw e;
-          }
-        }
-      `
     }
   ]
 });

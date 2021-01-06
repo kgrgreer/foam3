@@ -30,6 +30,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.notification.Notification',
+    'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.TrustAccount',
     'net.nanopay.tx.DigitalTransaction',
     'net.nanopay.tx.cico.CITransaction',
@@ -54,23 +55,22 @@ foam.CLASS({
               txn.setStatus(TransactionStatus.COMPLETED);
 
               DigitalTransaction revTxn = new DigitalTransaction.Builder(x)
-                .setDestinationAccount(TrustAccount.find(x, txn.findSourceAccount(x), txn.getInstitutionNumber()).getId())
+                .setDestinationAccount(((DigitalAccount) txn.findDestinationAccount(x)).getTrustAccount())
                 .setSourceAccount(txn.getDestinationAccount())
                 .setAmount(txn.getAmount())
                 .setName("Reversal of DECLINED: "+txn.getId())
-                .setIsQuoted(true)
                 .setAssociateTransaction(txn.getId())
                 .build();
 
               try {
-                ((DAO) x.get("transactionDAO")).put_(x, revTxn);
+                ((DAO) x.get("localTransactionDAO")).put_(x, revTxn);
               }
               catch (Exception e) {
                 //email Support about failure.
                 Notification notification = new Notification();
                 notification.setBody("Cash in transaction id: " + txn.getId() + " was declined but failed to revert the balance.");
                 notification.setNotificationType("Cashin transaction declined");
-                notification.setGroupId("support");
+                notification.setGroupId(txn.getSpid() + "-support");
                 ((DAO) x.get("notificationDAO")).put(notification);
               }
             }

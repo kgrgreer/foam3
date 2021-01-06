@@ -28,17 +28,23 @@ foam.CLASS({
   ],
 
   javaImports: [
+    'foam.core.X',
     'foam.dao.DAO',
+    'foam.nanos.alarming.Alarm',
+    'foam.nanos.alarming.AlarmReason',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.AuthenticationException',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.notification.email.EmailMessage',
+    'foam.nanos.app.SupportConfig',
     'foam.nanos.session.Session',
     'foam.util.Emails.EmailsUtility',
     'foam.util.Password',
     'foam.util.SafetyUtil',
+    'foam.nanos.theme.Theme',
+    'foam.nanos.theme.Themes',
 
     'java.util.HashMap',
 
@@ -152,8 +158,18 @@ foam.CLASS({
           throw new AuthenticationException("User not found.");
         }
 
-        Group group = user.findGroup(x);
-        String supportEmail = (String) group.getSupportEmail();
+        X userX = x.put("subject", new Subject.Builder(x).setUser(user).build());
+        Group group = user.findGroup(userX);
+        if ( group == null ) {
+          Alarm alarm = new Alarm("User Configuration", AlarmReason.CONFIGURATION);
+          alarm.setNote("User " + user.getId() + " does not have a group assigned");
+          ((DAO) x.get("alarmDAO")).put(alarm);
+          throw new AuthenticationException("There was an issue logging in");
+        }
+
+        Theme theme = ((Themes) x.get("themes")).findTheme(userX);
+        SupportConfig supportConfig = theme.getSupportConfig();
+        String supportEmail = (String) supportConfig.getSupportEmail();
 
         if (
           ! user.getLoginEnabled() ||

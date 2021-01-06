@@ -39,8 +39,8 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'BUSINESS_CREATE_ERROR',  message: 'There was an issue with creating the business.' },
-    { name: 'ASSOCIATION_ERROR', messsage: 'There was an issue associating the business to the user.' },
+    { name: 'BUSINESS_CREATE_ERROR',  message: 'There was an issue creating the business' },
+    { name: 'ASSOCIATION_ERROR', messsage: 'There was an issue associating the business to the user' },
     {
       name: 'UNABLE_SIGN_IN',
       message: `

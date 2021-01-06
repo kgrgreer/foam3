@@ -21,7 +21,7 @@ foam.CLASS({
   extends: 'net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability',
 
   messages: [
-    { name: 'ACKNOWLEDGE_AFEX_AGREEMENT', message: 'Must acknowledge the AFEX agreement.' }
+    { name: 'ACKNOWLEDGE_AFEX_AGREEMENT', message: 'Must acknowledge the AFEX agreement' }
   ],
 
   properties: [
@@ -40,8 +40,10 @@ foam.CLASS({
       }
     },
     {
-      name: 'link',
-      value: 'https://ablii.com/wp-content/uploads/2019/02/Tri-Party-Agreeement-for-Nanopay.AscendantFX-Service-US-01.28.2019-FINAL.pdf'
+      name: 'fileId',
+      factory: function() {
+        return 'bb0095dd-08f2-5897-e66a-ef7a7f44e64b';
+      }
     },
     {
       name: 'checkboxText',

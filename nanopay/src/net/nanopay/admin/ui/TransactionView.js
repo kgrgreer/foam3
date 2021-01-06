@@ -73,7 +73,7 @@ foam.CLASS({
 
     ^container th {
       background: black;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 16px;
       font-weight: normal;
       line-height: 1.0;
@@ -95,7 +95,7 @@ foam.CLASS({
     }
 
     ^no-pending-transactions {
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       letter-spacing: 0.2px;
       color: /*%BLACK%*/ #1e1f21;
@@ -115,7 +115,7 @@ foam.CLASS({
   messages: [
     {
       name: 'noPendingTransactions',
-      message: 'There is no transaction in your network yet.'
+      message: 'There is no transaction in your network yet'
     }
   ],
 

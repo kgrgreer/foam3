@@ -22,8 +22,8 @@ foam.CLASS({
   documentation: 'Verifies if the user has authorized nanopay or afex to debit and credit accounts (US)',
 
   messages: [
-    { name: 'ACKNOWLEDGE_STATEMENT', message: 'Must acknowledge the statement above.' },
-    { name: 'CHECKBOX_MSG',
+    { name: 'ACKNOWLEDGE_STATEMENT', message: 'Must acknowledge the statement above' },
+    { name: 'TITLE_MSG',
       message: 'I/We authorize Associated Foreign Exchange Inc (AFEX) and the financial ' +
         'institution designated (or any other financial institution I/we may authorize at ' +
         'any time) to deduct regular and/or one-time payments as per my/our instructions ' +
@@ -37,7 +37,19 @@ foam.CLASS({
     {
       name: 'checkboxText',
       factory: function() {
-        return this.CHECKBOX_MSG;
+        return null;
+      }
+    },
+    {
+      name: 'title',
+      factory: function() {
+        return this.TITLE_MSG;
+      }
+    },
+    {
+      name: 'fileId',
+      factory: function() {
+        return '488eedba-b34a-4b61-9f6d-1c501f13dcc9';
       }
     },
     {

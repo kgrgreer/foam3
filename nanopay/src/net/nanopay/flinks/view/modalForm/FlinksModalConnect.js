@@ -24,7 +24,7 @@ foam.CLASS({
 
   requires: [
     'foam.log.LogLevel',
-    'net.nanopay.ui.LoadingSpinner',
+    'foam.u2.LoadingSpinner',
     'foam.u2.dialog.Popup',
     'net.nanopay.documents.AcceptanceDocument',
     'net.nanopay.documents.AcceptanceDocumentService'
@@ -45,12 +45,12 @@ foam.CLASS({
   ],
 
   css: `
-    ^ {
-      width: 504px;
-    }
     ^content {
+      box-sizing: border-box;
+      min-width: 615px;
       position: relative;
-      padding: 0px 50px 24px 0px;
+      padding: 24px;
+      padding-top: 0;
     }
     ^ .foam-u2-tag-Input {
       -webkit-transition: all .15s ease-in-out;
@@ -90,9 +90,6 @@ foam.CLASS({
     }
     ^ label > span {
       display: none;
-    }
-    ^ .net-nanopay-sme-ui-wizardModal-WizardModalNavigationBar-container {
-      padding: 0 60px 0 0;
     }
   `,
 
@@ -143,9 +140,9 @@ foam.CLASS({
 
   messages: [
     { name: 'CONNECTING', message: 'Securely connecting you to your institution. Please do not close this window.' },
-    { name: 'ERROR', message: 'An unknown error has occurred.' },
-    { name: 'INVALID_FORM', message: 'Please complete the form before proceeding.' },
-    { name: 'ACCEPT_CONDITIONS', message: 'Please accept the terms and conditions before proceeding.' },
+    { name: 'ERROR', message: 'An unknown error has occurred' },
+    { name: 'INVALID_FORM', message: 'Please complete the form before proceeding' },
+    { name: 'ACCEPT_CONDITIONS', message: 'Please accept the terms and conditions before proceeding' },
     { name: 'LABEL_USERNAME', message: 'Access Card # / Username' },
     { name: 'LABEL_PASSWORD', message: 'Password' },
     { name: 'LEGAL_1', message: 'I agree to the ' },

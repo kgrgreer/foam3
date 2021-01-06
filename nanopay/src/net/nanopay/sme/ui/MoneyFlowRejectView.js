@@ -116,7 +116,7 @@ foam.CLASS({
 
   messages: [
     { name: 'TITLE', message: 'This invoice has been voided' },
-    { name: 'V_PAY', message: 'View this payable' },
+    { name: 'V_PAY', message: 'View this invoice' },
     { name: 'V_REC', message: 'View this receivable' }
   ],
 
@@ -162,8 +162,8 @@ foam.CLASS({
       label: 'Done',
       code: function(X) {
         var menuId = this.isPayable_ ?
-            'sme.main.invoices.payables' :
-            'sme.main.invoices.receivables';
+            'capability.main.invoices.payables' :
+            'capability.main.invoices.receivables';
         this.menuDAO
           .find(menuId)
           .then((menu) => menu.launch());

@@ -67,7 +67,7 @@ foam.CLASS({
     ^title {
       height: 24px;
       margin: 0;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 15px;
       font-weight: 900;
       line-height: 1.5;
@@ -76,7 +76,7 @@ foam.CLASS({
     ^description {
       margin: 0;
       margin-top: 8px;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       line-height: 1.5;
       color: #525455;

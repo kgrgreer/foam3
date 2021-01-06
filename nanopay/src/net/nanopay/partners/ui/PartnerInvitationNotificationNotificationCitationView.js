@@ -148,7 +148,7 @@ foam.CLASS({
     },
     {
       name: 'ErrorFromBackend',
-      message: 'There was a problem connecting you.'
+      message: 'There was a problem connecting you'
     },
     {
       name: 'ErrorMultipleInvites',

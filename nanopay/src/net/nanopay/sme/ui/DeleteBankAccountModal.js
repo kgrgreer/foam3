@@ -102,7 +102,7 @@ foam.CLASS({
       font-size: 24px;
       color: /*%BLACK%*/ #1e1f21;
       font-weight: 900;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       margin-left: 0;
       line-height: 1.5;
     }
@@ -134,7 +134,7 @@ foam.CLASS({
     },
     {
       name: 'SUCCESS_MESSAGE',
-      message: 'Bank account deleted.'
+      message: 'Bank account deleted'
     }
   ],
 

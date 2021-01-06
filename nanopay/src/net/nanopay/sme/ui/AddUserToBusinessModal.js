@@ -108,9 +108,9 @@ foam.CLASS({
     { name: 'EMAIL_LABEL', message: 'Email' },
     { name: 'ROLE_LABEL', message: 'Role' },
     { name: 'INVITATION_SUCCESS', message: 'Invitation sent' },
-    { name: 'INVITATION_ERROR', message: 'Something went wrong with adding the user.' },
-    { name: 'INVALID_EMAIL', message: 'Invalid email address.' },
-    { name: 'INVALID_EMAIL2', message: 'Sorry but the email you are trying to add is already a user within your business.' }
+    { name: 'INVITATION_ERROR', message: 'Something went wrong with adding the user' },
+    { name: 'INVALID_EMAIL', message: 'Invalid email address' },
+    { name: 'INVALID_EMAIL2', message: 'The email you are trying to add is already a user within your business' }
   ],
 
   methods: [

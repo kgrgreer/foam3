@@ -45,7 +45,7 @@ foam.CLASS({
     'loadingSpin',
     'notify',
     'subject',
-    'viewData'
+    'txnQuote'
   ],
 
   properties: [
@@ -60,7 +60,7 @@ foam.CLASS({
     ^ .invoice-details {
       margin-top: 25px;
     }
-    ^ .net-nanopay-ui-LoadingSpinner img{
+    ^ .foam-u2-LoadingSpinner img{
       width: 150px;
       margin: 200px;
     }
@@ -76,6 +76,9 @@ foam.CLASS({
       overflow: scroll;
       margin-top: 15px;
     }
+    ^ .foam-u2-view-StringView {
+      width: auto;
+    }
   `,
   messages: [
     {
@@ -88,6 +91,10 @@ foam.CLASS({
     }
   ],
 
+  messages: [
+    { name: 'VOID', message: 'Void' }
+  ],
+
   methods: [
     function initE() {
       this.SUPER();
@@ -98,16 +105,19 @@ foam.CLASS({
         ? this.APPROVE_INVOICE_LABEL
         : this.SUBMIT_LABEL;
       this.hasOtherOption = this.isApproving ? true : false;
-      this.optionLabel = 'Reject';
+      this.optionLabel = this.VOID;
       this.start().addClass(this.myClass())
         .start().show(this.loadingSpin.isHidden$)
-          .start({
-            class: 'net.nanopay.invoice.ui.InvoiceRateView',
-            isPayable: this.type,
-            isReadOnly: true,
-            quote: this.viewData.quote,
-            chosenBankAccount: this.viewData.bankAccount
-          })
+          /** summaryTransaction area **/
+          .start()
+            .add(this.slot(txnQuote => {
+              if ( ! txnQuote ) return;
+              return this.E()
+                .start({
+                  class: 'net.nanopay.tx.SummaryTransactionCitationView',
+                  data: txnQuote
+                });
+            }))
           .end()
           .start({
             class: 'net.nanopay.sme.ui.InvoiceDetails',
@@ -124,9 +134,14 @@ foam.CLASS({
     },
     async function updateDisclosure() {
       if ( ! this.isPayable ) return;
-      var type = this.viewData.quote ? this.viewData.quote.type : null;
       try {
-        var disclosure = await this.acceptanceDocumentService.getTransactionRegionDocuments(this.__context__, type, this.AcceptanceDocumentType.DISCLOSURE, this.subject.user.address.countryId, this.subject.user.address.regionId);
+        var disclosure = await this.acceptanceDocumentService
+          .getTransactionRegionDocuments(
+            this.__context__,
+            this.txnQuote && this.txnQuote.type,
+            this.AcceptanceDocumentType.DISCLOSURE,
+            this.subject.user.address.countryId,
+            this.subject.user.address.regionId);
         if ( disclosure ) {
           this.disclosureView = this.Document.create({ markup: disclosure.body });
         }

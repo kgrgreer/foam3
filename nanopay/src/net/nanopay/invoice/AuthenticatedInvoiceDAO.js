@@ -54,11 +54,11 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'CREATE_INVOICE_ERROR_MSG', message: 'You do not have permission to create invoices.' },
-    { name: 'UPDATE_REF_ID_ERROR_MSG', message: 'Cannot update reference Id.' },
-    { name: 'NO_INVOICE_ERROR_MSG', message: 'Invoice doesn\'t exist.' },
+    { name: 'CREATE_INVOICE_ERROR_MSG', message: 'You do not have permission to create invoices' },
+    { name: 'UPDATE_REF_ID_ERROR_MSG', message: 'Cannot update reference Id' },
+    { name: 'NO_INVOICE_ERROR_MSG', message: 'Invoice doesn\'t exist' },
     { name: 'DELETE_INVOICE_ERROR_MSG', message: 'Only invoice drafts can be deleted' },
-    { name: 'DELETE_INVOICE_ERROR_MSG2', message: 'You can only delete invoices that you created.' },
+    { name: 'DELETE_INVOICE_ERROR_MSG2', message: 'You can only delete invoices that you created' },
     { name: 'NULL_INVOICE_ERROR_MSG', message: 'Cannot put null' }
   ],
 
@@ -94,7 +94,8 @@ foam.CLASS({
               Invoice invoice = (Invoice) obj;
               if ( isRelated(getX(), invoice) && ! ( invoice.getDraft() && invoice.getCreatedBy() != user_.getId() && ! invoice.getRemoved() ) &&
                   ! ( invoice.getCreatedBy() != user_.getId() && invoice.getStatus() == InvoiceStatus.PENDING_APPROVAL && invoice.getPayeeId() == user_.getId()) &&
-                  ! ( invoice.getCreatedBy() != user_.getId() && invoice.getStatus() == InvoiceStatus.VOID ) ) {
+                  ! ( invoice.getCreatedBy() != user_.getId() && invoice.getStatus() == InvoiceStatus.VOID ) &&
+                  ! ( invoice.getCreatedBy() != user_.getId() && invoice.getStatus() == InvoiceStatus.REJECTED ) ) {
                 getDelegate().put(obj, sub);
               }
             }
@@ -115,6 +116,8 @@ foam.CLASS({
         if ( invoice == null ) {
           throw new IllegalArgumentException(NULL_INVOICE_ERROR_MSG);
         }
+        // TODO temporary fix
+        String temp = invoice.getReferenceId();
 
         // Check if the user has invoice.create permission
         Invoice oldInvoice = (Invoice) getDelegate().find(obj);

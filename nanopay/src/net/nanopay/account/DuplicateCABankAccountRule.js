@@ -24,6 +24,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.ArraySink',
+    'foam.mlang.sink.Count',
     'foam.util.SafetyUtil',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.bank.CABankAccount',
@@ -42,37 +43,41 @@ foam.CLASS({
     {
       name: 'cmd',
       javaCode: `
-        BankAccount newAccount = (CABankAccount) nu;
-        List<BankAccount> accounts = ((ArraySink) dao
-          .where(
-            EQ(BankAccount.DELETED, false)
+        BankAccount account = (CABankAccount) nu;
+        
+        // Set institution number
+        if ( SafetyUtil.isEmpty(account.getInstitutionNumber()) ) {
+          Institution institution = account.findInstitution(x);
+
+          // Skip match check since neither institution nor the institution number is set
+          if ( institution == null ) 
+            return;
+
+          account.setInstitutionNumber(institution.getInstitutionNumber());
+        }
+
+        // Set branch id
+        if ( SafetyUtil.isEmpty(account.getBranchId()) ) {
+          Branch branch = account.findBranch(x);
+
+          // Skip match check since neither the branch nor the branch id is set
+          if ( branch == null )
+            return;
+
+          account.setBranchId(branch.getBranchId());
+        }
+        
+        // different owner, accountNumber, and denomination should already be filtered from the dao
+        Count count = (Count) dao
+          .where(AND(
+              EQ(BankAccount.DELETED, false),
+              EQ(BankAccount.BRANCH_ID, account.getBranchId()),
+              EQ(BankAccount.INSTITUTION_NUMBER, account.getInstitutionNumber())
+            )
           )
-          .select(new ArraySink()))
-          .getArray();
-        
-        // Set institution number for a new account if not set
-        if ( SafetyUtil.isEmpty(newAccount.getInstitutionNumber()) ) {
-          Institution institution = newAccount.findInstitution(x);
-          // New account doesn't have both institution and institution number
-          if ( institution == null ) return;
-          newAccount.setInstitutionNumber(institution.getInstitutionNumber());
-        }
-        
-        for ( BankAccount account : accounts ) {
-          Branch curBranch = account.findBranch(x);
-          if ( curBranch == null ) continue;
-          String curBranchId = curBranch.getBranchId();
-
-          Institution curInstitution = curBranch.findInstitution(x);
-          if ( curInstitution == null ) continue;
-          String curInstNumber = curInstitution.getInstitutionNumber();
-
-          if ( curBranchId == newAccount.getBranchId() &&
-               curInstNumber == newAccount.getInstitutionNumber()
-          ) {
-            throw new RuntimeException(ERROR_MESSAGE);
-          }
-        }
+          .select(new Count());
+        if ( count.getValue() != 0 )
+          throw new RuntimeException(ERROR_MESSAGE);
       `
     },
   ]

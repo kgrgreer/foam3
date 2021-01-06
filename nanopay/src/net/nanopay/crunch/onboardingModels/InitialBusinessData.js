@@ -19,10 +19,6 @@ foam.CLASS({
   package: 'net.nanopay.crunch.onboardingModels',
   name: 'InitialBusinessData',
 
-  implements: [
-    'foam.core.Validatable'
-  ],
-
   requires: [
     'foam.nanos.auth.Address',
     'net.nanopay.model.Business'
@@ -42,20 +38,22 @@ foam.CLASS({
   sections: [
     {
       name: 'businessRegistration',
-      title: 'Business Details',
-      help: `Please enter business details.`
+      title: 'Business information',
+      help: `Business information`
     },
     {
       name: 'businessAddress',
-      title: 'Business Address',
-      help: `Please enter your business' address.`
+      title: 'Business address',
+      help: `Business address`
     }
   ],
 
   messages: [
+    { name: 'BUSINESS_NAME_REQUIRED', message: 'Business name required' },
     { name: 'QUEBEC_NOT_SUPPORTED_ERROR', message: 'This application does not currently support businesses in Quebec. We are working hard to change this! If you are based in Quebec, check back for updates.' },
-    { name: 'INVALID_ADDRESS_ERROR', message: 'Invalid address.' },
-    { name: 'SAME_AS_BUSINESS_ADDRESS_LABEL', message: 'Mailing address is same as business address.' }
+    { name: 'INVALID_ADDRESS_ERROR', message: 'Invalid address' },
+    { name: 'SAME_AS_BUSINESS_ADDRESS_LABEL', message: 'Mailing address is same as business address' },
+    { name: 'INVALID_FAX_ERROR', message: 'Valid fax number required' }
   ],
 
   properties: [
@@ -69,6 +67,7 @@ foam.CLASS({
       class: 'String',
       name: 'businessName',
       documentation: 'Legal name of business.',
+      label: 'Business name',
       section: 'businessRegistration',
       required: true,
       visibility: function() {
@@ -78,15 +77,20 @@ foam.CLASS({
           return foam.u2.DisplayMode.RW;
         }
       },
+      validateObj: function(businessName) {
+        if ( businessName.length === 0 ) {
+          return this.BUSINESS_NAME_REQUIRED;
+        }
+      },
       factory: function() {
-        return this.subject.user.businessName
+        return this.subject.user.businessName;
       }
     },
     {
       class: 'PhoneNumber',
       name: 'companyPhone',
       documentation: 'Phone number of the business.',
-      label: 'Company Phone #',
+      label: 'Business phone number',
       section: 'businessRegistration',
       required: true
     },
@@ -94,7 +98,7 @@ foam.CLASS({
       class: 'PhoneNumber',
       name: 'fax',
       documentation: 'Fax number of the business.',
-      label: 'Fax #',
+      label: 'Fax number',
       section: 'businessRegistration',
       validationPredicates: [
         {
@@ -106,7 +110,7 @@ foam.CLASS({
                 e.REG_EXP(net.nanopay.crunch.onboardingModels.InitialBusinessData.FAX, PHONE_NUMBER_REGEX)
               );
           },
-          errorString: 'Invalid fax number.'
+          errorMessage: 'INVALID_FAX_ERROR'
         }
       ]
     },
@@ -114,7 +118,7 @@ foam.CLASS({
       class: 'EMail',
       name: 'email',
       documentation: 'Company email.',
-      label: 'Email Address',
+      label: 'Email',
       section: 'businessRegistration'
     },
     {
@@ -130,7 +134,7 @@ foam.CLASS({
       view: function(_, X) {
         var m = foam.mlang.Expressions.create();
         var countryId = X.data ? X.data.countryId : null;
-        var dao = countryId ? 
+        var dao = countryId ?
           X.permittedCountryDAO.where(m.EQ(foam.nanos.auth.Country.ID, countryId)) :
           X.permittedCountryDAO;
 
@@ -164,6 +168,7 @@ foam.CLASS({
       class: 'Boolean',
       name: 'sameAsBusinessAddress',
       section: 'businessAddress',
+      value: true,
       documentation: `
         Determines whether the business address and its mailing address are the same.
       `,
@@ -174,6 +179,7 @@ foam.CLASS({
     },
     net.nanopay.model.Business.MAILING_ADDRESS.clone().copyFrom({
       documentation: 'Business mailing address.',
+      label: 'Mailing address',
       section: 'businessAddress',
       // TODO: Add a JS getter.
       javaGetter: `
@@ -181,7 +187,7 @@ foam.CLASS({
       `,
       visibility: function(sameAsBusinessAddress) {
         return sameAsBusinessAddress ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
-      },  
+      },
       view: function(_, X) {
         return {
           class: 'net.nanopay.sme.ui.AddressView',
@@ -205,21 +211,5 @@ foam.CLASS({
         }
       ]
     })
-  ],
-
-  methods: [
-    {
-      name: 'validate',
-      javaCode: `
-        java.util.List<foam.core.PropertyInfo> props = getClassInfo().getAxiomsByClass(foam.core.PropertyInfo.class);
-        for ( foam.core.PropertyInfo prop : props ) {
-          try {
-            prop.validateObj(x, this);
-          } catch ( IllegalStateException e ) {
-            throw e;
-          }
-        }
-      `
-    }
   ]
 });

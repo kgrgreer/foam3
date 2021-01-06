@@ -53,7 +53,8 @@ foam.CLASS({
     'java.util.List',
     'static foam.mlang.MLang.EQ',
     'net.nanopay.payment.Institution',
-    'net.nanopay.model.Branch'
+    'net.nanopay.model.Branch',
+    'foam.core.ValidationException'
   ],
 
   methods: [
@@ -277,7 +278,7 @@ System.out.println("createTEstCItransaction before initial put status: "+plan.ge
 System.out.println("createTEstCItransaction after initial put status: "+plan.getStatus());
   return (AlternaCITransaction) plan;
 }
-throw new RuntimeException("Plan transaction not instance of AlternaCITransaction. transaction: "+plan);
+throw new ValidationException("Plan transaction not instance of AlternaCITransaction. transaction: "+plan);
     `
     },
      {
@@ -464,13 +465,13 @@ test(txn.getStatus() == TransactionStatus.SENT, "Transaction status SENT");
 Account destAccount = txn.findDestinationAccount(x);
 //Account destAcccount = (Account) ((DAO) x.get("localAccountDAO")).find_(x, txn.getSourceAccount());
 Long destBalanceBefore = (Long) destAccount.findBalance(x);
-TrustAccount trustAccount = TrustAccount.find(x, txn.findSourceAccount(x));
+TrustAccount trustAccount = ((DigitalAccount) txn.findDestinationAccount(x)).findTrustAccount(x);
 Long trustBalanceBefore = (Long) trustAccount.findBalance(x);
 logger.info("completionTest trust balance before", trustBalanceBefore);
 txn.setStatus(TransactionStatus.COMPLETED);
 txn = (AlternaCITransaction) transactionDAO.put_(x, txn);
 Long destBalanceAfter = (Long) destAccount.findBalance(x);
-trustAccount = TrustAccount.find(x, txn.findSourceAccount(x));
+trustAccount = ((DigitalAccount) txn.findDestinationAccount(x)).findTrustAccount(x);
 Long trustBalanceAfter = (Long) trustAccount.findBalance(x);
 logger.info("completionTest dest account balance: before", destBalanceBefore, "after", destBalanceAfter, "amount", txn.getAmount());
 logger.info("completionTest trust account balance:  before", trustBalanceBefore, "after", trustBalanceAfter, "amount", txn.getAmount());

@@ -38,6 +38,10 @@ foam.CLASS({
 
   documentation: 'View for displaying history for invoice status',
 
+  messages: [
+    { name: 'INVOICE_STATUS_CHANGED_TO', message: 'Invoice status changed to ' }
+  ],
+
   properties: [
     'paymentDate',
     'name'
@@ -60,7 +64,7 @@ foam.CLASS({
       padding-left: 40px;
     }
     ^ .statusDate {
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 8px;
       line-height: 1.33;
       letter-spacing: 0.1px;
@@ -69,7 +73,7 @@ foam.CLASS({
       position: relative;
     }
     ^ .statusTitle {
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       line-height: 1.33;
       letter-spacing: 0.2px;
@@ -131,7 +135,7 @@ foam.CLASS({
                 this.add(`${self.name} marks invoice as `);
               })
               .callIf( ! completedByPayee && ! emplyeeChanges && ! markAsVoid, function() {
-                this.add('Invoice status changed to ');
+                this.add(this.INVOICE_STATUS_CHANGED_TO);
               })
             .end()
             .callIf( ! emplyeeChanges, function() {
@@ -150,7 +154,7 @@ foam.CLASS({
           .start('div')
             .style({ 'padding-left': '30px' })
             .start('span').addClass('statusDate')
-              .add(this.formatDate(record.timestamp))
+              .add(record.timestamp.toISOString())
             .end()
           .end()
         .end();

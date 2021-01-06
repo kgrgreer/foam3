@@ -26,7 +26,7 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Int',
+      class: 'Long',
       name: 'id',
       documentation: 'Transaction codes are defined three digit codes used by a Payment Originator to identify a payment.',
     },

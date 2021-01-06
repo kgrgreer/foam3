@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'CABankAccount',
-  label: 'Canadian Bank Account',
+  label: 'Canada',
   extends: 'net.nanopay.bank.BankAccount',
 
   imports: [
@@ -29,10 +29,12 @@ foam.CLASS({
   ],
 
   requires: [
-    'foam.log.LogLevel',
+    'foam.log.LogLevel'
   ],
 
   javaImports: [
+    'foam.nanos.iban.ValidationIBAN',
+    'foam.nanos.iban.IBANInfo',
     'foam.util.SafetyUtil',
     'java.util.regex.Pattern',
     'net.nanopay.model.Branch',
@@ -61,12 +63,10 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'accountDetails',
-      title: function(forContact) {
-        return forContact ? this.SECTION_DETAILS_TITLE_CONTACT : this.SECTION_DETAILS_TITLE_VOID;
-      },
-      subTitle: `Connect to the account without signing in to online banking.
-          Please ensure the details are entered properly.`
+      name: 'accountInformation',
+      title: function() {
+        return this.forContact ? '' : this.SECTION_DETAILS_TITLE_VOID;
+      }
     },
     {
       name: 'pad',
@@ -80,15 +80,14 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'TRANSIT_NUMBER_REQUIRED', message: 'Transit number required.' },
-    { name: 'TRANSIT_NUMBER_FORMAT', message: 'Transit number must contain numbers.' },
-    { name: 'TRANSIT_NUMBER_FIVE', message: 'Transit number must be 5 digits long.' },
-    { name: 'ACCOUNT_NUMBER_REQUIRED', message: 'Account number required.' },
-    { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number must be between 5 and 12 digits long.' },
-    { name: 'INSTITUTION_NUMBER_REQUIRED', message: 'Institution number required.' },
-    { name: 'INSTITUTION_NUMBER_THREE', message: 'Institution number must be 3 digits long.' },
-    { name: 'ADD_SUCCESSFUL', message: 'Bank Account added successfully!' },
-    { name: 'SECTION_DETAILS_TITLE_CONTACT', message: 'Add contact bank account' },
+    { name: 'TRANSIT_NUMBER_REQUIRED', message: 'Transit number required' },
+    { name: 'TRANSIT_NUMBER_FORMAT', message: 'Transit number must contain numbers' },
+    { name: 'TRANSIT_NUMBER_FIVE', message: 'Transit number must be 5 digits long' },
+    { name: 'ACCOUNT_NUMBER_REQUIRED', message: 'Account number required' },
+    { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number must be between 5 and 12 digits long' },
+    { name: 'INSTITUTION_NUMBER_REQUIRED', message: 'Institution required' },
+    { name: 'INSTITUTION_NUMBER_THREE', message: 'Institution number must be 3 digits long' },
+    { name: 'ADD_SUCCESSFUL', message: 'Bank Account successfully added' },
     { name: 'SECTION_DETAILS_TITLE_VOID', message: 'Connect using a void check' }
   ],
 
@@ -96,19 +95,19 @@ foam.CLASS({
     {
       name: 'country',
       value: 'CA',
-      section: 'accountDetails',
+      section: 'accountInformation',
       visibility: 'RO'
     },
     {
       name: 'flagImage',
-      section: 'accountDetails',
+      section: 'accountInformation',
       label: '',
       value: 'images/flags/cad.png',
       visibility: 'RO'
     },
     {
       name: 'denomination',
-      section: 'accountDetails',
+      section: 'accountInformation',
       gridColumns: 12,
       value: 'CAD',
     },
@@ -121,23 +120,22 @@ foam.CLASS({
       },
       javaGetter: `
         return getAccountNumber();
-      `
-    },
-    {
-      name: 'bankCode',
-      visibility: 'HIDDEN'
+      `,
+      validateObj: function(iban) {
+      }
     },
     {
       name: 'voidChequeImage',
       class: 'String',
       label: '',
-      value: 'images/Canada-Check.png',
-      section: 'accountDetails',
+      value: 'images/Canada-Check3.svg',
+      section: 'accountInformation',
       visibility: 'RO',
       transient: true,
       view: function(_, X) {
         return {
-          class: 'foam.u2.tag.Image'
+          class: 'foam.u2.tag.Image',
+          displayWidth: '100%'
         };
       },
     },
@@ -148,13 +146,13 @@ foam.CLASS({
     {
       name: 'branchId',
       type: 'String',
-      label: 'Transit No.',
-      section: 'accountDetails',
+      label: 'Transit',
+      section: 'accountInformation',
       updateVisibility: 'RO',
+      createVisibility: 'RW',
       gridColumns: 4,
       view: {
         class: 'foam.u2.tag.Input',
-        placeholder: '12345',
         onKey: true
       },
       preSet: function(o, n) {
@@ -178,18 +176,17 @@ foam.CLASS({
       }
     },
     {
-      class: 'String',
       name: 'institutionNumber',
-      label: 'Inst. No.',
+      label: 'Institution',
       documentation: `Provides backward compatibilty for mobile call flow.
           BankAccountInstitutionDAO will lookup the institutionNumber and set the institution property.`,
       updateVisibility: 'RO',
-      section: 'accountDetails',
+      createVisibility: 'RW',
+      section: 'accountInformation',
       storageTransient: true,
-      gridColumns: 2,
+      gridColumns: 3,
       view: {
         class: 'foam.u2.tag.Input',
-        placeholder: '123',
         maxLength: 3,
         onKey: true
       },
@@ -212,14 +209,13 @@ foam.CLASS({
       },
     },
     {
-      class: 'String',
       name: 'accountNumber',
+      label: 'Account',
       updateVisibility: 'RO',
-      section: 'accountDetails',
-      gridColumns: 6,
+      section: 'accountInformation',
+      gridColumns: 5,
       view: {
         class: 'foam.u2.tag.Input',
-        placeholder: '1234567',
         onKey: true
       },
       postSet: function(o, n) {
@@ -234,12 +230,6 @@ foam.CLASS({
           return this.ACCOUNT_NUMBER_INVALID;
         }
       },
-    },
-    {
-      name: 'securityPromoteInfo',
-      label: '',
-      section: 'accountDetails',
-      view: { class: 'net.nanopay.ui.DataSecurityBanner' }
     },
     {
       class: 'String',
@@ -274,7 +264,6 @@ foam.CLASS({
             });
           }))
         .end()
-
         .start()
           .add(obj.slot((accountNumber) => {
               if ( accountNumber ) {
@@ -291,7 +280,7 @@ foam.CLASS({
       of: 'net.nanopay.model.CAPadCapture',
       name: 'padCapture',
       section: 'pad',
-      storageTransient: true,
+      transient: true,
       label: '',
       updateVisibility: 'HIDDEN',
       factory: function() {
@@ -299,24 +288,42 @@ foam.CLASS({
           country: this.country,
           firstName: this.subject.realUser.firstName,
           lastName: this.subject.realUser.lastName,
-          companyName: this.subject.user.businessName,
+          companyName: this.subject.user.organization || this.subject.user.businessName,
           address: this.subject.user.address
         }, this);
       },
       view: function(_, X) {
-        return foam.u2.view.FObjectView.create({
-          of: net.nanopay.model.CAPadCapture
+        return foam.u2.MultiView.create({
+          views: [
+            {
+              class: 'foam.u2.view.FObjectView',
+              of: 'net.nanopay.model.CAPadCapture'
+            },
+            {
+              // displays ca bank account capabilities
+              class: 'foam.nanos.crunch.ui.CapableView',
+              capableObj: X.data.padCapture
+            }
+          ]
         }, X);
+      }
+    },
+    {
+      name: 'swiftCode',
+      label: 'SWIFT/BIC',
+      updateVisibility: 'RO',
+      section: 'accountInformation',
+      validateObj: function(swiftCode) {
       }
     }
   ],
   methods: [
-    async function save() {
+    async function save(stack_back) {
       try {
         await this.padCaptureDAO.put(this.padCapture);
         this.address = this.padCapture.address;
         await this.subject.user.accounts.put(this);
-        if ( this.stack ) this.stack.back();
+        if ( this.stack && stack_back ) this.stack.back();
         this.notify(this.ADD_SUCCESSFUL, '', this.LogLevel.INFO, true);
       } catch (error) {
         this.notify(error.message, '', this.LogLevel.ERROR, true);

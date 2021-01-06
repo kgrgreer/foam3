@@ -55,9 +55,9 @@ foam.CLASS({
       value: 'localFXService'
     },
     {
-      type: 'Long',
+      type: 'String',
       name: 'NANOPAY_FEE_ACCOUNT_ID',
-      value: 2
+      value: '2'
     },
     {
       type: 'Long',
@@ -96,21 +96,20 @@ foam.CLASS({
         fxTransaction.setFxQuoteId(fxQuote.getExternalId());
         fxTransaction.setFxRate(fxQuote.getRate());
         fxTransaction.setDestinationAmount((new Double(fxQuote.getTargetAmount())).longValue());
-        fxTransaction.addLineItems( new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(fxQuote.getExternalId()).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).setSourceCurrency(fxQuote.findSourceCurrency(x)).setDestinationCurrency(fxQuote.findTargetCurrency(x)).build()} );
+        fxTransaction.addLineItems( new TransactionLineItem[] {new FXLineItem.Builder(x).setGroup("fx").setRate(fxQuote.getRate()).setQuoteId(fxQuote.getExternalId()).setExpiry(fxQuote.getExpiryTime()).setAccepted(ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus())).setSourceCurrency(fxQuote.getSourceCurrency()).setDestinationCurrency(fxQuote.getTargetCurrency()).build()} );
         if ( ExchangeRateStatus.ACCEPTED.getName().equalsIgnoreCase(fxQuote.getStatus()) ) {
           fxTransaction.setAccepted(true);
         }
 
-        quote.addTransfer(sourceAccount.getId(), -requestTxn.getAmount());
-        quote.addTransfer(brokerSourceAccount.getId(), requestTxn.getAmount());
-        quote.addTransfer(brokerDestinationAccount.getId(), -fxTransaction.getDestinationAmount());
-        quote.addTransfer(destinationAccount.getId(), fxTransaction.getDestinationAmount());
+        quote.addTransfer(true, sourceAccount.getId(), -requestTxn.getAmount(), 0);
+        quote.addTransfer(true, brokerSourceAccount.getId(), requestTxn.getAmount(), 0);
+        quote.addTransfer(true, brokerDestinationAccount.getId(), -fxTransaction.getDestinationAmount(), 0);
+        quote.addTransfer(true, destinationAccount.getId(), fxTransaction.getDestinationAmount(), 0);
 
         if ( fxQuote.getFee() > 0 ) {
           Long feeAmount = (new Double(fxQuote.getFee())).longValue();
           fxTransaction.addLineItems( new TransactionLineItem[] {new FeeLineItem.Builder(x).setGroup("fx").setNote("FX Broker Fee").setAmount(feeAmount).setDestinationAccount(NANOPAY_FEE_ACCOUNT_ID).build()} );
         }
-        fxTransaction.setIsQuoted(true);
         return fxTransaction;
       }
 

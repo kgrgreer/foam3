@@ -1,0 +1,67 @@
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"appConfig",
+  "lazy":false,
+  "parameters":false,
+  "service": {
+    "class":"foam.nanos.app.AppConfig",
+    "privacyUrl":"/service/file/d6a408c6-587d-b00f-6e04-6a4b933f7495",
+    "copyright":"Copyright © 2017-@{currentYear} nanopay Corp. All rights reserved.",
+    "termsAndCondLink":"/service/file/1f406b9b-bde4-58ff-f171-657627581f61",
+    "url":"http://treviso:8080",
+    "mode":0
+  }
+})
+
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"trevisoService",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    import net.nanopay.country.br.exchange.*;
+
+    // Set exchange limit ($20000.00 USD)
+    EXCHANGE_LIMIT = 2000000L;
+    UTILIZED_LIMIT = 1000L;
+
+    mockExchange = new ExchangeClientMock(x);
+    mockExchange.getStubSearchTitularCapFin().setSearchTitularCapFinResult(
+      new ResponseTitular.Builder(x)
+        .setServiceStatus(new ServiceStatus.Builder(x).setCODRETORNO(0).build())
+        .setTitular(new Titular.Builder(x).setLIMITEOP(EXCHANGE_LIMIT).setUTILIZADO(UTILIZED_LIMIT).build())
+        .build()
+    );
+    return new net.nanopay.partner.treviso.TrevisoService(x, x.get("fepWebService"), mockExchange);
+  """
+})
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"exchange",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    import net.nanopay.country.br.exchange.*;
+
+    // Set exchange limit ($20000.00 USD)
+    EXCHANGE_LIMIT = 2000000L;
+
+    mockExchange = new ExchangeClientMock(x);
+    mockExchange.getStubSearchTitular().setSearchTitularResult(
+      new ResponseTitular.Builder(x)
+        .setServiceStatus(new ServiceStatus.Builder(x).setCODRETORNO(0).build())
+        .setTitular(new Titular.Builder(x).setLIMITEOP(EXCHANGE_LIMIT).build())
+        .build()
+    );
+    return mockExchange;
+  """
+})
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"soaWebService",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.partner.soawebservices.SoaWebServiceClientMock(x);
+  """
+})

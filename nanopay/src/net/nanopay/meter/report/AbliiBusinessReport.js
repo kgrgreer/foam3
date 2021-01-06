@@ -40,8 +40,6 @@ foam.CLASS({
     * Email Address
   `,
 
-  searchColumns: [],
-
   properties: [
     {
       class: 'String',
@@ -178,7 +176,7 @@ foam.CLASS({
       class: 'String',
       name: 'ip',
       label: 'IP Address',
-      documentation: `The IP address of the last time any user 
+      documentation: `The IP address of the last time any user
           of the business logged in`,
       visibility: 'RO',
       toCSVLabel: function (x, outputter) {

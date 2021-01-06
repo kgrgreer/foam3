@@ -22,33 +22,32 @@ import foam.dao.DAO;
 import foam.nanos.auth.Address;
 import foam.nanos.auth.Country;
 import foam.nanos.auth.Region;
+import foam.nanos.auth.ServiceProvider;
 import foam.nanos.auth.User;
+import foam.nanos.crunch.Capability;
+import foam.nanos.crunch.UserCapabilityJunction;
 import foam.nanos.logger.Logger;
 import foam.nanos.NanoService;
 import foam.util.SafetyUtil;
-
-import static foam.mlang.MLang.AND;
-import static foam.mlang.MLang.EQ;
-import static foam.mlang.MLang.INSTANCE_OF;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
 import net.nanopay.bank.BankAccount;
-import foam.nanos.crunch.Capability;
-import foam.nanos.crunch.UserCapabilityJunction;
 import net.nanopay.contacts.Contact;
 import net.nanopay.country.br.BrazilBusinessInfoData;
 import net.nanopay.country.br.CPF;
 import net.nanopay.country.br.exchange.Exchange;
+import net.nanopay.country.br.exchange.ExchangeClientValues;
 import net.nanopay.country.br.exchange.ExchangeCredential;
 import net.nanopay.country.br.exchange.ExchangeCustomer;
 import net.nanopay.country.br.exchange.ExchangeService;
-import net.nanopay.country.br.FederalRevenueService;
+import net.nanopay.country.br.exchange.ExchangeServiceProvider;
 import net.nanopay.country.br.OpenDataService;
 import net.nanopay.country.br.PTaxRate;
 import net.nanopay.country.br.PTaxDollarRateResponse;
+import net.nanopay.country.br.tx.NatureCodeLineItem;
 import net.nanopay.fx.afex.AFEXServiceProvider;
 import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
@@ -65,35 +64,51 @@ import net.nanopay.partner.treviso.api.Document;
 import net.nanopay.partner.treviso.api.Entity;
 import net.nanopay.partner.treviso.api.FepWeb;
 import net.nanopay.partner.treviso.api.FepWebResponse;
+import net.nanopay.country.br.exchange.Boleto;
+import net.nanopay.country.br.exchange.BoletoStatusResponse;
+import net.nanopay.country.br.exchange.GetBoletoStatus;
 import net.nanopay.country.br.exchange.InsertBoleto;
 import net.nanopay.country.br.exchange.InsertBoletoResponse;
 import net.nanopay.country.br.exchange.InsertTitular;
 import net.nanopay.country.br.exchange.InsertTitularResponse;
+import net.nanopay.country.br.exchange.Moeda;
 import net.nanopay.country.br.exchange.Natureza;
 import net.nanopay.partner.treviso.api.ResponsibleArea;
+import net.nanopay.country.br.exchange.Pais;
 import net.nanopay.partner.treviso.api.SaveEntityRequest;
 import net.nanopay.partner.treviso.api.SearchCustomerRequest;
 import net.nanopay.partner.treviso.api.SearchCustomerResponse;
 import net.nanopay.country.br.exchange.SearchNatureza;
 import net.nanopay.country.br.exchange.SearchNaturezaResponse;
 import net.nanopay.country.br.exchange.SearchTitular;
+import net.nanopay.country.br.exchange.SearchTitularCapFin;
+import net.nanopay.country.br.exchange.SearchTitularCapFinResponse;
 import net.nanopay.country.br.exchange.SearchTitularResponse;
 import net.nanopay.country.br.exchange.ServiceStatus;
 import net.nanopay.country.br.exchange.Titular;
 import net.nanopay.country.br.exchange.UpdateTitular;
 import net.nanopay.country.br.exchange.UpdateTitularResponse;
 import net.nanopay.payment.Institution;
+import net.nanopay.tx.FeeLineItem;
+import net.nanopay.tx.FeeSummaryTransactionLineItem;
+import net.nanopay.tx.fee.Rate;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.TransactionLineItem;
+import net.nanopay.tx.model.TransactionStatus;
 
-public class TrevisoService extends ContextAwareSupport implements TrevisoServiceInterface, FXService, ExchangeService, FederalRevenueService {
+import static foam.mlang.MLang.AND;
+import static foam.mlang.MLang.EQ;
+import static foam.mlang.MLang.INSTANCE_OF;
+
+public class TrevisoService extends ContextAwareSupport implements TrevisoServiceInterface, FXService, ExchangeService {
 
   private FepWeb fepWebService;
-  private Exchange exchangeService;
+  private ExchangeService exchangeService;
   private final Logger logger_;
 
-  public TrevisoService(X x, final FepWeb fepWebService, final Exchange exchangeService) {
+  public TrevisoService(X x, final FepWeb fepWebService, final Exchange exchangeClient) {
     this.fepWebService = fepWebService;
-    this.exchangeService = exchangeService;
+    this.exchangeService = new ExchangeServiceProvider(x, exchangeClient);
     setX(x);
     this.logger_ = (Logger) x.get("logger");
   }
@@ -166,7 +181,7 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
     request.setCnpjCpf(cnpj);
     request.setIe(region.getName());
     request.setIm(user.getAddress().getCity());
-    TrevisoCredientials credentials = (TrevisoCredientials) x.get("TrevisoCredientials");
+    TrevisoCredientials credentials = (TrevisoCredientials) x.get("trevisoCredientials");
     ResponsibleArea area = new ResponsibleArea();
     if ( credentials != null ) {
       area.setExtCode(credentials.getFepWebCode());
@@ -175,6 +190,8 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
       platform.setExtCode(credentials.getFepWebCode()); // Set from where?
       platform.setPltfrmNm(credentials.getFepWebCodeName()); // TODO should this be hardcoded?
       area.setCurrentPlatform(platform);
+    } else {
+      throw new RuntimeException("Invalid credentials");
     }
     request.setResponsibleArea(area);
     request.setDocuments(buildCustomerDocuments(user));
@@ -257,288 +274,31 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
   }
 
   public ExchangeCustomer createExchangeCustomerDefault(long userId) throws RuntimeException {
-    return createExchangeCustomer(userId, 1000000L); // Default limit
+    return exchangeService.createExchangeCustomerDefault(userId);
   }
 
   public ExchangeCustomer createExchangeCustomer(long userId, long amount) throws RuntimeException {
-    try {
-      if ( getExchangeCustomer(userId) != null ) return findExchangeCustomer(userId); // User already pushed to Exchange
-    } catch(Throwable t) {
-      logger_.error("Error fetching exchange user" , t);
-    }
-
-    InsertTitular request = new InsertTitular();
-    request.setDadosTitular(getTitularRequest(userId, amount));
-    try {
-      InsertTitularResponse response = exchangeService.insertTitular(request);
-      if ( response == null || response.getInsertTitularResult() == null )
-        throw new RuntimeException("Unable to get a valid response from Exchange while calling insertTitular");
-
-      if ( response.getInsertTitularResult().getCODRETORNO() != 0 )
-        throw new RuntimeException("Error while calling insertTitular: " + response.getInsertTitularResult().getMENSAGEM());
-
-      return saveExchangeCustomer(userId, "Active");
-    } catch(Throwable t) {
-      logger_.error("Error updating Titular" , t);
-      throw new RuntimeException(t);
-    }
-  }
-
-  public ExchangeCustomer findExchangeCustomer(long user) {
-    return (ExchangeCustomer) ((DAO)
-      getX().get("brazilExchangeCustomerDAO")).find(EQ(ExchangeCustomer.USER, user));
-  }
-
-  protected ExchangeCustomer saveExchangeCustomer(long userId, String status) {
-    DAO exchangeCustomerDAO = (DAO) getX().get("brazilExchangeCustomerDAO");
-    ExchangeCustomer client  = findExchangeCustomer(userId);
-    if ( client == null ) {
-      client = (ExchangeCustomer) exchangeCustomerDAO.put(new ExchangeCustomer.Builder(getX())
-        .setUser(userId)
-        .setStatus(status)
-        .build());
-    }
-    return client;
-  }
-
-  public Titular getExchangeCustomer(long userId) throws RuntimeException {
-    SearchTitular request = new SearchTitular();
-    String formattedcpfCnpj = findCpfCnpj(userId).replaceAll("[^0-9]", "");
-    request.setCODIGO(formattedcpfCnpj); // 10786348070
-    SearchTitularResponse response = exchangeService.searchTitular(request);
-    if ( response == null || response.getSearchTitularResult() == null )
-      throw new RuntimeException("Unable to get a valid response from Exchange while calling SearchTitular");
-
-    ServiceStatus status = response.getSearchTitularResult().getServiceStatus();
-    if ( status == null )
-      throw new RuntimeException("Unable to get a valid response from Exchange while calling SearchTitular");
-
-    if ( status.getCODRETORNO() != 0 || response.getSearchTitularResult().getTitular() == null )
-      throw new RuntimeException("Error while calling SearchTitular: " + status.getMENSAGEM());
-
-    return response.getSearchTitularResult().getTitular();
+    return exchangeService.createExchangeCustomer(userId, amount);
   }
 
   public long getTransactionLimit(long userId) throws RuntimeException {
-    return new Double(getExchangeCustomer(userId).getLIMITEOP()).longValue();
+    return exchangeService.getTransactionLimit(userId);
   }
 
   public void updateTransactionLimit(long userId, long amount) throws RuntimeException {
-    UpdateTitular request = new UpdateTitular();
-    Titular titular = getTitularRequest(userId, amount);
-    request.setDadosTitular(titular);
-
-    try {
-      UpdateTitularResponse response = exchangeService.updateTitular(request);
-      if ( response == null || response.getUpdateTitularResult() == null )
-        throw new RuntimeException("Unable to get a valid response from Exchange while calling updateTitular");
-
-      if ( response.getUpdateTitularResult().getCODRETORNO() != 0 )
-        throw new RuntimeException("Error while calling updateTitular: " + response.getUpdateTitularResult().getMENSAGEM());
-    } catch(Throwable t) {
-      logger_.error("Error updating Titular" , t);
-      throw new RuntimeException(t);
-    }
-  }
-
-  protected Titular getTitularRequest(long userId, long amount) {
-    User user = (User) ((DAO) getX().get("bareUserDAO")).find(userId);
-    if ( user == null ) throw new RuntimeException("User not found: " + userId);
-    if ( user.getAddress() == null ) throw new RuntimeException("User address cannot be null: " + userId);
-
-    Titular titular = new Titular();
-    ExchangeCredential credentials = (ExchangeCredential) getX().get("exchangeCredential");
-    titular.setAGENCIA(credentials.getExchangeAgencia());
-    titular.setDTINICIO(user.getCreated());
-    String formattedCpfCnpj = findCpfCnpj(userId).replaceAll("[^0-9]", "");
-    if ( SafetyUtil.isEmpty(formattedCpfCnpj) ) throw new RuntimeException("Invalid CNPJ");
-    titular.setCODIGO(formattedCpfCnpj); // e.g 10786348070
-    titular.setTIPO(1);
-    titular.setSUBTIPO("J"); // F = Physical, J = Legal, S = Symbolic
-    titular.setNOMEAB(getName(user));
-    titular.setNOME(getName(user));
-    titular.setENDERECO(user.getAddress().getAddress());
-    titular.setCIDADE(user.getAddress().getCity());
-    titular.setESTADO(user.getAddress().getRegionId());
-    titular.setCEP(user.getAddress().getPostalCode());
-    titular.setPAIS("1058"); // TODO Pais do Cliente – Código Bacen - Brazil
-    titular.setPAISMT("1058"); // TODO Pais Matriz do Cliente - Bacen Code - Brazil
-    titular.setLIMITEOP(new Long(amount).doubleValue());
-
-    return titular;
+    exchangeService.updateTransactionLimit(userId, amount);
   }
 
   public Transaction createTransaction(Transaction transaction) throws RuntimeException {
-    BankAccount bankAccount = (BankAccount)transaction.findSourceAccount(getX());
-    if ( null == bankAccount ) throw new RuntimeException("Invalid source bank account " + transaction.getId());
-    User user = (User) ((DAO) getX().get("bareUserDAO")).find(bankAccount.getOwner());
-    if ( user == null ) throw new RuntimeException("User not found: " + bankAccount.getOwner());
+    return exchangeService.createTransaction(transaction);
+  }
 
-    InsertBoleto request = new InsertBoleto();
-    Boleto dadosBoleto = new Boleto();
-    ExchangeCredential credentials = (ExchangeCredential) getX().get("exchangeCredential");
-    dadosBoleto.setAGENCIA(credentials.getExchangeAgencia());
-    dadosBoleto.setBANCO(bankAccount.getBankCode());
-
-    Institution institution = (Institution) ((DAO) getX().get("institutionDAO")).find(bankAccount.getInstitution());
-    if ( institution != null ) {
-      dadosBoleto.setBANCOBEN1(institution.getSwiftCode());
-    }
-    Address bankAddress = bankAccount.getAddress() == null ? bankAccount.getBankAddress() : bankAccount.getAddress();
-    if ( bankAddress != null ) {
-      dadosBoleto.setBANCOBEN3(bankAddress.getCity());
-    }
-
-    dadosBoleto.setCLAUSULAXX(false);
-    String formattedCpfCnpj = findCpfCnpj(user.getId()).replaceAll("[^0-9]", "");
-    dadosBoleto.setCNPJPCPFCLIENTE(formattedCpfCnpj); // eg 10786348070
-
-    SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-    Date completionDate = transaction.getCompletionDate();
-    if ( completionDate == null )
-      completionDate = ((ClearingTimeService) getX().get("clearingTimeService")).estimateCompletionDateSimple(getX(), transaction);
-
-    try {
-      String completionDateString = sdf.format(completionDate);
-      dadosBoleto.setDATALQ(completionDateString);
-      dadosBoleto.setDATAME(completionDateString); // TODO Foreign currency delivery date ( DD / MM / YYYY)
-      dadosBoleto.setDATAMN(completionDateString); // TODO National currency delivery date ( DD / MM / YYYY)
-    } catch(Throwable t) {
-      logger_.error("Unable to parse completion date", t);
-      throw new RuntimeException("Error inserting boleto. Cound not parse completion date.");
-    }
-
-    if ( user instanceof Business ) {
-      try {
-        dadosBoleto.setDATAOP(sdf.format(((Business) user).getBusinessRegistrationDate()));
-      } catch(Throwable t) {
-        logger_.error("Unable to parse business registration date", t);
-        throw new RuntimeException("Error inserting boleto. Cound not parse business registration date.");
-      }
-    }
-
-    // TODO consider fixing problem with parsing default values because we are checking PropertyInfo isSet.
-    dadosBoleto.setFORMAME(dadosBoleto.getFORMAME());
-    dadosBoleto.setFORMAMN(dadosBoleto.getFORMAMN());
-    dadosBoleto.setGIRO(dadosBoleto.getGIRO());
-    dadosBoleto.setIMPRESSO(dadosBoleto.getIMPRESSO());
-    dadosBoleto.setOPLINHA(dadosBoleto.getOPLINHA());
-    dadosBoleto.setPAIS(dadosBoleto.getPAIS());
-    dadosBoleto.setPARIDADE(dadosBoleto.getPARIDADE());
-    dadosBoleto.setPLATBMF(dadosBoleto.getPLATBMF());
-    dadosBoleto.setRSISB(dadosBoleto.getRSISB());
-    dadosBoleto.setSEGMENTO(dadosBoleto.getSEGMENTO());
-    dadosBoleto.setTIPO(dadosBoleto.getTIPO());
-
-    dadosBoleto.setSTATUS("R"); // "R" - Pre-Boleto
-    if ( transaction instanceof FXTransaction ) {
-      dadosBoleto.setTAXAOP(((FXTransaction) transaction).getFxRate() );
-    } else {
-      dadosBoleto.setTAXAOP(1);
-    }
-
-    dadosBoleto.setVALORME(transaction.getAmount());
-    dadosBoleto.setVALORMN(transaction.getDestinationAmount());
-    request.setDadosBoleto(dadosBoleto);
-    InsertBoletoResponse response = exchangeService.insertBoleto(request);
-    if ( response == null || response.getInsertBoletoResult() == null )
-      throw new RuntimeException("Unable to get a valid response from Exchange while calling insertBoleto");
-
-    if ( response.getInsertBoletoResult().getCODRETORNO() != 0 )
-      throw new RuntimeException("Error while calling insertBoleto: " + response.getInsertBoletoResult().getMENSAGEM());
-
-    transaction.setReferenceNumber(response.getInsertBoletoResult().getNRREFERENCE());
-    return transaction;
+  public Transaction updateTransactionStatus(Transaction transaction) throws RuntimeException {
+    return exchangeService.updateTransactionStatus(transaction);
   }
 
   public List searchNatureCode(String natureCode) throws RuntimeException {
-    List<Natureza> natureCodes = new ArrayList<>();
-    SearchNatureza request  = new SearchNatureza();
-    request.setCD_NATUREZA(natureCode);
-    try {
-      SearchNaturezaResponse response = exchangeService.searchNatureza(request);
-      if ( response == null || response.getSearchNaturezaResult() == null )
-        throw new RuntimeException("Unable to get a valid response from Exchange while calling searchNatureza");
-
-      ServiceStatus status = response.getSearchNaturezaResult().getServiceStatus();
-      if ( status == null )
-        throw new RuntimeException("Unable to get a valid response from Exchange while calling SearchTitular");
-
-      if ( status.getCODRETORNO() != 0 )
-        throw new RuntimeException("Error while calling searchNatureza: " + status.getMENSAGEM());
-
-      if ( response.getSearchNaturezaResult().getNatureza() != null ) {
-        for ( Natureza nCode : response.getSearchNaturezaResult().getNatureza() ) {
-          natureCodes.add(nCode);
-        }
-      }
-
-      return natureCodes;
-
-    } catch(Throwable t) {
-      logger_.error("Error searching nature code" , t);
-      throw new RuntimeException(t);
-    }
-  }
-
-  public boolean validateCnpj(String cnpj) throws RuntimeException {
-    try {
-      String formattedCnpj = cnpj.replaceAll("[^0-9]", "");
-      TrevisoCredientials credentials = (TrevisoCredientials) getX().get("TrevisoCredientials");
-      if ( null == credentials ) throw new RuntimeException("Invalid credientials. Treviso token required to validate CNPJ");
-      CNPJResponseData data = ((Sintegra) getX().get("sintegraService")).getCNPJData(formattedCnpj, credentials.getSintegraToken());
-      if ( data == null ) throw new RuntimeException("Unable to get a valid response from CNPJ validation.");
-
-      if ( ! "0".equals(data.getCode()) ) throw new RuntimeException(data.getMessage());
-
-      return "ATIVA".equals(data.getSituacao());
-    } catch(Throwable t) {
-      logger_.error("Error validating CNPJ" , t);
-      throw new RuntimeException(t);
-    }
-  }
-
-  public boolean validateUserCpf(String cpf, long userId) throws RuntimeException {
-    User user = (User) ((DAO) getX().get("bareUserDAO")).find(userId);
-    if ( user == null ) throw new RuntimeException("User cannot be null");
-
-    return validateCpf(cpf, findUserBirthDate(userId));
-  }
-
-  public boolean validateCpf(String cpf, Date dateOfBirth) throws RuntimeException {
-    String birthDate = "";
-    try {
-      SimpleDateFormat sdf = new SimpleDateFormat("ddMMyyyy");
-      sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-      birthDate = sdf.format(dateOfBirth);
-    } catch(Throwable t) {
-      logger_.error("Unable to parse user birth date: " , t);
-      throw new RuntimeException("Unable to parse user birth date.");
-    }
-
-    try {
-      String formattedCpf = cpf.replaceAll("[^0-9]", "");
-      TrevisoCredientials credentials = (TrevisoCredientials) getX().get("TrevisoCredientials");
-      if ( null == credentials ) throw new RuntimeException("Invalid credientials. Treviso token required to validate CPF");
-      CPFResponseData data = ((Sintegra) getX().get("sintegraService")).getCPFData(formattedCpf, birthDate, credentials.getSintegraToken());
-      if ( data == null ) throw new RuntimeException("Unable to get a valid response from CPF validation.");
-
-      if ( ! "0".equals(data.getCode()) ) throw new RuntimeException(data.getMessage());
-
-      return "REGULAR".equalsIgnoreCase(data.getSituacaoCadastral());
-    } catch(Throwable t) {
-      logger_.error("Error validating CPF" , t);
-      throw new RuntimeException(t);
-    }
-  }
-
-  protected Date findUserBirthDate(long userId) {
-    UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) getX().get("userCapabilityJunctionDAO")).find(AND(
-        EQ(UserCapabilityJunction.TARGET_ID, "8bffdedc-5176-4843-97df-1b75ff6054fb"),
-        EQ(UserCapabilityJunction.SOURCE_ID, userId)
-    ));
-    return (ucj != null && ucj.getData() != null) ? ((net.nanopay.crunch.onboardingModels.UserBirthDateData)ucj.getData()).getBirthday() : null;
+    return exchangeService.searchNatureCode(natureCode);
   }
 
 }

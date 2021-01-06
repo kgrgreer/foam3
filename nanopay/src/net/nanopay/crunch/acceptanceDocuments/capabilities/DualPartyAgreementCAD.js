@@ -21,7 +21,7 @@ foam.CLASS({
   extends: 'net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability',
 
   messages: [
-    { name: 'ACKNOWLEDGE_AGREEMENT', message: 'Must acknowledge the agreement above.' }
+    { name: 'ACKNOWLEDGE_AGREEMENT', message: 'Must acknowledge the agreement above' }
   ],
 
   properties: [
@@ -40,8 +40,10 @@ foam.CLASS({
       }
     },
     {
-      name: 'link',
-      value: 'https://nanopay.net/wp-content/uploads/2019/05/nanopay-Canada-Dual-Agreement.pdf'
+      name: 'fileId',
+      factory: function() {
+        return '971d0fe5-4e69-311f-87c1-5a06866620b7';
+      }
     },
     {
       name: 'checkboxText',

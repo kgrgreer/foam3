@@ -18,10 +18,23 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'IEBankAccount',
-  label: 'Ireland Bank Account',
-  extends: 'net.nanopay.bank.BankAccount',
+  label: 'Ireland',
+  extends: 'net.nanopay.bank.EUBankAccount',
 
   documentation: 'Ireland bank account information.',
+
+  constants: [
+    {
+      name: 'ACCOUNT_NUMBER_PATTERN',
+      type: 'Regex',
+      factory: function() { return /^[0-9]{8}$/; }
+    },
+    {
+      name: 'INSTITUTION_NUMBER_PATTERN',
+      type: 'Regex',
+      factory: function() { return /^[A-z0-9a-z]{4}$/; }
+    }
+  ],
 
   properties: [
     {
@@ -36,16 +49,16 @@ foam.CLASS({
       visibility: 'RO'
     },
     {
+      name: 'denomination',
+      section: 'accountInformation',
+      gridColumns: 12,
+      value: 'EUR',
+    },
+    {
       name: 'accountNumber',
-      label: 'Account No.',
       updateVisibility: 'RO',
-      view: {
-        class: 'foam.u2.tag.Input',
-        placeholder: '12345678',
-        onKey: true
-      },
       preSet: function(o, n) {
-        return /^\d*$/.test(n) ? n : o;
+        return /^[\d\w]*$/.test(n) ? n : o;
       },
       tableCellFormatter: function(str) {
         if ( ! str ) return;
@@ -54,48 +67,41 @@ foam.CLASS({
           .add(displayAccountNumber);
         this.tooltip = displayAccountNumber;
       },
-      validateObj: function(accountNumber) {
-        var accNumberRegex = /^[0-9]{8}$/;
+      validateObj: function(accountNumber, iban) {
+        if ( iban )
+          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
-        if ( accountNumber === '' ) {
-          return this.ACCOUNT_NUMBER_REQUIRED;
-        } else if ( ! accNumberRegex.test(accountNumber) ) {
-          return this.ACCOUNT_NUMBER_INVALID;
+        if ( ! iban || (iban && ibanMsg != 'passed') ) {
+          if ( accountNumber === '' ) {
+            return this.ACCOUNT_NUMBER_REQUIRED;
+          } else if ( ! this.ACCOUNT_NUMBER_PATTERN.test(accountNumber) ) {
+            return this.ACCOUNT_NUMBER_INVALID;
+          }
         }
       }
     },
     {
-      name: 'bankCode',
-      label: 'Bank Code',
+      name: 'institutionNumber',
       updateVisibility: 'RO',
-      validateObj: function(bankCode) {
-        var regex = /^[A-z0-9a-z]{4}$/;
+      validateObj: function(institutionNumber, iban) {
+        if ( iban )
+          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
 
-        if ( bankCode === '' ) {
-          return this.BANK_CODE_REQUIRED;
-        } else if ( ! regex.test(bankCode) ) {
-          return this.BANK_CODE_INVALID;
-        }
-      }
-    },
-    {
-      class: 'String',
-      name: 'sortCode',
-      label: 'Sort Code',
-      section: 'accountDetails',
-      updateVisibility: 'RO',
-      validateObj: function(sortCode) {
-        var sortCodeRegex = /^[0-9]{6}$/;
-
-        if ( sortCode === '' ) {
-          return this.SORT_CODE_REQUIRED;
-        } else if ( ! sortCodeRegex.test(sortCode) ) {
-          return this.SORT_CODE_INVALID;
+        if ( ! iban || (iban && ibanMsg != 'passed') ) {
+          if ( institutionNumber === '' ) {
+            return this.INSTITUTION_NUMBER_REQUIRED;
+          } else if ( ! this.INSTITUTION_NUMBER_PATTERN.test(institutionNumber) ) {
+            return this.INSTITUTION_NUMBER_INVALID;
+          }
         }
       }
     },
     {
       name: 'desc',
+      visibility: 'HIDDEN'
+    },
+    {
+      name: 'branchId',
       visibility: 'HIDDEN'
     }
   ]

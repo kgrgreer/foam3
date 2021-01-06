@@ -8,7 +8,7 @@ p({
   "settingsRootMenu":"smeSettings",
   "logoRedirect":"sme.main.appStore",
   "admissionCapability": "554af38a-8225-87c8-dfdf-eeb15f71215e-18",
-  "defaultMenu":"sme.accountProfile.switch-business",
+  "defaultMenu":"sme.main.appStore",
   "disableCurrencyChoice": true,
   "loginImage": "images/sign_in_illustration.png",
   "logo":"images/gd/gd-logo-72x72.png",
@@ -64,12 +64,6 @@ p({
   "inputHorizontalPadding":"8px",
   "customCSS":
   """
-    .foam-u2-stack-StackView {
-      margin: auto;
-      padding-bottom: 65px;
-      overflow: scroll;
-      height: calc(100vh - 100px);
-    }
     .net-nanopay-ui-Controller {
       overflow: hidden;
     }
@@ -88,5 +82,6 @@ p({
   """,
   "createdBy":1,
   "createdByAgent":1,
-  "created":"2020-04-29T22:32:52.685Z"
+  "created":"2020-04-29T22:32:52.685Z",
+  "spid":"gd"
 })

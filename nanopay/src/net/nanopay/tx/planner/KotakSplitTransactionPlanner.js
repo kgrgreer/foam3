@@ -108,11 +108,11 @@ foam.CLASS({
 
       FXSummaryTransaction txn = new FXSummaryTransaction.Builder(x).build();
       txn.copyFrom(requestTxn);
-      txn.addNext(createCompliance(requestTxn));
+      txn.addNext(createComplianceTransaction(requestTxn));
       FXLineItem fxLineItem = new FXLineItem();
       fxLineItem.setRate(fxQuote.getRate());
-      fxLineItem.setSourceCurrency(fxQuote.findSourceCurrency(x));
-      fxLineItem.setDestinationCurrency(fxQuote.findTargetCurrency(x));
+      fxLineItem.setSourceCurrency(fxQuote.getSourceCurrency());
+      fxLineItem.setDestinationCurrency(fxQuote.getTargetCurrency());
       txn.addLineItems( new TransactionLineItem[] { fxLineItem } );
 
       DigitalAccount destinationDigitalaccount = DigitalAccount.findDefault(x, destinationAccount.findOwner(x), sourceAccount.getDenomination());
@@ -136,14 +136,7 @@ foam.CLASS({
       if ( kotakPlan != null ) {
 
         // add transfer to update CI trust account
-        TrustAccount trustAccount = null;
-        if ( cashinPlan instanceof BmoCITransaction ) {
-          trustAccount = TrustAccount.find(x, quote.getSourceAccount(), BMO_INSTITUTION_NUMBER);
-        } else if ( cashinPlan instanceof RbcCITransaction ) {
-          trustAccount = TrustAccount.find(x, quote.getSourceAccount(), RBC_INSTITUTION_NUMBER);
-        } else {
-          trustAccount = TrustAccount.find(x, quote.getSourceAccount(), ALTERNA_INSTITUTION_NUMBER);
-        }
+        TrustAccount trustAccount =  ((DigitalAccount) cashinPlan.findDestinationAccount(x)).findTrustAccount(x);
         Transfer t = new Transfer();
         t.setAccount(trustAccount.getId());
         t.setAmount(requestTxn.getAmount());

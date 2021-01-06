@@ -17,7 +17,7 @@ foam.CLASS({
       flags: ['web'],
       name: 'save',
       code: async function() {
-        var ucj = await this.crunchController.save(this);
+        var ucj = await this.SUPER();
         if ( ucj.status === foam.nanos.crunch.CapabilityJunctionStatus.GRANTED )
           this.window.location.reload();
         return;

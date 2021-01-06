@@ -34,17 +34,41 @@ foam.CLASS({
       documentation: 'Name of business sector.'
     },
     {
+      class: 'String',
+      name: 'code',
+      label: 'Business Sector Code',
+      documentation: 'business sector code.'
+    },
+    {
       class: 'Long',
       name: 'parent'
-    }
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.Country',
+      name: 'countryId',
+      view: function(_, X) {
+        return foam.u2.view.ChoiceView.create({
+          dao: X.countryDAO,
+          objToChoice: function(a) {
+            return [a.id, a.name];
+          },
+          placeholder: 'Select a Country'
+        });
+      }
+    },
   ],
 
   methods: [
     {
       name: 'toSummary',
+      type: 'String',
       code: function(x) {
         return this.name;
       },
+      javaCode: `
+        return getName();
+      `
     },
   ]
 });

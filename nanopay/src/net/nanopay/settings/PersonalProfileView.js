@@ -70,7 +70,7 @@ foam.CLASS({
     }
     ^ h1{
       opacity: 0.6;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 20px;
       font-weight: 300;
       line-height: 1;
@@ -80,7 +80,7 @@ foam.CLASS({
       display: inline-block;
     }
     ^ h2{
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: 300;
       letter-spacing: 0.2px;
@@ -92,7 +92,7 @@ foam.CLASS({
       background-color: #ffffff;
       border: solid 1px rgba(164, 179, 184, 0.5);
       padding: 10px;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       line-height: 1.33;
       letter-spacing: 0.2;
@@ -104,7 +104,7 @@ foam.CLASS({
       height: 40px;
       background-color: #ffffff;
       border: solid 1px rgba(164, 179, 184, 0.5);
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       line-height: 1.33;
       letter-spacing: 0.2px;
@@ -135,7 +135,7 @@ foam.CLASS({
       width: 135px;
       height: 40px;
       border-radius: 2px;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       line-height: normal;
       letter-spacing: 0.2px;
@@ -170,7 +170,7 @@ foam.CLASS({
     ^ .status-Text {
       width: 90px;
       height: 14px;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       letter-spacing: 0.2px;
       text-align: left;
@@ -197,7 +197,7 @@ foam.CLASS({
       float: left;
     }
     ^ .tfa-qr-code span {
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       font-weight: normal;
       font-style: normal;
@@ -212,7 +212,7 @@ foam.CLASS({
       float: right;
     }
     ^ .tfa-download span {
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       font-weight: normal;
       font-style: normal;
@@ -224,7 +224,7 @@ foam.CLASS({
     }
     ^ .tfa-download a {
       height: 16px;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       font-weight: normal;
       font-style: normal;
@@ -344,18 +344,18 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'NO_INFORMATION', message: 'Please fill out all necessary fields before proceeding.' },
-    { name: 'INVALID_PHONE', message: 'Phone Number is invalid.' },
-    { name: 'INVALID_MOBILE', message: 'Mobile Phone Number is invalid.' },
-    { name: 'INFORMATION_UPDATED', message: 'Information has been successfully changed.' },
+    { name: 'NO_INFORMATION', message: 'Please fill out all necessary fields before proceeding' },
+    { name: 'INVALID_PHONE', message: 'Phone Number is invalid' },
+    { name: 'INVALID_MOBILE', message: 'Mobile Phone Number is invalid' },
+    { name: 'INFORMATION_UPDATED', message: 'Information has been successfully changed' },
     { name: 'FORM_ERROR', message: 'Error while saving your changes. Please review your input and try again.' },
     { name: 'JOB_TITLE_EMPTY_ERROR', message: 'Job title can\'t be empty' },
     { name: 'JOB_TITLE_LENGTH_ERROR', message: 'Job title is too long' },
     { name: 'EMAIL_ERROR', message: 'Invalid email address' },
-    { name: 'TWO_FACTOR_NO_TOKEN_ERROR', message: 'Please enter a verification token.' },
-    { name: 'TWO_FACTOR_ENABLE_SUCCESS', message: 'Two-factor authentication enabled.' },
+    { name: 'TWO_FACTOR_NO_TOKEN_ERROR', message: 'Please enter a verification token' },
+    { name: 'TWO_FACTOR_ENABLE_SUCCESS', message: 'Two-factor authentication enabled' },
     { name: 'TWO_FACTOR_ENABLE_ERROR', message: 'Could not enable two-factor authentication. Please try again.' },
-    { name: 'TWO_FACTOR_DISABLE_SUCCESS', message: 'Two-factor authentication disabled.' },
+    { name: 'TWO_FACTOR_DISABLE_SUCCESS', message: 'Two-factor authentication disabled' },
     { name: 'TWO_FACTOR_DISABLE_ERROR', message: 'Could not disable two-factor authentication. Please try again.' }
   ],
 

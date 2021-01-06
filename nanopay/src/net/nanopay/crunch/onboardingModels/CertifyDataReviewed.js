@@ -18,6 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.crunch.onboardingModels',
   name: 'CertifyDataReviewed',
+  extends: 'foam.nanos.crunch.RenewableData',
 
   implements: [
     'foam.core.Validatable',
@@ -34,7 +35,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'REVIEW_REQUIRED_ERROR', message: 'All data must be reviewed by a signing officer.' }
+    { name: 'REVIEW_REQUIRED_ERROR', message: 'All data must be reviewed by a signing officer' }
   ],
 
   sections: [
@@ -50,7 +51,7 @@ foam.CLASS({
       section: 'reviewDataSection',
       transient: true,
       hidden: true,
-      factory: function() {
+      expression: function() {
         var self = this;
         this.auth.check(this.__subContext__, "certifydatareviewed.rw.reviewed").then((result) => { 
           self.canReview = result;

@@ -5,6 +5,7 @@ import static foam.mlang.MLang.EQ;
 
 import java.util.List;
 
+import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
@@ -111,7 +112,11 @@ public class RbcPlannerTest
   private DigitalAccount createTestDigitalAccount(BankAccount testBankAccount){
     DAO userDAO = (DAO) x_.get("localUserDAO");
     User user = (User) userDAO.find_(x_, testBankAccount.getOwner());
-    return DigitalAccount.findDefault(x_, user, "CAD");
+    DigitalAccount d =  (DigitalAccount) DigitalAccount.findDefault(x_, user, "CAD").fclone();
+    d.setTrustAccount("11");
+    DAO dao = (DAO) x_.get("accountDAO");
+    d = (DigitalAccount) (dao.put(d)).fclone();
+    return d;
   }
 
   private Transaction createCOTransaction(BankAccount testBankAccount, DigitalAccount testDigitalAccount){
@@ -129,15 +134,12 @@ public class RbcPlannerTest
   }
 
   public void testRbcCOTransaction() {
-    TransactionQuote quote = new TransactionQuote.Builder(x_)
-      .setRequestTransaction(createCOTransaction(testBankAccount,testDigitalAccount))
-      .build();
 
     TransactionQuote resultQuote = (TransactionQuote) ((DAO) x_.get("localTransactionPlannerDAO"))
-      .put(quote);
+      .put(createCOTransaction(testBankAccount,testDigitalAccount));
 
     test(resultQuote != null, "Result CO Quote is not null" );
-    test(resultQuote.getPlans() != null && resultQuote.getPlans().length > 0, "Result CO Quote has plane" );
+    test(resultQuote.getPlans() != null && resultQuote.getPlans().length > 0, "Result CO Quote has plan" );
     
     boolean hasRbcCOTransaction = false;
     for ( Transaction plan : resultQuote.getPlans() ) {
@@ -150,15 +152,12 @@ public class RbcPlannerTest
   }
 
   public void testRbcCITransaction() {
-    TransactionQuote quote = new TransactionQuote.Builder(x_)
-      .setRequestTransaction(createCITransaction(testBankAccount,testDigitalAccount))
-      .build();
 
     TransactionQuote resultQuote = (TransactionQuote) ((DAO) x_.get("localTransactionPlannerDAO"))
-      .put(quote);
+      .put(createCITransaction(testBankAccount,testDigitalAccount));
 
     test(resultQuote != null, "Result CI Quote is not null" );
-    test(resultQuote.getPlans() != null && resultQuote.getPlans().length > 0, "Result CI Quote has plane" );
+    test(resultQuote.getPlans() != null && resultQuote.getPlans().length > 0, "Result CI Quote has plan" );
     
     boolean hasRbcCITransaction = false;
     for ( Transaction plan : resultQuote.getPlans() ) {
@@ -171,13 +170,10 @@ public class RbcPlannerTest
   }
 
   public void testWrongInstitution() {
-    TransactionQuote quote = new TransactionQuote.Builder(x_)
-      .setRequestTransaction(createCITransaction(testWrongBankAccount,testDigitalAccount))
-      .build();
 
     try {
       TransactionQuote resultQuote = (TransactionQuote) ((DAO) x_.get("localTransactionPlannerDAO"))
-      .put(quote);
+      .put(createCITransaction(testWrongBankAccount,testDigitalAccount));
     } catch(Exception e) {
       test(true, "Unable to find a plan for requested transaction." );
     }

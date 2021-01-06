@@ -66,7 +66,7 @@ foam.CLASS({
       display: inline-block;
       vertical-align: middle;
       font-size: 16px;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
     ^ .menu-item {
       margin: 14px 16px;
@@ -185,7 +185,6 @@ foam.CLASS({
       name: 'dao',
       expression: function(loginSuccess) {
         return this.menuDAO
-          .orderBy(this.Menu.ORDER)
           .where(
             this.AND(
               this.STARTS_WITH(this.Menu.ID, 'sme.main'),

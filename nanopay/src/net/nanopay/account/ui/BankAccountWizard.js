@@ -20,6 +20,10 @@ foam.CLASS({
   name: 'BankAccountWizard',
   extends: 'foam.u2.detail.WizardSectionsView',
 
+  imports: [
+    'stack'
+  ],
+
   css: `
     ^ .foam-u2-detail-SectionedDetailView .inner-card {
       padding: 0px;
@@ -31,7 +35,7 @@ foam.CLASS({
     }
     ^ .checkBoxText {
       font-size: 10px;
-      color: /*%GREY1%*/ #8e9090;
+      color: /*%GREY1%*/ #5e6061;
     }
     ^ .net-nanopay-documents-AcceptanceDocumentUserInputView .checkBox {
       display: none;
@@ -47,13 +51,13 @@ foam.CLASS({
       padding: 0px;
     }
     ^ .sectioned-detail-property-supportingDocuments m3 {
-      color: /*%GREY2%*/ #8e9090;
+      color: /*%GREY2%*/ #9ba1a6;
     }
   `,
 
   messages: [
-    { name: 'SUCCESS', message: 'Bank account successfully added.' },
-    { name: 'ERROR', message: 'Bank account error occured.' }
+    { name: 'SUCCESS', message: 'Bank account successfully added' },
+    { name: 'ERROR', message: 'Bank account error occured' }
   ],
 
   methods: [
@@ -83,16 +87,37 @@ foam.CLASS({
   actions: [
     {
       name: 'submit',
-      label: 'I agree',
-      isEnabled: function(data$errors_) {
-        return ! data$errors_;
+      isEnabled: function(currentIndex,
+                          data$errors_,
+                          data$padCapture$address$errors_,
+                          data$padCapture$capablePayloads,
+                          data$padCapture$capabilityIds,
+                          ) {
+        if ( data$errors_ || data$padCapture$address$errors_ ) return false;
+
+        if (data$padCapture$capabilityIds.length > data$padCapture$capablePayloads.length) return false;
+        
+        if ( data$padCapture$capablePayloads ) {
+          for ( payload of data$padCapture$capablePayloads ) {
+            if ( ! data$padCapture$capabilityIds.includes(payload.capability) && (! payload.data || ! payload.data.agreement) ) return false;
+          }
+        }
+
+        return true;
       },
       isAvailable: function(nextIndex) {
         return nextIndex === -1;
       },
       code: async function(X) {
-        await X.data.data.save();
+        await X.data.data.save(false);
         X.closeDialog();
+
+        // redirect to bank account lists view if you added a bank account
+        // on BankPickCurrencyView
+        const curView = this.stack.stack_[this.stack.pos]; // top view on the stack
+        if ( curView[0].class === 'net.nanopay.bank.ui.BankPickCurrencyView' ) {
+          this.stack.back();
+        }
       }
     }
   ]

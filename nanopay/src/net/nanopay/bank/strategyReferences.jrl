@@ -203,3 +203,19 @@ p({
   "strategy":"net.nanopay.bank.SKBankAccount",
   "label": "Slovakia"
 })
+
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"20f2e47c-13b8-11eb-adc1-0242ac120002",
+  "desiredModelId":"net.nanopay.bank.BankAccount",
+  "strategy":"net.nanopay.bank.SEBankAccount",
+  "label": "Sweden"
+})
+
+p({
+  "class":"foam.strategy.StrategyReference",
+  "id":"6df3094b-e275-4a1b-a90c-b7b1c5be90fb",
+  "desiredModelId":"net.nanopay.bank.BankAccount",
+  "strategy":"net.nanopay.bank.ESBankAccount",
+  "label": "Spain"
+})

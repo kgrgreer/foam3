@@ -30,7 +30,7 @@ foam.CLASS({
   ],
 
   requires: [
-    'net.nanopay.ui.topNavigation.LanguageChoiceView'
+    'foam.nanos.auth.LanguageChoiceView'
   ],
 
   css: `
@@ -38,7 +38,7 @@ foam.CLASS({
       display: flex;
       justify-content: space-between;
       background-color: /*%PRIMARY1%*/ #202341;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
     ^ .logo-wrapper {
       cursor: pointer;
@@ -73,7 +73,7 @@ foam.CLASS({
     }
     ^ .foam-nanos-menu-SubMenuView-inner > div {
       height: 40px;
-      padding-left: 50px;
+      padding: 8px 0px 8px 50px;
       font-size: 14px;
       font-weight: 300;
       color: /*%BLACK%*/ #1e1f21;
@@ -85,7 +85,7 @@ foam.CLASS({
       color: /*%BLACK%*/ black;
     }
     ^ .foam-nanos-menu-SubMenuView-inner > div:hover {
-      background-color: /*%GREY5%*/ #406dea;
+      background-color: /*%GREY5%*/ #f5f7fa;
       cursor: pointer;
     }
     ^ .foam-nanos-menu-SubMenuView-inner::before {
@@ -112,7 +112,7 @@ foam.CLASS({
       background-color: /*%PRIMARY1%*/ #202341;
       height: 60px;
       justify-content: center;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     }
   `,
 
@@ -135,7 +135,7 @@ foam.CLASS({
               .tag({ class: 'foam.nanos.u2.navigation.ApplicationLogoView' })
             .end()
             .start().addClass('navigation-components')
-              .tag({ class: 'net.nanopay.ui.topNavigation.LanguageChoiceView' })
+              .tag({ class: 'foam.nanos.auth.LanguageChoiceView' })
               .callIf( ! this.theme.disableCurrencyChoice, function() {
                 this.tag({ class: 'net.nanopay.ui.topNavigation.CurrencyChoiceView' });
               })

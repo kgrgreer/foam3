@@ -62,8 +62,6 @@ foam.CLASS({
     * Service - DJ News
   `,
 
-  searchColumns: [],
-
   properties: [
     {
       class: 'String',

@@ -25,21 +25,32 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'ACKNOWLEDGE_BRAZIL_TC', message: 'Must acknowledge the Terms and Conditions.' }
+    { name: 'ACKNOWLEDGE_BRAZIL_TC', message: 'Must acknowledge the Terms and Conditions' }
+  ],
+
+  sections: [
+    {
+      name: 'reviewAgreementDocumentsSection',
+      title: 'Review and accept the terms and conditions',
+      navTitle: 'Terms and Conditions',
+      permissionRequired: false
+    }
   ],
 
   properties: [
     {
       name: 'title',
-      value: `Unlock payment Terms and Conditions`
+      value: `the Terms and Conditions`
     },
     {
       name: 'checkboxText',
       value: 'I agree to '
     },
     {
-      name: 'link',
-      value: '/service/file/9ff66c65-09be-f263-2389-d46ba1b30eb1'
+      name: 'fileId',
+      factory: function() {
+        return '61ee89ca-19ec-d8fc-0306-380657a38949';
+      }
     },
     {
       name: 'agreement',

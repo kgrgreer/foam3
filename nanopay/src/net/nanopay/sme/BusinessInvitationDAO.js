@@ -52,16 +52,9 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'ADD_PERMISSION_ERROR_MSG', message: 'You don\'t have the ability to add users to this business.' },
+    { name: 'ADD_PERMISSION_ERROR_MSG', message: 'You don\'t have the ability to add users to this business' },
     { name: 'DUPLICATE_INVITATION_ERROR_MSG', message: 'Invitation already exists' },
-    { name: 'ENCODING_ERROR_MSG', message: 'Error encoding the email or business name.' }
-  ],
-
-  properties: [
-    {
-      class: 'foam.dao.DAOProperty',
-      name: 'whitelistedEmailDAO'
-    }
+    { name: 'ENCODING_ERROR_MSG', message: 'Error encoding the email or business name' }
   ],
 
   axioms: [
@@ -71,7 +64,6 @@ foam.CLASS({
         cls.extras.push(`
           public BusinessInvitationDAO(X x, DAO delegate) {
             super(x, delegate);
-            setWhitelistedEmailDAO((DAO) x.get("whitelistedEmailDAO"));
           }    
         `
         );
@@ -169,12 +161,6 @@ foam.CLASS({
           joinBusiness.generateTokenWithParameters(x, invitee, parameters);
         } else {
           // Inviting a user who's not on our platform to join a business.
-
-          // Add invited user to the email whitelist.
-          EmailWhitelistEntry entry = new EmailWhitelistEntry();
-          entry.setId(invite.getEmail());
-          getWhitelistedEmailDAO().inX(getX()).put(entry);
-
           sendInvitationEmail(x, business, invite);
         }
 

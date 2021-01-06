@@ -51,6 +51,12 @@ p({
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "signingOfficerOnboarding",
+"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-1a5-us"
+})
+
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "signingOfficerOnboarding",
 "targetId": "777af38a-8225-87c8-dfdf-eeb15f71215f-123"
 })
 
@@ -77,6 +83,11 @@ p({
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "app",
+"targetId": "242B00F8-C775-4899-AEBA-F287EC54E901"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "AFEXOnboarding",
 "targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-12"
 })
@@ -99,4 +110,46 @@ p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "complianceSetting",
 "targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-1a5"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "complianceSetting",
+"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-1a5-us"
+})
+
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "secureFactUserValidation",
+"targetId": "manual.compliance.securefact.user"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "dowJonesUserValidation",
+"targetId": "manual.compliance.dowjones.user"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "secureFactBusinessValidation",
+"targetId": "manual.compliance.securefact.business"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "dowJonesBusinessValidation",
+"targetId": "manual.compliance.dowjones.business"
+})
+
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "compliancePassed",
+"targetId": "1F0B39AD-934E-462E-A608-D590D1081298"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "compliancePassed",
+"targetId": "25D9499A-36D3-436A-9C87-3CA41B5FC08F"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "compliancePassed",
+"targetId": "18DD6F03-998F-4A21-8938-358183151F96"
 })

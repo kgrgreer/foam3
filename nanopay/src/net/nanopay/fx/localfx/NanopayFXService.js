@@ -101,7 +101,8 @@ foam.CLASS({
     {
       name: 'getFXSpotRate',
       javaCode: `
-        throw new RuntimeException("Missing implementation");
+        // Temporary implementation
+        return 1.0;
       `
     },
     {

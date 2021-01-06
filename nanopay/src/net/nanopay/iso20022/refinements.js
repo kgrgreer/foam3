@@ -61,7 +61,7 @@ foam.CLASS({
                 df.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
                 return df;
               }
-            }
+            };
           `
         })
       ];
@@ -141,7 +141,7 @@ foam.CLASS({
                 df.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
                 return df;
               }
-            }
+            };
           `
         })
       ];
@@ -230,7 +230,7 @@ foam.CLASS({
                 df.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
                 return df;
               }
-            }
+            };
           `
         })
       ];
@@ -282,6 +282,7 @@ foam.CLASS({
     'net.nanopay.model.Branch',
     'net.nanopay.payment.Institution',
     'net.nanopay.tx.TransactionDAO',
+    'net.nanopay.tx.PacsTransaction',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionEntity',
     'net.nanopay.tx.model.TransactionStatus',
@@ -349,8 +350,8 @@ foam.CLASS({
                 String addrLine   = "";
                 long senderId     = 0 ;
                 long receiverId   = 0;
-                long senderBkId   = 0;
-                long receiverBkId = 0;
+                String senderBkId   = "";
+                String receiverBkId = "";
                 String txnId = null;
 
                 FObject fObjSender       = null;
@@ -421,7 +422,7 @@ foam.CLASS({
                       if ( (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getDebtorAccount() != null ) {
                         senderBankAcct = new CABankAccount();
 
-                        senderBankAcct.setId(senderId);
+                        senderBankAcct.setId(String.valueOf(senderId));
                         senderBankAcct.setName(senderId + "Account");
                         senderBankAcct.setX(getX());
                         senderBankAcct.setOwner(senderId);
@@ -516,7 +517,7 @@ foam.CLASS({
                       // Create a Receiver's BankAccount
                       if ( (this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getCreditorAccount() != null ) {
                         receiverBankAcct = new INBankAccount();
-                        receiverBankAcct.setId(receiverId);
+                        receiverBankAcct.setId(String.valueOf(receiverId));
                         receiverBankAcct.setName(receiverId + "Account");
                         receiverBankAcct.setX(getX());
                         receiverBankAcct.setOwner(receiverId);
@@ -588,9 +589,9 @@ foam.CLASS({
                       .build();
 
                     long desAmt = new Double((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getInterbankSettlementAmount().getText()).longValue();
-                    transaction = new Transaction.Builder(getX())
+                    transaction = new PacsTransaction.Builder(getX())
                       .setName("Digital Transfer from PACS")
-                      // REVIEW: ACSP and ACSC are pacs status, but not transaction status. 
+                      // REVIEW: ACSP and ACSC are pacs status, but not transaction status.
                       //.setStatus(TransactionStatus.ACSP)
 
                       .setSourceCurrency((this.getFIToFICstmrCdtTrf().getCreditTransferTransactionInformation())[i].getInstructedAmount().getCcy())
@@ -602,8 +603,10 @@ foam.CLASS({
 
                       .setAmount(longTxAmt)
                       .setMessageId(this.getFIToFICstmrCdtTrf().getGroupHeader().getMessageIdentification())
-                      .setReferenceData(new FObject[]{this})
                       .build();
+
+                      // Add the pacs message to the reference data
+                      transaction.getExternalData().put("Digital Transfer from PACS", this);
 
                       fObjTxn = txnDAO.put(transaction);
 
@@ -709,6 +712,7 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.tx.TransactionDAO',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.PacsTransaction',
     'net.nanopay.tx.model.TransactionStatus',
 
     'java.io.*',
@@ -755,7 +759,7 @@ foam.CLASS({
 
                   if ( (this.getFIToFIPmtStsReq().getOriginalGroupInformation())[i].getOriginalMessageIdentification() != null && (this.getFIToFIPmtStsReq().getOriginalGroupInformation())[i].getOriginalCreationDateTime() != null ) {
                     //Transaction txn = (Transaction) txnDAO.find((this.getFIToFIPmtStsReq().getOriginalGroupInformation())[i].getOriginalMessageIdentification());
-                    Transaction txn = (Transaction) txnDAO.find(EQ(Transaction.MESSAGE_ID, (this.getFIToFIPmtStsReq().getOriginalGroupInformation())[i].getOriginalMessageIdentification()));
+                    Transaction txn = (Transaction) txnDAO.find(EQ(PacsTransaction.MESSAGE_ID, (this.getFIToFIPmtStsReq().getOriginalGroupInformation())[i].getOriginalMessageIdentification()));
 
                     TransactionStatus cur_txnStatus = null;
                     String txnStatus  = null;

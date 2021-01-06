@@ -52,7 +52,6 @@ import org.apache.http.util.EntityUtils;
 
 public class FepWebService extends ContextAwareSupport implements FepWeb {
 
-  private TrevisoCredientials credentials;
   private CloseableHttpClient httpClient;
   private JSONParser jsonParser;
   private Logger logger;
@@ -65,25 +64,19 @@ public class FepWebService extends ContextAwareSupport implements FepWeb {
     omLogger = (OMLogger) x.get("OMLogger");
     jsonParser = new JSONParser();
     jsonParser.setX(x);
+    getCredentials();
   }
 
   protected TrevisoCredientials getCredentials() {
-    if ( credentials == null ) {
-      credentials = (TrevisoCredientials) getX().get("TrevisoCredientials");
-      if ( ! isCredientialsValid() ) {
-        credentials = null;
-        logger.error(this.getClass().getSimpleName(), "Invalid credentials");
-        throw new RuntimeException("Invalid credentials" );
-      }
+    TrevisoCredientials credentials = (TrevisoCredientials) getX().get("trevisoCredientials");
+    if ( credentials == null ||
+         SafetyUtil.isEmpty(credentials.getFepWebUsername()) ||
+         SafetyUtil.isEmpty(credentials.getFepWebPassword()) ||
+         SafetyUtil.isEmpty(credentials.getFepWebApi()) ) {
+      logger.error(this.getClass().getSimpleName(), "Invalid credentials");
+      throw new RuntimeException("Invalid credentials");
     }
     return credentials;
-  }
-
-  protected boolean isCredientialsValid() {
-    return credentials != null &&
-      ! SafetyUtil.isEmpty(credentials.getFepWebUsername()) &&
-      ! SafetyUtil.isEmpty(credentials.getFepWebPassword()) &&
-      ! SafetyUtil.isEmpty(credentials.getFepWebApi());
   }
 
   protected CloseableHttpClient getHttpClient() {

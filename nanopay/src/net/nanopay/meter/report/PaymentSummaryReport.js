@@ -31,8 +31,6 @@ foam.CLASS({
                     | Completed   |
   `,
 
-  searchColumns: [],
-
   tableColumns: [
     'typeDate',
     'status',

@@ -31,6 +31,7 @@ foam.CLASS({
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.nanos.crunch.UserCapabilityJunctionDAO',
     'foam.nanos.logger.Logger',
+    'foam.util.SafetyUtil',
     'java.util.Date',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
     'net.nanopay.meter.compliance.dowJones.*',
@@ -42,6 +43,10 @@ foam.CLASS({
       name: 'response',
       class: 'FObjectProperty',
       of: 'net.nanopay.meter.compliance.dowJones.DowJonesResponse'
+    },
+    {
+      name: 'classification',
+      class: 'String'
     }
   ],
 
@@ -87,14 +92,16 @@ foam.CLASS({
             agency.submit(x, new ContextAgent() {
               @Override
               public void execute(X x) {
+                String group = user.getSpid() + "-fraud-ops";
                 requestApproval(x, 
                   new DowJonesApprovalRequest.Builder(x)
                     .setObjId(ucj.getId())
                     .setDaoKey("userCapabilityJunctionDAO")
                     .setCauseId(response.getId())
                     .setCauseDaoKey("dowJonesResponseDAO")
-                    .setClassification("Validate Signing Officer UserCapabilityJunction Using Dow Jones")
+                    .setClassification(getClassification())
                     .setMatches(response.getResponseBody().getMatches())
+                    .setGroup(group)
                     .build());
               }
             }, "Person Sanction Validator");
@@ -103,14 +110,16 @@ foam.CLASS({
         } catch (Exception e) {
           ((Logger) x.get("logger")).warning("PersonSanctionValidator failed.", e);
           DowJonesResponse response = getResponse();
+          String group = user.getSpid() + "-fraud-ops";
           requestApproval(x, 
             new DowJonesApprovalRequest.Builder(x)
               .setObjId(ucj.getId())
               .setDaoKey("userCapabilityJunctionDAO")
               .setCauseId(response != null ? response.getId() : 0L)
               .setCauseDaoKey("dowJonesResponseDAO")
-              .setClassification("Validate Signing Officer UserCapabilityJunction Using Dow Jones")
+              .setClassification(getClassification())
               .setMatches(response != null ? response.getResponseBody().getMatches() : null)
+              .setGroup(group)
               .build());
           ruler.putResult(ComplianceValidationStatus.PENDING);
         }

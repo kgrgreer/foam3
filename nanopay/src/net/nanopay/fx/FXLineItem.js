@@ -26,19 +26,26 @@ foam.CLASS({
   extends: 'net.nanopay.tx.ExpiryLineItem',
 
   javaImports: [
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'foam.core.Currency',
+    'foam.dao.DAO'
   ],
 
   properties: [
     {
       name: 'rate',
       class: 'Double',
-      view: function(_, x) {
-        return foam.u2.Element.create()
-          .start()
-            .add( x.data.sourceCurrency.format(1 * Math.pow(10, x.data.sourceCurrency.precision)) + ' : ' + x.data.destinationCurrency.format(x.data.rate * Math.pow(10, x.data.sourceCurrency.precision)))
-          .end();
-      }
+      hidden: true,
+      javaSetter: `
+        rate_ = val;
+        rateIsSet_ = true;
+        calculateView_();
+      `
+    },
+    {
+      name: 'rateView',
+      label: 'Rate',
+      class: 'String'
     },
     {
       name: 'accepted',
@@ -53,16 +60,28 @@ foam.CLASS({
       hidden: true
     },
     {
-      class: 'FObjectProperty',
+      class: 'Reference',
       of: 'foam.core.Currency',
       name: 'sourceCurrency',
-      hidden: true
+      targetDAOKey: 'currencyDAO',
+      hidden: true,
+      javaSetter: `
+        sourceCurrency_ = val;
+        sourceCurrencyIsSet_ = true;
+        calculateView_();
+      `
     },
     {
-      class: 'FObjectProperty',
+      class: 'Reference',
       of: 'foam.core.Currency',
       name: 'destinationCurrency',
-      hidden: true
+      targetDAOKey: 'currencyDAO',
+      hidden: true,
+      javaSetter: `
+        destinationCurrency_ = val;
+        destinationCurrencyIsSet_ = true;
+        calculateView_();
+      `
     },
     // destinationAmount ?
   ],
@@ -72,6 +91,22 @@ foam.CLASS({
   ],
 
   methods: [
+    {
+      name: 'calculateView_',
+      javaCode: `
+        DAO currDAO = (DAO) getX().get("currencyDAO");
+        if ( currDAO != null ) {
+          Currency src = (Currency) currDAO.find(getSourceCurrency());
+          Currency dst = (Currency) currDAO.find(getDestinationCurrency());
+          // format both sides of ':' to 1 of major unit of source currency.
+          if ( src != null && dst != null ) {
+            setRateView(src.format((long) Math.pow(10, src.getPrecision())) + " : " + dst.format((long) (getRate() * Math.pow(10, src.getPrecision()))));
+            return;
+          }
+        }
+        setRateView(""+getRate());
+      `
+    },
     function toSummary() {
       return this.DESCRIPTION;
     }

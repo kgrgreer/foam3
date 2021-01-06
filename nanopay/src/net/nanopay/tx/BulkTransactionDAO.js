@@ -28,6 +28,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'net.nanopay.account.Account',
+    'foam.core.ValidationException',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.tx.model.Transaction'
   ],
@@ -36,9 +37,6 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-        if ( ! ( obj instanceof TransactionQuote ) ) {
-          return getDelegate().put_(x, obj);
-        }
 
         var quote = (TransactionQuote) obj;
         if ( quote.getRequestTransaction() instanceof BulkTransaction ) {
@@ -80,11 +78,23 @@ foam.CLASS({
           }
 
           if ( bulkTxn.getChildren().length == 0 ) {
-            throw new RuntimeException("BulkTransaction missing child transactions.");
+            throw new ValidationException("BulkTransaction missing child transactions.");
           }
         }
         return getDelegate().put_(x, obj);
       `
     }
+  ],
+
+  axioms: [
+    {
+      buildJavaClass: function(cls) {
+        cls.extras.push(`
+          public BulkTransactionDAO(foam.core.X x, foam.dao.DAO delegate) {
+            setDelegate(delegate);
+          }
+        `);
+      },
+    },
   ]
 });

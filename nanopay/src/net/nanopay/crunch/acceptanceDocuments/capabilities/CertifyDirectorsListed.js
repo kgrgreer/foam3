@@ -4,13 +4,28 @@ foam.CLASS({
   extends: 'net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability',
 
   messages: [
-    { name: 'CERTIFY_DIRECTORS_LISTED', message: 'You must certify that all directors have been listed.' }
+    { name: 'CERTIFY_DIRECTORS_LISTED', message: 'You must certify that all directors have been listed or your business does not require Director information.' },
+    { name: 'TITLE_MSG', message: 'all directors have been listed or my business does not require Director information.' }
   ],
 
   properties: [
     {
       name: 'checkboxText',
-      value: 'I certify that all directors have been listed.'
+      factory: function() {
+        return this.I_CERTIFY;
+      }
+    },
+    {
+      name: 'title',
+      factory: function() {
+        return this.TITLE_MSG;
+      }
+    },
+    {
+      name: 'fileId',
+      factory: function() {
+        return '188eedba-b34a-4b61-9f6d-1c501f13dcc0';
+      }
     },
     {
       name: 'agreement',

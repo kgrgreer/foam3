@@ -285,7 +285,10 @@ foam.CLASS({
       type: 'String',
       code: function(x) {
         return this.name || this.id;
-      }
+      },
+      javaCode: `
+        return foam.util.SafetyUtil.isEmpty(getName()) ? getId() : getName();
+      `
     },
     {
       name: 'getImpliedCapabilityNames',

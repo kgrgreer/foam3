@@ -15,6 +15,8 @@
  * from nanopay Corporation.
  */
 
+// DEPRECATED. Will need new planner written if ever used.
+
 foam.CLASS({
   package: 'net.nanopay.tx.realex',
   name: 'RealexTransactionPlanDAO',

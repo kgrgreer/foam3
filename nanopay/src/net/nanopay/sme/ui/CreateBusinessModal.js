@@ -100,8 +100,8 @@ foam.CLASS({
         this business on the switch business menu.`
     },
     { name: 'TITLE', message: 'Create a Business' },
-    { name: 'SUCCESS_MESSAGE', message: 'Business successfully created!' },
-    { name: 'ERROR_MESSAGE', message: 'Sorry, there was an error creating this business.' }
+    { name: 'SUCCESS_MESSAGE', message: 'Business successfully created' },
+    { name: 'ERROR_MESSAGE', message: 'There was an error creating this business' }
   ],
 
   methods: [

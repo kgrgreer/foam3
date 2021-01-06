@@ -34,7 +34,7 @@ foam.CLASS({
   messages: [
     {
       name: 'DEFAULT_LABEL',
-      message: 'Choose from bank accounts'
+      message: 'Select bank account'
     }
   ],
 

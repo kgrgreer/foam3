@@ -199,7 +199,7 @@ public class UserUserDAOPrivilegeEscalationTest
       // Clean up.
       groupDAO.remove(g);
     } catch (AuthorizationException e) {
-      test(e.getMessage().equals("Permission denied. You cannot change the parent of a group if doing so grants that group permissions that you do not have."), "Users cannot set the parent of a group to a group containing a permission that isn't implied by one they already have.");
+      test(e.getMessage().equals("Permission denied. You cannot change the parent of a group."), "Users cannot set the parent of a group to a group containing a permission that isn't implied by one they already have.");
     }
 
     cleanUp(userContext);
@@ -272,7 +272,7 @@ public class UserUserDAOPrivilegeEscalationTest
       // Clean up.
       groupDAO.remove(g);
     } catch (AuthorizationException e) {
-      test(e.getMessage().equals("Permission denied. You cannot change the parent of a group if doing so grants that group permissions that you do not have."), "Users cannot set the parent of a group to a group containing a permission that isn't implied by one they already have.");
+      test(e.getMessage().equals("Permission denied. You cannot change the parent of a group."), "Users cannot set the parent of a group to a group containing a permission that isn't implied by one they already have.");
     }
 
     cleanUp(userContext);

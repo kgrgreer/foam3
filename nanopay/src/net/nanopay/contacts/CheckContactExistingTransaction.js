@@ -41,7 +41,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'DELETE_ERROR_MSG', message: 'Cannot delete this contact because it\'s associated to transactions.' }
+    { name: 'DELETE_ERROR_MSG', message: 'Cannot delete this contact because it\'s associated to transactions' }
   ],
 
   axioms: [

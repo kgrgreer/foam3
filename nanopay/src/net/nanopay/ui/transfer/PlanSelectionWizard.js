@@ -107,7 +107,7 @@ foam.CLASS({
       border: solid 1px rgba(164, 179, 184, 0.5);
     }
     ^ .checkBox-Text{
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       font-weight: normal;
       display: inline-block;

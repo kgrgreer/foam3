@@ -261,7 +261,13 @@ foam.CLASS({
     'businessOnboarding',
     'onboardingStatus',
     'businessRegistrationDate',
-    'countryOfBusinessRegistration'
+    'countryOfBusinessRegistration',
+    'showLowerCards',
+    {
+      class: 'Boolean',
+      name: 'requestMoneyPermission',
+      value: false
+    }
   ],
 
   methods: [
@@ -279,7 +285,11 @@ foam.CLASS({
         .then(sink => {
           this.bankAccount = sink.array[0];
         });
-     this.userHasPermissionsForAccounting = await this.accountingIntegrationUtil.getPermission();
+      this.requestMoneyPermission = await this.auth.check(null, 'menu.read.capability.main.invoices.receivables');
+      this.showLowerCards = await this.auth.check(null, 'menu.read.accountingintegrationcards');
+      this.userHasPermissionsForAccounting = this.showLowerCards ? 
+        await this.accountingIntegrationUtil.getPermission() : 
+        null;
 
       // We need to find the BusinessOnboarding by checking both the userId and
       // the businessId. Previously we were only checking the userId, which
@@ -314,13 +324,15 @@ foam.CLASS({
             .add(this.TITLE)
           .end()
           .add(capStore.renderFeatured())
-          .start()
-            .tag({
-              class: 'net.nanopay.sme.ui.dashboard.LowerCardsView',
-              bankAccount: this.bankAccount,
-              userHasPermissionsForAccounting: this.userHasPermissionsForAccounting
-            })
-          .end();
+          .callIf(this.showLowerCards, function() {
+            this.start()
+              .tag({
+                class: 'net.nanopay.sme.ui.dashboard.LowerCardsView',
+                bankAccount: this.bankAccount,
+                userHasPermissionsForAccounting: this.userHasPermissionsForAccounting
+              })
+              .end();
+          });
 
         var line = this.Element.create()
           .start().addClass('line')
@@ -352,7 +364,7 @@ foam.CLASS({
               .add(this.VIEW_ALL)
               .hide(this.payablesCount$.map(value => value == 0))
               .on('click', function() {
-                self.pushMenu('sme.main.invoices.payables');
+                self.pushMenu('capability.main.invoices.payables');
               })
             .end()
           .end()
@@ -410,7 +422,7 @@ foam.CLASS({
               .end()
           .end();
 
-        var botR = this.Element.create()
+        var botR = ! this.requestMoneyPermission ? null : this.Element.create()
           .start()
             .addClass(this.myClass('separate'))
             .start('h2')
@@ -421,7 +433,7 @@ foam.CLASS({
               .add(this.VIEW_ALL)
               .hide(this.receivablesCount$.map(value => value == 0))
               .on('click', function() {
-                self.pushMenu('sme.main.invoices.receivables');
+                self.pushMenu('capability.main.invoices.receivables');
               })
             .end()
           .end()

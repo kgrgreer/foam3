@@ -107,7 +107,7 @@ foam.CLASS({
     }
     ^TwoFactAuthIntro {
       font-size: 14px;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       line-height: 1.6;
       height: 63px;
       padding: 0 16px;
@@ -123,7 +123,7 @@ foam.CLASS({
       margin: 0 128px;
     }
     ^ .sub-note {
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px 
     }
   `,
@@ -132,7 +132,7 @@ foam.CLASS({
     { name: 'PHONE_IPHONE_IMAGE', value: 'images/phone-iphone-24-px.png' },
     { name: 'SIGN_IN_IMAGE', value: 'images/sign_in_illustration.png' },
     { name: 'ERROR_ICON', value: 'images/inline-error-icon.svg' },
-    { name: 'CONTACT_EMAIL', value: 'mailto:support@ablii.com' },
+    { name: 'CONTACT_EMAIL', value: 'mailto: ' },
     { name: 'ABLII_ADDRESS', value: 'https://www.ablii.com' },
   ],
 
@@ -157,13 +157,22 @@ foam.CLASS({
       factory: function() {
         return this.theme.appName;
       }
-    }
+    },
+    {
+      class: 'String',
+      name: 'supportPhone',
+      factory: function() {
+        let supportConfig = this.theme.supportConfig;
+        return supportConfig ? supportConfig.supportPhone : '';
+      }
+    },
+    
   ],
 
   messages: [
-    { name: 'TWO_FACTOR_NO_TOKEN', message: 'Please enter a verification code.' },
+    { name: 'TWO_FACTOR_NO_TOKEN', message: 'Please enter a verification code' },
     { name: 'TWO_FACTOR_LABEL', message: 'Enter verification code' },
-    { name: 'TWO_FACTOR_ERROR', message: 'Incorrect code. Please try again.' },
+    { name: 'TWO_FACTOR_ERROR', message: 'Incorrect code. Please try again' },
     { name: 'TWO_FACTOR_TITLE', message: 'Two-factor authentication' },
     { name: 'TWO_FACTOR_EXPLANATION', message: `Open your Google Authenticator app on your mobile device to view the 6-digit code and verify your identity` },
     { name: 'TWO_FACTOR_NOTES_1', message: `Need another way to authenticate?` },
@@ -222,7 +231,7 @@ foam.CLASS({
       .start().addClass(this.myClass('sme-subtitle'))
         .start('strong').add(this.TWO_FACTOR_NOTES_1).end()
         .start('a').addClass('app-link')
-          .attrs({ href: this.CONTACT_EMAIL })
+          .attrs({ href: this.CONTACT_EMAIL + this.supportPhone})
           .add(this.TWO_FACTOR_NOTES_2)
         .end()
       .end();

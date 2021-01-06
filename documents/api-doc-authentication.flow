@@ -86,19 +86,19 @@
     session for a user/business.
 </p>
 
-<h4>Payment Session</h4>
+<h4>Transaction Session</h4>
 <p>
-    The payment session is the session ID of the user/business who is creating the transaction (aka. payment).
+    The transaction session is the session ID of the user/business who is creating the transaction (aka. payment).
 </p>
 <p>
-    The payment session should be used as the bearer token when creating a transaction for the transaction that is
+    The transaction session should be used as the bearer token when creating a transaction for the transaction that is
     created by the user/business. For the transactions created by the admin for other users/businesses, the
     administrative session should be used instead.
 </p>
 
-<h5>Establishing a Payment Session</h5>
+<h5>Establishing a Transation Session</h5>
 <p>
-    In order to establish a payment session, both a user and a business must be selected and then a session must 
+    In order to establish a transaction session, both a user and a business must be selected and then a session must 
     be created for that user and business.
 </p>
 <p>
@@ -114,7 +114,7 @@
     for the sessionService API call.
 </p>
 <p>
-    Establish a payment session by making a SUGAR call to the sessionService with the following payload:
+    Establish a transaction session by making a SUGAR call to the sessionService with the following payload:
 <code>
 {
     "service":"sessionService",

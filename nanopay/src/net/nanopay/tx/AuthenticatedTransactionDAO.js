@@ -69,12 +69,12 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'INVOICE_NOT_FOUND_ERROR_MSG', message: 'the invoice associated with this transaction could not be found.' },
-    { name: 'PAY_RECEIVABLE_ERROR_MSG', message: 'You cannot pay a receivable.' },
-    { name: 'UPDATE_RECEIVABLE_ERROR_MSG', message: 'You cannot update a receivable.' },
-    { name: 'PAY_DRAFT_ERROR_MSG', message: 'You cannot pay draft invoices.' },
-    { name: 'USER_NOT_FOUND_ERROR_MSG', message: 'User not found in authenicatedTransactionDAO find_.' },
-    { name: 'USER_NOT_FOUND_ERROR_MSG2', message: 'User not found in authenicatedTransactionDAO select_.' }
+    { name: 'INVOICE_NOT_FOUND_ERROR_MSG', message: 'the invoice associated with this transaction could not be found' },
+    { name: 'PAY_RECEIVABLE_ERROR_MSG', message: 'You cannot pay a receivable' },
+    { name: 'UPDATE_RECEIVABLE_ERROR_MSG', message: 'You cannot update a receivable' },
+    { name: 'PAY_DRAFT_ERROR_MSG', message: 'You cannot pay draft invoices' },
+    { name: 'USER_NOT_FOUND_ERROR_MSG', message: 'User not found in authenicatedTransactionDAO find_' },
+    { name: 'USER_NOT_FOUND_ERROR_MSG2', message: 'User not found in authenicatedTransactionDAO select_' }
   ],
 
   axioms: [
@@ -163,7 +163,7 @@ foam.CLASS({
             throw new AuthorizationException(PAY_DRAFT_ERROR_MSG);
           }
 
-          if ( ! auth.check(x, "invoice.pay") ) {
+          if ( ! auth.check(x, "business.invoice.pay") || ! auth.check(x, "user.invoice.pay") ) {
             invoice = (Invoice) invoice.fclone();
             invoice.setPaymentMethod(PaymentStatus.PENDING_APPROVAL);
             invoiceDAO.put(invoice);

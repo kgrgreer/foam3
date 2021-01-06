@@ -48,13 +48,13 @@ foam.CLASS({
             Business business = (Business) obj;
             Address businessAddress = business.getAddress();
 
-            if( businessAddress != null && ! businessAddress.getCountryId().equals("US") ){
+            if ( businessAddress != null ) {
               Logger                  logger         = (Logger) x.get("logger");
               Group                   group          = business.findGroup(x);
               AppConfig               config         = group != null ? (AppConfig) group.getAppConfig(x) : (AppConfig) x.get("appConfig");
               Map<String, Object>     args           = new HashMap<>();
 
-              args.put("link",   config.getUrl() + "#sme.main.dashboard");
+              args.put("link",   config.getUrl() + "#capability.main.dashboard");
               args.put("sendTo", User.EMAIL);
               args.put("business", business.getOrganization());
               

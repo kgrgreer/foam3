@@ -21,7 +21,11 @@ foam.CLASS({
   messages: [
     {
       name: 'SUCCESS_SIGNING_OFFICER_QUESTION',
-      message: 'Thank you! Please fill in the additional details required for signing officer priviliges.'
+      message: 'Thank you! Please fill in the additional details required for signing officer privileges.'
+    },
+    {
+      name: 'SUCCESS_SIGNING_OFFICER_INVITED',
+      message: 'Thank you! Please complete the unlock international and domestic payment and invoicing for approval of signing officer.'
     }
   ],
 
@@ -30,10 +34,11 @@ foam.CLASS({
       flags: ['web'],
       name: 'save',
       code: async function() {
-        await this.crunchController.save(this);
+        await this.SUPER();
         this.crunchController.purgeCachedCapabilityDAOs();
         this.auth.check(null, 'certifydatareviewed.rw.reviewed');
-        this.notify(this.SUCCESS_SIGNING_OFFICER_QUESTION, '', this.LogLevel.INFO, true)
+        var isInvite = this.data && ! this.data.isSigningOfficer;
+        this.notify(isInvite ? this.SUCCESS_SIGNING_OFFICER_INVITED : this.SUCCESS_SIGNING_OFFICER_QUESTION, '', this.LogLevel.INFO, true)
         return;
       }
     }

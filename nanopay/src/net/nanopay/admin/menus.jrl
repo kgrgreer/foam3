@@ -47,8 +47,14 @@ p({
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
       "daoKey":"alarmDAO",
-      "editPredicate":{"class":"foam.mlang.predicate.False"},
-      "deletePredicate":{"class":"foam.mlang.predicate.False"}
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "alarm"
+        }
+      }
     }
   },
   "parent":"admin"
@@ -195,7 +201,8 @@ p({
       "class":"foam.comics.v2.DAOControllerConfig",
       "daoKey":"flinksAccountsDetailResponseDAO",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "editPredicate":{"class":"foam.mlang.predicate.False"}
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
     }
   },
   "parent":"integration"
@@ -210,7 +217,54 @@ p({
       "class":"foam.comics.v2.DAOControllerConfig",
       "daoKey":"plaidResultReportDAO",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "editPredicate":{"class":"foam.mlang.predicate.False"}
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
+    }
+  },
+  "parent":"integration"
+})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"integration.afexbeneficiaries",
+  "label":"AFEX Beneficiaries",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"afexBeneficiaryDAO",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "afexbeneficiary"
+        }
+      }
+    }
+  },
+  "parent":"integration"
+})
+p({
+  "class":"foam.nanos.menu.Menu",
+  "id":"integration.afexbusiness",
+  "label":"AFEX Businesses",
+  "handler":{
+    "class":"foam.nanos.menu.DAOMenu2",
+    "config":{
+      "class":"foam.comics.v2.DAOControllerConfig",
+      "daoKey":"afexBusinessDAO",
+      "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "afexbusiness"
+        }
+      }
     }
   },
   "parent":"integration"
@@ -227,7 +281,15 @@ p({
       "config":
         {
           "class": "foam.comics.v2.DAOControllerConfig",
-          "daoKey": "businessDAO"
+          "daoKey": "businessDAO",
+          "CRUDEnabledActionsAuth": {
+            "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+            "isEnabled": true,
+            "enabledActionsAuth": {
+              "class": "foam.comics.v2.BasicEnabledActionsAuth",
+              "modelName": "business"
+            }
+          }
         }
     }
 })
@@ -243,7 +305,15 @@ p({
       "config":
         {
           "class": "foam.comics.v2.DAOControllerConfig",
-          "daoKey": "contactDAO"
+          "daoKey": "contactDAO",
+          "CRUDEnabledActionsAuth": {
+            "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+            "isEnabled": true,
+            "enabledActionsAuth": {
+              "class": "foam.comics.v2.BasicEnabledActionsAuth",
+              "modelName": "contact"
+            }
+          }
         }
     }
 })
@@ -258,7 +328,15 @@ p({
       "config":
         {
           "class": "foam.comics.v2.DAOControllerConfig",
-          "daoKey": "detailedInvoiceDAO"
+          "daoKey": "detailedInvoiceDAO",
+          "CRUDEnabledActionsAuth": {
+            "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+            "isEnabled": true,
+            "enabledActionsAuth": {
+              "class": "foam.comics.v2.BasicEnabledActionsAuth",
+              "modelName": "invoice"
+            }
+          }
         }
     }
 })

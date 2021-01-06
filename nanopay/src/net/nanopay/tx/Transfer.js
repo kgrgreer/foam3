@@ -18,11 +18,13 @@
 foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'Transfer',
+  documentation: 'describes: what amount is added to which account (internal)',
 
   javaImports: [
     'net.nanopay.account.Account',
     'net.nanopay.account.Balance',
-    'foam.util.SafetyUtil'
+    'foam.util.SafetyUtil',
+    'foam.core.ValidationException'
   ],
 
   javaImplements: [
@@ -31,38 +33,41 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'description',
-      class: 'String'
-    },
-    {
       name: 'amount',
       class: 'Long'
     },
     {
       name: 'account',
       class: 'Reference',
-      of: 'net.nanopay.account.Account'
+      of: 'net.nanopay.account.Account',
+      targetDAOKey: 'localAccountDAO'
     },
     {
       documentation: 'Time transfer was applied. Also reverse transfers are only displayed if they have been executed.',
       name: 'executed',
       class: 'DateTime',
     },
-    { //DEPRECATED in planners V3: TODO: check that we can safely delete
-      documentation: 'Control which Transfers are visible in customer facing views.  Some transfers such as Reversals, or internal Digital account transfers are not meant to be visible to the customer.',
-      name: 'visible',
-      class: 'Boolean',
-      value: false,
-      hidden: true
+    {
+      name: 'stage',
+      class: 'Long',
+      documentation: 'The transaction stage at which to execute this transfer',
+      value: 0
     }
   ],
 
   methods: [
-
     {
       name: 'validate',
+      /*args: [
+        { name: 'x', type: 'Context'}
+      ],*/
       type: 'Void',
       javaCode: `
+        if ( getAmount() == 0 )
+          throw new ValidationException("Transfer has no amount set");
+        if ( SafetyUtil.isEmpty(getAccount()) )
+          throw new ValidationException("No account specified on Transfer");
+
       `
     },
     {
@@ -92,6 +97,25 @@ foam.CLASS({
       javaCode: `
         return SafetyUtil.compare(getAccount(),t.getAccount());
       `
+    }
+  ],
+
+  axioms: [
+    {
+      name: 'javaExtras',
+      buildJavaClass: function(cls) {
+        cls.extras.push(`
+          public Transfer(String account, long amount) {
+            setAmount(amount);
+            setAccount(account);
+          }
+          public Transfer(String account, long amount, long stage) {
+            setAmount(amount);
+            setAccount(account);
+            setStage(stage);
+          }
+        `);
+      }
     }
   ]
 });

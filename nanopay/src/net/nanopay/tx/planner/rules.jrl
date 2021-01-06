@@ -31,6 +31,107 @@ p({
           "prop1": "sourceAccount",
           "prop2": "destinationAccount"
         }
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.HasSameReserveAccount"
+      }
+    ]
+  },
+  "lifecycleState":1
+})
+p({
+  "class":"net.nanopay.tx.planner.RbcInterTrustPlanner",
+  "id":"c4f3e4ae-01b6-4638-8a09-06e6b9f05f42",
+  "name":"RBC Digital Inter Trust Transaction Planner",
+  "priority":200,
+  "ruleGroup":"transactionPlanner",
+  "enabled":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.account.DigitalAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.account.DigitalAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQProperty",
+        "prop1":"sourceUnit",
+        "prop2":"destinationUnit"
+      },
+      {
+        "class": "foam.mlang.predicate.Not",
+        "arg1": {
+          "class": "foam.nanos.ruler.predicate.PropertyEQProperty",
+          "prop1": "sourceAccount",
+          "prop2": "destinationAccount"
+        }
+      },
+      {
+        "class": "foam.mlang.predicate.Not",
+        "arg1":{
+          "class":"net.nanopay.tx.planner.predicate.HasSameReserveAccount"
+        }
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.CheckReserveAccountFor",
+        "source":true,
+        "bankProperty":"institution",
+        "bankValue":"10"
+      }
+    ]
+  },
+  "lifecycleState":1
+})
+p({
+  "class":"net.nanopay.tx.planner.BmoInterTrustPlanner",
+  "id":"884607ff-055e-41d4-9dbb-69433b2aa816",
+  "name":"BMO Digital Inter Trust Transaction Planner",
+  "priority":200,
+  "ruleGroup":"transactionPlanner",
+  "enabled":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.account.DigitalAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.account.DigitalAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQProperty",
+        "prop1":"sourceUnit",
+        "prop2":"destinationUnit"
+      },
+      {
+        "class": "foam.mlang.predicate.Not",
+        "arg1": {
+          "class": "foam.nanos.ruler.predicate.PropertyEQProperty",
+          "prop1": "sourceAccount",
+          "prop2": "destinationAccount"
+        }
+      },
+      {
+        "class": "foam.mlang.predicate.Not",
+        "arg1":{
+          "class":"net.nanopay.tx.planner.predicate.HasSameReserveAccount"
+        }
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.CheckReserveAccountFor",
+        "source":true,
+        "bankProperty":"institution",
+        "bankValue":"2"
       }
     ]
   },
@@ -268,7 +369,7 @@ p({
   "name":"AscendantFx Transaction Planner",
   "priority":90,
   "ruleGroup":"transactionPlanner",
-  "enabled":true,
+  "enabled":false,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -464,6 +565,7 @@ p({
   },
   "lifecycleState":1
 })
+//TODO: Basically don't merge the change to this file in was for testing
 p({
   "class":"net.nanopay.tx.planner.BankToBankPlanner",
   "id":"61d57d66-3e63-4c53-9eee-de3f8f75e56c",
@@ -471,9 +573,7 @@ p({
   "documentation":"Planner for Bank -> bank transactions",
   "priority":95,
   "ruleGroup":"transactionPlanner",
-  
   "enabled":true,
-
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -486,15 +586,39 @@ p({
         "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"destinationAccount",
         "of":"net.nanopay.bank.BankAccount"
-      },
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyEQProperty",
-        "prop1":"sourceUnit",
-        "prop2":"destinationUnit"
       }
     ]
   },
   "lifecycleState":1
+})
+p({
+  "class":"net.nanopay.tx.planner.IntuitBankToBankPlanner",
+  "id":"8A9B2980-F6C5-4A67-966E-760FE6649B56",
+  "name":"Intuit Bank to Bank Planner",
+  "documentation":"Planner for Bank -> Bank Transactions for Intuit",
+  "priority":95,
+  "ruleGroup":"transactionPlanner",
+  "enabled":false,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+       "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.bank.BankAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.bank.BankAccount"
+      }
+    ]
+  },
+  "lifecycleState":1,
+  "sourceCapabilityList": ["56D2D946-6085-4EC3-8572-04A17225F86A", "1F0B39AD-934E-462E-A608-D590D1081298"],
+  "sourceCapabilityExceptionListUpperLimit": 100000,
+  "sourceCapabilityExceptionList": ["F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD"],
+  "destinationCapabilityList": ["18DD6F03-998F-4A21-8938-358183151F96", "1F0B39AD-934E-462E-A608-D590D1081298"]
 })
 p({
   "class":"net.nanopay.tx.planner.VerificationPlanner",
@@ -643,6 +767,12 @@ p({
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
         "propName":"destinationUnit",
         "propValue":"CAD"
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.CheckReserveAccountFor",
+        "source":false,
+        "bankProperty":"institution",
+        "bankValue":"2"
       }
     ]
   },
@@ -691,6 +821,12 @@ p({
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
         "propName":"destinationUnit",
         "propValue":"CAD"
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.CheckReserveAccountFor",
+        "source":true,
+        "bankProperty":"institution",
+        "bankValue":"2"
       }
     ]
   },
@@ -818,6 +954,12 @@ p({
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
         "propName":"destinationUnit",
         "propValue":"CAD"
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.CheckReserveAccountFor",
+        "source":false,
+        "bankProperty":"institution",
+        "bankValue":"10"
       }
     ]
   },
@@ -864,6 +1006,12 @@ p({
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
         "propName":"destinationUnit",
         "propValue":"CAD"
+      },
+      {
+        "class":"net.nanopay.tx.planner.predicate.CheckReserveAccountFor",
+        "source":true,
+        "bankProperty":"institution",
+        "bankValue":"10"
       }
     ]
   },
@@ -893,68 +1041,4 @@ p({
     ]
   },
   lifecycleState: 1
-})
-
-p({
-  "class": "foam.nanos.ruler.Rule",
-  "id":"43ec9904-8295-436e-8cb3-44293d729ab6",
-  "name": "ETA Summary line item planner",
-  "documentation": "ETA Summary Transaction line creator",
-  "daoKey": "transactionPlannerDAO",
-  "ruleGroup": "transactionPlanner",
-  "operation": 0,
-  "after": true,
-  "priority": 100,
-   predicate: {
-    class: "foam.mlang.predicate.Or",
-    args: [
-      {
-        class: "foam.nanos.ruler.predicate.PropertyIsInstance",
-        propName: "plan",
-        of: "net.nanopay.tx.SummaryTransaction"
-      },
-      {
-        class: "foam.nanos.ruler.predicate.PropertyIsInstance",
-        propName: "plan",
-        of: "net.nanopay.fx.FXSummaryTransaction"
-      }
-    ]
-  },
-  "action": {
-    "class": "net.nanopay.tx.planner.SummaryLineItemRule"
-  },
-  "enabled": true,
-  "lifecycleState":1
-})
-p({
-  "class": "foam.nanos.ruler.Rule",
-  "id":"8a1e7833-17de-496c-9c1a-3dd60107286b",
-  "name": "Summary total rate line item planner",
-  "daoKey": "transactionPlannerDAO",
-  "ruleGroup": "transactionPlanner",
-  "operation": 0,
-  "after": true,
-  "priority": 100,
-  "predicate": {
-    "class":"foam.mlang.predicate.And",
-    "args":[
-      {
-        class: "foam.nanos.ruler.predicate.PropertyIsInstance",
-        propName: "plan",
-        of: "net.nanopay.fx.FXSummaryTransaction"
-      },
-      {
-        class: "foam.mlang.PredicatedExpr",
-        arg1: {
-          class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
-          of: "net.nanopay.fx.TotalRateLineItem",
-        }
-      }
-    ]
-  },
-  "action": {
-    "class": "net.nanopay.tx.planner.SummaryTotalRateLineItemRule"
-  },
-  "enabled": true,
-  "lifecycleState":1
 })

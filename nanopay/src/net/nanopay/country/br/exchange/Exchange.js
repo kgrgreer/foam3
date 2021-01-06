@@ -47,6 +47,18 @@ foam.INTERFACE({
       ]
     },
     {
+      name: 'getBoletoStatus',
+      documentation: 'Get Boleto Status',
+      async: true,
+      type: 'net.nanopay.country.br.exchange.BoletoStatusResponse',
+      args: [
+        {
+          type: 'net.nanopay.country.br.exchange.GetBoletoStatus',
+          name: 'request',
+        }
+      ]
+    },
+    {
       name: 'insertTitular',
       documentation: 'Insert Titular',
       async: true,
@@ -83,6 +95,18 @@ foam.INTERFACE({
       ]
     },
     {
+      name: 'searchTitularCapFin',
+      documentation: 'Search Titular',
+      async: true,
+      type: 'net.nanopay.country.br.exchange.SearchTitularCapFinResponse',
+      args: [
+        {
+          type: 'net.nanopay.country.br.exchange.SearchTitularCapFin',
+          name: 'request',
+        }
+      ]
+    },
+    {
       name: 'searchNatureza',
       documentation: 'Search Natureza',
       async: true,
@@ -94,5 +118,41 @@ foam.INTERFACE({
         }
       ]
     },
+    {
+      name: 'searchMoeda',
+      documentation: 'Search Moeda',
+      async: true,
+      type: 'net.nanopay.country.br.exchange.SearchMoedaResponse',
+      args: [
+        {
+          type: 'net.nanopay.country.br.exchange.SearchMoeda',
+          name: 'request',
+        }
+      ]
+    },
+    {
+      name: 'searchPais',
+      documentation: 'Search Pais',
+      async: true,
+      type: 'net.nanopay.country.br.exchange.SearchPaisResponse',
+      args: [
+        {
+          type: 'net.nanopay.country.br.exchange.SearchPais',
+          name: 'request',
+        }
+      ]
+    },
+    {
+      name: 'cotacaoTaxaCambio',
+      documentation: 'Get CotacaoTaxaCambio',
+      async: true,
+      type: 'net.nanopay.country.br.exchange.CotacaoTaxaCambioResponse',
+      args: [
+        {
+          type: 'net.nanopay.country.br.exchange.GetCotacaoTaxaCambio',
+          name: 'request',
+        }
+      ]
+    }
   ]
 });

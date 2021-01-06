@@ -46,11 +46,11 @@ foam.CLASS({
   messages: [
     {
       name: 'INVITE_SUCCESS',
-      message: 'Sent a request to connect.'
+      message: 'Sent a request to connect'
     },
     {
       name: 'INVITE_FAILURE',
-      message: 'There was a problem sending the invitation.'
+      message: 'There was a problem sending the invitation'
     },
     {
       name: 'EXISTING_BUSINESS',

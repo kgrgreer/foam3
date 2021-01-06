@@ -26,6 +26,10 @@ foam.CLASS({
   name: 'EtaSummaryTransactionLineItem',
   extends: 'net.nanopay.tx.SummaryTransactionLineItem',
 
+  imports: [
+    'theme'
+  ],
+
   javaImports: [
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
@@ -36,7 +40,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'eta',
-      label: 'ETA',
+      label: 'Time',
       view: function(_, x) {
         let formatted = foam.core.Duration.duration(x.data.eta);
         return foam.u2.Element.create()
@@ -44,16 +48,29 @@ foam.CLASS({
           .add(formatted)
         .end();
       }
+    },
+    {
+      name: 'expiry',
+      hidden: true
     }
   ],
 
   messages: [
-    { name: 'ETA_MESSAGE', message: 'Estimated time of Arrival' }
+    { name: 'ETA_MESSAGE', message: 'Estimated time until payment is received' }
   ],
 
   methods: [
     function toSummary() {
       return this.ETA_MESSAGE;
+    },
+    {
+      name: 'showLineItem',
+      code: function() {
+        if ( this.theme.appName === 'Treviso' ) {
+          return false;
+        }
+        return true;
+      }
     }
   ]
 

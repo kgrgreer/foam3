@@ -42,7 +42,7 @@ foam.CLASS({
     height: 36px;
     margin-left: 24px;
     margin-top: 24px;
-    font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 24px;
     font-weight: 900;
     font-style: normal;
@@ -61,7 +61,7 @@ foam.CLASS({
     margin-top: 8px;
     margin-right: 24px;
     margin-bottom: 8px;
-    font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
     font-size: 14px;
     font-weight: normal;
     font-style: normal;
@@ -118,7 +118,7 @@ foam.CLASS({
     {name: 'WITH_EMAIL', message: ' with the email address : '},
     {name: 'USER_EXIST_1', message: 'A contact who is also an user already exists on '},
     {name: 'USER_EXIST_2', message: ' with the email : '},
-    {name: 'USER_EXIST_3', message: ' belongs to multiple businessness on '},
+    {name: 'USER_EXIST_3', message: ' belongs to multiple business on '},
     {name: 'CONTACT', message: ' contact : '},
     {name: 'ACC_SOFTWARE_CONTACT', message: 'Accounting software contact: '},
     {name: 'USER_ON', message: 'A user on '}
@@ -194,7 +194,7 @@ foam.CLASS({
       code: function(X) {
         X.closeDialog();
         if (this.redirect) {
-          this.pushMenu('sme.main.dashboard')
+          this.pushMenu('capability.main.dashboard')
         }
       }
     },

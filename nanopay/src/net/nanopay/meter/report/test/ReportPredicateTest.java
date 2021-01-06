@@ -45,10 +45,10 @@ public class ReportPredicateTest extends foam.nanos.test.Test {
     receiver = addUser(x, "txntest2@transactiontest.ca");
 
     setup();
-    RuleGroup alterna = (RuleGroup) ruleGroupDAO.find("AlternaPlanner");
-    RuleGroup bmo = (RuleGroup) ruleGroupDAO.find("BMOPlanner");
+    RuleGroup alterna = (RuleGroup) ruleGroupDAO.find("AlternaPlanner").fclone();
+    RuleGroup bmo = (RuleGroup) ruleGroupDAO.find("BMOPlanner").fclone();
     alterna.setEnabled(false);
-    bmo.setEnabled(false);
+    bmo.setEnabled(true);
     ruleGroupDAO.put(alterna);
     ruleGroupDAO.put(bmo);
 
@@ -143,6 +143,7 @@ public class ReportPredicateTest extends foam.nanos.test.Test {
       user.setLastName("Filth");
       user.setEmailVerified(true);
       user.setGroup("business");
+      user.setSpid("nanopay");
       user = (User) userDAO.put(user);
       user = (User) user.fclone();
     }

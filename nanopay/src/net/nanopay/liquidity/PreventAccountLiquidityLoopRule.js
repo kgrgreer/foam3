@@ -75,7 +75,7 @@ foam.CLASS({
       ],
       javaCode: `
         DAO accountDAO = (DAO) x.get("localAccountDAO");
-        HashSet<Long> seenAccountIds = new HashSet<>();
+        HashSet<String> seenAccountIds = new HashSet<>();
 
         while ( account != null ) {
           if ( seenAccountIds.contains(account.getId()) ) {

@@ -55,7 +55,6 @@ foam.CLASS({
           ct.clearLineItems();
           ct.clearNext();
           ct.addNext(plan);
-          ct.setIsQuoted(true);
           quote.setPlan(ct);
         }
       `

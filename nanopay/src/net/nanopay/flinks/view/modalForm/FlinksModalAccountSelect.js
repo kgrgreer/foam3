@@ -32,7 +32,7 @@ foam.CLASS({
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.CABankAccount',
     'net.nanopay.payment.Institution',
-    'net.nanopay.ui.LoadingSpinner'
+    'foam.u2.LoadingSpinner'
   ],
 
   exports: [
@@ -51,13 +51,15 @@ foam.CLASS({
 
   css: `
     ^ {
-      width: auto;
+      box-sizing: border-box;
+      min-width: 615px;
       max-height: 80vh;
       overflow-y: scroll;
     }
     ^content {
       position: relative;
-      padding: 0px 50px 24px 0px;
+      padding: 24px;
+      padding-top: 0;
     }
     ^shrink {
       /*max height - titlebar - navigationbar - content padding*/
@@ -111,6 +113,7 @@ foam.CLASS({
     ^title {
       font-size: 14px;
       font-weight: 900;
+      padding-bottom: 4px;
     }
     ^subtitle {
       font-size: 10px;
@@ -129,9 +132,6 @@ foam.CLASS({
 
       margin: 0;
       margin-bottom: 24px;
-    }
-    ^ .net-nanopay-sme-ui-wizardModal-WizardModalNavigationBar-container {
-      padding: 0 60px 0 0;
     }
   `,
 
@@ -157,7 +157,7 @@ foam.CLASS({
 
   messages: [
     { name: 'Connecting', message: 'Almost there ...'},
-    { name: 'INVALID_FORM', message: 'Please select an account to proceed.'},
+    { name: 'INVALID_FORM', message: 'Please select an account to proceed'},
     { name: 'INSTRUCTIONS', message : 'Please select the account you wish to connect.'}
   ],
 

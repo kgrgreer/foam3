@@ -249,7 +249,7 @@ foam.CLASS({
       doc.append("body {");
       doc.append("  width: 8.5in;");
       doc.append("  min-height: 11in;");
-      doc.append("  font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;");
+      doc.append("  font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;");
       doc.append("  font-size: 12px;");
       doc.append("}");
       doc.append("img {");
@@ -290,7 +290,7 @@ foam.CLASS({
       doc.append(\"    <td><b>Client ID:</b></td>\");
       doc.append(\"    <td>\").append(clientId).append(\"</td>\");
       doc.append(\"    <td><b>Transaction Number:</b></td>\");
-      doc.append(\"    <td>\").append(getReferenceNumber()).append(\"</td>\");
+      doc.append(\"    <td>\").append(getExternalInvoiceId()).append(\"</td>\");
       doc.append(\"  </tr>\");
       doc.append(\"  <tr>\");
       doc.append(\"    <td><b>Client Name:</b></td>\");

@@ -54,7 +54,7 @@ foam.CLASS({
       box-sizing: border-box;
     }
     ^ .labelTitle {
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       font-weight: bold;
       letter-spacing: 0.2px;
@@ -81,7 +81,7 @@ foam.CLASS({
       width: 135px;
       height: 40px;
       border-radius: 2px;
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 14px;
       line-height: 2.86;
       letter-spacing: 0.2px;
@@ -109,7 +109,7 @@ foam.CLASS({
       visibility: hidden;
     }
     ^ .foam-u2-TimeView {
-      font-family: /*%FONT1%*/, Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      font-family: /*%FONT1%*/ Roboto, 'Helvetica Neue', Helvetica, Arial, sans-serif;
       font-size: 12px;
       color: /*%BLACK%*/ #1e1f21;
       height: 30px;

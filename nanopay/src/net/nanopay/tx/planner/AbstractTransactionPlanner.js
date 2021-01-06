@@ -42,6 +42,8 @@ foam.CLASS({
     'net.nanopay.tx.Transfer',
     'static foam.mlang.MLang.EQ',
     'net.nanopay.tx.TransactionQuote',
+    'net.nanopay.tx.FeeLineItem',
+    'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.Transaction',
     'org.apache.commons.lang.ArrayUtils'
   ],
@@ -126,6 +128,12 @@ foam.CLASS({
       `
     },
     {
+      name: 'getUser',
+      javaCode: `
+        return ((TransactionQuote) obj).getSourceAccount().findOwner(x);
+      `
+    },
+    {
       name: 'applyAction',
       documentation: 'applyAction of the rule is called by rule engine',
       javaCode: `
@@ -166,7 +174,6 @@ foam.CLASS({
         if ( getMultiPlan_() ) { // for performance can disallow multiplans on some planners?
           for ( Object altPlanO : quote.getAlternatePlans_() ) {
             Transaction altPlan = (Transaction) altPlanO;
-            altPlan.setIsQuoted(true);
             altPlan.setTransfers((Transfer[]) ArrayUtils.addAll(altPlan.getTransfers(),quote.getMyTransfers_().toArray(new Transfer[0])));
             // add the planner id for validation
             altPlan.setPlanner(this.getId());
@@ -178,7 +185,6 @@ foam.CLASS({
         if ( txn != null ) {
           txn.setId(UUID.randomUUID().toString());
           txn.setTransfers((Transfer[]) quote.getMyTransfers_().toArray(new Transfer[0]));
-          txn.setIsQuoted(true);
           //likely can add logic for setting clearing/completion time based on planners here.
           //auto add fx rate
           txn = applyFee(x, quote, txn);
@@ -248,7 +254,7 @@ foam.CLASS({
       `
     },
     {
-      name: 'createCompliance',
+      name: 'createComplianceTransaction',
       documentation: 'Creates a compliance transaction and returns it',
       args: [
         { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
@@ -263,7 +269,6 @@ foam.CLASS({
         ct.clearLineItems();
         ct.setPlanner(getId());
         ct.clearNext();
-        ct.setIsQuoted(true);
         ct.setId(UUID.randomUUID().toString());
         return ct;
       `
@@ -278,6 +283,20 @@ foam.CLASS({
       ],
       javaCode: `
         return true;
+        // To be filled out in extending class.
+      `
+    },
+    {
+      name: 'postPlanning',
+      documentation: 'Run any planner specific logic that needs to happen after planning and then run validation logic',
+      type: 'boolean',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' },
+        { name: 'root', type: 'net.nanopay.tx.model.Transaction' }
+      ],
+      javaCode: `
+        return validatePlan(x,txn);
         // To be filled out in extending class.
       `
     },
@@ -320,6 +339,7 @@ foam.CLASS({
       javaCode: `
         var txnclone = (Transaction) txn.fclone();
         if ( getIsFeeOnRootCorridors() ) {
+          // TODO: validate Crunch capabilities?
           while ( quote.getParent() != null ){
             quote = quote.getParent();
           }
@@ -329,9 +349,17 @@ foam.CLASS({
           txnclone.setSourceCurrency(quote.getSourceUnit());
           txnclone.setDestinationCurrency(quote.getDestinationUnit());
         }
-
         txnclone = (Transaction) ((DAO) x.get("localFeeEngineDAO")).put(txnclone);
-        txn.setLineItems(txnclone.getLineItems());
+
+        // Copy lineItem transfers to transaction (fees + taxes that were added)
+        TransactionLineItem [] ls = txnclone.getLineItems();
+        for ( TransactionLineItem li : ls ) {
+          if ( li instanceof FeeLineItem && ((FeeLineItem)li).getTransfers() != null ) {
+            txn.add(((FeeLineItem)li).getTransfers());
+            ((FeeLineItem)li).setTransfers(null);
+          }
+        }
+        txn.setLineItems(ls);
         return txn;
       `
     }

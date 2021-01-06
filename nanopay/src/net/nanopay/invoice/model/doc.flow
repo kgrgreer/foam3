@@ -1,0 +1,54 @@
+<title>Nanopay Invoice Model</title>
+
+<foam class="foam.flow.widgets.DocumentationIncomplete" status="wip" />
+
+<h1>Invoice</h1>
+
+<h2>Purpose</h2>
+<foam class="foam.flow.widgets.DocumentationIncomplete" status="todo" isSection="true" />
+
+<h1>Features</h1>
+
+<h2>Capable</h2>
+
+The `Invoice` model implements Capable
+
+<h3>Brazil Nature Codes</h3>
+
+<h2>Rules</h2>
+
+<h3>Treviso</h3>
+
+<h4>Invoice Nature Code Rule (TrevisoInvoiceCapabilityRule)</h4>
+
+<foam class="foam.flow.widgets.ModelSummary" of="net.nanopay.invoice.ruler.TrevisoInvoiceCapabilityRule" visibleModelProps="id,constants" />
+
+This is a `BEFORE` rule which does the following:
+
+<ol>
+  <li>Throw intercept if user does not have `USER_CAPABILITY_ID`</li>
+  <li>Add empty payload for `OBJECT_CAPABILITY_ID` to invoice</li>
+</ol>
+
+This rule is here to prevent users who haven't finished onboarding from creating
+an invoice, and to prepare the invoice for its own requirements which will be
+obtained via `crunch.lite`. For more information on how the Capable interface
+allows an invoice to have its own process of gathering data from the user, refer
+to the `crunch.lite` documentation. (TODO: link)
+
+<h4>Invoice No Capability Check Rule (NoCapabilityCheckRule)<h4>
+
+This is a BEFORE rule which sets an invoice's status to QUOTED if no
+requirements were added by any previous rule.
+
+<h4>Invoice Validate Capabilities Rule (TrevisoCapabilityValidateRule)</h4>
+
+This is an AFTER rule which invokes a CRUNCH intercept (CapabilityIntercept)
+when the client sends an invoice with insufficient requirements.
+
+This rule uses the `OBJECT_CAPABILITY_ID` constant from
+TrevisoInvoiceCapabilityRule as the capable payload to check for GRANTED status.
+
+<h4>Update Transaction on Invoice Validation (UpdateTransactionOnInvoiceValidationRule)</h4>
+
+<foam class="foam.flow.widgets.ModelSummary" of="net.nanopay.invoice.ruler.UpdateTransactionOnInvoiceValidationRule" visibleModelProps="id,documentation,constants" />

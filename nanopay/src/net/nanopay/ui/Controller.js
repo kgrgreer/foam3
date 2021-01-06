@@ -95,9 +95,13 @@ foam.CLASS({
     'findAccount',
     'findBalance',
     'homeDenomination',
+    'initLayout',
+    'isMenuOpen',
     'isIframe',
     'onboardingUtil',
     'privacyUrl',
+    'showFooter',
+    'showNav',
     'sme',
     'termsUrl'
   ],
@@ -174,6 +178,15 @@ foam.CLASS({
       color: rgb(0, 153, 229);
       text-decoration-line: none;
     }
+
+    @media print {
+      ^ .foam-nanos-menu-VerticalMenu {
+        display: none !important;
+      }
+      ^ .foam-u2-stack-StackView {
+        padding-left: 0 !important;
+      }
+    }
   `,
 
   messages: [
@@ -240,10 +253,20 @@ foam.CLASS({
     {
       class: 'foam.core.FObjectProperty',
       of: 'foam.core.Latch',
-      name: 'themeUpdated',
-      documentation: 'A latch used to wait on theme update after login.',
+      name: 'initLayout',
+      documentation: 'A latch used to wait on layout initialization.',
       factory: function() {
         return this.Latch.create();
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'layoutInitialized',
+      documentation: 'True if layout has been initialized.',
+      value: false,
+      expression: async function(initLayout) {
+        await initLayout;
+        return true;
       }
     },
     {
@@ -341,6 +364,26 @@ foam.CLASS({
       class: 'Boolean',
       name: 'sme',
       value: false
+    },
+    {
+      class: 'Boolean',
+      name: 'showFooter',
+      value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'showNav',
+      value: true
+    },
+    {
+      class: 'Boolean',
+      name: 'isMenuOpen',
+      factory: function() {
+        if ( window.localStorage.getItem('isMenuOpen') === 'false' )
+          return false;
+        else
+          return true;
+      }
     }
   ],
 
@@ -388,31 +431,31 @@ foam.CLASS({
       });
 
       await this.themeInstalled;
+      await this.languageInstalled;
 
       if ( ! this.isIframe() ) {
         this
           .addClass(this.myClass())
           .add(this.slot( async function(loginSuccess, topNavigation_) {
             if ( ! loginSuccess ) return null;
-            await this.themeUpdated;
-            return this.E().tag(topNavigation_);
+            await this.initLayout;
+            return this.E().tag(topNavigation_).show(this.showNav$);
           }))
           .start()
             .addClass('stack-wrapper')
-            .enableClass('login-stack', this.loginSuccess$.map( ls => ! ls ))
             .tag({
               class: 'net.nanopay.ui.banner.Banner',
               data$: this.bannerData$
             })
-            .tag(this.StackView.create({
-                data: this.stack,
-                showActions: false
-              }))
+            .start(this.StackView.create({data: this.stack, showActions: false}))
+              .enableClass('login-stack', this.layoutInitialized$.map( li => ! li ))
+              .enableClass('application-stack', this.layoutInitialized$.map( li => li ))
+            .end()
           .end()
-          .start()
+          .start().show(this.showFooter$)
             .enableClass('footer-wrapper', this.loginSuccess$)
             .add(this.slot( async function(loginSuccess, footerView_) {
-              if ( loginSuccess ) await this.themeUpdated;
+              if ( loginSuccess ) await this.initLayout;
               return this.E().tag(footerView_);
             }))
           .end();
@@ -425,10 +468,9 @@ foam.CLASS({
               class: 'net.nanopay.ui.banner.Banner',
               data$: this.bannerData$
             })
-            .tag(this.StackView, {
-              data: this.stack,
-              showActions: false
-            })
+            .start(this.StackView.create({data: this.stack, showActions: false}))
+              .style({'margin-top': '55px'})
+            .end()
           .end();
       }
     },
@@ -439,6 +481,29 @@ foam.CLASS({
         if ( await this.group.isDescendantOf('sme', this.client.groupDAO) ) {
           this.sme = true;
         }
+      }
+    },
+
+    async function fetchSubject() {
+      /** Get current user, else show login. */
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const otLoginToken = urlParams.get('otltoken');
+
+        if ( otLoginToken != null ) {
+          await this.client.otLoginService.loginTokenId(null, otLoginToken);
+          window.location.href = "/";
+        }
+
+        var result = await this.client.auth.getCurrentSubject(null);
+
+        if ( ! result || ! result.user) throw new Error();
+
+        this.subject = result;
+      } catch (err) {
+        this.languageInstalled.resolve();
+        await this.requestLogin();
+        return await this.fetchSubject();
       }
     },
 
@@ -517,6 +582,16 @@ foam.CLASS({
             self.client.authenticationTokenService.processToken(null, null, tokenParam)
               .then(() => {
                 location = locHash == '#onboarding' ? '/' : '/' + locHash;
+              })
+              .catch((err) => {
+                if ( err.message && err.message === "Token has already been used" ) {
+                  view = {
+                      class: 'net.nanopay.sme.ui.SuccessPasswordView'
+                  };
+                  self.stack.push(view, self);
+                } else {
+                  throw err;
+                }
               });
           }
         }
@@ -601,7 +676,7 @@ foam.CLASS({
      * It is only required for payables.
      */
     async function check2FAEnalbed() {
-      var canPayInvoice = await this.client.auth.check(null, 'invoice.pay');
+      var canPayInvoice = await this.client.auth.check(null, 'business.invoice.pay') && await this.client.auth.check(null, 'user.invoice.pay');
 
       if ( canPayInvoice && ! this.subject.realUser.twoFactorEnabled ) {
         var TwoFactorNotificationDOM = this.Element.create()
@@ -726,14 +801,13 @@ foam.CLASS({
     function onUserAgentAndGroupLoaded() {
       var self = this;
       this.loginSuccess = true;
-      this.themeUpdated.resolve();
-
       // Listener to check for new toast notifications
       var userNotificationQueryId = this.subject.realUser.id;
       this.__subSubContext__.notificationDAO.where(
         this.EQ(this.Notification.USER_ID, userNotificationQueryId)
       ).on.put.sub((sub, on, put, obj) => {
         if ( obj.toastState == this.ToastState.REQUESTED ) {
+          obj.toastMessage = this.__subContext__.translationService.getTranslation(foam.locale, obj.toastMessage, obj.toastMessage);
           this.add(this.NotificationMessage.create({
             message: obj.toastMessage,
             type: obj.severity,
@@ -750,14 +824,19 @@ foam.CLASS({
           var menu;
 
           // Redirect user to switch business if agent doesn't exist.
-          if ( ! this.subject.realUser ) {
-            menu = await this.client.menuDAO.find('sme.accountProfile.switch-business');
-            menu.launch(this);
+          if ( ! this.subject.realUser || this.subject.realUser.id === this.subject.user.id ) {
+            //by setting memento here we will trigger mementoChange function in ApplicationController
+            //which will find and launch sme.accountProfile.switch-business menu
+            this.memento.value = 'sme.accountProfile.switch-business'
             return;
           }
 
           var hash = location.hash.substr(1);
-  
+
+          if ( hash !== 'sme.accountProfile.switch-business' ) {
+            this.initLayout.resolve();
+          }
+
           try {
             menu = await this.client.menuDAO.find(hash);
           }
@@ -796,6 +875,7 @@ foam.CLASS({
       }
 
       else {
+        this.initLayout.resolve();
         // only show B2B onboarding if user is a Business
         if ( this.subject.user.type === 'Business' ) {
           // check account status and show UI accordingly

@@ -87,9 +87,9 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Receivables' },
     { name: 'SUB_TITLE', message: `Here's a list of the funds you've requested from other people` },
-    { name: 'DELETE_DRAFT', message: 'Draft has been deleted.' },
-    { name: 'RECONCILED_SUCCESS', message: 'Invoice has been reconciled by payer.' },
-    { name: 'RECONCILED_ERROR', message: `There was an error reconciling the invoice.` },
+    { name: 'DELETE_DRAFT', message: 'Draft has been deleted' },
+    { name: 'RECONCILED_SUCCESS', message: 'Invoice has been reconciled by payer' },
+    { name: 'RECONCILED_ERROR', message: `There was an error reconciling the invoice` },
     { name: 'INVOICE', message: 'invoice' }
   ],
 
@@ -100,18 +100,6 @@ foam.CLASS({
 
       imports: [
         'accountingIntegrationUtil'
-      ],
-
-      methods: [
-        async function dblclick(invoice) {
-          let updatedInvoice = await this.accountingIntegrationUtil.forceSyncInvoice(invoice);
-          if ( updatedInvoice === null || updatedInvoice === undefined ) return;
-          this.stack.push({
-            class: 'net.nanopay.sme.ui.InvoiceOverview',
-            invoice: updatedInvoice,
-            isPayable: false
-          });
-        }
       ]
     }
   ],
@@ -155,6 +143,16 @@ foam.CLASS({
         var self = this;
         return {
           class: 'foam.u2.view.ScrollTableView',
+          dblClickListenerAction: async function dblclick(invoice, id) {
+            if ( ! invoice ) invoice = await this.__subContext__.invoiceDAO.find(id);
+            let updatedInvoice = await this.accountingIntegrationUtil.forceSyncInvoice(invoice);
+            if ( updatedInvoice === null || updatedInvoice === undefined ) return;
+            this.stack.push({
+              class: 'net.nanopay.sme.ui.InvoiceOverview',
+              invoice: updatedInvoice,
+              isPayable: false
+            });
+          },
           columns: [
             this.Invoice.PAYER_ID.clone().copyFrom({
               label: 'Company',
@@ -268,30 +266,7 @@ foam.CLASS({
     },
     {
       name: 'primaryAction',
-      factory: function() {
-        var self = this;
-        return this.Action.create({
-          name: 'reqMoney',
-          label: 'Request payment',
-          code: function(X) {
-            self.checkAndNotifyAbilityToReceive().then((result) => {
-              if ( result ) {
-                X.menuDAO.find('sme.quickAction.request').then((menu) => {
-                  var clone = menu.clone();
-                  Object.assign(clone.handler.view, {
-                    invoice: self.Invoice.create({}),
-                    isPayable: false,
-                    isForm: true,
-                    isList: false,
-                    isDetailView: false
-                  });
-                  clone.launch(X, X.controllerView);
-                });
-              }
-            });
-          }
-        });
-      }
+      factory: function() { return this.REQ_MONEY; }
     }
   ],
 
@@ -320,8 +295,33 @@ foam.CLASS({
   ],
   actions: [
     {
+      name: 'reqMoney',
+      label: 'Request payment',
+      code: function(X) {
+        self.checkAndNotifyAbilityToReceive().then((result) => {
+          if ( result ) {
+            X.menuDAO.find('sme.quickAction.request').then((menu) => {
+              var clone = menu.clone();
+              Object.assign(clone.handler.view, {
+                invoice: self.Invoice.create({}),
+                isPayable: false,
+                isForm: true,
+                isList: false,
+                isDetailView: false
+              });
+              clone.launch(X, X.controllerView);
+            });
+          }
+        });
+      }
+    },
+    {
       name: 'sync',
       label: 'Sync with Accounting',
+      isAvailable: async function() {
+        var permissions = await this.accountingIntegrationUtil.getPermission();
+        return permissions[0];
+      },
       code: function(X) {
         this.ctrl.add(this.Popup.create().tag({
           class: 'net.invoice.ui.modal.IntegrationModal'

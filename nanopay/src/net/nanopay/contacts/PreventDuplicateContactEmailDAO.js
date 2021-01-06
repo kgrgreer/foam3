@@ -43,7 +43,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'DUPLICATE_CONTACT_ERROR_MSG', message: 'You already have a contact with that email address.' }
+    { name: 'DUPLICATE_CONTACT_ERROR_MSG', message: 'You already have a contact with that email address' }
   ],
 
   axioms: [
