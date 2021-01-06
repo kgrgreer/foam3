@@ -181,6 +181,10 @@ myApprover.setCompliance(ComplianceStatus.PASSED);
 myApprover.setSpid("nanopay");
 myApprover = (User) localUserDAO.put(myApprover);
 X myApproverContext = Auth.sudo(x, myApprover);
+Session sessionApprover = myApproverContext.get(Session.class);
+sessionApprover.setAgentId(myApprover.getId());
+myApproverContext = sessionApprover.applyTo(myApproverContext);
+
 localUserDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "employee@example.com")).removeAll();
 User myEmployee = new User();
 myEmployee.setFirstName("MyEmployee");
@@ -209,7 +213,6 @@ agentJunctionDAO.put(employeeToBusinessJunc);
 Session sessionApprover = myApproverContext.get(Session.class);
 sessionApprover.setUserId(myBusiness.getId());
 sessionApprover.setAgentId(myApprover.getId());
-sessionApprover = (Session) ((DAO) x.get("localSessionDAO")).put_(x, sessionApprover);
 myApproverContext = sessionApprover.applyTo(myApproverContext);
 
 Session sessionEmployee = myEmployeeContext.get(Session.class);
