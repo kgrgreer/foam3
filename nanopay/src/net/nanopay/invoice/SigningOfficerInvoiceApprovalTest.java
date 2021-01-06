@@ -529,6 +529,6 @@ try {
   message = t.getMessage();
   print("DEBUG: " + message);
 }
-test(! threw, "When an approver tries to pay an invoice, it works as expected." + message);
+test(! threw, "When an approver tries to pay an invoice, it works as expected." + message + " source = " + invoice.getAccount() + "dest = " + invoice.getDestinationAccount());
   }
 }
