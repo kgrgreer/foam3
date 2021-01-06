@@ -95,7 +95,7 @@ foam.CLASS({
           throw new RuntimeException("bankAccount = " + bankAccount);
           // txn = (Transaction)transactionDAO.put(txn);
         } catch (Exception e) {
-          throw new RuntimeException("Auto transfer of funds from InvoiceId: " + invoice.getId() + " to payeeId: " + invoice.getPayeeId() + " failed." + e +"\n"+ bankAccount);
+          throw new RuntimeException("Auto transfer of funds from InvoiceId: " + invoice.getId() + " to payeeId: " + invoice.getPayeeId() + " failed." + e +":::"+ bankAccount);
         }
       `
     },
