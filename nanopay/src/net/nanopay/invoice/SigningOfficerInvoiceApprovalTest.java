@@ -162,8 +162,11 @@ userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBR);
 
 // Get MyBusiness
 ArraySink sink = (foam.dao.ArraySink) agentJunctionDAO.where(foam.mlang.MLang.EQ(UserUserJunction.SOURCE_ID, myAdmin.getId())).select(new foam.dao.ArraySink());
+
 UserUserJunction agentJunction = (UserUserJunction) sink.getArray().get(0);
 Business myBusiness = (Business)localBusinessDAO.find(agentJunction.getTargetId());
+System.out.println("admin group = " + myAdmin.getGroup());
+System.out.println("junction group = " + agentJunction.getGroup());
 
 // Setup Approver and Employee Users
 localUserDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "approver@example.com")).removeAll();
@@ -451,6 +454,10 @@ for ( ApprovalRequest approvalRequest : approvalRequests ) {
     throw e;
   }
 }
+System.out.println("approver group = " + myApprover.getGroup());
+sink = (foam.dao.ArraySink) agentJunctionDAO.where(foam.mlang.MLang.EQ(UserUserJunction.SOURCE_ID, myApprover.getId())).select(new foam.dao.ArraySink());
+agentJunction = (UserUserJunction) sink.getArray().get(0);
+System.out.println("junction group = " + agentJunction.getGroup());
 
 ///////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// TEST CODE ///////////////////////////////////////////
@@ -512,7 +519,8 @@ invoice.setAccount(myBusinessBankAccount.getId());
 invoice = (Invoice) invoiceDAO.inX(myApproverContext).put(invoice);
 test(invoice.getStatus() == InvoiceStatus.UNPAID && invoice.getPaymentMethod() == PaymentStatus.NONE, "When an approver creates an invoice, the invoice status is UNPAID and the payment status is NONE.");
 
-
+System.out.println("myApproverContext " + myApproverContext.get("subject").getUser() + ", " + myApproverContext.get("subject").getRealUser());
+System.out.println("myAdminContext " + myAdminContext.get("subject").getUser() + ", " + myAdminContext.get("subject").getRealUser());
 transaction = new Transaction();
 transaction.setSourceAccount(invoice.getAccount());
 transaction.setDestinationAccount(invoice.getDestinationAccount());
@@ -523,7 +531,7 @@ transaction.setInvoiceId(invoice.getId());
 threw = false;
 message = "";
 try {
-  transactionDAO.inX(myApproverContext).put(transaction);
+  transactionDAO.inX(myAdminContext).put(transaction);
 } catch (Throwable t) {
   threw = true;
   message = t.getMessage();
