@@ -5,6 +5,7 @@ import foam.dao.*;
 import foam.nanos.approval.ApprovalRequest;
 import foam.nanos.approval.ApprovalStatus;
 import foam.nanos.auth.Address;
+import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
 import foam.nanos.crunch.AgentCapabilityJunction;
@@ -173,7 +174,7 @@ localUserDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "approver@example.com")).remo
 User myApprover = new User();
 myApprover.setFirstName("MyApprover");
 myApprover.setEmail("approver@example.com");
-myApprover.setGroup(myBusiness.getBusinessPermissionId() + ".admin");
+myApprover.setGroup("sme");
 myApprover.setEmailVerified(true); // Required to send or receive money.
 myApprover.setCompliance(ComplianceStatus.PASSED);
 myApprover.setSpid("nanopay");
@@ -454,8 +455,18 @@ for ( ApprovalRequest approvalRequest : approvalRequests ) {
     throw e;
   }
 }
-System.out.println("approver group = " + myApprover.getGroup());
+
+System.out.println("myApproverContext " + ((Subject) myApproverContext.get("subject")).getUser().getId() + ", " + ((Subject) myApproverContext.get("subject")).getRealUser().getId());
+
+System.out.println("\napprover group = " + myApprover.getGroup());
 sink = (foam.dao.ArraySink) agentJunctionDAO.where(foam.mlang.MLang.EQ(UserUserJunction.SOURCE_ID, myApprover.getId())).select(new foam.dao.ArraySink());
+agentJunction = (UserUserJunction) sink.getArray().get(0);
+System.out.println("junction group = " + agentJunction.getGroup());
+
+System.out.println("myAdminContext " + ((Subject) myAdminContext.get("subject")).getUser().getId() + ", " + ((Subject) myAdminContext.get("subject")).getRealUser().getId());
+
+System.out.println("\nadmin group = " + myAdmin.getGroup());
+sink = (foam.dao.ArraySink) agentJunctionDAO.where(foam.mlang.MLang.EQ(UserUserJunction.SOURCE_ID, myAdmin.getId())).select(new foam.dao.ArraySink());
 agentJunction = (UserUserJunction) sink.getArray().get(0);
 System.out.println("junction group = " + agentJunction.getGroup());
 
@@ -519,8 +530,6 @@ invoice.setAccount(myBusinessBankAccount.getId());
 invoice = (Invoice) invoiceDAO.inX(myApproverContext).put(invoice);
 test(invoice.getStatus() == InvoiceStatus.UNPAID && invoice.getPaymentMethod() == PaymentStatus.NONE, "When an approver creates an invoice, the invoice status is UNPAID and the payment status is NONE.");
 
-System.out.println("myApproverContext " + myApproverContext.get("subject").getUser() + ", " + myApproverContext.get("subject").getRealUser());
-System.out.println("myAdminContext " + myAdminContext.get("subject").getUser() + ", " + myAdminContext.get("subject").getRealUser());
 transaction = new Transaction();
 transaction.setSourceAccount(invoice.getAccount());
 transaction.setDestinationAccount(invoice.getDestinationAccount());
