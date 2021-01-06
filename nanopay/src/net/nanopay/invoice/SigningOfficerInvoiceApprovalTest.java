@@ -4,9 +4,7 @@ import foam.dao.*;
 
 import foam.nanos.approval.ApprovalRequest;
 import foam.nanos.approval.ApprovalStatus;
-import foam.nanos.auth.AuthService;
 import foam.nanos.auth.Address;
-import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
 import foam.nanos.crunch.AgentCapabilityJunction;
@@ -458,10 +456,6 @@ for ( ApprovalRequest approvalRequest : approvalRequests ) {
   }
 }
 
-if ( myBusinessBankAccount.getStatus() != BankAccountStatus.VERIFIED ) {
-  myBusinessBankAccount.setStatus(BankAccountStatus.VERIFIED);
-  myBusinessBankAccount = (CABankAccount) myBusiness.getAccounts(x).put_(x, myBusinessBankAccount);
-}
 
 ///////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// TEST CODE ///////////////////////////////////////////
@@ -473,7 +467,6 @@ invoice.setAmount(1);
 invoice.setPayerId(myBusiness.getId());
 invoice.setPayeeId(externalBusiness.getId());
 invoice.setDestinationCurrency("CAD");
-// invoice.setPaymentMethod(PaymentStatus.NONE);
 invoice.setAccount(myBusinessBankAccount.getId());
 invoice = (Invoice) invoiceDAO.inX(myEmployeeContext).put(invoice);
 Boolean invoiceStatusIsCorrect = invoice.getStatus() == InvoiceStatus.UNPAID;
@@ -484,8 +477,7 @@ if ( ! invoiceStatusIsCorrect ) {
 if ( ! paymentStatusIsCorrect ) {
   print("DEBUG: Payment status is " + invoice.getPaymentMethod());
 }
-
-test(invoiceStatusIsCorrect && paymentStatusIsCorrect, "When an employee creates an invoice, the invoice status is "+invoice.getStatus()+" and the payment status is "+invoice.getPaymentMethod()+".");
+test(invoiceStatusIsCorrect && paymentStatusIsCorrect, "When an employee creates an invoice, the invoice status is UNPAID and the payment status is NONE.");
 
 
 Transaction transaction = new Transaction();
@@ -521,7 +513,6 @@ invoice.setAmount(1);
 invoice.setPayerId(myBusiness.getId());
 invoice.setPayeeId(externalBusiness.getId());
 invoice.setDestinationCurrency("CAD");
-invoice.setPaymentMethod(PaymentStatus.NONE);
 invoice.setAccount(myBusinessBankAccount.getId());
 invoice = (Invoice) invoiceDAO.inX(myApproverContext).put(invoice);
 test(invoice.getStatus() == InvoiceStatus.UNPAID && invoice.getPaymentMethod() == PaymentStatus.NONE, "When an approver creates an invoice, the invoice status is UNPAID and the payment status is NONE.");
