@@ -303,8 +303,10 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMo
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.EXIT.label",target:"exit pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.GO_BACK.label",target:"goBack pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.OTHER_OPTION.label",target:"otherOption pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.ConfirmDisable2FAModal.TITLE",target:"Desativar a autenticação de dois fatores?"})
 
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.CANCEL_SUCCESS",target:"Fatura cancelada com sucesso"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.ConfirmDisable2FAModal.TITLE",target:"Desativar a autenticação de dois fatores?"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.ConfirmDisable2FAModal.INSTRUCTIONS_1",target:"Two-factor authentication provides an added layer of security to your account by decreasing the probability that an attacker can impersonate you or gain access to your sensitve account information. pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.ConfirmDisable2FAModal.INSTRUCTIONS_2",target:"Recomendamos mantê-la ativada."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.ConfirmDisable2FAModal.FIELD_LABEL",target:"Insira o código de verificação"})
@@ -955,47 +957,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-7.name",target:"Propriedade de negócio"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-76.name",target:"Registro comercial"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-76.description",target:"Crie um negócio para acessar pagamentos e faturas na plataforma."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-1.name",target:"Balanço e demonstração de resultados para o período determinado"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-10.name",target:"Nota de débito"})
-
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-11.name",target:"Escritura de Propriedade"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-12.name",target:"Prova de parentesco"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-13.name",target:"Prova de operação"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-15.name",target:"Nota de seguro"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-14.name",target:"Declaração de importação ou declaração única de importação"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-16.name",target:"Fatura com detalhes de pagamento"})
-
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-18.name",target:"Contrato de empréstimo"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-17.name",target:"Contrato de locação"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-19.name",target:"Minutos de Distribuição de Lucros da empresa"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-2.name",target:"Domicílio bancário para pagamento (em reais (M / N) ou moeda estrangeira (M / E))"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-20.name",target:"Política"})
-
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-21.name",target:"Prova de investimento no exterior"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-22.name",target:"Comprovante de pedido recebido do exterior (SWIFT / CCME)"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-23.name",target:"Comprovante de pagamento do ITCMD"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-24.name",target:"Contrato de compra e venda de propriedade"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-25.name",target:"Contrato de aluguel de propriedade"})
-
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-26.name",target:"RDE-ROF and payment scheme pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-27.name",target:"RE (Export Registration) or DSE (Simplified Export Declaration) pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-28.name",target:"ROF pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-29.name",target:"Extrato de vendas do período"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-3.name",target:"Bill of Lading (BL, AWB, CTR, Courier) pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-30.name",target:"Acordo de Prestação de Serviços"})
-
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-31.name",target:"Fatura Comercial Assinada"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-32.name",target:"Signed Proforma Invoice (containing expected shipping date) pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-33.name",target:"Contrato social"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-34.description",target:"Fornecer RDE-IED atualizado"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-35.name",target:"Wills / Inventory pt"})
-
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-4.name",target:"Autorização da placa para fechamento"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-5.name",target:"Incorporação de empresa"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-6.name",target:"Relatório da empresa com números de conhecimento de embarque"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-7.name",target:"Contrato entre as partes"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-8.name",target:"Ato societário que delibera sobre investimento ou Carta de autorização de empresa estrangeira para recebimento do investimento"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"5fdd9025-86e6-45a1-bed5-8962acdf5338-9.name",target:"Voucher de correio"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"63049307-8db4-2437-5c02-b71d6878263c.name",target:"Capacidade do país de destino BR"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"688cb7c6-7316-4bbf-8483-fb79f8fdeaaf.name",target:"Números de identificação comercial"})
@@ -1121,7 +1082,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.Sign
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.PLEASE_READ_IMPORTANT_INFORMATION.label",target:"pleaseReadImportantInformation pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.PLEASE_READ_IMPORTANT_INFORMATION.value",target:"Obrigado por nos informar que você é o oficial de assinatura desta empresa. Devemos coletar\n          suas informações antes de processar quaisquer pagamentos ou requisitos de integração para você.\n          Isso garante a proteção de todos os membros que operam na plataforma.\n          Sua empresa não conseguirá desbloquear totalmente os recursos de faturamento e pagamento até pelo menos um oficial de assinatura\n          preenche este formulário e sua identidade é totalmente revisada e aprovada.\n      "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.COUNTRY_ID.label",target:"countryId pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.ADDRESS.label",target:"endereço"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.ADDRESS.documentation",target:"Retorna o endereço postal do modelo de endereço."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.JOB_TITLE.label",target:"Titulo do trabalho"})
@@ -1142,6 +1102,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.Sign
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.YES",target:"Sim"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.NO",target:"Não"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.SELECT_JOB_TITLE",target:"Titulo do trabalho obrigatório"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.PLACE_HOLDER",target:"Por favor selecione..."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.BUSINESS_TYPE_ERROR",target:"Selecione o tipo de negócio."})
@@ -3104,8 +3065,8 @@ p({class:"foam.i18n.Locale",locale:"pt","source":"5fdd9025-86e6-45a1-bed5-8962ac
 p({class:"foam.i18n.Locale",locale:"pt","source":"5fdd9025-86e6-45a1-bed5-8962acdf5338-1.description","target":"Balanço do período relevante"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"5fdd9025-86e6-45a1-bed5-8962acdf5338-2.name","target":"Declaração de renda"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"5fdd9025-86e6-45a1-bed5-8962acdf5338-2.description","target":"Declaração de renda para o período relevante"})
-p({class:"foam.i18n.Locale",locale:"pt","source":"5fdd9025-86e6-45a1-bed5-8962acdf5338-3.name","target":"Banco Domicile Reasis"})
-p({class:"foam.i18n.Locale",locale:"pt","source":"5fdd9025-86e6-45a1-bed5-8962acdf5338-3.description","target":"Fornecer domicílio bancário para pagamento de Reasis"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"5fdd9025-86e6-45a1-bed5-8962acdf5338-3.name","target":"Banco domiciliar para pagamentos em reais"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"5fdd9025-86e6-45a1-bed5-8962acdf5338-3.description","target":"Forneça um documento que mostre seu endereço bancário para pagamento em reais"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"5fdd9025-86e6-45a1-bed5-8962acdf5338-4.name","target":"Banco Domicílio Moeda Estrangeira"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"5fdd9025-86e6-45a1-bed5-8962acdf5338-4.description","target":"Fornecer domicílio bancário para pagamento em moeda estrangeira"})
 
@@ -3168,7 +3129,7 @@ p({class:"foam.i18n.Locale",locale:"pt","source":"cbb67837-54ac-49dc-a596-9fdddb
 p({class:"foam.i18n.Locale",locale:"pt","source":"Nature Code Requirement","target":"Propósito do Pagamento"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"05a663b8-2b48-11eb-adc1-0242ac120002.name","target":"Ativar pagamentos internacionais"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"05a663b8-2b48-11eb-adc1-0242ac120002.description","target":"Habilitar pagamentos internacionais no Brasil"})
-p({class:"foam.i18n.Locale",locale:"pt","source":"05a663b8-2b48-11eb-adc1-0242ac120002.requirementViewTitle","target":"Prepare seus documentos comerciais. Você pode salvar seu progresso e voltar mais tarde"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"05a663b8-2b48-11eb-adc1-0242ac120002.requirementViewTitle","target":"Preparar seus documentos comerciais. Você pode salvar seu progresso e voltar mais tarde"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"554af38a-8225-87c8-dfdf-eeb15f71215f-49.name","target":"Brasil onboarding"})
 
 p({class:"foam.i18n.Locale",locale:"pt","source":"554af38a-8225-87c8-dfdf-eeb15f71215f-49.description","target":"Brasil onboarding"})
@@ -3253,7 +3214,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.NewInvoiceFor
 
 p({class:"foam.i18n.Locale",locale:"pt","source":"0B2E7305-B898-43F2-9C1B-63FB2CE38B2D.name","target":"Pagamentos internacionais"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"0B2E7305-B898-43F2-9C1B-63FB2CE38B2D.description","target":"Pagamentos internacionais do Brasil"})
-p({class:"foam.i18n.Locale",locale:"pt","source":"0B2E7305-B898-43F2-9C1B-63FB2CE38B2D.requirementViewTitle","target":"Prepare seus documentos comerciais. Você pode salvar seu progresso e voltar mais tarde."})
+p({class:"foam.i18n.Locale",locale:"pt","source":"0B2E7305-B898-43F2-9C1B-63FB2CE38B2D.requirementViewTitle","target":"Preparar seus documentos comerciais. Você pode salvar seu progresso e voltar mais tarde."})
 
 // Brazil Business Info Data
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.country.br.BrazilBusinessInfoData.CNPJ.label",target:"Cadastro Nacional da Pessoa Jurídica (CNPJ)"})
