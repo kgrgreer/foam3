@@ -60,7 +60,7 @@ foam.CLASS({
         Invoice invoice = (Invoice) obj;
         DAO userDAO = ((DAO) x.get("localUserDAO")).inX(x);
         User payee = (User) userDAO.find(invoice.getPayeeId());
-        if ( payee == null ) { return super.put_(x, invoice); }
+        if ( payee == null ) { throw new RuntimeException("payee is null" + invoice);return super.put_(x, invoice); }
         if ( auth.check(x, "invoice.holdingAccount") &&
           invoice.getStatus() == InvoiceStatus.PENDING_ACCEPTANCE &&
           checkIfUserHasVerifiedBankAccount(x, payee, invoice)) {
