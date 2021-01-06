@@ -5,7 +5,6 @@ p({
   "name":"Digital Transaction Planner",
   "priority":200,
   "ruleGroup":"transactionPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -45,7 +44,6 @@ p({
   "name":"RBC Digital Inter Trust Transaction Planner",
   "priority":200,
   "ruleGroup":"transactionPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -94,7 +92,6 @@ p({
   "name":"BMO Digital Inter Trust Transaction Planner",
   "priority":200,
   "ruleGroup":"transactionPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -143,7 +140,6 @@ p({
   "name":"Generic Cash In Planner",
   "priority":100,
   "ruleGroup":"genericPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -167,7 +163,6 @@ p({
   "name":"Generic Cash Out Planner",
   "priority":101,
   "ruleGroup":"genericPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -191,7 +186,6 @@ p({
   "name":"Generic FX Planner",
   "priority": 95,
   "ruleGroup":"genericPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -223,7 +217,6 @@ p({
   "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d51",
   "priority":110,
   "ruleGroup":"SecurityPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -252,7 +245,6 @@ p({
   "name":"Generic Security CO planner",
   "priority":111,
   "ruleGroup":"SecurityPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -281,7 +273,6 @@ p({
   "name":"FOP Transaction Planner",
   "priority":100,
   "ruleGroup":"SecurityPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -310,7 +301,6 @@ p({
   "name":"DVP Transaction Planner",
   "priority":90,
   "ruleGroup":"SecurityPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
     "propName":"requestTransaction",
@@ -324,7 +314,6 @@ p({
   "name":"Bucket Transaction Planner",
   "priority":80,
   "ruleGroup":"SecurityPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
     "propName":"requestTransaction",
@@ -338,7 +327,6 @@ p({
   "name":"AFEX Transaction Planner",
   "priority":95,
   "ruleGroup":"transactionPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -369,7 +357,6 @@ p({
   "name":"AscendantFx Transaction Planner",
   "priority":90,
   "ruleGroup":"transactionPlanner",
-  "enabled":false,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -401,7 +388,6 @@ p({
   "documentation":"Planner for transaction from CA Digital Account (CAD) to IN Bank Account (INR)",
   "priority":90,
   "ruleGroup":"KotakPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -440,7 +426,6 @@ p({
   "documentation":"Split CA bank to IN bank transactions",
   "priority":85,
   "ruleGroup":"KotakPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -469,7 +454,6 @@ p({
   "documentation":"Planner for INR Digital to INR bank account",
   "priority":70,
   "ruleGroup":"KotakPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -503,7 +487,6 @@ p({
   "documentation":"Planner for bank -> digital transaction where owners for both accounts are different",
   "priority":90,
   "ruleGroup":"transactionPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -538,7 +521,6 @@ p({
   "documentation":"Planner for digital -> bank transaction where owners for both accounts are different",
   "priority":90,
   "ruleGroup":"transactionPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -573,7 +555,6 @@ p({
   "documentation":"Planner for Bank -> bank transactions",
   "priority":95,
   "ruleGroup":"transactionPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -598,7 +579,6 @@ p({
   "documentation":"Planner for Bank -> Bank Transactions for Intuit",
   "priority":95,
   "ruleGroup":"transactionPlanner",
-  "enabled":false,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -628,7 +608,6 @@ p({
   "priority":70,
   "verifierAccount":4,
   "ruleGroup":"transactionPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -653,7 +632,6 @@ p({
   "documentation":"Alterna CI Transaction Planner",
   "priority":100,
   "ruleGroup":"AlternaPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -691,9 +669,6 @@ p({
   "documentation":"Alterna CO Transaction Planner",
   "priority":100,
   "ruleGroup":"AlternaPlanner",
-  
-  "enabled":true,
-
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -739,9 +714,6 @@ p({
   "documentation":"BMO CI Transaction Planner",
   "priority":100,
   "ruleGroup":"BMOPlanner",
-  
-  "enabled":true,
-
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -785,9 +757,6 @@ p({
   "documentation":"BMO CO Transaction Planner",
   "priority":100,
   "ruleGroup":"BMOPlanner",
-  
-  "enabled":true,
-
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -839,7 +808,6 @@ p({
   "documentation":"Plans Fx transactions",
   "priority":85,
   "ruleGroup":"transactionPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -872,7 +840,6 @@ p({
   "documentation":"Plans loan transactions",
   "priority":85,
   "ruleGroup":"transactionPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.Or",
     "args":[
@@ -897,7 +864,6 @@ p({
   "name":"Detable Planner",
   "priority":85,
   "ruleGroup":"transactionPlanner",
-  "enabled":false,
   "predicate":{
     "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
     "propName":"sourceAccount",
@@ -912,7 +878,6 @@ p({
   "name":"Debt Repayment Planner",
   "priority":85,
   "ruleGroup":"transactionPlanner",
-  "enabled":false,
   "predicate":{
     "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
     "propName":"destinationAccount",
@@ -928,7 +893,6 @@ p({
   "documentation":"RBC CI Transaction Planner",
   "priority":100,
   "ruleGroup":"RBCPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -972,7 +936,6 @@ p({
   "documentation":"RBC CO Transaction Planner",
   "priority":100,
   "ruleGroup":"RBCPlanner",
-  "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
