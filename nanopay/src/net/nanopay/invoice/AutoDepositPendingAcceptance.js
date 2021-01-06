@@ -66,11 +66,11 @@ foam.CLASS({
           invoice.getStatus() == InvoiceStatus.PENDING_ACCEPTANCE &&
           checkIfUserHasVerifiedBankAccount(x, payee, invoice)) {
           // Try to deposit
-          System.out.println("a="+a+"b="+b+"c="+c);
+          System.out.println("a1="+a+"b1="+b+"c1="+c+"invoice="+invoice);
           doTransactionToBankAccount(x, invoice, payee);
           return invoice;
         } else {
-          throw new RuntimeException("a="+a+"b="+b+"c="+c);
+          throw new RuntimeException("a2="+a+"b2="+b+"c2="+c+"invoice="+invoice);
         }
         // return super.put_(x, invoice);
       `
