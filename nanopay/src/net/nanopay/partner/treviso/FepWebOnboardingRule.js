@@ -73,7 +73,7 @@ foam.CLASS({
               if ( cause == null) {
                 // if not connection exception
                 cause = t.getCause();
-                logger.error("FepWeb Onboarding Failed", cause);
+                logger.warning("FepWeb Onboarding Failed", cause);
               }
             }
           }
