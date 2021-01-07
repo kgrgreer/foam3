@@ -61,16 +61,12 @@ foam.CLASS({
         DAO userDAO = ((DAO) x.get("localUserDAO")).inX(x);
         User payee = (User) userDAO.find(invoice.getPayeeId());
         if ( payee == null ) { return super.put_(x, invoice); }
-        boolean a= auth.check(x, "invoice.holdingAccount"), b=invoice.getStatus() == InvoiceStatus.PENDING_ACCEPTANCE, c=checkIfUserHasVerifiedBankAccount(x, payee, invoice);
         if ( auth.check(x, "invoice.holdingAccount") &&
           invoice.getStatus() == InvoiceStatus.PENDING_ACCEPTANCE &&
           checkIfUserHasVerifiedBankAccount(x, payee, invoice)) {
           // Try to deposit
-          System.out.println("a1="+a+"b1="+b+"c1="+c+"invoice="+invoice);
           doTransactionToBankAccount(x, invoice, payee);
           return invoice;
-        } else {
-          // throw new RuntimeException("a2="+a+"b2="+b+"c2="+c+"invoice="+invoice);
         }
         return super.put_(x, invoice);
       `
@@ -90,20 +86,13 @@ foam.CLASS({
         try {
           Transaction txn = new Transaction();
           txn.setPayeeId(invoice.getPayeeId());
-          // txn.setSourceAccount(invoice.getAccount());
-          txn.setSourceAccount(invoice.getDestinationAccount());
+          txn.setSourceAccount(invoice.getAccount());
           txn.setDestinationAccount(bankAccount.getId());
           txn.setAmount(invoice.getAmount());
           txn.setPayerId(invoice.getPayerId());
           txn.setInvoiceId(invoice.getId());
           invoice.setDestinationAccount(bankAccount.getId());
-          try {
-            txn = (Transaction)transactionDAO.put(txn);
-          } catch (Exception e) {
-            System.out.println("TRANSACTION PUT THREW");
-            System.out.println(e);
-            e.printStackTrace();
-          }
+          txn = (Transaction)transactionDAO.put(txn);
         } catch (Exception e) {
           throw new RuntimeException("Auto transfer of funds from InvoiceId: " + invoice.getId() + " to payeeId: " + invoice.getPayeeId() + " failed.", e);
         }
