@@ -9,6 +9,8 @@ p({
         "treviso",
         "treviso.release.nanopay.net",
         "treviso.development.nanopay.net"
+        "treviso.release.medusa.nanopay.net",
+        "treviso.development.medusa.nanopay.net"
       ]
     },
     {
@@ -18,6 +20,8 @@ p({
         "localhost",
         "release.nanopay.net",
         "development.nanopay.net",
+        "release.medusa.nanopay.net",
+        "development.medusa.nanopay.net",
         "ablii",
         "release.ablii.com"
       ]
