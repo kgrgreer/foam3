@@ -20,7 +20,7 @@
  * Copyright 2018 The FOAM Authors. All Rights Reserved.
  * http://www.apache.org/licenses/LICENSE-2.0
  */
-
+// this file is turning the txn into digitaltxn and setting the sourceaccount as a digitalaccount
 foam.CLASS({
   package: 'net.nanopay.tx.planner',
   name: 'TransactionQuoteDAO',
