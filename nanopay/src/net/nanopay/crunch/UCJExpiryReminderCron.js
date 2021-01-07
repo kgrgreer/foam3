@@ -29,6 +29,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.i18n.TranslationService',
     'foam.nanos.auth.User',
+    'foam.nanos.auth.Subject',
     'foam.nanos.crunch.Capability',
     'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.nanos.crunch.RenewableData',
@@ -98,10 +99,11 @@ foam.CLASS({
         for ( UserCapabilityJunction ucj : activeJunctions ) {
           User user = (User) ucj.findSourceId(x);
           Capability capability = (Capability) ucj.findTargetId(x);
-          String locale = user.getLanguage().getCode().toString();
+          Subject subject = (Subject) x.get("subject");
+          String locale = ((User) subject.getRealUser()).getLanguage().getCode().toString();
 
           String capabilityName = ts.getTranslation(locale, capability.getId() + ".name", capability.getName());
-          
+
           String notificationP1 = ts.getTranslation(locale, getClassInfo().getId()+ ".NOTIFICATION_BODY_P1", this.NOTIFICATION_BODY_P1);
           String notificationP2 = ts.getTranslation(locale, getClassInfo().getId()+ ".NOTIFICATION_BODY_P2", this.NOTIFICATION_BODY_P2);
           String notificationP3 = ts.getTranslation(locale, getClassInfo().getId()+ ".NOTIFICATION_BODY_P3", this.NOTIFICATION_BODY_P3);
@@ -159,7 +161,7 @@ foam.CLASS({
         ucj.setIsInRenewablePeriod(true);
 
         userCapabilityJunctionDAO.put(ucj);
-        
+
       `
     }
   ]
