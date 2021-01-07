@@ -338,6 +338,8 @@ UserCapabilityJunction ucjBDD = new UserCapabilityJunction();
 ucjBDD.setSourceId(myBusiness.getId());
 ucjBDD.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-6-5");
 ucjBDD.setData(bdd);
+// setting the status manually here to bypass issue with UserComplianceApproval for now
+ucjBDD.setStatus(CapabilityJunctionStatus.GRANTED);
 userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBDD);
 
 // Certify Directors Listed : 554af38a-8225-87c8-dfdf-eeb15f71215e-17
