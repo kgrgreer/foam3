@@ -62,7 +62,11 @@ foam.CLASS({
           .addClass('bank-account-popup').tag({
             class: 'net.nanopay.account.ui.BankAccountWizard',
             data: (foam.lookup(`net.nanopay.bank.${ X.subject.user.address.countryId }BankAccount`)).create({}, X),
-            useSections: ['accountInformation', 'pad']
+            useSections: ['accountInformation', 'pad'],
+            config: {
+              id: { updateVisibility: 'HIDDEN' },
+              summary: { updateVisibility: 'HIDDEN' }
+            }
           }));
         }
       }
