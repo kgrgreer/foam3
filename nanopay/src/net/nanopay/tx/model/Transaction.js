@@ -27,7 +27,8 @@ foam.CLASS({
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.LastModifiedByAware',
-    'foam.nanos.auth.LifecycleAware'
+    'foam.nanos.auth.LifecycleAware',
+    'foam.nanos.auth.ServiceProviderAware'
   ],
 
   imports: [
@@ -51,11 +52,13 @@ foam.CLASS({
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.LifecycleState',
+    'foam.nanos.auth.ServiceProviderAwareSupport',
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
     'java.util.*',
     'java.util.Arrays',
     'java.util.List',
+    'java.util.ArrayList',
     'net.nanopay.account.Account',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.contacts.Contact',
@@ -930,6 +933,35 @@ foam.CLASS({
       readVisibility: 'RO',
       tableWidth: 130,
       networkTransient: true
+    },
+    {
+      class: 'Long',
+      name: 'planCost',
+      transient: true,
+      visibility: 'HIDDEN'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.ServiceProvider',
+      name: 'spid',
+      section: 'systemInformation',
+      storageTransient: true,
+      javaFactory: `
+        var transactionSpidMap = new java.util.HashMap();
+        transactionSpidMap.put(
+          Account.class.getName(),
+          new foam.core.PropertyInfo[] { Account.OWNER }
+        );
+        transactionSpidMap.put(
+          Transaction.class.getName(),
+          new foam.core.PropertyInfo[] {
+            Transaction.SOURCE_ACCOUNT,
+            Transaction.DESTINATION_ACCOUNT,
+          }
+        );
+        return new ServiceProviderAwareSupport()
+          .findSpid(foam.core.XLocator.get(), transactionSpidMap, this);
+      `
     }
   ],
 
@@ -1239,6 +1271,13 @@ foam.CLASS({
 `
     },
     {
+      name: 'getTotalPlanCost',
+      type: 'Long',
+      javaCode: `
+        return getPlanCost() + getCost();
+      `
+    },
+    {
       name: 'getEta',
       code: function getEta() {
         var value = 0;
@@ -1377,22 +1416,12 @@ foam.CLASS({
     type: 'net.nanopay.tx.Transfer[]',
     javaCode: `
       Transfer[] tr = getTransfers();
-      //TODO: verify the more efficient staged check works.
       Long stage = getStage();
-      for (int i = 0; i < tr.length; i++ ){
-        if (tr[i].getStage() != stage ) {
-          Transfer[] tr2 = new Transfer[tr.length - 1];
-          System.arraycopy(tr,0,tr2,0,i);
-          for (int j = i ; j < tr.length; j++ ) {
-            if (tr[j].getStage() == stage ){
-              tr2[i] = tr[j];
-              i++;
-            }
-          }
-          return tr2;
-        }
-      }
-      return tr;
+      List<Transfer> ltr = new ArrayList<Transfer>();
+      for (Transfer t : tr)
+        if (SafetyUtil.equals(t.getStage(), stage) )
+          ltr.add(t);
+      return ltr.toArray(new Transfer[0]);
     `,
   },
   {

@@ -297,6 +297,7 @@ public class BillingInvoicesCronTest extends Test {
             .setCurrency(payerAccount.getDenomination())
             .build() })
         .setStatus(TransactionStatus.COMPLETED)
+        .setSpid("nanopay")
         .build()
     );
   }

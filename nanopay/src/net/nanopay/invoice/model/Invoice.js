@@ -36,7 +36,9 @@ foam.CLASS({
     'foam.nanos.auth.CreatedByAware',
     'foam.nanos.auth.LastModifiedAware',
     'foam.nanos.auth.LastModifiedByAware',
-    'foam.nanos.crunch.lite.Capable'
+    'foam.nanos.auth.LifecycleAware',
+    'foam.nanos.auth.ServiceProviderAware',
+    'foam.nanos.crunch.lite.Capable',
   ],
 
   searchColumns: [
@@ -64,6 +66,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.auth.Group',
+    'foam.nanos.auth.ServiceProviderAwareSupport',
     'foam.util.SafetyUtil',
     'java.util.Date',
     'java.util.UUID',
@@ -445,7 +448,8 @@ foam.CLASS({
       of: 'net.nanopay.invoice.model.PaymentStatus',
       name: 'paymentMethod',
       section: 'invoiceInformation',
-      documentation: `Tracks the payment instrument or method used to pay the invoice.`
+      documentation: `Tracks the payment instrument or method used to pay the invoice.`,
+      value: net.nanopay.invoice.model.PaymentStatus.NONE
     },
     {
       class: 'String',
@@ -681,8 +685,7 @@ foam.CLASS({
         although they are not registered on the platform, can still receive invoices from
         platform users.`,
       view: function(_, X) {
-        return {
-          class: 'foam.u2.view.RichChoiceView',
+        return foam.u2.view.RichChoiceView.create({
           selectionView: {
             class: 'net.nanopay.auth.ui.UserSelectionView',
             emptySelectionLabel: X.data.SELECT_CONTACT
@@ -697,7 +700,7 @@ foam.CLASS({
               ]
             }
           ]
-        };
+        }, X);
       }
     },
     {
@@ -791,9 +794,35 @@ foam.CLASS({
       section: 'invoiceInformation'
     },
     {
+      class: 'Reference',
+      of: 'foam.nanos.auth.ServiceProvider',
+      name: 'spid',
+      storageTransient: true,
+      javaFactory: `
+        var invoiceSpidMap = new java.util.HashMap();
+        invoiceSpidMap.put(
+          Invoice.class.getName(),
+          new foam.core.PropertyInfo[] {
+            Invoice.PAYER_ID,
+            Invoice.PAYEE_ID,
+          }
+        );
+        return new ServiceProviderAwareSupport()
+          .findSpid(foam.core.XLocator.get(), invoiceSpidMap, this);
+      `
+    },
+    {
       class: 'StringArray',
       name: 'capabilityIds',
       section: 'invoiceInformation'
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'foam.nanos.auth.LifecycleState',
+      name: 'lifecycleState',
+      value: foam.nanos.auth.LifecycleState.ACTIVE,
+      writePermissionRequired: true,
+      readPermissionRequired: true
     }
   ],
 

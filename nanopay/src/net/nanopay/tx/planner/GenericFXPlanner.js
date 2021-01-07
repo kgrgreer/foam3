@@ -24,6 +24,7 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.fx.FXTransaction',
+    'net.nanopay.account.DigitalAccount',
     'net.nanopay.account.TrustAccount',
   ],
 
@@ -35,10 +36,10 @@ foam.CLASS({
         fx.copyFrom(requestTxn);
         fx.setName("Foreign Exchange "+quote.getSourceUnit()+" to "+quote.getDestinationUnit());
 
-        quote.addTransfer(true, TrustAccount.find(x, quote.getSourceAccount()).getId(), fx.getAmount(), 0);
+        quote.addTransfer(true, ((DigitalAccount)quote.getSourceAccount()).getTrustAccount(), fx.getAmount(), 0);
         quote.addTransfer(true, quote.getSourceAccount().getId(), -fx.getAmount(), 0);
 
-        quote.addTransfer(true, TrustAccount.find(x, quote.getDestinationAccount()).getId(), - fx.getDestinationAmount(), 0);
+        quote.addTransfer(true, ((DigitalAccount)quote.getDestinationAccount()).getTrustAccount(), - fx.getDestinationAmount(), 0);
         quote.addTransfer(true, quote.getDestinationAccount().getId(), fx.getDestinationAmount(), 0);
 
         fx.setStatus(net.nanopay.tx.model.TransactionStatus.COMPLETED);

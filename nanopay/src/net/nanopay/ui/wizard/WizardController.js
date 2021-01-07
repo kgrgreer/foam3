@@ -107,7 +107,7 @@ foam.CLASS({
               .startContext({ controllerMode: self.controllerMode })
                 .tag({
                   class: `net.nanopay.contacts.ui.${self.modelName}WizardView`,
-                  data: self.data,
+                  data$: self.data$,
                   isEdit: self.isEdit
                 })
               .endContext();

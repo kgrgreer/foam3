@@ -303,8 +303,10 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMo
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.EXIT.label",target:"exit pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.GO_BACK.label",target:"goBack pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.OTHER_OPTION.label",target:"otherOption pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.ConfirmDisable2FAModal.TITLE",target:"Desativar a autenticação de dois fatores?"})
 
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.CANCEL_SUCCESS",target:"Fatura cancelada com sucesso"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.ConfirmDisable2FAModal.TITLE",target:"Desativar a autenticação de dois fatores?"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.ConfirmDisable2FAModal.INSTRUCTIONS_1",target:"Two-factor authentication provides an added layer of security to your account by decreasing the probability that an attacker can impersonate you or gain access to your sensitve account information. pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.ConfirmDisable2FAModal.INSTRUCTIONS_2",target:"Recomendamos mantê-la ativada."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.ConfirmDisable2FAModal.FIELD_LABEL",target:"Insira o código de verificação"})
@@ -1667,21 +1669,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.modal.Bu
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.modal.BusinessNameSearch.CONNECTED_COUNT.documentation",target:"\n        O número de empresas conectadas no\n        connctedBusiness dao após a filtragem.\n       pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.modal.BusinessNameSearch.FILTER.placeholder",target:"Pesquise o nome da empresa"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.modal.BusinessNameSearch.CONNECTED_COUNT.label",target:"connectedCount pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.filterView.LABEL_CLEAR",target:"Limpe o filtro"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.filterView.LINK_ADVANCED",target:"Filtros avançados"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.filterView.LINK_SIMPLE",target:"Filtros simples"})
-
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.filterView.LABEL_FILTER",target:"Filtros"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.filterView.LABEL_RESULTS",target:"Resultados do filtro"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.filterView.MESSAGE_ADVANCEDMODE",target:"Usando filtros avançados"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.filterView.MESSAGE_VIEWADVANCED",target:"Usando filtros simples"})
-
-p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.Contact.ORGANIZATION.label",target:"Nome da empresa"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.booleanFilterView.BOOL_T.label",target:"Verdadeiro"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.booleanFilterView.BOOL_F.label",target:"Falso"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.propertyFilterView.LABEL_PROPERTY_ALL",target:"Todos"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.filter.propertyFilterView.LABEL_PROPERTY_FILTER",target:"Filtrando"})
-
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.modal.BusinessNameSearch.UNCONNECTED_COUNT.label",target:"unconnectedCount pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.modal.BusinessNameSearch.UNCONNECTED_COUNT.documentation",target:"\n        O número de empresas não conectadas no\n        negócio desconectado dao dao após a filtragem.\n       "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.modal.BusinessNameSearch.COUNT_BUSINESSES.documentation",target:"\n        Número total de empresas após a filtragem\n        incluindo as empresas conectadas e não conectadas.\n       "})

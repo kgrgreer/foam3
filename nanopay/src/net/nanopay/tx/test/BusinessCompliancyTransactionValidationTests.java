@@ -3,6 +3,7 @@ package net.nanopay.tx.test;
 import foam.core.X;
 import foam.core.ValidationException;
 import foam.dao.DAO;
+import net.nanopay.account.DigitalAccount;
 import net.nanopay.model.Business;
 import net.nanopay.tx.TransactionQuote;
 import net.nanopay.tx.model.Transaction;
@@ -34,9 +35,13 @@ public class BusinessCompliancyTransactionValidationTests
     payee.setCompliance(net.nanopay.admin.model.ComplianceStatus.NOTREQUESTED);
     payee = (Business) localUserDAO.put_(x, payee).fclone();
 
+    DigitalAccount sender = TransactionTestUtil.RetrieveDigitalAccount(x, payer, "CAD");
+    DigitalAccount receiver = TransactionTestUtil.RetrieveDigitalAccount(x, payee,"CAD", sender);
     Transaction txn = new net.nanopay.tx.model.Transaction();
     txn.setPayerId(payer.getId());
+    txn.setSourceAccount(sender.getId());
     txn.setPayeeId(payee.getId());
+    txn.setDestinationAccount(receiver.getId());
     txn.setAmount(100);
 
     // Test 1 - Sender needs to pass business compliance

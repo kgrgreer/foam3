@@ -99,8 +99,12 @@ public class ExchangeServiceProvider implements ExchangeService {
     User user = (User) ((DAO) this.x.get("localUserDAO")).find(userId);
     if ( user == null ) throw new RuntimeException("User not found: " + userId);
 
-    ExchangeCustomer existingExchangeCustomer = findExchangeCustomer(user);
-    if ( existingExchangeCustomer != null ) return existingExchangeCustomer;
+    try {
+      ExchangeCustomer existingExchangeCustomer = findExchangeCustomer(user);
+      if ( existingExchangeCustomer != null ) return existingExchangeCustomer;
+    } catch(Throwable t) {
+      logger_.error("Error thrown while checking if Exchange user exists already. Would proceed to create anyways." , t);
+    }
 
     InsertTitular request = new InsertTitular();
     request.setDadosTitular(getTitularRequest(user, amount));
