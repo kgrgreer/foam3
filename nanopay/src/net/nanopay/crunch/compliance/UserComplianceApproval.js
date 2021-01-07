@@ -78,7 +78,6 @@ foam.CLASS({
               X ownerContext = x.put("subject", subject);
               ((DAO) x.get("userCapabilityJunctionDAO")).inX(ownerContext).put(ucj);
             }
-
             ruler.putResult(status);
           }
         }, "User Compliance Approval");
