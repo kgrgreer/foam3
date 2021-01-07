@@ -70,7 +70,11 @@ foam.CLASS({
             return self.E()
               .tag(self.sectionView, {
                 section: sections[currentIndex],
-                data$: self.data$
+                data$: self.data$,
+                config: {
+                  id: { updateVisibility: 'HIDDEN' },
+                  summary: { updateVisibility: 'HIDDEN' }
+                }
               });
           })).addClass(this.myClass('wizard-body'))
           .startContext({ data: this })
