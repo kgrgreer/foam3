@@ -448,7 +448,8 @@ foam.CLASS({
       of: 'net.nanopay.invoice.model.PaymentStatus',
       name: 'paymentMethod',
       section: 'invoiceInformation',
-      documentation: `Tracks the payment instrument or method used to pay the invoice.`
+      documentation: `Tracks the payment instrument or method used to pay the invoice.`,
+      value: net.nanopay.invoice.model.PaymentStatus.NONE
     },
     {
       class: 'String',
