@@ -257,7 +257,7 @@ foam.CLASS({
         fundingTransaction.setAmount(fxQuote.getSourceAmount());
         fundingTransaction.setSourceCurrency(fxQuote.getSourceCurrency());
         fundingTransaction.setDestinationAccount(destination);
-        fundingTransaction.setDestinationAmount(fxQuote.getSourceAmount());
+        fundingTransaction.setDestinationAmount(fxQuote.getTargetAmount());
         fundingTransaction.setDestinationCurrency(fxQuote.getTargetCurrency());
         fundingTransaction.setPlanner(this.getId());
         fundingTransaction.setValueDate(fxQuote.getValueDate());
