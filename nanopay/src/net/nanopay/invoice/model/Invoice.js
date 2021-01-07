@@ -551,7 +551,8 @@ foam.CLASS({
       },
       javaGetter: `
         if ( getDraft() ) return InvoiceStatus.DRAFT;
-        String message = "paymentMethodIsSet_ = " + this.paymentMethodIsSet_ + ", paymentmethod = " + getPaymentMethod() + "\/" + this.paymentMethod_;
+        String message = "paymentMethodIsSet_ = " + this.paymentMethodIsSet_ + ", paymentmethod = " + getPaymentMethod() + "\/" + this.paymentMethod_
+          + ", isDefaultValue = " + PAYMENT_METHOD.isDefaultValue(this);
         if ( getPaymentMethod() != null ) {
           throw new RuntimeException(message);
         }
