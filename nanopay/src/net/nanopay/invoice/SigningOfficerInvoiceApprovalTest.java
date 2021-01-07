@@ -41,6 +41,7 @@ import net.nanopay.meter.compliance.dowJones.DowJonesMockService;
 import net.nanopay.meter.compliance.dowJones.DowJonesService;
 import net.nanopay.model.BeneficialOwner;
 import net.nanopay.model.Business;
+import net.nanopay.model.BusinessDirector;
 import net.nanopay.model.SigningOfficer;
 import net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo;
 import net.nanopay.tx.model.Transaction;
@@ -264,7 +265,7 @@ userCapabilityJunctionDAO.inX(x).put(ucjUDPAI);
 
 // Business Details : 554af38a-8225-87c8-dfdf-eeb15f71215f-4
 BusinessInformationData bid = new BusinessInformationData();
-bid.setBusinessTypeId(2);
+bid.setBusinessTypeId(3);
 bid.setBusinessSectorId(21211);
 bid.setSourceOfFunds("Investment Income");
 bid.setOperatingUnderDifferentName(false);
@@ -330,15 +331,21 @@ ucjCOP.setData(cop);
 userCapabilityJunctionDAO.inX(myAdminContext).put(ucjCOP);
 
 // Business Directors Data : 554af38a-8225-87c8-dfdf-eeb15f71215f-6-5
-BusinessDirectorsData bdd = new BusinessDirectorsData();
+// adding actualy data to bypass usercomplianceapproval issue to be fixed later
+BusinessDirector bd = new BusinessDirector();
+bd.setFirstName("Francis");
+bd.setLastName("Filth");
+
+BusinessDirector[] bdl = {bd};
+BusinessDirectorsData bdd = new BusinessDirectorsData.Builder(myAdminContext)
+  .setBusinessDirectors(bdl)
+  .build();
 
 UserCapabilityJunction ucjBDD = new UserCapabilityJunction();
 ucjBDD.setSourceId(myBusiness.getId());
 ucjBDD.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-6-5");
 ucjBDD.setData(bdd);
-// setting the status manually here to bypass issue with UserComplianceApproval for now
-ucjBDD.setStatus(CapabilityJunctionStatus.GRANTED);
-ucjBDD = (UserCapabilityJunction) ((DAO) x.get("bareUserCapabilityJunctionDAO")).inX(myAdminContext).put(ucjBDD);
+ucjBDD = (UserCapabilityJunction) userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBDD);
 // Certify Directors Listed : 554af38a-8225-87c8-dfdf-eeb15f71215e-17
 CertifyDirectorsListed cdl = new CertifyDirectorsListed();
 cdl.setAgreement(true);
@@ -415,13 +422,14 @@ externalBusinessBankAccount.setStatus(BankAccountStatus.VERIFIED);
 // that is why we must use the override put_, in order to set the employee bank account using the global context permissions
 externalBusinessBankAccount = (CABankAccount) externalBusiness.getAccounts(x).put_(x, externalBusinessBankAccount);
 
-// approve signingofficers and beneficialowners
+// approve signingofficers and beneficialowners and directors
 List<ApprovalRequest> approvalRequests = ((ArraySink) approvalRequestDAO
   .where(foam.mlang.MLang.AND( new foam.mlang.predicate.Predicate[] {
     foam.mlang.MLang.EQ(ApprovalRequest.DAO_KEY, "userCapabilityJunctionDAO"),
     foam.mlang.MLang.OR( new foam.mlang.predicate.Predicate[] {
       foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjBOD.getId()),
-      foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjSOP.getId())
+      foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjSOP.getId()),
+          foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjBDD.getId())
     }),
     foam.mlang.MLang.EQ(ApprovalRequest.IS_FULFILLED, false)
   }))
@@ -460,7 +468,47 @@ for ( ApprovalRequest approvalRequest : approvalRequests ) {
 ///////////////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////// TEST CODE ///////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////////////
+ucjBD = (UserCapabilityJunction) userCapabilityJunctionDAO.find(foam.mlang.MLang.AND(
+foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-4"), 
+foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())));
+ucjTD = (UserCapabilityJunction) userCapabilityJunctionDAO.find(foam.mlang.MLang.AND(
+foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-6"), 
+foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())));
+ucjBOD = (UserCapabilityJunction) userCapabilityJunctionDAO.find(foam.mlang.MLang.AND(
+foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-7"), 
+foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())));
+ucjCOP = (UserCapabilityJunction) userCapabilityJunctionDAO.find(foam.mlang.MLang.AND(
+foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215e-12"), 
+foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())));
+ucjBDD = (UserCapabilityJunction) userCapabilityJunctionDAO.find(foam.mlang.MLang.AND(
+foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-6-5"), 
+foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())));
+ucjCDL = (UserCapabilityJunction) userCapabilityJunctionDAO.find(foam.mlang.MLang.AND(
+foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215e-17"), 
+foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())));
+ucjDPAC = (UserCapabilityJunction) userCapabilityJunctionDAO.find(foam.mlang.MLang.AND(
+foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215e-3"), 
+foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())));
+ucjCDR = (UserCapabilityJunction) userCapabilityJunctionDAO.find(foam.mlang.MLang.AND(
+foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-14"), 
+foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())));
+ucjABA = (UserCapabilityJunction) userCapabilityJunctionDAO.find(foam.mlang.MLang.AND(
+foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "24602528-34c1-11eb-adc1-0242ac120002"), 
+foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())));
+ucjUDPAI = (UserCapabilityJunction) userCapabilityJunctionDAO.find(foam.mlang.MLang.AND(
+foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-11"), 
+foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())));
 
+test(ucjBD.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjBD: " + ucjBD.getStatus());
+test(ucjTD.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjTD: " + ucjTD.getStatus());
+test(ucjBOD.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjBOD: " + ucjBOD.getStatus());
+test(ucjCOP.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjCOP: " + ucjCOP.getStatus());
+test(ucjBDD.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjBDD: " + ucjBDD.getStatus());
+test(ucjCDL.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjCDL: " + ucjCDL.getStatus());
+test(ucjDPAC.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjDPAC: " + ucjDPAC.getStatus());
+test(ucjCDR.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjCDR: " + ucjCDR.getStatus());
+test(ucjABA.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjABA: " + ucjABA.getStatus());
+test(ucjUDPAI.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjUDPAI: " + ucjUDPAI.getStatus());
 
 Invoice invoice = new Invoice();
 invoice.setAmount(1);
