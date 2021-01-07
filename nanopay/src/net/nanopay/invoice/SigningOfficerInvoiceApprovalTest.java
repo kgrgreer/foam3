@@ -469,15 +469,33 @@ for ( ApprovalRequest approvalRequest : approvalRequests ) {
 ///////////////////////////////////////////////////////////////////////////////////////
 
 
+Boolean threw = false;
+String message = "";
 Invoice invoice = new Invoice();
 invoice.setAmount(1);
 invoice.setPayerId(myBusiness.getId());
 invoice.setPayeeId(externalBusiness.getId());
 invoice.setDestinationCurrency("CAD");
 // invoice.setPaymentMethod(PaymentStatus.NONE);
-test(invoice.getStatus() == InvoiceStatus.UNPAID, "invoice status is " + invoice.getStatus() + " initially, paymentmethod = " + invoice.getPaymentMethod());
+try {
+  threw = false;
+  message = "";
+  test(invoice.getStatus() == InvoiceStatus.UNPAID, "invoice status is " + invoice.getStatus() + " initially, paymentmethod = " + invoice.getPaymentMethod());
+} catch (Throwable t) {
+  threw = true;
+  message = t.getMessage();
+  print("DEBUG: " + message);
+}
 invoice.setAccount(myBusinessBankAccount.getId());
-invoice = (Invoice) invoiceDAO.inX(myEmployeeContext).put(invoice);
+try {
+  threw = false;
+  message = "";
+  invoice = (Invoice) invoiceDAO.inX(myEmployeeContext).put(invoice);
+} catch (Throwable t) {
+  threw = true;
+  message = t.getMessage();
+  print("DEBUG: " + message);
+}
 Boolean invoiceStatusIsCorrect = invoice.getStatus() == InvoiceStatus.UNPAID;
 Boolean paymentStatusIsCorrect = invoice.getPaymentMethod() == PaymentStatus.NONE;
 if ( ! invoiceStatusIsCorrect ) {
@@ -497,8 +515,6 @@ transaction.setPayerId(invoice.getPayerId());
 transaction.setPayeeId(invoice.getPayeeId());
 transaction.setAmount(invoice.getAmount());
 transaction.setInvoiceId(invoice.getId());
-Boolean threw = false;
-String message = "";
 try {
   transactionDAO.inX(myEmployeeContext).put(transaction);
   invoice = (Invoice) invoiceDAO.inX(myEmployeeContext).find(invoice.getId());
@@ -523,9 +539,26 @@ invoice.setAmount(1);
 invoice.setPayerId(myBusiness.getId());
 invoice.setPayeeId(externalBusiness.getId());
 invoice.setDestinationCurrency("CAD");
+try {
+  threw = false;
+  message = "";
+  test(invoice.getStatus() == InvoiceStatus.UNPAID, "invoice status is " + invoice.getStatus() + " initially, paymentmethod = " + invoice.getPaymentMethod());
+} catch (Throwable t) {
+  threw = true;
+  message = t.getMessage();
+  print("DEBUG: " + message);
+}
 // invoice.setPaymentMethod(PaymentStatus.NONE);
 invoice.setAccount(myBusinessBankAccount.getId());
-invoice = (Invoice) invoiceDAO.inX(myApproverContext).put(invoice);
+try {
+  threw = false;
+  message = "";
+  invoice = (Invoice) invoiceDAO.inX(myApproverContext).put(invoice);
+} catch (Throwable t) {
+  threw = true;
+  message = t.getMessage();
+  print("DEBUG: " + message);
+}
 test(invoice.getStatus() == InvoiceStatus.UNPAID && invoice.getPaymentMethod() == PaymentStatus.NONE, "When an approver creates an invoice, the invoice status is UNPAID and the payment status is NONE.");
 
 
