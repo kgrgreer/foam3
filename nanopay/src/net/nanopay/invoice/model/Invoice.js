@@ -551,7 +551,10 @@ foam.CLASS({
       },
       javaGetter: `
         if ( getDraft() ) return InvoiceStatus.DRAFT;
-
+        String message = "paymentMethodIsSet_ = " + this.paymentMethodIsSet_ + ", paymentmethod = " + getPaymentMethod() + "\/" + this.paymentMethod_;
+        if ( getPaymentMethod() != null ) {
+          throw new RuntimeException(message);
+        }
         switch ( getPaymentMethod() ) {
           case PROCESSING:
           case TRANSIT_PAYMENT:
@@ -573,6 +576,9 @@ foam.CLASS({
             return InvoiceStatus.QUOTED;
           case SUBMIT:
             return InvoiceStatus.SUBMIT;
+        }
+        if ( 1 + 1 == 2 ) {
+          throw new RuntimeException("PAYMENT METHOD WAS NULL!!" + message);
         }
 
         if ( getPaymentDate() != null ){
