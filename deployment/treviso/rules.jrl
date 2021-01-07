@@ -78,7 +78,7 @@ p({
     class: "foam.nanos.cron.TimeHMS",
     hour: 24
   },
-  feeAccount: "31"
+  feeAccount: "31",
   enabled: true,
   predicate: {
     class: "foam.mlang.predicate.And",
