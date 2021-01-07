@@ -479,7 +479,6 @@ if ( ! invoiceStatusIsCorrect ) {
 if ( ! paymentStatusIsCorrect ) {
   print("DEBUG: Payment status is " + invoice.getPaymentMethod());
 }
-
 test(invoiceStatusIsCorrect && paymentStatusIsCorrect, "When an employee creates an invoice, the invoice status is UNPAID and the payment status is NONE.");
 
 
