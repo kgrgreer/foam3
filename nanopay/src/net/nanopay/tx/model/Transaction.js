@@ -955,8 +955,13 @@ foam.CLASS({
         transactionSpidMap.put(
           Transaction.class.getName(),
           new foam.core.PropertyInfo[] {
-            Transaction.SOURCE_ACCOUNT,
+            // NOTE: Prioritize destinationAccount over sourceAccount route
+            // since in a multi-leg plan the intermediary account becomes the
+            // the sourceAccount of the second leg. The intermediary account can
+            // be owned by nanopay and won't provide the correct spid for the
+            // transaction.
             Transaction.DESTINATION_ACCOUNT,
+            Transaction.SOURCE_ACCOUNT
           }
         );
         return new ServiceProviderAwareSupport()

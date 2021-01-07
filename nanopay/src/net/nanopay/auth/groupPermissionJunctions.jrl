@@ -779,6 +779,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","tar
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"service.digitalAccount"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"service.groupDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"service.logMessageDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"service.languageDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"service.menuDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"service.mspSetupDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"msp-admin","targetId":"service.notificationDAO"})

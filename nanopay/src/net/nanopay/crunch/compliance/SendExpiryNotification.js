@@ -30,6 +30,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.i18n.TranslationService',
     'foam.nanos.auth.User',
+    'foam.nanos.auth.Subject',
     'foam.nanos.crunch.Capability',
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.nanos.notification.Notification',
@@ -59,7 +60,8 @@ foam.CLASS({
             User user = (User) junction.findSourceId(x);
 
             TranslationService ts = (TranslationService) x.get("translationService");
-            String locale = user.getLanguage().getCode().toString();
+            Subject subject = (Subject) x.get("subject");
+            String locale = ((User) subject.getRealUser()).getLanguage().getCode().toString();
             String source = cap.getId() + ".name";
             String capabilityName = ts.getTranslation(locale, source, cap.getName());
 
