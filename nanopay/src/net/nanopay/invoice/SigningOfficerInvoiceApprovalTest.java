@@ -485,6 +485,7 @@ try {
   threw = true;
   message = t.getMessage();
   print("DEBUG: " + message);
+  test(!threw, "1+"+message);
 }
 invoice.setAccount(myBusinessBankAccount.getId());
 try {
@@ -495,17 +496,27 @@ try {
   threw = true;
   message = t.getMessage();
   print("DEBUG: " + message);
+  test(!threw, "2+"+message);
 }
-Boolean invoiceStatusIsCorrect = invoice.getStatus() == InvoiceStatus.UNPAID;
-Boolean paymentStatusIsCorrect = invoice.getPaymentMethod() == PaymentStatus.NONE;
-if ( ! invoiceStatusIsCorrect ) {
-  print("DEBUG: Invoice status is " + invoice.getStatus());
-}
-if ( ! paymentStatusIsCorrect ) {
-  print("DEBUG: Payment status is " + invoice.getPaymentMethod());
-}
+try {
+  threw = false;
+  message = "";
+  Boolean invoiceStatusIsCorrect = invoice.getStatus() == InvoiceStatus.UNPAID;
+  Boolean paymentStatusIsCorrect = invoice.getPaymentMethod() == PaymentStatus.NONE;
+  if ( ! invoiceStatusIsCorrect ) {
+    print("DEBUG: Invoice status is " + invoice.getStatus());
+  }
+  if ( ! paymentStatusIsCorrect ) {
+    print("DEBUG: Payment status is " + invoice.getPaymentMethod());
+  }
+  test(invoiceStatusIsCorrect && paymentStatusIsCorrect, "When an employee creates an invoice, the invoice status is "+invoice.getStatus()+" and the payment status is "+invoice.getPaymentMethod()+".");
 
-test(invoiceStatusIsCorrect && paymentStatusIsCorrect, "When an employee creates an invoice, the invoice status is "+invoice.getStatus()+" and the payment status is "+invoice.getPaymentMethod()+".");
+} catch (Throwable t) {
+  threw = true;
+  message = t.getMessage();
+  print("DEBUG: " + message);
+  test(!threw, "3+"+message);
+}
 
 
 Transaction transaction = new Transaction();
@@ -518,21 +529,22 @@ transaction.setInvoiceId(invoice.getId());
 try {
   transactionDAO.inX(myEmployeeContext).put(transaction);
   invoice = (Invoice) invoiceDAO.inX(myEmployeeContext).find(invoice.getId());
-  invoiceStatusIsCorrect = invoice.getStatus() == InvoiceStatus.PENDING_APPROVAL;
-  paymentStatusIsCorrect = invoice.getPaymentMethod() == PaymentStatus.PENDING_APPROVAL;
+  Boolean invoiceStatusIsCorrect = invoice.getStatus() == InvoiceStatus.PENDING_APPROVAL;
+  Boolean paymentStatusIsCorrect = invoice.getPaymentMethod() == PaymentStatus.PENDING_APPROVAL;
   if ( ! invoiceStatusIsCorrect ) {
     print("DEBUG: Invoice status is " + invoice.getStatus());
   }
   if ( ! paymentStatusIsCorrect ) {
     print("DEBUG: Payment status is " + invoice.getPaymentMethod());
   }
+  test(! threw && invoiceStatusIsCorrect && paymentStatusIsCorrect, "When an employee tries to pay an invoice the invoice is set to a PENDING_APPROVAL state.");
+
 } catch (Throwable t) {
   threw = true;
   message = t.getMessage();
   print("DEBUG: " + message);
+  test(!threw, "4+"+message);
 }
-test(! threw && invoiceStatusIsCorrect && paymentStatusIsCorrect, "When an employee tries to pay an invoice the invoice is set to a PENDING_APPROVAL state.");
-
 
 invoice = new Invoice();
 invoice.setAmount(1);
@@ -547,6 +559,7 @@ try {
   threw = true;
   message = t.getMessage();
   print("DEBUG: " + message);
+  test(!threw, "5+"+message);
 }
 // invoice.setPaymentMethod(PaymentStatus.NONE);
 invoice.setAccount(myBusinessBankAccount.getId());
@@ -558,8 +571,28 @@ try {
   threw = true;
   message = t.getMessage();
   print("DEBUG: " + message);
+  test(!threw, "6+"+message);
 }
-test(invoice.getStatus() == InvoiceStatus.UNPAID && invoice.getPaymentMethod() == PaymentStatus.NONE, "When an approver creates an invoice, the invoice status is UNPAID and the payment status is NONE.");
+try {
+  threw = false;
+  message = "";
+  Boolean invoiceStatusIsCorrect = invoice.getStatus() == InvoiceStatus.UNPAID;
+  Boolean paymentStatusIsCorrect = invoice.getPaymentMethod() == PaymentStatus.NONE;
+  if ( ! invoiceStatusIsCorrect ) {
+    print("DEBUG: Invoice status is " + invoice.getStatus());
+  }
+  if ( ! paymentStatusIsCorrect ) {
+    print("DEBUG: Payment status is " + invoice.getPaymentMethod());
+  }
+  test(invoiceStatusIsCorrect && paymentStatusIsCorrect, "When an approver creates an invoice, the invoice status is "+invoice.getStatus()+" and the payment status is "+invoice.getPaymentMethod()+".");
+
+} catch (Throwable t) {
+  threw = true;
+  message = t.getMessage();
+  print("DEBUG: " + message);
+  test(!threw, "7+"+message);
+}
+// test(invoice.getStatus() == InvoiceStatus.UNPAID && invoice.getPaymentMethod() == PaymentStatus.NONE, "When an approver creates an invoice, the invoice status is UNPAID and the payment status is NONE.");
 
 
 transaction = new Transaction();
@@ -577,6 +610,7 @@ try {
   threw = true;
   message = t.getMessage();
   print("DEBUG: " + message);
+  test(!threw, "8+"+message);
 }
 test(! threw, "When an approver tries to pay an invoice, it works as expected.");
   }
