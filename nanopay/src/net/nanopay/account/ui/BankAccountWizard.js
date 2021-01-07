@@ -60,6 +60,14 @@ foam.CLASS({
     { name: 'ERROR', message: 'Bank account error occured' }
   ],
 
+  properties: [
+    {
+      name: 'config'
+      // Map of property-name: {map of property overrides} for configuring properties
+      // values include 'label', 'units', and 'view'
+    },
+  ],
+
   methods: [
     function initE() {
       var self = this;
@@ -71,10 +79,7 @@ foam.CLASS({
               .tag(self.sectionView, {
                 section: sections[currentIndex],
                 data$: self.data$,
-                config: {
-                  id: { updateVisibility: 'HIDDEN' },
-                  summary: { updateVisibility: 'HIDDEN' }
-                }
+                config: self.config
               });
           })).addClass(this.myClass('wizard-body'))
           .startContext({ data: this })
