@@ -4,9 +4,7 @@ import foam.dao.*;
 
 import foam.nanos.approval.ApprovalRequest;
 import foam.nanos.approval.ApprovalStatus;
-import foam.nanos.auth.AuthService;
 import foam.nanos.auth.Address;
-import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
 import foam.nanos.auth.UserUserJunction;
 import foam.nanos.crunch.AgentCapabilityJunction;
