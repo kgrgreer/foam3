@@ -30,6 +30,7 @@ foam.CLASS({
     'foam.nanos.auth.Address',
     'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.User',
+    'foam.nanos.auth.Group',
     'foam.nanos.auth.Subject',
     'foam.nanos.crunch.connection.CapabilityPayload',
     'foam.nanos.dig.exception.ExternalAPIException',
@@ -339,13 +340,21 @@ foam.CLASS({
           overrides.getEmail() : holder.getEmail();
 
         Subject subject = (Subject) x.get("subject");
+
+        String groupId = "external-sme";
+        DAO groupDAO = (DAO) x.get("localGroupDAO");
+        Group group = (Group) groupDAO.find(subject.getRealUser().getSpid() + "-sme");
+        if ( group != null ) {
+          groupId = group.getId();
+        }
+
         DAO userDAO = (DAO) x.get("localUserDAO");
         User user = new User.Builder(x)
           .setEmail(userEmail)
           .setUserName(userEmail)
           .setDesiredPassword(java.util.UUID.randomUUID().toString())
           .setEmailVerified(true)
-          .setGroup("sme")
+          .setGroup(groupId)
           .setSpid(subject.getRealUser().getSpid())
           .setStatus(net.nanopay.admin.model.AccountStatus.ACTIVE)
           .build();

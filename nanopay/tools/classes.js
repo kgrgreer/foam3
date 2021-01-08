@@ -585,6 +585,7 @@ var classes = [
   'net.nanopay.tx.model.TransactionLimit',
   'net.nanopay.tx.ruler.TransactionLimitProbeInfo',
   'net.nanopay.tx.ruler.TransactionLimitRule',
+  'net.nanopay.tx.ruler.PermissionedTransactionRule',
   'net.nanopay.tx.ruler.InvoiceApprovedByRule',
   'net.nanopay.tx.ruler.SlowDownRule',
   'net.nanopay.tx.ruler.LiquidTransactionalBlocks',
@@ -1316,6 +1317,7 @@ var classes = [
   'net.nanopay.crunch.predicate.SigningOfficerPrivilegesRequested',
   'net.nanopay.crunch.predicate.UserIsSigningOfficerOfBusiness',
   'net.nanopay.crunch.IsSpid',
+  'net.nanopay.crunch.ruler.PermissionedUCJRule',
 
   // crunch onboarding
   'net.nanopay.crunch.onboardingModels.CreateRegisterPaymentProviderUCJ',
