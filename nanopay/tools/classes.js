@@ -154,7 +154,7 @@ var classes = [
   'net.nanopay.bank.StrategizedBankAccount',
   'net.nanopay.bank.ruler.VerifyBankRule',
   'net.nanopay.bank.ruler.CapabilityAddBankAccountRule',
-  'net.nanopay.bank.ruler.ExternalGrantBRBankAccountCapabilityRule',
+  'net.nanopay.country.br.ruler.BRBankAccountCapabilityOnGrantRule',
   'net.nanopay.bank.test.BankAccountIBANTest',
   'net.nanopay.model.CurrencyAmount',
   'net.nanopay.model.Broker',
@@ -1298,6 +1298,7 @@ var classes = [
   'net.nanopay.partner.treviso.onboarding.BRBusinessDirector',
   'net.nanopay.partner.treviso.onboarding.BRBeneficialOwner',
   'net.nanopay.partner.treviso.onboarding.BRBusinessOwnershipData',
+  'net.nanopay.partner.treviso.onboarding.BRBankAccountData',
 
   // crunch predicates - todo move all predicates used in crunch here
   'net.nanopay.crunch.predicate.IsBusiness',
