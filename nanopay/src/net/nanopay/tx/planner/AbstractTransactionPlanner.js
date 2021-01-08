@@ -67,6 +67,10 @@ foam.CLASS({
       value: false
     },
     {
+      name: 'enabled',
+      value: true
+    },
+    {
       name: 'willPlan',
       label: 'Planner will Plan',
       documentation: 'For front end, tells whether this planner will plan or not',
