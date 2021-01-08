@@ -532,6 +532,10 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"7b41a164-29bd-11eb-adc1-0242ac120002",
   "name":"Brazil Bank Account",
+<<<<<<< HEAD
+=======
+  "of":"net.nanopay.partner.treviso.onboarding.BRBankAccountData",
+>>>>>>> ac423e0976220bd2bccaa982db2f10e5488191fa
   "enabled":true
 })
 

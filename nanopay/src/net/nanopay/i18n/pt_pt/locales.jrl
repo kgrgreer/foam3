@@ -1365,7 +1365,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.A
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.ACCOUNT_HOLDER_REQUIRED",target:"É necessário titular da conta."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.BANK_ADDED",target:"Conta bancária adicionada com sucesso!"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.INSTITUTION_NUMBER_INVALID",target:"O número da instituição deve ter 8 letras e / ou dígitos"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.SECTION_ACCOUNT_INFORMATION_TITLE",target:"Adicionar Conta"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.INSTITUTION_NUMBER_REQUIRED",target:"Número da instituição obrigatório"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.BRANCH_ID_INVALID",target:"O ID da agência deve ter 5 dígitos"})
@@ -2055,6 +2054,9 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onbo
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBeneficialOwner.PEPHIORELATED.help",target:"Uma pessoa politicamente exposta (PEP) ou o chefe de uma organização internacional (HIO) é uma pessoa a quem foi confiada uma posição de destaque que normalmente vem com a oportunidade de influenciar decisões e a capacidade de controlar recursos"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBeneficialOwner.HAS_SIGNED_CONTRATOS_DE_CAMBIO.label",target:"A pessoa listada aqui assinou os contratos de câmbio"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBeneficialOwner.HAS_SIGNED_CONTRATOS_DE_CAMBIO.help",target:"Contratos de câmbio é um acordo legal no qual as partes concordam em transferir entre si uma determinada quantia de moeda estrangeira a uma taxa de câmbio predeterminada e em uma data predeterminada."})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBankAccountData.NO_BANK_NEEDED",target:"Nenhuma informação de conta bancária necessária. Prossiga para a próxima etapa."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBankAccountData.ADD_ACCOUNT_TITLE",target:"Adicionar Conta"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.INVALID_DATE_ERROR",target:"Data de nascimento válida exigida"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.UNGER_AGE_LIMIT_ERROR",target:"Deve ter pelo menos 18 anos."})
