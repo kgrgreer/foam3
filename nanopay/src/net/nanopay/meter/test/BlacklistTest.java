@@ -42,6 +42,7 @@ import net.nanopay.meter.compliance.dowJones.DowJonesMockService;
 import net.nanopay.meter.compliance.dowJones.DowJonesService;
 import net.nanopay.model.BeneficialOwner;
 import net.nanopay.model.Business;
+import net.nanopay.model.BusinessDirector;
 import net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo;
 import net.nanopay.tx.model.Transaction;
 
@@ -364,16 +365,21 @@ public class BlacklistTest extends Test {
     userCapabilityJunctionDAO.inX(myAdminContext).put(ucjCOP);
 
     // Business Directors Data : 554af38a-8225-87c8-dfdf-eeb15f71215f-6-5
-    BusinessDirectorsData bdd = new BusinessDirectorsData();
+    // adding actualy data to bypass usercomplianceapproval issue to be fixed later
+    BusinessDirector bd = new BusinessDirector();
+    bd.setFirstName("Francis");
+    bd.setLastName("Filth");
+
+    BusinessDirector[] bdl = {bd};
+    BusinessDirectorsData bdd = new BusinessDirectorsData.Builder(myAdminContext)
+      .setBusinessDirectors(bdl)
+      .build();
 
     UserCapabilityJunction ucjBDD = new UserCapabilityJunction();
     ucjBDD.setSourceId(myBusiness.getId());
     ucjBDD.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-6-5");
     ucjBDD.setData(bdd);
-    // setting the status manually here to bypass issue with UserComplianceApproval for now
-    ucjBDD.setStatus(CapabilityJunctionStatus.GRANTED);
-    ucjBDD = (UserCapabilityJunction) ((DAO) x.get("bareUserCapabilityJunctionDAO")).inX(myAdminContext).put(ucjBDD);
-
+    ucjBDD = (UserCapabilityJunction) userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBDD);
     // Certify Directors Listed : 554af38a-8225-87c8-dfdf-eeb15f71215e-17
     CertifyDirectorsListed cdl = new CertifyDirectorsListed();
     cdl.setAgreement(true);
@@ -404,13 +410,14 @@ public class BlacklistTest extends Test {
     ucjCDR.setData(cdr);
     userCapabilityJunctionDAO.inX(myAdminContext).put(ucjCDR);
 
-    // approve signinofficer and owners
+    // approve signinofficer and owners and directors
     List<ApprovalRequest> approvalRequests = ((ArraySink) approvalRequestDAO
       .where(foam.mlang.MLang.AND( new foam.mlang.predicate.Predicate[] {
         foam.mlang.MLang.EQ(ApprovalRequest.DAO_KEY, "userCapabilityJunctionDAO"),
         foam.mlang.MLang.OR( new foam.mlang.predicate.Predicate[] {
           foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjBOD.getId()),
-          foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjSOP.getId())
+          foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjSOP.getId()),
+          foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjBDD.getId())
         }),
         foam.mlang.MLang.EQ(ApprovalRequest.IS_FULFILLED, false)
       }))

@@ -476,15 +476,10 @@ p({
   "operation":3,
   "after":true,
   "predicate": {
-    "class": "foam.mlang.predicate.And",
-    "args": [
-      {
-        "class": "net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
-        "status": 1,
-        "statusChanged": false,
-        "category": "AFEXOnboarding"
-      }
-    ]
+    "class": "net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+    "status": 1,
+    "statusChanged": false,
+    "category": "AFEXOnboarding"
   },
   "asyncAction":{ "class":"net.nanopay.partner.afex.crunch.AFEXBusinessOnboardingRule"},
   "enabled":true,

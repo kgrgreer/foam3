@@ -30,7 +30,6 @@ foam.CLASS({
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.crunch.UserCapabilityJunction',
-    'foam.nanos.crunch.CapabilityJunctionStatus',
     'net.nanopay.model.Business',
     'static foam.mlang.MLang.*'
   ],
