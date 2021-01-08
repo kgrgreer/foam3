@@ -35,7 +35,6 @@ public class ExchangeClient
   public ExchangeClient(X x) {
     setX(x);
     logger = (Logger) x.get("logger");
-    getCredentials();
   }
 
   protected ExchangeCredential getCredentials() {
