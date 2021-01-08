@@ -5,7 +5,6 @@ p({
   description: "Grants Digital Transaction planner",
   id: "DigitalPlannerCapability",
   version: "0",
-  enabled: true,
   permissionsGranted: [
     "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d182",
   ]
@@ -16,7 +15,6 @@ p({
   id: "DomesticInterBankAccountPlannerCapability",
   description: "Grants BankBank, BankDigital and DigitalBank planners",
   version: "0",
-  enabled: true,
   permissionsGranted: [
     "rule.read.3cb6aab3-107a-495a-8974-ed3286192b35",
     "rule.read.ab51def7-b5d4-48ee-99ee-e3d418583740",
@@ -30,7 +28,6 @@ p({
   description: "Grants RBC cico planners",
   id: "RBCPlannerCapability",
   version: "0",
-  enabled: true,
   permissionsGranted: [
     "rule.read.c4f3e4ae-01b6-4638-8a09-06e6b9f05f42",
     "rule.read.3ced1642-1bed-4615-a263-d816b2a2db60",
@@ -43,7 +40,6 @@ p({
   description: "Grants Alterna cico planners",
   id: "AlternaPlannerCapability",
   version: "0",
-  enabled: true,
   permissionsGranted: [
     "rule.read.826d7ac5-65ce-4459-972b-6211a3fb8554",
     "rule.read.b72c9818-1446-4041-8ea8-598205bd3a1f"
@@ -55,7 +51,6 @@ p({
   description: "Grants BMO cico planners",
   id: "BMOPlannerCapability",
   version: "0",
-  enabled: true,
   permissionsGranted: [
     "rule.read.884607ff-055e-41d4-9dbb-69433b2aa816",
     "rule.read.4763d336-e876-4611-a8b4-b0325b187d79",
@@ -68,7 +63,6 @@ p({
   description: "AFEX planner",
   id: "AFEXPlannerCapability",
   version: "0",
-  enabled: true,
   permissionsGranted: [
     "rule.read.13df0d76-ba3e-4287-b42e-c7ceff059dd8"
   ]
@@ -79,7 +73,6 @@ p({
   description: "Ascendant planner",
   id: "AscendantPlannerCapability",
   version: "0",
-  enabled: true,
   permissionsGranted: [
     "rule.read.33666aa9-2294-415a-a015-31530f9e0204"
   ]
@@ -90,7 +83,6 @@ p({
   description: "All planners dealing with securities transactions",
   id: "SecuritiesPlannerCapability",
   version: "0",
-  enabled: true,
   permissionsGranted: [
     "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d52",
     "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d53",
@@ -106,7 +98,6 @@ p({
   description: "All planners that are generic",
   id: "GenericPlannerCapability",
   version: "0",
-  enabled: true,
   permissionsGranted: [
     "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d183",
     "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d184",
@@ -119,7 +110,6 @@ p({
   description: "All planners that are generic",
   id: "KotakPlannerCapability",
   version: "0",
-  enabled: true,
   permissionsGranted: [
     "rule.read.43db5d84-1d63-4b28-b671-7bd1e7cccf5f",
     "rule.read.10625392-606c-4d9b-9cec-8e588b28e134",
@@ -132,7 +122,6 @@ p({
   description: "All planners that are generic",
   id: "SandBoxPlannerCapability",
   version: "0",
-  enabled: true,
   permissionsGranted: [
     "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d182",
     "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d183",
@@ -146,7 +135,6 @@ p({
   description: "All planners",
   id: "AllPlannerCapability",
   version: "0",
-  enabled: true,
   permissionsGranted: [
     "rule.read.ea880670-142c-4be3-930d-acfba1bd5914",
     "rule.read.d4d6dc04-db17-43f6-a7e8-e720d18b22df",
