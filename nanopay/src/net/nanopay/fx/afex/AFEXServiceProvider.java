@@ -18,6 +18,7 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.i18n.TranslationService;
+import foam.mlang.MLang;
 import foam.nanos.auth.Address;
 import foam.nanos.auth.AuthService;
 import foam.nanos.auth.Country;
@@ -421,7 +422,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         fxQuote.setHasSourceAmount(isAmountSettlement);
 
         LocalDateTime time;
-        AFEXCredentials credentials = (AFEXCredentials) getX().get("AFEXCredentials");
+        DAO credentialDAO = (DAO) getX().get("afexCredentialDAO");
+        AFEXCredentials credentials = (AFEXCredentials) credentialDAO.find(MLang.EQ(AFEXCredentials.SPID, userObj.getSpid()));
         if ( credentials != null && credentials.getQuoteExpiryTime() != 0 ) {
           time = LocalDateTime.now().plusSeconds(credentials.getQuoteExpiryTime());
         } else {
