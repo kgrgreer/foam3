@@ -195,13 +195,14 @@ foam.CLASS({
               if ( accountNumber ) {
                 return this.E()
                   .start('span').style({ 'font-weight' : '500', 'white-space': 'pre' }).add(` ${obj.cls_.getAxiomByName('accountNumber').label} `).end()
-                  .start('span').add(`*** ${accountNumber.substring(accountNumber.length - 4, accountNumber.length)}`).end();
+                  .start('span').add(obj.obfuscate(accountNumber, 1, accountNumber.length - 4)).end();
               }
           }))
         .end();
       },
       javaFactory: `
-        return "***" + getAccountNumber().substring(Math.max(getAccountNumber().length() - 4, 0));
+        net.nanopay.bank.BankAccount account = new net.nanopay.bank.BankAccount();
+        return account.obfuscate(getAccountNumber(), 1, getAccountNumber().length() - 4);
       `
     },
     {
@@ -590,10 +591,14 @@ foam.CLASS({
       ],
       javaCode: `
         StringBuilder sb = new StringBuilder();
-        Long count = 0;
+        int count = 0;
         for (char c : str.toCharArray()) {
-          char x = "*";
-          
+          if ( c != ' ' ) {
+            if ( count >= start - 1 && count <= end - 1 ) {
+              c = '*';
+            }
+            count++;
+          }
           sb.append(c);
         }
         return sb.toString();
