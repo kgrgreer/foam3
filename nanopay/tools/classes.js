@@ -191,6 +191,9 @@ var classes = [
   'net.nanopay.plaid.PlaidResultReportAuthorizer',
   'net.nanopay.plaid.PlaidResultReportAuthorizerTest',
 
+  // Util
+  'net.nanopay.util.Tag',
+
   //Exchangeable
   'net.nanopay.exchangeable.Security',
   'net.nanopay.exchangeable.AssetClass',
@@ -698,21 +701,23 @@ var classes = [
   'net.nanopay.cico.model.MobileWallet',
 
   // auth
-  'net.nanopay.auth.LoginAttempt',
-  'net.nanopay.auth.NanopayUserAndGroupAuthService',
-  'net.nanopay.auth.NanopayResetPasswordTokenService',
-  'net.nanopay.auth.PublicBusinessInfo',
-  'net.nanopay.auth.BusinessToPublicBusinessInfoDAO',
+  'net.nanopay.auth.AuthType',
   'net.nanopay.auth.BusinessEmployeeDAO',
+  'net.nanopay.auth.BusinessToPublicBusinessInfoDAO',
   'net.nanopay.auth.CheckCurrencyRule',
+  'net.nanopay.auth.LoginAttempt',
+  'net.nanopay.auth.NanopayResetPasswordTokenService',
+  'net.nanopay.auth.NanopayUserAndGroupAuthService',
   'net.nanopay.auth.OneTimeAuthenticationTokenService',
+  'net.nanopay.auth.PublicBusinessInfo',
   'net.nanopay.auth.ruler.LogoutUserAction',
-  'net.nanopay.security.auth.LoginAttemptAuthService',
-  'net.nanopay.security.auth.LoginAttempts',
-  'net.nanopay.security.auth.IPLoggingAuthService',
   'net.nanopay.auth.ServiceProviderURL',
   'net.nanopay.auth.UserCreateServiceProviderURLRule',
   'net.nanopay.auth.UserCreateServiceProviderURLRuleAction',
+  
+  'net.nanopay.security.auth.IPLoggingAuthService',
+  'net.nanopay.security.auth.LoginAttemptAuthService',
+  'net.nanopay.security.auth.LoginAttempts',
 
   // SSO
   'net.nanopay.auth.openid.SSOToken',

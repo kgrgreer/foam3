@@ -256,6 +256,8 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/openid/ClientTokenLoginService' },
   { name: 'net/nanopay/auth/openid/OAuthService' },
   { name: 'net/nanopay/auth/openid/ClientOAuthService' },
+  { name: 'net/nanopay/auth/openid/DUGRuleRefinement' },
+  { name: 'net/nanopay/auth/openid/DUGRuleActionRefinement' },
 
   // Exchangeable
   { name: 'net/nanopay/exchangeable/Security' },
@@ -809,6 +811,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/auth/LoginAttempts' },
   { name: 'net/nanopay/security/auth/IPLoggingAuthService' },
   { name: 'net/nanopay/auth/LoginAttempt' },
+  { name: 'net/nanopay/auth/AuthType' },
 
   // PII
   { name: 'net/nanopay/security/pii/PII' },
@@ -929,6 +932,7 @@ FOAM_FILES([
   { name: 'net/nanopay/util/CurrencyFormatter' },
   { name: 'net/nanopay/util/Iso20022' },
   { name: 'net/nanopay/util/OnboardingUtil' },
+  { name: 'net/nanopay/util/Tag' },
 
   // transfer
   { name: 'net/nanopay/ui/transfer/TransferWizard', flags: ['web'] },

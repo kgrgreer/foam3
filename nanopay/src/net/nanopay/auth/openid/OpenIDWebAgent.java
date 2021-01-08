@@ -53,6 +53,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.StringJoiner;
 
 public class OpenIDWebAgent implements OAuthProvider, WebAgent, NanoService, ContextAware {
@@ -68,20 +69,29 @@ public class OpenIDWebAgent implements OAuthProvider, WebAgent, NanoService, Con
   protected String spidId_;
   protected JwkProvider keyProvider_;
 
+  @Override
   public String getAuthorizationUrl() {
     return authorizationUrl_;
   }
 
+  @Override
   public String getRedirectUri() {
     return redirectUri_;
   }
 
+  @Override
   public String getClientId() {
     return clientId_;
   }
 
+  @Override
   public String getClientSecret() {
     return clientSecret_;
+  }
+
+  @Override
+  public String getAuthToken() {
+    return Base64.getMimeEncoder().encodeToString((clientId_ + ":" + clientSecret_).getBytes());
   }
 
   protected Logger getLogger(X x) {

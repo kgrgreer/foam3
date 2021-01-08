@@ -41,6 +41,11 @@ foam.INTERFACE({
         name: 'getClientSecret',
         async: true,
         type: 'String'
+      },
+      {
+        name: 'getAuthToken',
+        async: true,
+        type: 'String'
       }
     ]
   });
