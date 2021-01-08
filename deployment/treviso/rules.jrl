@@ -489,7 +489,7 @@ p({
 
 // No compliance approvals for beneficialOwnerOnboarding or businessDirectorOnboarding
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
   "id":"crunch-onboard-compliance-0",
   "name":"Crunch Onboarding - User Final Compliance Rule",
   "documentation":"Final rule for User compliance.",

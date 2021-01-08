@@ -1872,7 +1872,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"api-doc-60-capabilities.label",t
 p({class:"foam.i18n.Locale",locale:"pt",source:"api-doc-70-data.label",target:"Dados API"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"api-doc-75-webhooks.label",target:"Webhooks de API"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"api-doc-99-reference.label",target:"Referência"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"api-documentation-northcard.label",target:"Documentação API"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"approvals.label",target:"Pedidos de Aprovação"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"bankaccounts.label",target:"Contas bancárias"})
