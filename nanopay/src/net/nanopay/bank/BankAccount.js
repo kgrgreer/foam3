@@ -564,6 +564,42 @@ foam.CLASS({
       return `${ this.name } ${ this.country } ${ this.BANK_ACCOUNT_LABEL } (${this.denomination})`;
     },
     {
+      name: 'obfuscate',
+      documentation: ``,
+      code: function(str, start, end) {
+        var obfuscatedString = str;
+        var count = 0;
+        for ( let i = 0; i < str.length; i++ ) {
+          if ( count == end ) {
+            break;
+          }
+          if ( str[i] != ' ' ) {
+            if ( count >= start - 1 ) {
+              obfuscatedString = obfuscatedString.substring(0, i) + '*' + obfuscatedString.substring(i + 1);
+            }
+            count++;
+          }
+        }
+        return obfuscatedString;
+      },
+      type: 'String',
+      args: [
+        { name: 'str', type: 'String' },
+        { name: 'start', type: 'Long' },
+        { name: 'end', type: 'Long' }
+      ],
+      javaCode: `
+        StringBuilder sb = new StringBuilder();
+        Long count = 0;
+        for (char c : str.toCharArray()) {
+          char x = "*";
+          
+          sb.append(c);
+        }
+        return sb.toString();
+      `
+    },
+    {
       name: 'calcCheckSum',
       type: 'String',
       documentation: `
