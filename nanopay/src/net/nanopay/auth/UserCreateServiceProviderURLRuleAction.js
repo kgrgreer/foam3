@@ -42,6 +42,7 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'java.net.URL',
     'java.net.MalformedURLException',
+    'javax.servlet.http.HttpServletRequest'
   ],
 
   methods: [
@@ -65,15 +66,21 @@ foam.CLASS({
           return;
         }
 
-        AppConfig app = (AppConfig) x.get("appConfig");
-        URL url = null;
-        try {
-          url = new URL(app.getUrl());
-        } catch ( MalformedURLException e ) {
-          throw new RuntimeException(e);
+        String host = "localhost";
+        HttpServletRequest req = x.get(HttpServletRequest.class);
+        if ( req != null ) {
+          host = req.getServerName();
+        } else {
+          AppConfig app = (AppConfig) x.get("appConfig");
+          URL url = null;
+          try {
+            url = new URL(app.getUrl());
+            host = url.getHost();
+          } catch ( MalformedURLException e ) {
+            throw new RuntimeException(e);
+          }
         }
 
-        String host = url.getHost();
         outerLoop:
         for ( ServiceProviderURL spu : myRule.getConfig() ) {
           for ( String u : spu.getUrls() ) {
