@@ -429,6 +429,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         } else {
           time = LocalDateTime.now().plusSeconds(30);
         }
+        logger_.debug("current time : ", LocalDateTime.now(),"  Expiry time: ", time );
         fxQuote.setExpiryTime(Date.from( time.atZone( ZoneId.systemDefault()).toInstant()));
         fxQuote = (FXQuote) fxQuoteDAO_.put_(x, fxQuote);
       }
