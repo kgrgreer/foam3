@@ -26,7 +26,7 @@ foam.CLASS({
   ],
 
   imports: [
-    'user',
+    'subject',
     'theme'
   ],
 
@@ -77,7 +77,7 @@ foam.CLASS({
               .add(X.data.USER_PAYMENT_CODE_LABEL)
             .end()
             .start().addClass('my-payment-code-value')
-              .select(X.data.user.paymentCode, (paymentCode) => {
+              .select(X.data.subject.user.paymentCode, (paymentCode) => {
                 return foam.u2.Element.create().start().add(paymentCode.id).end();
               })
             .end()
@@ -95,7 +95,7 @@ foam.CLASS({
       factory: function() {
         return this.Contact.create({
           type: 'Contact',
-          group: 'sme'
+          group: this.subject.user.spid +  '-sme'
         });
       },
       view: { class: 'net.nanopay.contacts.ui.modal.ContactConfirmationView' }

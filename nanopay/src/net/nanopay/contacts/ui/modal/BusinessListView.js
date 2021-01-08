@@ -49,7 +49,7 @@ foam.CLASS({
                   let { data }  = self.wizard;
                   var contact = net.nanopay.contacts.Contact.create({
                     type: 'Contact',
-                    group: 'sme',
+                    group: business.spid + '-sme',
                     organization: business.businessName,
                     operatingBusinessName: business.operatingBusinessName,
                     businessId: business.id,
