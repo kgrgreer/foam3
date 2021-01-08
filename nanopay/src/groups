@@ -19,4 +19,4 @@ p({class:"foam.nanos.auth.Group",id:"nanopay-admin",description:"nanopay admin",
 p({class:"foam.nanos.auth.Group",id:"nanopay-fraud-ops",description:"nanopay fraud-ops group",parent:"fraud-ops",defaultMenu:"accounts"})
 p({class:"foam.nanos.auth.Group",id:"nanopay-payment-ops",description:"nanopay payment-ops group",parent:"payment-ops",defaultMenu:"accounts"})
 p({class:"foam.nanos.auth.Group",id:"nanopay-support",description:"nanopay support group",parent:"support",defaultMenu:"contacts"})
-p({class:"foam.nanos.auth.Group",id:"nanopay-sme",description:"nanopay sme group","parent":"sme"})
+p({class:"foam.nanos.auth.Group",id:"nanopay-sme",description:"nanopay sme group","parent":"sme","url":"http://ablii:8080"})
