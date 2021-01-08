@@ -105,8 +105,6 @@ p({
     before: true
   },
   "version":"0",
-  "duration":3650,
-  "gracePeriod":7,
   "enabled":true,
   "associatedEntity": 1
 })
