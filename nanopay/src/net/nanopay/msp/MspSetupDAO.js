@@ -223,6 +223,7 @@ foam.CLASS({
         smeGroup.setId(mspInfo.getSpid() + "-sme");
         smeGroup.setParent("sme");
         smeGroup.setDescription(mspInfo.getSpid() + " sme group");
+        smeGroup.setUrl(mspInfo.getSmeGroupUrl());
         groupDAO.put(smeGroup);
 
         return mspInfo;

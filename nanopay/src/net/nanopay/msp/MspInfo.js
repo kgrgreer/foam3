@@ -129,6 +129,11 @@ foam.CLASS({
       required: true
     },
     {
+      class: 'String',
+      name: 'smeGroupUrl',
+      value: null
+    },
+    {
       class: 'StringArray',
       name: 'menuPermissions'
     },
