@@ -64,7 +64,7 @@ public class FepWebService extends ContextAwareSupport implements FepWeb {
     omLogger = (OMLogger) x.get("OMLogger");
     jsonParser = new JSONParser();
     jsonParser.setX(x);
-    getCredentials();
+    // getCredentials(); - fails startup
   }
 
   protected TrevisoCredientials getCredentials() {
