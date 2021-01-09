@@ -22,7 +22,8 @@ p({
   permissionsGranted: [
     "rule.read.13df0d76-ba3e-4287-b42e-c7ceff059dd8",
     "rule.read.2775abef-05d4-4460-bea8-7a70e9d544af",
-    "rule.read.519e2a68-a914-444f-b050-2ce01f29fe24"
+    "rule.read.519e2a68-a914-444f-b050-2ce01f29fe24",
+    "rule.read.91194da9-8391-436a-8468-fa2c706126b8"
   ]
 })
 p({
@@ -118,8 +119,6 @@ p({
   """,
   "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "duration":3650,
-  "gracePeriod":7,
   "enabled":true,
   "associatedEntity": 1
 })

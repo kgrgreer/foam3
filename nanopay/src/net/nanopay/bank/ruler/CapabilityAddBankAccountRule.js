@@ -42,17 +42,17 @@ foam.CLASS({
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-          //find user and check if it is a business
-          User user = ((Subject) x.get("subject")).getUser();
-          
           UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
+          User user = ucj.getSubject(x).getUser();
+          if ( ! ( user instanceof Business ) ) throw new RuntimeException("Error in ucj source user - Not a business.");
+          
           StrategizedBankAccount bankInfo = (StrategizedBankAccount) ucj.getData();
           BankAccount bank = (BankAccount) (bankInfo.getBankAccount()).fclone();
+          bank.clearSpid();
           bank.setOwner(user.getId());
           
           DAO accountDAO = (DAO) x.get("localAccountDAO");
           accountDAO.put(bank);
-
          }
         }, "Create bank account for a user submitting a strategized bank account capability");
       `

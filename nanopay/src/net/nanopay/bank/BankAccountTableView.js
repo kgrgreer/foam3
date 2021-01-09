@@ -88,7 +88,11 @@ foam.CLASS({
               .tag({
                 class: 'net.nanopay.account.ui.BankAccountWizard',
                 data: this.selection,
-                useSections: ['accountInformation', 'pad']
+                useSections: ['accountInformation', 'pad'],
+                config: {
+                  id: { updateVisibility: 'HIDDEN' },
+                  summary: { updateVisibility: 'HIDDEN' }
+                }
               })
             .endContext();
         this.add(popupView);

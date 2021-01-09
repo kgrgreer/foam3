@@ -155,7 +155,7 @@ var classes = [
   'net.nanopay.bank.StrategizedBankAccount',
   'net.nanopay.bank.ruler.VerifyBankRule',
   'net.nanopay.bank.ruler.CapabilityAddBankAccountRule',
-  'net.nanopay.bank.ruler.ExternalGrantBRBankAccountCapabilityRule',
+  'net.nanopay.country.br.ruler.BRBankAccountCapabilityOnGrantRule',
   'net.nanopay.bank.test.BankAccountIBANTest',
   'net.nanopay.model.CurrencyAmount',
   'net.nanopay.model.Broker',
@@ -191,6 +191,9 @@ var classes = [
   'net.nanopay.plaid.PlaidAccountDetailTest',
   'net.nanopay.plaid.PlaidResultReportAuthorizer',
   'net.nanopay.plaid.PlaidResultReportAuthorizerTest',
+
+  // Util
+  'net.nanopay.util.Tag',
 
   //Exchangeable
   'net.nanopay.exchangeable.Security',
@@ -583,6 +586,7 @@ var classes = [
   'net.nanopay.tx.model.TransactionLimit',
   'net.nanopay.tx.ruler.TransactionLimitProbeInfo',
   'net.nanopay.tx.ruler.TransactionLimitRule',
+  'net.nanopay.tx.ruler.PermissionedTransactionRule',
   'net.nanopay.tx.ruler.InvoiceApprovedByRule',
   'net.nanopay.tx.ruler.SlowDownRule',
   'net.nanopay.tx.ruler.LiquidTransactionalBlocks',
@@ -699,21 +703,23 @@ var classes = [
   'net.nanopay.cico.model.MobileWallet',
 
   // auth
-  'net.nanopay.auth.LoginAttempt',
-  'net.nanopay.auth.NanopayUserAndGroupAuthService',
-  'net.nanopay.auth.NanopayResetPasswordTokenService',
-  'net.nanopay.auth.PublicBusinessInfo',
-  'net.nanopay.auth.BusinessToPublicBusinessInfoDAO',
+  'net.nanopay.auth.AuthType',
   'net.nanopay.auth.BusinessEmployeeDAO',
+  'net.nanopay.auth.BusinessToPublicBusinessInfoDAO',
   'net.nanopay.auth.CheckCurrencyRule',
+  'net.nanopay.auth.LoginAttempt',
+  'net.nanopay.auth.NanopayResetPasswordTokenService',
+  'net.nanopay.auth.NanopayUserAndGroupAuthService',
   'net.nanopay.auth.OneTimeAuthenticationTokenService',
+  'net.nanopay.auth.PublicBusinessInfo',
   'net.nanopay.auth.ruler.LogoutUserAction',
-  'net.nanopay.security.auth.LoginAttemptAuthService',
-  'net.nanopay.security.auth.LoginAttempts',
-  'net.nanopay.security.auth.IPLoggingAuthService',
   'net.nanopay.auth.ServiceProviderURL',
   'net.nanopay.auth.UserCreateServiceProviderURLRule',
   'net.nanopay.auth.UserCreateServiceProviderURLRuleAction',
+  
+  'net.nanopay.security.auth.IPLoggingAuthService',
+  'net.nanopay.security.auth.LoginAttemptAuthService',
+  'net.nanopay.security.auth.LoginAttempts',
 
   // SSO
   'net.nanopay.auth.openid.SSOToken',
@@ -1300,6 +1306,7 @@ var classes = [
   'net.nanopay.partner.treviso.onboarding.BRBusinessDirector',
   'net.nanopay.partner.treviso.onboarding.BRBeneficialOwner',
   'net.nanopay.partner.treviso.onboarding.BRBusinessOwnershipData',
+  'net.nanopay.partner.treviso.onboarding.BRBankAccountData',
 
   // crunch predicates - todo move all predicates used in crunch here
   'net.nanopay.crunch.predicate.IsBusiness',
@@ -1312,6 +1319,7 @@ var classes = [
   'net.nanopay.crunch.predicate.SigningOfficerPrivilegesRequested',
   'net.nanopay.crunch.predicate.UserIsSigningOfficerOfBusiness',
   'net.nanopay.crunch.IsSpid',
+  'net.nanopay.crunch.ruler.PermissionedUCJRule',
 
   // crunch onboarding
   'net.nanopay.crunch.onboardingModels.CreateRegisterPaymentProviderUCJ',

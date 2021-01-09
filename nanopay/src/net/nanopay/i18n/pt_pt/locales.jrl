@@ -1365,7 +1365,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.A
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.ACCOUNT_HOLDER_REQUIRED",target:"É necessário titular da conta."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.BANK_ADDED",target:"Conta bancária adicionada com sucesso!"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.INSTITUTION_NUMBER_INVALID",target:"O número da instituição deve ter 8 letras e / ou dígitos"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.SECTION_ACCOUNT_INFORMATION_TITLE",target:"Adicionar Conta"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.INSTITUTION_NUMBER_REQUIRED",target:"Número da instituição obrigatório"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.BRANCH_ID_INVALID",target:"O ID da agência deve ter 5 dígitos"})
@@ -1873,7 +1872,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"api-doc-60-capabilities.label",t
 p({class:"foam.i18n.Locale",locale:"pt",source:"api-doc-70-data.label",target:"Dados API"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"api-doc-75-webhooks.label",target:"Webhooks de API"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"api-doc-99-reference.label",target:"Referência"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"api-documentation-northcard.label",target:"Documentação API"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"approvals.label",target:"Pedidos de Aprovação"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"bankaccounts.label",target:"Contas bancárias"})
@@ -2055,6 +2053,9 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onbo
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBeneficialOwner.PEPHIORELATED.help",target:"Uma pessoa politicamente exposta (PEP) ou o chefe de uma organização internacional (HIO) é uma pessoa a quem foi confiada uma posição de destaque que normalmente vem com a oportunidade de influenciar decisões e a capacidade de controlar recursos"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBeneficialOwner.HAS_SIGNED_CONTRATOS_DE_CAMBIO.label",target:"A pessoa listada aqui assinou os contratos de câmbio"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBeneficialOwner.HAS_SIGNED_CONTRATOS_DE_CAMBIO.help",target:"Contratos de câmbio é um acordo legal no qual as partes concordam em transferir entre si uma determinada quantia de moeda estrangeira a uma taxa de câmbio predeterminada e em uma data predeterminada."})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBankAccountData.NO_BANK_NEEDED",target:"Nenhuma informação de conta bancária necessária. Prossiga para a próxima etapa."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBankAccountData.ADD_ACCOUNT_TITLE",target:"Adicionar Conta"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.INVALID_DATE_ERROR",target:"Data de nascimento válida exigida"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.UNGER_AGE_LIMIT_ERROR",target:"Deve ter pelo menos 18 anos."})
@@ -3272,3 +3273,11 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.business.NatureOfBus
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions.DOCUMENT_READ",target:"O documento deve ser revisado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.DOCUMENT_READ",target:"O documento deve ser revisado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.security.auth.LoginAttemptAuthService.ACCOUNT_LOCKED",target:"Conta bloqueada. Entre em contato com o atendimento ao cliente."})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.cron.WelcomeEmailCron.WELCOME_NOTIFICATION_MESSAGE",target:"Para concluir o registro, entre em contato com nosso especialista de integração em "})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ruler.CompleteInvoiceNotification.NOTIFICATION_BODY_1",target:"Você recebeu pagamento de "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ruler.CompleteInvoiceNotification.NOTIFICATION_BODY_2",target:" recebeu seu pagamento "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ruler.CompleteInvoiceNotification.NOTIFICATION_BODY_3",target:" para "})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ruler.AccountAddedNotificationRule.NOTIFICATION_BODY_P1",target:" foi adicionado!"})

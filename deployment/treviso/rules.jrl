@@ -78,7 +78,7 @@ p({
     class: "foam.nanos.cron.TimeHMS",
     hour: 24
   },
-  feeAccount: "31"
+  feeAccount: "31",
   enabled: true,
   predicate: {
     class: "foam.mlang.predicate.And",
@@ -476,15 +476,10 @@ p({
   "operation":3,
   "after":true,
   "predicate": {
-    "class": "foam.mlang.predicate.And",
-    "args": [
-      {
-        "class": "net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
-        "status": 1,
-        "statusChanged": false,
-        "category": "AFEXOnboarding"
-      }
-    ]
+    "class": "net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+    "status": 1,
+    "statusChanged": false,
+    "category": "AFEXOnboarding"
   },
   "asyncAction":{ "class":"net.nanopay.partner.afex.crunch.AFEXBusinessOnboardingRule"},
   "enabled":true,
@@ -494,7 +489,7 @@ p({
 
 // No compliance approvals for beneficialOwnerOnboarding or businessDirectorOnboarding
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
   "id":"crunch-onboard-compliance-0",
   "name":"Crunch Onboarding - User Final Compliance Rule",
   "documentation":"Final rule for User compliance.",
