@@ -111,7 +111,7 @@ public class AFEXServiceProviderTest
       identification.setExpirationDate(new Date());
       user1.setIdentification(identification);
       user1.setPhoneNumber("1234567890");
-      user1 = (User) smeBusinessRegistrationDAO.put_(x, user1).fclone();
+      user1 = (User) smeBusinessRegistrationDAO.put(user1).fclone();
 
       // Set properties that can't be set during registration.
       user1.setEmailVerified(true);
