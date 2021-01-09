@@ -57,7 +57,7 @@ foam.CLASS({
 
         try {
           User user = super.login(x, identifier, password);
-          if ( Group.ADMIN_GROUP.equalsIgnoreCase(user.getGroup()) ) {
+          if ( user.isAdmin() ) {
             loginAttempt.setClusterable(false);
           }
           loginAttempt.setLoginAttemptedFor(user.getId());
@@ -67,7 +67,8 @@ foam.CLASS({
           return user;
         } catch (Throwable t) {
           loginAttempt.setLoginSuccessful(false);
-          if ( "admin@nanopay.net".equals(identifier) ) {
+          if ( "admin@nanopay.net".equals(identifier) ||
+               "admin".equals(identifier) ) {
             loginAttempt.setClusterable(false);
           }
           ((DAO) getLoginAttemptDAO()).inX(getX()).put(loginAttempt);
