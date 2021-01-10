@@ -25,7 +25,9 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.nanos.auth.User',
     'foam.util.SafetyUtil',
+    'net.nanopay.account.Account',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.meter.compliance.ComplianceValidationStatus',
@@ -52,11 +54,16 @@ foam.CLASS({
           IdentityMindResponse response = identityMindService.evaluateTransfer(x, transaction);
           status = response.getComplianceValidationStatus();
 
+          Account sourceAccount = transaction.findSourceAccount(x);
+          User accountOwner = sourceAccount != null ? sourceAccount.findOwner(x) : null;
+          String approvalGroup = accountOwner != null ? accountOwner.getSpid() + "-" + getApproverGroupId() : getApproverGroupId();
+
           // Create approval request
           approvalRequest.setCauseId(response.getId());
           approvalRequest.setCauseDaoKey("identityMindResponseDAO");
           approvalRequest.setStatus(getApprovalStatus(status));
           approvalRequest.setApprover(getApprover(status));
+          approvalRequest.setGroup(approvalGroup);
           requestApproval(x, approvalRequest);
           ruler.putResult(status);
         }

@@ -256,6 +256,8 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/openid/ClientTokenLoginService' },
   { name: 'net/nanopay/auth/openid/OAuthService' },
   { name: 'net/nanopay/auth/openid/ClientOAuthService' },
+  { name: 'net/nanopay/auth/openid/DUGRuleRefinement' },
+  { name: 'net/nanopay/auth/openid/DUGRuleActionRefinement' },
 
   // Exchangeable
   { name: 'net/nanopay/exchangeable/Security' },
@@ -294,7 +296,7 @@ FOAM_FILES([
   { name: 'net/nanopay/bank/ruler/CorridorAuthorizationRule' },
   { name: 'net/nanopay/bank/ruler/VerifyBankRule' },
   { name: 'net/nanopay/bank/ruler/CapabilityAddBankAccountRule' },
-  { name: 'net/nanopay/bank/ruler/ExternalGrantBRBankAccountCapabilityRule' },
+  { name: 'net/nanopay/country/br/ruler/BRBankAccountCapabilityOnGrantRule' },
 
   // fx
   { name: 'net/nanopay/fx/ExchangeRateStatus' },
@@ -475,6 +477,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/TransactionLimit' },
   { name: 'net/nanopay/tx/ruler/TransactionLimitProbeInfo' },
   { name: 'net/nanopay/tx/ruler/TransactionLimitRule' },
+  { name: 'net/nanopay/tx/ruler/PermissionedTransactionRule' },
   { name: 'net/nanopay/tx/ruler/InvoiceApprovedByRule' },
   { name: 'net/nanopay/tx/ruler/SlowDownRule' },
   { name: 'net/nanopay/tx/ruler/AbliiSendCompletedNotification' },
@@ -809,6 +812,7 @@ FOAM_FILES([
   { name: 'net/nanopay/security/auth/LoginAttempts' },
   { name: 'net/nanopay/security/auth/IPLoggingAuthService' },
   { name: 'net/nanopay/auth/LoginAttempt' },
+  { name: 'net/nanopay/auth/AuthType' },
 
   // PII
   { name: 'net/nanopay/security/pii/PII' },
@@ -929,6 +933,7 @@ FOAM_FILES([
   { name: 'net/nanopay/util/CurrencyFormatter' },
   { name: 'net/nanopay/util/Iso20022' },
   { name: 'net/nanopay/util/OnboardingUtil' },
+  { name: 'net/nanopay/util/Tag' },
 
   // transfer
   { name: 'net/nanopay/ui/transfer/TransferWizard', flags: ['web'] },
@@ -1646,6 +1651,7 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/predicate/SigningOfficerQuestionAnswered' },
   { name: 'net/nanopay/crunch/predicate/UserIsSigningOfficerOfBusiness' },
   { name: 'net/nanopay/crunch/IsSpid' },
+  { name: 'net/nanopay/crunch/ruler/PermissionedUCJRule' },
 
   // crunch onboarding
   { name: 'net/nanopay/crunch/onboardingModels/CreateRegisterPaymentProviderUCJ' },
@@ -1806,6 +1812,7 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/onboarding/BRBusinessDirector' },
   { name: 'net/nanopay/partner/treviso/onboarding/BRBeneficialOwner' },
   { name: 'net/nanopay/partner/treviso/onboarding/BRBusinessOwnershipData' },
+  { name: 'net/nanopay/partner/treviso/onboarding/BRBankAccountData' },
   { name: 'net/nanopay/partner/treviso/test/TrevisoOnboardingSupport' },
   { name: 'net/nanopay/partner/treviso/TrevisoSendEmailToAllRule' },
 

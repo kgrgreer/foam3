@@ -30,6 +30,7 @@ foam.CLASS({
     'foam.nanos.auth.Address',
     'foam.nanos.auth.LifecycleState',
     'foam.nanos.auth.User',
+    'foam.nanos.auth.Group',
     'foam.nanos.auth.Subject',
     'foam.nanos.crunch.connection.CapabilityPayload',
     'foam.nanos.dig.exception.ExternalAPIException',
@@ -95,12 +96,12 @@ foam.CLASS({
             flinksLoginId.setBusiness(previousFlinksLoginId.getBusiness());
           }
         }
-        
+
         FlinksResponse flinksResponse = (FlinksResponse) flinksResponseService.getFlinksResponse(x, flinksLoginId);
         if ( flinksResponse == null ) {
           throw new ExternalAPIException("Flinks failed to provide a valid response when provided with login ID: " + flinksLoginId.getLoginId());
         }
-        
+
         FlinksResponse flinksAuthResponse = flinksAuth.getAccountSummary(x, flinksResponse.getRequestId(), subject.getUser(), false);
         while ( flinksAuthResponse.getHttpStatusCode() == 202 ) {
           flinksAuthResponse = flinksAuth.pollAsync(x, flinksAuthResponse.getRequestId(), subject.getUser());
@@ -134,27 +135,27 @@ foam.CLASS({
         if ( flinksLoginId instanceof FlinksLoginIdOnboarding )
         {
           FlinksLoginIdOnboarding flinksLoginIdOnboarding = (FlinksLoginIdOnboarding) flinksLoginId;
-          
+
           if ( user == null ) {
             // Create the user when they do not exist
 
             onboarding(x, flinksLoginIdOnboarding, accountDetail, loginDetail);
-            
+
             // Retrieve the user and the business
             user = flinksLoginId.findUser(x);
             business = flinksLoginId.findBusiness(x);
-            
+
             // User must exist
             if ( user == null ) {
               throw new GeneralException("User not provisioned: " + flinksLoginId.getUser());
             }
-          
+
           } else {
             // Retrieve any missing capabilities from previous calls with this Flinks LoginId
 
             // API CAD Personal Payments Under 1000CAD Capability ID
             String capabilityId = "F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD";
-                
+
             // Switch contexts to the newly created user
             Subject newSubject = new Subject.Builder(x).setUser(user).build();
             if ( flinksLoginIdOnboarding.getType() != OnboardingType.PERSONAL && business != null ) {
@@ -162,7 +163,7 @@ foam.CLASS({
 
               // Business CAD payments capability
               capabilityId = "18DD6F03-998F-4A21-8938-358183151F96";
-            } 
+            }
             X subjectX = x.put("subject", newSubject);
 
             DAO capabilityPayloadDAO = (DAO) subjectX.get("capabilityPayloadDAO");
@@ -200,7 +201,7 @@ foam.CLASS({
         AccountWithDetailModel[] accounts = flinksDetailResponse.getAccounts();
         for ( int i = 0; i < accounts.length; i++ ) {
           AccountWithDetailModel account = accounts[i];
-          
+
           // When no account ID is specific, take the first CAD account
           if ( SafetyUtil.isEmpty(request.getAccountId()) && account.getCurrency().equals("CAD") && firstCADAccountDetail == null ) {
             firstCADAccountDetail = account;
@@ -271,7 +272,7 @@ foam.CLASS({
       ],
       javaCode: `
       DAO accountDAO = (DAO) x.get("accountDAO");
-      
+
       return (BankAccount) accountDAO.find(AND(
         INSTANCE_OF(CABankAccount.class),
         EQ(BankAccount.ACCOUNT_NUMBER, accountDetail.getAccountNumber()),
@@ -332,26 +333,33 @@ foam.CLASS({
         { name: 'loginDetail', type: 'LoginModel' }
       ],
       javaCode: `
-        HolderModel holder = accountDetail.getHolder();  
+        HolderModel holder = accountDetail.getHolder();
         UserOverrideData overrides = null;
         if ( request.getFlinksOverrides() != null ) overrides = request.getFlinksOverrides().getUserOverrides();
         String userEmail = overrides != null && !SafetyUtil.isEmpty(overrides.getEmail()) ?
           overrides.getEmail() : holder.getEmail();
 
         Subject subject = (Subject) x.get("subject");
+
+        String groupId = "external-sme";
+        DAO groupDAO = (DAO) x.get("localGroupDAO");
+        Group group = (Group) groupDAO.find(subject.getRealUser().getSpid() + "-sme");
+        if ( group != null ) {
+          groupId = group.getId();
+        }
+
         DAO userDAO = (DAO) x.get("localUserDAO");
-        String spid = subject.getRealUser().getSpid();
         User user = new User.Builder(x)
           .setEmail(userEmail)
           .setUserName(userEmail)
           .setDesiredPassword(java.util.UUID.randomUUID().toString())
           .setEmailVerified(true)
-          .setGroup(spid + "-sme")
-          .setSpid(spid)
+          .setGroup(groupId)
+          .setSpid(subject.getRealUser().getSpid())
           .setStatus(net.nanopay.admin.model.AccountStatus.ACTIVE)
           .build();
         user = (User) userDAO.put(user);
-        
+
         // Save the UserId on the request
         request.setUser(user.getId());
 
@@ -360,9 +368,9 @@ foam.CLASS({
         X subjectX = getX().put("subject", newSubject);
         subjectX = subjectX.put("group", null);
 
-        AddressModel holderAddress = holder.getAddress();        
+        AddressModel holderAddress = holder.getAddress();
         Address address = overrides != null && overrides.getAddress() != null ?
-          overrides.getAddress() : 
+          overrides.getAddress() :
           new Address.Builder(subjectX)
             .setStructured(false)
             .setAddress1(holderAddress.getCivicAddress())
@@ -382,7 +390,7 @@ foam.CLASS({
 
         // API CAD Personal Payments Under 1000CAD Capability ID
         final String capabilityId = "F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD";
-        
+
         // Add capabilities for the new user
         DAO capabilityPayloadDAO = (DAO) subjectX.get("capabilityPayloadDAO");
         CapabilityPayload missingPayloads = (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).find(capabilityId);
@@ -403,7 +411,7 @@ foam.CLASS({
         // Update properties in the map
         userCapabilityDataObjects.put("User Details", userData);
         userCapabilityDataObjects.put("Personal Onboarding Type", onboardingTypeData);
-        
+
         // Resubmit the capability payload
         CapabilityPayload userCapPayload = new CapabilityPayload.Builder(subjectX)
           .setId(capabilityId)
@@ -433,7 +441,7 @@ foam.CLASS({
         X subjectX = getX().put("subject", newSubject);
 
         HolderModel holder = accountDetail.getHolder();
-        AddressModel holderAddress = holder.getAddress();        
+        AddressModel holderAddress = holder.getAddress();
         Address address = new Address.Builder(subjectX)
           .setStructured(false)
           .setAddress1(holderAddress.getCivicAddress())
@@ -454,7 +462,7 @@ foam.CLASS({
           overrides.getAddress() : address;
         Address mailingAddress = overrides != null && overrides.getMailingAddress() != null ?
           overrides.getMailingAddress() : businessAddress;
-        String phoneNumber = overrides != null && !SafetyUtil.isEmpty(overrides.getPhoneNumber()) ? 
+        String phoneNumber = overrides != null && !SafetyUtil.isEmpty(overrides.getPhoneNumber()) ?
           overrides.getPhoneNumber() : user.getPhoneNumber();
         String externalId = overrides != null && !SafetyUtil.isEmpty(overrides.getExternalId()) ?
           overrides.getExternalId() : "";
@@ -488,7 +496,7 @@ foam.CLASS({
           .setMailingAddress(mailingAddress)
           .setEmail(businessEmail)
           .build();
-        
+
         // Create the capabilities data map
         Map<String,FObject> businessCapabilityDataObjects = new HashMap<>();
         businessCapabilityDataObjects.put("Business Onboarding Details", businessDetailData);
@@ -506,7 +514,7 @@ foam.CLASS({
         if ( business == null ) {
           throw new ExternalAPIException("Failed to create business during onboarding with Flinks");
         }
-        
+
         // Business CAD payments capability
         String capabilityId = "18DD6F03-998F-4A21-8938-358183151F96";
         CapabilityPayload missingPayloads = (CapabilityPayload) capabilityPayloadDAO.inX(subjectX).find(capabilityId);
@@ -516,7 +524,7 @@ foam.CLASS({
         if ( securefactOnboardingService == null ) {
           throw new GeneralException("Cannot find securefactOnboardingService");
         }
-      
+
         // Fill the capability data objects from SecureFact LEV
         securefactOnboardingService.retrieveLEVCapabilityPayloads(subjectX, business, businessCapabilityDataObjects);
 
@@ -576,7 +584,7 @@ foam.CLASS({
           if ( signingOfficer.getUser() == user.getId() ) {
             return;
           }
-          
+
           if ( match == null &&
                SafetyUtil.equals(user.getFirstName(), signingOfficer.getFirstName()) &&
                SafetyUtil.equals(user.getLastName(), signingOfficer.getLastName()) )
@@ -595,7 +603,7 @@ foam.CLASS({
             .setSource("FLINKS")
             .setUser(user.getId())
             .build();
-          
+
           // Add the signing officer to current list of signing officers
           int size = signingOfficerList.getSigningOfficers() == null ? 0 : signingOfficerList.getSigningOfficers().length;
           SigningOfficer[] signingOfficersArray = new SigningOfficer[size + 1];

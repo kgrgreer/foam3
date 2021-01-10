@@ -2,29 +2,25 @@ p({
   class:"foam.nanos.auth.Group",
   id:"treviso-admin",
   description:"treviso admin",
-  parent:"msp-admin",
-  defaultMenu:"users",
+  parent:"msp-admin"
 })
 p({
   class:"foam.nanos.auth.Group",
   id:"treviso-fraud-ops",
   description:"treviso fraud-ops group",
-  parent:"fraud-ops",
-  defaultMenu:"accounts",
+  parent:"fraud-ops"
 })
 p({
   class:"foam.nanos.auth.Group",
   id:"treviso-payment-ops",
   description:"treviso payment-ops group",
-  parent:"payment-ops",
-  defaultMenu:"accounts"
+  parent:"payment-ops"
 })
 p({
   class:"foam.nanos.auth.Group",
   id:"treviso-support",
   description:"treviso support group",
-  parent:"support",
-  defaultMenu:"contacts"
+  parent:"support"
 })
 p({
   class:"foam.nanos.auth.Group",

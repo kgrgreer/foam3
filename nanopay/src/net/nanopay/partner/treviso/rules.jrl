@@ -61,7 +61,7 @@ p({
   "lifecycleState":1
 })
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
   "id":"ae4aa9c1-2e62-41a2-b5e5-73e5a951ce15",
   "name":"Treviso addSigningOfficerRule",
   "priority":100,
