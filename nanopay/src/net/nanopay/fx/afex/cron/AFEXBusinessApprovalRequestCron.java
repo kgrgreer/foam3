@@ -40,18 +40,24 @@ public class AFEXBusinessApprovalRequestCron implements ContextAgent {
     for (Object obj : pendinApprovals) {
       AFEXBusinessApprovalRequest request = (AFEXBusinessApprovalRequest) obj;
       if ( ApprovalRequestUtil.getStatus(x, request.getObjId(), request.getClassification()) == ApprovalStatus.REQUESTED ) {
-        AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(request.getAfexBusinessId());
-        AFEXCredentials credentials = (AFEXCredentials) credentialDAO.find(MLang.EQ(AFEXCredentials.SPID, afexBusiness.findUser(x).getSpid()));
-        boolean bufferElapsed = false;
-        Calendar now = Calendar.getInstance();
-        Calendar eta = Calendar.getInstance();
-        eta.setTime(request.getCreated());
-        eta.add(Calendar.MINUTE, credentials.getClientApprovalDelay());
-        bufferElapsed = (now.after(eta));
-        if ( bufferElapsed ) {
-          request = (AFEXBusinessApprovalRequest) request.fclone();
-          request.setStatus(ApprovalStatus.APPROVED);
-          approvalRequestDAO.put(request);
+        if ( ! foam.util.SafetyUtil.isEmpty(request.getAfexBusinessId()) ) {
+          AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(request.getAfexBusinessId());
+          AFEXCredentials credentials = (AFEXCredentials) credentialDAO.find(MLang.EQ(AFEXCredentials.SPID, afexBusiness.findUser(x).getSpid()));
+          boolean bufferElapsed = false;
+          Calendar now = Calendar.getInstance();
+          Calendar eta = Calendar.getInstance();
+          eta.setTime(request.getCreated());
+          eta.add(Calendar.MINUTE, credentials.getClientApprovalDelay());
+          bufferElapsed = (now.after(eta));
+          if ( bufferElapsed ) {
+            request = (AFEXBusinessApprovalRequest) request.fclone();
+            request.setStatus(ApprovalStatus.APPROVED);
+            approvalRequestDAO.put(request);
+          }
+        } else {
+          Exception e = new Exception("AFEXBusinessApprovalRequest missing afexBusinessId");
+          foam.nanos.logger.Logger logger = (foam.nanos.logger.Logger) x.get("logger");
+          logger.warning(this.getClass().getSimpleName(), "AFEXBuinessApprovalRequest missing afexBusinessId", request, e);
         }
       } else if ( ApprovalRequestUtil.getStatus(x, request.getObjId(), request.getClassification()) == ApprovalStatus.APPROVED ) {
         approvalRequestDAO.where(AND(
