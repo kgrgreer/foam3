@@ -47,3 +47,10 @@ p({
   targetId: "ucj-crunchOnboarding-rules",
   priority: 7
 })
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "treviso",
+  targetId: "treviso-tx-rules",
+  priority: 8
+})
