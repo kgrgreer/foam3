@@ -11,7 +11,7 @@ p({
         "ablii.development.nanopay.net",
         "ablii.release.nanopay.net",
         "ablii.development.medusa.nanopay.net",
-        "ablii.release.medusa.nanopay.net"
+        "ablii.release.medusa.nanopay.net",
         "ablii.backoffice.nanopay.net",
         "ablii.backoffice.development.nanopay.net",
         "ablii.backoffice.release.nanopay.net",
