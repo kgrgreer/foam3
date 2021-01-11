@@ -37,7 +37,7 @@ p({
 
 
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
   "id":"crunch-business-registration",
   "name":"Create business on initial business data submit.",
   "priority":1,
@@ -69,7 +69,7 @@ p({
 })
 
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
   "id":"b82fc19c-0f13-11eb-adc1-0242ac120002",
   "name":"set business capability after business registration",
   "priority":1,

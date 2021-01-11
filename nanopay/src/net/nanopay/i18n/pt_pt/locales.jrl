@@ -1004,7 +1004,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.InitialBusinessData.INVALID_FAX_ERROR",target:"Número de fax válido requerido"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.InitialBusinessData.EMAIL.documentation",target:"Email da empresa."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.InitialBusinessData.ADDRESS.label",target:"endereço"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.InitialBusinessData.ADDRESS.documentation",target:"Endereço comercial ."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.InitialBusinessData.ADDRESS.documentation",target:"Endereço comercial."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.InitialBusinessData.SAME_AS_BUSINESS_ADDRESS.documentation",target:"\n        Determina se o endereço comercial e o endereço para correspondência são iguais.\n       "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.InitialBusinessData.MAILING_ADDRESS.label",target:"endereço de correspondência"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.InitialBusinessData.MAILING_ADDRESS.documentation",target:"Endereço postal comercial."})
@@ -1029,7 +1029,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.predicate.CheckUserCountry.COUNTRY.label",target:"país"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.predicate.CheckUserCountry.COUNTRY.documentation",target:"Compare a sequência passada para o país das empresas"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.InitialBusinessData.SECTION_BUSINESS_ADDRESS.title",target:"Endereço comercial "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.InitialBusinessData.SECTION_BUSINESS_ADDRESS.title",target:"Endereço comercial"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.CANNOT_SELECT_QUEBEC_ERROR",target:"Este aplicativo não oferece suporte atualmente a empresas em Quebec. Estamos trabalhando muito para mudar isso! Se você mora em Quebec, verifique as atualizações."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.INVALID_ADDRESS_ERROR",target:"Endereço inválido."})
@@ -1561,7 +1561,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.NO_
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.NO_CORRIDORS_AVAILABLE.documentation",target:"GUI quando nenhum recurso de corredor foi adicionado ao usuário."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.SHOULD_INVITE.documentation",target:"Verdadeiro se o usuário quiser convidar o beneficiário para ingressar no Ablii."})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.BUSINESS_ADDRESS.label",target:"Endereço comercial "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.BUSINESS_ADDRESS.label",target:"Endereço comercial"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.BUSINESS_ADDRESS.documentation",target:"O endereço postal da empresa associada ao beneficiário."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.BUSINESS_STATUS.documentation",target:"Rastreia o status de uma empresa."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.IS_EDIT.label",target:"isEdit pt"})
@@ -1872,7 +1872,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"api-doc-60-capabilities.label",t
 p({class:"foam.i18n.Locale",locale:"pt",source:"api-doc-70-data.label",target:"Dados API"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"api-doc-75-webhooks.label",target:"Webhooks de API"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"api-doc-99-reference.label",target:"Referência"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"api-documentation-northcard.label",target:"Documentação API"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"approvals.label",target:"Pedidos de Aprovação"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"bankaccounts.label",target:"Contas bancárias"})

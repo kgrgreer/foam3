@@ -477,6 +477,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/TransactionLimit' },
   { name: 'net/nanopay/tx/ruler/TransactionLimitProbeInfo' },
   { name: 'net/nanopay/tx/ruler/TransactionLimitRule' },
+  { name: 'net/nanopay/tx/ruler/PermissionedTransactionRule' },
   { name: 'net/nanopay/tx/ruler/InvoiceApprovedByRule' },
   { name: 'net/nanopay/tx/ruler/SlowDownRule' },
   { name: 'net/nanopay/tx/ruler/AbliiSendCompletedNotification' },
@@ -1650,6 +1651,7 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/predicate/SigningOfficerQuestionAnswered' },
   { name: 'net/nanopay/crunch/predicate/UserIsSigningOfficerOfBusiness' },
   { name: 'net/nanopay/crunch/IsSpid' },
+  { name: 'net/nanopay/crunch/ruler/PermissionedUCJRule' },
 
   // crunch onboarding
   { name: 'net/nanopay/crunch/onboardingModels/CreateRegisterPaymentProviderUCJ' },
