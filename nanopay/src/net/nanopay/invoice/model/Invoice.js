@@ -202,6 +202,7 @@ foam.CLASS({
     },
     // TODO/REVIEW: all of the following dates could just be
     // InvoiceEvents, or could have a Date Array - name, date
+    // Or See Transaction StatusHistory
     {
       class: 'Date',
       name: 'dueDate',
