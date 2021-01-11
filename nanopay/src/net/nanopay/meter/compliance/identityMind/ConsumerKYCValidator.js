@@ -58,7 +58,8 @@ foam.CLASS({
               requestApproval(x,
                 new ComplianceApprovalRequest.Builder(x)
                   .setObjId(obj.getProperty("id"))
-                  .setDaoKey("localUserDAO")
+                  .setDaoKey("userDAO")
+                  .setServerDaoKey("localUserDAO")
                   .setCauseId(response.getId())
                   .setCauseDaoKey("identityMindResponseDAO")
                   .setStatus(getApprovalStatus(status))

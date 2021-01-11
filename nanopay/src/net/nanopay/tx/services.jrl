@@ -502,13 +502,13 @@ p({
   """,
   "client": "{\"of\":\"net.nanopay.tx.IBAN\"}"
 })
+
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "errorCodeDAO",
   "serve": true,
   "serviceScript":
   """
-
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.integration.ErrorCode.getOwnClassInfo())
       .setPm(true)
@@ -518,6 +518,73 @@ p({
       .build();
   """,
   "client": "{\"of\":\"net.nanopay.integration.ErrorCode\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "localErrorFeeDAO",
+  "lazy": false,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.tx.errorfee.ErrorFee.getOwnClassInfo())
+      .setPm(true)
+      .setPipelinePm(true)
+      .setJournalName("errorFees")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.tx.errorfee.ErrorFee\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "errorFeeDAO",
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("errorFeeDAO"))
+      .setInnerDAO("localErrorFeeDAO")
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.tx.errorfee.ErrorFee\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "errorBillingService",
+  "serve": true,
+  "serviceClass": "net.nanopay.tx.errorfee.ErrorBillingService",
+  "boxClass": "net.nanopay.tx.errorfee.ErrorBillingSkeleton",
+  "client":
+    """
+      {
+        "class":"net.nanopay.tx.errorfee.ClientErrorBillingService",
+        "delegate": {
+          "class":"foam.box.SessionClientBox",
+          "delegate": {
+            "class":"foam.box.HTTPBox",
+            "url":
+            "service/errorBillingService"
+          }
+        }
+      }
+    """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "nanopayChargeDateService",
+  "lazy": false,
+  "serviceClass": "net.nanopay.tx.errorfee.ChargeDateService"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "chargeDateService",
+  "lazy": false,
+  "serviceClass": "net.nanopay.tx.errorfee.ChargeDateService"
 })
 
 p({

@@ -1159,6 +1159,14 @@ var classes = [
   'net.nanopay.tx.planner.RbcInterTrustPlanner',
   'net.nanopay.tx.planner.BmoInterTrustPlanner',
 
+  // error fees
+  'net.nanopay.tx.errorfee.ChargeDateServiceInterface',
+  'net.nanopay.tx.errorfee.ClientErrorBillingService',
+  'net.nanopay.tx.errorfee.ErrorBilling',
+  'net.nanopay.tx.errorfee.ErrorCharge',
+  'net.nanopay.tx.errorfee.ErrorChargeFee',
+  'net.nanopay.tx.errorfee.ErrorFee',
+
   // Fees
   'net.nanopay.tx.fee.Fee',
   'net.nanopay.tx.fee.FeeExpr',
@@ -1506,6 +1514,7 @@ var classes = [
   'net.nanopay.tx.realex.RealexTransactionDAO',
   'net.nanopay.tx.stripe.StripeTransactionDAO',
   'net.nanopay.tx.ChainSummary',
+  'net.nanopay.tx.ChargedTo',
   'net.nanopay.tx.TransactionCreateOnInvoiceSubmission',
   'net.nanopay.payment.PayeeCurrencyService',
   'net.nanopay.payment.ClientPayeeCurrencyService',
@@ -1537,6 +1546,7 @@ var skeletons = [
   'net.nanopay.fx.ExchangeRateInterface',
   'net.nanopay.fx.FXService',
   'net.nanopay.tx.UserTransactionLimit',
+  'net.nanopay.tx.errorfee.ErrorBilling',
   'net.nanopay.liquidity.LiquidityAuth',
   'net.nanopay.auth.passwordutil.PasswordEntropy',
   'net.nanopay.payment.CorridorService',
