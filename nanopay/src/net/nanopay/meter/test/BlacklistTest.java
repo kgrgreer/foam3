@@ -21,6 +21,7 @@ import net.nanopay.account.Account;
 import net.nanopay.admin.model.ComplianceStatus;
 import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.bank.CABankAccount;
+import net.nanopay.bank.StrategizedBankAccount;
 import net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy;
 import net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiTermsAndConditions;
 import net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyDirectorsListed;
@@ -41,6 +42,7 @@ import net.nanopay.meter.compliance.dowJones.DowJonesMockService;
 import net.nanopay.meter.compliance.dowJones.DowJonesService;
 import net.nanopay.model.BeneficialOwner;
 import net.nanopay.model.Business;
+import net.nanopay.model.BusinessDirector;
 import net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo;
 import net.nanopay.tx.model.Transaction;
 
@@ -214,6 +216,23 @@ public class BlacklistTest extends Test {
     myBusinessBankAccount.setStatus(BankAccountStatus.VERIFIED);
     myBusinessBankAccount = (CABankAccount) myBusiness.getAccounts(x).put_(x, myBusinessBankAccount);
 
+    // add bankaccount capability so ucjUPDAI can be reput and granted
+    StrategizedBankAccount sba = new StrategizedBankAccount.Builder(x)
+      .setBankAccount(myBusinessBankAccount)
+      .build();
+    UserCapabilityJunction ucjABA = new UserCapabilityJunction.Builder(x)
+      .setSourceId(myBusiness.getId())
+      .setTargetId("24602528-34c1-11eb-adc1-0242ac120002")
+      .setData(sba)
+      .build();
+    userCapabilityJunctionDAO.inX(myAdminContext).put(ucjABA);
+    
+    // get myBusinessBankAccount after it has been put by the ucj
+    myBusinessBankAccount = (CABankAccount) myBusiness.getAccounts(myAdminContext).find(foam.mlang.MLang.AND(
+      foam.mlang.MLang.INSTANCE_OF(CABankAccount.class),
+      foam.mlang.MLang.EQ(CABankAccount.NAME, myBusinessBankAccount.getName())
+    ));
+
     accountDAO.where(foam.mlang.MLang.EQ(Account.NAME, "Blacklist Tests externalBusiness test account")).removeAll();
     CABankAccount externalBusinessBankAccount = new CABankAccount();
     externalBusinessBankAccount.setName("Blacklist Tests externalBusiness test account");
@@ -223,10 +242,6 @@ public class BlacklistTest extends Test {
     externalBusinessBankAccount.setBranchId("54321");
     externalBusinessBankAccount.setStatus(BankAccountStatus.VERIFIED);
     externalBusinessBankAccount = (CABankAccount) externalBusiness.getAccounts(x).put_(x, externalBusinessBankAccount);
-
-    ///////////////////////////////////////////////////////////////////////////////////////
-    ///////////////////////////////// TEST CODE ///////////////////////////////////////////
-    ///////////////////////////////////////////////////////////////////////////////////////
 
     Invoice invoice = new Invoice();
     invoice.setAmount(1);
@@ -254,25 +269,19 @@ public class BlacklistTest extends Test {
       test(false, "Unexpected exception putting transaction before business passes compliance: " + t);
     }
 
-    Invoice invoice2 = new Invoice();
-    invoice2.setAmount(2);
-    invoice2.setPayerId(myBusiness.getId());
-    invoice2.setPayeeId(externalBusiness.getId());
-    invoice2.setDestinationCurrency("CAD");
-    invoice2.setAccount(myBusinessBankAccount.getId());
-    try {
-      invoiceDAO.inX(x).put(invoice2);
-    } catch (Throwable t) {
-      test(true, "Invoice not created until business passes compliance passing proper compliance.");
-    }
 
     // Grant Unlock Domestic Payments and Invoicing to pass Business Compliance and try putting the invoice and paying it
     // Unlock Domestic Payments and Invoicing : 554af38a-8225-87c8-dfdf-eeb15f71215f-11
     UserCapabilityJunction ucjUDPAI = new UserCapabilityJunction();
     ucjUDPAI.setSourceId(myBusiness.getId());
     ucjUDPAI.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-11");
-    ucjUDPAI.setStatus(CapabilityJunctionStatus.GRANTED);
+    // removed line below
+    // setting this to Granted manually will cause ucj to bypass setUCJStatusOnPut rule
+    // which finds the ucjs status as a result of its chainedStatus
+    // not sure if intentional, but it is hiding issues in its prerequisites not being Granted
+    // ucjUDPAI.setStatus(CapabilityJunctionStatus.GRANTED);
     userCapabilityJunctionDAO.inX(x).put(ucjUDPAI);
+
 
     // Business Details : 554af38a-8225-87c8-dfdf-eeb15f71215f-4
     BusinessInformationData bid = new BusinessInformationData();
@@ -313,6 +322,7 @@ public class BlacklistTest extends Test {
     bo.setBusiness(myBusiness.getId());
     bo.setAddress(address);
     bo.setBirthday(birthday);
+    bo.setNationality("CA");
     bo.setOwnershipPercent(30);  
 
     int[] chosenOwners = {1};
@@ -341,14 +351,21 @@ public class BlacklistTest extends Test {
     userCapabilityJunctionDAO.inX(myAdminContext).put(ucjCOP);
 
     // Business Directors Data : 554af38a-8225-87c8-dfdf-eeb15f71215f-6-5
-    BusinessDirectorsData bdd = new BusinessDirectorsData();
+    // adding actualy data to bypass usercomplianceapproval issue to be fixed later
+    BusinessDirector bd = new BusinessDirector();
+    bd.setFirstName("Francis");
+    bd.setLastName("Filth");
+
+    BusinessDirector[] bdl = {bd};
+    BusinessDirectorsData bdd = new BusinessDirectorsData.Builder(myAdminContext)
+      .setBusinessDirectors(bdl)
+      .build();
 
     UserCapabilityJunction ucjBDD = new UserCapabilityJunction();
     ucjBDD.setSourceId(myBusiness.getId());
     ucjBDD.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-6-5");
     ucjBDD.setData(bdd);
-    userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBDD);
-
+    ucjBDD = (UserCapabilityJunction) userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBDD);
     // Certify Directors Listed : 554af38a-8225-87c8-dfdf-eeb15f71215e-17
     CertifyDirectorsListed cdl = new CertifyDirectorsListed();
     cdl.setAgreement(true);
@@ -379,18 +396,14 @@ public class BlacklistTest extends Test {
     ucjCDR.setData(cdr);
     userCapabilityJunctionDAO.inX(myAdminContext).put(ucjCDR);
 
-    ucjCDR = new UserCapabilityJunction();
-    ucjCDR.setSourceId(myAdmin.getId());
-    ucjCDR.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-1a5");
-    ucjCDR.setStatus(CapabilityJunctionStatus.GRANTED);
-    userCapabilityJunctionDAO.inX(x).put(ucjCDR);
-
+    // approve signinofficer and owners and directors
     List<ApprovalRequest> approvalRequests = ((ArraySink) approvalRequestDAO
       .where(foam.mlang.MLang.AND( new foam.mlang.predicate.Predicate[] {
         foam.mlang.MLang.EQ(ApprovalRequest.DAO_KEY, "userCapabilityJunctionDAO"),
         foam.mlang.MLang.OR( new foam.mlang.predicate.Predicate[] {
           foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjBOD.getId()),
-          foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjSOP.getId())
+          foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjSOP.getId()),
+          foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjBDD.getId())
         }),
         foam.mlang.MLang.EQ(ApprovalRequest.IS_FULFILLED, false)
       }))
@@ -406,7 +419,95 @@ public class BlacklistTest extends Test {
         throw e;
       }
     }
+    // approve business approvalrequests after beneficial owner/signing officers approved
+    approvalRequests = ((ArraySink) approvalRequestDAO
+      .where(foam.mlang.MLang.AND( new foam.mlang.predicate.Predicate[] {
+        foam.mlang.MLang.EQ(ApprovalRequest.DAO_KEY, "userCapabilityJunctionDAO"),
+        foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjUDPAI.getId()),
+        foam.mlang.MLang.EQ(ApprovalRequest.IS_FULFILLED, false)
+      }))
+      .select(new ArraySink()))
+      .getArray();
+    for ( ApprovalRequest approvalRequest : approvalRequests ) {
+      approvalRequest = (ApprovalRequest) approvalRequest.fclone();
+      approvalRequest.setStatus(ApprovalStatus.APPROVED);
+      try{
+        approvalRequest = (ApprovalRequest) approvalRequestDAO.put(approvalRequest);
+      } catch(Exception e) {
+        throw e;
+      }
+    }
+ucjBD = (UserCapabilityJunction) userCapabilityJunctionDAO.find(foam.mlang.MLang.AND(
+foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-4"), 
+foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())));
+ucjTD = (UserCapabilityJunction) userCapabilityJunctionDAO.find(foam.mlang.MLang.AND(
+foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-6"), 
+foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())));
+ucjBOD = (UserCapabilityJunction) userCapabilityJunctionDAO.find(foam.mlang.MLang.AND(
+foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-7"), 
+foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())));
+ucjCOP = (UserCapabilityJunction) userCapabilityJunctionDAO.find(foam.mlang.MLang.AND(
+foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215e-12"), 
+foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())));
+ucjBDD = (UserCapabilityJunction) userCapabilityJunctionDAO.find(foam.mlang.MLang.AND(
+foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-6-5"), 
+foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())));
+ucjCDL = (UserCapabilityJunction) userCapabilityJunctionDAO.find(foam.mlang.MLang.AND(
+foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215e-17"), 
+foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())));
+ucjDPAC = (UserCapabilityJunction) userCapabilityJunctionDAO.find(foam.mlang.MLang.AND(
+foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215e-3"), 
+foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())));
+ucjCDR = (UserCapabilityJunction) userCapabilityJunctionDAO.find(foam.mlang.MLang.AND(
+foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-14"), 
+foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())));
+ucjABA = (UserCapabilityJunction) userCapabilityJunctionDAO.find(foam.mlang.MLang.AND(
+foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "24602528-34c1-11eb-adc1-0242ac120002"), 
+foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())));
+ucjUDPAI = (UserCapabilityJunction) userCapabilityJunctionDAO.find(foam.mlang.MLang.AND(
+foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-11"), 
+foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())));
 
+test(ucjBD.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjBD: " + ucjBD.getStatus());
+test(ucjTD.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjTD: " + ucjTD.getStatus());
+test(ucjBOD.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjBOD: " + ucjBOD.getStatus());
+test(ucjCOP.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjCOP: " + ucjCOP.getStatus());
+test(ucjBDD.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjBDD: " + ucjBDD.getStatus());
+test(ucjCDL.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjCDL: " + ucjCDL.getStatus());
+test(ucjDPAC.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjDPAC: " + ucjDPAC.getStatus());
+test(ucjCDR.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjCDR: " + ucjCDR.getStatus());
+test(ucjABA.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjABA: " + ucjABA.getStatus());
+//test(ucjUDPAI.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjUDPAI: " + ucjUDPAI.getStatus());
+
+int i = 0;
+while(i < 10) {
+  ucjUDPAI = (UserCapabilityJunction) userCapabilityJunctionDAO.find(foam.mlang.MLang.AND(
+                                                                                          foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-11"), 
+                                                                                          foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, myBusiness.getId())));
+  if (ucjUDPAI.getStatus() == CapabilityJunctionStatus.GRANTED) {
+    break;
+  }
+  System.out.println("ucjUDPAI.status: " +ucjUDPAI.getStatus());
+  try {
+    Thread.sleep(5000);
+  } catch (InterruptedException e) {
+    // nop
+  }
+  i++;
+}
+
+    Invoice invoice2 = new Invoice();
+    invoice2.setAmount(2);
+    invoice2.setPayerId(myBusiness.getId());
+    invoice2.setPayeeId(externalBusiness.getId());
+    invoice2.setDestinationCurrency("CAD");
+    invoice2.setAccount(myBusinessBankAccount.getId());
+
+    try {
+      invoiceDAO.inX(x).put(invoice2);
+    } catch (Throwable t) {
+      test(true, "Invoice not created until business passes compliance passing proper compliance.");
+    }
     try {
       invoice2 = (Invoice) invoiceDAO.inX(x).put(invoice2);
     } catch (Throwable t) {

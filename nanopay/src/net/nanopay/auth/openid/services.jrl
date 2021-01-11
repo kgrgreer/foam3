@@ -26,11 +26,7 @@ p({
   "authenticate": false,
   "boxClass": "net.nanopay.auth.openid.OAuthServiceSkeleton",
   "serviceScript":"""
-  return new net.nanopay.auth.openid.ServerOAuthService(
-    new String[] {
-      "openid"
-    }
-  );
+  return new net.nanopay.auth.openid.ServerOAuthService("localOAuthProviderDAO");
   """,
   "client":"""
   {
@@ -42,6 +38,46 @@ p({
         "url":"service/oauth"
       }
     }
+  }
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "localOAuthProviderDAO",
+  "serviceScript": """
+  import foam.dao.DAO;
+
+  dao = new foam.dao.MDAO(net.nanopay.util.Tag.getOwnClassInfo());
+  dao.addIndex(new foam.core.PropertyInfo[] { net.nanopay.util.Tag.ID });
+
+  return new foam.dao.EasyDAO.Builder(x)
+    .setRuler(false)
+    .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+    .setJournalName("oauthproviders")
+    .setOf(net.nanopay.util.Tag.getOwnClassInfo())
+    .setInnerDAO(x.get(dao))
+    .build();
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "oauthProviderDAO",
+  "serve": true,
+  "authenticate": false,
+  "serviceScript": """
+  return new foam.dao.EasyDAO.Builder(x)
+    .setAuthorize(false)
+    .setReadOnly(false)
+    .setRuler(false)
+    .setOf(net.nanopay.util.Tag.getOwnClassInfo())
+    .setInnerDAO(x.get("localOAuthProviderDAO"))
+    .build();
+  """,
+  "client": """
+  {
+    "of":"net.nanopay.util.Tag"
   }
   """
 })

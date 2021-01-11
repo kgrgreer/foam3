@@ -60,18 +60,17 @@ foam.CLASS({
         BankAccount acc = (BankAccount) obj;
         User owner = (User) acc.findOwner(x);
         User creator = (User) acc.findCreatedBy(x);
-        if ( ! (creator instanceof Business) ) {
-          throw new AuthorizationException(BUSINESS_REQUIRED);
-        }
+        
         String country =  acc.getCountry();
         String currency = acc.getDenomination();
 
-        DAO paymentProviderCorridorDAO = (DAO) x.get("paymentProviderCorridorDAO");
+        DAO sourceCorridorDAO = (DAO) x.get("sourceCorridorDAO");
+        DAO targetCorridorDAO = (DAO) x.get("targetCorridorDAO");
         PaymentProviderCorridor ppc;
 
-        //check if bank account is belong to a contact
+        //check if bank account belongs to a contact
         if ( acc.getCreatedBy() != acc.getOwner() ) {
-          ppc = (PaymentProviderCorridor) paymentProviderCorridorDAO.find(
+          ppc = (PaymentProviderCorridor) targetCorridorDAO.find(
             AND(
               EQ(PaymentProviderCorridor.TARGET_COUNTRY, country),
               EQ(PaymentProviderCorridor.TARGET_CURRENCIES, currency)
@@ -79,7 +78,7 @@ foam.CLASS({
           );
           if ( ppc != null ) return;
         } else {
-          ppc = (PaymentProviderCorridor) paymentProviderCorridorDAO.find(
+          ppc = (PaymentProviderCorridor) sourceCorridorDAO.find(
             AND(
               EQ(PaymentProviderCorridor.SOURCE_COUNTRY, country),
               EQ(PaymentProviderCorridor.SOURCE_CURRENCIES, currency)

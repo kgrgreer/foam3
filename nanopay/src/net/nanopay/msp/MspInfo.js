@@ -61,7 +61,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.theme.Theme',
       name: 'theme',
-      documentation: 'Use Ablii theme as the default client theme',
+      documentation: `Reference existing theme to use as a template for the new spid.`,
       value: 'A7FBB672-D395-4C30-B5EE-F737B8079BCD',
       tableCellFormatter: function(value, obj, axiom) {
         this.__subSubContext__.themeDAO

@@ -99,6 +99,7 @@ foam.CLASS({
         addSpidPrerequisites(x, spid, mspInfo.getPlannerPermissions(), "plannerCapability");
 
         // Add theme for the client side - not for back-office
+        // MSPInfo referenced theme will be used as a template for a new theme associated to the created spid
         Theme clientTheme = (Theme) themeDAO.find(mspInfo.getTheme());
         clientTheme = clientTheme == null ? new Theme() : (Theme) clientTheme.fclone();
         clientTheme.clearId();
@@ -121,7 +122,6 @@ foam.CLASS({
         Group adminGroup = new Group();
         adminGroup.setId(mspInfo.getSpid() + "-admin");
         adminGroup.setParent("msp-admin");
-        adminGroup.setDefaultMenu("users");
         adminGroup.setDescription(mspInfo.getSpid() +" admin");
         groupDAO.put(adminGroup);
 
@@ -187,7 +187,6 @@ foam.CLASS({
         Group fraudOpsGroup = new Group();
         fraudOpsGroup.setId(mspInfo.getSpid() + "-fraud-ops");
         fraudOpsGroup.setParent("fraud-ops");
-        fraudOpsGroup.setDefaultMenu("accounts");
         fraudOpsGroup.setDescription(mspInfo.getSpid() + " fraud-ops group");
         groupDAO.put(fraudOpsGroup);
 
@@ -195,7 +194,6 @@ foam.CLASS({
         Group paymentOpsGroup = new Group();
         paymentOpsGroup.setId(mspInfo.getSpid() + "-payment-ops");
         paymentOpsGroup.setParent("payment-ops");
-        paymentOpsGroup.setDefaultMenu("accounts");
         paymentOpsGroup.setDescription(mspInfo.getSpid() + " payment-ops group");
         groupDAO.put(paymentOpsGroup);
 
@@ -214,7 +212,6 @@ foam.CLASS({
         Group supportGroup = new Group();
         supportGroup.setId(mspInfo.getSpid() + "-support");
         supportGroup.setParent("support");
-        supportGroup.setDefaultMenu("contacts");
         supportGroup.setDescription(mspInfo.getSpid() + " support group");
         groupDAO.put(supportGroup);
 

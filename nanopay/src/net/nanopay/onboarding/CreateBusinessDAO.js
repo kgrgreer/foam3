@@ -83,10 +83,16 @@ foam.CLASS({
         Group adminTemplateGroup = (Group) getGroupDAO().find("smeBusinessAdmin");
         Group employeeTemplateGroup = (Group) getGroupDAO().find("smeBusinessEmployee");
     
+        String groupId = "sme";
+        Group parentSmeGroup = (Group) getGroupDAO().find(user.getSpid() + "-sme");
+        if ( parentSmeGroup != null ) {
+          groupId = parentSmeGroup.getId();
+        }
+
         Group employeeGroup = new Group();
         employeeGroup.copyFrom(employeeTemplateGroup);
         employeeGroup.setId(safeBusinessName + ".employee");
-        employeeGroup.setParent("sme");
+        employeeGroup.setParent(groupId);
         employeeGroup = (Group) getGroupDAO().put(employeeGroup);
         generatePermissions(x, employeeTemplateGroup, employeeGroup, safeBusinessName);
     

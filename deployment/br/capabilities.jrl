@@ -100,9 +100,11 @@ p({
     Provide a copy of a piece of government issued identification which shows your full name, picture, and CPF number.
   """,
   "of":"net.nanopay.crunch.document.Document",
+  "wizardlet": {
+    class: "foam.u2.crunch.FlatteningCapabilityWizardlet",
+    before: true
+  },
   "version":"0",
-  "duration":3650,
-  "gracePeriod":7,
   "enabled":true,
   "associatedEntity": 1
 })

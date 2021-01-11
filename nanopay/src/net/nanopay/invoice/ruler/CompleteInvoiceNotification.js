@@ -28,8 +28,10 @@ foam.CLASS({
     'foam.core.Currency',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.i18n.TranslationService',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
+    'foam.nanos.auth.Subject',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.Notification',
 
@@ -39,6 +41,12 @@ foam.CLASS({
     'net.nanopay.invoice.model.Invoice',
 
     'static foam.mlang.MLang.*',
+  ],
+
+  messages: [
+    { name: 'NOTIFICATION_BODY_1', message: 'You have received payment from '},
+    { name: 'NOTIFICATION_BODY_2', message: ' has received your payment '},
+    { name: 'NOTIFICATION_BODY_3', message: ' for '}
   ],
 
   methods: [
@@ -63,17 +71,24 @@ foam.CLASS({
               DAO currencyDAO = ((DAO) x.get("currencyDAO")).inX(x);
               Currency currency = (Currency) currencyDAO.find(iv.getDestinationCurrency());
 
-              StringBuilder sb = new StringBuilder("You have received payment from ")
+              TranslationService ts = (TranslationService) x.get("translationService");
+              String locale = ((User) subject.getRealUser()).getLanguage().getCode().toString();
+
+              String notification1 = ts.getTranslation(locale, getClassInfo().getId()+ ".NOTIFICATION_BODY_1", NOTIFICATION_BODY_1);
+              String notification3 = ts.getTranslation(locale, getClassInfo().getId()+ ".NOTIFICATION_BODY_3", NOTIFICATION_BODY_3);
+
+              StringBuilder sb = new StringBuilder(notification1)
                 .append(payer.toSummary())
-                .append(" for ")
+                .append(notification3)
                 .append(currency.format(iv.getAmount()))
                 .append(" ")
                 .append(iv.getSourceCurrency())
                 .append(".");
 
+              String notification2 = ts.getTranslation(locale, getClassInfo().getId()+ ".NOTIFICATION_BODY_2", NOTIFICATION_BODY_2);
               StringBuilder rb = new StringBuilder(payee.toSummary())
-                .append(" has received your payment ")
-                .append(" for ")
+                .append(notification2)
+                .append(notification3)
                 .append(currency.format(iv.getAmount()))
                 .append(" ")
                 .append(iv.getSourceCurrency())
@@ -87,6 +102,7 @@ foam.CLASS({
               payeeNotification.setUserId(payee.getId());
               payeeNotification.setBody(notificationMsg);
               payeeNotification.setNotificationType("Latest_Activity");
+
               try {
                 if ( payeeUser != null ) {
                   payeeUser.doNotify(x, payeeNotification);
