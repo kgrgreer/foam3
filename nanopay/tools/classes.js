@@ -713,8 +713,6 @@ var classes = [
   'net.nanopay.auth.OneTimeAuthenticationTokenService',
   'net.nanopay.auth.PublicBusinessInfo',
   'net.nanopay.auth.ruler.LogoutUserAction',
-  'net.nanopay.auth.ServiceProviderURL',
-  'net.nanopay.auth.UserCreateServiceProviderURLRuleAction',
   
   'net.nanopay.security.auth.IPLoggingAuthService',
   'net.nanopay.security.auth.LoginAttemptAuthService',
