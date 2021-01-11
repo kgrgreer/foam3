@@ -8,6 +8,43 @@ p({
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
   sourceId: "ablii",
-  targetId: "ablii-tx-rules",
+  targetId: "serviceProviderCapability",
   priority: 2
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "abliiPlannerCapability",
+  priority: 3
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "abliiCountryCapability",
+  priority: 4
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "abliiCorridorCapability",
+  priority: 5
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "abliiCurrencyCapability",
+  priority: 6
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "abliiMenuCapability",
+  priority: 7
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "ablii-tx-rules",
+  priority: 8
 })
