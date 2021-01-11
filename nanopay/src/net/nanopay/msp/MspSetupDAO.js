@@ -99,6 +99,7 @@ foam.CLASS({
         addSpidPrerequisites(x, spid, mspInfo.getPlannerPermissions(), "plannerCapability");
 
         // Add theme for the client side - not for back-office
+        // MSPInfo referenced theme will be used as a template for a new theme associated to the created spid
         Theme clientTheme = (Theme) themeDAO.find(mspInfo.getTheme());
         clientTheme = clientTheme == null ? new Theme() : (Theme) clientTheme.fclone();
         clientTheme.clearId();
