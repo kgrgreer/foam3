@@ -521,6 +521,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/AddLiquidTransactionAction' },
   { name: 'net/nanopay/tx/LabelLiquidSummaryAction' },
   { name: 'net/nanopay/tx/ChainSummary' },
+  { name: 'net/nanopay/tx/ChargedTo' },
   { name: 'net/nanopay/tx/PartnerTransaction' },
   { name: 'net/nanopay/tx/SummaryTransactionDAO' },
   { name: 'net/nanopay/tx/SummaryTransactionInnerDAO' },
@@ -1606,6 +1607,14 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/InterTrustPlanner' },
   { name: 'net/nanopay/tx/planner/RbcInterTrustPlanner' },
   { name: 'net/nanopay/tx/planner/BmoInterTrustPlanner' },
+
+  // Error Fees
+  { name: 'net/nanopay/tx/errorfee/ClientErrorBillingService' },
+  { name: 'net/nanopay/tx/errorfee/ErrorBilling' },
+  { name: 'net/nanopay/tx/errorfee/ErrorCharge' },
+  { name: 'net/nanopay/tx/errorfee/ErrorChargeFee' },
+  { name: 'net/nanopay/tx/errorfee/ErrorFee' },
+  { name: 'net/nanopay/tx/errorfee/ChargeDateServiceInterface' },
 
   // Fees
   { name: 'net/nanopay/tx/fee/Fee' },
