@@ -1,4 +1,52 @@
 p({
+  class:"net.nanopay.auth.UserCreateServiceProviderURLRule",
+  id:"68afcf0c-c718-98f8-0841-75e97a3ad16d4",
+  config:[
+    {
+      class:"net.nanopay.auth.ServiceProviderURL",
+      spid:"ablii",
+      urls:[
+        "ablii",
+        "app.ablii.com",
+        "ablii.development.nanopay.net",
+        "ablii.release.nanopay.net",
+        "ablii.development.medusa.nanopay.net",
+        "ablii.release.medusa.nanopay.net"
+        "ablii.backoffice.nanopay.net",
+        "ablii.backoffice.development.nanopay.net",
+        "ablii.backoffice.release.nanopay.net",
+        "ablii.backoffice.development.medusa.nanopay.net",
+        "ablii.backoffice.release.medusa.nanopay.net"
+      ]
+    },
+    {
+      class:"net.nanopay.auth.ServiceProviderURL",
+      spid:"nanopay",
+      urls:[
+        "localhost"
+      ]
+    }
+  ]
+})
+
+p({
+  class:"foam.nanos.auth.ruler.EnsurePropertyOnCreateRule",
+  id:"f2b09cea-9dd0-3570-99c0-6f037ef623e6",
+  name:"Auto-fill feeAccount for TransactionFeeRule - ablii",
+  daoKey:"localRuleDAO",
+  ruleGroup:"TransactionFeeRule",
+  targetClass:"net.nanopay.tx.fee.TransactionFeeRule",
+  propName:"feeAccount",
+  propValue:"38157811-a62c-ca34-1718-3bcbcefc5dc8",
+  created:1609960629939,
+  createdBy:1,
+  createdByAgent:1,
+  lastModified:1609960629939,lastModifiedBy:1,
+  lifecycleState:1,
+  spid:"ablii"
+})
+
+p({
   "class":"foam.nanos.ruler.Rule",
   "id":"afex-crunch-onboarding-rule1",
   "name":"Onboard Business to AFEX",

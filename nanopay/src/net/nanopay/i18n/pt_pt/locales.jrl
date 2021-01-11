@@ -1004,7 +1004,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.InitialBusinessData.INVALID_FAX_ERROR",target:"Número de fax válido requerido"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.InitialBusinessData.EMAIL.documentation",target:"Email da empresa."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.InitialBusinessData.ADDRESS.label",target:"endereço"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.InitialBusinessData.ADDRESS.documentation",target:"Endereço comercial ."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.InitialBusinessData.ADDRESS.documentation",target:"Endereço comercial."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.InitialBusinessData.SAME_AS_BUSINESS_ADDRESS.documentation",target:"\n        Determina se o endereço comercial e o endereço para correspondência são iguais.\n       "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.InitialBusinessData.MAILING_ADDRESS.label",target:"endereço de correspondência"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.InitialBusinessData.MAILING_ADDRESS.documentation",target:"Endereço postal comercial."})
@@ -1029,7 +1029,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.predicate.CheckUserCountry.COUNTRY.label",target:"país"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.predicate.CheckUserCountry.COUNTRY.documentation",target:"Compare a sequência passada para o país das empresas"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.InitialBusinessData.SECTION_BUSINESS_ADDRESS.title",target:"Endereço comercial "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.InitialBusinessData.SECTION_BUSINESS_ADDRESS.title",target:"Endereço comercial"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.CANNOT_SELECT_QUEBEC_ERROR",target:"Este aplicativo não oferece suporte atualmente a empresas em Quebec. Estamos trabalhando muito para mudar isso! Se você mora em Quebec, verifique as atualizações."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.INVALID_ADDRESS_ERROR",target:"Endereço inválido."})
@@ -1078,6 +1078,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.Sign
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.INVALID_ADDRESS_ERROR",target:"Endereço inválido."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.UNGER_AGE_LIMIT_ERROR",target:"Deve ter pelo menos 18 anos."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.OVER_AGE_LIMIT_ERROR",target:"Deve ter menos de 125 anos."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.SELECT_HAVE_SIGNED_CONTRACT",target:"Como oficial de assinatura desta empresa, você deve ter assinado este contrato. Esse contrato é necessário mediante a necessidade de trocar moeda nacional pela estrangeira."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.PLEASE_READ_IMPORTANT_INFORMATION.label",target:"pleaseReadImportantInformation pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.PLEASE_READ_IMPORTANT_INFORMATION.value",target:"Obrigado por nos informar que você é o oficial de assinatura desta empresa. Devemos coletar\n          suas informações antes de processar quaisquer pagamentos ou requisitos de integração para você.\n          Isso garante a proteção de todos os membros que operam na plataforma.\n          Sua empresa não conseguirá desbloquear totalmente os recursos de faturamento e pagamento até pelo menos um oficial de assinatura\n          preenche este formulário e sua identidade é totalmente revisada e aprovada.\n      "})
@@ -1561,7 +1562,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.NO_
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.NO_CORRIDORS_AVAILABLE.documentation",target:"GUI quando nenhum recurso de corredor foi adicionado ao usuário."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.SHOULD_INVITE.documentation",target:"Verdadeiro se o usuário quiser convidar o beneficiário para ingressar no Ablii."})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.BUSINESS_ADDRESS.label",target:"Endereço comercial "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.BUSINESS_ADDRESS.label",target:"Endereço comercial"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.BUSINESS_ADDRESS.documentation",target:"O endereço postal da empresa associada ao beneficiário."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.BUSINESS_STATUS.documentation",target:"Rastreia o status de uma empresa."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.IS_EDIT.label",target:"isEdit pt"})
@@ -2030,6 +2031,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onbo
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBusinessDirector.FOREIGN_ID_ERROR",target:"RG / RNE necessário"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBusinessDirector.NATIONALITY_ERROR",target:"Nacionalidade necessária"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBusinessDirector.INVALID_DATE_ERROR",target:"Data de nascimento válida exigida"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BRBusinessDirector.HAS_SIGNED_CONTRATOS_DE_CAMBIO",target:"Como oficial de assinatura desta empresa, você deve ter assinado este contrato. Esse contrato é necessário mediante a necessidade de trocar moeda nacional pela estrangeira."})
 
 p({class:"foam.i18n.Locale",target:"Adicionar detalhes para o proprietário #"})
 
