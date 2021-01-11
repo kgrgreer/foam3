@@ -195,13 +195,14 @@ foam.CLASS({
               if ( accountNumber ) {
                 return this.E()
                   .start('span').style({ 'font-weight' : '500', 'white-space': 'pre' }).add(` ${obj.cls_.getAxiomByName('accountNumber').label} `).end()
-                  .start('span').add(`*** ${accountNumber.substring(accountNumber.length - 4, accountNumber.length)}`).end();
+                  .start('span').add(obj.obfuscate(accountNumber, 1, accountNumber.length - 4)).end();
               }
           }))
         .end();
       },
       javaFactory: `
-        return "***" + getAccountNumber().substring(Math.max(getAccountNumber().length() - 4, 0));
+        net.nanopay.bank.BankAccount account = new net.nanopay.bank.BankAccount();
+        return account.obfuscate(getAccountNumber(), 1, getAccountNumber().length() - 4);
       `
     },
     {
@@ -562,6 +563,46 @@ foam.CLASS({
   methods: [
     function toSummary() {
       return `${ this.name } ${ this.country } ${ this.BANK_ACCOUNT_LABEL } (${this.denomination})`;
+    },
+    {
+      name: 'obfuscate',
+      documentation: ``,
+      code: function(str, start, end) {
+        var obfuscatedString = str;
+        var count = 0;
+        for ( let i = 0; i < str.length; i++ ) {
+          if ( count == end ) {
+            break;
+          }
+          if ( str[i] != ' ' ) {
+            if ( count >= start - 1 ) {
+              obfuscatedString = obfuscatedString.substring(0, i) + '*' + obfuscatedString.substring(i + 1);
+            }
+            count++;
+          }
+        }
+        return obfuscatedString;
+      },
+      type: 'String',
+      args: [
+        { name: 'str', type: 'String' },
+        { name: 'start', type: 'Long' },
+        { name: 'end', type: 'Long' }
+      ],
+      javaCode: `
+        StringBuilder sb = new StringBuilder();
+        int count = 0;
+        for (char c : str.toCharArray()) {
+          if ( c != ' ' ) {
+            if ( count >= start - 1 && count <= end - 1 ) {
+              c = '*';
+            }
+            count++;
+          }
+          sb.append(c);
+        }
+        return sb.toString();
+      `
     },
     {
       name: 'calcCheckSum',

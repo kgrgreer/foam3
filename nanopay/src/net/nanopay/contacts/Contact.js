@@ -339,6 +339,10 @@ foam.CLASS({
           placeholder: X.data.PLACEHOLDER,
           header: X.data.HEADER,
           classIsFinal: true,
+          config: {
+            id: { updateVisibility: 'HIDDEN' },
+            summary: { updateVisibility: 'HIDDEN' }
+          },
           copyOldData: function(o) { return { isDefault: o.isDefault, forContact: o.forContact }; }
         }, X);
         v.data$.sub(function() { v.data.forContact = true; });
