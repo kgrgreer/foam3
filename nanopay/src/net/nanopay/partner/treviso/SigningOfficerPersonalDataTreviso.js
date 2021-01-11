@@ -55,6 +55,7 @@ foam.CLASS({
     { name: 'PLEASE_SELECT', message: 'Please select...' },
     { name: 'YES', message: 'Yes' },
     { name: 'NO', message: 'No' },
+    { name: 'SELECT_HAVE_SIGNED_CONTRACT', message: 'As the signing officer of this business, you are required to have signed this contract. This contract is necessary due to the need to exchange national currency for foreign currency.' }
   ],
 
   properties: [
@@ -219,7 +220,19 @@ foam.CLASS({
           isHorizontal: true
         };
       },
-      gridColumns: 12
+      gridColumns: 12,
+      validationPredicates: [
+        {
+          args: ['hasSignedContratosDeCambio'],
+          predicateFactory: function(e) {
+            return e.EQ(
+              net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso.HAS_SIGNED_CONTRATOS_DE_CAMBIO,
+              true
+            );
+          },
+          errorMessage: 'SELECT_HAVE_SIGNED_CONTRACT'
+        }
+      ]
     },
     {
       name: 'businessId',
