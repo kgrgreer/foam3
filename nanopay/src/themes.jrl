@@ -169,6 +169,7 @@ p({
   "inputHeight":"40px",
   "inputVerticalPadding":"10px",
   "inputHorizontalPadding":"8px",
+  "domains": ["ablii"],
   "customCSS":"""
     .net-nanopay-ui-Controller {
       overflow: hidden;
