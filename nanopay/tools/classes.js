@@ -1246,7 +1246,6 @@ var classes = [
   'net.nanopay.country.br.NatureCode',
   'net.nanopay.country.br.NatureCodeRate',
   'net.nanopay.country.br.NatureBusinessRelationship',
-  'net.nanopay.country.PermittedCountryFilterDAO',
   'net.nanopay.country.br.OpenData',
   'net.nanopay.country.br.PTaxRate',
   'net.nanopay.country.br.PTaxDollarRateResponse',
