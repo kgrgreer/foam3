@@ -4,3 +4,10 @@ p({
   targetId: "ucj-crunchOnboarding-rules",
   priority: 1
 })
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "ablii-tx-rules",
+  priority: 2
+})
