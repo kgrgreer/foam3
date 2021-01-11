@@ -35,13 +35,15 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
-    'static foam.mlang.MLang.*',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.User',
+    'foam.nanos.theme.Themes',
+    'foam.nanos.theme.Theme',
     'foam.util.SafetyUtil',
-    'java.net.URL',
     'java.net.MalformedURLException',
+    'java.net.URL',
+    'static foam.mlang.MLang.*'
   ],
 
   methods: [
@@ -50,6 +52,7 @@ foam.CLASS({
       javaCode: `
         User user = (User) obj;
         AuthService auth = (AuthService) x.get("auth");
+        Themes themes = (Themes) x.get("themes");
 
         if ( ! SafetyUtil.isEmpty(user.getSpid())
           && auth.check(x, "serviceprovider.read." + user.getSpid())
@@ -58,37 +61,9 @@ foam.CLASS({
           return;
         }
 
-        final ServiceProviderURL spu_ = new ServiceProviderURL();
+        Theme theme = (Theme) themes.findTheme(x);
 
-        UserCreateServiceProviderURLRule myRule = (UserCreateServiceProviderURLRule) rule;
-        if ( myRule.getConfig() == null ||
-             myRule.getConfig().length == 0 ) {
-          return;
-        }
-
-        AppConfig app = (AppConfig) x.get("appConfig");
-        URL url = null;
-        try {
-          url = new URL(app.getUrl());
-        } catch ( MalformedURLException e ) {
-          throw new RuntimeException(e);
-        }
-
-        String host = url.getHost();
-        outerLoop:
-        for ( ServiceProviderURL spu : myRule.getConfig() ) {
-          for ( String u : spu.getUrls() ) {
-            if ( u.equals(host) ) {
-              spu_.setSpid(spu.getSpid());
-              break outerLoop;
-            }
-          }
-        }
-        if ( SafetyUtil.isEmpty(spu_.getSpid()) ) {
-          return;
-        }
-
-        user.setSpid(spu_.getSpid());
+        user.setSpid(theme.getSpid());
       `
     }
   ]

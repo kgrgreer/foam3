@@ -714,7 +714,6 @@ var classes = [
   'net.nanopay.auth.PublicBusinessInfo',
   'net.nanopay.auth.ruler.LogoutUserAction',
   'net.nanopay.auth.ServiceProviderURL',
-  'net.nanopay.auth.UserCreateServiceProviderURLRule',
   'net.nanopay.auth.UserCreateServiceProviderURLRuleAction',
   
   'net.nanopay.security.auth.IPLoggingAuthService',
