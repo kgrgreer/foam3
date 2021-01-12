@@ -41,6 +41,8 @@ foam.CLASS({
     'net.nanopay.tx.ComplianceTransaction',
     'net.nanopay.tx.Transfer',
     'static foam.mlang.MLang.EQ',
+    'net.nanopay.fx.FXSummaryTransaction',
+    'net.nanopay.tx.SummaryTransaction',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.TransactionLineItem',
@@ -364,6 +366,22 @@ foam.CLASS({
           }
         }
         txn.setLineItems(ls);
+        return txn;
+      `
+    },
+    {
+      name: 'removeSummaryTransaction',
+      args: [
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
+      ],
+      type: 'net.nanopay.tx.model.Transaction',
+      javaCode: `
+        if ( txn instanceof FXSummaryTransaction || txn instanceof SummaryTransaction ) {
+          txn = txn.getNext()[0];
+        }
+        if ( txn instanceof ComplianceTransaction ) {
+          txn = txn.getNext()[0];
+        }
         return txn;
       `
     }
