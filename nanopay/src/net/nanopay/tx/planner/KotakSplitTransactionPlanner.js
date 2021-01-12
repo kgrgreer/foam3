@@ -145,7 +145,7 @@ foam.CLASS({
         t.setAmount(requestTxn.getAmount());
         Transfer[] transfers = new Transfer[1];
         transfers[0] = t;
-        KotakCOTransaction kotakCO = (KotakCOTransaction) removeSummaryTransaction(kotakPlan);
+        KotakCOTransaction kotakCO = (KotakCOTransaction) kotakPlan.getNext()[0];
         kotakCO.setTransfers((Transfer[]) ArrayUtils.addAll(transfers, kotakCO.getTransfers()));
 
         txn.addNext(kotakPlan);
