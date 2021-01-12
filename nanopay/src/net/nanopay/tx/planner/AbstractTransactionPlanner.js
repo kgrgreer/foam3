@@ -401,9 +401,11 @@ foam.CLASS({
       javaCode: `
         if ( txn instanceof FXSummaryTransaction || txn instanceof SummaryTransaction ) {
           txn = txn.getNext()[0];
+          txn.setStatus(txn.getInitialStatus());
         }
         if ( txn instanceof ComplianceTransaction ) {
           txn = txn.getNext()[0];
+          txn.setStatus(txn.getInitialStatus());
         }
         return txn;
       `

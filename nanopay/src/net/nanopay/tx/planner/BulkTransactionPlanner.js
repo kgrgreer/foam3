@@ -115,7 +115,7 @@ foam.CLASS({
           PlanCostComparator costComparator =  new PlanCostComparator.Builder(x).build();
           Collections.sort(transactionPlans, costComparator);
           var quotedChild = transactionPlans.get(0);
-          if (quotedChild instanceof SummaryTransaction) quotedChild = removeSummaryTransaction(quotedChild);
+          quotedChild = removeSummaryTransaction(quotedChild);
           var compliance = createComplianceTransaction(quotedChild);
           compliance.addNext(quotedChild);
           ct.addNext(compliance);

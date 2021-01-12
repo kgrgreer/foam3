@@ -107,9 +107,7 @@ foam.CLASS({
               Transaction co; // If a summary is present, we need to cut it out.
               if (COP instanceof SummaryTransaction) {
                 co = (Transaction) removeSummaryTransaction(COP);
-                co.setStatus(TransactionStatus.COMPLETED);
-              }
-              else
+              } else
                 co = (Transaction) COP.fclone();
               ci.addNext(co);
               if (getCreateCompliance()) {

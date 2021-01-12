@@ -169,8 +169,6 @@ foam.CLASS({
             Transaction l1 = removeSummaryTransaction(leg1);
             Transaction l2 = removeSummaryTransaction(leg2);
             Transaction compliance = createComplianceTransaction(fxSummary);
-            l1.setStatus(TransactionStatus.PENDING);
-            l2.setStatus(TransactionStatus.PENDING);
             l1.addNext(l2);
             compliance.addNext(l1);
             fxSummary.addNext(compliance);
