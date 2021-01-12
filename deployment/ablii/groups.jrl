@@ -2,3 +2,5 @@ p({class:"foam.nanos.auth.Group",id:"ablii-admin",description:"ablii admin",pare
 p({class:"foam.nanos.auth.Group",id:"ablii-fraud-ops",description:"ablii fraud-ops group",parent:"fraud-ops",defaultMenu:"accounts"})
 p({class:"foam.nanos.auth.Group",id:"ablii-payment-ops",description:"ablii payment-ops group",parent:"payment-ops",defaultMenu:"accounts"})
 p({class:"foam.nanos.auth.Group",id:"ablii-support",description:"ablii support group",parent:"support",defaultMenu:"contacts"})
+
+p({class:"foam.nanos.auth.Group",id:"ablii-sme",description:"ablii sme group",parent:"sme",url:"http://ablii:8080"})
