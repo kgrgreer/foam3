@@ -154,7 +154,7 @@ foam.CLASS({
           .start('div')
             .style({ 'padding-left': '30px' })
             .start('span').addClass('statusDate')
-              .add(record.timestamp.toISOString())
+              .add(self.formatDate(record.timestamp))
             .end()
           .end()
         .end();
