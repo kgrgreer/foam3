@@ -1024,7 +1024,7 @@ p({
   "version":"0",
   "enabled":true,
   "permissionsGranted":[
-  "menu.read.submenu.submenu.contact.search",
+  "menu.read.submenu.contact.search",
   "menu.read.submenu.contact.paymentcode",
   "menu.read.submenu.contact.invitation",
   "contact.ro.shouldinvite",
