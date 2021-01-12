@@ -83,15 +83,6 @@ foam.CLASS({
 
   methods: [
 
-    function formatDate(timestamp, displayTime=true) {
-      var locale = 'en-US';
-      var time = displayTime ? `${timestamp.toLocaleTimeString(locale, { hour12: false })}s ` : '';
-      return time
-        + `${timestamp.toLocaleString(locale, { month: 'short' })} `
-        + `${timestamp.getDate()} `
-        + timestamp.getFullYear();
-    },
-
     async function outputRecord(parentView, record) {
       const attributes = this.getAttributes(record);
 
@@ -147,7 +138,7 @@ foam.CLASS({
               (attributes.labelText === 'Scheduled' || completedByPayee),
               function() {
                 this.start('span').addClass('statusTitle')
-                  .add(` on ${self.formatDate(displayDate, false)}`)
+                  .add(` on ${self.formatDate(displayDate)}`)
                 .end();
             })
           .end()
