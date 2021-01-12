@@ -819,49 +819,6 @@ p({
   priority: 5
 })
 
-// Prerequisites for nanopay spid capability
-p({
-  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "nanopay",
-  targetId: "serviceProviderCapability",
-  priority: 1
-})
-
-p({
-  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "nanopay",
-  targetId: "nanopayPlannerCapability",
-  priority: 2
-})
-
-p({
-  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "nanopay",
-  targetId: "nanopayCountryCapability",
-  priority: 3
-})
-
-p({
-  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "nanopay",
-  targetId: "nanopayCorridorCapability",
-  priority: 4
-})
-
-p({
-  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "nanopay",
-  targetId: "nanopayCurrencyCapability",
-  priority: 5
-})
-
-p({
-  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "nanopay",
-  targetId: "nanopayMenuCapability",
-  priority: 6
-})
-
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
   sourceId: "554af38a-8225-87c8-dfdf-eeb15f71215f-20",

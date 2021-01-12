@@ -11,3 +11,10 @@ p({
   targetId: "AllPlannerCapability",
   priority: 2
 })
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "nanopay",
+  targetId: "AllPlannerCapability",
+  priority: 1
+})

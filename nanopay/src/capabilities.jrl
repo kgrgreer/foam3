@@ -937,78 +937,6 @@ p({
   "enabled":true
 })
 
-// nanopay capabilities
-p({
-  class: "foam.nanos.crunch.Capability",
-  id: "nanopayCountryCapability",
-  name: "nanopay Country Capability",
-  version: "0",
-  enabled: true,
-  permissionsGranted: [
-    "country.read.CA",
-    "country.read.US"
-  ]
-})
-
-p({
-  class: "foam.nanos.crunch.Capability",
-  id: "nanopayCorridorCapability",
-  name: "nanopay Corridor Capability",
-  version: "0",
-  enabled: true
-})
-
-p({
-  class: "foam.nanos.crunch.Capability",
-  id: "nanopayCurrencyCapability",
-  name: "nanopay Currency Capability",
-  version: "0",
-  enabled: true,
-  permissionsGranted: [
-    "currency.read.CAD",
-    "currency.read.USD",
-    "currency.read.INR",
-    "multi-currency.read"
-  ]
-})
-
-p({
-  class: "foam.nanos.crunch.Capability",
-  id: "nanopayPlannerCapability",
-  name: "nanopay Planner Capability",
-  version: "0",
-  enabled: true,
-  permissionsGranted: [
-    "rule.read.*"
-  ]
-})
-
-p({
-  "class": "foam.nanos.crunch.Capability",
-  "id": "nanopayMenuCapability",
-  "name": "nanopay Menu Capability",
-  "version":"0",
-  "enabled":true,
-  "permissionsGranted":[
-    "business.rw.ispublic",
-    "menu.read.accountingintegrationcards",
-    "menu.read.paymentcode",
-    "menu.read.transactionlimit",
-    "menu.read.sme.userManagement"
-  ]
-})
-
-p({
-  "class": "foam.nanos.crunch.Capability",
-  "id": "nanopayAccountingCapability",
-  "name": "nanopay Accounting Capability",
-  "version":"0",
-  "enabled":true,
-  "permissionsGranted":[
-    "service.quickbooksService"
-  ]
-})
-
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"7bf54e2d-2bf0-41fe-bc25-31c8de030ffa",
@@ -1017,22 +945,6 @@ p({
   "version":"0",
   "enabled":true
 })
-
-p({
-  "class":"foam.nanos.crunch.Capability",
-  "id":"nanopayBusinessMenuCapability",
-  "name":"nanopay business registration granted menu",
-  "version":"0",
-  "enabled":true,
-  "permissionsGranted":[
-  "menu.read.capability.menu.search",
-  "menu.read.capability.menu.paymentcode",
-  "menu.read.capability.menu.invitation",
-  "contact.ro.shouldinvite",
-  "group.read.smeBusinessEmployee"
-  ]
-})
-
 
 p({
   "class":"foam.nanos.crunch.Capability",
