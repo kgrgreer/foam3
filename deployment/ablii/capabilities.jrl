@@ -69,7 +69,7 @@ p({
   "icon":"/images/capabilityIcons/finalApprovalCap.svg",
   "version":"0",
   "enabled":true,
-  "visibilityPredicate":  { class: "foam.mlang.predicate.True" },  
+  "visibilityPredicate":  { class: "foam.mlang.predicate.True" },
   "keywords":["featured"],
   "min": 1,
   "permissionsGranted":[
@@ -90,6 +90,24 @@ p({
       }
     ]
   }
+})
+
+p({
+  "class": "foam.nanos.crunch.Capability",
+  "id":"1f6b2047-1eef-471d-82e7-d86bdf511375-2",
+  "name":"BMO Payables Menu Payment Provider Capability",
+  "description":"BMO Payables Menu Payment Provider Capability",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class": "foam.nanos.crunch.Capability",
+  "id":"1f6b2047-1eef-471d-82e7-d86bdf511375-3",
+  "name":"RBC Payables Menu Payment Provider Capability",
+  "description":"RBC Payables Menu Payment Provider Capability",
+  "version":"0",
+  "enabled":true
 })
 
 p({
