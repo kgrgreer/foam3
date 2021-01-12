@@ -529,7 +529,7 @@ p({
   """
     return new foam.dao.EasyDAO.Builder(x)
       .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("errorFeeDAO"))
-      .setInnerDAO("localErrorFeeDAO")
+      .setInnerFeeDAO(x.get("localErrorFeeDAO")) 
       .build();
   """,
   "client": "{\"of\":\"net.nanopay.tx.errorfee.ErrorFee\"}"
