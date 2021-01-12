@@ -68,27 +68,31 @@ foam.CLASS({
 
         for ( Object obj : digitalList ) {
           Account digital = (DigitalAccount) obj;
+
+
           // Split 1: ABank -> ADigital
           Transaction t1 = new Transaction(x);
           t1.copyFrom(requestTxn);
           t1.setDestinationAccount(digital.getId());
-
-          // ADigital -> BDigital
-          Transaction t2 = new Transaction(x);
-          t2.copyFrom(requestTxn);
-          t2.setSourceAccount(digital.getId());
-
-          Transaction[] digitals = multiQuoteTxn(x, t2, quote);
           Transaction[] CIs = multiQuoteTxn(x, t1, quote);
-          for ( Transaction tx1 : digitals ) {
-            for ( Transaction tx2 : CIs ) {
-              Transaction CI = (Transaction) tx2.fclone();
-              CI.addNext((Transaction) tx1.fclone());
-              CI.setPlanCost(CI.getPlanCost() + tx1.getPlanCost());
-              Transaction t = (Transaction) txn.fclone();
-              t.addNext(CI);
-              quote.getAlternatePlans_().add(t);
-            }
+
+          for ( Transaction ci : CIs ) {
+            // ADigital -> BDigital
+            Transaction t2 = new Transaction(x);
+            t2.copyFrom(requestTxn);
+            t2.setSourceAccount(digital.getId());
+            //Note: if ci, does not have all the transfers for getTotal this wont work.
+            t2.setAmount(ci.getTotal(x, digital.getId()));
+            Transaction[] digitals = multiQuoteTxn(x, t2, quote);
+
+              for ( Transaction d : digitals ) {
+                Transaction CI = (Transaction) ci.fclone();
+                CI.addNext((Transaction) d.fclone());
+                CI.setPlanCost(CI.getPlanCost() + d.getPlanCost());
+                Transaction t = (Transaction) txn.fclone();
+                t.addNext(CI);
+                quote.getAlternatePlans_().add(t);
+              }
           }
         }
         return null;

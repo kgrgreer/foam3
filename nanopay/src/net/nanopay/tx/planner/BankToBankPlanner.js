@@ -85,20 +85,22 @@ foam.CLASS({
 
         for ( Object obj : digitals ) {
           DigitalAccount sourceDigitalAccount = (DigitalAccount) obj;
+
           // Split 1: ABank -> ADigital
           Transaction t1 = new Transaction(x);
           t1.copyFrom(txn);
           t1.setDestinationAccount(sourceDigitalAccount.getId());
-
-          // Split 2: ADigital -> BBank
-          Transaction t2 = new Transaction(x);
-          t2.copyFrom(txn);
-          t2.setSourceAccount(sourceDigitalAccount.getId());
-
           Transaction[] cashInPlans = multiQuoteTxn(x, t1, quote);
-          Transaction[] cashOutPlans = multiQuoteTxn(x, t2, quote);
 
           for ( Transaction CIP : cashInPlans ) {
+            // Split 2: ADigital -> BBank
+            Transaction t2 = new Transaction(x);
+            t2.copyFrom(txn);
+            t2.setSourceAccount(sourceDigitalAccount.getId());
+            //Note: if CIP, does not have all the transfers for getTotal this wont work.
+            t2.setAmount(CIP.getTotal(x, sourceDigitalAccount.getId()));
+            Transaction[] cashOutPlans = multiQuoteTxn(x, t2, quote);
+
             for ( Transaction COP : cashOutPlans ) {
               Transaction t = (Transaction) txn.fclone();
               Transaction ci = (Transaction) CIP.fclone();
