@@ -578,7 +578,7 @@ p({
   "serviceScript":
   """
     dao = new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.auth.User.getOwnClassInfo()).build();
-    dao = new foam.nanos.approval.PopulateApprovalRequestsDAO.Builder(x).setDaoKey("localUserDAO").setDelegate(dao).build();
+    dao = new foam.nanos.approval.PopulateApprovalRequestsDAO.Builder(x).setDaoKey("userDAO").setDelegate(dao).build();
     return new foam.dao.EasyDAO.Builder(x)
         .setPm(true)
         .setPipelinePm(true)
@@ -835,7 +835,7 @@ p({
   "serviceScript":
   """
     dao = new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.model.Business.getOwnClassInfo()).build();
-    dao = new foam.nanos.approval.PopulateApprovalRequestsDAO.Builder(x).setDaoKey("localUserDAO").setDelegate(dao).build();
+    dao = new foam.nanos.approval.PopulateApprovalRequestsDAO.Builder(x).setDaoKey("userDAO").setDelegate(dao).build();
     return new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.model.Business.getOwnClassInfo())
       .setDecorator(dao)
@@ -1749,7 +1749,7 @@ p({
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "ascendantFXReports",
-  "authenticate": false,
+  "authenticate": true,
   "serviceScript":
   """
     httpBlobService = new foam.nanos.blob.HttpBlobService(x, x.get(\"blobStore\"));
@@ -1890,7 +1890,7 @@ p({
   "client":"{\"of\":\"net.nanopay.documents.UserAcceptanceDocument\"}"
 })
 
-p({"class":"foam.nanos.boot.NSpec", "name":"settlementReports",                "authenticate":false, "description":"This generates a PDF file that is downloaded as a zip file. The report contains a dated range for invoices and specific fields from the invoices.", "serviceScript":"return new net.nanopay.invoice.InvoiceFilteredSettlementReport.Builder(x).setDelegate(new foam.nanos.blob.HttpBlobService(x, x.get(\"blobStore\"))).build();"})
+p({"class":"foam.nanos.boot.NSpec", "name":"settlementReports",                "authenticate":true, "description":"This generates a PDF file that is downloaded as a zip file. The report contains a dated range for invoices and specific fields from the invoices.", "serviceScript":"return new net.nanopay.invoice.InvoiceFilteredSettlementReport.Builder(x).setDelegate(new foam.nanos.blob.HttpBlobService(x, x.get(\"blobStore\"))).build();"})
 
 p({
   "class": "foam.nanos.boot.NSpec",

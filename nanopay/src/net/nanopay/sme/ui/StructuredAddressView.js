@@ -168,7 +168,7 @@ foam.CLASS({
                     placeholder: this.PLACE_HOLDER,
                     dao: this.customCountryDAO,
                     objToChoice: function(a) {
-                      return [a.id, a.name];
+                      return [a.id, self.translationService.getTranslation(foam.locale, a.name, a.name)];
                     },
                     mode$: this.mode$
                   },

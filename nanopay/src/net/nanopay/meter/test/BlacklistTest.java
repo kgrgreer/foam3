@@ -85,7 +85,7 @@ public class BlacklistTest extends Test {
     externalBusiness.setBusinessName("EvilCorp");
     externalBusiness.setEmailVerified(true); // Required to send or receive money.
     externalBusiness.setCompliance(ComplianceStatus.PASSED);
-    externalBusiness.setSpid("nanopay");
+    externalBusiness.setSpid("test");
     externalBusiness = (Business) localBusinessDAO.put(externalBusiness);
 
     // Setup Admin User
@@ -95,7 +95,7 @@ public class BlacklistTest extends Test {
     myAdmin.setDesiredPassword("password");
     myAdmin.setGroup("sme");
     myAdmin.setOrganization("testBusiness");
-    myAdmin.setSpid("nanopay");
+    myAdmin.setSpid("test");
 
     myAdmin = (User) smeUserRegistrationDAO.put(myAdmin);
     myAdmin.setEmailVerified(true);
@@ -269,6 +269,19 @@ public class BlacklistTest extends Test {
       test(false, "Unexpected exception putting transaction before business passes compliance: " + t);
     }
 
+    Invoice invoice2 = new Invoice();
+    invoice2.setAmount(2);
+    invoice2.setPayerId(myBusiness.getId());
+    invoice2.setPayeeId(externalBusiness.getId());
+    invoice2.setDestinationCurrency("CAD");
+    invoice2.setAccount(myBusinessBankAccount.getId());
+
+    try {
+      invoiceDAO.inX(myAdminContext).put(invoice2);
+      test(false, "Unexpected: Invoice created before business passes compliance.");
+    } catch (Throwable t) {
+      test(true, "Invoice not created until business passes compliance passing proper compliance.");
+    }
 
     // Grant Unlock Domestic Payments and Invoicing to pass Business Compliance and try putting the invoice and paying it
     // Unlock Domestic Payments and Invoicing : 554af38a-8225-87c8-dfdf-eeb15f71215f-11
@@ -496,20 +509,9 @@ while(i < 10) {
   i++;
 }
 
-    Invoice invoice2 = new Invoice();
-    invoice2.setAmount(2);
-    invoice2.setPayerId(myBusiness.getId());
-    invoice2.setPayeeId(externalBusiness.getId());
-    invoice2.setDestinationCurrency("CAD");
-    invoice2.setAccount(myBusinessBankAccount.getId());
-
     try {
-      invoiceDAO.inX(x).put(invoice2);
-    } catch (Throwable t) {
-      test(true, "Invoice not created until business passes compliance passing proper compliance.");
-    }
-    try {
-      invoice2 = (Invoice) invoiceDAO.inX(x).put(invoice2);
+      invoice2 = (Invoice) invoiceDAO.inX(myAdminContext).put(invoice2);
+      test(true, "Invoice created after business passes compliance passing proper compliance.");
     } catch (Throwable t) {
       test(false, "Unexpected exception putting invoice after setting compliance to passed: " + t);
     }
