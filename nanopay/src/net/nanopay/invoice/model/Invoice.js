@@ -192,7 +192,7 @@ foam.CLASS({
         }
       `,
       tableCellFormatter: function(val) {
-        this.add(val.toISOString().substring(0, 10));
+        this.add(val.toLocaleDateString(foam.locale));
       },
       aliases: [
         'issueDate',
@@ -211,7 +211,7 @@ foam.CLASS({
       documentation: `The date by which the invoice must be paid.`,
       label: 'Date Due',
       tableCellFormatter: function(val) {
-        this.add(val.toISOString().substring(0, 10));
+        this.add(val.toLocaleDateString(foam.locale));
       },
       aliases: ['dueDate', 'due', 'd', 'issued'],
       tableWidth: 95
@@ -232,7 +232,7 @@ foam.CLASS({
       section: 'invoiceInformation',
       documentation: `The date by which the invoice payment begun.`,
       tableCellFormatter: function(val) {
-        this.add(val ? val.toISOString().substring(0, 10) : null);
+        this.add(val ? val.toLocaleDateString(foam.locale) : null);
       }
     },
     {
@@ -242,7 +242,7 @@ foam.CLASS({
       section: 'invoiceInformation',
       documentation: `The date by which the invoice approval occured.`,
       tableCellFormatter: function(val) {
-        this.add(val ? val.toISOString().substring(0, 10) : null);
+        this.add(val ? val.toLocaleDateString(foam.locale) : null);
       }
     },
     {
@@ -252,7 +252,7 @@ foam.CLASS({
       section: 'invoiceInformation',
       documentation: `The date by which the invoice payment was sent.`,
       tableCellFormatter: function(val) {
-        this.add(vale ? val.toISOString().substring(0, 10) : null);
+        this.add(vale ? val.toLocaleDateString(foam.locale) : null);
       }
     },
     {
@@ -262,7 +262,7 @@ foam.CLASS({
       section: 'invoiceInformation',
       documentation: `The date by which the invoice payment was received.`,
       tableCellFormatter: function(val) {
-        this.add(val ? val.toISOString().substring(0, 10) : null);
+        this.add(val ? val.toLocaleDateString(foam.locale) : null);
       }
     },
     {
@@ -638,7 +638,7 @@ foam.CLASS({
         var label = state.label;
         var color = state.color;
         if ( state === net.nanopay.invoice.model.InvoiceStatus.SCHEDULED ) {
-          label = label + ' ' + obj.paymentDate.toISOString().substring(0, 10);
+          label = label + ' ' + obj.paymentDate.toLocaleDateString(foam.locale);
         }
 
         this.start().style({ color : color }).add(label).end();
