@@ -702,7 +702,6 @@ var classes = [
   'net.nanopay.cico.model.MobileWallet',
 
   // auth
-  'net.nanopay.auth.AuthType',
   'net.nanopay.auth.BusinessEmployeeDAO',
   'net.nanopay.auth.BusinessToPublicBusinessInfoDAO',
   'net.nanopay.auth.CheckCurrencyRule',
