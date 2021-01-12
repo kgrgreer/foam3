@@ -115,7 +115,7 @@ p({
 p({
   "class": "foam.nanos.menu.Menu",
   "parent": "sme",
-  "id": "capability.menu.search",
+  "id": "capability.menu.business.search",
   "label": "Search by Business Name",
   "icon": "images/ablii/search.png",
   "order": 1,
@@ -163,7 +163,7 @@ p({
 p({
   "class": "foam.nanos.menu.Menu",
   "parent": "sme",
-  "id": "capability.menu.create",
+  "id": "capability.menu.contact.create",
   "label": "Create from Scratch",
   "icon": "images/ablii/scratch.png",
   "order": 3,
