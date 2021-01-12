@@ -646,7 +646,7 @@ foam.CLASS({
                     //   .add(this.slot(function(invoice$paymentDate) {
                     //     if ( invoice$paymentDate ) {
                     //       var creditDate =
-                    //         invoice$paymentDate.toISOString().substring(0, 10);
+                    //         invoice$paymentDate.toLocaleDateString(foam.locale);
                     //       return this.isPaid ? creditDate : `${creditDate} *`;
                     //     } else {
                     //       return '--';

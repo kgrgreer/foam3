@@ -127,7 +127,7 @@ foam.CLASS({
       factory: function() { return new Date(); },
       aliases: [ 'dueDate', 'due', 'd', 'issued' ],
       tableCellFormatter: function(date) {
-        this.add(date ? date.toISOString().substring(0,10) : '');
+        this.add(date ? date.toLocaleDateString(foam.locale) : '');
       }
     }
   ]
