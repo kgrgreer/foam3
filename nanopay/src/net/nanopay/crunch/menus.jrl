@@ -1,54 +1,3 @@
-p({"class":"foam.nanos.menu.Menu","id":"sme","label":"Ablii","handler":{"class":"foam.nanos.menu.SubMenu"},"order":101,"parent":""})
-
-p({"class":"foam.nanos.menu.Menu","id":"smeSettings","label":"Ablii Settings","handler":{"class":"foam.nanos.menu.SubMenu"},"order":102,"parent":"sme"})
-p({"class":"foam.nanos.menu.Menu","id":"sme.accountProfile.business-settings","label":"Business settings","description":"View and update business profile information and permissions","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.sme.ui.BusinessSettingsView"}},"order":1,"parent":"smeSettings"})
-p({"class":"foam.nanos.menu.Menu","id":"sme.accountProfile.personal-settings","label":"Personal settings","description":"Manage your password, email and notifications","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.sme.ui.PersonalSettingsView"}},"order":2, "parent":"smeSettings"})
-p({"class":"foam.nanos.menu.Menu","id":"sme.accountProfile.switch-business","label":"Switch Company","description":"","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.sme.ui.SwitchBusinessView"}},"order":3, "parent":"smeSettings"})
-p({"class":"foam.nanos.menu.Menu","id":"sme.accountProfile.signout","label":"Sign out","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"foam.nanos.auth.SignOutView"}},"order":100,"parent":"smeSettings"})
-
-p({"class":"foam.nanos.menu.Menu","id":"smeNavigation","label":"Ablii Navigation","handler":{"class":"foam.nanos.menu.SubMenu"},"order":103,"parent":"sme"})
-p({"class":"foam.nanos.menu.Menu","id":"sme.bank.matching","label":"Bank Matching","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.accounting.ui.AccountingCallbackPage"}},"parent":"hidden"})
-p({"class":"foam.nanos.menu.Menu","id":"sme.menu.addBankAccount","label":"Add Bank Account","icon":"images/ablii/bankaccount-icon-resting.svg","activeIcon":"images/ablii/bankaccount-icon-active.svg","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.bank.ui.BankPickCurrencyView"}},"order":506,"parent":"sme"})
-
-p({"class":"foam.nanos.menu.Menu","id":"sme.quickAction.send","label":"Send payment","icon":"images/ablii/sendpayment-icon-resting.svg","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.sme.ui.SendRequestMoney","isPayable":true}},"order":1,"parent":"sme"})
-p({"class":"foam.nanos.menu.Menu","id":"sme.quickAction.request","label":"Request payment","icon":"images/ablii/requestpayment-icon-resting.svg","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.sme.ui.SendRequestMoney"}},"order":2,"parent":"sme"})
-
-p({
-  "class":"foam.nanos.menu.Menu",
-  "id": "sme.main.appStore",
-  "label": "Capabilities",
-  "activeIcon":"images/ablii/extension-active.svg",
-  "icon":"images/ablii/extension-resting.svg",
-  "handler":{
-    "class":"foam.nanos.menu.ViewMenu",
-    "view":{
-      "class":"foam.u2.crunch.CapabilityStore"
-    }
-  },
-  "order":499,
-  "parent":"smeNavigation"
-})
-
-p({
-  "class": "foam.nanos.menu.Menu",
-  "parent": "sme",
-  "id": "sme.menu.toolbar",
-  "label": "Menu Tool Bar",
-  "handler": {
-    "class": "foam.nanos.menu.ViewMenu",
-    "view": {
-      "class": "net.nanopay.sme.ui.MenuRedirectSMEModalView",
-      "menu": "mainmenu.contacts",
-      "view": {
-        "class": "foam.nanos.menu.MenuToolBar",
-        "classification": "submenu",
-        "parent": "sme",
-        "title": "Add contact"
-      }
-    }
-  }
-})
-
 p({"class":"foam.nanos.menu.Menu","id":"mainmenu.dashboard","label":"Dashboard","icon":"images/ablii/dashboard-icon-resting.svg","activeIcon":"images/ablii/dashboard-icon-active.svg","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.sme.ui.dashboard.Dashboard"}},"order":500,"parent":"smeNavigation"})
 p({
   "class":"foam.nanos.menu.Menu",
@@ -73,7 +22,7 @@ p({
       "menu":"mainmenu.contacts",
       "view":{
         "class":"foam.nanos.menu.MenuToolBar",
-        "classification":"submenu.contact",
+        "classification":"submenu",
         "parent":"sme",
         "title":"Add contact"
       }
@@ -163,7 +112,7 @@ p({
 p({
   "class": "foam.nanos.menu.Menu",
   "parent": "sme",
-  "id": "submenu.contact.create",
+  "id": "submenu.create",
   "label": "Create from Scratch",
   "icon": "images/ablii/scratch.png",
   "order": 3,
@@ -206,3 +155,4 @@ p({
   "order":502,
   "parent":"smeNavigation"
 })
+

@@ -13,10 +13,14 @@ p({
   class:"foam.nanos.crunch.Capability",
   id:"abliiMenuCapability",
   permissionsGranted:[
-    "menu.read.accountingintegrationcards",
-    "menu.read.paymentcode",
-    "menu.read.transactionlimit",
-    "menu.read.sme.userManagement"
+    "menu.read.submenu.contact.invitation",
+    "menu.read.submenu.contact.create",
+    "menu.read.submenu.contact.search",
+    "menu.read.submenu.contact.paymentcode",
+    "businesssetting.read.transactionlimit",
+    "businesssetting.read.userManagement",
+    "businesssetting.read.paymentcode",
+    "businesssetting.read.businessvisibility"
   ]
 })
 
@@ -73,7 +77,7 @@ p({
   "keywords":["featured"],
   "min": 1,
   "permissionsGranted":[
-    "menu.read.capability.main.invoices.payables"
+    "menu.read.mainmenu.invoices.payables"
   ],
   "availabilityPredicate": {
     "class":"foam.mlang.predicate.And",

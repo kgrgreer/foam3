@@ -547,7 +547,7 @@ foam.CLASS({
       },
       isAvailable: async function() {
         let account = await this.accountDAO.find(this.bankAccount);
-        let permission = await this.auth.check(null, 'menu.read.capability.menu.invitation');
+        let permission = await this.auth.check(null, 'menu.read.submenu.contact.invitation');
         return this.signUpStatus != this.ContactStatus.READY && ! this.INBankAccount.isInstance(account) && permission;
       },
       code: function(X) {
@@ -573,7 +573,7 @@ foam.CLASS({
         ) || this.bankAccount;
       },
       isAvailable: async function() {
-        let permission = await this.auth.check(null, 'menu.read.capability.main.invoices.receivables');
+        let permission = await this.auth.check(null, 'menu.read.mainmenu.invoices.receivables');
         return permission;
       },
       code: function(X) {
@@ -600,7 +600,7 @@ foam.CLASS({
         ) || this.bankAccount;
       },
       isAvailable: async function() {
-        let permission = await this.auth.check(null, 'menu.read.capability.main.invoices.payables');
+        let permission = await this.auth.check(null, 'menu.read.mainmenu.invoices.payables');
         return permission;
       },
       code: function(X) {

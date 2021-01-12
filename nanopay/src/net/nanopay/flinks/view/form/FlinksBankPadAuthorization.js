@@ -174,7 +174,7 @@ foam.CLASS({
 
             X.closeDialog();
 
-            this.pushMenu('capability.main.banking');
+            this.pushMenu('mainmenu.banking');
           });
         }
       }
