@@ -517,8 +517,7 @@ p({
       .setJournalName("errorFees")
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .build();
-  """,
-  "client": "{\"of\":\"net.nanopay.tx.errorfee.ErrorFee\"}"
+  """
 })
 
 p({
@@ -528,6 +527,7 @@ p({
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.tx.errorfee.ErrorFee.getOwnClassInfo())
       .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("errorFeeDAO"))
       .setInnerFeeDAO(x.get("localErrorFeeDAO")) 
       .build();
