@@ -38,13 +38,18 @@ foam.CLASS({
     'java.util.ArrayList',
     'foam.core.ContextAwareAgent',
     'foam.core.X',
+    'foam.util.SafetyUtil',
     'net.nanopay.tx.ComplianceTransaction',
     'net.nanopay.tx.Transfer',
+    'net.nanopay.tx.ExternalTransfer',
+    'net.nanopay.account.DigitalAccount',
+    'net.nanopay.account.Account',
     'static foam.mlang.MLang.EQ',
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.tx.SummaryTransaction',
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.tx.FeeLineItem',
+    'net.nanopay.tx.InvoicedFeeLineItem',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.Transaction',
     'org.apache.commons.lang.ArrayUtils'
@@ -198,7 +203,6 @@ foam.CLASS({
           //TODO: signing
           // add the planner id for validation
           txn.setPlanner(this.getId());
-          txn = createSummaryLineItems(x, txn);
           quote.addPlan(txn);
           if (getBestPlan()) {
             quote.setPlan(txn);
@@ -307,18 +311,6 @@ foam.CLASS({
       `
     },
     {
-      name: 'createSummaryLineItems',
-      documentation: 'group up similar line items',
-      type: 'net.nanopay.tx.model.Transaction',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
-      ],
-      javaCode: `
-        return txn;
-        `
-    },
-    {
       name: 'applyFee',
       type: 'Transaction',
       documentation: `
@@ -357,15 +349,46 @@ foam.CLASS({
         }
         txnclone = (Transaction) ((DAO) x.get("localFeeEngineDAO")).put(txnclone);
 
-        // Copy lineItem transfers to transaction (fees + taxes that were added)
-        TransactionLineItem [] ls = txnclone.getLineItems();
+        txn.setLineItems(txnclone.getLineItems());
+        txn = createFeeTransfers(x, txn, quote);
+        return txn;
+      `
+    },
+    {
+      name: 'createFeeTransfers',
+      documentation: 'Creates transfers for fees, and adjusts other transfers if needed',
+      type: 'Transaction',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' },
+        { name: 'quote', type: 'net.nanopay.tx.TransactionQuote' },
+      ],
+      javaCode: `
+        TransactionLineItem [] ls = txn.getLineItems();
         for ( TransactionLineItem li : ls ) {
-          if ( li instanceof FeeLineItem && ((FeeLineItem)li).getTransfers() != null ) {
-            txn.add(((FeeLineItem)li).getTransfers());
-            ((FeeLineItem)li).setTransfers(null);
+          if ( li instanceof FeeLineItem && ! (li instanceof InvoicedFeeLineItem) && ! SafetyUtil.isEmpty(li.getSourceAccount()) ) {
+            FeeLineItem feeLineItem = (FeeLineItem) li;
+            Account acc = null;
+            if ( feeLineItem.getSourceAccount() == quote.getSourceAccount().getId() )
+              acc = quote.getSourceAccount();
+            if ( feeLineItem.getSourceAccount() == quote.getDestinationAccount().getId() )
+              acc = quote.getDestinationAccount();
+            if (acc == null)
+              acc = feeLineItem.findSourceAccount(x);
+            if ( acc instanceof DigitalAccount) {
+              Transfer tSend = new Transfer(acc.getId(), -feeLineItem.getAmount());
+              Transfer tReceive = new Transfer(feeLineItem.getDestinationAccount(), feeLineItem.getAmount());
+              Transfer[] transfers = { tSend, tReceive };
+              txn.add(transfers);
+            }
+            else {
+              Transfer tSend = new ExternalTransfer(acc.getId(), -feeLineItem.getAmount());
+              Transfer tReceive = new ExternalTransfer(feeLineItem.getDestinationAccount(), feeLineItem.getAmount());
+              Transfer[] transfers = { tSend, tReceive };
+              txn.add(transfers);
+            }
           }
         }
-        txn.setLineItems(ls);
         return txn;
       `
     },

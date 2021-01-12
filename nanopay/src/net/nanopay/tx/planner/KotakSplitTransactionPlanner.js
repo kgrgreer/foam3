@@ -35,6 +35,7 @@ foam.CLASS({
     'net.nanopay.bank.INBankAccount',
     'net.nanopay.account.TrustAccount',
     'net.nanopay.fx.CurrencyFXService',
+    'net.nanopay.tx.SummaryTransaction',
     'net.nanopay.fx.FXLineItem',
     'net.nanopay.fx.FXService',
     'net.nanopay.fx.FXQuote',
@@ -123,6 +124,8 @@ foam.CLASS({
       t1.setDestinationCurrency(t1.getSourceCurrency());
       t1.setDestinationAmount(t1.getAmount());
       Transaction cashinPlan = quoteTxn(x, t1, quote);
+      if (cashinPlan instanceof SummaryTransaction)
+        cashinPlan = cashinPlan.getNext()[0];
       if ( cashinPlan != null ) {
         txn.addNext(cashinPlan);
       } else {

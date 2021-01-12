@@ -3,14 +3,11 @@ package net.nanopay.tx.test;
 import static foam.mlang.MLang.AND;
 import static foam.mlang.MLang.EQ;
 import static foam.mlang.MLang.INSTANCE_OF;
-import static foam.mlang.MLang.NOT;
 import static net.nanopay.tx.model.TransactionStatus.COMPLETED;
 
-import foam.core.CompoundException;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.User;
-import foam.test.TestUtils;
 import net.nanopay.account.DigitalAccount;
 import net.nanopay.account.LoanAccount;
 import net.nanopay.account.LoanedTotalAccount;
@@ -24,12 +21,9 @@ import net.nanopay.tx.AbliiTransaction;
 import net.nanopay.tx.DigitalTransaction;
 import net.nanopay.tx.TransactionLineItem;
 import net.nanopay.tx.TransactionQuote;
-import net.nanopay.tx.Transfer;
-import net.nanopay.tx.bmo.cico.BmoInterTrustTransaction;
 import net.nanopay.tx.bmo.cico.BmoVerificationTransaction;
 import net.nanopay.tx.cico.CITransaction;
 import net.nanopay.tx.cico.COTransaction;
-import net.nanopay.tx.cico.InterTrustTransaction;
 import net.nanopay.tx.cico.VerificationTransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
@@ -73,7 +67,6 @@ public class TransactionTest
     inv = addInvoice(sender_,receiver_);
     setup();
 
-    testTransactionMethods();
     testAbliiTransaction();
     testPADType();
     testVerificationTransaction();
@@ -317,56 +310,6 @@ public class TransactionTest
 
     // Transaction tx1 = (Transaction) ((DAO) x_.get("localTransactionDAO")).put_(x_,tq.getPlan()).fclone();
     // test(true,tx1.toString());
-  }
-
-
-  public void testTransactionMethods(){
-    // This txn is not part of tests but if fail will fail test
-    // testing status change and generic putput
-    Transaction txn = new Transaction();
-    txn.setAmount(1000000);
-    txn.setSourceAccount(sender_CA.getId());
-    txn.setDestinationAccount(sender_Dig.getId());
-    txn = (Transaction) txnDAO.put(txn).fclone();
-    txn.setStatus(COMPLETED);
-    txnDAO.put(txn);
-
-
-    txn = new Transaction();
-    txn.setInvoiceId(inv.getId());
-    txn.setStatus(TransactionStatus.PAUSED);
-    txn.setAmount(333);
-    txn.setPayeeId(receiver_.getId()); //NOTE SINCE USING PAYEE/PAYER IDS NOT ACCOUNTS, INTERTRUST CAN BE PLANNED.
-    txn.setPayerId(sender_.getId());
-    txn = (Transaction) txnDAO.put(txn).fclone();
-
-    test(txn.limitedClone(x_,null) == txn,"limited clone of null txn returns itself");
-    Transaction txnNew = txn.limitedClone(x_,txn);
-
-    test(txnNew.getAmount() == 333,"Amount not copied in LimitedClone");
-    test(txnNew.getInvoiceId() == txn.getInvoiceId(),"Invoice IDs copied in LimitedClone");
-    test(txnNew.getExternalData() == txn.getExternalData(),"Reference Data copied in LimitedClone");
-    test(txnNew.getExternalInvoiceId().equals(txn.getExternalInvoiceId()),"External Invoice Id copied in LimitedClone");
-    test(txnNew.getStatus() == txn.getStatus(),"Status copied in LimitedClone from "+txn.getStatus().getName() +" and "+ txnNew.getStatus().getName());
-
-    int amount = txn.getTransfers().length;
-    Transfer transfer = new Transfer();
-    Transfer transfer2 = new Transfer();
-    Transfer[] transfers = new Transfer[2];
-    transfers[0] = transfer;
-    transfers[1] = transfer2;
-
-    test(txn.getTransfers().length == amount, "new Transaction has no transfers");
-    txn.add(transfers);
-    test(txn.getTransfers().length == 2+amount, "2 Transfers added successfully");
-    txn.add(transfers);
-    test(txn.getTransfers().length == 4+amount, "2 more Transfers added successfully");
-    txn.setStatus(TransactionStatus.PENDING_PARENT_COMPLETED);
-    test( ! txn.canTransfer(x_,null), "Cannot transfer transaction in PENDING_PARENT_COMPLETED status");
-    txn.setStatus(TransactionStatus.PENDING); //ENSURE WE ACCOUNT FOR POSSIBILITY OF INTERTRUST
-    test( ((txn instanceof DigitalTransaction) && (! txn.canTransfer(x_, null))) || ((txn instanceof InterTrustTransaction) && ( txn.canTransfer(x_, null))), "Cannot transfer transaction if status is PENDING");
-    txnNew.setStatus(TransactionStatus.PENDING);
-    test( ! txn.canTransfer(x_,txnNew),"Cannot transfer transaction in same status as old transaction");
   }
 
   public void testPADType() {

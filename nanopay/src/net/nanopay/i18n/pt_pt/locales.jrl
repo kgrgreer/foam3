@@ -1888,10 +1888,10 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"capability.main.dashboard.label"
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"capability.main.invoices.payables.label",target:"Pagáveis"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"capability.main.invoices.receivables.label",target:"Recebíveis"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"capability.menu.create.label",target:"Criar do zero"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"capability.menu.contact.create.label",target:"Criar do zero"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"capability.menu.invitation.label",target:"Convite"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"capability.menu.paymentcode.label",target:"Pesquisa por código de pagamento"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"capability.menu.search.label",target:"Pesquisa por nome comercial"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"capability.menu.business.search.label",target:"Pesquisa por nome comercial"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"contacts.label",target:"Beneficiários"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"dashboard.label",target:"Painel de controle"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"documentation.label",target:"Documentação"})
