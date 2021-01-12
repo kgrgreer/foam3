@@ -48,3 +48,17 @@ p({
   targetId: "ablii-tx-rules",
   priority: 8
 })
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "ablii-tx-fees",
+  priority: 9
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "AllPlannerCapability",
+  priority: 10
+})
