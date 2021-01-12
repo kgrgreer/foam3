@@ -25,13 +25,11 @@ import foam.mlang.Constant;
 import foam.mlang.Expr;
 import foam.mlang.Formula;
 import foam.nanos.logger.Logger;
-import net.nanopay.account.DigitalAccount;
 import net.nanopay.fx.TotalRateLineItem;
-import net.nanopay.tx.ExternalTransfer;
 import net.nanopay.tx.FeeLineItem;
 import net.nanopay.tx.TransactionLineItem;
-import net.nanopay.tx.Transfer;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.ChargedTo;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -95,10 +93,12 @@ public class FeeEngine {
           var logger = (Logger) x.get("logger");
           logger.debug("Fee amount is (" + feeAmount + ")", fee.toString(), transaction);
         }
-
-        transaction.addLineItems(new TransactionLineItem[]{
-          newFeeLineItem(x, fee.getLabel(), feeAmount, getCurrency(x, transaction), transaction.getSourceAccount())
-        });
+        FeeLineItem fli = null;
+          if (fee.getChargedTo() == ChargedTo.PAYER)
+            fli = newFeeLineItem(x, fee.getLabel(), feeAmount, getCurrency(x, transaction), transaction.getSourceAccount());
+          if (fee.getChargedTo() == ChargedTo.PAYEE)
+            fli = newFeeLineItem(x, fee.getLabel(), feeAmount, getCurrency(x, transaction), transaction.getDestinationAccount());
+        if (fli != null) transaction.addLineItems(new TransactionLineItem[] {fli});
       }
     } catch ( Exception e ) {
       var feeInfo = fee != null ? fee.toString() : "Fee name:" + feeName;
@@ -197,10 +197,8 @@ public class FeeEngine {
       );
     }
     if ( ! SafetyUtil.isEmpty(transactionFeeRule_.getFeeAccount()) ) {
-      result.setTransfers(new Transfer[] {
-        new ExternalTransfer(sourceAccount, -amount, 0),
-        new ExternalTransfer(transactionFeeRule_.getFeeAccount(), amount, 0)
-      });
+      result.setSourceAccount(sourceAccount);
+      result.setDestinationAccount(transactionFeeRule_.getFeeAccount());  
     }
     return result;
   }

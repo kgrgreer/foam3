@@ -28,6 +28,8 @@ foam.CLASS({
     'net.nanopay.fx.FXQuote',
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.tx.ExternalTransfer',
+    'net.nanopay.tx.InvoicedFeeLineItem',
+    'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
@@ -198,6 +200,22 @@ foam.CLASS({
         }
         txn.addLineItems( new TransactionLineItem[] { natureCode } );
 
+        return txn;
+      `
+    },
+    {
+      name: 'createFeeTransfers',
+      javaCode: `
+        TransactionLineItem [] ls = txn.getLineItems();
+        for ( TransactionLineItem li : ls ) {
+          if ( li instanceof FeeLineItem && ! (li instanceof InvoicedFeeLineItem) ) {
+            FeeLineItem feeLineItem = (FeeLineItem) li;
+            ExternalTransfer ext = new ExternalTransfer(feeLineItem.getSourceAccount(), -feeLineItem.getAmount());
+            ExternalTransfer ext2 = new ExternalTransfer(feeLineItem.getDestinationAccount(), feeLineItem.getAmount());
+            Transfer[] transfers = { ext, ext2 };
+            txn.add(transfers);
+          }
+        }
         return txn;
       `
     },

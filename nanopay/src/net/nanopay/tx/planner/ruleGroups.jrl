@@ -54,6 +54,12 @@ p({
 })
 p({
   "class":"net.nanopay.tx.planner.PlannerGroup",
+  "id":"LoanPlanner",
+  "documentation":"planning for loans ",
+  "enabled":false
+})
+p({
+  "class":"net.nanopay.tx.planner.PlannerGroup",
   "id":"FeeEngine",
   "documentation":"Fee Engine which deals with adding fees to transactions",
 })

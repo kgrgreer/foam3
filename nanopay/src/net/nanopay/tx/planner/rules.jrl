@@ -893,7 +893,7 @@ p({
   "id":"9522dba0-ea23-4249-b6a5-cfe5105cf12f",
   "name":"Detable Planner",
   "priority":85,
-  "ruleGroup":"transactionPlanner",
+  "ruleGroup":"LoanPlanner",
   "predicate":{
     "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
     "propName":"sourceAccount",
@@ -907,7 +907,7 @@ p({
   "id":"9124f118-f408-456b-813d-2ca92c95747e",
   "name":"Debt Repayment Planner",
   "priority":85,
-  "ruleGroup":"transactionPlanner",
+  "ruleGroup":"LoanPlanner",
   "predicate":{
     "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
     "propName":"destinationAccount",
