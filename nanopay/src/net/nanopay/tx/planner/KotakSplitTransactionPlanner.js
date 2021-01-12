@@ -125,7 +125,7 @@ foam.CLASS({
       t1.setDestinationAmount(t1.getAmount());
       Transaction cashinPlan = quoteTxn(x, t1, quote);
       if (cashinPlan instanceof SummaryTransaction)
-        cashinPlan = cashinPlan.getNext()[0];
+        cashinPlan = removeSummaryTransaction(cashinPlan);
       if ( cashinPlan != null ) {
         txn.addNext(cashinPlan);
       } else {
@@ -145,7 +145,7 @@ foam.CLASS({
         t.setAmount(requestTxn.getAmount());
         Transfer[] transfers = new Transfer[1];
         transfers[0] = t;
-        KotakCOTransaction kotakCO = (KotakCOTransaction) kotakPlan.getNext()[0];
+        KotakCOTransaction kotakCO = (KotakCOTransaction) removeSummaryTransaction(kotakPlan);
         kotakCO.setTransfers((Transfer[]) ArrayUtils.addAll(transfers, kotakCO.getTransfers()));
 
         txn.addNext(kotakPlan);
