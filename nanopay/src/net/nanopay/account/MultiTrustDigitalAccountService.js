@@ -110,8 +110,8 @@ foam.CLASS({
         { name: 'trustAccounts', type: 'String[]' }
       ],
       javaCode: `
-        DAO accountDAO = (DAO) x.get("localAccountDAO");
         User user = ((Subject) x.get("subject")).getUser();
+        DAO accountDAO = user.getAccounts(x).inX(x);
         // get the trust account to generate for
         List trusts = new ArrayList<TrustAccount>();
         for (String tId : trustAccounts) {
@@ -124,7 +124,7 @@ foam.CLASS({
         for (Object o : trusts) {
           TrustAccount t = (TrustAccount) o;
           DigitalAccount defaultDigital = (DigitalAccount) accountDAO.find(AND(
-            EQ(Account.OWNER, user.getId()),
+//            EQ(Account.OWNER, user.getId()),
             INSTANCE_OF(DigitalAccount.class),
             EQ(DigitalAccount.TRUST_ACCOUNT,t.getId()),
             EQ(Account.LIFECYCLE_STATE, LifecycleState.ACTIVE),
@@ -137,7 +137,7 @@ foam.CLASS({
           account.setName("Digital Account");
           account.setDenomination(t.getDenomination());
           account.setIsDefault(true);
-          account.setOwner(user.getId());
+//          account.setOwner(user.getId());
           account.setLifecycleState(LifecycleState.ACTIVE);
           account.setTrustAccount(t.getId());
           account = (DigitalAccount) accountDAO.put(account);
