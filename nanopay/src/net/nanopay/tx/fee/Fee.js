@@ -53,6 +53,14 @@ foam.CLASS({
       section: 'basicInfo'
     },
     {
+      class: 'Enum',
+      of: 'net.nanopay.tx.ChargedTo',
+      name: 'chargedTo',
+      required: true,
+      value: 'net.nanopay.tx.ChargedTo.PAYER',
+      section: 'basicInfo'
+    },
+    {
       class: 'String',
       name: 'label',
       label: 'Display Name',

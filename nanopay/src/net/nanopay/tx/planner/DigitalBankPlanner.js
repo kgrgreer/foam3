@@ -26,6 +26,8 @@ foam.CLASS({
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.SummaryTransaction',
+    'net.nanopay.tx.model.TransactionStatus',
     'static foam.mlang.MLang.CLASS_OF',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
@@ -46,6 +48,17 @@ foam.CLASS({
     {
       name: 'plan',
       javaCode: `
+        Transaction txn;
+        if ( requestTxn.getType().equals("Transaction") ) {
+          txn = new SummaryTransaction(x);
+          txn.copyFrom(requestTxn);
+        } else {
+          txn = (Transaction) requestTxn.fclone();
+        }
+
+        txn.setStatus(TransactionStatus.PENDING);
+        txn.setInitialStatus(TransactionStatus.COMPLETED);
+
         Account destinationAccount = quote.getDestinationAccount();
         foam.nanos.auth.User bankOwner = destinationAccount.findOwner(x);
 
@@ -64,21 +77,23 @@ foam.CLASS({
           Transaction digitalTxn = new Transaction();
           digitalTxn.copyFrom(requestTxn);
           digitalTxn.setDestinationAccount(digital.getId());
-
-          // Split 2: BDigital -> BBank
-          Transaction co = new Transaction();
-          co.copyFrom(requestTxn);
-          co.setSourceAccount(digital.getId());
-
           Transaction[] Ds = multiQuoteTxn(x, digitalTxn, quote);
-          Transaction[] COs = multiQuoteTxn(x, co, quote, false);
+
 
           for ( Transaction tx1 : Ds ) {
+            // Split 2: BDigital -> BBank
+            Transaction co = new Transaction();
+            co.copyFrom(requestTxn);
+            co.setSourceAccount(digital.getId());
+            co.setAmount(tx1.getTotal(x, tx1.getDestinationAccount()));
+            Transaction[] COs = multiQuoteTxn(x, co, quote, false);
             for ( Transaction tx2 : COs ) {
               Transaction Digital = (Transaction) tx1.fclone();
               Digital.addNext((Transaction) tx2.fclone());
               Digital.setPlanCost(Digital.getPlanCost() + tx2.getPlanCost());
-              quote.getAlternatePlans_().add(Digital);
+              Transaction t = (Transaction) txn.fclone();
+              t.addNext(Digital);
+              quote.getAlternatePlans_().add(t);
             }
           }
         }

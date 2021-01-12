@@ -216,6 +216,7 @@ foam.CLASS({
         summary.setFxRate(fxQuote.getRate());
         summary.setFxExpiry(fxQuote.getExpiryTime());
         summary.setInvoiceId(request.getInvoiceId());
+        summary.setPlanner(this.getId());
 
         summary.addNext(createComplianceTransaction(request));
         summary.addNext(afexCT);
