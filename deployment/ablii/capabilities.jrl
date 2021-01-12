@@ -20,7 +20,8 @@ p({
     "businesssetting.read.transactionlimit",
     "businesssetting.read.userManagement",
     "businesssetting.read.paymentcode",
-    "businesssetting.read.businessvisibility"
+    "businesssetting.read.businessvisibility",
+    "group.read.smeBusinessEmployee"
   ]
 })
 
