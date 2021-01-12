@@ -48,7 +48,6 @@ foam.CLASS({
         public void execute(X x) {
           UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
           DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
-          DAO pcjDAO = (DAO) x.get("prerequisiteCapabilityJunctionDAO");
           User user = ((Subject) x.get("subject")).getUser();
 
           //granted service provider business capability
