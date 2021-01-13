@@ -83,13 +83,6 @@ foam.CLASS({
 
   methods: [
 
-    function formatDate(timestamp) {
-      return timestamp.toLocaleTimeString(foam.locale, { hour12: false }) +
-        ' ' + timestamp.toLocaleString(foam.locale, { month: 'short' }) +
-        ' ' + timestamp.getDate() +
-        ' ' + timestamp.getFullYear();
-    },
-
     async function outputRecord(parentView, record) {
       const attributes = this.getAttributes(record);
 
