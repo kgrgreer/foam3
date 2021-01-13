@@ -26,10 +26,12 @@ foam.CLASS({
     javaImports: [
       'foam.core.ContextAgent',
       'foam.core.X',
+      'foam.dao.DAO',
       'foam.nanos.app.AppConfig',
       'foam.nanos.auth.Address',
       'foam.nanos.auth.Group',
       'foam.nanos.auth.User',
+      'foam.nanos.crunch.UserCapabilityJunction',
       'foam.nanos.logger.Logger',
       'foam.nanos.notification.Notification',
       'net.nanopay.model.Business',
@@ -45,7 +47,9 @@ foam.CLASS({
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-            Business business = (Business) obj;
+            if ( ! (obj instanceof UserCapabilityJunction) ) return;
+            DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
+            Business business = (Business) localBusinessDAO.find(((UserCapabilityJunction) obj).getSourceId());
             Address businessAddress = business.getAddress();
 
             if ( businessAddress != null ) {
@@ -57,7 +61,7 @@ foam.CLASS({
               args.put("link",   config.getUrl() + "#capability.main.dashboard");
               args.put("sendTo", User.EMAIL);
               args.put("business", business.getOrganization());
-              
+
               if ( group == null ) {
                 logger.error("Error sending compliance-notification-to-user email, group is null.");
                 return;

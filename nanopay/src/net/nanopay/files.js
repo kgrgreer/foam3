@@ -1718,13 +1718,16 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/compliance/ManualPersonSanctionValidator' },
   { name: 'net/nanopay/crunch/compliance/ManualSecurefactSIDniValidator' },
   { name: 'net/nanopay/crunch/compliance/ManualSecurefactLEVValidator' },
-  
+
 
   { name: 'net/nanopay/partner/afex/AFEXDigitalAccount' },
   // crunch afex
   { name: 'net/nanopay/partner/afex/crunch/BusinessHasVerifiedBankAccount' },
   { name: 'net/nanopay/partner/afex/crunch/AFEXBusinessOnboardingRule' },
   { name: 'net/nanopay/partner/afex/crunch/BankAccountOwnerIsBusiness' },
+
+  { name: 'net/nanopay/partner/bmo/BMOPayableMenuCapabilityRule' },
+  { name: 'net/nanopay/partner/rbc/RBCPayableMenuCapabilityRule' },
 
   // crunch acceptance
   { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/AbliiTermsAndConditions' },

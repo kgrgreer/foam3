@@ -16,14 +16,14 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.partner.bmo',
-  name: 'BMOPayableMenuCapabilityRule',
+  package: 'net.nanopay.partner.rbc',
+  name: 'RBCPayableMenuCapabilityRule',
 
   implements: [
     'foam.nanos.ruler.RuleAction'
   ],
 
-  documentation: `Grants BMO Payable Menu Capability after Compliance is passed.`,
+  documentation: `Grants RBC Payable Menu Capability after Compliance is passed.`,
 
   javaImports: [
     'foam.core.ContextAgent',
@@ -48,11 +48,11 @@ foam.CLASS({
           var subject = new Subject(x);
           subject.setUser(business);
           var subjectX = x.put("subject", subject);
-          String bmoPaymentMenuCapId = "1f6b2047-1eef-471d-82e7-d86bdf511375-2";
+          String bmoPaymentMenuCapId = "1f6b2047-1eef-471d-82e7-d86bdf511375-3";
           crunchService.updateJunction(subjectX, bmoPaymentMenuCapId, null, CapabilityJunctionStatus.GRANTED);
         }
 
-      }, "Grants BMO Payable Meny Capability after business compliance is Passed.");
+      }, "Grants RBC Payable Meny Capability after business compliance is Passed.");
       `
     }
   ]

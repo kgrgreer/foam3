@@ -715,7 +715,7 @@ var classes = [
   'net.nanopay.auth.ServiceProviderURL',
   'net.nanopay.auth.UserCreateServiceProviderURLRule',
   'net.nanopay.auth.UserCreateServiceProviderURLRuleAction',
-  
+
   'net.nanopay.security.auth.IPLoggingAuthService',
   'net.nanopay.security.auth.LoginAttemptAuthService',
   'net.nanopay.security.auth.LoginAttempts',
@@ -1250,6 +1250,8 @@ var classes = [
   'net.nanopay.country.br.PTaxRate',
   'net.nanopay.country.br.PTaxDollarRateResponse',
   'net.nanopay.country.br.tx.NatureCodeLineItem',
+  'net.nanopay.partner.bmo.BMOPayableMenuCapabilityRule',
+  'net.nanopay.partner.rbc.RBCPayableMenuCapabilityRule',
   'net.nanopay.partner.soawebservices.PessoaFisicaSimplificada',
   'net.nanopay.partner.soawebservices.PessoaJuridicaSimplificada',
   'net.nanopay.partner.soawebservices.PessoaResponse',

@@ -145,25 +145,20 @@ p({
 
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d67",
-  "name": "Send business compliance passed email",
-  "priority": 100,
-  "ruleGroup": "smeBusinessCompliance",
-  "documentation": "Send business compliance passed email to signing officer",
-  "daoKey": "localUserDAO",
-  "operation": 3,
-  "after": true,
+  "id":"ac18795b-5512-4a58-8964-d0e45d43ba91",
+  "name":"Grant BMO Payables Menu Payment Provider Capability",
+  "documentation":"Set BMO Payables Menu Payment Provider Capability to GRANTED when business compliance passed.",
+  "priority":80,
+  "ruleGroup":"onboarding",
+  "daoKey":"localUserDAO",
+  "operation":3,
+  "after":true,
   "predicate": {
     "class":"foam.mlang.predicate.And",
     "args":[
       {
         "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
         "of":"net.nanopay.model.Business"
-      },
-      {
-        "class":"net.nanopay.crunch.predicate.CheckUserCountry",
-        "user":{"class":"foam.mlang.ContextObject","key":"NEW"},
-        "country":"CA"
       },
       {
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
@@ -178,10 +173,46 @@ p({
       }
     ]
   },
-  "action": {
-    "class": "net.nanopay.sme.ruler.BusinessCompliancePassedEmailRule"
+  "action":{
+    "class":"net.nanopay.partner.bmo.BMOPayableMenuCapabilityRule"
   },
   "enabled":true,
-  "saveHistory":false,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"5bf2690b-cbb7-49a8-a57c-546b98364c56",
+  "name":"Grant RBC Payables Menu Payment Provider Capability",
+  "documentation":"Set RBC Payables Menu Payment Provider Capability to GRANTED when business compliance passed.",
+  "priority":80,
+  "ruleGroup":"onboarding",
+  "daoKey":"localUserDAO",
+  "operation":3,
+  "after":true,
+  "predicate": {
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of":"net.nanopay.model.Business"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"compliance",
+        "propValue":{"class": "net.nanopay.admin.model.ComplianceStatus", "ordinal":2}
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
+        "propName":"compliance",
+        "propValue":{"class": "net.nanopay.admin.model.ComplianceStatus", "ordinal":2},
+        "isNew": false
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.partner.rbc.RBCPayableMenuCapabilityRule"
+  },
+  "enabled":true,
   "lifecycleState":1
 })
