@@ -111,20 +111,22 @@ foam.CLASS({
       ],
       javaCode: `
         User user = ((Subject) x.get("subject")).getUser();
-        DAO accountDAO = user.getAccounts(x).inX(x);
+        DAO accountDAO = ((DAO) x.get("localAccountDAO")).inX(x);
         // get the trust account to generate for
         List trusts = new ArrayList<TrustAccount>();
         for (String tId : trustAccounts) {
           TrustAccount trust = (TrustAccount) accountDAO.find(tId);
-          if (trust == null)
-            throw new RuntimeException("MultiTrustService: Incorrect Trust account id Entered");
+          if (trust == null) {
+            ((foam.nanos.logger.Logger) x.get("logger")).warning("Trust account not found", tId);
+            throw new RuntimeException("MultiTrustService: Incorrect Trust account");
+          }
           trusts.add(trust);
         }
         // make sure each trust has a digital account for the user.
         for (Object o : trusts) {
           TrustAccount t = (TrustAccount) o;
           DigitalAccount defaultDigital = (DigitalAccount) accountDAO.find(AND(
-//            EQ(Account.OWNER, user.getId()),
+            EQ(Account.OWNER, user.getId()),
             INSTANCE_OF(DigitalAccount.class),
             EQ(DigitalAccount.TRUST_ACCOUNT,t.getId()),
             EQ(Account.LIFECYCLE_STATE, LifecycleState.ACTIVE),
@@ -137,7 +139,8 @@ foam.CLASS({
           account.setName("Digital Account");
           account.setDenomination(t.getDenomination());
           account.setIsDefault(true);
-//          account.setOwner(user.getId());
+          account.setOwner(user.getId());
+          account.setSpid(user.getSpid());
           account.setLifecycleState(LifecycleState.ACTIVE);
           account.setTrustAccount(t.getId());
           account = (DigitalAccount) accountDAO.put(account);

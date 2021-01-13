@@ -60,6 +60,7 @@ p({
       .setGuid(true)
       .setRuler(true)
       .setApprovableAware(false)
+      .setServiceProviderAware(false)
      .build();
   """
 })
@@ -82,6 +83,7 @@ p({
       .setPm(true)
       .setPipelinePm(true)
       .setEnableInterfaceDecorators(false)
+      .setServiceProviderAware(true)
       .setRuler(false)
       .setCluster(false)
       .build();
@@ -174,7 +176,6 @@ p({
       .setJournalName("zeroAccountUserAssociations")
       .setOf(net.nanopay.account.ZeroAccountUserAssociation.getOwnClassInfo())
       .build()
-      /*.setDaoType(foam.dao.MDAO).build()*/;
   """,
   "client":"{\"of\":\"net.nanopay.account.ZeroAccountUserAssociation\"}"
 })
