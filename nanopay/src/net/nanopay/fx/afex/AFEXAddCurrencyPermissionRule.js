@@ -32,9 +32,9 @@ foam.CLASS({
     'foam.nanos.auth.Address',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.Permission',
-    'foam.nanos.auth.User',
+    'foam.nanos.auth.Subject',
     'foam.nanos.crunch.CapabilityJunctionStatus',
-    'foam.nanos.crunch.UserCapabilityJunction',
+    'foam.nanos.crunch.CrunchService',
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'javax.security.auth.AuthPermission',
@@ -79,18 +79,11 @@ foam.CLASS({
 
                 // TODO check and remove if currency.read permissions still need to be given here and update rule name
 
-                DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
+                CrunchService crunchService = (CrunchService) x.get("crunchService");
                 String afexPaymentMenuCapId = "1f6b2047-1eef-471d-82e7-d86bdf511375";
-                UserCapabilityJunction ucj = (UserCapabilityJunction) ucjDAO.find(afexPaymentMenuCapId);
-                if ( ucj == null ) {
-                  ucj = new UserCapabilityJunction.Builder(x).setSourceId(business.getId())
-                    .setTargetId(afexPaymentMenuCapId)
-                    .build();
-                }
-
-                ucj.setStatus(CapabilityJunctionStatus.GRANTED);
-                ucjDAO.put(ucj);
-
+                Subject subject = new Subject.Builder(x).setUser(business).setUser(business).build();
+                crunchService.updateUserJunction(x, subject, afexPaymentMenuCapId, null, CapabilityJunctionStatus.GRANTED);
+                
                 String permissionString = "currency.read.";
                 permissionString = businessAddress.getCountryId().equals("CA") ? permissionString + "USD" : permissionString + "CAD";
                 Permission permission = new Permission.Builder(x).setId(permissionString).build();
