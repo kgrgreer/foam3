@@ -684,6 +684,15 @@ if [ ${CLEAN_BUILD} -eq 1 ]; then
     GRADLE_FLAGS="${GRADLE_FLAGS} --rerun-tasks"
 fi
 
+
+if [ "${RUN_JAR}" -eq 1 ]; then
+    if [ -z "${JOURNAL_CONFIG}" ]; then
+        JOURNAL_CONFIG=u
+    else
+        JOURNAL_CONFIG="${JOURNAL_CONFIG},u"
+    fi
+fi
+
 echo "INFO :: Journal Config is ${JOURNAL_CONFIG}"
 
 ############################
