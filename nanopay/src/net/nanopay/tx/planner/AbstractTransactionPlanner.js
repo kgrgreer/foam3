@@ -52,7 +52,8 @@ foam.CLASS({
     'net.nanopay.tx.InvoicedFeeLineItem',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.Transaction',
-    'org.apache.commons.lang.ArrayUtils'
+    'org.apache.commons.lang.ArrayUtils',
+    'net.nanopay.tx.TransactionException'
   ],
 
   tableColumns: [
@@ -398,15 +399,21 @@ foam.CLASS({
         { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
       ],
       type: 'net.nanopay.tx.model.Transaction',
+      documentation: 'Remove the summary and or compliance transaction from this chain.'
       javaCode: `
-        if ( txn instanceof FXSummaryTransaction || txn instanceof SummaryTransaction ) {
+        boolean removed = false;
+        if ( (txn != null) && (txn instanceof FXSummaryTransaction || txn instanceof SummaryTransaction) ) {
           txn = txn.getNext()[0];
-          txn.setStatus(txn.getInitialStatus());
+          removed = true;
         }
-        if ( txn instanceof ComplianceTransaction ) {
+        if ( (txn != null) && (txn instanceof ComplianceTransaction) ) {
           txn = txn.getNext()[0];
-          txn.setStatus(txn.getInitialStatus());
+          removed = true;
         }
+        if ( txn == null )
+          throw new TransactionException('Error: Summary removal called on bare summary transaction.');
+        if (removed)
+          txn.setStatus(txn.getInitialStatus());
         return txn;
       `
     }

@@ -89,10 +89,10 @@ foam.CLASS({
             Transaction[] COs = multiQuoteTxn(x, co, quote, false);
 
             for ( Transaction tx2 : COs ) {
-              Transaction Digital = (Transaction) tx1.fclone();
-              Digital.addNext((Transaction) tx2.fclone());
-              Digital.setPlanCost(Digital.getPlanCost() + tx2.getPlanCost());
+              Transaction Digital = (Transaction) removeSummaryTransaction(tx1).fclone();
+              Digital.addNext((Transaction) removeSummaryTransaction(tx2).fclone());
               Transaction t = (Transaction) txn.fclone();
+              t.setPlanCost(tx1.getPlanCost() + tx2.getPlanCost());
               t.addNext(Digital);
               quote.getAlternatePlans_().add(t);
             }
