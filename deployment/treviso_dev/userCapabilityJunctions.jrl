@@ -82,3 +82,4 @@ p({class:"foam.nanos.crunch.AgentCapabilityJunction",effectiveUser:2005,id:"2b19
 p({class:"foam.nanos.crunch.UserCapabilityJunction",id:"be6f822c-d537-1016-0b56-258ca08ad9b6",sourceId:2005,targetId:"05a663b8-2b48-11eb-adc1-0242ac120002",payload:{class:"foam.nanos.crunch.CapabilityJunctionPayload",status:1},lastUpdatedRealUser:2004})
 
 p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"50ee1aa9-f9bc-48f3-bdea-fd72f71b027c","sourceId":2005,"targetId":"treviso-tx-rules","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"1cf7a521-a792-43c1-985e-ccda041762ce","sourceId":2005,"targetId":"treviso-tx-fees","status":1})
