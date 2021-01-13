@@ -24,17 +24,10 @@ foam.CLASS({
   implements: ['foam.nanos.ruler.RuleAction'],
 
   javaImports: [
-    'java.util.Arrays',
-    'java.util.List',
     'foam.core.X',
     'foam.dao.DAO',
-    'foam.dao.ArraySink',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.User',
-    'foam.nanos.crunch.UserCapabilityJunction',
-    'foam.nanos.crunch.CapabilityJunctionStatus',
-    'foam.nanos.notification.Notification',
-    'foam.util.SafetyUtil',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.model.Business',
     'net.nanopay.payment.PaymentProviderCorridor',
@@ -56,7 +49,6 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        DAO userCapability = (DAO) x.get("userCapabilityJunctionDAO");
         BankAccount acc = (BankAccount) obj;
         User owner = (User) acc.findOwner(x);
         User creator = (User) acc.findCreatedBy(x);
