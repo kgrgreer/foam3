@@ -48,7 +48,7 @@ p({
   "after":true,
   "predicate":{
     "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
-    "category":"AFEXOnboarding",
+    "category":"onboarding",
     "isRecurring":false,
     "status": 1
   },

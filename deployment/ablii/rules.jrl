@@ -146,35 +146,30 @@ p({
 p({
   "class":"foam.nanos.ruler.Rule",
   "id":"ac18795b-5512-4a58-8964-d0e45d43ba91",
-  "name":"Grant BMO Payables Menu Payment Provider Capability",
-  "documentation":"Set BMO Payables Menu Payment Provider Capability to GRANTED when business compliance passed.",
+  "name":"Grant BMO Payment Provider Capability",
+  "documentation":"Set BMO Payment Provider Capability to GRANTED when domestic onboarding is complete.",
   "priority":80,
   "ruleGroup":"onboarding",
-  "daoKey":"localUserDAO",
+  "daoKey":"userCapabilityJunctionDAO",
   "operation":3,
   "after":true,
-  "predicate": {
+  "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
       {
-        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
-        "of":"net.nanopay.model.Business"
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"targetId",
+        "propValue":"554af38a-8225-87c8-dfdf-eeb15f71215f-11",
       },
       {
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
-        "propName":"compliance",
-        "propValue":{"class": "net.nanopay.admin.model.ComplianceStatus", "ordinal":2}
-      },
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
-        "propName":"compliance",
-        "propValue":{"class": "net.nanopay.admin.model.ComplianceStatus", "ordinal":2},
-        "isNew": false
+        "propName":"status",
+        "propValue":{"class":"foam.nanos.crunch.CapabilityJunctionStatus","ordinal":1}
       }
     ]
   },
   "action":{
-    "class":"net.nanopay.partner.bmo.BMOPayableMenuCapabilityRule"
+    "class":"net.nanopay.partner.bmo.BMOPaymentProviderCapabilityRule"
   },
   "enabled":true,
   "lifecycleState":1
@@ -183,35 +178,30 @@ p({
 p({
   "class":"foam.nanos.ruler.Rule",
   "id":"5bf2690b-cbb7-49a8-a57c-546b98364c56",
-  "name":"Grant RBC Payables Menu Payment Provider Capability",
-  "documentation":"Set RBC Payables Menu Payment Provider Capability to GRANTED when business compliance passed.",
+  "name":"Grant RBC Payment Provider Capability",
+  "documentation":"Set RBC Payment Provider Capability to GRANTED when domestic onboarding is complete.",
   "priority":80,
   "ruleGroup":"onboarding",
-  "daoKey":"localUserDAO",
+  "daoKey":"userCapabilityJunctionDAO",
   "operation":3,
   "after":true,
-  "predicate": {
+  "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
       {
-        "class":"foam.nanos.ruler.predicate.IsInstancePredicate",
-        "of":"net.nanopay.model.Business"
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"targetId",
+        "propValue":"554af38a-8225-87c8-dfdf-eeb15f71215f-11",
       },
       {
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
-        "propName":"compliance",
-        "propValue":{"class": "net.nanopay.admin.model.ComplianceStatus", "ordinal":2}
-      },
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyNEQValue",
-        "propName":"compliance",
-        "propValue":{"class": "net.nanopay.admin.model.ComplianceStatus", "ordinal":2},
-        "isNew": false
+        "propName":"status",
+        "propValue":{"class":"foam.nanos.crunch.CapabilityJunctionStatus","ordinal":1}
       }
     ]
   },
   "action":{
-    "class":"net.nanopay.partner.rbc.RBCPayableMenuCapabilityRule"
+    "class":"net.nanopay.partner.rbc.RBCPaymentProviderCapabilityRule"
   },
   "enabled":true,
   "lifecycleState":1

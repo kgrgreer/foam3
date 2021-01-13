@@ -17,13 +17,13 @@
 
 foam.CLASS({
   package: 'net.nanopay.partner.rbc',
-  name: 'RBCPayableMenuCapabilityRule',
+  name: 'RBCPaymentProviderCapabilityRule',
 
   implements: [
     'foam.nanos.ruler.RuleAction'
   ],
 
-  documentation: `Grants RBC Payable Menu Capability after Compliance is passed.`,
+  documentation: `Grants RBC Payable Menu Capability after domestic onboarding is complete..`,
 
   javaImports: [
     'foam.core.ContextAgent',
@@ -32,6 +32,7 @@ foam.CLASS({
     'foam.nanos.auth.Subject',
     'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.nanos.crunch.CrunchService',
+    'foam.nanos.crunch.UserCapabilityJunction',
     'foam.nanos.logger.Logger',
     'net.nanopay.model.Business'
   ],
@@ -43,16 +44,19 @@ foam.CLASS({
       agency.submit(x, new ContextAgent() {
         @Override
         public void execute(X x) {
-          Business business = (Business) obj;
+          if ( ! ( obj  instanceof UserCapabilityJunction ) ) return;
+
           var crunchService = (CrunchService) x.get("crunchService");
+          DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
+          Business business = (Business) localBusinessDAO.find(((UserCapabilityJunction) obj).getSourceId());
           var subject = new Subject(x);
           subject.setUser(business);
           var subjectX = x.put("subject", subject);
-          String bmoPaymentMenuCapId = "1f6b2047-1eef-471d-82e7-d86bdf511375-3";
-          crunchService.updateJunction(subjectX, bmoPaymentMenuCapId, null, CapabilityJunctionStatus.GRANTED);
+          String rbcPaymentMenuCapId = "1f6b2047-1eef-471d-82e7-d86bdf511375-3";
+          crunchService.updateJunction(subjectX, rbcPaymentMenuCapId, null, CapabilityJunctionStatus.GRANTED);
         }
 
-      }, "Grants RBC Payable Meny Capability after business compliance is Passed.");
+      }, "Grants RBC Payable Menu Capability after domestic onboarding is complete..");
       `
     }
   ]

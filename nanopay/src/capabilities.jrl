@@ -279,7 +279,6 @@ p({
   "permissionsGranted":[
     "business.invoice.pay",
     "menu.read.capability.main.invoices.receivables",
-    "menu.read.capability.main.invoices.payables",
     "paymentprovidercorridor.read.bmo",
     "paymentprovidercorridor.read.rbc",
     "paymentprovidercorridor.source.read.bmo",

@@ -1726,8 +1726,8 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/afex/crunch/AFEXBusinessOnboardingRule' },
   { name: 'net/nanopay/partner/afex/crunch/BankAccountOwnerIsBusiness' },
 
-  { name: 'net/nanopay/partner/bmo/BMOPayableMenuCapabilityRule' },
-  { name: 'net/nanopay/partner/rbc/RBCPayableMenuCapabilityRule' },
+  { name: 'net/nanopay/partner/bmo/BMOPaymentProviderCapabilityRule' },
+  { name: 'net/nanopay/partner/rbc/RBCPaymentProviderCapabilityRule' },
 
   // crunch acceptance
   { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/AbliiTermsAndConditions' },
