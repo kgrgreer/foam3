@@ -146,6 +146,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'type',
+      includeInDigest: false,
       documentation: 'The type of the account.',
       transient: true,
       getter: function() {
@@ -162,6 +163,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'id',
+      includeInDigest: true,
       documentation: 'The ID for the account.',
       section: 'accountInformation',
       createVisibility: 'HIDDEN',
@@ -173,6 +175,7 @@ foam.CLASS({
       name: 'deleted',
       documentation: 'Determines whether the account is deleted.',
       value: false,
+      includeInDigest: false,
       section: 'deprecated',
       writePermissionRequired: true,
       visibility: 'RO',
@@ -182,6 +185,7 @@ foam.CLASS({
       class: 'String',
       name: 'name',
       label: 'Account Name',
+      includeInDigest: false,
       documentation: `The given name of the account,
         provided by the individual person, or real user.`,
       validateObj: function(name) {
@@ -196,6 +200,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'desc',
+      includeInDigest: false,
       documentation: `The given description of the account, provided by
         the individual person, or real user.`,
       label: 'Memo',
@@ -207,6 +212,7 @@ foam.CLASS({
       name: 'transferIn',
       documentation: 'Determines whether an account can receive transfers.',
       value: true,
+      includeInDigest: false,
       section: 'systemInformation'
     },
     {
@@ -214,12 +220,14 @@ foam.CLASS({
       name: 'transferOut',
       documentation: 'Determines whether an account can make transfers out.',
       value: true,
+      includeInDigest: false,
       section: 'systemInformation'
     },
     {
       class: 'Reference',
       of: 'foam.core.Unit',
       name: 'denomination',
+      includeInDigest: true,
       label: 'Currency',
       targetDAOKey: 'currencyDAO',
       documentation: `The unit of measure of the payment type. The payment system can handle
@@ -249,6 +257,7 @@ foam.CLASS({
       tableWidth: 87,
       label: 'Set As Default',
       value: false,
+      includeInDigest: false,
       section: 'operationsInformation',
       tableHeaderFormatter: function(axiom) {
         this.add('Default');
@@ -352,6 +361,7 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'created',
+      includeInDigest: true,
       documentation: 'The date and time of when the account was created in the system.',
       section: 'operationsInformation',
       createVisibility: 'HIDDEN',
@@ -361,6 +371,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdBy',
+      includeInDigest: true,
       documentation: 'The ID of the User who created the account.',
       section: 'operationsInformation',
       createVisibility: 'HIDDEN',
@@ -370,6 +381,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'createdByAgent',
+      includeInDigest: true,
       documentation: 'The ID of the Agent who created the account.',
       section: 'operationsInformation',
       createVisibility: 'HIDDEN',
@@ -378,6 +390,7 @@ foam.CLASS({
     {
       class: 'DateTime',
       name: 'lastModified',
+      includeInDigest: true,
       documentation: 'The date and time of when the account was last changed in the system.',
       section: 'operationsInformation',
       createVisibility: 'HIDDEN',
@@ -387,6 +400,7 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'lastModifiedBy',
+      includeInDigest: true,
       documentation: `The unique identifier of the individual person, or real user,
         who last modified this account.`,
       section: 'operationsInformation',
@@ -436,6 +450,7 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
+      includeInDigest: true,
       section: 'systemInformation',
       value: foam.nanos.auth.LifecycleState.PENDING,
       writePermissionRequired: true,

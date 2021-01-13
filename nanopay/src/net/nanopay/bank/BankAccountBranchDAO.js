@@ -153,7 +153,7 @@ foam.CLASS({
             bankAccount.setBranchId(branch.getBranchId());
             return bankAccount;
           } 
-          getLogger().warning("Branch not found", bankAccount.getBranch(), "account", bankAccount.getId());
+          getLogger().debug("Branch not found", bankAccount.getBranch(), "account", bankAccount.getId());
         }
         return fObject;
       `
