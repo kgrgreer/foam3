@@ -54,3 +54,9 @@ p({
   targetId: "treviso-tx-rules",
   priority: 8
 })
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "treviso",
+  targetId: "treviso-tx-fees",
+  priority: 9
+})
