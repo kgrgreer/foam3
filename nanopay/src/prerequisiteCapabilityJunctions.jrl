@@ -1,3 +1,11 @@
+// nanopay spid has access to all planners
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "nanopay",
+  targetId: "AllPlannerCapability",
+  priority: 1
+})
+
 // Prerequisites for canadianBusinessOnboardedWithDomesticPayments
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",

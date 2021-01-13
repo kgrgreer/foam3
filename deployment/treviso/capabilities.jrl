@@ -20,7 +20,6 @@ p({
   version: "0",
   enabled: true,
   permissionsGranted: [
-    "rule.read.13df0d76-ba3e-4287-b42e-c7ceff059dd8",
     "rule.read.2775abef-05d4-4460-bea8-7a70e9d544af",
     "rule.read.519e2a68-a914-444f-b050-2ce01f29fe24"
   ]
