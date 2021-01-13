@@ -89,7 +89,7 @@ foam.CLASS({
       ],
       validateObj: function(bankAccount, bankAccount$errors_) {
         return bankAccount ? bankAccount$errors_ : "text";
-        }
+      }
     },
     {
       transient: true,
