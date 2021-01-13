@@ -512,8 +512,8 @@ foam.CLASS({
                   .add(this.BACK)
                 .end()
                 .on('click', () => {
-                  var menuId = this.isPayable ? 'capability.main.invoices.payables'
-                    : 'capability.main.invoices.receivables';
+                  var menuId = this.isPayable ? 'mainmenu.invoices.payables'
+                    : 'mainmenu.invoices.receivables';
                   this.menuDAO
                     .find(menuId)
                     .then((menu) => menu.launch());

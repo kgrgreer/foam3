@@ -364,7 +364,7 @@ foam.CLASS({
 
       checkAndNotifyAbility().then(result => {
         if ( ! result ) {
-          this.pushMenu('capability.main.dashboard');
+          this.pushMenu('mainmenu.dashboard');
           return;
         }
       });
@@ -502,8 +502,8 @@ foam.CLASS({
       this.invoiceDAO.put(this.invoice);
       this.notify(error.message,'', this.LogLevel.ERROR, true);
       this.pushMenu(this.isPayable
-        ? 'capability.main.invoices.payables'
-        : 'capability.main.invoices.receivables');
+        ? 'mainmenu.invoices.payables'
+        : 'mainmenu.invoices.receivables');
     },
 
     async function setTransactionPlanAndQuote() {
@@ -576,8 +576,8 @@ foam.CLASS({
         await this.invoiceDAO.put(invoice);
         this.notify(this.DRAFT_SUCCESS, '', this.LogLevel.INFO, true);
         this.pushMenu(this.isPayable
-          ? 'capability.main.invoices.payables'
-          : 'capability.main.invoices.receivables');
+          ? 'mainmenu.invoices.payables'
+          : 'mainmenu.invoices.receivables');
       } catch (error) {
         console.error('@SendRequestMoney (Invoice put after quote transaction put): ' + error.message);
         this.notify(this.SAVE_DRAFT_ERROR + this.type, '', this.LogLevel.ERROR, true);
@@ -666,7 +666,7 @@ foam.CLASS({
           /* Redirects users back to dashboard if none
             of the above conditions are matched */
           default:
-            this.pushMenu('capability.main.dashboard');
+            this.pushMenu('mainmenu.dashboard');
         }
       }
     },
@@ -682,8 +682,8 @@ foam.CLASS({
 
         this.notify(this.CANCEL_SUCCESS,'', this.LogLevel.INFO, true);
         this.pushMenu(this.isPayable
-          ? 'capability.main.invoices.payables'
-          : 'capability.main.invoices.receivables');
+          ? 'mainmenu.invoices.payables'
+          : 'mainmenu.invoices.receivables');
       }
     },
     {

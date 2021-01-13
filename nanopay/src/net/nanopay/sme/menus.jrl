@@ -38,10 +38,10 @@ p({
     "class": "foam.nanos.menu.ViewMenu",
     "view": {
       "class": "net.nanopay.sme.ui.MenuRedirectSMEModalView",
-      "menu": "capability.main.contacts",
+      "menu": "mainmenu.contacts",
       "view": {
         "class": "foam.nanos.menu.MenuToolBar",
-        "classification": "capability.menu",
+        "classification": "submenu",
         "parent": "sme",
         "title": "Add contact"
       }
@@ -49,10 +49,10 @@ p({
   }
 })
 
-p({"class":"foam.nanos.menu.Menu","id":"capability.main.dashboard","label":"Dashboard","icon":"images/ablii/dashboard-icon-resting.svg","activeIcon":"images/ablii/dashboard-icon-active.svg","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.sme.ui.dashboard.Dashboard"}},"order":500,"parent":"smeNavigation"})
+p({"class":"foam.nanos.menu.Menu","id":"mainmenu.dashboard","label":"Dashboard","icon":"images/ablii/dashboard-icon-resting.svg","activeIcon":"images/ablii/dashboard-icon-active.svg","handler":{"class":"foam.nanos.menu.ViewMenu","view":{"class":"net.nanopay.sme.ui.dashboard.Dashboard"}},"order":500,"parent":"smeNavigation"})
 p({
   "class":"foam.nanos.menu.Menu",
-  "id":"capability.main.contacts",
+  "id":"mainmenu.contacts",
   "label":"Contacts",
   "icon":"images/ablii/contacts-icon-resting.svg",
   "activeIcon":"images/ablii/contacts-icon-active.svg",
@@ -70,10 +70,10 @@ p({
     "createLabel":"Add contact",
     "createControllerView":{
       "class":"net.nanopay.sme.ui.MenuRedirectSMEModalView",
-      "menu":"capability.main.contacts",
+      "menu":"mainmenu.contacts",
       "view":{
         "class":"foam.nanos.menu.MenuToolBar",
-        "classification":"capability.menu",
+        "classification":"submenu.contact",
         "parent":"sme",
         "title":"Add contact"
       }
@@ -84,7 +84,7 @@ p({
 })
 p({
   "class": "foam.nanos.menu.Menu",
-  "id": "capability.main.banking",
+  "id": "mainmenu.banking",
   "label": "Bank accounts",
   "icon": "images/ablii/bankaccount-icon-resting.svg",
   "activeIcon": "images/ablii/bankaccount-icon-active.svg",
@@ -115,7 +115,7 @@ p({
 p({
   "class": "foam.nanos.menu.Menu",
   "parent": "sme",
-  "id": "capability.menu.business.search",
+  "id": "submenu.contact.search",
   "label": "Search by Business Name",
   "icon": "images/ablii/search.png",
   "order": 1,
@@ -131,7 +131,7 @@ p({
 p({
   "class": "foam.nanos.menu.Menu",
   "parent": "sme",
-  "id": "capability.menu.paymentcode",
+  "id": "submenu.contact.paymentcode",
   "label": "Search by Payment Code",
   "icon": "images/ablii/payment-code.png",
   "order": 2,
@@ -147,7 +147,7 @@ p({
 p({
   "class": "foam.nanos.menu.Menu",
   "parent": "sme",
-  "id": "capability.menu.invitation",
+  "id": "submenu.contact.invitation",
   "label": "Invite",
   "icon": "images/ablii/mail.png",
   "order": 4,
@@ -163,7 +163,7 @@ p({
 p({
   "class": "foam.nanos.menu.Menu",
   "parent": "sme",
-  "id": "capability.menu.contact.create",
+  "id": "submenu.contact.create",
   "label": "Create from Scratch",
   "icon": "images/ablii/scratch.png",
   "order": 3,
@@ -178,7 +178,7 @@ p({
 
 p({
   "class": "foam.nanos.menu.Menu",
-  "id": "capability.main.invoices.payables",
+  "id": "mainmenu.invoices.payables",
   "label": "Payables",
   "activeIcon":"images/ablii/payables-icon-active.svg",
   "icon":"images/ablii/payables-icon-resting.svg",
@@ -193,7 +193,7 @@ p({
 })
 p({
   "class": "foam.nanos.menu.Menu",
-  "id": "capability.main.invoices.receivables",
+  "id": "mainmenu.invoices.receivables",
   "label": "Receivables",
   "activeIcon":"images/ablii/receivables-icon-active.svg",
   "icon":"images/ablii/receivables-icon-resting.svg",
