@@ -130,6 +130,11 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'backofficeGroupUrl',
+      value: null
+    },
+    {
+      class: 'String',
       name: 'smeGroupUrl',
       value: null
     },
