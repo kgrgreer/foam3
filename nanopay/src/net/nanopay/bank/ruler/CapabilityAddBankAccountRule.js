@@ -48,6 +48,7 @@ foam.CLASS({
           
           StrategizedBankAccount bankInfo = (StrategizedBankAccount) ucj.getData();
           BankAccount bank = (BankAccount) (bankInfo.getBankAccount()).fclone();
+          bank.clearSpid();
           bank.setOwner(user.getId());
           
           DAO accountDAO = (DAO) x.get("localAccountDAO");

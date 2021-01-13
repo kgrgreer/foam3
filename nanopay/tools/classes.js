@@ -36,6 +36,7 @@ var classes = [
   'net.nanopay.tx.alterna.AlternaCITransaction',
   'net.nanopay.tx.alterna.AlternaVerificationTransaction',
   'net.nanopay.tx.bench.TransactionBenchmarkClient',
+  'net.nanopay.tx.bench.TransactionPlannerBenchmarkClient',
   'net.nanopay.tx.stripe.StripeTransaction',
   'net.nanopay.tx.stripe.StripeCustomer',
   'net.nanopay.tx.realex.RealexTransaction',
@@ -585,6 +586,7 @@ var classes = [
   'net.nanopay.tx.model.TransactionLimit',
   'net.nanopay.tx.ruler.TransactionLimitProbeInfo',
   'net.nanopay.tx.ruler.TransactionLimitRule',
+  'net.nanopay.tx.ruler.PermissionedTransactionRule',
   'net.nanopay.tx.ruler.InvoiceApprovedByRule',
   'net.nanopay.tx.ruler.SlowDownRule',
   'net.nanopay.tx.ruler.LiquidTransactionalBlocks',
@@ -701,7 +703,6 @@ var classes = [
   'net.nanopay.cico.model.MobileWallet',
 
   // auth
-  'net.nanopay.auth.AuthType',
   'net.nanopay.auth.BusinessEmployeeDAO',
   'net.nanopay.auth.BusinessToPublicBusinessInfoDAO',
   'net.nanopay.auth.CheckCurrencyRule',
@@ -711,9 +712,6 @@ var classes = [
   'net.nanopay.auth.OneTimeAuthenticationTokenService',
   'net.nanopay.auth.PublicBusinessInfo',
   'net.nanopay.auth.ruler.LogoutUserAction',
-  'net.nanopay.auth.ServiceProviderURL',
-  'net.nanopay.auth.UserCreateServiceProviderURLRule',
-  'net.nanopay.auth.UserCreateServiceProviderURLRuleAction',
   
   'net.nanopay.security.auth.IPLoggingAuthService',
   'net.nanopay.security.auth.LoginAttemptAuthService',
@@ -751,6 +749,7 @@ var classes = [
   'net.nanopay.security.PKCS11KeyStoreManager',
   'net.nanopay.security.PKCS12KeyStoreManager',
   'net.nanopay.security.HashingJournal',
+  'net.nanopay.security.HashingReplayJournal',
   'net.nanopay.security.HashedJSONParser',
   'net.nanopay.security.csp.CSPViolation',
   'net.nanopay.security.csp.CSPReportWebAgent',
@@ -1156,6 +1155,14 @@ var classes = [
   'net.nanopay.tx.planner.RbcInterTrustPlanner',
   'net.nanopay.tx.planner.BmoInterTrustPlanner',
 
+  // error fees
+  'net.nanopay.tx.errorfee.ChargeDateServiceInterface',
+  'net.nanopay.tx.errorfee.ClientErrorBillingService',
+  'net.nanopay.tx.errorfee.ErrorBilling',
+  'net.nanopay.tx.errorfee.ErrorCharge',
+  'net.nanopay.tx.errorfee.ErrorChargeFee',
+  'net.nanopay.tx.errorfee.ErrorFee',
+
   // Fees
   'net.nanopay.tx.fee.Fee',
   'net.nanopay.tx.fee.FeeExpr',
@@ -1237,7 +1244,6 @@ var classes = [
   'net.nanopay.country.br.NatureCode',
   'net.nanopay.country.br.NatureCodeRate',
   'net.nanopay.country.br.NatureBusinessRelationship',
-  'net.nanopay.country.PermittedCountryFilterDAO',
   'net.nanopay.country.br.OpenData',
   'net.nanopay.country.br.PTaxRate',
   'net.nanopay.country.br.PTaxDollarRateResponse',
@@ -1316,6 +1322,7 @@ var classes = [
   'net.nanopay.crunch.predicate.SigningOfficerPrivilegesRequested',
   'net.nanopay.crunch.predicate.UserIsSigningOfficerOfBusiness',
   'net.nanopay.crunch.IsSpid',
+  'net.nanopay.crunch.ruler.PermissionedUCJRule',
 
   // crunch onboarding
   'net.nanopay.crunch.onboardingModels.CreateRegisterPaymentProviderUCJ',
@@ -1502,6 +1509,7 @@ var classes = [
   'net.nanopay.tx.realex.RealexTransactionDAO',
   'net.nanopay.tx.stripe.StripeTransactionDAO',
   'net.nanopay.tx.ChainSummary',
+  'net.nanopay.tx.ChargedTo',
   'net.nanopay.tx.TransactionCreateOnInvoiceSubmission',
   'net.nanopay.payment.PayeeCurrencyService',
   'net.nanopay.payment.ClientPayeeCurrencyService',
@@ -1533,6 +1541,7 @@ var skeletons = [
   'net.nanopay.fx.ExchangeRateInterface',
   'net.nanopay.fx.FXService',
   'net.nanopay.tx.UserTransactionLimit',
+  'net.nanopay.tx.errorfee.ErrorBilling',
   'net.nanopay.liquidity.LiquidityAuth',
   'net.nanopay.auth.passwordutil.PasswordEntropy',
   'net.nanopay.payment.CorridorService',

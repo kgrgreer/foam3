@@ -230,9 +230,6 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/ProxyAgentAuthService', flags: ['web'] },
   { name: 'net/nanopay/auth/BusinessAgentAuthService', flags: ['web'] },
   { name: 'net/nanopay/auth/CheckCurrencyRule' },
-  { name: 'net/nanopay/auth/ServiceProviderURL' },
-  { name: 'net/nanopay/auth/UserCreateServiceProviderURLRule' },
-  { name: 'net/nanopay/auth/UserCreateServiceProviderURLRuleAction' },
   { name: 'net/nanopay/ui/wizard/WizardOverview', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardSubView', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardController', flags: ['web'] },
@@ -465,6 +462,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/Transaction' },
   { name: 'net/nanopay/tx/model/TransactionDAOCreateView' },
   { name: 'net/nanopay/tx/bench/TransactionBenchmarkClient' },
+  { name: 'net/nanopay/tx/bench/TransactionPlannerBenchmarkClient' },
   { name: 'net/nanopay/tx/ComplianceTransaction' },
   { name: 'net/nanopay/tx/GreenfenceTransaction' },
   { name: 'net/nanopay/tx/InvoiceTransaction' },
@@ -477,6 +475,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/TransactionLimit' },
   { name: 'net/nanopay/tx/ruler/TransactionLimitProbeInfo' },
   { name: 'net/nanopay/tx/ruler/TransactionLimitRule' },
+  { name: 'net/nanopay/tx/ruler/PermissionedTransactionRule' },
   { name: 'net/nanopay/tx/ruler/InvoiceApprovedByRule' },
   { name: 'net/nanopay/tx/ruler/SlowDownRule' },
   { name: 'net/nanopay/tx/ruler/AbliiSendCompletedNotification' },
@@ -520,9 +519,12 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/AddLiquidTransactionAction' },
   { name: 'net/nanopay/tx/LabelLiquidSummaryAction' },
   { name: 'net/nanopay/tx/ChainSummary' },
+  { name: 'net/nanopay/tx/ChargedTo' },
   { name: 'net/nanopay/tx/PartnerTransaction' },
   { name: 'net/nanopay/tx/SummaryTransactionDAO' },
   { name: 'net/nanopay/tx/SummaryTransactionInnerDAO' },
+  { name: 'net/nanopay/tx/TransactionException' },
+  { name: 'net/nanopay/tx/UnsupportedTransactionException' },
   { name: 'net/nanopay/tx/UnsupportedDateException' },
 
   //integration
@@ -811,7 +813,6 @@ FOAM_FILES([
   { name: 'net/nanopay/security/auth/LoginAttempts' },
   { name: 'net/nanopay/security/auth/IPLoggingAuthService' },
   { name: 'net/nanopay/auth/LoginAttempt' },
-  { name: 'net/nanopay/auth/AuthType' },
 
   // PII
   { name: 'net/nanopay/security/pii/PII' },
@@ -1606,6 +1607,14 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/RbcInterTrustPlanner' },
   { name: 'net/nanopay/tx/planner/BmoInterTrustPlanner' },
 
+  // Error Fees
+  { name: 'net/nanopay/tx/errorfee/ClientErrorBillingService' },
+  { name: 'net/nanopay/tx/errorfee/ErrorBilling' },
+  { name: 'net/nanopay/tx/errorfee/ErrorCharge' },
+  { name: 'net/nanopay/tx/errorfee/ErrorChargeFee' },
+  { name: 'net/nanopay/tx/errorfee/ErrorFee' },
+  { name: 'net/nanopay/tx/errorfee/ChargeDateServiceInterface' },
+
   // Fees
   { name: 'net/nanopay/tx/fee/Fee' },
   { name: 'net/nanopay/tx/fee/FeeDAOCreateView' },
@@ -1650,6 +1659,7 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/predicate/SigningOfficerQuestionAnswered' },
   { name: 'net/nanopay/crunch/predicate/UserIsSigningOfficerOfBusiness' },
   { name: 'net/nanopay/crunch/IsSpid' },
+  { name: 'net/nanopay/crunch/ruler/PermissionedUCJRule' },
 
   // crunch onboarding
   { name: 'net/nanopay/crunch/onboardingModels/CreateRegisterPaymentProviderUCJ' },
@@ -1779,7 +1789,6 @@ FOAM_FILES([
   { name: 'net/nanopay/country/br/CapableCreateNatureCodeApprovalsRuleAction' },
   { name: 'net/nanopay/country/br/ApprovedNatureCodeApprovalRequestRuleAction' },
   { name: 'net/nanopay/country/br/ExpectedBoardingDate' },
-  { name: 'net/nanopay/country/PermittedCountryFilterDAO' },
   { name: 'net/nanopay/country/br/NatureCodePaymentProviderJunctionRefinement' },
   { name: 'net/nanopay/country/br/NatureBusinessRelationship' },
   { name: 'net/nanopay/country/br/NatureCodeCardSelectView' },

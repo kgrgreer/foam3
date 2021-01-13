@@ -32,7 +32,6 @@ foam.CLASS({
     'net.nanopay.fx.CurrencyFXService',
     'net.nanopay.fx.afex.AFEXBeneficiaryComplianceTransaction',
     'net.nanopay.fx.afex.AFEXBusiness',
-    'net.nanopay.fx.afex.AFEXCredentials',
     'net.nanopay.fx.afex.AFEXServiceProvider',
     'net.nanopay.fx.afex.AFEXTransaction',
     'net.nanopay.fx.afex.AFEXFundingTransaction',
@@ -217,6 +216,7 @@ foam.CLASS({
         summary.setFxRate(fxQuote.getRate());
         summary.setFxExpiry(fxQuote.getExpiryTime());
         summary.setInvoiceId(request.getInvoiceId());
+        summary.setPlanner(this.getId());
 
         summary.addNext(createComplianceTransaction(request));
         summary.addNext(afexCT);

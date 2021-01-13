@@ -1,5 +1,5 @@
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
   "id":"crunch-onboard-compliance-so-0",
   "name":"Crunch Onboarding - Securefact SIDni",
   "priority":110,
@@ -33,7 +33,7 @@ p({
 })
 
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
   "id":"crunch-onboard-compliance-so-1",
   "name":"Crunch Onboarding - Dow Jones Person KYC - User onboarding",
   "priority":100,
@@ -65,7 +65,7 @@ p({
 })
 
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
   "id":"crunch-onboard-compliance-business-0",
   "name":"Crunch Onboarding - Securefact LEV",
   "priority":110,
@@ -89,7 +89,7 @@ p({
 })
 
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
   "id":"crunch-onboard-compliance-business-1",
   "name":"Crunch Onboarding - Dow Jones Entity KYC - Business onboarding",
   "priority":100,
@@ -113,7 +113,7 @@ p({
 })
 
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
   "id":"crunch-onboard-compliance-beneficialowner-0",
   "name":"Crunch Onboarding - Dow Jones Beneficial Owner KYC - Business onboarding",
   "priority":100,
@@ -136,7 +136,7 @@ p({
 })
 
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
   "id":"expanded-onboarding-compliance-expandedUserDetail-dowJones",
   "name":"Crunch Onboarding - Dow Jones Expanded User Detail KYC",
   "priority":120,
@@ -170,7 +170,7 @@ p({
 })
 
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
   "id":"expanded-onboarding-compliance-expandedUserDetail-secureFact",
   "name":"Crunch Onboarding - SecureFact SIDni Expanded User Detail",
   "priority":120,
@@ -203,7 +203,7 @@ p({
 })
 
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
   "id":"expanded-onboarding-compliance-businessPaymentsReceiving-dowJones",
   "name":"Crunch Onboarding - Dow Jones Business Detail Data KYC",
   "priority":110,
@@ -237,7 +237,7 @@ p({
 })
 
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
   "id":"expanded-onboarding-compliance-businessPaymentsReceiving-secureFact",
   "name":"Crunch Onboarding - SecureFact LEV Business Detail Data",
   "priority":110,
@@ -269,7 +269,7 @@ p({
   "lifecycleState":1
 })
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
   "id":"expanded-onboarding-compliance-status",
   "name":"Expanded Onboarding Set Compliance Status to Pass",
   "documentation":"For legacy system integration we need to set some properties to User objects.",
@@ -293,7 +293,7 @@ p({
 })
 
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
   "id":"expanded-onboarding-compliance-approval-0",
   "name":"Crunch Onboarding - User Compliance Approval Rule",
   "documentation": "Rule for User updating compliance UCJs",
@@ -340,7 +340,7 @@ p({
 })
 
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
   "id":"expanded-onboarding-compliance-passed-reput-create",
   "name":"Reput Source Capabilities When Onboarding Capability Granted on Create",
   "priority":1,
@@ -366,7 +366,7 @@ p({
   "lifecycleState":1
 })
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
   "id":"expanded-onboarding-compliance-passed-reput-update",
   "name":"Reput Source Capabilities when Onboarding Capability Granted on Update",
   "priority":1,
@@ -398,7 +398,7 @@ p({
   "lifecycleState":1
 })
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
   "id":"expanded-onboarding-compliance-approval-1",
   "name":"Set Fulfilled ComplianceApprovalRequest",
   "priority":1,
@@ -413,7 +413,7 @@ p({
 })
 
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
   "id":"crunch-onboard-compliance-0",
   "name":"Crunch Onboarding - User Final Compliance Rule",
   "documentation":"Final rule for User compliance.",
@@ -470,7 +470,7 @@ p({
 })
 
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
   "id":"crunch-onboard-compliance-businessdirector-0",
   "name":"Crunch Onboarding - Dow Jones Business Director KYC - Business onboarding",
   "priority":100,
@@ -493,7 +493,7 @@ p({
 })
 
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
   "id":"crunch-onboard-compliance-approvalrequest-0",
   "name":"Set Fulfilled ComplianceApprovalRequest",
   "priority":1,
@@ -508,7 +508,7 @@ p({
 })
 
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
   "id":"crunch-onboard-compliance-notification",
   "name":"Send UCJ Expiry Notification",
   "priority":1,
@@ -586,7 +586,7 @@ p({
 })
 
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
   "id":"7bedc2da-d27f-4f17-a452-50038993898e",
   "name":"Signing Officer user compliance value update",
   "documentation":"For legacy system integration we need to set some properties to User objects.",
@@ -621,7 +621,7 @@ p({
 })
 
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
   "id":"12b0c9d0-eeb9-4b26-9d8d-95ddd19dfb1e",
   "name":"Onboarded user compliance value update",
   "documentation":"For legacy system integration we need to set some properties to User objects.",
@@ -645,7 +645,7 @@ p({
 })
 
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
   "id":"12b0c9d0-wwb9-4b26-9d8d-95fff19dfb1e",
   "name":"Enable business status setting",
   "documentation":"Set status to active when SetComplianceOnBusiness",
@@ -667,7 +667,7 @@ p({
   "lifecycleState":1
 })
 p({
-  "class": "foam.nanos.ruler.Rule",
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
   "id":"9d1d9360-c320-4b2c-b813-8482c07a75a1",
   "name": "Signing Officer manual Approval by Agent",
   "priority": 100,
@@ -701,7 +701,7 @@ p({
   "lifecycleState":1
 })
 p({
-  "class":"foam.nanos.ruler.Rule",
+  "class":"net.nanopay.crunch.ruler.PermissionedUCJRule",
   "id":"1106f209-e33c-4870-bcad-0b717f831e37",
   "name":"Business manual Approval by Agent",
   "priority":110,

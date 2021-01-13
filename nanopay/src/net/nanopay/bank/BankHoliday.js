@@ -45,7 +45,7 @@ foam.CLASS({
         documentation: 'Date of the holiday.',
         required: true,
         tableCellFormatter: function(value, obj, axiom) {
-          this.add(value.toISOString().substring(0, 10));
+          this.add(value.toLocaleDateString(foam.locale));
         }
       },
       {

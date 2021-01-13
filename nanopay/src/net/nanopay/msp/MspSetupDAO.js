@@ -42,9 +42,6 @@ foam.CLASS({
     'foam.nanos.ruler.Rule',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.admin.model.AccountStatus',
-    'net.nanopay.auth.ServiceProviderURL',
-    'net.nanopay.auth.UserCreateServiceProviderURLRule',
-    'net.nanopay.auth.UserCreateServiceProviderURLRuleAction',
     'net.nanopay.tx.fee.TransactionFeeRule',
     'java.util.Arrays',
     'java.util.ArrayList',
@@ -99,6 +96,7 @@ foam.CLASS({
         addSpidPrerequisites(x, spid, mspInfo.getPlannerPermissions(), "plannerCapability");
 
         // Add theme for the client side - not for back-office
+        // MSPInfo referenced theme will be used as a template for a new theme associated to the created spid
         Theme clientTheme = (Theme) themeDAO.find(mspInfo.getTheme());
         clientTheme = clientTheme == null ? new Theme() : (Theme) clientTheme.fclone();
         clientTheme.clearId();
@@ -153,20 +151,6 @@ foam.CLASS({
           junction.setTargetId(permissionArray.get(i));
           groupPermissionJunctionDAO.put(junction);
         }
-
-        // Create new serviceProviderURL
-        ServiceProviderURL serviceProviderURL = new ServiceProviderURL();
-        serviceProviderURL.setSpid(mspInfo.getSpid());
-        serviceProviderURL.setUrls(mspInfo.getDomain());
-
-        ServiceProviderURL[] configList = new ServiceProviderURL[1];
-        configList[0] = serviceProviderURL;
-
-        // find the UserCreateServiceProviderURLRule and update the configList
-        UserCreateServiceProviderURLRule rule =
-          (UserCreateServiceProviderURLRule) ruleDAO.find(this.getSpidUrlRule());
-        rule.setConfig((ServiceProviderURL[]) ArrayUtils.addAll(configList, rule.getConfig()));
-        ruleDAO.put(rule);
 
         // Create spid-admin's default digital account
         var digitalAccount = DigitalAccount.findDefault(x, adminUser, mspInfo.getDenomination());

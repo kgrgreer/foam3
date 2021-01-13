@@ -114,9 +114,9 @@ foam.CLASS({
         // Check transaction status and lifecycleState
         Transaction oldTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).find(getId());
         if ( oldTxn != null
-          && ( oldTxn.getStatus().equals(TransactionStatus.DECLINED)
-            || oldTxn.getStatus().equals(TransactionStatus.COMPLETED) )
-          && ! getStatus().equals(TransactionStatus.DECLINED)
+          && ( oldTxn.getStatus() == TransactionStatus.DECLINED
+            || oldTxn.getStatus() == TransactionStatus.COMPLETED )
+          && getStatus() != TransactionStatus.DECLINED
           && oldTxn.getLifecycleState() != LifecycleState.PENDING
         ) {
           logger.error("Unable to update CITransaction, if transaction status is completed or declined. Transaction id: " + getId());

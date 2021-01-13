@@ -25,13 +25,9 @@ p({
     description:"External API support group",
     parent:"support-base"
 })
-
-// Northcard
 p({
-    "class":"foam.nanos.auth.Group",
-    "id":"api-northcard",
-    "parent":"api-base",
-    "enabled":true,
-    "description":"API Northcard",
-    "defaultMenu":"view-requestmoney"
+    class:"foam.nanos.auth.Group",
+    id:"external-sme",
+    description:"External API sme group",
+    parent:"sme"
 })

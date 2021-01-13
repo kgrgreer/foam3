@@ -44,6 +44,7 @@ foam.CLASS({
     'java.util.List',
     'java.util.Map',
     'net.nanopay.model.Business',
+    'net.nanopay.model.BusinessDirector',
     'net.nanopay.model.BusinessUserJunction',
     'net.nanopay.partner.treviso.onboarding.BRBeneficialOwner',
     'net.nanopay.partner.treviso.onboarding.BRBusinessDirector',
@@ -108,7 +109,8 @@ foam.CLASS({
           }
 
           // send email to business directors whose hasSignedContratosDeCambio is true
-          for ( BRBusinessDirector businessDirector : (BRBusinessDirector[]) business.getBusinessDirectors() ) {
+          for ( BusinessDirector bD : business.getBusinessDirectors() ) {
+            BRBusinessDirector businessDirector = (BRBusinessDirector) bD;
             if ( ! businessDirector.getHasSignedContratosDeCambio() ) continue;
             List<User> businessDirectorUser = ((ArraySink) localUserDAO
               .where(EQ(User.EMAIL, businessDirector.getEmail()))
@@ -138,9 +140,9 @@ foam.CLASS({
         {
           name: 'recipient',
           type: 'foam.nanos.auth.User'
-        },        
+        }   
       ],
-      javaCode:`
+      javaCode: `
         Map<String, Object>  args           = new HashMap<>();
         Group                group          = business.findGroup(x);
         AppConfig            config         = group != null ? group.getAppConfig(x) : (AppConfig) x.get("appConfig");
@@ -187,7 +189,7 @@ foam.CLASS({
           type: 'String'
         }
       ],
-      javaCode:`
+      javaCode: `
         Map<String, Object>  args           = new HashMap<>();
         Group                group          = business.findGroup(x);
         AppConfig            config         = group != null ? group.getAppConfig(x) : (AppConfig) x.get("appConfig");

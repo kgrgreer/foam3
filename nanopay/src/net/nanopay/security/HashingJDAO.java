@@ -43,11 +43,11 @@ public class HashingJDAO
   }
 
   public HashingJDAO(X x, String algorithm, ClassInfo classInfo, String filename) {
-    this(x, algorithm, false, false, new MDAO(classInfo), filename);
+    this(x, algorithm, true, true, new MDAO(classInfo), filename);
   }
 
   public HashingJDAO(X x, boolean rollDigests, ClassInfo classInfo, String filename) {
-    this(x, "SHA-256", false, rollDigests, new MDAO(classInfo), filename);
+    this(x, "SHA-256", true, rollDigests, new MDAO(classInfo), filename);
   }
 
   public HashingJDAO(X x, String algorithm, boolean digestRequired, boolean rollDigests, ClassInfo classInfo, String filename) {
@@ -55,19 +55,19 @@ public class HashingJDAO
   }
 
   public HashingJDAO(X x, DAO delegate, String filename) {
-    this(x, "SHA-256", false, false, delegate, filename);
+    this(x, "SHA-256", true, true, delegate, filename);
   }
 
   public HashingJDAO(X x, String algorithm, DAO delegate, String filename) {
-    this(x, algorithm, false, false, delegate, filename);
+    this(x, algorithm, true, true, delegate, filename);
   }
 
   public HashingJDAO(X x, boolean rollDigests, DAO delegate, String filename) {
-    this(x, "SHA-256", false, rollDigests, delegate, filename);
+    this(x, "SHA-256", true, rollDigests, delegate, filename);
   }
 
   public HashingJDAO(X x, String algorithm, boolean rollDigests, DAO delegate, String filename) {
-    this(x, algorithm, false, rollDigests, delegate, filename);
+    this(x, algorithm, true, rollDigests, delegate, filename);
   }
 
   public HashingJDAO(X x, String algorithm, boolean digestRequired, boolean rollDigests, DAO delegate, String filename) {

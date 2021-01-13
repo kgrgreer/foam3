@@ -102,7 +102,13 @@ foam.CLASS({
             for ( Transaction COP : cashOutPlans ) {
               Transaction t = (Transaction) txn.fclone();
               Transaction ci = (Transaction) CIP.fclone();
-              Transaction co = (Transaction) COP.fclone();
+              Transaction co; // If a summary is present, we need to cut it out.
+              if (COP instanceof SummaryTransaction) {
+                co = (Transaction) COP.getNext()[0].fclone();
+                co.setStatus(TransactionStatus.COMPLETED);
+              }
+              else
+                co = (Transaction) COP.fclone();
               ci.addNext(co);
               if (getCreateCompliance()) {
                 ComplianceTransaction ct = createComplianceTransaction(txn);
@@ -112,8 +118,6 @@ foam.CLASS({
               else{
                 t.addNext(ci);
               }
-              t.addLineItems(CIP.getLineItems());
-              t.addLineItems(COP.getLineItems());
               t.setStatus(TransactionStatus.COMPLETED);
               t.setPlanCost(t.getPlanCost() + ci.getPlanCost() + co.getPlanCost());
               quote.getAlternatePlans_().add(t);

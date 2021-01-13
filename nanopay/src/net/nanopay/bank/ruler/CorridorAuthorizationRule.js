@@ -60,9 +60,7 @@ foam.CLASS({
         BankAccount acc = (BankAccount) obj;
         User owner = (User) acc.findOwner(x);
         User creator = (User) acc.findCreatedBy(x);
-        if ( ! (creator instanceof Business) ) {
-          throw new AuthorizationException(BUSINESS_REQUIRED);
-        }
+        
         String country =  acc.getCountry();
         String currency = acc.getDenomination();
 
