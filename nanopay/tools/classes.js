@@ -1027,6 +1027,11 @@ var classes = [
   'net.nanopay.meter.test.BlockDisabledUserInvoiceTest',
   'net.nanopay.meter.test.ComplianceAwareDummy',
 
+  //screening response
+  'net.nanopay.meter.compliance.ruler.CreateScreeningResponse',
+  'net.nanopay.meter.report.ScreeningResponseCounter',
+  'net.nanopay.meter.report.ScreeningResponseType',
+
   'net.nanopay.security.auth.LogoutDisabledUserDAO',
 
   // business

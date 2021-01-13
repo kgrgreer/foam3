@@ -245,6 +245,18 @@ FOAM_FILES([
 
   { name: 'net/nanopay/ui/LoadingSpinner', flags: ['web'] },
 
+
+  { name: 'net/nanopay/ui/dashboard/DashboardView', flags: ['web'] },
+  { name: 'net/nanopay/ui/dashboard/PaymentErrorCard', flags: ['web'] },
+  { name: 'net/nanopay/ui/dashboard/PendingComplianceCard', flags: ['web'] },
+  { name: 'net/nanopay/ui/dashboard/ScreeningResponsesCard', flags: ['web'] },
+  { name: 'net/nanopay/ui/dashboard/TransactionDateRangeView', flags: ['web'] },
+  { name: 'net/nanopay/ui/dashboard/PaymentErrorCitationView', flags: ['web'] },
+  { name: 'net/nanopay/ui/dashboard/PendingComplianceCitationView', flags: ['web'] },
+  { name: 'net/nanopay/ui/dashboard/ScreeningResponseCitationView', flags: ['web'] },
+  { name: 'net/nanopay/meter/report/ScreeningResponseCounter', flags: ['web'] },
+  { name: 'net/nanopay/meter/report/ScreeningResponseType', flags: ['web'] },
+
   // SSO
   { name: 'net/nanopay/auth/openid/SSOToken' },
   { name: 'net/nanopay/auth/openid/OTLoginToken' },
