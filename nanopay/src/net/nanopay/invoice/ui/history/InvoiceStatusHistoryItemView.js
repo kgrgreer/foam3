@@ -83,13 +83,11 @@ foam.CLASS({
 
   methods: [
 
-    function formatDate(timestamp, displayTime=true) {
-      var locale = 'en-US';
-      var time = displayTime ? `${timestamp.toLocaleTimeString(locale, { hour12: false })}s ` : '';
-      return time
-        + `${timestamp.toLocaleString(locale, { month: 'short' })} `
-        + `${timestamp.getDate()} `
-        + timestamp.getFullYear();
+    function formatDate(timestamp) {
+      return timestamp.toLocaleTimeString(foam.locale, { hour12: false }) +
+        ' ' + timestamp.toLocaleString(foam.locale, { month: 'short' }) +
+        ' ' + timestamp.getDate() +
+        ' ' + timestamp.getFullYear();
     },
 
     async function outputRecord(parentView, record) {

@@ -46,6 +46,7 @@ foam.CLASS({
     'net.nanopay.payment.PADTypeLineItem',
     'net.nanopay.tx.BulkTransaction',
     'net.nanopay.tx.CompositeTransaction',
+    'net.nanopay.tx.SummaryTransaction',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.PlanCostComparator',
     'static foam.mlang.MLang.*',
@@ -113,7 +114,8 @@ foam.CLASS({
           // add it as the next of the composite transaction
           PlanCostComparator costComparator =  new PlanCostComparator.Builder(x).build();
           Collections.sort(transactionPlans, costComparator);
-          var quotedChild = transactionPlans.get(0);  
+          var quotedChild = transactionPlans.get(0);
+          if (quotedChild instanceof SummaryTransaction) quotedChild = quotedChild.getNext()[0];
           var compliance = createComplianceTransaction(quotedChild);
           compliance.addNext(quotedChild);
           ct.addNext(compliance);
