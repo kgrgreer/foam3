@@ -52,7 +52,7 @@ foam.CLASS({
           bank.setOwner(user.getId());
           
           DAO accountDAO = (DAO) x.get("localAccountDAO");
-          accountDAO.put(bank);
+          accountDAO.put_(x, bank);
          }
         }, "Create bank account for a user submitting a strategized bank account capability");
       `
