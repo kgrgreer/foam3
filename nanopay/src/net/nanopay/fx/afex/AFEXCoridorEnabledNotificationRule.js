@@ -90,7 +90,7 @@ foam.CLASS({
       DAO                  localGroupDAO  = (DAO) x.get("localGroupDAO");
       Group                group          = (Group) localGroupDAO.find(business.getGroup());
       AppConfig            appConfig      = group.getAppConfig(x);
-      String               url            = appConfig.getUrl().replaceAll("/$", "");
+      String               url            = appConfig.getUrl();
 
       message.setTo(new String[]{business.getEmail()});
       String toCountry = business.getAddress().getCountryId().equals("CA") ? "USA" : "Canada";

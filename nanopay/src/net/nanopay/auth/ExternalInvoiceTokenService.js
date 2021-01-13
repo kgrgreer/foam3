@@ -94,7 +94,7 @@ foam.CLASS({
 
         Group group = user.findGroup(x);
         AppConfig appConfig = group.getAppConfig(x);
-        String url = appConfig.getUrl().replaceAll("/$", "");
+        String url = appConfig.getUrl();
 
         // Construct the url of the external invoice
         StringBuilder urlStringB = new StringBuilder();
