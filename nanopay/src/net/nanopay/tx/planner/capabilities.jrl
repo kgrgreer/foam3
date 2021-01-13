@@ -13,7 +13,7 @@ p({
 p({
   class: "foam.nanos.crunch.Capability",
   id: "DomesticInterBankAccountPlannerCapability",
-  description: "Grants BankBank, BankDigital and DigitalBank planners",
+  description: "Grants BankBank, BankDigital, DigitalBank planners and Verification Transaction planner",
   version: "0",
   permissionsGranted: [
     "rule.read.3cb6aab3-107a-495a-8974-ed3286192b35",
