@@ -79,19 +79,20 @@ foam.CLASS({
           digitalTxn.setDestinationAccount(digital.getId());
           Transaction[] Ds = multiQuoteTxn(x, digitalTxn, quote);
 
-
           for ( Transaction tx1 : Ds ) {
             // Split 2: BDigital -> BBank
             Transaction co = new Transaction();
             co.copyFrom(requestTxn);
             co.setSourceAccount(digital.getId());
-            co.setAmount(tx1.getTotal(x, tx1.getDestinationAccount()));
+            //Note: if tx1, does not have all the transfers for getTotal this wont work.
+            co.setAmount(tx1.getTotal(x, digital.getId()));
             Transaction[] COs = multiQuoteTxn(x, co, quote, false);
+
             for ( Transaction tx2 : COs ) {
-              Transaction Digital = (Transaction) tx1.fclone();
-              Digital.addNext((Transaction) tx2.fclone());
-              Digital.setPlanCost(Digital.getPlanCost() + tx2.getPlanCost());
+              Transaction Digital = (Transaction) removeSummaryTransaction(tx1).fclone();
+              Digital.addNext((Transaction) removeSummaryTransaction(tx2).fclone());
               Transaction t = (Transaction) txn.fclone();
+              t.setPlanCost(tx1.getPlanCost() + tx2.getPlanCost());
               t.addNext(Digital);
               quote.getAlternatePlans_().add(t);
             }
