@@ -543,7 +543,9 @@ else
   echo -e "\033[34;1m \033[36;1m(c) nanopay Corporation \033[0m\033[34;1m|_|          |___/  \033[0m"
   echo ""
 fi
-
+#Print Transactions version Number.
+  echo -e "Running Transaction Engine\033[36;1m v4.2.4\033[0m"
+  echo ""
 ############################
 
 FS=rw
