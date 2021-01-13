@@ -31,7 +31,7 @@ done
 declare -a sources=(
 )
 
-if [ -z ${EXPLICIT_FILES} ]; then
+if [ -z ${EXTRA_FILES} ]; then
     sources+=("foam2/src")
     sources+=("nanopay/src")
 fi

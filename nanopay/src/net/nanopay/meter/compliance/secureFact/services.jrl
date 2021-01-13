@@ -3,14 +3,17 @@ p({
     "name":"securefactSIDniDAO",
     "serve":true,
     "serviceScript":"""
-        ruler = new foam.nanos.ruler.RulerDAO(x, new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse.getOwnClassInfo(), "securefactSIDni"), "securefactSIDniDAO"); 
+        mdao = new foam.dao.MDAO(net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse.getOwnClassInfo());
+        inner = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, mdao, "securefactSIDniDAO", "true".equals(System.getProperty("CLUSTER")));
         dao = new foam.dao.EasyDAO.Builder(x)
+            .setOf(net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse.getOwnClassInfo())
             .setPm(true)
             .setPipelinePm(true)
             .setSeqNo(true)
-            .setInnerDAO(ruler)
+            .setMdao(mdao)
+            .setInnerDAO(inner)
             .setName("securefactSIDni")
-            .setOf(net.nanopay.meter.compliance.secureFact.sidni.SIDniResponse.getOwnClassInfo())
+            .setRuler(true)
             .build(); 
         return dao;
     """,
@@ -25,14 +28,16 @@ p({
     "name":"securefactLEVDAO",
     "serve":true,
     "serviceScript":"""
-        ruler = new foam.nanos.ruler.RulerDAO(x, new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, net.nanopay.meter.compliance.secureFact.lev.LEVResponse.getOwnClassInfo(), "securefactLEV"), "securefactLEVDAO"); 
+      mdao = new foam.dao.MDAO(net.nanopay.meter.compliance.secureFact.lev.LEVResponse.getOwnClassInfo());
+      inner = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, mdao, "securefactLEVDAO", "true".equals(System.getProperty("CLUSTER"))); 
         dao = new foam.dao.EasyDAO.Builder(x)
+            .setOf(net.nanopay.meter.compliance.secureFact.lev.LEVResponse.getOwnClassInfo())
             .setPm(true)
             .setPipelinePm(true)
             .setSeqNo(true)
-            .setInnerDAO(ruler)
-            .setName(\"securefactLEV\")
-            .setOf(net.nanopay.meter.compliance.secureFact.lev.LEVResponse.getOwnClassInfo())
+            .setMdao(mdao)
+            .setInnerDAO(inner)
+            .setName("securefactLEV")
             .build(); 
         return dao;
     """,
