@@ -26,12 +26,11 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
-    'foam.dao.DAO',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
+    'foam.nanos.crunch.CrunchService',
     'foam.nanos.crunch.UserCapabilityJunction',
-    'net.nanopay.model.Business',
-    'static foam.mlang.MLang.*'
+    'net.nanopay.model.Business'
   ],
 
   properties: [
@@ -51,17 +50,11 @@ foam.CLASS({
       javaCode: `
         if ( ! ( obj instanceof X ) ) return false;
         X x = (X) obj;
-        DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
+        CrunchService crunchService = (CrunchService) x.get("crunchService");
         User user = ((Subject) x.get("subject")).getUser();
         if ( user == null || ! ( user instanceof Business ) ) return false;
-        UserCapabilityJunction ucj = (UserCapabilityJunction) userCapabilityJunctionDAO.find(
-          AND(
-            EQ(UserCapabilityJunction.SOURCE_ID, user.getId()),
-            EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-20"),
-            EQ(UserCapabilityJunction.STATUS, getStatus())
-          )
-        );
-        return ucj != null;
+        UserCapabilityJunction ucj = crunchService.getJunction(x, "554af38a-8225-87c8-dfdf-eeb15f71215f-20");
+        return ucj != null && ucj.getStatus() == getStatus();
       `
     }
   ]

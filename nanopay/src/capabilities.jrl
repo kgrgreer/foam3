@@ -33,7 +33,10 @@ p({
     "class": "foam.nanos.crunch.predicate.IsAgent"
   },
   "keywords":["featured"],
-  "interceptIf":{"class":"net.nanopay.crunch.predicate.SigningOfficerQuestionAnswered"},
+  "interceptIf":{
+    "class":"foam.mlang.predicate.Not",
+    "arg1":{"class":"net.nanopay.crunch.predicate.SigningOfficerQuestionAnswered"}
+  },
   "wizardlet": {
     "class": "net.nanopay.crunch.wizardlet.SigningOfficerQuestionWizardlet"
   },
