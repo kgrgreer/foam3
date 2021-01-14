@@ -60,7 +60,7 @@ p({
       .setGuid(true)
       .setRuler(true)
       .setApprovableAware(false)
-      .setServiceProviderAware(false)
+      .setServiceProviderAware(true)
      .build();
   """
 })

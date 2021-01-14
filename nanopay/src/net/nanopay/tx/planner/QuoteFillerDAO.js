@@ -37,7 +37,9 @@ foam.CLASS({
     'net.nanopay.tx.TransactionQuote',
     'net.nanopay.account.SecuritiesAccount',
     'foam.util.SafetyUtil',
-    'foam.nanos.auth.LifecycleState'
+    'foam.nanos.auth.LifecycleState',
+    'static foam.mlang.MLang.EQ',
+    'static foam.mlang.MLang.OR',
   ],
 
   methods: [
@@ -48,31 +50,41 @@ foam.CLASS({
         Logger logger = (Logger) x.get("logger");
         TransactionQuote quote = (TransactionQuote) obj;
         Transaction txn = quote.getRequestTransaction();
+        //*** Elevate account DAO to system access constrained to spid+nanopay ***
+        DAO dao = (DAO) getX().get("localAccountDAO");
+        User payer = null; // can get user from payer id or source account. default to payerid found user spid.
+        if ( txn.getPayerId() != 0 ) // assuming user can only set a payerid that they have access to in their own context
+          payer = (User) ((DAO) x.get("bareUserDAO")).find_(x, txn.getPayerId());
+        else { if (txn.getSourceAccount() != null) //the user needs to be able to find their own account in their own context to use this.
+          payer = (User) ((Account) ((DAO) x.get("accountDAO")).find_(x, txn.getSourceAccount())).findOwner(x);
+        }
+        if (payer == null ) { // we require a user to get the spid, no way to get user = failure to plan.
+          ((Logger) x.get("logger")).error("Payer not found", txn.getId(), "source", txn.getSourceAccount(), "payer", txn.getPayerId());
+          throw new ValidationException("Payer not found");
+        }
+        dao = dao.where(OR(
+          EQ(Account.SPID,"nanopay"),
+          EQ(Account.SPID, payer.getSpid())
+        ));
+        x.put("localAccountDAO",dao); // store elevated localAccountDAO in context
 
         // ---- set source account
         Account account = txn.findSourceAccount(x);
         if ( account == null ) {
-          User user = (User) ((DAO) x.get("bareUserDAO")).find_(x, txn.getPayerId());
-          if ( user == null ) {
-            ((Logger) x.get("logger")).error("Payer not found", txn.getId(), "source", txn.getSourceAccount(), "payer", txn.getPayerId());
-            throw new ValidationException("Payer not found");
-          }
-          account = DigitalAccount.findDefault(getX(), user, txn.getSourceCurrency());
+          account = DigitalAccount.findDefault(x, payer, txn.getSourceCurrency());
           txn.setSourceAccount(account.getId());
-          quote.setSourceAccount(account);
-        } else {
-          quote.setSourceAccount(account);
         }
+        quote.setSourceAccount(account);
 
         // ---- set destination account
-        Account destAccount = txn.findDestinationAccount(x);
+        Account destAccount = txn.findDestinationAccount(x); //context looking in admin, but spid+nanopay constrained.
         if ( destAccount == null ) {
-          User user = (User) ((DAO) x.get("bareUserDAO")).find_(x, txn.getPayeeId());
-          if ( user == null ) {
+          User payee = (User) ((DAO) x.get("bareUserDAO")).find_(x, txn.getPayeeId());
+          if ( payee == null ) {
             ((Logger) x.get("logger")).error("Payee not found", txn.getId(), "source", txn.getDestinationAccount(), "payee", txn.getPayeeId());
             throw new ValidationException("Payee not found");
           }
-          DigitalAccount accountDigital = DigitalAccount.findDefault(getX(), user, txn.getDestinationCurrency());
+          DigitalAccount accountDigital = DigitalAccount.findDefault(x, payee, txn.getDestinationCurrency()); //context looking in admin, but spid+nanopay constrained.
           
           // Once Ablii has digital account support, will need to make AFEX support CAD digital accounts as well.
           // AFEX planner will know which trust account to use for AFEXTransaction and then add on
@@ -82,7 +94,7 @@ foam.CLASS({
           //   - DigitalTransaction for : CA-CAD -> CA-Digital
           LiquiditySettings digitalAccLiquidity = accountDigital.findLiquiditySetting(x);
           if ( digitalAccLiquidity == null || (! digitalAccLiquidity.getHighLiquidity().getEnabled()) ) {
-            Account bankAccount = BankAccount.findDefault(x, user, txn.getDestinationCurrency());
+            Account bankAccount = BankAccount.findDefault(x, payee, txn.getDestinationCurrency());
             if ( bankAccount != null ) {
               destAccount = bankAccount;
             }
