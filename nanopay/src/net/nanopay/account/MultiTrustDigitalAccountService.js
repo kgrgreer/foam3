@@ -41,6 +41,8 @@ foam.CLASS({
      'java.util.List',
      'java.util.ArrayList',
      'foam.dao.ArraySink',
+     'static foam.mlang.MLang.EQ',
+     'static foam.mlang.MLang.OR',
   ],
 
   properties: [
@@ -51,6 +53,11 @@ foam.CLASS({
       javaType: 'java.util.ArrayList<String>',
       javaFactory: `ArrayList al = new ArrayList<String>(); al.add("11");al.add("9"); return al;`
 
+    },
+    {
+      name: 'reserveAccountSpid',
+      class: 'String',
+      value: 'nanopay'
     }
   ],
 
@@ -111,7 +118,13 @@ foam.CLASS({
       ],
       javaCode: `
         User user = ((Subject) x.get("subject")).getUser();
-        DAO accountDAO = ((DAO) x.get("localAccountDAO")).inX(x);
+        DAO accountDAO = ((DAO) getX().get("localAccountDAO"));
+        accountDAO = accountDAO.where(
+          OR(
+            EQ(Account.SPID, getReserveAccountSpid()),
+            EQ(Account.SPID, user.getSpid())
+        ));
+        x = x.put("localAccountDAO", accountDAO);
         // get the trust account to generate for
         List trusts = new ArrayList<TrustAccount>();
         for (String tId : trustAccounts) {
