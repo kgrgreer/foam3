@@ -230,9 +230,6 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/ProxyAgentAuthService', flags: ['web'] },
   { name: 'net/nanopay/auth/BusinessAgentAuthService', flags: ['web'] },
   { name: 'net/nanopay/auth/CheckCurrencyRule' },
-  { name: 'net/nanopay/auth/ServiceProviderURL' },
-  { name: 'net/nanopay/auth/UserCreateServiceProviderURLRule' },
-  { name: 'net/nanopay/auth/UserCreateServiceProviderURLRuleAction' },
   { name: 'net/nanopay/ui/wizard/WizardOverview', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardSubView', flags: ['web'] },
   { name: 'net/nanopay/ui/wizard/WizardController', flags: ['web'] },
@@ -247,6 +244,18 @@ FOAM_FILES([
   { name: 'net/nanopay/ui/DataSecurityBanner', flags: ['web'] },
 
   { name: 'net/nanopay/ui/LoadingSpinner', flags: ['web'] },
+
+
+  { name: 'net/nanopay/ui/dashboard/DashboardView', flags: ['web'] },
+  { name: 'net/nanopay/ui/dashboard/PaymentErrorCard', flags: ['web'] },
+  { name: 'net/nanopay/ui/dashboard/PendingComplianceCard', flags: ['web'] },
+  { name: 'net/nanopay/ui/dashboard/ScreeningResponsesCard', flags: ['web'] },
+  { name: 'net/nanopay/ui/dashboard/TransactionDateRangeView', flags: ['web'] },
+  { name: 'net/nanopay/ui/dashboard/PaymentErrorCitationView', flags: ['web'] },
+  { name: 'net/nanopay/ui/dashboard/PendingComplianceCitationView', flags: ['web'] },
+  { name: 'net/nanopay/ui/dashboard/ScreeningResponseCitationView', flags: ['web'] },
+  { name: 'net/nanopay/meter/report/ScreeningResponseCounter', flags: ['web'] },
+  { name: 'net/nanopay/meter/report/ScreeningResponseType', flags: ['web'] },
 
   // SSO
   { name: 'net/nanopay/auth/openid/SSOToken' },
@@ -465,6 +474,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/model/Transaction' },
   { name: 'net/nanopay/tx/model/TransactionDAOCreateView' },
   { name: 'net/nanopay/tx/bench/TransactionBenchmarkClient' },
+  { name: 'net/nanopay/tx/bench/TransactionPlannerBenchmarkClient' },
   { name: 'net/nanopay/tx/ComplianceTransaction' },
   { name: 'net/nanopay/tx/GreenfenceTransaction' },
   { name: 'net/nanopay/tx/InvoiceTransaction' },
@@ -525,6 +535,8 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/PartnerTransaction' },
   { name: 'net/nanopay/tx/SummaryTransactionDAO' },
   { name: 'net/nanopay/tx/SummaryTransactionInnerDAO' },
+  { name: 'net/nanopay/tx/TransactionException' },
+  { name: 'net/nanopay/tx/UnsupportedTransactionException' },
   { name: 'net/nanopay/tx/UnsupportedDateException' },
 
   //integration
@@ -813,7 +825,6 @@ FOAM_FILES([
   { name: 'net/nanopay/security/auth/LoginAttempts' },
   { name: 'net/nanopay/security/auth/IPLoggingAuthService' },
   { name: 'net/nanopay/auth/LoginAttempt' },
-  { name: 'net/nanopay/auth/AuthType' },
 
   // PII
   { name: 'net/nanopay/security/pii/PII' },

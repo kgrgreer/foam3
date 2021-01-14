@@ -59,7 +59,6 @@ foam.CLASS({
       height: 84px;
       background-color: #fafafa;
       position: fixed;
-      bottom: 0;
       position: absolute;
       margin: 0;
     }
@@ -104,6 +103,7 @@ foam.CLASS({
     ^emailStyle {
       margin-top: 24px;
       margin-left: 32px;
+      margin-bottom: 24px;
       width: 92%;
     }
     ^emailStyle .foam-u2-TextField {

@@ -195,9 +195,9 @@ foam.CLASS({
       code: function() {
         var url = window.location.origin
           + '/service/genTxnReport?startDate='
-          + this.startDate.toISOString().substring(0, 10)
+          + this.startDate.toLocaleDateString(foam.locale)
           +'&endDate='
-          + this.endDate.toISOString().substring(0, 10);
+          + this.endDate.toLocaleDateString(foam.locale);
         window.location.assign(url);
       }
     }

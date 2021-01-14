@@ -120,7 +120,7 @@ foam.CLASS({
           test( txn.getNext().length > 0, "CI-D-CO root.next[0].next[0].next[0] has next, found: "+txn.getNext().length);
           if ( txn.getNext().length > 0 ) {
             txn = txn.getNext()[0];
-            test( txn instanceof DigitalTransaction, "CI-D-CO root.next[0].next[0].next[0].next[0] instanceof DigitalTransaction, found: "+txn.getClass().getSimpleName());
+            test( txn instanceof DigitalTransaction || txn instanceof InterTrustTransaction, "CI-D-CO root.next[0].next[0].next[0].next[0] instanceof DigitalTransaction, found: "+txn.getClass().getSimpleName());
             test( txn.getNext().length > 0, "CI-D-CO root.next[0].next[0].next[0].next[0] has next, found: "+txn.getNext().length);
             if ( txn.getNext().length > 0 ) {
               txn = txn.getNext()[0];

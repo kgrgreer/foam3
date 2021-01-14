@@ -1878,20 +1878,20 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"approvals.label",target:"Pedidos
 p({class:"foam.i18n.Locale",locale:"pt",source:"bankaccounts.label",target:"Contas bancárias"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"businesses.label",target:"Negócios"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"capability.main.banking.label",target:"Contas bancárias"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"mainmenu.banking.label",target:"Contas bancárias"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"capability.main.contacts.label",target:"Beneficiários"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"capability.main.contacts.handler.title",target:"Beneficiários"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"capability.main.contacts.handler.createLabel",target:"Adicionar um beneficiário"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"capability.main.contacts.handler.createControllerView.view.title",target:"Adicionar um beneficiário"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"capability.main.dashboard.label",target:"painel de controle"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"mainmenu.contacts.label",target:"Beneficiários"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"mainmenu.contacts.handler.title",target:"Beneficiários"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"mainmenu.contacts.handler.createLabel",target:"Adicionar um beneficiário"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"mainmenu.contacts.handler.createControllerView.view.title",target:"Adicionar um beneficiário"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"mainmenu.dashboard.label",target:"painel de controle"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"capability.main.invoices.payables.label",target:"Pagáveis"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"capability.main.invoices.receivables.label",target:"Recebíveis"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"capability.menu.create.label",target:"Criar do zero"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"capability.menu.invitation.label",target:"Convite"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"capability.menu.paymentcode.label",target:"Pesquisa por código de pagamento"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"capability.menu.search.label",target:"Pesquisa por nome comercial"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"mainmenu.invoices.payables.label",target:"Pagáveis"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"mainmenu.invoices.receivables.label",target:"Recebíveis"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"submenu.contact.create.label",target:"Criar do zero"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"submenu.contact.invitation.label",target:"Convite"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"submenu.contact.paymentcode.label",target:"Pesquisa por código de pagamento"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"submenu.contact.search.label",target:"Pesquisa por nome comercial"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"contacts.label",target:"Beneficiários"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"dashboard.label",target:"Painel de controle"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"documentation.label",target:"Documentação"})
@@ -3159,7 +3159,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.DEL
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoneyDetails.NEXT",target:"Próximo"})
 
-p({class:"foam.i18n.Locale",locale:"pt","source":"capability.main.contacts.createLabel","target":"Adicionar beneficiário"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"mainmenu.contacts.createLabel","target":"Adicionar beneficiário"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"sme.quickAction.send.label","target":"Mande o pagamento"})
 
 p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.RECONCILE.label","target":"Conciliar"})

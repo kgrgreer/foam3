@@ -21,7 +21,7 @@
     refines: 'foam.nanos.dig.DUGRule',
 
     requires: [
-        'net.nanopay.auth.AuthType'
+        'foam.box.HTTPAuthorizationType'
     ],
 
     javaImports: [
@@ -54,7 +54,7 @@
     properties: [
         {
             class: 'Enum',
-            of: 'net.nanopay.auth.AuthType',
+            of: 'foam.box.HTTPAuthorizationType',
             name: 'authType',
             section: 'authInfo',
             order: 10,
@@ -65,7 +65,7 @@
             section: 'authInfo',
             order: 20,
             visibility: function(authType) {
-                return authType == this.AuthType.BEARER ?
+                return authType == this.HTTPAuthorizationType.BEARER ?
                     foam.u2.DisplayMode.RW :
                     foam.u2.DisplayMode.HIDDEN;
             }
@@ -78,7 +78,7 @@
             section: 'authInfo',
             order: 30,
             visibility: function(authType) {
-                return authType == this.AuthType.OAUTH ?
+                return authType == this.HTTPAuthorizationType.OAUTH ?
                     foam.u2.DisplayMode.RW :
                     foam.u2.DisplayMode.HIDDEN;
             },

@@ -285,8 +285,8 @@ foam.CLASS({
         .then(sink => {
           this.bankAccount = sink.array[0];
         });
-      this.requestMoneyPermission = await this.auth.check(null, 'menu.read.capability.main.invoices.receivables');
-      this.showLowerCards = await this.auth.check(null, 'menu.read.accountingintegrationcards');
+      this.requestMoneyPermission = await this.auth.check(null, 'menu.read.mainmenu.invoices.receivables');
+      this.showLowerCards = await this.auth.check(null, 'dashboard.read.accountingintegrationcards');
       this.userHasPermissionsForAccounting = this.showLowerCards ? 
         await this.accountingIntegrationUtil.getPermission() : 
         null;
@@ -364,7 +364,7 @@ foam.CLASS({
               .add(this.VIEW_ALL)
               .hide(this.payablesCount$.map(value => value == 0))
               .on('click', function() {
-                self.pushMenu('capability.main.invoices.payables');
+                self.pushMenu('mainmenu.invoices.payables');
               })
             .end()
           .end()
@@ -433,7 +433,7 @@ foam.CLASS({
               .add(this.VIEW_ALL)
               .hide(this.receivablesCount$.map(value => value == 0))
               .on('click', function() {
-                self.pushMenu('capability.main.invoices.receivables');
+                self.pushMenu('mainmenu.invoices.receivables');
               })
             .end()
           .end()

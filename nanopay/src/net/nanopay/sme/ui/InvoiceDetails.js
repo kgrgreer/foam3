@@ -208,7 +208,7 @@ foam.CLASS({
       name: 'dueDate',
       expression: function(invoice$dueDate) {
         return invoice$dueDate ?
-          invoice$dueDate.toISOString().substring(0, 10) : '';
+          invoice$dueDate.toLocaleDateString(foam.locale) : '';
       },
     },
     {
@@ -216,7 +216,7 @@ foam.CLASS({
       name: 'issueDate',
       expression: function(invoice$issueDate) {
         return invoice$issueDate ?
-          invoice$issueDate.toISOString().substring(0, 10) : '';
+          invoice$issueDate.toLocaleDateString(foam.locale) : '';
       },
     },
     {
@@ -285,8 +285,8 @@ foam.CLASS({
           .addClass(this.myClass('invoice-content-text'))
           .add(this.slot(function(invoice) {
             if ( isBillingInvoice )
-              return self.CYCLE_LABEL + invoice.billingStartDate.toISOString().substring(0, 10)
-                + " to " + invoice.billingEndDate.toISOString().substring(0, 10);
+              return self.CYCLE_LABEL + invoice.billingStartDate.toLocaleDateString(foam.locale)
+                + " to " + invoice.billingEndDate.toLocaleDateString(foam.locale);
           }))
         .end()
         .add(this.slot(function(invoice, invoice$status) {

@@ -73,7 +73,7 @@ foam.CLASS({
     function initE() {
       this.bodyMsg = this.data.body;
       this.date = this.data.created ?
-          this.spliceDateFormatter(this.data.created.toISOString().slice(0, 10)) : '';
+          this.spliceDateFormatter(this.data.created.toLocaleDateString(foam.locale)) : '';
 
       this.SUPER();
       this

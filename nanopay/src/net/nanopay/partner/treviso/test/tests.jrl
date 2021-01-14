@@ -30,7 +30,7 @@ support = net.nanopay.partner.treviso.test.TrevisoOnboardingSupport.create({
     }, x)
   }, x);
 
-async function execute(x) {
+  async function execute(x) {
     try {
       support.setup(x);
       console.info('start');
@@ -117,22 +117,24 @@ async function execute(x) {
         throw e;
       }
 
-      var business;
-      // try {
-      //   business = await support.createBusiness(x, u);
-      //   test(true, 'createBusiness: '+business.id);
-      // } catch (e) {
-      //   test(false, 'createBusiness: '+(e.message || e));
-      //   throw e;
-      // }
+      name = 'businessInitialData: ';
       try {
-        business = await support.businessInitialData(x, u);
-        test(true, 'businessInitialData: '+business.id);
+        ucj = await support.businessInitialData(x, u);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
       } catch (e) {
-        test(false, 'businessInitialData: '+(e.message || e));
+        test(false, name+(e.message || e));
         throw e;
       }
 
+      var business;
+      name = 'createBusiness: ';
+      try {
+        business = await support.createBusiness(x, u);
+        test(business && business.id, name+business.id);
+      } catch (e) {
+        test(false, name+(e.message || e));
+        throw e;
+      }
 
       var businessSession;
       try {
@@ -143,9 +145,9 @@ async function execute(x) {
         throw e;
       }
 
-      // switch to business
+      // switch to admin
       support.sudoStore(x);
-      x = support.sudo(x, businessSession.id, u, business);
+      x = support.sudoAdmin(x);
 
       name = 'updateBusinessComplianceStatus: ';
       try {
@@ -155,6 +157,12 @@ async function execute(x) {
         test(false, name+(e.message || e));
         throw e;
       }
+
+      x = support.sudoRestore(x);
+
+      // switch to business
+      support.sudoStore(x);
+      x = support.sudo(x, businessSession.id, u, business);
 
       // Signing Officer
       name = 'userDateOfBirth: ';
@@ -202,10 +210,12 @@ async function execute(x) {
         throw e;
       }
 
+      var signingOfficerPersonalDataUCJ;
       name = 'signingOfficerPersonalData: ';
       try {
         ucj = await support.signingOfficerPersonalData(x, u, business);
-        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+        signingOfficerPersonalDataUCJ = ucj;
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status)+' signingOfficerPersonalDataUCJ: '+ucj);
       } catch (e) {
         test(false, name+(e.message || e));
         throw e;
@@ -238,14 +248,14 @@ async function execute(x) {
         throw e;
       }
 
-      name = 'businessTypeData: ';
-      try {
-        ucj = await support.businessTypeData(x, business);
-        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
-      } catch (e) {
-        test(false, name+(e.message || e));
-        throw e;
-      }
+      // name = 'businessTypeData: ';
+      // try {
+      //   ucj = await support.businessTypeData(x, business);
+      //   test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      // } catch (e) {
+      //   test(false, name+(e.message || e));
+      //   throw e;
+      // }
 
       name = 'businessExtraBusinessTypeDataNotRequired: ';
       try {
@@ -346,6 +356,15 @@ async function execute(x) {
         throw e;
       }
 
+      name = 'targetCountryCapabilityBR: ';
+      try {
+        ucj = await support.targetCountryCapabilityBR(x, business);
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED, name+(ucj && ucj.status));
+      } catch (e) {
+        test(false, name+(e.message || e));
+        throw e;
+      }
+
       name = 'businessCapitalAndEquity: ';
       try {
         ucj = await support.businessCapitalAndEquity(x, business);
@@ -400,10 +419,12 @@ async function execute(x) {
         throw e;
       }
 
+      brazilOnboardingReviewedUCJ;
       name = 'brazilOnboardingReviewed: ';
       try {
         ucj = await support.brazilOnboardingReviewed(x, u);
-        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED, name+(ucj && ucj.status));
+        brazilOnboardingReviewedUCJ = ucj;
+        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.PENDING, name+(ucj && ucj.status)+' ucj.id: '+ucj.id);
       } catch (e) {
         test(false, name+(e.message || e));
         throw e;
@@ -472,21 +493,21 @@ async function execute(x) {
       }
 
       // Validate Business Onboarding UserCapabilityJunction
-      try {
-        let approval = support.approveRequest(x, business.spid+'-payment-ops', business.id);
-        test(approval && approval.status == foam.nanos.approval.ApprovalStatus.APPROVED, 'approveBusiness: '+approval.status);
-      } catch (e) {
-        test(false, 'approveBusiness: '+(e.message || e));
-      }
+      // try {
+      //   let approval = support.approveRequest(x, business.spid+'-fraud-ops', 'userCapabilityJunctionDAO', brazilOnboardingReviewedUCJ.id);
+      //   test(approval && approval.status == foam.nanos.approval.ApprovalStatus.APPROVED, 'approveBusiness: '+approval.status);
+      // } catch (e) {
+      //   test(false, 'approveBusiness: '+(e.message || e));
+      // }
 
-      name = 'brazilOnboardingReviewed: ';
-      try {
-        ucj = await support.brazilOnboardingReviewed(x, u);
-        test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
-      } catch (e) {
-        test(false, name+(e.message || e));
-        throw e;
-      }
+      // name = 'brazilOnboardingReviewed: ';
+      // try {
+      //   ucj = await support.brazilOnboardingReviewed(x, u);
+      //   test(ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED, name+(ucj && ucj.status));
+      // } catch (e) {
+      //   test(false, name+(e.message || e));
+      //   throw e;
+      // }
 
       console.info('done');
       support.teardown(x);
