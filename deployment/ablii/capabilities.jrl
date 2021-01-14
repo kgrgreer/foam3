@@ -97,6 +97,11 @@ p({
   "id":"1f6b2047-1eef-471d-82e7-d86bdf511375-2",
   "name":"BMO Payment Provider Capability",
   "description":"BMO Payment Provider Capability",
+  "permissionsGranted":[
+    "paymentprovidercorridor.read.bmo",
+    "paymentprovidercorridor.source.read.bmo",
+    "paymentprovidercorridor.target.read.bmo"
+  ],
   "version":"0",
   "enabled":true
 })
@@ -106,6 +111,11 @@ p({
   "id":"1f6b2047-1eef-471d-82e7-d86bdf511375-3",
   "name":"RBC Payment Provider Capability",
   "description":"RBC Payment Provider Capability",
+  "permissionsGranted":[
+    "paymentprovidercorridor.read.rbc",
+    "paymentprovidercorridor.source.read.rbc",
+    "paymentprovidercorridor.target.read.rbc"
+  ],
   "version":"0",
   "enabled":true
 })
