@@ -16,7 +16,7 @@ p({"class":"foam.nanos.menu.Menu","id":"sme.quickAction.request","label":"Reques
 p({
   "class":"foam.nanos.menu.Menu",
   "id": "sme.main.appStore",
-  "label": "Capabilities",
+  "label": "Features",
   "activeIcon":"images/ablii/extension-active.svg",
   "icon":"images/ablii/extension-resting.svg",
   "handler":{
