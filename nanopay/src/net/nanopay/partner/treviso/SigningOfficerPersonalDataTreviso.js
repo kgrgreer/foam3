@@ -131,7 +131,7 @@ foam.CLASS({
     }),
     foam.nanos.auth.User.PEPHIORELATED.clone().copyFrom({
       section: 'signingOfficerPersonalInformationSection',
-      label: 'The signing officer is a politically exposed person (PEP) or head of an international organization',
+      label: 'Is the signing officer considered a politically exposed person (PEP)?',
       help: `
       As defined in item 7 of Bacen Circular Letter 3430/2010 -
       “For the purposes of the provisions of § 1 of art. 4 of Circular No. 3,461, of 2009,
