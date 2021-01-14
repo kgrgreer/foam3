@@ -26,11 +26,12 @@ foam.CLASS({
 
   javaImports: [
     'foam.core.X',
+    'foam.dao.DAO',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
-    'foam.nanos.crunch.CrunchService',
     'foam.nanos.crunch.UserCapabilityJunction',
-    'net.nanopay.model.Business'
+    'net.nanopay.model.Business',
+    'static foam.mlang.MLang.*'
   ],
 
   properties: [
@@ -50,11 +51,21 @@ foam.CLASS({
       javaCode: `
         if ( ! ( obj instanceof X ) ) return false;
         X x = (X) obj;
-        CrunchService crunchService = (CrunchService) x.get("crunchService");
+        DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
         User user = ((Subject) x.get("subject")).getUser();
         if ( user == null || ! ( user instanceof Business ) ) return false;
-        UserCapabilityJunction ucj = crunchService.getJunction(x, "554af38a-8225-87c8-dfdf-eeb15f71215f-20");
-        return ucj != null && ucj.getStatus() == getStatus();
+        // Note: this cannot be changed to use crunchService.getJunction since this is used as an AvailabilityPredicate
+        // for the ucj "554af38a-8225-87c8-dfdf-eeb15f71215f-20", and trigger a StackOverflow
+        // due to getJunctionForSubject calling getAssociationPredicate_ which will try to lookup the capability
+        // from the capabilityDAO again
+        UserCapabilityJunction ucj = (UserCapabilityJunction) userCapabilityJunctionDAO.find(
+          AND(
+            EQ(UserCapabilityJunction.SOURCE_ID, user.getId()),
+            EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-20"),
+            EQ(UserCapabilityJunction.STATUS, getStatus())
+          )
+        );
+        return ucj != null;
       `
     }
   ]
