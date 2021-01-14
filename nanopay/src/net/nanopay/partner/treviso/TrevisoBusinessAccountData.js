@@ -136,7 +136,7 @@ foam.CLASS({
     {
       section: 'accountingSection',
       name: 'publiclyTraded',
-      label: 'Publicly held company?',
+      label: 'Is the business a publicly held company?',
       class: 'Boolean',
       view: function(_, X) {
         return {
@@ -152,7 +152,7 @@ foam.CLASS({
     {
       section: 'accountingSection',
       name: 'capitalSource',
-      label: 'Source of capital:',
+      label: 'What is the primary source of capital for your business?',
       class: 'String',
       view: function(_, X) {
         return {
@@ -181,7 +181,7 @@ foam.CLASS({
     {
       section: 'accountingSection',
       name: 'nonprofitEntity',
-      label: 'Non-profit entity:',
+      label: 'Is your business considered a non-profit entity?',
       class: 'Boolean',
       view: function(_, X) {
         return {
@@ -197,7 +197,7 @@ foam.CLASS({
     {
       section: 'accountingSection',
       name: 'capitalType',
-      label: 'Capital type:',
+      label: 'How is your business funded?',
       class: 'String',
       view: function(_, X) {
         return {
