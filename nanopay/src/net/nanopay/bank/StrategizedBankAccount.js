@@ -73,7 +73,7 @@ foam.CLASS({
             classIsFinal: true,
             data$: X.data.bankAccount$,
             copyOldData: function(o) { return { isDefault: o.isDefault }; }
-          }, X); 
+          }, X);
         })
       },
       validationPredicates: [
@@ -86,7 +86,10 @@ foam.CLASS({
           },
           errorMessage: 'INVALID_BANK'
         }
-      ]
+      ],
+      validateObj: function(bankAccount, bankAccount$errors_) {
+        return bankAccount ? bankAccount$errors_ : "text";
+      }
     },
     {
       transient: true,
