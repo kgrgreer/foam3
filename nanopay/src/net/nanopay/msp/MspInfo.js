@@ -158,5 +158,9 @@ foam.CLASS({
       class: 'StringArray',
       name: 'plannerPermissions'
     },
+    {
+      class: 'StringArray',
+      name: 'businessMenuPermissions'
+    },
   ]
 });
