@@ -42,6 +42,14 @@ foam.CLASS({
     'static foam.mlang.MLang.OR',
   ],
 
+  properties: [
+    {
+      name: 'reserveAccountSpid',
+      class: 'String',
+      value: 'nanopay'
+    }
+  ],
+
   methods: [
     {
       name: 'put_',
@@ -50,23 +58,29 @@ foam.CLASS({
         Logger logger = (Logger) x.get("logger");
         TransactionQuote quote = (TransactionQuote) obj;
         Transaction txn = quote.getRequestTransaction();
-        //*** Elevate account DAO to system access constrained to spid+nanopay ***
         DAO dao = (DAO) getX().get("localAccountDAO");
-        User payer = null; // can get user from payer id or source account. default to payerid found user spid.
-        if ( txn.getPayerId() != 0 ) // assuming user can only set a payerid that they have access to in their own context
+        User payer = null;
+
+        if ( txn.getPayerId() != 0 ) {
           payer = (User) ((DAO) x.get("bareUserDAO")).find_(x, txn.getPayerId());
-        else { if (txn.getSourceAccount() != null) //the user needs to be able to find their own account in their own context to use this.
-          payer = (User) ((Account) ((DAO) x.get("accountDAO")).find_(x, txn.getSourceAccount())).findOwner(x);
+        }
+        else {
+          if (txn.getSourceAccount() != null) {
+            Account source = (Account) ((DAO) x.get("accountDAO")).find_(x, txn.getSourceAccount());
+            payer = (User) source.findOwner(x);
+          }
         }
         if (payer == null ) { // we require a user to get the spid, no way to get user = failure to plan.
           ((Logger) x.get("logger")).error("Payer not found", txn.getId(), "source", txn.getSourceAccount(), "payer", txn.getPayerId());
           throw new ValidationException("Payer not found");
         }
-        dao = dao.where(OR(
-          EQ(Account.SPID,"nanopay"),
-          EQ(Account.SPID, payer.getSpid())
-        ));
-        x.put("localAccountDAO",dao); // store elevated localAccountDAO in context
+        dao = dao.where(
+          OR(
+            EQ(Account.SPID, getReserveAccountSpid()),
+            EQ(Account.SPID, payer.getSpid())
+          )
+        );
+        x = x.put("localAccountDAO", dao);
 
         // ---- set source account
         Account account = txn.findSourceAccount(x);
