@@ -110,14 +110,16 @@ foam.CLASS({
         { name: 'trustAccounts', type: 'String[]' }
       ],
       javaCode: `
-        DAO accountDAO = (DAO) x.get("localAccountDAO");
         User user = ((Subject) x.get("subject")).getUser();
+        DAO accountDAO = ((DAO) x.get("localAccountDAO")).inX(x);
         // get the trust account to generate for
         List trusts = new ArrayList<TrustAccount>();
         for (String tId : trustAccounts) {
           TrustAccount trust = (TrustAccount) accountDAO.find(tId);
-          if (trust == null)
-            throw new RuntimeException("MultiTrustService: Incorrect Trust account id Entered");
+          if (trust == null) {
+            ((foam.nanos.logger.Logger) x.get("logger")).warning("Trust account not found", tId);
+            throw new RuntimeException("MultiTrustService: Incorrect Trust account");
+          }
           trusts.add(trust);
         }
         // make sure each trust has a digital account for the user.
@@ -138,6 +140,7 @@ foam.CLASS({
           account.setDenomination(t.getDenomination());
           account.setIsDefault(true);
           account.setOwner(user.getId());
+          account.setSpid(user.getSpid());
           account.setLifecycleState(LifecycleState.ACTIVE);
           account.setTrustAccount(t.getId());
           account = (DigitalAccount) accountDAO.put(account);

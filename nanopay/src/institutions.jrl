@@ -1,4 +1,5 @@
-p({"class":"net.nanopay.payment.Institution", "id":1,   "name":"Alberta Treasury Bank",                 "abbreviation":"ATB",    "institutionNumber":"219", "countryId":"CA"});
+// See https://transferwise.com/help/14/currencies/2666692/canadian-institution-numbers
+p({"class":"net.nanopay.payment.Institution", "id":1,   "name":"Alberta Treasury Bank", "abbreviation":"ATB",  "institutionNumber":"219", "countryId":"CA"});
 p({"class":"net.nanopay.payment.Institution", "id":2,   "name":"Bank of Montreal",    "abbreviation":"BMO",    "institutionNumber":"001", "countryId":"CA"})
 p({"class":"net.nanopay.payment.Institution", "id":3,   "name":"Canadian Imperial Bank of Canada", "abbreviation":"CIBC","institutionNumber":"010", "countryId":"CA"})
 p({"class":"net.nanopay.payment.Institution", "id":4,   "name":"CoastCapital",        "abbreviation":"",       "institutionNumber":"809"})
@@ -21,4 +22,7 @@ p({"class":"net.nanopay.payment.Institution", "id":20,  "name":"ICICI Bank of Ca
 p({"class":"net.nanopay.payment.Institution", "id":21,  "name":"ICICI Bank Limited",  "abbreviation":"",       "institutionNumber":"ICIC0006438"})
 p({"class":"net.nanopay.payment.Institution", "id":22,  "name":"IndusInd Bank",       "abbreviation":"INBD",   "institutionNumber":"", "countryId":"IN"})
 p({"class":"net.nanopay.payment.Institution", "id":23,  "name":"Kotak Mahindra Bank", "abbreviation":"KKBK",   "institutionNumber":"", "countryId":"IN"})
+p({"class":"net.nanopay.payment.Institution", "id":24,  "name":"Test (123)",           "abbreviation":"TEST",   "institutionNumber":"123", "countryId":"CA"})
+p({"class":"net.nanopay.payment.Institution", "id":27,  "name":"Central 1 Credit Union Ontario", "abbreviation":"CCUO",   "institutionNumber":"828", "countryId":"CA"})
+p({"class":"net.nanopay.payment.Institution", "id":28,  "name":"Central 1 Credit Union British Columbia", "abbreviation":"CCUB",   "institutionNumber":"809", "countryId":"CA"})
 p({"class":"net.nanopay.payment.Institution", "id":35,  "name":"Alterna Savings and Credit Union", "abbreviation":"Alterna",   "institutionNumber":"842", "countryId":"CA"})

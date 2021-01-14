@@ -12,7 +12,7 @@ p({
   "settingsRootMenu":"trevisoSmeSettings",
   "disableCurrencyChoice":true,
   "logoRedirect":"sme.main.appStore",
-  "defaultMenu":"capability.main.invoices.payables",
+  "defaultMenu":"mainmenu.invoices.payables",
   "headConfig":{
     "customFavIcon":[
        "<link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/favicon/treviso/apple-touch-icon.png\">",

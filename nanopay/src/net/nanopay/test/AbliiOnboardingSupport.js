@@ -261,6 +261,24 @@ foam.CLASS({
       }
     },
     {
+      name: 'getUcj',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'targetId',
+          type: 'String'
+        },
+      ],
+      type: 'foam.nanos.crunch.UserCapabilityJunction',
+      code: async function(x, targetId) {
+        console.info('getUcj', 'targetId', targetId);
+        return await this.crunchService.getJunction(x, targetId);
+      }
+    },
+    {
       name: 'createUser',
       args: [
         {
@@ -403,18 +421,19 @@ foam.CLASS({
     },
     {
       name: 'businessInitialData',
-      type: 'foam.nanos.model.Business',
+      type: 'foam.nanos.crunch.UserCapabilityJunction',
       code: async function(x, user) {
-        // Business Registration Data
+        
         var id = '554af38a-8225-87c8-dfdf-eeb15f71215f-76';
         var cap = net.nanopay.crunch.onboardingModels.InitialBusinessData.create({
           businessName: 'b-'+user.userName,
-          phoneNumber: user.phoneNumber,
+          companyPhone: user.phoneNumber,
           address: user.address,
           mailingAddress: user.address
         });
-        await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
-        return await this.createBusiness(x, user);
+        return this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
+        // call createBusiness from script
+        // return this.createBusiness(x, user);
       }
     },
     {
@@ -704,9 +723,9 @@ foam.CLASS({
       code: async function(x, business) {
         var c = net.nanopay.contacts.Contact.create({
           owner: business.id,
-          firstName: 'CAContact'+business.id,
+          firstName: 'CAContact-'+business.id,
           lastName: business.id,
-          organization: business.id,
+          organization: 'CAContact-'+business.organization,
           email: 'ca.contact@nanopay.net',
           group: business.spid + '-sme',
           confirm: true,
@@ -722,7 +741,6 @@ foam.CLASS({
           }
         }, x);
         return await business.contacts.put_(x, c);
-        // return this.updateContact(x, c);
       }
     },
     {
@@ -733,7 +751,7 @@ foam.CLASS({
           owner: business.id,
           firstName: 'USContact-'+business.id,
           lastName: business.id,
-          organization: business.id,
+          organization: 'USContact-'+business.organization,
           email: 'us.contact@nanopay.net',
           group: business.spid + '-sme',
           confirm: true,
@@ -749,7 +767,6 @@ foam.CLASS({
           }
         }, x);
         return await business.contacts.put_(x, c);
-        // return this.updateContact(x, c);
       }
     },
     {
@@ -762,7 +779,7 @@ foam.CLASS({
     {
       name: 'approveRequest',
       type: 'foam.nanos.approval.ApprovalRequest',
-      code: async function(x, groupId, refObjId) {
+      code: async function(x, groupId, daoKey, objId) {
         let y = this.sudoStore(x);
         let z = this.sudoAdmin(x);
         const E = foam.mlang.ExpressionsSingleton.create();
@@ -770,17 +787,19 @@ foam.CLASS({
         var u = await this.client(z, 'userDAO', foam.nanos.auth.User).find(E.EQ(foam.nanos.auth.User.GROUP, groupId));
         if ( u ) {
           console.info('approveRequest', 'approver', u.id);
-          var r = await this.findApprovalRequest(z, u, refObjId);
+          var r = await this.findApprovalRequest(z, u, daoKey, objId);
           if ( r ) {
-            console.info('approveRequest', 'approval', r.id);
-            r = fclone();
-            r.setStatus(foam.nanos.approval.ApprovalStatus.APPROVED);
-            r = await this.putApprovalRequest(z, r);
+            console.info('approveRequest', 'approval', r.id, r.status);
+            r = r.clone();
+            r.status = foam.nanos.approval.ApprovalStatus.APPROVED;
+            r.isFulfilled = true;
+            r = await this.client(z, 'approvalRequestDAO', foam.nanos.approval.ApprovalRequest).put_(z, r);
+            console.info('approveRequest', 'approved', r & r.id, r & r.status);
             this.sudoRestore(y);
             return r;
           }
           this.sudoRestore(y);
-          throw 'ApprovalRequest not found for refObjId '+refObjId;
+          throw 'ApprovalRequest not found for objId '+objId;
         }
         this.sudoRestore(y);
         throw 'ApprovalRequest user not found in group '+groupId;
@@ -789,12 +808,14 @@ foam.CLASS({
     {
       name: 'findApprovalRequest',
       type: 'foam.nanos.approval.ApprovalRequest',
-      code: async function(x, approver, refObjId) {
+      code: async function(x, approver, daoKey, objId) {
         const E = foam.mlang.ExpressionsSingleton.create();
         return await this.client(x, 'approvalRequestDAO', foam.nanos.approval.ApprovalRequest).find(
           E.AND(
             E.EQ(foam.nanos.approval.ApprovalRequest.APPROVER, approver.id),
-            E.EQ(foam.nanos.approval.ApprovalRequest.REF_OBJ_ID, refObjId)
+            E.EQ(foam.nanos.approval.ApprovalRequest.DAO_KEY, daoKey),
+            E.EQ(foam.nanos.approval.ApprovalRequest.OBJ_ID, objId),
+            E.EQ(foam.nanos.approval.ApprovalRequest.IS_FULFILLED, false)
           )
         );
       }

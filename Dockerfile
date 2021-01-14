@@ -28,5 +28,6 @@ ENV JAVA_HOME=/opt/java/openjdk \
 	
 RUN wget https://downloads.gradle-dn.com/distributions/gradle-5.4.1-bin.zip --no-check-certificate -P /tmp
 RUN unzip -d /opt/gradle /tmp/gradle-*.zip
-ENV GRADLE_HOME /opt/gradle/gradle-5.4.1
+ENV GRADLE_HOME /opt/gradle/gradle-5.2.1
 ENV PATH ${GRADLE_HOME}/bin:${PATH}
+

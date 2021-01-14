@@ -124,8 +124,7 @@ foam.CLASS({
       t1.setDestinationCurrency(t1.getSourceCurrency());
       t1.setDestinationAmount(t1.getAmount());
       Transaction cashinPlan = quoteTxn(x, t1, quote);
-      if (cashinPlan instanceof SummaryTransaction)
-        cashinPlan = cashinPlan.getNext()[0];
+      cashinPlan = removeSummaryTransaction(cashinPlan);
       if ( cashinPlan != null ) {
         txn.addNext(cashinPlan);
       } else {

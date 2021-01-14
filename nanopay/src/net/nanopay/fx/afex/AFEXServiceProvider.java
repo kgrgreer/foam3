@@ -26,6 +26,7 @@ import foam.nanos.auth.Region;
 import foam.nanos.auth.User;
 import foam.nanos.auth.LifecycleState;
 import foam.nanos.logger.Logger;
+import foam.nanos.notification.Notification;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.admin.model.ComplianceStatus;
@@ -167,6 +168,12 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
           }
     } catch(Exception e) {
       logger_.error("Failed to onboard client to AFEX.", e);
+      Notification notification = new Notification.Builder(x)
+        .setBody("AFEX business failed to onboard for id: " + business.getId() + " with error: " + e.getMessage())
+        .setGroupId(business.getSpid()+ "-payment-ops")
+        .setNotificationType("AFEX")
+        .build();
+      ((DAO) x.get("localNotificationDAO")).inX(x).put(notification);
     }
     return false;
   }

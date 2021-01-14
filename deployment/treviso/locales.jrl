@@ -56,11 +56,11 @@ p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.modal.Ed
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.modal.EditContactView.TITLE_ON_EDIT",target:"Edit Beneficiary"})
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.contacts.ui.modal.EditContactView.QUESTION",target:"Would you like to add a bank account to this beneficiary?"})
 
-p({class:"foam.i18n.Locale",locale:"en",source:"capability.main.contacts.label", target:"Beneficiaries"})
-p({class:"foam.i18n.Locale",locale:"en","source":"capability.main.contacts.createLabel","target":"Add Beneficiary"})
-p({class:"foam.i18n.Locale",locale:"en",source:"capability.main.contacts.handler.title",target:"Beneficiaries"})
-p({class:"foam.i18n.Locale",locale:"en",source:"capability.main.contacts.handler.createLabel",target:"Add Beneficiary"})
-p({class:"foam.i18n.Locale",locale:"en",source:"capability.main.contacts.handler.createControllerView.view.title",target:"Add Beneficiary"})
+p({class:"foam.i18n.Locale",locale:"en",source:"mainmenu.contacts.label", target:"Beneficiaries"})
+p({class:"foam.i18n.Locale",locale:"en","source":"mainmenu.contacts.createLabel","target":"Add Beneficiary"})
+p({class:"foam.i18n.Locale",locale:"en",source:"mainmenu.contacts.handler.title",target:"Beneficiaries"})
+p({class:"foam.i18n.Locale",locale:"en",source:"mainmenu.contacts.handler.createLabel",target:"Add Beneficiary"})
+p({class:"foam.i18n.Locale",locale:"en",source:"mainmenu.contacts.handler.createControllerView.view.title",target:"Add Beneficiary"})
 
 p({class:"foam.i18n.Locale",locale:"en",source:"contacts.label",target:"Beneficiaries"})
 
