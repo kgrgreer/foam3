@@ -165,9 +165,9 @@ foam.CLASS({
               bankAccount.setInstitutionNumber(institution.getInstitutionNumber());
               return bankAccount;
             }
-            getLogger().warning("Institution not found", branch.getInstitution(), "account", bankAccount.getId());
+            getLogger().debug("Institution not found", branch.getInstitution(), "account", bankAccount.getId());
           } else {
-            getLogger().warning("Branch not found", bankAccount.getBranch(), "account", bankAccount.getId());
+            getLogger().debug("Branch not found", bankAccount.getBranch(), "account", bankAccount.getId());
           }
         }
         return fObject;

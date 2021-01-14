@@ -166,11 +166,9 @@ foam.CLASS({
               fxSummary.setPaymentProvider(paymentProvider);
             }
 
-            Transaction l1 = leg1.getNext()[0].getNext()[0];
-            Transaction l2 = leg2.getNext()[0].getNext()[0];
+            Transaction l1 = removeSummaryTransaction(leg1);
+            Transaction l2 = removeSummaryTransaction(leg2);
             Transaction compliance = createComplianceTransaction(fxSummary);
-            l1.setStatus(TransactionStatus.PENDING);
-            l2.setStatus(TransactionStatus.PENDING);
             l1.addNext(l2);
             compliance.addNext(l1);
             fxSummary.addNext(compliance);

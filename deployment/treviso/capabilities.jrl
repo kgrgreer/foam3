@@ -135,7 +135,7 @@ p({
   "keywords":["featured"],
   "min": 1,
   "permissionsGranted":[
-    "menu.read.capability.main.invoices.payables"
+    "menu.read.mainmenu.invoices.payables"
   ],
   "availabilityPredicate": {
     "class":"foam.mlang.predicate.And",

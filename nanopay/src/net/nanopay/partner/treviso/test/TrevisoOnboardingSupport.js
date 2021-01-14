@@ -312,6 +312,18 @@ foam.CLASS({
       }
     },
     {
+      name: 'targetCountryCapabilityBR',
+      code: async function(x, business) {
+        var id = '63049307-8db4-2437-5c02-b71d6878263c';
+        var ucj = await this.crunchService.getJunction(x, id);
+        if ( ! ucj ||
+             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          ucj = await this.crunchService.updateJunction(x, id, null, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
+        }
+        return ucj;
+      }
+    },
+    {
       name: 'businessInformationData',
       code: async function(x, business) {
         var id;
@@ -407,18 +419,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'targetCountryCapabilityBR',
-      code: async function(x) {
-        var id = '63049307-8db4-2437-5c02-b71d6878263c';
-        var ucj = await this.crunchService.getJunction(x, id);
-        if ( ! ucj ||
-             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-          ucj = await this.crunchService.updateJunction(x, id, null, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
-        }
-        return ucj;
-      }
-    },
-    {
       name: 'createBRBankAccount',
       type: 'net.nanopay.bank.BankAccount',
       code: async function(x, user) {
@@ -436,10 +436,10 @@ foam.CLASS({
             accountType: 'Current',
             accountOwnerType: '1st Holder',
             iban: 'BR1800360305000010009795493C1',
-            // TODO: following just to satisfy Branch and Institution decorators
-            accountNumber: '12345678',
-            institutionNumber: '123',
-            branchId: '12345'
+//            // TODO: following just to satisfy Branch and Institution decorators
+//            accountNumber: '12345678',
+//            institutionNumber: '123',
+//            branchId: '12345'
           }, x));
 
           this.sudoStore(x);
@@ -449,7 +449,13 @@ foam.CLASS({
             b.status = 1;
             b.verifiedBy = 'API';
             b = await this.client(y, 'accountDAO', net.nanopay.account.Account).put_(y, b);
+
             this.sudoRestore(x);
+
+            let cap = net.nanopay.partner.treviso.onboarding.BRBankAccountData.create({
+              hasBankAccount: true
+            });
+            await this.crunchService.updateJunction(x, '7b41a164-29bd-11eb-adc1-0242ac120002', cap, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
           } catch (e) {
             this.sudoRestore(x);
             throw e;

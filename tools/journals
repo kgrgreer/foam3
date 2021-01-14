@@ -19,6 +19,7 @@ capabilities
 capabilityCategories
 capabilityCategoryCapabilityJunction
 clearingTimes
+clusterConfig
 complianceItems
 corridors
 countries
@@ -40,6 +41,7 @@ fundTransferSystems
 fxProviders
 groupPermissionJunctions
 groups
+hosts
 htmlDoc
 identificationTypes
 InstitutionPaymentProvider
@@ -84,9 +86,11 @@ rootAccounts
 ruleGroups
 rules
 scripts
+scriptEvents
 securities
 services
 sessions
+sessionsinternal
 signingOfficerJunctions
 spids
 strategyReferences

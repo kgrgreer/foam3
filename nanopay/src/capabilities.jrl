@@ -4,7 +4,7 @@ p({class: "foam.nanos.crunch.Capability", id: "plannerCapability", name: "Planne
 p({class: "foam.nanos.crunch.Capability", id: "countryCapability", name: "Country Capability"})
 p({class: "foam.nanos.crunch.Capability", id: "corridorCapability", name: "Corridor Capability"})
 p({class: "foam.nanos.crunch.Capability", id: "currencyCapability", name: "Currency Capability"})
-p({class: "foam.nanos.crunch.Capability", id: "menuCapability", name: "Menu Capability", permissionsGranted: ["menu.read.capability.menu.contact.create", "menu.read.sme.main.onboarding"]})
+p({class: "foam.nanos.crunch.Capability", id: "menuCapability", name: "Menu Capability", permissionsGranted: ["menu.read.submenu.contact.create", "menu.read.sme.main.onboarding"]})
 
 // spid capabilities
 p({"class":"foam.nanos.auth.ServiceProvider","id":"nanopay","description":"nanopay"})
@@ -281,8 +281,8 @@ p({
   "keywords":["featured"],
   "permissionsGranted":[
     "business.invoice.pay",
-    "menu.read.capability.main.invoices.receivables",
-    "menu.read.capability.main.invoices.payables",
+    "menu.read.mainmenu.invoices.receivables",
+    "menu.read.mainmenu.invoices.payables",
     "paymentprovidercorridor.read.bmo",
     "paymentprovidercorridor.read.rbc",
     "paymentprovidercorridor.source.read.bmo",
@@ -325,8 +325,8 @@ p({
   "keywords":["featured"],
   "permissionsGranted":[
     "business.invoice.pay",
-    "menu.read.capability.main.invoices.receivables",
-    "menu.read.capability.main.invoices.payables",
+    "menu.read.mainmenu.invoices.receivables",
+    "menu.read.mainmenu.invoices.payables",
     "paymentprovidercorridor.read.bmo",
     "paymentprovidercorridor.read.rbc",
     "paymentprovidercorridor.source.read.bmo",
@@ -377,8 +377,8 @@ p({
   "keywords":["featured"],
   "permissionsGranted":[
     "business.invoice.pay",
-    "menu.read.capability.main.invoices.receivables",
-    "menu.read.capability.main.invoices.payables",
+    "menu.read.mainmenu.invoices.receivables",
+    "menu.read.mainmenu.invoices.payables",
     "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
     "paymentprovidercorridor.source.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
     "paymentprovidercorridor.target.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
@@ -519,8 +519,8 @@ p({
   },
   "requirementViewTitle":"Have your business documents ready. You can save your progress and come back later.",
   "permissionsGranted":[
-  "menu.read.capability.main.banking",
-  "menu.read.capability.main.contacts",
+  "menu.read.mainmenu.banking",
+  "menu.read.mainmenu.contacts",
   ]
 })
 
@@ -994,10 +994,9 @@ p({
   "enabled":true,
   "permissionsGranted":[
     "business.rw.ispublic",
-    "menu.read.accountingintegrationcards",
-    "menu.read.paymentcode",
+    "menu.read.submenu.contact.paymentcode",
     "menu.read.transactionlimit",
-    "menu.read.sme.userManagement"
+    "menu.read.submenu.userManagement"
   ]
 })
 
@@ -1028,9 +1027,9 @@ p({
   "version":"0",
   "enabled":true,
   "permissionsGranted":[
-  "menu.read.capability.menu.capability.menu.business.search",
-  "menu.read.capability.menu.paymentcode",
-  "menu.read.capability.menu.invitation",
+  "menu.read.submenu.contact.search",
+  "menu.read.submenu.contact.paymentcode",
+  "menu.read.submenu.contact.invitation",
   "contact.ro.shouldinvite",
   "group.read.smeBusinessEmployee"
   ]
@@ -1055,6 +1054,6 @@ p({
   "of":"net.nanopay.bank.StrategizedBankAccount",
   "enabled":true,
   "permissionsGranted":[
-    "menu.read.capability.main.invoices.receivables"
+    "menu.read.mainmenu.invoices.receivables"
   ]
 })

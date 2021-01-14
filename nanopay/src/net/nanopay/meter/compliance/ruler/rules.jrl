@@ -509,3 +509,20 @@ p({
   "enabled":false,
   "lifecycleState":1
 })
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d10001",
+  "name":"Create ScreeningResponse entry",
+  "priority": 50,
+  "ruleGroup":"ScreeningResponse",
+  "documentation":"Creates a record in counterDAO for dashboard reporting",
+  "daoKey":"dowJonesResponseDAO",
+  "operation":0,
+  "action":{
+    "class":"net.nanopay.meter.compliance.ruler.CreateScreeningResponse"
+  },
+  "after":false,
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1
+})

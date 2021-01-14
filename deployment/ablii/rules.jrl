@@ -1,35 +1,4 @@
 p({
-  class:"net.nanopay.auth.UserCreateServiceProviderURLRule",
-  id:"68afcf0c-c718-98f8-0841-75e97a3ad16d4",
-  config:[
-    {
-      class:"net.nanopay.auth.ServiceProviderURL",
-      spid:"ablii",
-      urls:[
-        "ablii",
-        "app.ablii.com",
-        "ablii.development.nanopay.net",
-        "ablii.release.nanopay.net",
-        "ablii.development.medusa.nanopay.net",
-        "ablii.release.medusa.nanopay.net",
-        "ablii.backoffice.nanopay.net",
-        "ablii.backoffice.development.nanopay.net",
-        "ablii.backoffice.release.nanopay.net",
-        "ablii.backoffice.development.medusa.nanopay.net",
-        "ablii.backoffice.release.medusa.nanopay.net"
-      ]
-    },
-    {
-      class:"net.nanopay.auth.ServiceProviderURL",
-      spid:"nanopay",
-      urls:[
-        "localhost"
-      ]
-    }
-  ]
-})
-
-p({
   class:"foam.nanos.auth.ruler.EnsurePropertyOnCreateRule",
   id:"f2b09cea-9dd0-3570-99c0-6f037ef623e6",
   name:"Auto-fill feeAccount for TransactionFeeRule - ablii",
