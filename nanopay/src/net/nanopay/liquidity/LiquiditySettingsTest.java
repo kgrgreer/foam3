@@ -68,7 +68,7 @@ public class LiquiditySettingsTest
     senderLiquidityDigital = new DigitalAccount();
     senderLiquidityDigital.setDenomination("CAD");
     senderLiquidityDigital.setOwner(sender_.getId());
-    senderLiquidityDigital.setTrustAccount("11");
+    senderLiquidityDigital.setTrustAccount("7ee216ae-9371-4684-9e99-ba42a5759444");
     ((DAO) x_.get("localAccountDAO")).put(senderLiquidityDigital);
 
       receiver_ = new User();

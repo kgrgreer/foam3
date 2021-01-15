@@ -71,7 +71,7 @@ public class TransactionTest
     testPADType();
     testVerificationTransaction();
     testFXTransaction();
-    testLoanTransaction();
+    //testLoanTransaction();
   }
 
   public void setup() {
