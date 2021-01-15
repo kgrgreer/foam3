@@ -56,7 +56,7 @@ foam.CLASS({
           .getArray();
         
         CrunchService crunchService = (CrunchService) x.get("crunchService");
-        Subject businessSubject = new Subject.Builder(x).setUser(business).build();
+        Subject businessSubject = new Subject(business);
         for ( Capability capability : afexOnboardingCapabilities ) {
           if ( crunchService.getJunctionForSubject(x, capability.getId(), businessSubject).getStatus() == CapabilityJunctionStatus.GRANTED ) 
             return true;
