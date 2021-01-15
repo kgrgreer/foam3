@@ -41,7 +41,7 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
         User user = (User) Objects.requireNonNull(obj, "User cannot be null.");
-        return super.put_(x,sanitize(user));
+        return super.put_(x, sanitize(user));
       `
     },
     {
