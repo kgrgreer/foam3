@@ -239,11 +239,129 @@ p({
 })
 
 // IdentityMind rules
-p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d89","name":"IdentityMind Consumer KYC - Signup","priority":90,"ruleGroup":"onboarding","documentation":"On user signup, check user via IdentityMind Consumer KYC stage 1.","daoKey":"localUserDAO","operation":0,"after":true,"predicate":{"class":"net.nanopay.meter.compliance.ruler.predicate.AbliiSignup"},"asyncAction":{"class":"net.nanopay.meter.compliance.identityMind.ConsumerKYCValidator","stage":1},"enabled":false,"saveHistory":true,"lifecycleState":1})
-p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d90","name":"IdentityMind Entity Login Record","priority":90,"ruleGroup":"compliance","documentation":"Check logged in user via IdentityMind Entity Login Record.","daoKey":"loginAttemptDAO","operation":0,"after":true,"predicate":{"class":"net.nanopay.meter.compliance.ruler.predicate.LoginSuccess"},"asyncAction":{"class":"net.nanopay.meter.compliance.identityMind.EntityLoginValidator"},"enabled":false,"saveHistory":true,"lifecycleState":1})
-p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d91","name":"IdentityMind Merchant KYC","priority":90,"ruleGroup":"onboarding","documentation":"Check business via IdentityMind Merchant KYC.","daoKey":"localUserDAO","operation":3,"after":true,"predicate":{"class":"foam.mlang.predicate.And","args":[{"class":"foam.mlang.predicate.Not","arg1":{"class":"foam.nanos.ruler.predicate.NewEqOld"}},{"class":"net.nanopay.meter.compliance.ruler.predicate.BusinessComplianceRequested"}]},"asyncAction":{"class":"net.nanopay.meter.compliance.identityMind.MerchantKYCValidator"},"enabled":false,"saveHistory":true,"lifecycleState":1})
-p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d92","name":"IdentityMind Consumer KYC - Signing officer","priority":90,"ruleGroup":"onboarding","documentation":"Check user compliance via IdentityMind Consumer KYC stage 2 when compliance is requested.","daoKey":"localUserDAO","operation":1,"after":true,"predicate":{"class":"foam.mlang.predicate.And","args":[{"class":"foam.mlang.predicate.Not","arg1":{"class":"foam.nanos.ruler.predicate.NewEqOld"}},{"class":"net.nanopay.meter.compliance.ruler.predicate.UserComplianceRequested","strict":true}]},"asyncAction":{"class":"net.nanopay.meter.compliance.identityMind.ConsumerKYCValidator","stage":2},"enabled":false,"saveHistory":true,"lifecycleState":1})
-p({"class":"foam.nanos.ruler.Rule","id":"68afcf0c-c718-98f8-0841-75e97a3ad16d93","name":"IdentityMind Consumer KYC - Beneficial owner","priority":90,"ruleGroup":"onboarding","documentation":"Check beneficial owner via IdentityMind Consumer KYC stage 2.\n\nNote: ConsumerKYCValidator would need to change to support creating approval request for beneficial owner.","daoKey":"beneficialOwnerDAO","operation":1,"after":true,"predicate":{"class":"foam.mlang.predicate.And","args":[{"class":"foam.mlang.predicate.Not","arg1":{"class":"foam.nanos.ruler.predicate.NewEqOld"}},{"class":"net.nanopay.meter.compliance.ruler.predicate.BeneficialOwnerComplianceRequested"}]},"asyncAction":{"class":"net.nanopay.meter.compliance.identityMind.ConsumerKYCValidator","stage":2},"enabled":false,"saveHistory":true,"lifecycleState":1})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d89",
+  "name":"IdentityMind Consumer KYC - Signup",
+  "priority":90,
+  "ruleGroup":"onboarding",
+  "documentation":"On user signup, check user via IdentityMind Consumer KYC stage 1.",
+  "daoKey":"localUserDAO",
+  "operation":0,
+  "after":true,
+  "predicate":{
+    "class":"net.nanopay.meter.compliance.ruler.predicate.AbliiSignup"
+  },
+  "asyncAction":{
+    "class":"net.nanopay.meter.compliance.identityMind.ConsumerKYCValidator",
+    "stage":1
+  },
+  "enabled":false,
+  "saveHistory":true,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d90",
+  "name":"IdentityMind Entity Login Record",
+  "priority":90,
+  "ruleGroup":"compliance",
+  "documentation":"Check logged in user via IdentityMind Entity Login Record.",
+  "daoKey":"loginAttemptDAO",
+  "operation":0,
+  "after":true,
+  "predicate":{
+    "class":"net.nanopay.meter.compliance.ruler.predicate.LoginSuccess"
+  },
+  "asyncAction":{
+    "class":"net.nanopay.meter.compliance.identityMind.EntityLoginValidator"
+  },
+  "enabled":false,
+  "saveHistory":true,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d91",
+  "name":"IdentityMind Merchant KYC",
+  "priority":90,
+  "ruleGroup":"onboarding",
+  "documentation":"Check business via IdentityMind Merchant KYC.",
+  "daoKey":"localUserDAO",
+  "operation":3,
+  "after":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[{
+      "class":"foam.mlang.predicate.Not",
+      "arg1":{"class":"foam.nanos.ruler.predicate.NewEqOld"}
+    },{
+      "class":"net.nanopay.meter.compliance.ruler.predicate.BusinessComplianceRequested"
+    }]
+  },
+  "asyncAction":{
+    "class":"net.nanopay.meter.compliance.identityMind.MerchantKYCValidator"
+  },
+  "enabled":false,
+  "saveHistory":true,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d92",
+  "name":"IdentityMind Consumer KYC - Signing officer",
+  "priority":90,
+  "ruleGroup":"onboarding",
+  "documentation":"Check user compliance via IdentityMind Consumer KYC stage 2 when compliance is requested.",
+  "daoKey":"localUserDAO",
+  "operation":1,
+  "after":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.And","args":[{
+      "class":"foam.mlang.predicate.Not",
+      "arg1":{
+        "class":"foam.nanos.ruler.predicate.NewEqOld"
+      }
+    },{
+      "class":"net.nanopay.meter.compliance.ruler.predicate.UserComplianceRequested",
+      "strict":true
+    }]
+  },
+  "asyncAction":{
+    "class":"net.nanopay.meter.compliance.identityMind.ConsumerKYCValidator",
+    "stage":2
+  },
+  "enabled":false,
+  "saveHistory":true,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d93",
+  "name":"IdentityMind Consumer KYC - Beneficial owner",
+  "priority":90,
+  "ruleGroup":"onboarding",
+  "documentation":"Check beneficial owner via IdentityMind Consumer KYC stage 2.\n\nNote: ConsumerKYCValidator would need to change to support creating approval request for beneficial owner.",
+  "daoKey":"beneficialOwnerDAO",
+  "operation":1,
+  "after":true,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[{
+      "class":"foam.mlang.predicate.Not",
+      "arg1":{"class":"foam.nanos.ruler.predicate.NewEqOld"}
+    },{
+      "class":"net.nanopay.meter.compliance.ruler.predicate.BeneficialOwnerComplianceRequested"
+    }]
+  },
+  "asyncAction":{
+    "class":"net.nanopay.meter.compliance.identityMind.ConsumerKYCValidator",
+    "stage":2
+  },
+  "enabled":false,
+  "saveHistory":true,
+  "lifecycleState":1
+})
 p({
   "class": "net.nanopay.tx.ruler.PermissionedTransactionRule",
   "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d94","name": "IdentityMind transfer transaction",
@@ -507,5 +625,22 @@ p({
   },
   "after":true,
   "enabled":false,
+  "lifecycleState":1
+})
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"68afcf0c-c718-98f8-0841-75e97a3ad16d10001",
+  "name":"Create ScreeningResponse entry",
+  "priority": 50,
+  "ruleGroup":"ScreeningResponse",
+  "documentation":"Creates a record in counterDAO for dashboard reporting",
+  "daoKey":"dowJonesResponseDAO",
+  "operation":0,
+  "action":{
+    "class":"net.nanopay.meter.compliance.ruler.CreateScreeningResponse"
+  },
+  "after":false,
+  "enabled":true,
+  "saveHistory":false,
   "lifecycleState":1
 })

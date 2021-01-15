@@ -27,6 +27,8 @@ foam.CLASS({
     'foam.dao.ArraySink',
     'net.nanopay.account.Account',
     'net.nanopay.account.DigitalAccount',
+    'net.nanopay.tx.SummaryTransaction',
+    'net.nanopay.tx.model.TransactionStatus',
     'net.nanopay.tx.model.Transaction',
     'static foam.mlang.MLang.CLASS_OF',
     'static foam.mlang.MLang.AND',
@@ -45,6 +47,17 @@ foam.CLASS({
     {
       name: 'plan',
       javaCode: `
+        Transaction txn;
+        if ( requestTxn.getType().equals("Transaction") ) {
+          txn = new SummaryTransaction(x);
+          txn.copyFrom(requestTxn);
+        } else {
+          txn = (Transaction) requestTxn.fclone();
+        }
+
+        txn.setStatus(TransactionStatus.PENDING);
+        txn.setInitialStatus(TransactionStatus.COMPLETED);
+
         Account sourceAccount = quote.getSourceAccount();
         DAO dao = (DAO) x.get("localAccountDAO");
         List digitalList = ((ArraySink) dao.where(
@@ -55,25 +68,31 @@ foam.CLASS({
 
         for ( Object obj : digitalList ) {
           Account digital = (DigitalAccount) obj;
+
+
           // Split 1: ABank -> ADigital
           Transaction t1 = new Transaction(x);
           t1.copyFrom(requestTxn);
           t1.setDestinationAccount(digital.getId());
-
-          // ADigital -> BDigital
-          Transaction t2 = new Transaction(x);
-          t2.copyFrom(requestTxn);
-          t2.setSourceAccount(digital.getId());
-
-          Transaction[] digitals = multiQuoteTxn(x, t2, quote);
           Transaction[] CIs = multiQuoteTxn(x, t1, quote);
-          for ( Transaction tx1 : digitals ) {
-            for ( Transaction tx2 : CIs ) {
-              Transaction CI = (Transaction) tx2.fclone();
-              CI.addNext((Transaction) tx1.fclone());
-              CI.setPlanCost(CI.getPlanCost() + tx1.getPlanCost());
-              quote.getAlternatePlans_().add(CI);
-            }
+
+          for ( Transaction ci : CIs ) {
+            // ADigital -> BDigital
+            Transaction t2 = new Transaction(x);
+            t2.copyFrom(requestTxn);
+            t2.setSourceAccount(digital.getId());
+            //Note: if ci, does not have all the transfers for getTotal this wont work.
+            t2.setAmount(ci.getTotal(x, digital.getId()));
+            Transaction[] digitals = multiQuoteTxn(x, t2, quote);
+
+              for ( Transaction d : digitals ) {
+                Transaction CI = (Transaction) removeSummaryTransaction(ci).fclone();
+                CI.addNext((Transaction) removeSummaryTransaction(d).fclone());
+                Transaction t = (Transaction) txn.fclone();
+                t.setPlanCost(ci.getPlanCost() + d.getPlanCost());
+                t.addNext(CI);
+                quote.getAlternatePlans_().add(t);
+              }
           }
         }
         return null;

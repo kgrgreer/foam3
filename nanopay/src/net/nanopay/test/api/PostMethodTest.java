@@ -27,7 +27,7 @@ public class PostMethodTest
       localUserDAO.put(user);
 
       // Create the request
-      String            sugarUrl   = ( this.getBaseUrl(x) == null || this.getBaseUrl(x).equals("") ? "http://localhost:8080" : this.getBaseUrl(x) ) + "/service/sugar";
+      String sugarUrl = this.getBaseUrl(x) + "/service/sugar";
       HttpURLConnection connection = this.createRequest(sugarUrl, "POST");
       connection.setRequestProperty("Content-Type", "application/json");
       

@@ -25,15 +25,15 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'foam.nanos.auth.Subject',
     'foam.nanos.crunch.Capability',
     'foam.nanos.crunch.CapabilityCategory',
-    'foam.nanos.crunch.CapabilityCategoryCapabilityJunction',
     'foam.nanos.crunch.CapabilityJunctionStatus',
-    'foam.nanos.crunch.UserCapabilityJunction',
+    'foam.nanos.crunch.CrunchService',
     'java.util.List',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.model.Business',
-    'static foam.mlang.MLang.*',
+    'static foam.mlang.MLang.NEW_OBJ'
   ],
 
   methods: [
@@ -54,13 +54,12 @@ foam.CLASS({
           .getDAO())
           .select(new ArraySink()))
           .getArray();
-        DAO userCapabilityJunctionDAO = ((DAO) x.get("userCapabilityJunctionDAO"))
-          .where(AND(
-            EQ(UserCapabilityJunction.SOURCE_ID, business.getId()),
-            EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.GRANTED)
-          ));
+        
+        CrunchService crunchService = (CrunchService) x.get("crunchService");
+        Subject businessSubject = new Subject(business);
         for ( Capability capability : afexOnboardingCapabilities ) {
-          if ( userCapabilityJunctionDAO.find(EQ(UserCapabilityJunction.TARGET_ID, capability.getId())) != null ) return true;
+          if ( crunchService.getJunctionForSubject(x, capability.getId(), businessSubject).getStatus() == CapabilityJunctionStatus.GRANTED ) 
+            return true;
         }
         return false;
       `

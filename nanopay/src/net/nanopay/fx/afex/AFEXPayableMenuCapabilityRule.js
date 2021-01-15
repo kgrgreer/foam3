@@ -84,8 +84,6 @@ foam.CLASS({
               subject.setUser(business);
 
               var subjectX = x.put("subject", subject);
-
-              DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
               String afexPaymentMenuCapId = "1f6b2047-1eef-471d-82e7-d86bdf511375";
               crunchService.updateJunction(subjectX, afexPaymentMenuCapId, null, CapabilityJunctionStatus.GRANTED);
 

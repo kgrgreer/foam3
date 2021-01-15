@@ -170,6 +170,7 @@ foam.CLASS({
               account.setDenomination(ta.getDenomination());
               account.setIsDefault(true);
               account.setOwner(user.getId()); // required until user.getAccounts()
+              account.setSpid(user.getSpid());
               account.setLifecycleState(LifecycleState.ACTIVE);
               account.setTrustAccount(ta.getId());
 

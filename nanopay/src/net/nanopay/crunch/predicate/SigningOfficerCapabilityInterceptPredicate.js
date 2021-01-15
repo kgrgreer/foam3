@@ -30,6 +30,8 @@ foam.CLASS({
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.crunch.AgentCapabilityJunction',
+    'foam.nanos.crunch.CapabilityJunctionStatus',
+    'foam.nanos.crunch.CrunchService',
     'foam.nanos.crunch.UserCapabilityJunction',
     'net.nanopay.crunch.onboardingModels.SigningOfficerQuestion',
     'net.nanopay.model.Business',
@@ -42,26 +44,17 @@ foam.CLASS({
       javaCode: `
         if ( ! ( obj instanceof X ) ) return false;
         X x = (X) obj;
-        DAO signingOfficerJunctionDAO = (DAO) x.get("signingOfficerJunctionDAO");
+        CrunchService crunchService = (CrunchService) x.get("crunchService");
         DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
         User agent = ((Subject) x.get("subject")).getRealUser();
         User user = ((Subject) x.get("subject")).getUser();
 
         if ( agent == null || user == null || ! ( agent instanceof User ) || ! ( user instanceof Business ) ) return false;
 
-        // intercept if signing officer question capability is granted
-        AgentCapabilityJunction signingOfficerQuestionJunction = (AgentCapabilityJunction) userCapabilityJunctionDAO.find(
-          AND(
-            INSTANCE_OF(AgentCapabilityJunction.class),
-            EQ(UserCapabilityJunction.SOURCE_ID, agent.getId()),
-            EQ(UserCapabilityJunction.TARGET_ID, "554af38a-8225-87c8-dfdf-eeb15f71215f-0"),
-            EQ(AgentCapabilityJunction.EFFECTIVE_USER, user.getId()),
-            EQ(UserCapabilityJunction.STATUS, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED)
-          )
-        );
-
-        SigningOfficerQuestion soq = signingOfficerQuestionJunction != null ? (SigningOfficerQuestion) signingOfficerQuestionJunction.getData() : null;
-        Boolean affirmativeSOQAnswer = soq != null ? soq.getIsSigningOfficer() : false;
+        UserCapabilityJunction soqJunction = crunchService.getJunction(x, "554af38a-8225-87c8-dfdf-eeb15f71215f-0");
+        if ( soqJunction == null || soqJunction.getStatus() != CapabilityJunctionStatus.GRANTED ||
+           ( ! ((SigningOfficerQuestion) soqJunction.getData()).getIsSigningOfficer() ) 
+        ) return false;
 
         // do not intercept if the ucj is pending review
         AgentCapabilityJunction signingOfficerPrivilegesJunction = (AgentCapabilityJunction) userCapabilityJunctionDAO.find(
@@ -75,12 +68,12 @@ foam.CLASS({
             ),
             EQ(AgentCapabilityJunction.EFFECTIVE_USER, user.getId()),
             OR(
-              EQ(UserCapabilityJunction.STATUS, foam.nanos.crunch.CapabilityJunctionStatus.GRANTED),
-              EQ(UserCapabilityJunction.STATUS, foam.nanos.crunch.CapabilityJunctionStatus.PENDING)
+              EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.GRANTED),
+              EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.PENDING)
             )
           )
         );
-        return signingOfficerQuestionJunction != null && affirmativeSOQAnswer && signingOfficerPrivilegesJunction == null;
+        return signingOfficerPrivilegesJunction == null;
       `
     }
   ]

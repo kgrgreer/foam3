@@ -84,7 +84,7 @@ externalBusiness.setBusinessName("ExternalBusiness");
 externalBusiness.setEmail("externalBusiness@example.com");
 externalBusiness.setEmailVerified(true); // Required to send or receive money.
 externalBusiness.setCompliance(ComplianceStatus.PASSED);
-externalBusiness.setSpid("nanopay");
+externalBusiness.setSpid("test");
 externalBusiness = (Business) localBusinessDAO.put(externalBusiness);
 
 // Setup Admin User
@@ -94,7 +94,7 @@ myAdmin.setEmail("email@admin123.com");
 myAdmin.setDesiredPassword("password");
 myAdmin.setGroup("sme");
 myAdmin.setOrganization("testBusiness");
-myAdmin.setSpid("nanopay");
+myAdmin.setSpid("test");
 
 myAdmin = (User)  smeUserRegistrationDAO.put(myAdmin);
 myAdmin.setEmailVerified(true);
@@ -164,7 +164,8 @@ userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBR);
 // Get MyBusiness
 ArraySink sink = (foam.dao.ArraySink) agentJunctionDAO.where(foam.mlang.MLang.EQ(UserUserJunction.SOURCE_ID, myAdmin.getId())).select(new foam.dao.ArraySink());
 UserUserJunction agentJunction = (UserUserJunction) sink.getArray().get(0);
-Business myBusiness = (Business)localBusinessDAO.find(agentJunction.getTargetId());
+Business myBusiness = (Business) localBusinessDAO.find(agentJunction.getTargetId()).fclone();
+myBusiness = (Business) localBusinessDAO.put(myBusiness);
 
 // Setup Approver and Employee Users
 localUserDAO.where(foam.mlang.MLang.EQ(User.EMAIL, "approver@example.com")).removeAll();
@@ -174,7 +175,7 @@ myApprover.setEmail("approver@example.com");
 myApprover.setGroup(myBusiness.getBusinessPermissionId() + ".employee");
 myApprover.setEmailVerified(true); // Required to send or receive money.
 myApprover.setCompliance(ComplianceStatus.PASSED);
-myApprover.setSpid("nanopay");
+myApprover.setSpid("test");
 myApprover = (User) localUserDAO.put(myApprover);
 X myApproverContext = Auth.sudo(x, myApprover);
 
@@ -185,7 +186,7 @@ myEmployee.setEmail("employee@example.com");
 myEmployee.setGroup(myBusiness.getBusinessPermissionId() + ".employee");
 myEmployee.setEmailVerified(true); // Required to send or receive money.
 myEmployee.setCompliance(ComplianceStatus.PASSED);
-myEmployee.setSpid("nanopay");
+myEmployee.setSpid("test");
 myEmployee = (User) localUserDAO.put(myEmployee);
 X myEmployeeContext = Auth.sudo(x, myEmployee);
 
@@ -224,6 +225,14 @@ ucjSOQ.setEffectiveUser(myBusiness.getId());
 ucjSOQ.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-0");
 ucjSOQ.setData(soq);
 userCapabilityJunctionDAO.put(ucjSOQ);
+
+// Grant PaymentProviderCorridor permissions
+
+UserCapabilityJunction ucjPPD = new UserCapabilityJunction();
+ucjPPD.setSourceId(myAdmin.getId());
+ucjPPD.setTargetId("testCorridorCapability");
+ucjPPD.setStatus(CapabilityJunctionStatus.GRANTED);
+userCapabilityJunctionDAO.inX(myAdminContext).put(ucjPPD);
 
 // Signing Officer Privileges : 554af38a-8225-87c8-dfdf-eeb15f71215f-1a5
 UserBirthDateData so1 = new UserBirthDateData();

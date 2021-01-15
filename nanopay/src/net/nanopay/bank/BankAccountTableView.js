@@ -35,6 +35,12 @@ foam.CLASS({
     'subject'
   ],
 
+  css: `
+  ^ .foam-u2-view-TableView-tr div {
+    display: inline-block;
+  }
+`,
+
   properties: [
     {
       class: 'foam.dao.DAOProperty',

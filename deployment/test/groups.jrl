@@ -1,0 +1,6 @@
+p({
+  class:"foam.nanos.auth.Group",
+  id:"test-fraud-ops",
+  description:"test fraud-ops group",
+  parent:"fraud-ops"
+})

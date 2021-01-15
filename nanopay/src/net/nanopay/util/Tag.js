@@ -19,6 +19,8 @@ foam.CLASS({
     package: 'net.nanopay.util',
     name: 'Tag',
 
+    documentation: 'A String wrapper, can be used to allow a DAO to have a list of Strings',
+
     properties: [
         {
             name: 'id',

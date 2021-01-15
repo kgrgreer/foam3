@@ -60,6 +60,12 @@ p({
 })
 p({
   "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "identityMindUserValidation",
+  "name": "Check Compliance of User Against IdentityMind",
+  "visible": false
+})
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
   "id": "secureFactBusinessValidation",
   "name": "Check Compliance of Business Against SecureFact",
   "visible": false
@@ -68,6 +74,12 @@ p({
   "class": "foam.nanos.crunch.CapabilityCategory",
   "id": "dowJonesBusinessValidation",
   "name": "Check Compliance of Business Against Dow Jones",
+  "visible": false
+})
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "identityMindBusinessValidation",
+  "name": "Check Compliance of Business Against IdentityMind",
   "visible": false
 })
 p({

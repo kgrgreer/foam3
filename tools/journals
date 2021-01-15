@@ -19,6 +19,7 @@ capabilities
 capabilityCategories
 capabilityCategoryCapabilityJunction
 clearingTimes
+clusterConfig
 complianceItems
 corridors
 countries
@@ -28,6 +29,7 @@ currencies
 currencyfxServices
 deprecatedCapabilityJunctions
 digs
+emailConfig
 emailTemplates
 errorCodes
 exchangeClientValues
@@ -40,6 +42,7 @@ fundTransferSystems
 fxProviders
 groupPermissionJunctions
 groups
+hosts
 htmlDoc
 identificationTypes
 InstitutionPaymentProvider
@@ -84,9 +87,11 @@ rootAccounts
 ruleGroups
 rules
 scripts
+scriptEvents
 securities
 services
 sessions
+sessionsinternal
 signingOfficerJunctions
 spids
 strategyReferences

@@ -10,14 +10,14 @@ function usage {
     echo "Usage: $0 [OPTIONS]"
     echo ""
     echo "Options are:"
+    echo "  -A : Extra journal files to include in the build"
+    echo "  -E : Specify explicit journal source directories, ignore faom2 and nanopay source directories."
     echo "  -I : Input File, no option defaults to stdin"
     echo "  -J : deployment journals"
     echo "  -O : Output File, no option defaults to stdout"
-    echo "  -E : Specify explicit journal source directories, ignore faom2 and nanopay source directories."
-    echo "  -A : Extra journal files to include in the build"
 }
 
-while getopts "A:I:J:O:E:" opt ; do
+while getopts "A:E:I:J:O:" opt ; do
     case $opt in
         A) EXTRA_FILES=$OPTARG ;;
         I) IN_FILE=$OPTARG ;;
@@ -31,10 +31,9 @@ done
 declare -a sources=(
 )
 
-if [ -z ${EXPLICIT_FILES} ]; then
-    sources+=("foam2/src")
-    sources+=("nanopay/src")
-fi
+
+sources+=("foam2/src")
+sources+=("nanopay/src")
 
 if [ ! -z ${EXTRA_FILES} ]; then
     IFS=',' read -ra DIRS <<< "$EXTRA_FILES"

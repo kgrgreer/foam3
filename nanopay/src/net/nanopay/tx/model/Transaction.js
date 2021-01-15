@@ -211,9 +211,11 @@ foam.CLASS({
 
   properties: [
     {
+      // TODO: what is this.
       class: 'String',
       name: 'mode',
       hidden: true,
+      includeInDigest: false,
       networkTransient: true
     },
     {
@@ -229,13 +231,15 @@ foam.CLASS({
       javaFactory: `
     return getType();
       `,
+      includeInDigest: false
     },
     {
       name: 'balances',
       class: 'FObjectArray',
       of: 'net.nanopay.account.Balance',
       javaFactory: 'return new Balance[0];',
-      hidden: true
+      hidden: true,
+      includeInDigest: false
     },
     {
       name: 'type',
@@ -250,7 +254,8 @@ foam.CLASS({
       javaGetter: `
     return getClass().getSimpleName();
       `,
-      tableWidth: 180
+      tableWidth: 180,
+      includeInDigest: false
     },
     {
       name: 'isValid',
@@ -267,6 +272,7 @@ foam.CLASS({
       of: 'net.nanopay.tx.Transfer',
       javaFactory: 'return new Transfer[0];',
       hidden: true,
+      includeInDigest: true,
       networkTransient: true
     },
     {
@@ -274,6 +280,7 @@ foam.CLASS({
       class: 'FObjectArray',
       of: 'net.nanopay.tx.Transfer',
       javaFactory: 'return new Transfer[0];',
+      includeInDigest: false,
       networkTransient: true,
       hidden: true
     },
@@ -322,7 +329,8 @@ foam.CLASS({
             }
           }
         }.bind(this));
-      }
+      },
+      includeInDigest: true
     },
     {
       class: 'Reference',
@@ -339,7 +347,8 @@ foam.CLASS({
             }
           }
         }.bind(this));
-      }
+      },
+      includeInDigest: true
     },
     {
       class: 'DateTime',
@@ -347,7 +356,8 @@ foam.CLASS({
       section: 'basicInfo',
       documentation: `The date the transaction was last modified.`,
       createVisibility: 'HIDDEN',
-      updateVisibility: 'RO'
+      updateVisibility: 'RO',
+      includeInDigest: true
     },
     {
       class: 'Reference',
@@ -365,7 +375,8 @@ foam.CLASS({
             }
           }
         }.bind(this));
-      }
+      },
+      includeInDigest: true
     },
     {
       class: 'Reference',
@@ -390,6 +401,7 @@ foam.CLASS({
           .end();
       },
       javaToCSVLabel: 'outputter.outputValue("Payment Id/Invoice Id");',
+      includeInDigest: true
     },
     {
       class: 'foam.core.Enum',
@@ -431,7 +443,8 @@ foam.CLASS({
       factory: function() {
         return ['No status to choose'];
       },
-      documentation: 'Returns available statuses for each transaction depending on current status'
+      documentation: 'Returns available statuses for each transaction depending on current status',
+      storageTransient: true
     },
     {
     // can this also be storage transient and just take the first entry in the historicStatus array?
@@ -441,6 +454,7 @@ foam.CLASS({
       value: 'COMPLETED',
       networkTransient: true,
       hidden: true,
+      includeInDigest: false
     },
     {
       class: 'String',
@@ -449,12 +463,13 @@ foam.CLASS({
       section: 'basicInfo',
       includeInDigest: true
     },
-     {
+    {
       // FIXME: move to a ViewTransaction used on the client
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.TransactionEntity',
       name: 'payer',
       label: 'Sender',
+      storageTransient: true,
       section: 'basicInfo',
       createVisibility: 'HIDDEN',
       readVisibility: function(payer) {
@@ -473,7 +488,6 @@ foam.CLASS({
           choices$: x.data.payer$.map((p) => p ? [[p, p.toSummary()]] : [])
         };
       },
-      storageTransient: true,
       tableCellFormatter: function(value) {
         this.start()
           .start('p').style({ 'margin-bottom': 0 })
@@ -527,7 +541,7 @@ foam.CLASS({
       class: 'Long',
       name: 'payerId',
       label: 'payer',
-      section: 'basicInfo',
+      storageTransient: true,
       createVisibility: 'HIDDEN',
       documentation: 'ID of the payer.',
       readVisibility: function(payerId) {
@@ -540,7 +554,6 @@ foam.CLASS({
           foam.u2.DisplayMode.RO :
           foam.u2.DisplayMode.HIDDEN;
       },
-      storageTransient: true,
       view: function(_, X) {
         return {
           class: 'foam.u2.view.ChoiceView',
@@ -676,6 +689,7 @@ foam.CLASS({
       class: 'UnitValue',
       name: 'destinationAmount',
       label: 'Destination Amount',
+      includeInDigest: true,
       gridColumns: 7,
       documentation: `Amount received in the payee's account (desintation account) in the destination currency.`,
       help: `This is the amount sent to payee's account (destination account).`,
@@ -749,7 +763,7 @@ foam.CLASS({
         return processDate ?
           foam.u2.DisplayMode.RO :
           foam.u2.DisplayMode.HIDDEN;
-      }
+      },
     },
     {
       class: 'DateTime',
@@ -772,6 +786,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'sourceCurrency',
+      includeInDigest: true,
       aliases: ['sourceDenomination'],
       section: 'basicInfo',
       documentation: 'Source currency',
@@ -785,7 +800,6 @@ foam.CLASS({
       javaFactory: `
         return "CAD";
       `,
-      includeInDigest: true,
       view: function(_, X) {
         return foam.u2.view.ChoiceView.create({
           dao: X.currencyDAO,
@@ -806,6 +820,7 @@ foam.CLASS({
       section: 'basicInfo'
     },
     {
+      // REVIEW: Remove-  I suspect this specific to payment providers.
       class: 'String',
       name: 'dstAccountError',
       documentation: 'This is used strictly for the synchronizing of dstAccount errors on create.',
@@ -815,6 +830,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'destinationCurrency',
+      includeInDigest: true,
       aliases: ['destinationDenomination'],
       createVisibility: 'RO',
       readVisibility: 'RO',
@@ -844,6 +860,7 @@ foam.CLASS({
       name: 'statusHistory',
       class: 'FObjectArray',
       of: 'net.nanopay.tx.HistoricStatus',
+      includeInDigest: false,
       section: 'basicInfo',
       documentation: 'Status history of the transaction.',
       createVisibility: 'HIDDEN',
@@ -874,6 +891,7 @@ foam.CLASS({
     {
       name: 'lastStatusChange',
       class: 'DateTime',
+      includeInDigest: false,
       section: 'basicInfo',
       documentation: 'The date that a transaction changed to its current status',
       createVisibility: 'HIDDEN',
@@ -902,11 +920,13 @@ foam.CLASS({
       class: 'FObjectArray',
       of: 'net.nanopay.tx.TransactionLineItem',
       javaValue: 'new TransactionLineItem[] {}',
-      updateVisibility: 'RO'
+      updateVisibility: 'RO',
+      includeInDigest: false,
     },
     {
       class: 'DateTime',
       name: 'scheduledTime',
+      includeInDigest: false,
       section: 'basicInfo',
       createVisibility: 'HIDDEN',
       readVisibility: function(scheduledTime) {
@@ -927,6 +947,7 @@ foam.CLASS({
       name: 'lifecycleState',
       section: 'systemInformation',
       value: foam.nanos.auth.LifecycleState.ACTIVE,
+      includeInDigest: true,
       writePermissionRequired: true,
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
@@ -970,6 +991,7 @@ foam.CLASS({
     }
   ],
 
+  // REVIEW: move many methods to a Transactions.js support model
   methods: [
     {
       name: 'doFolds',
@@ -1231,7 +1253,7 @@ foam.CLASS({
     {
       name: 'copyLineItems',
       code: function copyLineItems(from, to) {
-      if ( from.length > 0 ) {
+        if ( from.length > 0 ) {
           to = to.concat(from);
         }
         return to;
@@ -1239,7 +1261,7 @@ foam.CLASS({
       args: [
         { name: 'from', type: 'net.nanopay.tx.TransactionLineItem[]' },
         { name: 'to', type: 'net.nanopay.tx.TransactionLineItem[]' },
-     ],
+      ],
       type: 'net.nanopay.tx.TransactionLineItem[]',
       javaCode: `
       ArrayList<TransactionLineItem> list1 = new ArrayList<>(Arrays.asList(to));
@@ -1329,45 +1351,45 @@ foam.CLASS({
         tx.setNext(t2);
       }
     `
-  },
-  {
-    name: 'authorizeOnCreate',
-    args: [
-      { name: 'x', type: 'Context' }
-    ],
-    javaThrows: ['AuthorizationException'],
-    javaCode: `
+    },
+    {
+      name: 'authorizeOnCreate',
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
       // TODO: Move logic in AuthenticatedTransactionDAO here.
     `
-  },
-  {
-    name: 'authorizeOnUpdate',
-    args: [
-      { name: 'x', type: 'Context' },
-      { name: 'oldObj', type: 'foam.core.FObject' }
-    ],
-    javaThrows: ['AuthorizationException'],
-    javaCode: `
+    },
+    {
+      name: 'authorizeOnUpdate',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'oldObj', type: 'foam.core.FObject' }
+      ],
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
       // TODO: Move logic in AuthenticatedTransactionDAO here.
     `
-  },
-  {
-    name: 'authorizeOnDelete',
-    args: [
-      { name: 'x', type: 'Context' },
-    ],
-    javaThrows: ['AuthorizationException'],
-    javaCode: `
+    },
+    {
+      name: 'authorizeOnDelete',
+      args: [
+        { name: 'x', type: 'Context' },
+      ],
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
       // TODO: Move logic in AuthenticatedTransactionDAO here.
     `
-  },
-  {
-    name: 'authorizeOnRead',
-    args: [
-      { name: 'x', type: 'Context' },
-    ],
-    javaThrows: ['AuthorizationException'],
-    javaCode: `
+    },
+    {
+      name: 'authorizeOnRead',
+      args: [
+        { name: 'x', type: 'Context' },
+      ],
+      javaThrows: ['AuthorizationException'],
+      javaCode: `
       // TODO: Move logic in AuthenticatedTransactionDAO here.
     `
   },
@@ -1394,32 +1416,32 @@ foam.CLASS({
           sum += t.getAmount();
       return sum;
     `
-  },
-  {
-    name: 'calculateErrorCode',
-    type: 'Long',
-    javaCode: `
+    },
+    {
+      name: 'calculateErrorCode',
+      type: 'Long',
+      javaCode: `
       return 0l;
     `
-  },
-  {
-    name: 'findPlanner',
-    documentation: 'Find the planner that created this transaction',
-    args: [
-      { name: 'x', type: 'Context' },
-    ],
-    type: 'FObject',
-    javaCode: `
+    },
+    {
+      name: 'findPlanner',
+      documentation: 'Find the planner that created this transaction',
+      args: [
+        { name: 'x', type: 'Context' },
+      ],
+      type: 'FObject',
+      javaCode: `
       //TODO: once plannerDAO is a thing this method can go away as itll be auto generated.
       DAO rulerDAO = (DAO) x.get("ruleDAO");
       return (AbstractTransactionPlanner) rulerDAO.find(getPlanner());
     `,
-  },
-  {
-    name: 'getCurrentStageTransfers',
-    documentation: 'Find the transfers that belong to the current stage',
-    type: 'net.nanopay.tx.Transfer[]',
-    javaCode: `
+    },
+    {
+      name: 'getCurrentStageTransfers',
+      documentation: 'Find the transfers that belong to the current stage',
+      type: 'net.nanopay.tx.Transfer[]',
+      javaCode: `
       Transfer[] tr = getTransfers();
       Long stage = getStage();
       List<Transfer> ltr = new ArrayList<Transfer>();
@@ -1428,14 +1450,14 @@ foam.CLASS({
           ltr.add(t);
       return ltr.toArray(new Transfer[0]);
     `,
-  },
-  {
-    name: 'getStage',
-    documentation: 'The current transaction transfer execution stage',
-    type: 'Long',
-    javaCode: `
+    },
+    {
+      name: 'getStage',
+      documentation: 'The current transaction transfer execution stage',
+      type: 'Long',
+      javaCode: `
       return 0;
     `,
-  }
-]
+    }
+  ]
 });

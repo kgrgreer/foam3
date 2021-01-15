@@ -32,14 +32,14 @@ rm ${OUT_DIR}/*.0
 while read -r filePath; do
   # Add a comment in the journal to indicate the source of the lines that follow
   # in the .0 file.
-  echo "// The following $(wc -l < ${filePath} | tr -d ' ') lines were copied from \"${filePath}\"" >> ${OUT_DIR}/"$(basename "${filePath%.jrl}")".0
+  echo "// The following $(wc -l < ${filePath} | tr -d ' ') lines were copied from \"${filePath}\"" >> ${OUT_DIR}/"$(basename "${filePath%.*}")".0
 
   # Append the journal entries from the current file to the .0 file.
-  cat ${filePath} >> ${OUT_DIR}/"$(basename "${filePath%.jrl}")".0
+  cat ${filePath} >> ${OUT_DIR}/"$(basename "${filePath%.*}")".0
 
   # Add a newline if one is missing so we don't put two journal entries on
   # the same line.
-  test "$(tail -c 1 "${filePath}" | wc -l)" -eq 0 && echo "" >> ${OUT_DIR}/"$(basename "${filePath%.jrl}")".0
+  test "$(tail -c 1 "${filePath}" | wc -l)" -eq 0 && echo "" >> ${OUT_DIR}/"$(basename "${filePath%.*}")".0
 done < ${IN_FILE:-/dev/stdin}
 
 exit 0
