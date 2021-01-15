@@ -346,11 +346,15 @@ public class BlacklistTest extends Test {
       .setOwner1(bo)
       .setChosenOwners(Arrays.stream(chosenOwners).boxed().collect(Collectors.toList()))
       .build();
+    UserCapabilityJunction ucjBODRR = new UserCapabilityJunction();
+    ucjBODRR.setSourceId(myBusiness.getId());
+    ucjBODRR.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-7-reviewRequired");
+    ucjBODRR.setData(bod);
+    userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBODRR);
 
     UserCapabilityJunction ucjBOD = new UserCapabilityJunction();
     ucjBOD.setSourceId(myBusiness.getId());
     ucjBOD.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-7");
-    ucjBOD.setData(bod);
     userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBOD);
 
     // Certify Owners Percent : 554af38a-8225-87c8-dfdf-eeb15f71215e-12
@@ -364,21 +368,15 @@ public class BlacklistTest extends Test {
     userCapabilityJunctionDAO.inX(myAdminContext).put(ucjCOP);
 
     // Business Directors Data : 554af38a-8225-87c8-dfdf-eeb15f71215f-6-5
-    // adding actualy data to bypass usercomplianceapproval issue to be fixed later
-    BusinessDirector bd = new BusinessDirector();
-    bd.setFirstName("Francis");
-    bd.setLastName("Filth");
-
-    BusinessDirector[] bdl = {bd};
-    BusinessDirectorsData bdd = new BusinessDirectorsData.Builder(myAdminContext)
-      .setBusinessDirectors(bdl)
-      .build();
-
+    UserCapabilityJunction ucjBDDNR = new UserCapabilityJunction();
+    ucjBDDNR.setSourceId(myBusiness.getId());
+    ucjBDDNR.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-6-5-noReview");
+    userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBDDNR);
     UserCapabilityJunction ucjBDD = new UserCapabilityJunction();
     ucjBDD.setSourceId(myBusiness.getId());
     ucjBDD.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-6-5");
-    ucjBDD.setData(bdd);
-    ucjBDD = (UserCapabilityJunction) userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBDD);
+    userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBDD);
+
     // Certify Directors Listed : 554af38a-8225-87c8-dfdf-eeb15f71215e-17
     CertifyDirectorsListed cdl = new CertifyDirectorsListed();
     cdl.setAgreement(true);

@@ -1028,16 +1028,17 @@ foam.CLASS({
     {
       name: 'businessDirectorsData',
       code: async function(x, business) {
+        var prereqId = '554af38a-8225-87c8-dfdf-eeb15f71215f-6-5-noReview';
+        var ucj = await this.crunchService.getJunction(x, prereqId);
+        if ( ! ucj ||
+             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          ucj = await this.crunchService.updateJunction(x, prereqId, null, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
+        }
         var id = '554af38a-8225-87c8-dfdf-eeb15f71215f-6-5';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-          var cap = net.nanopay.crunch.onboardingModels.BusinessDirectorsData.create({
-            //needDirector: false,
-            businessTypeId: 3,
-            businessDirectors: []
-          });
-          ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
+          ucj = await this.crunchService.updateJunction(x, id, null, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
         }
         return ucj;
       }
@@ -1062,15 +1063,17 @@ foam.CLASS({
     {
       name: 'businessOwnershipData',
       code: async function(x, business) {
+        var prereqId = '554af38a-8225-87c8-dfdf-eeb15f71215f-7-noReview';
+        var ucj = await this.crunchService.getJunction(x, prereqId);
+        if ( ! ucj ||
+             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
+          ucj = await this.crunchService.updateJunction(x, prereqId, null, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
+        }
         var id = '554af38a-8225-87c8-dfdf-eeb15f71215f-7';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-          var cap = net.nanopay.crunch.onboardingModels.BusinessOwnershipData.create({
-            ownersSelectionsValidated: true,
-            amountOfOwners: 0
-          });
-          ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
+          ucj = await this.crunchService.updateJunction(x, id, null, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
         }
         return ucj;
       }
