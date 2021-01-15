@@ -678,7 +678,17 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"manual.compliance.dowjones.business",
   "name":"Dow Jones Business Validation",
-  "description":"Validate a user against Dow Jones.",
+  "description":"Validate a business against Dow Jones.",
+  "version":"0",
+  "enabled":true,
+  "grantMode": 1
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"manual.compliance.identitymind.business",
+  "name":"IdentityMind Business Validation",
+  "description":"Validate a business against IdentityMind.",
   "version":"0",
   "enabled":true,
   "grantMode": 1
@@ -847,6 +857,19 @@ p({
   "id":"manual.compliance.dowjones.user",
   "name":"Dow Jones User Validation",
   "description":"Validate a user against Dow Jones.",
+  "version":"0",
+  "enabled":true,
+  "grantMode": 1,
+  "daoKey":"userDAO",
+  "contextDAOFindKey": "subject.realUser",
+  "associatedEntity": 1
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"manual.compliance.identitymind.user",
+  "name":"IdentityMind User Validation",
+  "description":"Validate a user against IdentityMind.",
   "version":"0",
   "enabled":true,
   "grantMode": 1,

@@ -33,8 +33,10 @@ p({
   permissionsGranted: [
     "rule.read.expanded-onboarding-compliance-expandedUserDetail-dowJones",
     "rule.read.expanded-onboarding-compliance-expandedUserDetail-secureFact",
+    "rule.read.expanded-onboarding-compliance-expandedUserDetail-identityMind",
     "rule.read.expanded-onboarding-compliance-businessPaymentsReceiving-dowJones",
     "rule.read.expanded-onboarding-compliance-businessPaymentsReceiving-secureFact",
+    "rule.read.expanded-onboarding-compliance-businessPaymentsReceiving-identityMind",
     "rule.read.expanded-onboarding-compliance-status",
     "rule.read.expanded-onboarding-compliance-approval-0",
     "rule.read.expanded-onboarding-compliance-passed-reput-create",
