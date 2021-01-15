@@ -231,7 +231,7 @@ foam.CLASS({
           .setEmailVerified(true)
           .build();
 
-       getLocalBusinessDAO().inX(userContext).put(business);
+        getLocalBusinessDAO().inX(userContext).put(business);
 
         return user;
       `
