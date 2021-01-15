@@ -29,6 +29,7 @@ currencies
 currencyfxServices
 deprecatedCapabilityJunctions
 digs
+emailConfig
 emailTemplates
 errorCodes
 exchangeClientValues
