@@ -96,6 +96,14 @@ foam.CLASS({
         addSpidPrerequisites(x, spid, mspInfo.getCorridorPermissions(), "corridorCapability");
         addSpidPrerequisites(x, spid, mspInfo.getPlannerPermissions(), "plannerCapability");
 
+        // Add spid business menu capability
+        getLocalCapabilityDAO().put(
+          new Capability.Builder(x)
+            .setId(spid + "BusinessMenuCapability")
+            .setPermissionsGranted(mspInfo.getBusinessMenuPermissions())
+            .build()
+        );
+
         // Add theme for the client side - not for back-office
         // MSPInfo referenced theme will be used as a template for a new theme associated to the created spid
         Theme clientTheme = (Theme) themeDAO.find(mspInfo.getTheme());
@@ -121,6 +129,7 @@ foam.CLASS({
         adminGroup.setId(mspInfo.getSpid() + "-admin");
         adminGroup.setParent("msp-admin");
         adminGroup.setDescription(mspInfo.getSpid() +" admin");
+        adminGroup.setUrl(mspInfo.getBackofficeGroupUrl());
         groupDAO.put(adminGroup);
 
         // Create spid-admin user
@@ -172,6 +181,7 @@ foam.CLASS({
         fraudOpsGroup.setId(mspInfo.getSpid() + "-fraud-ops");
         fraudOpsGroup.setParent("fraud-ops");
         fraudOpsGroup.setDescription(mspInfo.getSpid() + " fraud-ops group");
+        fraudOpsGroup.setUrl(mspInfo.getBackofficeGroupUrl());
         groupDAO.put(fraudOpsGroup);
 
         // Create spid-payment-ops group
@@ -179,6 +189,7 @@ foam.CLASS({
         paymentOpsGroup.setId(mspInfo.getSpid() + "-payment-ops");
         paymentOpsGroup.setParent("payment-ops");
         paymentOpsGroup.setDescription(mspInfo.getSpid() + " payment-ops group");
+        paymentOpsGroup.setUrl(mspInfo.getBackofficeGroupUrl());
         groupDAO.put(paymentOpsGroup);
 
         List<String> fraudPermissionArray = new ArrayList<>();
@@ -197,7 +208,16 @@ foam.CLASS({
         supportGroup.setId(mspInfo.getSpid() + "-support");
         supportGroup.setParent("support");
         supportGroup.setDescription(mspInfo.getSpid() + " support group");
+        supportGroup.setUrl(mspInfo.getBackofficeGroupUrl());
         groupDAO.put(supportGroup);
+
+        // Create spid-sme group
+        Group smeGroup = new Group();
+        smeGroup.setId(mspInfo.getSpid() + "-sme");
+        smeGroup.setParent("sme");
+        smeGroup.setDescription(mspInfo.getSpid() + " sme group");
+        smeGroup.setUrl(mspInfo.getSmeGroupUrl());
+        groupDAO.put(smeGroup);
 
         // Create emailConfig
         DAO emailConfigDAO = (DAO) x.get("emailConfigDAO");

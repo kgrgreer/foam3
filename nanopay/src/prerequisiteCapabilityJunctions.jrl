@@ -1,3 +1,11 @@
+// nanopay spid has access to all planners
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "nanopay",
+  targetId: "AllPlannerCapability",
+  priority: 1
+})
+
 // Prerequisites for canadianBusinessOnboardedWithDomesticPayments
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
@@ -817,49 +825,6 @@ p({
   sourceId: "serviceProviderCapability",
   targetId: "menuCapability",
   priority: 5
-})
-
-// Prerequisites for nanopay spid capability
-p({
-  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "nanopay",
-  targetId: "serviceProviderCapability",
-  priority: 1
-})
-
-p({
-  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "nanopay",
-  targetId: "nanopayPlannerCapability",
-  priority: 2
-})
-
-p({
-  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "nanopay",
-  targetId: "nanopayCountryCapability",
-  priority: 3
-})
-
-p({
-  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "nanopay",
-  targetId: "nanopayCorridorCapability",
-  priority: 4
-})
-
-p({
-  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "nanopay",
-  targetId: "nanopayCurrencyCapability",
-  priority: 5
-})
-
-p({
-  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "nanopay",
-  targetId: "nanopayMenuCapability",
-  priority: 6
 })
 
 p({
