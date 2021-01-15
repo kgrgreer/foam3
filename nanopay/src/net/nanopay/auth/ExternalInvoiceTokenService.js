@@ -94,7 +94,7 @@ foam.CLASS({
 
         Group group = user.findGroup(x);
         AppConfig appConfig = group.getAppConfig(x);
-        String url = appConfig.getUrl().replaceAll("/$", "");
+        String url = appConfig.getUrl();
 
         // Construct the url of the external invoice
         StringBuilder urlStringB = new StringBuilder();
@@ -186,7 +186,7 @@ foam.CLASS({
           // Set user email verified & login enabled to true to enable log in.
           user.setEmailVerified(true);
           user.setLoginEnabled(true);
-          user.setGroup("sme");
+          user.setGroup(user.getSpid() + "-sme");
           userUserDAO.put(user);
 
           // Set token processed to true.

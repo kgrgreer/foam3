@@ -50,8 +50,6 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
         BankAccount acc = (BankAccount) obj;
-        User owner = (User) acc.findOwner(x);
-        User creator = (User) acc.findCreatedBy(x);
         
         String country =  acc.getCountry();
         String currency = acc.getDenomination();
@@ -61,7 +59,7 @@ foam.CLASS({
         PaymentProviderCorridor ppc;
 
         //check if bank account belongs to a contact
-        if ( acc.getCreatedBy() != acc.getOwner() ) {
+        if ( acc.getForContact() ) {
           ppc = (PaymentProviderCorridor) targetCorridorDAO.find(
             AND(
               EQ(PaymentProviderCorridor.TARGET_COUNTRY, country),
