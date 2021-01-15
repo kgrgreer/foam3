@@ -61,9 +61,9 @@ p({
   "version":"0",
   "enabled":true,
   "permissionsGranted":[
-    "menu.read.capability.menu.capability.menu.business.search",
-    "menu.read.capability.menu.paymentcode",
-    "menu.read.capability.menu.invitation",
+    "menu.read.submenu.contact.search",
+    "menu.read.submenu.contact.paymentcode",
+    "menu.read.submenu.contact.invitation",
     "contact.ro.shouldinvite",
     "group.read.smeBusinessEmployee"
   ]
