@@ -10,17 +10,17 @@ p({
   "admissionCapability": "",
   "defaultMenu":"businesses-support",
   "disableCurrencyChoice": true,
-  "loginImage": "images/sign_in_illustration.png",
-  "logo":"images/nanopay_logo_blue.png",
-  "largeLogo": "images/nanopay_blue_white_206x42.png",
+  "loginImage": "images/intuit/QB-Large-Logo.svg",
+  "logo":"images/intuit/QB-Small-Logo.svg",
+  "largeLogo": "images/intuit/QB-Large-Logo.svg",
   "headConfig": {
     "customFavIcon" : [
-      "<link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/favicon/apple-touch-icon.png\">",
-      "<link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/favicon/favicon.png\">",
-      "<link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"/favicon/favicon.png\">",
+      "<link rel=\"apple-touch-icon\" sizes=\"180x180\" href=\"/favicon/intuit/apple-touch-icon.png\">",
+      "<link rel=\"icon\" type=\"image/png\" sizes=\"32x32\" href=\"/favicon/intuit/favicon-32x32.png\">",
+      "<link rel=\"icon\" type=\"image/png\" sizes=\"16x16\" href=\"/favicon/intuit/favicon-16x16.png\">",
       "<link rel=\"manifest\" href=\"/favicon/manifest.json\">",
       "<link rel=\"mask-icon\" href=\"/favicon/safari-pinned-tab.svg\" color=\"#5bbad5\">",
-      "<link rel=\"shortcut icon\" href=\"/favicon/favicon.png\">",
+      "<link rel=\"shortcut icon\" href=\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAACXBIWXMAAAsTAAALEwEAmpwYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAIHSURBVHgBjVM7TxtBEP727ESRYoOLECKCo4uSIolCsCJFSqQUgSapYihIlRQXaBIKHn8AkKh5FdAAFoICQYNLGgwVSFAcEk8JJEu8G2RsXAA2y8z6zjoOgxhpdbs7+818M/OdgMveR8q/SSHCGi5rJISeu5WmBMyszHZsGIdx53thb/RIIOAX/jYJ2Yw7jPw9D2S6wzQSiXwABvuEL0bbkBvw3FeOvdNddxjTK9NVHETjI2cuBGb7+aoO/ypbXLcidCEeMwaeN5Fnuia0cdvlf1iEJ49K1Jf5fSj5iDJfEJvHq0hdJB21i89Pw0VzntLa4m46qOy/39ajr3oI9RWN+POuAWfZMytoMWpf16Hza5c6Lx0t2HFONBscJqoMaoo1oGIkiKmtiWukjelf+EuL3/BbxUJNy6q9hjKMrg1i8XAetxn7+s0uVL/4nmslpK7ZzuR5Evc11R/LqAQZ583MzjT+h1rxqfTLrUD2cQnR7UnrhscpRZRa2hTdmqSZBzH8Y0JR3TvdyQO5PF4pYjmw3A1+mysBpmDpUoCYM1MZiYdnv08CGlsfylPmAClHqRmZeamtGLuzFKrXGYCBB5b6GMBnXk4wY/i/UFIORfRARmRuSJmZ7N+Qseq+mSYpx20pm0Y84ZXeqkJMCqB7bTAfhdvP0vbA004iqbQZ8aSy1GzKNqVKdtgVUyjVq1XSBwMAAAAASUVORK5CYII=\" type=\"image/png\">",
       "<meta name=\"msapplication-config\" content=\"/favicon/browserconfig.xml\">",
       "<meta name=\"theme-color\" content=\"#ffffff\">"
     ]
@@ -41,13 +41,13 @@ p({
     personalSupportUser:1030,
   },
   "font1":"IBM Plex Sans",
-  "primary1":"#2e2379",
-  "primary2":"#4434b4",
-  "primary3":"#604aff",
-  "primary4":"#937dff",
-  "primary5":"#e4e4f7",
-  "secondary1":"#4a33f4",
-  "secondary2":"#432de7",
+  "primary1":"#000000",
+  "primary2":"#2CA01C",
+  "primary3":"#53B700",
+  "primary4":"#7FD000",
+  "primary5":"#D4D7DC",
+  "secondary1":"#000000",
+  "secondary2":"transparent",
   "approval1":"#19402e",
   "approval2":"#117a41",
   "approval3":"#32bf5e",
@@ -79,6 +79,20 @@ p({
     }
     .foam-comics-BrowserView {
       margin-top: 30px;
+    }
+    .net-nanopay-sme-ui-FooterView {
+      background: white !important;
+      border-top: 1px solid /*%GREY4%*/ #e7eaec;
+      color: black !important;
+    }
+    .net-nanopay-sme-ui-FooterView a{
+      color: black !important;
+    }
+    .foam-u2-ActionView-primary {
+      border: none !important;
+    }
+    .top-bar-img { 
+      display: none;
     }
   """,
   "createdBy":1,
