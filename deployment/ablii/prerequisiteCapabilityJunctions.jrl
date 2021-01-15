@@ -56,9 +56,34 @@ p({
   priority: 9
 })
 
+// REVIEW: Planners for ablii
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
   sourceId: "ablii",
-  targetId: "AllPlannerCapability",
+  targetId: "RBCPlannerCapability",
   priority: 10
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "BMOPlannerCapability",
+  priority: 11
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "AFEXPlannerCapability",
+  priority: 12
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "KotakPlannerCapability",
+  priority: 13
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "DomesticInterBankAccountPlannerCapability",
+  priority: 14
 })

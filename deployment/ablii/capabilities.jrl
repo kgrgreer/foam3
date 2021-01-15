@@ -69,16 +69,10 @@ p({
   ]
 })
 
-// NOTE: Use AllPlannerCapability for ablii
+// NOTE: see prerequisite of abliiPlannerCapability in prerequisiteCapabilityJunctions.jrl
 p({
   class:"foam.nanos.crunch.Capability",
-  id:"abliiPlannerCapability",
-  permissionsGranted:[
-    "rule.read.61d57d66-3e63-4c53-9eee-de3f8f75e56c",
-    "rule.read.9577e4ae-c3c3-41a2-b479-43d91a12b2a0",
-    "rule.read.3cb6aab3-107a-495a-8974-ed3286192b35",
-    "rule.read.ab51def7-b5d4-48ee-99ee-e3d418583740"
-  ]
+  id:"abliiPlannerCapability"
 })
 
 p({
