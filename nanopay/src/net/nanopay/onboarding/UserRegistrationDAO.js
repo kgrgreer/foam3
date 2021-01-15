@@ -99,7 +99,6 @@ foam.CLASS({
             setLocalBusinessDAO((DAO) x.get("localBusinessDAO"));
             setInvitationDAO((DAO) x.get("businessInvitationDAO"));
             setAgentJunctionDAO((DAO) x.get("agentJunctionDAO"));
-            setUserCapabilityJunctionDAO((DAO) x.get("userCapabilityJunctionDAO"));
           }
         `
         );
