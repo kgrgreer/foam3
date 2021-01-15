@@ -60,10 +60,10 @@ public class TransactionTest
     userDAO = (DAO) x_.get("localUserDAO");
     txnQuoteDAO = (DAO) x_.get("localTransactionPlannerDAO");
 
-    sender_ = addUser("txntest1@transactiontest.ca");
-    receiver_ = addUser("txntest2@transactiontest.ca");
-    loaneeTester = addUser("loantest1@transactiontest.ca");
-    loanerTester = addUser("loantest2@transactiontest.ca");
+    sender_ = addUser("txntest1@transactiontest.caa");
+    receiver_ = addUser("txntest2@transactiontest.caa");
+    loaneeTester = addUser("loantest1@transactiontest.caa");
+    loanerTester = addUser("loantest2@transactiontest.caa");
     inv = addInvoice(sender_,receiver_);
     setup();
 

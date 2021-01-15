@@ -85,12 +85,12 @@ public class BankVerificationTest
     userDAO = (DAO) x_.get("localUserDAO");
     txnQuoteDAO = (DAO) x_.get("localTransactionPlannerDAO");
     //set up receiver and sender
-    sender_ = addUser("txntest1@transactiontest.ca");
-    receiver_ = addUser("txntest2@transactiontest.ca");
-    sender_2 = addUser("txntest3@transactiontest.ca");
-    receiver_2 = addUser("txntest4@transactiontest.ca");
-    user1 = addUser("txntest5@transactiontest.ca");
-    user2 = addUsUser("txntest6@transactiontest.ca");
+    sender_ = addUser("BankVerification1@transactiontest.ca");
+    receiver_ = addUser("BankVerification2@transactiontest.ca");
+    sender_2 = addUser("BankVerification3@transactiontest.ca");
+    receiver_2 = addUser("BankVerification4@transactiontest.ca");
+    user1 = addUser("BankVerification5@transactiontest.ca");
+    user2 = addUsUser("BankVerification6@transactiontest.ca");
     // setUp bank account
     setup();
     //set up AFEX transaction
@@ -150,7 +150,7 @@ public class BankVerificationTest
       user.setLastName("Filth");
       user.setEmailVerified(true);
       user.setGroup("business");
-      user.setSpid("nanopay");
+      user.setSpid("test");
       user = (User) userDAO.put(user);
       user = (User) user.fclone();
     }
@@ -199,7 +199,7 @@ public class BankVerificationTest
       user.setLastName("Filth_US");
       user.setEmailVerified(true);
       user.setGroup("business");
-      user.setSpid("nanopay");
+      user.setSpid("test");
       user = (User) userDAO.put(user);
       user = (User) user.fclone();
     }
