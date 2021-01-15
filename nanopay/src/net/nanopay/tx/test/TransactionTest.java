@@ -367,7 +367,7 @@ public class TransactionTest
       user.setLastName("Filth");
       user.setEmailVerified(true);
       user.setGroup("business");
-      user.setSpid("nanopay");
+      user.setSpid("test");
       user = (User) userDAO.put(user);
       user = (User) user.fclone();
     }

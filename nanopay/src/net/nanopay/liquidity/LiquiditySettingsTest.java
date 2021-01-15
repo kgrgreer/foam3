@@ -62,7 +62,7 @@ public class LiquiditySettingsTest
     sender_.setFirstName("Francis");
     sender_.setLastName("Filth");
     sender_.setGroup("business");
-    sender_.setSpid("nanopay");
+    sender_.setSpid("test");
     sender_ = (User) (((DAO) x_.get("localUserDAO")).put_(x_, sender_)).fclone();
     senderDigitalDefault = (DigitalAccount) DigitalAccount.findDefault(x_, sender_, "CAD","11").fclone();
     senderLiquidityDigital = new DigitalAccount();
@@ -77,7 +77,7 @@ public class LiquiditySettingsTest
       receiver_.setEmail("lstesting2@nanopay.net");
       receiver_.setGroup("business");
     receiver_.setEmailVerified(true);
-    receiver_.setSpid("nanopay");
+    receiver_.setSpid("test");
     receiver_ = (User) (((DAO) x_.get("localUserDAO")).put_(x_, receiver_)).fclone();
     receiverDigital = DigitalAccount.findDefault(x_, receiver_, "CAD","11");
   }
