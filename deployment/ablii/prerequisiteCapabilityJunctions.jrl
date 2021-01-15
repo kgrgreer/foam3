@@ -60,3 +60,15 @@ p({
   sourceId: "554af38a-8225-87c8-dfdf-eeb15f71215f-20",
   targetId: "1f6b2047-1eef-471d-82e7-d86bdf511375-3",
 })
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "bf6a49d5-4027-4dac-a269-4d3ed070609e-1",
+  targetId: "554af38a-8225-87c8-dfdf-eeb15f71215f-11",
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "bf6a49d5-4027-4dac-a269-4d3ed070609e-1",
+  targetId: "554af38a-8225-87c8-dfdf-eeb15f71215f-20",
+})

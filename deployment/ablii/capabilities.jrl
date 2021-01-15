@@ -66,30 +66,17 @@ p({
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-20",
   "name":"Final approval",
   "description":"Registering with Payment Provider",
-  "icon":"/images/capabilityIcons/finalApprovalCap.svg",
   "version":"0",
   "enabled":true,
-  "visibilityPredicate":  { class: "foam.mlang.predicate.True" },
-  "keywords":["featured"],
   "min": 1,
   "permissionsGranted":[
     "menu.read.capability.main.invoices.payables"
   ],
-  "availabilityPredicate": {
-    "class":"foam.mlang.predicate.And",
-    "args": [
-      { "class": "net.nanopay.crunch.predicate.BusinessPassedCompliance" },
-      { "class": "net.nanopay.crunch.predicate.HasVerifiedBankAccount" },
-      {
-        "class": "foam.mlang.predicate.Not",
-        "arg1":
-          {
-            "class":"net.nanopay.crunch.predicate.RegisterPaymentProviderStatus",
-            "status": 1
-          }
-      }
-    ]
-  }
+  beforeWizardlet: {
+    class: "foam.nanos.crunch.ui.MinMaxCapabilityWizardlet",
+    consumePrerequisites: true,
+    hideChoiceView: true,
+  },
 })
 
 p({
