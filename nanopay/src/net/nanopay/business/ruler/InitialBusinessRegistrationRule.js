@@ -61,7 +61,6 @@ foam.CLASS({
           UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
           DAO localUserDAO = (DAO) x.get("localUserDAO");
           DAO businessDAO = (DAO) x.get("businessDAO");
-          DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
           User user = ((Subject) x.get("subject")).getUser();
 
           if ( ucj.getStatus() != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) return;
