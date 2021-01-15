@@ -10,15 +10,3 @@ p({
   description:"test fraud-ops group",
   parent:"fraud-ops"
 })
-// p({
-//   class:"foam.nanos.auth.Group",
-//   id:"test-payment-ops",
-//   description:"test payment-ops group",
-//   parent:"payment-ops"
-// })
-// p({
-//   class:"foam.nanos.auth.Group",
-//   id:"test-support",
-//   description:"test support group",
-//   parent:"support"
-// })

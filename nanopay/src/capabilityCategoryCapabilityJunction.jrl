@@ -129,6 +129,11 @@ p({
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "identityMindUserValidation",
+"targetId": "manual.compliance.identitymind.user"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "secureFactBusinessValidation",
 "targetId": "manual.compliance.securefact.business"
 })
@@ -136,6 +141,11 @@ p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "dowJonesBusinessValidation",
 "targetId": "manual.compliance.dowjones.business"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "identityMindBusinessValidation",
+"targetId": "manual.compliance.identitymind.business"
 })
 
 p({

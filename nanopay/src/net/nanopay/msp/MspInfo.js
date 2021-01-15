@@ -129,6 +129,16 @@ foam.CLASS({
       required: true
     },
     {
+      class: 'String',
+      name: 'backofficeGroupUrl',
+      value: null
+    },
+    {
+      class: 'String',
+      name: 'smeGroupUrl',
+      value: null
+    },
+    {
       class: 'StringArray',
       name: 'menuPermissions'
     },
@@ -147,6 +157,10 @@ foam.CLASS({
     {
       class: 'StringArray',
       name: 'plannerPermissions'
+    },
+    {
+      class: 'StringArray',
+      name: 'businessMenuPermissions'
     },
   ]
 });
