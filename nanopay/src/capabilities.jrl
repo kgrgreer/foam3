@@ -487,7 +487,10 @@ p({
   "enabled":true,
   "daoKey":"userDAO",
   "contextDAOFindKey": "subject.realUser",
-  "associatedEntity": 1
+  "associatedEntity": 1,
+  "wizardlet": {
+    "class": "net.nanopay.crunch.wizardlet.RefreshWizardlet"
+  }
 })
 
 p({
