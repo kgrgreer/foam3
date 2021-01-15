@@ -105,7 +105,7 @@ foam.CLASS({
             setInvitationDAO((DAO) x.get("businessInvitationDAO"));
             setAgentJunctionDAO((DAO) x.get("agentJunctionDAO"));
             setUserCapabilityJunctionDAO((DAO) x.get("userCapabilityJunctionDAO"));
-          }    
+          }
         `
         );
       }
@@ -123,7 +123,9 @@ foam.CLASS({
           throw new RuntimeException(EMAIL_REQUIRED_ERROR_MSG);
         }
 
-        user.setGroup(getGroup());
+        if ( SafetyUtil.isEmpty(user.getGroup()) ) {
+          user.setGroup(getGroup());
+        }
 
         // We want the system user to be putting the User we're trying to create. If
         // we didn't do this, the user in the context's id would be 0 and many

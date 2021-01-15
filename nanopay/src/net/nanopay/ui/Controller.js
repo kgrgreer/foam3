@@ -275,7 +275,7 @@ foam.CLASS({
         return {
           dao_: client$smeUserRegistrationDAO || null,
           imgPath: this.theme.loginImage,
-          group_: 'sme',
+          group_: this.theme.spid + '-sme',
           countryChoices_: ['CA', 'US']
         };
       }
