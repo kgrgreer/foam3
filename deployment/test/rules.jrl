@@ -35,7 +35,7 @@ p({
   "operation":0,
   "action":{
     "class":"net.nanopay.account.CreateDefaultDigitalAccountOnUserCreateRule",
-    "trusts":["11"]
+    "trusts":["325e128a-f76f-46bd-ba82-26d12d92865f","7ee216ae-9371-4684-9e99-ba42a5759444"]
   },
   "after":true,
   "enabled":true,

@@ -47,14 +47,6 @@ foam.CLASS({
 
   properties: [
     {
-      name: 'trustAccounts',
-      documentation: 'A list of trust account Ids that a default digital account should be created for',
-      class: 'List',
-      javaType: 'java.util.ArrayList<String>',
-      javaFactory: `ArrayList al = new ArrayList<String>(); al.add("11");al.add("9"); return al;`
-
-    },
-    {
       name: 'reserveAccountSpid',
       class: 'String',
       value: 'nanopay'
@@ -98,15 +90,8 @@ foam.CLASS({
     {
       name: 'createDefaults',
       javaCode: `
-        if ( trustAccounts == null || trustAccounts.length == 0 ) {
-
-          if ( getTrustAccounts() == null || getTrustAccounts().size() == 0 )
-            return;
-          Object[] oa = getTrustAccounts().toArray();
-          trustAccounts = new String[oa.length];
-          for (int i = 0; i < oa.length; i++ )
-            trustAccounts[i] = (String) oa[i];
-        }
+        if (trustAccounts == null)
+          return;
         checkAndCreateAll_(x, trustAccounts);
       `
     },
@@ -118,20 +103,20 @@ foam.CLASS({
       ],
       javaCode: `
         User user = ((Subject) x.get("subject")).getUser();
-        DAO accountDAO = ((DAO) getX().get("localAccountDAO"));
-        accountDAO = accountDAO.where(
+        DAO accountDAO = ((DAO) x.get("localAccountDAO"));
+       /* accountDAO = accountDAO.where(
           OR(
             EQ(Account.SPID, getReserveAccountSpid()),
             EQ(Account.SPID, user.getSpid())
         ));
-        x = x.put("localAccountDAO", accountDAO);
+        x = x.put("localAccountDAO", accountDAO);*/
         // get the trust account to generate for
         List trusts = new ArrayList<TrustAccount>();
         for (String tId : trustAccounts) {
           TrustAccount trust = (TrustAccount) accountDAO.find(tId);
           if (trust == null) {
             ((foam.nanos.logger.Logger) x.get("logger")).warning("Trust account not found", tId);
-            throw new RuntimeException("MultiTrustService: Incorrect Trust account");
+            throw new RuntimeException("MultiTrustService: Incorrect Trust account "+tId);
           }
           trusts.add(trust);
         }
