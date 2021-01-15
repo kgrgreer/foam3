@@ -226,6 +226,14 @@ ucjSOQ.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-0");
 ucjSOQ.setData(soq);
 userCapabilityJunctionDAO.put(ucjSOQ);
 
+// Grant PaymentProviderCorridor permissions
+
+UserCapabilityJunction ucjPPD = new UserCapabilityJunction();
+ucjPPD.setSourceId(myAdmin.getId());
+ucjPPD.setTargetId("testCorridorCapability");
+ucjPPD.setStatus(CapabilityJunctionStatus.GRANTED);
+userCapabilityJunctionDAO.inX(myAdminContext).put(ucjPPD);
+
 // Signing Officer Privileges : 554af38a-8225-87c8-dfdf-eeb15f71215f-1a5
 UserBirthDateData so1 = new UserBirthDateData();
 so1.setBirthday(birthday);

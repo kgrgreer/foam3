@@ -120,3 +120,11 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.Trev
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoCurrencyAmountInformation.SECTION_BUSINESS_CAPITAL.title",target:"Capital de negócios e patrimônio líquido"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoCurrencyAmountInformation.CAPITAL.help",target:"Quais são os ativos circulantes das empresas, ou seja, soma de todos os ativos."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoCurrencyAmountInformation.EQUITY.help",target:"Qual é o patrimônio líquido das empresas, ou seja, soma de todos os ativos menos a soma de todos os passivos."})
+
+// CapabilityStore
+p({class:"foam.i18n.Locale",locale:"en",source:"foam.u2.crunch.CapabilityStore.TITLE",target:"Registration"})
+p({class:"foam.i18n.Locale",locale:"en",source:"foam.u2.crunch.CapabilityStore.SUBTITLE",target:"To complete the registration, follow the steps below"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.crunch.CapabilityStore.TITLE",target:"Cadastro"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.crunch.CapabilityStore.SUBTITLE",target:"Para habilitar totalmente nossa plataforma, precisamos de um pouco mais de informações sobre você e sua empresa."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"sme.main.appStore.label",target:"Cadastro"})

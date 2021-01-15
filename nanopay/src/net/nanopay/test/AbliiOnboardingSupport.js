@@ -727,7 +727,7 @@ foam.CLASS({
           lastName: business.id,
           organization: 'CAContact-'+business.organization,
           email: 'ca.contact@nanopay.net',
-          group: 'sme',
+          group: business.spid + '-sme',
           confirm: true,
           businessAddress: {
             class: 'foam.nanos.auth.Address',
@@ -753,7 +753,7 @@ foam.CLASS({
           lastName: business.id,
           organization: 'USContact-'+business.organization,
           email: 'us.contact@nanopay.net',
-          group: 'sme',
+          group: business.spid + '-sme',
           confirm: true,
           businessAddress: {
             class: 'foam.nanos.auth.Address',

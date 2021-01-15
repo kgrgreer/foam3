@@ -37,7 +37,7 @@ foam.CLASS({
     'ctrl',
     'contactService',
     'invitationDAO',
-    'user'
+    'subject'
   ],
 
   css: `
@@ -130,7 +130,7 @@ foam.CLASS({
     async function init() {
       var sectionOne = this.Section.create({
         title: this.SECTION_ONE_TITLE,
-        properties: [ 
+        properties: [
           net.nanopay.contacts.Contact.ORGANIZATION.clone().copyFrom({ gridColumns: 12 }),
           net.nanopay.contacts.Contact.EMAIL.clone().copyFrom({ gridColumns: 12 }),
           net.nanopay.contacts.Contact.FIRST_NAME,
@@ -164,7 +164,7 @@ foam.CLASS({
       this.sections = [ sectionOne, sectionTwo, sectionThree ];
       this.data.copyFrom({
         type: 'Contact',
-        group: 'sme'
+        group: this.subject.user.spid +  '-sme'
       });
       if ( this.isEdit ) {
         this.data.isEdit = true;
@@ -226,7 +226,7 @@ foam.CLASS({
 
           if ( ! isExisting ) {
             try {
-              this.contact = await this.user.contacts.put(this.data);
+              this.contact = await this.subject.user.contacts.put(this.data);
 
               if ( await this.sendInvite(false) ) {
                 this.ctrl.notify(this.CONTACT_ADDED_INVITE_SUCCESS, '', this.LogLevel.INFO, true);
@@ -240,7 +240,7 @@ foam.CLASS({
             return false;
           }
         } else {
-          this.contact = await this.user.contacts.put(this.data);
+          this.contact = await this.subject.user.contacts.put(this.data);
           this.ctrl.notify(this.isEdit ? this.CONTACT_EDITED : this.CONTACT_ADDED, '', this.LogLevel.INFO, true);
         }
       } catch (e) {
@@ -257,7 +257,7 @@ foam.CLASS({
     async function sendInvite(showToastMsg) {
       var invite = this.Invitation.create({
         email: this.data.email,
-        createdBy: this.user.id,
+        createdBy: this.subject.user.id,
         inviteeId: this.data.id,
         businessName: this.data.organization,
         message: ''
@@ -268,7 +268,7 @@ foam.CLASS({
           this.ctrl.notify(this.INVITE_SUCCESS, '', this.LogLevel.INFO, true);
         }
         // Force the view to update.
-        this.user.contacts.cmd(foam.dao.AbstractDAO.RESET_CMD);
+        this.subject.user.contacts.cmd(foam.dao.AbstractDAO.RESET_CMD);
       } catch (e) {
         this.ctrl.notify(this.CONTACT_ADDED_INVITE_FAILURE, '', this.LogLevel.ERROR, true);
         return false;
@@ -296,7 +296,7 @@ foam.CLASS({
     async function updateContactBankInfo(contact, bankAccountId) {
       try {
         contact.bankAccount = bankAccountId;
-        await this.user.contacts.put(contact);
+        await this.subject.user.contacts.put(contact);
       } catch (err) {
         var msg = err.message || this.GENERIC_PUT_FAILED;
         this.ctrl.notify(msg, '', this.LogLevel.ERROR, true);

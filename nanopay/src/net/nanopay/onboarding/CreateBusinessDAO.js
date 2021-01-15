@@ -29,7 +29,7 @@ foam.CLASS({
     'static foam.mlang.MLang.EQ',
 
     'java.util.List',
-    
+
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.ArraySink',
@@ -60,7 +60,7 @@ foam.CLASS({
             setDelegate(delegate);
             setGroupDAO(((DAO) x.get("groupDAO")).inX(x));
             setAgentJunctionDAO(((DAO) x.get("agentJunctionDAO")).inX(x));
-          }    
+          }
         `
         );
       }
@@ -74,15 +74,15 @@ foam.CLASS({
         if ( super.find_(x, obj) != null || ! ( obj instanceof Business ) ) {
           return super.put_(x, obj);
         }
-    
+
         Subject subject = (Subject) x.get("subject");
         User user = subject.getRealUser();
         Business business = (Business) super.put_(x, obj);
         String safeBusinessName = business.getBusinessPermissionId();
-    
+
         Group adminTemplateGroup = (Group) getGroupDAO().find("smeBusinessAdmin");
         Group employeeTemplateGroup = (Group) getGroupDAO().find("smeBusinessEmployee");
-    
+
         String groupId = "sme";
         Group parentSmeGroup = (Group) getGroupDAO().find(user.getSpid() + "-sme");
         if ( parentSmeGroup != null ) {
@@ -95,20 +95,20 @@ foam.CLASS({
         employeeGroup.setParent(groupId);
         employeeGroup = (Group) getGroupDAO().put(employeeGroup);
         generatePermissions(x, employeeTemplateGroup, employeeGroup, safeBusinessName);
-    
+
         Group adminGroup = new Group();
         adminGroup.copyFrom(adminTemplateGroup);
         adminGroup.setId(safeBusinessName + ".admin");
         adminGroup.setParent(safeBusinessName + ".employee");
         adminGroup = (Group) getGroupDAO().put(adminGroup);
         generatePermissions(x, adminTemplateGroup, adminGroup, safeBusinessName);
-    
+
         // Put the business itself in the admin group for the business.
         business = (Business) business.fclone();
         business.setGroup(safeBusinessName + ".admin");
         business.setEmailVerified(true);
         business = (Business) super.put_(x, business);
-    
+
         // Create a relationship between the user and the business. Set the group on
         // the junction object to the admin group for that business.
         UserUserJunction junction = new UserUserJunction();
@@ -116,7 +116,7 @@ foam.CLASS({
         junction.setSourceId(user.getId());
         junction.setTargetId(business.getId());
         getAgentJunctionDAO().put(junction);
-    
+
         return business;
       `
     },
@@ -127,7 +127,7 @@ foam.CLASS({
         { type: 'Context', name: 'x' },
         { type: 'Group', name: 'templateGroup' },
         { type: 'Group', name: 'realGroup' },
-        { type: 'String', name: 'safeBusinessName' } 
+        { type: 'String', name: 'safeBusinessName' }
       ],
       documentation: `
         Given a template group with template permissions in the form
