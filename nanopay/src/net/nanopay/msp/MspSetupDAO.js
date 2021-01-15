@@ -40,6 +40,7 @@ foam.CLASS({
     'foam.nanos.theme.Theme',
     'foam.nanos.theme.ThemeDomain',
     'foam.nanos.ruler.Rule',
+    'foam.nanos.notification.email.EmailConfig',
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.tx.fee.TransactionFeeRule',
@@ -217,6 +218,17 @@ foam.CLASS({
         smeGroup.setDescription(mspInfo.getSpid() + " sme group");
         smeGroup.setUrl(mspInfo.getSmeGroupUrl());
         groupDAO.put(smeGroup);
+
+        // Create emailConfig
+        DAO emailConfigDAO = (DAO) x.get("emailConfigDAO");
+        EmailConfig emailConfig = (EmailConfig) emailConfigDAO.find(mspInfo.getSpid());
+        if ( emailConfig == null ) {
+          emailConfig = new EmailConfig();
+          emailConfig.setSpid(mspInfo.getSpid());
+          emailConfig.setDisplayName(foam.util.StringUtil.capitalize(mspInfo.getSpid()));
+          emailConfig.setFrom("noreply@"+mspInfo.getSpid()+".com");
+          emailConfig.setReplyTo("noreply@"+mspInfo.getSpid()+".com");
+        }
 
         return mspInfo;
       `
