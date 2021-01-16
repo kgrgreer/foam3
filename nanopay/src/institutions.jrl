@@ -14,7 +14,7 @@ p({"class":"net.nanopay.payment.Institution", "id":12,  "name":"Tangerine",     
 p({"class":"net.nanopay.payment.Institution", "id":13,  "name":"Toronto Dominion",    "abbreviation":"TD",     "institutionNumber":"004", "countryId":"CA"})
 p({"class":"net.nanopay.payment.Institution", "id":14,  "name":"Vancity",             "abbreviation":"",       "institutionNumber":"809"})
 p({"class":"net.nanopay.payment.Institution", "id":15,  "name":"HSBC",                "abbreviation":"HSBC",   "institutionNumber":"016"})
-p({"class":"net.nanopay.payment.Institution", "id":16,  "name":"FlinksCapital",       "abbreviation":"",       "institutionNumber":"test", "countryId":"US"})
+p({"class":"net.nanopay.payment.Institution", "id":16,  "name":"FlinksCapital",       "abbreviation":"",       "institutionNumber":"0000", "countryId":"US"})
 p({"class":"net.nanopay.payment.Institution", "id":17,  "name":"Canadian Bank",       "abbreviation":"",       "institutionNumber":"998"})
 p({"class":"net.nanopay.payment.Institution", "id":18,  "name":"Indian Bank",         "abbreviation":"",       "institutionNumber":"999"})
 p({"class":"net.nanopay.payment.Institution", "id":19,  "name":"State Bank of India", "abbreviation":"",       "institutionNumber":"SBIN0071222"})

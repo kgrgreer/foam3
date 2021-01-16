@@ -201,7 +201,7 @@ foam.CLASS({
       },
       preSet: function(o, n) {
         if ( n === '' ) return n;
-        var reg = /^\d+$|^test/;
+        var reg = /^\d+$/;
         return reg.test(n) ? n : o;
       },
       postSet: function(o, n) {
