@@ -214,7 +214,7 @@ foam.CLASS({
       javaCode: `
         Group group = (Group) userBeingSentEmail.findGroup(x);
         AppConfig appConfig = group.getAppConfig(x);
-        args.put("link", appConfig.getUrl().replaceAll("/$", ""));
+        args.put("link", appConfig.getUrl());
         args.put("name", User.FIRST_NAME);
         args.put("sendTo", User.EMAIL);
         args.put("invoiceId", invoiceId);

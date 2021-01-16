@@ -26,13 +26,9 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.dao.DAO',
-    'foam.nanos.auth.Subject',
-    'foam.nanos.auth.User',
+    'foam.nanos.crunch.CrunchService',
     'foam.nanos.crunch.UserCapabilityJunction',
-    'net.nanopay.model.BusinessType',
-    'static foam.mlang.MLang.AND',
-    'static foam.mlang.MLang.EQ'
+    'net.nanopay.model.BusinessType'
   ],
   
   properties: [
@@ -55,16 +51,11 @@ foam.CLASS({
           case 3: // Corporation
           case 5: // LLC
           case 6: // Publicly traded company
-            Subject subject = (Subject) x.get("subject");
-            User user = subject.getUser();
-            DAO dao = (DAO) x.get("userCapabilityJunctionDAO");
-            UserCapabilityJunction ucj = (UserCapabilityJunction) dao.find(AND(
-              EQ(UserCapabilityJunction.SOURCE_ID, user.getId()),
-              EQ(UserCapabilityJunction.TARGET_ID, capabilityId)
-            ));
+            CrunchService crunchService = (CrunchService) x.get("crunchService");
+            UserCapabilityJunction ucj = crunchService.getJunction(x, capabilityId);
 
             // UCJ must exist and be granted
-            if ((ucj == null) || (ucj.getStatus() != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED)) {
+            if ( ucj.getStatus() != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
               throw new IllegalStateException("Extra Business Type Data required for business type: " + getBusinessTypeId());
             }
         }

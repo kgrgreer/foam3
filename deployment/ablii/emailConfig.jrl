@@ -1,0 +1,7 @@
+p({
+  "class":"foam.nanos.notification.email.EmailConfig",
+  "spid":"ablii",
+  "from":"noreply@ablii.com",
+  "displayName":"Ablii",
+  "replyTo":"noreply@ablii.com"
+})

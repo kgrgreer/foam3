@@ -28,13 +28,9 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
-    'foam.dao.DAO',
-    'foam.nanos.auth.User',
     'foam.nanos.crunch.CapabilityJunctionStatus',
-    'foam.nanos.crunch.UserCapabilityJunction',
-    'foam.nanos.logger.Logger',
-    'static foam.mlang.MLang.AND',
-    'static foam.mlang.MLang.EQ'
+    'foam.nanos.crunch.CrunchService',
+    'foam.nanos.crunch.UserCapabilityJunction'
   ],
 
   methods: [
@@ -44,22 +40,12 @@ foam.CLASS({
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-            DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
-            String capId = "554af38a-8225-87c8-dfdf-eeb15f71215f-20";
-            UserCapabilityJunction ucj = (UserCapabilityJunction) ucjDAO.find(AND(
-              EQ(UserCapabilityJunction.TARGET_ID, capId),
-              EQ(UserCapabilityJunction.SOURCE_ID, ((UserCapabilityJunction) obj).getSourceId())
-            ));
-// TODO - USE CRUNCH SERVICE -MAKE FUNCTION INPUT var u_id = user.id WHERE return CONTEXT WITH SUBJECT REPLACED WITH U_ID
-            if ( ucj == null ) {
-              ucj = new UserCapabilityJunction.Builder(x)
-                .setSourceId(((UserCapabilityJunction) obj).getSourceId())
-                .setTargetId(capId)
-                .build();
-            }
+            UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
+            CrunchService crunchService = (CrunchService) x.get("crunchService");
 
-            ucj.setStatus(CapabilityJunctionStatus.PENDING);
-            ucjDAO.put_(x, ucj);
+            String capId = "554af38a-8225-87c8-dfdf-eeb15f71215f-20";
+
+            crunchService.updateUserJunction(x, ucj.getSubject(x), capId, null, CapabilityJunctionStatus.PENDING);
           }
         }, "Create ucj on user passed compliance");
       `

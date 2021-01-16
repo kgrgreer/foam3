@@ -1970,7 +1970,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"sme.accountProfile.personal-sett
 p({class:"foam.i18n.Locale",locale:"pt",source:"sme.menu.addBankAccount.label",target:"Adicionar conta bancária"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"smeNavigation.label",target:"Navegação Ablii"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"sme.main.appStore.label",target:"Cadastro"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"sme.main.appStore.label",target:"Característicos"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"sme.quickAction.request.label",target:"Solicitar pagamento"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"sme.menu.toolbar.label",target:"Barra de Ferramentas do Menu"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"sme.quickAction.send.label",target:"Mande o pagamento"})
@@ -1986,8 +1986,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.Receivabl
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.ReceivableDAOBrowser.SYNC.label",target:"Sincronizar com contabilidade"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.PayableDAOBrowser.SYNC.label",target:"Sincronizar com contabilidade"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.crunch.CapabilityStore.TITLE",target:"Cadastro"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.crunch.CapabilityStore.SUBTITLE",target:"Para habilitar totalmente nossa plataforma, precisamos de um pouco mais de informações sobre você e sua empresa."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.crunch.CapabilityStore.TITLE",target:"Característicos"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.crunch.CapabilityStore.SUBTITLE",target:"Desbloqueie mais recursos no {appName}"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.document.Document.SECTION_DOCUMENT_UPLOAD_SECTION.title",target:"Envio de Documento"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.BaseAcceptanceDocumentCapability.I_CERTIFY",target:"Certifico que "})

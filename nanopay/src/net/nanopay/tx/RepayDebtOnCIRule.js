@@ -46,7 +46,7 @@ foam.CLASS({
           CITransaction cashIn = (CITransaction) obj;
           CITransaction oldCashIn = (CITransaction) oldObj;
           User user = cashIn.findDestinationAccount(x).findOwner(x);
-          if( user instanceof Business || user.getGroup().equals("sme") ) { // <- maybe should be part of predicate
+          if( user instanceof Business || user.getGroup().endsWith("-sme") ) { // <- maybe should be part of predicate
             if( cashIn.getStatus() == TransactionStatus.COMPLETED && oldCashIn.getStatus() != TransactionStatus.COMPLETED ) {
               Account OD = (Account) cashIn.findDestinationAccount(x);
               if ( OD != null && OD instanceof OverdraftAccount ) {

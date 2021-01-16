@@ -270,7 +270,7 @@ try {
 
         }
         newContact.setType("Contact");
-        newContact.setGroup("sme");
+        newContact.setGroup(user.getSpid() + "-sme");
         newContact.setOwner(user.getId());
         contactDAO.put(newContact);
         continue;
@@ -346,7 +346,7 @@ try {
     newContact.setFirstName(xeroContact.getFirstName());
     newContact.setLastName(xeroContact.getLastName());
     newContact.setOwner(user.getId());
-    newContact.setGroup("sme");
+    newContact.setGroup(user.getSpid() + "-sme");
     contactDAO.put(newContact);
   }
   return new ResultResponse(true, "All contacts have been synchronized");
