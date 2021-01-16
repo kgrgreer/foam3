@@ -560,15 +560,11 @@ foam.CLASS({
       value: ''
     },
     {
-      class: 'String',
-      name: 'ownerModel',
-      factory: () => 'net.nanopay.model.BeneficialOwner'
-    },
-    {
       name: 'view',
       value: function(_, X) {
-        var ownerCls = this.__context__.lookup(this.ownerModel);
-        var dao2 = X.data.slot((soUsersDAO) => soUsersDAO);
+        debugger;
+        var ownerCls = this.__context__.lookup(this.of);
+        var dao2 = X.data.slot(soUsersDAO => soUsersDAO);
         var dao = foam.dao.MDAO.create({
             of: ownerCls
           });
@@ -582,7 +578,6 @@ foam.CLASS({
         dao.put(obj);
         return {
           class: 'net.nanopay.crunch.onboardingModels.SelectionViewOwner',
-          ownerModel: this.ownerModel,
           dao2$: dao2,
           dao: dao,
           index: this.index,
@@ -652,11 +647,6 @@ foam.CLASS({
       name: 'index'
     },
     {
-      class: 'String',
-      name: 'ownerModel',
-      factory: () => 'net.nanopay.model.BeneficialOwner'
-    },
-    {
       class: 'List',
       name: 'chosenOwners'
     },
@@ -679,13 +669,12 @@ foam.CLASS({
       name: 'choiceData_',
       documentation: 'Data that is set by choiceView(reference object)',
       factory: function() {
-        if ( this.chosenOwners[this.index-1] )
-          return this.chosenOwners[this.index-1];
+        if ( this.chosenOwners[this.index-1] ) return this.chosenOwners[this.index-1];
       },
-      postSet: async function(o, n) {
+      postSet: async function(_, n) {
         // checks if data already exists
+        debugger;
         let dataExists = this.data && n === this.data.id;
-
         try {
           const numSO = (await this.dao2.select(this.COUNT())).value;
           // checks if a signing officer is selected
@@ -734,12 +723,8 @@ foam.CLASS({
     function init() {
       // Pre-initialize with just one section to prevent empty array error
       // thrown by RichChoiceView
-      if ( this.chosenOwners[this.index-1] != undefined )
-        // set default data if there is
-        this.updateSections_(this.chosenOwners[this.index-1]);
-      else
-        this.updateSections_(-1);
-
+      if ( this.chosenOwners[this.index-1] != undefined ) this.updateSections_(this.chosenOwners[this.index-1]);
+      else this.updateSections_(-1);
     },
     function initE() {
       this.add(this.slot((choiceData_, choiceSections_) => {
@@ -761,8 +746,8 @@ foam.CLASS({
     function updateSections_(choice) {
       var choiceSections = [];
       var choiceSectionsNonSoFirst = [];
-
-      var ownerCls = this.__context__.lookup(this.ownerModel);
+debugger;
+      var ownerCls = this.__context__.lookup(this.of);
 
       choiceSections.push({
         // filter out all the siging officers except the one chosen by this owner

@@ -110,7 +110,9 @@ foam.CLASS({
             this.businessEmployeeDAO
               .where(this.IN(foam.nanos.auth.User.ID, sos.projection))
               .select({ put: sinkFn })
-              .then(() => pdao.promise.resolve(adao));
+              .then(() => {
+                pdao.promise.resolve(adao);
+              });
           });
         return pdao;
       }
@@ -119,7 +121,7 @@ foam.CLASS({
     // Ownership Amount Section
     {
       name: 'publiclyTraded',
-      hidden:true
+      hidden: true
     },
     {
       class: 'net.nanopay.crunch.onboardingModels.OwnerProperty',
