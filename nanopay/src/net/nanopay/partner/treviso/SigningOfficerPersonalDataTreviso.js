@@ -55,7 +55,7 @@ foam.CLASS({
     { name: 'PLEASE_SELECT', message: 'Please select...' },
     { name: 'YES', message: 'Yes' },
     { name: 'NO', message: 'No' },
-    { name: 'SELECT_HAVE_SIGNED_CONTRACT', message: 'As the signing officer of this business, you are required to have signed this contract. This contract is necessary due to the need to exchange national currency for foreign currency.' }
+    { name: 'SELECT_HAVE_SIGNED_CONTRACT', message: 'As the signing officer of this business, you are required to have signed this contract.' }
   ],
 
   properties: [
@@ -206,7 +206,7 @@ foam.CLASS({
       label: 'Has the foreign exchange contract been signed?',
       section: 'signingOfficerPersonalInformationSection',
       help: `
-        Contratos de câmbio (foreign exchange contract) is a legal arrangement in which the
+        Foreign exchange contract (Contratos de câmbio) is a legal arrangement in which the
         parties agree to transfer between them a certain amount of foreign exchange at a
         predetermined rate of exchange, and as of a predetermined date.
       `,

@@ -303,7 +303,6 @@ bo.setJobTitle("CEO");
 bo.setBusiness(myBusiness.getId());
 bo.setAddress(address);
 bo.setBirthday(birthday);
-bo.setNationality("CA");
 bo.setOwnershipPercent(30);
 
 int[] chosenOwners = {1};

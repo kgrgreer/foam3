@@ -50,7 +50,7 @@ foam.CLASS({
               EQ(UserCapabilityJunction.TARGET_ID, capId),
               EQ(UserCapabilityJunction.SOURCE_ID, ((UserCapabilityJunction) obj).getSourceId())
             ));
-
+// TODO - USE CRUNCH SERVICE -MAKE FUNCTION INPUT var u_id = user.id WHERE return CONTEXT WITH SUBJECT REPLACED WITH U_ID
             if ( ucj == null ) {
               ucj = new UserCapabilityJunction.Builder(x)
                 .setSourceId(((UserCapabilityJunction) obj).getSourceId())
