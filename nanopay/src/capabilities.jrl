@@ -996,3 +996,11 @@ p({
     "menu.read.mainmenu.invoices.receivables"
   ]
 })
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"contact.capable.afex.cn",
+  "name":"Additional information",
+  "of":"net.nanopay.contacts.AFEXCNBeneficiaryCapability",
+  "enabled":true
+})
