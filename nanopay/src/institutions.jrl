@@ -139,5 +139,3 @@ p({"class":"net.nanopay.payment.Institution", "id":134,  "name":"UBS AG Canada B
 p({"class":"net.nanopay.payment.Institution", "id":135,  "name":"UBS Bank (Canada)",                        "abbreviation":"", "institutionNumber":"290", "countryId":"CA"})
 p({"class":"net.nanopay.payment.Institution", "id":136,  "name":"United Overseas Bank Limited",             "abbreviation":"", "institutionNumber":"335", "countryId":"CA"})
 p({"class":"net.nanopay.payment.Institution", "id":137,  "name":"HomEquity Bank",                           "abbreviation":"", "institutionNumber":"358", "countryId":"CA"})
-
-
