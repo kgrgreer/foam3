@@ -504,7 +504,8 @@ p({
   "enabled":true,
   "reviewRequired":true,
   "permissionsGranted":[
-    "business.invoice.pay"
+    "business.invoice.pay",
+    "menu.read.capability.main.invoices.receivables"
   ],
   "permissionsIntercepted": [
     "business.invoice.pay"
