@@ -3,9 +3,6 @@ package net.nanopay.tx.rbc;
 
 import static foam.mlang.MLang.EQ;
 
-import java.util.List;
-
-import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.User;

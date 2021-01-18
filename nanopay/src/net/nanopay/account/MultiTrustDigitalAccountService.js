@@ -104,12 +104,6 @@ foam.CLASS({
       javaCode: `
         User user = ((Subject) x.get("subject")).getUser();
         DAO accountDAO = ((DAO) x.get("localAccountDAO"));
-       /* accountDAO = accountDAO.where(
-          OR(
-            EQ(Account.SPID, getReserveAccountSpid()),
-            EQ(Account.SPID, user.getSpid())
-        ));
-        x = x.put("localAccountDAO", accountDAO);*/
         // get the trust account to generate for
         List trusts = new ArrayList<TrustAccount>();
         for (String tId : trustAccounts) {
