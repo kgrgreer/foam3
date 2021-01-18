@@ -274,9 +274,7 @@ foam.CLASS({
       expression: function( client$smeUserRegistrationDAO ) {
         return {
           dao_: client$smeUserRegistrationDAO || null,
-          imgPath: this.theme.loginImage,
-          group_: this.theme.spid + '-sme',
-          countryChoices_: ['CA', 'US']
+          imgPath: this.theme.loginImage
         };
       }
     },
@@ -615,7 +613,6 @@ foam.CLASS({
             disableEmail_: searchParams.has('email'),
             disableCompanyName_: searchParams.has('companyName'),
             organization: searchParams.has('companyName') ? searchParams.get('companyName') : '',
-            countryChoices_: searchParams.has('country') ? [searchParams.get('country')] : ['CA', 'US'],
             firstName: searchParams.has('firstName') ? searchParams.get('firstName') : '',
             lastName: searchParams.has('lastName') ? searchParams.get('lastName') : '',
             jobTitle: searchParams.has('jobTitle') ? searchParams.get('jobTitle') : '',

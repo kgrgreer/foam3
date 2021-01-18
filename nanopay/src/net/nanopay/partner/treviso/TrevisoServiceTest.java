@@ -71,7 +71,7 @@ public class TrevisoServiceTest
 
   private void setUpExchangeClientValues() {
     ExchangeClientValues e = new ExchangeClientValues();
-    e.setSpid("nanopay");
+    e.setSpid("test");
     ((DAO) this.x.get("exchangeClientValueDAO")).put(e);
   }
 
@@ -84,7 +84,7 @@ public class TrevisoServiceTest
       Address address = new Address.Builder(x).setCountryId("CA")
         .setRegionId("CA-ON").setCity("Toronto").build();
       user.setAddress(address);
-      user.setSpid("nanopay");
+      user.setSpid("test");
       user.setEmail("trevisouser@nanopay.net");
     }
     user = (User) user.fclone();
@@ -131,7 +131,7 @@ public class TrevisoServiceTest
       BankAccount testBankAccount = new CABankAccount.Builder(x)
         .setAccountNumber("12345678")
         .setBranch( branch.getId() )
-        .setOwner(1348)
+        .setOwner(1014)
         .setName("RBC Test Account")
         .setStatus(BankAccountStatus.VERIFIED)
         .build();

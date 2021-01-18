@@ -32,6 +32,7 @@ foam.CLASS({
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.fx.TotalRateLineItem',
     'net.nanopay.tx.TransactionLineItem',
+    'net.nanopay.tx.ComplianceTransaction',
     'net.nanopay.tx.Transfer',
     'java.util.Arrays',
     'java.util.ArrayList',
@@ -214,9 +215,13 @@ foam.CLASS({
         if ( txn.getAmount() == 0 && requestTxn.getAmount() == 0) {
           // NOTE ONLY APPROXIMATION ROUNDING ERRORS POSSIBLE
           txn.setAmount((long) (requestTxn.getDestinationAmount() / fxRate));
+          if (txn.getNext()[0] instanceof ComplianceTransaction && txn.getNext()[0].getAmount() == 0)
+            txn.getNext()[0].setAmount(txn.getAmount()); // if theres a compliance, update also.
         }
         if ( txn.getDestinationAmount() == 0 && requestTxn.getDestinationAmount() == 0) {
           txn.setDestinationAmount((long) (requestTxn.getAmount() * fxRate));
+          if (txn.getNext()[0] instanceof ComplianceTransaction && txn.getNext()[0].getDestinationAmount() == 0)
+            txn.getNext()[0].setDestinationAmount(txn.getDestinationAmount()); // if theres a compliance, update also.
         }
       }
 

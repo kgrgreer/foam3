@@ -19,20 +19,5 @@ mediator treviso
 ./build.sh -uJbr,treviso,treviso_dev,cluster_2,mm -Nmediator1 -W8100 -Ctrue -c
 ./build.sh -uJbr,treviso,treviso_dev,cluster_2,mm -Nmediator2 -W8110 -Ctrue
 
-Instructions
-You’ll notice the capability store is not working (issue 1), so go through
-1. Sign up
-2. Get Email Message token
-3. Signing Officer Privileges
-4. Approve the Approval Request
-5. Complete your Signing Officer information
-6. Approve the Approval Request
-7. Register your Business
-8. Add Contact
-9. Add Bank Account
-10. Enable International Payments
-That’s as far as I can get.
-
-Signup at mediator1:8100 or mediator2:8110
-and login as admin@nanopay/adminAb1 on same instance to perform the Approval Requests and get Email signup token.
-Regarding the email signup token, as admin find the email message, copy out the http.... url and paste it into the 'user' sign up site, then proceed.
+'User' interface at mediator1:8100 or mediator2:8110
+'Admin' interface at localhost:8100 or localhost:8110
