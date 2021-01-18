@@ -507,15 +507,11 @@ p({
     "class":"foam.mlang.predicate.And",
     "args":[
       {
-        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
-        "propName":"targetId",
-        "propValue":"554af38a-8225-87c8-dfdf-eeb15f71215f-20",
-      },
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
-        "propName":"status",
-        "propValue":{"class":"foam.nanos.crunch.CapabilityJunctionStatus","ordinal":1}
-      },
+        "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+        "category":"registerPaymentProvider",
+        "isRecurring":false,
+        "status": 1
+      }
     ]
   },
   "action":{"class":"net.nanopay.partner.treviso.TrevisoSendEmailToAllRule"},

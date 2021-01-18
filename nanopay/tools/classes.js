@@ -1322,7 +1322,6 @@ var classes = [
   'net.nanopay.crunch.predicate.BusinessPassedCompliance',
   'net.nanopay.crunch.predicate.CheckUserCountry',
   'net.nanopay.crunch.predicate.HasVerifiedBankAccount',
-  'net.nanopay.crunch.predicate.RegisterPaymentProviderStatus',
   'net.nanopay.crunch.predicate.SigningOfficerQuestionAnswered',
   'net.nanopay.crunch.predicate.SigningOfficerCapabilityInterceptPredicate',
   'net.nanopay.crunch.predicate.SigningOfficerPrivilegesRequested',

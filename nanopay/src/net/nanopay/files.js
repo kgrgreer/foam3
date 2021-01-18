@@ -1666,7 +1666,6 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/predicate/BusinessPassedCompliance' },
   { name: 'net/nanopay/crunch/predicate/CheckUserCountry' },
   { name: 'net/nanopay/crunch/predicate/HasVerifiedBankAccount' },
-  { name: 'net/nanopay/crunch/predicate/RegisterPaymentProviderStatus' },
   { name: 'net/nanopay/crunch/predicate/SigningOfficerCapabilityInterceptPredicate' },
   { name: 'net/nanopay/crunch/predicate/SigningOfficerPrivilegesRequested' },
   { name: 'net/nanopay/crunch/predicate/SigningOfficerQuestionAnswered' },
