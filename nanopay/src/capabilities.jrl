@@ -278,6 +278,13 @@ p({
   "enabled":true,
   "visibilityPredicate":  { class: "foam.mlang.predicate.True" },
   "keywords":["featured"],
+  "permissionsGranted":[
+    "business.invoice.pay",
+    "menu.read.capability.main.invoices.receivables"
+  ],
+  "permissionsIntercepted": [
+    "business.invoice.pay"
+  ],
   "availabilityPredicate": {
     "class":"foam.mlang.predicate.And",
     "args": [
