@@ -424,7 +424,6 @@ p({
   "permissionsGranted":[
     "business.invoice.pay",
     "menu.read.mainmenu.invoices.receivables",
-    "menu.read.mainmenu.invoices.payables",
     "paymentprovidercorridor.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
     "paymentprovidercorridor.source.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
     "paymentprovidercorridor.target.read.554af38a-8125-87c8-dfdf-eeb15fafexca-us",
