@@ -9,8 +9,8 @@ import foam.core.Currency;
 public class TemporalRelationshipTest extends foam.nanos.test.Test{
 
   public void runTest(X x) {
-      Account account = (Account) ((DAO) x.get("localAccountDAO")).find(1L);
-      test(account != null, "accont != null. account: " + account);
+      Account account = (Account) ((DAO) x.get("localAccountDAO")).find("5b68522d-2948-4b64-a2ea-afe5108a95ae");
+      test(account != null, "account != null. account: " + account);
       test(account.findOwner(x) != null, "account.findOwner(x) != null. Found owner: : " + account.findOwner(x));
       test(account.getOwner() != 0, "account.getOwner() != 0. account.getOwner: " + account.getOwner());
 
