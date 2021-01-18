@@ -16,8 +16,8 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.tx.errorfee',
-  name: 'ErrorChargeFee',
+  package: 'net.nanopay.tx.billing',
+  name: 'BillingFee',
 
   documentation: 'Represents details on the charges associated to a transaction error',
 

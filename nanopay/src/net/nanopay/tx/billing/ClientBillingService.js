@@ -15,24 +15,19 @@
  * from nanopay Corporation.
  */
 
- foam.INTERFACE({
-   package: 'net.nanopay.tx.errorfee',
-   name: 'ChargeDateServiceInterface',
+foam.CLASS({
+  package: 'net.nanopay.tx.billing',
+  name: 'ClientBillingService',
 
-   documentation: `
-    Service interface to determine the charge date for an error fee
-   `,
+  implements: [
+    'net.nanopay.tx.billing.BillingServiceInterface'
+  ],
 
-   methods: [
-     {
-       name: 'findChargeDate',
-       type: 'Date',
-       args: [
-        {
-          name: 'transactionDate',
-          type: 'Date'
-        }
-       ]
-     }
-   ]
- });
+  properties: [
+    {
+      class: 'Stub',
+      of: 'net.nanopay.tx.billing.BillingServiceInterface',
+      name: 'delegate'
+    }
+  ]
+});

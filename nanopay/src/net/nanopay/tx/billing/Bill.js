@@ -16,18 +16,29 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.tx.errorfee',
-  name: 'ClientErrorBillingService',
-
-  implements: [
-    'net.nanopay.tx.errorfee.ErrorBilling'
-  ],
+  package: 'net.nanopay.tx.billing',
+  name: 'Bill',
 
   properties: [
     {
-      class: 'Stub',
-      of: 'net.nanopay.tx.errorfee.ErrorBilling',
-      name: 'delegate'
+      class: 'String',
+      name: 'id'
+    },
+    {
+      class: 'Reference',
+      targetDAOKey: 'errorCodeDAO',
+      name: 'errorCode',
+      of: 'net.nanopay.integration.ErrorCode',
+      documentation: 'Error code associated to transaction error'
+    },
+    {
+      class: 'FObjectArray',
+      name: 'fees',
+      of: 'net.nanopay.tx.billing.BillingFee'
     }
+    /* transaction reference,
+    billingtransaction reference,
+    spid,
+    transactionStatus */
   ]
 });

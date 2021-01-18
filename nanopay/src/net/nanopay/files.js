@@ -1621,14 +1621,14 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/RbcInterTrustPlanner' },
   { name: 'net/nanopay/tx/planner/BmoInterTrustPlanner' },
 
-  // Error Fees
-  { name: 'net/nanopay/tx/errorfee/ClientErrorBillingService' },
-  { name: 'net/nanopay/tx/errorfee/ErrorBilling' },
-  { name: 'net/nanopay/tx/errorfee/ErrorCharge' },
-  { name: 'net/nanopay/tx/errorfee/ErrorChargeFee' },
-  { name: 'net/nanopay/tx/errorfee/ErrorFee' },
-  { name: 'net/nanopay/tx/errorfee/ChargeDateServiceInterface' },
-
+  // Billing
+  { name: 'net/nanopay/tx/billing/Bill' },
+  { name: 'net/nanopay/tx/billing/BillingFee' },
+  { name: 'net/nanopay/tx/billing/BillingServiceInterface' },
+  { name: 'net/nanopay/tx/billing/ChargeDateServiceInterface' },
+  { name: 'net/nanopay/tx/billing/ClientBillingService' },
+  { name: 'net/nanopay/tx/billing/ErrorFee' },
+  
   // Fees
   { name: 'net/nanopay/tx/fee/Fee' },
   { name: 'net/nanopay/tx/fee/FeeDAOCreateView' },

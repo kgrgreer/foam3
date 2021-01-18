@@ -15,7 +15,7 @@
  * from nanopay Corporation.
  */
 
-package net.nanopay.tx.errorfee;
+package net.nanopay.tx.billing;
 
 import foam.core.X;
 import foam.dao.DAO;
@@ -33,9 +33,9 @@ import net.nanopay.tx.model.TransactionStatus;
 
 import static foam.mlang.MLang.EQ;
 
-public class ErrorBillingServiceTest extends Test {
+public class BillingServiceTest extends Test {
   
-  protected ErrorBilling errorBillingService;
+  protected BillingServiceInterface billingService;
   protected X x_;
   DigitalAccount senderAcc, receiverAcc;
   User sender, receiver;
@@ -44,15 +44,15 @@ public class ErrorBillingServiceTest extends Test {
   public void runTest(X x) {
     x_ = x;
     createAccounts();
-    testErrorBilling();
+    testBilling();
   }
 
   public void createAccounts() {
     sender = new User();
-    sender.setEmail("errorbillingsender@nanopay.net");
+    sender.setEmail("billingsender@nanopay.net");
     sender = (User) sender.fclone();
     sender.setEmailVerified(true);
-    sender.setFirstName("ErrorBilling");
+    sender.setFirstName("Billing");
     sender.setLastName("Sender");
     sender.setSpid("nanopay");
     sender = (User) (((DAO) x_.get("localUserDAO")).put_(x_, sender)).fclone();
@@ -63,9 +63,9 @@ public class ErrorBillingServiceTest extends Test {
     ((DAO) x_.get("localAccountDAO")).put(senderAcc);
 
     receiver = new User();
-    receiver.setFirstName("ErrorBilling");
+    receiver.setFirstName("Billing");
     receiver.setLastName("Receiver");
-    receiver.setEmail("errorbillingreceiver@nanopay.net");
+    receiver.setEmail("billingreceiver@nanopay.net");
     receiver.setEmailVerified(true);
     receiver.setSpid("nanopay");
     receiver = (User) (((DAO) x_.get("localUserDAO")).put_(x_, receiver)).fclone();
@@ -76,16 +76,16 @@ public class ErrorBillingServiceTest extends Test {
     ((DAO) x_.get("localAccountDAO")).put(receiverAcc);
   }
 
-  public void testErrorBilling() {
+  public void testBilling() {
     MDAO transactionMDAO = new MDAO(Transaction.getOwnClassInfo());
     x_ = x_.put("localTransactionDAO", transactionMDAO);
 
     ChainSummary chainSummary = new ChainSummary();
     chainSummary.setSummary("Test Failed Summary Transaction");
     chainSummary.setStatus(TransactionStatus.FAILED);
-    chainSummary.setCategory("Error Billing Test");
+    chainSummary.setCategory("Billing Test");
     chainSummary.setErrorCode(901);
-    chainSummary.setErrorInfo("Error Billing Test");
+    chainSummary.setErrorInfo("Billing Test");
 
     SummaryTransaction txn = new SummaryTransaction();
     txn.setId("12345");
@@ -108,15 +108,15 @@ public class ErrorBillingServiceTest extends Test {
     errorFee.setChargedTo(ChargedTo.PAYEE);
     errorFee = (ErrorFee) ((DAO) x_.get("localErrorFeeDAO")).put(errorFee).fclone();
 
-    errorBillingService = (ErrorBilling) x_.get("errorBillingService");
-    ErrorCharge errorCharge = errorBillingService.getErrorCharge(x_, txn.getId());
-    test(errorCharge != null, "Error charge successfully created from failed transaction");
-    test(errorCharge.getErrorCode() == errorFee.getErrorCode(), "Error charge has correct error code");
+    billingService = (BillingServiceInterface) x_.get("billingService");
+    Bill bill = billingService.createBill(x_, txn.getId());
+    test(bill != null, "Bill successfully created from failed transaction");
+    test(bill.getErrorCode() == errorFee.getErrorCode(), "bill has correct error code");
 
-    ErrorChargeFee[] fees = errorCharge.getFees();
+    BillingFee[] fees = bill.getFees();
     for ( int i = 0; i < fees.length; i++ ) {
-      ErrorChargeFee chargeFee = fees[i];
-      test( chargeFee.getAmount() == errorFee.getAmount(), "Error charge fee has correct amount");
+      BillingFee billingFee = fees[i];
+      test( billingFee.getAmount() == errorFee.getAmount(), "Billing fee has correct amount");
     }
   }
 }

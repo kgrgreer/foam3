@@ -16,8 +16,8 @@
  */
 
 foam.INTERFACE({
-  package: 'net.nanopay.tx.errorfee',
-  name: 'ErrorBilling',
+  package: 'net.nanopay.tx.billing',
+  name: 'BillingServiceInterface',
 
   documentation: `
     Service interface for retrieving transaction error billing information
@@ -25,8 +25,8 @@ foam.INTERFACE({
 
   methods: [
     {
-      name: 'getErrorCharge',
-      type: 'net.nanopay.tx.errorfee.ErrorCharge',
+      name: 'createBill',
+      type: 'net.nanopay.tx.billing.Bill',
       args: [
         {
           name: 'x',

@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from nanopay Corporation.
  */
-package net.nanopay.tx.errorfee;
+package net.nanopay.tx.billing;
 
 import foam.dao.ArraySink;
 import foam.dao.DAO;
@@ -33,14 +33,15 @@ import net.nanopay.tx.model.Transaction;
 import static foam.mlang.MLang.EQ;
 
 
-public class ErrorBillingService implements ErrorBilling {
+public class BillingService implements BillingServiceInterface {
   @Override
-  public ErrorCharge getErrorCharge(X x, String transactionId) {
+  public Bill createBill(X x, String transactionId) {
     ChargeDateServiceInterface chargeDateService = (ChargeDateServiceInterface) x.get("chargeDateService");
+    DAO billDAO = (DAO) x.get("billDAO");
     DAO errorCodeDAO = (DAO) x.get("errorCodeDAO");
     DAO errorFeeDAO = (DAO) x.get("localErrorFeeDAO");
     DAO transactionDAO = (DAO) x.get("localTransactionDAO");
-    ErrorCharge errorCharge = new ErrorCharge();
+    Bill bill = new Bill();
 
     Transaction txn = (Transaction) transactionDAO.find(transactionId);
     if ( txn instanceof SummaryTransaction ) {
@@ -48,14 +49,14 @@ public class ErrorBillingService implements ErrorBilling {
       ChainSummary chainSummary = summaryTxn.getChainSummary();
 
       if ( chainSummary.getErrorCode() == 0 ) {
-        errorCharge.setErrorCode(chainSummary.getErrorCode());
-        return errorCharge;
+        bill.setErrorCode(chainSummary.getErrorCode());
+        return bill;
       }
 
       ErrorCode errorCode = (ErrorCode) errorCodeDAO.find(chainSummary.getErrorCode());
       if ( errorCode == null ) {
-        errorCharge.setErrorCode(chainSummary.getErrorCode());
-        return errorCharge;
+        bill.setErrorCode(chainSummary.getErrorCode());
+        return bill;
       }
 
       ArraySink sink = (ArraySink) errorFeeDAO.where(
@@ -63,41 +64,41 @@ public class ErrorBillingService implements ErrorBilling {
       ).select(new ArraySink());
 
       Date chargeDate = chargeDateService.findChargeDate(summaryTxn.getLastStatusChange());
-      ErrorChargeFee[] errorChargeFees = new ErrorChargeFee[sink.getArray().size()];
+      BillingFee[] billingFees = new BillingFee[sink.getArray().size()];
       for ( int i = 0; i < sink.getArray().size(); i++ ) {
-        ErrorChargeFee errorChargeFee = new ErrorChargeFee();
+        BillingFee billingFee = new BillingFee();
         ErrorFee errorFee = (ErrorFee) sink.getArray().get(i);
         if ( errorFee.getChargedTo().equals(ChargedTo.PAYER) ) {
-          setupChargeToUser(x, summaryTxn.getSourceAccount(), errorChargeFee);
+          setupChargeToUser(x, summaryTxn.getSourceAccount(), billingFee);
         } else {
-          setupChargeToUser(x, summaryTxn.getDestinationAccount(), errorChargeFee);
+          setupChargeToUser(x, summaryTxn.getDestinationAccount(), billingFee);
         }
-        errorChargeFee.setChargeDate(chargeDate);
-        errorChargeFee.setAmount(errorFee.getAmount());
-        errorChargeFee.setCurrency(errorFee.getCurrency());
-        errorChargeFee.setDescription(errorCode.getFullText());
-        errorChargeFees[i] = errorChargeFee;
+        billingFee.setChargeDate(chargeDate);
+        billingFee.setAmount(errorFee.getAmount());
+        billingFee.setCurrency(errorFee.getCurrency());
+        billingFee.setDescription(errorCode.getFullText());
+        billingFees[i] = billingFee;
       }
 
-      errorCharge.setErrorCode(errorCode.getId());
-      errorCharge.setFees(errorChargeFees);
+      bill.setErrorCode(errorCode.getId());
+      bill.setFees(billingFees);
     } else {
       throw new FOAMException("Transaction must be a SummaryTransaction to fetch error billing information");
     }
 
-    return errorCharge;
+    return (Bill) billDAO.put(bill);
   }
 
-  private void setupChargeToUser(X x, String accountId, ErrorChargeFee errorChargeFee) {
+  private void setupChargeToUser(X x, String accountId, BillingFee billingFee) {
     DAO accountDAO = (DAO) x.get("localAccountDAO");
     DAO userDAO = (DAO) x.get("localUserDAO");
     Account account = (Account) accountDAO.find(accountId);
     if ( userDAO.find(account.getOwner()) instanceof Business ) {
       Business business = (Business) userDAO.find(account.getOwner());
-      errorChargeFee.setChargeToBusiness(business.getId());
+      billingFee.setChargeToBusiness(business.getId());
     } else {
       User user = (User) userDAO.find(account.getOwner());
-      errorChargeFee.setChargeToUser(user.getId());
+      billingFee.setChargeToUser(user.getId());
     }
   }
 }

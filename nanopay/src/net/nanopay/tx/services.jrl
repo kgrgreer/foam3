@@ -505,6 +505,22 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
+  "name": "billDAO",
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.tx.billing.Bill.getOwnClassInfo())
+      .setPm(true)
+      .setPipelinePm(true)
+      .setJournalName("bills")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .build();
+  """
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
   "name": "errorCodeDAO",
   "serve": true,
   "serviceScript":
@@ -527,7 +543,7 @@ p({
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
-      .setOf(net.nanopay.tx.errorfee.ErrorFee.getOwnClassInfo())
+      .setOf(net.nanopay.tx.billing.ErrorFee.getOwnClassInfo())
       .setPm(true)
       .setPipelinePm(true)
       .setJournalName("errorFees")
@@ -543,30 +559,30 @@ p({
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
-      .setOf(net.nanopay.tx.errorfee.ErrorFee.getOwnClassInfo())
+      .setOf(net.nanopay.tx.billing.ErrorFee.getOwnClassInfo())
       .setAuthorizer(new foam.nanos.auth.GlobalReadAuthorizer("errorFeeDAO"))
       .setInnerDAO(x.get("localErrorFeeDAO")) 
       .build();
   """,
-  "client": "{\"of\":\"net.nanopay.tx.errorfee.ErrorFee\"}"
+  "client": "{\"of\":\"net.nanopay.tx.billing.ErrorFee\"}"
 })
 
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "errorBillingService",
+  "name": "billingService",
   "serve": true,
-  "serviceClass": "net.nanopay.tx.errorfee.ErrorBillingService",
-  "boxClass": "net.nanopay.tx.errorfee.ErrorBillingSkeleton",
+  "serviceClass": "net.nanopay.tx.billing.BillingService",
+  "boxClass": "net.nanopay.tx.billing.BillingServiceInterfaceSkeleton",
   "client":
     """
       {
-        "class":"net.nanopay.tx.errorfee.ClientErrorBillingService",
+        "class":"net.nanopay.tx.billing.ClientBillingService",
         "delegate": {
           "class":"foam.box.SessionClientBox",
           "delegate": {
             "class":"foam.box.HTTPBox",
             "url":
-            "service/errorBillingService"
+            "service/billingService"
           }
         }
       }
@@ -577,14 +593,14 @@ p({
   "class": "foam.nanos.boot.NSpec",
   "name": "nanopayChargeDateService",
   "lazy": false,
-  "serviceClass": "net.nanopay.tx.errorfee.ChargeDateService"
+  "serviceClass": "net.nanopay.tx.billing.ChargeDateService"
 })
 
 p({
   "class": "foam.nanos.boot.NSpec",
   "name": "chargeDateService",
   "lazy": false,
-  "serviceClass": "net.nanopay.tx.errorfee.ChargeDateService"
+  "serviceClass": "net.nanopay.tx.billing.ChargeDateService"
 })
 
 p({
