@@ -26,6 +26,7 @@ public class RbcPlannerTest
   BankAccount testWrongBankAccount;
   BankAccount testBankAccount;
   DigitalAccount testDigitalAccount;
+  User user;
 
   @Override
   public void runTest(X x) {
@@ -38,12 +39,31 @@ public class RbcPlannerTest
   }
 
   private void setUpTest() {
-    testBankAccount = createTestBankAccount();
-    testWrongBankAccount = createWrongTestBankAccount();
+    user = addUser("planner1@rbcplannertest.ca");
+    testBankAccount = createTestBankAccount(user.getId());
+    testWrongBankAccount = createWrongTestBankAccount(user.getId());
     testDigitalAccount = createTestDigitalAccount(testBankAccount);
   }
+  private User addUser(String email) {
+    User user;
+    DAO userDAO = (DAO) x_.get("localUserDAO");
 
-  private CABankAccount createTestBankAccount() {
+    user = (User) userDAO.inX(x_).find(EQ(User.EMAIL, email));
+    if (user == null) {
+      user = new User();
+      user.setEmail(email);
+      user.setFirstName("Francis");
+      user.setLastName("Filth");
+      user.setEmailVerified(true);
+      user.setGroup("business");
+      user.setSpid("test");
+      user = (User) userDAO.put(user);
+      user = (User) user.fclone();
+    }
+    return user;
+  }
+
+  private CABankAccount createTestBankAccount(long userId) {
     DAO bankAccountDao = (DAO) x_.get("accountDAO");
     CABankAccount account = (CABankAccount) bankAccountDao.find(EQ(CABankAccount.NAME, "RBC Test Account"));
     if ( account == null ) {
@@ -64,7 +84,7 @@ public class RbcPlannerTest
       BankAccount testBankAccount = new CABankAccount.Builder(x_)
         .setAccountNumber("12345678")
         .setBranch( branch.getId() )
-        .setOwner(1014)
+        .setOwner(userId)
         .setName("RBC Test Account")
         .setStatus(BankAccountStatus.VERIFIED)
         .build();
@@ -75,7 +95,7 @@ public class RbcPlannerTest
     }
   }
 
-  private USBankAccount createWrongTestBankAccount() {
+  private USBankAccount createWrongTestBankAccount(long userId) {
     DAO bankAccountDao = (DAO) x_.get("accountDAO");
     USBankAccount account = (USBankAccount) bankAccountDao.find(EQ(USBankAccount.NAME, "Wrong RBC Test Account"));
     if ( account == null ) {
@@ -96,7 +116,7 @@ public class RbcPlannerTest
       BankAccount testBankAccount = new USBankAccount.Builder(x_)
         .setAccountNumber("12345678")
         .setBranch( branch.getId() )
-        .setOwner(1014)
+        .setOwner(userId)
         .setInstitution(institution.getId())
         .setBranchId("123456789")
         .setName("Wrong RBC Test Account")
@@ -112,8 +132,7 @@ public class RbcPlannerTest
   private DigitalAccount createTestDigitalAccount(BankAccount testBankAccount){
     DAO userDAO = (DAO) x_.get("localUserDAO");
     User user = (User) userDAO.find_(x_, testBankAccount.getOwner());
-    DigitalAccount d =  (DigitalAccount) DigitalAccount.findDefault(x_, user, "CAD").fclone();
-    d.setTrustAccount("7ee216ae-9371-4684-9e99-ba42a5759444");
+    DigitalAccount d =  (DigitalAccount) DigitalAccount.findDefault(x_, user, "CAD","7ee216ae-9371-4684-9e99-ba42a5759444").fclone();
     DAO dao = (DAO) x_.get("accountDAO");
     d = (DigitalAccount) (dao.put(d)).fclone();
     return d;
