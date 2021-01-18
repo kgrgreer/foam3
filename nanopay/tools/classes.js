@@ -36,6 +36,7 @@ var classes = [
   'net.nanopay.tx.alterna.AlternaCITransaction',
   'net.nanopay.tx.alterna.AlternaVerificationTransaction',
   'net.nanopay.tx.bench.TransactionBenchmarkClient',
+  'net.nanopay.tx.bench.TransactionPlannerBenchmarkClient',
   'net.nanopay.tx.stripe.StripeTransaction',
   'net.nanopay.tx.stripe.StripeCustomer',
   'net.nanopay.tx.realex.RealexTransaction',
@@ -702,7 +703,6 @@ var classes = [
   'net.nanopay.cico.model.MobileWallet',
 
   // auth
-  'net.nanopay.auth.AuthType',
   'net.nanopay.auth.BusinessEmployeeDAO',
   'net.nanopay.auth.BusinessToPublicBusinessInfoDAO',
   'net.nanopay.auth.CheckCurrencyRule',
@@ -712,10 +712,6 @@ var classes = [
   'net.nanopay.auth.OneTimeAuthenticationTokenService',
   'net.nanopay.auth.PublicBusinessInfo',
   'net.nanopay.auth.ruler.LogoutUserAction',
-  'net.nanopay.auth.ServiceProviderURL',
-  'net.nanopay.auth.UserCreateServiceProviderURLRule',
-  'net.nanopay.auth.UserCreateServiceProviderURLRuleAction',
-
   'net.nanopay.security.auth.IPLoggingAuthService',
   'net.nanopay.security.auth.LoginAttemptAuthService',
   'net.nanopay.security.auth.LoginAttempts',
@@ -752,6 +748,7 @@ var classes = [
   'net.nanopay.security.PKCS11KeyStoreManager',
   'net.nanopay.security.PKCS12KeyStoreManager',
   'net.nanopay.security.HashingJournal',
+  'net.nanopay.security.HashingReplayJournal',
   'net.nanopay.security.HashedJSONParser',
   'net.nanopay.security.csp.CSPViolation',
   'net.nanopay.security.csp.CSPReportWebAgent',
@@ -1028,6 +1025,11 @@ var classes = [
   'net.nanopay.meter.test.BlockDisabledUserTransactionTest',
   'net.nanopay.meter.test.BlockDisabledUserInvoiceTest',
   'net.nanopay.meter.test.ComplianceAwareDummy',
+
+  //screening response
+  'net.nanopay.meter.compliance.ruler.CreateScreeningResponse',
+  'net.nanopay.meter.report.ScreeningResponseCounter',
+  'net.nanopay.meter.report.ScreeningResponseType',
 
   'net.nanopay.security.auth.LogoutDisabledUserDAO',
 
@@ -1378,8 +1380,10 @@ var classes = [
   'net.nanopay.crunch.compliance.GenericSigningOfficerValidator',
   'net.nanopay.crunch.compliance.GenericBusinessValidator',
   'net.nanopay.crunch.compliance.AbstractManualValidator',
-  'net.nanopay.crunch.compliance.ManualPersonSanctionValidator',
+  'net.nanopay.crunch.compliance.ManualConsumerKYCValidator',
   'net.nanopay.crunch.compliance.ManualEntitySanctionValidator',
+  'net.nanopay.crunch.compliance.ManualMerchantKYCValidator',
+  'net.nanopay.crunch.compliance.ManualPersonSanctionValidator',
   'net.nanopay.crunch.compliance.ManualSecurefactSIDniValidator',
   'net.nanopay.crunch.compliance.ManualSecurefactLEVValidator',
 
@@ -1518,6 +1522,7 @@ var classes = [
   'net.nanopay.payment.PayeeCurrencyService',
   'net.nanopay.payment.ClientPayeeCurrencyService',
   'net.nanopay.payment.PayeeCurrency',
+  'net.nanopay.payment.RegisterPaymentProviderCapability',
 
   // support
   'net.nanopay.support.SupportAccount',

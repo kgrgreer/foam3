@@ -160,7 +160,6 @@ public class WebhookOAuth implements OAuthProvider, NanoService, ContextAware {
       return bearerToken_;
     } catch (IOException e) {
       getLogger().error(e.getMessage());
-      e.printStackTrace();
       return null;
     }
   }

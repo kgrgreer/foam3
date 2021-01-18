@@ -47,8 +47,7 @@ foam.CLASS({
           @Override
           public void execute(X x) {
             DigitalAccountServiceInterface service = (DigitalAccountServiceInterface) x.get("digitalAccountService");
-            Subject subject = new Subject.Builder(x).setUser((User)obj).build();
-            service.createDefaults(x.put("subject", subject), null, getTrusts());
+            service.createDefaults(x.put("subject", new Subject((User) obj)), null, getTrusts());
          }
         },"Creating default account(s)");
       `

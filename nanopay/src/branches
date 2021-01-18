@@ -51,3 +51,4 @@ p({"class":"net.nanopay.model.Branch","id":17,"branchId":"62570","institution":1
 p({"class":"net.nanopay.model.Branch","id":38,"branchId":"62782","institution":6})
 p({"class":"net.nanopay.model.Branch","id":39,"branchId":"27522","institution":13})
 p({"class":"net.nanopay.model.Branch","id":40,"branchId":"29692","institution":11})
+p({"class":"net.nanopay.model.Branch","id":130,"branchId":"00646","institution":35})

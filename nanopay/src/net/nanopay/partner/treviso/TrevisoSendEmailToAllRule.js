@@ -32,20 +32,18 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.Group',
-    'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
+    'foam.nanos.crunch.AgentCapabilityJunction',
+    'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
     'foam.nanos.notification.Notification',
     'foam.util.Emails.EmailsUtility',
-    'foam.util.SafetyUtil',
     'java.util.HashMap',
     'java.util.List',
     'java.util.Map',
     'net.nanopay.model.Business',
-    'net.nanopay.model.BusinessDirector',
-    'net.nanopay.model.BusinessUserJunction',
     'net.nanopay.partner.treviso.onboarding.BRBeneficialOwner',
     'net.nanopay.partner.treviso.onboarding.BRBusinessDirector',
     'static foam.mlang.MLang.*'
@@ -58,33 +56,23 @@ foam.CLASS({
       agency.submit(x, new ContextAgent() {
         @Override
         public void execute(X x) {
-          DAO localUserDAO = (DAO) x.get("localUserDAO");
-          DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
+          DAO localUserDAO = (DAO) x.get("localuserDAO");
           UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
-          Business business = (Business) localBusinessDAO.find(EQ(Business.ID, ucj.getSourceId()));
-          User user = ((Subject) x.get("subject")).getUser();
+          Business business = (Business) ucj.findSourceId(x);
           
-          // send email to signing officers whose hasSignedContratosDeCambio is true
-          DAO signingOfficerJunctionDAO = (DAO) x.get("signingOfficerJunctionDAO");
           DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
-          List<BusinessUserJunction> soJunctions = ((ArraySink) signingOfficerJunctionDAO
-            .where(EQ(BusinessUserJunction.SOURCE_ID, business.getId()))
+          // find all signingofficers of the business and send email to signing officers whose hasSignedContratosDeCambio is true
+          List<UserCapabilityJunction> sopJunctions = ((ArraySink) userCapabilityJunctionDAO.where(AND(
+              EQ(AgentCapabilityJunction.EFFECTIVE_USER, business.getId()),
+              EQ(UserCapabilityJunction.TARGET_ID, "777af38a-8225-87c8-dfdf-eeb15f71215f-123"),
+              EQ(UserCapabilityJunction.STATUS, CapabilityJunctionStatus.GRANTED),
+              NOT(EQ(UserCapabilityJunction.DATA, null))
+            ))
             .select(new ArraySink()))
             .getArray();
-
-          if ( soJunctions == null || soJunctions.size() == 0 ) {
-            throw new RuntimeException("Signing officers not found");
-          }
-
-          for ( BusinessUserJunction soJunction : soJunctions ){
-            UserCapabilityJunction soCapJunc = (UserCapabilityJunction) userCapabilityJunctionDAO.find(AND(
-              EQ(UserCapabilityJunction.SOURCE_ID, soJunction.getTargetId()),
-              EQ(UserCapabilityJunction.TARGET_ID, "777af38a-8225-87c8-dfdf-eeb15f71215f-123")
-            ));
-            SigningOfficerPersonalDataTreviso soData = (SigningOfficerPersonalDataTreviso) soCapJunc.getData();
-            User signingOfficer = (User) localUserDAO.find(soJunction.getTargetId());
-
-            if ( soData.getHasSignedContratosDeCambio() ) sendNotificationToUser(x, business, signingOfficer);
+          for ( UserCapabilityJunction sopJunction : sopJunctions ) {
+            SigningOfficerPersonalDataTreviso soData = (SigningOfficerPersonalDataTreviso) sopJunction.getData();
+            if ( soData.getHasSignedContratosDeCambio() ) sendNotificationToUser(x, business, sopJunction.findSourceId(x));
           }
 
           // send email to beneficial owners whose hasSignedContratosDeCambio is true
@@ -109,7 +97,7 @@ foam.CLASS({
           }
 
           // send email to business directors whose hasSignedContratosDeCambio is true
-          for ( BusinessDirector bD : business.getBusinessDirectors() ) {
+          for ( BRBusinessDirector bD : ((BRBusinessDirector[]) business.getBusinessDirectors()) ) {
             BRBusinessDirector businessDirector = (BRBusinessDirector) bD;
             if ( ! businessDirector.getHasSignedContratosDeCambio() ) continue;
             List<User> businessDirectorUser = ((ArraySink) localUserDAO

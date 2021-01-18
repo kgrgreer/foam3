@@ -1,2 +1,8 @@
+p({
+  class:"foam.nanos.theme.ThemeDomain",
+  id:"treviso",
+  theme:"85d018c3-ec75-028e-523e-23d0c89c243b"
+})
 p({class:"foam.nanos.theme.ThemeDomain",id:"treviso.nanopay.net",theme:"85d018c3-ec75-028e-523e-23d0c89c243b"})
+p({class:"foam.nanos.theme.ThemeDomain",id:"trevisobackoffice",theme:"85d018c3-ec75-028e-523e-23d0c89c243b"})
 p({class:"foam.nanos.theme.ThemeDomain",id:"treviso.backoffice.nanopay.net",theme:"85d018c3-ec75-028e-523e-23d0c89c243b"})

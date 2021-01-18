@@ -19,6 +19,7 @@ p({
       .setDecorator(dao)
       .setOf(net.nanopay.tx.planner.TransactionPlan.getOwnClassInfo())
       .setRuler(false)
+      .setCluster(false)
       .setPm(true)
       .setPipelinePm(true)
       .setAuthorize(false)
@@ -40,6 +41,7 @@ p({
       .setPm(true)
       .setPipelinePm(true)
       .setEnableInterfaceDecorators(false)
+      .setCluster(false)
       .build();
     """,
   "client":"{\"of\":\"net.nanopay.tx.planner.TransactionPlan\"}"

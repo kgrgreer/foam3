@@ -54,6 +54,10 @@ foam.CLASS({
         DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
         User user = ((Subject) x.get("subject")).getUser();
         if ( user == null || ! ( user instanceof Business ) ) return false;
+        // Note: this cannot be changed to use crunchService.getJunction since this is used as an AvailabilityPredicate
+        // for the ucj "554af38a-8225-87c8-dfdf-eeb15f71215f-20", and trigger a StackOverflow
+        // due to getJunctionForSubject calling getAssociationPredicate_ which will try to lookup the capability
+        // from the capabilityDAO again
         UserCapabilityJunction ucj = (UserCapabilityJunction) userCapabilityJunctionDAO.find(
           AND(
             EQ(UserCapabilityJunction.SOURCE_ID, user.getId()),

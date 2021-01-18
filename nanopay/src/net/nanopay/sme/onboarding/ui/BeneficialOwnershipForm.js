@@ -481,7 +481,7 @@ properties: [
     class: 'Date',
     name: 'birthdayField',
     tableCellFormatter: function(date) {
-      this.add(date ? date.toISOString().substring(0, 10) : '');
+      this.add(date ? date.toLocaleDateString(foam.locale) : '');
     },
     postSet: function(o, n) {
       this.viewData.beneficialOwner.birthday = n;

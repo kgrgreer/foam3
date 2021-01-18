@@ -20,10 +20,8 @@ p({
   version: "0",
   enabled: true,
   permissionsGranted: [
-    "rule.read.13df0d76-ba3e-4287-b42e-c7ceff059dd8",
     "rule.read.2775abef-05d4-4460-bea8-7a70e9d544af",
-    "rule.read.519e2a68-a914-444f-b050-2ce01f29fe24",
-    "rule.read.91194da9-8391-436a-8468-fa2c706126b8"
+    "rule.read.519e2a68-a914-444f-b050-2ce01f29fe24"
   ]
 })
 p({
@@ -135,7 +133,7 @@ p({
   "keywords":["featured"],
   "min": 1,
   "permissionsGranted":[
-    "menu.read.capability.main.invoices.payables"
+    "menu.read.mainmenu.invoices.payables"
   ],
   "availabilityPredicate": {
     "class":"foam.mlang.predicate.And",
@@ -927,4 +925,26 @@ p({
     "allowSkipping": false
   },
   "requirementViewTitle":"Have your signing officer documents ready. You can save your progress and come back later."
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "treviso-tx-rules",
+  name: "Enable Treviso Transaction Rules",
+  version: "0",
+  enabled: true,
+  permissionsGranted: [
+    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d31"
+  ]
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "treviso-tx-fees",
+  name: "Enable Treviso Fees",
+  version: "0",
+  enabled: true,
+  permissionsGranted: [
+    "rule.read.91194da9-8391-436a-8468-fa2c706126b8"
+  ]
 })

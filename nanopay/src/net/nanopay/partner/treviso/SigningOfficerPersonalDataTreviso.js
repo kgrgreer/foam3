@@ -162,7 +162,7 @@ foam.CLASS({
       class: 'Boolean',
       documentation: `todo save this property somewhere`,
       section: 'signingOfficerPersonalInformationSection',
-      label: 'I need to report assets under FATCA',
+      label: 'Are assets reported under the Foreign Account Tax Compliance Act (FATCA)?',
       help: `
       Note 4: The FATCA - Foreign Account Tax Compliance Act is an American federal law,
       which aims to prevent tax evasion by individuals and legal entities that have a tax
@@ -203,7 +203,7 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'hasSignedContratosDeCambio',
-      label: 'Have you signed the \'contratos de câmbio\'?',
+      label: 'Has the foreign exchange contract been signed?',
       section: 'signingOfficerPersonalInformationSection',
       help: `
         Contratos de câmbio (foreign exchange contract) is a legal arrangement in which the

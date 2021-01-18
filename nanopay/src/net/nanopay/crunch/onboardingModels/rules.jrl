@@ -39,7 +39,7 @@ p({
 p({
   "class":"foam.nanos.ruler.Rule",
   "id":"9734f035-fa30-4b49-972e-e5258aa9d2b8",
-  "name":"Create UCJ between User and Registering Payment Provider Capability on user compliance passed",
+  "name":"Create UCJ between User and Registering Payment Provider Capability as soon as ",
   "documentation":"Create UCJ between User and  Registering Payment Provider Capability on user compliance passed.",
   "priority":80,
   "ruleGroup":"onboarding",
@@ -50,7 +50,7 @@ p({
     "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
     "category":"onboarding",
     "isRecurring":false,
-    "status": 1
+    "status": 0
   },
   "asyncAction":{
     "class":"net.nanopay.crunch.onboardingModels.CreateRegisterPaymentProviderUCJ"

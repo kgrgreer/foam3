@@ -1,5 +1,53 @@
 // net.nanopay.bank.BankAccountInstitutionDAOTest
-p({"class":"foam.nanos.test.Test","passed":0,"failed":0,"id":"net.nanopay.bank.BankAccountInstitutionDAOTest","enabled":true,"description":"","lastRun":"2018-08-03T15:20:18.484Z","lastDuration":1487,"server":true,"status":1,"code":"institutionNumber = \"net.nanopay.bank.BankAccountInstitutionTest\";\nid = (foam.dao.DAO) x.get(\"institutionDAO\");\nid = id.limit(1);\nid = id.where(\nfoam.mlang.MLang.EQ(net.nanopay.payment.Institution.INSTITUTION_NUMBER, institutionNumber)\n);\nil = ((foam.dao.ArraySink) id.select(new foam.dao.ArraySink())).getArray();\nif ( il.size() > 0 ) {\nprint(\"cleaning up previous run\");\nid.remove(il.get(0));\n};\n\nbd = (foam.dao.DAO) x.get(\"localAccountDAO\");\nbd = bd.where(\nfoam.mlang.MLang.EQ(net.nanopay.account.Account.NAME, institutionNumber)\n);\nbl = ((foam.dao.ArraySink) bd.select(new foam.dao.ArraySink())).getArray();\nif ( bl.size() > 0 ) {\nbd.remove(bl.get(0));\nprint(\"cleaning up previous run.\");\n};\n\nu = (foam.nanos.auth.User) x.get(\"subject\").getUser();\nb = new net.nanopay.bank.CABankAccount();\nb.setName(institutionNumber);\nb.setOwner(u.getId());\nb.setInstitutionNumber(institutionNumber);\nb.setAccountNumber(institutionNumber);\nb.setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED);\n\ntest(b.findInstitution(x) == null, \"institution should not exist\");\n\nb = bd.put(b);\ntest( ! String.valueOf(b.getInstitution()).equals(institutionNumber), \"institution reference should not equal number\"); \nlist = ((foam.dao.ArraySink) id.select(new foam.dao.ArraySink())).getArray();\ntest( list.size() == 1, \"institution created\");\ni = list.get(0);\ntest( i.getInstitutionNumber().equals(institutionNumber), \"matching institutionNumber\");\n","output":"cleaning up previous run\ncleaning up previous run.\nSUCCESS: institution should not exist\nSUCCESS: institution reference should not equal number\nSUCCESS: institution created\nSUCCESS: matching institutionNumber\n","notes":""})
-
-// net.nanopay.bank.PreventDuplicateBankAccountDAOTest
-
+p({
+  "class":"foam.nanos.test.Test",
+  "passed":0,
+  "failed":0,
+  "id":"net.nanopay.bank.BankAccountInstitutionDAOTest",
+  "enabled":true,
+  "description":"",
+  "lastRun":"2018-08-03T15:20:18.484Z",
+  "lastDuration":1487,
+  "server":true,
+  "status":1,
+  "code":"""
+    institutionNumber = "net.nanopay.bank.BankAccountInstitutionTest";
+    id = (foam.dao.DAO) x.get("institutionDAO");
+    id = id.limit(1);
+    id = id.where(
+      foam.mlang.MLang.EQ(net.nanopay.payment.Institution.INSTITUTION_NUMBER, institutionNumber)
+    );
+    il = ((foam.dao.ArraySink) id.select(new foam.dao.ArraySink())).getArray();
+    if ( il.size() > 0 ) {
+      print("cleaning up previous run");
+      id.remove(il.get(0));
+    };
+    
+    bd = (foam.dao.DAO) x.get("localAccountDAO");
+    bd = bd.where(
+      foam.mlang.MLang.EQ(net.nanopay.account.Account.NAME, institutionNumber)
+    );
+    bl = ((foam.dao.ArraySink) bd.select(new foam.dao.ArraySink())).getArray();
+    if ( bl.size() > 0 ) {
+      bd.remove(bl.get(0));
+      print("cleaning up previous run.");
+    };
+    
+    u = (foam.nanos.auth.User) x.get("subject").getUser();
+    b = new net.nanopay.bank.CABankAccount();
+    b.setName(institutionNumber);
+    b.setOwner(u.getId());
+    b.setInstitutionNumber(institutionNumber);
+    b.setAccountNumber(institutionNumber);
+    b.setStatus(net.nanopay.bank.BankAccountStatus.VERIFIED);
+    
+    test(b.findInstitution(x) == null, "institution should not exist");
+      
+    b = bd.put(b);
+    test( ! String.valueOf(b.getInstitution()).equals(institutionNumber), "institution reference should not equal number"); 
+    list = ((foam.dao.ArraySink) id.select(new foam.dao.ArraySink())).getArray();
+    test( list.size() == 1, "institution created");
+    i = list.get(0);
+    test( i.getInstitutionNumber().equals(institutionNumber), "matching institutionNumber");
+  """
+})

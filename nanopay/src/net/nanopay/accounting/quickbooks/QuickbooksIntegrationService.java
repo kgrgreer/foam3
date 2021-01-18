@@ -629,7 +629,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
     newContact.setEmail(email.getAddress().toLowerCase());
     newContact.setType("Contact");
-    newContact.setGroup("sme");
+    newContact.setGroup(user.getSpid() + "-sme");
     newContact.setQuickId(importContact.getId());
     newContact.setRealmId(token.getRealmId());
     newContact.setOwner(user.getId());

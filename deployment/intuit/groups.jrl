@@ -7,14 +7,16 @@ p({
     id:"intuit-fraud-ops",
     description:"Intuit Fraud Operations Group",
     parent:"fraud-ops",
-    defaultMenu:"accounts"
+    defaultMenu:"accounts",
+    url:"http://intuit:8080"
 })
 p({
     class:"foam.nanos.auth.Group",
     id:"intuit-payment-ops",
     description:"Intuit Payment Operations Group",
     parent:"payment-ops",
-    defaultMenu:"accounts"
+    defaultMenu:"accounts",
+    url:"http://intuit:8080"
 })
 
 p({
@@ -22,7 +24,8 @@ p({
     id:"intuit-internal-support",
     description:"intuit internal support group",
     parent:"support",
-    defaultMenu:"contacts"
+    defaultMenu:"contacts",
+    url:"http://intuit:8080"
 })
 
 p({
@@ -30,12 +33,14 @@ p({
     id:"intuit-support",
     description:"intuit support group",
     parent:"external-support",
-    defaultMenu:"businesses-support"
+    defaultMenu:"businesses-support",
+    url:"http://intuit:8080"
 })
 
 p({
     class:"foam.nanos.auth.Group",
     id:"intuit-sme",
     description:"intuit sme group",
-    parent:"external-sme"
+    parent:"external-sme",
+    url:"http://intuit:8080"
 })
