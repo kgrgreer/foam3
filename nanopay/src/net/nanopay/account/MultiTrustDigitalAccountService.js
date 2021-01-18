@@ -40,9 +40,7 @@ foam.CLASS({
      'foam.nanos.auth.User',
      'java.util.List',
      'java.util.ArrayList',
-     'foam.dao.ArraySink',
-     'static foam.mlang.MLang.EQ',
-     'static foam.mlang.MLang.OR',
+     'foam.dao.ArraySink'
   ],
 
   properties: [
