@@ -317,6 +317,8 @@ var classes = [
   'net.nanopay.contacts.ExternalContactToken',
   'net.nanopay.contacts.ClientPaymentCodeService',
   'net.nanopay.contacts.ClientContactService',
+  'net.nanopay.contacts.AFEXContactCapabilityRule',
+  'net.nanopay.contacts.AFEXCNBeneficiaryCapability',
 
   // invite
   'net.nanopay.admin.model.ComplianceStatus',

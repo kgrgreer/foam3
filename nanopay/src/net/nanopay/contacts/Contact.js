@@ -30,7 +30,8 @@ foam.CLASS({
   implements: [
     'foam.core.Validatable',
     'foam.mlang.Expressions',
-    'foam.nanos.auth.Authorizable'
+    'foam.nanos.auth.Authorizable',
+    'foam.nanos.crunch.lite.Capable',
   ],
 
   javaImports: [
@@ -143,6 +144,9 @@ foam.CLASS({
   `,
 
   properties: [
+    ...(foam.nanos.crunch.lite.CapableObjectData
+      .getOwnAxiomsByClass(foam.core.Property)
+      .map(p => p.clone())),
     {
       name: 'organization',
       label: 'Business',
@@ -655,6 +659,9 @@ foam.CLASS({
   ],
 
   methods: [
+    ...(foam.nanos.crunch.lite.CapableObjectData
+      .getOwnAxiomsByClass(foam.core.Method)
+      .map(p => p.clone())),
     async function init() {
       this.isConsent = await this.auth.check(this.CONTACT_PERMISSION);
     },

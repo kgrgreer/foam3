@@ -1117,6 +1117,8 @@ FOAM_FILES([
   { name: 'net/nanopay/contacts/ClientPaymentCodeService' },
   { name: 'net/nanopay/contacts/ContactServiceInterface' },
   { name: 'net/nanopay/contacts/ClientContactService' },
+  { name: 'net/nanopay/contacts/AFEXContactCapabilityRule' },
+  { name: 'net/nanopay/contacts/AFEXCNBeneficiaryCapability' },
 
   // sme
   { name: 'net/nanopay/model/Business' },
