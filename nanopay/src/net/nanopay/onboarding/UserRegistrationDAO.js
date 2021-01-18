@@ -29,6 +29,7 @@ foam.CLASS({
     'foam.mlang.predicate.Predicate',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.Address',
+    'foam.nanos.auth.ServiceProviderAwareDAO',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.nanos.auth.UserUserJunction',
@@ -36,6 +37,8 @@ foam.CLASS({
     'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.nanos.crunch.CrunchService',
     'foam.nanos.logger.Logger',
+    'foam.nanos.theme.Theme',
+    'foam.nanos.theme.Themes',
     'foam.util.Auth',
     'foam.util.SafetyUtil',
     'net.nanopay.contacts.Contact',
@@ -116,9 +119,24 @@ foam.CLASS({
         if ( user == null || SafetyUtil.isEmpty(user.getEmail()) ) {
           throw new RuntimeException(EMAIL_REQUIRED_ERROR_MSG);
         }
+        String spid = null;
+        if ( user != null && SafetyUtil.isEmpty(user.getSpid()) ) {
+          Theme theme = ((Themes) x.get("themes")).findTheme(x);
+          if ( theme != null &&
+                ! SafetyUtil.isEmpty(theme.getSpid()) ) {
+            spid = theme.getSpid();
+          } else {
+            ((foam.dao.DAO) x.get("alarmDAO")).put(new foam.nanos.alarming.Alarm.Builder(x)
+            .setName("Theme not found.")
+            .setSeverity(foam.log.LogLevel.ERROR)
+            .setNote(" Theme not found for user registration when looking for appropriate service provider.")
+            .build());
+            throw new RuntimeException("Configuration error: Theme not found on user registration");
+          }
+        }
 
         if ( SafetyUtil.isEmpty(user.getGroup()) ) {
-          user.setGroup(getGroup());
+          user.setGroup(spid + "-" + getGroup());
         }
 
         // We want the system user to be putting the User we're trying to create. If

@@ -502,10 +502,7 @@ p({
   "enabled":true,
   "daoKey":"userDAO",
   "contextDAOFindKey": "subject.realUser",
-  "associatedEntity": 1,
-  "wizardlet": {
-    "class": "net.nanopay.crunch.wizardlet.RefreshWizardlet"
-  }
+  "associatedEntity": 1
 })
 
 p({
@@ -1020,4 +1017,12 @@ p({
   "permissionsGranted":[
     "menu.read.mainmenu.invoices.receivables"
   ]
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"contact.capable.afex.cn",
+  "name":"Additional information",
+  "of":"net.nanopay.contacts.AFEXCNBeneficiaryCapability",
+  "enabled":true
 })

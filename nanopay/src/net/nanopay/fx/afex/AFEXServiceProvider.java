@@ -25,12 +25,14 @@ import foam.nanos.auth.Country;
 import foam.nanos.auth.Region;
 import foam.nanos.auth.User;
 import foam.nanos.auth.LifecycleState;
+import foam.nanos.crunch.connection.CapabilityPayload;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
 import foam.util.SafetyUtil;
 import net.nanopay.account.Account;
 import net.nanopay.admin.model.ComplianceStatus;
 import net.nanopay.bank.*;
+import net.nanopay.contacts.AFEXCNBeneficiaryCapability;
 import net.nanopay.contacts.Contact;
 import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
@@ -557,6 +559,13 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       createBeneficiaryRequest.setCurrency(bankAccount.getDenomination());
       createBeneficiaryRequest.setVendorId(String.valueOf(userId));
       createBeneficiaryRequest.setClientAPIKey(afexBusiness.getApiKey());
+
+      if ( bankAccount.getDenomination().equals("CNY") ){
+        Contact contact = (Contact) ((DAO) x.get("localContactDAO")).find(user.getId());
+        AFEXCNBeneficiaryCapability cap = (AFEXCNBeneficiaryCapability) contact.getCapablePayloads()[0].getData();
+        createBeneficiaryRequest.setRemittanceLine2(cap.getPurposeCode());
+        createBeneficiaryRequest.setRemittanceLine3(beneficiaryName + " " + cap.getPhone().getNumber());
+      }
 
       try {
         CreateBeneficiaryResponse createBeneficiaryResponse = this.afexClient.createBeneficiary(createBeneficiaryRequest, user.getSpid());
