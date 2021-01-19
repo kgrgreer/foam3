@@ -43,7 +43,47 @@ foam.CLASS({
     { name: 'SIGNINGOFFICER_DATA_FETCHING_ERR', message: 'Failed to find this signing officer info' }
   ],
 
+  sections: [
+    {
+      name: 'reviewOwnersSection',
+      isAvailable: function(amountOfOwners) {
+        return amountOfOwners > 0;
+      }
+    }
+  ],
+
   properties: [
+    {
+      name: 'amountOfOwners',
+      view: {
+        class: 'foam.u2.view.RadioView',
+        choices: [
+          0, 1, 2, 3, 4
+        ],
+        isHorizontal: true
+      },
+      validationPredicates: [
+        {
+          args: ['amountOfOwners'],
+          predicateFactory: function(e) {
+            return e.AND(
+              e.GTE(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
+                .AMOUNT_OF_OWNERS, 0),
+              e.LTE(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
+                .AMOUNT_OF_OWNERS, 4)
+            );
+          },
+          errorMessage: 'NO_AMOUNT_OF_OWNERS_SELECTED_ERROR'
+        },
+        {
+          args: ['ownerSelectionsValidated', 'owner1', 'owner2', 'owner3', 'owner4', 'chosenOwners'],
+          predicateFactory: function(e) {
+            return e.EQ(net.nanopay.crunch.onboardingModels
+              .BusinessOwnershipData.OWNER_SELECTIONS_VALIDATED, true);
+          }
+        }
+      ]
+    },
     {
       name: 'soUsersDAO',
       factory: function() {
@@ -118,10 +158,6 @@ foam.CLASS({
 
     // Ownership Amount Section
     {
-      name: 'publiclyTraded',
-      hidden:true
-    },
-    {
       class: 'net.nanopay.crunch.onboardingModels.OwnerProperty',
       ownerModel: 'net.nanopay.partner.treviso.onboarding.BRBeneficialOwner',
       index: 1
@@ -150,6 +186,10 @@ foam.CLASS({
           seqNo: true,
           daoType: 'MDAO'
         });
+      },
+      visibility: function(amountOfOwners) {
+        return amountOfOwners > 0 ?
+          foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
       }
     }
   ]
