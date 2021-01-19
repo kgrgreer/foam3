@@ -342,6 +342,7 @@ foam.CLASS({
         return currentIndex === 1 && ! data$bankAccount;
       },
       code: async function(X) {
+        this.data.clearProperty("createBankAccount");
         if ( ! await this.addContact() ) return;
         X.closeDialog();
       }
