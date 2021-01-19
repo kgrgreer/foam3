@@ -714,7 +714,6 @@ var classes = [
   'net.nanopay.auth.OneTimeAuthenticationTokenService',
   'net.nanopay.auth.PublicBusinessInfo',
   'net.nanopay.auth.ruler.LogoutUserAction',
-  
   'net.nanopay.security.auth.IPLoggingAuthService',
   'net.nanopay.security.auth.LoginAttemptAuthService',
   'net.nanopay.security.auth.LoginAttempts',
@@ -1255,6 +1254,8 @@ var classes = [
   'net.nanopay.country.br.PTaxRate',
   'net.nanopay.country.br.PTaxDollarRateResponse',
   'net.nanopay.country.br.tx.NatureCodeLineItem',
+  'net.nanopay.partner.bmo.BMOPaymentProviderCapabilityRule',
+  'net.nanopay.partner.rbc.RBCPaymentProviderCapabilityRule',
   'net.nanopay.partner.soawebservices.PessoaFisicaSimplificada',
   'net.nanopay.partner.soawebservices.PessoaJuridicaSimplificada',
   'net.nanopay.partner.soawebservices.PessoaResponse',
@@ -1323,7 +1324,6 @@ var classes = [
   'net.nanopay.crunch.predicate.BusinessPassedCompliance',
   'net.nanopay.crunch.predicate.CheckUserCountry',
   'net.nanopay.crunch.predicate.HasVerifiedBankAccount',
-  'net.nanopay.crunch.predicate.RegisterPaymentProviderStatus',
   'net.nanopay.crunch.predicate.SigningOfficerQuestionAnswered',
   'net.nanopay.crunch.predicate.SigningOfficerCapabilityInterceptPredicate',
   'net.nanopay.crunch.predicate.SigningOfficerPrivilegesRequested',
@@ -1523,6 +1523,7 @@ var classes = [
   'net.nanopay.payment.PayeeCurrencyService',
   'net.nanopay.payment.ClientPayeeCurrencyService',
   'net.nanopay.payment.PayeeCurrency',
+  'net.nanopay.payment.RegisterPaymentProviderCapability',
 
   // support
   'net.nanopay.support.SupportAccount',
