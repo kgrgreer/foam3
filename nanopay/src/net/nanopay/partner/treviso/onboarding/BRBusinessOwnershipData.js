@@ -45,6 +45,41 @@ foam.CLASS({
 
   sections: [
     {
+      name: 'ownershipAmountSection',
+      title: 'Enter the number of people who own 25% or more of the business either directly or indirectly.',
+      navTitle: 'Number of owners',
+      help: `In accordance with banking laws, we need to document the percentage of ownership of any individual with a 25% + stake in the company.
+      Please have owner address and date of birth ready.`,
+    },
+    {
+      class: 'net.nanopay.crunch.onboardingModels.OwnerSection',
+      index: 1,
+      isAvailable: function(amountOfOwners) {
+        return amountOfOwners >= 1;
+      }
+    },
+    {
+      class: 'net.nanopay.crunch.onboardingModels.OwnerSection',
+      index: 2,
+      isAvailable: function(amountOfOwners) {
+        return amountOfOwners >= 2;
+      }
+    },
+    {
+      class: 'net.nanopay.crunch.onboardingModels.OwnerSection',
+      index: 3,
+      isAvailable: function(amountOfOwners) {
+        return amountOfOwners >= 3;
+      }
+    },
+    {
+      class: 'net.nanopay.crunch.onboardingModels.OwnerSection',
+      index: 4,
+      isAvailable: function(amountOfOwners) {
+        return amountOfOwners >= 4;
+      }
+    },
+    {
       name: 'reviewOwnersSection',
       isAvailable: function(amountOfOwners) {
         return amountOfOwners > 0;
