@@ -368,14 +368,20 @@ public class BlacklistTest extends Test {
     userCapabilityJunctionDAO.inX(myAdminContext).put(ucjCOP);
 
     // Business Directors Data : 554af38a-8225-87c8-dfdf-eeb15f71215f-6-5
-    UserCapabilityJunction ucjBDDNR = new UserCapabilityJunction();
-    ucjBDDNR.setSourceId(myBusiness.getId());
-    ucjBDDNR.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-6-5-noReview");
-    userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBDDNR);
+    BusinessDirector bd = new BusinessDirector();
+    bd.setFirstName("Francis");
+    bd.setLastName("Filth");
+
+    BusinessDirector[] bdl = {bd};
+    BusinessDirectorsData bdd = new BusinessDirectorsData.Builder(myAdminContext)
+      .setBusinessDirectors(bdl)
+      .build();
+
     UserCapabilityJunction ucjBDD = new UserCapabilityJunction();
     ucjBDD.setSourceId(myBusiness.getId());
     ucjBDD.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-6-5");
-    userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBDD);
+    ucjBDD.setData(bdd);
+    ucjBDD = (UserCapabilityJunction) userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBDD);
 
     // Certify Directors Listed : 554af38a-8225-87c8-dfdf-eeb15f71215e-17
     CertifyDirectorsListed cdl = new CertifyDirectorsListed();

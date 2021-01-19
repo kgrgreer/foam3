@@ -345,14 +345,20 @@ ucjCOP.setData(cop);
 userCapabilityJunctionDAO.inX(myAdminContext).put(ucjCOP);
 
 // Business Directors Data : 554af38a-8225-87c8-dfdf-eeb15f71215f-6-5
-UserCapabilityJunction ucjBDDNR = new UserCapabilityJunction();
-ucjBDDNR.setSourceId(myBusiness.getId());
-ucjBDDNR.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-6-5-noReview");
-userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBDDNR);
-UserCapabilityJunction ucjBDD = new UserCapabilityJunction();
-ucjBDD.setSourceId(myBusiness.getId());
-ucjBDD.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-6-5");
-userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBDD);
+  BusinessDirector bd = new BusinessDirector();
+  bd.setFirstName("Francis");
+  bd.setLastName("Filth");
+
+  BusinessDirector[] bdl = {bd};
+  BusinessDirectorsData bdd = new BusinessDirectorsData.Builder(myAdminContext)
+    .setBusinessDirectors(bdl)
+    .build();
+
+  UserCapabilityJunction ucjBDD = new UserCapabilityJunction();
+  ucjBDD.setSourceId(myBusiness.getId());
+  ucjBDD.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-6-5");
+  ucjBDD.setData(bdd);
+  ucjBDD = (UserCapabilityJunction) userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBDD);
 
 // Certify Directors Listed : 554af38a-8225-87c8-dfdf-eeb15f71215e-17
 CertifyDirectorsListed cdl = new CertifyDirectorsListed();
@@ -437,14 +443,17 @@ List<ApprovalRequest> approvalRequests = ((ArraySink) approvalRequestDAO
     foam.mlang.MLang.OR( new foam.mlang.predicate.Predicate[] {
       foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjBOD.getId()),
       foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjSOP.getId()),
-          foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjBDD.getId())
+      foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjBDD.getId())
     }),
     foam.mlang.MLang.EQ(ApprovalRequest.IS_FULFILLED, false)
   }))
   .select(new ArraySink()))
   .getArray();
 
+test(approvalRequests.size() > 0, "requests = " + approvalRequests);
+
 for ( ApprovalRequest approvalRequest : approvalRequests ) {
+  test(approvalRequest != null, "request = " + approvalRequest);
   approvalRequest = (ApprovalRequest) approvalRequest.fclone();
   approvalRequest.setStatus(ApprovalStatus.APPROVED);
   try{
