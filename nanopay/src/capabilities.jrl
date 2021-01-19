@@ -67,7 +67,7 @@ p({
   "icon":"/images/capabilityIcons/SigningOfficerIcon.svg",
   "daoKey":"userDAO",
   "contextDAOFindKey":"subject.realuser",
-  "reviewRequired":false,
+  "reviewRequired":true,
   "associatedEntity":2,
   "keywords":["featured"],
   "permissionsGranted":[
