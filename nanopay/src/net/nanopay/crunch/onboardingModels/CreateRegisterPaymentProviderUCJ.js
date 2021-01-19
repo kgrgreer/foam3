@@ -23,7 +23,7 @@ foam.CLASS({
     'foam.nanos.ruler.RuleAction'
   ],
 
-  documentation: 'Create a UserCapabilityJunction between User and Register Payment provider capability when ',
+  documentation: 'Create a UserCapabilityJunction between User and Register Payment provider capability when appropriate onboarding cap becomes pending.',
 
   javaImports: [
     'foam.core.ContextAgent',
@@ -70,7 +70,7 @@ foam.CLASS({
               }
             }
           }
-        }, "Create ucj on user passed compliance");
+        }, "Create a UserCapabilityJunction between User and Register Payment provider capability when appropriate onboarding cap becomes pending.");
       `
     },
     {
