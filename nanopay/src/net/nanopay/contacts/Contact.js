@@ -346,7 +346,7 @@ foam.CLASS({
           predicate: pred,
           placeholder: X.data.PLACEHOLDER,
           header: X.data.HEADER,
-          classIsFinal: true,
+          classIsFinal: !! X.data.bankAccount,
           config: {
             id: { updateVisibility: 'HIDDEN' },
             summary: { updateVisibility: 'HIDDEN' }
@@ -364,7 +364,6 @@ foam.CLASS({
       name: 'availableCountries',
       visibility: 'HIDDEN',
       expression: function(targetCorridorDAO) {
-        if ( this.createBankAccount && this.createBankAccount.country ) return [];
         return this.PromisedDAO.create({
           promise: targetCorridorDAO.where(this.INSTANCE_OF(this.PaymentProviderCorridor))
             .select(this.MAP(this.PaymentProviderCorridor.TARGET_COUNTRY))
