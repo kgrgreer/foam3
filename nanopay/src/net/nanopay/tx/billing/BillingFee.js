@@ -37,11 +37,6 @@ foam.CLASS({
       documentation: 'Business paying the fee'
     },
     {
-      class: 'Date',
-      name: 'chargeDate',
-      documentation: 'Calculated date of when the fees will be charged'
-    },
-    {
       class: 'UnitValue',
       name: 'amount',
       documentation: 'Amount being charged'

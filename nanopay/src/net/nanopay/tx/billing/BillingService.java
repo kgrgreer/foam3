@@ -25,17 +25,18 @@ import java.util.Date;
 import net.nanopay.account.Account;
 import net.nanopay.integration.ErrorCode;
 import net.nanopay.model.Business;
-import net.nanopay.tx.ChainSummary;
 import net.nanopay.tx.ChargedTo;
-import net.nanopay.tx.SummaryTransaction;
 import net.nanopay.tx.model.Transaction;
 
 import static foam.mlang.MLang.EQ;
 
 
 public class BillingService implements BillingServiceInterface {
+
+  // getBills() find corresponding bills for the summaryTxn children
+
   @Override
-  public Bill createBill(X x, String transactionId) {
+  public void createBill(X x, Transaction transaction) {
     ChargeDateServiceInterface chargeDateService = (ChargeDateServiceInterface) x.get("chargeDateService");
     DAO billDAO = (DAO) x.get("billDAO");
     DAO errorCodeDAO = (DAO) x.get("errorCodeDAO");
@@ -43,50 +44,42 @@ public class BillingService implements BillingServiceInterface {
     DAO transactionDAO = (DAO) x.get("localTransactionDAO");
     Bill bill = new Bill();
 
-    Transaction txn = (Transaction) transactionDAO.find(transactionId);
-    if ( txn instanceof SummaryTransaction ) {
-      SummaryTransaction summaryTxn = (SummaryTransaction) txn;
-      ChainSummary chainSummary = summaryTxn.getChainSummary();
-
-      if ( chainSummary.getErrorCode() == 0 ) {
-        bill.setErrorCode(chainSummary.getErrorCode());
-        return bill;
-      }
-
-      ErrorCode errorCode = (ErrorCode) errorCodeDAO.find(chainSummary.getErrorCode());
-      if ( errorCode == null ) {
-        bill.setErrorCode(chainSummary.getErrorCode());
-        return bill;
-      }
-
-      ArraySink sink = (ArraySink) errorFeeDAO.where(
-        EQ(ErrorFee.ERROR_CODE, errorCode.getId())
-      ).select(new ArraySink());
-
-      Date chargeDate = chargeDateService.findChargeDate(summaryTxn.getLastStatusChange());
-      BillingFee[] billingFees = new BillingFee[sink.getArray().size()];
-      for ( int i = 0; i < sink.getArray().size(); i++ ) {
-        BillingFee billingFee = new BillingFee();
-        ErrorFee errorFee = (ErrorFee) sink.getArray().get(i);
-        if ( errorFee.getChargedTo().equals(ChargedTo.PAYER) ) {
-          setupChargeToUser(x, summaryTxn.getSourceAccount(), billingFee);
-        } else {
-          setupChargeToUser(x, summaryTxn.getDestinationAccount(), billingFee);
-        }
-        billingFee.setChargeDate(chargeDate);
-        billingFee.setAmount(errorFee.getAmount());
-        billingFee.setCurrency(errorFee.getCurrency());
-        billingFee.setDescription(errorCode.getFullText());
-        billingFees[i] = billingFee;
-      }
-
-      bill.setErrorCode(errorCode.getId());
-      bill.setFees(billingFees);
-    } else {
-      throw new FOAMException("Transaction must be a SummaryTransaction to fetch error billing information");
+    Long errorCode = transaction.calculateErrorCode();
+    if ( errorCode == 0 ) {
+      return;
+    }
+    ErrorCode errorCodeObj = (ErrorCode) errorCodeDAO.find(errorCode);
+    if ( errorCodeObj == null ) {
+      return;
     }
 
-    return (Bill) billDAO.put(bill);
+    ArraySink sink = (ArraySink) errorFeeDAO.where(
+      EQ(ErrorFee.ERROR_CODE, errorCodeObj.getId())
+    ).select(new ArraySink());
+
+    Date chargeDate = chargeDateService.findChargeDate(transaction.getLastStatusChange());
+    BillingFee[] billingFees = new BillingFee[sink.getArray().size()];
+    for ( int i = 0; i < sink.getArray().size(); i++ ) {
+      BillingFee billingFee = new BillingFee();
+      ErrorFee errorFee = (ErrorFee) sink.getArray().get(i);
+      if ( errorFee.getChargedTo().equals(ChargedTo.PAYER) ) {
+        setupChargeToUser(x, transaction.getSourceAccount(), billingFee);
+      } else {
+        setupChargeToUser(x, transaction.getDestinationAccount(), billingFee);
+      }
+      billingFee.setAmount(errorFee.getAmount());
+      billingFee.setCurrency(errorFee.getCurrency());
+      billingFee.setDescription(errorCodeObj.getFullText());
+      billingFees[i] = billingFee;
+    }
+
+    bill.setErrorCode(errorCodeObj.getId());
+    bill.setFees(billingFees);
+    bill.setOriginatingTransaction(transaction.getId());
+    bill.setChargeDate(chargeDate);
+    bill.setStatus(transaction.getStatus());
+    bill.setStatusHistory(transaction.getStatusHistory());
+    billDAO.put(bill);
   }
 
   private void setupChargeToUser(X x, String accountId, BillingFee billingFee) {

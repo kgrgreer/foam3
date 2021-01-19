@@ -9,6 +9,7 @@ ascendantfxusers
 ascendantUserPayeeJunctions
 assetClasses
 beneficialOwners
+bills
 blacklists
 bootscripts
 branches
@@ -32,6 +33,7 @@ digs
 emailConfig
 emailTemplates
 errorCodes
+errorFees
 exchangeClientValues
 exchangeRates
 exportDriverRegistrys

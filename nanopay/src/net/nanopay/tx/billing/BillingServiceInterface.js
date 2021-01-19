@@ -26,15 +26,15 @@ foam.INTERFACE({
   methods: [
     {
       name: 'createBill',
-      type: 'net.nanopay.tx.billing.Bill',
+      type: 'Void',
       args: [
         {
           name: 'x',
           type: 'Context'
         },
         {
-          name: 'transactionId',
-          type: 'String'
+          name: 'transaction',
+          type: 'net.nanopay.tx.model.Transaction'
         }
       ]
     }

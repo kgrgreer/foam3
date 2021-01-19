@@ -20,3 +20,4 @@ p({"class":"net.nanopay.tx.billing.ErrorFee","errorCode":921,"amount":500,"curre
 p({"class":"net.nanopay.tx.billing.ErrorFee","errorCode":922,"amount":500,"currency":"CAD","chargedTo":"1","spid":"intuit"})
 p({"class":"net.nanopay.tx.billing.ErrorFee","errorCode":923,"amount":500,"currency":"CAD","chargedTo":"1","spid":"intuit"})
 p({"class":"net.nanopay.tx.billing.ErrorFee","errorCode":990,"amount":0,"currency":"CAD","chargedTo":"1","spid":"intuit"})
+p({"class":"net.nanopay.tx.billing.ErrorFee","errorCode":991,"amount":0,"currency":"CAD","chargedTo":"1","spid":"intuit"})

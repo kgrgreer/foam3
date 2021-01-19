@@ -56,6 +56,11 @@ foam.CLASS({
       of: 'net.nanopay.tx.model.Transaction'
     },
     {
+      class: 'Date',
+      name: 'chargeDate',
+      documentation: 'Calculated date of when the fees will be charged'
+    },
+    {
       class: 'Reference',
       of: 'foam.nanos.auth.ServiceProvider',
       name: 'spid'
