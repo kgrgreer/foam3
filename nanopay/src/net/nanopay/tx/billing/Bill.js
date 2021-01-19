@@ -19,6 +19,13 @@ foam.CLASS({
   package: 'net.nanopay.tx.billing',
   name: 'Bill',
 
+  documentation: 'Bill object for Intuit Billing',
+
+  implements: [
+    'foam.nanos.auth.CreatedAware',
+    'foam.nanos.auth.ServiceProviderAware'
+  ],
+
   properties: [
     {
       class: 'String',
@@ -35,10 +42,38 @@ foam.CLASS({
       class: 'FObjectArray',
       name: 'fees',
       of: 'net.nanopay.tx.billing.BillingFee'
+    },
+    {
+      class: 'Reference',
+      targetDAOKey: 'localTransactionDAO',
+      name: 'originatingTransaction',
+      of: 'net.nanopay.tx.model.Transaction'
+    },
+    {
+      class: 'Reference',
+      targetDAOKey: 'localTransactionDAO',
+      name: 'billingTransaction',
+      of: 'net.nanopay.tx.model.Transaction'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.ServiceProvider',
+      name: 'spid'
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.tx.model.TransactionStatus',
+      name: 'status'
+    },
+    {
+      class: 'DateTime',
+      name: 'created',
+      visibility: 'RO'
+    },
+    {
+      name: 'statusHistory',
+      class: 'FObjectArray',
+      of: 'net.nanopay.tx.HistoricStatus',
     }
-    /* transaction reference,
-    billingtransaction reference,
-    spid,
-    transactionStatus */
   ]
 });
