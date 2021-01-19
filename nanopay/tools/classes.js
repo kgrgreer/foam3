@@ -667,6 +667,7 @@ var classes = [
   'net.nanopay.tx.FxSummaryTransactionLineItem',
   'net.nanopay.tx.EtaSummaryTransactionLineItem',
   'net.nanopay.tx.UnsupportedDateException',
+  'net.nanopay.tx.ExpiredTransactionException',
 
   'net.nanopay.fx.FXService',
   'net.nanopay.fx.client.ClientFXService',
