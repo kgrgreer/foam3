@@ -12,12 +12,16 @@ node:
 ./build.sh -uJcluster_2,mn -Nnode2 -W8210 [-j]
 
 mediator
-./build.sh -uJcluster_2,mm -Nmediator1 -W8100 -Ctrue -c
-./build.sh -uJcluster_2,mm -Nmediator2 -W8110 -Ctrue
+./build.sh -uJcluster_2,mm -Nmediator1 -W8100 -m -c
+./build.sh -uJcluster_2,mm -Nmediator2 -W8110 -m
 
 mediator treviso
-./build.sh -uJbr,treviso,treviso_dev,cluster_2,mm -Nmediator1 -W8100 -Ctrue -c
-./build.sh -uJbr,treviso,treviso_dev,cluster_2,mm -Nmediator2 -W8110 -Ctrue
+./build.sh -uJbr,treviso,treviso_dev,cluster_2,mm -Nmediator1 -W8100 -m -c
+./build.sh -uJbr,treviso,treviso_dev,cluster_2,mm -Nmediator2 -W8110 -m
 
 'User' interface at mediator1:8100 or mediator2:8110
 'Admin' interface at localhost:8100 or localhost:8110
+
+NOTE: If rebuilding either node or mediator after the other, perform a clean build.
+
+To drop journals - build the node with the -j
