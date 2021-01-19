@@ -74,7 +74,7 @@ p({
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "businessDirectorOnboarding",
-"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-6-5-reviewRequired"
+"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-6-5"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
