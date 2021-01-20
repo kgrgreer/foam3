@@ -136,7 +136,7 @@ foam.CLASS({
                 .setReceiverName(receiver.toSummary())
                 .setSourceAmount(transaction.getTotal(x, transaction.getSourceAccount()))
                 .setSourceCurrency(transaction.getSourceCurrency())
-                .setDestinationAmount(transaction.getDestinationAmount())
+                .setDestinationAmount(transaction.getTotal(x, transaction.getDestinationAccount()))
                 .setDestinationCurrency(transaction.getDestinationCurrency())
                 .build();
                 decoratedSink.put(pr, null);
