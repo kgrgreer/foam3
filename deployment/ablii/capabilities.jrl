@@ -76,33 +76,84 @@ p({
 })
 
 p({
-  "class": "foam.nanos.crunch.MinMaxCapability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-20",
-  "name":"Final approval",
-  "description":"Registering with Payment Provider",
-  "icon":"/images/capabilityIcons/finalApprovalCap.svg",
+  "class": "net.nanopay.payment.RegisterPaymentProviderCapability",
+  "id":"89cc91da-4bbd-458b-81d4-574815e455fa-1",
+  "name":"Registering with Payment Provider(CA Domestic)",
+  "description":"Registering with Payment Provider(CA Domestic)",
   "version":"0",
   "enabled":true,
-  "visibilityPredicate":  { class: "foam.mlang.predicate.True" },
-  "keywords":["featured"],
   "min": 1,
   "permissionsGranted":[
     "menu.read.mainmenu.invoices.payables"
   ],
-  "availabilityPredicate": {
-    "class":"foam.mlang.predicate.And",
-    "args": [
-      { "class": "net.nanopay.crunch.predicate.BusinessPassedCompliance" },
-      { "class": "net.nanopay.crunch.predicate.HasVerifiedBankAccount" },
-      {
-        "class": "foam.mlang.predicate.Not",
-        "arg1":
-          {
-            "class":"net.nanopay.crunch.predicate.RegisterPaymentProviderStatus",
-            "status": 1
-          }
-      }
-    ]
+  beforeWizardlet: {
+    class: "foam.nanos.crunch.ui.MinMaxCapabilityWizardlet",
+    consumePrerequisites: true,
+    hideChoiceView: true,
+  }
+})
+
+p({
+  "class": "foam.nanos.crunch.Capability",
+  "id":"1f6b2047-1eef-471d-82e7-d86bdf511375-2",
+  "name":"BMO Payment Provider Capability",
+  "description":"BMO Payment Provider Capability",
+  "permissionsGranted":[
+    "paymentprovidercorridor.read.bmo",
+    "paymentprovidercorridor.source.read.bmo",
+    "paymentprovidercorridor.target.read.bmo"
+  ],
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class": "foam.nanos.crunch.Capability",
+  "id":"1f6b2047-1eef-471d-82e7-d86bdf511375-3",
+  "name":"RBC Payment Provider Capability",
+  "description":"RBC Payment Provider Capability",
+  "permissionsGranted":[
+    "paymentprovidercorridor.read.rbc",
+    "paymentprovidercorridor.source.read.rbc",
+    "paymentprovidercorridor.target.read.rbc"
+  ],
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class": "net.nanopay.payment.RegisterPaymentProviderCapability",
+  "id":"89cc91da-4bbd-458b-81d4-574815e455fa-2",
+  "name":"Registering with Payment Provider(International)",
+  "description":"Registering with Payment Provider(International)",
+  "version":"0",
+  "enabled":true,
+  "min": 1,
+  "permissionsGranted":[
+    "menu.read.mainmenu.invoices.payables"
+  ],
+  beforeWizardlet: {
+    class: "foam.nanos.crunch.ui.MinMaxCapabilityWizardlet",
+    consumePrerequisites: true,
+    hideChoiceView: true,
+  },
+})
+
+p({
+  "class": "net.nanopay.payment.RegisterPaymentProviderCapability",
+  "id":"89cc91da-4bbd-458b-81d4-574815e455fa-3",
+  "name":"Registering with Payment Provider(US Domestic/International)",
+  "description":"Registering with Payment Provider(US Domestic/International)",
+  "version":"0",
+  "enabled":true,
+  "min": 1,
+  "permissionsGranted":[
+    "menu.read.mainmenu.invoices.payables"
+  ],
+  beforeWizardlet: {
+    class: "foam.nanos.crunch.ui.MinMaxCapabilityWizardlet",
+    consumePrerequisites: true,
+    hideChoiceView: true,
   }
 })
 

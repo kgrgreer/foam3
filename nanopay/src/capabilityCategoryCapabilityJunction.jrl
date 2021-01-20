@@ -163,3 +163,44 @@ p({
 "sourceId": "compliancePassed",
 "targetId": "18DD6F03-998F-4A21-8938-358183151F96"
 })
+
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "toplevelonboarding",
+"targetId": "bf6a49d5-4027-4dac-a269-4d3ed070609e-1"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "toplevelonboarding",
+"targetId": "bf6a49d5-4027-4dac-a269-4d3ed070609e-2"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "toplevelonboarding",
+"targetId": "bf6a49d5-4027-4dac-a269-4d3ed070609e-3"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "toplevelonboarding",
+"targetId": "bf6a49d5-4027-4dac-a269-4d3ed070609e-4"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "registerPaymentProvider",
+"targetId": "89cc91da-4bbd-458b-81d4-574815e455fa-1"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "registerPaymentProvider",
+"targetId": "89cc91da-4bbd-458b-81d4-574815e455fa-2"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "registerPaymentProvider",
+"targetId": "89cc91da-4bbd-458b-81d4-574815e455fa-3"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "registerPaymentProvider",
+"targetId": "89cc91da-4bbd-458b-81d4-574815e455fa-4"
+})

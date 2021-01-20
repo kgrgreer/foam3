@@ -54,6 +54,7 @@ FOAM_FILES([
   { name: 'net/nanopay/payment/PaymentProviderCorridorAddCountryRule' },
   { name: 'net/nanopay/payment/PaymentProviderCorridorAuthorizer' },
   { name: 'net/nanopay/payment/DestinationCorridorAuthorizer' },
+  { name: 'net/nanopay/payment/RegisterPaymentProviderCapability' },
   { name: 'net/nanopay/account/Account' },
   { name: 'net/nanopay/account/AccountDAOBrowserView' },
   { name: 'net/nanopay/account/AccountDAOCreateView' },
@@ -1667,7 +1668,6 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/predicate/BusinessPassedCompliance' },
   { name: 'net/nanopay/crunch/predicate/CheckUserCountry' },
   { name: 'net/nanopay/crunch/predicate/HasVerifiedBankAccount' },
-  { name: 'net/nanopay/crunch/predicate/RegisterPaymentProviderStatus' },
   { name: 'net/nanopay/crunch/predicate/SigningOfficerCapabilityInterceptPredicate' },
   { name: 'net/nanopay/crunch/predicate/SigningOfficerPrivilegesRequested' },
   { name: 'net/nanopay/crunch/predicate/SigningOfficerQuestionAnswered' },
@@ -1734,13 +1734,16 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/compliance/ManualPersonSanctionValidator' },
   { name: 'net/nanopay/crunch/compliance/ManualSecurefactSIDniValidator' },
   { name: 'net/nanopay/crunch/compliance/ManualSecurefactLEVValidator' },
-  
+
 
   { name: 'net/nanopay/partner/afex/AFEXDigitalAccount' },
   // crunch afex
   { name: 'net/nanopay/partner/afex/crunch/BusinessHasVerifiedBankAccount' },
   { name: 'net/nanopay/partner/afex/crunch/AFEXBusinessOnboardingRule' },
   { name: 'net/nanopay/partner/afex/crunch/BankAccountOwnerIsBusiness' },
+
+  { name: 'net/nanopay/partner/bmo/BMOPaymentProviderCapabilityRule' },
+  { name: 'net/nanopay/partner/rbc/RBCPaymentProviderCapabilityRule' },
 
   // crunch acceptance
   { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/AbliiTermsAndConditions' },

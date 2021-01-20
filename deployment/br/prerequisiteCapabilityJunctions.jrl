@@ -212,3 +212,22 @@ p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"ab3fb392-40
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"49b77f74-124e-41a5-9c0c-da3e86102d0b", targetId:"1d72f804-4019-11eb-b378-0242ac130002",  priority: 18})
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"ed4ca3a0-3c2a-4161-93db-48fe963f1729", targetId:"1d72f804-4019-11eb-b378-0242ac130002",  priority: 18})
 p({class:"foam.nanos.crunch.CapabilityCapabilityJunction", sourceId:"eecb85f8-66d4-43b9-8c26-a187a5a00b7a", targetId:"1d72f804-4019-11eb-b378-0242ac130002",  priority: 18})
+
+// Register Payment Provider Requirements for Brazil
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "bf6a49d5-4027-4dac-a269-4d3ed070609e-4",
+  targetId: "0B2E7305-B898-43F2-9C1B-63FB2CE38B2D",
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "bf6a49d5-4027-4dac-a269-4d3ed070609e-4",
+  targetId: "89cc91da-4bbd-458b-81d4-574815e455fa-4",
+})
+
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "89cc91da-4bbd-458b-81d4-574815e455fa-4",
+  targetId: "1f6b2047-1eef-471d-82e7-d86bdf511375",
+})
