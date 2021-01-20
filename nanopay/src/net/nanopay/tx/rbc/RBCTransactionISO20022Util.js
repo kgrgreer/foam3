@@ -213,7 +213,7 @@ foam.CLASS({
           net.nanopay.iso20022.AmountType3Choice amt = new net.nanopay.iso20022.AmountType3Choice();
           net.nanopay.iso20022.ActiveOrHistoricCurrencyAndAmount instdAmt = new net.nanopay.iso20022.ActiveOrHistoricCurrencyAndAmount();
           instdAmt.setCcy(txn.getDestinationCurrency());
-          instdAmt.setText(toDecimal(txn.getTotal(x, txn.getSourceAccount()))); // TODO should be getDestinationAmount for future USD purposes
+          instdAmt.setText(toDecimal(txn.getTotal(x, txn.getSourceAccount())*-1)); // TODO should be getDestinationAmount for future USD purposes
           amt.setInstdAmt(instdAmt);
           cdtTrfTxInf.setAmount(amt);
 
@@ -273,7 +273,7 @@ foam.CLASS({
           // Add credit message
           cdtTrfTxInfList.add(cdtTrfTxInf);
           transactionCount++;
-          transactionVal = transactionVal + txn.getTotal(x, txn.getSourceAccount()); // TODO should be getDestinationAmount for future USD purposes
+          transactionVal = transactionVal + (txn.getTotal(x,txn.getSourceAccount())*-1); // TODO should be getDestinationAmount for future USD purposes
           processedTransactions.add(txn);
         } catch ( Exception e ) {
           logger.error("Error when add transaction to RBC ISO20022 file", e);
@@ -453,7 +453,7 @@ foam.CLASS({
 
           net.nanopay.iso20022.ActiveOrHistoricCurrencyAndAmount instdAmt = new net.nanopay.iso20022.ActiveOrHistoricCurrencyAndAmount();
           instdAmt.setCcy(txn.getDestinationCurrency());
-          instdAmt.setText(toDecimal(txn.getTotal(x, txn.getSourceAccount())));
+          instdAmt.setText(toDecimal(txn.getTotal(x, txn.getSourceAccount())*-1));
           drctDbtTxInf.setInstructedAmount(instdAmt);
 
           // Debtor Agent
@@ -523,7 +523,7 @@ foam.CLASS({
           // Add debit message
           drctDbtTxInfList.add(drctDbtTxInf);
           transactionCount++;
-          transactionVal = transactionVal +  txn.getTotal(x, txn.getSourceAccount());
+          transactionVal = transactionVal +  (txn.getTotal(x, txn.getSourceAccount())*-1);
           processedTransactions.add(txn);
         } catch ( Exception e ) {
           logger.error("Error when add transaction to RBC ISO20022 file", e);
