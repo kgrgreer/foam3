@@ -195,10 +195,6 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
     net.nanopay.partner.treviso.api.Address[] adresses = new net.nanopay.partner.treviso.api.Address[1];
     adresses[0] = address;
     request.setAddresses(adresses);
-    BusinessUnit bu = new BusinessUnit();
-    bu.setExtCode(credentials.getFepWebCode());
-    bu.setBusUnitNm("CORPORATE");
-    request.setBusinessUnit(bu);
     ResponsibleArea area = new ResponsibleArea();
     if ( credentials != null ) {
       area.setExtCode(credentials.getFepWebCode());
