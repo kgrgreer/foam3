@@ -4,16 +4,6 @@ p({class:"foam.nanos.boot.NSpec",id:"identityMindService",service:{class:"net.na
 
 p({
   "class":"foam.nanos.boot.NSpec",
-  "name":"fepWebService",
-  "lazy":false,
-  "serve":true,
-  "serviceScript":"""
-    return new net.nanopay.partner.treviso.api.FepWebServiceMock(x);
-  """
-})
-
-p({
-  "class":"foam.nanos.boot.NSpec",
   "name":"trevisoService",
   "lazy":false,
   "serve":true,
