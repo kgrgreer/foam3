@@ -52,8 +52,17 @@ p({
   "daoKey":"localUserDAO",
   "operation":0,
   "predicate": {
-    "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
-    "of": "net.nanopay.model.Business"
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of": "net.nanopay.model.Business"
+      },
+      {
+        "class":"net.nanopay.crunch.IsSpid",
+        "spid": "treviso"
+      }
+    ]
   },
   "action":{"class":"net.nanopay.crunch.onboardingModels.SigningOfficerByDefaultRule"},
   "saveHistory":false,
