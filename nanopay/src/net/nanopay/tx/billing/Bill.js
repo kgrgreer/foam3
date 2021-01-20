@@ -56,6 +56,26 @@ foam.CLASS({
       of: 'net.nanopay.tx.model.Transaction'
     },
     {
+      class: 'Reference',
+      targetDAOKey: 'userDAO',
+      name: 'chargeToUser',
+      of: 'foam.nanos.auth.User',
+      documentation: 'User paying the fee'
+    },
+    {
+      class: 'Reference',
+      targetDAOKey: 'businessDAO',
+      name: 'chargeToBusiness',
+      of: 'net.nanopay.model.Business',
+      documentation: 'Business paying the fee'
+    },
+    {
+      class: 'Enum',
+      of: 'net.nanopay.tx.ChargedTo',
+      name: 'chargedTo',
+      documentation: 'Determines if Payer or Payee is charged the fee'
+    },
+    {
       class: 'Date',
       name: 'chargeDate',
       documentation: 'Calculated date of when the fees will be charged'

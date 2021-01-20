@@ -1135,6 +1135,17 @@ foam.RELATIONSHIP({
 });
 
 foam.RELATIONSHIP({
+  sourceModel: 'net.nanopay.tx.SummaryTransaction',
+  targetModel: 'net.nanopay.tx.billing.Bill',
+  forwardName: 'bills',
+  inverseName: 'originatingSummaryTransaction',
+  cardinality: '1:*',
+  sourceDAOKey: 'transactionDAO',
+  unauthorizedSourceDAOKey: 'localTransactionDAO',
+  targetDAOKey: 'billDAO'
+});
+
+foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.exchangeable.AssetClass',
   targetModel: 'net.nanopay.exchangeable.Security',
   forwardName: 'members',
@@ -1143,7 +1154,6 @@ foam.RELATIONSHIP({
   sourceDAOKey: 'assetClassDAO',
   targetDAOKey: 'securitiesDAO',
 });
-
 
 foam.RELATIONSHIP({
   sourceModel: 'net.nanopay.tx.model.Transaction',

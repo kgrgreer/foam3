@@ -23,20 +23,6 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'Reference',
-      targetDAOKey: 'userDAO',
-      name: 'chargeToUser',
-      of: 'foam.nanos.auth.User',
-      documentation: 'User paying the fee'
-    },
-    {
-      class: 'Reference',
-      targetDAOKey: 'businessDAO',
-      name: 'chargeToBusiness',
-      of: 'net.nanopay.model.Business',
-      documentation: 'Business paying the fee'
-    },
-    {
       class: 'UnitValue',
       name: 'amount',
       documentation: 'Amount being charged'
