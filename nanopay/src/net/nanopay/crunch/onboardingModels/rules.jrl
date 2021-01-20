@@ -39,8 +39,8 @@ p({
 p({
   "class":"foam.nanos.ruler.Rule",
   "id":"9734f035-fa30-4b49-972e-e5258aa9d2b8",
-  "name":"Create UCJ between User and Registering Payment Provider Capability on user compliance passed",
-  "documentation":"Create UCJ between User and  Registering Payment Provider Capability on user compliance passed.",
+  "name":"Create UCJ between User and Registering Payment Provider Capability when appropriate onboarding cap becomes pending. ",
+  "documentation":"Create UCJ between User and  Registering Payment Provider Capability when appropriate onboarding cap becomes pending.",
   "priority":80,
   "ruleGroup":"onboarding",
   "daoKey":"userCapabilityJunctionDAO",
@@ -48,9 +48,9 @@ p({
   "after":true,
   "predicate":{
     "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
-    "category":"AFEXOnboarding",
+    "category":"onboarding",
     "isRecurring":false,
-    "status": 1
+    "status": 0
   },
   "asyncAction":{
     "class":"net.nanopay.crunch.onboardingModels.CreateRegisterPaymentProviderUCJ"

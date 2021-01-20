@@ -37,6 +37,7 @@ p({
       .setDecorator(dao)
       .setEnableInterfaceDecorators(false)
       .setInnerDAO(x.get("localContactDAO"))
+      .setPermissioned(true)
       .build();
   """,
   "client":
