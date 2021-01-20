@@ -217,7 +217,7 @@ foam.CLASS({
             userTransactionAmount = getTransactionAmounts(user, isPayer, Calendar.DAY_OF_YEAR);
             break;
         }
-        return ( ( userTransactionAmount + (transaction.getTotal(x, transaction.getSourceAccount())*-1) ) > limit);
+        return ( ( userTransactionAmount + transaction.getTotal(x, transaction.getSourceAccount()) ) > limit);
       `
     },
     {
