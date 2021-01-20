@@ -31,7 +31,7 @@ p({
   "supportConfig":{
     class:"foam.nanos.app.SupportConfig",
     emailConfig:{
-      class:"foam.nanos.app.EmailConfig",
+      class:"foam.nanos.notification.email.EmailConfig",
       from:"noreply@nanopay.com",
       displayName:"nanopay",
       replyTo:"noreply@nanopay.com"

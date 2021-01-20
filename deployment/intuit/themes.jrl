@@ -31,7 +31,7 @@ p({
   "supportConfig":{
     class:"foam.nanos.app.SupportConfig",
     emailConfig:{
-      class:"foam.nanos.app.EmailConfig",
+      class:"foam.nanos.notification.email.EmailConfig",
       from:"noreply@nanopay.com",
       displayName:"nanopay",
       replyTo:"noreply@nanopay.com"
@@ -91,7 +91,7 @@ p({
     .foam-u2-ActionView-primary {
       border: none !important;
     }
-    .top-bar-img { 
+    .top-bar-img {
       display: none;
     }
   """,

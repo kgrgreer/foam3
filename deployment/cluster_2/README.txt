@@ -12,27 +12,16 @@ node:
 ./build.sh -uJcluster_2,mn -Nnode2 -W8210 [-j]
 
 mediator
-./build.sh -uJcluster_2,mm -Nmediator1 -W8100 -Ctrue -c
-./build.sh -uJcluster_2,mm -Nmediator2 -W8110 -Ctrue
+./build.sh -uJcluster_2,mm -Nmediator1 -W8100 -m -c
+./build.sh -uJcluster_2,mm -Nmediator2 -W8110 -m
 
 mediator treviso
-./build.sh -uJbr,treviso,treviso_dev,cluster_2,mm -Nmediator1 -W8100 -Ctrue -c
-./build.sh -uJbr,treviso,treviso_dev,cluster_2,mm -Nmediator2 -W8110 -Ctrue
+./build.sh -uJbr,treviso,treviso_dev,cluster_2,mm -Nmediator1 -W8100 -m -c
+./build.sh -uJbr,treviso,treviso_dev,cluster_2,mm -Nmediator2 -W8110 -m
 
-Instructions
-You’ll notice the capability store is not working (issue 1), so go through
-1. Sign up
-2. Get Email Message token
-3. Signing Officer Privileges
-4. Approve the Approval Request
-5. Complete your Signing Officer information
-6. Approve the Approval Request
-7. Register your Business
-8. Add Contact
-9. Add Bank Account
-10. Enable International Payments
-That’s as far as I can get.
+'User' interface at mediator1:8100 or mediator2:8110
+'Admin' interface at localhost:8100 or localhost:8110
 
-Signup at mediator1:8100 or mediator2:8110
-and login as admin@nanopay/adminAb1 on same instance to perform the Approval Requests and get Email signup token.
-Regarding the email signup token, as admin find the email message, copy out the http.... url and paste it into the 'user' sign up site, then proceed.
+NOTE: If rebuilding either node or mediator after the other, perform a clean build.
+
+To drop journals - build the node with the -j

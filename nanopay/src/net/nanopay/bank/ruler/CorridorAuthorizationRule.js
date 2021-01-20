@@ -63,7 +63,7 @@ foam.CLASS({
           ppc = (PaymentProviderCorridor) targetCorridorDAO.find(
             AND(
               EQ(PaymentProviderCorridor.TARGET_COUNTRY, country),
-              EQ(PaymentProviderCorridor.TARGET_CURRENCIES, currency)
+              IN(currency, PaymentProviderCorridor.TARGET_CURRENCIES)
             )
           );
           if ( ppc != null ) return;
@@ -71,7 +71,7 @@ foam.CLASS({
           ppc = (PaymentProviderCorridor) sourceCorridorDAO.find(
             AND(
               EQ(PaymentProviderCorridor.SOURCE_COUNTRY, country),
-              EQ(PaymentProviderCorridor.SOURCE_CURRENCIES, currency)
+              IN(currency, PaymentProviderCorridor.SOURCE_CURRENCIES)
             )
           );
           if ( ppc != null ) return;

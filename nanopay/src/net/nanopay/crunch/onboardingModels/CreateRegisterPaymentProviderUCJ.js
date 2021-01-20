@@ -23,14 +23,18 @@ foam.CLASS({
     'foam.nanos.ruler.RuleAction'
   ],
 
-  documentation: 'Create a UserCapabilityJunction between User and Register Payment provider capability on compliance passed',
+  documentation: 'Create a UserCapabilityJunction between User and Register Payment provider capability when appropriate onboarding cap becomes pending.',
 
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.dao.DAO',
+    'foam.nanos.crunch.CapabilityCategoryCapabilityJunction',
     'foam.nanos.crunch.CapabilityJunctionStatus',
     'foam.nanos.crunch.CrunchService',
-    'foam.nanos.crunch.UserCapabilityJunction'
+    'foam.nanos.crunch.UserCapabilityJunction',
+    'java.util.List',
+    'static foam.mlang.MLang.*'
   ],
 
   methods: [
@@ -42,13 +46,60 @@ foam.CLASS({
           public void execute(X x) {
             UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
             CrunchService crunchService = (CrunchService) x.get("crunchService");
+            String[] dependentIds = crunchService.getDependentIds(x, ucj.getTargetId());
+            String dependentId = null;
 
-            String capId = "554af38a-8225-87c8-dfdf-eeb15f71215f-20";
+            for ( String id : dependentIds ) {
+              if ( isOfCategory(x, id, "toplevelonboarding") ) {
+                dependentId = id;
+                break;
+              }
+            }
 
-            crunchService.updateUserJunction(x, ucj.getSubject(x), capId, null, CapabilityJunctionStatus.PENDING);
+            if ( dependentId == null ) return;
+            List<String> prereqs = crunchService.getPrereqs(dependentId);
+            for ( String id : prereqs ) {
+              if ( isOfCategory(x, id, "registerPaymentProvider") ) {
+                // Work around for case when caps are created  as GRANTED when they have no prereqs
+                List<String> providers = crunchService.getPrereqs(id);
+                for ( String provider : providers ) {
+                  crunchService.updateUserJunction(x, ucj.getSubject(x), provider, null, CapabilityJunctionStatus.AVAILABLE);
+                }
+                crunchService.updateUserJunction(x, ucj.getSubject(x), id, null, CapabilityJunctionStatus.PENDING);
+                break;
+              }
+            }
           }
-        }, "Create ucj on user passed compliance");
+        }, "Create a UserCapabilityJunction between User and Register Payment provider capability when appropriate onboarding cap becomes pending.");
       `
-    }
+    },
+    {
+      name: 'isOfCategory',
+      type: 'Boolean',
+      args: [
+        {
+          name: 'x',
+          type: 'Context',
+        },
+        {
+          name: 'capabilityId',
+          type: 'String'
+        },
+        {
+          name: 'category',
+          type: 'String'
+        }
+      ],
+      javaCode: `
+        DAO categoryJunctionDAO = (DAO) x.get("capabilityCategoryCapabilityJunctionDAO");
+        CapabilityCategoryCapabilityJunction junction = (CapabilityCategoryCapabilityJunction) categoryJunctionDAO.find(
+          AND(
+            EQ(CapabilityCategoryCapabilityJunction.SOURCE_ID, category),
+            EQ(CapabilityCategoryCapabilityJunction.TARGET_ID, capabilityId)
+          )
+        );
+        return junction != null;
+      `
+    },
   ]
 });

@@ -88,3 +88,17 @@ p({
   "name": "Capabilities that are granted once compliance has been passed",
   "visible": false
 })
+
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "toplevelonboarding",
+  "name": "Top Level Onboarding",
+  "visible": false
+})
+
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "registerPaymentProvider",
+  "name": "Register Payment Provider",
+  "visible": false
+})

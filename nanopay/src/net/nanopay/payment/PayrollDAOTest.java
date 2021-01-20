@@ -39,7 +39,7 @@ public class PayrollDAOTest extends foam.nanos.test.Test {
     addPayeesIfNotFound(x);
     addPayrollEntries(x);
     payroll = new Payroll();
-    payroll.setSpid("payroll");
+    payroll.setSpid("test");
     payroll.setSourceAccount(PAYER_ACCOUNT);
     payroll.setPayrollEntries(entries);
 
@@ -53,24 +53,24 @@ public class PayrollDAOTest extends foam.nanos.test.Test {
     String payerA = ((DigitalAccount) accountDAO.find(AND(
       INSTANCE_OF(DigitalAccount.class),
       EQ(DigitalAccount.OWNER, PAYER_ID),
-      EQ(DigitalAccount.TRUST_ACCOUNT,"11")
+      EQ(DigitalAccount.TRUST_ACCOUNT,"325e128a-f76f-46bd-ba82-26d12d92865f")
     ))).getId();
     String payerB = ((DigitalAccount) accountDAO.find(AND(
       INSTANCE_OF(DigitalAccount.class),
       EQ(DigitalAccount.OWNER, PAYER_ID),
-      EQ(DigitalAccount.TRUST_ACCOUNT,"9")
+      EQ(DigitalAccount.TRUST_ACCOUNT,"7ee216ae-9371-4684-9e99-ba42a5759444")
     ))).getId();
 
     for(long payeeId : payeeIds) {
       String payeeA = ((DigitalAccount) accountDAO.find(AND(
         INSTANCE_OF(DigitalAccount.class),
         EQ(DigitalAccount.OWNER, payeeId),
-        EQ(DigitalAccount.TRUST_ACCOUNT,"9")
+        EQ(DigitalAccount.TRUST_ACCOUNT,"7ee216ae-9371-4684-9e99-ba42a5759444")
         ))).getId();
       String payeeB = ((DigitalAccount) accountDAO.find(AND(
         INSTANCE_OF(DigitalAccount.class),
         EQ(DigitalAccount.OWNER, payeeId),
-        EQ(DigitalAccount.TRUST_ACCOUNT,"11")
+        EQ(DigitalAccount.TRUST_ACCOUNT,"325e128a-f76f-46bd-ba82-26d12d92865f")
       ))).getId();
 
       Transaction txn = (Transaction) txnDAO.find(
