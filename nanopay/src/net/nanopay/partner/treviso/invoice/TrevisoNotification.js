@@ -16,42 +16,37 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.invoice.ruler',
-  name: 'CompleteInvoiceNotification',
+  package: 'net.nanopay.partner.treviso.invoice',
+  name: 'TrevisoNotification',
   extends: 'foam.nanos.notification.Notification',
 
   messages: [
-    { name: 'NOTIFICATION_BODY_1', message: 'You have received payment from '},
-    { name: 'NOTIFICATION_BODY_2', message: ' for '},
-    { name: 'NOTIFICATION_BODY_3', message: ' has received your payment '}
+    { name: 'NOTIFICATION_BODY_1', message: 'Attention : this transaction is not complete yet! To complete, send a TED of (' },
+    { name: 'NOTIFICATION_BODY_2', message: `) to:
+                                                     Treviso Corretora de Câmbio S.A
+                                                     CNPJ: 02.992.317/0001-87
+                                                     Bank: Banco SC Treviso (143)
+                                                     Institution: 0001
+                                                     Account: 1-1
+
+                                                     In case that payment has not been done until 16:00hs, the transaction will be canceled automatically.`
+    }
+  ],
+
+  imports: [
+    'translationService'
   ],
 
   javaImports: [
     'foam.i18n.TranslationService',
     'foam.nanos.auth.Subject',
-    'foam.nanos.auth.User',
+    'foam.nanos.auth.User'
   ],
 
   properties: [
     {
       class: 'String',
-      name: 'summary'
-    },
-    {
-      class: 'String',
       name: 'amount'
-    },
-    {
-      class: 'String',
-      name: 'sourceCurrency'
-    },
-    {
-      class: 'Long',
-      name: 'payerId'
-    },
-    {
-      class: 'Long',
-      name: 'payeeId'
     },
     {
       name: 'body',
@@ -63,18 +58,14 @@ foam.CLASS({
 
         String t1 = ts.getTranslation(locale, getClassInfo().getId()+ ".NOTIFICATION_BODY_1", this.NOTIFICATION_BODY_1);
         String t2 = ts.getTranslation(locale, getClassInfo().getId()+ ".NOTIFICATION_BODY_2", this.NOTIFICATION_BODY_2);
-        String t3 = ts.getTranslation(locale, getClassInfo().getId()+ ".NOTIFICATION_BODY_3", this.NOTIFICATION_BODY_3);
 
-        if ( getPayerId() == getPayeeId() )
-          return t1 + getSummary() + t2 + getAmount() + " " + getSourceCurrency();
-
-        return getSummary() + t3 + t2 + getAmount() + " " + getSourceCurrency();
+        return t1 + getAmount() + t2;
       `,
       getter: function() {
-        if ( this.payerId == this.payeeId )
-          return this.NOTIFICATION_BODY_1 + this.summary + this.NOTIFICATION_BODY_2 + this.amount + " " + this.sourceCurrency;
+        var t1 = this.translationService.getTranslation(foam.locale, `${this.id}.NOTIFICATION_BODY_1`, this.NOTIFICATION_BODY_1);
+        var t2 = this.translationService.getTranslation(foam.locale, `${this.id}.NOTIFICATION_BODY_2`, this.NOTIFICATION_BODY_2);
 
-        return this.summary + this.NOTIFICATION_BODY_3 + this.NOTIFICATION_BODY_2 + this.amount + " " + this.sourceCurrency;
+        return t1 + this.amount + t2;
       }
     }
   ]

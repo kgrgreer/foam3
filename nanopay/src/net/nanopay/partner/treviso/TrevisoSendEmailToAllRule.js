@@ -38,7 +38,6 @@ foam.CLASS({
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
-    'foam.nanos.notification.Notification',
     'foam.util.Emails.EmailsUtility',
     'java.util.HashMap',
     'java.util.List',
@@ -46,6 +45,7 @@ foam.CLASS({
     'net.nanopay.model.Business',
     'net.nanopay.partner.treviso.onboarding.BRBeneficialOwner',
     'net.nanopay.partner.treviso.onboarding.BRBusinessDirector',
+    'net.nanopay.partner.treviso.TrevisoSendEmailToAllNotification',
     'static foam.mlang.MLang.*'
   ],
 
@@ -59,7 +59,7 @@ foam.CLASS({
           DAO localUserDAO = (DAO) x.get("localuserDAO");
           UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
           Business business = (Business) ucj.findSourceId(x);
-          
+
           DAO userCapabilityJunctionDAO = (DAO) x.get("userCapabilityJunctionDAO");
           // find all signingofficers of the business and send email to signing officers whose hasSignedContratosDeCambio is true
           List<UserCapabilityJunction> sopJunctions = ((ArraySink) userCapabilityJunctionDAO.where(AND(
@@ -128,7 +128,7 @@ foam.CLASS({
         {
           name: 'recipient',
           type: 'foam.nanos.auth.User'
-        }   
+        }
       ],
       javaCode: `
         Map<String, Object>  args           = new HashMap<>();
@@ -143,13 +143,13 @@ foam.CLASS({
         args.put("name", recipient.getFirstName());
 
         try {
-          Notification notification = new Notification.Builder(x)
-            .setBody(business.toSummary() + " can now make international payments")
+          TrevisoSendEmailToAllNotification notification = new TrevisoSendEmailToAllNotification.Builder(x)
+            .setSummary(business.toSummary())
             .setNotificationType("Latest_Activity")
             .setUserId(recipient.getId())
             .setEmailArgs(args)
             .setEmailName("compliance-notification-to-user")
-            .build();  
+            .build();
           recipient.doNotify(x, notification);
         } catch (Throwable t) {
           String msg = String.format("Email meant for business Error: Business (id = %1$s) has been enabled for international payments.", business.getId());

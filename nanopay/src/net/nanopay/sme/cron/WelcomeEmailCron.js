@@ -32,7 +32,6 @@ foam.CLASS({
     'foam.nanos.cron.Cron',
     'foam.nanos.logger.Logger',
     'foam.nanos.notification.email.EmailMessage',
-    'foam.nanos.notification.Notification',
     'foam.nanos.theme.Theme',
     'foam.nanos.theme.Themes',
     'java.util.Date',
@@ -40,14 +39,11 @@ foam.CLASS({
     'java.util.List',
     'java.util.Map',
     'net.nanopay.model.Business',
+    'net.nanopay.sme.cron.WelcomeEmailNotification',
     'static foam.mlang.MLang.*',
   ],
 
   documentation: 'Send Welcome Email to Ablii Business 30min after SignUp',
-
-  messages: [
-    { name: 'WELCOME_NOTIFICATION_MESSAGE', message: 'To complete the registration, reach out to our onboarding specialist at ' }
-  ],
 
   properties: [
     {
@@ -102,8 +98,8 @@ foam.CLASS({
           message.setTo(new String[]{ business.getEmail() });
           args.put("name", User.FIRST_NAME);
           try {
-            Notification helpSignUpNotification = new Notification.Builder(x)
-              .setBody(this.WELCOME_NOTIFICATION_MESSAGE + supportPhone)
+            WelcomeEmailNotification helpSignUpNotification = new WelcomeEmailNotification.Builder(x)
+              .setSupportPhone(supportPhone)
               .setNotificationType("WelcomeEmail")
               .setEmailArgs(args)
               .setEmailName("helpsignup")

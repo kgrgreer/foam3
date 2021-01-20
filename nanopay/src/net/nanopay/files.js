@@ -781,7 +781,7 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/notification/NewInvoiceNotificationNotificationCitationView', flags: ['web'] },
   { name: 'net/nanopay/invoice/notification/InvoicePaymentNotification' },
   { name: 'net/nanopay/invoice/notification/InvoicePaymentNotificationNotificationCitationView', flags: ['web'] },
-  { name: 'net/nanopay/invoice/ruler/CompleteInvoiceNotification' },
+  { name: 'net/nanopay/invoice/ruler/CompleteInvoiceNotificationRule' },
   { name: 'net/nanopay/invoice/ruler/InvoiceVoidEmailRule' },
   { name: 'net/nanopay/invoice/ruler/IsCompletePayment' },
   { name: 'net/nanopay/invoice/ruler/RequestPaymentNotificationRule' },
@@ -1707,7 +1707,7 @@ FOAM_FILES([
 
   // crunch notification
   { name: 'net/nanopay/crunch/UCJExpiryReminderCron' },
-  { name: 'net/nanopay/crunch/compliance/SendExpiryNotification' },
+  { name: 'net/nanopay/crunch/compliance/SendExpiryNotificationRule' },
 
   // crunch compliance
   { name: 'net/nanopay/crunch/compliance/IsCapabilityOfCertainCategoryAndStatus' },
@@ -1841,10 +1841,21 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/onboarding/BRBankAccountData' },
   { name: 'net/nanopay/partner/treviso/test/TrevisoOnboardingSupport' },
   { name: 'net/nanopay/partner/treviso/TrevisoSendEmailToAllRule' },
+  { name: 'net/nanopay/partner/treviso/TrevisoSendEmailToAllNotification' },
+  { name: 'net/nanopay/partner/treviso/invoice/TrevisoNotification' },
 
   // support
   { name: 'net/nanopay/support/SupportAccount' },
   { name: 'net/nanopay/support/SupportBusiness' },
   { name: 'net/nanopay/support/SupportTransaction' },
-  { name: 'net/nanopay/support/SupportUser' }
+  { name: 'net/nanopay/support/SupportUser' },
+
+  // notification
+  { name: 'net/nanopay/bank/ruler/AccountAddedNotification' },
+  { name: 'net/nanopay/sme/cron/WelcomeEmailNotification' },
+  { name: 'net/nanopay/crunch/UCJExpiryReminderNotification' },
+  { name: 'net/nanopay/invoice/ruler/CompleteInvoiceNotification'},
+  { name: 'net/nanopay/crunch/compliance/SendExpiryNotification'},
+  { name: 'net/nanopay/tx/ruler/MicroDepositSentNotification'},
+  { name: 'net/nanopay/sme/cron/OnboardingReminderNotification'},
 ]);

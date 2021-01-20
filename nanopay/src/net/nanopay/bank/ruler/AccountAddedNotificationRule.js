@@ -26,21 +26,15 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
-    'foam.i18n.TranslationService',
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
-    'foam.nanos.auth.Subject',
-    'foam.nanos.notification.Notification',
     'java.util.HashMap',
     'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.ruler.AccountAddedNotification',
     'net.nanopay.contacts.Contact',
     'net.nanopay.model.Branch',
     'net.nanopay.payment.Institution'
-  ],
-
-  messages: [
-    { name: 'NOTIFICATION_BODY_P1', message: ' has been added!'}
   ],
 
   methods: [
@@ -68,13 +62,8 @@ foam.CLASS({
             args.put("link",    config.getUrl());
             args.put("business", owner.getOrganization());
 
-            TranslationService ts = (TranslationService) x.get("translationService");
-            Subject subject = (Subject) x.get("subject");
-            String locale = ((User) subject.getRealUser()).getLanguage().getCode().toString();
-            String notificationP1 = ts.getTranslation(locale, getClassInfo().getId()+ ".NOTIFICATION_BODY_P1", NOTIFICATION_BODY_P1);
-
-            Notification addedNotification = new Notification.Builder(x)
-                    .setBody(accountNumber + notificationP1)
+            AccountAddedNotification addedNotification = new AccountAddedNotification.Builder(x)
+                    .setAccountNumber(accountNumber)
                     .setNotificationType("Latest_Activity")
                     .setEmailArgs(args)
                     .setEmailName("addBank")

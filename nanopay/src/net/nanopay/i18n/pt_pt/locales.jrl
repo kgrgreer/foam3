@@ -939,6 +939,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-18.name",target:"Número de identificação fiscal"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-18.description",target:"Número de identificação fiscal"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-19.name",target:"Quando sua empresa foi registrada pela última vez?"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5-us.name",target:"Preencha suas informações de oficial de assinatura"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessRegistrationDateData.BUSINESS_REGISTRATION_DATE.label",target:"Data de entrada do primeiro registro da empresa"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData.BUSINESS_REGISTRATION_DATE.label",target:"Data de entrada da primeira incorporação de negócios"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.TaxIdNumberData.TAX_IDENTIFICATION_NUMBER.label",target:"Número de identificação fiscal federal"})
@@ -3200,13 +3202,13 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"One-Person Limited Company (SLU)
 p({class:"foam.i18n.Locale",locale:"pt",source:"Association.name",target:"Associação"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.compliance.SendExpiryNotification.NOTIF_PRE",target:"Sua capacidade \""})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.compliance.SendExpiryNotification.EXPIRY_NOTIF_SUF",target:"\" expirou."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.compliance.SendExpiryNotification.EXPIRY_NOTIF_SUF",target:"\" expirou"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.compliance.SendExpiryNotification.GRACE_PERIOD_NOTIF_SUF_1",target:"\" mudou para um período de carência de "})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.compliance.SendExpiryNotification.GRACE_PERIOD_NOTIF_SUF_2",target:" dias."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.compliance.SendExpiryNotification.GRACE_PERIOD_NOTIF_SUF_2",target:" dias"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.UCJExpiryReminderCron.NOTIFICATION_BODY_P1",target:"Sua capacidade \""})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.UCJExpiryReminderCron.NOTIFICATION_BODY_P2",target:"\" irá expirar em "})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.UCJExpiryReminderCron.NOTIFICATION_BODY_P3",target:" dias."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.UCJExpiryReminderNotification.NOTIFICATION_BODY_P1",target:"Sua capacidade \""})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.UCJExpiryReminderNotification.NOTIFICATION_BODY_P2",target:"\" irá expirar em "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.UCJExpiryReminderNotification.NOTIFICATION_BODY_P3",target:" dias."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmail.VERIFICATION_EMAIL",target:"Email de verificação enviado para"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.VerifyEmailView.VERIFICATION_EMAIL",target:"Email de verificação enviado para"})
@@ -3274,10 +3276,17 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.Trev
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.DOCUMENT_READ",target:"O documento deve ser revisado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.security.auth.LoginAttemptAuthService.ACCOUNT_LOCKED",target:"Conta bloqueada. Entre em contato com o atendimento ao cliente."})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.cron.WelcomeEmailCron.WELCOME_NOTIFICATION_MESSAGE",target:"Para concluir o registro, entre em contato com nosso especialista de integração em "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.cron.WelcomeEmailNotification.WELCOME_NOTIFICATION_MESSAGE",target:"Para concluir o registro, entre em contato com nosso especialista de integração em "})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ruler.CompleteInvoiceNotification.NOTIFICATION_BODY_1",target:"Você recebeu pagamento de "})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ruler.CompleteInvoiceNotification.NOTIFICATION_BODY_2",target:" recebeu seu pagamento "})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ruler.CompleteInvoiceNotification.NOTIFICATION_BODY_3",target:" para "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ruler.CompleteInvoiceNotification.NOTIFICATION_BODY_2",target:" para "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ruler.CompleteInvoiceNotification.NOTIFICATION_BODY_3",target:" recebeu seu pagamento "})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ruler.AccountAddedNotificationRule.NOTIFICATION_BODY_P1",target:" foi adicionado!"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ruler.AccountAddedNotification.NOTIFICATION_BODY_P1",target:" foi adicionado!"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ruler.MicroDepositSentNotification.IN_PROCESS",target:"está processando"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.cron.OnboardingReminderNotification.BODY_TEXT",target:"Aqui está um lembrete para concluir o registro de sua empresa"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoSendEmailToAllNotification.NOTIFICATION_BODY",target:" agora pode fazer pagamentos internacionais"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.invoice.TrevisoNotification.NOTIFICATION_BODY_1",target:"ATTENTION: This transaction has not yet been sent! Para completar, envie um TED de ("})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.invoice.TrevisoNotification.NOTIFICATION_BODY_2",target:") para : Treviso Corretora de Câmbio S.A CNPJ: 02.992.317/0001-87 Banco SC Treviso (143) Agencia: 0001 Conta: 1-1 O não envio dos fundos causará o cancelamento automático desta transação."})

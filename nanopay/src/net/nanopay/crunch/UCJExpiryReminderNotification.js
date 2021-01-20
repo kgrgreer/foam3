@@ -16,15 +16,14 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.crunch.compliance',
-  name: 'SendExpiryNotification',
+  package: 'net.nanopay.crunch',
+  name: 'UCJExpiryReminderNotification',
   extends: 'foam.nanos.notification.Notification',
 
   messages: [
-    { name: 'NOTIF_PRE', message: 'Your capability "' },
-    { name: 'EXPIRY_NOTIF_SUF', message: '" has expired' },
-    { name: 'GRACE_PERIOD_NOTIF_SUF_1', message: '" has transitioned into a grace period of ' },
-    { name: 'GRACE_PERIOD_NOTIF_SUF_2', message: ' days' },
+    { name: 'NOTIFICATION_BODY_P1', message: 'Your Capability "' },
+    { name: 'NOTIFICATION_BODY_P2', message: '" will expire in ' },
+    { name: 'NOTIFICATION_BODY_P3', message: ' days' }
   ],
 
   javaImports: [
@@ -44,7 +43,7 @@ foam.CLASS({
     },
     {
       class: 'Int',
-      name: 'gracePeriod'
+      name: 'daysBeforeNotification'
     },
     {
       name: 'body',
@@ -54,22 +53,15 @@ foam.CLASS({
         String locale = ((User) subject.getRealUser()).getLanguage().getCode().toString();
         TranslationService ts = (TranslationService) getX().get("translationService");
 
-        String t1 = ts.getTranslation(locale, getClassInfo().getId()+ ".NOTIF_PRE", this.NOTIF_PRE);
-        String t2 = ts.getTranslation(locale, getClassInfo().getId()+ ".GRACE_PERIOD_NOTIF_SUF_1", this.GRACE_PERIOD_NOTIF_SUF_1);
-        String t3 = ts.getTranslation(locale, getClassInfo().getId()+ ".GRACE_PERIOD_NOTIF_SUF_2", this.GRACE_PERIOD_NOTIF_SUF_2);
-        String t4 = ts.getTranslation(locale, getClassInfo().getId()+ ".EXPIRY_NOTIF_SUF", this.EXPIRY_NOTIF_SUF);
+        String t1 = ts.getTranslation(locale, getClassInfo().getId()+ ".NOTIFICATION_BODY_P1", this.NOTIFICATION_BODY_P1);
         String capName = ts.getTranslation(locale, getCapabilitySource(), getCapabilityName());
+        String t2 = ts.getTranslation(locale, getClassInfo().getId()+ ".NOTIFICATION_BODY_P2", this.NOTIFICATION_BODY_P2);
+        String t3 = ts.getTranslation(locale, getClassInfo().getId()+ ".NOTIFICATION_BODY_P3", this.NOTIFICATION_BODY_P3);;
 
-        if ( getGracePeriod() > 0  )
-          return t1 + capName + t2 + getGracePeriod() + t3;
-
-        return t1 + capName + t4;
+        return t1 + capName + t2 + getDaysBeforeNotification() + t3;
       `,
       getter: function() {
-        if ( this.gracePeriod )
-          return this.NOTIF_PRE + this.capabilityName + this.GRACE_PERIOD_NOTIF_SUF_1 + this.gracePeriod + this.GRACE_PERIOD_NOTIF_SUF_2;
-
-        return this.NOTIF_PRE + this.capabilityName + this.EXPIRY_NOTIF_SUF;
+        return this.NOTIFICATION_BODY_P1 + this.capabilityName + this.NOTIFICATION_BODY_P2 + this.daysBeforeNotification + this.NOTIFICATION_BODY_P3;
       }
     }
   ]
