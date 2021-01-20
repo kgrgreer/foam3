@@ -130,7 +130,7 @@ foam.CLASS({
                 .setSenderName(sender.toSummary())
                 .setReceiverUserId(receiver.getId())
                 .setReceiverName(receiver.toSummary())
-                .setSourceAmount(transaction.getAmount())
+                .setSourceAmount(transaction.getTotal(x, transaction.getSourceAccount()))
                 .setSourceCurrency(transaction.getSourceCurrency())
                 .setDestinationAmount(transaction.getDestinationAmount())
                 .setDestinationCurrency(transaction.getDestinationCurrency())
