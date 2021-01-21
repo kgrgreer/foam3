@@ -3293,5 +3293,5 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.tx.ruler.MicroDeposi
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.cron.OnboardingReminderNotification.BODY_TEXT",target:"Aqui está um lembrete para concluir o registro de sua empresa"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoSendEmailToAllNotification.NOTIFICATION_BODY",target:" agora pode fazer pagamentos internacionais"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.invoice.TrevisoNotification.NOTIFICATION_BODY_1",target:"ATTENTION: This transaction has not yet been sent! Para completar, envie um TED de ("})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.invoice.TrevisoNotification.NOTIFICATION_BODY_1",target:"ATENÇÃO : Esta transação ainda não foi enviada! Para completar, envie um TED de ("})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.invoice.TrevisoNotification.NOTIFICATION_BODY_2",target:") para : Treviso Corretora de Câmbio S.A CNPJ: 02.992.317/0001-87 Banco SC Treviso (143) Agencia: 0001 Conta: 1-1 O não envio dos fundos causará o cancelamento automático desta transação."})
