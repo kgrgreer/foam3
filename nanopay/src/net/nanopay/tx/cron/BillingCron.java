@@ -26,9 +26,11 @@ import foam.nanos.auth.User;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Calendar;
+import java.util.Map;
+import java.util.HashMap;
 import net.nanopay.tx.billing.Bill;
 
 public class BillingCron implements ContextAgent {
@@ -36,10 +38,13 @@ public class BillingCron implements ContextAgent {
 
   @Override
   public void execute(X x) {
-    // create single billing transaction, set txn id to all the bills
+    
+    // fetch todays date
     Calendar today = Calendar.getInstance();
     int currentMonth = today.get(Calendar.MONTH);
     int currentYear = today.get(Calendar.YEAR);
+
+    // create admin user context
     User adminUser = new User.Builder(x)
       .setFirstName("Billing")
       .setLastName("Admin")
@@ -48,13 +53,12 @@ public class BillingCron implements ContextAgent {
       .setGroup("admin")
       .build();
     adminUser = (User) ((DAO) x.get("localUserDAO")).put(adminUser);
-
     Subject subject = new Subject.Builder(x).setUser(adminUser).build();
     x = x.put("subject", subject);
 
+    // fetch all bills from this month
     ArraySink sink = (ArraySink) ((DAO) x.get("billDAO")).select(new ArraySink());
     List<Bill> billList = new ArrayList<>();
-    
     for ( int i = 0; i < sink.getArray().size(); i++ ) {
       Bill bill = (Bill) sink.getArray().get(i);
       Date chargeDate = bill.getChargeDate();
@@ -63,6 +67,29 @@ public class BillingCron implements ContextAgent {
       int chargeYear = localChargeDate.getYear();
       if ( (chargeMonth == currentMonth) && (chargeYear == currentYear) ) {
         billList.add(bill);
+      }
+    }
+
+    // add bills in a map and associate them to the users or businesses being charged
+    Map<Long, List<Bill>> billingMap = new HashMap<>();
+    for ( int i = 0; i < billList.size(); i++ ) {
+      Bill bill = billList.get(i);
+      if ( (Long) bill.getChargeToUser() != null ) {
+        if ( ! billingMap.containsKey(bill.getChargeToUser()) ) {
+          List<Bill> userBillingList = new ArrayList<>();
+          userBillingList.add(bill);
+          billingMap.put(bill.getChargeToUser(), userBillingList);
+        } else {
+          billingMap.get(bill.getChargeToUser()).add(bill);
+        }
+      } else {
+        if ( ! billingMap.containsKey(bill.getChargeToBusiness()) ) {
+          List<Bill> businessBillingList = new ArrayList<>();
+          businessBillingList.add(bill);
+          billingMap.put(bill.getChargeToBusiness(), businessBillingList);
+        } else {
+          billingMap.get(bill.getChargeToBusiness()).add(bill);
+        }
       }
     }
 
