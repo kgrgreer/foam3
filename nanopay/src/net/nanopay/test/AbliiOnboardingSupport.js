@@ -1028,17 +1028,21 @@ foam.CLASS({
     {
       name: 'businessDirectorsData',
       code: async function(x, business) {
-        var prereqId = '554af38a-8225-87c8-dfdf-eeb15f71215f-6-5-noReview';
-        var ucj = await this.crunchService.getJunction(x, prereqId);
-        if ( ! ucj ||
-             ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-          ucj = await this.crunchService.updateJunction(x, prereqId, null, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
-        }
+        // need a director to pass generate approvalrequest pass usercomplianceapproval
+        var businessDirector = net.nanopay.model.BusinessDirector.create({
+          firstName:'userFirst',
+          lastName:'userLast'
+        });
         var id = '554af38a-8225-87c8-dfdf-eeb15f71215f-6-5';
         var ucj = await this.crunchService.getJunction(x, id);
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-          ucj = await this.crunchService.updateJunction(x, id, null, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
+          var cap = net.nanopay.crunch.onboardingModels.BusinessDirectorsData.create({
+            //needDirector: false,	
+            businessTypeId: 2,
+            businessDirectors: [businessDirector]	
+          });
+          ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
         }
         return ucj;
       }
