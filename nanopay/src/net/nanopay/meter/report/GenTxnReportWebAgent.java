@@ -97,7 +97,7 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
               txn.getType(),
               Long.toString(txn.findDestinationAccount(x).getOwner()),
               Long.toString(txn.findSourceAccount(x).getOwner()),
-              StringEscapeUtils.escapeCsv(currency.format(txn.getAmount())),
+              StringEscapeUtils.escapeCsv(currency.format(-txn.getTotal(x, txn.getSourceAccount()))),
               currency.getId(),
               StringEscapeUtils.escapeCsv(currency.format(txn.getCost())),
               currency.getId(),
@@ -108,9 +108,9 @@ public class GenTxnReportWebAgent extends AbstractReport implements WebAgent {
 
             if (currency.getId().equals("CAD")) {
               if (txn instanceof CITransaction) {
-                ciAmountCAD += txn.getAmount();
+                ciAmountCAD += -txn.getTotal(x, txn.getSourceAccount());
               } else if (txn instanceof COTransaction) {
-                coAmountCAD += txn.getAmount();
+                coAmountCAD += -txn.getTotal(x, txn.getSourceAccount());
               } else if ( txn instanceof DigitalTransaction &&
                           txn.getCost() > 0 ) {
                   totalCount += 1;

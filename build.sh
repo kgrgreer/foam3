@@ -544,7 +544,7 @@ else
   echo ""
 fi
 #Print Transactions version Number.
-  echo -e "Running Transaction Engine\033[36;1m v4.2.4\033[0m"
+  echo -e "Running Transaction Engine\033[36;1m v4.2.5\033[0m"
   echo ""
 ############################
 
