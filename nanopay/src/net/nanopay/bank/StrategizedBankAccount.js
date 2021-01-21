@@ -62,9 +62,14 @@ foam.CLASS({
       view: function(_, X){
         return X.data.slot(function(availableCountries, countries) {
           let e = foam.mlang.Expressions.create();
+          let  strategies = [];
+          for ( const i of countries) {
+            let model = foam.lookup(`net.nanopay.bank.${ i }BankAccount`);
+            if ( model ) strategies.push(model);
+          }
           var pred = e.AND(
               e.EQ(foam.strategy.StrategyReference.DESIRED_MODEL_ID, 'net.nanopay.bank.BankAccount'),
-              e.IN(foam.strategy.StrategyReference.STRATEGY, countries)
+              e.IN(foam.strategy.StrategyReference.STRATEGY, strategies)
           );
           return foam.u2.view.FObjectView.create({
             of: net.nanopay.bank.BankAccount,
@@ -104,12 +109,7 @@ foam.CLASS({
               let countries = sink.delegate.array ? sink.delegate.array : [];
               countries.push(this.subject.user.address.countryId);
               let unique = [...new Set(countries)];
-              let arr = [];
-              for ( i = 0; i < unique.length; i++ ) {
-                model = foam.lookup(`net.nanopay.bank.${ unique[i] }BankAccount`);
-                if ( model ) arr.push(model);
-              }
-              this.countries = arr;
+              this.countries = unique;
             })
         });
       }
