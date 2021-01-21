@@ -257,7 +257,7 @@ public class BmoEftFileGenerator implements EFTFileGenerator {
           Branch branch = getBranchById(bankAccount.getBranch());
 
           BmoDetailRecord detailRecord =      new BmoDetailRecord();
-          detailRecord.setAmount              (transaction.getAmount());
+          detailRecord.setAmount              (-transaction.getTotal(x, transaction.getSourceAccount()));
           detailRecord.setLogicalRecordTypeId (type);
           detailRecord.setClientName          (getNameById(bankAccount.getOwner()));
           detailRecord.setClientInstitutionId (getInstitutionById(branch.getInstitution()) + branch.getBranchId());
@@ -265,7 +265,7 @@ public class BmoEftFileGenerator implements EFTFileGenerator {
           detailRecord.setReferenceNumber     (String.valueOf(getRefNumber(transaction)));
           detailRecord.validate(x);
 
-          sum = sum + transaction.getAmount();
+          sum = sum + -transaction.getTotal(x, transaction.getSourceAccount());
           detailRecords.add(detailRecord);
           transaction.getTransactionEvents(x).inX(x).put(new TransactionEvent.Builder(x).setEvent("Transaction added to EFT file").build());
           ((BmoTransaction)transaction). setBmoReferenceNumber(detailRecord.getReferenceNumber());
