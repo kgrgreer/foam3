@@ -921,14 +921,8 @@ foam.CLASS({
     }
 
     /* signIn & signUp */
-    .foam-u2-view-LoginView .foam-u2-detail-VerticalDetailView {
-      width: 78%;
-    }
     .title-top {
       padding-bottom: 2vh;
-    }
-    .center-footer {
-      width: 78%;
     }
     .foam-u2-view-LoginView .foam-u2-borders-SplitScreenBorder {
       padding-top: 75px;

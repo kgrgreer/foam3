@@ -39,12 +39,6 @@ foam.CLASS({
       }
     },
     {
-      name: 'fileId',
-      factory: function() {
-        return '488eedba-b34a-4b61-9f6d-1c501f13dcc4';
-      }
-    },
-    {
       name: 'agreement',
       validationPredicates: [
         {

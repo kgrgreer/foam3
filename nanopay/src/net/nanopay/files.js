@@ -54,6 +54,7 @@ FOAM_FILES([
   { name: 'net/nanopay/payment/PaymentProviderCorridorAddCountryRule' },
   { name: 'net/nanopay/payment/PaymentProviderCorridorAuthorizer' },
   { name: 'net/nanopay/payment/DestinationCorridorAuthorizer' },
+  { name: 'net/nanopay/payment/RegisterPaymentProviderCapability' },
   { name: 'net/nanopay/account/Account' },
   { name: 'net/nanopay/account/AccountDAOBrowserView' },
   { name: 'net/nanopay/account/AccountDAOCreateView' },
@@ -781,7 +782,7 @@ FOAM_FILES([
   { name: 'net/nanopay/invoice/notification/NewInvoiceNotificationNotificationCitationView', flags: ['web'] },
   { name: 'net/nanopay/invoice/notification/InvoicePaymentNotification' },
   { name: 'net/nanopay/invoice/notification/InvoicePaymentNotificationNotificationCitationView', flags: ['web'] },
-  { name: 'net/nanopay/invoice/ruler/CompleteInvoiceNotification' },
+  { name: 'net/nanopay/invoice/ruler/CompleteInvoiceNotificationRule' },
   { name: 'net/nanopay/invoice/ruler/InvoiceVoidEmailRule' },
   { name: 'net/nanopay/invoice/ruler/IsCompletePayment' },
   { name: 'net/nanopay/invoice/ruler/RequestPaymentNotificationRule' },
@@ -1668,7 +1669,6 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/predicate/BusinessPassedCompliance' },
   { name: 'net/nanopay/crunch/predicate/CheckUserCountry' },
   { name: 'net/nanopay/crunch/predicate/HasVerifiedBankAccount' },
-  { name: 'net/nanopay/crunch/predicate/RegisterPaymentProviderStatus' },
   { name: 'net/nanopay/crunch/predicate/SigningOfficerCapabilityInterceptPredicate' },
   { name: 'net/nanopay/crunch/predicate/SigningOfficerPrivilegesRequested' },
   { name: 'net/nanopay/crunch/predicate/SigningOfficerQuestionAnswered' },
@@ -1686,6 +1686,7 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/onboardingModels/BusinessInformationData' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessTypeAndSector' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessOwnershipData' },
+  { name: 'net/nanopay/crunch/onboardingModels/IsPubliclyTradedQuestion' },
   { name: 'net/nanopay/crunch/onboardingModels/TransactionDetailsData' },
   { name: 'net/nanopay/crunch/onboardingModels/BusinessDirectorsData' },
   { name: 'net/nanopay/crunch/onboardingModels/CertifyDataReviewed' },
@@ -1708,7 +1709,7 @@ FOAM_FILES([
 
   // crunch notification
   { name: 'net/nanopay/crunch/UCJExpiryReminderCron' },
-  { name: 'net/nanopay/crunch/compliance/SendExpiryNotification' },
+  { name: 'net/nanopay/crunch/compliance/SendExpiryNotificationRule' },
 
   // crunch compliance
   { name: 'net/nanopay/crunch/compliance/IsCapabilityOfCertainCategoryAndStatus' },
@@ -1734,13 +1735,16 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/compliance/ManualPersonSanctionValidator' },
   { name: 'net/nanopay/crunch/compliance/ManualSecurefactSIDniValidator' },
   { name: 'net/nanopay/crunch/compliance/ManualSecurefactLEVValidator' },
-  
+
 
   { name: 'net/nanopay/partner/afex/AFEXDigitalAccount' },
   // crunch afex
   { name: 'net/nanopay/partner/afex/crunch/BusinessHasVerifiedBankAccount' },
   { name: 'net/nanopay/partner/afex/crunch/AFEXBusinessOnboardingRule' },
   { name: 'net/nanopay/partner/afex/crunch/BankAccountOwnerIsBusiness' },
+
+  { name: 'net/nanopay/partner/bmo/BMOPaymentProviderCapabilityRule' },
+  { name: 'net/nanopay/partner/rbc/RBCPaymentProviderCapabilityRule' },
 
   // crunch acceptance
   { name: 'net/nanopay/crunch/acceptanceDocuments/capabilities/AbliiTermsAndConditions' },
@@ -1839,10 +1843,21 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/onboarding/BRBankAccountData' },
   { name: 'net/nanopay/partner/treviso/test/TrevisoOnboardingSupport' },
   { name: 'net/nanopay/partner/treviso/TrevisoSendEmailToAllRule' },
+  { name: 'net/nanopay/partner/treviso/TrevisoSendEmailToAllNotification' },
+  { name: 'net/nanopay/partner/treviso/invoice/TrevisoNotification' },
 
   // support
   { name: 'net/nanopay/support/SupportAccount' },
   { name: 'net/nanopay/support/SupportBusiness' },
   { name: 'net/nanopay/support/SupportTransaction' },
-  { name: 'net/nanopay/support/SupportUser' }
+  { name: 'net/nanopay/support/SupportUser' },
+
+  // notification
+  { name: 'net/nanopay/bank/ruler/AccountAddedNotification' },
+  { name: 'net/nanopay/sme/cron/WelcomeEmailNotification' },
+  { name: 'net/nanopay/crunch/UCJExpiryReminderNotification' },
+  { name: 'net/nanopay/invoice/ruler/CompleteInvoiceNotification'},
+  { name: 'net/nanopay/crunch/compliance/SendExpiryNotification'},
+  { name: 'net/nanopay/tx/ruler/MicroDepositSentNotification'},
+  { name: 'net/nanopay/sme/cron/OnboardingReminderNotification'},
 ]);

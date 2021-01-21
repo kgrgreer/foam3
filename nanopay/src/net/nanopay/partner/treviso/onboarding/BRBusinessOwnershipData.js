@@ -43,7 +43,82 @@ foam.CLASS({
     { name: 'SIGNINGOFFICER_DATA_FETCHING_ERR', message: 'Failed to find this signing officer info' }
   ],
 
+  sections: [
+    {
+      name: 'ownershipAmountSection',
+      title: 'Enter the number of people who own 25% or more of the business either directly or indirectly.',
+      navTitle: 'Number of owners',
+      help: `In accordance with banking laws, we need to document the percentage of ownership of any individual with a 25% + stake in the company.
+      Please have owner address and date of birth ready.`,
+    },
+    {
+      class: 'net.nanopay.crunch.onboardingModels.OwnerSection',
+      index: 1,
+      isAvailable: function(amountOfOwners) {
+        return amountOfOwners >= 1;
+      }
+    },
+    {
+      class: 'net.nanopay.crunch.onboardingModels.OwnerSection',
+      index: 2,
+      isAvailable: function(amountOfOwners) {
+        return amountOfOwners >= 2;
+      }
+    },
+    {
+      class: 'net.nanopay.crunch.onboardingModels.OwnerSection',
+      index: 3,
+      isAvailable: function(amountOfOwners) {
+        return amountOfOwners >= 3;
+      }
+    },
+    {
+      class: 'net.nanopay.crunch.onboardingModels.OwnerSection',
+      index: 4,
+      isAvailable: function(amountOfOwners) {
+        return amountOfOwners >= 4;
+      }
+    },
+    {
+      name: 'reviewOwnersSection',
+      isAvailable: function(amountOfOwners) {
+        return amountOfOwners > 0;
+      }
+    }
+  ],
+
   properties: [
+    {
+      name: 'amountOfOwners',
+      view: {
+        class: 'foam.u2.view.RadioView',
+        choices: [
+          0, 1, 2, 3, 4
+        ],
+        isHorizontal: true
+      },
+      validationPredicates: [
+        {
+          args: ['amountOfOwners'],
+          predicateFactory: function(e) {
+            return e.AND(
+              e.GTE(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
+                .AMOUNT_OF_OWNERS, 0),
+              e.LTE(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
+                .AMOUNT_OF_OWNERS, 4)
+            );
+          },
+          errorMessage: 'NO_AMOUNT_OF_OWNERS_SELECTED_ERROR'
+        },
+        {
+          args: ['ownerSelectionsValidated', 'owner1', 'owner2', 'owner3', 'owner4', 'chosenOwners'],
+          predicateFactory: function(e) {
+            return e.EQ(net.nanopay.crunch.onboardingModels
+              .BusinessOwnershipData.OWNER_SELECTIONS_VALIDATED, true);
+          }
+        }
+      ]
+    },
     {
       name: 'soUsersDAO',
       factory: function() {
@@ -118,10 +193,6 @@ foam.CLASS({
 
     // Ownership Amount Section
     {
-      name: 'publiclyTraded',
-      hidden:true
-    },
-    {
       class: 'net.nanopay.crunch.onboardingModels.OwnerProperty',
       ownerModel: 'net.nanopay.partner.treviso.onboarding.BRBeneficialOwner',
       index: 1
@@ -150,6 +221,10 @@ foam.CLASS({
           seqNo: true,
           daoType: 'MDAO'
         });
+      },
+      visibility: function(amountOfOwners) {
+        return amountOfOwners > 0 ?
+          foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
       }
     }
   ]
