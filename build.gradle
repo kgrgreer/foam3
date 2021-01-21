@@ -289,7 +289,6 @@ task copyResources(type: Copy) {
 task copyJournals(type: Copy) {
     from "${project.targetDir}/journals"
     into "${project.targetDir}/classes/journals"
-//    include "*.0"
 }
 
 task copyImages(type: Copy) {
@@ -324,10 +323,12 @@ task getVersion() {
     }
 }
 
-// task printVersions() {
-//     logger.quiet("Application Version: ${project.version}")
-//     logger.quiet("Transaction Engine: ${project.transactionEngine}")
-// }
+task printVersions() {
+    doLast {
+        logger.quiet("Application Version: ${project.version}")
+        logger.quiet("Transaction Engine: ${project.transactionEngine}")
+    }
+}
 
 task getClasspath() {
     doLast {
@@ -366,6 +367,7 @@ clean {
 compileJava {
     dependsOn tasks.genJava
     dependsOn tasks.copyLib
+    dependsOn printVersions
 
     options.incremental = true
     options.compilerArgs += ["-parameters"]
