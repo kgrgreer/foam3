@@ -346,11 +346,15 @@ public class BlacklistTest extends Test {
       .setOwner1(bo)
       .setChosenOwners(Arrays.stream(chosenOwners).boxed().collect(Collectors.toList()))
       .build();
+    UserCapabilityJunction ucjBODRR = new UserCapabilityJunction();
+    ucjBODRR.setSourceId(myBusiness.getId());
+    ucjBODRR.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-7-reviewRequired");
+    ucjBODRR.setData(bod);
+    ucjBODRR = (UserCapabilityJunction) userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBODRR);
 
     UserCapabilityJunction ucjBOD = new UserCapabilityJunction();
     ucjBOD.setSourceId(myBusiness.getId());
     ucjBOD.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-7");
-    ucjBOD.setData(bod);
     userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBOD);
 
     // Certify Owners Percent : 554af38a-8225-87c8-dfdf-eeb15f71215e-12
@@ -364,7 +368,6 @@ public class BlacklistTest extends Test {
     userCapabilityJunctionDAO.inX(myAdminContext).put(ucjCOP);
 
     // Business Directors Data : 554af38a-8225-87c8-dfdf-eeb15f71215f-6-5
-    // adding actualy data to bypass usercomplianceapproval issue to be fixed later
     BusinessDirector bd = new BusinessDirector();
     bd.setFirstName("Francis");
     bd.setLastName("Filth");
@@ -379,6 +382,7 @@ public class BlacklistTest extends Test {
     ucjBDD.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-6-5");
     ucjBDD.setData(bdd);
     ucjBDD = (UserCapabilityJunction) userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBDD);
+
     // Certify Directors Listed : 554af38a-8225-87c8-dfdf-eeb15f71215e-17
     CertifyDirectorsListed cdl = new CertifyDirectorsListed();
     cdl.setAgreement(true);
@@ -414,7 +418,7 @@ public class BlacklistTest extends Test {
       .where(foam.mlang.MLang.AND( new foam.mlang.predicate.Predicate[] {
         foam.mlang.MLang.EQ(ApprovalRequest.DAO_KEY, "userCapabilityJunctionDAO"),
         foam.mlang.MLang.OR( new foam.mlang.predicate.Predicate[] {
-          foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjBOD.getId()),
+          foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjBODRR.getId()),
           foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjSOP.getId()),
           foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjBDD.getId())
         }),

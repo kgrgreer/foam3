@@ -125,9 +125,12 @@ p({
 // and the of is set to BRBusinessOwnershipData instead of generic BusinessOwnershipData
 p({
   class:"foam.nanos.crunch.Capability",
-  id:"554af38a-8225-87c8-dfdf-eeb15f71215f-7",
+  id:"554af38a-8225-87c8-dfdf-eeb15f71215f-7-br",
+  name:"Business ownership",
   of:"net.nanopay.partner.treviso.onboarding.BRBusinessOwnershipData",
-  reviewRequired:false
+  reviewRequired:false,
+  enabled:true,
+  daokey:"convertOwnerObjectDAO"
 })
 p({
   "class":"foam.nanos.crunch.Capability",
