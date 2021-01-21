@@ -327,7 +327,7 @@ UserCapabilityJunction ucjBODRR = new UserCapabilityJunction();
 ucjBODRR.setSourceId(myBusiness.getId());
 ucjBODRR.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-7-reviewRequired");
 ucjBODRR.setData(bod);
-userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBODRR);
+ucjBODRR = (UserCapabilityJunction) userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBODRR);
 UserCapabilityJunction ucjBOD = new UserCapabilityJunction();
 ucjBOD.setSourceId(myBusiness.getId());
 ucjBOD.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-7");
@@ -441,7 +441,7 @@ List<ApprovalRequest> approvalRequests = ((ArraySink) approvalRequestDAO
   .where(foam.mlang.MLang.AND( new foam.mlang.predicate.Predicate[] {
     foam.mlang.MLang.EQ(ApprovalRequest.DAO_KEY, "userCapabilityJunctionDAO"),
     foam.mlang.MLang.OR( new foam.mlang.predicate.Predicate[] {
-      foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjBOD.getId()),
+      foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjBODRR.getId()),
       foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjSOP.getId()),
       foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjBDD.getId())
     }),
