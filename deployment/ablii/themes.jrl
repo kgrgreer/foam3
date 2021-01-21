@@ -158,12 +158,6 @@ p({
   """,
   "supportConfig":{
     "class":"foam.nanos.app.SupportConfig",
-    "emailConfig":{
-      "class":"foam.nanos.notification.email.EmailConfig",
-      "from":"noreply@ablii.com",
-      "displayName":"Ablii",
-      "replyTo":"noreply@ablii.com"
-    },
     "supportEmail":"support@ablii.com",
     "supportPhone":"+1.647.496.1526",
     "personalSupportUser":1030
