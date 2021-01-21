@@ -289,7 +289,7 @@ task copyResources(type: Copy) {
 task copyJournals(type: Copy) {
     from "${project.targetDir}/journals"
     into "${project.targetDir}/classes/journals"
-    include "*.0"
+//    include "*.0"
 }
 
 task copyImages(type: Copy) {
@@ -323,6 +323,11 @@ task getVersion() {
         println project.version
     }
 }
+
+// task printVersions() {
+//     logger.quiet("Application Version: ${project.version}")
+//     logger.quiet("Transaction Engine: ${project.transactionEngine}")
+// }
 
 task getClasspath() {
     doLast {
@@ -384,5 +389,6 @@ task buildJar(type: Jar) {
         attributes "Implementation-Timestamp": new Date()
         attributes "Implementation-Vendor-Id": project.group
         attributes "Implementation-Vendor": "nanopay"
+        attributes "Transaction-Engine":project.transactionEngine
     }
 }

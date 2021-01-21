@@ -5,6 +5,10 @@ p({
   "service": {
     "class": "foam.nanos.jetty.HttpServer",
     "port": 8080,
+    "enableHttps": true,
+    "httpsPort": 8443,
+    "keystoreFileName": "nanopay.jks",
+    "keystorePassword": "nanopay",
     "forwardedForProxyWhitelist": [],
     "welcomeFiles": ["welcome"],
     "servletMappings": [{
