@@ -84,11 +84,8 @@ foam.CLASS({
     },
     {
       name: 'reviewOwnersSection',
-      title: 'Review the list of owners',
-      isAvailable: function(amountOfOwners) {
-        return amountOfOwners > 0;
-      }
-    },
+      title: 'Review the list of owners'
+    }
   ],
 
   messages: [
@@ -205,7 +202,7 @@ foam.CLASS({
       view: {
         class: 'foam.u2.view.RadioView',
         choices: [
-          0, 1, 2, 3, 4
+          1, 2, 3, 4
         ],
         isHorizontal: true
       },
@@ -215,7 +212,7 @@ foam.CLASS({
           predicateFactory: function(e) {
             return e.AND(
               e.GTE(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
-                .AMOUNT_OF_OWNERS, 0),
+                .AMOUNT_OF_OWNERS, 1),
               e.LTE(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
                 .AMOUNT_OF_OWNERS, 4)
             );
@@ -230,19 +227,6 @@ foam.CLASS({
           }
         }
       ]
-    },
-    {
-      class: 'Boolean',
-      name: 'publiclyTraded',
-      section: 'ownershipAmountSection',
-      documentation: 'Whether this is a publicly traded company.',
-      label: 'This is a publicly traded company',
-      postSet: function(_, n) {
-        if ( n ) this.clearAllOwnerAndPercentData();
-      },
-      visibility: function(amountOfOwners) {
-        return amountOfOwners == 0 ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
-      }
     },
     {
       class: 'net.nanopay.crunch.onboardingModels.OwnerProperty',
@@ -377,10 +361,6 @@ foam.CLASS({
           'jobTitle',
           'ownershipPercent'
         ]
-      },
-      visibility: function(amountOfOwners) {
-        return amountOfOwners > 0 ?
-          foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
       }
     },
     {

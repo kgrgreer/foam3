@@ -257,15 +257,37 @@ p({
   "contextDAOFindKey":"subject.user"
 })
 
+
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-7",
-  "name":"Business ownership",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-7-reviewRequired",
+  "name":"One or more beneficial owners",
   "of":"net.nanopay.crunch.onboardingModels.BusinessOwnershipData",
   "version":"0",
   "enabled":true,
   "daoKey":"convertOwnerObjectDAO",
   "reviewRequired":true
+})
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-7-noReview",
+  "name":"No beneficial owners",
+  "of":"net.nanopay.crunch.onboardingModels.IsPubliclyTradedQuestion",
+  "version":"0",
+  "enabled":true,
+  "daoKey":"businessDAO",
+  "contextDAOFindKey":"subject.user",
+  "reviewRequired":false
+})
+
+p({
+  "class":"foam.nanos.crunch.MinMaxCapability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-7",
+  "name":"Business Ownership",
+  "min":1,
+  "max":1,
+  "version":"0",
+  "enabled":true 
 })
 
 p({
@@ -409,7 +431,7 @@ p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-13",
   "name":"International & Domestic Payments Onboarding",
-  "description":"International & Domestic Payments Onboarding,
+  "description":"International & Domestic Payments Onboarding",
   "version":"0",
   "enabled":true,
   "reviewRequired":true,
