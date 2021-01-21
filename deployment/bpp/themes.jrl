@@ -30,12 +30,6 @@ p({
   "footerView":"net.nanopay.sme.ui.FooterView",
   "supportConfig":{
     class:"foam.nanos.app.SupportConfig",
-    emailConfig:{
-      class:"foam.nanos.notification.email.EmailConfig",
-      from:"noreply@nanopay.com",
-      displayName:"nanopay",
-      replyTo:"noreply@nanopay.com"
-    },
     supportEmail:"support@nanopay.com",
     supportPhone:"+1.647.496.1526",
     personalSupportUser:1030,
