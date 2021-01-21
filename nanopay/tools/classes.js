@@ -386,7 +386,7 @@ var classes = [
   'net.nanopay.invoice.InvoiceNotificationDAO',
   'net.nanopay.invoice.InvoiceLineItem',
   'net.nanopay.invoice.DetailedInvoiceDAO',
-  'net.nanopay.invoice.ruler.CompleteInvoiceNotification',
+  'net.nanopay.invoice.ruler.CompleteInvoiceNotificationRule',
   'net.nanopay.invoice.ruler.IsCompletePayment',
   'net.nanopay.invoice.ruler.InvoiceVoidEmailRule',
   'net.nanopay.invoice.ruler.SetProcessingDateRule',
@@ -1318,6 +1318,8 @@ var classes = [
   'net.nanopay.partner.treviso.onboarding.BRBeneficialOwner',
   'net.nanopay.partner.treviso.onboarding.BRBusinessOwnershipData',
   'net.nanopay.partner.treviso.onboarding.BRBankAccountData',
+  'net.nanopay.partner.treviso.TrevisoSendEmailToAllNotification',
+  'net.nanopay.partner.treviso.invoice.TrevisoNotification',
 
   // crunch predicates - todo move all predicates used in crunch here
   'net.nanopay.crunch.predicate.IsBusiness',
@@ -1343,6 +1345,7 @@ var classes = [
   'net.nanopay.crunch.onboardingModels.BusinessInformationData',
   'net.nanopay.crunch.onboardingModels.BusinessTypeAndSector',
   'net.nanopay.crunch.onboardingModels.BusinessOwnershipData',
+  'net.nanopay.crunch.onboardingModels.IsPubliclyTradedQuestion',
   'net.nanopay.crunch.onboardingModels.TransactionDetailsData',
   'net.nanopay.crunch.onboardingModels.BusinessDirectorsData',
   'net.nanopay.crunch.onboardingModels.CertifyDataReviewed',
@@ -1358,7 +1361,7 @@ var classes = [
 
   // crunch notification
   'net.nanopay.crunch.UCJExpiryReminderCron',
-  'net.nanopay.crunch.compliance.SendExpiryNotification',
+  'net.nanopay.crunch.compliance.SendExpiryNotificationRule',
 
   'net.nanopay.crunch.test.TestCapable',
   'net.nanopay.crunch.test.TestCapableDAO',
@@ -1537,6 +1540,15 @@ var classes = [
 
   //integration
   'net.nanopay.integration.ErrorCode',
+
+  // notification
+  'net.nanopay.bank.ruler.AccountAddedNotification',
+  'net.nanopay.sme.cron.WelcomeEmailNotification',
+  'net.nanopay.crunch.UCJExpiryReminderNotification',
+  'net.nanopay.invoice.ruler.CompleteInvoiceNotification',
+  'net.nanopay.crunch.compliance.SendExpiryNotification',
+  'net.nanopay.tx.ruler.MicroDepositSentNotification',
+  'net.nanopay.sme.cron.OnboardingReminderNotification',
 ];
 
 var abstractClasses = [

@@ -660,7 +660,7 @@ p({
       },
     ]
   },
-  "action":{"class":"net.nanopay.crunch.compliance.SendExpiryNotification"},
+  "action":{"class":"net.nanopay.crunch.compliance.SendExpiryNotificationRule"},
   "enabled":true,
   "lifecycleState":1
 })

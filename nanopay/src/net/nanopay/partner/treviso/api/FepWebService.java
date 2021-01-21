@@ -258,6 +258,11 @@ public class FepWebService extends ContextAwareSupport implements FepWeb {
     try {
       String endpoint = getCredentials().getFepWebApi() + "entities/save";
       CloseableHttpResponse httpResponse = sendPost(endpoint, getJsonMessage(request));
+      if ( httpResponse.getStatusLine().getStatusCode() / 100 == 2 ) {
+        FepWebResponse res = new FepWebResponse();
+        res.setCode(0);
+        return res;
+      }
       return (FepWebResponse) jsonParser.parseString(parseHttpResponse(httpResponse, endpoint), FepWebResponse.class);
     } catch (Exception e) {
       logger.error(e);

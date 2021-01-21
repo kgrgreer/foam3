@@ -88,7 +88,7 @@ p({
   "supportConfig":{
     "class":"foam.nanos.app.SupportConfig",
     "emailConfig":{
-      "class":"foam.nanos.app.EmailConfig",
+      "class":"foam.nanos.notification.email.EmailConfig",
       "from":"noreply@treviso.com.br",
       "displayName":"Treviso",
       "replyTo":"noreply@treviso.com.br"
