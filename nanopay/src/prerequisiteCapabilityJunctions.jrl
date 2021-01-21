@@ -189,12 +189,12 @@ p({
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-7-noReview",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-14",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-14"
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-7-reviewRequired",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-14",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-14"
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",

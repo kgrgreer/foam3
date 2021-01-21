@@ -1038,9 +1038,9 @@ foam.CLASS({
         if ( ! ucj ||
              ucj.status != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
           var cap = net.nanopay.crunch.onboardingModels.BusinessDirectorsData.create({
-            //needDirector: false,	
+            //needDirector: false,
             businessTypeId: 2,
-            businessDirectors: [businessDirector]	
+            businessDirectors: [businessDirector]
           });
           ucj = await this.crunchService.updateJunction(x, id, cap, foam.nanos.crunch.CapabilityJunctionStatus.ACTION_REQUIRED);
         }

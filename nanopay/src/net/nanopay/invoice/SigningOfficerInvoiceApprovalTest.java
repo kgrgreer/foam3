@@ -450,10 +450,7 @@ List<ApprovalRequest> approvalRequests = ((ArraySink) approvalRequestDAO
   .select(new ArraySink()))
   .getArray();
 
-test(approvalRequests.size() > 0, "requests = " + approvalRequests);
-
 for ( ApprovalRequest approvalRequest : approvalRequests ) {
-  test(approvalRequest != null, "request = " + approvalRequest);
   approvalRequest = (ApprovalRequest) approvalRequest.fclone();
   approvalRequest.setStatus(ApprovalStatus.APPROVED);
   try{
