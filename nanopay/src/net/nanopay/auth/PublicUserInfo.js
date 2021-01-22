@@ -35,7 +35,7 @@ foam.CLASS({
     {
       class: 'Long',
       name: 'id',
-      tableWidth: 50,
+      tableWidth: 60,
       documentation: `The unique identifier for the User.`,
       visibility: 'RO'
     },
