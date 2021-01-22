@@ -7,6 +7,7 @@ import foam.nanos.NanoService;
 import foam.nanos.auth.AuthenticationException;
 import foam.nanos.logger.Logger;
 import foam.nanos.approval.ApprovalStatus;
+import foam.nanos.pm.PM;
 import net.nanopay.meter.compliance.dowJones.EntityNameSearchData;
 import net.nanopay.meter.compliance.dowJones.PersonNameSearchData;
 
@@ -32,6 +33,8 @@ public class DowJonesService
 
   // To perform search on entity of type User
   public DowJonesResponse personNameSearch(X x, PersonNameSearchData searchData) {
+    var pm = new PM(DowJonesService.class.getSimpleName(), "personNameSearch");
+
     try {
       DowJonesResponseMsg respMsg = null;
       DowJonesRequestMsg reqMsg = DowJonesRequestGenerator.getPersonNameSearchRequest(x, searchData);
@@ -65,14 +68,19 @@ public class DowJonesService
       }
       return feedback;
     } catch ( Throwable t ) {
+      pm.error(x, t.getMessage());
       Logger logger = (Logger) x.get("logger");
       logger.error("Dow Jones User Person name search error: [ " + t.toString() + " ].", t);
       throw new AuthenticationException("Dow Jones User person name search failed: [ " + t.toString() + " ].");
+    } finally {
+      pm.log(x);
     }
   }
 
   // To perform search on entity of type BeneficialOwner
   public DowJonesResponse beneficialOwnerNameSearch(X x, PersonNameSearchData searchData) {
+    var pm = new PM(DowJonesService.class.getSimpleName(), "beneficialOwnerNameSearch");
+
     try {
       DowJonesResponseMsg respMsg = null;
       DowJonesRequestMsg reqMsg = DowJonesRequestGenerator.getPersonNameSearchRequest(x, searchData);
@@ -103,14 +111,19 @@ public class DowJonesService
       }
       return feedback;
     } catch ( Throwable t ) {
+      pm.error(x, t.getMessage());
       Logger logger = (Logger) x.get("logger");
       logger.error("Dow Jones Beneficial Owner Person name search error: [ " + t.toString() + " ].", t);
       throw new AuthenticationException("Dow Jones beneficial owner person name search failed: [ " + t.toString() + " ].");
+    } finally {
+      pm.log(x);
     }
   }
 
   // To perform search on entity of type Business
   public DowJonesResponse entityNameSearch(X x, EntityNameSearchData searchData) {
+    var pm = new PM(DowJonesService.class.getSimpleName(), "entityNameSearch");
+
     try {
       DowJonesResponseMsg respMsg = null;
       DowJonesRequestMsg reqMsg = DowJonesRequestGenerator.getEntityNameSearchRequest(x, searchData);
@@ -141,9 +154,12 @@ public class DowJonesService
       }
       return feedback;
     } catch ( Throwable t ) {
+      pm.error(x, t.getMessage());
       Logger logger = (Logger) x.get("logger");
       logger.error("Dow Jones entity name search error: [ " + t.toString() + " ].", t);
       throw new AuthenticationException("Dow Jones entity name search failed: [ " + t.toString() + " ].");
+    } finally {
+      pm.log(x);
     }
   }
 

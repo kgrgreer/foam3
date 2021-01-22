@@ -62,13 +62,13 @@ public class LiquiditySettingsTest
     sender_.setFirstName("Francis");
     sender_.setLastName("Filth");
     sender_.setGroup("business");
-    sender_.setSpid("nanopay");
+    sender_.setSpid("test");
     sender_ = (User) (((DAO) x_.get("localUserDAO")).put_(x_, sender_)).fclone();
-    senderDigitalDefault = (DigitalAccount) DigitalAccount.findDefault(x_, sender_, "CAD","11").fclone();
+    senderDigitalDefault = (DigitalAccount) DigitalAccount.findDefault(x_, sender_, "CAD","7ee216ae-9371-4684-9e99-ba42a5759444").fclone();
     senderLiquidityDigital = new DigitalAccount();
     senderLiquidityDigital.setDenomination("CAD");
     senderLiquidityDigital.setOwner(sender_.getId());
-    senderLiquidityDigital.setTrustAccount("11");
+    senderLiquidityDigital.setTrustAccount("7ee216ae-9371-4684-9e99-ba42a5759444");
     ((DAO) x_.get("localAccountDAO")).put(senderLiquidityDigital);
 
       receiver_ = new User();
@@ -77,9 +77,9 @@ public class LiquiditySettingsTest
       receiver_.setEmail("lstesting2@nanopay.net");
       receiver_.setGroup("business");
     receiver_.setEmailVerified(true);
-    receiver_.setSpid("nanopay");
+    receiver_.setSpid("test");
     receiver_ = (User) (((DAO) x_.get("localUserDAO")).put_(x_, receiver_)).fclone();
-    receiverDigital = DigitalAccount.findDefault(x_, receiver_, "CAD","11");
+    receiverDigital = DigitalAccount.findDefault(x_, receiver_, "CAD","7ee216ae-9371-4684-9e99-ba42a5759444");
   }
 
   public void testPerTransactionLiquidity() {

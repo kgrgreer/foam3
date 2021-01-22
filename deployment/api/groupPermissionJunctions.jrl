@@ -61,6 +61,9 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"service.userAcceptanceDocumentDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"useracceptancedocument.read.*"})
 
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"service.natureCodeDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"service.permittedCountryDAO"})
+
 // ******** SESSION *********
 
 // External session creation

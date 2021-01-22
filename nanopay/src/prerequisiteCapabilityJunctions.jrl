@@ -60,6 +60,18 @@ p({
   "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215e-12",
   "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-7"
 })
+
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-7",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-7-reviewRequired"
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-7",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-7-noReview"
+})
+
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215e-17",
@@ -176,9 +188,13 @@ p({
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-7",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-14",
-  "priority":6
+  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-7-noReview",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-14"
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-7-reviewRequired",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-14"
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
@@ -362,13 +378,13 @@ p({
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-7",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-7-br",
   "priority":8
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"554af38a-8225-87c8-dfdf-eeb15f71215f-49",
-  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-7",
+  "targetId":"554af38a-8225-87c8-dfdf-eeb15f71215f-7-br",
   "priority":9
 })
 p({
@@ -861,12 +877,6 @@ p({
   sourceId: "serviceProviderCapability",
   targetId: "menuCapability",
   priority: 5
-})
-
-p({
-  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "554af38a-8225-87c8-dfdf-eeb15f71215f-20",
-  targetId: "1f6b2047-1eef-471d-82e7-d86bdf511375",
 })
 
 p({

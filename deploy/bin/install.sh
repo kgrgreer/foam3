@@ -251,12 +251,12 @@ function setupNanopaySymLink {
         ln -s ${VAR_HOME} ${NANOPAY_HOME}/var
     fi
 
-    if [ -h ${JOURNAL_HOME}/files ]; then
-        unlink ${JOURNAL_HOME}/files
+    if [ -h ${JOURNAL_HOME}/largefiles ]; then
+        unlink ${JOURNAL_HOME}/largefiles
     fi
     
     if [ -d ${JOURNAL_HOME} ]; then
-        ln -s ${FILES_HOME} ${JOURNAL_HOME}/files
+        ln -s ${FILES_HOME} ${JOURNAL_HOME}/largefiles
     fi
 }
 

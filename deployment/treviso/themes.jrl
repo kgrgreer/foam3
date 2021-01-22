@@ -87,12 +87,6 @@ p({
   },
   "supportConfig":{
     "class":"foam.nanos.app.SupportConfig",
-    "emailConfig":{
-      "class":"foam.nanos.app.EmailConfig",
-      "from":"noreply@treviso.com.br",
-      "displayName":"Treviso",
-      "replyTo":"noreply@treviso.com.br"
-    },
     "supportEmail":"suportetech@trevisocc.com.br",
     "supportPhone":"+1.647.496.1526"
   },
