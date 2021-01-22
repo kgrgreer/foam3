@@ -51,12 +51,6 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      targetDAOKey: 'localTransactionDAO',
-      name: 'billingTransaction',
-      of: 'net.nanopay.tx.model.Transaction'
-    },
-    {
-      class: 'Reference',
       targetDAOKey: 'userDAO',
       name: 'chargeToUser',
       of: 'foam.nanos.auth.User',

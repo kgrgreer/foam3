@@ -25,7 +25,7 @@ foam.INTERFACE({
 
   methods: [
     {
-      name: 'createBill',
+      name: 'createBills',
       type: 'Void',
       args: [
         {

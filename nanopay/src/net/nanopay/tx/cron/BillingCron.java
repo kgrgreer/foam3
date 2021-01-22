@@ -23,26 +23,34 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
-import java.time.LocalDate;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.HashMap;
+import net.nanopay.account.Account;
 import net.nanopay.tx.billing.Bill;
+import net.nanopay.tx.billing.BillingFee;
+import net.nanopay.tx.model.Transaction;
+
+import static foam.mlang.MLang.*;
+import static java.util.Calendar.*;
 
 public class BillingCron implements ContextAgent {
-  
-
   @Override
   public void execute(X x) {
     
-    // fetch todays date
-    Calendar today = Calendar.getInstance();
-    int currentMonth = today.get(Calendar.MONTH);
-    int currentYear = today.get(Calendar.YEAR);
+    // fetch first day of this month and next month
+    Calendar first = getInstance();
+    Calendar next = getInstance();
+    first.set(DAY_OF_MONTH, 1);
+    next.clear();
+    next.set(YEAR, first.get(YEAR));
+    next.set(MONTH, first.get(MONTH) + 1);
+    next.set(DAY_OF_MONTH, 1);
+    Date firstDayOfThisMonth = first.getTime();
+    Date firstDayOfNextMonth = next.getTime();
 
     // create admin user context
     User adminUser = new User.Builder(x)
@@ -56,24 +64,18 @@ public class BillingCron implements ContextAgent {
     Subject subject = new Subject.Builder(x).setUser(adminUser).build();
     x = x.put("subject", subject);
 
-    // fetch all bills from this month
-    ArraySink sink = (ArraySink) ((DAO) x.get("billDAO")).select(new ArraySink());
-    List<Bill> billList = new ArrayList<>();
-    for ( int i = 0; i < sink.getArray().size(); i++ ) {
-      Bill bill = (Bill) sink.getArray().get(i);
-      Date chargeDate = bill.getChargeDate();
-      LocalDate localChargeDate = chargeDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-      int chargeMonth = localChargeDate.getMonthValue();
-      int chargeYear = localChargeDate.getYear();
-      if ( (chargeMonth == currentMonth) && (chargeYear == currentYear) ) {
-        billList.add(bill);
-      }
-    }
+    // query all bills from this month
+    ArraySink bills = (ArraySink) ((DAO) x.get("billDAO")).where(
+      AND(
+        GTE(Bill.CHARGE_DATE, firstDayOfThisMonth),
+        LT(Bill.CHARGE_DATE, firstDayOfNextMonth)
+      )
+    ).select(new ArraySink());
 
     // add bills in a map and associate them to the users or businesses being charged
     Map<Long, List<Bill>> billingMap = new HashMap<>();
-    for ( int i = 0; i < billList.size(); i++ ) {
-      Bill bill = billList.get(i);
+    for ( int i = 0; i < bills.getArray().size(); i++ ) {
+      Bill bill = (Bill) bills.getArray().get(i);
       if ( (Long) bill.getChargeToUser() != null ) {
         if ( ! billingMap.containsKey(bill.getChargeToUser()) ) {
           List<Bill> userBillingList = new ArrayList<>();
@@ -92,6 +94,44 @@ public class BillingCron implements ContextAgent {
         }
       }
     }
+
+    for ( Long userId : billingMap.keySet() ) {
+      ArraySink userAccountSink = (ArraySink) ((DAO) x.get("localAccountDAO"))
+        .where(AND(EQ(Account.OWNER, userId), EQ(Account.DENOMINATION, "CAD")))
+        .orderBy(Account.CREATED)
+        .limit(1)
+        .select(new ArraySink());
+
+      ArraySink feeAccountSink = (ArraySink) ((DAO) x.get("localAccountDAO"))
+        .where(EQ(Account.NAME, "Nanopay Fee Receiving Account"))
+        .select(new ArraySink());
+      
+      Account userAccount = (Account) userAccountSink.getArray().get(0);
+      Account feeAccount = (Account) feeAccountSink.getArray().get(0);
+      
+      long amount = 0;
+      List<Bill> billList = billingMap.get(userId);
+      for ( Bill bill : billList ) {
+        BillingFee[] fees = bill.getFees();
+        for ( BillingFee fee : fees  ) {
+          amount += fee.getAmount();
+        }
+      }
+
+      Transaction billingTxn = new Transaction.Builder(x)
+        .setSourceAccount(userAccount.getId())
+        .setDestinationAccount(feeAccount.getId())
+        .setAmount(amount)
+        .build();
+
+      billingTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).put(billingTxn);
+
+      for ( Bill bill : billList ) {
+        bill.setBillingTransaction(billingTxn.getId());
+        ((DAO) x.get("billDAO")).put(bill);
+      }
+    }
+
 
   }
 }

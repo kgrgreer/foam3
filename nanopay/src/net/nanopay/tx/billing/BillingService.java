@@ -30,6 +30,7 @@ import net.nanopay.account.Account;
 import net.nanopay.integration.ErrorCode;
 import net.nanopay.model.Business;
 import net.nanopay.tx.ChargedTo;
+import net.nanopay.tx.SummaryTransaction;
 import net.nanopay.tx.model.Transaction;
 
 import static foam.mlang.MLang.EQ;
@@ -37,16 +38,22 @@ import static foam.mlang.MLang.EQ;
 
 public class BillingService implements BillingServiceInterface {
 
-  // getBills() find corresponding bills for the summaryTxn children
+  // getBills() find corresponding bills for the transaction children
+  /*@Override
+  public Bill[] getBills(X x, String transactionId) {
+    DAO transactionDAO = (DAO) x.get("localTransactionDAO");
+    SummaryTransaction txn = (SummaryTransaction) transactionDAO.find(transactionId);
+    if ( txn instanceof SummaryTransaction ) {
+      return txn.findBills(x);
+    }
+  }*/
 
   @Override
-  public void createBill(X x, Transaction transaction) {
+  public void createBills(X x, Transaction transaction) {
     ChargeDateServiceInterface chargeDateService = (ChargeDateServiceInterface) x.get("chargeDateService");
     DAO billDAO = (DAO) x.get("billDAO");
     DAO errorCodeDAO = (DAO) x.get("errorCodeDAO");
     DAO errorFeeDAO = (DAO) x.get("localErrorFeeDAO");
-    DAO transactionDAO = (DAO) x.get("localTransactionDAO");
-    Bill bill = new Bill();
 
     Long errorCode = transaction.calculateErrorCode();
     if ( errorCode == 0 ) {
@@ -63,6 +70,7 @@ public class BillingService implements BillingServiceInterface {
 
     Date chargeDate = chargeDateService.findChargeDate(transaction.getLastStatusChange());
     Map<ChargedTo, List<BillingFee>> billingMap = new HashMap<>();
+    Transaction originatingSummaryTxn = transaction.findRoot(x);
 
     for ( int i = 0; i < sink.getArray().size(); i++ ) {
       BillingFee billingFee = new BillingFee();
@@ -82,6 +90,7 @@ public class BillingService implements BillingServiceInterface {
 
     for ( ChargedTo chargedTo : billingMap.keySet() ) {
       List<BillingFee> billingFeeList = billingMap.get(chargedTo);
+      Bill bill = new Bill();
       bill.setChargedTo(chargedTo);
       bill.setErrorCode(errorCodeObj.getId());
       bill.setFees(billingFeeList.toArray(new BillingFee[billingFeeList.size()]));
@@ -90,6 +99,9 @@ public class BillingService implements BillingServiceInterface {
       bill.setStatus(transaction.getStatus());
       bill.setStatusHistory(transaction.getStatusHistory());
 
+      if ( originatingSummaryTxn instanceof SummaryTransaction ) {
+        bill.setOriginatingSummaryTransaction(originatingSummaryTxn.getId());
+      }
       if ( chargedTo.equals(ChargedTo.PAYER) ) {
         setupChargeToUser(x, transaction.getSourceAccount(), bill);
       } else {
