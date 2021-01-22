@@ -69,6 +69,7 @@ foam.CLASS({
           }
           this.add(net.nanopay.ui.wizard.ContactWizardDetailView.create({
             model: 'net.nanopay.contacts.Contact',
+            wizardView: 'net.nanopay.contacts.ui.ContactWizardView',
             data: this.selection,
             controllerMode: controllerMode_,
             isEdit: true

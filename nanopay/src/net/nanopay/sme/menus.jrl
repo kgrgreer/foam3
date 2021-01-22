@@ -41,7 +41,7 @@ p({
       "menu": "mainmenu.contacts",
       "view": {
         "class": "foam.nanos.menu.MenuToolBar",
-        "classification": "submenu",
+        "classification": "submenu.contact",
         "parent": "sme",
         "title": "Add contact"
       }
@@ -122,8 +122,10 @@ p({
   "handler": {
     "class": "foam.nanos.menu.ViewMenu",
     "view": {
-      "class": "net.nanopay.ui.wizard.ContactWizardDetailView",
-      "model": "net.nanopay.contacts.ui.modal.BusinessNameSearch"
+      "class": "net.nanopay.ui.wizard.WizardController",
+      "wizardView": "net.nanopay.contacts.ui.BusinessNameSearchWizardView",
+      "model": "net.nanopay.contacts.ui.modal.BusinessNameSearch",
+      "redirectMenu": "mainmenu.contacts"
     }
   }
 })
@@ -138,8 +140,10 @@ p({
   "handler": {
     "class": "foam.nanos.menu.ViewMenu",
     "view": {
-      "class": "net.nanopay.ui.wizard.ContactWizardDetailView",
-      "model": "net.nanopay.contacts.ui.modal.PaymentCodeSearch"
+      "class": "net.nanopay.ui.wizard.WizardController",
+      "wizardView": "net.nanopay.contacts.ui.PaymentCodeSearchWizardView",
+      "model": "net.nanopay.contacts.ui.modal.PaymentCodeSearch",
+      "redirectMenu": "mainmenu.contacts"
     }
   }
 })
@@ -154,8 +158,10 @@ p({
   "handler": {
     "class": "foam.nanos.menu.ViewMenu",
     "view": {
-      "class": "net.nanopay.ui.wizard.ContactWizardDetailView",
-      "model": "net.nanopay.model.Invitation"
+      "class": "net.nanopay.ui.wizard.WizardController",
+      "wizardView": "net.nanopay.contacts.ui.InvitationWizardView",
+      "model": "net.nanopay.model.Invitation",
+      "redirectMenu": "mainmenu.contacts"
     }
   }
 })
@@ -170,8 +176,10 @@ p({
   "handler": {
     "class": "foam.nanos.menu.ViewMenu",
     "view": {
-      "class": "net.nanopay.ui.wizard.ContactWizardDetailView",
-      "model": "net.nanopay.contacts.Contact"
+      "class": "net.nanopay.ui.wizard.WizardController",
+      "wizardView": "net.nanopay.contacts.ui.ContactWizardView",
+      "model": "net.nanopay.contacts.Contact",
+      "redirectMenu": "mainmenu.contacts"
     }
   }
 })

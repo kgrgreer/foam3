@@ -227,6 +227,24 @@ foam.CLASS({
 
   actions: [
     {
+<<<<<<< Upstream, based on development
+=======
+      name: 'addBankAccount',
+      isAvailable: function() {
+        return this.signUpStatus !== this.ContactStatus.READY && ! this.bankAccount;
+      },
+      code: function(X) {
+        X.controllerView.add(this.WizardController.create({
+          model: 'net.nanopay.contacts.Contact',
+          wizardView: 'net.nanopay.contacts.ui.ContactWizardView',
+          data: this,
+          controllerMode: foam.u2.ControllerMode.CREATE,
+          isEdit: true
+        }, X));
+      }
+    },
+    {
+>>>>>>> 43725d4 update WizardController references
       name: 'edit',
       label: 'Edit Details',
       isAvailable: function() {
@@ -235,6 +253,7 @@ foam.CLASS({
       code: function(X) {
         X.controllerView.add(this.ContactWizardDetailView.create({
           model: 'net.nanopay.contacts.Contact',
+          wizardView: 'net.nanopay.contacts.ui.ContactWizardView',
           data: this,
           controllerMode: foam.u2.ControllerMode.EDIT,
           isEdit: true
@@ -260,8 +279,10 @@ foam.CLASS({
         }, X);
         X.controllerView.add(this.ContactWizardDetailView.create({
           model: 'net.nanopay.model.Invitation',
+          wizardView: 'net.nanopay.contacts.ui.InvitationWizardView',
           data: invite,
-          controllerMode: foam.u2.ControllerMode.EDIT
+          controllerMode: foam.u2.ControllerMode.EDIT,
+          isEdit: true
         }, X))
       }
     },
