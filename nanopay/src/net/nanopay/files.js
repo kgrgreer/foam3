@@ -500,7 +500,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/SummaryTransactionDAO' },
   { name: 'net/nanopay/tx/SummaryTransactionInnerDAO' },
   { name: 'net/nanopay/tx/ReversalRequest' },
-
+  { name: 'net/nanopay/tx/TransactionRetryDAO' },
   //integration
   { name: 'net/nanopay/integration/ErrorCode' },
 

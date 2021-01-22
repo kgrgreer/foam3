@@ -1144,6 +1144,7 @@ var classes = [
 
   // Transaction Reversal
   'net.nanopay.tx.ReversalRequest',
+  'net.nanopay.tx.TransactionRetryDAO',
 
   // Treviso
   'net.nanopay.country.br.NatureCode',
