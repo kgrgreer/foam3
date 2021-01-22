@@ -19,6 +19,7 @@ package net.nanopay.tx.billing;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.core.FOAMException;
+import foam.core.FObject;
 import foam.core.X;
 import foam.nanos.auth.User;
 import java.util.List;
@@ -84,6 +85,7 @@ public class BillingService implements BillingServiceInterface {
         billingMap.get(errorFee.getChargedTo()).add(billingFee);
       } else {
         List<BillingFee> billingFeeList = new ArrayList<>();
+        billingFeeList.add(billingFee);
         billingMap.put(errorFee.getChargedTo(), billingFeeList);
       }
     }
@@ -109,6 +111,14 @@ public class BillingService implements BillingServiceInterface {
       }
       billDAO.put(bill);
     }
+  }
+
+  @Override
+  public List getBills(X x, String transactionId) {
+    DAO transactionDAO = (DAO) x.get("localTransactionDAO");
+    SummaryTransaction txn = (SummaryTransaction) transactionDAO.find(transactionId);
+    ArraySink billSink = (ArraySink) txn.getBills(x).select(new ArraySink());
+    return billSink.getArray();
   }
 
   private void setupChargeToUser(X x, String accountId, Bill bill) {

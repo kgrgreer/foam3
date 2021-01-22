@@ -37,6 +37,20 @@ foam.INTERFACE({
           type: 'net.nanopay.tx.model.Transaction'
         }
       ]
+    },
+    {
+      name: 'getBills',
+      type: 'List',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'transactionId',
+          type: 'String'
+        }
+      ]
     }
   ]
 });

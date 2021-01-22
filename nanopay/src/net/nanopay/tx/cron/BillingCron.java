@@ -40,7 +40,6 @@ import static java.util.Calendar.*;
 public class BillingCron implements ContextAgent {
   @Override
   public void execute(X x) {
-    
     // fetch first day of this month and next month
     Calendar first = getInstance();
     Calendar next = getInstance();
@@ -95,6 +94,7 @@ public class BillingCron implements ContextAgent {
       }
     }
 
+    // for each userId in the billingMap generate a billing transaction
     for ( Long userId : billingMap.keySet() ) {
       ArraySink userAccountSink = (ArraySink) ((DAO) x.get("localAccountDAO"))
         .where(AND(EQ(Account.OWNER, userId), EQ(Account.DENOMINATION, "CAD")))
@@ -131,7 +131,6 @@ public class BillingCron implements ContextAgent {
         ((DAO) x.get("billDAO")).put(bill);
       }
     }
-
-
   }
+
 }
