@@ -534,6 +534,7 @@ foam.CLASS({
       code: function(X) {
         X.controllerView.add(this.WizardController.create({
           model: 'net.nanopay.contacts.Contact',
+          wizardView: 'net.nanopay.contacts.ui.ContactWizardView',
           data: this,
           controllerMode: foam.u2.ControllerMode.CREATE,
           isEdit: true
@@ -549,6 +550,7 @@ foam.CLASS({
       code: function(X) {
         X.controllerView.add(this.WizardController.create({
           model: 'net.nanopay.contacts.Contact',
+          wizardView: 'net.nanopay.contacts.ui.ContactWizardView',
           data: this,
           controllerMode: foam.u2.ControllerMode.EDIT,
           isEdit: true
@@ -574,8 +576,10 @@ foam.CLASS({
         }, X);
         X.controllerView.add(this.WizardController.create({
           model: 'net.nanopay.model.Invitation',
+          wizardView: 'net.nanopay.contacts.ui.InvitationWizardView',
           data: invite,
-          controllerMode: foam.u2.ControllerMode.EDIT
+          controllerMode: foam.u2.ControllerMode.EDIT,
+          isEdit: true
         }, X))
       }
     },

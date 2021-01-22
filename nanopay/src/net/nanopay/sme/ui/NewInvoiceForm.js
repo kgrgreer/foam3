@@ -541,6 +541,7 @@ foam.CLASS({
                   self.userDAO.find(self.invoice.contactId).then((contact)=>{
                     self.add(self.WizardController.create({
                       model: 'net.nanopay.contacts.Contact',
+                      wizardView: 'net.nanopay.contacts.ui.ContactWizardView',
                       data: contact,
                       controllerMode: foam.u2.ControllerMode.CREATE,
                       onClose: self.checkUser.bind(self)
@@ -796,6 +797,7 @@ foam.CLASS({
         var self = X.data;
         X.ctrl.add(net.nanopay.ui.wizard.WizardController.create({
           model: 'net.nanopay.contacts.Contact',
+          wizardView: 'net.nanopay.contacts.ui.ContactWizardView',
           data$: self.addedContact$,
           controllerMode: foam.u2.ControllerMode.CREATE,
           onClose: self.setContactIdOnContactAdd.bind(self)
