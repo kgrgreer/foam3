@@ -4,6 +4,7 @@ p({
   "lazy": false,
   "service": {
     "class": "foam.nanos.jetty.HttpServer",
+    "enableHttp": true,
     "port": 8080,
     "enableHttps": true,
     "httpsPort": 8443,
@@ -15,6 +16,7 @@ p({
       "class": "foam.nanos.servlet.ServletMapping",
       "servletObject": {
         "class": "foam.nanos.servlet.VirtualHostRoutingServlet",
+        "liveScriptBundlerDisabled": true,
         "isResourceStorage": true
       },
       "pathSpec": "/welcome"

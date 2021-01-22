@@ -21,9 +21,9 @@ ST=Ontario
 localityName=Toronto
 O=nanopay.net
 organizationalUnitName=R&D
-CN=nanopay.net
 emailAddress=support@nanopay.net
 "
+CN=nanopay.net
 
 # Generate a private key
 openssl genrsa -out "$DOMAIN.key" 2048
@@ -39,16 +39,18 @@ keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
 extendedKeyUsage = serverAuth, clientAuth
 subjectAltName = @alt_names
 [alt_names]
-DNS.1 = *.nanopay.net
-DNS.2 = *.development.nanopay.net
-DNS.3 = *.development.medusa.nanopay.net
-DNS.4 = *.backoffice.development.nanopay.net
-DNS.5 = *.backoffice.development.medusa.nanopay.net
-DNS.6 = localhost
+DNS.1 = localhost
+DNS.2 = localhost.localdomain
+DNS.3 = *.development.nanopay.net
+DNS.4 = *.development.medusa.nanopay.net
+DNS.5 = *.backoffice.development.nanopay.net
+DNS.6 = *.backoffice.development.medusa.nanopay.net
 DNS.7 = ablii
 DNS.8 = bpp
 DNS.9 = intuit
 DNS.10 = treviso
+IP.1 = 127.0.0.1
+IP.2 = ::1
 EOF
 
 # Create the signed certificate
