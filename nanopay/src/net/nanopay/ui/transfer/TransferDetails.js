@@ -225,8 +225,8 @@ foam.CLASS({
           dao: X.data.publicUserDAO,
           objToChoice: function(payee) {
             var username = payee.firstName + ' ' + payee.lastName;
-            if ( X.data.invoiceMode && payee.businessName ) {
-              username = payee.businessName;
+            if ( X.data.invoiceMode && ( payee.organization || payee.businessName ) ) {
+              username = payee.organization || payee.businessName;
             }
             return [payee.id, username + ' - (' + payee.email + ')'];
           }

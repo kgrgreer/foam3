@@ -76,7 +76,7 @@ foam.CLASS({
       name: 'issuedDate',
       label: 'Effective Date',
       tableCellFormatter: function(date) {
-        this.add(date ? date.toISOString().substring(0, 10) : '');
+        this.add(date ? date.toLocaleDateString(foam.locale) : '');
       }
     },
     {
@@ -84,7 +84,7 @@ foam.CLASS({
       name: 'expiryDate',
       documentation: 'Document expiry date after which user must re-accept document',
       tableCellFormatter: function(date) {
-        this.add(date ? date.toISOString().substring(0, 10) : '');
+        this.add(date ? date.toLocaleDateString(foam.locale) : '');
       }
     },
     {

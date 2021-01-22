@@ -1,3 +1,71 @@
+// treviso service provider capability and permissions from running MSP setup
+p({
+  class: "foam.nanos.auth.ServiceProvider",
+  id: "treviso",
+  description: "treviso",
+  permissionsGranted: [
+    "net.nanopay.partner.treviso.trevisounlockpaymenttermsandconditions.section.reviewAgreementDocumentsSection"
+  ]
+})
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "trevisoMenuCapability",
+  version: "0",
+  enabled: true,
+  permissionsGranted: []
+})
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "trevisoPlannerCapability",
+  version: "0",
+  enabled: true,
+  permissionsGranted: [
+    "rule.read.2775abef-05d4-4460-bea8-7a70e9d544af",
+    "rule.read.519e2a68-a914-444f-b050-2ce01f29fe24"
+  ]
+})
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "trevisoCountryCapability",
+  version: "0",
+  enabled: true,
+  permissionsGranted: [
+    "country.read.BR"
+  ]
+})
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "trevisoCorridorCapability",
+  version: "0",
+  enabled: true,
+  permissionsGranted: [
+    "paymentprovidercorridor.read.afex",
+    "paymentprovidercorridor.read.treviso",
+    "paymentprovidercorridor.source.read.treviso",
+    "paymentprovidercorridor.target.read.afex"
+  ]
+})
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "trevisoCurrencyCapability",
+  version: "0",
+  enabled: true,
+  permissionsGranted: [
+    "currency.read.USD",
+    "currency.read.CAD"
+  ]
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "trevisoBusinessMenuCapability",
+  name: "treviso business registration granted menu",
+  version: "0",
+  enabled: true,
+  visible: false,
+  permissionsGranted: []
+})
+
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-14",
@@ -30,17 +98,45 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
+  "id":"8ad3c898-db232-1ea-87d0-0242ac130z0",
+  "name":"Date of Issue",
+  "description":"Date of issue of an identification document",
+  "of":"net.nanopay.crunch.document.DateOfIssue",
+  "version":"0",
+  "duration":540,
+  "gracePeriod":7,
+  "enabled":true,
+  "associatedEntity":1
+})
+p({
+  "class":"foam.nanos.crunch.Capability",
   "id":"8ad3c898-db32-11ea-87d0-0242ac130003",
   "name":"Identification",
   "description":"""
-    Please attach a copy of a piece of government issued identification which shows your full name, picture, and CPF number.
+    Provide a copy of a piece of government issued identification which shows your full name, picture, and CPF number.
   """,
-  "of":"net.nanopay.crunch.document.ExpirableDocument",
+  "of":"net.nanopay.crunch.document.Document",
   "version":"0",
-  "duration":3650,
-  "gracePeriod":7,
   "enabled":true,
   "associatedEntity": 1
+})
+
+// These capabilities do not have approval requests in Treviso
+// and the of is set to BRBusinessOwnershipData instead of generic BusinessOwnershipData
+p({
+  class:"foam.nanos.crunch.Capability",
+  id:"554af38a-8225-87c8-dfdf-eeb15f71215f-7-br",
+  name:"Business ownership",
+  of:"net.nanopay.partner.treviso.onboarding.BRBusinessOwnershipData",
+  reviewRequired:false,
+  enabled:true,
+  daokey:"convertOwnerObjectDAO"
+})
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-6-5",
+  "of":"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData",
+  "reviewRequired":false
 })
 
 p({class:"net.nanopay.payment.PaymentProviderCorridor",provider:"AFEX",sourceCountry:"CA",targetCountry:"CA",sourceCurrencies:["CAD","USD"],targetCurrencies:["CAD","USD"],id:"1cfb91e7-9c63-6e8a-b848-5b0656feeb59",name:"CA-CA Corridor - AFEX",enabled:true,availabilityPredicate:{class:"foam.mlang.predicate.True"},lastModified:1603233049278,lastModifiedBy:1})
@@ -715,9 +811,113 @@ p({class:"net.nanopay.payment.PaymentProviderCorridor",provider:"AFEX",sourceCou
 p({class:"net.nanopay.payment.PaymentProviderCorridor",provider:"AFEX",sourceCountry:"SE",targetCountry:"ES",sourceCurrencies:["EUR"],targetCurrencies:["EUR"],id:"3e9e304b-7630-cbf0-f50b-42e5185208db",name:"SE-ES Corridor - AFEX",enabled:true,availabilityPredicate:{class:"foam.mlang.predicate.True"},lastModified:1603233050281,lastModifiedBy:1})
 p({class:"net.nanopay.payment.PaymentProviderCorridor",provider:"AFEX",sourceCountry:"ES",targetCountry:"SE",sourceCurrencies:["EUR"],targetCurrencies:["EUR"],id:"e6560134-b2cb-9576-7fb3-7bb98ef8c02c",name:"ES-SE Corridor AFEX",enabled:true,availabilityPredicate:{class:"foam.mlang.predicate.True"},lastModified:1603233050285,lastModifiedBy:1})
 p({class:"net.nanopay.payment.PaymentProviderCorridor",provider:"AFEX",sourceCountry:"ES",targetCountry:"ES",sourceCurrencies:["EUR"],targetCurrencies:["EUR"],id:"d0c28a73-e766-70da-7301-86123e744e65",name:"ES-ES Corridor - AFEX",enabled:true,availabilityPredicate:{class:"foam.mlang.predicate.True"},lastModified:1603233050298,lastModifiedBy:1})
+p({class:"net.nanopay.payment.PaymentProviderCorridor",provider:"AFEX",sourceCountry:"US",targetCountry:"CA",sourceCurrencies:["USD"],targetCurrencies:["USD"],id:"62eee7df-7a8b-46cd-841d-9884572df53f",name:"US-CA Corridor - AFEX",enabled:true,availabilityPredicate:{class:"foam.mlang.predicate.True"},lastModified:1603233049462,lastModifiedBy:1})
 
 
 // Treviso config
-p({class:"net.nanopay.payment.PaymentProviderCorridor",ranking:1,provider:"Treviso",sourceCountry:"BR",targetCountry:"US",sourceCurrencies:["BRL"],targetCurrencies:["USD"],id:"f9c7ce45-c076-4f55-93d2-867c011ee6ca",name:"BR-USD Corridor - Treviso",enabled:true,visible:true,lastModified:1602783690373,lastModifiedBy:1})
-p({class:"net.nanopay.payment.PaymentProviderCorridor",ranking:2,provider:"Treviso",sourceCountry:"BR",targetCountry:"DE",sourceCurrencies:["BRL"],targetCurrencies:["EUR"],id:"ddcdada6-90de-4729-aa22-94a60b629faf",name:"BR-EUR Corridor - Treviso",enabled:true,visible:true,lastModified:1602783690373,lastModifiedBy:1})
-p({class:"net.nanopay.payment.PaymentProviderCorridor",ranking:3,provider:"Treviso",sourceCountry:"BR",targetCountry:"GB",sourceCurrencies:["BRL"],targetCurrencies:["GBP"],id:"5466bee2-1639-461d-a8d4-84c152cfb235",name:"BR-GBP Corridor - Treviso",enabled:true,visible:true,lastModified:1602783690373,lastModifiedBy:1}) 
+p({class:"net.nanopay.payment.PaymentProviderCorridor",ranking:1,provider:"Treviso",sourceCountry:"BR",targetCountry:"US",sourceCurrencies:["BRL"],targetCurrencies:["USD"],id:"f9c7ce45-c076-4f55-93d2-867c011ee6ca",name:"BR-USD Corridor - Treviso",enabled:true,"visibilityPredicate": { class: "foam.mlang.predicate.True" },lastModified:1602783690373,lastModifiedBy:1})
+p({class:"net.nanopay.payment.PaymentProviderCorridor",ranking:2,provider:"Treviso",sourceCountry:"BR",targetCountry:"DE",sourceCurrencies:["BRL"],targetCurrencies:["EUR"],id:"ddcdada6-90de-4729-aa22-94a60b629faf",name:"BR-EUR Corridor - Treviso",enabled:true,"visibilityPredicate": { class: "foam.mlang.predicate.True" },lastModified:1602783690373,lastModifiedBy:1})
+p({class:"net.nanopay.payment.PaymentProviderCorridor",ranking:3,provider:"Treviso",sourceCountry:"BR",targetCountry:"GB",sourceCurrencies:["BRL"],targetCurrencies:["GBP"],id:"5466bee2-1639-461d-a8d4-84c152cfb235",name:"BR-GBP Corridor - Treviso",enabled:true,"visibilityPredicate": { class: "foam.mlang.predicate.True" },lastModified:1602783690373,lastModifiedBy:1})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"777af38a-8225-87c8-dfdf-eeb15f71215f-123",
+  "name":"Complete your signing officer information",
+  "of":"net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso",
+  "description":"Authorization to sign on behalf of the business",
+  "version":"0",
+  "visibilityPredicate":  { class: "foam.mlang.predicate.True" },
+  "enabled":true,
+  "icon":"/images/capabilityIcons/SigningOfficerIcon.svg",
+  "daoKey":"userDAO",
+  "contextDAOFindKey":"subject.realuser",
+  "associatedEntity":2,
+  "keywords":["featured"],
+  "permissionsGranted":[
+    "certifydatareviewed.rw.reviewed",
+    "user.invoice.pay",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.certifyownerspercent.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.dualpartyagreementcad.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.tripartyagreementcad.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.usdafexterms.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.nanopayinternationalpaymentscustomeragreement.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxmassachusettsdisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxnewyorkdisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxwashingtondisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxcaliforniadisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxarizonadisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.tripartyagreementusd.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxcoloradodisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.abliitermsandconditions.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.abliiprivacypolicy.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.cadafexterms.section.reviewAgreementDocumentsSection"
+  ],
+  "permissionsIntercepted": [
+    "certifydatareviewed.rw.reviewed",
+    "user.invoice.pay",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.certifydirectorslisted.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.certifyownerspercent.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.dualpartyagreementcad.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.tripartyagreementcad.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.usdafexterms.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.nanopayinternationalpaymentscustomeragreement.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxmassachusettsdisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxnewyorkdisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxwashingtondisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxcaliforniadisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxarizonadisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.tripartyagreementusd.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.afxcoloradodisclosure.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.abliitermsandconditions.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.abliiprivacypolicy.section.reviewAgreementDocumentsSection",
+    "net.nanopay.crunch.acceptancedocuments.capabilities.cadafexterms.section.reviewAgreementDocumentsSection"
+  ],
+  "interceptIf":{ "class":"net.nanopay.crunch.predicate.SigningOfficerCapabilityInterceptPredicate" },
+  "availabilityPredicate":
+  {
+    "class":"foam.mlang.predicate.And",
+    "args": [
+      { "class":"net.nanopay.crunch.predicate.SigningOfficerPrivilegesRequested" },
+      {
+        "class":"net.nanopay.crunch.predicate.CheckUserCountry",
+        "country":"BR"
+      }
+    ]
+  },
+  "visibilityPredicate": {
+    "class":"foam.mlang.predicate.Not",
+    "arg1": {
+      "class":"foam.nanos.crunch.predicate.CapabilityGranted",
+      "capabilityId":"777af38a-8225-87c8-dfdf-eeb15f71215f-123",
+      "subjectFromUCJ":false
+    }
+  },
+  "wizardConfig": {
+    "class": "foam.u2.crunch.EasyCrunchWizard",
+    "allowSkipping": false
+  },
+  "requirementViewTitle":"Have your signing officer documents ready. You can save your progress and come back later."
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "treviso-tx-rules",
+  name: "Enable Treviso Transaction Rules",
+  version: "0",
+  enabled: true,
+  permissionsGranted: [
+    "rule.read.68afcf0c-c718-98f8-0841-75e97a3ad16d31"
+  ]
+})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "treviso-tx-fees",
+  name: "Enable Treviso Fees",
+  version: "0",
+  enabled: true,
+  permissionsGranted: [
+    "rule.read.91194da9-8391-436a-8468-fa2c706126b8"
+  ]
+})

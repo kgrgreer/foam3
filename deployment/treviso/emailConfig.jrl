@@ -1,0 +1,7 @@
+p({
+  "class":"foam.nanos.notification.email.EmailConfig",
+  "spid":"treviso",
+  "from":"noreply@treviso.com.br",
+  "displayName":"Treviso",
+  "replyTo":"noreply@treviso.com.br"
+})

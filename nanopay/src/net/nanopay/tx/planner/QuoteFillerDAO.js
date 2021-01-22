@@ -35,8 +35,19 @@ foam.CLASS({
     'net.nanopay.account.DigitalAccount',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.TransactionQuote',
+    'net.nanopay.account.SecuritiesAccount',
     'foam.util.SafetyUtil',
-    'foam.nanos.auth.LifecycleState'
+    'foam.nanos.auth.LifecycleState',
+    'static foam.mlang.MLang.EQ',
+    'static foam.mlang.MLang.OR',
+  ],
+
+  properties: [
+    {
+      name: 'reserveAccountSpid',
+      class: 'String',
+      value: 'nanopay'
+    }
   ],
 
   methods: [
@@ -47,31 +58,47 @@ foam.CLASS({
         Logger logger = (Logger) x.get("logger");
         TransactionQuote quote = (TransactionQuote) obj;
         Transaction txn = quote.getRequestTransaction();
+        DAO dao = (DAO) getX().get("localAccountDAO");
+        User payer = null;
+
+        if ( txn.getPayerId() != 0 ) {
+          payer = (User) ((DAO) x.get("bareUserDAO")).find_(x, txn.getPayerId());
+        }
+        else {
+          if (txn.getSourceAccount() != null) {
+            Account source = (Account) ((DAO) x.get("accountDAO")).find_(x, txn.getSourceAccount());
+            payer = (User) source.findOwner(x);
+          }
+        }
+        if (payer == null ) { // we require a user to get the spid, no way to get user = failure to plan.
+          ((Logger) x.get("logger")).error("Payer not found", txn.getId(), "source", txn.getSourceAccount(), "payer", txn.getPayerId());
+          throw new ValidationException("Payer not found");
+        }
+        dao = dao.where(
+          OR(
+            EQ(Account.SPID, getReserveAccountSpid()),
+            EQ(Account.SPID, payer.getSpid())
+          )
+        );
+        x = x.put("localAccountDAO", dao);
 
         // ---- set source account
         Account account = txn.findSourceAccount(x);
         if ( account == null ) {
-          User user = (User) ((DAO) x.get("bareUserDAO")).find_(x, txn.getPayerId());
-          if ( user == null ) {
-            ((Logger) x.get("logger")).error("Payer not found", txn.getId(), "source", txn.getSourceAccount(), "payer", txn.getPayerId());
-            throw new ValidationException("Payer not found");
-          }
-          account = DigitalAccount.findDefault(getX(), user, txn.getSourceCurrency());
+          account = DigitalAccount.findDefault(x, payer, txn.getSourceCurrency());
           txn.setSourceAccount(account.getId());
-          quote.setSourceAccount(account);
-        } else {
-          quote.setSourceAccount(account);
         }
+        quote.setSourceAccount(account);
 
         // ---- set destination account
-        Account destAccount = txn.findDestinationAccount(x);
+        Account destAccount = txn.findDestinationAccount(x); //context looking in admin, but spid+nanopay constrained.
         if ( destAccount == null ) {
-          User user = (User) ((DAO) x.get("bareUserDAO")).find_(x, txn.getPayeeId());
-          if ( user == null ) {
+          User payee = (User) ((DAO) x.get("bareUserDAO")).find_(x, txn.getPayeeId());
+          if ( payee == null ) {
             ((Logger) x.get("logger")).error("Payee not found", txn.getId(), "source", txn.getDestinationAccount(), "payee", txn.getPayeeId());
             throw new ValidationException("Payee not found");
           }
-          DigitalAccount accountDigital = DigitalAccount.findDefault(getX(), user, txn.getDestinationCurrency());
+          DigitalAccount accountDigital = DigitalAccount.findDefault(x, payee, txn.getDestinationCurrency()); //context looking in admin, but spid+nanopay constrained.
           
           // Once Ablii has digital account support, will need to make AFEX support CAD digital accounts as well.
           // AFEX planner will know which trust account to use for AFEXTransaction and then add on
@@ -81,7 +108,7 @@ foam.CLASS({
           //   - DigitalTransaction for : CA-CAD -> CA-Digital
           LiquiditySettings digitalAccLiquidity = accountDigital.findLiquiditySetting(x);
           if ( digitalAccLiquidity == null || (! digitalAccLiquidity.getHighLiquidity().getEnabled()) ) {
-            Account bankAccount = BankAccount.findDefault(x, user, txn.getDestinationCurrency());
+            Account bankAccount = BankAccount.findDefault(x, payee, txn.getDestinationCurrency());
             if ( bankAccount != null ) {
               destAccount = bankAccount;
             }
@@ -115,6 +142,10 @@ foam.CLASS({
         }
         txn.validate(x); // validate the request txn 1st
         txn.freeze();
+        if ( quote.getSourceAccount() instanceof SecuritiesAccount &&
+        quote.getDestinationAccount() instanceof SecuritiesAccount ) {
+         throw new ValidationException(" Securities quotes are not currently accepted here"); //TODO: for now just block securities. will need to make sure they dont hit the regular transaction planners. maybe by redirection to a rule engine that only has securities rules.
+        }
         return getDelegate().put_(x, quote);
       `
     },

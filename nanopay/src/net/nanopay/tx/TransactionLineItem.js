@@ -25,6 +25,10 @@ foam.CLASS({
   package: 'net.nanopay.tx',
   name: 'TransactionLineItem',
 
+  imports: [
+    'currencyDAO'
+  ],
+
   javaImports: [
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
@@ -81,17 +85,21 @@ foam.CLASS({
     {
       name: 'amount',
       class: 'UnitValue',
+      unitPropName: 'currency',
+      view: { class: 'net.nanopay.liquidity.ui.LiquidCurrencyView' },
       unitPropValueToString: async function(x, val, unitPropName) {
-        var formattedAmount = val / 100;
-        return '$' + x.addCommas(formattedAmount.toFixed(2));
+        var unitProp = await x.currencyDAO.find(unitPropName);
+        if ( unitProp )
+          return unitProp.format(val);
+        return val;
       },
-      tableCellFormatter: function(amount, X) {
-        var formattedAmount = amount/100;
-        this
-          .start()
-            .add('$', X.addCommas(formattedAmount.toFixed(2)))
-          .end();
-      }
+      tableCellFormatter: function(value, obj) {
+        obj.currencyDAO.find(obj.currency).then(function(c) {
+          if ( c ) {
+            this.add(c.format(value));
+          }
+        }.bind(this));
+      },
     },
     {
       documentation: 'Used to format amount',
@@ -169,6 +177,12 @@ foam.CLASS({
       name: 'deepClone',
       type: 'FObject',
       javaCode: 'return this;'
+    },
+    {
+      name: 'showLineItem',
+      code: function() {
+        return true;
+      }
     }
   ]
 });

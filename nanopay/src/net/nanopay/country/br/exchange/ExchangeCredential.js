@@ -35,5 +35,10 @@ foam.CLASS({
       class: 'String',
        name: 'exchangePassword'
     },
+    {
+      class: 'Long',
+      name: 'defaultLimit',
+      value: 1000000
+    }
   ]
 });

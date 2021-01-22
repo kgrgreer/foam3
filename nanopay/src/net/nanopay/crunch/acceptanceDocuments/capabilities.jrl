@@ -84,7 +84,7 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-10",
-  "name":"USD AFEX Terms",
+  "name":"AFEX Terms and Conditions",
   "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms",
   "version":"0",
   "enabled":true
@@ -194,6 +194,22 @@ p({
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215e-24",
   "name":"US Cancellation Agreement",
   "of":"net.nanopay.crunch.acceptanceDocuments.capabilities.USCancellationAgreement",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"e9e1567f-ef12-4c4e-b8c2-fa614a177adb",
+  "name":"US Pad Capture",
+  "version":"0",
+  "enabled":true
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"67d9a3c7-6243-4b80-a8a9-9fe0c05db6d0",
+  "name":"CA Pad Capture",
   "version":"0",
   "enabled":true
 })

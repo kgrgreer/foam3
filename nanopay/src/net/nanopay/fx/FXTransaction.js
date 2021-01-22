@@ -53,7 +53,7 @@ Stores all Exchange Rate info.`,
     {
       name: 'fxRate',
       class: 'Double',
-      section: 'amountSelection',
+      section: 'basicInfo',
       visibility: function(fxRate) {
         if ( ! fxRate || fxRate == 1 ) return foam.u2.DisplayMode.HIDDEN;
         return foam.u2.DisplayMode.RO;
@@ -69,7 +69,8 @@ Stores all Exchange Rate info.`,
     },
     {
       name: 'fxExpiry',
-      class: 'DateTime'
+      class: 'DateTime',
+      section: 'basicInfo'
     },
     {
       name: 'accepted',
@@ -78,16 +79,19 @@ Stores all Exchange Rate info.`,
     },
     {
       name: 'fxQuoteId', // or fxQuoteCode
-      class: 'String'
+      class: 'String',
+      section: 'basicInfo'
     },
     {
       name: 'fxFees',
       class: 'FObjectProperty',
-      of: 'net.nanopay.fx.FeesFields'
+      of: 'net.nanopay.fx.FeesFields',
+      section: 'basicInfo'
     },
     {
       name: 'paymentMethod',
-      class: 'String'
+      class: 'String',
+      section: 'basicInfo'
     }
   ],
 

@@ -31,7 +31,7 @@ foam.CLASS({
   sections: [
     {
       name: 'reviewAgreementDocumentsSection',
-      title: 'Review and accept the terms of service',
+      title: 'Review and accept the terms and conditions',
       navTitle: 'Terms and Conditions',
       permissionRequired: false
     }
@@ -47,9 +47,9 @@ foam.CLASS({
       value: 'I agree to '
     },
     {
-      name: 'link',
+      name: 'fileId',
       factory: function() {
-        return '/service/httpFileService/61ee89ca-19ec-d8fc-0306-380657a38949?sessionId=' + localStorage['defaultSession'];
+        return '61ee89ca-19ec-d8fc-0306-380657a38949';
       }
     },
     {

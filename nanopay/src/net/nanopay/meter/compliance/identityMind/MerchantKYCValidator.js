@@ -40,14 +40,15 @@ foam.CLASS({
           public void execute(X x) {
             Business business = (Business) obj;
             IdentityMindService identityMindService = (IdentityMindService) x.get("identityMindService");
-            Map <String, Object> memoMap = fetchMemos(x, false, business.getId(), "Dow Jones Entity");
+            Map <String, Object> memoMap = identityMindService.fetchMemos(x, false, business.getId(), "Dow Jones Entity");
             IdentityMindResponse response = identityMindService.evaluateMerchant(x, business, memoMap);
             ComplianceValidationStatus status = response.getComplianceValidationStatus();
 
             requestApproval(x,
               new ComplianceApprovalRequest.Builder(x)
                 .setObjId(business.getId())
-                .setDaoKey("localUserDAO")
+                .setDaoKey("userDAO")
+                .setServerDaoKey("localUserDAO")
                 .setCauseId(response.getId())
                 .setCauseDaoKey("identityMindResponseDAO")
                 .setStatus(getApprovalStatus(status))

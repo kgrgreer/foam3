@@ -110,7 +110,9 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
 
   @Override
   public CreateTradeResponse createTrade(CreateTradeRequest request, String spid) {
-    return null;
+    CreateTradeResponse response = new CreateTradeResponse();
+    response.setTradeNumber(3);
+    return response;
   }
 
   @Override
@@ -166,5 +168,12 @@ public class AFEXServiceMock extends ContextAwareSupport implements AFEX {
   @Override
   public ValidateInstantBenefiaryResponse validateInstantBenefiaryRequest(ValidateInstantBenefiaryRequest validateInstantBenefiary, String spid)  {
     return null;
+  }
+
+  @Override
+  public IsIbanResponse isiban(IsIbanRequest request, String spid) {
+    IsIbanResponse response = new IsIbanResponse();
+    response.setIsIban(true);
+    return response;
   }
 }

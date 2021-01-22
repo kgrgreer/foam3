@@ -1,0 +1,33 @@
+p({
+    class:"foam.nanos.auth.Group",
+    id:"external-api",
+    description:"External API group",
+    parent:"api-base",
+    defaultMenu:"view-accounts"
+})
+p({
+    class:"foam.nanos.auth.Group",
+    id:"external-api-session",
+    description:"External API session group",
+    parent:"external-api",
+    defaultMenu:"view-users"
+})
+p({
+    class:"foam.nanos.auth.Group",
+    id:"external-dev",
+    description:"External API devevopment group",
+    parent:"external-api",
+    defaultMenu:"view-accounts"
+})
+p({
+    class:"foam.nanos.auth.Group",
+    id:"external-support",
+    description:"External API support group",
+    parent:"support-base"
+})
+p({
+    class:"foam.nanos.auth.Group",
+    id:"external-sme",
+    description:"External API sme group",
+    parent:"sme"
+})

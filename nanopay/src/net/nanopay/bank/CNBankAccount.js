@@ -18,7 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.bank',
   name: 'CNBankAccount',
-  label: 'China Bank',
+  label: 'China',
   extends: 'net.nanopay.bank.BankAccount',
 
   documentation: 'China bank account information.',
@@ -37,33 +37,13 @@ foam.CLASS({
     },
     {
       name: 'denomination',
-      section: 'accountDetails',
+      section: 'accountInformation',
       gridColumns: 12,
       value: 'CNY',
     },
     {
-      name: 'swiftCode',
-      label: 'SWIFT/BIC',
-      updateVisibility: 'RO',
-      section: 'accountDetails',
-      validateObj: function(swiftCode) {
-        var regex = /^[A-z0-9a-z]{8,11}$/;
-
-        if ( swiftCode === '' ) {
-          return this.SWIFT_CODE_REQUIRED;
-        } else if ( ! regex.test(swiftCode) ) {
-          return this.SWIFT_CODE_INVALID;
-        }
-      }
-    },
-    {
       name: 'accountNumber',
       updateVisibility: 'RO',
-      view: {
-        class: 'foam.u2.tag.Input',
-        placeholder: '123456789012',
-        onKey: true
-      },
       preSet: function(o, n) {
         return /^\d*$/.test(n) ? n : o;
       },
@@ -85,16 +65,34 @@ foam.CLASS({
       }
     },
     {
-      name: 'bankCode',
-      visibility: 'HIDDEN'
+      name: 'institutionNumber',
+      updateVisibility: 'RO',
+      section: 'accountInformation',
+      validateObj: function(institutionNumber) {
+        var regex = /^[A-z0-9a-z]{4}$/;
+
+        if ( institutionNumber === '' ) {
+          return this.INSTITUTION_NUMBER_REQUIRED;
+        } else if ( ! regex.test(institutionNumber) ) {
+          return this.INSTITUTION_NUMBER_INVALID;
+        }
+      }
     },
     {
       name: 'iban',
       required: false,
-      visibility: 'HIDDEN'
+      visibility: 'HIDDEN',
+      validateObj: function(iban) {
+      },
+      javaPostSet: `
+      `
     },
     {
       name: 'desc',
+      visibility: 'HIDDEN'
+    },
+    {
+      name: 'branchId',
       visibility: 'HIDDEN'
     }
   ]

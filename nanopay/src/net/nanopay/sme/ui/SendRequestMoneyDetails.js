@@ -231,7 +231,7 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'DETAILS_SUBTITLE', message: 'Create new or choose from existing' },
+    { name: 'DETAILS_SUBTITLE', message: 'Create new payable or choose from existing' },
     { name: 'EXISTING_HEADER', message: 'Choose an existing ' },
     { name: 'DETAILS_HEADER', message: 'Invoice Details' },
     { name: 'BACK', message: 'Back to selection' },
@@ -239,6 +239,7 @@ foam.CLASS({
     { name: 'SELECT_BANK_ACCOUNT', message: 'Please select a bank account' },
     { name: 'NEW_MSG', message: 'New' },
     { name: 'EXISTING_MSG', message: 'Existing' },
+    { name: 'NEXT', message: 'Next' },
   ],
 
   methods: [
@@ -248,7 +249,7 @@ foam.CLASS({
       var existingButtonLabel = this.EXISTING_MSG;
       this.hasBackOption = false;
       // Update the next button label
-      this.nextLabel = 'Next';
+      this.nextLabel = this.NEXT;
 
       this.addClass(this.myClass())
       .startContext({ data: this })

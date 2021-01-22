@@ -401,8 +401,8 @@ foam.CLASS({
         var sourceX = x.put("subject", subject);
 
         // fetch source account
-        var sourceAccount = TransactionTestUtil.RetrieveDigitalAccount(x, sourceUser);
-        var destinationAccount = TransactionTestUtil.RetrieveDigitalAccount(x, destinationUser);
+        var sourceAccount = TransactionTestUtil.RetrieveDigitalAccount(x, sourceUser,"CAD","7ee216ae-9371-4684-9e99-ba42a5759444");
+        var destinationAccount = TransactionTestUtil.RetrieveDigitalAccount(x, destinationUser,"CAD","7ee216ae-9371-4684-9e99-ba42a5759444");
 
         // create transaction
         var transaction = new Transaction();

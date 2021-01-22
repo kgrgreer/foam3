@@ -1,0 +1,19 @@
+// Don't want this on a production system yet, but want it for testing
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "openid",
+  "authenticate": false,
+  "parameters": true,
+  "serviceScript":"""
+  return new net.nanopay.auth.openid.OpenIDWebAgent(
+    "https://accounts.google.com/o/oauth2/v2/auth",
+    "https://oauth2.googleapis.com/token",
+    "https://www.googleapis.com/oauth2/v3/certs",
+    "http://localhost:8080/service/openid",
+    "4y0b4cjUpu-OFqlKSxd4ueol",
+    "431444451658-6t95i2cqe2f6v1f3rvkq5iug3ib1vdiv.apps.googleusercontent.com",
+    "sme",
+    null
+  );
+  """
+})

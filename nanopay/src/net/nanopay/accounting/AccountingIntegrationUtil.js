@@ -204,7 +204,7 @@ foam.CLASS({
       }
 
       let columns = [
-        { header: 'Business', dataKey: 'businessName' },
+        { header: 'Business', dataKey: 'organization' },
         { header: 'Name', dataKey: 'name' },
         { header: 'Message', dataKey: 'message' }
       ];
@@ -215,7 +215,7 @@ foam.CLASS({
 
       for ( let item of mismatch ) {
         data.push({
-          businessName: item.existContact.businessName,
+          organization: item.existContact.organization,
           name: item.existContact.firstName + ' ' + item.existContact.lastName,
           message: this.getMessage(item.resultCode.name)
         });
@@ -233,7 +233,7 @@ foam.CLASS({
 
     function createContactWarningTables(contactErrors, doc) {
       let columns = [
-        { header: 'Business', dataKey: 'businessName' },
+        { header: 'Business', dataKey: 'organization' },
         { header: 'Name', dataKey: 'name' }
       ];
       for ( let key of Object.keys(contactErrors) ) {
@@ -262,7 +262,7 @@ foam.CLASS({
       let printTitle = true;
       let removeLastItem = false;
       let columns = [
-        { header: 'Business', dataKey: 'businessName' },
+        { header: 'Business', dataKey: 'organization' },
         { header: 'Name', dataKey: 'name' }
       ];
       for ( key of Object.keys(contactErrors) ) {

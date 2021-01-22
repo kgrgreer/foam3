@@ -28,19 +28,14 @@ foam.CLASS({
       background-color: white;
       padding: 12px 13px;
       box-sizing: border-box;
+      align-items: center;
     }
 
     ^image {
       display: inline-block;
-      vertical-align: middle;
       width: 32px;
       height: 32px;
       margin-right: 8px;
-    }
-
-    ^text-container {
-      display: inline-block;
-      vertical-align: middle;
     }
 
     ^text-container p {
@@ -51,6 +46,7 @@ foam.CLASS({
     ^title {
       font-weight: 900;
       color: /*%BLACK%*/ #1e1f21;
+      padding-bottom: 4px;
     }
 
     ^subtitle {

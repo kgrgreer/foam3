@@ -20,6 +20,7 @@ import net.nanopay.bank.BankAccountStatus;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.invoice.model.InvoiceStatus;
 import net.nanopay.tx.model.Transaction;
+import foam.util.SafetyUtil;
 
 public class BankAccountVerifierService
     extends    ContextAwareSupport
@@ -27,7 +28,7 @@ public class BankAccountVerifierService
   protected DAO bankAccountDAO;
 
   @Override
-  public boolean verify(X x, long bankAccountId, long randomDepositAmount)
+  public boolean verify(X x, String bankAccountId, long randomDepositAmount)
       throws RuntimeException {
     // To test auto depoit of the ablii app
     if ( randomDepositAmount == -1000000 ) {
@@ -42,7 +43,7 @@ public class BankAccountVerifierService
     PM pm = new PM(this.getClass(), "bankAccountVerify");
 
     try {
-      if (bankAccountId <= 0) {
+      if ( SafetyUtil.isEmpty(bankAccountId) ) {
         throw new RuntimeException("Invalid Bank Account Id");
       }
 

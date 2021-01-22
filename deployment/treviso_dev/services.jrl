@@ -1,6 +1,13 @@
-p({class:"foam.nanos.boot.NSpec",id:"dowjonesCredentials",service:{class:"net.nanopay.meter.compliance.dowJones.DowJonesCredentials",namespace:"18",username:"nanoAPI",password:"4ZszDP3c51Va",baseUrl:"https://djrc.api.test.dowjones.com/v1/search/"}})
-p({class:"foam.nanos.boot.NSpec",id:"securefactService",service:{class:"net.nanopay.meter.compliance.secureFact.SecurefactService",sidniUrl:"https://qa2-sidni.securefact.com/rest/v3/verifyIndividual",sidniApiKey:"NTc5MDk0MDc5OTUyNzMxMDYwNzg1NDgxMTQ3OTkwNDI4MDkwMzY4",levUrl:"https://lev3uat.securefact.com/rest/v1/lev/search",levApiKey:"ODA1NTMyNjA0MTAyNDg2NzIxMzg4NTk0MTQ4ODg0NTI1MDg4NzY4"}})
-p({class:"foam.nanos.boot.NSpec",id:"identityMindService",service:{class:"net.nanopay.meter.compliance.identityMind.IdentityMindService",baseUrl:"https://staging.identitymind.com/im",apiUser:"nanopay",apiKey:"80c264cb0c381fbc995763982b35e965f37347eb",hashingSalt:"54l73D47"}})
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"fepWebService",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.partner.treviso.api.FepWebServiceMock(x);
+  """
+})
+
 p({
   "class":"foam.nanos.boot.NSpec",
   "name":"trevisoService",
@@ -11,15 +18,16 @@ p({
 
     // Set exchange limit ($20000.00 USD)
     EXCHANGE_LIMIT = 2000000L;
+    UTILIZED_LIMIT = 1000L;
 
     mockExchange = new ExchangeClientMock(x);
-    mockExchange.getStubSearchTitular().setSearchTitularResult(
+    mockExchange.getStubSearchTitularCapFin().setSearchTitularCapFinResult(
       new ResponseTitular.Builder(x)
         .setServiceStatus(new ServiceStatus.Builder(x).setCODRETORNO(0).build())
-        .setTitular(new Titular.Builder(x).setLIMITEOP(EXCHANGE_LIMIT).build())
+        .setTitular(new Titular.Builder(x).setLIMITEOP(EXCHANGE_LIMIT).setUTILIZADO(UTILIZED_LIMIT).build())
         .build()
     );
-    return new net.nanopay.partner.treviso.TrevisoService(x, x.get("trevisoAPIService"), mockExchange);
+    return new net.nanopay.partner.treviso.TrevisoService(x, x.get("fepWebService"), mockExchange);
   """
 })
 p({
@@ -41,5 +49,14 @@ p({
         .build()
     );
     return mockExchange;
+  """
+})
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"soaWebService",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.partner.soawebservices.SoaWebServiceClientMock(x);
   """
 })

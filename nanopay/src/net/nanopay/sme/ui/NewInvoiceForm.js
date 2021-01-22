@@ -257,7 +257,7 @@ foam.CLASS({
     },
     {
       name: 'ADD_NOTE',
-      message: 'Note'
+      message: 'Notes'
     },
     {
       name: 'ADD_BANK',
@@ -334,13 +334,16 @@ foam.CLASS({
         this.invoice.invoiceFile = n;
       },
       view: function(_, X) {
+        let selectSlot = foam.core.SimpleSlot.create({value: 0});
         return foam.u2.MultiView.create({
         views: [
           foam.nanos.fs.fileDropZone.FileDropZone.create({
-            files$: X.uploadFileData$
+            files$: X.uploadFileData$,
+            selected$: selectSlot
           }, X),
           foam.nanos.fs.fileDropZone.FilePreview.create({
-            data$: X.uploadFileData$
+            data$: X.uploadFileData$,
+            selected$: selectSlot
           }, X)
         ]
         });
@@ -427,6 +430,14 @@ foam.CLASS({
       of: 'net.nanopay.bank.BankAccount',
       name: 'chosenBankAccount'
     },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.contacts.Contact',
+      name: 'addedContact',
+      factory: function() {
+        return net.nanopay.contacts.Contact.create({}, this.ctrl);
+      }
+    },
   ],
 
   methods: [
@@ -502,6 +513,7 @@ foam.CLASS({
             .startContext({ data: this.invoice })
               .start(this.invoice.CONTACT_ID, {
                 action: this.ADD_CONTACT,
+                actionData: this,
                 search: true,
                 searchPlaceholder: this.START_SEARCH,
                 mode: displayMode
@@ -527,11 +539,6 @@ foam.CLASS({
               .start().add(this.ADD_BANK).addClass('add-banking-information')
                 .on('click', async function() {
                   self.userDAO.find(self.invoice.contactId).then((contact)=>{
-                    // case of save without banking
-                    if ((net.nanopay.bank.BankAccount).isInstance(contact.createBankAccount) || contact.createBankAccount === undefined) {
-                      contact.createBankAccount = net.nanopay.bank.CABankAccount.create({ isDefault: true }, self);
-                    }
-
                     self.add(self.WizardController.create({
                       model: 'net.nanopay.contacts.Contact',
                       data: contact,
@@ -657,7 +664,7 @@ foam.CLASS({
               .end()
             .end()
             .add(this.UPLOAD_FILE_DATA)
-            .start().addClass('input-wrapper')
+            .start().addClass('input-wrapper').style({ display: 'inline-block'})
               .start().addClass('input-label').add(this.ADD_NOTE).end()
               .start( this.Invoice.NOTE, {
                 class: 'foam.u2.tag.TextArea',
@@ -684,13 +691,19 @@ foam.CLASS({
           self.showAddBank = self.type === 'payable';
         }
       });
+    },
+    function setContactIdOnContactAdd() {
+      if ( this.addedContact.id ) {
+        this.invoice.contactId = this.addedContact.id;
+      }
+      this.addedContact = undefined;
     }
   ],
 
   listeners: [
     async function onContactIdChange() {
       this.contact = await this.subject.user.contacts.find(this.invoice.contactId);
-      if ( this.contact && ( this.contact.bankAccount > 0 || this.contact.businessId > 0 ) ) {
+      if ( this.contact && ( this.contact.bankAccount || this.contact.businessId > 0 ) ) {
         if ( this.type == 'payable' )
           await this.setDefaultCurrency();
 
@@ -744,13 +757,13 @@ foam.CLASS({
       }
     },
     async function setChosenBankAccount() {
-      var isPayable = this.type === 'payable' ? true : false ;
+      var isPayable = this.type === 'payable';
 
       if ( isPayable ) {
         this.chosenBankAccount = await this.subject.user.accounts.find(
           this.AND(
             this.INSTANCE_OF(this.BankAccount),
-            this.EQ(this.BankAccount.IS_DEFAULT, true),
+            this.EQ(this.BankAccount.IS_DEFAULT, true)
           )
         );
       } else {
@@ -780,11 +793,12 @@ foam.CLASS({
       label: 'Create new contact',
       icon: 'images/plus-no-bg.svg',
       code: function(X, e) {
-        let contact = net.nanopay.contacts.Contact.create({}, X.ctrl);
+        var self = X.data;
         X.ctrl.add(net.nanopay.ui.wizard.WizardController.create({
           model: 'net.nanopay.contacts.Contact',
-          data: contact,
-          controllerMode: foam.u2.ControllerMode.CREATE
+          data$: self.addedContact$,
+          controllerMode: foam.u2.ControllerMode.CREATE,
+          onClose: self.setContactIdOnContactAdd.bind(self)
         }, X.ctrl));
       }
     },
@@ -801,7 +815,7 @@ foam.CLASS({
           X.ctrl.add(X.ctrl.SMEModal.create({}, X.ctrl).addClass('bank-account-popup').tag({
             class: 'net.nanopay.account.ui.BankAccountWizard',
             data: account,
-            useSections: ['accountDetails', 'pad']
+            useSections: ['accountInformation', 'pad']
           }));
         }
       }

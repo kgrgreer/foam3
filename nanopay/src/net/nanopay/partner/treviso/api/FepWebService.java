@@ -52,7 +52,6 @@ import org.apache.http.util.EntityUtils;
 
 public class FepWebService extends ContextAwareSupport implements FepWeb {
 
-  private TrevisoCredientials credentials;
   private CloseableHttpClient httpClient;
   private JSONParser jsonParser;
   private Logger logger;
@@ -68,22 +67,15 @@ public class FepWebService extends ContextAwareSupport implements FepWeb {
   }
 
   protected TrevisoCredientials getCredentials() {
-    if ( credentials == null ) {
-      credentials = (TrevisoCredientials) getX().get("TrevisoCredientials");
-      if ( ! isCredientialsValid() ) {
-        credentials = null;
-        logger.error(this.getClass().getSimpleName(), "Invalid credentials");
-        throw new RuntimeException("Invalid credentials" );
-      }
+    TrevisoCredientials credentials = (TrevisoCredientials) getX().get("trevisoCredientials");
+    if ( credentials == null ||
+         SafetyUtil.isEmpty(credentials.getFepWebUsername()) ||
+         SafetyUtil.isEmpty(credentials.getFepWebPassword()) ||
+         SafetyUtil.isEmpty(credentials.getFepWebApi()) ) {
+      logger.error(this.getClass().getSimpleName(), "Invalid credentials");
+      throw new RuntimeException("Invalid credentials");
     }
     return credentials;
-  }
-
-  protected boolean isCredientialsValid() {
-    return credentials != null &&
-      ! SafetyUtil.isEmpty(credentials.getFepWebUsername()) &&
-      ! SafetyUtil.isEmpty(credentials.getFepWebPassword()) &&
-      ! SafetyUtil.isEmpty(credentials.getFepWebApi());
   }
 
   protected CloseableHttpClient getHttpClient() {
@@ -266,6 +258,11 @@ public class FepWebService extends ContextAwareSupport implements FepWeb {
     try {
       String endpoint = getCredentials().getFepWebApi() + "entities/save";
       CloseableHttpResponse httpResponse = sendPost(endpoint, getJsonMessage(request));
+      if ( httpResponse.getStatusLine().getStatusCode() / 100 == 2 ) {
+        FepWebResponse res = new FepWebResponse();
+        res.setCode(0);
+        return res;
+      }
       return (FepWebResponse) jsonParser.parseString(parseHttpResponse(httpResponse, endpoint), FepWebResponse.class);
     } catch (Exception e) {
       logger.error(e);

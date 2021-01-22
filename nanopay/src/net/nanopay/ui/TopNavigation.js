@@ -73,7 +73,7 @@ foam.CLASS({
     }
     ^ .foam-nanos-menu-SubMenuView-inner > div {
       height: 40px;
-      padding-left: 50px;
+      padding: 8px 0px 8px 50px;
       font-size: 14px;
       font-weight: 300;
       color: /*%BLACK%*/ #1e1f21;
@@ -85,7 +85,7 @@ foam.CLASS({
       color: /*%BLACK%*/ black;
     }
     ^ .foam-nanos-menu-SubMenuView-inner > div:hover {
-      background-color: /*%GREY5%*/ #406dea;
+      background-color: /*%GREY5%*/ #f5f7fa;
       cursor: pointer;
     }
     ^ .foam-nanos-menu-SubMenuView-inner::before {

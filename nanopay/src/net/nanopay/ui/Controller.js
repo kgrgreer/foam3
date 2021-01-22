@@ -274,9 +274,7 @@ foam.CLASS({
       expression: function( client$smeUserRegistrationDAO ) {
         return {
           dao_: client$smeUserRegistrationDAO || null,
-          imgPath: this.theme.loginImage,
-          group_: 'sme',
-          countryChoices_: ['CA', 'US']
+          imgPath: this.theme.loginImage
         };
       }
     },
@@ -431,6 +429,7 @@ foam.CLASS({
       });
 
       await this.themeInstalled;
+      await this.languageInstalled;
 
       if ( ! this.isIframe() ) {
         this
@@ -480,6 +479,29 @@ foam.CLASS({
         if ( await this.group.isDescendantOf('sme', this.client.groupDAO) ) {
           this.sme = true;
         }
+      }
+    },
+
+    async function fetchSubject() {
+      /** Get current user, else show login. */
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const otLoginToken = urlParams.get('otltoken');
+
+        if ( otLoginToken != null ) {
+          await this.client.otLoginService.loginTokenId(null, otLoginToken);
+          window.location.href = "/";
+        }
+
+        var result = await this.client.auth.getCurrentSubject(null);
+
+        if ( ! result || ! result.user) throw new Error();
+
+        this.subject = result;
+      } catch (err) {
+        this.languageInstalled.resolve();
+        await this.requestLogin();
+        return await this.fetchSubject();
       }
     },
 
@@ -591,7 +613,6 @@ foam.CLASS({
             disableEmail_: searchParams.has('email'),
             disableCompanyName_: searchParams.has('companyName'),
             organization: searchParams.has('companyName') ? searchParams.get('companyName') : '',
-            countryChoices_: searchParams.has('country') ? [searchParams.get('country')] : ['CA', 'US'],
             firstName: searchParams.has('firstName') ? searchParams.get('firstName') : '',
             lastName: searchParams.has('lastName') ? searchParams.get('lastName') : '',
             jobTitle: searchParams.has('jobTitle') ? searchParams.get('jobTitle') : '',
@@ -801,8 +822,9 @@ foam.CLASS({
 
           // Redirect user to switch business if agent doesn't exist.
           if ( ! this.subject.realUser || this.subject.realUser.id === this.subject.user.id ) {
-            menu = await this.client.menuDAO.find('sme.accountProfile.switch-business');
-            menu.launch(this);
+            //by setting memento here we will trigger mementoChange function in ApplicationController
+            //which will find and launch sme.accountProfile.switch-business menu
+            this.memento.value = 'sme.accountProfile.switch-business'
             return;
           }
 

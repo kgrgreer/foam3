@@ -50,13 +50,13 @@ foam.CLASS({
       class: 'Reference',
       of: 'net.nanopay.country.br.NatureCode',
       name: 'natureCode',
-      section: 'supportDetails'
+      section: 'requestDetails'
     },
     {
       class: 'Reference',
       of: 'net.nanopay.country.br.NatureCodeData',
       name: 'natureCodeData',
-      section: 'supportDetails',
+      section: 'requestDetails',
       view: function(_, X) {
         var E = foam.mlang.Expressions.create();
 
@@ -83,6 +83,11 @@ foam.CLASS({
 
   actions: [
     {
+      name: 'approveWithMemo',
+      isAvailable: () => false,
+      code: () => { return; }
+    },
+    {
       name: 'approve',
       section: 'requestDetails',
       isAvailable: (isTrackingRequest, status) => {
@@ -102,6 +107,7 @@ foam.CLASS({
           property: this.NATURE_CODE_DATA,
           isModalRequired: true,
           data$: X.data$,
+          propertyData$: X.data.natureCodeData$,
           title: "Please select a nature code (required)",
           onExecute: this.approveWithData.bind(this, X)
         }));

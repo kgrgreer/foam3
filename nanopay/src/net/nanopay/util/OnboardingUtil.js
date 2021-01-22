@@ -39,6 +39,7 @@ foam.CLASS({
     'foam.u2.crunch.wizardflow.CapabilityAdaptAgent',
     'foam.u2.crunch.wizardflow.LoadCapabilitiesAgent',
     'foam.u2.crunch.wizardflow.CreateWizardletsAgent',
+    'foam.u2.crunch.wizardflow.LoadWizardletsAgent',
     'foam.u2.crunch.wizardflow.StepWizardAgent',
     'foam.u2.crunch.wizardflow.PutFinalJunctionsAgent',
     'foam.u2.crunch.wizardflow.FilterWizardletsAgent',
@@ -148,6 +149,7 @@ foam.CLASS({
         .add(this.CreateWizardletsAgent)
         .add(this.FilterWizardletsAgent)
         .add(this.LoadTopConfig)
+        .add(this.LoadWizardletsAgent)
         .add(this.StepWizardAgent, {
           config: foam.u2.wizard.StepWizardConfig.create({ 
             allowBacktracking: false,

@@ -22,8 +22,16 @@ foam.CLASS({
 
   documentation: 'document upload capability',
 
+  imports: [
+    'translationService'
+  ],
+
+  implements: [
+    'foam.core.Validatable'
+  ],
+
   messages: [
-    { name: 'UPLOAD_REQUEST_MSG', message: 'Document(s) required for' },
+    { name: 'UPLOAD_REQUEST_MSG', message: 'Provide' },
     { name: 'IMAGE_REQUIRED', message: 'Document(s) required' },
     { name: 'SECTION_HELP_MSG', message: 'Require a document for' },
     { name: 'DOC_UPLOAD_SECTION', message: '${UPLOAD_REQUEST_MSG} ${capability.name}' }
@@ -33,10 +41,9 @@ foam.CLASS({
     {
       name: 'documentUploadSection',
       title: 'Document Upload',
-      subTitle: function(helper) {
-          return this.capability.description ?
-              this.capability.description :
-              helper(this.DOC_UPLOAD_SECTION);
+      subTitle: function(evaluateMessage) {
+        let capDescription = this.translationService.getTranslation(foam.locale, `${this.capability.id}.description`, this.capability.description);
+        return capDescription ? capDescription : evaluateMessage(this.DOC_UPLOAD_SECTION);
       },
       help: function(capability) {
         return `${this.SECTION_HELP_MSG} ${capability.name}`;
@@ -51,12 +58,17 @@ foam.CLASS({
       label: '',
       section: 'documentUploadSection',
       view: function(_, X) {
+        let selectSlot = foam.core.SimpleSlot.create({value: 0});
         return foam.u2.MultiView.create({
         views: [
           foam.nanos.fs.fileDropZone.FileDropZone.create({
-            files$: X.data.documents$
+            files$: X.data.documents$,
+            selected$: selectSlot
           }, X),
-          foam.nanos.fs.fileDropZone.FilePreview.create()
+          foam.nanos.fs.fileDropZone.FilePreview.create({
+            data$: X.data.documents$,
+            selected$: selectSlot
+          })
         ]
         });
       },
@@ -64,14 +76,17 @@ foam.CLASS({
         if ( isRequired && documents.length === 0 ) {
           return this.IMAGE_REQUIRED;
         }
-      },
+      }
     },
     {
       class: 'FObjectProperty',
       of: 'foam.nanos.crunch.Capability',
       name: 'capability',
       hidden: true,
-      documentation: 'Used by section subTitle and help'
+      documentation: 'Used by section subTitle and help',
+      factory: function() {
+        return foam.nanos.crunch.Capability.create();
+      }
     },
     {
       class: 'Boolean',
@@ -79,6 +94,16 @@ foam.CLASS({
       documentation: 'Whether the file is required or not.',
       value: true,
       hidden: true
+    }
+  ],
+  methods: [
+    {
+      name: 'validate',
+      javaCode: `
+      if ( getIsRequired() && getDocuments().length == 0 ) {
+        throw new foam.core.ValidationException(IMAGE_REQUIRED);
+      }
+      `
     }
   ]
 });

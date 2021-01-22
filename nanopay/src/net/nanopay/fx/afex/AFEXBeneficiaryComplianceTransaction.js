@@ -32,6 +32,7 @@ foam.CLASS({
       of: 'net.nanopay.fx.afex.AFEXBeneficiary',
       targetDAOKey: 'afexBeneficiaryDAO',
       name: 'BeneficiaryId',
+      section: 'basicInfo'
     }
   ]
 });

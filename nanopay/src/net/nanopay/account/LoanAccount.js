@@ -45,7 +45,7 @@ foam.CLASS({
       name: 'denomination',
       documentation: 'The currency that this account stores.',
       tableWidth: 127,
-      section: 'accountDetails',
+      section: 'accountInformation',
       order: 3
     },
     {

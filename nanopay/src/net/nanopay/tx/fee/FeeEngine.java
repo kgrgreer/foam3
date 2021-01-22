@@ -26,15 +26,15 @@ import foam.mlang.Expr;
 import foam.mlang.Formula;
 import foam.nanos.logger.Logger;
 import net.nanopay.fx.TotalRateLineItem;
-import net.nanopay.tx.ExternalTransfer;
 import net.nanopay.tx.FeeLineItem;
 import net.nanopay.tx.TransactionLineItem;
-import net.nanopay.tx.Transfer;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.ChargedTo;
 
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.*;
+import foam.util.SafetyUtil;
 
 public class FeeEngine {
   /**
@@ -93,10 +93,12 @@ public class FeeEngine {
           var logger = (Logger) x.get("logger");
           logger.debug("Fee amount is (" + feeAmount + ")", fee.toString(), transaction);
         }
-
-        transaction.addLineItems(new TransactionLineItem[]{
-          newFeeLineItem(fee.getLabel(), feeAmount, getCurrency(x, transaction), transaction.getSourceAccount())
-        });
+        FeeLineItem fli = null;
+          if (fee.getChargedTo() == ChargedTo.PAYER)
+            fli = newFeeLineItem(x, fee.getLabel(), feeAmount, getCurrency(x, transaction), transaction.getSourceAccount());
+          if (fee.getChargedTo() == ChargedTo.PAYEE)
+            fli = newFeeLineItem(x, fee.getLabel(), feeAmount, getCurrency(x, transaction), transaction.getDestinationAccount());
+        if (fli != null) transaction.addLineItems(new TransactionLineItem[] {fli});
       }
     } catch ( Exception e ) {
       var feeInfo = fee != null ? fee.toString() : "Fee name:" + feeName;
@@ -179,7 +181,7 @@ public class FeeEngine {
     return transactionFeeRule_.getFees(x);
   }
 
-  private FeeLineItem newFeeLineItem(String name, long amount, Currency currency, long sourceAccount)
+  private FeeLineItem newFeeLineItem(X x, String name, long amount, Currency currency, String sourceAccount)
     throws InstantiationException, IllegalAccessException
   {
     var result = (FeeLineItem) transactionFeeRule_.getFeeClass().newInstance();
@@ -194,11 +196,9 @@ public class FeeEngine {
           .toArray(Rate[]::new)
       );
     }
-    if ( transactionFeeRule_.getFeeAccount() > 0 ) {
-      result.setTransfers(new Transfer[] {
-        new ExternalTransfer(-amount, sourceAccount),
-        new ExternalTransfer( amount, transactionFeeRule_.getFeeAccount())
-      });
+    if ( ! SafetyUtil.isEmpty(transactionFeeRule_.getFeeAccount()) ) {
+      result.setSourceAccount(sourceAccount);
+      result.setDestinationAccount(transactionFeeRule_.getFeeAccount());  
     }
     return result;
   }

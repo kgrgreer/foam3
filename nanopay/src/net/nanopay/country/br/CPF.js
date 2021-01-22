@@ -45,7 +45,7 @@ foam.CLASS({
   sections: [
     {
       name: 'collectCpf',
-      title: 'Enter your CPF',
+      title: 'Enter your Cadastro de Pessoas Físicas(CPF)',
       navTitle: 'Signing officer\’s CPF number',
       help: 'Require your CPF'
     }
@@ -84,33 +84,25 @@ foam.CLASS({
       view: function(_, X) {
         return foam.u2.FragmentedTextField.create({
           delegates: [
-            {
-              class: 'foam.u2.TextField',
-              attributes: [ { name: 'maxlength', value: 3 } ],
-              onKey: true,
-              data: X.data.data.slice(0,3)
-            },
+            foam.u2.FragmentedTextFieldFragment.create({
+              data: X.data.data.slice(0,3),
+              maxLength: 3
+            }),
             '.',
-            {
-              class: 'foam.u2.TextField',
-              attributes: [ { name: 'maxlength', value: 3 } ],
-              onKey: true,
-              data: X.data.data.slice(3,6)
-            },
+            foam.u2.FragmentedTextFieldFragment.create({
+              data: X.data.data.slice(3,6),
+              maxLength: 3
+            }),
             '.',
-            {
-              class: 'foam.u2.TextField',
-              attributes: [ { name: 'maxlength', value: 3 } ],
-              onKey: true,
-              data: X.data.data.slice(6,9)
-            },
+            foam.u2.FragmentedTextFieldFragment.create({
+              data: X.data.data.slice(6,9),
+              maxLength: 3
+            }),
             '-',
-            {
-              class: 'foam.u2.TextField',
-              attributes: [ { name: 'maxlength', value: 2 } ],
-              onKey: true,
-              data: X.data.data.slice(9,11)
-            }
+            foam.u2.FragmentedTextFieldFragment.create({
+              data: X.data.data.slice(9,11),
+              maxLength: 2
+            })
           ]
         })
       }
@@ -176,7 +168,9 @@ foam.CLASS({
 
         try {
           if ( ! ((BrazilVerificationService) x.get("brazilVerificationService")).validateUserCpf(x, getData(), getUser()) )
-            throw new RuntimeException(INVALID_CPF);
+            throw new foam.core.ValidationException(INVALID_CPF);
+        } catch (foam.core.ValidationException e) {
+          throw new foam.core.ValidationException(INVALID_CPF, e);
         } catch(Throwable t) {
           throw t;
         }

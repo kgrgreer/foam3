@@ -46,7 +46,7 @@ foam.CLASS({
         model.installAxiom(syncedAxiom);
         return [
           this.Contact.ID,
-          this.Contact.BUSINESS_NAME,
+          this.Contact.ORGANIZATION,
           this.Contact.EMAIL,
           this.Contact.CREATED,
           this.Contact.OWNER,

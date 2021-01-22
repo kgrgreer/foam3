@@ -56,9 +56,9 @@ foam.CLASS({
       destinationAccount.validateAmount(x, bal, amount);
       txn.setAmount(amount);
 
-      quote.addTransfer(sourceAccount.getId(), -txn.getAmount());
-      quote.addTransfer(destinationAccount.getId(), txn.getAmount());
-      quote.addTransfer(creditorAccount.getId(), txn.getAmount());
+      quote.addTransfer(true, sourceAccount.getId(), -txn.getAmount(), 0);
+      quote.addTransfer(true, destinationAccount.getId(), txn.getAmount(), 0);
+      quote.addTransfer(true, creditorAccount.getId(), txn.getAmount(), 0);
 
       return txn;
     `

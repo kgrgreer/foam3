@@ -173,7 +173,7 @@ foam.CLASS({
             .start(this.Cols).style({'align-items': 'baseline'})
               .start().add(this.cls_.name).addClass(this.myClass('header')).end()
               .start()
-                .add(this.lastUpdated$.map(v => `${this.UPDATED}: ${v.toLocaleString()}`))
+                .add(this.lastUpdated$.map(v => `${this.UPDATED}: ${v.toLocaleString(foam.locale)}`))
                 .addClass(this.myClass('last-updated'))
               .end()
             .end()

@@ -159,8 +159,8 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
       (xeroMobilePhone.getPhoneAreaCode() != null ? xeroMobilePhone.getPhoneAreaCode() : "") +
       (xeroMobilePhone.getPhoneNumber() != null ? xeroMobilePhone.getPhoneNumber() : "");
 
-      newContact.setBusinessPhoneNumber(phoneNumber);
-      newContact.setBusinessPhoneNumberVerified(! SafetyUtil.isEmpty(phoneNumber));
+      newContact.setPhoneNumber(phoneNumber);
+      newContact.setPhoneNumberVerified(! SafetyUtil.isEmpty(phoneNumber));
       newContact.setMobileNumber(mobileNumber);
       newContact.setMobileNumberVerified(! SafetyUtil.isEmpty(mobileNumber));
     }
@@ -168,7 +168,6 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
     newContact.setXeroId(xeroContact.getContactID());
     newContact.setEmail(xeroContact.getEmailAddress());
     newContact.setOrganization(xeroContact.getName());
-    newContact.setBusinessName(xeroContact.getName());
     if ( xeroContact.getFirstName() != null ) {
       newContact.setFirstName(xeroContact.getFirstName());
     }
@@ -176,7 +175,7 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
       newContact.setLastName(xeroContact.getLastName());
     }
     newContact.setOwner(user.getId());
-    newContact.setGroup("sme");
+    newContact.setGroup(user.getSpid() + "-sme");
     newContact.setXeroOrganizationId(token.getOrganizationId());
     newContact.setLastUpdated(xeroContact.getUpdatedDateUTC().getTime().getTime());
     newContact.setLastDateUpdated(new Date());
@@ -238,11 +237,10 @@ public class XeroIntegrationService extends ContextAwareSupport implements net.n
           UserUserJunction userUserJunction = (UserUserJunction) sink.getArray().get(0);
           Business business = (Business) businessDAO.find(userUserJunction.getTargetId());
           newContact.setOrganization(business.getOrganization());
-          newContact.setBusinessName(business.getBusinessName());
           newContact.setBusinessId(business.getId());
           newContact.setEmail(business.getEmail());
           newContact.setType("Contact");
-          newContact.setGroup("sme");
+          newContact.setGroup(user.getSpid() + "-sme");
           newContact.setOwner(user.getId());
           result.setExistContact(newContact);
           result.setResultCode(ContactMismatchCode.EXISTING_USER);

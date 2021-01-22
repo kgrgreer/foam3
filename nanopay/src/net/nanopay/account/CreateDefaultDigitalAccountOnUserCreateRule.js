@@ -31,6 +31,14 @@ foam.CLASS({
     'net.nanopay.account.Account'
   ],
 
+  properties: [
+    {
+      class: 'StringArray',
+      name: 'trusts',
+      documentation: 'The trust accounts for which to add a default digital account'
+    }
+  ],
+
   methods: [
     {
       name: 'applyAction',
@@ -38,11 +46,10 @@ foam.CLASS({
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-            DigitalAccountService service = (DigitalAccountService) x.get("digitalAccount");
-            Subject subject = new Subject.Builder(x).setUser((User)obj).build();
-            service.findDefault(x.put("subject", subject), null);
+            DigitalAccountServiceInterface service = (DigitalAccountServiceInterface) x.get("digitalAccountService");
+            service.createDefaults(x.put("subject", new Subject((User) obj)), null, getTrusts());
          }
-        },"Finding default account");
+        },"Creating default account(s)");
       `
     }
   ]

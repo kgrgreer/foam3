@@ -1,0 +1,17 @@
+// Kotak
+
+p({"class":"net.nanopay.bank.CABankAccount","branch":12,"branchId":"","institutionNumber":"","country":"CA","flagImage":"images/flags/cad.png","accountNumber":"1234567","status":1,"denomination":"CAD","verificationAttempts":0,"integrationId":"","compliance":0,"institution":24,"id":"111","name":"Kotak Mahindra Canada CAD","desc":"","transferIn":true,"transferOut":true,"isDefault":true,"balance":0,"created":"2019-05-23T16:01:33.696Z","createdBy":1348,"lastModified":"2019-05-23T16:01:33.696Z","lastModifiedBy":1348,"owner":1020,"lifecycleState":1})
+
+p({"class":"net.nanopay.bank.INBankAccount","denomination":"INR","accountNumber":"123456789","status":1,"id":"112","name":"Kotak Mahindra Canada INR","desc":"","transferIn":true,"transferOut":true,"isDefault":true,"created":"2019-04-30T14:58:22.412Z","createdBy":1348,"lastModified":"2019-05-24T14:58:22.412Z","lastModifiedBy":1348,"owner":1020,"lifecycleState":1})
+
+p({"class":"net.nanopay.bank.INBankAccount","denomination":"INR","accountNumber":"222456789","status":1,"id":"113","name":"Kotak Mahindra India INR","desc":"","transferIn":true,"transferOut":true,"isDefault":true,"created":"2019-04-30T15:58:22.412Z","createdBy":1348,"lastModified":"2019-05-24T15:58:22.412Z","lastModifiedBy":1348,"owner":1021,"lifecycleState":1})
+
+p({"class":"net.nanopay.account.TrustAccount", "id":"5", "reserveAccount":"112", "owner":1014,"lifecycleState":1, "denomination":"INR", "name":"nanopay Trust Account INR"})
+
+// Ablii Trusts
+p({"class":"net.nanopay.account.TrustAccount", "id":"5b68522d-2948-4b64-a2ea-afe5108a95ae", "reserveAccount":"9c3d0e0e-7b5e-46da-9093-ceb1b0da2b0b", "owner":1014, "denomination":"CAD", "name":"nanopay Alterna Trust Account CAD","lifecycleState":1})
+p({"class":"net.nanopay.account.TrustAccount", "id":"325e128a-f76f-46bd-ba82-26d12d92865f", "reserveAccount":"9c34bfad-ec60-4abd-8fc3-fcd5681df5f8", "owner":1014, "denomination":"CAD", "name":"nanopay BMO Trust Account CAD","lifecycleState":1})
+p({"class":"net.nanopay.account.TrustAccount", "id":"7ee216ae-9371-4684-9e99-ba42a5759444", "reserveAccount":"73ee9d92-fc0b-471c-8e9b-0fc0d85e318c", "owner":1014, "denomination":"CAD", "name":"nanopay RBC Trust Account CAD","lifecycleState":1})
+
+// Ablii Fee Account ???
+p({"class":"net.nanopay.account.DigitalAccount", "id":"2", "owner":1014,"lifecycleState":1, "denomination":"CAD", "name":"nanopay Fee Account CAD"})

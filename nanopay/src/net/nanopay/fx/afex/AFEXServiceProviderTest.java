@@ -40,6 +40,7 @@ public class AFEXServiceProviderTest
   protected DAO agentJunctionDAO;
   protected DAO businessDAO;
   protected DAO regionDAO;
+  protected DAO smeUserRegistrationDAO;
   protected DAO smeBusinessRegistrationDAO;
   protected DAO afexBusinessDAO;
   protected User user1 ;
@@ -61,7 +62,11 @@ public class AFEXServiceProviderTest
     agentJunctionDAO = (DAO) x.get("agentJunctionDAO");
     businessDAO = (DAO) x.get("businessDAO");
     regionDAO = (DAO) x.get("regionDAO");
-    smeBusinessRegistrationDAO = (DAO) x.get("smeBusinessRegistrationDAO");
+    smeUserRegistrationDAO = (DAO) x.get("smeUserRegistrationDAO");
+    // smeBusinessRegistrationDAO not longer used. To avoid complete
+    // capability onboarding just to test AFEX, the relavant parts
+    // of smeBusinessRegistrationDAO are used here.
+    smeBusinessRegistrationDAO = new net.nanopay.onboarding.NewUserCreateBusinessDAO.Builder(x).setDelegate((DAO) x.get("localUserDAO")).build();
     afexBusinessDAO = (DAO) x.get("afexBusinessDAO");
     this.x = x;
 
@@ -96,15 +101,18 @@ public class AFEXServiceProviderTest
     business = null;
     if (user1 == null) {
       user1 = new User();
-      user1.setFirstName("AFEXTestPayer");
-      user1.setLastName("AFEXTwo");
+      user1.setUserName("afexpayee");
       user1.setEmail("afexpayee@nanopay.net");
       user1.setDesiredPassword("AFXTestPassword123$");
+      user1.setLanguage(new LanguageId.Builder(null).setCode("en").build());
+      user1 = (User) smeUserRegistrationDAO.put(user1).fclone();
+
+      user1.setFirstName("AFEXTestPayer");
+      user1.setLastName("AFEXTwo");
       user1.setAddress(address);
       user1.setType("Business");
       user1.setOrganization("Test Company");
       user1.setBusinessName("Test Company");
-      user1.setLanguage(new LanguageId.Builder(null).setCode("en").build());
       user1.setBirthday(new Date());
       user1.setAddress(address);
       PersonalIdentification identification = new PersonalIdentification();
@@ -245,9 +253,9 @@ public class AFEXServiceProviderTest
   private void testOnboardBusiness() {
     Business businessNoCompliance = (Business) business.fclone();
     businessNoCompliance.setCompliance(ComplianceStatus.FAILED);
-    boolean onbarded = afexServiceProvider.onboardBusiness(businessNoCompliance, user1CABankAccount);
+    boolean onbarded = afexServiceProvider.onboardBusiness(businessNoCompliance);
     test( ! onbarded, "Business was not onboarded" );
-    onbarded = afexServiceProvider.onboardBusiness(business, user1CABankAccount);
+    onbarded = afexServiceProvider.onboardBusiness(business);
     test( onbarded, "Business was onboarded" );
     AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, business.getId()));
     if ( afexBusiness != null ) {

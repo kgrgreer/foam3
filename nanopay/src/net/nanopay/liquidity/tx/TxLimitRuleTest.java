@@ -8,6 +8,7 @@ import foam.nanos.auth.LifecycleState;
 import foam.nanos.test.Test;
 import foam.test.TestUtils;
 import net.nanopay.account.Account;
+import net.nanopay.account.DigitalAccount;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 import net.nanopay.tx.test.TransactionTestUtil;
@@ -51,8 +52,8 @@ public class TxLimitRuleTest
     X sourceX = x.put("subject", subject);
 
     // fetch source account
-    Account sourceAccount = TransactionTestUtil.RetrieveDigitalAccount(x, sourceUser);
-    Account destinationAccount = TransactionTestUtil.RetrieveDigitalAccount(x, destinationUser);
+    DigitalAccount sourceAccount = TransactionTestUtil.RetrieveDigitalAccount(x, sourceUser);
+    DigitalAccount destinationAccount = TransactionTestUtil.RetrieveDigitalAccount(x, destinationUser, sourceAccount.getDenomination(),sourceAccount);
 
     // create test rule to restrict users from transacting
     TxLimitRule txLimitRule = new TxLimitRule();

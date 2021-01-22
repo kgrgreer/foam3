@@ -84,7 +84,7 @@ public class LiquidityService
   }
 
   @Override
-  public void liquifyAccount(long accountId, Frequency frequency, long txnAmount) {
+  public void liquifyAccount(String accountId, Frequency frequency, long txnAmount) {
     LiquiditySettings ls;
     DigitalAccount account = (DigitalAccount) ((DAO) x_.get("localAccountDAO")).find(accountId);
     ls = account.findLiquiditySetting(getX());
@@ -235,9 +235,9 @@ public class LiquidityService
       args.put("src_account_name",    account.getName());
       args.put("src_account_id",      account.getId());
 
-      var dstAccount = (Account) ((DAO)getX().get("localAccountDAO")).find(liquidity.getPushPullAccount());
-      var dstAccountName = "";
-      var dstAccountId = 0L;
+      Account dstAccount = (Account) ((DAO)getX().get("localAccountDAO")).find(liquidity.getPushPullAccount());
+      String dstAccountName = "";
+      String dstAccountId = "";
       if ( dstAccount != null ) {
         dstAccountName = dstAccount.getName();
         dstAccountId = dstAccount.getId();
@@ -247,7 +247,7 @@ public class LiquidityService
       args.put("dst_account_id",     dstAccountId);
 
       notificationBody = String.format(
-        "The %s for %s has been reached\nFunds have automatically moved between %s & %d and %s & %d",
+        "The %s for %s has been reached\nFunds have automatically moved between %s & %s and %s & %s",
         threshold, ls.getName(), account.getName(), account.getId(), dstAccountName, dstAccountId
       );
     } else {
@@ -257,7 +257,7 @@ public class LiquidityService
       args.put("account_id",      account.getId());
 
       notificationBody = String.format(
-        "The %s for %s has been reached for %s & %d",
+        "The %s for %s has been reached for %s & %s",
         threshold, ls.getName(), account.getName(), account.getId()
       );
     }
@@ -280,7 +280,7 @@ public class LiquidityService
 
   //Add cash in and cash out transaction, set transaction type to separate if it is an cash in or cash out transaction
 
-  public void addCICOTransaction(long amount, long source, long destination, LiquiditySettings ls)
+  public void addCICOTransaction(long amount, String source, String destination, LiquiditySettings ls)
     throws RuntimeException
   {
     Transaction transaction = new Transaction.Builder(x_)
@@ -298,7 +298,7 @@ public class LiquidityService
       if ( tx instanceof ComplianceTransaction &&
         ( ( (AppConfig) x_.get("appConfig") ).getMode() == Mode.TEST || ( (AppConfig) x_.get("appConfig") ).getMode() == Mode.DEVELOPMENT ) ) {
         DAO approvalDAO = (DAO) x_.get("approvalRequestDAO");
-        ApprovalRequest request = (ApprovalRequest) approvalDAO.find(AND(EQ(ApprovalRequest.OBJ_ID, tx.getId()), EQ(ApprovalRequest.DAO_KEY, "localTransactionDAO"))).fclone();
+        ApprovalRequest request = (ApprovalRequest) approvalDAO.find(AND(EQ(ApprovalRequest.OBJ_ID, tx.getId()), EQ(ApprovalRequest.SERVER_DAO_KEY, "localTransactionDAO"))).fclone();
         request.setStatus(ApprovalStatus.APPROVED);
         approvalDAO.put_(x_, request);
       }

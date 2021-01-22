@@ -35,6 +35,8 @@ foam.CLASS({
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.model.Branch',
     'net.nanopay.payment.Institution',
+    'net.nanopay.tx.cico.InterTrustTransaction',
+    'net.nanopay.account.DigitalAccount',
     'net.nanopay.tx.BulkTransaction',
     'net.nanopay.tx.ComplianceTransaction',
     'net.nanopay.tx.CompositeTransaction',
@@ -85,7 +87,8 @@ foam.CLASS({
           test( txn.getNext().length > 0, "CI-D root.next[0].next[0].next[0] has next, found: "+txn.getNext().length);
           if ( txn.getNext().length > 0 ) {
             txn = txn.getNext()[0];
-            test( txn instanceof DigitalTransaction, "CI-D root.next[0].next[0].next[0].next[0] instanceof DigitalTransaction, found: "+txn.getClass().getSimpleName());
+            //NOTE. Since setup up of the test journals includes multiple trusts, the bulk can actually plan inter trusts if requested.
+            test( (txn instanceof DigitalTransaction) || (txn instanceof InterTrustTransaction), "CI-D root.next[0].next[0].next[0].next[0] instanceof DigitalTransaction, found: "+txn.getClass().getSimpleName());
             test( txn.getNext().length == 0, "CI-D root.next[0].next[0].next[0].next[0] NOT has next, found: "+txn.getNext().length);
           }
         }
@@ -117,7 +120,7 @@ foam.CLASS({
           test( txn.getNext().length > 0, "CI-D-CO root.next[0].next[0].next[0] has next, found: "+txn.getNext().length);
           if ( txn.getNext().length > 0 ) {
             txn = txn.getNext()[0];
-            test( txn instanceof DigitalTransaction, "CI-D-CO root.next[0].next[0].next[0].next[0] instanceof DigitalTransaction, found: "+txn.getClass().getSimpleName());
+            test( txn instanceof DigitalTransaction || txn instanceof InterTrustTransaction, "CI-D-CO root.next[0].next[0].next[0].next[0] instanceof DigitalTransaction, found: "+txn.getClass().getSimpleName());
             test( txn.getNext().length > 0, "CI-D-CO root.next[0].next[0].next[0].next[0] has next, found: "+txn.getNext().length);
             if ( txn.getNext().length > 0 ) {
               txn = txn.getNext()[0];

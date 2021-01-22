@@ -49,12 +49,12 @@ foam.CLASS({
       updateVisibility: 'RO',
       createVisibility: 'RW',
       readVisibility: 'RO',
-      section: 'paymentInfoSource',
+      section: 'basicInfo',
     },
     {
       name: 'lineItems',
       label: '',
-      section: 'additionalInfo',
+      section: 'lineItemsSection',
       javaFactory: `
         InfoLineItem ifl1 = new InfoLineItem();
         ifl1.setName("Memo");

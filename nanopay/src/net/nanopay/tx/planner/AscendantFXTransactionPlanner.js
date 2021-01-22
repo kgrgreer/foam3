@@ -155,8 +155,8 @@ foam.CLASS({
       type: 'String',
       javaCode: `
       String pacsEndToEndId = null;
-      if ( null != transaction.getReferenceData() && transaction.getReferenceData().length > 0 ) {
-        for ( FObject obj : transaction.getReferenceData() ) {
+      if ( null != transaction.getExternalData() ) {
+        for ( Object obj : transaction.getExternalData().values() ) {
           if ( obj instanceof Pacs00800106 ) {
             Pacs00800106 pacs = (Pacs00800106) obj;
             FIToFICustomerCreditTransferV06 fi = pacs.getFIToFICstmrCdtTrf();
@@ -182,8 +182,8 @@ foam.CLASS({
       javaType: 'FXQuote',
       javaCode: `
         FXQuote fxQuote = null;
-        if ( null != request.getReferenceData() && request.getReferenceData().length > 0 ) {
-          for ( Object obj : request.getReferenceData() ) {
+        if ( null != request.getExternalData() ) {
+          for ( Object obj : request.getExternalData().values() ) {
             if ( obj instanceof FXQuote ) {
               fxQuote = (FXQuote) obj;
               break;

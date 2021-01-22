@@ -29,15 +29,15 @@ foam.CLASS({
     'foam.nanos.app.AppConfig',
     'foam.nanos.auth.Group',
     'foam.nanos.auth.User',
-    'foam.nanos.notification.Notification',
     'java.util.HashMap',
     'net.nanopay.bank.BankAccount',
+    'net.nanopay.bank.ruler.AccountAddedNotification',
     'net.nanopay.contacts.Contact',
     'net.nanopay.model.Branch',
     'net.nanopay.payment.Institution'
   ],
 
-   methods: [
+  methods: [
     {
       name: 'applyAction',
       javaCode: `
@@ -53,7 +53,7 @@ foam.CLASS({
             User owner = (User) userDAO.find(account.getOwner());
             Group       group      = owner.findGroup(x);
             AppConfig   config     = group != null ? (AppConfig) group.getAppConfig(x) : (AppConfig) x.get("appConfig");
-            String accountNumber   = account.getAccountNumber() != null ? account.getAccountNumber().substring(account.getAccountNumber().length() - 4) : "";
+            String accountNumber   = account.getAccountNumber() != null ? account.obfuscate(account.getAccountNumber(), 1, account.getAccountNumber().length() - 4) : "";
 
             HashMap<String, Object> args = new HashMap<>();
             args.put("name",    User.FIRST_NAME);
@@ -62,8 +62,8 @@ foam.CLASS({
             args.put("link",    config.getUrl());
             args.put("business", owner.getOrganization());
 
-            Notification addedNotification = new Notification.Builder(x)
-                    .setBody(accountNumber + " has been added!")
+            AccountAddedNotification addedNotification = new AccountAddedNotification.Builder(x)
+                    .setAccountNumber(accountNumber)
                     .setNotificationType("Latest_Activity")
                     .setEmailArgs(args)
                     .setEmailName("addBank")

@@ -236,7 +236,7 @@ foam.CLASS({
               .end()
               .start().addClass('labelDiv')
                 .start().add('Registration Date').addClass('labelTitle').end()
-                .start().add(this.user.businessRegistrationDate ? this.user.businessRegistrationDate.toISOString().substring(0,10) : '').addClass('labelContent').end()
+                .start().add(this.user.businessRegistrationDate ? this.user.businessRegistrationDate.toLocaleDateString(foam.locale) : '').addClass('labelContent').end()
               .end()
             .end()
             .start().addClass('topInlineDiv')

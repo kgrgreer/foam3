@@ -41,14 +41,14 @@ public class ReportPredicateTest extends foam.nanos.test.Test {
     accDAO = (DAO) x.get("localAccountDAO");
     userDAO = (DAO) x.get("localUserDAO");
 
-    sender = addUser(x, "txntest1@transactiontest.ca");
-    receiver = addUser(x, "txntest2@transactiontest.ca");
+    sender = addUser(x, "reportPredicateTest1@transactiontest.ca");
+    receiver = addUser(x, "reportPredicateTest2@transactiontest.ca");
 
     setup();
     RuleGroup alterna = (RuleGroup) ruleGroupDAO.find("AlternaPlanner").fclone();
     RuleGroup bmo = (RuleGroup) ruleGroupDAO.find("BMOPlanner").fclone();
     alterna.setEnabled(false);
-    bmo.setEnabled(false);
+    bmo.setEnabled(true);
     ruleGroupDAO.put(alterna);
     ruleGroupDAO.put(bmo);
 
@@ -143,7 +143,7 @@ public class ReportPredicateTest extends foam.nanos.test.Test {
       user.setLastName("Filth");
       user.setEmailVerified(true);
       user.setGroup("business");
-      user.setSpid("nanopay");
+      user.setSpid("test");
       user = (User) userDAO.put(user);
       user = (User) user.fclone();
     }

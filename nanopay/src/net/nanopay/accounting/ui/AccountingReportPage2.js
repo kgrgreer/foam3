@@ -342,7 +342,7 @@ foam.CLASS({
         .end()
       .end();
       if ( ! this.showContactError && ! this.showInvoiceError ) {
-        this.pushMenu('capability.main.dashboard');
+        this.pushMenu('mainmenu.dashboard');
       }
     },
 
@@ -412,7 +412,7 @@ foam.CLASS({
       name: 'done',
       label: 'Done',
       code: function() {
-        this.pushMenu('capability.main.dashboard');
+        this.pushMenu('mainmenu.dashboard');
       }
     },
     {

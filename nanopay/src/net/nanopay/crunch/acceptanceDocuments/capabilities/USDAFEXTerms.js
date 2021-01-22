@@ -44,9 +44,9 @@ foam.CLASS({
       value: 'I certify that I have consent to submit all personal information provided, and that all information is correct. I have read, understood, and agree to '
     },
     {
-      name: 'link',
+      name: 'fileId',
       getter: function() {
-        return '/service/httpFileService/' + this.AGREEMENT_HASH + '?sessionId=' + localStorage['defaultSession'];
+        return this.AGREEMENT_HASH;
       }
     },
     {

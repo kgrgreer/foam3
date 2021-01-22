@@ -43,6 +43,14 @@ foam.CLASS({
     'static foam.mlang.MLang.*'
   ],
 
+  properties: [
+    {
+      name:  'clearDataOnRejection',
+      class: 'Boolean',
+      value: true
+    }
+  ],
+
   methods: [
     {
       name: 'applyAction',
@@ -55,22 +63,20 @@ foam.CLASS({
 
             ApprovalStatus approval = getApprovalState(x, ucj);
 
-            if ( approval == null || approval != ApprovalStatus.REQUESTED ) {
+            var isRequested = approval == null || approval == ApprovalStatus.REQUESTED;
+
+            if ( ! isRequested ) {
+              Subject subject = ucj.getSubject(x);
+              X ownerContext = x.put("subject", subject);
+
               status = ApprovalStatus.REJECTED == approval ? CapabilityJunctionStatus.ACTION_REQUIRED : CapabilityJunctionStatus.APPROVED;
               ucj.setStatus(status);
 
-              if ( approval == ApprovalStatus.REJECTED ) clearData(x, ucj);
-
-              DAO userDAO = (DAO) x.get("localUserDAO");
-              User user = (User) userDAO.find(ucj.getSourceId());
-              Subject subject = new Subject.Builder(x).build();
-              subject.setUser(user);
-              if ( ucj instanceof AgentCapabilityJunction ) {
-                User effectiveUser = (User) userDAO.find(((AgentCapabilityJunction) ucj).getEffectiveUser());
-                subject.setUser(effectiveUser);
+              if ( approval == ApprovalStatus.REJECTED && getClearDataOnRejection() ) {
+                clearData(ownerContext, ucj);
               }
-              X ownerContext = x.put("subject", subject);
 
+              // Update junction
               ((DAO) x.get("userCapabilityJunctionDAO")).inX(ownerContext).put(ucj);
             }
             ruler.putResult(status);
@@ -120,21 +126,13 @@ foam.CLASS({
 
         List<Capability> prereqs = (List<Capability>) crunchService.getCapabilityPath(x, ucj.getTargetId(), false);
 
-        User user = (User) ucj.findSourceId(x);
-        Subject subject = new Subject.Builder(x).build();
-        subject.setUser(user);
-        if ( ucj instanceof AgentCapabilityJunction ) {
-          User effectiveUser = (User) ((AgentCapabilityJunction) ucj).findEffectiveUser(x);
-          subject.setUser(effectiveUser);
-        }
-
         for ( Capability prereq : prereqs ) {
           // this is the business registration capability, onboarding seems to be dependent on this, 
           // but if this is cleared and the user is prompted to reapply - it will create new business,
           // and also this is not part of the "onboarding" data, so skip over 
           if ( prereq.getId().equals("554af38a-8225-87c8-dfdf-eeb15f71215f-76")) continue;
 
-          UserCapabilityJunction prereqUcj = crunchService.getJunctionForSubject(x, prereq.getId(), subject);
+          UserCapabilityJunction prereqUcj = crunchService.getJunction(x, prereq.getId());
           if ( prereqUcj.getStatus() == CapabilityJunctionStatus.AVAILABLE )
             continue;
           prereqUcj.setStatus(CapabilityJunctionStatus.ACTION_REQUIRED);
@@ -143,7 +141,7 @@ foam.CLASS({
           prereqUcj.clearExpiry();
           prereqUcj.resetRenewalStatus();
 
-          userCapabilityJunctionDAO.put(prereqUcj);
+          userCapabilityJunctionDAO.inX(x).put(prereqUcj);
         }
       `
     }

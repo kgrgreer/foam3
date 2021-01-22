@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="525px" height="204px" viewBox="0 0 525 204" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>0B289C85-A1C2-4F46-BD82-8940DC54A831</title>
+    <defs>
+        <rect id="path-1" x="0" y="24" width="585" height="724" rx="3"></rect>
+        <filter x="-8.3%" y="-6.7%" width="116.6%" height="116.7%" filterUnits="objectBoundingBox" id="filter-2">
+            <feMorphology radius="0.5" operator="dilate" in="SourceAlpha" result="shadowSpreadOuter1"></feMorphology>
+            <feOffset dx="0" dy="24" in="shadowSpreadOuter1" result="shadowOffsetOuter1"></feOffset>
+            <feGaussianBlur stdDeviation="12" in="shadowOffsetOuter1" result="shadowBlurOuter1"></feGaussianBlur>
+            <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"></feComposite>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.11571558 0" type="matrix" in="shadowBlurOuter1" result="shadowMatrixOuter1"></feColorMatrix>
+            <feMorphology radius="0.5" operator="dilate" in="SourceAlpha" result="shadowSpreadOuter2"></feMorphology>
+            <feOffset dx="0" dy="0" in="shadowSpreadOuter2" result="shadowOffsetOuter2"></feOffset>
+            <feGaussianBlur stdDeviation="12" in="shadowOffsetOuter2" result="shadowBlurOuter2"></feGaussianBlur>
+            <feComposite in="shadowBlurOuter2" in2="SourceAlpha" operator="out" result="shadowBlurOuter2"></feComposite>
+            <feColorMatrix values="0 0 0 0 0   0 0 0 0 0   0 0 0 0 0  0 0 0 0.144559556 0" type="matrix" in="shadowBlurOuter2" result="shadowMatrixOuter2"></feColorMatrix>
+            <feMerge>
+                <feMergeNode in="shadowMatrixOuter1"></feMergeNode>
+                <feMergeNode in="shadowMatrixOuter2"></feMergeNode>
+            </feMerge>
+        </filter>
+    </defs>
+    <g id="Concepts-/-Dead-or-Alive" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="Add-Contact-4.1-(Yes)---Revised" transform="translate(-115.000000, -268.000000)">
+            <rect fill="#F9FBFF" x="0" y="0" width="1280" height="1092"></rect>
+            <rect id="Fade" fill-opacity="0.75" fill="#2B2B2B" x="0" y="0" width="1280" height="1092"></rect>
+            <g id="Canada" transform="translate(85.000000, 52.000000)">
+                <g id="Base">
+                    <use fill="black" fill-opacity="1" filter="url(#filter-2)" xlink:href="#path-1"></use>
+                    <use stroke="#E2E2E3" stroke-width="1" fill="#FFFFFF" fill-rule="evenodd" xlink:href="#path-1"></use>
+                </g>
+                <g id="CDN-Cheque" transform="translate(30.000000, 216.000000)">
+                    <line x1="398.355263" y1="34.5" x2="506.578947" y2="34.5" id="Line-3" stroke="#C8CBCB" stroke-linecap="round"></line>
+                    <line x1="18.4210526" y1="106.5" x2="506.578947" y2="106.5" id="Line-3" stroke="#C8CBCB" stroke-linecap="round"></line>
+                    <line x1="18.4210526" y1="82.5" x2="506.578947" y2="82.5" id="Line-3" stroke="#C8CBCB" stroke-linecap="round"></line>
+                    <text id="Pay-to-the-order-of" font-family="Lato-Regular, Lato" font-size="10" font-weight="normal" line-spacing="15" fill="#8E9090">
+                        <tspan x="18.4210526" y="69">Pay to the order of</tspan>
+                    </text>
+                    <line x1="225.082237" y1="143.969" x2="225.082237" y2="154" id="Line-2" stroke="#E2E2E3" stroke-linecap="round"></line>
+                    <line x1="281.496711" y1="143.969" x2="281.496711" y2="154" id="Line-2" stroke="#E2E2E3" stroke-linecap="round"></line>
+                    <text id="12345" font-family="Lato-Regular, Lato" font-size="14" font-weight="normal" line-spacing="21" fill="#8E9090">
+                        <tspan x="164.638158" y="152">12345</tspan>
+                    </text>
+                    <text id="123" font-family="Lato-Regular, Lato" font-size="14" font-weight="normal" line-spacing="21" fill="#8E9090">
+                        <tspan x="239.473684" y="152">123</tspan>
+                    </text>
+                    <text id="1234567" font-family="Lato-Regular, Lato" font-size="14" font-weight="normal" line-spacing="21" fill="#8E9090">
+                        <tspan x="294.736842" y="152">1234567</tspan>
+                    </text>
+                    <rect id="Rectangle" stroke="#8E9090" x="0.5" y="0.5" width="524" height="174" rx="3"></rect>
+                    <text id="Sample-check" font-family="Lato-Regular, Lato" font-size="16" font-weight="normal" fill="#8E9090">
+                        <tspan x="18.4210526" y="32">Sample check</tspan>
+                    </text>
+                    <text id="$" font-family="Lato-Regular, Lato" font-size="16" font-weight="normal" fill="#8E9090">
+                        <tspan x="382.236842" y="32">$</tspan>
+                    </text>
+                    <polyline id="Line-4" stroke="#604AFF" stroke-linecap="round" points="37.8157895 203 37.8157895 181.879601 184.815789 181.879601 184.815789 166"></polyline>
+                    <polyline id="Line-4" stroke="#604AFF" stroke-linecap="round" points="207.743421 203 207.743421 181.879601 250.743421 181.879601 250.743421 166"></polyline>
+                    <polyline id="Line-4" stroke="#604AFF" stroke-linecap="round" transform="translate(340.671053, 184.500000) scale(-1, 1) translate(-340.671053, -184.500000) " points="323.671053 203 323.671053 181.879601 357.671053 181.879601 357.671053 166"></polyline>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

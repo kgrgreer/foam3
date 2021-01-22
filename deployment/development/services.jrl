@@ -1,78 +1,26 @@
+// copied from nanopay/src/.  AFEX sandbox is never cleared, unlike our journals, so need to update start sequence number. Will have to do this if we clear staging/test journals
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "http",
+  "name": "bareUserDAO",
   "lazy": false,
-  "service": {
-    "class": "foam.nanos.jetty.HttpServer",
-    "port": 8080,
-    "forwardedForProxyWhitelist": [],
-    "welcomeFiles": ["welcome"],
-    "hostDomains": ["ablii", "localhost"],
-    "servletMappings": [{
-      "class": "foam.nanos.servlet.ServletMapping",
-      "servletObject": {
-        "class": "foam.nanos.servlet.VirtualHostRoutingServlet",
-        "isResourceStorage": true,
-        "defaultHost": "localhost"
-      },
-      "pathSpec": "/welcome"
-    }, {
-      "class": "foam.nanos.servlet.ServletMapping",
-      "className": "foam.nanos.http.NanoRouter",
-      "pathSpec": "/service/*"
-    }, {
-      "class": "foam.nanos.servlet.ServletMapping",
-      "className": "foam.nanos.servlet.ResourceImageServlet",
-      "pathSpec": "/images/*",
-      "initParameters": {
-        "paths": "images"
-      }
-    }, {
-      "class": "foam.nanos.servlet.ServletMapping",
-      "className": "org.eclipse.jetty.servlet.DefaultServlet",
-      "pathSpec": "/*",
-      "initParameters": {
-        "pathInfoOnly": "true",
-        "welcomeServlets": "true",
-        "dirAllowed": "false"
-      }
-    }],
-    "errorMappings": [{
-      "class": "foam.nanos.servlet.ErrorPageMapping",
-      "errorCode": 404,
-      "location": "/errorPage.html"
-    }, {
-      "class": "foam.nanos.servlet.ErrorPageMapping",
-      "exceptionType": "javax.ws.rs.NotAuthorizedException",
-      "location": "/unauthorizedAccess.html"
-    }, {
-      "class": "foam.nanos.servlet.ErrorPageMapping",
-      "exceptionType": "java.lang.Throwable",
-      "location": "/errorPage.html"
-    }],
-    "filterMappings": [{
-      "class": "foam.nanos.servlet.FilterMapping",
-      "filterClass": "net.nanopay.security.csp.CSPFilter",
-      "pathSpec": "/*",
-      "initParameters": {
-        "CONTENT_SECURITY_POLICY": """
-          default-src 'none';
-          child-src 'self' https://cdn.plaid.com/link/ nanopay.net nanopay.net data: chrome-extension-resource:;
-          connect-src 'self' http://localhost:*/service/;
-          font-src 'self' https://fonts.gstatic.com data: chrome-extension-resource:;
-          frame-src 'self' data: blob: filesystem:;
-          img-src 'self' data: blob: filesystem:;
-          manifest-src 'self';
-          media-src * data: blob: filesystem:;
-          object-src 'self' data: blob: filesystem:;
-          prefetch-src 'self' https://cdn.plaid.com/link/;
-          report-uri /service/CSPReportWebAgent;
-          script-src 'self' https://cdn.plaid.com/link/v2/stable/link-initialize.js 'unsafe-eval' 'sha256-HY1JzEwuxkis4xx0ggY23gbYY/MCEAE1T6+OQnWS2vA=' 'sha256-NiNrLgJ8wbIXIi5saiR3XTd1Mxm4k0nju66GJsw4b9U=' 'sha256-FLYDXBkz4oo/H5jEfYXqAGYUwERY44OO1yznaMCdMiU=' 'sha256-G3UfiJBy6rwOk3glkBQuQDFA7IoCtiOT56gTh+IfNF0=';
-          style-src 'self' https://fonts.googleapis.com/css https://fonts.googleapis.com/icon data: chrome-extension-resource: 'unsafe-inline';
-          worker-src 'self';
-        """
-      }
-    }]
-  }
+  "description": "Bare boned userDAO wrapped with essential decorators.",
+  "authenticate": false,
+  "serviceScript":
+  """
+    dao = new foam.dao.EasyDAO.Builder(x)
+      .setPm(true)
+      .setPipelinePm(true)
+      .setSeqNo(true)
+      .setSeqStartingValue(20000)
+      .setOf(foam.nanos.auth.User.getOwnClassInfo())
+      .setDecorator(new foam.dao.history.HistoryDAO(x, "userHistoryDAO", new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.auth.User.getOwnClassInfo()).build()))
+      .setJournalName("users")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setAuthorize(false)
+      .setServiceProviderAware(true)
+      .build();
+    dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.User.EMAIL });
+    dao.addPropertyIndex(new foam.core.PropertyInfo[] { foam.nanos.auth.User.GROUP });
+    return dao;
+  """
 })
-r({"class":"foam.nanos.boot.NSpec", "name":"liveScriptBundler"})

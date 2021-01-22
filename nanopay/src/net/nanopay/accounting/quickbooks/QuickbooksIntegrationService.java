@@ -517,7 +517,6 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
           temp.setFirstName(existUser.getFirstName());
           temp.setLastName(existUser.getLastName());
           temp.setOrganization(business.getOrganization());
-          temp.setBusinessName(business.getBusinessName());
           temp.setBusinessId(business.getId());
           temp.setEmail(business.getEmail());
           return new ContactMismatchPair.Builder(x)
@@ -533,7 +532,6 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
           temp.setFirstName(existUser.getFirstName());
           temp.setLastName(existUser.getLastName());
           temp.setOrganization("MULTI_BUSINESS");
-          temp.setBusinessName("MULTI_BUSINESS");
           return new ContactMismatchPair.Builder(x)
             .setExistContact(temp)
             .setResultCode(ContactMismatchCode.EXISTING_USER_MULTI)
@@ -622,8 +620,8 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
       if ( importContact.getFamilyName() != null ) {
         newContact.setLastName(importContact.getFamilyName());
       }
-      newContact.setBusinessPhoneNumber(businessPhone);
-      newContact.setBusinessPhoneNumberVerified(businessPhoneNumberVerified);
+      newContact.setPhoneNumber(businessPhone);
+      newContact.setPhoneNumberVerified(businessPhoneNumberVerified);
       newContact.setMobileNumber(mobilePhone);
       newContact.setMobileNumberVerified(mobilePhoneVerified);
     }
@@ -631,7 +629,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
 
     newContact.setEmail(email.getAddress().toLowerCase());
     newContact.setType("Contact");
-    newContact.setGroup("sme");
+    newContact.setGroup(user.getSpid() + "-sme");
     newContact.setQuickId(importContact.getId());
     newContact.setRealmId(token.getRealmId());
     newContact.setOwner(user.getId());
@@ -898,7 +896,7 @@ public class QuickbooksIntegrationService extends ContextAwareSupport
     // 2. contact ref
     QuickbooksContact contact = (QuickbooksContact) contactDAO.inX(x).find(quickInvoice.getContactId());
     ReferenceType contactRef = new ReferenceType();
-    contactRef.setName(contact.getBusinessName());
+    contactRef.setName(contact.getOrganization());
     contactRef.setValue(contact.getQuickId());
 
     // 3.

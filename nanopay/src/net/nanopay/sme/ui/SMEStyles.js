@@ -876,102 +876,6 @@ foam.CLASS({
       display: inline-block;
     }
 
-    .generic-status-circle.Scheduled {
-      background: #406dea;
-    }
-
-    .Invoice-Status.Scheduled {
-      color: #406dea !important;
-    }
-
-    .generic-status-circle.Complete {
-      background: #07941f;
-    }
-
-    .generic-status-circle.Pending-acceptance {
-      background: #cf6f0a;
-    }
-
-    .Invoice-Status.Pending-acceptance {
-      color: #cf6f0a !important;
-    }
-
-    .Invoice-Status.Processing {
-      color: #cf6f0a !important;
-    }
-
-    .generic-status-circle.Processing {
-      background: #cf6f0a;
-    }
-
-    .Invoice-Status.Complete {
-      color: #07941f !important;
-    }
-
-    .generic-status-circle.Unpaid {
-      background: #545d87;
-    }
-
-    .Invoice-Status.Unpaid {
-      color: #545d87 !important;
-    }
-
-    .generic-status-circle.Overdue {
-      background: #d42035;
-    }
-
-    .Invoice-Status.Overdue {
-      color: #d42035 !important;
-    }
-
-    .generic-status-circle.draft {
-      border-color: #8b90a6;
-      border-style: solid;
-      border-width: 1.5px;
-      height: 4px;
-      width: 4px;
-    }
-
-    .Invoice-Status.draft {
-      color: #8b90a6 !important;
-    }
-
-    .generic-status-circle.pending-approval {
-      border-color: #545d87;
-      border-style: solid;
-      border-width: 1.5px;
-      height: 4px;
-      width: 4px;
-    }
-
-    .Invoice-Status.pending-approval {
-      color: #545d87 !important;
-    }
-
-    .generic-status-circle.depositing-money {
-      background: #cf6f0a;
-    }
-
-    .Invoice-Status.depositing-money {
-      color: #cf6f0a !important;
-    }
-
-    .generic-status-circle.pending {
-      background: #cf6f0a;
-    }
-
-    .Invoice-Status.pending {
-      color: #cf6f0a !important;
-    }
-
-    .generic-status-circle.void {
-      background: #424242;
-    }
-
-    .Invoice-Status.void {
-      color: #424242 !important;
-    }
-
     /* BankForm Override */
     .net-nanopay-cico-ui-bankAccount-form-BankForm  {
       position: fixed;
@@ -1017,14 +921,8 @@ foam.CLASS({
     }
 
     /* signIn & signUp */
-    .foam-u2-view-LoginView .foam-u2-detail-VerticalDetailView {
-      width: 78%;
-    }
     .title-top {
       padding-bottom: 2vh;
-    }
-    .center-footer {
-      width: 78%;
     }
     .foam-u2-view-LoginView .foam-u2-borders-SplitScreenBorder {
       padding-top: 75px;

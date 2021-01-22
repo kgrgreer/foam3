@@ -21,7 +21,7 @@ foam.CLASS({
   extends: 'net.nanopay.crunch.document.Document',
 
   messages: [
-    { name: 'EXCEED_EXPIRY_LIMIT_ERROR', message: 'Expiry date must not exceed 5 years'},
+    { name: 'EXCEED_EXPIRY_LIMIT_ERROR', message: 'Expiry date must not exceed 10 years'},
     { name: 'EXPIRED_DOCUMENT_ERROR', message: 'Expiry date must be a future date' },
     { name: 'INVALID_EXPIRY_ERROR', message: 'Valid expiry date required' }
   ],
@@ -70,7 +70,7 @@ foam.CLASS({
           args: ['expiry'],
           predicateFactory: function(e) {
             var limit = new Date();
-            limit.setDate(limit.getDate() + ( 5 * 365 ));
+            limit.setFullYear(new Date().getFullYear() + 10);
             return e.LT(net.nanopay.crunch.document.ExpirableDocument.EXPIRY, limit);
           },
           errorMessage: 'EXCEED_EXPIRY_LIMIT_ERROR'

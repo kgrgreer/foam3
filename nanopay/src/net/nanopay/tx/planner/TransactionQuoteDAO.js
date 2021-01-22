@@ -60,11 +60,10 @@ foam.CLASS({
         return getDelegate().put_(x, quote);
       }
 
-
       //if no plans found throw exception
       if ( quote.getPlans().length == 0 ) {
         Transaction requestTxn = quote.getRequestTransaction();
-        String message = String.format("Unable to find a plan for transaction with source currency: %s, destination currency: %s, source account: %d, destination account: %d", requestTxn.getSourceCurrency(), requestTxn.getDestinationCurrency(), requestTxn.getSourceAccount(), requestTxn.getDestinationAccount());
+        String message = String.format("Unable to plan transaction with source currency: %s, destination currency: %s, source account: %s, destination account: %s", requestTxn.getSourceCurrency(), requestTxn.getDestinationCurrency(), requestTxn.getSourceAccount(), requestTxn.getDestinationAccount());
         sendNOC(x, message);
         ((Logger) x.get("logger")).error(message);
         throw new UnableToPlanException("Unable to plan");
@@ -114,7 +113,7 @@ foam.CLASS({
       ((DAO) x.get("localNotificationDAO")).put(notification);
       ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), message);
 
-      String name = "Unable to find a plan for requested transaction";
+      String name = "Unable to plan";
       DAO alarmDAO = (DAO) x.get("alarmDAO");
       Alarm alarm = (Alarm) alarmDAO.find(EQ(Alarm.NAME, name));
       if ( alarm != null &&

@@ -6,12 +6,16 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.logger.Logger;
 
-import java.util.Calendar;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
 
 import net.nanopay.fx.afex.AFEXFundingTransaction;
 import net.nanopay.fx.afex.AFEXServiceProvider;
 import net.nanopay.fx.afex.AFEXTransaction;
+import net.nanopay.fx.afex.CreateTradeResponse;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
@@ -26,10 +30,9 @@ public class AFEXPaymentStatusCron implements ContextAgent {
   public void execute(X x) {
     Logger logger = (Logger) x.get("logger");
     DAO transactionDAO = (DAO) x.get("localTransactionDAO");
+    DAO traderesponseDAO = (DAO) x.get("afexTradeResponseDAO");
     AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
     
-    Calendar currentDate = Calendar.getInstance();
-
     ArraySink sink = (ArraySink) transactionDAO
     .where(
       AND(
@@ -41,14 +44,27 @@ public class AFEXPaymentStatusCron implements ContextAgent {
         )
       )
     .select(new ArraySink());
-    List<Transaction> pendingTransactions = sink.getArray();
-    for (Transaction transaction : pendingTransactions) {
+    List<AFEXTransaction> pendingTransactions = sink.getArray();
+    for (AFEXTransaction transaction : pendingTransactions) {
       try{
-       Calendar txnCompletionDate = Calendar.getInstance();
-       if ( transaction.getCompletionDate() != null ) {
-         txnCompletionDate.setTime(transaction.getCompletionDate());
-         if ( txnCompletionDate.get(Calendar.DAY_OF_YEAR) <= currentDate.get(Calendar.DAY_OF_YEAR) ) {
-              transactionDAO.put(afexServiceProvider.updatePaymentStatus(transaction));
+        LocalDateTime now = LocalDateTime.now();
+        if ( transaction.getCompletionDate() != null ) {
+          LocalDateTime completionDate =  LocalDateTime.ofInstant(transaction.getCompletionDate().toInstant(), ZoneId.systemDefault());
+          if ( now.isAfter(completionDate) ) {
+            transactionDAO.put(afexServiceProvider.updatePaymentStatus(transaction));
+          }
+       } else {
+         // Check trade response value date for date
+         CreateTradeResponse response = (CreateTradeResponse) traderesponseDAO.find(EQ(CreateTradeResponse.TRADE_NUMBER,transaction.getAfexTradeResponseNumber()));
+         try {
+           Date valueDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").parse(response.getValueDate());
+           LocalDateTime completionDate =  LocalDateTime.ofInstant(valueDate.toInstant(), ZoneId.systemDefault());
+           if ( now.isAfter(completionDate) ) {
+             transactionDAO.put(afexServiceProvider.updatePaymentStatus(transaction));
+           }
+         } catch (Exception e){
+           // error parsing value date so check the status now
+           transactionDAO.put(afexServiceProvider.updatePaymentStatus(transaction));
          }
        }
       } catch(Throwable t){

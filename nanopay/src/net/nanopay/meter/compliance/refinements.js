@@ -32,7 +32,8 @@ foam.CLASS({
       documentation: 'Operations approval status for user.',
       readPermissionRequired: true,
       writePermissionRequired: true,
-      section: 'administrative',
+      section: 'complianceInformation',
+      order: 1,
       sheetsOutput: true
     }
   ]
@@ -52,6 +53,7 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'net.nanopay.admin.model.ComplianceStatus',
       name: 'compliance',
+      section: 'complianceInformation',
       documentation: 'Operations approval status for bank account.',
       readPermissionRequired: true,
       writePermissionRequired: true,

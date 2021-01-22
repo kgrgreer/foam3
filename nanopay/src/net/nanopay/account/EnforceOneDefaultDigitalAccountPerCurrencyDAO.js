@@ -46,6 +46,7 @@ foam.CLASS({
                      INSTANCE_OF(DigitalAccount.class),
                      EQ(DigitalAccount.OWNER, account.getOwner()),
                      EQ(DigitalAccount.DENOMINATION, account.getDenomination()),
+                     EQ(DigitalAccount.TRUST_ACCOUNT, account.getTrustAccount()),
                      EQ(DigitalAccount.IS_DEFAULT, true),
                      EQ(DigitalAccount.LIFECYCLE_STATE, LifecycleState.ACTIVE)
                      )

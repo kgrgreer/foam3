@@ -82,7 +82,7 @@ https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31
         // add user overrides
         ...
       },
-      "buseinssOverrides": {
+      "businessOverrides": {
         "businessName": "--Custom Business Name--",
         ...
       }
@@ -111,13 +111,13 @@ https://flinks.io/contact/thank-you?loginId=8b35f6c8-e7b6-41d3-98f8-08d68b7f8d31
             "class": "foam.nanos.crunch.connection.CapabilityPayload",
             "id": "F3DCAF53-D48B-4FA5-9667-6A6EC58C54FD",
             "capabilityDataObjects": {
-                "AbliiPrivacyPolicy": {
+                "Ablii Privacy Policy": {
                     "class": "net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiPrivacyPolicy",
                     "title": "Ablii's Privacy Policy",
                     "agreement": false,
                     "version": "1.0"
                 },
-                "AbliiTermsAndConditions": {
+                "Ablii Terms and Conditions": {
                     "class": "net.nanopay.crunch.acceptanceDocuments.capabilities.AbliiTermsAndConditions",
                     "title": "Ablii's Terms and Conditions",
                     "agreement": false,
