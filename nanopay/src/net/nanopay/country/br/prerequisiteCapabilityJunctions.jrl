@@ -23,7 +23,7 @@ p({
 // PRECONDITION: Signing officer privilages - Unlock payments
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "0B2E7305-B898-43F2-9C1B-63FB2CE38B2D",
+  sourceId: "bf6a49d5-4027-4dac-a269-4d3ed070609e-4",
   targetId: "777af38a-8225-87c8-dfdf-eeb15f71215f-123",
   precondition: true
 })
@@ -73,8 +73,8 @@ p({
   targetId:"554af38a-8225-87c8-dfdf-eeb15f71215f-14"
 })
 
-// replace businessdetails prereq with businesstypeandsector for brazil 
-// certify data reviewed 
+// replace businessdetails prereq with businesstypeandsector for brazil
+// certify data reviewed
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"554af38a-8225-87c8-dfdf-eebsdf3225y-4",

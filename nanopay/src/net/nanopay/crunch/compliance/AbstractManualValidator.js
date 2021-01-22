@@ -102,7 +102,7 @@ foam.CLASS({
           // Alarm on failure
           ((DAO) x.get("alarmDAO")).put(new Alarm.Builder(x)
             .setName(getClassification() + " failed")
-            .setReason(AlarmReason.CREDENTIALS)
+            .setReason(AlarmReason.UNSPECIFIED)
             .setNote(e.getMessage())
             .build());
         }

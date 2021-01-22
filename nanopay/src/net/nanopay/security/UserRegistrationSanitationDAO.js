@@ -50,9 +50,18 @@ foam.CLASS({
       args: [{ type: 'User', name: 'user' }],
       documentation: `Return a sanitized copy of the given user.`,
       javaCode: `
-          User userClone;
-          userClone = (User) user.fclone();
-          return userClone;
+        User nu = new User();
+        nu.setUserName(user.getUserName());
+        nu.setEmail(user.getEmail());
+        nu.setDesiredPassword(user.getDesiredPassword());
+        nu.setSignUpToken(user.getSignUpToken());
+        nu.setGroup(user.getGroup());
+        nu.setLanguage(user.getLanguage());
+
+        if ( nu.isAdmin() ) {
+          nu.setGroup("basicUser");
+        }
+        return nu;
       `
     }
   ],

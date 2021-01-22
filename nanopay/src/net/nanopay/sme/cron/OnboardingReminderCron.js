@@ -53,7 +53,6 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'BODY_TEXT', message: 'Here\'s a reminder to complete your business registration.' },
     { name: 'ERROR_MSG', message: 'NOT SENT ERROR: Email(onboarding-reminder) meant for business: ' }
   ],
   methods: [
@@ -113,8 +112,7 @@ foam.CLASS({
               "https://nanopay.atlassian.net/servicedesk/customer/portal/4/topic/1cbf8d4b-9f54-4a15-9c0a-2e636351b803/article/950332"
             );
 
-            Notification onboardingReminderNotification = new Notification.Builder(x)
-              .setBody(BODY_TEXT)
+            OnboardingReminderNotification onboardingReminderNotification = new OnboardingReminderNotification.Builder(x)
               .setNotificationType("OnboardingReminder")
               .setEmailArgs(args)
               .setEmailName("onboarding-reminder")

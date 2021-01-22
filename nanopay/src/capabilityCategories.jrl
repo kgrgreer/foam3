@@ -60,6 +60,12 @@ p({
 })
 p({
   "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "identityMindUserValidation",
+  "name": "Check Compliance of User Against IdentityMind",
+  "visible": false
+})
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
   "id": "secureFactBusinessValidation",
   "name": "Check Compliance of Business Against SecureFact",
   "visible": false
@@ -72,7 +78,27 @@ p({
 })
 p({
   "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "identityMindBusinessValidation",
+  "name": "Check Compliance of Business Against IdentityMind",
+  "visible": false
+})
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
   "id": "compliancePassed",
   "name": "Capabilities that are granted once compliance has been passed",
+  "visible": false
+})
+
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "toplevelonboarding",
+  "name": "Top Level Onboarding",
+  "visible": false
+})
+
+p({
+  "class": "foam.nanos.crunch.CapabilityCategory",
+  "id": "registerPaymentProvider",
+  "name": "Register Payment Provider",
   "visible": false
 })

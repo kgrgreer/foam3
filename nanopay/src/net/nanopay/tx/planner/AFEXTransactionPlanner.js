@@ -260,7 +260,7 @@ foam.CLASS({
         fundingTransaction.setDestinationAccount(destination);
         // FundingTransaction does not perform fx conversions, only moves funds to a digital account
         fundingTransaction.setDestinationAmount(fxQuote.getSourceAmount());
-        fundingTransaction.setDestinationCurrency(fxQuote.getTargetCurrency());
+        fundingTransaction.setDestinationCurrency(fxQuote.getSourceCurrency());
         fundingTransaction.setPlanner(this.getId());
         fundingTransaction.setValueDate(fxQuote.getValueDate());
         fundingTransaction.clearLineItems();

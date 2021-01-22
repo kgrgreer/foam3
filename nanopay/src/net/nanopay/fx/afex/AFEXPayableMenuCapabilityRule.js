@@ -72,26 +72,16 @@ foam.CLASS({
           AFEXBusinessApprovalRequest request = (AFEXBusinessApprovalRequest) obj.fclone();
           AFEXBusiness afexBusiness = (AFEXBusiness) ((DAO) x.get("afexBusinessDAO")).find(EQ(AFEXBusiness.ID, request.getObjId()));
           DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
-          DAO localGroupDAO = (DAO) x.get("localGroupDAO");
 
           Business business = (Business) localBusinessDAO.find(EQ(Business.ID, afexBusiness.getUser()));
           if ( null != business ) {
-            Address businessAddress = business.getAddress();
-            if ( null != businessAddress && ! SafetyUtil.isEmpty(businessAddress.getCountryId()) ) {
+            var subject = new Subject(x);
+            subject.setUser(business);
+            subject.setUser(business);
 
-              var subject = new Subject(x);
-              subject.setUser(business);
-              subject.setUser(business);
-
-              var subjectX = x.put("subject", subject);
-
-              DAO ucjDAO = (DAO) x.get("userCapabilityJunctionDAO");
-              String afexPaymentMenuCapId = "1f6b2047-1eef-471d-82e7-d86bdf511375";
-              crunchService.updateJunction(subjectX, afexPaymentMenuCapId, null, CapabilityJunctionStatus.GRANTED);
-
-              // Temporary pending when MinMax Cap is fixed
-              crunchService.updateJunction(subjectX, "554af38a-8225-87c8-dfdf-eeb15f71215f-20", null, CapabilityJunctionStatus.GRANTED);
-            }
+            var subjectX = x.put("subject", subject);
+            String afexPaymentMenuCapId = "1f6b2047-1eef-471d-82e7-d86bdf511375";
+            crunchService.updateJunction(subjectX, afexPaymentMenuCapId, null, CapabilityJunctionStatus.GRANTED);
           }
         }
 

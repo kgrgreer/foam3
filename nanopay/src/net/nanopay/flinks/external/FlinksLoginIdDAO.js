@@ -37,6 +37,7 @@ foam.CLASS({
     'foam.nanos.dig.exception.GeneralException',
     'foam.nanos.dig.exception.UnknownIdException',
     'foam.nanos.logger.Logger',
+    'foam.nanos.pm.PM',
     'foam.util.SafetyUtil',
     'java.util.ArrayList',
     'java.util.HashMap',
@@ -72,6 +73,10 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
+      var pm = new PM(FlinksLoginIdDAO.getOwnClassInfo().getId(), "put");
+
+      try {
+
         Logger logger = (Logger) x.get("logger");
         Subject subject = (Subject) x.get("subject");
 
@@ -132,8 +137,7 @@ foam.CLASS({
         }
 
         // Create the user if this is an onboarding request
-        if ( flinksLoginId instanceof FlinksLoginIdOnboarding )
-        {
+        if ( flinksLoginId instanceof FlinksLoginIdOnboarding ) {
           FlinksLoginIdOnboarding flinksLoginIdOnboarding = (FlinksLoginIdOnboarding) flinksLoginId;
 
           if ( user == null ) {
@@ -183,6 +187,12 @@ foam.CLASS({
         flinksLoginId.setAccount(bankAccount.getId());
 
         return super.put_(x, flinksLoginId);
+      } catch (Throwable t) {
+        pm.error(x, t.getMessage());
+        throw t;
+      } finally {
+        pm.log(x);
+      }
       `
     },
     {

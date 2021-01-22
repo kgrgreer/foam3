@@ -24,17 +24,10 @@ foam.CLASS({
   implements: ['foam.nanos.ruler.RuleAction'],
 
   javaImports: [
-    'java.util.Arrays',
-    'java.util.List',
     'foam.core.X',
     'foam.dao.DAO',
-    'foam.dao.ArraySink',
     'foam.nanos.auth.AuthorizationException',
     'foam.nanos.auth.User',
-    'foam.nanos.crunch.UserCapabilityJunction',
-    'foam.nanos.crunch.CapabilityJunctionStatus',
-    'foam.nanos.notification.Notification',
-    'foam.util.SafetyUtil',
     'net.nanopay.bank.BankAccount',
     'net.nanopay.model.Business',
     'net.nanopay.payment.PaymentProviderCorridor',
@@ -56,7 +49,6 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        DAO userCapability = (DAO) x.get("userCapabilityJunctionDAO");
         BankAccount acc = (BankAccount) obj;
         
         String country =  acc.getCountry();
@@ -71,7 +63,7 @@ foam.CLASS({
           ppc = (PaymentProviderCorridor) targetCorridorDAO.find(
             AND(
               EQ(PaymentProviderCorridor.TARGET_COUNTRY, country),
-              EQ(PaymentProviderCorridor.TARGET_CURRENCIES, currency)
+              IN(currency, PaymentProviderCorridor.TARGET_CURRENCIES)
             )
           );
           if ( ppc != null ) return;
@@ -79,7 +71,7 @@ foam.CLASS({
           ppc = (PaymentProviderCorridor) sourceCorridorDAO.find(
             AND(
               EQ(PaymentProviderCorridor.SOURCE_COUNTRY, country),
-              EQ(PaymentProviderCorridor.SOURCE_CURRENCIES, currency)
+              IN(currency, PaymentProviderCorridor.SOURCE_CURRENCIES)
             )
           );
           if ( ppc != null ) return;
