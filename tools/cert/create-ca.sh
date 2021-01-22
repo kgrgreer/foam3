@@ -41,4 +41,13 @@ echo -e "  - $DOMAIN.key is the private key that will be used by create-certific
 echo
 echo "Next steps:"
 echo -e "  - Import $DOMAIN.crt in your browser"
+echo -e "  MacOS:"
+echo -e "  Certificate Authority must be installed."
+echo -e "  1. double click nanopay-ca.csr"
+echo -e "  2. add to MacOS keychain"
+echo -e "  3. open the newly added 'R&D' entry"
+echo -e "  4. open the 'Trust' section, near the top"
+echo -e "  5. change 'When using this certificate' to 'Always Trust'"
+echo -e "  6. close window, you will be prompted to make system changes"
+echo -e " "
 echo -e "  - run create-wildcard-certificate.sh"
