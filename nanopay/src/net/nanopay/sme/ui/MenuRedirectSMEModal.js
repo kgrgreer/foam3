@@ -41,14 +41,14 @@ foam.CLASS({
       label: '',
       icon: 'images/ic-cancelblack.svg',
       code: function(X) {
-        X.pushMenu(X.data.menu);
+        X.pushMenu(X.data.menu, true);
       }
     }
   ],
 
   listeners: [
     function close() {
-      this.pushMenu(this.menu);
+      this.pushMenu(this.menu, true);
     }
   ]
 });

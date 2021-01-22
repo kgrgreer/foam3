@@ -35,6 +35,9 @@ foam.CLASS({
       name: 'menu',
     },
     {
+      name: 'controllerMode'
+    },
+    {
       class: 'foam.u2.ViewSpec',
       name: 'view',
       type: 'foam.lib.json.UnknownFObject',
@@ -46,7 +49,11 @@ foam.CLASS({
     function initE() {
       this.start()
         .addClass(this.myClass())
-        .add(this.MenuRedirectSMEModal.create({ menu: this.menu }, this).tag(this.view))
+        .add(this.MenuRedirectSMEModal.create({ menu: this.menu }, this)
+          .startContext({ controllerMode: this.controllerMode })
+            .tag(this.view, { redirectMenu: this.menu })
+          .endContext()
+        )
       .end();
     }
   ]
