@@ -144,6 +144,15 @@ function deploy_journals {
         fi
     fi
 
+    if [ ! -z "${RESOURCES}" ]; then
+        echo "INFO :: Deploying Resources"
+        if [ "${RUN_JAR}" -eq 1 ]; then
+            cp -r deployment/${RESOURCES}/resources/* "${JOURNAL_OUT}/"
+        else
+            cp -r deployment/${RESOURCES}/resources/* "${JOURNAL_HOME}/"
+        fi
+    fi
+
     if [ "$RUN_JAR" -eq 0 ]; then
         while read -r file; do
             journal_file="$file".0
@@ -492,6 +501,7 @@ function usage {
     echo "  -p : Enable profiling on default port"
     echo "  -P PORT : JProfiler connection on PORT"
     echo "  -r : Start nanos with whatever was last built."
+    echo "  -R deployment directories with resources to add to Jar file"
     echo "  -s : Stop a running daemonized nanos."
     echo "  -S : When debugging, start suspended."
     echo "  -t : Run All tests."
@@ -543,9 +553,6 @@ else
   echo -e "\033[34;1m \033[36;1m(c) nanopay Corporation \033[0m\033[34;1m|_|          |___/  \033[0m"
   echo ""
 fi
-#Print Transactions version Number.
-  echo -e "Running Transaction Engine\033[36;1m v4.2.4\033[0m"
-  echo ""
 ############################
 
 FS=rw
@@ -577,7 +584,6 @@ RESTART=0
 STATUS=0
 DELETE_RUNTIME_JOURNALS=0
 DELETE_RUNTIME_LOGS=0
-COMPILE_ONLY=0
 DISABLE_LIVESCRIPTBUNDLER=0
 WEB_PORT=8080
 VULNERABILITY_CHECK=0
@@ -585,8 +591,9 @@ GRADLE_FLAGS=
 LIQUID_DEMO=0
 RUNTIME_COMPILE=0
 RUN_USER=
+RESOURCES=
 
-while getopts "bcC:dD:E:efF:ghijJ:klmN:opP:QrsStT:uU:vV:wW:xz" opt ; do
+while getopts "bcC:dD:E:efF:ghijJ:klmN:opP:QR:rsStT:uU:vV:wW:xz" opt ; do
     case $opt in
         b) BUILD_ONLY=1 ;;
         c) CLEAN_BUILD=1 ;;
@@ -642,10 +649,10 @@ while getopts "bcC:dD:E:efF:ghijJ:klmN:opP:QrsStT:uU:vV:wW:xz" opt ; do
            echo -e "\033[41;1m GenericCIPlanner & GenericFXPlanDAO \033[0m"
            ;;
         r) RESTART_ONLY=1 ;;
+        R) RESOURCES=$OPTARG ;;
         s) STOP_ONLY=1 ;;
         t) TEST=1
            MODE=TEST
-           COMPILE_ONLY=0
            ;;
         T) TEST=1
            TESTS=$OPTARG
@@ -653,7 +660,8 @@ while getopts "bcC:dD:E:efF:ghijJ:klmN:opP:QrsStT:uU:vV:wW:xz" opt ; do
            ;;
         u) RUN_JAR=1;;
         U) RUN_USER=${OPTARG};;
-        v) COMPILE_ONLY=1 ;;
+        v) gradle printVersions ;
+           quit 0 ;;
         V) VERSION=$OPTARG
            echo "VERSION=${VERSION}"
            if [ -z "${GRADLE_FLAGS}" ]; then
