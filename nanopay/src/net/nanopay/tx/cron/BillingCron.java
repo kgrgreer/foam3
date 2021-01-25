@@ -33,6 +33,7 @@ import net.nanopay.account.Account;
 import net.nanopay.tx.billing.Bill;
 import net.nanopay.tx.billing.BillingFee;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionStatus;
 
 import static foam.mlang.MLang.*;
 import static java.util.Calendar.*;
@@ -75,29 +76,17 @@ public class BillingCron implements ContextAgent {
     Map<Long, List<Bill>> billingMap = new HashMap<>();
     for ( int i = 0; i < bills.getArray().size(); i++ ) {
       Bill bill = (Bill) bills.getArray().get(i);
-      if ( (Long) bill.getChargeToUser() != null ) {
-        if ( ! billingMap.containsKey(bill.getChargeToUser()) ) {
-          List<Bill> userBillingList = new ArrayList<>();
-          userBillingList.add(bill);
-          billingMap.put(bill.getChargeToUser(), userBillingList);
-        } else {
-          billingMap.get(bill.getChargeToUser()).add(bill);
-        }
-      } else {
-        if ( ! billingMap.containsKey(bill.getChargeToBusiness()) ) {
-          List<Bill> businessBillingList = new ArrayList<>();
-          businessBillingList.add(bill);
-          billingMap.put(bill.getChargeToBusiness(), businessBillingList);
-        } else {
-          billingMap.get(bill.getChargeToBusiness()).add(bill);
-        }
+      Long id = (Long) bill.getChargeToUser() != null ? bill.getChargeToUser() : bill.getChargeToBusiness();
+      if ( ! billingMap.containsKey(id) ) {
+          billingMap.put(id, new ArrayList<Bill>());
       }
+      billingMap.get(id).add(bill);
     }
 
     // for each userId in the billingMap generate a billing transaction
     for ( Long userId : billingMap.keySet() ) {
       ArraySink userAccountSink = (ArraySink) ((DAO) x.get("localAccountDAO"))
-        .where(AND(EQ(Account.OWNER, userId), EQ(Account.DENOMINATION, "CAD")))
+        .where(EQ(Account.OWNER, userId))
         .orderBy(Account.CREATED)
         .limit(1)
         .select(new ArraySink());
@@ -121,6 +110,8 @@ public class BillingCron implements ContextAgent {
       Transaction billingTxn = new Transaction.Builder(x)
         .setSourceAccount(userAccount.getId())
         .setDestinationAccount(feeAccount.getId())
+        .setSourceCurrency(userAccount.getDenomination())
+        .setDestinationCurrency(feeAccount.getDenomination())
         .setAmount(amount)
         .build();
 
@@ -128,6 +119,7 @@ public class BillingCron implements ContextAgent {
 
       for ( Bill bill : billList ) {
         bill.setBillingTransaction(billingTxn.getId());
+        bill.setStatus(TransactionStatus.SENT);
         ((DAO) x.get("billDAO")).put(bill);
       }
     }

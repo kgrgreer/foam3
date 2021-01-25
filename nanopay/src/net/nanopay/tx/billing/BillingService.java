@@ -33,6 +33,7 @@ import net.nanopay.model.Business;
 import net.nanopay.tx.ChargedTo;
 import net.nanopay.tx.SummaryTransaction;
 import net.nanopay.tx.model.Transaction;
+import net.nanopay.tx.model.TransactionStatus;
 
 import static foam.mlang.MLang.EQ;
 
@@ -70,13 +71,10 @@ public class BillingService implements BillingServiceInterface {
       billingFee.setCurrency(errorFee.getCurrency());
       billingFee.setDescription(errorCodeObj.getFullText());
 
-      if ( billingMap.containsKey(errorFee.getChargedTo()) ) {
-        billingMap.get(errorFee.getChargedTo()).add(billingFee);
-      } else {
-        List<BillingFee> billingFeeList = new ArrayList<>();
-        billingFeeList.add(billingFee);
-        billingMap.put(errorFee.getChargedTo(), billingFeeList);
+      if ( ! billingMap.containsKey(errorFee.getChargedTo()) ) {
+        billingMap.put(errorFee.getChargedTo(), new ArrayList<BillingFee>());
       }
+      billingMap.get(errorFee.getChargedTo()).add(billingFee);
     }
 
     for ( ChargedTo chargedTo : billingMap.keySet() ) {
@@ -87,8 +85,7 @@ public class BillingService implements BillingServiceInterface {
       bill.setFees(billingFeeList.toArray(new BillingFee[billingFeeList.size()]));
       bill.setOriginatingTransaction(transaction.getId());
       bill.setChargeDate(chargeDate);
-      bill.setStatus(transaction.getStatus());
-      bill.setStatusHistory(transaction.getStatusHistory());
+      bill.setStatus(TransactionStatus.PENDING);
 
       if ( originatingSummaryTxn instanceof SummaryTransaction ) {
         bill.setOriginatingSummaryTransaction(originatingSummaryTxn.getId());

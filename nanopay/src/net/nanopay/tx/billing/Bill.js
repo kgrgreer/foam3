@@ -88,11 +88,6 @@ foam.CLASS({
       class: 'DateTime',
       name: 'created',
       visibility: 'RO'
-    },
-    {
-      name: 'statusHistory',
-      class: 'FObjectArray',
-      of: 'net.nanopay.tx.HistoricStatus',
     }
   ]
 });
