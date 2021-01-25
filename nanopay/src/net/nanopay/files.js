@@ -1628,6 +1628,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/billing/BillingServiceInterface' },
   { name: 'net/nanopay/tx/billing/ChargeDateServiceInterface' },
   { name: 'net/nanopay/tx/billing/ClientBillingService' },
+  { name: 'net/nanopay/tx/billing/CreateBillsRule' },
   { name: 'net/nanopay/tx/billing/ErrorFee' },
   
   // Fees

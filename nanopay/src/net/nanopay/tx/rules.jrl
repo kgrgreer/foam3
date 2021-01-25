@@ -897,3 +897,23 @@ p({
     "lifecycleState":1,
     "spid":"intuit"
 })
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"transactions-billing-engine-create-bill",
+  "name":"Create bills from failed transactions",
+  "priority":100,
+  "ruleGroup":"billing",
+  "documentation":"Creates bills from failed transactions",
+  "daoKey":"localTransactionDAO",
+  "operation":1,
+  "after":true,
+  "predicate":{},
+  "action":{
+    "class":"net.nanopay.tx.billing.CreateBillsRule"
+  },
+  "enabled":true,
+  "saveHistory":true,
+  "lifecycleState":1,
+  "spid":"intuit"
+})

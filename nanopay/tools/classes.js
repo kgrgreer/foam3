@@ -1167,6 +1167,7 @@ var classes = [
   'net.nanopay.tx.billing.BillingServiceInterface',
   'net.nanopay.tx.billing.ChargeDateServiceInterface',
   'net.nanopay.tx.billing.ClientBillingService',
+  'net.nanopay.tx.billing.CreateBillsRule',
   'net.nanopay.tx.billing.ErrorFee',
 
   // Fees
