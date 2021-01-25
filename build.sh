@@ -701,6 +701,11 @@ if [ "${RUN_JAR}" -eq 1 ]; then
     else
         JOURNAL_CONFIG="${JOURNAL_CONFIG},u"
     fi
+    if [ -z "${RESOURCES}" ]; then
+        RESOURCES=u
+    else
+        RESOURCES="${RESOURCES},u"
+    fi
 fi
 
 echo "INFO :: Journal Config is ${JOURNAL_CONFIG}"
