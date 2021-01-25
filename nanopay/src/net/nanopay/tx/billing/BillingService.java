@@ -38,17 +38,6 @@ import static foam.mlang.MLang.EQ;
 
 
 public class BillingService implements BillingServiceInterface {
-
-  // getBills() find corresponding bills for the transaction children
-  /*@Override
-  public Bill[] getBills(X x, String transactionId) {
-    DAO transactionDAO = (DAO) x.get("localTransactionDAO");
-    SummaryTransaction txn = (SummaryTransaction) transactionDAO.find(transactionId);
-    if ( txn instanceof SummaryTransaction ) {
-      return txn.findBills(x);
-    }
-  }*/
-
   @Override
   public void createBills(X x, Transaction transaction) {
     ChargeDateServiceInterface chargeDateService = (ChargeDateServiceInterface) x.get("chargeDateService");
