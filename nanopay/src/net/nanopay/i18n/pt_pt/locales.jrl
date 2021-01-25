@@ -957,8 +957,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.TaxIdNumberData.TAX_ID_NUMBER_ERROR",target:"Insira um número de identificação fiscal federal válido."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-7.name",target:"Propriedade de negócio"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-7-reviewRequired.name",target:"Um ou mais proprietários beneficiários"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-7-noReview.name",target:"Nenhum proprietário beneficiário"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-7-reviewRequired.name",target:"Sua empresa possui uma ou mais pessoas que possuem 25% ou mais do negócio, direta ou indiretamente?"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-7-noReview.name",target:"Sua empresa NÃO possui uma pessoa que detém 25% ou mais do negócio, direta ou indiretamente."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-7-br.name",target:"Propriedade de negócio"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-76.name",target:"Registro comercial"})

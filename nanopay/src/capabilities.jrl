@@ -271,7 +271,7 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"554af38a-8225-87c8-dfdf-eeb15f71215f-7-noReview",
-  "name":"Your company does NOT have one or more people who own 25% or more of the business either directly or indirectly",
+  "name":"Your company does NOT have a person who own 25% or more of the business either directly or indirectly.",
   "of":"net.nanopay.crunch.onboardingModels.IsPubliclyTradedQuestion",
   "version":"0",
   "enabled":true,
