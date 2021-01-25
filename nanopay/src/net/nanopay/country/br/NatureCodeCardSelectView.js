@@ -45,8 +45,8 @@ foam.CLASS({
     {
       class: 'String',
       name: 'operationType',
-      expression: function(obj) {
-        return obj && obj.operationType;
+      expression: function(data) {
+        return data && data.operationType;
       }
     }
   ],
@@ -57,14 +57,10 @@ foam.CLASS({
       .addClass(this.myClass())
       .addClass(this.myClass('innerFlexer'))
       .start(this.CardBorder)
-        .enableClass(this.myClass('selected'), this.slot((data, mode) => {
-          return data && mode !== foam.u2.DisplayMode.DISABLED;
-        }))
-        .enableClass(this.myClass('disabled'), this.slot((data, mode) => {
-          return ! data && mode === foam.u2.DisplayMode.DISABLED;
-        }))
-        .enableClass(this.myClass('selected-disabled'), this.slot((data, mode) => {
-          return data && mode === foam.u2.DisplayMode.DISABLED;
+        .enableClass(this.myClass('selected'), this.isSelected$)
+        .enableClass(this.myClass('disabled'), this.isDisabled$)
+        .enableClass(this.myClass('selected-disabled'), this.slot((isSelected, isDisabled) => {
+          return isSelected  && isDisabled;
         }))
         .on('click', this.onClick)
         .add(this.label)
