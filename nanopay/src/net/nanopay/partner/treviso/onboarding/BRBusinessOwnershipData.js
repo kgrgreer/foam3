@@ -102,10 +102,10 @@ foam.CLASS({
           args: ['amountOfOwners'],
           predicateFactory: function(e) {
             return e.AND(
-              e.GTE(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
-                .AMOUNT_OF_OWNERS, 0),
-              e.LTE(net.nanopay.crunch.onboardingModels.BusinessOwnershipData
-                .AMOUNT_OF_OWNERS, 4)
+              e.GTE(net.nanopay.partner.treviso.onboarding
+                .BRBusinessOwnershipData.AMOUNT_OF_OWNERS, 0),
+              e.LTE(net.nanopay.partner.treviso.onboarding
+                .BRBusinessOwnershipData.AMOUNT_OF_OWNERS, 4)
             );
           },
           errorMessage: 'NO_AMOUNT_OF_OWNERS_SELECTED_ERROR'
@@ -113,8 +113,8 @@ foam.CLASS({
         {
           args: ['ownerSelectionsValidated', 'owner1', 'owner2', 'owner3', 'owner4', 'chosenOwners'],
           predicateFactory: function(e) {
-            return e.EQ(net.nanopay.crunch.onboardingModels
-              .BusinessOwnershipData.OWNER_SELECTIONS_VALIDATED, true);
+            return e.EQ(net.nanopay.partner.treviso.onboarding
+              .BRBusinessOwnershipData.OWNER_SELECTIONS_VALIDATED, true);
           }
         }
       ]
@@ -142,16 +142,16 @@ foam.CLASS({
             verifyName = cap.data.verifyName;
             cpfName = cap.data.cpfName;
           }
-
           this.crunchService.getJunction(x, '777af38a-8225-87c8-dfdf-eeb15f71215f-123').then(ucj=> {
             // SigningOfficerPersonalData
             if ( ucj && ucj.status == foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
               hasSignedContratosDeCambio = ucj.data.hasSignedContratosDeCambio;
               pepHioRelated = ucj.data.PEPHIORelated;
             }
-          })
-
-        }).catch((err) => {
+          }).catch(err => {
+            this.notify(this.SIGNINGOFFICER_DATA_FETCHING_ERR, '', this.LogLevel.ERROR, true);
+          });
+        }).catch(err => {
           this.notify(this.SIGNINGOFFICER_DATA_FETCHING_ERR, '', this.LogLevel.ERROR, true);
         });
 
@@ -185,9 +185,7 @@ foam.CLASS({
             this.businessEmployeeDAO
               .where(this.IN(foam.nanos.auth.User.ID, sos.projection))
               .select({ put: sinkFn })
-              .then(() => {
-                pdao.promise.resolve(adao);
-              });
+              .then(() => pdao.promise.resolve(adao));
           });
         return pdao;
       }
