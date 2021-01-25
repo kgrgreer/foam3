@@ -26,6 +26,8 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.nanos.auth.User',
+    'foam.nanos.crunch.CapabilityJunctionStatus',
+    'foam.nanos.crunch.CrunchService',
     'foam.nanos.crunch.UserCapabilityJunction',
     'foam.nanos.logger.Logger',
     'java.util.Date',
@@ -56,6 +58,7 @@ foam.CLASS({
         User user = (User) ucj.findSourceId(x);
         String group = user.getSpid() + "-fraud-ops";
 
+        boolean autoValidated = true;
         for ( int i = 1 ; i <= data.getAmountOfOwners() ; i++ ) {
           ComplianceValidationStatus status = ComplianceValidationStatus.VALIDATED;
           try {
@@ -67,9 +70,9 @@ foam.CLASS({
           if ( status != ComplianceValidationStatus.VALIDATED ) {
             DowJonesResponse response = getResponse();
             rulerResult = ComplianceValidationStatus.PENDING;
+            autoValidated = false;
 
             int index = i;
-
             agency.submit(x, new ContextAgent() {
               @Override
               public void execute(X x) {
@@ -88,7 +91,14 @@ foam.CLASS({
             }, "Beneficial Owner Sanction Validator");
           }
         }
-
+        if ( autoValidated ) {
+          X userX = ruler.getX().put("subject", ucj.getSubject(x));
+          ((CrunchService) userX.get("crunchService")).updateJunction(
+            userX,
+            ucj.getTargetId(), 
+            null, 
+            CapabilityJunctionStatus.APPROVED);
+        }
         ruler.putResult(rulerResult);
       `
     },
