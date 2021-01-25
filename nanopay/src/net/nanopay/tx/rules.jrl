@@ -908,7 +908,14 @@ p({
   "daoKey":"localTransactionDAO",
   "operation":1,
   "after":true,
-  "predicate":{},
+  "predicate":{
+    "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+    "propName":"status",
+    "propValue": {
+      "class": "net.nanopay.tx.model.TransactionStatus",
+      "ordinal":9
+    }
+  },
   "action":{
     "class":"net.nanopay.tx.billing.CreateBillsRule"
   },
