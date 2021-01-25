@@ -11,3 +11,9 @@ p({
   targetId: "AllPlannerCapability",
   priority: 2
 })
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "test",
+  targetId: "abliiCorridorCapability",
+  priority: 2
+})

@@ -8,7 +8,6 @@ p({
   "id":"testBusinessMenuCapability",
   "enabled":true
 })
-
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"testCorridorCapability",

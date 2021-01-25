@@ -607,6 +607,7 @@ p({
     return new foam.dao.EasyDAO.Builder(x)
         .setPm(true)
         .setPipelinePm(true)
+        .setPermissioned(true)
         .setValidated(true)
         .setValidator(new foam.nanos.auth.validators.UserGroupAndSpidValidator())
         .setOf(foam.nanos.auth.User.getOwnClassInfo())
@@ -866,6 +867,7 @@ p({
       .setDecorator(dao)
       .setInnerDAO(x.get("localBusinessDAO"))
       .setEnableInterfaceDecorators(false)
+      .setPermissioned(true)
       .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(net.nanopay.model.Business.CREATED).build() })
       .build();
   """,

@@ -289,7 +289,6 @@ task copyResources(type: Copy) {
 task copyJournals(type: Copy) {
     from "${project.targetDir}/journals"
     into "${project.targetDir}/classes/journals"
-    include "*.0"
 }
 
 task copyImages(type: Copy) {
@@ -321,6 +320,13 @@ tasks.withType(JavaCompile) {
 task getVersion() {
     doLast {
         println project.version
+    }
+}
+
+task printVersions() {
+    doLast {
+        logger.quiet("Application Version: ${project.version}")
+        logger.quiet("Transaction Engine: ${project.transactionEngine}")
     }
 }
 
@@ -361,6 +367,7 @@ clean {
 compileJava {
     dependsOn tasks.genJava
     dependsOn tasks.copyLib
+    dependsOn printVersions
 
     options.incremental = true
     options.compilerArgs += ["-parameters"]
@@ -384,5 +391,6 @@ task buildJar(type: Jar) {
         attributes "Implementation-Timestamp": new Date()
         attributes "Implementation-Vendor-Id": project.group
         attributes "Implementation-Vendor": "nanopay"
+        attributes "Transaction-Engine":project.transactionEngine
     }
 }

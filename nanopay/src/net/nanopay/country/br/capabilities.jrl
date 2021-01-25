@@ -449,7 +449,7 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"0B2E7305-B898-43F2-9C1B-63FB2CE38B2D",
+  "id":"bf6a49d5-4027-4dac-a269-4d3ed070609e-4",
   "name":"International payments",
   "description":"International payments from Brazil",
   "icon":"/images/capabilityIcons/BrazilCap.svg",
@@ -457,6 +457,26 @@ p({
   "visibilityPredicate":  { class: "foam.mlang.predicate.True" },
   "enabled":true,
   "keywords":["featured"],
+  "availabilityPredicate": {
+    "class":"foam.mlang.predicate.And",
+    "args": [
+      { "class":"net.nanopay.crunch.predicate.IsBusiness" },
+      {
+        "class":"net.nanopay.crunch.predicate.CheckUserCountry",
+        "country":"BR"
+      }
+    ]
+  }
+})
+
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"0B2E7305-B898-43F2-9C1B-63FB2CE38B2D",
+  "name":"International payments onboarding",
+  "description":"International payments from Brazil",
+  "icon":"/images/capabilityIcons/BrazilCap.svg",
+  "version":"0",
+  "enabled":true,
   "availabilityPredicate": {
     "class":"foam.mlang.predicate.And",
     "args": [
@@ -484,7 +504,8 @@ p({
   "enabled":true,
   "reviewRequired":true,
   "permissionsGranted":[
-    "business.invoice.pay"
+    "business.invoice.pay",
+    "menu.read.capability.main.invoices.receivables"
   ],
   "permissionsIntercepted": [
     "business.invoice.pay"
@@ -517,6 +538,24 @@ p({
   "capabilityToReview": "554af38a-8225-87c8-dfdf-eeb15f71215f-49",
   "enabled":true,
   "visibilityPredicate":  { class: "foam.mlang.predicate.True" },
+})
+
+p({
+  "class": "net.nanopay.payment.RegisterPaymentProviderCapability",
+  "id":"89cc91da-4bbd-458b-81d4-574815e455fa-4",
+  "name":"Registering with Payment Provider(BR International)",
+  "description":"Registering with Payment Provider(BR International)",
+  "version":"0",
+  "enabled":true,
+  "min": 1,
+  "permissionsGranted":[
+    "menu.read.mainmenu.invoices.payables"
+  ],
+  beforeWizardlet: {
+    class: "foam.nanos.crunch.ui.MinMaxCapabilityWizardlet",
+    consumePrerequisites: true,
+    hideChoiceView: true,
+  }
 })
 
 p({

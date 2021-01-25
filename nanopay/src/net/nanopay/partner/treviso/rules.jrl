@@ -52,8 +52,17 @@ p({
   "daoKey":"localUserDAO",
   "operation":0,
   "predicate": {
-    "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
-    "of": "net.nanopay.model.Business"
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of": "net.nanopay.model.Business"
+      },
+      {
+        "class":"net.nanopay.crunch.IsSpid",
+        "spid": "treviso"
+      }
+    ]
   },
   "action":{"class":"net.nanopay.crunch.onboardingModels.SigningOfficerByDefaultRule"},
   "saveHistory":false,
@@ -77,35 +86,4 @@ p({
   },
   "action":{"class":"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalDataOnPut"},
   "lifecycleState":1
-})
-p({
-  "class":"foam.nanos.ruler.Rule",
-  "id":"9cb36c96-c2e6-4c2a-8b38-f009d44c341a",
-  "name":"Treviso TrevisoSendEmailToAllRule",
-  "priority":1,
-  "ruleGroup":"Notifications",
-  "documentation":"When the business account is approved, send emails to all directors, signing officers who have signed contratos de câmbio.",
-  "enabled":true,
-  "after":true,
-  "daoKey":"userCapabilityJunctionDAO",
-  "operation":3,
-  "predicate":{
-    "class":"foam.mlang.predicate.And",
-    "args":[
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
-        "propName":"targetId",
-        "propValue":"554af38a-8225-87c8-dfdf-eeb15f71215f-20",
-      },
-      {
-        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
-        "propName":"status",
-        "propValue":{"class":"foam.nanos.crunch.CapabilityJunctionStatus","ordinal":1}
-      },
-    ]
-  },
-  "action":{"class":"net.nanopay.partner.treviso.TrevisoSendEmailToAllRule"},
-  "saveHistory":false,
-  "lifecycleState":1,
-  "spid": "treviso"
 })

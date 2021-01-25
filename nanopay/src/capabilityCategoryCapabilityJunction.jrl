@@ -41,6 +41,11 @@ p({
 "sourceId": "onboarding",
 "targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-49"
 })
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "onboarding",
+"targetId": "0B2E7305-B898-43F2-9C1B-63FB2CE38B2D"
+})
 
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
@@ -69,7 +74,7 @@ p({
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "beneficialOwnerOnboarding",
-"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-7"
+"targetId": "554af38a-8225-87c8-dfdf-eeb15f71215f-7-reviewRequired"
 })
 p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
@@ -162,4 +167,45 @@ p({
 "class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
 "sourceId": "compliancePassed",
 "targetId": "18DD6F03-998F-4A21-8938-358183151F96"
+})
+
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "toplevelonboarding",
+"targetId": "bf6a49d5-4027-4dac-a269-4d3ed070609e-1"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "toplevelonboarding",
+"targetId": "bf6a49d5-4027-4dac-a269-4d3ed070609e-2"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "toplevelonboarding",
+"targetId": "bf6a49d5-4027-4dac-a269-4d3ed070609e-3"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "toplevelonboarding",
+"targetId": "bf6a49d5-4027-4dac-a269-4d3ed070609e-4"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "registerPaymentProvider",
+"targetId": "89cc91da-4bbd-458b-81d4-574815e455fa-1"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "registerPaymentProvider",
+"targetId": "89cc91da-4bbd-458b-81d4-574815e455fa-2"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "registerPaymentProvider",
+"targetId": "89cc91da-4bbd-458b-81d4-574815e455fa-3"
+})
+p({
+"class": "foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+"sourceId": "registerPaymentProvider",
+"targetId": "89cc91da-4bbd-458b-81d4-574815e455fa-4"
 })

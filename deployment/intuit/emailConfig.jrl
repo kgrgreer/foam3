@@ -1,0 +1,7 @@
+p({
+  "class":"foam.nanos.notification.email.EmailConfig",
+  "spid":"intuit",
+  "from":"noreply@nanopay.net",
+  "displayName":"nanopay",
+  "replyTo":"noreply@nanopay.net"
+})

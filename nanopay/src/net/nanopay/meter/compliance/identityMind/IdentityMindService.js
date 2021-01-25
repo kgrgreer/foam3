@@ -28,6 +28,7 @@ foam.CLASS({
     'foam.nanos.auth.Address',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
+    'foam.nanos.pm.PM',
     'foam.util.SafetyUtil',
     'java.util.Base64',
     'java.util.Map',
@@ -101,6 +102,9 @@ foam.CLASS({
         }
       ],
       javaCode: `
+      var pm = new PM(IdentityMindService.getOwnClassInfo().getId(), "evaluateConsumer");
+
+      try {
         IdentityMindRequest request = IdentityMindRequestGenerator.getConsumerKYCRequest(x, consumer);
         request.setUrl(getBaseUrl() + "/account/consumer");
         request.setBasicAuth(getApiUser() + ":" + getApiKey());
@@ -123,6 +127,12 @@ foam.CLASS({
         response.setDaoKey(request.getDaoKey());
         return (IdentityMindResponse)
           ((DAO) getIdentityMindResponseDAO()).put(response);
+      } catch (Throwable t) {
+        pm.error(x, t.getMessage());
+        throw t;
+      } finally {
+        pm.log(x);
+      }
       `
     },
     {
@@ -139,6 +149,9 @@ foam.CLASS({
         }
       ],
       javaCode: `
+      var pm = new PM(IdentityMindService.getOwnClassInfo().getId(), "recordLogin");
+
+      try {
         IdentityMindRequest request = IdentityMindRequestGenerator.getEntityLoginRequest(x, login);
         request.setUrl(getBaseUrl() + "/account/login");
         request.setBasicAuth(getApiUser() + ":" + getApiKey());
@@ -152,6 +165,12 @@ foam.CLASS({
         response.setDaoKey(request.getDaoKey());
         return (IdentityMindResponse)
           ((DAO) getIdentityMindResponseDAO()).put(response);
+      } catch (Throwable t) {
+        pm.error(x, t.getMessage());
+        throw t;
+      } finally {
+        pm.log(x);
+      }
       `
     },
     {
@@ -172,6 +191,9 @@ foam.CLASS({
         }
       ],
       javaCode: `
+      var pm = new PM(IdentityMindService.getOwnClassInfo().getId(), "evaluateMerchant");
+
+      try {
         IdentityMindRequest request = IdentityMindRequestGenerator.getMerchantKYCRequest(x, business);
         request.setUrl(getBaseUrl() + "/account/merchant");
         request.setBasicAuth(getApiUser() + ":" + getApiKey());
@@ -193,6 +215,12 @@ foam.CLASS({
         response.setDaoKey(request.getDaoKey());
         return (IdentityMindResponse)
           ((DAO) getIdentityMindResponseDAO()).put(response);
+      } catch (Throwable t) {
+        pm.error(x, t.getMessage());
+        throw t;
+      } finally {
+        pm.log(x);
+      }
       `
     },
     {
@@ -209,6 +237,9 @@ foam.CLASS({
         }
       ],
       javaCode: `
+      var pm = new PM(IdentityMindService.getOwnClassInfo().getId(), "evaluateTransfer");
+
+      try {
         IdentityMindRequest request = IdentityMindRequestGenerator.getTransferRequest(x, transaction);
         request.setUrl(getBaseUrl() + "/account/transfer");
         request.setBasicAuth(getApiUser() + ":" + getApiKey());
@@ -221,6 +252,12 @@ foam.CLASS({
         response.setDaoKey(request.getDaoKey());
         return (IdentityMindResponse)
           ((DAO) getIdentityMindResponseDAO()).put(response);
+      } catch(Throwable t) {
+        pm.error(x, t.getMessage());
+        throw t;
+      } finally {
+        pm.log(x);
+      }
       `
     },
     {

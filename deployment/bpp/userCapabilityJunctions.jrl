@@ -2,3 +2,13 @@
 p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"C9233187-7C24-4DAB-BE04-E661D1F281D1","sourceId":8053,"targetId":"bpp","status":1})
 p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"4F92603A-2DF7-4ACE-BEE2-3596D32253BA","sourceId":8054,"targetId":"bpp","status":1})
 p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"01327FE5-DFD6-4E8C-9143-8109AF14A6C2","sourceId":8055,"targetId":"bpp","status":1})
+
+// permitted countries
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"3391279E-B63F-4850-91E0-7BD432261FC8","sourceId":8053,"targetId":"bppCountryCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"FE81DAAE-AF9F-4350-9600-BFED1D52FF17","sourceId":8054,"targetId":"bppCountryCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"13DF63F0-178C-4296-8AD4-4B17DC4BC614","sourceId":8055,"targetId":"bppCountryCapability","status":1})
+
+// reason codes
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"EBA9E983-D494-499A-BF77-F63415C928F6","sourceId":8053,"targetId":"bpp-tx-reason-codes","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"96D309CA-70FD-4673-A0F7-640FB1280F1B","sourceId":8054,"targetId":"bpp-tx-reason-codes","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"96B19FF2-8765-4F8D-B386-91F0EBE20434","sourceId":8055,"targetId":"bpp-tx-reason-codes","status":1})
