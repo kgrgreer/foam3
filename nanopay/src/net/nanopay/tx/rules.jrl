@@ -903,10 +903,10 @@ p({
   "id":"b64905d0-289b-4371-92a5-f843e344109a",
   "name":"Reversal Rule",
   "priority":100,
-  "ruleGroup":"summaryTransactions",
+  "ruleGroup":"BMOPlanner",
   "documentation":"Handle transaction reversal",
   "daoKey":"localTicketDAO",
-  "operation":1,
+  "operation":3,
   "action":{
     "class":"net.nanopay.tx.ReversalRule"
   },

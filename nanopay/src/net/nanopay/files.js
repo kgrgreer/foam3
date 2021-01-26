@@ -537,6 +537,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/SummaryTransactionDAO' },
   { name: 'net/nanopay/tx/SummaryTransactionInnerDAO' },
   { name: 'net/nanopay/tx/ReversalTicket' },
+  { name: 'net/nanopay/tx/ReversalRule' },
   { name: 'net/nanopay/tx/TransactionException' },
   { name: 'net/nanopay/tx/UnsupportedTransactionException' },
   { name: 'net/nanopay/tx/UnsupportedDateException' },

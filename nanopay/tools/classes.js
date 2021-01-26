@@ -1188,6 +1188,7 @@ var classes = [
 
   // Transaction Reversal
   'net.nanopay.tx.ReversalTicket',
+  'net.nanopay.tx.ReversalRule',
 
   // Treviso
   'net.nanopay.country.br.CNPJCache',

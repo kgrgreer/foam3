@@ -16,7 +16,7 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.fx.afex',
+  package: 'net.nanopay.tx',
   name: 'ReversalRule',
 
   implements: [
@@ -33,9 +33,10 @@ foam.CLASS({
     'foam.nanos.notification.Notification',
     'foam.nanos.logger.Logger',
     'net.nanopay.tx.SummaryTransaction',
-    'net.nanopay.fx.fxsummaryTransaction',
+    'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.tx.TransactionLineItem',
-    'net.nanopay.tx.ReversalTicket'
+    'net.nanopay.tx.ReversalTicket',
+    'net.nanopay.tx.model.Transaction'
   ],
 
   methods: [
@@ -59,17 +60,17 @@ foam.CLASS({
           if ( request.getRefundTransaction() ) {
             newTxn.setSourceAccount(problemTxn.getDestinationAccount());
             newTxn.setDestinationAccount(txn.getSourceAccount());
-            newTxn.setAmount(problemTxn.getTotal(x, problemTxn.getSourceAccount()));
+            newTxn.setAmount(-problemTxn.getTotal(x, problemTxn.getSourceAccount()));
           } else {
             newTxn.setSourceAccount(problemTxn.getSourceAccount());
             newTxn.setDestinationAccount(txn.getDestinationAccount());
-            newTxn.setAmount(problemTxn.getTotal(x, problemTxn.getSourceAccount()));  
+            newTxn.setAmount(-problemTxn.getTotal(x, problemTxn.getSourceAccount()));  
           }
           
           newTxn.setLineItems(request.getLineitems());
           txnDAO.put(newTxn);
 
-          return request;
+        }
      
       }, "Rule to reverse transaction.");
       `
