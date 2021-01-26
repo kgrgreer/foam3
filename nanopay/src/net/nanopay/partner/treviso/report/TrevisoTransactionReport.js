@@ -27,6 +27,12 @@ foam.CLASS({
     * Source Currency
     * Receiver
     * Destination Currency
+    * Total Fees
+    * Spot Rate
+    * Spread Rate
+    * Total Amount
+    * PTax Rate
+    * Bank Fee
   `,
 
   properties: [
