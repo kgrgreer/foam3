@@ -40,22 +40,16 @@ import static foam.mlang.MLang.*;
 public class BillingCron implements ContextAgent {
   @Override
   public void execute(X x) {
-    // create admin user context
-    User adminUser = new User.Builder(x)
-      .setFirstName("Billing")
-      .setLastName("Admin")
-      .setEmail("billingadmin@nanopay.net")
-      .setSpid("intuit")
-      .setGroup("admin")
-      .build();
-    adminUser = (User) ((DAO) x.get("localUserDAO")).put(adminUser);
-    Subject subject = new Subject.Builder(x).setUser(adminUser).build();
-    x = x.put("subject", subject);
-
     // query all bills from this month
     ArraySink bills = (ArraySink) ((DAO) x.get("billDAO")).where(
         LT(Bill.CHARGE_DATE, new Date())
     ).select(new ArraySink());
+
+    // Short-circuit if there are no bills
+    if ( bills.getArray().size() == 0 ) return;
+
+    // Keep a record of the cron running
+    ((Logger) x.get("logger")).info("BillingCron processing " + bills.getArray().size() + " bills");
 
     // add bills in a map and associate them to the users or businesses being charged
     Map<Long, List<Bill>> billingMap = new HashMap<>();
@@ -84,11 +78,17 @@ public class BillingCron implements ContextAgent {
       Account feeAccount = (Account) feeAccountSink.getArray().get(0);
       
       long amount = 0;
+      String currency = userAccount.getDenomination();
       List<Bill> billList = billingMap.get(userId);
       for ( Bill bill : billList ) {
         BillingFee[] fees = bill.getFees();
         for ( BillingFee fee : fees  ) {
           amount += fee.getAmount();
+
+          // Check the currency of the fee
+          if ( !currency.equals(fee.getCurrency()) ) {
+            ((Logger) x.get("logger")).warning("BillingCron unexpected currency when charging fee on bill: " + bill.getId() + " - " + fee);
+          }
         }
       }
 
@@ -107,8 +107,8 @@ public class BillingCron implements ContextAgent {
           bill.setStatus(TransactionStatus.SENT);
           ((DAO) x.get("billDAO")).put(bill);
         }
-      } catch (Throwable e) {
-        ((Logger) x.get("logger")).error("BillingCron error: " +  e.getMessage());
+      } catch (Throwable t) {
+        ((Logger) x.get("logger")).error("BillingCron error creating billing transaction for: " + userId, t);
       }
     }
   }

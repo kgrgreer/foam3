@@ -1,0 +1,44 @@
+p({
+  class:"foam.nanos.cron.Cron",
+  id:"Intuit Billing Cron",
+  description:"Create Intuit Billing Transactions",
+  enabled:true,
+  code:"""
+    import foam.nanos.auth.Subject;
+    import foam.nanos.auth.User;
+    import net.nanopay.tx.cron.BillingCron;
+    import static foam.mlang.MLang.*;
+
+    // Retrieve or create the billing user for Intuit
+    emailAddress = "billing@intuit.com";
+    localUserDAO = x.get("localUserDAO");
+    user = localUserDAO.find(EQ(User.EMAIL, emailAddress));
+    if ( user == null ) {
+      user = new User.Builder(x)
+        .setFirstName("Billing")
+        .setLastName("Intuit")
+        .setEmail(emailAddress)
+        .setSpid("intuit")
+        .setGroup("admin")
+        .build();
+      user = localUserDAO.put(user);
+    }
+
+    // Update the subject in the context
+    billingX = x.put("subject", new Subject.Builder(x).setUser(user).build());
+
+    // Execute billing
+    new BillingCron().execute(billingX);
+
+    print("done");
+  """,
+  schedule:{
+    class:"foam.nanos.cron.CronSchedule",
+    minute: 0,
+    hour: 1,
+    dayOfMonth:-1,
+    month:-1,
+    dayOfWeek:-1,
+    second: 0
+  }
+})
