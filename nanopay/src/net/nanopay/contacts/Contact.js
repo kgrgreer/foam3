@@ -117,6 +117,10 @@ foam.CLASS({
       message: 'This contact cannot be invited to join Ablii'
     },
     {
+      name: 'UNABLE_TO_ADD_BANK_ACCOUNT_SPLITTER',
+      message: 'capability store'
+    },
+    {
       name: 'UNABLE_TO_ADD_BANK_ACCOUNT',
       message: `You currently have not completed the necessary requirements
           to add an account to your contact. Please visit the capability store to enable payments.`
@@ -355,6 +359,7 @@ foam.CLASS({
             id: { updateVisibility: 'HIDDEN' },
             summary: { updateVisibility: 'HIDDEN' }
           },
+          skipBaseClass: true,
           copyOldData: function(o) { return { isDefault: o.isDefault, forContact: o.forContact }; }
         }, X);
         v.data$.sub(function() { v.data.forContact = true; });
@@ -395,6 +400,7 @@ foam.CLASS({
     {
       transient: true,
       flags: ['web'],
+      label: 'Action Required',
       name: 'noCorridorsAvailable',
       documentation: 'GUI when no corridor capabilities have been added to user.',
       visibility: function(showSpinner, countries, createBankAccount) {
@@ -403,7 +409,19 @@ foam.CLASS({
           foam.u2.DisplayMode.HIDDEN;
       },
       view: function(_, X) {
-        return X.E().start().add(X.data.UNABLE_TO_ADD_BANK_ACCOUNT).end();
+        var arr = X.data.UNABLE_TO_ADD_BANK_ACCOUNT.split(X.data.UNABLE_TO_ADD_BANK_ACCOUNT_SPLITTER);
+        return X.E()
+          .start()
+            .add(arr[0])
+            .start('span')
+              .style({ 'color': '/*%PRIMARY3%*/ #604aff', 'cursor': 'pointer', 'text-decoration': 'underline'})
+              .add(X.data.UNABLE_TO_ADD_BANK_ACCOUNT_SPLITTER)
+              .on('click', function() {
+                this.pushMenu('sme.main.appStore');
+              }.bind(X))
+            .end()
+            .add(arr[1])
+          .end()
       }
     },
     {
