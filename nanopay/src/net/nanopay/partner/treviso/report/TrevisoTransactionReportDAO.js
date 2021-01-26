@@ -33,7 +33,6 @@ foam.CLASS({
     'foam.dao.Sink',
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.partner.treviso.report.TrevisoTransactionReport',
-    'net.nanopay.partner.treviso.tx.TrevisoTransaction',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.FeeSummaryTransactionLineItem',
@@ -61,13 +60,8 @@ foam.CLASS({
         Sink decoratedSink = decorateSink(x, sink, skip, limit, order, predicate);
 
         // Retrieve the DAO
-        DAO businessDAO             = (DAO) x.get("localBusinessDAO");
-        DAO businessOnboardingDAO   = (DAO) x.get("businessOnboardingDAO");
-        DAO usBusinessOnboardingDAO = (DAO) x.get("uSBusinessOnboardingDAO");
         DAO transactionDAO          = (DAO) x.get("localTransactionDAO");
-        DAO loginAttemptDAO         = (DAO) x.get("loginAttemptDAO");
-        DAO agentJunctionDAO        = (DAO) x.get("agentJunctionDAO");
-        DAO approvalRequestDAO      = (DAO) x.get("approvalRequestDAO");
+        
         DateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm:ss z");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
     
@@ -156,20 +150,6 @@ foam.CLASS({
         });
 
         return sink;
-      `
-    },
-    {
-      name: 'getFeeSummaryLineItems',
-      type: 'FeeLineItem[]',
-      args: [
-        { name: 'transaction', type: 'Transaction' }
-      ],
-      javaCode: `
-        List<FeeLineItem> list = new ArrayList<>();
-        for ( var li : transaction.getLineItems() ) {
-          if ( li instanceof FeeLineItem ) list.add((FeeLineItem) li);
-        }
-        return list.toArray(new FeeLineItem[0]);
       `
     }
   ]
