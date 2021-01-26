@@ -38,11 +38,11 @@ foam.CLASS({
       javaCode: `
         if ( ((TransactionQuote) obj).getDestinationAccount() instanceof EstimationAccount ) {
           for ( Transaction t : ((TransactionQuote) obj).getPlans() )
-            getDelegate().put_(x, new TransactionPlan(t));
+            getDelegate().put_(x, new TransactionPlan(t, false));
         }
         else {
           for ( Transaction t : ((TransactionQuote) obj).getPlans() )
-            getDelegate().put_(x, new TransactionPlan(t, false));
+            getDelegate().put_(x, new TransactionPlan(t));
         }
         return obj;
       `

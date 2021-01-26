@@ -1623,6 +1623,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/InterTrustPlanner' },
   { name: 'net/nanopay/tx/planner/RbcInterTrustPlanner' },
   { name: 'net/nanopay/tx/planner/BmoInterTrustPlanner' },
+  { name: 'net/nanopay/tx/planner/PartialPlanDAO' },
 
   // Error Fees
   { name: 'net/nanopay/tx/errorfee/ClientErrorBillingService' },

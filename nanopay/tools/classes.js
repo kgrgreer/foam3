@@ -1162,6 +1162,7 @@ var classes = [
   'net.nanopay.tx.planner.InterTrustPlanner',
   'net.nanopay.tx.planner.RbcInterTrustPlanner',
   'net.nanopay.tx.planner.BmoInterTrustPlanner',
+  'net.nanopay.tx.planner.PartialPlanDAO',
 
   // error fees
   'net.nanopay.tx.errorfee.ChargeDateServiceInterface',
