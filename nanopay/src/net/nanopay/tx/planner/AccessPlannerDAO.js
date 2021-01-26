@@ -23,6 +23,10 @@ foam.CLASS({
 
   javaImports: [
     'foam.nanos.logger.Logger',
+    'foam.nanos.auth.User',
+    'foam.core.X',
+    'foam.dao.DAO',
+    'foam.nanos.auth.Subject',
     'foam.util.SafetyUtil',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.TransactionQuote',
@@ -36,7 +40,19 @@ foam.CLASS({
     'net.nanopay.tx.TransactionException',
     'java.util.ArrayList',
     'java.util.List',
-    'net.nanopay.tx.UnsupportedTransactionException'
+    'net.nanopay.tx.UnsupportedTransactionException',
+    'static foam.mlang.MLang.EQ',
+    'static foam.mlang.MLang.OR',
+    'net.nanopay.account.Account',
+    'foam.mlang.sink.Count'
+  ],
+
+  properties: [
+    {
+      name: 'reserveAccountSpid',
+      class: 'String',
+      value: 'nanopay'
+    }
   ],
 
   methods: [
@@ -50,7 +66,9 @@ foam.CLASS({
             if (SafetyUtil.isEmpty(tq.getRequestTransaction().getId())) {
               tq.setPlan(null);
               tq.setPlans(new Transaction [0]);
-              return getDelegate().put_(x, tq);
+              if (tq.getParent() == null)
+                return getDelegate().put_(getPlannerContext_(x, tq.getRequestTransaction()), tq);
+              return getDelegate().put_(x, tq); // sub plan call
             }
             t = tq.getRequestTransaction();
           }
@@ -59,16 +77,58 @@ foam.CLASS({
 
           if (t != null) {
             // if transaction has been planned already, just load it.
-            if ( ! SafetyUtil.isEmpty(t.getId()) )
-              return loadPlan(x, t);
+            if ( ! SafetyUtil.isEmpty(t.getId()) ) {
+              return loadPlan(getPlannerContext_(x, t), t);
             // otherwise make a new clean quote.
+            }
             t.setNext(null);
             TransactionQuote tq = new TransactionQuote();
             tq.setRequestTransaction(t);
-            return getDelegate().put_(x, tq);
+            return getDelegate().put_(getPlannerContext_(x, t), tq);
           }
         }
         throw new UnsupportedTransactionException("Error, Only transaction or TransactionQuote objects can be put to the TransactionPlannerDAO");
+      `
+    },
+    {
+      name: 'getPlannerContext_',
+      type: 'net.nanopay.tx.model.Transaction',
+      args: [
+        { name: 'x', type: 'Context' },
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
+      ],
+      type: 'foam.core.X',
+      javaCode: `
+        DAO dao = (DAO) getX().get("localAccountDAO");
+        DAO daoOld = (DAO) x.get("localAccountDAO");
+                Subject subject = (Subject) x.get("subject");
+                User user = subject.getUser();
+        System.out.println("incoming user: "+user.getId());
+        User payer = null;
+        // Assume source account owner is the user making the txn.
+        if ( txn.getPayerId() != 0 ) {
+          payer = (User) ((DAO) x.get("bareUserDAO")).find_(x, txn.getPayerId());
+        }
+        else {
+          if (txn.getSourceAccount() != null) {
+            Account source = (Account) ((DAO) x.get("accountDAO")).find_(x, txn.getSourceAccount());
+            payer = (User) source.findOwner(x);
+          }
+        }
+        if (payer == null ) { // we require a user to get the spid, no way to get user = failure to plan.
+          ((Logger) x.get("logger")).error("user not found - for transaction planning");
+          throw new ValidationException("user not found");
+        }
+        dao = dao.where(
+          OR(
+            EQ(Account.SPID, getReserveAccountSpid()),
+            EQ(Account.SPID, payer.getSpid())
+          )
+        );
+        X y = x.put("localAccountDAO", dao);
+        //subject.setUser(payer);
+        //y = y.put("subject", subject);
+        return y;
       `
     },
     {
@@ -86,7 +146,13 @@ foam.CLASS({
           throw new PlanNotFoundException("Plan not found");
         }
 
-       // --- Run post planning & validate the plan ---
+        // --- Check if the plan is complete or just an estimate ---
+        if ( plannedTx.getComplete() == false ) {
+
+
+        }
+
+        // --- Run post planning & validate the plan ---
         try {
           postPlanning_(x, plannedTx.getTransaction(), plannedTx.getTransaction());
         } catch(foam.core.ValidationException e) {

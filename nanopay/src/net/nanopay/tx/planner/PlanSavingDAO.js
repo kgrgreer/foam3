@@ -35,8 +35,12 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-        for ( Transaction t : ((TransactionQuote) obj).getPlans() )
-          getDelegate().put_(x, new TransactionPlan(t));
+        /*if (((TransactionQuote) obj).getDestinationAccount() instanceof EstimateAccount )
+          for ( Transaction t : ((TransactionQuote) obj).getPlans() )
+            getDelegate().put_(x, new TransactionPlan(t, false));
+        else*/
+          for ( Transaction t : ((TransactionQuote) obj).getPlans() )
+            getDelegate().put_(x, new TransactionPlan(t));
         return obj;
       `
     },

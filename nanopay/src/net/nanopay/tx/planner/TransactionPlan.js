@@ -23,7 +23,6 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.tx.ExpirySummaryTransactionLineItem',
     'net.nanopay.tx.TransactionLineItem',
-
     'java.util.Date'
   ],
 
@@ -36,6 +35,11 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'net.nanopay.tx.model.Transaction',
       name: 'transaction'
+    },
+    {
+      class: 'Boolean',
+      name: 'complete',
+      value: true
     },
     {
       class: 'DateTime',
@@ -69,6 +73,13 @@ foam.CLASS({
             setId(t.getId());
             setTransaction(t);
             setExpiryDate(t);
+          }
+
+          public TransactionPlan (net.nanopay.tx.model.Transaction t, Boolean complete) {
+            setId(t.getId());
+            setTransaction(t);
+            setExpiryDate(t);
+            setComplete(complete);
           }
         `);
       },
