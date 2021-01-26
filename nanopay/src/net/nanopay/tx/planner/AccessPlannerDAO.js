@@ -140,17 +140,17 @@ foam.CLASS({
           throw new PlanNotFoundException("Plan not found");
         }
         // --- Ensure Completeness of plan ---
-          if ( ! plannedTx.getComplete ) {
-            if ( SafetyUtil.equals(txn.getDestinationAccount(), plannedTx.getDestinationAccount()) ) {
+          if ( ! plannedTx.getComplete() ) {
+            if ( SafetyUtil.equals(txn.getDestinationAccount(), plannedTx.getTransaction().getDestinationAccount()) ) {
               // User has not updated the estimation account to a proper bank account.
               throw new ValidationException("Estimate can not be acted on with provided information");
             }
             TransactionQuote tq = new TransactionQuote();
             tq.setPartialTransaction(plannedTx.getTransaction());
-            Transaction newTx = txn.fclone();
-            newTx.clearId(); // may or maynot need this
+            Transaction newTx = (Transaction) txn.fclone();
+            newTx.clearId();
             tq.setRequestTransaction(newTx);
-            Transaction t = getDelegate.put_(x, tq);
+            Transaction t = (Transaction) getDelegate().put_(x, tq);
             getDelegate().remove_(x, plannedTx);
             return t;
           }

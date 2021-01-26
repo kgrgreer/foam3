@@ -74,11 +74,7 @@ foam.CLASS({
             setTransaction(t);
             setExpiryDate(t);
           }
-        `);
-      },
 
-      buildJavaClass: function(cls) {
-        cls.extras.push(`
           public TransactionPlan (net.nanopay.tx.model.Transaction t, Boolean complete) {
             setId(t.getId());
             setTransaction(t);
@@ -87,6 +83,6 @@ foam.CLASS({
           }
         `);
       },
-    },
+    }
   ]
 });

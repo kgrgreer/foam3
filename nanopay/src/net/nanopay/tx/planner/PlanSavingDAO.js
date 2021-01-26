@@ -29,7 +29,7 @@ foam.CLASS({
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.tx.FxSummaryTransactionLineItem',
     'net.nanopay.tx.TransactionLineItem',
-    'net.nanopay.account.EstimationAccount'
+    'net.nanopay.bank.EstimationAccount'
   ],
 
   methods: [
