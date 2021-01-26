@@ -23,7 +23,6 @@ foam.CLASS({
   javaImports: [
     'net.nanopay.tx.ExpirySummaryTransactionLineItem',
     'net.nanopay.tx.TransactionLineItem',
-
     'java.util.Date'
   ],
 
