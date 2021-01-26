@@ -1826,6 +1826,7 @@ FOAM_FILES([
   // Treviso
   { name: 'net/nanopay/partner/soawebservices/PessoaResponse' },
   { name: 'net/nanopay/partner/soawebservices/SoaCredenciais' },
+  { name: 'net/nanopay/partner/soawebservices/Transacao' },
   { name: 'net/nanopay/partner/treviso/FepWebOnboardingRule'},
   { name: 'net/nanopay/partner/treviso/FepWebUserUpdatingRule'},
   { name: 'net/nanopay/partner/treviso/TrevisoCredientials' },
