@@ -97,7 +97,7 @@ p({
   },
   spid: "treviso",
   "asyncAction":{ "class":"net.nanopay.country.br.crunch.ExchangeServiceOnboardingRule" },
-  "enabled":false,
+  "enabled":true,
   "saveHistory":true,
   "lifecycleState":1
 })
