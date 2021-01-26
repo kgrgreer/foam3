@@ -37,6 +37,11 @@ foam.CLASS({
       name: 'transaction'
     },
     {
+      class: 'Boolean',
+      name: 'complete',
+      value: true
+    },
+    {
       class: 'DateTime',
       name: 'expiry',
     },
@@ -68,6 +73,17 @@ foam.CLASS({
             setId(t.getId());
             setTransaction(t);
             setExpiryDate(t);
+          }
+        `);
+      },
+
+      buildJavaClass: function(cls) {
+        cls.extras.push(`
+          public TransactionPlan (net.nanopay.tx.model.Transaction t, Boolean complete) {
+            setId(t.getId());
+            setTransaction(t);
+            setExpiryDate(t);
+            setComplete(complete);
           }
         `);
       },

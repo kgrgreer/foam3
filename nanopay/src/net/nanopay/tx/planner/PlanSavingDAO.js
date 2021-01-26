@@ -29,14 +29,21 @@ foam.CLASS({
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.tx.FxSummaryTransactionLineItem',
     'net.nanopay.tx.TransactionLineItem',
+    'net.nanopay.account.EstimationAccount'
   ],
 
   methods: [
     {
       name: 'put_',
       javaCode: `
-        for ( Transaction t : ((TransactionQuote) obj).getPlans() )
-          getDelegate().put_(x, new TransactionPlan(t));
+        if ( ((TransactionQuote) obj).getDestinationAccount() instanceof EstimationAccount ) {
+          for ( Transaction t : ((TransactionQuote) obj).getPlans() )
+            getDelegate().put_(x, new TransactionPlan(t));
+        }
+        else {
+          for ( Transaction t : ((TransactionQuote) obj).getPlans() )
+            getDelegate().put_(x, new TransactionPlan(t, false));
+        }
         return obj;
       `
     },
