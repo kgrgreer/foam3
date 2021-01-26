@@ -100,10 +100,6 @@ foam.CLASS({
       type: 'foam.core.X',
       javaCode: `
         DAO dao = (DAO) getX().get("localAccountDAO");
-        DAO daoOld = (DAO) x.get("localAccountDAO");
-                Subject subject = (Subject) x.get("subject");
-                User user = subject.getUser();
-        System.out.println("incoming user: "+user.getId());
         User payer = null;
         // Assume source account owner is the user making the txn.
         if ( txn.getPayerId() != 0 ) {
@@ -126,8 +122,6 @@ foam.CLASS({
           )
         );
         X y = x.put("localAccountDAO", dao);
-        //subject.setUser(payer);
-        //y = y.put("subject", subject);
         return y;
       `
     },
@@ -144,12 +138,6 @@ foam.CLASS({
         if ( plannedTx == null ) {
           ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), "Plan Not Found", txn.getId());
           throw new PlanNotFoundException("Plan not found");
-        }
-
-        // --- Check if the plan is complete or just an estimate ---
-        if ( plannedTx.getComplete() == false ) {
-
-
         }
 
         // --- Run post planning & validate the plan ---

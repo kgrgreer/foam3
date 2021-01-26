@@ -154,7 +154,7 @@ foam.CLASS({
           public void execute(X x) {
           TransactionQuote q = (TransactionQuote) obj;
           Transaction t = q.getRequestTransaction();
-          save(getX(), plan(getX(), q, ((Transaction) t), agency), q);
+          save(x, plan(x, q, ((Transaction) t), agency), q);
         }
       },"AbstractTransaction Planner executing");
       `
