@@ -14,23 +14,44 @@
  * is strictly forbidden unless prior written permission is obtained
  * from nanopay Corporation.
  */
-foam.CLASS({
-  package: 'net.nanopay.partner.soawebservices',
-  name: 'PessoaFisicaSimplificada',
 
-  properties: [
+foam.CLASS({
+	package: 'net.nanopay.country.br',
+	name: 'CNPJCache',
+
+  ids: [
+    'cnpj'
+  ],
+
+  implements: [
+    'foam.nanos.auth.CreatedAware',
+    'foam.nanos.auth.LastModifiedAware'
+  ],
+
+	properties: [
+		{
+			class: 'String',
+			name: 'cnpj'
+		},
+		{
+			class: 'FObjectProperty',
+			of: 'net.nanopay.partner.soawebservices.PessoaResponse',
+			name: 'response',
+			hidden: true
+		},
+		{
+			class: 'String',
+			name: 'responseString'
+		},
     {
-      class: 'String',
-      name: 'Documento'
+      class: 'DateTime',
+      name: 'created',
+      visibility: 'RO'
     },
     {
-      class: 'String',
-      name: 'DataNascimento'
+      class: 'DateTime',
+      name: 'lastModified',
+      visibility: 'RO'
     },
-    {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.partner.soawebservices.SoaCredenciais',
-      name: 'Credenciais'
-    }
-  ]
+	]
 });

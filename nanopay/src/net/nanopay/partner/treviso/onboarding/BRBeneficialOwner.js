@@ -66,9 +66,9 @@ foam.CLASS({
     },
     {
       name: 'birthday',
-      postSet: function(_, n) {
-        this.cpfName = '';
-        if ( this.cpf.length == 11 ) {
+      postSet: function(_,n) {
+        if ( this.cpf.length == 11 && this.verifyName !== true ) {
+          this.cpfName = "";
           this.getCpfName(this.cpf).then(v => {
             this.cpfName = v;
           });
@@ -342,12 +342,6 @@ foam.CLASS({
         super.validate(x);
 
         if ( ! getVerifyName() ) throw new IllegalStateException("Must verify name attached to CPF is valid.");
-        try {
-          if ( ! ((BrazilVerificationService) x.get("brazilVerificationService")).validateCpf(x, getCpf(), getBirthday()) )
-            throw new RuntimeException(INVALID_CPF);
-        } catch(Throwable t) {
-          throw t;
-        }
       `
     }
   ]

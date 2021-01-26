@@ -79,8 +79,8 @@ foam.CLASS({
         return foam.String.applyFormat(val, 'xx.xxx.xxx/xxxx-xx');
       },
       postSet: function(_,n) {
-        this.cnpjName = "";
-        if ( n.length == 14 ) {
+        if ( n.length == 14 && this.verifyName !== true ) {
+          this.cnpjName = "";
           this.getCNPJBusinessName(n).then((v) => {
             this.cnpjName = v;
           });
@@ -198,14 +198,7 @@ foam.CLASS({
       name: 'validate',
       javaCode: `
         if ( ! getVerifyName() )
-          throw new IllegalStateException("Must verify business name attached to CNPJ is valid.");
-
-        try {
-          if ( ! ((BrazilVerificationService) x.get("brazilVerificationService")).validateCnpj(x, getCnpj()) )
-            throw new RuntimeException("Invalid CNPJ");
-        } catch(Throwable t) {
-          throw t;
-        }
+          throw new foam.core.ValidationException(CNPJ_INVALID);
       `
     }
   ]

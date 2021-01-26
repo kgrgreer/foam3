@@ -16,7 +16,7 @@
  */
 foam.CLASS({
   package: 'net.nanopay.partner.soawebservices',
-  name: 'PessoaResponse',
+  name: 'PessoaFisicaNFe',
 
   properties: [
     {
@@ -25,40 +25,12 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'Nome'
-    },
-    {
-      class: 'String',
-      name: 'RazaoSocial'
-    },
-    {
-      class: 'String',
-      name: 'Mensagem'
-    },
-    {
-      class: 'String',
-      name: 'AnoObito'
-    },
-    {
-      class: 'String',
-      name: 'SituacaoRFB'
-    },
-    {
-      class: 'String',
-      name: 'MensagemObito'
-    },
-    {
-      class: 'Boolean',
-      name: 'Status'
-    },
-    {
-      class: 'String',
-      name: 'responseString'
+      name: 'DataNascimento'
     },
     {
       class: 'FObjectProperty',
-      of: 'net.nanopay.partner.soawebservices.Transacao',
-      name: 'Transacao'
+      of: 'net.nanopay.partner.soawebservices.SoaCredenciais',
+      name: 'Credenciais'
     }
   ]
 });

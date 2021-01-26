@@ -95,14 +95,7 @@ foam.CLASS({
     {
       name: 'id',
       section: 'businessInformation',
-      order: 1,
-      gridColumns: 6
-    },
-    {
-      name: 'type',
-      section: 'businessInformation',
-      includeInDigest: false,
-      order: 2,
+      order: 10,
       gridColumns: 6
     },
     {
@@ -111,8 +104,18 @@ foam.CLASS({
       documentation: 'Legal name of business.',
       includeInDigest: true,
       section: 'businessInformation',
-      order: 10,
+      order: 20,
       width: 50
+    },
+    {
+      class: 'Boolean',
+      name: 'holdingCompany',
+      documentation: `Determines whether a Business is a holding company.  A holding c2ompany
+        represent a corporate group which owns shares of multiple companies.`,
+      includeInDigest: false,
+      section: 'businessInformation',
+      order: 30,
+      gridColumns: 6
     },
     {
       class: 'String',
@@ -123,24 +126,31 @@ foam.CLASS({
           // Is displayed on client if present taking place of organziation name.
       includeInDigest: false,
       section: 'businessInformation',
-      order: 11,
+      order: 40,
       gridColumns: 6
     },
     {
-      name: 'email',
+      name: 'type',
       section: 'businessInformation',
       includeInDigest: false,
-      order: 20,
-      validateObj: function() {}
+      order: 50,
+      gridColumns: 6
     },
     {
-      class: 'Reference',
-      targetDAOKey: 'businessTypeDAO',
-      name: 'businessTypeId',
-      of: 'net.nanopay.model.BusinessType',
-      documentation: 'The ID of the proprietary details of the business.',
-      includeInDigest: true,
+      class: 'String',
+      name: 'issuingAuthority',
+      transient: true,
+      documentation: 'An organization that has the power to issue an official document.',
+      getter: function() {
+        return this.businessRegistrationAuthority;
+      },
+      setter: function(x) {
+        this.businessRegistrationAuthority = x;
+      },
+      javaGetter: `return getBusinessRegistrationAuthority();`,
+      javaSetter: `setBusinessRegistrationAuthority(val);`,
       section: 'businessInformation',
+      order: 60,
       gridColumns: 6
     },
     {
@@ -165,6 +175,414 @@ foam.CLASS({
         };
       },
       section: 'businessInformation',
+      order: 70,
+      gridColumns: 6
+    },
+    {
+      class: 'Reference',
+      targetDAOKey: 'businessTypeDAO',
+      name: 'businessTypeId',
+      of: 'net.nanopay.model.BusinessType',
+      documentation: 'The ID of the proprietary details of the business.',
+      includeInDigest: true,
+      section: 'businessInformation',
+      order: 80,
+      gridColumns: 6
+    },
+    {
+      name: 'businessIdentificationCode',
+      documentation: 'ISO 9362 Business Identification Code (BIC) (regulated by SWIFT). see https://en.wikipedia.org/wiki/ISO_9362.',
+      class: 'String',
+      includeInDigest: true,
+      section: 'businessInformation',
+      order: 90,
+      gridColumns: 6
+    },
+    {
+      class: 'String',
+      name: 'businessIdentificationNumber',
+      transient: true,
+      documentation: `The Business Identification Number (BIN) that identifies your business
+        to federal, provincial or municipal governments and is used by the business
+        for tax purposes. This number is typically issued by an Issuing Authority such as
+        the CRA.`,
+      includeInDigest: false,
+      getter: function() {
+        return this.businessRegistrationNumber;
+      },
+      setter: function(x) {
+        this.businessRegistrationNumber = x;
+      },
+      javaGetter: `return getBusinessRegistrationNumber();`,
+      javaSetter: `setBusinessRegistrationNumber(val);`,
+      section: 'businessInformation',
+      order: 100,
+      gridColumns: 6
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.Country',
+      name: 'countryOfBusinessRegistration',
+      documentation: `Country where business was registered.`,
+      includeInDigest: true,
+      section: 'businessInformation',
+      order: 110,
+      gridColumns: 6
+    },
+    {
+      class: 'String',
+      name: 'businessRegistrationAuthority',
+      documentation: `An organization that has the power to issue and process a
+        business registration.`,
+      includeInDigest: false,
+      width: 35,
+      validateObj: function(businessRegistrationAuthority) {
+        var re = /^[a-zA-Z0-9 ]{1,35}$/;
+        if ( businessRegistrationAuthority.length > 0 &&
+            ! re.test(businessRegistrationAuthority) ) {
+          return 'Invalid issuing authority.';
+        }
+      },
+      section: 'businessInformation',
+      order: 120,
+      gridColumns: 6
+    },
+    {
+      class: 'String',
+      name: 'businessRegistrationNumber',
+      width: 35,
+      documentation: `The Business Registration Number (BRN) that identifies your business
+        to federal, provincial or municipal governments and is used by the business
+        for tax purposes. This number is typically issued by an Issuing Authority such as
+        the CRA.`,
+
+      includeInDigest: true,
+      validateObj: function(businessRegistrationNumber) {
+        var re = /^[a-zA-Z0-9 ]{1,35}$/;
+        if ( businessRegistrationNumber.length > 0 &&
+              ! re.test(businessRegistrationNumber) ) {
+          return 'Invalid registration number.';
+        }
+      },
+      section: 'businessInformation',
+      order: 130,
+      gridColumns: 6
+    },
+    {
+      class: 'Boolean',
+      name: 'publiclyTraded',
+      includeInDigest: false,
+      section: 'businessInformation',
+      order: 140,
+      gridColumns: 6
+    },
+    {
+      class: 'String',
+      name: 'taxIdentificationNumber',
+      documentation: `The tax identification number associated with the business of
+      the User.`,
+      includeInDigest: true,
+      section: 'businessInformation',
+      order: 150,
+      gridColumns: 6
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Address',
+      name: 'address',
+      label: 'Commercial Address',
+      documentation: `Returns the postal address of the business associated with the
+        User from the Address model.`,
+      includeInDigest: false,
+      section: 'businessInformation',
+      order: 160,
+      factory: function() {
+        return this.Address.create();
+      },
+      validationPredicates: [
+        {
+          args: ['address', 'address$errors_'],
+          predicateFactory: function(e) {
+            return e.EQ(foam.mlang.IsValid.create({
+                arg1: net.nanopay.model.Business.ADDRESS
+              }), true);
+          },
+          errorString: 'Invalid address.'
+        }
+      ],
+      view: function(_, X) {
+        return {
+          class: 'net.nanopay.sme.ui.AddressView'
+        };
+      }
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'foam.nanos.auth.Address',
+      name: 'mailingAddress',
+      documentation: `Mailing address of business`,
+      includeInDigest: false,
+      section: 'businessInformation',
+      order: 180,
+      factory: function() {
+        return this.Address.create();
+      },
+      validationPredicates: [
+        {
+          args: ['address', 'address$errors_'],
+          predicateFactory: function(e) {
+            return e.EQ(foam.mlang.IsValid.create({
+                arg1: net.nanopay.model.Business.ADDRESS
+              }), true);
+          },
+          errorString: 'Invalid address.'
+        }
+      ],
+      view: function(_, X) {
+        return {
+          class: 'net.nanopay.sme.ui.AddressView'
+        };
+      }
+    },
+    {
+      class: 'PhoneNumber',
+      name: 'phoneNumber',
+      documentation: 'The phone number of the business.',
+      includeInDigest: false,
+      section: 'businessInformation',
+      order: 190,
+      gridColumns: 6
+    },
+    {
+      class: 'Boolean',
+      name: 'phoneNumberVerified',
+      writePermissionRequired: true,
+      includeInDigest: false,
+      section: 'businessInformation',
+      order: 195,
+      gridColumns: 6
+    },
+    {
+      class: 'PhoneNumber',
+      name: 'fax',
+      documentation: 'The fax number of the business.',
+      includeInDigest: false,
+      section: 'businessInformation',
+      order: 200,
+      gridColumns: 6
+    },
+    {
+      class: 'foam.nanos.fs.FileProperty',
+      name: 'businessProfilePicture',
+      documentation: `The profile picture of the business, such as a logo, initially
+        defaulting to a placeholder picture.`,
+      includeInDigest: false,
+      view: {
+        class: 'foam.nanos.auth.ProfilePictureView',
+        placeholderImage: 'images/business-placeholder.png'
+      },
+      section: 'businessInformation',
+      order: 210,
+      gridColumns: 6
+    },
+    {
+      name: 'note',
+      section: 'businessInformation',
+      order: 220
+    },
+    {
+      name: 'created',
+      section: 'businessInformation',
+      order: 230,
+      gridColumns: 6
+    },
+    {
+      name: 'createdBy',
+      section: 'businessInformation',
+      order: 240,
+      gridColumns: 6
+    },
+    {
+      name: 'createdByAgent',
+      section: 'businessInformation',
+      order: 245,
+      gridColumns: 6
+    },
+    {
+      name: 'lastModified',
+      section: 'businessInformation',
+      order: 250,
+      gridColumns: 6
+    },
+    {
+      name: 'lastModifiedBy',
+      section: 'businessInformation',
+      order: 260,
+      gridColumns: 6
+    },
+    {
+      name: 'email',
+      section: 'businessInformation',
+      order: 270,
+      gridColumns: 6,
+      includeInDigest: false,
+      validateObj: function() {}
+    },
+    {
+      name: 'website',
+      section: 'businessInformation',
+      order: 280,
+      gridColumns: 6,
+      includeInDigest: false,
+    },
+    {
+      class: 'String',
+      name: 'sourceOfFunds',
+      documentation: 'The entities that provide funding to the business.',
+      includeInDigest: false,
+      section: 'complianceInformation',
+      order: 60,
+      gridColumns: 6
+    },
+    {
+      class: 'FObjectProperty',
+      name: 'suggestedUserTransactionInfo',
+      of: 'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
+      documentation: `Returns the expected transaction types, frequency, amount and
+        currencies that the User anticipates making with the platform. This
+        information is required for KYC purposes.  It is drawn from the
+        suggestedUserTransactionInfo object.
+        `,
+      includeInDigest: false,
+      section: 'complianceInformation',
+      order: 70,
+      factory: function() {
+        return net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.create();
+      },
+      view: { class: 'foam.u2.detail.VerticalDetailView' },
+    },
+    {
+      class: 'String',
+      name: 'targetCustomers',
+      label: 'Describe the target customer of your products and services',
+      documentation: `The type of clients that the business markets its products and services.`,
+      includeInDigest: false,
+      section: 'complianceInformation',
+      order: 110,
+      gridColumns: 6
+    },
+    {
+      class: 'Date',
+      name: 'businessRegistrationDate',
+      documentation: 'The date that the business was registered by their issuing authority.',
+      includeInDigest: true,
+      section: 'complianceInformation',
+      order: 120,
+      gridColumns: 6
+    },
+    {
+      class: 'Boolean',
+      name: 'onboarded',
+      documentation: `Determines whether completed business registration. This property
+        dictates portal views after compliance and account approval.`,
+      value: false,
+      includeInDigest: false,
+      writePermissionRequired: true,
+      section: 'operationsInformation',
+      order: 1,
+      gridColumns: 6
+    },
+    {
+      class: 'Boolean',
+      name: 'internationalPaymentEnabled',
+      value: false,
+      documentation: `Determines whether a user has been onboarded to
+        a partner platform to support international payments.`,
+      includeInDigest: false,
+      section: 'operationsInformation',
+      order: 2,
+      gridColumns: 6
+    },
+    {
+      name: 'organization',
+      section: 'ownerInformation',
+      order: 10,
+      gridColumns: 6
+    },
+    {
+      name: 'department',
+      section: 'ownerInformation',
+      order: 20
+    },
+    {
+      name: 'jobTitle',
+      section: 'ownerInformation',
+      order: 30
+    },
+    {
+      class: 'FObjectArray',
+      name: 'businessDirectors',
+      of: 'net.nanopay.model.BusinessDirector',
+      includeInDigest: false,
+      section: 'ownerInformation',
+      order: 40
+    },
+    {
+      class: 'foam.nanos.fs.FileArray',
+      name: 'beneficialOwnerDocuments',
+      documentation: `A stored copy of the documents that verify a person as a beneficial owner.`,
+      view: function(_, X) {
+        return {
+          class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
+          documents$: X.data.beneficialOwnerDocuments$
+        };
+      },
+      section: 'ownerInformation',
+      order: 60,
+      includeInDigest: false
+    },
+    // REVIEW: includeInDigest - many of the following are UCJ entries on the
+    // business, or will be, hence marked as false - assuming they will move. 
+    {
+      class: 'FObjectArray',
+      of: 'foam.nanos.auth.User',
+      name: 'principalOwners',
+      documentation: 'Represents the people who own the majority shares in a business.',
+      includeInDigest: false,
+      view: { class: 'foam.u2.view.DAOtoFObjectArrayView' },
+      createVisibility: 'HIDDEN',
+      section: 'ownerInformation',
+      order: 70
+    },
+    {
+      name: 'businessesInWhichThisUserIsASigningOfficer',
+      section: 'ownerInformation',
+      order: 80,
+      hidden: true
+    },
+    {
+      name: 'agents',
+      section: 'ownerInformation',
+      order: 90
+    },
+    {
+      name: 'entities',
+      section: 'ownerInformation',
+      order: 100,
+      hidden: true
+    },
+    {
+      name: 'additionalDocuments',
+      section: 'ownerInformation',
+      order: 110,
+      includeInDigest: false,
+    },
+    {
+      class: 'Boolean',
+      name: 'residenceOperated',
+      documentation: 'Determines whether a business is operated at the residence of the owner.',
+      section: 'ownerInformation',
+      order: 120,
       gridColumns: 6
     },
     {
@@ -185,13 +603,21 @@ foam.CLASS({
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       section: 'systemInformation',
+      order: 20,
       gridColumns: 6
     },
     {
-      name: 'website',
-      section: 'businessInformation',
+      class: 'Boolean',
+      name: 'businessHoursEnabled',
+      documentation: 'Determines whether business hours are enabled for the User to set.',
+      value: false,
       includeInDigest: false,
+      section: 'systemInformation',
+      order: 100,
+      gridColumns: 6
     },
+    // Overwrite validateObj on firstName, lastName, and email so we can create
+    // businesses through the GUI.
     {
       class: 'Boolean',
       name: 'loginEnabled',
@@ -221,370 +647,14 @@ foam.CLASS({
       hidden: true
     },
     {
-      class: 'Boolean',
-      name: 'residenceOperated',
-      documentation: 'Determines whether a business is operated at the residence of the owner.',
-      section: 'businessInformation',
-      gridColumns: 6
-    },
-    {
-      name: 'additionalDocuments',
-      section: 'ownerInformation',
-      includeInDigest: false,
-    },
-    {
-      class: 'foam.nanos.fs.FileArray',
-      name: 'beneficialOwnerDocuments',
-      documentation: `A stored copy of the documents that verify a person as a
-        beneficial owner.`,
-      view: function(_, X) {
-        return {
-          class: 'net.nanopay.onboarding.b2b.ui.AdditionalDocumentsUploadView',
-          documents$: X.data.beneficialOwnerDocuments$
-        };
-      },
-      section: 'ownerInformation',
-      includeInDigest: false
-    },
-    {
-      class: 'String',
-      name: 'businessRegistrationAuthority',
-      documentation: `An organization that has the power to issue and process a
-        business registration.`,
-      includeInDigest: false,
-      width: 35,
-      validateObj: function(businessRegistrationAuthority) {
-        var re = /^[a-zA-Z0-9 ]{1,35}$/;
-        if ( businessRegistrationAuthority.length > 0 &&
-            ! re.test(businessRegistrationAuthority) ) {
-          return 'Invalid issuing authority.';
-        }
-      },
-      section: 'businessInformation',
-      gridColumns: 6
-    },
-    {
-      class: 'String',
-      name: 'issuingAuthority',
-      transient: true,
-      documentation: 'An organization that has the power to issue an official document.',
-      getter: function() {
-        return this.businessRegistrationAuthority;
-      },
-      setter: function(x) {
-        this.businessRegistrationAuthority = x;
-      },
-      javaGetter: `return getBusinessRegistrationAuthority();`,
-      javaSetter: `setBusinessRegistrationAuthority(val);`,
-      section: 'businessInformation',
-      gridColumns: 6
-    },
-    {
-      class: 'Reference',
-      of: 'foam.nanos.auth.Country',
-      name: 'countryOfBusinessRegistration',
-      documentation: `Country where business was registered.`,
-      includeInDigest: true,
-      section: 'businessInformation',
-      gridColumns: 6
-    },
-    {
-      class: 'Date',
-      name: 'businessRegistrationDate',
-      documentation: 'The date that the business was registered by their issuing authority.',
-      includeInDigest: true,
-      section: 'businessInformation',
-      gridColumns: 6
-    },
-    {
-      class: 'PhoneNumber',
-      name: 'phoneNumber',
-      documentation: 'The phone number of the business.',
-      includeInDigest: false,
-      section: 'businessInformation'
-    },
-    {
-      class: 'PhoneNumber',
-      name: 'fax',
-      documentation: 'The fax number of the business.',
-      includeInDigest: false,
-      section: 'businessInformation',
-      gridColumns: 6
-    },
-    {
-      class: 'Boolean',
-      name: 'phoneNumberVerified',
-      writePermissionRequired: true,
-      includeInDigest: false,
-      section: 'operationsInformation',
-      gridColumns: 6
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'foam.nanos.auth.Address',
-      name: 'address',
-      label: 'Commercial Address',
-      documentation: `Returns the postal address of the business associated with the
-        User from the Address model.`,
-      includeInDigest: false,
-      section: 'businessInformation',
-      factory: function() {
-        return this.Address.create();
-      },
-      validationPredicates: [
-        {
-          args: ['address', 'address$errors_'],
-          predicateFactory: function(e) {
-            return e.EQ(foam.mlang.IsValid.create({
-                arg1: net.nanopay.model.Business.ADDRESS
-              }), true);
-          },
-          errorString: 'Invalid address.'
-        }
-      ],
-      view: function(_, X) {
-        return {
-          class: 'net.nanopay.sme.ui.AddressView'
-        };
-      }
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'foam.nanos.auth.Address',
-      name: 'mailingAddress',
-      documentation: `Mailing address of business`,
-      includeInDigest: false,
-      section: 'businessInformation',
-      factory: function() {
-        return this.Address.create();
-      },
-      validationPredicates: [
-        {
-          args: ['address', 'address$errors_'],
-          predicateFactory: function(e) {
-            return e.EQ(foam.mlang.IsValid.create({
-                arg1: net.nanopay.model.Business.ADDRESS
-              }), true);
-          },
-          errorString: 'Invalid address.'
-        }
-      ],
-      view: function(_, X) {
-        return {
-          class: 'net.nanopay.sme.ui.AddressView'
-        };
-      }
-    },
-    {
-      class: 'Boolean',
-      name: 'businessHoursEnabled',
-      documentation: 'Determines whether business hours are enabled for the User to set.',
-      value: false,
-      includeInDigest: false,
-      section: 'businessInformation',
-      gridColumns: 6
-    },
-    {
-      class: 'Boolean',
-      name: 'onboarded',
-      documentation: `Determines whether completed business registration. This property
-        dictates portal views after compliance and account approval.`,
-      value: false,
-      includeInDigest: false,
-      writePermissionRequired: true,
-      section: 'operationsInformation',
-      gridColumns: 6
-    },
-    // REVIEW: includeInDigest - many of the following are UCJ entries on the
-    // business, or will be, hence marked as false - assuming they will move. 
-    {
-      class: 'FObjectArray',
-      of: 'foam.nanos.auth.User',
-      name: 'principalOwners',
-      documentation: 'Represents the people who own the majority shares in a business.',
-      includeInDigest: false,
-      view: { class: 'foam.u2.view.DAOtoFObjectArrayView' },
-      createVisibility: 'HIDDEN',
-      section: 'ownerInformation',
-      order: 20
-    },
-    {
-      class: 'Boolean',
-      name: 'holdingCompany',
-      documentation: `Determines whether a Business is a holding company.  A holding c2ompany
-        represent a corporate group which owns shares of multiple companies.`,
-      includeInDigest: false,
-      section: 'businessInformation',
-      gridColumns: 6
-    },
-    {
-      class: 'String',
-      name: 'sourceOfFunds',
-      documentation: 'The entities that provide funding to the business.',
-      includeInDigest: false,
-      section: 'complianceInformation',
-      gridColumns: 6
-    },
-    {
-      class: 'String',
-      name: 'targetCustomers',
-      label: 'Describe the target customer of your products and services',
-      documentation: `The type of clients that the business markets its products and
-        services.`,
-      includeInDigest: false,
-      section: 'complianceInformation',
-      gridColumns: 6
-    },
-    {
-      class: 'FObjectProperty',
-      name: 'suggestedUserTransactionInfo',
-      of: 'net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo',
-      documentation: `Returns the expected transaction types, frequency, amount and
-        currencies that the User anticipates making with the platform. This
-        information is required for KYC purposes.  It is drawn from the
-        suggestedUserTransactionInfo object.
-        `,
-      includeInDigest: false,
-      section: 'complianceInformation',
-      factory: function() {
-        return net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.create();
-      },
-      view: { class: 'foam.u2.detail.VerticalDetailView' },
-    },
-    {
-      class: 'String',
-      name: 'taxIdentificationNumber',
-      documentation: `The tax identification number associated with the business of
-      the User.`,
-      includeInDigest: true,
-      section: 'businessInformation',
-      gridColumns: 6
-    },
-    {
-      name: 'businessIdentificationCode',
-      documentation: 'ISO 9362 Business Identification Code (BIC) (regulated by SWIFT). see https://en.wikipedia.org/wiki/ISO_9362.',
-      class: 'String',
-      includeInDigest: true,
-      section: 'businessInformation',
-      gridColumns: 6
-    },
-    {
-      class: 'String',
-      name: 'businessRegistrationNumber',
-      width: 35,
-      documentation: `The Business Registration Number (BRN) that identifies your business
-        to federal, provincial or municipal governments and is used by the business
-        for tax purposes. This number is typically issued by an Issuing Authority such as
-        the CRA.`,
-
-      includeInDigest: true,
-      validateObj: function(businessRegistrationNumber) {
-        var re = /^[a-zA-Z0-9 ]{1,35}$/;
-        if ( businessRegistrationNumber.length > 0 &&
-              ! re.test(businessRegistrationNumber) ) {
-          return 'Invalid registration number.';
-        }
-      },
-      section: 'businessInformation',
-      gridColumns: 6
-    },
-    {
-      class: 'String',
-      name: 'businessIdentificationNumber',
-      transient: true,
-      documentation: `The Business Identification Number (BIN) that identifies your business
-        to federal, provincial or municipal governments and is used by the business
-        for tax purposes. This number is typically issued by an Issuing Authority such as
-        the CRA.`,
-      includeInDigest: false,
-      getter: function() {
-        return this.businessRegistrationNumber;
-      },
-      setter: function(x) {
-        this.businessRegistrationNumber = x;
-      },
-      javaGetter: `return getBusinessRegistrationNumber();`,
-      javaSetter: `setBusinessRegistrationNumber(val);`,
-      section: 'businessInformation',
-      gridColumns: 6
-    },
-    {
-      class: 'FObjectArray',
-      name: 'businessDirectors',
-      of: 'net.nanopay.model.BusinessDirector',
-      includeInDigest: false,
-      section: 'ownerInformation',
-      order: 50
-    },
-    {
-      class: 'foam.nanos.fs.FileProperty',
-      name: 'businessProfilePicture',
-      documentation: `The profile picture of the business, such as a logo, initially
-        defaulting to a placeholder picture.`,
-      includeInDigest: false,
-      view: {
-        class: 'foam.nanos.auth.ProfilePictureView',
-        placeholderImage: 'images/business-placeholder.png'
-      },
-      section: 'systemInformation',
-      gridColumns: 6
-    },
-    {
-      class: 'Boolean',
-      name: 'internationalPaymentEnabled',
-      value: false,
-      documentation: `Determines whether a user has been onboarded to
-        a partner platform to support international payments.`,
-      includeInDigest: false,
-      section: 'operationsInformation',
-      gridColumns: 6
-    },
-    {
-      class: 'Boolean',
-      name: 'publiclyTraded',
-      includeInDigest: false,
-      section: 'ownerInformation',
-      gridColumns: 6,
-      order: 55
-    },
-    // Overwrite validateObj on firstName, lastName, and email so we can create
-    // businesses through the GUI.
-    {
       name: 'firstName',
-      validateObj: function() {}
+      hidden: true,
+      validateObj: function() {},
     },
     {
       name: 'lastName',
-      validateObj: function() {}
-    },
-    {
-      name: 'created',
-      section: 'businessInformation',
-      gridColumns: 6
-    },
-    {
-      name: 'createdBy',
-      section: 'businessInformation',
-      gridColumns: 6
-    },
-    {
-      name: 'createdByAgent',
-      section: 'businessInformation',
-      gridColumns: 6
-    },
-    {
-      name: 'lastModified',
-      section: 'businessInformation',
-      gridColumns: 6
-    },
-    {
-      name: 'lastModifiedBy',
-      section: 'businessInformation',
-      gridColumns: 6
-    },
-    {
-      name: 'note',
-      section: 'businessInformation'
+      hidden: true,
+      validateObj: function() {}  
     }
  ],
 
