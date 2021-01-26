@@ -23,8 +23,8 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.Subject;
 import foam.nanos.auth.User;
+import foam.nanos.logger.Logger;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -36,22 +36,10 @@ import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
 import static foam.mlang.MLang.*;
-import static java.util.Calendar.*;
 
 public class BillingCron implements ContextAgent {
   @Override
   public void execute(X x) {
-    // fetch first day of this month and next month
-    Calendar first = getInstance();
-    Calendar next = getInstance();
-    first.set(DAY_OF_MONTH, 1);
-    next.clear();
-    next.set(YEAR, first.get(YEAR));
-    next.set(MONTH, first.get(MONTH) + 1);
-    next.set(DAY_OF_MONTH, 1);
-    Date firstDayOfThisMonth = first.getTime();
-    Date firstDayOfNextMonth = next.getTime();
-
     // create admin user context
     User adminUser = new User.Builder(x)
       .setFirstName("Billing")
@@ -66,10 +54,7 @@ public class BillingCron implements ContextAgent {
 
     // query all bills from this month
     ArraySink bills = (ArraySink) ((DAO) x.get("billDAO")).where(
-      AND(
-        GTE(Bill.CHARGE_DATE, firstDayOfThisMonth),
-        LT(Bill.CHARGE_DATE, firstDayOfNextMonth)
-      )
+        LT(Bill.CHARGE_DATE, new Date())
     ).select(new ArraySink());
 
     // add bills in a map and associate them to the users or businesses being charged
@@ -115,12 +100,15 @@ public class BillingCron implements ContextAgent {
         .setAmount(amount)
         .build();
 
-      billingTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).put(billingTxn);
-
-      for ( Bill bill : billList ) {
-        bill.setBillingTransaction(billingTxn.getId());
-        bill.setStatus(TransactionStatus.SENT);
-        ((DAO) x.get("billDAO")).put(bill);
+      try {
+        billingTxn = (Transaction) ((DAO) x.get("localTransactionDAO")).put(billingTxn);
+        for ( Bill bill : billList ) {
+          bill.setBillingTransaction(billingTxn.getId());
+          bill.setStatus(TransactionStatus.SENT);
+          ((DAO) x.get("billDAO")).put(bill);
+        }
+      } catch (Throwable e) {
+        ((Logger) x.get("logger")).error("BillingCron error: " +  e.getMessage());
       }
     }
   }
