@@ -305,7 +305,8 @@ foam.RELATIONSHIP({
   cardinality: '1:*',
   sourceProperty: {
     readPermissionRequired: true,
-    section: 'operationsInformation'
+    section: 'operationsInformation',
+    order: 170
   }
 });
 
@@ -329,7 +330,8 @@ foam.CLASS({
       name: 'transactionLimits',
       of: 'net.nanopay.tx.model.TransactionLimit',
       createVisibility: 'HIDDEN',
-      section: 'operationsInformation'
+      section: 'operationsInformation',
+      order: 110
     }
   ]
 });
@@ -424,11 +426,13 @@ foam.RELATIONSHIP({
   junctionDAOKey: 'partnerJunctionDAO',
   sourceProperty: {
     createVisibility: 'HIDDEN',
-    section: 'contactInformation'
+    section: 'contactInformation',
+    order: 20
   },
   targetProperty: {
     createVisibility: 'HIDDEN',
-    section: 'contactInformation'
+    section: 'contactInformation',
+    order: 30
   }
 });
 
@@ -686,7 +690,8 @@ foam.RELATIONSHIP({
   unauthorizedTargetDAOKey: 'localContactDAO',
   sourceProperty: {
     readPermissionRequired: true,
-    section: 'contactInformation'
+    section: 'contactInformation',
+    order: 10
   },
   targetProperty: {
     section: 'userInformation'
@@ -756,13 +761,13 @@ foam.RELATIONSHIP({
   sourceProperty: {
     createVisibility: 'HIDDEN',
     section: 'ownerInformation',
-    order: 30
+    order: 80
   },
   targetProperty: {
-    label: 'Businesses User is Signing Officer',
+    label: 'Businesses User is Signing Officer Within',
     createVisibility: 'HIDDEN',
     section: 'ownerInformation',
-    order: 31
+    order: 81
   },
   junctionDAOKey: 'signingOfficerJunctionDAO'
 });
@@ -832,7 +837,7 @@ foam.RELATIONSHIP({
   targetDAOKey: 'beneficialOwnerDAO',
   sourceProperty: {
     section: 'ownerInformation',
-    order: 40
+    order: 50
   }
 });
 
@@ -1066,7 +1071,7 @@ foam.RELATIONSHIP({
   sourceProperty: {
     readPermissionRequired: true,
     section: 'complianceInformation',
-    order: 2
+    order: 50
   }
 });
 
@@ -1085,7 +1090,8 @@ foam.RELATIONSHIP({
   },
   sourceProperty: {
     readPermissionRequired: true,
-    section: 'complianceInformation'
+    section: 'complianceInformation',
+    order: 40
   }
 });
 
@@ -1176,7 +1182,8 @@ foam.RELATIONSHIP({
   inverseName: 'owner',
   cardinality: '1:*',
   sourceProperty: {
-    section: 'businessInformation'
+    section: 'operationsInformation',
+    order: 180
   }
 });
 

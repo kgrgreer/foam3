@@ -16,28 +16,46 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.accounting',
-  name: 'UserRefine',
-  refines: 'foam.nanos.auth.User',
-  properties: [
+	package: 'net.nanopay.country.br',
+	name: 'CPFCache',
+
+  ids: [
+    'cpf'
+  ],
+
+  implements: [
+    'foam.nanos.auth.CreatedAware',
+    'foam.nanos.auth.LastModifiedAware'
+  ],
+
+	properties: [
+		{
+			class: 'String',
+			name: 'cpf'
+		},
+		{
+			class: 'Date',
+			name: 'birthDate'
+		},
+		{
+			class: 'String',
+			name: 'responseString'
+		},
+		{
+			class: 'FObjectProperty',
+			of: 'net.nanopay.partner.soawebservices.PessoaResponse',
+			name: 'response',
+			hidden: true
+		},
     {
-      class: 'foam.core.Enum',
-      of: 'net.nanopay.accounting.IntegrationCode',
-      name: 'integrationCode',
-      documentation: 'The code that determines which Accounting system is currently active with the user.',
-      visibility: 'RO',
-      value: 'NONE',
-      label: 'Accounting Integration',
-      section: 'systemInformation',
-      order: 10,
-      gridColumns: 6
+      class: 'DateTime',
+      name: 'created',
+      visibility: 'RO'
     },
     {
-      class: 'Boolean',
-      name: 'hasIntegrated',
-      section: 'systemInformation',
-      gridColumns: 6,
-      value: false
+      class: 'DateTime',
+      name: 'lastModified',
+      visibility: 'RO'
     },
-  ]
+	]
 });

@@ -16,6 +16,7 @@
  */
 package net.nanopay.country.br.exchange;
 
+import org.apache.commons.lang3.StringUtils;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.Address;
@@ -224,7 +225,7 @@ public class ExchangeServiceProvider implements ExchangeService {
     titular.setCODIGO(formattedCpfCnpj); // e.g 10786348070
     titular.setTIPO(1);
     titular.setSUBTIPO("J"); // F = Physical, J = Legal, S = Symbolic
-    titular.setNOMEAB(getName(user));
+    titular.setNOMEAB(StringUtils.abbreviate(getName(user), 15));
     titular.setNOME(getName(user));
     titular.setENDERECO(user.getAddress().getAddress());
     titular.setCIDADE(user.getAddress().getCity());

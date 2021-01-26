@@ -33,7 +33,8 @@ foam.CLASS({
       readPermissionRequired: true,
       writePermissionRequired: true,
       section: 'complianceInformation',
-      order: 1,
+      order: 30,
+      gridColumns: 6,
       sheetsOutput: true
     }
   ]

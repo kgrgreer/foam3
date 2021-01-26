@@ -1798,7 +1798,9 @@ FOAM_FILES([
   { name: 'net/nanopay/country/br/tx/ExchangeLimitTransactionCronAgent'},
   { name: 'net/nanopay/country/br/tx/ExchangeLimitTransactionCronAgentSink'},
 
+  { name: 'net/nanopay/country/br/CNPJCache' },
   { name: 'net/nanopay/country/br/CPF' },
+  { name: 'net/nanopay/country/br/CPFCache' },
   { name: 'net/nanopay/country/br/BrazilBusinessInfoData' },
   { name: 'net/nanopay/country/br/crunch/ExchangeServiceOnboardingRule' },
   { name: 'net/nanopay/country/br/exchange/ExchangeCredential' },
@@ -1823,6 +1825,7 @@ FOAM_FILES([
   { name: 'net/nanopay/rtp/ThankYou', flags: ['web'] },
 
   // Treviso
+  { name: 'net/nanopay/partner/soawebservices/PessoaResponse' },
   { name: 'net/nanopay/partner/soawebservices/SoaCredenciais' },
   { name: 'net/nanopay/partner/treviso/FepWebOnboardingRule'},
   { name: 'net/nanopay/partner/treviso/FepWebUserUpdatingRule'},
