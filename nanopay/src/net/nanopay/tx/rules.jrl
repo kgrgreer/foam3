@@ -897,3 +897,20 @@ p({
     "lifecycleState":1,
     "spid":"intuit"
 })
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"b64905d0-289b-4371-92a5-f843e344109a",
+  "name":"Reversal Rule",
+  "priority":100,
+  "ruleGroup":"summaryTransactions",
+  "documentation":"Handle transaction reversal",
+  "daoKey":"localTicketDAO",
+  "operation":1,
+  "action":{
+    "class":"net.nanopay.tx.ReversalRule"
+  },
+  "after":false,
+  "enabled":true,
+  "lifecycleState":1
+})

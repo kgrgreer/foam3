@@ -17,7 +17,8 @@
 
 foam.CLASS({
   package: 'net.nanopay.tx',
-  name: 'ReversalRequest',
+  name: 'ReversalTicket',
+  extends: 'foam.nanos.ticket.Ticket',
 
   documentation: `Transaction reversal request`,
 
