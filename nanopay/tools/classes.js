@@ -1320,6 +1320,8 @@ var classes = [
   'net.nanopay.partner.treviso.onboarding.BRBankAccountData',
   'net.nanopay.partner.treviso.TrevisoSendEmailToAllNotification',
   'net.nanopay.partner.treviso.invoice.TrevisoNotification',
+  'net.nanopay.partner.treviso.report.TrevisoTransactionReport',
+  'net.nanopay.partner.treviso.report.TrevisoTransactionReportDAO',
 
   // crunch predicates - todo move all predicates used in crunch here
   'net.nanopay.crunch.predicate.IsBusiness',

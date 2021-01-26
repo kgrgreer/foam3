@@ -1941,6 +1941,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"operation.whitelistedemail.label
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"report.label",target:"Relatórios"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"report.abliiBusinessReport.label",target:"Relatório de Negócios Ablii"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"report.trevisoTransactionReport.label",target:"Relatório de transação Treviso"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"report.summaryBusinessReport.label",target:"Relatório de negócios resumido"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"report.reportScripts.label",target:"Scripts de relatório"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"report.paymentReport.label",target:"Relatório de Pagamento"})

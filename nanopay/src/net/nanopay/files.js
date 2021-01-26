@@ -1813,7 +1813,7 @@ FOAM_FILES([
   { name: 'net/nanopay/country/br/NatureBusinessRelationship' },
   { name: 'net/nanopay/country/br/NatureCodeCardSelectView' },
 
-  //RequestToPay
+  // RequestToPay
   { name: 'net/nanopay/rtp/RequestToPay'},
   { name: 'net/nanopay/rtp/RtpFlinksView'},
   { name: 'net/nanopay/rtp/RtpConfirmView'},
@@ -1844,6 +1844,10 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/TrevisoSendEmailToAllRule' },
   { name: 'net/nanopay/partner/treviso/TrevisoSendEmailToAllNotification' },
   { name: 'net/nanopay/partner/treviso/invoice/TrevisoNotification' },
+
+  // Reports for Treviso
+  { name: 'net/nanopay/partner/treviso/report/TrevisoTransactionReport' },
+  { name: 'net/nanopay/partner/treviso/report/TrevisoTransactionReportDAO' },
 
   // support
   { name: 'net/nanopay/support/SupportAccount' },
