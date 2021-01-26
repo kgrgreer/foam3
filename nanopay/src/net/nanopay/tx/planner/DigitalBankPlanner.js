@@ -70,8 +70,9 @@ foam.CLASS({
             CLASS_OF(DigitalAccount.class)
             //TODO also add spid check
           )).select(new ArraySink())).getArray();
-
         for ( Object obj : digitals ) {
+          // todo fix properly
+try {
           Account digital = (DigitalAccount) obj;
           // Split 1: Adigital -> BDigital
           Transaction digitalTxn = new Transaction();
@@ -97,6 +98,9 @@ foam.CLASS({
               quote.getAlternatePlans_().add(t);
             }
           }
+      } catch(Exception e){
+
+      }
         }
         return null;
       `

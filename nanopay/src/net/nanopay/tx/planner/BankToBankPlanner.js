@@ -84,6 +84,8 @@ foam.CLASS({
           )).select(new ArraySink())).getArray();
 
         for ( Object obj : digitals ) {
+          // todo fix properly
+          try {
           DigitalAccount sourceDigitalAccount = (DigitalAccount) obj;
 
           // Split 1: ABank -> ADigital
@@ -118,6 +120,9 @@ foam.CLASS({
               quote.getAlternatePlans_().add(t);
             }
           }
+        } catch (Exception e) {
+
+        }
         }
         return null;
       `
