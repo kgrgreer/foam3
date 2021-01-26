@@ -37,7 +37,6 @@ import net.nanopay.tx.model.TransactionStatus;
 
 import static foam.mlang.MLang.EQ;
 
-
 public class BillingService implements BillingServiceInterface {
   @Override
   public void createBills(X x, Transaction transaction) {

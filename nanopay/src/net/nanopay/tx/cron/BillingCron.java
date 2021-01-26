@@ -42,7 +42,10 @@ public class BillingCron implements ContextAgent {
   public void execute(X x) {
     // query all bills from this month
     ArraySink bills = (ArraySink) ((DAO) x.get("billDAO")).where(
-        LT(Bill.CHARGE_DATE, new Date())
+        AND(
+          LT(Bill.CHARGE_DATE, new Date()),
+          EQ(Bill.STATUS, TransactionStatus.PENDING)
+        )
     ).select(new ArraySink());
 
     // Short-circuit if there are no bills
