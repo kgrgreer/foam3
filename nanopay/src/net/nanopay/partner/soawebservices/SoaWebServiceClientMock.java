@@ -30,26 +30,33 @@ public class SoaWebServiceClientMock extends ContextAwareSupport implements SoaW
   }
 
   @Override
-  public PessoaResponse pessoaFisicaSimplificada(PessoaFisicaSimplificada request) {
+  public PessoaResponse pessoaFisicaNFe(PessoaFisicaNFe request) {
     if ( "10786348070".equals(request.getDocumento()) ) {
       PessoaResponse res = new PessoaResponse();
       res.setNome("Mock Legal User");
       res.setStatus(true);
+      res.setSituacaoRFB("REGULAR");
+      res.setMensagemObito("");
+      res.setAnoObito("0000");
+      res.setResponseString("Response string here");
       return res;
     } else {
-      return new SoaWebServiceClient(getX()).pessoaFisicaSimplificada(request);
+      return new SoaWebServiceClient(getX()).pessoaFisicaNFe(request);
     }
   }
 
   @Override
-  public PessoaResponse pessoaJuridicaSimplificada(PessoaJuridicaSimplificada request) {
+  public PessoaResponse pessoaJuridicaNFe(PessoaJuridicaNFe request) {
     if ( "06990590000123".equals(request.getDocumento()) ) {
       PessoaResponse res = new PessoaResponse();
       res.setNome("Mock Legal User");
+      res.setSituacaoRFB("ativa");
+      res.setResponseString("Response string here");
+      res.setRazaoSocial("Mock Legal User");
       res.setStatus(true);
       return res;
     } else {
-      return new SoaWebServiceClient(getX()).pessoaJuridicaSimplificada(request);
+      return new SoaWebServiceClient(getX()).pessoaJuridicaNFe(request);
     }
   }
 }

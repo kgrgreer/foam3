@@ -23,7 +23,6 @@ O=nanopay.net
 organizationalUnitName=R&D
 emailAddress=support@nanopay.net
 "
-CN=nanopay.net
 
 # Generate a private key
 openssl genrsa -out "$DOMAIN.key" 2048

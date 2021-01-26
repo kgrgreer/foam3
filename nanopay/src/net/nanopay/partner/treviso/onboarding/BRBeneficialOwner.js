@@ -44,15 +44,17 @@ foam.CLASS({
   ],
 
   messages: [
+    { name: 'INVALID_NATIONALITY', message: 'Nationality required' },
     { name: 'INVALID_CPF', message: 'Valid CPF number required' },
     { name: 'INVALID_OWNER_NAME', message: 'Confirm the name of the business owner' },
     { name: 'YES', message: 'Yes' },
-    { name: 'NO', message: 'No' }
+    { name: 'NO', message: 'No' },
+    { name: 'RICHCHOICE_SELECTION_TITLE', message: 'Countries' },
+    { name: 'PROOF_OF_ADDRESS', message: 'Proof of address documents required' },
+    { name: 'PROOF_OF_IDENTIFICATION', message: 'Proof of identication documents required' }
   ],
 
   properties: [
-    'firstName',
-    'lastName',
     {
       class: 'EMail',
       name: 'email',
@@ -65,18 +67,54 @@ foam.CLASS({
     {
       name: 'birthday',
       postSet: function(_,n) {
-        this.cpfName = "";
-        if ( this.cpf.length == 11 ) {
-          this.getCpfName(this.cpf).then((v) => {
+        if ( this.cpf.length == 11 && this.verifyName !== true ) {
+          this.cpfName = "";
+          this.getCpfName(this.cpf).then(v => {
             this.cpfName = v;
           });
         }
       }
     },
-    'jobTitle',
-    'ownershipPercent',
-    'address',
-    'nationality',
+    {
+      class: 'Reference',
+      targetDAOKey: 'countryDAO',
+      name: 'nationality',
+      of: 'foam.nanos.auth.Country',
+      section: 'requiredSection',
+      documentation: `Defined nationality of beneficial owner.`,
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          search: true,
+          placeholder: X.data.PLACEHOLDER,
+          sections: [
+            {
+              heading$: X.data.RICHCHOICE_SELECTION_TITLE,
+              dao: X.countryDAO
+            }
+          ]
+        };
+      },
+      validationPredicates: [
+        {
+          args: ['nationality', 'showValidation'],
+          predicateFactory: function(e) {
+            return e.OR(
+              e.EQ(
+                net.nanopay.partner.treviso.onboarding.BRBeneficialOwner
+                  .SHOW_VALIDATION,
+                false),
+              e.GT(
+                foam.mlang.StringLength.create({
+                  arg1: net.nanopay.partner.treviso.onboarding.BRBeneficialOwner
+                    .NATIONALITY }),
+                 0)
+            );
+          },
+          errorMessage: 'INVALID_NATIONALITY'
+        }
+      ]
+    },
     {
       class: 'String',
       name: 'cpf',
@@ -90,7 +128,10 @@ foam.CLASS({
         {
           args: ['cpfName'],
           predicateFactory: function(e) {
-            return e.GT(net.nanopay.partner.treviso.onboarding.BRBeneficialOwner.CPF_NAME, 0);
+            return e.GT(
+              net.nanopay.partner.treviso.onboarding.BRBeneficialOwner
+                .CPF_NAME,
+              0);
           },
           errorMessage: 'INVALID_CPF'
         }
@@ -99,10 +140,10 @@ foam.CLASS({
       tableCellFormatter: function(val) {
         return foam.String.applyFormat(val, 'xxx.xxx.xxx-xx');
       },
-      postSet: function(_,n) {
-        this.cpfName = "";
+      postSet: function(_, n) {
+        this.cpfName = '';
         if ( n.length == 11 ) {
-          this.getCpfName(n).then((v) => {
+          this.getCpfName(n).then(v => {
             this.cpfName = v;
           });
         }
@@ -111,26 +152,26 @@ foam.CLASS({
         return foam.u2.FragmentedTextField.create({
           delegates: [
             foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cpf.slice(0,3),
+              data: X.data.cpf.slice(0, 3),
               maxLength: 3
             }),
             '.',
             foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cpf.slice(3,6),
+              data: X.data.cpf.slice(3, 6),
               maxLength: 3
             }),
             '.',
             foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cpf.slice(6,9),
+              data: X.data.cpf.slice(6, 9),
               maxLength: 3
             }),
             '-',
             foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cpf.slice(9,11),
+              data: X.data.cpf.slice(9, 11),
               maxLength: 2
             })
           ]
-        })
+        });
       }
     },
     {
@@ -146,11 +187,12 @@ foam.CLASS({
       name: 'verifyName',
       label: 'Is this the business owner?',
       section: 'requiredSection',
-      visibility: function (cpfName, mode) {
-        return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN :
-          cpfName.length > 0 ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      visibility: function(cpfName, mode) {
+        return mode === 'percent' ?
+          foam.u2.DisplayMode.HIDDEN : cpfName.length > 0 ?
+            foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
-      view: function(n, X) {
+      view: function(_, X) {
         var self = X.data$;
         return foam.u2.CheckBox.create({
           labelFormatter: function() {
@@ -164,7 +206,10 @@ foam.CLASS({
         {
           args: ['verifyName'],
           predicateFactory: function(e) {
-            return e.EQ(net.nanopay.partner.treviso.onboarding.BRBeneficialOwner.VERIFY_NAME, true);
+            return e.EQ(
+              net.nanopay.partner.treviso.onboarding.BRBeneficialOwner
+                .VERIFY_NAME,
+              true);
           },
           errorMessage: 'INVALID_OWNER_NAME'
         }
@@ -174,19 +219,24 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'PEPHIORelated',
+      label: 'Is the owner considered a politically exposed person (PEP)?',
       documentation: `Determines whether the user is a domestic or foreign _Politically
-        Exposed Person (PEP), Head of an International Organization (HIO)_, or
-        related to any such person.
+        Exposed Person (PEP), or related to any such person.
       `,
       section: 'requiredSection',
-      label: 'The owner is a politically exposed person (PEP) or head of an international organization (HIO)',
       help: `
-        A political exposed person (PEP) or the head of an international organization (HIO)
-        is a person entrusted with a prominent position that typically comes with the opportunity
-        to influence decisions and the ability to control resources
+      As defined in item 7 of Bacen Circular Letter 3430/2010 -
+      “For the purposes of the provisions of § 1 of art. 4 of Circular No. 3,461, of 2009,
+      are clients examples of situations that characterize close relationships and lead to
+      the classification of permanentas politically exposed persons:
+      I – constitution of politically exposed persons as attorneys or representatives;
+      II - control, direct or indirect, by a politically exposed person, in the case of a corporate client;
+      and III – habitual movement of financial resources from or to a politically exposed person Client of the institution,
+                not justified by economic events, such as the acquisition of goods or provision of services;".
+      
       `,
       value: false,
-      visibility: function (mode) {
+      visibility: function(mode) {
         return mode === 'percent' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
       view: function(_, X) {
@@ -203,10 +253,10 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'hasSignedContratosDeCambio',
-      label: 'Has the person listed here signed the \'contratos de câmbio\'?',
+      label: 'Has this business owner signed the foreign exchange contract?',
       section: 'requiredSection',
       help: `
-        Contratos de câmbio (foreign exchange contract) is a legal arrangement in which the
+        Foreign exchange contract (Contratos de câmbio) is a legal arrangement in which the
         parties agree to transfer between them a certain amount of foreign exchange at a
         predetermined rate of exchange, and as of a predetermined date.
       `,
@@ -223,6 +273,58 @@ foam.CLASS({
           isHorizontal: true
         };
       }
+    },
+    {
+      class: 'foam.nanos.fs.FileArray',
+      name: 'documentsOfAddress',
+      label: 'Please upload proof of address',
+      section: 'requiredSection',
+      view: function(_, X) {
+        let selectSlot = foam.core.SimpleSlot.create({ value: 0 });
+        return foam.u2.MultiView.create({
+        views: [
+          foam.nanos.fs.fileDropZone.FileDropZone.create({
+            files$: X.data.documentsOfAddress$,
+            selected$: selectSlot
+          }, X),
+          foam.nanos.fs.fileDropZone.FilePreview.create({
+            data$: X.data.documentsOfAddress$,
+            selected$: selectSlot
+          })
+        ]
+        });
+      },
+      validateObj: function(documentsOfAddress) {
+        if ( documentsOfAddress.length === 0 ) {
+          return this.PROOF_OF_ADDRESS;
+        }
+      }
+    },
+    {
+      class: 'foam.nanos.fs.FileArray',
+      name: 'documentsOfId',
+      label: 'Please upload proof of identification',
+      section: 'requiredSection',
+      view: function(_, X) {
+        let selectSlot = foam.core.SimpleSlot.create({ value: 0 });
+        return foam.u2.MultiView.create({
+        views: [
+          foam.nanos.fs.fileDropZone.FileDropZone.create({
+            files$: X.data.documentsOfId$,
+            selected$: selectSlot
+          }, X),
+          foam.nanos.fs.fileDropZone.FilePreview.create({
+            data$: X.data.documentsOfId$,
+            selected$: selectSlot
+          })
+        ]
+        });
+      },
+      validateObj: function(documentsOfId) {
+        if ( documentsOfId.length === 0 ) {
+          return this.PROOF_OF_IDENTIFICATION;
+        }
+      }
     }
   ],
 
@@ -230,7 +332,8 @@ foam.CLASS({
     {
       name: 'getCpfName',
       code: async function(cpf) {
-        return await this.brazilVerificationService.getCPFNameWithBirthDate(this.__subContext__, cpf, this.birthday);
+        return await this.brazilVerificationService
+          .getCPFNameWithBirthDate(this.__subContext__, cpf, this.birthday);
       }
     },
     {
@@ -239,12 +342,6 @@ foam.CLASS({
         super.validate(x);
 
         if ( ! getVerifyName() ) throw new IllegalStateException("Must verify name attached to CPF is valid.");
-        try {
-          if ( ! ((BrazilVerificationService) x.get("brazilVerificationService")).validateCpf(x, getCpf(), getBirthday()) )
-            throw new RuntimeException(INVALID_CPF);
-        } catch(Throwable t) {
-          throw t;
-        }
       `
     }
   ]

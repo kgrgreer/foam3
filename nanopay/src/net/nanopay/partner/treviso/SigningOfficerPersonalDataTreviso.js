@@ -55,7 +55,7 @@ foam.CLASS({
     { name: 'PLEASE_SELECT', message: 'Please select...' },
     { name: 'YES', message: 'Yes' },
     { name: 'NO', message: 'No' },
-    { name: 'SELECT_HAVE_SIGNED_CONTRACT', message: 'As the signing officer of this business, you are required to have signed this contract. This contract is necessary due to the need to exchange national currency for foreign currency.' }
+    { name: 'SELECT_HAVE_SIGNED_CONTRACT', message: 'As the signing officer of this business, you are required to have signed this contract.' }
   ],
 
   properties: [
@@ -131,7 +131,7 @@ foam.CLASS({
     }),
     foam.nanos.auth.User.PEPHIORELATED.clone().copyFrom({
       section: 'signingOfficerPersonalInformationSection',
-      label: 'The signing officer is a politically exposed person (PEP) or head of an international organization',
+      label: 'Is the signing officer considered a politically exposed person (PEP)?',
       help: `
       As defined in item 7 of Bacen Circular Letter 3430/2010 -
       “For the purposes of the provisions of § 1 of art. 4 of Circular No. 3,461, of 2009,
@@ -206,7 +206,7 @@ foam.CLASS({
       label: 'Has the foreign exchange contract been signed?',
       section: 'signingOfficerPersonalInformationSection',
       help: `
-        Contratos de câmbio (foreign exchange contract) is a legal arrangement in which the
+        Foreign exchange contract (Contratos de câmbio) is a legal arrangement in which the
         parties agree to transfer between them a certain amount of foreign exchange at a
         predetermined rate of exchange, and as of a predetermined date.
       `,

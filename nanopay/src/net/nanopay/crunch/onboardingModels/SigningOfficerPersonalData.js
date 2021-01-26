@@ -129,7 +129,7 @@ foam.CLASS({
     }),
     foam.nanos.auth.User.PEPHIORELATED.clone().copyFrom({
       section: 'signingOfficerPersonalInformationSection',
-      label: 'The signing officer is a politically exposed person (PEP) or head of an international organization (HIO)',
+      label: 'Is the signing officer considered a politically exposed person (PEP) or head of an international organization(HIO)?',
       help: `
         A politically exposed person (PEP) or the head of an international organization (HIO)
         is a person entrusted with a prominent position that typically comes with the opportunity

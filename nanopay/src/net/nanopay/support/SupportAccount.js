@@ -149,7 +149,7 @@ foam.CLASS({
 
   methods: [
     function toSummary() {
-      return '(' + this.id + ') ' + this.name + ' ' + this.summary;
+      return `(${this.id}) ${this.name} ${this.summary}`;
     },
 
     function getCredits() {
