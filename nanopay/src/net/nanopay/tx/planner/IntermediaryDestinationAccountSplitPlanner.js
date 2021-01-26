@@ -57,7 +57,7 @@ foam.CLASS({
     {
       class: 'Map',
       name: 'intermediaryAccountId',
-      javaFactory: `return new java.util.HashMap<String, Long>();`
+      javaFactory: `return new java.util.HashMap<String, String>();`
     },
     {
       class: 'Int',
