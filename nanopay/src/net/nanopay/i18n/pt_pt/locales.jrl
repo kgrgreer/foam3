@@ -1520,6 +1520,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ClientConta
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.CONFIRM_RELATIONSHIP",target:"Tenho uma relação comercial com este beneficiário."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.INVITE_LABEL",target:"Convide este beneficiário para participar "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.RESTRICT_INVITE_LABEL",target:"Este beneficiário não pode ser convidado para participar do Ablii"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.UNABLE_TO_ADD_BANK_ACCOUNT_SPLITTER",target:"loja de recursos"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.UNABLE_TO_ADD_BANK_ACCOUNT",target:"Atualmente você não completou os requisitos necessários\n          para adicionar uma conta ao seu beneficiário. Visite a loja de recursos para permitir pagamentos."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.ERROR_BUSINESS_PROFILE_NAME_MESSAGE",target:"Nome comercial obrigatório."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.INVALID_EMAIL",target:"Endereço de email invalido."})
@@ -1562,7 +1563,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.CRE
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.AVAILABLE_COUNTRIES.label",target:"availableCountries pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.COUNTRIES.label",target:"countries pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.COUNTRIES.documentation",target:"O beneficiário dos países disponíveis nas lojas pode ter conta domiciliada em."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.NO_CORRIDORS_AVAILABLE.label",target:"noCorridorsAvailable pt"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.NO_CORRIDORS_AVAILABLE.label",target:"Ação Requerida"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.NO_CORRIDORS_AVAILABLE.documentation",target:"GUI quando nenhum recurso de corredor foi adicionado ao usuário."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.SHOULD_INVITE.documentation",target:"Verdadeiro se o usuário quiser convidar o beneficiário para ingressar no Ablii."})
 
