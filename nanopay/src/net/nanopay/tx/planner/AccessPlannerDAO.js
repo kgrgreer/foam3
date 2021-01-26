@@ -117,7 +117,7 @@ foam.CLASS({
         }
         if (payer == null ) { // we require a user to get the spid, no way to get user = failure to plan.
           ((Logger) x.get("logger")).error("user not found - for transaction planning");
-          throw new ValidationException("user not found");
+          throw new ValidationException("Payer not found");
         }
         dao = dao.where(
           OR(
