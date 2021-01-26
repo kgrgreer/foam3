@@ -67,7 +67,8 @@ foam.CLASS({
     {
       name: 'viewRequestStatus',
       class: 'Enum',
-      of: 'net.nanopay.security.pii.PIIRequestStatus'
+      of: 'net.nanopay.security.pii.PIIRequestStatus',
+      value: 'PENDING'
     },
     {
       class: 'Reference',

@@ -48,9 +48,16 @@ foam.CLASS({
       max-height: 570px;
       overflow-y: scroll;
     }
-    ^step-indicator {
+    ^left-button-container {
+      width: 200px;
       display: flex;
-      justify-content: flex-end;
+      justify-content: flex-start;
+    }
+    ^option {
+      margin-left: 15px;
+    }
+    ^step-indicator {
+      margin-right: 150px;
     }
     .property-rbiLink {
       margin-top: -33px;
@@ -60,7 +67,7 @@ foam.CLASS({
     }
     ^ .button-container-wrapper {
       position: relative;
-      width: 585px;
+      width: 600px;
       right: 30px;
       top: 30px;
     }
@@ -189,13 +196,17 @@ foam.CLASS({
           .startContext({ data: this })
             .start().addClass('button-container-wrapper')
               .start().addClass('button-container')
-                .tag(this.BACK, { buttonStyle: 'TERTIARY' })
+                .start().addClass(self.myClass('left-button-container'))
+                  .tag(this.BACK, { buttonStyle: 'TERTIARY' })
+                  .start().addClass(self.myClass('option'))
+                    .tag(this.OPTION, { buttonStyle: 'SECONDARY' })
+                  .end()
+                .end()
                 .start().addClass(self.myClass('step-indicator'))
                   .add(this.slot(function(currentIndex) {
                     return `${self.STEP} ${currentIndex + 1} ${self.OF_MSG} 3`;
                   }))
                 .end()
-                .tag(this.OPTION, { buttonStyle: 'SECONDARY' })
                 .start(this.NEXT).end()
                 .start(this.SAVE).end()
               .end()
@@ -328,9 +339,10 @@ foam.CLASS({
       name: 'option',
       label: 'Save and close',
       isAvailable: function(currentIndex, data$bankAccount) {
-        return currentIndex === 1 && data$bankAccount === 0;
+        return currentIndex === 1 && ! data$bankAccount;
       },
       code: async function(X) {
+        this.data.clearProperty("createBankAccount");
         if ( ! await this.addContact() ) return;
         X.closeDialog();
       }
