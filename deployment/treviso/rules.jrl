@@ -7,7 +7,7 @@ p({
   ruleGroup: "TransactionFeeRule",
   targetClass: "net.nanopay.tx.fee.TransactionFeeRule",
   propName: "feeAccount",
-  propValue: "31",
+  propValue: "707911f9-5129-4916-a27a-6a6c469668ce",
   created: 1601313462375,
   createdBy: 1,
   createdByAgent: 1,
@@ -37,7 +37,7 @@ p({
     class: "foam.nanos.cron.TimeHMS",
     hour: 24
   },
-  feeAccount: "31",
+  feeAccount: "707911f9-5129-4916-a27a-6a6c469668ce",
   enabled: true,
   predicate: {
     class: "foam.mlang.predicate.And",
