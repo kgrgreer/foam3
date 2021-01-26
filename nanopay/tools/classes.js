@@ -1187,6 +1187,9 @@ var classes = [
   'net.nanopay.country.br.tx.fee.PTaxRate',
 
   // Treviso
+  'net.nanopay.country.br.CNPJCache',
+  'net.nanopay.country.br.CPFCache',
+  'net.nanopay.country.br.ExpiredValidationDAO',
   'net.nanopay.country.br.NatureCode',
   'net.nanopay.country.br.NatureCodeData',
   'net.nanopay.country.br.NatureCodeApprovalRequest',
@@ -1257,8 +1260,8 @@ var classes = [
   'net.nanopay.country.br.tx.NatureCodeLineItem',
   'net.nanopay.partner.bmo.BMOPaymentProviderCapabilityRule',
   'net.nanopay.partner.rbc.RBCPaymentProviderCapabilityRule',
-  'net.nanopay.partner.soawebservices.PessoaFisicaSimplificada',
-  'net.nanopay.partner.soawebservices.PessoaJuridicaSimplificada',
+  'net.nanopay.partner.soawebservices.PessoaFisicaNFe',
+  'net.nanopay.partner.soawebservices.PessoaJuridicaNFe',
   'net.nanopay.partner.soawebservices.PessoaResponse',
   'net.nanopay.partner.soawebservices.SoaCredenciais',
   'net.nanopay.partner.soawebservices.SoaWebService',

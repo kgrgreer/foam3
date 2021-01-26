@@ -61,6 +61,9 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"service.userAcceptanceDocumentDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"useracceptancedocument.read.*"})
 
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"service.natureCodeDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api","targetId":"service.permittedCountryDAO"})
+
 // ******** SESSION *********
 
 // External session creation
@@ -83,7 +86,6 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-se
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"group.read.sme"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"group.update.external-api-session"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"group.update.personal"})
-p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"group.update.sme"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"registration.email.enabled"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"service.errorBillingService"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-api-session","targetId":"user.create"})

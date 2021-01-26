@@ -62,7 +62,6 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'INVALID_NATIONALITY', message: 'Nationality required' },
     { name: 'INVALID_FIRST_NAME', message: 'First name required' },
     { name: 'INVALID_LAST_NAME', message: 'Last name required' },
     { name: 'INVALID_JOB_TITLE', message: 'Job title required' },
@@ -73,9 +72,7 @@ foam.CLASS({
     { name: 'STREET_NUMBER_LABEL', message: 'Street number' },
     { name: 'STREET_NAME_LABEL', message: 'Street name' },
     { name: 'PLACEHOLDER', message: 'Select a country' },
-    { name: 'COMPLIANCE_HISTORY_MSG', message: 'Compliance History for' },
-    { name: 'PROOF_OF_ADDRESS', message: 'Proof of address documents required' },
-    { name: 'PROOF_OF_IDENTIFICATION', message: 'Proof of identication documents required' }
+    { name: 'COMPLIANCE_HISTORY_MSG', message: 'Compliance History for' }
   ],
 
   properties: [
@@ -269,7 +266,7 @@ foam.CLASS({
         let address = this.Address.create();
         address.streetName$.prop.label = this.STREET_NAME_LABEL;
         address.streetNumber$.prop.label = this.STREET_NUMBER_LABEL;
-        return address
+        return address;
       },
       view: function(_, X) {
         return {
@@ -279,94 +276,6 @@ foam.CLASS({
         };
       },
       autoValidate: true
-    },
-    {
-      class: 'Reference',
-      targetDAOKey: 'countryDAO',
-      name: 'nationality',
-      of: 'foam.nanos.auth.Country',
-      section: 'requiredSection',
-      documentation: `Defined nationality of beneficial owner.`,
-      view: function(_, X) {
-        return {
-          class: 'foam.u2.view.RichChoiceView',
-          search: true,
-          placeholder: X.data.PLACEHOLDER,
-          sections: [
-            {
-              heading: 'Countries',
-              dao: X.countryDAO
-            }
-          ]
-        };
-      },
-      validationPredicates: [
-        {
-          args: ['nationality', 'showValidation'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.EQ(net.nanopay.model.BeneficialOwner.SHOW_VALIDATION, false),
-              e.GT(
-                foam.mlang.StringLength.create({
-                  arg1: net.nanopay.model.BeneficialOwner.NATIONALITY
-                }), 0)
-            );
-          },
-          errorMessage: 'INVALID_NATIONALITY'
-        }
-      ]
-    },
-    {
-      class: 'foam.nanos.fs.FileArray',
-      name: 'documentsOfAddress',
-      label: 'Please upload proof of address',
-      section: 'requiredSection',
-      view: function(_, X) {
-        let selectSlot = foam.core.SimpleSlot.create({value: 0});
-        return foam.u2.MultiView.create({
-        views: [
-          foam.nanos.fs.fileDropZone.FileDropZone.create({
-            files$: X.data.documentsOfAddress$,
-            selected$: selectSlot
-          }, X),
-          foam.nanos.fs.fileDropZone.FilePreview.create({
-            data$: X.data.documentsOfAddress$,
-            selected$: selectSlot
-          })
-        ]
-        });
-      },
-      validateObj: function(documentsOfAddress) {
-        if ( documentsOfAddress.length === 0 ) {
-          return this.PROOF_OF_ADDRESS;
-        }
-      }
-    },
-    {
-      class: 'foam.nanos.fs.FileArray',
-      name: 'documentsOfId',
-      label: 'Please upload proof of identification',
-      section: 'requiredSection',
-      view: function(_, X) {
-        let selectSlot = foam.core.SimpleSlot.create({value: 0});
-        return foam.u2.MultiView.create({
-        views: [
-          foam.nanos.fs.fileDropZone.FileDropZone.create({
-            files$: X.data.documentsOfId$,
-            selected$: selectSlot
-          }, X),
-          foam.nanos.fs.fileDropZone.FilePreview.create({
-            data$: X.data.documentsOfId$,
-            selected$: selectSlot
-          })
-        ]
-        });
-      },
-      validateObj: function(documentsOfId) {
-        if ( documentsOfId.length === 0 ) {
-          return this.PROOF_OF_IDENTIFICATION;
-        }
-      }
     }
   ],
 
@@ -480,7 +389,7 @@ foam.CLASS({
             dao: dao,
             createPredicate: foam.mlang.predicate.False,
             editPredicate: foam.mlang.predicate.True,
-            browseTitle:`${this.COMPLIANCE_HISTORY_MSG} ${this.legalName}`
+            browseTitle: `${this.COMPLIANCE_HISTORY_MSG} ${this.legalName}`
           }
         });
       }

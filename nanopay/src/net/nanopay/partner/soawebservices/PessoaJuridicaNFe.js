@@ -16,7 +16,7 @@
  */
 foam.CLASS({
   package: 'net.nanopay.partner.soawebservices',
-  name: 'PessoaJuridicaSimplificada',
+  name: 'PessoaJuridicaNFe',
 
   properties: [
     {
