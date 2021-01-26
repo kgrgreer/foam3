@@ -1029,7 +1029,7 @@ p({
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-131",
   "name": "helpsignup",
   "group": "sme",
-  "displayName": "{{personalSupportEmail}}",
+  "displayName": "{{appName}}",
   "subject": "Can we help with your {{appName}} sign up?",
   "body": "\n\n<include template = 'ablii-email-base_3'>\n<div style=\"font-size: 13px;\">\n<p style = \"margin: 0;\"> Hello {{name}},</p>\n<br>\n<p style = \"margin: 0;\"> Thank you for creating an {{appName}} account! I'm {{personalSupportFirstName}}, the onboarding specialist here at {{appName}}, and I'm here to help you complete your registration.</p>\n<br>\n<p style = \"margin: 0;\">Is now a good time to hop on a call?</p>\n<br>\n<p style = \"margin: 0;\">Our review team is standing by to get your profile approved, so your business can start sending payments as soon as possible.</p>\n<br>\n<p style =  \"margin: 0;\"> Chat soon,</p>\n<p style = \"margin: 4px 0 0;\"> {{personalSupportFirstName}}</p>\n<br>\n<p style = \"margin: 0 0 20px;\"> --</p>\n</div>\n\n</include>\n"
 })
@@ -1072,7 +1072,7 @@ p({
   "id": "4f45c745-1c93-4380-b275-2d2fea091d1f-136",
   "name": "onboarding-reminder",
   "group": "sme",
-  "displayName": "{{personalSupportEmail}}",
+  "displayName": "{{appName}}",
   "subject": "Do you need help completing {{business}}'s business profile on {{appName}}?",
   "body": "\n\n<include template = 'ablii-email-base_3'>\n<div style=\"font-size: 13px;\">\n<p style = \"margin: 0;\"> Hello {{name}},</p>\n<br>\n<p style = \"margin: 0;\"> I see that you are missing a few important steps to set up your {{appName}} account.</p>\n<br>\n<p style = \"margin: 0;\"> To start sending, you need to add your business information and bank account. I’m here to help walk you through the process. Is now a good time to hop on a call?</p>\n<br>\n<p style = \" margin: 0;\"> I have also included the the step-by-step guides below:</p>\n<br>\n<div>\n<a href=\"{{businessRegistrationLink}}\" style=\"color: #1155cc;\">How to register your business</a>\n</div>\n<br>\n<div>\n<a href=\"{{bankAccountSetupLink}}\" style=\"color: #1155cc;\">How to add your bank account</a>\n</div>\n<br>\n<p style =  \"margin: 0;\"> Chat soon,</p>\n<p style = \"margin: 4px 0 0;\"> {{personalSupportFirstName}}</p>\n<br>\n<p style = \"margin: 0 0 20px;\"> --</p>\n</div>\n</include>"
 })
