@@ -45,6 +45,11 @@ public class BillingService implements BillingServiceInterface {
     DAO errorCodeDAO = (DAO) x.get("errorCodeDAO");
     DAO errorFeeDAO = (DAO) x.get("localErrorFeeDAO");
 
+    List txnBills = getBills(x, transaction.getId());
+    if (txnBills.size() > 0) {
+      return;
+    }
+
     Long errorCode = transaction.calculateErrorCode();
     if ( errorCode == 0 ) {
       return;

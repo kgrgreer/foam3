@@ -66,19 +66,14 @@ public class BillingCron implements ContextAgent {
     }
 
     // for each userId in the billingMap generate a billing transaction
+    Account feeAccount = (Account) x.get("feeAccount");
     for ( Long userId : billingMap.keySet() ) {
       ArraySink userAccountSink = (ArraySink) ((DAO) x.get("localAccountDAO"))
         .where(EQ(Account.OWNER, userId))
         .orderBy(Account.CREATED)
         .limit(1)
         .select(new ArraySink());
-
-      ArraySink feeAccountSink = (ArraySink) ((DAO) x.get("localAccountDAO"))
-        .where(EQ(Account.NAME, "Nanopay Fee Receiving Account"))
-        .select(new ArraySink());
-      
       Account userAccount = (Account) userAccountSink.getArray().get(0);
-      Account feeAccount = (Account) feeAccountSink.getArray().get(0);
       
       long amount = 0;
       String currency = userAccount.getDenomination();

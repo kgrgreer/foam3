@@ -4,8 +4,11 @@ p({
   description:"Create Intuit Billing Transactions",
   enabled:true,
   code:"""
+    import foam.dao.ArraySink;
+    import foam.dao.DAO;
     import foam.nanos.auth.Subject;
     import foam.nanos.auth.User;
+    import net.nanopay.account.Account;
     import net.nanopay.tx.cron.BillingCron;
     import static foam.mlang.MLang.*;
 
@@ -19,13 +22,20 @@ p({
         .setLastName("Intuit")
         .setEmail(emailAddress)
         .setSpid("intuit")
-        .setGroup("admin")
+        .setGroup("intuit-admin")
         .build();
       user = localUserDAO.put(user);
     }
 
+    ArraySink feeAccountSink = (ArraySink) ((DAO) x.get("localAccountDAO"))
+        .where(EQ(Account.NAME, "Nanopay Fee Receiving Account"))
+        .select(new ArraySink());
+
+    Account feeAccount = (Account) feeAccountSink.getArray().get(0);
+
     // Update the subject in the context
     billingX = x.put("subject", new Subject.Builder(x).setUser(user).build());
+    billingX = billingX.put("feeAccount", feeAccount);
 
     // Execute billing
     new BillingCron().execute(billingX);
