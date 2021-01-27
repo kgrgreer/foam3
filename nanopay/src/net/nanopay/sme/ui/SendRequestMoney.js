@@ -433,7 +433,7 @@ foam.CLASS({
     async function getQuote() {
       this.invoice.quote = null;
       // TODO fix 
-      s.PaymentStatus.QUOTED;
+      this.invoice.paymentMethod = this.PaymentStatus.QUOTED;
 
       // to be able to adjust capable payloads that were previously saved
       if ( this.invoice.draft && this.invoice.capabilityIds.length > 0 && this.invoice.capablePayloads.length > 0 ){
