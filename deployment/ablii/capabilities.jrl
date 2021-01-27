@@ -103,6 +103,7 @@ p({
     "paymentprovidercorridor.source.read.bmo",
     "paymentprovidercorridor.target.read.bmo"
   ],
+  "grantMode": 1,
   "version":"0",
   "enabled":true
 })
@@ -117,6 +118,7 @@ p({
     "paymentprovidercorridor.source.read.rbc",
     "paymentprovidercorridor.target.read.rbc"
   ],
+  "grantMode": 1,
   "version":"0",
   "enabled":true
 })
