@@ -5,19 +5,10 @@ p({
   "lazy":false,
   "service": {
     "class": "foam.box.socket.SslContextFactory",
+    "enableSSL": true
     "keyStorePath": "nanopay.jks",
     "keyStorePass": "nanopay",
     "trustStorePath": "nanopay.jks",
     "trustStorePass": "nanopay"
-  }
-})
-
-p({
-  "class": "foam.nanos.boot.NSpec",
-  "name": "socketConnectionBoxManager",
-  "lazy": false,
-  "service": {
-    "class": "foam.box.socket.SocketConnectionBoxManager",
-    "enableSSL": true
   }
 })
