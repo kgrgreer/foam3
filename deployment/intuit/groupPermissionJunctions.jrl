@@ -46,7 +46,3 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-support"
 
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-fraud-ops","targetId":"menu.read.admin.data"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"intuit-payment-ops","targetId":"menu.read.admin.data"})
-
-
-// p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"counter.read.*"})
-// p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"payment-ops","targetId":"service.counterDAO"})
