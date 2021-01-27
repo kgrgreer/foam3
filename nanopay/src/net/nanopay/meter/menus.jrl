@@ -21,9 +21,14 @@ p({
         "status",
         "ownerType"
       ],
-      "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "editPredicate":{"class":"foam.mlang.predicate.False"},
-      "deletePredicate":{"class":"foam.mlang.predicate.False"}
+      "CRUDEnabledActionsAuth":{
+        "class":"foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled":true,
+        "enabledActionsAuth":{
+          "class":"foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName":"bankaccount"
+        }
+      }
     }
   }
 })
