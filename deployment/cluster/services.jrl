@@ -1,0 +1,23 @@
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "sslContextFactory",
+  "description": "ssl context factory for creating ssl socket",
+  "lazy":false,
+  "service": {
+    "class": "foam.box.socket.SslContextFactory",
+    "keyStorePath": "nanopay.jks",
+    "keyStorePass": "nanopay",
+    "trustStorePath": "nanopay.jks",
+    "trustStorePass": "nanopay"
+  }
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "socketConnectionBoxManager",
+  "lazy": false,
+  "service": {
+    "class": "foam.box.socket.SocketConnectionBoxManager",
+    "enableSSL": true
+  }
+})
