@@ -178,6 +178,10 @@ foam.CLASS({
       name: 'userFeedback',
       storageTransient: true,
       visibility: 'HIDDEN'
+    },
+    {
+      name: 'spid',
+      value: ''
     }
   ],
 
