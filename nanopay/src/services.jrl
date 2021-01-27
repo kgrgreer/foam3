@@ -2258,25 +2258,6 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "trevisoTransactionReportDAO",
-  "serve": true,
-  "serviceScript": """
-    ttrDAO =  new net.nanopay.partner.treviso.report.TrevisoTransactionReportDAO.Builder(x)
-      .build();
-    return new foam.dao.EasyDAO.Builder(x)
-      .setOf(net.nanopay.partner.treviso.report.TrevisoTransactionReport.getOwnClassInfo())
-      .setDecorator(ttrDAO)
-      .build();
-  """,
-  "client": """
-    {
-      "of": "net.nanopay.partner.treviso.report.TrevisoTransactionReport"
-    }
-  """
-})
-
-p({
-  "class": "foam.nanos.boot.NSpec",
   "name": "paymentReportDAO",
   "serve": true,
   "serviceScript": """
