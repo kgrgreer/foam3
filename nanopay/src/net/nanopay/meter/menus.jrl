@@ -105,6 +105,70 @@ p({
   },
   "parent":"operation"
 })
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "operation.txlimitrules",
+  "label": "Transaction Limits",
+  "handler": {
+    "class": "foam.nanos.menu.DAOMenu2",
+    "config": {
+      "class": "foam.comics.v2.DAOControllerConfig",
+      "daoKey": "ruleDAO",
+      "predicate": {
+        "class": "foam.mlang.predicate.IsInstanceOf",
+        "targetClass": "net.nanopay.liquidity.tx.TxLimitRule"
+      },
+      "defaultColumns": [
+        "id",
+        "name",
+        "enabled",
+        "applyLimitTo",
+        "send",
+        "limit",
+        "period"
+      ],
+      "of": "net.nanopay.liquidity.tx.TxLimitRule",
+      "browseTitle": "Transaction Limits",
+      "createTitle": "Create a New Transaction Limit",
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "rule"
+        }
+      }
+    }
+  },
+  "parent": "operation"
+})
+p({
+  "class": "foam.nanos.menu.Menu",
+  "id": "operation.clearingtimerules",
+  "label": "Clearing Times",
+  "handler": {
+    "class": "foam.nanos.menu.DAOMenu2",
+    "config": {
+      "class": "foam.comics.v2.DAOControllerConfig",
+      "daoKey": "ruleDAO",
+      "factory": "net.nanopay.meter.clearing.ruler.BusinessClearingTimeRule",
+      "predicate": {
+        "class": "foam.mlang.predicate.IsInstanceOf",
+        "targetClass": "net.nanopay.meter.clearing.ruler.ClearingTimeRule"
+      },
+      "of": "net.nanopay.meter.clearing.ruler.ClearingTimeRule",
+      "CRUDEnabledActionsAuth": {
+        "class": "foam.comics.v2.CRUDEnabledActionsAuth",
+        "isEnabled": true,
+        "enabledActionsAuth": {
+          "class": "foam.comics.v2.BasicEnabledActionsAuth",
+          "modelName": "clearingtimerule"
+        }
+      }
+    }
+  },
+  "parent": "operation"
+})
 
 // reports
 p({
