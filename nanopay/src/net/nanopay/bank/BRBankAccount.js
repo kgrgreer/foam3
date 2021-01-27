@@ -47,6 +47,13 @@ foam.CLASS({
     'foam.core.ValidationException'
   ],
 
+  sections: [
+    {
+      name: 'accountInformation',
+      title: ''
+    }
+  ],
+
   messages: [
     { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number must be 10 digits long' },
     { name: 'ACCOUNT_NUMBER_REQUIRED', message: 'Account number required' },
