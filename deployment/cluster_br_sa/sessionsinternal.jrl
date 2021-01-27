@@ -28,6 +28,13 @@ p({
 })
 p({
   "class":"foam.nanos.session.Session",
+  "id":"91170448-B78B-40E2-BE6E-0FF94C2DFBF8",
+  "userId":2,
+  "created":"2020-12-15T14:57:12.959Z",
+  "ttl":22118400000
+})
+p({
+  "class":"foam.nanos.session.Session",
   "id":"0E6B96D0-6110-4B37-AF98-1025A2D5DBEC",
   "userId":2,
   "created":"2020-12-15T14:57:12.959Z",
