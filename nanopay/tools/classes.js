@@ -1338,7 +1338,6 @@ var classes = [
   'net.nanopay.crunch.ruler.PermissionedUCJRule',
 
   // crunch onboarding
-  'net.nanopay.crunch.onboardingModels.CreateRegisterPaymentProviderUCJ',
   'net.nanopay.crunch.onboardingModels.InitialBusinessData',
   'net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData',
   'net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso',
