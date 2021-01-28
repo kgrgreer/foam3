@@ -117,10 +117,11 @@ p({
 p({
   "class": "net.nanopay.liquidity.crunch.LiquidCapability",
   "permissionsGranted":[
+    "menu.read.operation",
+    "menu.read.operation.txlimitrules",
     "menu.read.rules",
     "menu.read.rules.restrictaccountsrules",
     "menu.read.rules.txapprovalrules",
-    "menu.read.rules.txlimitrules",
     "roletemplate.rw.viewliquiditysettings"
   ],
   "id":"1b36b11a-93c6-b40c-d9c8-f8effefb31cc-4",

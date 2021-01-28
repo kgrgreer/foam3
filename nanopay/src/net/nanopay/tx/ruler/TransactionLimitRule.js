@@ -123,6 +123,10 @@ foam.CLASS({
     {
       name: 'predicate',
       transient: true
+    },
+    {
+      name: 'spid',
+      value: ''
     }
   ],
 
