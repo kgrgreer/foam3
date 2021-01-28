@@ -84,7 +84,8 @@ p({
       "class":"foam.comics.v2.DAOControllerConfig",
       "daoKey":"ipHistoryDAO",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "editPredicate":{"class":"foam.mlang.predicate.False"}
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
     }
   },
   "parent":"operation"
@@ -157,6 +158,7 @@ p({
         "targetClass": "net.nanopay.meter.clearing.ruler.ClearingTimeRule"
       },
       "of": "net.nanopay.meter.clearing.ruler.ClearingTimeRule",
+      "deletePredicate":{"class":"foam.mlang.predicate.False"},
       "CRUDEnabledActionsAuth": {
         "class": "foam.comics.v2.CRUDEnabledActionsAuth",
         "isEnabled": true,
@@ -211,7 +213,8 @@ p({
       "daoKey":        "abliiBusinessReportDAO",
       "browseTitle":   "Ablii Business Report",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "editPredicate":{"class":"foam.mlang.predicate.False"}
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
     }
   },
   "parent":"report"
@@ -238,7 +241,8 @@ p({
       "daoKey":        "paymentReportDAO",
       "browseTitle":   "Payment Report",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "editPredicate":{"class":"foam.mlang.predicate.False"}
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
     }
   },
   "parent":  "report"
@@ -255,7 +259,8 @@ p({
       "daoKey":        "businessSummaryReportDAO",
       "browseTitle":   "Business Summary Report",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "editPredicate":{"class":"foam.mlang.predicate.False"}
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
     }
   },
   "parent":  "report"
@@ -272,7 +277,8 @@ p({
       "daoKey":        "paymentSummaryReportDAO",
       "browseTitle":   "Payment Summary Report for Leadership",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "editPredicate":{"class":"foam.mlang.predicate.False"}
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
     }
   },
   "parent":  "report"
@@ -289,7 +295,8 @@ p({
       "daoKey":        "userComplianceSummaryReportDAO",
       "browseTitle":   "User Compliance Summary Report",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "editPredicate":{"class":"foam.mlang.predicate.False"}
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
     }
   },
   "parent":  "report"
@@ -306,7 +313,8 @@ p({
       "daoKey":        "rejectedTransactionReportDAO",
       "browseTitle":   "Rejected Transaction Report",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
-      "editPredicate":{"class":"foam.mlang.predicate.False"}
+      "editPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"}
     }
   },
   "parent":  "report"
@@ -330,6 +338,7 @@ p({
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
       "daoKey":"businessOnboardingDAO",
+      "deletePredicate":{"class":"foam.mlang.predicate.False"},
       "CRUDEnabledActionsAuth": {
         "class": "foam.comics.v2.CRUDEnabledActionsAuth",
         "isEnabled": true,
@@ -351,6 +360,7 @@ p({
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
       "daoKey":"canadaUsBusinessOnboardingDAO",
+      "deletePredicate":{"class":"foam.mlang.predicate.False"},
       "CRUDEnabledActionsAuth": {
         "class": "foam.comics.v2.CRUDEnabledActionsAuth",
         "isEnabled": true,
@@ -372,6 +382,7 @@ p({
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
       "daoKey":"uSBusinessOnboardingDAO",
+      "deletePredicate":{"class":"foam.mlang.predicate.False"},
       "CRUDEnabledActionsAuth": {
         "class": "foam.comics.v2.CRUDEnabledActionsAuth",
         "isEnabled": true,
@@ -413,6 +424,7 @@ p({
       "class": "foam.comics.v2.DAOControllerConfig",
       "daoKey":"tableViewTransactionDAO",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
+      "deletePredicate":{"class":"foam.mlang.predicate.False"},
       "defaultColumns":[
         "type",
         "status",
