@@ -452,6 +452,7 @@ p({
   "id":"bf6a49d5-4027-4dac-a269-4d3ed070609e-4",
   "name":"International payments",
   "description":"International payments from Brazil",
+  "acting-user":2,
   "icon":"/images/capabilityIcons/BrazilCap.svg",
   "version":"0",
   "visibilityPredicate":  { class: "foam.mlang.predicate.True" },
