@@ -192,6 +192,7 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
     address.setAddrNr(user.getAddress().getStreetNumber());
     address.setZip(user.getAddress().getPostalCode());
     address.setBusPhoneNr(user.getPhoneNumber());
+    address.setStAbbrvtn(region.getName());
     net.nanopay.partner.treviso.api.Address[] adresses = new net.nanopay.partner.treviso.api.Address[1];
     adresses[0] = address;
     request.setAddresses(adresses);

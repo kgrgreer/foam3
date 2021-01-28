@@ -18,10 +18,13 @@ package net.nanopay.country.br.exchange;
 
 import org.apache.commons.lang3.StringUtils;
 import foam.core.X;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.auth.Address;
 import foam.nanos.auth.Country;
 import foam.nanos.auth.User;
+import foam.nanos.crunch.CapabilityJunctionPayload;
+import foam.nanos.crunch.Capability;
 import foam.nanos.crunch.UserCapabilityJunction;
 import foam.nanos.logger.Logger;
 import foam.util.SafetyUtil;
@@ -35,7 +38,9 @@ import net.nanopay.contacts.Contact;
 import net.nanopay.country.br.BrazilBusinessInfoData;
 import net.nanopay.country.br.CPF;
 import net.nanopay.country.br.exchange.Pais;
+import net.nanopay.country.br.NatureCode;
 import net.nanopay.country.br.tx.NatureCodeLineItem;
+import net.nanopay.invoice.model.Invoice;
 import net.nanopay.meter.clearing.ClearingTimeService;
 import net.nanopay.model.Business;
 import net.nanopay.payment.Institution;
@@ -410,12 +415,13 @@ public class ExchangeServiceProvider implements ExchangeService {
   }
 
   protected String extractNatureCode(Transaction txn) {
-    if ( txn == null ) return "";
-    for (TransactionLineItem lineItem : txn.getLineItems() ) {
-      if ( lineItem instanceof NatureCodeLineItem )
-        return ((NatureCodeLineItem)lineItem).getCode();
-    }
-    return "";
+    return getNatureCodeFromInvoice(txn);
+//    if ( txn == null ) return "";
+//    for (TransactionLineItem lineItem : txn.getLineItems() ) {
+//      if ( lineItem instanceof NatureCodeLineItem )
+//        return ((NatureCodeLineItem)lineItem).getCode();
+//    }
+//    return "";
   }
 
   protected int getContactRelationship(User payer, User payee) {
@@ -431,6 +437,27 @@ public class ExchangeServiceProvider implements ExchangeService {
     if ( payee instanceof Contact ) return (Contact) payee;
 
     return (Contact) payer.getContacts(this.x).find(EQ(Contact.BUSINESS_ID, payee.getId()));
+  }
+
+  protected String getNatureCodeFromInvoice(Transaction txn) {
+    StringBuilder str =  new StringBuilder();
+    Invoice invoice = txn.findInvoiceId(x);
+    if ( invoice == null ) return str.toString();
+
+    DAO capablePayloadDAO = (DAO) invoice.getCapablePayloadDAO(x);
+    List<CapabilityJunctionPayload> capablePayloadLst = (List<CapabilityJunctionPayload>) ((ArraySink) capablePayloadDAO.select(new ArraySink())).getArray();
+
+    for ( CapabilityJunctionPayload capablePayload : capablePayloadLst ) {
+      DAO capabilityDAO = (DAO) x.get("capabilityDAO");
+      Capability cap = (Capability) capabilityDAO.find(capablePayload.getCapability());
+      if ( cap instanceof NatureCode ) {
+        NatureCode natureCode = (NatureCode) cap;
+        str.append(natureCode.getOperationType());
+        str.append(capablePayload.getData().toString());
+        break;
+      }
+    }
+    return str.toString();
   }
 
   public Transaction updateTransactionStatus(Transaction transaction) throws RuntimeException {
