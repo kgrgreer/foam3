@@ -27,6 +27,7 @@ import foam.nanos.test.Test;
 import java.util.Date;
 import net.nanopay.account.DigitalAccount;
 import net.nanopay.tx.ChargedTo;
+import net.nanopay.tx.SummaryTransaction;
 import net.nanopay.tx.bmo.cico.BmoCITransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
@@ -80,15 +81,28 @@ public class BillingServiceTest extends Test {
     MDAO transactionMDAO = new MDAO(Transaction.getOwnClassInfo());
     x_ = x_.put("localTransactionDAO", transactionMDAO);
 
-    BmoCITransaction txn = new BmoCITransaction();
-    txn.setId("12345");
-    txn.setAmount(10000);
-    txn.setSourceAccount(senderAcc.getId());
-    txn.setDestinationAccount(receiverAcc.getId());
-    txn.setStatus(TransactionStatus.FAILED);
-    txn.setLastStatusChange(new Date());
-    txn.setRejectReason("INST. ID INVALID");
-    txn = (BmoCITransaction) (((DAO) x_.get("localTransactionDAO")).put(txn)).fclone();
+    BmoCITransaction bmoTxn = new BmoCITransaction();
+    bmoTxn.setId("12345");
+    bmoTxn.setAmount(10000);
+    bmoTxn.setSourceAccount(senderAcc.getId());
+    bmoTxn.setDestinationAccount(receiverAcc.getId());
+    bmoTxn.setSourceCurrency(senderAcc.getDenomination());
+    bmoTxn.setDestinationCurrency(receiverAcc.getDenomination());
+    bmoTxn.setLastStatusChange(new Date());
+    bmoTxn.setStatus(TransactionStatus.FAILED);
+    bmoTxn.setRejectReason("INST. ID INVALID");
+
+    SummaryTransaction summaryTxn = new SummaryTransaction();
+    summaryTxn.setId("12345");
+    summaryTxn.setAmount(10000);
+    summaryTxn.setSourceAccount(senderAcc.getId());
+    summaryTxn.setDestinationAccount(receiverAcc.getId());
+    summaryTxn.setSourceCurrency(senderAcc.getDenomination());
+    summaryTxn.setDestinationCurrency(receiverAcc.getDenomination());
+    summaryTxn.setLastStatusChange(new Date());
+    summaryTxn.setStatus(TransactionStatus.FAILED);
+    summaryTxn.addNext(bmoTxn);
+    ((DAO) x_.get("localTransactionDAO")).put(summaryTxn);
 
     MDAO errorFeeMDAO = new MDAO(ErrorFee.getOwnClassInfo());
     x_ = x_.put("localErrorFeeDAO", errorFeeMDAO);
@@ -104,9 +118,9 @@ public class BillingServiceTest extends Test {
     billingService = (BillingServiceInterface) x_.get("billingService");
     MDAO billMDAO = new MDAO(Bill.getOwnClassInfo());
     x_ = x_.put("billDAO", billMDAO);
-    billingService.createBills(x_, txn);
+    billingService.createBills(x_, bmoTxn);
 
-    ArraySink sink = (ArraySink) ((DAO) x_.get("billDAO")).where(EQ(Bill.ORIGINATING_TRANSACTION, txn.getId())).select(new ArraySink());
+    ArraySink sink = (ArraySink) ((DAO) x_.get("billDAO")).where(EQ(Bill.ORIGINATING_TRANSACTION, bmoTxn.getId())).select(new ArraySink());
     Bill bill = (Bill) sink.getArray().get(0);
     test(bill != null, "Bill successfully created from failed transaction");
     test(bill.getErrorCode() == errorFee.getErrorCode(), "bill has correct error code");
