@@ -32,7 +32,7 @@ foam.INTERFACE({
         },
         {
           name: 'id',
-          type: 'Long'
+          type: 'String'
         }
       ]
     }
