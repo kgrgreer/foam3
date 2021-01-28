@@ -1050,7 +1050,7 @@ p({"class": "net.nanopay.model.BusinessSector", "id": 93133, "name":  "Sewage Re
 p({"class": "net.nanopay.model.BusinessSector", "id": 93134, "name":  "Collection Of Non-Hazardous Waste", "code":  "3811438", "countryId":  "BR", "parent": 14})
 p({"class": "net.nanopay.model.BusinessSector", "id": 93135, "name":  "Hazardous Waste Collection", "code":  "3812238", "countryId":  "BR", "parent": 14})
 p({"class": "net.nanopay.model.BusinessSector", "id": 93136, "name":  "Integrated Edition To Book Printing", "code":  "5821258", "countryId":  "BR", "parent": 5})
-p({"class": "net.nanopay.model.BusinessSector", "id": 93137, "name":  "Hazardous Waste Treatment And Disposal", "code":  "3822038", "countryId":  "BR", "parent": 14})
+p({"class": "net.nanopay.model.BusinessSector", "id": 93137, "name":  "Waste Treatment and Disposal", "code":  "3822038", "countryId":  "BR", "parent": 14})
 p({"class": "net.nanopay.model.BusinessSector", "id": 93138, "name":  "Metal Material Recovery", "code":  "3831938", "countryId":  "BR", "parent": 14})
 p({"class": "net.nanopay.model.BusinessSector", "id": 93139, "name":  "Recovery Of Plastic Materials", "code":  "3832738", "countryId":  "BR", "parent": 14})
 p({"class": "net.nanopay.model.BusinessSector", "id": 93140, "name":  "Recovery Of Materials Not Specified Previously", "code":  "3839438", "countryId":  "BR", "parent": 14})
