@@ -58,9 +58,9 @@ foam.CLASS({
           }
 
           if ( request.getRefundTransaction() ) {
-            newTxn.setSourceAccount(problemTxn.getDestinationAccount());
+            newTxn.setSourceAccount(problemTxn.getSourceAccount());
             newTxn.setDestinationAccount(txn.getSourceAccount());
-            newTxn.setAmount(-problemTxn.getTotal(x, problemTxn.getSourceAccount()));
+            newTxn.setAmount(txn.getAmount());
           } else {
             newTxn.setSourceAccount(problemTxn.getSourceAccount());
             newTxn.setDestinationAccount(txn.getDestinationAccount());
