@@ -44,7 +44,7 @@ public class BillingService implements BillingServiceInterface {
     DAO billDAO = (DAO) x.get("billDAO");
     DAO errorCodeDAO = (DAO) x.get("errorCodeDAO");
     DAO errorFeeDAO = (DAO) x.get("localErrorFeeDAO");
-    
+
     Long errorCode = transaction.calculateErrorCode();
     if ( errorCode == 0 ) {
       return;
@@ -61,6 +61,9 @@ public class BillingService implements BillingServiceInterface {
     Date chargeDate = chargeDateService.findChargeDate(transaction.getLastStatusChange());
     Map<ChargedTo, List<BillingFee>> billingMap = new HashMap<>();
     Transaction originatingSummaryTxn = transaction.findRoot(x);
+
+    List txnBills = getBills(x, originatingSummaryTxn.getId());
+    if ( txnBills.size() > 0 ) { return; }
 
     for ( int i = 0; i < sink.getArray().size(); i++ ) {
       BillingFee billingFee = new BillingFee();
