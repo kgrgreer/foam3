@@ -2438,21 +2438,18 @@ p({
   "class":"foam.nanos.boot.NSpec",
   "name":"bareUserCapabilityJunctionDAO",
   "serviceScript":"""
-    inner = new foam.dao.MDAO(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo());
-    inner.addIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.SOURCE_ID, foam.nanos.crunch.UserCapabilityJunction.TARGET_ID });
-    inner.addIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.SOURCE_ID });
-    hashingjdao = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, inner, "userCapabilityJunctions");
-    // disable ucj history for now
-    // decorator = new foam.dao.history.HistoryDAO(x, "userCapabilityJunctionHistoryDAO", new foam.dao.NullDAO.Builder(x).setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo()).build());
+    mdao = new foam.dao.MDAO(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo());
+    mdao.addIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.SOURCE_ID, foam.nanos.crunch.UserCapabilityJunction.TARGET_ID });
+    mdao.addIndex(new foam.core.PropertyInfo[] { foam.nanos.crunch.UserCapabilityJunction.SOURCE_ID });
+    inner = new net.nanopay.security.HashingJDAO(x, "SHA-256", false, true, mdao, "userCapabilityJunctions", "true".equals(System.getProperty("CLUSTER")));
     dao = new foam.dao.EasyDAO.Builder(x)
-      .setMdao(inner)
+      .setMdao(mdao)
       .setAuthorize(false)
       .setGuid(true)
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("userCapabilityJunctions")
-      .setInnerDAO(hashingjdao)
+      .setInnerDAO(inner)
       .setOf(foam.nanos.crunch.UserCapabilityJunction.getOwnClassInfo())
-      // .setDecorator(decorator)
       .build();
     return dao;
   """,

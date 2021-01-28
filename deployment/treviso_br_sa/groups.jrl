@@ -1,5 +1,10 @@
 p({
   class:"foam.nanos.auth.Group",
+  id:"treviso-sme",
+  url:"https://treviso.nanopay.net"
+})
+p({
+  class:"foam.nanos.auth.Group",
   id:"treviso-admin",
   url:"https://treviso.backoffice.nanopay.net"
 })

@@ -564,7 +564,7 @@ p({
   "name":"User Invoice Capability",
   "icon":"/images/capabilityIcons/BrazilCap.svg",
   "enabled":true,
-  "associatedEntity": 2
+  "associatedEntity":2
 })
 
 p({
