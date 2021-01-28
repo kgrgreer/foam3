@@ -67,27 +67,27 @@ foam.CLASS({
     {
       class: 'String',
       name: "contactAddress1"
-    },  
+    },
     {
       class: 'String',
       name: "contactCity"
-    }, 
+    },
     {
       class: 'String',
       name: "contactCountryCode"
-    }, 
+    },
     {
       class: 'String',
       name: "contactStateRegion"
-    }, 
+    },
     {
       class: 'String',
       name: "contactZip"
-    },   
+    },
     {
       class: 'String',
       name: "dateOfBirth"
-    }, 
+    },
     {
       class: 'String',
       name: "companyType"
@@ -147,6 +147,14 @@ foam.CLASS({
     {
       class: 'String',
       name: "taxIdentificationNumber"
+    },
+    {
+      class: 'String',
+      name: "Citizenship"
+    },
+    {
+      class: 'String',
+      name: "Website"
     }
   ]
 });
