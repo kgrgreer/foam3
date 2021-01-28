@@ -15,9 +15,10 @@
  * from nanopay Corporation.
  */
 
-package net.nanopay.tx.errorfee;
+package net.nanopay.tx.billing;
 
 import foam.core.X;
+import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.dao.MDAO;
 import foam.nanos.auth.Address;
@@ -25,17 +26,17 @@ import foam.nanos.auth.User;
 import foam.nanos.test.Test;
 import java.util.Date;
 import net.nanopay.account.DigitalAccount;
-import net.nanopay.tx.ChainSummary;
 import net.nanopay.tx.ChargedTo;
 import net.nanopay.tx.SummaryTransaction;
+import net.nanopay.tx.bmo.cico.BmoCITransaction;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
 import static foam.mlang.MLang.EQ;
 
-public class ErrorBillingServiceTest extends Test {
+public class BillingServiceTest extends Test {
   
-  protected ErrorBilling errorBillingService;
+  protected BillingServiceInterface billingService;
   protected X x_;
   DigitalAccount senderAcc, receiverAcc;
   User sender, receiver;
@@ -44,15 +45,15 @@ public class ErrorBillingServiceTest extends Test {
   public void runTest(X x) {
     x_ = x;
     createAccounts();
-    testErrorBilling();
+    testBilling();
   }
 
   public void createAccounts() {
     sender = new User();
-    sender.setEmail("errorbillingsender@nanopay.net");
+    sender.setEmail("billingsender@nanopay.net");
     sender = (User) sender.fclone();
     sender.setEmailVerified(true);
-    sender.setFirstName("ErrorBilling");
+    sender.setFirstName("Billing");
     sender.setLastName("Sender");
     sender.setSpid("nanopay");
     sender = (User) (((DAO) x_.get("localUserDAO")).put_(x_, sender)).fclone();
@@ -63,9 +64,9 @@ public class ErrorBillingServiceTest extends Test {
     ((DAO) x_.get("localAccountDAO")).put(senderAcc);
 
     receiver = new User();
-    receiver.setFirstName("ErrorBilling");
+    receiver.setFirstName("Billing");
     receiver.setLastName("Receiver");
-    receiver.setEmail("errorbillingreceiver@nanopay.net");
+    receiver.setEmail("billingreceiver@nanopay.net");
     receiver.setEmailVerified(true);
     receiver.setSpid("nanopay");
     receiver = (User) (((DAO) x_.get("localUserDAO")).put_(x_, receiver)).fclone();
@@ -76,47 +77,58 @@ public class ErrorBillingServiceTest extends Test {
     ((DAO) x_.get("localAccountDAO")).put(receiverAcc);
   }
 
-  public void testErrorBilling() {
+  public void testBilling() {
     MDAO transactionMDAO = new MDAO(Transaction.getOwnClassInfo());
     x_ = x_.put("localTransactionDAO", transactionMDAO);
 
-    ChainSummary chainSummary = new ChainSummary();
-    chainSummary.setSummary("Test Failed Summary Transaction");
-    chainSummary.setStatus(TransactionStatus.FAILED);
-    chainSummary.setCategory("Error Billing Test");
-    chainSummary.setErrorCode(901);
-    chainSummary.setErrorInfo("Error Billing Test");
+    BmoCITransaction bmoTxn = new BmoCITransaction();
+    bmoTxn.setId("12345");
+    bmoTxn.setAmount(10000);
+    bmoTxn.setSourceAccount(senderAcc.getId());
+    bmoTxn.setDestinationAccount(receiverAcc.getId());
+    bmoTxn.setSourceCurrency(senderAcc.getDenomination());
+    bmoTxn.setDestinationCurrency(receiverAcc.getDenomination());
+    bmoTxn.setLastStatusChange(new Date());
+    bmoTxn.setStatus(TransactionStatus.FAILED);
+    bmoTxn.setRejectReason("INST. ID INVALID");
 
-    SummaryTransaction txn = new SummaryTransaction();
-    txn.setId("12345");
-    txn.setAmount(10000);
-    txn.setSourceAccount(senderAcc.getId());
-    txn.setDestinationAccount(receiverAcc.getId());
-    txn.setStatus(TransactionStatus.FAILED);
-    txn.setChainSummary(chainSummary);
-    txn.setLastStatusChange(new Date());
-    txn = (SummaryTransaction) (((DAO) x_.get("localTransactionDAO")).put(txn)).fclone();
+    SummaryTransaction summaryTxn = new SummaryTransaction();
+    summaryTxn.setId("12345");
+    summaryTxn.setAmount(10000);
+    summaryTxn.setSourceAccount(senderAcc.getId());
+    summaryTxn.setDestinationAccount(receiverAcc.getId());
+    summaryTxn.setSourceCurrency(senderAcc.getDenomination());
+    summaryTxn.setDestinationCurrency(receiverAcc.getDenomination());
+    summaryTxn.setLastStatusChange(new Date());
+    summaryTxn.setStatus(TransactionStatus.FAILED);
+    summaryTxn.addNext(bmoTxn);
+    ((DAO) x_.get("localTransactionDAO")).put(summaryTxn);
 
     MDAO errorFeeMDAO = new MDAO(ErrorFee.getOwnClassInfo());
     x_ = x_.put("localErrorFeeDAO", errorFeeMDAO);
 
     ErrorFee errorFee = new ErrorFee();
     errorFee.setId("12345");
-    errorFee.setErrorCode(901);
-    errorFee.setAmount(3000);
+    errorFee.setErrorCode(923);
+    errorFee.setAmount(500);
     errorFee.setCurrency("CAD");
     errorFee.setChargedTo(ChargedTo.PAYEE);
     errorFee = (ErrorFee) ((DAO) x_.get("localErrorFeeDAO")).put(errorFee).fclone();
 
-    errorBillingService = (ErrorBilling) x_.get("errorBillingService");
-    ErrorCharge errorCharge = errorBillingService.getErrorCharge(x_, txn.getId());
-    test(errorCharge != null, "Error charge successfully created from failed transaction");
-    test(errorCharge.getErrorCode() == errorFee.getErrorCode(), "Error charge has correct error code");
+    billingService = (BillingServiceInterface) x_.get("billingService");
+    MDAO billMDAO = new MDAO(Bill.getOwnClassInfo());
+    x_ = x_.put("billDAO", billMDAO);
+    billingService.createBills(x_, bmoTxn);
 
-    ErrorChargeFee[] fees = errorCharge.getFees();
+    ArraySink sink = (ArraySink) ((DAO) x_.get("billDAO")).where(EQ(Bill.ORIGINATING_TRANSACTION, bmoTxn.getId())).select(new ArraySink());
+    Bill bill = (Bill) sink.getArray().get(0);
+    test(bill != null, "Bill successfully created from failed transaction");
+    test(bill.getErrorCode() == errorFee.getErrorCode(), "bill has correct error code");
+
+    BillingFee[] fees = bill.getFees();
     for ( int i = 0; i < fees.length; i++ ) {
-      ErrorChargeFee chargeFee = fees[i];
-      test( chargeFee.getAmount() == errorFee.getAmount(), "Error charge fee has correct amount");
+      BillingFee billingFee = fees[i];
+      test( billingFee.getAmount() == errorFee.getAmount(), "Billing fee has correct amount");
     }
   }
 }
