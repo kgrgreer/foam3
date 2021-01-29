@@ -527,7 +527,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.InvoiceDetail
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.InvoiceDetails.NOTE_LABEL",target:"Notas"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.InvoiceDetails.PAYEE_LABEL",target:"Pagamento para"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.InvoiceDetails.PAYER_LABEL",target:"Pagamento de"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.InvoiceDetails.PO_NO_LABEL",target:"P.O. No.  pt"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.InvoiceDetails.PO_NO_LABEL",target:"P.O. No."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.InvoiceDetails.CYCLE_LABEL",target:"Ciclo de faturamento: "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.InvoiceDetails.SAVE_AS_PDF_FAIL",target:"Ocorreu um erro inesperado ao criar o PDF. Entre em contato com o suporte."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.InvoiceDetails.SHOW_ACTIONS.label",target:"showActions pt"})
