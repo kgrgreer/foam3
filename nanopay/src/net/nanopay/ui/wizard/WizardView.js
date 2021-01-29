@@ -388,7 +388,6 @@ foam.CLASS({
     },
     {
       name: 'goNext',
-      label: 'tttt',
       isAvailable: function(position, errors, hasNextOption) {
         if ( errors ) return false; // Error present
         return hasNextOption;
