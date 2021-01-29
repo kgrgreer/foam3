@@ -127,7 +127,9 @@ foam.CLASS({
       documentation: `if we are finishing a partial transaction, it is stored here`,
       name: 'partialTransaction',
       class: 'FObjectProperty',
-      of: 'net.nanopay.tx.model.Transaction'
+      of: 'net.nanopay.tx.model.Transaction',
+      javaFactory: 'return null;',
+      networkTransient: true,
     },
   ],
 

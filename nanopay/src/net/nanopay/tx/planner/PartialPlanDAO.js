@@ -56,33 +56,74 @@ foam.CLASS({
       javaCode: `
         // -- Skip for non partial plan --
         if ( ((TransactionQuote) obj).getPartialTransaction() == null )
-          getDelegate().put_(x, obj);
-
+          return getDelegate().put_(x, obj);
+        // -- set up --
         TransactionQuote tq = (TransactionQuote) obj;
-        Transaction leg2 = tq.getPlan();
-        Transaction partial = tq.getPartialTransaction();
-        String estimation = partial.getDestinationAccount();
+        Transaction[] newPlans = tq.getPlans();
 
-        // -- set summary and compliance destinations to new destination --
-        partial.setDestinationAccount(leg2.getDestinationAccount()); // summary
-        Transaction t = partial.getNext()[0];
-        t.setDestinationAccount(leg2.getDestinationAccount()); // compliance
-
-        while ( t.getNext() != null ) { // conserve first leg
-          if ( SafetyUtil.equals(t.getNext()[0].getDestinationAccount(), estimation) ) {
-            t.setNext(null); // cut off the last leg.
+        Transaction oldPartialPlan = tq.getPartialTransaction();
+        Transaction headOldPartialPlan = oldPartialPlan;
+        String estimation = oldPartialPlan.getDestinationAccount();
+        String intermediary = "";
+        Transaction cutOffEnd = null;
+        // -- walk to get intermediary, and cut leg2 off --
+        while ( oldPartialPlan.getNext() != null ) { // conserve summaries and first leg
+          if ( SafetyUtil.equals(oldPartialPlan.getNext()[0].getDestinationAccount(), estimation) ) {
+            intermediary = oldPartialPlan.getNext()[0].getSourceAccount(); // save the intermediary.
+            cutOffEnd = oldPartialPlan.getNext()[0];
+            oldPartialPlan.setNext(null); // cut off the last leg.
             break;
           }
-          t = t.getNext()[0];
+          oldPartialPlan = oldPartialPlan.getNext()[0]; // this is now the last txn in old partial.
         }
 
-        // -- Assemble new plan --
-        leg2 = removeSummaryTransaction(leg2);
-        partial.addNext(leg2);
-        partial.setId(UUID.randomUUID().toString());
-        tq.setPlan(partial);
-        Transaction[] ts = new Transaction [1];
-        ts[0] = partial;
+        // -- walk the newplans to find the correct new plan --
+        ArrayList<Transaction> eligibleNewPlans = new ArrayList<Transaction>();
+
+        for ( Transaction txn : newPlans ) {
+          Boolean eligible = false;
+          Transaction summary = txn;
+          while ( txn.getNext() != null ) {
+            if (SafetyUtil.equals(txn.getNext()[0].getSourceAccount(), intermediary) ) {
+              summary = txn.getNext()[0];
+              eligible = true;
+              break;
+            }
+            txn = txn.getNext()[0];
+          }
+          if ( eligible )
+            eligibleNewPlans.add(summary);
+        }
+
+        // -- set ids of old leg2 to the new leg2 candidates --
+        for ( Transaction head : eligibleNewPlans ) {
+          Transaction oldHead = cutOffEnd;
+          while( head.getNext()[0] != null ) {
+            head.setId(oldHead.getId());
+            head = head.getNext()[0];
+            oldHead = oldHead.getNext()[0];
+          }
+        }
+
+        // -- set summary and compliance destinations to new destination --
+        headOldPartialPlan.setDestinationAccount(tq.getDestinationAccount().getId()); // summary
+        headOldPartialPlan.getNext()[0].setDestinationAccount(tq.getDestinationAccount().getId()); // compliance
+
+        // -- glue front and back parts together --
+        ArrayList<Transaction> finalNewPlans = new ArrayList<Transaction>();
+        for ( Transaction newTail : eligibleNewPlans ) {
+          Transaction[] leg2 = new Transaction[1];
+          leg2[0] = newTail;
+          oldPartialPlan.setNext(leg2);
+          Transaction newTxn = (Transaction) headOldPartialPlan.fclone();
+          newTxn.setId(UUID.randomUUID().toString());
+          finalNewPlans.add(newTxn);
+        }
+
+        // -- FillQuote --
+
+        tq.setPlan(null);
+        Transaction[] ts = (Transaction[]) finalNewPlans.toArray();
         tq.setPlans(ts);
         return getDelegate().put_(x, tq);
       `

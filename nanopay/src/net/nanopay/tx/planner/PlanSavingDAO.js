@@ -42,7 +42,7 @@ foam.CLASS({
         }
         else {
           for ( Transaction t : ((TransactionQuote) obj).getPlans() )
-            getDelegate().put_(x, new TransactionPlan(t));
+            getDelegate().put_(x, new TransactionPlan(t, true));
         }
         return obj;
       `
