@@ -921,6 +921,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-11.name",target:"Desbloquear pagamentos domésticos e faturamento"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-11.description",target:"Desbloquear pagamentos e faturamento para o Canadá (CAD para CAD)"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-12.name",target:"Desbloquear pagamentos internacionais"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"bf6a49d5-4027-4dac-a269-4d3ed070609e-4.name",target:"Pagamentos internacionais onboarding"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-12.description",target:"Desbloquear pagamentos internacionais"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-13.name",target:"Desbloquear pagamentos e faturas nacionais e internacionais"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-13.description",target:"Desbloquear pagamentos"})
@@ -3299,3 +3301,5 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.invo
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.invoice.TrevisoNotification.NOTIFICATION_BODY_2",target:") para : Treviso Corretora de Câmbio S.A CNPJ: 02.992.317/0001-87 Banco SC Treviso (143) Agencia: 0001 Conta: 1-1 O não envio dos fundos causará o cancelamento automático desta transação."})
 
 p({class:"foam.i18n.Locale",locale:"pt","source":"554af38a-8225-87c8-dfdf-eeb15f71215f-6-5.name","target":"Dados de diretores de negócios"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-6.name",target:"detalhes da transação"})
