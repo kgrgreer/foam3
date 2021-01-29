@@ -177,7 +177,8 @@ foam.CLASS({
       order: 9
     }),
     net.nanopay.tx.model.Transaction.CREATED_BY.clone().copyFrom({
-      gridColumns:4,
+      targetDAOKey: 'supportUserDAO',
+      gridColumns: 4,
       section: 'transactionInformation',
       order: 10
     }),
