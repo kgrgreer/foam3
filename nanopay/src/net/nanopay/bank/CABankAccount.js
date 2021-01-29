@@ -229,7 +229,7 @@ foam.CLASS({
         views of BankAccounts.
       `,
       tableCellFormatter: function(_, obj) {
-        this.start().style({'display': 'flex', 'overflow': 'scroll'})
+        this.start().style({'display': 'flex'})
           .add(obj.slot((accountNumber) => {
               if ( accountNumber ) {
                 return this.E()
