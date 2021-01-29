@@ -102,7 +102,21 @@ foam.CLASS({
       help: 'Amount sent by payer in the payer currency.',
       validationPredicates: [],
       section: 'transactionInformation',
-      order: 3
+      order: 3,
+      view: function(_, X) {
+        if ( X.data.amount > 0 || ( X.data.amount == 0 && X.data.destinationAmount == 0 ) ) {
+          return {
+            class: 'net.nanopay.tx.ui.UnitFormatDisplayView',
+            linkCurrency$: X.data.destinationCurrency$,
+            currency$: X.data.sourceCurrency$,
+            linkAmount$: X.data.destinationAmount$
+          }
+        }
+        return {
+          class: 'foam.u2.view.LiteralValueView',
+          value: '--'
+        }
+      }
     }),
     net.nanopay.tx.model.Transaction.SOURCE_CURRENCY.clone().copyFrom({
       label: 'Payer Currency',
@@ -127,7 +141,21 @@ foam.CLASS({
       help: 'Amount requested by payee in the payee currency.',
       validationPredicates: [],
       section: 'transactionInformation',
-      order: 6
+      order: 6,
+      view: function(_, X) {
+        if ( X.data.amount > 0 ) {
+          return {
+            class: 'foam.u2.view.LiteralValueView',
+            value: '--'
+          }
+        }
+        return {
+          class: 'net.nanopay.tx.ui.UnitFormatDisplayView',
+          linkCurrency$: X.data.destinationCurrency$,
+          currency$: X.data.sourceCurrency$,
+          linkAmount$: X.data.destinationAmount$
+        }
+      }
     }),
     net.nanopay.tx.model.Transaction.DESTINATION_CURRENCY.clone().copyFrom({
       label: 'Payee Currency',
