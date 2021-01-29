@@ -3305,3 +3305,5 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.invo
 p({class:"foam.i18n.Locale",locale:"pt","source":"554af38a-8225-87c8-dfdf-eeb15f71215f-6-5.name","target":"Dados de diretores de negócios"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-6.name",target:"detalhes da transação"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.ui.wizard.WizardView.NEXT_LABEL.value",target:"próximo"})
