@@ -172,6 +172,8 @@ foam.CLASS({
       name: 'accountType',
       updateVisibility: 'RO',
       section: 'accountInformation',
+      order: 60,
+      gridColumns: 6,
       factory: function() {
         return this.CURRENT;
       },
@@ -197,6 +199,8 @@ foam.CLASS({
       label: 'Account holder',
       updateVisibility: 'RO',
       section: 'accountInformation',
+      order: 20,
+      gridColumns: 6,
       view: function(_, X) {
         return {
           class: 'foam.u2.view.ChoiceView',

@@ -46,6 +46,8 @@ foam.CLASS({
       documentation: 'The Trust account mirrors a real world reserve account, or an Account in another nanopay realm.',
       name: 'reserveAccount',
       section: 'accountInformation',
+      order: 180,
+      gridColumns: 6,
       class: 'Reference',
       of: 'net.nanopay.account.Account',
       view: function(_, X) {
