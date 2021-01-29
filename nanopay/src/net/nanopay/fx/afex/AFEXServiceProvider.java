@@ -668,7 +668,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     updateBeneficiaryRequest.setBankName(bankName);
     String bankRoutingCode = bankAccount.getRoutingCode(this.x);
     if ( bankAccount instanceof CABankAccount) {
-      bankRoutingCode = "0" + bankAccount.getInstitutionNumber() + bankRoutingCode;
+      bankRoutingCode = "0" + bankRoutingCode;
     }
     updateBeneficiaryRequest.setBankRoutingCode(bankRoutingCode);
     updateBeneficiaryRequest.setBeneficiaryAddressLine1(bankAddress.getAddress());
@@ -976,16 +976,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     findBankByNationalIDRequest.setClientAPIKey(clientAPIKey);
     findBankByNationalIDRequest.setCountryCode(bankAccount.getCountry());
     if ( bankAccount instanceof CABankAccount ) {
-      String institutionNumber;
-      if ( SafetyUtil.isEmpty(bankAccount.getInstitutionNumber()) ) {
-        DAO institutionDAO = (DAO) x.get("institutionDAO");
-        Institution institution = (Institution) institutionDAO.find(bankAccount.getInstitution());
-        institutionNumber = institution.getInstitutionNumber();
-      } else {
-        institutionNumber = bankAccount.getInstitutionNumber();
-      }
-      String branchId = SafetyUtil.isEmpty(bankAccount.getBranchId()) ? bankAccount.getRoutingCode(x) : bankAccount.getBranchId();
-      findBankByNationalIDRequest.setNationalID("0" + institutionNumber + branchId);
+      findBankByNationalIDRequest.setNationalID("0" + bankAccount.getRoutingCode(x) );
     } else if ( bankAccount instanceof USBankAccount ) {
       findBankByNationalIDRequest.setNationalID(bankAccount.getBranchId());
     } else {

@@ -1631,7 +1631,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/billing/ClientBillingService' },
   { name: 'net/nanopay/tx/billing/CreateBillsRule' },
   { name: 'net/nanopay/tx/billing/ErrorFee' },
-  
+
   // Fees
   { name: 'net/nanopay/tx/fee/Fee' },
   { name: 'net/nanopay/tx/fee/FeeDAOCreateView' },
@@ -1802,13 +1802,16 @@ FOAM_FILES([
   { name: 'net/nanopay/country/br/CPFCache' },
   { name: 'net/nanopay/country/br/BrazilBusinessInfoData' },
   { name: 'net/nanopay/country/br/crunch/ExchangeServiceOnboardingRule' },
+  { name: 'net/nanopay/country/br/exchange/BancoConfig' },
   { name: 'net/nanopay/country/br/exchange/ExchangeCredential' },
   { name: 'net/nanopay/country/br/exchange/ExchangeCustomer' },
   { name: 'net/nanopay/country/br/exchange/ExchangeClientValues' },
+  { name: 'net/nanopay/country/br/exchange/Moeda' },
   { name: 'net/nanopay/country/br/NatureCode' },
   { name: 'net/nanopay/country/br/NatureCodeData' },
   { name: 'net/nanopay/country/br/NatureCodeRate' },
   { name: 'net/nanopay/country/br/NatureCodeApprovalRequest' },
+  { name: 'net/nanopay/country/br/exchange/Pais' },
   { name: 'net/nanopay/country/br/CapableCreateNatureCodeApprovalsRuleAction' },
   { name: 'net/nanopay/country/br/ApprovedNatureCodeApprovalRequestRuleAction' },
   { name: 'net/nanopay/country/br/ExpectedBoardingDate' },

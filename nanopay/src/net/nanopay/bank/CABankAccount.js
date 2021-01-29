@@ -450,6 +450,7 @@ foam.CLASS({
         Branch branch = findBranch(x);
         if ( branch != null ) {
           code.append(branch.getBranchId());
+          code.append(getBankCode(x));
         }
         return code.toString();
       `
