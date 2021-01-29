@@ -63,12 +63,6 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'accountInformation',
-      title: function() {
-        return this.forContact ? '' : this.SECTION_DETAILS_TITLE_VOID;
-      }
-    },
-    {
       name: 'pad',
       title: `Connect using a void check`,
       subTitle: `Connect to your account without signing in to online banking.
@@ -87,8 +81,7 @@ foam.CLASS({
     { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number must be between 5 and 12 digits long' },
     { name: 'INSTITUTION_NUMBER_REQUIRED', message: 'Institution required' },
     { name: 'INSTITUTION_NUMBER_THREE', message: 'Institution number must be 3 digits long' },
-    { name: 'ADD_SUCCESSFUL', message: 'Bank Account successfully added' },
-    { name: 'SECTION_DETAILS_TITLE_VOID', message: 'Connect using a void check' }
+    { name: 'ADD_SUCCESSFUL', message: 'Bank Account successfully added' }
   ],
 
   properties: [
