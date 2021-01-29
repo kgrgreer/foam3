@@ -290,7 +290,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMo
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.HAS_EXIT_OPTION.label",target:"hasExitOption pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.HAS_EXIT_OPTION.value",target:"true pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.SAVE_LABEL.label",target:"saveLabel pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.SAVE_LABEL.value",target:"Save as draft"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.SAVE_LABEL.value",target:"Salvar como rascunho"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.SAVE_LABEL.documentation",target:"Esta propriedade é para o rótulo personalizado do botão save"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.INVOICE.label",target:"invoice pt"})
 
