@@ -123,6 +123,17 @@ foam.CLASS({
           throw new ValidationException("Unable to update CITransaction, if transaction status is completed or declined. Transaction id: " + getId());
         }
       `
-    }
+    },
+    {
+      name: 'getStage',
+      documentation: 'Intertrust transactions have multi-stage transfers, 0 on pending, 1 when completed.',
+      type: 'Long',
+      javaCode: `
+        if ( getStatus() == TransactionStatus.COMPLETED ) {
+          return 1;
+        }
+        return 0;
+      `,
+    },
   ]
 });

@@ -78,7 +78,8 @@ foam.CLASS({
         if ( this.status == this.TransactionStatus.PENDING_PARENT_COMPLETED ) {
           return [
             'choose status',
-            ['PAUSED', 'PAUSED']
+            ['PAUSED', 'PAUSED'],
+            ['PENDING', 'PENDING']
           ];
         }
         if ( this.status == this.TransactionStatus.PAUSED ) {
@@ -157,14 +158,26 @@ foam.CLASS({
         }
 
         // Cannot transfer when updating status != PENDING.
-        if ( getStatus() != TransactionStatus.PENDING ) return false;
+        if ( ! (getStatus() == TransactionStatus.PENDING || getStatus() == TransactionStatus.COMPLETED) ) return false;
 
         // Updating status=PENDING, can transfer when transitioning from
         // PENDING_PARENT_COMPLETED, PAUSED or SCHEDULED.
         return oldTxn.getStatus() == TransactionStatus.PENDING_PARENT_COMPLETED
           || oldTxn.getStatus() == TransactionStatus.PAUSED
-          || oldTxn.getStatus() == TransactionStatus.SCHEDULED;
+          || oldTxn.getStatus() == TransactionStatus.SCHEDULED
+          || oldTxn.getStatus() == TransactionStatus.PENDING;
       `
-    }
+    },
+    {
+      name: 'getStage',
+      documentation: 'Intertrust transactions have multi-stage transfers, 0 on pending, 1 when completed.',
+      type: 'Long',
+      javaCode: `
+        if ( getStatus() == TransactionStatus.COMPLETED ) {
+          return 1;
+        }
+        return 0;
+      `,
+    },
  ]
 });
