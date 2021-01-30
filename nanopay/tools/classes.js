@@ -1174,6 +1174,7 @@ var classes = [
   // Fees
   'net.nanopay.tx.fee.Fee',
   'net.nanopay.tx.fee.FeeExpr',
+  'net.nanopay.tx.fee.FeeRateExpr',
   'net.nanopay.tx.fee.FeeType',
   'net.nanopay.tx.fee.FixedFee',
   'net.nanopay.tx.fee.InformationalFee',

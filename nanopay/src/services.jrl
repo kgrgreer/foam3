@@ -432,6 +432,7 @@ p({
             new foam.core.PropertyInfo[] { net.nanopay.tx.fee.Fee.FEE_RULE }
           }
         ))
+      .setContextualize(true)
       .build();
   """,
   "client":
