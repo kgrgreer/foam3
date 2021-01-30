@@ -37,6 +37,7 @@ p({
     mdao.addIndex(new foam.core.PropertyInfo[] {Transaction.DESTINATION_ACCOUNT});
     mdao.addIndex(new foam.core.PropertyInfo[] {Transaction.SOURCE_ACCOUNT});
     mdao.addIndex(new foam.core.PropertyInfo[] {Transaction.LAST_STATUS_CHANGE});
+    mdao.addIndex(new foam.core.PropertyInfo[] {Transaction.SPID});
 
     tdao = new DAOFoldManager.Builder(x)
       .setDao((DAO)x.get("accountBalanceHourlyCandlestickDAO"))
@@ -60,7 +61,10 @@ p({
     } else {
       inner = new net.nanopay.security.HashingJDAO(x, "SHA-256", true, false, tdao, "transactions");
     }
-    
+    inner = new foam.nanos.auth.ServiceProviderAwareDAO.Builder(x)
+      .setDelegate(inner)
+      .build();
+      
     dao = new net.nanopay.tx.SaveChainedTransactionDAO.Builder(x)
       .setDelegate(new foam.dao.NullDAO(x, net.nanopay.tx.model.Transaction.getOwnClassInfo()))
       .build();
@@ -87,6 +91,7 @@ p({
       .setContextualize(true)
       .setRuler(false)
       .setCluster(false)
+      .setServiceProviderAware(false)
       .build();
     """
 })

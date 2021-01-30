@@ -24,7 +24,9 @@ foam.RELATIONSHIP({
   targetDAOKey: 'accountDAO',
   unauthorizedTargetDAOKey: 'localAccountDAO',
   targetProperty: {
-    section: 'deprecated',
+    section: 'accountInformation',
+    order: 135,
+    gridColumns: 6,
     label: 'Transit No.',
     view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' },
     tableCellFormatter: function(value, obj, axiom) {
@@ -48,7 +50,9 @@ foam.RELATIONSHIP({
   targetDAOKey: 'accountDAO',
   unauthorizedTargetDAOKey: 'localAccountDAO',
   targetProperty: {
-    section: 'deprecated',
+    section: 'accountInformation',
+    order: 125,
+    gridColumns: 6,
     view: function(_, X) {
       return foam.u2.view.ChoiceView.create({
         dao: X.institutionDAO,
@@ -106,11 +110,13 @@ foam.RELATIONSHIP({
   forwardName: 'children',
   cardinality: '1:*',
   sourceProperty: {
-    section: 'parentSection'
+    section: 'parentInformation',
+    order: 10
   },
   targetProperty: {
-    section: 'parentSection',
-    order: 4,
+    section: 'parentInformation',
+    order: 20,
+    gridColumns: 6,
     label: 'Parent Account',
     tableCellFormatter: function(value, obj, axiom) {
       this.__subSubContext__.accountDAO
@@ -158,10 +164,13 @@ foam.RELATIONSHIP({
   sourceDAOKey: 'accountDAO',
   cardinality: '1:*',
   sourceProperty: {
-    section: 'parentSection'
+    section: 'parentInformation',
+    order: 30
   },
   targetProperty: {
-    section: 'parentSection'
+    section: 'accountInformation',
+    order: 190,
+    gridColumns: 6
   }
 });
 
@@ -179,7 +188,7 @@ foam.RELATIONSHIP({
     updateVisibility: 'RO'
   },
   targetProperty: {
-    section: 'liquiditySettingsSection',
+    section: 'liquiditySettingsInformation',
     label: '',
     tableCellFormatter: function(value, obj, axiom) {
       this.__subSubContext__.liquiditySettingsDAO
@@ -225,6 +234,8 @@ foam.RELATIONSHIP({
   },
   targetProperty: {
     section: 'ownerInformation',
+    order: 10,
+    gridColumns: 6,
     view: function(_, X) {
       return foam.u2.view.RichChoiceView.create({
         search: true,
@@ -1038,7 +1049,10 @@ foam.RELATIONSHIP({
   sourceDAOKey: 'accountDAO',
   unauthorizedSourceDAOKey: 'localAccountDAO',
   targetDAOKey: 'flinksAccountsDetailResponseDAO',
-  sourceProperty: { section: 'complianceInformation' },
+  sourceProperty: { 
+    section: 'complianceInformation',
+    order: 20
+  },
   targetProperty: { visibility: 'RO' }
 });
 
@@ -1051,7 +1065,10 @@ foam.RELATIONSHIP({
   sourceDAOKey: 'accountDAO',
   unauthorizedSourceDAOKey: 'localAccountDAO',
   targetDAOKey: 'plaidAccountDetailDAO',
-  sourceProperty: { section: 'complianceInformation' },
+  sourceProperty: { 
+    section: 'complianceInformation',
+    order: 30
+  },
   targetProperty: { visibility: 'RO' }
 });
 

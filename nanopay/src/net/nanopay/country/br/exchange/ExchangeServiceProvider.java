@@ -40,6 +40,8 @@ import net.nanopay.country.br.CPF;
 import net.nanopay.country.br.exchange.Pais;
 import net.nanopay.country.br.NatureCode;
 import net.nanopay.country.br.tx.NatureCodeLineItem;
+import net.nanopay.fx.afex.AFEXServiceProvider;
+import net.nanopay.fx.afex.FindBankByNationalIDResponse;
 import net.nanopay.invoice.model.Invoice;
 import net.nanopay.meter.clearing.ClearingTimeService;
 import net.nanopay.model.Business;
@@ -262,21 +264,26 @@ public class ExchangeServiceProvider implements ExchangeService {
     if ( exchangeClientValues == null )
       throw new RuntimeException("Exchange is not properly configured. Missing exchange client values.");
 
+    BancoConfig bancoConfig = (BancoConfig) ((DAO) this.x.get("bancoConfigDAO")).find(AND(
+      EQ(BancoConfig.CURRENCY, transaction.getDestinationCurrency()),
+      EQ(BancoConfig.SPID, payer.getSpid())
+    ));
+
     InsertBoleto request = new InsertBoleto();
     Boleto dadosBoleto = new Boleto();
     dadosBoleto.setAGENCIA(exchangeClientValues.getAgencia());
-    dadosBoleto.setBANCO(exchangeClientValues.getBANCO());
+    if ( bancoConfig != null ) dadosBoleto.setBANCO(bancoConfig.getCode());
     dadosBoleto.setBANCOBEN0(exchangeClientValues.getBeneficiaryType());
-
-    Institution institution = (Institution) ((DAO) this.x.get("institutionDAO")).find(bankAccount.getInstitution());
-    if ( institution != null ) {
-      dadosBoleto.setBANCOBEN1(institution.getSwiftCode());
-      dadosBoleto.setPAGADORS(institution.getSwiftCode());
-      dadosBoleto.setESP5(getESP("SWIFT CODE: ", institution.getSwiftCode(),
+    dadosBoleto.setCONTA(exchangeClientValues.getCONTA());
+    dadosBoleto.setBANCOBEN1(bankAccount.getSwiftCode());
+    dadosBoleto.setBANCOBEN4(bankAccount.getRoutingCode(this.x));
+    dadosBoleto.setPAGADORS(bankAccount.getSwiftCode());
+    dadosBoleto.setESP5(getESP("SWIFT CODE: ", bankAccount.getSwiftCode(),
         " - IBAN:  ", bankAccount.getIban(), " - DETAILS OF CHARGE: "));
-    }
-    Address bankAddress = bankAccount.getAddress() == null ? bankAccount.getBankAddress() : bankAccount.getAddress();
-    if ( bankAddress != null ) dadosBoleto.setBANCOBEN3(bankAddress.getCity());
+
+    FindBankByNationalIDResponse bankInfo = getBankInformation(bankAccount, payer.getSpid());
+    if ( bankInfo != null ) dadosBoleto.setBANCOBEN2(bankInfo.getInstitutionName());
+    dadosBoleto.setBANCOBEN3(getBancoBen3(bankInfo, bankAccount));
 
     dadosBoleto.setCLAUSULAXX(false);
     String formattedCpfCnpj = findCpfCnpj(payer.getId()).replaceAll("[^0-9]", "");
@@ -330,7 +337,7 @@ public class ExchangeServiceProvider implements ExchangeService {
     }
     dadosBoleto.setOBSERVACAO("");
     dadosBoleto.setPAGADOR(getName(receiver));
-    dadosBoleto.setPAGADORC(bankAccount.getIban());
+    dadosBoleto.setPAGADORC("/" + bankAccount.getIban());
     dadosBoleto.setGERENTE(exchangeClientValues.getGERENTE());
     dadosBoleto.setESP1(getESP("FORMA DE PAGAMENTO: ", dadosBoleto.getFORMAEN(),
       " - DATA: ", today));
@@ -384,6 +391,32 @@ public class ExchangeServiceProvider implements ExchangeService {
     transaction.setStatus(TransactionStatus.SENT);
     transaction.setCompletionDate(completionDate);
     return transaction;
+  }
+
+  protected String getBancoBen3(FindBankByNationalIDResponse bankInfo, BankAccount bankAccount) {
+    StringBuilder bancoBen3 = new StringBuilder();
+    if ( bankInfo != null ) {
+      bancoBen3.append(bankInfo.getCity());
+      bancoBen3.append("/");
+      bancoBen3.append(bankInfo.getCountryName());
+      return bancoBen3.toString();
+    }
+
+    Address bankAddress = bankAccount.getAddress() == null ? bankAccount.getBankAddress() : bankAccount.getAddress();
+    if ( bankAddress != null && ! ( SafetyUtil.isEmpty(bankAddress.getCity()))) {
+      bancoBen3.append(bankAddress.getCity());
+      Country country = bankAddress.findCountryId(this.x);
+      if ( country != null ) {
+        bancoBen3.append("/");
+        bancoBen3.append(country.getName());
+      }
+    }
+    return bancoBen3.toString();
+  }
+
+  protected FindBankByNationalIDResponse getBankInformation(BankAccount bankAccount, String spid) {
+    AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) this.x.get("afexServiceProvider");
+    return afexServiceProvider.getBankInformation(x, null, bankAccount, spid);
   }
 
   protected ExchangeClientValues getExchangeClientValues(String spid) {

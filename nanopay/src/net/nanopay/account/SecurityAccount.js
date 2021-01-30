@@ -60,7 +60,7 @@ foam.CLASS({
     {
       name: 'balance',
       label: 'Balance (local)',
-      section: 'balanceDetails',
+      section: 'balanceInformation',
       documentation: 'A numeric value representing the available funds in the bank account.',
       storageTransient: true,
       visibility: 'RO',
