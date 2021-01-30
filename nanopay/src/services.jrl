@@ -589,7 +589,6 @@ p({
       .setRuler(true)
       .setAuthorize(false)
       .setValidated(true)
-      .setServiceProviderAware(true)
       .build();
   """
 })
@@ -818,6 +817,7 @@ p({
       .setRuler(false)
       .setDecorator(new net.nanopay.auth.BusinessEmployeeDAO.Builder(x).build())
       .setInnerDAO(x.get("bareUserDAO"))
+      .setEnableInterfaceDecorators(false)
       .build();
   """,
   "client":
