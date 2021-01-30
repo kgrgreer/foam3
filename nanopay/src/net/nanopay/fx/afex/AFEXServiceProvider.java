@@ -474,6 +474,9 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     return fxQuote;
   }
 
+  // REVIEW: consider caching/saving afex user SPOT rate since the SPOT is good
+  // for 2 business days and in treviso fee selection we are fetching
+  // "USD Spot Rate" many times to convert the destination amount.
   public double getFXSpotRate(String sourceCurrency, String targetCurrency, long userId) throws RuntimeException {
     if ( sourceCurrency.equals(targetCurrency) ) return 1.0;
     User user = User.findUser(x, userId);
