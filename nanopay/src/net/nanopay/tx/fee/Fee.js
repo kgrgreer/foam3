@@ -21,6 +21,10 @@ foam.CLASS({
 
   documentation: 'Describes the fee type.',
 
+  implements: [
+    'foam.nanos.auth.ServiceProviderAware'
+  ],
+
   sections: [
     {
       name: 'basicInfo',
@@ -110,6 +114,21 @@ foam.CLASS({
         It can be also used for setting up a default fee (without a predicate)
         that is evaluated last by setting the "order" to a number greater than
         other existing fees.`
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.ServiceProvider',
+      name: 'spid',
+      storageTransient: true,
+      javaFactory: `
+        var feeSpidMap = new java.util.HashMap();
+        feeSpidMap.put(
+          Fee.class.getName(),
+          new foam.core.PropertyInfo[] { Fee.FEE_RULE }
+        );
+        return new foam.nanos.auth.ServiceProviderAwareSupport()
+          .findSpid(foam.core.XLocator.get(), feeSpidMap, this);
+      `
     }
   ],
 

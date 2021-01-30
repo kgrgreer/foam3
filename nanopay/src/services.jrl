@@ -425,13 +425,6 @@ p({
       .setIndex(new foam.core.PropertyInfo[] { net.nanopay.tx.fee.Fee.NAME })
       .setOrder(new foam.mlang.order.Comparator[] { net.nanopay.tx.fee.Fee.ORDER })
       .setServiceProviderAware(true)
-      .setServiceProviderAwarePropertyInfos(
-        foam.util.Arrays.asMap(new Object[]
-          {
-            net.nanopay.tx.fee.Fee.class.getName(),
-            new foam.core.PropertyInfo[] { net.nanopay.tx.fee.Fee.FEE_RULE }
-          }
-        ))
       .setContextualize(true)
       .build();
   """,
