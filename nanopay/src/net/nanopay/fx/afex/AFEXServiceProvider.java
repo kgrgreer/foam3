@@ -514,7 +514,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
         .setToCurrency(targetCurrency)
         .setRate("A".equals(rateResponse.getTerms()) ? rateResponse.getInvertedRate() : rateResponse.getRate())
         .setFxProvider("afex")
-        .setExpirationDate(Date.from(LocalDateTime.now().plusDays(1).atZone(ZoneId.systemDefault()).toInstant()))
+        .setExpirationDate(Date.from(LocalDateTime.now().plusHours(1).atZone(ZoneId.systemDefault()).toInstant()))
         .setValueDate(new Date())
         .build()
     );
