@@ -127,6 +127,7 @@ p({
   "class": "foam.nanos.boot.NSpec",
   "name": "fxSpotRateDAO",
   "documentation": "In-memory, server-side only datastore for SPOT fx rate. Caching the SPOT rates to minimize number of calls to exchange providers.",
+  "serve": false,
   "serviceScript":
   """
     return new foam.dao.EasyDAO.Builder(x)
@@ -138,6 +139,5 @@ p({
       .setCluster(false)
       .setIndex(new foam.core.PropertyInfo[] { net.nanopay.fx.ExchangeRate.FROM_CURRENCY, net.nanopay.fx.ExchangeRate.TO_CURRENCY, net.nanopay.fx.ExchangeRate.FX_PROVIDER })
       .build();
-  """,
-  "client": "{\"of\":\"net.nanopay.fx.ExchangeRate\"}"
+  """
 })
