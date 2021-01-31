@@ -2112,7 +2112,7 @@ p({
   "serve": false,
   "service": {
     "class": "net.nanopay.meter.clearing.ClearingTimeService",
-    "defaultClearingTime": 2
+    "defaultClearingTime": 0
   }
 })
 
