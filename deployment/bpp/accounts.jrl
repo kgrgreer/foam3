@@ -1,2 +1,4 @@
 // BPP Trust Account
 p({"class":"net.nanopay.account.TrustAccount", "id":"12", "owner":8054, "denomination":"CAD", "name":"BPP Trust Account CAD","lifecycleState":1})
+
+p({"class":"net.nanopay.account.EstimationAccount", "id":"44fff2fc-62f8-4f0c-8e23-e70324c7fe05", "owner":8054, "denomination":"CAD", "name":"Canada estimation account","lifecycleState":1})

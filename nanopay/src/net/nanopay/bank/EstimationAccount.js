@@ -22,4 +22,20 @@ foam.CLASS({
   extends: 'net.nanopay.bank.BankAccount',
 
   documentation: 'Estimation account for getting Estimate Plans. unable to transact.',
+
+  methods: [
+    {
+      name: 'validate',
+      args: [
+        {
+          name: 'x', type: 'Context'
+        }
+      ],
+      type: 'Void',
+      javaThrows: ['IllegalStateException'],
+      javaCode: `
+        //NOP
+      `
+    },
+  ]
 });
