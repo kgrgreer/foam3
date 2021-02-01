@@ -68,6 +68,7 @@ foam.CLASS({
         String estimation = oldPartialPlan.getDestinationAccount();
         String intermediary = "";
         Transaction cutOffEnd = null;
+
         // -- walk to get intermediary, and cut leg2 off --
         while ( oldPartialPlan.getNext() != null ) { // conserve summaries and first leg
           if ( SafetyUtil.equals(oldPartialPlan.getNext()[0].getDestinationAccount(), estimation) ) {

@@ -146,7 +146,6 @@ foam.CLASS({
               throw new ValidationException("Estimate can not be acted on with provided information");
             }
             TransactionQuote tq = new TransactionQuote();
-            // insert intermediary. as source. or dont. extract leg later
             tq.setPartialTransaction(plannedTx.getTransaction());
             Transaction newTx = (Transaction) txn.fclone();
             newTx.clearId();
