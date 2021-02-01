@@ -36,7 +36,7 @@ foam.CLASS({
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.ComplianceTransaction',
     'net.nanopay.tx.SummaryTransaction',
-    'net.nanopay.tx.InfoLineItem',
+    'net.nanopay.tx.TransactionException',
     'net.nanopay.tx.FxSummaryTransactionLineItem',
     'net.nanopay.tx.planner.TransactionPlan',
     'foam.core.ValidationException',
@@ -119,7 +119,7 @@ foam.CLASS({
           oldPartialPlan.setNext(leg2);
           Transaction newTxn = (Transaction) headOldPartialPlan.fclone();
           newTxn.setId(UUID.randomUUID().toString());
-          newTxn.addLineItem(addPreviousFX(tq.getPartialTransaction()));;
+          newTxn.addLineItems(addPreviousFX(tq.getPartialTransaction()));
           finalNewPlans.add(newTxn);
         }
 
@@ -134,18 +134,23 @@ foam.CLASS({
     {
       name: 'addPreviousFX',
       args: [
-        { name: 'txn', type: 'net.nanopay.tx.SummaryTransaction' }
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
       ],
-      type: 'net.nanopay.tx.TransactionLineItem',
+      type: 'net.nanopay.tx.TransactionLineItem[]',
       documentation: 'Create an info line item for the difference in fees between old and new txns',
       javaCode: `
+        if ( ! (txn instanceof SummaryTransaction) )
+          throw new TransactionException("unable to properly update new fx line item");
         TransactionLineItem[] oldTli = txn.getLineItems();
         for (TransactionLineItem tli : oldTli) {
           if (tli instanceof FxSummaryTransactionLineItem) {
             tli.setName("actual new fx line item");
-            return tli;
+            TransactionLineItem[] tlis = new TransactionLineItem[1];
+            tlis[0] = tli;
+            return tlis;
           }
         }
+        return null;
       `
     },
     {
