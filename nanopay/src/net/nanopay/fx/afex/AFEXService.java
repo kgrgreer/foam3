@@ -507,7 +507,8 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
       credentials = getCredentials(spid);
       HttpPost httpPost = new HttpPost(credentials.getAFEXApi()  + "api/nationalid/find");
 
-      httpPost.addHeader("API-Key", request.getClientAPIKey());
+      String apiKey = SafetyUtil.isEmpty(request.getClientAPIKey()) ? credentials.getApiKey() : request.getClientAPIKey();
+      httpPost.addHeader("API-Key", apiKey);
       httpPost.addHeader("Content-Type", "application/x-www-form-urlencoded");
 
       List<NameValuePair> nvps = new ArrayList<>();
@@ -516,7 +517,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       httpPost.setEntity(new UrlEncodedFormEntity(nvps, "utf-8"));
 
-      logMessage(request.getClientAPIKey(), "findBankByNationalID", parseHttpPost(httpPost), false);
+      logMessage(apiKey, "findBankByNationalID", parseHttpPost(httpPost), false);
 
       omLogger.log("AFEX findBankByNationalID starting");
 
@@ -532,7 +533,7 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
         }
 
         String response = new BasicResponseHandler().handleResponse(httpResponse);
-        logMessage(request.getClientAPIKey(), "findBankByNationalID", response, true);
+        logMessage(apiKey, "findBankByNationalID", response, true);
         Object[] respArr = jsonParser.parseStringForArray(response, FindBankByNationalIDResponse.class);
 
         if ( respArr.length != 0 ) {

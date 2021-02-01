@@ -47,13 +47,6 @@ foam.CLASS({
     'foam.core.ValidationException'
   ],
 
-  sections: [
-    {
-      name: 'accountInformation',
-      title: ''
-    }
-  ],
-
   messages: [
     { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number must be 10 digits long' },
     { name: 'ACCOUNT_NUMBER_REQUIRED', message: 'Account number required' },
@@ -89,10 +82,67 @@ foam.CLASS({
     }
   ],
 
+  sections: [
+    {
+      name: 'clientAccountInformation',
+      title: function() {
+        return this.clientAccountInformationTitle;
+      },
+      properties: [
+        { 
+          name: 'denomination',
+          order: 10,
+          gridColumns: 12
+        },
+        {
+          name: 'name',
+          order: 20,
+          gridColumns: 12
+        },
+        {
+          name: 'flagImage',
+          order: 30,
+          gridColumns: 12
+        },
+        {
+          name: 'country',
+          order: 40,
+          gridColumns: 12
+        },
+        {
+          name: 'accountType',
+          order: 50,
+          gridColumns: 12
+        },
+        {
+          name: 'accountOwnerType',
+          order: 60,
+          gridColumns: 12
+        },
+        {
+          name: 'swiftCode',
+          order: 80,
+          gridColumns: 12
+        },
+        {
+          name: 'iban',
+          order: 90,
+          gridColumns: 12
+        }
+      ],
+      order: 110
+    },
+  ],
+
   properties: [
     {
       name: 'denomination',
-      value: 'BRL'
+      value: 'BRL',
+      order: 1
+    },
+    {
+      name: 'name',
+      order: 2
     },
     {
       name: 'country',
@@ -174,6 +224,8 @@ foam.CLASS({
       name: 'accountType',
       updateVisibility: 'RO',
       section: 'accountInformation',
+      order: 60,
+      gridColumns: 6,
       factory: function() {
         return this.CURRENT;
       },
@@ -199,6 +251,8 @@ foam.CLASS({
       label: 'Account holder',
       updateVisibility: 'RO',
       section: 'accountInformation',
+      order: 20,
+      gridColumns: 6,
       view: function(_, X) {
         return {
           class: 'foam.u2.view.ChoiceView',

@@ -444,7 +444,7 @@ foam.CLASS({
         this.invoice.draft = true;
         try{
           this.invoice = await this.invoiceDAO.put(this.invoice);
-        } catch(error) {
+        } catch(err) {
           await this.abortQuoteAndSaveDraft(err);
         }
         this.invoice.draft = false;

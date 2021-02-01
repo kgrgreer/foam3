@@ -1623,18 +1623,20 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/RbcInterTrustPlanner' },
   { name: 'net/nanopay/tx/planner/BmoInterTrustPlanner' },
 
-  // Error Fees
-  { name: 'net/nanopay/tx/errorfee/ClientErrorBillingService' },
-  { name: 'net/nanopay/tx/errorfee/ErrorBilling' },
-  { name: 'net/nanopay/tx/errorfee/ErrorCharge' },
-  { name: 'net/nanopay/tx/errorfee/ErrorChargeFee' },
-  { name: 'net/nanopay/tx/errorfee/ErrorFee' },
-  { name: 'net/nanopay/tx/errorfee/ChargeDateServiceInterface' },
+  // Billing
+  { name: 'net/nanopay/tx/billing/Bill' },
+  { name: 'net/nanopay/tx/billing/BillingFee' },
+  { name: 'net/nanopay/tx/billing/BillingServiceInterface' },
+  { name: 'net/nanopay/tx/billing/ChargeDateServiceInterface' },
+  { name: 'net/nanopay/tx/billing/ClientBillingService' },
+  { name: 'net/nanopay/tx/billing/CreateBillsRule' },
+  { name: 'net/nanopay/tx/billing/ErrorFee' },
 
   // Fees
   { name: 'net/nanopay/tx/fee/Fee' },
   { name: 'net/nanopay/tx/fee/FeeDAOCreateView' },
   { name: 'net/nanopay/tx/fee/FeeExpr' },
+  { name: 'net/nanopay/tx/fee/FeeRateExpr' },
   { name: 'net/nanopay/tx/fee/FeeType' },
   { name: 'net/nanopay/tx/fee/FixedFee' },
   { name: 'net/nanopay/tx/fee/InformationalFee' },
@@ -1677,7 +1679,6 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/ruler/PermissionedUCJRule' },
 
   // crunch onboarding
-  { name: 'net/nanopay/crunch/onboardingModels/CreateRegisterPaymentProviderUCJ' },
   { name: 'net/nanopay/crunch/onboardingModels/InitialBusinessData' },
   { name: 'net/nanopay/crunch/onboardingModels/SigningOfficerPersonalData' },
   { name: 'net/nanopay/partner/treviso/SigningOfficerPersonalDataTreviso' },
@@ -1802,13 +1803,16 @@ FOAM_FILES([
   { name: 'net/nanopay/country/br/CPFCache' },
   { name: 'net/nanopay/country/br/BrazilBusinessInfoData' },
   { name: 'net/nanopay/country/br/crunch/ExchangeServiceOnboardingRule' },
+  { name: 'net/nanopay/country/br/exchange/BancoConfig' },
   { name: 'net/nanopay/country/br/exchange/ExchangeCredential' },
   { name: 'net/nanopay/country/br/exchange/ExchangeCustomer' },
   { name: 'net/nanopay/country/br/exchange/ExchangeClientValues' },
+  { name: 'net/nanopay/country/br/exchange/Moeda' },
   { name: 'net/nanopay/country/br/NatureCode' },
   { name: 'net/nanopay/country/br/NatureCodeData' },
   { name: 'net/nanopay/country/br/NatureCodeRate' },
   { name: 'net/nanopay/country/br/NatureCodeApprovalRequest' },
+  { name: 'net/nanopay/country/br/exchange/Pais' },
   { name: 'net/nanopay/country/br/CapableCreateNatureCodeApprovalsRuleAction' },
   { name: 'net/nanopay/country/br/ApprovedNatureCodeApprovalRequestRuleAction' },
   { name: 'net/nanopay/country/br/ExpectedBoardingDate' },
