@@ -29,12 +29,14 @@ foam.CLASS({
 
   imports: [
     'sourceCorridorDAO',
-    'subject'
+    'subject',
+    'countryDAO',
   ],
 
   requires: [
     'foam.dao.PromisedDAO',
-    'net.nanopay.payment.PaymentProviderCorridor'
+    'net.nanopay.payment.PaymentProviderCorridor',
+    'foam.nanos.auth.Country',
   ],
 
   sections: [
@@ -43,7 +45,7 @@ foam.CLASS({
       title: function() {
         return this.SECTION_ACCOUNT_INFORMATION_TITLE;
       }
-    },
+    }
   ],
 
   messages: [
@@ -54,73 +56,49 @@ foam.CLASS({
 
   properties: [
     {
-      class: 'FObjectProperty',
-      name: 'bankAccount',
-      of: 'net.nanopay.bank.BankAccount',
-      section: 'accountInformation',
-      label: '',
-      view: function(_, X){
-        return X.data.slot(function(availableCountries, countries) {
-          let e = foam.mlang.Expressions.create();
-          let  strategies = [];
-          for ( const i of countries) {
-            let model = foam.lookup(`net.nanopay.bank.${ i }BankAccount`);
-            if ( model ) strategies.push(model);
-          }
-          var pred = e.AND(
-              e.EQ(foam.strategy.StrategyReference.DESIRED_MODEL_ID, 'net.nanopay.bank.BankAccount'),
-              e.IN(foam.strategy.StrategyReference.STRATEGY, strategies)
-          );
-          return foam.u2.view.FObjectView.create({
-            of: net.nanopay.bank.BankAccount,
-            predicate: pred,
-            placeholder: X.data.PLACEHOLDER,
-            classIsFinal: true,
-            data$: X.data.bankAccount$,
-            copyOldData: function(o) { return { isDefault: o.isDefault }; }
-          }, X);
-        })
-      },
-      validationPredicates: [
-        {
-          args: ['bankAccount', 'bankAccount$errors_'],
-          predicateFactory: function(e) {
-            return e.EQ(foam.mlang.IsValid.create({
-                arg1: net.nanopay.bank.StrategizedBankAccount.BANK_ACCOUNT
-              }), true);
-          },
-          errorMessage: 'INVALID_BANK'
-        }
-      ],
-      validateObj: function(bankAccount, bankAccount$errors_) {
-        return bankAccount ? bankAccount$errors_ : "text";
-      }
-    },
-    {
-      transient: true,
-      flags: ['web'],
-      name: 'availableCountries',
+      class: 'foam.dao.DAOProperty',
+      name: 'permittedCountries',
       visibility: 'HIDDEN',
-      expression: function(sourceCorridorDAO) {
+      factory: function() {
         return this.PromisedDAO.create({
-          promise: sourceCorridorDAO
+          of: 'foam.nanos.auth.Country',
+          promise: this.sourceCorridorDAO
             .select(this.MAP(this.PaymentProviderCorridor.SOURCE_COUNTRY))
             .then((sink) => {
               let countries = sink.delegate.array ? sink.delegate.array : [];
               countries.push(this.subject.user.address.countryId);
-              let unique = [...new Set(countries)];
-              this.countries = unique;
+              return this.countryDAO.where(this.IN(this.Country.CODE, sink.delegate.array));
             })
         });
       }
     },
     {
-      transient: true,
-      flags: ['web'],
-      name: 'countries',
-      visibility: 'HIDDEN',
-      documentation: ``,
-      factory: function() { return []; }
+      class: 'Reference',
+      name: 'selectedCountry',
+      of: 'foam.nanos.auth.Country',
+      label: 'Country of bank account',
+      documentation: 'Determines what bank view will be displayed pertaining to country.',
+      view: function(_, x) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          sections: [
+            {
+              heading: 'Domiciled bank account country',
+              dao$: x.data.permittedCountries$
+            }
+          ]
+        };
+      }
     },
+    {
+      class: 'FObjectProperty',
+      name: 'bankAccount',
+      visibility: function(selectedCountry) {
+        return selectedCountry == '' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.HIDDEN;
+      },
+      expression: function(selectedCountry) {
+        return (foam.lookup(`net.nanopay.bank.${ selectedCountry }BankAccount`)).create({}, this)
+      }
+    }
   ],
 });
