@@ -83,21 +83,44 @@ foam.CLASS({
           class: 'foam.u2.view.RichChoiceView',
           sections: [
             {
+              placeholder: x.data.PLACEHOLDER,
               heading: 'Domiciled bank account country',
               dao$: x.data.permittedCountries$
             }
           ]
         };
+      },
+      postSet: function(o, n) {
+        var bank = (foam.lookup(`net.nanopay.bank.${n}BankAccount`)).create({}, this)
+        if ( bank.voidCheckImage ) bank.voidCheckImage.visibility = foam.u2.DisplayMode.HIDDEN
+        this.bankAccount = bank
       }
     },
     {
       class: 'FObjectProperty',
       name: 'bankAccount',
+      of: 'net.nanopay.bank.BankAccount',
       visibility: function(selectedCountry) {
-        return selectedCountry == '' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.HIDDEN;
+        return selectedCountry == '' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
-      expression: function(selectedCountry) {
-        return (foam.lookup(`net.nanopay.bank.${ selectedCountry }BankAccount`)).create({}, this)
+      view: function(_,X) {
+        return foam.u2.detail.VerticalDetailView.create({
+          useSections: ['accountInformation', 'pad']
+        }, X)
+      },
+      validationPredicates: [
+        {
+          args: ['bankAccount', 'bankAccount$errors_'],
+          predicateFactory: function(e) {
+            return e.EQ(foam.mlang.IsValid.create({
+                arg1: net.nanopay.bank.StrategizedBankAccount.BANK_ACCOUNT
+              }), true);
+          },
+          errorMessage: 'INVALID_BANK'
+        }
+      ],
+      validateObj: function(bankAccount, bankAccount$errors_) {
+        return bankAccount ? bankAccount$errors_ : "text";
       }
     }
   ],
