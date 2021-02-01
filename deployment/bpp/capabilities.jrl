@@ -18,3 +18,15 @@ p({
     "naturecode.read.f0224036-2a37-4fa9-8879-a413fe168f34"
   ]
 })
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "bpp-tx-fees",
+  name: "Enable BPP Fees",
+  version: "0",
+  enabled: true,
+  permissionsGranted: [
+    "rule.read.454df571-f639-4506-8d59-98b4f39934e4",
+    "rule.read.9e7661a6-610b-47ad-b521-96b9c760fb16"
+  ]
+})

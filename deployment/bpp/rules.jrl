@@ -1,0 +1,102 @@
+p({
+  class: "net.nanopay.tx.fee.TransactionFeeRule",
+  id: "454df571-f639-4506-8d59-98b4f39934e4",
+  name: "BPP Fee",
+  documentation: "Add fixed fee line item for BPP transactions.",
+  feeName: "BPP Fixed Fee",
+  ruleGroup: "TransactionFeeRule",
+  feeDenomination: "BRL",
+  feeClass: "net.nanopay.tx.FeeLineItem",
+  rateName: "Total Rate",
+  isInvertedRate: true,
+  rateExpiry: {
+    class: "foam.nanos.cron.TimeHMS",
+    hour: 24
+  },
+  feeAccount: "31",
+  enabled: true,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.nanos.ruler.predicate.IsInstancePredicate",
+        of: "net.nanopay.fx.FXSummaryTransaction"
+      },
+      {
+        class: "foam.mlang.predicate.Eq",
+        arg1: {
+          class: "foam.mlang.expr.Dot",
+          arg1: {
+            class: "foam.mlang.ContextObject",
+            key: "NEW"
+          },
+          arg2: {
+            class: "foam.mlang.PredicatedExpr",
+            arg1: {
+              class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+              of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+              propName: "natureCode"
+            }
+          }
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: true
+        }
+      }
+    ]
+  },
+  spid: "bpp",
+  lifecycleState:1
+})
+p({
+  class: "net.nanopay.tx.fee.TransactionFeeRule",
+  id: "9e7661a6-610b-47ad-b521-96b9c760fb16",
+  name: "BPP Fee",
+  documentation: "Add percentage fee line item for BPP transactions.",
+  feeName: "BPP Percentage Fee",
+  ruleGroup: "TransactionFeeRule",
+  feeDenomination: "BRL",
+  feeClass: "net.nanopay.tx.FeeLineItem",
+  rateName: "Total Rate",
+  isInvertedRate: true,
+  rateExpiry: {
+    class: "foam.nanos.cron.TimeHMS",
+    hour: 24
+  },
+  feeAccount: "31",
+  enabled: true,
+  predicate: {
+    class: "foam.mlang.predicate.And",
+    args: [
+      {
+        class: "foam.nanos.ruler.predicate.IsInstancePredicate",
+        of: "net.nanopay.fx.FXSummaryTransaction"
+      },
+      {
+        class: "foam.mlang.predicate.Eq",
+        arg1: {
+          class: "foam.mlang.expr.Dot",
+          arg1: {
+            class: "foam.mlang.ContextObject",
+            key: "NEW"
+          },
+          arg2: {
+            class: "foam.mlang.PredicatedExpr",
+            arg1: {
+              class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+              of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+              propName: "natureCode"
+            }
+          }
+        },
+        arg2: {
+          class: "foam.mlang.Constant",
+          value: true
+        }
+      }
+    ]
+  },
+  spid: "bpp",
+  lifecycleState:1
+})
