@@ -94,7 +94,7 @@ foam.CLASS({
               .tag({
                 class: 'net.nanopay.account.ui.BankAccountWizard',
                 data: this.selection,
-                useSections: ['accountInformation', 'pad'],
+                useSections: ['clientAccountInformation', 'pad'],
                 config: {
                   id: { updateVisibility: 'HIDDEN' },
                   summary: { updateVisibility: 'HIDDEN' }

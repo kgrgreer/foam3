@@ -76,9 +76,9 @@ foam.CLASS({
 
   methods: [
     function init() {
-      this.data.accountInformationTitle = this.customTitle ? this.customTitle : this.CREATE_TITLE;
+      this.data.clientAccountInformationTitle = this.customTitle ? this.customTitle : this.CREATE_TITLE;
       if ( this.controllerMode == foam.u2.ControllerMode.EDIT ) {
-        this.data.accountInformationTitle = this.EDIT_TITLE;
+        this.data.clientAccountInformationTitle = this.EDIT_TITLE;
       }
     },
     function initE() {
