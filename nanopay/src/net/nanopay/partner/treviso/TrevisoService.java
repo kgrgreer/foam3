@@ -44,9 +44,6 @@ import net.nanopay.country.br.exchange.ExchangeCredential;
 import net.nanopay.country.br.exchange.ExchangeCustomer;
 import net.nanopay.country.br.exchange.ExchangeService;
 import net.nanopay.country.br.exchange.ExchangeServiceProvider;
-import net.nanopay.country.br.OpenDataService;
-import net.nanopay.country.br.PTaxRate;
-import net.nanopay.country.br.PTaxDollarRateResponse;
 import net.nanopay.country.br.tx.NatureCodeLineItem;
 import net.nanopay.fx.afex.AFEXServiceProvider;
 import net.nanopay.fx.FXQuote;
@@ -192,6 +189,7 @@ public class TrevisoService extends ContextAwareSupport implements TrevisoServic
     address.setAddrNr(user.getAddress().getStreetNumber());
     address.setZip(user.getAddress().getPostalCode());
     address.setBusPhoneNr(user.getPhoneNumber());
+    address.setStAbbrvtn(region.getName());
     net.nanopay.partner.treviso.api.Address[] adresses = new net.nanopay.partner.treviso.api.Address[1];
     adresses[0] = address;
     request.setAddresses(adresses);

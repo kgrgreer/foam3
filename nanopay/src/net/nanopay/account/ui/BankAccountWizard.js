@@ -57,7 +57,9 @@ foam.CLASS({
 
   messages: [
     { name: 'SUCCESS', message: 'Bank account successfully added' },
-    { name: 'ERROR', message: 'Bank account error occured' }
+    { name: 'ERROR', message: 'Bank account error occured' },
+    { name: 'CREATE_TITLE', message: 'Add Bank Account' },
+    { name: 'EDIT_TITLE', message: 'Edit Bank Account' }
   ],
 
   properties: [
@@ -66,9 +68,19 @@ foam.CLASS({
       // Map of property-name: {map of property overrides} for configuring properties
       // values include 'label', 'units', and 'view'
     },
+    {
+      class: 'String',
+      name: 'customTitle'
+    }
   ],
 
   methods: [
+    function init() {
+      this.data.accountInformationTitle = this.customTitle ? this.customTitle : this.CREATE_TITLE;
+      if ( this.controllerMode == foam.u2.ControllerMode.EDIT ) {
+        this.data.accountInformationTitle = this.EDIT_TITLE;
+      }
+    },
     function initE() {
       var self = this;
       this.addClass(this.myClass());

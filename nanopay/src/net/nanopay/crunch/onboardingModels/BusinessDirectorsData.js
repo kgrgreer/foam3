@@ -50,12 +50,20 @@ foam.CLASS({
       name: 'needDirector',
       class: 'Boolean',
       section: 'directorsInfoSection',
+      documentation: 'a hack for updating businessTypeId',
       hidden: true,
       transient: true,
       getter: function() {
         var self = this;
         this.businessDAO.find(this.subject.user.id).then((business) => {
+          if ( ! business ) return;
+          
           self.businessTypeId = business.businessTypeId;
+
+          // Clear directors if directors are not required for this business type
+          if ( [1, 2, 4, 7].includes(self.businessTypeId) ) {
+            self.businessDirectors = [];
+          }
         });
       }
     },

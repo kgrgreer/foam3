@@ -290,7 +290,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMo
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.HAS_EXIT_OPTION.label",target:"hasExitOption pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.HAS_EXIT_OPTION.value",target:"true pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.SAVE_LABEL.label",target:"saveLabel pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.SAVE_LABEL.value",target:"Save as draft"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.SAVE_LABEL.value",target:"Salvar como rascunho"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.SAVE_LABEL.documentation",target:"Esta propriedade é para o rótulo personalizado do botão save"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.INVOICE.label",target:"invoice pt"})
 
@@ -921,6 +921,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-11.name",target:"Desbloquear pagamentos domésticos e faturamento"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-11.description",target:"Desbloquear pagamentos e faturamento para o Canadá (CAD para CAD)"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-12.name",target:"Desbloquear pagamentos internacionais"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"bf6a49d5-4027-4dac-a269-4d3ed070609e-4.name",target:"Pagamentos internacionais onboarding"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-12.description",target:"Desbloquear pagamentos internacionais"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-13.name",target:"Desbloquear pagamentos e faturas nacionais e internacionais"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-13.description",target:"Desbloquear pagamentos"})
@@ -1406,7 +1408,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.I
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.INSTITUTION_NUMBER_THREE",target:"O número da instituição deve ter 3 dígitos."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.ADD_SUCCESSFUL",target:"Conta bancária adicionada com sucesso!"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.SECTION_DETAILS_TITLE_VOID",target:"Conecte usando uma verificação de vazio"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.COUNTRY.label",target:"país"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.DENOMINATION.label",target:"denominação"})
 
@@ -1520,6 +1521,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ClientConta
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.CONFIRM_RELATIONSHIP",target:"Tenho uma relação comercial com este beneficiário."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.INVITE_LABEL",target:"Convide este beneficiário para participar "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.RESTRICT_INVITE_LABEL",target:"Este beneficiário não pode ser convidado para participar do Ablii"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.UNABLE_TO_ADD_BANK_ACCOUNT_SPLITTER",target:"loja de recursos"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.UNABLE_TO_ADD_BANK_ACCOUNT",target:"Atualmente você não completou os requisitos necessários\n          para adicionar uma conta ao seu beneficiário. Visite a loja de recursos para permitir pagamentos."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.ERROR_BUSINESS_PROFILE_NAME_MESSAGE",target:"Nome comercial obrigatório."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.INVALID_EMAIL",target:"Endereço de email invalido."})
@@ -1562,7 +1564,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.CRE
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.AVAILABLE_COUNTRIES.label",target:"availableCountries pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.COUNTRIES.label",target:"countries pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.COUNTRIES.documentation",target:"O beneficiário dos países disponíveis nas lojas pode ter conta domiciliada em."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.NO_CORRIDORS_AVAILABLE.label",target:"noCorridorsAvailable pt"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.NO_CORRIDORS_AVAILABLE.label",target:"Ação Requerida"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.NO_CORRIDORS_AVAILABLE.documentation",target:"GUI quando nenhum recurso de corredor foi adicionado ao usuário."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.Contact.SHOULD_INVITE.documentation",target:"Verdadeiro se o usuário quiser convidar o beneficiário para ingressar no Ablii."})
 
@@ -2361,6 +2363,9 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.STA
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.CustomerBasicInformation.INVALID_PHONE_ERROR",target:"Número de telefone comercial obrigatório"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions.SECTION_REVIEW_AGREEMENT_DOCUMENTS_SECTION.title",target:"Leia e aceite os termos e condições"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.account.ui.BankAccountWizard.SUBMIT.label",target:"Próximo"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.account.ui.BankAccountWizard.CREATE_TITLE",target:"Adicionar Conta Bancária"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.account.ui.BankAccountWizard.EDIT_TITLE",target:"Editar Conta Bancária"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ui.BankPickCurrencyView.SECTION_DETAILS_TITLE_VOID",target:"Conecte usando uma verificação de vazio"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.BusinessDirectorArrayView.ADD_MSG",target:"+ Adicionar"})
 
@@ -3296,3 +3301,9 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.Trev
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.invoice.TrevisoNotification.NOTIFICATION_BODY_1",target:"ATENÇÃO : Esta transação ainda não foi enviada! Para completar, envie um TED de ("})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.invoice.TrevisoNotification.NOTIFICATION_BODY_2",target:") para : Treviso Corretora de Câmbio S.A CNPJ: 02.992.317/0001-87 Banco SC Treviso (143) Agencia: 0001 Conta: 1-1 O não envio dos fundos causará o cancelamento automático desta transação."})
+
+p({class:"foam.i18n.Locale",locale:"pt","source":"554af38a-8225-87c8-dfdf-eeb15f71215f-6-5.name","target":"Dados de diretores de negócios"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-6.name",target:"detalhes da transação"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.ui.wizard.WizardView.NEXT_LABEL.value",target:"próximo"})

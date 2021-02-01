@@ -29,6 +29,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.invoice.model.PaymentStatus',
+    'net.nanopay.tx.ExpiredTransactionException',
     'net.nanopay.tx.model.Transaction'
   ],
 
@@ -53,6 +54,11 @@ foam.CLASS({
             } catch (Exception e) {
               logger.log("Could not reput transaction on invoice #" + invoice.getId());
               logger.log(e);
+
+              if ( e instanceof ExpiredTransactionException ) {
+                throw e;
+              }
+
               invoice.setPaymentMethod(PaymentStatus.SUBMIT);
               invoice.setPaymentId("");
               invoice.clearPlan();

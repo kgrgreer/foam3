@@ -35,7 +35,7 @@ p({
   "class": "foam.nanos.boot.NSpec",
   "name": "intuitChargeDateService",
   "lazy": false,
-  "serviceClass": "net.nanopay.partner.intuit.tx.errorfee.IntuitChargeDateService"
+  "serviceClass": "net.nanopay.partner.intuit.tx.billing.IntuitChargeDateService"
 })
 
 p({
