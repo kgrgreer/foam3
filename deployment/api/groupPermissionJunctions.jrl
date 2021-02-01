@@ -182,6 +182,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-dev","targetId":"transaction.rw.*"})
 
 // Update base SME group to allow for DIG access
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-sme","targetId":"bill.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-sme","targetId":"business.create"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-sme","targetId":"business.read.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-sme","targetId":"business.update.*"})
