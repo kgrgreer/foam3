@@ -111,7 +111,7 @@ p({
     "dayOfMonth":-1,
     "month":-1,
     "dayOfWeek":-1,
-    "second":23 
+    "second":23
   },
   "code":"""
     import net.nanopay.fx.afex.cron.AFEXPaymentStatusCron;

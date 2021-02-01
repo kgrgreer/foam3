@@ -28,3 +28,5 @@ p({class:"foam.i18n.Locale",locale:"en",source:"foam.core.ClientRuntimeException
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.crunch.registration.UserRegistrationData.FIRST_NAME.label",target:"First name"})
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.crunch.registration.UserRegistrationData.LAST_NAME.label",target:"Last name"})
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.crunch.registration.UserRegistrationData.PHONE_NUMBER.label",target:"Phone number"})
+
+p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.sme.ui.SendRequestMoney.GO_NEXT.label",target:"Next"})

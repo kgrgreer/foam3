@@ -34,6 +34,9 @@ p({
     .top-bar-img {
       display: none;
     }
+    .net-nanopay-contacts-ui-ContactWizardView-option {
+      display: none;
+    }
     .net-nanopay-ui-Controller {
       overflow: hidden;
     }

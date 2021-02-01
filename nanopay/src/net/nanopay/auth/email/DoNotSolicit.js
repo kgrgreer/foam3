@@ -149,7 +149,6 @@ foam.CLASS({
       name: 'spid',
       class: 'Reference',
       of: 'foam.nanos.auth.ServiceProvider',
-      value: foam.nanos.auth.ServiceProviderAware.GLOBAL_SPID,
       readPermissionRequired: true
     }
   ]
