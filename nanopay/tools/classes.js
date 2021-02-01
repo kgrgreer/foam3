@@ -936,6 +936,8 @@ var classes = [
   // securefact
   'net.nanopay.meter.compliance.secureFact.ResponseError',
   'net.nanopay.meter.compliance.secureFact.SecurefactOnboardingService',
+  'net.nanopay.meter.compliance.secureFact.ServerSecurefactOnboardingService',
+  'net.nanopay.meter.compliance.secureFact.MockSecurefactOnboardingService',
   'net.nanopay.meter.compliance.secureFact.SecurefactRequest',
   'net.nanopay.meter.compliance.secureFact.SecurefactResponse',
   'net.nanopay.meter.compliance.secureFact.SecurefactService',

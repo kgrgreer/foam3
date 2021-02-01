@@ -24,16 +24,18 @@ foam.CLASS({
 
   implements: [
     'foam.core.Validatable',
-    'foam.mlang.Expressions',
+    'foam.mlang.Expressions'
   ],
 
   imports: [
+    'countryDAO',
     'sourceCorridorDAO',
     'subject'
   ],
 
   requires: [
     'foam.dao.PromisedDAO',
+    'foam.nanos.auth.Country',
     'net.nanopay.payment.PaymentProviderCorridor'
   ],
 
@@ -43,7 +45,7 @@ foam.CLASS({
       title: function() {
         return this.SECTION_ACCOUNT_INFORMATION_TITLE;
       }
-    },
+    }
   ],
 
   messages: [
@@ -54,32 +56,58 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'foam.dao.DAOProperty',
+      name: 'permittedCountries',
+      visibility: 'HIDDEN',
+      factory: function() {
+        return this.PromisedDAO.create({
+          of: 'foam.nanos.auth.Country',
+          promise: this.sourceCorridorDAO
+            .select(this.MAP(this.PaymentProviderCorridor.SOURCE_COUNTRY))
+            .then((sink) => {
+              let countries = sink.delegate.array ? sink.delegate.array : [];
+              countries.push(this.subject.user.address.countryId);
+              return this.countryDAO.where(this.IN(this.Country.CODE, sink.delegate.array));
+            })
+        });
+      }
+    },
+    {
+      class: 'Reference',
+      name: 'selectedCountry',
+      of: 'foam.nanos.auth.Country',
+      label: 'Country of bank account',
+      documentation: 'Determines what bank view will be displayed pertaining to country.',
+      view: function(_, x) {
+        return {
+          class: 'foam.u2.view.RichChoiceView',
+          sections: [
+            {
+              placeholder: x.data.PLACEHOLDER,
+              heading: 'Domiciled bank account country',
+              dao$: x.data.permittedCountries$
+            }
+          ]
+        };
+      },
+      postSet: function(o, n) {
+        var bank = (foam.lookup(`net.nanopay.bank.${n}BankAccount`)).create({}, this)
+        this.bankAccount = bank
+      }
+    },
+    {
       class: 'FObjectProperty',
       name: 'bankAccount',
       of: 'net.nanopay.bank.BankAccount',
-      section: 'accountInformation',
       label: '',
-      view: function(_, X){
-        return X.data.slot(function(availableCountries, countries) {
-          let e = foam.mlang.Expressions.create();
-          let  strategies = [];
-          for ( const i of countries) {
-            let model = foam.lookup(`net.nanopay.bank.${ i }BankAccount`);
-            if ( model ) strategies.push(model);
-          }
-          var pred = e.AND(
-              e.EQ(foam.strategy.StrategyReference.DESIRED_MODEL_ID, 'net.nanopay.bank.BankAccount'),
-              e.IN(foam.strategy.StrategyReference.STRATEGY, strategies)
-          );
-          return foam.u2.view.FObjectView.create({
-            of: net.nanopay.bank.BankAccount,
-            predicate: pred,
-            placeholder: X.data.PLACEHOLDER,
-            classIsFinal: true,
-            data$: X.data.bankAccount$,
-            copyOldData: function(o) { return { isDefault: o.isDefault }; }
-          }, X);
-        })
+      visibility: function(selectedCountry) {
+        return selectedCountry == '' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      },
+      view: function(_,X) {
+        return foam.u2.detail.VerticalDetailView.create({
+          useSections: ['clientAccountInformation', 'pad'],
+          showTitle: false
+        }, X)
       },
       validationPredicates: [
         {
@@ -95,32 +123,6 @@ foam.CLASS({
       validateObj: function(bankAccount, bankAccount$errors_) {
         return bankAccount ? bankAccount$errors_ : "text";
       }
-    },
-    {
-      transient: true,
-      flags: ['web'],
-      name: 'availableCountries',
-      visibility: 'HIDDEN',
-      expression: function(sourceCorridorDAO) {
-        return this.PromisedDAO.create({
-          promise: sourceCorridorDAO
-            .select(this.MAP(this.PaymentProviderCorridor.SOURCE_COUNTRY))
-            .then((sink) => {
-              let countries = sink.delegate.array ? sink.delegate.array : [];
-              countries.push(this.subject.user.address.countryId);
-              let unique = [...new Set(countries)];
-              this.countries = unique;
-            })
-        });
-      }
-    },
-    {
-      transient: true,
-      flags: ['web'],
-      name: 'countries',
-      visibility: 'HIDDEN',
-      documentation: ``,
-      factory: function() { return []; }
-    },
+    }
   ],
 });

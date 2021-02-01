@@ -65,7 +65,7 @@ foam.CLASS({
         return hasBankAccount ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
       factory: function() {
-        return net.nanopay.bank.BRBankAccount.create({ accountInformationTitle: '' }, this);
+        return net.nanopay.bank.BRBankAccount.create({ clientAccountInformationTitle: '' }, this);
       }
     },
     {
@@ -93,7 +93,7 @@ foam.CLASS({
         this.hasBankAccount = true;
       }
       if ( this.bankAccount ) {
-        this.bankAccount.copyFrom({ accountInformationTitle: '' });
+        this.bankAccount.copyFrom({ clientAccountInformationTitle: '' });
       }
     },
     {

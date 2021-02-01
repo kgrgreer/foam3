@@ -195,6 +195,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-sme","
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-sme","targetId":"flinksloginid.ro.account"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-sme","targetId":"service.capabilityPayloadDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-sme","targetId":"service.billingService"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-sme","targetId":"service.billDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-sme","targetId":"service.flinksLoginIdDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-sme","targetId":"service.summaryTransactionDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"external-sme","targetId":"service.read.capabilityPayloadDAO"})

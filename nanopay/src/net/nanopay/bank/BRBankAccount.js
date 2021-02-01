@@ -82,6 +82,58 @@ foam.CLASS({
     }
   ],
 
+  sections: [
+    {
+      name: 'clientAccountInformation',
+      title: function() {
+        return this.clientAccountInformationTitle;
+      },
+      properties: [
+        { 
+          name: 'denomination',
+          order: 10,
+          gridColumns: 12
+        },
+        {
+          name: 'name',
+          order: 20,
+          gridColumns: 12
+        },
+        {
+          name: 'flagImage',
+          order: 30,
+          gridColumns: 12
+        },
+        {
+          name: 'country',
+          order: 40,
+          gridColumns: 12
+        },
+        {
+          name: 'accountType',
+          order: 50,
+          gridColumns: 12
+        },
+        {
+          name: 'accountOwnerType',
+          order: 60,
+          gridColumns: 12
+        },
+        {
+          name: 'swiftCode',
+          order: 80,
+          gridColumns: 12
+        },
+        {
+          name: 'iban',
+          order: 90,
+          gridColumns: 12
+        }
+      ],
+      order: 110
+    },
+  ],
+
   properties: [
     {
       name: 'denomination',
