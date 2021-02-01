@@ -33,6 +33,7 @@ foam.RELATIONSHIP({
   targetDAOKey: 'publicKeyDAO',
   cardinality: '1:*',
   sourceProperty: {
-    section: 'systemInformation'
+    section: 'systemInformation',
+    order: 20
   }
 });

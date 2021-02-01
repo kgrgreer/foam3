@@ -15,23 +15,17 @@
  * from nanopay Corporation.
  */
 
-package net.nanopay.partner.intuit.tx.errorfee;
+package net.nanopay.tx.billing;
 
 import foam.core.X;
 import foam.dao.DAO;
-import java.time.DayOfWeek;
-import java.time.LocalDate;
-import java.time.Month;
-import java.time.temporal.TemporalAdjusters;
-import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
-import net.nanopay.tx.errorfee.ChargeDateServiceInterface;
 import net.nanopay.tx.model.Transaction;
 
 import static java.util.Calendar.*;
 
-public class IntuitChargeDateService implements ChargeDateServiceInterface {
+public class ChargeDateService implements ChargeDateServiceInterface {
   @Override
   public Date findChargeDate(Date transactionDate) {
     Calendar created = getInstance();
@@ -41,11 +35,6 @@ public class IntuitChargeDateService implements ChargeDateServiceInterface {
     next.set(YEAR, created.get(YEAR));
     next.set(MONTH, created.get(MONTH) + 1);
     next.set(DAY_OF_MONTH, 1);
-    LocalDate nextMonth = next.getTime().toInstant()
-      .atZone(ZoneId.systemDefault())
-      .toLocalDate();
-    LocalDate firstFriday = nextMonth.with(TemporalAdjusters.firstInMonth(DayOfWeek.FRIDAY));
-    Date firstFridayDate = Date.from(firstFriday.atStartOfDay(ZoneId.systemDefault()).toInstant());
-    return firstFridayDate;
+    return next.getTime();
   }
 }

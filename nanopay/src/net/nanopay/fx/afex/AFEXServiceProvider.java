@@ -1,9 +1,5 @@
 package net.nanopay.fx.afex;
 
-import static foam.mlang.MLang.AND;
-import static foam.mlang.MLang.EQ;
-import static foam.mlang.MLang.INSTANCE_OF;
-
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -25,7 +21,7 @@ import foam.nanos.auth.Country;
 import foam.nanos.auth.Region;
 import foam.nanos.auth.User;
 import foam.nanos.auth.LifecycleState;
-import foam.nanos.crunch.connection.CapabilityPayload;
+import foam.nanos.crunch.UserCapabilityJunction;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
 import foam.util.SafetyUtil;
@@ -34,6 +30,8 @@ import net.nanopay.admin.model.ComplianceStatus;
 import net.nanopay.bank.*;
 import net.nanopay.contacts.AFEXCNBeneficiaryCapability;
 import net.nanopay.contacts.Contact;
+import net.nanopay.country.br.BrazilBusinessInfoData;
+import net.nanopay.fx.ExchangeRate;
 import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
 import net.nanopay.model.BeneficialOwner;
@@ -46,11 +44,12 @@ import net.nanopay.model.PadCapture;
 import net.nanopay.model.PersonalIdentification;
 import net.nanopay.partner.afex.AFEXDigitalAccount;
 import net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding;
-import net.nanopay.payment.Institution;
 import net.nanopay.payment.PaymentService;
 import net.nanopay.tx.UnsupportedDateException;
 import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
+
+import static foam.mlang.MLang.*;
 
 public class AFEXServiceProvider extends ContextAwareSupport implements FXService, PaymentService {
 
@@ -89,10 +88,9 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
           if ( signingOfficer != null ) {
             Boolean useHardCoded = business.getAddress().getCountryId().equals("CA");
-            String identificationType = businessCountry == null || businessCountry.getId().equals("CA") ? "Passport"
-              : "EmployerIdentificationNumber_EIN"; // Madlen asked it is hardcoded
-            String identificationNumber = SafetyUtil.isEmpty(business.getBusinessRegistrationNumber()) ? "N/A"
-              : business.getBusinessRegistrationNumber(); // Madlen asked it is hardcoded
+            String identificationType = businessCountry == null || businessCountry.getId().equals("US") ? "EmployerIdentificationNumber_EIN"
+              : "BusinessRegistrationNumber"; // Madlen asked it is hardcoded
+            String identificationNumber = getBusinessRegistrationNumber(business);// Madlen asked it is hardcoded
             if ( businessRegion != null ) onboardingRequest.setBusinessStateRegion(businessRegion.getRegionCode());
             onboardingRequest.setAccountPrimaryIdentificationExpirationDate("01/01/2099"); // Asked to hardcode this by Madlen(AFEX)
             onboardingRequest.setAccountPrimaryIdentificationNumber( useHardCoded ? "000000000" : identificationNumber);
@@ -102,6 +100,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             if ( businessRegion != null ) onboardingRequest.setBusinessStateRegion(businessRegion.getRegionCode());
             onboardingRequest.setBusinessAddress1(business.getAddress().getAddress());
             onboardingRequest.setBusinessCity(business.getAddress().getCity());
+            onboardingRequest.setWebsite(business.getWebsite());
 
             if ( businessCountry != null )
               onboardingRequest.setAccountPrimaryIdentificationIssuer( useHardCoded ? "Canada" : businessCountry.getName());
@@ -132,6 +131,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
               Country country = contactAddress.findCountryId(this.x);
               if ( country != null ) onboardingRequest.setContactCountryCode(country.getCode());
               onboardingRequest.setContactZip(contactAddress.getPostalCode());
+              onboardingRequest.setCitizenship(country.getName());
             }
 
             try {
@@ -178,6 +178,25 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       ((DAO) x.get("localNotificationDAO")).inX(x).put(notification);
     }
     return false;
+  }
+
+  public String getBusinessRegistrationNumber(Business business) {
+    if ( ! SafetyUtil.isEmpty(business.getBusinessRegistrationNumber()) )
+      return business.getBusinessRegistrationNumber();
+
+    if ( "BR".equals(business.getAddress().getCountryId()) )
+      return findCNPJ(business.getId());
+
+    return "N/A";
+  }
+
+  protected String findCNPJ(long userId) {
+    UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) this.x.get("bareUserCapabilityJunctionDAO")).find(AND(
+      EQ(UserCapabilityJunction.TARGET_ID, "688cb7c6-7316-4bbf-8483-fb79f8fdeaaf"),
+      EQ(UserCapabilityJunction.SOURCE_ID, userId)
+    ));
+
+    return ucj != null && ucj.getData() != null ?  ((BrazilBusinessInfoData)ucj.getData()).getCnpj() : "";
   }
 
   public void pushSigningOfficers(Business business, String clientKey) {
@@ -457,16 +476,48 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     User user = User.findUser(x, userId);
     if ( null == user ) throw new RuntimeException("Unable to find User " + userId);
 
+    var spotRate = findSpotRate(sourceCurrency, targetCurrency);
+    if ( spotRate != null ) {
+      return spotRate.getRate();
+    }
+
     GetRateRequest rateRequest = new GetRateRequest();
     rateRequest.setCurrencyPair(targetCurrency + sourceCurrency);
     try {
       GetRateResponse rateResponse = this.afexClient.getSpotRate(rateRequest, user.getSpid());
       if ( null == rateResponse ) throw new RuntimeException("Unable to get spot rates from AFEX");
-      return "A".equals(rateResponse.getTerms()) ? rateResponse.getInvertedRate() : rateResponse.getRate();
+      spotRate = saveSpotRate(sourceCurrency, targetCurrency, rateResponse);
+      return spotRate.getRate();
     } catch(Exception e) {
       logger_.error("Error to get FX Rate from AFEX.", e);
       throw(e);
     }
+  }
+
+  private ExchangeRate findSpotRate(String sourceCurrency, String targetCurrency) {
+    var fxSpotRateDAO = (DAO) x.get("fxSpotRateDAO");
+    return (ExchangeRate) fxSpotRateDAO.find(
+      AND(
+        EQ(ExchangeRate.FROM_CURRENCY, sourceCurrency),
+        EQ(ExchangeRate.TO_CURRENCY, targetCurrency),
+        EQ(ExchangeRate.FX_PROVIDER, "afex"),
+        GT(ExchangeRate.EXPIRATION_DATE, new Date())
+      )
+    );
+  }
+
+  private ExchangeRate saveSpotRate(String sourceCurrency, String targetCurrency, GetRateResponse rateResponse) {
+    var fxSpotRateDAO = (DAO) x.get("fxSpotRateDAO");
+    return (ExchangeRate) fxSpotRateDAO.put(
+      new ExchangeRate.Builder(x)
+        .setFromCurrency(sourceCurrency)
+        .setToCurrency(targetCurrency)
+        .setRate("A".equals(rateResponse.getTerms()) ? rateResponse.getInvertedRate() : rateResponse.getRate())
+        .setFxProvider("afex")
+        .setExpirationDate(Date.from(LocalDateTime.now().plusHours(1).atZone(ZoneId.systemDefault()).toInstant()))
+        .setValueDate(new Date())
+        .build()
+    );
   }
 
   private Double getConvertedAmount(Quote quote, long amount, Boolean isSettlementAmount ) {
@@ -646,7 +697,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     updateBeneficiaryRequest.setBankName(bankName);
     String bankRoutingCode = bankAccount.getRoutingCode(this.x);
     if ( bankAccount instanceof CABankAccount) {
-      bankRoutingCode = "0" + bankAccount.getInstitutionNumber() + bankRoutingCode;
+      bankRoutingCode = "0" + bankRoutingCode;
     }
     updateBeneficiaryRequest.setBankRoutingCode(bankRoutingCode);
     updateBeneficiaryRequest.setBeneficiaryAddressLine1(bankAddress.getAddress());
@@ -954,16 +1005,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     findBankByNationalIDRequest.setClientAPIKey(clientAPIKey);
     findBankByNationalIDRequest.setCountryCode(bankAccount.getCountry());
     if ( bankAccount instanceof CABankAccount ) {
-      String institutionNumber;
-      if ( SafetyUtil.isEmpty(bankAccount.getInstitutionNumber()) ) {
-        DAO institutionDAO = (DAO) x.get("institutionDAO");
-        Institution institution = (Institution) institutionDAO.find(bankAccount.getInstitution());
-        institutionNumber = institution.getInstitutionNumber();
-      } else {
-        institutionNumber = bankAccount.getInstitutionNumber();
-      }
-      String branchId = SafetyUtil.isEmpty(bankAccount.getBranchId()) ? bankAccount.getRoutingCode(x) : bankAccount.getBranchId();
-      findBankByNationalIDRequest.setNationalID("0" + institutionNumber + branchId);
+      findBankByNationalIDRequest.setNationalID("0" + bankAccount.getRoutingCode(x) );
     } else if ( bankAccount instanceof USBankAccount ) {
       findBankByNationalIDRequest.setNationalID(bankAccount.getBranchId());
     } else {

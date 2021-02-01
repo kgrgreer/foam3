@@ -14,7 +14,7 @@
  * is strictly forbidden unless prior written permission is obtained
  * from nanopay Corporation.
  */
-package net.nanopay.tx.errorfee;
+package net.nanopay.tx.billing;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.nanos.auth.Address;
@@ -28,7 +28,7 @@ import java.time.temporal.TemporalAdjusters;
 import java.time.ZoneId;
 import java.util.Calendar;
 import java.util.Date;
-import net.nanopay.partner.intuit.tx.errorfee.IntuitChargeDateService;
+import net.nanopay.partner.intuit.tx.billing.IntuitChargeDateService;
 
 import static foam.mlang.MLang.EQ;
 import static java.util.Calendar.*;

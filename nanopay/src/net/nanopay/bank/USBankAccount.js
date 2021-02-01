@@ -45,12 +45,6 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'accountInformation',
-      title: function() {
-        return this.forContact ? '' : this.SECTION_DETAILS_TITLE_VOID;
-      }
-    },
-    {
       name: 'pad',
       title: function() {
         return this.plaidResponseItem ?

@@ -1162,17 +1162,19 @@ var classes = [
   'net.nanopay.tx.planner.RbcInterTrustPlanner',
   'net.nanopay.tx.planner.BmoInterTrustPlanner',
 
-  // error fees
-  'net.nanopay.tx.errorfee.ChargeDateServiceInterface',
-  'net.nanopay.tx.errorfee.ClientErrorBillingService',
-  'net.nanopay.tx.errorfee.ErrorBilling',
-  'net.nanopay.tx.errorfee.ErrorCharge',
-  'net.nanopay.tx.errorfee.ErrorChargeFee',
-  'net.nanopay.tx.errorfee.ErrorFee',
+  // Billing
+  'net.nanopay.tx.billing.Bill',
+  'net.nanopay.tx.billing.BillingFee',
+  'net.nanopay.tx.billing.BillingServiceInterface',
+  'net.nanopay.tx.billing.ChargeDateServiceInterface',
+  'net.nanopay.tx.billing.ClientBillingService',
+  'net.nanopay.tx.billing.CreateBillsRule',
+  'net.nanopay.tx.billing.ErrorFee',
 
   // Fees
   'net.nanopay.tx.fee.Fee',
   'net.nanopay.tx.fee.FeeExpr',
+  'net.nanopay.tx.fee.FeeRateExpr',
   'net.nanopay.tx.fee.FeeType',
   'net.nanopay.tx.fee.FixedFee',
   'net.nanopay.tx.fee.InformationalFee',
@@ -1208,6 +1210,7 @@ var classes = [
   'net.nanopay.country.br.exchange.ArrayOfBoleto',
   'net.nanopay.country.br.exchange.ArrayOfNatureza',
   'net.nanopay.country.br.exchange.ArrayOfParcelas',
+  'net.nanopay.country.br.exchange.BancoConfig',
   'net.nanopay.country.br.exchange.Boleto',
   'net.nanopay.country.br.exchange.BoletoStatusResponse',
   'net.nanopay.country.br.exchange.BoletoStatusResult',
@@ -1338,7 +1341,6 @@ var classes = [
   'net.nanopay.crunch.ruler.PermissionedUCJRule',
 
   // crunch onboarding
-  'net.nanopay.crunch.onboardingModels.CreateRegisterPaymentProviderUCJ',
   'net.nanopay.crunch.onboardingModels.InitialBusinessData',
   'net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData',
   'net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso',
@@ -1567,7 +1569,7 @@ var skeletons = [
   'net.nanopay.fx.ExchangeRateInterface',
   'net.nanopay.fx.FXService',
   'net.nanopay.tx.UserTransactionLimit',
-  'net.nanopay.tx.errorfee.ErrorBilling',
+  'net.nanopay.tx.billing.BillingServiceInterface',
   'net.nanopay.liquidity.LiquidityAuth',
   'net.nanopay.auth.passwordutil.PasswordEntropy',
   'net.nanopay.payment.CorridorService',
