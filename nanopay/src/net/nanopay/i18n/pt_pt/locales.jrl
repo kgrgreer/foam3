@@ -1375,27 +1375,27 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.I
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.INSTITUTION_NUMBER_REQUIRED",target:"Número da instituição obrigatório"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.BRANCH_ID_INVALID",target:"O ID da agência deve ter 5 dígitos"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.DENOMINATION.label",target:"denominação"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.DENOMINATION.label",target:"Denominação"})
 //p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.DENOMINATION.value",target:"BRL pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.BRANCH_ID_REQUIRED",target:"Identificação da filial necessária"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.COUNTRY.label",target:"país"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.COUNTRY.label",target:"País"})
 //p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.COUNTRY.value",target:"BR pt"})
 
 
 //p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.FLAG_IMAGE.value",target:"images/flags/brazil.png pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.INSTITUTION_NUMBER.label",target:"número da instituição"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.BRANCH_ID.label",target:"id da filial"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.INSTITUTION_NUMBER.label",target:"Número da instituição"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.BRANCH_ID.label",target:"Id da filial"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.ACCOUNT_NUMBER.label",target:"Númeroº da conta"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.ACCOUNT_TYPE.label",target:"tipo de conta"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.ACCOUNT_TYPE.label",target:"Tipo de conta"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.ACCOUNT_TYPE.view.placeholder",target:"Por favor selecione"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.ACCOUNT_OWNER_TYPE.label",target:"Titularidade"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.ACCOUNT_OWNER_TYPE.view.placeholder",target:"Por favor selecione"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.IBAN.label",target:"Número de conta bancária internacional (IBAN)"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.TYPE.label",target:"tipo"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.TYPE.label",target:"Tipo"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.HOLDER2",target:"Conjunta"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.CURRENT",target:"conta corrente"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.SAVINGS",target:"conta poupança"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.CURRENT",target:"Conta corrente"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.SAVINGS",target:"Conta poupança"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BRBankAccount.PLEASE_SELECT",target:"Por favor selecione"})
 
 //CA
