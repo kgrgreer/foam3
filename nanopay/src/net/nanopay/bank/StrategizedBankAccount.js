@@ -98,13 +98,15 @@ foam.CLASS({
     {
       class: 'FObjectProperty',
       name: 'bankAccount',
+      label: '',
       of: 'net.nanopay.bank.BankAccount',
       visibility: function(selectedCountry) {
         return selectedCountry == '' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
       view: function(_,X) {
         return foam.u2.detail.VerticalDetailView.create({
-          useSections: ['clientAccountInformation', 'pad']
+          useSections: ['clientAccountInformation', 'pad'],
+          showTitle: false
         }, X)
       },
       validationPredicates: [
