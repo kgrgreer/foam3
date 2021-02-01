@@ -92,7 +92,6 @@ foam.CLASS({
       },
       postSet: function(o, n) {
         var bank = (foam.lookup(`net.nanopay.bank.${n}BankAccount`)).create({}, this)
-        if ( bank.voidCheckImage ) bank.voidCheckImage.visibility = foam.u2.DisplayMode.HIDDEN
         this.bankAccount = bank
       }
     },
