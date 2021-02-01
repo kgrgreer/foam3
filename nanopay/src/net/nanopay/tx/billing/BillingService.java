@@ -41,7 +41,7 @@ public class BillingService implements BillingServiceInterface {
   @Override
   public void createBills(X x, Transaction transaction) {
     ChargeDateServiceInterface chargeDateService = (ChargeDateServiceInterface) x.get("chargeDateService");
-    DAO billDAO = (DAO) x.get("billDAO");
+    DAO billDAO = (DAO) x.get("localBillDAO");
     DAO errorCodeDAO = (DAO) x.get("errorCodeDAO");
     DAO errorFeeDAO = (DAO) x.get("localErrorFeeDAO");
 
@@ -58,7 +58,10 @@ public class BillingService implements BillingServiceInterface {
       EQ(ErrorFee.ERROR_CODE, errorCodeObj.getId())
     ).select(new ArraySink());
 
-    Date chargeDate = chargeDateService.findChargeDate(transaction.getLastStatusChange());
+    Date transactionDate = transaction.getLastStatusChange() != null ?
+      transaction.getLastStatusChange() :
+      transaction.getLastModified();
+    Date chargeDate = chargeDateService.findChargeDate(transactionDate);
     Map<ChargedTo, List<BillingFee>> billingMap = new HashMap<>();
     Transaction originatingSummaryTxn = transaction.findRoot(x);
 
@@ -88,6 +91,7 @@ public class BillingService implements BillingServiceInterface {
       bill.setOriginatingTransaction(transaction.getId());
       bill.setChargeDate(chargeDate);
       bill.setStatus(TransactionStatus.PENDING);
+      bill.setSpid(transaction.getSpid());
 
       if ( originatingSummaryTxn instanceof SummaryTransaction ) {
         bill.setOriginatingSummaryTransaction(originatingSummaryTxn.getId());
