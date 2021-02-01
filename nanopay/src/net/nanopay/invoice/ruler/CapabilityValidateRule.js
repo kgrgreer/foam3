@@ -58,8 +58,9 @@ foam.CLASS({
         {
             name: 'applyAction',
             javaCode: `
-                var invoice = (Invoice) obj.fclone(); // After rule.
-                var capable = (Capable) obj;
+                FObject clonedObj = (FObject) obj.fclone();
+                var invoice = (Invoice) clonedObj;
+                var capable = (Capable) clonedObj;
 
                 try {
                     // If invoice is valid & capabilities are granted, set status to QUOTING
