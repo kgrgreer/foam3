@@ -23,7 +23,6 @@ p({
   class: "foam.nanos.crunch.Capability",
   id: "bpp-tx-fees",
   name: "Enable BPP Fees",
-  version: "0",
   enabled: true,
   permissionsGranted: [
     "rule.read.454df571-f639-4506-8d59-98b4f39934e4",
