@@ -936,6 +936,8 @@ var classes = [
   // securefact
   'net.nanopay.meter.compliance.secureFact.ResponseError',
   'net.nanopay.meter.compliance.secureFact.SecurefactOnboardingService',
+  'net.nanopay.meter.compliance.secureFact.ServerSecurefactOnboardingService',
+  'net.nanopay.meter.compliance.secureFact.MockSecurefactOnboardingService',
   'net.nanopay.meter.compliance.secureFact.SecurefactRequest',
   'net.nanopay.meter.compliance.secureFact.SecurefactResponse',
   'net.nanopay.meter.compliance.secureFact.SecurefactService',
@@ -1174,6 +1176,7 @@ var classes = [
   // Fees
   'net.nanopay.tx.fee.Fee',
   'net.nanopay.tx.fee.FeeExpr',
+  'net.nanopay.tx.fee.FeeRateExpr',
   'net.nanopay.tx.fee.FeeType',
   'net.nanopay.tx.fee.FixedFee',
   'net.nanopay.tx.fee.InformationalFee',
@@ -1209,6 +1212,7 @@ var classes = [
   'net.nanopay.country.br.exchange.ArrayOfBoleto',
   'net.nanopay.country.br.exchange.ArrayOfNatureza',
   'net.nanopay.country.br.exchange.ArrayOfParcelas',
+  'net.nanopay.country.br.exchange.BancoConfig',
   'net.nanopay.country.br.exchange.Boleto',
   'net.nanopay.country.br.exchange.BoletoStatusResponse',
   'net.nanopay.country.br.exchange.BoletoStatusResult',

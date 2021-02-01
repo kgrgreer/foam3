@@ -64,10 +64,13 @@ foam.CLASS({
       updateVisibility: 'RO'
     },
     {
-      name: 'IBAN',
+      name: 'iban',
       class: 'Reference',
       of: 'net.nanopay.tx.IBAN',
       targetDAOKey: 'ibanDAO',
+      section: 'accountInformation',
+      order: 80,
+      gridColumns: 6
     }
   ],
 
@@ -86,8 +89,9 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'liquiditySettingsSection',
-      title: 'Liquidity Settings'
+      name: 'liquiditySettingsInformation',
+      title: 'Liquidity Settings',
+      order: 40
     }
   ],
 

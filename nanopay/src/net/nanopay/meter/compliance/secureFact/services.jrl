@@ -63,6 +63,6 @@ p({
   "name":"securefactOnboardingService",
   "lazy":false,
   "service":{
-    "class":"net.nanopay.meter.compliance.secureFact.SecurefactOnboardingService"
+    "class":"net.nanopay.meter.compliance.secureFact.ServerSecurefactOnboardingService"
   }
 })

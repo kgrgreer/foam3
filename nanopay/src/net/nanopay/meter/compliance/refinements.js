@@ -56,6 +56,8 @@ foam.CLASS({
       of: 'net.nanopay.admin.model.ComplianceStatus',
       name: 'compliance',
       section: 'complianceInformation',
+      order: 10,
+      gridColumns: 6,
       documentation: 'Operations approval status for bank account.',
       readPermissionRequired: true,
       writePermissionRequired: true,

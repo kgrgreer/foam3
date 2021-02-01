@@ -45,7 +45,7 @@ foam.CLASS({
     },
     {
       class: 'Reference',
-      targetDAOKey: 'localTransactionDAO',
+      targetDAOKey: 'transactionDAO',
       name: 'originatingTransaction',
       of: 'net.nanopay.tx.model.Transaction'
     },
