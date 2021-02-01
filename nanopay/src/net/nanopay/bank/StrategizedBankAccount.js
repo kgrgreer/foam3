@@ -105,7 +105,7 @@ foam.CLASS({
       },
       view: function(_,X) {
         return foam.u2.detail.VerticalDetailView.create({
-          useSections: ['accountInformation', 'pad']
+          useSections: ['clientAccountInformation', 'pad']
         }, X)
       },
       validationPredicates: [
