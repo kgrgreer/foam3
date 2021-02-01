@@ -24,19 +24,19 @@ foam.CLASS({
 
   implements: [
     'foam.core.Validatable',
-    'foam.mlang.Expressions',
+    'foam.mlang.Expressions'
   ],
 
   imports: [
-    'sourceCorridorDAO',
-    'subject',
     'countryDAO',
+    'sourceCorridorDAO',
+    'subject'
   ],
 
   requires: [
     'foam.dao.PromisedDAO',
-    'net.nanopay.payment.PaymentProviderCorridor',
     'foam.nanos.auth.Country',
+    'net.nanopay.payment.PaymentProviderCorridor'
   ],
 
   sections: [
