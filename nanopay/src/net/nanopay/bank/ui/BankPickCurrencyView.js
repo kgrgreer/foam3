@@ -203,7 +203,6 @@ foam.CLASS({
     font-size: 16px;
   }
   ^ .net-nanopay-sme-ui-SMEModal-inner {
-    width: 515px;
     height: 500px;
   }
   ^ .net-nanopay-sme-ui-SMEModal-content {
@@ -219,7 +218,8 @@ foam.CLASS({
     { name: 'SUB_TITLE', message: 'Connect through a banking partner below, or ' },
     { name: 'CONNECT_LABEL', message: 'connect with a void check' },
     { name: 'BANK_ADDED', message: 'Your bank account was successfully added' },
-    { name: 'CHOOSE_COUNTRY', message: 'Please select the originating country of the bank account you would like to add.' }
+    { name: 'CHOOSE_COUNTRY', message: 'Please select the originating country of the bank account you would like to add.' },
+    { name: 'SECTION_DETAILS_TITLE_VOID', message: 'Connect using a void check' }
   ],
 
   properties: [
@@ -317,7 +317,8 @@ foam.CLASS({
                   this.add(this.SMEModal.create().tag({
                     class: 'net.nanopay.account.ui.BankAccountWizard',
                     data: this.bankAccount,
-                    useSections: ['accountInformation', 'pad']
+                    customTitle: this.SECTION_DETAILS_TITLE_VOID,
+                    useSections: ['clientAccountInformation', 'pad']
                   }));
                 })
               .end()

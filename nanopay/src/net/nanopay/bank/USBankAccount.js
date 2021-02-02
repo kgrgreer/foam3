@@ -45,10 +45,52 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'accountInformation',
+      name: 'clientAccountInformation',
       title: function() {
-        return this.forContact ? '' : this.SECTION_DETAILS_TITLE_VOID;
-      }
+        return this.clientAccountInformationTitle;
+      },
+      properties: [
+        { 
+          name: 'denomination',
+          order: 10,
+          gridColumns: 12
+        },
+        {
+          name: 'name',
+          order: 20,
+          gridColumns: 12
+        },
+        {
+          name: 'flagImage',
+          order: 30,
+          gridColumns: 12
+        },
+        {
+          name: 'country',
+          order: 40,
+          gridColumns: 12
+        },
+        {
+          name: 'voidChequeImage',
+          order: 50,
+          gridColumns: 12
+        },
+        {
+          name: 'branchId',
+          order: 60,
+          gridColumns: 6
+        },
+        {
+          name: 'accountNumber',
+          order: 70,
+          gridColumns: 6
+        },
+        {
+          name: 'supportingDocuments',
+          order: 80,
+          gridColumns: 12
+        }
+      ]
     },
     {
       name: 'pad',
@@ -311,7 +353,8 @@ foam.CLASS({
           views: [
             {
               class: 'foam.u2.view.FObjectView',
-              of: 'net.nanopay.model.USPadCapture'
+              of: 'net.nanopay.model.USPadCapture',
+              classIsFinal: true
             },
             {
               // displays us bank account capabilities

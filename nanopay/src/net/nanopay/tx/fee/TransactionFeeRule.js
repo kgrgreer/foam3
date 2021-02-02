@@ -176,6 +176,10 @@ foam.CLASS({
     {
       name: 'validity',
       visibility: 'HIDDEN'
+    },
+    {
+      name: 'spid',
+      value: ''
     }
   ],
 

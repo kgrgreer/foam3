@@ -26,6 +26,7 @@ import foam.nanos.logger.Logger;
 import foam.nanos.logger.PrefixLogger;
 import foam.nanos.om.OMLogger;
 import foam.util.SafetyUtil;
+import foam.util.StringUtil;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URISyntaxException;
@@ -213,7 +214,7 @@ public class FepWebService extends ContextAwareSupport implements FepWeb {
     } catch(Exception e) {
       logger.error(e);
     }
-    return json;
+    return StringUtil.normalize(json);
   }
 
   protected void logRequestMessage(String methodName, String msg) {

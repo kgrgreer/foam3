@@ -42,6 +42,10 @@ foam.CLASS({
     },
     {
       class: 'String',
+      name: 'CONTA'
+    },
+    {
+      class: 'String',
       name: 'beneficiaryType',
       documentation: 'Type of beneficiary supported. A - Individual/Company'
     },

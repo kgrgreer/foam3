@@ -16,18 +16,26 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.tx.errorfee',
-  name: 'ClientErrorBillingService',
+  package: 'net.nanopay.tx.billing',
+  name: 'BillingFee',
 
-  implements: [
-    'net.nanopay.tx.errorfee.ErrorBilling'
-  ],
+  documentation: 'Represents details on the charges associated to a transaction error',
 
   properties: [
     {
-      class: 'Stub',
-      of: 'net.nanopay.tx.errorfee.ErrorBilling',
-      name: 'delegate'
+      class: 'UnitValue',
+      name: 'amount',
+      documentation: 'Amount being charged'
+    },
+    {
+      class: 'String',
+      name: 'currency',
+      documentation: 'Currency of amount being charged'
+    },
+    {
+      class: 'String',
+      name: 'description',
+      documentation: 'Description of the charge'
     }
   ]
 });

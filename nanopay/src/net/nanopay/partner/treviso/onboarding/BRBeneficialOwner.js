@@ -89,7 +89,7 @@ foam.CLASS({
           placeholder: X.data.PLACEHOLDER,
           sections: [
             {
-              heading$: X.data.RICHCHOICE_SELECTION_TITLE,
+              heading: X.data.RICHCHOICE_SELECTION_TITLE,
               dao: X.countryDAO
             }
           ]

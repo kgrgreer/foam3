@@ -1816,9 +1816,9 @@ p({
     users = userDAO.select(new ArraySink()).getArray();
 
     for ( User user : users ) {
-      notificationSetting = user.getNotificationSettings(x).where(NOT(INSTANCE_OF(EmailSetting.class))).select(new Count());
-      emailSetting = user.getNotificationSettings(x).where(INSTANCE_OF(EmailSetting.class)).select(new Count());
-      smsSetting = user.getNotificationSettings(x).where(INSTANCE_OF(SMSSetting.class)).select(new Count());
+      notificationSetting = user.getNotificationSettings(x).where(CLASS_OF(NotificationSetting.class)).select(new Count());
+      emailSetting = user.getNotificationSettings(x).where(CLASS_OF(EmailSetting.class)).select(new Count());
+      smsSetting = user.getNotificationSettings(x).where(CLASS_OF(SMSSetting.class)).select(new Count());
 
       if (notificationSetting.getValue() <= 0) {
         notificationSetting = new NotificationSetting();
@@ -1850,17 +1850,17 @@ p({
       junctionId.setTargetId(junction.getTargetId());
 
       notificationSettings = notificationSettingDAO.where(AND(new Predicate [] {
-        NOT(INSTANCE_OF(EmailSetting.class)),
+        CLASS_OF(NotificationSetting.class),
         EQ(NotificationSetting.USER_JUNCTION, junctionId)
       })).select(new Count()).getValue();
 
       emailSettings = notificationSettingDAO.where(AND(new Predicate [] {
-        INSTANCE_OF(EmailSetting.class),
+        CLASS_OF(EmailSetting.class),
         EQ(NotificationSetting.USER_JUNCTION, junctionId)
       })).select(new Count()).getValue();
 
       smsSettings = notificationSettingDAO.where(AND(new Predicate [] {
-        INSTANCE_OF(SMSSetting.class),
+        CLASS_OF(SMSSetting.class),
         EQ(NotificationSetting.USER_JUNCTION, junctionId)
       })).select(new Count()).getValue();
 

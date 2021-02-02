@@ -82,7 +82,6 @@ p({
       .setPm(true)
       .setPipelinePm(true)
       .setEnableInterfaceDecorators(false)
-      .setServiceProviderAware(true)
       .setRuler(false)
       .setCluster(false)
       .build();
