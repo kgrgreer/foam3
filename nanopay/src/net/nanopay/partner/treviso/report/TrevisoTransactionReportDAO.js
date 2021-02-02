@@ -31,6 +31,8 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.dao.ArraySink',
     'foam.dao.Sink',
+    'foam.mlang.Constant',
+    'foam.mlang.predicate.*',
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.partner.treviso.report.TrevisoTransactionReport',
     'net.nanopay.tx.model.Transaction',
@@ -57,10 +59,61 @@ foam.CLASS({
         if ( sink == null )
           return super.select_(x, sink, skip, limit, order, predicate);
 
+        Predicate newPredicate = new True();
+
+        if ( predicate != null &&
+              predicate instanceof And ) {
+          Predicate predicateContent = ((And) predicate).getArgs()[1];
+          if ( predicateContent instanceof And ) {
+            newPredicate = AND(
+              OR(
+                GTE(
+                  Transaction.CREATED,
+                  ((Constant) ((Gt) ((And) predicateContent).getArgs()[0]).getArg2()).getValue()
+                ),
+                GTE(
+                  Transaction.PROCESS_DATE,
+                  ((Constant) ((Gt) ((And) predicateContent).getArgs()[0]).getArg2()).getValue()
+                ),
+                GTE(
+                  Transaction.COMPLETION_DATE,
+                  ((Constant) ((Gt) ((And) predicateContent).getArgs()[0]).getArg2()).getValue()
+                )
+              ),
+              LTE(
+                Transaction.CREATED,
+                ((Constant) ((Lt) ((And) predicateContent).getArgs()[1]).getArg2()).getValue()
+              )
+            );
+          } else if ( predicateContent instanceof Gt ) {
+            newPredicate = OR(
+              GTE(
+                Transaction.CREATED,
+                ((Constant) ((Gt) predicateContent).getArg2()).getValue()
+              ),
+              GTE(
+                Transaction.PROCESS_DATE,
+                ((Constant) ((Gt) predicateContent).getArg2()).getValue()
+              ),
+              GTE(
+                Transaction.COMPLETION_DATE,
+                ((Constant) ((Gt) predicateContent).getArg2()).getValue()
+              )
+            );
+          } else if ( predicateContent instanceof Lt ) {
+            newPredicate = LTE(
+              Transaction.CREATED,
+              ((Constant) ((Lt) predicateContent).getArg2()).getValue()
+            );
+          } else {
+            newPredicate = predicate;
+          }
+        }
+
         Sink decoratedSink = decorateSink(x, sink, skip, limit, order, predicate);
 
         // Retrieve the DAO
-        DAO transactionDAO          = (DAO) x.get("localTransactionDAO");
+        DAO transactionDAO = (DAO) x.get("localTransactionDAO");
         
         DateFormat dateFormat = new SimpleDateFormat("yyyy.MM.dd 'at' HH:mm:ss z");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));

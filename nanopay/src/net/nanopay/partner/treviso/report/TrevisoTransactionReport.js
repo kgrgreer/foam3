@@ -35,7 +35,32 @@ foam.CLASS({
     * Bank Fee
   `,
 
+  tableColumns: [
+    'id',
+    'date',
+    'payer',
+    'sourceCurrency',
+    'payee',
+    'destinationCurrency',
+    'totalFees',
+    'spotRate',
+    'spreadRate',
+    'totalAmount',
+    'pTaxRate',
+    'bankFee'
+  ],
+
+  searchColumns: [
+    'dateRange'
+  ],
+
   properties: [
+    {
+      class: 'DateTime',
+      name: 'dateRange',
+      documentation: 'This is a "virtual" property for catching user\'s selection.',
+      visibility: 'HIDDEN'
+    },
     {
       class: 'String',
       name: 'id',
