@@ -931,8 +931,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-14.description",target:"Certifique-se de que todos os dados enviados foram revisados"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5.name",target:"Privilégios de oficial de assinatura"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-1a5.description",target:"Desbloquear privilégios de oficial de assinatura"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-4.name",target:"Detalhes da empresa"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eebsdf3225y-4.name",target:"Detalhes da empresa"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-4.name",target:"Detalhes do negócio"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eebsdf3225y-4.name",target:"Detalhes do negócio"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eebsdf3225y-4.documentation",target:"Uma versão simplificada de Detalhes de Negócios contendo apenas Tipo de Negócio e Setor de Negócios"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"05a663b8-2b48-11eb-adc1-0242ac120002.name",target:"Ativar pagamentos internacionais"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"05a663b8-2b48-11eb-adc1-0242ac120002.description",target:"Ativar pagamentos internacionais"})
@@ -1143,7 +1143,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.OPERATING_UNDER_DIFFERENT_NAME.documentation",target:"Se a empresa opera com um nome diferente."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.OPERATING_BUSINESS_NAME.label",target:"Companhia"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.OPERATING_BUSINESS_NAME.documentation",target:"O nome da empresa exibido ao público. Isso pode ser diferente\n        do nome da organização."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.SECTION_BUSINESS_DETAILS_SECTION.title",target:"Insira os detalhes da empresa"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.SECTION_BUSINESS_DETAILS_SECTION.title",target:"Tipo de negócio e setor"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessTypeAndSector.PLACE_HOLDER",target:"Por favor selecione..."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessTypeAndSector.BUSINESS_TYPE_ERROR",target:"Selecione o tipo de negócio."})
@@ -1152,7 +1152,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessTypeAndSector.BUSINESS_TYPE_ID.documentation",target:"O ID dos detalhes proprietários da empresa. Este ID é encontrado consultando o businessTypeDAO."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessTypeAndSector.BUSINESS_SECTOR_ID.documentation",target:"O ID do agrupamento econômico geral para a empresa. Este ID é encontrado consultando o businessSectorDAO."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessTypeAndSector.BUSINESS_SECTOR_ID.label",target:"Setor de negócios"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessTypeAndSector.SECTION_BUSINESS_DETAILS_SECTION.title",target:"Insira os detalhes da empresa"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessTypeAndSector.SECTION_BUSINESS_DETAILS_SECTION.title",target:"Tipo de negócio e setor"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SelectionViewOwner.OTHER_SELECTION",target:"Se o proprietário não for um oficial de assinatura, selecione o seguinte ..."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SelectionViewOwner.SO_SELECTION",target:"Selecione um dos seguintes agentes de assinatura ..."})
@@ -2108,45 +2108,6 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwne
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.ADDRESS.documentation",target:"O endereço do beneficiário"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.BeneficialOwner.VIEW_COMPLIANCE_HISTORY.label",target:"Ver Histórico de Conformidade"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.PLACE_HOLDER",target:"por favor selecione..."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessIncorporationDateData.SECTION_BUSINESS_INCORPORATION_DATE_SECTION.title",target:"Insira a data de incorporação da empresa"})
-
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.BUSINESS_TYPE_ERROR",target:"Selecione o tipo de negócio."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.NATURE_OF_BUSINESS_ERROR",target:"Selecione o setor empresarial."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.SOURCE_OF_FUNDS_ERROR",target:"Forneça a fonte primária de fundos."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.OPERATING_NAME_ERROR",target:"Insira o nome da empresa."})
-
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.YES",target:"Sim"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.NO",target:"Não"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.OTHER_LABEL",target:"De outros"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.BUSINESS_LABEL",target:"Sua empresa opera com um nome diferente?"})
-
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.OPERATING_NAME_LABEL",target:"Digite seu nome operacional"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.PRIMARY_LABEL",target:"Fonte primária de fundos"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.OPTION_ONE",target:"Compra de bens produzidos"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.OPTION_TWO",target:"Conclusão de contratos de serviço"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.OPTION_THREE",target:"Retorno do investimento"})
-
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.OPTION_FOUR",target:"Taxas de corretagem"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.OPTION_FIVE",target:"Honorários de Consultoria"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.OPTION_SIX",target:"Venda de investimentos"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.OPTION_SEVEN",target:"herança"})
-
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.OPTION_EIGHT",target:"Doações, empréstimos e outras fontes de financiamento"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.BUSINESS_TYPE_ID.label",target:"Tipo de negócios"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.BUSINESS_TYPE_ID.documentation",target:"The ID of the proprietary details of the business. This ID is found by querying the businessTypeDAO. pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.BUSINESS_SECTOR_ID.label",target:"Setor de negócios"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.BUSINESS_SECTOR_ID.documentation",target:"O ID do agrupamento econômico geral para a empresa. Este ID é encontrado consultando o businessSectorDAO."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.SOURCE_OF_FUNDS.label",target:"Fonte de renda"})
-
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.SOURCE_OF_FUNDS.documentation",target:"As entidades que fornecem financiamento para o negócio."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.OPERATING_UNDER_DIFFERENT_NAME.label",target:"operando sob um nome diferente"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.OPERATING_UNDER_DIFFERENT_NAME.documentation",target:"Se a empresa opera com um nome diferente."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.OPERATING_BUSINESS_NAME.label",target:"companhia"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.OPERATING_BUSINESS_NAME.documentation",target:"O nome da empresa exibido ao público. Isso pode ser diferente do nome da organização."})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessInformationData.SECTION_BUSINESS_DETAILS_SECTION.title",target:"Insira os detalhes da empresa"})
-
-
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerQuestion.IS_SIGNING_OFFICER.help",target:"Um oficial de assinatura é uma pessoa legalmente autorizada a agir em nome da empresa (por exemplo, CEO, COO, diretor do conselho)"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.PEPHIORELATED.help",target:"Uma pessoa politicamente exposta (PEP) ou o chefe de uma organização internacional (HIO) é uma pessoa a quem foi confiada uma posição de destaque que normalmente vem com a oportunidade de influenciar decisões e a capacidade de controlar recursos"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData.THIRD_PARTY.help",target:"Um terceiro é uma pessoa ou entidade que instrui outra pessoa ou entidade a realizar uma atividade ou transação financeira em seu nome"})
@@ -3040,7 +3001,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.Receivabl
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SendRequestMoney.CANCEL",target:"Cancelar"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"4c46cdb8-06b2-11eb-adc1-0242ac120002.name",target:"Natureza da relação comercial"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"9d4d667c-04c3-11eb-adc1-0242ac120002.name",target:"Capital de negócios e patrimônio líquido"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"9d4d667c-04c3-11eb-adc1-0242ac120002.name",target:"Finanças de negócios"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.BankAccount.AVAILABLE_CURRENCIES_MSG",target:"Moedas Disponíveis"})
 
@@ -3151,7 +3112,6 @@ p({class:"foam.i18n.Locale",locale:"pt","source":"25F5C0CC-DD7E-4206-B392-46EAA9
 p({class:"foam.i18n.Locale",locale:"pt","source":"2910C2C9-3597-42A3-BF85-CFBC8F0E1388.name","target":"Capacidade de fatura do usuário"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"7b41a164-29bd-11eb-adc1-0242ac120002.name","target":"Conta no banco do brasil"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"554af38a-8225-87c8-dfdf-eeb15f71215e-25.name","target":"Termos e Condições"})
-p({class:"foam.i18n.Locale",locale:"pt","source":"9d4d667c-04c3-11eb-adc1-0242ac120002.name","target":"Capital de negócios e patrimônio líquido"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"af3d9c28-0674-11eb-adc1-0242ac120002.name","target":"Referências Comerciais"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"4c46cdb8-06b2-11eb-adc1-0242ac120002.name","target":"Natureza da relação comercial"})
 
