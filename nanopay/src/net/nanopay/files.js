@@ -1856,6 +1856,9 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/TrevisoSendEmailToAllNotification' },
   { name: 'net/nanopay/partner/treviso/invoice/TrevisoNotification' },
 
+  // bpp
+  { name: 'net/nanopay/partner/bpp/tx/BPPTransaction' },
+
   // support
   { name: 'net/nanopay/support/SupportAccount' },
   { name: 'net/nanopay/support/SupportBusiness' },

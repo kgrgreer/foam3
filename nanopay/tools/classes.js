@@ -1330,6 +1330,9 @@ var classes = [
   'net.nanopay.partner.treviso.TrevisoSendEmailToAllNotification',
   'net.nanopay.partner.treviso.invoice.TrevisoNotification',
 
+  // bpp
+  'net.nanopay.partner.bpp.tx.BPPTransaction',
+
   // crunch predicates - todo move all predicates used in crunch here
   'net.nanopay.crunch.predicate.IsBusiness',
   'net.nanopay.crunch.predicate.BusinessPassedCompliance',
