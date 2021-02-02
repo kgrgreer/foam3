@@ -226,7 +226,7 @@ foam.CLASS({
     {
       name: 'branchId',
       type: 'String',
-      label: 'Transitddddd',
+      label: 'Transit',
       section: 'accountInformation',
       order: 130,
       gridColumns: 6,
