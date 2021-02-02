@@ -87,7 +87,8 @@ foam.CLASS({
           },
           errorMessage: 'GROSS_ANNUAL_SALES_ERROR'
         }
-      ]
+      ],
+      gridColumns: 6
     },
     {
       class: 'String',
@@ -120,7 +121,8 @@ foam.CLASS({
           },
           errorMessage: 'TRANSACTION_PURPOSE_ERROR'
         }
-      ]
+      ],
+      gridColumns: 6
     },
     {
       class: 'String',
@@ -157,7 +159,8 @@ foam.CLASS({
           },
           errorMessage: 'ANNUAL_NUMBER_ERROR'
         }
-      ]
+      ],
+      gridColumns: 6
     },
     {
       class: 'String',
@@ -212,7 +215,8 @@ foam.CLASS({
           },
           errorMessage: 'ANNUAL_VOLUME_ERROR'
         }
-      ]
+      ],
+      gridColumns: 6
     },
     {
       class: 'Date',

@@ -117,7 +117,7 @@ public class ReportNetPosition extends AbstractReport {
         // Add up all of the cash-out transactions
         for (int k = 0; k < transactions.size(); k++) {
           Transaction transaction = (Transaction)transactions.get(k);
-          cashout += transaction.getAmount();
+          cashout += -transaction.getTotal(x, transaction.getSourceAccount());
         }
 
         // Replace the cashout value in the map

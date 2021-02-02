@@ -15,22 +15,24 @@
  * from nanopay Corporation.
  */
 
-foam.CLASS({
-  package: 'net.nanopay.tx.errorfee',
-  name: 'ErrorCharge',
+ foam.INTERFACE({
+   package: 'net.nanopay.tx.billing',
+   name: 'ChargeDateServiceInterface',
 
-  properties: [
-    {
-      class: 'Reference',
-      targetDAOKey: 'errorCodeDAO',
-      name: 'errorCode',
-      of: 'net.nanopay.integration.ErrorCode',
-      documentation: 'Error code associated to transaction error'
-    },
-    {
-      class: 'FObjectArray',
-      name: 'fees',
-      of: 'net.nanopay.tx.errorfee.ErrorChargeFee'
-    }
-  ]
-});
+   documentation: `
+    Service interface to determine the charge date for an error fee
+   `,
+
+   methods: [
+     {
+       name: 'findChargeDate',
+       type: 'Date',
+       args: [
+        {
+          name: 'transactionDate',
+          type: 'Date'
+        }
+       ]
+     }
+   ]
+ });

@@ -30,13 +30,14 @@ import foam.nanos.auth.User;
 import foam.nanos.crunch.Capability;
 import foam.nanos.crunch.UserCapabilityJunction;
 import foam.nanos.logger.Logger;
+import foam.util.SafetyUtil;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import static foam.mlang.MLang.*;
 
 import net.nanopay.partner.soawebservices.SoaWebService;
-import net.nanopay.partner.soawebservices.PessoaFisicaSimplificada;
-import net.nanopay.partner.soawebservices.PessoaJuridicaSimplificada;
+import net.nanopay.partner.soawebservices.PessoaFisicaNFe;
+import net.nanopay.partner.soawebservices.PessoaJuridicaNFe;
 import net.nanopay.partner.soawebservices.PessoaResponse;
 
 public class BrazilVerificationService
@@ -48,32 +49,61 @@ public class BrazilVerificationService
 
   @Override
   public boolean validateCnpj(X x, String cnpj)  throws RuntimeException {
-    return getCNPJResponseData(cnpj).getStatus();
+    PessoaResponse res = getCNPJResponseData(cnpj);
+    if ( res != null && "ativa".equalsIgnoreCase(res.getSituacaoRFB()) ) return true;
+    return false;
   }
 
   @Override
   public String getCNPJName(X x, String cnpj) throws RuntimeException {
-    return getCNPJResponseData(cnpj).getNome();
+    PessoaResponse res = getCNPJResponseData(cnpj);
+    if ( res != null && "ativa".equalsIgnoreCase(res.getSituacaoRFB()) ) return res.getRazaoSocial();
+    return "";
   }
 
   @Override
   public String getCPFName(X x, String cpf, long userId) throws RuntimeException {
-    return getCPFResponseData(cpf, userId).getNome();
+    PessoaResponse res = getCPFResponseData(cpf, userId);
+    if ( res != null && "REGULAR".equalsIgnoreCase(res.getSituacaoRFB())
+      && SafetyUtil.isEmpty(res.getMensagemObito())
+      && ("0000".equals(res.getAnoObito())
+      || SafetyUtil.isEmpty(res.getAnoObito())) ) return res.getNome();
+
+    return "";
   }
 
   @Override
   public String getCPFNameWithBirthDate(X x, String cpf, Date birthDate) throws RuntimeException {
-    return getCPFResponseData(cpf, birthDate).getNome();
+    PessoaResponse res = getCPFResponseData(cpf, birthDate);
+    if ( res != null && "REGULAR".equalsIgnoreCase(res.getSituacaoRFB())
+      && SafetyUtil.isEmpty(res.getMensagemObito())
+      && ( "0000".equals(res.getAnoObito())
+      || SafetyUtil.isEmpty(res.getAnoObito())) ) {
+      return res.getNome();
+    }
+    return "";
   }
 
   @Override
   public boolean validateUserCpf(X x, String cpf, long userId) throws RuntimeException {
-    return getCPFResponseData(cpf, userId).getStatus();
+    PessoaResponse res = getCPFResponseData(cpf, userId);
+    if ( res != null && "REGULAR".equalsIgnoreCase(res.getSituacaoRFB())
+      && SafetyUtil.isEmpty(res.getMensagemObito())
+      && ( "0000".equals(res.getAnoObito())
+      || SafetyUtil.isEmpty(res.getAnoObito())) ) return true;
+
+    return false;
   }
 
   @Override
   public boolean validateCpf(X x, String cpf, Date birthDate) throws RuntimeException {
-    return getCPFResponseData(cpf, birthDate).getStatus();
+    PessoaResponse res = getCPFResponseData(cpf, birthDate);
+    if ( res != null && "REGULAR".equalsIgnoreCase(res.getSituacaoRFB())
+      && SafetyUtil.isEmpty(res.getMensagemObito())
+      && ( "0000".equals(res.getAnoObito())
+      || SafetyUtil.isEmpty(res.getAnoObito())) )  return true;
+
+    return false;
   }
 
   @Override
@@ -87,9 +117,11 @@ public class BrazilVerificationService
   }
 
   protected PessoaResponse getCPFResponseData(String cpf, Date birthDate) throws RuntimeException {
-    if ( birthDate == null ) {
-      throw new ValidationException("User birth date not found");
-    };
+    if ( birthDate == null ) throw new ValidationException("User birth date not found");
+
+    String formattedCpf = cpf.replaceAll("[^0-9]", "");
+    PessoaResponse response = findFromCPFCache(formattedCpf, birthDate);
+    if ( response != null ) return response;
 
     try {
       String birthDateString = "";
@@ -101,17 +133,17 @@ public class BrazilVerificationService
         throw new RuntimeException("Unable to parse user birth date");
       }
 
-      String formattedCpf = cpf.replaceAll("[^0-9]", "");
-      PessoaFisicaSimplificada request = new PessoaFisicaSimplificada();
+
+      PessoaFisicaNFe request = new PessoaFisicaNFe();
       request.setDocumento(formattedCpf);
       request.setDataNascimento(birthDateString);
-      PessoaResponse response = ((SoaWebService) getX().get("soaWebService"))
-        .pessoaFisicaSimplificada(request);
+      response = ((SoaWebService) getX().get("soaWebService"))
+        .pessoaFisicaNFe(request);
       if ( response == null ) {
-        throw new RuntimeException("SoaWebService.pessoaFisicaSimplificada no response");
+        throw new RuntimeException("SoaWebService.PessoaFisicaNFe no response");
       }
       ((DAO) getX().get("alarmDAO")).put(new Alarm(this.getClass().getSimpleName(), false));
-      return response;
+      return saveCPFValidationResponse(formattedCpf, birthDate, response).getResponse();
     } catch (Throwable t) {
       Alarm alarm = new Alarm.Builder(getX())
         .setName(this.getClass().getSimpleName())
@@ -127,15 +159,17 @@ public class BrazilVerificationService
   protected PessoaResponse getCNPJResponseData(String cnpj) throws RuntimeException {
     try {
       String formattedCnpj = cnpj.replaceAll("[^0-9]", "");
-      PessoaJuridicaSimplificada request = new PessoaJuridicaSimplificada();
-      request.setDocumento(formattedCnpj);
+      PessoaResponse response = findFromCNPJCache(formattedCnpj);
+      if ( response != null ) return response;
 
-      PessoaResponse response = ((SoaWebService) getX().get("soaWebService")).pessoaJuridicaSimplificada(request);
+      PessoaJuridicaNFe request = new PessoaJuridicaNFe();
+      request.setDocumento(formattedCnpj);
+      response = ((SoaWebService) getX().get("soaWebService")).pessoaJuridicaNFe(request);
       if ( response == null ) {
-        throw new RuntimeException("SoaWebService.pessoaJuridicaSimplificada no response");
+        throw new RuntimeException("SoaWebService.PessoaJuridicaNFe no response");
       }
       ((DAO) getX().get("alarmDAO")).put(new Alarm(this.getClass().getSimpleName(), false));
-      return response;
+      return saveCNPJValidationResponse(formattedCnpj, response).getResponse();
     } catch (Throwable t) {
       Alarm alarm = new Alarm.Builder(getX())
         .setName(this.getClass().getSimpleName())
@@ -146,6 +180,40 @@ public class BrazilVerificationService
       ((DAO) getX().get("alarmDAO")).put(alarm);
       throw t;
     }
+  }
+
+  protected CPFCache saveCPFValidationResponse(String cpf, Date birthDate, PessoaResponse response) throws RuntimeException {
+    DAO cpfCacheDAO =   (DAO) getX().get("cpfCacheDAO");
+    return (CPFCache) cpfCacheDAO.put(new CPFCache.Builder(getX())
+      .setCpf(cpf)
+      .setBirthDate(birthDate)
+      .setResponse(response)
+      .setResponseString(response.getResponseString())
+      .build());
+  }
+
+  protected PessoaResponse findFromCPFCache(String cpf, Date birthDate) {
+    DAO cpfCacheDAO =   (DAO) getX().get("cpfCacheDAO");
+    CPFCache cache = (CPFCache) cpfCacheDAO.find(AND(
+      EQ(CPFCache.CPF, cpf),
+      EQ(CPFCache.BIRTH_DATE, birthDate))
+    );
+    return cache == null ? null : cache.getResponse();
+  }
+
+  protected CNPJCache saveCNPJValidationResponse(String cnpj, PessoaResponse response) throws RuntimeException {
+    DAO cnpjCacheDAO =   (DAO) getX().get("cnpjCacheDAO");
+    return (CNPJCache) cnpjCacheDAO.put(new CNPJCache.Builder(getX())
+      .setCnpj(cnpj)
+      .setResponse(response)
+      .setResponseString(response.getResponseString())
+      .build());
+  }
+
+  protected PessoaResponse findFromCNPJCache(String cnpj) {
+    DAO cnpjCacheDAO =   (DAO) getX().get("cnpjCacheDAO");
+    CNPJCache cache = (CNPJCache) cnpjCacheDAO.find(EQ(CNPJCache.CNPJ, cnpj));
+    return cache == null ? null : cache.getResponse();
   }
 
   protected Date findUserBirthDate(long userId) {

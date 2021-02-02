@@ -44,7 +44,10 @@ foam.CLASS({
     { name: 'FOREIGN_ID_ERROR', message: 'RG/RNE required' },
     { name: 'NATIONALITY_ERROR', message: 'Nationality required' },
     { name: 'YES', message: 'Yes' },
-    { name: 'NO', message: 'No' }
+    { name: 'NO', message: 'No' },
+    { name: 'PROOF_OF_ADDRESS', message: 'Proof of address documents required' },
+    { name: 'PROOF_OF_IDENTIFICATION', message: 'Proof of identication documents required' },
+    { name: 'RICHCHOICE_SELECTION_TITLE', message: 'Countries' }
   ],
 
   properties: [
@@ -64,7 +67,11 @@ foam.CLASS({
         {
           args: ['foreignId'],
           predicateFactory: function(e) {
-            return e.GTE(foam.mlang.StringLength.create({ arg1: net.nanopay.partner.treviso.onboarding.BRBusinessDirector.FOREIGN_ID }), 1);
+            return e.GTE(
+              foam.mlang.StringLength.create({
+                arg1: net.nanopay.partner.treviso.onboarding.BRBusinessDirector
+                  .FOREIGN_ID }),
+                1);
           },
           errorMessage: 'FOREIGN_ID_ERROR'
         }
@@ -78,7 +85,10 @@ foam.CLASS({
         {
           args: ['birthday'],
           predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.partner.treviso.onboarding.BRBusinessDirector.BIRTHDAY, null);
+            return e.NEQ(
+              net.nanopay.partner.treviso.onboarding.BRBusinessDirector
+                .BIRTHDAY,
+              null);
           },
           errorMessage: 'INVALID_DATE_ERROR'
         },
@@ -87,7 +97,10 @@ foam.CLASS({
           predicateFactory: function(e) {
             var limit = new Date();
             limit.setDate(limit.getDate() - ( 18 * 365 ));
-            return e.LT(net.nanopay.partner.treviso.onboarding.BRBusinessDirector.BIRTHDAY, limit);
+            return e.LT(
+              net.nanopay.partner.treviso.onboarding.BRBusinessDirector
+                .BIRTHDAY,
+              limit);
           },
           errorMessage: 'UNDER_AGE_LIMIT_ERROR'
         },
@@ -96,15 +109,18 @@ foam.CLASS({
           predicateFactory: function(e) {
             var limit = new Date();
             limit.setDate(limit.getDate() - ( 125 * 365 ));
-            return e.GT(net.nanopay.partner.treviso.onboarding.BRBusinessDirector.BIRTHDAY, limit);
+            return e.GT(
+              net.nanopay.partner.treviso.onboarding.BRBusinessDirector
+                .BIRTHDAY,
+              limit);
           },
           errorMessage: 'OVER_AGE_LIMIT_ERROR'
         }
       ],
-      postSet: function(_,n) {
-        this.cpfName = "";
+      postSet: function(_, _) {
+        this.cpfName = '';
         if ( this.cpf.length == 11 ) {
-          this.getCpfName(this.cpf).then((v) => {
+          this.getCpfName(this.cpf).then(v => {
             this.cpfName = v;
           });
         }
@@ -119,7 +135,10 @@ foam.CLASS({
         {
           args: ['cpfName'],
           predicateFactory: function(e) {
-            return e.GT(net.nanopay.partner.treviso.onboarding.BRBusinessDirector.CPF_NAME, 0);
+            return e.GT(
+              net.nanopay.partner.treviso.onboarding.BRBusinessDirector
+                .CPF_NAME,
+              0);
           },
           errorMessage: 'INVALID_CPF'
         }
@@ -129,9 +148,9 @@ foam.CLASS({
         return foam.String.applyFormat(val, 'xxx.xxx.xxx-xx');
       },
       postSet: function(_,n) {
-        this.cpfName = "";
-        if ( n.length == 11 ) {
-          this.getCpfName(n).then((v) => {
+        if ( n.length == 11 && this.verifyName !== true ) {
+          this.cpfName = "";
+          this.getCpfName(n).then(v => {
             this.cpfName = v;
           });
         }
@@ -140,26 +159,26 @@ foam.CLASS({
         return foam.u2.FragmentedTextField.create({
           delegates: [
             foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cpf.slice(0,3),
+              data: X.data.cpf.slice(0, 3),
               maxLength: 3
             }),
             '.',
             foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cpf.slice(3,6),
+              data: X.data.cpf.slice(3, 6),
               maxLength: 3
             }),
             '.',
             foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cpf.slice(6,9),
+              data: X.data.cpf.slice(6, 9),
               maxLength: 3
             }),
             '-',
             foam.u2.FragmentedTextFieldFragment.create({
-              data: X.data.cpf.slice(9,11),
+              data: X.data.cpf.slice(9, 11),
               maxLength: 2
             })
           ]
-        })
+        });
       }
     },
     {
@@ -172,8 +191,9 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'verifyName',
-      visibility: function (cpfName) {
-        return cpfName.length > 0 ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
+      visibility: function(cpfName) {
+        return cpfName.length > 0 ?
+          foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
       label: 'Is this your director?',
       view: function(n, X) {
@@ -190,7 +210,10 @@ foam.CLASS({
         {
           args: ['verifyName'],
           predicateFactory: function(e) {
-            return e.EQ(net.nanopay.partner.treviso.onboarding.BRBusinessDirector.VERIFY_NAME, true);
+            return e.EQ(
+              net.nanopay.partner.treviso.onboarding.BRBusinessDirector
+                .VERIFY_NAME,
+              true);
           },
           errorMessage: 'INVALID_DIRECTOR_NAME'
         }
@@ -209,7 +232,7 @@ foam.CLASS({
           search: true,
           sections: [
             {
-              heading: 'Countries',
+              heading: X.data.RICHCHOICE_SELECTION_TITLE,
               dao: X.countryDAO
             }
           ]
@@ -219,7 +242,11 @@ foam.CLASS({
         {
           args: ['nationality'],
           predicateFactory: function(e) {
-            return e.GTE(foam.mlang.StringLength.create({ arg1: net.nanopay.partner.treviso.onboarding.BRBusinessDirector.NATIONALITY }), 1);
+            return e.GTE(
+              foam.mlang.StringLength.create({
+                arg1: net.nanopay.partner.treviso.onboarding.BRBusinessDirector
+                  .NATIONALITY }),
+              1);
           },
           errorMessage: 'NATIONALITY_ERROR'
         }
@@ -228,9 +255,9 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'hasSignedContratosDeCambio',
-      label: 'Has the person listed here signed the \'contratos de câmbio\'?',
+      label: 'Has this business director signed the foreign exchange contract?',
       help: `
-        Contratos de câmbio (foreign exchange contract) is a legal arrangement in which the
+        Foreign exchange contract (Contratos de câmbio) is a legal arrangement in which the
         parties agree to transfer between them a certain amount of foreign exchange at a
         predetermined rate of exchange, and as of a predetermined date.
       `,
@@ -244,13 +271,64 @@ foam.CLASS({
           isHorizontal: true
         };
       }
+    },
+    {
+      class: 'foam.nanos.fs.FileArray',
+      name: 'documentsOfAddress',
+      label: 'Please upload proof of address',
+      view: function(_, X) {
+        let selectSlot = foam.core.SimpleSlot.create({ value: 0 });
+        return foam.u2.MultiView.create({
+        views: [
+          foam.nanos.fs.fileDropZone.FileDropZone.create({
+            files$: X.data.documentsOfAddress$,
+            selected$: selectSlot
+          }, X),
+          foam.nanos.fs.fileDropZone.FilePreview.create({
+            data$: X.data.documentsOfAddress$,
+            selected$: selectSlot
+          })
+        ]
+        });
+      },
+      validateObj: function(documentsOfAddress) {
+        if ( documentsOfAddress.length === 0 ) {
+          return this.PROOF_OF_ADDRESS;
+        }
+      }
+    },
+    {
+      class: 'foam.nanos.fs.FileArray',
+      name: 'documentsOfId',
+      label: 'Please upload proof of identification',
+      view: function(_, X) {
+        let selectSlot = foam.core.SimpleSlot.create({ value: 0 });
+        return foam.u2.MultiView.create({
+        views: [
+          foam.nanos.fs.fileDropZone.FileDropZone.create({
+            files$: X.data.documentsOfId$,
+            selected$: selectSlot
+          }, X),
+          foam.nanos.fs.fileDropZone.FilePreview.create({
+            data$: X.data.documentsOfId$,
+            selected$: selectSlot
+          })
+        ]
+        });
+      },
+      validateObj: function(documentsOfId) {
+        if ( documentsOfId.length === 0 ) {
+          return this.PROOF_OF_IDENTIFICATION;
+        }
+      }
     }
   ],
   methods: [
     {
       name: 'getCpfName',
       code: async function(cpf) {
-        return await this.brazilVerificationService.getCPFNameWithBirthDate(this.__subContext__, cpf, this.birthday);
+        return await this.brazilVerificationService
+          .getCPFNameWithBirthDate(this.__subContext__, cpf, this.birthday);
       }
     },
     {
@@ -264,13 +342,6 @@ foam.CLASS({
         // validate CPF
         if ( ! getVerifyName() )
           throw new IllegalStateException("Must verify name attached to CPF is valid.");
-
-        try {
-          if ( ! ((BrazilVerificationService) x.get("brazilVerificationService")).validateCpf(x, getCpf(), getBirthday()) )
-            throw new RuntimeException(INVALID_CPF);
-        } catch(Throwable t) {
-          throw t;
-        }
       `
     }
   ]

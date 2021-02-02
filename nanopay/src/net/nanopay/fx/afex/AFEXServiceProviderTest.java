@@ -162,6 +162,7 @@ public class AFEXServiceProviderTest
       suggestedUserTransactionInfo.setAnnualDomesticVolume("$2000");
       suggestedUserTransactionInfo.setAnnualDomesticTransactionAmount("N/A");
       business.setSuggestedUserTransactionInfo(suggestedUserTransactionInfo);
+      business.setBusinessSectorId(81141);
 
       try {
         business = (Business) businessDAO.put(business);

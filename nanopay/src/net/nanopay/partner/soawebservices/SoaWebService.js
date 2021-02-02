@@ -22,26 +22,26 @@ foam.INTERFACE({
 
   methods: [
     {
-      name: 'pessoaFisicaSimplificada',
+      name: 'pessoaFisicaNFe',
       type: 'net.nanopay.partner.soawebservices.PessoaResponse',
       documentation: 'Consultation for Individual with Date of Birth',
       async: true,
       args: [
         {
           name: 'request',
-          type: 'net.nanopay.partner.soawebservices.PessoaFisicaSimplificada'
+          type: 'net.nanopay.partner.soawebservices.PessoaFisicaNFe'
         }
       ]
     },
     {
-      name: 'pessoaJuridicaSimplificada',
+      name: 'pessoaJuridicaNFe',
       type: 'net.nanopay.partner.soawebservices.PessoaResponse',
       documentation: 'Consultation for Legal Entity',
       async: true,
       args: [
         {
           name: 'request',
-          type: 'net.nanopay.partner.soawebservices.PessoaJuridicaSimplificada'
+          type: 'net.nanopay.partner.soawebservices.PessoaJuridicaNFe'
         }
       ]
     }

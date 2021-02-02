@@ -75,6 +75,16 @@ p({
 })
 
 p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"openDataService",
+  "lazy":false,
+  "serve":true,
+  "serviceScript":"""
+    return new net.nanopay.country.br.OpenDataServiceMock(x);
+  """
+})
+
+p({
   "class": "foam.nanos.boot.NSpec",
   "name": "trevisoTransactionReportDAO",
   "serve": true,

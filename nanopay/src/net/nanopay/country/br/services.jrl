@@ -146,3 +146,69 @@ p({
     }
   """
 })
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "cpfCacheDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.country.br.CPFCache.getOwnClassInfo())
+      .setName("cpfCacheDAO")
+      .setJournalName("cpfCache")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setAuthorize(true)
+      .setDecorator(
+        new net.nanopay.country.br.ExpiredValidationDAO.Builder(x)
+          .setValidityPeriod(30)
+          .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.country.br.CPFCache.getOwnClassInfo()).build())
+        .build())
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.country.br.CPFCache\"}"
+})
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "cnpjCacheDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.country.br.CNPJCache.getOwnClassInfo())
+      .setName("cnpjCacheDAO")
+      .setJournalName("cnpjCache")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setAuthorize(true)
+      .setDecorator(
+        new net.nanopay.country.br.ExpiredValidationDAO.Builder(x)
+          .setValidityPeriod(30)
+          .setDelegate(new foam.dao.NullDAO.Builder(x).setOf(net.nanopay.country.br.CNPJCache.getOwnClassInfo()).build())
+        .build())
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.country.br.CNPJCache\"}"
+})
+
+
+p({
+  "class": "foam.nanos.boot.NSpec",
+  "name": "bancoConfigDAO",
+  "lazy": false,
+  "serve": true,
+  "serviceScript":
+  """
+    return new foam.dao.EasyDAO.Builder(x)
+      .setOf(net.nanopay.country.br.exchange.BancoConfig.getOwnClassInfo())
+      .setSeqNo(true)
+      .setName("bancoConfigDAO")
+      .setJournalName("bancoConfigs")
+      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
+      .setAuthorize(true)
+      .build();
+  """,
+  "client": "{\"of\":\"net.nanopay.country.br.exchange.BancoConfig\"}"
+})

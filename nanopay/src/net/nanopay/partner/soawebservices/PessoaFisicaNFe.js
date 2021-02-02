@@ -14,20 +14,23 @@
  * is strictly forbidden unless prior written permission is obtained
  * from nanopay Corporation.
  */
-
 foam.CLASS({
-  package: 'net.nanopay.tx.errorfee',
-  name: 'ClientErrorBillingService',
-
-  implements: [
-    'net.nanopay.tx.errorfee.ErrorBilling'
-  ],
+  package: 'net.nanopay.partner.soawebservices',
+  name: 'PessoaFisicaNFe',
 
   properties: [
     {
-      class: 'Stub',
-      of: 'net.nanopay.tx.errorfee.ErrorBilling',
-      name: 'delegate'
+      class: 'String',
+      name: 'Documento'
+    },
+    {
+      class: 'String',
+      name: 'DataNascimento'
+    },
+    {
+      class: 'FObjectProperty',
+      of: 'net.nanopay.partner.soawebservices.SoaCredenciais',
+      name: 'Credenciais'
     }
   ]
 });

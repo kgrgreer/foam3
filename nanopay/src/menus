@@ -17,7 +17,7 @@ p({
 })
 p({
   "class": "foam.nanos.menu.Menu",
-  "id": "paymentErrors",
+  "id": "dashboard-backoffice.paymentErrors",
   "label": "Payment Errors",
   "handler": {
     "class": "foam.nanos.menu.ViewMenu",
@@ -29,7 +29,7 @@ p({
 })
 p({
   "class": "foam.nanos.menu.Menu",
-  "id": "screeningResponses",
+  "id": "dashboard-backoffice.screeningResponses",
   "label": "Screening Responses",
   "handler": {
     "class": "foam.nanos.menu.ViewMenu",
@@ -41,7 +41,7 @@ p({
 })
 p({
   "class": "foam.nanos.menu.Menu",
-  "id": "pendingCompliance",
+  "id": "dashboard-backoffice.pendingCompliance",
   "label": "Pending Compliance",
   "handler": {
     "class": "foam.nanos.menu.ViewMenu",

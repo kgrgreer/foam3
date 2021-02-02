@@ -81,6 +81,7 @@ foam.CLASS({
     'net.nanopay.invoice.model.InvoiceStatus',
     'net.nanopay.invoice.model.PaymentStatus',
     'net.nanopay.tx.AbliiTransaction',
+    'net.nanopay.tx.ExpiredTransactionException',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.FxSummaryTransactionLineItem',
     'net.nanopay.tx.TransactionQuote',
@@ -409,33 +410,12 @@ foam.CLASS({
       return true;
     },
 
-    function getExpired( time, transaction) {
-      let quoteExpiry = null;
-      for ( i=0; i < transaction.lineItems.length; i++ ) {
-        if ( ( this.FXLineItem.isInstance(transaction.lineItems[i]) || this.FxSummaryTransactionLineItem.isInstance(transaction.lineItems[i]) ) && transaction.lineItems[i].expiry ) {
-          if ( quoteExpiry == null ) {
-            quoteExpiry = transaction.lineItems[i].expiry;
-            quoteExpiry = Date.UTC(quoteExpiry.getFullYear(), quoteExpiry.getMonth(), quoteExpiry.getDate(), quoteExpiry.getHours(), quoteExpiry.getMinutes(), quoteExpiry.getSeconds());
-          } else {
-            let temp = transaction.lineItems[i].expiry;
-            temp = Date.UTC(temp.getFullYear(), temp.getMonth(), temp.getDate(), temp.getHours(), temp.getMinutes(), temp.getSeconds());
-            quoteExpiry = quoteExpiry < temp ? quoteExpiry : temp;
-          }
-        }
-      }
-
-      if ( quoteExpiry == null ) return false;
-
-      let utc1 =  Date.UTC(time.getFullYear(), time.getMonth(), time.getDate(), time.getHours(), time.getMinutes(), time.getSeconds());
-      return Math.floor(( quoteExpiry-utc1 )) <= 0;
-    },
-
     async function getQuote() {
       this.invoice.quote = null;
       this.invoice.paymentMethod = this.PaymentStatus.SUBMIT;
 
       // to be able to adjust capable payloads that were previously saved
-      if ( this.invoice.draft && this.invoice.capabilityIds.length > 0 && this.invoice.capablePayloads.length > 0 ){
+      if ( this.invoice.draft && this.invoice.capabilityIds.length > 0 && this.invoice.capablePayloads.length > 0 ) {
         this.invoice.draft = false;
 
         var capabilityIntercept = this.CapabilityIntercept.create();
@@ -450,7 +430,7 @@ foam.CLASS({
           return;
         }
 
-        if ( ! wizardContext.submitted ){
+        if ( ! wizardContext.submitted ) {
           this.invoice.draft = true;
           this.saveDraft(this.invoice);
           return;
@@ -460,11 +440,11 @@ foam.CLASS({
       this.invoice.draft = false;
 
       // to preserve any invoice created as a draft in case of failure
-      if ( this.invoice.id === 0 ){
+      if ( this.invoice.id === 0 ) {
         this.invoice.draft = true;
         try{
           this.invoice = await this.invoiceDAO.put(this.invoice);
-        } catch(error) {
+        } catch(err) {
           await this.abortQuoteAndSaveDraft(err);
         }
         this.invoice.draft = false;
@@ -472,7 +452,7 @@ foam.CLASS({
 
       try {
         this.invoice = await this.invoiceDAO.put(this.invoice);
-
+        this.invoice = await this.invoiceDAO.find(this.invoice.id);
         if ( this.invoice.capabilityIds.length > 0 && this.invoice.isWizardIncomplete ) {
           this.invoice.draft = true;
           this.saveDraft(this.invoice);
@@ -523,13 +503,6 @@ foam.CLASS({
       try {
         if ( this.isPayable && isSigningOfficer ) {
           let transaction = this.invoice.quote.plan;
-        // confirm fxquote is still valid
-          if ( transaction != null && this.getExpired(new Date(), transaction) ) {
-            transaction = await this.getQuote();
-            this.notify(this.RATE_REFRESH + ( this.isApproving ? this.RATE_REFRESH_APPROVE : this.RATE_REFRESH_SUBMIT), '', this.LogLevel.WARN, true);
-            this.isLoading = false;
-            return;
-          }
 
           this.invoice.plan = transaction;
           this.invoice = await this.invoiceDAO.put(this.invoice);
@@ -560,6 +533,17 @@ foam.CLASS({
           isApprover_: isSigningOfficer
         });
       } catch ( error ) {
+        // check if plan expired
+        if ( this.ExpiredTransactionException.isInstance(error.data.exception) ) {
+          this.invoice.paymentMethod = this.PaymentStatus.QUOTED;
+          this.invoice.paymentId = '';
+          this.invoice.quote = null;
+          this.invoice.plan = null;
+          this.invoice = await this.invoiceDAO.put(this.invoice);
+          this.notify(this.RATE_REFRESH + ( this.isApproving ? this.RATE_REFRESH_APPROVE : this.RATE_REFRESH_SUBMIT), '', this.LogLevel.WARN, true);
+          this.isLoading = false;
+          return;
+        }
         this.isLoading = false;
         console.error('@SendRequestMoney (Invoice/Integration Sync): ' + error.message);
         this.notify(this.TRANSACTION_ERROR + this.type, '', this.LogLevel.ERROR, true);

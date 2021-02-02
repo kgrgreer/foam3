@@ -667,6 +667,7 @@ var classes = [
   'net.nanopay.tx.FxSummaryTransactionLineItem',
   'net.nanopay.tx.EtaSummaryTransactionLineItem',
   'net.nanopay.tx.UnsupportedDateException',
+  'net.nanopay.tx.ExpiredTransactionException',
 
   'net.nanopay.fx.FXService',
   'net.nanopay.fx.client.ClientFXService',
@@ -935,6 +936,8 @@ var classes = [
   // securefact
   'net.nanopay.meter.compliance.secureFact.ResponseError',
   'net.nanopay.meter.compliance.secureFact.SecurefactOnboardingService',
+  'net.nanopay.meter.compliance.secureFact.ServerSecurefactOnboardingService',
+  'net.nanopay.meter.compliance.secureFact.MockSecurefactOnboardingService',
   'net.nanopay.meter.compliance.secureFact.SecurefactRequest',
   'net.nanopay.meter.compliance.secureFact.SecurefactResponse',
   'net.nanopay.meter.compliance.secureFact.SecurefactService',
@@ -1161,17 +1164,19 @@ var classes = [
   'net.nanopay.tx.planner.RbcInterTrustPlanner',
   'net.nanopay.tx.planner.BmoInterTrustPlanner',
 
-  // error fees
-  'net.nanopay.tx.errorfee.ChargeDateServiceInterface',
-  'net.nanopay.tx.errorfee.ClientErrorBillingService',
-  'net.nanopay.tx.errorfee.ErrorBilling',
-  'net.nanopay.tx.errorfee.ErrorCharge',
-  'net.nanopay.tx.errorfee.ErrorChargeFee',
-  'net.nanopay.tx.errorfee.ErrorFee',
+  // Billing
+  'net.nanopay.tx.billing.Bill',
+  'net.nanopay.tx.billing.BillingFee',
+  'net.nanopay.tx.billing.BillingServiceInterface',
+  'net.nanopay.tx.billing.ChargeDateServiceInterface',
+  'net.nanopay.tx.billing.ClientBillingService',
+  'net.nanopay.tx.billing.CreateBillsRule',
+  'net.nanopay.tx.billing.ErrorFee',
 
   // Fees
   'net.nanopay.tx.fee.Fee',
   'net.nanopay.tx.fee.FeeExpr',
+  'net.nanopay.tx.fee.FeeRateExpr',
   'net.nanopay.tx.fee.FeeType',
   'net.nanopay.tx.fee.FixedFee',
   'net.nanopay.tx.fee.InformationalFee',
@@ -1186,6 +1191,9 @@ var classes = [
   'net.nanopay.country.br.tx.fee.PTaxRate',
 
   // Treviso
+  'net.nanopay.country.br.CNPJCache',
+  'net.nanopay.country.br.CPFCache',
+  'net.nanopay.country.br.ExpiredValidationDAO',
   'net.nanopay.country.br.NatureCode',
   'net.nanopay.country.br.NatureCodeData',
   'net.nanopay.country.br.NatureCodeApprovalRequest',
@@ -1204,6 +1212,7 @@ var classes = [
   'net.nanopay.country.br.exchange.ArrayOfBoleto',
   'net.nanopay.country.br.exchange.ArrayOfNatureza',
   'net.nanopay.country.br.exchange.ArrayOfParcelas',
+  'net.nanopay.country.br.exchange.BancoConfig',
   'net.nanopay.country.br.exchange.Boleto',
   'net.nanopay.country.br.exchange.BoletoStatusResponse',
   'net.nanopay.country.br.exchange.BoletoStatusResult',
@@ -1256,8 +1265,8 @@ var classes = [
   'net.nanopay.country.br.tx.NatureCodeLineItem',
   'net.nanopay.partner.bmo.BMOPaymentProviderCapabilityRule',
   'net.nanopay.partner.rbc.RBCPaymentProviderCapabilityRule',
-  'net.nanopay.partner.soawebservices.PessoaFisicaSimplificada',
-  'net.nanopay.partner.soawebservices.PessoaJuridicaSimplificada',
+  'net.nanopay.partner.soawebservices.PessoaFisicaNFe',
+  'net.nanopay.partner.soawebservices.PessoaJuridicaNFe',
   'net.nanopay.partner.soawebservices.PessoaResponse',
   'net.nanopay.partner.soawebservices.SoaCredenciais',
   'net.nanopay.partner.soawebservices.SoaWebService',
@@ -1336,7 +1345,6 @@ var classes = [
   'net.nanopay.crunch.ruler.PermissionedUCJRule',
 
   // crunch onboarding
-  'net.nanopay.crunch.onboardingModels.CreateRegisterPaymentProviderUCJ',
   'net.nanopay.crunch.onboardingModels.InitialBusinessData',
   'net.nanopay.crunch.onboardingModels.SigningOfficerPersonalData',
   'net.nanopay.partner.treviso.SigningOfficerPersonalDataTreviso',
@@ -1565,7 +1573,7 @@ var skeletons = [
   'net.nanopay.fx.ExchangeRateInterface',
   'net.nanopay.fx.FXService',
   'net.nanopay.tx.UserTransactionLimit',
-  'net.nanopay.tx.errorfee.ErrorBilling',
+  'net.nanopay.tx.billing.BillingServiceInterface',
   'net.nanopay.liquidity.LiquidityAuth',
   'net.nanopay.auth.passwordutil.PasswordEntropy',
   'net.nanopay.payment.CorridorService',

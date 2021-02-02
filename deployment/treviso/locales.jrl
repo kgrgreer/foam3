@@ -117,7 +117,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.Trev
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoCurrencyAmountInformation.INVALID_MONTHLY_REVENUE",target:"Receita média mensal necessária"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoCurrencyAmountInformation.MONTHLY_REVENUE.label",target:"Faturamento médio mensal dos doze (12) meses anteriore"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoCurrencyAmountInformation.MONTHLY_REVENUE.help",target:"Qual é a receita média mensal das empresas nos doze (12) meses anteriores"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoCurrencyAmountInformation.SECTION_BUSINESS_CAPITAL.title",target:"Capital de negócios e patrimônio líquido"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoCurrencyAmountInformation.SECTION_BUSINESS_CAPITAL.title",target:"Capital, patrimônio líquido e receita"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoCurrencyAmountInformation.CAPITAL.help",target:"Quais são os ativos circulantes das empresas, ou seja, soma de todos os ativos."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoCurrencyAmountInformation.EQUITY.help",target:"Qual é o patrimônio líquido das empresas, ou seja, soma de todos os ativos menos a soma de todos os passivos."})
 

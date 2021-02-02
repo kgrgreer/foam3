@@ -466,7 +466,8 @@ p({
         "country":"BR"
       }
     ]
-  }
+  },
+  "associatedEntity":2
 })
 
 p({
@@ -564,7 +565,7 @@ p({
   "name":"User Invoice Capability",
   "icon":"/images/capabilityIcons/BrazilCap.svg",
   "enabled":true,
-  "associatedEntity": 2
+  "associatedEntity":2
 })
 
 p({
@@ -588,7 +589,7 @@ p({
 p({
   "class":"foam.nanos.crunch.Capability",
   "id":"9d4d667c-04c3-11eb-adc1-0242ac120002",
-  "name":"Business Capital and Equity",
+  "name":"Business Financials",
   "of":"net.nanopay.partner.treviso.TrevisoCurrencyAmountInformation",
   "version":"0",
   "enabled":true

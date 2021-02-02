@@ -16,12 +16,13 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.tx.errorfee',
-  name: 'ErrorFee',
+  package: 'net.nanopay.tx.billing',
+  name: 'Bill',
 
-  documentation: 'Represents details on the fee associated to a transaction error',
+  documentation: 'Bill object for Intuit Billing',
 
   implements: [
+    'foam.nanos.auth.CreatedAware',
     'foam.nanos.auth.ServiceProviderAware'
   ],
 
@@ -38,14 +39,29 @@ foam.CLASS({
       documentation: 'Error code associated to transaction error'
     },
     {
-      class: 'UnitValue',
-      name: 'amount',
-      documentation: 'Amount of the error fee'
+      class: 'FObjectArray',
+      name: 'fees',
+      of: 'net.nanopay.tx.billing.BillingFee'
     },
     {
-      class: 'String',
-      name: 'currency',
-      documentation: 'Currency of the fee'
+      class: 'Reference',
+      targetDAOKey: 'transactionDAO',
+      name: 'originatingTransaction',
+      of: 'net.nanopay.tx.model.Transaction'
+    },
+    {
+      class: 'Reference',
+      targetDAOKey: 'userDAO',
+      name: 'chargeToUser',
+      of: 'foam.nanos.auth.User',
+      documentation: 'User paying the fee'
+    },
+    {
+      class: 'Reference',
+      targetDAOKey: 'businessDAO',
+      name: 'chargeToBusiness',
+      of: 'net.nanopay.model.Business',
+      documentation: 'Business paying the fee'
     },
     {
       class: 'Enum',
@@ -54,10 +70,24 @@ foam.CLASS({
       documentation: 'Determines if Payer or Payee is charged the fee'
     },
     {
+      class: 'Date',
+      name: 'chargeDate',
+      documentation: 'Calculated date of when the fees will be charged'
+    },
+    {
       class: 'Reference',
       of: 'foam.nanos.auth.ServiceProvider',
-      name: 'spid',
-      documentation: 'spid the fee applies to'
+      name: 'spid'
+    },
+    {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.tx.model.TransactionStatus',
+      name: 'status'
+    },
+    {
+      class: 'DateTime',
+      name: 'created',
+      visibility: 'RO'
     }
   ]
 });
