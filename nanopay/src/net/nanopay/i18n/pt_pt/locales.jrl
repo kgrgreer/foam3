@@ -149,7 +149,11 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.FooterView.CO
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.PersonalSettingsView.TITLE",target:"Configurações pessoais"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.PersonalSettingsView.TWO_FACTOR_SUBTITLE",target:"Autenticação de dois fatores"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.PersonalSettingsView.TWO_FACTOR_INSTR1",target:"Faça download e use o Google Authenticator"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.PersonalSettingsView.TWO_FACTOR_INSTR2",target:" app on your mobile device to scan the QR code. If you can’t use the QR code, you can enter the provided key into the Google Authenticator app manually. pt"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.PersonalSettingsView.TWO_FACTOR_INSTR2",target:" aplicativo em seu dispositivo móvel para ler o código QR. Se você não conseguir usar o código QR, pode inserir a chave fornecida no aplicativo Google Authenticator manualmente."})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.PersonalSettingsView.TWO_FACTOR_INSTR3",target:"Etapa 2: digitalize o código QR ou digite a chave de 16 dígitos no aplicativo Google Authenticator"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.PersonalSettingsView.TWO_FACTOR_INSTR4",target:"Etapa 3: o aplicativo fornecerá um código de verificação. Insira o código e selecione ‘Verificar’"})
+
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.PersonalSettingsView.IOS_NAME",target:"iOS"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.PersonalSettingsView.ANDROID_NAME",target:"Android"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.PersonalSettingsView.OR",target:" ou "})
@@ -640,7 +644,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.TwoFactorAuth
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.TwoFactorAuthView.TWO_FACTOR_ENABLE_ERROR",target:"Não foi possível habilitar a autenticação de dois fatores. Tente novamente."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.TwoFactorAuthView.TWO_FACTOR_BENEFIT",target:"Two-factor authentication provides an extra layer of security to your account. Two-factor authentication is enabled at all time to prevent potential unauthorized access to your business and financial information. pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.TwoFactorAuthView.TWO_FACTOR_LABEL",target:"Insira o código de verificação"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.TwoFactorAuthView.STATUS",target:"Status pt"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.TwoFactorAuthView.STATUS",target:"Estado"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.TwoFactorAuthView.ENABLED",target:"• Ativado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.TwoFactorAuthView.DISABLED",target:"• Desativado"})
@@ -654,7 +658,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.TwoFactorAuth
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.TwoFactorAuthView.TWO_FACTOR_TOKEN.placeholder",target:"123456"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.TwoFactorAuthView.HIDE_DISABLE_BUTTON.label",target:"hideDisableButton pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.TwoFactorAuthView.HIDE_DISABLE_BUTTON.value",target:"false pt"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.TwoFactorAuthView.ENABLE_TWO_FACTOR.label",target:"Verify pt"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.TwoFactorAuthView.ENABLE_TWO_FACTOR.label",target:"Verificar"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.TwoFactorAuthView.DISABLE_TWO_FACTOR.label",target:"Disable pt"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.Link.DATA.label",target:"data pt"})
@@ -3267,3 +3271,49 @@ p({class:"foam.i18n.Locale",locale:"pt","source":"554af38a-8225-87c8-dfdf-eeb15f
 p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-6.name",target:"detalhes da transação"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.ui.wizard.WizardView.NEXT_LABEL.value",target:"próximo"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.modal.MarkAsVoidModal.TITLE",target:"Marcar como nulo?"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.modal.MarkAsVoidModal.MSG1",target:"Tem certeza de que deseja cancelar esta fatura?"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.modal.MarkAsVoidModal.MSG2",target:"Depois que esta fatura for anulada, ela não poderá ser editada."})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.modal.MarkAsVoidModal.SUCCESS_MESSAGE",target:"A fatura foi marcada como anulada"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.modal.MarkAsVoidModal.NOTE_LABEL",target:"Notas"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.modal.MarkAsVoidModal.NOTE_HINT",target:"ou seja, por que é anulado?"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.modal.MarkAsVoidModal.VOID_SUCCESS",target:"Invoice successfully voided"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.modal.MarkAsVoidModal.VOID_ERROR",target:"A fatura não pôde ser anulada"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"bf6a49d5-4027-4dac-a269-4d3ed070609e-1.name",target:"Desbloquear pagamentos domésticos e faturamento"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71215f-11.name",target:"Desbloquear pagamentos domésticos e faturamento"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"24602528-34c1-11eb-adc1-0242ac120002.name",target:"Adicionar conta bancária"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"Business Ownership",target:"Propriedade de negócio"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"bf6a49d5-4027-4dac-a269-4d3ed070609e-2.name",target:"Pagamentos internacionais"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ui.BankPickCurrencyView.TITLE",target:"Adicionar um novo banco"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ui.BankPickCurrencyView.SUB_TITLE",target:"Conecte-se por meio de um parceiro bancário abaixo ou "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ui.BankPickCurrencyView.CONNECT_LABEL",target:"conectar com um cheque vazio"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ui.BankPickCurrencyView.BANK_ADDED",target:"Sua conta bancária foi adicionada com sucesso"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ui.BankPickCurrencyView.CHOOSE_COUNTRY",target:"Selecione o país de origem da conta bancária que deseja adicionar."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ui.BankPickCurrencyView.SECTION_DETAILS_TITLE_VOID",target:"Conecte usando uma verificação de vazio"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.flinks.view.modalForm.FlinksModalConnect.CONNECTING",target:"Conectando você com segurança à sua instituição. Por favor, não feche esta janela."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.flinks.view.modalForm.FlinksModalConnect.ERROR",target:"Um erro desconhecido ocorreu"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.flinks.view.modalForm.FlinksModalConnect.INVALID_FORM",target:"Por favor, preencha o formulário antes de continuar"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.flinks.view.modalForm.FlinksModalConnect.ACCEPT_CONDITIONS",target:"Aceite os termos e condições antes de continuar"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.flinks.view.modalForm.FlinksModalConnect.LABEL_USERNAME",target:"Número do cartão de acesso / nome de usuário"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.flinks.view.modalForm.FlinksModalConnect.LABEL_PASSWORD",target:"Senha"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.flinks.view.modalForm.FlinksModalConnect.LEGAL_1",target:"eu concordo com o "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.flinks.view.modalForm.FlinksModalConnect.LEGAL_2",target:"termos e Condições"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.flinks.view.modalForm.FlinksModalConnect.LEGAL_3",target:" e autorizar a liberação de minhas informações bancárias para o nanopay."})
+//p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.flinks.view.modalForm.FlinksModalConnect.TERMS_AGREEMENT_DOCUMENT_NAME",target:"NanopayTermsAndConditions"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.flinks.view.element.FlinksModalHeader.CONNECT_TO",target:"Conectar a"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.ui.DataSecurityBanner.DATA_TITLE",target:"Sua segurança é nossa maior prioridade"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.ui.DataSecurityBanner.DATA_SUBTITLE",target:"Nossa plataforma usa medidas de segurança e criptografia de última geração ao lidar com seus dados"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.flinks.view.modalForm.FlinksModalConnect.BACK.label",target:"Cancelar"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.flinks.view.modalForm.FlinksModalConnect.NEXT.label",target:"Conectar"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"submenu.contact.title",target:"Adicionar contato"})
