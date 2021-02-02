@@ -1165,7 +1165,10 @@ foam.RELATIONSHIP({
   cardinality: '1:*',
   sourceDAOKey: 'transactionDAO',
   unauthorizedSourceDAOKey: 'localTransactionDAO',
-  targetDAOKey: 'billDAO'
+  targetDAOKey: 'billDAO',
+  sourceProperty: {
+    section: 'systemInformation'
+  }
 });
 
 foam.RELATIONSHIP({

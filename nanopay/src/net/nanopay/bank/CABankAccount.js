@@ -63,6 +63,60 @@ foam.CLASS({
 
   sections: [
     {
+      name: 'clientAccountInformation',
+      title: function() {
+        return this.clientAccountInformationTitle;
+      },
+      properties: [
+        { 
+          name: 'denomination',
+          order: 10,
+          gridColumns: 12
+        },
+        {
+          name: 'name',
+          order: 20,
+          gridColumns: 12
+        },
+        {
+          name: 'flagImage',
+          order: 30,
+          gridColumns: 12
+        },
+        {
+          name: 'country',
+          order: 40,
+          gridColumns: 12
+        },
+        {
+          name: 'voidChequeImage',
+          order: 50,
+          gridColumns: 12
+        },
+        {
+          name: 'branchId',
+          order: 60,
+          gridColumns: 4
+        },
+        {
+          name: 'institutionNumber',
+          order: 70,
+          gridColumns: 3
+        },
+        {
+          name: 'accountNumber',
+          order: 80,
+          gridColumns: 5
+        },
+        {
+          name: 'swiftCode',
+          order: 90,
+          gridColumns: 12
+        }
+      ],
+      order: 110
+    },
+    {
       name: 'pad',
       title: `Connect using a void check`,
       subTitle: `Connect to your account without signing in to online banking.
@@ -70,7 +124,7 @@ foam.CLASS({
       isAvailable: function(forContact) {
         return ! forContact;
       },
-      order: 110
+      order: 120
     }
   ],
 
@@ -306,7 +360,8 @@ foam.CLASS({
           views: [
             {
               class: 'foam.u2.view.FObjectView',
-              of: 'net.nanopay.model.CAPadCapture'
+              of: 'net.nanopay.model.CAPadCapture',
+              classIsFinal: true
             },
             {
               // displays ca bank account capabilities

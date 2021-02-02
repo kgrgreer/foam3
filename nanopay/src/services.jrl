@@ -899,7 +899,6 @@ p({
       .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
       .setJournalName("userHistory")
       .setOf(foam.dao.history.HistoryRecord.getOwnClassInfo())
-      .setCluster(false)
       .build()
       .orderBy(foam.mlang.MLang.DESC(foam.dao.history.HistoryRecord.TIMESTAMP));
   """,
@@ -1912,7 +1911,15 @@ p({
   "client":"{\"of\":\"net.nanopay.documents.UserAcceptanceDocument\"}"
 })
 
-p({"class":"foam.nanos.boot.NSpec", "name":"settlementReports",                "authenticate":true, "description":"This generates a PDF file that is downloaded as a zip file. The report contains a dated range for invoices and specific fields from the invoices.", "serviceScript":"return new net.nanopay.invoice.InvoiceFilteredSettlementReport.Builder(x).setDelegate(new foam.nanos.blob.HttpBlobService(x, x.get(\"blobStore\"))).build();"})
+p({
+  "class":"foam.nanos.boot.NSpec",
+  "name":"settlementReports",
+  "authenticate":true,
+  "description":"This generates a PDF file that is downloaded as a zip file. The report contains a dated range for invoices and specific fields from the invoices.",
+  "serviceScript":"""
+    return new net.nanopay.invoice.InvoiceFilteredSettlementReport.Builder(x).setDelegate(new foam.nanos.blob.HttpBlobService(x, x.get("blobStore"))).build();
+  """
+})
 
 p({
   "class": "foam.nanos.boot.NSpec",

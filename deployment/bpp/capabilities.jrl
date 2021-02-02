@@ -9,6 +9,18 @@ p({
     "country.read.PT"
   ]
 })
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "bppCorridorCapability",
+  version: "0",
+  enabled: true,
+  permissionsGranted: [
+    "paymentprovidercorridor.read.afex",
+    "paymentprovidercorridor.read.treviso",
+    "paymentprovidercorridor.source.read.bpp",
+    "paymentprovidercorridor.target.read.afex"
+  ]
+})
 
 p({
   class:"foam.nanos.crunch.Capability",
@@ -18,6 +30,12 @@ p({
     "naturecode.read.f0224036-2a37-4fa9-8879-a413fe168f34"
   ]
 })
+
+// PaymentProviderCorridors
+p({class:"net.nanopay.payment.PaymentProviderCorridor",ranking:1,provider:"BPP",sourceCountry:"BR",targetCountry:"US",sourceCurrencies:["BRL"],targetCurrencies:["USD"],id:"2869DB5B-0AFE-4113-8EF7-5E5B6B8BB4AC",name:"BR-USD Corridor - BPP",enabled:true,"visibilityPredicate": { class: "foam.mlang.predicate.True" }})
+p({class:"net.nanopay.payment.PaymentProviderCorridor",ranking:2,provider:"BPP",sourceCountry:"BR",targetCountry:"CA",sourceCurrencies:["BRL"],targetCurrencies:["CAD"],id:"5B9EE768-4B35-493C-A356-FEC306235AB7",name:"BR-CAD Corridor - BPP",enabled:true,"visibilityPredicate": { class: "foam.mlang.predicate.True" }})
+p({class:"net.nanopay.payment.PaymentProviderCorridor",ranking:3,provider:"BPP",sourceCountry:"BR",targetCountry:"GB",sourceCurrencies:["BRL"],targetCurrencies:["GBP"],id:"2DCB6488-A880-49F5-9973-CABDDDDD017A",name:"BR-GBP Corridor - BPP",enabled:true,"visibilityPredicate": { class: "foam.mlang.predicate.True" }})
+p({class:"net.nanopay.payment.PaymentProviderCorridor",ranking:4,provider:"BPP",sourceCountry:"BR",targetCountry:"PT",sourceCurrencies:["BRL"],targetCurrencies:["EUR"],id:"E55A5CFE-6EA1-40EC-929A-E6E374349A79",name:"BR-EUR Corridor - BPP",enabled:true,"visibilityPredicate": { class: "foam.mlang.predicate.True" }})
 
 p({
   class: "foam.nanos.crunch.Capability",

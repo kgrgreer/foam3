@@ -97,6 +97,59 @@ foam.CLASS({
       order: 30
     },
     {
+      name: 'clientAccountInformation',
+      title: function() {
+        return this.clientAccountInformationTitle;
+      },
+      properties: [
+        { 
+          name: 'denomination',
+          order: 10,
+          gridColumns: 12
+        },
+        {
+          name: 'name',
+          order: 20,
+          gridColumns: 12
+        },
+        {
+          name: 'flagImage',
+          order: 30,
+          gridColumns: 12
+        },
+        {
+          name: 'country',
+          order: 40,
+          gridColumns: 12
+        },
+        {
+          name: 'branchId',
+          order: 50,
+          gridColumns: 12
+        },
+        {
+          name: 'institutionNumber',
+          order: 60,
+          gridColumns: 12
+        },
+        {
+          name: 'accountNumber',
+          order: 70,
+          gridColumns: 12
+        },
+        {
+          name: 'swiftCode',
+          order: 80,
+          gridColumns: 12
+        },
+        {
+          name: 'iban',
+          order: 90,
+          gridColumns: 12
+        }
+      ]
+    },
+    {
       name: 'pad',
       permissionRequired: true,
       isAvailable: function(forContact) {
@@ -134,7 +187,8 @@ foam.CLASS({
     { name: 'UNABLE_TO_DEFAULT', message: 'Unable to set non verified bank accounts as default' },
     { name: 'STATUS_ACTIVE', message: 'Active' },
     { name: 'STATUS_PENDING', message: 'Pending' },
-    { name: 'STATUS_DISABLED', message: 'Disabled' }
+    { name: 'STATUS_DISABLED', message: 'Disabled' },
+    { name: 'CLIENT_ACCOUNT_INFORMATION_DEFAULT_TITLE', message: 'Client Account Information' }
   ],
 
   css: `
@@ -511,6 +565,14 @@ foam.CLASS({
         });
       },
       visibility: 'HIDDEN'
+    },
+    {
+      name: 'clientAccountInformationTitle',
+      transient: true,
+      visibility: 'HIDDEN',
+      factory: function() {
+        return this.CLIENT_ACCOUNT_INFORMATION_DEFAULT_TITLE;
+      }
     }
   ],
 
@@ -545,7 +607,7 @@ foam.CLASS({
             .tag({
               class: 'net.nanopay.account.ui.BankAccountWizard',
               data: account,
-              useSections: ['accountInformation', 'pad'],
+              useSections: ['clientAccountInformation', 'pad'],
               config: {
                 id: { updateVisibility: 'HIDDEN' },
                 summary: { updateVisibility: 'HIDDEN' }
