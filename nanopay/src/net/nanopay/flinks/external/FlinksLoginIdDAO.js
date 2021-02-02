@@ -385,6 +385,7 @@ foam.CLASS({
           user.getNotificationSettings(x).put(notificationSetting);
         } else {
           NotificationSetting notificationSetting = (NotificationSetting) notificationSettings.getArray().get(0);
+          notificationSetting = (NotificationSetting) notificationSetting.fclone();
           notificationSetting.setEnabled(false);
           user.getNotificationSettings(x).put(notificationSetting);
         }
@@ -396,6 +397,7 @@ foam.CLASS({
           user.getNotificationSettings(x).put(emailSetting);
         } else {
           EmailSetting emailSetting = (EmailSetting) emailSettings.getArray().get(0);
+          emailSetting = (EmailSetting) emailSetting.fclone();
           emailSetting.setEnabled(false);
           user.getNotificationSettings(x).put(emailSetting);
         }
@@ -407,6 +409,7 @@ foam.CLASS({
           user.getNotificationSettings(x).put(smsSetting);
         } else {
           SMSSetting smsSetting = (SMSSetting) smsSettings.getArray().get(0);
+          smsSetting = (SMSSetting)  smsSetting.fclone();
           smsSetting.setEnabled(false);
           user.getNotificationSettings(x).put(smsSetting);
         }
@@ -541,6 +544,7 @@ foam.CLASS({
           business.getNotificationSettings(x).put(notificationSetting);
         } else {
           NotificationSetting notificationSetting = (NotificationSetting) notificationSettings.getArray().get(0);
+          notificationSetting = (NotificationSetting) notificationSetting.fclone();
           notificationSetting.setEnabled(false);
           business.getNotificationSettings(x).put(notificationSetting);
         }
