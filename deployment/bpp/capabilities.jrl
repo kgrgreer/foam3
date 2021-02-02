@@ -36,3 +36,14 @@ p({class:"net.nanopay.payment.PaymentProviderCorridor",ranking:1,provider:"BPP",
 p({class:"net.nanopay.payment.PaymentProviderCorridor",ranking:2,provider:"BPP",sourceCountry:"BR",targetCountry:"CA",sourceCurrencies:["BRL"],targetCurrencies:["CAD"],id:"5B9EE768-4B35-493C-A356-FEC306235AB7",name:"BR-CAD Corridor - BPP",enabled:true,"visibilityPredicate": { class: "foam.mlang.predicate.True" }})
 p({class:"net.nanopay.payment.PaymentProviderCorridor",ranking:3,provider:"BPP",sourceCountry:"BR",targetCountry:"GB",sourceCurrencies:["BRL"],targetCurrencies:["GBP"],id:"2DCB6488-A880-49F5-9973-CABDDDDD017A",name:"BR-GBP Corridor - BPP",enabled:true,"visibilityPredicate": { class: "foam.mlang.predicate.True" }})
 p({class:"net.nanopay.payment.PaymentProviderCorridor",ranking:4,provider:"BPP",sourceCountry:"BR",targetCountry:"PT",sourceCurrencies:["BRL"],targetCurrencies:["EUR"],id:"E55A5CFE-6EA1-40EC-929A-E6E374349A79",name:"BR-EUR Corridor - BPP",enabled:true,"visibilityPredicate": { class: "foam.mlang.predicate.True" }})
+
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "bpp-tx-fees",
+  name: "Enable BPP Fees",
+  enabled: true,
+  permissionsGranted: [
+    "rule.read.454df571-f639-4506-8d59-98b4f39934e4",
+    "rule.read.9e7661a6-610b-47ad-b521-96b9c760fb16"
+  ]
+})

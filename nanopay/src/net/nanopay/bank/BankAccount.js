@@ -102,7 +102,7 @@ foam.CLASS({
         return this.clientAccountInformationTitle;
       },
       properties: [
-        { 
+        {
           name: 'denomination',
           order: 10,
           gridColumns: 12
@@ -167,12 +167,12 @@ foam.CLASS({
     { name: 'ACCOUNT_NUMBER_REQUIRED', message: 'Account number required' },
     { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number invalid' },
     { name: 'NICKNAME_REQUIRED', message: 'Nickname required' },
-    { name: 'INSTITUTION_NUMBER_REQUIRED', message: 'Institution number required' },
-    { name: 'INSTITUTION_NUMBER_INVALID', message: 'Institution number invalid' },
+    { name: 'INSTITUTION_NUMBER_REQUIRED', message: 'Institution required' },
+    { name: 'INSTITUTION_NUMBER_INVALID', message: 'Institution invalid' },
     { name: 'CHECK_DIGIT_REQUIRED', message: 'Check digit required' },
     { name: 'CHECK_DIGIT_INVALID', message: 'Check digit invalid' },
-    { name: 'BRANCH_ID_REQUIRED', message: 'Branch id required' },
-    { name: 'BRANCH_ID_INVALID', message: 'Branch id invalid' },
+    { name: 'BRANCH_ID_REQUIRED', message: 'Branch required' },
+    { name: 'BRANCH_ID_INVALID', message: 'Branch invalid' },
     { name: 'SWIFT_CODE_REQUIRED', message: 'SWIFT/BIC code required' },
     { name: 'SWIFT_CODE_INVALID', message: 'SWIFT/BIC code invalid' },
     { name: 'IBAN_REQUIRED', message: 'IBAN required' },
@@ -352,6 +352,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'institutionNumber',
+      label: 'Institution',
       section: 'accountInformation',
       order: 120,
       gridColumns: 6,
@@ -362,6 +363,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'branchId',
+      label: 'Branch',
       section: 'accountInformation',
       order: 130,
       gridColumns: 6,
