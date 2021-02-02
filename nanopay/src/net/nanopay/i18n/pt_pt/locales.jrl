@@ -3117,6 +3117,7 @@ p({class:"foam.i18n.Locale",locale:"pt","source":"25F5C0CC-DD7E-4206-B392-46EAA9
 p({class:"foam.i18n.Locale",locale:"pt","source":"2910C2C9-3597-42A3-BF85-CFBC8F0E1388.name","target":"Capacidade de fatura do usuário"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"7b41a164-29bd-11eb-adc1-0242ac120002.name","target":"Conta no banco do brasil"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"554af38a-8225-87c8-dfdf-eeb15f71215e-25.name","target":"Termos e Condições"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"9d4d667c-04c3-11eb-adc1-0242ac120002.name","target":"Capital de negócios e patrimônio líquido"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"af3d9c28-0674-11eb-adc1-0242ac120002.name","target":"Referências Comerciais"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"4c46cdb8-06b2-11eb-adc1-0242ac120002.name","target":"Natureza da relação comercial"})
 
@@ -3317,3 +3318,19 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.ui.DataSecurityBanne
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.flinks.view.modalForm.FlinksModalConnect.BACK.label",target:"Cancelar"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.flinks.view.modalForm.FlinksModalConnect.NEXT.label",target:"Conectar"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"submenu.contact.title",target:"Adicionar contato"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f712bpp-10.name",target:"Termos e Condições AFEX"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"fb7d3ca2-62f2-4caf-a84c-860392e46bpp.name",target:"Número CPF"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"fb7d3ca2-62f2-2131-a84c-8603dsrf2bpp.name",target:"detalhes estendidos do usuário"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.br.ExtendedUserDetailsData.BIRTHDAY.label",target:"Data de nascimento"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.br.ExtendedUserDetailsData.UNDER_AGE_LIMIT_ERROR",target:"Deve ter pelo menos 18 anos."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.br.ExtendedUserDetailsData.OVER_AGE_LIMIT_ERROR",target:"Deve ter menos de 125 anos."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.br.ExtendedUserDetailsData.INVALID_DATE_ERROR",target:"Data de nascimento válida exigida"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.br.ExtendedUserDetailsData.MOTHERS_MAIDEN_NAME.label",target:"nome de solteira da mãe"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AccountEntityType.PRIVATE_CLIENT.label",target:"cliente privado"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AccountEntityType.CORPORATE_CLIENT.label",target:"cliente corporativo"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"8ad3c898-db232-1ea-87d0-0242ac130z0-bpp.name",target:"Data de emissão"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"8ad3c898-db232-1ea-87d0-0242ac130z0-bpp.description",target:"Data de emissão de um documento de identificação"})
