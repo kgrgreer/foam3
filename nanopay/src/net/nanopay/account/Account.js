@@ -81,16 +81,13 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'DEFAULT_MSG', message: 'Default' },
-    { name: 'ACCOUNT_INFORMATION_DEFAULT_TITLE', message: 'Account Information' }
+    { name: 'DEFAULT_MSG', message: 'Default' }
   ],
 
   sections: [
     {
       name: 'accountInformation',
-      title: function() {
-        return this.accountInformationTitle;
-      },
+      permissionRequired: true,
       order: 10
     },
     {
@@ -137,7 +134,7 @@ foam.CLASS({
       title: 'Transactions',
       permissionRequired: true,
       order: 100
-    }    
+    }
   ],
 
   properties: [
@@ -529,15 +526,7 @@ foam.CLASS({
       class: 'Map',
       name: 'externalData',
       visibility: 'HIDDEN'
-    },
-    {
-      name: 'accountInformationTitle',
-      transient: true,
-      visibility: 'HIDDEN',
-      factory: function() {
-        return this.ACCOUNT_INFORMATION_DEFAULT_TITLE;
-      }
-    },
+    }
   ],
 
   methods: [

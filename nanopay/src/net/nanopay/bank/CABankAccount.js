@@ -63,6 +63,60 @@ foam.CLASS({
 
   sections: [
     {
+      name: 'clientAccountInformation',
+      title: function() {
+        return this.clientAccountInformationTitle;
+      },
+      properties: [
+        {
+          name: 'denomination',
+          order: 10,
+          gridColumns: 12
+        },
+        {
+          name: 'name',
+          order: 20,
+          gridColumns: 12
+        },
+        {
+          name: 'flagImage',
+          order: 30,
+          gridColumns: 12
+        },
+        {
+          name: 'country',
+          order: 40,
+          gridColumns: 12
+        },
+        {
+          name: 'voidChequeImage',
+          order: 50,
+          gridColumns: 12
+        },
+        {
+          name: 'branchId',
+          order: 60,
+          gridColumns: 4
+        },
+        {
+          name: 'institutionNumber',
+          order: 70,
+          gridColumns: 3
+        },
+        {
+          name: 'accountNumber',
+          order: 80,
+          gridColumns: 5
+        },
+        {
+          name: 'swiftCode',
+          order: 90,
+          gridColumns: 12
+        }
+      ],
+      order: 110
+    },
+    {
       name: 'pad',
       title: `Connect using a void check`,
       subTitle: `Connect to your account without signing in to online banking.
@@ -70,7 +124,7 @@ foam.CLASS({
       isAvailable: function(forContact) {
         return ! forContact;
       },
-      order: 110
+      order: 120
     }
   ],
 
@@ -81,8 +135,9 @@ foam.CLASS({
     { name: 'ACCOUNT_NUMBER_REQUIRED', message: 'Account number required' },
     { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number must be between 5 and 12 digits long' },
     { name: 'INSTITUTION_NUMBER_REQUIRED', message: 'Institution required' },
-    { name: 'INSTITUTION_NUMBER_THREE', message: 'Institution number must be 3 digits long' },
-    { name: 'ADD_SUCCESSFUL', message: 'Bank Account successfully added' }
+    { name: 'INSTITUTION_NUMBER_THREE', message: 'Institution must be 3 digits long' },
+    { name: 'ADD_SUCCESSFUL', message: 'Bank Account successfully added' },
+    { name: 'REQUIRED', message: 'Required' }
   ],
 
   properties: [
@@ -102,7 +157,7 @@ foam.CLASS({
       },
       validateObj: function(accountNumber) {
         if ( accountNumber === '' ) {
-          return this.ACCOUNT_NUMBER_REQUIRED;
+          return this.REQUIRED;
         }
         var accNumberRegex = /^[0-9]{5,12}$/;
         if ( ! accNumberRegex.test(accountNumber) ) {
@@ -153,7 +208,7 @@ foam.CLASS({
       },
       validateObj: function(institutionNumber) {
         if ( institutionNumber === '' ) {
-          return this.INSTITUTION_NUMBER_REQUIRED;
+          return this.REQUIRED;
         }
         var instNumberRegex = /^[0-9]{3}$/;
         if ( ! instNumberRegex.test(institutionNumber) ) {
@@ -194,7 +249,7 @@ foam.CLASS({
           return;
         }
         if ( branchId === '' ) {
-          return this.TRANSIT_NUMBER_REQUIRED;
+          return this.REQUIRED;
         } else if ( ! /^\d+$/.test(branchId) ) {
           return this.TRANSIT_NUMBER_FORMAT;
         } else if ( branchId.length !== 5 ) {
@@ -306,7 +361,8 @@ foam.CLASS({
           views: [
             {
               class: 'foam.u2.view.FObjectView',
-              of: 'net.nanopay.model.CAPadCapture'
+              of: 'net.nanopay.model.CAPadCapture',
+              classIsFinal: true
             },
             {
               // displays ca bank account capabilities

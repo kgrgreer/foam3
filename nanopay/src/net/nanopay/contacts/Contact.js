@@ -362,7 +362,7 @@ foam.CLASS({
           skipBaseClass: true,
           copyOldData: function(o) { return { isDefault: o.isDefault, forContact: o.forContact }; }
         }, X);
-        v.data$.sub(function() { v.data.forContact = true; v.data.accountInformationTitle = ''; });
+        v.data$.sub(function() { v.data.forContact = true; v.data.clientAccountInformationTitle = ''; });
 
         return v;
       }

@@ -117,10 +117,10 @@ public class BillingServiceTest extends Test {
 
     billingService = (BillingServiceInterface) x_.get("billingService");
     MDAO billMDAO = new MDAO(Bill.getOwnClassInfo());
-    x_ = x_.put("billDAO", billMDAO);
+    x_ = x_.put("localBillDAO", billMDAO);
     billingService.createBills(x_, bmoTxn);
 
-    ArraySink sink = (ArraySink) ((DAO) x_.get("billDAO")).where(EQ(Bill.ORIGINATING_TRANSACTION, bmoTxn.getId())).select(new ArraySink());
+    ArraySink sink = (ArraySink) ((DAO) x_.get("localBillDAO")).where(EQ(Bill.ORIGINATING_TRANSACTION, bmoTxn.getId())).select(new ArraySink());
     Bill bill = (Bill) sink.getArray().get(0);
     test(bill != null, "Bill successfully created from failed transaction");
     test(bill.getErrorCode() == errorFee.getErrorCode(), "bill has correct error code");

@@ -148,9 +148,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             onboardingRequest.setExpectedMonthlyPayments(mapAFEXTransactionCount(business.getSuggestedUserTransactionInfo().getAnnualTransactionFrequency()));
             onboardingRequest.setExpectedMonthlyVolume(mapAFEXVolumeEstimates(business.getSuggestedUserTransactionInfo().getAnnualDomesticVolume()));
             onboardingRequest.setDescription(business.getSuggestedUserTransactionInfo().getTransactionPurpose());
-
-            BusinessSector businessSector = (BusinessSector) ((DAO) this.x.get("businessSectorDAO")).find(business.getBusinessSectorId());
-            if ( businessSector != null ) onboardingRequest.setNAICS(businessSector.getName());
+            onboardingRequest.setNAICS(getBusinessSector(business.getBusinessSectorId()));
 
             if ( ! SafetyUtil.isEmpty(business.getOperatingBusinessName()) ) {
               onboardingRequest.setTradeName(business.getOperatingBusinessName());
@@ -1229,6 +1227,13 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     if ( businessType == null ) throw new RuntimeException("Business Type not found.");
     return ((TranslationService) x.get("translationService"))
       .getTranslation("en-AFEX", businessType.getName(), "Other");
+  }
+
+  protected String getBusinessSector(long sectorId) throws RuntimeException {
+    BusinessSector businessSector = (BusinessSector) ((DAO) x.get("businessSectorDAO")).find(sectorId);
+    if ( businessSector == null ) throw new RuntimeException("Business Sector not found.");
+    return ((TranslationService) x.get("translationService"))
+      .getTranslation("en-AFEX", businessSector.getName(), businessSector.getName());
   }
 
   private String mapAFEXVolumeEstimates(String estimates) {

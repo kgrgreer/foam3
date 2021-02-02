@@ -97,6 +97,59 @@ foam.CLASS({
       order: 30
     },
     {
+      name: 'clientAccountInformation',
+      title: function() {
+        return this.clientAccountInformationTitle;
+      },
+      properties: [
+        {
+          name: 'denomination',
+          order: 10,
+          gridColumns: 12
+        },
+        {
+          name: 'name',
+          order: 20,
+          gridColumns: 12
+        },
+        {
+          name: 'flagImage',
+          order: 30,
+          gridColumns: 12
+        },
+        {
+          name: 'country',
+          order: 40,
+          gridColumns: 12
+        },
+        {
+          name: 'branchId',
+          order: 50,
+          gridColumns: 12
+        },
+        {
+          name: 'institutionNumber',
+          order: 60,
+          gridColumns: 12
+        },
+        {
+          name: 'accountNumber',
+          order: 70,
+          gridColumns: 12
+        },
+        {
+          name: 'swiftCode',
+          order: 80,
+          gridColumns: 12
+        },
+        {
+          name: 'iban',
+          order: 90,
+          gridColumns: 12
+        }
+      ]
+    },
+    {
       name: 'pad',
       permissionRequired: true,
       isAvailable: function(forContact) {
@@ -114,12 +167,12 @@ foam.CLASS({
     { name: 'ACCOUNT_NUMBER_REQUIRED', message: 'Account number required' },
     { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number invalid' },
     { name: 'NICKNAME_REQUIRED', message: 'Nickname required' },
-    { name: 'INSTITUTION_NUMBER_REQUIRED', message: 'Institution number required' },
-    { name: 'INSTITUTION_NUMBER_INVALID', message: 'Institution number invalid' },
+    { name: 'INSTITUTION_NUMBER_REQUIRED', message: 'Institution required' },
+    { name: 'INSTITUTION_NUMBER_INVALID', message: 'Institution invalid' },
     { name: 'CHECK_DIGIT_REQUIRED', message: 'Check digit required' },
     { name: 'CHECK_DIGIT_INVALID', message: 'Check digit invalid' },
-    { name: 'BRANCH_ID_REQUIRED', message: 'Branch id required' },
-    { name: 'BRANCH_ID_INVALID', message: 'Branch id invalid' },
+    { name: 'BRANCH_ID_REQUIRED', message: 'Branch required' },
+    { name: 'BRANCH_ID_INVALID', message: 'Branch invalid' },
     { name: 'SWIFT_CODE_REQUIRED', message: 'SWIFT/BIC code required' },
     { name: 'SWIFT_CODE_INVALID', message: 'SWIFT/BIC code invalid' },
     { name: 'IBAN_REQUIRED', message: 'IBAN required' },
@@ -134,7 +187,8 @@ foam.CLASS({
     { name: 'UNABLE_TO_DEFAULT', message: 'Unable to set non verified bank accounts as default' },
     { name: 'STATUS_ACTIVE', message: 'Active' },
     { name: 'STATUS_PENDING', message: 'Pending' },
-    { name: 'STATUS_DISABLED', message: 'Disabled' }
+    { name: 'STATUS_DISABLED', message: 'Disabled' },
+    { name: 'CLIENT_ACCOUNT_INFORMATION_DEFAULT_TITLE', message: 'Client Account Information' }
   ],
 
   css: `
@@ -298,6 +352,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'institutionNumber',
+      label: 'Institution',
       section: 'accountInformation',
       order: 120,
       gridColumns: 6,
@@ -308,6 +363,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'branchId',
+      label: 'Branch',
       section: 'accountInformation',
       order: 130,
       gridColumns: 6,
@@ -511,6 +567,14 @@ foam.CLASS({
         });
       },
       visibility: 'HIDDEN'
+    },
+    {
+      name: 'clientAccountInformationTitle',
+      transient: true,
+      visibility: 'HIDDEN',
+      factory: function() {
+        return this.CLIENT_ACCOUNT_INFORMATION_DEFAULT_TITLE;
+      }
     }
   ],
 
@@ -545,7 +609,7 @@ foam.CLASS({
             .tag({
               class: 'net.nanopay.account.ui.BankAccountWizard',
               data: account,
-              useSections: ['accountInformation', 'pad'],
+              useSections: ['clientAccountInformation', 'pad'],
               config: {
                 id: { updateVisibility: 'HIDDEN' },
                 summary: { updateVisibility: 'HIDDEN' }

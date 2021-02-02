@@ -914,7 +914,9 @@ p({
   "enabled":true,
   "lifecycleState":1
 })
+
 p({
+  "class":"foam.nanos.ruler.Rule",
   "id":"transactions-billing-engine-create-bill",
   "name":"Create bills from failed transactions",
   "priority":100,

@@ -37,6 +37,9 @@ foam.CLASS({
     'foam.nanos.dig.exception.GeneralException',
     'foam.nanos.dig.exception.UnknownIdException',
     'foam.nanos.logger.Logger',
+    'foam.nanos.notification.NotificationSetting',
+    'foam.nanos.notification.EmailSetting',
+    'foam.nanos.notification.sms.SMSSetting',
     'foam.nanos.pm.PM',
     'foam.util.SafetyUtil',
     'java.util.ArrayList',
@@ -370,6 +373,47 @@ foam.CLASS({
           .build();
         user = (User) userDAO.put(user);
 
+        // Update or create notification settings and disable them
+        ArraySink notificationSettings = (ArraySink) user.getNotificationSettings(x).where(CLASS_OF(NotificationSetting.class)).select(new ArraySink());
+        ArraySink emailSettings = (ArraySink) user.getNotificationSettings(x).where(CLASS_OF(EmailSetting.class)).select(new ArraySink());
+        ArraySink smsSettings = (ArraySink) user.getNotificationSettings(x).where(CLASS_OF(SMSSetting.class)).select(new ArraySink());
+
+        if (notificationSettings.getArray().size() == 0) {
+          NotificationSetting notificationSetting = new NotificationSetting();
+          notificationSetting.setOwner(user.getId());
+          notificationSetting.setEnabled(false);
+          user.getNotificationSettings(x).put(notificationSetting);
+        } else {
+          NotificationSetting notificationSetting = (NotificationSetting) notificationSettings.getArray().get(0);
+          notificationSetting = (NotificationSetting) notificationSetting.fclone();
+          notificationSetting.setEnabled(false);
+          user.getNotificationSettings(x).put(notificationSetting);
+        }
+
+        if (emailSettings.getArray().size() == 0) {
+          EmailSetting emailSetting = new EmailSetting();
+          emailSetting.setOwner(user.getId());
+          emailSetting.setEnabled(false);
+          user.getNotificationSettings(x).put(emailSetting);
+        } else {
+          EmailSetting emailSetting = (EmailSetting) emailSettings.getArray().get(0);
+          emailSetting = (EmailSetting) emailSetting.fclone();
+          emailSetting.setEnabled(false);
+          user.getNotificationSettings(x).put(emailSetting);
+        }
+
+        if (smsSettings.getArray().size() == 0) {
+          SMSSetting smsSetting = new SMSSetting();
+          smsSetting.setOwner(user.getId());
+          smsSetting.setEnabled(false);
+          user.getNotificationSettings(x).put(smsSetting);
+        } else {
+          SMSSetting smsSetting = (SMSSetting) smsSettings.getArray().get(0);
+          smsSetting = (SMSSetting)  smsSetting.fclone();
+          smsSetting.setEnabled(false);
+          user.getNotificationSettings(x).put(smsSetting);
+        }
+
         // Save the UserId on the request
         request.setUser(user.getId());
 
@@ -489,6 +533,21 @@ foam.CLASS({
           .build();
         DAO localUserDAO = (DAO) subjectX.get("localUserDAO");
         business = (Business) localUserDAO.inX(subjectX).put(business);
+
+        // Update or create notification settings and disable them
+        ArraySink notificationSettings = (ArraySink) business.getNotificationSettings(x).where(CLASS_OF(NotificationSetting.class)).select(new ArraySink());
+
+        if (notificationSettings.getArray().size() == 0) {
+          NotificationSetting notificationSetting = new NotificationSetting();
+          notificationSetting.setOwner(business.getId());
+          notificationSetting.setEnabled(false);
+          business.getNotificationSettings(x).put(notificationSetting);
+        } else {
+          NotificationSetting notificationSetting = (NotificationSetting) notificationSettings.getArray().get(0);
+          notificationSetting = (NotificationSetting) notificationSetting.fclone();
+          notificationSetting.setEnabled(false);
+          business.getNotificationSettings(x).put(notificationSetting);
+        }
 
         // Switch to business context
         Subject currentSubject = (Subject) subjectX.get("subject");

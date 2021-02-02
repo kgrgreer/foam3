@@ -1413,3 +1413,5 @@ p({class:"foam.i18n.Locale",locale:"en",variant:"AFEX",source:"Nonprofit/Charita
 p({class:"foam.i18n.Locale",locale:"en",variant:"AFEX",source:"Limited Liability Company",target:"Limited Liability Company (LLC)"})
 p({class:"foam.i18n.Locale",locale:"en",variant:"AFEX",source:"Publicly Traded Corporation",target:"Public Limited Company"})
 p({class:"foam.i18n.Locale",locale:"en",variant:"AFEX",source:"Trust",target:"Other"})
+
+p({class:"foam.i18n.Locale",locale:"en",variant:"AFEX",source:"Waste Treatment and Disposal",target:"Waste collection services, hazardous"})

@@ -892,8 +892,8 @@ foam.CLASS({
         var sDate = new Date(Date.now() - (1000*60*60*24*3));
         var dDate = new Date(Date.now() + (1000*60*60*24*3));
         var url = window.location.origin
-          + '/service/settlementReports?userId='+ this.id
-          + '&startDate=' // + sDate <- add(uncomment) to use above set dates.
+          + '/service/settlementReports?'
+          + 'startDate=' // + sDate <- add(uncomment) to use above set dates.
           + '&endDate='; // + dDate; <- add(uncomment) to use above set dates.
         window.location.assign(url);
       }
