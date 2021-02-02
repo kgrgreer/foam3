@@ -68,7 +68,7 @@ foam.CLASS({
         return this.clientAccountInformationTitle;
       },
       properties: [
-        { 
+        {
           name: 'denomination',
           order: 10,
           gridColumns: 12
@@ -135,7 +135,7 @@ foam.CLASS({
     { name: 'ACCOUNT_NUMBER_REQUIRED', message: 'Account number required' },
     { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number must be between 5 and 12 digits long' },
     { name: 'INSTITUTION_NUMBER_REQUIRED', message: 'Institution required' },
-    { name: 'INSTITUTION_NUMBER_THREE', message: 'Institution number must be 3 digits long' },
+    { name: 'INSTITUTION_NUMBER_THREE', message: 'Institution must be 3 digits long' },
     { name: 'ADD_SUCCESSFUL', message: 'Bank Account successfully added' }
   ],
 
@@ -226,7 +226,7 @@ foam.CLASS({
     {
       name: 'branchId',
       type: 'String',
-      label: 'Transit',
+      label: 'Transitddddd',
       section: 'accountInformation',
       order: 130,
       gridColumns: 6,
