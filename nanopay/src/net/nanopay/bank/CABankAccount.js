@@ -136,7 +136,8 @@ foam.CLASS({
     { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number must be between 5 and 12 digits long' },
     { name: 'INSTITUTION_NUMBER_REQUIRED', message: 'Institution required' },
     { name: 'INSTITUTION_NUMBER_THREE', message: 'Institution must be 3 digits long' },
-    { name: 'ADD_SUCCESSFUL', message: 'Bank Account successfully added' }
+    { name: 'ADD_SUCCESSFUL', message: 'Bank Account successfully added' },
+    { name: 'REQUIRED', message: 'Required' }
   ],
 
   properties: [
@@ -156,7 +157,7 @@ foam.CLASS({
       },
       validateObj: function(accountNumber) {
         if ( accountNumber === '' ) {
-          return this.ACCOUNT_NUMBER_REQUIRED;
+          return this.REQUIRED;
         }
         var accNumberRegex = /^[0-9]{5,12}$/;
         if ( ! accNumberRegex.test(accountNumber) ) {
@@ -207,7 +208,7 @@ foam.CLASS({
       },
       validateObj: function(institutionNumber) {
         if ( institutionNumber === '' ) {
-          return this.INSTITUTION_NUMBER_REQUIRED;
+          return this.REQUIRED;
         }
         var instNumberRegex = /^[0-9]{3}$/;
         if ( ! instNumberRegex.test(institutionNumber) ) {
@@ -248,7 +249,7 @@ foam.CLASS({
           return;
         }
         if ( branchId === '' ) {
-          return this.TRANSIT_NUMBER_REQUIRED;
+          return this.REQUIRED;
         } else if ( ! /^\d+$/.test(branchId) ) {
           return this.TRANSIT_NUMBER_FORMAT;
         } else if ( branchId.length !== 5 ) {

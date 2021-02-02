@@ -126,12 +126,12 @@ foam.CLASS({
         },
         {
           name: 'accountType',
-          order: 100,
+          order: 80,
           gridColumns: 12
         },
         {
           name: 'accountOwnerType',
-          order: 110,
+          order: 90,
           gridColumns: 12
         }
       ],

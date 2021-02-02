@@ -1405,6 +1405,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.T
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.ACCOUNT_NUMBER_REQUIRED",target:"Número da conta obrigatório"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.ACCOUNT_NUMBER_INVALID",target:"O número da conta deve ter entre 5 e 12 dígitos."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.INSTITUTION_NUMBER_REQUIRED",target:"Instituição obrigatório"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.REQUIRED",target:"Obrigatório"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.INSTITUTION_NUMBER_THREE",target:"Instituição deve ter 3 dígitos"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.CABankAccount.ADD_SUCCESSFUL",target:"Conta bancária adicionada com sucesso!"})
