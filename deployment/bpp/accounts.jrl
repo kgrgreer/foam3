@@ -1,2 +1,2 @@
-// BPP Trust Account
-p({"class":"net.nanopay.account.TrustAccount", "id":"12", "owner":8054, "denomination":"CAD", "name":"BPP Trust Account CAD","lifecycleState":1})
+// from MSP setup
+p({class:"net.nanopay.account.DigitalAccount",denomination:"BRL",id:"512360f6-ec67-4339-9fc4-9a677bc2bff7",name:"FeeAccount-treviso",isDefault:true,owner:2001,created:1601392287945,createdBy:1,createdByAgent:1,lastModified:1601392287945,lastModifiedBy:1,lifecycleState:1})
