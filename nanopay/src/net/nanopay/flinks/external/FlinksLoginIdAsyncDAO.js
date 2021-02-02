@@ -118,10 +118,12 @@ foam.CLASS({
                         flinksLoginIdAsync.setFlinksLoginIdResult(flinksLoginIdResult);
                         flinksLoginIdAsync.setStatus(AsyncStatus.COMPLETED.getLabel());
                     } catch ( foam.core.FOAMException fe ) {
+                        ((Logger) x.get("logger")).error("Failure processing FlinksLoginId: " + flinksLoginId.getId(), fe);
                         flinksLoginIdAsync.setStatus(AsyncStatus.FAILURE.getLabel());
                         flinksLoginIdAsync.setErrorMessage(fe.getMessage());
                         flinksLoginIdAsync.setException(fe);
                     } catch ( Throwable t ) {
+                        ((Logger) x.get("logger")).error("Unexpected failure processing FlinksLoginId: " + flinksLoginId.getId(), t);
                         flinksLoginIdAsync.setStatus(AsyncStatus.FAILURE.getLabel());
                         flinksLoginIdAsync.setErrorMessage(t.getMessage());
                     } finally {

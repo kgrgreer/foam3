@@ -203,11 +203,11 @@ foam.CLASS({
     font-size: 16px;
   }
   ^ .net-nanopay-sme-ui-SMEModal-inner {
-    width: 515px;
     height: 500px;
   }
   ^ .net-nanopay-sme-ui-SMEModal-content {
     box-sizing: border-box;
+    width: 600px;
     overflow-y: scroll;
     padding: 30px;
   }
@@ -318,7 +318,7 @@ foam.CLASS({
                     class: 'net.nanopay.account.ui.BankAccountWizard',
                     data: this.bankAccount,
                     customTitle: this.SECTION_DETAILS_TITLE_VOID,
-                    useSections: ['accountInformation', 'pad']
+                    useSections: ['clientAccountInformation', 'pad']
                   }));
                 })
               .end()

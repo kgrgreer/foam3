@@ -58,6 +58,7 @@ import net.nanopay.model.Business;
 import foam.dao.DAO;
 import foam.nanos.notification.NotificationSetting;
 import foam.nanos.notification.EmailSetting;
+import foam.nanos.notification.sms.SMSSetting;
 import foam.dao.ArraySink;
 import foam.mlang.MLang;
 import foam.mlang.predicate.Predicate;
@@ -72,8 +73,9 @@ notificationSettingDAO = (DAO) x.get("notificationSettingDAO");
 users = userDAO.select(new ArraySink()).getArray();
 
 for ( User user : users ) {
-  notificationSetting = user.getNotificationSettings(x).where(MLang.NOT(MLang.INSTANCE_OF(EmailSetting.class))).select(new Count());
-  emailSetting = user.getNotificationSettings(x).where(MLang.INSTANCE_OF(EmailSetting.class)).select(new Count());
+  notificationSetting = user.getNotificationSettings(x).where(MLang.CLASS_OF(NotificationSetting.class)).select(new Count());
+  emailSetting = user.getNotificationSettings(x).where(MLang.CLASS_OF(EmailSetting.class)).select(new Count());
+  smsSetting = user.getNotificationSettings(x).where(MLang.CLASS_OF(SMSSetting.class)).select(new Count());
 
   if (notificationSetting.getValue() <= 0) {
     notificationSetting = new NotificationSetting();
@@ -89,6 +91,12 @@ for ( User user : users ) {
       notificationSettingDAO.put(emailsetting);
       print("Email Setting created for user: " + user.getId());
     }
+    if (smsSetting.getValue() <= 0) {
+      smsSetting = new SMSSetting();
+      smsSetting.setOwner(user.getId());
+      notificationSettingDAO.put(smsSetting);
+      print("SMS Setting created for user: " + user.getId());
+    }
   }
 }
 
@@ -99,12 +107,12 @@ for ( junction : junctions ) {
   junctionId.setTargetId(junction.getTargetId());
 
   notificationSettings = notificationSettingDAO.where(MLang.AND(new Predicate [] {
-        MLang.NOT(MLang.INSTANCE_OF(EmailSetting.class)),
+        MLang.CLASS_OF(NotificationSetting.class),
         MLang.EQ(NotificationSetting.USER_JUNCTION, junctionId)
       })).select(new Count()).getValue();
 
   emailSettings = notificationSettingDAO.where(MLang.AND(new Predicate [] {
-        MLang.INSTANCE_OF(EmailSetting.class),
+        MLang.CLASS_OF(EmailSetting.class),
         MLang.EQ(NotificationSetting.USER_JUNCTION, junctionId)
       })).select(new Count()).getValue();
 

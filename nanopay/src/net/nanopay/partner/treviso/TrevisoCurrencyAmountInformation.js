@@ -24,7 +24,7 @@ foam.CLASS({
   sections: [
     {
       name: 'businessCapital',
-      title: 'Business capital and equity'
+      title: 'Capital, equity and revenue'
     }
   ],
 
