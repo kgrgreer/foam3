@@ -53,10 +53,10 @@ foam.CLASS({
     { name: 'ACCOUNT_TYPE_REQUIRED', message: 'Account type required' },
     { name: 'ACCOUNT_HOLDER_REQUIRED', message: 'Account holder required' },
     { name: 'BANK_ADDED', message: 'Bank Account successfully added' },
-    { name: 'INSTITUTION_NUMBER_INVALID', message: 'Institution number must be 8 letters and/or digits long' },
-    { name: 'INSTITUTION_NUMBER_REQUIRED', message: 'Institution number required' },
-    { name: 'BRANCH_ID_INVALID', message: 'Branch id must be 5 digits long' },
-    { name: 'BRANCH_ID_REQUIRED', message: 'Branch id required' },
+    { name: 'INSTITUTION_NUMBER_INVALID', message: 'Institution must be 8 letters and/or digits long' },
+    { name: 'INSTITUTION_NUMBER_REQUIRED', message: 'Institution required' },
+    { name: 'BRANCH_ID_INVALID', message: 'Branch must be 5 digits long' },
+    { name: 'BRANCH_ID_REQUIRED', message: 'Branch required' },
     { name: 'HOLDER1', message: 'Individual' },
     { name: 'HOLDER2', message: 'Joint' },
     { name: 'CURRENT', message: 'Checking' },
@@ -89,7 +89,7 @@ foam.CLASS({
         return this.clientAccountInformationTitle;
       },
       properties: [
-        { 
+        {
           name: 'denomination',
           order: 10,
           gridColumns: 12
@@ -110,22 +110,27 @@ foam.CLASS({
           gridColumns: 12
         },
         {
-          name: 'accountType',
+          name: 'branchId',
           order: 50,
           gridColumns: 12
         },
         {
-          name: 'accountOwnerType',
+          name: 'institutionNumber',
           order: 60,
           gridColumns: 12
         },
         {
-          name: 'swiftCode',
+          name: 'accountNumber',
+          order: 70,
+          gridColumns: 12
+        },
+        {
+          name: 'accountType',
           order: 80,
           gridColumns: 12
         },
         {
-          name: 'iban',
+          name: 'accountOwnerType',
           order: 90,
           gridColumns: 12
         }
@@ -157,44 +162,35 @@ foam.CLASS({
     },
     {
       name: 'institutionNumber',
-      createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       section: 'accountInformation',
-      validateObj: function(institutionNumber, iban) {
-        if ( iban )
-          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
+      validateObj: function(institutionNumber) {
+        var regex = /^[A-z0-9a-z]{8}$/;
 
-        if ( ! iban || (iban && ibanMsg != 'passed') ) {
-          if ( institutionNumber === '' ) {
-            return this.INSTITUTION_NUMBER_REQUIRED;
-          } else if ( ! this.INSTITUTION_NUMBER_PATTERN.test(institutionNumber) ) {
-            return this.INSTITUTION_NUMBER_INVALID;
-          }
+        if ( institutionNumber === '' ) {
+          return this.INSTITUTION_NUMBER_REQUIRED;
+        } else if ( ! this.INSTITUTION_NUMBER_PATTERN.test(institutionNumber) ) {
+          return this.INSTITUTION_NUMBER_INVALID;
         }
       }
     },
     {
       name: 'branchId',
       section: 'accountInformation',
-      createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
-      validateObj: function(branchId, iban) {
-        if ( iban )
-          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
+      validateObj: function(branchId) {
+        var regex = /^[0-9]{5}$/;
 
-        if ( ! iban || (iban && ibanMsg != 'passed') ) {
-          if ( branchId === '' ) {
-            return this.BRANCH_ID_REQUIRED;
-          } else if ( ! this.BRANCH_ID_PATTERN.test(branchId) ) {
-            return this.BRANCH_ID_INVALID;
-          }
+        if ( branchId === '' ) {
+          return this.BRANCH_ID_REQUIRED;
+        } else if ( ! this.BRANCH_ID_PATTERN.test(branchId) ) {
+          return this.BRANCH_ID_INVALID;
         }
       }
     },
     {
       name: 'accountNumber',
       section: 'accountInformation',
-      createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       preSet: function(o, n) {
         return /^[\d\w]*$/.test(n) ? n : o;
@@ -206,16 +202,13 @@ foam.CLASS({
           .add(displayAccountNumber);
         this.tooltip = displayAccountNumber;
       },
-      validateObj: function(accountNumber, iban) {
-        if ( iban )
-          var ibanMsg = this.ValidationIBAN.create({}).validate(iban);
+      validateObj: function(accountNumber) {
+        var accNumberRegex = /^[0-9]{10}$/;
 
-        if ( ! iban || (iban && ibanMsg != 'passed') ) {
-          if ( accountNumber === '' ) {
-            return this.ACCOUNT_NUMBER_REQUIRED;
-          } else if ( ! this.ACCOUNT_NUMBER_PATTERN.test(accountNumber) ) {
-            return this.ACCOUNT_NUMBER_INVALID;
-          }
+        if ( accountNumber === '' ) {
+          return this.ACCOUNT_NUMBER_REQUIRED;
+        } else if ( ! this.ACCOUNT_NUMBER_PATTERN.test(accountNumber) ) {
+          return this.ACCOUNT_NUMBER_INVALID;
         }
       }
     },
@@ -279,9 +272,14 @@ foam.CLASS({
     },
     {
       name: 'swiftCode',
-      updateVisibility: 'RO',
-      section: 'accountInformation',
+      visibility: 'HIDDEN',
       validateObj: function(swiftCode) {
+      }
+    },
+    {
+      name: 'iban',
+      visibility: 'HIDDEN',
+      validateObj: function(iban) {
       }
     }
   ],
@@ -304,19 +302,10 @@ foam.CLASS({
       type: 'Void',
       javaThrows: ['ValidationException'],
       javaCode: `
-        String iban = this.getIban();
-
         super.validate(x);
-        foam.nanos.iban.ValidationIBAN validationIban = new foam.nanos.iban.ValidationIBAN();
-        try {
-          validationIban.validate(iban);
-        } catch (ValidationException ex) {
-//          validateInstitutionNumber();
-//          validateBranchId();
-//          validateAccountNumber();
-//          validateSwiftCode();
-          throw ex;
-        }
+        validateInstitutionNumber();
+        validateBranchId();
+        validateAccountNumber();
 
         if ( getOwner() == 0 ) {
           setOwner(((foam.nanos.auth.Subject) x.get("subject")).getUser().getId());
@@ -370,6 +359,7 @@ foam.CLASS({
       `
     },
     {
+      /* temporary swift not used on BR Bank Account*/
       name: 'validateSwiftCode',
       type: 'Void',
       javaThrows: ['ValidationException'],
