@@ -55,7 +55,7 @@ foam.CLASS({
       documentation: `The ID for the user`,
       tableCellFormatter: function(value, obj, axiom) {
         var self = this;
-        this.__subSubContext__.publicBusinessDAO.find(value).then( function( user ) {
+        this.__subSubContext__.userDAO.find(value).then( function( user ) {
           if ( user ) self.add(user.businessName);
         });
       }
