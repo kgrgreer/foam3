@@ -1,7 +1,7 @@
-p({class:"foam.nanos.auth.ServiceProvider",id:"bpp",enabled:true,description:"BPP spid"})
+p({class:"foam.nanos.auth.ServiceProvider",id:"bepay",enabled:true,description:"BePay spid"})
 p({
   class:"foam.nanos.crunch.Capability",
-  id:"bppCountryCapability",
+  id:"bepayCountryCapability",
   permissionsGranted:[
     "country.read.CA",
     "country.read.US",
@@ -11,20 +11,20 @@ p({
 })
 p({
   class: "foam.nanos.crunch.Capability",
-  id: "bppCorridorCapability",
+  id: "bepayCorridorCapability",
   version: "0",
   enabled: true,
   permissionsGranted: [
     "paymentprovidercorridor.read.afex",
-    "paymentprovidercorridor.read.bpp",
-    "paymentprovidercorridor.source.read.bpp",
+    "paymentprovidercorridor.read.bepay",
+    "paymentprovidercorridor.source.read.bepay",
     "paymentprovidercorridor.target.read.afex"
   ]
 })
 
 p({
   class:"foam.nanos.crunch.Capability",
-  id:"bpp-tx-reason-codes",
+  id:"bepay-tx-reason-codes",
   permissionsGranted:[
     "naturecode.read.4cfa9007-1d87-4bdd-b6e1-4e3c6fe78a2c",
     "naturecode.read.f0224036-2a37-4fa9-8879-a413fe168f34"
@@ -32,15 +32,15 @@ p({
 })
 
 // PaymentProviderCorridors
-p({class:"net.nanopay.payment.PaymentProviderCorridor",ranking:1,provider:"BPP",sourceCountry:"BR",targetCountry:"US",sourceCurrencies:["BRL"],targetCurrencies:["USD"],id:"2869DB5B-0AFE-4113-8EF7-5E5B6B8BB4AC",name:"BR-USD Corridor - BPP",enabled:true,"visibilityPredicate": { class: "foam.mlang.predicate.True" }})
-p({class:"net.nanopay.payment.PaymentProviderCorridor",ranking:2,provider:"BPP",sourceCountry:"BR",targetCountry:"CA",sourceCurrencies:["BRL"],targetCurrencies:["CAD"],id:"5B9EE768-4B35-493C-A356-FEC306235AB7",name:"BR-CAD Corridor - BPP",enabled:true,"visibilityPredicate": { class: "foam.mlang.predicate.True" }})
-p({class:"net.nanopay.payment.PaymentProviderCorridor",ranking:3,provider:"BPP",sourceCountry:"BR",targetCountry:"GB",sourceCurrencies:["BRL"],targetCurrencies:["GBP"],id:"2DCB6488-A880-49F5-9973-CABDDDDD017A",name:"BR-GBP Corridor - BPP",enabled:true,"visibilityPredicate": { class: "foam.mlang.predicate.True" }})
-p({class:"net.nanopay.payment.PaymentProviderCorridor",ranking:4,provider:"BPP",sourceCountry:"BR",targetCountry:"PT",sourceCurrencies:["BRL"],targetCurrencies:["EUR"],id:"E55A5CFE-6EA1-40EC-929A-E6E374349A79",name:"BR-EUR Corridor - BPP",enabled:true,"visibilityPredicate": { class: "foam.mlang.predicate.True" }})
+p({class:"net.nanopay.payment.PaymentProviderCorridor",ranking:1,provider:"BePay",sourceCountry:"BR",targetCountry:"US",sourceCurrencies:["BRL"],targetCurrencies:["USD"],id:"2869DB5B-0AFE-4113-8EF7-5E5B6B8BB4AC",name:"BR-USD Corridor - BePay",enabled:true,"visibilityPredicate": { class: "foam.mlang.predicate.True" }})
+p({class:"net.nanopay.payment.PaymentProviderCorridor",ranking:2,provider:"BePay",sourceCountry:"BR",targetCountry:"CA",sourceCurrencies:["BRL"],targetCurrencies:["CAD"],id:"5B9EE768-4B35-493C-A356-FEC306235AB7",name:"BR-CAD Corridor - BePay",enabled:true,"visibilityPredicate": { class: "foam.mlang.predicate.True" }})
+p({class:"net.nanopay.payment.PaymentProviderCorridor",ranking:3,provider:"BePay",sourceCountry:"BR",targetCountry:"GB",sourceCurrencies:["BRL"],targetCurrencies:["GBP"],id:"2DCB6488-A880-49F5-9973-CABDDDDD017A",name:"BR-GBP Corridor - BePay",enabled:true,"visibilityPredicate": { class: "foam.mlang.predicate.True" }})
+p({class:"net.nanopay.payment.PaymentProviderCorridor",ranking:4,provider:"BePay",sourceCountry:"BR",targetCountry:"PT",sourceCurrencies:["BRL"],targetCurrencies:["EUR"],id:"E55A5CFE-6EA1-40EC-929A-E6E374349A79",name:"BR-EUR Corridor - BePay",enabled:true,"visibilityPredicate": { class: "foam.mlang.predicate.True" }})
 
 p({
   class: "foam.nanos.crunch.Capability",
-  id: "bpp-tx-fees",
-  name: "Enable BPP Fees",
+  id: "bepay-tx-fees",
+  name: "Enable BePay Fees",
   enabled: true,
   permissionsGranted: [
     "rule.read.454df571-f639-4506-8d59-98b4f39934e4",
@@ -53,12 +53,12 @@ p({
 p({
   class:"foam.nanos.crunch.Capability",
   id:"BF58A50D-70F5-45CB-A79A-AF18C1D6F685",
-  name:"BPP Personal International Payments",
+  name:"BePay Personal International Payments",
   description:"submit a request to AFEX to create a privateClient account",
   visibilityPredicate:{class:"foam.mlang.predicate.True"},
   enabled:true,
   associatedEntity:1,
-  keywords:["bpp"],
+  keywords:["bepay"],
   permissionsGranted: []
 })
 
@@ -73,9 +73,9 @@ p({
 
 p({
   class:"foam.nanos.crunch.Capability",
-  id:"fb7d3ca2-62f2-2131-a84c-8603dsrf2bpp",
+  id:"fb7d3ca2-62f2-2131-a84c-8603dsrf2bepay",
   name:"Extended User Details",
-  of:"net.nanopay.crunch.bpp.ExtendedUserDetailsData",
+  of:"net.nanopay.crunch.bepay.ExtendedUserDetailsData",
   enabled:true,
   daoKey:"userDAO",
   contextDAOFindKey:"subject.user",
@@ -84,7 +84,7 @@ p({
 
 p({
   class:"foam.nanos.crunch.Capability",
-  id:"fb7d3ca2-62f2-4caf-a84c-860392e46bpp",
+  id:"fb7d3ca2-62f2-4caf-a84c-860392e46bepay",
   name:"CPF Number",
   of:"net.nanopay.country.br.CPF",
   enabled:true,
@@ -93,7 +93,7 @@ p({
 
 p({
   class:"foam.nanos.crunch.Capability",
-  id:"8ad3c898-db232-1ea-87d0-0242ac130z0-bpp",
+  id:"8ad3c898-db232-1ea-87d0-0242ac130z0-bepay",
   name:"Date of Issue",
   description:"Date of issue of an identification document",
   of:"net.nanopay.crunch.document.DateOfIssue",
@@ -103,7 +103,7 @@ p({
 
 p({
   class:"foam.nanos.crunch.Capability",
-  id:"554af38a-8225-87c8-dfdf-eeb15f712bpp-10",
+  id:"554af38a-8225-87c8-dfdf-eeb15f712bepay-10",
   name:"AFEX Terms and Conditions",
   of:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms",
   enabled:true

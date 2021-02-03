@@ -1449,8 +1449,8 @@ var classes = [
   'net.nanopay.crunch.registration.UserDetailData',
   'net.nanopay.crunch.registration.UserDetailExpandedData',
 
-  // bpp crunch onboarding
-  'net.nanopay.crunch.bpp.ExtendedUserDetailsData',
+  // bepay crunch onboarding
+  'net.nanopay.crunch.bepay.ExtendedUserDetailsData',
 
   // crunch documents
   'net.nanopay.crunch.document.Document',

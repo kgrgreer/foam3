@@ -1,36 +1,36 @@
-// Prerequisites for bpp spid capability
+// Prerequisites for bepay spid capability
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "bpp",
+  sourceId: "bepay",
   targetId: "serviceProviderCapability",
   priority: 1
 })
 
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "bpp",
-  targetId: "bppCountryCapability",
+  sourceId: "bepay",
+  targetId: "bepayCountryCapability",
   priority: 1
 })
 
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "bpp",
-  targetId: "bppCorridorCapability",
+  sourceId: "bepay",
+  targetId: "bepayCorridorCapability",
   priority: 1
 })
 
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "bpp",
+  sourceId: "bepay",
   targetId: "2EFEFD46-967D-43B3-A464-2ACDC3B2D032",
   priority: 2
 })
 
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId: "bpp",
-  targetId: "bpp-tx-reason-codes",
+  sourceId: "bepay",
+  targetId: "bepay-tx-reason-codes",
   priority: 3
 })
 
@@ -46,25 +46,25 @@ p({
 p({
   class:"foam.nanos.crunch.CapabilityCapabilityJunction",
   sourceId:"BF58A50D-70F5-45CB-A79A-AF18C1D6F685",
-  targetId:"fb7d3ca2-62f2-4caf-a84c-860392e46bpp",
+  targetId:"fb7d3ca2-62f2-4caf-a84c-860392e46bepay",
   priority:2
 })
 // AFEX Terms and Conditions
 p({
   class:"foam.nanos.crunch.CapabilityCapabilityJunction",
   sourceId:"BF58A50D-70F5-45CB-A79A-AF18C1D6F685",
-  targetId:"554af38a-8225-87c8-dfdf-eeb15f712bpp-10",
+  targetId:"554af38a-8225-87c8-dfdf-eeb15f712bepay-10",
   priority:4
 })
 // cpf - extended user details
 p({
   class:"foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId:"fb7d3ca2-62f2-4caf-a84c-860392e46bpp",
-  targetId:"fb7d3ca2-62f2-2131-a84c-8603dsrf2bpp"
+  sourceId:"fb7d3ca2-62f2-4caf-a84c-860392e46bepay",
+  targetId:"fb7d3ca2-62f2-2131-a84c-8603dsrf2bepay"
 })
 // cpf - date of issue
 p({
   class:"foam.nanos.crunch.CapabilityCapabilityJunction",
-  sourceId:"fb7d3ca2-62f2-4caf-a84c-860392e46bpp",
-  targetId:"8ad3c898-db232-1ea-87d0-0242ac130z0-bpp"
+  sourceId:"fb7d3ca2-62f2-4caf-a84c-860392e46bepay",
+  targetId:"8ad3c898-db232-1ea-87d0-0242ac130z0-bepay"
 })
