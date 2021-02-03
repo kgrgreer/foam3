@@ -70,7 +70,7 @@ foam.CLASS({
           }
 
           AFEXBusinessApprovalRequest request = (AFEXBusinessApprovalRequest) obj.fclone();
-          AFEXBusiness afexBusiness = (AFEXBusiness) ((DAO) x.get("afexBusinessDAO")).find(EQ(AFEXBusiness.ID, request.getObjId()));
+          AFEXBusiness afexBusiness = (AFEXBusiness) ((DAO) x.get("afexUserDAO")).find(EQ(AFEXBusiness.ID, request.getObjId()));
           DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
 
           Business business = (Business) localBusinessDAO.find(EQ(Business.ID, afexBusiness.getUser()));

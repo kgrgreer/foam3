@@ -110,8 +110,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     if ( business == null ||  ! business.getCompliance().equals(ComplianceStatus.PASSED) ) return false;
 
     try {
-        DAO afexBusinessDAO = (DAO) this.x.get("afexBusinessDAO");
-        AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, business.getId()));
+        DAO afexUserDAO = (DAO) this.x.get("afexUserDAO");
+        AFEXBusiness afexBusiness = (AFEXBusiness) afexUserDAO.find(EQ(AFEXBusiness.USER, business.getId()));
 
         User signingOfficer = getSigningOfficer(this.x, business);
           OnboardAFEXClientRequest onboardingRequest = new OnboardAFEXClientRequest();
@@ -198,7 +198,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
               afexBusiness.setUser(business.getId());
               afexBusiness.setApiKey(newClient.getAPIKey());
               afexBusiness.setAccountNumber(newClient.getAccountNumber());
-              afexBusinessDAO.put(afexBusiness);
+              afexUserDAO.put(afexBusiness);
             }
             return true;
           }
@@ -1089,7 +1089,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
   }
 
   public AFEXBusiness getAFEXBusiness(X x, Long userId) {
-    DAO dao = (DAO) x.get("afexBusinessDAO");
+    DAO dao = (DAO) x.get("afexUserDAO");
     return (AFEXBusiness) dao.find(EQ(AFEXBusiness.USER, userId));
   }
 

@@ -164,7 +164,7 @@ public class AFEXTransactionPlanDAOTest
     localAccountDAO.put(user2USBankAccount);
 
 
-    DAO afexBusinessDAO = (DAO) x_.get("afexBusinessDAO");
+    DAO afexUserDAO = (DAO) x_.get("afexUserDAO");
     DAO afexBeneficiaryDAO = (DAO) x_.get("afexBeneficiaryDAO");
 
     AFEXBusiness b1 = new AFEXBusiness.Builder(x_)
@@ -173,7 +173,7 @@ public class AFEXTransactionPlanDAOTest
       .setUser(user1.getId())
       .setStatus("Active")
       .build();
-    afexBusinessDAO.put(b1);
+    afexUserDAO.put(b1);
 
     AFEXBusiness b2 = new AFEXBusiness.Builder(x_)
       .setApiKey("123abc")
@@ -181,7 +181,7 @@ public class AFEXTransactionPlanDAOTest
       .setUser(user2.getId())
       .setStatus("Active")
       .build();
-    afexBusinessDAO.put(b2);
+    afexUserDAO.put(b2);
 
     AFEXBeneficiary beneficiary1 = new AFEXBeneficiary.Builder(x_)
       .setContact(user2.getId())

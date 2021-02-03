@@ -45,7 +45,7 @@ foam.CLASS({
             String group = spid + "-payment-ops";
             approvalRequestDAO.put_(x,
               new AFEXBusinessApprovalRequest.Builder(x)
-                .setDaoKey("afexBusinessDAO")
+                .setDaoKey("afexUserDAO")
                 .setObjId(afexBusiness.getId())
                 .setClassification("Validate AFEX Business")
                 .setDescription("Approve AFEX business to enable the international payments.")

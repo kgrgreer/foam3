@@ -63,7 +63,7 @@ foam.CLASS({
           AFEXBusiness afexBusiness = (AFEXBusiness) obj;
           DAO dao = ((DAO) x.get("approvalRequestDAO"))
           .where(AND(
-            EQ(ApprovalRequest.DAO_KEY, "afexBusinessDAO"),
+            EQ(ApprovalRequest.DAO_KEY, "afexUserDAO"),
             EQ(ApprovalRequest.OBJ_ID, afexBusiness.getId())
           ));
 

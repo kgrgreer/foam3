@@ -516,7 +516,7 @@ foam.CLASS({
       name: 'getAFEXBusiness',
       code: async function(x, business) {
         const E = foam.mlang.ExpressionsSingleton.create();
-        return await this.client(x, 'afexBusinessDAO', net.nanopay.fx.afex.AFEXBusiness).find(
+        return await this.client(x, 'afexUserDAO', net.nanopay.fx.afex.AFEXBusiness).find(
           E.EQ(net.nanopay.fx.afex.AFEXBusiness.USER, business.id)
         );
       }

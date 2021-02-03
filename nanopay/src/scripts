@@ -843,8 +843,8 @@ p({
         return;
       }
 
-      DAO afexBusinessDAO = (DAO)x.get("afexBusinessDAO");
-      AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(foam.mlang.MLang.EQ(AFEXBusiness.USER, business.getId()));
+      DAO afexUserDAO = (DAO)x.get("afexUserDAO");
+      AFEXBusiness afexBusiness = (AFEXBusiness) afexUserDAO.find(foam.mlang.MLang.EQ(AFEXBusiness.USER, business.getId()));
       java.util.List signingOfficers = ((ArraySink) business.getSigningOfficers(x).getDAO().select(new ArraySink())).getArray();
       if ( afexBusiness != null ) {
         print(" Business: " + business.getBusinessName() + " is already pushed to AFEX");
@@ -1778,9 +1778,9 @@ p({
     // *      Body       *
     // *******************
 
-    afexBusinessDAO = x.get("afexBusinessDAO");
+    afexUserDAO = x.get("afexUserDAO");
     userDAO = x.get("businessDAO");
-    afexBusinessDAO.select(new AbstractSink() {
+    afexUserDAO.select(new AbstractSink() {
       public void put(Object obj, Detachable sub) {
         Business business = (Business) userDAO.find(obj.getUser());
         if ( business != null ) {

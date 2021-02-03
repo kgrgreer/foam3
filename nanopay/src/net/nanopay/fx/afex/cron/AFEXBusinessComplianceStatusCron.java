@@ -13,16 +13,16 @@ import static foam.mlang.MLang.*;
 
 public class AFEXBusinessComplianceStatusCron implements ContextAgent {
   private Logger logger;
-  private DAO afexBusinessDAO;
+  private DAO afexUserDAO;
   private AFEXServiceProvider afexServiceProvider;
 
   @Override
   public void execute(X x) {
     logger = (Logger) x.get("logger");
-    afexBusinessDAO = (DAO) x.get("afexBusinessDAO");
+    afexUserDAO = (DAO) x.get("afexUserDAO");
     afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
 
-    ArraySink sink = (ArraySink) afexBusinessDAO.where(OR(
+    ArraySink sink = (ArraySink) afexUserDAO.where(OR(
       EQ(AFEXBusiness.STATUS, "Pending"),
       EQ(AFEXBusiness.STATUS, "PendingApproval")
       
@@ -33,7 +33,7 @@ public class AFEXBusinessComplianceStatusCron implements ContextAgent {
       if ( null != status) {
         afexBusiness = (AFEXBusiness) afexBusiness.fclone();
         afexBusiness.setStatus(status);
-        afexBusinessDAO.put(afexBusiness);
+        afexUserDAO.put(afexBusiness);
       }
     }
   }

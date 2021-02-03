@@ -21,7 +21,7 @@ import net.nanopay.tx.model.TransactionStatus;
 public class AFEXBeneficiaryStatusCron implements ContextAgent {
   private DAO afexBeneficiaryDAO;
   private Logger logger;
-  private DAO afexBusinessDAO;
+  private DAO afexUserDAO;
   private AFEXServiceProvider afexServiceProvider;
   private DAO txnDAO;
 
@@ -29,14 +29,14 @@ public class AFEXBeneficiaryStatusCron implements ContextAgent {
   public void execute(X x) {
     logger = (Logger) x.get("logger");
     afexBeneficiaryDAO = (DAO) x.get("afexBeneficiaryDAO");
-    afexBusinessDAO = (DAO) x.get("afexBusinessDAO");
+    afexUserDAO = (DAO) x.get("afexUserDAO");
     afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
     txnDAO = (DAO) x.get("localTransactionDAO");
 
     ArraySink sink = (ArraySink) afexBeneficiaryDAO.where(EQ(AFEXBeneficiary.STATUS, "Pending")).select(new ArraySink());
     List<AFEXBeneficiary> pendingBeneficiaries = sink.getArray();
     for (AFEXBeneficiary beneficiary : pendingBeneficiaries) {
-      AFEXBusiness afexBusiness =  (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, beneficiary.getOwner()));
+      AFEXBusiness afexBusiness =  (AFEXBusiness) afexUserDAO.find(EQ(AFEXBusiness.USER, beneficiary.getOwner()));
       if ( afexBusiness != null ) {
         User user = User.findUser(x, afexBusiness.getUser());
         FindBeneficiaryResponse beneficiaryResponse = afexServiceProvider.findBeneficiary(beneficiary.getContact(),afexBusiness.getApiKey(), user.getSpid());

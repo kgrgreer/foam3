@@ -254,7 +254,7 @@ p({
     "class":"foam.nanos.menu.DAOMenu2",
     "config":{
       "class":"foam.comics.v2.DAOControllerConfig",
-      "daoKey":"afexBusinessDAO",
+      "daoKey":"afexUserDAO",
       "createPredicate":{"class":"foam.mlang.predicate.False"},
       "deletePredicate":{"class":"foam.mlang.predicate.False"},
       "CRUDEnabledActionsAuth": {
