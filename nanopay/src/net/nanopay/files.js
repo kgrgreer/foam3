@@ -536,8 +536,6 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/PartnerTransaction' },
   { name: 'net/nanopay/tx/SummaryTransactionDAO' },
   { name: 'net/nanopay/tx/SummaryTransactionInnerDAO' },
-  { name: 'net/nanopay/tx/ReversalTicket' },
-  { name: 'net/nanopay/tx/ReversalRule' },
   { name: 'net/nanopay/tx/TransactionException' },
   { name: 'net/nanopay/tx/UnsupportedTransactionException' },
   { name: 'net/nanopay/tx/UnsupportedDateException' },
@@ -1569,6 +1567,9 @@ FOAM_FILES([
   { name: 'net/nanopay/ticket/SudoTicketApprovalResponseRule' },
   { name: 'net/nanopay/ticket/SudoTicketApprovalResponseAction' },
   { name: 'net/nanopay/ticket/test/SudoTicketTest' },
+  { name: 'net/nanopay/ticket/ReverseTicketCreateRule' },
+  { name: 'net/nanopay/ticket/ReversalRule' },
+  { name: 'net/nanopay/ticket/ReversalTicket' },
 
   // planners
   { name: 'net/nanopay/tx/planner/PlannerGroup' },

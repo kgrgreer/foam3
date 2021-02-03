@@ -30,3 +30,37 @@ p({
   },
   "lifecycleState":1
 })
+
+p({
+  "class":"net.nanopay.ticket.SudoTicketApprovalResponseRule",
+  "id":"40c3758f-054b-490c-8328-f6ab33ebaed0",
+  "name":"ReverseTicketCreateRule",
+  "priority":101,
+  "ruleGroup":"Ticket",
+  "daoKey":"localTicketDAO",
+  "operation":0,
+  "after":false,
+  "enabled":true,
+  "saveHistory":false,
+  "asyncAction":{
+    "class":"net.nanopay.ticket.ReverseTicketCreateRule"
+  },
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"b64905d0-289b-4371-92a5-f843e344109a",
+  "name":"Reversal Rule",
+  "priority":100,
+  "ruleGroup":"BMOPlanner",
+  "documentation":"Handle transaction reversal",
+  "daoKey":"localTicketDAO",
+  "operation":3,
+  "action":{
+    "class":"net.nanopay.ticket.ReversalRule"
+  },
+  "after":false,
+  "enabled":true,
+  "lifecycleState":1
+})

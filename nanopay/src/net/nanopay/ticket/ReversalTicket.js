@@ -16,7 +16,7 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.tx',
+  package: 'net.nanopay.ticket',
   name: 'ReversalTicket',
   extends: 'foam.nanos.ticket.Ticket',
 
@@ -37,12 +37,6 @@ foam.CLASS({
       class: 'Boolean',
       name: 'refundTransaction',
       documentation: 'True to refundTransaction. False to retry transaction'
-    },
-    {
-      class: 'FObjectArray',
-      of: 'net.nanopay.tx.model.Transaction',
-      name: 'plans',
-      javaValue: 'new Transaction[] {}'
     },
     {
       class: 'FObjectArray',

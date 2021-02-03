@@ -16,7 +16,7 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.tx',
+  package: 'net.nanopay.ticket',
   name: 'ReversalRule',
 
   implements: [
@@ -32,11 +32,12 @@ foam.CLASS({
     'foam.nanos.fs.File',
     'foam.nanos.notification.Notification',
     'foam.nanos.logger.Logger',
+    'net.nanopay.ticket.ReversalTicket',
     'net.nanopay.tx.SummaryTransaction',
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.tx.TransactionLineItem',
-    'net.nanopay.tx.ReversalTicket',
-    'net.nanopay.tx.model.Transaction'
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.model.TransactionStatus'
   ],
 
   methods: [
@@ -50,12 +51,19 @@ foam.CLASS({
           ReversalTicket request = (ReversalTicket) obj;
           DAO txnDAO = (DAO) x.get("localTransactionDAO");
           Transaction txn = (Transaction) txnDAO.find(request.getRequestTransaction());
-          Transaction problemTxn = txn.getStateTxn(x);
           Transaction newTxn = new Transaction();
 
           if (! (txn instanceof SummaryTransaction || txn instanceof FXSummaryTransaction) ) {
             txn = txn.findRoot(x);
           }
+
+          Transaction problemTxn = txn.getStateTxn(x);
+
+          // TODO check if txn is in reversable state
+          // set status of problem transaction to reversed
+          problemTxn = (Transaction) problemTxn.fclone();
+          problemTxn.setStatus(TransactionStatus.CANCELLED);
+          txnDAO.put(problemTxn);
 
           if ( request.getRefundTransaction() ) {
             newTxn.setSourceAccount(problemTxn.getSourceAccount());

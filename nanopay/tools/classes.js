@@ -1106,6 +1106,9 @@ var classes = [
   'net.nanopay.ticket.SudoTicketApprovalResponseRule',
   'net.nanopay.ticket.SudoTicketApprovalResponseAction',
   'net.nanopay.ticket.test.SudoTicketTest',
+  'net.nanopay.ticket.ReverseTicketCreateRule',
+  'net.nanopay.ticket.ReversalRule',
+  'net.nanopay.ticket.ReversalTicket',
 
   // Planners
   'net.nanopay.tx.planner.PlannerGroup',
@@ -1190,10 +1193,6 @@ var classes = [
   'net.nanopay.tx.fee.predicate.PaymentCorridorPredicate',
   'net.nanopay.tx.fee.test.TransactionFeeRuleTest',
   'net.nanopay.country.br.tx.fee.PTaxRate',
-
-  // Transaction Reversal
-  'net.nanopay.tx.ReversalTicket',
-  'net.nanopay.tx.ReversalRule',
 
   // Treviso
   'net.nanopay.country.br.CNPJCache',
