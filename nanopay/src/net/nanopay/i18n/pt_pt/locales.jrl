@@ -1186,6 +1186,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 // business directors data
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessDirectorsData.NEED_DIRECTOR.label",target:"needDirector pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessDirectorsData.NO_DIRECTOR_INFO",target:"Informações do diretor necessárias"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessDirectorsData.DIRECTOR_INFO_NOT_VALID",target:"As informações do diretor não são válidas"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessDirectorsData.BUSINESS_TYPE_ID.label",target:"businessTypeId pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessDirectorsData.NO_DIRECTORS_NEEDED.label",target:"não são necessários diretores"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessDirectorsData.BUSINESS_DIRECTORS.label",target:"Diretores de negócios"})
@@ -1197,6 +1198,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 // treviso business directors data
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.NEED_DIRECTOR.label",target:"needDirector pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.NO_DIRECTOR_INFO",target:"Informações do diretor necessárias"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.DIRECTOR_INFO_NOT_VALID",target:"As informações do diretor não são válidas"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.BUSINESS_TYPE_ID.label",target:"businessTypeId pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.NO_DIRECTORS_NEEDED.label",target:"não são necessários diretores"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.BUSINESS_DIRECTORS.label",target:"Diretores de negócios"})
