@@ -38,6 +38,7 @@ foam.CLASS({
     'net.nanopay.tx.SummaryTransaction',
     'net.nanopay.tx.TransactionException',
     'net.nanopay.tx.FxSummaryTransactionLineItem',
+    'net.nanopay.tx.ComplianceTransaction',
     'net.nanopay.tx.planner.TransactionPlan',
     'foam.core.ValidationException',
     'net.nanopay.tx.Transfer',
