@@ -91,7 +91,7 @@ externalBusiness = (Business) localBusinessDAO.put(externalBusiness);
 User myAdmin = new User();
 myAdmin.setUserName("Admin123");
 myAdmin.setEmail("email@admin123.com");
-myAdmin.setDesiredPassword("password");
+myAdmin.setDesiredPassword("password123");
 myAdmin.setGroup("sme");
 myAdmin.setOrganization("testBusiness");
 myAdmin.setSpid("test");
