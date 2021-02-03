@@ -275,6 +275,7 @@ var classes = [
   'net.nanopay.fx.afex.CreateInstantBenefiaryResponse',
   'net.nanopay.fx.afex.FundingBalance',
   'net.nanopay.fx.afex.GetFundingBalanceResponse',
+  'net.nanopay.fx.afex.KeyIndividual',
   'net.nanopay.fx.afex.ValidateInstantBenefiaryRequest',
   'net.nanopay.fx.afex.ValidateInstantBenefiaryResponse',
   'net.nanopay.fx.afex.CheckPaymentStatusRequest',
