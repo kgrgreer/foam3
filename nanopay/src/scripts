@@ -823,7 +823,7 @@ p({
     import foam.nanos.auth.User;
     import net.nanopay.admin.model.ComplianceStatus;
     import net.nanopay.bank.BankAccount;
-    import net.nanopay.fx.afex.AFEXBusiness;
+    import net.nanopay.fx.afex.AFEXUser;
     import net.nanopay.fx.afex.AFEXServiceProvider;
     import net.nanopay.model.Business;
     import net.nanopay.sme.onboarding.CanadaUsBusinessOnboarding;
@@ -844,7 +844,7 @@ p({
       }
 
       DAO afexUserDAO = (DAO)x.get("afexUserDAO");
-      AFEXBusiness afexBusiness = (AFEXBusiness) afexUserDAO.find(foam.mlang.MLang.EQ(AFEXBusiness.USER, business.getId()));
+      AFEXUser afexBusiness = (AFEXUser) afexUserDAO.find(foam.mlang.MLang.EQ(AFEXUser.USER, business.getId()));
       java.util.List signingOfficers = ((ArraySink) business.getSigningOfficers(x).getDAO().select(new ArraySink())).getArray();
       if ( afexBusiness != null ) {
         print(" Business: " + business.getBusinessName() + " is already pushed to AFEX");

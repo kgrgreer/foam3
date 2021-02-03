@@ -12,7 +12,7 @@ import foam.nanos.auth.User;
 import foam.nanos.logger.Logger;
 import net.nanopay.fx.afex.AFEXBeneficiary;
 import net.nanopay.fx.afex.AFEXBeneficiaryComplianceTransaction;
-import net.nanopay.fx.afex.AFEXBusiness;
+import net.nanopay.fx.afex.AFEXUser;
 import net.nanopay.fx.afex.AFEXServiceProvider;
 import net.nanopay.fx.afex.FindBeneficiaryResponse;
 import net.nanopay.tx.model.Transaction;
@@ -36,7 +36,7 @@ public class AFEXBeneficiaryStatusCron implements ContextAgent {
     ArraySink sink = (ArraySink) afexBeneficiaryDAO.where(EQ(AFEXBeneficiary.STATUS, "Pending")).select(new ArraySink());
     List<AFEXBeneficiary> pendingBeneficiaries = sink.getArray();
     for (AFEXBeneficiary beneficiary : pendingBeneficiaries) {
-      AFEXBusiness afexBusiness =  (AFEXBusiness) afexUserDAO.find(EQ(AFEXBusiness.USER, beneficiary.getOwner()));
+      AFEXUser afexBusiness =  (AFEXUser) afexUserDAO.find(EQ(AFEXUser.USER, beneficiary.getOwner()));
       if ( afexBusiness != null ) {
         User user = User.findUser(x, afexBusiness.getUser());
         FindBeneficiaryResponse beneficiaryResponse = afexServiceProvider.findBeneficiary(beneficiary.getContact(),afexBusiness.getApiKey(), user.getSpid());

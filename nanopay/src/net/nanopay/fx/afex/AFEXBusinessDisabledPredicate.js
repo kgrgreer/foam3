@@ -30,8 +30,8 @@ foam.CLASS({
     {
       name: 'f',
       javaCode: `
-      if ( ! (NEW_OBJ.f(obj) instanceof AFEXBusiness) ) return false;
-      AFEXBusiness afexBusiness = (AFEXBusiness) NEW_OBJ.f(obj);
+      if ( ! (NEW_OBJ.f(obj) instanceof AFEXUser) ) return false;
+      AFEXUser afexBusiness = (AFEXUser) NEW_OBJ.f(obj);
       return ! afexBusiness.getEnabled()
         || "Disabled".equals(afexBusiness.getStatus());
       `

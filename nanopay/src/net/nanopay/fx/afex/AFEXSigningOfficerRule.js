@@ -44,11 +44,11 @@ foam.CLASS({
         @Override
         public void execute(X x) {
 
-          if ( ! (obj instanceof AFEXBusiness) ) {
+          if ( ! (obj instanceof AFEXUser) ) {
             return;
           }
 
-          AFEXBusiness afexBusiness = (AFEXBusiness) obj;
+          AFEXUser afexBusiness = (AFEXUser) obj;
           Business business = (Business) ((DAO) x.get("localBusinessDAO")).find(EQ(Business.ID, afexBusiness.getUser()));
           if ( business != null ) {
             ((AFEXServiceProvider) x.get("afexServiceProvider")).pushSigningOfficers(business, afexBusiness.getApiKey());

@@ -46,7 +46,7 @@ foam.CLASS({
             if ( user instanceof Business ) {
               Business business = (Business) user;
               AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
-              AFEXBusiness afexBusiness = afexServiceProvider.getAFEXBusiness(x, account.getOwner());
+              AFEXUser afexBusiness = afexServiceProvider.getAFEXUser(x, account.getOwner());
 
               try {
                 if ( ! afexServiceProvider.directDebitUnenrollment(business, account) ) {

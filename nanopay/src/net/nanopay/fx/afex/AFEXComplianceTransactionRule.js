@@ -62,7 +62,7 @@ foam.CLASS({
           } else {
             DAO afexBeneficiaryDAO = (DAO) x.get("afexBeneficiaryDAO");
             DAO afexUserDAO = (DAO) x.get("afexUserDAO");
-            AFEXBusiness afexBusiness =  (AFEXBusiness) afexUserDAO.find(EQ(AFEXBusiness.USER, beneficiary.getOwner()));
+            AFEXUser afexBusiness =  (AFEXUser) afexUserDAO.find(EQ(AFEXUser.USER, beneficiary.getOwner()));
             if ( afexBusiness == null ) {
               ((Logger) x.get("logger")).error("AFEX Business not found for transaction " + txn.getId() + " with owner id " + beneficiary.getOwner() );
               return;

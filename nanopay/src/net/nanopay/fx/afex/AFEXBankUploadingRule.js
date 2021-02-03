@@ -46,7 +46,7 @@ foam.CLASS({
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-            AFEXBusiness afexBusiness = (AFEXBusiness) obj;
+            AFEXUser afexBusiness = (AFEXUser) obj;
             AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
             DAO businessDAO = (DAO) x.get("businessDAO");
             Business business = (Business) businessDAO.find(EQ(Business.ID, afexBusiness.getUser()));
@@ -82,7 +82,7 @@ foam.CLASS({
           name: 'account'
         },
         {
-          type: 'AFEXBusiness',
+          type: 'AFEXUser',
           name: 'afexBusiness'
         },
         {

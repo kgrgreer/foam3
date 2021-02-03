@@ -50,11 +50,11 @@ foam.CLASS({
 
           Logger logger = (Logger) x.get("logger");
           
-          if ( ! (obj instanceof AFEXBusiness) ) {
+          if ( ! (obj instanceof AFEXUser) ) {
             return;
           }
           
-          AFEXBusiness afexBusiness = (AFEXBusiness) obj;
+          AFEXUser afexBusiness = (AFEXUser) obj;
           DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");          
           Business business = (Business) localBusinessDAO.find(EQ(Business.ID, afexBusiness.getUser())); 
           if ( null != business ) {

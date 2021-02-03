@@ -6,7 +6,7 @@ import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.nanos.logger.Logger;
 import java.util.List;
-import net.nanopay.fx.afex.AFEXBusiness;
+import net.nanopay.fx.afex.AFEXUser;
 import net.nanopay.fx.afex.AFEXServiceProvider;
 
 import static foam.mlang.MLang.*;
@@ -23,15 +23,15 @@ public class AFEXBusinessComplianceStatusCron implements ContextAgent {
     afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
 
     ArraySink sink = (ArraySink) afexUserDAO.where(OR(
-      EQ(AFEXBusiness.STATUS, "Pending"),
-      EQ(AFEXBusiness.STATUS, "PendingApproval")
+      EQ(AFEXUser.STATUS, "Pending"),
+      EQ(AFEXUser.STATUS, "PendingApproval")
       
       )).select(new ArraySink());
-    List<AFEXBusiness> pendingBusinesses = sink.getArray();
-    for (AFEXBusiness afexBusiness : pendingBusinesses) {
+    List<AFEXUser> pendingBusinesses = sink.getArray();
+    for (AFEXUser afexBusiness : pendingBusinesses) {
       String status = afexServiceProvider.getClientAccountStatus(afexBusiness);
       if ( null != status) {
-        afexBusiness = (AFEXBusiness) afexBusiness.fclone();
+        afexBusiness = (AFEXUser) afexBusiness.fclone();
         afexBusiness.setStatus(status);
         afexUserDAO.put(afexBusiness);
       }

@@ -15,7 +15,7 @@ import foam.mlang.MLang;
 import foam.nanos.approval.ApprovalRequest;
 import foam.nanos.approval.ApprovalRequestUtil;
 import foam.nanos.approval.ApprovalStatus;
-import net.nanopay.fx.afex.AFEXBusiness;
+import net.nanopay.fx.afex.AFEXUser;
 import net.nanopay.fx.afex.AFEXBusinessApprovalRequest;
 import net.nanopay.fx.afex.AFEXCredentials;
 
@@ -40,7 +40,7 @@ public class AFEXBusinessApprovalRequestCron implements ContextAgent {
     for (Object obj : pendinApprovals) {
       AFEXBusinessApprovalRequest request = (AFEXBusinessApprovalRequest) obj;
       if ( ApprovalRequestUtil.getStatus(x, request.getObjId(), request.getClassification()) == ApprovalStatus.REQUESTED ) {
-        AFEXBusiness afexBusiness = (AFEXBusiness) afexUserDAO.find(request.getObjId());
+        AFEXUser afexBusiness = (AFEXUser) afexUserDAO.find(request.getObjId());
         AFEXCredentials credentials = (AFEXCredentials) credentialDAO.find(MLang.EQ(AFEXCredentials.SPID, afexBusiness.findUser(x).getSpid()));
         boolean bufferElapsed = false;
         Calendar now = Calendar.getInstance();

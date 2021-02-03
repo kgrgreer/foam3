@@ -111,7 +111,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
     try {
         DAO afexUserDAO = (DAO) this.x.get("afexUserDAO");
-        AFEXBusiness afexBusiness = (AFEXBusiness) afexUserDAO.find(EQ(AFEXBusiness.USER, business.getId()));
+        AFEXUser afexBusiness = (AFEXUser) afexUserDAO.find(EQ(AFEXUser.USER, business.getId()));
 
         User signingOfficer = getSigningOfficer(this.x, business);
           OnboardAFEXClientRequest onboardingRequest = new OnboardAFEXClientRequest();
@@ -194,7 +194,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             onboardingRequest.setTermsAndConditions("true");
             OnboardAFEXClientResponse newClient = afexClient.onboardAFEXClient(onboardingRequest, business.getSpid(), AccountEntityType.CORPORATE_CLIENT);
             if ( newClient != null && afexBusiness == null ) {
-              afexBusiness  = new AFEXBusiness();
+              afexBusiness  = new AFEXUser();
               afexBusiness.setUser(business.getId());
               afexBusiness.setApiKey(newClient.getAPIKey());
               afexBusiness.setAccountNumber(newClient.getAccountNumber());
@@ -397,7 +397,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
   }
 
   public Boolean directDebitEnrollment (Business business, BankAccount bankAccount) {
-    AFEXBusiness afexBusiness = getAFEXBusiness(x, business.getId());
+    AFEXUser afexBusiness = getAFEXUser(x, business.getId());
     if ( afexBusiness ==  null ) {
       return false;
     }
@@ -450,21 +450,6 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     return status;
   }
 
-  public String getClientAccountStatus(AFEXBusiness afexBusiness) throws RuntimeException {
-    String status = null;
-    if ( afexBusiness == null ) return null;
-    User user = User.findUser(x, afexBusiness.getUser());
-    try {
-      GetClientAccountStatusResponse response = this.afexClient.getClientAccountStatus(afexBusiness.getApiKey(), user.getSpid());
-      if ( response != null ) {
-        status = response.getAccountStatus();
-      }
-    } catch(Throwable t) {
-      logger_.error("Error getting afex business compliance status.", t);
-    }
-    return status;
-  }
-
   public FXQuote getFXRate(String sourceCurrency, String targetCurrency, long sourceAmount,  long destinationAmount,
     String fxDirection, String valueDate, long user, String fxProvider) throws RuntimeException {
     FXQuote fxQuote = new FXQuote();
@@ -475,7 +460,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     quoteRequest.setAmount(String.valueOf(toDecimal(amount)));
     quoteRequest.setCurrencyPair(targetCurrency + sourceCurrency);
 
-    AFEXBusiness business = this.getAFEXBusiness(x, user);
+    AFEXUser business = this.getAFEXUser(x, user);
     if ( business == null ) {
       throw new RuntimeException("No afexBusiness found for user " + user);
     }
@@ -613,7 +598,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     BankAccount bankAccount = (BankAccount) ((DAO) x.get("localAccountDAO")).find(bankAccountId);
     if ( null == bankAccount ) throw new RuntimeException("Unable to find Bank account: " + bankAccountId );
 
-    AFEXBusiness afexBusiness = getAFEXBusiness(x, sourceUser);
+    AFEXUser afexBusiness = getAFEXUser(x, sourceUser);
     if ( null == afexBusiness ) throw new RuntimeException("Business as not been completely onboarded on partner system. " + sourceUser);
 
     Address bankAddress = bankAccount.getAddress() == null ? bankAccount.getBankAddress() : bankAccount.getAddress();
@@ -732,7 +717,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     Address bankAddress = bankAccount.getAddress() == null ? bankAccount.getBankAddress() : bankAccount.getAddress();
     if ( null == bankAddress ) throw new RuntimeException("Bank Account Address is null " + bankAccountId );
 
-    AFEXBusiness afexBusiness = getAFEXBusiness(x, sourceUser);
+    AFEXUser afexBusiness = getAFEXUser(x, sourceUser);
     if ( null == afexBusiness ) throw new RuntimeException("Business as not been completely onboarded on partner system. " + sourceUser);
 
     FindBankByNationalIDResponse bankInformation = getBankInformation(x,afexBusiness.getApiKey(),bankAccount, user.getSpid());
@@ -783,7 +768,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
   }
 
   public boolean directDebitUnenrollment(Business business, BankAccount bankAccount) {
-    AFEXBusiness afexBusiness = getAFEXBusiness(x, business.getId());
+    AFEXUser afexBusiness = getAFEXUser(x, business.getId());
     DirectDebitUnenrollmentRequest unenrollmentRequest = new DirectDebitUnenrollmentRequest.Builder(x)
       .setAccountNumber(bankAccount.getAccountNumber())
       .setApiKey(afexBusiness.getApiKey())
@@ -796,7 +781,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
   }
 
   public void deletePayee(long payeeUserId, long payerUserId) throws RuntimeException {
-    AFEXBusiness afexBusiness = getAFEXBusiness(x, payerUserId);
+    AFEXUser afexBusiness = getAFEXUser(x, payerUserId);
     if ( null == afexBusiness ) throw new RuntimeException("Business as not been completely onboarded on partner system. " + payerUserId);
     User user = User.findUser(x, payerUserId);
     try{
@@ -825,7 +810,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     }
     AFEXTransaction afexTransaction = (AFEXTransaction) transaction;
 
-    AFEXBusiness afexBusiness = getAFEXBusiness(x,afexTransaction.getPayerId());
+    AFEXUser afexBusiness = getAFEXUser(x,afexTransaction.getPayerId());
     if ( null == afexBusiness ) {
       logger_.error("Business has not been completely onboarded on partner system. " + transaction.getPayerId());
       throw new RuntimeException("Business has not been completely onboarded on partner system. " + transaction.getPayerId());
@@ -918,7 +903,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     Account destinationAccount = afexTransaction.findDestinationAccount(x);
     Account sourceAccount = afexTransaction.findSourceAccount(x);
 
-    AFEXBusiness afexBusiness = getAFEXBusiness(x,sourceAccount.getOwner());
+    AFEXUser afexBusiness = getAFEXUser(x,sourceAccount.getOwner());
     if ( null == afexBusiness ) {
       logger_.error("Business has not been completely onboarded on partner system. " + sourceAccount.getOwner());
       throw new RuntimeException("Business has not been completely onboarded on partner system. " + sourceAccount.getOwner());
@@ -990,11 +975,11 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
       AFEXTransaction txn = (AFEXTransaction) transaction.fclone();
       Account srcAccount = txn.findSourceAccount(x);
-      AFEXBusiness afexBusiness = getAFEXBusiness(x, srcAccount.getOwner());
+      AFEXUser afexBusiness = getAFEXUser(x, srcAccount.getOwner());
       long userId = 0;
       CheckPaymentStatusRequest request = new CheckPaymentStatusRequest();
       if ( txn instanceof AFEXFundingTransaction ) {
-        afexBusiness = getAFEXBusiness(x, txn.findDestinationAccount(x).getOwner());
+        afexBusiness = getAFEXUser(x, txn.findDestinationAccount(x).getOwner());
         userId = afexBusiness.getUser();
         request.setClientAPIKey("");
       } else if ( afexBusiness != null ){
@@ -1074,7 +1059,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     }
     AFEXTransaction afexTransaction = (AFEXTransaction) txn;
 
-    AFEXBusiness business = getAFEXBusiness(x, afexTransaction.getPayerId());
+    AFEXUser business = getAFEXUser(x, afexTransaction.getPayerId());
     GetConfirmationPDFRequest pdfRequest = new GetConfirmationPDFRequest.Builder(x)
       .setClientAPIKey(business.getApiKey())
       .setTradeNumber(afexTransaction.getAfexTradeResponseNumber()+"")
@@ -1088,9 +1073,9 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     return null;
   }
 
-  public AFEXBusiness getAFEXBusiness(X x, Long userId) {
+  public AFEXUser getAFEXUser(X x, Long userId) {
     DAO dao = (DAO) x.get("afexUserDAO");
-    return (AFEXBusiness) dao.find(EQ(AFEXBusiness.USER, userId));
+    return (AFEXUser) dao.find(EQ(AFEXUser.USER, userId));
   }
 
   protected AFEXBeneficiary getAFEXBeneficiary(X x, Long beneficiaryId, Long ownerId) {
@@ -1135,7 +1120,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     Long userId = transaction.findDestinationAccount(x).getOwner();
     User user = User.findUser(x, userId);
     if ( null == user ) throw new RuntimeException("Unable to find User " + userId);
-    AFEXBusiness afexBusiness = getAFEXBusiness(x, userId);
+    AFEXUser afexBusiness = getAFEXUser(x, userId);
     if ( null == afexBusiness ) throw new RuntimeException("User not yet onboarded to payment partner " + userId);
 
     CreateFundingBalanceRequest request = new CreateFundingBalanceRequest();
@@ -1196,7 +1181,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     User user = User.findUser(x, userId);
     if ( null == user ) throw new RuntimeException("Unable to find User " + userId);
 
-    AFEXBusiness afexBusiness = getAFEXBusiness(x, user.getId());
+    AFEXUser afexBusiness = getAFEXUser(x, user.getId());
     if ( null == afexBusiness ) throw new RuntimeException("User not yet onboarded to payment partner " + userId);
 
     try {
@@ -1215,7 +1200,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     User user = User.findUser(x, userId);
     if ( null == user ) throw new RuntimeException("Unable to find User " + userId);
 
-    AFEXBusiness afexBusiness = getAFEXBusiness(x, user.getId());
+    AFEXUser afexBusiness = getAFEXUser(x, user.getId());
     // check if instant beneficiary exists already;
     AFEXBeneficiary afexBeneficiary = getAFEXBeneficiary(x, afexBusiness.getId(), afexBusiness.getId(), true);
     if ( afexBeneficiary != null ) {

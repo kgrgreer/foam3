@@ -25,7 +25,7 @@ foam.CLASS({
     'net.nanopay.bank.BankAccount',
     'net.nanopay.fx.CurrencyFXService',
     'net.nanopay.fx.FXService',
-    'net.nanopay.fx.afex.AFEXBusiness',
+    'net.nanopay.fx.afex.AFEXUser',
     'net.nanopay.fx.afex.AFEXServiceProvider',
     'net.nanopay.fx.ascendantfx.AscendantFXServiceProvider',
     'net.nanopay.fx.ascendantfx.AscendantFXUser',
@@ -69,7 +69,7 @@ foam.CLASS({
         }
 
         AFEXServiceProvider afexService = (AFEXServiceProvider) fxService;
-        AFEXBusiness afexBusiness = afexService.getAFEXBusiness(getX(), quote.getSourceAccount().getOwner());
+        AFEXUser afexBusiness = afexService.getAFEXUser(getX(), quote.getSourceAccount().getOwner());
         if ( afexBusiness == null ) {
           return false;
         }

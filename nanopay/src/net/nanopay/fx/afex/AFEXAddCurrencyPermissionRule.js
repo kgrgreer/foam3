@@ -56,11 +56,11 @@ foam.CLASS({
         public void execute(X x) {
           Logger logger = (Logger) x.get("logger");
 
-          if ( ! (obj instanceof AFEXBusiness) ) {
+          if ( ! (obj instanceof AFEXUser) ) {
             return;
           }
 
-          AFEXBusiness afexBusiness = (AFEXBusiness) obj;
+          AFEXUser afexBusiness = (AFEXUser) obj;
           DAO dao = ((DAO) x.get("approvalRequestDAO"))
           .where(AND(
             EQ(ApprovalRequest.DAO_KEY, "afexUserDAO"),

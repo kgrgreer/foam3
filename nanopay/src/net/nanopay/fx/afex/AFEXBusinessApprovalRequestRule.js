@@ -39,7 +39,7 @@ foam.CLASS({
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-            AFEXBusiness afexBusiness = (AFEXBusiness) obj;
+            AFEXUser afexBusiness = (AFEXUser) obj;
             DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
             String spid = afexBusiness.findUser(x).getSpid();
             String group = spid + "-payment-ops";

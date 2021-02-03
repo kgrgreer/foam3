@@ -49,7 +49,7 @@ import net.nanopay.tx.planner.AFEXTransactionPlanner;
 import net.nanopay.fx.afex.AFEXServiceProvider;
 import net.nanopay.fx.afex.AFEX;
 import net.nanopay.fx.afex.AFEXServiceMock;
-import net.nanopay.fx.afex.AFEXBusiness;
+import net.nanopay.fx.afex.AFEXUser;
 import net.nanopay.fx.afex.AFEXBeneficiary;
 import net.nanopay.payment.Institution;
 
@@ -286,7 +286,7 @@ public class BankVerificationTest
     DAO afexUserDAO = (DAO) x_.get("afexUserDAO");
     DAO afexBeneficiaryDAO = (DAO) x_.get("afexBeneficiaryDAO");
 
-    AFEXBusiness b1 = new AFEXBusiness.Builder(x_)
+    AFEXUser b1 = new AFEXUser.Builder(x_)
       .setApiKey("abc123")
       .setAccountNumber("0001")
       .setUser(user1.getId())
@@ -294,7 +294,7 @@ public class BankVerificationTest
       .build();
     afexUserDAO.put(b1);
 
-    AFEXBusiness b2 = new AFEXBusiness.Builder(x_)
+    AFEXUser b2 = new AFEXUser.Builder(x_)
       .setApiKey("123abc")
       .setAccountNumber("0002")
       .setUser(user2.getId())
