@@ -275,6 +275,7 @@ var classes = [
   'net.nanopay.fx.afex.CreateInstantBenefiaryResponse',
   'net.nanopay.fx.afex.FundingBalance',
   'net.nanopay.fx.afex.GetFundingBalanceResponse',
+  'net.nanopay.fx.afex.KeyIndividual',
   'net.nanopay.fx.afex.ValidateInstantBenefiaryRequest',
   'net.nanopay.fx.afex.ValidateInstantBenefiaryResponse',
   'net.nanopay.fx.afex.CheckPaymentStatusRequest',
@@ -1449,8 +1450,8 @@ var classes = [
   'net.nanopay.crunch.registration.UserDetailData',
   'net.nanopay.crunch.registration.UserDetailExpandedData',
 
-  // bpp crunch onboarding
-  'net.nanopay.crunch.bpp.ExtendedUserDetailsData',
+  // bepay crunch onboarding
+  'net.nanopay.crunch.bepay.ExtendedUserDetailsData',
 
   // crunch documents
   'net.nanopay.crunch.document.Document',

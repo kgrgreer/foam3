@@ -329,15 +329,12 @@ foam.CLASS({
       name: 'tradingCountries',
       description: 'Expected trading countries'
     },
-    {
-      class: 'String',
-      name: 'keyIndividuals',
-      description: 'Key individual',
-      documentation: `
-        Corporate client can fill in salutation, firstName, middleName, lastName, jobTitle, jobTitleOther, citizenship,
-         and dateOfBirth props also for the individual referenced in the following props
-      `
-    },
+		{
+			class: "FObjectArray",
+			name: "keyIndividuals",
+			documentation: "An array of signing officers.",
+			of: "net.nanopay.fx.afex.KeyIndividual",
+		},
     {
       class: 'String',
       name: 'individualRoles',

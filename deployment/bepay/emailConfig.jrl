@@ -1,6 +1,6 @@
 p({
   "class":"foam.nanos.notification.email.EmailConfig",
-  "spid":"bpp",
+  "spid":"bepay",
   "from":"noreply@nanopay.net",
   "displayName":"nanopay",
   "replyTo":"noreply@nanopay.net"
