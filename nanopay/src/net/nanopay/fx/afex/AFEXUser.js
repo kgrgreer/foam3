@@ -56,7 +56,7 @@ foam.CLASS({
       tableCellFormatter: function(value, obj, axiom) {
         var self = this;
         this.__subSubContext__.userDAO.find(value).then( function( user ) {
-          if ( user ) self.add(user.businessName);
+          if ( user ) self.add(user.toSummary());
         });
       }
     },
