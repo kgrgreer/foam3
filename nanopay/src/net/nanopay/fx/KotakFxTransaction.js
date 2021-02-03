@@ -72,5 +72,11 @@ foam.CLASS({
        setFxQuoteId(((KotakFxTransaction) other).getFxQuoteId());
        `
      },
+     {
+      name: 'isRefundable',
+      javaCode: `
+      return false;
+      `
+    }
   ]
 });

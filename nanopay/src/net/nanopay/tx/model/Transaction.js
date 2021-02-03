@@ -1458,6 +1458,36 @@ foam.CLASS({
       javaCode: `
       return 0;
     `,
-    }
+    },
+    {
+      name: 'isRefundable',
+      type: 'Boolean',
+      javaCode: `
+      return true;
+    `,
+    },
+    {
+      name: 'isChainRefundable',
+      args: [
+        { name: 'x', type: 'Context' }
+      ],
+      type: 'Boolean',
+      documentation: 'Returns if the chain is reversable or not',
+      javaCode: `
+      if ( ! isRefundable() ) {
+        return false;
+      }
+      DAO dao = (DAO) x.get("localTransactionDAO");
+      List children = ((ArraySink) dao.where(EQ(Transaction.PARENT, getId())).select(new ArraySink())).getArray();
+      for ( Object obj : children ) {
+        Transaction child = (Transaction) obj;
+        Boolean childRefundable = child.isChainRefundable(x);
+        if ( ! childRefundable ) {
+          return false;
+        }
+      }
+      return true;
+      `
+    },
   ]
 });

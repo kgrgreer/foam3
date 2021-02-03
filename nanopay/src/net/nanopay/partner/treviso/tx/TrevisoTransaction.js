@@ -124,6 +124,12 @@ foam.CLASS({
       throw new RuntimeException("Sender needs to pass business compliance.");
     }
     `
+  },
+  {
+    name: 'isRefundable',
+    javaCode: `
+    return false;
+    `
   }
   ]
 
