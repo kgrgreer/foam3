@@ -477,13 +477,13 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
     AFEXBusiness business = this.getAFEXBusiness(x, user);
     if ( business == null ) {
-      throw new RuntimeException("No afexBusiness found for user " + user);
+      //throw new RuntimeException("No afexBusiness found for user " + user);
     }
-    quoteRequest.setValueDate(getValueDate(targetCurrency, sourceCurrency, business.getApiKey(), userObj.getSpid(), valueDate));
-    quoteRequest.setClientAPIKey(business.getApiKey());
+    //quoteRequest.setValueDate(getValueDate(targetCurrency, sourceCurrency, business.getApiKey(), userObj.getSpid(), valueDate));
+    //quoteRequest.setClientAPIKey(business.getApiKey());
 
     if ( SafetyUtil.isEmpty(quoteRequest.getClientAPIKey()) ) {
-      throw new RuntimeException("No ClientAPIKey set");
+      //throw new RuntimeException("No ClientAPIKey set");
     }
     try {
       Quote quote = this.afexClient.getQuote(quoteRequest, userObj.getSpid());
@@ -614,7 +614,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     if ( null == bankAccount ) throw new RuntimeException("Unable to find Bank account: " + bankAccountId );
 
     AFEXBusiness afexBusiness = getAFEXBusiness(x, sourceUser);
-    if ( null == afexBusiness ) throw new RuntimeException("Business as not been completely onboarded on partner system. " + sourceUser);
+//    if ( null == afexBusiness ) throw new RuntimeException("Business as not been completely onboarded on partner system. " + sourceUser);
 
     Address bankAddress = bankAccount.getAddress() == null ? bankAccount.getBankAddress() : bankAccount.getAddress();
     FindBankByNationalIDResponse bankInformation = getBankInformation(x,afexBusiness.getApiKey(),bankAccount, user.getSpid());
@@ -825,17 +825,17 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     }
     AFEXTransaction afexTransaction = (AFEXTransaction) transaction;
 
-    AFEXBusiness afexBusiness = getAFEXBusiness(x,afexTransaction.getPayerId());
-    if ( null == afexBusiness ) {
-      logger_.error("Business has not been completely onboarded on partner system. " + transaction.getPayerId());
-      throw new RuntimeException("Business has not been completely onboarded on partner system. " + transaction.getPayerId());
-    }
+//    AFEXBusiness afexBusiness = getAFEXBusiness(x,afexTransaction.getPayerId());
+//    if ( null == afexBusiness ) {
+//      logger_.error("Business has not been completely onboarded on partner system. " + transaction.getPayerId());
+//      throw new RuntimeException("Business has not been completely onboarded on partner system. " + transaction.getPayerId());
+//    }
 
-    AFEXBeneficiary afexBeneficiary = getOrCreateAFEXBeneficiary(x,afexTransaction.getPayeeId(), afexTransaction.getPayerId());
-    if ( null == afexBeneficiary ) {
-      logger_.error("Contact has not been completely onboarded on partner system as a Beneficiary. " + transaction.getPayerId());
-      throw new RuntimeException("Contact has not been completely onboarded on partner system as a Beneficiary. " + transaction.getPayerId());
-    }
+    //AFEXBeneficiary afexBeneficiary = getOrCreateAFEXBeneficiary(x,afexTransaction.getPayeeId(), afexTransaction.getPayerId());
+//    if ( null == afexBeneficiary ) {
+//      logger_.error("Contact has not been completely onboarded on partner system as a Beneficiary. " + transaction.getPayerId());
+//      throw new RuntimeException("Contact has not been completely onboarded on partner system as a Beneficiary. " + transaction.getPayerId());
+//    }
 
     FXQuote quote = (FXQuote) fxQuoteDAO_.find(Long.parseLong(afexTransaction.getFxQuoteId()));
     if  ( null == quote ) {
@@ -847,7 +847,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     long tradeAmount = 0;
     tradeAmount =  afexTransaction.getDestinationAmount();
     CreateTradeRequest createTradeRequest = new CreateTradeRequest();
-    createTradeRequest.setClientAPIKey(afexBusiness.getApiKey());
+    //createTradeRequest.setClientAPIKey(afexBusiness.getApiKey());
     createTradeRequest.setAmount(String.valueOf(toDecimal(tradeAmount)));
     createTradeRequest.setIsAmountSettlement(String.valueOf(false));
     createTradeRequest.setSettlementCcy(afexTransaction.getSourceCurrency());

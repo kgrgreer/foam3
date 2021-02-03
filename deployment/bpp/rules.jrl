@@ -134,9 +134,6 @@ p({
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
         "propName":"sourceUnit",
         "propValue":"BRL"
-      },
-      {
-        "class":"net.nanopay.tx.planner.predicate.IsAccountOwnerAFEXUserPredicate",
       }
     ]
   },
@@ -178,7 +175,7 @@ p({
       },
       {
         "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
-        "provider":"bpp"
+        "provider":"BPP"
       }
     ]
   },
@@ -230,4 +227,28 @@ p({
   "saveHistory":true,
   "lifecycleState":1,
   "spid":"bpp"
+})
+p({
+  "class":"net.nanopay.tx.planner.AFEXTransactionPlanner",
+  "id":"13df0d76-ba3e-4287-b42e-c7ceff059dd8",
+  "ruleGroup":"BPPPlanner",
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"sourceAccount",
+        "of":"net.nanopay.bank.BankAccount"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+        "propName":"destinationAccount",
+        "of":"net.nanopay.bank.BankAccount"
+      },
+      {
+        "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
+        "provider":"AFEX"
+      }
+    ]
+  }
 })

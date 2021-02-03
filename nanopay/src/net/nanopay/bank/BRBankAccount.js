@@ -354,7 +354,7 @@ foam.CLASS({
           throw new ValidationException(this.ACCOUNT_NUMBER_REQUIRED);
         }
         if ( ! ACCOUNT_NUMBER_PATTERN.matcher(accountNumber).matches() ) {
-          throw new ValidationException(this.ACCOUNT_NUMBER_INVALID);
+          //throw new ValidationException(this.ACCOUNT_NUMBER_INVALID);
         }
       `
     },
