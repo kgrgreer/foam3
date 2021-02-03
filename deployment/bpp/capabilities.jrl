@@ -16,7 +16,7 @@ p({
   enabled: true,
   permissionsGranted: [
     "paymentprovidercorridor.read.afex",
-    "paymentprovidercorridor.read.treviso",
+    "paymentprovidercorridor.read.bpp",
     "paymentprovidercorridor.source.read.bpp",
     "paymentprovidercorridor.target.read.afex"
   ]
@@ -45,5 +45,75 @@ p({
   permissionsGranted: [
     "rule.read.454df571-f639-4506-8d59-98b4f39934e4",
     "rule.read.9e7661a6-610b-47ad-b521-96b9c760fb16"
+  ]
+})
+
+
+// top level capability to onboard afex user
+p({
+  class:"foam.nanos.crunch.Capability",
+  id:"BF58A50D-70F5-45CB-A79A-AF18C1D6F685",
+  name:"BPP Personal International Payments",
+  description:"submit a request to AFEX to create a privateClient account",
+  visibilityPredicate:{class:"foam.mlang.predicate.True"},
+  enabled:true,
+  associatedEntity:1,
+  keywords:["bpp"],
+  permissionsGranted: []
+})
+
+// prerequisites of onboard afex user capability
+p({
+  class:"foam.nanos.crunch.Capability",
+  id:"0ED5DD86-AA1A-452B-BA7D-E7A2D0542135",
+  name:"User Details",
+  contextDAOFindKey:"subject.user",
+  associatedEntity:0
+})
+
+p({
+  class:"foam.nanos.crunch.Capability",
+  id:"fb7d3ca2-62f2-2131-a84c-8603dsrf2bpp",
+  name:"Extended User Details",
+  of:"net.nanopay.crunch.bpp.ExtendedUserDetailsData",
+  enabled:true,
+  daoKey:"userDAO",
+  contextDAOFindKey:"subject.user",
+  associatedEntity:0
+})
+
+p({
+  class:"foam.nanos.crunch.Capability",
+  id:"fb7d3ca2-62f2-4caf-a84c-860392e46bpp",
+  name:"CPF Number",
+  of:"net.nanopay.country.br.CPF",
+  enabled:true,
+  associatedEntity:0
+})
+
+p({
+  class:"foam.nanos.crunch.Capability",
+  id:"8ad3c898-db232-1ea-87d0-0242ac130z0-bpp",
+  name:"Date of Issue",
+  description:"Date of issue of an identification document",
+  of:"net.nanopay.crunch.document.DateOfIssue",
+  enabled:true,
+  associatedEntity:0
+})
+
+p({
+  class:"foam.nanos.crunch.Capability",
+  id:"554af38a-8225-87c8-dfdf-eeb15f712bpp-10",
+  name:"AFEX Terms and Conditions",
+  of:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms",
+  enabled:true
+})
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "bppPlannerCapability",
+  enabled: true,
+  permissionsGranted: [
+    "rule.read.119fa381-d2a2-4369-b242-1dc8e2163bb9",
+    "rule.read.2fdd7d35-6704-47dc-9f0e-9419e0aa74ed"
   ]
 })

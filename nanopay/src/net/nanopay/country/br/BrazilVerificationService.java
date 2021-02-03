@@ -218,10 +218,13 @@ public class BrazilVerificationService
 
   protected Date findUserBirthDate(long userId) {
     UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) getX().get("userCapabilityJunctionDAO")).find(AND(
-      EQ(UserCapabilityJunction.TARGET_ID, "8bffdedc-5176-4843-97df-1b75ff6054fb"),
+      OR(
+        EQ(UserCapabilityJunction.TARGET_ID, "fb7d3ca2-62f2-2131-a84c-8603dsrf2bpp"),
+        EQ(UserCapabilityJunction.TARGET_ID, "8bffdedc-5176-4843-97df-1b75ff6054fb")
+      ),
       EQ(UserCapabilityJunction.SOURCE_ID, userId)
     ));
-    return (ucj != null && ucj.getData() != null) ? ((net.nanopay.crunch.onboardingModels.UserBirthDateData)ucj.getData()).getBirthday() : null;
+    return (ucj != null && ucj.getData() != null) ? (Date) ((foam.core.FObject) ucj.getData()).getProperty("birthday") : null;
   }
 
 }

@@ -374,7 +374,7 @@ foam.CLASS({
             paymentSummaryReport.setId(i++);
             decoratedSink.put(paymentSummaryReport, null);
           }
-          return decoratedSink;
+          return sink;
         }
     
         // separate by currency
@@ -408,7 +408,7 @@ foam.CLASS({
           paymentSummaryReport.setId(i++);
           decoratedSink.put(paymentSummaryReport, null);
         }
-        return decoratedSink;
+        return sink;
       `
     }
   ],

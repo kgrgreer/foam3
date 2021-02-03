@@ -16,108 +16,71 @@
  */
 
 foam.CLASS({
-  package: "net.nanopay.fx.afex",
-  name: "RetrieveClientAccountDetailsResponse",
+  package: 'net.nanopay.fx.afex',
+  name: 'RetrieveClientAccountDetailsResponse',
+
   properties: [
-    {
-      class: 'String',
-      name: "AccountStatus"
-    },
-    {
-      class: 'String',
-      name: "Citizenship"
-    },
-    {
-      class: 'String',
-      name: "ContactCity"
-    },
-    {
-      class: 'String',
-      name: "ContactAddress1"
-    },
-    {
-      class: 'String',
-      name: "ContactAddress2"
-    },
-    {
-      class: 'String',
-      name: "ContactAddress3"
-    },
-    {
-      class: 'String',
-      name: "ContactCountryCode"
-    },
-    {
-      class: 'String',
-      name: "ContactPrimaryIdentificationExpirationDate"
-    },
-    {
-      class: 'String',
-      name: "ContactPrimaryIdentificationIssuingAgency"
-    },
-    {
-      class: 'String',
-      name: "ContactPrimaryIdentificationNumber"
-    },
-    {
-      class: 'String',
-      name: "ContactPrimaryIdentificationType"
-    },
-    {
-      class: 'String',
-      name: "ContactStateRegion"
-    },
-    {
-      class: 'String',
-      name: "ContactZip"
-    },
-    {
-      class: 'String',
-      name: "DateOfBirth"
-    },
-    {
-      class: 'Int',
-      name: "ExpectedMonthlyPayments"
-    },
-    {
-      class: 'Float',
-      name: "ExpectedMonthlyVolume"
-    },
-    {
-      class: 'String',
-      name: "FirstName"
-    },
-    {
-      class: 'String',
-      name: "Gender"
-    },
-    {
-      class: 'String',
-      name: "JobTitle"
-    },
-    {
-      class: 'String',
-      name: "LastName"
-    },
-    {
-      class: 'String',
-      name: "MiddleName"
-    },
-    {
-      class: 'String',
-      name: "PhoneNumber"
-    },
-    {
-      class: 'String',
-      name: "PrimaryEmailAddress"
-    },
-    {
-      class: 'String',
-      name: "TaxIdentificationNumber"
-    },
-    {
-      class: 'String',
-      name: "TermsAndConditions"
-    }
+    { class: 'String', name: 'accountEntityType' },
+    { class: 'String', name: 'accountNumber' },
+    { class: 'String', name: 'accountStatus' },
+    { class: 'String', name: 'businessAddress' },
+    { class: 'String', name: 'businessCity' },
+    { class: 'String', name: 'businessCountry' },
+    { class: 'String', name: 'businessState' },
+    { class: 'String', name: 'businessTelephoneNo' },
+    { class: 'String', name: 'businessWebsite' },
+    { class: 'String', name: 'businessZip' },
+    { class: 'String', name: 'citizenship' },
+    { class: 'String', name: 'companyRegistrationNo' },
+    { class: 'String', name: 'companyType' },
+    { class: 'String', name: 'contactAddress1' },
+    { class: 'String', name: 'contactAddress2' },
+    { class: 'String', name: 'contactAddress3' },
+    { class: 'String', name: 'contactCity' },
+    { class: 'String', name: 'contactCountryCode' },
+    { class: 'String', name: 'contactPhone' },
+    { class: 'String', name: 'contactPrimaryIdentificationIssuingAgency' },
+    { class: 'String', name: 'contactPrimaryIdentificationExpirationDate' },
+    { class: 'String', name: 'contactPrimaryIdentificationNumber' },
+    { class: 'String', name: 'contactPrimaryIdentificationType' },
+    { class: 'String', name: 'contactStateRegion' },
+    { class: 'String', name: 'contactZip' },
+    { class: 'String', name: 'correspondenceAddress' },
+    { class: 'String', name: 'correspondenceCity' },
+    { class: 'String', name: 'correspondenceCountry' },
+    { class: 'String', name: 'correspondenceState' },
+    { class: 'String', name: 'correspondenceZip' },
+    { class: 'String', name: 'countryOfIncorporation' },
+    { class: 'String', name: 'dateOfBirth' },
+    { class: 'String', name: 'dateOfFormation' },
+    { class: 'String', name: 'description' },
+    { class: 'String', name: 'descriptionOfBusiness' },
+    { class: 'String', name: 'doingBusinessAs' },
+    { class: 'String', name: 'employmentStatus' },
+    { class: 'String', name: 'expectedMonthlyPayments' },
+    { class: 'String', name: 'expectedMonthlyVolume' },
+    { class: 'String', name: 'federalTaxId' },
+    { class: 'String', name: 'firstName' },
+    { class: 'String', name: 'jobTitle' },
+    { class: 'String', name: 'keyIndividuals' },
+    { class: 'String', name: 'lastName' },
+    { class: 'String', name: 'legalCompanyName' },
+    { class: 'String', name: 'LEIExpirationDate' },
+    { class: 'String', name: 'LEINumber' },
+    { class: 'String', name: 'middleName' },
+    { class: 'String', name: 'NAICS' },
+    { class: 'String', name: 'occupation' },
+    { class: 'String', name: 'primaryEmailAddress' },
+    { class: 'String', name: 'salutation' },
+    { class: 'String', name: 'secondaryIdentificationExpirationDate' },
+    { class: 'String', name: 'secondaryIdentificationIssuingAgency' },
+    { class: 'String', name: 'secondaryIdentificationNumber' },
+    { class: 'String', name: 'secondaryIdentificationType' },
+    { class: 'StringArray', name: 'sourcesOfWealth' },
+    { class: 'String', name: 'stateRegionOfIncorporation' },
+    { class: 'String', name: 'taxIdentificationNumber' },
+    { class: 'Boolean', name: 'termsAndConditions' },
+    { class: 'String', name: 'tickerSymbol' },
+    { class: 'StringArray', name: 'tradingCountries' }
   ]
 });
