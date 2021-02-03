@@ -1,7 +1,12 @@
 p({"class":"net.nanopay.bank.EstimationAccount", "id":"44fff2fc-62f8-4f0c-8e23-e70324c7fe05", "owner":8054, "denomination":"USD", "country":"US","name":"Canada estimation account","lifecycleState":1})
-p({class:"net.nanopay.account.DigitalAccount",denomination:"BRL",id:"512360f6-ec67-4339-9fc4-9a677bc2bff7",name:"FeeAccount-bpp",isDefault:true,owner:8054,created:1601392287945,createdBy:1,createdByAgent:1,lastModified:1601392287945,lastModifiedBy:1,lifecycleState:1})
+
 p({
-  class:"net.nanopay.account.DigitalAccount",
+  "class":"net.nanopay.bank.BRBankAccount",
+  "bankCode":"12345678",
+  "branchCode":"12345",
+  "accountNumber":"1234567890",
+  "status":1,
+  "name":"Bank BRL",
   denomination:"BRL",
   id:"512360f6-ec67-4339-9fc4-9a677bc2bff7",
   name:"FeeAccount-bpp",

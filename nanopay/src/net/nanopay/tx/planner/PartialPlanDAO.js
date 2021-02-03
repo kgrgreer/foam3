@@ -101,7 +101,7 @@ foam.CLASS({
         // -- set ids of old leg2 to the new leg2 candidates --
         for ( Transaction head : eligibleNewPlans ) {
           Transaction oldHead = cutOffEnd;
-          while( head.getNext()[0] != null ) {
+          while( head.getNext() != null && head.getNext().length != 0) {
             head.setId(oldHead.getId());
             head = head.getNext()[0];
             oldHead = oldHead.getNext()[0];
