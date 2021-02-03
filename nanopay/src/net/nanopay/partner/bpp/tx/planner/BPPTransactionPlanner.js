@@ -24,19 +24,22 @@ foam.CLASS({
   javaImports: [
     'foam.util.SafetyUtil',
     'java.util.UUID',
+    'java.util.Calendar',
+    'java.util.Date',
+    'net.nanopay.country.br.tx.ExchangeLimitTransaction',
+    'net.nanopay.country.br.tx.NatureCodeLineItem',
+    'net.nanopay.fx.FXLineItem',
     'net.nanopay.fx.FXLineItem',
     'net.nanopay.fx.FXSummaryTransaction',
+    'net.nanopay.partner.bpp.tx.BPPTransaction',
     'net.nanopay.tx.ExternalTransfer',
-    'net.nanopay.tx.InvoicedFeeLineItem',
     'net.nanopay.tx.FeeLineItem',
+    'net.nanopay.tx.InvoicedFeeLineItem',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.country.br.tx.ExchangeLimitTransaction',
-    'net.nanopay.country.br.tx.NatureCodeLineItem',
     'org.apache.commons.lang.ArrayUtils',
-    'net.nanopay.partner.bpp.tx.BPPTransaction'
   ],
 properties: [
     {
@@ -205,12 +208,18 @@ properties: [
         }
       ],
       javaCode: `
+      Calendar c = Calendar.getInstance();
+      c.setTime(new Date());
+      c.add(Calendar.DATE, 1);
+
       txn.addLineItems( new TransactionLineItem[] {
-        new FeeLineItem.Builder(x)
+        new FXLineItem.Builder(x)
           .setGroup("fx").setNote("FX Broker Fee")
-          .setAmount(((Double)(requestTxn.getDestinationAmount() * fxRate)).longValue())
           .setDestinationAccount(requestTxn.getSourceAccount())
-          .setFeeCurrency(requestTxn.getSourceCurrency())
+          .setSourceCurrency(requestTxn.getSourceCurrency())
+          .setDestinationCurrency(requestTxn.getDestinationCurrency())
+          .setExpiry(c.getTime())
+          .setRate(fxRate)
           .build()
       } );
       return txn;
