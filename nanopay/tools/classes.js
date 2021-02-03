@@ -1332,6 +1332,7 @@ var classes = [
 
   // bpp
   'net.nanopay.partner.bpp.tx.BPPTransaction',
+  'net.nanopay.partner.bpp.tx.planner.BPPTransactionPlanner',
 
   // crunch predicates - todo move all predicates used in crunch here
   'net.nanopay.crunch.predicate.IsBusiness',
