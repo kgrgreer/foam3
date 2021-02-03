@@ -87,7 +87,7 @@ foam.CLASS({
         if ( SafetyUtil.isEmpty(txn.getId()) ) { // Transaction planning, no id.
           TransactionQuote quote = (TransactionQuote) ((DAO) x.get("localTransactionPlannerDAO")).inX(x).put(txn);
           validateQuoteTransfers(x, quote); // deprecated. should be done in planner validation
-          txn = (Transaction) quote.getPlan(); // transaction is auto-quoted.
+          return txn;
         }
 
         Transaction loadedTxn;
