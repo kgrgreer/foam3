@@ -110,7 +110,10 @@ foam.CLASS({
 
         // -- set summary and compliance destinations to new destination --
         headOldPartialPlan.setDestinationAccount(tq.getDestinationAccount().getId()); // summary
-        headOldPartialPlan.getNext()[0].setDestinationAccount(tq.getDestinationAccount().getId()); // compliance
+        if ( (headOldPartialPlan.getNext() != null) && (headOldPartialPlan.getNext().length > 0) &&
+        (headOldPartialPlan.getNext()[0] instanceof ComplianceTransaction) ) {
+          headOldPartialPlan.getNext()[0].setDestinationAccount(tq.getDestinationAccount().getId()); // compliance
+        }
 
         // -- glue front and back parts together --
         ArrayList<Transaction> finalNewPlans = new ArrayList<Transaction>();
