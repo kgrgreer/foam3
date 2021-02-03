@@ -357,6 +357,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEX' },
   { name: 'net/nanopay/fx/afex/AFEXBeneficiary' },
   { name: 'net/nanopay/fx/afex/AFEXBeneficiaryComplianceTransaction' },
+  { name: 'net/nanopay/fx/afex/AFEXUser' },
   { name: 'net/nanopay/fx/afex/AFEXBusiness' },
   { name: 'net/nanopay/fx/afex/AFEXPayableMenuCapabilityRule' },
   { name: 'net/nanopay/fx/afex/AFEXAddCurrencyPermissionRule' },
@@ -371,8 +372,9 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEXFundingBalance' },
   { name: 'net/nanopay/fx/afex/AFEXLog' },
   { name: 'net/nanopay/fx/afex/Token' },
-  { name: 'net/nanopay/fx/afex/OnboardCorporateClientRequest' },
-  { name: 'net/nanopay/fx/afex/OnboardCorporateClientResponse' },
+  { name: 'net/nanopay/fx/afex/AccountEntityType' },
+  { name: 'net/nanopay/fx/afex/OnboardAFEXClientRequest' },
+  { name: 'net/nanopay/fx/afex/OnboardAFEXClientResponse' },
   { name: 'net/nanopay/fx/afex/GetClientAccountStatusResponse' },
   { name: 'net/nanopay/fx/afex/RetrieveClientAccountDetailsResponse' },
   { name: 'net/nanopay/fx/afex/CreateBeneficiaryRequest' },
@@ -1668,6 +1670,9 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/registration/UserDetailData' },
   { name: 'net/nanopay/crunch/registration/UserDetailExpandedData' },
 
+  // bpp crunch onboarding
+  { name: 'net/nanopay/crunch/bpp/ExtendedUserDetailsData' },
+
   // crunch predicates - todo move all predicates used in crunch here
   { name: 'net/nanopay/crunch/predicate/IsBusiness' },
   { name: 'net/nanopay/crunch/predicate/BusinessPassedCompliance' },
@@ -1744,6 +1749,7 @@ FOAM_FILES([
   // crunch afex
   { name: 'net/nanopay/partner/afex/crunch/BusinessHasVerifiedBankAccount' },
   { name: 'net/nanopay/partner/afex/crunch/AFEXBusinessOnboardingRule' },
+  { name: 'net/nanopay/partner/afex/crunch/AFEXUserOnboardingRule' },
   { name: 'net/nanopay/partner/afex/crunch/BankAccountOwnerIsBusiness' },
 
   { name: 'net/nanopay/partner/bmo/BMOPaymentProviderCapabilityRule' },
@@ -1822,7 +1828,7 @@ FOAM_FILES([
   { name: 'net/nanopay/country/br/NatureBusinessRelationship' },
   { name: 'net/nanopay/country/br/NatureCodeCardSelectView' },
 
-  //RequestToPay
+  // RequestToPay
   { name: 'net/nanopay/rtp/RequestToPay'},
   { name: 'net/nanopay/rtp/RtpFlinksView'},
   { name: 'net/nanopay/rtp/RtpConfirmView'},
@@ -1856,8 +1862,14 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/TrevisoSendEmailToAllNotification' },
   { name: 'net/nanopay/partner/treviso/invoice/TrevisoNotification' },
 
+<<<<<<< HEAD
   // bpp
   { name: 'net/nanopay/partner/bpp/tx/BPPTransaction' },
+=======
+  // Reports for Treviso
+  { name: 'net/nanopay/partner/treviso/report/TrevisoTransactionReport' },
+  { name: 'net/nanopay/partner/treviso/report/TrevisoTransactionReportDAO' },
+>>>>>>> 46be4aa494fb0bd9bb9ad819aa0d36833d73002e
 
   // support
   { name: 'net/nanopay/support/SupportAccount' },
