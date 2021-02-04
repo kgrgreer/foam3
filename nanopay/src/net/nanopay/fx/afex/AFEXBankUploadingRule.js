@@ -46,12 +46,12 @@ foam.CLASS({
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-            AFEXBusiness afexBusiness = (AFEXBusiness) obj;
+            AFEXUser afexUser = (AFEXUser) obj;
             AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
             DAO businessDAO = (DAO) x.get("businessDAO");
-            Business business = (Business) businessDAO.find(EQ(Business.ID, afexBusiness.getUser()));
+            Business business = (Business) businessDAO.find(EQ(Business.ID, afexUser.getUser()));
             if ( business == null ) {
-              sendFailureEmail(x, "All account", afexBusiness, null);
+              sendFailureEmail(x, "All account", afexUser, null);
               return;
             }
             DAO accountDAO = (DAO) x.get("localAccountDAO");
@@ -63,7 +63,7 @@ foam.CLASS({
             List<BankAccount> accountList = accountSink.getArray();
             for ( BankAccount account: accountList) {
               if ( ! afexServiceProvider.directDebitEnrollment(business, account) ) {
-                sendFailureEmail(x, String.valueOf(account.getId()), afexBusiness, business);
+                sendFailureEmail(x, String.valueOf(account.getId()), afexUser, business);
               }
             }
           }
@@ -82,8 +82,8 @@ foam.CLASS({
           name: 'account'
         },
         {
-          type: 'AFEXBusiness',
-          name: 'afexBusiness'
+          type: 'AFEXUser',
+          name: 'afexUser'
         },
         {
           type: 'Business',
@@ -93,7 +93,7 @@ foam.CLASS({
       javaCode: `
         EmailMessage message = new EmailMessage();
         String businessInfo = business == null ? "" : business.getId() + " " + business.getBusinessName();
-        String body = "Failed to upload bank account: " + account + ", for AFEX business " + afexBusiness.getId() + ", business: " + businessInfo;
+        String body = "Failed to upload bank account: " + account + ", for AFEX business " + afexUser.getId() + ", business: " + businessInfo;
         message.setTo(new String[]{"enrollment@ablii.com"});
         message.setSubject("Failed AFEX Bank Account Upload");
         message.setBody(body);
