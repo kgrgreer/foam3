@@ -25,7 +25,6 @@ var classes = [
   'net.nanopay.tx.cico.EFTFileGenerator',
   'net.nanopay.tx.cico.EFTFileStatus',
   'net.nanopay.tx.cico.ReverseCIRule',
-  'net.nanopay.tx.cico.ReverseCORule',
   'net.nanopay.tx.cico.ReverseInterTrustRule',
   'net.nanopay.tx.client.ClientTransactionLimitService',
   'net.nanopay.tx.alterna.AlternaFormat',

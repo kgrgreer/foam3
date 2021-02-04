@@ -157,6 +157,11 @@ foam.CLASS({
           return false;
         }
 
+        // Reverse funds that were taken out of digital accounts when old status was pending or sent
+        if ( getStage() == 2 && (oldTxn.getStatus() == TransactionStatus.PENDING || oldTxn.getStatus() == TransactionStatus.SENT) ) {
+          return true;
+        }
+
         // Cannot transfer when updating status != PENDING.
         if ( ! (getStatus() == TransactionStatus.PENDING || getStatus() == TransactionStatus.COMPLETED) ) return false;
 
@@ -175,6 +180,10 @@ foam.CLASS({
       javaCode: `
         if ( getStatus() == TransactionStatus.COMPLETED ) {
           return 1;
+        } else if ( getStatus() == TransactionStatus.CANCELLED ||
+            getStatus() == TransactionStatus.DECLINED ||
+            getStatus() == TransactionStatus.FAILED ) {
+          return 2;
         }
         return 0;
       `,
