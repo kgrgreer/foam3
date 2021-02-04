@@ -219,7 +219,7 @@ public class BrazilVerificationService
   protected Date findUserBirthDate(long userId) {
     UserCapabilityJunction ucj = (UserCapabilityJunction) ((DAO) getX().get("userCapabilityJunctionDAO")).find(AND(
       OR(
-        EQ(UserCapabilityJunction.TARGET_ID, "fb7d3ca2-62f2-2131-a84c-8603dsrf2bpp"),
+        EQ(UserCapabilityJunction.TARGET_ID, "fb7d3ca2-62f2-2131-a84c-8603dsrf2bepay"),
         EQ(UserCapabilityJunction.TARGET_ID, "8bffdedc-5176-4843-97df-1b75ff6054fb")
       ),
       EQ(UserCapabilityJunction.SOURCE_ID, userId)

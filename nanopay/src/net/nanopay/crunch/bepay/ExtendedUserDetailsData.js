@@ -16,10 +16,10 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.crunch.bpp',
+  package: 'net.nanopay.crunch.bepay',
   name: 'ExtendedUserDetailsData',
 
-  documentation: `This model represents the expanded info of a User that must be collect for bpp onboarding.`,
+  documentation: `This model represents the expanded info of a User that must be collect for BePay onboarding.`,
 
   messages: [
     { name: 'INVALID_DATE_ERROR', message: 'Valid date of birth required' },
@@ -34,7 +34,7 @@ foam.CLASS({
         {
           args: ['birthday'],
           predicateFactory: function(e) {
-            return e.NEQ(net.nanopay.crunch.bpp.ExtendedUserDetailsData.BIRTHDAY, null);
+            return e.NEQ(net.nanopay.crunch.bepay.ExtendedUserDetailsData.BIRTHDAY, null);
           },
           errorMessage: 'INVALID_DATE_ERROR'
         },
@@ -43,7 +43,7 @@ foam.CLASS({
           predicateFactory: function(e) {
             var limit = new Date();
             limit.setDate(limit.getDate() - ( 18 * 365 ));
-            return e.LT(net.nanopay.crunch.bpp.ExtendedUserDetailsData.BIRTHDAY, limit);
+            return e.LT(net.nanopay.crunch.bepay.ExtendedUserDetailsData.BIRTHDAY, limit);
           },
           errorMessage: 'UNGER_AGE_LIMIT_ERROR'
         },
@@ -52,7 +52,7 @@ foam.CLASS({
           predicateFactory: function(e) {
             var limit = new Date();
             limit.setDate(limit.getDate() - ( 125 * 365 ));
-            return e.GT(net.nanopay.crunch.bpp.ExtendedUserDetailsData.BIRTHDAY, limit);
+            return e.GT(net.nanopay.crunch.bepay.ExtendedUserDetailsData.BIRTHDAY, limit);
           },
           errorMessage: 'OVER_AGE_LIMIT_ERROR'
         }
@@ -65,4 +65,3 @@ foam.CLASS({
     }
   ]
 });
-  
