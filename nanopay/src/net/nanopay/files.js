@@ -1867,7 +1867,7 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/report/TrevisoTransactionReportDAO' },
 
   // bepay
-  { name: 'net/nanopay/partner/bepay/tx//ScreenUsersOnTransactionCreate' },
+  { name: 'net/nanopay/partner/bepay/tx/ScreenUsersOnTransactionCreate' },
 
   // support
   { name: 'net/nanopay/support/SupportAccount' },

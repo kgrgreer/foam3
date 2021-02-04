@@ -24,16 +24,16 @@ foam.CLASS({
   implements: ['foam.nanos.ruler.RuleAction'],
 
   javaImports: [
-    'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus',
     'foam.core.ContextAgent',
-    'net.nanopay.meter.compliance.dowJones.PersonNameSearchData',
-    'net.nanopay.meter.compliance.dowJones.DowJonesResponse',
-    'net.nanopay.meter.compliance.dowJones.DowJonesCredentials',
-    'net.nanopay.meter.compliance.dowJones.DowJonesService',
     'foam.core.X',
     'foam.nanos.auth.User',
-    'foam.nanos.logger.Logger'
+    'foam.nanos.logger.Logger',
+    'net.nanopay.meter.compliance.dowJones.DowJonesCredentials',
+    'net.nanopay.meter.compliance.dowJones.DowJonesResponse',
+    'net.nanopay.meter.compliance.dowJones.DowJonesService',
+    'net.nanopay.meter.compliance.dowJones.PersonNameSearchData',
+    'net.nanopay.tx.model.Transaction',
+    'net.nanopay.tx.model.TransactionStatus',
   ],
 
   methods: [
