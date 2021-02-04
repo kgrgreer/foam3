@@ -54,8 +54,8 @@ foam.CLASS({
         String country =  acc.getCountry();
         String currency = acc.getDenomination();
 
-        DAO sourceCorridorDAO = ((DAO) x.get("sourceCorridorDAO")).inX(ruler.getX());
-        DAO targetCorridorDAO = ((DAO) x.get("targetCorridorDAO")).inX(ruler.getX());
+        DAO sourceCorridorDAO = (DAO) x.get("sourceCorridorDAO");
+        DAO targetCorridorDAO = (DAO) x.get("targetCorridorDAO");
         PaymentProviderCorridor ppc;
 
         //check if bank account belongs to a contact
