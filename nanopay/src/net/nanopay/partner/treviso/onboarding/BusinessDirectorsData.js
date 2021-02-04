@@ -35,6 +35,7 @@ foam.CLASS({
 
   messages: [
     { name: 'NO_DIRECTOR_INFO', message: 'Director information required' },
+    { name: 'DIRECTOR_INFO_NOT_VALID', message: 'Director information is not valid' },
     { name: 'NO_DIR_NEEDED', message: 'No Business Directors required for this business type. Please proceed to next step.' }
   ],
 
@@ -105,6 +106,13 @@ properties: [
       },
       visibility: function(businessTypeId, needDirector) {
          return businessTypeId < 4 ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+      },
+      validateObj: function(businessTypeId, businessDirectors, businessDirectors$errors) {
+        if ( businessTypeId < 4 ) return;
+        if ( ! businessDirectors || businessDirectors.length == 0 )
+          return this.NO_DIRECTOR_INFO;
+        if ( businessDirectors$errors && businessDirectors$errors.length  )
+          return this.DIRECTOR_INFO_NOT_VALID;
       },
       autoValidate: true,
       validationTextVisible: true,

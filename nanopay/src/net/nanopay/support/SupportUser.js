@@ -197,6 +197,11 @@ foam.CLASS({
             this.IN(net.nanopay.support.SupportTransaction.DESTINATION_ACCOUNT, ids)
           )
         );
+
+        if ( X.memento ) {
+          X = X.createSubContext({memento: X.memento.tail});
+        }
+        
         X.stack.push({
           class: 'foam.comics.v2.DAOBrowseControllerView',
           data: dao,
@@ -208,7 +213,7 @@ foam.CLASS({
             deletePredicate: foam.mlang.predicate.False,
             browseTitle: `${this.toSummary()}'s Transactions`
           }
-        });
+        }, X);
       }
     }
   ]
