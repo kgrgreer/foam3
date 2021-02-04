@@ -306,7 +306,12 @@ foam.CLASS({
         validateInstitutionNumber();
         validateBranchId();
         validateAccountNumber();
-
+        if ( SafetyUtil.isEmpty(this.getAccountType()) ) {
+          throw new ValidationException(this.ACCOUNT_TYPE_REQUIRED);
+        }
+        if ( SafetyUtil.isEmpty(this.getAccountOwnerType()) ) {
+          throw new ValidationException(this.ACCOUNT_HOLDER_REQUIRED);
+        }
         if ( getOwner() == 0 ) {
           setOwner(((foam.nanos.auth.Subject) x.get("subject")).getUser().getId());
         }

@@ -519,7 +519,10 @@ foam.CLASS({
       order: 40,
       gridColumns: 6,
       documentation: `Flag for whether bank account is owned by a contact.
-          Required for visibility property expressions.`
+          Required for visibility property expressions.`,
+      javaFactory: `
+        return findOwner(foam.core.XLocator.get()) != null;
+      `
     },
     {
       class: 'String',
