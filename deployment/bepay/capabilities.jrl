@@ -110,7 +110,7 @@ p({
 })
 p({
   class: "foam.nanos.crunch.Capability",
-  id: "bppPlannerCapability",
+  id: "bepayPlannerCapability",
   enabled: true,
   permissionsGranted: [
     "rule.read.119fa381-d2a2-4369-b242-1dc8e2163bb9",

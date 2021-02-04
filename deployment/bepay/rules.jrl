@@ -107,7 +107,7 @@ p({
     "EUR":"c0f5a1ad-1d3d-4bee-bf16-56e12d2ff7ca"
   },
   "priority":90,
-  "ruleGroup":"BPPPlanner",
+  "ruleGroup":"BepayPlanner",
   "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
@@ -135,17 +135,17 @@ p({
     ]
   },
   "isFeeOnRootCorridors": true,
-  "spid": "bpp",
+  "spid": "bepay",
   "lifecycleState":1
 })
 
 p({
-  "class":"net.nanopay.partner.bpp.tx.planner.BPPTransactionPlanner",
+  "class":"BepayTransactionPlanner",
   "id":"2fdd7d35-6704-47dc-9f0e-9419e0aa74ed",
-  "name":"BPPTransactionPlanner",
+  "name":"BepayTransactionPlanner",
   "documentation":"Planner for transaction from BRL to USD/EUR/GBP (leg 1)",
   "priority":80,
-  "ruleGroup":"BPPPlanner",
+  "ruleGroup":"BepayPlanner",
   "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
@@ -172,12 +172,12 @@ p({
       },
       {
         "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
-        "provider":"BPP"
+        "provider":"Bepay"
       }
     ]
   },
   "isFeeOnRootCorridors": true,
-  "spid": "bpp",
+  "spid": "bepay",
   "lifecycleState":1
 })
 p({
@@ -228,7 +228,7 @@ p({
 p({
   "class":"net.nanopay.tx.planner.AFEXTransactionPlanner",
   "id":"13df0d76-ba3e-4287-b42e-c7ceff059dd8",
-  "ruleGroup":"BPPPlanner",
+  "ruleGroup":"BepayPlanner",
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
