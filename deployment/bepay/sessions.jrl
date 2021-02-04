@@ -1,4 +1,4 @@
-// Long lived session ID for BPP API user
+// Long lived session ID for BePay API user
 p({
     class:"foam.nanos.session.Session",
     id:"E50DCA40-3B75-4617-9C0C-92E6E8AAE93B",

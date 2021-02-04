@@ -1670,8 +1670,8 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/registration/UserDetailData' },
   { name: 'net/nanopay/crunch/registration/UserDetailExpandedData' },
 
-  // bpp crunch onboarding
-  { name: 'net/nanopay/crunch/bpp/ExtendedUserDetailsData' },
+  // bepay crunch onboarding
+  { name: 'net/nanopay/crunch/bepay/ExtendedUserDetailsData' },
 
   // crunch predicates - todo move all predicates used in crunch here
   { name: 'net/nanopay/crunch/predicate/IsBusiness' },
