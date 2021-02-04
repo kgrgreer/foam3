@@ -26,8 +26,10 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
+    'net.nanopay.meter.compliance.ComplianceApprovalRequest',
     'net.nanopay.meter.compliance.dowJones.DowJonesCredentials',
     'net.nanopay.meter.compliance.dowJones.DowJonesResponse',
     'net.nanopay.meter.compliance.dowJones.DowJonesService',
@@ -40,26 +42,37 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        try {
-          agency.submit(x, new ContextAgent() {
-            @Override
-            public void execute(X x) {
-              Transaction tx = (Transaction) obj;
-              User payer = tx.findSourceAccount(ruler.getX()).findOwner(ruler.getX());
-              User payee = tx.findDestinationAccount(ruler.getX()).findOwner(ruler.getX());
-              DowJonesCredentials creds = (DowJonesCredentials) ruler.getX().get("dowJonesCredentials");
-              DowJonesService dowJones = (DowJonesService) ruler.getX().get("dowJonesService");
-              if ( screenUser(x, payer, creds, dowJones) && screenUser(x, payee, creds, dowJones) ) {
-                tx.setStatus(TransactionStatus.COMPLETED);
-              } else {
-                tx.setStatus(TransactionStatus.DECLINED);
-              }
+      agency.submit(x, new ContextAgent() {
+        @Override
+        public void execute(X x) {
+          Transaction tx = (Transaction) obj;
+          User payer = tx.findSourceAccount(x).findOwner(x);
+          User payee = tx.findDestinationAccount(x).findOwner(x);
+          DowJonesCredentials creds = (DowJonesCredentials) x.get("dowJonesCredentials");
+          DowJonesService dowJones = (DowJonesService) x.get("dowJonesService");
+          try {
+            if ( screenUser(x, payer, creds, dowJones) && screenUser(x, payee, creds, dowJones) ) {
+              tx.setStatus(TransactionStatus.COMPLETED);
+            } else {
+              String spid = tx.findSourceAccount(x).findOwner(x).getSpid();
+              String group = spid + "-fraud-ops";
+              ComplianceApprovalRequest approvalRequest = new ComplianceApprovalRequest.Builder(x)
+                .setDaoKey("transactionDAO")
+                .setServerDaoKey("localTransactionDAO")
+                .setObjId(tx.getId())
+                .setGroup(group)
+                .setDescription(tx.getSummary())
+                .setClassification("Compliance Transaction")
+                .build();
+
+              ((DAO) x.get("approvalRequestDAO")).put(approvalRequest);
             }
-          }, "Create screening for tx payer and payee rule");
-        } catch (Exception e) {
-          Logger logger = (Logger) x.get("logger");
-          logger.error("ScreenUsersOnTransactionCreate Error: ", e);
+          } catch (Exception e) {
+            Logger logger = (Logger) x.get("logger");
+            logger.error("ScreenUsersOnTransactionCreate Error: ", e);
+          }
         }
+      }, "Create screening for tx payer and payee rule");
       `
     },
     {
@@ -77,7 +90,7 @@ foam.CLASS({
         .setFirstName(user.getFirstName())
         .setSurName(user.getLastName())
         .build();
-      DowJonesResponse response = dowJones.beneficialOwnerNameSearch(x, searchData1);
+      DowJonesResponse response = dowJones.personNameSearch(x, searchData1);
       return response.getResponseBody().getMatches().length == 0;
       `
     }
