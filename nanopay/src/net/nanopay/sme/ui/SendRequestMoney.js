@@ -452,17 +452,22 @@ foam.CLASS({
 
       try {
         this.invoice = await this.invoiceDAO.put(this.invoice);
-        this.invoice = await this.invoiceDAO.find(this.invoice.id);
         if ( this.invoice.capabilityIds.length > 0 && this.invoice.isWizardIncomplete ) {
           this.invoice.draft = true;
           this.saveDraft(this.invoice);
           return;
         }
+
+        this.invoice = await this.invoiceDAO.find(this.invoice.id);
       } catch(err) {
         await this.abortQuoteAndSaveDraft(err);
         return;
       }
 
+      if ( ! this.invoice.quote ) {
+        this.abortQuoteAndSaveDraft(new Error("quote not set"));
+        return;
+      }
       this.txnQuote = this.invoice.quote.plan;
       return this.txnQuote;
     },

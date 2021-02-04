@@ -38,26 +38,6 @@ p({
 
 p({
   "class": "foam.nanos.boot.NSpec",
-  "name": "afexBusinessDAO",
-  "lazy": false,
-  "serve": true,
-  "serviceScript":
-  """
-    return new foam.dao.EasyDAO.Builder(x)
-      .setOf(net.nanopay.fx.afex.AFEXBusiness.getOwnClassInfo())
-      .setSeqNo(true)
-      .setName("afexBusinessDAO")
-      .setJournalName("afexBusinesses")
-      .setJournalType(foam.dao.JournalType.SINGLE_JOURNAL)
-      .setAuthorize(true)
-      .build();
-  """,
-  "client": "{\"of\":\"net.nanopay.fx.afex.AFEXBusiness\"}"
-})
-
-// separating afexuserdao /afexbusinessdao setup in case authorization/permission str need be different
-p({
-  "class": "foam.nanos.boot.NSpec",
   "name": "afexUserDAO",
   "lazy": false,
   "serve": true,
@@ -74,6 +54,7 @@ p({
   """,
   "client": "{\"of\":\"net.nanopay.fx.afex.AFEXUser\"}"
 })
+
 
 p({
   "class": "foam.nanos.boot.NSpec",

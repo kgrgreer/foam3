@@ -42,10 +42,10 @@ public class AFEXServiceProviderTest
   protected DAO regionDAO;
   protected DAO smeUserRegistrationDAO;
   protected DAO smeBusinessRegistrationDAO;
-  protected DAO afexBusinessDAO;
+  protected DAO afexUserDAO;
   protected User user1 ;
   protected Business business ;
-  protected AFEXBusiness afexBusiness;
+  protected AFEXUser afexUser;
   protected User user2;
   protected BankAccount user1CABankAccount;
   protected BankAccount user2USBankAccount;
@@ -67,7 +67,7 @@ public class AFEXServiceProviderTest
     // capability onboarding just to test AFEX, the relavant parts
     // of smeBusinessRegistrationDAO are used here.
     smeBusinessRegistrationDAO = new net.nanopay.onboarding.NewUserCreateBusinessDAO.Builder(x).setDelegate((DAO) x.get("localUserDAO")).build();
-    afexBusinessDAO = (DAO) x.get("afexBusinessDAO");
+    afexUserDAO = (DAO) x.get("afexUserDAO");
     this.x = x;
 
     afexService = new AFEXServiceMock(x);
@@ -245,8 +245,8 @@ public class AFEXServiceProviderTest
   private void tearDownTest() {
     localAccountDAO.remove(user1CABankAccount);
     localAccountDAO.remove(user2USBankAccount);
-    AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, business.getId()));
-    afexBusinessDAO.remove(afexBusiness);
+    AFEXUser afexUser = (AFEXUser) afexUserDAO.find(EQ(AFEXUser.USER, business.getId()));
+    afexUserDAO.remove(afexUser);
     localUserDAO.inX(x).remove(user1);
     localUserDAO.inX(x).remove(user2);
   }
@@ -258,11 +258,11 @@ public class AFEXServiceProviderTest
     test( ! onbarded, "Business was not onboarded" );
     onbarded = afexServiceProvider.onboardBusiness(business);
     test( onbarded, "Business was onboarded" );
-    AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, business.getId()));
-    if ( afexBusiness != null ) {
-      afexBusiness = (AFEXBusiness) afexBusiness.fclone();
-      afexBusiness.setStatus("Active");
-      afexBusinessDAO.put(afexBusiness);
+    AFEXUser afexUser = (AFEXUser) afexUserDAO.find(EQ(AFEXUser.USER, business.getId()));
+    if ( afexUser != null ) {
+      afexUser = (AFEXUser) afexUser.fclone();
+      afexUser.setStatus("Active");
+      afexUserDAO.put(afexUser);
     }
 
   }
@@ -296,9 +296,9 @@ public class AFEXServiceProviderTest
   }
 
   public void testFindBeneficiary() {
-    AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, business.getId()));
-    test( afexBusiness != null, "AFEXBusiness is found" );
-    FindBeneficiaryResponse beneficiaryResponse = afexServiceProvider.findBeneficiary(user2.getId(), afexBusiness.getApiKey(), user2.getSpid());
+    AFEXUser afexUser = (AFEXUser) afexUserDAO.find(EQ(AFEXUser.USER, business.getId()));
+    test( afexUser != null, "AFEXUser is found" );
+    FindBeneficiaryResponse beneficiaryResponse = afexServiceProvider.findBeneficiary(user2.getId(), afexUser.getApiKey(), user2.getSpid());
     test( beneficiaryResponse != null, "beneficiary is found" );
   }
 

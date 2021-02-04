@@ -168,7 +168,9 @@ foam.CLASS({
     {
       name: 'iban',
       visibility: 'HIDDEN',
-      required: false
+      required: false,
+      validateObj: function(iban) {
+      }
     },
     {
       name: 'country',
