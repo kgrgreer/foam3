@@ -131,7 +131,7 @@ foam.CLASS({
         // -- FillQuote --
 
         tq.setPlan(null);
-        Transaction[] ts = (Transaction[]) finalNewPlans.toArray();
+        Transaction[] ts = (Transaction[]) finalNewPlans.toArray( new Transaction[0] );
         tq.setPlans(ts);
         return getDelegate().put_(x, tq);
       `
@@ -144,7 +144,7 @@ foam.CLASS({
       type: 'net.nanopay.tx.TransactionLineItem[]',
       documentation: 'Create an info line item for the difference in fees between old and new txns',
       javaCode: `
-        if ( ! (txn instanceof SummaryTransaction) )
+        if ( ! ((txn instanceof SummaryTransaction) || (txn instanceof FXSummaryTransaction)) )
           throw new TransactionException("unable to properly update new fx line item");
         TransactionLineItem[] oldTli = txn.getLineItems();
         for (TransactionLineItem tli : oldTli) {
