@@ -36,7 +36,7 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'foam.util.SafetyUtil',
     'javax.security.auth.AuthPermission',
-    'net.nanopay.fx.afex.AFEXBusiness',
+    'net.nanopay.fx.afex.AFEXUser',
     'net.nanopay.model.Business',
     'static foam.mlang.MLang.EQ'
   ],
@@ -48,16 +48,16 @@ foam.CLASS({
       agency.submit(x, new ContextAgent() {
         @Override
         public void execute(X x) {
-          if ( ! (obj instanceof AFEXBusiness) ) {
+          if ( ! (obj instanceof AFEXUser) ) {
             return;
           }
 
-          AFEXBusiness afexBusiness = (AFEXBusiness) obj;
+          AFEXUser afexUser = (AFEXUser) obj;
           DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
           DAO localGroupDAO = (DAO) x.get("localGroupDAO");
           Logger logger = (Logger) x.get("logger");
 
-          Business business = (Business) localBusinessDAO.find(EQ(Business.ID, afexBusiness.getUser()));
+          Business business = (Business) localBusinessDAO.find(EQ(Business.ID, afexUser.getUser()));
           if ( business != null ) {
             Address businessAddress = business.getAddress();
             if ( null != businessAddress && ! SafetyUtil.isEmpty(businessAddress.getCountryId()) && businessAddress.getCountryId().equals("CA") ) {

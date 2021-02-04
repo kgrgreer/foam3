@@ -25,7 +25,7 @@ foam.CLASS({
     'net.nanopay.bank.BankAccount',
     'net.nanopay.fx.CurrencyFXService',
     'net.nanopay.fx.FXService',
-    'net.nanopay.fx.afex.AFEXBusiness',
+    'net.nanopay.fx.afex.AFEXUser',
     'net.nanopay.fx.afex.AFEXServiceProvider',
     'net.nanopay.fx.ascendantfx.AscendantFXServiceProvider',
     'net.nanopay.fx.ascendantfx.AscendantFXUser',
