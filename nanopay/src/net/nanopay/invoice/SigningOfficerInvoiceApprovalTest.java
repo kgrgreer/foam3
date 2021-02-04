@@ -84,6 +84,7 @@ externalBusiness.setBusinessName("ExternalBusiness");
 externalBusiness.setEmail("externalBusiness@example.com");
 externalBusiness.setEmailVerified(true); // Required to send or receive money.
 externalBusiness.setCompliance(ComplianceStatus.PASSED);
+externalBusiness.setGroup("sme");
 externalBusiness.setSpid("test");
 externalBusiness = (Business) localBusinessDAO.put(externalBusiness);
 
@@ -252,7 +253,34 @@ ucjSOP.setEffectiveUser(myBusiness.getId());
 ucjSOP.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-1a5");
 ucjSOP.setData(so);
 userCapabilityJunctionDAO.inX(myApproverContext).put(ucjSODOB);
-userCapabilityJunctionDAO.inX(myApproverContext).put(ucjSOP);
+ucjSOP = (AgentCapabilityJunction) userCapabilityJunctionDAO.inX(myApproverContext).put(ucjSOP);
+
+List<ApprovalRequest> soApprovalRequests = ((ArraySink) approvalRequestDAO
+  .where(foam.mlang.MLang.AND( new foam.mlang.predicate.Predicate[] {
+    foam.mlang.MLang.EQ(ApprovalRequest.DAO_KEY, "userCapabilityJunctionDAO"),
+    foam.mlang.MLang.OR( new foam.mlang.predicate.Predicate[] {
+      foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjSOP.getId()),
+    }),
+    foam.mlang.MLang.EQ(ApprovalRequest.IS_FULFILLED, false)
+  }))
+  .select(new ArraySink()))
+  .getArray();
+
+for ( ApprovalRequest approvalRequest : soApprovalRequests ) {
+  approvalRequest = (ApprovalRequest) approvalRequest.fclone();
+  approvalRequest.setStatus(ApprovalStatus.APPROVED);
+  try{
+    approvalRequest = (ApprovalRequest) approvalRequestDAO.put(approvalRequest);
+  } catch(Exception e) {
+    throw e;
+  }
+}
+
+ucjSOP = (AgentCapabilityJunction) userCapabilityJunctionDAO.find(foam.mlang.MLang.AND(
+foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, ucjSOP.getTargetId()), 
+foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, ucjSOP.getSourceId())));
+
+test(ucjSOP.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjSOP: " + ucjSOP.getStatus());
 
 // Grant Unlock Domestic Payments and Invoicing
 
@@ -441,7 +469,6 @@ List<ApprovalRequest> approvalRequests = ((ArraySink) approvalRequestDAO
     foam.mlang.MLang.EQ(ApprovalRequest.DAO_KEY, "userCapabilityJunctionDAO"),
     foam.mlang.MLang.OR( new foam.mlang.predicate.Predicate[] {
       foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjBODRR.getId()),
-      foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjSOP.getId()),
       foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjBDD.getId())
     }),
     foam.mlang.MLang.EQ(ApprovalRequest.IS_FULFILLED, false)
@@ -566,7 +593,7 @@ try {
   message = t.getMessage();
   print("DEBUG: " + message);
 }
-test(! threw && invoiceStatusIsCorrect && paymentStatusIsCorrect, "When an employee tries to pay an invoice the invoice is set to a PENDING_APPROVAL state.");
+test(! threw && invoiceStatusIsCorrect && paymentStatusIsCorrect, "When an employee tries to pay an invoice the invoice is set to a PENDING_APPROVAL state. State = " + invoice.getStatus());
 
 
 invoice = new Invoice();

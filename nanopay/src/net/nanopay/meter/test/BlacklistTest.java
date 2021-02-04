@@ -85,6 +85,7 @@ public class BlacklistTest extends Test {
     externalBusiness.setBusinessName("EvilCorp");
     externalBusiness.setEmailVerified(true); // Required to send or receive money.
     externalBusiness.setCompliance(ComplianceStatus.PASSED);
+    externalBusiness.setGroup("sme");
     externalBusiness.setSpid("test");
     externalBusiness = (Business) localBusinessDAO.put(externalBusiness);
 
@@ -203,7 +204,34 @@ public class BlacklistTest extends Test {
     ucjSOP.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-1a5");
     ucjSOP.setData(so);
     userCapabilityJunctionDAO.inX(myAdminContext).put(ucjSODOB);
-    userCapabilityJunctionDAO.inX(myAdminContext).put(ucjSOP);
+    ucjSOP = (AgentCapabilityJunction) userCapabilityJunctionDAO.inX(myAdminContext).put(ucjSOP);
+
+    List<ApprovalRequest> soApprovalRequests = ((ArraySink) approvalRequestDAO
+      .where(foam.mlang.MLang.AND( new foam.mlang.predicate.Predicate[] {
+        foam.mlang.MLang.EQ(ApprovalRequest.DAO_KEY, "userCapabilityJunctionDAO"),
+        foam.mlang.MLang.OR( new foam.mlang.predicate.Predicate[] {
+          foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjSOP.getId()),
+        }),
+        foam.mlang.MLang.EQ(ApprovalRequest.IS_FULFILLED, false)
+      }))
+      .select(new ArraySink()))
+      .getArray();
+
+    for ( ApprovalRequest approvalRequest : soApprovalRequests ) {
+      approvalRequest = (ApprovalRequest) approvalRequest.fclone();
+      approvalRequest.setStatus(ApprovalStatus.APPROVED);
+      try{
+        approvalRequest = (ApprovalRequest) approvalRequestDAO.put(approvalRequest);
+      } catch(Exception e) {
+        throw e;
+      }
+    }
+
+    ucjSOP = (AgentCapabilityJunction) userCapabilityJunctionDAO.find(foam.mlang.MLang.AND(
+    foam.mlang.MLang.EQ(UserCapabilityJunction.TARGET_ID, ucjSOP.getTargetId()), 
+    foam.mlang.MLang.EQ(UserCapabilityJunction.SOURCE_ID, ucjSOP.getSourceId())));
+
+    test(ucjSOP.getStatus() == CapabilityJunctionStatus.GRANTED, "ucjSOP: " + ucjSOP.getStatus());
 
     // setting up their respective accounts
     accountDAO.where(foam.mlang.MLang.EQ(Account.NAME, "Blacklist Tests myBusiness test account")).removeAll();
@@ -418,7 +446,6 @@ public class BlacklistTest extends Test {
         foam.mlang.MLang.EQ(ApprovalRequest.DAO_KEY, "userCapabilityJunctionDAO"),
         foam.mlang.MLang.OR( new foam.mlang.predicate.Predicate[] {
           foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjBODRR.getId()),
-          foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjSOP.getId()),
           foam.mlang.MLang.EQ(ApprovalRequest.OBJ_ID, ucjBDD.getId())
         }),
         foam.mlang.MLang.EQ(ApprovalRequest.IS_FULFILLED, false)
