@@ -1569,7 +1569,9 @@ FOAM_FILES([
   { name: 'net/nanopay/ticket/test/SudoTicketTest' },
   { name: 'net/nanopay/ticket/ReverseTicketCreateRule' },
   { name: 'net/nanopay/ticket/ReversalRule' },
-  { name: 'net/nanopay/ticket/ReversalTicket' },
+  { name: 'net/nanopay/ticket/ReversalTicketCreateApprovals' },
+  { name: 'net/nanopay/ticket/RefundTypes' },
+  { name: 'net/nanopay/ticket/RefundStatus' },
 
   // planners
   { name: 'net/nanopay/tx/planner/PlannerGroup' },

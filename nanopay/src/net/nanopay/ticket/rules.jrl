@@ -35,6 +35,23 @@ p({
   "class":"net.nanopay.ticket.SudoTicketApprovalResponseRule",
   "id":"40c3758f-054b-490c-8328-f6ab33ebaed0",
   "name":"ReverseTicketCreateRule",
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of": "net.nanopay.ticket.ReversalTicket"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"refundStatus",
+        "propValue":{
+          "class":"net.nanopay.ticket.RefundStatus",
+          "ordinal":0
+        }
+      }
+    ]
+  },
   "priority":101,
   "ruleGroup":"Ticket",
   "daoKey":"localTicketDAO",
@@ -60,7 +77,57 @@ p({
   "action":{
     "class":"net.nanopay.ticket.ReversalRule"
   },
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of": "net.nanopay.ticket.ReversalTicket"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"refundStatus",
+        "propValue":{
+          "class":"net.nanopay.ticket.RefundStatus",
+          "ordinal":1
+        }
+      }
+    ]
+  },
   "after":false,
+  "enabled":true,
+  "lifecycleState":1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"680ef5ac-78c1-4331-813f-d78058ad827c",
+  "name":"ReversalTicket Create Approvals",
+  "priority":100,
+  "ruleGroup":"Ticket",
+  "daoKey":"localTicketDAO",
+  "operation":3,
+  "action":{
+    "class":"net.nanopay.ticket.ReversalTicketCreateApprovals"
+  },
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
+        "of": "net.nanopay.ticket.ReversalTicket"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"refundStatus",
+        "propValue":{
+          "class":"net.nanopay.ticket.RefundStatus",
+          "ordinal":1
+        }
+      }
+    ]
+  },
+  "after":true,
   "enabled":true,
   "lifecycleState":1
 })

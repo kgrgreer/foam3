@@ -1108,7 +1108,10 @@ var classes = [
   'net.nanopay.ticket.test.SudoTicketTest',
   'net.nanopay.ticket.ReverseTicketCreateRule',
   'net.nanopay.ticket.ReversalRule',
+  'net.nanopay.ticket.ReversalTicketCreateApprovals',
   'net.nanopay.ticket.ReversalTicket',
+  'net.nanopay.ticket.RefundStatus',
+  'net.nanopay.ticket.RefundTypes',
 
   // Planners
   'net.nanopay.tx.planner.PlannerGroup',

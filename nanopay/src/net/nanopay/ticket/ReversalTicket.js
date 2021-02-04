@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -34,6 +34,11 @@ foam.CLASS({
       documentation: `Id of transaction requiring reversal`
     },
     {
+      class: 'String',
+      name: 'reversalTransaction',
+      documentation: `Id of the reversal transaction`
+    },
+    {
       class: 'Boolean',
       name: 'refundTransaction',
       documentation: 'True to refundTransaction. False to retry transaction'
@@ -42,6 +47,68 @@ foam.CLASS({
       class: 'FObjectArray',
       of: 'net.nanopay.tx.TransactionLineItem',
       name: 'lineitems',
+    },
+    {
+      class: 'Enum',
+      of: 'net.nanopay.ticket.RefundTypes',
+      name: 'refundType'
+    },
+    {
+      class: 'Enum',
+      of: 'net.nanopay.ticket.RefundStatus',
+      name: 'refundStatus'
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.account.Account',
+      name: 'sourceAccount',
+      readVisibility: function(refundType) {
+        return refundType === net.nanopay.ticket.RefundTypes.MANUAL ?
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
+      },
+      updateVisibility: function(refundType) {
+        return refundType === net.nanopay.ticket.RefundTypes.MANUAL ?
+          foam.u2.DisplayMode.RW :
+          foam.u2.DisplayMode.HIDDEN;
+      }
+    },
+    {
+      class: 'Reference',
+      of: 'net.nanopay.account.Account',
+      name: 'destinationAccount',
+      readVisibility: function(refundType) {
+        return refundType === net.nanopay.ticket.RefundTypes.MANUAL ?
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
+      },
+      updateVisibility: function(refundType) {
+        return refundType === net.nanopay.ticket.RefundTypes.MANUAL ?
+          foam.u2.DisplayMode.RW :
+          foam.u2.DisplayMode.HIDDEN;
+      }
+    },
+    {
+      class: 'Long',
+      name: 'amount',
+      readVisibility: function(refundType) {
+        return refundType === net.nanopay.ticket.RefundTypes.MANUAL ?
+          foam.u2.DisplayMode.RO :
+          foam.u2.DisplayMode.HIDDEN;
+      },
+      updateVisibility: function(refundType) {
+        return refundType === net.nanopay.ticket.RefundTypes.MANUAL ?
+          foam.u2.DisplayMode.RW :
+          foam.u2.DisplayMode.HIDDEN;
+      }
+    },
+    {
+      class: 'Boolean',
+      name: 'refundFees'
+    },
+    {
+      class: 'Boolean',
+      name: 'chargeNewFees'
     }
   ],
 
