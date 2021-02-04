@@ -42,16 +42,13 @@ foam.CLASS({
   sections: [
     {
       name: 'accountInformation',
-      title: function() {
-        return this.SECTION_ACCOUNT_INFORMATION_TITLE;
-      }
+      title: 'Create Bank Account'
     }
   ],
 
   messages: [
     { name: 'PLACEHOLDER', message: 'Please select ' },
-    { name: 'INVALID_BANK', message: 'Invalid Bank' },
-    { name: 'SECTION_ACCOUNT_INFORMATION_TITLE', message: 'Create Bank Account' },
+    { name: 'INVALID_BANK', message: 'Invalid Bank' }
   ],
 
   properties: [
@@ -77,6 +74,7 @@ foam.CLASS({
       name: 'selectedCountry',
       of: 'foam.nanos.auth.Country',
       label: 'Country of bank account',
+      section: 'accountInformation',
       documentation: 'Determines what bank view will be displayed pertaining to country.',
       view: function(_, x) {
         return {
@@ -100,6 +98,7 @@ foam.CLASS({
       name: 'bankAccount',
       of: 'net.nanopay.bank.BankAccount',
       label: '',
+      section: 'accountInformation',
       visibility: function(selectedCountry) {
         return selectedCountry == '' ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
