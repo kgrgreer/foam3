@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -15,8 +15,8 @@
  * from nanopay Corporation.
  */
 foam.CLASS({
-  package: 'net.nanopay.partner.treviso.tx.planner',
-  name: 'TrevisoTransactionPlanner',
+  package: 'net.nanopay.partner.bepay.tx.planner',
+  name: 'BepayTransactionPlanner',
   extends: 'net.nanopay.tx.planner.AbstractTransactionPlanner',
 
   documentation: 'Plans BRL to USD',
@@ -24,24 +24,24 @@ foam.CLASS({
   javaImports: [
     'foam.util.SafetyUtil',
     'java.util.UUID',
+    'java.util.Calendar',
+    'java.util.Date',
+    'net.nanopay.country.br.tx.ExchangeLimitTransaction',
+    'net.nanopay.country.br.tx.NatureCodeLineItem',
     'net.nanopay.fx.FXLineItem',
-    'net.nanopay.fx.FXQuote',
+    'net.nanopay.fx.FXLineItem',
     'net.nanopay.fx.FXSummaryTransaction',
+    'net.nanopay.partner.bepay.tx.BepayTransaction',
     'net.nanopay.tx.ExternalTransfer',
-    'net.nanopay.tx.InvoicedFeeLineItem',
     'net.nanopay.tx.FeeLineItem',
+    'net.nanopay.tx.InvoicedFeeLineItem',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
-    'net.nanopay.country.br.tx.ExchangeLimitTransaction',
-    'net.nanopay.partner.treviso.TrevisoService',
-    'net.nanopay.country.br.tx.NatureCodeLineItem',
-    'net.nanopay.partner.treviso.tx.TrevisoTransaction',
-    'org.apache.commons.lang.ArrayUtils'
+    'org.apache.commons.lang.ArrayUtils',
   ],
-
-  properties: [
+properties: [
     {
       name: 'bestPlan',
       value: true
@@ -59,7 +59,7 @@ foam.CLASS({
     {
       name: 'PAYMENT_PROVIDER',
       type: 'String',
-      value: 'Treviso'
+      value: 'Bepay'
     }
   ],
 
@@ -87,36 +87,27 @@ foam.CLASS({
     {
       name: 'plan',
       javaCode: `
-
+      //TODO: add api call to retrieve fx rate
+      Double fxRate = 3.0;
       FXSummaryTransaction txn = new FXSummaryTransaction();
       txn.copyFrom(requestTxn);
       txn.setPaymentProvider(PAYMENT_PROVIDER);
       txn.setStatus(TransactionStatus.COMPLETED);
       txn.clearLineItems();
-
       txn.setAmount(0);
-
-      txn.addNext(createComplianceTransaction(txn));
-      txn.addNext(createLimit(txn));
-
-      TrevisoTransaction trevisoTxn = new TrevisoTransaction();
-      trevisoTxn.copyFrom(requestTxn);
-      trevisoTxn.setId(UUID.randomUUID().toString());
-      trevisoTxn.setAmount(0);
-      trevisoTxn.setName("Treviso transaction");
-      trevisoTxn.setPaymentProvider(PAYMENT_PROVIDER);
-      trevisoTxn.setPlanner(this.getId());
-      trevisoTxn = addNatureCodeLineItems(x, trevisoTxn, requestTxn);
-
-      txn.addNext(trevisoTxn);
-      
-      // TODO: evaluate helper methods on the intended transaction instead of the head.
-      /* quote.addExternalTransfer(quote.getDestinationAccount().getId(), trevisoTxn.getDestinationAmount());
-      quote.addExternalTransfer(quote.getSourceAccount().getId(), - trevisoTxn.getAmount());*/
+      BepayTransaction bepayTx = new BepayTransaction();
+      bepayTx.copyFrom(requestTxn);
+      bepayTx.setId(UUID.randomUUID().toString());
+      bepayTx.setAmount(0);
+      bepayTx.setName("Bepay Transaction");
+      bepayTx.setPaymentProvider(PAYMENT_PROVIDER);
+      bepayTx.setPlanner(this.getId());
+      bepayTx = addNatureCodeLineItems(x, bepayTx, requestTxn);
+      bepayTx = addFxLineItems(x, bepayTx, requestTxn, fxRate);
+      txn.addNext(bepayTx);
       ExternalTransfer[] exT = new ExternalTransfer[1];
-      exT[0] = new ExternalTransfer(quote.getDestinationAccount().getId(), trevisoTxn.getDestinationAmount());
-      trevisoTxn.setTransfers( exT );
-
+      exT[0] = new ExternalTransfer(quote.getDestinationAccount().getId(), bepayTx.getDestinationAmount());
+      bepayTx.setTransfers( exT );
       return txn;
     `
     },
@@ -128,56 +119,44 @@ foam.CLASS({
         { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
       ],
       javaCode: `
-        if ( ! (txn instanceof TrevisoTransaction) ) {
+        if ( ! (txn instanceof BepayTransaction) ) {
           return true;
         }
         NatureCodeLineItem natureCode = null;
-        TrevisoTransaction transaction = (TrevisoTransaction) txn;;
-
+        BepayTransaction transaction = (BepayTransaction) txn;;
         for (TransactionLineItem lineItem: txn.getLineItems() ) {
           if ( lineItem instanceof NatureCodeLineItem ) {
             natureCode = (NatureCodeLineItem) lineItem;
             break;
           }
         }
-
         if ( natureCode == null || SafetyUtil.isEmpty(natureCode.getNatureCode()) ) {
           throw new RuntimeException("[Transaction Validation error]"+ this.INVALID_NATURE_CODE);
         }
-
         return true;
       `
     },
     {
       name: 'postPlanning',
       javaCode: `
-        if ( txn instanceof TrevisoTransaction ) {
-          TrevisoTransaction transaction =(TrevisoTransaction) txn;
-
+        if ( txn instanceof BepayTransaction ) {
+          BepayTransaction transaction =(BepayTransaction) txn;
           // -- Copy line items
           transaction.setLineItems(root.getLineItems());
-          
           // Add transfer for source amount
           ExternalTransfer ext = new ExternalTransfer(transaction.getSourceAccount(), -root.getAmount());
           Transfer[] transfers = (Transfer[]) ArrayUtils.add(transaction.getTransfers(), ext);
-
-          // Update the amount
-          transaction.setAmount(root.getAmount());
-
           // Add transfers for fees from summary
           transfers =  (Transfer[]) ArrayUtils.addAll(transfers, root.getTransfers());
           transaction.setTransfers(transfers);
           root.setTransfers(null);
-        } else if ( txn instanceof ExchangeLimitTransaction ) {
-          ExchangeLimitTransaction exchange = (ExchangeLimitTransaction) txn;
-          exchange.setAmount(root.getAmount());
         }
         return super.postPlanning(x,txn,root);
       `
     },
     {
       name: 'addNatureCodeLineItems',
-      javaType: 'TrevisoTransaction',
+      javaType: 'BepayTransaction',
       args: [
         {
           name: 'x',
@@ -185,7 +164,7 @@ foam.CLASS({
         },
         {
           name: 'txn',
-          type: 'TrevisoTransaction',
+          type: 'BepayTransaction',
         },
         {
           name: 'requestTxn',
@@ -200,13 +179,50 @@ foam.CLASS({
             break;
           }
         }
-
         if ( natureCode == null ) {
           natureCode = new NatureCodeLineItem();
         }
         txn.addLineItems( new TransactionLineItem[] { natureCode } );
-
         return txn;
+      `
+    },
+    {
+      name: 'addFxLineItems',
+      javaType: 'BepayTransaction',
+      args: [
+        {
+          name: 'x',
+          type: 'Context'
+        },
+        {
+          name: 'txn',
+          type: 'BepayTransaction',
+        },
+        {
+          name: 'requestTxn',
+          type: 'Transaction'
+        },
+        {
+          name: 'fxRate',
+          type: 'Double'
+        }
+      ],
+      javaCode: `
+      Calendar c = Calendar.getInstance();
+      c.setTime(new Date());
+      c.add(Calendar.DATE, 1);
+
+      txn.addLineItems( new TransactionLineItem[] {
+        new FXLineItem.Builder(x)
+          .setGroup("fx").setNote("FX Broker Fee")
+          .setDestinationAccount(requestTxn.getSourceAccount())
+          .setSourceCurrency(requestTxn.getSourceCurrency())
+          .setDestinationCurrency(requestTxn.getDestinationCurrency())
+          .setExpiry(c.getTime())
+          .setRate(fxRate)
+          .build()
+      } );
+      return txn;
       `
     },
     {
@@ -224,6 +240,6 @@ foam.CLASS({
         }
         return txn;
       `
-    },
+    }
   ]
 });

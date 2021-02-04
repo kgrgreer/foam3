@@ -108,3 +108,12 @@ p({
   of:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms",
   enabled:true
 })
+p({
+  class: "foam.nanos.crunch.Capability",
+  id: "bepayPlannerCapability",
+  enabled: true,
+  permissionsGranted: [
+    "rule.read.119fa381-d2a2-4369-b242-1dc8e2163bb9",
+    "rule.read.2fdd7d35-6704-47dc-9f0e-9419e0aa74ed"
+  ]
+})

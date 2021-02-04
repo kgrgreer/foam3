@@ -38,16 +38,6 @@ foam.CLASS({
     'net.nanopay.account.SecuritiesAccount',
     'foam.util.SafetyUtil',
     'foam.nanos.auth.LifecycleState',
-    'static foam.mlang.MLang.EQ',
-    'static foam.mlang.MLang.OR',
-  ],
-
-  properties: [
-    {
-      name: 'reserveAccountSpid',
-      class: 'String',
-      value: 'nanopay'
-    }
   ],
 
   methods: [
@@ -58,7 +48,6 @@ foam.CLASS({
         Logger logger = (Logger) x.get("logger");
         TransactionQuote quote = (TransactionQuote) obj;
         Transaction txn = quote.getRequestTransaction();
-        DAO dao = (DAO) getX().get("localAccountDAO");
         User payer = null;
 
         if ( txn.getPayerId() != 0 ) {
@@ -74,13 +63,6 @@ foam.CLASS({
           ((Logger) x.get("logger")).error("Payer not found", txn.getId(), "source", txn.getSourceAccount(), "payer", txn.getPayerId());
           throw new ValidationException("Payer not found");
         }
-        dao = dao.where(
-          OR(
-            EQ(Account.SPID, getReserveAccountSpid()),
-            EQ(Account.SPID, payer.getSpid())
-          )
-        );
-        x = x.put("localAccountDAO", dao);
 
         // ---- set source account
         Account account = txn.findSourceAccount(x);

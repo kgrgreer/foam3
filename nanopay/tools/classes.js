@@ -120,6 +120,7 @@ var classes = [
   'net.nanopay.account.BrokerAccount',
   'net.nanopay.account.CreateDefaultDigitalAccountOnUserCreateRule',
   'net.nanopay.bank.BankAccount',
+  'net.nanopay.bank.EstimationAccount',
   'net.nanopay.bank.EUBankAccount',
   'net.nanopay.bank.CABankAccount',
   'net.nanopay.bank.USBankAccount',
@@ -1166,6 +1167,7 @@ var classes = [
   'net.nanopay.tx.planner.InterTrustPlanner',
   'net.nanopay.tx.planner.RbcInterTrustPlanner',
   'net.nanopay.tx.planner.BmoInterTrustPlanner',
+  'net.nanopay.tx.planner.PartialPlanDAO',
 
   // Billing
   'net.nanopay.tx.billing.Bill',
@@ -1334,6 +1336,10 @@ var classes = [
   'net.nanopay.partner.treviso.invoice.TrevisoNotification',
   'net.nanopay.partner.treviso.report.TrevisoTransactionReport',
   'net.nanopay.partner.treviso.report.TrevisoTransactionReportDAO',
+
+  // bepay
+  'net.nanopay.partner.bepay.tx.BepayTransaction',
+  'net.nanopay.partner.bepay.tx.planner.BepayTransactionPlanner',
 
   // crunch predicates - todo move all predicates used in crunch here
   'net.nanopay.crunch.predicate.IsBusiness',
