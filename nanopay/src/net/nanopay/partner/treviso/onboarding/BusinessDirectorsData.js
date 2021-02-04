@@ -107,7 +107,8 @@ properties: [
       visibility: function(businessTypeId, needDirector) {
          return businessTypeId < 4 ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
       },
-      validateObj: function(businessDirectors, businessDirectors$errors) {
+      validateObj: function(businessTypeId, businessDirectors, businessDirectors$errors) {
+        if ( businessTypeId < 4 ) return;
         if ( ! businessDirectors || businessDirectors.length == 0 )
           return this.NO_DIRECTOR_INFO;
         if ( businessDirectors$errors && businessDirectors$errors.length  )
