@@ -46,8 +46,8 @@ foam.CLASS({
     'payerId',
     'payeeId',
     'issueDate',
-    'payeeReconciled',
-    'payerReconciled',
+//    'payeeReconciled',
+//    'payerReconciled',
     'amount',
     'status'
   ],
@@ -981,11 +981,13 @@ foam.CLASS({
       section: 'invoiceInformation',
       isAvailable: async function() {
         var acc = await this.accountDAO.find(this.destinationAccount);
-        return this.user.id != acc.owner;
+        return this.destinationAccount ? this.user.id != acc.owner : false;
       },
       code: async function(X) {
+      console.log("this.account : " + this.account);
         var payerAccount = await X.accountDAO.find(this.account);
         var dao = X.accountDAO.where(this.EQ(net.nanopay.account.Account.ID, payerAccount.id));
+        console.log("dao : " + dao);
         X.stack.push({
           class: 'foam.comics.v2.DAOBrowseControllerView',
           data: dao,

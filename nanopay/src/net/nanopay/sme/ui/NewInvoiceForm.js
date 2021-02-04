@@ -777,11 +777,14 @@ foam.CLASS({
       }
 
       if ( ! this.chosenBankAccount ) {
+      console.log("return");
         return;
       }
       if ( this.type === 'payable' ) {
+      console.log("payable");
         this.invoice.account = this.chosenBankAccount;
       } else {
+      console.log("not payable");
         this.invoice.destinationAccount = this.chosenBankAccount;
       }
     }

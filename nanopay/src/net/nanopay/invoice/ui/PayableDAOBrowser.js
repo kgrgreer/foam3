@@ -243,7 +243,7 @@ foam.CLASS({
         return permissions[0];
       },
       code: function(X) {
-        this.ctrl.add(this.Popup.create().tag({
+        this.ctrl.add(ctrl.Popup.create().tag({
           class: 'net.invoice.ui.modal.IntegrationModal'
         }));
       }
@@ -253,9 +253,11 @@ foam.CLASS({
       label: 'Reconcile',
       isAvailable: function() {
         var self = this.private_;
+
         return ! this.payerReconciled && this.status === this.InvoiceStatus.PAID;
       },
       code: async function(X) {
+        var self = this.__subContext__;
         this.payerReconciled = true;
         self.subject.user.expenses.put(this).then(() => {
           self.notify(self.RECONCILED_SUCCESS, '', self.LogLevel.INFO, true);
@@ -267,6 +269,9 @@ foam.CLASS({
     {
       name: 'viewDetails',
       label: 'View details',
+      isAvailable: function() {
+        return true;
+      },
       code: async function(X) {
         let updatedInvoice = await X.accountingIntegrationUtil.forceSyncInvoice(this);
         X.stack.push({
@@ -287,7 +292,7 @@ foam.CLASS({
       code: async function(X) {
         let updatedInvoice = await X.accountingIntegrationUtil.forceSyncInvoice(this);
 
-        if (! updatedInvoice) {
+        if ( ! updatedInvoice ) {
           return;
         }
         self.checkAndNotifyAbilityToPay().then((result) => {
@@ -358,7 +363,7 @@ foam.CLASS({
           ( this.status === self.InvoiceStatus.UNPAID ||
           this.status === self.InvoiceStatus.OVERDUE ||
           this.status === self.InvoiceStatus.PENDING_APPROVAL ) && !
-          ( self.QuickbooksInvoice.isInstance(this) || self.XeroInvoice.isInstance(this) );
+          ( net.nanopay.accounting.quickbooks.model.QuickbooksInvoice.isInstance(this) || net.nanopay.accounting.xero.model.XeroInvoice.isInstance(this) );
       },
       isAvailable: function() {
         var self = this.private_;
@@ -369,8 +374,8 @@ foam.CLASS({
           this.status === self.InvoiceStatus.PENDING_APPROVAL;
       },
       code: function() {
-        var self = this.__subContext__.data;
-        self.ctrl.add(self.Popup.create().tag({
+        var self = this.__subContext__;
+        ctrl.add(ctrl.Popup.create().tag({
           class: 'net.nanopay.invoice.ui.modal.MarkAsVoidModal',
           invoice: this
         }));
@@ -383,13 +388,13 @@ foam.CLASS({
         var self = this.private_;
         return this.status === self.InvoiceStatus.DRAFT;
       },
-      code: function() {
-        var self = this.__subContext__.data;
-        ctrl.add(self.Popup.create().tag({
+      code: function(X) {
+        var self = this.__subContext__;
+        ctrl.add(ctrl.Popup.create().tag({
           class: 'foam.u2.DeleteModal',
           dao: self.subject.user.expenses,
           data: this,
-          label: self.INVOICE
+          label: this.model_.label
         }));
       }
     }
