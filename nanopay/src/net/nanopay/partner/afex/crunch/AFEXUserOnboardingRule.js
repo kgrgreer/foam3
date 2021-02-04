@@ -16,43 +16,35 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.crunch.compliance',
-  name: 'SetComplianceOnUser',
-  implements: [
-    'foam.nanos.ruler.RuleAction'
-  ],
+  package: 'net.nanopay.partner.afex.crunch',
+  name: 'AFEXUserOnboardingRule',
+  implements: ['foam.nanos.ruler.RuleAction'],
 
-  documentation: `For legacy system integration we need to set some properties to User objects.`,
+  documentation: `Onboards user to AFEX if onboarding ucj is passed.`,
 
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
-    'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.crunch.UserCapabilityJunction',
-    'java.lang.UnsupportedOperationException',
-    'net.nanopay.admin.model.ComplianceStatus'
+    'net.nanopay.fx.afex.AFEXServiceProvider'
   ],
 
   methods: [
     {
       name: 'applyAction',
-      javaCode: `
+      javaCode: ` 
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-            DAO userDAO = (DAO) x.get("localUserDAO");
+            UserCapabilityJunction ucj = (UserCapabilityJunction) obj;
+            User user = (User) ucj.findSourceId(x);
+            if ( user == null || ! user.getClass().equals(foam.nanos.auth.User.class) ) return;
 
-            User user = (User) userDAO.find(((UserCapabilityJunction) obj).getSourceId());
-            try {
-              user = (User) user.fclone();
-              user.setCompliance(ComplianceStatus.PASSED);
-              userDAO.put(user);
-            } catch(Exception e) {
-              throw new UnsupportedOperationException("User : " + user.getId() + " compliance not set - but UCJ granted" + " Errors: " + e);
-            }
+            AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
+            afexServiceProvider.onboardUser(user);
           }
-        }, "User Compliance Set");
+        }, "Onboards user to AFEX after final AFEX onboarding ucj is granted.");
       `
     }
   ]

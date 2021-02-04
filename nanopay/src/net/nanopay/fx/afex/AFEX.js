@@ -35,18 +35,22 @@ foam.INTERFACE({
       ]
     },
     {
-      name: 'onboardCorporateClient',
-      documentation: 'Create a new corporate client account',
+      name: 'onboardAFEXClient',
+      documentation: 'Create a new AFEX client account',
       async: true,
-      type: 'net.nanopay.fx.afex.OnboardCorporateClientResponse',
+      type: 'net.nanopay.fx.afex.OnboardAFEXClientResponse',
       args: [
         {
           name: 'request',
-          type: 'net.nanopay.fx.afex.OnboardCorporateClientRequest'
+          type: 'net.nanopay.fx.afex.OnboardAFEXClientRequest'
         },
         {
           name: 'spid',
           type: 'String'
+        },
+        {
+          name: 'requestType',
+          type: 'net.nanopay.fx.afex.AccountEntityType'
         }
       ]
     },
