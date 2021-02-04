@@ -108,7 +108,8 @@ p({
   "daoKey":"localTicketDAO",
   "operation":3,
   "action":{
-    "class":"net.nanopay.ticket.ReversalTicketCreateApprovals"
+    "class":"net.nanopay.ticket.ReversalTicketCreateApprovals",
+    "groupToNotify": "ablii-fraud-ops"
   },
   "predicate": {
     "class": "foam.mlang.predicate.And",
