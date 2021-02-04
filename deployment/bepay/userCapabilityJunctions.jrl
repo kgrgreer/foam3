@@ -1,0 +1,23 @@
+// spids
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"C9233187-7C24-4DAB-BE04-E661D1F281D1","sourceId":8053,"targetId":"bepay","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"4F92603A-2DF7-4ACE-BEE2-3596D32253BA","sourceId":8054,"targetId":"bepay","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"01327FE5-DFD6-4E8C-9143-8109AF14A6C2","sourceId":8055,"targetId":"bepay","status":1})
+
+// permitted countries
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"3391279E-B63F-4850-91E0-7BD432261FC8","sourceId":8053,"targetId":"bepayCountryCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"FE81DAAE-AF9F-4350-9600-BFED1D52FF17","sourceId":8054,"targetId":"bepayCountryCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"13DF63F0-178C-4296-8AD4-4B17DC4BC614","sourceId":8055,"targetId":"bepayCountryCapability","status":1})
+
+// corridors
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"9977B35C-A228-4843-8A4C-E24BA375AC5E","sourceId":8053,"targetId":"bepayCorridorCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"4F66648E-EECE-4808-A7E2-BD9EA0174784","sourceId":8054,"targetId":"bepayCorridorCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"95B7A02F-638B-4433-A1EB-7C15806085BC","sourceId":8055,"targetId":"bepayCorridorCapability","status":1})
+
+// reason codes
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"EBA9E983-D494-499A-BF77-F63415C928F6","sourceId":8053,"targetId":"bepay-tx-reason-codes","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"96D309CA-70FD-4673-A0F7-640FB1280F1B","sourceId":8054,"targetId":"bepay-tx-reason-codes","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"96B19FF2-8765-4F8D-B386-91F0EBE20434","sourceId":8055,"targetId":"bepay-tx-reason-codes","status":1})
+
+// granted automatically
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"1c7add8e-0b58-4b08-9d0f-98d27b3ad7c9","sourceId":8056,"targetId":"bepayPlannerCapability","status":1})
+p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"cb58a81d-7d65-41e8-be3c-f28d3423ecc0","sourceId":8056,"targetId":"bepay-tx-fees","status":1})

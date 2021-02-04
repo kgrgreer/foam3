@@ -1186,6 +1186,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 // business directors data
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessDirectorsData.NEED_DIRECTOR.label",target:"needDirector pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessDirectorsData.NO_DIRECTOR_INFO",target:"Informações do diretor necessárias"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessDirectorsData.DIRECTOR_INFO_NOT_VALID",target:"As informações do diretor não são válidas"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessDirectorsData.BUSINESS_TYPE_ID.label",target:"businessTypeId pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessDirectorsData.NO_DIRECTORS_NEEDED.label",target:"não são necessários diretores"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingModels.BusinessDirectorsData.BUSINESS_DIRECTORS.label",target:"Diretores de negócios"})
@@ -1197,6 +1198,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.onboardingMod
 // treviso business directors data
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.NEED_DIRECTOR.label",target:"needDirector pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.NO_DIRECTOR_INFO",target:"Informações do diretor necessárias"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.DIRECTOR_INFO_NOT_VALID",target:"As informações do diretor não são válidas"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.BUSINESS_TYPE_ID.label",target:"businessTypeId pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.NO_DIRECTORS_NEEDED.label",target:"não são necessários diretores"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.BUSINESS_DIRECTORS.label",target:"Diretores de negócios"})
@@ -3320,9 +3322,9 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.flinks.view.modalFor
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.flinks.view.modalForm.FlinksModalConnect.NEXT.label",target:"Conectar"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"submenu.contact.title",target:"Adicionar contato"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f712bpp-10.name",target:"Termos e Condições AFEX"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"fb7d3ca2-62f2-4caf-a84c-860392e46bpp.name",target:"Número CPF"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"fb7d3ca2-62f2-2131-a84c-8603dsrf2bpp.name",target:"detalhes estendidos do usuário"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f712bepay-10.name",target:"Termos e Condições AFEX"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"fb7d3ca2-62f2-4caf-a84c-860392e46bepay.name",target:"Número CPF"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"fb7d3ca2-62f2-2131-a84c-8603dsrf2bepay.name",target:"detalhes estendidos do usuário"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.br.ExtendedUserDetailsData.BIRTHDAY.label",target:"Data de nascimento"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.br.ExtendedUserDetailsData.UNDER_AGE_LIMIT_ERROR",target:"Deve ter pelo menos 18 anos."})
@@ -3333,5 +3335,5 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.br.ExtendedUs
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AccountEntityType.PRIVATE_CLIENT.label",target:"cliente privado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AccountEntityType.CORPORATE_CLIENT.label",target:"cliente corporativo"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"8ad3c898-db232-1ea-87d0-0242ac130z0-bpp.name",target:"Data de emissão"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"8ad3c898-db232-1ea-87d0-0242ac130z0-bpp.description",target:"Data de emissão de um documento de identificação"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"8ad3c898-db232-1ea-87d0-0242ac130z0-bepay.name",target:"Data de emissão"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"8ad3c898-db232-1ea-87d0-0242ac130z0-bepay.description",target:"Data de emissão de um documento de identificação"})

@@ -15,8 +15,8 @@
  * from nanopay Corporation.
  */
 foam.CLASS({
-  package: 'net.nanopay.partner.bpp.tx.planner',
-  name: 'BPPTransactionPlanner',
+  package: 'net.nanopay.partner.bepay.tx.planner',
+  name: 'BepayTransactionPlanner',
   extends: 'net.nanopay.tx.planner.AbstractTransactionPlanner',
 
   documentation: 'Plans BRL to USD',
@@ -31,7 +31,7 @@ foam.CLASS({
     'net.nanopay.fx.FXLineItem',
     'net.nanopay.fx.FXLineItem',
     'net.nanopay.fx.FXSummaryTransaction',
-    'net.nanopay.partner.bpp.tx.BPPTransaction',
+    'net.nanopay.partner.bepay.tx.BepayTransaction',
     'net.nanopay.tx.ExternalTransfer',
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.InvoicedFeeLineItem',
@@ -59,7 +59,7 @@ properties: [
     {
       name: 'PAYMENT_PROVIDER',
       type: 'String',
-      value: 'BPP'
+      value: 'Bepay'
     }
   ],
 
@@ -95,19 +95,19 @@ properties: [
       txn.setStatus(TransactionStatus.COMPLETED);
       txn.clearLineItems();
       txn.setAmount(0);
-      BPPTransaction bppTx = new BPPTransaction();
-      bppTx.copyFrom(requestTxn);
-      bppTx.setId(UUID.randomUUID().toString());
-      bppTx.setAmount(0);
-      bppTx.setName("BPP transaction");
-      bppTx.setPaymentProvider(PAYMENT_PROVIDER);
-      bppTx.setPlanner(this.getId());
-      bppTx = addNatureCodeLineItems(x, bppTx, requestTxn);
-      bppTx = addFxLineItems(x, bppTx, requestTxn, fxRate);
-      txn.addNext(bppTx);
+      BepayTransaction bepayTx = new BepayTransaction();
+      bepayTx.copyFrom(requestTxn);
+      bepayTx.setId(UUID.randomUUID().toString());
+      bepayTx.setAmount(0);
+      bepayTx.setName("Bepay Transaction");
+      bepayTx.setPaymentProvider(PAYMENT_PROVIDER);
+      bepayTx.setPlanner(this.getId());
+      bepayTx = addNatureCodeLineItems(x, bepayTx, requestTxn);
+      bepayTx = addFxLineItems(x, bepayTx, requestTxn, fxRate);
+      txn.addNext(bepayTx);
       ExternalTransfer[] exT = new ExternalTransfer[1];
-      exT[0] = new ExternalTransfer(quote.getDestinationAccount().getId(), bppTx.getDestinationAmount());
-      bppTx.setTransfers( exT );
+      exT[0] = new ExternalTransfer(quote.getDestinationAccount().getId(), bepayTx.getDestinationAmount());
+      bepayTx.setTransfers( exT );
       return txn;
     `
     },
@@ -119,11 +119,11 @@ properties: [
         { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
       ],
       javaCode: `
-        if ( ! (txn instanceof BPPTransaction) ) {
+        if ( ! (txn instanceof BepayTransaction) ) {
           return true;
         }
         NatureCodeLineItem natureCode = null;
-        BPPTransaction transaction = (BPPTransaction) txn;;
+        BepayTransaction transaction = (BepayTransaction) txn;;
         for (TransactionLineItem lineItem: txn.getLineItems() ) {
           if ( lineItem instanceof NatureCodeLineItem ) {
             natureCode = (NatureCodeLineItem) lineItem;
@@ -139,8 +139,8 @@ properties: [
     {
       name: 'postPlanning',
       javaCode: `
-        if ( txn instanceof BPPTransaction ) {
-          BPPTransaction transaction =(BPPTransaction) txn;
+        if ( txn instanceof BepayTransaction ) {
+          BepayTransaction transaction =(BepayTransaction) txn;
           // -- Copy line items
           transaction.setLineItems(root.getLineItems());
           // Add transfer for source amount
@@ -156,7 +156,7 @@ properties: [
     },
     {
       name: 'addNatureCodeLineItems',
-      javaType: 'BPPTransaction',
+      javaType: 'BepayTransaction',
       args: [
         {
           name: 'x',
@@ -164,7 +164,7 @@ properties: [
         },
         {
           name: 'txn',
-          type: 'BPPTransaction',
+          type: 'BepayTransaction',
         },
         {
           name: 'requestTxn',
@@ -188,7 +188,7 @@ properties: [
     },
     {
       name: 'addFxLineItems',
-      javaType: 'BPPTransaction',
+      javaType: 'BepayTransaction',
       args: [
         {
           name: 'x',
@@ -196,7 +196,7 @@ properties: [
         },
         {
           name: 'txn',
-          type: 'BPPTransaction',
+          type: 'BepayTransaction',
         },
         {
           name: 'requestTxn',

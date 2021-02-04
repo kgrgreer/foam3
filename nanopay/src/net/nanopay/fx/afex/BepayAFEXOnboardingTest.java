@@ -14,13 +14,13 @@ import foam.nanos.crunch.connection.CapabilityPayload;
 import java.util.*;
 import net.nanopay.country.br.*;
 import net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms;
-import net.nanopay.crunch.bpp.*;
+import net.nanopay.crunch.bepay.*;
 import net.nanopay.crunch.registration.UserDetailData;
 import net.nanopay.fx.afex.*;
 import static foam.mlang.MLang.*;
 import net.nanopay.crunch.document.*;
 
-public class BPPAFEXOnboardingTest extends foam.nanos.test.Test {
+public class BepayAFEXOnboardingTest extends foam.nanos.test.Test {
   public void runTest(X x) {
     DAO capabilityDAO = (DAO) x.get("localCapabilityDAO");
     DAO userCapabilityJunctionDAO = (DAO) x.get("bareUserCapabilityJunctionDAO");
@@ -30,7 +30,7 @@ public class BPPAFEXOnboardingTest extends foam.nanos.test.Test {
     AFEXServiceProvider afexServiceProvider = (AFEXServiceProvider) x.get("afexServiceProvider");
     AFEXService afexService = new AFEXService(x);
 
-    User user = new User.Builder(x).setId(888L).setSpid("bpp").setGroup("sme").build();
+    User user = new User.Builder(x).setId(888L).setSpid("bepay").setGroup("bepay-sme").build();
     user = (User) userDAO.put(user);
 
     X userX = (X) x.put("subject", new Subject.Builder(x).setUser(user).setUser(user).build());
@@ -89,7 +89,7 @@ public class BPPAFEXOnboardingTest extends foam.nanos.test.Test {
     }
     // test if capabilitypayload submitted sucessfully
     test(! threw, "ERROR : " + message + ex);
-  
+
     // test if onboarding ucj is granted
     UserCapabilityJunction ucj = (UserCapabilityJunction) userCapabilityJunctionDAO.find(AND(
       EQ(UserCapabilityJunction.SOURCE_ID, user.getId()),
@@ -109,8 +109,8 @@ public class BPPAFEXOnboardingTest extends foam.nanos.test.Test {
     user = (User) userDAO.find(user.getId());
     test(user.getCompliance() == net.nanopay.admin.model.ComplianceStatus.PASSED, "user compliance passed");
 
-    // try retrieving the client 
-    RetrieveClientAccountDetailsResponse accountDetails = afexService.retrieveClientAccountDetails(afexUser.getApiKey(), "bpp");
+    // try retrieving the client
+    RetrieveClientAccountDetailsResponse accountDetails = afexService.retrieveClientAccountDetails(afexUser.getApiKey(), "bepay");
     test(accountDetails != null, "accountdetails retrieved: " + accountDetails);
   }
 }

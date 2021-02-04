@@ -1672,8 +1672,8 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/registration/UserDetailData' },
   { name: 'net/nanopay/crunch/registration/UserDetailExpandedData' },
 
-  // bpp crunch onboarding
-  { name: 'net/nanopay/crunch/bpp/ExtendedUserDetailsData' },
+  // bepay crunch onboarding
+  { name: 'net/nanopay/crunch/bepay/ExtendedUserDetailsData' },
 
   // crunch predicates - todo move all predicates used in crunch here
   { name: 'net/nanopay/crunch/predicate/IsBusiness' },
@@ -1864,9 +1864,9 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/TrevisoSendEmailToAllNotification' },
   { name: 'net/nanopay/partner/treviso/invoice/TrevisoNotification' },
 
-  // bpp
-  { name: 'net/nanopay/partner/bpp/tx/BPPTransaction' },
-  { name: 'net/nanopay/partner/bpp/tx/planner/BPPTransactionPlanner' },
+  // bepay
+  { name: 'net/nanopay/partner/bepay/tx/BepayTransaction' },
+  { name: 'net/nanopay/partner/bepay/tx/planner/BepayTransactionPlanner' },
 
   // Reports for Treviso
   { name: 'net/nanopay/partner/treviso/report/TrevisoTransactionReport' },

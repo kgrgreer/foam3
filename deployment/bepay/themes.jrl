@@ -1,9 +1,9 @@
 p({
   "class":"foam.nanos.theme.Theme",
   "id":"18E4CEBB-2C91-4D14-AC5B-64D38103D524",
-  "name":"bpp",
-  "appName":"BPP",
-  "description":"BPP",
+  "name":"bepay",
+  "appName":"BePay",
+  "description":"BePay",
   "navigationRootMenu":"",
   "settingsRootMenu":"settings",
   "logoRedirect":"businesses-support",
@@ -78,5 +78,5 @@ p({
   "createdBy":1,
   "createdByAgent":1,
   "created":"2020-04-29T22:32:52.685Z",
-  "spid":"bpp"
+  "spid":"bepay"
 })

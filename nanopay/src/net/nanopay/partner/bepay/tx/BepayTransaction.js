@@ -16,11 +16,11 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.partner.bpp.tx',
-  name: 'BPPTransaction',
+  package: 'net.nanopay.partner.bepay.tx',
+  name: 'BepayTransaction',
   extends: 'net.nanopay.fx.FXTransaction',
 
-  documentation: `BPP Transaction`,
+  documentation: `BePay Transaction`,
 
   javaImports: [
     'foam.nanos.auth.User',

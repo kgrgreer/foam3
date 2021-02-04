@@ -276,6 +276,7 @@ var classes = [
   'net.nanopay.fx.afex.CreateInstantBenefiaryResponse',
   'net.nanopay.fx.afex.FundingBalance',
   'net.nanopay.fx.afex.GetFundingBalanceResponse',
+  'net.nanopay.fx.afex.KeyIndividual',
   'net.nanopay.fx.afex.ValidateInstantBenefiaryRequest',
   'net.nanopay.fx.afex.ValidateInstantBenefiaryResponse',
   'net.nanopay.fx.afex.CheckPaymentStatusRequest',
@@ -1336,9 +1337,9 @@ var classes = [
   'net.nanopay.partner.treviso.report.TrevisoTransactionReport',
   'net.nanopay.partner.treviso.report.TrevisoTransactionReportDAO',
 
-  // bpp
-  'net.nanopay.partner.bpp.tx.BPPTransaction',
-  'net.nanopay.partner.bpp.tx.planner.BPPTransactionPlanner',
+  // bepay
+  'net.nanopay.partner.bepay.tx.BepayTransaction',
+  'net.nanopay.partner.bepay.tx.planner.BepayTransactionPlanner',
 
   // crunch predicates - todo move all predicates used in crunch here
   'net.nanopay.crunch.predicate.IsBusiness',
@@ -1455,8 +1456,8 @@ var classes = [
   'net.nanopay.crunch.registration.UserDetailData',
   'net.nanopay.crunch.registration.UserDetailExpandedData',
 
-  // bpp crunch onboarding
-  'net.nanopay.crunch.bpp.ExtendedUserDetailsData',
+  // bepay crunch onboarding
+  'net.nanopay.crunch.bepay.ExtendedUserDetailsData',
 
   // crunch documents
   'net.nanopay.crunch.document.Document',

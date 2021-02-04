@@ -1,15 +1,12 @@
 p({
   class: "net.nanopay.tx.fee.TransactionFeeRule",
   id: "454df571-f639-4506-8d59-98b4f39934e4",
-  name: "BPP Fee",
-  documentation: "Add fixed fee line item for BPP transactions.",
-  feeName: "BPP Fixed Fee",
+  name: "BePay Fee",
+  documentation: "BePay transaction fee",
+  feeName: "BePay Fee",
   feeAccount: "512360f6-ec67-4339-9fc4-9a677bc2bff7",
-  ruleGroup: "TransactionFeeRule",
   feeDenomination: "BRL",
   feeClass: "net.nanopay.tx.FeeLineItem",
-  rateName: "Total Rate",
-  isInvertedRate: true,
   rateExpiry: {
     class: "foam.nanos.cron.TimeHMS",
     hour: 24
@@ -46,15 +43,15 @@ p({
       }
     ]
   },
-  spid: "bpp",
+  spid: "bepay",
   lifecycleState:1
 })
 p({
   class: "net.nanopay.tx.fee.TransactionFeeRule",
   id: "9e7661a6-610b-47ad-b521-96b9c760fb16",
-  name: "BPP Fee",
-  documentation: "Add percentage fee line item for BPP transactions.",
-  feeName: "BPP Percentage Fee",
+  name: "IOF",
+  documentation: "IOF charge for BePay transactions.",
+  feeName: "IOF",
   feeAccount: "512360f6-ec67-4339-9fc4-9a677bc2bff7",
   ruleGroup: "TransactionFeeRule",
   feeDenomination: "BRL",
@@ -97,7 +94,7 @@ p({
       }
     ]
   },
-  spid: "bpp",
+  spid: "bepay",
   lifecycleState:1
 })
 
@@ -110,7 +107,7 @@ p({
     "EUR":"c0f5a1ad-1d3d-4bee-bf16-56e12d2ff7ca"
   },
   "priority":90,
-  "ruleGroup":"BPPPlanner",
+  "ruleGroup":"BepayPlanner",
   "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
@@ -138,17 +135,17 @@ p({
     ]
   },
   "isFeeOnRootCorridors": true,
-  "spid": "bpp",
+  "spid": "bepay",
   "lifecycleState":1
 })
 
 p({
-  "class":"net.nanopay.partner.bpp.tx.planner.BPPTransactionPlanner",
+  "class":"BepayTransactionPlanner",
   "id":"2fdd7d35-6704-47dc-9f0e-9419e0aa74ed",
-  "name":"BPPTransactionPlanner",
+  "name":"BepayTransactionPlanner",
   "documentation":"Planner for transaction from BRL to USD/EUR/GBP (leg 1)",
   "priority":80,
-  "ruleGroup":"BPPPlanner",
+  "ruleGroup":"BepayPlanner",
   "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
@@ -175,12 +172,12 @@ p({
       },
       {
         "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
-        "provider":"BPP"
+        "provider":"Bepay"
       }
     ]
   },
   "isFeeOnRootCorridors": true,
-  "spid": "bpp",
+  "spid": "bepay",
   "lifecycleState":1
 })
 p({
@@ -203,12 +200,12 @@ p({
   "enabled":true,
   "saveHistory":true,
   "lifecycleState":1,
-  "spid":"bpp"
+  "spid":"bepay"
 })
 
 p({
   "class":"foam.nanos.ruler.Rule",
-  "id":"bpp-user-compliance-passed-rule",
+  "id":"bepay-user-compliance-passed-rule",
   "name":"Set User Compliance",
   "documentation":"Rule to set user compliance to passed after required onboarding capabilities are submitted.",
   "priority":1,
@@ -226,12 +223,12 @@ p({
   "enabled":true,
   "saveHistory":true,
   "lifecycleState":1,
-  "spid":"bpp"
+  "spid":"bepay"
 })
 p({
   "class":"net.nanopay.tx.planner.AFEXTransactionPlanner",
   "id":"13df0d76-ba3e-4287-b42e-c7ceff059dd8",
-  "ruleGroup":"BPPPlanner",
+  "ruleGroup":"BepayPlanner",
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
