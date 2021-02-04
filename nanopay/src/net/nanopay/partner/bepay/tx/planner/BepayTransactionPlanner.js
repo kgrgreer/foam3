@@ -59,7 +59,7 @@ properties: [
     {
       name: 'PAYMENT_PROVIDER',
       type: 'String',
-      value: 'Bepay'
+      value: 'BePay'
     }
   ],
 
@@ -94,20 +94,21 @@ properties: [
       txn.setPaymentProvider(PAYMENT_PROVIDER);
       txn.setStatus(TransactionStatus.COMPLETED);
       txn.clearLineItems();
-      txn.setAmount(0);
-      BepayTransaction bepayTx = new BepayTransaction();
-      bepayTx.copyFrom(requestTxn);
-      bepayTx.setId(UUID.randomUUID().toString());
-      bepayTx.setAmount(0);
-      bepayTx.setName("Bepay Transaction");
-      bepayTx.setPaymentProvider(PAYMENT_PROVIDER);
-      bepayTx.setPlanner(this.getId());
-      bepayTx = addNatureCodeLineItems(x, bepayTx, requestTxn);
-      bepayTx = addFxLineItems(x, bepayTx, requestTxn, fxRate);
-      txn.addNext(bepayTx);
-      ExternalTransfer[] exT = new ExternalTransfer[1];
-      exT[0] = new ExternalTransfer(quote.getDestinationAccount().getId(), bepayTx.getDestinationAmount());
-      bepayTx.setTransfers( exT );
+      txn.setAmount( (long) (requestTxn.getDestinationAmount() * fxRate) ); // if rate is in different format, need / here instead of *
+      BepayTransaction bTx = new BepayTransaction();
+      bTx.copyFrom(requestTxn);
+      bTx.setId(UUID.randomUUID().toString());
+      bTx.setAmount(txn.getAmount());
+      bTx.setName("BePay transaction");
+      bTx.setPaymentProvider(PAYMENT_PROVIDER);
+      bTx.setPlanner(this.getId());
+      bTx = addNatureCodeLineItems(x, bTx, requestTxn);
+      bTx = addFxLineItems(x, bTx, requestTxn, fxRate);
+      txn.addNext(bTx);
+      ExternalTransfer[] exT = new ExternalTransfer[2];
+      exT[0] = new ExternalTransfer(quote.getDestinationAccount().getId(), bTx.getDestinationAmount());
+      exT[1] = new ExternalTransfer(quote.getSourceAccount().getId(), bTx.getAmount());
+      bTx.setTransfers( exT );
       return txn;
     `
     },
@@ -139,18 +140,6 @@ properties: [
     {
       name: 'postPlanning',
       javaCode: `
-        if ( txn instanceof BepayTransaction ) {
-          BepayTransaction transaction =(BepayTransaction) txn;
-          // -- Copy line items
-          transaction.setLineItems(root.getLineItems());
-          // Add transfer for source amount
-          ExternalTransfer ext = new ExternalTransfer(transaction.getSourceAccount(), -root.getAmount());
-          Transfer[] transfers = (Transfer[]) ArrayUtils.add(transaction.getTransfers(), ext);
-          // Add transfers for fees from summary
-          transfers =  (Transfer[]) ArrayUtils.addAll(transfers, root.getTransfers());
-          transaction.setTransfers(transfers);
-          root.setTransfers(null);
-        }
         return super.postPlanning(x,txn,root);
       `
     },
@@ -211,7 +200,6 @@ properties: [
       Calendar c = Calendar.getInstance();
       c.setTime(new Date());
       c.add(Calendar.DATE, 1);
-
       txn.addLineItems( new TransactionLineItem[] {
         new FXLineItem.Builder(x)
           .setGroup("fx").setNote("FX Broker Fee")

@@ -140,7 +140,7 @@ p({
 })
 
 p({
-  "class":"BepayTransactionPlanner",
+  "class":"net.nanopay.partner.bepay.tx.planner.BepayTransactionPlanner",
   "id":"2fdd7d35-6704-47dc-9f0e-9419e0aa74ed",
   "name":"BepayTransactionPlanner",
   "documentation":"Planner for transaction from BRL to USD/EUR/GBP (leg 1)",
@@ -172,7 +172,7 @@ p({
       },
       {
         "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
-        "provider":"Bepay"
+        "provider":"BePay"
       }
     ]
   },
