@@ -150,7 +150,7 @@ foam.CLASS({
             Transaction newTx = (Transaction) txn.fclone();
             newTx.clearId();
             tq.setRequestTransaction(newTx);
-            Transaction t = (Transaction) getDelegate().put_(x, tq);
+            Transaction t = ((TransactionQuote) getDelegate().put_(x, tq)).getPlan();
             getDelegate().remove_(x, plannedTx);
             return t;
           }
