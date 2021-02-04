@@ -48,10 +48,10 @@ foam.CLASS({
             return;
           }
 
-          AFEXUser afexBusiness = (AFEXUser) obj;
-          Business business = (Business) ((DAO) x.get("localBusinessDAO")).find(EQ(Business.ID, afexBusiness.getUser()));
+          AFEXUser afexUser = (AFEXUser) obj;
+          Business business = (Business) ((DAO) x.get("localBusinessDAO")).find(EQ(Business.ID, afexUser.getUser()));
           if ( business != null ) {
-            ((AFEXServiceProvider) x.get("afexServiceProvider")).pushBeneficialOwners(business, afexBusiness.getApiKey());
+            ((AFEXServiceProvider) x.get("afexServiceProvider")).pushBeneficialOwners(business, afexUser.getApiKey());
           }
         }
       }, "Rule to push Business Beneficial Owner to AFEX after AFEX Business is created.");

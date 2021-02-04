@@ -28,12 +28,12 @@ public class AFEXBusinessComplianceStatusCron implements ContextAgent {
       
       )).select(new ArraySink());
     List<AFEXUser> pendingBusinesses = sink.getArray();
-    for (AFEXUser afexBusiness : pendingBusinesses) {
-      String status = afexServiceProvider.getClientAccountStatus(afexBusiness);
+    for (AFEXUser afexUser : pendingBusinesses) {
+      String status = afexServiceProvider.getClientAccountStatus(afexUser);
       if ( null != status) {
-        afexBusiness = (AFEXUser) afexBusiness.fclone();
-        afexBusiness.setStatus(status);
-        afexUserDAO.put(afexBusiness);
+        afexUser = (AFEXUser) afexUser.fclone();
+        afexUser.setStatus(status);
+        afexUserDAO.put(afexUser);
       }
     }
   }

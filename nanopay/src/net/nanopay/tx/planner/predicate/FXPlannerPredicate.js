@@ -69,8 +69,8 @@ foam.CLASS({
         }
 
         AFEXServiceProvider afexService = (AFEXServiceProvider) fxService;
-        AFEXUser afexBusiness = afexService.getAFEXUser(getX(), quote.getSourceAccount().getOwner());
-        if ( afexBusiness == null ) {
+        AFEXUser afexUser = afexService.getAFEXUser(getX(), quote.getSourceAccount().getOwner());
+        if ( afexUser == null ) {
           return false;
         }
       } else {

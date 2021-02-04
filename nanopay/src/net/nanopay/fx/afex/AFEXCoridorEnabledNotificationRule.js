@@ -57,10 +57,10 @@ foam.CLASS({
             return;
           }
 
-          AFEXUser afexBusiness = (AFEXUser) obj;
+          AFEXUser afexUser = (AFEXUser) obj;
           DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
 
-          Business business = (Business) localBusinessDAO.find(EQ(Business.ID, afexBusiness.getUser()));
+          Business business = (Business) localBusinessDAO.find(EQ(Business.ID, afexUser.getUser()));
           if ( null != business ) {
             Address businessAddress = business.getAddress();
             if ( null != businessAddress && ! SafetyUtil.isEmpty(businessAddress.getCountryId()) ) {

@@ -60,11 +60,11 @@ foam.CLASS({
             return;
           }
 
-          AFEXUser afexBusiness = (AFEXUser) obj;
+          AFEXUser afexUser = (AFEXUser) obj;
           DAO dao = ((DAO) x.get("approvalRequestDAO"))
           .where(AND(
             EQ(ApprovalRequest.DAO_KEY, "afexUserDAO"),
-            EQ(ApprovalRequest.OBJ_ID, afexBusiness.getId())
+            EQ(ApprovalRequest.OBJ_ID, afexUser.getId())
           ));
 
           ApprovalStatus approval = ApprovalRequestUtil.getState(dao);
@@ -72,7 +72,7 @@ foam.CLASS({
             DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
             DAO localGroupDAO = (DAO) x.get("localGroupDAO");
 
-            Business business = (Business) localBusinessDAO.find(EQ(Business.ID, afexBusiness.getUser()));
+            Business business = (Business) localBusinessDAO.find(EQ(Business.ID, afexUser.getUser()));
             if ( null != business ) {
               Address businessAddress = business.getAddress();
               if ( null != businessAddress && ! SafetyUtil.isEmpty(businessAddress.getCountryId()) ) {

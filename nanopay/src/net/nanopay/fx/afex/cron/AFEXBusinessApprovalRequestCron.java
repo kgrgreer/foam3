@@ -40,8 +40,8 @@ public class AFEXBusinessApprovalRequestCron implements ContextAgent {
     for (Object obj : pendinApprovals) {
       AFEXBusinessApprovalRequest request = (AFEXBusinessApprovalRequest) obj;
       if ( ApprovalRequestUtil.getStatus(x, request.getObjId(), request.getClassification()) == ApprovalStatus.REQUESTED ) {
-        AFEXUser afexBusiness = (AFEXUser) afexUserDAO.find(request.getObjId());
-        AFEXCredentials credentials = (AFEXCredentials) credentialDAO.find(MLang.EQ(AFEXCredentials.SPID, afexBusiness.findUser(x).getSpid()));
+        AFEXUser afexUser = (AFEXUser) afexUserDAO.find(request.getObjId());
+        AFEXCredentials credentials = (AFEXCredentials) credentialDAO.find(MLang.EQ(AFEXCredentials.SPID, afexUser.findUser(x).getSpid()));
         boolean bufferElapsed = false;
         Calendar now = Calendar.getInstance();
         Calendar eta = Calendar.getInstance();

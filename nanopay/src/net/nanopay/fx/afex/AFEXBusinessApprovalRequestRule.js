@@ -39,14 +39,14 @@ foam.CLASS({
         agency.submit(x, new ContextAgent() {
           @Override
           public void execute(X x) {
-            AFEXUser afexBusiness = (AFEXUser) obj;
+            AFEXUser afexUser = (AFEXUser) obj;
             DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
-            String spid = afexBusiness.findUser(x).getSpid();
+            String spid = afexUser.findUser(x).getSpid();
             String group = spid + "-payment-ops";
             approvalRequestDAO.put_(x,
               new AFEXBusinessApprovalRequest.Builder(x)
                 .setDaoKey("afexUserDAO")
-                .setObjId(afexBusiness.getId())
+                .setObjId(afexUser.getId())
                 .setClassification("Validate AFEX Business")
                 .setDescription("Approve AFEX business to enable the international payments.")
                 .setGroup(group)

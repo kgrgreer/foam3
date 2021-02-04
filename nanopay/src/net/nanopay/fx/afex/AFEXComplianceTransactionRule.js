@@ -62,13 +62,13 @@ foam.CLASS({
           } else {
             DAO afexBeneficiaryDAO = (DAO) x.get("afexBeneficiaryDAO");
             DAO afexUserDAO = (DAO) x.get("afexUserDAO");
-            AFEXUser afexBusiness =  (AFEXUser) afexUserDAO.find(EQ(AFEXUser.USER, beneficiary.getOwner()));
-            if ( afexBusiness == null ) {
+            AFEXUser afexUser =  (AFEXUser) afexUserDAO.find(EQ(AFEXUser.USER, beneficiary.getOwner()));
+            if ( afexUser == null ) {
               ((Logger) x.get("logger")).error("AFEX Business not found for transaction " + txn.getId() + " with owner id " + beneficiary.getOwner() );
               return;
             }
-            User user = User.findUser(x, afexBusiness.getUser());
-            FindBeneficiaryResponse beneficiaryResponse = afexServiceProvider.findBeneficiary(beneficiary.getContact(),afexBusiness.getApiKey(), user.getSpid());
+            User user = User.findUser(x, afexUser.getUser());
+            FindBeneficiaryResponse beneficiaryResponse = afexServiceProvider.findBeneficiary(beneficiary.getContact(),afexUser.getApiKey(), user.getSpid());
             if ( beneficiaryResponse.getStatus().equals("Approved") ) {
               beneficiary = (AFEXBeneficiary) beneficiary.fclone();
               beneficiary.setStatus("Active");

@@ -45,7 +45,7 @@ public class AFEXServiceProviderTest
   protected DAO afexUserDAO;
   protected User user1 ;
   protected Business business ;
-  protected AFEXUser afexBusiness;
+  protected AFEXUser afexUser;
   protected User user2;
   protected BankAccount user1CABankAccount;
   protected BankAccount user2USBankAccount;
@@ -245,8 +245,8 @@ public class AFEXServiceProviderTest
   private void tearDownTest() {
     localAccountDAO.remove(user1CABankAccount);
     localAccountDAO.remove(user2USBankAccount);
-    AFEXUser afexBusiness = (AFEXUser) afexUserDAO.find(EQ(AFEXUser.USER, business.getId()));
-    afexUserDAO.remove(afexBusiness);
+    AFEXUser afexUser = (AFEXUser) afexUserDAO.find(EQ(AFEXUser.USER, business.getId()));
+    afexUserDAO.remove(afexUser);
     localUserDAO.inX(x).remove(user1);
     localUserDAO.inX(x).remove(user2);
   }
@@ -258,11 +258,11 @@ public class AFEXServiceProviderTest
     test( ! onbarded, "Business was not onboarded" );
     onbarded = afexServiceProvider.onboardBusiness(business);
     test( onbarded, "Business was onboarded" );
-    AFEXUser afexBusiness = (AFEXUser) afexUserDAO.find(EQ(AFEXUser.USER, business.getId()));
-    if ( afexBusiness != null ) {
-      afexBusiness = (AFEXUser) afexBusiness.fclone();
-      afexBusiness.setStatus("Active");
-      afexUserDAO.put(afexBusiness);
+    AFEXUser afexUser = (AFEXUser) afexUserDAO.find(EQ(AFEXUser.USER, business.getId()));
+    if ( afexUser != null ) {
+      afexUser = (AFEXUser) afexUser.fclone();
+      afexUser.setStatus("Active");
+      afexUserDAO.put(afexUser);
     }
 
   }
@@ -296,9 +296,9 @@ public class AFEXServiceProviderTest
   }
 
   public void testFindBeneficiary() {
-    AFEXUser afexBusiness = (AFEXUser) afexUserDAO.find(EQ(AFEXUser.USER, business.getId()));
-    test( afexBusiness != null, "AFEXUser is found" );
-    FindBeneficiaryResponse beneficiaryResponse = afexServiceProvider.findBeneficiary(user2.getId(), afexBusiness.getApiKey(), user2.getSpid());
+    AFEXUser afexUser = (AFEXUser) afexUserDAO.find(EQ(AFEXUser.USER, business.getId()));
+    test( afexUser != null, "AFEXUser is found" );
+    FindBeneficiaryResponse beneficiaryResponse = afexServiceProvider.findBeneficiary(user2.getId(), afexUser.getApiKey(), user2.getSpid());
     test( beneficiaryResponse != null, "beneficiary is found" );
   }
 

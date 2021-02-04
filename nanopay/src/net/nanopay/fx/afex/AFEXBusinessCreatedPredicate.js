@@ -31,11 +31,11 @@ foam.CLASS({
       name: 'f',
       javaCode: `
       if ( ! (NEW_OBJ.f(obj) instanceof AFEXUser) ) return false;
-      AFEXUser afexBusiness = (AFEXUser) NEW_OBJ.f(obj);
-      return ! SafetyUtil.isEmpty(afexBusiness.getApiKey())
-        && ! SafetyUtil.isEmpty(afexBusiness.getAccountNumber())
-        && ! "Disabled".equals(afexBusiness.getStatus())
-        && afexBusiness.getEnabled();
+      AFEXUser afexUser = (AFEXUser) NEW_OBJ.f(obj);
+      return ! SafetyUtil.isEmpty(afexUser.getApiKey())
+        && ! SafetyUtil.isEmpty(afexUser.getAccountNumber())
+        && ! "Disabled".equals(afexUser.getStatus())
+        && afexUser.getEnabled();
       `
     }
   ]
