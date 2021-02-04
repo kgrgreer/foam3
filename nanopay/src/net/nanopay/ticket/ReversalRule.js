@@ -58,24 +58,21 @@ foam.CLASS({
           }
 
           Transaction problemTxn = txn.getStateTxn(x);
-
-          // TODO check if txn is in reversable state
-          // set status of problem transaction to reversed
           problemTxn = (Transaction) problemTxn.fclone();
-          problemTxn.setStatus(TransactionStatus.CANCELLED);
-          txnDAO.put(problemTxn);
 
-          if ( request.getRefundTransaction() ) {
+          if ( request.getRefundType() == RefundTypes.MANUAL ) {
+            newTxn.setSourceAccount(request.getSourceAccount());
+            newTxn.setDestinationAccount(request.getDestinationAccount());
+            newTxn.setAmount(request.getAmount());
+          } else {
             newTxn.setSourceAccount(problemTxn.getSourceAccount());
             newTxn.setDestinationAccount(txn.getSourceAccount());
             newTxn.setAmount(txn.getAmount());
-          } else {
-            newTxn.setSourceAccount(problemTxn.getSourceAccount());
-            newTxn.setDestinationAccount(txn.getDestinationAccount());
-            newTxn.setAmount(-problemTxn.getTotal(x, problemTxn.getSourceAccount()));  
+            newTxn.setLineItems(request.getLineitems());
           }
-          
-          newTxn.setLineItems(request.getLineitems());
+
+          problemTxn.setStatus(TransactionStatus.CANCELLED);
+          txnDAO.put(problemTxn);
           txnDAO.put(newTxn);
 
         }

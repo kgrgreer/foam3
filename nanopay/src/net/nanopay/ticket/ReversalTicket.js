@@ -39,11 +39,6 @@ foam.CLASS({
       documentation: `Id of the reversal transaction`
     },
     {
-      class: 'Boolean',
-      name: 'refundTransaction',
-      documentation: 'True to refundTransaction. False to retry transaction'
-    },
-    {
       class: 'FObjectArray',
       of: 'net.nanopay.tx.TransactionLineItem',
       name: 'lineitems',

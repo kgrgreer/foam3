@@ -21,18 +21,14 @@ foam.ENUM({
 
   values: [
     {
-      name: 'SCHEDULED',
-      documentation: `A status that indicates that the invoice has a scheduled
-        due date, and has not been paid yet.`,
-      label: { en: 'Scheduled', pt: 'Programado'},
-      color: '#406dea !important'
+      name: 'AUTO',
+      label: 'Auto',
+      documentation: `A simple mode where the system will figure out the amounts and accounts automatically.`
     },
     {
-      name: 'OVERDUE',
-      documentation: `A status that indicates that the invoice has a passed
-        due date, and has not been paid yet.`,
-      label: { en: 'Overdue', pt: 'Em atraso'},
-      color: '#d42035 !important'
+      name: 'MANUAL',
+      label: 'Manual',
+      documentation: `An advanced mode where the user will have to enter the amounts and accounts.`
     },
   ]
 });

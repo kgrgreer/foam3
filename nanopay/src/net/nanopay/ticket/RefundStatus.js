@@ -21,6 +21,14 @@ foam.ENUM({
 
   values: [
     {
+      name: 'AVAILABLE',
+      label: 'Available',
+      documentation: `
+        A status that indicates that the ReversalTicket is awaiting 
+        input from users.
+      `
+    },
+    {
       name: 'REQUESTED',
       label: 'Requested',
       documentation: `

@@ -53,7 +53,7 @@ foam.CLASS({
         }
 
         if ( txn.isChainRefundable(x) ) {
-          request.setStatus("REQUESTED");
+          request.setRefundStatus(RefundStatus.REQUESTED);
         } else {
           throw new RuntimeException("Transaction is in non reversable state");
         }

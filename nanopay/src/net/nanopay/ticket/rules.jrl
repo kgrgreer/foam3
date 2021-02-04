@@ -55,11 +55,11 @@ p({
   "priority":101,
   "ruleGroup":"Ticket",
   "daoKey":"localTicketDAO",
-  "operation":0,
+  "operation":3,
   "after":false,
   "enabled":true,
   "saveHistory":false,
-  "asyncAction":{
+  "action":{
     "class":"net.nanopay.ticket.ReverseTicketCreateRule"
   },
   "lifecycleState":1
@@ -70,7 +70,7 @@ p({
   "id":"b64905d0-289b-4371-92a5-f843e344109a",
   "name":"Reversal Rule",
   "priority":100,
-  "ruleGroup":"BMOPlanner",
+  "ruleGroup":"Ticket",
   "documentation":"Handle transaction reversal",
   "daoKey":"localTicketDAO",
   "operation":3,
@@ -89,7 +89,7 @@ p({
         "propName":"refundStatus",
         "propValue":{
           "class":"net.nanopay.ticket.RefundStatus",
-          "ordinal":1
+          "ordinal":2
         }
       }
     ]
