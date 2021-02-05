@@ -40,24 +40,32 @@ foam.CLASS({
   properties: [
     {
       class: 'String',
-      name: 'AccountId',
-      section: 'basicInfo'
+      name: 'accountId',
+      section: 'transactionInformation',
+      order: 240,
+      gridColumns: 6
     },
     {
       class: 'String',
       name: 'fundingBalanceId',
-      section: 'basicInfo',
+      section: 'transactionInformation',
+      order: 245,
+      gridColumns: 6,
       documentation: 'id of the AFEX funding balance response'
-    },
-    {
-      class: 'String',
-      name: 'valueDate',
-      section: 'basicInfo'
     },
     {
       class: 'Boolean',
       name: 'fundingBalanceInitiated',
-      section: 'basicInfo'
+      section: 'transactionInformation',
+      order: 250,
+      gridColumns: 6
     },
+    {
+      class: 'String',
+      name: 'valueDate',
+      section: 'transactionInformation',
+      order: 255,
+      gridColumns: 6
+    }
   ]
 });

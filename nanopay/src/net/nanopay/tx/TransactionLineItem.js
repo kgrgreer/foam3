@@ -42,12 +42,14 @@ foam.CLASS({
       factory: function() {
         return foam.uuid.randomGUID();
       },
-      javaFactory: `return java.util.UUID.randomUUID().toString();`
+      javaFactory: `return java.util.UUID.randomUUID().toString();`,
+      hidden: true
     },
     {
       documentation: 'Assigned when line items are added to a transaction. All lineitems add at the same time are assigned to the same group so line items can be shown together.  For example, FX rate, expiry, fee can be grouped in the output.',
       name: 'group',
-      class: 'String'
+      class: 'String',
+      hidden: true
     },
     {
       name: 'sourceAccount',

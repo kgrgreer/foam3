@@ -353,31 +353,18 @@ foam.RELATIONSHIP({
   forwardName: 'children',
   inverseName: 'parent',
   sourceProperty: {
-    section: 'basicInfo',
-    updateVisibility: function(parent) {
-      return parent ?
-        foam.u2.DisplayMode.RO :
-        foam.u2.DisplayMode.HIDDEN;
-    },
-    readVisibility: function(parent) {
-      return parent ?
-        foam.u2.DisplayMode.RO :
-        foam.u2.DisplayMode.HIDDEN;
-    },
+    section: 'transactionInformation',
+    order: 187,
+    updateVisibility: 'RO',
+    readVisibility: 'RO',
     createVisibility: 'HIDDEN'
   },
   targetProperty: {
-    section: 'basicInfo',
-    updateVisibility: function(children) {
-      return children ?
-        foam.u2.DisplayMode.RO :
-        foam.u2.DisplayMode.HIDDEN;
-    },
-    readVisibility: function(children) {
-      return children ?
-        foam.u2.DisplayMode.RO :
-        foam.u2.DisplayMode.HIDDEN;
-    },
+    section: 'transactionInformation',
+    order: 185,
+    gridColumns: 6,
+    updateVisibility: 'RO',
+    readVisibility: 'RO',
     createVisibility: 'HIDDEN'
   }
 });
@@ -389,33 +376,19 @@ foam.RELATIONSHIP({
   forwardName: 'associatedTransactions',
   inverseName: 'associateTransaction',
   sourceProperty: {
-    section: 'basicInfo',
+    section: 'systemInformation',
+    order: 60,
     createVisibility: 'HIDDEN',
-    readVisibility: function(associateTransaction) {
-      return associateTransaction ?
-        foam.u2.DisplayMode.RO :
-        foam.u2.DisplayMode.HIDDEN;
-    },
-    updateVisibility: function(associateTransaction) {
-      return associateTransaction ?
-        foam.u2.DisplayMode.RO :
-        foam.u2.DisplayMode.HIDDEN;
-    },
+    readVisibility: 'RO',
+    updateVisibility: 'RO',
     view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' }
   },
   targetProperty: {
-    section: 'basicInfo',
+    section: 'systemInformation',
+    order: 70,
     createVisibility: 'HIDDEN',
-    readVisibility: function(associatedTransactions) {
-      return associatedTransactions ?
-        foam.u2.DisplayMode.RO :
-        foam.u2.DisplayMode.HIDDEN;
-    },
-    updateVisibility: function(associatedTransactions) {
-      return associatedTransactions ?
-        foam.u2.DisplayMode.RO :
-        foam.u2.DisplayMode.HIDDEN;
-    },
+    readVisibility: 'RO',
+    updateVisibility: 'RO',
     view: { class: 'foam.u2.view.ReferenceView', placeholder: '--' }
   }
 });
@@ -868,7 +841,10 @@ foam.RELATIONSHIP({
   targetProperty: {
     help: `Set this to the account you would like to withdraw funds from.
     Selection of shadow accounts is only available for admin of group.`,
-    gridColumns: 7,
+    label: 'Payer Account',
+    section: 'transactionInformation',
+    order: 30,
+    gridColumns: 6,
     required: true,
     postSet: function(_, n) {
       // only want this postSet to fire off when we are creating txns not viewing
@@ -903,7 +879,7 @@ foam.RELATIONSHIP({
       };
     },
     updateVisibility: 'RO',
-    section: 'basicInfo',
+    section: 'transactionInformation',
     tableWidth: 180,
     tableCellFormatter: function(value, obj) {
       this.add(value);
@@ -956,7 +932,10 @@ foam.RELATIONSHIP({
   },
   targetProperty: {
     help: `Please input your payee's account id. Confirm account id with contact externally.`,
-    gridColumns: 7,
+    label: 'Payee Account',
+    section: 'transactionInformation',
+    order: 70,
+    gridColumns: 6,
     required: true,
     readVisibility: 'RO',
     updateVisibility: 'RO',
@@ -979,7 +958,6 @@ foam.RELATIONSHIP({
         sections: sec
       };
     },
-    section: 'basicInfo',
     postSet: function(o, n) {
       if ( this.mode == 'create' ) { // validation check for users manually creating a Transaction
         // setup
@@ -1144,16 +1122,8 @@ foam.RELATIONSHIP({
   sourceProperty: {
     section: 'complianceInformation',
     createVisibility: 'HIDDEN',
-    readVisibility: function(complianceResponses) {
-      return complianceResponses.length > 0 ?
-        foam.u2.DisplayMode.RO :
-        foam.u2.DisplayMode.HIDDEN;
-    },
-    updateVisibility: function(complianceResponses) {
-      return complianceResponses.length > 0 ?
-        foam.u2.DisplayMode.RO :
-        foam.u2.DisplayMode.HIDDEN;
-    }
+    readVisibility: 'RO',
+    updateVisibility: 'RO'
   }
 });
 
@@ -1201,18 +1171,11 @@ foam.RELATIONSHIP({
   sourceDAOKey: 'transactionDAO',
   targetDAOKey: 'transactionEventDAO',
   sourceProperty: {
-    section: 'basicInfo',
+    section: 'systemInformation',
+    order: 50,
     createVisibility: 'HIDDEN',
-    readVisibility: function(transactionEvents) {
-      return transactionEvents.length > 0 ?
-        foam.u2.DisplayMode.RO :
-        foam.u2.DisplayMode.HIDDEN;
-    },
-    updateVisibility: function(transactionEvents) {
-      return transactionEvents.length > 0 ?
-        foam.u2.DisplayMode.RO :
-        foam.u2.DisplayMode.HIDDEN;
-    }
+    readVisibility: 'RO',
+    updateVisibility: 'RO'
   }
 });
 

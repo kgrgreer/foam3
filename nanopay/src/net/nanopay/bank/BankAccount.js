@@ -65,6 +65,7 @@ foam.CLASS({
     'java.util.List',
     'java.util.regex.Pattern',
     'net.nanopay.account.Account',
+    'net.nanopay.contacts.Contact',
     'static foam.mlang.MLang.*'
   ],
 
@@ -521,7 +522,7 @@ foam.CLASS({
       documentation: `Flag for whether bank account is owned by a contact.
           Required for visibility property expressions.`,
       javaFactory: `
-        return findOwner(foam.core.XLocator.get()) != null;
+        return findOwner(foam.core.XLocator.get()) instanceof Contact;
       `
     },
     {
