@@ -29,29 +29,77 @@ foam.CLASS({
 
   properties: [
     {
+      class: 'Long',
+      name: 'id',
+      createVisibility: 'HIDDEN',
+      updateVisibility: 'RO',
+      readVisibility: 'RO',
+      section: 'infoSection',
+      order: 1,
+      tableWidth: 100
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.ticket.TicketStatus',
+      name: 'status',
+      value: 'OPEN',
+      javaFactory: 'return "OPEN";',
+      includeInDigest: true,
+      section: 'infoSection',
+      order: 3,
+      tableWidth: 130,
+      createVisibility: 'HIDDEN',
+      tableCellFormatter: function(value, obj) {
+        obj.ticketStatusDAO.find(value).then(function(status) {
+          if (status) {
+            this.add(status.label);
+          }
+        }.bind(this));
+      },
+      view: function(_, x) {
+        return {
+          class: 'foam.u2.view.ModeAltView',
+          readView: {
+            class: 'foam.u2.view.ReferenceView',
+            of: 'foam.nanos.ticket.TicketStatus'
+          },
+          writeView: {
+            class: 'foam.u2.view.ChoiceView',
+            choices: x.data.statusChoices
+          }
+        };
+      },
+    },
+    {
       class: 'String',
       name: 'requestTransaction',
-      documentation: `Id of transaction requiring reversal`
+      documentation: `Id of transaction requiring reversal`,
+      section: 'infoSection'
     },
     {
       class: 'String',
       name: 'reversalTransaction',
-      documentation: `Id of the reversal transaction`
+      documentation: `Id of the reversal transaction`,
+      createVisibility: 'HIDDEN',
+      section: 'infoSection'
     },
     {
       class: 'FObjectArray',
       of: 'net.nanopay.tx.TransactionLineItem',
       name: 'lineitems',
+      section: 'infoSection'
     },
     {
       class: 'Enum',
       of: 'net.nanopay.ticket.RefundTypes',
-      name: 'refundType'
+      name: 'refundType',
+      section: 'infoSection'
     },
     {
       class: 'Enum',
       of: 'net.nanopay.ticket.RefundStatus',
-      name: 'refundStatus'
+      name: 'refundStatus',
+      section: 'infoSection'
     },
     {
       class: 'Reference',
@@ -66,7 +114,13 @@ foam.CLASS({
         return refundType === net.nanopay.ticket.RefundTypes.MANUAL ?
           foam.u2.DisplayMode.RW :
           foam.u2.DisplayMode.HIDDEN;
-      }
+      },
+      createVisibility: function(refundType) {
+        return refundType === net.nanopay.ticket.RefundTypes.MANUAL ?
+          foam.u2.DisplayMode.RW :
+          foam.u2.DisplayMode.HIDDEN;
+      },
+      section: 'infoSection'
     },
     {
       class: 'Reference',
@@ -81,7 +135,13 @@ foam.CLASS({
         return refundType === net.nanopay.ticket.RefundTypes.MANUAL ?
           foam.u2.DisplayMode.RW :
           foam.u2.DisplayMode.HIDDEN;
-      }
+      },
+      createVisibility: function(refundType) {
+        return refundType === net.nanopay.ticket.RefundTypes.MANUAL ?
+          foam.u2.DisplayMode.RW :
+          foam.u2.DisplayMode.HIDDEN;
+      },
+      section: 'infoSection'
     },
     {
       class: 'Long',
@@ -95,16 +155,32 @@ foam.CLASS({
         return refundType === net.nanopay.ticket.RefundTypes.MANUAL ?
           foam.u2.DisplayMode.RW :
           foam.u2.DisplayMode.HIDDEN;
-      }
+      },
+      createVisibility: function(refundType) {
+        return refundType === net.nanopay.ticket.RefundTypes.MANUAL ?
+          foam.u2.DisplayMode.RW :
+          foam.u2.DisplayMode.HIDDEN;
+      },
+      section: 'infoSection'
     },
     {
       class: 'Boolean',
-      name: 'refundFees'
+      name: 'refundFees',
+      section: 'infoSection'
     },
     {
       class: 'Boolean',
-      name: 'chargeNewFees'
-    }
+      name: 'chargeNewFees',
+      section: 'infoSection'
+    },
+    {
+      class: 'String',
+      name: 'comment',
+      value: '',
+      storageTransient: true,
+      section: '_defaultSection',
+      validationPredicates: [],
+    },
   ],
 
   actions: [
