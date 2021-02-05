@@ -17,7 +17,7 @@
 
 foam.CLASS({
   package: 'net.nanopay.ticket',
-  name: 'ReversalTicket',
+  name: 'RefundTicket',
   extends: 'foam.nanos.ticket.Ticket',
 
   documentation: `Transaction reversal request`,
@@ -35,7 +35,7 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'reversalTransaction',
+      name: 'refundTransaction',
       documentation: `Id of the reversal transaction`
     },
     {
@@ -45,65 +45,16 @@ foam.CLASS({
     },
     {
       class: 'Enum',
-      of: 'net.nanopay.ticket.RefundTypes',
-      name: 'refundType'
-    },
-    {
-      class: 'Enum',
       of: 'net.nanopay.ticket.RefundStatus',
       name: 'refundStatus'
     },
     {
-      class: 'Reference',
-      of: 'net.nanopay.account.Account',
-      name: 'sourceAccount',
-      readVisibility: function(refundType) {
-        return refundType === net.nanopay.ticket.RefundTypes.MANUAL ?
-          foam.u2.DisplayMode.RO :
-          foam.u2.DisplayMode.HIDDEN;
-      },
-      updateVisibility: function(refundType) {
-        return refundType === net.nanopay.ticket.RefundTypes.MANUAL ?
-          foam.u2.DisplayMode.RW :
-          foam.u2.DisplayMode.HIDDEN;
-      }
-    },
-    {
-      class: 'Reference',
-      of: 'net.nanopay.account.Account',
-      name: 'destinationAccount',
-      readVisibility: function(refundType) {
-        return refundType === net.nanopay.ticket.RefundTypes.MANUAL ?
-          foam.u2.DisplayMode.RO :
-          foam.u2.DisplayMode.HIDDEN;
-      },
-      updateVisibility: function(refundType) {
-        return refundType === net.nanopay.ticket.RefundTypes.MANUAL ?
-          foam.u2.DisplayMode.RW :
-          foam.u2.DisplayMode.HIDDEN;
-      }
-    },
-    {
-      class: 'Long',
-      name: 'amount',
-      readVisibility: function(refundType) {
-        return refundType === net.nanopay.ticket.RefundTypes.MANUAL ?
-          foam.u2.DisplayMode.RO :
-          foam.u2.DisplayMode.HIDDEN;
-      },
-      updateVisibility: function(refundType) {
-        return refundType === net.nanopay.ticket.RefundTypes.MANUAL ?
-          foam.u2.DisplayMode.RW :
-          foam.u2.DisplayMode.HIDDEN;
-      }
+      class: 'Boolean',
+      name: 'refundOldFees'
     },
     {
       class: 'Boolean',
-      name: 'refundFees'
-    },
-    {
-      class: 'Boolean',
-      name: 'chargeNewFees'
+      name: 'waiveFees'
     }
   ],
 

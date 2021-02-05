@@ -24,7 +24,7 @@ foam.ENUM({
       name: 'AVAILABLE',
       label: 'Available',
       documentation: `
-        A status that indicates that the ReversalTicket is awaiting 
+        A status that indicates that the RefundTicket is awaiting 
         input from users.
       `
     },
@@ -32,7 +32,7 @@ foam.ENUM({
       name: 'REQUESTED',
       label: 'Requested',
       documentation: `
-        A status that indicates that the ReversalTicket is awaiting 
+        A status that indicates that the RefundTicket is awaiting 
         approval by the system and approving users
       `
     },
@@ -40,7 +40,7 @@ foam.ENUM({
       name: 'APPROVED',
       label: 'Approved',
       documentation: `
-        A status that indicates that the ReversalTicket has been approved
+        A status that indicates that the RefundTicket has been approved
         and is awaiting to be actioned on
       `
     },
@@ -48,21 +48,21 @@ foam.ENUM({
       name: 'PROCESSING',
       label: 'Processing',
       documentation: `
-        A status that indicates that the ReversalTicket is currently processing
+        A status that indicates that the RefundTicket is currently processing
       `
     },
     {
       name: 'COMPLETED',
       label: 'Completed',
       documentation: `
-        A status that indicates that the ReversalTicket has completed processing
+        A status that indicates that the RefundTicket has completed processing
       `
     },
     {
       name: 'DECLINED',
       label: 'Declined',
       documentation: `
-        A status that indicates that the ReversalTicket has been rejected either
+        A status that indicates that the RefundTicket has been rejected either
         by the system or approving user
       `
     }

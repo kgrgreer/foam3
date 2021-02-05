@@ -17,7 +17,7 @@
 
 foam.CLASS({
   package: 'net.nanopay.ticket',
-  name: 'ReverseTicketCreateRule',
+  name: 'RefundTicketCreateRule',
 
   implements: [
     'foam.nanos.ruler.RuleAction'
@@ -32,7 +32,7 @@ foam.CLASS({
     'foam.nanos.fs.File',
     'foam.nanos.notification.Notification',
     'foam.nanos.logger.Logger',
-    'net.nanopay.ticket.ReversalTicket',
+    'net.nanopay.ticket.RefundTicket',
     'net.nanopay.tx.SummaryTransaction',
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.tx.TransactionLineItem',
@@ -44,7 +44,7 @@ foam.CLASS({
     {
       name: 'applyAction',
       javaCode: `
-        ReversalTicket request = (ReversalTicket) obj;
+        RefundTicket request = (RefundTicket) obj;
         DAO txnDAO = (DAO) x.get("localTransactionDAO");
         Transaction txn = (Transaction) txnDAO.find(request.getRequestTransaction());
 
@@ -52,11 +52,7 @@ foam.CLASS({
           txn = txn.findRoot(x);
         }
 
-        if ( txn.isChainRefundable(x) ) {
-          request.setRefundStatus(RefundStatus.REQUESTED);
-        } else {
-          throw new RuntimeException("Transaction is in non reversable state");
-        }
+        // fill in txn amount, fee amount, etc
       `
     }
   ]

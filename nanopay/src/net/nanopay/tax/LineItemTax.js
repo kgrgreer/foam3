@@ -123,11 +123,6 @@ foam.CLASS({
           dao$: choices
         });
       }
-    },
-    {
-      class: 'Boolean',
-      name: 'refundable',
-      value: false
     }
   ],
 

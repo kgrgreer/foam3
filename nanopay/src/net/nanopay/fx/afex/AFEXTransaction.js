@@ -151,12 +151,6 @@ foam.CLASS({
       setCompletionDate(other.getCompletionDate());
       setLineItems(other.getLineItems());
       `
-    },
-    {
-      name: 'isRefundable',
-      javaCode: `
-      return false;
-      `
     }
   ],
 });

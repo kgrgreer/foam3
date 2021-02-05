@@ -17,7 +17,7 @@
 
 foam.CLASS({
   package: 'net.nanopay.ticket',
-  name: 'ReversalRule',
+  name: 'RefundRule',
 
   implements: [
     'foam.nanos.ruler.RuleAction'
@@ -32,7 +32,7 @@ foam.CLASS({
     'foam.nanos.fs.File',
     'foam.nanos.notification.Notification',
     'foam.nanos.logger.Logger',
-    'net.nanopay.ticket.ReversalTicket',
+    'net.nanopay.ticket.RefundTicket',
     'net.nanopay.tx.SummaryTransaction',
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.tx.TransactionLineItem',
@@ -48,7 +48,7 @@ foam.CLASS({
         @Override
         public void execute(X x) {
           
-          ReversalTicket request = (ReversalTicket) obj;
+          RefundTicket request = (RefundTicket) obj;
           DAO txnDAO = (DAO) x.get("localTransactionDAO");
           Transaction txn = (Transaction) txnDAO.find(request.getRequestTransaction());
           Transaction newTxn = new Transaction();
@@ -60,16 +60,10 @@ foam.CLASS({
           Transaction problemTxn = txn.getStateTxn(x);
           problemTxn = (Transaction) problemTxn.fclone();
 
-          if ( request.getRefundType() == RefundTypes.MANUAL ) {
-            newTxn.setSourceAccount(request.getSourceAccount());
-            newTxn.setDestinationAccount(request.getDestinationAccount());
-            newTxn.setAmount(request.getAmount());
-          } else {
-            newTxn.setSourceAccount(problemTxn.getSourceAccount());
-            newTxn.setDestinationAccount(txn.getSourceAccount());
-            newTxn.setAmount(txn.getAmount());
-            newTxn.setLineItems(request.getLineitems());
-          }
+          newTxn.setSourceAccount(problemTxn.getSourceAccount());
+          newTxn.setDestinationAccount(txn.getSourceAccount());
+          newTxn.setAmount(txn.getAmount());
+          newTxn.setLineItems(request.getLineitems());
 
           problemTxn.setStatus(TransactionStatus.CANCELLED);
           txnDAO.put(problemTxn);

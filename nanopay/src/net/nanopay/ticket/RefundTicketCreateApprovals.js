@@ -17,13 +17,13 @@
 
 foam.CLASS({
   package: 'net.nanopay.ticket',
-  name: 'ReversalTicketCreateApprovals',
+  name: 'RefundTicketCreateApprovals',
 
   implements: [
     'foam.nanos.ruler.RuleAction'
   ],
 
-  documentation: `Rule to send out approvals after the ReversalTicket has been created`,
+  documentation: `Rule to send out approvals after the RefundTicket has been created`,
 
   javaImports: [
     'foam.core.ContextAwareAgent',
@@ -41,7 +41,7 @@ foam.CLASS({
     'java.util.ArrayList',
     'java.util.List',
     'foam.util.SafetyUtil',
-    'net.nanopay.ticket.ReversalTicket',
+    'net.nanopay.ticket.RefundTicket',
     'net.nanopay.ticket.RefundStatus',
     'foam.nanos.logger.Logger'
   ],
@@ -64,8 +64,8 @@ foam.CLASS({
 
         FObject clonedObj = obj.fclone();
 
-        ReversalTicket oldReversalTicket = (ReversalTicket) obj;
-        ReversalTicket newReversalTicket = (ReversalTicket) clonedObj;
+        RefundTicket oldRefundTicket = (RefundTicket) obj;
+        RefundTicket newRefundTicket = (RefundTicket) clonedObj;
 
         agency.submit(x, new ContextAwareAgent() {
 
@@ -79,7 +79,7 @@ foam.CLASS({
             String hashedId = new StringBuilder("d")
               .append("localTicketDAO")
               .append(":o")
-              .append(String.valueOf(oldReversalTicket.getId()))
+              .append(String.valueOf(oldRefundTicket.getId()))
               .toString();
 
             List approvablesPending = ((ArraySink) approvableDAO
@@ -96,11 +96,11 @@ foam.CLASS({
             }
 
             try {
-              FObject objectToDiffAgainst = (FObject) oldReversalTicket;
+              FObject objectToDiffAgainst = (FObject) oldRefundTicket;
 
-              newReversalTicket.setRefundStatus(RefundStatus.APPROVED);
+              newRefundTicket.setRefundStatus(RefundStatus.APPROVED);
 
-              Map propertiesToApprove = objectToDiffAgainst.diff(newReversalTicket);
+              Map propertiesToApprove = objectToDiffAgainst.diff(newRefundTicket);
 
               Approvable approvable = (Approvable) approvableDAO.put_(getX(), new Approvable.Builder(getX())
                 .setLookupId(hashedId)
@@ -109,7 +109,7 @@ foam.CLASS({
                 .setStatus(ApprovalStatus.REQUESTED)
                 .setObjId(String.valueOf(obj.getProperty("id")))
                 .setOperation(operation)
-                .setOf(oldReversalTicket.getClassInfo())
+                .setOf(oldRefundTicket.getClassInfo())
                 .setPropertiesToUpdate(propertiesToApprove).build());
 
               ApprovalRequest  approvalRequest = new ApprovalRequest.Builder(getX())
@@ -120,9 +120,9 @@ foam.CLASS({
                 .setGroup(getGroupToNotify())
                 .setClassification(
                   "Ticket:" +
-                  oldReversalTicket.getId() +
+                  oldRefundTicket.getId() +
                   " for Transaction:" +
-                  oldReversalTicket.getRequestTransaction()
+                  oldRefundTicket.getRequestTransaction()
                 )
                 .setStatus(ApprovalStatus.REQUESTED).build();
 
@@ -131,7 +131,7 @@ foam.CLASS({
               throw new RuntimeException(e);
             }
           }
-        }, "Sent out approval requests to approve the ReversalTicket");
+        }, "Sent out approval requests to approve the RefundTicket");
       `
     }
   ]

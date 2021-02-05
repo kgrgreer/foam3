@@ -125,12 +125,6 @@ foam.CLASS({
     }
     `
   },
-  {
-    name: 'isRefundable',
-    javaCode: `
-    return false;
-    `
-  }
   ]
 
 });

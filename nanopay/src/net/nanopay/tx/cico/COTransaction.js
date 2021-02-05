@@ -187,15 +187,6 @@ foam.CLASS({
         }
         return 0;
       `,
-    },
-    {
-      name: 'isRefundable',
-      javaCode: `
-      if ( getStatus() == TransactionStatus.SENT ) {
-        return false;
-      }
-      return true;
-    `,
     }
  ]
 });

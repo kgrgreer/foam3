@@ -34,13 +34,13 @@ p({
 p({
   "class":"net.nanopay.ticket.SudoTicketApprovalResponseRule",
   "id":"40c3758f-054b-490c-8328-f6ab33ebaed0",
-  "name":"ReverseTicketCreateRule",
+  "name":"RefundTicketCreateRule",
   "predicate": {
     "class": "foam.mlang.predicate.And",
     "args": [
       {
         "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
-        "of": "net.nanopay.ticket.ReversalTicket"
+        "of": "net.nanopay.ticket.RefundTicket"
       },
       {
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
@@ -60,7 +60,7 @@ p({
   "enabled":true,
   "saveHistory":false,
   "action":{
-    "class":"net.nanopay.ticket.ReverseTicketCreateRule"
+    "class":"net.nanopay.ticket.RefundTicketCreateRule"
   },
   "lifecycleState":1
 })
@@ -75,14 +75,14 @@ p({
   "daoKey":"localTicketDAO",
   "operation":3,
   "action":{
-    "class":"net.nanopay.ticket.ReversalRule"
+    "class":"net.nanopay.ticket.RefundRule"
   },
   "predicate": {
     "class": "foam.mlang.predicate.And",
     "args": [
       {
         "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
-        "of": "net.nanopay.ticket.ReversalTicket"
+        "of": "net.nanopay.ticket.RefundTicket"
       },
       {
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
@@ -102,13 +102,13 @@ p({
 p({
   "class":"foam.nanos.ruler.Rule",
   "id":"680ef5ac-78c1-4331-813f-d78058ad827c",
-  "name":"ReversalTicket Create Approvals",
+  "name":"RefundTicket Create Approvals",
   "priority":100,
   "ruleGroup":"Ticket",
   "daoKey":"localTicketDAO",
   "operation":3,
   "action":{
-    "class":"net.nanopay.ticket.ReversalTicketCreateApprovals",
+    "class":"net.nanopay.ticket.RefundTicketCreateApprovals",
     "groupToNotify": "ablii-fraud-ops"
   },
   "predicate": {
@@ -116,7 +116,7 @@ p({
     "args": [
       {
         "class": "foam.nanos.ruler.predicate.IsInstancePredicate",
-        "of": "net.nanopay.ticket.ReversalTicket"
+        "of": "net.nanopay.ticket.RefundTicket"
       },
       {
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
