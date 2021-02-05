@@ -252,8 +252,6 @@ foam.CLASS({
       name: 'reconcile',
       label: 'Reconcile',
       isAvailable: function() {
-        var self = this.private_;
-
         return ! this.payerReconciled && this.status === this.InvoiceStatus.PAID;
       },
       code: async function(X) {
@@ -269,9 +267,6 @@ foam.CLASS({
     {
       name: 'viewDetails',
       label: 'View details',
-      isAvailable: function() {
-        return true;
-      },
       code: async function(X) {
         let updatedInvoice = await X.accountingIntegrationUtil.forceSyncInvoice(this);
         X.stack.push({
@@ -285,17 +280,17 @@ foam.CLASS({
       name: 'payNow',
       label: 'Pay now',
       isAvailable: function() {
-        var self = this.private_;
-        return this.status === self.InvoiceStatus.UNPAID ||
-          this.status === self.InvoiceStatus.OVERDUE;
+        return this.status === this.InvoiceStatus.UNPAID ||
+          this.status === this.InvoiceStatus.OVERDUE;
       },
       code: async function(X) {
+        var self = this;
         let updatedInvoice = await X.accountingIntegrationUtil.forceSyncInvoice(this);
 
         if ( ! updatedInvoice ) {
           return;
         }
-        self.checkAndNotifyAbilityToPay().then((result) => {
+        this.checkAndNotifyAbilityToPay().then((result) => {
           if ( result ) {
             X.menuDAO.find('sme.quickAction.send').then((menu) => {
               var clone = menu.clone();
@@ -316,8 +311,7 @@ foam.CLASS({
       name: 'edit',
       label: 'Edit',
       isAvailable: function() {
-        var self = this.private_;
-        return this.status === self.InvoiceStatus.DRAFT;
+        return this.status === this.InvoiceStatus.DRAFT;
       },
       code: function(X) {
         X.menuDAO.find('sme.quickAction.send').then((menu) => {
@@ -335,8 +329,7 @@ foam.CLASS({
     {
       name: 'approve',
       isAvailable: function() {
-        var self = this.private_;
-        return this.status === self.InvoiceStatus.PENDING_APPROVAL;
+        return this.status === this.InvoiceStatus.PENDING_APPROVAL;
       },
       availablePermissions: ['business.invoice.pay', 'user.invoice.pay'],
       code: function(X) {
@@ -358,20 +351,18 @@ foam.CLASS({
       name: 'markVoid',
       label: 'Mark as Void',
       isEnabled: function() {
-      var self = this.private_;
         return this.__subContext__.subject.user.id === this.createdBy &&
-          ( this.status === self.InvoiceStatus.UNPAID ||
-          this.status === self.InvoiceStatus.OVERDUE ||
-          this.status === self.InvoiceStatus.PENDING_APPROVAL ) && !
+          ( this.status === this.InvoiceStatus.UNPAID ||
+          this.status === this.InvoiceStatus.OVERDUE ||
+          this.status === this.InvoiceStatus.PENDING_APPROVAL ) && !
           ( net.nanopay.accounting.quickbooks.model.QuickbooksInvoice.isInstance(this) || net.nanopay.accounting.xero.model.XeroInvoice.isInstance(this) );
       },
       isAvailable: function() {
-        var self = this.private_;
-        return this.status === self.InvoiceStatus.UNPAID ||
-          this.status === self.InvoiceStatus.PAID ||
-          this.status === self.InvoiceStatus.PROCESSING ||
-          this.status === self.InvoiceStatus.OVERDUE ||
-          this.status === self.InvoiceStatus.PENDING_APPROVAL;
+        return this.status === this.InvoiceStatus.UNPAID ||
+          this.status === this.InvoiceStatus.PAID ||
+          this.status === this.InvoiceStatus.PROCESSING ||
+          this.status === this.InvoiceStatus.OVERDUE ||
+          this.status === this.InvoiceStatus.PENDING_APPROVAL;
       },
       code: function() {
         var self = this.__subContext__;
@@ -385,8 +376,7 @@ foam.CLASS({
       name: 'delete',
       label: 'Delete',
       isAvailable: function() {
-        var self = this.private_;
-        return this.status === self.InvoiceStatus.DRAFT;
+        return this.status === this.InvoiceStatus.DRAFT;
       },
       code: function(X) {
         var self = this.__subContext__;
