@@ -56,7 +56,7 @@ foam.CLASS({
   tableColumns :[
     'id',
     'amount',
-    'referenceNumber',
+    'externalId',
     'chainSummary.summary',
     'chainSummary.status',
     'chainSummary.errorCode'

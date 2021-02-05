@@ -37,6 +37,10 @@ foam.CLASS({
     'foam.nanos.auth.ruler.EnsurePropertyOnCreateRule',
     'foam.nanos.crunch.Capability',
     'foam.nanos.crunch.CapabilityCapabilityJunction',
+    'foam.nanos.notification.EmailSetting',
+    'foam.nanos.notification.NotificationSetting',
+    'foam.nanos.notification.SlackSetting',
+    'foam.nanos.notification.sms.SMSSetting',
     'foam.nanos.theme.Theme',
     'foam.nanos.theme.ThemeDomain',
     'foam.nanos.ruler.Rule',
@@ -88,6 +92,7 @@ foam.CLASS({
         DAO themeDAO = (DAO) x.get("themeDAO");
         DAO themeDomainDAO = (DAO) x.get("themeDomainDAO");
         DAO ruleDAO = (DAO) x.get("localRuleDAO");
+        DAO notificationSettingDefaultsDAO = (DAO) x.get("notificationSettingDefaultsDAO");
 
         // Add spid prerequisites
         addSpidPrerequisites(x, spid, mspInfo.getMenuPermissions(), "menuCapability");
@@ -123,6 +128,12 @@ foam.CLASS({
           themeDomain.setTheme(clientTheme.getId());
           themeDomainDAO.put(themeDomain);
         }
+
+        // add notificationSettingDefaults for spid
+        notificationSettingDefaultsDAO.put(new NotificationSetting.Builder(x).setSpid(spid).build());
+        notificationSettingDefaultsDAO.put(new EmailSetting.Builder(x).setSpid(spid).build());
+        notificationSettingDefaultsDAO.put(new SlackSetting.Builder(x).setSpid(spid).build());
+        notificationSettingDefaultsDAO.put(new SMSSetting.Builder(x).setSpid(spid).build());
 
         // Create spid-admin group
         Group adminGroup = new Group();
