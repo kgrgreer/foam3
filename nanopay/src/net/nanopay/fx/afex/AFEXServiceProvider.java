@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -185,6 +186,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             onboardingRequest.setExpectedMonthlyVolume(mapAFEXVolumeEstimates(business.getSuggestedUserTransactionInfo().getAnnualDomesticVolume()));
             onboardingRequest.setDescription(business.getSuggestedUserTransactionInfo().getTransactionPurpose());
             onboardingRequest.setNAICS(getBusinessSector(business.getBusinessSectorId()));
+            onboardingRequest.setKeyIndividuals(getKeyIndividuals(business));
 
             if ( ! SafetyUtil.isEmpty(business.getOperatingBusinessName()) ) {
               onboardingRequest.setDoingBusinessAs(business.getOperatingBusinessName());
@@ -1245,6 +1247,61 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     return signingOfficers.isEmpty() ? null : signingOfficers.get(0);
   }
 
+
+  protected KeyIndividual[] getKeyIndividuals(Business business) {
+    if ( business == null ) return null;
+    List<KeyIndividual> keyIndividualList = new ArrayList<>();
+    List<User> signingOfficers = ((ArraySink) business.getSigningOfficers(x).getDAO().select(new ArraySink())).getArray();
+    for ( User officer : signingOfficers ) {
+      KeyIndividual individual = new KeyIndividual();
+      individual.setFirstName(officer.getFirstName());
+      individual.setLastName(officer.getLastName());
+      individual.setIndividualRoles(new String[] {"OFFICER"}); // TODO ENUM TYPE
+      individual.setJobTitle(officer.getJobTitle());
+      individual.setAccountPrimaryContact("True");
+      int ownership = getSigningOfficerOwnershipPercentage(business, officer);
+      individual.setPercentOwnership(String.valueOf(ownership));
+
+      try {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        individual.setDateOfBirth(dateFormat.format(officer.getBirthday()));
+      } catch(Exception e) {
+        logger_.error("Failed parse beneficial owner birthday.", e);
+      }
+      Address address = officer.getAddress();
+      if ( address != null ) {
+        individual.setAddress(address.getAddress());
+        individual.setCity(address.getCity());
+        Country country = address.findCountryId(this.x);
+        if ( country != null ) {
+          individual.setCountry(address.getCountryId());
+          individual.setCitizenship(country.getName());
+        }
+
+        Region region = address.findRegionId(this.x);
+        if ( null != region )individual.setState(region.getRegionCode());
+        individual.setZip(address.getPostalCode());
+      }
+
+      PersonalIdentification identification = officer.getIdentification();
+      if ( identification != null ) {
+        individual.setIdType(getAFEXIdentificationType(identification.getIdentificationTypeId()));
+        individual.setIdNo(identification.getIdentificationNumber());
+        individual.setIssueJurisdiction(identification.getCountryId());
+        try {
+          SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+          dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+          individual.setIdExpirationDate(dateFormat.format(identification.getExpirationDate()));
+        } catch(Exception e) {
+          logger_.error("Failed parse company officer identification expiration date.", e);
+        }
+      }
+      keyIndividualList.add(individual);
+    }
+    return keyIndividualList.toArray(new KeyIndividual[keyIndividualList.size()]);
+  }
+
   protected String getAFEXIdentificationType(long idType) {
     switch((int)idType) {
       case 1:
@@ -1254,7 +1311,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       case 3:
         return "Passport";
       default:
-        return "Item";
+        return "CitizenshipCard";
     }
   }
 
