@@ -56,7 +56,7 @@ foam.CLASS({
   tableColumns :[
     'id',
     'amount',
-    'referenceNumber',
+    'externalId',
     'chainSummary.summary',
     'chainSummary.status',
     'chainSummary.errorCode'
@@ -83,7 +83,8 @@ foam.CLASS({
     net.nanopay.tx.model.Transaction.ID.clone().copyFrom({
       label: 'Transaction ID',
       section: 'transactionInformation',
-      order: 1
+      order: 1,
+      gridColumns: 12
     }),
     net.nanopay.tx.model.Transaction.SOURCE_ACCOUNT.clone().copyFrom({
       label: 'Payer Account',
