@@ -586,7 +586,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     if ( null == user ) throw new RuntimeException("Unable to find User " + userId);
 
     // Check if business address is set and not empty
-    Address userAddress = new Address();
+    Address userAddress = null;
     if ( user instanceof Contact ) {
       Contact contact = (Contact) user;
       if ( contact.getBusinessAddress() != null && ! SafetyUtil.equals((contact.getBusinessAddress()).getCountryId(), "") ) {
