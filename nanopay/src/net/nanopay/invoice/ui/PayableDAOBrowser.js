@@ -107,6 +107,21 @@ foam.CLASS({
 
       imports: [
         'accountingIntegrationUtil'
+      ],
+
+      exports: [
+        'click',
+      ],
+
+      methods: [
+        function click(obj, id, X) {
+          let updatedInvoice = X.accountingIntegrationUtil.forceSyncInvoice(this);
+          X.stack.push({
+            class: 'net.nanopay.sme.ui.InvoiceOverview',
+            invoice: updatedInvoice,
+            isPayable: true
+          });
+        },
       ]
     }
   ],
