@@ -38,6 +38,11 @@ foam.CLASS({
     }
   ],
 
+  tableColumns: [
+    'event',
+    'created'
+  ],
+
   properties: [
     {
       class: 'Long',
