@@ -36,7 +36,8 @@ foam.CLASS({
 
   messages: [
     { name: 'NO_BANK_NEEDED', message: 'No Bank Account information needed. Please proceed to next step.' },
-    { name: 'ADD_ACCOUNT_TITLE', message: 'Add account' }
+    { name: 'ADD_ACCOUNT_TITLE', message: 'Add account' },
+    { name: 'INVALID_BANK', message: 'Invalid Bank Account' },
   ],
 
   sections: [
@@ -66,6 +67,11 @@ foam.CLASS({
       },
       factory: function() {
         return net.nanopay.bank.BRBankAccount.create({ clientAccountInformationTitle: '' }, this);
+      },
+      validateObj: function(bankAccount$errors_) {
+        if ( bankAccount$errors_ && bankAccount$errors_.length ) {
+          return this.INVALID_BANK;
+        }
       }
     },
     {
@@ -78,7 +84,7 @@ foam.CLASS({
       },
       visibility: function(hasBankAccount) {
         return hasBankAccount ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
-      },
+      }
     }
   ],
   methods: [

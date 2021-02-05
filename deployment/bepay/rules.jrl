@@ -1,15 +1,12 @@
 p({
   class: "net.nanopay.tx.fee.TransactionFeeRule",
   id: "454df571-f639-4506-8d59-98b4f39934e4",
-  name: "BPP Fee",
-  documentation: "Add fixed fee line item for BPP transactions.",
-  feeName: "BPP Fixed Fee",
+  name: "BePay Fee",
+  documentation: "BePay transaction fee",
+  feeName: "BePay Fee",
   feeAccount: "512360f6-ec67-4339-9fc4-9a677bc2bff7",
-  ruleGroup: "TransactionFeeRule",
   feeDenomination: "BRL",
   feeClass: "net.nanopay.tx.FeeLineItem",
-  rateName: "Total Rate",
-  isInvertedRate: true,
   rateExpiry: {
     class: "foam.nanos.cron.TimeHMS",
     hour: 24
@@ -46,15 +43,15 @@ p({
       }
     ]
   },
-  spid: "bpp",
+  spid: "bepay",
   lifecycleState:1
 })
 p({
   class: "net.nanopay.tx.fee.TransactionFeeRule",
   id: "9e7661a6-610b-47ad-b521-96b9c760fb16",
-  name: "BPP Fee",
-  documentation: "Add percentage fee line item for BPP transactions.",
-  feeName: "BPP Percentage Fee",
+  name: "IOF",
+  documentation: "IOF charge for BePay transactions.",
+  feeName: "IOF",
   feeAccount: "512360f6-ec67-4339-9fc4-9a677bc2bff7",
   ruleGroup: "TransactionFeeRule",
   feeDenomination: "BRL",
@@ -97,6 +94,52 @@ p({
       }
     ]
   },
-  spid: "bpp",
+  spid: "bepay",
   lifecycleState:1
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"afex-crunch-user-onboarding-rule",
+  "name":"Onboard User to AFEX",
+  "documentation":"Rule to onboard user to AFEX after required afex onboarding capabilities are submitted.",
+  "priority":1,
+  "ruleGroup":"AFEXCrunchOnboarding",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "predicate":{
+    "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+    "status":1,
+    "statusChanged":true,
+    "category":"AFEXUserOnboarding"
+  },
+  "action":{"class":"net.nanopay.partner.afex.crunch.AFEXUserOnboardingRule"},
+  "enabled":true,
+  "saveHistory":true,
+  "lifecycleState":1,
+  "spid":"bepay"
+})
+
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"bepay-user-compliance-passed-rule",
+  "name":"Set User Compliance",
+  "documentation":"Rule to set user compliance to passed after required onboarding capabilities are submitted.",
+  "priority":1,
+  "ruleGroup":"onboarding",
+  "daoKey":"userCapabilityJunctionDAO",
+  "operation":3,
+  "after":true,
+  "predicate":{
+    "class":"net.nanopay.crunch.compliance.IsCapabilityOfCertainCategoryAndStatus",
+    "status":1,
+    "statusChanged":true,
+    "category":"AFEXUserOnboarding"
+  },
+  "action":{"class":"net.nanopay.crunch.compliance.SetComplianceOnUser"},
+  "enabled":true,
+  "saveHistory":true,
+  "lifecycleState":1,
+  "spid":"bepay"
 })

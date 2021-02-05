@@ -1,0 +1,5 @@
+p({
+  class:"foam.nanos.crunch.CapabilityCategoryCapabilityJunction",
+  sourceId:"AFEXUserOnboarding",
+  targetId:"BF58A50D-70F5-45CB-A79A-AF18C1D6F685"
+})

@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -14,13 +15,13 @@ import foam.core.X;
 import foam.dao.ArraySink;
 import foam.dao.DAO;
 import foam.i18n.TranslationService;
-import foam.mlang.MLang;
 import foam.nanos.auth.Address;
 import foam.nanos.auth.AuthService;
 import foam.nanos.auth.Country;
 import foam.nanos.auth.Region;
 import foam.nanos.auth.User;
 import foam.nanos.auth.LifecycleState;
+import foam.nanos.crunch.connection.CapabilityPayload;
 import foam.nanos.crunch.UserCapabilityJunction;
 import foam.nanos.logger.Logger;
 import foam.nanos.notification.Notification;
@@ -32,6 +33,7 @@ import net.nanopay.contacts.AFEXCNBeneficiaryCapability;
 import net.nanopay.contacts.Contact;
 import net.nanopay.country.br.BrazilBusinessInfoData;
 import net.nanopay.fx.ExchangeRate;
+import net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms;
 import net.nanopay.fx.FXQuote;
 import net.nanopay.fx.FXService;
 import net.nanopay.model.BeneficialOwner;
@@ -65,6 +67,41 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     this.logger_ = (Logger) x.get("logger");
   }
 
+  public boolean onboardUser(User user) throws RuntimeException {
+    try {
+      DAO afexUserDAO = (DAO) this.x.get("afexUserDAO");
+      AFEXUser afexUser = (AFEXUser) afexUserDAO.find(EQ(AFEXUser.USER, user.getId()));
+
+      // set up the required parameters for onboarding private client
+      OnboardAFEXClientRequest onboardingRequest = new OnboardAFEXClientRequest();
+      onboardingRequest.setAccountEntityType(AccountEntityType.PRIVATE_CLIENT.getLabel());
+      onboardingRequest.setContactAddress1(user.getAddress().getAddress());
+      onboardingRequest.setContactCountryCode(user.getAddress().findCountryId(this.x).getCode());
+      onboardingRequest.setFirstName(user.getFirstName());
+      onboardingRequest.setLastName(user.getLastName());
+      onboardingRequest.setTermsAndConditions("TRUE");
+
+      OnboardAFEXClientResponse newClient = afexClient.onboardAFEXClient(onboardingRequest, user.getSpid(), AccountEntityType.PRIVATE_CLIENT);
+      if ( newClient != null && afexUser == null ) {
+        afexUser  = new AFEXUser();
+        afexUser.setUser(user.getId());
+        afexUser.setApiKey(newClient.getAPIKey());
+        afexUser.setAccountNumber(newClient.getAccountNumber());
+        afexUserDAO.put(afexUser);
+      }
+      return true;
+    } catch(Exception e) {
+      logger_.error("Failed to onboard client to AFEX.", e);
+      Notification notification = new Notification.Builder(x)
+        .setBody("AFEX user failed to onboard for user id: " + user.getId() + " with error: " + e.getMessage())
+        .setGroupId(user.getSpid()+ "-payment-ops")
+        .setNotificationType("AFEX")
+        .build();
+      ((DAO) x.get("localNotificationDAO")).inX(x).put(notification);
+    }
+    return false;
+  }
+
   public boolean onboardBusiness(BankAccount bankAccount) {
     Business business = (Business) ((DAO) this.x.get("localBusinessDAO")).find(bankAccount.getOwner());
     return onboardBusiness(business);
@@ -74,40 +111,41 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     if ( business == null ||  ! business.getCompliance().equals(ComplianceStatus.PASSED) ) return false;
 
     try {
-        DAO afexBusinessDAO = (DAO) this.x.get("afexBusinessDAO");
-        AFEXBusiness afexBusiness = (AFEXBusiness) afexBusinessDAO.find(EQ(AFEXBusiness.USER, business.getId()));
+        DAO afexUserDAO = (DAO) this.x.get("afexUserDAO");
+        AFEXUser afexUser = (AFEXUser) afexUserDAO.find(EQ(AFEXUser.USER, business.getId()));
 
         User signingOfficer = getSigningOfficer(this.x, business);
-        AuthService auth = (AuthService) this.x.get("auth");
-          OnboardCorporateClientRequest onboardingRequest = new OnboardCorporateClientRequest();
+          OnboardAFEXClientRequest onboardingRequest = new OnboardAFEXClientRequest();
+          onboardingRequest.setAccountEntityType(AccountEntityType.CORPORATE_CLIENT.getLabel());
           Region businessRegion = business.getAddress().findRegionId(this.x);
           Country businessCountry = business.getAddress().findCountryId(this.x);
-          if ( afexBusiness != null ) {
-            onboardingRequest.setAccountNumber(afexBusiness.getAccountNumber());
+          if ( afexUser != null ) {
+            onboardingRequest.setAccountNumber(afexUser.getAccountNumber());
           }
 
           if ( signingOfficer != null ) {
             Boolean useHardCoded = business.getAddress().getCountryId().equals("CA");
-            String identificationType = businessCountry == null || businessCountry.getId().equals("US") ? "EmployerIdentificationNumber_EIN"
-              : "BusinessRegistrationNumber"; // Madlen asked it is hardcoded
-            String identificationNumber = getBusinessRegistrationNumber(business);// Madlen asked it is hardcoded
-            if ( businessRegion != null ) onboardingRequest.setBusinessStateRegion(businessRegion.getRegionCode());
-            onboardingRequest.setAccountPrimaryIdentificationExpirationDate("01/01/2099"); // Asked to hardcode this by Madlen(AFEX)
-            onboardingRequest.setAccountPrimaryIdentificationNumber( useHardCoded ? "000000000" : identificationNumber);
-            onboardingRequest.setAccountPrimaryIdentificationType(useHardCoded ? "BusinessRegistrationNumber" : identificationType);
-            if ( businessCountry.getId().equals("US") ) onboardingRequest.setTaxIdentificationNumber(business.getTaxIdentificationNumber());
-            if ( businessCountry != null ) onboardingRequest.setBusinessCountryCode(businessCountry.getCode());
-            if ( businessRegion != null ) onboardingRequest.setBusinessStateRegion(businessRegion.getRegionCode());
-            onboardingRequest.setBusinessAddress1(business.getAddress().getAddress());
+            String identificationType = businessCountry == null || businessCountry.getId().equals("CA") ? "Passport"
+              : "EmployerIdentificationNumber_EIN"; // Madlen asked it is hardcoded
+            String identificationNumber = SafetyUtil.isEmpty(business.getBusinessRegistrationNumber()) ? "N/A"
+              : business.getBusinessRegistrationNumber(); // Madlen asked it is hardcoded
+            if ( businessRegion != null ) onboardingRequest.setBusinessState(businessRegion.getRegionCode());
+            onboardingRequest.setIDExpirationDate("01/01/2099"); // Asked to hardcode this by Madlen(AFEX)
+            onboardingRequest.setIDNo( useHardCoded ? "000000000" : identificationNumber);
+            onboardingRequest.setIDType(useHardCoded ? "BusinessRegistrationNumber" : identificationType);
+            if ( businessCountry.getId().equals("US") ) onboardingRequest.setFederalTaxId(business.getTaxIdentificationNumber());
+            if ( businessCountry != null ) onboardingRequest.setBusinessCountry(businessCountry.getCode());
+            if ( businessRegion != null ) onboardingRequest.setBusinessState(businessRegion.getRegionCode());
+            onboardingRequest.setBusinessAddress(business.getAddress().getAddress());
             onboardingRequest.setBusinessCity(business.getAddress().getCity());
-            onboardingRequest.setWebsite(business.getWebsite());
+            onboardingRequest.setBusinessWebsite(business.getWebsite());
 
             if ( businessCountry != null )
-              onboardingRequest.setAccountPrimaryIdentificationIssuer( useHardCoded ? "Canada" : businessCountry.getName());
-            onboardingRequest.setBusinessName(business.getBusinessName());
+              onboardingRequest.setCountryOfIncorporation( useHardCoded ? "Canada" : businessCountry.getName());
+            onboardingRequest.setLegalCompanyName(business.getBusinessName());
             onboardingRequest.setBusinessZip(business.getAddress().getPostalCode());
             onboardingRequest.setCompanyType(getBusinessType(business.getBusinessTypeId()));
-            onboardingRequest.setContactBusinessPhone(business.getPhoneNumber());
+            onboardingRequest.setBusinessTelephoneNo(business.getPhoneNumber());
             String businessRegDate = null;
             try {
               SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
@@ -117,20 +155,19 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
               logger_.error("Error onboarding business. Error parsing business registration date.", t);
               throw new RuntimeException("Error onboarding business. Error parsing business registration date.");
             }
-            onboardingRequest.setDateOfIncorporation(businessRegDate);
+            onboardingRequest.setDateOfFormation(businessRegDate);
             onboardingRequest.setFirstName(signingOfficer.getFirstName());
-            onboardingRequest.setGender("Male"); // TO be removed in API by AFEX
             onboardingRequest.setLastName(signingOfficer.getLastName());
-            onboardingRequest.setPrimaryEmailAddress(signingOfficer.getEmail());
+            onboardingRequest.setEmail(signingOfficer.getEmail());
             Address contactAddress = signingOfficer.getAddress();
             if ( contactAddress != null ) {
-              onboardingRequest.setContactAddress1(contactAddress.getAddress());
-              onboardingRequest.setContactCity(contactAddress.getCity());
+              onboardingRequest.setAddress(contactAddress.getAddress());
+              onboardingRequest.setCity(contactAddress.getCity());
               Region region = contactAddress.findRegionId(this.x);
-              if ( region != null ) onboardingRequest.setContactStateRegion(region.getRegionCode());
+              if ( region != null ) onboardingRequest.setState(region.getRegionCode());
               Country country = contactAddress.findCountryId(this.x);
-              if ( country != null ) onboardingRequest.setContactCountryCode(country.getCode());
-              onboardingRequest.setContactZip(contactAddress.getPostalCode());
+              if ( country != null ) onboardingRequest.setCountry(country.getCode());
+              onboardingRequest.setZip(contactAddress.getPostalCode());
               onboardingRequest.setCitizenship(country.getName());
             }
 
@@ -149,20 +186,21 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
             onboardingRequest.setExpectedMonthlyVolume(mapAFEXVolumeEstimates(business.getSuggestedUserTransactionInfo().getAnnualDomesticVolume()));
             onboardingRequest.setDescription(business.getSuggestedUserTransactionInfo().getTransactionPurpose());
             onboardingRequest.setNAICS(getBusinessSector(business.getBusinessSectorId()));
+            onboardingRequest.setKeyIndividuals(getKeyIndividuals(business));
 
             if ( ! SafetyUtil.isEmpty(business.getOperatingBusinessName()) ) {
-              onboardingRequest.setTradeName(business.getOperatingBusinessName());
+              onboardingRequest.setDoingBusinessAs(business.getOperatingBusinessName());
             } else {
-              onboardingRequest.setTradeName(business.getOrganization());
+              onboardingRequest.setDoingBusinessAs(business.getOrganization());
             }
             onboardingRequest.setTermsAndConditions("true");
-            OnboardCorporateClientResponse newClient = afexClient.onboardCorporateClient(onboardingRequest, business.getSpid());
-            if ( newClient != null && afexBusiness == null ) {
-              afexBusiness  = new AFEXBusiness();
-              afexBusiness.setUser(business.getId());
-              afexBusiness.setApiKey(newClient.getAPIKey());
-              afexBusiness.setAccountNumber(newClient.getAccountNumber());
-              afexBusinessDAO.put(afexBusiness);
+            OnboardAFEXClientResponse newClient = afexClient.onboardAFEXClient(onboardingRequest, business.getSpid(), AccountEntityType.CORPORATE_CLIENT);
+            if ( newClient != null && afexUser == null ) {
+              afexUser  = new AFEXUser();
+              afexUser.setUser(business.getId());
+              afexUser.setApiKey(newClient.getAPIKey());
+              afexUser.setAccountNumber(newClient.getAccountNumber());
+              afexUserDAO.put(afexUser);
             }
             return true;
           }
@@ -361,8 +399,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
   }
 
   public Boolean directDebitEnrollment (Business business, BankAccount bankAccount) {
-    AFEXBusiness afexBusiness = getAFEXBusiness(x, business.getId());
-    if ( afexBusiness ==  null ) {
+    AFEXUser afexUser = getAFEXUser(x, business.getId());
+    if ( afexUser ==  null ) {
       return false;
     }
     DAO padDAO = (DAO) x.get("padCaptureDAO");
@@ -374,12 +412,12 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     } else {
       return false;
     }
-    FindBankByNationalIDResponse bankResponse = getBankInformation(x, afexBusiness.getApiKey(), bankAccount, business.getSpid());
+    FindBankByNationalIDResponse bankResponse = getBankInformation(x, afexUser.getApiKey(), bankAccount, business.getSpid());
     DirectDebitEnrollmentRequest directDebitEnrollmentRequest = new DirectDebitEnrollmentRequest.Builder(x)
       .setAccountNumber(bankAccount.getAccountNumber())
       .setAccountOwnerFirstName(pad.getFirstName())
       .setAccountOwnerLastName(pad.getLastName())
-      .setAPIKey(afexBusiness.getApiKey())
+      .setAPIKey(afexUser.getApiKey())
       .setBankDetailsVerified(bankAccount.getStatus() == BankAccountStatus.VERIFIED)
       .setBankName(bankResponse != null ? bankResponse.getInstitutionName() : bankAccount.findInstitution(x).getName())
       .setCurrency(bankAccount.getDenomination())
@@ -399,17 +437,17 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     return true;
   }
 
-  public String getClientAccountStatus(AFEXBusiness afexBusiness) throws RuntimeException {
+  public String getClientAccountStatus(AFEXUser afexUser) throws RuntimeException {
     String status = null;
-    if ( afexBusiness == null ) return null;
-    User user = User.findUser(x, afexBusiness.getUser());
+    if ( afexUser == null ) return null;
+    User user = User.findUser(x, afexUser.getUser());
     try {
-      GetClientAccountStatusResponse response = this.afexClient.getClientAccountStatus(afexBusiness.getApiKey(), user.getSpid());
+      GetClientAccountStatusResponse response = this.afexClient.getClientAccountStatus(afexUser.getApiKey(), user.getSpid());
       if ( response != null ) {
         status = response.getAccountStatus();
       }
     } catch(Throwable t) {
-      logger_.error("Error getting afex business compliance status.", t);
+      logger_.error("Error getting afex user compliance status.", t);
     }
     return status;
   }
@@ -424,9 +462,9 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     quoteRequest.setAmount(String.valueOf(toDecimal(amount)));
     quoteRequest.setCurrencyPair(targetCurrency + sourceCurrency);
 
-    AFEXBusiness business = this.getAFEXBusiness(x, user);
+    AFEXUser business = this.getAFEXUser(x, user);
     if ( business == null ) {
-      throw new RuntimeException("No afexBusiness found for user " + user);
+      throw new RuntimeException("No afexUser found for user " + user);
     }
     quoteRequest.setValueDate(getValueDate(targetCurrency, sourceCurrency, business.getApiKey(), userObj.getSpid(), valueDate));
     quoteRequest.setClientAPIKey(business.getApiKey());
@@ -449,7 +487,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
         LocalDateTime time;
         DAO credentialDAO = (DAO) x.get("afexCredentialDAO");
-        AFEXCredentials credentials = (AFEXCredentials) credentialDAO.find(MLang.EQ(AFEXCredentials.SPID, userObj.getSpid()));
+        AFEXCredentials credentials = (AFEXCredentials) credentialDAO.find(EQ(AFEXCredentials.SPID, userObj.getSpid()));
         if ( credentials != null && credentials.getQuoteExpiryTime() != 0 ) {
           time = LocalDateTime.now().plusSeconds(credentials.getQuoteExpiryTime());
         } else {
@@ -548,7 +586,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     if ( null == user ) throw new RuntimeException("Unable to find User " + userId);
 
     // Check if business address is set and not empty
-    Address userAddress = new Address();
+    Address userAddress = null;
     if ( user instanceof Contact ) {
       Contact contact = (Contact) user;
       if ( contact.getBusinessAddress() != null && ! SafetyUtil.equals((contact.getBusinessAddress()).getCountryId(), "") ) {
@@ -562,11 +600,11 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     BankAccount bankAccount = (BankAccount) ((DAO) x.get("localAccountDAO")).find(bankAccountId);
     if ( null == bankAccount ) throw new RuntimeException("Unable to find Bank account: " + bankAccountId );
 
-    AFEXBusiness afexBusiness = getAFEXBusiness(x, sourceUser);
-    if ( null == afexBusiness ) throw new RuntimeException("Business as not been completely onboarded on partner system. " + sourceUser);
+    AFEXUser afexUser = getAFEXUser(x, sourceUser);
+    if ( null == afexUser ) throw new RuntimeException("Business as not been completely onboarded on partner system. " + sourceUser);
 
     Address bankAddress = bankAccount.getAddress() == null ? bankAccount.getBankAddress() : bankAccount.getAddress();
-    FindBankByNationalIDResponse bankInformation = getBankInformation(x,afexBusiness.getApiKey(),bankAccount, user.getSpid());
+    FindBankByNationalIDResponse bankInformation = getBankInformation(x,afexUser.getApiKey(),bankAccount, user.getSpid());
     if ( null == bankAddress ) {
       bankAddress = new Address.Builder(x)
         .setCountryId(bankAccount.getCountry())
@@ -578,7 +616,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     }
 
     // Check payee does not already exists on AFEX
-    FindBeneficiaryResponse beneficiaryResponse = findBeneficiary(userId,afexBusiness.getApiKey(), user.getSpid());
+    FindBeneficiaryResponse beneficiaryResponse = findBeneficiary(userId,afexUser.getApiKey(), user.getSpid());
     if ( null == beneficiaryResponse ) {
       String allowedChars = "[^a-zA-Z0-9,.+()?/:‘\\s-]";
       String beneficiaryName = SafetyUtil.isEmpty(user.getOrganization()) ? user.getBusinessName() : user.getOrganization();
@@ -607,7 +645,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       if ( region != null ) createBeneficiaryRequest.setBeneficiaryRegion(region.getRegionCode());
       createBeneficiaryRequest.setCurrency(bankAccount.getDenomination());
       createBeneficiaryRequest.setVendorId(String.valueOf(userId));
-      createBeneficiaryRequest.setClientAPIKey(afexBusiness.getApiKey());
+      createBeneficiaryRequest.setClientAPIKey(afexUser.getApiKey());
 
       if ( bankAccount.getDenomination().equals("CNY") ){
         Contact contact = (Contact) ((DAO) x.get("localContactDAO")).find(user.getId());
@@ -681,10 +719,10 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     Address bankAddress = bankAccount.getAddress() == null ? bankAccount.getBankAddress() : bankAccount.getAddress();
     if ( null == bankAddress ) throw new RuntimeException("Bank Account Address is null " + bankAccountId );
 
-    AFEXBusiness afexBusiness = getAFEXBusiness(x, sourceUser);
-    if ( null == afexBusiness ) throw new RuntimeException("Business as not been completely onboarded on partner system. " + sourceUser);
+    AFEXUser afexUser = getAFEXUser(x, sourceUser);
+    if ( null == afexUser ) throw new RuntimeException("Business as not been completely onboarded on partner system. " + sourceUser);
 
-    FindBankByNationalIDResponse bankInformation = getBankInformation(x,afexBusiness.getApiKey(),bankAccount, user.getSpid());
+    FindBankByNationalIDResponse bankInformation = getBankInformation(x,afexUser.getApiKey(),bankAccount, user.getSpid());
     String bankName = bankInformation != null ? bankInformation.getInstitutionName() : bankAccount.getName();
 
     String allowedChars = "[^a-zA-Z0-9,.+()?/:‘\\s-]";
@@ -707,7 +745,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     updateBeneficiaryRequest.setBeneficiaryRegion(region.getRegionCode());
     updateBeneficiaryRequest.setCurrency(bankAccount.getDenomination());
     updateBeneficiaryRequest.setVendorId(String.valueOf(userId));
-    updateBeneficiaryRequest.setClientAPIKey(afexBusiness.getApiKey());
+    updateBeneficiaryRequest.setClientAPIKey(afexUser.getApiKey());
 
     try {
       UpdateBeneficiaryResponse updateBeneficiaryResponse = this.afexClient.updateBeneficiary(updateBeneficiaryRequest, user.getSpid());
@@ -732,10 +770,10 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
   }
 
   public boolean directDebitUnenrollment(Business business, BankAccount bankAccount) {
-    AFEXBusiness afexBusiness = getAFEXBusiness(x, business.getId());
+    AFEXUser afexUser = getAFEXUser(x, business.getId());
     DirectDebitUnenrollmentRequest unenrollmentRequest = new DirectDebitUnenrollmentRequest.Builder(x)
       .setAccountNumber(bankAccount.getAccountNumber())
-      .setApiKey(afexBusiness.getApiKey())
+      .setApiKey(afexUser.getApiKey())
       .setCurrency(bankAccount.getDenomination())
       .build();
 
@@ -745,12 +783,12 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
   }
 
   public void deletePayee(long payeeUserId, long payerUserId) throws RuntimeException {
-    AFEXBusiness afexBusiness = getAFEXBusiness(x, payerUserId);
-    if ( null == afexBusiness ) throw new RuntimeException("Business as not been completely onboarded on partner system. " + payerUserId);
+    AFEXUser afexUser = getAFEXUser(x, payerUserId);
+    if ( null == afexUser ) throw new RuntimeException("Business as not been completely onboarded on partner system. " + payerUserId);
     User user = User.findUser(x, payerUserId);
     try{
       DisableBeneficiaryRequest request = new DisableBeneficiaryRequest();
-      request.setClientAPIKey(afexBusiness.getApiKey());
+      request.setClientAPIKey(afexUser.getApiKey());
       request.setVendorId(String.valueOf(payeeUserId));
       this.afexClient.disableBeneficiary(request, user.getSpid());
       DAO afexBeneficiaryDAO = ((DAO) x.get("afexBeneficiaryDAO")).inX(x);
@@ -774,8 +812,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     }
     AFEXTransaction afexTransaction = (AFEXTransaction) transaction;
 
-    AFEXBusiness afexBusiness = getAFEXBusiness(x,afexTransaction.getPayerId());
-    if ( null == afexBusiness ) {
+    AFEXUser afexUser = getAFEXUser(x,afexTransaction.getPayerId());
+    if ( null == afexUser ) {
       logger_.error("Business has not been completely onboarded on partner system. " + transaction.getPayerId());
       throw new RuntimeException("Business has not been completely onboarded on partner system. " + transaction.getPayerId());
     }
@@ -796,7 +834,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     long tradeAmount = 0;
     tradeAmount =  afexTransaction.getDestinationAmount();
     CreateTradeRequest createTradeRequest = new CreateTradeRequest();
-    createTradeRequest.setClientAPIKey(afexBusiness.getApiKey());
+    createTradeRequest.setClientAPIKey(afexUser.getApiKey());
     createTradeRequest.setAmount(String.valueOf(toDecimal(tradeAmount)));
     createTradeRequest.setIsAmountSettlement(String.valueOf(false));
     createTradeRequest.setSettlementCcy(afexTransaction.getSourceCurrency());
@@ -867,8 +905,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     Account destinationAccount = afexTransaction.findDestinationAccount(x);
     Account sourceAccount = afexTransaction.findSourceAccount(x);
 
-    AFEXBusiness afexBusiness = getAFEXBusiness(x,sourceAccount.getOwner());
-    if ( null == afexBusiness ) {
+    AFEXUser afexUser = getAFEXUser(x,sourceAccount.getOwner());
+    if ( null == afexUser ) {
       logger_.error("Business has not been completely onboarded on partner system. " + sourceAccount.getOwner());
       throw new RuntimeException("Business has not been completely onboarded on partner system. " + sourceAccount.getOwner());
     }
@@ -904,7 +942,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     if ( null != tradeResponse && tradeResponse.getTradeNumber() > 0 ) {
       User user = User.findUser(x, transaction.findSourceAccount(x).getOwner());
       CreatePaymentRequest createPaymentRequest = new CreatePaymentRequest();
-      createPaymentRequest.setClientAPIKey(afexBusiness.getApiKey());
+      createPaymentRequest.setClientAPIKey(afexUser.getApiKey());
       createPaymentRequest.setPaymentDate(tradeResponse.getValueDate());
       createPaymentRequest.setAmount(String.valueOf(tradeResponse.getAmount()));
       createPaymentRequest.setCurrency(tradeResponse.getTradeCcy());
@@ -939,15 +977,15 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
 
       AFEXTransaction txn = (AFEXTransaction) transaction.fclone();
       Account srcAccount = txn.findSourceAccount(x);
-      AFEXBusiness afexBusiness = getAFEXBusiness(x, srcAccount.getOwner());
+      AFEXUser afexUser = getAFEXUser(x, srcAccount.getOwner());
       long userId = 0;
       CheckPaymentStatusRequest request = new CheckPaymentStatusRequest();
       if ( txn instanceof AFEXFundingTransaction ) {
-        afexBusiness = getAFEXBusiness(x, txn.findDestinationAccount(x).getOwner());
-        userId = afexBusiness.getUser();
+        afexUser = getAFEXUser(x, txn.findDestinationAccount(x).getOwner());
+        userId = afexUser.getUser();
         request.setClientAPIKey("");
-      } else if ( afexBusiness != null ){
-        request.setClientAPIKey(afexBusiness.getApiKey());
+      } else if ( afexUser != null ){
+        request.setClientAPIKey(afexUser.getApiKey());
         userId = transaction.findSourceAccount(x).getOwner();
       } else {
         throw new RuntimeException("Business has not been completely onboarded on partner system. " + transaction.getPayerId());
@@ -1023,7 +1061,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     }
     AFEXTransaction afexTransaction = (AFEXTransaction) txn;
 
-    AFEXBusiness business = getAFEXBusiness(x, afexTransaction.getPayerId());
+    AFEXUser business = getAFEXUser(x, afexTransaction.getPayerId());
     GetConfirmationPDFRequest pdfRequest = new GetConfirmationPDFRequest.Builder(x)
       .setClientAPIKey(business.getApiKey())
       .setTradeNumber(afexTransaction.getAfexTradeResponseNumber()+"")
@@ -1037,9 +1075,9 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     return null;
   }
 
-  public AFEXBusiness getAFEXBusiness(X x, Long userId) {
-    DAO dao = (DAO) x.get("afexBusinessDAO");
-    return (AFEXBusiness) dao.find(EQ(AFEXBusiness.USER, userId));
+  public AFEXUser getAFEXUser(X x, Long userId) {
+    DAO dao = (DAO) x.get("afexUserDAO");
+    return (AFEXUser) dao.find(EQ(AFEXUser.USER, userId));
   }
 
   protected AFEXBeneficiary getAFEXBeneficiary(X x, Long beneficiaryId, Long ownerId) {
@@ -1084,13 +1122,13 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     Long userId = transaction.findDestinationAccount(x).getOwner();
     User user = User.findUser(x, userId);
     if ( null == user ) throw new RuntimeException("Unable to find User " + userId);
-    AFEXBusiness afexBusiness = getAFEXBusiness(x, userId);
-    if ( null == afexBusiness ) throw new RuntimeException("User not yet onboarded to payment partner " + userId);
+    AFEXUser afexUser = getAFEXUser(x, userId);
+    if ( null == afexUser ) throw new RuntimeException("User not yet onboarded to payment partner " + userId);
 
     CreateFundingBalanceRequest request = new CreateFundingBalanceRequest();
-    request.setAccountNumber(afexBusiness.getAccountNumber());
+    request.setAccountNumber(afexUser.getAccountNumber());
     request.setCurrency(transaction.getSourceCurrency());
-    request.setClientAPIKey(afexBusiness.getApiKey());
+    request.setClientAPIKey(afexUser.getApiKey());
     try {
       CreateFundingBalanceResponse response = afexClient.createFundingBalance(request, user.getSpid());
       if ( response == null ) throw new RuntimeException("Unable to get a valid response from  CreateFundingBalance API" );
@@ -1145,11 +1183,11 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     User user = User.findUser(x, userId);
     if ( null == user ) throw new RuntimeException("Unable to find User " + userId);
 
-    AFEXBusiness afexBusiness = getAFEXBusiness(x, user.getId());
-    if ( null == afexBusiness ) throw new RuntimeException("User not yet onboarded to payment partner " + userId);
+    AFEXUser afexUser = getAFEXUser(x, user.getId());
+    if ( null == afexUser ) throw new RuntimeException("User not yet onboarded to payment partner " + userId);
 
     try {
-      FundingBalance f = afexClient.getFundingBalance(afexBusiness.getApiKey(), currency, user.getSpid());
+      FundingBalance f = afexClient.getFundingBalance(afexUser.getApiKey(), currency, user.getSpid());
       if ( f != null )
         return saveFundingBalance(x, userId, f.getFundingBalanceId(), f.getAccountId(), currency);
     } catch(Throwable t) {
@@ -1164,9 +1202,9 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     User user = User.findUser(x, userId);
     if ( null == user ) throw new RuntimeException("Unable to find User " + userId);
 
-    AFEXBusiness afexBusiness = getAFEXBusiness(x, user.getId());
+    AFEXUser afexUser = getAFEXUser(x, user.getId());
     // check if instant beneficiary exists already;
-    AFEXBeneficiary afexBeneficiary = getAFEXBeneficiary(x, afexBusiness.getId(), afexBusiness.getId(), true);
+    AFEXBeneficiary afexBeneficiary = getAFEXBeneficiary(x, afexUser.getId(), afexUser.getId(), true);
     if ( afexBeneficiary != null ) {
       return afexBeneficiary;
     }
@@ -1209,6 +1247,61 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
     return signingOfficers.isEmpty() ? null : signingOfficers.get(0);
   }
 
+
+  protected KeyIndividual[] getKeyIndividuals(Business business) {
+    if ( business == null ) return null;
+    List<KeyIndividual> keyIndividualList = new ArrayList<>();
+    List<User> signingOfficers = ((ArraySink) business.getSigningOfficers(x).getDAO().select(new ArraySink())).getArray();
+    for ( User officer : signingOfficers ) {
+      KeyIndividual individual = new KeyIndividual();
+      individual.setFirstName(officer.getFirstName());
+      individual.setLastName(officer.getLastName());
+      individual.setIndividualRoles(new String[] {"OFFICER"}); // TODO ENUM TYPE
+      individual.setJobTitle(officer.getJobTitle());
+      individual.setAccountPrimaryContact("True");
+      int ownership = getSigningOfficerOwnershipPercentage(business, officer);
+      individual.setPercentOwnership(String.valueOf(ownership));
+
+      try {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+        individual.setDateOfBirth(dateFormat.format(officer.getBirthday()));
+      } catch(Exception e) {
+        logger_.error("Failed parse beneficial owner birthday.", e);
+      }
+      Address address = officer.getAddress();
+      if ( address != null ) {
+        individual.setAddress(address.getAddress());
+        individual.setCity(address.getCity());
+        Country country = address.findCountryId(this.x);
+        if ( country != null ) {
+          individual.setCountry(address.getCountryId());
+          individual.setCitizenship(country.getName());
+        }
+
+        Region region = address.findRegionId(this.x);
+        if ( null != region )individual.setState(region.getRegionCode());
+        individual.setZip(address.getPostalCode());
+      }
+
+      PersonalIdentification identification = officer.getIdentification();
+      if ( identification != null ) {
+        individual.setIdType(getAFEXIdentificationType(identification.getIdentificationTypeId()));
+        individual.setIdNo(identification.getIdentificationNumber());
+        individual.setIssueJurisdiction(identification.getCountryId());
+        try {
+          SimpleDateFormat dateFormat = new SimpleDateFormat("MM-dd-yyyy");
+          dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
+          individual.setIdExpirationDate(dateFormat.format(identification.getExpirationDate()));
+        } catch(Exception e) {
+          logger_.error("Failed parse company officer identification expiration date.", e);
+        }
+      }
+      keyIndividualList.add(individual);
+    }
+    return keyIndividualList.toArray(new KeyIndividual[keyIndividualList.size()]);
+  }
+
   protected String getAFEXIdentificationType(long idType) {
     switch((int)idType) {
       case 1:
@@ -1218,7 +1311,7 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       case 3:
         return "Passport";
       default:
-        return "Item";
+        return "CitizenshipCard";
     }
   }
 

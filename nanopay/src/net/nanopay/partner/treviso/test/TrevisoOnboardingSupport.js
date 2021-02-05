@@ -513,11 +513,11 @@ foam.CLASS({
       }
     },
     {
-      name: 'getAFEXBusiness',
+      name: 'getAFEXUser',
       code: async function(x, business) {
         const E = foam.mlang.ExpressionsSingleton.create();
-        return await this.client(x, 'afexBusinessDAO', net.nanopay.fx.afex.AFEXBusiness).find(
-          E.EQ(net.nanopay.fx.afex.AFEXBusiness.USER, business.id)
+        return await this.client(x, 'afexUserDAO', net.nanopay.fx.afex.AFEXUser).find(
+          E.EQ(net.nanopay.fx.afex.AFEXUser.USER, business.id)
         );
       }
     },
@@ -525,7 +525,7 @@ foam.CLASS({
       name: 'getApprovalRequest',
       code: async function(x, daoKey, objId) {
         const E = foam.mlang.ExpressionsSingleton.create();
-        return await this.client(x, 'approvalRequestDAO', net.nanopay.fx.afex.AFEXBusiness).find(E.AND(
+        return await this.client(x, 'approvalRequestDAO', net.nanopay.fx.afex.AFEXUser).find(E.AND(
           E.EQ(foam.nanos.approval.ApprovalRequest.DAO_KEY, daoKey),
           E.EQ(foam.nanos.approval.ApprovalRequest.OBJ_ID, objId)
         ));

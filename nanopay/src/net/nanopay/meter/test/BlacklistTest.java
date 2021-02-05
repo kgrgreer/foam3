@@ -9,10 +9,13 @@ import foam.nanos.auth.UserUserJunction;
 import foam.nanos.approval.ApprovalRequest;
 import foam.nanos.approval.ApprovalStatus;
 import foam.nanos.auth.Group;
+import foam.nanos.auth.ServiceProvider;
 import foam.nanos.auth.UserUserJunction;
 import foam.nanos.crunch.AgentCapabilityJunction;
 import foam.nanos.crunch.UserCapabilityJunction;
 import foam.nanos.crunch.CapabilityJunctionStatus;
+import foam.nanos.notification.*;
+import foam.nanos.notification.sms.*;
 import foam.nanos.session.Session;
 import foam.nanos.test.Test;
 import foam.util.Auth;
@@ -69,6 +72,11 @@ public class BlacklistTest extends Test {
     DAO approvalRequestDAO = (DAO) x.get("approvalRequestDAO");
     DAO smeUserRegistrationDAO = (DAO) x.get("smeUserRegistrationDAO");
 
+    ((DAO) x.get("localServiceProviderDAO")).put(new ServiceProvider.Builder(x).setId("test").build());
+    ((DAO) x.get("notificationSettingDefaultsDAO")).put(new NotificationSetting.Builder(x).setSpid("test").setEnabled(false).build());
+    ((DAO) x.get("notificationSettingDefaultsDAO")).put(new SlackSetting.Builder(x).setSpid("test").setEnabled(false).build());
+    ((DAO) x.get("notificationSettingDefaultsDAO")).put(new EmailSetting.Builder(x).setSpid("test").setEnabled(false).build());
+    ((DAO) x.get("notificationSettingDefaultsDAO")).put(new SMSSetting.Builder(x).setSpid("test").setEnabled(false).build());
     ////////////////////////////////////////////////////////////////////////////////////
     ///////////////////////////////// SETUP ////////////////////////////////////////////
     ////////////////////////////////////////////////////////////////////////////////////
@@ -92,7 +100,7 @@ public class BlacklistTest extends Test {
     User myAdmin = new User();
     myAdmin.setUserName("Admin321");
     myAdmin.setEmail("email@admin321.com");
-    myAdmin.setDesiredPassword("password");
+    myAdmin.setDesiredPassword("password123");
     myAdmin.setGroup("sme");
     myAdmin.setOrganization("testBusiness");
     myAdmin.setSpid("test");

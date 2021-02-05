@@ -69,12 +69,10 @@ foam.CLASS({
               Subject subject = ucj.getSubject(x);
               X ownerContext = x.put("subject", subject);
 
-              status = ApprovalStatus.REJECTED == approval ? CapabilityJunctionStatus.ACTION_REQUIRED : CapabilityJunctionStatus.APPROVED;
+              status = ApprovalStatus.REJECTED == approval ? CapabilityJunctionStatus.ACTION_REQUIRED : CapabilityJunctionStatus.APPROVED;          
+              if ( approval == ApprovalStatus.REJECTED ) return;
+              
               ucj.setStatus(status);
-
-              if ( approval == ApprovalStatus.REJECTED && getClearDataOnRejection() ) {
-                clearData(ownerContext, ucj);
-              }
 
               // Update junction
               ((DAO) x.get("userCapabilityJunctionDAO")).inX(ownerContext).put(ucj);

@@ -34,9 +34,10 @@ foam.CLASS({
 
   sections: [
     {
-      name: 'transactionChainSummary',
+      name: 'transactionChainSummaryInformation',
+      title: 'Transaction Status Summary',
       help: 'Transaction chain information can be added here',
-      order: 4
+      order: 15
     }
   ],
 
@@ -47,7 +48,7 @@ foam.CLASS({
       of: 'net.nanopay.tx.ChainSummary',
       storageTransient: true,
       visibility: 'RO',
-      section: 'transactionChainSummary'
+      section: 'transactionChainSummaryInformation'
     },
     {
       name: 'status',

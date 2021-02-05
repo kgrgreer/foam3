@@ -142,7 +142,7 @@ foam.CLASS({
           }
         });
 
-        return decoratedSink;
+        return sink;
       `
     }
   ]

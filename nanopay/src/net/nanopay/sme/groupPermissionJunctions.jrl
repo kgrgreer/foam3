@@ -15,6 +15,7 @@ p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId"
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"service.notificationDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"menu.read.sme.quickAction.*"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"service.notificationSettingDAO"})
+p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"service.notificationSettingDefaultsDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"notificationsetting.create"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"service.paymentCodeDAO"})
 p({"class":"foam.nanos.auth.GroupPermissionJunction","sourceId":"sme","targetId":"paymentcode.create"})
