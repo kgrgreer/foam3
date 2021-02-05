@@ -1,0 +1,4 @@
+p({"class":"foam.nanos.notification.NotificationSetting","id":"8D788C56-E519-4F24-9479-D57DFC174253","spid":"ablii"})
+p({"class":"foam.nanos.notification.EmailSetting","id":"C6747834-3733-494D-9BBC-958DCF4F5AAE","spid":"ablii"})
+p({"class":"foam.nanos.notification.SlackSetting","id":"8928CD92-F81E-4012-A96D-41289EC31D8A","spid":"ablii"})
+p({"class":"foam.nanos.notification.sms.SMSSetting","id":"4BE6CEAC-D73E-46EF-8024-080E8ACC6FD1","spid":"ablii","enabled":false})

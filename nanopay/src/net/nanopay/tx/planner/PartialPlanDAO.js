@@ -131,8 +131,8 @@ foam.CLASS({
         // -- FillQuote --
 
         tq.setPlan(null);
-        Transaction[] ts = (Transaction[]) finalNewPlans.toArray(new Transaction[0]);
         tq.setPlan(ts[0]);
+        Transaction[] ts = (Transaction[]) finalNewPlans.toArray( new Transaction[0] );
         tq.setPlans(ts);
         return getDelegate().put_(x, tq);
       `

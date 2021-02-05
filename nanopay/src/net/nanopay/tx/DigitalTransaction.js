@@ -40,7 +40,7 @@ foam.CLASS({
         return 'Digital Transfer';
       },
       javaFactory: `
-    return "Digital Transfer";
+        return "Digital Transfer";
       `,
     },
     {
