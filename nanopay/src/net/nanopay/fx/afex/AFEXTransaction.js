@@ -59,10 +59,27 @@ foam.CLASS({
       javaFactory: 'return TransactionStatus.PENDING;'
     },
     {
+      class: 'foam.core.Enum',
+      of: 'net.nanopay.fx.afex.AFEXPaymentStatus',
+      name: 'afexPaymentStatus',
+      section: 'transactionInformation',
+      order: 340,
+      gridColumns: 6,
+      value: 'PENDING'
+    },
+    {
       class: 'Long',
       name: 'afexTradeResponseNumber',
-      section: 'basicInfo',
+      section: 'transactionInformation',
+      order: 350,
+      gridColumns: 6,
       documentation: 'id of the AFEX trade response'
+    },
+    
+    {
+      class: 'DateTime',
+      name: 'completionDate',
+      storageTransient: false
     },
     {
       class: 'foam.core.Enum',
@@ -98,18 +115,6 @@ foam.CLASS({
                 }
        return ['No status to choose'];
       }
-    },
-    {
-      class: 'foam.core.Enum',
-      of: 'net.nanopay.fx.afex.AFEXPaymentStatus',
-      name: 'afexPaymentStatus',
-      section: 'basicInfo',
-      value: 'PENDING'
-    },
-    {
-      class: 'DateTime',
-      name: 'completionDate',
-      storageTransient: false
     }
   ],
 
