@@ -56,8 +56,6 @@ p({
   ruleGroup: "TransactionFeeRule",
   feeDenomination: "BRL",
   feeClass: "net.nanopay.tx.FeeLineItem",
-  rateName: "Total Rate",
-  isInvertedRate: true,
   rateExpiry: {
     class: "foam.nanos.cron.TimeHMS",
     hour: 24
