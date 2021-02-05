@@ -33,6 +33,7 @@ foam.CLASS({
     'foam.nanos.notification.Notification',
     'foam.nanos.logger.Logger',
     'net.nanopay.ticket.RefundTicket',
+    'net.nanopay.ticket.RefundStatus',
     'net.nanopay.tx.SummaryTransaction',
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.tx.TransactionLineItem',
@@ -69,6 +70,7 @@ foam.CLASS({
           txnDAO.put(problemTxn);
           txnDAO.put(newTxn);
 
+          request.setRefundStatus(RefundStatus.PROCESSING);
         }
      
       }, "Rule to reverse transaction.");
