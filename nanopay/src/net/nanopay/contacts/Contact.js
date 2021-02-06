@@ -692,6 +692,7 @@ foam.CLASS({
       type: 'Void',
       javaThrows: ['IllegalStateException'],
       javaCode: `
+        super.validate(x);
         if ( getBusinessId() != 0 ) {
           DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
           Business business = (Business) localBusinessDAO.inX(x).find(getBusinessId());
