@@ -155,7 +155,6 @@ foam.CLASS({
       name: 'organization',
       label: 'Business',
       documentation: 'The organization/business associated with the Contact.',
-      includeInDigest: false,
       view: { class: 'foam.u2.tag.Input', focused: true },
       validateObj: function(organization) {
         if (

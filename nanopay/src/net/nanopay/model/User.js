@@ -114,9 +114,6 @@ foam.CLASS({
       class: 'FObjectProperty',
       of: 'foam.nanos.auth.Address',
       name: 'address',
-      factory: function() {
-        return this.Address.create();
-      },
       view: function(_, X) {
         return {
           class: 'net.nanopay.sme.ui.AddressView'
@@ -126,24 +123,12 @@ foam.CLASS({
     {
       class: 'foam.nanos.fs.FileProperty',
       name: 'profilePicture',
-      documentation: `The profile picture of the individual user, initially
-        defaulting to a placeholder picture.`,
-      view: {
-        class: 'foam.nanos.auth.ProfilePictureView',
-        placeholderImage: 'images/ic-placeholder.png'
-      },
       createVisibility: 'HIDDEN'
     },
     {
       class: 'String',
       name: 'organization',
-      documentation: 'The organization/business associated with the User.',
-      displayWidth: 80,
-      width: 100,
-      tableWidth: 160,
-      section: 'businessInformation',
       order: 15,
-      gridColumns: 6,
       label: 'Company Name'
     },
     {
@@ -330,11 +315,9 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
-      value: foam.nanos.auth.LifecycleState.PENDING,
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
-      readVisibility: 'RO',
-      writePermissionRequired: true
+      readVisibility: 'RO'
     },
     {
       class: 'Boolean',
@@ -352,14 +335,12 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'enabled',
-      documentation: 'Determines whether the User is permitted certain actions.',
       javaGetter: `
         return net.nanopay.admin.model.AccountStatus.DISABLED != getStatus();
       `,
       // NOTE: '_enabled_ is deprecated; use _status_ instead.',
       section: 'deprecatedInformation',
-      order: 30,
-      gridColumns: 6
+      order: 30
     },
     {
       class: 'FObjectProperty',
