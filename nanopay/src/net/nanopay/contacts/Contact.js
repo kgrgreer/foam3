@@ -699,23 +699,23 @@ foam.CLASS({
             throw new IllegalStateException("The business this contact references was not found.");
           }
         } else {
-          boolean isValidEmail = true;
-          try {
-            InternetAddress emailAddr = new InternetAddress(this.getEmail());
-            emailAddr.validate();
-          } catch (AddressException ex) {
-            isValidEmail = false;
-          }
-
-          if ( this.getFirstName().length() > NAME_MAX_LENGTH ) {
-            throw new IllegalStateException("First name cannot exceed 70 characters.");
-          } else if ( this.getLastName().length() > NAME_MAX_LENGTH ) {
-            throw new IllegalStateException("Last name cannot exceed 70 characters.");
-          } else  if ( this.getBusinessId() == 0 && SafetyUtil.isEmpty(this.getEmail()) ) {
-            throw new IllegalStateException("Email is required.");
-          } else if ( ! isValidEmail ) {
-            throw new IllegalStateException("Invalid email address.");
-          }
+//          boolean isValidEmail = true;
+//          try {
+//            InternetAddress emailAddr = new InternetAddress(this.getEmail());
+//            emailAddr.validate();
+//          } catch (AddressException ex) {
+//            isValidEmail = false;
+//          }
+//
+//          if ( this.getFirstName().length() > NAME_MAX_LENGTH ) {
+//            throw new IllegalStateException("First name cannot exceed 70 characters.");
+//          } else if ( this.getLastName().length() > NAME_MAX_LENGTH ) {
+//            throw new IllegalStateException("Last name cannot exceed 70 characters.");
+//          } else  if ( this.getBusinessId() == 0 && SafetyUtil.isEmpty(this.getEmail()) ) {
+//            throw new IllegalStateException("Email is required.");
+//          } else if ( ! isValidEmail ) {
+//            throw new IllegalStateException("Invalid email address.");
+//          }
 
           if ( SafetyUtil.isEmpty(this.getOrganization()) ) {
             throw new IllegalStateException("Business name is required.");

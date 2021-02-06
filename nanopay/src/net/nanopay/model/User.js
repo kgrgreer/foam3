@@ -34,19 +34,22 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.mlang.MLang',
+
     'foam.core.FObject',
     'foam.core.PropertyInfo',
-    'static foam.mlang.MLang.AND',
-    'static foam.mlang.MLang.EQ',
-    'static foam.mlang.MLang.INSTANCE_OF',
-    'static foam.mlang.MLang.NOT',
+    'foam.mlang.MLang',
 
     'java.util.List',
     'java.util.regex.Pattern',
-    'javax.mail.internet.InternetAddress',
     'javax.mail.internet.AddressException',
-    'net.nanopay.contacts.Contact'
+    'javax.mail.internet.InternetAddress',
+    'javax.mail.internet.InternetAddress',
+
+    'net.nanopay.contacts.Contact',
+    'static foam.mlang.MLang.AND',
+    'static foam.mlang.MLang.EQ',
+    'static foam.mlang.MLang.INSTANCE_OF',
+    'static foam.mlang.MLang.NOT'
   ],
 
   requires: [
@@ -391,6 +394,27 @@ foam.CLASS({
       ],
       type: 'Void',
       javaCode: `
+        boolean isValidEmail = true;
+        try {
+          InternetAddress emailAddr = new InternetAddress(this.getEmail());
+          emailAddr.validate();
+        } catch (AddressException ex) {
+          isValidEmail = false;
+        }
+
+        if ( this.getFirstName().length() > NAME_MAX_LENGTH ) {
+          throw new IllegalStateException("First name cannot exceed 70 characters.");
+        }
+        if ( this.getLastName().length() > NAME_MAX_LENGTH ) {
+          throw new IllegalStateException("Last name cannot exceed 70 characters.");
+        }
+        if ( SafetyUtil.isEmpty(this.getEmail()) ) {
+          throw new IllegalStateException("Email is required.");
+        }
+        if ( ! isValidEmail ) {
+          throw new IllegalStateException("Invalid email address.");
+        }
+
         List <PropertyInfo> props = getClassInfo().getAxiomsByClass(PropertyInfo.class);
         for ( PropertyInfo prop : props ) {
           try {
