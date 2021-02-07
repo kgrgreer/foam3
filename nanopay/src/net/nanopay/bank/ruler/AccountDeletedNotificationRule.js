@@ -33,7 +33,7 @@ foam.CLASS({
     'foam.nanos.auth.User',
     'foam.nanos.notification.Notification',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.contacts.Contact',
+    'net.nanopay.contacts.PersonalContact',
     'net.nanopay.payment.Institution',
     'static foam.mlang.MLang.EQ'
   ],
@@ -56,7 +56,7 @@ foam.CLASS({
             Institution     institution = (Institution) institutionDAO.find(EQ(Institution.INSTITUTION_NUMBER,account.getInstitutionNumber()));
 
             if ( config == null ) return;
-            if ( owner instanceof Contact ) return;
+            if ( owner instanceof PersonalContact ) return;
 
             HashMap<String, Object> args = new HashMap<>();
             args.put("link",    config.getUrl());
