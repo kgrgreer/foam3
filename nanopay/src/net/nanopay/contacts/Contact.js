@@ -304,6 +304,20 @@ foam.CLASS({
           this.businessId &&
           this.businessStatus !== this.AccountStatus.DISABLED
         ) || this.bankAccount;
+      },
+      code: function(X) {
+        this.checkAndNotifyAbilityToPay().then((result) => {
+          if ( result ) {
+            X.menuDAO.find('sme.quickAction.send').then((menu) => {
+              var clone = menu.clone();
+              Object.assign(clone.handler.view, {
+                invoice: this.Invoice.create({ contactId: this.id }),
+                isPayable: true
+              });
+              clone.launch(X, X.controllerView);
+            });
+          }
+        });
       }
     },
     {
@@ -313,6 +327,20 @@ foam.CLASS({
           this.businessId &&
           this.businessStatus !== this.AccountStatus.DISABLED
         ) || this.bankAccount;
+      },
+      code: function(X) {
+        this.checkAndNotifyAbilityToReceive().then((result) => {
+          if ( result ) {
+            X.menuDAO.find('sme.quickAction.request').then((menu) => {
+              var clone = menu.clone();
+              Object.assign(clone.handler.view, {
+                invoice: this.Invoice.create({ contactId: this.id }),
+                isPayable: false
+              });
+              clone.launch(X, X.controllerView);
+            });
+          }
+        });
       }
     },
     {
