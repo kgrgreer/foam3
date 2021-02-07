@@ -69,6 +69,8 @@ foam.CLASS({
             { type: 'foam.core.FObject', name: 'obj' }
           ],
           javaCode: `
+            if ( ! obj instanceof Contact ) return result;
+
             Contact result = (Contact) obj;
     
             if ( result != null
