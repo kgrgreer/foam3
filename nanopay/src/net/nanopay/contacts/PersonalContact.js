@@ -81,6 +81,11 @@ foam.CLASS({
       name: 'NAME_MAX_LENGTH',
       type: 'Integer',
       value: 70
+    },
+    {
+      name: 'PERMISSION_PREFIX',
+      type: 'String',
+      value: 'personalcontact'
     }
   ],
 
@@ -523,6 +528,98 @@ foam.CLASS({
       code: function(X) {
         return;
       }
+    }
+  ],
+
+  methods: [
+    ...(foam.nanos.crunch.lite.CapableObjectData
+    .getOwnAxiomsByClass(foam.core.Method)
+    .map(p => p.clone())),
+    {
+      type: 'Boolean',
+      name: 'validatePostalCode',
+      args: [
+        {
+          class: 'String',
+          name: 'code'
+        },
+        {
+          class: 'String',
+          name: 'countryId'
+        }
+      ],
+      javaCode: `
+        Pattern caPosCode = Pattern.compile("^[ABCEGHJ-NPRSTVXY]\\\\d[ABCEGHJ-NPRSTV-Z][ -]?\\\\d[ABCEGHJ-NPRSTV-Z]\\\\d$");
+        Pattern usPosCode = Pattern.compile("^\\\\d{5}(?:[-\\\\s]\\\\d{4})?$");
+        Pattern inPosCode = Pattern.compile("^\\\\d{6}(?:[-\\\\s]\\\\d{4})?$");
+
+        switch ( countryId ) {
+          case "CA":
+            return caPosCode.matcher(code).matches();
+          case "US":
+            return usPosCode.matcher(code).matches();
+          case "IN":
+            return inPosCode.matcher(code).matches();
+          default:
+            return false;
+        }
+      `
+    },
+    {
+      name: 'authorizeOnCreate',
+      javaCode: `
+        User user = ((Subject) x.get("subject")).getUser();
+        AuthService auth = (AuthService) x.get("auth");
+
+        if (
+          user.getId() != this.getOwner() &&
+          ! auth.check(x, PERMISSION_PREFIX + ".create." + this.getId())
+        ) {
+          throw new AuthorizationException();
+        }
+      `
+    },
+    {
+      name: 'authorizeOnRead',
+      javaCode: `
+        User user = ((Subject) x.get("subject")).getUser();
+        AuthService auth = (AuthService) x.get("auth");
+
+        if (
+          user.getId() != this.getOwner() &&
+          ! auth.check(x, PERMISSION_PREFIX + ".read." + this.getId())
+        ) {
+          throw new AuthorizationException();
+        }
+      `
+    },
+    {
+      name: 'authorizeOnUpdate',
+      javaCode: `
+        User user = ((Subject) x.get("subject")).getUser();
+        AuthService auth = (AuthService) x.get("auth");
+
+        if (
+          user.getId() != this.getOwner() &&
+          ! auth.check(x, PERMISSION_PREFIX + ".update." + this.getId())
+        ) {
+          throw new AuthorizationException();
+        }
+      `
+    },
+    {
+      name: 'authorizeOnDelete',
+      javaCode: `
+        User user = ((Subject) x.get("subject")).getUser();
+        AuthService auth = (AuthService) x.get("auth");
+
+        if (
+          user.getId() != this.getOwner() &&
+          ! auth.check(x, PERMISSION_PREFIX + ".remove." + this.getId())
+        ) {
+          throw new AuthorizationException();
+        }
+      `
     }
   ]
 });

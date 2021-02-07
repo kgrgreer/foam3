@@ -80,9 +80,9 @@ foam.CLASS({
 
   constants: [
     {
-      name: 'NAME_MAX_LENGTH',
-      type: 'Integer',
-      value: 70
+      name: 'PERMISSION_PREFIX',
+      type: 'String',
+      value: 'contact'
     }
   ],
 
@@ -418,92 +418,6 @@ foam.CLASS({
         }
         if ( SafetyUtil.isEmpty(this.getOrganization()) ) {
           throw new IllegalStateException("Organization is required.");
-        }
-      `
-    },
-    {
-      type: 'Boolean',
-      name: 'validatePostalCode',
-      args: [
-        {
-          class: 'String',
-          name: 'code'
-        },
-        {
-          class: 'String',
-          name: 'countryId'
-        }
-      ],
-      javaCode: `
-        Pattern caPosCode = Pattern.compile("^[ABCEGHJ-NPRSTVXY]\\\\d[ABCEGHJ-NPRSTV-Z][ -]?\\\\d[ABCEGHJ-NPRSTV-Z]\\\\d$");
-        Pattern usPosCode = Pattern.compile("^\\\\d{5}(?:[-\\\\s]\\\\d{4})?$");
-        Pattern inPosCode = Pattern.compile("^\\\\d{6}(?:[-\\\\s]\\\\d{4})?$");
-
-        switch ( countryId ) {
-          case "CA":
-            return caPosCode.matcher(code).matches();
-          case "US":
-            return usPosCode.matcher(code).matches();
-          case "IN":
-            return inPosCode.matcher(code).matches();
-          default:
-            return false;
-        }
-      `
-    },
-    {
-      name: 'authorizeOnCreate',
-      javaCode: `
-        User user = ((Subject) x.get("subject")).getUser();
-        AuthService auth = (AuthService) x.get("auth");
-
-        if (
-          user.getId() != this.getOwner() &&
-          ! auth.check(x, "contact.create." + this.getId())
-        ) {
-          throw new AuthorizationException();
-        }
-      `
-    },
-    {
-      name: 'authorizeOnRead',
-      javaCode: `
-        User user = ((Subject) x.get("subject")).getUser();
-        AuthService auth = (AuthService) x.get("auth");
-
-        if (
-          user.getId() != this.getOwner() &&
-          ! auth.check(x, "contact.read." + this.getId())
-        ) {
-          throw new AuthorizationException();
-        }
-      `
-    },
-    {
-      name: 'authorizeOnUpdate',
-      javaCode: `
-        User user = ((Subject) x.get("subject")).getUser();
-        AuthService auth = (AuthService) x.get("auth");
-
-        if (
-          user.getId() != this.getOwner() &&
-          ! auth.check(x, "contact.update." + this.getId())
-        ) {
-          throw new AuthorizationException();
-        }
-      `
-    },
-    {
-      name: 'authorizeOnDelete',
-      javaCode: `
-        User user = ((Subject) x.get("subject")).getUser();
-        AuthService auth = (AuthService) x.get("auth");
-
-        if (
-          user.getId() != this.getOwner() &&
-          ! auth.check(x, "contact.remove." + this.getId())
-        ) {
-          throw new AuthorizationException();
         }
       `
     },
