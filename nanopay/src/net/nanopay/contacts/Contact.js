@@ -78,29 +78,9 @@ foam.CLASS({
     'net.nanopay.ui.wizard.WizardController'
   ],
 
-  constants: [
-    {
-      name: 'PERMISSION_PREFIX',
-      type: 'String',
-      value: 'contact'
-    }
-  ],
-
   tableColumns: [
     'organization',
     'status'
-  ],
-
-  sections: [
-    {
-      name: 'userInformation',
-      title: 'Contact Information',
-      order: 1
-    },
-    {
-      name: 'businessInformation',
-      order: 2
-    }
   ],
 
   messages: [
@@ -108,44 +88,11 @@ foam.CLASS({
       name: 'CONFIRM_RELATIONSHIP',
       message: `I have a business relationship with this contact`
     },
-    {
-      name: 'INVITE_LABEL',
-      message: 'Invite this contact to join '
-    },
-    {
-      name: 'RESTRICT_INVITE_LABEL',
-      message: 'This contact cannot be invited to join Ablii'
-    },
-    {
-      name: 'UNABLE_TO_ADD_BANK_ACCOUNT_SPLITTER',
-      message: 'capability store'
-    },
-    {
-      name: 'UNABLE_TO_ADD_BANK_ACCOUNT',
-      message: `You currently have not completed the necessary requirements
-          to add an account to your contact. Please visit the capability store to enable payments.`
-    },
     { name: 'ERROR_BUSINESS_PROFILE_NAME_MESSAGE', message: 'Business name required' },
-    { name: 'INVALID_EMAIL', message: 'Valid email required' },
-    { name: 'INVALID_FIRST_NAME', message: 'First name cannot exceed 70 characters' },
-    { name: 'INVALID_LAST_NAME', message: 'Last name cannot exceed 70 characters' },
     { name: 'CONFIRMATION_REQUIRED', message: 'Confirmation required' },
-    { name: 'PLACEHOLDER', message: 'Please select....' },
-    { name: 'HEADER', message: 'Country of bank account' },
     { name: 'MISSING_BANK_WARNING', message: 'Missing bank information' },
     { name: 'CONTACT_PERMISSION', message: 'contact.ro.shouldinvite' },
   ],
-
-  css: `
-    .spinner {
-      text-align: center;
-      margin-top: 20px;
-      margin-bottom: 20px;
-    }
-    .spinner img {
-      width: 60px;
-    }
-  `,
 
   properties: [
     ...(foam.nanos.crunch.lite.CapableObjectData

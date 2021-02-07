@@ -81,11 +81,6 @@ foam.CLASS({
       name: 'NAME_MAX_LENGTH',
       type: 'Integer',
       value: 70
-    },
-    {
-      name: 'PERMISSION_PREFIX',
-      type: 'String',
-      value: 'personalcontact'
     }
   ],
 
@@ -126,11 +121,8 @@ foam.CLASS({
     { name: 'INVALID_EMAIL', message: 'Valid email required' },
     { name: 'INVALID_FIRST_NAME', message: 'First name cannot exceed 70 characters' },
     { name: 'INVALID_LAST_NAME', message: 'Last name cannot exceed 70 characters' },
-    { name: 'CONFIRMATION_REQUIRED', message: 'Confirmation required' },
     { name: 'PLACEHOLDER', message: 'Please select....' },
     { name: 'HEADER', message: 'Country of bank account' },
-    { name: 'MISSING_BANK_WARNING', message: 'Missing bank information' },
-    { name: 'CONTACT_PERMISSION', message: 'contact.ro.shouldinvite' },
   ],
 
   css: `
@@ -573,7 +565,7 @@ foam.CLASS({
 
         if (
           user.getId() != this.getOwner() &&
-          ! auth.check(x, PERMISSION_PREFIX + ".create." + this.getId())
+          ! auth.check(x, "contact.create." + this.getId())
         ) {
           throw new AuthorizationException();
         }
@@ -587,7 +579,7 @@ foam.CLASS({
 
         if (
           user.getId() != this.getOwner() &&
-          ! auth.check(x, PERMISSION_PREFIX + ".read." + this.getId())
+          ! auth.check(x, "contact.read." + this.getId())
         ) {
           throw new AuthorizationException();
         }
@@ -601,7 +593,7 @@ foam.CLASS({
 
         if (
           user.getId() != this.getOwner() &&
-          ! auth.check(x, PERMISSION_PREFIX + ".update." + this.getId())
+          ! auth.check(x, "contact.update." + this.getId())
         ) {
           throw new AuthorizationException();
         }
@@ -615,7 +607,7 @@ foam.CLASS({
 
         if (
           user.getId() != this.getOwner() &&
-          ! auth.check(x, PERMISSION_PREFIX + ".remove." + this.getId())
+          ! auth.check(x, "contact.remove." + this.getId())
         ) {
           throw new AuthorizationException();
         }
