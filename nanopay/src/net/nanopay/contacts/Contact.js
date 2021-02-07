@@ -18,10 +18,10 @@
 foam.CLASS({
   package: 'net.nanopay.contacts',
   name: 'Contact',
-  extends: 'foam.nanos.auth.User',
+  extends: 'net.nanopay.contacts.PersonalContact',
 
   documentation: `
-    The base model, as part of the Self-Serve project, for representing people who,
+    The base model, as part of the Self-Serve project, for business representatives who,
     although they are not registered on the platform, can still receive invoices from
     platform users. Used as a property model in ContactWizardView for the three steps
     of contact creation.
@@ -151,6 +151,34 @@ foam.CLASS({
     ...(foam.nanos.crunch.lite.CapableObjectData
       .getOwnAxiomsByClass(foam.core.Property)
       .map(p => p.clone())),
+      {
+        // REVIEW: this should be storageTransient - believe it's just used for
+        // capability input.
+        class: 'Boolean',
+        name: 'confirm',
+        documentation: `True if the user confirms their relationship with the contact.`,
+        includeInDigest: false,
+        section: 'operationsInformation',
+        gridColumns: 6,
+        label: '',
+        updateVisibility: function() {
+          return foam.u2.DisplayMode.HIDDEN;
+        },
+        createVisibility: function(isEdit, isConsent) {
+          return isEdit || ! isConsent ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
+        },
+        view: function(_, X) {
+          return {
+            class: 'foam.u2.CheckBox',
+            label: X.data.CONFIRM_RELATIONSHIP
+          };
+        },
+        validateObj: function(confirm, isConsent) {
+          if ( ! confirm && isConsent) {
+            return this.CONFIRMATION_REQUIRED;
+          }
+        }
+      },
     {
       name: 'organization',
       label: 'Business',
@@ -192,118 +220,6 @@ foam.CLASS({
       visibility: 'HIDDEN'
     },
     {
-      name: 'legalName',
-      documentation: `A field for the legal first and last name of the Contact,
-        if different than the provided first name.  The field will default to first
-        name, last name.`,
-      visibility: 'HIDDEN',
-      label: 'Name'
-    },
-    {
-      name: 'email',
-      documentation: 'The email address of the Contact.',
-      label: 'Email',
-      view: { class: 'foam.u2.tag.Input' },
-      validateObj: function(email) {
-        if ( ! this.businessId ) {
-          var emailRegex = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-          if ( ! emailRegex.test(email) ) {
-            return this.INVALID_EMAIL;
-          }
-        }
-      }
-    },
-    {
-      name: 'firstName',
-      view: { class: 'foam.u2.tag.Input' },
-      validateObj: function(firstName) {
-        if ( !! firstName ) {
-          if ( firstName.length > this.NAME_MAX_LENGTH ) {
-            return this.INVALID_FIRST_NAME;
-          }
-        }
-      }
-    },
-    {
-      name: 'middleName',
-      visibility: 'HIDDEN',
-      validateObj: function(middleName) {}
-    },
-    {
-      name: 'lastName',
-      view: { class: 'foam.u2.tag.Input' },
-      validateObj: function(lastName) {
-        if ( !! lastName ) {
-          if ( lastName.length > this.NAME_MAX_LENGTH ) {
-            return this.INVALID_LAST_NAME;
-          }
-        }
-      }
-    },
-    {
-      // REVIEW: this should be storageTransient - believe it's just used for
-      // capability input.
-      class: 'Boolean',
-      name: 'confirm',
-      documentation: `True if the user confirms their relationship with the contact.`,
-      includeInDigest: false,
-      section: 'operationsInformation',
-      gridColumns: 6,
-      label: '',
-      updateVisibility: function() {
-        return foam.u2.DisplayMode.HIDDEN;
-      },
-      createVisibility: function(isEdit, isConsent) {
-        return isEdit || ! isConsent ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RW;
-      },
-      view: function(_, X) {
-        return {
-          class: 'foam.u2.CheckBox',
-          label: X.data.CONFIRM_RELATIONSHIP
-        };
-      },
-      validateObj: function(confirm, isConsent) {
-        if ( ! confirm && isConsent) {
-          return this.CONFIRMATION_REQUIRED;
-        }
-      }
-    },
-    {
-      class: 'foam.core.Enum',
-      of: 'net.nanopay.contacts.ContactStatus',
-      name: 'signUpStatus',
-      documentation: `Tracks the registration status of a contact with respect to
-        whether a individual person, or real user, can sign in or not.
-        Pending, Ready and Connected
-      `,
-      includeInDigest: true,
-      visibility: 'HIDDEN',
-      label: 'Status',
-      tableWidth: 170,
-      expression: function(bankAccount, businessId) {
-        return bankAccount || businessId ? net.nanopay.contacts.ContactStatus.READY : net.nanopay.contacts.ContactStatus.PENDING;
-      },
-      tableCellFormatter: function(state, obj) {
-        var color = state.color;
-
-        this.__subContext__.contactDAO.find(obj.id).then(contactObj=> {
-          var format = contactObj.bankAccount || contactObj.businessId ? net.nanopay.contacts.ContactStatus.READY : net.nanopay.contacts.ContactStatus.PENDING;
-          var label = state == net.nanopay.contacts.ContactStatus.CONNECTED ? state.label.replace(/\s+/g, '') : format.label.replace(/\s+/g, '');
-
-          this.start()
-            .start('img')
-              .show(state == net.nanopay.contacts.ContactStatus.CONNECTED)
-              .attrs({ src: this.__subContext__.theme.logo })
-              .style({ 'width': '15px', 'position': 'relative', 'top': '3px', 'right': '4px' })
-            .end()
-            .start().style({ color : color })
-              .add(label)
-            .end()
-          .end();
-        });
-      }
-    },
-    {
       // TODO: This should probably be defined by a relationship.
       class: 'Reference',
       of: 'net.nanopay.model.Business',
@@ -313,158 +229,6 @@ foam.CLASS({
       includeInDigest: false,
       section: 'businessInformation',
       gridColumns: 6
-    },
-    {
-      class: 'Boolean',
-      name: 'loginEnabled',
-      documentation: 'Determines whether the Contact can login to the platform.',
-      value: false
-    },
-    {
-      class: 'Reference',
-      of: 'net.nanopay.account.Account',
-      name: 'bankAccount',
-      includeInDigest: true,
-      documentation: `The unique identifier for the bank account of the Contact
-        if created while registering the Contact.`,
-      section: 'accountInformation',
-      gridColumns: 6
-    },
-    {
-      class: 'FObjectProperty',
-      of: 'net.nanopay.bank.BankAccount',
-      name: 'createBankAccount',
-      documentation: 'A before put bank account object a user creates for the contact.',
-      storageTransient: true,
-      label: '',
-      visibility: function(countries) {
-        return countries.length == 0 && ! this.createBankAccount ?
-          foam.u2.DisplayMode.HIDDEN :
-          foam.u2.DisplayMode.RW;
-      },
-      view: function(_, X) {
-        let e = foam.mlang.Expressions.create();
-        var pred = e.AND(
-            e.EQ(foam.strategy.StrategyReference.DESIRED_MODEL_ID, 'net.nanopay.bank.BankAccount'),
-            e.IN(foam.strategy.StrategyReference.STRATEGY, X.data.countries)
-        );
-        var v = foam.u2.view.FObjectView.create({
-          of: net.nanopay.bank.BankAccount,
-          predicate: pred,
-          placeholder: X.data.PLACEHOLDER,
-          header: X.data.HEADER,
-          classIsFinal: !! X.data.bankAccount,
-          config: {
-            id: { updateVisibility: 'HIDDEN' },
-            summary: { updateVisibility: 'HIDDEN' }
-          },
-          skipBaseClass: true,
-          copyOldData: function(o) { return { isDefault: o.isDefault, forContact: o.forContact }; }
-        }, X);
-        v.data$.sub(function() { v.data.forContact = true; v.data.clientAccountInformationTitle = ''; });
-
-        return v;
-      }
-    },
-    {
-      transient: true,
-      flags: ['web'],
-      name: 'availableCountries',
-      visibility: 'HIDDEN',
-      expression: function(targetCorridorDAO) {
-        return this.PromisedDAO.create({
-          promise: targetCorridorDAO.where(this.INSTANCE_OF(this.PaymentProviderCorridor))
-            .select(this.MAP(this.PaymentProviderCorridor.TARGET_COUNTRY))
-            .then(sink => {
-              let unique = [...new Set(sink.delegate.array)];
-              let arr = [];
-              for ( i = 0; i < unique.length; i++ ) {
-                model = foam.lookup(`net.nanopay.bank.${ unique[i] }BankAccount`);
-                if ( model ) arr.push(model);
-              }
-              this.countries = arr;
-              this.showSpinner = false;
-            })
-        });
-      }
-    },
-    {
-      transient: true,
-      flags: ['web'],
-      name: 'countries',
-      visibility: 'HIDDEN',
-      documentation: `Stores available countries contact can have account domicilied in.`,
-      factory: function() { return []; }
-    },
-    {
-      transient: true,
-      flags: ['web'],
-      label: 'Action Required',
-      name: 'noCorridorsAvailable',
-      documentation: 'GUI when no corridor capabilities have been added to user.',
-      visibility: function(showSpinner, countries, createBankAccount) {
-        return ! showSpinner && countries.length == 0 && ! createBankAccount ?
-          foam.u2.DisplayMode.RO :
-          foam.u2.DisplayMode.HIDDEN;
-      },
-      view: function(_, X) {
-        var arr = X.data.UNABLE_TO_ADD_BANK_ACCOUNT.split(X.data.UNABLE_TO_ADD_BANK_ACCOUNT_SPLITTER);
-        return X.E()
-          .start()
-            .add(arr[0])
-            .start('span')
-              .style({ 'color': '/*%PRIMARY3%*/ #604aff', 'cursor': 'pointer', 'text-decoration': 'underline'})
-              .add(X.data.UNABLE_TO_ADD_BANK_ACCOUNT_SPLITTER)
-              .on('click', function() {
-                this.pushMenu('sme.main.appStore');
-              }.bind(X))
-            .end()
-            .add(arr[1])
-          .end()
-      }
-    },
-    {
-      transient: true,
-      flags: ['web'],
-      name: 'loadingSpinner',
-      label: '',
-      visibility: function(showSpinner, createBankAccount) {
-        return showSpinner && ! createBankAccount ? foam.u2.DisplayMode.RO : foam.u2.DisplayMode.HIDDEN;
-      },
-      factory: function() {
-        return this.LoadingSpinner.create().addClass('spinner');
-      },
-      view: function(_, X) {
-        return X.E().start().add(X.data.loadingSpinner).end();
-      }
-    },
-    {
-      transient: true,
-      flags: ['web'],
-      class: 'Boolean',
-      name: 'showSpinner',
-      value: true
-    },
-    {
-      transient: true,
-      flags: ['web'],
-      class: 'Boolean',
-      name: 'shouldInvite',
-      documentation: 'True if the user wants to invite the contact to join Ablii.',
-      section: 'userInformation',
-      label: '',
-      readPermissionRequired: true,
-      createVisibility: function(createBankAccount$country, isEdit) {
-        return (createBankAccount$country != 'IN' && ! isEdit) ?
-          foam.u2.DisplayMode.RW :
-          foam.u2.DisplayMode.HIDDEN;
-      },
-      updateVisibility: function() {
-        return foam.u2.DisplayMode.HIDDEN;
-      },
-      view: function(_, X) {
-        return foam.u2.CheckBox.create({ label: X.data.INVITE_LABEL + X.theme.appName });
-      }
     },
     {
       class: 'FObjectProperty',
@@ -495,24 +259,7 @@ foam.CLASS({
       storageTransient: true
     },
     {
-      class: 'Boolean',
-      name: 'isEdit',
-      documentation: 'True if the contact is being edited',
-      visibility: 'HIDDEN',
-      storageTransient: true,
-      value: false
-    },
-    {
-      name: 'emailVerified',
-      value: true,
-      documentation: `Verifies that the email address of the Contact is valid.
-        If the email address is not verified the transaction validation logic will
-        throw an error when a Contact is either the Payer or Payee of an invoice.
-      `,
-      section: 'systemInformation'
-    },
-    {
-      // TODO/REVIEW: this should be transient. 
+      // TODO/REVIEW: this should be transient.
       class: 'String',
       name: 'warning',
       section: 'systemInformation',
@@ -531,13 +278,6 @@ foam.CLASS({
           .end();
         }
       }
-    },
-    {
-      class: 'Boolean',
-      name: 'isConsent',
-      documentation: 'Check if should shows consent checkbox when adding contact',
-      visibility: 'HIDDEN',
-      value: true
     }
   ],
 

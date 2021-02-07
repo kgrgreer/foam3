@@ -315,6 +315,7 @@ var classes = [
 
   // Contacts
   'net.nanopay.contacts.Contact',
+  'net.nanopay.contacts.PersonalContact',
   'net.nanopay.contacts.ContactStatus',
   'net.nanopay.contacts.ContactMigrationRule',
   'net.nanopay.contacts.ExternalContactToken',
