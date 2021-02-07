@@ -66,11 +66,13 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
     DAO credentialDAO = (DAO) getX().get("afexCredentialDAO");
     ArraySink arraySink = new ArraySink();
     credentialDAO.where(MLang.EQ(AFEXCredentials.SPID, spid)).select(arraySink);
-    credentials = (AFEXCredentials) (arraySink.getArray()).get(0);
+    if ( arraySink.getArray().size() > 0 ) {
+      credentials = (AFEXCredentials) (arraySink.getArray()).get(0);
+    }
     if ( ! isCredientialsValid() ) {
-      credentials = null;
+      credentials = new AFEXCredentials();
       logger.error(this.getClass().getSimpleName(), "invalid credentials");
-      ((DAO) getX().get("alarmDAO")).put(new Alarm.Builder(getX()).setName("AFEX getCredentials").setReason(AlarmReason.CREDENTIALS).build());
+      ((DAO) getX().get("alarmDAO")).put(new Alarm.Builder(getX()).setName("AFEX getCredentials").setSeverity(foam.log.LogLevel.ERROR).setReason(AlarmReason.CREDENTIALS).build());
     }
     return credentials;
   }
