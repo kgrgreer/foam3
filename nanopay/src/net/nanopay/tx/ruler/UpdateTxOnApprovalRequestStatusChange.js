@@ -52,7 +52,7 @@ foam.CLASS({
               Transaction tx = (Transaction) txDAO.find(request.getObjId());
               if ( request.getStatus() == ApprovalStatus.APPROVED ) {
                 tx.setStatus(TransactionStatus.COMPLETED);
-              } else {
+              } else if ( request.getStatus() == ApprovalStatus.REJECTED ) {
                 tx.setStatus(TransactionStatus.DECLINED);
               }
               txDAO.put(tx);

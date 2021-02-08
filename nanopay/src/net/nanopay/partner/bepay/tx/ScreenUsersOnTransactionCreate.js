@@ -18,6 +18,7 @@
 foam.CLASS({
   package: 'net.nanopay.partner.bepay.tx',
   name: 'ScreenUsersOnTransactionCreate',
+  extends: 'net.nanopay.meter.compliance.dowJones.AbstractDowJonesComplianceRuleAction',
 
   documentation: 'Dow Jones screening for payer and payee',
 
@@ -29,8 +30,10 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
+
+    'java.util.Date',
+
     'net.nanopay.meter.compliance.ComplianceApprovalRequest',
-    'net.nanopay.meter.compliance.dowJones.DowJonesCredentials',
     'net.nanopay.meter.compliance.dowJones.DowJonesResponse',
     'net.nanopay.meter.compliance.dowJones.DowJonesService',
     'net.nanopay.meter.compliance.dowJones.PersonNameSearchData',
@@ -48,13 +51,12 @@ foam.CLASS({
           Transaction tx = (Transaction) obj;
           User payer = tx.findSourceAccount(x).findOwner(x);
           User payee = tx.findDestinationAccount(x).findOwner(x);
-          DowJonesCredentials creds = (DowJonesCredentials) x.get("dowJonesCredentials");
           DowJonesService dowJones = (DowJonesService) x.get("dowJonesService");
           try {
-            if ( screenUser(x, payer, creds, dowJones) && screenUser(x, payee, creds, dowJones) ) {
+            if ( screenUser(x, payer, dowJones) && screenUser(x, payee, dowJones) ) {
               tx.setStatus(TransactionStatus.COMPLETED);
             } else {
-              String spid = tx.findSourceAccount(x).findOwner(x).getSpid();
+              String spid = tx.getSpid();
               String group = spid + "-fraud-ops";
               ComplianceApprovalRequest approvalRequest = new ComplianceApprovalRequest.Builder(x)
                 .setDaoKey("transactionDAO")
@@ -81,17 +83,26 @@ foam.CLASS({
       args: [
         { name: 'x', type: 'Context' },
         { name: 'user', type: 'User' },
-        { name: 'creds', type: 'DowJonesCredentials' },
         { name: 'dowJones', type: 'DowJonesService' }
       ],
       javaCode: `
+      Date filterLRDFrom = fetchLastExecutionDate(x, user.getId(), "Dow Jones User");
+      String filterRegion = "";
+
+      if ( user.getAddress().getCountryId().equals("CA") ) {
+        filterRegion = "Canada,CANA,CA,CAN";
+      } else if ( user.getAddress().getCountryId().equals("US") ) {
+        filterRegion = "United States,USA,US";
+      }
       PersonNameSearchData searchData1 = new PersonNameSearchData.Builder(x)
         .setSearchId(user.getId())
         .setFirstName(user.getFirstName())
+        .setFilterLRDFrom(filterLRDFrom)
+        .setFilterRegion(filterRegion)
         .setSurName(user.getLastName())
         .build();
       DowJonesResponse response = dowJones.personNameSearch(x, searchData1);
-      return response.getResponseBody().getMatches().length == 0;
+      return response.getTotalMatches() == 0;
       `
     }
   ]

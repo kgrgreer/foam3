@@ -4,7 +4,7 @@ p({
     "class":"foam.nanos.ruler.Rule",
     "id":"f2c694e4-ca5c-4fc7-bbf0-747f8aa794db",
     "name":"Screen User On Transaction Create Rule",
-    "ruleGroup":"BepayCompliance",
+    "ruleGroup":"BePayCompliance",
     "documentation":"Screens payer and payee in Dow Jones",
     "daoKey":"localTransactionDAO",
     "operation":0,
