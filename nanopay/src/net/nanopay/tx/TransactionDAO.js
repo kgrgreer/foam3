@@ -102,15 +102,18 @@ foam.CLASS({
       `
     },
     {
-      name: 'find_',
-      javaCode: `
-        return super.find_(x, id);
-      `
-    },
-    {
       name: 'remove_',
       javaCode: `
         return null;
+      `
+    },
+    {
+      name: 'cmd_',
+      javaCode: `
+      if ( foam.dao.DAO.LAST_CMD.equals(obj) ) {
+        return this;
+      }
+      return null;
       `
     },
     {
