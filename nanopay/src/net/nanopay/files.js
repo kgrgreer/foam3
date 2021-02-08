@@ -541,6 +541,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/UnsupportedTransactionException' },
   { name: 'net/nanopay/tx/UnsupportedDateException' },
   { name: 'net/nanopay/tx/ExpiredTransactionException' },
+  { name: 'net/nanopay/tx/ruler/UpdateTxOnApprovalRequestStatusChange' },
 
   //integration
   { name: 'net/nanopay/integration/ErrorCode' },
