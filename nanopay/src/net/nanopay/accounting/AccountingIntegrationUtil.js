@@ -118,7 +118,7 @@ foam.CLASS({
       finalResult.invoiceErrors = invoiceResult.invoiceErrors;
       finalResult.successInvoice = invoiceResult.successInvoice;
       this.ctrl.notify('All information has been synchronized', '', this.LogLevel.INFO, true);
-      
+
       let report = this.AccountingResultReport.create();
       report.userId = this.subject.user.id;
       report.time = new Date();
@@ -133,6 +133,8 @@ foam.CLASS({
 
 
     async function forceSyncInvoice(invoice) {
+      //TODO rename to findInvoice
+      //it should be in the list of services
       this.showIntegrationModal = false;
       let service = null;
       let accountingSoftwareName = null;

@@ -73,7 +73,7 @@ foam.CLASS({
     }
     ^ .disclosureView {
       max-height: 170px;
-      overflow: scroll;
+      overflow: auto;
       margin-top: 15px;
     }
     ^ .foam-u2-view-StringView {

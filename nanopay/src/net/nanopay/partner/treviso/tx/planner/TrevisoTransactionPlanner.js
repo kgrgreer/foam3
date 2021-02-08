@@ -161,10 +161,16 @@ foam.CLASS({
           ExternalTransfer ext = new ExternalTransfer(transaction.getSourceAccount(), -root.getAmount());
           Transfer[] transfers = (Transfer[]) ArrayUtils.add(transaction.getTransfers(), ext);
 
+          // Update the amount
+          transaction.setAmount(root.getAmount());
+
           // Add transfers for fees from summary
           transfers =  (Transfer[]) ArrayUtils.addAll(transfers, root.getTransfers());
           transaction.setTransfers(transfers);
           root.setTransfers(null);
+        } else if ( txn instanceof ExchangeLimitTransaction ) {
+          ExchangeLimitTransaction exchange = (ExchangeLimitTransaction) txn;
+          exchange.setAmount(root.getAmount());
         }
         return super.postPlanning(x,txn,root);
       `

@@ -57,7 +57,7 @@ foam.CLASS({
   }
   ^ .bank-currency-pick-height {
     height: 100%;
-    overflow-y: scroll;
+    overflow-y: auto;
   }
   ^ .bank-pick-margin {
     width: 1046px;
@@ -208,7 +208,7 @@ foam.CLASS({
   ^ .net-nanopay-sme-ui-SMEModal-content {
     box-sizing: border-box;
     width: 600px;
-    overflow-y: scroll;
+    overflow-y: auto;
     padding: 30px;
   }
   `,

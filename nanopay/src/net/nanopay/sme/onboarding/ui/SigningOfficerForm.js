@@ -404,7 +404,7 @@ foam.CLASS({
       view: function(args, x) {
         var data = x.data$.dot('triPartyAgreementCad').dot('body');
         return foam.u2.HTMLElement.create({ nodeName: 'div' }).
-        style({ 'max-height': '200px', 'overflow-y': 'scroll', border: '1px inset', background: 'lightgray', 'border-radius': '5px', padding: '10px'}).
+        style({ 'max-height': '200px', 'overflow-y': 'auto', border: '1px inset', background: 'lightgray', 'border-radius': '5px', padding: '10px'}).
         add(data);
       },
       displayWidth: 60,
@@ -416,7 +416,7 @@ foam.CLASS({
       view: function(args, x) {
         var data = x.data$.dot('triPartyAgreementUsd').dot('body');
         return foam.u2.HTMLElement.create({ nodeName: 'div' }).
-        style({ 'max-height': '200px', 'overflow-y': 'scroll', border: '1px inset', background: 'lightgray', 'border-radius': '5px', padding: '10px'}).
+        style({ 'max-height': '200px', 'overflow-y': 'auto', border: '1px inset', background: 'lightgray', 'border-radius': '5px', padding: '10px'}).
         add(data);
       },
       displayWidth: 60,
@@ -428,7 +428,7 @@ foam.CLASS({
       view: function(args, x) {
         var data = x.data$.dot('dualPartyAgreementCad').dot('body');
         return foam.u2.HTMLElement.create({ nodeName: 'div' }).
-        style({ 'max-height': '200px', 'overflow-y': 'scroll', border: '1px inset', background: 'lightgray', 'border-radius': '5px', padding: '10px'}).
+        style({ 'max-height': '200px', 'overflow-y': 'auto', border: '1px inset', background: 'lightgray', 'border-radius': '5px', padding: '10px'}).
         add(data);
       },
       displayWidth: 60,
