@@ -220,7 +220,7 @@ foam.CLASS({
       width: 1240px;
     }
     ^ .net-nanopay-admin-ui-ReviewProfileView{
-      overflow-y: scroll;
+      overflow-y: auto;
       height: 500px;
       margin-top: 50px;
     }
