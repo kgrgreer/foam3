@@ -27,7 +27,9 @@ foam.CLASS({
   properties: [
     {
       name: 'paymentProvider',
-      section: 'basicInfo'
+      section: 'transactionInformation',
+      order: 270,
+      gridColumns: 6
     }
   ]
 });
@@ -44,7 +46,9 @@ foam.CLASS({
   properties: [
     {
       name: 'paymentProvider',
-      section: 'basicInfo'
+      section: 'transactionInformation',
+      order: 270,
+      gridColumns: 6
     }
   ]
 });
@@ -61,7 +65,9 @@ foam.CLASS({
   properties: [
     {
       name: 'paymentProvider',
-      section: 'basicInfo'
+      section: 'transactionInformation',
+      order: 270,
+      gridColumns: 6
     }
   ]
 });
@@ -75,5 +81,13 @@ foam.CLASS({
     'net.nanopay.payment.PaymentProviderAware'
   ],
 
-  properties: [ 'paymentProvider' ]
+  properties: 
+  [ 
+    {
+      name: 'paymentProvider',
+      section: 'transactionInformation',
+      order: 270,
+      gridColumns: 6
+    }
+  ]
 });

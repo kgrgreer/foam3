@@ -27,19 +27,31 @@ foam.CLASS({
   properties: [
     {
       name: 'bmoReferenceNumber',
-      class: 'String'
+      class: 'String',
+      section: 'transactionInformation',
+      order: 450,
+      gridColumns: 6
     },
     {
       name: 'bmoFileCreationNumber',
-      class: 'Int'
+      class: 'Int',
+      section: 'transactionInformation',
+      order: 460,
+      gridColumns: 6
     },
     {
       name: 'rejectReason',
-      class: 'String'
+      class: 'String',
+      section: 'transactionInformation',
+      order: 470,
+      gridColumns: 6
     },
     {
       name: 'settled',
-      class: 'Boolean'
+      class: 'Boolean',
+      section: 'transactionInformation',
+      order: 480,
+      gridColumns: 6
     }
   ],
 
