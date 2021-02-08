@@ -45,6 +45,9 @@ foam.CLASS({
             @Override
             public void execute(X x) {
               ApprovalRequest request = (ApprovalRequest) obj;
+              ApprovalRequest oldRequest = (ApprovalRequest) oldObj;
+              if ( oldRequest.getStatus() == ApprovalStatus.APPROVED ||
+                oldRequest.getStatus() == ApprovalStatus.REJECTED ) return;
               DAO txDAO = ((DAO) x.get("transactionDAO"));
               Transaction tx = (Transaction) txDAO.find(request.getObjId());
               if ( request.getStatus() == ApprovalStatus.APPROVED ) {
