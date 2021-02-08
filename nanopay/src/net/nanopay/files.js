@@ -130,6 +130,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/AcceptAware' },
   { name: 'net/nanopay/bank/ui/BankPADForm', flags: ['web'] },
   { name: 'net/nanopay/bank/BankAccount' },
+  { name: 'net/nanopay/bank/EstimationAccount' },
   { name: 'net/nanopay/bank/EUBankAccount' },
   { name: 'net/nanopay/bank/CABankAccount' },
   { name: 'net/nanopay/bank/USBankAccount' },
@@ -1626,6 +1627,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/InterTrustPlanner' },
   { name: 'net/nanopay/tx/planner/RbcInterTrustPlanner' },
   { name: 'net/nanopay/tx/planner/BmoInterTrustPlanner' },
+  { name: 'net/nanopay/tx/planner/PartialPlanDAO' },
 
   // Billing
   { name: 'net/nanopay/tx/billing/Bill' },
