@@ -224,6 +224,7 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/email/DoNotSolicit' },
   { name: 'net/nanopay/auth/ExternalInvoiceTokenService' },
   { name: 'net/nanopay/auth/ruler/LogoutUserAction' },
+  { name: 'net/nanopay/auth/ruler/predicate/IsUserInGroups' },
   { name: 'net/nanopay/auth/sms/PhoneVerificationTokenService', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/UserDetailView', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/UserTableView', flags: ['web'] },
@@ -1885,4 +1886,5 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/compliance/SendExpiryNotification'},
   { name: 'net/nanopay/tx/ruler/MicroDepositSentNotification'},
   { name: 'net/nanopay/sme/cron/OnboardingReminderNotification'},
+  { name: 'net/nanopay/notification/PermissionedNotificationSettingRule'},
 ]);

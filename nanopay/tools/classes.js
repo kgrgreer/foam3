@@ -719,6 +719,7 @@ var classes = [
   'net.nanopay.auth.OneTimeAuthenticationTokenService',
   'net.nanopay.auth.PublicBusinessInfo',
   'net.nanopay.auth.ruler.LogoutUserAction',
+  'net.nanopay.auth.ruler.predicate.IsUserInGroups',
   'net.nanopay.security.auth.IPLoggingAuthService',
   'net.nanopay.security.auth.LoginAttemptAuthService',
   'net.nanopay.security.auth.LoginAttempts',
@@ -1470,6 +1471,7 @@ var classes = [
   'net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig',
 
   // Notification
+  'net.nanopay.notification.PermissionedNotificationSettingRule',
   'net.nanopay.notification.TriggerNotificationTestAction',
   'net.nanopay.notification.TriggerDoNotifyTestAction',
 

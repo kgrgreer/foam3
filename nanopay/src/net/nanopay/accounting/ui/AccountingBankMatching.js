@@ -53,7 +53,7 @@ foam.CLASS({
       z-index: 950;
       margin: 0 !important;
       padding: 0 !important;
-      overflow-y: scroll;
+      overflow-y: auto;
       background-color: /*%GREY5%*/ #f5f7fa;
     }
     ^ {

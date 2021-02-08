@@ -40,7 +40,7 @@ foam.CLASS({
       z-index: 950;
       margin: 0;
       padding: 0;
-      overflow: scroll;
+      overflow: auto;
     }
 
     ^logo {

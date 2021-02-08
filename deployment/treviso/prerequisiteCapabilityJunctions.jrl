@@ -62,6 +62,13 @@ p({
 })
 
 p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "treviso",
+  targetId: "treviso-user-notification-settings",
+  priority: 10
+})
+
+p({
   class:"foam.nanos.crunch.CapabilityCapabilityJunction",
   sourceId:"554af38a-8225-87c8-dfdf-eeb15f71215f-7-br",
   targetId:"554af38a-8225-87c8-dfdf-eeb15f71215f-14"

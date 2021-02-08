@@ -207,8 +207,7 @@ foam.CLASS({
       class: 'String',
       section: 'transactionInformation',
       order: 20,
-      gridColumns: 6,
-      documentation: 'The type of the transaction.',
+      gridColumns: 3,
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
       factory: function() {
@@ -216,6 +215,24 @@ foam.CLASS({
       },
       javaFactory: `
         return getType();
+      `,
+      includeInDigest: false,
+      documentation: 'The type of the transaction.'
+    },
+    {
+      name: 'type',
+      class: 'String',
+      section: 'transactionInformation',
+      order: 25,
+      gridColumns: 3,
+      tableWidth: 190,
+      storageTransient: true,
+      getter: function() {
+         return this.cls_.name;
+      },
+      javaToCSVLabel: 'outputter.outputValue("Transaction Type");',
+      javaGetter: `
+        return getClass().getSimpleName();
       `,
       includeInDigest: false
     },
@@ -867,20 +884,6 @@ foam.CLASS({
       of: 'net.nanopay.account.Balance',
       javaFactory: 'return new Balance[0];',
       hidden: true,
-      includeInDigest: false
-    },
-    {
-      name: 'type',
-      class: 'String',
-      visibility: 'HIDDEN',
-      storageTransient: true,
-      getter: function() {
-         return this.cls_.name;
-      },
-      javaToCSVLabel: 'outputter.outputValue("Transaction Type");',
-      javaGetter: `
-        return getClass().getSimpleName();
-      `,
       includeInDigest: false
     },
     {

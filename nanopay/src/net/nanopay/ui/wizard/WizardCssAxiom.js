@@ -69,7 +69,7 @@ foam.CLASS({
           box-sizing: border-box;
           padding: 20px 0;
           padding-top: 4px;
-          overflow-y: scroll;
+          overflow-y: auto;
           vertical-align: top;
         }
 
