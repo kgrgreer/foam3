@@ -87,7 +87,7 @@ properties: [
       txn.addNext(bTx);
       ExternalTransfer[] exT = new ExternalTransfer[2];
       exT[0] = new ExternalTransfer(quote.getDestinationAccount().getId(), bTx.getDestinationAmount());
-      exT[1] = new ExternalTransfer(quote.getSourceAccount().getId(), bTx.getAmount());
+      exT[1] = new ExternalTransfer(quote.getSourceAccount().getId(), -bTx.getAmount());
       bTx.setTransfers( exT );
       return txn;
     `
