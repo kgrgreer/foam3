@@ -1864,8 +1864,8 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/invoice/TrevisoNotification' },
 
   // bepay
-  { name: 'net/nanopay/partner/bepay/tx/BepayTransaction' },
-  { name: 'net/nanopay/partner/bepay/tx/planner/BepayTransactionPlanner' },
+  { name: 'net/nanopay/partner/bepay/tx/BePayTransaction' },
+  { name: 'net/nanopay/partner/bepay/tx/planner/BePayTransactionPlanner' },
 
   // Reports for Treviso
   { name: 'net/nanopay/partner/treviso/report/TrevisoTransactionReport' },

@@ -1,5 +1,5 @@
 p({
   "class":"net.nanopay.tx.planner.PlannerGroup",
-  "id":"BepayPlanner",
+  "id":"BePayPlanner",
   "enabled":true,
 })

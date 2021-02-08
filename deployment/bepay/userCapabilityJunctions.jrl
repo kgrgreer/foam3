@@ -17,7 +17,3 @@ p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"95B7A02F-638B-4433-A
 p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"EBA9E983-D494-499A-BF77-F63415C928F6","sourceId":8053,"targetId":"bepay-tx-reason-codes","status":1})
 p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"96D309CA-70FD-4673-A0F7-640FB1280F1B","sourceId":8054,"targetId":"bepay-tx-reason-codes","status":1})
 p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"96B19FF2-8765-4F8D-B386-91F0EBE20434","sourceId":8055,"targetId":"bepay-tx-reason-codes","status":1})
-
-// granted automatically
-p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"1c7add8e-0b58-4b08-9d0f-98d27b3ad7c9","sourceId":8056,"targetId":"bepayPlannerCapability","status":1})
-p({"class":"foam.nanos.crunch.UserCapabilityJunction","id":"cb58a81d-7d65-41e8-be3c-f28d3423ecc0","sourceId":8056,"targetId":"bepay-tx-fees","status":1})

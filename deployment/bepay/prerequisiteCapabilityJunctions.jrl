@@ -33,6 +33,18 @@ p({
   targetId: "bepay-tx-reason-codes",
   priority: 3
 })
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "bepay",
+  targetId: "bepayPlannerCapability",
+  priority: 3
+})
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "bepay",
+  targetId: "bepay-tx-fees",
+  priority: 3
+})
 
 // prerequisites for onboard AFEX user
 // user details

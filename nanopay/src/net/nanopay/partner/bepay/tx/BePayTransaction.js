@@ -17,7 +17,7 @@
 
 foam.CLASS({
   package: 'net.nanopay.partner.bepay.tx',
-  name: 'BepayTransaction',
+  name: 'BePayTransaction',
   extends: 'net.nanopay.fx.FXTransaction',
 
   documentation: `BePay Transaction`,
@@ -45,26 +45,6 @@ foam.CLASS({
       class: 'DateTime',
       name: 'completionDate',
       storageTransient: false
-    }
-  ],
-
-
- methods: [
-   {
-     name: `validate`,
-     args: [
-       { name: 'x', type: 'Context' }
-     ],
-     type: 'Void',
-     javaCode: `
-     super.validate(x);
-    // Check source account owner compliance
-    User sourceOwner = findSourceAccount(x).findOwner(x);
-    if ( sourceOwner instanceof Business
-      && ! sourceOwner.getCompliance().equals(ComplianceStatus.PASSED)
-    ) {
-      throw new RuntimeException("Sender needs to pass business compliance.");
-    }`
     }
   ]
 });

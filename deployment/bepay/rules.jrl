@@ -105,7 +105,7 @@ p({
     "EUR":"c0f5a1ad-1d3d-4bee-bf16-56e12d2ff7ca"
   },
   "priority":90,
-  "ruleGroup":"BepayPlanner",
+  "ruleGroup":"BePayPlanner",
   "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
@@ -132,18 +132,17 @@ p({
       }
     ]
   },
-  "isFeeOnRootCorridors": true,
   "spid": "bepay",
   "lifecycleState":1
 })
 
 p({
-  "class":"net.nanopay.partner.bepay.tx.planner.BepayTransactionPlanner",
+  "class":"net.nanopay.partner.bepay.tx.planner.BePayTransactionPlanner",
   "id":"2fdd7d35-6704-47dc-9f0e-9419e0aa74ed",
-  "name":"BepayTransactionPlanner",
+  "name":"BePayTransactionPlanner",
   "documentation":"Planner for transaction from BRL to USD/EUR/GBP (leg 1)",
   "priority":80,
-  "ruleGroup":"BepayPlanner",
+  "ruleGroup":"BePayPlanner",
   "enabled":true,
   "predicate":{
     "class":"foam.mlang.predicate.And",
@@ -156,12 +155,32 @@ p({
       {
         "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
         "propName":"sourceAccount",
-        "of":"net.nanopay.bank.BankAccount"
+        "of":"net.nanopay.bank.BRBankAccount"
       },
       {
-        "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
-        "propName":"destinationAccount",
-        "of":"net.nanopay.bank.BankAccount"
+        class: "foam.mlang.predicate.Or",
+        args: [
+          {
+            "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+            "propName":"destinationAccount",
+            "of":"net.nanopay.bank.USBankAccount"
+          },
+          {
+            "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+            "propName":"destinationAccount",
+            "of":"net.nanopay.bank.CABankAccount"
+          },
+          {
+            "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+            "propName":"destinationAccount",
+            "of":"net.nanopay.bank.EUBankAccount"
+          },
+          {
+            "class":"foam.nanos.ruler.predicate.PropertyIsInstance",
+            "propName":"destinationAccount",
+            "of":"net.nanopay.bank.GBBankAccount"
+          },
+        ]
       },
       {
         "class":"foam.nanos.ruler.predicate.PropertyEQValue",
@@ -225,8 +244,9 @@ p({
 })
 p({
   "class":"net.nanopay.tx.planner.AFEXTransactionPlanner",
-  "id":"13df0d76-ba3e-4287-b42e-c7ceff059dd8",
-  "ruleGroup":"BepayPlanner",
+  "id":"77480e3b-fc7e-400c-bee6-dda5a22b982a",
+  "name":"AFEX Transaction Planner",
+  "ruleGroup":"BePayPlanner",
   "predicate":{
     "class":"foam.mlang.predicate.And",
     "args":[
@@ -241,9 +261,13 @@ p({
         "of":"net.nanopay.bank.BankAccount"
       },
       {
+        "class":"net.nanopay.tx.planner.predicate.IsAccountOwnerAFEXUserPredicate",
+      },
+      {
         "class": "net.nanopay.tx.planner.predicate.ProviderPredicate",
         "provider":"AFEX"
       }
     ]
-  }
+  },
+  "lifecycleState":1
 })

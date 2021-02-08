@@ -1338,8 +1338,8 @@ var classes = [
   'net.nanopay.partner.treviso.report.TrevisoTransactionReportDAO',
 
   // bepay
-  'net.nanopay.partner.bepay.tx.BepayTransaction',
-  'net.nanopay.partner.bepay.tx.planner.BepayTransactionPlanner',
+  'net.nanopay.partner.bepay.tx.BePayTransaction',
+  'net.nanopay.partner.bepay.tx.planner.BePayTransactionPlanner',
 
   // crunch predicates - todo move all predicates used in crunch here
   'net.nanopay.crunch.predicate.IsBusiness',

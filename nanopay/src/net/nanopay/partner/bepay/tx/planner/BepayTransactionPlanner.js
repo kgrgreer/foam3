@@ -16,10 +16,10 @@
  */
 foam.CLASS({
   package: 'net.nanopay.partner.bepay.tx.planner',
-  name: 'BepayTransactionPlanner',
+  name: 'BePayTransactionPlanner',
   extends: 'net.nanopay.tx.planner.AbstractTransactionPlanner',
 
-  documentation: 'Plans BRL to USD',
+  documentation: 'Plans BRL to intermediary currencies e.g. USD, CAD, EUR, and GBP',
 
   javaImports: [
     'foam.util.SafetyUtil',
@@ -31,7 +31,7 @@ foam.CLASS({
     'net.nanopay.fx.FXLineItem',
     'net.nanopay.fx.FXLineItem',
     'net.nanopay.fx.FXSummaryTransaction',
-    'net.nanopay.partner.bepay.tx.BepayTransaction',
+    'net.nanopay.partner.bepay.tx.BePayTransaction',
     'net.nanopay.tx.ExternalTransfer',
     'net.nanopay.tx.FeeLineItem',
     'net.nanopay.tx.InvoicedFeeLineItem',
@@ -65,26 +65,6 @@ properties: [
 
   methods: [
     {
-      name: 'createLimit',
-      documentation: 'Creates a limit check transaction and returns it',
-      args: [
-        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
-      ],
-      type: 'ExchangeLimitTransaction',
-      javaCode: `
-        ExchangeLimitTransaction elt = new ExchangeLimitTransaction();
-        elt.copyFrom(txn);
-        elt.setStatus(net.nanopay.tx.model.TransactionStatus.PENDING);
-        elt.setName("Exchange TxLimit Transaction");
-        elt.clearTransfers();
-        elt.clearLineItems();
-        elt.setPlanner(getId());
-        elt.clearNext();
-        elt.setId(UUID.randomUUID().toString());
-        return elt;
-      `
-    },
-    {
       name: 'plan',
       javaCode: `
       //TODO: add api call to retrieve fx rate
@@ -95,7 +75,7 @@ properties: [
       txn.setStatus(TransactionStatus.COMPLETED);
       txn.clearLineItems();
       txn.setAmount( (long) (requestTxn.getDestinationAmount() * fxRate) ); // if rate is in different format, need / here instead of *
-      BepayTransaction bTx = new BepayTransaction();
+      BePayTransaction bTx = new BePayTransaction();
       bTx.copyFrom(requestTxn);
       bTx.setId(UUID.randomUUID().toString());
       bTx.setAmount(txn.getAmount());
@@ -120,11 +100,11 @@ properties: [
         { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
       ],
       javaCode: `
-        if ( ! (txn instanceof BepayTransaction) ) {
+        if ( ! (txn instanceof BePayTransaction) ) {
           return true;
         }
         NatureCodeLineItem natureCode = null;
-        BepayTransaction transaction = (BepayTransaction) txn;;
+        BePayTransaction transaction = (BePayTransaction) txn;;
         for (TransactionLineItem lineItem: txn.getLineItems() ) {
           if ( lineItem instanceof NatureCodeLineItem ) {
             natureCode = (NatureCodeLineItem) lineItem;
@@ -145,7 +125,7 @@ properties: [
     },
     {
       name: 'addNatureCodeLineItems',
-      javaType: 'BepayTransaction',
+      javaType: 'BePayTransaction',
       args: [
         {
           name: 'x',
@@ -153,7 +133,7 @@ properties: [
         },
         {
           name: 'txn',
-          type: 'BepayTransaction',
+          type: 'BePayTransaction',
         },
         {
           name: 'requestTxn',
@@ -177,7 +157,7 @@ properties: [
     },
     {
       name: 'addFxLineItems',
-      javaType: 'BepayTransaction',
+      javaType: 'BePayTransaction',
       args: [
         {
           name: 'x',
@@ -185,7 +165,7 @@ properties: [
         },
         {
           name: 'txn',
-          type: 'BepayTransaction',
+          type: 'BePayTransaction',
         },
         {
           name: 'requestTxn',
