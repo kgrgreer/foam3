@@ -48,7 +48,7 @@ foam.CLASS({
       box-sizing: border-box;
       min-width: 615px;
       max-height: 80vh;
-      overflow-y: scroll;
+      overflow-y: auto;
     }
     ^content {
       position: relative;

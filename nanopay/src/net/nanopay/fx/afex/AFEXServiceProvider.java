@@ -165,10 +165,9 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
               onboardingRequest.setCity(contactAddress.getCity());
               Region region = contactAddress.findRegionId(this.x);
               if ( region != null ) onboardingRequest.setState(region.getRegionCode());
-              Country country = contactAddress.findCountryId(this.x);
-              if ( country != null ) onboardingRequest.setCountry(country.getCode());
+              onboardingRequest.setCountry(contactAddress.getCountryId());
               onboardingRequest.setZip(contactAddress.getPostalCode());
-              onboardingRequest.setCitizenship(country.getName());
+              onboardingRequest.setCitizenship(contactAddress.getCountryId());
             }
 
             try {
@@ -1273,11 +1272,8 @@ public class AFEXServiceProvider extends ContextAwareSupport implements FXServic
       if ( address != null ) {
         individual.setAddress(address.getAddress());
         individual.setCity(address.getCity());
-        Country country = address.findCountryId(this.x);
-        if ( country != null ) {
-          individual.setCountry(address.getCountryId());
-          individual.setCitizenship(country.getName());
-        }
+        individual.setCountry(address.getCountryId());
+        individual.setCitizenship(address.getCountryId());
 
         Region region = address.findRegionId(this.x);
         if ( null != region )individual.setState(region.getRegionCode());

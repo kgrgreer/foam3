@@ -139,7 +139,7 @@ foam.CLASS({
       display: block;
       height: 600px;
       width: 600px;
-      overflow: scroll;
+      overflow: auto;
       background: white;
       margin-top: 20px;
     }
@@ -717,7 +717,7 @@ foam.CLASS({
   css: `
     ^ {
       width: 275px;
-      overflow: scroll;
+      overflow: auto;
       height: 575px;
       margin-top: 30px;
       font-weight: 300;
