@@ -44,7 +44,7 @@ foam.CLASS({
     .foam-u2-DetailView-title {
       background: #ddd;
       color: gray;
-      padding: 6px;
+      padding: 8px;
     }
     .foam-u2-ActionView{
       border: none;

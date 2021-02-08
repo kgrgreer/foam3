@@ -457,9 +457,13 @@ foam.CLASS({
       section: 'complianceInformation',
       order: 70,
       factory: function() {
-        return net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.create();
+        return net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.create({}, this);
       },
-      view: { class: 'foam.u2.detail.VerticalDetailView' },
+      view: function(_, X) {
+        return foam.u2.detail.SectionView.create({
+          sectionName: 'backOfficeSuggestedUserTransactionInfo'
+        }, X);
+      }
     },
     {
       class: 'String',

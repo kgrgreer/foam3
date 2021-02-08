@@ -56,6 +56,13 @@ p({
   priority: 9
 })
 
+p({
+  class: "foam.nanos.crunch.CapabilityCapabilityJunction",
+  sourceId: "ablii",
+  targetId: "ablii-user-notification-settings",
+  priority: 10
+})
+
 // REVIEW: Planners for ablii
 p({
   class: "foam.nanos.crunch.CapabilityCapabilityJunction",

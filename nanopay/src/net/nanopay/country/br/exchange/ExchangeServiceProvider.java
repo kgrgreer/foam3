@@ -458,12 +458,12 @@ public class ExchangeServiceProvider implements ExchangeService {
   }
 
   protected int getContactRelationship(User payer, User payee) {
-    if ( ! (payee instanceof Business) ) return 30; // Contact is not a business
+//    if ( ! (payee instanceof Business) ) return 30; // Contact is not a business
+//
+//    Contact contact = findContact(payer, payee);
+//    if ( contact != null && contact.getConfirm() ) return 12; // has relationship with contact
 
-    Contact contact = findContact(payer, payee);
-    if ( contact != null && contact.getConfirm() ) return 12; // has relationship with contact
-
-    return 20;
+    return 20; // Default to Business for now
   }
 
   protected Contact findContact(User payer, User payee) {
