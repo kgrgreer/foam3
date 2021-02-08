@@ -89,7 +89,8 @@ foam.CLASS({
           },
           errorMessage: 'NO_SUGGESTED_USER_TXN_INFO_ERROR'
         }
-      ]
+      ],
+      view: { class: 'foam.u2.detail.SectionedDetailView' }
     })
   ]
 });

@@ -53,16 +53,48 @@ foam.CLASS({
     { name: 'OVER_THEN_1000', message: 'Over 1000' }
   ],
 
+  sections: [
+    {
+      name: 'backOfficeSuggestedUserTransactionInfo',
+      title: '',
+      permissionRequired: true
+    },
+    {
+      name: 'clientSuggestedUserTransactionInfo',
+      title: '',
+      properties: [
+        {
+          name: 'annualRevenue',
+          gridColumns: 12
+        },
+        {
+          name: 'transactionPurpose',
+          gridColumns: 12
+        },
+        {
+          name: 'annualTransactionFrequency',
+          gridColumns: 12
+        },
+        {
+          name: 'annualDomesticVolume',
+          gridColumns: 12
+        },
+      ]
+    }
+  ],
+
   properties: [
     {
       class: 'String',
       name: 'baseCurrency',
+      section: 'backOfficeSuggestedUserTransactionInfo',
       documentation: `Currency based on business address.`,
       hidden: true
     },
     {
       class: 'String',
       name: 'annualRevenue',
+      section: 'backOfficeSuggestedUserTransactionInfo',
       label: 'Estimated gross annual sales',
       documentation: `Estimated annual revenue for user or business.`,
       view: function(_, X) {
@@ -93,6 +125,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'transactionPurpose',
+      section: 'backOfficeSuggestedUserTransactionInfo',
       label: 'Main purpose of transactions',
       documentation: `General transaction purposes.`,
       view: function(_, X) {
@@ -127,6 +160,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'annualTransactionAmount',
+      section: 'backOfficeSuggestedUserTransactionInfo',
       documentation: `Estimated annual number of transactions user or business conducts.
       BaseCurrency of this field which is set when user confirms that they do international transfers,
       is opposite (CAD - USD) of set base currency of this model.
@@ -136,6 +170,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'annualTransactionFrequency',
+      section: 'backOfficeSuggestedUserTransactionInfo',
       label: 'Estimated annual number of transactions',
       documentation: `Estimated annual frequency of transactions the user or business conducts.`,
         view: function(_, X) {
@@ -165,6 +200,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'annualVolume',
+      section: 'backOfficeSuggestedUserTransactionInfo',
       documentation: `Estimated annual volume in USD of user or business.
       BaseCurrency of this field which is set when user confirms that they do international transfers,
       is opposite (CAD - USD) of set base currency of this model.
@@ -174,6 +210,7 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'firstTradeDate',
+      section: 'backOfficeSuggestedUserTransactionInfo',
       documentation: `Anticipated first payment date.
       Legacy Property-as of April 2020`,
       hidden: true
@@ -181,6 +218,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'annualDomesticTransactionAmount',
+      section: 'backOfficeSuggestedUserTransactionInfo',
       documentation: `Estimated annual number of transactions user or business conducts. baseCurrency of this model.
       US-based company (the information pertains to their domestic transactions, as they will be processed through AFX)
       Legacy Property-as of April 2020`,
@@ -190,6 +228,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'annualDomesticVolume',
+      section: 'backOfficeSuggestedUserTransactionInfo',
       label: 'Estimated annual volume',
       documentation: `Estimated annual volume in USD of user or business. baseCurrency of this model.
       US-based company (the information pertains to their domestic transactions, as they will be processed through AFX)`,
@@ -221,6 +260,7 @@ foam.CLASS({
     {
       class: 'Date',
       name: 'firstTradeDateDomestic',
+      section: 'backOfficeSuggestedUserTransactionInfo',
       documentation: `Anticipated first payment date.
       US-based company (the information pertains to their domestic transactions, as they will be processed through AFX)
       Legacy Property-as of April 2020`,
