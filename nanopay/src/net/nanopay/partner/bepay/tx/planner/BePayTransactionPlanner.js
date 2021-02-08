@@ -93,31 +93,6 @@ properties: [
     `
     },
     {
-      name: 'validatePlan',
-      type: 'boolean',
-      args: [
-        { name: 'x', type: 'Context' },
-        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' }
-      ],
-      javaCode: `
-        if ( ! (txn instanceof BePayTransaction) ) {
-          return true;
-        }
-        NatureCodeLineItem natureCode = null;
-        BePayTransaction transaction = (BePayTransaction) txn;;
-        for (TransactionLineItem lineItem: txn.getLineItems() ) {
-          if ( lineItem instanceof NatureCodeLineItem ) {
-            natureCode = (NatureCodeLineItem) lineItem;
-            break;
-          }
-        }
-        if ( natureCode == null || SafetyUtil.isEmpty(natureCode.getNatureCode()) ) {
-          throw new RuntimeException("[Transaction Validation error]"+ this.INVALID_NATURE_CODE);
-        }
-        return true;
-      `
-    },
-    {
       name: 'postPlanning',
       javaCode: `
         return super.postPlanning(x,txn,root);
@@ -148,8 +123,8 @@ properties: [
             break;
           }
         }
-        if ( natureCode == null ) {
-          natureCode = new NatureCodeLineItem();
+        if ( natureCode == null || SafetyUtil.isEmpty(natureCode.getNatureCode()) ) {
+          throw new RuntimeException("[Transaction Validation error]"+ this.INVALID_NATURE_CODE);
         }
         txn.addLineItems( new TransactionLineItem[] { natureCode } );
         return txn;
