@@ -143,3 +143,34 @@ p({
   "lifecycleState":1,
   "spid":"bepay"
 })
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"16cebf5b-30b5-4a67-9fbe-d69c93c736e5",
+  "name":"Update transaction status based on approval",
+  "daoKey":"approvalRequestDAO",
+  "ruleGroup":"BePayCompliance",
+  "operation":1,
+  "predicate": {
+    "class": "foam.mlang.predicate.And",
+    "args": [
+      {
+        class: "foam.nanos.ruler.predicate.IsInstancePredicate",
+        of:"net.nanopay.meter.compliance.ComplianceApprovalRequest"
+      },
+      {
+        "class":"foam.nanos.ruler.predicate.PropertyEQValue",
+        "propName":"daoKey",
+        "propValue":"transactionDAO"
+      },
+      {
+        "class": "foam.nanos.ruler.predicate.PropertyChangePredicate",
+        "propName": "status"
+      },
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.tx.ruler.UpdateTxOnApprovalRequestStatusChange",
+  },
+  "enabled":true,
+  "lifecycleState":1
+})

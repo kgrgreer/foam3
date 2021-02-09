@@ -1,0 +1,5 @@
+p({
+  "class":"net.nanopay.tx.planner.PlannerGroup",
+  "id":"BePayCompliance",
+  "enabled":true
+})
