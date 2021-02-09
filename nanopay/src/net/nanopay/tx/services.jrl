@@ -103,11 +103,15 @@ p({
   "serve":true,
   "serviceScript":
   """
+    daoDecorator = new foam.dao.NullDAO(x, net.nanopay.tx.model.Transaction.getOwnClassInfo());
+    daoDecorator = new foam.nanos.auth.PermissionedPropertyDAO(x, daoDecorator);
+    daoDecorator = new net.nanopay.tx.PermisssionedTransactionLineItemDAO(x, daoDecorator);
+      
     return new net.nanopay.tx.AuthenticatedTransactionDAO(x,
       new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo())
       .setInnerDAO(x.get("localTransactionDAO"))
-      .setDecorator(new foam.nanos.auth.PermissionedPropertyDAO(x, new foam.dao.NullDAO(x, net.nanopay.tx.model.Transaction.getOwnClassInfo())))
+      .setDecorator()
       .setAuthorizer(new foam.nanos.auth.AuthorizableAuthorizer("transaction"))
       .setPm(true)
       .setPipelinePm(true)
