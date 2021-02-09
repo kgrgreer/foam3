@@ -57,7 +57,7 @@ foam.CLASS({
       padding: 0 !important;
       background: /*%GREY5%*/ #f5f7fa;
       text-align: center;
-      overflow-y: scroll;
+      overflow-y: auto;
     }
     
     ^ .button-bar {

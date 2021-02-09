@@ -29,7 +29,7 @@ foam.CLASS({
     'foam.mlang.order.Comparator',
     'foam.mlang.predicate.Predicate',
     'foam.nanos.auth.*',
-    'net.nanopay.contacts.Contact',
+    'net.nanopay.contacts.PersonalContact',
 
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.OR'
@@ -221,7 +221,7 @@ foam.CLASS({
       javaCode: `
         User user = ((Subject) x.get("subject")).getUser();
         User owner = account.findOwner(x);
-        return owner instanceof Contact && ((Contact) owner).getOwner() == user.getId();
+        return owner instanceof PersonalContact && ((PersonalContact) owner).getOwner() == user.getId();
       `
     },
     {

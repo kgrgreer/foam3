@@ -47,7 +47,7 @@ foam.CLASS({
 
     'net.nanopay.admin.model.AccountStatus',
     'net.nanopay.auth.AgentJunctionStatus',
-    'net.nanopay.contacts.Contact',
+    'net.nanopay.contacts.PersonalContact',
 
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
@@ -72,7 +72,7 @@ foam.CLASS({
       javaCode: `
         if ( entity == null ) {
           throw new AuthorizationException("Entity user doesn't exist.");
-        } else if ( entity instanceof Contact ) {
+        } else if ( entity instanceof PersonalContact ) {
           throw new RuntimeException("You cannot act as a contact.");
         }
 

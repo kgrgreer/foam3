@@ -58,7 +58,7 @@ foam.CLASS({
       display: flex;
       align-items: center;
       flex-wrap: wrap;
-      overflow: scroll;
+      overflow: auto;
       height: 100%;
       flex: 1;
       basis:0;

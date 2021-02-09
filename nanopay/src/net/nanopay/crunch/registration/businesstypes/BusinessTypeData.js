@@ -16,7 +16,7 @@
  */
 
 foam.CLASS({
-  package: 'net.nanopay.crunch.registration',
+  package: 'net.nanopay.crunch.registration.businesstypes',
   name: 'BusinessTypeData',
 
   documentation: `This model represents the business type of a business.`,
@@ -32,7 +32,13 @@ foam.CLASS({
   ],
   
   properties: [
-    net.nanopay.model.Business.BUSINESS_TYPE_ID.clone().copyFrom()
+    net.nanopay.model.Business.BUSINESS_TYPE_ID,
+    {
+      class: 'Boolean',
+      name: 'selected',
+      value: false,
+      documentation: 'Whether the associated capability is selected'
+    }
   ],
   
   methods: [
@@ -44,23 +50,10 @@ foam.CLASS({
           throw new IllegalStateException("Business type does not exist: " + getBusinessTypeId());
         }
 
-        // Extra Business Type Data Required Capability
-        final String capabilityId = "840FC3EB-F826-4AB3-AD92-131CD1C7C8D1";
-
-        switch ( (int) businessType.getId() ) {
-          case 3: // Corporation
-          case 5: // LLC
-          case 6: // Publicly traded company
-            CrunchService crunchService = (CrunchService) x.get("crunchService");
-            UserCapabilityJunction ucj = crunchService.getJunction(x, capabilityId);
-
-            // UCJ must exist and be granted
-            if ( ucj.getStatus() != foam.nanos.crunch.CapabilityJunctionStatus.GRANTED ) {
-              throw new IllegalStateException("Extra Business Type Data required for business type: " + getBusinessTypeId());
-            }
+        if ( ! getSelected() ) {
+          throw new IllegalStateException("Capability not selected");
         }
       `
     }
   ]
 });
-  

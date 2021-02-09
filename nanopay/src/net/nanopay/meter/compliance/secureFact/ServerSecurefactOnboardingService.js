@@ -24,9 +24,13 @@
 
    javaImports: [
      'foam.core.FObject',
+     'foam.dao.ArraySink',
      'foam.dao.DAO',
      'foam.nanos.auth.Subject',
      'foam.nanos.auth.User',
+     'foam.nanos.crunch.Capability',
+     'foam.nanos.crunch.CapabilityCapabilityJunction',
+     'foam.nanos.crunch.CrunchService',
      'foam.nanos.dig.exception.ExternalAPIException',
      'foam.nanos.logger.Logger',
      'foam.util.SafetyUtil',
@@ -36,9 +40,11 @@
      'java.util.Map',
      'net.nanopay.crunch.registration.BusinessDirectorList',
      'net.nanopay.crunch.registration.BusinessOwnerList',
-     'net.nanopay.crunch.registration.BusinessTypeData',
-     'net.nanopay.crunch.registration.IsSelectedData',
      'net.nanopay.crunch.registration.SigningOfficerList',
+     'net.nanopay.crunch.registration.businesstypes.BusinessTypeData',
+     'net.nanopay.crunch.registration.businesstypes.SoleProprietorData',
+     'net.nanopay.crunch.registration.businesstypes.PartnershipData',
+     'net.nanopay.crunch.registration.businesstypes.CorporationData',
      'net.nanopay.meter.compliance.secureFact.SecurefactService',
      'net.nanopay.meter.compliance.secureFact.lev.LEVResponse',
      'net.nanopay.meter.compliance.secureFact.lev.LEVResult',
@@ -49,7 +55,32 @@
      'net.nanopay.model.Business',
      'net.nanopay.model.BusinessDirector',
      'net.nanopay.model.SigningOfficer',
+     'static foam.mlang.MLang.*'
    ],
+
+   classes: [
+    {
+      name: 'BusinessTypeDescriptor',
+      documentation: `Holds business type information for setting capability payloads.`,
+
+      properties: [
+        {
+          class: 'FObjectProperty',
+          name: 'businessTypeData',
+          of: 'net.nanopay.crunch.registration.businesstypes.BusinessTypeData'
+        },
+        {
+          class: 'FObjectProperty',
+          name: 'capability',
+          of: 'foam.nanos.crunch.Capability'
+        },
+        {
+          class: 'Boolean',
+          name: 'hasPrerequisites'
+        }
+      ]
+    }
+  ],
 
    methods: [
       {
@@ -69,22 +100,10 @@
           }
 
           // Get the business type
-          int businessTypeId = retrieveBusinessType(x, chosenResult.getNormalizedEntityType());
-          BusinessTypeData businessTypeData = new BusinessTypeData.Builder(x)
-            .setBusinessTypeId(businessTypeId)
-            .build();
-          partiesCapabilityDataObjects.put("Business Type", businessTypeData);
-          
-          // Only need to collect more information when the business is a corporation
-          if ( businessTypeId != 3 ) {
-            partiesCapabilityDataObjects.put("Extra Business Type Data Required", new IsSelectedData.Builder(x).setSelected(false).build());
-            partiesCapabilityDataObjects.put("Extra Business Type Data Not Required", new IsSelectedData.Builder(x).setSelected(true).build());
+          BusinessTypeDescriptor businessTypeDescriptor = retrieveBusinessType(x, chosenResult.getNormalizedEntityType());
+          partiesCapabilityDataObjects.put(businessTypeDescriptor.getCapability().getName(), businessTypeDescriptor.getBusinessTypeData());
+          if ( !businessTypeDescriptor.getHasPrerequisites() ) 
             return;
-          }
-
-          // For corporations, director and owner information must be collected
-          partiesCapabilityDataObjects.put("Extra Business Type Data Not Required", new IsSelectedData.Builder(x).setSelected(false).build());
-          partiesCapabilityDataObjects.put("Extra Business Type Data Required", new IsSelectedData.Builder(x).setSelected(true).build());
 
           // Retrieve document data
           LEVDocumentDataResponse dataResponse = retrieveDocumentData(x, chosenResult, business);
@@ -192,7 +211,7 @@
     },
     {
       name: 'retrieveBusinessType',
-      type: 'Integer',
+      type: 'BusinessTypeDescriptor',
       args: [
         { name: 'x', type: 'Context' },
         { name: 'normalizedEntityType', type: 'String' }
@@ -203,23 +222,52 @@
           throw new RuntimeException("Business type cannot be determined. LEV normalized entity type not supplied");
         }
 
+        BusinessTypeData businessTypeData;
+        String capabilityId;
+
         if ( SafetyUtil.equals(normalizedEntityType, "Sole Proprietorship") ||
              SafetyUtil.equals(normalizedEntityType, "Trade Name") ||
              SafetyUtil.equals(normalizedEntityType, "Sole Proprietorship/Trade Name") ||
              SafetyUtil.equals(normalizedEntityType, "Sole Proprietorship/Partnership") ) {
-          return 1; // Sole Proprietorship
+          businessTypeData = new SoleProprietorData.Builder(x)
+            .setSelected(true)
+            .build();
+          capabilityId = "business-type-sole-proprietorship";
         }
         else if ( SafetyUtil.equals(normalizedEntityType, "Partnership") ||
                   SafetyUtil.equals(normalizedEntityType, "Partnership/Sole Proprietorship/Trade Name") ) {
-          return 2; // Partnership
+          businessTypeData = new PartnershipData.Builder(x)
+            .setSelected(true)
+            .build();
+          capabilityId = "business-type-partnership";
         }
         else if ( SafetyUtil.equals(normalizedEntityType, "Corporation") )
         {
-          return 3; // Corporation
+          businessTypeData = new CorporationData.Builder(x)
+            .setSelected(true)
+            .build();
+          capabilityId = "business-type-corporation";
         }
         else {
           throw new RuntimeException("Unexpected normalized entity type from LEV: " + normalizedEntityType);
         }
+
+        // Set the business type so that it is copied over in the copyFrom method which requires the property to be set and not the default value
+        businessTypeData.setBusinessTypeId(businessTypeData.getBusinessTypeId());
+
+        Capability capability = (Capability) ((DAO) x.get("capabilityDAO")).find(capabilityId);
+        if ( capability == null ) {
+          throw new RuntimeException("Capability for business type cannot be found");
+        }
+
+        List<String> prerequisites = ((CrunchService) x.get("crunchService")).getPrereqs(capability.getId());
+        Boolean hasPrerequisites = prerequisites.size() > 0;
+
+        return new BusinessTypeDescriptor.Builder(x)
+              .setBusinessTypeData(businessTypeData)
+              .setCapability(capability)
+              .setHasPrerequisites(hasPrerequisites)
+              .build();
       `
     },
     {

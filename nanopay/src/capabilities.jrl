@@ -757,7 +757,6 @@ p({
   "class": "foam.nanos.crunch.MinMaxCapability",
   "id":"A679CA67-93C2-4597-B92E-4BBA00797E96",
   "name":"Business Type",
-  "of":"net.nanopay.crunch.registration.BusinessTypeData",
   "version":"0",
   "enabled":true,
   "min": 1,
@@ -768,24 +767,87 @@ p({
 
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"ED16359E-628E-4104-83B0-C77BB8544B78",
-  "name":"Extra Business Type Data Not Required",
-  "description":"Business type data is not required for onboarding.",
-  "of":"net.nanopay.crunch.registration.IsSelectedData",
+  "id":"business-type-sole-proprietorship",
+  "name":"Sole Proprietorship Business Type",
+  "description":"Business is a sole proprietorship.",
+  "of":"net.nanopay.crunch.registration.businesstypes.SoleProprietorData",
   "version":"0",
   "enabled":true,
-  "keywords":["intuit"]
+  "keywords":["intuit"],
+  "daoKey":"businessDAO",
+  "contextDAOFindKey":"subject.user"
 })
-
 p({
   "class":"foam.nanos.crunch.Capability",
-  "id":"840FC3EB-F826-4AB3-AD92-131CD1C7C8D1",
-  "name":"Extra Business Type Data Required",
-  "description":"Business type data is required for onboarding.",
-  "of":"net.nanopay.crunch.registration.IsSelectedData",
+  "id":"business-type-partnership",
+  "name":"Partnership Business Type",
+  "description":"Business is a paretnership.",
+  "of":"net.nanopay.crunch.registration.businesstypes.PartnershipData",
   "version":"0",
   "enabled":true,
-  "keywords":["intuit"]
+  "keywords":["intuit"],
+  "daoKey":"businessDAO",
+  "contextDAOFindKey":"subject.user"
+})
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"business-type-corporation",
+  "name":"Corporation Business Type",
+  "description":"Business is a corporation.",
+  "of":"net.nanopay.crunch.registration.businesstypes.CorporationData",
+  "version":"0",
+  "enabled":true,
+  "keywords":["intuit"],
+  "daoKey":"businessDAO",
+  "contextDAOFindKey":"subject.user"
+})
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"business-type-nonprofit",
+  "name":"Nonprofit Business Type",
+  "description":"Business is a nonprofit or charitable organization.",
+  "of":"net.nanopay.crunch.registration.businesstypes.NonprofitData",
+  "version":"0",
+  "enabled":true,
+  "keywords":["intuit"],
+  "daoKey":"businessDAO",
+  "contextDAOFindKey":"subject.user"
+})
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"business-type-limited-liability",
+  "name":"Limited Liability Company Business Type",
+  "description":"Business is a limited liability company (LLC).",
+  "of":"net.nanopay.crunch.registration.businesstypes.LimitedLiabilityData",
+  "version":"0",
+  "enabled":true,
+  "keywords":["intuit"],
+  "daoKey":"businessDAO",
+  "contextDAOFindKey":"subject.user"
+})
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"business-type-publicly-traded",
+  "name":"Publicly Traded Business Type",
+  "description":"Business is a publicly traded company.",
+  "of":"net.nanopay.crunch.registration.businesstypes.PubliclyTradedData",
+  "version":"0",
+  "enabled":true,
+  "keywords":["intuit"],
+  "daoKey":"businessDAO",
+  "contextDAOFindKey":"subject.user"
+})
+p({
+  "class":"foam.nanos.crunch.Capability",
+  "id":"business-type-trust",
+  "name":"Trust Business Type",
+  "description":"Business is a trust.",
+  "of":"net.nanopay.crunch.registration.businesstypes.TrustData",
+  "version":"0",
+  "enabled":true,
+  "keywords":["intuit"],
+  "daoKey":"businessDAO",
+  "contextDAOFindKey":"subject.user"
 })
 
 p({

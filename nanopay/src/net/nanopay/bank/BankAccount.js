@@ -65,7 +65,7 @@ foam.CLASS({
     'java.util.List',
     'java.util.regex.Pattern',
     'net.nanopay.account.Account',
-    'net.nanopay.contacts.Contact',
+    'net.nanopay.contacts.PersonalContact',
     'static foam.mlang.MLang.*'
   ],
 
@@ -198,12 +198,12 @@ foam.CLASS({
       height: 500px;
     }
     .bank-account-popup .net-nanopay-sme-ui-SMEModal-content {
-      overflow: scroll !important;
+      overflow: auto !important;
       padding: 30px;
     }
     .bank-account-detail-popup .net-nanopay-sme-ui-SMEModal-inner {
       max-height: 100vh;
-      overflow: scroll;
+      overflow: auto;
     }
   `,
 
@@ -522,7 +522,7 @@ foam.CLASS({
       documentation: `Flag for whether bank account is owned by a contact.
           Required for visibility property expressions.`,
       javaFactory: `
-        return findOwner(foam.core.XLocator.get()) instanceof Contact;
+        return findOwner(foam.core.XLocator.get()) instanceof PersonalContact;
       `
     },
     {

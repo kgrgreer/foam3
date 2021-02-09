@@ -54,7 +54,7 @@ foam.CLASS({
       box-sizing: border-box;
       width: 320px;
       height: 66px;
-      overflow-y: scroll;
+      overflow-y: auto;
       background-color: #ffffff;
       border: solid 1px rgba(164, 179, 184, 0.5);
       resize: vertical;
