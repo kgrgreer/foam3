@@ -672,6 +672,7 @@ var classes = [
   'net.nanopay.tx.EtaSummaryTransactionLineItem',
   'net.nanopay.tx.UnsupportedDateException',
   'net.nanopay.tx.ExpiredTransactionException',
+  'net.nanopay.tx.ruler.UpdateTxOnApprovalRequestStatusChange',
 
   'net.nanopay.fx.FXService',
   'net.nanopay.fx.client.ClientFXService',
@@ -1337,6 +1338,9 @@ var classes = [
   'net.nanopay.partner.treviso.invoice.TrevisoNotification',
   'net.nanopay.partner.treviso.report.TrevisoTransactionReport',
   'net.nanopay.partner.treviso.report.TrevisoTransactionReportDAO',
+
+  // bepay
+  'net.nanopay.partner.bepay.tx.ScreenUsersOnTransactionCreate',
 
   // crunch predicates - todo move all predicates used in crunch here
   'net.nanopay.crunch.predicate.IsBusiness',
