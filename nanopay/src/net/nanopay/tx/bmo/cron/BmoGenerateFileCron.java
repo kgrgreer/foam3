@@ -31,6 +31,7 @@ import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
 public class BmoGenerateFileCron implements ContextAgent {
+  String spid = "intuit";
 
   @Override
   public void execute(X x) {
@@ -50,14 +51,18 @@ public class BmoGenerateFileCron implements ContextAgent {
       Transaction.STATUS, TransactionStatus.PENDING
     );
 
-    Predicate condition3 = MLang.OR(
+    Predicate condition3 = MLang.EQ(
+      Transaction.SPID, spid
+    );
+
+    Predicate condition4 = MLang.OR(
       MLang.EQ(BmoCITransaction.SETTLED, false),
       MLang.EQ(BmoCOTransaction.SETTLED, false),
       MLang.EQ(BmoVerificationTransaction.SETTLED, false)
     );
 
     ArraySink sink = (ArraySink) transactionDAO.where(
-      MLang.AND(condition1, condition2, condition3)
+      MLang.AND(condition1, condition2, condition3, condition4)
     ).select(new ArraySink());
     ArrayList<Transaction> transactions = (ArrayList<Transaction>) sink.getArray();
 
