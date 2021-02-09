@@ -120,6 +120,7 @@ var classes = [
   'net.nanopay.account.BrokerAccount',
   'net.nanopay.account.CreateDefaultDigitalAccountOnUserCreateRule',
   'net.nanopay.bank.BankAccount',
+  'net.nanopay.bank.EstimationAccount',
   'net.nanopay.bank.EUBankAccount',
   'net.nanopay.bank.CABankAccount',
   'net.nanopay.bank.USBankAccount',
@@ -718,6 +719,7 @@ var classes = [
   'net.nanopay.auth.OneTimeAuthenticationTokenService',
   'net.nanopay.auth.PublicBusinessInfo',
   'net.nanopay.auth.ruler.LogoutUserAction',
+  'net.nanopay.auth.ruler.predicate.IsUserInGroups',
   'net.nanopay.security.auth.IPLoggingAuthService',
   'net.nanopay.security.auth.LoginAttemptAuthService',
   'net.nanopay.security.auth.LoginAttempts',
@@ -1166,6 +1168,7 @@ var classes = [
   'net.nanopay.tx.planner.InterTrustPlanner',
   'net.nanopay.tx.planner.RbcInterTrustPlanner',
   'net.nanopay.tx.planner.BmoInterTrustPlanner',
+  'net.nanopay.tx.planner.PartialPlanDAO',
 
   // Billing
   'net.nanopay.tx.billing.Bill',
@@ -1464,6 +1467,7 @@ var classes = [
   'net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig',
 
   // Notification
+  'net.nanopay.notification.PermissionedNotificationSettingRule',
   'net.nanopay.notification.TriggerNotificationTestAction',
   'net.nanopay.notification.TriggerDoNotifyTestAction',
 

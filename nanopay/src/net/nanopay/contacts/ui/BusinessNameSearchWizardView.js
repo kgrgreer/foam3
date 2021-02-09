@@ -45,7 +45,7 @@ foam.CLASS({
       position: relative;
     }
     .business-list {
-      overflow-y: scroll;
+      overflow-y: auto;
       height: 288px;
     }
     .search-count {

@@ -198,12 +198,12 @@ foam.CLASS({
       height: 500px;
     }
     .bank-account-popup .net-nanopay-sme-ui-SMEModal-content {
-      overflow: scroll !important;
+      overflow: auto !important;
       padding: 30px;
     }
     .bank-account-detail-popup .net-nanopay-sme-ui-SMEModal-inner {
       max-height: 100vh;
-      overflow: scroll;
+      overflow: auto;
     }
   `,
 

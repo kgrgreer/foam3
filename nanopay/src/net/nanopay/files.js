@@ -130,6 +130,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/AcceptAware' },
   { name: 'net/nanopay/bank/ui/BankPADForm', flags: ['web'] },
   { name: 'net/nanopay/bank/BankAccount' },
+  { name: 'net/nanopay/bank/EstimationAccount' },
   { name: 'net/nanopay/bank/EUBankAccount' },
   { name: 'net/nanopay/bank/CABankAccount' },
   { name: 'net/nanopay/bank/USBankAccount' },
@@ -223,6 +224,7 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/email/DoNotSolicit' },
   { name: 'net/nanopay/auth/ExternalInvoiceTokenService' },
   { name: 'net/nanopay/auth/ruler/LogoutUserAction' },
+  { name: 'net/nanopay/auth/ruler/predicate/IsUserInGroups' },
   { name: 'net/nanopay/auth/sms/PhoneVerificationTokenService', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/UserDetailView', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/UserTableView', flags: ['web'] },
@@ -1625,6 +1627,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/InterTrustPlanner' },
   { name: 'net/nanopay/tx/planner/RbcInterTrustPlanner' },
   { name: 'net/nanopay/tx/planner/BmoInterTrustPlanner' },
+  { name: 'net/nanopay/tx/planner/PartialPlanDAO' },
 
   // Billing
   { name: 'net/nanopay/tx/billing/Bill' },
@@ -1879,4 +1882,5 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/compliance/SendExpiryNotification'},
   { name: 'net/nanopay/tx/ruler/MicroDepositSentNotification'},
   { name: 'net/nanopay/sme/cron/OnboardingReminderNotification'},
+  { name: 'net/nanopay/notification/PermissionedNotificationSettingRule'},
 ]);

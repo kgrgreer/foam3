@@ -46,7 +46,7 @@ foam.CLASS({
       width: 600px;
       padding: 30px;
       max-height: 570px;
-      overflow-y: scroll;
+      overflow-y: auto;
     }
     ^left-button-container {
       width: 200px;
