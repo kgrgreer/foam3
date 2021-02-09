@@ -39,6 +39,7 @@ import net.nanopay.country.br.BrazilBusinessInfoData;
 import net.nanopay.country.br.CPF;
 import net.nanopay.country.br.exchange.Pais;
 import net.nanopay.country.br.NatureCode;
+import net.nanopay.country.br.NatureCodeData;
 import net.nanopay.country.br.tx.NatureCodeLineItem;
 import net.nanopay.fx.afex.AFEXServiceProvider;
 import net.nanopay.fx.afex.FindBankByNationalIDResponse;
@@ -458,13 +459,16 @@ public class ExchangeServiceProvider implements ExchangeService {
   }
 
   protected String extractNatureCode(Transaction txn) {
+    if ( txn == null ) return "";
+    for (TransactionLineItem lineItem : txn.getLineItems() ) {
+      if ( lineItem instanceof NatureCodeLineItem ) {
+        NatureCodeData natureCodeData = ((NatureCodeLineItem) lineItem).getNatureCodeData();
+        if ( natureCodeData != null && ! SafetyUtil.isEmpty(natureCodeData.toString())
+          && ! SafetyUtil.isEmpty(((NatureCodeLineItem)lineItem).getNatureCode()) )
+          return ((NatureCodeLineItem)lineItem).getCode();
+      }
+    }
     return getNatureCodeFromInvoice(txn);
-//    if ( txn == null ) return "";
-//    for (TransactionLineItem lineItem : txn.getLineItems() ) {
-//      if ( lineItem instanceof NatureCodeLineItem )
-//        return ((NatureCodeLineItem)lineItem).getCode();
-//    }
-//    return "";
   }
 
   protected int getContactRelationship(User payer, User payee) {
