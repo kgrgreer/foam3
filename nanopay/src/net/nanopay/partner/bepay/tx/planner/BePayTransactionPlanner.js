@@ -22,12 +22,14 @@ foam.CLASS({
   documentation: 'Plans BRL to intermediary currencies e.g. USD, CAD, EUR, and GBP',
 
   javaImports: [
+    'foam.dao.DAO',
     'foam.util.SafetyUtil',
-    'java.util.UUID',
     'java.util.Calendar',
     'java.util.Date',
+    'java.util.UUID',
     'net.nanopay.country.br.tx.ExchangeLimitTransaction',
     'net.nanopay.country.br.tx.NatureCodeLineItem',
+    'net.nanopay.fx.ExchangeRate',
     'net.nanopay.fx.FXLineItem',
     'net.nanopay.fx.FXLineItem',
     'net.nanopay.fx.FXSummaryTransaction',
@@ -40,8 +42,10 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
     'org.apache.commons.lang.ArrayUtils',
+    'static foam.mlang.MLang.*',
   ],
-properties: [
+
+  properties: [
     {
       name: 'bestPlan',
       value: true
@@ -68,7 +72,14 @@ properties: [
       name: 'plan',
       javaCode: `
       //TODO: add api call to retrieve fx rate
-      Double fxRate = 3.0;
+
+      ExchangeRate exchangeRate = (ExchangeRate) ((DAO) x.get("localExchangeRateDAO")).find(AND(
+        EQ(ExchangeRate.TO_CURRENCY, requestTxn.getDestinationCurrency()),
+        EQ(ExchangeRate.FROM_CURRENCY, requestTxn.getSourceCurrency())
+      ));
+
+      if ( exchangeRate == null ) throw new RuntimeException("no rate found for source currency: " + requestTxn.getSourceCurrency() + " and destination currency" + requestTxn.getDestinationCurrency());
+      Double fxRate = exchangeRate.getRate();
       FXSummaryTransaction txn = new FXSummaryTransaction();
       txn.copyFrom(requestTxn);
       txn.setPaymentProvider(PAYMENT_PROVIDER);
