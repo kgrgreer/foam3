@@ -34,7 +34,8 @@ foam.CLASS({
 
   messages: [
     { name: 'NO_DIRECTOR_INFO', message: 'Director information required' },
-    { name: 'NO_DIR_NEEDED', message: 'No Business Directors required for this business type. Please proceed to next step.' }
+    { name: 'NO_DIR_NEEDED', message: 'No Business Directors required for this business type. Please proceed to next step.' },
+    { name: 'DIRECTOR_INFO_NOT_VALID', message: 'Director information is not valid' }
   ],
 
   sections: [
@@ -105,24 +106,16 @@ foam.CLASS({
       visibility: function(businessTypeId, needDirector) {
         return businessTypeId === 3 || businessTypeId === 5 || businessTypeId === 6 ? foam.u2.DisplayMode.RW : foam.u2.DisplayMode.HIDDEN;
       },
+      validateObj: function(businessTypeId, businessDirectors, businessDirectors$errors) {
+        if ( [0, 1, 2, 4, 7].includes(businessTypeId) ) return;
+        if ( ! businessDirectors || businessDirectors.length === 0 )
+          return this.NO_DIRECTOR_INFO;
+        if ( businessDirectors$errors?.length )
+          return this.DIRECTOR_INFO_NOT_VALID;
+      },
       autoValidate: true,
       validationTextVisible: true,
-      validationPredicates: [
-        {
-          args: [ 'businessTypeId', 'businessDirectors' ],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.HAS(net.nanopay.crunch.onboardingModels.BusinessDirectorsData.BUSINESS_DIRECTORS),
-              e.EQ(net.nanopay.crunch.onboardingModels.BusinessDirectorsData.BUSINESS_TYPE_ID, 0),
-              e.EQ(net.nanopay.crunch.onboardingModels.BusinessDirectorsData.BUSINESS_TYPE_ID, 1),
-              e.EQ(net.nanopay.crunch.onboardingModels.BusinessDirectorsData.BUSINESS_TYPE_ID, 2),
-              e.EQ(net.nanopay.crunch.onboardingModels.BusinessDirectorsData.BUSINESS_TYPE_ID, 4),
-              e.EQ(net.nanopay.crunch.onboardingModels.BusinessDirectorsData.BUSINESS_TYPE_ID, 7)
-            );
-          },
-          errorMessage: 'NO_DIRECTOR_INFO'
-        }
-      ]
+      validationStyleEnabled: false
     }
   ],
 
