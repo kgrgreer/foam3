@@ -4,6 +4,7 @@ import foam.core.FObject;
 import foam.core.X;
 import foam.dao.DAO;
 import foam.dao.ProxyDAO;
+import foam.dao.ProxySink;
 import foam.dao.Sink;
 import foam.mlang.order.Comparator;
 import foam.mlang.predicate.Predicate;
@@ -38,7 +39,8 @@ public class PermissionedTransactionLineItemDAO extends ProxyDAO {
 
   @Override
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
-    return super.select_(x, new PermissionedTransactionLineItemSink(x, sink),  skip, limit, order, predicate);
+    var proxySink = (ProxySink) super.select_(x, new PermissionedTransactionLineItemSink(x, sink),  skip, limit, order, predicate);
+    return proxySink.getDelegate();
   }
 
   @Override
