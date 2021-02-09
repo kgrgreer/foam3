@@ -245,26 +245,27 @@ foam.CLASS({
       }
     },
     {
-      name: 'sendMoney',
+      name: 'invite',
       isEnabled: function() {
-        return (
-          this.businessId &&
-          this.businessStatus !== this.AccountStatus.DISABLED
-        ) || this.bankAccount;
+        return this.signUpStatus != this.ContactStatus.READY;
+      },
+      isAvailable: async function() {
+        let account = await this.accountDAO.find(this.bankAccount);
+        let permission = await this.auth.check(null, 'menu.read.submenu.contact.invitation');
+        return this.signUpStatus != this.ContactStatus.READY && ! this.INBankAccount.isInstance(account) && permission;
       },
       code: function(X) {
-        this.checkAndNotifyAbilityToPay().then((result) => {
-          if ( result ) {
-            X.menuDAO.find('sme.quickAction.send').then((menu) => {
-              var clone = menu.clone();
-              Object.assign(clone.handler.view, {
-                invoice: this.Invoice.create({ contactId: this.id }),
-                isPayable: true
-              });
-              clone.launch(X, X.controllerView);
-            });
-          }
-        });
+        var invite = net.nanopay.model.Invitation.create({
+          email: this.email,
+          businessName: this.organization,
+          createdBy: this.subject.user.id,
+          isContact: true
+        }, X);
+        X.controllerView.add(this.WizardController.create({
+          model: 'net.nanopay.model.Invitation',
+          data: invite,
+          controllerMode: foam.u2.ControllerMode.EDIT
+        }, X))
       }
     },
     {
@@ -274,6 +275,10 @@ foam.CLASS({
           this.businessId &&
           this.businessStatus !== this.AccountStatus.DISABLED
         ) || this.bankAccount;
+      },
+      isAvailable: async function() {
+        let permission = await this.auth.check(null, 'menu.read.mainmenu.invoices.receivables');
+        return permission;
       },
       code: function(X) {
         this.checkAndNotifyAbilityToReceive().then((result) => {
@@ -291,21 +296,32 @@ foam.CLASS({
       }
     },
     {
-      name: 'invite',
+      name: 'sendMoney',
+      isEnabled: function() {
+        return (
+          this.businessId &&
+          this.businessStatus !== this.AccountStatus.DISABLED
+        ) || this.bankAccount;
+      },
+      isAvailable: async function() {
+        let permission = await this.auth.check(null, 'menu.read.mainmenu.invoices.payables');
+        return permission;
+      },
       code: function(X) {
-        var invite = net.nanopay.model.Invitation.create({
-          email: this.email,
-          businessName: this.organization,
-          createdBy: this.subject.user.id,
-          isContact: true
-        }, X);
-        X.controllerView.add(this.WizardController.create({
-          model: 'net.nanopay.model.Invitation',
-          data: invite,
-          controllerMode: foam.u2.ControllerMode.EDIT
-        }, X))
+        this.checkAndNotifyAbilityToPay().then((result) => {
+          if ( result ) {
+            X.menuDAO.find('sme.quickAction.send').then((menu) => {
+              var clone = menu.clone();
+              Object.assign(clone.handler.view, {
+                invoice: this.Invoice.create({ contactId: this.id }),
+                isPayable: true
+              });
+              clone.launch(X, X.controllerView);
+            });
+          }
+        });
       }
-    }
+    },
   ],
 
   methods: [
