@@ -36,7 +36,7 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
       // TODO: swap runtime errors for Transaction Request Error Codes.
-        if ( obj instanceof Transaction && (SafetyUtil.isEmpty( ((Transaction) obj).getId() )) )
+        if ( obj instanceof Transaction && ! SafetyUtil.isEmpty(((Transaction) obj).getId()) )
           throw new ValidationException("Only transactions without an ID can be planned");
         if ( obj instanceof Transaction || obj instanceof TransactionQuote )
           return getDelegate().put_(x, obj);

@@ -36,9 +36,8 @@
      'java.util.Map',
      'net.nanopay.crunch.registration.BusinessDirectorList',
      'net.nanopay.crunch.registration.BusinessOwnerList',
-     'net.nanopay.crunch.registration.BusinessTypeData',
-     'net.nanopay.crunch.registration.IsSelectedData',
      'net.nanopay.crunch.registration.SigningOfficerList',
+     'net.nanopay.crunch.registration.businesstypes.CorporationData',
      'net.nanopay.model.BeneficialOwner',
      'net.nanopay.model.Business',
      'net.nanopay.model.BusinessDirector',
@@ -55,16 +54,10 @@
        ],
        javaCode: `
         try {
-          // Get the business type
-          int businessTypeId = 3; // Corporation
-          BusinessTypeData businessTypeData = new BusinessTypeData.Builder(x)
-            .setBusinessTypeId(businessTypeId)
-            .build();
-          partiesCapabilityDataObjects.put("Business Type", businessTypeData);
-          
           // For corporations, director and owner information must be collected
-          partiesCapabilityDataObjects.put("Extra Business Type Data Not Required", new IsSelectedData.Builder(x).setSelected(false).build());
-          partiesCapabilityDataObjects.put("Extra Business Type Data Required", new IsSelectedData.Builder(x).setSelected(true).build());
+          CorporationData corporationData = new CorporationData.Builder(x).setSelected(true).build();
+          corporationData.setBusinessTypeId(corporationData.getBusinessTypeId());
+          partiesCapabilityDataObjects.put("Corporation Business Type", corporationData);
 
           // Process the parties
           List<SigningOfficer> officerList = new ArrayList<>();

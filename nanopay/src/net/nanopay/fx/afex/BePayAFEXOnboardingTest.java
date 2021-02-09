@@ -20,7 +20,7 @@ import net.nanopay.fx.afex.*;
 import static foam.mlang.MLang.*;
 import net.nanopay.crunch.document.*;
 
-public class BepayAFEXOnboardingTest extends foam.nanos.test.Test {
+public class BePayAFEXOnboardingTest extends foam.nanos.test.Test {
   public void runTest(X x) {
     DAO capabilityDAO = (DAO) x.get("localCapabilityDAO");
     DAO userCapabilityJunctionDAO = (DAO) x.get("bareUserCapabilityJunctionDAO");

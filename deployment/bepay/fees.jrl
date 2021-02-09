@@ -12,6 +12,5 @@ p({
   id: "ddd324fa-f17b-4b8c-bafa-3a8b2db6a50a",
   name: "IOF",
   percentage: 0.38,
-  amountPropName: "destinationAmount",
   feeRule: "9e7661a6-610b-47ad-b521-96b9c760fb16"
 })
