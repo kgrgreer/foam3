@@ -148,7 +148,7 @@ p({
   "id":"16cebf5b-30b5-4a67-9fbe-d69c93c736e5",
   "name":"Update transaction status based on approval",
   "daoKey":"approvalRequestDAO",
-  "ruleGroup":"TXComplianceApproval",
+  "ruleGroup":"BePayCompliance",
   "operation":1,
   "predicate": {
     "class": "foam.mlang.predicate.And",
