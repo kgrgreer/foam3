@@ -543,6 +543,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/UnsupportedTransactionException' },
   { name: 'net/nanopay/tx/UnsupportedDateException' },
   { name: 'net/nanopay/tx/ExpiredTransactionException' },
+  { name: 'net/nanopay/tx/ruler/UpdateTxOnApprovalRequestStatusChange' },
 
   //integration
   { name: 'net/nanopay/integration/ErrorCode' },
@@ -1871,6 +1872,9 @@ FOAM_FILES([
   // Reports for Treviso
   { name: 'net/nanopay/partner/treviso/report/TrevisoTransactionReport' },
   { name: 'net/nanopay/partner/treviso/report/TrevisoTransactionReportDAO' },
+
+  // bepay
+  { name: 'net/nanopay/partner/bepay/tx/ScreenUsersOnTransactionCreate' },
 
   // support
   { name: 'net/nanopay/support/SupportAccount' },

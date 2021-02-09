@@ -672,6 +672,7 @@ var classes = [
   'net.nanopay.tx.EtaSummaryTransactionLineItem',
   'net.nanopay.tx.UnsupportedDateException',
   'net.nanopay.tx.ExpiredTransactionException',
+  'net.nanopay.tx.ruler.UpdateTxOnApprovalRequestStatusChange',
 
   'net.nanopay.fx.FXService',
   'net.nanopay.fx.client.ClientFXService',
@@ -1341,6 +1342,7 @@ var classes = [
   // bepay
   'net.nanopay.partner.bepay.tx.BePayTransaction',
   'net.nanopay.partner.bepay.tx.planner.BePayTransactionPlanner',
+  'net.nanopay.partner.bepay.tx.ScreenUsersOnTransactionCreate',
 
   // crunch predicates - todo move all predicates used in crunch here
   'net.nanopay.crunch.predicate.IsBusiness',
