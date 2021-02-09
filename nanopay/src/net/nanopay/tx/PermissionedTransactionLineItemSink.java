@@ -1,6 +1,7 @@
 package net.nanopay.tx;
 
 import foam.core.Detachable;
+import foam.core.X;
 import foam.dao.ProxySink;
 import foam.dao.Sink;
 import net.nanopay.tx.model.Transaction;
@@ -12,8 +13,8 @@ public class PermissionedTransactionLineItemSink extends ProxySink {
     super.put(PermissionedTransactionLineItemDAO.filterLineItems(getX(), (Transaction) obj), sub);
   }
 
-  PermissionedTransactionLineItemSink(Sink sink) {
-    super(sink);
+  PermissionedTransactionLineItemSink(X x, Sink sink) {
+    super(x, sink);
   }
 
 }

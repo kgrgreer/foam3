@@ -11,32 +11,39 @@ import foam.nanos.auth.AuthService;
 import net.nanopay.tx.model.Transaction;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class PermissionedTransactionLineItemDAO extends ProxyDAO {
 
   public static Transaction filterLineItems(X x, Transaction transaction) {
+    if ( transaction == null ) return null;
+
     var newTransaction = (Transaction) transaction.fclone();
-    var transactionLineItems = new ArrayList<TransactionLineItem>();
+    newTransaction.clearLineItems();
+    final var auth = (AuthService) x.get("auth");
 
-    var auth = (AuthService) x.get("auth");
-    for ( var lineItem : newTransaction.getLineItems() ) {
-      if ( auth.check(x, "read." +  lineItem.getClassInfo().getId()) ) {
-        transactionLineItems.add(lineItem);
-      }
-    }
+    newTransaction.setLineItems(Arrays.stream(transaction.getLineItems())
+      .filter(lineItem -> {
+        try {
+          return auth.check(x, lineItem.getClass().getSimpleName().toLowerCase() + ".read");
+        } catch (Throwable t) {
+          return false;
+        }
+      })
+      .toArray(TransactionLineItem[]::new));
 
-    newTransaction.setLineItems(transactionLineItems.toArray(new TransactionLineItem[0]));
     return newTransaction;
   }
 
   @Override
   public Sink select_(X x, Sink sink, long skip, long limit, Comparator order, Predicate predicate) {
-    return super.select_(x, new PermissionedTransactionLineItemSink(sink),  skip, limit, order, predicate);
+    return super.select_(x, new PermissionedTransactionLineItemSink(x, sink),  skip, limit, order, predicate);
   }
 
   @Override
   public FObject find_(X x, Object id) {
-    return filterLineItems(getX(), (Transaction) super.find_(x, id));
+    return filterLineItems(x, (Transaction) super.find_(x, id));
   }
 
   PermissionedTransactionLineItemDAO(X x, DAO delegate) {

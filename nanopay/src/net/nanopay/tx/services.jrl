@@ -105,13 +105,13 @@ p({
   """
     daoDecorator = new foam.dao.NullDAO(x, net.nanopay.tx.model.Transaction.getOwnClassInfo());
     daoDecorator = new foam.nanos.auth.PermissionedPropertyDAO(x, daoDecorator);
-    daoDecorator = new net.nanopay.tx.PermisssionedTransactionLineItemDAO(x, daoDecorator);
+    daoDecorator = new net.nanopay.tx.AuthenticatedTransactionDAO(x, daoDecorator);
+    daoDecorator = new net.nanopay.tx.PermissionedTransactionLineItemDAO(x, daoDecorator);
       
-    return new net.nanopay.tx.AuthenticatedTransactionDAO(x,
-      new foam.dao.EasyDAO.Builder(x)
+    new foam.dao.EasyDAO.Builder(x)
       .setOf(net.nanopay.tx.model.Transaction.getOwnClassInfo())
       .setInnerDAO(x.get("localTransactionDAO"))
-      .setDecorator()
+      .setDecorator(daoDecorator)
       .setAuthorizer(new foam.nanos.auth.AuthorizableAuthorizer("transaction"))
       .setPm(true)
       .setPipelinePm(true)
@@ -119,7 +119,7 @@ p({
       .setRuler(false)
       .setCluster(false)
       .setOrder(new foam.mlang.order.Comparator[] { new foam.mlang.order.Desc.Builder(x).setArg1(net.nanopay.tx.model.Transaction.CREATED).build() })
-      .build());
+      .build();
   """,
   "client": "{\"of\":\"net.nanopay.tx.model.Transaction\", \"remoteListenerSupport\": false, \"serverBox\":{ \"class\":\"foam.box.SessionClientBox\", \"url\":\"service/transactionDAO\", \"delegate\":{ \"class\":\"foam.box.TimeoutBox\", \"timeout\":60000,\"delegate\":{\"class\":\"foam.box.HTTPBox\", \"url\":\"service/transactionDAO\"}}}}"
 })
