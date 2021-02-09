@@ -17,12 +17,18 @@
 
 foam.CLASS({
   package: 'net.nanopay.auth',
-  name: 'ServiceProviderRefines',
+  name: 'ServiceProviderRefine',
   refines: 'foam.nanos.auth.ServiceProvider',
   properties: [
     {
       class: 'String',
-      name: 'paymentIssuerTag'
+      name: 'paymentIssuerTag',
+      factory: function() {
+        return this.id.charAt(0).toUpperCase() + this.id.slice(1) + ' powered by nanopay';
+      },
+      javaFactory: `
+        return getId().substring(0, 1).toUpperCase() + getId().substring(1) + " powered by nanopay";
+      `
     }
   ]
 });
