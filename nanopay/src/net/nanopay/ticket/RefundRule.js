@@ -34,11 +34,14 @@ foam.CLASS({
     'foam.nanos.logger.Logger',
     'net.nanopay.ticket.RefundTicket',
     'net.nanopay.ticket.RefundStatus',
+    'net.nanopay.tx.CreditLineItem',
+    'net.nanopay.tx.FeeSummaryTransactionLineItem',
     'net.nanopay.tx.SummaryTransaction',
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus'
+    'net.nanopay.tx.model.TransactionStatus',
+    'java.util.ArrayList'
   ],
 
   methods: [
@@ -51,7 +54,7 @@ foam.CLASS({
           
           RefundTicket request = (RefundTicket) obj;
           DAO txnDAO = (DAO) x.get("localTransactionDAO");
-          Transaction txn = (Transaction) txnDAO.find(request.getRequestTransaction());
+          Transaction txn = (Transaction) txnDAO.inX(x).find(request.getRequestTransaction());
           Transaction newTxn = new Transaction();
 
           if (! (txn instanceof SummaryTransaction || txn instanceof FXSummaryTransaction) ) {
@@ -60,15 +63,44 @@ foam.CLASS({
 
           Transaction problemTxn = txn.getStateTxn(x);
           problemTxn = (Transaction) problemTxn.fclone();
+          ArrayList<TransactionLineItem> array = new ArrayList<>();
+
+          if ( request.getRefundOldFees() ) {
+            FeeSummaryTransactionLineItem feeSummary = null;
+            for ( TransactionLineItem lineItem: txn.getLineItems() ) {
+              if ( lineItem instanceof FeeSummaryTransactionLineItem ) {
+                feeSummary = (FeeSummaryTransactionLineItem) lineItem;
+              }
+            }
+            CreditLineItem feeRefund = new CreditLineItem();
+            feeRefund.setAmount(feeSummary.getAmount());
+            feeRefund.setFeeCurrency(feeSummary.getCurrency());
+            // TODO replace with credit account
+            feeRefund.setSourceAccount("9c34bfad-ec60-4abd-8fc3-fcd5681df5f8");
+            feeRefund.setDestinationAccount(txn.getSourceAccount());
+            array.add(feeRefund);
+          }
+
+          if ( request.getCreditAmount() > 0 ) {
+            CreditLineItem feeRefund = new CreditLineItem();
+            feeRefund.setAmount(request.getCreditAmount());
+            feeRefund.setFeeCurrency(txn.findSourceAccount(x).getDenomination());
+            // TODO replace with credit account
+            feeRefund.setSourceAccount("9c34bfad-ec60-4abd-8fc3-fcd5681df5f8");
+            feeRefund.setDestinationAccount(txn.getSourceAccount());
+            array.add(feeRefund);
+          }
 
           newTxn.setSourceAccount(problemTxn.getSourceAccount());
           newTxn.setDestinationAccount(txn.getSourceAccount());
           newTxn.setAmount(txn.getAmount());
-          newTxn.setLineItems(request.getLineitems());
+          if ( array.size() > 0 ) {
+            newTxn.setLineItems(array.toArray(new TransactionLineItem[array.size()]));
+          }
 
           problemTxn.setStatus(TransactionStatus.CANCELLED);
-          txnDAO.put(problemTxn);
-          txnDAO.put(newTxn);
+          txnDAO.inX(x).put(problemTxn);
+          txnDAO.inX(x).put(newTxn);
 
           request.setRefundStatus(RefundStatus.PROCESSING);
         }
