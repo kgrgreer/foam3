@@ -27,10 +27,8 @@ foam.CLASS({
     'java.util.Calendar',
     'java.util.Date',
     'java.util.UUID',
-    'net.nanopay.country.br.tx.ExchangeLimitTransaction',
     'net.nanopay.country.br.tx.NatureCodeLineItem',
     'net.nanopay.fx.ExchangeRate',
-    'net.nanopay.fx.FXLineItem',
     'net.nanopay.fx.FXLineItem',
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.partner.bepay.tx.BePayTransaction',
@@ -41,7 +39,6 @@ foam.CLASS({
     'net.nanopay.tx.Transfer',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
-    'org.apache.commons.lang.ArrayUtils',
     'static foam.mlang.MLang.*',
   ],
 
