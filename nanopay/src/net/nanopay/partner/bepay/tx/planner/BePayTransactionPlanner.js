@@ -28,7 +28,7 @@ foam.CLASS({
     'java.util.Date',
     'java.util.UUID',
     'net.nanopay.country.br.tx.NatureCodeLineItem',
-    'net.nanopay.fx.ExchangeRate',
+    'net.nanopay.fx.ExchangeRateService',
     'net.nanopay.fx.FXLineItem',
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.partner.bepay.tx.BePayTransaction',
@@ -70,13 +70,9 @@ foam.CLASS({
       javaCode: `
       //TODO: add api call to retrieve fx rate
 
-      ExchangeRate exchangeRate = (ExchangeRate) ((DAO) x.get("localExchangeRateDAO")).find(AND(
-        EQ(ExchangeRate.TO_CURRENCY, requestTxn.getDestinationCurrency()),
-        EQ(ExchangeRate.FROM_CURRENCY, requestTxn.getSourceCurrency())
-      ));
+      ExchangeRateService exchangeRateService = (ExchangeRateService) x.get("exchangeRateService");
 
-      if ( exchangeRate == null ) throw new RuntimeException("no rate found for source currency: " + requestTxn.getSourceCurrency() + " and destination currency" + requestTxn.getDestinationCurrency());
-      Double fxRate = exchangeRate.getRate();
+      Double fxRate = exchangeRateService.getRate(requestTxn.getSourceCurrency(), requestTxn.getDestinationCurrency());
       FXSummaryTransaction txn = new FXSummaryTransaction();
       txn.copyFrom(requestTxn);
       txn.setPaymentProvider(PAYMENT_PROVIDER);
