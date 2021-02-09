@@ -341,6 +341,7 @@ foam.CLASS({
       transient: true,
       label: '',
       updateVisibility: 'HIDDEN',
+      autoValidate: true,
       factory: function() {
         return net.nanopay.model.CAPadCapture.create({
           country: this.country,
