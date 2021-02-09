@@ -22,11 +22,6 @@ foam.CLASS({
 
   documentation: `BePay Transaction`,
 
-  javaImports: [
-    'foam.nanos.auth.User',
-    'net.nanopay.admin.model.ComplianceStatus',
-    'net.nanopay.model.Business'
-  ],
 
   properties: [
     {
