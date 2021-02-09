@@ -981,7 +981,7 @@ foam.CLASS({
       section: 'invoiceInformation',
       isAvailable: async function() {
         var acc = await this.accountDAO.find(this.destinationAccount);
-        return this.user.id != acc.owner;
+        return this.acc ? this.user.id != acc.owner : false;
       },
       code: async function(X) {
         var payerAccount = await X.accountDAO.find(this.account);
