@@ -61,7 +61,7 @@ foam.CLASS({
     'java.util.ArrayList',
     'net.nanopay.account.Account',
     'net.nanopay.admin.model.AccountStatus',
-    'net.nanopay.contacts.Contact',
+    'net.nanopay.contacts.PersonalContact',
     'net.nanopay.tx.AbliiTransaction',
     'net.nanopay.tx.ETALineItem',
     'net.nanopay.tx.FeeLineItem',
@@ -1095,7 +1095,7 @@ foam.CLASS({
         throw new AuthorizationException("You must verify email to send money");
       }
 
-      if ( ! (destinationOwner instanceof Contact) && ! destinationOwner.getEmailVerified() ) {
+      if ( ! (destinationOwner instanceof PersonalContact) && ! destinationOwner.getEmailVerified() ) {
         throw new AuthorizationException("Receiver must verify email to receive money");
       }
 

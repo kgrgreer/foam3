@@ -59,7 +59,7 @@ foam.CLASS({
       name: 'put_',
       javaCode: `
         User externalContact = (User) obj.fclone();
-        if ( externalContact instanceof Contact ) {
+        if ( externalContact instanceof PersonalContact ) {
           DAO tokenDAO = ((DAO) x.get("localTokenDAO")).inX(x);
 
           // Handle the existing external contact

@@ -23,7 +23,7 @@ foam.CLASS({
 
   javaImports: [
     'net.nanopay.model.Business',
-    'net.nanopay.contacts.Contact',
+    'net.nanopay.contacts.PersonalContact',
     'foam.core.FObject',
     'foam.core.X',
     'foam.dao.DAO',
@@ -41,7 +41,7 @@ foam.CLASS({
     {
       name: 'put_',
       javaCode: `
-  if ( obj instanceof Business || obj instanceof Contact ) {
+  if ( obj instanceof Business || obj instanceof PersonalContact ) {
     return super.put_(x, obj);
   }
 
