@@ -110,7 +110,7 @@ foam.CLASS({
         if ( [0, 1, 2, 4, 7].includes(businessTypeId) ) return;
         if ( ! businessDirectors || businessDirectors.length === 0 )
           return this.NO_DIRECTOR_INFO;
-        if ( businessDirectors$errors?.length )
+        if ( businessDirectors$errors && businessDirectors$errors.length )
           return this.DIRECTOR_INFO_NOT_VALID;
       },
       autoValidate: true,
