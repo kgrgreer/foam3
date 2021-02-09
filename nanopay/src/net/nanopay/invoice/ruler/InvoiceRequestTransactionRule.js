@@ -29,7 +29,7 @@ foam.CLASS({
     'foam.core.X',
     'foam.dao.DAO',
     'foam.nanos.logger.Logger',
-    'net.nanopay.contacts.Contact',
+    'net.nanopay.contacts.PersonalContact',
     'net.nanopay.invoice.model.Invoice',
     'net.nanopay.tx.model.Transaction',
   ],
@@ -55,8 +55,8 @@ foam.CLASS({
         requestTxn.setDestinationAmount(invoice.getAmount());
         requestTxn.setInvoiceId(invoice.getId());
 
-        if ( payee instanceof Contact && SafetyUtil.isEmpty(invoice.getDestinationAccount()) ) {
-          requestTxn.setDestinationAccount(((Contact) payee).getBankAccount());              
+        if ( payee instanceof PersonalContact && SafetyUtil.isEmpty(invoice.getDestinationAccount()) ) {
+          requestTxn.setDestinationAccount(((PersonalContact) payee).getBankAccount());
         }
 
         invoice.setRequestTransaction(requestTxn);

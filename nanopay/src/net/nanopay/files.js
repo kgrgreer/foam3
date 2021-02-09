@@ -1105,6 +1105,7 @@ FOAM_FILES([
 
   // contacts
   { name: 'net/nanopay/contacts/Contact' },
+  { name: 'net/nanopay/contacts/PersonalContact' },
   { name: 'net/nanopay/contacts/ContactStatus' },
   { name: 'net/nanopay/contacts/ContactMigrationRule' },
   { name: 'net/nanopay/contacts/ExternalContactToken' },
@@ -1665,13 +1666,20 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/registration/BusinessDetailExpandedData' },
   { name: 'net/nanopay/crunch/registration/BusinessDirectorList' },
   { name: 'net/nanopay/crunch/registration/BusinessOwnerList' },
-  { name: 'net/nanopay/crunch/registration/BusinessTypeData' },
   { name: 'net/nanopay/crunch/registration/IsSelectedData' },
   { name: 'net/nanopay/crunch/registration/PersonalOnboardingTypeData' },
   { name: 'net/nanopay/crunch/registration/SigningOfficerList' },
   { name: 'net/nanopay/crunch/registration/UserRegistrationData' },
   { name: 'net/nanopay/crunch/registration/UserDetailData' },
   { name: 'net/nanopay/crunch/registration/UserDetailExpandedData' },
+  { name: 'net/nanopay/crunch/registration/businesstypes/BusinessTypeData' },
+  { name: 'net/nanopay/crunch/registration/businesstypes/CorporationData' },
+  { name: 'net/nanopay/crunch/registration/businesstypes/LimitedLiabilityData' },
+  { name: 'net/nanopay/crunch/registration/businesstypes/NonprofitData' },
+  { name: 'net/nanopay/crunch/registration/businesstypes/PartnershipData' },
+  { name: 'net/nanopay/crunch/registration/businesstypes/PubliclyTradedData' },
+  { name: 'net/nanopay/crunch/registration/businesstypes/SoleProprietorData' },
+  { name: 'net/nanopay/crunch/registration/businesstypes/TrustData' },
 
   // bepay crunch onboarding
   { name: 'net/nanopay/crunch/bepay/ExtendedUserDetailsData' },
@@ -1864,6 +1872,10 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/TrevisoSendEmailToAllRule' },
   { name: 'net/nanopay/partner/treviso/TrevisoSendEmailToAllNotification' },
   { name: 'net/nanopay/partner/treviso/invoice/TrevisoNotification' },
+
+  // bepay
+  { name: 'net/nanopay/partner/bepay/tx/BePayTransaction' },
+  { name: 'net/nanopay/partner/bepay/tx/planner/BePayTransactionPlanner' },
 
   // Reports for Treviso
   { name: 'net/nanopay/partner/treviso/report/TrevisoTransactionReport' },
