@@ -650,13 +650,13 @@ foam.CLASS({
     .login-stack {
       height: calc(100vh - 65px);
       margin-bottom: 65px;
-      overflow: scroll;
+      overflow: auto;
     }
 
     .application-stack {
       height: calc(100vh - 120px);
       margin-top: 55px;
-      overflow: scroll;
+      overflow: auto;
     }
 
     .net-nanopay-auth-ui-UserSelectionView .styleHolder_NameField {
@@ -969,7 +969,7 @@ foam.CLASS({
       height: 500px;
     }
     .bank-account-popup .net-nanopay-sme-ui-SMEModal-content {
-      overflow: scroll !important;
+      overflow: auto !important;
       padding: 30px;
     }
   `

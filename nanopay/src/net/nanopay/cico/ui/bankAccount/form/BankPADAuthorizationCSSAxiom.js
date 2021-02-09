@@ -198,7 +198,7 @@ foam.CLASS({
           width: 496px;
           background: white;
           border-radius: 2px;
-          overflow-y: scroll;
+          overflow-y: auto;
           padding: 20px;
         }
         ^ .notEditable{

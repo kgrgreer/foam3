@@ -102,15 +102,18 @@ foam.CLASS({
       `
     },
     {
-      name: 'find_',
-      javaCode: `
-        return super.find_(x, id);
-      `
-    },
-    {
       name: 'remove_',
       javaCode: `
         return null;
+      `
+    },
+    {
+      name: 'cmd_',
+      javaCode: `
+      if ( foam.dao.DAO.LAST_CMD.equals(obj) ) {
+        return this;
+      }
+      return null;
       `
     },
     {
@@ -244,8 +247,7 @@ foam.CLASS({
         // sort the transfer array
         java.util.Arrays.sort(newTs);
         // persist condensed transfers
-        //TODO: setTransfers will overwrite multi stage transfers, either need to not set, or smartly replace.
-        txn.setTransfers(newTs);
+        txn = replaceTransfers(txn, newTs);
         // lock accounts in transfers
         return lockAndExecute_(x, txn, newTs, 0);
       } finally {
@@ -328,6 +330,29 @@ foam.CLASS({
       } finally {
         pm.log(x);
       }
+      `
+    },
+    {
+      name: 'replaceTransfers',
+      documentation: 'Find the transfers that belong to the current stage',
+      type: 'net.nanopay.tx.model.Transaction',
+      args: [
+        { name: 'txn', type: 'net.nanopay.tx.model.Transaction' },
+        { name: 'newTrs', type: 'net.nanopay.tx.Transfer[]' }
+      ],
+      javaCode: `
+        Transfer[] oldTrs = txn.getTransfers();
+        Long stage = txn.getStage();
+        List<Transfer> replacements = new ArrayList<Transfer>();
+        for ( int i = 0; i < oldTrs.length; i++) {
+          if ( oldTrs[i].getStage() != stage )
+            replacements.add(oldTrs[i]);
+        }
+        for ( int i = 0; i < newTrs.length; i++ ) {
+          replacements.add(newTrs[i]);
+        }
+        txn.setTransfers(replacements.toArray(new Transfer[0]));
+        return txn;
       `
     }
   ]
