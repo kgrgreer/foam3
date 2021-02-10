@@ -30,7 +30,11 @@ import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
 public class RbcGenerateFileCron implements ContextAgent {
-  String spid = "intuit";
+  String spid;
+
+  public RbcGenerateFileCron(String spid) {
+    this.spid = spid;
+  }
 
   @Override
   public void execute(X x) {

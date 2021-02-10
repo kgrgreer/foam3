@@ -31,7 +31,11 @@ import net.nanopay.tx.model.Transaction;
 import net.nanopay.tx.model.TransactionStatus;
 
 public class BmoGenerateFileCron implements ContextAgent {
-  String spid = "intuit";
+  String spid;
+
+  public BmoGenerateFileCron(String spid) {
+    this.spid = spid;
+  }
 
   @Override
   public void execute(X x) {
