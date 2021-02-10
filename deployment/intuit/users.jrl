@@ -101,6 +101,7 @@ p({
     createdBy:1,
     createdByAgent:1,
     status:2,
+    enabled: true,
     nextLoginAttemptAllowedAt:1596216443297
 })
 

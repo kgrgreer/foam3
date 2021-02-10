@@ -24,6 +24,7 @@ foam.CLASS({
     'foam.dao.DAO',
     'foam.nanos.auth.Address',
     'foam.nanos.auth.User',
+    'foam.nanos.auth.ServiceProvider',
     'foam.nanos.notification.Notification',
     'foam.nanos.logger.Logger',
     'foam.nanos.logger.PrefixLogger',
@@ -48,7 +49,6 @@ foam.CLASS({
     'net.nanopay.tx.rbc.iso20022file.RbcCORecord',
     'net.nanopay.tx.TransactionEvent',
     'net.nanopay.tx.model.TransactionStatus',
-
     'java.math.BigDecimal',
     'java.util.Calendar',
     'java.util.Date',
@@ -73,6 +73,8 @@ foam.CLASS({
       RbcCORecord coRecords = new RbcCORecord();
       int transactionCount = 0;
       Long transactionVal = 0L;
+      Transaction spidTxn = transactions[0];
+      ServiceProvider spid = (ServiceProvider) ((DAO) x.get("localServiceProviderDAO")).find(spidTxn.getSpid());
       RbcAssignedClientValue rbcValues = (RbcAssignedClientValue) x.get("rbcAssignedClientValue");
       BankAccount fundingAccount = (BankAccount) ((DAO) x.get("accountDAO")).find(rbcValues.getAccountId());
       if ( fundingAccount == null ) throw new RuntimeException("nanopay bank account cannot be null");
@@ -91,6 +93,7 @@ foam.CLASS({
       net.nanopay.iso20022.OrganisationIdentification4  orgId = new net.nanopay.iso20022.OrganisationIdentification4();
       net.nanopay.iso20022.GenericOrganisationIdentification1 othr = new net.nanopay.iso20022.GenericOrganisationIdentification1();
       othr.setIdentification(rbcValues.getInitiatingPartyId()); // RBC w ill provide production and test IDs.
+      othr.setIssuer(spid.getPaymentIssuerTag());
       orgId.setOther(new net.nanopay.iso20022.GenericOrganisationIdentification1[]{othr});
       id.setOrgId(orgId);
       initgPty.setIdentification(id);
@@ -117,6 +120,7 @@ foam.CLASS({
       net.nanopay.iso20022.OrganisationIdentificationSchemeName1Choice schmeNm = new net.nanopay.iso20022.OrganisationIdentificationSchemeName1Choice();
       schmeNm.setCd("BANK");
       debtorOthr.setSchemeName(schmeNm);
+      debtorOthr.setIssuer(spid.getPaymentIssuerTag());
       debtorOrgId.setOther(new net.nanopay.iso20022.GenericOrganisationIdentification1[]{debtorOthr});
       debtorId.setOrgId(debtorOrgId);
       debtor.setIdentification(debtorId);
@@ -317,6 +321,8 @@ foam.CLASS({
       RbcCIRecord ciRecords = new RbcCIRecord();
       int transactionCount = 0;
       Long transactionVal = 0L;
+      Transaction spidTxn = transactions[0];
+      ServiceProvider spid = (ServiceProvider) ((DAO) x.get("localServiceProviderDAO")).find(spidTxn.getSpid());
       RbcAssignedClientValue rbcValues = (RbcAssignedClientValue) x.get("rbcAssignedClientValue");
       BankAccount fundingAccount = (BankAccount) ((DAO) x.get("accountDAO")).find(rbcValues.getAccountId());
       if ( fundingAccount == null ) throw new RuntimeException("Nanopay bank account cannot be null");
@@ -332,7 +338,8 @@ foam.CLASS({
       net.nanopay.iso20022.Party6Choice id = new net.nanopay.iso20022.Party6Choice();
       net.nanopay.iso20022.OrganisationIdentification4  orgId = new net.nanopay.iso20022.OrganisationIdentification4();
       net.nanopay.iso20022.GenericOrganisationIdentification1 othr = new net.nanopay.iso20022.GenericOrganisationIdentification1();
-      othr.setIdentification(rbcValues.getInitiatingPartyId()); // RBC w ill provide production and test IDs.
+      othr.setIssuer(spid.getPaymentIssuerTag());
+      othr.setIdentification(rbcValues.getInitiatingPartyId()); // RBC will provide production and test IDs.
       orgId.setOther(new net.nanopay.iso20022.GenericOrganisationIdentification1[]{othr});
       id.setOrgId(orgId);
       initgPty.setIdentification(id);
@@ -372,6 +379,7 @@ foam.CLASS({
       net.nanopay.iso20022.OrganisationIdentificationSchemeName1Choice schmeNm = new net.nanopay.iso20022.OrganisationIdentificationSchemeName1Choice();
       schmeNm.setCd("BANK");
       creditorOthr.setSchemeName(schmeNm);
+      creditorOthr.setIssuer(spid.getPaymentIssuerTag());
       creditorOrgId.setOther(new net.nanopay.iso20022.GenericOrganisationIdentification1[]{creditorOthr});
       creditorId.setOrgId(creditorOrgId);
       creditor.setIdentification(creditorId);

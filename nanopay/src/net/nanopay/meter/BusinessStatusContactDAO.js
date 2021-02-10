@@ -63,12 +63,14 @@ foam.CLASS({
         },
         {
           name: 'fillBusinessStatus',
-          type: 'net.nanopay.contacts.Contact',
+          type: 'foam.core.FObject',
           args: [
             { type: 'Context', name: 'x' },
             { type: 'foam.core.FObject', name: 'obj' }
           ],
           javaCode: `
+            if ( ! ( obj instanceof Contact ) ) return obj;
+
             Contact result = (Contact) obj;
     
             if ( result != null

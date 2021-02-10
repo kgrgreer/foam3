@@ -29,7 +29,7 @@ foam.CLASS({
     'foam.util.SafetyUtil',
     'net.nanopay.bank.BankAccountStatus',
     'net.nanopay.bank.BRBankAccount',
-    'net.nanopay.contacts.Contact'
+    'net.nanopay.contacts.PersonalContact'
   ],
 
   constants: [
@@ -99,7 +99,7 @@ foam.CLASS({
         DAO userDAO = (DAO) x.get("userDAO");
         Object bankAccountOwner = userDAO.find(bankAccountOwnerId);
 
-        if ( bankAccountOwner instanceof Contact ) {
+        if ( bankAccountOwner instanceof PersonalContact ) {
           obj.setProperty("status", BankAccountStatus.VERIFIED);
         }
       }

@@ -607,26 +607,84 @@ p({
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"A679CA67-93C2-4597-B92E-4BBA00797E96",
-  "targetId":"ED16359E-628E-4104-83B0-C77BB8544B78",
+  "targetId":"business-type-sole-proprietorship",
   "priority": 1
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
   "sourceId":"A679CA67-93C2-4597-B92E-4BBA00797E96",
-  "targetId":"840FC3EB-F826-4AB3-AD92-131CD1C7C8D1",
+  "targetId":"business-type-partnership",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"A679CA67-93C2-4597-B92E-4BBA00797E96",
+  "targetId":"business-type-corporation",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"A679CA67-93C2-4597-B92E-4BBA00797E96",
+  "targetId":"business-type-nonprofit",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"A679CA67-93C2-4597-B92E-4BBA00797E96",
+  "targetId":"business-type-limited-liability",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"A679CA67-93C2-4597-B92E-4BBA00797E96",
+  "targetId":"business-type-publicly-traded",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"A679CA67-93C2-4597-B92E-4BBA00797E96",
+  "targetId":"business-type-trust",
   "priority": 1
 })
 
-//Extra Business Type Data Required
+//Corporation Business Type
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"840FC3EB-F826-4AB3-AD92-131CD1C7C8D1",
+  "sourceId":"business-type-corporation",
   "targetId":"F1359801-7D71-4F30-8D36-531B4A674981",
   "priority": 1
 })
 p({
   "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
-  "sourceId":"840FC3EB-F826-4AB3-AD92-131CD1C7C8D1",
+  "sourceId":"business-type-corporation",
+  "targetId":"6DD8D005-7514-432D-BC32-9C5D569A0462",
+  "priority": 2
+})
+
+//Limited Liability Business Type
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"business-type-limited-liability",
+  "targetId":"F1359801-7D71-4F30-8D36-531B4A674981",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"business-type-limited-liability",
+  "targetId":"6DD8D005-7514-432D-BC32-9C5D569A0462",
+  "priority": 2
+})
+
+//Publicly Traded Business Type
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"business-type-publicly-traded",
+  "targetId":"F1359801-7D71-4F30-8D36-531B4A674981",
+  "priority": 1
+})
+p({
+  "class":"foam.nanos.crunch.CapabilityCapabilityJunction",
+  "sourceId":"business-type-publicly-traded",
   "targetId":"6DD8D005-7514-432D-BC32-9C5D569A0462",
   "priority": 2
 })

@@ -316,6 +316,7 @@ var classes = [
 
   // Contacts
   'net.nanopay.contacts.Contact',
+  'net.nanopay.contacts.PersonalContact',
   'net.nanopay.contacts.ContactStatus',
   'net.nanopay.contacts.ContactMigrationRule',
   'net.nanopay.contacts.ExternalContactToken',
@@ -673,6 +674,7 @@ var classes = [
   'net.nanopay.tx.EtaSummaryTransactionLineItem',
   'net.nanopay.tx.UnsupportedDateException',
   'net.nanopay.tx.ExpiredTransactionException',
+  'net.nanopay.tx.ruler.UpdateTxOnApprovalRequestStatusChange',
   'net.nanopay.fx.FXService',
   'net.nanopay.fx.client.ClientFXService',
   'net.nanopay.fx.FXAccepted',
@@ -1346,6 +1348,11 @@ var classes = [
   'net.nanopay.partner.treviso.report.TrevisoTransactionReport',
   'net.nanopay.partner.treviso.report.TrevisoTransactionReportDAO',
 
+  // bepay
+  'net.nanopay.partner.bepay.tx.BePayTransaction',
+  'net.nanopay.partner.bepay.tx.planner.BePayTransactionPlanner',
+  'net.nanopay.partner.bepay.tx.ScreenUsersOnTransactionCreate',
+
   // crunch predicates - todo move all predicates used in crunch here
   'net.nanopay.crunch.predicate.IsBusiness',
   'net.nanopay.crunch.predicate.BusinessPassedCompliance',
@@ -1453,13 +1460,20 @@ var classes = [
   'net.nanopay.crunch.registration.BusinessDetailExpandedData',
   'net.nanopay.crunch.registration.BusinessDirectorList',
   'net.nanopay.crunch.registration.BusinessOwnerList',
-  'net.nanopay.crunch.registration.BusinessTypeData',
   'net.nanopay.crunch.registration.IsSelectedData',
   'net.nanopay.crunch.registration.PersonalOnboardingTypeData',
   'net.nanopay.crunch.registration.SigningOfficerList',
   'net.nanopay.crunch.registration.UserRegistrationData',
   'net.nanopay.crunch.registration.UserDetailData',
   'net.nanopay.crunch.registration.UserDetailExpandedData',
+  'net.nanopay.crunch.registration.businesstypes.BusinessTypeData',
+  'net.nanopay.crunch.registration.businesstypes.CorporationData',
+  'net.nanopay.crunch.registration.businesstypes.LimitedLiabilityData',
+  'net.nanopay.crunch.registration.businesstypes.NonprofitData',
+  'net.nanopay.crunch.registration.businesstypes.PartnershipData',
+  'net.nanopay.crunch.registration.businesstypes.PubliclyTradedData',
+  'net.nanopay.crunch.registration.businesstypes.SoleProprietorData',
+  'net.nanopay.crunch.registration.businesstypes.TrustData',
 
   // bepay crunch onboarding
   'net.nanopay.crunch.bepay.ExtendedUserDetailsData',

@@ -39,6 +39,7 @@ import net.nanopay.country.br.BrazilBusinessInfoData;
 import net.nanopay.country.br.CPF;
 import net.nanopay.country.br.exchange.Pais;
 import net.nanopay.country.br.NatureCode;
+import net.nanopay.country.br.NatureCodeData;
 import net.nanopay.country.br.tx.NatureCodeLineItem;
 import net.nanopay.fx.afex.AFEXServiceProvider;
 import net.nanopay.fx.afex.FindBankByNationalIDResponse;
@@ -85,7 +86,6 @@ public class ExchangeServiceProvider implements ExchangeService {
       EQ(UserCapabilityJunction.TARGET_ID, "688cb7c6-7316-4bbf-8483-fb79f8fdeaaf"),
       EQ(UserCapabilityJunction.SOURCE_ID, userId)
     ));
-
     return ucj != null && ucj.getData() != null ?  ((BrazilBusinessInfoData)ucj.getData()).getCnpj() : "";
   }
 
@@ -231,8 +231,8 @@ public class ExchangeServiceProvider implements ExchangeService {
     if ( SafetyUtil.isEmpty(formattedCpfCnpj) ) throw new RuntimeException("Invalid CNPJ");
     titular.setCODIGO(formattedCpfCnpj); // e.g 10786348070
     titular.setTIPO(1);
-    titular.setSUBTIPO("J"); // F = Physical, J = Legal, S = Symbolic
-    titular.setNOMEAB(StringUtils.abbreviate(getName(user), 15));
+    titular.setSUBTIPO(user instanceof Business ? "J" : "F"); // F = Physical, J = Legal, S = Symbolic
+    titular.setNOMEAB(formatShortName(formattedCpfCnpj, user));
     titular.setNOME(getName(user));
     titular.setENDERECO(user.getAddress().getAddress());
     titular.setCIDADE(user.getAddress().getCity());
@@ -246,6 +246,17 @@ public class ExchangeServiceProvider implements ExchangeService {
     titular.setLIMITEOP(new Long(amount).doubleValue());
 
     return titular;
+  }
+
+  protected String formatShortName(String formattedCpf_Cnpj, User user) {
+    int MAX_LEN = 15; // Max characters accepted
+    int cpfLen = user instanceof Business ? 8 : 9;
+    String name = getName(user).replaceAll("\\s+","");
+    StringBuilder shortName = new StringBuilder();
+    shortName.append(name.substring(0, Math.min(name.length(), (MAX_LEN - cpfLen) - 1)));
+    shortName.append("-");
+    shortName.append(formattedCpf_Cnpj.substring(0, Math.min(formattedCpf_Cnpj.length(), cpfLen)));
+    return shortName.toString();
   }
 
   public Transaction createTransaction(Transaction transaction) throws RuntimeException {
@@ -448,13 +459,16 @@ public class ExchangeServiceProvider implements ExchangeService {
   }
 
   protected String extractNatureCode(Transaction txn) {
+    if ( txn == null ) return "";
+    for (TransactionLineItem lineItem : txn.getLineItems() ) {
+      if ( lineItem instanceof NatureCodeLineItem ) {
+        NatureCodeData natureCodeData = ((NatureCodeLineItem) lineItem).getNatureCodeData();
+        if ( natureCodeData != null && ! SafetyUtil.isEmpty(natureCodeData.toString())
+          && ! SafetyUtil.isEmpty(((NatureCodeLineItem)lineItem).getNatureCode()) )
+          return ((NatureCodeLineItem)lineItem).getCode();
+      }
+    }
     return getNatureCodeFromInvoice(txn);
-//    if ( txn == null ) return "";
-//    for (TransactionLineItem lineItem : txn.getLineItems() ) {
-//      if ( lineItem instanceof NatureCodeLineItem )
-//        return ((NatureCodeLineItem)lineItem).getCode();
-//    }
-//    return "";
   }
 
   protected int getContactRelationship(User payer, User payee) {

@@ -34,19 +34,22 @@ foam.CLASS({
   ],
 
   javaImports: [
-    'foam.mlang.MLang',
+
     'foam.core.FObject',
     'foam.core.PropertyInfo',
-    'static foam.mlang.MLang.AND',
-    'static foam.mlang.MLang.EQ',
-    'static foam.mlang.MLang.INSTANCE_OF',
-    'static foam.mlang.MLang.NOT',
+    'foam.mlang.MLang',
 
     'java.util.List',
     'java.util.regex.Pattern',
-    'javax.mail.internet.InternetAddress',
     'javax.mail.internet.AddressException',
-    'net.nanopay.contacts.Contact'
+    'javax.mail.internet.InternetAddress',
+    'javax.mail.internet.InternetAddress',
+
+    'net.nanopay.contacts.Contact',
+    'static foam.mlang.MLang.AND',
+    'static foam.mlang.MLang.EQ',
+    'static foam.mlang.MLang.INSTANCE_OF',
+    'static foam.mlang.MLang.NOT'
   ],
 
   requires: [
@@ -123,24 +126,12 @@ foam.CLASS({
     {
       class: 'foam.nanos.fs.FileProperty',
       name: 'profilePicture',
-      documentation: `The profile picture of the individual user, initially
-        defaulting to a placeholder picture.`,
-      view: {
-        class: 'foam.nanos.auth.ProfilePictureView',
-        placeholderImage: 'images/ic-placeholder.png'
-      },
       createVisibility: 'HIDDEN'
     },
     {
       class: 'String',
       name: 'organization',
-      documentation: 'The organization/business associated with the User.',
-      displayWidth: 80,
-      width: 100,
-      tableWidth: 160,
-      section: 'businessInformation',
       order: 15,
-      gridColumns: 6,
       label: 'Company Name'
     },
     {
@@ -327,11 +318,9 @@ foam.CLASS({
       class: 'foam.core.Enum',
       of: 'foam.nanos.auth.LifecycleState',
       name: 'lifecycleState',
-      value: foam.nanos.auth.LifecycleState.PENDING,
       createVisibility: 'HIDDEN',
       updateVisibility: 'RO',
-      readVisibility: 'RO',
-      writePermissionRequired: true
+      readVisibility: 'RO'
     },
     {
       class: 'Boolean',
@@ -349,14 +338,12 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'enabled',
-      documentation: 'Determines whether the User is permitted certain actions.',
       javaGetter: `
         return net.nanopay.admin.model.AccountStatus.DISABLED != getStatus();
       `,
       // NOTE: '_enabled_ is deprecated; use _status_ instead.',
       section: 'deprecatedInformation',
-      order: 30,
-      gridColumns: 6
+      order: 30
     },
     {
       class: 'FObjectProperty',
@@ -391,6 +378,27 @@ foam.CLASS({
       ],
       type: 'Void',
       javaCode: `
+        boolean isValidEmail = true;
+        try {
+          InternetAddress emailAddr = new InternetAddress(this.getEmail());
+          emailAddr.validate();
+        } catch (AddressException ex) {
+          isValidEmail = false;
+        }
+
+        if ( this.getFirstName().length() > NAME_MAX_LENGTH ) {
+          throw new IllegalStateException("First name cannot exceed 70 characters.");
+        }
+        if ( this.getLastName().length() > NAME_MAX_LENGTH ) {
+          throw new IllegalStateException("Last name cannot exceed 70 characters.");
+        }
+        if ( SafetyUtil.isEmpty(this.getEmail()) ) {
+          throw new IllegalStateException("Email is required.");
+        }
+        if ( ! isValidEmail ) {
+          throw new IllegalStateException("Invalid email address.");
+        }
+
         List <PropertyInfo> props = getClassInfo().getAxiomsByClass(PropertyInfo.class);
         for ( PropertyInfo prop : props ) {
           try {

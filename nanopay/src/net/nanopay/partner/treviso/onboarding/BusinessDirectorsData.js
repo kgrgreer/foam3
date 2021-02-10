@@ -116,21 +116,7 @@ properties: [
       },
       autoValidate: true,
       validationTextVisible: true,
-      validationPredicates: [
-        {
-          args: ['businessTypeId', 'businessDirectors'],
-          predicateFactory: function(e) {
-            return e.OR(
-              e.HAS(net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.BUSINESS_DIRECTORS),
-              e.AND(
-                e.GT(net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.BUSINESS_TYPE_ID, 0),
-                e.LT(net.nanopay.partner.treviso.onboarding.BusinessDirectorsData.BUSINESS_TYPE_ID, 4),
-              )
-            );
-          },
-          errorMessage: 'NO_DIRECTOR_INFO'
-        }
-      ]
+      validationStyleEnabled: false
     }
   ],
 

@@ -35,7 +35,7 @@ foam.CLASS({
     'java.util.HashMap',
     'java.util.Map',
     'net.nanopay.bank.BankAccount',
-    'net.nanopay.contacts.Contact',
+    'net.nanopay.contacts.PersonalContact',
     'net.nanopay.model.Business'
   ],
 
@@ -82,7 +82,7 @@ foam.CLASS({
       account = (BankAccount) getDelegate().put_(x, obj);
 
       // Do not send email to contact owned accounts.
-      if ( owner instanceof Contact ) {
+      if ( owner instanceof PersonalContact ) {
         return account;
       }
 
