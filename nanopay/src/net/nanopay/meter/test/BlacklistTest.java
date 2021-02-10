@@ -14,6 +14,7 @@ import foam.nanos.auth.UserUserJunction;
 import foam.nanos.crunch.AgentCapabilityJunction;
 import foam.nanos.crunch.UserCapabilityJunction;
 import foam.nanos.crunch.CapabilityJunctionStatus;
+import foam.nanos.crunch.MinMaxCapabilityData;
 import foam.nanos.notification.*;
 import foam.nanos.notification.sms.*;
 import foam.nanos.session.Session;
@@ -353,6 +354,9 @@ public class BlacklistTest extends Test {
       .setOwner1(bo)
       .setChosenOwners(Arrays.stream(chosenOwners).boxed().collect(Collectors.toList()))
       .build();
+    MinMaxCapabilityData bodSelection = new MinMaxCapabilityData.Builder(x)
+      .setSelectedData(new String[]{"554af38a-8225-87c8-dfdf-eeb15f71215f-7-reviewRequired"})
+      .build();
     UserCapabilityJunction ucjBODRR = new UserCapabilityJunction();
     ucjBODRR.setSourceId(myBusiness.getId());
     ucjBODRR.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-7-reviewRequired");
@@ -362,6 +366,7 @@ public class BlacklistTest extends Test {
     UserCapabilityJunction ucjBOD = new UserCapabilityJunction();
     ucjBOD.setSourceId(myBusiness.getId());
     ucjBOD.setTargetId("554af38a-8225-87c8-dfdf-eeb15f71215f-7");
+    ucjBOD.setData(bodSelection);
     userCapabilityJunctionDAO.inX(myAdminContext).put(ucjBOD);
 
     // Certify Owners Percent : 554af38a-8225-87c8-dfdf-eeb15f71215e-12
