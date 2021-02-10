@@ -17,7 +17,7 @@
 
 foam.CLASS({
   package: 'net.nanopay.auth',
-  name: 'ServiceProviderRefine',
+  name: 'ServiceProviderRefinement',
   refines: 'foam.nanos.auth.ServiceProvider',
   properties: [
     {
