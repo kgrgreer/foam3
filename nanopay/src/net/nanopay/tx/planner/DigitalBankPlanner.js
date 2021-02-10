@@ -78,7 +78,7 @@ try {
           Transaction digitalTxn = new Transaction();
           digitalTxn.copyFrom(requestTxn);
           digitalTxn.setDestinationAccount(digital.getId());
-          Transaction[] Ds = multiQuoteTxn(x, digitalTxn, quote);
+          Transaction[] Ds = multiQuoteTxn(x, digitalTxn, quote, false);
 
           for ( Transaction tx1 : Ds ) {
             // Split 2: BDigital -> BBank
@@ -87,7 +87,7 @@ try {
             co.setSourceAccount(digital.getId());
             //Note: if tx1, does not have all the transfers for getTotal this wont work.
             co.setAmount(tx1.getTotal(x, digital.getId()));
-            Transaction[] COs = multiQuoteTxn(x, co, quote, false);
+            Transaction[] COs = multiQuoteTxn(x, co, quote);
 
             for ( Transaction tx2 : COs ) {
               Transaction Digital = (Transaction) removeSummaryTransaction(tx1).fclone();

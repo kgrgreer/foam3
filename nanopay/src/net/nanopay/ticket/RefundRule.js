@@ -32,6 +32,8 @@ foam.CLASS({
     'foam.nanos.fs.File',
     'foam.nanos.notification.Notification',
     'foam.nanos.logger.Logger',
+    'net.nanopay.account.Account',
+    'net.nanopay.account.DigitalAccount',
     'net.nanopay.ticket.RefundTicket',
     'net.nanopay.ticket.RefundStatus',
     'net.nanopay.tx.CreditLineItem',
@@ -41,7 +43,11 @@ foam.CLASS({
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
-    'java.util.ArrayList'
+    'java.util.ArrayList',
+    
+    'static foam.mlang.MLang.AND',
+    'static foam.mlang.MLang.CLASS_OF',
+    'static foam.mlang.MLang.EQ'
   ],
 
   methods: [
@@ -64,6 +70,11 @@ foam.CLASS({
           Transaction problemTxn = txn.getStateTxn(x);
           problemTxn = (Transaction) problemTxn.fclone();
           ArrayList<TransactionLineItem> array = new ArrayList<>();
+          DAO dao = (DAO) x.get("localAccountDAO");
+          DigitalAccount digitalAccount = (DigitalAccount) dao.find(AND(
+              EQ(Account.OWNER, txn.findSourceAccount(x).getOwner()),
+              CLASS_OF(DigitalAccount.class)
+            ));
 
           if ( request.getRefundOldFees() ) {
             FeeSummaryTransactionLineItem feeSummary = null;
@@ -76,8 +87,8 @@ foam.CLASS({
             feeRefund.setAmount(feeSummary.getAmount());
             feeRefund.setFeeCurrency(feeSummary.getCurrency());
             // TODO replace with credit account
-            feeRefund.setSourceAccount("9c34bfad-ec60-4abd-8fc3-fcd5681df5f8");
-            feeRefund.setDestinationAccount(txn.getSourceAccount());
+            feeRefund.setSourceAccount("6028f910-9f66-4cc3-a4cd-f5790ca3eafa");
+            feeRefund.setDestinationAccount(digitalAccount.getId());
             array.add(feeRefund);
           }
 
@@ -86,8 +97,8 @@ foam.CLASS({
             feeRefund.setAmount(request.getCreditAmount());
             feeRefund.setFeeCurrency(txn.findSourceAccount(x).getDenomination());
             // TODO replace with credit account
-            feeRefund.setSourceAccount("9c34bfad-ec60-4abd-8fc3-fcd5681df5f8");
-            feeRefund.setDestinationAccount(txn.getSourceAccount());
+            feeRefund.setSourceAccount("6028f910-9f66-4cc3-a4cd-f5790ca3eafa");
+            feeRefund.setDestinationAccount(digitalAccount.getId());
             array.add(feeRefund);
           }
 
