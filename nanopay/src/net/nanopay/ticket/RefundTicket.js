@@ -71,7 +71,8 @@ foam.CLASS({
       },
     },
     {
-      class: 'String',
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.model.Transaction',
       name: 'requestTransaction',
       documentation: `Id of transaction requiring reversal`,
       section: 'infoSection'
@@ -96,6 +97,10 @@ foam.CLASS({
     {
       class: 'Boolean',
       name: 'waiveFees'
+    },
+    {
+      class: 'String',
+      name: 'textToAgent'
     },
     {
       class: 'Long',

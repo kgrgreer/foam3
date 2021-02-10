@@ -208,3 +208,30 @@ p({
   "saveHistory":true,
   "lifecycleState":1
 })
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"bd485714-b0c1-458e-acba-2804d6765ff3",
+  "name":"RefundTicket - cancel CO on pending",
+  "priority":100,
+  "ruleGroup":"refundTickets",
+  "documentation":"Creates a default digital account when a user is created.",
+  "daoKey":"localUserDAO",
+  "operation":0,
+  "predicate":{
+    "class":"net.nanopay.ticket.RefundTicketPropertyPredicate",
+    "txnProperty":"status",
+    txnValue":{
+      "class": "net.nanopay.tx.model.TransactionStatus",
+      "ordinal":0
+    }
+  }
+  "action":{
+    "class":"net.nanopay.ticket.BasicFullReverseRefundTicketCreateRule",
+    "textToAgent":"This transaction can be safely refunded, dont waive fees though"
+  },
+  "after":false,
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1,
+  "spid": "ablii"
+})
