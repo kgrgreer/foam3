@@ -124,7 +124,7 @@ foam.CLASS({
       throw new RuntimeException("Sender needs to pass business compliance.");
     }
     `
-  },
+  }
   ]
 
 });
