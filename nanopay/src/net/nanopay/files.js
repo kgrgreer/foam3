@@ -122,7 +122,6 @@ FOAM_FILES([
   { name: 'net/nanopay/account/SecuritiesTrustAccount' },
   { name: 'net/nanopay/account/BrokerAccount' },
   { name: 'net/nanopay/account/SecurityAccount' },
-  { name: 'net/nanopay/account/CreditAccount' },
   { name: 'net/nanopay/tx/BalanceAdapterAccountDAO' },
   { name: 'net/nanopay/model/Branch' },
   { name: 'net/nanopay/model/ClientUserJunction' },
