@@ -1116,7 +1116,6 @@ var classes = [
   'net.nanopay.ticket.RefundTicketCreateApprovals',
   'net.nanopay.ticket.RefundTicket',
   'net.nanopay.ticket.RefundStatus',
-  'net.nanopay.ticket.RefundTypes',
   'net.nanopay.ticket.BasicFullReverseRefundTicketCreateRule',
   'net.nanopay.ticket.AgentRefundTicketCreateRule',
   'net.nanopay.ticket.RefundTicketPropertyPredicate',
