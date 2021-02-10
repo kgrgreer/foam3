@@ -34,6 +34,10 @@ import java.util.stream.Collectors;
 
 public class PermissionedTransactionLineItemDAO extends ProxyDAO {
 
+  public PermissionedTransactionLineItemDAO(X x, DAO delegate) {
+    super(x, delegate);
+  }
+
   public static Transaction filterLineItems(X x, Transaction transaction) {
     if ( transaction == null ) return null;
 
@@ -63,9 +67,5 @@ public class PermissionedTransactionLineItemDAO extends ProxyDAO {
   @Override
   public FObject find_(X x, Object id) {
     return filterLineItems(x, (Transaction) super.find_(x, id));
-  }
-
-  PermissionedTransactionLineItemDAO(X x, DAO delegate) {
-    super(x, delegate);
   }
 }
