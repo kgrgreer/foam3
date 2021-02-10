@@ -24,10 +24,10 @@ foam.CLASS({
       class: 'String',
       name: 'paymentIssuerTag',
       factory: function() {
-        return this.id.charAt(0).toUpperCase() + this.id.slice(1) + ' powered by nanopay';
+        return this.id;
       },
       javaFactory: `
-        return getId().substring(0, 1).toUpperCase() + getId().substring(1) + " powered by nanopay";
+        return getId();
       `
     }
   ]
