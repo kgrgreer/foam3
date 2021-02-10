@@ -48,7 +48,8 @@ public class PermissionedTransactionLineItemDAO extends ProxyDAO {
     newTransaction.setLineItems(Arrays.stream(transaction.getLineItems())
       .filter(lineItem -> {
         try {
-          return auth.check(x, lineItem.getClass().getSimpleName().toLowerCase() + ".read");
+          var perm = lineItem.getClass().getSimpleName().toLowerCase() + ".read." + lineItem.getId();
+          return auth.check(x, perm);
         } catch (Throwable t) {
           return false;
         }
