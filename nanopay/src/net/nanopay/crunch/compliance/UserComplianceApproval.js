@@ -115,7 +115,7 @@ foam.CLASS({
       javaCode: `
         Capability capability = (Capability) ucj.findTargetId(x);
         if ( capability.getOf() != null ) {
-          ucj.clearData();
+          ucj.getPayload().clearData();
           return;
         }
 
@@ -134,7 +134,7 @@ foam.CLASS({
           if ( prereqUcj.getStatus() == CapabilityJunctionStatus.AVAILABLE )
             continue;
           prereqUcj.setStatus(CapabilityJunctionStatus.ACTION_REQUIRED);
-          prereqUcj.clearData();
+          prereqUcj.getPayload().clearData();
           prereqUcj.clearGracePeriod();
           prereqUcj.clearExpiry();
           prereqUcj.resetRenewalStatus();
