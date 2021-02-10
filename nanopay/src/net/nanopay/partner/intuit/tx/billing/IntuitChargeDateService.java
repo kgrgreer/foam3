@@ -40,12 +40,11 @@ public class IntuitChargeDateService implements ChargeDateServiceInterface {
     next.clear();
     next.set(YEAR, created.get(YEAR));
     next.set(MONTH, created.get(MONTH) + 1);
-    next.set(DAY_OF_MONTH, 1);
+    next.set(WEEK_OF_MONTH, 1);
+    next.set(DAY_OF_WEEK, Calendar.FRIDAY);
     LocalDate nextMonth = next.getTime().toInstant()
       .atZone(ZoneId.systemDefault())
       .toLocalDate();
-    LocalDate firstFriday = nextMonth.with(TemporalAdjusters.firstInMonth(DayOfWeek.FRIDAY));
-    Date firstFridayDate = Date.from(firstFriday.atStartOfDay(ZoneId.systemDefault()).toInstant());
-    return firstFridayDate;
+    return Date.from(nextMonth.atStartOfDay(ZoneId.systemDefault()).toInstant());
   }
 }
