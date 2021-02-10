@@ -28,6 +28,7 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.dao.DAO',
+    'foam.nanos.auth.Address',
     'foam.nanos.auth.User',
     'foam.nanos.logger.Logger',
 
@@ -89,10 +90,11 @@ foam.CLASS({
       Date filterLRDFrom = fetchLastExecutionDate(x, user.getId(), "Dow Jones User");
       String filterRegion = "";
 
-      if ( user.getAddress() != null ) {
-        if ( user.getAddress().getCountryId().equals("CA") ) {
+      Address address = user.getAddress();
+      if ( address != null ) {
+        if ( address.getCountryId().equals("CA") ) {
           filterRegion = "Canada,CANA,CA,CAN";
-        } else if ( user.getAddress().getCountryId().equals("US") ) {
+        } else if ( address.getCountryId().equals("US") ) {
           filterRegion = "United States,USA,US";
         }
       }
