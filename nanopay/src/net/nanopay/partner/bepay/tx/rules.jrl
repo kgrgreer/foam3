@@ -12,24 +12,20 @@ p({
       "class":"net.nanopay.partner.bepay.tx.ScreenUsersOnTransactionCreate"
     },
     "predicate":{
-      {
-        "class": "foam.mlang.predicate.And",
-        "args": [
-          {
+      "class": "foam.mlang.predicate.And",
+      "args": [
+        {
+          class: "foam.nanos.ruler.predicate.IsInstancePredicate",
+          of:"net.nanopay.tx.ComplianceTransaction"
+        },
+        {
+          class: "foam.mlang.predicate.Not",
+          arg1: {
             class: "foam.nanos.ruler.predicate.IsInstancePredicate",
-            of:"net.nanopay.tx.ComplianceTransaction"
-          },
-          {
-            class: "foam.mlang.predicate.Not",
-            arg1: {
-              {
-                class: "foam.nanos.ruler.predicate.IsInstancePredicate",
-                of:"net.nanopay.fx.afex.AFEXBeneficiaryComplianceTransaction"
-              }
-            }
+            of:"net.nanopay.fx.afex.AFEXBeneficiaryComplianceTransaction"
           }
-        ]
-      }
+        }
+      ]
     },
     "lifecycleState":1
 })

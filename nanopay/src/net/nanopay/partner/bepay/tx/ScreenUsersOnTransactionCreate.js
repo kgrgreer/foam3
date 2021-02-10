@@ -89,10 +89,12 @@ foam.CLASS({
       Date filterLRDFrom = fetchLastExecutionDate(x, user.getId(), "Dow Jones User");
       String filterRegion = "";
 
-      if ( user.getAddress().getCountryId().equals("CA") ) {
-        filterRegion = "Canada,CANA,CA,CAN";
-      } else if ( user.getAddress().getCountryId().equals("US") ) {
-        filterRegion = "United States,USA,US";
+      if ( user.getAddress() != null ) {
+        if ( user.getAddress().getCountryId().equals("CA") ) {
+          filterRegion = "Canada,CANA,CA,CAN";
+        } else if ( user.getAddress().getCountryId().equals("US") ) {
+          filterRegion = "United States,USA,US";
+        }
       }
       PersonNameSearchData searchData1 = new PersonNameSearchData.Builder(x)
         .setSearchId(user.getId())
