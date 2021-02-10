@@ -33,6 +33,7 @@ foam.CLASS({
 
   javaImports: [
     'foam.dao.DAO',
+    'foam.i18n.TranslationService',
     'foam.nanos.auth.AccessDeniedException',
     'foam.nanos.auth.AuthenticationException',
     'foam.nanos.auth.Group',
@@ -53,7 +54,9 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'ACCOUNT_LOCKED', message: 'Account locked. Please contact customer service.'}
+    { name: 'ACCOUNT_LOCKED', message: 'Account locked. Please contact customer service.'},
+    { name: 'LOGIN_FAILED', message: 'Login failed'},
+    { name: 'ATTEPMTS_REMAIN', message: 'attempts remaining.'},
   ],
 
   properties: [
@@ -268,13 +271,18 @@ foam.CLASS({
           return reason;
         }
         int remaining = getMaxAttempts() - loginAttempts.getLoginAttempts();
+
+        String locale = user.getLanguage().getCode().toString();
+        TranslationService ts = (TranslationService) getX().get("translationService");
+
         if ( remaining > 0 ) {
-          return "Login failed (" + reason + "). " + ( remaining ) + " attempts remaining.";
+          return ts.getTranslation(locale, getClassInfo().getId()+ ".LOGIN_FAILED", this.LOGIN_FAILED) + " " + remaining + " "
+          + ts.getTranslation(locale, getClassInfo().getId()+ ".ATTEPMTS_REMAIN", this.ATTEPMTS_REMAIN);
         } else {
           if ( isAdminUser(x, user) ){
             return "Account temporarily locked. You can attempt to login after " + getDateFormat().format(loginAttempts.getNextLoginAttemptAllowedAt());
           } else {
-            return ACCOUNT_LOCKED;
+            return ts.getTranslation(locale, getClassInfo().getId()+ ".ACCOUNT_LOCKED", this.ACCOUNT_LOCKED);
           }
         }
       `
