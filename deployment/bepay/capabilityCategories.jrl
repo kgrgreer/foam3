@@ -1,0 +1,5 @@
+p({
+  class:"foam.nanos.crunch.CapabilityCategory",
+  id:"AFEXUserOnboarding",
+  name:"AFEX User Onboarding"
+})

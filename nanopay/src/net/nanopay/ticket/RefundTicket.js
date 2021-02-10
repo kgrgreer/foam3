@@ -85,12 +85,6 @@ foam.CLASS({
       section: 'infoSection'
     },
     {
-      class: 'FObjectArray',
-      of: 'net.nanopay.tx.TransactionLineItem',
-      name: 'lineitems',
-      section: 'infoSection'
-    },
-    {
       class: 'Enum',
       of: 'net.nanopay.ticket.RefundStatus',
       name: 'refundStatus',
@@ -107,23 +101,10 @@ foam.CLASS({
     {
       class: 'String',
       name: 'textToAgent'
+    },
+    {
+      class: 'Long',
+      name: 'creditAmount'
     }
-  ],
-
-  actions: [
-    {
-      name: 'addFee',
-      label: 'Add FeeLineItem',
-      code: function() {
-        this.lineitems = this.lineitems.concat([new this.FeeLineItem.create()]);
-      }
-    },
-    {
-      name: 'addDiscount',
-      label: 'Add DiscountLineItem',
-      code: function() {
-        this.lineitems = this.lineitems.concat([new this.CreditLineItem.create()]);
-      }
-    },
   ]
 });

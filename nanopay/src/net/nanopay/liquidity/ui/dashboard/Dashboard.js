@@ -75,7 +75,7 @@ foam.CLASS({
     }
 
     ^ .foam-u2-layout-Card {
-      overflow-x: scroll;
+      overflow-x: auto;
     }
 
     ^ .foam-u2-view-RichChoiceView {

@@ -163,6 +163,8 @@ foam.CLASS({
         for ( TransactionLineItem feeLine: feeArray ) {
             totalFee += ((FeeLineItem) feeLine).getAmount();
         }
+        feeSummary.setAmount(totalFee);
+        feeSummary.setCurrency(currency.getId());
         feeSummary.setTotalFee(currency.format(totalFee) + " " + currency.getId());
         txn.addLineItems(new TransactionLineItem[]{feeSummary});
       }

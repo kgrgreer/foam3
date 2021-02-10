@@ -1,7 +1,7 @@
 /**
  * NANOPAY CONFIDENTIAL
  *
- * [2020] nanopay Corporation
+ * [2021] nanopay Corporation
  * All Rights Reserved.
  *
  * NOTICE:  All information contained herein is, and remains
@@ -15,21 +15,20 @@
  * from nanopay Corporation.
  */
 
-foam.CLASS({
-  package: "net.nanopay.fx.afex",
-  name: "OnboardCorporateClientResponse",
-  properties: [
+foam.ENUM({
+  package: 'net.nanopay.fx.afex',
+  name: 'AccountEntityType',
+
+  documentation: 'Model of currently supported onboarding request types available for AFEX',
+
+  values: [
     {
-      class: 'String',
-      name: "APIKey"
+      name: 'CORPORATE_CLIENT',
+      label: 'Corporate Client'
     },
     {
-      class: 'String',
-      name: "AccountNumber"
-    },
-    {
-      class: 'String',
-      name: "Message"
+      name: 'PRIVATE_CLIENT',
+      label: 'Private Client'
     }
   ]
 });

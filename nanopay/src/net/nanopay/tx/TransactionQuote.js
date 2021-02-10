@@ -34,8 +34,7 @@ foam.CLASS({
       documentation: `Request quote on behalf of this transaction.`,
       name: 'requestTransaction',
       class: 'FObjectProperty',
-      of: 'net.nanopay.tx.model.Transaction',
-      type: 'net.nanopay.tx.model.Transaction'
+      of: 'net.nanopay.tx.model.Transaction'
     },
     {
       class: 'FObjectArray',
@@ -122,6 +121,14 @@ foam.CLASS({
       class: 'Reference',
       of: 'foam.nanos.auth.User',
       name: 'requestOwner',
+      networkTransient: true,
+    },
+    {
+      documentation: `if we are finishing a partial transaction, it is stored here`,
+      name: 'partialTransaction',
+      class: 'FObjectProperty',
+      of: 'net.nanopay.tx.model.Transaction',
+      javaFactory: 'return null;',
       networkTransient: true,
     },
   ],

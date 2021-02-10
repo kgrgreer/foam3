@@ -48,14 +48,14 @@ foam.CLASS({
   ],
 
   messages: [
-    { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number must be 10 digits long' },
+    { name: 'ACCOUNT_NUMBER_INVALID', message: 'Account number must be between 3 and 12 digits long' },
     { name: 'ACCOUNT_NUMBER_REQUIRED', message: 'Account number required' },
     { name: 'ACCOUNT_TYPE_REQUIRED', message: 'Account type required' },
     { name: 'ACCOUNT_HOLDER_REQUIRED', message: 'Account holder required' },
     { name: 'BANK_ADDED', message: 'Bank Account successfully added' },
-    { name: 'INSTITUTION_NUMBER_INVALID', message: 'Institution must be 8 letters and/or digits long' },
+    { name: 'INSTITUTION_NUMBER_INVALID', message: 'Institution must be between 3 and 8 digits long' },
     { name: 'INSTITUTION_NUMBER_REQUIRED', message: 'Institution required' },
-    { name: 'BRANCH_ID_INVALID', message: 'Branch must be 5 digits long' },
+    { name: 'BRANCH_ID_INVALID', message: 'Branch must be between 1 and 6 digits long' },
     { name: 'BRANCH_ID_REQUIRED', message: 'Branch required' },
     { name: 'HOLDER1', message: 'Individual' },
     { name: 'HOLDER2', message: 'Joint' },
@@ -68,17 +68,17 @@ foam.CLASS({
     {
       name: 'ACCOUNT_NUMBER_PATTERN',
       type: 'Regex',
-      factory: function() { return /^[0-9]{10}$/; }
+      factory: function() { return /^[0-9]{3,12}$/; }
     },
     {
       name: 'INSTITUTION_NUMBER_PATTERN',
       type: 'Regex',
-      factory: function() { return /^[A-z0-9a-z]{8}$/; }
+      factory: function() { return /^[0-9]{3,8}$/; }
     },
     {
       name: 'BRANCH_ID_PATTERN',
       type: 'Regex',
-      factory: function() { return /^[0-9]{5}$/; }
+      factory: function() { return /^[0-9]{1,6}$/; }
     }
   ],
 
@@ -165,7 +165,7 @@ foam.CLASS({
       updateVisibility: 'RO',
       section: 'accountInformation',
       validateObj: function(institutionNumber) {
-        var regex = /^[A-z0-9a-z]{8}$/;
+        var regex = /^[A-z0-9a-z]{3,8}$/;
 
         if ( institutionNumber === '' ) {
           return this.INSTITUTION_NUMBER_REQUIRED;
@@ -179,7 +179,7 @@ foam.CLASS({
       section: 'accountInformation',
       updateVisibility: 'RO',
       validateObj: function(branchId) {
-        var regex = /^[0-9]{5}$/;
+        var regex = /^[0-9]{1,6}$/;
 
         if ( branchId === '' ) {
           return this.BRANCH_ID_REQUIRED;
@@ -203,7 +203,7 @@ foam.CLASS({
         this.tooltip = displayAccountNumber;
       },
       validateObj: function(accountNumber) {
-        var accNumberRegex = /^[0-9]{10}$/;
+        var accNumberRegex = /^[0-9]{3,12}$/;
 
         if ( accountNumber === '' ) {
           return this.ACCOUNT_NUMBER_REQUIRED;
@@ -306,7 +306,12 @@ foam.CLASS({
         validateInstitutionNumber();
         validateBranchId();
         validateAccountNumber();
-
+        if ( SafetyUtil.isEmpty(this.getAccountType()) ) {
+          throw new ValidationException(this.ACCOUNT_TYPE_REQUIRED);
+        }
+        if ( SafetyUtil.isEmpty(this.getAccountOwnerType()) ) {
+          throw new ValidationException(this.ACCOUNT_HOLDER_REQUIRED);
+        }
         if ( getOwner() == 0 ) {
           setOwner(((foam.nanos.auth.Subject) x.get("subject")).getUser().getId());
         }

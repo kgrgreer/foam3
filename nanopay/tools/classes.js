@@ -119,6 +119,7 @@ var classes = [
   'net.nanopay.account.BrokerAccount',
   'net.nanopay.account.CreateDefaultDigitalAccountOnUserCreateRule',
   'net.nanopay.bank.BankAccount',
+  'net.nanopay.bank.EstimationAccount',
   'net.nanopay.bank.EUBankAccount',
   'net.nanopay.bank.CABankAccount',
   'net.nanopay.bank.USBankAccount',
@@ -227,7 +228,8 @@ var classes = [
   'net.nanopay.fx.afex.AFEXTransaction',
   'net.nanopay.fx.afex.AFEX',
   'net.nanopay.fx.afex.AFEXAddCurrencyPermissionRule',
-  'net.nanopay.fx.afex.AFEXBusiness',
+  'net.nanopay.fx.afex.AFEXUser',
+  'net.nanopay.fx.afex.AFEXUser',
   'net.nanopay.fx.afex.AFEXPayableMenuCapabilityRule',
   'net.nanopay.fx.afex.AFEXBusinessCreatedPredicate',
   'net.nanopay.fx.afex.AFEXBusinessDisabledPredicate',
@@ -242,8 +244,9 @@ var classes = [
   'net.nanopay.fx.afex.AFEXFundingBalance',
   'net.nanopay.fx.afex.AFEXLog',
   'net.nanopay.fx.afex.Token',
-  'net.nanopay.fx.afex.OnboardCorporateClientRequest',
-  'net.nanopay.fx.afex.OnboardCorporateClientResponse',
+  'net.nanopay.fx.afex.AccountEntityType',
+  'net.nanopay.fx.afex.OnboardAFEXClientRequest',
+  'net.nanopay.fx.afex.OnboardAFEXClientResponse',
   'net.nanopay.fx.afex.GetClientAccountStatusResponse',
   'net.nanopay.fx.afex.RetrieveClientAccountDetailsResponse',
   'net.nanopay.fx.afex.CreateBeneficiaryRequest',
@@ -272,6 +275,7 @@ var classes = [
   'net.nanopay.fx.afex.CreateInstantBenefiaryResponse',
   'net.nanopay.fx.afex.FundingBalance',
   'net.nanopay.fx.afex.GetFundingBalanceResponse',
+  'net.nanopay.fx.afex.KeyIndividual',
   'net.nanopay.fx.afex.ValidateInstantBenefiaryRequest',
   'net.nanopay.fx.afex.ValidateInstantBenefiaryResponse',
   'net.nanopay.fx.afex.CheckPaymentStatusRequest',
@@ -714,6 +718,7 @@ var classes = [
   'net.nanopay.auth.OneTimeAuthenticationTokenService',
   'net.nanopay.auth.PublicBusinessInfo',
   'net.nanopay.auth.ruler.LogoutUserAction',
+  'net.nanopay.auth.ruler.predicate.IsUserInGroups',
   'net.nanopay.security.auth.IPLoggingAuthService',
   'net.nanopay.security.auth.LoginAttemptAuthService',
   'net.nanopay.security.auth.LoginAttempts',
@@ -1170,6 +1175,7 @@ var classes = [
   'net.nanopay.tx.planner.InterTrustPlanner',
   'net.nanopay.tx.planner.RbcInterTrustPlanner',
   'net.nanopay.tx.planner.BmoInterTrustPlanner',
+  'net.nanopay.tx.planner.PartialPlanDAO',
 
   // Billing
   'net.nanopay.tx.billing.Bill',
@@ -1336,6 +1342,8 @@ var classes = [
   'net.nanopay.partner.treviso.onboarding.BRBankAccountData',
   'net.nanopay.partner.treviso.TrevisoSendEmailToAllNotification',
   'net.nanopay.partner.treviso.invoice.TrevisoNotification',
+  'net.nanopay.partner.treviso.report.TrevisoTransactionReport',
+  'net.nanopay.partner.treviso.report.TrevisoTransactionReportDAO',
 
   // crunch predicates - todo move all predicates used in crunch here
   'net.nanopay.crunch.predicate.IsBusiness',
@@ -1410,6 +1418,7 @@ var classes = [
 
   // crunch afex
   'net.nanopay.partner.afex.crunch.AFEXBusinessOnboardingRule',
+  'net.nanopay.partner.afex.crunch.AFEXUserOnboardingRule',
   'net.nanopay.partner.afex.crunch.BusinessHasVerifiedBankAccount',
   'net.nanopay.partner.afex.crunch.BankAccountOwnerIsBusiness',
 
@@ -1451,6 +1460,9 @@ var classes = [
   'net.nanopay.crunch.registration.UserDetailData',
   'net.nanopay.crunch.registration.UserDetailExpandedData',
 
+  // bepay crunch onboarding
+  'net.nanopay.crunch.bepay.ExtendedUserDetailsData',
+
   // crunch documents
   'net.nanopay.crunch.document.Document',
   'net.nanopay.crunch.document.ExpirableDocument',
@@ -1462,6 +1474,7 @@ var classes = [
   'net.nanopay.crunch.wizardlet.UnlockPaymentsWizardConfig',
 
   // Notification
+  'net.nanopay.notification.PermissionedNotificationSettingRule',
   'net.nanopay.notification.TriggerNotificationTestAction',
   'net.nanopay.notification.TriggerDoNotifyTestAction',
 

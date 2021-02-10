@@ -162,6 +162,11 @@ foam.CLASS({
             this.IN(net.nanopay.support.SupportTransaction.DESTINATION_ACCOUNT, ids)
           )
         );
+
+        if ( X.memento ) {
+          X = X.createSubContext({memento: X.memento.tail});
+        }
+
         X.stack.push({
           class: 'foam.comics.v2.DAOBrowseControllerView',
           data: dao,
@@ -173,7 +178,7 @@ foam.CLASS({
             deletePredicate: foam.mlang.predicate.False,
             browseTitle: `${this.toSummary()}'s Transactions`
           }
-        });
+        }, X);
       }
     },
     {
@@ -188,6 +193,11 @@ foam.CLASS({
           .select(this.MAP(foam.nanos.auth.UserUserJunction.SOURCE_ID))
           .then((sink) => sink.delegate.array);
         var dao = X.supportUserDAO.where(this.IN(net.nanopay.support.SupportUser.ID, junctionSourceIds));
+
+        if ( X.memento ) {
+          X = X.createSubContext({memento: X.memento.tail});
+        }
+
         X.stack.push({
           class: 'foam.comics.v2.DAOBrowseControllerView',
           data: dao,
@@ -199,7 +209,7 @@ foam.CLASS({
             deletePredicate: foam.mlang.predicate.False,
             browseTitle: `${this.businessName}'s Users`
           }
-        });
+        }, X);
       }
     }
   ]

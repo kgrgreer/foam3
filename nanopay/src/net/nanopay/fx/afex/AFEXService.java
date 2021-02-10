@@ -66,11 +66,13 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
     DAO credentialDAO = (DAO) getX().get("afexCredentialDAO");
     ArraySink arraySink = new ArraySink();
     credentialDAO.where(MLang.EQ(AFEXCredentials.SPID, spid)).select(arraySink);
-    credentials = (AFEXCredentials) (arraySink.getArray()).get(0);
+    if ( arraySink.getArray().size() > 0 ) {
+      credentials = (AFEXCredentials) (arraySink.getArray()).get(0);
+    }
     if ( ! isCredientialsValid() ) {
-      credentials = null;
+      credentials = new AFEXCredentials();
       logger.error(this.getClass().getSimpleName(), "invalid credentials");
-      ((DAO) getX().get("alarmDAO")).put(new Alarm.Builder(getX()).setName("AFEX getCredentials").setReason(AlarmReason.CREDENTIALS).build());
+      ((DAO) getX().get("alarmDAO")).put(new Alarm.Builder(getX()).setName("AFEX getCredentials").setSeverity(foam.log.LogLevel.ERROR).setReason(AlarmReason.CREDENTIALS).build());
     }
     return credentials;
   }
@@ -139,10 +141,11 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
   }
 
   @Override
-  public OnboardCorporateClientResponse onboardCorporateClient(OnboardCorporateClientRequest request, String spid) {
+  public OnboardAFEXClientResponse onboardAFEXClient(OnboardAFEXClientRequest request, String spid, AccountEntityType entityType) {
+    String requestLabel = "onboard " + entityType.getLabel();
     try {
       credentials = getCredentials(spid);
-      HttpPost httpPost = new HttpPost(credentials.getPartnerApi() + "api/v1/corporateClient");
+      HttpPost httpPost = new HttpPost(credentials.getPartnerApi() + "api/v1/AccountCreate");
 
       httpPost.addHeader("API-Key", credentials.getApiKey());
       httpPost.addHeader("Content-Type", "application/json");
@@ -158,39 +161,39 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
       httpPost.setEntity(params);
 
-      logMessage(credentials.getApiKey(), "onboardCorporateClient", parseHttpPost(httpPost), false);
+      logMessage(credentials.getApiKey(), requestLabel, parseHttpPost(httpPost), false);
 
-      omLogger.log("AFEX onboardCorpateClient starting");
+      omLogger.log("AFEX " + requestLabel + " starting");
 
       logger.debug(params);
 
       CloseableHttpResponse httpResponse = getHttpClient().execute(httpPost);
 
-      omLogger.log("AFEX onboardCorpateClient complete");
+      omLogger.log("AFEX " + requestLabel + " complete");
 
 
       try {
         if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
           if ( httpResponse.getStatusLine().getStatusCode() / 100 == 5 ) {
-            logger.debug("AFEX onboardCorpateClient failed with 500, retrying.");
+            logger.debug("AFEX " + requestLabel + " failed with 500, retrying.");
             httpResponse = getHttpClient().execute(httpPost);
           }
           if ( httpResponse.getStatusLine().getStatusCode() / 100 != 2 ) {
-            String errorMsg = parseHttpResponse("onboardCorporateClient", httpResponse);
+            String errorMsg = parseHttpResponse(requestLabel, httpResponse);
             logger.error(errorMsg);
             throw new RuntimeException(errorMsg);
           }
         }
 
         String response = new BasicResponseHandler().handleResponse(httpResponse);
-        logMessage(credentials.getApiKey(), "onboardCorporateClient", response, true);
-        return (OnboardCorporateClientResponse) jsonParser.parseString(response, OnboardCorporateClientResponse.class);
+        logMessage(credentials.getApiKey(), requestLabel, response, true);
+        return (OnboardAFEXClientResponse) jsonParser.parseString(response, OnboardAFEXClientResponse.class);
       } finally {
         httpResponse.close();
       }
 
     } catch (IOException e) {
-      omLogger.log("AFEX onboardCorpateClient timeout");
+      omLogger.log("AFEX " + requestLabel + " timeout");
       logger.error(e);
     }
 
@@ -248,13 +251,13 @@ public class AFEXService extends ContextAwareSupport implements AFEX {
 
     try {
       credentials = getCredentials(spid);
-      URIBuilder uriBuilder = new URIBuilder(credentials.getPartnerApi() + "api/v1/privateclient");
+      URIBuilder uriBuilder = new URIBuilder(credentials.getPartnerApi() + "api/v1/AccountFind");
       uriBuilder.setParameter("ApiKey", clientAPIKey);
 
       HttpGet httpGet = new HttpGet(uriBuilder.build());
 
       httpGet.addHeader("API-Key", credentials.getApiKey());
-      httpGet.addHeader("Content-Type", "application/x-www-form-urlencoded");
+      httpGet.addHeader("Content-Type", "application/json");
       httpGet.addHeader("Authorization", "bearer " + getToken(spid).getAccess_token());
 
       logMessage(credentials.getApiKey(), "retrieveClientAccountDetails", httpGet.toString(), false);

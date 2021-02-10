@@ -323,7 +323,7 @@ foam.CLASS({
             RowOfBusSumReports.LOCKED
           ), null);
 
-          return decoratedSink;
+          return sink;
         `
       }
     ]

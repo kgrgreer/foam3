@@ -43,14 +43,14 @@ foam.CLASS({
       agency.submit(x, new ContextAgent() {
         @Override
         public void execute(X x) {
-          if ( ! (obj instanceof AFEXBusiness) ) {
+          if ( ! (obj instanceof AFEXUser) ) {
             return;
           }
 
-          AFEXBusiness afexBusiness = (AFEXBusiness) obj;
-          Business business = (Business) ((DAO) x.get("localBusinessDAO")).find(EQ(Business.ID, afexBusiness.getUser()));
+          AFEXUser afexUser = (AFEXUser) obj;
+          Business business = (Business) ((DAO) x.get("localBusinessDAO")).find(EQ(Business.ID, afexUser.getUser()));
           if ( business != null ) {
-            ((AFEXServiceProvider) x.get("afexServiceProvider")).pushBusinessDirectors(business, afexBusiness.getApiKey());
+            ((AFEXServiceProvider) x.get("afexServiceProvider")).pushBusinessDirectors(business, afexUser.getApiKey());
           }
         }
       }, "Rule to push Business Directors to AFEX after AFEX Business is created.");

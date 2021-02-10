@@ -130,6 +130,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/AcceptAware' },
   { name: 'net/nanopay/bank/ui/BankPADForm', flags: ['web'] },
   { name: 'net/nanopay/bank/BankAccount' },
+  { name: 'net/nanopay/bank/EstimationAccount' },
   { name: 'net/nanopay/bank/EUBankAccount' },
   { name: 'net/nanopay/bank/CABankAccount' },
   { name: 'net/nanopay/bank/USBankAccount' },
@@ -223,6 +224,7 @@ FOAM_FILES([
   { name: 'net/nanopay/auth/email/DoNotSolicit' },
   { name: 'net/nanopay/auth/ExternalInvoiceTokenService' },
   { name: 'net/nanopay/auth/ruler/LogoutUserAction' },
+  { name: 'net/nanopay/auth/ruler/predicate/IsUserInGroups' },
   { name: 'net/nanopay/auth/sms/PhoneVerificationTokenService', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/UserDetailView', flags: ['web'] },
   { name: 'net/nanopay/auth/ui/UserTableView', flags: ['web'] },
@@ -357,7 +359,7 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEX' },
   { name: 'net/nanopay/fx/afex/AFEXBeneficiary' },
   { name: 'net/nanopay/fx/afex/AFEXBeneficiaryComplianceTransaction' },
-  { name: 'net/nanopay/fx/afex/AFEXBusiness' },
+  { name: 'net/nanopay/fx/afex/AFEXUser' },
   { name: 'net/nanopay/fx/afex/AFEXPayableMenuCapabilityRule' },
   { name: 'net/nanopay/fx/afex/AFEXAddCurrencyPermissionRule' },
   { name: 'net/nanopay/fx/afex/AFEXBusinessCreatedPredicate' },
@@ -371,8 +373,9 @@ FOAM_FILES([
   { name: 'net/nanopay/fx/afex/AFEXFundingBalance' },
   { name: 'net/nanopay/fx/afex/AFEXLog' },
   { name: 'net/nanopay/fx/afex/Token' },
-  { name: 'net/nanopay/fx/afex/OnboardCorporateClientRequest' },
-  { name: 'net/nanopay/fx/afex/OnboardCorporateClientResponse' },
+  { name: 'net/nanopay/fx/afex/AccountEntityType' },
+  { name: 'net/nanopay/fx/afex/OnboardAFEXClientRequest' },
+  { name: 'net/nanopay/fx/afex/OnboardAFEXClientResponse' },
   { name: 'net/nanopay/fx/afex/GetClientAccountStatusResponse' },
   { name: 'net/nanopay/fx/afex/RetrieveClientAccountDetailsResponse' },
   { name: 'net/nanopay/fx/afex/CreateBeneficiaryRequest' },
@@ -1632,6 +1635,7 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/planner/InterTrustPlanner' },
   { name: 'net/nanopay/tx/planner/RbcInterTrustPlanner' },
   { name: 'net/nanopay/tx/planner/BmoInterTrustPlanner' },
+  { name: 'net/nanopay/tx/planner/PartialPlanDAO' },
 
   // Billing
   { name: 'net/nanopay/tx/billing/Bill' },
@@ -1675,6 +1679,9 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/registration/UserRegistrationData' },
   { name: 'net/nanopay/crunch/registration/UserDetailData' },
   { name: 'net/nanopay/crunch/registration/UserDetailExpandedData' },
+
+  // bepay crunch onboarding
+  { name: 'net/nanopay/crunch/bepay/ExtendedUserDetailsData' },
 
   // crunch predicates - todo move all predicates used in crunch here
   { name: 'net/nanopay/crunch/predicate/IsBusiness' },
@@ -1752,6 +1759,7 @@ FOAM_FILES([
   // crunch afex
   { name: 'net/nanopay/partner/afex/crunch/BusinessHasVerifiedBankAccount' },
   { name: 'net/nanopay/partner/afex/crunch/AFEXBusinessOnboardingRule' },
+  { name: 'net/nanopay/partner/afex/crunch/AFEXUserOnboardingRule' },
   { name: 'net/nanopay/partner/afex/crunch/BankAccountOwnerIsBusiness' },
 
   { name: 'net/nanopay/partner/bmo/BMOPaymentProviderCapabilityRule' },
@@ -1830,7 +1838,7 @@ FOAM_FILES([
   { name: 'net/nanopay/country/br/NatureBusinessRelationship' },
   { name: 'net/nanopay/country/br/NatureCodeCardSelectView' },
 
-  //RequestToPay
+  // RequestToPay
   { name: 'net/nanopay/rtp/RequestToPay'},
   { name: 'net/nanopay/rtp/RtpFlinksView'},
   { name: 'net/nanopay/rtp/RtpConfirmView'},
@@ -1864,6 +1872,10 @@ FOAM_FILES([
   { name: 'net/nanopay/partner/treviso/TrevisoSendEmailToAllNotification' },
   { name: 'net/nanopay/partner/treviso/invoice/TrevisoNotification' },
 
+  // Reports for Treviso
+  { name: 'net/nanopay/partner/treviso/report/TrevisoTransactionReport' },
+  { name: 'net/nanopay/partner/treviso/report/TrevisoTransactionReportDAO' },
+
   // support
   { name: 'net/nanopay/support/SupportAccount' },
   { name: 'net/nanopay/support/SupportBusiness' },
@@ -1878,4 +1890,5 @@ FOAM_FILES([
   { name: 'net/nanopay/crunch/compliance/SendExpiryNotification'},
   { name: 'net/nanopay/tx/ruler/MicroDepositSentNotification'},
   { name: 'net/nanopay/sme/cron/OnboardingReminderNotification'},
+  { name: 'net/nanopay/notification/PermissionedNotificationSettingRule'},
 ]);

@@ -457,9 +457,13 @@ foam.CLASS({
       section: 'complianceInformation',
       order: 70,
       factory: function() {
-        return net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.create();
+        return net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.create({}, this);
       },
-      view: { class: 'foam.u2.detail.VerticalDetailView' },
+      view: function(_, X) {
+        return foam.u2.detail.SectionView.create({
+          sectionName: 'backOfficeSuggestedUserTransactionInfo'
+        }, X);
+      }
     },
     {
       class: 'String',
@@ -808,7 +812,10 @@ foam.CLASS({
           }
 
           // Get the default settings for the user if none are already defined
-          List<NotificationSetting> settingDefaults = ((ArraySink) ((DAO) x.get("notificationSettingDefaultsDAO")).select(new ArraySink())).getArray();
+          List<NotificationSetting> settingDefaults = ((ArraySink) ((DAO) x.get("notificationSettingDefaultsDAO"))
+            .where(EQ(foam.nanos.notification.NotificationSetting.SPID, getSpid()))
+            .select(new ArraySink()))
+            .getArray();
           HashMap<String, NotificationSetting> settingsMap = new HashMap<String, NotificationSetting>();
           for ( NotificationSetting setting : settingDefaults ) {
             settingsMap.put(setting.getClassInfo().getId(), setting);

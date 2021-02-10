@@ -169,12 +169,6 @@ foam.CLASS({
       name: 'iban',
       visibility: 'HIDDEN',
       required: false,
-      getter: function() {
-        return this.accountNumber;
-      },
-      javaGetter: `
-        return getAccountNumber();
-      `,
       validateObj: function(iban) {
       }
     },
