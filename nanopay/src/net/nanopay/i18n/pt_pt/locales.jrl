@@ -3255,6 +3255,8 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.business.NatureOfBus
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.partner.treviso.TrevisoUnlockPaymentTermsAndConditions.DOCUMENT_READ",target:"O documento deve ser revisado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.DOCUMENT_READ",target:"O documento deve ser revisado"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.security.auth.LoginAttemptAuthService.ACCOUNT_LOCKED",target:"Conta bloqueada. Entre em contato com o atendimento ao cliente."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.security.auth.LoginAttemptAuthService.LOGIN_FAILED",target:"Falha na autenticação."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.security.auth.LoginAttemptAuthService.ATTEPMTS_REMAIN",target:"Tentativas restantes."})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.cron.WelcomeEmailNotification.WELCOME_NOTIFICATION_MESSAGE",target:"Para concluir o registro, entre em contato com nosso especialista de integração em "})
 
