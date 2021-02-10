@@ -28,7 +28,9 @@ foam.CLASS({
   javaImports: [
     'foam.core.ContextAgent',
     'foam.core.X',
+    'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'java.util.List',
     'foam.nanos.fs.File',
     'foam.nanos.notification.Notification',
     'foam.nanos.logger.Logger',
@@ -58,7 +60,30 @@ foam.CLASS({
       name: 'applyAction',
       javaCode: `
         RefundTicket ticket = (RefundTicket) obj;
-        ticket.setTextToAgent(getTextToAgent());
+        ticket.setAgentInstructions(getTextToAgent());
+        DAO txnDAO = (DAO) x.get("localTransactionDAO");
+        Transaction summary = (Transaction) txnDAO.find(ticket.getRefundTransaction());
+        if (! (summary instanceof SummaryTransaction || summary instanceof FXSummaryTransaction) ) {
+          summary = summary.findRoot(x);
+        }
+        Transaction problem = summary.getStateTxn(x);
+        ticket.setProblemTransaction(problem.getId());
+        try {
+          problem.setStatus(TransactionStatus.PAUSED);
+          txnDAO.put(problem);
+        }
+        catch ( Exception e ) {
+          try {
+            List children = ((ArraySink) problem.getChildren(x).select(new ArraySink())).getArray();
+            for ( Object t : children) {
+              ((Transaction) t).setStatus(TransactionStatus.PAUSED);
+              txnDAO.put((Transaction) t);
+            }
+          }
+          catch ( Exception e2 ) {
+            // add note on ticket that the transaction was not paused.
+          }
+        }
 
         if ( ! SafetyUtil.isEmpty(getErrorCode())) {
           // look up error code fee. and create a fee line item for this.

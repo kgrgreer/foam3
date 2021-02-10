@@ -214,20 +214,20 @@ p({
   "name":"RefundTicket - cancel CO on pending",
   "priority":100,
   "ruleGroup":"refundTickets",
-  "documentation":"Creates a default digital account when a user is created.",
-  "daoKey":"localUserDAO",
+  "documentation":"Scenario 4: user presses cancel on pending cashout",
+  "daoKey":"localTicketDAO",
   "operation":0,
   "predicate":{
     "class":"net.nanopay.ticket.RefundTicketPropertyPredicate",
     "txnProperty":"status",
-    txnValue":{
+    "txnValue":{
       "class": "net.nanopay.tx.model.TransactionStatus",
       "ordinal":0
     }
-  }
+  },
   "action":{
     "class":"net.nanopay.ticket.BasicFullReverseRefundTicketCreateRule",
-    "textToAgent":"This transaction can be safely refunded, dont waive fees though"
+    "textToAgent":"This transaction can be safely refunded, don't waive fees though"
   },
   "after":false,
   "enabled":true,

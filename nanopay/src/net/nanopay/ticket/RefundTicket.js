@@ -80,8 +80,19 @@ foam.CLASS({
     {
       class: 'String',
       name: 'refundTransaction',
-      documentation: `Id of the reversal transaction`,
-      createVisibility: 'HIDDEN',
+      documentation: `Id of the transaction`,
+      createVisibility: function(a) {
+        return (refundTransaction == null) ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RO;
+      },
+      section: 'infoSection'
+    },
+    {
+      class: 'String',
+      name: 'problemTransaction',
+      documentation: `Id of the problem transaction`,
+      createVisibility: function(a) {
+        return (problemTransaction == null) ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RO;
+      },
       section: 'infoSection'
     },
     {
@@ -100,7 +111,9 @@ foam.CLASS({
     },
     {
       class: 'String',
-      name: 'textToAgent'
+      name: 'agentInstructions',
+      readVisibility: 'RO',
+      updateVisibility: 'RO'
     },
     {
       class: 'Long',

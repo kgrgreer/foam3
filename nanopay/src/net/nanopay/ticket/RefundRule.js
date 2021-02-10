@@ -44,7 +44,6 @@ foam.CLASS({
     'net.nanopay.tx.model.Transaction',
     'net.nanopay.tx.model.TransactionStatus',
     'java.util.ArrayList',
-    
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.CLASS_OF',
     'static foam.mlang.MLang.EQ'
@@ -60,15 +59,12 @@ foam.CLASS({
           
           RefundTicket request = (RefundTicket) obj;
           DAO txnDAO = (DAO) x.get("localTransactionDAO");
-          Transaction txn = (Transaction) txnDAO.inX(x).find(request.getRequestTransaction());
-          Transaction newTxn = new Transaction();
 
-          if (! (txn instanceof SummaryTransaction || txn instanceof FXSummaryTransaction) ) {
-            txn = txn.findRoot(x);
-          }
+          Transaction reverse = request.getRequestTransaction();
 
-          Transaction problemTxn = txn.getStateTxn(x);
-          problemTxn = (Transaction) problemTxn.fclone();
+          Transaction problemTxn = (Transaction) txnDAO.inX(x).find(request.getProblemTransaction()).fclone();
+
+/*
           ArrayList<TransactionLineItem> array = new ArrayList<>();
           DAO dao = (DAO) x.get("localAccountDAO");
           DigitalAccount digitalAccount = (DigitalAccount) dao.find(AND(
@@ -102,21 +98,24 @@ foam.CLASS({
             array.add(feeRefund);
           }
 
-          newTxn.setSourceAccount(problemTxn.getSourceAccount());
-          newTxn.setDestinationAccount(txn.getSourceAccount());
-          newTxn.setAmount(txn.getAmount());
           if ( array.size() > 0 ) {
-            newTxn.setLineItems(array.toArray(new TransactionLineItem[array.size()]));
+            reverse.setLineItems(array.toArray(new TransactionLineItem[array.size()]));
           }
-
-          problemTxn.setStatus(TransactionStatus.CANCELLED);
-          txnDAO.inX(x).put(problemTxn);
-          txnDAO.inX(x).put(newTxn);
+*/
+          try {
+            problemTxn.setStatus(TransactionStatus.CANCELLED);
+            txnDAO.inX(x).put(problemTxn);
+          }
+          catch (Exception e) {
+          // transaction was not set to cancelled.
+          // if declined
+          }
+          txnDAO.inX(x).put(reverse);
 
           request.setRefundStatus(RefundStatus.PROCESSING);
         }
      
-      }, "Rule to reverse transaction.");
+      }, "Rule to submit the reverse transaction.");
       `
     }
   ]

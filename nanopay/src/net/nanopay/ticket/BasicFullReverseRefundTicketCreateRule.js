@@ -29,7 +29,9 @@ foam.CLASS({
     'foam.core.ContextAgent',
     'foam.core.X',
     'foam.util.SafetyUtil',
+    'foam.dao.ArraySink',
     'foam.dao.DAO',
+    'java.util.List',
     'foam.nanos.fs.File',
     'foam.nanos.notification.Notification',
     'foam.nanos.logger.Logger',
@@ -63,8 +65,24 @@ foam.CLASS({
         if (! (summary instanceof SummaryTransaction || summary instanceof FXSummaryTransaction) ) {
           summary = summary.findRoot(x);
         }
-
         Transaction problem = summary.getStateTxn(x);
+        ticket.setProblemTransaction(problem.getId());
+        try {
+          problem.setStatus(TransactionStatus.PAUSED);
+          txnDAO.put(problem);
+        }
+        catch ( Exception e ) {
+          try {
+            List children = ((ArraySink) problem.getChildren(x).select(new ArraySink())).getArray();
+            for ( Object t : children) {
+              ((Transaction) t).setStatus(TransactionStatus.PAUSED);
+              txnDAO.put((Transaction) t);
+            }
+          }
+          catch ( Exception e2 ) {
+            // add note on ticket that the transaction was not paused.
+          }
+        }
 
         Transaction newRequest = new Transaction();
         newRequest.setAmount(problem.getAmount());
@@ -78,7 +96,7 @@ foam.CLASS({
         }
 
         ticket.setRequestTransaction(newRequest);
-        ticket.setTextToAgent(getTextToAgent() + " The proposed transaction will move "+newRequest.getAmount()+
+        ticket.setAgentInstructions(getTextToAgent() + " The proposed transaction will move "+newRequest.getAmount()+
         " from account "+newRequest.getSourceAccount()+" to Account "+newRequest.getDestinationAccount());
 
 
