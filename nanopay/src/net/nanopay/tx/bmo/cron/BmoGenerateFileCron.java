@@ -129,6 +129,7 @@ public class BmoGenerateFileCron implements ContextAgent {
         });
         updateTransaction(x, passedTransaction, eftFile);
         eftFile.setStatus(EFTFileStatus.GENERATED);
+        eftFile.setSpid(spid);
         ((DAO) x.get("bmoEftFileDAO")).put(eftFile);
       } catch ( Exception e ) {
         logger.error("BMO Batch Error while updating transaction: " + e.getMessage(), e);

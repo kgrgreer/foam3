@@ -129,6 +129,7 @@ public class RbcGenerateFileCron implements ContextAgent {
         });
         updateTransaction(x, passedTransaction, eftFile);
         eftFile.setStatus(EFTFileStatus.GENERATED);
+        eftFile.setSpid(spid);
         ((DAO) x.get("eftFileDAO")).put(eftFile);
       } catch ( Exception e ) {
         logger.error("RBC Batch Error while updating transaction: " + e.getMessage(), e);

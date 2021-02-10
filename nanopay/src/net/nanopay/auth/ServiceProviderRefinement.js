@@ -19,6 +19,11 @@ foam.CLASS({
   package: 'net.nanopay.auth',
   name: 'ServiceProviderRefinement',
   refines: 'foam.nanos.auth.ServiceProvider',
+
+  messages: [
+    { name: 'INVALID_ISSUER', message: 'Payment issuer tag cannot exceed 15 characters' }
+  ],
+
   properties: [
     {
       class: 'String',
@@ -28,7 +33,18 @@ foam.CLASS({
       },
       javaFactory: `
         return getId();
-      `
+      `,
+      validationPredicates: [
+        {
+          args: ['paymentIssuerTag'],
+          predicateFactory: function(e) {
+            return e.LTE(foam.mlang.StringLength.create({
+              arg1: foam.nanos.auth.ServiceProvider.PAYMENT_ISSUER_TAG
+            }), 15);
+          },
+          errorMessage: 'INVALID_ISSUER'
+        }
+      ],
     }
   ]
 });
