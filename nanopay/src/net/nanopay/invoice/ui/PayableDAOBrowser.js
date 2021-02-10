@@ -393,7 +393,6 @@ foam.CLASS({
       },
       code: function(X) {
         var self = this.__subContext__;
-        //console.log("this... : " + self.invoice);
         ctrl.add(ctrl.Popup.create().tag({
           class: 'foam.u2.DeleteModal',
           dao: self.subject.user.expenses,
