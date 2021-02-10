@@ -2550,6 +2550,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.history.I
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.FXSummaryTransaction.DESCRIPTION",target:"Resumo"})
 
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.model_.label",target:"Fatura"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.model.Invoice.SELECT_CONTACT",target:"Selecione o beneficiário"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.invoice.ui.history.InvoiceStatusHistoryItemView.INVOICE_STATUS_CHNGE_TO",target:"Invoice status changed to"})
@@ -3148,6 +3149,10 @@ p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.Payable
 p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.APPROVE.label","target":"aprovar"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.MARK_VOID.label","target":"Marcar como nulo"})
 p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.DELETE.label","target":"Excluir"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.TITLE.label","target":"Pagáveis"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.SUB_TITLE.label","target":"Aqui está uma lista de pagamentos que você enviou"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.RECONCILED_SUCCESS.label","target":"A fatura foi reconciliada pelo pagador"})
+p({class:"foam.i18n.Locale",locale:"pt","source":"net.nanopay.invoice.ui.PayableDAOBrowser.RECONCILED_ERROR.label","target":"Ocorreu um erro ao reconciliar a fatura"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.iban.ValidationIBAN.IBAN_REQUIRED",target:"IBAN necessário"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"foam.nanos.iban.ValidationIBAN.UNKNOWN_COUNTRY_CODE",target:"Código de país desconhecido"})
@@ -3338,3 +3343,13 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AccountEntit
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"8ad3c898-db232-1ea-87d0-0242ac130z0-bepay.name",target:"Data de emissão"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"8ad3c898-db232-1ea-87d0-0242ac130z0-bepay.description",target:"Data de emissão de um documento de identificação"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"4f45c745-1c93-4380-b275-2d2fea091d1f-157.subject",target:"Notificação NOC"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.DeleteModal.TITLE",target:"Excluir "})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.DeleteModal.CONFIRM_DELETE_1",target:"Tem certeza de que deseja excluir"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.DeleteModal.SUCCESS_MSG",target:" apagado"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.DeleteModal.FAIL_MSG",target:"Falha ao excluir"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.DeleteModal.DELETE.label",target:"Excluir"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"foam.u2.DeleteModal.CANCEL.label",target:"Cancelar"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.Invitation.model_.label",target:"Convite"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.settings.business.DeleteInvitedUserView.DELETE.label",target:"Excluir"})

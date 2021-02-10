@@ -94,10 +94,8 @@ foam.CLASS({
   messages: [
     { name: 'TITLE', message: 'Payables' },
     { name: 'SUB_TITLE', message: `Here's a list of payments you've sent` },
-    { name: 'DELETE_DRAFT', message: 'Draft has been deleted' },
     { name: 'RECONCILED_SUCCESS', message: 'Invoice has been reconciled by payer' },
-    { name: 'RECONCILED_ERROR', message: `There was an error reconciling the invoice` },
-    { name: 'INVOICE', message: 'invoice' }
+    { name: 'RECONCILED_ERROR', message: `There was an error reconciling the invoice` }
   ],
 
   classes: [
@@ -395,11 +393,11 @@ foam.CLASS({
       },
       code: function(X) {
         var self = this.__subContext__;
+        //console.log("this... : " + self.invoice);
         ctrl.add(ctrl.Popup.create().tag({
           class: 'foam.u2.DeleteModal',
           dao: self.subject.user.expenses,
-          data: this,
-          label: this.model_.label
+          data: this
         }));
       }
     }
