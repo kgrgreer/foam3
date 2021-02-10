@@ -10,7 +10,8 @@ foam.CLASS({
   extends: 'foam.nanos.crunch.lite.ruler.CapableCreateApprovalsRuleAction',
 
   documentation: `
-    TODO:
+    To add a NatureCodeApprovalRequest decorator on ApprovalRequest instantiation in
+    CapableCreateApprovalsRuleAction
   `,
 
   javaImports: [
