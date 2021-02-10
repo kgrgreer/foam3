@@ -25,39 +25,83 @@ foam.CLASS({
     'foam.nanos.auth.ServiceProviderAware'
   ],
 
+  imports: [
+    'currencyDAO'
+  ],
+
+  tableColumns: [
+    'id',
+    'errorCode',
+    'amount',
+    'currency',
+    'chargedTo',
+    'spid'
+  ],
+
+  sections: [
+    {
+      name: 'errorFeeInformation'
+    }
+  ],
+
   properties: [
     {
       class: 'String',
-      name: 'id'
+      name: 'id',
+      section: 'errorFeeInformation',
+      order: 10,
+      gridColumns: 6
     },
     {
       class: 'Reference',
       targetDAOKey: 'errorCodeDAO',
       name: 'errorCode',
       of: 'net.nanopay.integration.ErrorCode',
-      documentation: 'Error code associated to transaction error'
+      documentation: 'Error code associated to transaction error',
+      section: 'errorFeeInformation',
+      order: 20,
+      gridColumns: 6
     },
     {
       class: 'UnitValue',
       name: 'amount',
-      documentation: 'Amount of the error fee'
+      documentation: 'Amount of the error fee',
+      unitPropName: 'currency',
+      unitPropValueToString: async function(x, val, unitPropName) {
+        var unitProp = await x.currencyDAO.find(unitPropName);
+        if ( unitProp )
+          return unitProp.format(val);
+        return val;
+      },
+      section: 'errorFeeInformation',
+      order: 30,
+      gridColumns: 6
     },
     {
       class: 'String',
       name: 'currency',
-      documentation: 'Currency of the fee'
+      documentation: 'Currency of the fee',
+      section: 'errorFeeInformation',
+      order: 40,
+      gridColumns: 6
     },
     {
       class: 'Enum',
       of: 'net.nanopay.tx.ChargedTo',
       name: 'chargedTo',
-      documentation: 'Determines if Payer or Payee is charged the fee'
+      documentation: 'Determines if Payer or Payee is charged the fee',
+      section: 'errorFeeInformation',
+      order: 50,
+      gridColumns: 6
     },
     {
       class: 'Reference',
       of: 'foam.nanos.auth.ServiceProvider',
       name: 'spid',
-      documentation: 'spid the fee applies to'
+      documentation: 'spid the fee applies to',
+      section: 'errorFeeInformation',
+      order: 60,
+      gridColumns: 6
     }
   ]
 });

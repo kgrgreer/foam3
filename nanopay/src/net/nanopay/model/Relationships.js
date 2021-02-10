@@ -1138,6 +1138,11 @@ foam.RELATIONSHIP({
   targetDAOKey: 'billDAO',
   sourceProperty: {
     section: 'systemInformation'
+  },
+  targetProperty: {
+    section: 'billInformation',
+    order: 45,
+    gridColumns: 6
   }
 });
 
@@ -1149,7 +1154,12 @@ foam.RELATIONSHIP({
   cardinality: '1:*',
   sourceDAOKey: 'transactionDAO',
   unauthorizedSourceDAOKey: 'localTransactionDAO',
-  targetDAOKey: 'billDAO'
+  targetDAOKey: 'billDAO',
+  targetProperty: {
+    section: 'billInformation',
+    order: 90,
+    gridColumns: 6
+  }
 });
 
 foam.RELATIONSHIP({
