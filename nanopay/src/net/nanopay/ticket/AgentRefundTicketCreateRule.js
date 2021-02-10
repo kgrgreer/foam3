@@ -17,7 +17,7 @@
 
 foam.CLASS({
   package: 'net.nanopay.ticket',
-  name: 'RefundTicketCreateRule',
+  name: 'AgentRefundTicketCreateRule',
 
   implements: [
     'foam.nanos.ruler.RuleAction'
@@ -37,22 +37,38 @@ foam.CLASS({
     'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.tx.TransactionLineItem',
     'net.nanopay.tx.model.Transaction',
-    'net.nanopay.tx.model.TransactionStatus'
+    'net.nanopay.tx.model.TransactionStatus',
+    'foam.util.SafetyUtil',
+  ],
+
+  properties: [
+    {
+      class: 'String',
+      name: 'errorCode'
+    },
+    {
+      class: 'String',
+      name: 'textToAgent',
+      documentation: 'Description of the base resolution path'
+    }
   ],
 
   methods: [
     {
       name: 'applyAction',
       javaCode: `
-        RefundTicket request = (RefundTicket) obj;
-        DAO txnDAO = (DAO) x.get("localTransactionDAO");
-        Transaction txn = (Transaction) txnDAO.find(request.getRequestTransaction());
+        RefundTicket ticket = (RefundTicket) obj;
+        ticket.setTextToAgent(getTextToAgent());
 
-        if (! (txn instanceof SummaryTransaction || txn instanceof FXSummaryTransaction) ) {
-          txn = txn.findRoot(x);
+        if ( ! SafetyUtil.isEmpty(getErrorCode())) {
+          // look up error code fee. and create a fee line item for this.
         }
 
-        // fill in txn amount, fee amount, etc
+        // send back to agent for fee/credit entering and approval.
+        // scenario has crafted the request transaction.
+        // agent presses. approve. then we hit refundRUle.
+        // refund rule does a plan with the specified request transaction to the txn Dao for immidiete execution.
+        // transaction is put.. this updates the ticket.
       `
     }
   ]

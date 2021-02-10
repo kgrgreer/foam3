@@ -668,7 +668,6 @@ var classes = [
   'net.nanopay.tx.EtaSummaryTransactionLineItem',
   'net.nanopay.tx.UnsupportedDateException',
   'net.nanopay.tx.ExpiredTransactionException',
-
   'net.nanopay.fx.FXService',
   'net.nanopay.fx.client.ClientFXService',
   'net.nanopay.fx.FXAccepted',
@@ -1105,12 +1104,14 @@ var classes = [
   'net.nanopay.ticket.SudoTicketApprovalResponseRule',
   'net.nanopay.ticket.SudoTicketApprovalResponseAction',
   'net.nanopay.ticket.test.SudoTicketTest',
-  'net.nanopay.ticket.RefundTicketCreateRule',
   'net.nanopay.ticket.RefundRule',
   'net.nanopay.ticket.RefundTicketCreateApprovals',
   'net.nanopay.ticket.RefundTicket',
   'net.nanopay.ticket.RefundStatus',
   'net.nanopay.ticket.RefundTypes',
+  'net.nanopay.ticket.BasicFullReverseRefundTicketCreateRule',
+  'net.nanopay.ticket.AgentRefundTicketCreateRule',
+  'net.nanopay.ticket.RefundTicketPropertyPredicate',
 
   // Planners
   'net.nanopay.tx.planner.PlannerGroup',

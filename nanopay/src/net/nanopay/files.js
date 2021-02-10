@@ -731,7 +731,6 @@ FOAM_FILES([
   { name: 'net/nanopay/tx/stripe/StripeTransaction' },
   { name: 'net/nanopay/tx/stripe/StripeCustomer' },
   { name: 'net/nanopay/tx/TransactionCreateOnInvoiceSubmission' },
-
   { name: 'net/nanopay/cico/paymentCard/model/PaymentCardNetwork' },
   { name: 'net/nanopay/cico/paymentCard/model/PaymentCardType' },
   { name: 'net/nanopay/cico/paymentCard/model/PaymentCard' },
@@ -1566,12 +1565,15 @@ FOAM_FILES([
   { name: 'net/nanopay/ticket/SudoTicketApprovalResponseRule' },
   { name: 'net/nanopay/ticket/SudoTicketApprovalResponseAction' },
   { name: 'net/nanopay/ticket/test/SudoTicketTest' },
-  { name: 'net/nanopay/ticket/RefundTicketCreateRule' },
   { name: 'net/nanopay/ticket/RefundRule' },
   { name: 'net/nanopay/ticket/RefundTicket' },
   { name: 'net/nanopay/ticket/RefundTicketCreateApprovals' },
   { name: 'net/nanopay/ticket/RefundTypes' },
   { name: 'net/nanopay/ticket/RefundStatus' },
+  { name: 'net/nanopay/ticket/RefundTicketPropertyPredicate' },
+  { name: 'net/nanopay/ticket/BasicFullReverseRefundTicketCreateRule' },
+  { name: 'net/nanopay/ticket/AgentRefundTicketCreateRule' },
+
 
   // planners
   { name: 'net/nanopay/tx/planner/PlannerGroup' },
