@@ -48,7 +48,8 @@ foam.CLASS({
 
   messages: [
     { name: 'PLACEHOLDER', message: 'Please select ' },
-    { name: 'INVALID_BANK', message: 'Invalid Bank' }
+    { name: 'INVALID_BANK', message: 'Invalid Bank' },
+    { name: 'DOMICILED_BK_ACC_COUNTRY', message: 'Domiciled bank account country' }
   ],
 
   properties: [
@@ -82,7 +83,7 @@ foam.CLASS({
           sections: [
             {
               placeholder: x.data.PLACEHOLDER,
-              heading: 'Domiciled bank account country',
+              heading: x.data.DOMICILED_BK_ACC_COUNTRY,
               dao$: x.data.permittedCountries$
             }
           ]
