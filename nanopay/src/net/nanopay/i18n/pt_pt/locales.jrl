@@ -232,6 +232,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SwitchBusines
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SwitchBusinessView.CREATE_BUSINESS.label",target:"Clique aqui para criar um novo negócio ..."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.BusinessSettingsView.TITLE",target:"Configurações de negócios"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.BusinessSettingsView.COMPANY_TAB",target:"Perfil"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.SwitchBusinessView.SIGN_OUT",target:"Sair"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.BusinessSettingsView.USER_MANAGEMENT_TAB",target:"Gerenciamento de usuários"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.ui.BusinessSettingsView.INTEGRATION_TAB",target:"Integrações"})
@@ -714,7 +715,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.acceptanceDoc
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.NanopayInternationalPaymentsCustomerAgreement.ACKNOWLEDGE_AGREEMENT",target:"Deve reconhecer o acordo acima."})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.NanopayInternationalPaymentsCustomerAgreement.TITLE.label",target:"título"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.NanopayInternationalPaymentsCustomerAgreement.TITLE.value",target:"nanopay international Payments Customer Agreement pt"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.NanopayInternationalPaymentsCustomerAgreement.TITLE.value",target:"Contrato de cliente de pagamentos internacional nanopay"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.NanopayInternationalPaymentsCustomerAgreement.CHECKBOX_TEXT.value",target:"Eu reconheço que li e aceito o "})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.NanopayInternationalPaymentsCustomerAgreement.LINK.label",target:"ligação"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.NanopayInternationalPaymentsCustomerAgreement.LINK.value",target:"https://ablii.com/wp-content/uploads/2019/08/Sep-2019-nanopay-International-Payments-Customer-Agreement.pdf pt"})
@@ -3338,3 +3339,29 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.fx.afex.AccountEntit
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"8ad3c898-db232-1ea-87d0-0242ac130z0-bepay.name",target:"Data de emissão"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"8ad3c898-db232-1ea-87d0-0242ac130z0-bepay.description",target:"Data de emissão de um documento de identificação"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.wizardlet.SigningOfficerQuestionWizardlet.SUCCESS_SIGNING_OFFICER_QUESTION",target:"Obrigado! Preencha os detalhes adicionais necessários para assinar os privilégios de dirigente."})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.wizardlet.SigningOfficerQuestionWizardlet.SUCCESS_SIGNING_OFFICER_INVITED",target:"Obrigado! Conclua o desbloqueio de pagamentos e faturas internacionais e nacionais para aprovação do oficial de assinatura."})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.CAPadCapture.FIRST_NAME.label",target:"Primeiro nome"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.CAPadCapture.LAST_NAME.label",target:"Último nome"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.CAPadCapture.COMPANY_NAME.label",target:"Nome da empresa"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.CAPadCapture.ADDRESS.label",target:"Endereço profissional"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.CAPadCapture.BRANCH_ID.label",target:"Transito"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.CAPadCapture.INSTITUTION_NUMBER.label",target:"Instituição"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.CAPadCapture.ACCOUNT_NUMBER.label",target:"Conta"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.CAPadCapture.INVALID_ACCOUNT_NUMBER",target:"Número de conta inválido"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.CAPadCapture.INVALID_INSTITUTION_NUMBER",target:"Número de instituição inválido"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.CAPadCapture.INVALID_TRANSIT_NUMBER",target:"Número de trânsito inválido"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.CACancellationAgreement.CHECKBOX_MSG",target:"Esta Autorização pode ser cancelada a qualquer momento mediante notificação por mim fornecida, por escrito ou oralmente, com a devida autorização para verificar minha identidade. Eu reconheço que posso obter um exemplo de formulário de cancelamento ou mais informações sobre meu direito de cancelar este Acordo da nanopay Corporation (para transações domésticas canadenses) ou AFEX (para transações internacionais) ou visitando"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.CACancellationAgreement.ACKNOWLEDGE_STATEMENT",target:"Deve reconhecer a declaração acima"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.CABankAccountAuthAgreement.TITLE_MSG",target:"EEE nanopay Corporation (para transações domésticas canadenses) ou AFEX (para transações internacionais) para sacar de minha conta (de débito) com a instituição financeira listada de tempos em tempos para o valor que eu especificar ao processar uma única vez (\" esporádico \") débito pré-autorizado. Eu concordei que podemos reduzir o período padrão de pré-notificação para PADs de valor variável (Ablii Monthly Fee Invoice). Enviaremos a você um aviso do valor de cada PAD de Fatura de Taxa Mensal cinco dias antes do vencimento do PAD."})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.StrategizedBankAccount.DOMICILED_BK_ACC_COUNTRY",target:"País com conta bancária domiciliada"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.bank.ui.BankPickCurrencyView.DOMICILED_BK_ACC_COUNTRY",target:"País com conta bancária domiciliada"})
+
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.ui.BeneficialOwnershipForm.NO_ADDITIONAL_OWNERS",target:"Certifico que as pessoas que possuem 25% ou mais do negócio, direta ou indiretamente, foram listadas e suas informações são precisas."})
