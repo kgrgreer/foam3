@@ -75,7 +75,8 @@ foam.CLASS({
 
           Business business = (Business) localBusinessDAO.find(EQ(Business.ID, afexUser.getUser()));
           if ( null != business ) {
-            var subject = (Subject) ((Subject) x.get("subject")).fclone();
+            var subject = new Subject(x);
+            subject.setUser(business);
             subject.setUser(business);
 
             var subjectX = x.put("subject", subject);
