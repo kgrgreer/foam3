@@ -1,12 +1,14 @@
 p({class:"foam.i18n.Locale",locale:"en",variant:"AFEX",source:"Individual Entrepreneur (EI)",target:"Sole Proprietorship"})
 p({class:"foam.i18n.Locale",locale:"en",variant:"AFEX",source:"Individual Microentrepreneur (MEI)",target:"Sole Proprietorship"})
-p({class:"foam.i18n.Locale",locale:"en",variant:"AFEX",source:"Individual Limited Liability Company (EIRELI)",target:"Sole Proprietorship"})
+p({class:"foam.i18n.Locale",locale:"en",variant:"AFEX",source:"Individual Limited Liability Company (EIRELI)",target:"Limited (Ltd.)"})
 p({class:"foam.i18n.Locale",locale:"en",variant:"AFEX",source:"Simple Company (SS)",target:"Sole Proprietorship"})
 p({class:"foam.i18n.Locale",locale:"en",variant:"AFEX",source:"Limited Business Company (Ltda)",target:"Limited Liability Company (LLC)"})
 p({class:"foam.i18n.Locale",locale:"en",variant:"AFEX",source:"Limited Company (SA)",target:"Limited Liability Company (LLC)"})
 p({class:"foam.i18n.Locale",locale:"en",variant:"AFEX",source:"Civil Society (SC)",target:"Registered Charity"})
 p({class:"foam.i18n.Locale",locale:"en",variant:"AFEX",source:"One-Person Limited Company (SLU)",target:"Single Member Company"})
 p({class:"foam.i18n.Locale",locale:"en",variant:"AFEX",source:"Association",target:"Association"})
+p({class:"foam.i18n.Locale",locale:"en",variant:"AFEX",source:"Micro Company (ME)",target:"Sole Proprietorship"})
+p({class:"foam.i18n.Locale",locale:"en",variant:"AFEX",source:"Small Business (EPP)",target:"Sole Proprietorship"})
 
 // Renaming contact to beneficiary
 p({class:"foam.i18n.Locale",locale:"en",source:"net.nanopay.sme.ui.NewInvoiceForm.ADD_CONTACT.label",target:"Add beneficiary"})
