@@ -60,7 +60,6 @@ foam.CLASS({
 
     ^ .foam-nanos-menu-VerticalMenu .side-nav-view {
       margin-top: 56px;
-      margin-left: -50px;
     }
 
     ^ .imageMenuStyle {

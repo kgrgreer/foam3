@@ -270,7 +270,8 @@ foam.CLASS({
                 ctrl.add(self.Popup.create().tag({
                   class: 'foam.u2.DeleteModal',
                   dao: self.subject.user.sales,
-                  data: this
+                  data: this,
+                  label: self.INVOICE
                 }));
               }
             })
