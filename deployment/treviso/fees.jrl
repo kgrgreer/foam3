@@ -216,18 +216,202 @@ p({
   class: "net.nanopay.tx.fee.PercentageFee",
   id: "6498491c-3237-4f82-b46a-2d2d5f3f3046-001",
   name: "FTT Rate",
-  percentage: 1.1,
+  percentage: 0.0,
   predicate: {
     class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
     of: "net.nanopay.country.br.tx.NatureCodeLineItem",
     propName: "natureCode",
-    propValue: "10002"
+    propValue: "12012"
   },
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
 p({
   class: "net.nanopay.tx.fee.PercentageFee",
   id: "6498491c-3237-4f82-b46a-2d2d5f3f3046-002",
+  name: "FTT Rate",
+  percentage: 0.0,
+  predicate: {
+    class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+    of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+    propName: "natureCode",
+    propValue: "12036"
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "6498491c-3237-4f82-b46a-2d2d5f3f3046-003",
+  name: "FTT Rate",
+  percentage: 0.38,
+  predicate: {
+    class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+    of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+    propName: "natureCode",
+    propValue: "37004"
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "6498491c-3237-4f82-b46a-2d2d5f3f3046-004",
+  name: "FTT Rate",
+  percentage: 0.38,
+  predicate: {
+    class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+    of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+    propName: "natureCode",
+    propValue: "37011"
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "6498491c-3237-4f82-b46a-2d2d5f3f3046-005",
+  name: "FTT Rate",
+  percentage: 0.38,
+  predicate: {
+    class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+    of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+    propName: "natureCode",
+    propValue: "47025"
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "6498491c-3237-4f82-b46a-2d2d5f3f3046-006",
+  name: "FTT Rate",
+  percentage: 0.38,
+  predicate: {
+    class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+    of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+    propName: "natureCode",
+    propValue: "47128"
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "6498491c-3237-4f82-b46a-2d2d5f3f3046-007",
+  name: "FTT Rate",
+  percentage: 0.38,
+  predicate: {
+    class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+    of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+    propName: "natureCode",
+    propValue: "47142"
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "6498491c-3237-4f82-b46a-2d2d5f3f3046-008",
+  name: "FTT Rate",
+  percentage: 0.38,
+  predicate: {
+    class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+    of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+    propName: "natureCode",
+    propValue: "47159"
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "6498491c-3237-4f82-b46a-2d2d5f3f3046-009",
+  name: "FTT Rate",
+  percentage: 0.38,
+  predicate: {
+    class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+    of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+    propName: "natureCode",
+    propValue: "47197"
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "6498491c-3237-4f82-b46a-2d2d5f3f3046-010",
+  name: "FTT Rate",
+  percentage: 0.38,
+  predicate: {
+    class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+    of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+    propName: "natureCode",
+    propValue: "47575"
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "6498491c-3237-4f82-b46a-2d2d5f3f3046-011",
+  name: "FTT Rate",
+  percentage: 0.38,
+  predicate: {
+    class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+    of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+    propName: "natureCode",
+    propValue: "47702"
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "6498491c-3237-4f82-b46a-2d2d5f3f3046-012",
+  name: "FTT Rate",
+  percentage: 0.38,
+  predicate: {
+    class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+    of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+    propName: "natureCode",
+    propValue: "47915"
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "6498491c-3237-4f82-b46a-2d2d5f3f3046-013",
+  name: "FTT Rate",
+  percentage: 0.38,
+  predicate: {
+    class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+    of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+    propName: "natureCode",
+    propValue: "67407"
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "6498491c-3237-4f82-b46a-2d2d5f3f3046-014",
+  name: "FTT Rate",
+  percentage: 1.1,
+  predicate: {
+    class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+    of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+    propName: "natureCode",
+    propValue: "67500"
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "6498491c-3237-4f82-b46a-2d2d5f3f3046-015",
+  name: "FTT Rate",
+  percentage: 0.38,
+  predicate: {
+    class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+    of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+    propName: "natureCode",
+    propValue: "67940"
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+
+// Fallback FTT Rate = 0.38%
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "6498491c-3237-4f82-b46a-2d2d5f3f3046-fallback",
   name: "FTT Rate",
   percentage: 0.38,
   order: 10,
