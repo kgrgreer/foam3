@@ -53,18 +53,23 @@ foam.CLASS({
           User payer = tx.findSourceAccount(x).findOwner(x);
           User payee = tx.findDestinationAccount(x).findOwner(x);
           DowJonesService dowJones = (DowJonesService) x.get("dowJonesService");
+          boolean payerSuccess = screenUser(x, payer, dowJones);
+          boolean payeeSuccess = screenUser(x, payee, dowJones);
           try {
-            if ( screenUser(x, payer, dowJones) && screenUser(x, payee, dowJones) ) {
+            if ( payerSuccess && payeeSuccess ) {
               tx.setStatus(TransactionStatus.COMPLETED);
             } else {
               String spid = tx.getSpid();
               String group = spid + "-fraud-ops";
+              StringBuilder description = new StringBuilder("Compliance check failed for users: ");
+              if ( ! payerSuccess ) description.append("payer - id(").append(payer.getId()).append("),");
+              if ( ! payeeSuccess ) description.append("payee - id(").append(payee.getId()).append(")");
               ComplianceApprovalRequest approvalRequest = new ComplianceApprovalRequest.Builder(x)
                 .setDaoKey("transactionDAO")
                 .setServerDaoKey("localTransactionDAO")
                 .setObjId(tx.getId())
                 .setGroup(group)
-                .setDescription(tx.getSummary())
+                .setDescription(description.toString())
                 .setClassification("Compliance Transaction")
                 .build();
 
