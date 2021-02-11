@@ -27,9 +27,10 @@ foam.CLASS({
   `,
 
   implements: [
-    'foam.nanos.auth.Authorizable',
+    'foam.core.Validatable',
     'foam.mlang.Expressions',
-    'foam.core.Validatable'
+    'foam.nanos.auth.Authorizable',
+    'foam.nanos.auth.ServiceProviderAware'
   ],
 
   requires: [
@@ -39,6 +40,7 @@ foam.CLASS({
   javaImports: [
     'foam.nanos.auth.AuthService',
     'foam.nanos.auth.AuthorizationException',
+    'foam.nanos.auth.ServiceProviderAwareSupport',
     'foam.nanos.auth.Subject',
     'foam.nanos.auth.User',
     'foam.util.SafetyUtil'
@@ -276,6 +278,21 @@ foam.CLASS({
         };
       },
       autoValidate: true
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.ServiceProvider',
+      name: 'spid',
+      storageTransient: true,
+      javaFactory: `
+        var ownerSpidMap = new java.util.HashMap();
+        ownerSpidMap.put(
+          BeneficialOwner.class.getName(),
+          new foam.core.PropertyInfo[] { BeneficialOwner.BUSINESS }
+        );
+        return new ServiceProviderAwareSupport()
+          .findSpid(foam.core.XLocator.get(), ownerSpidMap, this);
+      `
     }
   ],
 

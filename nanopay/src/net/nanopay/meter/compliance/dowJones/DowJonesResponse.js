@@ -20,6 +20,10 @@ foam.CLASS({
   name: 'DowJonesResponse',
   extends: 'net.nanopay.meter.compliance.dowJones.DowJonesCall',
 
+  implements: [
+    'foam.nanos.auth.ServiceProviderAware'
+  ],
+
   documentation: 'Base class model for a search response from the Dow Jones Risk Database.',
 
   tableColumns: [
@@ -111,6 +115,12 @@ foam.CLASS({
       name: 'responseBody',
       visibility: 'RO',
       documentation: 'Body retreived from the body response data'
+    },
+    {
+      class: 'Reference',
+      of: 'foam.nanos.auth.ServiceProvider',
+      name: 'spid',
+      visibility: 'RO'
     }
   ],
 
