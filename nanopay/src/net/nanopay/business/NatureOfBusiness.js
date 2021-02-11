@@ -92,7 +92,7 @@ foam.CLASS({
         .addClass(this.myClass())
         .start(this.Cols)
           .start()
-            .style({ 'flex': 1, 'margin-right': '16px' })
+            .style({ 'flex': 1, 'margin-right': '16px', 'width': 0 }) // 0 width to prevent the container to widen if the content overflows
             .tag(this.RichChoiceView, {
               data$: this.parentChoice$,
               sections: [
@@ -108,7 +108,7 @@ foam.CLASS({
           .end()
 
           .start()
-            .style({ flex: 1 })
+            .style({ flex: 1, width: 0 }) // 0 width to prevent the container to widen if the content overflows
             .add(this.parentChoice$.map((id) => {
               return this.E()
                 .tag(this.RichChoiceView, {
