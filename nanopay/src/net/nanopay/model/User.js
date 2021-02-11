@@ -544,7 +544,9 @@ foam.CLASS({
                 if ( user == null ) {
                   return (User) bareUserDAO.find(userId);
                 }
-              } catch(Exception e) {}
+              } catch(Exception e) {
+                ((foam.nanos.logger.Logger) x.get("logger")).warning("User", "findUser", userId, e);
+              }
               return user;
             }
         `);
