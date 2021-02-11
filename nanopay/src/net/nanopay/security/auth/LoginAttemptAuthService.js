@@ -147,7 +147,10 @@ foam.CLASS({
               throw new foam.nanos.auth.AuthenticationException("Account temporarily locked. You can attempt to login after " + getDateFormat().format(la.getNextLoginAttemptAllowedAt()));
             }
           }  else {
-            throw new foam.nanos.auth.AuthenticationException(ACCOUNT_LOCKED);
+            String locale = user.getLanguage().getCode().toString();
+            TranslationService ts = (TranslationService) getX().get("translationService");
+            String exc = ts.getTranslation(locale, getClassInfo().getId()+ ".ACCOUNT_LOCKED", this.ACCOUNT_LOCKED);
+            throw new foam.nanos.auth.AuthenticationException(exc);
           }
         }
 
