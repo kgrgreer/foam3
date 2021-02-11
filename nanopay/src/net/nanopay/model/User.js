@@ -46,7 +46,6 @@ foam.CLASS({
     'javax.mail.internet.InternetAddress',
 
     'net.nanopay.contacts.Contact',
-    'net.nanopay.contacts.PersonalContact',
     'static foam.mlang.MLang.AND',
     'static foam.mlang.MLang.EQ',
     'static foam.mlang.MLang.INSTANCE_OF',
@@ -537,17 +536,14 @@ foam.CLASS({
               DAO contactDAO = (DAO) x.get("contactDAO");
               DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
               User user = null;
-              try{
+              try {
                 user = (User) contactDAO.find(userId);
-                if ( user != null && user instanceof PersonalContact ) {
-                  if ( user instanceof Contact && ((Contact) user).getBusinessId() > 0 )
-                    return (User) localBusinessDAO.find(((Contact) user).getBusinessId());
-                  else
-                    return user;
-                } else if (user == null) {
+                if ( user != null && user instanceof Contact && ((Contact) user).getBusinessId() > 0 ) {
+                  return (User) localBusinessDAO.find(((Contact) user).getBusinessId());
+                }
+                if ( user == null ) {
                   return (User) bareUserDAO.find(userId);
                 }
-                return user;
               } catch(Exception e) {}
               return user;
             }
