@@ -75,22 +75,23 @@ foam.CLASS({
       of: 'net.nanopay.tx.model.Transaction',
       name: 'requestTransaction',
       documentation: `Id of transaction requiring reversal`,
-      section: 'infoSection'
+      section: 'infoSection',
+      hidden: true
     },
     {
       class: 'String',
       name: 'refundTransaction',
       documentation: `Id of the transaction`,
-      createVisibility: function(a) {
-        return (refundTransaction == null) ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RO;
-      },
+      // createVisibility: function(refundTransaction) {
+      //   return (refundTransaction == null) ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RO;
+      // },
       section: 'infoSection'
     },
     {
       class: 'String',
       name: 'problemTransaction',
       documentation: `Id of the problem transaction`,
-      createVisibility: function(a) {
+      createVisibility: function(problemTransaction) {
         return (problemTransaction == null) ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RO;
       },
       section: 'infoSection'
