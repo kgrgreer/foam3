@@ -423,23 +423,12 @@ p({
   class: "net.nanopay.tx.fee.PercentageFee",
   id: "83a864bc-f34c-4b1f-86de-18097383a19a-001",
   name: "IRS Rate",
-  percentage: 10.0,
+  percentage: 0.0,
   predicate: {
-    class: "foam.mlang.predicate.And",
-    args: [
-      {
-        class: "net.nanopay.tx.fee.predicate.PaymentCorridorPredicate",
-        paymentProvider: "Treviso",
-        sourceCountry: "BR",
-        targetCountry: "US"
-      },
-      {
-        class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
-        of: "net.nanopay.country.br.tx.NatureCodeLineItem",
-        propName: "natureCode",
-        propValue: "10002"
-      }
-    ]
+    class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+    of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+    propName: "natureCode",
+    propValue: "12012"
   },
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
@@ -447,22 +436,192 @@ p({
   class: "net.nanopay.tx.fee.PercentageFee",
   id: "83a864bc-f34c-4b1f-86de-18097383a19a-002",
   name: "IRS Rate",
-  percentage: 15.0,
+  percentage: 0.0,
   predicate: {
     class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
     of: "net.nanopay.country.br.tx.NatureCodeLineItem",
     propName: "natureCode",
-    propValue: "10002"
+    propValue: "12036"
   },
-  order: 10,
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
 p({
   class: "net.nanopay.tx.fee.PercentageFee",
   id: "83a864bc-f34c-4b1f-86de-18097383a19a-003",
   name: "IRS Rate",
-  percentage: 25.0,
-  order: 20,
+  percentage: 0.0,
+  predicate: {
+    class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+    of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+    propName: "natureCode",
+    propValue: "37004"
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "83a864bc-f34c-4b1f-86de-18097383a19a-004",
+  name: "IRS Rate",
+  percentage: 0.0,
+  predicate: {
+    class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+    of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+    propName: "natureCode",
+    propValue: "37011"
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "83a864bc-f34c-4b1f-86de-18097383a19a-005",
+  name: "IRS Rate",
+  percentage: 17.64765,
+  predicate: {
+    class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+    of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+    propName: "natureCode",
+    propValue: "47025"
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "83a864bc-f34c-4b1f-86de-18097383a19a-006",
+  name: "IRS Rate",
+  percentage: 17.64765,
+  predicate: {
+    class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+    of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+    propName: "natureCode",
+    propValue: "47128"
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "83a864bc-f34c-4b1f-86de-18097383a19a-007",
+  name: "IRS Rate",
+  percentage: 17.64765,
+  predicate: {
+    class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+    of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+    propName: "natureCode",
+    propValue: "47142"
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "83a864bc-f34c-4b1f-86de-18097383a19a-008",
+  name: "IRS Rate",
+  percentage: 17.64765,
+  predicate: {
+    class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+    of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+    propName: "natureCode",
+    propValue: "47159"
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "83a864bc-f34c-4b1f-86de-18097383a19a-009",
+  name: "IRS Rate",
+  percentage: 17.64765,
+  predicate: {
+    class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+    of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+    propName: "natureCode",
+    propValue: "47197"
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "83a864bc-f34c-4b1f-86de-18097383a19a-010",
+  name: "IRS Rate",
+  percentage: 17.64765,
+  predicate: {
+    class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+    of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+    propName: "natureCode",
+    propValue: "47575"
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "83a864bc-f34c-4b1f-86de-18097383a19a-011",
+  name: "IRS Rate",
+  percentage: 0.0,
+  predicate: {
+    class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+    of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+    propName: "natureCode",
+    propValue: "47702"
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "83a864bc-f34c-4b1f-86de-18097383a19a-012",
+  name: "IRS Rate",
+  percentage: 33.3333,
+  predicate: {
+    class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+    of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+    propName: "natureCode",
+    propValue: "47915"
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "83a864bc-f34c-4b1f-86de-18097383a19a-013",
+  name: "IRS Rate",
+  percentage: 0.0,
+  predicate: {
+    class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+    of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+    propName: "natureCode",
+    propValue: "67407"
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "83a864bc-f34c-4b1f-86de-18097383a19a-014",
+  name: "IRS Rate",
+  percentage: 0.0,
+  predicate: {
+    class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+    of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+    propName: "natureCode",
+    propValue: "67500"
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "83a864bc-f34c-4b1f-86de-18097383a19a-015",
+  name: "IRS Rate",
+  percentage: 0.0,
+  predicate: {
+    class: "net.nanopay.tx.fee.predicate.HasLineItemPredicate",
+    of: "net.nanopay.country.br.tx.NatureCodeLineItem",
+    propName: "natureCode",
+    propValue: "67940"
+  },
+  feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
+})
+
+// Fallback IRS Rate = 17.64765%
+p({
+  class: "net.nanopay.tx.fee.PercentageFee",
+  id: "83a864bc-f34c-4b1f-86de-18097383a19a-fallback",
+  name: "IRS Rate",
+  percentage: 17.64765,
+  order: 10,
   feeRule: "91194da9-8391-436a-8468-fa2c706126b8"
 })
 
