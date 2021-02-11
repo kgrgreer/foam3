@@ -2305,7 +2305,7 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.PaymentC
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.contacts.ui.PaymentCodeSearchWizardView.SAVE.label",target:"adicionar beneficiários"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.CurrencyAmount.NO_CURRENCY_ERROR",target:"Moeda necessária"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.CurrencyAmount.NO_AMOUNT_ERROR",target:"Quantidade necessária"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.CurrencyAmount.NO_AMOUNT_ERROR",target:"Quantidade obrigatório"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.CurrencyAmount.CURRENCY_PLACEHOLDER",target:"Escolha a moeda"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.CurrencyAmount.CUSTOM_CURRENCY_DAO.label",target:"customCurrencyDAO pt"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.CurrencyAmount.CUSTOM_CURRENCY_DAO.documentation",target:"DAO usado para seleção de moedat"})
@@ -2314,10 +2314,10 @@ p({class:"foam.i18n.Locale",locale:"pt",source:"554af38a-8225-87c8-dfdf-eeb15f71
 p({class:"foam.i18n.Locale",locale:"pt",source:"fb7d3ca2-62f2-4caf-a84c-860392e4676b.name",target:"Número CPF"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.model.Business.TARGET_CUSTOMERS.label",target:"Descreva o cliente-alvo de seus produtos e serviços"})
 
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.GROSS_ANNUAL_SALES_ERROR",target:"Vendas anuais brutas necessárias"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.TRANSACTION_PURPOSE_ERROR",target:"Objetivo da transação necessário"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_NUMBER_ERROR",target:"Número anual de transações necessárias"})
-p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_VOLUME_ERROR",target:"Volume anual necessário"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.GROSS_ANNUAL_SALES_ERROR",target:"Vendas anuais brutas obrigatório"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.TRANSACTION_PURPOSE_ERROR",target:"Objetivo da transação obrigatório"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_NUMBER_ERROR",target:"Número anual de transações obrigatório"})
+p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.sme.onboarding.model.SuggestedUserTransactionInfo.ANNUAL_VOLUME_ERROR",target:"Volume anual obrigatório"})
 
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.CertifyOwnersPercent.SECTION_REVIEW_AGREEMENT_DOCUMENTS_SECTION.title",target:"Certificar a porcentagem de propriedade"})
 p({class:"foam.i18n.Locale",locale:"pt",source:"net.nanopay.crunch.acceptanceDocuments.capabilities.USDAFEXTerms.SECTION_REVIEW_AGREEMENT_DOCUMENTS_SECTION.title",target:"Leia e aceite os termos e condições"})
