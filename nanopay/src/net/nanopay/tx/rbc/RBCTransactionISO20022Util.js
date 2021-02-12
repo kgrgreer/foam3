@@ -286,7 +286,6 @@ foam.CLASS({
           ((DAO) x.get("localTransactionDAO")).put(txn);
           Notification notification = new Notification.Builder(x)
             .setTemplate("NOC")
-            .setEmailName("NOC")
             .setBody("Failed to add transaction to RBC file: " + txn.getId() + " : " + e.getMessage() )
           .build();
           ((DAO) x.get("localNotificationDAO")).put(notification);
@@ -541,7 +540,6 @@ foam.CLASS({
           ((DAO) x.get("localTransactionDAO")).put(txn);
           Notification notification = new Notification.Builder(x)
             .setTemplate("NOC")
-            .setEmailName("NOC")
             .setBody("Failed to add transaction to RBC file: " + txn.getId() + " : " + e.getMessage() )
           .build();
           ((DAO) x.get("localNotificationDAO")).put(notification);

@@ -59,7 +59,6 @@ foam.CLASS({
               logger.error(msg, t);
               Notification notification = new Notification.Builder(x)
                 .setTemplate("NOC")
-                .setEmailName("NOC")
                 .setBody(msg + " " + t.getMessage())
                 .build();
               ((DAO) x.get("localNotificationDAO")).put(notification);
@@ -76,11 +75,10 @@ foam.CLASS({
             logger.error(msg, t);
             Notification notification = new Notification.Builder(x)
               .setTemplate("NOC")
-              .setEmailName("NOC")
               .setBody(msg + " " + t.getMessage())
               .build();
             ((DAO) x.get("localNotificationDAO")).put(notification);
-          }
+          } 
         }
       }, "Rule to create submit transaction on AFEX system when transaction is pending and balance is completed.");
       `

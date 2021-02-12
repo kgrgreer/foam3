@@ -182,7 +182,6 @@ public class CsvUtil {
               logger.error(message.toString());
               Notification notification = new Notification.Builder(x)
                 .setTemplate("NOC")
-                .setEmailName("NOC")
                 .setBody(message.toString())
                 .build();
               notificationDAO.put(notification);
@@ -201,7 +200,6 @@ public class CsvUtil {
               logger.error(message.toString());
               Notification notification = new Notification.Builder(x)
                 .setTemplate("NOC")
-                .setEmailName("NOC")
                 .setBody(message.toString())
                 .build();
               notificationDAO.put(notification);
@@ -219,7 +217,6 @@ public class CsvUtil {
               logger.error(message.toString());
               Notification notification = new Notification.Builder(x)
                 .setTemplate("NOC")
-                .setEmailName("NOC")
                 .setBody(message.toString())
                 .build();
               notificationDAO.put(notification);
@@ -237,7 +234,6 @@ public class CsvUtil {
             logger.error(message.toString());
             Notification notification = new Notification.Builder(x)
               .setTemplate("NOC")
-              .setEmailName("NOC")
               .setBody(message.toString())
               .build();
             notificationDAO.put(notification);
@@ -257,7 +253,6 @@ public class CsvUtil {
             logger.error(message.toString());
             Notification notification = new Notification.Builder(x)
               .setTemplate("NOC")
-              .setEmailName("NOC")
               .setBody(message.toString())
               .build();
             notificationDAO.put(notification);

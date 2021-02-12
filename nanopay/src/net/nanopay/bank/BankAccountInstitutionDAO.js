@@ -56,7 +56,7 @@ foam.CLASS({
           public BankAccountInstitutionDAO(X x, DAO delegate) {
             setX(x);
             setDelegate(delegate);
-          }
+          }  
         `
         );
       }
@@ -126,7 +126,6 @@ foam.CLASS({
 
             Notification notification = new Notification.Builder(x)
               .setTemplate("NOC")
-              .setEmailName("NOC")
               .setBody(message)
               .build();
             new Transfer.Builder(x).build();
@@ -136,7 +135,6 @@ foam.CLASS({
             String message = "Multiple Institutions found for institutionNumber: " + bankAccount.getInstitution() + ". Using " + institution.getId() + " on BankAccount: " + bankAccount.getId();
             Notification notification = new Notification.Builder(x)
               .setTemplate("NOC")
-              .setEmailName("NOC")
               .setBody(message)
               .build();
             ((DAO) x.get("localNotificationDAO")).put(notification);

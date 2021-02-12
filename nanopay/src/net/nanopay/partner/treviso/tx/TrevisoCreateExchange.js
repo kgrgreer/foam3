@@ -46,7 +46,7 @@ foam.CLASS({
         @Override
         public void execute(X x) {
 
-          Logger logger = (Logger) x.get("logger");
+          Logger logger = (Logger) x.get("logger");          
           DAO transactionDAO = ((DAO) x.get("localTransactionDAO")).inX(x);
           Transaction transaction = (Transaction) obj;
           TrevisoService trevisoService = (TrevisoService) x.get("trevisoService");
@@ -58,7 +58,6 @@ foam.CLASS({
             logger.error(msg, t);
             Notification notification = new Notification.Builder(x)
               .setTemplate("NOC")
-              .setEmailName("NOC")
               .setBody(msg + " " + t.getMessage())
               .build();
               ((DAO) x.get("localNotificationDAO")).put(notification);

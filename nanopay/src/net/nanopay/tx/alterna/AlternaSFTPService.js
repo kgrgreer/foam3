@@ -144,7 +144,6 @@ foam.CLASS({
             logger.warning("Same CSV file has been processed. Duplicate CSV file not sent", filename, System.getProperty("user.name"));
             Notification notification = new Notification.Builder(x)
               .setTemplate("NOC")
-              .setEmailName("NOC")
               .setBody("Same CSV file has been processed. Duplicate CSV file not sent. FileName: " + filename)
               .build();
             notificationDAO.put(notification);
@@ -152,15 +151,14 @@ foam.CLASS({
             logger.warning("Same CSV file is being processed. Duplicate CSV file not sent", filename, System.getProperty("user.name"));
             Notification notification = new Notification.Builder(x)
               .setTemplate("NOC")
-              .setEmailName("NOC")
               .setBody("CSV file is being processed. Duplicate CSV file not sent. FileName: " + filename)
               .build();
             notificationDAO.put(notification);
-          } else {
+          } else {    
             // send CSV file
             channelSftp.put(new ByteArrayInputStream(baos.toByteArray()), filename);
             logger.info("CICO CSV file sent");
-
+            
             // save CSV file
             saveFile(baos, SEND_FOLDER + filename);
           }

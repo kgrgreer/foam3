@@ -172,7 +172,6 @@ public class FlinksRestService
       logger.error("Flinks credentials not found");
       Notification notification = new Notification.Builder(getX())
         .setTemplate("NOC")
-        .setEmailName("NOC")
         .setBody("Flinks credentials not found")
         .build();
       notificationDAO.put(notification);

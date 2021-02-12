@@ -82,7 +82,7 @@ foam.CLASS({
     {
       name: 'plan',
       javaCode: `
-
+    
         AFEXServiceProvider fxService = (AFEXServiceProvider) x.get("afexServiceProvider");
         return generateTransaction(x, quote, (AFEXServiceProvider) fxService);
               `
@@ -120,7 +120,6 @@ foam.CLASS({
           String message = "Unable to get FX quotes for source currency: "+ request.getSourceCurrency() + " and destination currency: " + request.getDestinationCurrency() + " from AFEX" ;
           Notification notification = new Notification.Builder(x)
             .setTemplate("NOC")
-            .setEmailName("NOC")
             .setBody(message)
             .build();
           ((DAO) x.get("localNotificationDAO")).put(notification);
@@ -207,7 +206,7 @@ foam.CLASS({
         //--- Create Fx Summary ---
         FXSummaryTransaction summary = new FXSummaryTransaction();
         // get Summary amounts from the fxQuote
-        summary.setAmount(fxQuote.getSourceAmount());
+        summary.setAmount(fxQuote.getSourceAmount()); 
         summary.setDestinationAmount(fxQuote.getTargetAmount());
         summary.setSourceCurrency(request.getSourceCurrency());
         summary.setDestinationCurrency(request.getDestinationCurrency());

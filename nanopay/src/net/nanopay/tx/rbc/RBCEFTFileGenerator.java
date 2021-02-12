@@ -63,7 +63,7 @@ public class RBCEFTFileGenerator implements EFTFileGenerator {
   }
 
   /**
-   * Create the real file object and save it into the disk.
+   * Create the real file object and save it into the disk.		
    * @param transactions a list of transactins to be sent
    * @return an EFTFile model
    */
@@ -88,8 +88,8 @@ public class RBCEFTFileGenerator implements EFTFileGenerator {
    * @return the real file object
    */
   public foam.nanos.fs.File createFile(EFTFile eftFile) {
-    if ( eftFile == null ) return null;
-
+    if ( eftFile == null ) return null; 
+    
     try {
       /* create and store in FileDAO */
       InputStream in = new ByteArrayInputStream(eftFile.getContent().getBytes());
@@ -103,7 +103,7 @@ public class RBCEFTFileGenerator implements EFTFileGenerator {
 
   /**
    * Create the encrypted file.
-   * @param plainFiles real plain files
+   * @param plainFiles real plain files 
    * @return list of encrypted file objects
    */
   public File createEncryptedFile(File plainFile) {
@@ -145,13 +145,13 @@ public class RBCEFTFileGenerator implements EFTFileGenerator {
     RBCTransactionISO20022Util transactionISO20022Util = new RBCTransactionISO20022Util();
     try {
       EFTFile eftFile = new EFTFile();
-      eftFile = (EFTFile) eftFileDAO.inX(x).put(eftFile);
+      eftFile = (EFTFile) eftFileDAO.inX(x).put(eftFile); 
       RbcCIRecord ciRecords = transactionISO20022Util.generateCIRecords(x, ciTransactions.toArray(new Transaction[ciTransactions.size()]), String.valueOf(eftFile.getId()));
       if ( ciRecords != null && ciRecords.getDebitMsg() != null ) {
         ciRecords.setTransmissionHeader(transmissionHeader(rbcCredential));
         this.passedTransactions.addAll(Arrays.asList(ciRecords.getTransactions()));
         eftFile.setFileName(eftFile.getId() + "-debit" + ".txt");
-        String content = ciRecords.toPain00800102XML();
+        String content = ciRecords.toPain00800102XML();          
         content = replaceInbetweenTag(content, "<ReqdColltnDt>", "</ReqdColltnDt>"); // TODO an Ugly hack pending when ISODate outputter is fixed
         content = replaceInbetweenTag(content, "<RltdDt>", "</RltdDt>");
         eftFile.setContent(content);
@@ -161,10 +161,9 @@ public class RBCEFTFileGenerator implements EFTFileGenerator {
         eftFileDAO.inX(x).remove(eftFile);
       }
     } catch (Exception e) {
-      this.logger.error("Error creating RBC EFT file", e);
+      this.logger.error("Error creating RBC EFT file", e); 
       Notification notification = new Notification.Builder(x)
         .setTemplate("NOC")
-        .setEmailName("NOC")
         .setBody("RBC Failed to create EFT File for CI Transactions: " + e.getMessage() )
       .build();
       ((DAO) x.get("localNotificationDAO")).put(notification);
@@ -182,7 +181,7 @@ public class RBCEFTFileGenerator implements EFTFileGenerator {
         coRecords.setTransmissionHeader(transmissionHeader(rbcCredential));
         this.passedTransactions.addAll(Arrays.asList(coRecords.getTransactions()));
         eftFile.setFileName(eftFile.getId() + "-credit" + ".txt");
-        String content = coRecords.toPain00100103XML();
+        String content = coRecords.toPain00100103XML();          
         content = replaceInbetweenTag(content, "<ReqdExctnDt>", "</ReqdExctnDt>"); // TODO an Ugle hack pending when ISODate outputter is fixed
         content = replaceInbetweenTag(content, "<RltdDt>", "</RltdDt>");
         eftFile.setContent(content);
@@ -192,10 +191,9 @@ public class RBCEFTFileGenerator implements EFTFileGenerator {
         eftFileDAO.inX(x).remove(eftFile);
       }
     } catch (Exception e) {
-      this.logger.error("Error creating RBC EFT file", e);
+      this.logger.error("Error creating RBC EFT file", e); 
       Notification notification = new Notification.Builder(x)
         .setTemplate("NOC")
-        .setEmailName("NOC")
         .setBody("RBC Failed to create EFT File for CO Transactions: " + e.getMessage() )
       .build();
       ((DAO) x.get("localNotificationDAO")).put(notification);

@@ -50,7 +50,7 @@ foam.CLASS({
           public AscendantFXBankAccountDAO(X x, DAO delegate) {
             setX(x);
             setDelegate(delegate);
-          }
+          }  
         `
         );
       }
@@ -64,7 +64,7 @@ foam.CLASS({
         if ( !(obj instanceof BankAccount) ) {
           return getDelegate().put_(x, obj);
         }
-
+    
         BankAccount account = (BankAccount) obj;
         AuthService auth = (AuthService) x.get("auth");
         DAO localBusinessDAO = (DAO) x.get("localBusinessDAO");
@@ -75,18 +75,18 @@ foam.CLASS({
           hasFXProvisionPayerPermission = auth.checkUser(getX(), accountOwner, "fx.provision.payer");
         }
         if ( hasFXProvisionPayerPermission ) {
-
+    
           DAO ascendantFXUserDAO = (DAO) getX().get("ascendantFXUserDAO");
           AscendantFXUser ascendantFXUser = (AscendantFXUser) ascendantFXUserDAO.find(
               MLang.EQ(AscendantFXUser.USER, accountOwner.getId()));
-
+    
           if ( null == ascendantFXUser ) {
             ascendantFXUser = new AscendantFXUser();
             ascendantFXUser.setName(accountOwner.getLegalName());
             ascendantFXUser.setUser(accountOwner.getId());
             ascendantFXUser.setUserStatus(FXUserStatus.PENDING);
             ascendantFXUserDAO.put_(getX(), ascendantFXUser);
-
+    
             //Create Ascendant Organization notification
             String message = ORGANIZATION_SETUP_REQUIRED_ERROR_MSG + accountOwner.getId() ;
             Notification notification = new Notification.Builder(x)
@@ -97,7 +97,7 @@ foam.CLASS({
           ((Logger) x.get("logger")).warning(this.getClass().getSimpleName(), message);
           }
         }
-
+    
         return super.put_(x, obj);
       `
     }

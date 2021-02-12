@@ -55,7 +55,7 @@ foam.CLASS({
           public BankAccountBranchDAO(X x, DAO delegate) {
             setX(x);
             setDelegate(delegate);
-          }
+          }    
         `
         );
       }
@@ -75,7 +75,7 @@ foam.CLASS({
       `
     }
   ],
-
+  
   methods: [
     {
       name: 'put_',
@@ -152,7 +152,7 @@ foam.CLASS({
             bankAccount = (BankAccount) bankAccount.fclone();
             bankAccount.setBranchId(branch.getBranchId());
             return bankAccount;
-          }
+          } 
           getLogger().debug("Branch not found", bankAccount.getBranch(), "account", bankAccount.getId());
         }
         return fObject;
@@ -209,7 +209,6 @@ foam.CLASS({
 
         Notification notification = new Notification.Builder(x)
             .setTemplate("NOC")
-            .setEmailName("NOC")
             .setBody(message)
             .build();
         ((DAO) x.get("localNotificationDAO")).put(notification);

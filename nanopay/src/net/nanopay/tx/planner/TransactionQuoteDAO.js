@@ -108,7 +108,6 @@ foam.CLASS({
       javaCode: `
       Notification notification = new Notification.Builder(x)
         .setTemplate("NOC")
-        .setEmailName("NOC")
         .setBody(message)
         .build();
       ((DAO) x.get("localNotificationDAO")).put(notification);
