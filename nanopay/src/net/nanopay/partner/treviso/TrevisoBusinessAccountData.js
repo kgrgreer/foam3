@@ -151,6 +151,22 @@ foam.CLASS({
     },
     {
       section: 'accountingSection',
+      name: 'nonprofitEntity',
+      label: 'Is your business considered a non-profit entity?',
+      class: 'Boolean',
+      view: function(_, X) {
+        return {
+          class: 'foam.u2.view.RadioView',
+          choices: [
+            [true, X.data.YES],
+            [false, X.data.NO]
+          ],
+          isHorizontal: true
+        };
+      }
+    },
+    {
+      section: 'accountingSection',
       name: 'capitalSource',
       label: 'What is the primary source of capital for your business?',
       class: 'String',
@@ -177,22 +193,6 @@ foam.CLASS({
           }
         }
       ]
-    },
-    {
-      section: 'accountingSection',
-      name: 'nonprofitEntity',
-      label: 'Is your business considered a non-profit entity?',
-      class: 'Boolean',
-      view: function(_, X) {
-        return {
-          class: 'foam.u2.view.RadioView',
-          choices: [
-            [true, X.data.YES],
-            [false, X.data.NO]
-          ],
-          isHorizontal: true
-        };
-      }
     },
     {
       section: 'accountingSection',
