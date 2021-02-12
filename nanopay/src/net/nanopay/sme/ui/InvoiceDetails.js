@@ -136,6 +136,11 @@ foam.CLASS({
     ^ .note {
       white-space: pre-line;
     }
+    @media print {
+      ^ .note {
+        white-space: normal;
+      }
+    }
   `,
 
   constants: [
