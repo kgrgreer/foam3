@@ -36,7 +36,7 @@ foam.CLASS({
     {
       class: 'String',
       name: 'totalFee',
-      label: 'Fees'
+      label: 'Fees' // TODO see if can make total storage transient, and calculate from currency + amount
     },
     {
       name: 'lineItems',
