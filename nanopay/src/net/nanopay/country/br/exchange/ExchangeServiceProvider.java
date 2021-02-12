@@ -510,19 +510,19 @@ public class ExchangeServiceProvider implements ExchangeService {
   public Transaction updateTransactionStatus(Transaction transaction) throws RuntimeException {
     if ( SafetyUtil.isEmpty(transaction.getExternalInvoiceId()) ) return transaction;
 
-    GetBoletoStatus request = new GetBoletoStatus();
+    SearchBoleto request = new SearchBoleto();
     request.setNrBoleto(transaction.getExternalInvoiceId());
     try {
-      BoletoStatusResponse response = exchangeClient.getBoletoStatus(request);
-      if ( response == null || response.getBoletoStatusResult() == null )
-        throw new RuntimeException("Unable to get a valid response from Exchange while calling GetBoletoStatus");
+      SearchBoletoResponse response = exchangeClient.searchBoleto(request);
+      if ( response == null || response.getSearchBoletoResult() == null )
+        throw new RuntimeException("Unable to get a valid response from Exchange while calling SearchBoletoResponse");
 
-      if ( response.getBoletoStatusResult().getBoleto() == null ||
-        response.getBoletoStatusResult().getBoleto().length < 1 )
+      if ( response.getSearchBoletoResult().getBoletos() == null ||
+        response.getSearchBoletoResult().getBoletos().length < 1 )
         throw new RuntimeException("GetBoletoStatus failed, transaction not found in exchange");
 
       transaction = (Transaction) transaction.fclone();
-      Boleto boleto = (Boleto) response.getBoletoStatusResult().getBoleto()[0];
+      Boleto boleto = (Boleto) response.getSearchBoletoResult().getBoletos()[0];
       transaction.setStatus(mapExchangeTransactionStatus(boleto.getSTATUS(), transaction));
       return transaction;
     } catch(Throwable t) {
@@ -540,7 +540,7 @@ public class ExchangeServiceProvider implements ExchangeService {
       case "R":
         return TransactionStatus.SENT;
       case "F":
-        return TransactionStatus.DECLINED;
+        return TransactionStatus.COMPLETED;
       default:
         return transaction.getStatus();
     }
