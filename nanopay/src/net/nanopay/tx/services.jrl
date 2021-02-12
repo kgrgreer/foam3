@@ -160,7 +160,6 @@ p({
         foam.mlang.MLang.INSTANCE_OF(net.nanopay.fx.FXSummaryTransaction.class)
       }))
       .setDelegate(x.get("transactionDAO"))
-      .setOf(net.nanopay.tx.SummaryTransaction.getOwnClassInfo())
       .setPrimaryKey(net.nanopay.tx.model.Transaction.ID)
       .build();
 
