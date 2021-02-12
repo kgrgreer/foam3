@@ -218,16 +218,32 @@ p({
   "daoKey":"localTicketDAO",
   "operation":0,
   "predicate":{
-    "class":"net.nanopay.ticket.RefundTicketPropertyPredicate",
-    "txnProperty":"status",
-    "txnValue":{
-      "class": "net.nanopay.tx.model.TransactionStatus",
-      "ordinal":0
-    }
-  },
+      "class":"foam.mlang.predicate.And",
+      "args":[
+        {
+          "class": "foam.mlang.predicate.IsClassOf",
+          "targetClass": "net.nanopay.ticket.RefundTicket"
+        },
+        {
+          "class":"net.nanopay.ticket.RefundTicketPropertyPredicate",
+          "txnProperty":"status",
+          "txnValue":
+          {
+            "class":"net.nanopay.tx.model.TransactionStatus",
+            "ordinal":0
+          }
+        },
+        {
+          "class":"net.nanopay.ticket.RefundTicketPropertyPredicate",
+          "txnProperty":"instance",
+          "txnValue":"net.nanopay.tx.cico.COTransaction"
+        }
+      ]
+    },
   "action":{
     "class":"net.nanopay.ticket.BasicFullReverseRefundTicketCreateRule",
-    "textToAgent":"This transaction can be safely refunded, don't waive fees though"
+    "agentInstructions":"This transaction can be safely refunded, don't waive fees though",
+    "creditAccount":"25b06dce-39bc-45ec-b736-856f3c25ce28"
   },
   "after":false,
   "enabled":true,

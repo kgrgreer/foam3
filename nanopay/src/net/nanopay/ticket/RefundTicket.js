@@ -82,9 +82,12 @@ foam.CLASS({
       class: 'String',
       name: 'refundTransaction',
       documentation: `Id of the transaction`,
-      // createVisibility: function(refundTransaction) {
-      //   return (refundTransaction == null) ? foam.u2.DisplayMode.HIDDEN : foam.u2.DisplayMode.RO;
-      // },
+      section: 'infoSection'
+    },
+    {
+      class: 'String',
+      name: 'creditAccount',
+      documentation: `Id of the creditAccount`,
       section: 'infoSection'
     },
     {

@@ -58,3 +58,46 @@ p({
   "lifecycleState":1,
   "spid": "intuit"
 })
+p({
+  "class":"foam.nanos.ruler.Rule",
+  "id":"379c1084-ebec-4f3b-8627-964146c6f06b",
+  "name":"RefundTicket - cancel CO on pending",
+  "priority":100,
+  "ruleGroup":"refundTickets",
+  "documentation":"Scenario 4: user presses cancel on pending cashout",
+  "daoKey":"localTicketDAO",
+  "operation":0,
+  "predicate":{
+    "class":"foam.mlang.predicate.And",
+    "args":[
+      {
+        "class": "foam.mlang.predicate.IsClassOf",
+        "targetClass": "net.nanopay.ticket.RefundTicket"
+      },
+      {
+        "class":"net.nanopay.ticket.RefundTicketPropertyPredicate",
+        "txnProperty":"status",
+        "txnValue":
+        {
+          "class":"net.nanopay.tx.model.TransactionStatus",
+          "ordinal":0
+        }
+      },
+      {
+        "class":"net.nanopay.ticket.RefundTicketPropertyPredicate",
+        "txnProperty":"instance",
+        "txnValue":"net.nanopay.tx.cico.COTransaction"
+      }
+    ]
+  },
+  "action":{
+    "class":"net.nanopay.ticket.BasicFullReverseRefundTicketCreateRule",
+    "agentInstructions":"This transaction can be safely refunded, don't waive fees though",
+    "creditAccount":"64307927-db83-43a7-9787-c5cc89becc11"
+  },
+  "after":false,
+  "enabled":true,
+  "saveHistory":false,
+  "lifecycleState":1,
+  "spid": "intuit"
+})
