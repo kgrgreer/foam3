@@ -39,6 +39,7 @@ foam.CLASS({
     'java.io.ByteArrayOutputStream',
     'java.io.InputStream',
     'java.util.List',
+    'net.nanopay.fx.FXSummaryTransaction',
     'net.nanopay.fx.afex.AFEXServiceProvider',
     'net.nanopay.fx.afex.AFEXTransaction',
     'net.nanopay.fx.FXQuote',
@@ -64,7 +65,7 @@ foam.CLASS({
 
           Transaction txn = (Transaction) transactionDAO.find(invoice.getPaymentId());
 
-          if ( ! txn instanceof FXSummaryTransaction ) {
+          if ( ! (txn instanceof FXSummaryTransaction) ) {
             return;
           }
                    
