@@ -52,6 +52,12 @@ foam.CLASS({
       class: 'String',
       name: 'textToAgent',
       documentation: 'Description of the base resolution path'
+    },
+    {
+      class: 'String',
+      name: 'creditAccount',
+      documentation: 'The default credit account to be used in this scenario'
+      // add validator make sure not empty
     }
   ],
 
@@ -61,6 +67,7 @@ foam.CLASS({
       javaCode: `
         RefundTicket ticket = (RefundTicket) obj;
         DAO txnDAO = (DAO) x.get("localTransactionDAO");
+        ticket.setCreditAccount(getCreditAccount());
         Transaction summary = (Transaction) txnDAO.find(ticket.getRefundTransaction());
         if (! (summary instanceof SummaryTransaction || summary instanceof FXSummaryTransaction) ) {
           summary = summary.findRoot(x);
